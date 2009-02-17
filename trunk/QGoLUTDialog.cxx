@@ -35,6 +35,7 @@ QGoLUTDialog::~QGoLUTDialog()
 {
   this->LUTActor->Delete();
   this->LUT->Delete();
+  delete this->qvtkWidget;
 }
 
 vtkLookupTable* QGoLUTDialog::GetLookupTable( )
