@@ -103,35 +103,32 @@ QT4_WRAP_CPP( QGOLUT_MOC_SRC ${QGOLUT_HDRS} )
 
 ############################
 
-#ADD_LIBRARY( QGO ${LIBS_STYLE}
-#  ${QGOMAINWINDOW_SRC}  ${QGOMAINWINDOW_QRC}  ${QGOMAINWINDOW_MOC_SRC}
-#  ${QGOLUT_SRC} ${QGOLUT_MOC_SRC} )
+ADD_LIBRARY( QGO ${LIBS_STYLE}
+ ${QGOMAINWINDOW_SRC}  ${QGOMAINWINDOW_QRC}  ${QGOMAINWINDOW_MOC_SRC}
+ ${QGOLUT_SRC} ${QGOLUT_MOC_SRC} )
 
-#SET( QGO_LIBS 
-#     QGO 
+# SET( QGO_LIBS
+#     QGO
 #     ${QMegaVTKAddOn} )
 
-#TARGET_LINK_LIBRARIES( QGO 
+#TARGET_LINK_LIBRARIES( QGO
 #     ${QGO_LIBS} )
 
 ############################
+SUBDIRS( Testing )
 
-ADD_EXECUTABLE( 
-  gofigure 
-  #MACOSX_BUNDLE 
-  gofigure.cxx 
-  ${QGOMAINWINDOW_SRC}  ${QGOMAINWINDOW_QRC}  ${QGOMAINWINDOW_MOC_SRC}
-  ${QGOLUT_SRC} ${QGOLUT_MOC_SRC})
+############################
+ADD_EXECUTABLE( gofigure
+  #MACOSX_BUNDLE
+  gofigure.cxx )
 
 TARGET_LINK_LIBRARIES( gofigure
   vtkVisuManagement
+  QGO
   QMegaVTKAddOn
-  ${QT_LIBRARIES}
-## required vtk librairies
-  QVTK
-  ITKCommon ITKIO ITKBasicFilters ITKAlgorithms
-  ITKNumerics
-  vtkImaging
+  ITKCommon
+  ITKIO
+  ITKBasicFilters
 )
 
 ADD_TEST( gofigure_TEST ${CXX_TEST_PATH}/gofigure )

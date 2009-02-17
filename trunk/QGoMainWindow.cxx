@@ -57,11 +57,11 @@ QGoMainWindow::~QGoMainWindow()
 // *****************************************************************************
 void QGoMainWindow::on_actionOpen_activated( )
 {
-  // NOTE: Handling symbolic links will be done later 
+  // NOTE: Handling symbolic links will be done later
   // (that way it requires much more code than expected)
   // QFileDialog filedialog( this, tr( "Select Image" ) );
-  // filedialog.setResolveSymlinks( true ); 
-  QString filename = filedialog.getOpenFileName( this, tr( "Select Image" ) );
+  // filedialog.setResolveSymlinks( true );
+  QString filename = QFileDialog::getOpenFileName( this, tr( "Select Image" ) );
 
   if( !filename.isEmpty() )
   {
