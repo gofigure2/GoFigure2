@@ -7,6 +7,7 @@
 #include <QtGui/QHBoxLayout>
 #include <QtGui/QLabel>
 #include <QtGui/QWidget>
+#include <QtGui/QSpacerItem>
 
 #include <vtkLookupTable.h>
 #include <vtkScalarBarActor.h>
@@ -30,11 +31,12 @@ public slots:
 protected:
   vtkLookupTable* LUT;
   vtkScalarBarActor* LUTActor;
-  //   Ui::LUTDialog ui;
   QDialogButtonBox *buttonBox;
   QVTKWidget *qvtkWidget;
-  QWidget *layoutWidget;
   QHBoxLayout *horizontalLayout;
+  QHBoxLayout *horizontalLayout_2;
+  QVBoxLayout *verticalLayout;
+  QSpacerItem *horizontalSpacer;
   QLabel *label;
   QComboBox *LUTComboBox;
 

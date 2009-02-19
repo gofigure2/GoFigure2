@@ -48,34 +48,26 @@ void QGoLUTDialog::setupUi( QDialog* LUTDialog )
   if( LUTDialog->objectName().isEmpty() )
     LUTDialog->setObjectName( QString::fromUtf8("LUTDialog") );
 
-  LUTDialog->resize(321, 203);
-  this->buttonBox = new QDialogButtonBox( LUTDialog );
-  this->buttonBox->setObjectName( QString::fromUtf8("buttonBox") );
-  this->buttonBox->setGeometry(QRect(60, 160, 252, 32));
-  this->buttonBox->setOrientation(Qt::Horizontal);
-  this->buttonBox->setStandardButtons( QDialogButtonBox::Cancel |
-  QDialogButtonBox::Ok );
-  this->buttonBox->setCenterButtons(false);
+  LUTDialog->resize(321, 183);
+  LUTDialog->setMinimumSize( 200, 150 );
+  LUTDialog->setModal( true );
 
-  this->qvtkWidget = new QVTKWidget(LUTDialog);
-  this->qvtkWidget->setObjectName(QString::fromUtf8("qvtkWidget"));
-  this->qvtkWidget->setGeometry(QRect(10, 50, 301, 100));
+  this->verticalLayout = new QVBoxLayout( LUTDialog );
+  this->verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
+  this->verticalLayout->setContentsMargins(10, 10, 10, 10);
+  this->verticalLayout->setSpacing( 20 );
 
-  this->layoutWidget = new QWidget(LUTDialog);
-  this->layoutWidget->setObjectName(QString::fromUtf8("layoutWidget"));
-  this->layoutWidget->setGeometry(QRect(10, 10, 301, 28));
-
-  this->horizontalLayout = new QHBoxLayout(layoutWidget);
+  this->horizontalLayout = new QHBoxLayout;
   this->horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
   this->horizontalLayout->setContentsMargins(0, 0, 0, 0);
 
-  this->label = new QLabel(layoutWidget);
+  this->label = new QLabel;
   this->label->setObjectName(QString::fromUtf8("label"));
   this->label->setText( tr("Lookup Table") );
 
   this->horizontalLayout->addWidget(label);
 
-  this->LUTComboBox = new QComboBox(layoutWidget);
+  this->LUTComboBox = new QComboBox;
   this->LUTComboBox->setObjectName(QString::fromUtf8("LUTComboBox"));
   this->LUTComboBox->setLayoutDirection(Qt::RightToLeft);
   this->LUTComboBox->setAutoFillBackground(false);
@@ -94,7 +86,35 @@ void QGoLUTDialog::setupUi( QDialog* LUTDialog )
   this->LUTComboBox->insertItem( k++, tr( "Asymmetry" ) );
   this->LUTComboBox->insertItem( k++, tr( "P-Value" ) );
 
-  horizontalLayout->addWidget(this->LUTComboBox);
+  this->horizontalLayout->addWidget(this->LUTComboBox);
+
+  this->verticalLayout->addLayout( this->horizontalLayout );
+
+  this->qvtkWidget = new QVTKWidget;
+  this->qvtkWidget->setObjectName(QString::fromUtf8("qvtkWidget"));
+  this->qvtkWidget->setGeometry(QRect(10, 50, 301, 100));
+
+  this->verticalLayout->addWidget( this->qvtkWidget );
+
+  this->horizontalLayout_2 = new QHBoxLayout;
+  this->horizontalLayout_2->setObjectName(QString::fromUtf8("horizontalLayout_2"));
+  this->horizontalLayout_2->setContentsMargins(0, 0, 0, 0);
+
+  this->horizontalSpacer = new QSpacerItem(166, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+  this->horizontalLayout_2->addItem(horizontalSpacer);
+
+  this->buttonBox = new QDialogButtonBox;
+  this->buttonBox->setObjectName( QString::fromUtf8("buttonBox") );
+  this->buttonBox->setGeometry(QRect(60, 160, 252, 32));
+  this->buttonBox->setOrientation(Qt::Horizontal);
+  this->buttonBox->setStandardButtons( QDialogButtonBox::Cancel |
+  QDialogButtonBox::Ok );
+  this->buttonBox->setCenterButtons(false);
+  this->horizontalLayout_2->addWidget(buttonBox);
+
+  this->verticalLayout->addLayout( this->horizontalLayout_2 );
+
+  LUTDialog->setLayout( this->verticalLayout );
 
   QObject::connect( this->buttonBox, SIGNAL(accepted()),
                     LUTDialog, SLOT(accept()) );
@@ -110,8 +130,11 @@ void QGoLUTDialog::setupUi( QDialog* LUTDialog )
 
 void QGoLUTDialog::ChangeLookupTable( const int& idx )
 {
+  this->LUT->Delete();
   this->LUT = vtkLookupTableManager::GetLookupTable( idx );
   this->LUTActor->SetLookupTable( this->LUT );
-  this->qvtkWidget->GetRenderWindow( )->GetRenderers(
-    )->GetFirstRenderer( )->Render( ) ;
+
+  vtkRenderWindow* renwin = this->qvtkWidget->GetRenderWindow();
+  vtkRenderer* render = renwin->GetRenderers()->GetFirstRenderer( );
+  render->Render( ) ;
 }

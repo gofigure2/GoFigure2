@@ -626,7 +626,7 @@ Weight</string>
           <item>
            <widget class="QLabel" name="label_10" >
             <property name="text" >
-             <string>Max. Nb. 
+             <string>Max. Nb.
 Iter.</string>
             </property>
             <property name="buddy" >

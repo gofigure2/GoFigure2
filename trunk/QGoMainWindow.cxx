@@ -12,6 +12,7 @@
 QGoMainWindow::QGoMainWindow( ) : m_PageView( 0 )
 {
   this->setupUi( this );
+  this->setCentralWidget( this->CentralImageTabWidget );
   this->setWindowTitle( tr( "~~>=O~~ GoFigure ~~O=<~~") );
   this->statusbar->showMessage( tr( "No data" ) );
   this->CentralImageTabWidget->clear();
@@ -284,6 +285,7 @@ void QGoMainWindow::on_actionAbout_activated( )
   authors.append( " * Alexandre Gouaillard\n" );
   authors.append( " * Sean Megason\n" );
   authors.append( " * Kishore Mosaliganti\n" );
+  authors.append( " * Lydie Souhait\n" );
 
   QString message = QString( "GoFigure %1\n\n" ).arg( version );
   message.append( about_gofigure );
