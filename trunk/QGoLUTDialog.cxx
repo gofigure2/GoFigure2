@@ -24,7 +24,7 @@ QGoLUTDialog::QGoLUTDialog( QWidget* parent ) : QDialog( parent ), LUT( 0 )
   this->LUTActor->SetHeight( 0.9 );
   this->LUTActor->SetPosition( 0.1, 0.1 );
   this->LUTActor->SetTitle( "LUT" );
-
+ 
   render->AddActor2D( this->LUTActor );
   render->Delete();
 

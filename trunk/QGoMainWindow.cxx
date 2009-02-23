@@ -16,6 +16,8 @@ QGoMainWindow::QGoMainWindow( ) : m_PageView( 0 )
   this->setWindowTitle( tr( "~~>=O~~ GoFigure ~~O=<~~") );
   this->statusbar->showMessage( tr( "No data" ) );
   this->CentralImageTabWidget->clear();
+  this->KishoreSegDockWidget->setVisible(false);
+  this->ManualSegmentationDockWidget->setVisible(false);
 
   m_Convert = VTKConvertImageType::New();
 
@@ -23,7 +25,8 @@ QGoMainWindow::QGoMainWindow( ) : m_PageView( 0 )
   m_LUTDialog = new QGoLUTDialog( this );
 
   QObject::connect( this->m_LUTDialog, SIGNAL( accepted( ) ),
-    this, SLOT( ChangeLookupTable( ) ) );
+   this, SLOT( ChangeLookupTable( ) ) );
+
 /*  QObject::connect( this->TracerPolygonBtn, SIGNAL( released( ) ),
     this, SLOT( SetTracerToPolygonTracer() ) );
   QObject::connect( this->TracerFreeLineBtn, SIGNAL( released( ) ),

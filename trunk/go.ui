@@ -58,7 +58,7 @@
      <x>0</x>
      <y>0</y>
      <width>1434</width>
-     <height>25</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile" >
@@ -202,7 +202,7 @@
     <widget class="QToolBox" name="VoronoiSeg" >
      <property name="geometry" >
       <rect>
-       <x>5</x>
+       <x>0</x>
        <y>0</y>
        <width>211</width>
        <height>421</height>
@@ -238,8 +238,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>201</width>
-        <height>324</height>
+        <width>211</width>
+        <height>337</height>
        </rect>
       </property>
       <attribute name="label" >
@@ -422,8 +422,8 @@ Radius</string>
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>201</width>
-        <height>324</height>
+        <width>211</width>
+        <height>337</height>
        </rect>
       </property>
       <attribute name="label" >
@@ -588,8 +588,8 @@ Weight</string>
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>201</width>
-        <height>324</height>
+        <width>211</width>
+        <height>337</height>
        </rect>
       </property>
       <attribute name="label" >
@@ -933,6 +933,9 @@ Component</string>
    </property>
   </action>
   <action name="actionSave_As" >
+   <property name="enabled" >
+    <bool>false</bool>
+   </property>
    <property name="icon" >
     <iconset resource="resources/axes.qrc" >
      <normaloff>:/newPrefix/fig/filesave.png</normaloff>:/newPrefix/fig/filesave.png</iconset>
@@ -1030,6 +1033,9 @@ Component</string>
    </property>
    <property name="checked" >
     <bool>true</bool>
+   </property>
+   <property name="enabled" >
+    <bool>false</bool>
    </property>
    <property name="text" >
     <string>Geodesic Active Contour Seg.</string>
@@ -1158,6 +1164,9 @@ Component</string>
    <property name="checked" >
     <bool>true</bool>
    </property>
+   <property name="enabled" >
+    <bool>false</bool>
+   </property>
    <property name="text" >
     <string>Manual Segmentation</string>
    </property>
@@ -1179,7 +1188,7 @@ Component</string>
   </action>
   <action name="actionLookup_Table" >
    <property name="enabled" >
-    <bool>true</bool>
+    <bool>false</bool>
    </property>
    <property name="icon" >
     <iconset resource="resources/axes.qrc" >
