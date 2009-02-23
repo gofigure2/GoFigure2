@@ -130,6 +130,7 @@ TARGET_LINK_LIBRARIES( gofigure
   vtkVisuManagement
   QGO
   QMegaVTKAddOn
+  ${QT_LIBRARIES}
   ITKCommon
   ITKIO
   ITKBasicFilters
