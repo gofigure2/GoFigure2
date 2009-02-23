@@ -134,6 +134,7 @@ TARGET_LINK_LIBRARIES( gofigure
   ITKCommon
   ITKIO
   ITKBasicFilters
+  vtkImaging
 )
 
 ADD_TEST( gofigure_TEST ${CXX_TEST_PATH}/gofigure )
