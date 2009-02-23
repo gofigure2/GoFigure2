@@ -15,7 +15,10 @@
 // #include "ui_LUTDialog.h"
 
 #include "QVTKWidget.h"
-
+/**
+\class QGoLUTDialog
+\brief LUT Dialog
+*/
 class QGoLUTDialog : public QDialog
 {
   Q_OBJECT
