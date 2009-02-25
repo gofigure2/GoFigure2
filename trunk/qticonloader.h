@@ -35,7 +35,7 @@
 // Version 0.1
 //
 
-class QtIconLoader
+class qticonLoader
 {
 public:
     static QIcon icon(const QString &name, const QIcon &fallback = QIcon());
