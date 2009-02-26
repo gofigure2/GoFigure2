@@ -11,10 +11,9 @@ QGoLUTDialog::QGoLUTDialog( QWidget* parent ) : QDialog( parent ), LUT( 0 )
   setupUi( this );
 
   this->LUT = vtkLookupTableManager::GetBWLookupTable();
+  this->Renderer = vtkRenderer::New();
 
   vtkRenderWindow* renwin = this->qvtkWidget->GetRenderWindow();
-
-  this->Renderer = vtkRenderer::New();
   renwin->AddRenderer( this->Renderer );
 
   this->LUTActor = vtkScalarBarActor::New();
@@ -26,7 +25,8 @@ QGoLUTDialog::QGoLUTDialog( QWidget* parent ) : QDialog( parent ), LUT( 0 )
   this->LUTActor->SetTitle( "LUT" );
 
   this->Renderer->AddActor2D( this->LUTActor );
-  this->Renderer->Render();
+  
+  renwin->Render();
 }
 
 QGoLUTDialog::~QGoLUTDialog()
@@ -133,7 +133,5 @@ void QGoLUTDialog::ChangeLookupTable( const int& idx )
   this->LUT = vtkLookupTableManager::GetLookupTable( idx );
   this->LUTActor->SetLookupTable( this->LUT );
 
-  vtkRenderWindow* renwin = this->qvtkWidget->GetRenderWindow();
-  vtkRenderer* render = renwin->GetRenderers()->GetFirstRenderer( );
-  render->Render( ) ;
+  this->qvtkWidget->GetRenderWindow()->Render( ) ;
 }
