@@ -34,6 +34,7 @@ public slots:
 protected:
   vtkLookupTable* LUT;
   vtkScalarBarActor* LUTActor;
+  vtkRenderer*  Renderer;
   QDialogButtonBox *buttonBox;
   QVTKWidget *qvtkWidget;
   QHBoxLayout *horizontalLayout;

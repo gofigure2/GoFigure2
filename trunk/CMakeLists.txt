@@ -135,6 +135,7 @@ TARGET_LINK_LIBRARIES( gofigure
   ITKCommon
   ITKIO
   ITKBasicFilters
+  ITKNumerics
   vtkImaging
 )
 
