@@ -106,7 +106,7 @@ SET( QICONLOADER_SRC qticonloader.cxx )
 ############################
 
 ADD_LIBRARY( QGO ${LIBS_STYLE}
- ${QGOMAINWINDOW_SRC}  ${QGOMAINWINDOW_QRC}  ${QGOMAINWINDOW_MOC_SRC}
+ ${QGOMAINWINDOW_SRC}  ${QGOMAINWINDOW_MOC_SRC}
  ${QGOLUT_SRC} ${QGOLUT_MOC_SRC} 
  ${QICONLOADER_SRC} 
 )
@@ -124,7 +124,8 @@ SUBDIRS( Testing )
 ############################
 ADD_EXECUTABLE( gofigure
   #MACOSX_BUNDLE
-  gofigure.cxx )
+  gofigure.cxx 
+  ${QGOMAINWINDOW_QRC} ) 
 
 TARGET_LINK_LIBRARIES( gofigure
   vtkVisuManagement
