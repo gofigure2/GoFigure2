@@ -922,8 +922,8 @@ Component</string>
     <bool>false</bool>
    </property>
    <property name="icon" >
-    <iconset>
-     <normaloff>resources/fig/document-open.png</normaloff>resources/fig/document-open.png</iconset>
+    <iconset resource="resources/axes.qrc" >
+     <normaloff>:/newPrefix/fig/document-open.png</normaloff>:/newPrefix/fig/document-open.png</iconset>
    </property>
    <property name="text" >
     <string>Open</string>
