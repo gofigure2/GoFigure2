@@ -6,6 +6,9 @@
     <file>fig/filesave.png</file>
   </qresource>
   <qresource prefix="newPrefix" >
+    <file>fig/document-open.png</file>
+  </qresource>
+  <qresource prefix="newPrefix" >
     <file>fig/Hand.png</file>
   </qresource>
   <qresource prefix="newPrefix" >

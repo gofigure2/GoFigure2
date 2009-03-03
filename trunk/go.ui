@@ -9,7 +9,7 @@
     <x>0</x>
     <y>0</y>
     <width>1434</width>
-    <height>826</height>
+    <height>824</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -22,7 +22,7 @@
    <widget class="QTabWidget" name="CentralImageTabWidget" >
     <property name="geometry" >
      <rect>
-      <x>0</x>
+      <x>10</x>
       <y>0</y>
       <width>1201</width>
       <height>749</height>
@@ -922,8 +922,8 @@ Component</string>
     <bool>false</bool>
    </property>
    <property name="icon" >
-    <iconset resource="resources/axes.qrc" >
-     <normaloff>:/newPrefix/fig/folder.png</normaloff>:/newPrefix/fig/folder.png</iconset>
+    <iconset>
+     <normaloff>resources/fig/document-open.png</normaloff>resources/fig/document-open.png</iconset>
    </property>
    <property name="text" >
     <string>Open</string>
@@ -1188,7 +1188,7 @@ Component</string>
   </action>
   <action name="actionLookup_Table" >
    <property name="enabled" >
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="icon" >
     <iconset resource="resources/axes.qrc" >
