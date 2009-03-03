@@ -3,8 +3,12 @@
     <file>fig/xy.png</file>
   </qresource>
   <qresource prefix="newPrefix" >
-    <file>fig/filesave.png</file>
+    <file>fig/selection.png</file>
   </qresource>
+  <qresource prefix="newPrefix" >
+    <file>fig/filesaveas.png</file>
+  </qresource>
+  <qresource prefix="newPrefix" />
   <qresource prefix="newPrefix" >
     <file>fig/document-open.png</file>
   </qresource>
@@ -12,19 +16,16 @@
     <file>fig/Hand.png</file>
   </qresource>
   <qresource prefix="newPrefix" >
-    <file>fig/selector.png</file>
-  </qresource>
-  <qresource prefix="newPrefix" >
     <file>fig/LookupTable.png</file>
   </qresource>
   <qresource prefix="newPrefix" >
-    <file>fig/zoom.png</file>
-  </qresource>
-  <qresource prefix="newPrefix" >
-    <file>fig/quit.png</file>
-  </qresource>
-  <qresource prefix="newPrefix" >
     <file>fig/folder.png</file>
+  </qresource>
+  <qresource prefix="newPrefix" >
+    <file>fig/page-zoom.png</file>
+  </qresource>
+  <qresource prefix="newPrefix" >
+    <file>fig/system-quit.png</file>
   </qresource>
   <qresource prefix="newPrefix" >
     <file>fig/spline.png</file>
