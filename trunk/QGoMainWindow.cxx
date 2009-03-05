@@ -26,7 +26,7 @@ QGoMainWindow::QGoMainWindow( ) : m_PageView( 0 )
 
   QObject::connect( this->m_LUTDialog, SIGNAL( accepted( ) ),
    this, SLOT( ChangeLookupTable( ) ) );
-
+  
 /*  QObject::connect( this->TracerPolygonBtn, SIGNAL( released( ) ),
     this, SLOT( SetTracerToPolygonTracer() ) );
   QObject::connect( this->TracerFreeLineBtn, SIGNAL( released( ) ),
@@ -45,6 +45,7 @@ QGoMainWindow::QGoMainWindow( ) : m_PageView( 0 )
     this, SLOT( SetColorForGivenId( ) ) );
   QObject::connect( this->TracerValidationBtn, SIGNAL( released( ) ),
     this, SLOT( ValidateContourTracer() ) );
+  
 }
 
 // *****************************************************************************
