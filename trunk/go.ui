@@ -973,6 +973,9 @@ Component</string>
    </property>
   </action>
   <action name="actionFull_screen_XY" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
    <property name="icon" >
     <iconset resource="resources/axes.qrc" >
      <normaloff>:/newPrefix/fig/xy.png</normaloff>:/newPrefix/fig/xy.png</iconset>
@@ -982,6 +985,9 @@ Component</string>
    </property>
   </action>
   <action name="actionFull_screen_YZ" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
    <property name="icon" >
     <iconset resource="resources/axes.qrc" >
      <normaloff>:/newPrefix/fig/yz.png</normaloff>:/newPrefix/fig/yz.png</iconset>
@@ -991,6 +997,9 @@ Component</string>
    </property>
   </action>
   <action name="actionFull_screen_XZ" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
    <property name="icon" >
     <iconset resource="resources/axes.qrc" >
      <normaloff>:/newPrefix/fig/zx.png</normaloff>:/newPrefix/fig/zx.png</iconset>
@@ -1000,6 +1009,9 @@ Component</string>
    </property>
   </action>
   <action name="actionFull_screen_XYZ" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
    <property name="icon" >
     <iconset resource="resources/axes.qrc" >
      <normaloff>:/newPrefix/fig/xyz.png</normaloff>:/newPrefix/fig/xyz.png</iconset>
