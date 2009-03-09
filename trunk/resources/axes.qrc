@@ -1,6 +1,9 @@
 <RCC>
   <qresource prefix="newPrefix" >
-    <file>fig/xy.png</file>
+    <file>fig/xy.PNG</file>
+  </qresource>
+  <qresource prefix="newPrefix" >
+    <file>fig/yz.png</file>
   </qresource>
   <qresource prefix="newPrefix" >
     <file>fig/selection.png</file>
@@ -49,15 +52,6 @@
     <file>fig/xyz.png</file>
   </qresource>
   <qresource prefix="newPrefix" >
-    <file>fig/xz.png</file>
-  </qresource>
-  <qresource prefix="newPrefix" >
-    <file>fig/yz.png</file>
-  </qresource>
-  <qresource prefix="newPrefix" >
     <file>fig/zx.png</file>
-  </qresource>
-  <qresource prefix="newPrefix" >
-    <file>fig/zy.png</file>
   </qresource>
 </RCC>
