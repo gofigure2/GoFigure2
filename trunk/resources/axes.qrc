@@ -3,6 +3,9 @@
     <file>fig/xy.PNG</file>
   </qresource>
   <qresource prefix="newPrefix" >
+    <file>fig/4views.PNG</file>
+  </qresource>
+  <qresource prefix="newPrefix" >
     <file>fig/yz.png</file>
   </qresource>
   <qresource prefix="newPrefix" >

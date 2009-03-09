@@ -37,6 +37,7 @@ QGoMainWindow::QGoMainWindow( ) : m_PageView( 0 )
     this, SLOT( SetTracerToRotateContourTracer() ) );
   QObject::connect( this->TracerScalingBtn, SIGNAL( released() ),
     this, SLOT( SetTracerToScaleContourTracer() ) );*/
+    //this->Fullscreenbuttons();
   QObject::connect( this->ManualSegmentationOnRadioBtn, SIGNAL( toggled(bool) ),
     this, SLOT( SetContourTracerOn(bool) ) );
   QObject::connect( this->ManualSegmentationOffRadioBtn, SIGNAL( toggled(bool) ),
@@ -46,6 +47,12 @@ QGoMainWindow::QGoMainWindow( ) : m_PageView( 0 )
   QObject::connect( this->TracerValidationBtn, SIGNAL( released( ) ),
     this, SLOT( ValidateContourTracer() ) );
   
+  QGoMainWindow::Fullscreenbuttons();
+  /*Fullscreengroup = new QActionGroup (this);
+  Fullscreengroup->addAction(actionFull_screen_XY);
+  Fullscreengroup->addAction(actionFull_screen_YZ);
+  Fullscreengroup->addAction(actionFull_screen_XZ);
+  Fullscreengroup->addAction(actionFull_screen_XYZ);*/
 }
 
 // *****************************************************************************
@@ -116,6 +123,14 @@ void QGoMainWindow::on_actionBackground_activated( )
 void QGoMainWindow::on_actionLookup_Table_activated( )
 {
   m_LUTDialog->show();
+}
+
+// *****************************************************************************
+// *****************************************************************************
+// *****************************************************************************
+void QGoMainWindow::on_actionQuad_View_activated( )
+{
+  m_PageView->quadview();
 }
 
 // *****************************************************************************
@@ -304,4 +319,14 @@ void QGoMainWindow::on_actionAbout_activated( )
 void QGoMainWindow::on_actionAbout_Qt_activated( )
 {
   QMessageBox::aboutQt( this, tr( "About Qt" ) );
+}
+
+void QGoMainWindow::Fullscreenbuttons()
+{
+Fullscreengroup = new QActionGroup (this);
+Fullscreengroup->addAction(actionFull_screen_XY);
+Fullscreengroup->addAction(actionFull_screen_YZ);
+Fullscreengroup->addAction(actionFull_screen_XZ);
+Fullscreengroup->addAction(actionFull_screen_XYZ);
+Fullscreengroup->addAction(actionQuad_View);
 }

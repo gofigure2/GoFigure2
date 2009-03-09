@@ -22,7 +22,7 @@
    <widget class="QTabWidget" name="CentralImageTabWidget" >
     <property name="geometry" >
      <rect>
-      <x>10</x>
+      <x>0</x>
       <y>0</y>
       <width>1201</width>
       <height>749</height>
@@ -76,9 +76,9 @@
     <property name="title" >
      <string>View</string>
     </property>
-    <addaction name="actionFull_screen_XY" />
     <addaction name="actionFull_screen_YZ" />
     <addaction name="actionFull_screen_XZ" />
+    <addaction name="actionFull_screen_XY" />
     <addaction name="separator" />
     <addaction name="actionFull_screen_XYZ" />
     <addaction name="actionFull_screen_volume_rendering_XYZ" />
@@ -168,6 +168,7 @@
    <addaction name="actionFull_screen_XZ" />
    <addaction name="separator" />
    <addaction name="actionFull_screen_XYZ" />
+   <addaction name="actionQuad_View" />
    <addaction name="actionFull_screen_volume_rendering_XYZ" />
   </widget>
   <widget class="QDockWidget" name="KishoreSegDockWidget" >
@@ -903,6 +904,12 @@ Component</string>
    <property name="windowTitle" >
     <string>toolBar</string>
    </property>
+   <property name="iconSize" >
+    <size>
+     <width>22</width>
+     <height>22</height>
+    </size>
+   </property>
    <attribute name="toolBarArea" >
     <enum>TopToolBarArea</enum>
    </attribute>
@@ -978,7 +985,7 @@ Component</string>
    </property>
    <property name="icon" >
     <iconset resource="resources/axes.qrc" >
-     <normaloff>:/newPrefix/fig/xy.png</normaloff>:/newPrefix/fig/xy.png</iconset>
+     <normaloff>:/newPrefix/fig/xy.PNG</normaloff>:/newPrefix/fig/xy.PNG</iconset>
    </property>
    <property name="text" >
     <string>Full-screen XY</string>
@@ -1011,6 +1018,9 @@ Component</string>
   <action name="actionFull_screen_XYZ" >
    <property name="checkable" >
     <bool>true</bool>
+   </property>
+   <property name="checked" >
+    <bool>false</bool>
    </property>
    <property name="icon" >
     <iconset resource="resources/axes.qrc" >
@@ -1237,6 +1247,26 @@ Component</string>
   <action name="actionClose_all" >
    <property name="text" >
     <string>Close all</string>
+   </property>
+  </action>
+  <action name="actionQuad_View" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="checked" >
+    <bool>true</bool>
+   </property>
+   <property name="icon" >
+    <iconset resource="resources/axes.qrc" >
+     <normaloff>:/newPrefix/fig/4views.PNG</normaloff>:/newPrefix/fig/4views.PNG</iconset>
+   </property>
+   <property name="text" >
+    <string>Quad-View</string>
+   </property>
+  </action>
+  <action name="actionQuad_View_2" >
+   <property name="text" >
+    <string>Quad-View</string>
    </property>
   </action>
  </widget>
