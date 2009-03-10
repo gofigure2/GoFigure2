@@ -1275,6 +1275,10 @@ Component</string>
    <property name="checked" >
     <bool>false</bool>
    </property>
+   <property name="icon" >
+    <iconset resource="resources/axes.qrc" >
+     <normaloff>:/newPrefix/fig/scalarbar.png</normaloff>:/newPrefix/fig/scalarbar.png</iconset>
+   </property>
    <property name="text" >
     <string>Scalar bars</string>
    </property>
