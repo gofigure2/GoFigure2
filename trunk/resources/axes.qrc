@@ -54,4 +54,7 @@
   <qresource prefix="newPrefix" >
     <file>fig/zx.png</file>
   </qresource>
+  <qresource prefix="newPrefix" >
+    <file>fig/yz.png</file>
+  </qresource>
 </RCC>
