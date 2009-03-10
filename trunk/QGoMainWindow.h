@@ -8,7 +8,7 @@
 
 #include <QImagePageViewTracer.h>
 #include <itkImageToVTKImageFilter.h>
-#include <QActionGroup.h>
+#include <qactiongroup.h>
 
 #include "QGoLUTDialog.h"
 #include "ui_go.h"

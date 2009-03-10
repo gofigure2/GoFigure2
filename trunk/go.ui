@@ -58,7 +58,7 @@
      <x>0</x>
      <y>0</y>
      <width>1434</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile" >
@@ -240,7 +240,7 @@
         <x>0</x>
         <y>0</y>
         <width>211</width>
-        <height>337</height>
+        <height>316</height>
        </rect>
       </property>
       <attribute name="label" >
@@ -271,7 +271,7 @@
          <x>0</x>
          <y>0</y>
          <width>192</width>
-         <height>248</height>
+         <height>261</height>
         </rect>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout" >
@@ -424,7 +424,7 @@ Radius</string>
         <x>0</x>
         <y>0</y>
         <width>211</width>
-        <height>337</height>
+        <height>316</height>
        </rect>
       </property>
       <attribute name="label" >
@@ -452,7 +452,7 @@ Radius</string>
          <x>0</x>
          <y>0</y>
          <width>202</width>
-         <height>213</height>
+         <height>222</height>
         </rect>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_2" >
@@ -590,7 +590,7 @@ Weight</string>
         <x>0</x>
         <y>0</y>
         <width>211</width>
-        <height>337</height>
+        <height>316</height>
        </rect>
       </property>
       <attribute name="label" >
@@ -618,7 +618,7 @@ Weight</string>
          <x>0</x>
          <y>0</y>
          <width>187</width>
-         <height>256</height>
+         <height>268</height>
         </rect>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_3" >
@@ -819,8 +819,8 @@ Component</string>
       <rect>
        <x>10</x>
        <y>70</y>
-       <width>202</width>
-       <height>31</height>
+       <width>212</width>
+       <height>39</height>
       </rect>
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout_16" >
@@ -994,10 +994,6 @@ Component</string>
   <action name="actionFull_screen_YZ" >
    <property name="checkable" >
     <bool>true</bool>
-   </property>
-   <property name="icon" >
-    <iconset resource="resources/axes.qrc" >
-     <normaloff>:/newPrefix/fig/yz.png</normaloff>:/newPrefix/fig/yz.png</iconset>
    </property>
    <property name="text" >
     <string>Full-screen YZ</string>
