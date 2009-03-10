@@ -87,6 +87,7 @@
     <addaction name="actionPan" />
     <addaction name="actionZoom" />
     <addaction name="actionLookup_Table" />
+    <addaction name="actionScale_bars" />
    </widget>
    <widget class="QMenu" name="menuHelp" >
     <property name="title" >
@@ -919,6 +920,7 @@ Component</string>
    <addaction name="actionPan" />
    <addaction name="actionZoom" />
    <addaction name="actionLookup_Table" />
+   <addaction name="actionScale_bars" />
   </widget>
   <action name="actionOpen" >
    <property name="checkable" >
@@ -1264,6 +1266,17 @@ Component</string>
    </property>
    <property name="text" >
     <string>Quad-View</string>
+   </property>
+  </action>
+  <action name="actionScale_bars" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="checked" >
+    <bool>false</bool>
+   </property>
+   <property name="text" >
+    <string>Scalar bars</string>
    </property>
   </action>
  </widget>

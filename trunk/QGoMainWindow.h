@@ -46,6 +46,7 @@ protected slots:
   void on_actionFull_screen_XZ_activated( );
   void on_actionFull_screen_XYZ_activated( );
   void on_actionVolume_rendering_XYZ_activated( );
+  void on_actionScale_bars_activated( );
 
   void on_actionAbout_activated( );
   void on_actionAbout_Qt_activated( );

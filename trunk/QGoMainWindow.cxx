@@ -169,6 +169,14 @@ void QGoMainWindow::on_actionVolume_rendering_XYZ_activated( )
   m_PageView->SetView3DToTriPlanarMode();
 }
 
+void QGoMainWindow::on_actionScale_bars_activated( )
+{ 
+  if (actionScale_bars->isChecked())
+  m_PageView->SetShowScalarBar(true);
+  else
+  m_PageView->SetShowScalarBar(false);
+}
+  
 // *****************************************************************************
 // *****************************************************************************
 // *****************************************************************************
