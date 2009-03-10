@@ -26,7 +26,7 @@ QGoMainWindow::QGoMainWindow( ) : m_PageView( 0 )
 
   QObject::connect( this->m_LUTDialog, SIGNAL( accepted( ) ),
    this, SLOT( ChangeLookupTable( ) ) );
-  
+
 /*  QObject::connect( this->TracerPolygonBtn, SIGNAL( released( ) ),
     this, SLOT( SetTracerToPolygonTracer() ) );
   QObject::connect( this->TracerFreeLineBtn, SIGNAL( released( ) ),
@@ -46,7 +46,7 @@ QGoMainWindow::QGoMainWindow( ) : m_PageView( 0 )
     this, SLOT( SetColorForGivenId( ) ) );
   QObject::connect( this->TracerValidationBtn, SIGNAL( released( ) ),
     this, SLOT( ValidateContourTracer() ) );
-  
+
   QGoMainWindow::Fullscreenbuttons();
   /*Fullscreengroup = new QActionGroup (this);
   Fullscreengroup->addAction(actionFull_screen_XY);
@@ -162,7 +162,13 @@ void QGoMainWindow::on_actionFull_screen_XZ_activated( )
 // *****************************************************************************
 void QGoMainWindow::on_actionFull_screen_XYZ_activated( )
 {
-//   m_PageView->SetView4ToTriPlanarMode();
+  m_PageView->SetView3DToTriPlanarMode();
+  m_PageView->FullScreenViewXYZ();
+}
+
+void QGoMainWindow::on_actionFull_screen_volume_rendering_XYZ_activated( )
+{
+  m_PageView->SetView3DToVolumeRenderingMode();
   m_PageView->FullScreenViewXYZ();
 }
 
