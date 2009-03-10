@@ -58,7 +58,7 @@
      <x>0</x>
      <y>0</y>
      <width>1434</width>
-     <height>25</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile" >
@@ -81,7 +81,7 @@
     <addaction name="actionFull_screen_XZ" />
     <addaction name="actionFull_screen_XY" />
     <addaction name="actionFull_screen_XYZ" />
-    <addaction name="actionFull_screen_volume_rendering_XYZ" />
+    <addaction name="actionVolume_rendering_XYZ" />
     <addaction name="separator" />
     <addaction name="actionSelect" />
     <addaction name="actionPan" />
@@ -168,7 +168,6 @@
    <addaction name="actionFull_screen_YZ" />
    <addaction name="actionFull_screen_XZ" />
    <addaction name="actionFull_screen_XYZ" />
-   <addaction name="actionFull_screen_volume_rendering_XYZ" />
   </widget>
   <widget class="QDockWidget" name="KishoreSegDockWidget" >
    <property name="enabled" >
@@ -238,8 +237,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>201</width>
-        <height>324</height>
+        <width>211</width>
+        <height>337</height>
        </rect>
       </property>
       <attribute name="label" >
@@ -422,8 +421,8 @@ Radius</string>
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>94</width>
-        <height>24</height>
+        <width>211</width>
+        <height>337</height>
        </rect>
       </property>
       <attribute name="label" >
@@ -588,8 +587,8 @@ Weight</string>
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>94</width>
-        <height>24</height>
+        <width>211</width>
+        <height>337</height>
        </rect>
       </property>
       <attribute name="label" >
@@ -915,6 +914,7 @@ Component</string>
    <attribute name="toolBarBreak" >
     <bool>false</bool>
    </attribute>
+   <addaction name="actionVolume_rendering_XYZ" />
    <addaction name="actionSelect" />
    <addaction name="actionPan" />
    <addaction name="actionZoom" />
@@ -1083,7 +1083,7 @@ Component</string>
     <string>Mesh ...</string>
    </property>
   </action>
-  <action name="actionFull_screen_volume_rendering_XYZ" >
+  <action name="actionVolume_rendering_XYZ" >
    <property name="checkable" >
     <bool>true</bool>
    </property>
@@ -1095,7 +1095,7 @@ Component</string>
      <normaloff>:/newPrefix/fig/VolumeRendering1.png</normaloff>:/newPrefix/fig/VolumeRendering1.png</iconset>
    </property>
    <property name="text" >
-    <string>Full-screen (volume rendering) XYZ</string>
+    <string>Volume rendering on/off</string>
    </property>
    <property name="iconText" >
     <string>Volume Rendering XYZ</string>

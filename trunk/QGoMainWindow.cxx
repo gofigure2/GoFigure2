@@ -48,11 +48,7 @@ QGoMainWindow::QGoMainWindow( ) : m_PageView( 0 )
     this, SLOT( ValidateContourTracer() ) );
 
   QGoMainWindow::Fullscreenbuttons();
-  /*Fullscreengroup = new QActionGroup (this);
-  Fullscreengroup->addAction(actionFull_screen_XY);
-  Fullscreengroup->addAction(actionFull_screen_YZ);
-  Fullscreengroup->addAction(actionFull_screen_XZ);
-  Fullscreengroup->addAction(actionFull_screen_XYZ);*/
+  
 }
 
 // *****************************************************************************
@@ -162,14 +158,15 @@ void QGoMainWindow::on_actionFull_screen_XZ_activated( )
 // *****************************************************************************
 void QGoMainWindow::on_actionFull_screen_XYZ_activated( )
 {
-  m_PageView->SetView3DToTriPlanarMode();
   m_PageView->FullScreenViewXYZ();
 }
 
-void QGoMainWindow::on_actionFull_screen_volume_rendering_XYZ_activated( )
+void QGoMainWindow::on_actionVolume_rendering_XYZ_activated( )
 {
+  if (actionVolume_rendering_XYZ->isChecked())
   m_PageView->SetView3DToVolumeRenderingMode();
-  m_PageView->FullScreenViewXYZ();
+  else
+  m_PageView->SetView3DToTriPlanarMode();
 }
 
 // *****************************************************************************
