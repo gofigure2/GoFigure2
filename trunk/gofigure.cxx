@@ -13,12 +13,11 @@ int main( int argc, char** argv )
  
   app.processEvents();
   splash->showMessage("Application loading...please wait");
-  //splash.showMessage("Ready");
   
-
   QGoMainWindow form;
-  if( argc == 2 )
-    form.SetFileName( argv[1] );
+  if( argc == 2 ) 
+  splash->showMessage("Image loading...please wait");
+  form.SetFileName( argv[1] );
  
   app.setMainWidget( &form );
   
@@ -28,6 +27,7 @@ int main( int argc, char** argv )
  // app.processEvents();
   splash->finish(&form);
   delete splash;
+
   return app.exec();
 }
 
