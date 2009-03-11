@@ -6,6 +6,9 @@
     <file>fig/xy.png</file>
   </qresource>
   <qresource prefix="newPrefix" >
+    <file>fig/scalarbar.png</file>
+  </qresource>
+  <qresource prefix="newPrefix" >
     <file>fig/4views.png</file>
   </qresource>
   <qresource prefix="newPrefix" >
