@@ -1,4 +1,7 @@
 <RCC>
+  <qresource prefix="/" >
+    <file>fig/splash.jpg</file>
+  </qresource>
   <qresource prefix="newPrefix" >
     <file>fig/xy.png</file>
   </qresource>
@@ -11,7 +14,6 @@
   <qresource prefix="newPrefix" >
     <file>fig/filesaveas.png</file>
   </qresource>
-  <qresource prefix="newPrefix" />
   <qresource prefix="newPrefix" >
     <file>fig/document-open.png</file>
   </qresource>
