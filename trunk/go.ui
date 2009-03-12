@@ -66,6 +66,9 @@
      <string>File</string>
     </property>
     <widget class="QMenu" name="menuOpen_Recent_Files" >
+     <property name="enabled" >
+      <bool>false</bool>
+     </property>
      <property name="title" >
       <string>Open Recent Files</string>
      </property>
@@ -972,6 +975,9 @@ Component</string>
    <property name="shortcut" >
     <string>Ctrl+Q</string>
    </property>
+   <property name="visible" >
+    <bool>true</bool>
+   </property>
   </action>
   <action name="actionNew_Tab" >
    <property name="text" >
@@ -1317,7 +1323,7 @@ Component</string>
  </resources>
  <connections>
   <connection>
-   <sender>actionKishoreSegmentation</sender>
+   <sender>actionCopy</sender>
    <signal>toggled(bool)</signal>
    <receiver>KishoreSegDockWidget</receiver>
    <slot>setVisible(bool)</slot>

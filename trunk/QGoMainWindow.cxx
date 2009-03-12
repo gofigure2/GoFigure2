@@ -19,7 +19,7 @@ QGoMainWindow::QGoMainWindow( ) : m_PageView( 0 )
   this->CentralImageTabWidget->clear();
   this->KishoreSegDockWidget->setVisible(false);
   this->ManualSegmentationDockWidget->setVisible(false);
-  this->separatorAction = new QAction(this);
+  
 
   m_Convert = VTKConvertImageType::New();
 
@@ -27,19 +27,19 @@ QGoMainWindow::QGoMainWindow( ) : m_PageView( 0 )
   m_LUTDialog = new QGoLUTDialog( this );
 
   QObject::connect( this->m_LUTDialog, SIGNAL( accepted( ) ),
-   this, SLOT( ChangeLookupTable( ) ) );
+    this, SLOT( ChangeLookupTable( ) ) );
 
-/*  QObject::connect( this->TracerPolygonBtn, SIGNAL( released( ) ),
-    this, SLOT( SetTracerToPolygonTracer() ) );
+  /*  QObject::connect( this->TracerPolygonBtn, SIGNAL( released( ) ),
+  this, SLOT( SetTracerToPolygonTracer() ) );
   QObject::connect( this->TracerFreeLineBtn, SIGNAL( released( ) ),
-    this, SLOT( SetTracerToFreeLineTracer() ) );
+  this, SLOT( SetTracerToFreeLineTracer() ) );
   QObject::connect( this->TracerTranslationBtn, SIGNAL( released() ),
-    this, SLOT( SetTracerToTranslateContourTracer() ) );
+  this, SLOT( SetTracerToTranslateContourTracer() ) );
   QObject::connect( this->TracerRotationBtn, SIGNAL( released() ),
-    this, SLOT( SetTracerToRotateContourTracer() ) );
+  this, SLOT( SetTracerToRotateContourTracer() ) );
   QObject::connect( this->TracerScalingBtn, SIGNAL( released() ),
-    this, SLOT( SetTracerToScaleContourTracer() ) );*/
-   
+  this, SLOT( SetTracerToScaleContourTracer() ) );*/
+
   QObject::connect( this->ManualSegmentationOnRadioBtn, SIGNAL( toggled(bool) ),
     this, SLOT( SetContourTracerOn(bool) ) );
   QObject::connect( this->ManualSegmentationOffRadioBtn, SIGNAL( toggled(bool) ),
@@ -49,15 +49,16 @@ QGoMainWindow::QGoMainWindow( ) : m_PageView( 0 )
   QObject::connect( this->TracerValidationBtn, SIGNAL( released( ) ),
     this, SLOT( ValidateContourTracer() ) );
 
-  QGoMainWindow::Fullscreenbuttons();
-  QGoMainWindow::setCurrentFile("");
+  Fullscreenbuttons();
 
-  for (int i = 0; i < MaxRecentFiles; ++i) {
-        recentFileActions[i] = new QAction(this);
-        recentFileActions[i]->setVisible(false);
-        connect(this->recentFileActions[i], SIGNAL(triggered()),
-                this, SLOT(openRecentFile()));
-        }
+
+  for (int i = 0; i < MaxRecentFiles; ++i) 
+  {
+    recentFileActions[i] = new QAction(this);
+    recentFileActions[i]->setVisible(false);
+    connect(this->recentFileActions[i], SIGNAL(triggered()),
+      this, SLOT(openRecentFile()));
+  }
   //menuOpen_Recent_Files->setVisible(false);
 }
 
@@ -174,19 +175,19 @@ void QGoMainWindow::on_actionFull_screen_XYZ_activated( )
 void QGoMainWindow::on_actionVolume_rendering_XYZ_activated( )
 {
   if (actionVolume_rendering_XYZ->isChecked())
-  m_PageView->SetView3DToVolumeRenderingMode();
+    m_PageView->SetView3DToVolumeRenderingMode();
   else
-  m_PageView->SetView3DToTriPlanarMode();
+    m_PageView->SetView3DToTriPlanarMode();
 }
 
 void QGoMainWindow::on_actionScale_bars_activated( )
 { 
   if (actionScale_bars->isChecked())
-  m_PageView->SetShowScalarBar(true);
+    m_PageView->SetShowScalarBar(true);
   else
-  m_PageView->SetShowScalarBar(false);
+    m_PageView->SetShowScalarBar(false);
 }
-  
+
 // *****************************************************************************
 // *****************************************************************************
 // *****************************************************************************
@@ -252,9 +253,9 @@ void QGoMainWindow::ChangeLookupTable( )
 void QGoMainWindow::SetColorForGivenId( )
 {
   unsigned int cell_id = IdContourBox->value();
-//   m_PageView->
-//   m_IdColorMap[ cell_id ] =
-//     QColorDialog::getColor( Qt::red, this );
+  //   m_PageView->
+  //   m_IdColorMap[ cell_id ] =
+  //     QColorDialog::getColor( Qt::red, this );
 
 }
 
@@ -273,6 +274,7 @@ void QGoMainWindow::SetFileName( const QString& iFile )
     m_FileName = iFile;
     OpenImage( m_FileName );
     DisplayImage( m_VTKImage, m_FileName );
+    setCurrentFile(m_FileName);
   }
 }
 
@@ -290,8 +292,7 @@ void QGoMainWindow::OpenImage( const QString& iFile )
 
   m_ITKImage = reader->GetOutput();
   m_ITKImage->DisconnectPipeline();
-  
-  setCurrentFile(m_FileName);
+
   //std::cout <<m_FileName.toAscii( ).constData( )<<std::endl;
 
   this->statusbar->showMessage( iFile );
@@ -308,7 +309,7 @@ void QGoMainWindow::DisplayImage( vtkImageData* iImage, QString iTag )
   m_VTKImage = m_Convert->GetOutput();
 
   m_PageView->SetImage( m_VTKImage );
-//   m_PageView->SetScalarBarVisibility( true );
+  //   m_PageView->SetScalarBarVisibility( true );
 
   int idx = this->CentralImageTabWidget->addTab( this->m_PageView, iTag );
   this->CentralImageTabWidget->setCurrentIndex( idx );
@@ -347,56 +348,63 @@ void QGoMainWindow::on_actionAbout_Qt_activated( )
 
 void QGoMainWindow::Fullscreenbuttons()
 {
-Fullscreengroup = new QActionGroup (this);
-Fullscreengroup->addAction(actionFull_screen_XY);
-Fullscreengroup->addAction(actionFull_screen_YZ);
-Fullscreengroup->addAction(actionFull_screen_XZ);
-Fullscreengroup->addAction(actionFull_screen_XYZ);
-Fullscreengroup->addAction(actionQuad_View);
+  Fullscreengroup = new QActionGroup (this);
+  Fullscreengroup->addAction(actionFull_screen_XY);
+  Fullscreengroup->addAction(actionFull_screen_YZ);
+  Fullscreengroup->addAction(actionFull_screen_XZ);
+  Fullscreengroup->addAction(actionFull_screen_XYZ);
+  Fullscreengroup->addAction(actionQuad_View);
 }
 
 void QGoMainWindow::setCurrentFile(const QString &fileName)
 {
-curFile = fileName;
-setWindowModified(false);
-QString shownName = "Untitled";
-if (!curFile.isEmpty()) {
-shownName = strippedName(curFile);
-recentFiles.removeAll(curFile);
-recentFiles.prepend(curFile);
-updateRecentFileActions();
-}
+  curFile = fileName;
+  setWindowModified(false);
+  QString shownName = "Untitled";
+  if (!curFile.isEmpty())
+  {
+    shownName = strippedName(curFile);
+    recentFiles.removeAll(curFile);
+    recentFiles.prepend(curFile);
+    updateRecentFileActions();
+  }
 }
 
 QString QGoMainWindow::strippedName(const QString &fullFileName)
 {
-return QFileInfo(fullFileName).fileName();
+  return QFileInfo(fullFileName).fileName();
 }
 
 void QGoMainWindow::updateRecentFileActions()
 {
-QMutableStringListIterator i(recentFiles);
-while (i.hasNext()) {
-  if (!QFile::exists(i.next()))
-  i.remove();
+  QMutableStringListIterator i(recentFiles);
+  while (i.hasNext()) 
+  {
+    if (!QFile::exists(i.next()))
+      i.remove();
   }
-if (!recentFiles.isEmpty()){
-  menuOpen_Recent_Files->setVisible(true);
-}
-
-for (int j = 0; j < MaxRecentFiles; ++j) {
-  if (j < recentFiles.count()) {
-  QString text = tr("&%1 %2 ")
-                  .arg(j + 1)
-                  .arg(strippedName(recentFiles[j]));
-
-  recentFileActions[j]->setText(text);
-  recentFileActions[j]->setData(recentFiles[j]);
-  recentFileActions[j]->setVisible(true);
-  menuOpen_Recent_Files->addAction(recentFileActions[j]);
-  } else {
-  recentFileActions[j]->setVisible(false);
+  if (!recentFiles.isEmpty())
+  {
+    menuOpen_Recent_Files->setEnabled(true);
   }
+
+  for (int j = 0; j < MaxRecentFiles; ++j) 
+  {
+    if (j < recentFiles.count()) 
+    {
+      QString text = tr("&%1 %2 ")
+        .arg(j + 1)
+        .arg(strippedName(recentFiles[j]));
+
+      recentFileActions[j]->setText(text);
+      recentFileActions[j]->setData(recentFiles[j]);
+      recentFileActions[j]->setVisible(true);
+      menuOpen_Recent_Files->addAction(recentFileActions[j]);
+    } 
+    else 
+    {
+      recentFileActions[j]->setVisible(false);
+    }
   }
 
 }
@@ -404,7 +412,9 @@ for (int j = 0; j < MaxRecentFiles; ++j) {
 
 void QGoMainWindow::openRecentFile()
 {
-QAction *action = qobject_cast<QAction *>(sender());
-if (action)
-OpenImage(action->data().toString());
+  QAction *action = qobject_cast<QAction *>(sender());
+  if (action)
+  {  
+    SetFileName(action->data().toString());
+  }
 }

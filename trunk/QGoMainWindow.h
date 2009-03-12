@@ -83,19 +83,17 @@ protected:
   void OpenImage( const QString& iFileName );
   void DisplayImage( vtkImageData* iImage, QString iTag );
   void Fullscreenbuttons();
-  
-  
-
-private:
-  QGoMainWindow( const QGoMainWindow& );
-  QGoMainWindow operator = ( const QGoMainWindow& );
   QStringList recentFiles;
   QString curFile;
   QString strippedName(const QString &fullFileName);
   enum { MaxRecentFiles = 5 };
   QAction *recentFileActions[MaxRecentFiles];
-  QAction *separatorAction;
+  
 
+private:
+  QGoMainWindow( const QGoMainWindow& );
+  QGoMainWindow operator = ( const QGoMainWindow& );
+  
 };
 
 #endif
