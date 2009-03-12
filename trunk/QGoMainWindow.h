@@ -29,6 +29,7 @@ public:
   virtual ~QGoMainWindow();
 
   void SetFileName( const QString& iFileName );
+  
 
 protected slots:
   void on_actionOpen_activated( );
@@ -53,6 +54,7 @@ protected slots:
 
   void SetContourTracerOn(const bool& iChecked);
   void SetContourTracerOff(const bool& iChecked);
+ 
 
 //   void SetTracerToPolygonTracer();
 //   void SetTracerToFreeLineTracer();
@@ -64,6 +66,7 @@ protected slots:
 
   void SetColorForGivenId();
   void ValidateContourTracer();
+  void openRecentFile();
 
 protected:
   QString m_FileName;
@@ -75,13 +78,23 @@ protected:
   std::map< unsigned int, QColor > m_IdColorMap;
   QActionGroup *Fullscreengroup;
 
+  void setCurrentFile(const QString &fileName);
+  void updateRecentFileActions();
   void OpenImage( const QString& iFileName );
   void DisplayImage( vtkImageData* iImage, QString iTag );
   void Fullscreenbuttons();
+  
+  
 
 private:
   QGoMainWindow( const QGoMainWindow& );
   QGoMainWindow operator = ( const QGoMainWindow& );
+  QStringList recentFiles;
+  QString curFile;
+  QString strippedName(const QString &fullFileName);
+  enum { MaxRecentFiles = 5 };
+  QAction *recentFileActions[MaxRecentFiles];
+  QAction *separatorAction;
 
 };
 

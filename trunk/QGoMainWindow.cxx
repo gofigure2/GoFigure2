@@ -5,6 +5,7 @@
 #include <qcolordialog.h>
 
 #include <itkImageFileReader.h>
+#include <iostream>
 
 // *****************************************************************************
 // *****************************************************************************
@@ -18,6 +19,7 @@ QGoMainWindow::QGoMainWindow( ) : m_PageView( 0 )
   this->CentralImageTabWidget->clear();
   this->KishoreSegDockWidget->setVisible(false);
   this->ManualSegmentationDockWidget->setVisible(false);
+  this->separatorAction = new QAction(this);
 
   m_Convert = VTKConvertImageType::New();
 
@@ -37,7 +39,7 @@ QGoMainWindow::QGoMainWindow( ) : m_PageView( 0 )
     this, SLOT( SetTracerToRotateContourTracer() ) );
   QObject::connect( this->TracerScalingBtn, SIGNAL( released() ),
     this, SLOT( SetTracerToScaleContourTracer() ) );*/
-    //this->Fullscreenbuttons();
+   
   QObject::connect( this->ManualSegmentationOnRadioBtn, SIGNAL( toggled(bool) ),
     this, SLOT( SetContourTracerOn(bool) ) );
   QObject::connect( this->ManualSegmentationOffRadioBtn, SIGNAL( toggled(bool) ),
@@ -48,7 +50,15 @@ QGoMainWindow::QGoMainWindow( ) : m_PageView( 0 )
     this, SLOT( ValidateContourTracer() ) );
 
   QGoMainWindow::Fullscreenbuttons();
-  
+  QGoMainWindow::setCurrentFile("");
+
+  for (int i = 0; i < MaxRecentFiles; ++i) {
+        recentFileActions[i] = new QAction(this);
+        recentFileActions[i]->setVisible(false);
+        connect(this->recentFileActions[i], SIGNAL(triggered()),
+                this, SLOT(openRecentFile()));
+        }
+  //menuOpen_Recent_Files->setVisible(false);
 }
 
 // *****************************************************************************
@@ -280,6 +290,9 @@ void QGoMainWindow::OpenImage( const QString& iFile )
 
   m_ITKImage = reader->GetOutput();
   m_ITKImage->DisconnectPipeline();
+  
+  setCurrentFile(m_FileName);
+  //std::cout <<m_FileName.toAscii( ).constData( )<<std::endl;
 
   this->statusbar->showMessage( iFile );
 }
@@ -340,4 +353,58 @@ Fullscreengroup->addAction(actionFull_screen_YZ);
 Fullscreengroup->addAction(actionFull_screen_XZ);
 Fullscreengroup->addAction(actionFull_screen_XYZ);
 Fullscreengroup->addAction(actionQuad_View);
+}
+
+void QGoMainWindow::setCurrentFile(const QString &fileName)
+{
+curFile = fileName;
+setWindowModified(false);
+QString shownName = "Untitled";
+if (!curFile.isEmpty()) {
+shownName = strippedName(curFile);
+recentFiles.removeAll(curFile);
+recentFiles.prepend(curFile);
+updateRecentFileActions();
+}
+}
+
+QString QGoMainWindow::strippedName(const QString &fullFileName)
+{
+return QFileInfo(fullFileName).fileName();
+}
+
+void QGoMainWindow::updateRecentFileActions()
+{
+QMutableStringListIterator i(recentFiles);
+while (i.hasNext()) {
+  if (!QFile::exists(i.next()))
+  i.remove();
+  }
+if (!recentFiles.isEmpty()){
+  menuOpen_Recent_Files->setVisible(true);
+}
+
+for (int j = 0; j < MaxRecentFiles; ++j) {
+  if (j < recentFiles.count()) {
+  QString text = tr("&%1 %2 ")
+                  .arg(j + 1)
+                  .arg(strippedName(recentFiles[j]));
+
+  recentFileActions[j]->setText(text);
+  recentFileActions[j]->setData(recentFiles[j]);
+  recentFileActions[j]->setVisible(true);
+  menuOpen_Recent_Files->addAction(recentFileActions[j]);
+  } else {
+  recentFileActions[j]->setVisible(false);
+  }
+  }
+
+}
+
+
+void QGoMainWindow::openRecentFile()
+{
+QAction *action = qobject_cast<QAction *>(sender());
+if (action)
+OpenImage(action->data().toString());
 }
