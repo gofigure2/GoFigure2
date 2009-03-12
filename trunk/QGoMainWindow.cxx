@@ -19,7 +19,7 @@ QGoMainWindow::QGoMainWindow( ) : m_PageView( 0 )
   this->CentralImageTabWidget->clear();
   this->KishoreSegDockWidget->setVisible(false);
   this->ManualSegmentationDockWidget->setVisible(false);
-  
+
 
   m_Convert = VTKConvertImageType::New();
 
@@ -52,7 +52,7 @@ QGoMainWindow::QGoMainWindow( ) : m_PageView( 0 )
   Fullscreenbuttons();
 
 
-  for (int i = 0; i < MaxRecentFiles; ++i) 
+  for (int i = 0; i < MaxRecentFiles; ++i)
   {
     recentFileActions[i] = new QAction(this);
     recentFileActions[i]->setVisible(false);
@@ -84,7 +84,6 @@ void QGoMainWindow::on_actionOpen_activated( )
 
   if( !filename.isEmpty() )
   {
-    std::cout <<filename.toAscii( ).constData( ) <<std::endl;
     SetFileName( filename );
   }
 }
@@ -181,7 +180,7 @@ void QGoMainWindow::on_actionVolume_rendering_XYZ_activated( )
 }
 
 void QGoMainWindow::on_actionScale_bars_activated( )
-{ 
+{
   if (actionScale_bars->isChecked())
     m_PageView->SetShowScalarBar(true);
   else
@@ -252,7 +251,7 @@ void QGoMainWindow::ChangeLookupTable( )
 // *****************************************************************************
 void QGoMainWindow::SetColorForGivenId( )
 {
-  unsigned int cell_id = IdContourBox->value();
+//   unsigned int cell_id = IdContourBox->value();
   //   m_PageView->
   //   m_IdColorMap[ cell_id ] =
   //     QColorDialog::getColor( Qt::red, this );
@@ -269,12 +268,11 @@ void QGoMainWindow::ValidateContourTracer( )
 // *****************************************************************************
 void QGoMainWindow::SetFileName( const QString& iFile )
 {
-  if( !iFile.isEmpty() )
+  if( QFile::exists( iFile ) )
   {
-    m_FileName = iFile;
-    OpenImage( m_FileName );
-    DisplayImage( m_VTKImage, m_FileName );
-    setCurrentFile(m_FileName);
+    setCurrentFile( iFile );
+    OpenImage( m_CurrentFile );
+    DisplayImage( m_VTKImage, m_CurrentFile );
   }
 }
 
@@ -287,13 +285,11 @@ void QGoMainWindow::OpenImage( const QString& iFile )
   typedef ImageReaderType::Pointer ImageReaderPointer;
 
   ImageReaderPointer reader = ImageReaderType::New();
-  reader->SetFileName( m_FileName.toAscii( ).constData( ) );
+  reader->SetFileName( iFile.toAscii( ).constData( ) );
   reader->Update();
 
   m_ITKImage = reader->GetOutput();
   m_ITKImage->DisconnectPipeline();
-
-  //std::cout <<m_FileName.toAscii( ).constData( )<<std::endl;
 
   this->statusbar->showMessage( iFile );
 }
@@ -320,7 +316,7 @@ void QGoMainWindow::DisplayImage( vtkImageData* iImage, QString iTag )
 // *****************************************************************************
 void QGoMainWindow::on_actionAbout_activated( )
 {
-  QString version( tr( "v0.1" ) );
+  QString version( tr( "v2.0" ) );
 
   QString about_gofigure( tr( "GoFigure rocks!!! it rocks, rules!!!\n\n" ) );
 
@@ -348,24 +344,24 @@ void QGoMainWindow::on_actionAbout_Qt_activated( )
 
 void QGoMainWindow::Fullscreenbuttons()
 {
-  Fullscreengroup = new QActionGroup (this);
-  Fullscreengroup->addAction(actionFull_screen_XY);
-  Fullscreengroup->addAction(actionFull_screen_YZ);
-  Fullscreengroup->addAction(actionFull_screen_XZ);
-  Fullscreengroup->addAction(actionFull_screen_XYZ);
-  Fullscreengroup->addAction(actionQuad_View);
+  m_FullscreenGroup = new QActionGroup (this);
+  m_FullscreenGroup->addAction( this->actionFull_screen_XY );
+  m_FullscreenGroup->addAction( this->actionFull_screen_YZ );
+  m_FullscreenGroup->addAction( this->actionFull_screen_XZ );
+  m_FullscreenGroup->addAction( this->actionFull_screen_XYZ );
+  m_FullscreenGroup->addAction( this->actionQuad_View );
 }
 
 void QGoMainWindow::setCurrentFile(const QString &fileName)
 {
-  curFile = fileName;
-  setWindowModified(false);
+  m_CurrentFile = fileName;
+  this->setWindowModified( false );
   QString shownName = "Untitled";
-  if (!curFile.isEmpty())
+  if( !m_CurrentFile.isEmpty() )
   {
-    shownName = strippedName(curFile);
-    recentFiles.removeAll(curFile);
-    recentFiles.prepend(curFile);
+    shownName = strippedName( m_CurrentFile );
+    m_RecentFiles.removeAll( m_CurrentFile );
+    m_RecentFiles.prepend( m_CurrentFile );
     updateRecentFileActions();
   }
 }
@@ -377,31 +373,31 @@ QString QGoMainWindow::strippedName(const QString &fullFileName)
 
 void QGoMainWindow::updateRecentFileActions()
 {
-  QMutableStringListIterator i(recentFiles);
-  while (i.hasNext()) 
+  QMutableStringListIterator i(m_RecentFiles);
+  while (i.hasNext())
   {
     if (!QFile::exists(i.next()))
       i.remove();
   }
-  if (!recentFiles.isEmpty())
+  if (!m_RecentFiles.isEmpty())
   {
     menuOpen_Recent_Files->setEnabled(true);
   }
 
-  for (int j = 0; j < MaxRecentFiles; ++j) 
+  for (int j = 0; j < MaxRecentFiles; ++j)
   {
-    if (j < recentFiles.count()) 
+    if (j < m_RecentFiles.count())
     {
       QString text = tr("&%1 %2 ")
         .arg(j + 1)
-        .arg(strippedName(recentFiles[j]));
+        .arg(strippedName(m_RecentFiles[j]));
 
       recentFileActions[j]->setText(text);
-      recentFileActions[j]->setData(recentFiles[j]);
+      recentFileActions[j]->setData(m_RecentFiles[j]);
       recentFileActions[j]->setVisible(true);
       menuOpen_Recent_Files->addAction(recentFileActions[j]);
-    } 
-    else 
+    }
+    else
     {
       recentFileActions[j]->setVisible(false);
     }
@@ -414,7 +410,7 @@ void QGoMainWindow::openRecentFile()
 {
   QAction *action = qobject_cast<QAction *>(sender());
   if (action)
-  {  
+  {
     SetFileName(action->data().toString());
   }
 }

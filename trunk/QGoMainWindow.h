@@ -29,7 +29,7 @@ public:
   virtual ~QGoMainWindow();
 
   void SetFileName( const QString& iFileName );
-  
+
 
 protected slots:
   void on_actionOpen_activated( );
@@ -54,7 +54,7 @@ protected slots:
 
   void SetContourTracerOn(const bool& iChecked);
   void SetContourTracerOff(const bool& iChecked);
- 
+
 
 //   void SetTracerToPolygonTracer();
 //   void SetTracerToFreeLineTracer();
@@ -69,31 +69,58 @@ protected slots:
   void openRecentFile();
 
 protected:
-  QString m_FileName;
   ImagePointer m_ITKImage;
   vtkImageData* m_VTKImage;
-  QImagePageViewTracer* m_PageView;
-  VTKConvertImagePointer m_Convert;
-  QGoLUTDialog* m_LUTDialog;
-  std::map< unsigned int, QColor > m_IdColorMap;
-  QActionGroup *Fullscreengroup;
 
+  /** \brief Quad View*/
+  QImagePageViewTracer* m_PageView;
+
+  /** \brief Convert itk::Image format to vtkImageData */
+  VTKConvertImagePointer m_Convert;
+
+  /** \brief Look-up Table dialog */
+  QGoLUTDialog* m_LUTDialog;
+
+  std::map< unsigned int, QColor > m_IdColorMap;
+  QActionGroup* m_FullscreenGroup;
+
+  /** \brief */
   void setCurrentFile(const QString &fileName);
+
+  /** \brief */
   void updateRecentFileActions();
+
+  /** \brief Open Image with given iFileName
+      \param[in] iFileName
+  */
   void OpenImage( const QString& iFileName );
+
+  /** \brief Display Image in a "quad-view" widget in a tab.
+    The title of the tab is given by iTag.
+      \param[in] iImage
+      \param[in] iTag
+  */
   void DisplayImage( vtkImageData* iImage, QString iTag );
+
+  /** \brief Create Fullscreengroup*/
   void Fullscreenbuttons();
-  QStringList recentFiles;
-  QString curFile;
+
+  /** \brief list of recent files */
+  QStringList m_RecentFiles;
+
+  /** \brief current file name */
+  QString m_CurrentFile;
+
+  /** \brief Remove path from a given FileName*/
   QString strippedName(const QString &fullFileName);
+
   enum { MaxRecentFiles = 5 };
   QAction *recentFileActions[MaxRecentFiles];
-  
 
 private:
   QGoMainWindow( const QGoMainWindow& );
   QGoMainWindow operator = ( const QGoMainWindow& );
-  
+
 };
 
 #endif
