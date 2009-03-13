@@ -48,6 +48,8 @@ QGoMainWindow::QGoMainWindow( ) : m_PageView( 0 )
     this, SLOT( SetColorForGivenId( ) ) );
   QObject::connect( this->TracerValidationBtn, SIGNAL( released( ) ),
     this, SLOT( ValidateContourTracer() ) );
+  QObject::connect( this->actionOpen, SIGNAL( activated( ) ),
+    this, SLOT( showprogressloading() ) );
 
   Fullscreenbuttons();
 
@@ -413,4 +415,23 @@ void QGoMainWindow::openRecentFile()
   {
     SetFileName(action->data().toString());
   }
+}
+void QGoMainWindow::showprogressloading ()
+{
+  QProgressDialog* Progressloading = new QProgressDialog("Loading images...", "Abort loading", 0, 100, this,Qt::WindowStaysOnTopHint);
+  QProgressBar* bar = new QProgressBar(this);
+  
+   //Progressloading.setWindowModality(Qt::WindowModal);
+  Progressloading->setBar(bar);
+     for (int i = 0; i < 100; i++) 
+     {
+       Progressloading->setValue(i);
+
+       if (Progressloading->wasCanceled())
+             break;
+       bar->update();
+       bar->show();
+      
+     }
+     Progressloading->setValue(100);
 }

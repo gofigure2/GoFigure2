@@ -22,7 +22,7 @@
    <widget class="QTabWidget" name="CentralImageTabWidget" >
     <property name="geometry" >
      <rect>
-      <x>0</x>
+      <x>20</x>
       <y>0</y>
       <width>1201</width>
       <height>749</height>
