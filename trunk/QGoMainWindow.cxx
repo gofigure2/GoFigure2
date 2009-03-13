@@ -25,7 +25,7 @@ QGoMainWindow::QGoMainWindow( ) : m_PageView( 0 )
 
   m_Convert = VTKConvertImageType::New();
 
-  m_PageView = new QImagePageViewTracer;
+//   m_PageView = new QImagePageViewTracer;
   m_LUTDialog = new QGoLUTDialog( this );
 
   QObject::connect( this->m_LUTDialog, SIGNAL( accepted( ) ),
@@ -308,6 +308,16 @@ void QGoMainWindow::DisplayImage( vtkImageData* iImage, QString iTag )
 
   m_VTKImage = m_Convert->GetOutput();
 
+  //NOTE 13 March 2009: Dirty temporary tricks to handle the change of image
+  if( m_PageView )
+  {
+    delete m_PageView;
+    m_PageView = 0;
+  }
+  if( !m_PageView )
+  {
+    m_PageView = new QImagePageViewTracer;
+  }
   m_PageView->SetImage( m_VTKImage );
   //   m_PageView->SetScalarBarVisibility( true );
 
@@ -415,6 +425,8 @@ void QGoMainWindow::openRecentFile()
   QAction *action = qobject_cast<QAction *>(sender());
   if (action)
   {
+    delete m_PageView;
+    m_PageView = 0;
     SetFileName(action->data().toString());
   }
 }
@@ -422,10 +434,10 @@ void QGoMainWindow::showprogressloading ()
 {
   QProgressDialog* Progressloading = new QProgressDialog("Loading images...", "Abort loading", 0, 100, this,Qt::WindowStaysOnTopHint);
   QProgressBar* bar = new QProgressBar(this);
-  
+
    //Progressloading.setWindowModality(Qt::WindowModal);
   Progressloading->setBar(bar);
-     for (int i = 0; i < 100; i++) 
+     for (int i = 0; i < 100; i++)
      {
        Progressloading->setValue(i);
 
@@ -433,7 +445,7 @@ void QGoMainWindow::showprogressloading ()
              break;
        bar->update();
        bar->show();
-      
+
      }
      Progressloading->setValue(100);
 }
