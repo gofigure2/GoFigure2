@@ -6,6 +6,8 @@
 
 #include <itkImageFileReader.h>
 #include <iostream>
+#include <qprogressdialog.h>
+#include <qprogressbar.h>
 
 // *****************************************************************************
 // *****************************************************************************
