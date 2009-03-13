@@ -105,6 +105,8 @@ protected:
   /** \brief Create Fullscreengroup*/
   void Fullscreenbuttons();
 
+  void showprogressloading ();
+
   /** \brief list of recent files */
   QStringList m_RecentFiles;
 
