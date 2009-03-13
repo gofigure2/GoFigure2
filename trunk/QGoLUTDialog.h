@@ -12,18 +12,17 @@
 #include <vtkLookupTable.h>
 #include <vtkScalarBarActor.h>
 
-// #include "ui_LUTDialog.h"
-
 #include "QVTKWidget.h"
+
 /**
-\class QGoLUTDialog
-\brief LUT Dialog
+  \class QGoLUTDialog
+  \brief Look-up Table Dialog
 */
 class QGoLUTDialog : public QDialog
 {
   Q_OBJECT
 public:
-  QGoLUTDialog( QWidget* parent = 0 );
+  explicit QGoLUTDialog( QWidget* parent = 0 );
   virtual ~QGoLUTDialog();
 
   vtkLookupTable* GetLookupTable( );
@@ -35,14 +34,14 @@ protected:
   vtkLookupTable* LUT;
   vtkScalarBarActor* LUTActor;
   vtkRenderer*  Renderer;
-  QDialogButtonBox *buttonBox;
-  QVTKWidget *qvtkWidget;
-  QHBoxLayout *horizontalLayout;
-  QHBoxLayout *horizontalLayout_2;
-  QVBoxLayout *verticalLayout;
-  QSpacerItem *horizontalSpacer;
-  QLabel *label;
-  QComboBox *LUTComboBox;
+  QDialogButtonBox* buttonBox;
+  QVTKWidget* qvtkWidget;
+  QHBoxLayout* horizontalLayout;
+  QHBoxLayout* horizontalLayout_2;
+  QVBoxLayout* verticalLayout;
+  QSpacerItem* horizontalSpacer;
+  QLabel* label;
+  QComboBox* LUTComboBox;
 
   void setupUi( QDialog *LUTDialog );
 };
