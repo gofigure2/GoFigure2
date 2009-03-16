@@ -10,6 +10,8 @@
 #include <itkImageToVTKImageFilter.h>
 #include <qactiongroup.h>
 
+#include <vector>
+
 #include "QGoLUTDialog.h"
 #include "ui_go.h"
 
@@ -73,7 +75,7 @@ protected:
   vtkImageData* m_VTKImage;
 
   /** \brief Quad View*/
-  QImagePageViewTracer* m_PageView;
+  std::vector< QImagePageViewTracer* > m_PageView;
 
   /** \brief Convert itk::Image format to vtkImageData */
   VTKConvertImagePointer m_Convert;

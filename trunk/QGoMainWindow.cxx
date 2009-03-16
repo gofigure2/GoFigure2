@@ -12,7 +12,7 @@
 // *****************************************************************************
 // *****************************************************************************
 // *****************************************************************************
-QGoMainWindow::QGoMainWindow( ) : m_PageView( 0 )
+QGoMainWindow::QGoMainWindow( ) : m_PageView( 1 )
 {
   this->setupUi( this );
   this->setCentralWidget( this->CentralImageTabWidget );
@@ -22,10 +22,14 @@ QGoMainWindow::QGoMainWindow( ) : m_PageView( 0 )
   this->KishoreSegDockWidget->setVisible(false);
   this->ManualSegmentationDockWidget->setVisible(false);
 
+#if QT_VERSION_MAJOR == 4 && QT_VERSION_MINOR >= 5
+  //NOTE: The next properties appear in Qt 4.5.
+  this->CentralImageTabWidget->setTabsClosable( true );
+  this->CentralImageTabWidget->setTabsMovable( true );
+#endif
 
   m_Convert = VTKConvertImageType::New();
 
-//   m_PageView = new QImagePageViewTracer;
   m_LUTDialog = new QGoLUTDialog( this );
 
   QObject::connect( this->m_LUTDialog, SIGNAL( accepted( ) ),
@@ -71,7 +75,11 @@ QGoMainWindow::QGoMainWindow( ) : m_PageView( 0 )
 // *****************************************************************************
 QGoMainWindow::~QGoMainWindow()
 {
-  delete m_PageView;
+  while( !m_PageView.empty() )
+  {
+    delete m_PageView.back();
+    m_PageView.pop_back();
+  }
   delete m_LUTDialog;
 }
 
@@ -97,9 +105,11 @@ void QGoMainWindow::on_actionOpen_activated( )
 // *****************************************************************************
 void QGoMainWindow::on_actionClose_activated( )
 {
-  delete m_PageView;
   int idx = this->CentralImageTabWidget->currentIndex();
   this->CentralImageTabWidget->removeTab( idx );
+  delete m_PageView[idx];
+//   m_PageView.erase( m_PageView.begin()+ idx );
+  m_PageView[idx] = 0;
 }
 
 // *****************************************************************************
@@ -107,8 +117,12 @@ void QGoMainWindow::on_actionClose_activated( )
 // *****************************************************************************
 void QGoMainWindow::on_actionClose_all_activated( )
 {
-  delete m_PageView;
   this->CentralImageTabWidget->clear( );
+  while( !m_PageView.empty() )
+  {
+    delete m_PageView.back();
+    m_PageView.pop_back();
+  }
 }
 
 // *****************************************************************************
@@ -124,7 +138,8 @@ void QGoMainWindow::on_actionQuit_activated( )
 // *****************************************************************************
 void QGoMainWindow::on_actionBackground_activated( )
 {
-  m_PageView->SetBackgroundColor( QColorDialog::getColor( Qt::black, this ) );
+  int idx = this->CentralImageTabWidget->currentIndex();
+  m_PageView[idx]->SetBackgroundColor( QColorDialog::getColor( Qt::black, this ) );
 }
 
 // *****************************************************************************
@@ -140,7 +155,8 @@ void QGoMainWindow::on_actionLookup_Table_activated( )
 // *****************************************************************************
 void QGoMainWindow::on_actionQuad_View_activated( )
 {
-  m_PageView->quadview();
+  int idx = this->CentralImageTabWidget->currentIndex();
+  m_PageView[idx]->quadview();
 }
 
 // *****************************************************************************
@@ -148,7 +164,8 @@ void QGoMainWindow::on_actionQuad_View_activated( )
 // *****************************************************************************
 void QGoMainWindow::on_actionFull_screen_XY_activated( )
 {
-  m_PageView->FullScreenViewXY();
+  int idx = this->CentralImageTabWidget->currentIndex();
+  m_PageView[idx]->FullScreenViewXY();
 }
 
 // *****************************************************************************
@@ -156,7 +173,8 @@ void QGoMainWindow::on_actionFull_screen_XY_activated( )
 // *****************************************************************************
 void QGoMainWindow::on_actionFull_screen_YZ_activated( )
 {
-  m_PageView->FullScreenView3();
+  int idx = this->CentralImageTabWidget->currentIndex();
+  m_PageView[idx]->FullScreenView3();
 }
 
 // *****************************************************************************
@@ -164,7 +182,8 @@ void QGoMainWindow::on_actionFull_screen_YZ_activated( )
 // *****************************************************************************
 void QGoMainWindow::on_actionFull_screen_XZ_activated( )
 {
-  m_PageView->FullScreenView2();
+  int idx = this->CentralImageTabWidget->currentIndex();
+  m_PageView[idx]->FullScreenView2();
 }
 
 // *****************************************************************************
@@ -172,23 +191,26 @@ void QGoMainWindow::on_actionFull_screen_XZ_activated( )
 // *****************************************************************************
 void QGoMainWindow::on_actionFull_screen_XYZ_activated( )
 {
-  m_PageView->FullScreenViewXYZ();
+  int idx = this->CentralImageTabWidget->currentIndex();
+  m_PageView[idx]->FullScreenViewXYZ();
 }
 
 void QGoMainWindow::on_actionVolume_rendering_XYZ_activated( )
 {
+  int idx = this->CentralImageTabWidget->currentIndex();
   if (actionVolume_rendering_XYZ->isChecked())
-    m_PageView->SetView3DToVolumeRenderingMode();
+    m_PageView[idx]->SetView3DToVolumeRenderingMode();
   else
-    m_PageView->SetView3DToTriPlanarMode();
+    m_PageView[idx]->SetView3DToTriPlanarMode();
 }
 
 void QGoMainWindow::on_actionScale_bars_activated( )
 {
+  int idx = this->CentralImageTabWidget->currentIndex();
   if (actionScale_bars->isChecked())
-    m_PageView->SetShowScalarBar(true);
+    m_PageView[idx]->SetShowScalarBar(true);
   else
-    m_PageView->SetShowScalarBar(false);
+    m_PageView[idx]->SetShowScalarBar(false);
 }
 
 // *****************************************************************************
@@ -197,13 +219,19 @@ void QGoMainWindow::on_actionScale_bars_activated( )
 void QGoMainWindow::SetContourTracerOn(const bool& iChecked)
 {
   if( iChecked )
-    m_PageView->SetTracerON();
+  {
+    int idx = this->CentralImageTabWidget->currentIndex();
+    m_PageView[idx]->SetTracerON();
+  }
 }
 
 void QGoMainWindow::SetContourTracerOff(const bool& iChecked)
 {
   if( iChecked )
-    m_PageView->SetTracerOFF();
+  {
+    int idx = this->CentralImageTabWidget->currentIndex();
+    m_PageView[idx]->SetTracerOFF();
+  }
 }
 // void QGoMainWindow::SetTracerToPolygonTracer()
 // {
@@ -247,7 +275,8 @@ void QGoMainWindow::SetContourTracerOff(const bool& iChecked)
 
 void QGoMainWindow::ChangeLookupTable( )
 {
-  m_PageView->SetLookupTable( this->m_LUTDialog->GetLookupTable() );
+  int idx = this->CentralImageTabWidget->currentIndex();
+  m_PageView[idx]->SetLookupTable( this->m_LUTDialog->GetLookupTable() );
 }
 
 // *****************************************************************************
@@ -264,8 +293,9 @@ void QGoMainWindow::SetColorForGivenId( )
 
 void QGoMainWindow::ValidateContourTracer( )
 {
-  m_PageView->SetCellId( IdContourBox->value() );
-  m_PageView->ValidateContour();
+  int idx = this->CentralImageTabWidget->currentIndex();
+  m_PageView[idx]->SetCellId( IdContourBox->value() );
+  m_PageView[idx]->ValidateContour();
 }
 // *****************************************************************************
 // *****************************************************************************
@@ -309,19 +339,19 @@ void QGoMainWindow::DisplayImage( vtkImageData* iImage, QString iTag )
   m_VTKImage = m_Convert->GetOutput();
 
   //NOTE 13 March 2009: Dirty temporary tricks to handle the change of image
-  if( m_PageView )
+  if( m_PageView[0] )
   {
-    delete m_PageView;
-    m_PageView = 0;
+    delete m_PageView[0];
+    m_PageView[0] = 0;
   }
-  if( !m_PageView )
+  if( !m_PageView[0] )
   {
-    m_PageView = new QImagePageViewTracer;
+    m_PageView[0] = new QImagePageViewTracer;
   }
-  m_PageView->SetImage( m_VTKImage );
+  m_PageView[0]->SetImage( m_VTKImage );
   //   m_PageView->SetScalarBarVisibility( true );
 
-  int idx = this->CentralImageTabWidget->addTab( this->m_PageView, iTag );
+  int idx = this->CentralImageTabWidget->addTab( this->m_PageView[0], iTag );
   this->CentralImageTabWidget->setCurrentIndex( idx );
 }
 
@@ -425,8 +455,11 @@ void QGoMainWindow::openRecentFile()
   QAction *action = qobject_cast<QAction *>(sender());
   if (action)
   {
-    delete m_PageView;
-    m_PageView = 0;
+    if( m_PageView[0] )
+    {
+      delete m_PageView[0];
+      m_PageView[0] = 0;
+    }
     SetFileName(action->data().toString());
   }
 }
