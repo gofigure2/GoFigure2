@@ -56,6 +56,7 @@ protected slots:
 
   void SetContourTracerOn(const bool& iChecked);
   void SetContourTracerOff(const bool& iChecked);
+  void showprogressloading ();
 
 
 //   void SetTracerToPolygonTracer();
@@ -106,8 +107,6 @@ protected:
 
   /** \brief Create Fullscreengroup*/
   void Fullscreenbuttons();
-
-  void showprogressloading ();
 
   /** \brief list of recent files */
   QStringList m_RecentFiles;
