@@ -315,6 +315,10 @@ void QGoMainWindow::SetFileName( const QString& iFile )
 // *****************************************************************************
 void QGoMainWindow::OpenImage( const QString& iFile )
 {
+  // NOTE ALEX: here have to check the file
+  // and possibly define ImageType on the fly
+  // then define a templated function to pass the image along
+  // just as the cellinterface test for QEMesh
   typedef itk::ImageFileReader< ImageType > ImageReaderType;
   typedef ImageReaderType::Pointer ImageReaderPointer;
 
