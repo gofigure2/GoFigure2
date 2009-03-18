@@ -8,8 +8,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1434</width>
-    <height>824</height>
+    <width>1440</width>
+    <height>829</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -19,45 +19,41 @@
    <bool>true</bool>
   </property>
   <widget class="QWidget" name="centralwidget" >
-   <widget class="QTabWidget" name="CentralImageTabWidget" >
-    <property name="geometry" >
-     <rect>
-      <x>20</x>
-      <y>0</y>
-      <width>1201</width>
-      <height>749</height>
-     </rect>
-    </property>
-    <property name="tabPosition" >
-     <enum>QTabWidget::North</enum>
-    </property>
-    <property name="tabShape" >
-     <enum>QTabWidget::Rounded</enum>
-    </property>
-    <property name="currentIndex" >
-     <number>0</number>
-    </property>
-    <property name="elideMode" >
-     <enum>Qt::ElideLeft</enum>
-    </property>
-    <widget class="QWidget" name="tab" >
-     <attribute name="title" >
-      <string>Tab 1</string>
-     </attribute>
-    </widget>
-    <widget class="QWidget" name="tab_2" >
-     <attribute name="title" >
-      <string>Page</string>
-     </attribute>
-    </widget>
-   </widget>
+   <layout class="QVBoxLayout" name="verticalLayout_8" >
+    <item>
+     <widget class="QTabWidget" name="CentralImageTabWidget" >
+      <property name="tabPosition" >
+       <enum>QTabWidget::North</enum>
+      </property>
+      <property name="tabShape" >
+       <enum>QTabWidget::Rounded</enum>
+      </property>
+      <property name="currentIndex" >
+       <number>0</number>
+      </property>
+      <property name="elideMode" >
+       <enum>Qt::ElideLeft</enum>
+      </property>
+      <widget class="QWidget" name="tab" >
+       <attribute name="title" >
+        <string>Tab 1</string>
+       </attribute>
+      </widget>
+      <widget class="QWidget" name="tab_2" >
+       <attribute name="title" >
+        <string>Page</string>
+       </attribute>
+      </widget>
+     </widget>
+    </item>
+   </layout>
   </widget>
   <widget class="QMenuBar" name="menubar" >
    <property name="geometry" >
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1434</width>
+     <width>1440</width>
      <height>25</height>
     </rect>
    </property>
@@ -110,6 +106,7 @@
      <string>Segmentation</string>
     </property>
     <addaction name="actionManual_Segmentation" />
+    <addaction name="actionOne_Click_Segmentation" />
     <addaction name="actionKishoreSegmentation" />
    </widget>
    <widget class="QMenu" name="menuTracking" >
@@ -214,7 +211,7 @@
        <x>0</x>
        <y>0</y>
        <width>211</width>
-       <height>421</height>
+       <height>381</height>
       </rect>
      </property>
      <property name="font" >
@@ -240,7 +237,7 @@
       <number>0</number>
      </property>
      <property name="currentIndex" >
-      <number>0</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="page" >
       <property name="geometry" >
@@ -248,7 +245,7 @@
         <x>0</x>
         <y>0</y>
         <width>201</width>
-        <height>324</height>
+        <height>284</height>
        </rect>
       </property>
       <attribute name="label" >
@@ -432,7 +429,7 @@ Radius</string>
         <x>0</x>
         <y>0</y>
         <width>201</width>
-        <height>324</height>
+        <height>284</height>
        </rect>
       </property>
       <attribute name="label" >
@@ -598,7 +595,7 @@ Weight</string>
         <x>0</x>
         <y>0</y>
         <width>201</width>
-        <height>324</height>
+        <height>284</height>
        </rect>
       </property>
       <attribute name="label" >
@@ -932,6 +929,12 @@ Component</string>
       </item>
      </layout>
     </widget>
+    <zorder>layoutWidget</zorder>
+    <zorder>TracerValidationBtn</zorder>
+    <zorder>layoutWidget</zorder>
+    <zorder>TracerReinitializeBtn</zorder>
+    <zorder>SaveContourCheckBox</zorder>
+    <zorder>OneClickSegmentationDockWidget</zorder>
    </widget>
   </widget>
   <widget class="QToolBar" name="toolBar" >
@@ -956,6 +959,134 @@ Component</string>
    <addaction name="actionZoom" />
    <addaction name="actionLookup_Table" />
    <addaction name="actionScale_bars" />
+  </widget>
+  <widget class="QDockWidget" name="OneClickSegmentationDockWidget" >
+   <property name="windowTitle" >
+    <string>One Click</string>
+   </property>
+   <attribute name="dockWidgetArea" >
+    <number>1</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents" >
+    <widget class="QDialogButtonBox" name="buttonBox" >
+     <property name="geometry" >
+      <rect>
+       <x>30</x>
+       <y>140</y>
+       <width>126</width>
+       <height>26</height>
+      </rect>
+     </property>
+     <property name="standardButtons" >
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+    <widget class="Line" name="line" >
+     <property name="geometry" >
+      <rect>
+       <x>7</x>
+       <y>60</y>
+       <width>161</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="orientation" >
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+    <widget class="QWidget" name="" >
+     <property name="geometry" >
+      <rect>
+       <x>10</x>
+       <y>10</y>
+       <width>108</width>
+       <height>48</height>
+      </rect>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_7" >
+      <item>
+       <widget class="QRadioButton" name="radioButton_3" >
+        <property name="text" >
+         <string>Chan Vese</string>
+        </property>
+        <property name="checked" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QRadioButton" name="radioButton_4" >
+        <property name="text" >
+         <string>Shape-Based</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QWidget" name="" >
+     <property name="geometry" >
+      <rect>
+       <x>10</x>
+       <y>80</y>
+       <width>170</width>
+       <height>50</height>
+      </rect>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_20" >
+      <item>
+       <layout class="QVBoxLayout" name="verticalLayout_6" >
+        <item>
+         <widget class="QRadioButton" name="radioButton" >
+          <property name="text" >
+           <string>2D</string>
+          </property>
+          <property name="checked" >
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QRadioButton" name="radioButton_2" >
+          <property name="text" >
+           <string>3D</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_19" >
+        <item>
+         <widget class="QLabel" name="label_17" >
+          <property name="text" >
+           <string>Radius</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QDoubleSpinBox" name="doubleSpinBox" >
+          <property name="suffix" >
+           <string>um</string>
+          </property>
+          <property name="minimum" >
+           <double>0.100000000000000</double>
+          </property>
+          <property name="maximum" >
+           <double>6.000000000000000</double>
+          </property>
+          <property name="singleStep" >
+           <double>0.100000000000000</double>
+          </property>
+          <property name="value" >
+           <double>3.000000000000000</double>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </widget>
   </widget>
   <action name="actionOpen" >
    <property name="checkable" >
@@ -1326,6 +1457,17 @@ Component</string>
     <string>???</string>
    </property>
   </action>
+  <action name="actionOne_Click_Segmentation" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="enabled" >
+    <bool>false</bool>
+   </property>
+   <property name="text" >
+    <string>One Click Segmentation</string>
+   </property>
+  </action>
  </widget>
  <tabstops>
   <tabstop>m_NucleiTresholdSpinBox</tabstop>
@@ -1376,7 +1518,23 @@ Component</string>
     </hint>
     <hint type="destinationlabel" >
      <x>107</x>
-     <y>698</y>
+     <y>462</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionOne_Click_Segmentation</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>OneClickSegmentationDockWidget</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>97</x>
+     <y>672</y>
     </hint>
    </hints>
   </connection>

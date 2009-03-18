@@ -23,6 +23,7 @@ QGoMainWindow::QGoMainWindow( ) : m_PageView( 1 )
   this->CentralImageTabWidget->clear();
   this->KishoreSegDockWidget->setVisible(false);
   this->ManualSegmentationDockWidget->setVisible(false);
+  this->OneClickSegmentationDockWidget->setVisible(false);
 
 #if QT_VERSION_MAJOR == 4 && QT_VERSION_MINOR >= 5
   //NOTE: The next properties appear in Qt 4.5.
@@ -142,7 +143,11 @@ void QGoMainWindow::on_actionQuit_activated( )
 void QGoMainWindow::on_actionBackground_activated( )
 {
   int idx = this->CentralImageTabWidget->currentIndex();
-  m_PageView[idx]->SetBackgroundColor( QColorDialog::getColor( Qt::black, this ) );
+  double* rgb = m_PageView[idx]->GetBackgroundColor();
+  QColor color( static_cast< int >( 255. * rgb[0] ),
+    static_cast< int >( 255. * rgb[1] ),
+    static_cast< int >( 255. * rgb[2] ) );
+  m_PageView[idx]->SetBackgroundColor( QColorDialog::getColor( color, this ) );
 }
 
 // *****************************************************************************
