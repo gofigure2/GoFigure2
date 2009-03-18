@@ -1,13 +1,15 @@
 #include "QGoMainWindow.h"
 
+#include <iostream>
+
 #include <qfiledialog.h>
 #include <qmessagebox.h>
 #include <qcolordialog.h>
-
-#include <itkImageFileReader.h>
-#include <iostream>
 #include <qprogressdialog.h>
 #include <qprogressbar.h>
+
+#include <itkImageFileReader.h>
+#include <vnl/vnl_random.h>
 
 // *****************************************************************************
 // *****************************************************************************
@@ -108,8 +110,7 @@ void QGoMainWindow::on_actionClose_activated( )
   int idx = this->CentralImageTabWidget->currentIndex();
   this->CentralImageTabWidget->removeTab( idx );
   delete m_PageView[idx];
-//   m_PageView.erase( m_PageView.begin()+ idx );
-  m_PageView[idx] = 0;
+  m_PageView.remove( idx );
 }
 
 // *****************************************************************************
@@ -282,20 +283,85 @@ void QGoMainWindow::ChangeLookupTable( )
 // *****************************************************************************
 // *****************************************************************************
 // *****************************************************************************
-void QGoMainWindow::SetColorForGivenId( )
+void QGoMainWindow::SetColorForGivenId( const bool& iSelect )
 {
-//   unsigned int cell_id = IdContourBox->value();
+  unsigned int cell_id = IdContourBox->value();
+
   //   m_PageView->
-  //   m_IdColorMap[ cell_id ] =
-  //     QColorDialog::getColor( Qt::red, this );
+  vnl_random random( 12 );
+  QColor color;
+
+  if( cell_id < 7 )
+  {
+    switch( cell_id )
+    {
+      default:
+      case 1:
+        color.setHsv( 0, 255, 255 );
+        break;
+      case 2:
+        color.setHsv( 60, 255, 255 );
+        break;
+      case 3:
+        color.setHsv( 120, 255, 255 );
+        break;
+      case 4:
+        color.setHsv( 180, 255, 255 );
+        break;
+      case 5:
+        color.setHsv( 240, 255, 255 );
+        break;
+      case 6:
+        color.setHsv( 300, 255, 255 );
+        break;
+    }
+  }
+  else
+  {
+    switch( cell_id % 6 )
+    {
+      case 0:
+        color.setHsv( random.lrand32( 0, 60 ), random.lrand32( 0, 255 ), random.lrand32( 0, 255 ) );
+        break;
+      case 1:
+        color.setHsv( random.lrand32( 60, 120 ), random.lrand32( 0, 255 ), random.lrand32( 0, 255 ) );
+        break;
+      case 2:
+        color.setHsv( random.lrand32( 120, 180 ), random.lrand32( 0, 255 ), random.lrand32( 0, 255 ) );
+        break;
+      case 3:
+        color.setHsv( random.lrand32( 180, 240 ), random.lrand32( 0, 255 ), random.lrand32( 0, 255 ) );
+        break;
+      case 4:
+        color.setHsv( random.lrand32( 240, 300 ), random.lrand32( 0, 255 ), random.lrand32( 0, 255 ) );
+        break;
+      case 5:
+        color.setHsv( random.lrand32( 300, 360 ), random.lrand32( 0, 255 ), random.lrand32( 0, 255 ) );
+        break;
+    }
+  }
+
+  if( iSelect )
+  {
+    m_IdColorMap[ cell_id ] = QColorDialog::getColor( color, this );
+  }
+  else
+  {
+    m_IdColorMap[ cell_id ] = color;
+  }
 
 }
 
 void QGoMainWindow::ValidateContourTracer( )
 {
   int idx = this->CentralImageTabWidget->currentIndex();
-  m_PageView[idx]->SetCellId( IdContourBox->value() );
-  m_PageView[idx]->ValidateContour();
+  unsigned int cell_id = IdContourBox->value();
+  m_PageView[idx]->SetCellId( cell_id );
+
+  if( m_IdColorMap.find( cell_id ) == m_IdColorMap.end() )
+    SetColorForGivenId( false );
+
+  m_PageView[idx]->ValidateContour( m_IdColorMap[ cell_id ] );
 }
 // *****************************************************************************
 // *****************************************************************************
@@ -478,10 +544,10 @@ void QGoMainWindow::showprogressloading ()
   statusbar->addWidget(message,0);
   statusbar->addWidget(bar,0);
   //statusbar->insertWidget(1,bar,0);
-  
+
    //Progressloading.setWindowModality(Qt::WindowModal);
- 
-     for (int i = 0; i < 100; i++) 
+
+     for (int i = 0; i < 100; i++)
      {
        Progressloading->setValue(i);
 
@@ -489,7 +555,7 @@ void QGoMainWindow::showprogressloading ()
        {
           break;
        }
-       
+
        bar->update();
        bar->show();
 

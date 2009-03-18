@@ -8,9 +8,10 @@
 
 #include <QImagePageViewTracer.h>
 #include <itkImageToVTKImageFilter.h>
-#include <qactiongroup.h>
 
-#include <vector>
+#include <qactiongroup.h>
+#include <qvector.h>
+#include <qhash.h>
 
 #include "QGoLUTDialog.h"
 #include "ui_go.h"
@@ -67,7 +68,7 @@ protected slots:
 
   void ChangeLookupTable( );
 
-  void SetColorForGivenId();
+  void SetColorForGivenId( const bool& iSelected = true );
   void ValidateContourTracer();
   void openRecentFile();
 
@@ -76,7 +77,7 @@ protected:
   vtkImageData* m_VTKImage;
 
   /** \brief Quad View*/
-  std::vector< QImagePageViewTracer* > m_PageView;
+  QVector< QImagePageViewTracer* > m_PageView;
 
   /** \brief Convert itk::Image format to vtkImageData */
   VTKConvertImagePointer m_Convert;
@@ -84,7 +85,7 @@ protected:
   /** \brief Look-up Table dialog */
   QGoLUTDialog* m_LUTDialog;
 
-  std::map< unsigned int, QColor > m_IdColorMap;
+  QHash< unsigned int, QColor > m_IdColorMap;
   QActionGroup* m_FullscreenGroup;
 
   /** \brief */
