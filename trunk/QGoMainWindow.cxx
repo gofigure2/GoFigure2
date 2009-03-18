@@ -366,7 +366,10 @@ void QGoMainWindow::ValidateContourTracer( )
   if( m_IdColorMap.find( cell_id ) == m_IdColorMap.end() )
     SetColorForGivenId( false );
 
-  m_PageView[idx]->ValidateContour( m_IdColorMap[ cell_id ] );
+  m_PageView[idx]->ValidateContour(
+    cell_id,
+    m_IdColorMap[ cell_id ],
+    this->SaveContourCheckBox->isChecked() );
 }
 // *****************************************************************************
 // *****************************************************************************
