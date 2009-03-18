@@ -56,6 +56,8 @@ QGoMainWindow::QGoMainWindow( ) : m_PageView( 1 )
     this, SLOT( SetColorForGivenId( ) ) );
   QObject::connect( this->TracerValidationBtn, SIGNAL( released( ) ),
     this, SLOT( ValidateContourTracer() ) );
+  QObject::connect( this->TracerReinitializeBtn, SIGNAL( released() ),
+    this, SLOT( ReinitializeContourTracer() ) );
   QObject::connect( this->actionOpen, SIGNAL( activated( ) ),
     this, SLOT( showprogressloading() ) );
 
@@ -351,6 +353,9 @@ void QGoMainWindow::SetColorForGivenId( const bool& iSelect )
   }
 
 }
+// *****************************************************************************
+// *****************************************************************************
+// *****************************************************************************
 
 void QGoMainWindow::ValidateContourTracer( )
 {
@@ -362,6 +367,15 @@ void QGoMainWindow::ValidateContourTracer( )
     SetColorForGivenId( false );
 
   m_PageView[idx]->ValidateContour( m_IdColorMap[ cell_id ] );
+}
+// *****************************************************************************
+// *****************************************************************************
+// *****************************************************************************
+
+void QGoMainWindow::ReinitializeContourTracer()
+{
+  int idx = this->CentralImageTabWidget->currentIndex();
+  m_PageView[idx]->ReinitializeContour();
 }
 // *****************************************************************************
 // *****************************************************************************
