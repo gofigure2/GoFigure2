@@ -74,14 +74,14 @@ protected slots:
   void openRecentFile();
 
 protected:
-  ImagePointer m_ITKImage;
-  vtkImageData* m_VTKImage;
+  QVector< ImagePointer >   m_ITKImage;
+  QVector< vtkImageData* >  m_VTKImage;
 
   /** \brief Quad View*/
   QVector< QImagePageViewTracer* > m_PageView;
 
   /** \brief Convert itk::Image format to vtkImageData */
-  VTKConvertImagePointer m_Convert;
+  QVector< VTKConvertImagePointer > m_Convert;
 
   /** \brief Look-up Table dialog */
   QGoLUTDialog* m_LUTDialog;
@@ -105,7 +105,7 @@ protected:
       \param[in] iImage
       \param[in] iTag
   */
-  void DisplayImage( vtkImageData* iImage, QString iTag );
+  void DisplayImage( QString iTag );
 
   /** \brief Create Fullscreengroup*/
   void Fullscreenbuttons();

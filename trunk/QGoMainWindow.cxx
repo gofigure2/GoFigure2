@@ -14,7 +14,7 @@
 // *****************************************************************************
 // *****************************************************************************
 // *****************************************************************************
-QGoMainWindow::QGoMainWindow( ) : m_PageView( 1 )
+QGoMainWindow::QGoMainWindow( )
 {
   this->setupUi( this );
   this->setCentralWidget( this->CentralImageTabWidget );
@@ -30,8 +30,6 @@ QGoMainWindow::QGoMainWindow( ) : m_PageView( 1 )
   this->CentralImageTabWidget->setTabsClosable( true );
   this->CentralImageTabWidget->setTabsMovable( true );
 #endif
-
-  m_Convert = VTKConvertImageType::New();
 
   m_LUTDialog = new QGoLUTDialog( this );
 
@@ -69,7 +67,7 @@ QGoMainWindow::QGoMainWindow( ) : m_PageView( 1 )
   {
     recentFileActions[i] = new QAction(this);
     recentFileActions[i]->setVisible(false);
-    connect(this->recentFileActions[i], SIGNAL(triggered()),
+    QObject::connect(this->recentFileActions[i], SIGNAL(triggered()),
       this, SLOT(openRecentFile()));
   }
   //menuOpen_Recent_Files->setVisible(false);
@@ -82,7 +80,7 @@ QGoMainWindow::~QGoMainWindow()
 {
   while( !m_PageView.empty() )
   {
-    delete m_PageView.back();
+    delete m_PageView.last();
     m_PageView.pop_back();
   }
   delete m_LUTDialog;
@@ -124,7 +122,7 @@ void QGoMainWindow::on_actionClose_all_activated( )
   this->CentralImageTabWidget->clear( );
   while( !m_PageView.empty() )
   {
-    delete m_PageView.back();
+    delete m_PageView.last();
     m_PageView.pop_back();
   }
 }
@@ -394,7 +392,7 @@ void QGoMainWindow::SetFileName( const QString& iFile )
   {
     setCurrentFile( iFile );
     OpenImage( m_CurrentFile );
-    DisplayImage( m_VTKImage, m_CurrentFile );
+    DisplayImage( m_CurrentFile );
   }
 }
 
@@ -414,8 +412,8 @@ void QGoMainWindow::OpenImage( const QString& iFile )
   reader->SetFileName( iFile.toAscii( ).constData( ) );
   reader->Update();
 
-  m_ITKImage = reader->GetOutput();
-  m_ITKImage->DisconnectPipeline();
+  m_ITKImage.push_back( reader->GetOutput() );
+  m_ITKImage.last()->DisconnectPipeline();
 
   this->statusbar->showMessage( iFile );
 }
@@ -423,27 +421,18 @@ void QGoMainWindow::OpenImage( const QString& iFile )
 // *****************************************************************************
 // *****************************************************************************
 // *****************************************************************************
-void QGoMainWindow::DisplayImage( vtkImageData* iImage, QString iTag )
+void QGoMainWindow::DisplayImage( QString iTag )
 {
-  m_Convert->SetInput( m_ITKImage );
-  m_Convert->Update();
+  m_Convert.push_back( VTKConvertImageType::New() );
+  m_Convert.last()->SetInput( m_ITKImage.last() );
+  m_Convert.last()->Update();
 
-  m_VTKImage = m_Convert->GetOutput();
+  m_VTKImage.push_back( m_Convert.last()->GetOutput() );
 
-  //NOTE 13 March 2009: Dirty temporary tricks to handle the change of image
-  if( m_PageView[0] )
-  {
-    delete m_PageView[0];
-    m_PageView[0] = 0;
-  }
-  if( !m_PageView[0] )
-  {
-    m_PageView[0] = new QImagePageViewTracer;
-  }
-  m_PageView[0]->SetImage( m_VTKImage );
-  //   m_PageView->SetScalarBarVisibility( true );
+  m_PageView.push_back( new QImagePageViewTracer );
+  m_PageView.last()->SetImage( m_VTKImage.last() );
 
-  int idx = this->CentralImageTabWidget->addTab( this->m_PageView[0], iTag );
+  int idx = this->CentralImageTabWidget->addTab( m_PageView.last(), iTag );
   this->CentralImageTabWidget->setCurrentIndex( idx );
 }
 
@@ -544,14 +533,9 @@ void QGoMainWindow::updateRecentFileActions()
 
 void QGoMainWindow::openRecentFile()
 {
-  QAction *action = qobject_cast<QAction *>(sender());
-  if (action)
+  QAction* action = qobject_cast< QAction* >( sender() );
+  if( action )
   {
-    if( m_PageView[0] )
-    {
-      delete m_PageView[0];
-      m_PageView[0] = 0;
-    }
     SetFileName(action->data().toString());
   }
 }

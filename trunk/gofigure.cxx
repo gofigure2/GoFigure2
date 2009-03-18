@@ -5,24 +5,27 @@
 int main( int argc, char** argv )
 {
   QApplication app(argc, argv);
-  
-  QPixmap pixmap(":/fig/splash.jpg");
+
+  QPixmap pixmap;//(":/fig/splash.jpg");
   QSplashScreen *splash = new QSplashScreen(pixmap,Qt::WindowStaysOnTopHint);
 
   splash->show();
- 
+
   app.processEvents();
   splash->showMessage("Application loading...please wait");
-  
+
   QGoMainWindow form;
-  if( argc == 2 ) 
-  splash->showMessage("Image loading...please wait");
-  form.SetFileName( argv[1] );
- 
+
+  if( argc == 2 )
+  {
+    splash->showMessage("Image loading...please wait");
+    form.SetFileName( argv[1] );
+  }
+
   app.setMainWidget( &form );
-  
+
   form.show( );
-    
+
   splash->showMessage("Application ready");
  // app.processEvents();
   splash->finish(&form);
