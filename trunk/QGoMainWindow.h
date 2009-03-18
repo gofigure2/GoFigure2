@@ -125,7 +125,5 @@ protected:
 private:
   QGoMainWindow( const QGoMainWindow& );
   QGoMainWindow operator = ( const QGoMainWindow& );
-
 };
-
 #endif
