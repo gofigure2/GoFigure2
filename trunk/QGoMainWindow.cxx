@@ -5,8 +5,8 @@
 #include <qfiledialog.h>
 #include <qmessagebox.h>
 #include <qcolordialog.h>
-#include <qprogressdialog.h>
-#include <qprogressbar.h>
+#include "itkQtAdaptor.h"
+#include "itkQtProgressBar.h"
 
 #include <itkImageFileReader.h>
 #include <vnl/vnl_random.h>
@@ -15,7 +15,8 @@
 // *****************************************************************************
 // *****************************************************************************
 // *****************************************************************************
-QGoMainWindow::QGoMainWindow( )
+QGoMainWindow::QGoMainWindow( ):
+m_Bar( this, "Progress")
 {
   this->setupUi( this );
   this->setCentralWidget( this->CentralImageTabWidget );
@@ -25,7 +26,7 @@ QGoMainWindow::QGoMainWindow( )
   this->KishoreSegDockWidget->setVisible(false);
   this->ManualSegmentationDockWidget->setVisible(false);
   this->OneClickSegmentationDockWidget->setVisible(false);
-  
+  statusbar->addWidget(&(this->m_Bar),0);
   //setCurrentFile("");
 
 #if QT_VERSION_MAJOR == 4 && QT_VERSION_MINOR >= 5
@@ -397,10 +398,19 @@ void QGoMainWindow::SetFileName( const QString& iFile )
 {
   if( QFile::exists( iFile ) )
   {
-    showprogressloading();
-    setCurrentFile( iFile );
-    OpenImage( m_CurrentFile );
-    DisplayImage( m_CurrentFile );
+    this->setCurrentFile( iFile );
+    // parse extension
+    QFileInfo fi(iFile);
+    QString ext = fi.suffix();
+    if( ext.compare("lsm") == 0 )
+    {
+      this->OpenAndDisplayLSMFile( m_CurrentFile, 0, false );
+    }
+    else
+    {
+      this->OpenImage( m_CurrentFile );
+      this->DisplayImage( m_CurrentFile );
+    }
   }
 }
 
@@ -409,21 +419,18 @@ void QGoMainWindow::SetFileName( const QString& iFile )
 // *****************************************************************************
 void QGoMainWindow::OpenImage( const QString& iFile )
 {
-  // NOTE ALEX: here have to check the file
-  // and possibly define ImageType on the fly
-  // then define a templated function to pass the image along
-  // just as the cellinterface test for QEMesh
   typedef itk::ImageFileReader< ImageType > ImageReaderType;
   typedef ImageReaderType::Pointer ImageReaderPointer;
-
+  
   ImageReaderPointer reader = ImageReaderType::New();
   reader->SetFileName( iFile.toAscii( ).constData( ) );
+  this->ShowProgressLoading( reader );
   reader->Update();
+  this->HideProgressLoading();
 
   m_ITKImage.push_back( reader->GetOutput() );
   m_ITKImage.last()->DisconnectPipeline();
 
-  this->statusbar->showMessage( iFile );
 }
 
 // *****************************************************************************
@@ -433,7 +440,9 @@ void QGoMainWindow::DisplayImage( QString iTag )
 {
   m_Convert.push_back( VTKConvertImageType::New() );
   m_Convert.last()->SetInput( m_ITKImage.last() );
+  ShowProgressLoading( m_Convert.last() );
   m_Convert.last()->Update();
+  HideProgressLoading();
 
   m_VTKImage.push_back( m_Convert.last()->GetOutput() );
 
@@ -443,6 +452,40 @@ void QGoMainWindow::DisplayImage( QString iTag )
   int idx = this->CentralImageTabWidget->addTab( m_PageView.last(), iTag );
   this->CentralImageTabWidget->setCurrentIndex( idx );
 }
+
+// *****************************************************************************
+// *****************************************************************************
+// *****************************************************************************
+void QGoMainWindow::OpenAndDisplayLSMFile( QString iTag, int timePoint, bool ComposeChannels )
+{
+  vtkImageData* readImage = this->OpenLSMFile( iTag, timePoint, ComposeChannels );
+  m_VTKImage.push_back( readImage );
+
+  m_PageView.push_back( new QImagePageViewTracer );
+  m_PageView.last()->SetImage( m_VTKImage.last() );
+
+  int idx = this->CentralImageTabWidget->addTab( m_PageView.last(), iTag );
+  this->CentralImageTabWidget->setCurrentIndex( idx );
+}
+
+vtkImageData* QGoMainWindow::OpenLSMFile( QString iTag, int timePoint, bool ComposeChannels )
+{
+  vtkLSMReader* reader=vtkLSMReader::New();
+  reader->SetFileName( iTag.toAscii( ).constData( ) );
+  reader->SetUpdateTimePoint( timePoint );
+  reader->Update();
+
+  // TODO COMPOSE CHANNELS
+
+  return( reader->GetOutput() );
+}
+
+void QGoMainWindow::DisplayInTab( vtkImageData* myImage, int TabIndex )
+{
+  m_PageView[ TabIndex ]->SetImage( myImage );
+}
+
+
 
 // *****************************************************************************
 // *****************************************************************************
@@ -529,10 +572,8 @@ void QGoMainWindow::updateRecentFileActions()
       recentFileActions[j]->setData(m_RecentFiles[j]);
       recentFileActions[j]->setVisible(true);
       menuOpen_Recent_Files->addAction(recentFileActions[j]);
-    }
-    
+    } 
   }
-
 }
 
 
@@ -548,34 +589,28 @@ void QGoMainWindow::openRecentFile()
 void QGoMainWindow::readSettings()
 {
     QSettings settings("MegasonLab", "Gofigure2");
-
     m_RecentFiles = settings.value("recentFiles").toStringList();
     updateRecentFileActions();
-
 }
 
 void QGoMainWindow::writeSettings()
 {
     QSettings settings("MegasonLab", "Gofigure2");
-
     settings.setValue("recentFiles", m_RecentFiles);
-    
 }
 
-void QGoMainWindow::showprogressloading ()
+void QGoMainWindow::ShowProgressLoading( itk::Object * myFilter )
 {
-   QProgressBar* bar = new QProgressBar(this);
-  
-  statusbar->addWidget(bar,0);
- 
+  m_Bar.show();
+  m_Bar.Observe( myFilter );
 
-     for (int i = 0; i < 100; i++)
-     {
-       bar->setValue(i);
-       bar->update();
-       bar->show();
+  typedef itk::QtSignalAdaptor SignalAdaptorType;
+  SignalAdaptorType signalAdaptor;
+  myFilter->AddObserver( itk::EndEvent(),  signalAdaptor.GetCommand() );
+  QObject::connect( &signalAdaptor, SIGNAL(Signal()), &(this->m_Bar), SLOT(hide()) );
+}
 
-     }
-     bar->setValue(100);
-     bar->hide();
+void QGoMainWindow::HideProgressLoading()
+{
+  m_Bar.hide();
 }

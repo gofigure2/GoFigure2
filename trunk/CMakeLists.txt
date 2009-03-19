@@ -76,7 +76,7 @@ INCLUDE_DIRECTORIES( ${QT_INCLUDES}
   ${MegaVTK_INCLUDE_DIRS} )
 ############################
 
-SET( QGOMAINWINDOW_HDRS QGoMainWindow.h )
+SET( QGOMAINWINDOW_HDRS QGoMainWindow.h itkQtAdaptor.h)
 SET( QGOMAINWINDOW_SRC QGoMainWindow.cxx )
 
 QT4_WRAP_UI( QGOMAINWINDOW_UI_HDRS go.ui )
@@ -99,6 +99,8 @@ SET( QICONLOADER_SRC qticonloader.cxx )
 ADD_EXECUTABLE( gofigure
   #MACOSX_BUNDLE
   gofigure.cxx
+  itkQtProgressBar.cxx
+  vtkLSMReader.cxx
   ${QGOMAINWINDOW_SRC}  ${QGOMAINWINDOW_MOC_SRC}
   ${QICONLOADER_SRC}
   ${QGOMAINWINDOW_QRC} )

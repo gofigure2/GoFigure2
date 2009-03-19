@@ -8,10 +8,13 @@
 
 #include <QImagePageViewTracer.h>
 #include <itkImageToVTKImageFilter.h>
+#include "itkQtProgressBar.h"
+#include "vtkLSMReader.h"
 
 #include <qactiongroup.h>
 #include <qvector.h>
 #include <qhash.h>
+#include <qprogressbar.h>
 
 #include "QGoLUTDialog.h"
 #include "ui_go.h"
@@ -57,7 +60,8 @@ protected slots:
 
   void SetContourTracerOn(const bool& iChecked);
   void SetContourTracerOff(const bool& iChecked);
-  void showprogressloading ();
+  void ShowProgressLoading( itk::Object * myFilter );
+  void HideProgressLoading();
 
 
 //   void SetTracerToPolygonTracer();
@@ -121,12 +125,18 @@ protected:
   /** \brief Remove path from a given FileName*/
   QString strippedName(const QString &fullFileName);
 
+  itk::QtProgressBar m_Bar;
+
   enum { MaxRecentFiles = 5 };
   QAction *recentFileActions[MaxRecentFiles];
 
 private:
   QGoMainWindow( const QGoMainWindow& );
   QGoMainWindow operator = ( const QGoMainWindow& );
+
+  void QGoMainWindow::DisplayInTab( vtkImageData* myImage, int TabIndex );
+  vtkImageData* QGoMainWindow::OpenLSMFile( QString iTag, int timePoint, bool ComposeChannels );
+  void QGoMainWindow::OpenAndDisplayLSMFile( QString iTag, int timePoint, bool ComposeChannels );
  
 };
 #endif
