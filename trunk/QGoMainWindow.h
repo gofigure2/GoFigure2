@@ -134,9 +134,9 @@ private:
   QGoMainWindow( const QGoMainWindow& );
   QGoMainWindow operator = ( const QGoMainWindow& );
 
-  void QGoMainWindow::DisplayInTab( vtkImageData* myImage, int TabIndex );
-  vtkImageData* QGoMainWindow::OpenLSMFile( QString iTag, int timePoint, bool ComposeChannels );
-  void QGoMainWindow::OpenAndDisplayLSMFile( QString iTag, int timePoint, bool ComposeChannels );
+  void DisplayInTab( vtkImageData* myImage, int TabIndex );
+  vtkImageData* OpenLSMFile( QString iTag, int timePoint, bool ComposeChannels );
+  void OpenAndDisplayLSMFile( QString iTag, int timePoint, bool ComposeChannels );
  
 };
 #endif
