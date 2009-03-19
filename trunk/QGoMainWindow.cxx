@@ -10,6 +10,7 @@
 
 #include <itkImageFileReader.h>
 #include <vnl/vnl_random.h>
+#include <qsettings.h>
 
 // *****************************************************************************
 // *****************************************************************************
@@ -24,6 +25,8 @@ QGoMainWindow::QGoMainWindow( )
   this->KishoreSegDockWidget->setVisible(false);
   this->ManualSegmentationDockWidget->setVisible(false);
   this->OneClickSegmentationDockWidget->setVisible(false);
+  
+  //setCurrentFile("");
 
 #if QT_VERSION_MAJOR == 4 && QT_VERSION_MINOR >= 5
   //NOTE: The next properties appear in Qt 4.5.
@@ -70,7 +73,8 @@ QGoMainWindow::QGoMainWindow( )
     QObject::connect(this->recentFileActions[i], SIGNAL(triggered()),
       this, SLOT(openRecentFile()));
   }
-  //menuOpen_Recent_Files->setVisible(false);
+
+ readSettings();
 }
 
 // *****************************************************************************
@@ -112,6 +116,7 @@ void QGoMainWindow::on_actionClose_activated( )
   this->CentralImageTabWidget->removeTab( idx );
   delete m_PageView[idx];
   m_PageView.remove( idx );
+  writeSettings();
 }
 
 // *****************************************************************************
@@ -124,6 +129,7 @@ void QGoMainWindow::on_actionClose_all_activated( )
   {
     delete m_PageView.last();
     m_PageView.pop_back();
+    writeSettings();
   }
 }
 
@@ -133,6 +139,7 @@ void QGoMainWindow::on_actionClose_all_activated( )
 void QGoMainWindow::on_actionQuit_activated( )
 {
   this->close();
+  writeSettings();
 }
 
 // *****************************************************************************
@@ -522,10 +529,7 @@ void QGoMainWindow::updateRecentFileActions()
       recentFileActions[j]->setVisible(true);
       menuOpen_Recent_Files->addAction(recentFileActions[j]);
     }
-    else
-    {
-      recentFileActions[j]->setVisible(false);
-    }
+    
   }
 
 }
@@ -539,6 +543,24 @@ void QGoMainWindow::openRecentFile()
     SetFileName(action->data().toString());
   }
 }
+
+void QGoMainWindow::readSettings()
+{
+    QSettings settings("MegasonLab", "Gofigure2");
+
+    m_RecentFiles = settings.value("recentFiles").toStringList();
+    updateRecentFileActions();
+
+}
+
+void QGoMainWindow::writeSettings()
+{
+    QSettings settings("MegasonLab", "Gofigure2");
+
+    settings.setValue("recentFiles", m_RecentFiles);
+    
+}
+
 void QGoMainWindow::showprogressloading ()
 {
   QProgressDialog* Progressloading = new QProgressDialog("Loading images...", "Abort loading", 0, 100, this,Qt::WindowStaysOnTopHint);

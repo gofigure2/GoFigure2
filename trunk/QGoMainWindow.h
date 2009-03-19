@@ -110,6 +110,8 @@ protected:
   /** \brief Create Fullscreengroup*/
   void Fullscreenbuttons();
 
+  void readSettings();
+  void writeSettings();
   /** \brief list of recent files */
   QStringList m_RecentFiles;
 
@@ -125,5 +127,6 @@ protected:
 private:
   QGoMainWindow( const QGoMainWindow& );
   QGoMainWindow operator = ( const QGoMainWindow& );
+ 
 };
 #endif

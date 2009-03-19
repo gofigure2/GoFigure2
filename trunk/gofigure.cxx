@@ -6,7 +6,7 @@ int main( int argc, char** argv )
 {
   QApplication app(argc, argv);
 
-  QPixmap pixmap(":/fig/splash.jpg");
+  QPixmap pixmap;//(":/fig/splash.jpg");
   QSplashScreen *splash = new QSplashScreen(pixmap,Qt::WindowStaysOnTopHint);
 
   splash->show();
