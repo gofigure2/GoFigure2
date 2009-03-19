@@ -60,8 +60,8 @@ QGoMainWindow::QGoMainWindow( )
     this, SLOT( ValidateContourTracer() ) );
   QObject::connect( this->TracerReinitializeBtn, SIGNAL( released() ),
     this, SLOT( ReinitializeContourTracer() ) );
-  QObject::connect( this->actionOpen, SIGNAL( activated( ) ),
-    this, SLOT( showprogressloading() ) );
+  //QObject::connect( this->actionOpen, SIGNAL( activated( ) ),
+    //this, SLOT( showprogressloading() ) );
 
   Fullscreenbuttons();
 
@@ -397,6 +397,7 @@ void QGoMainWindow::SetFileName( const QString& iFile )
 {
   if( QFile::exists( iFile ) )
   {
+    showprogressloading();
     setCurrentFile( iFile );
     OpenImage( m_CurrentFile );
     DisplayImage( m_CurrentFile );
@@ -563,30 +564,18 @@ void QGoMainWindow::writeSettings()
 
 void QGoMainWindow::showprogressloading ()
 {
-  QProgressDialog* Progressloading = new QProgressDialog("Loading images...", "Abort loading", 0, 100, this,Qt::WindowStaysOnTopHint);
-  QProgressBar* bar = new QProgressBar(this);
-  QLabel* message = new QLabel(this);
-  message->setText("Image loading...");
-  message->setAlignment(Qt::AlignLeft);
-  Progressloading->setBar(bar);
-  statusbar->addWidget(message,0);
+   QProgressBar* bar = new QProgressBar(this);
+  
   statusbar->addWidget(bar,0);
-  //statusbar->insertWidget(1,bar,0);
-
-   //Progressloading.setWindowModality(Qt::WindowModal);
+ 
 
      for (int i = 0; i < 100; i++)
      {
-       Progressloading->setValue(i);
-
-       if (Progressloading->wasCanceled())
-       {
-          break;
-       }
-
+       bar->setValue(i);
        bar->update();
        bar->show();
 
      }
-     Progressloading->setValue(100);
+     bar->setValue(100);
+     bar->hide();
 }
