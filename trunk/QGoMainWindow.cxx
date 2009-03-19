@@ -12,8 +12,8 @@
 #include <vnl/vnl_random.h>
 #include <qsettings.h>
 
-// *****************************************************************************
-// *****************************************************************************
+#include "vtkImageAppendComponents.h"
+
 // *****************************************************************************
 QGoMainWindow::QGoMainWindow( ):
 m_Bar( this, "Progress")
@@ -66,7 +66,6 @@ m_Bar( this, "Progress")
 
   Fullscreenbuttons();
 
-
   for (int i = 0; i < MaxRecentFiles; ++i)
   {
     recentFileActions[i] = new QAction(this);
@@ -79,8 +78,6 @@ m_Bar( this, "Progress")
 }
 
 // *****************************************************************************
-// *****************************************************************************
-// *****************************************************************************
 QGoMainWindow::~QGoMainWindow()
 {
   while( !m_PageView.empty() )
@@ -91,8 +88,6 @@ QGoMainWindow::~QGoMainWindow()
   delete m_LUTDialog;
 }
 
-// *****************************************************************************
-// *****************************************************************************
 // *****************************************************************************
 void QGoMainWindow::on_actionOpen_activated( )
 {
@@ -109,8 +104,6 @@ void QGoMainWindow::on_actionOpen_activated( )
 }
 
 // *****************************************************************************
-// *****************************************************************************
-// *****************************************************************************
 void QGoMainWindow::on_actionClose_activated( )
 {
   int idx = this->CentralImageTabWidget->currentIndex();
@@ -120,8 +113,6 @@ void QGoMainWindow::on_actionClose_activated( )
   writeSettings();
 }
 
-// *****************************************************************************
-// *****************************************************************************
 // *****************************************************************************
 void QGoMainWindow::on_actionClose_all_activated( )
 {
@@ -135,16 +126,12 @@ void QGoMainWindow::on_actionClose_all_activated( )
 }
 
 // *****************************************************************************
-// *****************************************************************************
-// *****************************************************************************
 void QGoMainWindow::on_actionQuit_activated( )
 {
   this->close();
   writeSettings();
 }
 
-// *****************************************************************************
-// *****************************************************************************
 // *****************************************************************************
 void QGoMainWindow::on_actionBackground_activated( )
 {
@@ -157,15 +144,11 @@ void QGoMainWindow::on_actionBackground_activated( )
 }
 
 // *****************************************************************************
-// *****************************************************************************
-// *****************************************************************************
 void QGoMainWindow::on_actionLookup_Table_activated( )
 {
   m_LUTDialog->show();
 }
 
-// *****************************************************************************
-// *****************************************************************************
 // *****************************************************************************
 void QGoMainWindow::on_actionQuad_View_activated( )
 {
@@ -174,16 +157,12 @@ void QGoMainWindow::on_actionQuad_View_activated( )
 }
 
 // *****************************************************************************
-// *****************************************************************************
-// *****************************************************************************
 void QGoMainWindow::on_actionFull_screen_XY_activated( )
 {
   int idx = this->CentralImageTabWidget->currentIndex();
   m_PageView[idx]->FullScreenViewXY();
 }
 
-// *****************************************************************************
-// *****************************************************************************
 // *****************************************************************************
 void QGoMainWindow::on_actionFull_screen_YZ_activated( )
 {
@@ -192,8 +171,6 @@ void QGoMainWindow::on_actionFull_screen_YZ_activated( )
 }
 
 // *****************************************************************************
-// *****************************************************************************
-// *****************************************************************************
 void QGoMainWindow::on_actionFull_screen_XZ_activated( )
 {
   int idx = this->CentralImageTabWidget->currentIndex();
@@ -201,14 +178,13 @@ void QGoMainWindow::on_actionFull_screen_XZ_activated( )
 }
 
 // *****************************************************************************
-// *****************************************************************************
-// *****************************************************************************
 void QGoMainWindow::on_actionFull_screen_XYZ_activated( )
 {
   int idx = this->CentralImageTabWidget->currentIndex();
   m_PageView[idx]->FullScreenViewXYZ();
 }
 
+// *****************************************************************************
 void QGoMainWindow::on_actionVolume_rendering_XYZ_activated( )
 {
   int idx = this->CentralImageTabWidget->currentIndex();
@@ -218,6 +194,7 @@ void QGoMainWindow::on_actionVolume_rendering_XYZ_activated( )
     m_PageView[idx]->SetView3DToTriPlanarMode();
 }
 
+// *****************************************************************************
 void QGoMainWindow::on_actionScale_bars_activated( )
 {
   int idx = this->CentralImageTabWidget->currentIndex();
@@ -228,8 +205,6 @@ void QGoMainWindow::on_actionScale_bars_activated( )
 }
 
 // *****************************************************************************
-// *****************************************************************************
-// *****************************************************************************
 void QGoMainWindow::SetContourTracerOn(const bool& iChecked)
 {
   if( iChecked )
@@ -239,6 +214,7 @@ void QGoMainWindow::SetContourTracerOn(const bool& iChecked)
   }
 }
 
+// *****************************************************************************
 void QGoMainWindow::SetContourTracerOff(const bool& iChecked)
 {
   if( iChecked )
@@ -253,15 +229,11 @@ void QGoMainWindow::SetContourTracerOff(const bool& iChecked)
 // }
 
 // *****************************************************************************
-// *****************************************************************************
-// *****************************************************************************
 // void QGoMainWindow::SetTracerToFreeLineTracer()
 // {
 //   m_PageView->SetTracerToFreeLine();
 // }
 
-// *****************************************************************************
-// *****************************************************************************
 // *****************************************************************************
 // void QGoMainWindow::SetTracerToTranslateContourTracer()
 // {
@@ -269,32 +241,25 @@ void QGoMainWindow::SetContourTracerOff(const bool& iChecked)
 // }
 
 // *****************************************************************************
-// *****************************************************************************
-// *****************************************************************************
 // void QGoMainWindow::SetTracerToRotateContourTracer()
 // {
 //   m_PageView->SetTracerToRotateExistingContour();
 // }
 
 // *****************************************************************************
-// *****************************************************************************
-// *****************************************************************************
 // void QGoMainWindow::SetTracerToScaleContourTracer()
 // {
 //   m_PageView->SetTracerToScaleExistingContour();
 // }
-// *****************************************************************************
-// *****************************************************************************
-// *****************************************************************************
 
+
+// *****************************************************************************
 void QGoMainWindow::ChangeLookupTable( )
 {
   int idx = this->CentralImageTabWidget->currentIndex();
   m_PageView[idx]->SetLookupTable( this->m_LUTDialog->GetLookupTable() );
 }
 
-// *****************************************************************************
-// *****************************************************************************
 // *****************************************************************************
 void QGoMainWindow::SetColorForGivenId( const bool& iSelect )
 {
@@ -364,10 +329,8 @@ void QGoMainWindow::SetColorForGivenId( const bool& iSelect )
   }
 
 }
-// *****************************************************************************
-// *****************************************************************************
-// *****************************************************************************
 
+// *****************************************************************************
 void QGoMainWindow::ValidateContourTracer( )
 {
   int idx = this->CentralImageTabWidget->currentIndex();
@@ -382,17 +345,15 @@ void QGoMainWindow::ValidateContourTracer( )
     m_IdColorMap[ cell_id ],
     this->SaveContourCheckBox->isChecked() );
 }
-// *****************************************************************************
-// *****************************************************************************
-// *****************************************************************************
 
+// *****************************************************************************
 void QGoMainWindow::ReinitializeContourTracer()
 {
   int idx = this->CentralImageTabWidget->currentIndex();
   m_PageView[idx]->ReinitializeContour();
 }
-// *****************************************************************************
-// *****************************************************************************
+
+
 // *****************************************************************************
 void QGoMainWindow::SetFileName( const QString& iFile )
 {
@@ -404,7 +365,7 @@ void QGoMainWindow::SetFileName( const QString& iFile )
     QString ext = fi.suffix();
     if( ext.compare("lsm") == 0 )
     {
-      this->OpenAndDisplayLSMFile( m_CurrentFile, 0, false );
+      this->OpenAndDisplayLSMFile( m_CurrentFile, 0, true );
     }
     else
     {
@@ -414,8 +375,6 @@ void QGoMainWindow::SetFileName( const QString& iFile )
   }
 }
 
-// *****************************************************************************
-// *****************************************************************************
 // *****************************************************************************
 void QGoMainWindow::OpenImage( const QString& iFile )
 {
@@ -433,8 +392,6 @@ void QGoMainWindow::OpenImage( const QString& iFile )
 
 }
 
-// *****************************************************************************
-// *****************************************************************************
 // *****************************************************************************
 void QGoMainWindow::DisplayImage( QString iTag )
 {
@@ -454,8 +411,6 @@ void QGoMainWindow::DisplayImage( QString iTag )
 }
 
 // *****************************************************************************
-// *****************************************************************************
-// *****************************************************************************
 void QGoMainWindow::OpenAndDisplayLSMFile( QString iTag, int timePoint, bool ComposeChannels )
 {
   vtkImageData* readImage = this->OpenLSMFile( iTag, timePoint, ComposeChannels );
@@ -468,18 +423,70 @@ void QGoMainWindow::OpenAndDisplayLSMFile( QString iTag, int timePoint, bool Com
   this->CentralImageTabWidget->setCurrentIndex( idx );
 }
 
+// *****************************************************************************
 vtkImageData* QGoMainWindow::OpenLSMFile( QString iTag, int timePoint, bool ComposeChannels )
 {
   vtkLSMReader* reader=vtkLSMReader::New();
   reader->SetFileName( iTag.toAscii( ).constData( ) );
   reader->SetUpdateTimePoint( timePoint );
   reader->Update();
+  vtkImageData* myImage_ch1 = reader->GetOutput();
+  int NumberOfChannels = reader->GetNumberOfChannels();
+   
+  if( !ComposeChannels || NumberOfChannels < 2 )
+    {
+    return( myImage_ch1 );
+    }
+  else
+    {
+    vtkImageData* myImage_ch2;
+    vtkImageData* myImage_ch3;
+      
+    {
+    vtkLSMReader* treader=vtkLSMReader::New();
+    treader->SetFileName( iTag.toAscii( ).constData( ) );
+    treader->SetUpdateTimePoint( timePoint );
+    treader->SetUpdateChannel( 1 );
+    treader->Update();
+    myImage_ch2 = treader->GetOutput();
+    }
 
-  // TODO COMPOSE CHANNELS
+    {
+    vtkLSMReader* treader=vtkLSMReader::New();
+    treader->SetFileName( iTag.toAscii( ).constData( ) );
+    treader->SetUpdateTimePoint( timePoint );
+    treader->SetUpdateChannel( 2 );
+    treader->Update();
+    int * dimensions = treader->GetDimensions();
+    int  flatindex = dimensions[0] * dimensions[1] * dimensions[2];
+    myImage_ch3 = treader->GetOutput();
+    if( NumberOfChannels == 2 ) // dummy third channel 
+      {
+      // here we suppose the type to be char
+      // to be improved
+      char *ptr = (char*)( myImage_ch3->GetScalarPointer());
+      for( int k=0; k < flatindex; k++ )
+        {
+        *ptr++ = 0; 
+        }            
+      }
+    }
+   
+    vtkImageAppendComponents* appendFilter1 = vtkImageAppendComponents::New();
+    appendFilter1->AddInput( myImage_ch1 );
+    appendFilter1->AddInput( myImage_ch2 );
+    appendFilter1->Update();
 
-  return( reader->GetOutput() );
+    vtkImageAppendComponents* appendFilter2 = vtkImageAppendComponents::New();
+    appendFilter2->AddInput( appendFilter1->GetOutput() );
+    appendFilter2->AddInput( myImage_ch3 );
+    appendFilter2->Update(); 
+    
+    return( appendFilter2->GetOutput( ) );
+    }
 }
 
+// *****************************************************************************
 void QGoMainWindow::DisplayInTab( vtkImageData* myImage, int TabIndex )
 {
   m_PageView[ TabIndex ]->SetImage( myImage );
@@ -488,20 +495,18 @@ void QGoMainWindow::DisplayInTab( vtkImageData* myImage, int TabIndex )
 
 
 // *****************************************************************************
-// *****************************************************************************
-// *****************************************************************************
 void QGoMainWindow::on_actionAbout_activated( )
 {
   QString version( tr( "v2.0" ) );
 
-  QString about_gofigure( tr( "GoFigure rocks!!! it rocks, rules!!!\n\n" ) );
+  QString about_gofigure( tr( "GoFigure V2 \n\n" ) );
 
   QString authors( tr( "Authors in alphabetical order:\n" ) );
-  authors.append( " * Arnaud Gelas\n" );
-  authors.append( " * Alexandre Gouaillard\n" );
-  authors.append( " * Sean Megason\n" );
-  authors.append( " * Kishore Mosaliganti\n" );
-  authors.append( " * Lydie Souhait\n" );
+  authors.append( " * 2008 ~ Arnaud Gelas\n" );
+  authors.append( " * 2007 ~ Alexandre Gouaillard\n" );
+  authors.append( " * 2002 ~ Sean Megason\n" );
+  authors.append( " * 2008 ~ Kishore Mosaliganti\n" );
+  authors.append( " * 2008 ~ Lydie Souhait\n" );
 
   QString message = QString( "GoFigure %1\n\n" ).arg( version );
   message.append( about_gofigure );
@@ -511,13 +516,12 @@ void QGoMainWindow::on_actionAbout_activated( )
 }
 
 // *****************************************************************************
-// *****************************************************************************
-// *****************************************************************************
 void QGoMainWindow::on_actionAbout_Qt_activated( )
 {
   QMessageBox::aboutQt( this, tr( "About Qt" ) );
 }
 
+// *****************************************************************************
 void QGoMainWindow::Fullscreenbuttons()
 {
   m_FullscreenGroup = new QActionGroup (this);
@@ -528,6 +532,7 @@ void QGoMainWindow::Fullscreenbuttons()
   m_FullscreenGroup->addAction( this->actionQuad_View );
 }
 
+// *****************************************************************************
 void QGoMainWindow::setCurrentFile(const QString &fileName)
 {
   m_CurrentFile = fileName;
@@ -542,11 +547,13 @@ void QGoMainWindow::setCurrentFile(const QString &fileName)
   }
 }
 
+// *****************************************************************************
 QString QGoMainWindow::strippedName(const QString &fullFileName)
 {
   return QFileInfo(fullFileName).fileName();
 }
 
+// *****************************************************************************
 void QGoMainWindow::updateRecentFileActions()
 {
   QMutableStringListIterator i(m_RecentFiles);
@@ -576,7 +583,7 @@ void QGoMainWindow::updateRecentFileActions()
   }
 }
 
-
+// *****************************************************************************
 void QGoMainWindow::openRecentFile()
 {
   QAction* action = qobject_cast< QAction* >( sender() );
@@ -586,6 +593,8 @@ void QGoMainWindow::openRecentFile()
   }
 }
 
+
+// *****************************************************************************
 void QGoMainWindow::readSettings()
 {
     QSettings settings("MegasonLab", "Gofigure2");
@@ -593,12 +602,14 @@ void QGoMainWindow::readSettings()
     updateRecentFileActions();
 }
 
+// *****************************************************************************
 void QGoMainWindow::writeSettings()
 {
     QSettings settings("MegasonLab", "Gofigure2");
     settings.setValue("recentFiles", m_RecentFiles);
 }
 
+// *****************************************************************************
 void QGoMainWindow::ShowProgressLoading( itk::Object * myFilter )
 {
   m_Bar.show();
@@ -610,6 +621,7 @@ void QGoMainWindow::ShowProgressLoading( itk::Object * myFilter )
   QObject::connect( &signalAdaptor, SIGNAL(Signal()), &(this->m_Bar), SLOT(hide()) );
 }
 
+// *****************************************************************************
 void QGoMainWindow::HideProgressLoading()
 {
   m_Bar.hide();
