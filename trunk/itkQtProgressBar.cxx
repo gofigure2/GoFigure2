@@ -23,11 +23,8 @@
 
 namespace itk {
 
-
 /** Constructor */
-QtProgressBar::QtProgressBar( 
-                  QWidget *parent, 
-                  const char *name):QProgressBar(parent)
+QtProgressBar::QtProgressBar( QWidget *parent ):QProgressBar(parent)
 {
   m_RedrawCommand = RedrawCommandType::New();
   m_RedrawCommand->SetCallbackFunction( this, &QtProgressBar::ProcessEvent );
@@ -38,7 +35,6 @@ QtProgressBar::QtProgressBar(
   this->reset();
 
 }
-
 
   
 /** Get Command */

@@ -15,8 +15,7 @@
 #include "vtkImageAppendComponents.h"
 
 // *****************************************************************************
-QGoMainWindow::QGoMainWindow( ):
-m_Bar( this, "Progress")
+QGoMainWindow::QGoMainWindow( )
 {
   this->setupUi( this );
   this->setCentralWidget( this->CentralImageTabWidget );
@@ -26,7 +25,8 @@ m_Bar( this, "Progress")
   this->KishoreSegDockWidget->setVisible(false);
   this->ManualSegmentationDockWidget->setVisible(false);
   this->OneClickSegmentationDockWidget->setVisible(false);
-  statusbar->addWidget(&(this->m_Bar),0);
+  this->statusbar->addPermanentWidget( &m_Bar );
+  m_Bar.hide();
   //setCurrentFile("");
 
 #if QT_VERSION_MAJOR == 4 && QT_VERSION_MINOR >= 5
@@ -612,12 +612,15 @@ void QGoMainWindow::writeSettings()
 // *****************************************************************************
 void QGoMainWindow::ShowProgressLoading( itk::Object * myFilter )
 {
+  m_Bar.setValue(50);
   m_Bar.show();
   m_Bar.Observe( myFilter );
+
 
   typedef itk::QtSignalAdaptor SignalAdaptorType;
   SignalAdaptorType signalAdaptor;
   myFilter->AddObserver( itk::EndEvent(),  signalAdaptor.GetCommand() );
+
   QObject::connect( &signalAdaptor, SIGNAL(Signal()), &(this->m_Bar), SLOT(hide()) );
 }
 

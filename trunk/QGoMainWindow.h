@@ -126,6 +126,7 @@ protected:
   QString strippedName(const QString &fullFileName);
 
   itk::QtProgressBar m_Bar;
+  //QProgressBar m_Bar;
 
   enum { MaxRecentFiles = 5 };
   QAction *recentFileActions[MaxRecentFiles];
