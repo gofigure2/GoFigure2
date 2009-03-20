@@ -63,7 +63,8 @@ QGoMainWindow::QGoMainWindow( )
     this, SLOT( ReinitializeContourTracer() ) );
   //QObject::connect( this->actionOpen, SIGNAL( activated( ) ),
     //this, SLOT( showprogressloading() ) );
-
+  QObject::connect(CentralImageTabWidget,SIGNAL(currentChanged(int)),this, SLOT(UpdateFullScreenViewButtons(int))); 
+  
   Fullscreenbuttons();
 
   for (int i = 0; i < MaxRecentFiles; ++i)
@@ -628,4 +629,42 @@ void QGoMainWindow::ShowProgressLoading( itk::Object * myFilter )
 void QGoMainWindow::HideProgressLoading()
 {
   m_Bar.hide();
+}
+
+// *****************************************************************************
+void QGoMainWindow::UpdateFullScreenViewButtons(int idx)
+{
+  if( (idx>=0) && (idx<m_PageView.size()))
+  {
+  int whichview = 0;
+  whichview = m_PageView[idx]->GetFullScreenView();
+switch( whichview )
+  {
+  default:
+  case 0:
+    { this->actionQuad_View->setChecked(true);
+      break;
+    }
+  case 1:
+    {
+      this->actionFull_screen_XY->setChecked(true);
+      break;
+    }
+  case 2:
+    {
+      this->actionFull_screen_XZ->setChecked(true);
+      break;
+    }
+  case 3:
+    {
+      this->actionFull_screen_YZ->setChecked(true);
+      break;
+    }
+  case 4:
+    {
+      this->actionFull_screen_XYZ->setChecked(true);
+      break;
+    }
+  }
+}
 }

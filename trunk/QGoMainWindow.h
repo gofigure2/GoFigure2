@@ -62,6 +62,8 @@ protected slots:
   void SetContourTracerOff(const bool& iChecked);
   void ShowProgressLoading( itk::Object * myFilter );
   void HideProgressLoading();
+/**\Update the full screen button group when the current tab is changed*/
+  void UpdateFullScreenViewButtons(int idx);
 
 
 //   void SetTracerToPolygonTracer();
