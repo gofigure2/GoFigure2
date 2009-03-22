@@ -22,7 +22,6 @@ ADD_LIBRARY( QMegaVTKAddOn ${MegaVTK_LIBS_STYLE}
   ${QSplitterchild_MOC_SRC} )
 
 TARGET_LINK_LIBRARIES(QMegaVTKAddOn
-    vtkVisuManagement
     QMegaVTKAddOn
     vtkRenderingAddOn
     QVTK

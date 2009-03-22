@@ -69,7 +69,6 @@ IF( VTK_FOUND )
     ${QGOFIGURE_SOURCE_DIR}/MegaVTK/vtkItk
     ${QGOFIGURE_SOURCE_DIR}/MegaVTK/qt
     ${QGOFIGURE_SOURCE_DIR}/MegaVTK/vtkRenderingAddOn
-    ${QGOFIGURE_SOURCE_DIR}/MegaVTK/vtkVisuManagement
     )
 
   SET( QGOMAINWINDOW_HDRS QGoMainWindow.h itkQtAdaptor.h)
@@ -108,7 +107,6 @@ IF( VTK_FOUND )
     ITKNumerics
     vtkImaging
     QMegaVTKAddOn
-    vtkVisuManagement
     )
 
   ADD_TEST( gofigure_TEST ${CXX_TEST_PATH}/gofigure )
