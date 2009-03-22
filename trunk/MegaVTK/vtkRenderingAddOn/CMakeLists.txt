@@ -11,6 +11,7 @@ SET( vtkRenderingAddOn_SRCS
   vtkOrientationAnnotation.cxx
   vtkFillImageWithPolyData.cxx
   vtkOrientedBoxWidget.cxx
+  vtkLookupTableManager.cxx
   )
 
 ADD_LIBRARY( vtkRenderingAddOn 
