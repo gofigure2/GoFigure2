@@ -66,36 +66,36 @@ IF( VTK_FOUND )
   INCLUDE_DIRECTORIES( ${QT_INCLUDES}
     ${QGOFIGURE_SOURCE_DIR}
     ${QGOFIGURE_BINARY_DIR}
-    ${QGOFIGURE_SOURCE_DIR}/MegaVTK/vtkItk
-    ${QGOFIGURE_SOURCE_DIR}/MegaVTK/qt
-    ${QGOFIGURE_SOURCE_DIR}/MegaVTK/vtkRenderingAddOn
+    ${QGOFIGURE_SOURCE_DIR}/ExternalCode/MegaVTK/vtkItk
+    ${QGOFIGURE_SOURCE_DIR}/ExternalCode/MegaVTK/qt
+    ${QGOFIGURE_SOURCE_DIR}/ExternalCode/MegaVTK/vtkRenderingAddOn
+    ${QGOFIGURE_SOURCE_DIR}/ExternalCode/vtkLSM
+    ${QGOFIGURE_SOURCE_DIR}/ExternalCode/itkQt
     )
 
-  SET( QGOMAINWINDOW_HDRS QGoMainWindow.h itkQtAdaptor.h)
+  SET( QGOMAINWINDOW_HDRS QGoMainWindow.h 
+       ${QGOFIGURE_SOURCE_DIR}/ExternalCode/itkQt/itkQtAdaptor.h)
   SET( QGOMAINWINDOW_SRC QGoMainWindow.cxx )
 
   QT4_WRAP_UI( QGOMAINWINDOW_UI_HDRS go.ui )
   QT4_WRAP_CPP( QGOMAINWINDOW_MOC_SRC ${QGOMAINWINDOW_HDRS} )
   QT4_ADD_RESOURCES( QGOMAINWINDOW_QRC ${QGOFIGURE_SOURCE_DIR}/resources/axes.qrc)
 
-
   SET_SOURCE_FILES_PROPERTIES( ${QGOMAINWINDOW_SRC} PROPERTIES
                             OBJECT_DEPENDS "${QGOMAINWINDOW_UI_HDRS}" )
   SET_SOURCE_FILES_PROPERTIES( ${QGOMAINWINDOW_MOC_SRC} PROPERTIES
                             OBJECT_DEPENDS "${QGOMAINWINDOW_UI_HDRS}" )
 
-  SET( QICONLOADER_SRC qticonloader.cxx )
-
-  SUBDIRS( MegaVTK )
+  SUBDIRS( ExternalCode )
 
   ADD_EXECUTABLE( gofigure
     #MACOSX_BUNDLE
     gofigure.cxx
-    itkQtProgressBar.cxx
-    vtkLSMReader.cxx
+    qticonloader.cxx
+    ${QGOFIGURE_SOURCE_DIR}/ExternalCode/itkQt/itkQtProgressBar.cxx
+    ${QGOFIGURE_SOURCE_DIR}/ExternalCode/vtkLSM/vtkLSMReader.cxx
     ${QGOMAINWINDOW_SRC}  
     ${QGOMAINWINDOW_MOC_SRC}
-    ${QICONLOADER_SRC}
     ${QGOMAINWINDOW_QRC} )
 
   TARGET_LINK_LIBRARIES( gofigure
