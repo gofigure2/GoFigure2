@@ -153,7 +153,7 @@
 #ifndef __vtkLSMReader_h
 #define __vtkLSMReader_h
 
-//#include "vtkImageSource.h"
+#include "vtkImageSource.h"
 #include "vtkImageAlgorithm.h"
 #include "vtkIntArray.h"
 #include "vtkUnsignedIntArray.h"
@@ -174,8 +174,6 @@
 
 #define VTK_FILE_BYTE_ORDER_BIG_ENDIAN 0
 #define VTK_FILE_BYTE_ORDER_LITTLE_ENDIAN 1
-
-// #include "vtkBXDProcessingWin32Header.h"                                            
 
 class vtkLSMReader : public vtkImageAlgorithm
 {

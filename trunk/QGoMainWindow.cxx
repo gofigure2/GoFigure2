@@ -414,8 +414,7 @@ void QGoMainWindow::DisplayImage( QString iTag )
 // *****************************************************************************
 void QGoMainWindow::OpenAndDisplayLSMFile( QString iTag, int timePoint, bool ComposeChannels )
 {
-  vtkImageData* readImage = this->OpenLSMFile( iTag, timePoint, ComposeChannels );
-  m_VTKImage.push_back( readImage );
+  this->OpenLSMFile( iTag, timePoint, ComposeChannels );
 
   m_PageView.push_back( new QImagePageViewTracer );
   m_PageView.last()->SetImage( m_VTKImage.last() );
@@ -425,66 +424,74 @@ void QGoMainWindow::OpenAndDisplayLSMFile( QString iTag, int timePoint, bool Com
 }
 
 // *****************************************************************************
-vtkImageData* QGoMainWindow::OpenLSMFile( QString iTag, int timePoint, bool ComposeChannels )
+void QGoMainWindow::OpenLSMFile( QString iTag, int timePoint, bool ComposeChannels )
 {
   vtkLSMReader* reader=vtkLSMReader::New();
   reader->SetFileName( iTag.toAscii( ).constData( ) );
   reader->SetUpdateTimePoint( timePoint );
   reader->Update();
-  vtkImageData* myImage_ch1 = reader->GetOutput();
+  
   int NumberOfChannels = reader->GetNumberOfChannels();
-   
+  
   if( !ComposeChannels || NumberOfChannels < 2 )
     {
-    return( myImage_ch1 );
+    vtkImageData * result = vtkImageData::New();
+    result->ShallowCopy( reader->GetOutput() );
+    m_VTKImage.push_back( result );
+    reader->Delete();
+    return;
     }
-  else
-    {
-    vtkImageData* myImage_ch2;
-    vtkImageData* myImage_ch3;
-      
-    {
-    vtkLSMReader* treader=vtkLSMReader::New();
-    treader->SetFileName( iTag.toAscii( ).constData( ) );
-    treader->SetUpdateTimePoint( timePoint );
-    treader->SetUpdateChannel( 1 );
-    treader->Update();
-    myImage_ch2 = treader->GetOutput();
-    }
+    
+  vtkLSMReader* reader2 = vtkLSMReader::New();
+  reader2->SetFileName( iTag.toAscii( ).constData( ) );
+  reader2->SetUpdateTimePoint( timePoint );
+  reader2->SetUpdateChannel( 1 );
+  reader2->Update();
 
+  vtkImageAppendComponents* appendFilter1 = vtkImageAppendComponents::New();
+  appendFilter1->AddInput( reader->GetOutput() );
+  appendFilter1->AddInput( reader2->GetOutput() );
+  appendFilter1->Update();
+ 
+  reader->Delete();
+  reader2->Delete();
+
+  // NOTE ALEX: if channel == 2 we could do a deepcopy 
+  // for faster process
+  vtkLSMReader* reader3 = vtkLSMReader::New();
+  reader3->SetFileName( iTag.toAscii( ).constData( ) );
+  reader3->SetUpdateTimePoint( timePoint );
+  reader3->SetUpdateChannel( 2 );
+  reader3->Update();
+  
+  int * dimensions = reader3->GetDimensions();
+  int  flatindex = dimensions[0] * dimensions[1] * dimensions[2];
+  if( NumberOfChannels == 2 ) // dummy third channel 
     {
-    vtkLSMReader* treader=vtkLSMReader::New();
-    treader->SetFileName( iTag.toAscii( ).constData( ) );
-    treader->SetUpdateTimePoint( timePoint );
-    treader->SetUpdateChannel( 2 );
-    treader->Update();
-    int * dimensions = treader->GetDimensions();
-    int  flatindex = dimensions[0] * dimensions[1] * dimensions[2];
-    myImage_ch3 = treader->GetOutput();
-    if( NumberOfChannels == 2 ) // dummy third channel 
+    // here we suppose the type to be char
+    // to be improved
+    char *ptr = (char*)( reader3->GetOutput()->GetScalarPointer());
+    for( int k=0; k < flatindex; k++ )
       {
-      // here we suppose the type to be char
-      // to be improved
-      char *ptr = (char*)( myImage_ch3->GetScalarPointer());
-      for( int k=0; k < flatindex; k++ )
-        {
-        *ptr++ = 0; 
-        }            
-      }
+      *ptr++ = 0; 
+      }            
     }
    
-    vtkImageAppendComponents* appendFilter1 = vtkImageAppendComponents::New();
-    appendFilter1->AddInput( myImage_ch1 );
-    appendFilter1->AddInput( myImage_ch2 );
-    appendFilter1->Update();
+  vtkImageAppendComponents* appendFilter2 = vtkImageAppendComponents::New();
+  appendFilter2->AddInput( appendFilter1->GetOutput() );
+  appendFilter2->AddInput( reader3->GetOutput() );
+  appendFilter2->Update(); 
 
-    vtkImageAppendComponents* appendFilter2 = vtkImageAppendComponents::New();
-    appendFilter2->AddInput( appendFilter1->GetOutput() );
-    appendFilter2->AddInput( myImage_ch3 );
-    appendFilter2->Update(); 
-    
-    return( appendFilter2->GetOutput( ) );
-    }
+  appendFilter1->Delete();
+  reader3->Delete();
+  
+  vtkImageData * result = vtkImageData::New();
+  result->ShallowCopy( appendFilter2->GetOutput() );
+  appendFilter2->Delete();
+  
+  m_VTKImage.push_back( result );
+  
+  return;
 }
 
 // *****************************************************************************
