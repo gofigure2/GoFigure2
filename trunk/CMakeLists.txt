@@ -91,7 +91,6 @@ IF( VTK_FOUND )
   ADD_EXECUTABLE( gofigure
     #MACOSX_BUNDLE
     gofigure.cxx
-    qticonloader.cxx
     ${QGOFIGURE_SOURCE_DIR}/ExternalCode/itkQt/itkQtProgressBar.cxx
     ${QGOFIGURE_SOURCE_DIR}/ExternalCode/vtkLSM/vtkLSMReader.cxx
     ${QGOMAINWINDOW_SRC}  
