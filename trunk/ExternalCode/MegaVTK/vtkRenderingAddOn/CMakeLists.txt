@@ -14,12 +14,12 @@ SET( vtkRenderingAddOn_SRCS
   vtkLookupTableManager.cxx
   )
 
-ADD_LIBRARY( vtkRenderingAddOn 
+ADD_LIBRARY( vtkRenderingAddOn2 
   ${MegaVTK_LIBS_STYLE}
   ${vtkRenderingAddOn_SRCS}
   )
 
-TARGET_LINK_LIBRARIES( vtkRenderingAddOn
+TARGET_LINK_LIBRARIES( vtkRenderingAddOn2
   vtkCommon
   vtkRendering
   vtkWidgets
@@ -28,6 +28,6 @@ TARGET_LINK_LIBRARIES( vtkRenderingAddOn
   vtkImaging
   )
 
-INSTALL_TARGETS(/lib vtkRenderingAddOn)
+INSTALL_TARGETS(/lib vtkRenderingAddOn2)
 
 INSTALL_FILES(/include "(\\.h|\\.txx)$")

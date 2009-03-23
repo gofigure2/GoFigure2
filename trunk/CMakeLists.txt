@@ -106,7 +106,7 @@ IF( VTK_FOUND )
     ITKBasicFilters
     ITKNumerics
     vtkImaging
-    QMegaVTKAddOn
+    QMegaVTKAddOn2
     )
 
   ADD_TEST( gofigure_TEST ${CXX_TEST_PATH}/gofigure )
