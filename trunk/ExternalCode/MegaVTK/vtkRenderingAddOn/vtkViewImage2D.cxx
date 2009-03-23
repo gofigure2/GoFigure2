@@ -1,3 +1,36 @@
+/*========================================================================
+ Copyright (c) INRIA - ASCLEPIOS Project (http://www-sop.inria.fr/asclepios).
+ All rights reserved.
+ 
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are met:
+ 
+ * Redistributions of source code must retain the above copyright notice,
+ this list of conditions and the following disclaimer.
+ 
+ * Redistributions in binary form must reproduce the above copyright notice,
+ this list of conditions and the following disclaimer in the documentation
+ and/or other materials provided with the distribution.
+ 
+ * Neither the name of INRIA or ASCLEPIOS, nor the names of any contributors
+ may be used to endorse or promote products derived from this software 
+ without specific prior written permission.
+ 
+ * Modified source versions must be plainly marked as such, and must not be
+ misrepresented as being the original software.
+ 
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDER AND CONTRIBUTORS ``AS IS''
+ AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OR CONTRIBUTORS BE LIABLE FOR
+ ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ =========================================================================*/
+
 #include "vtkViewImage2D.h"
 
 #include "vtkCamera.h"
@@ -340,9 +373,6 @@ void vtkViewImage2D::SetAnnotationToConvention(void)
   matrix[0][0] = "R";matrix[0][1] = "L";
   matrix[1][0] = "A";matrix[1][1] = "P";
   matrix[2][0] = "V";matrix[2][1] = "D";
-//   matrix[0][0] = "R";matrix[0][1] = "L";
-//   matrix[1][0] = "A";matrix[1][1] = "P";
-//   matrix[2][0] = "I";matrix[2][1] = "S";
 
   std::string solution[4];
 
@@ -642,8 +672,6 @@ void vtkViewImage2D::InstallPipeline()
     {
       this->InteractorStyle = vtkInteractorStyleImage2D::New();
       this->Interactor->SetInteractorStyle(this->InteractorStyle);
-//       this->InteractorStyle->AddObserver(
-//        vtkCommand::ResetWindowLevelEvent, this->Command);
       this->InteractorStyle->AddObserver(
         vtkCommand::StartWindowLevelEvent, this->Command);
       this->InteractorStyle->AddObserver(
@@ -687,7 +715,6 @@ void vtkViewImage2D::SetInterpolate(const int& val )
   if( this->ImageActor)
   {
     this->ImageActor->SetInterpolate( val);
-//     this->ImageActor->Modified();
   }
 }
 

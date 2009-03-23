@@ -14,6 +14,7 @@
      PURPOSE.  See the above copyright notices for more information.
 
 =========================================================================*/
+
 #ifndef __itkImageToVTKImageFilter_h
 #define __itkImageToVTKImageFilter_h
 

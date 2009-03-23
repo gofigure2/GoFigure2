@@ -1,3 +1,36 @@
+/*========================================================================
+ Copyright (c) INRIA - ASCLEPIOS Project (http://www-sop.inria.fr/asclepios).
+ All rights reserved.
+ 
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are met:
+ 
+ * Redistributions of source code must retain the above copyright notice,
+ this list of conditions and the following disclaimer.
+ 
+ * Redistributions in binary form must reproduce the above copyright notice,
+ this list of conditions and the following disclaimer in the documentation
+ and/or other materials provided with the distribution.
+ 
+ * Neither the name of INRIA or ASCLEPIOS, nor the names of any contributors
+ may be used to endorse or promote products derived from this software 
+ without specific prior written permission.
+ 
+ * Modified source versions must be plainly marked as such, and must not be
+ misrepresented as being the original software.
+ 
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDER AND CONTRIBUTORS ``AS IS''
+ AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OR CONTRIBUTORS BE LIABLE FOR
+ ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ =========================================================================*/
+
 #include "vtkViewImage3D.h"
 
 #include "vtkCamera.h"
@@ -243,12 +276,6 @@ void vtkViewImage3D::SetupWidgets()
   this->Cube->SetYMinusFaceText ("A");
   this->Cube->SetZPlusFaceText ("D");
   this->Cube->SetZMinusFaceText ("V");
-//   this->Cube->SetXPlusFaceText ("L");
-//   this->Cube->SetXMinusFaceText ("R");
-//   this->Cube->SetYPlusFaceText ("P");
-//   this->Cube->SetYMinusFaceText ("A");
-//   this->Cube->SetZPlusFaceText ("S");
-//   this->Cube->SetZMinusFaceText ("I");
   this->Cube->SetZFaceTextRotation (90);
   this->Cube->SetFaceTextScale (0.65);
   this->Cube->GetCubeProperty()->SetColor (0.5, 1, 1);
@@ -330,17 +357,12 @@ void vtkViewImage3D::Add2DPhantom(const unsigned int& i,
   vtkRenderer* ren = this->GetRenderer();
   if( ren )
   {
-//     ImageActorCallback* cbk = ImageActorCallback::New();
-//     vtkImageActor* actor = vtkImageActor::New();
     this->Phantom[i]->SetInput (input->GetInput());
     this->Phantom[i]->SetDisplayExtent (input->GetDisplayExtent());
     this->Phantom[i]->SetUserMatrix (input->GetUserMatrix());
     this->PhantomCallback[i]->Actor = this->Phantom[i];
     input->AddObserver (vtkCommand::ModifiedEvent, this->PhantomCallback[i]);
     ren->AddActor (this->Phantom[i]);
-//     this->PhantomCallback[i]->Delete();
-//     actor->Delete();
-//     cbk->Delete();
 
     /**
        IMPORTANT NOTE
@@ -365,8 +387,6 @@ void vtkViewImage3D::Add2DPhantom(const unsigned int& i,
       ren->AddActor( this->BoundsActor[i] );
       bounds_mapper->Delete();
     }
-
-
 
   }
 
