@@ -43,6 +43,7 @@
 #include <QImagePageViewTracer.h>
 #include <itkImageToVTKImageFilter.h>
 #include "itkQtProgressBar.h"
+#include "itkQtAdaptor.h"
 #include "vtkLSMReader.h"
 
 #include <qactiongroup.h>
@@ -52,6 +53,7 @@
 
 #include "QGoLUTDialog.h"
 #include "ui_go.h"
+
 
 class QGoMainWindow : public QMainWindow,
   private Ui::go_mainwindow
@@ -152,6 +154,9 @@ protected:
 
   void readSettings();
   void writeSettings();
+
+  itk::QtSignalAdaptor m_SignalAdaptor;
+
   /** \brief list of recent files */
   QStringList m_RecentFiles;
 

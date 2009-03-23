@@ -49,8 +49,8 @@
  
  =========================================================================*/
 
-#ifndef _WHATEVER_QTPROGRESSBAR_H__
-#define _WHATEVER_QTPROGRESSBAR_H__
+#ifndef __itkQtProgressBar_h  
+#define __itkQtProgressBar_h
 
 #include <qprogressbar.h>
 #include "itkCommand.h"

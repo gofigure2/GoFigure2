@@ -671,12 +671,10 @@ void QGoMainWindow::ShowProgressLoading( itk::Object * myFilter )
   m_Bar.show();
   m_Bar.Observe( myFilter );
 
+  myFilter->AddObserver( itk::EndEvent(),  m_SignalAdaptor.GetCommand() );
 
-  typedef itk::QtSignalAdaptor SignalAdaptorType;
-  SignalAdaptorType signalAdaptor;
-  myFilter->AddObserver( itk::EndEvent(),  signalAdaptor.GetCommand() );
-
-  QObject::connect( &signalAdaptor, SIGNAL(Signal()), &(this->m_Bar), SLOT(hide()) );
+  QObject::connect( &m_SignalAdaptor, SIGNAL(Signal()), 
+    &(this->m_Bar), SLOT(hide()) );
 }
 
 // *****************************************************************************

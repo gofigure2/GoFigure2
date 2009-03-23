@@ -49,6 +49,9 @@
 
 =========================================================================*/
 
+#ifndef __itkQtAdaptor_h
+#define __itkQtAdaptor_h
+
 #include <qobject.h>
 #include "itkObject.h"
 #include "itkObjectFactory.h"
@@ -188,7 +191,7 @@ private:
   CommandType::Pointer    m_Command;
 };
 
-
-
-
 } // end namespace
+
+#endif
+
