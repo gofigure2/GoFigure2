@@ -393,7 +393,10 @@ void QGoMainWindow::OpenImage( const QString& iFile )
   
   ImageReaderPointer reader = ImageReaderType::New();
   reader->SetFileName( iFile.toAscii( ).constData( ) );
-  this->ShowProgressLoading( reader );
+  
+  //BUG 03/23: This next line is commented for the time being since 
+  // it makes gofigure crashing.
+  // this->ShowProgressLoading( reader );
   reader->Update();
   this->HideProgressLoading();
 
