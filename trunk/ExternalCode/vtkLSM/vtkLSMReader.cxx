@@ -654,7 +654,7 @@ int vtkLSMReader::ReadLSMSpecificInfo(ifstream *f,unsigned long pos)
   }
 
   // Read scan information
-  printf("Scan information offset = %d\n", scanInformationOffset);
+  printf("Scan information offset = %ld\n", scanInformationOffset);
   this->ReadScanInformation(f, scanInformationOffset);
   // SKip Zeiss Vision KS-3D speific data
   pos +=  4;
@@ -939,7 +939,7 @@ int vtkLSMReader::AnalyzeTag(ifstream *f,unsigned long startPos)
     if(length>1) {
           for(i=0;i<length;i++)
         {
-          unsigned int* counts = (unsigned int*)actualValue;
+//          unsigned int* counts = (unsigned int*)actualValue;
           unsigned int bytecount = this->CharPointerToUnsignedInt(actualValue + (this->TIFF_BYTES(TIFF_LONG)*i));
 
             this->StripByteCount->SetValue(i,bytecount);
@@ -1027,7 +1027,7 @@ unsigned int vtkLSMReader::GetSliceOffset(unsigned int timepoint, unsigned int s
 
 void vtkLSMReader::ConstructSliceOffsets()
 {
-    unsigned long int startPos = 2;
+//    unsigned long int startPos = 2;
     if(!this->ImageOffsets) {
         this->ImageOffsets = vtkUnsignedIntArray::New();
         this->ReadSizes = vtkUnsignedIntArray::New();
@@ -1059,8 +1059,9 @@ unsigned long vtkLSMReader::GetOffsetToImage(int slice, int timepoint)
 unsigned long vtkLSMReader::SeekFile(int image)
 {
   unsigned long offset = 4, finalOffset;
-  int readSize = 4,i=0;
-  unsigned short numberOfTags = 0;
+  // int readSize = 4;
+  int i=0;
+  //unsigned short numberOfTags = 0;
   int imageCount = image+1;
 
   if(this->OffsetToLastAccessedImage && (this->NumberOfLastAccessedImage < image))
@@ -1152,7 +1153,8 @@ void vtkLSMReader::DecodeLZWCompression(unsigned char* buffer, int size) {
     lzw_decode_init(s, 8, bufp, size);
     vtkDebugMacro(<<"Size: "<<size<<", bytes per pixel: "<<bytes<<", lines: "<<lines<<", width: "<<width<<"\n");
 
-    int decoded = lzw_decode(s, outbufp, size);
+    //int decoded = 
+    lzw_decode(s, outbufp, size);
     outbufp = outbuf;
     for(int line = 0; line < lines; line++) {
         if(this->Predictor == 2) {
@@ -1189,7 +1191,7 @@ int vtkLSMReader::RequestData(
   vtkInformationVector **vtkNotUsed(inputVector),
   vtkInformationVector *outputVector)
 {
-  unsigned long offset, imageOffset;;
+  unsigned long offset;//, imageOffset;;
   unsigned char *buf, *tempBuf;
   int size,readSize,numberOfPixels,timepoint,channel;
   time_t start, end;
@@ -1216,7 +1218,7 @@ int vtkLSMReader::RequestData(
   // we use maximum
   timepoint = (this->IntUpdateExtent[3]>this->GetNumberOfTimePoints()-1?this->GetNumberOfTimePoints()-1:this->IntUpdateExtent[3]);
   channel = this->GetUpdateChannel();
-  int nSlices = (outExtent[5]-outExtent[4])+1;
+//  int nSlices = (outExtent[5]-outExtent[4])+1;
   // std::cout <<"Timepoint="<<timepoint<<", channel="<<channel<<", "<<nSlices<<" slices"<< std::endl;
   numberOfPixels = this->Dimensions[0]*this->Dimensions[1]*(outExtent[5]-outExtent[4]+1 );
   int dataType = this->GetDataTypeForChannel(channel);
@@ -1321,7 +1323,7 @@ int vtkLSMReader::RequestInformation (
   int dataType;
 
 
-  char buf[12];
+//  char buf[12];
 
   vtkInformation* outInfo = outputVector->GetInformationObject(0);
 
