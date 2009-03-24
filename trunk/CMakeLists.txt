@@ -87,6 +87,7 @@ IF( VTK_FOUND )
                             OBJECT_DEPENDS "${QGOMAINWINDOW_UI_HDRS}" )
 
   SUBDIRS( ExternalCode )
+  SUBDIRS( Examples )
 
   ADD_EXECUTABLE( gofigure
     #MACOSX_BUNDLE

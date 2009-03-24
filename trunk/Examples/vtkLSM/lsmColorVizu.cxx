@@ -83,7 +83,7 @@ int main(int argc,char* argv[])
         appendFilter2->Update(); 
 
         {
-        std::cout << "vtkImageViewer2.: << std::endl;
+        std::cout << "vtkImageViewer2.:" << std::endl;
         vtkImageViewer2 * viewer = vtkImageViewer2::New();
         viewer->SetInput( appendFilter2->GetOutput() );
         viewer->Render();
@@ -91,7 +91,7 @@ int main(int argc,char* argv[])
         cin >> buffer;
         }
         {
-        std::cout << "vtkViewImage.: << std::endl;
+        std::cout << "vtkViewImage.:" << std::endl;
         vtkViewImage * viewer = vtkViewImage::New();
         viewer->SetInput( appendFilter2->GetOutput() );
         viewer->Render();
@@ -99,7 +99,7 @@ int main(int argc,char* argv[])
         cin >> buffer;
         }
         {
-        std::cout << "vtkViewColorImage.: << std::endl;
+        std::cout << "vtkViewColorImage.:" << std::endl;
         vtkViewColorImage * viewer = vtkViewColorImage::New();
         viewer->SetInput( appendFilter2->GetOutput() );
         viewer->Render();
