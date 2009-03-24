@@ -1,4 +1,4 @@
-SET( QMegaVTKAddOn_NAME
+SET( QMegaVTKAddOn_NAME2
   QGoLUTDialog
   QColorImagePageView
   QImagePageView
@@ -6,7 +6,7 @@ SET( QMegaVTKAddOn_NAME
   QSplitterchild 
   )
 
-SET( QMegaVTKAddOn_SRC
+SET( QMegaVTKAddOn_SRC2
   QGoLUTDialog.cxx
   QColorImagePageView.cxx
   QImagePageView.cxx
@@ -14,24 +14,29 @@ SET( QMegaVTKAddOn_SRC
   QSplitterchild.cxx 
   )
 
-FOREACH( src ${QMegaVTKAddOn_NAME} )
-  QT4_WRAP_CPP( ${src}_MOC_SRC ${src}.h )
+FOREACH( src ${QMegaVTKAddOn_NAME2} )
+  QT4_WRAP_CPP( ${src}_MOC_SRC2 ${src}.h )
 ENDFOREACH( src )
 
 ADD_LIBRARY( QMegaVTKAddOn2 
-  ${MegaVTK_LIBS_STYLE}
-  ${QGoLUTDialog_MOC_SRC}
-  ${QImagePageView_MOC_SRC}
-  ${QImagePageViewTracer_MOC_SRC}
-  ${QColorImagePageView_MOC_SRC}
-  ${QMegaVTKAddOn_SRC}
-  ${QSplitterchild_MOC_SRC} 
+  ${LIBS_STYLE}
+  ${QGoLUTDialog_MOC_SRC2}
+  ${QImagePageView_MOC_SRC2}
+  ${QImagePageViewTracer_MOC_SRC2}
+  ${QColorImagePageView_MOC_SRC2}
+  ${QMegaVTKAddOn_SRC2}
+  ${QSplitterchild_MOC_SRC2} 
   )
 
-TARGET_LINK_LIBRARIES( QMegaVTKAddOn2
+SET( QMegaVTKAddOn2_LIBS
+  QMegaVTKAddOn2
   vtkRenderingAddOn2
   QVTK
   ${QT_LIBRARIES}
+ )
+
+TARGET_LINK_LIBRARIES( QMegaVTKAddOn2
+  ${QMegaVTKAddOn2_LIBS}
   )
 
 INSTALL_TARGETS(/lib QMegaVTKAddOn2)

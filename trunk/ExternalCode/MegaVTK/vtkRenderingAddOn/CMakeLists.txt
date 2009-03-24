@@ -1,36 +1,21 @@
-SET( vtkRenderingAddOn_SRCS 
-  vtkViewColorImage.cxx
-  vtkViewColorImage2D.cxx
-  vtkViewColorImage2DCommand.cxx
-  vtkViewColorImage2DCollection.cxx
-  vtkViewColorImage3D.cxx
-  vtkViewImage.cxx 
-  vtkViewImage2D.cxx
-  vtkViewImage2DCommand.cxx
-  vtkViewImage2DWithContourWidget.cxx
-  vtkViewImage2DWithContourWidgetCollection.cxx
-  vtkViewImage3D.cxx
-  vtkImageBlendWithMask.cxx
-  vtkInteractorStyleImage2D.cxx
-  vtkImage3DCroppingBoxCallback.cxx
-  vtkOrientationAnnotation.cxx
-  vtkFillImageWithPolyData.cxx
-  vtkOrientedBoxWidget.cxx
-  vtkLookupTableManager.cxx
-  )
+FILE( GLOB vtkRenderingAddOn_SRCS2 *.cxx )
 
 ADD_LIBRARY( vtkRenderingAddOn2 
-  ${MegaVTK_LIBS_STYLE}
-  ${vtkRenderingAddOn_SRCS}
+  ${LIBS_STYLE}
+  ${vtkRenderingAddOn_SRCS2}
   )
 
-TARGET_LINK_LIBRARIES( vtkRenderingAddOn2
+SET(vtkRenderingAddOn_LIBS2
   vtkCommon
   vtkRendering
   vtkWidgets
   vtkVolumeRendering
   vtkHybrid
   vtkImaging
+  )
+
+TARGET_LINK_LIBRARIES( vtkRenderingAddOn2
+  ${vtkRenderingAddOn_LIBS2}
   )
 
 INSTALL_TARGETS(/lib vtkRenderingAddOn2)
