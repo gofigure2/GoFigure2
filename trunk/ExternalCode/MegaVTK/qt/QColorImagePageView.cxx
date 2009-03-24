@@ -65,7 +65,7 @@
  
  =========================================================================*/
  
-#include "QImagePageViewTracer.h"
+#include "QColorImagePageView.h"
 #include "QSplitterchild.h"
 
 #include <QResizeEvent>
@@ -79,6 +79,7 @@
 #include <vtkImagePermute.h>
 #include <vtkImageResample.h>
 #include <vtkWindowToImageFilter.h>
+#include <vtkOrientedGlyphContourRepresentation.h>
 
 #include <vtkBMPWriter.h>
 #include <vtkPostScriptWriter.h>
@@ -93,16 +94,16 @@
 #include <vtkCellArray.h>
 #include <vtkMath.h>
 
-QImagePageViewTracer::QImagePageViewTracer( QWidget* parent ) : QWidget( parent )
+QColorImagePageView::QColorImagePageView( QWidget* parent ) : QWidget( parent )
 {
   IsFullScreen = 0;
   SnapshotId = 1;
 
-  Tag = QString( "QImagePageViewTracer" );
+  Tag = QString( "QColorImagePageView" );
   Image = 0;
 
-  Pool = vtkViewImage2DWithContourWidgetCollection::New();
-  View3D = vtkViewImage3D::New();
+  Pool = vtkViewColorImage2DCollection::New();
+  View3D = vtkViewColorImage3D::New();
 
   setupUi( this );
   QObject::connect( this->slider1, SIGNAL( valueChanged( int ) ),
@@ -119,13 +120,13 @@ QImagePageViewTracer::QImagePageViewTracer( QWidget* parent ) : QWidget( parent 
 
 }
 
-QImagePageViewTracer::~QImagePageViewTracer()
+QColorImagePageView::~QColorImagePageView()
 {
   Pool->Delete();
   View3D->Delete();
 }
 
-void QImagePageViewTracer::setupUi( QWidget* parent )
+void QColorImagePageView::setupUi( QWidget* parent )
 {
   if(parent->objectName().isEmpty())
     {
@@ -192,13 +193,13 @@ void QImagePageViewTracer::setupUi( QWidget* parent )
   QMetaObject::connectSlotsByName(parent);
 } // setupUi
 
-void QImagePageViewTracer::retranslateUi(QWidget *parent)
+void QColorImagePageView::retranslateUi(QWidget *parent)
 {
   parent->setWindowTitle( this->Tag );
   Q_UNUSED(parent);
 }
 
-bool QImagePageViewTracer::BuildScreenshotFromImage( vtkImageData* image,
+bool QColorImagePageView::BuildScreenshotFromImage( vtkImageData* image,
   vtkImageData* screenshot,
   int size )
 {
@@ -286,16 +287,8 @@ bool QImagePageViewTracer::BuildScreenshotFromImage( vtkImageData* image,
                           resample_input_spacing[large_dim]));
     resample->Update();
     resample_output = resample->GetOutput();
-  //   resample_output->GetDimensions(resample_output_dims);
 
     screenshot->ShallowCopy( resample_output );
-// SetImage(
-//     (const unsigned char*) resample_output->GetScalarPointer(),
-//     resample_output_dims[0],
-//     resample_output_dims[1],
-//     3,
-//     0,
-//     vtkKWIcon::ImageOptionFlipVertical);
     resample->Delete();
     }
   else
@@ -304,7 +297,6 @@ bool QImagePageViewTracer::BuildScreenshotFromImage( vtkImageData* image,
     }
 
   // Deallocate
-
   clip->Delete();
 
   if( permute )
@@ -315,7 +307,7 @@ bool QImagePageViewTracer::BuildScreenshotFromImage( vtkImageData* image,
   return true;
 }
 
-bool QImagePageViewTracer::BuildScreenshotFromRenderWindow(
+bool QColorImagePageView::BuildScreenshotFromRenderWindow(
   vtkRenderWindow *win,
   vtkImageData* screenshot,
   int size )
@@ -334,13 +326,13 @@ bool QImagePageViewTracer::BuildScreenshotFromRenderWindow(
   return false;
 }
 
-void QImagePageViewTracer::SnapshotView( QVTKWidget* iWidget,
+void QColorImagePageView::SnapshotView( QVTKWidget* iWidget,
   const SnapshotImageType& iType,
   const QString& iBaseName )
 {
   vtkImageData* image = vtkImageData::New();
   BuildScreenshotFromRenderWindow( iWidget->GetRenderWindow(),
-        image );
+        image, 0 );
   QString filename = iBaseName;
   filename.append( QString( "%1" ).arg( SnapshotId ) );
 
@@ -402,29 +394,29 @@ void QImagePageViewTracer::SnapshotView( QVTKWidget* iWidget,
   image->Delete();
 }
 
-void QImagePageViewTracer::SnapshotViewXY( const SnapshotImageType& iType,
+void QColorImagePageView::SnapshotViewXY( const SnapshotImageType& iType,
     const QString& iBaseName )
 {
   SnapshotView( qvtkWidget_XY, iType, iBaseName );
 }
 
-void QImagePageViewTracer::SnapshotView2( const SnapshotImageType& iType,
+void QColorImagePageView::SnapshotView2( const SnapshotImageType& iType,
     const QString& iBaseName )
 {
   SnapshotView( qvtkWidget_2, iType, iBaseName );
 }
-void QImagePageViewTracer::SnapshotView3( const SnapshotImageType& iType,
+void QColorImagePageView::SnapshotView3( const SnapshotImageType& iType,
     const QString& iBaseName )
 {
   SnapshotView( qvtkWidget_3, iType, iBaseName );
 }
-void QImagePageViewTracer::SnapshotViewXYZ( const SnapshotImageType& iType,
+void QColorImagePageView::SnapshotViewXYZ( const SnapshotImageType& iType,
     const QString& iBaseName )
 {
   SnapshotView( qvtkWidget_XYZ, iType, iBaseName );
 }
 
-void QImagePageViewTracer::SetFullScreenView( const int& iS )
+void QColorImagePageView::SetFullScreenView( const int& iS )
 {
   if( IsFullScreen == iS )
     IsFullScreen = 0;
@@ -477,17 +469,17 @@ void QImagePageViewTracer::SetFullScreenView( const int& iS )
   }
 }
 
-int QImagePageViewTracer::GetFullScreenView( ) const
+int QColorImagePageView::GetFullScreenView( ) const
 {
   return IsFullScreen;
 }
 
-double* QImagePageViewTracer::GetBackgroundColor()
+double* QColorImagePageView::GetBackgroundColor()
 {
   return this->Pool->GetItem( 0 )->GetBackground();
 }
 
-void QImagePageViewTracer::GetBackgroundColor( double& r,
+void QColorImagePageView::GetBackgroundColor( double& r,
   double& g, double& b )
 {
   double* rgb = this->Pool->GetItem( 0 )->GetBackground();
@@ -496,7 +488,7 @@ void QImagePageViewTracer::GetBackgroundColor( double& r,
   b = rgb[2];
 }
 
-void QImagePageViewTracer::SetBackgroundColor( const double& r,
+void QColorImagePageView::SetBackgroundColor( const double& r,
 const double& g, const double& b )
 {
   double textcolor[3];
@@ -515,7 +507,7 @@ const double& g, const double& b )
   this->Pool->SyncSetTextProperty( property );
 }
 
-void QImagePageViewTracer::SetBackgroundColor( double rgb[3] )
+void QColorImagePageView::SetBackgroundColor( double rgb[3] )
 {
   double textcolor[3];
   textcolor[0] = 1. - rgb[0];
@@ -531,7 +523,7 @@ void QImagePageViewTracer::SetBackgroundColor( double rgb[3] )
   this->Pool->SyncSetTextProperty( property );
 }
 
-void QImagePageViewTracer::SetBackgroundColor( const QColor& iColor )
+void QColorImagePageView::SetBackgroundColor( const QColor& iColor )
 {
   int r, g, b;
   iColor.getRgb( &r, &g, &b );
@@ -554,7 +546,7 @@ void QImagePageViewTracer::SetBackgroundColor( const QColor& iColor )
   this->Pool->SyncSetTextProperty( property );
 }
 
-QVTKWidget* QImagePageViewTracer::GetActiveQVTKWidget( )
+QVTKWidget* QColorImagePageView::GetActiveQVTKWidget( )
 {
 
   switch(this->IsFullScreen)
@@ -571,7 +563,7 @@ QVTKWidget* QImagePageViewTracer::GetActiveQVTKWidget( )
 }
 
 
-vtkViewImage* QImagePageViewTracer::GetActiveView()
+vtkViewColorImage* QColorImagePageView::GetActiveView()
 {
   switch(this->IsFullScreen)
   {
@@ -586,81 +578,53 @@ vtkViewImage* QImagePageViewTracer::GetActiveView()
   }
 }
 
-void QImagePageViewTracer::SetLookupTable( vtkLookupTable* lut )
+void QColorImagePageView::SetLookupTable( vtkLookupTable* lut )
 {
-  if( !lut )
-    {
-    return;
-    }
-  else
-    {
-    this->Pool->SyncSetLookupTable( lut );
-    }
 }
 
-void QImagePageViewTracer::quadview()
+void QColorImagePageView::quadview()
 {
    SetFullScreenView( 0 );
 }
 
-void QImagePageViewTracer::FullScreenViewXY ()
+void QColorImagePageView::FullScreenViewXY ()
 {
   SetFullScreenView( 1 );
 }
 
 
-void QImagePageViewTracer::FullScreenView2( )
+void QColorImagePageView::FullScreenView2( )
 {
   SetFullScreenView( 2 );
 }
 
 
-void QImagePageViewTracer::FullScreenView3( )
+void QColorImagePageView::FullScreenView3( )
 {
   SetFullScreenView( 3 );
 }
 
 
-void QImagePageViewTracer::FullScreenViewXYZ ( )
+void QColorImagePageView::FullScreenViewXYZ ( )
 {
   SetFullScreenView( 4 );
 }
 
-void QImagePageViewTracer::SetView3DToTriPlanarMode()
+void QColorImagePageView::SetView3DToTriPlanarMode()
 {
   View3D->SetTriPlanarRenderingOn();
   View3D->SetVolumeRenderingOff();
   View3D->Render();
 }
 //
-void QImagePageViewTracer::SetView3DToVolumeRenderingMode()
+void QColorImagePageView::SetView3DToVolumeRenderingMode()
 {
   View3D->SetTriPlanarRenderingOff();
   View3D->SetVolumeRenderingOn();
   View3D->Render();
 }
 
-#ifdef MegaVTK_USE_ITK
-template< class TImage >
-void QImagePageViewTracer::SetITKImage( TImage::Pointer itkImage )
-{
-  if( itkImage.IsNull() )
-  {
-    return;
-  }
-
-  typedef itk::ImageToVTKImageFilter< TImage > ConverterType;
-  ConverterType::Pointer myConverter = ConverterType::New();
-  myConverter->SetInput ( itkImage );
-  myConverter->Update();
-
-  this->SetImage ( myConverter->GetOutput() );
-
-  this->ImageConverter = myConverter;
-}
-#endif
-
-void QImagePageViewTracer::SetImage( vtkImageData* input )
+void QColorImagePageView::SetImage( vtkImageData* input )
 {
   if( !input )
     return;
@@ -668,20 +632,15 @@ void QImagePageViewTracer::SetImage( vtkImageData* input )
     {
     this->Image = input;
 
-    vtkViewImage2DWithContourWidget* View1 =
-      vtkViewImage2DWithContourWidget::New();
+    vtkViewColorImage2D* View1 =
+      vtkViewColorImage2D::New();
     View1->SetInput( this->Image );
-    View1->SetViewConvention( vtkViewImage2D::VIEW_CONVENTION_NEUROLOGICAL );
+    View1->SetViewConvention( vtkViewColorImage2D::VIEW_CONVENTION_NEUROLOGICAL );
     vtkRenderWindow* renwin1 = this->qvtkWidget_XY->GetRenderWindow( );
-//     renwin1->GetRenderers()->RemoveAllItems();
     View1->SetupInteractor( this->qvtkWidget_XY->GetInteractor() );
     View1->SetRenderWindow( renwin1 );
     View1->SetRenderer( renwin1->GetRenderers()->GetFirstRenderer() );
-    View1->SetViewOrientation( vtkViewImage2D::VIEW_ORIENTATION_AXIAL );
-//     View1->GetTextProperty()->SetFontFamilyToArial();
-//     View1->GetTextProperty()->SetFontSize( 14 );
-
-//     View1->SetContourWidgetInteractionOn();
+    View1->SetViewOrientation( vtkViewColorImage2D::VIEW_ORIENTATION_AXIAL );
     this->Pool->AddItem( View1 );
     this->View3D->Add2DPhantom( 0, View1->GetImageActor(), View1->GetSlicePlane() );
 
@@ -691,19 +650,15 @@ void QImagePageViewTracer::SetImage( vtkImageData* input )
     this->slider1->setMaximum( range[1] );
     View1->Delete();
 
-    vtkViewImage2DWithContourWidget* View2 =
-      vtkViewImage2DWithContourWidget::New();
+    vtkViewColorImage2D* View2 =
+      vtkViewColorImage2D::New();
     View2->SetInput( this->Image );
-    View2->SetViewConvention( vtkViewImage2D::VIEW_CONVENTION_NEUROLOGICAL );
+    View2->SetViewConvention( vtkViewColorImage2D::VIEW_CONVENTION_NEUROLOGICAL );
     vtkRenderWindow* renwin2 = this->qvtkWidget_2->GetRenderWindow( );
     View2->SetRenderWindow( renwin2 );
     View2->SetRenderer( renwin2->GetRenderers()->GetFirstRenderer() );
     View2->SetupInteractor( this->qvtkWidget_2->GetInteractor() );
-    View2->SetViewOrientation (vtkViewImage2D::VIEW_ORIENTATION_CORONAL);
-//     View2->GetTextProperty()->SetFontFamilyToArial();
-//     View2->GetTextProperty()->SetFontSize( 14 );
-//     View2->SetContourWidgetInteractionOn();
-
+    View2->SetViewOrientation (vtkViewColorImage2D::VIEW_ORIENTATION_CORONAL);
     this->Pool->AddItem( View2 );
     this->View3D->Add2DPhantom( 1, View2->GetImageActor(), View2->GetSlicePlane() );
 
@@ -712,19 +667,15 @@ void QImagePageViewTracer::SetImage( vtkImageData* input )
     this->slider2->setMaximum( range[1] );
     View2->Delete();
 
-    vtkViewImage2DWithContourWidget* View3 =
-      vtkViewImage2DWithContourWidget::New();
+    vtkViewColorImage2D* View3 =
+      vtkViewColorImage2D::New();
     View3->SetInput( this->Image );
-    View3->SetViewConvention( vtkViewImage2D::VIEW_CONVENTION_NEUROLOGICAL );
+    View3->SetViewConvention( vtkViewColorImage2D::VIEW_CONVENTION_NEUROLOGICAL );
     vtkRenderWindow* renwin3 = this->qvtkWidget_3->GetRenderWindow( );
     View3->SetRenderWindow( renwin3 );
     View3->SetRenderer( renwin3->GetRenderers()->GetFirstRenderer() );
     View3->SetupInteractor( this->qvtkWidget_3->GetInteractor() );
-    View3->SetViewOrientation (vtkViewImage2D::VIEW_ORIENTATION_SAGITTAL);
-
-//     View3->GetTextProperty()->SetFontFamilyToArial();
-//     View3->GetTextProperty()->SetFontSize( 14 );
-//     View3->SetContourWidgetInteractionOn();
+    View3->SetViewOrientation (vtkViewColorImage2D::VIEW_ORIENTATION_SAGITTAL);
 
     this->Pool->AddItem( View3 );
     this->View3D->Add2DPhantom( 2, View3->GetImageActor(), View3->GetSlicePlane() );
@@ -738,20 +689,16 @@ void QImagePageViewTracer::SetImage( vtkImageData* input )
     this->Pool->SyncSetSize (size);
 
     vtkRenderWindow* renwin4 = this->qvtkWidget_XYZ->GetRenderWindow( );
-//     this->View3D->SetRenderWindow( renwin4 );
     this->View3D->SetupInteractor( this->qvtkWidget_XYZ->GetInteractor() );
     this->View3D->SetInput( this->Image );
     this->View3D->SetVolumeRenderingOff();
-    this->View3D->SetShowScalarBar( false );
     this->View3D->ResetCamera();
     this->Pool->SetExtraRenderWindow( renwin4 );
 
     this->Pool->Initialize();
     this->Pool->SyncSetShowAnnotations( true );
-    this->Pool->SyncSetShowScalarBar( false );
     this->Pool->SyncSetBackground( this->Pool->GetItem(0)->GetBackground() );
     this->Pool->SyncSetTextProperty( this->Pool->GetItem(0)->GetTextProperty());
-//     this->Pool->SyncMaskImage();
     this->Pool->SyncRender();
     this->Pool->SyncReset();
 
@@ -761,162 +708,62 @@ void QImagePageViewTracer::SetImage( vtkImageData* input )
     }
 }
 
-void QImagePageViewTracer::SetShowScalarBar( const bool& state )
-{
-  this->Pool->SyncSetShowScalarBar(state);
-//   this->View3D->SetShowScalarBar( state );
-  this->Pool->SyncRender();
-}
-
-void QImagePageViewTracer::SetShowAnnotations( const bool& iState )
+void QColorImagePageView::SetShowAnnotations( const bool& iState )
 {
   this->Pool->SyncSetShowAnnotations( iState );
 }
 
-void QImagePageViewTracer::SetColorWindow( const double& iValue )
-{
-  this->Pool->SyncSetColorWindow( iValue );
-}
-
-void QImagePageViewTracer::SetColorLevel( const double& iValue )
-{
-  this->Pool->SyncSetColorLevel( iValue );
-}
-
-void QImagePageViewTracer::SetTag( const QString& iTag )
+void QColorImagePageView::SetTag( const QString& iTag )
 {
   this->Tag = iTag;
 }
 
-QString QImagePageViewTracer::GetTag( ) const
+QString QColorImagePageView::GetTag( ) const
 {
   return this->Tag;
 }
 
-void QImagePageViewTracer::SetCellId( const unsigned int& iId )
+void QColorImagePageView::SetCellId( const unsigned int& iId )
 {
   this->CellId = iId;
 }
 
-unsigned int QImagePageViewTracer::GetCellId() const
+unsigned int QColorImagePageView::GetCellId() const
 {
   return this->CellId;
 }
 
-void QImagePageViewTracer::SetTracerON()
-{
-  this->Pool->GetItem( 0 )->SetContourWidgetInteractionOn();
-  this->Pool->GetItem( 1 )->SetContourWidgetInteractionOn();
-  this->Pool->GetItem( 2 )->SetContourWidgetInteractionOn();
-}
-
-void QImagePageViewTracer::SetTracerOFF()
-{
-  this->Pool->GetItem( 0 )->SetContourWidgetInteractionOff();
-  this->Pool->GetItem( 1 )->SetContourWidgetInteractionOff();
-  this->Pool->GetItem( 2 )->SetContourWidgetInteractionOff();
-}
-
-void QImagePageViewTracer::SetTracer( const bool& iState )
-{
-  this->Pool->GetItem( 0 )->SetContourWidgetInteraction( iState );
-  this->Pool->GetItem( 1 )->SetContourWidgetInteraction( iState );
-  this->Pool->GetItem( 2 )->SetContourWidgetInteraction( iState );
-}
-
-void QImagePageViewTracer::resizeEvent( QResizeEvent* event )
+void QColorImagePageView::resizeEvent( QResizeEvent* event )
 {
   QWidget::resizeEvent( event );
   vSplitter->resize( event->size() );
 }
 
 
-// void QImagePageViewTracer::ValidateContour( const int& iId )
-void QImagePageViewTracer::ValidateContour(
+void QColorImagePageView::ValidateContour(
   const int& iId,
   const QColor& iColor,
   const bool& iSave )
 {
-  double rgb[3];
-  rgb[0] = static_cast< double >( iColor.red() ) / 255.;
-  rgb[1] = static_cast< double >( iColor.green() ) / 255.;
-  rgb[2] = static_cast< double >( iColor.blue() ) / 255.;
-
-  vtkOrientedGlyphContourRepresentation* contour_rep;
-  vtkPolyData* contour;
-
-  vtkProperty* contour_property = vtkProperty::New();
-  contour_property->SetRepresentationToWireframe();
-  contour_property->SetColor( rgb );
-  contour_property->SetLineWidth( 3. );
-
-  for( int i = 0; i < 3; i++ )
-   {
-    contour_rep = this->Pool->GetItem( i )->GetContourRepresentation();
-    contour = contour_rep->GetContourRepresentationAsPolyData( );
-
-    if( contour )
-    {
-      if( contour->GetNumberOfPoints() > 2 )
-      {
-        if( iSave )
-        {
-          QString identifier = QString( "_id%1" ).arg( iId );
-          QString orientation = QString( "_dir%1" ).arg( this->Pool->GetItem(i)->GetViewOrientation() );
-          QString slice = QString( "_slice%1" ).arg( this->Pool->GetItem(i)->GetSlice() );
-
-          QString filename = QString( "contour%1%2%3%4" )
-            .arg( identifier ).arg( orientation ).arg( slice ).arg( ".vtk" );
-
-          vtkPolyDataWriter* writer = vtkPolyDataWriter::New();
-          writer->SetInput( contour );
-          writer->SetFileName( filename.toAscii().constData() );
-          writer->Write();
-
-          writer->Delete();
-        }
-
-        vtkPolyData* contour_copy = vtkPolyData::New();
-        contour_copy->ShallowCopy( contour );
-
-        for( int j = 0; j < 3; j++ )
-        {
-          this->Pool->GetItem( j )->AddDataSet( contour_copy, contour_property, true );
-        }
-        contour_copy->Delete();
-//         this->Pool->GetItem( i )->GetContourWidget()->Initialize( 0 );
-      }
-    }
-
-  }
-  contour_property->Delete();
-  this->Pool->SyncRender();
-//   this->Pool->SyncMaskImage();
 }
-//
 
-void QImagePageViewTracer::ReinitializeContour( )
+void QColorImagePageView::ReinitializeContour( )
 {
-  for( int i = 0; i < 3; i++ )
-  {
-    this->Pool->GetItem( i )->GetContourWidget()->Initialize( 0 );
-  }
-  this->Pool->SyncRender();
 }
 
-void QImagePageViewTracer::SetSlideView1( const int& iSlice )
+void QColorImagePageView::SetSlideView1( const int& iSlice )
 {
   this->Pool->GetItem( 0 )->SetSlice( iSlice );
   this->Pool->SyncRender();
 }
 
-void QImagePageViewTracer::SetSlideView2( const int& iSlice )
+void QColorImagePageView::SetSlideView2( const int& iSlice )
 {
   this->Pool->GetItem( 1 )->SetSlice( iSlice );
   this->Pool->SyncRender();
 }
 
-void QImagePageViewTracer::SetSlideView3( const int& iSlice )
+void QColorImagePageView::SetSlideView3( const int& iSlice )
 {
   this->Pool->GetItem( 2 )->SetSlice( iSlice );
   this->Pool->SyncRender();

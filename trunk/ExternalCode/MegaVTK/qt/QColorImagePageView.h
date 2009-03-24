@@ -82,6 +82,7 @@
 #include <vtkImageData.h>
 
 #include "vtkViewColorImage3D.h"
+#include "vtkViewColorImage2D.h"
 #include "vtkViewColorImage2DCollection.h"
 #include "QSplitterchild.h"
 
@@ -114,6 +115,10 @@ public:
     TIFF
     };
 
+  bool BuildScreenshotFromImage(vtkImageData*, vtkImageData*, int);
+  bool BuildScreenshotFromRenderWindow(vtkRenderWindow*, vtkImageData*, int);
+  void SnapshotView(QVTKWidget*, const QColorImagePageView::SnapshotImageType&, const QString&);
+
   void SetTag( const QString& iTag );
   QString GetTag( ) const;
 
@@ -131,9 +136,9 @@ public slots:
 
   void SetLookupTable( vtkLookupTable* lut );
   void SetShowAnnotations( const bool& );
-  void SetShowScalarBar( const bool& );
-  void SetColorWindow( const double& );
-  void SetColorLevel( const double& );
+  void SetShowScalarBar( const bool& ) {};
+  void SetColorWindow( const double& ) {};
+  void SetColorLevel( const double& ) {};
 
   void SetFullScreenView( const int& iS );
   void quadview();
@@ -198,7 +203,9 @@ protected:
   virtual void resizeEvent( QResizeEvent* event );
 
   double BackgroundRGB[3];
-
+  
+  unsigned int CellId;
+  unsigned int SnapshotId;
   int IsFullScreen;
 };
 
