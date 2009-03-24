@@ -1,35 +1,35 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009 
- 
+ at Megason Lab, Systems biology, Harvard Medical school, 2009
+
  Copyright (c) 2009, President and Fellows of Harvard College.
  All rights reserved.
- 
+
  Redistribution and use in source and binary forms, with or without
  modification, are permitted provided that the following conditions are met:
- 
- Redistributions of source code must retain the above copyright notice, 
+
+ Redistributions of source code must retain the above copyright notice,
  this list of conditions and the following disclaimer.
  Redistributions in binary form must reproduce the above copyright notice,
- this list of conditions and the following disclaimer in the documentation 
+ this list of conditions and the following disclaimer in the documentation
  and/or other materials provided with the distribution.
- Neither the name of the  President and Fellows of Harvard College 
+ Neither the name of the  President and Fellows of Harvard College
  nor the names of its contributors may be used to endorse or promote
- products derived from this software without specific prior written 
+ products derived from this software without specific prior written
  permission.
- 
- THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
- THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+ THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
  PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS
  BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
- OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT 
- OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; 
- OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
- WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
- OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF 
+ OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
+ OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+ OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- 
+
  =========================================================================*/
 
 #include "QGoMainWindow.h"
@@ -39,8 +39,10 @@
 #include <qfiledialog.h>
 #include <qmessagebox.h>
 #include <qcolordialog.h>
+
 #include "itkQtAdaptor.h"
 #include "itkQtProgressBar.h"
+#include "QColorImagePageView.h"
 
 #include <itkImageFileReader.h>
 #include <vnl/vnl_random.h>
@@ -97,8 +99,8 @@ QGoMainWindow::QGoMainWindow( )
     this, SLOT( ReinitializeContourTracer() ) );
   //QObject::connect( this->actionOpen, SIGNAL( activated( ) ),
     //this, SLOT( showprogressloading() ) );
-  QObject::connect(CentralImageTabWidget,SIGNAL(currentChanged(int)),this, SLOT(UpdateFullScreenViewButtons(int))); 
-  
+  QObject::connect(CentralImageTabWidget,SIGNAL(currentChanged(int)),this, SLOT(UpdateFullScreenViewButtons(int)));
+
   Fullscreenbuttons();
 
   for (int i = 0; i < MaxRecentFiles; ++i)
@@ -148,14 +150,14 @@ void QGoMainWindow::on_actionClose_activated( )
   {delete m_PageView[idx];
   m_PageView.remove( idx );
   }
-  
+
   // NOTE ALEX:
-  // we should remove the datasets in m_ITK, m_VTK arrays 
-  // by default to release memory 
-  // 
-  // We should check if it was the last tab, in which case, 
+  // we should remove the datasets in m_ITK, m_VTK arrays
+  // by default to release memory
+  //
+  // We should check if it was the last tab, in which case,
   // the close option shoudl be disactivated
-  
+
   writeSettings();
 }
 
@@ -426,11 +428,11 @@ void QGoMainWindow::OpenImage( const QString& iFile )
 {
   typedef itk::ImageFileReader< ImageType > ImageReaderType;
   typedef ImageReaderType::Pointer ImageReaderPointer;
-  
+
   ImageReaderPointer reader = ImageReaderType::New();
   reader->SetFileName( iFile.toAscii( ).constData( ) );
-  
-  //BUG 03/23: This next line is commented for the time being since 
+
+  //BUG 03/23: This next line is commented for the time being since
   // it makes gofigure crashing.
   // this->ShowProgressLoading( reader );
   reader->Update();
@@ -480,9 +482,9 @@ void QGoMainWindow::OpenLSMFile( QString iTag, int timePoint, bool ComposeChanne
   reader->SetFileName( iTag.toAscii( ).constData( ) );
   reader->SetUpdateTimePoint( timePoint );
   reader->Update();
-  
+
   int NumberOfChannels = reader->GetNumberOfChannels();
-  
+
   if( !ComposeChannels || NumberOfChannels < 2 )
     {
     vtkImageData * result = vtkImageData::New();
@@ -491,7 +493,7 @@ void QGoMainWindow::OpenLSMFile( QString iTag, int timePoint, bool ComposeChanne
     reader->Delete();
     return;
     }
-    
+
   vtkLSMReader* reader2 = vtkLSMReader::New();
   reader2->SetFileName( iTag.toAscii( ).constData( ) );
   reader2->SetUpdateTimePoint( timePoint );
@@ -502,45 +504,45 @@ void QGoMainWindow::OpenLSMFile( QString iTag, int timePoint, bool ComposeChanne
   appendFilter1->AddInput( reader->GetOutput() );
   appendFilter1->AddInput( reader2->GetOutput() );
   appendFilter1->Update();
- 
+
   reader->Delete();
   reader2->Delete();
 
-  // NOTE ALEX: if channel == 2 we could do a deepcopy 
+  // NOTE ALEX: if channel == 2 we could do a deepcopy
   // for faster process
   vtkLSMReader* reader3 = vtkLSMReader::New();
   reader3->SetFileName( iTag.toAscii( ).constData( ) );
   reader3->SetUpdateTimePoint( timePoint );
   reader3->SetUpdateChannel( 2 );
   reader3->Update();
-  
+
   int * dimensions = reader3->GetDimensions();
   int  flatindex = dimensions[0] * dimensions[1] * dimensions[2];
-  if( NumberOfChannels == 2 ) // dummy third channel 
+  if( NumberOfChannels == 2 ) // dummy third channel
     {
     // here we suppose the type to be char
     // to be improved
     char *ptr = (char*)( reader3->GetOutput()->GetScalarPointer());
     for( int k=0; k < flatindex; k++ )
       {
-      *ptr++ = 0; 
-      }            
+      *ptr++ = 0;
+      }
     }
-   
+
   vtkImageAppendComponents* appendFilter2 = vtkImageAppendComponents::New();
   appendFilter2->AddInput( appendFilter1->GetOutput() );
   appendFilter2->AddInput( reader3->GetOutput() );
-  appendFilter2->Update(); 
+  appendFilter2->Update();
 
   appendFilter1->Delete();
   reader3->Delete();
-  
+
   vtkImageData * result = vtkImageData::New();
   result->ShallowCopy( appendFilter2->GetOutput() );
   appendFilter2->Delete();
-  
+
   m_VTKImage.push_back( result );
-  
+
   return;
 }
 
@@ -638,7 +640,7 @@ void QGoMainWindow::updateRecentFileActions()
       recentFileActions[j]->setData(m_RecentFiles[j]);
       recentFileActions[j]->setVisible(true);
       menuOpen_Recent_Files->addAction(recentFileActions[j]);
-    } 
+    }
   }
 }
 
@@ -677,7 +679,7 @@ void QGoMainWindow::ShowProgressLoading( itk::Object * myFilter )
 
   myFilter->AddObserver( itk::EndEvent(),  m_SignalAdaptor.GetCommand() );
 
-  QObject::connect( &m_SignalAdaptor, SIGNAL(Signal()), 
+  QObject::connect( &m_SignalAdaptor, SIGNAL(Signal()),
     &(this->m_Bar), SLOT(hide()) );
 }
 
