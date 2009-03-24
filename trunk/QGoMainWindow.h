@@ -40,7 +40,9 @@
 #include <vtkImageData.h>
 #include <itkImage.h>
 
+// ALEX: Have to use decorator pattern here
 #include <QImagePageViewTracer.h>
+#include "QColorImagePageView.h"
 #include <itkImageToVTKImageFilter.h>
 #include "itkQtProgressBar.h"
 #include "itkQtAdaptor.h"
@@ -120,6 +122,7 @@ protected:
   QVector< vtkImageData* >  m_VTKImage;
 
   /** \brief Quad View*/
+  // QVector< QWidget* > m_PageView;
   QVector< QImagePageViewTracer* > m_PageView;
 
   /** \brief Convert itk::Image format to vtkImageData */

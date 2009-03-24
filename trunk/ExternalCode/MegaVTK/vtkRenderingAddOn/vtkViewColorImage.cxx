@@ -1,0 +1,320 @@
+/*========================================================================
+ Copyright (c) INRIA - ASCLEPIOS Project (http://www-sop.inria.fr/asclepios).
+ All rights reserved.
+ 
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are met:
+ 
+ * Redistributions of source code must retain the above copyright notice,
+ this list of conditions and the following disclaimer.
+ 
+ * Redistributions in binary form must reproduce the above copyright notice,
+ this list of conditions and the following disclaimer in the documentation
+ and/or other materials provided with the distribution.
+ 
+ * Neither the name of INRIA or ASCLEPIOS, nor the names of any contributors
+ may be used to endorse or promote products derived from this software 
+ without specific prior written permission.
+ 
+ * Modified source versions must be plainly marked as such, and must not be
+ misrepresented as being the original software.
+ 
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDER AND CONTRIBUTORS ``AS IS''
+ AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OR CONTRIBUTORS BE LIABLE FOR
+ ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ =========================================================================*/
+
+/*=========================================================================
+ Modifications were made by the GoFigure Dev. Team.
+ while at Megason Lab, Systems biology, Harvard Medical school, 2009 
+ 
+ Copyright (c) 2009, President and Fellows of Harvard College.
+ All rights reserved.
+ 
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are met:
+ 
+ Redistributions of source code must retain the above copyright notice, 
+ this list of conditions and the following disclaimer.
+ Redistributions in binary form must reproduce the above copyright notice,
+ this list of conditions and the following disclaimer in the documentation 
+ and/or other materials provided with the distribution.
+ Neither the name of the  President and Fellows of Harvard College 
+ nor the names of its contributors may be used to endorse or promote
+ products derived from this software without specific prior written 
+ permission.
+ 
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+ PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS
+ BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT 
+ OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; 
+ OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+ WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
+ OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF 
+ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ 
+ =========================================================================*/
+
+#include "vtkViewColorImage.h"
+
+#include "vtkCamera.h"
+#include "vtkCommand.h"
+#include "vtkImageActor.h"
+#include "vtkImageData.h"
+#include "vtkInteractorStyleImage.h"
+#include "vtkObjectFactory.h"
+#include "vtkRenderWindow.h"
+#include "vtkRenderWindowInteractor.h"
+#include "vtkRenderer.h"
+#include "vtkMatrix4x4.h"
+#include "vtkOrientationAnnotation.h"
+#include "vtkCornerAnnotation.h"
+#include "vtkTextProperty.h"
+#include "vtkMath.h"
+#include "vtkPlane.h"
+#include "vtkCutter.h"
+#include "vtkActor.h"
+#include "vtkPolyDataMapper.h"
+#include "vtkProp3DCollection.h"
+#include "vtkDataSetCollection.h"
+#include "vtkPoints.h"
+#include "vtkIdList.h"
+#include "vtkOutlineSource.h"
+#include "vtkMatrixToLinearTransform.h"
+#include "vtkPointData.h"
+#include "vtkUnsignedCharArray.h"
+#include "vtkIntArray.h"
+#include "vtkImageAccumulate.h"
+#include "vtkInteractorStyleImage.h"
+
+#include <vector>
+#include <string>
+
+vtkCxxRevisionMacro(vtkViewColorImage, "$Revision: 2 $");
+vtkStandardNewMacro(vtkViewColorImage);
+
+//----------------------------------------------------------------------------
+vtkViewColorImage::vtkViewColorImage()
+{
+  this->OrientationMatrix = vtkMatrix4x4::New();
+  this->OrientationAnnotation = vtkOrientationAnnotation::New();
+  this->CornerAnnotation = vtkCornerAnnotation::New();
+  this->TextProperty = vtkTextProperty::New();
+  this->Prop3DCollection = vtkProp3DCollection::New();
+  this->DataSetCollection = vtkDataSetCollection::New();
+  this->OrientationTransform = vtkMatrixToLinearTransform::New();
+
+  this->OrientationMatrix->Identity();
+  this->CornerAnnotation->SetNonlinearFontScaleFactor (0.22);
+  this->CornerAnnotation->SetTextProperty ( this->TextProperty );
+  this->OrientationAnnotation->SetNonlinearFontScaleFactor (0.25);
+  this->OrientationAnnotation->SetTextProperty ( this->TextProperty );
+
+  this->ShowAnnotations = true;
+
+  this->OrientationTransform->SetInput (this->OrientationMatrix);
+
+  this->Renderer->AddViewProp ( this->CornerAnnotation );
+  this->Renderer->AddViewProp ( this->OrientationAnnotation );
+}
+
+//----------------------------------------------------------------------------
+vtkViewColorImage::~vtkViewColorImage()
+{
+  this->OrientationMatrix->Delete();
+  this->OrientationAnnotation->Delete();
+  this->CornerAnnotation->Delete();
+  this->Prop3DCollection->Delete();
+  this->DataSetCollection->Delete();
+  this->OrientationTransform->Delete();
+  this->TextProperty->Delete();
+}
+
+
+//----------------------------------------------------------------------------
+void vtkViewColorImage::SetOrientationMatrix (vtkMatrix4x4* matrix)
+{
+  vtkSetObjectMacro2Body (OrientationMatrix, vtkMatrix4x4, matrix);
+  this->ImageActor->SetUserMatrix (this->OrientationMatrix);
+  this->OrientationTransform->SetInput (this->OrientationMatrix);
+
+  this->UpdateOrientation();
+}
+
+//----------------------------------------------------------------------------
+void vtkViewColorImage::SetTextProperty (vtkTextProperty* textproperty)
+{
+  vtkSetObjectMacro2Body (TextProperty, vtkTextProperty, textproperty);
+  this->CornerAnnotation->SetTextProperty (this->TextProperty);
+}
+
+//----------------------------------------------------------------------------
+double vtkViewColorImage::GetValueAtPosition(double worldcoordinates[3],
+  int component )
+{
+  if (!this->GetInput())
+    return 0.0;
+
+  int* indices= this->GetImageCoordinatesFromWorldCoordinates(worldcoordinates);
+  int* extent = this->GetInput()->GetWholeExtent();
+  if ( (indices[0] < extent[0]) || (indices[0] > extent[1]) ||
+       (indices[1] < extent[2]) || (indices[1] > extent[3]) ||
+       (indices[2] < extent[4]) || (indices[2] > extent[5]) )
+    return 0;
+  else
+    return this->GetInput()->GetScalarComponentAsDouble (indices[0], indices[1],
+      indices[2], component);
+}
+
+
+//----------------------------------------------------------------------------
+bool vtkViewColorImage::RemoveDataSet (vtkDataSet* dataset)
+{
+  unsigned int index = this->DataSetCollection->IsItemPresent (dataset);
+  if (!index)
+    return false;
+  this->Renderer->RemoveViewProp (
+    vtkProp::SafeDownCast (this->Prop3DCollection->GetItemAsObject (index)));
+  this->DataSetCollection->RemoveItem (index);
+  this->Prop3DCollection->RemoveItem (index);
+
+  return true;
+}
+
+//----------------------------------------------------------------------------
+double* vtkViewColorImage::GetWorldCoordinatesFromImageCoordinates(int indices[3])
+{
+  if (!this->GetInput())
+  {
+    double* nullpos = new double[3];
+    nullpos[0] = 0; nullpos[1] = 0; nullpos[2] = 0;
+    return nullpos;
+  }
+
+  // Get information
+  double* spacing = this->GetInput()->GetSpacing();
+  double* origin = this->GetInput()->GetOrigin();
+
+  double unorientedposition[4];
+  for (unsigned int i=0; i<3; i++)
+    unorientedposition[i] = origin[i] + spacing[i]*indices[i];
+  unorientedposition[3] = 1;
+
+  // apply orientation matrix
+  double* position = new double[4];
+  this->GetOrientationMatrix()->MultiplyPoint (unorientedposition, position);
+  return position;
+}
+
+//----------------------------------------------------------------------------
+int* vtkViewColorImage::GetImageCoordinatesFromWorldCoordinates(double position[3])
+{
+  if (!this->GetInput())
+  {
+    int* nullpos = new int[3];
+    nullpos[0] = 0; nullpos[1] = 0; nullpos[2] = 0;
+    return nullpos;
+  }
+
+  // Get information
+  double unorientedposition[4] = {position[0], position[1], position[2], 1};
+  double spacing[4] = {this->GetInput()->GetSpacing()[0],
+    this->GetInput()->GetSpacing()[1],
+    this->GetInput()->GetSpacing()[2],
+    0};
+  double origin[4] = {this->GetInput()->GetOrigin()[0],
+    this->GetInput()->GetOrigin()[1],
+    this->GetInput ()->GetOrigin()[2],
+    1};
+
+  // apply inverted orientation matrix to the world-coordinate position
+  vtkMatrix4x4* inverse = vtkMatrix4x4::New();
+  vtkMatrix4x4::Invert (this->GetOrientationMatrix(), inverse);
+  inverse->MultiplyPoint (unorientedposition, unorientedposition);
+
+  int* indices = new int[3];
+  for (unsigned int i=0; i<3;i++)
+  {
+    if (fabs (spacing[i]) > 1e-5)
+      indices[i] = vtkMath::Round((unorientedposition[i]-origin[i])/spacing[i]);
+    else
+      indices[i] = 0;
+  }
+  inverse->Delete();
+
+  return indices;
+}
+
+//----------------------------------------------------------------------------
+void vtkViewColorImage::SetBackground(double rgb[3])
+{
+  if (this->Renderer)
+    this->Renderer->SetBackground(rgb);
+}
+//----------------------------------------------------------------------------
+void vtkViewColorImage::SetBackground(double r, double g, double b)
+{
+  if (this->Renderer)
+    this->Renderer->SetBackground(r,g,b);
+}
+
+//----------------------------------------------------------------------------
+double* vtkViewColorImage::GetBackground()
+{
+  if (this->Renderer)
+    return this->Renderer->GetBackground();
+  return NULL;
+}
+
+//----------------------------------------------------------------------------
+void vtkViewColorImage::ResetCamera (void)
+{
+  if (this->Renderer)
+    this->Renderer->ResetCamera();
+}
+
+//----------------------------------------------------------------------------
+void vtkViewColorImage::Reset (void)
+{
+  this->ResetCamera();
+}
+
+//----------------------------------------------------------------------------
+void vtkViewColorImage::Enable (void)
+{
+  this->Interactor->Enable();
+}
+//----------------------------------------------------------------------------
+void vtkViewColorImage::Disable (void)
+{
+  this->Interactor->Disable();
+}
+//----------------------------------------------------------------------------
+int vtkViewColorImage::GetEnabled (void)
+{
+  return this->Interactor->GetEnabled();
+}
+
+//----------------------------------------------------------------------------
+void vtkViewColorImage::SetShowAnnotations (int val)
+{
+  this->ShowAnnotations = val;
+  this->CornerAnnotation->SetVisibility (val);
+  this->OrientationAnnotation->SetVisibility (val);
+}
+
+//----------------------------------------------------------------------------
+vtkRenderWindowInteractor* vtkViewColorImage::GetRenderWindowInteractor()
+{
+  return this->GetRenderWindow()->GetInteractor();
+} 

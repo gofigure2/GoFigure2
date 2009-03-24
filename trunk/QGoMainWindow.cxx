@@ -462,10 +462,12 @@ void QGoMainWindow::OpenAndDisplayLSMFile( QString iTag, int timePoint, bool Com
 {
   this->OpenLSMFile( iTag, timePoint, ComposeChannels );
 
-  m_PageView.push_back( new QImagePageViewTracer );
-  m_PageView.last()->SetImage( m_VTKImage.last() );
+  //m_PageView.push_back( new QImagePageViewTracer );
+  QColorImagePageView * viewer =  new QColorImagePageView;
+  //m_PageView.last()->SetImage( m_VTKImage.last() );
+  viewer->SetImage( m_VTKImage.last() );
 
-  int idx = this->CentralImageTabWidget->addTab( m_PageView.last(), iTag );
+  int idx = this->CentralImageTabWidget->addTab( viewer, iTag );
   this->CentralImageTabWidget->setCurrentIndex( idx );
 }
 

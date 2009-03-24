@@ -1,11 +1,16 @@
 SET( vtkRenderingAddOn_SRCS 
+  vtkViewColorImage.cxx
+  vtkViewColorImage2D.cxx
+  vtkViewColorImage2DCommand.cxx
+  vtkViewColorImage2DCollection.cxx
+  vtkViewColorImage3D.cxx
   vtkViewImage.cxx 
-  vtkImageBlendWithMask.cxx
   vtkViewImage2D.cxx
   vtkViewImage2DCommand.cxx
   vtkViewImage2DWithContourWidget.cxx
   vtkViewImage2DWithContourWidgetCollection.cxx
   vtkViewImage3D.cxx
+  vtkImageBlendWithMask.cxx
   vtkInteractorStyleImage2D.cxx
   vtkImage3DCroppingBoxCallback.cxx
   vtkOrientationAnnotation.cxx
