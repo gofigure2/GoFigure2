@@ -65,8 +65,8 @@
  
  =========================================================================*/
 
-#ifndef __QColorImagePageView_h
-#define __QColorImagePageView_h
+#ifndef __QColorImagePageView
+#define __QColorImagePageView
 
 #include <QtCore/QVariant>
 #include <QtGui/QAction>
@@ -81,11 +81,13 @@
 
 #include <vtkImageData.h>
 
-#include "vtkViewColorImage.h"
-#include "vtkViewColorImage2D.h"
 #include "vtkViewColorImage3D.h"
 #include "vtkViewColorImage2DCollection.h"
+#include "QSplitterchild.h"
 
+/**
+\class QColorImagePageView
+*/
 class QColorImagePageView : public QWidget
 {
   Q_OBJECT
@@ -115,29 +117,61 @@ public:
   void SetTag( const QString& iTag );
   QString GetTag( ) const;
 
+  void SetCellId( const unsigned int& iId );
+  unsigned int GetCellId( ) const;
+
+  void GetBackgroundColor( double& r, double& g, double& b );
+  double* GetBackgroundColor();
+
 public slots:
 
   void SetBackgroundColor( const double& r, const double& g, const double& b );
   void SetBackgroundColor( double rgb[3] );
   void SetBackgroundColor( const QColor& iColor );
 
+  void SetLookupTable( vtkLookupTable* lut );
   void SetShowAnnotations( const bool& );
+  void SetShowScalarBar( const bool& );
+  void SetColorWindow( const double& );
+  void SetColorLevel( const double& );
 
   void SetFullScreenView( const int& iS );
-  void FullScreenView1();
+  void quadview();
+  void FullScreenViewXY();
   void FullScreenView2();
   void FullScreenView3();
-  void FullScreenView4();
+  void FullScreenViewXYZ();
+  void SetView3DToTriPlanarMode();
+  void SetView3DToVolumeRenderingMode();
+
+  void SnapshotViewXY( const SnapshotImageType& iType,
+    const QString& iBaseName = QString( "snapshot" ) );
+  void SnapshotView2( const SnapshotImageType& iType,
+    const QString& iBaseName = QString( "snapshot" ) );
+  void SnapshotView3( const SnapshotImageType& iType,
+    const QString& iBaseName = QString( "snapshot" ) );
+  void SnapshotViewXYZ( const SnapshotImageType& iType,
+    const QString& iBaseName = QString( "snapshot" ) );
+
+  void SetSlideView1( const int& );
+  void SetSlideView2( const int& );
+  void SetSlideView3( const int& );
+
+  void ValidateContour(
+    const int& iId,
+    const QColor& iColor,
+    const bool& iSave );
+  void ReinitializeContour( );
 
 protected:
   QSplitter*    vSplitter;
-  QSplitter*    htSplitter;
-  QSplitter*    hbSplitter;
+  QSplitterchild*    htSplitter;
+  QSplitterchild*    hbSplitter;
 
   QWidget*      LayOutWidget1;
   QHBoxLayout*  LayOut1;
   QSlider*      slider1;
-  QVTKWidget*   qvtkWidget_1;
+  QVTKWidget*   qvtkWidget_XY;
 
   QWidget*      LayOutWidget2;
   QHBoxLayout*  LayOut2;
@@ -151,7 +185,7 @@ protected:
 
   QWidget*      LayOutWidget4;
   QHBoxLayout*  LayOut4;
-  QVTKWidget*   qvtkWidget_4;
+  QVTKWidget*   qvtkWidget_XYZ;
   QSpacerItem*  Spacer;
   vtkViewColorImage3D* View3D;
 
@@ -160,8 +194,6 @@ protected:
   vtkViewColorImage2DCollection* Pool;
 
   QString Tag;
-
-  void CreateAllViews( );
 
   virtual void resizeEvent( QResizeEvent* event );
 

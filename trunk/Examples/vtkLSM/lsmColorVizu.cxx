@@ -5,6 +5,7 @@
 #include "vtkImageData.h"
 #include "vtkViewImage.h"
 #include "vtkViewColorImage.h"
+#include "vtkViewColorImage2D.h"
 
 int main(int argc,char* argv[])
 {
@@ -101,6 +102,14 @@ int main(int argc,char* argv[])
         {
         std::cout << "vtkViewColorImage.:" << std::endl;
         vtkViewColorImage * viewer = vtkViewColorImage::New();
+        viewer->SetInput( appendFilter2->GetOutput() );
+        viewer->Render();
+        char buffer;
+        cin >> buffer;
+        }
+        {
+        std::cout << "vtkViewColorImage2D.:" << std::endl;
+        vtkViewColorImage2D * viewer = vtkViewColorImage2D::New();
         viewer->SetInput( appendFilter2->GetOutput() );
         viewer->Render();
         char buffer;
