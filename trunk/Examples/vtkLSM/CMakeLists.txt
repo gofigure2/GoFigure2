@@ -5,6 +5,8 @@ ADD_EXECUTABLE( lsm2jpg
 TARGET_LINK_LIBRARIES( lsm2jpg 
   vtkIO
   vtkImaging 
+  vtkFiltering
+  vtkCommon
   )
 
 ADD_EXECUTABLE( lsm2mha 
@@ -14,6 +16,8 @@ ADD_EXECUTABLE( lsm2mha
 TARGET_LINK_LIBRARIES( lsm2mha 
   vtkIO
   vtkImaging 
+  vtkFiltering
+  vtkCommon
   )
 
 ADD_EXECUTABLE( lsmColorVizu 
@@ -25,5 +29,9 @@ TARGET_LINK_LIBRARIES( lsmColorVizu
   vtkImaging 
   vtkRendering
   vtkRenderingAddOn2
+  vtkFiltering
+  QMegaVTKAddOn2
+  ${QT_LIBRARIES}
+  QVTK
   )
 

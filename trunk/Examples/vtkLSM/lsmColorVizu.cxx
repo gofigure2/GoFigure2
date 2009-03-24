@@ -7,6 +7,8 @@
 #include "vtkViewColorImage.h"
 #include "vtkViewColorImage2D.h"
 
+#include "QColorImagePageView.h"
+
 int main(int argc,char* argv[])
 {
   if (argc != 2)
@@ -17,106 +19,111 @@ int main(int argc,char* argv[])
     return 0;
     }  
 
-  //read the LSM file:
+  vtkImageData* myImage_ch1 = vtkImageData::New();
   vtkLSMReader* reader=vtkLSMReader::New();
   reader->SetFileName(argv[1]);
   reader->Update();
-
   int NumberOfTimePoints = reader->GetNumberOfTimePoints();
   int NumberOfChannels = reader->GetNumberOfChannels();
+  myImage_ch1->ShallowCopy( reader->GetOutput() );
+  reader->Delete();
 
-  for( int timePoint = 0;timePoint < NumberOfTimePoints; timePoint++)
+  vtkImageData* myImage_ch2 = vtkImageData::New(); 
+  if( NumberOfChannels == 1 ) 
     {
-      {
-        {
-        vtkImageData* myImage_ch1;
-        vtkImageData* myImage_ch2;
-        vtkImageData* myImage_ch3;
-      
-        myImage_ch1 = reader->GetOutput();
- 
-        {
-        vtkLSMReader* treader=vtkLSMReader::New();
-        treader->SetFileName(argv[1]);
-        treader->SetUpdateTimePoint( timePoint );
-        treader->SetUpdateChannel( 1 );
-        treader->Update();
-        int * dimensions = treader->GetDimensions();
-        int  flatindex = dimensions[0] * dimensions[1] * dimensions[2];
-        myImage_ch2 = treader->GetOutput();
-        if( NumberOfChannels == 1 ) 
-          {
-          char *ptr = (char*)( myImage_ch2->GetScalarPointer());
-          for( int k=0; k < flatindex; k++ )
-            {
-            *ptr++ = 0; 
-            }            
-          }
-        }
-      
-        {
-        vtkLSMReader* treader=vtkLSMReader::New();
-        treader->SetFileName(argv[1]);
-        treader->SetUpdateTimePoint( timePoint );
-        treader->SetUpdateChannel( 2 );
-        treader->Update();
-        int * dimensions = treader->GetDimensions();
-        int  flatindex = dimensions[0] * dimensions[1] * dimensions[2];
-        myImage_ch3 = treader->GetOutput();
-        if( NumberOfChannels == 2 ) // dummy third channel 
-          {
-          char *ptr = (char*)( myImage_ch3->GetScalarPointer());
-          for( int k=0; k < flatindex; k++ )
-            {
-            *ptr++ = 0; 
-            }            
-          }
-        }
-   
-        vtkImageAppendComponents* appendFilter1 = vtkImageAppendComponents::New();
-        appendFilter1->AddInput( myImage_ch1 );
-        appendFilter1->AddInput( myImage_ch2 );
-        appendFilter1->Update();
+    myImage_ch2->ShallowCopy( myImage_ch1 );
+    }
+  else
+    {
+    vtkLSMReader* reader2=vtkLSMReader::New();
+    reader2->SetFileName(argv[1]);
+    reader2->SetUpdateChannel( 1 );
+    reader2->Update();
+    myImage_ch2->ShallowCopy( reader2->GetOutput() );
+    reader2->Delete();
+    }
 
-        vtkImageAppendComponents* appendFilter2 = vtkImageAppendComponents::New();
-        appendFilter2->AddInput( appendFilter1->GetOutput() );
-        appendFilter2->AddInput( myImage_ch3 );
-        appendFilter2->Update(); 
+  vtkImageData* myImage2 = vtkImageData::New(); 
+  vtkImageAppendComponents* appendFilter1 = vtkImageAppendComponents::New();
+  appendFilter1->AddInput( myImage_ch1 );
+  appendFilter1->AddInput( myImage_ch2 );
+  appendFilter1->Update();
+  myImage2->ShallowCopy( appendFilter1->GetOutput() );
+  appendFilter1->Delete();
+  myImage_ch2->Delete();
 
-        {
-        std::cout << "vtkImageViewer2.:" << std::endl;
-        vtkImageViewer2 * viewer = vtkImageViewer2::New();
-        viewer->SetInput( appendFilter2->GetOutput() );
-        viewer->Render();
-        char buffer;
-        cin >> buffer;
-        }
-        {
-        std::cout << "vtkViewImage.:" << std::endl;
-        vtkViewImage * viewer = vtkViewImage::New();
-        viewer->SetInput( appendFilter2->GetOutput() );
-        viewer->Render();
-        char buffer;
-        cin >> buffer;
-        }
-        {
-        std::cout << "vtkViewColorImage.:" << std::endl;
-        vtkViewColorImage * viewer = vtkViewColorImage::New();
-        viewer->SetInput( appendFilter2->GetOutput() );
-        viewer->Render();
-        char buffer;
-        cin >> buffer;
-        }
-        {
-        std::cout << "vtkViewColorImage2D.:" << std::endl;
-        vtkViewColorImage2D * viewer = vtkViewColorImage2D::New();
-        viewer->SetInput( appendFilter2->GetOutput() );
-        viewer->Render();
-        char buffer;
-        cin >> buffer;
-        }
-        }
-      } 
-    } 
-  return 1;
+      
+  vtkImageData* myImage_ch3 = vtkImageData::New();
+  if( NumberOfChannels == 2 )
+    {
+	myImage_ch3->ShallowCopy( myImage_ch1 );
+    }
+  else
+    {
+	vtkLSMReader* reader3=vtkLSMReader::New();
+    reader3->SetFileName(argv[1]);
+    reader3->SetUpdateChannel( 2 );
+    reader3->Update();
+    myImage_ch3->ShallowCopy( reader3->GetOutput() );
+    reader3->Delete();
+    }
+  myImage_ch1->Delete();
+
+  vtkImageData* myImage3 = vtkImageData::New(); 
+  vtkImageAppendComponents* appendFilter2 = vtkImageAppendComponents::New();
+  appendFilter2->AddInput( myImage2    );
+  appendFilter2->AddInput( myImage_ch3 );
+  appendFilter2->Update(); 
+  myImage3->ShallowCopy( appendFilter2->GetOutput() );
+  appendFilter2->Delete();
+  myImage2->Delete();
+  myImage_ch3->Delete();
+
+  {
+  std::cout << "vtkImageViewer2.:" << std::endl;
+  vtkImageViewer2 * viewer = vtkImageViewer2::New();
+  viewer->SetInput( myImage3 );
+  viewer->Render();
+  char buffer;
+  cin >> buffer;
+  viewer->Delete();
+  }
+
+  {
+  std::cout << "vtkViewImage.:" << std::endl;
+  vtkViewImage * viewer = vtkViewImage::New();
+  viewer->SetInput( myImage3 );
+  viewer->Render();
+  char buffer;
+  cin >> buffer;
+  viewer->Delete();
+  }
+       
+  {
+  std::cout << "vtkViewColorImage.:" << std::endl;
+  vtkViewColorImage * viewer = vtkViewColorImage::New();
+  viewer->SetInput( myImage3 );
+  viewer->Render();
+  char buffer;
+  cin >> buffer;
+  viewer->Delete();
+  }
+
+  {
+  std::cout << "vtkViewColorImage2D.:" << std::endl;
+  vtkViewColorImage2D * viewer = vtkViewColorImage2D::New();
+  viewer->SetInput( myImage3 );
+  viewer->Render();
+  char buffer;
+  cin >> buffer;
+  viewer->Delete();
+  }
+
+  QApplication app(argc, argv);
+  app.processEvents();
+  QColorImagePageView * viewer =  new QColorImagePageView;
+  viewer->SetImage( myImage3 );
+  app.setMainWidget( viewer );
+  return app.exec();
+
 }
