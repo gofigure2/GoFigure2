@@ -144,8 +144,10 @@ void QGoMainWindow::on_actionClose_activated( )
   int idx = this->CentralImageTabWidget->currentIndex();
   // NOTE ALEX: should check idx against min and max of array
   this->CentralImageTabWidget->removeTab( idx );
-  delete m_PageView[idx];
+  if (idx>=0)
+  {delete m_PageView[idx];
   m_PageView.remove( idx );
+  }
   
   // NOTE ALEX:
   // we should remove the datasets in m_ITK, m_VTK arrays 
