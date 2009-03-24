@@ -155,6 +155,7 @@ vtkStandardNewMacro(vtkViewImage3D);
 class ImageActorCallback : public vtkCommand
 {
 public:
+
   static ImageActorCallback *New() { return new ImageActorCallback; }
 
   void Execute(vtkObject *caller,
@@ -178,7 +179,11 @@ public:
       this->Actor->SetDisplayExtent (imagecaller->GetDisplayExtent());
     }
   }
+
   vtkImageActor* Actor;
+protected:
+  ImageActorCallback() : Actor( 0 ) {}
+  ~ImageActorCallback() {}
 
 };
 
