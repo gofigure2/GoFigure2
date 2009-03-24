@@ -158,7 +158,6 @@
    </attribute>
    <addaction name="actionOpen" />
    <addaction name="actionSave_As" />
-   <addaction name="actionQuit" />
   </widget>
   <widget class="QToolBar" name="ViewToolBar" >
    <property name="windowTitle" >
