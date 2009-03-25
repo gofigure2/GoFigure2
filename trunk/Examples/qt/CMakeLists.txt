@@ -1,1 +1,4 @@
-SUBDIRS( QColorImagePageView QImagePageView QImagePageViewTracer QGoLUTDialog )
+SUBDIRS( # QColorImagePageView #missing directory
+QImagePageView 
+QImagePageViewTracer 
+QGoLUTDialog )
