@@ -72,6 +72,8 @@ QImagePageViewTracer::QImagePageViewTracer( QWidget* parent ) : QWidget( parent 
   Pool = vtkViewImage2DWithContourWidgetCollection::New();
   View3D = vtkViewImage3D::New();
 
+  vtkEventQtConnector = vtkEventQtSlotConnect::New();
+
   setupUi( this );
   QObject::connect( this->slider1, SIGNAL( valueChanged( int ) ),
     this, SLOT( SetSlideView1( int ) ) );
@@ -93,6 +95,7 @@ QImagePageViewTracer::~QImagePageViewTracer()
   delete hbSplitter;
   Pool->Delete();
   View3D->Delete();
+  vtkEventQtConnector->Delete();
 }
 
 void QImagePageViewTracer::setupUi( QWidget* parent )
@@ -659,6 +662,27 @@ void QImagePageViewTracer::SetImage( vtkImageData* input )
 
     this->slider1->setMinimum( range[0] );
     this->slider1->setMaximum( range[1] );
+
+    // Event connection between vtk and qt
+    // when SliceMoveEvent occurs in the XY View, Slider1 moves.
+    vtkEventQtConnector->Connect(
+      reinterpret_cast< vtkObject* >( View1->GetInteractorStyle() ),
+      vtkViewImage2DCommand::SliceMoveEvent,
+      this, SLOT( MoveSlider1() ) );
+
+    // Event connection between vtk and qt
+    // when RequestedPositionEvent occurs in the XY View (double-click),
+    // Slider2 and Slider3 move.
+    vtkEventQtConnector->Connect(
+      reinterpret_cast< vtkObject* >( View1->GetInteractorStyle() ),
+      vtkViewImage2DCommand::RequestedPositionEvent,
+      this, SLOT( MoveSlider2() ) );
+
+    vtkEventQtConnector->Connect(
+      reinterpret_cast< vtkObject* >( View1->GetInteractorStyle() ),
+      vtkViewImage2DCommand::RequestedPositionEvent,
+      this, SLOT( MoveSlider3() ) );
+
     View1->Delete();
 
     vtkViewImage2DWithContourWidget* View2 =
@@ -680,6 +704,26 @@ void QImagePageViewTracer::SetImage( vtkImageData* input )
     range = View2->GetSliceRange();
     this->slider2->setMinimum( range[0] );
     this->slider2->setMaximum( range[1] );
+    // Event connection between vtk and qt
+    // when SliceMoveEvent occurs in the XY View, Slider1 moves.
+    vtkEventQtConnector->Connect(
+      reinterpret_cast< vtkObject* >( View2->GetInteractorStyle() ),
+      vtkViewImage2DCommand::SliceMoveEvent,
+      this, SLOT( MoveSlider2() ) );
+
+    // Event connection between vtk and qt
+    // when RequestedPositionEvent occurs in the XY View (double-click),
+    // Slider2 and Slider3 move.
+    vtkEventQtConnector->Connect(
+      reinterpret_cast< vtkObject* >( View2->GetInteractorStyle() ),
+      vtkViewImage2DCommand::RequestedPositionEvent,
+      this, SLOT( MoveSlider1() ) );
+
+    vtkEventQtConnector->Connect(
+      reinterpret_cast< vtkObject* >( View2->GetInteractorStyle() ),
+      vtkViewImage2DCommand::RequestedPositionEvent,
+      this, SLOT( MoveSlider3() ) );
+
     View2->Delete();
 
     vtkViewImage2DWithContourWidget* View3 =
@@ -702,6 +746,27 @@ void QImagePageViewTracer::SetImage( vtkImageData* input )
     range = View3->GetSliceRange();
     this->slider3->setMinimum( range[0] );
     this->slider3->setMaximum( range[1] );
+
+    // Event connection between vtk and qt
+    // when SliceMoveEvent occurs in the XY View, Slider1 moves.
+    vtkEventQtConnector->Connect(
+      reinterpret_cast< vtkObject* >( View3->GetInteractorStyle() ),
+      vtkViewImage2DCommand::SliceMoveEvent,
+      this, SLOT( MoveSlider3() ) );
+
+    // Event connection between vtk and qt
+    // when RequestedPositionEvent occurs in the XY View (double-click),
+    // Slider2 and Slider3 move.
+    vtkEventQtConnector->Connect(
+      reinterpret_cast< vtkObject* >( View3->GetInteractorStyle() ),
+      vtkViewImage2DCommand::RequestedPositionEvent,
+      this, SLOT( MoveSlider1() ) );
+
+    vtkEventQtConnector->Connect(
+      reinterpret_cast< vtkObject* >( View3->GetInteractorStyle() ),
+      vtkViewImage2DCommand::RequestedPositionEvent,
+      this, SLOT( MoveSlider2() ) );
+
     View3->Delete();
 
     int size[2] = {400, 400};
@@ -876,27 +941,33 @@ void QImagePageViewTracer::ReinitializeContour( )
 
 void QImagePageViewTracer::SetSlideView1( const int& iSlice )
 {
-  if( iSlice != this->Pool->GetItem( 0 )->GetSlice() )
-  {
-    this->Pool->GetItem( 0 )->SetSlice( iSlice );
-    this->Pool->SyncRender();
-  }
+  this->Pool->GetItem( 0 )->SetSlice( iSlice );
+  this->Pool->SyncRender();
 }
 
 void QImagePageViewTracer::SetSlideView2( const int& iSlice )
 {
-  if( iSlice != this->Pool->GetItem( 1 )->GetSlice() )
-  {
-    this->Pool->GetItem( 1 )->SetSlice( iSlice );
-    this->Pool->SyncRender();
-  }
+  this->Pool->GetItem( 1 )->SetSlice( iSlice );
+  this->Pool->SyncRender();
 }
 
 void QImagePageViewTracer::SetSlideView3( const int& iSlice )
 {
-  if( iSlice != this->Pool->GetItem( 2 )->GetSlice() )
-  {
-    this->Pool->GetItem( 2 )->SetSlice( iSlice );
-    this->Pool->SyncRender();
-  }
+  this->Pool->GetItem( 2 )->SetSlice( iSlice );
+  this->Pool->SyncRender();
+}
+
+void QImagePageViewTracer::MoveSlider1( )
+{
+  this->slider1->setValue( this->Pool->GetItem( 0 )->GetSlice() );
+}
+
+void QImagePageViewTracer::MoveSlider2( )
+{
+  this->slider2->setValue( this->Pool->GetItem( 1 )->GetSlice() );
+}
+
+void QImagePageViewTracer::MoveSlider3( )
+{
+  this->slider3->setValue( this->Pool->GetItem( 2 )->GetSlice() );
 }
