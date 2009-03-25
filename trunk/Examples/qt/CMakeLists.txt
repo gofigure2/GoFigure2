@@ -1,0 +1,1 @@
+SUBDIRS( QImagePageView QImagePageViewTracer QGoLUTDialog )

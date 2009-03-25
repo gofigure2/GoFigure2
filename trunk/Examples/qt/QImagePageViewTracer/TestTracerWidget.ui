@@ -1,0 +1,272 @@
+<ui version="4.0" >
+ <class>Form</class>
+ <widget class="QWidget" name="Form" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1434</width>
+    <height>829</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Form</string>
+  </property>
+  <widget class="QGroupBox" name="TransformBox" >
+   <property name="geometry" >
+    <rect>
+     <x>10</x>
+     <y>180</y>
+     <width>131</width>
+     <height>111</height>
+    </rect>
+   </property>
+   <property name="title" >
+    <string>Transform</string>
+   </property>
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="checked" >
+    <bool>false</bool>
+   </property>
+   <widget class="QRadioButton" name="TranslationBtn" >
+    <property name="geometry" >
+     <rect>
+      <x>10</x>
+      <y>20</y>
+      <width>94</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>Translation</string>
+    </property>
+    <property name="checked" >
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="RotationBtn" >
+    <property name="geometry" >
+     <rect>
+      <x>10</x>
+      <y>40</y>
+      <width>94</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>Rotation</string>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="ScalingBtn" >
+    <property name="geometry" >
+     <rect>
+      <x>10</x>
+      <y>60</y>
+      <width>94</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>Scaling</string>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="CopyBtn" >
+    <property name="geometry" >
+     <rect>
+      <x>10</x>
+      <y>80</y>
+      <width>94</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>Copy</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QGroupBox" name="TracerBox" >
+   <property name="geometry" >
+    <rect>
+     <x>10</x>
+     <y>0</y>
+     <width>131</width>
+     <height>71</height>
+    </rect>
+   </property>
+   <property name="title" >
+    <string>Tracer</string>
+   </property>
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <widget class="QRadioButton" name="FreeLineBtn" >
+    <property name="geometry" >
+     <rect>
+      <x>10</x>
+      <y>40</y>
+      <width>94</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>Free Line</string>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="PolygonBtn" >
+    <property name="geometry" >
+     <rect>
+      <x>10</x>
+      <y>20</y>
+      <width>94</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>Polygon</string>
+    </property>
+    <property name="checked" >
+     <bool>true</bool>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QGroupBox" name="LabelBox" >
+   <property name="geometry" >
+    <rect>
+     <x>10</x>
+     <y>340</y>
+     <width>131</width>
+     <height>101</height>
+    </rect>
+   </property>
+   <property name="title" >
+    <string>Label</string>
+   </property>
+   <widget class="QPushButton" name="ValidateBtn" >
+    <property name="geometry" >
+     <rect>
+      <x>10</x>
+      <y>60</y>
+      <width>91</width>
+      <height>27</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>Validate</string>
+    </property>
+   </widget>
+   <widget class="QWidget" name="layoutWidget" >
+    <property name="geometry" >
+     <rect>
+      <x>10</x>
+      <y>20</y>
+      <width>73</width>
+      <height>29</height>
+     </rect>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout" >
+     <item>
+      <widget class="QLabel" name="label" >
+       <property name="text" >
+        <string>Id</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QSpinBox" name="IdSpinBox" />
+     </item>
+    </layout>
+   </widget>
+   <widget class="QPushButton" name="IdColorBtn" >
+    <property name="geometry" >
+     <rect>
+      <x>90</x>
+      <y>20</y>
+      <width>31</width>
+      <height>27</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string/>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QGroupBox" name="EditBox" >
+   <property name="geometry" >
+    <rect>
+     <x>10</x>
+     <y>80</y>
+     <width>131</width>
+     <height>91</height>
+    </rect>
+   </property>
+   <property name="title" >
+    <string>Edit</string>
+   </property>
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="checked" >
+    <bool>false</bool>
+   </property>
+   <widget class="QRadioButton" name="InsertNodeBtn" >
+    <property name="geometry" >
+     <rect>
+      <x>10</x>
+      <y>20</y>
+      <width>94</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>Insert Node</string>
+    </property>
+    <property name="checked" >
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="DeleteNodeBtn" >
+    <property name="geometry" >
+     <rect>
+      <x>10</x>
+      <y>40</y>
+      <width>101</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>Delete Node</string>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="MoveNodeBtn" >
+    <property name="geometry" >
+     <rect>
+      <x>10</x>
+      <y>60</y>
+      <width>94</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>Move Node</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QPushButton" name="AddContourBtn" >
+   <property name="geometry" >
+    <rect>
+     <x>10</x>
+     <y>300</y>
+     <width>131</width>
+     <height>27</height>
+    </rect>
+   </property>
+   <property name="text" >
+    <string>Add Contour</string>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

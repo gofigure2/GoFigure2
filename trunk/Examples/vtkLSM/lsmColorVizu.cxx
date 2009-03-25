@@ -23,7 +23,6 @@ int main(int argc,char* argv[])
   vtkLSMReader* reader=vtkLSMReader::New();
   reader->SetFileName(argv[1]);
   reader->Update();
-  int NumberOfTimePoints = reader->GetNumberOfTimePoints();
   int NumberOfChannels = reader->GetNumberOfChannels();
   myImage_ch1->ShallowCopy( reader->GetOutput() );
   reader->Delete();
