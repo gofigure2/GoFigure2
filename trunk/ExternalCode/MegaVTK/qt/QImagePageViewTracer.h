@@ -47,6 +47,7 @@
 #include <QVTKWidget.h>
 
 #include <vtkImageData.h>
+#include <vtkEventQtSlotConnect.h>
 
 #include "vtkViewImage3D.h"
 #include "vtkViewImage2DWithContourWidgetCollection.h"
@@ -170,6 +171,7 @@ protected:
   vtkViewImage3D* View3D;
 
   vtkImageData* Image;
+  vtkEventQtSlotConnect* vtkEventQtConnector;
 
   vtkViewImage2DWithContourWidgetCollection* Pool;
 
@@ -204,6 +206,11 @@ protected:
   int IsFullScreen;
 
   unsigned int CellId;
+protected slots:
+  void MoveSlider1();
+  void MoveSlider2();
+  void MoveSlider3();
+
 };
 
 #endif

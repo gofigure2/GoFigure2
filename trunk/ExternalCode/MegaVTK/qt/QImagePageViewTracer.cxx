@@ -34,6 +34,7 @@
 
 #include "QImagePageViewTracer.h"
 #include "QSplitterchild.h"
+#include "vtkViewImage2DCommand.h"
 
 #include <QResizeEvent>
 #include <vtkRendererCollection.h>
@@ -875,18 +876,27 @@ void QImagePageViewTracer::ReinitializeContour( )
 
 void QImagePageViewTracer::SetSlideView1( const int& iSlice )
 {
-  this->Pool->GetItem( 0 )->SetSlice( iSlice );
-  this->Pool->SyncRender();
+  if( iSlice != this->Pool->GetItem( 0 )->GetSlice() )
+  {
+    this->Pool->GetItem( 0 )->SetSlice( iSlice );
+    this->Pool->SyncRender();
+  }
 }
 
 void QImagePageViewTracer::SetSlideView2( const int& iSlice )
 {
-  this->Pool->GetItem( 1 )->SetSlice( iSlice );
-  this->Pool->SyncRender();
+  if( iSlice != this->Pool->GetItem( 1 )->GetSlice() )
+  {
+    this->Pool->GetItem( 1 )->SetSlice( iSlice );
+    this->Pool->SyncRender();
+  }
 }
 
 void QImagePageViewTracer::SetSlideView3( const int& iSlice )
 {
-  this->Pool->GetItem( 2 )->SetSlice( iSlice );
-  this->Pool->SyncRender();
+  if( iSlice != this->Pool->GetItem( 2 )->GetSlice() )
+  {
+    this->Pool->GetItem( 2 )->SetSlice( iSlice );
+    this->Pool->SyncRender();
+  }
 }
