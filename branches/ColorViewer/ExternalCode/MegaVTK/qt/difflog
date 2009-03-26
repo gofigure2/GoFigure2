@@ -1,0 +1,106 @@
+2c2
+<  Authors: Thhe GoFigure Dev. Team.
+---
+>  Authors: The GoFigure Dev. Team.
+35,36c35,36
+< #ifndef __QColorImagePageView
+< #define __QColorImagePageView
+---
+> #ifndef __QImagePageViewTracer_h
+> #define __QImagePageViewTracer_h
+51,53c51,52
+< #include "vtkViewColorImage3D.h"
+< #include "vtkViewColorImage2D.h"
+< #include "vtkViewColorImage2DCollection.h"
+---
+> #include "vtkViewImage3D.h"
+> #include "vtkViewImage2DWithContourWidgetCollection.h"
+57c56,59
+< \class QColorImagePageView
+---
+> \class QImagePageViewTracer
+> \bug vtkViewImage3D MUST be the last element inserted in Splitters (temporary solution)...
+> The bug is at the destruction of the QImagePageViewTracer:
+> the vtkViewImage3D must be destructed last.
+59c61
+< class QColorImagePageView : public QWidget
+---
+> class QImagePageViewTracer : public QWidget
+63,64c65,66
+<   explicit QColorImagePageView( QWidget* parent = 0 );
+<   ~QColorImagePageView();
+---
+>   explicit QImagePageViewTracer( QWidget* parent = 0 );
+>   ~QImagePageViewTracer();
+67a70,74
+> #ifdef MegaVTK_USE_ITK
+>   template< class TImage >
+>   void SetITKImage (TImage::Pointer);
+> #endif
+> 
+74c81
+<   vtkViewColorImage* GetActiveView();
+---
+>   vtkViewImage* GetActiveView();
+85,88d91
+<   bool BuildScreenshotFromImage(vtkImageData*, vtkImageData*, int);
+<   bool BuildScreenshotFromRenderWindow(vtkRenderWindow*, vtkImageData*, int);
+<   void SnapshotView(QVTKWidget*, const QColorImagePageView::SnapshotImageType&, const QString&);
+< 
+94a98,101
+>   void SetTracerON();
+>   void SetTracerOFF();
+>   void SetTracer( const bool& iState );
+> 
+106,108c113,115
+<   void SetShowScalarBar( const bool& ) {};
+<   void SetColorWindow( const double& ) {};
+<   void SetColorLevel( const double& ) {};
+---
+>   void SetShowScalarBar( const bool& );
+>   void SetColorWindow( const double& );
+>   void SetColorLevel( const double& );
+136a144
+> //   void Render( );
+162c170
+<   vtkViewColorImage3D* View3D;
+---
+>   vtkViewImage3D* View3D;
+166c174
+<   vtkViewColorImage2DCollection* Pool;
+---
+>   vtkViewImage2DWithContourWidgetCollection* Pool;
+169a178,189
+> #ifdef MegaVTK_USE_ITK
+>   /**
+>      This pointer is used to store internally a reference to the
+>      current ITK->VTK converter, in order to prevent the image buffer
+>      to be deleted unexpectdely. See the SetITKImageInXXX for more
+>      information.
+>    */
+>   //BTX
+>   itk::ProcessObject::Pointer ImageConverter;
+>   //ETX
+> #endif
+> 
+170a191,202
+> //   virtual void dragEnterEvent ( QDragEnterEvent * event );
+> 
+>   void SnapshotView( QVTKWidget* iWidget,
+>     const SnapshotImageType& iType,
+>     const QString& iBaseName = QString( "snapshot" ) );
+> 
+>   bool BuildScreenshotFromImage( vtkImageData* image,
+>     vtkImageData* screenshot, int size = 0 );
+>   bool BuildScreenshotFromRenderWindow( vtkRenderWindow *win,
+>     vtkImageData* screenshot, int size = 0 );
+> 
+>   int SnapshotId;
+172,175d203
+<   double BackgroundRGB[3];
+<   
+<   unsigned int CellId;
+<   unsigned int SnapshotId;
+176a205,206
+> 
+>   unsigned int CellId;
