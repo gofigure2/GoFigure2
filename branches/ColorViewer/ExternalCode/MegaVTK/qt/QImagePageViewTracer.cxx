@@ -639,7 +639,7 @@ void QImagePageViewTracer::SetImage( vtkImageData* input )
     return;
   else
     {
-		if( this->Image ) this->Image->Delete();		
+    if( this->Image ) this->Image->Delete();		
  
     this->Image = input;
 
@@ -648,15 +648,10 @@ void QImagePageViewTracer::SetImage( vtkImageData* input )
     View1->SetInput( this->Image );
     View1->SetViewConvention( vtkViewImage2D::VIEW_CONVENTION_NEUROLOGICAL );
     vtkRenderWindow* renwin1 = this->qvtkWidget_XY->GetRenderWindow( );
-//     renwin1->GetRenderers()->RemoveAllItems();
     View1->SetupInteractor( this->qvtkWidget_XY->GetInteractor() );
     View1->SetRenderWindow( renwin1 );
     View1->SetRenderer( renwin1->GetRenderers()->GetFirstRenderer() );
     View1->SetViewOrientation( vtkViewImage2D::VIEW_ORIENTATION_AXIAL );
-//     View1->GetTextProperty()->SetFontFamilyToArial();
-//     View1->GetTextProperty()->SetFontSize( 14 );
-
-//     View1->SetContourWidgetInteractionOn();
     this->Pool->AddItem( View1 );
     this->View3D->Add2DPhantom( 0, View1->GetImageActor(), View1->GetSlicePlane() );
 
@@ -696,9 +691,6 @@ void QImagePageViewTracer::SetImage( vtkImageData* input )
     View2->SetRenderer( renwin2->GetRenderers()->GetFirstRenderer() );
     View2->SetupInteractor( this->qvtkWidget_2->GetInteractor() );
     View2->SetViewOrientation (vtkViewImage2D::VIEW_ORIENTATION_CORONAL);
-//     View2->GetTextProperty()->SetFontFamilyToArial();
-//     View2->GetTextProperty()->SetFontSize( 14 );
-//     View2->SetContourWidgetInteractionOn();
 
     this->Pool->AddItem( View2 );
     this->View3D->Add2DPhantom( 1, View2->GetImageActor(), View2->GetSlicePlane() );
@@ -738,10 +730,6 @@ void QImagePageViewTracer::SetImage( vtkImageData* input )
     View3->SetupInteractor( this->qvtkWidget_3->GetInteractor() );
     View3->SetViewOrientation (vtkViewImage2D::VIEW_ORIENTATION_SAGITTAL);
 
-//     View3->GetTextProperty()->SetFontFamilyToArial();
-//     View3->GetTextProperty()->SetFontSize( 14 );
-//     View3->SetContourWidgetInteractionOn();
-
     this->Pool->AddItem( View3 );
     this->View3D->Add2DPhantom( 2, View3->GetImageActor(), View3->GetSlicePlane() );
 
@@ -775,7 +763,6 @@ void QImagePageViewTracer::SetImage( vtkImageData* input )
     this->Pool->SyncSetSize (size);
 
     vtkRenderWindow* renwin4 = this->qvtkWidget_XYZ->GetRenderWindow( );
-//     this->View3D->SetRenderWindow( renwin4 );
     this->View3D->SetupInteractor( this->qvtkWidget_XYZ->GetInteractor() );
     this->View3D->SetInput( this->Image );
     this->View3D->SetVolumeRenderingOff();
@@ -788,7 +775,6 @@ void QImagePageViewTracer::SetImage( vtkImageData* input )
     this->Pool->SyncSetShowScalarBar( false );
     this->Pool->SyncSetBackground( this->Pool->GetItem(0)->GetBackground() );
     this->Pool->SyncSetTextProperty( this->Pool->GetItem(0)->GetTextProperty());
-//     this->Pool->SyncMaskImage();
     this->Pool->SyncRender();
     this->Pool->SyncReset();
 
@@ -798,10 +784,15 @@ void QImagePageViewTracer::SetImage( vtkImageData* input )
     }
 }
 
+void QImagePageViewTracer::Render()
+{
+  this->Pool->SyncRender();
+  View3D->Render();
+}
+
 void QImagePageViewTracer::SetShowScalarBar( const bool& state )
 {
   this->Pool->SyncSetShowScalarBar(state);
-//   this->View3D->SetShowScalarBar( state );
   this->Pool->SyncRender();
 }
 
@@ -921,16 +912,13 @@ void QImagePageViewTracer::ValidateContour(
           this->Pool->GetItem( j )->AddDataSet( contour_copy, contour_property, true );
         }
         contour_copy->Delete();
-//         this->Pool->GetItem( i )->GetContourWidget()->Initialize( 0 );
       }
     }
 
   }
   contour_property->Delete();
   this->Pool->SyncRender();
-//   this->Pool->SyncMaskImage();
 }
-//
 
 void QImagePageViewTracer::ReinitializeContour( )
 {

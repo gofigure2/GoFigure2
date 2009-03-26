@@ -45,6 +45,7 @@
 #include <QSlider>
 #include <QSpacerItem>
 #include <QVTKWidget.h>
+#include <QPushButton.h>
 
 #include <vtkImageData.h>
 #include <vtkEventQtSlotConnect.h>
@@ -68,11 +69,14 @@ public:
 	
 public slots:
   void SetView( int value );
+  void RunMovie();
   	
 protected:
   QWidget*      LayOutWidget1;
   QVBoxLayout*  LayOut1;
   QSlider*      slider1;
+  QPushButton*  button;
+
   QImagePageViewTracer* Whatever;
 	
   virtual void resizeEvent( QResizeEvent* event );
@@ -81,6 +85,7 @@ protected:
   char* FileName;
   vtkImageData* Image;	
   void ReadLSMFile( int TimePoint );
+  void Render() { this->Whatever->Render( ); };
 };
 
 #endif

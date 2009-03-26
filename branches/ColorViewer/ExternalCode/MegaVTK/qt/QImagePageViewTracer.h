@@ -142,7 +142,7 @@ public slots:
     const QColor& iColor,
     const bool& iSave );
   void ReinitializeContour( );
-//   void Render( );
+  void Render( );
 
 protected:
   QSplitter*    vSplitter;

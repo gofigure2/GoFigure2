@@ -68,20 +68,27 @@
 
 QImagePageView4DTracer::QImagePageView4DTracer( QWidget* parent ) : QWidget( parent )
 {
-  this->Whatever = new QImagePageViewTracer( );
-  this->slider1 = new QSlider( Qt::Horizontal );
-	
   this->NumberOfTimePoints = 0;
   this->Image = (vtkImageData*)(0);
+ 
+  this->Whatever = new QImagePageViewTracer( );
 
+  this->slider1 = new QSlider( Qt::Horizontal );
+
+  this->button = new QPushButton("Run &Movie");
+	
   this->LayOut1 = new QVBoxLayout;
   this->LayOut1->addWidget( this->Whatever );
   this->LayOut1->addWidget( this->slider1 );
+  this->LayOut1->addWidget( this->button );
+  
   this->LayOutWidget1 = new QWidget( this );
   this->LayOutWidget1->setLayout( this->LayOut1 );
 
   QObject::connect( this->slider1, SIGNAL( valueChanged( int ) ),
-  this, SLOT( SetView( int ) ) );
+    this, SLOT( SetView( int ) ) );
+  QObject::connect( this->button, SIGNAL( clicked( ) ),
+    this, SLOT( RunMovie( ) ) );
 
 }
 
@@ -97,6 +104,7 @@ void
 QImagePageView4DTracer::SetFileName( char* name )
 {
   this->FileName = name;
+  this->SetView( 0 );
 }
 
 void QImagePageView4DTracer::ReadLSMFile( int TimePoint )
@@ -113,7 +121,7 @@ void QImagePageView4DTracer::ReadLSMFile( int TimePoint )
   int NumberOfChannels = reader->GetNumberOfChannels();
   myImage_ch1->ShallowCopy( reader->GetOutput() );
   reader->Delete();
-	
+
   vtkImageData* myImage_ch2 = vtkImageData::New(); 
   if( NumberOfChannels == 1 ) 
     {
@@ -139,7 +147,6 @@ void QImagePageView4DTracer::ReadLSMFile( int TimePoint )
   appendFilter1->Delete();
   myImage_ch2->Delete();
 
-	
   vtkImageData* myImage_ch3 = vtkImageData::New();
   if( NumberOfChannels == 2 )
     {
@@ -168,7 +175,7 @@ void QImagePageView4DTracer::ReadLSMFile( int TimePoint )
   myImage_ch3->Delete();
 
   if( this->Image ) this->Image->Delete();
-	
+
   this->Image = myImage3;
 }
 
@@ -187,3 +194,17 @@ void QImagePageView4DTracer::resizeEvent( QResizeEvent* event )
   QWidget::resizeEvent( event );
   this->LayOutWidget1->resize( event->size() );
 }
+
+void QImagePageView4DTracer::RunMovie( )
+{
+  std::cout << "Enjoy movie mode." << std::endl;
+
+  //for( unsigned int i = 0; i < this->NumberOfTimePoints; i++)
+    {
+    this->SetView( 0 ); //i );
+    this->Render();
+    char buffer;
+    std::cin >> buffer;
+    }
+}
+
