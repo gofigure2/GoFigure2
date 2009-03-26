@@ -7,7 +7,7 @@
 #include "vtkViewColorImage.h"
 #include "vtkViewColorImage2D.h"
 
-#include "QColorImagePageView.h"
+#include "QImagePageViewTracer.h"
 
 int main(int argc,char* argv[])
 {
@@ -77,52 +77,14 @@ int main(int argc,char* argv[])
   appendFilter2->Delete();
   myImage2->Delete();
   myImage_ch3->Delete();
-
-  {
-  std::cout << "vtkImageViewer2.:" << std::endl;
-  vtkImageViewer2 * viewer = vtkImageViewer2::New();
-  viewer->SetInput( myImage3 );
-  viewer->Render();
-  char buffer;
-  cin >> buffer;
-  viewer->Delete();
-  }
-
-  {
-  std::cout << "vtkViewImage.:" << std::endl;
-  vtkViewImage * viewer = vtkViewImage::New();
-  viewer->SetInput( myImage3 );
-  viewer->Render();
-  char buffer;
-  cin >> buffer;
-  viewer->Delete();
-  }
-       
-  {
-  std::cout << "vtkViewColorImage.:" << std::endl;
-  vtkViewColorImage * viewer = vtkViewColorImage::New();
-  viewer->SetInput( myImage3 );
-  viewer->Render();
-  char buffer;
-  cin >> buffer;
-  viewer->Delete();
-  }
-
-  {
-  std::cout << "vtkViewColorImage2D.:" << std::endl;
-  vtkViewColorImage2D * viewer = vtkViewColorImage2D::New();
-  viewer->SetInput( myImage3 );
-  viewer->Render();
-  char buffer;
-  cin >> buffer;
-  viewer->Delete();
-  }
-
+	
   QApplication app(argc, argv);
-  app.processEvents();
-  QColorImagePageView * viewer =  new QColorImagePageView;
-  viewer->SetImage( myImage3 );
-  app.setMainWidget( viewer );
+  QImagePageViewTracer form;
+  form.SetImage( myImage3 );
+  form.SetBackgroundColor( 0., 0., 0. );
+  app.setMainWidget( &form );
+  form.show( );
+	
   return app.exec();
 
 }

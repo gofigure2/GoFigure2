@@ -139,17 +139,17 @@ vtkViewImage::vtkViewImage()
   this->LookupTable->Build();
 
   this->ShowAnnotations = true;
-  this->ShowScalarBar = true;
+  this->ShowScalarBar = false;
 
   this->OrientationTransform->SetInput (this->OrientationMatrix);
 
-  this->WindowLevel->SetLookupTable (this->LookupTable);
+  //this->WindowLevel->SetLookupTable (this->LookupTable);
   this->ScalarBarActor->SetLookupTable (this->LookupTable);
 
   this->Renderer->AddViewProp ( this->CornerAnnotation );
   this->Renderer->AddViewProp ( this->OrientationAnnotation );
 
- this->Renderer->AddViewProp ( this->ScalarBarActor );
+  this->Renderer->AddViewProp ( this->ScalarBarActor );
 }
 
 //----------------------------------------------------------------------------

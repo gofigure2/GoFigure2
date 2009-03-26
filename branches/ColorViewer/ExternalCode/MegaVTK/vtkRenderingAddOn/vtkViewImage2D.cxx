@@ -555,6 +555,7 @@ void vtkViewImage2D::ResetPosition( void )
 //----------------------------------------------------------------------------
 void vtkViewImage2D::ResetWindowLevel( void )
 {
+#if 0
   if( !this->GetInput())
     return;
 
@@ -564,6 +565,7 @@ void vtkViewImage2D::ResetWindowLevel( void )
 
   this->SetColorWindow(  window );
   this->SetColorLevel(  level );
+#endif
 }
 
 //----------------------------------------------------------------------------
@@ -706,10 +708,12 @@ void vtkViewImage2D::InstallPipeline()
     {
       this->InteractorStyle = vtkInteractorStyleImage2D::New();
       this->Interactor->SetInteractorStyle(this->InteractorStyle);
+#if 0
       this->InteractorStyle->AddObserver(
         vtkCommand::StartWindowLevelEvent, this->Command);
       this->InteractorStyle->AddObserver(
         vtkCommand::WindowLevelEvent, this->Command);
+#endif
       this->InteractorStyle->AddObserver(
         vtkCommand::KeyPressEvent, this->Command);
       this->InteractorStyle->AddObserver(
@@ -844,6 +848,7 @@ void vtkViewImage2D::AddDataSet( vtkDataSet* dataset,
 void vtkViewImage2D::SetMaskImage( vtkImageData* mask,
   vtkLookupTable* lut, const bool& iStatus )
 {
+#if 0
   vtkImageData* input = this->GetInput();
 
   if( !input || !mask || !lut)
@@ -882,4 +887,5 @@ void vtkViewImage2D::SetMaskImage( vtkImageData* mask,
   this->MaskFilter->Update();
 
   this->AddDataSet( this->MaskFilter->GetOutput(), 0, iStatus );
+#endif
 }

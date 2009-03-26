@@ -3,6 +3,7 @@ SET( QMegaVTKAddOn_NAME2
   QColorImagePageView
   QImagePageView
   QImagePageViewTracer
+  QImagePageView4DTracer
   QSplitterchild 
   )
 
@@ -11,6 +12,7 @@ SET( QMegaVTKAddOn_SRC2
   QColorImagePageView.cxx
   QImagePageView.cxx
   QImagePageViewTracer.cxx
+  QImagePageView4DTracer.cxx
   QSplitterchild.cxx 
   )
 
@@ -25,6 +27,7 @@ ADD_LIBRARY( QMegaVTKAddOn2
   ${QImagePageViewTracer_MOC_SRC2}
   ${QColorImagePageView_MOC_SRC2}
   ${QMegaVTKAddOn_SRC2}
+  ${QImagePageView4DTracer_MOC_SRC2}
   ${QSplitterchild_MOC_SRC2} 
   )
 
