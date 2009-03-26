@@ -54,7 +54,7 @@
      <x>0</x>
      <y>0</y>
      <width>1440</width>
-     <height>25</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile" >
@@ -133,6 +133,12 @@
     <addaction name="actionImage" />
     <addaction name="actionMesh" />
    </widget>
+   <widget class="QMenu" name="menuTools" >
+    <property name="title" >
+     <string>Tools</string>
+    </property>
+    <addaction name="actionSnapshot" />
+   </widget>
    <addaction name="menuFile" />
    <addaction name="menuView" />
    <addaction name="menuProperties" />
@@ -140,6 +146,7 @@
    <addaction name="menuTracking" />
    <addaction name="menuLineage" />
    <addaction name="menuHelp" />
+   <addaction name="menuTools" />
   </widget>
   <widget class="QStatusBar" name="statusbar" >
    <property name="autoFillBackground" >
@@ -243,8 +250,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>201</width>
-        <height>284</height>
+        <width>211</width>
+        <height>297</height>
        </rect>
       </property>
       <attribute name="label" >
@@ -427,8 +434,8 @@ Radius</string>
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>201</width>
-        <height>284</height>
+        <width>211</width>
+        <height>297</height>
        </rect>
       </property>
       <attribute name="label" >
@@ -593,8 +600,8 @@ Weight</string>
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>201</width>
-        <height>284</height>
+        <width>211</width>
+        <height>297</height>
        </rect>
       </property>
       <attribute name="label" >
@@ -860,7 +867,7 @@ Component</string>
       <string>Save Contours</string>
      </property>
     </widget>
-    <widget class="QWidget" name="" >
+    <widget class="QWidget" name="layoutWidget" >
      <property name="geometry" >
       <rect>
        <x>50</x>
@@ -886,7 +893,7 @@ Component</string>
       </item>
      </layout>
     </widget>
-    <widget class="QWidget" name="" >
+    <widget class="QWidget" name="layoutWidget" >
      <property name="geometry" >
       <rect>
        <x>11</x>
@@ -929,14 +936,15 @@ Component</string>
      </layout>
     </widget>
     <zorder>layoutWidget</zorder>
-    <zorder>TracerValidationBtn</zorder>
     <zorder>layoutWidget</zorder>
-    <zorder>TracerReinitializeBtn</zorder>
+    <zorder>layoutWidget</zorder>
     <zorder>SaveContourCheckBox</zorder>
-    <zorder>OneClickSegmentationDockWidget</zorder>
    </widget>
   </widget>
   <widget class="QToolBar" name="toolBar" >
+   <property name="enabled" >
+    <bool>true</bool>
+   </property>
    <property name="windowTitle" >
     <string>toolBar</string>
    </property>
@@ -956,6 +964,7 @@ Component</string>
    <addaction name="actionSelect" />
    <addaction name="actionPan" />
    <addaction name="actionZoom" />
+   <addaction name="actionSnapshot" />
    <addaction name="actionLookup_Table" />
    <addaction name="actionScale_bars" />
   </widget>
@@ -993,7 +1002,7 @@ Component</string>
       <enum>Qt::Horizontal</enum>
      </property>
     </widget>
-    <widget class="QWidget" name="" >
+    <widget class="QWidget" name="layoutWidget" >
      <property name="geometry" >
       <rect>
        <x>10</x>
@@ -1022,7 +1031,7 @@ Component</string>
       </item>
      </layout>
     </widget>
-    <widget class="QWidget" name="" >
+    <widget class="QWidget" name="layoutWidget" >
      <property name="geometry" >
       <rect>
        <x>10</x>
@@ -1465,6 +1474,18 @@ Component</string>
    </property>
    <property name="text" >
     <string>One Click Segmentation</string>
+   </property>
+  </action>
+  <action name="actionSnapshot" >
+   <property name="enabled" >
+    <bool>false</bool>
+   </property>
+   <property name="icon" >
+    <iconset resource="resources/axes.qrc" >
+     <normaloff>:/newPrefix/fig/camera-photo.png</normaloff>:/newPrefix/fig/camera-photo.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Snapshot</string>
    </property>
   </action>
  </widget>
