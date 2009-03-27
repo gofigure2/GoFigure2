@@ -66,6 +66,12 @@ public:
   ~QImagePageView4DTracer();
 
   void SetFileName( char* name );
+  void SetColorVizu( int value )
+    { 
+    std::cout << "Value: " << value << std::endl;
+    this->ColorVizu = value; 
+    std::cout << "ColorVizu: " << this->ColorVizu << std::endl;
+    };
 	
 public slots:
   void SetView( int value );
@@ -86,6 +92,8 @@ protected:
   vtkImageData* Image;	
   void ReadLSMFile( int TimePoint );
   void Render() { this->Whatever->Render( ); };
+  
+  int ColorVizu;
 };
 
 #endif

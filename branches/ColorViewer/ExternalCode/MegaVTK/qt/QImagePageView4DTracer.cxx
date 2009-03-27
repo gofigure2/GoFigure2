@@ -66,6 +66,9 @@
 #include <vtkCellArray.h>
 #include <vtkMath.h>
 
+#include <ctime>
+
+
 QImagePageView4DTracer::QImagePageView4DTracer( QWidget* parent ) : QWidget( parent )
 {
   this->NumberOfTimePoints = 0;
@@ -90,6 +93,7 @@ QImagePageView4DTracer::QImagePageView4DTracer( QWidget* parent ) : QWidget( par
   QObject::connect( this->button, SIGNAL( clicked( ) ),
     this, SLOT( RunMovie( ) ) );
 
+  ColorVizu = true;
 }
 
 QImagePageView4DTracer::~QImagePageView4DTracer()
@@ -122,14 +126,18 @@ void QImagePageView4DTracer::ReadLSMFile( int TimePoint )
   myImage_ch1->ShallowCopy( reader->GetOutput() );
   reader->Delete();
 
-  vtkImageData* myImage_ch2 = vtkImageData::New(); 
-  if( NumberOfChannels == 1 ) 
+  vtkImageData* myImage_ch2;
+  std::cout << ColorVizu << std::endl;
+  if( ( NumberOfChannels == 1 ) || ( !ColorVizu ) ) 
     {
-	myImage_ch2->ShallowCopy( myImage_ch1 );
+    if( this->Image ) this->Image->Delete();
+    this->Image = myImage_ch1;
+    return;
     }
   else
     {
-	vtkLSMReader* reader2=vtkLSMReader::New();
+	myImage_ch2 = vtkImageData::New(); 
+        vtkLSMReader* reader2=vtkLSMReader::New();
 	reader2->SetFileName( this->FileName );
         reader2->SetUpdateTimePoint( TimePoint );
 	reader2->SetUpdateChannel( 1 );
@@ -181,12 +189,29 @@ void QImagePageView4DTracer::ReadLSMFile( int TimePoint )
 
 void QImagePageView4DTracer::SetView( int value )
 {
+  clock_t start,finish;
+  double time;
+  
+  start = clock();
   this->ReadLSMFile( value );
+  finish = clock();
+  time = (double(finish)-double(start))/CLOCKS_PER_SEC;
+  std::cout << "Reading Time: " << time << "s" << std::endl; 
+
+  start = clock();
   this->LayOut1->remove( this->Whatever );
   delete this->Whatever;
   this->Whatever = new QImagePageViewTracer( );
   this->LayOut1->insertWidget( 0, this->Whatever );
+  finish = clock();
+  time = (double(finish)-double(start))/CLOCKS_PER_SEC;
+  std::cout << "Replace widget: " << time << "s" << std::endl; 
+  
+  start = clock();
   this->Whatever->SetImage( this->Image );
+  finish = clock();
+  time = (double(finish)-double(start))/CLOCKS_PER_SEC;
+  std::cout << "Set image in widget: " << time << "s" << std::endl; 
 }
 
 void QImagePageView4DTracer::resizeEvent( QResizeEvent* event )
@@ -199,12 +224,9 @@ void QImagePageView4DTracer::RunMovie( )
 {
   std::cout << "Enjoy movie mode." << std::endl;
 
-  //for( unsigned int i = 0; i < this->NumberOfTimePoints; i++)
+  for( unsigned int i = 0; i < this->NumberOfTimePoints; i++)
     {
-    this->SetView( 0 ); //i );
-    this->Render();
-    char buffer;
-    std::cin >> buffer;
+    this->slider1->setValue( i );
     }
 }
 
