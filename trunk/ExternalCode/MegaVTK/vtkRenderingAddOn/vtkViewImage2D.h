@@ -80,7 +80,7 @@ class vtkImageBlendWithMask;
 */
 
 
-class vtkViewImage2D : public vtkViewImage
+class VTK_RENDERINGADDON2_EXPORT vtkViewImage2D : public vtkViewImage
 {
 
  public:

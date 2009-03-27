@@ -74,7 +74,8 @@
 #include <vtkLookupTable.h>
 #include <vtkCornerAnnotation.h>
 
-class vtkViewImage2DWithContourWidget : public vtkViewImage2D
+class VTK_RENDERINGADDON2_EXPORT vtkViewImage2DWithContourWidget : 
+public vtkViewImage2D
 {
 public:
   static vtkViewImage2DWithContourWidget* New();

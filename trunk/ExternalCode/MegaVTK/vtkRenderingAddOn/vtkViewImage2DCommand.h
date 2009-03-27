@@ -74,7 +74,7 @@ class vtkInteractorStyleImage2D;
 class vtkInteractorStyleImage;
 class vtkViewImage2D;
 
-class vtkViewImage2DCommand : public vtkCommand
+class VTK_RENDERINGADDON2_EXPORT vtkViewImage2DCommand : public vtkCommand
 {
  public:
 

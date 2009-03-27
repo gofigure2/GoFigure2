@@ -78,7 +78,7 @@
 
 #include "vtkCornerAnnotation.h"
 
-class vtkOrientationAnnotation :
+class VTK_RENDERINGADDON2_EXPORT vtkOrientationAnnotation :
   public vtkCornerAnnotation
 {
 public:

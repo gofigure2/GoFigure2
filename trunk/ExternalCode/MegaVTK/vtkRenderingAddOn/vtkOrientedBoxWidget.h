@@ -86,7 +86,7 @@ class vtkMatrix4x4;
 
    \see vtk3DWidget vtkBoxWidget
  */
-class vtkOrientedBoxWidget : public vtkBoxWidget
+class VTK_RENDERINGADDON2_EXPORT vtkOrientedBoxWidget : public vtkBoxWidget
 {
 
  public:
