@@ -71,7 +71,7 @@
 #include "vtkThreadedImageAlgorithm.h"
 #include "vtkLookupTable.h"
 
-class VTK_RENDERINGADDON2_EXPORT vtkImageBlendWithMask :
+class vtkImageBlendWithMask :
   public vtkThreadedImageAlgorithm
 {
  public:

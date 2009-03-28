@@ -76,7 +76,7 @@
 class vtkViewImage2D;
 
 
-class VTK_RENDERINGADDON2_EXPORT vtkImage3DImagePlaneCallback: public vtkCommand
+class vtkImage3DImagePlaneCallback: public vtkCommand
 {
 
  public:

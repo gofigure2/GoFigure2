@@ -127,7 +127,7 @@ class vtkViewImage2DCollectionCommand;
 
 */
 
-class VTK_RENDERINGADDON2_EXPORT vtkViewImage2DCollection : public vtkCollection
+class vtkViewImage2DCollection : public vtkCollection
 {
  public:
 

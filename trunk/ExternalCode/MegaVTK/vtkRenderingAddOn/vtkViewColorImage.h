@@ -123,7 +123,7 @@ class vtkProp3DCollection;
 class vtkDataSetCollection;
 class vtkMatrixToLinearTransform;
 
-class VTK_RENDERINGADDON2_EXPORT vtkViewColorImage : public vtkImageViewer2
+class vtkViewColorImage : public vtkImageViewer2
 {
 
  public:

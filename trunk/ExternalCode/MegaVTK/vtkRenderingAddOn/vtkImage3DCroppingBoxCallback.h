@@ -73,7 +73,7 @@
 #include <vtkSetGet.h>
 #include <vtkObjectFactory.h>
 
-class VTK_RENDERINGADDON2_EXPORT vtkImage3DCroppingBoxCallback: 
+class vtkImage3DCroppingBoxCallback: 
 public vtkCommand
 {
 

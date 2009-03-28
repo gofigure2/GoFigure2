@@ -126,7 +126,7 @@ class vtkViewColorImage2DCollectionCommand;
 */
 // NOTE ALEX: could do a template here to manage color and greyscale with i
 // the same class.
-class VTK_RENDERINGADDON2_EXPORT vtkViewColorImage2DCollection : public vtkCollection
+class vtkViewColorImage2DCollection : public vtkCollection
 {
  public:
 

@@ -91,7 +91,7 @@ PURPOSE.  See the above copyright notices for more information.
 #include <vtkObject.h>
 #include <vtkLookupTable.h>
 
-class VTK_RENDERINGADDON2_EXPORT vtkLookupTableManager: public vtkObject
+class vtkLookupTableManager: public vtkObject
 {
 
  public:

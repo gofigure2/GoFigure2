@@ -102,7 +102,7 @@ class vtkViewColorImage2D;
 
 class ColorImageActorCallback;
 
-class VTK_RENDERINGADDON2_EXPORT vtkViewColorImage3D : public vtkViewColorImage
+class vtkViewColorImage3D : public vtkViewColorImage
 {
 
  public:

@@ -112,7 +112,7 @@ class vtkColorTransferFunction;
 
 class ImageActorCallback;
 
-class VTK_RENDERINGADDON2_EXPORT vtkViewImage3D : public vtkViewImage
+class vtkViewImage3D : public vtkViewImage
 {
 
  public:

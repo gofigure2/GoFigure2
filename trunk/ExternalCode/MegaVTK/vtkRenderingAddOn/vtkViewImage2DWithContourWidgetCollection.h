@@ -76,7 +76,7 @@
 
 class vtkViewImage2DWithContourWidgetCollectionCommand;
 
-class VTK_RENDERINGADDON2_EXPORT vtkViewImage2DWithContourWidgetCollection :
+class vtkViewImage2DWithContourWidgetCollection :
 public vtkCollection
 {
 public:

@@ -72,7 +72,7 @@
 
 #define VTKIS_SLICE_MOVE  5051
 
-class VTK_RENDERINGADDON2_EXPORT vtkInteractorStyleImage2D :
+class vtkInteractorStyleImage2D :
   public vtkInteractorStyleImage
 {
  public:

@@ -129,7 +129,7 @@ class vtkMatrixToLinearTransform;
 */
 
 
-class VTK_RENDERINGADDON2_EXPORT  vtkViewImage : public vtkImageViewer2
+class vtkViewImage : public vtkImageViewer2
 {
 
  public:
