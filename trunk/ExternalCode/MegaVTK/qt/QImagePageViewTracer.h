@@ -104,14 +104,16 @@ public:
   QMEGAVTKADDON2_EXPORT void GetBackgroundColor( double& r, double& g, double& b );
   QMEGAVTKADDON2_EXPORT double* GetBackgroundColor();
 
-  QMEGAVTKADDON2_EXPORT
+  
   template< class TContourContainer,
             class TPropertyContainer >
+  QMEGAVTKADDON2_EXPORT
   void AddContours( TContourContainer& iContours,
     TPropertyContainer& iProperty,
     const bool& iIntersection = true );
 
-  QMEGAVTKADDON2_EXPORT  template< class TPolyDataContainer >
+  template< class TPolyDataContainer >
+  QMEGAVTKADDON2_EXPORT  
   void RemoveContours( TPolyDataContainer& iContours );
 
 public slots:
