@@ -70,8 +70,9 @@
 
 #include "vtkThreadedImageAlgorithm.h"
 #include <vtkPolyData.h>
+#include "MegaVTK2Configure.h"
 
-class vtkFillImageWithPolyData :
+class VTK_RENDERINGADDON2_EXPORT vtkFillImageWithPolyData :
   public vtkThreadedImageAlgorithm
 {
 

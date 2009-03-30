@@ -69,10 +69,11 @@
 #define _vtk_InteractorStyleImage2D_h_
 
 #include <vtkInteractorStyleImage.h>
+#include "MegaVTK2Configure.h"
 
 #define VTKIS_SLICE_MOVE  5051
 
-class vtkInteractorStyleImage2D :
+class VTK_RENDERINGADDON2_EXPORT vtkInteractorStyleImage2D :
   public vtkInteractorStyleImage
 {
  public:

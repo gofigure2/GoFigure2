@@ -68,13 +68,14 @@
 #ifndef _vtkViewColorImage2DCommand_h_
 #define _vtkViewColorImage2DCommand_h_
 
-#include<vtkCommand.h>
+#include <vtkCommand.h>
+#include "MegaVTK2Configure.h"
 
 class vtkInteractorStyleImage2D;
 class vtkInteractorStyleImage;
 class vtkViewColorImage2D;
 
-class vtkViewColorImage2DCommand : public vtkCommand
+class VTK_RENDERINGADDON2_EXPORT vtkViewColorImage2DCommand : public vtkCommand
 {
  public:
 

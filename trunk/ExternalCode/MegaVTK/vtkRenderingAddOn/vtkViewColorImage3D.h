@@ -69,10 +69,11 @@
 #define _vtkViewColorImage3D_h_
 
 #include "vtkViewColorImage.h"
+#include "MegaVTK2Configure.h"
 
 #include <vtkImageActor.h>
 #include <vtkRenderer.h>
-#include <vtkOrientedBoxWidget.h>
+#include "vtkOrientedBoxWidget.h"
 #include <vtkPlaneWidget.h>
 #include <vtkOrientationMarkerWidget.h>
 #include <vtkVolumeProperty.h>
@@ -102,7 +103,7 @@ class vtkViewColorImage2D;
 
 class ColorImageActorCallback;
 
-class vtkViewColorImage3D : public vtkViewColorImage
+class VTK_RENDERINGADDON2_EXPORT vtkViewColorImage3D : public vtkViewColorImage
 {
 
  public:

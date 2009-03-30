@@ -72,6 +72,8 @@
 #include "vtkCommand.h"
 
 #include "vtkViewColorImage2D.h"
+#include "MegaVTK2Configure.h"
+
 /**
    This macro can be useful as we frequently set
    an instance this way, meaning unregistering previously set instance,
@@ -126,7 +128,8 @@ class vtkViewColorImage2DCollectionCommand;
 */
 // NOTE ALEX: could do a template here to manage color and greyscale with i
 // the same class.
-class vtkViewColorImage2DCollection : public vtkCollection
+class VTK_RENDERINGADDON2_EXPORT vtkViewColorImage2DCollection :
+  public vtkCollection
 {
  public:
 
@@ -211,7 +214,7 @@ class vtkViewColorImage2DCollection : public vtkCollection
 
 
 
-class vtkViewColorImage2DCollectionCommand :
+class VTK_RENDERINGADDON2_EXPORT vtkViewColorImage2DCollectionCommand :
   public vtkCommand
 {
 

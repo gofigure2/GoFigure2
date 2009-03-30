@@ -152,7 +152,7 @@ vtkStandardNewMacro(vtkViewImage3D);
 
 
 //----------------------------------------------------------------------------
-class ImageActorCallback : public vtkCommand
+class VTK_RENDERINGADDON2_EXPORT ImageActorCallback : public vtkCommand
 {
 public:
 

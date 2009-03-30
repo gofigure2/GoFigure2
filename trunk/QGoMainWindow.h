@@ -41,9 +41,9 @@
 #include <itkImage.h>
 
 // ALEX: Have to use decorator pattern here
-#include <QImagePageViewTracer.h>
+#include "QImagePageViewTracer.h"
 // #include "QColorImagePageView.h"
-#include <itkImageToVTKImageFilter.h>
+#include "itkImageToVTKImageFilter.h"
 #include "itkQtProgressBar.h"
 #include "itkQtAdaptor.h"
 #include "vtkLSMReader.h"

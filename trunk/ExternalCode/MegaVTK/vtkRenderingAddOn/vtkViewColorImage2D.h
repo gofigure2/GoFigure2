@@ -69,6 +69,7 @@
 #define _vtkViewColorImage2D_h_
 
 #include "vtkViewColorImage.h"
+#include "MegaVTK2Configure.h"
 
 class vtkPlane;
 class vtkViewColorImage2DCommand;
@@ -80,7 +81,7 @@ class vtkImageBlendWithMask;
 */
 
 
-class vtkViewColorImage2D : public vtkViewColorImage
+class VTK_RENDERINGADDON2_EXPORT vtkViewColorImage2D : public vtkViewColorImage
 {
 
  public:

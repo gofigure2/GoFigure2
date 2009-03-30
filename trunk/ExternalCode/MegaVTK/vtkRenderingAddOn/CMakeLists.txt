@@ -1,6 +1,11 @@
 FILE( GLOB vtkRenderingAddOn_SRCS2 *.cxx )
 
-ADD_LIBRARY( vtkRenderingAddOn2 
+INCLUDE_DIRECTORIES( BEFORE
+  ${MEGAVTK2_BINARY_DIR}
+  ${MEGAVTK2_BINARY_DIR}/vtkRenderingAddOn
+)
+
+ADD_LIBRARY( vtkRenderingAddOn2
   ${LIBS_STYLE}
   ${vtkRenderingAddOn_SRCS2}
   )

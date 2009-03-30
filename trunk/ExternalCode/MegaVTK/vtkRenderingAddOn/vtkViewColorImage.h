@@ -69,6 +69,7 @@
 #define _vtkViewColorImage_h_
 
 #include "vtkImageViewer2.h"
+#include "MegaVTK2Configure.h"
 
 /**
    This macro can be useful as we frequently set
@@ -123,7 +124,7 @@ class vtkProp3DCollection;
 class vtkDataSetCollection;
 class vtkMatrixToLinearTransform;
 
-class vtkViewColorImage : public vtkImageViewer2
+class VTK_RENDERINGADDON2_EXPORT vtkViewColorImage : public vtkImageViewer2
 {
 
  public:
