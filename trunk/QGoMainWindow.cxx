@@ -99,7 +99,8 @@ QGoMainWindow::QGoMainWindow( )
     this, SLOT( ReinitializeContourTracer() ) );
   //QObject::connect( this->actionOpen, SIGNAL( activated( ) ),
     //this, SLOT( showprogressloading() ) );
-  QObject::connect(CentralImageTabWidget,SIGNAL(currentChanged(int)),this, SLOT(UpdateFullScreenViewButtons(int)));
+  QObject::connect( this->CentralImageTabWidget, SIGNAL( currentChanged( int ) ),
+    this, SLOT( UpdateFullScreenViewButtons( int ) ) );
 
   Fullscreenbuttons();
 

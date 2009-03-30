@@ -164,6 +164,15 @@ public:
   void SyncMaskImage( vtkImageData* mask, vtkLookupTable* lut );
   void SyncSetZoomAndParallelScale( double Zoom, double ParallelScale );
 
+  template< class TContourContainer,
+            class TPropertyContainer >
+  void SyncAddContours( TContourContainer& iContours,
+    TPropertyContainer& iProperty,
+    const bool& iIntersection = true );
+
+  template< class TPolyDataContainer >
+  void SyncRemoveContours( TPolyDataContainer& iContours );
+
 protected:
   vtkViewImage2DWithContourWidgetCollection();
   ~vtkViewImage2DWithContourWidgetCollection();

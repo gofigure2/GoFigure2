@@ -930,6 +930,22 @@ void QImagePageViewTracer::ValidateContour(
 }
 //
 
+
+template< class TContourContainer,
+          class TPropertyContainer >
+void QImagePageViewTracer::AddContours( TContourContainer& iContours,
+    TPropertyContainer& iProperty,
+    const bool& iIntersection )
+{
+  this->Pool->SyncAddContours( iContours, iProperty, iIntersection );
+}
+
+template< class TPolyDataContainer >
+void QImagePageViewTracer::RemoveContours( TPolyDataContainer& iContours )
+{
+  this->Pool->SyncRemoveContours( iContours );
+}
+
 void QImagePageViewTracer::ReinitializeContour( )
 {
   for( int i = 0; i < 3; i++ )
