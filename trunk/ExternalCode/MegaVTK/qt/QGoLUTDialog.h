@@ -47,6 +47,7 @@
 #include <vtkScalarBarActor.h>
 
 #include "QVTKWidget.h"
+#include "MegaVTK2Configure.h"
 
 /**
   \class QGoLUTDialog
@@ -56,13 +57,13 @@ class QGoLUTDialog : public QDialog
 {
   Q_OBJECT
 public:
-  explicit QGoLUTDialog( QWidget* parent = 0 );
-  virtual ~QGoLUTDialog();
+  explicit QMEGAVTKADDON2_EXPORT QGoLUTDialog( QWidget* parent = 0 );
+  virtual QMEGAVTKADDON2_EXPORT ~QGoLUTDialog();
 
-  vtkLookupTable* GetLookupTable( );
+  QMEGAVTKADDON2_EXPORT vtkLookupTable* GetLookupTable( );
 
 public slots:
-  void ChangeLookupTable( const int& );
+  QMEGAVTKADDON2_EXPORT void ChangeLookupTable( const int& );
 
 protected:
   vtkLookupTable* LUT;

@@ -52,6 +52,7 @@
 #include "vtkViewColorImage2D.h"
 #include "vtkViewColorImage2DCollection.h"
 #include "QSplitterchild.h"
+#include "MegaVTK2Configure.h"
 
 /**
 \class QColorImagePageView
@@ -60,18 +61,18 @@ class QColorImagePageView : public QWidget
 {
   Q_OBJECT
 public:
-  explicit QColorImagePageView( QWidget* parent = 0 );
-  ~QColorImagePageView();
+  explicit QMEGAVTKADDON2_EXPORT QColorImagePageView( QWidget* parent = 0 );
+  QMEGAVTKADDON2_EXPORT ~QColorImagePageView();
 
-  void SetImage( vtkImageData* input );
+  QMEGAVTKADDON2_EXPORT void SetImage( vtkImageData* input );
 
-  void setupUi( QWidget *Form );
-  void retranslateUi(QWidget *Form);
+  QMEGAVTKADDON2_EXPORT void setupUi( QWidget *Form );
+  QMEGAVTKADDON2_EXPORT void retranslateUi(QWidget *Form);
 
-  int GetFullScreenView( ) const;
+  QMEGAVTKADDON2_EXPORT int GetFullScreenView( ) const;
 
-  QVTKWidget* GetActiveQVTKWidget( );
-  vtkViewColorImage* GetActiveView();
+  QMEGAVTKADDON2_EXPORT QVTKWidget* GetActiveQVTKWidget( );
+  QMEGAVTKADDON2_EXPORT vtkViewColorImage* GetActiveView();
 
   enum SnapshotImageType
     {
@@ -82,58 +83,58 @@ public:
     TIFF
     };
 
-  bool BuildScreenshotFromImage(vtkImageData*, vtkImageData*, int);
-  bool BuildScreenshotFromRenderWindow(vtkRenderWindow*, vtkImageData*, int);
-  void SnapshotView(QVTKWidget*, const QColorImagePageView::SnapshotImageType&, const QString&);
+  QMEGAVTKADDON2_EXPORT bool BuildScreenshotFromImage(vtkImageData*, vtkImageData*, int);
+  QMEGAVTKADDON2_EXPORT bool BuildScreenshotFromRenderWindow(vtkRenderWindow*, vtkImageData*, int);
+  QMEGAVTKADDON2_EXPORT void SnapshotView(QVTKWidget*, const QColorImagePageView::SnapshotImageType&, const QString&);
 
-  void SetTag( const QString& iTag );
-  QString GetTag( ) const;
+  QMEGAVTKADDON2_EXPORT void SetTag( const QString& iTag );
+  QMEGAVTKADDON2_EXPORT QString GetTag( ) const;
 
-  void SetCellId( const unsigned int& iId );
-  unsigned int GetCellId( ) const;
+  QMEGAVTKADDON2_EXPORT void SetCellId( const unsigned int& iId );
+  QMEGAVTKADDON2_EXPORT unsigned int GetCellId( ) const;
 
-  void GetBackgroundColor( double& r, double& g, double& b );
-  double* GetBackgroundColor();
+  QMEGAVTKADDON2_EXPORT void GetBackgroundColor( double& r, double& g, double& b );
+  QMEGAVTKADDON2_EXPORT double* GetBackgroundColor();
 
 public slots:
 
-  void SetBackgroundColor( const double& r, const double& g, const double& b );
-  void SetBackgroundColor( double rgb[3] );
-  void SetBackgroundColor( const QColor& iColor );
+  QMEGAVTKADDON2_EXPORT void SetBackgroundColor( const double& r, const double& g, const double& b );
+  QMEGAVTKADDON2_EXPORT void SetBackgroundColor( double rgb[3] );
+  QMEGAVTKADDON2_EXPORT void SetBackgroundColor( const QColor& iColor );
 
-  void SetLookupTable( vtkLookupTable* lut );
-  void SetShowAnnotations( const bool& );
-  void SetShowScalarBar( const bool& ) {};
-  void SetColorWindow( const double& ) {};
-  void SetColorLevel( const double& ) {};
+  QMEGAVTKADDON2_EXPORT void SetLookupTable( vtkLookupTable* lut );
+  QMEGAVTKADDON2_EXPORT void SetShowAnnotations( const bool& );
+  QMEGAVTKADDON2_EXPORT void SetShowScalarBar( const bool& ) {};
+  QMEGAVTKADDON2_EXPORT void SetColorWindow( const double& ) {};
+  QMEGAVTKADDON2_EXPORT void SetColorLevel( const double& ) {};
 
-  void SetFullScreenView( const int& iS );
-  void quadview();
-  void FullScreenViewXY();
-  void FullScreenView2();
-  void FullScreenView3();
-  void FullScreenViewXYZ();
-  void SetView3DToTriPlanarMode();
-  void SetView3DToVolumeRenderingMode();
+  QMEGAVTKADDON2_EXPORT void SetFullScreenView( const int& iS );
+  QMEGAVTKADDON2_EXPORT void quadview();
+  QMEGAVTKADDON2_EXPORT void FullScreenViewXY();
+  QMEGAVTKADDON2_EXPORT void FullScreenView2();
+  QMEGAVTKADDON2_EXPORT void FullScreenView3();
+  QMEGAVTKADDON2_EXPORT void FullScreenViewXYZ();
+  QMEGAVTKADDON2_EXPORT void SetView3DToTriPlanarMode();
+  QMEGAVTKADDON2_EXPORT void SetView3DToVolumeRenderingMode();
 
-  void SnapshotViewXY( const SnapshotImageType& iType,
+  QMEGAVTKADDON2_EXPORT void SnapshotViewXY( const SnapshotImageType& iType,
     const QString& iBaseName = QString( "snapshot" ) );
-  void SnapshotView2( const SnapshotImageType& iType,
+  QMEGAVTKADDON2_EXPORT void SnapshotView2( const SnapshotImageType& iType,
     const QString& iBaseName = QString( "snapshot" ) );
-  void SnapshotView3( const SnapshotImageType& iType,
+  QMEGAVTKADDON2_EXPORT void SnapshotView3( const SnapshotImageType& iType,
     const QString& iBaseName = QString( "snapshot" ) );
-  void SnapshotViewXYZ( const SnapshotImageType& iType,
+  QMEGAVTKADDON2_EXPORT void SnapshotViewXYZ( const SnapshotImageType& iType,
     const QString& iBaseName = QString( "snapshot" ) );
 
-  void SetSlideView1( const int& );
-  void SetSlideView2( const int& );
-  void SetSlideView3( const int& );
+  QMEGAVTKADDON2_EXPORT void SetSlideView1( const int& );
+  QMEGAVTKADDON2_EXPORT void SetSlideView2( const int& );
+  QMEGAVTKADDON2_EXPORT void SetSlideView3( const int& );
 
-  void ValidateContour(
+  QMEGAVTKADDON2_EXPORT void ValidateContour(
     const int& iId,
     const QColor& iColor,
     const bool& iSave );
-  void ReinitializeContour( );
+  QMEGAVTKADDON2_EXPORT void ReinitializeContour( );
 
 protected:
   QSplitter*    vSplitter;

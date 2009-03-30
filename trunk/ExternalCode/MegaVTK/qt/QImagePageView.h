@@ -52,27 +52,28 @@
 #include "vtkViewImage2D.h"
 #include "vtkViewImage3D.h"
 #include "vtkViewImage2DCollection.h"
+#include "MegaVTK2Configure.h"
 
 class QImagePageView : public QWidget
 {
   Q_OBJECT
 public:
-  explicit QImagePageView( QWidget* parent = 0 );
-  ~QImagePageView();
+  explicit QMEGAVTKADDON2_EXPORT QImagePageView( QWidget* parent = 0 );
+  QMEGAVTKADDON2_EXPORT  ~QImagePageView();
 
-  void SetImage( vtkImageData* input );
+  QMEGAVTKADDON2_EXPORT  void SetImage( vtkImageData* input );
 #ifdef MegaVTK_USE_ITK
-  template< class TImage >
+  QMEGAVTKADDON2_EXPORT template< class TImage >
   void SetITKImage (TImage::Pointer);
 #endif
 
-  void setupUi( QWidget *Form );
-  void retranslateUi(QWidget *Form);
+  QMEGAVTKADDON2_EXPORT void setupUi( QWidget *Form );
+  QMEGAVTKADDON2_EXPORT void retranslateUi(QWidget *Form);
 
-  int GetFullScreenView( ) const;
+  QMEGAVTKADDON2_EXPORT int GetFullScreenView( ) const;
 
-  QVTKWidget* GetActiveQVTKWidget( );
-  vtkViewImage* GetActiveView();
+  QMEGAVTKADDON2_EXPORT QVTKWidget* GetActiveQVTKWidget( );
+  QMEGAVTKADDON2_EXPORT vtkViewImage* GetActiveView();
 
   enum SnapshotImageType
     {
@@ -83,26 +84,26 @@ public:
     TIFF
     };
 
-  void SetTag( const QString& iTag );
-  QString GetTag( ) const;
+  QMEGAVTKADDON2_EXPORT void SetTag( const QString& iTag );
+  QMEGAVTKADDON2_EXPORT QString GetTag( ) const;
 
 public slots:
 
-  void SetBackgroundColor( const double& r, const double& g, const double& b );
-  void SetBackgroundColor( double rgb[3] );
-  void SetBackgroundColor( const QColor& iColor );
+  QMEGAVTKADDON2_EXPORT void SetBackgroundColor( const double& r, const double& g, const double& b );
+  QMEGAVTKADDON2_EXPORT void SetBackgroundColor( double rgb[3] );
+  QMEGAVTKADDON2_EXPORT void SetBackgroundColor( const QColor& iColor );
 
-  void SetLookupTable( vtkLookupTable* lut );
-  void SetShowAnnotations( const bool& );
-  void SetShowScalarBar( const bool& );
-  void SetColorWindow( const double& );
-  void SetColorLevel( const double& );
+  QMEGAVTKADDON2_EXPORT void SetLookupTable( vtkLookupTable* lut );
+  QMEGAVTKADDON2_EXPORT void SetShowAnnotations( const bool& );
+  QMEGAVTKADDON2_EXPORT void SetShowScalarBar( const bool& );
+  QMEGAVTKADDON2_EXPORT void SetColorWindow( const double& );
+  QMEGAVTKADDON2_EXPORT void SetColorLevel( const double& );
 
-  void SetFullScreenView( const int& iS );
-  void FullScreenView1();
-  void FullScreenView2();
-  void FullScreenView3();
-  void FullScreenView4();
+  QMEGAVTKADDON2_EXPORT void SetFullScreenView( const int& iS );
+  QMEGAVTKADDON2_EXPORT void FullScreenView1();
+  QMEGAVTKADDON2_EXPORT void FullScreenView2();
+  QMEGAVTKADDON2_EXPORT void FullScreenView3();
+  QMEGAVTKADDON2_EXPORT void FullScreenView4();
 //   void SetView4ToTriPlanarMode();
 //   void SetView4ToVolumeRenderingMode();
 /*

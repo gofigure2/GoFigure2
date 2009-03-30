@@ -36,6 +36,7 @@
 #define __QSplitterchild_h
 
 #include <QSplitter>
+#include "MegaVTK2Configure.h"
 
 /**
   \class QSplitterchild
@@ -48,12 +49,12 @@ class QSplitterchild : public QSplitter
   Q_OBJECT
 
 public:
-  explicit QSplitterchild( QWidget* parent = 0 );
-  explicit QSplitterchild ( Qt::Orientation orientation, QWidget * parent = 0 );
-  virtual ~QSplitterchild();
+  explicit QMEGAVTKADDON2_EXPORT QSplitterchild( QWidget* parent = 0 );
+  explicit QMEGAVTKADDON2_EXPORT QSplitterchild ( Qt::Orientation orientation, QWidget * parent = 0 );
+  QMEGAVTKADDON2_EXPORT virtual ~QSplitterchild();
 
 public slots:
-  void moveSplitter(int pos,int index);
+  QMEGAVTKADDON2_EXPORT void moveSplitter(int pos,int index);
 
 protected:
   int prevpos;
