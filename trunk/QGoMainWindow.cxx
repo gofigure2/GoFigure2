@@ -209,7 +209,8 @@ void QGoMainWindow::on_actionFull_screen_XY_activated( )
 {
   int idx = this->CentralImageTabWidget->currentIndex();
   m_PageView[idx]->FullScreenViewXY();
-}
+  actionSnapshot->setEnabled(true);
+ }
 
 // *****************************************************************************
 void QGoMainWindow::on_actionFull_screen_YZ_activated( )
@@ -252,6 +253,38 @@ void QGoMainWindow::on_actionScale_bars_activated( )
     m_PageView[idx]->SetShowScalarBar(false);
 }
 
+// *****************************************************************************
+void QGoMainWindow::on_actionSnapshot_activated( )
+{
+  int idx = this->CentralImageTabWidget->currentIndex();
+  int whichview = m_PageView[idx]->GetFullScreenView();
+
+  switch( whichview )
+  {
+   case 1:
+    {
+      m_PageView[idx]->SnapshotViewXY(QImagePageViewTracer::PNG);
+      break;
+    }
+  case 2:
+    {
+      m_PageView[idx]->SnapshotView2(QImagePageViewTracer::PNG);
+      break;
+    }
+  case 3:
+    {
+      m_PageView[idx]->SnapshotView3(QImagePageViewTracer::PNG);
+      break;
+    }
+  case 4:
+    {
+      m_PageView[idx]->SnapshotViewXYZ(QImagePageViewTracer::PNG);
+      break;
+    }
+  }
+
+ 
+}
 // *****************************************************************************
 void QGoMainWindow::SetContourTracerOn(const bool& iChecked)
 {
