@@ -10,6 +10,7 @@ SET( QMegaVTKAddOn_NAME2
   QGoLUTDialog
   QImagePageView
   QImagePageViewTracer
+  QImagePageView4DTracer
   QSplitterchild
   )
 
@@ -17,6 +18,7 @@ SET( QMegaVTKAddOn_SRC2
   QGoLUTDialog.cxx
   QImagePageView.cxx
   QImagePageViewTracer.cxx
+  QImagePageView4DTracer.cxx
   QSplitterchild.cxx
   )
 
@@ -29,8 +31,10 @@ ADD_LIBRARY( QMegaVTKAddOn2
   ${QGoLUTDialog_MOC_SRC2}
   ${QImagePageView_MOC_SRC2}
   ${QImagePageViewTracer_MOC_SRC2}
+  ${QImagePageView4DTracer_MOC_SRC2}
   ${QMegaVTKAddOn_SRC2}
   ${QSplitterchild_MOC_SRC2}
+  ../../vtkLSM/vtkLSMReader.cxx
   )
 
 SET( QMegaVTKAddOn2_LIBS
