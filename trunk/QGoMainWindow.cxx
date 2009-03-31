@@ -202,6 +202,7 @@ void QGoMainWindow::on_actionQuad_View_activated( )
 {
   int idx = this->CentralImageTabWidget->currentIndex();
   m_PageView[idx]->quadview();
+  this->actionSnapshot->setEnabled(false);
 }
 
 // *****************************************************************************
@@ -217,6 +218,7 @@ void QGoMainWindow::on_actionFull_screen_YZ_activated( )
 {
   int idx = this->CentralImageTabWidget->currentIndex();
   m_PageView[idx]->FullScreenView3();
+  actionSnapshot->setEnabled(true);
 }
 
 // *****************************************************************************
@@ -224,6 +226,7 @@ void QGoMainWindow::on_actionFull_screen_XZ_activated( )
 {
   int idx = this->CentralImageTabWidget->currentIndex();
   m_PageView[idx]->FullScreenView2();
+  actionSnapshot->setEnabled(true);
 }
 
 // *****************************************************************************
@@ -231,6 +234,7 @@ void QGoMainWindow::on_actionFull_screen_XYZ_activated( )
 {
   int idx = this->CentralImageTabWidget->currentIndex();
   m_PageView[idx]->FullScreenViewXYZ();
+  actionSnapshot->setEnabled(true);
 }
 
 // *****************************************************************************
@@ -734,26 +738,31 @@ switch( whichview )
   default:
   case 0:
     { this->actionQuad_View->setChecked(true);
+    actionSnapshot->setEnabled(false);
       break;
     }
   case 1:
     {
       this->actionFull_screen_XY->setChecked(true);
+      actionSnapshot->setEnabled(true);
       break;
     }
   case 2:
     {
       this->actionFull_screen_XZ->setChecked(true);
+      actionSnapshot->setEnabled(true);
       break;
     }
   case 3:
     {
       this->actionFull_screen_YZ->setChecked(true);
+      actionSnapshot->setEnabled(true);
       break;
     }
   case 4:
     {
       this->actionFull_screen_XYZ->setChecked(true);
+      actionSnapshot->setEnabled(true);
       break;
     }
   }
