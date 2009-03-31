@@ -137,13 +137,13 @@ public slots:
   QMEGAVTKADDON2_EXPORT void SetView3DToTriPlanarMode();
   QMEGAVTKADDON2_EXPORT void SetView3DToVolumeRenderingMode();
 
-  QMEGAVTKADDON2_EXPORT void SnapshotViewXY( const SnapshotImageType& iType,
+  QMEGAVTKADDON2_EXPORT QString SnapshotViewXY( const SnapshotImageType& iType,
     const QString& iBaseName = QString( "snapshot" ) );
-  QMEGAVTKADDON2_EXPORT void SnapshotView2( const SnapshotImageType& iType,
+  QMEGAVTKADDON2_EXPORT QString SnapshotView2( const SnapshotImageType& iType,
     const QString& iBaseName = QString( "snapshot" ) );
-  QMEGAVTKADDON2_EXPORT void SnapshotView3( const SnapshotImageType& iType,
+  QMEGAVTKADDON2_EXPORT QString SnapshotView3( const SnapshotImageType& iType,
     const QString& iBaseName = QString( "snapshot" ) );
-  QMEGAVTKADDON2_EXPORT void SnapshotViewXYZ( const SnapshotImageType& iType,
+  QMEGAVTKADDON2_EXPORT QString SnapshotViewXYZ( const SnapshotImageType& iType,
     const QString& iBaseName = QString( "snapshot" ) );
 
   QMEGAVTKADDON2_EXPORT void SetSlideView1( const int& );
@@ -161,6 +161,8 @@ protected:
   QSplitter*    vSplitter;
   QSplitterchild*    htSplitter;
   QSplitterchild*    hbSplitter;
+
+  QString SnapshotFileName;
 
   QWidget*      LayOutWidget1;
   QHBoxLayout*  LayOut1;

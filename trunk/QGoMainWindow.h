@@ -42,7 +42,7 @@
 
 // ALEX: Have to use decorator pattern here
 #include "QImagePageViewTracer.h"
-// #include "QColorImagePageView.h"
+//#include "QColorImagePageView.h"
 #include "itkImageToVTKImageFilter.h"
 #include "itkQtProgressBar.h"
 #include "itkQtAdaptor.h"

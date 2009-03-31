@@ -262,31 +262,32 @@ void QGoMainWindow::on_actionSnapshot_activated( )
 {
   int idx = this->CentralImageTabWidget->currentIndex();
   int whichview = m_PageView[idx]->GetFullScreenView();
-
+  QString SnapshotFileName = "";
   switch( whichview )
   {
    case 1:
     {
-      m_PageView[idx]->SnapshotViewXY(QImagePageViewTracer::PNG);
+      SnapshotFileName = m_PageView[idx]->SnapshotViewXY(QImagePageViewTracer::PNG);
       break;
     }
   case 2:
     {
-      m_PageView[idx]->SnapshotView2(QImagePageViewTracer::PNG);
+      SnapshotFileName = m_PageView[idx]->SnapshotView2(QImagePageViewTracer::PNG);
       break;
     }
   case 3:
     {
-      m_PageView[idx]->SnapshotView3(QImagePageViewTracer::PNG);
+      SnapshotFileName = m_PageView[idx]->SnapshotView3(QImagePageViewTracer::PNG);
       break;
     }
   case 4:
     {
-      m_PageView[idx]->SnapshotViewXYZ(QImagePageViewTracer::PNG);
+      SnapshotFileName = m_PageView[idx]->SnapshotViewXYZ(QImagePageViewTracer::PNG);
       break;
     }
   }
-
+  //std::count<<SnapshotFileName.ascii()<<std::endl;
+  statusbar->showMessage( tr( "%1 has been saved").arg(SnapshotFileName) ) ;
  
 }
 // *****************************************************************************
