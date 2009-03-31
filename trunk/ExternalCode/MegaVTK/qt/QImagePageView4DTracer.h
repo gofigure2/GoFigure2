@@ -45,7 +45,7 @@
 #include <QSlider>
 #include <QSpacerItem>
 #include <QVTKWidget.h>
-#include <QPushButton.h>
+#include <qpushbutton.h>
 
 #include <vtkImageData.h>
 #include <vtkEventQtSlotConnect.h>
@@ -67,16 +67,16 @@ public:
 
   void SetFileName( char* name );
   void SetColorVizu( int value )
-    { 
+    {
     std::cout << "Value: " << value << std::endl;
-    this->ColorVizu = value; 
+    this->ColorVizu = value;
     std::cout << "ColorVizu: " << this->ColorVizu << std::endl;
     };
-	
+
 public slots:
   void SetView( int value );
   void RunMovie();
-  	
+
 protected:
   QWidget*      LayOutWidget1;
   QVBoxLayout*  LayOut1;
@@ -84,15 +84,15 @@ protected:
   QPushButton*  button;
 
   QImagePageViewTracer* Whatever;
-	
+
   virtual void resizeEvent( QResizeEvent* event );
-	
+
   int NumberOfTimePoints;
   char* FileName;
-  vtkImageData* Image;	
+  vtkImageData* Image;
   void ReadLSMFile( int TimePoint );
   // void Render() { this->Whatever->Render( ); };
-  
+
   int ColorVizu;
 };
 

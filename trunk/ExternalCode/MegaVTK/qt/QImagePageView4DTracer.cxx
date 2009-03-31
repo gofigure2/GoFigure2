@@ -33,7 +33,7 @@
  =========================================================================*/
 
 #include "QImagePageViewTracer.h"
-#include "QimagePageView4DTracer.h"
+#include "QImagePageView4DTracer.h"
 
 #include "QSplitterchild.h"
 #include "vtkViewImage2DCommand.h"
@@ -73,18 +73,18 @@ QImagePageView4DTracer::QImagePageView4DTracer( QWidget* parent ) : QWidget( par
 {
   this->NumberOfTimePoints = 0;
   this->Image = (vtkImageData*)(0);
- 
+
   this->Whatever = new QImagePageViewTracer( );
 
   this->slider1 = new QSlider( Qt::Horizontal );
 
   this->button = new QPushButton("Run &Movie");
-	
+
   this->LayOut1 = new QVBoxLayout;
   this->LayOut1->addWidget( this->Whatever );
   this->LayOut1->addWidget( this->slider1 );
   this->LayOut1->addWidget( this->button );
-  
+
   this->LayOutWidget1 = new QWidget( this );
   this->LayOutWidget1->setLayout( this->LayOut1 );
 
@@ -104,7 +104,7 @@ QImagePageView4DTracer::~QImagePageView4DTracer()
   delete this->slider1;
 }
 
-void 
+void
 QImagePageView4DTracer::SetFileName( char* name )
 {
   this->FileName = name;
@@ -121,14 +121,14 @@ void QImagePageView4DTracer::ReadLSMFile( int TimePoint )
   this->slider1->setMinimum( 0 );
   this->NumberOfTimePoints = reader->GetNumberOfTimePoints();
   this->slider1->setMaximum( this->NumberOfTimePoints );
-	
+
   int NumberOfChannels = reader->GetNumberOfChannels();
   myImage_ch1->ShallowCopy( reader->GetOutput() );
   reader->Delete();
 
   vtkImageData* myImage_ch2;
   std::cout << ColorVizu << std::endl;
-  if( ( NumberOfChannels == 1 ) || ( !ColorVizu ) ) 
+  if( ( NumberOfChannels == 1 ) || ( !ColorVizu ) )
     {
     if( this->Image ) this->Image->Delete();
     this->Image = myImage_ch1;
@@ -136,7 +136,7 @@ void QImagePageView4DTracer::ReadLSMFile( int TimePoint )
     }
   else
     {
-	myImage_ch2 = vtkImageData::New(); 
+	myImage_ch2 = vtkImageData::New();
         vtkLSMReader* reader2=vtkLSMReader::New();
 	reader2->SetFileName( this->FileName );
         reader2->SetUpdateTimePoint( TimePoint );
@@ -146,7 +146,7 @@ void QImagePageView4DTracer::ReadLSMFile( int TimePoint )
 	reader2->Delete();
     }
 
-  vtkImageData* myImage2 = vtkImageData::New(); 
+  vtkImageData* myImage2 = vtkImageData::New();
   vtkImageAppendComponents* appendFilter1 = vtkImageAppendComponents::New();
   appendFilter1->AddInput( myImage_ch1 );
   appendFilter1->AddInput( myImage_ch2 );
@@ -171,12 +171,12 @@ void QImagePageView4DTracer::ReadLSMFile( int TimePoint )
 	reader3->Delete();
     }
   myImage_ch1->Delete();
-	
-  vtkImageData* myImage3 = vtkImageData::New(); 
+
+  vtkImageData* myImage3 = vtkImageData::New();
   vtkImageAppendComponents* appendFilter2 = vtkImageAppendComponents::New();
   appendFilter2->AddInput( myImage2    );
   appendFilter2->AddInput( myImage_ch3 );
-  appendFilter2->Update(); 
+  appendFilter2->Update();
   myImage3->ShallowCopy( appendFilter2->GetOutput() );
   appendFilter2->Delete();
   myImage2->Delete();
@@ -191,12 +191,12 @@ void QImagePageView4DTracer::SetView( int value )
 {
   clock_t start,finish;
   double time;
-  
+
   start = clock();
   this->ReadLSMFile( value );
   finish = clock();
   time = (double(finish)-double(start))/CLOCKS_PER_SEC;
-  std::cout << "Reading Time: " << time << "s" << std::endl; 
+  std::cout << "Reading Time: " << time << "s" << std::endl;
 
   start = clock();
   this->LayOut1->remove( this->Whatever );
@@ -205,13 +205,13 @@ void QImagePageView4DTracer::SetView( int value )
   this->LayOut1->insertWidget( 0, this->Whatever );
   finish = clock();
   time = (double(finish)-double(start))/CLOCKS_PER_SEC;
-  std::cout << "Replace widget: " << time << "s" << std::endl; 
-  
+  std::cout << "Replace widget: " << time << "s" << std::endl;
+
   start = clock();
   this->Whatever->SetImage( this->Image );
   finish = clock();
   time = (double(finish)-double(start))/CLOCKS_PER_SEC;
-  std::cout << "Set image in widget: " << time << "s" << std::endl; 
+  std::cout << "Set image in widget: " << time << "s" << std::endl;
 }
 
 void QImagePageView4DTracer::resizeEvent( QResizeEvent* event )
