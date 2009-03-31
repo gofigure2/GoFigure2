@@ -114,6 +114,9 @@ IF( VTK_FOUND )
   SET_SOURCE_FILES_PROPERTIES( ${QGOMAINWINDOW_MOC_SRC} PROPERTIES
                             OBJECT_DEPENDS "${QGOMAINWINDOW_UI_HDRS}" )
 
+  SUBDIRS( ExternalCode )
+  SUBDIRS( Examples )
+
   ADD_EXECUTABLE( gofigure
     #MACOSX_BUNDLE
     gofigure.cxx

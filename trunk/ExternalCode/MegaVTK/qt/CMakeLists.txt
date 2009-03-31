@@ -8,7 +8,6 @@ INCLUDE_DIRECTORIES( BEFORE
 
 SET( QMegaVTKAddOn_NAME2
   QGoLUTDialog
-  QColorImagePageView
   QImagePageView
   QImagePageViewTracer
   QSplitterchild
@@ -16,7 +15,6 @@ SET( QMegaVTKAddOn_NAME2
 
 SET( QMegaVTKAddOn_SRC2
   QGoLUTDialog.cxx
-  QColorImagePageView.cxx
   QImagePageView.cxx
   QImagePageViewTracer.cxx
   QSplitterchild.cxx
@@ -31,7 +29,6 @@ ADD_LIBRARY( QMegaVTKAddOn2
   ${QGoLUTDialog_MOC_SRC2}
   ${QImagePageView_MOC_SRC2}
   ${QImagePageViewTracer_MOC_SRC2}
-  ${QColorImagePageView_MOC_SRC2}
   ${QMegaVTKAddOn_SRC2}
   ${QSplitterchild_MOC_SRC2}
   )

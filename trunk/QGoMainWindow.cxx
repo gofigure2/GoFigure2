@@ -42,7 +42,6 @@
 
 #include "itkQtAdaptor.h"
 #include "itkQtProgressBar.h"
-#include "QColorImagePageView.h"
 
 #include <itkImageFileReader.h>
 #include <vnl/vnl_random.h>
@@ -465,14 +464,14 @@ void QGoMainWindow::DisplayImage( QString iTag )
 // *****************************************************************************
 void QGoMainWindow::OpenAndDisplayLSMFile( QString iTag, int timePoint, bool ComposeChannels )
 {
-  // this->OpenLSMFile( iTag, timePoint, ComposeChannels );
+  //this->OpenLSMFile( iTag, timePoint, ComposeChannels );
 
-  // m_PageView.push_back( new QImagePageViewTracer );
-  // QColorImagePageView * viewer =  new QColorImagePageView;
-  // m_PageView.last()->SetImage( m_VTKImage.last() );
-  // viewer->SetImage( m_VTKImage.last() );
+  //m_PageView.push_back( new QImagePageViewTracer );
+  //QColorImagePageView * viewer =  new QColorImagePageView;
+  //m_PageView.last()->SetImage( m_VTKImage.last() );
+  //viewer->SetImage( m_VTKImage.last() );
 
-  // int idx = this->CentralImageTabWidget->addTab( viewer, iTag );
+  //int idx = this->CentralImageTabWidget->addTab( viewer, iTag );
   //this->CentralImageTabWidget->setCurrentIndex( idx );
 }
 

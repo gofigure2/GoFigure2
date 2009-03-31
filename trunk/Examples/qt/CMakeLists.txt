@@ -1,4 +1,4 @@
-SUBDIRS( QColorImagePageView 
+SUBDIRS(
 QImagePageView 
 QImagePageViewTracer 
 QGoLUTDialog )

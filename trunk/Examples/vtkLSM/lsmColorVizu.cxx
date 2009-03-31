@@ -4,10 +4,6 @@
 #include "vtkIndent.h"
 #include "vtkImageData.h"
 #include "vtkViewImage.h"
-#include "vtkViewColorImage.h"
-#include "vtkViewColorImage2D.h"
-
-#include "QColorImagePageView.h"
 
 int main(int argc,char* argv[])
 {
@@ -98,31 +94,4 @@ int main(int argc,char* argv[])
   viewer->Delete();
   }
        
-  {
-  std::cout << "vtkViewColorImage.:" << std::endl;
-  vtkViewColorImage * viewer = vtkViewColorImage::New();
-  viewer->SetInput( myImage3 );
-  viewer->Render();
-  char buffer;
-  cin >> buffer;
-  viewer->Delete();
-  }
-
-  {
-  std::cout << "vtkViewColorImage2D.:" << std::endl;
-  vtkViewColorImage2D * viewer = vtkViewColorImage2D::New();
-  viewer->SetInput( myImage3 );
-  viewer->Render();
-  char buffer;
-  cin >> buffer;
-  viewer->Delete();
-  }
-
-  QApplication app(argc, argv);
-  app.processEvents();
-  QColorImagePageView * viewer =  new QColorImagePageView;
-  viewer->SetImage( myImage3 );
-  app.setMainWidget( viewer );
-  return app.exec();
-
 }
