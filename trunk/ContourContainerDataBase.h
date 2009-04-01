@@ -16,8 +16,14 @@ public:
   ~ContourContainerDataBase();
 
   //To be implemented
-  void SaveAllContours( ContainerType& iContainer );
-  void LoadAllContours( ContainerType& iContainer );
+  void SaveAllContours( ContainerType& iContainer )
+  {
+  }
+
+  void LoadAllContours( ContainerType& iContainer )
+  {
+
+  }
 
 private:
   ContourContainerDataBase( const Self& );

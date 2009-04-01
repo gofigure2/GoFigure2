@@ -648,13 +648,16 @@ void QImagePageViewTracer::SetImage( vtkImageData* input )
     vtkViewImage2DWithContourWidget* View1 =
       vtkViewImage2DWithContourWidget::New();
     View1->SetInput( this->Image );
-    View1->SetViewConvention( vtkViewImage2D::VIEW_CONVENTION_NEUROLOGICAL );
+
     vtkRenderWindow* renwin1 = this->qvtkWidget_XY->GetRenderWindow( );
 //     renwin1->GetRenderers()->RemoveAllItems();
     View1->SetupInteractor( this->qvtkWidget_XY->GetInteractor() );
     View1->SetRenderWindow( renwin1 );
     View1->SetRenderer( renwin1->GetRenderers()->GetFirstRenderer() );
+
     View1->SetViewOrientation( vtkViewImage2D::VIEW_ORIENTATION_AXIAL );
+    View1->SetViewConvention( vtkViewImage2D::VIEW_CONVENTION_NEUROLOGICAL );
+
 //     View1->GetTextProperty()->SetFontFamilyToArial();
 //     View1->GetTextProperty()->SetFontSize( 14 );
 
@@ -692,12 +695,15 @@ void QImagePageViewTracer::SetImage( vtkImageData* input )
     vtkViewImage2DWithContourWidget* View2 =
       vtkViewImage2DWithContourWidget::New();
     View2->SetInput( this->Image );
-    View2->SetViewConvention( vtkViewImage2D::VIEW_CONVENTION_NEUROLOGICAL );
+
     vtkRenderWindow* renwin2 = this->qvtkWidget_2->GetRenderWindow( );
     View2->SetRenderWindow( renwin2 );
     View2->SetRenderer( renwin2->GetRenderers()->GetFirstRenderer() );
     View2->SetupInteractor( this->qvtkWidget_2->GetInteractor() );
+
+    View2->SetViewConvention( vtkViewImage2D::VIEW_CONVENTION_NEUROLOGICAL );
     View2->SetViewOrientation (vtkViewImage2D::VIEW_ORIENTATION_CORONAL);
+
 //     View2->GetTextProperty()->SetFontFamilyToArial();
 //     View2->GetTextProperty()->SetFontSize( 14 );
 //     View2->SetContourWidgetInteractionOn();
@@ -733,11 +739,13 @@ void QImagePageViewTracer::SetImage( vtkImageData* input )
     vtkViewImage2DWithContourWidget* View3 =
       vtkViewImage2DWithContourWidget::New();
     View3->SetInput( this->Image );
-    View3->SetViewConvention( vtkViewImage2D::VIEW_CONVENTION_NEUROLOGICAL );
+
     vtkRenderWindow* renwin3 = this->qvtkWidget_3->GetRenderWindow( );
     View3->SetRenderWindow( renwin3 );
     View3->SetRenderer( renwin3->GetRenderers()->GetFirstRenderer() );
     View3->SetupInteractor( this->qvtkWidget_3->GetInteractor() );
+
+    View3->SetViewConvention( vtkViewImage2D::VIEW_CONVENTION_NEUROLOGICAL );
     View3->SetViewOrientation (vtkViewImage2D::VIEW_ORIENTATION_SAGITTAL);
 
 //     View3->GetTextProperty()->SetFontFamilyToArial();
@@ -898,14 +906,31 @@ void QImagePageViewTracer::ValidateContour(
     {
       if( contour->GetNumberOfPoints() > 2 )
       {
+        double bounds[6];
+        contour->GetBounds( bounds );
+
+        double Min[3], Max[3];
+        Min[0] = bounds[0];
+        Max[0] = bounds[1];
+        Min[1] = bounds[2];
+        Max[1] = bounds[3];
+        Min[2] = bounds[4];
+        Max[2] = bounds[5];
+
+        int* min_idx = this->Pool->GetItem( i )->GetImageCoordinatesFromWorldCoordinates( Min );
+        int* max_idx = this->Pool->GetItem( i )->GetImageCoordinatesFromWorldCoordinates( Max );
+
+        std::cout <<"Min = [" <<min_idx[0] <<" " <<min_idx[1] <<" " <<min_idx[2] <<"]" <<std::endl;
+        std::cout <<"Max = [" <<max_idx[0] <<" " <<max_idx[1] <<" " <<max_idx[2] <<"]" <<std::endl;
+
         if( iSave )
         {
           QString identifier = QString( "_id%1" ).arg( iId );
-          QString orientation = QString( "_dir%1" ).arg( this->Pool->GetItem(i)->GetViewOrientation() );
-          QString slice = QString( "_slice%1" ).arg( this->Pool->GetItem(i)->GetSlice() );
+          QString MinString = QString( "_m%1_%2_%3" ).arg( min_idx[0] ).arg( min_idx[1] ).arg( min_idx[2] );
+          QString MaxString = QString( "_M%1_%2_%3" ).arg( max_idx[0] ).arg( max_idx[1] ).arg( max_idx[2] );
 
           QString filename = QString( "contour%1%2%3%4" )
-            .arg( identifier ).arg( orientation ).arg( slice ).arg( ".vtk" );
+            .arg( identifier ).arg( MinString ).arg( MaxString ).arg( ".vtk" );
 
           vtkPolyDataWriter* writer = vtkPolyDataWriter::New();
           writer->SetInput( contour );

@@ -55,7 +55,7 @@ QGoMainWindow::QGoMainWindow( )
 {
   this->setupUi( this );
   this->setCentralWidget( this->CentralImageTabWidget );
-  this->setWindowTitle( tr( "~~>=O~~ GoFigure ~~O=<~~") );
+  this->setWindowTitle( tr( "<*)0|00|0>< ~~ <*)0|00|0><     GoFigure    ><0|00|0(*> ~~ ><0|00|0(*>") );
   this->statusbar->showMessage( tr( "No data" ) );
   this->CentralImageTabWidget->clear();
   this->KishoreSegDockWidget->setVisible(false);
@@ -122,14 +122,14 @@ QGoMainWindow::~QGoMainWindow()
   {
   QImagePageViewTracer* myPageView = dynamic_cast<QImagePageViewTracer*>( m_PageView.last() );
   if( myPageView )
-    { 
+    {
     delete myPageView;
     }
   else
     {
     QImagePageView4DTracer* myPageView4D = dynamic_cast<QImagePageView4DTracer*>( m_PageView.last() );
     if( myPageView4D )
-      { 
+      {
       delete myPageView4D;
       }
     }
@@ -163,14 +163,14 @@ void QGoMainWindow::on_actionClose_activated( )
     {
     QImagePageViewTracer* myPageView = dynamic_cast<QImagePageViewTracer*>( m_PageView[ idx ] );
     if( myPageView )
-      { 
+      {
       delete myPageView;
       }
     else
       {
       QImagePageView4DTracer* myPageView4D = dynamic_cast<QImagePageView4DTracer*>( m_PageView[ idx ] );
       if( myPageView4D )
-        { 
+        {
         delete myPageView4D;
         }
       }
@@ -195,20 +195,20 @@ void QGoMainWindow::on_actionClose_all_activated( )
   {
   QImagePageViewTracer* myPageView = dynamic_cast<QImagePageViewTracer*>( m_PageView.last() );
   if( myPageView )
-    { 
+    {
     delete myPageView;
     }
   else
     {
     QImagePageView4DTracer* myPageView4D = dynamic_cast<QImagePageView4DTracer*>( m_PageView.last() );
     if( myPageView4D )
-      { 
+      {
       delete myPageView4D;
       }
     }
 
   m_PageView.pop_back();
-  
+
   writeSettings();
   }
 }
@@ -226,7 +226,7 @@ void QGoMainWindow::on_actionBackground_activated( )
   int idx = this->CentralImageTabWidget->currentIndex();
   QImagePageViewTracer* myPageView = dynamic_cast<QImagePageViewTracer*>( m_PageView[idx] );
   if( myPageView )
-    { 
+    {
     double* rgb = myPageView->GetBackgroundColor();
     QColor color( static_cast< int >( 255. * rgb[0] ),
       static_cast< int >( 255. * rgb[1] ),
@@ -247,7 +247,7 @@ void QGoMainWindow::on_actionQuad_View_activated( )
   int idx = this->CentralImageTabWidget->currentIndex();
   QImagePageViewTracer* myPageView = dynamic_cast<QImagePageViewTracer*>( m_PageView[idx] );
   if( myPageView )
-    { 
+    {
     myPageView->quadview();
     }
   this->actionSnapshot->setEnabled(false);
@@ -259,7 +259,7 @@ void QGoMainWindow::on_actionFull_screen_XY_activated( )
   int idx = this->CentralImageTabWidget->currentIndex();
   QImagePageViewTracer* myPageView = dynamic_cast<QImagePageViewTracer*>( m_PageView[idx] );
   if( myPageView )
-    { 
+    {
     myPageView->FullScreenViewXY();
     }
   actionSnapshot->setEnabled(true);
@@ -271,7 +271,7 @@ void QGoMainWindow::on_actionFull_screen_YZ_activated( )
   int idx = this->CentralImageTabWidget->currentIndex();
   QImagePageViewTracer* myPageView = dynamic_cast<QImagePageViewTracer*>( m_PageView[idx] );
   if( myPageView )
-    { 
+    {
     myPageView->FullScreenView3();
     }
   actionSnapshot->setEnabled(true);
@@ -283,7 +283,7 @@ void QGoMainWindow::on_actionFull_screen_XZ_activated( )
   int idx = this->CentralImageTabWidget->currentIndex();
   QImagePageViewTracer* myPageView = dynamic_cast<QImagePageViewTracer*>( m_PageView[idx] );
   if( myPageView )
-    { 
+    {
     myPageView->FullScreenView2();
     }
   actionSnapshot->setEnabled(true);
@@ -295,7 +295,7 @@ void QGoMainWindow::on_actionFull_screen_XYZ_activated( )
   int idx = this->CentralImageTabWidget->currentIndex();
   QImagePageViewTracer* myPageView = dynamic_cast<QImagePageViewTracer*>( m_PageView[idx] );
   if( myPageView )
-    { 
+    {
     myPageView->FullScreenViewXYZ();
     }
   actionSnapshot->setEnabled(true);
@@ -307,7 +307,7 @@ void QGoMainWindow::on_actionVolume_rendering_XYZ_activated( )
   int idx = this->CentralImageTabWidget->currentIndex();
   QImagePageViewTracer* myPageView = dynamic_cast<QImagePageViewTracer*>( m_PageView[idx] );
   if( myPageView )
-    { 
+    {
     if (actionVolume_rendering_XYZ->isChecked())
       {
       myPageView->SetView3DToVolumeRenderingMode();
@@ -317,7 +317,7 @@ void QGoMainWindow::on_actionVolume_rendering_XYZ_activated( )
       myPageView->SetView3DToTriPlanarMode();
       }
     }
-}    
+}
 
 // *****************************************************************************
 void QGoMainWindow::on_actionScale_bars_activated( )
@@ -325,12 +325,12 @@ void QGoMainWindow::on_actionScale_bars_activated( )
   int idx = this->CentralImageTabWidget->currentIndex();
   QImagePageViewTracer* myPageView = dynamic_cast<QImagePageViewTracer*>( m_PageView[idx] );
   if( myPageView )
-    { 
+    {
     if (actionScale_bars->isChecked())
       myPageView->SetShowScalarBar(true);
     else
       myPageView->SetShowScalarBar(false);
-    }    
+    }
 }
 
 // *****************************************************************************
@@ -339,7 +339,7 @@ void QGoMainWindow::on_actionSnapshot_activated( )
   int idx = this->CentralImageTabWidget->currentIndex();
   QImagePageViewTracer* myPageView = dynamic_cast<QImagePageViewTracer*>( m_PageView[idx] );
   if( myPageView )
-    { 
+    {
     int whichview = myPageView->GetFullScreenView();
     QString SnapshotFileName = "";
     switch( whichview )
@@ -378,7 +378,7 @@ void QGoMainWindow::SetContourTracerOn(const bool& iChecked)
     int idx = this->CentralImageTabWidget->currentIndex();
   QImagePageViewTracer* myPageView = dynamic_cast<QImagePageViewTracer*>( m_PageView[idx] );
   if( myPageView )
-    { 
+    {
     myPageView->SetTracerON();
     }
   }
@@ -392,7 +392,7 @@ void QGoMainWindow::SetContourTracerOff(const bool& iChecked)
     int idx = this->CentralImageTabWidget->currentIndex();
   QImagePageViewTracer* myPageView = dynamic_cast<QImagePageViewTracer*>( m_PageView[idx] );
   if( myPageView )
-    { 
+    {
     myPageView->SetTracerOFF();
     }
   }
@@ -435,7 +435,7 @@ void QGoMainWindow::ChangeLookupTable( )
   int idx = this->CentralImageTabWidget->currentIndex();
   QImagePageViewTracer* myPageView = dynamic_cast<QImagePageViewTracer*>( m_PageView[idx] );
   if( myPageView )
-    { 
+    {
     myPageView->SetLookupTable( this->m_LUTDialog->GetLookupTable() );
     }
 }
@@ -516,7 +516,7 @@ void QGoMainWindow::ValidateContourTracer( )
   unsigned int cell_id = IdContourBox->value();
   QImagePageViewTracer* myPageView = dynamic_cast<QImagePageViewTracer*>( m_PageView[idx] );
   if( myPageView )
-    { 
+    {
     myPageView->SetCellId( cell_id );
 
     if( m_IdColorMap.find( cell_id ) == m_IdColorMap.end() )
@@ -535,7 +535,7 @@ void QGoMainWindow::ReinitializeContourTracer()
   int idx = this->CentralImageTabWidget->currentIndex();
   QImagePageViewTracer* myPageView = dynamic_cast<QImagePageViewTracer*>( m_PageView[idx] );
   if( myPageView )
-    { 
+    {
     myPageView->ReinitializeContour();
     }
 }
@@ -596,7 +596,7 @@ void QGoMainWindow::DisplayImage( QString iTag )
   m_PageView.push_back( new QImagePageViewTracer );
   QImagePageViewTracer* myPageView = dynamic_cast<QImagePageViewTracer*>( m_PageView.last() );
   if( myPageView )
-    { 
+    {
     myPageView->SetImage( m_VTKImage.last() );
     }
 
@@ -609,7 +609,7 @@ void QGoMainWindow::OpenAndDisplayLSMFile( QString iTag, int timePoint, bool Com
 {
   (void)(timePoint);
   (void)(ComposeChannels);
-  
+
   m_PageView.push_back( new QImagePageView4DTracer );
   QImagePageView4DTracer* myPageView;
   myPageView = static_cast< QImagePageView4DTracer*>( m_PageView.last() );
@@ -629,7 +629,7 @@ void QGoMainWindow::DisplayInTab( vtkImageData* myImage, int idx )
 {
   QImagePageViewTracer* myPageView = dynamic_cast<QImagePageViewTracer*>( m_PageView[idx] );
   if( myPageView )
-    { 
+    {
     myPageView->SetImage( myImage );
     }
 }
@@ -654,7 +654,7 @@ void QGoMainWindow::on_actionAbout_activated( )
   message.append( about_gofigure );
   message.append( authors );
 
-  QMessageBox::about( this, tr( "About GoFigure" ), message );
+  QMessageBox::about( this, tr( "<*)0|00|0>< About GoFigure" ), message );
 }
 
 // *****************************************************************************
@@ -778,13 +778,13 @@ void QGoMainWindow::UpdateFullScreenViewButtons(int idx)
   int whichview = 0;
   QImagePageViewTracer* myPageView = dynamic_cast<QImagePageViewTracer*>( m_PageView[idx] );
   if( myPageView )
-    { 
+    {
     whichview = myPageView->GetFullScreenView();
     switch( whichview )
       {
     default:
     case 0:
-      { 
+      {
       this->actionQuad_View->setChecked(true);
       actionSnapshot->setEnabled(false);
       break;

@@ -5,8 +5,16 @@
 
 
 /**
-  BaseName_id@@cellid@@_dir@@direction@@_slice@@slice@@.vtk
-
+  BaseName_id@@cellid@@_m@@minXidx@@_@@minYidy@@_@@minZidz_M@@maxXidx@@_@@maxYidy@@_@@maxZidz@@
+  example:
+    contour_id1_m369_310_21_M644_638_21.vtk
+    id = 1
+    minXidx = 369
+    minYidy = 310
+    minZidz = 21
+    maxXidx = 644
+    maxYidy = 638
+    maxZidz = 21
 */
 template< class TContainer >
 class ContourContainerFileSystem : public ContourContainerBase< TContainer >
