@@ -123,8 +123,8 @@ protected:
   QVector< vtkImageData* >  m_VTKImage;
 
   /** \brief Quad View*/
-  // QVector< QWidget* > m_PageView;
-  QVector< QImagePageViewTracer* > m_PageView;
+  QVector< QWidget* > m_PageView;
+  // QVector< QImagePageViewTracer* > m_PageView;
 
   /** \brief Convert itk::Image format to vtkImageData */
   QVector< VTKConvertImagePointer > m_Convert;
@@ -171,7 +171,6 @@ protected:
   QString strippedName(const QString &fullFileName);
 
   itk::QtProgressBar m_Bar;
-  //QProgressBar m_Bar;
 
   enum { MaxRecentFiles = 5 };
   QAction *recentFileActions[MaxRecentFiles];

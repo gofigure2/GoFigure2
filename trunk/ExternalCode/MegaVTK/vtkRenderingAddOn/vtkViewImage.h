@@ -314,6 +314,8 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage : public vtkImageViewer2
 
   virtual vtkRenderWindowInteractor* GetRenderWindowInteractor();
 
+  virtual void SetInput( vtkImageData* );
+  
  protected:
 
   vtkViewImage();
@@ -336,6 +338,7 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage : public vtkImageViewer2
   int ShowAnnotations;
   int ShowScalarBar;
 
+  bool IsColor;
 };
 
 #endif /* _vtkViewImage_h_ */

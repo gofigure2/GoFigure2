@@ -66,34 +66,28 @@ public:
   ~QImagePageView4DTracer();
 
   void SetFileName( char* name );
-  void SetColorVizu( int value )
-    {
-    std::cout << "Value: " << value << std::endl;
-    this->ColorVizu = value;
-    std::cout << "ColorVizu: " << this->ColorVizu << std::endl;
-    };
+  void SetColorVizu( int value ) { this->ColorVizu = value; };
 
 public slots:
   void SetView( int value );
   void RunMovie();
+  void SwitchColorMode( );
 
 protected:
   QWidget*      LayOutWidget1;
   QVBoxLayout*  LayOut1;
   QSlider*      slider1;
-  QPushButton*  button;
+  QPushButton*  button1;
+  QPushButton*  button2;
 
-  QImagePageViewTracer* Whatever;
-
+  void ReadLSMFile( int TimePoint );
   virtual void resizeEvent( QResizeEvent* event );
 
-  int NumberOfTimePoints;
-  char* FileName;
-  vtkImageData* Image;
-  void ReadLSMFile( int TimePoint );
-  // void Render() { this->Whatever->Render( ); };
-
-  int ColorVizu;
+  QImagePageViewTracer* Whatever;
+  int                   NumberOfTimePoints;
+  char*                 FileName;
+  vtkImageData*         Image;
+  int                   ColorVizu;
 };
 
 #endif

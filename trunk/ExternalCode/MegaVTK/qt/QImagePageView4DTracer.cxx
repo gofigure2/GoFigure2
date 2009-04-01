@@ -78,22 +78,27 @@ QImagePageView4DTracer::QImagePageView4DTracer( QWidget* parent ) : QWidget( par
 
   this->slider1 = new QSlider( Qt::Horizontal );
 
-  this->button = new QPushButton("Run &Movie");
+  this->button2 = new QPushButton("Switch between greyscale and color when multichannel");
+  
+  this->button1 = new QPushButton("Run &Movie");
 
   this->LayOut1 = new QVBoxLayout;
   this->LayOut1->addWidget( this->Whatever );
   this->LayOut1->addWidget( this->slider1 );
-  this->LayOut1->addWidget( this->button );
+  this->LayOut1->addWidget( this->button2 );
+  //this->LayOut1->addWidget( this->button1 );
 
   this->LayOutWidget1 = new QWidget( this );
   this->LayOutWidget1->setLayout( this->LayOut1 );
 
   QObject::connect( this->slider1, SIGNAL( valueChanged( int ) ),
     this, SLOT( SetView( int ) ) );
-  QObject::connect( this->button, SIGNAL( clicked( ) ),
+  QObject::connect( this->button1, SIGNAL( clicked( ) ),
     this, SLOT( RunMovie( ) ) );
+  QObject::connect( this->button2, SIGNAL( clicked( ) ),
+    this, SLOT( SwitchColorMode( ) ) );
 
-  ColorVizu = true;
+  this->ColorVizu = 0;
 }
 
 QImagePageView4DTracer::~QImagePageView4DTracer()
@@ -102,6 +107,8 @@ QImagePageView4DTracer::~QImagePageView4DTracer()
   delete this->LayOut1;
   delete this->LayOutWidget1;
   delete this->slider1;
+  delete this->button1;
+  delete this->button2;
 }
 
 void
@@ -127,8 +134,7 @@ void QImagePageView4DTracer::ReadLSMFile( int TimePoint )
   reader->Delete();
 
   vtkImageData* myImage_ch2;
-  std::cout << ColorVizu << std::endl;
-  if( ( NumberOfChannels == 1 ) || ( !ColorVizu ) )
+  if( ( NumberOfChannels == 1 ) || ( ColorVizu == 0) )
     {
     if( this->Image ) this->Image->Delete();
     this->Image = myImage_ch1;
@@ -222,11 +228,23 @@ void QImagePageView4DTracer::resizeEvent( QResizeEvent* event )
 
 void QImagePageView4DTracer::RunMovie( )
 {
-  std::cout << "Enjoy movie mode." << std::endl;
+  // std::cout << "Enjoy movie mode." << std::endl;
+  // for( unsigned int i = 0; i < this->NumberOfTimePoints; i++)
+  //  {
+  //  this->slider1->setValue( i );
+  //  }
+}
 
-  for( unsigned int i = 0; i < this->NumberOfTimePoints; i++)
+void QImagePageView4DTracer::SwitchColorMode( )
+{
+  if( this->ColorVizu == 0 )
     {
-    this->slider1->setValue( i );
+    this->ColorVizu = 1;
     }
+  else
+    {
+    this->ColorVizu = 0;
+    }
+  this->SetView( this->slider1->value() );
 }
 
