@@ -123,6 +123,7 @@ void QImagePageView4DTracer::ReadLSMFile( int TimePoint )
   vtkImageData* myImage_ch1 = vtkImageData::New();
   vtkLSMReader* reader=vtkLSMReader::New();
   reader->SetFileName( this->FileName );
+  std::cout << "Reading File " << this->FileName << std::endl;
   reader->SetUpdateTimePoint( TimePoint );
   reader->Update();
   this->slider1->setMinimum( 0 );

@@ -569,7 +569,7 @@ void QGoMainWindow::OpenImage( const QString& iFile )
   typedef ImageReaderType::Pointer ImageReaderPointer;
 
   ImageReaderPointer reader = ImageReaderType::New();
-  reader->SetFileName( iFile.toAscii( ).constData( ) );
+  reader->SetFileName( iFile.toAscii( ).data( ) );
 
   //BUG 03/23: This next line is commented for the time being since
   // it makes gofigure crashing.
@@ -607,15 +607,16 @@ void QGoMainWindow::DisplayImage( QString iTag )
 // *****************************************************************************
 void QGoMainWindow::OpenAndDisplayLSMFile( QString iTag, int timePoint, bool ComposeChannels )
 {
-  //this->OpenLSMFile( iTag, timePoint, ComposeChannels );
+  (void)(timePoint);
+  (void)(ComposeChannels);
+  
+  m_PageView.push_back( new QImagePageView4DTracer );
+  QImagePageView4DTracer* myPageView;
+  myPageView = static_cast< QImagePageView4DTracer*>( m_PageView.last() );
+  myPageView->SetFileName( iTag.toAscii( ).data( ) );
 
-  //m_PageView.push_back( new QImagePageViewTracer );
-  //QColorImagePageView * viewer =  new QColorImagePageView;
-  //m_PageView.last()->SetImage( m_VTKImage.last() );
-  //viewer->SetImage( m_VTKImage.last() );
-
-  //int idx = this->CentralImageTabWidget->addTab( viewer, iTag );
-  //this->CentralImageTabWidget->setCurrentIndex( idx );
+  int idx = this->CentralImageTabWidget->addTab( myPageView, iTag );
+  this->CentralImageTabWidget->setCurrentIndex( idx );
 }
 
 // *****************************************************************************
