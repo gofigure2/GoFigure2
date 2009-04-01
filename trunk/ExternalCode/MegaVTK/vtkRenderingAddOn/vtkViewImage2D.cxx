@@ -706,7 +706,7 @@ void vtkViewImage2D::InstallPipeline()
     {
       this->InteractorStyle = vtkInteractorStyleImage2D::New();
       this->Interactor->SetInteractorStyle(this->InteractorStyle);
-      if( this->IsColor )
+      if( !this->IsColor )
         {
         this->InteractorStyle->AddObserver(
           vtkCommand::StartWindowLevelEvent, this->Command);
