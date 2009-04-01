@@ -99,6 +99,7 @@ QImagePageView4DTracer::QImagePageView4DTracer( QWidget* parent ) : QWidget( par
     this, SLOT( SwitchColorMode( ) ) );
 
   this->ColorVizu = 0;
+  this->FileName = NULL;
 }
 
 QImagePageView4DTracer::~QImagePageView4DTracer()
@@ -112,9 +113,27 @@ QImagePageView4DTracer::~QImagePageView4DTracer()
 }
 
 void
-QImagePageView4DTracer::SetFileName( char* name )
+QImagePageView4DTracer::SetFileName(const char* name )
 {
-  this->FileName = name;
+  if ( this->FileName && name && (!strcmp(this->FileName,name)))
+    {
+    return;
+    }
+  if (!name && !this->FileName)
+    {
+    return;
+    }
+  if (this->FileName)
+    {
+    delete [] this->FileName;
+    this->FileName = NULL;
+    }
+  if (name)
+    {
+    this->FileName = new char[strlen(name) + 1];
+    strcpy(this->FileName, name);
+    }
+
   this->SetView( 0 );
 }
 
@@ -123,7 +142,6 @@ void QImagePageView4DTracer::ReadLSMFile( int TimePoint )
   vtkImageData* myImage_ch1 = vtkImageData::New();
   vtkLSMReader* reader=vtkLSMReader::New();
   reader->SetFileName( this->FileName );
-  std::cout << "Reading File " << this->FileName << std::endl;
   reader->SetUpdateTimePoint( TimePoint );
   reader->Update();
   this->slider1->setMinimum( 0 );

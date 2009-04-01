@@ -65,7 +65,7 @@ public:
   explicit QImagePageView4DTracer( QWidget* parent = 0 );
   ~QImagePageView4DTracer();
 
-  void SetFileName( char* name );
+  void SetFileName( const char* name );
   void SetColorVizu( int value ) { this->ColorVizu = value; };
 
 public slots:

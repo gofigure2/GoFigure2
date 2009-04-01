@@ -615,7 +615,7 @@ void QGoMainWindow::OpenAndDisplayLSMFile( QString iTag, int timePoint, bool Com
   myPageView = static_cast< QImagePageView4DTracer*>( m_PageView.last() );
   myPageView->SetFileName( iTag.toAscii( ).data( ) );
 
-  int idx = this->CentralImageTabWidget->addTab( myPageView, iTag );
+  int idx = this->CentralImageTabWidget->addTab( m_PageView.last(), iTag );
   this->CentralImageTabWidget->setCurrentIndex( idx );
 }
 
