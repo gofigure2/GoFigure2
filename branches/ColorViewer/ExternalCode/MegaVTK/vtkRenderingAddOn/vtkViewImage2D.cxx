@@ -555,7 +555,6 @@ void vtkViewImage2D::ResetPosition( void )
 //----------------------------------------------------------------------------
 void vtkViewImage2D::ResetWindowLevel( void )
 {
-#if 0
   if( !this->GetInput())
     return;
 
@@ -565,7 +564,6 @@ void vtkViewImage2D::ResetWindowLevel( void )
 
   this->SetColorWindow(  window );
   this->SetColorLevel(  level );
-#endif
 }
 
 //----------------------------------------------------------------------------
@@ -805,6 +803,8 @@ void vtkViewImage2D::AddDataSet( vtkPolyData* dataset,
   actor->Delete();
 }
 //----------------------------------------------------------------------------
+
+
 //----------------------------------------------------------------------------
 void vtkViewImage2D::AddDataSet( vtkDataSet* dataset,
   vtkProperty* property,
@@ -844,11 +844,12 @@ void vtkViewImage2D::AddDataSet( vtkDataSet* dataset,
   mapper->Delete();
   actor->Delete();
 }
+
+
 //----------------------------------------------------------------------------
 void vtkViewImage2D::SetMaskImage( vtkImageData* mask,
   vtkLookupTable* lut, const bool& iStatus )
 {
-#if 0
   vtkImageData* input = this->GetInput();
 
   if( !input || !mask || !lut)
@@ -857,7 +858,7 @@ void vtkViewImage2D::SetMaskImage( vtkImageData* mask,
   }
 
   vtkViewImage::SetMaskImage( mask, lut );
-//
+  
   // check if the mask dimensions match the image dimensions
   int dim1[3], dim2[3];
   input->GetDimensions( dim1);
@@ -887,5 +888,4 @@ void vtkViewImage2D::SetMaskImage( vtkImageData* mask,
   this->MaskFilter->Update();
 
   this->AddDataSet( this->MaskFilter->GetOutput(), 0, iStatus );
-#endif
 }
