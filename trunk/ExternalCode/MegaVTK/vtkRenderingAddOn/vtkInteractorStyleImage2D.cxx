@@ -79,7 +79,7 @@
 #include "vtkViewImage2DCommand.h"
 
 
-vtkCxxRevisionMacro (vtkInteractorStyleImage2D, "$Revision: 752 $");
+vtkCxxRevisionMacro (vtkInteractorStyleImage2D, "$Revision$");
 vtkStandardNewMacro (vtkInteractorStyleImage2D);
 
 
@@ -201,6 +201,11 @@ void vtkInteractorStyleImage2D::OnChar()
     case 'o':
     {
       this->InvokeEvent (vtkViewImage2DCommand::ResetViewerEvent, this);
+      break;
+    }
+    case 'r':
+    {
+      this->InvokeEvent (vtkViewImage2DCommand::ResetWindowLevelEvent, this);
       break;
     }
   }

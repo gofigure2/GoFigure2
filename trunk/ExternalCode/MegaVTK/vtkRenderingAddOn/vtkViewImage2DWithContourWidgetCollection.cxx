@@ -81,7 +81,7 @@
 
 #include "vtkViewImage2DCommand.h"
 
-vtkCxxRevisionMacro(vtkViewImage2DWithContourWidgetCollection, "$Revision: 1 $");
+vtkCxxRevisionMacro(vtkViewImage2DWithContourWidgetCollection, "$Revision$");
 vtkStandardNewMacro(vtkViewImage2DWithContourWidgetCollection);
 
 vtkViewImage2DWithContourWidgetCollection::

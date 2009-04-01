@@ -107,7 +107,7 @@
 #include <vector>
 #include <string>
 
-vtkCxxRevisionMacro(vtkViewImage2D, "$Revision: 2 $");
+vtkCxxRevisionMacro(vtkViewImage2D, "$Revision$");
 vtkStandardNewMacro(vtkViewImage2D);
 
 //----------------------------------------------------------------------------
