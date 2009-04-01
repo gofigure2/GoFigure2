@@ -62,16 +62,16 @@ class QImagePageView4DTracer : public QWidget
 {
   Q_OBJECT
 public:
-  explicit QImagePageView4DTracer( QWidget* parent = 0 );
-  ~QImagePageView4DTracer();
+  explicit QMEGAVTKADDON2_EXPORT QImagePageView4DTracer( QWidget* parent = 0 );
+  QMEGAVTKADDON2_EXPORT ~QImagePageView4DTracer();
 
-  void SetFileName( const char* name );
-  void SetColorVizu( int value ) { this->ColorVizu = value; };
+  QMEGAVTKADDON2_EXPORT void SetFileName( const char* name );
+  QMEGAVTKADDON2_EXPORT void SetColorVizu( int value ) { this->ColorVizu = value; };
 
 public slots:
-  void SetView( int value );
-  void RunMovie();
-  void SwitchColorMode( );
+  QMEGAVTKADDON2_EXPORT void SetView( int value );
+  QMEGAVTKADDON2_EXPORT void RunMovie();
+  QMEGAVTKADDON2_EXPORT void SwitchColorMode( );
 
 protected:
   QWidget*      LayOutWidget1;
