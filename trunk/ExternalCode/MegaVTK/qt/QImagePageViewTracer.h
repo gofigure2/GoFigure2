@@ -104,7 +104,7 @@ public:
   QMEGAVTKADDON2_EXPORT void GetBackgroundColor( double& r, double& g, double& b );
   QMEGAVTKADDON2_EXPORT double* GetBackgroundColor();
 
-  
+
   template< class TContourContainer,
             class TPropertyContainer >
   QMEGAVTKADDON2_EXPORT
@@ -113,7 +113,7 @@ public:
     const bool& iIntersection = true );
 
   template< class TPolyDataContainer >
-  QMEGAVTKADDON2_EXPORT  
+  QMEGAVTKADDON2_EXPORT
   void RemoveContours( TPolyDataContainer& iContours );
 
 public slots:
@@ -221,6 +221,8 @@ protected:
   int IsFullScreen;
 
   unsigned int CellId;
+
+  bool Is2DImage;
 
 protected slots:
   void MoveSlider1();

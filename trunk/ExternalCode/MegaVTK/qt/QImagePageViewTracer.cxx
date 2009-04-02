@@ -316,7 +316,7 @@ void QImagePageViewTracer::SnapshotView( QVTKWidget* iWidget,
         image );
   QString filename = iBaseName;
   SnapshotFileName=filename.append( QString( "%1" ).arg( SnapshotId ) );
- 
+
   switch( iType )
     {
     default:
@@ -533,33 +533,46 @@ void QImagePageViewTracer::SetBackgroundColor( const QColor& iColor )
 
 QVTKWidget* QImagePageViewTracer::GetActiveQVTKWidget( )
 {
-
-  switch(this->IsFullScreen)
+  if( !this->Is2DImage )
   {
-  case 1 :
+    switch(this->IsFullScreen)
+    {
+    case 1 :
+      return qvtkWidget_XY;
+    case 2 :
+      return qvtkWidget_2;
+    case 3 :
+      return qvtkWidget_3;
+    default :
+      return qvtkWidget_XYZ;
+    }
+  }
+  else
+  {
     return qvtkWidget_XY;
-  case 2 :
-    return qvtkWidget_2;
-  case 3 :
-    return qvtkWidget_3;
-  default :
-    return qvtkWidget_XYZ;
   }
 }
 
 
 vtkViewImage* QImagePageViewTracer::GetActiveView()
 {
-  switch(this->IsFullScreen)
+  if( !this->Is2DImage )
   {
-  case 1 :
+    switch(this->IsFullScreen)
+    {
+    case 1 :
+      return this->Pool->GetItem(0);
+    case 2 :
+      return this->Pool->GetItem(1);
+    case 3 :
+      return this->Pool->GetItem(2);
+    default :
+      return this->Pool->GetItem(3);
+    }
+  }
+  else
+  {
     return this->Pool->GetItem(0);
-  case 2 :
-    return this->Pool->GetItem(1);
-  case 3 :
-    return this->Pool->GetItem(2);
-  default :
-    return this->Pool->GetItem(3);
   }
 }
 
@@ -577,44 +590,55 @@ void QImagePageViewTracer::SetLookupTable( vtkLookupTable* lut )
 
 void QImagePageViewTracer::quadview()
 {
+  if( !this->Is2DImage )
    SetFullScreenView( 0 );
 }
 
 void QImagePageViewTracer::FullScreenViewXY ()
 {
-  SetFullScreenView( 1 );
+  if( !this->Is2DImage )
+    SetFullScreenView( 1 );
 }
 
 
 void QImagePageViewTracer::FullScreenView2( )
 {
-  SetFullScreenView( 2 );
+  if( !this->Is2DImage )
+    SetFullScreenView( 2 );
 }
 
 
 void QImagePageViewTracer::FullScreenView3( )
 {
-  SetFullScreenView( 3 );
+  if( !this->Is2DImage )
+    SetFullScreenView( 3 );
 }
 
 
 void QImagePageViewTracer::FullScreenViewXYZ ( )
 {
-  SetFullScreenView( 4 );
+  if( !this->Is2DImage )
+    SetFullScreenView( 4 );
 }
 
 void QImagePageViewTracer::SetView3DToTriPlanarMode()
 {
-  View3D->SetTriPlanarRenderingOn();
-  View3D->SetVolumeRenderingOff();
-  View3D->Render();
+  if( !this->Is2DImage )
+  {
+    View3D->SetTriPlanarRenderingOn();
+    View3D->SetVolumeRenderingOff();
+    View3D->Render();
+  }
 }
 //
 void QImagePageViewTracer::SetView3DToVolumeRenderingMode()
 {
-  View3D->SetTriPlanarRenderingOff();
-  View3D->SetVolumeRenderingOn();
-  View3D->Render();
+  if( !this->Is2DImage )
+  {
+    View3D->SetTriPlanarRenderingOff();
+    View3D->SetVolumeRenderingOn();
+    View3D->Render();
+  }
 }
 
 #ifdef MegaVTK_USE_ITK
@@ -642,170 +666,214 @@ void QImagePageViewTracer::SetImage( vtkImageData* input )
   if( !input )
     return;
   else
-    {
+  {
     this->Image = input;
 
-    vtkViewImage2DWithContourWidget* View1 =
-      vtkViewImage2DWithContourWidget::New();
-    View1->SetInput( this->Image );
+    int extent[6];
+    this->Image->GetExtent( extent );
 
-    vtkRenderWindow* renwin1 = this->qvtkWidget_XY->GetRenderWindow( );
-//     renwin1->GetRenderers()->RemoveAllItems();
-    View1->SetupInteractor( this->qvtkWidget_XY->GetInteractor() );
-    View1->SetRenderWindow( renwin1 );
-    View1->SetRenderer( renwin1->GetRenderers()->GetFirstRenderer() );
+    this->Is2DImage = ( extent[0] == extent[1] ) || ( extent[2] == extent[3] )
+      || ( extent[4] == extent[5] );
 
-    View1->SetViewOrientation( vtkViewImage2D::VIEW_ORIENTATION_AXIAL );
-    View1->SetViewConvention( vtkViewImage2D::VIEW_CONVENTION_NEUROLOGICAL );
+    if( !this->Is2DImage )
+    {
+      vtkViewImage2DWithContourWidget* View1 =
+        vtkViewImage2DWithContourWidget::New();
+      View1->SetInput( this->Image );
 
-//     View1->GetTextProperty()->SetFontFamilyToArial();
-//     View1->GetTextProperty()->SetFontSize( 14 );
+      vtkRenderWindow* renwin1 = this->qvtkWidget_XY->GetRenderWindow( );
+  //     renwin1->GetRenderers()->RemoveAllItems();
+      View1->SetupInteractor( this->qvtkWidget_XY->GetInteractor() );
+      View1->SetRenderWindow( renwin1 );
+      View1->SetRenderer( renwin1->GetRenderers()->GetFirstRenderer() );
 
-//     View1->SetContourWidgetInteractionOn();
-    this->Pool->AddItem( View1 );
-    this->View3D->Add2DPhantom( 0, View1->GetImageActor(), View1->GetSlicePlane() );
+      View1->SetViewOrientation( vtkViewImage2D::VIEW_ORIENTATION_AXIAL );
+      View1->SetViewConvention( vtkViewImage2D::VIEW_CONVENTION_NEUROLOGICAL );
 
-    int *range = View1->GetSliceRange();
+  //     View1->GetTextProperty()->SetFontFamilyToArial();
+  //     View1->GetTextProperty()->SetFontSize( 14 );
 
-    this->slider1->setMinimum( range[0] );
-    this->slider1->setMaximum( range[1] );
+  //     View1->SetContourWidgetInteractionOn();
+      this->Pool->AddItem( View1 );
+      this->View3D->Add2DPhantom( 0, View1->GetImageActor(), View1->GetSlicePlane() );
 
-    // Event connection between vtk and qt
-    // when SliceMoveEvent occurs in the XY View, Slider1 moves.
-    vtkEventQtConnector->Connect(
-      reinterpret_cast< vtkObject* >( View1->GetInteractorStyle() ),
-      vtkViewImage2DCommand::SliceMoveEvent,
-      this, SLOT( MoveSlider1() ) );
+      int *range = View1->GetSliceRange();
 
-    // Event connection between vtk and qt
-    // when RequestedPositionEvent occurs in the XY View (double-click),
-    // Slider2 and Slider3 move.
-    vtkEventQtConnector->Connect(
-      reinterpret_cast< vtkObject* >( View1->GetInteractorStyle() ),
-      vtkViewImage2DCommand::RequestedPositionEvent,
-      this, SLOT( MoveSlider2() ) );
+      this->slider1->setMinimum( range[0] );
+      this->slider1->setMaximum( range[1] );
 
-    vtkEventQtConnector->Connect(
-      reinterpret_cast< vtkObject* >( View1->GetInteractorStyle() ),
-      vtkViewImage2DCommand::RequestedPositionEvent,
-      this, SLOT( MoveSlider3() ) );
+      // Event connection between vtk and qt
+      // when SliceMoveEvent occurs in the XY View, Slider1 moves.
+      vtkEventQtConnector->Connect(
+        reinterpret_cast< vtkObject* >( View1->GetInteractorStyle() ),
+        vtkViewImage2DCommand::SliceMoveEvent,
+        this, SLOT( MoveSlider1() ) );
 
-    View1->Delete();
+      // Event connection between vtk and qt
+      // when RequestedPositionEvent occurs in the XY View (double-click),
+      // Slider2 and Slider3 move.
+      vtkEventQtConnector->Connect(
+        reinterpret_cast< vtkObject* >( View1->GetInteractorStyle() ),
+        vtkViewImage2DCommand::RequestedPositionEvent,
+        this, SLOT( MoveSlider2() ) );
 
-    vtkViewImage2DWithContourWidget* View2 =
-      vtkViewImage2DWithContourWidget::New();
-    View2->SetInput( this->Image );
+      vtkEventQtConnector->Connect(
+        reinterpret_cast< vtkObject* >( View1->GetInteractorStyle() ),
+        vtkViewImage2DCommand::RequestedPositionEvent,
+        this, SLOT( MoveSlider3() ) );
 
-    vtkRenderWindow* renwin2 = this->qvtkWidget_2->GetRenderWindow( );
-    View2->SetRenderWindow( renwin2 );
-    View2->SetRenderer( renwin2->GetRenderers()->GetFirstRenderer() );
-    View2->SetupInteractor( this->qvtkWidget_2->GetInteractor() );
+      View1->Delete();
 
-    View2->SetViewConvention( vtkViewImage2D::VIEW_CONVENTION_NEUROLOGICAL );
-    View2->SetViewOrientation (vtkViewImage2D::VIEW_ORIENTATION_CORONAL);
+      vtkViewImage2DWithContourWidget* View2 =
+        vtkViewImage2DWithContourWidget::New();
+      View2->SetInput( this->Image );
 
-//     View2->GetTextProperty()->SetFontFamilyToArial();
-//     View2->GetTextProperty()->SetFontSize( 14 );
-//     View2->SetContourWidgetInteractionOn();
+      vtkRenderWindow* renwin2 = this->qvtkWidget_2->GetRenderWindow( );
+      View2->SetRenderWindow( renwin2 );
+      View2->SetRenderer( renwin2->GetRenderers()->GetFirstRenderer() );
+      View2->SetupInteractor( this->qvtkWidget_2->GetInteractor() );
 
-    this->Pool->AddItem( View2 );
-    this->View3D->Add2DPhantom( 1, View2->GetImageActor(), View2->GetSlicePlane() );
+      View2->SetViewConvention( vtkViewImage2D::VIEW_CONVENTION_NEUROLOGICAL );
+      View2->SetViewOrientation (vtkViewImage2D::VIEW_ORIENTATION_CORONAL);
 
-    range = View2->GetSliceRange();
-    this->slider2->setMinimum( range[0] );
-    this->slider2->setMaximum( range[1] );
-    // Event connection between vtk and qt
-    // when SliceMoveEvent occurs in the XY View, Slider1 moves.
-    vtkEventQtConnector->Connect(
-      reinterpret_cast< vtkObject* >( View2->GetInteractorStyle() ),
-      vtkViewImage2DCommand::SliceMoveEvent,
-      this, SLOT( MoveSlider2() ) );
+  //     View2->GetTextProperty()->SetFontFamilyToArial();
+  //     View2->GetTextProperty()->SetFontSize( 14 );
+  //     View2->SetContourWidgetInteractionOn();
 
-    // Event connection between vtk and qt
-    // when RequestedPositionEvent occurs in the XY View (double-click),
-    // Slider2 and Slider3 move.
-    vtkEventQtConnector->Connect(
-      reinterpret_cast< vtkObject* >( View2->GetInteractorStyle() ),
-      vtkViewImage2DCommand::RequestedPositionEvent,
-      this, SLOT( MoveSlider1() ) );
+      this->Pool->AddItem( View2 );
+      this->View3D->Add2DPhantom( 1, View2->GetImageActor(), View2->GetSlicePlane() );
 
-    vtkEventQtConnector->Connect(
-      reinterpret_cast< vtkObject* >( View2->GetInteractorStyle() ),
-      vtkViewImage2DCommand::RequestedPositionEvent,
-      this, SLOT( MoveSlider3() ) );
+      range = View2->GetSliceRange();
+      this->slider2->setMinimum( range[0] );
+      this->slider2->setMaximum( range[1] );
+      // Event connection between vtk and qt
+      // when SliceMoveEvent occurs in the XY View, Slider1 moves.
+      vtkEventQtConnector->Connect(
+        reinterpret_cast< vtkObject* >( View2->GetInteractorStyle() ),
+        vtkViewImage2DCommand::SliceMoveEvent,
+        this, SLOT( MoveSlider2() ) );
 
-    View2->Delete();
+      // Event connection between vtk and qt
+      // when RequestedPositionEvent occurs in the XY View (double-click),
+      // Slider2 and Slider3 move.
+      vtkEventQtConnector->Connect(
+        reinterpret_cast< vtkObject* >( View2->GetInteractorStyle() ),
+        vtkViewImage2DCommand::RequestedPositionEvent,
+        this, SLOT( MoveSlider1() ) );
 
-    vtkViewImage2DWithContourWidget* View3 =
-      vtkViewImage2DWithContourWidget::New();
-    View3->SetInput( this->Image );
+      vtkEventQtConnector->Connect(
+        reinterpret_cast< vtkObject* >( View2->GetInteractorStyle() ),
+        vtkViewImage2DCommand::RequestedPositionEvent,
+        this, SLOT( MoveSlider3() ) );
 
-    vtkRenderWindow* renwin3 = this->qvtkWidget_3->GetRenderWindow( );
-    View3->SetRenderWindow( renwin3 );
-    View3->SetRenderer( renwin3->GetRenderers()->GetFirstRenderer() );
-    View3->SetupInteractor( this->qvtkWidget_3->GetInteractor() );
+      View2->Delete();
 
-    View3->SetViewConvention( vtkViewImage2D::VIEW_CONVENTION_NEUROLOGICAL );
-    View3->SetViewOrientation (vtkViewImage2D::VIEW_ORIENTATION_SAGITTAL);
+      vtkViewImage2DWithContourWidget* View3 =
+        vtkViewImage2DWithContourWidget::New();
+      View3->SetInput( this->Image );
 
-//     View3->GetTextProperty()->SetFontFamilyToArial();
-//     View3->GetTextProperty()->SetFontSize( 14 );
-//     View3->SetContourWidgetInteractionOn();
+      vtkRenderWindow* renwin3 = this->qvtkWidget_3->GetRenderWindow( );
+      View3->SetRenderWindow( renwin3 );
+      View3->SetRenderer( renwin3->GetRenderers()->GetFirstRenderer() );
+      View3->SetupInteractor( this->qvtkWidget_3->GetInteractor() );
 
-    this->Pool->AddItem( View3 );
-    this->View3D->Add2DPhantom( 2, View3->GetImageActor(), View3->GetSlicePlane() );
+      View3->SetViewConvention( vtkViewImage2D::VIEW_CONVENTION_NEUROLOGICAL );
+      View3->SetViewOrientation (vtkViewImage2D::VIEW_ORIENTATION_SAGITTAL);
 
-    range = View3->GetSliceRange();
-    this->slider3->setMinimum( range[0] );
-    this->slider3->setMaximum( range[1] );
+  //     View3->GetTextProperty()->SetFontFamilyToArial();
+  //     View3->GetTextProperty()->SetFontSize( 14 );
+  //     View3->SetContourWidgetInteractionOn();
 
-    // Event connection between vtk and qt
-    // when SliceMoveEvent occurs in the XY View, Slider1 moves.
-    vtkEventQtConnector->Connect(
-      reinterpret_cast< vtkObject* >( View3->GetInteractorStyle() ),
-      vtkViewImage2DCommand::SliceMoveEvent,
-      this, SLOT( MoveSlider3() ) );
+      this->Pool->AddItem( View3 );
+      this->View3D->Add2DPhantom( 2, View3->GetImageActor(), View3->GetSlicePlane() );
 
-    // Event connection between vtk and qt
-    // when RequestedPositionEvent occurs in the XY View (double-click),
-    // Slider2 and Slider3 move.
-    vtkEventQtConnector->Connect(
-      reinterpret_cast< vtkObject* >( View3->GetInteractorStyle() ),
-      vtkViewImage2DCommand::RequestedPositionEvent,
-      this, SLOT( MoveSlider1() ) );
+      range = View3->GetSliceRange();
+      this->slider3->setMinimum( range[0] );
+      this->slider3->setMaximum( range[1] );
 
-    vtkEventQtConnector->Connect(
-      reinterpret_cast< vtkObject* >( View3->GetInteractorStyle() ),
-      vtkViewImage2DCommand::RequestedPositionEvent,
-      this, SLOT( MoveSlider2() ) );
+      // Event connection between vtk and qt
+      // when SliceMoveEvent occurs in the XY View, Slider1 moves.
+      vtkEventQtConnector->Connect(
+        reinterpret_cast< vtkObject* >( View3->GetInteractorStyle() ),
+        vtkViewImage2DCommand::SliceMoveEvent,
+        this, SLOT( MoveSlider3() ) );
 
-    View3->Delete();
+      // Event connection between vtk and qt
+      // when RequestedPositionEvent occurs in the XY View (double-click),
+      // Slider2 and Slider3 move.
+      vtkEventQtConnector->Connect(
+        reinterpret_cast< vtkObject* >( View3->GetInteractorStyle() ),
+        vtkViewImage2DCommand::RequestedPositionEvent,
+        this, SLOT( MoveSlider1() ) );
 
-    int size[2] = {400, 400};
-    this->Pool->SyncSetSize (size);
+      vtkEventQtConnector->Connect(
+        reinterpret_cast< vtkObject* >( View3->GetInteractorStyle() ),
+        vtkViewImage2DCommand::RequestedPositionEvent,
+        this, SLOT( MoveSlider2() ) );
 
-    vtkRenderWindow* renwin4 = this->qvtkWidget_XYZ->GetRenderWindow( );
-//     this->View3D->SetRenderWindow( renwin4 );
-    this->View3D->SetupInteractor( this->qvtkWidget_XYZ->GetInteractor() );
-    this->View3D->SetInput( this->Image );
-    this->View3D->SetVolumeRenderingOff();
-    this->View3D->SetShowScalarBar( false );
-    this->View3D->ResetCamera();
-    this->Pool->SetExtraRenderWindow( renwin4 );
+      View3->Delete();
 
-    this->Pool->Initialize();
-    this->Pool->SyncSetShowAnnotations( true );
-    this->Pool->SyncSetShowScalarBar( false );
-    this->Pool->SyncSetBackground( this->Pool->GetItem(0)->GetBackground() );
-    this->Pool->SyncSetTextProperty( this->Pool->GetItem(0)->GetTextProperty());
-//     this->Pool->SyncMaskImage();
-    this->Pool->SyncRender();
-    this->Pool->SyncReset();
+      int size[2] = {400, 400};
+      this->Pool->SyncSetSize (size);
 
-    this->slider1->setValue( (this->slider1->minimum()+this->slider1->maximum())/2 );
-    this->slider2->setValue( (this->slider2->minimum()+this->slider2->maximum())/2 );
-    this->slider3->setValue( (this->slider3->minimum()+this->slider3->maximum())/2 );
+      vtkRenderWindow* renwin4 = this->qvtkWidget_XYZ->GetRenderWindow( );
+  //     this->View3D->SetRenderWindow( renwin4 );
+      this->View3D->SetupInteractor( this->qvtkWidget_XYZ->GetInteractor() );
+      this->View3D->SetInput( this->Image );
+      this->View3D->SetVolumeRenderingOff();
+      this->View3D->SetShowScalarBar( false );
+      this->View3D->ResetCamera();
+      this->Pool->SetExtraRenderWindow( renwin4 );
+
+      this->Pool->Initialize();
+      this->Pool->SyncSetShowAnnotations( true );
+      this->Pool->SyncSetShowScalarBar( false );
+      this->Pool->SyncSetBackground( this->Pool->GetItem(0)->GetBackground() );
+      this->Pool->SyncSetTextProperty( this->Pool->GetItem(0)->GetTextProperty());
+  //     this->Pool->SyncMaskImage();
+      this->Pool->SyncRender();
+      this->Pool->SyncReset();
+
+      this->slider1->setValue( (this->slider1->minimum()+this->slider1->maximum())/2 );
+      this->slider2->setValue( (this->slider2->minimum()+this->slider2->maximum())/2 );
+      this->slider3->setValue( (this->slider3->minimum()+this->slider3->maximum())/2 );
     }
+    else
+    {
+      vtkViewImage2DWithContourWidget* View1 =
+        vtkViewImage2DWithContourWidget::New();
+      View1->SetInput( this->Image );
+
+      vtkRenderWindow* renwin1 = this->qvtkWidget_XY->GetRenderWindow( );
+  //     renwin1->GetRenderers()->RemoveAllItems();
+      View1->SetupInteractor( this->qvtkWidget_XY->GetInteractor() );
+      View1->SetRenderWindow( renwin1 );
+      View1->SetRenderer( renwin1->GetRenderers()->GetFirstRenderer() );
+
+      View1->SetViewOrientation( vtkViewImage2D::VIEW_ORIENTATION_AXIAL );
+      View1->SetViewConvention( vtkViewImage2D::VIEW_CONVENTION_NEUROLOGICAL );
+
+  //     View1->GetTextProperty()->SetFontFamilyToArial();
+  //     View1->GetTextProperty()->SetFontSize( 14 );
+
+  //     View1->SetContourWidgetInteractionOn();
+      this->Pool->AddItem( View1 );
+      View1->Delete();
+
+      this->Pool->Initialize();
+      this->Pool->SyncSetShowAnnotations( true );
+      this->Pool->SyncSetShowScalarBar( false );
+      this->Pool->SyncSetBackground( this->Pool->GetItem(0)->GetBackground() );
+      this->Pool->SyncSetTextProperty( this->Pool->GetItem(0)->GetTextProperty());
+  //     this->Pool->SyncMaskImage();
+      this->Pool->SyncRender();
+      this->Pool->SyncReset();
+
+      LayOutWidget2->hide();
+      LayOutWidget3->hide();
+      LayOutWidget4->hide();
+    }
+  }
 }
 
 void QImagePageViewTracer::SetShowScalarBar( const bool& state )
@@ -852,23 +920,26 @@ unsigned int QImagePageViewTracer::GetCellId() const
 
 void QImagePageViewTracer::SetTracerON()
 {
-  this->Pool->GetItem( 0 )->SetContourWidgetInteractionOn();
-  this->Pool->GetItem( 1 )->SetContourWidgetInteractionOn();
-  this->Pool->GetItem( 2 )->SetContourWidgetInteractionOn();
+  for( int i = 0; i < this->Pool->GetNumberOfItems(); i++ )
+  {
+    this->Pool->GetItem( i )->SetContourWidgetInteractionOn();
+  }
 }
 
 void QImagePageViewTracer::SetTracerOFF()
 {
-  this->Pool->GetItem( 0 )->SetContourWidgetInteractionOff();
-  this->Pool->GetItem( 1 )->SetContourWidgetInteractionOff();
-  this->Pool->GetItem( 2 )->SetContourWidgetInteractionOff();
+  for( int i = 0; i < this->Pool->GetNumberOfItems(); i++ )
+  {
+    this->Pool->GetItem( i )->SetContourWidgetInteractionOff();
+  }
 }
 
 void QImagePageViewTracer::SetTracer( const bool& iState )
 {
-  this->Pool->GetItem( 0 )->SetContourWidgetInteraction( iState );
-  this->Pool->GetItem( 1 )->SetContourWidgetInteraction( iState );
-  this->Pool->GetItem( 2 )->SetContourWidgetInteraction( iState );
+  for( int i = 0; i < this->Pool->GetNumberOfItems(); i++ )
+  {
+    this->Pool->GetItem( i )->SetContourWidgetInteraction( iState );
+  }
 }
 
 void QImagePageViewTracer::resizeEvent( QResizeEvent* event )
@@ -897,7 +968,7 @@ void QImagePageViewTracer::ValidateContour(
   contour_property->SetColor( rgb );
   contour_property->SetLineWidth( 3. );
 
-  for( int i = 0; i < 3; i++ )
+  for( int i = 0; i < this->Pool->GetNumberOfItems(); i++ )
    {
     contour_rep = this->Pool->GetItem( i )->GetContourRepresentation();
     contour = contour_rep->GetContourRepresentationAsPolyData( );
@@ -943,7 +1014,7 @@ void QImagePageViewTracer::ValidateContour(
         vtkPolyData* contour_copy = vtkPolyData::New();
         contour_copy->ShallowCopy( contour );
 
-        for( int j = 0; j < 3; j++ )
+        for( int j = 0; j < this->Pool->GetNumberOfItems(); j++ )
         {
           this->Pool->GetItem( j )->AddDataSet( contour_copy, contour_property, true );
         }
@@ -977,7 +1048,7 @@ void QImagePageViewTracer::RemoveContours( TPolyDataContainer& iContours )
 
 void QImagePageViewTracer::ReinitializeContour( )
 {
-  for( int i = 0; i < 3; i++ )
+  for( int i = 0; i < this->Pool->GetNumberOfItems(); i++ )
   {
     this->Pool->GetItem( i )->GetContourWidget()->Initialize( 0 );
   }

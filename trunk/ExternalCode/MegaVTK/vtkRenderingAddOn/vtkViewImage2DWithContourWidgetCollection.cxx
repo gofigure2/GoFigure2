@@ -87,6 +87,7 @@ vtkStandardNewMacro(vtkViewImage2DWithContourWidgetCollection);
 vtkViewImage2DWithContourWidgetCollection::
 vtkViewImage2DWithContourWidgetCollection( )
 {
+  this->ExtraRenderWindow = 0;
   this->Command = vtkViewImage2DWithContourWidgetCollectionCommand::New();
   this->Command->SetCollection( this );
 }
