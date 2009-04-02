@@ -335,7 +335,8 @@ char* vtkLSMReader::GetChannelName(int chNum)
   if(!this->ChannelNames || chNum < 0 || chNum > this->GetNumberOfChannels()-1)
     {
     vtkDebugMacro(<<"GetChannelName: Illegal channel index!");
-    return "";
+    //NOTE: would be much easier to return a const char*
+    return const_cast< char* >( std::string("").c_str() );
     }
   return this->ChannelNames[chNum];
 }
