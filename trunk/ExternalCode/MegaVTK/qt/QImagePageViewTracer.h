@@ -162,8 +162,6 @@ protected:
   QSplitterchild*    htSplitter;
   QSplitterchild*    hbSplitter;
 
-  QString SnapshotFileName;
-
   QWidget*      LayOutWidget1;
   QHBoxLayout*  LayOut1;
   QSlider*      slider1;
@@ -207,7 +205,7 @@ protected:
   virtual void resizeEvent( QResizeEvent* event );
 //   virtual void dragEnterEvent ( QDragEnterEvent * event );
 
-  void SnapshotView( QVTKWidget* iWidget,
+  QString SnapshotView( QVTKWidget* iWidget,
     const SnapshotImageType& iType,
     const QString& iBaseName = QString( "snapshot" ) );
 

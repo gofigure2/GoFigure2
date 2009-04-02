@@ -307,7 +307,7 @@ bool QImagePageViewTracer::BuildScreenshotFromRenderWindow(
   return false;
 }
 
-void QImagePageViewTracer::SnapshotView( QVTKWidget* iWidget,
+QString QImagePageViewTracer::SnapshotView( QVTKWidget* iWidget,
   const SnapshotImageType& iType,
   const QString& iBaseName )
 {
@@ -315,7 +315,7 @@ void QImagePageViewTracer::SnapshotView( QVTKWidget* iWidget,
   BuildScreenshotFromRenderWindow( iWidget->GetRenderWindow(),
         image );
   QString filename = iBaseName;
-  SnapshotFileName=filename.append( QString( "%1" ).arg( SnapshotId ) );
+  filename.append( QString( "%1" ).arg( SnapshotId ) );
 
   switch( iType )
     {
@@ -373,32 +373,29 @@ void QImagePageViewTracer::SnapshotView( QVTKWidget* iWidget,
     }
   SnapshotId++;
   image->Delete();
+  return filename;
 }
 
 QString QImagePageViewTracer::SnapshotViewXY( const SnapshotImageType& iType,
     const QString& iBaseName )
 {
-  SnapshotView( qvtkWidget_XY, iType, iBaseName );
-  return SnapshotFileName;
+  return SnapshotView( qvtkWidget_XY, iType, iBaseName );
 }
 
 QString QImagePageViewTracer::SnapshotView2( const SnapshotImageType& iType,
     const QString& iBaseName )
 {
-  SnapshotView( qvtkWidget_2, iType, iBaseName );
-  return SnapshotFileName;
+  return SnapshotView( qvtkWidget_2, iType, iBaseName );
 }
 QString QImagePageViewTracer::SnapshotView3( const SnapshotImageType& iType,
     const QString& iBaseName )
 {
-  SnapshotView( qvtkWidget_3, iType, iBaseName );
-  return SnapshotFileName;
+  return SnapshotView( qvtkWidget_3, iType, iBaseName );
 }
 QString QImagePageViewTracer::SnapshotViewXYZ( const SnapshotImageType& iType,
     const QString& iBaseName )
 {
-  SnapshotView( qvtkWidget_XYZ, iType, iBaseName );
-  return SnapshotFileName;
+  return SnapshotView( qvtkWidget_XYZ, iType, iBaseName );
 }
 
 void QImagePageViewTracer::SetFullScreenView( const int& iS )
