@@ -100,6 +100,7 @@ public:
   QMEGAVTKADDON2_EXPORT void SetTracerON();
   QMEGAVTKADDON2_EXPORT void SetTracerOFF();
   QMEGAVTKADDON2_EXPORT void SetTracer( const bool& iState );
+  QMEGAVTKADDON2_EXPORT bool GetTracerStatus( ) const;
 
   QMEGAVTKADDON2_EXPORT void GetBackgroundColor( double& r, double& g, double& b );
   QMEGAVTKADDON2_EXPORT double* GetBackgroundColor();

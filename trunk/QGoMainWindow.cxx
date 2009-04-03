@@ -49,6 +49,7 @@
 #include <qsettings.h>
 
 #include "vtkImageAppendComponents.h"
+#include "ContourContainerFileSystem.h"
 
 // *****************************************************************************
 QGoMainWindow::QGoMainWindow( )
@@ -86,7 +87,6 @@ QGoMainWindow::QGoMainWindow( )
   this, SLOT( SetTracerToRotateContourTracer() ) );
   QObject::connect( this->TracerScalingBtn, SIGNAL( released() ),
   this, SLOT( SetTracerToScaleContourTracer() ) );*/
-
   QObject::connect( this->ManualSegmentationOnRadioBtn, SIGNAL( toggled(bool) ),
     this, SLOT( SetContourTracerOn(bool) ) );
   QObject::connect( this->ManualSegmentationOffRadioBtn, SIGNAL( toggled(bool) ),
@@ -101,6 +101,8 @@ QGoMainWindow::QGoMainWindow( )
     //this, SLOT( showprogressloading() ) );
   QObject::connect( this->CentralImageTabWidget, SIGNAL( currentChanged( int ) ),
     this, SLOT( UpdateFullScreenViewButtons( int ) ) );
+  QObject::connect( this->CentralImageTabWidget, SIGNAL( currentChanged( int ) ),
+    this, SLOT( UpdateTracerButtons( int ) ) );
 
   Fullscreenbuttons();
 
@@ -356,31 +358,38 @@ void QGoMainWindow::on_actionSnapshot_activated( )
   if( myPageView )
   {
     int whichview = myPageView->GetFullScreenView();
-    QString SnapshotFileName = "";
-    switch( whichview )
+    if( whichview != 0 )
     {
-      case 1:
+      QString SnapshotFileName;
+      switch( whichview )
       {
-        SnapshotFileName = myPageView->SnapshotViewXY(QImagePageViewTracer::PNG);
-        break;
+        case 1:
+        {
+          SnapshotFileName = myPageView->SnapshotViewXY(
+            QImagePageViewTracer::PNG);
+          break;
+        }
+        case 2:
+        {
+          SnapshotFileName = myPageView->SnapshotView2(
+            QImagePageViewTracer::PNG);
+          break;
+        }
+        case 3:
+        {
+          SnapshotFileName = myPageView->SnapshotView3(
+            QImagePageViewTracer::PNG);
+          break;
+        }
+        case 4:
+        {
+          SnapshotFileName = myPageView->SnapshotViewXYZ(
+            QImagePageViewTracer::PNG);
+          break;
+        }
       }
-      case 2:
-      {
-        SnapshotFileName = myPageView->SnapshotView2(QImagePageViewTracer::PNG);
-        break;
-      }
-      case 3:
-      {
-        SnapshotFileName = myPageView->SnapshotView3(QImagePageViewTracer::PNG);
-        break;
-      }
-      case 4:
-      {
-        SnapshotFileName = myPageView->SnapshotViewXYZ(QImagePageViewTracer::PNG);
-        break;
-      }
+      statusbar->showMessage( tr( "%1 has been saved").arg(SnapshotFileName) ) ;
     }
-    statusbar->showMessage( tr( "%1 has been saved").arg(SnapshotFileName) ) ;
   }
 }
 
@@ -559,8 +568,7 @@ void QGoMainWindow::ValidateContourTracer( )
       m_IdColorMap[ cell_id ],
       this->SaveContourCheckBox->isChecked() );
   }
-
-  //DATABASE
+ //DATABASE
 
 }
 
@@ -811,6 +819,22 @@ void QGoMainWindow::HideProgressLoading()
   m_Bar.hide();
 }
 
+// *****************************************************************************
+void QGoMainWindow::UpdateTracerButtons(int idx)
+{
+  if( (idx>=0) && (idx<m_PageView.size()))
+  {
+    QImagePageViewTracer* myPageView =
+      dynamic_cast<QImagePageViewTracer*>( m_PageView[idx] );
+    if( myPageView )
+    {
+      if( myPageView->GetTracerStatus( ) )
+        this->ManualSegmentationOnRadioBtn->toggle();
+      else
+        this->ManualSegmentationOffRadioBtn->toggle();
+    }
+  }
+}
 // *****************************************************************************
 void QGoMainWindow::UpdateFullScreenViewButtons(int idx)
 {

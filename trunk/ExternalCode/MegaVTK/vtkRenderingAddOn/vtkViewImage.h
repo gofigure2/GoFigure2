@@ -315,6 +315,7 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage : public vtkImageViewer2
   virtual vtkRenderWindowInteractor* GetRenderWindowInteractor();
 
   virtual void SetInput( vtkImageData* );
+
   
  protected:
 

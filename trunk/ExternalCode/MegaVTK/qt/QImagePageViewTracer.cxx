@@ -915,6 +915,14 @@ unsigned int QImagePageViewTracer::GetCellId() const
   return this->CellId;
 }
 
+bool QImagePageViewTracer::GetTracerStatus() const
+{
+  if( this->Pool->GetNumberOfItems() )
+    return this->Pool->GetItem( 0 )->GetContourWidgetEnabled( );
+  else
+    return false;
+}
+
 void QImagePageViewTracer::SetTracerON()
 {
   for( int i = 0; i < this->Pool->GetNumberOfItems(); i++ )

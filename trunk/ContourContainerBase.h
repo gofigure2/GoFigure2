@@ -14,7 +14,10 @@ public:
   ContourContainerBase( );
   ~ContourContainerBase( );
 
-  virtual void SaveAllContours( ContainerType& iContainer ) = 0;
+  //NOTE it is really dirty to use QImagePageViewTracer
+  virtual void SaveAllContours( const unsigned int& iId,
+    ContainerType& iContainer,
+    QImagePageViewTracer* view ) = 0;
   virtual void LoadAllContours( ContainerType& iContainer ) = 0;
 
 private:
