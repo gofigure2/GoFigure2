@@ -163,27 +163,18 @@ void vtkViewImage::SetInput( vtkImageData* in )
     {
     this->Superclass::SetInput( in );
 
-    vtkInformation* inScalarInfo;
-    inScalarInfo = vtkDataObject::GetActiveFieldInformation(
-      in->GetInformation(),
-      vtkDataObject::FIELD_ASSOCIATION_POINTS,
-      vtkDataSetAttributes::SCALARS
-    );
-
-    if(  inScalarInfo
-      && inScalarInfo->Has( vtkDataObject::FIELD_NUMBER_OF_COMPONENTS() ) )
-     {
-     this->IsColor =
-       inScalarInfo->Get( vtkDataObject::FIELD_NUMBER_OF_COMPONENTS() ) > 1;
-     }
+    this->IsColor = (in->GetNumberOfScalarComponents() > 1);
+    std::cout << "Nb of Comp: ";
+    std::cout << in->GetNumberOfScalarComponents(); 
+    std::cout << std::endl;
 
     if( this->IsColor )
       {
-      this->WindowLevel->SetLookupTable(this->LookupTable);
+      this->WindowLevel->SetLookupTable( NULL );
       }
     else
       {
-      this->WindowLevel->SetLookupTable( NULL );
+      this->WindowLevel->SetLookupTable(this->LookupTable);
       }
     }
 }
