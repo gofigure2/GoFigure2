@@ -5,6 +5,7 @@
 #include "vtkImageData.h"
 #include "vtkViewImage.h"
 #include "vtkViewImage2D.h"
+#include "vtkViewImage2DWithContourWidget.h"
 
 int main(int argc,char* argv[])
 {
@@ -99,6 +100,16 @@ int main(int argc,char* argv[])
   {
   std::cout << "vtkViewImage2D.:" << std::endl;
   vtkViewImage2D * viewer = vtkViewImage2D::New();
+  viewer->SetInput( myImage3 );
+  viewer->Render();
+  char buffer;
+  cin >> buffer;
+  viewer->Delete();
+  }
+
+  {
+  std::cout << "vtkViewImage2DWithContourWidget:" << std::endl;
+  vtkViewImage2DWithContourWidget* viewer = vtkViewImage2DWithContourWidget::New();
   viewer->SetInput( myImage3 );
   viewer->Render();
   char buffer;
