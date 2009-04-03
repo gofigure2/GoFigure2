@@ -297,6 +297,8 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage : public vtkImageViewer2
   virtual void SetColorWindow(double s);
   virtual void SetColorLevel(double s);
 
+  vtkGetMacro( IsColor, int );
+
   /**
      Set a mask image and its corresponding LookupTable. The mask image will
      be overlapped to the current image, and the lookup table is used to assess
@@ -316,7 +318,7 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage : public vtkImageViewer2
 
   virtual void SetInput( vtkImageData* );
 
-  
+
  protected:
 
   vtkViewImage();

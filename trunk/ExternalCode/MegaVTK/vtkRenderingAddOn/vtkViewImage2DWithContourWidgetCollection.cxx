@@ -106,16 +106,21 @@ AddItem( vtkViewImage2DWithContourWidget* a )
   a->GetInteractorStyle()->RemoveObservers(
     vtkCommand::ResetWindowLevelEvent );
   a->GetInteractorStyle()->RemoveObservers(
+      vtkCommand::WindowLevelEvent );
+  a->GetInteractorStyle()->RemoveObservers(
     vtkViewImage2DCommand::SliceMoveEvent );
   a->GetInteractorStyle()->RemoveObservers(
     vtkViewImage2DCommand::ResetViewerEvent );
   a->GetInteractorStyle()->RemoveObservers( vtkViewImage2DCommand::
     RequestedPositionEvent );
 
-  a->GetInteractorStyle()->AddObserver( vtkCommand::ResetWindowLevelEvent,
-    this->Command );
-  a->GetInteractorStyle()->AddObserver( vtkCommand::WindowLevelEvent,
-    this->Command );
+  if( !a->GetIsColor() )
+  {
+    a->GetInteractorStyle()->AddObserver( vtkCommand::ResetWindowLevelEvent,
+      this->Command );
+    a->GetInteractorStyle()->AddObserver( vtkCommand::WindowLevelEvent,
+      this->Command );
+  }
   a->GetInteractorStyle()->AddObserver(
     vtkViewImage2DCommand::SliceMoveEvent,
     this->Command );
