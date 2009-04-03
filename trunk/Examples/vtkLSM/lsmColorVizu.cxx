@@ -4,6 +4,7 @@
 #include "vtkIndent.h"
 #include "vtkImageData.h"
 #include "vtkViewImage.h"
+#include "vtkViewImage2D.h"
 
 int main(int argc,char* argv[])
 {
@@ -20,6 +21,7 @@ int main(int argc,char* argv[])
   reader->SetFileName(argv[1]);
   reader->Update();
   int NumberOfChannels = reader->GetNumberOfChannels();
+  std::cout << reader << std::endl;
   myImage_ch1->ShallowCopy( reader->GetOutput() );
   reader->Delete();
 
@@ -94,4 +96,13 @@ int main(int argc,char* argv[])
   viewer->Delete();
   }
        
+  {
+  std::cout << "vtkViewImage2D.:" << std::endl;
+  vtkViewImage2D * viewer = vtkViewImage2D::New();
+  viewer->SetInput( myImage3 );
+  viewer->Render();
+  char buffer;
+  cin >> buffer;
+  viewer->Delete();
+  }
 }
