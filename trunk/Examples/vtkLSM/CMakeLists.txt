@@ -1,32 +1,32 @@
-ADD_EXECUTABLE( lsm2jpg 
+ADD_EXECUTABLE( lsm2jpg
    lsm2jpg.cxx
    ${QGOFIGURE_SOURCE_DIR}/ExternalCode/vtkLSM/vtkLSMReader.cxx
   )
-TARGET_LINK_LIBRARIES( lsm2jpg 
+TARGET_LINK_LIBRARIES( lsm2jpg
   vtkIO
-  vtkImaging 
+  vtkImaging
   vtkFiltering
   vtkCommon
   )
 
-ADD_EXECUTABLE( lsm2mha 
+ADD_EXECUTABLE( lsm2mha
    lsm2mha.cxx
    ${QGOFIGURE_SOURCE_DIR}/ExternalCode/vtkLSM/vtkLSMReader.cxx
   )
-TARGET_LINK_LIBRARIES( lsm2mha 
+TARGET_LINK_LIBRARIES( lsm2mha
   vtkIO
-  vtkImaging 
+  vtkImaging
   vtkFiltering
   vtkCommon
   )
 
-ADD_EXECUTABLE( lsmColorVizu 
+ADD_EXECUTABLE( lsmColorVizu
   lsmColorVizu.cxx
   ${QGOFIGURE_SOURCE_DIR}/ExternalCode/vtkLSM/vtkLSMReader.cxx
   )
-TARGET_LINK_LIBRARIES( lsmColorVizu 
+TARGET_LINK_LIBRARIES( lsmColorVizu
   vtkIO
-  vtkImaging 
+  vtkImaging
   vtkRendering
   vtkRenderingAddOn2
   vtkFiltering
@@ -35,3 +35,17 @@ TARGET_LINK_LIBRARIES( lsmColorVizu
   QVTK
   )
 
+ADD_EXECUTABLE( lsmColorVizuCollection
+  lsmColorVizuCollection.cxx
+  ${QGOFIGURE_SOURCE_DIR}/ExternalCode/vtkLSM/vtkLSMReader.cxx
+  )
+TARGET_LINK_LIBRARIES( lsmColorVizuCollection
+  vtkIO
+  vtkImaging
+  vtkRendering
+  vtkRenderingAddOn2
+  vtkFiltering
+  QMegaVTKAddOn2
+  ${QT_LIBRARIES}
+  QVTK
+  )
