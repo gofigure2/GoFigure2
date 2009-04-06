@@ -150,7 +150,7 @@ void QGoMainWindow::on_actionOpen_activated( )
   // (that way it requires much more code than expected)
   // QFileDialog filedialog( this, tr( "Select Image" ) );
   // filedialog.setResolveSymlinks( true );
-  QString filename = QFileDialog::getOpenFileName( this, tr( "Select Image" ) );
+  QString filename = QFileDialog::getOpenFileName( this, tr( "Select Image" ),"/home",tr("Image Files(*.png *.jpg *.jpeg *.tiff *.lsm *.mha *.mhd)") );
 
   if( !filename.isEmpty() )
   {
