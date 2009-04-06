@@ -146,12 +146,9 @@ QGoMainWindow::~QGoMainWindow()
 // *****************************************************************************
 void QGoMainWindow::on_actionOpen_activated( )
 {
-  // NOTE: Handling symbolic links will be done later
-  // (that way it requires much more code than expected)
-  // QFileDialog filedialog( this, tr( "Select Image" ) );
-  // filedialog.setResolveSymlinks( true );
-  QString filename = QFileDialog::getOpenFileName( this, tr( "Select Image" ),"/home",tr("Image Files(*.png *.jpg *.jpeg *.tiff *.lsm *.mha *.mhd)") );
-
+   
+  QString filename = QFileDialog::getOpenFileName( this, tr( "Select Image" ),"",tr("2D Images (*.png *.bmp *.jpg *.jpeg *.tiff);;3D files (*.mha *.mhd *img);;4D files (*.lsm)") );
+ 
   if( !filename.isEmpty() )
   {
     SetFileName( filename );
