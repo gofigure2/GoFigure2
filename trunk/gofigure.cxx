@@ -35,6 +35,10 @@
 #include <qapplication.h>
 #include "QGoMainWindow.h"
 #include <qsplashscreen.h>
+#include <qdesktopwidget.h>
+#include <iostream>
+
+void maximizeMainWindow(QGoMainWindow& form1);
 
 int main( int argc, char** argv )
 {
@@ -47,7 +51,7 @@ int main( int argc, char** argv )
 
   app.processEvents();
   splash->showMessage("Application loading...please wait");
-
+  
   QGoMainWindow form;
 
   if( argc == 2 )
@@ -57,6 +61,7 @@ int main( int argc, char** argv )
   }
 
   app.setMainWidget( &form );
+  //maximizeMainWindow(form);
 
   form.show( );
 
@@ -69,6 +74,23 @@ int main( int argc, char** argv )
 }
 
 
+void maximizeMainWindow(QGoMainWindow& form1)
+{
+  QDesktopWidget * Screen;  
+  Screen=QApplication::desktop();
+  
+  QRect Info;
+  Info=Screen->screenGeometry();
+  int height=Info.height();
+  int width=Info.width();
+  int x=Info.left();
+  int y=Info.top();
+  
+  std::cout<<"height  "<<height<<"  width  "<<width<<"  x  "<<x<<"  y  "<<y<<std::endl;
+  form1.setGeometry(10,10,width-50,height-50);
+ // form1.setRect(width,height,0,0);
+  //form1.resize(width,height);
+}
 
 
 
@@ -76,8 +98,3 @@ int main( int argc, char** argv )
 
 
 
-/*establishConnections();
-mainWin.show();
-splash->finish(&mainWin);
-delete splash;
-return app.exec();*/

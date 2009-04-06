@@ -146,11 +146,9 @@ QGoMainWindow::~QGoMainWindow()
 // *****************************************************************************
 void QGoMainWindow::on_actionOpen_activated( )
 {
-
-  QString filename = QFileDialog::getOpenFileName( this, tr( "Select Image" ),
-    QDir::homePath(),
-    tr("2D Images (*.png *.bmp *.jpg *.jpeg *.tiff);;3D files (*.mha *.mhd *.img);;4D files (*.lsm)") );
-
+   
+  QString filename = QFileDialog::getOpenFileName( this, tr( "Select Image" ),"",tr("2D Images (*.png *.bmp *.jpg *.jpeg *.tiff);;3D files (*.mha *.mhd *img);;4D files (*.lsm)") );
+ 
   if( !filename.isEmpty() )
   {
     SetFileName( filename );
@@ -791,6 +789,12 @@ void QGoMainWindow::readSettings()
   QSettings settings("MegasonLab", "Gofigure2");
   m_RecentFiles = settings.value("recentFiles").toStringList();
   updateRecentFileActions();
+  
+  settings.beginGroup("MainWindow");
+     resize(settings.value("size", QSize(400, 400)).toSize());
+     move(settings.value("pos", QPoint(200, 200)).toPoint());
+     settings.endGroup();
+
 }
 
 // *****************************************************************************
@@ -798,6 +802,11 @@ void QGoMainWindow::writeSettings()
 {
   QSettings settings("MegasonLab", "Gofigure2");
   settings.setValue("recentFiles", m_RecentFiles);
+  settings.beginGroup("MainWindow");
+       settings.setValue("size", size());
+       settings.setValue("pos", pos());
+  settings.endGroup();
+
 }
 
 // *****************************************************************************
