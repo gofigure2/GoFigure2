@@ -146,9 +146,11 @@ QGoMainWindow::~QGoMainWindow()
 // *****************************************************************************
 void QGoMainWindow::on_actionOpen_activated( )
 {
-   
-  QString filename = QFileDialog::getOpenFileName( this, tr( "Select Image" ),"",tr("2D Images (*.png *.bmp *.jpg *.jpeg *.tiff);;3D files (*.mha *.mhd *img);;4D files (*.lsm)") );
- 
+
+  QString filename = QFileDialog::getOpenFileName( this, tr( "Select Image" ),
+    QDir::homePath(),
+    tr("2D Images (*.png *.bmp *.jpg *.jpeg *.tiff);;3D files (*.mha *.mhd *.img);;4D files (*.lsm)") );
+
   if( !filename.isEmpty() )
   {
     SetFileName( filename );
@@ -625,7 +627,7 @@ void QGoMainWindow::OpenImage( const QString& iFile )
 }
 
 // *****************************************************************************
-void QGoMainWindow::DisplayImage( QString iTag )
+void QGoMainWindow::DisplayImage( const QString& iTag )
 {
   m_Convert.push_back( VTKConvertImageType::New() );
   m_Convert.last()->SetInput( m_ITKImage.last() );
@@ -648,8 +650,9 @@ void QGoMainWindow::DisplayImage( QString iTag )
 }
 
 // *****************************************************************************
-void QGoMainWindow::OpenAndDisplayLSMFile( QString iTag, int timePoint,
-  bool ComposeChannels )
+void QGoMainWindow::OpenAndDisplayLSMFile( const QString& iTag,
+  const int& timePoint,
+  const bool& ComposeChannels )
 {
   (void)(timePoint);
   (void)(ComposeChannels);
@@ -664,13 +667,13 @@ void QGoMainWindow::OpenAndDisplayLSMFile( QString iTag, int timePoint,
 }
 
 // *****************************************************************************
-void QGoMainWindow::OpenLSMFile( QString iTag, int timePoint,
-  bool ComposeChannels )
-{
-}
+// void QGoMainWindow::OpenLSMFile( QString iTag, int timePoint,
+//   bool ComposeChannels )
+// {
+// }
 
 // *****************************************************************************
-void QGoMainWindow::DisplayInTab( vtkImageData* myImage, int idx )
+void QGoMainWindow::DisplayInTab( vtkImageData* myImage, const int& idx )
 {
   QImagePageViewTracer* myPageView =
     dynamic_cast<QImagePageViewTracer*>( m_PageView[idx] );
@@ -817,7 +820,7 @@ void QGoMainWindow::HideProgressLoading()
 }
 
 // *****************************************************************************
-void QGoMainWindow::UpdateTracerButtons(int idx)
+void QGoMainWindow::UpdateTracerButtons( const int& idx)
 {
   if( (idx>=0) && (idx<m_PageView.size()))
   {
@@ -833,7 +836,7 @@ void QGoMainWindow::UpdateTracerButtons(int idx)
   }
 }
 // *****************************************************************************
-void QGoMainWindow::UpdateFullScreenViewButtons(int idx)
+void QGoMainWindow::UpdateFullScreenViewButtons( const int& idx )
 {
   if( (idx>=0) && (idx<m_PageView.size()))
   {

@@ -215,6 +215,9 @@ protected:
   bool BuildScreenshotFromRenderWindow( vtkRenderWindow *win,
     vtkImageData* screenshot, int size = 0 );
 
+  void Set2DImage( vtkImageData* input );
+  void Set3DImage( vtkImageData* input );
+
   int SnapshotId;
 
   int IsFullScreen;

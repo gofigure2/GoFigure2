@@ -97,14 +97,14 @@ protected slots:
   void on_actionAbout_activated( );
   void on_actionAbout_Qt_activated( );
 
-  void SetContourTracerOn(const bool& iChecked);
-  void SetContourTracerOff(const bool& iChecked);
+  void SetContourTracerOn( const bool& iChecked );
+  void SetContourTracerOff( const bool& iChecked );
   void ShowProgressLoading( itk::Object * myFilter );
   void HideProgressLoading();
 
   /**\Update the full screen button group when the current tab is changed*/
-  void UpdateFullScreenViewButtons(int idx);
-  void UpdateTracerButtons(int idx);
+  void UpdateFullScreenViewButtons( const int& idx);
+  void UpdateTracerButtons( const int& idx);
 
 
 //   void SetTracerToPolygonTracer();
@@ -153,7 +153,7 @@ protected:
       \param[in] iImage
       \param[in] iTag
   */
-  void DisplayImage( QString iTag );
+  void DisplayImage( const QString& iTag );
 
   /** \brief Create Fullscreengroup*/
   void Fullscreenbuttons();
@@ -181,9 +181,12 @@ private:
   QGoMainWindow( const QGoMainWindow& );
   QGoMainWindow operator = ( const QGoMainWindow& );
 
-  void DisplayInTab( vtkImageData* myImage, int TabIndex );
-  void OpenLSMFile( QString iTag, int timePoint, bool ComposeChannels );
-  void OpenAndDisplayLSMFile( QString iTag, int timePoint, bool ComposeChannels );
+  void DisplayInTab( vtkImageData* myImage, const int& TabIndex );
+//   void OpenLSMFile( const QString& iTag, const int& timePoint,
+//   const bool ComposeChannels );
+  void OpenAndDisplayLSMFile( const QString& iTag,
+    const int& timePoint,
+    const bool& ComposeChannels );
 
 };
 #endif

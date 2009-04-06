@@ -66,10 +66,11 @@ public:
   QMEGAVTKADDON2_EXPORT ~QImagePageView4DTracer();
 
   QMEGAVTKADDON2_EXPORT void SetFileName( const char* name );
-  QMEGAVTKADDON2_EXPORT void SetColorVizu( int value ) { this->ColorVizu = value; };
+  QMEGAVTKADDON2_EXPORT void SetColorVizu( const bool& value )
+    { this->ColorVizu = value; };
 
 public slots:
-  QMEGAVTKADDON2_EXPORT void SetView( int value );
+  QMEGAVTKADDON2_EXPORT void SetView( const int& value );
   QMEGAVTKADDON2_EXPORT void RunMovie();
   QMEGAVTKADDON2_EXPORT void SwitchColorMode( );
 
@@ -80,14 +81,14 @@ protected:
   QPushButton*  button1;
   QPushButton*  button2;
 
-  void ReadLSMFile( int TimePoint );
+  void ReadLSMFile( const int& TimePoint );
   virtual void resizeEvent( QResizeEvent* event );
 
   QImagePageViewTracer* Whatever;
   int                   NumberOfTimePoints;
   char*                 FileName;
   vtkImageData*         Image;
-  int                   ColorVizu;
+  bool                   ColorVizu;
 };
 
 #endif

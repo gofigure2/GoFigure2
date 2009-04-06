@@ -79,7 +79,7 @@ QImagePageView4DTracer::QImagePageView4DTracer( QWidget* parent ) : QWidget( par
   this->slider1 = new QSlider( Qt::Horizontal );
 
   this->button2 = new QPushButton("Switch between greyscale and color when multichannel");
-  
+
   this->button1 = new QPushButton("Run &Movie");
 
   this->LayOut1 = new QVBoxLayout;
@@ -98,7 +98,7 @@ QImagePageView4DTracer::QImagePageView4DTracer( QWidget* parent ) : QWidget( par
   QObject::connect( this->button2, SIGNAL( clicked( ) ),
     this, SLOT( SwitchColorMode( ) ) );
 
-  this->ColorVizu = 0;
+  this->ColorVizu = false;
   this->FileName = NULL;
 }
 
@@ -137,7 +137,7 @@ QImagePageView4DTracer::SetFileName(const char* name )
   this->SetView( 0 );
 }
 
-void QImagePageView4DTracer::ReadLSMFile( int TimePoint )
+void QImagePageView4DTracer::ReadLSMFile( const int& TimePoint )
 {
   vtkImageData* myImage_ch1 = vtkImageData::New();
   vtkLSMReader* reader=vtkLSMReader::New();
@@ -153,23 +153,26 @@ void QImagePageView4DTracer::ReadLSMFile( int TimePoint )
   reader->Delete();
 
   vtkImageData* myImage_ch2;
-  if( ( NumberOfChannels == 1 ) || ( ColorVizu == 0) )
+  if( ( NumberOfChannels == 1 ) || ( !ColorVizu ) )
+  {
+    if( this->Image )
     {
-    if( this->Image ) this->Image->Delete();
+      this->Image->Delete();
+    }
     this->Image = myImage_ch1;
     return;
     }
   else
-    {
-	myImage_ch2 = vtkImageData::New();
-        vtkLSMReader* reader2=vtkLSMReader::New();
-	reader2->SetFileName( this->FileName );
-        reader2->SetUpdateTimePoint( TimePoint );
-	reader2->SetUpdateChannel( 1 );
-	reader2->Update();
-	myImage_ch2->ShallowCopy( reader2->GetOutput() );
-	reader2->Delete();
-    }
+  {
+    myImage_ch2 = vtkImageData::New();
+      vtkLSMReader* reader2=vtkLSMReader::New();
+    reader2->SetFileName( this->FileName );
+    reader2->SetUpdateTimePoint( TimePoint );
+    reader2->SetUpdateChannel( 1 );
+    reader2->Update();
+    myImage_ch2->ShallowCopy( reader2->GetOutput() );
+    reader2->Delete();
+  }
 
   vtkImageData* myImage2 = vtkImageData::New();
   vtkImageAppendComponents* appendFilter1 = vtkImageAppendComponents::New();
@@ -182,19 +185,19 @@ void QImagePageView4DTracer::ReadLSMFile( int TimePoint )
 
   vtkImageData* myImage_ch3 = vtkImageData::New();
   if( NumberOfChannels == 2 )
-    {
-	myImage_ch3->ShallowCopy( myImage_ch1 );
-    }
+  {
+    myImage_ch3->ShallowCopy( myImage_ch1 );
+  }
   else
-    {
-	vtkLSMReader* reader3=vtkLSMReader::New();
-	reader3->SetFileName( this->FileName );
-        reader3->SetUpdateTimePoint( TimePoint );
-	reader3->SetUpdateChannel( 2 );
-	reader3->Update();
-	myImage_ch3->ShallowCopy( reader3->GetOutput() );
-	reader3->Delete();
-    }
+  {
+    vtkLSMReader* reader3=vtkLSMReader::New();
+    reader3->SetFileName( this->FileName );
+    reader3->SetUpdateTimePoint( TimePoint );
+    reader3->SetUpdateChannel( 2 );
+    reader3->Update();
+    myImage_ch3->ShallowCopy( reader3->GetOutput() );
+    reader3->Delete();
+  }
   myImage_ch1->Delete();
 
   vtkImageData* myImage3 = vtkImageData::New();
@@ -207,12 +210,15 @@ void QImagePageView4DTracer::ReadLSMFile( int TimePoint )
   myImage2->Delete();
   myImage_ch3->Delete();
 
-  if( this->Image ) this->Image->Delete();
+  if( this->Image )
+  {
+    this->Image->Delete();
+  }
 
   this->Image = myImage3;
 }
 
-void QImagePageView4DTracer::SetView( int value )
+void QImagePageView4DTracer::SetView( const int& value )
 {
   clock_t start,finish;
   double time;
@@ -256,14 +262,7 @@ void QImagePageView4DTracer::RunMovie( )
 
 void QImagePageView4DTracer::SwitchColorMode( )
 {
-  if( this->ColorVizu == 0 )
-    {
-    this->ColorVizu = 1;
-    }
-  else
-    {
-    this->ColorVizu = 0;
-    }
+  this->ColorVizu = !this->ColorVizu;
   this->SetView( this->slider1->value() );
 }
 
