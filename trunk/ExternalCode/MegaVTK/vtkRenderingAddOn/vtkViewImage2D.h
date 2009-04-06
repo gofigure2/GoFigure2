@@ -71,8 +71,6 @@
 #include "vtkViewImage.h"
 #include "MegaVTK2Configure.h"
 
-#include <list>
-
 class vtkPlane;
 class vtkViewImage2DCommand;
 class vtkTransform;
