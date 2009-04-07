@@ -102,7 +102,6 @@
 #include "vtkImageAccumulate.h"
 #include "vtkInteractorStyleImage2D.h"
 #include "vtkViewImage2DCommand.h"
-#include "vtkImageBlendWithMask.h"
 
 #include <vector>
 #include <string>
@@ -136,8 +135,6 @@ vtkViewImage2D::vtkViewImage2D()
   this->ConventionMatrix->SetElement( 1,3, -1);
   this->ConventionMatrix->SetElement( 2,3, -1);
 
-  this->MaskFilter = vtkImageBlendWithMask::New();
-
   this->InitializeSlicePlane();
   this->Zoom = 1.;
 }
@@ -149,7 +146,6 @@ vtkViewImage2D::~vtkViewImage2D()
   this->SliceImplicitPlane->Delete();
   this->SlicePlane->Delete();
   this->AdjustmentTransform->Delete();
-  this->MaskFilter->Delete();
   this->Command->Delete();
 }
 
@@ -558,15 +554,12 @@ void vtkViewImage2D::ResetWindowLevel( void )
   if( !this->GetInput())
     return;
 
-  if( !this->IsColor )
-  {
-    double* range = this->GetInput()->GetScalarRange();
-    double window = range[1]-range[0];
-    double level = 0.5*(range[1]+range[0]);
+  double* range = this->GetInput()->GetScalarRange();
+  double window = range[1]-range[0];
+  double level = 0.5*(range[1]+range[0]);
 
-    this->SetColorWindow(  window );
-    this->SetColorLevel(  level );
-  }
+  this->SetColorWindow(  window );
+  this->SetColorLevel(  level );
 }
 
 //----------------------------------------------------------------------------
@@ -886,47 +879,4 @@ void vtkViewImage2D::RemoveContours( TContourContainer& iContours )
   {
     this->RemoveDataSet( *contour_it );
   }
-}
-//----------------------------------------------------------------------------
-void vtkViewImage2D::SetMaskImage( vtkImageData* mask,
-  vtkLookupTable* lut, const bool& iStatus )
-{
-  vtkImageData* input = this->GetInput();
-
-  if( !input || !mask || !lut)
-  {
-    return;
-  }
-
-  vtkViewImage::SetMaskImage( mask, lut );
-//
-  // check if the mask dimensions match the image dimensions
-  int dim1[3], dim2[3];
-  input->GetDimensions( dim1);
-  mask->GetDimensions( dim2);
-
-  if( ( dim1[0] != dim2[0] ) ||
-      ( dim1[1] != dim2[1] ) ||
-      ( dim1[2] != dim2[2] ) )
-  {
-    vtkErrorMacro("Dimensions of the mask image do not match");
-    return;
-  }
-
-    // check if the scalar range match the number of entries in the LUT
-  double range[2];
-  mask->GetScalarRange( range);
-  int numLUT = lut->GetNumberOfTableValues();
-  if( numLUT < static_cast< int >( range[1] + 1. ) )
-  {
-    vtkErrorMacro( <<"The number of LUT entries is less than the"
-      <<" range of the mask.");
-    return;
-  }
-  this->MaskFilter->SetImageInput( this->WindowLevel->GetOutput() );
-  this->MaskFilter->SetMaskInput( mask );
-  this->MaskFilter->SetLookupTable( lut );
-  this->MaskFilter->Update();
-
-  this->AddDataSet( this->MaskFilter->GetOutput(), 0, iStatus );
 }

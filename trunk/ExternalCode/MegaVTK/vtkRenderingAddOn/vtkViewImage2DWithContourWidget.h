@@ -114,8 +114,6 @@ public:
     vtkOrientedGlyphContourRepresentation );
   virtual void SetInput( vtkImageData* image );
 
-  void ValidateTracing();
-
 protected:
   vtkViewImage2DWithContourWidget();
   ~vtkViewImage2DWithContourWidget();

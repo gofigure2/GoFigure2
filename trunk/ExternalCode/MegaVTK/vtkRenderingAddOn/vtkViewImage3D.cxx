@@ -101,6 +101,7 @@
 #include "vtkImageAccumulate.h"
 
 
+#include <vtkClipPolyData.h>
 #include <vtkInteractorStyleTrackball.h>
 #include <vtkRendererCollection.h>
 #include <vtkImageData.h>
@@ -204,7 +205,7 @@ vtkViewImage3D::vtkViewImage3D()
   this->BoxWidget = vtkOrientedBoxWidget::New();
   this->Callback = vtkImage3DCroppingBoxCallback::New();
   this->Blender = vtkImageBlend::New();
-  this->PlaneWidget = vtkPlaneWidget::New();
+  //this->PlaneWidget = vtkPlaneWidget::New();
   this->VolumeMapper3D = vtkVolumeTextureMapper3D::New();
 
   this->Phantom.push_back( vtkImageActor::New() );
@@ -219,7 +220,7 @@ vtkViewImage3D::vtkViewImage3D()
   this->BoundsActor.push_back( vtkActor::New() );
   this->BoundsActor.push_back( vtkActor::New() );
 
-  this->SetupVolumeRendering();
+//   this->SetupVolumeRendering();
   this->SetupWidgets();
 }
 
@@ -236,7 +237,7 @@ vtkViewImage3D::~vtkViewImage3D()
   this->Cube->Delete();
   this->Marker->Delete();
   this->Blender->Delete();
-  this->PlaneWidget->Delete();
+  //this->PlaneWidget->Delete();
   this->VolumeRayCastMapper->Delete();
   this->VolumeRayCastMIPFunction->Delete();
   this->VolumeRayCastCompositeFunction->Delete();
@@ -362,8 +363,8 @@ void vtkViewImage3D::SetupWidgets()
   this->BoxWidget->SetKeyPressActivationValue ('b');
   this->BoxWidget->AddObserver (vtkCommand::InteractionEvent, this->Callback);
 
-  this->PlaneWidget->SetKeyPressActivationValue ('p');
-  this->PlaneWidget->NormalToZAxisOn();
+  //this->PlaneWidget->SetKeyPressActivationValue ('p');
+  //this->PlaneWidget->NormalToZAxisOn();
 
 }
 
@@ -391,6 +392,67 @@ void vtkViewImage3D::Render()
   }
 }
 
+void vtkViewImage3D::SetVolumeRenderingOff()
+{
+  this->VolumeActor->SetVisibility (false);
+  this->BoxWidget->Off();
+}
+
+void vtkViewImage3D::SetVolumeRenderingOn()
+{
+  if( !this->IsColor )
+  {
+    vtkImageData* image = this->GetInput();
+
+    int* size = image->GetDimensions();
+
+    if ( (size[0] < 2) ||
+        (size[1] < 2) ||
+        (size[2] < 2) )
+    {
+      vtkWarningMacro ( <<"Cannot do volume rendering for a single slice, skipping"<<endl);
+      return;
+    }
+
+    this->SetupVolumeRendering();
+
+    this->VolumeMapper3D->SetInput( image );
+    this->VolumeRayCastMapper->SetInput( image );
+
+    this->SetupTextureMapper();
+
+    this->BoxWidget->SetInput( image );
+    this->BoxWidget->PlaceWidget();
+
+    //this->PlaneWidget->SetInput (this->GetInput());
+    //this->PlaneWidget->PlaceWidget();
+
+    // line to be removed: the box has to be called externally
+    this->BoxWidget->On();
+
+    this->VolumeActor->SetVisibility ( true );
+  }
+}
+
+void vtkViewImage3D::SetTriPlanarRenderingOn()
+{
+  this->VolumeActor->SetVisibility(false);
+  for( int i = 0; i < 3; i++ )
+  {
+    this->Phantom[i]->SetVisibility(true);
+    this->BoundsActor[i]->SetVisibility(true);
+  }
+}
+
+void vtkViewImage3D::SetTriPlanarRenderingOff()
+{
+  this->VolumeActor->SetVisibility(true);
+  for( int i = 0; i < 3; i++ )
+  {
+    this->Phantom[i]->SetVisibility(false);
+    this->BoundsActor[i]->SetVisibility(false);
+  }
+}
 
 void vtkViewImage3D::Add2DPhantom(const unsigned int& i,
   vtkImageActor* input,
@@ -453,7 +515,7 @@ void vtkViewImage3D::InstallPipeline()
     interactorStyle->SetCurrentStyleToTrackballCamera();
     this->Interactor->SetInteractorStyle (interactorStyle);
     this->BoxWidget->SetInteractor ( this->Interactor );
-    this->PlaneWidget->SetInteractor ( this->Interactor );
+    //this->PlaneWidget->SetInteractor ( this->Interactor );
     this->Marker->SetInteractor ( this->Interactor );
     interactorStyle->Delete();
     this->Interactor->SetRenderWindow(this->RenderWindow);
@@ -465,45 +527,46 @@ void vtkViewImage3D::InstallPipeline()
 
 }
 
-
-//----------------------------------------------------------------------------
-void vtkViewImage3D::SetInput(vtkImageData* image)
+void vtkViewImage3D::AddDataSet( vtkDataSet* dataset,
+  vtkProperty* property,
+  const bool& intersection )
 {
-  this->Superclass::SetInput (image);
-
-  if( !image )
-  {
+  vtkCamera *cam = this->Renderer ? this->Renderer->GetActiveCamera() : NULL;
+  if( !cam )
     return;
+
+  vtkPolyDataMapper* mapper = vtkPolyDataMapper::New();
+  vtkActor* actor = vtkActor::New();
+
+  vtkClipPolyData* cutter = vtkClipPolyData::New();
+
+  if( intersection )
+  {
+    //TODO to be implemented
+//     cutter->SetInputConnection( 0, dataset->GetProducerPort());
+//     cutter->SetClipFunction( this->SliceImplicitPlane );
+//     cutter->InsideOutOn();
+//     mapper->SetInputConnection( 0, cutter->GetOutputPort());
+  }
+  else
+  {
+    mapper->SetInput( vtkPolyData::SafeDownCast( dataset ) );
   }
 
-  int* size = image->GetDimensions();
+  actor->SetMapper( mapper );
+  if( property )
+    actor->SetProperty( property );
 
-  if ( (size[0] < 2) ||
-       (size[1] < 2) ||
-       (size[2] < 2) )
-  {
-    vtkWarningMacro ( <<"Cannot do volume rendering for a single slice, skipping"<<endl);
-    return;
-  }
+//   actor->SetUserTransform( this->AdjustmentTransform );
 
-  this->VolumeMapper3D->SetInput ( this->GetInput() );
-  this->VolumeRayCastMapper->SetInput ( this->GetInput() );
+  this->Renderer->AddViewProp( actor );
+  this->DataSetCollection->AddItem( dataset );
+  this->Prop3DCollection->AddItem( actor );
 
-  this->SetupTextureMapper();
-
-  this->BoxWidget->SetInput (this->GetInput());
-  this->BoxWidget->PlaceWidget();
-
-  this->PlaneWidget->SetInput (this->GetInput());
-  this->PlaneWidget->PlaceWidget();
-
-  // line to be removed: the box has to be called externally
-  this->BoxWidget->On();
-
-  this->VolumeActor->SetVisibility (1);
+  cutter->Delete();
+  mapper->Delete();
+  actor->Delete();
 }
-
-
 
 //----------------------------------------------------------------------------
 void vtkViewImage3D::SetOrientationMatrix (vtkMatrix4x4* matrix)

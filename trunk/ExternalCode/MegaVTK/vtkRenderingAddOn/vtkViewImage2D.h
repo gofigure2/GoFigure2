@@ -71,6 +71,8 @@
 #include "vtkViewImage.h"
 #include "MegaVTK2Configure.h"
 
+#include <list>
+
 class vtkPlane;
 class vtkViewImage2DCommand;
 class vtkTransform;
@@ -254,9 +256,6 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage2D : public vtkViewImage
   template< class TPolyDataContainer >
   void RemoveContours( TPolyDataContainer& iContours );
 
-  virtual void SetMaskImage( vtkImageData* mask,
-    vtkLookupTable* lut, const bool& status );
-
  protected:
 
   vtkViewImage2D();
@@ -275,8 +274,6 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage2D : public vtkViewImage
   vtkPlane* SliceImplicitPlane;
   vtkTransform* AdjustmentTransform;
   vtkPolyData* SlicePlane;
-
-  vtkImageBlendWithMask* MaskFilter;
 
   vtkViewImage2DCommand* Command;
 

@@ -135,7 +135,7 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage : public vtkImageViewer2
 
  public:
 
-  static vtkViewImage* New();
+  //static vtkViewImage* New();
   vtkTypeRevisionMacro(vtkViewImage, vtkImageViewer2);
 
   /**
@@ -191,19 +191,20 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage : public vtkImageViewer2
   vtkGetObjectMacro (TextProperty, vtkTextProperty);
   virtual void SetTextProperty (vtkTextProperty* textproperty);
   /**
-     The wolld is not always what we think it is ...
+     The world is not always what we think it is ...
 
      Use this method to move the viewer slice such that the position
      (in world coordinates) given by the arguments is contained by
      the slice plane. If the given position is outside the bounds
      of the image, then the slice will be as close as possible.
   */
-  virtual void SetWorldCoordinates (double x, double y, double z)
+  virtual void SetWorldCoordinates( const double& x, 
+    const double& y, const double& z )
   {
     double pos[3] = {x,y,z};
     this->SetWorldCoordinates (pos);
   }
-  virtual void SetWorldCoordinates (double pos[3]){};
+  virtual void SetWorldCoordinates (double pos[3]) = 0;
 
   /**
     Add a dataset to the view (has to be subclass of vtkPointSet).
@@ -216,25 +217,18 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage : public vtkImageViewer2
   */
   virtual void AddDataSet (vtkDataSet* dataset,
     vtkProperty* property = NULL,
-    const bool& intersection = true ) {};
+    const bool& intersection = true ) = 0;
   virtual bool RemoveDataSet (vtkDataSet* dataset);
-
-  /**
-     Set/Get the current slice to display (depending on the orientation
-     this can be in X, Y or Z).
-  */
-  virtual void SetSlice(int s)
-  { this->Superclass::SetSlice (s); };
 
   /**
      Convert an indices coordinate point (image coordinates) into a world
      coordinate point
   */
-  virtual double* GetWorldCoordinatesFromImageCoordinates (int indices[3]);
+  virtual double* GetWorldCoordinatesFromImageCoordinates( int indices[3] );
   /**
      Convert a world coordinate point into an image indices coordinate point
   */
-  virtual int* GetImageCoordinatesFromWorldCoordinates (double position[3]);
+  virtual int* GetImageCoordinatesFromWorldCoordinates( double position[3] );
   /**
      Get the pixel value at a given world coordinate point in space, return
      zero if out of bounds.
@@ -246,7 +240,7 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage : public vtkImageViewer2
      Example: SetBackground(0.9,0.9,0.9) for grey-white.
   */
   virtual void SetBackground(double rgb[3]);
-  virtual void SetBackground(double r, double g, double b);
+  virtual void SetBackground(const double& r, const double& g, const double& b);
   virtual double* GetBackground(void);
   /**
      Reset the camera
@@ -263,23 +257,23 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage : public vtkImageViewer2
   /**
      Show/Hide the annotations.
   */
-  virtual void SetShowAnnotations (int);
+  virtual void SetShowAnnotations( const bool& );
   /**
      Show/Hide the annotations.
   */
-  vtkBooleanMacro (ShowAnnotations, int);
+  vtkBooleanMacro( ShowAnnotations, int );
   /**
      Enable or Disable interaction on the view.
   */
-  virtual void Enable (void);
+  virtual void Enable( void );
   /**
      Enable or Disable interaction on the view.
   */
-  virtual void Disable (void);
+  virtual void Disable( void );
   /**
      Enable or Disable interaction on the view.
   */
-  virtual int GetEnabled (void);
+  virtual bool GetEnabled (void);
   /**
      Show/Hide the annotations.
   */
@@ -287,32 +281,18 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage : public vtkImageViewer2
   /**
      Show/Hide the annotations.
   */
-  virtual void SetShowScalarBar (int);
+  virtual void SetShowScalarBar( const bool& );
   /**
      Show/Hide the annotations.
   */
   vtkBooleanMacro (ShowScalarBar, int);
+  
   // Description:
   // Set window and level for mapping pixels to colors.
-  virtual void SetColorWindow(double s);
-  virtual void SetColorLevel(double s);
+  virtual void SetColorWindow( const double& s);
+  virtual void SetColorLevel( const double& s );
 
   vtkGetMacro( IsColor, int );
-
-  /**
-     Set a mask image and its corresponding LookupTable. The mask image will
-     be overlapped to the current image, and the lookup table is used to assess
-     the color of the label: label 0 will have color given by entry 0 of the LUT,
-     etc.
-     The image has to be of type unsigned char.
-  */
-  virtual void SetMaskImage( vtkImageData* mask, vtkLookupTable* lut )
-  {
-    this->MaskImage = mask;
-    this->MaskLUT = lut;
-  }
-  vtkGetObjectMacro( MaskImage, vtkImageData );
-  vtkGetObjectMacro( MaskLUT, vtkLookupTable );
 
   virtual vtkRenderWindowInteractor* GetRenderWindowInteractor();
 
@@ -334,9 +314,6 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage : public vtkImageViewer2
   vtkProp3DCollection*        Prop3DCollection;
   vtkDataSetCollection*       DataSetCollection;
   vtkMatrixToLinearTransform* OrientationTransform;
-
-  vtkImageData*               MaskImage;
-  vtkLookupTable*             MaskLUT;
 
   int ShowAnnotations;
   int ShowScalarBar;

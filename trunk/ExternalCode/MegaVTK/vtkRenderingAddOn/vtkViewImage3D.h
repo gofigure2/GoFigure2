@@ -136,7 +136,7 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage3D : public vtkViewImage
   */
   virtual void AddDataSet (vtkDataSet* dataset,
     vtkProperty* property = NULL,
-    const bool& intersection = true ) {};
+    const bool& intersection = true );
   /**
      Set/Get the current slice to display (depending on the orientation
      this can be in X, Y or Z).
@@ -161,40 +161,13 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage3D : public vtkViewImage
     vtkImageActor* input,
     vtkPolyData* in_bounds = NULL );
 
-  virtual void SetInput (vtkImageData* input);
-
   virtual void SetOrientationMatrix (vtkMatrix4x4* matrix);
 
-  void SetVolumeRenderingOff()
-  {
-    this->VolumeActor->SetVisibility (false);
-    this->BoxWidget->Off();
-  }
+  void SetVolumeRenderingOff();
+  void SetVolumeRenderingOn();
 
-  void SetVolumeRenderingOn()
-  {
-    this->VolumeActor->SetVisibility(true);
-  }
-
-  void SetTriPlanarRenderingOn()
-  {
-    this->VolumeActor->SetVisibility(false);
-    for( int i = 0; i < 3; i++ )
-    {
-      this->Phantom[i]->SetVisibility(true);
-      this->BoundsActor[i]->SetVisibility(true);
-    }
-  }
-
-  void SetTriPlanarRenderingOff()
-  {
-    this->VolumeActor->SetVisibility(true);
-    for( int i = 0; i < 3; i++ )
-    {
-      this->Phantom[i]->SetVisibility(false);
-      this->BoundsActor[i]->SetVisibility(false);
-    }
-  }
+  void SetTriPlanarRenderingOn();
+  void SetTriPlanarRenderingOff();
 
   void SetVolumeMapperToTexture (void)
   {
@@ -231,7 +204,7 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage3D : public vtkViewImage
 
 
   /** Set the box widget visibility */
-  void SetBoxWidgetVisibility (int a)
+  void SetBoxWidgetVisibility (const bool& a)
   {
     if (this->Interactor)
       this->BoxWidget->SetEnabled (a);
@@ -243,7 +216,7 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage3D : public vtkViewImage
   vtkBooleanMacro (BoxWidgetVisibility, int);
 
   /** Set the plane widget on */
-  void SetPlaneWidgetVisibility (int a)
+  /*void SetPlaneWidgetVisibility (const bool& a)
   {
     if (this->Interactor)
       this->PlaneWidget->SetEnabled (a);
@@ -252,10 +225,10 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage3D : public vtkViewImage
   {
     return ( this->PlaneWidget->GetEnabled() == 1 );
   }
-  vtkBooleanMacro (PlaneWidgetVisibility, int);
+  vtkBooleanMacro (PlaneWidgetVisibility, int);*/
 
   /** Set the cube widget on */
-  void SetCubeVisibility (int a)
+  void SetCubeVisibility (const bool& a)
   {
     if (this->Interactor)
       this->Marker->SetEnabled (a);
@@ -266,7 +239,7 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage3D : public vtkViewImage
   }
   vtkBooleanMacro (CubeVisibility, int);
 
-  void SetShade (int a)
+  void SetShade (const bool& a)
   {
     this->VolumeProperty->SetShade (a);
   }
@@ -279,11 +252,11 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage3D : public vtkViewImage
 
   /** Get volume actor */
   vtkGetObjectMacro (VolumeActor, vtkVolume);
-  vtkGetObjectMacro (PlaneWidget, vtkPlaneWidget);
+  //vtkGetObjectMacro (PlaneWidget, vtkPlaneWidget);
   vtkGetObjectMacro (VolumeProperty, vtkVolumeProperty);
   vtkGetObjectMacro (BoxWidget, vtkOrientedBoxWidget);
 
-
+  virtual void SetWorldCoordinates (double pos[3]) {}
 
  protected:
 
@@ -326,7 +299,7 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage3D : public vtkViewImage
   // box widget
   vtkOrientedBoxWidget*                   BoxWidget;
   // vtkPlane widget
-  vtkPlaneWidget*                 PlaneWidget;
+  // vtkPlaneWidget*                 PlaneWidget;
   // annotated cube actor
   vtkAnnotatedCubeActor*          Cube;
   vtkOrientationMarkerWidget*     Marker;

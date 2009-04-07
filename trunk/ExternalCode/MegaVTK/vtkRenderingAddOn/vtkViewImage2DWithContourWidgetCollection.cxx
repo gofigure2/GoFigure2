@@ -247,34 +247,6 @@ SyncResetWindowLevel(void)
   }
 }
 
-void vtkViewImage2DWithContourWidgetCollection::
-SyncMaskImage( void )
-{
-  for (int i=0; i<this->GetNumberOfItems(); i++)
-  {
-    vtkImageData* mask = this->GetItem(i)->GetMaskImage();
-    vtkLookupTable* lut = this->GetItem(i)->GetMaskLUT();
-
-    std::cout <<i <<" "<<mask <<" " <<lut <<std::endl;
-
-    for (int j=0; j<this->GetNumberOfItems(); j++)
-    {
-      this->GetItem(j)->SetMaskImage( mask, lut, ( i == j ) );
-    }
-  }
-}
-
-void vtkViewImage2DWithContourWidgetCollection::
-SyncMaskImage( vtkImageData* mask, vtkLookupTable* lut )
-{
-  this->InitTraversal();
-  vtkViewImage2DWithContourWidget* item = this->GetNextItem();
-  while(item)
-  {
-    item->SetMaskImage( mask, lut, true );
-    item = this->GetNextItem();
-  }
-}
 //----------------------------------------------------------------------------
 void vtkViewImage2DWithContourWidgetCollection::
 SyncPan()

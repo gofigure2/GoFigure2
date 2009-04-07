@@ -160,8 +160,6 @@ public:
   void SyncResetWindowLevel (void);
   void SyncReset (void);
   void SyncPan (void);
-  void SyncMaskImage( void );
-  void SyncMaskImage( vtkImageData* mask, vtkLookupTable* lut );
   void SyncSetZoomAndParallelScale( double Zoom, double ParallelScale );
 
   template< class TContourContainer,

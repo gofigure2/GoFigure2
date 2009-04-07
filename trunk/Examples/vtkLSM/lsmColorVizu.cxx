@@ -15,7 +15,7 @@ int main(int argc,char* argv[])
     std::cout << "(exe) FileName";
     std::cout << std::endl;
     return 0;
-    }  
+    }
 
   vtkImageData* myImage_ch1 = vtkImageData::New();
   vtkLSMReader* reader=vtkLSMReader::New();
@@ -26,8 +26,8 @@ int main(int argc,char* argv[])
   myImage_ch1->ShallowCopy( reader->GetOutput() );
   reader->Delete();
 
-  vtkImageData* myImage_ch2 = vtkImageData::New(); 
-  if( NumberOfChannels == 1 ) 
+  vtkImageData* myImage_ch2 = vtkImageData::New();
+  if( NumberOfChannels == 1 )
     {
     myImage_ch2->ShallowCopy( myImage_ch1 );
     }
@@ -41,7 +41,7 @@ int main(int argc,char* argv[])
     reader2->Delete();
     }
 
-  vtkImageData* myImage2 = vtkImageData::New(); 
+  vtkImageData* myImage2 = vtkImageData::New();
   vtkImageAppendComponents* appendFilter1 = vtkImageAppendComponents::New();
   appendFilter1->AddInput( myImage_ch1 );
   appendFilter1->AddInput( myImage_ch2 );
@@ -50,7 +50,7 @@ int main(int argc,char* argv[])
   appendFilter1->Delete();
   myImage_ch2->Delete();
 
-      
+
   vtkImageData* myImage_ch3 = vtkImageData::New();
   if( NumberOfChannels == 2 )
     {
@@ -67,11 +67,11 @@ int main(int argc,char* argv[])
     }
   myImage_ch1->Delete();
 
-  vtkImageData* myImage3 = vtkImageData::New(); 
+  vtkImageData* myImage3 = vtkImageData::New();
   vtkImageAppendComponents* appendFilter2 = vtkImageAppendComponents::New();
   appendFilter2->AddInput( myImage2    );
   appendFilter2->AddInput( myImage_ch3 );
-  appendFilter2->Update(); 
+  appendFilter2->Update();
   myImage3->ShallowCopy( appendFilter2->GetOutput() );
   appendFilter2->Delete();
   myImage2->Delete();
@@ -87,16 +87,16 @@ int main(int argc,char* argv[])
   viewer->Delete();
   }
 
-  {
-  std::cout << "vtkViewImage.:" << std::endl;
-  vtkViewImage * viewer = vtkViewImage::New();
-  viewer->SetInput( myImage3 );
-  viewer->Render();
-  char buffer;
-  cin >> buffer;
-  viewer->Delete();
-  }
-       
+//   {
+//   std::cout << "vtkViewImage.:" << std::endl;
+//   vtkViewImage * viewer = vtkViewImage::New();
+//   viewer->SetInput( myImage3 );
+//   viewer->Render();
+//   char buffer;
+//   cin >> buffer;
+//   viewer->Delete();
+//   }
+
   {
   std::cout << "vtkViewImage2D.:" << std::endl;
   vtkViewImage2D * viewer = vtkViewImage2D::New();
