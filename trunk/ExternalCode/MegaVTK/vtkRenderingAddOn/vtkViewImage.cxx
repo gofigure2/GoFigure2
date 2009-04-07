@@ -166,10 +166,12 @@ void vtkViewImage::SetInput( vtkImageData* in )
     if( this->IsColor )
     {
       std::cout << "Nb of Comp: ";
-      std::cout << in->GetNumberOfScalarComponents(); 
+      std::cout << in->GetNumberOfScalarComponents();
       std::cout << std::endl;
-      
+
       this->WindowLevel->SetLookupTable( NULL );
+      this->ShowScalarBar = false;
+      this->ScalarBarActor->SetVisibility( this->ShowScalarBar );
     }
     else
     {
@@ -213,6 +215,11 @@ void vtkViewImage::SetLookupTable (vtkLookupTable* lookuptable)
     this->WindowLevel->SetLookupTable(this->LookupTable);
     this->ScalarBarActor->SetLookupTable(this->LookupTable);
   }
+  else
+  {
+    this->ShowScalarBar = false;
+    this->ScalarBarActor->SetVisibility( this->ShowScalarBar );
+  }
 }
 
 //----------------------------------------------------------------------------
@@ -228,12 +235,17 @@ void vtkViewImage::SetColorWindow( const double& s)
   double t = ( s < 0 ) ? 1. : s;
 
   Superclass::SetColorWindow( t );
-  
+
   if( !this->IsColor )
   {
     double v_min = this->GetColorLevel() - 0.5 * t;
     double v_max = this->GetColorLevel() + 0.5 * t;
     this->LookupTable->SetRange (v_min, v_max);
+  }
+  else
+  {
+    this->ShowScalarBar = false;
+    this->ScalarBarActor->SetVisibility( this->ShowScalarBar );
   }
 }
 
@@ -247,6 +259,11 @@ void vtkViewImage::SetColorLevel( const double& s)
     double v_min = s - 0.5*this->GetColorWindow();
     double v_max = s + 0.5*this->GetColorWindow();
     this->LookupTable->SetRange (v_min, v_max);
+  }
+  else
+  {
+    this->ShowScalarBar = false;
+    this->ScalarBarActor->SetVisibility( this->ShowScalarBar );
   }
 }
 
@@ -262,7 +279,7 @@ double vtkViewImage::GetValueAtPosition(double worldcoordinates[3],
   vtkImageData* input = this->GetInput();
 
   int* extent = input->GetWholeExtent();
-  
+
   if ( (indices[0] < extent[0]) || (indices[0] > extent[1]) ||
        (indices[1] < extent[2]) || (indices[1] > extent[3]) ||
        (indices[2] < extent[4]) || (indices[2] > extent[5]) )
@@ -295,8 +312,8 @@ double* vtkViewImage::GetWorldCoordinatesFromImageCoordinates(int indices[3])
   if( !input )
   {
     double* nullpos = new double[3];
-    nullpos[0] = 0.; 
-    nullpos[1] = 0.; 
+    nullpos[0] = 0.;
+    nullpos[1] = 0.;
     nullpos[2] = 0.;
     return nullpos;
   }
@@ -324,8 +341,8 @@ int* vtkViewImage::GetImageCoordinatesFromWorldCoordinates(double position[3])
   if (!input )
   {
     int* nullpos = new int[3];
-    nullpos[0] = 0; 
-    nullpos[1] = 0; 
+    nullpos[0] = 0;
+    nullpos[1] = 0;
     nullpos[2] = 0;
     return nullpos;
   }
@@ -423,6 +440,11 @@ void vtkViewImage::SetShowScalarBar( const bool& val )
   {
     this->ShowScalarBar = val;
     this->ScalarBarActor->SetVisibility(val);
+  }
+  else
+  {
+    this->ShowScalarBar = false;
+    this->ScalarBarActor->SetVisibility( this->ShowScalarBar );
   }
 }
 
