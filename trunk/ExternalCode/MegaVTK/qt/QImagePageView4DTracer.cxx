@@ -105,6 +105,7 @@ QImagePageView4DTracer::QImagePageView4DTracer( QWidget* parent ) : QWidget( par
 QImagePageView4DTracer::~QImagePageView4DTracer()
 {
   delete this->Whatever;
+  Image->Delete();
   //delete this->LayOut1;
   //delete this->LayOutWidget1;
   //delete this->slider1;
