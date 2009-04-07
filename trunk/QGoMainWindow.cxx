@@ -793,7 +793,11 @@ void QGoMainWindow::readSettings()
   settings.beginGroup("MainWindow");
   
   if (settings.value("size")!=(0,0))
+  
+  {
   resize(settings.value("size").toSize());
+  move(settings.value("pos").toPoint());
+  }
   else
   resize(1450,750);
   
