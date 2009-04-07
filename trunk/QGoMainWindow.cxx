@@ -791,9 +791,15 @@ void QGoMainWindow::readSettings()
   updateRecentFileActions();
   
   settings.beginGroup("MainWindow");
-     resize(settings.value("size", QSize(400, 400)).toSize());
-     move(settings.value("pos", QPoint(200, 200)).toPoint());
-     settings.endGroup();
+  
+  if (settings.value("size")!=(0,0))
+  resize(settings.value("size").toSize());
+  else
+  resize(1450,750);
+  
+     //move(settings.value("pos", QPoint(200, 200)).toPoint());
+  
+   settings.endGroup();
 
 }
 
