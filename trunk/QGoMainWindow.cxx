@@ -120,6 +120,7 @@ QGoMainWindow::QGoMainWindow( )
 // *****************************************************************************
 QGoMainWindow::~QGoMainWindow()
 {
+  writeSettings();
   while( !m_PageView.empty() )
   {
     QImagePageViewTracer* myPageView =
