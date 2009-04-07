@@ -554,12 +554,15 @@ void vtkViewImage2D::ResetWindowLevel( void )
   if( !this->GetInput())
     return;
 
-  double* range = this->GetInput()->GetScalarRange();
-  double window = range[1]-range[0];
-  double level = 0.5*(range[1]+range[0]);
+  if( !this->IsColor )
+  {
+    double* range = this->GetInput()->GetScalarRange();
+    double window = range[1]-range[0];
+    double level = 0.5*(range[1]+range[0]);
 
-  this->SetColorWindow(  window );
-  this->SetColorLevel(  level );
+    this->SetColorWindow(  window );
+    this->SetColorLevel(  level );
+  }
 }
 
 //----------------------------------------------------------------------------
