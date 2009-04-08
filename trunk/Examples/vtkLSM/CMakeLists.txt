@@ -9,6 +9,17 @@ TARGET_LINK_LIBRARIES( lsm2jpg
   vtkCommon
   )
 
+ADD_EXECUTABLE( lsm2vtk
+   lsm2vtk.cxx
+   ${QGOFIGURE_SOURCE_DIR}/ExternalCode/vtkLSM/vtkLSMReader.cxx
+  )
+TARGET_LINK_LIBRARIES( lsm2vtk
+  vtkIO
+  vtkImaging
+  vtkFiltering
+  vtkCommon
+  )
+
 ADD_EXECUTABLE( lsm2mha
    lsm2mha.cxx
    ${QGOFIGURE_SOURCE_DIR}/ExternalCode/vtkLSM/vtkLSMReader.cxx
