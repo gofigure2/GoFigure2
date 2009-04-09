@@ -121,6 +121,9 @@ protected slots:
   void openRecentFile();
 
 protected:
+  void SetFullScreenDispatch( const int & ViewID );
+  template< class T > void SetFullScreen( const int & ViewID, T* PageView );
+  template< class T > void SetRendering( T* myPageView );
   QVector< ImagePointer >   m_ITKImage;
   QVector< vtkImageData* >  m_VTKImage;
 

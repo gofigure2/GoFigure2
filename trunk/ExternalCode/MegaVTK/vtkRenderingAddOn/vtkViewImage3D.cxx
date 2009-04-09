@@ -265,7 +265,7 @@ void vtkViewImage3D::SetupVolumeRendering()
   if (texturemapper)
   {
     texturemapper->SetSampleDistance(0.5);
-    texturemapper->SetPreferredMethodToNVidia();
+    //texturemapper->SetPreferredMethodToNVidia();
   }
 
   this->VolumeMapper3D->CroppingOn();
@@ -428,7 +428,7 @@ void vtkViewImage3D::SetVolumeRenderingOn()
     //this->PlaneWidget->PlaceWidget();
 
     // line to be removed: the box has to be called externally
-    this->BoxWidget->On();
+    // this->BoxWidget->On();
 
     this->VolumeActor->SetVisibility ( true );
   }
@@ -595,7 +595,7 @@ void vtkViewImage3D::SetupTextureMapper()
     if( !mapper3D->IsRenderSupported ( this->VolumeProperty ) )
     {
       //try the ATI fragment program implementation
-      mapper3D->SetPreferredMethodToFragmentProgram();
+      // mapper3D->SetPreferredMethodToFragmentProgram();
       if ( !mapper3D->IsRenderSupported ( this->VolumeProperty ) )
       {
         vtkWarningMacro (

@@ -400,6 +400,9 @@ QString QImagePageViewTracer::SnapshotViewXYZ( const SnapshotImageType& iType,
 
 void QImagePageViewTracer::SetFullScreenView( const int& iS )
 {
+
+  if( this->Is2DImage ) return;
+
   if( IsFullScreen == iS )
     IsFullScreen = 0;
   else

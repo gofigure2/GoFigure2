@@ -74,6 +74,25 @@ public slots:
   QMEGAVTKADDON2_EXPORT void RunMovie();
   QMEGAVTKADDON2_EXPORT void SwitchColorMode( );
 
+
+  // decorated, pass-through methods.
+  QMEGAVTKADDON2_EXPORT void SetFullScreenView( const int& iS )
+    { this->Whatever->SetFullScreenView( iS ); };
+  QMEGAVTKADDON2_EXPORT void quadview()
+    { this->Whatever->quadview(); };
+  QMEGAVTKADDON2_EXPORT void FullScreenViewXY()
+    { this->Whatever->FullScreenViewXY(); };
+  QMEGAVTKADDON2_EXPORT void FullScreenView2()
+    { this->Whatever->FullScreenView2(); };
+  QMEGAVTKADDON2_EXPORT void FullScreenView3()
+    { this->Whatever->FullScreenView3(); };
+  QMEGAVTKADDON2_EXPORT void FullScreenViewXYZ()
+    { this->Whatever->FullScreenViewXYZ(); };
+  QMEGAVTKADDON2_EXPORT void SetView3DToTriPlanarMode()
+    { this->Whatever->SetView3DToTriPlanarMode(); };
+  QMEGAVTKADDON2_EXPORT void SetView3DToVolumeRenderingMode()
+    { this->Whatever->SetView3DToVolumeRenderingMode(); };
+
 protected:
   QWidget*      LayOutWidget1;
   QVBoxLayout*  LayOut1;
