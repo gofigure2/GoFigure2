@@ -164,19 +164,15 @@ void vtkViewImage::SetInput( vtkImageData* in )
     this->IsColor = (in->GetNumberOfScalarComponents() > 1);
 
     if( this->IsColor )
-    {
-      std::cout << "Nb of Comp: ";
-      std::cout << in->GetNumberOfScalarComponents();
-      std::cout << std::endl;
-
+      {
       this->WindowLevel->SetLookupTable( NULL );
       this->ShowScalarBar = false;
       this->ScalarBarActor->SetVisibility( this->ShowScalarBar );
-    }
+      }
     else
-    {
+      {
       this->WindowLevel->SetLookupTable(this->LookupTable);
-    }
+      }
   }
 }
 

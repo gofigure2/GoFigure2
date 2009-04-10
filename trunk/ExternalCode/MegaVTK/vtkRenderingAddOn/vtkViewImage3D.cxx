@@ -67,6 +67,8 @@
 
 #include "vtkViewImage3D.h"
 
+#include "vtkImageAppendComponents.h"
+#include "vtkImageExtractComponents.h"
 #include "vtkCamera.h"
 #include "vtkCommand.h"
 #include "vtkImageActor.h"
@@ -400,7 +402,7 @@ void vtkViewImage3D::SetVolumeRenderingOff()
 
 void vtkViewImage3D::SetVolumeRenderingOn()
 {
-  if( !this->IsColor )
+  if( 1 ) //  !this->IsColor )
   {
     vtkImageData* image = this->GetInput();
 
@@ -415,9 +417,41 @@ void vtkViewImage3D::SetVolumeRenderingOn()
     }
 
     this->SetupVolumeRendering();
+    
+    int NbOfComp = image->GetNumberOfScalarComponents();
+    if( NbOfComp > 1 && NbOfComp != 4 && NbOfComp < 5 )
+      {
+      vtkImageExtractComponents* extComp = vtkImageExtractComponents::New();
+      extComp->SetInput( image );
+      extComp->SetComponents( 0 );
+      extComp->Update();
 
-    this->VolumeMapper3D->SetInput( image );
-    this->VolumeRayCastMapper->SetInput( image );
+      vtkImageAppendComponents*  addComp = vtkImageAppendComponents::New();
+      addComp->AddInput( image );
+      addComp->AddInput( extComp->GetOutput() );
+      addComp->Update();
+     
+      if( addComp->GetOutput()->GetNumberOfScalarComponents() == 4 )
+        {
+        this->VolumeMapper3D->SetInput( addComp->GetOutput() );
+        }
+      else
+        {
+        vtkImageData* temp = vtkImageData::New();
+        temp->ShallowCopy( addComp->GetOutput() );
+        addComp->SetInput( 0, temp );
+        addComp->Update();
+        this->VolumeMapper3D->SetInput( addComp->GetOutput() );
+        }        
+      }
+    else
+      {
+      if( NbOfComp == 1 || NbOfComp == 4 ) 
+        {
+        this->VolumeMapper3D->SetInput( image );
+        }
+      }
+    if( !this->IsColor ) this->VolumeRayCastMapper->SetInput( image );
 
     this->SetupTextureMapper();
 
