@@ -121,6 +121,7 @@ protected slots:
   void openRecentFile();
 
 protected:
+  template< class T > void UpdateFullScreenViewButtonsHelper( T* PageView );
   void SetFullScreenDispatch( const int & ViewID );
   template< class T > void SetFullScreen( const int & ViewID, T* PageView );
   template< class T > void SetRendering( T* myPageView );

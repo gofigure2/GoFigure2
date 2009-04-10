@@ -166,7 +166,7 @@ void QGoMainWindow::on_actionClose_activated( )
   this->CentralImageTabWidget->removeTab( idx );
   if ( idx >= 0 )
   {
-    QImagePageViewTracer* myPageView = dynamic_cast<QImagePageViewTracer*>( m_PageView[ idx ] );
+    QImagePageViewTracer* myPageView = dynamic_cast<QImagePageViewTracer*>( m_PageView[idx] );
     if( myPageView )
     {
       delete myPageView;
@@ -428,6 +428,14 @@ void QGoMainWindow::SetContourTracerOn(const bool& iChecked)
     if( myPageView )
     {
       myPageView->SetTracerON();
+      return;
+    }
+    QImagePageView4DTracer* myPageView2 =
+      dynamic_cast<QImagePageView4DTracer*>( m_PageView[idx] );
+    if( myPageView2 )
+    {
+      myPageView2->SetTracerON();
+      return;
     }
   }
 }
@@ -443,6 +451,14 @@ void QGoMainWindow::SetContourTracerOff(const bool& iChecked)
     if( myPageView )
     {
       myPageView->SetTracerOFF();
+      return;
+    }
+    QImagePageView4DTracer* myPageView2 =
+      dynamic_cast<QImagePageView4DTracer*>( m_PageView[idx] );
+    if( myPageView2 )
+    {
+      myPageView2->SetTracerOFF();
+      return;
     }
   }
 }
@@ -578,7 +594,6 @@ void QGoMainWindow::ValidateContourTracer( )
   unsigned int cell_id = IdContourBox->value();
   QImagePageViewTracer* myPageView =
     dynamic_cast<QImagePageViewTracer*>( m_PageView[idx] );
-
   if( myPageView )
   {
     myPageView->SetCellId( cell_id );
@@ -601,11 +616,10 @@ void QGoMainWindow::ReinitializeContourTracer()
   int idx = this->CentralImageTabWidget->currentIndex();
   QImagePageViewTracer* myPageView =
     dynamic_cast<QImagePageViewTracer*>( m_PageView[idx] );
-
   if( myPageView )
-  {
+    {
     myPageView->ReinitializeContour();
-  }
+    }
 }
 
 
@@ -785,9 +799,9 @@ void QGoMainWindow::openRecentFile()
 {
   QAction* action = qobject_cast< QAction* >( sender() );
   if( action )
-  {
+    {
     SetFileName(action->data().toString());
-  }
+    }
 }
 
 
@@ -803,9 +817,8 @@ void QGoMainWindow::readSettings()
   if( settings.value( "size" ) != ( 0, 0 ) )
     {
     resize( settings.value( "size" ).toSize( ) );
+    move(settings.value("pos").toPoint());
     }
-  move(settings.value("pos").toPoint());
-  }
   else
     {
     resize( 1450, 750 );
@@ -820,10 +833,9 @@ void QGoMainWindow::writeSettings()
   QSettings settings("MegasonLab", "Gofigure2");
   settings.setValue("recentFiles", m_RecentFiles);
   settings.beginGroup("MainWindow");
-       settings.setValue("size", size());
-       settings.setValue("pos", pos());
+  settings.setValue("size", size());
+  settings.setValue("pos", pos());
   settings.endGroup();
-
 }
 
 // *****************************************************************************
@@ -849,30 +861,45 @@ void QGoMainWindow::HideProgressLoading()
 void QGoMainWindow::UpdateTracerButtons( const int& idx)
 {
   if( (idx>=0) && (idx<m_PageView.size()))
-  {
+    {
     QImagePageViewTracer* myPageView =
       dynamic_cast<QImagePageViewTracer*>( m_PageView[idx] );
     if( myPageView )
-    {
+      {
       if( myPageView->GetTracerStatus( ) )
         this->ManualSegmentationOnRadioBtn->toggle();
       else
         this->ManualSegmentationOffRadioBtn->toggle();
+      }
     }
-  }
 }
 // *****************************************************************************
 void QGoMainWindow::UpdateFullScreenViewButtons( const int& idx )
 {
   if( (idx>=0) && (idx<m_PageView.size()))
-  {
-    int whichview = 0;
+    {
     QImagePageViewTracer* myPageView =
       dynamic_cast<QImagePageViewTracer*>( m_PageView[idx] );
     if( myPageView )
-    {
-      whichview = myPageView->GetFullScreenView();
-      switch( whichview )
+      {
+      UpdateFullScreenViewButtonsHelper( myPageView );
+      return;
+      }
+    QImagePageView4DTracer* myPageView2 =
+      dynamic_cast<QImagePageView4DTracer*>( m_PageView[idx] );
+    if( myPageView2 )
+      {
+      UpdateFullScreenViewButtonsHelper( myPageView );
+      return;
+      }
+    }
+}
+
+template< class T >
+void QGoMainWindow::UpdateFullScreenViewButtonsHelper( T* PageView )
+{
+    int whichview = PageView->GetFullScreenView();
+    switch( whichview )
       {
         default:
         case 0:
@@ -906,6 +933,4 @@ void QGoMainWindow::UpdateFullScreenViewButtons( const int& idx )
           break;
         }
       }
-    }
-  }
 }

@@ -76,6 +76,8 @@ public slots:
 
 
   // decorated, pass-through methods.
+  QMEGAVTKADDON2_EXPORT int GetFullScreenView( ) const
+    { return this->Whatever->GetFullScreenView( ); };
   QMEGAVTKADDON2_EXPORT void SetFullScreenView( const int& iS )
     { this->Whatever->SetFullScreenView( iS ); };
   QMEGAVTKADDON2_EXPORT void quadview()
@@ -92,6 +94,10 @@ public slots:
     { this->Whatever->SetView3DToTriPlanarMode(); };
   QMEGAVTKADDON2_EXPORT void SetView3DToVolumeRenderingMode()
     { this->Whatever->SetView3DToVolumeRenderingMode(); };
+  QMEGAVTKADDON2_EXPORT void SetTracerON()
+    { this->Whatever->SetTracerON(); };
+  QMEGAVTKADDON2_EXPORT void SetTracerOFF()
+    { this->Whatever->SetTracerOFF(); };
 
 protected:
   QWidget*      LayOutWidget1;
