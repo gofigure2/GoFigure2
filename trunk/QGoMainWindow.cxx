@@ -138,7 +138,6 @@ QGoMainWindow::~QGoMainWindow()
         delete myPageView4D;
       }
     }
-
     m_PageView.pop_back();
   }
   delete m_LUTDialog;
@@ -218,6 +217,8 @@ void QGoMainWindow::on_actionClose_all_activated( )
     }
 }
 
+
+
 // *****************************************************************************
 void QGoMainWindow::on_actionQuit_activated( )
 {
@@ -225,24 +226,39 @@ void QGoMainWindow::on_actionQuit_activated( )
   writeSettings();
 }
 
+
+
 // *****************************************************************************
 void QGoMainWindow::on_actionBackground_activated( )
 {
   int idx = this->CentralImageTabWidget->currentIndex();
   QImagePageViewTracer* myPageView =
-    dynamic_cast<QImagePageViewTracer*>( m_PageView[idx] );
-
+    dynamic_cast< QImagePageViewTracer* >( m_PageView[idx] );
   if( myPageView )
-  {
-    double* rgb = myPageView->GetBackgroundColor();
-    QColor color( 
-      static_cast< int >( 255. * rgb[0] ),
-      static_cast< int >( 255. * rgb[1] ),
-      static_cast< int >( 255. * rgb[2] ) );
-    myPageView->SetBackgroundColor( QColorDialog::getColor( color, this ) );
-  }
+    {
+    SetBackgroundColor< QImagePageViewTracer >( myPageView );
+    return;
+    }
+  QImagePageView4DTracer* myPageView2 =
+    dynamic_cast< QImagePageView4DTracer* >( m_PageView[idx] );
+  if( myPageView2 )
+    {
+    SetBackgroundColor< QImagePageView4DTracer >( myPageView2 );
+    return;
+    }
 }
 
+
+template< class T >
+void QGoMainWindow::SetBackgroundColor( T* PageView )
+{
+  double* rgb = PageView->GetBackgroundColor();
+  QColor color( 
+    static_cast< int >( 255. * rgb[0] ),
+    static_cast< int >( 255. * rgb[1] ),
+    static_cast< int >( 255. * rgb[2] ) );
+  PageView->SetBackgroundColor( QColorDialog::getColor( color, this ) );
+}
 
 
 // *****************************************************************************
