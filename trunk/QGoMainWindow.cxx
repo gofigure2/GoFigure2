@@ -889,7 +889,7 @@ void QGoMainWindow::UpdateFullScreenViewButtons( const int& idx )
       dynamic_cast<QImagePageView4DTracer*>( m_PageView[idx] );
     if( myPageView2 )
       {
-      UpdateFullScreenViewButtonsHelper( myPageView );
+      UpdateFullScreenViewButtonsHelper( myPageView2 );
       return;
       }
     }

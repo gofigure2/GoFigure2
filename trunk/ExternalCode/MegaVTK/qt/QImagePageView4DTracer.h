@@ -77,7 +77,7 @@ public slots:
 
   // decorated, pass-through methods.
   QMEGAVTKADDON2_EXPORT int GetFullScreenView( ) const
-    { return this->Whatever->GetFullScreenView( ); };
+    { std::cout << "TRY-1" << std::endl; return this->Whatever->GetFullScreenView( ); };
   QMEGAVTKADDON2_EXPORT void SetFullScreenView( const int& iS )
     { this->Whatever->SetFullScreenView( iS ); };
   QMEGAVTKADDON2_EXPORT void quadview()
