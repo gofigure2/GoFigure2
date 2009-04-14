@@ -156,6 +156,9 @@ IF( VTK_FOUND )
     )
 
   ADD_TEST( gofigure_TEST ${CXX_TEST_PATH}/gofigure )
+
+  INCLUDE(CTest)
+
 ENDIF( VTK_FOUND )
 
 
