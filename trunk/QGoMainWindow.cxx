@@ -607,24 +607,40 @@ void QGoMainWindow::SetColorForGivenId( const bool& iSelect )
 void QGoMainWindow::ValidateContourTracer( )
 {
   int idx = this->CentralImageTabWidget->currentIndex();
-  unsigned int cell_id = IdContourBox->value();
   QImagePageViewTracer* myPageView =
     dynamic_cast<QImagePageViewTracer*>( m_PageView[idx] );
   if( myPageView )
-  {
-    myPageView->SetCellId( cell_id );
-
-    if( m_IdColorMap.find( cell_id ) == m_IdColorMap.end() )
-      SetColorForGivenId( false );
-
-    myPageView->ValidateContour(
-      cell_id,
-      m_IdColorMap[ cell_id ],
-      this->SaveContourCheckBox->isChecked() );
-  }
- //DATABASE
-
+    {
+    ValidateContourTracerHelper< QImagePageViewTracer >( myPageView );
+    return;
+    }
+  QImagePageView4DTracer* myPageView2 =
+    dynamic_cast<QImagePageView4DTracer*>( m_PageView[idx] );
+  if( myPageView2 )
+    {
+    ValidateContourTracerHelper< QImagePageView4DTracer >( myPageView2 );
+    return;
+    }
 }
+
+template< class T >
+void QGoMainWindow::ValidateContourTracerHelper( T* PageView )
+{
+  unsigned int cell_id = IdContourBox->value();
+  PageView->SetCellId( cell_id );
+
+  if( m_IdColorMap.find( cell_id ) == m_IdColorMap.end() )
+    {
+    SetColorForGivenId( false );
+    }
+  //DATABASE
+  PageView->ValidateContour(
+    cell_id,
+    m_IdColorMap[ cell_id ],
+    this->SaveContourCheckBox->isChecked() );
+}
+
+
 
 // *****************************************************************************
 void QGoMainWindow::ReinitializeContourTracer()
@@ -635,6 +651,12 @@ void QGoMainWindow::ReinitializeContourTracer()
   if( myPageView )
     {
     myPageView->ReinitializeContour();
+    }
+  QImagePageView4DTracer* myPageView2 =
+    dynamic_cast<QImagePageView4DTracer*>( m_PageView[idx] );
+  if( myPageView2 )
+    {
+    myPageView2->ReinitializeContour();
     }
 }
 
