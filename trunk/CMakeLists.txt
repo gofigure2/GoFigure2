@@ -86,12 +86,12 @@ IF( VTK_FOUND )
     ${QT_INCLUDES}
     ${QGOFIGURE_SOURCE_DIR}
     ${QGOFIGURE_BINARY_DIR}
+    ${QGOFIGURE_SOURCE_DIR}/qt
+    ${QGOFIGURE_BINARY_DIR}/qt
     ${MEGAVTK2_SOURCE_DIR}
     ${MEGAVTK2_BINARY_DIR}
     ${MEGAVTK2_SOURCE_DIR}/vtkItk
     ${MEGAVTK2_BINARY_DIR}/vtkItk
-    ${MEGAVTK2_SOURCE_DIR}/qt
-    ${MEGAVTK2_BINARY_DIR}/qt
     ${MEGAVTK2_SOURCE_DIR}/vtkRenderingAddOn
     ${MEGAVTK2_BINARY_DIR}/vtkRenderingAddOn
     ${QGOFIGURE_SOURCE_DIR}/ExternalCode/vtkLSM
@@ -99,6 +99,7 @@ IF( VTK_FOUND )
 
   SUBDIRS( ExternalCode )
   SUBDIRS( Examples )
+  SUBDIRS( qt )
 
   SET( QGOMAINWINDOW_HDRS QGoMainWindow.h
        ${QGOFIGURE_SOURCE_DIR}/ExternalCode/itkQt/itkQtAdaptor.h)
