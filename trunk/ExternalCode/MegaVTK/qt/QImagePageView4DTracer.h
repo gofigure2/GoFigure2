@@ -76,6 +76,17 @@ public slots:
 
 
   // decorated, pass-through methods.
+  QMEGAVTKADDON2_EXPORT void ValidateContour(
+    const int& iId,
+    const QColor& iColor,
+    const bool& iSave )
+    { this->Whatever->ValidateContour( iId, iColor, iSave ); };
+  QMEGAVTKADDON2_EXPORT void ReinitializeContour( )
+    { this->Whatever->ReinitializeContour( ); };
+  QMEGAVTKADDON2_EXPORT void SetCellId( const unsigned int& iId )
+    { this->Whatever->SetCellId( iId ); };
+  QMEGAVTKADDON2_EXPORT unsigned int GetCellId( ) const
+    { return this->Whatever->GetCellId(); };
   QMEGAVTKADDON2_EXPORT void GetBackgroundColor( double& r, double& g, double& b )
     { return this->Whatever->GetBackgroundColor( r, g, b ); };
   QMEGAVTKADDON2_EXPORT double* GetBackgroundColor()

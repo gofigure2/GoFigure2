@@ -84,9 +84,10 @@ QImagePageView4DTracer::QImagePageView4DTracer( QWidget* parent ) : QWidget( par
 
   this->LayOut1 = new QVBoxLayout;
   this->LayOut1->addWidget( this->Whatever );
-  this->LayOut1->addWidget( this->slider1 );
   this->LayOut1->addWidget( this->button2 );
-  //this->LayOut1->addWidget( this->button1 );
+  this->LayOut1->addWidget( this->slider1 );
+  //NOTE ALEX: button for movie
+  // this->LayOut1->addWidget( this->button1 );
 
   this->LayOutWidget1 = new QWidget( this );
   this->LayOutWidget1->setLayout( this->LayOut1 );
@@ -106,11 +107,6 @@ QImagePageView4DTracer::~QImagePageView4DTracer()
 {
   delete this->Whatever;
   Image->Delete();
-  //delete this->LayOut1;
-  //delete this->LayOutWidget1;
-  //delete this->slider1;
-  //delete this->button1;
-  //delete this->button2;
 }
 
 void
@@ -147,8 +143,15 @@ void QImagePageView4DTracer::ReadLSMFile( const int& TimePoint )
   reader->Update();
   this->slider1->setMinimum( 0 );
   this->NumberOfTimePoints = reader->GetNumberOfTimePoints();
-  this->slider1->setMaximum( this->NumberOfTimePoints );
-
+  if( this->NumberOfTimePoints > 1)
+    {
+    this->slider1->setMaximum( this->NumberOfTimePoints );
+    }
+  else
+    {
+    this->LayOut1->removeWidget( this->slider1 );
+    }
+ 
   int NumberOfChannels = reader->GetNumberOfChannels();
   myImage_ch1->ShallowCopy( reader->GetOutput() );
   reader->Delete();
@@ -254,6 +257,7 @@ void QImagePageView4DTracer::resizeEvent( QResizeEvent* event )
 
 void QImagePageView4DTracer::RunMovie( )
 {
+  // NOTE ALEX: movie trials
   // std::cout << "Enjoy movie mode." << std::endl;
   // for( unsigned int i = 0; i < this->NumberOfTimePoints; i++)
   //  {
