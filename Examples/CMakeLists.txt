@@ -1,0 +1,2 @@
+SUBDIRS( vtkLSM )
+SUBDIRS( qt )
