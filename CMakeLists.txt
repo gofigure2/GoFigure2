@@ -180,7 +180,7 @@ IF( VTK_FOUND )
     vtkImaging
     )
 
-  ADD_TEST( gofigure_TEST ${CXX_TEST_PATH}/gofigure )
+#   ADD_TEST( gofigure_TEST ${CXX_TEST_PATH}/gofigure )
 
   INCLUDE(CTest)
 
