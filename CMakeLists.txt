@@ -46,11 +46,13 @@ IF( BUILD_DOCUMENTATION )
       ${QGOFIGURE_SOURCE_DIR}/Doxyfile.txt.in
       ${QGOFIGURE_BINARY_DIR}/Doxyfile.txt
     )
-#     MESSAGE( SEND_ERROR "${DOXYGEN_EXECUTABLE}" )
-    ADD_CUSTOM_TARGET(doc
-      ${DOXYGEN_EXECUTABLE}
-      ${QGOFIGURE_BINARY_DIR}/Doxyfile.txt
+
+    ADD_CUSTOM_TARGET(doc ALL
+      ${DOXYGEN_EXECUTABLE} ${QGOFIGURE_BINARY_DIR}/Doxyfile.txt
+      DEPENDS ${QGOFIGURE_BINARY_DIR}/Doxyfile.txt
     )
+  ELSE( DOXYGEN_FOUND )
+    MESSAGE( STATUS "Warning: Doxygen not found - Documentation will not be created")
   ENDIF( DOXYGEN_FOUND )
 ENDIF( BUILD_DOCUMENTATION )
 

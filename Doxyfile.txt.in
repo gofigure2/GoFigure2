@@ -1,13 +1,11 @@
-
-
 # Doxyfile 1.5.6-KDevelop
 
 #---------------------------------------------------------------------------
 # Project related configuration options
 #---------------------------------------------------------------------------
 DOXYFILE_ENCODING      = UTF-8
-PROJECT_NAME           = ${PROJECT_NAME}
-PROJECT_NUMBER         = ${QGOFIGURE_VERSION}
+PROJECT_NAME           = @PROJECT_NAME@
+PROJECT_NUMBER         = @QGOFIGURE_VERSION@
 OUTPUT_DIRECTORY       =
 CREATE_SUBDIRS         = NO
 OUTPUT_LANGUAGE        = English
@@ -27,8 +25,8 @@ ABBREVIATE_BRIEF       = "The $name class" \
 ALWAYS_DETAILED_SEC    = NO
 INLINE_INHERITED_MEMB  = NO
 FULL_PATH_NAMES        = YES
-STRIP_FROM_PATH        = ${QGOFIGURE_SOURCE_DIR}
-STRIP_FROM_INC_PATH    =
+STRIP_FROM_PATH        = @QGOFIGURE_SOURCE_DIR@
+STRIP_FROM_INC_PATH    = @QGOFIGURE_SOURCE_DIR@/
 SHORT_NAMES            = NO
 JAVADOC_AUTOBRIEF      = NO
 QT_AUTOBRIEF           = NO
@@ -96,7 +94,8 @@ WARN_LOGFILE           =
 #---------------------------------------------------------------------------
 # configuration options related to the input files
 #---------------------------------------------------------------------------
-INPUT                  = ${QGOFIGURE_SOURCE_DIR}
+INPUT                  = @QGOFIGURE_SOURCE_DIR@ \
+                         @QGOFIGURE_BINARY_DIR@
 INPUT_ENCODING         = UTF-8
 FILE_PATTERNS          = *.c \
                          *.cc \
