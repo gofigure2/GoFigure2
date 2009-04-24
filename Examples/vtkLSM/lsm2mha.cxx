@@ -39,22 +39,22 @@ int main(int argc,char* argv[])
       {
       for( int channel = 0; channel < NumberOfChannels; channel++)
         {
-        vtkLSMReader* treader=vtkLSMReader::New();
+        vtkLSMReader* treader = vtkLSMReader::New();
         treader->SetFileName(argv[1]);
         treader->SetUpdateTimePoint( timePoint );
-	treader->SetUpdateChannel( channel );
-	treader->Update();
+	    treader->SetUpdateChannel( channel );
+	    treader->Update();
 			
-	std::stringstream namebuffer;
-	namebuffer << argv[1];
-	namebuffer << "_T_"  << timePoint;
+	    std::stringstream namebuffer;
+	    namebuffer << argv[1];
+	    namebuffer << "_T_"  << timePoint;
+		namebuffer << "_C_"  << channel;
         namebuffer << ".mha";
-	std::cout << namebuffer.str().c_str();
-	writer->SetFileName(namebuffer.str().c_str()); 
-	writer->SetInputConnection( treader->GetOutputPort( ) );
-	writer->Write();
-        writer->Delete();
-	}
+	    std::cout << namebuffer.str().c_str();
+	    writer->SetFileName(namebuffer.str().c_str()); 
+	    writer->SetInputConnection( treader->GetOutputPort( ) );
+	    writer->Write();
+	    }
       }
       else
       {
