@@ -6,6 +6,13 @@
 #include "vtkIndent.h"
 #include "vtkImageData.h"
 
+
+// Note alex
+// This code works but is an early version of the 
+// code now in GoFigure App.
+// /todo update this code with the more efficient
+//       code from GoFigure
+
 int main(int argc,char* argv[])
 {
   if (argc<3 || argc>4)
@@ -56,89 +63,89 @@ int main(int argc,char* argv[])
 	    writer->Write();
 	    }
       }
-      else
+    else
       {
       // read the first channel, then Append other channel as components
-	// of myImage. Finally, write it.
-	// note that jpgwriter only handles 1 or 3 comp images.
-	// if only one channel, no compositing
-	// if two channel, compose with a dummy (empty) third channel
-	// if three channels, no problem
-	// if more than three channel, we should blend (TBD)
-	if( NumberOfChannels < 4 )
-	{
-	vtkImageData* myImage_ch1;
-	vtkImageData* myImage_ch2;
-	vtkImageData* myImage_ch3;
+	  // of myImage. Finally, write it.
+	  // note that jpgwriter only handles 1 or 3 comp images.
+	  // if only one channel, no compositing
+	  // if two channel, compose with a dummy (empty) third channel
+	  // if three channels, no problem
+	  // if more than three channel, we should blend (TBD)
+	  if( NumberOfChannels < 4 )
+	    {
+	    vtkImageData* myImage_ch1;
+	    vtkImageData* myImage_ch2;
+	    vtkImageData* myImage_ch3;
 			
-	{
-	vtkLSMReader* treader=vtkLSMReader::New();
+	    {
+	    vtkLSMReader* treader=vtkLSMReader::New();
         treader->SetFileName(argv[1]);
-	treader->SetUpdateTimePoint( timePoint );
-	treader->SetUpdateChannel( 0 );
-	treader->Update();
-	myImage_ch1 = treader->GetOutput();
-	}
+	    treader->SetUpdateTimePoint( timePoint );
+	    treader->SetUpdateChannel( 0 );
+	    treader->Update();
+	    myImage_ch1 = treader->GetOutput();
+	    }
 				
         {
-	vtkLSMReader* treader=vtkLSMReader::New();
-	treader->SetFileName(argv[1]);
-	treader->SetUpdateTimePoint( timePoint );
-	treader->SetUpdateChannel( 1 );
-	treader->Update();
-	myImage_ch2 = treader->GetOutput();
-	}
+	    vtkLSMReader* treader=vtkLSMReader::New();
+	    treader->SetFileName(argv[1]);
+	    treader->SetUpdateTimePoint( timePoint );
+	    treader->SetUpdateChannel( 1 );
+	    treader->Update();
+	    myImage_ch2 = treader->GetOutput();
+	    }
 				
         {
-	vtkLSMReader* treader=vtkLSMReader::New();
-	treader->SetFileName(argv[1]);
-	treader->SetUpdateTimePoint( timePoint );
-	treader->SetUpdateChannel( 2 );
+	    vtkLSMReader* treader=vtkLSMReader::New();
+	    treader->SetFileName(argv[1]);
+	    treader->SetUpdateTimePoint( timePoint );
+	    treader->SetUpdateChannel( 2 );
         treader->Update();
-	std::cout << "Third reader done." << std::endl;
-	int * dimensions = treader->GetDimensions();
-	int  flatindex = dimensions[0] * dimensions[1] * dimensions[2];
-	myImage_ch3 = treader->GetOutput();
-	if( NumberOfChannels == 2 ) // dummy third channel 
-	{
-	// here we suppose the type to be char
-	// to be improved
-	char *ptr = (char*)( myImage_ch3->GetScalarPointer());
-	for( int k=0; k < flatindex; k++ )
-	{
-	*ptr++ = 0; 
-	}            
-	}
-	std::cout << "third channel ready." << std::endl;
-	}
+	    std::cout << "Third reader done." << std::endl;
+	    int * dimensions = treader->GetDimensions();
+	    int  flatindex = dimensions[0] * dimensions[1] * dimensions[2];
+	    myImage_ch3 = treader->GetOutput();
+	    if( NumberOfChannels == 2 ) // dummy third channel 
+	      {
+	      // here we suppose the type to be char
+	      // to be improved
+	      char *ptr = (char*)( myImage_ch3->GetScalarPointer());
+	      for( int k=0; k < flatindex; k++ )
+	        {
+	        *ptr++ = 0; 
+	        }            
+	      }
+	    std::cout << "third channel ready." << std::endl;
+	    }
 				
-	vtkImageAppendComponents* appendFilter1 = vtkImageAppendComponents::New();
-	appendFilter1->AddInput( myImage_ch1 );
-	appendFilter1->AddInput( myImage_ch2 );
-	appendFilter1->Update();
-	std::cout << "Two first channel composed." << std::endl;
+	  vtkImageAppendComponents* appendFilter1 = vtkImageAppendComponents::New();
+	  appendFilter1->AddInput( myImage_ch1 );
+	  appendFilter1->AddInput( myImage_ch2 );
+	  appendFilter1->Update();
+	  std::cout << "Two first channel composed." << std::endl;
 				
-	vtkImageAppendComponents* appendFilter2 = vtkImageAppendComponents::New();
-	appendFilter2->AddInput( appendFilter1->GetOutput() );
-	appendFilter2->AddInput( myImage_ch3 );
-	appendFilter2->Update(); 
-	std::cout << "Third channel composed." << std::endl;
+	  vtkImageAppendComponents* appendFilter2 = vtkImageAppendComponents::New();
+	  appendFilter2->AddInput( appendFilter1->GetOutput() );
+	  appendFilter2->AddInput( myImage_ch3 );
+	  appendFilter2->Update(); 
+	  std::cout << "Third channel composed." << std::endl;
 				
-	std::stringstream namebuffer;
-	namebuffer << argv[1];
-	namebuffer << "_T_"  << timePoint;
-	namebuffer << ".mha";
-        std::cout << namebuffer.str().c_str();
-	writer->SetFileName(namebuffer.str().c_str()); 
-	writer->SetInput( appendFilter2->GetOutput( ) );
-	writer->Write(); 
-	}
+	  std::stringstream namebuffer;
+	  namebuffer << argv[1];
+	  namebuffer << "_T_"  << timePoint;
+	  namebuffer << ".mha";
+      std::cout << namebuffer.str().c_str();
+	  writer->SetFileName(namebuffer.str().c_str()); 
+	  writer->SetInput( appendFilter2->GetOutput( ) );
+	  writer->Write(); 
+	  }
 	else
-	{
-	// num of channel > 3
-	// TBD
-        }     
+	  {
+	  // num of channel > 3
+	  // TBD
+      }     
 	} 
-    } 
-	return EXIT_SUCCESS;
+  } 
+  return EXIT_SUCCESS;
 }
