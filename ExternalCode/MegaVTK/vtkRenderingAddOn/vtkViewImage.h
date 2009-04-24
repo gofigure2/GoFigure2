@@ -315,8 +315,8 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage : public vtkImageViewer2
   vtkDataSetCollection*       DataSetCollection;
   vtkMatrixToLinearTransform* OrientationTransform;
 
-  int ShowAnnotations;
-  int ShowScalarBar;
+  bool ShowAnnotations;
+  bool ShowScalarBar;
 
   bool IsColor;
 };
