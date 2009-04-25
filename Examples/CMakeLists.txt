@@ -1,2 +1,4 @@
+IF(QT_FOUND)
+  SUBDIRS( qt )
+ENDIF(QT_FOUND)
 SUBDIRS( vtkLSM )
-SUBDIRS( qt )
