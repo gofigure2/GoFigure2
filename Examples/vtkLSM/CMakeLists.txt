@@ -61,3 +61,5 @@ IF( QT_FOUND )
     ${QT_LIBRARIES}
     QVTK
     )
+ENDIF( QT_FOUND )
+
