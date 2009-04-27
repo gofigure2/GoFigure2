@@ -162,7 +162,7 @@ IF( VTK_FOUND )
                             OBJECT_DEPENDS "${QGOMAINWINDOW_UI_HDRS}" )
 
 
-    IF( APPLE )
+#    IF( APPLE )
       ADD_EXECUTABLE( 
         gofigure
         MACOSX_BUNDLE
@@ -173,25 +173,25 @@ IF( VTK_FOUND )
         ${QGOMAINWINDOW_MOC_SRC}
         ${QGOMAINWINDOW_QRC} 
         )
-    ENDIF( APPLE )
-    IF(WIN32)
-      IF(NOT BORLAND)
-        IF(NOT CYGWIN)
-          IF(NOT MINGW)
-            ADD_EXECUTABLE( 
-              gofigure
-              MACOSX_BUNDLE
-              gofigure.cxx
-              ${QGOFIGURE_SOURCE_DIR}/ExternalCode/itkQt/itkQtProgressBar.cxx
-              ${QGOFIGURE_SOURCE_DIR}/ExternalCode/vtkLSM/vtkLSMReader.cxx
-              ${QGOMAINWINDOW_SRC}
-              ${QGOMAINWINDOW_MOC_SRC}
-              ${QGOMAINWINDOW_QRC} 
-              )
-            ENDIF(NOT MINGW)
-        ENDIF(NOT CYGWIN)
-      ENDIF(NOT BORLAND)
-    ENDIF(WIN32)
+#    ENDIF( APPLE )
+#    IF(WIN32)
+#      IF(NOT BORLAND)
+#        IF(NOT CYGWIN)
+#          IF(NOT MINGW)
+#            ADD_EXECUTABLE( 
+#              gofigure
+#              MACOSX_BUNDLE
+#              gofigure.cxx
+#              ${QGOFIGURE_SOURCE_DIR}/ExternalCode/itkQt/itkQtProgressBar.cxx
+#              ${QGOFIGURE_SOURCE_DIR}/ExternalCode/vtkLSM/vtkLSMReader.cxx
+#              ${QGOMAINWINDOW_SRC}
+#              ${QGOMAINWINDOW_MOC_SRC}
+#              ${QGOMAINWINDOW_QRC} 
+#              )
+#            ENDIF(NOT MINGW)
+#        ENDIF(NOT CYGWIN)
+#      ENDIF(NOT BORLAND)
+#    ENDIF(WIN32)
 
     TARGET_LINK_LIBRARIES( gofigure
       QMegaVTKAddOn2
