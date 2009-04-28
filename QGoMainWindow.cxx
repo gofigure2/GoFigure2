@@ -84,11 +84,11 @@ QGoMainWindow::QGoMainWindow( )
   this, SLOT( SetTracerToRotateContourTracer() ) );
   QObject::connect( this->TracerScalingBtn, SIGNAL( released() ),
   this, SLOT( SetTracerToScaleContourTracer() ) );*/
-  QObject::connect( this->ManualSegmentationOnRadioBtn, 
+  QObject::connect( this->ManualSegmentationOnRadioBtn,
     SIGNAL( toggled(bool) ),
-    this, 
+    this,
     SLOT( SetContourTracerOn(bool) ) );
-  QObject::connect( this->ManualSegmentationOffRadioBtn, 
+  QObject::connect( this->ManualSegmentationOffRadioBtn,
     SIGNAL( toggled(bool) ),
     this, SLOT( SetContourTracerOff(bool) ) );
   QObject::connect( this->IdContourColorBtn, SIGNAL( released( ) ),
@@ -97,12 +97,15 @@ QGoMainWindow::QGoMainWindow( )
     this, SLOT( ValidateContourTracer() ) );
   QObject::connect( this->TracerReinitializeBtn, SIGNAL( released() ),
     this, SLOT( ReinitializeContourTracer() ) );
+  QObject::connect( this->TracerValidationIncrementBtn, SIGNAL( released() ),
+    this, SLOT( ValidateAndIncrementContourTracer() ) );
+
   //QObject::connect( this->actionOpen, SIGNAL( activated( ) ),
     //this, SLOT( showprogressloading() ) );
-  QObject::connect( this->CentralImageTabWidget, 
+  QObject::connect( this->CentralImageTabWidget,
     SIGNAL( currentChanged( int ) ),
     this, SLOT( UpdateFullScreenViewButtons( int ) ) );
-  QObject::connect( this->CentralImageTabWidget, 
+  QObject::connect( this->CentralImageTabWidget,
     SIGNAL( currentChanged( int ) ),
     this, SLOT( UpdateTracerButtons( int ) ) );
 
@@ -148,16 +151,16 @@ QGoMainWindow::~QGoMainWindow()
 // *************************************************************************
 void QGoMainWindow::on_actionOpen_activated( )
 {
-  QString filename = QFileDialog::getOpenFileName( 
-    this, 
+  QString filename = QFileDialog::getOpenFileName(
+    this,
     tr( "Select Image" ),"",
     tr( "Images (*.png *.bmp *.jpg *.jpeg *.tiff *.mha *.mhd *.img *.lsm)" )
     );
- 
+
   if( !filename.isEmpty() )
   {
     SetFileName( filename );
-  }  
+  }
 }
 
 // *****************************************************************************
@@ -167,7 +170,7 @@ void QGoMainWindow::on_actionClose_activated( )
   this->CentralImageTabWidget->removeTab( idx );
   if( idx >= 0 )
   {
-    QImagePageViewTracer* myPageView = 
+    QImagePageViewTracer* myPageView =
       dynamic_cast<QImagePageViewTracer*>( m_PageView[idx] );
     if( myPageView )
     {
@@ -175,7 +178,7 @@ void QGoMainWindow::on_actionClose_activated( )
     }
     else
     {
-      QImagePageView4DTracer* myPageView4D = 
+      QImagePageView4DTracer* myPageView4D =
         dynamic_cast<QImagePageView4DTracer*>( m_PageView[ idx ] );
       if( myPageView4D )
       {
@@ -208,7 +211,7 @@ void QGoMainWindow::on_actionClose_all_activated( )
       delete myPageView;
     }
     else
-    {  
+    {
       QImagePageView4DTracer* myPageView4D =
         dynamic_cast<QImagePageView4DTracer*>( m_PageView.last() );
       if( myPageView4D )
@@ -258,7 +261,7 @@ template< class T >
 void QGoMainWindow::SetBackgroundColor( T* PageView )
 {
   double* rgb = PageView->GetBackgroundColor();
-  QColor color( 
+  QColor color(
     static_cast< int >( 255. * rgb[0] ),
     static_cast< int >( 255. * rgb[1] ),
     static_cast< int >( 255. * rgb[2] ) );
@@ -301,7 +304,7 @@ QGoMainWindow::SetFullScreenDispatch( const int & ViewID )
     dynamic_cast<QImagePageViewTracer*>( m_PageView[idx] );
   if( myPageView )
   {
-    this->SetFullScreen<QImagePageViewTracer>( ViewID, myPageView ); 
+    this->SetFullScreen<QImagePageViewTracer>( ViewID, myPageView );
   }
   else
   {
@@ -309,7 +312,7 @@ QGoMainWindow::SetFullScreenDispatch( const int & ViewID )
       dynamic_cast<QImagePageView4DTracer*>( m_PageView[idx] );
     if( myPageView2 )
     {
-      this->SetFullScreen<QImagePageView4DTracer>( ViewID, myPageView2 ); 
+      this->SetFullScreen<QImagePageView4DTracer>( ViewID, myPageView2 );
     }
   }
   actionSnapshot->setEnabled(true);
@@ -429,7 +432,7 @@ void QGoMainWindow::on_actionSnapshot_activated( )
           break;
         }
       }
-      statusbar->showMessage( 
+      statusbar->showMessage(
         tr("%1 has been saved").arg(SnapshotFileName) );
     }
   }
@@ -627,6 +630,12 @@ void QGoMainWindow::ValidateContourTracer( )
       ValidateContourTracerHelper< QImagePageView4DTracer >( myPageView2 );
     }
   }
+}
+
+void QGoMainWindow::ValidateAndIncrementContourTracer( )
+{
+  ValidateContourTracer( );
+  this->IdContourBox->setValue( 1 + this->IdContourBox->value() );
 }
 
 template< class T >
@@ -858,10 +867,10 @@ void QGoMainWindow::readSettings()
   QSettings settings( "MegasonLab", "Gofigure2" );
   m_RecentFiles = settings.value( "recentFiles" ).toStringList( );
   updateRecentFileActions( );
-  
+
   settings.beginGroup( "MainWindow" );
   QSize size = settings.value( "size" ).toSize();
- 
+
   if( size.isValid() )
   {
     this->resize( size );
@@ -871,7 +880,7 @@ void QGoMainWindow::readSettings()
   {
     this->resize( 1450, 750 );
   }
-  
+
    settings.endGroup();
 }
 
