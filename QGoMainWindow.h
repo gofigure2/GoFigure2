@@ -117,7 +117,7 @@ protected slots:
 
   void SetColorForGivenId( const bool& iSelected = true );
   void ValidateContourTracer();
-  void ValidateAndIncrementContourTracer();
+  void ReinitializeAndIncrementContourTracer();
   void ReinitializeContourTracer();
   void openRecentFile();
 

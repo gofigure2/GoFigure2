@@ -882,7 +882,7 @@ Component</string>
       <rect>
        <x>20</x>
        <y>140</y>
-       <width>159</width>
+       <width>174</width>
        <height>85</height>
       </rect>
      </property>
@@ -908,9 +908,9 @@ Component</string>
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="TracerValidationIncrementBtn">
+       <widget class="QPushButton" name="TracerReinitializeIncrementBtn">
         <property name="text">
-         <string>Validate + Increment</string>
+         <string>Reinitialize + Increment</string>
         </property>
         <property name="shortcut">
          <string>Ctrl+C, Ctrl+I</string>

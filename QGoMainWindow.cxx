@@ -97,8 +97,8 @@ QGoMainWindow::QGoMainWindow( )
     this, SLOT( ValidateContourTracer() ) );
   QObject::connect( this->TracerReinitializeBtn, SIGNAL( released() ),
     this, SLOT( ReinitializeContourTracer() ) );
-  QObject::connect( this->TracerValidationIncrementBtn, SIGNAL( released() ),
-    this, SLOT( ValidateAndIncrementContourTracer() ) );
+  QObject::connect( this->TracerReinitializeIncrementBtn, SIGNAL( released() ),
+    this, SLOT( ReinitializeAndIncrementContourTracer() ) );
 
   //QObject::connect( this->actionOpen, SIGNAL( activated( ) ),
     //this, SLOT( showprogressloading() ) );
@@ -632,9 +632,9 @@ void QGoMainWindow::ValidateContourTracer( )
   }
 }
 
-void QGoMainWindow::ValidateAndIncrementContourTracer( )
+void QGoMainWindow::ReinitializeAndIncrementContourTracer( )
 {
-  ValidateContourTracer( );
+  ReinitializeContourTracer( );
   this->IdContourBox->setValue( 1 + this->IdContourBox->value() );
 }
 
