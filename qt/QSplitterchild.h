@@ -60,6 +60,11 @@ public slots:
 protected:
   int prevpos;
   int previndex;
+
+private:
+  QSplitterchild( const QSplitterchild& );
+  void operator = ( const QSplitterchild& );
+
 };
 
 #endif

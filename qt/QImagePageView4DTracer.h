@@ -50,10 +50,8 @@
 #include <vtkImageData.h>
 #include <vtkEventQtSlotConnect.h>
 
-#include "vtkViewImage3D.h"
-#include "vtkViewImage2DWithContourWidgetCollection.h"
-#include "QSplitterchild.h"
 #include "QImagePageViewTracer.h"
+#include "MegaVTK2Configure.h"
 
 /**
 \class QImagePageView4DTracer
@@ -68,12 +66,19 @@ public:
   QMEGAVTKADDON2_EXPORT void SetFileName( const char* name );
   QMEGAVTKADDON2_EXPORT void SetColorVizu( const bool& value )
     { this->ColorVizu = value; };
+  QMEGAVTKADDON2_EXPORT void GetBackgroundColor( double& r, double& g, double& b )
+    { return this->Whatever->GetBackgroundColor( r, g, b ); };
+  QMEGAVTKADDON2_EXPORT double* GetBackgroundColor()
+    { return this->Whatever->GetBackgroundColor(); };
+  QMEGAVTKADDON2_EXPORT unsigned int GetCellId( ) const
+    { return this->Whatever->GetCellId(); };
+  QMEGAVTKADDON2_EXPORT int GetFullScreenView( ) const
+    { return this->Whatever->GetFullScreenView( ); };
 
 public slots:
   QMEGAVTKADDON2_EXPORT void SetView( const int& value );
   QMEGAVTKADDON2_EXPORT void RunMovie();
   QMEGAVTKADDON2_EXPORT void SwitchColorMode( );
-
 
   // decorated, pass-through methods.
   QMEGAVTKADDON2_EXPORT void ValidateContour(
@@ -85,20 +90,12 @@ public slots:
     { this->Whatever->ReinitializeContour( ); };
   QMEGAVTKADDON2_EXPORT void SetCellId( const unsigned int& iId )
     { this->Whatever->SetCellId( iId ); };
-  QMEGAVTKADDON2_EXPORT unsigned int GetCellId( ) const
-    { return this->Whatever->GetCellId(); };
-  QMEGAVTKADDON2_EXPORT void GetBackgroundColor( double& r, double& g, double& b )
-    { return this->Whatever->GetBackgroundColor( r, g, b ); };
-  QMEGAVTKADDON2_EXPORT double* GetBackgroundColor()
-    { return this->Whatever->GetBackgroundColor(); };
   QMEGAVTKADDON2_EXPORT void SetBackgroundColor( const double& r, const double& g, const double& b )
     { this->Whatever->SetBackgroundColor( r, g, b ); };
   QMEGAVTKADDON2_EXPORT void SetBackgroundColor( double rgb[3] )
     { this->Whatever->SetBackgroundColor( rgb ); };
   QMEGAVTKADDON2_EXPORT void SetBackgroundColor( const QColor& iColor )
     { this->Whatever->SetBackgroundColor( iColor ); };
-  QMEGAVTKADDON2_EXPORT int GetFullScreenView( ) const
-    { return this->Whatever->GetFullScreenView( ); };
   QMEGAVTKADDON2_EXPORT void SetFullScreenView( const int& iS )
     { this->Whatever->SetFullScreenView( iS ); };
   QMEGAVTKADDON2_EXPORT void quadview()

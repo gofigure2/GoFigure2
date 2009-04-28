@@ -49,6 +49,8 @@
 #include <vtkImageData.h>
 #include <vtkEventQtSlotConnect.h>
 
+//#include <itkProcessObject.h>
+
 #include "vtkViewImage3D.h"
 #include "vtkViewImage2DWithContourWidgetCollection.h"
 #include "QSplitterchild.h"
@@ -69,10 +71,8 @@ public:
 
   QMEGAVTKADDON2_EXPORT void SetImage( vtkImageData* input );
 
-#ifdef MegaVTK_USE_ITK
-  QMEGAVTKADDON2_EXPORT template< class TImage >
-  void SetITKImage (TImage::Pointer);
-#endif
+//  QMEGAVTKADDON2_EXPORT template< class TImage >
+//  void SetITKImage( TImage::Pointer );
 
   QMEGAVTKADDON2_EXPORT void setupUi( QWidget *Form );
   QMEGAVTKADDON2_EXPORT void retranslateUi(QWidget *Form);
@@ -191,7 +191,6 @@ protected:
 
   QString Tag;
 
-#ifdef MegaVTK_USE_ITK
   /**
      This pointer is used to store internally a reference to the
      current ITK->VTK converter, in order to prevent the image buffer
@@ -199,9 +198,8 @@ protected:
      information.
    */
   //BTX
-  itk::ProcessObject::Pointer ImageConverter;
+  //itk::ProcessObject::Pointer ImageConverter;
   //ETX
-#endif
 
   virtual void resizeEvent( QResizeEvent* event );
 //   virtual void dragEnterEvent ( QDragEnterEvent * event );

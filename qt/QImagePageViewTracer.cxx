@@ -641,25 +641,23 @@ void QImagePageViewTracer::SetView3DToVolumeRenderingMode()
   }
 }
 
-#ifdef MegaVTK_USE_ITK
-template< class TImage >
-void QImagePageViewTracer::SetITKImage( TImage::Pointer itkImage )
-{
-  if( itkImage.IsNull() )
-  {
-    return;
-  }
-
-  typedef itk::ImageToVTKImageFilter< TImage > ConverterType;
-  ConverterType::Pointer myConverter = ConverterType::New();
-  myConverter->SetInput ( itkImage );
-  myConverter->Update();
-
-  this->SetImage ( myConverter->GetOutput() );
-
-  this->ImageConverter = myConverter;
-}
-#endif
+//template< class TImage >
+//void QImagePageViewTracer::SetITKImage( TImage::Pointer itkImage )
+//{
+//  if( itkImage.IsNull() )
+//  {
+//    return;
+//  }
+//
+//  typedef itk::ImageToVTKImageFilter< TImage > ConverterType;
+//  ConverterType::Pointer myConverter = ConverterType::New();
+//  myConverter->SetInput ( itkImage );
+//  myConverter->Update();
+//
+//  this->SetImage ( myConverter->GetOutput() );
+//
+//  this->ImageConverter = myConverter;
+//}
 
 void QImagePageViewTracer::Set3DImage( vtkImageData* input )
 {

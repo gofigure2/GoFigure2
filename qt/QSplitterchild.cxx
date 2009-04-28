@@ -34,7 +34,7 @@
 
 #include "QSplitterchild.h"
 
-QSplitterchild::QSplitterchild( QWidget* parent ): QSplitter( parent )
+QSplitterchild::QSplitterchild( QWidget* parent ) : QSplitter( parent )
 {
   prevpos=0;
   previndex=0;
@@ -46,7 +46,6 @@ QSplitterchild::QSplitterchild( Qt::Orientation orientation, QWidget* parent) :
 
 QSplitterchild::~QSplitterchild()
 {}
-
 
 
 void QSplitterchild::moveSplitter( int pos,int index )

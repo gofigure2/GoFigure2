@@ -2,8 +2,6 @@
 #define _MegaVTK2_Configure_h_
 
 /* Whether we are building shared libraries.  */
-#cmakedefine VTK_BUILD_SHARED_LIBS
-
 #if defined (WIN32) && defined (VTK_BUILD_SHARED_LIBS)
  #if defined (QMEGAVTKADDON2_EXPORTS)
   #define QMEGAVTKADDON2_EXPORT __declspec( dllexport )
