@@ -1,25 +1,25 @@
-PROJECT( QGOFIGURE )
+PROJECT( GOFIGURE2 )
 
-SET( QGOFIGURE_MAJOR_VERSION "0" )
-SET( QGOFIGURE_MINOR_VERSION "5" )
+SET( GOFIGURE2_MAJOR_VERSION "0" )
+SET( GOFIGURE2_MINOR_VERSION "5" )
 
-SET( QGOFIGURE_VERSION
-"${QGOFIGURE_MAJOR_VERSION}.${QGOFIGURE_MINOR_VERSION}")
+SET( GOFIGURE2_VERSION
+"${GOFIGURE2_MAJOR_VERSION}.${GOFIGURE2_MINOR_VERSION}" )
 
-CMAKE_MINIMUM_REQUIRED(VERSION 2.4)
+CMAKE_MINIMUM_REQUIRED( VERSION 2.6 )
 
-IF(COMMAND CMAKE_POLICY)
-  CMAKE_POLICY(VERSION 2.4)
-  CMAKE_POLICY(SET CMP0005 OLD)
-  CMAKE_POLICY(SET CMP0003 NEW)
+IF( COMMAND CMAKE_POLICY )
+  CMAKE_POLICY( VERSION 2.4 )
+  CMAKE_POLICY( SET CMP0005 OLD )
+  CMAKE_POLICY( SET CMP0003 NEW )
 ENDIF(COMMAND CMAKE_POLICY)
 
 # On Visual Studio 8 MS deprecated C. This removes all 1.276E1265 security
 # warnings. Copied from ITK CMakeLists.
-IF(WIN32)
-  IF(NOT BORLAND)
-    IF(NOT CYGWIN)
-      IF(NOT MINGW)
+IF( WIN32 )
+  IF( NOT BORLAND )
+    IF( NOT CYGWIN )
+      IF( NOT MINGW )
           ADD_DEFINITIONS(
             -D_CRT_FAR_MAPPINGS_NO_DEPRECATE
             -D_CRT_IS_WCTYPE_NO_DEPRECATE
@@ -32,24 +32,25 @@ IF(WIN32)
             -D_CRT_VCCLRIT_NO_DEPRECATE
             -D_SCL_SECURE_NO_DEPRECATE
             )
-      ENDIF(NOT MINGW)
-    ENDIF(NOT CYGWIN)
-  ENDIF(NOT BORLAND)
-ENDIF(WIN32)
+      ENDIF( NOT MINGW )
+    ENDIF( NOT CYGWIN )
+  ENDIF( NOT BORLAND )
+ENDIF( WIN32 )
 
 OPTION( BUILD_DOCUMENTATION "Build Doxygen Documentation" OFF )
+OPTION( BUILD_PACKAGE "Software packaging" OFF )
 
 IF( BUILD_DOCUMENTATION )
   FIND_PACKAGE( Doxygen )
   IF( DOXYGEN_FOUND )
     CONFIGURE_FILE (
-      ${QGOFIGURE_SOURCE_DIR}/Doxyfile.txt.in
-      ${QGOFIGURE_BINARY_DIR}/Doxyfile.txt
+      ${GOFIGURE2_SOURCE_DIR}/Doxyfile.txt.in
+      ${GOFIGURE2_BINARY_DIR}/Doxyfile.txt
     )
 
     ADD_CUSTOM_TARGET(doc ALL
-      ${DOXYGEN_EXECUTABLE} ${QGOFIGURE_BINARY_DIR}/Doxyfile.txt
-      DEPENDS ${QGOFIGURE_BINARY_DIR}/Doxyfile.txt
+      ${DOXYGEN_EXECUTABLE} ${GOFIGURE2_BINARY_DIR}/Doxyfile.txt
+      DEPENDS ${GOFIGURE2_BINARY_DIR}/Doxyfile.txt
     )
   ELSE( DOXYGEN_FOUND )
     MESSAGE( STATUS "Warning: Doxygen not found - Documentation will not be created")
@@ -90,8 +91,8 @@ IF( VTK_FOUND )
       SET(QT_LIBRARIES   ${QT_QT_LIBRARY})
     ENDIF(QT_USE_FILE)
 
-    SET( MEGAVTK2_SOURCE_DIR ${QGOFIGURE_SOURCE_DIR}/ExternalCode/MegaVTK )
-    SET( MEGAVTK2_BINARY_DIR ${QGOFIGURE_BINARY_DIR}/ExternalCode/MegaVTK )
+    SET( MEGAVTK2_SOURCE_DIR ${GOFIGURE2_SOURCE_DIR}/ExternalCode/MegaVTK )
+    SET( MEGAVTK2_BINARY_DIR ${GOFIGURE2_BINARY_DIR}/ExternalCode/MegaVTK )
 
     IF(WIN32)
       IF(NOT BORLAND)
@@ -111,30 +112,30 @@ IF( VTK_FOUND )
 
     INCLUDE_DIRECTORIES( BEFORE
       ${QT_INCLUDES}
-      ${QGOFIGURE_SOURCE_DIR}
-      ${QGOFIGURE_BINARY_DIR}
-      ${QGOFIGURE_SOURCE_DIR}/qt
-      ${QGOFIGURE_BINARY_DIR}/qt
+      ${GOFIGURE2_SOURCE_DIR}
+      ${GOFIGURE2_BINARY_DIR}
+      ${GOFIGURE2_SOURCE_DIR}/qt
+      ${GOFIGURE2_BINARY_DIR}/qt
       ${MEGAVTK2_SOURCE_DIR}
       ${MEGAVTK2_BINARY_DIR}
       ${MEGAVTK2_SOURCE_DIR}/vtkItk
       ${MEGAVTK2_BINARY_DIR}/vtkItk
       ${MEGAVTK2_SOURCE_DIR}/vtkRenderingAddOn
       ${MEGAVTK2_BINARY_DIR}/vtkRenderingAddOn
-      ${QGOFIGURE_SOURCE_DIR}/ExternalCode/vtkLSM
-      ${QGOFIGURE_SOURCE_DIR}/ExternalCode/itkQt )
+      ${GOFIGURE2_SOURCE_DIR}/ExternalCode/vtkLSM
+      ${GOFIGURE2_SOURCE_DIR}/ExternalCode/itkQt )
 
     SUBDIRS( ExternalCode )
     SUBDIRS( qt )
 
     SET( QGOMAINWINDOW_HDRS QGoMainWindow.h
-         ${QGOFIGURE_SOURCE_DIR}/ExternalCode/itkQt/itkQtAdaptor.h)
+         ${GOFIGURE2_SOURCE_DIR}/ExternalCode/itkQt/itkQtAdaptor.h)
     SET( QGOMAINWINDOW_SRC QGoMainWindow.cxx )
 
     QT4_WRAP_UI( QGOMAINWINDOW_UI_HDRS go.ui )
     QT4_WRAP_CPP( QGOMAINWINDOW_MOC_SRC ${QGOMAINWINDOW_HDRS} )
     QT4_ADD_RESOURCES( QGOMAINWINDOW_QRC
-      ${QGOFIGURE_SOURCE_DIR}/resources/axes.qrc)
+      ${GOFIGURE2_SOURCE_DIR}/resources/axes.qrc)
 
 ## translation
 #  SET( FILES_TO_TRANSLATE
@@ -163,30 +164,30 @@ IF( VTK_FOUND )
 
 
 #    IF( APPLE )
-      ADD_EXECUTABLE( 
+      ADD_EXECUTABLE(
         gofigure
         MACOSX_BUNDLE
         gofigure.cxx
-        ${QGOFIGURE_SOURCE_DIR}/ExternalCode/itkQt/itkQtProgressBar.cxx
-        ${QGOFIGURE_SOURCE_DIR}/ExternalCode/vtkLSM/vtkLSMReader.cxx
+        ${GOFIGURE2_SOURCE_DIR}/ExternalCode/itkQt/itkQtProgressBar.cxx
+        ${GOFIGURE2_SOURCE_DIR}/ExternalCode/vtkLSM/vtkLSMReader.cxx
         ${QGOMAINWINDOW_SRC}
         ${QGOMAINWINDOW_MOC_SRC}
-        ${QGOMAINWINDOW_QRC} 
+        ${QGOMAINWINDOW_QRC}
         )
 #    ENDIF( APPLE )
 #    IF(WIN32)
 #      IF(NOT BORLAND)
 #        IF(NOT CYGWIN)
 #          IF(NOT MINGW)
-#            ADD_EXECUTABLE( 
+#            ADD_EXECUTABLE(
 #              gofigure
 #              MACOSX_BUNDLE
 #              gofigure.cxx
-#              ${QGOFIGURE_SOURCE_DIR}/ExternalCode/itkQt/itkQtProgressBar.cxx
-#              ${QGOFIGURE_SOURCE_DIR}/ExternalCode/vtkLSM/vtkLSMReader.cxx
+#              ${GOFIGURE2_SOURCE_DIR}/ExternalCode/itkQt/itkQtProgressBar.cxx
+#              ${GOFIGURE2_SOURCE_DIR}/ExternalCode/vtkLSM/vtkLSMReader.cxx
 #              ${QGOMAINWINDOW_SRC}
 #              ${QGOMAINWINDOW_MOC_SRC}
-#              ${QGOMAINWINDOW_QRC} 
+#              ${QGOMAINWINDOW_QRC}
 #              )
 #            ENDIF(NOT MINGW)
 #        ENDIF(NOT CYGWIN)
@@ -206,7 +207,50 @@ IF( VTK_FOUND )
 
 #     ADD_TEST( gofigure_TEST ${CXX_TEST_PATH}/gofigure )
 
-    INCLUDE(CTest)
+    INCLUDE( CTest )
+
+    IF( BUILD_PACKAGE )
+
+      INCLUDE( InstallRequiredSystemLibraries )
+
+      SET( CPACK_PACKAGE_DESCRIPTION_SUMMARY "GoFigure2" )
+      SET( CPACK_PACKAGE_VENDOR "Megason Lab, Systems Biology, HMS" )
+#      SET(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/ReadMe.txt")
+#      SET(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/Copyright.txt")
+      SET( CPACK_PACKAGE_VERSION_MAJOR ${GOFIGURE2_MAJOR_VERSION} )
+      SET( CPACK_PACKAGE_VERSION_MINOR ${GOFIGURE2_MINOR_VERSION} )
+      SET( CPACK_PACKAGE_VERSION_PATCH "0" )
+      SET( CPACK_PACKAGE_INSTALL_DIRECTORY
+"GoFigure2-${GOFIGURE2_MAJOR_VERSION}.${GOFIGURE2_MINOR_VERSION}" )
+
+      IF( WIN32 AND NOT UNIX )
+      # There is a bug in NSI that does not handle full unix paths properly.
+      # Make sure there is at least one set of four (4) backslashes.
+#        SET( CPACK_PACKAGE_ICON "${CMake_SOURCE_DIR}/Utilities/Release\\\\InstallIcon.bmp" )
+        SET( CPACK_NSIS_INSTALLED_ICON_NAME "bin\\\\gofigure.exe")
+        SET( CPACK_NSIS_DISPLAY_NAME "${CPACK_PACKAGE_INSTALL_DIRECTORY}
+GoFigure2" )
+        SET( CPACK_NSIS_HELP_LINK "http:\\\\\\\\sourceforget.net\\\\projects\\\\gofigure2" )
+        SET( CPACK_NSIS_URL_INFO_ABOUT "http:\\\\megason.med.harvard.edu" )
+#        SET( CPACK_NSIS_CONTACT "me@my-personal-home-page.com" )
+        SET( CPACK_NSIS_MODIFY_PATH ON )
+      ELSE( WIN32 AND NOT UNIX )
+        SET( CPACK_STRIP_FILES "bin/gofigure" )
+        SET( CPACK_SOURCE_STRIP_FILES "" )
+
+      ENDIF( WIN32 AND NOT UNIX )
+
+      SET( CPACK_PACKAGE_EXECUTABLES "gofigure" "Gofigure2" )
+
+      IF( UNIX )
+        SET( CPACK_BINARY_RPM ON )
+        SET( CPACK_RPM_PACKAGE_DEBUG "1" )
+        SET( CPACK_RPM_SPEC_INSTALL_POST "/bin/true" )
+      ENDIF( UNIX )
+
+      INCLUDE( CPack )
+
+    ENDIF( BUILD_PACKAGE )
   ENDIF( QT_FOUND )
   SUBDIRS( Examples )
 ENDIF( VTK_FOUND )
