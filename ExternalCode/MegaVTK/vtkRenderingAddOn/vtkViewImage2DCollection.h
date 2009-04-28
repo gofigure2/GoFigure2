@@ -184,8 +184,8 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage2DCollection : public vtkCollection
 
   vtkSyncSetMacro (Slice, int, vtkViewImage2D);
   vtkSyncSetMacro (SliceOrientation, int, vtkViewImage2D);
-  vtkSyncSetMacro (ShowAnnotations, int, vtkViewImage2D);
-  vtkSyncSetMacro (ShowScalarBar, int, vtkViewImage2D);
+  vtkSyncSetMacro (ShowAnnotations, bool, vtkViewImage2D);
+  vtkSyncSetMacro (ShowScalarBar, bool, vtkViewImage2D);
 
   vtkSyncSetMacro (ColorWindow, double, vtkViewImage2D);
   vtkSyncSetMacro (ColorLevel, double, vtkViewImage2D);

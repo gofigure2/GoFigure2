@@ -49,7 +49,7 @@ int main(int argc,char* argv[])
   }
   j++;
 
-  char fname[len-j+1];
+  char* fname = new char[len-j+1];
   for( unsigned int i = 0; i < len-j+1; i++ )
     fname[i]  = argv[1][j+i];
 

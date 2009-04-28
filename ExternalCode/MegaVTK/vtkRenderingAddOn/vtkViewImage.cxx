@@ -419,7 +419,7 @@ void vtkViewImage::Disable (void)
 //----------------------------------------------------------------------------
 bool vtkViewImage::GetEnabled (void)
 {
-  return this->Interactor->GetEnabled();
+  return ( this->Interactor->GetEnabled() == 1 );
 }
 
 //----------------------------------------------------------------------------

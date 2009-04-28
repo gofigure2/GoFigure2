@@ -34,7 +34,7 @@ ADD_LIBRARY( QMegaVTKAddOn2
   ${QImagePageView4DTracer_MOC_SRC2}
   ${QMegaVTKAddOn_SRC2}
   ${QSplitterchild_MOC_SRC2}
-  ../ExternalCode/vtkLSM/vtkLSMReader.cxx
+  ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/vtkLSM/vtkLSMReader.cxx
   )
 
 SET( QMegaVTKAddOn2_LIBS

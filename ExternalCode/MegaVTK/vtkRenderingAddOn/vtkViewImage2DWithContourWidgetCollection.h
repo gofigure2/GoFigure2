@@ -133,8 +133,8 @@ public:
 
   vtkSyncSetMacro (Slice, int, vtkViewImage2DWithContourWidget );
   vtkSyncSetMacro (SliceOrientation, int, vtkViewImage2DWithContourWidget);
-  vtkSyncSetMacro (ShowAnnotations, int, vtkViewImage2DWithContourWidget);
-  vtkSyncSetMacro (ShowScalarBar, int, vtkViewImage2DWithContourWidget);
+  vtkSyncSetMacro (ShowAnnotations, bool, vtkViewImage2DWithContourWidget);
+  vtkSyncSetMacro (ShowScalarBar, bool, vtkViewImage2DWithContourWidget);
 
   vtkSyncSetMacro (ColorWindow, double, vtkViewImage2DWithContourWidget);
   vtkSyncSetMacro (ColorLevel, double, vtkViewImage2DWithContourWidget);

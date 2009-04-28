@@ -124,8 +124,8 @@ IF( VTK_FOUND )
       ${MEGAVTK2_BINARY_DIR}/vtkItk
       ${MEGAVTK2_SOURCE_DIR}/vtkRenderingAddOn
       ${MEGAVTK2_BINARY_DIR}/vtkRenderingAddOn
-      ${GOFIGURE2_SOURCE_DIR}/ExternalCode/vtkLSM
-      ${GOFIGURE2_SOURCE_DIR}/ExternalCode/itkQt )
+      ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/vtkLSM
+      ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/itkQt )
 
     SUBDIRS( ExternalCode )
     SUBDIRS( qt )
