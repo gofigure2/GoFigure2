@@ -37,6 +37,20 @@ IF( WIN32 )
   ENDIF( NOT BORLAND )
 ENDIF( WIN32 )
 
+#
+# Define EXECUTABLE_OUTPUT_PATH and LIBRARY_OUTPUT_PATH
+#
+SET(EXECUTABLE_OUTPUT_PATH
+ ${GOFIGURE2_BINARY_DIR}/bin
+ CACHE PATH "Single output directory for building all executables."
+)
+
+SET(LIBRARY_OUTPUT_PATH
+ ${GOFIGURE2_BINARY_DIR}/lib
+ CACHE PATH "Single output directory for building all libraries."
+)
+
+
 OPTION( BUILD_DOCUMENTATION "Build Doxygen Documentation" OFF )
 OPTION( BUILD_PACKAGE "Software packaging" OFF )
 
