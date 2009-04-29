@@ -110,7 +110,9 @@ QGoMainWindow::QGoMainWindow( )
   QObject::connect( this->CentralImageTabWidget,
     SIGNAL( currentChanged( int ) ),
     this, SLOT( UpdateTracerButtons( int ) ) );
-  
+  QObject::connect(this->CentralImageTabWidget,
+    SIGNAL(tabCloseRequested(int)),
+    this, SLOT( on_actionClose_activated( ) ) );
   Fullscreenbuttons();
 
   for( int i = 0; i < MaxRecentFiles; ++i )
