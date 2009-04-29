@@ -284,8 +284,11 @@ void QGoMainWindow::on_actionLookup_Table_activated( )
 // *************************************************************************
 void QGoMainWindow::on_actionQuad_View_activated( )
 {
+  if (this->CentralImageTabWidget->count()!= 0)
+  {
   this->SetFullScreenDispatch( 0 );
   this->actionSnapshot->setEnabled(false);
+  }
 }
 
 
@@ -326,48 +329,62 @@ QGoMainWindow::SetFullScreenDispatch( const int & ViewID )
 // *************************************************************************
 void QGoMainWindow::on_actionFull_screen_XY_activated( )
 {
+  if (this->CentralImageTabWidget->count()!= 0)
+  {
   this->SetFullScreenDispatch( 1 );
+  }
 }
 
 // *************************************************************************
 void QGoMainWindow::on_actionFull_screen_YZ_activated( )
 {
+  if (this->CentralImageTabWidget->count()!= 0)
+  {
   this->SetFullScreenDispatch( 2 );
+  }
 }
 
 // *************************************************************************
 void QGoMainWindow::on_actionFull_screen_XZ_activated( )
 {
+  if (this->CentralImageTabWidget->count()!= 0)
+  {
   this->SetFullScreenDispatch( 3 );
+  }
 }
 
 // *************************************************************************
 void QGoMainWindow::on_actionFull_screen_XYZ_activated( )
 {
+  if (this->CentralImageTabWidget->count()!= 0)
+  {
   this->SetFullScreenDispatch( 4 );
+  }
 }
 
 // *************************************************************************
 void QGoMainWindow::on_actionVolume_rendering_XYZ_activated( )
 {
-  int idx = this->CentralImageTabWidget->currentIndex();
-  QImagePageViewTracer* pageView =
-    dynamic_cast<QImagePageViewTracer*>( m_PageView[idx] );
-  if( pageView )
+  if (this->CentralImageTabWidget->count()!= 0)
   {
-    SetRendering<QImagePageViewTracer>( pageView );
-  }
-  else
-  {
-    QImagePageView4DTracer* pageViewColor =
-    dynamic_cast<QImagePageView4DTracer*>( m_PageView[idx] );
-    if( pageViewColor )
+    int idx = this->CentralImageTabWidget->currentIndex();
+    QImagePageViewTracer* pageView =
+      dynamic_cast<QImagePageViewTracer*>( m_PageView[idx] );
+    if( pageView )
     {
-      SetRendering<QImagePageView4DTracer>( pageViewColor );
+      SetRendering<QImagePageViewTracer>( pageView );
     }
+    else
+    {
+      QImagePageView4DTracer* pageViewColor =
+      dynamic_cast<QImagePageView4DTracer*>( m_PageView[idx] );
+      if( pageViewColor )
+      {
+        SetRendering<QImagePageView4DTracer>( pageViewColor );
+      }
+    } 
   }
 }
-
 
 
 // *************************************************************************
@@ -388,12 +405,15 @@ QGoMainWindow::SetRendering( T* myPageView )
 // *************************************************************************
 void QGoMainWindow::on_actionScale_bars_activated( )
 {
+  if (this->CentralImageTabWidget->count()!= 0)
+  {
   int idx = this->CentralImageTabWidget->currentIndex();
   QImagePageViewTracer* myPageView =
     dynamic_cast<QImagePageViewTracer*>( m_PageView[idx] );
-  if( myPageView )
-  {
-    myPageView->SetShowScalarBar( actionScale_bars->isChecked() );
+    if( myPageView )
+    {
+      myPageView->SetShowScalarBar( actionScale_bars->isChecked() );
+    }
   }
 }
 
