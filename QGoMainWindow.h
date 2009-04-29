@@ -103,9 +103,8 @@ protected slots:
   void HideProgressLoading();
 
   /**\Update the full screen button group when the current tab is changed*/
-  void UpdateFullScreenViewButtons( const int& idx);
+  void UpdateToolBarViewButtons( const int& idx);
   void UpdateTracerButtons( const int& idx);
-
 
 //   void SetTracerToPolygonTracer();
 //   void SetTracerToFreeLineTracer();
@@ -127,6 +126,7 @@ protected:
   template< class T > void UpdateFullScreenViewButtonsHelper( T* PageView );
   template< class T > void SetFullScreen( const int & ViewID, T* PageView );
   template< class T > void SetRendering( T* myPageView );
+  template< class T > void UpdateVolumeRenderingButton( T* PageView);
 
   void SetFullScreenDispatch( const int & ViewID );
 

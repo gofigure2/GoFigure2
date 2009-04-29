@@ -65,6 +65,7 @@ QImagePageViewTracer::QImagePageViewTracer( QWidget* parent ) : QWidget( parent 
 {
   IsFullScreen = 0;
   SnapshotId = 1;
+  IsVolumeRendering = false;
 
   Tag = QString( "QImagePageViewTracer" );
   Image = 0;
@@ -459,6 +460,10 @@ int QImagePageViewTracer::GetFullScreenView( ) const
   return IsFullScreen;
 }
 
+bool QImagePageViewTracer::GetVolumeRendering( ) const
+{
+  return IsVolumeRendering;
+}
 double* QImagePageViewTracer::GetBackgroundColor()
 {
   return this->Pool->GetItem( 0 )->GetBackground();
@@ -628,6 +633,7 @@ void QImagePageViewTracer::SetView3DToTriPlanarMode()
     View3D->SetTriPlanarRenderingOn();
     View3D->SetVolumeRenderingOff();
     View3D->Render();
+    IsVolumeRendering = false;
   }
 }
 //
@@ -638,6 +644,7 @@ void QImagePageViewTracer::SetView3DToVolumeRenderingMode()
     View3D->SetTriPlanarRenderingOff();
     View3D->SetVolumeRenderingOn();
     View3D->Render();
+    IsVolumeRendering = true;
   }
 }
 

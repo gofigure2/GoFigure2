@@ -78,6 +78,7 @@ public:
   QMEGAVTKADDON2_EXPORT void retranslateUi(QWidget *Form);
 
   QMEGAVTKADDON2_EXPORT int GetFullScreenView( ) const;
+  QMEGAVTKADDON2_EXPORT bool GetVolumeRendering( ) const;
 
   QMEGAVTKADDON2_EXPORT QVTKWidget* GetActiveQVTKWidget( );
   QMEGAVTKADDON2_EXPORT vtkViewImage* GetActiveView();
@@ -219,6 +220,7 @@ protected:
   int SnapshotId;
 
   int IsFullScreen;
+  bool IsVolumeRendering;
 
   unsigned int CellId;
 

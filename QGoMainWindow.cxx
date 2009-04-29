@@ -62,6 +62,7 @@ QGoMainWindow::QGoMainWindow( )
   this->KishoreSegDockWidget->setVisible(false);
   this->ManualSegmentationDockWidget->setVisible(false);
   this->OneClickSegmentationDockWidget->setVisible(false);
+  this->actionVolume_rendering_XYZ->setChecked(false);
   this->statusbar->addPermanentWidget( &m_Bar );
   m_Bar.hide();
   //setCurrentFile("");
@@ -104,11 +105,11 @@ QGoMainWindow::QGoMainWindow( )
     //this, SLOT( showprogressloading() ) );
   QObject::connect( this->CentralImageTabWidget,
     SIGNAL( currentChanged( int ) ),
-    this, SLOT( UpdateFullScreenViewButtons( int ) ) );
+    this, SLOT( UpdateToolBarViewButtons( int ) ) );
   QObject::connect( this->CentralImageTabWidget,
     SIGNAL( currentChanged( int ) ),
     this, SLOT( UpdateTracerButtons( int ) ) );
-
+  
   Fullscreenbuttons();
 
   for( int i = 0; i < MaxRecentFiles; ++i )
@@ -931,7 +932,7 @@ void QGoMainWindow::UpdateTracerButtons( const int& idx)
   }
 }
 // *************************************************************************
-void QGoMainWindow::UpdateFullScreenViewButtons( const int& idx )
+void QGoMainWindow::UpdateToolBarViewButtons( const int& idx )
 {
   if( (idx>=0) && (idx<m_PageView.size()))
   {
@@ -940,6 +941,8 @@ void QGoMainWindow::UpdateFullScreenViewButtons( const int& idx )
     if( myPageView )
     {
       UpdateFullScreenViewButtonsHelper( myPageView );
+      UpdateVolumeRenderingButton ( myPageView );
+
     }
     else
     {
@@ -948,6 +951,7 @@ void QGoMainWindow::UpdateFullScreenViewButtons( const int& idx )
       if( myPageView2 )
       {
         UpdateFullScreenViewButtonsHelper( myPageView2 );
+        UpdateVolumeRenderingButton ( myPageView2 );
       }
     }
   }
@@ -990,6 +994,19 @@ void QGoMainWindow::UpdateFullScreenViewButtonsHelper( T* PageView )
       actionSnapshot->setEnabled(true);
       break;
     }
+  }
+}
+
+template< class T >
+void QGoMainWindow::UpdateVolumeRenderingButton( T* PageView)
+{
+  bool IsVolumeRendering = PageView->GetVolumeRendering();
+  if (IsVolumeRendering)
+  {
+    actionVolume_rendering_XYZ->setChecked(true);
+  }
+  else
+  {actionVolume_rendering_XYZ->setChecked(false);
   }
 }
 

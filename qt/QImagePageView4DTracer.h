@@ -74,6 +74,8 @@ public:
     { return this->Whatever->GetCellId(); };
   QMEGAVTKADDON2_EXPORT int GetFullScreenView( ) const
     { return this->Whatever->GetFullScreenView( ); };
+  QMEGAVTKADDON2_EXPORT bool GetVolumeRendering( ) const
+    { return this->Whatever->GetVolumeRendering( ); };
 
 public slots:
   QMEGAVTKADDON2_EXPORT void SetView( const int& value );
