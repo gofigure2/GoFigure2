@@ -60,6 +60,7 @@
 #include <vtkPoints.h>
 #include <vtkCellArray.h>
 #include <vtkMath.h>
+#include <qsettings.h>
 
 QImagePageViewTracer::QImagePageViewTracer( QWidget* parent ) : QWidget( parent )
 {
@@ -1107,4 +1108,12 @@ void QImagePageViewTracer::MoveSlider2( )
 void QImagePageViewTracer::MoveSlider3( )
 {
   this->slider3->setValue( this->Pool->GetItem( 2 )->GetSlice() );
+}
+
+void QImagePageViewTracer::SaveStateSplitters()
+{
+  QSettings settings( "MegasonLab", "Gofigure2" );
+  settings.setValue("vSplitterSizes", vSplitter->saveState());
+  settings.setValue("htSplitterSizes", htSplitter->saveState());
+  settings.setValue("hbSplitterSizes", hbSplitter->saveState());
 }

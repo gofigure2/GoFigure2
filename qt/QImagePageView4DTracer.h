@@ -78,6 +78,8 @@ public:
     { return this->Whatever->GetVolumeRendering( ); };
   QMEGAVTKADDON2_EXPORT bool GetTracerStatus( ) const
     { return this->Whatever->GetTracerStatus(); }
+  QMEGAVTKADDON2_EXPORT void SaveStateSplitters()
+    { return this->Whatever->SaveStateSplitters(); }
 
 public slots:
   QMEGAVTKADDON2_EXPORT void SetView( const int& value );

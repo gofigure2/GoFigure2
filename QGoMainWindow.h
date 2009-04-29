@@ -127,6 +127,7 @@ protected:
   template< class T > void SetFullScreen( const int & ViewID, T* PageView );
   template< class T > void SetRendering( T* myPageView );
   template< class T > void UpdateVolumeRenderingButton( T* PageView);
+  template< class T > void writeSettings(T* PageView);
 
   void SetFullScreenDispatch( const int & ViewID );
 
@@ -168,7 +169,7 @@ protected:
   void Fullscreenbuttons();
 
   void readSettings();
-  void writeSettings();
+  
 
   itk::QtSignalAdaptor m_SignalAdaptor;
 

@@ -117,6 +117,8 @@ public:
   QMEGAVTKADDON2_EXPORT
   void RemoveContours( TPolyDataContainer& iContours );
 
+  QMEGAVTKADDON2_EXPORT void SaveStateSplitters();
+
 public slots:
 
   QMEGAVTKADDON2_EXPORT void SetBackgroundColor( const double& r, const double& g, const double& b );
