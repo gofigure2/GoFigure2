@@ -70,12 +70,14 @@ public:
     { return this->Whatever->GetBackgroundColor( r, g, b ); };
   QMEGAVTKADDON2_EXPORT double* GetBackgroundColor()
     { return this->Whatever->GetBackgroundColor(); };
-  QMEGAVTKADDON2_EXPORT unsigned int GetCellId( ) const
+  QMEGAVTKADDON2_EXPORT int GetCellId( ) const
     { return this->Whatever->GetCellId(); };
   QMEGAVTKADDON2_EXPORT int GetFullScreenView( ) const
     { return this->Whatever->GetFullScreenView( ); };
   QMEGAVTKADDON2_EXPORT bool GetVolumeRendering( ) const
     { return this->Whatever->GetVolumeRendering( ); };
+  QMEGAVTKADDON2_EXPORT bool GetTracerStatus( ) const
+    { return this->Whatever->GetTracerStatus(); }
 
 public slots:
   QMEGAVTKADDON2_EXPORT void SetView( const int& value );
@@ -90,8 +92,6 @@ public slots:
     { this->Whatever->ValidateContour( iId, iColor, iSave ); };
   QMEGAVTKADDON2_EXPORT void ReinitializeContour( )
     { this->Whatever->ReinitializeContour( ); };
-  QMEGAVTKADDON2_EXPORT void SetCellId( const unsigned int& iId )
-    { this->Whatever->SetCellId( iId ); };
   QMEGAVTKADDON2_EXPORT void SetBackgroundColor( const double& r, const double& g, const double& b )
     { this->Whatever->SetBackgroundColor( r, g, b ); };
   QMEGAVTKADDON2_EXPORT void SetBackgroundColor( double rgb[3] )

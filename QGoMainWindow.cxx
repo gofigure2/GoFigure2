@@ -646,7 +646,7 @@ template< class T >
 void QGoMainWindow::ValidateContourTracerHelper( T* PageView )
 {
   unsigned int cell_id = IdContourBox->value();
-  PageView->SetCellId( cell_id );
+//   PageView->SetCellId( cell_id );
 
   if( m_IdColorMap.find( cell_id ) == m_IdColorMap.end() )
   {
@@ -927,10 +927,33 @@ void QGoMainWindow::UpdateTracerButtons( const int& idx)
       dynamic_cast<QImagePageViewTracer*>( m_PageView[idx] );
     if( myPageView )
     {
+      this->IdContourBox->setValue( myPageView->GetCellId() );
       if( myPageView->GetTracerStatus( ) )
+      {
         this->ManualSegmentationOnRadioBtn->toggle();
+      }
       else
+      {
         this->ManualSegmentationOffRadioBtn->toggle();
+      }
+    }
+    else
+    {
+      QImagePageView4DTracer* myPageView2 =
+        dynamic_cast<QImagePageView4DTracer*>( m_PageView[idx] );
+
+      if( myPageView2 )
+      {
+        this->IdContourBox->setValue( myPageView2->GetCellId() );
+        if( myPageView2->GetTracerStatus( ) )
+        {
+          this->ManualSegmentationOnRadioBtn->toggle();
+        }
+        else
+        {
+          this->ManualSegmentationOffRadioBtn->toggle();
+        }
+      }
     }
   }
 }
@@ -944,8 +967,7 @@ void QGoMainWindow::UpdateToolBarViewButtons( const int& idx )
     if( myPageView )
     {
       UpdateFullScreenViewButtonsHelper( myPageView );
-      UpdateVolumeRenderingButton ( myPageView );
-
+      UpdateVolumeRenderingButton( myPageView );
     }
     else
     {

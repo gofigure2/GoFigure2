@@ -95,8 +95,7 @@ public:
   QMEGAVTKADDON2_EXPORT void SetTag( const QString& iTag );
   QMEGAVTKADDON2_EXPORT QString GetTag( ) const;
 
-  QMEGAVTKADDON2_EXPORT void SetCellId( const unsigned int& iId );
-  QMEGAVTKADDON2_EXPORT unsigned int GetCellId( ) const;
+  QMEGAVTKADDON2_EXPORT int GetCellId( ) const;
 
   QMEGAVTKADDON2_EXPORT void SetTracerON();
   QMEGAVTKADDON2_EXPORT void SetTracerOFF();
@@ -222,7 +221,7 @@ protected:
   int IsFullScreen;
   bool IsVolumeRendering;
 
-  unsigned int CellId;
+  int CellId;
 
   bool Is2DImage;
 
