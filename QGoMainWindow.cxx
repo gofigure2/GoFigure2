@@ -59,6 +59,7 @@ QGoMainWindow::QGoMainWindow( )
   this->setWindowTitle( tr( "<*)0|00|0>< ~~ <*)0|00|0><     GoFigure    ><0|00|0(*> ~~ ><0|00|0(*>") );
   this->statusbar->showMessage( tr( "No data" ) );
   this->CentralImageTabWidget->clear();
+  this->CentralImageTabWidget->setMovable(false);
   this->KishoreSegDockWidget->setVisible(false);
   this->ManualSegmentationDockWidget->setVisible(false);
   this->OneClickSegmentationDockWidget->setVisible(false);
@@ -68,7 +69,7 @@ QGoMainWindow::QGoMainWindow( )
   //setCurrentFile("");
 
   this->CentralImageTabWidget->setTabsClosable( true );
-  this->CentralImageTabWidget->setMovable( true );
+ 
 
   m_LUTDialog = new QGoLUTDialog( this );
 
