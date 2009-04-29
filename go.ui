@@ -189,14 +189,14 @@
    </property>
    <property name="minimumSize">
     <size>
-     <width>208</width>
-     <height>99</height>
+     <width>214</width>
+     <height>102</height>
     </size>
    </property>
    <property name="maximumSize">
     <size>
-     <width>311</width>
-     <height>584</height>
+     <width>317</width>
+     <height>587</height>
     </size>
    </property>
    <property name="floating">
@@ -815,8 +815,8 @@ Component</string>
   <widget class="QDockWidget" name="ManualSegmentationDockWidget">
    <property name="minimumSize">
     <size>
-     <width>208</width>
-     <height>76</height>
+     <width>214</width>
+     <height>79</height>
     </size>
    </property>
    <property name="windowTitle">
@@ -844,6 +844,9 @@ Component</string>
         <property name="shortcut">
          <string>Ctrl+C, Ctrl+Y</string>
         </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
        </widget>
       </item>
       <item>
@@ -855,7 +858,7 @@ Component</string>
          <string>Ctrl+C, Ctrl+N</string>
         </property>
         <property name="checked">
-         <bool>true</bool>
+         <bool>false</bool>
         </property>
        </widget>
       </item>
@@ -1604,6 +1607,118 @@ Component</string>
     <hint type="destinationlabel">
      <x>97</x>
      <y>672</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>ManualSegmentationOnRadioBtn</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>IdContourBox</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>47</x>
+     <y>438</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>64</x>
+     <y>509</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>ManualSegmentationOnRadioBtn</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>IdContourColorBtn</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>47</x>
+     <y>438</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>150</x>
+     <y>510</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>ManualSegmentationOnRadioBtn</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>SaveContourCheckBox</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>47</x>
+     <y>438</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>93</x>
+     <y>546</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>ManualSegmentationOnRadioBtn</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>TracerReinitializeBtn</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>47</x>
+     <y>438</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>109</x>
+     <y>578</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>ManualSegmentationOnRadioBtn</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>TracerReinitializeIncrementBtn</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>47</x>
+     <y>438</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>109</x>
+     <y>636</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>ManualSegmentationOnRadioBtn</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>TracerValidationBtn</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>47</x>
+     <y>438</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>109</x>
+     <y>607</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>ManualSegmentationOnRadioBtn</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>label_16</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>47</x>
+     <y>438</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>510</y>
     </hint>
    </hints>
   </connection>

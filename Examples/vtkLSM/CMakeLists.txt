@@ -1,65 +1,44 @@
-ADD_EXECUTABLE( lsm2jpg
-   lsm2jpg.cxx
-   ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/vtkLSM/vtkLSMReader.cxx
-  )
-TARGET_LINK_LIBRARIES( lsm2jpg
-  vtkIO
-  vtkImaging
-  vtkFiltering
-  vtkCommon
-  )
+SET( EXAMPLES_QT_NOT_REQUIRED 
+  lsm2jpg 
+  lsm2vtk
+  lsm2mha )
 
-ADD_EXECUTABLE( lsm2vtk
-   lsm2vtk.cxx
-   ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/vtkLSM/vtkLSMReader.cxx
-  )
-TARGET_LINK_LIBRARIES( lsm2vtk
-  vtkIO
-  vtkImaging
-  vtkFiltering
-  vtkCommon
-  )
+FOREACH( var ${EXAMPLES_QT_NOT_REQUIRED} )
 
-ADD_EXECUTABLE( lsm2mha
-   lsm2mha.cxx
-   ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/vtkLSM/vtkLSMReader.cxx
-  )
-TARGET_LINK_LIBRARIES( lsm2mha
-  vtkIO
-  vtkImaging
-  vtkFiltering
-  vtkCommon
-  )
+  ADD_EXECUTABLE( ${var} 
+    ${var}.cxx 
+    ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/vtkLSM/vtkLSMReader.cxx )
+
+  TARGET_LINK_LIBRARIES( ${var}
+    vtkIO
+    vtkImaging
+    vtkFiltering
+    vtkCommon )
+
+ENDFOREACH( var )
 
 IF( QT_FOUND )
-  ADD_EXECUTABLE( lsmColorVizu
-    lsmColorVizu.cxx
-    ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/vtkLSM/vtkLSMReader.cxx
-    )
-  TARGET_LINK_LIBRARIES( lsmColorVizu
-    vtkIO
-    vtkImaging
-    vtkRendering
-    vtkRenderingAddOn2
-    vtkFiltering
-    QMegaVTKAddOn2
-    ${QT_LIBRARIES}
-    QVTK
-    )
+  SET( EXAMPLES_QT_REQUIRED 
+    lsmColorVizu 
+    lsmColorVizuCollection )
 
-  ADD_EXECUTABLE( lsmColorVizuCollection
-    lsmColorVizuCollection.cxx
-    ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/vtkLSM/vtkLSMReader.cxx
-    )
-  TARGET_LINK_LIBRARIES( lsmColorVizuCollection
-    vtkIO
-    vtkImaging
-    vtkRendering
-    vtkRenderingAddOn2
-    vtkFiltering
-    QMegaVTKAddOn2
-    ${QT_LIBRARIES}
-    QVTK
-    )
+  FOREACH( var ${EXAMPLES_QT_REQUIRED} )
+
+     ADD_EXECUTABLE( ${var} 
+       ${var}.cxx
+       ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/vtkLSM/vtkLSMReader.cxx )
+
+     TARGET_LINK_LIBRARIES( ${var}
+       vtkIO
+       vtkImaging
+       vtkRendering
+       vtkRenderingAddOn2
+       vtkFiltering
+       QMegaVTKAddOn2
+       ${QT_LIBRARIES}
+       QVTK )
+
+  ENDFOREACH( var )
+
 ENDIF( QT_FOUND )
 

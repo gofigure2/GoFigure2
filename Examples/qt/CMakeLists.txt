@@ -1,5 +1,4 @@
-SUBDIRS(
-QImagePageView 
-QImagePageViewTracer 
-QImagePageView4DTracer 
-QGoLUTDialog )
+SUBDIRS( QImagePageView 
+  QImagePageViewTracer 
+  QImagePageView4DTracer 
+  QGoLUTDialog )
