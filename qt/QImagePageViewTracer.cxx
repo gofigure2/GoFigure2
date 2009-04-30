@@ -1112,7 +1112,7 @@ void QImagePageViewTracer::MoveSlider3( )
 
 void QImagePageViewTracer::SaveStateSplitters()
 {
-  QSettings settings( "MegasonLab", "Gofigure2" );
+  QSettings settings;
   settings.setValue("vSplitterSizes", vSplitter->saveState());
   settings.setValue("htSplitterSizes", htSplitter->saveState());
   settings.setValue("hbSplitterSizes", hbSplitter->saveState());

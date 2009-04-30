@@ -48,6 +48,7 @@
 
 #include <vtkImageData.h>
 #include <vtkEventQtSlotConnect.h>
+#include <qsettings.h>
 
 //#include <itkProcessObject.h>
 

@@ -55,7 +55,7 @@
 
 #include "QGoLUTDialog.h"
 #include "ui_go.h"
-
+#include <qsettings.h>
 
 class QGoMainWindow : public QMainWindow,
   private Ui::go_mainwindow
@@ -128,7 +128,7 @@ protected:
   template< class T > void SetFullScreen( const int & ViewID, T* PageView );
   template< class T > void SetRendering( T* myPageView );
   template< class T > void UpdateVolumeRenderingButton( T* PageView);
-  template< class T > void writeSettings(T* PageView);
+  template< class T > void writeSettingsPageView(T* PageView );
 
   void SetFullScreenDispatch( const int & ViewID );
 
@@ -147,6 +147,8 @@ protected:
 
   QHash< unsigned int, QColor > m_IdColorMap;
   QActionGroup* m_FullscreenGroup;
+
+  //QSettings settings("MegasonLab", "Gofigure2");
 
   /** \brief */
   void setCurrentFile(const QString &fileName);
@@ -168,6 +170,7 @@ protected:
   /** \brief Create Fullscreengroup*/
   void Fullscreenbuttons();
 
+  void writeSettings();
   void readSettings();
   
 

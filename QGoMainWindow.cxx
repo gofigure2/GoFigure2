@@ -46,7 +46,6 @@
 
 #include <itkImageFileReader.h>
 #include <vnl/vnl_random.h>
-#include <qsettings.h>
 
 #include "vtkImageAppendComponents.h"
 #include "ContourContainerFileSystem.h"
@@ -129,14 +128,14 @@ QGoMainWindow::QGoMainWindow( )
 // *************************************************************************
 QGoMainWindow::~QGoMainWindow()
 {
-  //writeSettings();
+  writeSettings();
   while( !m_PageView.empty() )
   {
     QImagePageViewTracer* myPageView =
       dynamic_cast<QImagePageViewTracer*>( m_PageView.last() );
     if( myPageView )
     {
-      writeSettings(myPageView);
+      writeSettingsPageView(myPageView);
       delete myPageView;
     }
     else
@@ -179,7 +178,7 @@ void QGoMainWindow::on_actionClose_activated( )
       dynamic_cast<QImagePageViewTracer*>( m_PageView[idx] );
     if( myPageView )
     {
-      writeSettings(myPageView);
+      writeSettingsPageView(myPageView);
       delete myPageView;
     }
     else
@@ -188,7 +187,7 @@ void QGoMainWindow::on_actionClose_activated( )
         dynamic_cast<QImagePageView4DTracer*>( m_PageView[ idx ] );
       if( myPageView4D )
       {
-        writeSettings(myPageView4D);
+        writeSettingsPageView(myPageView4D);
         delete myPageView4D;
       }
     }
@@ -202,7 +201,7 @@ void QGoMainWindow::on_actionClose_activated( )
   // We should check if it was the last tab, in which case,
   // the close option shoudl be disactivated
 
-  //writeSettings();
+  writeSettings();
 }
 
 // *************************************************************************
@@ -215,7 +214,7 @@ void QGoMainWindow::on_actionClose_all_activated( )
       dynamic_cast<QImagePageViewTracer*>( m_PageView.last() );
     if( myPageView )
     {
-      writeSettings(myPageView);
+      writeSettingsPageView(myPageView);
       delete myPageView;
     }
     else
@@ -224,12 +223,12 @@ void QGoMainWindow::on_actionClose_all_activated( )
         dynamic_cast<QImagePageView4DTracer*>( m_PageView.last() );
       if( myPageView4D )
       {
-        writeSettings(myPageView4D);
+        writeSettingsPageView(myPageView4D);
         delete myPageView4D;
       }
     }
     m_PageView.pop_back();
-    //writeSettings();
+    writeSettings();
   }
 }
 
@@ -239,7 +238,7 @@ void QGoMainWindow::on_actionClose_all_activated( )
 void QGoMainWindow::on_actionQuit_activated( )
 {
   this->close();
-//  writeSettings();
+  writeSettings();
 }
 
 
@@ -917,18 +916,22 @@ void QGoMainWindow::readSettings()
 }
 
 // *************************************************************************
-template< class T >
-void QGoMainWindow::writeSettings(T* PageView )
+
+void QGoMainWindow::writeSettings()
 {
-  QSettings settings("MegasonLab", "Gofigure2");
+  QSettings settings;
   settings.setValue("recentFiles", m_RecentFiles);
   settings.beginGroup("MainWindow");
   settings.setValue("size", size());
   settings.setValue("pos", pos());
   settings.endGroup();
+}
+// *************************************************************************
+template< class T >
+void QGoMainWindow::writeSettingsPageView(T* PageView )
+{
   PageView->SaveStateSplitters();
 }
-
 // *************************************************************************
 void QGoMainWindow::ShowProgressLoading( itk::Object * myFilter )
 {
