@@ -19,6 +19,7 @@ softwares:
 
     2.2.2 Configuration
 
+      * On Linux:
 $ cd gofigure2/trunk/
 
 Create a build directory where GoFigure will be compiled
