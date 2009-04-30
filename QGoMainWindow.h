@@ -102,7 +102,8 @@ protected slots:
   void ShowProgressLoading( itk::Object * myFilter );
   void HideProgressLoading();
 
-  /**\Update the full screen button group when the current tab is changed*/
+  /** \brief Update the full screen button group when the current tab is 
+ * changed. */
   void UpdateToolBarViewButtons( const int& idx);
   void UpdateTracerButtons( const int& idx);
 
@@ -160,7 +161,6 @@ protected:
 
   /** \brief Display Image in a "quad-view" widget in a tab.
     The title of the tab is given by iTag.
-      \param[in] iImage
       \param[in] iTag
   */
   void DisplayImage( const QString& iTag );
