@@ -120,6 +120,16 @@ public slots:
     { this->Whatever->SetTracerON(); };
   QMEGAVTKADDON2_EXPORT void SetTracerOFF()
     { this->Whatever->SetTracerOFF(); };
+  QMEGAVTKADDON2_EXPORT void SetShowScalarBar( const bool& what )
+    { 
+    if( ( this->Image->GetNumberOfScalarComponents() == 1 ) || ( !ColorVizu ) )
+      this->Whatever->SetShowScalarBar( what ); 
+    };
+  QMEGAVTKADDON2_EXPORT void SetLookupTable( vtkLookupTable* lut )
+    {
+    if( ( this->Image->GetNumberOfScalarComponents() == 1 ) || ( !ColorVizu ) )
+      this->Whatever->SetLookupTable( lut );
+    };
 
 protected:
   QWidget*      LayOutWidget1;
@@ -135,7 +145,7 @@ protected:
   int                   NumberOfTimePoints;
   char*                 FileName;
   vtkImageData*         Image;
-  bool                   ColorVizu;
+  bool                  ColorVizu;
 };
 
 #endif

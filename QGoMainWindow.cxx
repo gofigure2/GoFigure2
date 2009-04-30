@@ -414,14 +414,25 @@ void QGoMainWindow::on_actionScale_bars_activated( )
   int idx = this->CentralImageTabWidget->currentIndex();
   QImagePageViewTracer* myPageView =
     dynamic_cast<QImagePageViewTracer*>( m_PageView[idx] );
-    if( myPageView )
+  if( myPageView )
     {
-      myPageView->SetShowScalarBar( actionScale_bars->isChecked() );
+    myPageView->SetShowScalarBar( actionScale_bars->isChecked() );
+    }
+  else
+    {
+    QImagePageView4DTracer* pageViewColor =
+    dynamic_cast<QImagePageView4DTracer*>( m_PageView[idx] );
+    if( pageViewColor )
+      {
+      pageViewColor->SetShowScalarBar( actionScale_bars->isChecked() );
+      }
     }
   }
 }
 
 // *************************************************************************
+// \todo ALEX: implement support for LSM
+//
 void QGoMainWindow::on_actionSnapshot_activated( )
 {
   int idx = this->CentralImageTabWidget->currentIndex();
@@ -471,48 +482,49 @@ void QGoMainWindow::on_actionSnapshot_activated( )
 void QGoMainWindow::SetContourTracerOn(const bool& iChecked)
 {
   if( iChecked )
-  {
+    {
     int idx = this->CentralImageTabWidget->currentIndex();
     QImagePageViewTracer* myPageView =
       dynamic_cast<QImagePageViewTracer*>( m_PageView[idx] );
     if( myPageView )
-    {
+      {
       myPageView->SetTracerON();
-    }
+      }
     else
-    {
+      {
       QImagePageView4DTracer* myPageView2 =
         dynamic_cast<QImagePageView4DTracer*>( m_PageView[idx] );
       if( myPageView2 )
-      {
+        {
         myPageView2->SetTracerON();
+        }
       }
     }
-  }
 }
+
+
 
 // *************************************************************************
 void QGoMainWindow::SetContourTracerOff(const bool& iChecked)
 {
   if( iChecked )
-  {
+    {
     int idx = this->CentralImageTabWidget->currentIndex();
     QImagePageViewTracer* myPageView =
       dynamic_cast<QImagePageViewTracer*>( m_PageView[idx] );
     if( myPageView )
-    {
-      myPageView->SetTracerOFF();
-    }
-    else
-    {
-      QImagePageView4DTracer* myPageView2 =
-        dynamic_cast<QImagePageView4DTracer*>( m_PageView[idx] );
-      if( myPageView2 )
       {
-        myPageView2->SetTracerOFF();
+      myPageView->SetTracerOFF();
+      return;
+      }
+    QImagePageView4DTracer* myPageView2 =
+      dynamic_cast<QImagePageView4DTracer*>( m_PageView[idx] );
+    if( myPageView2 )
+      {
+      myPageView2->SetTracerOFF();
+      return;
       }
     }
-  }
 }
 
 
@@ -546,6 +558,8 @@ void QGoMainWindow::SetContourTracerOff(const bool& iChecked)
 // }
 
 
+
+
 // *************************************************************************
 void QGoMainWindow::ChangeLookupTable( )
 {
@@ -553,10 +567,21 @@ void QGoMainWindow::ChangeLookupTable( )
   QImagePageViewTracer* myPageView =
     dynamic_cast<QImagePageViewTracer*>( m_PageView[idx] );
   if( myPageView )
-  {
+    {
     myPageView->SetLookupTable( this->m_LUTDialog->GetLookupTable() );
-  }
+    return;
+    }
+  QImagePageView4DTracer* myPageView2 =
+    dynamic_cast<QImagePageView4DTracer*>( m_PageView[idx] );
+  if( myPageView2 )
+    {
+    myPageView2->SetLookupTable( this->m_LUTDialog->GetLookupTable() );
+    return;
+    }
 }
+
+
+
 
 // *************************************************************************
 void QGoMainWindow::SetColorForGivenId( const bool& iSelect )
@@ -639,6 +664,8 @@ void QGoMainWindow::SetColorForGivenId( const bool& iSelect )
 
 }
 
+
+
 // *************************************************************************
 void QGoMainWindow::ValidateContourTracer( )
 {
@@ -646,19 +673,20 @@ void QGoMainWindow::ValidateContourTracer( )
   QImagePageViewTracer* myPageView =
     dynamic_cast<QImagePageViewTracer*>( m_PageView[idx] );
   if( myPageView )
-  {
-    ValidateContourTracerHelper< QImagePageViewTracer >( myPageView );
-  }
-  else
-  {
-    QImagePageView4DTracer* myPageView2 =
-      dynamic_cast<QImagePageView4DTracer*>( m_PageView[idx] );
-    if( myPageView2 )
     {
-      ValidateContourTracerHelper< QImagePageView4DTracer >( myPageView2 );
+    ValidateContourTracerHelper< QImagePageViewTracer >( myPageView );
+    return;
     }
-  }
+  QImagePageView4DTracer* myPageView2 =
+    dynamic_cast<QImagePageView4DTracer*>( m_PageView[idx] );
+  if( myPageView2 )
+    {
+    ValidateContourTracerHelper< QImagePageView4DTracer >( myPageView2 );
+    return;
+    }
 }
+
+
 
 void QGoMainWindow::ReinitializeAndIncrementContourTracer( )
 {
@@ -666,16 +694,17 @@ void QGoMainWindow::ReinitializeAndIncrementContourTracer( )
   this->IdContourBox->setValue( 1 + this->IdContourBox->value() );
 }
 
+
+
 template< class T >
 void QGoMainWindow::ValidateContourTracerHelper( T* PageView )
 {
   unsigned int cell_id = IdContourBox->value();
-//   PageView->SetCellId( cell_id );
 
   if( m_IdColorMap.find( cell_id ) == m_IdColorMap.end() )
-  {
+    {
     SetColorForGivenId( false );
-  }
+    }
   //DATABASE
   PageView->ValidateContour(
     cell_id,
@@ -692,18 +721,17 @@ void QGoMainWindow::ReinitializeContourTracer()
   QImagePageViewTracer* myPageView =
     dynamic_cast<QImagePageViewTracer*>( m_PageView[idx] );
   if( myPageView )
-  {
-    myPageView->ReinitializeContour();
-  }
-  else
-  {
-    QImagePageView4DTracer* myPageView2 =
-      dynamic_cast<QImagePageView4DTracer*>( m_PageView[idx] );
-    if( myPageView2 )
     {
-      myPageView2->ReinitializeContour();
+    myPageView->ReinitializeContour();
+    return;
     }
-  }
+  QImagePageView4DTracer* myPageView2 =
+    dynamic_cast<QImagePageView4DTracer*>( m_PageView[idx] );
+  if( myPageView2 )
+    {
+    myPageView2->ReinitializeContour();
+    return;
+    }
 }
 
 
@@ -711,21 +739,21 @@ void QGoMainWindow::ReinitializeContourTracer()
 void QGoMainWindow::SetFileName( const QString& iFile )
 {
   if( QFile::exists( iFile ) )
-  {
+    {
     this->setCurrentFile( iFile );
     // parse extension
     QFileInfo fi(iFile);
     QString ext = fi.suffix();
     if( ext.compare( "lsm", Qt::CaseInsensitive ) == 0 )
-    {
+      {
       this->OpenAndDisplayLSMFile( m_CurrentFile, 0, true );
-    }
+      }
     else
-    {
+      {
       this->OpenImage( m_CurrentFile );
       this->DisplayImage( m_CurrentFile );
+      }
     }
-  }
 }
 
 // *************************************************************************
@@ -763,9 +791,9 @@ void QGoMainWindow::DisplayImage( const QString& iTag )
   QImagePageViewTracer* myPageView =
     dynamic_cast<QImagePageViewTracer*>( m_PageView.last() );
   if( myPageView )
-  {
+    {
     myPageView->SetImage( m_VTKImage.last() );
-  }
+    }
 
   int idx = this->CentralImageTabWidget->addTab( m_PageView.last(), iTag );
   this->CentralImageTabWidget->setCurrentIndex( idx );
@@ -834,12 +862,12 @@ void QGoMainWindow::setCurrentFile(const QString &fileName)
   this->setWindowModified( false );
   QString shownName = "Untitled";
   if( !m_CurrentFile.isEmpty() )
-  {
+    {
     shownName = strippedName( m_CurrentFile );
     m_RecentFiles.removeAll( m_CurrentFile );
     m_RecentFiles.prepend( m_CurrentFile );
     updateRecentFileActions();
-  }
+    }
 }
 
 // *****************************************************************************
@@ -853,19 +881,21 @@ void QGoMainWindow::updateRecentFileActions()
 {
   QMutableStringListIterator i(m_RecentFiles);
   while (i.hasNext())
-  {
+    {
     if (!QFile::exists(i.next()))
+      {
       i.remove();
-  }
+      }
+    }
   if (!m_RecentFiles.isEmpty())
-  {
+    {
     menuOpen_Recent_Files->setEnabled(true);
-  }
+    }
 
   for (int j = 0; j < MaxRecentFiles; ++j)
-  {
-    if (j < m_RecentFiles.count())
     {
+    if (j < m_RecentFiles.count())
+      {
       QString text = tr("&%1 %2 ")
         .arg(j + 1)
         .arg(strippedName(m_RecentFiles[j]));
@@ -874,8 +904,8 @@ void QGoMainWindow::updateRecentFileActions()
       recentFileActions[j]->setData(m_RecentFiles[j]);
       recentFileActions[j]->setVisible(true);
       menuOpen_Recent_Files->addAction(recentFileActions[j]);
+      }
     }
-  }
 }
 
 // *************************************************************************
@@ -883,9 +913,9 @@ void QGoMainWindow::openRecentFile()
 {
   QAction* action = qobject_cast< QAction* >( sender() );
   if( action )
-  {
-    SetFileName(action->data().toString());
-  }
+    {
+    SetFileName( action->data().toString() );
+    }
 }
 
 
@@ -900,18 +930,21 @@ void QGoMainWindow::readSettings()
   QSize size = settings.value( "size" ).toSize();
 
   if( size.isValid() )
-  {
+    {
     this->resize( size );
     this->move( settings.value("pos").toPoint() );
-  }
+    }
   else
-  {
+    {
     this->resize( 1450, 750 );
-  }
+    }
 
 //  settings.setValue("vsplitterSizes", vSplitter->saveState()); 
   settings.endGroup();
+<<<<<<< .mine
+=======
  
+>>>>>>> .r44
      
 }
 
@@ -955,64 +988,68 @@ void QGoMainWindow::HideProgressLoading()
 void QGoMainWindow::UpdateTracerButtons( const int& idx)
 {
   if( (idx>=0) && (idx<m_PageView.size()))
-  {
+    {
+
     QImagePageViewTracer* myPageView =
       dynamic_cast<QImagePageViewTracer*>( m_PageView[idx] );
     if( myPageView )
-    {
+      {
       this->IdContourBox->setValue( myPageView->GetCellId() );
       if( myPageView->GetTracerStatus( ) )
-      {
+        {
         this->ManualSegmentationOnRadioBtn->toggle();
-      }
+        }
       else
-      {
+        {
         this->ManualSegmentationOffRadioBtn->toggle();
+        }
+      return;
       }
-    }
-    else
-    {
-      QImagePageView4DTracer* myPageView2 =
-        dynamic_cast<QImagePageView4DTracer*>( m_PageView[idx] );
-
-      if( myPageView2 )
+   
+    QImagePageView4DTracer* myPageView2 =
+      dynamic_cast<QImagePageView4DTracer*>( m_PageView[idx] );
+    if( myPageView2 )
       {
-        this->IdContourBox->setValue( myPageView2->GetCellId() );
-        if( myPageView2->GetTracerStatus( ) )
+      this->IdContourBox->setValue( myPageView2->GetCellId() );
+      if( myPageView2->GetTracerStatus( ) )
         {
-          this->ManualSegmentationOnRadioBtn->toggle();
+        this->ManualSegmentationOnRadioBtn->toggle();
         }
-        else
+      else
         {
-          this->ManualSegmentationOffRadioBtn->toggle();
+        this->ManualSegmentationOffRadioBtn->toggle();
         }
+      return;
       }
     }
-  }
 }
+
+
 // *************************************************************************
 void QGoMainWindow::UpdateToolBarViewButtons( const int& idx )
 {
   if( (idx>=0) && (idx<m_PageView.size()))
-  {
+    {
+
     QImagePageViewTracer* myPageView =
       dynamic_cast<QImagePageViewTracer*>( m_PageView[idx] );
     if( myPageView )
-    {
+      {
       UpdateFullScreenViewButtonsHelper( myPageView );
       UpdateVolumeRenderingButton( myPageView );
-    }
-    else
-    {
-      QImagePageView4DTracer* myPageView2 =
-        dynamic_cast<QImagePageView4DTracer*>( m_PageView[idx] );
-      if( myPageView2 )
-      {
-        UpdateFullScreenViewButtonsHelper( myPageView2 );
-        UpdateVolumeRenderingButton ( myPageView2 );
+      return;
       }
+
+    QImagePageView4DTracer* myPageView2 =
+      dynamic_cast<QImagePageView4DTracer*>( m_PageView[idx] );
+    if( myPageView2 )
+      {
+      UpdateFullScreenViewButtonsHelper( myPageView2 );
+      UpdateVolumeRenderingButton ( myPageView2 );
+      return;
+      }
+
     }
-  }
 }
 
 template< class T >

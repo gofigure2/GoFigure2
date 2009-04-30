@@ -97,7 +97,7 @@ IF( VTK_FOUND )
   SET(QT_UIC_EXECUTABLE ${VTK_QT_UIC_EXECUTABLE} CACHE FILEPATH "")
 
   FIND_PACKAGE(Qt4)
-  IF(QT_FOUND)
+  IF( QT_FOUND AND QT_VERSION_MINOR GREATER 4 )
     IF(QT_USE_FILE)
       SET(QT_USE_QT3SUPPORT TRUE)
       INCLUDE(${QT_USE_FILE})
@@ -177,7 +177,7 @@ IF( VTK_FOUND )
                             OBJECT_DEPENDS "${QGOMAINWINDOW_UI_HDRS}" )
 
 
-#    IF( APPLE )
+    IF( APPLE )
       ADD_EXECUTABLE(
         gofigure
         MACOSX_BUNDLE
@@ -188,25 +188,18 @@ IF( VTK_FOUND )
         ${QGOMAINWINDOW_MOC_SRC}
         ${QGOMAINWINDOW_QRC}
         )
-#    ENDIF( APPLE )
-#    IF(WIN32)
-#      IF(NOT BORLAND)
-#        IF(NOT CYGWIN)
-#          IF(NOT MINGW)
-#            ADD_EXECUTABLE(
-#              gofigure
-#              MACOSX_BUNDLE
-#              gofigure.cxx
-#              ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/itkQt/itkQtProgressBar.cxx
-#              ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/vtkLSM/vtkLSMReader.cxx
-#              ${QGOMAINWINDOW_SRC}
-#              ${QGOMAINWINDOW_MOC_SRC}
-#              ${QGOMAINWINDOW_QRC}
-#              )
-#            ENDIF(NOT MINGW)
-#        ENDIF(NOT CYGWIN)
-#      ENDIF(NOT BORLAND)
-#    ENDIF(WIN32)
+    ELSE( APPLE )
+#  here will need to differenciate windows to avoid command window
+      ADD_EXECUTABLE(
+        gofigure
+        gofigure.cxx
+        ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/itkQt/itkQtProgressBar.cxx
+        ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/vtkLSM/vtkLSMReader.cxx
+        ${QGOMAINWINDOW_SRC}
+        ${QGOMAINWINDOW_MOC_SRC}
+        ${QGOMAINWINDOW_QRC}
+        )
+    ENDIF( APPLE ) 
 
     TARGET_LINK_LIBRARIES( gofigure
       QMegaVTKAddOn2
@@ -224,34 +217,35 @@ IF( VTK_FOUND )
     INCLUDE( CTest )
 
     IF( BUILD_PACKAGE )
-
       INCLUDE( InstallRequiredSystemLibraries )
-
       SET( CPACK_PACKAGE_DESCRIPTION_SUMMARY "GoFigure2" )
       SET( CPACK_PACKAGE_VENDOR "Megason Lab, Systems Biology, HMS" )
-#      SET(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/ReadMe.txt")
-#      SET(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/Copyright.txt")
+#     SET( CPACK_PACKAGE_DESCRIPTION_FILE
+#       "${CMAKE_CURRENT_SOURCE_DIR}/ReadMe.txt")
+#     SET( CPACK_RESOURCE_FILE_LICENSE
+#       "${CMAKE_CURRENT_SOURCE_DIR}/Copyright.txt")
       SET( CPACK_PACKAGE_VERSION_MAJOR ${GOFIGURE2_MAJOR_VERSION} )
       SET( CPACK_PACKAGE_VERSION_MINOR ${GOFIGURE2_MINOR_VERSION} )
       SET( CPACK_PACKAGE_VERSION_PATCH "0" )
       SET( CPACK_PACKAGE_INSTALL_DIRECTORY
-"GoFigure2-${GOFIGURE2_MAJOR_VERSION}.${GOFIGURE2_MINOR_VERSION}" )
+        "GoFigure2-${GOFIGURE2_MAJOR_VERSION}.${GOFIGURE2_MINOR_VERSION}" )
 
       IF( WIN32 AND NOT UNIX )
-      # There is a bug in NSI that does not handle full unix paths properly.
-      # Make sure there is at least one set of four (4) backslashes.
-#        SET( CPACK_PACKAGE_ICON "${CMake_SOURCE_DIR}/Utilities/Release\\\\InstallIcon.bmp" )
+        # There is a bug in NSI that does not handle full unix paths properly.
+        # Make sure there is at least one set of four (4) backslashes.
+#       SET( CPACK_PACKAGE_ICON
+#         "${CMake_SOURCE_DIR}/Utilities/Release\\\\InstallIcon.bmp" )
         SET( CPACK_NSIS_INSTALLED_ICON_NAME "bin\\\\gofigure.exe")
         SET( CPACK_NSIS_DISPLAY_NAME "${CPACK_PACKAGE_INSTALL_DIRECTORY}
-GoFigure2" )
-        SET( CPACK_NSIS_HELP_LINK "http:\\\\\\\\sourceforget.net\\\\projects\\\\gofigure2" )
+          GoFigure2" )
+        SET( CPACK_NSIS_HELP_LINK
+          "http:\\\\\\\\sourceforget.net\\\\projects\\\\gofigure2" )
         SET( CPACK_NSIS_URL_INFO_ABOUT "http:\\\\megason.med.harvard.edu" )
-#        SET( CPACK_NSIS_CONTACT "me@my-personal-home-page.com" )
+#       SET( CPACK_NSIS_CONTACT "me@my-personal-home-page.com" )
         SET( CPACK_NSIS_MODIFY_PATH ON )
       ELSE( WIN32 AND NOT UNIX )
         SET( CPACK_STRIP_FILES "bin/gofigure" )
         SET( CPACK_SOURCE_STRIP_FILES "" )
-
       ENDIF( WIN32 AND NOT UNIX )
 
       SET( CPACK_PACKAGE_EXECUTABLES "gofigure" "Gofigure2" )
@@ -265,7 +259,7 @@ GoFigure2" )
       INCLUDE( CPack )
 
     ENDIF( BUILD_PACKAGE )
-  ENDIF( QT_FOUND )
+  ENDIF( QT_FOUND AND QT_VERSION_MINOR GREATER 4 )
   SUBDIRS( Examples )
 ENDIF( VTK_FOUND )
 
