@@ -941,10 +941,6 @@ void QGoMainWindow::readSettings()
 
 //  settings.setValue("vsplitterSizes", vSplitter->saveState()); 
   settings.endGroup();
-<<<<<<< .mine
-=======
- 
->>>>>>> .r44
      
 }
 
