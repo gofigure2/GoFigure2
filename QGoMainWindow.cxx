@@ -135,7 +135,7 @@ QGoMainWindow::~QGoMainWindow()
       dynamic_cast<QImagePageViewTracer*>( m_PageView.last() );
     if( myPageView )
     {
-      writeSettingsPageView(myPageView);
+      //writeSettingsPageView(myPageView);
       delete myPageView;
     }
     else
@@ -178,7 +178,7 @@ void QGoMainWindow::on_actionClose_activated( )
       dynamic_cast<QImagePageViewTracer*>( m_PageView[idx] );
     if( myPageView )
     {
-      writeSettingsPageView(myPageView);
+      //writeSettingsPageView(myPageView);
       delete myPageView;
     }
     else
@@ -187,7 +187,7 @@ void QGoMainWindow::on_actionClose_activated( )
         dynamic_cast<QImagePageView4DTracer*>( m_PageView[ idx ] );
       if( myPageView4D )
       {
-        writeSettingsPageView(myPageView4D);
+        //writeSettingsPageView(myPageView4D);
         delete myPageView4D;
       }
     }
@@ -214,7 +214,7 @@ void QGoMainWindow::on_actionClose_all_activated( )
       dynamic_cast<QImagePageViewTracer*>( m_PageView.last() );
     if( myPageView )
     {
-      writeSettingsPageView(myPageView);
+      //writeSettingsPageView(myPageView);
       delete myPageView;
     }
     else
@@ -223,7 +223,7 @@ void QGoMainWindow::on_actionClose_all_activated( )
         dynamic_cast<QImagePageView4DTracer*>( m_PageView.last() );
       if( myPageView4D )
       {
-        writeSettingsPageView(myPageView4D);
+        //writeSettingsPageView(myPageView4D);
         delete myPageView4D;
       }
     }
