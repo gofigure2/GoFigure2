@@ -20,7 +20,17 @@ softwares:
     2.2.2 Configuration
 
 $ cd gofigure2/trunk/
+
+Create a build directory where GoFigure will be compiled
 $ mkdir BUILD
+
+Launch cmake 
+$ cd BUILD
 $ ccmake ..
+
+Build
 $ make
+
+Install
+$ make install
 
