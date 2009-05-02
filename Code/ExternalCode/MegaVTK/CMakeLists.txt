@@ -3,9 +3,3 @@ CONFIGURE_FILE(${MEGAVTK2_SOURCE_DIR}/MegaVTK2Configure.h.in
 
 SUBDIRS( vtkRenderingAddOn )
 SUBDIRS( vtkItk )
-
-
-
-
-
-

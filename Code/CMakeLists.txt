@@ -1,0 +1,5 @@
+SUBDIRS( ExternalCode )
+SUBDIRS( Vizualisation )
+SUBDIRS( IO )
+SUBDIRS( Filters )
+SUBDIRS( GUI )

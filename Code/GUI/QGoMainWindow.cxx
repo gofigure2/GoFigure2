@@ -49,7 +49,7 @@
 #include <qsettings.h>
 
 #include "vtkImageAppendComponents.h"
-#include "ContourContainerFileSystem.h"
+//#include "ContourContainerFileSystem.h"
 
 // *************************************************************************
 QGoMainWindow::QGoMainWindow( )

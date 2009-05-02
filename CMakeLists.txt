@@ -37,20 +37,21 @@ IF( WIN32 )
   ENDIF( NOT BORLAND )
 ENDIF( WIN32 )
 
-#
+#------------------------------------------------------------------------------
 # Define EXECUTABLE_OUTPUT_PATH and LIBRARY_OUTPUT_PATH
-#
+#------------------------------------------------------------------------------
 SET(EXECUTABLE_OUTPUT_PATH
  ${GOFIGURE2_BINARY_DIR}/bin
  CACHE PATH "Single output directory for building all executables."
 )
-
 SET(LIBRARY_OUTPUT_PATH
  ${GOFIGURE2_BINARY_DIR}/lib
  CACHE PATH "Single output directory for building all libraries."
 )
 
-
+#------------------------------------------------------------------------------
+# Handle Documentation
+#------------------------------------------------------------------------------
 OPTION( BUILD_DOCUMENTATION "Build Doxygen Documentation" OFF )
 OPTION( BUILD_PACKAGE "Software packaging" OFF )
 
@@ -71,9 +72,12 @@ IF( BUILD_DOCUMENTATION )
   ENDIF( DOXYGEN_FOUND )
 ENDIF( BUILD_DOCUMENTATION )
 
+#------------------------------------------------------------------------------
+# Main GoFigure Settings
+#------------------------------------------------------------------------------
 
-
-############################
+# Everything depends on VTK first
+# that way we can get Qt info from VTK
 FIND_PACKAGE( VTK )
 IF( VTK_FOUND )
   INCLUDE( ${VTK_USE_FILE} )
@@ -84,32 +88,36 @@ IF( VTK_FOUND )
     SET(LIBS_STYLE "STATIC")
   ENDIF( VTK_BUILD_SHARED_LIBS )
 
-  ############################
+  # Then find ITK
   FIND_PACKAGE( ITK )
   IF( ITK_FOUND )
     INCLUDE( ${ITK_USE_FILE} )
   ENDIF( ITK_FOUND )
 
-  ############################
-  # use what QVTK built with
+  # Try to extract Qt variable from VTK
   SET(QT_QMAKE_EXECUTABLE ${VTK_QT_QMAKE_EXECUTABLE} CACHE FILEPATH "")
   SET(QT_MOC_EXECUTABLE ${VTK_QT_MOC_EXECUTABLE} CACHE FILEPATH "")
   SET(QT_UIC_EXECUTABLE ${VTK_QT_UIC_EXECUTABLE} CACHE FILEPATH "")
 
+  # Try to find Qt. 
+  # Note that some command line tools will get compiled even without Qt 
   FIND_PACKAGE( Qt4 )
   IF( QT4_FOUND AND QT_VERSION_MINOR GREATER 4 )
-    IF(QT_USE_FILE)
-      SET(QT_USE_QT3SUPPORT TRUE)
-      INCLUDE(${QT_USE_FILE})
-    ELSE(QT_USE_FILE)
-      SET(QT_LIBRARIES   ${QT_QT_LIBRARY})
-    ENDIF(QT_USE_FILE)
+    IF( QT_USE_FILE )
+      SET( QT_USE_QT3SUPPORT TRUE )
+      INCLUDE( ${QT_USE_FILE} )
+    ELSE( QT_USE_FILE )
+      SET( QT_LIBRARIES ${QT_QT_LIBRARY} )
+    ENDIF( QT_USE_FILE )
 
-    SET( GOFIGURE2_EXTERNAL_SOURCE_DIR ${GOFIGURE2_SOURCE_DIR}/ExternalCode )
-    SET( GOFIGURE2_EXTERNAL_BINARY_DIR ${GOFIGURE2_BINARY_DIR}/ExternalCode )
+    SET(GOFIGURE2_EXTERNAL_SOURCE_DIR
+      ${GOFIGURE2_SOURCE_DIR}/Code/ExternalCode )
+    SET(GOFIGURE2_EXTERNAL_BINARY_DIR
+      ${GOFIGURE2_BINARY_DIR}/Code/ExternalCode )
     SET( MEGAVTK2_SOURCE_DIR ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/MegaVTK )
     SET( MEGAVTK2_BINARY_DIR ${GOFIGURE2_EXTERNAL_BINARY_DIR}/MegaVTK )
 
+    # Set specific flag for shared Qt libraries on windows
     IF(WIN32)
       IF(NOT CYGWIN)
         IF(NOT MINGW)
@@ -126,10 +134,12 @@ IF( VTK_FOUND )
 
     INCLUDE_DIRECTORIES( BEFORE
       ${QT_INCLUDES}
-      ${GOFIGURE2_SOURCE_DIR}
-      ${GOFIGURE2_BINARY_DIR}
-      ${GOFIGURE2_SOURCE_DIR}/qt
-      ${GOFIGURE2_BINARY_DIR}/qt
+      ${GOFIGURE2_SOURCE_DIR}/Code/GUI/
+      ${GOFIGURE2_BINARY_DIR}/Code/GUI/
+      ${GOFIGURE2_SOURCE_DIR}/Code/GUI/qt
+      ${GOFIGURE2_BINARY_DIR}/Code/GUI/qt
+      ${GOFIGURE2_SOURCE_DIR}/CodeG/UI/Vizualisation
+      ${GOFIGURE2_BINARY_DIR}/Code/GUI/Vizualisation
       ${MEGAVTK2_SOURCE_DIR}
       ${MEGAVTK2_BINARY_DIR}
       ${MEGAVTK2_SOURCE_DIR}/vtkItk
@@ -139,80 +149,7 @@ IF( VTK_FOUND )
       ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/vtkLSM
       ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/itkQt )
 
-    SUBDIRS( ExternalCode )
-    SUBDIRS( qt )
-
-    SET( QGOMAINWINDOW_HDRS QGoMainWindow.h
-         ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/itkQt/itkQtAdaptor.h)
-    SET( QGOMAINWINDOW_SRC QGoMainWindow.cxx )
-
-    QT4_WRAP_UI( QGOMAINWINDOW_UI_HDRS go.ui )
-    QT4_WRAP_CPP( QGOMAINWINDOW_MOC_SRC ${QGOMAINWINDOW_HDRS} )
-    QT4_ADD_RESOURCES( QGOMAINWINDOW_QRC
-      ${GOFIGURE2_SOURCE_DIR}/resources/axes.qrc)
-
-## translation
-#  SET( FILES_TO_TRANSLATE
-#    ${QGOMAINWINDOW_HDRS} ${QGOMAINWINDOW_SRC} ${QGOMAINWINDOW_UI_HDRS} )
-#
-#  FILE( GLOB TRANSLATIONS_FILES Translations/*.ts )
-#
-#  OPTION(UPDATE_TRANSLATIONS "Update source translation Translations/*.ts files (WARNING: make clean will delete the source .ts files! Danger!)")
-#  IF( UPDATE_TRANSLATIONS )
-#    QT4_CREATE_TRANSLATION( QM_FILES ${FILES_TO_TRANSLATE}
-#      ${TRANSLATIONS_FILES} )
-#  ELSE( UPDATE_TRANSLATIONS )
-#    QT4_CREATE_TRANSLATION( QM_FILES ${TRANSLATIONS_FILES} )
-#  ENDIF( UPDATE_TRANSLATIONS )
-#
-#  ADD_CUSTOM_TARGET( TRANSLATIONS_TARGET DEPENDS ${QM_FILES} )
-#
-#  INSTALL(FILES ${QM_FILES} DESTINATION
-#    ${CMAKE_INSTALL_PREFIX}/Translations)
-##translation
-
-    SET_SOURCE_FILES_PROPERTIES( ${QGOMAINWINDOW_SRC} PROPERTIES
-                            OBJECT_DEPENDS "${QGOMAINWINDOW_UI_HDRS}" )
-    SET_SOURCE_FILES_PROPERTIES( ${QGOMAINWINDOW_MOC_SRC} PROPERTIES
-                            OBJECT_DEPENDS "${QGOMAINWINDOW_UI_HDRS}" )
-
-
-    IF( APPLE )
-      ADD_EXECUTABLE(
-        gofigure
-        MACOSX_BUNDLE
-        gofigure.cxx
-        ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/itkQt/itkQtProgressBar.cxx
-        ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/vtkLSM/vtkLSMReader.cxx
-        ${QGOMAINWINDOW_SRC}
-        ${QGOMAINWINDOW_MOC_SRC}
-        ${QGOMAINWINDOW_QRC}
-        )
-    ELSE( APPLE )
-#  here will need to differenciate windows to avoid command window
-      ADD_EXECUTABLE(
-        gofigure
-        gofigure.cxx
-        ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/itkQt/itkQtProgressBar.cxx
-        ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/vtkLSM/vtkLSMReader.cxx
-        ${QGOMAINWINDOW_SRC}
-        ${QGOMAINWINDOW_MOC_SRC}
-        ${QGOMAINWINDOW_QRC}
-        )
-    ENDIF( APPLE ) 
-
-    TARGET_LINK_LIBRARIES( gofigure
-      QMegaVTKAddOn2
-      ${QT_LIBRARIES}
-      QVTK
-      ITKCommon
-      ITKIO
-      ITKBasicFilters
-      ITKNumerics
-      vtkImaging
-      )
-
-#     ADD_TEST( gofigure_TEST ${CXX_TEST_PATH}/gofigure )
+    SUBDIRS( Code )
 
     INCLUDE( CTest )
 
