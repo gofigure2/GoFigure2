@@ -1,4 +1,6 @@
 SET( EXAMPLES_QT_NOT_REQUIRED 
+  3DLsmSerie2mha
+  MegaCapture2mha
   lsm2jpg 
   lsm2vtk
   lsm2mha )
