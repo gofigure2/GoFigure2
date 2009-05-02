@@ -726,16 +726,17 @@ void QGoMainWindow::DisplayImage( const QString& iTag )
   QImagePageViewTracer* myPageView =
     dynamic_cast<QImagePageViewTracer*>( m_PageView.last() );
   if( myPageView )
-  {
+    {
     myPageView->SetImage( m_VTKImage.last() );
-  }
+    }
 
   int idx = this->CentralImageTabWidget->addTab( m_PageView.last(), iTag );
   this->CentralImageTabWidget->setCurrentIndex( idx );
 }
 
 // *************************************************************************
-void QGoMainWindow::OpenAndDisplayLSMFile( const QString& iTag,
+void QGoMainWindow::OpenAndDisplayLSMFile( 
+  const QString& iTag,
   const int& timePoint,
   const bool& ComposeChannels )
 {

@@ -42,7 +42,6 @@
 
 // ALEX: Have to use decorator pattern here
 #include "QImagePageViewTracer.h"
-//#include "QColorImagePageView.h"
 #include "itkImageToVTKImageFilter.h"
 #include "itkQtProgressBar.h"
 #include "itkQtAdaptor.h"
@@ -77,7 +76,6 @@ public:
 
 protected slots:
   void on_actionOpen_activated( );
-//   void on_actionSave_activated();
   void on_actionClose_activated( );
   void on_actionClose_all_activated( );
   void on_actionQuit_activated( );
@@ -134,7 +132,6 @@ protected:
 
   /** \brief Quad View*/
   QVector< QWidget* > m_PageView;
-  // QVector< QImagePageViewTracer* > m_PageView;
 
   /** \brief Convert itk::Image format to vtkImageData */
   QVector< VTKConvertImagePointer > m_Convert;
@@ -190,11 +187,9 @@ private:
   QGoMainWindow operator = ( const QGoMainWindow& );
 
   void DisplayInTab( vtkImageData* myImage, const int& TabIndex );
-//   void OpenLSMFile( const QString& iTag, const int& timePoint,
-//   const bool ComposeChannels );
   void OpenAndDisplayLSMFile( const QString& iTag,
-    const int& timePoint,
-    const bool& ComposeChannels );
+  const int& timePoint,
+  const bool& ComposeChannels );
 
 };
 #endif

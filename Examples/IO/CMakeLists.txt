@@ -12,6 +12,8 @@ FOREACH( var ${EXAMPLES_QT_NOT_REQUIRED} )
     ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/vtkLSM/vtkLSMReader.cxx )
 
   TARGET_LINK_LIBRARIES( ${var}
+    ITKCommon 
+    ITKIO
     vtkIO
     vtkImaging
     vtkFiltering

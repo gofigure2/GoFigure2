@@ -28,16 +28,13 @@ int main( int argc, char** argv )
   connector->Update();
 
   vtkImageData* image = connector->GetOutput();
-  //   image->SetExtent( 0, size[0], 0, size[1], 0, size[2] );
 
   QApplication app(argc, argv);
   QImagePageViewTracer form;
   form.SetImage( image );
   form.SetBackgroundColor( 0., 0., 0. );
-//   form.FullScreenView1();
   app.setMainWidget( &form );
   form.show( );
-  //form.SetView4ToVolumeRenderingMode();
 
   return app.exec();
 }

@@ -7,7 +7,7 @@
 // usage <LsmSerie2Mha> in_file out_file timepoint channel
 int main( int argc, char * argv[] ) 
 {
-  if( argc < 4 ) return EXIT_FAILURE;
+  if( argc < 5 ) return EXIT_FAILURE;
 
   try
     {
@@ -33,19 +33,19 @@ int main( int argc, char * argv[] )
     }
   catch( const itk::ExceptionObject& e )
     {
-    std::cerr << "3DLsmSerieTest caught an ITK exception: " << std::endl;
+    std::cerr << "3DLsmSerie2mha caught an ITK exception: " << std::endl;
     e.Print( std::cerr);
     return EXIT_FAILURE;
     }
   catch( const std::exception& e )
     {
-	std::cerr << "3DLsmSerieTest caught an std exception: " << std::endl;
+	std::cerr << "3DLsmSerie2mha caught an std exception: " << std::endl;
 	std::cerr << e.what() << std::endl;
 	return EXIT_FAILURE;
     }
   catch( ... )
     {
-    std::cerr << "3DLsmSerieTest caught an unknown exception!" << std::endl;
+    std::cerr << "3DLsmSerie2mha caught an unknown exception!" << std::endl;
     return EXIT_FAILURE;
     }
   return EXIT_SUCCESS;

@@ -61,12 +61,10 @@ int main( int argc, char** argv )
   }
 
   app.setMainWidget( &form );
-  //maximizeMainWindow(form);
 
   form.show( );
 
   splash->showMessage("Application ready");
- // app.processEvents();
   splash->finish(&form);
   delete splash;
 
@@ -80,16 +78,13 @@ void maximizeMainWindow(QGoMainWindow& form1)
   Screen=QApplication::desktop();
   
   QRect Info;
-  Info=Screen->screenGeometry();
+  Info = Screen->screenGeometry();
   int height=Info.height();
   int width=Info.width();
   int x=Info.left();
   int y=Info.top();
-  
-  std::cout<<"height  "<<height<<"  width  "<<width<<"  x  "<<x<<"  y  "<<y<<std::endl;
+   
   form1.setGeometry(10,10,width-50,height-50);
- // form1.setRect(width,height,0,0);
-  //form1.resize(width,height);
 }
 
 

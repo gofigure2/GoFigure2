@@ -1,35 +1,50 @@
 #include "itkMegaCaptureImport.h"
 #include "itkMultiFileReader.h"
 
-#include "vtkImageViewer2.h"
 #include "vtkMetaImageWriter.h"
 
 int main( int argc, char * argv[] ) 
 {
-  itk::MegaCaptureImport::Pointer  importFileInfoList = itk::MegaCaptureImport::New();
-  importFileInfoList->SetFileName( argv[1] );
-  importFileInfoList->Update();
+  if( argc < 5 ) return EXIT_FAILURE;
 
-  //  itk::MultiFileReader* reader = itk::MultiFileReader::New();
-  itk::MultiFileReader* reader = new itk::MultiFileReader;
-  reader->SetInput( importFileInfoList->GetOutput( ) );
-  reader->SetDimensionality( 2 );
-  reader->SetFileType( JPEG );
-  reader->SetMultiChannelImagesOFF();
-  reader->SetTimePoint( 20 );
-  reader->SetChannel( 0 );
-  reader->Update();
+  try
+    {
+    itk::MegaCaptureImport::Pointer  importFileInfoList = itk::MegaCaptureImport::New();
+    importFileInfoList->SetFileName( argv[1] );
+    importFileInfoList->Update();
 
-  vtkMetaImageWriter* writer = vtkMetaImageWriter::New();
-  writer->SetFileName( "Whatever.mha" );
-  writer->SetInput( reader->GetOutput() );
-  writer->Write();
+    //  itk::MultiFileReader* reader = itk::MultiFileReader::New();
+    itk::MultiFileReader* reader = new itk::MultiFileReader;
+    reader->SetInput( importFileInfoList->GetOutput( ) );
+    reader->SetDimensionality( 2 );
+    reader->SetFileType( JPEG );
+    reader->SetMultiChannelImagesOFF();
+    reader->SetTimePoint( atoi( argv[3] ) );
+    reader->SetChannel(   atoi( argv[4] ) );
+    reader->Update();
 
-  vtkImageViewer2* viewer = vtkImageViewer2::New();
-  viewer->SetInput( reader->GetOutput() );
-  viewer->SetSlice( ( viewer->GetSliceMax() - viewer->GetSliceMin() ) / 2 );
-  viewer->Render();
-
+    vtkMetaImageWriter* writer = vtkMetaImageWriter::New();
+    writer->SetFileName( argv[2] );
+    writer->SetInput( reader->GetOutput() );
+    writer->Write();
+    }   
+  catch( const itk::ExceptionObject& e )
+    {
+    std::cerr << "MegaCapture2mha caught an ITK exception: " << std::endl;
+    e.Print( std::cerr);
+    return EXIT_FAILURE;
+    }
+  catch( const std::exception& e )
+    {
+	std::cerr << "MegaCapture2mha caught an std exception: " << std::endl;
+	std::cerr << e.what() << std::endl;
+	return EXIT_FAILURE;
+    }
+  catch( ... )
+    {
+    std::cerr << "MegaCapture2mha caught an unknown exception!" << std::endl;
+    return EXIT_FAILURE;
+    }
   return EXIT_SUCCESS;
 }
 
