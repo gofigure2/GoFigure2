@@ -1,0 +1,1583 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>go_mainwindow</class>
+ <widget class="QMainWindow" name="go_mainwindow">
+  <property name="windowModality">
+   <enum>Qt::NonModal</enum>
+  </property>
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1434</width>
+    <height>826</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>GoFigure</string>
+  </property>
+  <property name="autoFillBackground">
+   <bool>true</bool>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QVBoxLayout" name="verticalLayout_8">
+    <item>
+     <widget class="QTabWidget" name="CentralImageTabWidget">
+      <property name="tabPosition">
+       <enum>QTabWidget::North</enum>
+      </property>
+      <property name="tabShape">
+       <enum>QTabWidget::Rounded</enum>
+      </property>
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
+      <property name="elideMode">
+       <enum>Qt::ElideLeft</enum>
+      </property>
+      <widget class="QWidget" name="tab">
+       <attribute name="title">
+        <string>Tab 1</string>
+       </attribute>
+      </widget>
+      <widget class="QWidget" name="tab_2">
+       <attribute name="title">
+        <string>Page</string>
+       </attribute>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1434</width>
+     <height>24</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <widget class="QMenu" name="menuOpen_Recent_Files">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="title">
+      <string>Open Recent Files</string>
+     </property>
+    </widget>
+    <addaction name="actionOpen"/>
+    <addaction name="actionSave_As"/>
+    <addaction name="actionClose"/>
+    <addaction name="actionClose_all"/>
+    <addaction name="menuOpen_Recent_Files"/>
+    <addaction name="separator"/>
+    <addaction name="actionQuit"/>
+   </widget>
+   <widget class="QMenu" name="menuView">
+    <property name="title">
+     <string>View</string>
+    </property>
+    <addaction name="actionQuad_View"/>
+    <addaction name="actionFull_screen_YZ"/>
+    <addaction name="actionFull_screen_XZ"/>
+    <addaction name="actionFull_screen_XY"/>
+    <addaction name="actionFull_screen_XYZ"/>
+    <addaction name="actionVolume_rendering_XYZ"/>
+    <addaction name="separator"/>
+    <addaction name="actionSelect"/>
+    <addaction name="actionPan"/>
+    <addaction name="actionZoom"/>
+    <addaction name="actionLookup_Table"/>
+    <addaction name="actionScale_bars"/>
+   </widget>
+   <widget class="QMenu" name="menuHelp">
+    <property name="title">
+     <string>Help</string>
+    </property>
+    <addaction name="actionAbout"/>
+    <addaction name="actionAbout_Qt"/>
+   </widget>
+   <widget class="QMenu" name="menuSegmentation">
+    <property name="title">
+     <string>Segmentation</string>
+    </property>
+    <addaction name="actionManual_Segmentation"/>
+    <addaction name="actionOne_Click_Segmentation"/>
+    <addaction name="actionKishoreSegmentation"/>
+   </widget>
+   <widget class="QMenu" name="menuTracking">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="title">
+     <string>Tracking</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menuLineage">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="title">
+     <string>Lineage</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menuProperties">
+    <property name="title">
+     <string>Properties</string>
+    </property>
+    <addaction name="actionBackground"/>
+    <addaction name="actionImage"/>
+    <addaction name="actionMesh"/>
+   </widget>
+   <widget class="QMenu" name="menuTools">
+    <property name="title">
+     <string>Tools</string>
+    </property>
+    <addaction name="actionSnapshot"/>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuView"/>
+   <addaction name="menuProperties"/>
+   <addaction name="menuSegmentation"/>
+   <addaction name="menuTracking"/>
+   <addaction name="menuLineage"/>
+   <addaction name="menuHelp"/>
+   <addaction name="menuTools"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar">
+   <property name="autoFillBackground">
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QToolBar" name="FileToolBar">
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="actionOpen"/>
+   <addaction name="actionSave_As"/>
+  </widget>
+  <widget class="QToolBar" name="ViewToolBar">
+   <property name="windowTitle">
+    <string>toolBar_2</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="actionQuad_View"/>
+   <addaction name="actionFull_screen_XY"/>
+   <addaction name="actionFull_screen_YZ"/>
+   <addaction name="actionFull_screen_XZ"/>
+   <addaction name="actionFull_screen_XYZ"/>
+  </widget>
+  <widget class="QDockWidget" name="KishoreSegDockWidget">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>202</width>
+     <height>96</height>
+    </size>
+   </property>
+   <property name="maximumSize">
+    <size>
+     <width>305</width>
+     <height>581</height>
+    </size>
+   </property>
+   <property name="floating">
+    <bool>false</bool>
+   </property>
+   <property name="features">
+    <set>QDockWidget::AllDockWidgetFeatures</set>
+   </property>
+   <property name="windowTitle">
+    <string>Geodesic Active Contour</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>1</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents_2">
+    <widget class="QToolBox" name="VoronoiSeg">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>211</width>
+       <height>381</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <weight>50</weight>
+       <italic>false</italic>
+       <bold>false</bold>
+       <underline>false</underline>
+       <strikeout>false</strikeout>
+       <kerning>true</kerning>
+      </font>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::LeftToRight</enum>
+     </property>
+     <property name="autoFillBackground">
+      <bool>false</bool>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Plain</enum>
+     </property>
+     <property name="midLineWidth">
+      <number>0</number>
+     </property>
+     <property name="currentIndex">
+      <number>2</number>
+     </property>
+     <widget class="QWidget" name="page">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>201</width>
+        <height>287</height>
+       </rect>
+      </property>
+      <attribute name="label">
+       <string>Foreground Extraction</string>
+      </attribute>
+      <widget class="QDialogButtonBox" name="ForegroundExtractionbuttonBox">
+       <property name="geometry">
+        <rect>
+         <x>30</x>
+         <y>250</y>
+         <width>152</width>
+         <height>60</height>
+        </rect>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="standardButtons">
+        <set>QDialogButtonBox::Apply|QDialogButtonBox::RestoreDefaults</set>
+       </property>
+       <property name="centerButtons">
+        <bool>false</bool>
+       </property>
+      </widget>
+      <widget class="QWidget" name="layoutWidget">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>192</width>
+         <height>261</height>
+        </rect>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout">
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_18">
+          <item>
+           <widget class="QLabel" name="thresholdFgLabel">
+            <property name="text">
+             <string>Nuclei Stain
+Threshold Min</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QSpinBox" name="thresholdFgSpinBox">
+            <property name="maximum">
+             <number>255</number>
+            </property>
+            <property name="value">
+             <number>70</number>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <item>
+           <widget class="QLabel" name="label">
+            <property name="text">
+             <string>Nuclei Stain
+Threshold Max</string>
+            </property>
+            <property name="buddy">
+             <cstring>m_NucleiTresholdSpinBox</cstring>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QSpinBox" name="m_NucleiTresholdSpinBox">
+            <property name="maximum">
+             <number>255</number>
+            </property>
+            <property name="value">
+             <number>120</number>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_2">
+          <item>
+           <widget class="QLabel" name="label_2">
+            <property name="text">
+             <string>Membrane Stain
+Threshold</string>
+            </property>
+            <property name="buddy">
+             <cstring>m_MembraneThresholdSpinBox</cstring>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QSpinBox" name="m_MembraneThresholdSpinBox">
+            <property name="maximum">
+             <number>255</number>
+            </property>
+            <property name="value">
+             <number>255</number>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_3">
+          <item>
+           <widget class="QLabel" name="label_3">
+            <property name="text">
+             <string>Correlation
+Threshold</string>
+            </property>
+            <property name="buddy">
+             <cstring>m_CorrelationThresholdSpinBox</cstring>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QSpinBox" name="m_CorrelationThresholdSpinBox">
+            <property name="maximum">
+             <number>255</number>
+            </property>
+            <property name="value">
+             <number>5</number>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_4">
+          <item>
+           <widget class="QLabel" name="label_4">
+            <property name="text">
+             <string>Average Cell
+Radius</string>
+            </property>
+            <property name="buddy">
+             <cstring>m_CellRadiusSpinBox</cstring>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QSpinBox" name="m_CellRadiusSpinBox">
+            <property name="maximum">
+             <number>255</number>
+            </property>
+            <property name="value">
+             <number>40</number>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_17">
+          <item>
+           <widget class="QLabel" name="SigmaForm">
+            <property name="text">
+             <string>Sigma Form</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QDoubleSpinBox" name="sigmaFgSpinBox">
+            <property name="value">
+             <double>2.000000000000000</double>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+     <widget class="QWidget" name="page_2">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>201</width>
+        <height>287</height>
+       </rect>
+      </property>
+      <attribute name="label">
+       <string>Feature Extraction</string>
+      </attribute>
+      <widget class="QDialogButtonBox" name="buttonBox_4">
+       <property name="geometry">
+        <rect>
+         <x>30</x>
+         <y>220</y>
+         <width>152</width>
+         <height>60</height>
+        </rect>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="standardButtons">
+        <set>QDialogButtonBox::Apply|QDialogButtonBox::RestoreDefaults</set>
+       </property>
+      </widget>
+      <widget class="QWidget" name="layoutWidget">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>202</width>
+         <height>222</height>
+        </rect>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_2">
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_9">
+          <item>
+           <widget class="QLabel" name="label_5">
+            <property name="text">
+             <string>Sigma Cell
+Stain</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QDoubleSpinBox" name="sigmaCellFeatdoubleSpinBox">
+            <property name="value">
+             <double>0.400000000000000</double>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_7">
+          <item>
+           <widget class="QLabel" name="label_7">
+            <property name="text">
+             <string>Sigma
+ Correlation Map</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QDoubleSpinBox" name="sigmaCorrFeatdoubleSpinBox">
+            <property name="value">
+             <double>0.400000000000000</double>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_6">
+          <item>
+           <widget class="QLabel" name="label_8">
+            <property name="text">
+             <string>Distance Map
+Weight</string>
+            </property>
+            <property name="buddy">
+             <cstring>spinBox_8</cstring>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QSpinBox" name="spinBox_8">
+            <property name="suffix">
+             <string>%</string>
+            </property>
+            <property name="maximum">
+             <number>100</number>
+            </property>
+            <property name="value">
+             <number>30</number>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_5">
+          <item>
+           <widget class="QLabel" name="label_9">
+            <property name="text">
+             <string>Gradient
+Weight</string>
+            </property>
+            <property name="buddy">
+             <cstring>spinBox_9</cstring>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QSpinBox" name="spinBox_9">
+            <property name="suffix">
+             <string>%</string>
+            </property>
+            <property name="prefix">
+             <string/>
+            </property>
+            <property name="maximum">
+             <number>100</number>
+            </property>
+            <property name="value">
+             <number>30</number>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_8">
+          <item>
+           <widget class="QLabel" name="label_6">
+            <property name="text">
+             <string>Gauss
+ Weight</string>
+            </property>
+            <property name="buddy">
+             <cstring>spinBox_6</cstring>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QSpinBox" name="spinBox_6">
+            <property name="suffix">
+             <string>%</string>
+            </property>
+            <property name="maximum">
+             <number>100</number>
+            </property>
+            <property name="value">
+             <number>10</number>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+     <widget class="QWidget" name="page_3">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>201</width>
+        <height>287</height>
+       </rect>
+      </property>
+      <attribute name="label">
+       <string>Level Set Evolution</string>
+      </attribute>
+      <widget class="QDialogButtonBox" name="buttonBox_3">
+       <property name="geometry">
+        <rect>
+         <x>30</x>
+         <y>260</y>
+         <width>152</width>
+         <height>60</height>
+        </rect>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="standardButtons">
+        <set>QDialogButtonBox::Apply|QDialogButtonBox::RestoreDefaults</set>
+       </property>
+      </widget>
+      <widget class="QWidget" name="layoutWidget">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>187</width>
+         <height>268</height>
+        </rect>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_3">
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_10">
+          <item>
+           <widget class="QLabel" name="label_10">
+            <property name="text">
+             <string>Max. Nb.
+Iter.</string>
+            </property>
+            <property name="buddy">
+             <cstring>spinBox_10</cstring>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QSpinBox" name="spinBox_10">
+            <property name="toolTip">
+             <string>Maximum Number Of Iterations</string>
+            </property>
+            <property name="maximum">
+             <number>1000</number>
+            </property>
+            <property name="value">
+             <number>500</number>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_11">
+          <item>
+           <widget class="QLabel" name="label_11">
+            <property name="text">
+             <string>Propagation
+Weight</string>
+            </property>
+            <property name="buddy">
+             <cstring>spinBox_11</cstring>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QSpinBox" name="spinBox_11">
+            <property name="suffix">
+             <string>%</string>
+            </property>
+            <property name="maximum">
+             <number>100</number>
+            </property>
+            <property name="value">
+             <number>3</number>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_12">
+          <item>
+           <widget class="QLabel" name="label_12">
+            <property name="text">
+             <string>Curvature
+Weight</string>
+            </property>
+            <property name="buddy">
+             <cstring>spinBox_12</cstring>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QSpinBox" name="spinBox_12">
+            <property name="suffix">
+             <string>%</string>
+            </property>
+            <property name="maximum">
+             <number>100</number>
+            </property>
+            <property name="value">
+             <number>1</number>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_13">
+          <item>
+           <widget class="QLabel" name="label_13">
+            <property name="text">
+             <string>Advection
+Weight</string>
+            </property>
+            <property name="buddy">
+             <cstring>spinBox_13</cstring>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QSpinBox" name="spinBox_13">
+            <property name="suffix">
+             <string>%</string>
+            </property>
+            <property name="maximum">
+             <number>100</number>
+            </property>
+            <property name="value">
+             <number>3</number>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_14">
+          <item>
+           <widget class="QLabel" name="label_14">
+            <property name="text">
+             <string>Max RMS
+Change</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QDoubleSpinBox" name="RMSLevelSetdoubleSpinBox">
+            <property name="decimals">
+             <number>4</number>
+            </property>
+            <property name="value">
+             <double>0.001000000000000</double>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_15">
+          <item>
+           <widget class="QLabel" name="label_15">
+            <property name="text">
+             <string>Min
+Component</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QDoubleSpinBox" name="seedLevelSetdoubleSpinBox">
+            <property name="decimals">
+             <number>2</number>
+            </property>
+            <property name="value">
+             <double>2.000000000000000</double>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </widget>
+    <widget class="QDialogButtonBox" name="m_KishoreGlobalApplyBtn">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>430</y>
+       <width>158</width>
+       <height>28</height>
+      </rect>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Apply|QDialogButtonBox::Cancel</set>
+     </property>
+    </widget>
+   </widget>
+  </widget>
+  <widget class="QDockWidget" name="ManualSegmentationDockWidget">
+   <property name="minimumSize">
+    <size>
+     <width>202</width>
+     <height>73</height>
+    </size>
+   </property>
+   <property name="windowTitle">
+    <string>Manual Segmentation</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>1</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents_3">
+    <widget class="QWidget" name="layoutWidget">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>0</y>
+       <width>49</width>
+       <height>56</height>
+      </rect>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_4">
+      <item>
+       <widget class="QRadioButton" name="ManualSegmentationOnRadioBtn">
+        <property name="text">
+         <string>On</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QRadioButton" name="ManualSegmentationOffRadioBtn">
+        <property name="text">
+         <string>Off</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QCheckBox" name="SaveContourCheckBox">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>110</y>
+       <width>121</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Save Contours</string>
+     </property>
+    </widget>
+    <widget class="QWidget" name="layoutWidget">
+     <property name="geometry">
+      <rect>
+       <x>50</x>
+       <y>140</y>
+       <width>96</width>
+       <height>58</height>
+      </rect>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_5">
+      <item>
+       <widget class="QPushButton" name="TracerReinitializeBtn">
+        <property name="text">
+         <string>Reinitialize</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="TracerValidationBtn">
+        <property name="text">
+         <string>Validate</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QWidget" name="layoutWidget">
+     <property name="geometry">
+      <rect>
+       <x>11</x>
+       <y>71</y>
+       <width>186</width>
+       <height>29</height>
+      </rect>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_16">
+      <item>
+       <widget class="QLabel" name="label_16">
+        <property name="text">
+         <string>Id</string>
+        </property>
+        <property name="buddy">
+         <cstring>IdContourBox</cstring>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QSpinBox" name="IdContourBox">
+        <property name="minimum">
+         <number>1</number>
+        </property>
+        <property name="maximum">
+         <number>10000</number>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="IdContourColorBtn">
+        <property name="autoFillBackground">
+         <bool>false</bool>
+        </property>
+        <property name="text">
+         <string>Set Color...</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+    <zorder>layoutWidget</zorder>
+    <zorder>layoutWidget</zorder>
+    <zorder>layoutWidget</zorder>
+    <zorder>SaveContourCheckBox</zorder>
+   </widget>
+  </widget>
+  <widget class="QToolBar" name="toolBar">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>22</width>
+     <height>22</height>
+    </size>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="actionVolume_rendering_XYZ"/>
+   <addaction name="actionSelect"/>
+   <addaction name="actionPan"/>
+   <addaction name="actionZoom"/>
+   <addaction name="actionSnapshot"/>
+   <addaction name="actionLookup_Table"/>
+   <addaction name="actionScale_bars"/>
+  </widget>
+  <widget class="QDockWidget" name="OneClickSegmentationDockWidget">
+   <property name="windowTitle">
+    <string>One Click</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>1</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>140</y>
+       <width>126</width>
+       <height>26</height>
+      </rect>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+    <widget class="Line" name="line">
+     <property name="geometry">
+      <rect>
+       <x>7</x>
+       <y>60</y>
+       <width>161</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+    <widget class="QWidget" name="layoutWidget">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>10</y>
+       <width>108</width>
+       <height>48</height>
+      </rect>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_7">
+      <item>
+       <widget class="QRadioButton" name="radioButton_3">
+        <property name="text">
+         <string>Chan Vese</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QRadioButton" name="radioButton_4">
+        <property name="text">
+         <string>Shape-Based</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QWidget" name="layoutWidget">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>80</y>
+       <width>170</width>
+       <height>50</height>
+      </rect>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_20">
+      <item>
+       <layout class="QVBoxLayout" name="verticalLayout_6">
+        <item>
+         <widget class="QRadioButton" name="radioButton">
+          <property name="text">
+           <string>2D</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QRadioButton" name="radioButton_2">
+          <property name="text">
+           <string>3D</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_19">
+        <item>
+         <widget class="QLabel" name="label_17">
+          <property name="text">
+           <string>Radius</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QDoubleSpinBox" name="doubleSpinBox">
+          <property name="suffix">
+           <string>um</string>
+          </property>
+          <property name="minimum">
+           <double>0.100000000000000</double>
+          </property>
+          <property name="maximum">
+           <double>6.000000000000000</double>
+          </property>
+          <property name="singleStep">
+           <double>0.100000000000000</double>
+          </property>
+          <property name="value">
+           <double>3.000000000000000</double>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </widget>
+  </widget>
+  <action name="actionOpen">
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
+   <property name="checked">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="resources/axes.qrc">
+     <normaloff>:/newPrefix/fig/document-open.png</normaloff>:/newPrefix/fig/document-open.png</iconset>
+   </property>
+   <property name="text">
+    <string>Open</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
+   </property>
+  </action>
+  <action name="actionSave_As">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="resources/axes.qrc">
+     <normaloff>:/newPrefix/fig/filesaveas.png</normaloff>:/newPrefix/fig/filesaveas.png</iconset>
+   </property>
+   <property name="text">
+    <string>Save As...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
+  </action>
+  <action name="actionQuit">
+   <property name="icon">
+    <iconset resource="resources/axes.qrc">
+     <normaloff>:/newPrefix/fig/system-quit.png</normaloff>:/newPrefix/fig/system-quit.png</iconset>
+   </property>
+   <property name="text">
+    <string>Quit</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Q</string>
+   </property>
+   <property name="visible">
+    <bool>true</bool>
+   </property>
+  </action>
+  <action name="actionNew_Tab">
+   <property name="text">
+    <string>New Tab</string>
+   </property>
+  </action>
+  <action name="actionClose">
+   <property name="text">
+    <string>Close</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+W</string>
+   </property>
+  </action>
+  <action name="actionFull_screen_XY">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="resources/axes.qrc">
+     <normaloff>:/newPrefix/fig/xy.png</normaloff>:/newPrefix/fig/xy.png</iconset>
+   </property>
+   <property name="text">
+    <string>Full-screen XY</string>
+   </property>
+  </action>
+  <action name="actionFull_screen_YZ">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="resources/axes.qrc">
+     <normaloff>:/newPrefix/fig/yz.png</normaloff>:/newPrefix/fig/yz.png</iconset>
+   </property>
+   <property name="text">
+    <string>Full-screen YZ</string>
+   </property>
+  </action>
+  <action name="actionFull_screen_XZ">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="resources/axes.qrc">
+     <normaloff>:/newPrefix/fig/zx.png</normaloff>:/newPrefix/fig/zx.png</iconset>
+   </property>
+   <property name="text">
+    <string>Full-screen XZ</string>
+   </property>
+  </action>
+  <action name="actionFull_screen_XYZ">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="resources/axes.qrc">
+     <normaloff>:/newPrefix/fig/xyz.png</normaloff>:/newPrefix/fig/xyz.png</iconset>
+   </property>
+   <property name="text">
+    <string>Full-screen (tri-planar) XYZ</string>
+   </property>
+   <property name="iconText">
+    <string>Tri-planar XYZ</string>
+   </property>
+  </action>
+  <action name="actionAbout">
+   <property name="text">
+    <string>About</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::AboutRole</enum>
+   </property>
+  </action>
+  <action name="actionAbout_Qt">
+   <property name="text">
+    <string>About Qt</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::AboutQtRole</enum>
+   </property>
+  </action>
+  <action name="actionKishoreSegmentation">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>false</bool>
+   </property>
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Geodesic Active Contour Seg.</string>
+   </property>
+  </action>
+  <action name="actionBackground">
+   <property name="text">
+    <string>Background ...</string>
+   </property>
+  </action>
+  <action name="actionImage">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Image ...</string>
+   </property>
+  </action>
+  <action name="actionMesh">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Mesh ...</string>
+   </property>
+  </action>
+  <action name="actionVolume_rendering_XYZ">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="resources/axes.qrc">
+     <normaloff>:/newPrefix/fig/VolumeRendering1.png</normaloff>:/newPrefix/fig/VolumeRendering1.png</iconset>
+   </property>
+   <property name="text">
+    <string>Volume rendering on/off</string>
+   </property>
+   <property name="iconText">
+    <string>Volume Rendering XYZ</string>
+   </property>
+  </action>
+  <action name="actionFree_Line">
+   <property name="text">
+    <string>Free-Line</string>
+   </property>
+  </action>
+  <action name="actionPolygon">
+   <property name="text">
+    <string>Polygon</string>
+   </property>
+  </action>
+  <action name="actionTranslation">
+   <property name="text">
+    <string>Translation</string>
+   </property>
+  </action>
+  <action name="actionRotation">
+   <property name="text">
+    <string>Rotation</string>
+   </property>
+  </action>
+  <action name="actionScaling">
+   <property name="text">
+    <string>Scaling</string>
+   </property>
+  </action>
+  <action name="actionMove_Node">
+   <property name="text">
+    <string>Move Node</string>
+   </property>
+  </action>
+  <action name="actionAdd_Node">
+   <property name="text">
+    <string>Add Node</string>
+   </property>
+  </action>
+  <action name="actionRemove_Node">
+   <property name="text">
+    <string>Remove Node</string>
+   </property>
+  </action>
+  <action name="actionTranslation_2">
+   <property name="text">
+    <string>Translation</string>
+   </property>
+  </action>
+  <action name="actionRotation_2">
+   <property name="text">
+    <string>Rotation</string>
+   </property>
+  </action>
+  <action name="actionScaling_2">
+   <property name="text">
+    <string>Scaling</string>
+   </property>
+  </action>
+  <action name="actionMove_node">
+   <property name="text">
+    <string>Move node</string>
+   </property>
+  </action>
+  <action name="actionAdd_node">
+   <property name="text">
+    <string>Add node</string>
+   </property>
+  </action>
+  <action name="actionDelete_node">
+   <property name="text">
+    <string>Delete node</string>
+   </property>
+  </action>
+  <action name="actionCopy">
+   <property name="text">
+    <string>Copy</string>
+   </property>
+  </action>
+  <action name="actionAdd_Contour">
+   <property name="text">
+    <string>Add Contour</string>
+   </property>
+  </action>
+  <action name="actionManual_Segmentation">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>false</bool>
+   </property>
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Manual Segmentation</string>
+   </property>
+  </action>
+  <action name="actionZoom">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="resources/axes.qrc">
+     <normaloff>:/newPrefix/fig/page-zoom.png</normaloff>:/newPrefix/fig/page-zoom.png</iconset>
+   </property>
+   <property name="text">
+    <string>Zoom</string>
+   </property>
+   <property name="iconVisibleInMenu">
+    <bool>true</bool>
+   </property>
+  </action>
+  <action name="actionLookup_Table">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="resources/axes.qrc">
+     <normaloff>:/newPrefix/fig/LookupTable.png</normaloff>:/newPrefix/fig/LookupTable.png</iconset>
+   </property>
+   <property name="text">
+    <string>Lookup Table</string>
+   </property>
+  </action>
+  <action name="actionPan">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="resources/axes.qrc">
+     <normaloff>:/newPrefix/fig/Hand.png</normaloff>:/newPrefix/fig/Hand.png</iconset>
+   </property>
+   <property name="text">
+    <string>Pan</string>
+   </property>
+  </action>
+  <action name="actionSelect">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="resources/axes.qrc">
+     <normaloff>:/newPrefix/fig/selection.png</normaloff>:/newPrefix/fig/selection.png</iconset>
+   </property>
+   <property name="text">
+    <string>Select</string>
+   </property>
+  </action>
+  <action name="actionClose_all">
+   <property name="text">
+    <string>Close all</string>
+   </property>
+  </action>
+  <action name="actionQuad_View">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="resources/axes.qrc">
+     <normaloff>:/newPrefix/fig/4views.png</normaloff>:/newPrefix/fig/4views.png</iconset>
+   </property>
+   <property name="text">
+    <string>Quad-View</string>
+   </property>
+  </action>
+  <action name="actionScale_bars">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="resources/axes.qrc">
+     <normaloff>:/newPrefix/fig/scalarbar.png</normaloff>:/newPrefix/fig/scalarbar.png</iconset>
+   </property>
+   <property name="text">
+    <string>Scalar bars</string>
+   </property>
+  </action>
+  <action name="action">
+   <property name="text">
+    <string>???</string>
+   </property>
+  </action>
+  <action name="actionOne_Click_Segmentation">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>One Click Segmentation</string>
+   </property>
+  </action>
+  <action name="actionSnapshot">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="resources/axes.qrc">
+     <normaloff>:/newPrefix/fig/camera-photo.png</normaloff>:/newPrefix/fig/camera-photo.png</iconset>
+   </property>
+   <property name="text">
+    <string>Snapshot</string>
+   </property>
+  </action>
+ </widget>
+ <tabstops>
+  <tabstop>ManualSegmentationOnRadioBtn</tabstop>
+  <tabstop>ManualSegmentationOffRadioBtn</tabstop>
+  <tabstop>IdContourBox</tabstop>
+  <tabstop>IdContourColorBtn</tabstop>
+  <tabstop>m_CellRadiusSpinBox</tabstop>
+  <tabstop>SaveContourCheckBox</tabstop>
+  <tabstop>TracerReinitializeBtn</tabstop>
+  <tabstop>TracerValidationBtn</tabstop>
+  <tabstop>buttonBox_3</tabstop>
+  <tabstop>spinBox_8</tabstop>
+  <tabstop>m_KishoreGlobalApplyBtn</tabstop>
+  <tabstop>spinBox_10</tabstop>
+  <tabstop>spinBox_11</tabstop>
+  <tabstop>spinBox_12</tabstop>
+  <tabstop>spinBox_13</tabstop>
+  <tabstop>m_NucleiTresholdSpinBox</tabstop>
+  <tabstop>spinBox_6</tabstop>
+  <tabstop>CentralImageTabWidget</tabstop>
+  <tabstop>thresholdFgSpinBox</tabstop>
+  <tabstop>sigmaFgSpinBox</tabstop>
+  <tabstop>sigmaCellFeatdoubleSpinBox</tabstop>
+  <tabstop>sigmaCorrFeatdoubleSpinBox</tabstop>
+  <tabstop>RMSLevelSetdoubleSpinBox</tabstop>
+  <tabstop>seedLevelSetdoubleSpinBox</tabstop>
+  <tabstop>m_CorrelationThresholdSpinBox</tabstop>
+  <tabstop>m_MembraneThresholdSpinBox</tabstop>
+  <tabstop>ForegroundExtractionbuttonBox</tabstop>
+  <tabstop>spinBox_9</tabstop>
+  <tabstop>buttonBox_4</tabstop>
+  <tabstop>buttonBox</tabstop>
+  <tabstop>radioButton_3</tabstop>
+  <tabstop>radioButton_4</tabstop>
+  <tabstop>radioButton</tabstop>
+  <tabstop>radioButton_2</tabstop>
+  <tabstop>doubleSpinBox</tabstop>
+ </tabstops>
+ <resources>
+  <include location="resources/axes.qrc"/>
+ </resources>
+ <connections>
+  <connection>
+   <sender>actionCopy</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>KishoreSegDockWidget</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>107</x>
+     <y>325</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionManual_Segmentation</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>ManualSegmentationDockWidget</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>107</x>
+     <y>462</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionOne_Click_Segmentation</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>OneClickSegmentationDockWidget</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>97</x>
+     <y>672</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
