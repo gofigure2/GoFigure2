@@ -53,7 +53,7 @@ CreateOutput()
          nit != m_FileNameS.end();
          nit++)
       {
-      FileInfo tempInfo;
+      GoFigureFileInfoHelper tempInfo;
       tempInfo.Filename = (*nit);
       std::string origFileName = 
         itksys::SystemTools::GetFilenameName( (*nit).c_str() );

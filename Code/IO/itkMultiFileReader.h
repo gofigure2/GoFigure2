@@ -7,7 +7,7 @@
 #include "vtkImagedata.h"
 #include "vtkImageAppend.h"
 
-#include "FileInfo.h"
+#include "GoFigureFileInfoHelper.h"
 
 enum FILETYPE
   {

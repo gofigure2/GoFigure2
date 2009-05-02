@@ -9,7 +9,7 @@
 #include <itksys/SystemTools.hxx>
 #include "itkRegularExpressionSeriesFileNames.h"
 
-#include "FileInfo.h"
+#include "GoFigureFileInfoHelper.h"
 
 namespace itk
 {
