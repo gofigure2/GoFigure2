@@ -1,7 +1,7 @@
 #ifndef __itkMultiFileReader_h__
 #define __itkMultiFileReader_h__
 
-#include "itkProcessObject.h"
+#include "itkLightProcessObject.h"
 
 #include "vtkJPEGReader.h"
 #include "vtkImagedata.h"
@@ -71,13 +71,15 @@ public:
   /** \Brief  */
   void SetDimensionality( int UserDimensionality );
 
+  int GetNumberOfTimePoints( ) const { return m_NumberOfTimePoints; };
+
   /** \Brief  */
   void SetMultiChannelImages( int value );
   void SetMultiChannelImagesON( )  { SetMultiChannelImages( 1 ); };
   void SetMultiChannelImagesOFF( ) { SetMultiChannelImages( 0 ); };
 
   /** \Brief  */
-  vtkImageData* GetOutput( ) { return( m_OutputImage ); };
+  vtkImageData* GetOutput( ) const { return( m_OutputImage ); };
 
   // Fake It. The output is not of itkDataObject type
   // so pipeline mechanism would not work.

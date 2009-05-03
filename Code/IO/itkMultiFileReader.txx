@@ -195,20 +195,79 @@ void MultiFileReader::Update( void )
       case LSM:
         {
         It = m_UpdateFileList.begin();
-        vtkLSMReader* reader = vtkLSMReader::New();
-        reader->SetFileName( (*It).Filename.c_str() );
         if( this->m_AreImagesMultiChannel )
           { 
-          // compose channels
+          vtkImageData* myImage_ch1 = vtkImageData::New();
+          vtkLSMReader* reader=vtkLSMReader::New();
+          reader->SetFileName( (*It).Filename.c_str() );
+          reader->Update();
+          int NumberOfChannels = reader->GetNumberOfChannels();
+          myImage_ch1->ShallowCopy( reader->GetOutput() );
+          reader->Delete();
+          
+          if( ( NumberOfChannels == 1 ) )
+            {      
+            m_OutputImage = myImage_ch1;
+            return;
+            }
+          
+          vtkImageData* myImage_ch2 = vtkImageData::New();
+          vtkLSMReader* reader2=vtkLSMReader::New();
+          reader2->SetFileName( (*It).Filename.c_str() );
+          reader2->SetUpdateChannel( 1 );
+          reader2->Update();
+          myImage_ch2->ShallowCopy( reader2->GetOutput() );
+          reader2->Delete();
+    
+          vtkImageData* myImage2 = vtkImageData::New();
+          vtkImageAppendComponents* appendFilter1 = vtkImageAppendComponents::New();
+          appendFilter1->AddInput( myImage_ch1 );
+          appendFilter1->AddInput( myImage_ch2 );
+          appendFilter1->Update();
+          myImage2->ShallowCopy( appendFilter1->GetOutput() );
+          appendFilter1->Delete();
+          myImage_ch2->Delete();
+
+          vtkImageData* myImage_ch3 = vtkImageData::New();
+          if( NumberOfChannels == 2 )
+            {
+            myImage_ch3->ShallowCopy( myImage_ch1 );
+            }
+          else
+            {
+            vtkLSMReader* reader3 = vtkLSMReader::New();
+            reader3->SetFileName( (*It).Filename.c_str() );
+            reader3->SetUpdateChannel( 2 );
+            reader3->Update();
+            myImage_ch3->ShallowCopy( reader3->GetOutput() );
+            reader3->Delete();
+            }
+          myImage_ch1->Delete();
+
+          vtkImageData* myImage3 = vtkImageData::New();
+          vtkImageAppendComponents* appendFilter2 = vtkImageAppendComponents::New();
+          appendFilter2->AddInput( myImage2    );
+          appendFilter2->AddInput( myImage_ch3 );
+          appendFilter2->Update();
+          myImage3->ShallowCopy( appendFilter2->GetOutput() );
+          appendFilter2->Delete();
+          myImage2->Delete();
+          myImage_ch3->Delete();
+
+          m_OutputImage = myImage3;
+          this->m_NumberOfChannels = m_OutputImage->GetNumberOfScalarComponents();
+          this->UpdateChannel();
           }
         else
-         {
-         reader->SetUpdateChannel( m_UpdateChannel );
-         reader->Update();
-         this->m_NumberOfChannels = reader->GetOutput()->GetNumberOfScalarComponents();
-         this->UpdateChannel();
-         m_OutputImage = reader->GetOutput();
-         }
+          {
+          vtkLSMReader* reader = vtkLSMReader::New();
+          reader->SetFileName( (*It).Filename.c_str() );
+          reader->SetUpdateChannel( m_UpdateChannel );
+          reader->Update();
+          this->m_NumberOfChannels = reader->GetOutput()->GetNumberOfScalarComponents();
+          this->UpdateChannel();
+          m_OutputImage = reader->GetOutput();
+          }
         break;
         }
       default:

@@ -755,6 +755,8 @@ void QGoMainWindow::OpenAndDisplayLSMFile(
 // *****************************************************************************
 void QGoMainWindow::on_actionAbout_activated( )
 {
+  // NOTE ALEX: is there anyway to link that with version definition
+  // in the cmakelist.txt?
   QString version( tr( "v0.5" ) );
 
   QString about_gofigure( tr( "GoFigure V2 \n\n" ) );

@@ -4,11 +4,15 @@
 
 int main( int argc, char** argv )
 {
+  if( argc < 3 ) return EXIT_FAILURE;
+
   QApplication app(argc, argv);
   QImagePageView4DTracer form;
   form.setMinimumSize( 800, 600 );
-  form.SetFileName( argv[1] );
   form.SetColorVizu( 0 );
+  form.SetFileTypeToSerie( );
+  form.SetSerieTypeToLsm();
+  form.SetFileName( argv[1] );
   app.setMainWidget( &form );
   form.show( );
 
