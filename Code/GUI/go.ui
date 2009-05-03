@@ -1127,7 +1127,7 @@ Component</string>
 
   <action name="actionCreate_DataBase">
    <property name="enabled">
-     <bool>false</bool>
+     <bool>true</bool>
    </property>
    <property name="text">
      <string>Create DataBase</string>

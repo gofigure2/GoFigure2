@@ -46,6 +46,9 @@
 #include "itkQtProgressBar.h"
 #include "itkQtAdaptor.h"
 #include "vtkLSMReader.h"
+// ALEX: have to make a conditional flag to check if
+// vtk has been compiled with the good drivers
+#include "CreateDataBaseHelper.h"
 
 #include <qactiongroup.h>
 #include <qvector.h>
@@ -77,7 +80,7 @@ public:
 protected slots:
   void on_actionOpen_Single_File_activated( );
   void on_actionOpen_Multiple_Files_activated( );
-  void on_actionCreate_DataBase_activated( ) {};
+  void on_actionCreate_DataBase_activated( ) { CreateDataBaseMain( "Whatever" ); };
   void on_actionImport_Dataset_in_DataBase_activated( ) {};
   void on_actionOpen_DataBase_activated( ) {};
   void on_actionClose_activated( );

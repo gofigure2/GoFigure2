@@ -1,5 +1,12 @@
 #include "CreateDataBaseHelper.h"
 
+// NOTE ALEX
+//
+// use exception for the following problems:
+// coul dnot open database
+// database with same name already exists.
+
+
 void CreateDataBaseMain( char * DBName)
 {
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
