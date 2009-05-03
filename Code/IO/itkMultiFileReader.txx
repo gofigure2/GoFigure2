@@ -1,6 +1,7 @@
 #ifndef __itkMultiFileReader_txx_
 #define __itkMultiFileReader_txx_
 
+#include "vtkImageAppendComponents.h"
 #include "vtkImageExtractComponents.h"
 #include "vtkLSMReader.h"
 
@@ -38,6 +39,10 @@ void MultiFileReader::UpdateChannel()
   if( this->m_UpdateChannel > m_NumberOfChannels )
     {
     this->m_UpdateChannel = m_NumberOfChannels;
+    }
+  if( this->m_UpdateChannel < 0 )
+    {
+    this->m_UpdateChannel = 0;
     }
   this->Modified();
   }

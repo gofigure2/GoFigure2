@@ -11,7 +11,8 @@ int main( int argc, char** argv )
   form.setMinimumSize( 800, 600 );
   form.SetColorVizu( 0 );
   form.SetFileTypeToSerie( );
-  form.SetSerieTypeToLsm();
+  form.SetSerieTypeToMegaCapture();
+  // filename must come last
   form.SetFileName( argv[1] );
   app.setMainWidget( &form );
   form.show( );
