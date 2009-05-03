@@ -50,8 +50,12 @@
 #include <vtkImageData.h>
 #include <vtkEventQtSlotConnect.h>
 
+#include "vtkViewImage3D.h"
+#include "vtkViewImage2DWithContourWidgetCollection.h"
+#include "QSplitterchild.h"
 #include "QImagePageViewTracer.h"
-#include "MegaVTK2Configure.h"
+
+#include "GoFigureFileInfoHelper.h"
 
 /**
 \class QImagePageView4DTracer
@@ -66,20 +70,26 @@ public:
   QMEGAVTKADDON2_EXPORT void SetFileName( const char* name );
   QMEGAVTKADDON2_EXPORT void SetColorVizu( const bool& value )
     { this->ColorVizu = value; };
-  QMEGAVTKADDON2_EXPORT void GetBackgroundColor( double& r, double& g, double& b )
-    { return this->Whatever->GetBackgroundColor( r, g, b ); };
-  QMEGAVTKADDON2_EXPORT double* GetBackgroundColor()
-    { return this->Whatever->GetBackgroundColor(); };
-  QMEGAVTKADDON2_EXPORT int GetCellId( ) const
-    { return this->Whatever->GetCellId(); };
-  QMEGAVTKADDON2_EXPORT int GetFullScreenView( ) const
-    { return this->Whatever->GetFullScreenView( ); };
-  QMEGAVTKADDON2_EXPORT bool GetVolumeRendering( ) const
-    { return this->Whatever->GetVolumeRendering( ); };
-  QMEGAVTKADDON2_EXPORT bool GetTracerStatus( ) const
-    { return this->Whatever->GetTracerStatus(); }
-  QMEGAVTKADDON2_EXPORT void SaveStateSplitters()
-    { return this->Whatever->SaveStateSplitters(); }
+  QMEGAVTKADDON2_EXPORT void SetFileTypeToSerie( )
+    { this->IsSerie = true; };
+  QMEGAVTKADDON2_EXPORT void SetSerieType( const int& value )
+    { 
+	if( value == 0 ) 
+	  {
+	  this->IsLsm = true;
+	  this->IsMegaCapture = false;
+	  }
+	else
+	  {
+	  this->IsLsm = false;
+	  this->IsMegaCapture = true;
+      }
+	this->IsFileListComputed = false;
+    };
+  QMEGAVTKADDON2_EXPORT void SetSerieTypeToLsm( )
+    { this->SetSerieType( 0 ); };
+  QMEGAVTKADDON2_EXPORT void SetSerieTypeToMegaCapture( )
+    { this->SetSerieType( 1 ); };
 
 public slots:
   QMEGAVTKADDON2_EXPORT void SetView( const int& value );
@@ -94,12 +104,22 @@ public slots:
     { this->Whatever->ValidateContour( iId, iColor, iSave ); };
   QMEGAVTKADDON2_EXPORT void ReinitializeContour( )
     { this->Whatever->ReinitializeContour( ); };
+  QMEGAVTKADDON2_EXPORT void SetCellId( const unsigned int& iId )
+    { this->Whatever->SetCellId( iId ); };
+  QMEGAVTKADDON2_EXPORT unsigned int GetCellId( ) const
+    { return this->Whatever->GetCellId(); };
+  QMEGAVTKADDON2_EXPORT void GetBackgroundColor( double& r, double& g, double& b )
+    { return this->Whatever->GetBackgroundColor( r, g, b ); };
+  QMEGAVTKADDON2_EXPORT double* GetBackgroundColor()
+    { return this->Whatever->GetBackgroundColor(); };
   QMEGAVTKADDON2_EXPORT void SetBackgroundColor( const double& r, const double& g, const double& b )
     { this->Whatever->SetBackgroundColor( r, g, b ); };
   QMEGAVTKADDON2_EXPORT void SetBackgroundColor( double rgb[3] )
     { this->Whatever->SetBackgroundColor( rgb ); };
   QMEGAVTKADDON2_EXPORT void SetBackgroundColor( const QColor& iColor )
     { this->Whatever->SetBackgroundColor( iColor ); };
+  QMEGAVTKADDON2_EXPORT int GetFullScreenView( ) const
+    { return this->Whatever->GetFullScreenView( ); };
   QMEGAVTKADDON2_EXPORT void SetFullScreenView( const int& iS )
     { this->Whatever->SetFullScreenView( iS ); };
   QMEGAVTKADDON2_EXPORT void quadview()
@@ -120,16 +140,6 @@ public slots:
     { this->Whatever->SetTracerON(); };
   QMEGAVTKADDON2_EXPORT void SetTracerOFF()
     { this->Whatever->SetTracerOFF(); };
-  QMEGAVTKADDON2_EXPORT void SetShowScalarBar( const bool& what )
-    { 
-    if( ( this->Image->GetNumberOfScalarComponents() == 1 ) || ( !ColorVizu ) )
-      this->Whatever->SetShowScalarBar( what ); 
-    };
-  QMEGAVTKADDON2_EXPORT void SetLookupTable( vtkLookupTable* lut )
-    {
-    if( ( this->Image->GetNumberOfScalarComponents() == 1 ) || ( !ColorVizu ) )
-      this->Whatever->SetLookupTable( lut );
-    };
 
 protected:
   QWidget*      LayOutWidget1;
@@ -138,14 +148,20 @@ protected:
   QPushButton*  button1;
   QPushButton*  button2;
 
+  void ReadMultiFile( const int& TimePoint );
   void ReadLSMFile( const int& TimePoint );
   virtual void resizeEvent( QResizeEvent* event );
 
   QImagePageViewTracer* Whatever;
+  FileListType          FileList;
   int                   NumberOfTimePoints;
   char*                 FileName;
   vtkImageData*         Image;
   bool                  ColorVizu;
+  bool                  IsSerie;
+  bool                  IsLsm;
+  bool                  IsMegaCapture;
+  bool                  IsFileListComputed;
 };
 
 #endif

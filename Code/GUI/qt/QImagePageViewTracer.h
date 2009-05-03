@@ -48,9 +48,6 @@
 
 #include <vtkImageData.h>
 #include <vtkEventQtSlotConnect.h>
-#include <qsettings.h>
-
-//#include <itkProcessObject.h>
 
 #include "vtkViewImage3D.h"
 #include "vtkViewImage2DWithContourWidgetCollection.h"
@@ -72,14 +69,15 @@ public:
 
   QMEGAVTKADDON2_EXPORT void SetImage( vtkImageData* input );
 
-//  QMEGAVTKADDON2_EXPORT template< class TImage >
-//  void SetITKImage( TImage::Pointer );
+#ifdef MegaVTK_USE_ITK
+  QMEGAVTKADDON2_EXPORT template< class TImage >
+  void SetITKImage (TImage::Pointer);
+#endif
 
   QMEGAVTKADDON2_EXPORT void setupUi( QWidget *Form );
   QMEGAVTKADDON2_EXPORT void retranslateUi(QWidget *Form);
 
   QMEGAVTKADDON2_EXPORT int GetFullScreenView( ) const;
-  QMEGAVTKADDON2_EXPORT bool GetVolumeRendering( ) const;
 
   QMEGAVTKADDON2_EXPORT QVTKWidget* GetActiveQVTKWidget( );
   QMEGAVTKADDON2_EXPORT vtkViewImage* GetActiveView();
@@ -96,7 +94,8 @@ public:
   QMEGAVTKADDON2_EXPORT void SetTag( const QString& iTag );
   QMEGAVTKADDON2_EXPORT QString GetTag( ) const;
 
-  QMEGAVTKADDON2_EXPORT int GetCellId( ) const;
+  QMEGAVTKADDON2_EXPORT void SetCellId( const unsigned int& iId );
+  QMEGAVTKADDON2_EXPORT unsigned int GetCellId( ) const;
 
   QMEGAVTKADDON2_EXPORT void SetTracerON();
   QMEGAVTKADDON2_EXPORT void SetTracerOFF();
@@ -117,8 +116,6 @@ public:
   template< class TPolyDataContainer >
   QMEGAVTKADDON2_EXPORT
   void RemoveContours( TPolyDataContainer& iContours );
-
-  QMEGAVTKADDON2_EXPORT void SaveStateSplitters();
 
 public slots:
 
@@ -194,6 +191,7 @@ protected:
 
   QString Tag;
 
+#ifdef MegaVTK_USE_ITK
   /**
      This pointer is used to store internally a reference to the
      current ITK->VTK converter, in order to prevent the image buffer
@@ -201,8 +199,9 @@ protected:
      information.
    */
   //BTX
-  //itk::ProcessObject::Pointer ImageConverter;
+  itk::ProcessObject::Pointer ImageConverter;
   //ETX
+#endif
 
   virtual void resizeEvent( QResizeEvent* event );
 //   virtual void dragEnterEvent ( QDragEnterEvent * event );
@@ -222,9 +221,8 @@ protected:
   int SnapshotId;
 
   int IsFullScreen;
-  bool IsVolumeRendering;
 
-  int CellId;
+  unsigned int CellId;
 
   bool Is2DImage;
 

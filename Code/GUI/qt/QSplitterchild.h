@@ -49,7 +49,7 @@ class QSplitterchild : public QSplitter
   Q_OBJECT
 
 public:
-  explicit QSplitterchild( QWidget* parent = 0 );
+  explicit QMEGAVTKADDON2_EXPORT QSplitterchild( QWidget* parent = 0 );
   explicit QMEGAVTKADDON2_EXPORT QSplitterchild ( Qt::Orientation orientation,
     QWidget* parent = 0 );
   QMEGAVTKADDON2_EXPORT virtual ~QSplitterchild();
@@ -60,11 +60,6 @@ public slots:
 protected:
   int prevpos;
   int previndex;
-
-private:
-  QSplitterchild( const QSplitterchild& );
-  void operator = ( const QSplitterchild& );
-
 };
 
 #endif
