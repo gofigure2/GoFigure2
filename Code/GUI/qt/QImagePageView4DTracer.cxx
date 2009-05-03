@@ -32,6 +32,7 @@
 
  =========================================================================*/
 
+#include "QImagePageViewTracer.h"
 #include "QImagePageView4DTracer.h"
 
 #include "QSplitterchild.h"
@@ -65,8 +66,11 @@
 #include <vtkCellArray.h>
 #include <vtkMath.h>
 
-#include <ctime>
+#include "itkMultiFileReader.h"
+#include "itkMegaCaptureImport.h"
+#include "itkLsm3DSerieImport.h"
 
+#include <ctime>
 
 QImagePageView4DTracer::QImagePageView4DTracer( QWidget* parent ) : QWidget( parent )
 {
@@ -100,12 +104,82 @@ QImagePageView4DTracer::QImagePageView4DTracer( QWidget* parent ) : QWidget( par
 
   this->ColorVizu = false;
   this->FileName = NULL;
+
+  this->IsSerie = false;
+  this->IsLsm = false;
+  this->IsMegaCapture = false;
+  this->IsFileListComputed = false;
 }
 
 QImagePageView4DTracer::~QImagePageView4DTracer()
 {
   delete this->Whatever;
   Image->Delete();
+}
+
+void
+QImagePageView4DTracer::
+ReadMultiFile( const int& TimePoint )
+{
+  itk::MultiFileReader* reader = new itk::MultiFileReader;
+
+  if( ! this->IsFileListComputed )
+    {
+    if( this->IsLsm )
+      {
+      itk::Lsm3DSerieImport::Pointer  importFileInfoList = itk::Lsm3DSerieImport::New();
+	  importFileInfoList->SetFileName( this->FileName );
+      importFileInfoList->SetGroupId( 1 );
+      importFileInfoList->Update();
+	  // NOTE ALEX: the pointer might be wrong when the object go out of scope
+	  // because it's not a smart pointer
+	  this->FileList = *(importFileInfoList->GetOutput());
+	  }
+	if( this->IsMegaCapture )
+	  {
+	  itk::MegaCaptureImport::Pointer  importFileInfoList = itk::MegaCaptureImport::New();
+      importFileInfoList->SetFileName( this->FileName );
+      importFileInfoList->Update();
+      this->FileList = *(importFileInfoList->GetOutput());
+	  }
+    }
+
+  //  itk::MultiFileReader* reader = itk::MultiFileReader::New();
+  reader->SetInput( &(this->FileList) );
+  if( this->IsLsm )
+    {
+    reader->SetDimensionality( 3 );
+    reader->SetFileType( LSM );
+    reader->SetChannel( 0 );
+    }
+  if( this->IsMegaCapture )
+    { 
+	reader->SetDimensionality( 2 );
+    reader->SetFileType( JPEG );
+    }
+  if( this->ColorVizu ) 
+	{
+    reader->SetMultiChannelImagesON();
+	}
+  else
+    {
+    reader->SetMultiChannelImagesOFF();
+    }
+  reader->SetTimePoint( TimePoint );
+  reader->Update();
+
+  this->slider1->setMinimum( 0 );
+  this->NumberOfTimePoints = reader->GetNumberOfTimePoints();
+  if( this->NumberOfTimePoints > 1)
+    {
+    this->slider1->setMaximum( this->NumberOfTimePoints );
+    }
+  else
+    {
+    this->LayOut1->removeWidget( this->slider1 );
+    }
+
+  this->Image = reader->GetOutput();
 }
 
 void
@@ -131,10 +205,14 @@ QImagePageView4DTracer::SetFileName(const char* name )
     }
 
   this->SetView( 0 );
+  this->IsFileListComputed = false;
 }
 
 void QImagePageView4DTracer::ReadLSMFile( const int& TimePoint )
 {
+  // have to redirect that to a Multifile reader with only one file,
+  // so we will have less duplicated code, and less maintenance.
+  
   vtkImageData* myImage_ch1 = vtkImageData::New();
   vtkLSMReader* reader=vtkLSMReader::New();
   reader->SetFileName( this->FileName );
@@ -157,25 +235,25 @@ void QImagePageView4DTracer::ReadLSMFile( const int& TimePoint )
 
   vtkImageData* myImage_ch2;
   if( ( NumberOfChannels == 1 ) || ( !ColorVizu ) )
-  {
-    if( this->Image )
     {
+    if( this->Image )
+      {
       this->Image->Delete();
-    }
+      }
     this->Image = myImage_ch1;
     return;
     }
   else
-  {
+    {
     myImage_ch2 = vtkImageData::New();
-      vtkLSMReader* reader2=vtkLSMReader::New();
+    vtkLSMReader* reader2=vtkLSMReader::New();
     reader2->SetFileName( this->FileName );
     reader2->SetUpdateTimePoint( TimePoint );
     reader2->SetUpdateChannel( 1 );
     reader2->Update();
     myImage_ch2->ShallowCopy( reader2->GetOutput() );
     reader2->Delete();
-  }
+    }
 
   vtkImageData* myImage2 = vtkImageData::New();
   vtkImageAppendComponents* appendFilter1 = vtkImageAppendComponents::New();
@@ -188,11 +266,11 @@ void QImagePageView4DTracer::ReadLSMFile( const int& TimePoint )
 
   vtkImageData* myImage_ch3 = vtkImageData::New();
   if( NumberOfChannels == 2 )
-  {
+    {
     myImage_ch3->ShallowCopy( myImage_ch1 );
-  }
+    }
   else
-  {
+    {
     vtkLSMReader* reader3=vtkLSMReader::New();
     reader3->SetFileName( this->FileName );
     reader3->SetUpdateTimePoint( TimePoint );
@@ -200,7 +278,7 @@ void QImagePageView4DTracer::ReadLSMFile( const int& TimePoint )
     reader3->Update();
     myImage_ch3->ShallowCopy( reader3->GetOutput() );
     reader3->Delete();
-  }
+    }
   myImage_ch1->Delete();
 
   vtkImageData* myImage3 = vtkImageData::New();
@@ -214,9 +292,9 @@ void QImagePageView4DTracer::ReadLSMFile( const int& TimePoint )
   myImage_ch3->Delete();
 
   if( this->Image )
-  {
+    {
     this->Image->Delete();
-  }
+    }
 
   this->Image = myImage3;
 }
@@ -227,7 +305,14 @@ void QImagePageView4DTracer::SetView( const int& value )
   double time;
 
   start = clock();
-  this->ReadLSMFile( value );
+  if( this->IsSerie )
+    {
+    this->ReadMultiFile( value );
+    }
+  else
+    {
+    this->ReadLSMFile( value );
+    }
   finish = clock();
   time = (double(finish)-double(start))/CLOCKS_PER_SEC;
   std::cout << "Reading Time: " << time << "s" << std::endl;
