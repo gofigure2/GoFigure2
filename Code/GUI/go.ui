@@ -70,10 +70,18 @@
       <string>Open Recent Files</string>
      </property>
     </widget>
-    <addaction name="actionOpen"/>
-    <addaction name="actionSave_As"/>
+    <addaction name="actionOpen_Single_File"/>
+    <addaction name="actionOpen_Multiple_Files"/>
+    <addaction name="separator"/>
+    <addaction name="actionCreate_DataBase"/>
+    <addaction name="actionImport_Dataset_in_DataBase"/>
+    <addaction name="actionOpen_DataBase"/>
+    <addaction name="separator"/>
+    <addaction name="actionSave_Single_File_As"/>
+    <addaction name="actionSave_Multiple_Files_As"/>
     <addaction name="actionClose"/>
     <addaction name="actionClose_all"/>
+    <addaction name="separator"/>
     <addaction name="menuOpen_Recent_Files"/>
     <addaction name="separator"/>
     <addaction name="actionQuit"/>
@@ -164,8 +172,8 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="actionOpen"/>
-   <addaction name="actionSave_As"/>
+   <addaction name="actionOpen_Single_File"/>
+   <addaction name="actionSave_Single_File_As"/>
   </widget>
   <widget class="QToolBar" name="ViewToolBar">
    <property name="windowTitle">
@@ -277,7 +285,7 @@
         <bool>false</bool>
        </property>
       </widget>
-      <widget class="QWidget" name="layoutWidget">
+      <widget class="QWidget" name="layoutWidget9">
        <property name="geometry">
         <rect>
          <x>0</x>
@@ -458,7 +466,7 @@ Radius</string>
         <set>QDialogButtonBox::Apply|QDialogButtonBox::RestoreDefaults</set>
        </property>
       </widget>
-      <widget class="QWidget" name="layoutWidget">
+      <widget class="QWidget" name="layoutWidget2">
        <property name="geometry">
         <rect>
          <x>0</x>
@@ -624,7 +632,7 @@ Weight</string>
         <set>QDialogButtonBox::Apply|QDialogButtonBox::RestoreDefaults</set>
        </property>
       </widget>
-      <widget class="QWidget" name="layoutWidget">
+      <widget class="QWidget" name="layoutWidget3">
        <property name="geometry">
         <rect>
          <x>0</x>
@@ -826,7 +834,7 @@ Component</string>
     <number>1</number>
    </attribute>
    <widget class="QWidget" name="dockWidgetContents_3">
-    <widget class="QWidget" name="layoutWidget">
+    <widget class="QWidget" name="layoutWidget4">
      <property name="geometry">
       <rect>
        <x>20</x>
@@ -868,7 +876,7 @@ Component</string>
       <string>Save Contours</string>
      </property>
     </widget>
-    <widget class="QWidget" name="layoutWidget">
+    <widget class="QWidget" name="layoutWidget5">
      <property name="geometry">
       <rect>
        <x>50</x>
@@ -894,7 +902,7 @@ Component</string>
       </item>
      </layout>
     </widget>
-    <widget class="QWidget" name="layoutWidget">
+    <widget class="QWidget" name="layoutWidget6">
      <property name="geometry">
       <rect>
        <x>11</x>
@@ -936,9 +944,9 @@ Component</string>
       </item>
      </layout>
     </widget>
-    <zorder>layoutWidget</zorder>
-    <zorder>layoutWidget</zorder>
-    <zorder>layoutWidget</zorder>
+    <zorder>layoutWidget4</zorder>
+    <zorder>layoutWidget5</zorder>
+    <zorder>layoutWidget6</zorder>
     <zorder>SaveContourCheckBox</zorder>
    </widget>
   </widget>
@@ -1003,7 +1011,7 @@ Component</string>
       <enum>Qt::Horizontal</enum>
      </property>
     </widget>
-    <widget class="QWidget" name="layoutWidget">
+    <widget class="QWidget" name="layoutWidget7">
      <property name="geometry">
       <rect>
        <x>10</x>
@@ -1032,7 +1040,7 @@ Component</string>
       </item>
      </layout>
     </widget>
-    <widget class="QWidget" name="layoutWidget">
+    <widget class="QWidget" name="layoutWidget8">
      <property name="geometry">
       <rect>
        <x>10</x>
@@ -1097,39 +1105,81 @@ Component</string>
     </widget>
    </widget>
   </widget>
-  <action name="actionOpen">
-   <property name="checkable">
-    <bool>false</bool>
-   </property>
-   <property name="checked">
-    <bool>false</bool>
-   </property>
+   
+  <action name="actionOpen_Single_File">
    <property name="icon">
     <iconset resource="resources/axes.qrc">
      <normaloff>:/newPrefix/fig/document-open.png</normaloff>:/newPrefix/fig/document-open.png</iconset>
    </property>
    <property name="text">
-    <string>Open</string>
+    <string>Open Single File</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+O</string>
    </property>
   </action>
-  <action name="actionSave_As">
+   
+  <action name="actionOpen_Multiple_Files">
+   <property name="text">
+     <string>Open Multiple Files</string>
+   </property>
+  </action>
+
+  <action name="actionCreate_DataBase">
    <property name="enabled">
-    <bool>true</bool>
+     <bool>false</bool>
+   </property>
+   <property name="text">
+     <string>Create DataBase</string>
+   </property>
+  </action>
+
+  <action name="actionImport_Dataset_in_DataBase">
+   <property name="enabled">
+     <bool>false</bool>
+   </property>
+   <property name="text">
+     <string>Import Dataset in DB</string>
+   </property>
+  </action>
+   
+  <action name="actionOpen_DataBase">
+   <property name="enabled">
+     <bool>false</bool>
+   </property>
+   <property name="text">
+     <string>Open DataBase</string>
+   </property>
+  </action>
+
+  <action name="actionSave_Multiple_Files_As">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+     <string>Save Multiple Files</string>
+   </property>
+  </action>
+   
+  <action name="actionSave_Single_File_As">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="visible">
+     <bool>true</bool>
    </property>
    <property name="icon">
     <iconset resource="resources/axes.qrc">
      <normaloff>:/newPrefix/fig/filesaveas.png</normaloff>:/newPrefix/fig/filesaveas.png</iconset>
    </property>
    <property name="text">
-    <string>Save As...</string>
+    <string>Save Single File As...</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+S</string>
    </property>
   </action>
+   
   <action name="actionQuit">
    <property name="icon">
     <iconset resource="resources/axes.qrc">
@@ -1145,11 +1195,13 @@ Component</string>
     <bool>true</bool>
    </property>
   </action>
+   
   <action name="actionNew_Tab">
    <property name="text">
     <string>New Tab</string>
    </property>
   </action>
+   
   <action name="actionClose">
    <property name="text">
     <string>Close</string>
@@ -1158,6 +1210,7 @@ Component</string>
     <string>Ctrl+W</string>
    </property>
   </action>
+   
   <action name="actionFull_screen_XY">
    <property name="checkable">
     <bool>true</bool>
@@ -1170,6 +1223,7 @@ Component</string>
     <string>Full-screen XY</string>
    </property>
   </action>
+   
   <action name="actionFull_screen_YZ">
    <property name="checkable">
     <bool>true</bool>
@@ -1182,6 +1236,7 @@ Component</string>
     <string>Full-screen YZ</string>
    </property>
   </action>
+   
   <action name="actionFull_screen_XZ">
    <property name="checkable">
     <bool>true</bool>
@@ -1194,6 +1249,7 @@ Component</string>
     <string>Full-screen XZ</string>
    </property>
   </action>
+   
   <action name="actionFull_screen_XYZ">
    <property name="checkable">
     <bool>true</bool>
@@ -1212,6 +1268,7 @@ Component</string>
     <string>Tri-planar XYZ</string>
    </property>
   </action>
+   
   <action name="actionAbout">
    <property name="text">
     <string>About</string>
@@ -1220,6 +1277,7 @@ Component</string>
     <enum>QAction::AboutRole</enum>
    </property>
   </action>
+   
   <action name="actionAbout_Qt">
    <property name="text">
     <string>About Qt</string>
@@ -1228,6 +1286,7 @@ Component</string>
     <enum>QAction::AboutQtRole</enum>
    </property>
   </action>
+   
   <action name="actionKishoreSegmentation">
    <property name="checkable">
     <bool>true</bool>
@@ -1242,6 +1301,7 @@ Component</string>
     <string>Geodesic Active Contour Seg.</string>
    </property>
   </action>
+   
   <action name="actionBackground">
    <property name="text">
     <string>Background ...</string>
@@ -1263,6 +1323,7 @@ Component</string>
     <string>Mesh ...</string>
    </property>
   </action>
+   
   <action name="actionVolume_rendering_XYZ">
    <property name="checkable">
     <bool>true</bool>
@@ -1281,66 +1342,79 @@ Component</string>
     <string>Volume Rendering XYZ</string>
    </property>
   </action>
+   
   <action name="actionFree_Line">
    <property name="text">
     <string>Free-Line</string>
    </property>
   </action>
+   
   <action name="actionPolygon">
    <property name="text">
     <string>Polygon</string>
    </property>
   </action>
+   
   <action name="actionTranslation">
    <property name="text">
     <string>Translation</string>
    </property>
   </action>
+   
   <action name="actionRotation">
    <property name="text">
     <string>Rotation</string>
    </property>
   </action>
+   
   <action name="actionScaling">
    <property name="text">
     <string>Scaling</string>
    </property>
   </action>
+   
   <action name="actionMove_Node">
    <property name="text">
     <string>Move Node</string>
    </property>
   </action>
+   
   <action name="actionAdd_Node">
    <property name="text">
     <string>Add Node</string>
    </property>
   </action>
+   
   <action name="actionRemove_Node">
    <property name="text">
     <string>Remove Node</string>
    </property>
   </action>
+   
   <action name="actionTranslation_2">
    <property name="text">
     <string>Translation</string>
    </property>
   </action>
+   
   <action name="actionRotation_2">
    <property name="text">
     <string>Rotation</string>
    </property>
   </action>
+   
   <action name="actionScaling_2">
    <property name="text">
     <string>Scaling</string>
    </property>
   </action>
+   
   <action name="actionMove_node">
    <property name="text">
     <string>Move node</string>
    </property>
   </action>
+   
   <action name="actionAdd_node">
    <property name="text">
     <string>Add node</string>

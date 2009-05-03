@@ -57,7 +57,7 @@ int main( int argc, char** argv )
   if( argc == 2 )
   {
     splash->showMessage("Image loading...please wait");
-    form.SetFileName( argv[1] );
+    form.SetFileName( argv[1], false );
   }
 
   app.setMainWidget( &form );

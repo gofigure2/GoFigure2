@@ -146,7 +146,7 @@ QGoMainWindow::~QGoMainWindow()
 }
 
 // *************************************************************************
-void QGoMainWindow::on_actionOpen_activated( )
+void QGoMainWindow::on_actionOpen_Single_File_activated( )
 {
   QString filename = QFileDialog::getOpenFileName( 
     this, 
@@ -154,10 +154,24 @@ void QGoMainWindow::on_actionOpen_activated( )
     tr( "Images (*.png *.bmp *.jpg *.jpeg *.tiff *.mha *.mhd *.img *.lsm)" )
     );
  
-  if( !filename.isEmpty() )
-  {
-    SetFileName( filename );
-  }  
+  if( !filename.isEmpty( ) )
+    {
+    SetFileName( filename, false );
+    }  
+}
+
+void QGoMainWindow::on_actionOpen_Multiple_Files_activated( )
+{
+  QString filename = QFileDialog::getOpenFileName( 
+    this, 
+    tr( "Select one Image from the Dataset" ),"",
+    tr( "Images (*.jpg *.jpeg *.lsm)" )
+    );
+ 
+  if( !filename.isEmpty( ) )
+    {
+    SetFileName( filename, true );
+    }  
 }
 
 // *****************************************************************************
@@ -515,19 +529,21 @@ void QGoMainWindow::SetContourTracerOff(const bool& iChecked)
 // }
 
 
-// *************************************************************************
+//-----------------------------------------------------------------------------
 void QGoMainWindow::ChangeLookupTable( )
 {
   int idx = this->CentralImageTabWidget->currentIndex();
   QImagePageViewTracer* myPageView =
     dynamic_cast<QImagePageViewTracer*>( m_PageView[idx] );
   if( myPageView )
-  {
+    {
     myPageView->SetLookupTable( this->m_LUTDialog->GetLookupTable() );
-  }
+    }
 }
+//-----------------------------------------------------------------------------
 
-// *************************************************************************
+
+//-----------------------------------------------------------------------------
 void QGoMainWindow::SetColorForGivenId( const bool& iSelect )
 {
   unsigned int cell_id = IdContourBox->value();
@@ -536,9 +552,9 @@ void QGoMainWindow::SetColorForGivenId( const bool& iSelect )
   QColor color;
 
   if( cell_id < 7 )
-  {
-    switch( cell_id )
     {
+    switch( cell_id )
+      {
       default:
       case 1:
         color.setHsv( 0, 255, 255 );
@@ -558,12 +574,12 @@ void QGoMainWindow::SetColorForGivenId( const bool& iSelect )
       case 6:
         color.setHsv( 300, 255, 255 );
         break;
+      }
     }
-  }
   else
-  {
-    switch( cell_id % 6 )
     {
+    switch( cell_id % 6 )
+      {
       case 0:
         color.setHsv( random.lrand32( 0, 60 ),
           random.lrand32( 0, 255 ),
@@ -594,41 +610,45 @@ void QGoMainWindow::SetColorForGivenId( const bool& iSelect )
           random.lrand32( 0, 255 ),
           random.lrand32( 0, 255 ) );
         break;
+      }
     }
-  }
 
   if( iSelect )
-  {
+    {
     m_IdColorMap[ cell_id ] = QColorDialog::getColor( color, this );
-  }
+    }
   else
-  {
+    {
     m_IdColorMap[ cell_id ] = color;
-  }
-
+    }
 }
+//-----------------------------------------------------------------------------
 
-// *************************************************************************
+
+//-----------------------------------------------------------------------------
 void QGoMainWindow::ValidateContourTracer( )
 {
   int idx = this->CentralImageTabWidget->currentIndex();
   QImagePageViewTracer* myPageView =
     dynamic_cast<QImagePageViewTracer*>( m_PageView[idx] );
   if( myPageView )
-  {
+    {
     ValidateContourTracerHelper< QImagePageViewTracer >( myPageView );
-  }
+    }
   else
-  {
+    {
     QImagePageView4DTracer* myPageView2 =
       dynamic_cast<QImagePageView4DTracer*>( m_PageView[idx] );
     if( myPageView2 )
-    {
+      {
       ValidateContourTracerHelper< QImagePageView4DTracer >( myPageView2 );
+      }
     }
-  }
 }
+//-----------------------------------------------------------------------------
 
+
+//-----------------------------------------------------------------------------
 template< class T >
 void QGoMainWindow::ValidateContourTracerHelper( T* PageView )
 {
@@ -636,62 +656,79 @@ void QGoMainWindow::ValidateContourTracerHelper( T* PageView )
   PageView->SetCellId( cell_id );
 
   if( m_IdColorMap.find( cell_id ) == m_IdColorMap.end() )
-  {
+    {
     SetColorForGivenId( false );
-  }
+    }
   //DATABASE
   PageView->ValidateContour(
     cell_id,
     m_IdColorMap[ cell_id ],
     this->SaveContourCheckBox->isChecked() );
 }
+//-----------------------------------------------------------------------------
 
 
-
-// *************************************************************************
+//-----------------------------------------------------------------------------
 void QGoMainWindow::ReinitializeContourTracer()
 {
   int idx = this->CentralImageTabWidget->currentIndex();
   QImagePageViewTracer* myPageView =
     dynamic_cast<QImagePageViewTracer*>( m_PageView[idx] );
   if( myPageView )
-  {
+    {
     myPageView->ReinitializeContour();
-  }
+    }
   else
-  {
+    {
     QImagePageView4DTracer* myPageView2 =
       dynamic_cast<QImagePageView4DTracer*>( m_PageView[idx] );
     if( myPageView2 )
-    {
+      {
       myPageView2->ReinitializeContour();
+      }
     }
-  }
 }
+//-----------------------------------------------------------------------------
 
 
-// *************************************************************************
-void QGoMainWindow::SetFileName( const QString& iFile )
+//-----------------------------------------------------------------------------
+void QGoMainWindow::SetFileName( const QString& iFile, const bool& IsSerie )
 {
   if( QFile::exists( iFile ) )
-  {
+    {
     this->setCurrentFile( iFile );
     // parse extension
     QFileInfo fi(iFile);
     QString ext = fi.suffix();
-    if( ext.compare( "lsm", Qt::CaseInsensitive ) == 0 )
-    {
-      this->OpenAndDisplayLSMFile( m_CurrentFile, 0, true );
+	if( IsSerie )
+	  {
+      if( ext.compare( "lsm", Qt::CaseInsensitive ) == 0 )
+	    {
+        this->OpenAndDisplay( m_CurrentFile, IsSerie, 0 );
+	    }
+	  else
+	    {
+		this->OpenAndDisplay( m_CurrentFile, IsSerie, 1 );
+	    }
+	  }
+	else
+	  {
+      if( ext.compare( "lsm", Qt::CaseInsensitive ) == 0 )
+        {
+        this->OpenAndDisplay( m_CurrentFile, IsSerie, 0 );
+        }
+      else // NOTE ALEX: last case to be unified
+        {
+        this->OpenImage( m_CurrentFile );
+        this->DisplayImage( m_CurrentFile );
+        }
+      }
     }
-    else
-    {
-      this->OpenImage( m_CurrentFile );
-      this->DisplayImage( m_CurrentFile );
-    }
-  }
 }
+//-----------------------------------------------------------------------------
 
-// *************************************************************************
+
+//-----------------------------------------------------------------------------
 void QGoMainWindow::OpenImage( const QString& iFile )
 {
   typedef itk::ImageFileReader< ImageType > ImageReaderType;
@@ -708,10 +745,11 @@ void QGoMainWindow::OpenImage( const QString& iFile )
 
   m_ITKImage.push_back( reader->GetOutput() );
   m_ITKImage.last()->DisconnectPipeline();
-
 }
+//-----------------------------------------------------------------------------
 
-// *************************************************************************
+
+//-----------------------------------------------------------------------------
 void QGoMainWindow::DisplayImage( const QString& iTag )
 {
   m_Convert.push_back( VTKConvertImageType::New() );
@@ -733,26 +771,34 @@ void QGoMainWindow::DisplayImage( const QString& iTag )
   int idx = this->CentralImageTabWidget->addTab( m_PageView.last(), iTag );
   this->CentralImageTabWidget->setCurrentIndex( idx );
 }
+//-----------------------------------------------------------------------------
 
-// *************************************************************************
-void QGoMainWindow::OpenAndDisplayLSMFile( 
-  const QString& iTag,
-  const int& timePoint,
-  const bool& ComposeChannels )
+
+//-----------------------------------------------------------------------------
+void QGoMainWindow::OpenAndDisplay( 
+  const QString& iTag, 
+  const bool& IsSerie, 
+  const int& Type )
 {
-  (void)(timePoint);
-  (void)(ComposeChannels);
-
   m_PageView.push_back( new QImagePageView4DTracer );
   QImagePageView4DTracer* myPageView;
   myPageView = static_cast< QImagePageView4DTracer*>( m_PageView.last() );
+  if( IsSerie )
+    {
+	myPageView->SetFileTypeToSerie( );
+    if( Type == 0 ) myPageView->SetSerieTypeToLsm( );
+    if( Type == 1 ) myPageView->SetSerieTypeToMegaCapture( );
+    }
   myPageView->SetFileName( iTag.toAscii( ).data( ) );
 
   int idx = this->CentralImageTabWidget->addTab( m_PageView.last(), iTag );
   this->CentralImageTabWidget->setCurrentIndex( idx );
 }
+//-----------------------------------------------------------------------------
 
-// *****************************************************************************
+
+
+//-----------------------------------------------------------------------------
 void QGoMainWindow::on_actionAbout_activated( )
 {
   // NOTE ALEX: is there anyway to link that with version definition
@@ -849,9 +895,9 @@ void QGoMainWindow::openRecentFile()
 {
   QAction* action = qobject_cast< QAction* >( sender() );
   if( action )
-  {
-    SetFileName(action->data().toString());
-  }
+    {
+    SetFileName( action->data().toString(), false );
+    }
 }
 
 

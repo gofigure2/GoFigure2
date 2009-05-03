@@ -71,11 +71,15 @@ public:
   QGoMainWindow( );
   virtual ~QGoMainWindow();
 
-  void SetFileName( const QString& iFileName );
+  void SetFileName( const QString& iFileName, const bool& IsSerie  );
 
 
 protected slots:
-  void on_actionOpen_activated( );
+  void on_actionOpen_Single_File_activated( );
+  void on_actionOpen_Multiple_Files_activated( );
+  void on_actionCreate_DataBase_activated( ) {};
+  void on_actionImport_Dataset_in_DataBase_activated( ) {};
+  void on_actionOpen_DataBase_activated( ) {};
   void on_actionClose_activated( );
   void on_actionClose_all_activated( );
   void on_actionQuit_activated( );
@@ -125,9 +129,13 @@ protected:
   template< class T > void SetFullScreen( const int & ViewID, T* PageView );
   template< class T > void SetRendering( T* myPageView );
 
+  /** \brief */
   void SetFullScreenDispatch( const int & ViewID );
 
+  /** \brief */
   QVector< ImagePointer >   m_ITKImage;
+
+  /** \brief */
   QVector< vtkImageData* >  m_VTKImage;
 
   /** \brief Quad View*/
@@ -139,7 +147,10 @@ protected:
   /** \brief Look-up Table dialog */
   QGoLUTDialog* m_LUTDialog;
 
+  /** \brief */
   QHash< unsigned int, QColor > m_IdColorMap;
+
+  /** \brief */
   QActionGroup* m_FullscreenGroup;
 
   /** \brief */
@@ -155,7 +166,6 @@ protected:
 
   /** \brief Display Image in a "quad-view" widget in a tab.
     The title of the tab is given by iTag.
-      \param[in] iImage
       \param[in] iTag
   */
   void DisplayImage( const QString& iTag );
@@ -163,9 +173,13 @@ protected:
   /** \brief Create Fullscreengroup*/
   void Fullscreenbuttons();
 
+  /** \brief */
   void readSettings();
+
+  /** \brief */
   void writeSettings();
 
+  /** \brief */
   itk::QtSignalAdaptor m_SignalAdaptor;
 
   /** \brief list of recent files */
@@ -187,9 +201,6 @@ private:
   QGoMainWindow operator = ( const QGoMainWindow& );
 
   void DisplayInTab( vtkImageData* myImage, const int& TabIndex );
-  void OpenAndDisplayLSMFile( const QString& iTag,
-  const int& timePoint,
-  const bool& ComposeChannels );
-
+  void OpenAndDisplay(  const QString& iTag, const bool& IsSerie, const int& Type );
 };
 #endif
