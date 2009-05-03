@@ -4,7 +4,7 @@
 #include "itkLightProcessObject.h"
 
 #include "vtkJPEGReader.h"
-#include "vtkImagedata.h"
+#include "vtkImageData.h"
 #include "vtkImageAppend.h"
 
 #include "GoFigureFileInfoHelper.h"
