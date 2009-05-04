@@ -5,20 +5,20 @@
 #include "vtkSQLQuery.h"
 #include "vtkStdString.h"
 
-void CreateDataBase( char * DBName );
-void CreateBookmarksTable( char * DBName );
-void CreateCollectionInfoTable( char * DBName );
-void CreateExperimentTable( char * DBName );
-void CreateFigureTable( char * DBName );
-void CreateFigureFlavorTable( char * DBName );
-void CreateLineageTable( char * DBName );
-void CreateLineageFlavorTable( char * DBName );
-void CreateMeshTable( char * DBName );
-void CreateMeshFlavor( char * DBName );
-void CreateSeriesGridTable( char * DBName );
-void CreateTrackTable( char * DBName );
-void CreateTrackFlavor( char * DBName );
+void CreateDataBase( const char * DBName );
+void CreateBookmarksTable( const char * DBName );
+void CreateCollectionInfoTable( const char * DBName );
+void CreateExperimentTable( const char * DBName );
+void CreateFigureTable( const char * DBName );
+void CreateFigureFlavorTable( const char * DBName );
+void CreateLineageTable( const char * DBName );
+void CreateLineageFlavorTable( const char * DBName );
+void CreateMeshTable( const char * DBName );
+void CreateMeshFlavor( const char * DBName );
+void CreateSeriesGridTable( const char * DBName );
+void CreateTrackTable( const char * DBName );
+void CreateTrackFlavor( const char * DBName );
 
-void CreateDataBaseMain( char * DBName);
+void CreateDataBaseMain( const char * DBName);
 
 #endif

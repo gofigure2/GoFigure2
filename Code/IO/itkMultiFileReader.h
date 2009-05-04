@@ -26,15 +26,15 @@ namespace itk
 *
 *  \brief
 *  Class that implement a reader for a stack of files
-*  
+*
 *  files can be of any dimensionality (we expect 2, 3 or 4D)
 *  files can be of the following types: JPG, PNG, BMP, TIFF, MHA, LSM
 *
 *  \todo  Add Support for ProgressEvent
-*  
+*
 *
 */
-class ITK_EXPORT MultiFileReader : public LightProcessObject 
+class ITK_EXPORT MultiFileReader : public LightProcessObject
 {
 public:
 
@@ -52,33 +52,33 @@ public:
 
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
-  
-  /** \Brief set the time point you want to extract 
+
+  /** \brief set the time point you want to extract
       and load in memory.                              */
   void SetTimePoint( const int& UserTimePoint );
 
-  /** \Brief set the channel you want to extract 
+  /** \brief set the channel you want to extract
       and load in memory. -1 for all channels.         */
   void SetChannel( const int& UserChannel );
   void UpdateChannel();
 
-  /** \Brief set the input as a GoFigure format file list */
+  /** \brief set the input as a GoFigure format file list */
   void SetInput( FileListType* UserFileList );
 
-  /** \Brief  */
+  /** \brief  */
   void SetFileType( const FILETYPE UserFileType );
 
-  /** \Brief  */
+  /** \brief  */
   void SetDimensionality( int UserDimensionality );
 
   int GetNumberOfTimePoints( ) const { return m_NumberOfTimePoints; };
 
-  /** \Brief  */
+  /** \brief  */
   void SetMultiChannelImages( int value );
   void SetMultiChannelImagesON( )  { SetMultiChannelImages( 1 ); };
   void SetMultiChannelImagesOFF( ) { SetMultiChannelImages( 0 ); };
 
-  /** \Brief  */
+  /** \brief  */
   vtkImageData* GetOutput( ) const { return( m_OutputImage ); };
 
   // Fake It. The output is not of itkDataObject type
@@ -87,19 +87,19 @@ public:
 
 // protected:
 
-  /** \Brief Mandatory PrintSelf */
+  /** \brief Mandatory PrintSelf */
   void PrintSelf( std::ostream& os, Indent indent) const;
 
   MultiFileReader( );
   ~MultiFileReader();
-	
+
 private:
 
   void ComputeUpdateFileList();
 
   MultiFileReader(const Self&); //purposely not implemented
   void operator=(const Self&); //purposely not implemented
- 
+
   vtkImageData*  m_OutputImage;
   FileListType*  m_FileList;
   FileListType   m_UpdateFileList;

@@ -107,7 +107,8 @@ protected slots:
   void ShowProgressLoading( itk::Object * myFilter );
   void HideProgressLoading();
 
-  /**\Update the full screen button group when the current tab is changed*/
+  /**\brief Update the full screen button group when the current tab is changed.
+  */
   void UpdateFullScreenViewButtons( const int& idx);
   void UpdateTracerButtons( const int& idx);
 

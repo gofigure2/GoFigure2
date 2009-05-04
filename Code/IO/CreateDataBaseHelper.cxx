@@ -7,7 +7,7 @@
 // database with same name already exists.
 
 
-void CreateDataBaseMain( char * DBName)
+void CreateDataBaseMain( const char * DBName)
 {
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
   DataBaseConnector->SetHostName("localhost");
@@ -34,7 +34,7 @@ void CreateDataBaseMain( char * DBName)
   DataBaseConnector->Delete();
 }
 
-void CreateDataBase( char * DBName )
+void CreateDataBase( const char * DBName )
 {
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
   DataBaseConnector->SetHostName("localhost");
@@ -62,7 +62,7 @@ void CreateDataBase( char * DBName )
   query->Delete();
 }
 
-void CreateBookmarksTable( char * DBName )
+void CreateBookmarksTable( const char * DBName )
 {
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
   DataBaseConnector->SetHostName("localhost");
@@ -108,7 +108,7 @@ void CreateBookmarksTable( char * DBName )
   query->Delete();
 }
 
-void CreateCollectionInfoTable( char * DBName )
+void CreateCollectionInfoTable( const char * DBName )
 {
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
   DataBaseConnector->SetHostName("localhost");
@@ -151,7 +151,7 @@ void CreateCollectionInfoTable( char * DBName )
   query->Delete();
 }
 
-void CreateExperimentTable( char * DBName )
+void CreateExperimentTable( const char * DBName )
 {
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
   DataBaseConnector->SetHostName("localhost");
@@ -204,7 +204,7 @@ void CreateExperimentTable( char * DBName )
   query->Delete();
 }
 
-void CreateFigureTable( char * DBName )
+void CreateFigureTable( const char * DBName )
 {
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
   DataBaseConnector->SetHostName("localhost");
@@ -262,7 +262,7 @@ void CreateFigureTable( char * DBName )
   query->Delete();
 }
 
-void CreateFigureFlavorTable( char * DBName )
+void CreateFigureFlavorTable( const char * DBName )
 {
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
   DataBaseConnector->SetHostName("localhost");
@@ -302,7 +302,7 @@ void CreateFigureFlavorTable( char * DBName )
   query->Delete();
 }
 
-void CreateLineageTable( char * DBName )
+void CreateLineageTable( const char * DBName )
 {
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
   DataBaseConnector->SetHostName("localhost");
@@ -363,7 +363,7 @@ void CreateLineageTable( char * DBName )
   query->Delete();
 }
 
-void CreateLineageFlavorTable( char * DBName )
+void CreateLineageFlavorTable( const char * DBName )
 {
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
   DataBaseConnector->SetHostName("localhost");
@@ -403,7 +403,7 @@ void CreateLineageFlavorTable( char * DBName )
   query->Delete();
 }
 
-void CreateMeshTable( char * DBName )
+void CreateMeshTable( const char * DBName )
 {
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
   DataBaseConnector->SetHostName("localhost");
@@ -464,7 +464,7 @@ void CreateMeshTable( char * DBName )
   query->Delete();
 }
 
-void CreateMeshFlavor( char * DBName )
+void CreateMeshFlavor( const char * DBName )
 {
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
   DataBaseConnector->SetHostName("localhost");
@@ -504,7 +504,7 @@ void CreateMeshFlavor( char * DBName )
   query->Delete();
 }
 
-void CreateSeriesGridTable( char * DBName )
+void CreateSeriesGridTable( const char * DBName )
 {
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
   DataBaseConnector->SetHostName("localhost");
@@ -549,7 +549,7 @@ void CreateSeriesGridTable( char * DBName )
   query->Delete();
 }
 
-void CreateTrackTable( char * DBName )
+void CreateTrackTable( const char * DBName )
 {
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
   DataBaseConnector->SetHostName("localhost");
@@ -617,7 +617,7 @@ void CreateTrackTable( char * DBName )
   query->Delete();
 }
 
-void CreateTrackFlavor( char * DBName )
+void CreateTrackFlavor( const char * DBName )
 {
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
   DataBaseConnector->SetHostName("localhost");
