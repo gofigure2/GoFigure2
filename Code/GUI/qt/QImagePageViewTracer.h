@@ -106,16 +106,22 @@ public:
   QMEGAVTKADDON2_EXPORT double* GetBackgroundColor();
 
 
-  template< class TContourContainer,
-            class TPropertyContainer >
+  template< typename TContourContainer,
+            typename TPropertyContainer >
   QMEGAVTKADDON2_EXPORT
   void AddContours( TContourContainer& iContours,
     TPropertyContainer& iProperty,
-    const bool& iIntersection = true );
+    const bool& iIntersection = true )
+  {
+    this->Pool->SyncAddContours( iContours, iProperty, iIntersection );
+  }
 
-  template< class TPolyDataContainer >
+  template< typename TPolyDataContainer >
   QMEGAVTKADDON2_EXPORT
-  void RemoveContours( TPolyDataContainer& iContours );
+  void RemoveContours( TPolyDataContainer& iContours )
+  {
+    this->Pool->SyncRemoveContours( iContours );
+  }
 
 public slots:
 
@@ -232,5 +238,6 @@ protected slots:
   void MoveSlider3();
 
 };
+
 
 #endif

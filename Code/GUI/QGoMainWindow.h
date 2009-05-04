@@ -48,7 +48,9 @@
 #include "vtkLSMReader.h"
 // ALEX: have to make a conditional flag to check if
 // vtk has been compiled with the good drivers
-#include "CreateDataBaseHelper.h"
+// #ifdef VTK_USE_MYSQL
+  #include "CreateDataBaseHelper.h"
+// #endif
 
 #include <qactiongroup.h>
 #include <qvector.h>
@@ -80,9 +82,15 @@ public:
 protected slots:
   void on_actionOpen_Single_File_activated( );
   void on_actionOpen_Multiple_Files_activated( );
+
+  void on_actionOpen_Mesh_activated( );
+
+// #ifdef VTK_USE_MYSQL
   void on_actionCreate_DataBase_activated( ) { CreateDataBaseMain( "Whatever" ); };
   void on_actionImport_Dataset_in_DataBase_activated( ) {};
   void on_actionOpen_DataBase_activated( ) {};
+// #endif
+
   void on_actionClose_activated( );
   void on_actionClose_all_activated( );
   void on_actionQuit_activated( );
@@ -205,6 +213,6 @@ private:
   QGoMainWindow operator = ( const QGoMainWindow& );
 
   void DisplayInTab( vtkImageData* myImage, const int& TabIndex );
-  void OpenAndDisplay(  const QString& iTag, const bool& IsSerie, const int& Type );
+  void OpenAndDisplay( const QString& iTag, const bool& IsSerie, const int& Type );
 };
 #endif

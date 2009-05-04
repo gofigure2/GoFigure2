@@ -48,7 +48,11 @@
 #include <vnl/vnl_random.h>
 #include <qsettings.h>
 
-#include "vtkImageAppendComponents.h"
+#include <vtkImageAppendComponents.h>
+
+#include <vtkPolyDataReader.h>
+#include <vtkPLYReader.h>
+#include <vtkPolyData.h>
 //#include "ContourContainerFileSystem.h"
 
 // *************************************************************************
@@ -160,6 +164,7 @@ void QGoMainWindow::on_actionOpen_Single_File_activated( )
   }
 }
 
+// *************************************************************************
 void QGoMainWindow::on_actionOpen_Multiple_Files_activated( )
 {
   QString filename = QFileDialog::getOpenFileName(
@@ -174,6 +179,96 @@ void QGoMainWindow::on_actionOpen_Multiple_Files_activated( )
   }
 }
 
+// *************************************************************************
+void QGoMainWindow::on_actionOpen_Mesh_activated( )
+{
+  int idx = this->CentralImageTabWidget->currentIndex();
+
+  if( idx >= 0 )
+  {
+    QString filename = QFileDialog::getOpenFileName(
+      this,
+      tr( "Select one mesh or contour"), "",
+      tr( "vtkPolyData (*.vtk);; PLY (*.ply)" ) );
+
+    if( !filename.isEmpty() )
+    {
+      if( QFile::exists( filename ) )
+      {
+        QString extension = QFileInfo( filename ).suffix();
+
+        std::list< vtkPolyData* > mesh_list;
+        std::list< vtkProperty* > property_list;
+        property_list.push_back( 0 );
+
+        if( extension.compare( "vtk", Qt::CaseInsensitive ) == 0 )
+        {
+          vtkPolyDataReader* mesh_reader = vtkPolyDataReader::New();
+          mesh_reader->SetFileName( filename.toAscii( ).data( ) );
+          mesh_reader->Update();
+
+          mesh_list.push_back( mesh_reader->GetOutput() );
+          mesh_reader->Delete();
+        }
+        else
+        {
+          if( extension.compare( "ply", Qt::CaseInsensitive ) == 0 )
+          {
+            vtkPLYReader* mesh_reader = vtkPLYReader::New();
+            mesh_reader->SetFileName( filename.toAscii( ).data( ) );
+            mesh_reader->Update();
+
+            mesh_list.push_back( mesh_reader->GetOutput() );
+            mesh_reader->Delete();
+          }
+        }
+
+        if( !mesh_list.empty() )
+        {
+          double mesh_bounds[6];
+          mesh_list.front()->GetBounds( mesh_bounds );
+          bool IsContour = false;
+
+          for( int i = 0; ( i < 3 ) && ( !IsContour ); ++i )
+          {
+            if( mesh_bounds[2*i] == mesh_bounds[2*i+1] )
+            {
+              IsContour = true;
+            }
+          }
+
+          QImagePageViewTracer* myPageView =
+            dynamic_cast<QImagePageViewTracer*>( m_PageView[idx] );
+          if( myPageView )
+          {
+            myPageView->AddContours( mesh_list, property_list, true );
+//             if( IsContour )
+//             {
+//             }
+//             else
+//             {
+//             }
+          }
+          else
+          {
+            QImagePageView4DTracer* myPageView4D =
+              dynamic_cast<QImagePageView4DTracer*>( m_PageView[ idx ] );
+            if( myPageView4D )
+            {
+//               myPageView4D->AddContours< std::list< vtkPolyData* >, std::list< vtkProperty* > >( mesh_list, property_list, true );
+//               if( IsContour )
+//               {
+//               }
+//               else
+//               {
+//               }
+            }
+          }
+        }
+      }
+    }
+  }
+}
 // *****************************************************************************
 void QGoMainWindow::on_actionClose_activated( )
 {
@@ -529,7 +624,7 @@ void QGoMainWindow::SetContourTracerOff(const bool& iChecked)
 // }
 
 
-//-----------------------------------------------------------------------------
+// *************************************************************************
 void QGoMainWindow::ChangeLookupTable( )
 {
   int idx = this->CentralImageTabWidget->currentIndex();
@@ -540,10 +635,8 @@ void QGoMainWindow::ChangeLookupTable( )
     myPageView->SetLookupTable( this->m_LUTDialog->GetLookupTable() );
   }
 }
-//-----------------------------------------------------------------------------
 
-
-//-----------------------------------------------------------------------------
+// *************************************************************************
 void QGoMainWindow::SetColorForGivenId( const bool& iSelect )
 {
   unsigned int cell_id = IdContourBox->value();
@@ -622,10 +715,9 @@ void QGoMainWindow::SetColorForGivenId( const bool& iSelect )
     m_IdColorMap[ cell_id ] = color;
   }
 }
-//-----------------------------------------------------------------------------
 
 
-//-----------------------------------------------------------------------------
+// *************************************************************************
 void QGoMainWindow::ValidateContourTracer( )
 {
   int idx = this->CentralImageTabWidget->currentIndex();
@@ -645,10 +737,8 @@ void QGoMainWindow::ValidateContourTracer( )
     }
   }
 }
-//-----------------------------------------------------------------------------
 
-
-//-----------------------------------------------------------------------------
+// *************************************************************************
 template< class T >
 void QGoMainWindow::ValidateContourTracerHelper( T* PageView )
 {
@@ -665,10 +755,8 @@ void QGoMainWindow::ValidateContourTracerHelper( T* PageView )
     m_IdColorMap[ cell_id ],
     this->SaveContourCheckBox->isChecked() );
 }
-//-----------------------------------------------------------------------------
 
-
-//-----------------------------------------------------------------------------
+// *************************************************************************
 void QGoMainWindow::ReinitializeContourTracer()
 {
   int idx = this->CentralImageTabWidget->currentIndex();
@@ -688,18 +776,16 @@ void QGoMainWindow::ReinitializeContourTracer()
     }
   }
 }
-//-----------------------------------------------------------------------------
 
-
-//-----------------------------------------------------------------------------
+// *************************************************************************
 void QGoMainWindow::SetFileName( const QString& iFile, const bool& IsSerie )
 {
   if( QFile::exists( iFile ) )
   {
     this->setCurrentFile( iFile );
     // parse extension
-    QFileInfo fi(iFile);
-    QString ext = fi.suffix();
+//     QFileInfo fi( iFile );
+    QString ext = QFileInfo( iFile ).suffix();
     if( IsSerie )
     {
       if( ext.compare( "lsm", Qt::CaseInsensitive ) == 0 )
@@ -725,10 +811,8 @@ void QGoMainWindow::SetFileName( const QString& iFile, const bool& IsSerie )
     }
   }
 }
-//-----------------------------------------------------------------------------
 
-
-//-----------------------------------------------------------------------------
+// *************************************************************************
 void QGoMainWindow::OpenImage( const QString& iFile )
 {
   typedef itk::ImageFileReader< ImageType > ImageReaderType;
@@ -746,10 +830,9 @@ void QGoMainWindow::OpenImage( const QString& iFile )
   m_ITKImage.push_back( reader->GetOutput() );
   m_ITKImage.last()->DisconnectPipeline();
 }
-//-----------------------------------------------------------------------------
 
 
-//-----------------------------------------------------------------------------
+// *************************************************************************
 void QGoMainWindow::DisplayImage( const QString& iTag )
 {
   m_Convert.push_back( VTKConvertImageType::New() );
@@ -771,10 +854,9 @@ void QGoMainWindow::DisplayImage( const QString& iTag )
   int idx = this->CentralImageTabWidget->addTab( m_PageView.last(), iTag );
   this->CentralImageTabWidget->setCurrentIndex( idx );
 }
-//-----------------------------------------------------------------------------
 
 
-//-----------------------------------------------------------------------------
+// *************************************************************************
 void QGoMainWindow::OpenAndDisplay(
   const QString& iTag,
   const bool& IsSerie,
@@ -794,11 +876,10 @@ void QGoMainWindow::OpenAndDisplay(
   int idx = this->CentralImageTabWidget->addTab( m_PageView.last(), iTag );
   this->CentralImageTabWidget->setCurrentIndex( idx );
 }
-//-----------------------------------------------------------------------------
 
 
 
-//-----------------------------------------------------------------------------
+// *************************************************************************
 void QGoMainWindow::on_actionAbout_activated( )
 {
   // NOTE ALEX: is there anyway to link that with version definition
@@ -854,13 +935,13 @@ void QGoMainWindow::setCurrentFile(const QString &fileName)
   }
 }
 
-// *****************************************************************************
+// *************************************************************************
 QString QGoMainWindow::strippedName(const QString &fullFileName)
 {
   return QFileInfo(fullFileName).fileName();
 }
 
-// *****************************************************************************
+// *************************************************************************
 void QGoMainWindow::updateRecentFileActions()
 {
   QMutableStringListIterator i(m_RecentFiles);
@@ -993,6 +1074,7 @@ void QGoMainWindow::UpdateFullScreenViewButtons( const int& idx )
   }
 }
 
+// *************************************************************************
 template< class T >
 void QGoMainWindow::UpdateFullScreenViewButtonsHelper( T* PageView )
 {

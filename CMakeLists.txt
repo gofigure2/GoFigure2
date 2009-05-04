@@ -99,8 +99,8 @@ IF( VTK_FOUND )
   SET(QT_MOC_EXECUTABLE ${VTK_QT_MOC_EXECUTABLE} CACHE FILEPATH "")
   SET(QT_UIC_EXECUTABLE ${VTK_QT_UIC_EXECUTABLE} CACHE FILEPATH "")
 
-  # Try to find Qt. 
-  # Note that some command line tools will get compiled even without Qt 
+  # Try to find Qt.
+  # Note that some command line tools will get compiled even without Qt
   FIND_PACKAGE( Qt4 )
   IF( QT4_FOUND AND QT_VERSION_MINOR GREATER 4 )
     IF( QT_USE_FILE )

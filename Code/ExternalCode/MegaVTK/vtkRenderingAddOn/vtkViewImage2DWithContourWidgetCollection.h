@@ -162,14 +162,36 @@ public:
   void SyncPan (void);
   void SyncSetZoomAndParallelScale( double Zoom, double ParallelScale );
 
-  template< class TContourContainer,
-            class TPropertyContainer >
+  template< typename TContourContainer,
+            typename TPropertyContainer >
   void SyncAddContours( TContourContainer& iContours,
     TPropertyContainer& iProperty,
-    const bool& iIntersection = true );
+    const bool& iIntersection = true )
+  {
+    this->InitTraversal();
+    vtkViewImage2DWithContourWidget* item = this->GetNextItem();
 
-  template< class TPolyDataContainer >
-  void SyncRemoveContours( TPolyDataContainer& iContours );
+    while( item )
+    {
+      item->AddContours( iContours, iProperty, iIntersection );
+      item->Render();
+      item = this->GetNextItem();
+    }
+  }
+
+  template< typename TPolyDataContainer >
+  void SyncRemoveContours( TPolyDataContainer& iContours )
+  {
+    this->InitTraversal();
+    vtkViewImage2DWithContourWidget* item = this->GetNextItem();
+
+    while( item )
+    {
+      item->RemoveContours( iContours );
+      item->Render();
+      item = this->GetNextItem();
+    }
+  }
 
 protected:
   vtkViewImage2DWithContourWidgetCollection();

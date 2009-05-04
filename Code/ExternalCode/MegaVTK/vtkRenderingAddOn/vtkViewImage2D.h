@@ -251,10 +251,42 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage2D : public vtkViewImage
             class TPropertyContainer >
   void AddContours( TContourContainer& iContours,
     TPropertyContainer& iProperty,
-    const bool& iIntersection = true );
+    const bool& iIntersection = true )
+  {
+    if( iContours.size() != iProperty.size() )
+    {
+      vtkWarningMacro(<<"iContours.size() != iProperty.size()");
+      return;
+    }
 
-  template< class TPolyDataContainer >
-  void RemoveContours( TPolyDataContainer& iContours );
+    typedef typename TContourContainer::iterator ContourContainerIterator;
+    typedef typename TPropertyContainer::iterator PropertyContainerIterator;
+
+    ContourContainerIterator contour_it = iContours.begin();
+    ContourContainerIterator contour_end = iContours.end();
+
+    PropertyContainerIterator prop_it = iProperty.begin();
+    PropertyContainerIterator prop_end = iProperty.end();
+
+    for( ; contour_it != contour_end; ++contour_it, ++prop_it )
+    {
+      this->AddDataSet( *contour_it, *prop_it, iIntersection );
+    }
+  }
+
+  template< class TContourContainer >
+  void RemoveContours( TContourContainer& iContours )
+  {
+    typedef typename TContourContainer::iterator ContourContainerIterator;
+    ContourContainerIterator contour_it = iContours.begin();
+    ContourContainerIterator contour_end = iContours.end();
+
+    for( ; contour_it != contour_end; ++contour_it )
+    {
+      this->RemoveDataSet( *contour_it );
+    }
+
+  }
 
  protected:
 

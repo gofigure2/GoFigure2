@@ -73,6 +73,8 @@
     <addaction name="actionOpen_Single_File"/>
     <addaction name="actionOpen_Multiple_Files"/>
     <addaction name="separator"/>
+    <addaction name="actionOpen_Mesh"/>
+    <addaction name="separator"/>
     <addaction name="actionCreate_DataBase"/>
     <addaction name="actionImport_Dataset_in_DataBase"/>
     <addaction name="actionOpen_DataBase"/>
@@ -197,14 +199,14 @@
    </property>
    <property name="minimumSize">
     <size>
-     <width>202</width>
-     <height>96</height>
+     <width>208</width>
+     <height>99</height>
     </size>
    </property>
    <property name="maximumSize">
     <size>
-     <width>305</width>
-     <height>581</height>
+     <width>311</width>
+     <height>584</height>
     </size>
    </property>
    <property name="floating">
@@ -259,8 +261,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>201</width>
-        <height>287</height>
+        <width>94</width>
+        <height>24</height>
        </rect>
       </property>
       <attribute name="label">
@@ -443,8 +445,8 @@ Radius</string>
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>201</width>
-        <height>287</height>
+        <width>94</width>
+        <height>24</height>
        </rect>
       </property>
       <attribute name="label">
@@ -823,8 +825,8 @@ Component</string>
   <widget class="QDockWidget" name="ManualSegmentationDockWidget">
    <property name="minimumSize">
     <size>
-     <width>202</width>
-     <height>73</height>
+     <width>208</width>
+     <height>76</height>
     </size>
    </property>
    <property name="windowTitle">
@@ -1105,7 +1107,6 @@ Component</string>
     </widget>
    </widget>
   </widget>
-   
   <action name="actionOpen_Single_File">
    <property name="icon">
     <iconset resource="resources/axes.qrc">
@@ -1118,55 +1119,46 @@ Component</string>
     <string>Ctrl+O</string>
    </property>
   </action>
-   
   <action name="actionOpen_Multiple_Files">
    <property name="text">
-     <string>Open Multiple Files</string>
+    <string>Open Multiple Files</string>
    </property>
   </action>
-
   <action name="actionCreate_DataBase">
    <property name="enabled">
-     <bool>true</bool>
+    <bool>true</bool>
    </property>
    <property name="text">
-     <string>Create DataBase</string>
+    <string>Create DataBase</string>
    </property>
   </action>
-
   <action name="actionImport_Dataset_in_DataBase">
    <property name="enabled">
-     <bool>false</bool>
+    <bool>false</bool>
    </property>
    <property name="text">
-     <string>Import Dataset in DB</string>
+    <string>Import Dataset in DB</string>
    </property>
   </action>
-   
   <action name="actionOpen_DataBase">
    <property name="enabled">
-     <bool>false</bool>
+    <bool>false</bool>
    </property>
    <property name="text">
-     <string>Open DataBase</string>
+    <string>Open DataBase</string>
    </property>
   </action>
-
   <action name="actionSave_Multiple_Files_As">
    <property name="enabled">
     <bool>false</bool>
    </property>
    <property name="text">
-     <string>Save Multiple Files</string>
+    <string>Save Multiple Files</string>
    </property>
   </action>
-   
   <action name="actionSave_Single_File_As">
    <property name="enabled">
     <bool>false</bool>
-   </property>
-   <property name="visible">
-     <bool>true</bool>
    </property>
    <property name="icon">
     <iconset resource="resources/axes.qrc">
@@ -1178,8 +1170,10 @@ Component</string>
    <property name="shortcut">
     <string>Ctrl+S</string>
    </property>
+   <property name="visible">
+    <bool>true</bool>
+   </property>
   </action>
-   
   <action name="actionQuit">
    <property name="icon">
     <iconset resource="resources/axes.qrc">
@@ -1195,13 +1189,11 @@ Component</string>
     <bool>true</bool>
    </property>
   </action>
-   
   <action name="actionNew_Tab">
    <property name="text">
     <string>New Tab</string>
    </property>
   </action>
-   
   <action name="actionClose">
    <property name="text">
     <string>Close</string>
@@ -1210,7 +1202,6 @@ Component</string>
     <string>Ctrl+W</string>
    </property>
   </action>
-   
   <action name="actionFull_screen_XY">
    <property name="checkable">
     <bool>true</bool>
@@ -1223,7 +1214,6 @@ Component</string>
     <string>Full-screen XY</string>
    </property>
   </action>
-   
   <action name="actionFull_screen_YZ">
    <property name="checkable">
     <bool>true</bool>
@@ -1236,7 +1226,6 @@ Component</string>
     <string>Full-screen YZ</string>
    </property>
   </action>
-   
   <action name="actionFull_screen_XZ">
    <property name="checkable">
     <bool>true</bool>
@@ -1249,7 +1238,6 @@ Component</string>
     <string>Full-screen XZ</string>
    </property>
   </action>
-   
   <action name="actionFull_screen_XYZ">
    <property name="checkable">
     <bool>true</bool>
@@ -1268,7 +1256,6 @@ Component</string>
     <string>Tri-planar XYZ</string>
    </property>
   </action>
-   
   <action name="actionAbout">
    <property name="text">
     <string>About</string>
@@ -1277,7 +1264,6 @@ Component</string>
     <enum>QAction::AboutRole</enum>
    </property>
   </action>
-   
   <action name="actionAbout_Qt">
    <property name="text">
     <string>About Qt</string>
@@ -1286,7 +1272,6 @@ Component</string>
     <enum>QAction::AboutQtRole</enum>
    </property>
   </action>
-   
   <action name="actionKishoreSegmentation">
    <property name="checkable">
     <bool>true</bool>
@@ -1301,7 +1286,6 @@ Component</string>
     <string>Geodesic Active Contour Seg.</string>
    </property>
   </action>
-   
   <action name="actionBackground">
    <property name="text">
     <string>Background ...</string>
@@ -1323,7 +1307,6 @@ Component</string>
     <string>Mesh ...</string>
    </property>
   </action>
-   
   <action name="actionVolume_rendering_XYZ">
    <property name="checkable">
     <bool>true</bool>
@@ -1342,79 +1325,66 @@ Component</string>
     <string>Volume Rendering XYZ</string>
    </property>
   </action>
-   
   <action name="actionFree_Line">
    <property name="text">
     <string>Free-Line</string>
    </property>
   </action>
-   
   <action name="actionPolygon">
    <property name="text">
     <string>Polygon</string>
    </property>
   </action>
-   
   <action name="actionTranslation">
    <property name="text">
     <string>Translation</string>
    </property>
   </action>
-   
   <action name="actionRotation">
    <property name="text">
     <string>Rotation</string>
    </property>
   </action>
-   
   <action name="actionScaling">
    <property name="text">
     <string>Scaling</string>
    </property>
   </action>
-   
   <action name="actionMove_Node">
    <property name="text">
     <string>Move Node</string>
    </property>
   </action>
-   
   <action name="actionAdd_Node">
    <property name="text">
     <string>Add Node</string>
    </property>
   </action>
-   
   <action name="actionRemove_Node">
    <property name="text">
     <string>Remove Node</string>
    </property>
   </action>
-   
   <action name="actionTranslation_2">
    <property name="text">
     <string>Translation</string>
    </property>
   </action>
-   
   <action name="actionRotation_2">
    <property name="text">
     <string>Rotation</string>
    </property>
   </action>
-   
   <action name="actionScaling_2">
    <property name="text">
     <string>Scaling</string>
    </property>
   </action>
-   
   <action name="actionMove_node">
    <property name="text">
     <string>Move node</string>
    </property>
   </action>
-   
   <action name="actionAdd_node">
    <property name="text">
     <string>Add node</string>
@@ -1561,6 +1531,16 @@ Component</string>
    </property>
    <property name="text">
     <string>Snapshot</string>
+   </property>
+  </action>
+  <action name="actionOpen_Mesh">
+   <property name="text">
+    <string>Open Mesh / Contour</string>
+   </property>
+  </action>
+  <action name="actionOpen_Contour">
+   <property name="text">
+    <string>Open Contour</string>
    </property>
   </action>
  </widget>
