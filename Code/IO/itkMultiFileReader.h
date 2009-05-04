@@ -8,6 +8,7 @@
 #include "vtkImageAppend.h"
 
 #include "GoFigureFileInfoHelper.h"
+#include "MegaVTK2Configure.h"
 
 enum FILETYPE
   {

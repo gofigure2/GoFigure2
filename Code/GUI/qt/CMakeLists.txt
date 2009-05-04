@@ -38,6 +38,8 @@ ADD_LIBRARY( QMegaVTKAddOn2
   )
 
 SET( QMegaVTKAddOn2_LIBS
+  ITKIO
+  ITKCommon
   QMegaVTKAddOn2
   vtkRenderingAddOn2
   QVTK
