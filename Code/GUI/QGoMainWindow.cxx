@@ -84,11 +84,11 @@ QGoMainWindow::QGoMainWindow( )
   this, SLOT( SetTracerToRotateContourTracer() ) );
   QObject::connect( this->TracerScalingBtn, SIGNAL( released() ),
   this, SLOT( SetTracerToScaleContourTracer() ) );*/
-  QObject::connect( this->ManualSegmentationOnRadioBtn, 
+  QObject::connect( this->ManualSegmentationOnRadioBtn,
     SIGNAL( toggled(bool) ),
-    this, 
+    this,
     SLOT( SetContourTracerOn(bool) ) );
-  QObject::connect( this->ManualSegmentationOffRadioBtn, 
+  QObject::connect( this->ManualSegmentationOffRadioBtn,
     SIGNAL( toggled(bool) ),
     this, SLOT( SetContourTracerOff(bool) ) );
   QObject::connect( this->IdContourColorBtn, SIGNAL( released( ) ),
@@ -99,10 +99,10 @@ QGoMainWindow::QGoMainWindow( )
     this, SLOT( ReinitializeContourTracer() ) );
   //QObject::connect( this->actionOpen, SIGNAL( activated( ) ),
     //this, SLOT( showprogressloading() ) );
-  QObject::connect( this->CentralImageTabWidget, 
+  QObject::connect( this->CentralImageTabWidget,
     SIGNAL( currentChanged( int ) ),
     this, SLOT( UpdateFullScreenViewButtons( int ) ) );
-  QObject::connect( this->CentralImageTabWidget, 
+  QObject::connect( this->CentralImageTabWidget,
     SIGNAL( currentChanged( int ) ),
     this, SLOT( UpdateTracerButtons( int ) ) );
 
@@ -148,30 +148,30 @@ QGoMainWindow::~QGoMainWindow()
 // *************************************************************************
 void QGoMainWindow::on_actionOpen_Single_File_activated( )
 {
-  QString filename = QFileDialog::getOpenFileName( 
-    this, 
+  QString filename = QFileDialog::getOpenFileName(
+    this,
     tr( "Select Image" ),"",
     tr( "Images (*.png *.bmp *.jpg *.jpeg *.tiff *.mha *.mhd *.img *.lsm)" )
     );
- 
+
   if( !filename.isEmpty( ) )
-    {
+  {
     SetFileName( filename, false );
-    }  
+  }
 }
 
 void QGoMainWindow::on_actionOpen_Multiple_Files_activated( )
 {
-  QString filename = QFileDialog::getOpenFileName( 
-    this, 
+  QString filename = QFileDialog::getOpenFileName(
+    this,
     tr( "Select one Image from the Dataset" ),"",
     tr( "Images (*.jpg *.jpeg *.lsm)" )
     );
- 
+
   if( !filename.isEmpty( ) )
-    {
+  {
     SetFileName( filename, true );
-    }  
+  }
 }
 
 // *****************************************************************************
@@ -181,7 +181,7 @@ void QGoMainWindow::on_actionClose_activated( )
   this->CentralImageTabWidget->removeTab( idx );
   if( idx >= 0 )
   {
-    QImagePageViewTracer* myPageView = 
+    QImagePageViewTracer* myPageView =
       dynamic_cast<QImagePageViewTracer*>( m_PageView[idx] );
     if( myPageView )
     {
@@ -189,7 +189,7 @@ void QGoMainWindow::on_actionClose_activated( )
     }
     else
     {
-      QImagePageView4DTracer* myPageView4D = 
+      QImagePageView4DTracer* myPageView4D =
         dynamic_cast<QImagePageView4DTracer*>( m_PageView[ idx ] );
       if( myPageView4D )
       {
@@ -222,7 +222,7 @@ void QGoMainWindow::on_actionClose_all_activated( )
       delete myPageView;
     }
     else
-    {  
+    {
       QImagePageView4DTracer* myPageView4D =
         dynamic_cast<QImagePageView4DTracer*>( m_PageView.last() );
       if( myPageView4D )
@@ -272,7 +272,7 @@ template< class T >
 void QGoMainWindow::SetBackgroundColor( T* PageView )
 {
   double* rgb = PageView->GetBackgroundColor();
-  QColor color( 
+  QColor color(
     static_cast< int >( 255. * rgb[0] ),
     static_cast< int >( 255. * rgb[1] ),
     static_cast< int >( 255. * rgb[2] ) );
@@ -315,7 +315,7 @@ QGoMainWindow::SetFullScreenDispatch( const int & ViewID )
     dynamic_cast<QImagePageViewTracer*>( m_PageView[idx] );
   if( myPageView )
   {
-    this->SetFullScreen<QImagePageViewTracer>( ViewID, myPageView ); 
+    this->SetFullScreen<QImagePageViewTracer>( ViewID, myPageView );
   }
   else
   {
@@ -323,7 +323,7 @@ QGoMainWindow::SetFullScreenDispatch( const int & ViewID )
       dynamic_cast<QImagePageView4DTracer*>( m_PageView[idx] );
     if( myPageView2 )
     {
-      this->SetFullScreen<QImagePageView4DTracer>( ViewID, myPageView2 ); 
+      this->SetFullScreen<QImagePageView4DTracer>( ViewID, myPageView2 );
     }
   }
   actionSnapshot->setEnabled(true);
@@ -443,7 +443,7 @@ void QGoMainWindow::on_actionSnapshot_activated( )
           break;
         }
       }
-      statusbar->showMessage( 
+      statusbar->showMessage(
         tr("%1 has been saved").arg(SnapshotFileName) );
     }
   }
@@ -536,9 +536,9 @@ void QGoMainWindow::ChangeLookupTable( )
   QImagePageViewTracer* myPageView =
     dynamic_cast<QImagePageViewTracer*>( m_PageView[idx] );
   if( myPageView )
-    {
+  {
     myPageView->SetLookupTable( this->m_LUTDialog->GetLookupTable() );
-    }
+  }
 }
 //-----------------------------------------------------------------------------
 
@@ -552,9 +552,9 @@ void QGoMainWindow::SetColorForGivenId( const bool& iSelect )
   QColor color;
 
   if( cell_id < 7 )
-    {
+  {
     switch( cell_id )
-      {
+    {
       default:
       case 1:
         color.setHsv( 0, 255, 255 );
@@ -574,12 +574,12 @@ void QGoMainWindow::SetColorForGivenId( const bool& iSelect )
       case 6:
         color.setHsv( 300, 255, 255 );
         break;
-      }
     }
+  }
   else
-    {
+  {
     switch( cell_id % 6 )
-      {
+    {
       case 0:
         color.setHsv( random.lrand32( 0, 60 ),
           random.lrand32( 0, 255 ),
@@ -610,17 +610,17 @@ void QGoMainWindow::SetColorForGivenId( const bool& iSelect )
           random.lrand32( 0, 255 ),
           random.lrand32( 0, 255 ) );
         break;
-      }
     }
+  }
 
   if( iSelect )
-    {
+  {
     m_IdColorMap[ cell_id ] = QColorDialog::getColor( color, this );
-    }
+  }
   else
-    {
+  {
     m_IdColorMap[ cell_id ] = color;
-    }
+  }
 }
 //-----------------------------------------------------------------------------
 
@@ -632,18 +632,18 @@ void QGoMainWindow::ValidateContourTracer( )
   QImagePageViewTracer* myPageView =
     dynamic_cast<QImagePageViewTracer*>( m_PageView[idx] );
   if( myPageView )
-    {
+  {
     ValidateContourTracerHelper< QImagePageViewTracer >( myPageView );
-    }
+  }
   else
     {
     QImagePageView4DTracer* myPageView2 =
       dynamic_cast<QImagePageView4DTracer*>( m_PageView[idx] );
     if( myPageView2 )
-      {
+    {
       ValidateContourTracerHelper< QImagePageView4DTracer >( myPageView2 );
-      }
     }
+  }
 }
 //-----------------------------------------------------------------------------
 
@@ -656,9 +656,9 @@ void QGoMainWindow::ValidateContourTracerHelper( T* PageView )
   PageView->SetCellId( cell_id );
 
   if( m_IdColorMap.find( cell_id ) == m_IdColorMap.end() )
-    {
+  {
     SetColorForGivenId( false );
-    }
+  }
   //DATABASE
   PageView->ValidateContour(
     cell_id,
@@ -675,18 +675,18 @@ void QGoMainWindow::ReinitializeContourTracer()
   QImagePageViewTracer* myPageView =
     dynamic_cast<QImagePageViewTracer*>( m_PageView[idx] );
   if( myPageView )
-    {
+  {
     myPageView->ReinitializeContour();
-    }
+  }
   else
-    {
+  {
     QImagePageView4DTracer* myPageView2 =
       dynamic_cast<QImagePageView4DTracer*>( m_PageView[idx] );
     if( myPageView2 )
-      {
+    {
       myPageView2->ReinitializeContour();
-      }
     }
+  }
 }
 //-----------------------------------------------------------------------------
 
@@ -695,35 +695,35 @@ void QGoMainWindow::ReinitializeContourTracer()
 void QGoMainWindow::SetFileName( const QString& iFile, const bool& IsSerie )
 {
   if( QFile::exists( iFile ) )
-    {
+  {
     this->setCurrentFile( iFile );
     // parse extension
     QFileInfo fi(iFile);
     QString ext = fi.suffix();
-	if( IsSerie )
-	  {
+    if( IsSerie )
+    {
       if( ext.compare( "lsm", Qt::CaseInsensitive ) == 0 )
-	    {
+      {
         this->OpenAndDisplay( m_CurrentFile, IsSerie, 0 );
-	    }
-	  else
-	    {
-		this->OpenAndDisplay( m_CurrentFile, IsSerie, 1 );
-	    }
-	  }
-	else
-	  {
-      if( ext.compare( "lsm", Qt::CaseInsensitive ) == 0 )
-        {
-        this->OpenAndDisplay( m_CurrentFile, IsSerie, 0 );
-        }
-      else // NOTE ALEX: last case to be unified
-        {
-        this->OpenImage( m_CurrentFile );
-        this->DisplayImage( m_CurrentFile );
-        }
+      }
+      else
+      {
+        this->OpenAndDisplay( m_CurrentFile, IsSerie, 1 );
       }
     }
+    else
+    {
+      if( ext.compare( "lsm", Qt::CaseInsensitive ) == 0 )
+      {
+        this->OpenAndDisplay( m_CurrentFile, IsSerie, 0 );
+      }
+      else // NOTE ALEX: last case to be unified
+      {
+        this->OpenImage( m_CurrentFile );
+        this->DisplayImage( m_CurrentFile );
+      }
+    }
+  }
 }
 //-----------------------------------------------------------------------------
 
@@ -764,9 +764,9 @@ void QGoMainWindow::DisplayImage( const QString& iTag )
   QImagePageViewTracer* myPageView =
     dynamic_cast<QImagePageViewTracer*>( m_PageView.last() );
   if( myPageView )
-    {
+  {
     myPageView->SetImage( m_VTKImage.last() );
-    }
+  }
 
   int idx = this->CentralImageTabWidget->addTab( m_PageView.last(), iTag );
   this->CentralImageTabWidget->setCurrentIndex( idx );
@@ -775,20 +775,20 @@ void QGoMainWindow::DisplayImage( const QString& iTag )
 
 
 //-----------------------------------------------------------------------------
-void QGoMainWindow::OpenAndDisplay( 
-  const QString& iTag, 
-  const bool& IsSerie, 
+void QGoMainWindow::OpenAndDisplay(
+  const QString& iTag,
+  const bool& IsSerie,
   const int& Type )
 {
   m_PageView.push_back( new QImagePageView4DTracer );
   QImagePageView4DTracer* myPageView;
   myPageView = static_cast< QImagePageView4DTracer*>( m_PageView.last() );
   if( IsSerie )
-    {
-	myPageView->SetFileTypeToSerie( );
+  {
+    myPageView->SetFileTypeToSerie( );
     if( Type == 0 ) myPageView->SetSerieTypeToLsm( );
     if( Type == 1 ) myPageView->SetSerieTypeToMegaCapture( );
-    }
+  }
   myPageView->SetFileName( iTag.toAscii( ).data( ) );
 
   int idx = this->CentralImageTabWidget->addTab( m_PageView.last(), iTag );
@@ -895,9 +895,9 @@ void QGoMainWindow::openRecentFile()
 {
   QAction* action = qobject_cast< QAction* >( sender() );
   if( action )
-    {
+  {
     SetFileName( action->data().toString(), false );
-    }
+  }
 }
 
 
@@ -907,10 +907,10 @@ void QGoMainWindow::readSettings()
   QSettings settings( "MegasonLab", "Gofigure2" );
   m_RecentFiles = settings.value( "recentFiles" ).toStringList( );
   updateRecentFileActions( );
-  
+
   settings.beginGroup( "MainWindow" );
   QSize size = settings.value( "size" ).toSize();
- 
+
   if( size.isValid() )
   {
     this->resize( size );
@@ -920,7 +920,7 @@ void QGoMainWindow::readSettings()
   {
     this->resize( 1450, 750 );
   }
-  
+
    settings.endGroup();
 }
 
