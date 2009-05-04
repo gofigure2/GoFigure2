@@ -197,6 +197,7 @@ void QGoMainWindow::on_actionOpen_Mesh_activated( )
       {
         QString extension = QFileInfo( filename ).suffix();
 
+        vtkPolyData* mesh = vtkPolyData::New();
         std::list< vtkPolyData* > mesh_list;
         std::list< vtkProperty* > property_list;
         property_list.push_back( 0 );
@@ -207,7 +208,8 @@ void QGoMainWindow::on_actionOpen_Mesh_activated( )
           mesh_reader->SetFileName( filename.toAscii( ).data( ) );
           mesh_reader->Update();
 
-          mesh_list.push_back( mesh_reader->GetOutput() );
+          mesh->ShallowCopy( mesh_reader->GetOutput() );
+          mesh_list.push_back( mesh );
           mesh_reader->Delete();
         }
         else
@@ -218,7 +220,8 @@ void QGoMainWindow::on_actionOpen_Mesh_activated( )
             mesh_reader->SetFileName( filename.toAscii( ).data( ) );
             mesh_reader->Update();
 
-            mesh_list.push_back( mesh_reader->GetOutput() );
+            mesh->ShallowCopy( mesh_reader->GetOutput() );
+            mesh_list.push_back( mesh );
             mesh_reader->Delete();
           }
         }
@@ -265,6 +268,8 @@ void QGoMainWindow::on_actionOpen_Mesh_activated( )
             }
           }
         }
+
+        mesh->Delete();
       }
     }
   }
