@@ -1,1 +1,54 @@
 SUBDIRS( qt )
+
+SET( QGOMAINWINDOW_HDRS QGoMainWindow.h 
+  ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/itkQt/itkQtAdaptor.h) 
+SET( QGOMAINWINDOW_SRC QGoMainWindow.cxx ) 
+
+QT4_WRAP_UI( QGOMAINWINDOW_UI_HDRS go.ui ) 
+QT4_WRAP_CPP( QGOMAINWINDOW_MOC_SRC ${QGOMAINWINDOW_HDRS} ) 
+QT4_ADD_RESOURCES( QGOMAINWINDOW_QRC 
+  ${GOFIGURE2_SOURCE_DIR}/Code/GUI//resources/axes.qrc) 
+
+
+SET_SOURCE_FILES_PROPERTIES( ${QGOMAINWINDOW_SRC} PROPERTIES 
+  OBJECT_DEPENDS "${QGOMAINWINDOW_UI_HDRS}" ) 
+
+SET_SOURCE_FILES_PROPERTIES( ${QGOMAINWINDOW_MOC_SRC} PROPERTIES 
+  OBJECT_DEPENDS "${QGOMAINWINDOW_UI_HDRS}" ) 
+
+IF( APPLE ) 
+  ADD_EXECUTABLE( 
+    gofigure 
+    MACOSX_BUNDLE 
+    gofigure.cxx 
+    ${GOFIGURE2_SOURCE_DIR}/Code/IO/CreateDataBaseHelper.cxx
+    ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/itkQt/itkQtProgressBar.cxx 
+    ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/vtkLSM/vtkLSMReader.cxx 
+    ${QGOMAINWINDOW_SRC} 
+    ${QGOMAINWINDOW_MOC_SRC} 
+    ${QGOMAINWINDOW_QRC} 
+    ) 
+ELSE( APPLE ) 
+  #  here will need to differenciate windows to avoid command window 
+  ADD_EXECUTABLE( 
+    gofigure 
+    gofigure.cxx 
+    ${GOFIGURE2_SOURCE_DIR}/Code/IO/CreateDataBaseHelper.cxx
+    ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/itkQt/itkQtProgressBar.cxx 
+    ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/vtkLSM/vtkLSMReader.cxx 
+    ${QGOMAINWINDOW_SRC} 
+    ${QGOMAINWINDOW_MOC_SRC} 
+    ${QGOMAINWINDOW_QRC} 
+    ) 
+ENDIF( APPLE )  
+
+TARGET_LINK_LIBRARIES( gofigure 
+  QMegaVTKAddOn2 
+  ${QT_LIBRARIES} 
+  QVTK 
+  ITKCommon 
+  ITKIO 
+  ITKBasicFilters 
+  ITKNumerics 
+  vtkImaging 
+) 

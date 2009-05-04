@@ -81,8 +81,8 @@ void maximizeMainWindow(QGoMainWindow& form1)
   Info = Screen->screenGeometry();
   int height=Info.height();
   int width=Info.width();
-  int x=Info.left();
-  int y=Info.top();
+  // int x=Info.left();
+  // int y=Info.top();
    
   form1.setGeometry(10,10,width-50,height-50);
 }
