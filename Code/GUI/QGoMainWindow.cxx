@@ -253,12 +253,10 @@ void QGoMainWindow::on_actionOpen_Mesh_activated( )
             dynamic_cast<QImagePageViewTracer*>( m_PageView[idx] );
           if( myPageView )
           {
-            myPageView->AddContours( mesh_list, property_list, true );
+            myPageView->AddContours( mesh_list, property_list, true, true );
 //             if( IsContour )
 //             {
-//             }
-//             else
-//             {
+//
 //             }
           }
           else
