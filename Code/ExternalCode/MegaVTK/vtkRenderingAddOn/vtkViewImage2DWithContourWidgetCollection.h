@@ -73,6 +73,7 @@
 
 #include "vtkViewImage2DCollection.h"
 #include "vtkViewImage2DWithContourWidget.h"
+#include <vtkTextProperty.h>
 #include "MegaVTK2Configure.h"
 
 class vtkViewImage2DWithContourWidgetCollectionCommand;
@@ -144,8 +145,8 @@ public:
     vtkViewImage2DWithContourWidget);
   vtkSyncSetObjectMacro (LookupTable, vtkLookupTable,
     vtkViewImage2DWithContourWidget);
-  vtkSyncSetObjectMacro (TextProperty, vtkTextProperty,
-    vtkViewImage2DWithContourWidget);
+//   vtkSyncSetObjectMacro (TextProperty, vtkTextProperty,
+//     vtkViewImage2DWithContourWidget);
   vtkSyncSetObjectMacro (Input, vtkImageData, vtkViewImage2DWithContourWidget);
   vtkSyncSetObjectMacro (InputConnection, vtkAlgorithmOutput,
     vtkViewImage2DWithContourWidget);
@@ -154,6 +155,18 @@ public:
   vtkSyncSetObjectMacro (Position, int, vtkViewImage2DWithContourWidget);
   vtkSyncSetObjectMacro (WorldCoordinates, double,
     vtkViewImage2DWithContourWidget);
+
+  void SyncSetTextProperty( vtkTextProperty* p )
+  {
+    this->InitTraversal();
+    vtkViewImage2DWithContourWidget* item = this->GetNextItem();
+
+    while( item )
+    {
+      item->GetTextProperty( )->ShallowCopy( p );
+      item = this->GetNextItem();
+    }
+  }
 
   void SyncSetBackground( double* rgb );
   void SyncRender (void);

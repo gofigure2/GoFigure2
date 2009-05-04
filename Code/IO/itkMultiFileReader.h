@@ -12,7 +12,7 @@
 
 enum FILETYPE
   {
-  BMP,
+  BMP = 0,
   JPEG,
   PNG,
   TIFF,

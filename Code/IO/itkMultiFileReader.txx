@@ -10,7 +10,7 @@ namespace itk
 
 //-----------------------------------------------------------------------------
 void MultiFileReader::SetTimePoint( const int& UserTimePoint )
-{ 
+{
   if( UserTimePoint <= m_NumberOfTimePoints )
     {
     this->m_UpdateTimePoint = UserTimePoint;
@@ -34,7 +34,7 @@ void MultiFileReader::SetChannel( const int& UserChannel )
 
 
 //-----------------------------------------------------------------------------
-void MultiFileReader::UpdateChannel() 
+void MultiFileReader::UpdateChannel()
   {
   if( this->m_UpdateChannel > m_NumberOfChannels )
     {
@@ -48,10 +48,10 @@ void MultiFileReader::UpdateChannel()
   }
 //-----------------------------------------------------------------------------
 
-  
+
 //-----------------------------------------------------------------------------
 void MultiFileReader::SetInput( FileListType* UserFileList )
-  { 
+  {
   if( UserFileList->size() == 0 ) return;
 
   this->m_FileList = UserFileList;
@@ -78,29 +78,29 @@ void MultiFileReader::SetInput( FileListType* UserFileList )
 void MultiFileReader::PrintSelf( std::ostream& os, Indent indent) const
 {
   Superclass::PrintSelf( os, indent );
-  os << indent << "Images Dimensionality: " 
+  os << indent << "Images Dimensionality: "
      << m_Dimensionality << std::endl;
-  os << indent << "Images Value Type: "     
+  os << indent << "Images Value Type: "
      << m_DataScalarType << std::endl;
-  os << indent << "Number Of Channels: "    
+  os << indent << "Number Of Channels: "
      << m_NumberOfChannels << std::endl;
-  os << indent << "Number of Time Points: " 
+  os << indent << "Number of Time Points: "
      << m_NumberOfTimePoints << std::endl;
-  os << indent << "Update Time Point: "     
+  os << indent << "Update Time Point: "
      << m_UpdateTimePoint << std::endl;
-  os << indent << "Update Channel: " 
+  os << indent << "Update Channel: "
      << m_UpdateChannel << std::endl;
-  os << indent << "Are Images multichannel? " 
+  os << indent << "Are Images multichannel? "
      << m_AreImagesMultiChannel << std::endl;
 }
 //-----------------------------------------------------------------------------
 
-   
+
 //-----------------------------------------------------------------------------
 void MultiFileReader::Update( void )
 {
   this->ComputeUpdateFileList();
- 
+
   FileListType::iterator startIt;
   FileListType::iterator endIt;
   FileListType::iterator It;
@@ -110,7 +110,7 @@ void MultiFileReader::Update( void )
     // prepare the final output
     vtkImageAppend* volumeBuilder = vtkImageAppend::New();
     volumeBuilder->SetAppendAxis( 2 ); //append along Z
-    
+
     // read the files and feed the volume builder
     // NOTE ALEX: sould convert to a vtkStringArray and use SetFileNames
     // note the S at  the end of the method name
@@ -125,13 +125,15 @@ void MultiFileReader::Update( void )
           {
           vtkJPEGReader* reader = vtkJPEGReader::New();
           reader->SetFileName( (*It).Filename.c_str() );
-	      reader->SetFileDimensionality( this->m_Dimensionality );
+	        reader->SetFileDimensionality( this->m_Dimensionality );
           reader->Update();
-	      volumeBuilder->SetInput( counter, reader->GetOutput( ) );
-	      break;
+
+	        volumeBuilder->SetInput( counter, reader->GetOutput( ) );
+          reader->Delete();
+   	      break;
           }
-	case BMP:
-          { 
+	      case BMP:
+          {
           itkExceptionMacro( << "BMP is not supported at this time." );
           break;
           }
@@ -145,7 +147,7 @@ void MultiFileReader::Update( void )
           itkExceptionMacro( << "TIFF is not supported at this time." );
           break;
           }
-	case MHA:
+	     case MHA:
           {
           itkExceptionMacro( << "MHA is not supported at this time." );
           break;
@@ -156,8 +158,10 @@ void MultiFileReader::Update( void )
           break;
           }
         default:
+          {
           itkExceptionMacro( << "unsupported type: " << this->m_FileType << "." );
-	      break;
+	        break;
+          }
         }
       It++;
       counter++;
@@ -181,7 +185,7 @@ void MultiFileReader::Update( void )
       }
 
     } // end of dimensionality == 2
-    
+
   if( this->m_Dimensionality == 3 )
     {
     switch( this->m_FileType )
@@ -196,12 +200,12 @@ void MultiFileReader::Update( void )
         break;
       case MHA:
         itkExceptionMacro( << "MHA is not supported at this time." );
-        break; 
+        break;
       case LSM:
         {
         It = m_UpdateFileList.begin();
         if( this->m_AreImagesMultiChannel )
-          { 
+          {
           vtkImageData* myImage_ch1 = vtkImageData::New();
           vtkLSMReader* reader=vtkLSMReader::New();
           reader->SetFileName( (*It).Filename.c_str() );
@@ -209,13 +213,13 @@ void MultiFileReader::Update( void )
           int NumberOfChannels = reader->GetNumberOfChannels();
           myImage_ch1->ShallowCopy( reader->GetOutput() );
           reader->Delete();
-          
+
           if( ( NumberOfChannels == 1 ) )
-            {      
+            {
             m_OutputImage = myImage_ch1;
             return;
             }
-          
+
           vtkImageData* myImage_ch2 = vtkImageData::New();
           vtkLSMReader* reader2=vtkLSMReader::New();
           reader2->SetFileName( (*It).Filename.c_str() );
@@ -223,7 +227,7 @@ void MultiFileReader::Update( void )
           reader2->Update();
           myImage_ch2->ShallowCopy( reader2->GetOutput() );
           reader2->Delete();
-    
+
           vtkImageData* myImage2 = vtkImageData::New();
           vtkImageAppendComponents* appendFilter1 = vtkImageAppendComponents::New();
           appendFilter1->AddInput( myImage_ch1 );
@@ -279,12 +283,12 @@ void MultiFileReader::Update( void )
         itkExceptionMacro( << "unsupported type: " << this->m_FileType << "." );
         break;
       }
-    }  
+    }
 }
 //-----------------------------------------------------------------------------
 
 
-//----------------------------------------------------------------------------- 
+//-----------------------------------------------------------------------------
 void MultiFileReader::ComputeUpdateFileList()
 {
   if( m_FileList->size() == 0 )
@@ -292,25 +296,25 @@ void MultiFileReader::ComputeUpdateFileList()
     itkExceptionMacro( << "The File List is empty." );
     return;
     }
-    
-  if( this->m_Dimensionality < 4 )    
+
+  if( this->m_Dimensionality < 4 )
   {
     // extract files of interest
     FileListType::iterator startIt;
     FileListType::iterator endIt;
     FileListType::iterator It = m_FileList->begin();
-  
+
     itkDebugMacro( "Number of Files imported: " << m_FileList->size() );
     itkDebugMacro( "First File Time Point: " << (*It).TimePoint );
-    itkDebugMacro( "Requested  Time Point: " << m_UpdateTimePoint ); 
+    itkDebugMacro( "Requested  Time Point: " << m_UpdateTimePoint );
     // get the first file
-    while( It != m_FileList->end() 
+    while( It != m_FileList->end()
            && (int)((*It).TimePoint) < this->m_UpdateTimePoint )
       {
       It++;
       }
     startIt = It;
-  
+
     itkDebugMacro( "First File: " << (*It).Filename.c_str() );
 
     // get the last file
@@ -321,7 +325,7 @@ void MultiFileReader::ComputeUpdateFileList()
       }
     else // find all the 2D files needed for the 3D volume
       {
-      while( It != m_FileList->end() 
+      while( It != m_FileList->end()
              && (int)((*It).TimePoint) == this->m_UpdateTimePoint )
         {
         It++;
@@ -332,7 +336,7 @@ void MultiFileReader::ComputeUpdateFileList()
 
     itkDebugMacro( "Last File: " << (*It).Filename.c_str() );
     itkDebugMacro( "Found " << counter << " Files in between." );
- 
+
     // build up the file list;
     m_UpdateFileList.clear();
     It = startIt;
@@ -341,7 +345,7 @@ void MultiFileReader::ComputeUpdateFileList()
       m_UpdateFileList.push_back( (*It) );
       It++;
       }
-  
+
     itkDebugMacro( "Number Of files to Read: " << m_UpdateFileList.size() );
 
     }
@@ -351,8 +355,8 @@ void MultiFileReader::ComputeUpdateFileList()
     }
 }
 //-----------------------------------------------------------------------------
-  
-  
+
+
 //-----------------------------------------------------------------------------
 void MultiFileReader::SetFileType( const FILETYPE UserFileType )
 {
@@ -374,7 +378,7 @@ void MultiFileReader::SetDimensionality( int UserDimensionality )
 //-----------------------------------------------------------------------------
 void MultiFileReader::SetMultiChannelImages( int value )
 {
-  if( value ) 
+  if( value )
     m_AreImagesMultiChannel = true;
   else
     m_AreImagesMultiChannel = false;
@@ -408,7 +412,7 @@ MultiFileReader::~MultiFileReader()
     }
 }
 //-----------------------------------------------------------------------------
-    
+
 }
 
 #endif

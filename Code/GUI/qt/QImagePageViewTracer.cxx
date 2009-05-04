@@ -493,11 +493,15 @@ const double& g, const double& b )
 
   this->Pool->SyncSetBackground( rgb );
 
-  vtkTextProperty* property = this->Pool->GetItem( 0 )->GetTextProperty();
-//   property->SetFontFamilyToArial();
-//   property->SetFontSize( 14 );
-  property->SetColor( textcolor );
-  this->Pool->SyncSetTextProperty( property );
+  for( int i = 0; i < 3; i++ )
+  {
+    vtkTextProperty* property = this->Pool->GetItem( i )->GetTextProperty();
+    property->SetFontFamilyToArial();
+    property->SetFontSize( 14 );
+    property->SetColor( textcolor );
+  }
+
+//   this->Pool->SyncSetTextProperty( property );
 }
 
 void QImagePageViewTracer::SetBackgroundColor( double rgb[3] )
@@ -509,11 +513,14 @@ void QImagePageViewTracer::SetBackgroundColor( double rgb[3] )
 
   this->Pool->SyncSetBackground( rgb );
 
-  vtkTextProperty* property = this->Pool->GetItem( 0 )->GetTextProperty();
-//   property->SetFontFamilyToArial();
-//   property->SetFontSize( 14 );
-  property->SetColor( textcolor );
-  this->Pool->SyncSetTextProperty( property );
+  for( int i = 0; i < 3; i++ )
+  {
+    vtkTextProperty* property = this->Pool->GetItem( 0 )->GetTextProperty();
+    property->SetFontFamilyToArial();
+    property->SetFontSize( 14 );
+    property->SetColor( textcolor );
+  }
+//   this->Pool->SyncSetTextProperty( property );
 }
 
 void QImagePageViewTracer::SetBackgroundColor( const QColor& iColor )
@@ -532,11 +539,14 @@ void QImagePageViewTracer::SetBackgroundColor( const QColor& iColor )
 
   this->Pool->SyncSetBackground( rgb );
 
-  vtkTextProperty* property = this->Pool->GetItem( 0 )->GetTextProperty();
-//   property->SetFontFamilyToArial();
-//   property->SetFontSize( 14 );
-  property->SetColor( textcolor );
-  this->Pool->SyncSetTextProperty( property );
+  for( int i = 0; i < 3; i++ )
+  {
+    vtkTextProperty* property = this->Pool->GetItem( 0 )->GetTextProperty();
+    property->SetFontFamilyToArial();
+    property->SetFontSize( 14 );
+    property->SetColor( textcolor );
+  }
+//   this->Pool->SyncSetTextProperty( property );
 }
 
 QVTKWidget* QImagePageViewTracer::GetActiveQVTKWidget( )
@@ -686,9 +696,6 @@ void QImagePageViewTracer::Set3DImage( vtkImageData* input )
   View1->SetViewOrientation( vtkViewImage2D::VIEW_ORIENTATION_AXIAL );
   View1->SetViewConvention( vtkViewImage2D::VIEW_CONVENTION_NEUROLOGICAL );
 
-  //     View1->GetTextProperty()->SetFontFamilyToArial();
-  //     View1->GetTextProperty()->SetFontSize( 14 );
-
   //     View1->SetContourWidgetInteractionOn();
   this->Pool->AddItem( View1 );
   this->View3D->Add2DPhantom( 0, View1->GetImageActor(), View1->GetSlicePlane() );
@@ -732,8 +739,8 @@ void QImagePageViewTracer::Set3DImage( vtkImageData* input )
   View2->SetViewConvention( vtkViewImage2D::VIEW_CONVENTION_NEUROLOGICAL );
   View2->SetViewOrientation (vtkViewImage2D::VIEW_ORIENTATION_CORONAL);
 
-  //     View2->GetTextProperty()->SetFontFamilyToArial();
-  //     View2->GetTextProperty()->SetFontSize( 14 );
+//       View2->GetTextProperty()->SetFontFamilyToArial();
+//       View2->GetTextProperty()->SetFontSize( 14 );
   //     View2->SetContourWidgetInteractionOn();
 
   this->Pool->AddItem( View2 );
@@ -776,8 +783,8 @@ void QImagePageViewTracer::Set3DImage( vtkImageData* input )
   View3->SetViewConvention( vtkViewImage2D::VIEW_CONVENTION_NEUROLOGICAL );
   View3->SetViewOrientation (vtkViewImage2D::VIEW_ORIENTATION_SAGITTAL);
 
-  //     View3->GetTextProperty()->SetFontFamilyToArial();
-  //     View3->GetTextProperty()->SetFontSize( 14 );
+//       View3->GetTextProperty()->SetFontFamilyToArial();
+//       View3->GetTextProperty()->SetFontSize( 14 );
   //     View3->SetContourWidgetInteractionOn();
 
   this->Pool->AddItem( View3 );
@@ -822,9 +829,17 @@ void QImagePageViewTracer::Set3DImage( vtkImageData* input )
   this->Pool->SetExtraRenderWindow( renwin4 );
 
   this->Pool->Initialize();
-  this->Pool->SyncSetShowAnnotations( true );
-  this->Pool->SyncSetShowScalarBar( false );
   this->Pool->SyncSetBackground( this->Pool->GetItem(0)->GetBackground() );
+  this->Pool->SyncSetShowAnnotations( true );
+
+  for( int i = 0; i < 3; i++ )
+  {
+    this->Pool->GetItem(i)->GetTextProperty()->SetFontFamilyToArial();
+    this->Pool->GetItem(i)->GetTextProperty()->SetFontSize( 14 );
+  }
+
+  this->Pool->SyncSetShowScalarBar( false );
+
   this->Pool->SyncSetTextProperty( this->Pool->GetItem(0)->GetTextProperty());
   //     this->Pool->SyncMaskImage();
   this->Pool->SyncRender();
@@ -850,8 +865,8 @@ void QImagePageViewTracer::Set2DImage( vtkImageData* input )
   View1->SetViewOrientation( vtkViewImage2D::VIEW_ORIENTATION_AXIAL );
   View1->SetViewConvention( vtkViewImage2D::VIEW_CONVENTION_NEUROLOGICAL );
 
-  //     View1->GetTextProperty()->SetFontFamilyToArial();
-  //     View1->GetTextProperty()->SetFontSize( 14 );
+  View1->GetTextProperty()->SetFontFamilyToArial();
+  View1->GetTextProperty()->SetFontSize( 20 );
 
   //     View1->SetContourWidgetInteractionOn();
   this->Pool->AddItem( View1 );
@@ -1025,15 +1040,26 @@ void QImagePageViewTracer::ValidateContour(
           QString MinString = QString( "_m%1_%2_%3" ).arg( min_idx[0] ).arg( min_idx[1] ).arg( min_idx[2] );
           QString MaxString = QString( "_M%1_%2_%3" ).arg( max_idx[0] ).arg( max_idx[1] ).arg( max_idx[2] );
 
-          QString filename = QString( "contour%1%2%3%4" )
-            .arg( identifier ).arg( MinString ).arg( MaxString ).arg( ".vtk" );
+          QString filename_prefix = QString( "contour%1%2%3" )
+            .arg( identifier ).arg( MinString ).arg( MaxString );
+          QString vtk_filename = filename_prefix.append( ".vtk");
 
           vtkPolyDataWriter* writer = vtkPolyDataWriter::New();
           writer->SetInput( contour );
-          writer->SetFileName( filename.toAscii().constData() );
+          writer->SetFileName( vtk_filename.toAscii().constData() );
           writer->Write();
 
           writer->Delete();
+
+//           QString ctrlpt_filename = filename_prefix.append( ".scpts" );
+//
+//
+//           int NbOfNodes = contour_rep->GetNumberOfNodes();
+//
+//           for( int ii = 0; ii < NbOfNodes; ii++ )
+//           {
+//
+//           }
         }
 
         vtkPolyData* contour_copy = vtkPolyData::New();
