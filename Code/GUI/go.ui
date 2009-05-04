@@ -851,6 +851,12 @@ Component</string>
         <property name="text">
          <string>On</string>
         </property>
+        <property name="shortcut">
+         <string>Ctrl+C, Ctrl+Y</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
        </widget>
       </item>
       <item>
@@ -858,8 +864,11 @@ Component</string>
         <property name="text">
          <string>Off</string>
         </property>
+        <property name="shortcut">
+         <string>Ctrl+C, Ctrl+N</string>
+        </property>
         <property name="checked">
-         <bool>true</bool>
+         <bool>false</bool>
         </property>
        </widget>
       </item>
@@ -877,6 +886,9 @@ Component</string>
      <property name="text">
       <string>Save Contours</string>
      </property>
+     <property name="shortcut">
+      <string>Ctrl+C, Ctrl+S</string>
+     </property>
     </widget>
     <widget class="QWidget" name="layoutWidget5">
      <property name="geometry">
@@ -893,12 +905,28 @@ Component</string>
         <property name="text">
          <string>Reinitialize</string>
         </property>
+        <property name="shortcut">
+         <string>Ctrl+C, Ctrl+R</string>
+        </property>
        </widget>
       </item>
       <item>
        <widget class="QPushButton" name="TracerValidationBtn">
         <property name="text">
          <string>Validate</string>
+        </property>
+        <property name="shortcut">
+         <string>Ctrl+C, Ctrl+V</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="TracerReinitializeIncrementBtn">
+        <property name="text">
+         <string>Reinitialize + Increment</string>
+        </property>
+        <property name="shortcut">
+         <string>Ctrl+C, Ctrl+I</string>
         </property>
        </widget>
       </item>
@@ -941,6 +969,9 @@ Component</string>
         </property>
         <property name="text">
          <string>Set Color...</string>
+        </property>
+        <property name="shortcut">
+         <string>Ctrl+C, Ctrl+C</string>
         </property>
        </widget>
       </item>
@@ -1108,6 +1139,12 @@ Component</string>
    </widget>
   </widget>
   <action name="actionOpen_Single_File">
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
+   <property name="checked">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset resource="resources/axes.qrc">
      <normaloff>:/newPrefix/fig/document-open.png</normaloff>:/newPrefix/fig/document-open.png</iconset>
@@ -1630,6 +1667,118 @@ Component</string>
     <hint type="destinationlabel">
      <x>97</x>
      <y>672</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>ManualSegmentationOnRadioBtn</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>IdContourBox</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>47</x>
+     <y>438</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>64</x>
+     <y>509</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>ManualSegmentationOnRadioBtn</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>IdContourColorBtn</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>47</x>
+     <y>438</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>150</x>
+     <y>510</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>ManualSegmentationOnRadioBtn</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>SaveContourCheckBox</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>47</x>
+     <y>438</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>93</x>
+     <y>546</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>ManualSegmentationOnRadioBtn</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>TracerReinitializeBtn</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>47</x>
+     <y>438</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>109</x>
+     <y>578</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>ManualSegmentationOnRadioBtn</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>TracerReinitializeIncrementBtn</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>47</x>
+     <y>438</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>109</x>
+     <y>636</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>ManualSegmentationOnRadioBtn</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>TracerValidationBtn</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>47</x>
+     <y>438</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>109</x>
+     <y>607</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>ManualSegmentationOnRadioBtn</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>label_16</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>47</x>
+     <y>438</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>510</y>
     </hint>
    </hints>
   </connection>

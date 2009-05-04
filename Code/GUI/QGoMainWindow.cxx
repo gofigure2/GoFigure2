@@ -63,15 +63,17 @@ QGoMainWindow::QGoMainWindow( )
   this->setWindowTitle( tr( "<*)0|00|0>< ~~ <*)0|00|0><     GoFigure    ><0|00|0(*> ~~ ><0|00|0(*>") );
   this->statusbar->showMessage( tr( "No data" ) );
   this->CentralImageTabWidget->clear();
+  this->CentralImageTabWidget->setMovable(false);
   this->KishoreSegDockWidget->setVisible(false);
   this->ManualSegmentationDockWidget->setVisible(false);
   this->OneClickSegmentationDockWidget->setVisible(false);
+  this->actionVolume_rendering_XYZ->setChecked(false);
   this->statusbar->addPermanentWidget( &m_Bar );
   m_Bar.hide();
   //setCurrentFile("");
 
   this->CentralImageTabWidget->setTabsClosable( true );
-  this->CentralImageTabWidget->setMovable( true );
+
 
   m_LUTDialog = new QGoLUTDialog( this );
 
@@ -101,15 +103,21 @@ QGoMainWindow::QGoMainWindow( )
     this, SLOT( ValidateContourTracer() ) );
   QObject::connect( this->TracerReinitializeBtn, SIGNAL( released() ),
     this, SLOT( ReinitializeContourTracer() ) );
+  QObject::connect( this->TracerReinitializeIncrementBtn, SIGNAL( released() ),
+    this, SLOT( ReinitializeAndIncrementContourTracer() ) );
+
   //QObject::connect( this->actionOpen, SIGNAL( activated( ) ),
     //this, SLOT( showprogressloading() ) );
   QObject::connect( this->CentralImageTabWidget,
     SIGNAL( currentChanged( int ) ),
-    this, SLOT( UpdateFullScreenViewButtons( int ) ) );
+    this, SLOT( UpdateToolBarViewButtons( int ) ) );
   QObject::connect( this->CentralImageTabWidget,
     SIGNAL( currentChanged( int ) ),
     this, SLOT( UpdateTracerButtons( int ) ) );
 
+  QObject::connect(this->CentralImageTabWidget,
+    SIGNAL(tabCloseRequested(int)),
+    this, SLOT( on_actionClose_activated( ) ) );
   Fullscreenbuttons();
 
   for( int i = 0; i < MaxRecentFiles; ++i )
@@ -133,6 +141,7 @@ QGoMainWindow::~QGoMainWindow()
       dynamic_cast<QImagePageViewTracer*>( m_PageView.last() );
     if( myPageView )
     {
+      //writeSettingsPageView(myPageView);
       delete myPageView;
     }
     else
@@ -285,6 +294,7 @@ void QGoMainWindow::on_actionClose_activated( )
       dynamic_cast<QImagePageViewTracer*>( m_PageView[idx] );
     if( myPageView )
     {
+      //writeSettingsPageView(myPageView);
       delete myPageView;
     }
     else
@@ -293,6 +303,7 @@ void QGoMainWindow::on_actionClose_activated( )
         dynamic_cast<QImagePageView4DTracer*>( m_PageView[ idx ] );
       if( myPageView4D )
       {
+        //writeSettingsPageView(myPageView4D);
         delete myPageView4D;
       }
     }
@@ -319,6 +330,7 @@ void QGoMainWindow::on_actionClose_all_activated( )
       dynamic_cast<QImagePageViewTracer*>( m_PageView.last() );
     if( myPageView )
     {
+      //writeSettingsPageView(myPageView);
       delete myPageView;
     }
     else
@@ -327,6 +339,7 @@ void QGoMainWindow::on_actionClose_all_activated( )
         dynamic_cast<QImagePageView4DTracer*>( m_PageView.last() );
       if( myPageView4D )
       {
+        //writeSettingsPageView(myPageView4D);
         delete myPageView4D;
       }
     }
@@ -391,8 +404,11 @@ void QGoMainWindow::on_actionLookup_Table_activated( )
 // *************************************************************************
 void QGoMainWindow::on_actionQuad_View_activated( )
 {
-  this->SetFullScreenDispatch( 0 );
-  this->actionSnapshot->setEnabled(false);
+  if (this->CentralImageTabWidget->count()!= 0)
+  {
+  	this->SetFullScreenDispatch( 0 );
+  	this->actionSnapshot->setEnabled(false);
+  }
 }
 
 
@@ -433,44 +449,59 @@ QGoMainWindow::SetFullScreenDispatch( const int & ViewID )
 // *************************************************************************
 void QGoMainWindow::on_actionFull_screen_XY_activated( )
 {
-  this->SetFullScreenDispatch( 1 );
+  if (this->CentralImageTabWidget->count()!= 0)
+  {
+  	this->SetFullScreenDispatch( 1 );
+  }
 }
 
 // *************************************************************************
 void QGoMainWindow::on_actionFull_screen_YZ_activated( )
 {
-  this->SetFullScreenDispatch( 2 );
+  if (this->CentralImageTabWidget->count()!= 0)
+  {
+  	this->SetFullScreenDispatch( 2 );
+  }
 }
 
 // *************************************************************************
 void QGoMainWindow::on_actionFull_screen_XZ_activated( )
 {
-  this->SetFullScreenDispatch( 3 );
+  if (this->CentralImageTabWidget->count()!= 0)
+  {
+  	this->SetFullScreenDispatch( 3 );
+  }
 }
 
 // *************************************************************************
 void QGoMainWindow::on_actionFull_screen_XYZ_activated( )
 {
-  this->SetFullScreenDispatch( 4 );
+  if (this->CentralImageTabWidget->count()!= 0)
+  {
+  	this->SetFullScreenDispatch( 4 );
+  }
 }
 
 // *************************************************************************
 void QGoMainWindow::on_actionVolume_rendering_XYZ_activated( )
 {
-  int idx = this->CentralImageTabWidget->currentIndex();
-  QImagePageViewTracer* pageView =
-    dynamic_cast<QImagePageViewTracer*>( m_PageView[idx] );
-  if( pageView )
+  if (this->CentralImageTabWidget->count()!= 0)
   {
-    SetRendering<QImagePageViewTracer>( pageView );
-  }
-  else
-  {
-    QImagePageView4DTracer* pageViewColor =
-    dynamic_cast<QImagePageView4DTracer*>( m_PageView[idx] );
-    if( pageViewColor )
+    int idx = this->CentralImageTabWidget->currentIndex();
+    QImagePageViewTracer* pageView =
+      dynamic_cast<QImagePageViewTracer*>( m_PageView[idx] );
+    if( pageView )
     {
-      SetRendering<QImagePageView4DTracer>( pageViewColor );
+      SetRendering<QImagePageViewTracer>( pageView );
+    }
+    else
+    {
+      QImagePageView4DTracer* pageViewColor =
+      dynamic_cast<QImagePageView4DTracer*>( m_PageView[idx] );
+      if( pageViewColor )
+      {
+        SetRendering<QImagePageView4DTracer>( pageViewColor );
+      }
     }
   }
 }
@@ -495,16 +526,30 @@ QGoMainWindow::SetRendering( T* myPageView )
 // *************************************************************************
 void QGoMainWindow::on_actionScale_bars_activated( )
 {
-  int idx = this->CentralImageTabWidget->currentIndex();
-  QImagePageViewTracer* myPageView =
-    dynamic_cast<QImagePageViewTracer*>( m_PageView[idx] );
-  if( myPageView )
+  if (this->CentralImageTabWidget->count()!= 0)
   {
-    myPageView->SetShowScalarBar( actionScale_bars->isChecked() );
+  	int idx = this->CentralImageTabWidget->currentIndex();
+  	QImagePageViewTracer* myPageView =
+  	  dynamic_cast<QImagePageViewTracer*>( m_PageView[idx] );
+  	if( myPageView )
+  	{
+  	  myPageView->SetShowScalarBar( actionScale_bars->isChecked() );
+  	}
+  	else
+ 	{
+      QImagePageView4DTracer* pageViewColor =
+    	dynamic_cast<QImagePageView4DTracer*>( m_PageView[idx] );
+      if( pageViewColor )
+      {
+      	pageViewColor->SetShowScalarBar( actionScale_bars->isChecked() );
+      }
+    }
   }
 }
 
 // *************************************************************************
+// \todo ALEX: implement support for LSM
+//
 void QGoMainWindow::on_actionSnapshot_activated( )
 {
   int idx = this->CentralImageTabWidget->currentIndex();
@@ -639,7 +684,20 @@ void QGoMainWindow::ChangeLookupTable( )
   {
     myPageView->SetLookupTable( this->m_LUTDialog->GetLookupTable() );
   }
+  else
+  {
+  	QImagePageView4DTracer* myPageView2 =
+      dynamic_cast<QImagePageView4DTracer*>( m_PageView[idx] );
+  	if( myPageView2 )
+    {
+      myPageView2->SetLookupTable( this->m_LUTDialog->GetLookupTable() );
+      return;
+    }
+  }
 }
+
+
+
 
 // *************************************************************************
 void QGoMainWindow::SetColorForGivenId( const bool& iSelect )
@@ -743,12 +801,17 @@ void QGoMainWindow::ValidateContourTracer( )
   }
 }
 
+
+void QGoMainWindow::ReinitializeAndIncrementContourTracer( )
+{
+  ReinitializeContourTracer( );
+  this->IdContourBox->setValue( 1 + this->IdContourBox->value() );
+}
 // *************************************************************************
 template< class T >
 void QGoMainWindow::ValidateContourTracerHelper( T* PageView )
 {
   unsigned int cell_id = IdContourBox->value();
-  PageView->SetCellId( cell_id );
 
   if( m_IdColorMap.find( cell_id ) == m_IdColorMap.end() )
   {
@@ -1007,13 +1070,14 @@ void QGoMainWindow::readSettings()
     this->resize( 1450, 750 );
   }
 
+//  settings.setValue("vsplitterSizes", vSplitter->saveState());
    settings.endGroup();
 }
 
 // *************************************************************************
 void QGoMainWindow::writeSettings()
 {
-  QSettings settings("MegasonLab", "Gofigure2");
+  QSettings settings;
   settings.setValue("recentFiles", m_RecentFiles);
   settings.beginGroup("MainWindow");
   settings.setValue("size", size());
@@ -1021,6 +1085,12 @@ void QGoMainWindow::writeSettings()
   settings.endGroup();
 }
 
+// *************************************************************************
+template< class T >
+void QGoMainWindow::writeSettingsPageView(T* PageView )
+{
+  PageView->SaveStateSplitters();
+}
 // *************************************************************************
 void QGoMainWindow::ShowProgressLoading( itk::Object * myFilter )
 {
@@ -1049,15 +1119,29 @@ void QGoMainWindow::UpdateTracerButtons( const int& idx)
       dynamic_cast<QImagePageViewTracer*>( m_PageView[idx] );
     if( myPageView )
     {
+      this->IdContourBox->setValue( myPageView->GetCellId() );
       if( myPageView->GetTracerStatus( ) )
+        this->ManualSegmentationOnRadioBtn->toggle();
+      else
+        this->ManualSegmentationOffRadioBtn->toggle();
+    }
+
+    QImagePageView4DTracer* myPageView2 =
+      dynamic_cast<QImagePageView4DTracer*>( m_PageView[idx] );
+    if( myPageView2 )
+    {
+      this->IdContourBox->setValue( myPageView2->GetCellId() );
+      if( myPageView2->GetTracerStatus( ) )
         this->ManualSegmentationOnRadioBtn->toggle();
       else
         this->ManualSegmentationOffRadioBtn->toggle();
     }
   }
 }
+
+
 // *************************************************************************
-void QGoMainWindow::UpdateFullScreenViewButtons( const int& idx )
+void QGoMainWindow::UpdateToolBarViewButtons( const int& idx )
 {
   if( (idx>=0) && (idx<m_PageView.size()))
   {
@@ -1066,6 +1150,7 @@ void QGoMainWindow::UpdateFullScreenViewButtons( const int& idx )
     if( myPageView )
     {
       UpdateFullScreenViewButtonsHelper( myPageView );
+	  UpdateVolumeRenderingButton( myPageView );
     }
     else
     {
@@ -1074,6 +1159,7 @@ void QGoMainWindow::UpdateFullScreenViewButtons( const int& idx )
       if( myPageView2 )
       {
         UpdateFullScreenViewButtonsHelper( myPageView2 );
+        UpdateVolumeRenderingButton ( myPageView2 );
       }
     }
   }
@@ -1117,6 +1203,20 @@ void QGoMainWindow::UpdateFullScreenViewButtonsHelper( T* PageView )
       actionSnapshot->setEnabled(true);
       break;
     }
+  }
+}
+
+template< class T >
+void QGoMainWindow::UpdateVolumeRenderingButton( T* PageView)
+{
+  bool IsVolumeRendering = PageView->GetVolumeRendering();
+  if (IsVolumeRendering)
+  {
+    actionVolume_rendering_XYZ->setChecked(true);
+  }
+  else
+  {
+    actionVolume_rendering_XYZ->setChecked(false);
   }
 }
 

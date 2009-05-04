@@ -59,7 +59,7 @@
 
 #include "QGoLUTDialog.h"
 #include "ui_go.h"
-
+// #include <qsettings.h>
 
 class QGoMainWindow : public QMainWindow,
   private Ui::go_mainwindow
@@ -115,9 +115,9 @@ protected slots:
   void ShowProgressLoading( itk::Object * myFilter );
   void HideProgressLoading();
 
-  /**\brief Update the full screen button group when the current tab is changed.
+  /** \brief Update the full screen button group when the current tab is changed.
   */
-  void UpdateFullScreenViewButtons( const int& idx);
+  void UpdateToolBarViewButtons( const int& idx);
   void UpdateTracerButtons( const int& idx);
 
 
@@ -131,6 +131,7 @@ protected slots:
 
   void SetColorForGivenId( const bool& iSelected = true );
   void ValidateContourTracer();
+  void ReinitializeAndIncrementContourTracer();
   void ReinitializeContourTracer();
   void openRecentFile();
 
@@ -140,6 +141,8 @@ protected:
   template< class T > void UpdateFullScreenViewButtonsHelper( T* PageView );
   template< class T > void SetFullScreen( const int & ViewID, T* PageView );
   template< class T > void SetRendering( T* myPageView );
+  template< class T > void UpdateVolumeRenderingButton( T* PageView);
+  template< class T > void writeSettingsPageView(T* PageView );
 
   /** \brief */
   void SetFullScreenDispatch( const int & ViewID );
@@ -164,6 +167,8 @@ protected:
 
   /** \brief */
   QActionGroup* m_FullscreenGroup;
+
+  //QSettings settings("MegasonLab", "Gofigure2");
 
   /** \brief */
   void setCurrentFile(const QString &fileName);

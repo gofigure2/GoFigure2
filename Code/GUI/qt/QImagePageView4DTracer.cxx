@@ -32,7 +32,6 @@
 
  =========================================================================*/
 
-#include "QImagePageViewTracer.h"
 #include "QImagePageView4DTracer.h"
 
 #include "QSplitterchild.h"

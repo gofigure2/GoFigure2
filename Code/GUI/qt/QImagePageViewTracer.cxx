@@ -60,11 +60,14 @@
 #include <vtkPoints.h>
 #include <vtkCellArray.h>
 #include <vtkMath.h>
+#include <qsettings.h>
 
 QImagePageViewTracer::QImagePageViewTracer( QWidget* parent ) : QWidget( parent )
 {
   IsFullScreen = 0;
   SnapshotId = 1;
+  IsVolumeRendering = false;
+  CellId = 1;
 
   Tag = QString( "QImagePageViewTracer" );
   Image = 0;
@@ -459,6 +462,11 @@ int QImagePageViewTracer::GetFullScreenView( ) const
   return IsFullScreen;
 }
 
+bool QImagePageViewTracer::GetVolumeRendering( ) const
+{
+  return IsVolumeRendering;
+}
+
 double* QImagePageViewTracer::GetBackgroundColor()
 {
   return this->Pool->GetItem( 0 )->GetBackground();
@@ -628,6 +636,7 @@ void QImagePageViewTracer::SetView3DToTriPlanarMode()
     View3D->SetTriPlanarRenderingOn();
     View3D->SetVolumeRenderingOff();
     View3D->Render();
+    IsVolumeRendering = false;
   }
 }
 //
@@ -638,6 +647,7 @@ void QImagePageViewTracer::SetView3DToVolumeRenderingMode()
     View3D->SetTriPlanarRenderingOff();
     View3D->SetVolumeRenderingOn();
     View3D->Render();
+    IsVolumeRendering = true;
   }
 }
 
@@ -918,12 +928,7 @@ QString QImagePageViewTracer::GetTag( ) const
   return this->Tag;
 }
 
-void QImagePageViewTracer::SetCellId( const unsigned int& iId )
-{
-  this->CellId = iId;
-}
-
-unsigned int QImagePageViewTracer::GetCellId() const
+int QImagePageViewTracer::GetCellId() const
 {
   return this->CellId;
 }
@@ -986,6 +991,8 @@ void QImagePageViewTracer::ValidateContour(
   contour_property->SetColor( rgb );
   contour_property->SetLineWidth( 3. );
 
+  CellId = iId;
+
   for( int i = 0; i < this->Pool->GetNumberOfItems(); i++ )
    {
     contour_rep = this->Pool->GetItem( i )->GetContourRepresentation();
@@ -1014,7 +1021,7 @@ void QImagePageViewTracer::ValidateContour(
 
         if( iSave )
         {
-          QString identifier = QString( "_id%1" ).arg( iId );
+          QString identifier = QString( "_id%1" ).arg( CellId );
           QString MinString = QString( "_m%1_%2_%3" ).arg( min_idx[0] ).arg( min_idx[1] ).arg( min_idx[2] );
           QString MaxString = QString( "_M%1_%2_%3" ).arg( max_idx[0] ).arg( max_idx[1] ).arg( max_idx[2] );
 
@@ -1088,4 +1095,12 @@ void QImagePageViewTracer::MoveSlider2( )
 void QImagePageViewTracer::MoveSlider3( )
 {
   this->slider3->setValue( this->Pool->GetItem( 2 )->GetSlice() );
+}
+
+void QImagePageViewTracer::SaveStateSplitters()
+{
+  QSettings settings;
+  settings.setValue("vSplitterSizes", vSplitter->saveState());
+  settings.setValue("htSplitterSizes", htSplitter->saveState());
+  settings.setValue("hbSplitterSizes", hbSplitter->saveState());
 }
