@@ -268,7 +268,20 @@ void vtkViewImage2DCommand::PrintInformation()
   os2 <<"Index: " <<"[ " <<idx[0] <<" ; " <<idx[1] <<" ; "
     <<idx[2]  <<" ]"<<std::endl;
 
-  os2 <<"Value : " <<this->Viewer->GetValueAtPosition (pos);
+  if( !this->Viewer->GetIsColor() )
+  {
+    os2 <<"Value : " <<this->Viewer->GetValueAtPosition (pos);
+  }
+  else
+  {
+    os2 <<"Value : [";
+    for( int i = 0; i < 3; i++ )
+    {
+      os2 <<this->Viewer->GetValueAtPosition (pos,i) <<", ";
+    }
+    os2 <<"]";
+  }
+
   this->Viewer->GetCornerAnnotation()->SetText (3, os2.str().c_str());
   this->Viewer->Render();
 }
