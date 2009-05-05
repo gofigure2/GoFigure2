@@ -8,6 +8,7 @@
 bool CanConnectToDatabase(
   const char* ServerName, const char* login, const char* Password, const char* DBName );
 
+
 void CreateDataBase(
   const char* ServerName, const char* login, const char* Password, const char* DBName );
 void CreateBookmarksTable(
