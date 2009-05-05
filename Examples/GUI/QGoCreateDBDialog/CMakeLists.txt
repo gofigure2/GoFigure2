@@ -1,0 +1,12 @@
+ADD_EXECUTABLE( 
+  QGoCreateDBDialogTest
+  QGoCreateDBDialogTest.cxx 
+  )
+TARGET_LINK_LIBRARIES( 
+  QGoCreateDBDialogTest
+  QMegaVTKAddOn2 
+  ITKCommon
+  ITKIO
+  ITKBasicFilters
+  ITKNumerics
+  )
