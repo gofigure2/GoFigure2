@@ -1,4 +1,7 @@
-SUBDIRS( QImagePageView 
+SUBDIRS( 
+  QImagePageView 
   QImagePageViewTracer 
   QImagePageView4DTracer 
-  QGoLUTDialog )
+  QGoLUTDialog 
+  QGoCreateDBDialog 
+  )

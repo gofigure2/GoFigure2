@@ -1,5 +1,5 @@
 /*=========================================================================
- Authors: The GoFigure Dev. Team.
+ Authors: the GoFigure Dev. Team.
  while at Megason Lab, Systems biology, Harvard Medical school, 2009 
  
  Copyright (c) 2009, President and Fellows of Harvard College.
@@ -32,52 +32,83 @@
  
  =========================================================================*/
 
-#ifndef __QGoLUTDialog_h
-#define __QGoLUTDialog_h
+#include <QInputDialog>
+#include <QMessageBox>
 
-#include <QtGui/QComboBox>
-#include <QtGui/QDialog>
-#include <QtGui/QDialogButtonBox>
-#include <QtGui/QHBoxLayout>
-#include <QtGui/QLabel>
-#include <QtGui/QWidget>
-#include <QtGui/QSpacerItem>
+#include "QGoCreateDBDialog.h"
+#include "CreateDataBaseHelper.h"
 
-#include <vtkLookupTable.h>
-#include <vtkScalarBarActor.h>
+#include "stdio.h"
 
-#include "QVTKWidget.h"
-#include "MegaVTK2Configure.h"
+#include <vtkTextProperty.h>
 
-/**
-  \class QGoLUTDialog
-  \brief Look-up Table Dialog
-*/
-class QGoLUTDialog : public QDialog
+QGoCreateDBDialog::QGoCreateDBDialog( QObject* parent ) 
+: QObject( parent )
 {
-  Q_OBJECT
-public:
-  explicit QMEGAVTKADDON2_EXPORT QGoLUTDialog( QWidget* parent = 0 );
-  virtual QMEGAVTKADDON2_EXPORT ~QGoLUTDialog();
+  bool ok = true;;
+  bool CouldConnect = false;
+  bool CouldCreate  = false;
+  QString ServerName;
+  QString DataBaseName;
 
-  QMEGAVTKADDON2_EXPORT vtkLookupTable* GetLookupTable( );
+  while( ok && !CouldConnect )
+    {
+    ServerName = QInputDialog::getText(
+      NULL, 
+      QString("Create DataBase"),
+      QString("Name of MySQL server to connect to:"), 
+      QLineEdit::Normal,
+      QString(""),
+      &ok
+      );
+   
+    if(ok && !ServerName.isEmpty()) 
+      {
+      CouldConnect = CanConnectToDatabase( 
+        ServerName.toAscii( ).data(),
+        "gofigure",
+        "gofigure",
+        ""
+        );
+      if( !CouldConnect )
+        {
+        QMessageBox::information(
+          NULL, 
+          tr("QMessageBox::information()"), 
+          tr("Could not connect to DataBase.") 
+          );
+        } 
+      }
+    }
 
-public slots:
-  QMEGAVTKADDON2_EXPORT void ChangeLookupTable( const int& );
+  if( ok && CouldConnect )
+    {
+    while( ok && !CouldCreate )
+      {
+      DataBaseName = QInputDialog::getText(
+        NULL, 
+        QString("Create DataBase"),
+        QString("Name of DataBase to create:"), 
+        QLineEdit::Normal,
+        QString(""),
+        &ok
+        );
+      if(ok && !DataBaseName.isEmpty())
+        {
+        CreateDataBaseMain( 
+          ServerName.toAscii( ).data(),
+          "gofigure",
+          "gofigure",
+          DataBaseName.toAscii().data() 
+          );
+        // NOTE ALEX: make a real test here
+        CouldCreate = true;
+        }
+      }
+    }
+}
 
-protected:
-  vtkLookupTable*    LUT;
-  vtkScalarBarActor* LUTActor;
-  vtkRenderer*       Renderer;
-  QDialogButtonBox*  buttonBox;
-  QVTKWidget*        qvtkWidget;
-  QHBoxLayout*       horizontalLayout;
-  QHBoxLayout*       horizontalLayout_2;
-  QVBoxLayout*       verticalLayout;
-  QSpacerItem*       horizontalSpacer;
-  QLabel*            label;
-  QComboBox*         LUTComboBox;
+QGoCreateDBDialog::~QGoCreateDBDialog()
+{
+}
 
-  void setupUi( QDialog *LUTDialog );
-};
-#endif

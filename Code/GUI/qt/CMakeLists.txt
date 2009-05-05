@@ -8,6 +8,7 @@ INCLUDE_DIRECTORIES( BEFORE
 
 SET( QMegaVTKAddOn_NAME2
   QGoLUTDialog
+  QGoCreateDBDialog
   QImagePageView
   QImagePageViewTracer
   QImagePageView4DTracer
@@ -16,6 +17,7 @@ SET( QMegaVTKAddOn_NAME2
 
 SET( QMegaVTKAddOn_SRC2
   QGoLUTDialog.cxx
+  QGoCreateDBDialog.cxx
   QImagePageView.cxx
   QImagePageViewTracer.cxx
   QImagePageView4DTracer.cxx
@@ -28,6 +30,7 @@ ENDFOREACH( src )
 
 ADD_LIBRARY( QMegaVTKAddOn2
   ${LIBS_STYLE}
+  ${QGoCreateDBDialog_MOC_SRC2}
   ${QGoLUTDialog_MOC_SRC2}
   ${QImagePageView_MOC_SRC2}
   ${QImagePageViewTracer_MOC_SRC2}
@@ -35,6 +38,7 @@ ADD_LIBRARY( QMegaVTKAddOn2
   ${QMegaVTKAddOn_SRC2}
   ${QSplitterchild_MOC_SRC2}
   ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/vtkLSM/vtkLSMReader.cxx
+  ${GOFIGURE2_SOURCE_DIR}/Code/IO/CreateDataBaseHelper.cxx
   )
 
 SET( QMegaVTKAddOn2_LIBS

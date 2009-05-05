@@ -6,40 +6,58 @@
 // coul dnot open database
 // database with same name already exists.
 
-
-void CreateDataBaseMain( const char * DBName)
+bool CanConnectToDatabase( 
+  char* ServerName, 
+  char* login     , 
+  char* Password  , 
+  char* DBName )
 {
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
-  DataBaseConnector->SetHostName("localhost");
-  DataBaseConnector->SetUser("gofigure");
-  DataBaseConnector->SetPassword("gofigure");
+  DataBaseConnector->SetHostName( ServerName );
+  DataBaseConnector->SetUser( login );
+  DataBaseConnector->SetPassword( Password );
+  DataBaseConnector->Open("");
+  return DataBaseConnector->IsOpen();
+}
+
+void CreateDataBaseMain( 
+  char* ServerName, 
+  char* login     , 
+  char* Password  , 
+  char* DBName )
+{
+  vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
+  DataBaseConnector->SetHostName( ServerName );
+  DataBaseConnector->SetUser( login );
+  DataBaseConnector->SetPassword( Password );
   DataBaseConnector->Open("");
   std::cout << "IsOpen ? " << DataBaseConnector->IsOpen()  << std::endl;
 
-  CreateDataBase(            DBName );
-  CreateBookmarksTable(      DBName );
-  CreateCollectionInfoTable( DBName );
-  CreateExperimentTable(     DBName );
-  CreateFigureTable(         DBName );
-  CreateFigureFlavorTable(   DBName );
-  CreateLineageTable(        DBName );
-  CreateLineageFlavorTable(  DBName );
-  CreateMeshTable(           DBName );
-  CreateMeshFlavor(          DBName );
-  CreateSeriesGridTable(     DBName );
-  CreateTrackTable(          DBName );
-  CreateTrackFlavor(         DBName );
+  CreateDataBase(            ServerName, login, Password, DBName );
+  CreateBookmarksTable(      ServerName, login, Password, DBName );
+  CreateCollectionInfoTable( ServerName, login, Password, DBName );
+  CreateExperimentTable(     ServerName, login, Password, DBName );
+  CreateFigureTable(         ServerName, login, Password, DBName );
+  CreateFigureFlavorTable(   ServerName, login, Password, DBName );
+  CreateLineageTable(        ServerName, login, Password, DBName );
+  CreateLineageFlavorTable(  ServerName, login, Password, DBName );
+  CreateMeshTable(           ServerName, login, Password, DBName );
+  CreateMeshFlavor(          ServerName, login, Password, DBName );
+  CreateSeriesGridTable(     ServerName, login, Password, DBName );
+  CreateTrackTable(          ServerName, login, Password, DBName );
+  CreateTrackFlavor(         ServerName, login, Password, DBName );
 
   DataBaseConnector->Close();
   DataBaseConnector->Delete();
 }
 
-void CreateDataBase( const char * DBName )
+void CreateDataBase( 
+  char* ServerName, char* login, char* Password, char * DBName )
 {
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
-  DataBaseConnector->SetHostName("localhost");
-  DataBaseConnector->SetUser("gofigure");
-  DataBaseConnector->SetPassword("gofigure");
+  DataBaseConnector->SetHostName( ServerName );
+  DataBaseConnector->SetUser( login );
+  DataBaseConnector->SetPassword( Password );
   if( !DataBaseConnector->Open() )
     {
     std::cerr << "Could not open database." << std::endl;
@@ -62,12 +80,13 @@ void CreateDataBase( const char * DBName )
   query->Delete();
 }
 
-void CreateBookmarksTable( const char * DBName )
+void CreateBookmarksTable(
+  char* ServerName, char* login, char* Password, char * DBName )
 {
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
-  DataBaseConnector->SetHostName("localhost");
-  DataBaseConnector->SetUser("gofigure");
-  DataBaseConnector->SetPassword("gofigure");
+  DataBaseConnector->SetHostName( ServerName );
+  DataBaseConnector->SetUser( login );
+  DataBaseConnector->SetPassword( Password );
   DataBaseConnector->SetDatabaseName( DBName );
   if( !DataBaseConnector->Open() )
     {
@@ -108,12 +127,13 @@ void CreateBookmarksTable( const char * DBName )
   query->Delete();
 }
 
-void CreateCollectionInfoTable( const char * DBName )
+void CreateCollectionInfoTable(
+  char* ServerName, char* login, char* Password, char * DBName )
 {
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
-  DataBaseConnector->SetHostName("localhost");
-  DataBaseConnector->SetUser("gofigure");
-  DataBaseConnector->SetPassword("gofigure");
+  DataBaseConnector->SetHostName( ServerName );
+  DataBaseConnector->SetUser( login );
+  DataBaseConnector->SetPassword( Password );
   DataBaseConnector->SetDatabaseName( DBName );
   if( !DataBaseConnector->Open() )
     {
@@ -151,12 +171,13 @@ void CreateCollectionInfoTable( const char * DBName )
   query->Delete();
 }
 
-void CreateExperimentTable( const char * DBName )
+void CreateExperimentTable(
+  char* ServerName, char* login, char* Password, char * DBName )
 {
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
-  DataBaseConnector->SetHostName("localhost");
-  DataBaseConnector->SetUser("gofigure");
-  DataBaseConnector->SetPassword("gofigure");
+  DataBaseConnector->SetHostName( ServerName );
+  DataBaseConnector->SetUser( login );
+  DataBaseConnector->SetPassword( Password );
   DataBaseConnector->SetDatabaseName( DBName );
   if( !DataBaseConnector->Open() )
     {
@@ -204,12 +225,13 @@ void CreateExperimentTable( const char * DBName )
   query->Delete();
 }
 
-void CreateFigureTable( const char * DBName )
+void CreateFigureTable(
+  char* ServerName, char* login, char* Password, char * DBName )
 {
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
-  DataBaseConnector->SetHostName("localhost");
-  DataBaseConnector->SetUser("gofigure");
-  DataBaseConnector->SetPassword("gofigure");
+  DataBaseConnector->SetHostName( ServerName );
+  DataBaseConnector->SetUser( login );
+  DataBaseConnector->SetPassword( Password );
   DataBaseConnector->SetDatabaseName( DBName );
   if( !DataBaseConnector->Open() )
     {
@@ -262,12 +284,13 @@ void CreateFigureTable( const char * DBName )
   query->Delete();
 }
 
-void CreateFigureFlavorTable( const char * DBName )
+void CreateFigureFlavorTable(
+  char* ServerName, char* login, char* Password, char * DBName )
 {
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
-  DataBaseConnector->SetHostName("localhost");
-  DataBaseConnector->SetUser("gofigure");
-  DataBaseConnector->SetPassword("gofigure");
+  DataBaseConnector->SetHostName( ServerName );
+  DataBaseConnector->SetUser( login );
+  DataBaseConnector->SetPassword( Password );
   DataBaseConnector->SetDatabaseName( DBName );
   if( !DataBaseConnector->Open() )
     {
@@ -302,12 +325,13 @@ void CreateFigureFlavorTable( const char * DBName )
   query->Delete();
 }
 
-void CreateLineageTable( const char * DBName )
+void CreateLineageTable(
+  char* ServerName, char* login, char* Password, char * DBName )
 {
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
-  DataBaseConnector->SetHostName("localhost");
-  DataBaseConnector->SetUser("gofigure");
-  DataBaseConnector->SetPassword("gofigure");
+  DataBaseConnector->SetHostName( ServerName );
+  DataBaseConnector->SetUser( login );
+  DataBaseConnector->SetPassword( Password );
   DataBaseConnector->SetDatabaseName( DBName );
   if( !DataBaseConnector->Open() )
     {
@@ -363,12 +387,13 @@ void CreateLineageTable( const char * DBName )
   query->Delete();
 }
 
-void CreateLineageFlavorTable( const char * DBName )
+void CreateLineageFlavorTable(
+  char* ServerName, char* login, char* Password, char * DBName )
 {
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
-  DataBaseConnector->SetHostName("localhost");
-  DataBaseConnector->SetUser("gofigure");
-  DataBaseConnector->SetPassword("gofigure");
+  DataBaseConnector->SetHostName( ServerName );
+  DataBaseConnector->SetUser( login );
+  DataBaseConnector->SetPassword( Password );
   DataBaseConnector->SetDatabaseName( DBName );
   if( !DataBaseConnector->Open() )
     {
@@ -403,12 +428,13 @@ void CreateLineageFlavorTable( const char * DBName )
   query->Delete();
 }
 
-void CreateMeshTable( const char * DBName )
+void CreateMeshTable(
+  char* ServerName, char* login, char* Password, char * DBName )
 {
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
-  DataBaseConnector->SetHostName("localhost");
-  DataBaseConnector->SetUser("gofigure");
-  DataBaseConnector->SetPassword("gofigure");
+  DataBaseConnector->SetHostName( ServerName );
+  DataBaseConnector->SetUser( login );
+  DataBaseConnector->SetPassword( Password );
   DataBaseConnector->SetDatabaseName( DBName );
   if( !DataBaseConnector->Open() )
     {
@@ -464,12 +490,13 @@ void CreateMeshTable( const char * DBName )
   query->Delete();
 }
 
-void CreateMeshFlavor( const char * DBName )
+void CreateMeshFlavor(
+  char* ServerName, char* login, char* Password, char * DBName )
 {
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
-  DataBaseConnector->SetHostName("localhost");
-  DataBaseConnector->SetUser("gofigure");
-  DataBaseConnector->SetPassword("gofigure");
+  DataBaseConnector->SetHostName( ServerName );
+  DataBaseConnector->SetUser( login );
+  DataBaseConnector->SetPassword( Password );
   DataBaseConnector->SetDatabaseName( DBName );
   if( !DataBaseConnector->Open() )
     {
@@ -504,12 +531,13 @@ void CreateMeshFlavor( const char * DBName )
   query->Delete();
 }
 
-void CreateSeriesGridTable( const char * DBName )
+void CreateSeriesGridTable(
+  char* ServerName, char* login, char* Password, char * DBName )
 {
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
-  DataBaseConnector->SetHostName("localhost");
-  DataBaseConnector->SetUser("gofigure");
-  DataBaseConnector->SetPassword("gofigure");
+  DataBaseConnector->SetHostName( ServerName );
+  DataBaseConnector->SetUser( login );
+  DataBaseConnector->SetPassword( Password );
   DataBaseConnector->SetDatabaseName( DBName );
   if( !DataBaseConnector->Open() )
     {
@@ -549,12 +577,13 @@ void CreateSeriesGridTable( const char * DBName )
   query->Delete();
 }
 
-void CreateTrackTable( const char * DBName )
+void CreateTrackTable(
+  char* ServerName, char* login, char* Password, char * DBName )
 {
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
-  DataBaseConnector->SetHostName("localhost");
-  DataBaseConnector->SetUser("gofigure");
-  DataBaseConnector->SetPassword("gofigure");
+  DataBaseConnector->SetHostName( ServerName );
+  DataBaseConnector->SetUser( login );
+  DataBaseConnector->SetPassword( Password );
   DataBaseConnector->SetDatabaseName( DBName );
   if( !DataBaseConnector->Open() )
     {
@@ -617,7 +646,9 @@ void CreateTrackTable( const char * DBName )
   query->Delete();
 }
 
-void CreateTrackFlavor( const char * DBName )
+
+void CreateTrackFlavor(
+  char* ServerName, char* login, char* Password, char * DBName )
 {
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
   DataBaseConnector->SetHostName("localhost");

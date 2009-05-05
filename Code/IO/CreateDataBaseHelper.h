@@ -5,20 +5,37 @@
 #include "vtkSQLQuery.h"
 #include "vtkStdString.h"
 
-void CreateDataBase( const char * DBName );
-void CreateBookmarksTable( const char * DBName );
-void CreateCollectionInfoTable( const char * DBName );
-void CreateExperimentTable( const char * DBName );
-void CreateFigureTable( const char * DBName );
-void CreateFigureFlavorTable( const char * DBName );
-void CreateLineageTable( const char * DBName );
-void CreateLineageFlavorTable( const char * DBName );
-void CreateMeshTable( const char * DBName );
-void CreateMeshFlavor( const char * DBName );
-void CreateSeriesGridTable( const char * DBName );
-void CreateTrackTable( const char * DBName );
-void CreateTrackFlavor( const char * DBName );
+bool CanConnectToDatabase( 
+  char* ServerName, char* login, char* Password, char * DBName );
 
-void CreateDataBaseMain( const char * DBName);
+void CreateDataBase(
+  char* ServerName, char* login, char* Password, char * DBName );
+void CreateBookmarksTable(
+  char* ServerName, char* login, char* Password, char * DBName );
+void CreateCollectionInfoTable(
+  char* ServerName, char* login, char* Password, char * DBName );
+void CreateExperimentTable(
+  char* ServerName, char* login, char* Password, char * DBName );
+void CreateFigureTable(
+  char* ServerName, char* login, char* Password, char * DBName );
+void CreateFigureFlavorTable(
+  char* ServerName, char* login, char* Password, char * DBName );
+void CreateLineageTable(
+  char* ServerName, char* login, char* Password, char * DBName );
+void CreateLineageFlavorTable(
+  char* ServerName, char* login, char* Password, char * DBName );
+void CreateMeshTable(
+  char* ServerName, char* login, char* Password, char * DBName );
+void CreateMeshFlavor(
+  char* ServerName, char* login, char* Password, char * DBName );
+void CreateSeriesGridTable(
+  char* ServerName, char* login, char* Password, char * DBName );
+void CreateTrackTable(
+  char* ServerName, char* login, char* Password, char * DBName );
+void CreateTrackFlavor(
+  char* ServerName, char* login, char* Password, char * DBName );
+
+void CreateDataBaseMain(
+  char* ServerName, char* login, char* Password, char * DBName );
 
 #endif

@@ -32,52 +32,26 @@
  
  =========================================================================*/
 
-#ifndef __QGoLUTDialog_h
-#define __QGoLUTDialog_h
+#ifndef __QGoCreateDBDialog_h
+#define __QGoCreateDBDialog_h
 
-#include <QtGui/QComboBox>
-#include <QtGui/QDialog>
-#include <QtGui/QDialogButtonBox>
-#include <QtGui/QHBoxLayout>
-#include <QtGui/QLabel>
-#include <QtGui/QWidget>
-#include <QtGui/QSpacerItem>
+#include <QObject>
 
-#include <vtkLookupTable.h>
-#include <vtkScalarBarActor.h>
-
-#include "QVTKWidget.h"
 #include "MegaVTK2Configure.h"
 
 /**
-  \class QGoLUTDialog
-  \brief Look-up Table Dialog
+  \class QGoCreateDBDialog
+  \brief 
 */
-class QGoLUTDialog : public QDialog
+class QGoCreateDBDialog : public QObject
 {
   Q_OBJECT
 public:
-  explicit QMEGAVTKADDON2_EXPORT QGoLUTDialog( QWidget* parent = 0 );
-  virtual QMEGAVTKADDON2_EXPORT ~QGoLUTDialog();
-
-  QMEGAVTKADDON2_EXPORT vtkLookupTable* GetLookupTable( );
+  explicit QMEGAVTKADDON2_EXPORT QGoCreateDBDialog( QObject* parent = 0 );
+  virtual  QMEGAVTKADDON2_EXPORT ~QGoCreateDBDialog();
 
 public slots:
-  QMEGAVTKADDON2_EXPORT void ChangeLookupTable( const int& );
 
 protected:
-  vtkLookupTable*    LUT;
-  vtkScalarBarActor* LUTActor;
-  vtkRenderer*       Renderer;
-  QDialogButtonBox*  buttonBox;
-  QVTKWidget*        qvtkWidget;
-  QHBoxLayout*       horizontalLayout;
-  QHBoxLayout*       horizontalLayout_2;
-  QVBoxLayout*       verticalLayout;
-  QSpacerItem*       horizontalSpacer;
-  QLabel*            label;
-  QComboBox*         LUTComboBox;
-
-  void setupUi( QDialog *LUTDialog );
 };
 #endif
