@@ -1042,7 +1042,8 @@ void QImagePageViewTracer::ValidateContour(
 
           QString filename_prefix = QString( "contour%1%2%3" )
             .arg( identifier ).arg( MinString ).arg( MaxString );
-          QString vtk_filename = filename_prefix.append( ".vtk");
+          QString vtk_filename = filename_prefix;
+          vtk_filename.append( ".vtk");
 
           vtkPolyDataWriter* writer = vtkPolyDataWriter::New();
           writer->SetInput( contour );
@@ -1051,15 +1052,24 @@ void QImagePageViewTracer::ValidateContour(
 
           writer->Delete();
 
-//           QString ctrlpt_filename = filename_prefix.append( ".scpts" );
-//
-//
-//           int NbOfNodes = contour_rep->GetNumberOfNodes();
-//
-//           for( int ii = 0; ii < NbOfNodes; ii++ )
-//           {
-//
-//           }
+          QString ctrlpt_filename = filename_prefix;
+          ctrlpt_filename.append( ".scpts" );
+
+          std::ofstream myfile;
+          myfile.open( ctrlpt_filename.toAscii().constData() );
+          myfile <<contour_rep->GetClosedLoop() <<std::endl;
+
+          int NbOfNodes = contour_rep->GetNumberOfNodes();
+
+          myfile <<NbOfNodes <<std::endl;
+          double pos[3];
+
+          for( int ii = 0; ii < NbOfNodes; ii++ )
+          {
+            contour_rep->GetNthNodeWorldPosition( ii, pos );
+            myfile <<pos[0] <<" " <<pos[1] <<" " <<pos[2] <<std::endl;
+          }
+          myfile.close();
         }
 
         vtkPolyData* contour_copy = vtkPolyData::New();
