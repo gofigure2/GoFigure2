@@ -6,11 +6,11 @@
 // coul dnot open database
 // database with same name already exists.
 
-bool CanConnectToDatabase( 
-  char* ServerName, 
-  char* login     , 
-  char* Password  , 
-  char* DBName )
+bool CanConnectToDatabase(
+  const char* ServerName,
+  const char* login     ,
+  const char* Password  ,
+  const char* DBName )
 {
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
   DataBaseConnector->SetHostName( ServerName );
@@ -20,11 +20,11 @@ bool CanConnectToDatabase(
   return DataBaseConnector->IsOpen();
 }
 
-void CreateDataBaseMain( 
-  char* ServerName, 
-  char* login     , 
-  char* Password  , 
-  char* DBName )
+void CreateDataBaseMain(
+  const char* ServerName,
+  const char* login     ,
+  const char* Password  ,
+  const char* DBName )
 {
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
   DataBaseConnector->SetHostName( ServerName );
@@ -51,8 +51,8 @@ void CreateDataBaseMain(
   DataBaseConnector->Delete();
 }
 
-void CreateDataBase( 
-  char* ServerName, char* login, char* Password, char * DBName )
+void CreateDataBase(
+  const char* ServerName, const char* login, const char* Password, const char* DBName )
 {
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
   DataBaseConnector->SetHostName( ServerName );
@@ -81,7 +81,7 @@ void CreateDataBase(
 }
 
 void CreateBookmarksTable(
-  char* ServerName, char* login, char* Password, char * DBName )
+  const char* ServerName, const char* login, const char* Password, const char* DBName )
 {
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
   DataBaseConnector->SetHostName( ServerName );
@@ -128,7 +128,7 @@ void CreateBookmarksTable(
 }
 
 void CreateCollectionInfoTable(
-  char* ServerName, char* login, char* Password, char * DBName )
+  const char* ServerName, const char* login, const char* Password, const char* DBName )
 {
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
   DataBaseConnector->SetHostName( ServerName );
@@ -172,7 +172,7 @@ void CreateCollectionInfoTable(
 }
 
 void CreateExperimentTable(
-  char* ServerName, char* login, char* Password, char * DBName )
+  const char* ServerName, const char* login, const char* Password, const char* DBName )
 {
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
   DataBaseConnector->SetHostName( ServerName );
@@ -226,7 +226,7 @@ void CreateExperimentTable(
 }
 
 void CreateFigureTable(
-  char* ServerName, char* login, char* Password, char * DBName )
+  const char* ServerName, const char* login, const char* Password, const char* DBName )
 {
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
   DataBaseConnector->SetHostName( ServerName );
@@ -285,7 +285,7 @@ void CreateFigureTable(
 }
 
 void CreateFigureFlavorTable(
-  char* ServerName, char* login, char* Password, char * DBName )
+  const char* ServerName, const char* login, const char* Password, const char* DBName )
 {
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
   DataBaseConnector->SetHostName( ServerName );
@@ -326,7 +326,7 @@ void CreateFigureFlavorTable(
 }
 
 void CreateLineageTable(
-  char* ServerName, char* login, char* Password, char * DBName )
+  const char* ServerName, const char* login, const char* Password, const char* DBName )
 {
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
   DataBaseConnector->SetHostName( ServerName );
@@ -388,7 +388,7 @@ void CreateLineageTable(
 }
 
 void CreateLineageFlavorTable(
-  char* ServerName, char* login, char* Password, char * DBName )
+  const char* ServerName, const char* login, const char* Password, const char* DBName )
 {
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
   DataBaseConnector->SetHostName( ServerName );
@@ -429,7 +429,7 @@ void CreateLineageFlavorTable(
 }
 
 void CreateMeshTable(
-  char* ServerName, char* login, char* Password, char * DBName )
+  const char* ServerName, const char* login, const char* Password, const char* DBName )
 {
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
   DataBaseConnector->SetHostName( ServerName );
@@ -491,7 +491,7 @@ void CreateMeshTable(
 }
 
 void CreateMeshFlavor(
-  char* ServerName, char* login, char* Password, char * DBName )
+  const char* ServerName, const char* login, const char* Password, const char* DBName )
 {
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
   DataBaseConnector->SetHostName( ServerName );
@@ -532,7 +532,7 @@ void CreateMeshFlavor(
 }
 
 void CreateSeriesGridTable(
-  char* ServerName, char* login, char* Password, char * DBName )
+  const char* ServerName, const char* login, const char* Password, const char* DBName )
 {
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
   DataBaseConnector->SetHostName( ServerName );
@@ -578,7 +578,7 @@ void CreateSeriesGridTable(
 }
 
 void CreateTrackTable(
-  char* ServerName, char* login, char* Password, char * DBName )
+  const char* ServerName, const char* login, const char* Password, const char* DBName )
 {
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
   DataBaseConnector->SetHostName( ServerName );
@@ -648,7 +648,7 @@ void CreateTrackTable(
 
 
 void CreateTrackFlavor(
-  char* ServerName, char* login, char* Password, char * DBName )
+  const char* ServerName, const char* login, const char* Password, const char* DBName )
 {
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
   DataBaseConnector->SetHostName("localhost");
