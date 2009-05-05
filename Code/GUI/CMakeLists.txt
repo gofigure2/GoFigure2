@@ -7,7 +7,7 @@ SET( QGOMAINWINDOW_SRC QGoMainWindow.cxx )
 QT4_WRAP_UI( QGOMAINWINDOW_UI_HDRS go.ui )
 QT4_WRAP_CPP( QGOMAINWINDOW_MOC_SRC ${QGOMAINWINDOW_HDRS} )
 QT4_ADD_RESOURCES( QGOMAINWINDOW_QRC
-  ${GOFIGURE2_SOURCE_DIR}/Code/GUI//resources/axes.qrc)
+  ${GOFIGURE2_SOURCE_DIR}/Code/GUI/resources/axes.qrc)
 
 
 SET_SOURCE_FILES_PROPERTIES( ${QGOMAINWINDOW_SRC} PROPERTIES
@@ -21,7 +21,7 @@ IF( APPLE )
     gofigure
     MACOSX_BUNDLE
     gofigure.cxx
-    ${GOFIGURE2_SOURCE_DIR}/Code/IO/CreateDataBaseHelper.cxx
+    #${GOFIGURE2_SOURCE_DIR}/Code/IO/CreateDataBaseHelper.cxx
     ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/itkQt/itkQtProgressBar.cxx
     ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/vtkLSM/vtkLSMReader.cxx
     ${QGOMAINWINDOW_SRC}
@@ -33,7 +33,7 @@ ELSE( APPLE )
   ADD_EXECUTABLE(
     gofigure
     gofigure.cxx
-    ${GOFIGURE2_SOURCE_DIR}/Code/IO/CreateDataBaseHelper.cxx
+    #${GOFIGURE2_SOURCE_DIR}/Code/IO/CreateDataBaseHelper.cxx
     ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/itkQt/itkQtProgressBar.cxx
     ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/vtkLSM/vtkLSMReader.cxx
     ${QGOMAINWINDOW_SRC}
