@@ -38,6 +38,7 @@
 #include <qdesktopwidget.h>
 #include <qcoreapplication.h>
 #include <iostream>
+#include <qpixmap.h>
 
 void maximizeMainWindow(QGoMainWindow& form1);
 
@@ -48,7 +49,7 @@ int main( int argc, char** argv )
   QCoreApplication::setApplicationName("GoFigure2");
 
   QPixmap pixmap(":/fig/splash.jpg");
-  QSplashScreen *splash = new QSplashScreen(pixmap,Qt::WindowStaysOnTopHint);
+  QSplashScreen *splash = new QSplashScreen(pixmap.scaledToWidth(800,Qt::SmoothTransformation),Qt::WindowStaysOnTopHint);
 
   splash->show();
 
