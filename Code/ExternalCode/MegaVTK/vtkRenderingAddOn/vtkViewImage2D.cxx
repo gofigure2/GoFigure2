@@ -82,7 +82,6 @@
 #include "vtkScalarBarActor.h"
 #include "vtkOrientationAnnotation.h"
 #include "vtkCornerAnnotation.h"
-#include "vtkTextProperty.h"
 #include "vtkLookupTable.h"
 #include "vtkMath.h"
 #include "vtkPlane.h"

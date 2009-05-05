@@ -122,9 +122,9 @@ vtkViewImage::vtkViewImage()
   this->OrientationTransform = vtkMatrixToLinearTransform::New();
 
   this->OrientationMatrix->Identity();
-  this->CornerAnnotation->SetNonlinearFontScaleFactor (0.22);
+  this->CornerAnnotation->SetNonlinearFontScaleFactor (0.35);
   this->CornerAnnotation->SetTextProperty ( this->TextProperty );
-  this->OrientationAnnotation->SetNonlinearFontScaleFactor (0.25);
+//   this->OrientationAnnotation->SetNonlinearFontScaleFactor (0.3);
   this->OrientationAnnotation->SetTextProperty ( this->TextProperty );
   this->ScalarBarActor->GetLabelTextProperty()->BoldOff();
   this->ScalarBarActor->GetLabelTextProperty()->ItalicOff();

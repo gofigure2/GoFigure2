@@ -515,7 +515,7 @@ void QImagePageViewTracer::SetBackgroundColor( double rgb[3] )
 
   for( int i = 0; i < 3; i++ )
   {
-    vtkTextProperty* property = this->Pool->GetItem( 0 )->GetTextProperty();
+    vtkTextProperty* property = this->Pool->GetItem( i )->GetTextProperty();
     property->SetFontFamilyToArial();
     property->SetFontSize( 14 );
     property->SetColor( textcolor );
@@ -541,7 +541,7 @@ void QImagePageViewTracer::SetBackgroundColor( const QColor& iColor )
 
   for( int i = 0; i < 3; i++ )
   {
-    vtkTextProperty* property = this->Pool->GetItem( 0 )->GetTextProperty();
+    vtkTextProperty* property = this->Pool->GetItem( i )->GetTextProperty();
     property->SetFontFamilyToArial();
     property->SetFontSize( 14 );
     property->SetColor( textcolor );
@@ -840,7 +840,7 @@ void QImagePageViewTracer::Set3DImage( vtkImageData* input )
 
   this->Pool->SyncSetShowScalarBar( false );
 
-  this->Pool->SyncSetTextProperty( this->Pool->GetItem(0)->GetTextProperty());
+//   this->Pool->SyncSetTextProperty( this->Pool->GetItem(0)->GetTextProperty());
   //     this->Pool->SyncMaskImage();
   this->Pool->SyncRender();
   this->Pool->SyncReset();
