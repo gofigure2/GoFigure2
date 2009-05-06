@@ -67,8 +67,6 @@ TARGET_LINK_LIBRARIES( gofigure
   QMegaVTKAddOn2
   ${QT_LIBRARIES}
   QVTK
-  ITKCommon
-  ITKIO
   ITKBasicFilters
   ITKNumerics
   vtkImaging

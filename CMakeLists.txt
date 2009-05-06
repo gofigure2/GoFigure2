@@ -37,9 +37,9 @@ IF( WIN32 )
   ENDIF( NOT BORLAND )
 ENDIF( WIN32 )
 
-#------------------------------------------------------------------------------
+#---------------------------------------------------------------------------
 # Define EXECUTABLE_OUTPUT_PATH and LIBRARY_OUTPUT_PATH
-#------------------------------------------------------------------------------
+#---------------------------------------------------------------------------
 SET(EXECUTABLE_OUTPUT_PATH
  ${GOFIGURE2_BINARY_DIR}/bin
  CACHE PATH "Single output directory for building all executables."
@@ -49,9 +49,9 @@ SET(LIBRARY_OUTPUT_PATH
  CACHE PATH "Single output directory for building all libraries."
 )
 
-#------------------------------------------------------------------------------
+#---------------------------------------------------------------------------
 # Handle Documentation
-#------------------------------------------------------------------------------
+#---------------------------------------------------------------------------
 OPTION( BUILD_DOCUMENTATION "Build Doxygen Documentation" OFF )
 OPTION( BUILD_PACKAGE "Software packaging" OFF )
 
@@ -72,9 +72,9 @@ IF( BUILD_DOCUMENTATION )
   ENDIF( DOXYGEN_FOUND )
 ENDIF( BUILD_DOCUMENTATION )
 
-#------------------------------------------------------------------------------
+#---------------------------------------------------------------------------
 # Main GoFigure Settings
-#------------------------------------------------------------------------------
+#---------------------------------------------------------------------------
 
 # Everything depends on VTK first
 # that way we can get Qt info from VTK
@@ -110,25 +110,25 @@ IF( VTK_FOUND )
       SET( QT_LIBRARIES ${QT_QT_LIBRARY} )
     ENDIF( QT_USE_FILE )
 
-    SET(GOFIGURE2_EXTERNAL_SOURCE_DIR
+    SET( GOFIGURE2_EXTERNAL_SOURCE_DIR
       ${GOFIGURE2_SOURCE_DIR}/Code/ExternalCode )
-    SET(GOFIGURE2_EXTERNAL_BINARY_DIR
+    SET( GOFIGURE2_EXTERNAL_BINARY_DIR
       ${GOFIGURE2_BINARY_DIR}/Code/ExternalCode )
     SET( MEGAVTK2_SOURCE_DIR ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/MegaVTK )
     SET( MEGAVTK2_BINARY_DIR ${GOFIGURE2_EXTERNAL_BINARY_DIR}/MegaVTK )
 
     # Set specific flag for shared Qt libraries on windows
-    IF(WIN32)
-      IF(NOT CYGWIN)
-        IF(NOT MINGW)
-          IF(VTK_BUILD_SHARED_LIBS)
+    IF( WIN32 )
+      IF( NOT CYGWIN )
+        IF( NOT MINGW )
+          IF( VTK_BUILD_SHARED_LIBS )
             ADD_DEFINITIONS( -DQMEGAVTKADDON2_EXPORTS )
             ADD_DEFINITIONS( -DvtkRenderingAddOn2_EXPORTS )
             SET( LIBRARY_OUTPUT_PATH ${EXECUTABLE_OUTPUT_PATH} )
-          ENDIF(VTK_BUILD_SHARED_LIBS)
-        ENDIF(NOT MINGW)
-      ENDIF(NOT CYGWIN)
-    ENDIF(WIN32)
+          ENDIF( VTK_BUILD_SHARED_LIBS )
+        ENDIF( NOT MINGW )
+      ENDIF( NOT CYGWIN )
+    ENDIF( WIN32 )
 
     LINK_DIRECTORIES( ${LIBRARY_OUTPUT_PATH} )
 
@@ -203,5 +203,4 @@ IF( VTK_FOUND )
   SUBDIRS( Examples )
 
 ENDIF( VTK_FOUND )
-
 

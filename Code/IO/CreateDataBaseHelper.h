@@ -1,9 +1,6 @@
 #ifndef __CreateDataBaseHelper_h_
 #define __CreateDataBaseHelper_h_
 
-#include "vtkMySQLDatabase.h"
-#include "vtkSQLQuery.h"
-#include "vtkStdString.h"
 
 bool CanConnectToDatabase(
   const char* ServerName, const char* login, const char* Password, const char* DBName );

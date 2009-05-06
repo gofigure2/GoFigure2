@@ -1,5 +1,9 @@
 #include "CreateDataBaseHelper.h"
 
+#include "vtkMySQLDatabase.h"
+#include "vtkSQLQuery.h"
+#include "vtkStdString.h"
+
 // NOTE ALEX
 //
 // use exception for the following problems:

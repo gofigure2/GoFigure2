@@ -1,10 +1,10 @@
 GoFigure2
-===============================================================================
+============================================================================
 
 1-Introduction
-  The prime goal of GoFigure is the automatic segmentation of nuclei and cell
-membranes and in temporally tracking them amidst cell division to create
-lineages.
+  The prime goal of GoFigure is the automatic segmentation of nuclei and 
+cell membranes and in temporally tracking them amidst cell division to 
+create lineages.
 
 2-Installation
   2.1 From Package
