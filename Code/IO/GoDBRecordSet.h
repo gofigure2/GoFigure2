@@ -7,6 +7,9 @@
 #include "vtkVariant.h"
 #include "CreateDataBaseHelper.h"
 
+#include "vtkMySQLDatabase.h"
+#include "vtkSQLQuery.h"
+
 template< class TObject >
 class GoDBRecordSet
 {
