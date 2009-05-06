@@ -1,9 +1,11 @@
 SET( EXAMPLES_QT_NOT_REQUIRED 
+  GoDBRecordSetTest
   3DLsmSerie2mha
   MegaCapture2mha
   lsm2jpg 
   lsm2vtk
-  lsm2mha )
+  lsm2mha 
+  )
 
 FOREACH( var ${EXAMPLES_QT_NOT_REQUIRED} )
 

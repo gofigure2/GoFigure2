@@ -1,11 +1,11 @@
+#include <algorithm>
+#include <utility>
+#include <vector>
 
-
-
-
-template< Class TObject >
+template< class TObject >
 class GoDBRecordSet
 {
-
+public:
   // row type
   typedef TObject                                OriginalObjectType;
 
@@ -27,13 +27,16 @@ class GoDBRecordSet
       AddObject( object );
       return;
       }
-    InternalObjectType temp& =  m_RowContainer[pos];
+    InternalObjectType& temp =  m_RowContainer[pos];
     m_RowContainer[pos] = InternalObjectType( true, object );
     delete temp;
-    }
+    };
 
   void SetServerName( const char* ServerName )
     { this->ServerName = ServerName; };
+
+  void SetDataBaseName( const char* DataBaseName )
+    { this->DataBaseName = DataBaseName; };
 
   void SetTableName( const char* TableName )
     { this->TableName = TableName; };
@@ -45,27 +48,25 @@ class GoDBRecordSet
     { this->PassWord = Password; };
 
   // read content from DB
-  void PopulateFromDB()
-    {
-
-
-
-    };
+  void PopulateFromDB() { };
 
   // save content to DB - ASYNCHRONOUS
   void SaveInDB()
     {
-    std::sort( m_RowContainer.begin(), m_RowCOntainer.end(), this->IsLess );
-    
+    std::sort( m_RowContainer.begin(), m_RowContainer.end(), IsLess() );
     };
 
 private:
   // functor to sort our RowContainer and optimize SQL requests
-  bool IsLess( InternalObjectType& A, InternalObjectType& B )
+  class IsLess
     {
-    // Dirty first
-    if( A.first || !B.first ) return true;
-    return false;
+    public:
+    bool operator()( const InternalObjectType& A, const InternalObjectType& B )
+      {
+      // Dirty first
+      if( A.first || !B.first ) return true;
+      return false;
+      };
     };
 
   // underlying container
@@ -75,11 +76,12 @@ private:
   std::vector< std::string >        m_ColumnNamesContainer;
 
   // DB variables
-  char* ServerName;
-  char* TableName;
-  char* User;
-  char* Password; 
+  const char* ServerName;
+  const char* DataBaseName;
+  const char* TableName;
+  const char* User;
+  const char* PassWord; 
   bool  IsOpen;
 
-}
+};
 

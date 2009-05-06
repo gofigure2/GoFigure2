@@ -5,7 +5,7 @@
 
 class GoDBFigureRow
 {
-  const int figureID;
+  int figureID;
   int imageID;
   int meshID;
   vtkPolyData* points;
@@ -27,6 +27,6 @@ class GoDBFigureRow
   int YCoord;
   int XCoord;
   int ZCoord;
-}
+};
 
 #endif
