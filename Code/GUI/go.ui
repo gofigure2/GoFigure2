@@ -18,7 +18,7 @@
   </property>
   <property name="windowIcon">
    <iconset resource="resources/axes.qrc">
-    <normaloff>:/newPrefix/fig/myapp.png</normaloff>:/newPrefix/fig/myapp.png</iconset>
+    <normaloff>:/newPrefix/fig/Myapp2.png</normaloff>:/newPrefix/fig/Myapp2.png</iconset>
   </property>
   <property name="autoFillBackground">
    <bool>true</bool>
@@ -59,7 +59,7 @@
      <x>0</x>
      <y>0</y>
      <width>1434</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -266,7 +266,7 @@
         <x>0</x>
         <y>0</y>
         <width>211</width>
-        <height>297</height>
+        <height>276</height>
        </rect>
       </property>
       <attribute name="label">
@@ -450,7 +450,7 @@ Radius</string>
         <x>0</x>
         <y>0</y>
         <width>211</width>
-        <height>297</height>
+        <height>276</height>
        </rect>
       </property>
       <attribute name="label">
@@ -616,7 +616,7 @@ Weight</string>
         <x>0</x>
         <y>0</y>
         <width>211</width>
-        <height>297</height>
+        <height>276</height>
        </rect>
       </property>
       <attribute name="label">
@@ -899,8 +899,8 @@ Component</string>
       <rect>
        <x>20</x>
        <y>140</y>
-       <width>174</width>
-       <height>85</height>
+       <width>192</width>
+       <height>100</height>
       </rect>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -941,8 +941,8 @@ Component</string>
       <rect>
        <x>11</x>
        <y>71</y>
-       <width>186</width>
-       <height>29</height>
+       <width>215</width>
+       <height>37</height>
       </rect>
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout_16">
@@ -1082,7 +1082,7 @@ Component</string>
       <rect>
        <x>10</x>
        <y>80</y>
-       <width>170</width>
+       <width>191</width>
        <height>50</height>
       </rect>
      </property>

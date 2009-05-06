@@ -3,7 +3,7 @@
     <file>fig/splash.jpg</file>
   </qresource>
   <qresource prefix="newPrefix" >
-    <file>fig/myapp.png</file>
+    <file>fig/Myapp2.png</file>
   </qresource>
   <qresource prefix="newPrefix" >
     <file>fig/camera-photo.png</file>
