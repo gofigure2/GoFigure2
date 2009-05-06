@@ -78,7 +78,7 @@ public:
       // throw exception
       return;
       }
-    std::string Query = this->SetUpInsertQueryString();
+    std::pair<std::string, std::string> Query = this->SetUpInsertQueryStrings();
     vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
     DataBaseConnector->SetHostName(this->ServerName);
     DataBaseConnector->SetUser(this->User);
@@ -87,7 +87,13 @@ public:
     DataBaseConnector->Open();
 
     vtkSQLQuery* query = DataBaseConnector->GetQueryInstance();
-    query->SetQuery( Query.c_str());
+    query->SetQuery( Query.first.c_str());
+    if ( !query->Execute() )
+      {
+      // replace by exception
+      std::cerr << "Create query failed" << std::endl;
+      }
+    query->SetQuery( Query.second.c_str());
     if ( !query->Execute() )
       {
       // replace by exception
@@ -111,10 +117,11 @@ private:
       };
     };
 
-  std::string SetUpInsertQueryString()
+  std::pair<std::string, std::string> SetUpInsertQueryStrings()
     {
     std::string whatever( "whatever" );
-    return whatever;
+    std::pair< std::string, std::string > result( whatever, whatever );
+    return result;
     };
 
   // underlying container
