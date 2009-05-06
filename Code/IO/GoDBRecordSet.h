@@ -69,6 +69,7 @@ public:
   // save content to DB - ASYNCHRONOUS
   void SaveInDB()
     {
+    if( m_RowContainer.size() == 0 ) return;
     std::sort( m_RowContainer.begin(), m_RowContainer.end(), IsLess() );
     if( !CanConnectToDatabase(
         this->ServerName,
