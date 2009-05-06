@@ -317,7 +317,7 @@ void QImagePageView4DTracer::SetView( const int& value )
   std::cout << "Reading Time: " << time << "s" << std::endl;
 
   start = clock();
-  this->LayOut1->remove( this->Whatever );
+  this->LayOut1->removeWidget( this->Whatever );
   delete this->Whatever;
   this->Whatever = new QImagePageViewTracer( );
   this->LayOut1->insertWidget( 0, this->Whatever );
