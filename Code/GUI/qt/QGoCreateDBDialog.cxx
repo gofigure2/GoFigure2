@@ -107,8 +107,3 @@ QGoCreateDBDialog::QGoCreateDBDialog( QObject* parent )
       }
     }
 }
-
-QGoCreateDBDialog::~QGoCreateDBDialog()
-{
-}
-

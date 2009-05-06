@@ -48,10 +48,6 @@ class QGoCreateDBDialog : public QObject
   Q_OBJECT
 public:
   explicit QGoCreateDBDialog( QObject* parent = 0 );
-  virtual  ~QGoCreateDBDialog();
-
-public slots:
-
-protected:
+  virtual  ~QGoCreateDBDialog() {};
 };
 #endif
