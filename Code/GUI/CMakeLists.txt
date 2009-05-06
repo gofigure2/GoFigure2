@@ -27,15 +27,16 @@ SET( GOFIGURE_APPLICATION_SOURCE_LIST
 
 IF( APPLE )
 
-#   SET( MACOSX_BUNDLE_ICON_FILE )
+  SET( MACOSX_BUNDLE_ICON_FILE
+    ${GOFIGURE2_SOURCE_DIR}/Code/GUI/resources/myapp.icns)	
   ADD_EXECUTABLE( gofigure
     MACOSX_BUNDLE
     ${GOFIGURE_APPLICATION_SOURCE_LIST} )
 
-#   ADD_CUSTOM_COMMAND( TARGET gofigure POST_BUILD
-#     COMMAND mkdir ARGS ${EXECUTABLE_OUTPUT_PATH}/gofigure.app/Contents/Resources
-#     COMMAND cp ARGS ${MACOSX_BUNDLE_ICON_FILE} ${CMAKE_CURRENT_BINARY_DIR}/gofigure.app/Contents/Resources
-#     COMMAND cp ARGS *.qm ${EXECUTABLE_OUTPUT_PATH}/gofigure.app/Contents/Resources )
+   ADD_CUSTOM_COMMAND( TARGET gofigure POST_BUILD
+     COMMAND mkdir ARGS ${EXECUTABLE_OUTPUT_PATH}/gofigure.app/Contents/Resources
+    COMMAND cp ARGS ${MACOSX_BUNDLE_ICON_FILE} ${EXECUTABLE_OUTPUT_PATH}/gofigure.app/Contents/Resources
+    COMMAND cp ARGS *.qm ${EXECUTABLE_OUTPUT_PATH}/gofigure.app/Contents/Resources )
 
 ELSE( APPLE )
   #  here will need to differenciate windows to avoid command window
