@@ -11,8 +11,8 @@ FOREACH( var ${EXAMPLES_QT_NOT_REQUIRED} )
 
   ADD_EXECUTABLE( ${var} 
     ${var}.cxx 
-    ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/vtkLSM/vtkLSMReader.cxx )
-
+    ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/vtkLSM/vtkLSMReader.cxx
+    ${GOFIGURE2_SOURCE_DIR}/Code/IO/CreateDataBaseHelper.cxx )
   TARGET_LINK_LIBRARIES( ${var}
     ITKCommon 
     ITKIO
