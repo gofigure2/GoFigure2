@@ -1,6 +1,8 @@
 #include <algorithm>
 #include <utility>
 #include <vector>
+#include <string>
+#include <sstream>
 
 #include "CreateDataBaseHelper.h"
 
@@ -9,7 +11,7 @@ class GoDBRecordSet
 {
 public:
   // row type
-  typedef TObject                                OriginalObjectType;
+  typedef TObject OriginalObjectType;
 
   // decorate the row type to know if it was modified
   // allows for optimization when synchronising the data
@@ -117,20 +119,12 @@ private:
       };
     };
 
-
-  // this method generates two SQL query strings
-  // one using the (mysql only) REPLACE command which overwrite existing
-  // entry with the same primary Key
-  // another one with the usual INSERT command for new entries.
-  std::pair<std::string, std::string> SetUpInsertQueryStrings()
-    {
-    std::string whatever( "whatever" );
-    std::pair< std::string, std::string > result( whatever, whatever );
-    return result;
-    };
-
   // underlying container
+  typedef typename std::vector< InternalObjectType >::iterator  myIteratorType;
   std::vector< InternalObjectType > m_RowContainer;
+
+  std::pair<std::string, std::string> SetUpInsertQueryStrings();
+  std::string ComputeQuery( std::string, myIteratorType start, myIteratorType end );
 
   // colum names container
   std::vector< std::string >        m_ColumnNamesContainer;
@@ -144,4 +138,68 @@ private:
   bool  IsOpen;
 
 };
+
+// this method generates two SQL query strings
+// one using the (mysql only) REPLACE command which overwrite existing
+// entry with the same primary Key
+// another one with the usual INSERT command for new entries.
+template< class TObject >
+std::pair<std::string, std::string> 
+GoDBRecordSet<TObject>::
+SetUpInsertQueryStrings()
+{
+
+  myIteratorType start = m_RowContainer.begin();
+  myIteratorType end   = m_RowContainer.begin();
+  while( (*end).first || end != m_RowContainer.end() ) end++;
+
+  std::string firstQuery = ComputeQuery( "REPLACE ", start, end );
+  
+  start = end;
+  end = m_RowContainer.end();
+ 
+  std::string secondQuery = ComputeQuery( "INSERT ", start, end );;
+  
+  std::pair< std::string, std::string > result( firstQuery, secondQuery );
+
+  return result;
+};
+
+
+template< class TObject >
+std::string 
+GoDBRecordSet<TObject>::
+ComputeQuery( std::string what, myIteratorType start, myIteratorType end )
+{
+  std::stringstream query;
+
+  // main query 
+  query << what  << "INTO " << this->TableName;
+
+  // column names
+  query << " ( ";
+  unsigned int NbOfCol = m_ColumnNamesContainer.size();
+  std::vector<std::string>::iterator It = m_ColumnNamesContainer.begin();
+  for( unsigned int i = 0; i < NbOfCol-1 ; i++, It++ )
+    {
+    query << (*It) << ", ";
+    }
+  query << (*It);
+  query << " ) ";
+
+  // now the values
+  query << " VALUES ";
+  myIteratorType rowIt = start;
+  for( int i = 0; i < end-start-1, rowIt != end; i++, rowIt++ )
+    {
+    query << "(" << (*rowIt).second.PrintValues() << "),";
+    } 
+  query << "(" << (*rowIt).second.PrintValues() << ")";
+
+  // and ... voila!
+  query << ";";
+  
+  return query.str(); 
+};
+
 
