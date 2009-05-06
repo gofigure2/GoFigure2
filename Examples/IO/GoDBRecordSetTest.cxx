@@ -3,7 +3,7 @@
 #include "CreateDataBaseHelper.h"
 
 template< class myT >
-void Test( char* DBName, char* TableName )
+void Test( const char* DBName,  const char* TableName )
 {
   typedef GoDBRecordSet< myT >   SetType;
 

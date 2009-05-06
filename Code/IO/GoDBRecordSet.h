@@ -4,6 +4,7 @@
 #include <string>
 #include <sstream>
 
+#include "vtkVariant.h"
 #include "CreateDataBaseHelper.h"
 
 template< class TObject >
