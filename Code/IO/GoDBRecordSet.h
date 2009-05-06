@@ -117,6 +117,11 @@ private:
       };
     };
 
+
+  // this method generates two SQL query strings
+  // one using the (mysql only) REPLACE command which overwrite existing
+  // entry with the same primary Key
+  // another one with the usual INSERT command for new entries.
   std::pair<std::string, std::string> SetUpInsertQueryStrings()
     {
     std::string whatever( "whatever" );
