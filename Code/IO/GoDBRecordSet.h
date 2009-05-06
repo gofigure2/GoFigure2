@@ -70,7 +70,7 @@ public:
   void SaveInDB()
     {
     if( m_RowContainer.size() == 0 ) return;
-    std::sort( m_RowContainer.begin(), m_RowContainer.end(), IsLess() );
+    
     if( !CanConnectToDatabase(
         this->ServerName,
         this->User,
@@ -81,7 +81,13 @@ public:
       // throw exception
       return;
       }
+
+    std::sort( m_RowContainer.begin(), m_RowContainer.end(), IsLess() );
+ 
+    this->PopulateColumnNamesContainer();
+
     std::pair<std::string, std::string> Query = this->SetUpInsertQueryStrings();
+
     vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
     DataBaseConnector->SetHostName(this->ServerName);
     DataBaseConnector->SetUser(this->User);
@@ -90,17 +96,23 @@ public:
     DataBaseConnector->Open();
 
     vtkSQLQuery* query = DataBaseConnector->GetQueryInstance();
-    query->SetQuery( Query.first.c_str());
-    if ( !query->Execute() )
+    if( Query.first != "")
       {
-      // replace by exception
-      std::cerr << "Create query failed" << std::endl;
+      query->SetQuery( Query.first.c_str());
+      if ( !query->Execute() )
+        {
+        // replace by exception
+        std::cerr << "Create query failed" << std::endl;
+        }
       }
-    query->SetQuery( Query.second.c_str());
-    if ( !query->Execute() )
+    if( Query.second != "" )
       {
-      // replace by exception
-      std::cerr << "Create query failed" << std::endl;
+      query->SetQuery( Query.second.c_str());
+      if ( !query->Execute() )
+        {
+        // replace by exception
+        std::cerr << "Create query failed" << std::endl;
+        }
       }
     DataBaseConnector->Close();
     DataBaseConnector->Delete();
@@ -126,6 +138,7 @@ private:
 
   std::pair<std::string, std::string> SetUpInsertQueryStrings();
   std::string ComputeQuery( std::string, myIteratorType start, myIteratorType end );
+  void PopulateColumnNamesContainer();
 
   // colum names container
   std::vector< std::string >        m_ColumnNamesContainer;
@@ -152,15 +165,31 @@ SetUpInsertQueryStrings()
 
   myIteratorType start = m_RowContainer.begin();
   myIteratorType end   = m_RowContainer.begin();
-  while( (*end).first || end != m_RowContainer.end() ) end++;
+  while( (*end).first && end != m_RowContainer.end() ) end++;
 
-  std::string firstQuery = ComputeQuery( "REPLACE ", start, end );
-  
+  std::string firstQuery;
+  if( end-start > 0 )
+    {
+    firstQuery = ComputeQuery( "REPLACE ", start, end );
+    }
+  else
+    { 
+    firstQuery = "";
+    }
+
   start = end;
   end = m_RowContainer.end();
+
+  std::string secondQuery; 
+  if( end-start > 0 )
+    {
+    secondQuery = ComputeQuery( "INSERT ", start, end );;
+    }
+  else
+    {
+    secondQuery = "";
+    } 
  
-  std::string secondQuery = ComputeQuery( "INSERT ", start, end );;
-  
   std::pair< std::string, std::string > result( firstQuery, secondQuery );
 
   return result;
@@ -172,6 +201,13 @@ std::string
 GoDBRecordSet<TObject>::
 ComputeQuery( std::string what, myIteratorType start, myIteratorType end )
 {
+  unsigned int NbOfCol = m_ColumnNamesContainer.size();
+  if( NbOfCol == 0 )
+    {
+    // throw exception
+    std::cerr << "Could not extract column names." << std::endl;
+    }
+  
   std::stringstream query;
 
   // main query 
@@ -179,7 +215,6 @@ ComputeQuery( std::string what, myIteratorType start, myIteratorType end )
 
   // column names
   query << " ( ";
-  unsigned int NbOfCol = m_ColumnNamesContainer.size();
   std::vector<std::string>::iterator It = m_ColumnNamesContainer.begin();
   for( unsigned int i = 0; i < NbOfCol-1 ; i++, It++ )
     {
@@ -191,7 +226,7 @@ ComputeQuery( std::string what, myIteratorType start, myIteratorType end )
   // now the values
   query << " VALUES ";
   myIteratorType rowIt = start;
-  for( int i = 0; i < end-start-1, rowIt != end; i++, rowIt++ )
+  for( int i = 0; i < end-start-1 && rowIt != end; i++, rowIt++ )
     {
     query << "(" << (*rowIt).second.PrintValues() << "),";
     } 
@@ -199,8 +234,48 @@ ComputeQuery( std::string what, myIteratorType start, myIteratorType end )
 
   // and ... voila!
   query << ";";
+
+  std::cout << query.str() << std::endl;
   
   return query.str(); 
 };
 
+template< class TObject >
+void
+GoDBRecordSet<TObject>::
+PopulateColumnNamesContainer()
+{
+  vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
+  DataBaseConnector->SetHostName(this->ServerName);
+  DataBaseConnector->SetUser(this->User);
+  DataBaseConnector->SetPassword(this->PassWord);
+  DataBaseConnector->SetDatabaseName( this->DataBaseName );
+  DataBaseConnector->Open();
+
+  vtkSQLQuery* query = DataBaseConnector->GetQueryInstance();
+  std::stringstream querystream;
+  querystream << "SHOW COLUMNS FROM ";
+  querystream << this->TableName;
+  querystream << " FROM ";
+  querystream << this->DataBaseName;
+  querystream << ";";
+
+  query->SetQuery( querystream.str().c_str() );
+  if ( !query->Execute() )
+    {
+    // replace by exception
+    std::cerr << "Create query failed" << std::endl;
+    }
+  else
+    {
+    while( query->NextRow() )
+      {
+      m_ColumnNamesContainer.push_back( query->DataValue( 0 ).ToString() );
+      }
+    }
+
+  DataBaseConnector->Close();
+  DataBaseConnector->Delete();
+
+};
 
