@@ -1,7 +1,8 @@
 SUBDIRS(
-  QImagePageView 
-  QImagePageViewTracer 
-  QImagePageView4DTracer 
-  QGoLUTDialog 
-  QGoCreateDBDialog 
+  QImagePageView
+  QImagePageViewTracer
+  QImagePageView4DTracer
+  QGoLUTDialog
+  QGoCreateDBDialog
+  QGoImageInfo
    )
