@@ -64,7 +64,6 @@ public slots:
   QMEGAVTKADDON2_EXPORT void setPixelPosition( const std::vector< unsigned int >& );
   QMEGAVTKADDON2_EXPORT void setWorldPosition( const std::vector< float >& );
   QMEGAVTKADDON2_EXPORT void setTimePoint( const float& );
-  QMEGAVTKADDON2_EXPORT void setTimeSpacing( const float& );
   QMEGAVTKADDON2_EXPORT void setValue( const std::vector< float >& );
 
 
@@ -93,8 +92,6 @@ QScrollArea *scrollArea;
     QLabel *ValueStaticLabel;
     QLabel *ValueLabel;
     QLabel *ChannelsLabel;
-    QLabel *TimeSpacingStaticLabel;
-    QLabel *TimeSpacingLabel;
     QLabel *TimeStaticLabel;
 
   unsigned int m_Dimension;
@@ -105,7 +102,6 @@ QScrollArea *scrollArea;
   std::vector< unsigned int > m_PPos;
   std::vector< float > m_WPos;
   std::vector< float > m_Value;
-  float m_TimeSpacing;
   float m_TimePoint;
 
   template< class TContainer >

@@ -1,4 +1,6 @@
 #include <qapplication.h>
+#include <iostream>
+
 #include "QGoImageInfo.h"
 
 int main( int argc, char** argv )
@@ -27,23 +29,21 @@ int main( int argc, char** argv )
   info.setValue( value );
 
   info.show( );
+  app.exec();
 
   const unsigned int Dim4 = 4;
 
   info.setDimension( Dim4 );
-  info.setNumberOfChannels( Dim4 );
+  info.setNumberOfChannels( Dim3 );
   std::vector< unsigned int > size4( Dim4, 512 );
   std::vector< float > spacing4( Dim4, 0.1 );
 
   info.setSize( size4 );
   info.setSpacing( spacing4 );
-  info.setTimeSpacing( 720. );
   info.setMemory( 1234567890 );
 
-  std::vector< unsigned int > ppos4( Dim4, 12 );
-  std::vector< float > wpos4( Dim4, 1.2 );
-  info.setPixelPosition( ppos4 );
-  info.setWorldPosition( wpos4 );
+  info.setPixelPosition( ppos3 );
+  info.setWorldPosition( wpos3 );
   info.setTimePoint( 0. );
   info.setValue( value );
 

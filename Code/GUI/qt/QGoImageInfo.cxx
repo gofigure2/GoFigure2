@@ -15,11 +15,17 @@ void QGoImageInfo::setupUi( QWidget *Form )
 if (Form->objectName().isEmpty())
             Form->setObjectName(QString::fromUtf8("Form"));
         Form->resize(288, 323);
+        QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+        sizePolicy.setHorizontalStretch(0);
+        sizePolicy.setVerticalStretch(0);
+        sizePolicy.setHeightForWidth(Form->sizePolicy().hasHeightForWidth());
+        Form->setSizePolicy(sizePolicy);
         scrollArea = new QScrollArea(Form);
         scrollArea->setObjectName(QString::fromUtf8("scrollArea"));
         scrollArea->setGeometry(QRect(0, -10, 287, 331));
+        scrollArea->setMinimumSize(QSize(287, 321));
         scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-        scrollArea->setWidgetResizable(true);
+        scrollArea->setWidgetResizable(false);
         scrollAreaWidgetContents = new QWidget();
         scrollAreaWidgetContents->setObjectName(QString::fromUtf8("scrollAreaWidgetContents"));
         scrollAreaWidgetContents->setGeometry(QRect(0, 0, 281, 325));
@@ -27,17 +33,17 @@ if (Form->objectName().isEmpty())
         gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
         TImageStaticlabel = new QLabel(scrollAreaWidgetContents);
         TImageStaticlabel->setObjectName(QString::fromUtf8("TImageStaticlabel"));
-        QSizePolicy sizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-        sizePolicy.setHorizontalStretch(0);
-        sizePolicy.setVerticalStretch(0);
-        sizePolicy.setHeightForWidth(TImageStaticlabel->sizePolicy().hasHeightForWidth());
-        TImageStaticlabel->setSizePolicy(sizePolicy);
+        QSizePolicy sizePolicy_t(QSizePolicy::Fixed, QSizePolicy::Fixed);
+        sizePolicy_t.setHorizontalStretch(0);
+        sizePolicy_t.setVerticalStretch(0);
+        sizePolicy_t.setHeightForWidth(TImageStaticlabel->sizePolicy().hasHeightForWidth());
+        TImageStaticlabel->setSizePolicy(sizePolicy_t);
 
         gridLayout->addWidget(TImageStaticlabel, 0, 0, 1, 1);
 
         DimensionStaticLabel = new QLabel(scrollAreaWidgetContents);
         DimensionStaticLabel->setObjectName(QString::fromUtf8("DimensionStaticLabel"));
-        sizePolicy.setHeightForWidth(DimensionStaticLabel->sizePolicy().hasHeightForWidth());
+        sizePolicy_t.setHeightForWidth(DimensionStaticLabel->sizePolicy().hasHeightForWidth());
         DimensionStaticLabel->setSizePolicy(sizePolicy);
 
         gridLayout->addWidget(DimensionStaticLabel, 1, 0, 1, 1);
@@ -179,20 +185,6 @@ if (Form->objectName().isEmpty())
 
         gridLayout->addWidget(ChannelsLabel, 2, 1, 1, 1);
 
-        TimeSpacingStaticLabel = new QLabel(scrollAreaWidgetContents);
-        TimeSpacingStaticLabel->setObjectName(QString::fromUtf8("TimeSpacingStaticLabel"));
-        sizePolicy.setHeightForWidth(TimeSpacingStaticLabel->sizePolicy().hasHeightForWidth());
-        TimeSpacingStaticLabel->setSizePolicy(sizePolicy);
-
-        gridLayout->addWidget(TimeSpacingStaticLabel, 12, 0, 1, 1);
-
-        TimeSpacingLabel = new QLabel(scrollAreaWidgetContents);
-        TimeSpacingLabel->setObjectName(QString::fromUtf8("TimeSpacingLabel"));
-        sizePolicy1.setHeightForWidth(TimeSpacingLabel->sizePolicy().hasHeightForWidth());
-        TimeSpacingLabel->setSizePolicy(sizePolicy1);
-
-        gridLayout->addWidget(TimeSpacingLabel, 12, 1, 1, 1);
-
         TimeStaticLabel = new QLabel(scrollAreaWidgetContents);
         TimeStaticLabel->setObjectName(QString::fromUtf8("TimeStaticLabel"));
         sizePolicy2.setHeightForWidth(TimeStaticLabel->sizePolicy().hasHeightForWidth());
@@ -279,12 +271,6 @@ if (Form->objectName().isEmpty())
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:9pt; font-weight:600;\">  Pixel value :</span></p></body></html>", 0, QApplication::UnicodeUTF8));
         ValueLabel->setText(QString());
         ChannelsLabel->setText(QString());
-        TimeSpacingStaticLabel->setText(QApplication::translate("Form", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
-"p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:'Sans Serif'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:9pt; font-weight:600;\">  Time Spacing :</span></p></body></html>", 0, QApplication::UnicodeUTF8));
-        TimeSpacingLabel->setText(QString());
         TimeStaticLabel->setText(QApplication::translate("Form", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
@@ -298,25 +284,21 @@ void QGoImageInfo::setDimension( const unsigned int& dim )
 {
   m_Dimension = dim;
   this->DimensionLabel->setText( QString( "%1" ).arg( m_Dimension ) );
+  m_Size.resize( dim );
+  m_Spacing.resize( dim );
 
   bool space_time = ( dim > 3 );
   this->TTimeStaticLabel->setVisible( space_time );
   this->TimeStaticLabel->setVisible( space_time );
   this->TimeLabel->setVisible( space_time );
-  this->TimeSpacingStaticLabel->setVisible( space_time );
-  this->TimeSpacingLabel->setVisible( space_time );
 
   if( space_time )
   {
-    m_Size.resize( 3 );
-    m_Spacing.resize( 3 );
     m_PPos.resize( 3 );
     m_WPos.resize( 3 );
   }
   else
   {
-    m_Size.resize( dim );
-    m_Spacing.resize( dim );
     m_PPos.resize( dim );
     m_WPos.resize( dim );
   }
@@ -327,7 +309,7 @@ void QGoImageInfo::setNumberOfChannels( const unsigned int& channel )
   m_Channel = channel;
   this->ChannelsLabel->setText( QString( "%1" ).arg( m_Channel ) );
 
-  m_Value.resize( channel );
+  m_Value.resize( m_Channel );
 }
 
 void QGoImageInfo::setMemory( const unsigned long& iMem )
@@ -345,12 +327,10 @@ void QGoImageInfo::setMemory( const unsigned long& iMem )
       if( static_cast< double >( m_Memory ) > 1e6 )
         this->MemoryLabel->setText( QString( "%1 MB").arg( 1e-6 * static_cast< double >( m_Memory ), 0, 'g', 3 ) );
       else
-      {
         if( static_cast< double >( m_Memory ) > 1e3 )
           this->MemoryLabel->setText( QString( "%1 KB").arg( 1e-3 * static_cast< double >( m_Memory ), 0, 'g', 3 ) );
         else
           this->MemoryLabel->setText( QString( "%1").arg( m_Memory ) );
-      }
     }
   }
 }
@@ -366,7 +346,7 @@ void QGoImageInfo::setSize( const std::vector< unsigned int >& iSize )
     }
     else
     {
-      std::cout <<"iSize.size() != m_Size.size()" <<std::endl;
+      std::cout <<"iSize.size() != " <<m_Dimension <<std::endl;
     }
   }
   else
@@ -386,7 +366,7 @@ void QGoImageInfo::setSpacing( const std::vector< float >& iSpacing )
     }
     else
     {
-      std::cout <<"iSpacing.size() != m_Spacing.size()" <<std::endl;
+      std::cout <<"iSpacing.size() != " <<m_Dimension <<std::endl;
     }
   }
   else
@@ -399,14 +379,15 @@ void QGoImageInfo::setPixelPosition( const std::vector< unsigned int >& iPos )
 {
   if( !m_PPos.empty() )
   {
-    if( iPos.size() == m_PPos.size() )
+    unsigned int len = ( m_Dimension > 3 ) ? 3 : m_Dimension;
+    if( iPos.size() == len )
     {
       m_PPos = iPos;
       this->PixelPosLabel->setText( ConvertToQString( m_PPos ) );
     }
     else
     {
-      std::cout <<"iPos.size() != m_PPos.size()" <<std::endl;
+      std::cout <<"iPos.size() != " <<len <<std::endl;
     }
   }
   else
@@ -419,14 +400,15 @@ void QGoImageInfo::setWorldPosition( const std::vector< float >& iPos )
 {
   if( !m_WPos.empty() )
   {
-    if( iPos.size() == m_WPos.size() )
+    unsigned int len = ( m_Dimension > 3 ) ? 3 : m_Dimension;
+    if( iPos.size() == len )
     {
       m_WPos = iPos;
       this->WorldPositionLabel->setText( ConvertToQString( m_WPos ) );
     }
     else
     {
-      std::cout <<"iPos.size() != m_WPos.size()" <<std::endl;
+      std::cout <<"iPos.size() != " <<len <<std::endl;
     }
   }
   else
@@ -441,26 +423,20 @@ void QGoImageInfo::setTimePoint( const float& iTime )
   this->TimeLabel->setText( QString( "%1" ).arg( m_TimePoint ) );
 }
 
-void QGoImageInfo::setTimeSpacing( const float& iSpacing )
-{
-  m_TimeSpacing = iSpacing;
-  this->TimeSpacingLabel->setText( QString( "%1" ).arg( m_TimeSpacing ) );
-}
-
 void QGoImageInfo::setValue( const std::vector< float >& iVal )
 {
   QString val;
 
   if( !m_Value.empty() )
   {
-    if( iVal.size() == m_Value.size() )
+    if( iVal.size() == m_Channel )
     {
       m_Value = iVal;
       this->ValueLabel->setText( ConvertToQString( m_Value ) );
     }
     else
     {
-      std::cout <<"iVal.size() != m_Value.size()" <<std::endl;
+      std::cout <<"iVal.size() != " <<m_Channel <<std::endl;
     }
   }
   else
