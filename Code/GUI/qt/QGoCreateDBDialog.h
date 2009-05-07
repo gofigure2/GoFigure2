@@ -48,6 +48,10 @@ class QGoCreateDBDialog : public QObject
   Q_OBJECT
 public:
   explicit QGoCreateDBDialog( QObject* parent = 0 );
-  virtual  ~QGoCreateDBDialog() {};
+  virtual  QMEGAVTKADDON2_EXPORT ~QGoCreateDBDialog() {};
+
+private:
+  QGoCreateDBDialog( const QGoCreateDBDialog& );
+  QGoCreateDBDialog operator = ( const QGoCreateDBDialog& );
 };
 #endif

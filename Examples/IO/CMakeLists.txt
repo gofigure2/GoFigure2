@@ -1,4 +1,4 @@
-SET( EXAMPLES_QT_NOT_REQUIRED 
+SET( EXAMPLES_QT_NOT_REQUIRED
   ImportMultiFilesInDB
   GoDBRecordSetTest
   3DLsmSerie2mha
