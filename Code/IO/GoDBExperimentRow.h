@@ -5,8 +5,8 @@ class GoDBExperimentRow
 {
 public:
   int    experimentID;
-  char*  name;
-  char*  description;
+  const char*  name;
+  const char*  description;
   int    timeInterval;
   int    tileHeight;
   int    tileWidth;
@@ -20,7 +20,7 @@ public:
   int    nSlices;
   int    nRows;
   int    nColumns;
-  char*  filePattern;
+  const char*  filePattern;
 
 GoDBExperimentRow()
 {

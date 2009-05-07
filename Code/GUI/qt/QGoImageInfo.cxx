@@ -3,6 +3,7 @@
 
 QGoImageInfo::QGoImageInfo( QWidget* parent ) :QWidget( parent )
 {
+  setupUi( this );
 }
 
 QGoImageInfo::~QGoImageInfo()
@@ -321,7 +322,7 @@ void QGoImageInfo::setDimension( const unsigned int& dim )
   }
 }
 
-void QGoImageInfo::setNumberOfChannel( const unsigned int& channel )
+void QGoImageInfo::setNumberOfChannels( const unsigned int& channel )
 {
   m_Channel = channel;
   this->ChannelsLabel->setText( QString( "%1" ).arg( m_Channel ) );
