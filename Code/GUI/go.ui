@@ -59,7 +59,7 @@
      <x>0</x>
      <y>0</y>
      <width>1434</width>
-     <height>22</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -68,11 +68,31 @@
     </property>
     <widget class="QMenu" name="menuOpen_Recent_Files">
      <property name="enabled">
-      <bool>false</bool>
+      <bool>true</bool>
      </property>
      <property name="title">
       <string>Open Recent Files</string>
      </property>
+     <widget class="QMenu" name="menuSingle_Files">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="title">
+       <string>Single Files</string>
+      </property>
+      <addaction name="separator"/>
+     </widget>
+     <widget class="QMenu" name="menuMultiple_Files">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="title">
+       <string>Multiple Files</string>
+      </property>
+      <addaction name="separator"/>
+     </widget>
+     <addaction name="menuSingle_Files"/>
+     <addaction name="menuMultiple_Files"/>
     </widget>
     <addaction name="actionOpen_Single_File"/>
     <addaction name="actionOpen_Multiple_Files"/>
@@ -266,7 +286,7 @@
         <x>0</x>
         <y>0</y>
         <width>211</width>
-        <height>276</height>
+        <height>297</height>
        </rect>
       </property>
       <attribute name="label">
@@ -450,7 +470,7 @@ Radius</string>
         <x>0</x>
         <y>0</y>
         <width>211</width>
-        <height>276</height>
+        <height>297</height>
        </rect>
       </property>
       <attribute name="label">
@@ -616,7 +636,7 @@ Weight</string>
         <x>0</x>
         <y>0</y>
         <width>211</width>
-        <height>276</height>
+        <height>297</height>
        </rect>
       </property>
       <attribute name="label">
@@ -1582,6 +1602,22 @@ Component</string>
   <action name="actionOpen_Contour">
    <property name="text">
     <string>Open Contour</string>
+   </property>
+  </action>
+  <action name="actionTest2">
+   <property name="text">
+    <string>test2</string>
+   </property>
+   <property name="visible">
+    <bool>true</bool>
+   </property>
+  </action>
+  <action name="actionTest3">
+   <property name="text">
+    <string>test3</string>
+   </property>
+   <property name="visible">
+    <bool>true</bool>
    </property>
   </action>
  </widget>

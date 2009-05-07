@@ -135,7 +135,7 @@ protected slots:
   void ValidateContourTracer();
   void ReinitializeAndIncrementContourTracer();
   void ReinitializeContourTracer();
-  void openRecentFile();
+  void openRecentFile(const bool& IsSerie);
 
 protected:
   template< class T > void ValidateContourTracerHelper( T* PageView );
@@ -173,10 +173,14 @@ protected:
   //QSettings settings("MegasonLab", "Gofigure2");
 
   /** \brief */
-  void setCurrentFile(const QString &fileName);
+  void setCurrentFile(const QString &fileName,const bool& IsSerie);
 
   /** \brief */
-  void updateRecentFileActions();
+   enum { MaxRecentFiles = 5 };
+  QAction *recentSingleFileActions[MaxRecentFiles];
+  QAction *recentMultipleFileActions[MaxRecentFiles];
+  
+  void updateRecentFileActions( QStringList list, QMenu *menu, QAction *recentFileActions[MaxRecentFiles]);
 
   /** \brief Open Image with given iFileName
       \param[in] iFileName
@@ -202,7 +206,8 @@ protected:
   itk::QtSignalAdaptor m_SignalAdaptor;
 
   /** \brief list of recent files */
-  QStringList m_RecentFiles;
+  QStringList m_RecentSingleFiles;
+  QStringList m_RecentMultipleFiles;
 
   /** \brief current file name */
   QString m_CurrentFile;
@@ -211,9 +216,6 @@ protected:
   QString strippedName(const QString &fullFileName);
 
   itk::QtProgressBar m_Bar;
-
-  enum { MaxRecentFiles = 5 };
-  QAction *recentFileActions[MaxRecentFiles];
 
 private:
   QGoMainWindow( const QGoMainWindow& );

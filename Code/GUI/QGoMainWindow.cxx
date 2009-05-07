@@ -122,10 +122,18 @@ QGoMainWindow::QGoMainWindow( )
 
   for( int i = 0; i < MaxRecentFiles; ++i )
   {
-    recentFileActions[i] = new QAction(this);
-    recentFileActions[i]->setVisible(false);
-    QObject::connect(this->recentFileActions[i], SIGNAL(triggered()),
-      this, SLOT(openRecentFile()));
+    recentSingleFileActions[i] = new QAction(this);
+    recentSingleFileActions[i]->setVisible(false);
+    QObject::connect(this->recentSingleFileActions[i], SIGNAL(triggered()),
+      this, SLOT(openRecentFile(false)));
+  }
+
+  for( int i = 0; i < MaxRecentFiles; ++i )
+  {
+    recentMultipleFileActions[i] = new QAction(this);
+    recentMultipleFileActions[i]->setVisible(false);
+    QObject::connect(this->recentMultipleFileActions[i], SIGNAL(triggered()),
+      this, SLOT(openRecentFile(true)));
   }
 
  readSettings();
@@ -848,12 +856,13 @@ void QGoMainWindow::SetFileName( const QString& iFile, const bool& IsSerie )
 {
   if( QFile::exists( iFile ) )
   {
-    this->setCurrentFile( iFile );
+    
     // parse extension
 //     QFileInfo fi( iFile );
     QString ext = QFileInfo( iFile ).suffix();
     if( IsSerie )
     {
+      this->setCurrentFile( iFile, true );
       if( ext.compare( "lsm", Qt::CaseInsensitive ) == 0 )
       {
         this->OpenAndDisplay( m_CurrentFile, IsSerie, 0 );
@@ -865,6 +874,7 @@ void QGoMainWindow::SetFileName( const QString& iFile, const bool& IsSerie )
     }
     else
     {
+      this->setCurrentFile( iFile, false );
       if( ext.compare( "lsm", Qt::CaseInsensitive ) == 0 )
       {
         this->OpenAndDisplay( m_CurrentFile, IsSerie, 0 );
@@ -987,7 +997,7 @@ void QGoMainWindow::Fullscreenbuttons()
 }
 
 // *************************************************************************
-void QGoMainWindow::setCurrentFile(const QString &fileName)
+void QGoMainWindow::setCurrentFile(const QString &fileName,const bool& IsSerie)
 {
   m_CurrentFile = fileName;
   this->setWindowModified( false );
@@ -995,9 +1005,18 @@ void QGoMainWindow::setCurrentFile(const QString &fileName)
   if( !m_CurrentFile.isEmpty() )
   {
     shownName = strippedName( m_CurrentFile );
-    m_RecentFiles.removeAll( m_CurrentFile );
-    m_RecentFiles.prepend( m_CurrentFile );
-    updateRecentFileActions();
+    if (IsSerie)
+    {
+      m_RecentMultipleFiles.removeAll( m_CurrentFile );
+      m_RecentMultipleFiles.prepend( m_CurrentFile );
+      updateRecentFileActions(m_RecentMultipleFiles, menuMultiple_Files, recentMultipleFileActions);
+    }
+    else
+    {
+      m_RecentSingleFiles.removeAll( m_CurrentFile );
+      m_RecentSingleFiles.prepend( m_CurrentFile );
+      updateRecentFileActions(m_RecentSingleFiles,menuSingle_Files, recentSingleFileActions);
+    }
   }
 }
 
@@ -1008,42 +1027,42 @@ QString QGoMainWindow::strippedName(const QString &fullFileName)
 }
 
 // *************************************************************************
-void QGoMainWindow::updateRecentFileActions()
+void QGoMainWindow::updateRecentFileActions(QStringList list, QMenu *menu, QAction *recentFileActions[MaxRecentFiles] )
 {
-  QMutableStringListIterator i(m_RecentFiles);
+  QMutableStringListIterator i(list);
   while (i.hasNext())
   {
     if (!QFile::exists(i.next()))
       i.remove();
   }
-  if (!m_RecentFiles.isEmpty())
+  if (!list.isEmpty())
   {
-    menuOpen_Recent_Files->setEnabled(true);
+    menu->setEnabled(true);
   }
 
   for (int j = 0; j < MaxRecentFiles; ++j)
   {
-    if (j < m_RecentFiles.count())
+    if (j < list.count())
     {
       QString text = tr("&%1 %2 ")
         .arg(j + 1)
-        .arg(strippedName(m_RecentFiles[j]));
+        .arg(strippedName(list[j]));
 
       recentFileActions[j]->setText(text);
-      recentFileActions[j]->setData(m_RecentFiles[j]);
+      recentFileActions[j]->setData(list[j]);
       recentFileActions[j]->setVisible(true);
-      menuOpen_Recent_Files->addAction(recentFileActions[j]);
+      menu->addAction(recentFileActions[j]);
     }
   }
 }
 
 // *************************************************************************
-void QGoMainWindow::openRecentFile()
+void QGoMainWindow::openRecentFile(const bool& IsSerie)
 {
   QAction* action = qobject_cast< QAction* >( sender() );
   if( action )
   {
-    SetFileName( action->data().toString(), false );
+      SetFileName( action->data().toString(), IsSerie );
   }
 }
 
@@ -1052,8 +1071,10 @@ void QGoMainWindow::openRecentFile()
 void QGoMainWindow::readSettings()
 {
   QSettings settings( "MegasonLab", "Gofigure2" );
-  m_RecentFiles = settings.value( "recentFiles" ).toStringList( );
-  updateRecentFileActions( );
+  m_RecentSingleFiles = settings.value( "RecentSingleFiles" ).toStringList( );
+  m_RecentMultipleFiles = settings.value( "RecentMultipleFiles" ).toStringList( );
+  updateRecentFileActions(m_RecentSingleFiles, menuSingle_Files, recentSingleFileActions );
+  updateRecentFileActions(m_RecentMultipleFiles, menuMultiple_Files, recentMultipleFileActions );
 
   settings.beginGroup( "MainWindow" );
   QSize size = settings.value( "size" ).toSize();
@@ -1076,7 +1097,8 @@ void QGoMainWindow::readSettings()
 void QGoMainWindow::writeSettings()
 {
   QSettings settings;
-  settings.setValue("recentFiles", m_RecentFiles);
+  settings.setValue("RecentSingleFiles", m_RecentSingleFiles);
+  settings.setValue("RecentMultipleFiles", m_RecentMultipleFiles);
   settings.beginGroup("MainWindow");
   settings.setValue("size", size());
   settings.setValue("pos", pos());
