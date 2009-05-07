@@ -1,3 +1,6 @@
+#ifndef _GoDBRecordSet_h__
+#define _GoDBRecordSet_h__
+
 #include <algorithm>
 #include <utility>
 #include <vector>
@@ -282,4 +285,6 @@ PopulateColumnNamesContainer()
   DataBaseConnector->Delete();
 
 };
+
+#endif
 

@@ -13,7 +13,7 @@ int   TCoord;
 int   YCoord;
 int   XCoord;
 int   ZCoord;
-char* filename;
+const char* filename;
 
 std::string PrintValues()
 {
