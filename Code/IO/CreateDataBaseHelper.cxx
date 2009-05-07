@@ -211,7 +211,7 @@ void CreateExperimentTable(
     `nSlices` INTEGER NOT NULL  DEFAULT -1, \
     `nRows` INTEGER DEFAULT -1, \
     `nColumns` INTEGER DEFAULT -1, \
-    `filePattern` varchar (50),\
+    `filePattern` varchar (250),\
     PRIMARY KEY (experimentID)\
     )";
 
@@ -563,7 +563,7 @@ void CreateSeriesGridTable(
     `YCoord` INTEGER NOT NULL  DEFAULT -1, \
     `XCoord` INTEGER NOT NULL  DEFAULT -1, \
     `ZCoord` INTEGER NOT NULL  DEFAULT -1, \
-    `filename` varchar (50),\
+    `filename` varchar (250),\
     PRIMARY KEY (imageID)\
     )";
 

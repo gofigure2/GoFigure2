@@ -8,14 +8,17 @@ QT4_WRAP_UI( QGOMAINWINDOW_UI_HDRS go.ui )
 QT4_WRAP_CPP( QGOMAINWINDOW_MOC_SRC ${QGOMAINWINDOW_HDRS} )
 QT4_WRAP_CPP( MY_MOC_SRC ${GOFIGURE2_SOURCE_DIR}/Code/GUI/qt/QGoCreateDBDialog.h )
 QT4_ADD_RESOURCES( QGOMAINWINDOW_QRC
-  ${GOFIGURE2_SOURCE_DIR}/Code/GUI/resources/axes.qrc)
+  ${GOFIGURE2_SOURCE_DIR}/Code/GUI/resources/axes.qrc
+  )
 
 
 SET_SOURCE_FILES_PROPERTIES( ${QGOMAINWINDOW_SRC} PROPERTIES
-  OBJECT_DEPENDS "${QGOMAINWINDOW_UI_HDRS}" )
+  OBJECT_DEPENDS "${QGOMAINWINDOW_UI_HDRS}" 
+  )
 
 SET_SOURCE_FILES_PROPERTIES( ${QGOMAINWINDOW_MOC_SRC} PROPERTIES
-  OBJECT_DEPENDS "${QGOMAINWINDOW_UI_HDRS}" )
+  OBJECT_DEPENDS "${QGOMAINWINDOW_UI_HDRS}" 
+  )
 
 SET( GOFIGURE_APPLICATION_SOURCE_LIST
     gofigure.cxx
@@ -32,47 +35,50 @@ SET( GOFIGURE_APPLICATION_SOURCE_LIST
 IF( APPLE )
 
   SET( MACOSX_BUNDLE_ICON_FILE
-    ${GOFIGURE2_SOURCE_DIR}/Code/GUI/resources/myapp.icns)	
+    ${GOFIGURE2_SOURCE_DIR}/Code/GUI/resources/myapp.icns
+    )	
   ADD_EXECUTABLE( gofigure
     MACOSX_BUNDLE
-    ${GOFIGURE_APPLICATION_SOURCE_LIST} )
+    ${GOFIGURE_APPLICATION_SOURCE_LIST} 
+    )
 
-   ADD_CUSTOM_COMMAND( TARGET gofigure POST_BUILD
-     COMMAND mkdir ARGS ${EXECUTABLE_OUTPUT_PATH}/gofigure.app/Contents/Resources
+  ADD_CUSTOM_COMMAND( TARGET gofigure POST_BUILD
+    COMMAND mkdir ARGS ${EXECUTABLE_OUTPUT_PATH}/gofigure.app/Contents/Resources
     COMMAND cp ARGS ${MACOSX_BUNDLE_ICON_FILE} ${EXECUTABLE_OUTPUT_PATH}/gofigure.app/Contents/Resources
     COMMAND cp ARGS *.qm ${EXECUTABLE_OUTPUT_PATH}/gofigure.app/Contents/Resources )
-
+    
 ELSE( APPLE )
-  #  here will need to differenciate windows to avoid command window
+
   IF( WIN32 )
+  
     IF( MINGW )
       ADD_CUSTOM_COMMAND( OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/myapp.o
         COMMAND windres.exe -I${CMAKE_CURRENT_SOURCE_DIR}
-          -i${GOFIGURE2_SOURCE_DIR}/Code/GUI/resources/myapp.rc
-          -o ${CMAKE_CURRENT_BINARY_DIR}/myapp.o )
-
+          -i ${GOFIGURE2_SOURCE_DIR}/Code/GUI/resources/myapp.rc
+          -o ${CMAKE_CURRENT_BINARY_DIR}/myapp.o 
+          )
       SET( ${GOFIGURE_APPLICATION_SOURCE_LIST}
         ${GOFIGURE_APPLICATION_SOURCE_LIST}
-        ${CMAKE_CURRENT_BINARY_DIR}/myapp.o )
-        
+        ${CMAKE_CURRENT_BINARY_DIR}/myapp.o 
+        )
       ADD_EXECUTABLE( gofigure
-        ${GOFIGURE_APPLICATION_SOURCE_LIST} )
+        ${GOFIGURE_APPLICATION_SOURCE_LIST} 
+        )
 
-    ELSE( MINGW )
-#      SET( ${GOFIGURE_APPLICATION_SOURCE_LIST}
-#        ${GOFIGURE_APPLICATION_SOURCE_LIST}
-#        ${GOFIGURE2_SOURCE_DIR}/Code/GUI/resources/myapp.rc )
-#      MESSAGE( SEND_ERROR "${GOFIGURE_APPLICATION_SOURCE_LIST}" )
+    ELSE( MINGW ) # borland or MSVC
       ADD_EXECUTABLE( gofigure
         ${GOFIGURE_APPLICATION_SOURCE_LIST}
-        ${GOFIGURE2_SOURCE_DIR}/Code/GUI/resources/myapp.rc )
+        #${GOFIGURE2_SOURCE_DIR}/Code/GUI/resources/myapp.rc 
+        )
+        
     ENDIF( MINGW )
-  ELSE( WIN32 )
+    
+  ELSE( WIN32 ) # linux / UNIX / solaris, ....
     ADD_EXECUTABLE( gofigure
-      ${GOFIGURE_APPLICATION_SOURCE_LIST} )
+      ${GOFIGURE_APPLICATION_SOURCE_LIST} 
+      )
+      
   ENDIF( WIN32 )
-
-
 
 ENDIF( APPLE )
 
@@ -83,10 +89,11 @@ TARGET_LINK_LIBRARIES( gofigure
   ITKBasicFilters
   ITKNumerics
   vtkImaging
-)
+  )
 
 INSTALL( TARGETS gofigure
       RUNTIME DESTINATION bin
       BUNDLE  DESTINATION bin
       LIBRARY DESTINATION lib
-      ARCHIVE DESTINATION lib/static )
+      ARCHIVE DESTINATION lib/static 
+      )

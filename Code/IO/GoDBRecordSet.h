@@ -91,13 +91,14 @@ public:
   
     myIteratorType start = m_RowContainer.begin();
     myIteratorType end   = m_RowContainer.end(); 
-    while( start != end )
+    // while( start != end )
       {
-      std::cout << (*start).second.PrintValues()  << std::endl;
-      start++;
+      // std::cout << (*start).second.PrintValues()  << std::endl;
+      // start++;
       }   
  
-    std::sort( m_RowContainer.begin(), m_RowContainer.end(), IsLess() );
+	// start = m_RowContainer.begin();
+    std::sort( start, end, IsLess() );
  
     this->PopulateColumnNamesContainer();
 
@@ -142,7 +143,7 @@ private:
     bool operator()( const InternalObjectType& A, const InternalObjectType& B )
       {
       // Dirty first
-      if( A.first || !B.first ) return true;
+      if( A.first && !B.first ) return true;
       return false;
       };
     };

@@ -6,10 +6,10 @@
 
 int main( int argc, char * argv[] )
 {
-  if( argc < 6 )
+  if( argc < 7 )
     {
     std::cout << "Usage: ";
-    std::cout << "<bin> ImageName ServerName Login Pass ExperimentID" << std::endl; 
+    std::cout << "<bin> ImageName ServerName Login Pass DataBaseName ExperimentID" << std::endl; 
     return EXIT_FAILURE;
     }
 
@@ -24,6 +24,7 @@ int main( int argc, char * argv[] )
     RecordSet->SetServerName( argv[2] );
     RecordSet->SetUser( argv[3] );
     RecordSet->SetPassword( argv[4] );
+	RecordSet->SetDataBaseName( argv[5] );
     RecordSet->SetTableName( "seriesgrid" );
 
     typedef FileListType::iterator myFilesIteratorType;
@@ -32,7 +33,7 @@ int main( int argc, char * argv[] )
     while( It != end )
       {
       GoDBSeriesGridRow row;
-      row.experimentID = atoi( argv[5] );
+      row.experimentID = atoi( argv[6] );
       row.RCoord = (*It).RTile;
       row.CCoord = (*It).CTile;
       row.TCoord = (*It).TimePoint;

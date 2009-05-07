@@ -29,7 +29,7 @@ void Test( const char* DBName,  const char* TableName )
 
 int main( int argc, char * argv[] )
 {
-  //CreateDataBaseMain( "localhost", "gofigure", "gofigure", DBName );
+  CreateDataBaseMain( "localhost", "gofigure", "gofigure", "MyTestDB" );
   Test< GoDBExperimentRow >( "myTestDB", "experiment" );
   Test< GoDBSeriesGridRow >( "myTestDB", "seriesgrid" );
   Test< GoDBFigureRow     >( "myTestDB", "figure"     );
