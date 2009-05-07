@@ -88,7 +88,15 @@ public:
       // throw exception
       return;
       }
-
+  
+    myIteratorType start = m_RowContainer.begin();
+    myIteratorType end   = m_RowContainer.end(); 
+    while( start != end )
+      {
+      std::cout << (*start).second.PrintValues()  << std::endl;
+      start++;
+      }   
+ 
     std::sort( m_RowContainer.begin(), m_RowContainer.end(), IsLess() );
  
     this->PopulateColumnNamesContainer();
