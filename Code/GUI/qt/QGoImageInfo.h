@@ -58,10 +58,11 @@ public:
 public slots:
   QMEGAVTKADDON2_EXPORT void setDimension( const unsigned int& );
   QMEGAVTKADDON2_EXPORT void setNumberOfChannels( const unsigned int& );
+  QMEGAVTKADDON2_EXPORT void setMemory( const unsigned long& );
   QMEGAVTKADDON2_EXPORT void setSize( const std::vector< unsigned int >& );
   QMEGAVTKADDON2_EXPORT void setSpacing( const std::vector< float >& );
   QMEGAVTKADDON2_EXPORT void setPixelPosition( const std::vector< unsigned int >& );
-  QMEGAVTKADDON2_EXPORT void setWorldPosision( const std::vector< float >& );
+  QMEGAVTKADDON2_EXPORT void setWorldPosition( const std::vector< float >& );
   QMEGAVTKADDON2_EXPORT void setTimePoint( const float& );
   QMEGAVTKADDON2_EXPORT void setTimeSpacing( const float& );
   QMEGAVTKADDON2_EXPORT void setValue( const std::vector< float >& );
@@ -83,7 +84,7 @@ QScrollArea *scrollArea;
     QLabel *TimeLabel;
     QLabel *SpacingStaticLabel;
     QLabel *MemoryStaticLabel;
-    QLabel *PositionLabel;
+    QLabel *TPositionLabel;
     QLabel *PixelPosStaticLabel;
     QLabel *WorldPosStaticLabel;
     QLabel *ChannelsStaticLabel;
@@ -98,6 +99,7 @@ QScrollArea *scrollArea;
 
   unsigned int m_Dimension;
   unsigned int m_Channel;
+  unsigned long m_Memory;
   std::vector< unsigned int > m_Size;
   std::vector< float >  m_Spacing;
   std::vector< unsigned int > m_PPos;
