@@ -1,13 +1,14 @@
 #include "GoDBRecordSet.h"
+
 #include "GoDBFigureRow.h"
+#include "GoDBExperimentRow.h"
+
 #include "CreateDataBaseHelper.h"
 
 template< class myT >
 void Test( const char* DBName,  const char* TableName )
 {
   typedef GoDBRecordSet< myT >   SetType;
-
-  CreateDataBaseMain( "localhost", "gofigure", "gofigure", DBName );
 
   SetType* mySet = new SetType;
   mySet->SetServerName( "localhost" );
@@ -27,7 +28,11 @@ void Test( const char* DBName,  const char* TableName )
 
 int main( int argc, char * argv[] )
 {
-  Test< GoDBFigureRow >( "myTestDB", "figure" );
+  //CreateDataBaseMain( "localhost", "gofigure", "gofigure", DBName );
+  Test< GoDBExperimentRow >( "myTestDB", "experiment" );
+  Test< GoDBFigureRow     >( "myTestDB", "figure"     );
+
+
   return 1;
 }
 
