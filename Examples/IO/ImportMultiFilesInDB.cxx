@@ -42,6 +42,7 @@ int main( int argc, char * argv[] )
       row.filename = (*It).Filename.c_str();
 
       RecordSet->AddObject( row );
+      It++;
       }
 
     RecordSet->SaveInDB();
