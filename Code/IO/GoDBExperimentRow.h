@@ -7,7 +7,7 @@ public:
   int    experimentID;
   char*  name;
   char*  description;
-  char*  timeInterval;
+  int    timeInterval;
   int    tileHeight;
   int    tileWidth;
   double pixelDepth;
@@ -46,9 +46,10 @@ GoDBExperimentRow()
 std::string PrintValues()
 {
   std::stringstream myString;
+
   myString << experimentID << ", ";
-  myString << name         << ", ";
-  myString << description  << ", ";
+  myString << "\"" << name         << "\"" << ", ";
+  myString << "\"" << description  << "\"" << ", ";
   myString << timeInterval << ", ";
   myString << tileHeight   << ", ";
   myString << tileWidth    << ", ";
@@ -62,7 +63,8 @@ std::string PrintValues()
   myString << nSlices      << ", ";
   myString << nRows        << ", ";
   myString << nColumns     << ", ";
-  myString << filePattern;
+  myString << "\"" << filePattern << "\"";
+
   return myString.str();
 };
 
