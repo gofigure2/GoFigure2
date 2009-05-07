@@ -75,13 +75,13 @@ GoDBFigureRow()
   score      = 0;
   xCenter    = 0;
   yCenter    = 0;
-  experimentID = 0;
-  RCoord = 0;
-  CCoord = 0;
-  TCoord = 0;
-  YCoord = 0;
-  XCoord = 0;
-  ZCoord = 0;
+  experimentID = -1;
+  RCoord = -1;
+  CCoord = -1;
+  TCoord = -1;
+  YCoord = -1;
+  XCoord = -1;
+  ZCoord = -1;
 } 
   
 };
