@@ -2,6 +2,7 @@
 
 #include "GoDBFigureRow.h"
 #include "GoDBExperimentRow.h"
+#include "GoDBSeriesGridRow.h"
 
 #include "CreateDataBaseHelper.h"
 
@@ -30,6 +31,7 @@ int main( int argc, char * argv[] )
 {
   //CreateDataBaseMain( "localhost", "gofigure", "gofigure", DBName );
   Test< GoDBExperimentRow >( "myTestDB", "experiment" );
+  Test< GoDBSeriesGridRow >( "myTestDB", "seriesgrid" );
   Test< GoDBFigureRow     >( "myTestDB", "figure"     );
 
 
