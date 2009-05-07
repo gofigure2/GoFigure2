@@ -7,6 +7,7 @@ INCLUDE_DIRECTORIES( BEFORE
 
 
 SET( QMegaVTKAddOn_NAME2
+  QGoImageInfo
   QGoLUTDialog
   QGoCreateDBDialog
   QImagePageView
@@ -16,6 +17,7 @@ SET( QMegaVTKAddOn_NAME2
   )
 
 SET( QMegaVTKAddOn_SRC2
+  QGoImageInfo.cxx
   QGoLUTDialog.cxx
   QGoCreateDBDialog.cxx
   QImagePageView.cxx
@@ -30,6 +32,7 @@ ENDFOREACH( src )
 
 ADD_LIBRARY( QMegaVTKAddOn2
   ${LIBS_STYLE}
+  ${QGoImageInfo_MOC_SRC2}
   ${QGoCreateDBDialog_MOC_SRC2}
   ${QGoLUTDialog_MOC_SRC2}
   ${QImagePageView_MOC_SRC2}
