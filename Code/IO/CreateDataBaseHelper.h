@@ -2,6 +2,7 @@
 #define __CreateDataBaseHelper_h_
 
 #include <vector>
+#include <string>
 
 std::vector<std::string> ListDataBases(
   const char* ServerName, const char* login,
