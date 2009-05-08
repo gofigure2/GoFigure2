@@ -49,97 +49,102 @@
 #include "MegaVTK2Configure.h"
 
 class QGoImageInfo : public QWidget
-{
-  Q_OBJECT
-public:
-  explicit QMEGAVTKADDON2_EXPORT QGoImageInfo( QWidget* parent = 0 );
-  virtual QMEGAVTKADDON2_EXPORT  ~QGoImageInfo( );
+  {
+    Q_OBJECT
+  public:
+    explicit QMEGAVTKADDON2_EXPORT QGoImageInfo( QWidget* parent = 0 );
+    virtual QMEGAVTKADDON2_EXPORT  ~QGoImageInfo( );
 
-public slots:
-  QMEGAVTKADDON2_EXPORT void setDimension( const unsigned int& );
-  QMEGAVTKADDON2_EXPORT void setNumberOfChannels( const unsigned int& );
-  QMEGAVTKADDON2_EXPORT void setMemory( const unsigned long& );
-  QMEGAVTKADDON2_EXPORT void setSize( const std::vector< unsigned int >& );
-  QMEGAVTKADDON2_EXPORT void setSpacing( const std::vector< float >& );
-  QMEGAVTKADDON2_EXPORT void setPixelPosition( const std::vector< unsigned int >& );
-  QMEGAVTKADDON2_EXPORT void setWorldPosition( const std::vector< float >& );
-  QMEGAVTKADDON2_EXPORT void setTimePoint( const float& );
-  QMEGAVTKADDON2_EXPORT void setValue( const std::vector< float >& );
+  public slots:
+    QMEGAVTKADDON2_EXPORT void setDimension( const unsigned int& );
+    QMEGAVTKADDON2_EXPORT void setNumberOfChannels( const unsigned int& );
+    QMEGAVTKADDON2_EXPORT void setMemory( const unsigned long& );
+    QMEGAVTKADDON2_EXPORT void setSize( const std::vector< unsigned int >& );
+    QMEGAVTKADDON2_EXPORT void setSpacing( const std::vector< float >& );
+    QMEGAVTKADDON2_EXPORT void setPixelPosition( const std::vector< unsigned int >& );
+    QMEGAVTKADDON2_EXPORT void setWorldPosition( const std::vector< float >& );
+    QMEGAVTKADDON2_EXPORT void setTimePoint( const float& );
+    QMEGAVTKADDON2_EXPORT void setValue( const std::vector< float >& );
 
 
-protected:
-QScrollArea *scrollArea;
+  protected:
+    QVBoxLayout *verticalLayout;
+    QScrollArea *scrollArea;
     QWidget *scrollAreaWidgetContents;
     QGridLayout *gridLayout;
     QLabel *TImageStaticlabel;
+    QLabel *TImageLabel;
     QLabel *DimensionStaticLabel;
     QLabel *DimensionLabel;
-    QLabel *SizeStaticLabel;
-    QLabel *SizeLabel;
-    QLabel *SpacingLabel;
-    QLabel *MemoryLabel;
-    QLabel *PixelPosLabel;
-    QLabel *WorldPositionLabel;
-    QLabel *TimeLabel;
+    QLabel *ChannelStaticLabel;
+    QLabel *ChannelLabel;
     QLabel *SpacingStaticLabel;
-    QLabel *MemoryStaticLabel;
-    QLabel *TPositionLabel;
-    QLabel *PixelPosStaticLabel;
-    QLabel *WorldPosStaticLabel;
-    QLabel *ChannelsStaticLabel;
+    QLabel *SpacingLabel;
+    QLabel *PPositionLabel;
+    QLabel *WPositionStaticLabel;
+    QLabel *WPositionLabel;
     QLabel *TTimeStaticLabel;
+    QLabel *TTimeLabel;
     QLabel *TValueStaticLabel;
+    QLabel *TValueLabel;
     QLabel *ValueStaticLabel;
     QLabel *ValueLabel;
-    QLabel *ChannelsLabel;
+    QLabel *SizeStaticLabel;
+    QLabel *SizeLabel;
     QLabel *TimeStaticLabel;
+    QLabel *TimeLabel;
+    QLabel *TPositionLabel;
+    QLabel *TPositionStaticLabel;
+    QLabel *MemoryStaticLabel;
+    QLabel *MemoryLabel;
+    QLabel *PPositionStaticLabel;
 
-  unsigned int m_Dimension;
-  unsigned int m_Channel;
-  unsigned long m_Memory;
-  std::vector< unsigned int > m_Size;
-  std::vector< float >  m_Spacing;
-  std::vector< unsigned int > m_PPos;
-  std::vector< float > m_WPos;
-  std::vector< float > m_Value;
-  float m_TimePoint;
+    unsigned int m_Dimension;
+    unsigned int m_Channel;
+    unsigned long m_Memory;
+    std::vector< unsigned int > m_Size;
+    std::vector< float >  m_Spacing;
+    std::vector< unsigned int > m_PPos;
+    std::vector< float > m_WPos;
+    std::vector< float > m_Value;
+    float m_TimePoint;
 
-  template< class TContainer >
-  QString ConvertToQString( const TContainer& iVector )
-  {
-    if( iVector.empty() )
-      return QString();
-    else
+    template< class TContainer >
+    QString ConvertToQString( const TContainer& iVector )
     {
-      size_t size = iVector.size();
-
-      if( size == 1 )
-      {
-        return QString( "%1" ).arg( *iVector.begin() );
-      }
+      if ( iVector.empty() )
+        return QString();
       else
-      {
-        QString v( "[ ");
-        unsigned int i = 0;
-        for( typename TContainer::const_iterator it = iVector.begin();
-             it != iVector.end();
-             ++it, ++i )
         {
-          if( i == ( size - 1 ) )
-            v.append( QString( "%1 ]" ).arg( *it ) );
-          else
-            v.append( QString( "%1 ; " ).arg( *it ) );
-        }
-        return v;
-      }
-    }
-  }
+          size_t size = iVector.size();
 
-  void setupUi( QWidget* Form );
-  void retranslateUi(QWidget* Form);
-private:
-  QGoImageInfo( const QGoImageInfo& );
-  void operator = ( const QGoImageInfo& );
-};
+          if ( size == 1 )
+            {
+              return QString( "%1" ).arg( *iVector.begin() );
+            }
+          else
+            {
+              QString v( "[ ");
+              unsigned int i = 0;
+              for ( typename TContainer::const_iterator it = iVector.begin();
+                    it != iVector.end();
+                    ++it, ++i )
+                {
+                  if ( i == ( size - 1 ) )
+                    v.append( QString( "%1 ]" ).arg( *it ) );
+                  else
+                    v.append( QString( "%1 ; " ).arg( *it ) );
+                }
+              return v;
+            }
+        }
+    }
+
+    void setupUi( QWidget* Form );
+    void retranslateUi(QWidget* Form);
+  private:
+    QGoImageInfo( const QGoImageInfo& );
+    void operator = ( const QGoImageInfo& );
+  };
 
 #endif
