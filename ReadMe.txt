@@ -15,6 +15,7 @@ softwares:
       * CMake (>=2.6) visit http://www.cmake.org
       * Qt  (>=4.5)  visit http://www.qtsoftware.com
       * VTK (>=5.4) visit http://www.vtk.org
+with Qt and MYSQL
       * ITK (>=3.10) visit http://www.itk.org
 
     2.2.2 Configuration
