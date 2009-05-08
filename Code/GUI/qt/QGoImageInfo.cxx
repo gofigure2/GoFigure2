@@ -21,19 +21,13 @@ void QGoImageInfo::setupUi( QWidget *ImageInfo )
   sizePolicy.setHeightForWidth(ImageInfo->sizePolicy().hasHeightForWidth());
   ImageInfo->setSizePolicy(sizePolicy);
   verticalLayout = new QVBoxLayout(ImageInfo);
-  verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
   verticalLayout->setContentsMargins(3, -1, 3, -1);
   scrollArea = new QScrollArea(ImageInfo);
-  scrollArea->setObjectName(QString::fromUtf8("scrollArea"));
-  scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
   scrollArea->setWidgetResizable(true);
   scrollAreaWidgetContents = new QWidget();
-  scrollAreaWidgetContents->setObjectName(QString::fromUtf8("scrollAreaWidgetContents"));
   scrollAreaWidgetContents->setGeometry(QRect(0, 0, 281, 301));
   gridLayout = new QGridLayout(scrollAreaWidgetContents);
-  gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
   TImageStaticlabel = new QLabel(scrollAreaWidgetContents);
-  TImageStaticlabel->setObjectName(QString::fromUtf8("TImageStaticlabel"));
   QSizePolicy sizePolicy1(QSizePolicy::Fixed, QSizePolicy::Fixed);
   sizePolicy1.setHorizontalStretch(0);
   sizePolicy1.setVerticalStretch(0);
@@ -43,19 +37,16 @@ void QGoImageInfo::setupUi( QWidget *ImageInfo )
   gridLayout->addWidget(TImageStaticlabel, 0, 0, 1, 1);
 
   TImageLabel = new QLabel(scrollAreaWidgetContents);
-  TImageLabel->setObjectName(QString::fromUtf8("TImageLabel"));
 
   gridLayout->addWidget(TImageLabel, 0, 1, 1, 1);
 
   DimensionStaticLabel = new QLabel(scrollAreaWidgetContents);
-  DimensionStaticLabel->setObjectName(QString::fromUtf8("DimensionStaticLabel"));
   sizePolicy1.setHeightForWidth(DimensionStaticLabel->sizePolicy().hasHeightForWidth());
   DimensionStaticLabel->setSizePolicy(sizePolicy1);
 
   gridLayout->addWidget(DimensionStaticLabel, 1, 0, 1, 1);
 
   DimensionLabel = new QLabel(scrollAreaWidgetContents);
-  DimensionLabel->setObjectName(QString::fromUtf8("DimensionLabel"));
   QSizePolicy sizePolicy2(QSizePolicy::Expanding, QSizePolicy::Preferred);
   sizePolicy2.setHorizontalStretch(0);
   sizePolicy2.setVerticalStretch(0);
@@ -65,40 +56,34 @@ void QGoImageInfo::setupUi( QWidget *ImageInfo )
   gridLayout->addWidget(DimensionLabel, 1, 1, 1, 1);
 
   ChannelStaticLabel = new QLabel(scrollAreaWidgetContents);
-  ChannelStaticLabel->setObjectName(QString::fromUtf8("ChannelStaticLabel"));
   sizePolicy1.setHeightForWidth(ChannelStaticLabel->sizePolicy().hasHeightForWidth());
   ChannelStaticLabel->setSizePolicy(sizePolicy1);
 
   gridLayout->addWidget(ChannelStaticLabel, 2, 0, 1, 1);
 
   ChannelLabel = new QLabel(scrollAreaWidgetContents);
-  ChannelLabel->setObjectName(QString::fromUtf8("ChannelLabel"));
   sizePolicy2.setHeightForWidth(ChannelLabel->sizePolicy().hasHeightForWidth());
   ChannelLabel->setSizePolicy(sizePolicy2);
 
   gridLayout->addWidget(ChannelLabel, 2, 1, 1, 1);
 
   SpacingStaticLabel = new QLabel(scrollAreaWidgetContents);
-  SpacingStaticLabel->setObjectName(QString::fromUtf8("SpacingStaticLabel"));
   sizePolicy1.setHeightForWidth(SpacingStaticLabel->sizePolicy().hasHeightForWidth());
   SpacingStaticLabel->setSizePolicy(sizePolicy1);
 
   gridLayout->addWidget(SpacingStaticLabel, 4, 0, 1, 1);
 
   SpacingLabel = new QLabel(scrollAreaWidgetContents);
-  SpacingLabel->setObjectName(QString::fromUtf8("SpacingLabel"));
   sizePolicy2.setHeightForWidth(SpacingLabel->sizePolicy().hasHeightForWidth());
   SpacingLabel->setSizePolicy(sizePolicy2);
 
   gridLayout->addWidget(SpacingLabel, 4, 1, 1, 1);
 
   PPositionLabel = new QLabel(scrollAreaWidgetContents);
-  PPositionLabel->setObjectName(QString::fromUtf8("PPositionLabel"));
 
   gridLayout->addWidget(PPositionLabel, 7, 1, 1, 1);
 
   WPositionStaticLabel = new QLabel(scrollAreaWidgetContents);
-  WPositionStaticLabel->setObjectName(QString::fromUtf8("WPositionStaticLabel"));
   QSizePolicy sizePolicy3(QSizePolicy::Preferred, QSizePolicy::Fixed);
   sizePolicy3.setHorizontalStretch(0);
   sizePolicy3.setVerticalStretch(0);
@@ -108,110 +93,94 @@ void QGoImageInfo::setupUi( QWidget *ImageInfo )
   gridLayout->addWidget(WPositionStaticLabel, 8, 0, 1, 1);
 
   WPositionLabel = new QLabel(scrollAreaWidgetContents);
-  WPositionLabel->setObjectName(QString::fromUtf8("WPositionLabel"));
   sizePolicy2.setHeightForWidth(WPositionLabel->sizePolicy().hasHeightForWidth());
   WPositionLabel->setSizePolicy(sizePolicy2);
 
   gridLayout->addWidget(WPositionLabel, 8, 1, 1, 1);
 
   TTimeStaticLabel = new QLabel(scrollAreaWidgetContents);
-  TTimeStaticLabel->setObjectName(QString::fromUtf8("TTimeStaticLabel"));
   sizePolicy3.setHeightForWidth(TTimeStaticLabel->sizePolicy().hasHeightForWidth());
   TTimeStaticLabel->setSizePolicy(sizePolicy3);
 
   gridLayout->addWidget(TTimeStaticLabel, 9, 0, 1, 1);
 
   TTimeLabel = new QLabel(scrollAreaWidgetContents);
-  TTimeLabel->setObjectName(QString::fromUtf8("TTimeLabel"));
   sizePolicy2.setHeightForWidth(TTimeLabel->sizePolicy().hasHeightForWidth());
   TTimeLabel->setSizePolicy(sizePolicy2);
 
   gridLayout->addWidget(TTimeLabel, 9, 1, 1, 1);
 
   TValueStaticLabel = new QLabel(scrollAreaWidgetContents);
-  TValueStaticLabel->setObjectName(QString::fromUtf8("TValueStaticLabel"));
   sizePolicy3.setHeightForWidth(TValueStaticLabel->sizePolicy().hasHeightForWidth());
   TValueStaticLabel->setSizePolicy(sizePolicy3);
 
   gridLayout->addWidget(TValueStaticLabel, 11, 0, 1, 1);
 
   TValueLabel = new QLabel(scrollAreaWidgetContents);
-  TValueLabel->setObjectName(QString::fromUtf8("TValueLabel"));
 
   gridLayout->addWidget(TValueLabel, 11, 1, 1, 1);
 
   ValueStaticLabel = new QLabel(scrollAreaWidgetContents);
-  ValueStaticLabel->setObjectName(QString::fromUtf8("ValueStaticLabel"));
   sizePolicy1.setHeightForWidth(ValueStaticLabel->sizePolicy().hasHeightForWidth());
   ValueStaticLabel->setSizePolicy(sizePolicy1);
 
   gridLayout->addWidget(ValueStaticLabel, 12, 0, 1, 1);
 
   ValueLabel = new QLabel(scrollAreaWidgetContents);
-  ValueLabel->setObjectName(QString::fromUtf8("ValueLabel"));
   sizePolicy2.setHeightForWidth(ValueLabel->sizePolicy().hasHeightForWidth());
   ValueLabel->setSizePolicy(sizePolicy2);
 
   gridLayout->addWidget(ValueLabel, 12, 1, 1, 1);
 
   SizeStaticLabel = new QLabel(scrollAreaWidgetContents);
-  SizeStaticLabel->setObjectName(QString::fromUtf8("SizeStaticLabel"));
   sizePolicy1.setHeightForWidth(SizeStaticLabel->sizePolicy().hasHeightForWidth());
   SizeStaticLabel->setSizePolicy(sizePolicy1);
 
   gridLayout->addWidget(SizeStaticLabel, 3, 0, 1, 1);
 
   SizeLabel = new QLabel(scrollAreaWidgetContents);
-  SizeLabel->setObjectName(QString::fromUtf8("SizeLabel"));
   sizePolicy2.setHeightForWidth(SizeLabel->sizePolicy().hasHeightForWidth());
   SizeLabel->setSizePolicy(sizePolicy2);
 
   gridLayout->addWidget(SizeLabel, 3, 1, 1, 1);
 
   TimeStaticLabel = new QLabel(scrollAreaWidgetContents);
-  TimeStaticLabel->setObjectName(QString::fromUtf8("TimeStaticLabel"));
   sizePolicy3.setHeightForWidth(TimeStaticLabel->sizePolicy().hasHeightForWidth());
   TimeStaticLabel->setSizePolicy(sizePolicy3);
 
   gridLayout->addWidget(TimeStaticLabel, 10, 0, 1, 1);
 
   TimeLabel = new QLabel(scrollAreaWidgetContents);
-  TimeLabel->setObjectName(QString::fromUtf8("TimeLabel"));
   sizePolicy2.setHeightForWidth(TimeLabel->sizePolicy().hasHeightForWidth());
   TimeLabel->setSizePolicy(sizePolicy2);
 
   gridLayout->addWidget(TimeLabel, 10, 1, 1, 1);
 
   TPositionLabel = new QLabel(scrollAreaWidgetContents);
-  TPositionLabel->setObjectName(QString::fromUtf8("TPositionLabel"));
   sizePolicy2.setHeightForWidth(TPositionLabel->sizePolicy().hasHeightForWidth());
   TPositionLabel->setSizePolicy(sizePolicy2);
 
   gridLayout->addWidget(TPositionLabel, 6, 1, 1, 1);
 
   TPositionStaticLabel = new QLabel(scrollAreaWidgetContents);
-  TPositionStaticLabel->setObjectName(QString::fromUtf8("TPositionStaticLabel"));
   sizePolicy1.setHeightForWidth(TPositionStaticLabel->sizePolicy().hasHeightForWidth());
   TPositionStaticLabel->setSizePolicy(sizePolicy1);
 
   gridLayout->addWidget(TPositionStaticLabel, 6, 0, 1, 1);
 
   MemoryStaticLabel = new QLabel(scrollAreaWidgetContents);
-  MemoryStaticLabel->setObjectName(QString::fromUtf8("MemoryStaticLabel"));
   sizePolicy1.setHeightForWidth(MemoryStaticLabel->sizePolicy().hasHeightForWidth());
   MemoryStaticLabel->setSizePolicy(sizePolicy1);
 
   gridLayout->addWidget(MemoryStaticLabel, 5, 0, 1, 1);
 
   MemoryLabel = new QLabel(scrollAreaWidgetContents);
-  MemoryLabel->setObjectName(QString::fromUtf8("MemoryLabel"));
   sizePolicy2.setHeightForWidth(MemoryLabel->sizePolicy().hasHeightForWidth());
   MemoryLabel->setSizePolicy(sizePolicy2);
 
   gridLayout->addWidget(MemoryLabel, 5, 1, 1, 1);
 
   PPositionStaticLabel = new QLabel(scrollAreaWidgetContents);
-  PPositionStaticLabel->setObjectName(QString::fromUtf8("PPositionStaticLabel"));
   sizePolicy3.setHeightForWidth(PPositionStaticLabel->sizePolicy().hasHeightForWidth());
   PPositionStaticLabel->setSizePolicy(sizePolicy3);
 
@@ -316,9 +285,10 @@ void QGoImageInfo::setDimension( const unsigned int& dim )
   m_Spacing.resize( dim );
 
   bool space_time = ( dim > 3 );
-//   this->TTimeStaticLabel->setVisible( space_time );
-//   this->TimeStaticLabel->setVisible( space_time );
-//   this->TimeLabel->setVisible( space_time );
+  this->TTimeStaticLabel->setVisible( space_time );
+  this->TTimeLabel->setVisible( space_time );
+  this->TimeStaticLabel->setVisible( space_time );
+  this->TimeLabel->setVisible( space_time );
 
   if ( space_time )
     {
