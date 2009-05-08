@@ -113,6 +113,9 @@ QImagePageView4DTracer::QImagePageView4DTracer( QWidget* parent ) : QWidget( par
 QImagePageView4DTracer::~QImagePageView4DTracer()
 {
   delete this->Whatever;
+  // NOTE ALEX: bug come from here
+  // commenting this line lead to huge memory leaks, don t even think about it.
+  // the error comes from very very deep in the vtk hierarchy. I can't explain it.
   Image->Delete();
 }
 
@@ -213,7 +216,7 @@ void QImagePageView4DTracer::ReadLSMFile( const int& TimePoint )
   // so we will have less duplicated code, and less maintenance.
   
   vtkImageData* myImage_ch1 = vtkImageData::New();
-  vtkLSMReader* reader=vtkLSMReader::New();
+  vtkLSMReader* reader = vtkLSMReader::New();
   reader->SetFileName( this->FileName );
   reader->SetUpdateTimePoint( TimePoint );
   reader->Update();

@@ -30,10 +30,15 @@ void Test( const char* DBName,  const char* TableName )
 int main( int argc, char * argv[] )
 {
   CreateDataBaseMain( "localhost", "gofigure", "gofigure", "MyTestDB" );
+  std::cout << 
+    IsDatabaseOfGoFigureType( "localhost", "gofigure", "gofigure", "MyTestDB")
+	<< std::endl;
+
   Test< GoDBExperimentRow >( "myTestDB", "experiment" );
   Test< GoDBSeriesGridRow >( "myTestDB", "seriesgrid" );
   Test< GoDBFigureRow     >( "myTestDB", "figure"     );
 
+  DropDatabase( "localhost", "gofigure", "gofigure", "MyTestDB" );
 
   return 1;
 }
