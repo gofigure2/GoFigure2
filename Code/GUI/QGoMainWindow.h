@@ -83,7 +83,9 @@ public:
 
 protected slots:
   void on_actionOpen_Single_File_activated( );
+  void openRecentSingleFile();
   void on_actionOpen_Multiple_Files_activated( );
+  void openRecentMultipleFile();
 
   void on_actionOpen_Mesh_activated( );
 
@@ -135,7 +137,7 @@ protected slots:
   void ValidateContourTracer();
   void ReinitializeAndIncrementContourTracer();
   void ReinitializeContourTracer();
-  void openRecentFile(const bool& IsSerie);
+  
 
 protected:
   template< class T > void ValidateContourTracerHelper( T* PageView );
@@ -145,6 +147,7 @@ protected:
   template< class T > void SetRendering( T* myPageView );
   template< class T > void UpdateVolumeRenderingButton( T* PageView);
   template< class T > void writeSettingsPageView(T* PageView );
+
 
   /** \brief */
   void SetFullScreenDispatch( const int & ViewID );
@@ -172,6 +175,9 @@ protected:
 
   //QSettings settings("MegasonLab", "Gofigure2");
 
+  /** \brief */
+  void openRecentFile(const bool& IsSerie);
+	
   /** \brief */
   void setCurrentFile(const QString &fileName,const bool& IsSerie);
 

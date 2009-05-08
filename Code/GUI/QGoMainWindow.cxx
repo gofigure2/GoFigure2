@@ -125,7 +125,7 @@ QGoMainWindow::QGoMainWindow( )
     recentSingleFileActions[i] = new QAction(this);
     recentSingleFileActions[i]->setVisible(false);
     QObject::connect(this->recentSingleFileActions[i], SIGNAL(triggered()),
-      this, SLOT(openRecentFile(false)));
+      this, SLOT(openRecentSingleFile()));
   }
 
   for( int i = 0; i < MaxRecentFiles; ++i )
@@ -133,7 +133,7 @@ QGoMainWindow::QGoMainWindow( )
     recentMultipleFileActions[i] = new QAction(this);
     recentMultipleFileActions[i]->setVisible(false);
     QObject::connect(this->recentMultipleFileActions[i], SIGNAL(triggered()),
-      this, SLOT(openRecentFile(true)));
+      this, SLOT(openRecentMultipleFile()));
   }
 
  readSettings();
@@ -1064,6 +1064,18 @@ void QGoMainWindow::openRecentFile(const bool& IsSerie)
   {
       SetFileName( action->data().toString(), IsSerie );
   }
+}
+
+// *************************************************************************
+void QGoMainWindow::openRecentSingleFile()
+{
+	openRecentFile(false);
+}
+
+// *************************************************************************
+void QGoMainWindow::openRecentMultipleFile()
+{
+	openRecentFile(true);
 }
 
 
