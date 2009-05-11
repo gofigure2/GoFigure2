@@ -59,7 +59,7 @@
      <x>0</x>
      <y>0</y>
      <width>1434</width>
-     <height>21</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -223,14 +223,14 @@
    </property>
    <property name="minimumSize">
     <size>
-     <width>214</width>
-     <height>102</height>
+     <width>220</width>
+     <height>105</height>
     </size>
    </property>
    <property name="maximumSize">
     <size>
-     <width>317</width>
-     <height>587</height>
+     <width>323</width>
+     <height>590</height>
     </size>
    </property>
    <property name="floating">
@@ -285,8 +285,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>211</width>
-        <height>297</height>
+        <width>201</width>
+        <height>287</height>
        </rect>
       </property>
       <attribute name="label">
@@ -469,8 +469,8 @@ Radius</string>
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>211</width>
-        <height>297</height>
+        <width>201</width>
+        <height>287</height>
        </rect>
       </property>
       <attribute name="label">
@@ -635,8 +635,8 @@ Weight</string>
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>211</width>
-        <height>297</height>
+        <width>201</width>
+        <height>287</height>
        </rect>
       </property>
       <attribute name="label">
@@ -849,8 +849,8 @@ Component</string>
   <widget class="QDockWidget" name="ManualSegmentationDockWidget">
    <property name="minimumSize">
     <size>
-     <width>214</width>
-     <height>79</height>
+     <width>220</width>
+     <height>82</height>
     </size>
    </property>
    <property name="windowTitle">
@@ -1043,10 +1043,13 @@ Component</string>
    </attribute>
    <widget class="QWidget" name="dockWidgetContents">
     <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
      <property name="geometry">
       <rect>
        <x>30</x>
-       <y>140</y>
+       <y>210</y>
        <width>126</width>
        <height>26</height>
       </rect>
@@ -1059,7 +1062,7 @@ Component</string>
      <property name="geometry">
       <rect>
        <x>7</x>
-       <y>60</y>
+       <y>130</y>
        <width>161</width>
        <height>20</height>
       </rect>
@@ -1072,14 +1075,17 @@ Component</string>
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>10</y>
-       <width>108</width>
+       <y>80</y>
+       <width>121</width>
        <height>48</height>
       </rect>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_7">
       <item>
-       <widget class="QRadioButton" name="radioButton_3">
+       <widget class="QRadioButton" name="ChanVeseBtn">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="text">
          <string>Chan Vese</string>
         </property>
@@ -1090,6 +1096,9 @@ Component</string>
       </item>
       <item>
        <widget class="QRadioButton" name="radioButton_4">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="text">
          <string>Shape-Based</string>
         </property>
@@ -1101,7 +1110,7 @@ Component</string>
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>80</y>
+       <y>150</y>
        <width>191</width>
        <height>50</height>
       </rect>
@@ -1111,6 +1120,9 @@ Component</string>
        <layout class="QVBoxLayout" name="verticalLayout_6">
         <item>
          <widget class="QRadioButton" name="radioButton">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
           <property name="text">
            <string>2D</string>
           </property>
@@ -1121,6 +1133,9 @@ Component</string>
         </item>
         <item>
          <widget class="QRadioButton" name="radioButton_2">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
           <property name="text">
            <string>3D</string>
           </property>
@@ -1132,6 +1147,9 @@ Component</string>
        <layout class="QHBoxLayout" name="horizontalLayout_19">
         <item>
          <widget class="QLabel" name="label_17">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
           <property name="text">
            <string>Radius</string>
           </property>
@@ -1139,6 +1157,9 @@ Component</string>
         </item>
         <item>
          <widget class="QDoubleSpinBox" name="doubleSpinBox">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
           <property name="suffix">
            <string>um</string>
           </property>
@@ -1159,6 +1180,57 @@ Component</string>
        </layout>
       </item>
      </layout>
+    </widget>
+    <widget class="QWidget" name="layoutWidget4_2">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>0</y>
+       <width>49</width>
+       <height>56</height>
+      </rect>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_9">
+      <item>
+       <widget class="QRadioButton" name="SeedWidgetOnRadioBtn">
+        <property name="text">
+         <string>On</string>
+        </property>
+        <property name="shortcut">
+         <string>Ctrl+C, Ctrl+Y</string>
+        </property>
+        <property name="checked">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QRadioButton" name="SeedWidgetOffRadioBtn">
+        <property name="text">
+         <string>Off</string>
+        </property>
+        <property name="shortcut">
+         <string>Ctrl+C, Ctrl+N</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+    <widget class="Line" name="line_2">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>60</y>
+       <width>161</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
     </widget>
    </widget>
   </widget>
@@ -1576,7 +1648,7 @@ Component</string>
     <bool>true</bool>
    </property>
    <property name="enabled">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="text">
     <string>One Click Segmentation</string>
@@ -1652,7 +1724,7 @@ Component</string>
   <tabstop>spinBox_9</tabstop>
   <tabstop>buttonBox_4</tabstop>
   <tabstop>buttonBox</tabstop>
-  <tabstop>radioButton_3</tabstop>
+  <tabstop>ChanVeseBtn</tabstop>
   <tabstop>radioButton_4</tabstop>
   <tabstop>radioButton</tabstop>
   <tabstop>radioButton_2</tabstop>
@@ -1674,7 +1746,7 @@ Component</string>
     </hint>
     <hint type="destinationlabel">
      <x>107</x>
-     <y>325</y>
+     <y>252</y>
     </hint>
    </hints>
   </connection>
@@ -1717,12 +1789,12 @@ Component</string>
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>47</x>
-     <y>438</y>
+     <x>48</x>
+     <y>301</y>
     </hint>
     <hint type="destinationlabel">
-     <x>64</x>
-     <y>509</y>
+     <x>109</x>
+     <y>379</y>
     </hint>
    </hints>
   </connection>
@@ -1733,12 +1805,12 @@ Component</string>
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>47</x>
-     <y>438</y>
+     <x>48</x>
+     <y>301</y>
     </hint>
     <hint type="destinationlabel">
-     <x>150</x>
-     <y>510</y>
+     <x>227</x>
+     <y>379</y>
     </hint>
    </hints>
   </connection>
@@ -1749,12 +1821,12 @@ Component</string>
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>47</x>
-     <y>438</y>
+     <x>48</x>
+     <y>301</y>
     </hint>
     <hint type="destinationlabel">
      <x>93</x>
-     <y>546</y>
+     <y>410</y>
     </hint>
    </hints>
   </connection>
@@ -1765,12 +1837,12 @@ Component</string>
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>47</x>
-     <y>438</y>
+     <x>48</x>
+     <y>301</y>
     </hint>
     <hint type="destinationlabel">
-     <x>109</x>
-     <y>578</y>
+     <x>110</x>
+     <y>446</y>
     </hint>
    </hints>
   </connection>
@@ -1781,12 +1853,12 @@ Component</string>
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>47</x>
-     <y>438</y>
+     <x>48</x>
+     <y>301</y>
     </hint>
     <hint type="destinationlabel">
-     <x>109</x>
-     <y>636</y>
+     <x>110</x>
+     <y>510</y>
     </hint>
    </hints>
   </connection>
@@ -1797,12 +1869,12 @@ Component</string>
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>47</x>
-     <y>438</y>
+     <x>48</x>
+     <y>301</y>
     </hint>
     <hint type="destinationlabel">
-     <x>109</x>
-     <y>607</y>
+     <x>110</x>
+     <y>478</y>
     </hint>
    </hints>
   </connection>
@@ -1813,12 +1885,124 @@ Component</string>
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>47</x>
-     <y>438</y>
+     <x>48</x>
+     <y>301</y>
     </hint>
     <hint type="destinationlabel">
-     <x>20</x>
-     <y>510</y>
+     <x>21</x>
+     <y>384</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>SeedWidgetOffRadioBtn</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>ChanVeseBtn</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>55</x>
+     <y>602</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>72</x>
+     <y>650</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>SeedWidgetOffRadioBtn</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>radioButton_4</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>22</x>
+     <y>601</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>22</x>
+     <y>677</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>SeedWidgetOffRadioBtn</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>radioButton</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>47</x>
+     <y>609</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>48</x>
+     <y>726</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>SeedWidgetOffRadioBtn</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>radioButton_2</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>54</x>
+     <y>605</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>57</x>
+     <y>747</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>SeedWidgetOffRadioBtn</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>doubleSpinBox</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>39</x>
+     <y>609</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>160</x>
+     <y>734</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>SeedWidgetOffRadioBtn</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>buttonBox</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>32</x>
+     <y>603</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>80</x>
+     <y>777</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>SeedWidgetOffRadioBtn</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>label_17</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>41</x>
+     <y>611</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>99</x>
+     <y>729</y>
     </hint>
    </hints>
   </connection>

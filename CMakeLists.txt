@@ -3,6 +3,12 @@ PROJECT( GOFIGURE2 )
 SET( GOFIGURE2_MAJOR_VERSION "0" )
 SET( GOFIGURE2_MINOR_VERSION "5" )
 
+# NOTE: It is possible to get the revision number by calling in bash the 
+# svnversion command
+#ADD_CUSTOM_COMMAND( TARGET yo PRE_BUILD
+#  COMMAND svnversion ARGS ${GOFIGURE2_SOURCE_DIR} 
+#)
+
 SET( GOFIGURE2_VERSION
 "${GOFIGURE2_MAJOR_VERSION}.${GOFIGURE2_MINOR_VERSION}" )
 

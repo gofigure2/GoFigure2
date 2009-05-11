@@ -96,7 +96,18 @@ QGoMainWindow::QGoMainWindow( )
     SLOT( SetContourTracerOn(bool) ) );
   QObject::connect( this->ManualSegmentationOffRadioBtn,
     SIGNAL( toggled(bool) ),
-    this, SLOT( SetContourTracerOff(bool) ) );
+    this,
+    SLOT( SetContourTracerOff(bool) ) );
+
+  QObject::connect( this->SeedWidgetOnRadioBtn,
+    SIGNAL( toggled(bool) ),
+    this,
+    SLOT( SetSeedWidgetOn(bool) ) );
+  QObject::connect( this->SeedWidgetOffRadioBtn,
+    SIGNAL( toggled(bool) ),
+    this,
+    SLOT( SetSeedWidgetOff(bool) ) );
+
   QObject::connect( this->IdContourColorBtn, SIGNAL( released( ) ),
     this, SLOT( SetColorForGivenId( ) ) );
   QObject::connect( this->TracerValidationBtn, SIGNAL( released( ) ),
@@ -626,6 +637,54 @@ void QGoMainWindow::SetContourTracerOn(const bool& iChecked)
 }
 
 // *************************************************************************
+void QGoMainWindow::SetSeedWidgetOn(const bool& iChecked)
+{
+  if( iChecked )
+  {
+    int idx = this->CentralImageTabWidget->currentIndex();
+    QImagePageViewTracer* myPageView =
+      dynamic_cast<QImagePageViewTracer*>( m_PageView[idx] );
+    if( myPageView )
+    {
+      myPageView->SetSeedingON();
+    }
+    else
+    {
+//       QImagePageView4DTracer* myPageView2 =
+//         dynamic_cast<QImagePageView4DTracer*>( m_PageView[idx] );
+//       if( myPageView2 )
+//       {
+//         myPageView2->SetSeedingON();
+//       }
+    }
+  }
+
+}
+// *************************************************************************
+void QGoMainWindow::SetSeedWidgetOff(const bool& iChecked)
+{
+  if( iChecked )
+  {
+    int idx = this->CentralImageTabWidget->currentIndex();
+    QImagePageViewTracer* myPageView =
+      dynamic_cast<QImagePageViewTracer*>( m_PageView[idx] );
+    if( myPageView )
+    {
+      myPageView->SetSeedingOFF();
+    }
+    else
+    {
+//       QImagePageView4DTracer* myPageView2 =
+//         dynamic_cast<QImagePageView4DTracer*>( m_PageView[idx] );
+//       if( myPageView2 )
+//       {
+//         myPageView2->SetSeedingON();
+//       }
+    }
+  }
+
+}
+// *************************************************************************
 void QGoMainWindow::SetContourTracerOff(const bool& iChecked)
 {
   if( iChecked )
@@ -856,7 +915,7 @@ void QGoMainWindow::SetFileName( const QString& iFile, const bool& IsSerie )
 {
   if( QFile::exists( iFile ) )
   {
-    
+
     // parse extension
 //     QFileInfo fi( iFile );
     QString ext = QFileInfo( iFile ).suffix();
@@ -1250,5 +1309,10 @@ void QGoMainWindow::UpdateVolumeRenderingButton( T* PageView)
   {
     actionVolume_rendering_XYZ->setChecked(false);
   }
+}
+
+void QGoMainWindow::StartSeedWidget()
+{
+
 }
 

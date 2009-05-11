@@ -96,6 +96,14 @@ QImagePageViewTracer::~QImagePageViewTracer()
 {
   delete htSplitter;
   delete hbSplitter;
+
+  for( int i = 0; i < this->SeedWidget.size(); i++ )
+  {
+    this->Handle[i]->Delete();
+    this->SeedRep[i]->Delete();
+    this->SeedWidget[i]->Delete();
+  }
+
   Pool->Delete();
   View3D->Delete();
   vtkEventQtConnector->Delete();
@@ -848,6 +856,27 @@ void QImagePageViewTracer::Set3DImage( vtkImageData* input )
   this->slider1->setValue( (this->slider1->minimum()+this->slider1->maximum())/2 );
   this->slider2->setValue( (this->slider2->minimum()+this->slider2->maximum())/2 );
   this->slider3->setValue( (this->slider3->minimum()+this->slider3->maximum())/2 );
+
+  this->Handle.resize( this->Pool->GetNumberOfItems() );
+  this->SeedRep.resize( this->Pool->GetNumberOfItems() );
+  this->SeedWidget.resize( this->Pool->GetNumberOfItems() );
+
+  for( int i = 0; i < this->Pool->GetNumberOfItems(); i++)
+  {
+    this->Handle[i] = vtkPointHandleRepresentation2D::New();
+    this->Handle[i]->GetProperty()->SetColor(1,0,0);
+
+    this->SeedRep[i] = vtkSeedRepresentation::New();
+    this->SeedRep[i]->SetHandleRepresentation(this->Handle[i]);
+
+    this->SeedWidget[i] = vtkSeedWidget::New();
+    this->SeedWidget[i]->SetPriority( 10.0 );
+    this->SeedWidget[i]->SetRepresentation( this->SeedRep[i] );
+  }
+
+  this->SeedWidget[0]->SetInteractor( this->qvtkWidget_XY->GetInteractor() );
+  this->SeedWidget[1]->SetInteractor( this->qvtkWidget_2->GetInteractor() );
+  this->SeedWidget[2]->SetInteractor( this->qvtkWidget_3->GetInteractor() );
 }
 
 void QImagePageViewTracer::Set2DImage( vtkImageData* input )
@@ -880,6 +909,20 @@ void QImagePageViewTracer::Set2DImage( vtkImageData* input )
   //     this->Pool->SyncMaskImage();
   this->Pool->SyncRender();
   this->Pool->SyncReset();
+
+  this->Handle.resize( this->Pool->GetNumberOfItems() );
+  this->Handle[0] = vtkPointHandleRepresentation2D::New();
+  this->Handle[0]->GetProperty()->SetColor(1,0,0);
+
+  this->SeedRep.resize( this->Pool->GetNumberOfItems() );
+  this->SeedRep[0] = vtkSeedRepresentation::New();
+  this->SeedRep[0]->SetHandleRepresentation(this->Handle[0]);
+
+  this->SeedWidget.resize( this->Pool->GetNumberOfItems() );
+  this->SeedWidget[0] = vtkSeedWidget::New();
+  this->SeedWidget[0]->SetPriority( 10.0 );
+  this->SeedWidget[0]->SetRepresentation( this->SeedRep[0] );
+  this->SeedWidget[0]->SetInteractor( this->qvtkWidget_XY->GetInteractor() );
 
   LayOutWidget2->hide();
   LayOutWidget3->hide();
@@ -978,6 +1021,36 @@ void QImagePageViewTracer::SetTracer( const bool& iState )
   {
     this->Pool->GetItem( i )->SetContourWidgetInteraction( iState );
   }
+}
+
+void QImagePageViewTracer::SetSeedingON()
+{
+  for( int i = 0; i < this->Pool->GetNumberOfItems(); i++ )
+  {
+    this->Pool->GetItem( i )->SetContourWidgetInteractionOff();
+    this->SeedWidget[i]->On();
+  }
+}
+
+void QImagePageViewTracer::SetSeedingOFF()
+{
+  for( int i = 0; i < this->Pool->GetNumberOfItems(); i++ )
+  {
+    this->Pool->GetItem( i )->SetContourWidgetInteractionOff();
+    this->SeedWidget[i]->Off();
+  }
+}
+
+void QImagePageViewTracer::SetSeeding( const bool& iState )
+{
+  for( int i = 0; i < this->SeedWidget.size(); i++ )
+  {
+    this->SeedWidget[i]->SetEnabled( iState );
+  }
+}
+bool QImagePageViewTracer::GetSeedingStatus( ) const
+{
+  return this->SeedWidget.front()->GetEnabled();
 }
 
 void QImagePageViewTracer::resizeEvent( QResizeEvent* event )

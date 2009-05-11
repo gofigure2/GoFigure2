@@ -116,6 +116,10 @@ protected slots:
 
   void SetContourTracerOn( const bool& iChecked );
   void SetContourTracerOff( const bool& iChecked );
+
+  void SetSeedWidgetOn( const bool& iChecked );
+  void SetSeedWidgetOff( const bool& iChecked );
+
   void ShowProgressLoading( itk::Object * myFilter );
   void HideProgressLoading();
 
@@ -137,7 +141,7 @@ protected slots:
   void ValidateContourTracer();
   void ReinitializeAndIncrementContourTracer();
   void ReinitializeContourTracer();
-  
+
 
 protected:
   template< class T > void ValidateContourTracerHelper( T* PageView );
@@ -177,7 +181,7 @@ protected:
 
   /** \brief */
   void openRecentFile(const bool& IsSerie);
-	
+
   /** \brief */
   void setCurrentFile(const QString &fileName,const bool& IsSerie);
 
@@ -185,7 +189,7 @@ protected:
    enum { MaxRecentFiles = 5 };
   QAction *recentSingleFileActions[MaxRecentFiles];
   QAction *recentMultipleFileActions[MaxRecentFiles];
-  
+
   void updateRecentFileActions( QStringList list, QMenu *menu, QAction *recentFileActions[MaxRecentFiles]);
 
   /** \brief Open Image with given iFileName
@@ -207,6 +211,8 @@ protected:
 
   /** \brief */
   void writeSettings();
+
+  void StartSeedWidget();
 
   /** \brief */
   itk::QtSignalAdaptor m_SignalAdaptor;

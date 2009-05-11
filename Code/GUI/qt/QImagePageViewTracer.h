@@ -54,6 +54,11 @@
 #include "QSplitterchild.h"
 #include "MegaVTK2Configure.h"
 
+#include <vtkPointHandleRepresentation2D.h>
+#include <vtkSeedRepresentation.h>
+#include <vtkSeedWidget.h>
+#include <vtkProperty2D.h>
+
 /**
 \class QImagePageViewTracer
 \bug vtkViewImage3D MUST be the last element inserted in Splitters (temporary solution)...
@@ -101,6 +106,11 @@ public:
   QMEGAVTKADDON2_EXPORT void SetTracerOFF();
   QMEGAVTKADDON2_EXPORT void SetTracer( const bool& iState );
   QMEGAVTKADDON2_EXPORT bool GetTracerStatus( ) const;
+
+  QMEGAVTKADDON2_EXPORT void SetSeedingON();
+  QMEGAVTKADDON2_EXPORT void SetSeedingOFF();
+  QMEGAVTKADDON2_EXPORT void SetSeeding( const bool& iState );
+  QMEGAVTKADDON2_EXPORT bool GetSeedingStatus( ) const;
 
   QMEGAVTKADDON2_EXPORT void GetBackgroundColor( double& r, double& g, double& b );
   QMEGAVTKADDON2_EXPORT double* GetBackgroundColor();
@@ -214,6 +224,9 @@ protected:
   vtkEventQtSlotConnect* vtkEventQtConnector;
 
   vtkViewImage2DWithContourWidgetCollection* Pool;
+  std::vector< vtkPointHandleRepresentation2D* > Handle;
+  std::vector< vtkSeedRepresentation* > SeedRep;
+  std::vector< vtkSeedWidget* > SeedWidget;
 
   QString Tag;
 
