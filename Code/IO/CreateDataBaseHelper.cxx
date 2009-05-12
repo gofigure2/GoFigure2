@@ -11,9 +11,9 @@
 // could not open database
 // database with same name already exists.
 
-bool CanConnectToDatabase(
+bool CanConnectToServer(
   const char* ServerName, const char* login,
-  const char* Password, const char* DBName )
+  const char* Password)
 {
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
   DataBaseConnector->SetHostName( ServerName );

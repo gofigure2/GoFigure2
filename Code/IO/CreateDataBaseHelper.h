@@ -12,9 +12,9 @@ std::vector<std::string> ListTables(
   const char* ServerName, const char* login,
   const char* Password, const char* DBName );
 
-bool CanConnectToDatabase(
+bool CanConnectToServer(
   const char* ServerName, const char* login,
-  const char* Password, const char* DBName );
+  const char* Password);
 
 void DropDatabase( 
   const char* ServerName, const char* login,
