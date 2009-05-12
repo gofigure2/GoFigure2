@@ -99,9 +99,9 @@ QImagePageViewTracer::~QImagePageViewTracer()
 
   for( int i = 0; i < this->SeedWidget.size(); i++ )
   {
-    this->Handle[i]->Delete();
-    this->SeedRep[i]->Delete();
-    this->SeedWidget[i]->Delete();
+    Handle[i]->Delete();
+    SeedRep[i]->Delete();
+    SeedWidget[i]->Delete();
   }
 
   Pool->Delete();
