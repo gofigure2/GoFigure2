@@ -854,6 +854,11 @@ void CreateTrackTable(
 void CreateTrackFlavor(
   const char* ServerName, const char* login, const char* Password, const char* DBName )
 {
+  (void) ServerName;
+  (void) login;
+  (void) Password;
+  (void) DBName;
+
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
   DataBaseConnector->SetHostName("localhost");
   DataBaseConnector->SetUser("gofigure");
