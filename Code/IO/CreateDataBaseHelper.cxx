@@ -108,7 +108,7 @@ std::vector<std::string> ListTables(
   return result;
 };
 
-void DropDatabase( 
+void DropDatabase(
   const char* ServerName, const char* login,
   const char* Password, const char* DBName )
 {
@@ -214,9 +214,9 @@ bool IsDatabaseOfGoFigureType(
   const char* Password, const char* DBName )
 {
   if(  DoesTableExist( ServerName, login, Password, DBName, "bookmarks" )
-    && DoesTableExist( ServerName, login, Password, DBName, "figure" )  
-    && DoesTableExist( ServerName, login, Password, DBName, "lineage" )     
-	&& DoesTableExist( ServerName, login, Password, DBName, "mesh" ) 
+    && DoesTableExist( ServerName, login, Password, DBName, "figure" )
+    && DoesTableExist( ServerName, login, Password, DBName, "lineage" )
+	&& DoesTableExist( ServerName, login, Password, DBName, "mesh" )
     && DoesTableExist( ServerName, login, Password, DBName, "seriesgrid" )
     && DoesTableExist( ServerName, login, Password, DBName, "track" ) )
     {
@@ -230,7 +230,8 @@ void CreateDataBaseMain(
   const char* ServerName, const char* login,
   const char* Password, const char* DBName )
 {
-  if( CanConnectToDatabase(    ServerName, login, Password, DBName ) )
+//   if( CanConnectToDatabase(    ServerName, login, Password, DBName ) )
+  if( CanConnectToServer(    ServerName, login, Password ) )
     {
     CreateDataBase(            ServerName, login, Password, DBName );
     CreateBookmarksTable(      ServerName, login, Password, DBName );

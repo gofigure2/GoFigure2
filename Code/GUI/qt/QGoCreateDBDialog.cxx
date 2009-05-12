@@ -64,11 +64,10 @@ QGoCreateDBDialog::QGoCreateDBDialog( QObject* parent )
 
     if(ok && !ServerName.isEmpty())
       {
-      CouldConnect = CanConnectToDatabase(
+      CouldConnect = CanConnectToServer(
         ServerName.toAscii( ).data(),
         std::string( "gofigure" ).c_str(),
-        std::string( "gofigure" ).c_str(),
-        std::string( "" ).c_str()
+        std::string( "gofigure" ).c_str()
         );
       if( !CouldConnect )
         {

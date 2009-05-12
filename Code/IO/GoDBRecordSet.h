@@ -61,12 +61,17 @@ public:
   // read content from DB
   void PopulateFromDB()
     { 
-    if( !CanConnectToDatabase(
+    if( !CanConnectToServer( 
+        this->ServerName,
+        this->User,
+        this->PassWord )
+        /* 
+        !CanConnectToDatabase(
         this->ServerName,
         this->User,
         this->PassWord,
         this->DataBaseName
-        ) ) 
+        )*/ ) 
       {
       // throw exception
       return;
@@ -78,12 +83,17 @@ public:
     {
     if( m_RowContainer.size() == 0 ) return;
     
-    if( !CanConnectToDatabase(
+    if( CanConnectToServer(
+        this->ServerName,
+        this->User,
+        this->PassWord )
+        /*
+        !CanConnectToDatabase(
         this->ServerName,
         this->User,
         this->PassWord,
         this->DataBaseName
-        ) ) 
+        )*/ ) 
       {
       // throw exception
       return;
