@@ -1,4 +1,5 @@
 SET( EXAMPLES_FILTER 
+  ChanAndVeseSegmentationFilterTest2D 
   ChanAndVeseSegmentationFilterTest3D 
   )
 
