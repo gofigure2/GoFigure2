@@ -223,14 +223,14 @@
    </property>
    <property name="minimumSize">
     <size>
-     <width>220</width>
-     <height>105</height>
+     <width>226</width>
+     <height>108</height>
     </size>
    </property>
    <property name="maximumSize">
     <size>
-     <width>323</width>
-     <height>590</height>
+     <width>329</width>
+     <height>593</height>
     </size>
    </property>
    <property name="floating">
@@ -849,8 +849,8 @@ Component</string>
   <widget class="QDockWidget" name="ManualSegmentationDockWidget">
    <property name="minimumSize">
     <size>
-     <width>220</width>
-     <height>82</height>
+     <width>226</width>
+     <height>85</height>
     </size>
    </property>
    <property name="windowTitle">
@@ -1042,7 +1042,7 @@ Component</string>
     <number>1</number>
    </attribute>
    <widget class="QWidget" name="dockWidgetContents">
-    <widget class="QDialogButtonBox" name="buttonBox">
+    <widget class="QDialogButtonBox" name="OneClickBtnBox">
      <property name="enabled">
       <bool>false</bool>
      </property>
@@ -1095,7 +1095,7 @@ Component</string>
        </widget>
       </item>
       <item>
-       <widget class="QRadioButton" name="radioButton_4">
+       <widget class="QRadioButton" name="ShapeBasedBtn">
         <property name="enabled">
          <bool>false</bool>
         </property>
@@ -1119,7 +1119,7 @@ Component</string>
       <item>
        <layout class="QVBoxLayout" name="verticalLayout_6">
         <item>
-         <widget class="QRadioButton" name="radioButton">
+         <widget class="QRadioButton" name="twoDBtn">
           <property name="enabled">
            <bool>false</bool>
           </property>
@@ -1132,7 +1132,7 @@ Component</string>
          </widget>
         </item>
         <item>
-         <widget class="QRadioButton" name="radioButton_2">
+         <widget class="QRadioButton" name="threeDBtn">
           <property name="enabled">
            <bool>false</bool>
           </property>
@@ -1146,7 +1146,7 @@ Component</string>
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_19">
         <item>
-         <widget class="QLabel" name="label_17">
+         <widget class="QLabel" name="RadiusLabel">
           <property name="enabled">
            <bool>false</bool>
           </property>
@@ -1156,7 +1156,7 @@ Component</string>
          </widget>
         </item>
         <item>
-         <widget class="QDoubleSpinBox" name="doubleSpinBox">
+         <widget class="QDoubleSpinBox" name="RadiusSpinBox">
           <property name="enabled">
            <bool>false</bool>
           </property>
@@ -1723,12 +1723,12 @@ Component</string>
   <tabstop>ForegroundExtractionbuttonBox</tabstop>
   <tabstop>spinBox_9</tabstop>
   <tabstop>buttonBox_4</tabstop>
-  <tabstop>buttonBox</tabstop>
+  <tabstop>OneClickBtnBox</tabstop>
   <tabstop>ChanVeseBtn</tabstop>
-  <tabstop>radioButton_4</tabstop>
-  <tabstop>radioButton</tabstop>
-  <tabstop>radioButton_2</tabstop>
-  <tabstop>doubleSpinBox</tabstop>
+  <tabstop>ShapeBasedBtn</tabstop>
+  <tabstop>twoDBtn</tabstop>
+  <tabstop>threeDBtn</tabstop>
+  <tabstop>RadiusSpinBox</tabstop>
  </tabstops>
  <resources>
   <include location="resources/axes.qrc"/>
@@ -1789,12 +1789,12 @@ Component</string>
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>48</x>
-     <y>301</y>
+     <x>49</x>
+     <y>426</y>
     </hint>
     <hint type="destinationlabel">
-     <x>109</x>
-     <y>379</y>
+     <x>127</x>
+     <y>504</y>
     </hint>
    </hints>
   </connection>
@@ -1805,12 +1805,12 @@ Component</string>
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>48</x>
-     <y>301</y>
+     <x>49</x>
+     <y>426</y>
     </hint>
     <hint type="destinationlabel">
      <x>227</x>
-     <y>379</y>
+     <y>504</y>
     </hint>
    </hints>
   </connection>
@@ -1821,12 +1821,12 @@ Component</string>
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>48</x>
-     <y>301</y>
+     <x>49</x>
+     <y>426</y>
     </hint>
     <hint type="destinationlabel">
      <x>93</x>
-     <y>410</y>
+     <y>535</y>
     </hint>
    </hints>
   </connection>
@@ -1837,12 +1837,12 @@ Component</string>
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>48</x>
-     <y>301</y>
+     <x>49</x>
+     <y>426</y>
     </hint>
     <hint type="destinationlabel">
-     <x>110</x>
-     <y>446</y>
+     <x>111</x>
+     <y>571</y>
     </hint>
    </hints>
   </connection>
@@ -1853,12 +1853,12 @@ Component</string>
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>48</x>
-     <y>301</y>
+     <x>49</x>
+     <y>426</y>
     </hint>
     <hint type="destinationlabel">
-     <x>110</x>
-     <y>510</y>
+     <x>111</x>
+     <y>635</y>
     </hint>
    </hints>
   </connection>
@@ -1869,12 +1869,12 @@ Component</string>
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>48</x>
-     <y>301</y>
+     <x>49</x>
+     <y>426</y>
     </hint>
     <hint type="destinationlabel">
-     <x>110</x>
-     <y>478</y>
+     <x>111</x>
+     <y>603</y>
     </hint>
    </hints>
   </connection>
@@ -1885,12 +1885,12 @@ Component</string>
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>48</x>
-     <y>301</y>
+     <x>49</x>
+     <y>426</y>
     </hint>
     <hint type="destinationlabel">
-     <x>21</x>
-     <y>384</y>
+     <x>22</x>
+     <y>509</y>
     </hint>
    </hints>
   </connection>
@@ -1901,108 +1901,124 @@ Component</string>
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>55</x>
-     <y>602</y>
+     <x>56</x>
+     <y>544</y>
     </hint>
     <hint type="destinationlabel">
-     <x>72</x>
-     <y>650</y>
+     <x>73</x>
+     <y>595</y>
     </hint>
    </hints>
   </connection>
   <connection>
    <sender>SeedWidgetOffRadioBtn</sender>
    <signal>toggled(bool)</signal>
-   <receiver>radioButton_4</receiver>
+   <receiver>ShapeBasedBtn</receiver>
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>22</x>
-     <y>601</y>
+     <x>23</x>
+     <y>544</y>
     </hint>
     <hint type="destinationlabel">
-     <x>22</x>
-     <y>677</y>
+     <x>23</x>
+     <y>620</y>
     </hint>
    </hints>
   </connection>
   <connection>
    <sender>SeedWidgetOffRadioBtn</sender>
    <signal>toggled(bool)</signal>
-   <receiver>radioButton</receiver>
+   <receiver>twoDBtn</receiver>
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>47</x>
-     <y>609</y>
-    </hint>
-    <hint type="destinationlabel">
      <x>48</x>
-     <y>726</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>SeedWidgetOffRadioBtn</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>radioButton_2</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>54</x>
-     <y>605</y>
+     <y>544</y>
     </hint>
     <hint type="destinationlabel">
-     <x>57</x>
-     <y>747</y>
+     <x>50</x>
+     <y>666</y>
     </hint>
    </hints>
   </connection>
   <connection>
    <sender>SeedWidgetOffRadioBtn</sender>
    <signal>toggled(bool)</signal>
-   <receiver>doubleSpinBox</receiver>
+   <receiver>threeDBtn</receiver>
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>39</x>
-     <y>609</y>
+     <x>55</x>
+     <y>544</y>
     </hint>
     <hint type="destinationlabel">
-     <x>160</x>
-     <y>734</y>
+     <x>59</x>
+     <y>691</y>
     </hint>
    </hints>
   </connection>
   <connection>
    <sender>SeedWidgetOffRadioBtn</sender>
    <signal>toggled(bool)</signal>
-   <receiver>buttonBox</receiver>
+   <receiver>RadiusSpinBox</receiver>
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>32</x>
-     <y>603</y>
+     <x>40</x>
+     <y>544</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>201</x>
+     <y>681</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>SeedWidgetOffRadioBtn</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>OneClickBtnBox</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>33</x>
+     <y>544</y>
     </hint>
     <hint type="destinationlabel">
      <x>80</x>
-     <y>777</y>
+     <y>729</y>
     </hint>
    </hints>
   </connection>
   <connection>
    <sender>SeedWidgetOffRadioBtn</sender>
    <signal>toggled(bool)</signal>
-   <receiver>label_17</receiver>
+   <receiver>RadiusLabel</receiver>
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>41</x>
-     <y>611</y>
+     <x>42</x>
+     <y>544</y>
     </hint>
     <hint type="destinationlabel">
-     <x>99</x>
-     <y>729</y>
+     <x>122</x>
+     <y>691</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>OneClickBtnBox</sender>
+   <signal>rejected()</signal>
+   <receiver>SeedWidgetOffRadioBtn</receiver>
+   <slot>toggle()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>142</x>
+     <y>719</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>37</x>
+     <y>534</y>
     </hint>
    </hints>
   </connection>

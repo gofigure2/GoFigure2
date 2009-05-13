@@ -120,6 +120,8 @@ protected slots:
   void SetSeedWidgetOn( const bool& iChecked );
   void SetSeedWidgetOff( const bool& iChecked );
 
+  void OneClickSegmentation( );
+
   void ShowProgressLoading( itk::Object * myFilter );
   void HideProgressLoading();
 

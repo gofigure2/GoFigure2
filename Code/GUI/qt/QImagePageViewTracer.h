@@ -47,6 +47,7 @@
 #include <QVTKWidget.h>
 
 #include <vtkImageData.h>
+#include <vtkPoints.h>
 #include <vtkEventQtSlotConnect.h>
 
 #include "vtkViewImage3D.h"
@@ -111,6 +112,9 @@ public:
   QMEGAVTKADDON2_EXPORT void SetSeedingOFF();
   QMEGAVTKADDON2_EXPORT void SetSeeding( const bool& iState );
   QMEGAVTKADDON2_EXPORT bool GetSeedingStatus( ) const;
+
+  QMEGAVTKADDON2_EXPORT vtkPoints* GetAllSeeds();
+  QMEGAVTKADDON2_EXPORT void ClearAllSeeds();
 
   QMEGAVTKADDON2_EXPORT void GetBackgroundColor( double& r, double& g, double& b );
   QMEGAVTKADDON2_EXPORT double* GetBackgroundColor();

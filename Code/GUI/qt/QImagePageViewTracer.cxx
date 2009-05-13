@@ -1053,6 +1053,39 @@ bool QImagePageViewTracer::GetSeedingStatus( ) const
   return this->SeedWidget.front()->GetEnabled();
 }
 
+
+vtkPoints* QImagePageViewTracer::GetAllSeeds()
+{
+  double pos[3];
+  vtkPoints* oPoints = vtkPoints::New();
+
+  for( int i = 0; i < this->SeedWidget.size(); i++ )
+  {
+    int N = this->SeedRep[i]->GetNumberOfSeeds();
+
+    for( int j = 0; j < N; j++ )
+    {
+      this->SeedRep[i]->GetSeedWorldPosition( j, pos );
+      oPoints->InsertNextPoint( pos );
+    }
+  }
+
+  return oPoints;
+}
+
+void QImagePageViewTracer::ClearAllSeeds()
+{
+  for( int i = 0; i < this->SeedWidget.size(); i++ )
+  {
+    int N = this->SeedRep[i]->GetNumberOfSeeds();
+    int k = N - 1;
+    for( int j = 0; j < N; j++ )
+    {
+      this->SeedWidget[i]->DeleteSeed( k-- );
+    }
+  }
+}
+
 void QImagePageViewTracer::resizeEvent( QResizeEvent* event )
 {
   QWidget::resizeEvent( event );

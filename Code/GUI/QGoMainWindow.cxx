@@ -117,6 +117,9 @@ QGoMainWindow::QGoMainWindow( )
   QObject::connect( this->TracerReinitializeIncrementBtn, SIGNAL( released() ),
     this, SLOT( ReinitializeAndIncrementContourTracer() ) );
 
+  QObject::connect( this->OneClickBtnBox, SIGNAL( accepted() ),
+    this, SLOT( OneClickSegmentation( ) ) );
+
   //QObject::connect( this->actionOpen, SIGNAL( activated( ) ),
     //this, SLOT( showprogressloading() ) );
   QObject::connect( this->CentralImageTabWidget,
@@ -1300,19 +1303,41 @@ void QGoMainWindow::UpdateFullScreenViewButtonsHelper( T* PageView )
 template< class T >
 void QGoMainWindow::UpdateVolumeRenderingButton( T* PageView)
 {
-  bool IsVolumeRendering = PageView->GetVolumeRendering();
-  if (IsVolumeRendering)
-  {
-    actionVolume_rendering_XYZ->setChecked(true);
-  }
-  else
-  {
-    actionVolume_rendering_XYZ->setChecked(false);
-  }
+  actionVolume_rendering_XYZ->setChecked( PageView->GetVolumeRendering() );
 }
 
 void QGoMainWindow::StartSeedWidget()
 {
 
+}
+
+void QGoMainWindow::OneClickSegmentation()
+{
+  int idx = this->CentralImageTabWidget->currentIndex();
+  QImagePageViewTracer* myPageView =
+    dynamic_cast<QImagePageViewTracer*>( m_PageView[idx] );
+
+  double radius = this->RadiusSpinBox->value();
+  std::cout <<radius <<std::endl;
+  double pos[3];
+  if( myPageView )
+  {
+    vtkPoints* seeds = myPageView->GetAllSeeds();
+    for( int i = 0; i < seeds->GetNumberOfPoints(); i++ )
+    {
+      seeds->GetPoint( i, pos );
+      std::cout <<i <<" [" <<pos[0] <<" " <<pos[1] <<" " <<pos[2] <<"]" <<std::endl;
+    }
+//     myPageView->ClearAllSeeds();
+  }
+  else
+  {
+    QImagePageView4DTracer* myPageView2 =
+      dynamic_cast<QImagePageView4DTracer*>( m_PageView[idx] );
+    if( myPageView2 )
+    {
+//       myPageView2->SetTracerOFF();
+    }
+  }
 }
 
