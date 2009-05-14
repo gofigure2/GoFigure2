@@ -619,96 +619,92 @@ void QGoMainWindow::on_actionSnapshot_activated( )
 void QGoMainWindow::SetContourTracerOn(const bool& iChecked)
 {
   if( iChecked )
-  {
+    {
     int idx = this->CentralImageTabWidget->currentIndex();
     QImagePageViewTracer* myPageView =
       dynamic_cast<QImagePageViewTracer*>( m_PageView[idx] );
     if( myPageView )
-    {
-      myPageView->SetTracerON();
-    }
-    else
-    {
-      QImagePageView4DTracer* myPageView2 =
-        dynamic_cast<QImagePageView4DTracer*>( m_PageView[idx] );
-      if( myPageView2 )
       {
-        myPageView2->SetTracerON();
+      myPageView->SetTracerON();
+      return;
+      }
+    QImagePageView4DTracer* myPageView2 =
+      dynamic_cast<QImagePageView4DTracer*>( m_PageView[idx] );
+    if( myPageView2 )
+      {
+      myPageView2->SetTracerON();
+      return;
       }
     }
-  }
 }
 
 // *************************************************************************
 void QGoMainWindow::SetSeedWidgetOn(const bool& iChecked)
 {
   if( iChecked )
-  {
+    {
     int idx = this->CentralImageTabWidget->currentIndex();
     QImagePageViewTracer* myPageView =
       dynamic_cast<QImagePageViewTracer*>( m_PageView[idx] );
     if( myPageView )
-    {
+      {
       myPageView->SetSeedingON();
+      return;
+      }
+    QImagePageView4DTracer* myPageView2 =
+      dynamic_cast<QImagePageView4DTracer*>( m_PageView[idx] );
+    if( myPageView2 )
+      {
+      myPageView2->SetSeedingON();
+      return;
+      }
     }
-    else
-    {
-//       QImagePageView4DTracer* myPageView2 =
-//         dynamic_cast<QImagePageView4DTracer*>( m_PageView[idx] );
-//       if( myPageView2 )
-//       {
-//         myPageView2->SetSeedingON();
-//       }
-    }
-  }
 
 }
 // *************************************************************************
 void QGoMainWindow::SetSeedWidgetOff(const bool& iChecked)
 {
   if( iChecked )
-  {
+    {
     int idx = this->CentralImageTabWidget->currentIndex();
     QImagePageViewTracer* myPageView =
       dynamic_cast<QImagePageViewTracer*>( m_PageView[idx] );
     if( myPageView )
-    {
+      {
       myPageView->SetSeedingOFF();
+      return;
+      }
+    QImagePageView4DTracer* myPageView2 =
+      dynamic_cast<QImagePageView4DTracer*>( m_PageView[idx] );
+    if( myPageView2 )
+      {
+      myPageView2->SetSeedingOFF();
+      return;
+      }
     }
-    else
-    {
-//       QImagePageView4DTracer* myPageView2 =
-//         dynamic_cast<QImagePageView4DTracer*>( m_PageView[idx] );
-//       if( myPageView2 )
-//       {
-//         myPageView2->SetSeedingON();
-//       }
-    }
-  }
 
 }
 // *************************************************************************
 void QGoMainWindow::SetContourTracerOff(const bool& iChecked)
 {
   if( iChecked )
-  {
+    {
     int idx = this->CentralImageTabWidget->currentIndex();
     QImagePageViewTracer* myPageView =
       dynamic_cast<QImagePageViewTracer*>( m_PageView[idx] );
     if( myPageView )
-    {
-      myPageView->SetTracerOFF();
-    }
-    else
-    {
-      QImagePageView4DTracer* myPageView2 =
-        dynamic_cast<QImagePageView4DTracer*>( m_PageView[idx] );
-      if( myPageView2 )
       {
-        myPageView2->SetTracerOFF();
+      myPageView->SetTracerOFF();
+      return;
+      }
+    QImagePageView4DTracer* myPageView2 =
+      dynamic_cast<QImagePageView4DTracer*>( m_PageView[idx] );
+    if( myPageView2 )
+      {
+      myPageView2->SetTracerOFF();
+      return;
       }
     }
-  }
 }
 
 
@@ -1321,23 +1317,28 @@ void QGoMainWindow::OneClickSegmentation()
   std::cout <<radius <<std::endl;
   double pos[3];
   if( myPageView )
-  {
+    {
     vtkPoints* seeds = myPageView->GetAllSeeds();
     for( int i = 0; i < seeds->GetNumberOfPoints(); i++ )
-    {
+      {
       seeds->GetPoint( i, pos );
       std::cout <<i <<" [" <<pos[0] <<" " <<pos[1] <<" " <<pos[2] <<"]" <<std::endl;
+      }
+//  myPageView->ClearAllSeeds();
+    return;
     }
-//     myPageView->ClearAllSeeds();
-  }
-  else
-  {
-    QImagePageView4DTracer* myPageView2 =
-      dynamic_cast<QImagePageView4DTracer*>( m_PageView[idx] );
-    if( myPageView2 )
+  QImagePageView4DTracer* myPageView2 =
+    dynamic_cast<QImagePageView4DTracer*>( m_PageView[idx] );
+  if( myPageView2 )
     {
-//       myPageView2->SetTracerOFF();
+    vtkPoints* seeds = myPageView2->GetAllSeeds();
+    for( int i = 0; i < seeds->GetNumberOfPoints(); i++ )
+      {
+      seeds->GetPoint( i, pos );
+      std::cout <<i <<" [" <<pos[0] <<" " <<pos[1] <<" " <<pos[2] <<"]" <<std::endl;
+      }
+//  myPageView2->SetTracerOFF();
+    return;
     }
-  }
 }
 

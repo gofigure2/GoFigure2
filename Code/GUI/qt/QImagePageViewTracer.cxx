@@ -97,7 +97,7 @@ QImagePageViewTracer::~QImagePageViewTracer()
   delete htSplitter;
   delete hbSplitter;
 
-  for( int i = 0; i < this->SeedWidget.size(); i++ )
+  for( unsigned int i = 0; i < this->SeedWidget.size(); i++ )
   {
     Handle[i]->Delete();
     SeedRep[i]->Delete();
@@ -1043,7 +1043,7 @@ void QImagePageViewTracer::SetSeedingOFF()
 
 void QImagePageViewTracer::SetSeeding( const bool& iState )
 {
-  for( int i = 0; i < this->SeedWidget.size(); i++ )
+  for( unsigned int i = 0; i < this->SeedWidget.size(); i++ )
   {
     this->SeedWidget[i]->SetEnabled( iState );
   }
@@ -1059,7 +1059,7 @@ vtkPoints* QImagePageViewTracer::GetAllSeeds()
   double pos[3];
   vtkPoints* oPoints = vtkPoints::New();
 
-  for( int i = 0; i < this->SeedWidget.size(); i++ )
+  for( unsigned int i = 0; i < this->SeedWidget.size(); i++ )
   {
     int N = this->SeedRep[i]->GetNumberOfSeeds();
 
@@ -1075,7 +1075,7 @@ vtkPoints* QImagePageViewTracer::GetAllSeeds()
 
 void QImagePageViewTracer::ClearAllSeeds()
 {
-  for( int i = 0; i < this->SeedWidget.size(); i++ )
+  for( unsigned int i = 0; i < this->SeedWidget.size(); i++ )
   {
     int N = this->SeedRep[i]->GetNumberOfSeeds();
     int k = N - 1;

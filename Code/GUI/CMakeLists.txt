@@ -34,9 +34,9 @@ SET( GOFIGURE_APPLICATION_SOURCE_LIST
 
 IF( APPLE )
   
-  SET( MACOSX_BUNDLE_ICON_FILE
-    ${GOFIGURE2_SOURCE_DIR}/Code/GUI/resources/myapp.icns
-    )
+  #SET( MACOSX_BUNDLE_ICON_FILE
+  #  ${GOFIGURE2_SOURCE_DIR}/Code/GUI/resources/myapp.icns
+  #  )
   SET( MACOSX_BUNDLE_SHORT_VERSION_STRING 
     ${GOFIGURE2_VERSION} 
     )
@@ -51,16 +51,18 @@ IF( APPLE )
     MACOSX_BUNDLE
     ${GOFIGURE_APPLICATION_SOURCE_LIST} 
     )
-  IF( EXISTS ${EXECUTABLE_OUTPUT_PATH}/gofigure.app/Contents/Resources )
-    ADD_CUSTOM_COMMAND( TARGET gofigure POST_BUILD
-      COMMAND cp ARGS ${MACOSX_BUNDLE_ICON_FILE} ${EXECUTABLE_OUTPUT_PATH}/gofigure.app/Contents/Resources
-      COMMAND cp ARGS *.qm ${EXECUTABLE_OUTPUT_PATH}/gofigure.app/Contents/Resources )
-  ELSE( EXISTS ${EXECUTABLE_OUTPUT_PATH}/gofigure.app/Contents/Resources ) 
-    ADD_CUSTOM_COMMAND( TARGET gofigure POST_BUILD
-      COMMAND mkdir ARGS ${EXECUTABLE_OUTPUT_PATH}/gofigure.app/Contents/Resources
-      COMMAND cp ARGS ${MACOSX_BUNDLE_ICON_FILE} ${EXECUTABLE_OUTPUT_PATH}/gofigure.app/Contents/Resources
-      COMMAND cp ARGS *.qm ${EXECUTABLE_OUTPUT_PATH}/gofigure.app/Contents/Resources )
-  ENDIF( EXISTS ${EXECUTABLE_OUTPUT_PATH}/gofigure.app/Contents/Resources )
+  #IF( EXISTS ${EXECUTABLE_OUTPUT_PATH}/gofigure.app/Contents/Resources )
+  #  ADD_CUSTOM_COMMAND( TARGET gofigure POST_BUILD
+  
+#    COMMAND cp ARGS ${MACOSX_BUNDLE_ICON_FILE} ${EXECUTABLE_OUTPUT_PATH}/gofigure.app/Contents/Resources
+ 
+#     COMMAND cp ARGS *.qm ${EXECUTABLE_OUTPUT_PATH}/gofigure.app/Contents/Resources )
+#  ELSE( EXISTS ${EXECUTABLE_OUTPUT_PATH}/gofigure.app/Contents/Resources ) 
+#    ADD_CUSTOM_COMMAND( TARGET gofigure POST_BUILD
+#      COMMAND mkdir ARGS ${EXECUTABLE_OUTPUT_PATH}/gofigure.app/Contents/Resources
+#      COMMAND cp ARGS ${MACOSX_BUNDLE_ICON_FILE} ${EXECUTABLE_OUTPUT_PATH}/gofigure.app/Contents/Resources
+#      COMMAND cp ARGS *.qm ${EXECUTABLE_OUTPUT_PATH}/gofigure.app/Contents/Resources )
+#  ENDIF( EXISTS ${EXECUTABLE_OUTPUT_PATH}/gofigure.app/Contents/Resources )
     
 ELSE( APPLE )
 

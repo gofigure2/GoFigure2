@@ -152,6 +152,19 @@ public slots:
     if( ( this->Image->GetNumberOfScalarComponents() == 1 ) || ( !ColorVizu ) )
       this->Whatever->SetLookupTable( lut );
     };
+  QMEGAVTKADDON2_EXPORT void SetSeedingON()
+    { this->Whatever->SetSeedingOFF(); };
+  QMEGAVTKADDON2_EXPORT void SetSeedingOFF()
+    { this->Whatever->SetSeedingOFF(); };
+  QMEGAVTKADDON2_EXPORT void SetSeeding( const bool& iState )
+    { this->Whatever->SetSeeding( iState ); };
+  QMEGAVTKADDON2_EXPORT bool GetSeedingStatus( ) const
+    { return this->Whatever->GetSeedingStatus(); };
+
+  QMEGAVTKADDON2_EXPORT vtkPoints* GetAllSeeds()
+    { return this->Whatever->GetAllSeeds(); };
+  QMEGAVTKADDON2_EXPORT void ClearAllSeeds()
+    { this->Whatever->ClearAllSeeds(); };
 
 protected:
   QWidget*      LayOutWidget1;

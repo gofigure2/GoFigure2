@@ -93,6 +93,7 @@ QImagePageView4DTracer::QImagePageView4DTracer( QWidget* parent ) : QWidget( par
 
   this->LayOutWidget1 = new QWidget( this );
   this->LayOutWidget1->setLayout( this->LayOut1 );
+  // this->setLayout( this->LayOut1 );
 
   QObject::connect( this->slider1, SIGNAL( valueChanged( int ) ),
     this, SLOT( SetView( int ) ) );
@@ -178,6 +179,8 @@ ReadMultiFile( const int& TimePoint )
     }
   else
     {
+    // NOTE ALEX: this quickly remove the horizontal slider problem
+    // had better make it visible / invisble if possible, not to mess up with the layout.
     this->LayOut1->removeWidget( this->slider1 );
     }
 
