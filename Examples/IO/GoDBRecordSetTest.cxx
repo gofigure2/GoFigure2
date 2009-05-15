@@ -38,7 +38,7 @@ int main( int argc, char * argv[] )
   Test< GoDBSeriesGridRow >( "myTestDB", "seriesgrid" );
   Test< GoDBFigureRow     >( "myTestDB", "figure"     );
 
-  //DropDatabase( "localhost", "gofigure", "gofigure", "MyTestDB" );
+  DropDatabase( "localhost", "gofigure", "gofigure", "MyTestDB" );
 
   return 1;
 }
