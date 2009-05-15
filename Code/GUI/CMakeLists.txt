@@ -33,37 +33,39 @@ SET( GOFIGURE_APPLICATION_SOURCE_LIST
     )
 
 IF( APPLE )
-  
-  #SET( MACOSX_BUNDLE_ICON_FILE
-  #  ${GOFIGURE2_SOURCE_DIR}/Code/GUI/resources/myapp.icns
-  #  )
-  SET( MACOSX_BUNDLE_SHORT_VERSION_STRING 
-    ${GOFIGURE2_VERSION} 
-    )
-  SET( MACOSX_BUNDLE_VERSION 
-    ${GOFIGURE2_VERSION}
-    )
-  SET( MACOSX_BUNDLE_LONG_VERSION_STRING 
-    Version ${GOFIGURE2_VERSION} 
-    )
+  IF( BUILD_PACKAGE ) 
+    SET( MACOSX_BUNDLE_ICON_FILE
+      ${GOFIGURE2_SOURCE_DIR}/Code/GUI/resources/myapp.icns
+      )
+    SET( MACOSX_BUNDLE_SHORT_VERSION_STRING 
+      ${GOFIGURE2_VERSION} 
+      )
+    SET( MACOSX_BUNDLE_VERSION 
+      ${GOFIGURE2_VERSION}
+      )
+    SET( MACOSX_BUNDLE_LONG_VERSION_STRING 
+      Version ${GOFIGURE2_VERSION} 
+      )
+  ENDIF( BUILD_PACKAGE )
  	
   ADD_EXECUTABLE( gofigure
     MACOSX_BUNDLE
     ${GOFIGURE_APPLICATION_SOURCE_LIST} 
     )
-  #IF( EXISTS ${EXECUTABLE_OUTPUT_PATH}/gofigure.app/Contents/Resources )
-  #  ADD_CUSTOM_COMMAND( TARGET gofigure POST_BUILD
-  
-#    COMMAND cp ARGS ${MACOSX_BUNDLE_ICON_FILE} ${EXECUTABLE_OUTPUT_PATH}/gofigure.app/Contents/Resources
- 
-#     COMMAND cp ARGS *.qm ${EXECUTABLE_OUTPUT_PATH}/gofigure.app/Contents/Resources )
-#  ELSE( EXISTS ${EXECUTABLE_OUTPUT_PATH}/gofigure.app/Contents/Resources ) 
-#    ADD_CUSTOM_COMMAND( TARGET gofigure POST_BUILD
-#      COMMAND mkdir ARGS ${EXECUTABLE_OUTPUT_PATH}/gofigure.app/Contents/Resources
-#      COMMAND cp ARGS ${MACOSX_BUNDLE_ICON_FILE} ${EXECUTABLE_OUTPUT_PATH}/gofigure.app/Contents/Resources
-#      COMMAND cp ARGS *.qm ${EXECUTABLE_OUTPUT_PATH}/gofigure.app/Contents/Resources )
-#  ENDIF( EXISTS ${EXECUTABLE_OUTPUT_PATH}/gofigure.app/Contents/Resources )
-    
+
+  IF( BUILD_PACKAGE )
+    IF( EXISTS ${EXECUTABLE_OUTPUT_PATH}/gofigure.app/Contents/Resources )
+      ADD_CUSTOM_COMMAND( TARGET gofigure POST_BUILD
+      COMMAND cp ARGS ${MACOSX_BUNDLE_ICON_FILE} ${EXECUTABLE_OUTPUT_PATH}/gofigure.app/Contents/Resources
+      COMMAND cp ARGS *.qm ${EXECUTABLE_OUTPUT_PATH}/gofigure.app/Contents/Resources )
+    ELSE( EXISTS ${EXECUTABLE_OUTPUT_PATH}/gofigure.app/Contents/Resources ) 
+      ADD_CUSTOM_COMMAND( TARGET gofigure POST_BUILD
+      COMMAND mkdir ARGS ${EXECUTABLE_OUTPUT_PATH}/gofigure.app/Contents/Resources
+      COMMAND cp ARGS ${MACOSX_BUNDLE_ICON_FILE} ${EXECUTABLE_OUTPUT_PATH}/gofigure.app/Contents/Resources
+      COMMAND cp ARGS *.qm ${EXECUTABLE_OUTPUT_PATH}/gofigure.app/Contents/Resources )
+    ENDIF( EXISTS ${EXECUTABLE_OUTPUT_PATH}/gofigure.app/Contents/Resources )
+  ENDIF( BUILD_PACKAGE ) 
+
 ELSE( APPLE )
 
   IF( WIN32 )
