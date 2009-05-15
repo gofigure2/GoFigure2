@@ -83,7 +83,7 @@ public:
     {
     if( m_RowContainer.size() == 0 ) return;
     
-    if( CanConnectToServer(
+    if( !CanConnectToServer(
         this->ServerName,
         this->User,
         this->PassWord )
