@@ -5,6 +5,8 @@
 #include "itkImageFileReader.h"
 #include "itkCastImageFilter.h"
 #include "itkScalarChanAndVeseLevelSetFunction.h"
+#include "itkScalarChanAndVeseLevelSetFunctionData.h"
+#include "itkConstrainedRegionBasedLevelSetFunctionSharedData.h"
 #include "itkScalarChanAndVeseSparseLevelSetImageFilter.h"
 #include "itkThresholdImageFilter.h"
 #include "itkDanielssonDistanceMapImageFilter.h"
@@ -26,10 +28,17 @@ int main( int argc, char** argv )
 
   typedef itk::Image< ScalarPixelType, Dimension > FeatureImageType;
 
+typedef itk::ScalarChanAndVeseLevelSetFunctionData< LevelSetImageType, FeatureImageType >
+    DataHelperType;
+
+  typedef itk::ConstrainedRegionBasedLevelSetFunctionSharedData< LevelSetImageType, FeatureImageType, DataHelperType >
+    SharedDataHelperType;
+
+
   typedef itk::ScalarChanAndVeseLevelSetFunction< LevelSetImageType,
-    FeatureImageType > LevelSetFunctionType;
+    FeatureImageType, SharedDataHelperType > LevelSetFunctionType;
   typedef itk::ScalarChanAndVeseSparseLevelSetImageFilter< LevelSetImageType,
-    FeatureImageType, LevelSetImageType, LevelSetFunctionType > MultiLevelSetType;
+    FeatureImageType, LevelSetImageType, LevelSetFunctionType, SharedDataHelperType > MultiLevelSetType;
 
   typedef itk::ImageFileReader< FeatureImageType > FeatureReaderType;
   typedef itk::DanielssonDistanceMapImageFilter< LevelSetImageType,LevelSetImageType >
