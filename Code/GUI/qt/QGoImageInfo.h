@@ -1,6 +1,13 @@
 /*=========================================================================
+  URL: $HeadURL:$
+  Author: $Author:$  // Author of last commit
+  Version: $Revision:$  // Revision of last commit
+  Date: $Date:$  // Date of last commit
+=========================================================================*/
+
+/*=========================================================================
  Authors: The GoFigure Dev. Team.
- while at Megason Lab, Systems biology, Harvard Medical school, 2009
+ at Megason Lab, Systems biology, Harvard Medical school, 2009
 
  Copyright (c) 2009, President and Fellows of Harvard College.
  All rights reserved.
@@ -49,13 +56,13 @@
 #include "MegaVTK2Configure.h"
 
 class QGoImageInfo : public QWidget
-  {
-    Q_OBJECT
-  public:
+{
+  Q_OBJECT
+public:
     explicit QMEGAVTKADDON2_EXPORT QGoImageInfo( QWidget* parent = 0 );
     virtual QMEGAVTKADDON2_EXPORT  ~QGoImageInfo( );
 
-  public slots:
+public slots:
     QMEGAVTKADDON2_EXPORT void setDimension( const unsigned int& );
     QMEGAVTKADDON2_EXPORT void setNumberOfChannels( const unsigned int& );
     QMEGAVTKADDON2_EXPORT void setMemory( const unsigned long& );
@@ -67,11 +74,12 @@ class QGoImageInfo : public QWidget
     QMEGAVTKADDON2_EXPORT void setValue( const std::vector< float >& );
 
 
-  protected:
-    QVBoxLayout *verticalLayout;
-    QScrollArea *scrollArea;
-    QWidget *scrollAreaWidgetContents;
-    QGridLayout *gridLayout;
+protected:
+    QVBoxLayout     *verticalLayout;
+    QScrollArea     *scrollArea;
+    QWidget         *scrollAreaWidgetContents;
+    QGridLayout     *gridLayout;
+
     QLabel *TImageStaticlabel;
     QLabel *TImageLabel;
     QLabel *DimensionStaticLabel;
@@ -99,52 +107,60 @@ class QGoImageInfo : public QWidget
     QLabel *MemoryLabel;
     QLabel *PPositionStaticLabel;
 
-    unsigned int m_Dimension;
-    unsigned int m_Channel;
+    unsigned int  m_Dimension;
+    unsigned int  m_Channel;
     unsigned long m_Memory;
+
     std::vector< unsigned int > m_Size;
-    std::vector< float >  m_Spacing;
+    std::vector< float >        m_Spacing;
     std::vector< unsigned int > m_PPos;
-    std::vector< float > m_WPos;
-    std::vector< float > m_Value;
-    float m_TimePoint;
+    std::vector< float >        m_WPos;
+    std::vector< float >        m_Value;
+    float                       m_TimePoint;
 
     template< class TContainer >
     QString ConvertToQString( const TContainer& iVector )
     {
-      if ( iVector.empty() )
-        return QString();
+    if ( iVector.empty() )
+      {
+      return QString();
+      }
+    else
+      {
+      size_t size = iVector.size();
+
+      if ( size == 1 )
+        {
+        return QString( "%1" ).arg( *iVector.begin() );
+        }
       else
         {
-          size_t size = iVector.size();
-
-          if ( size == 1 )
+        QString v( "[ ");
+        unsigned int i = 0;
+        for ( typename TContainer::const_iterator it = iVector.begin();
+            it != iVector.end();
+            ++it, ++i )
+          {
+          if ( i == ( size - 1 ) )
             {
-              return QString( "%1" ).arg( *iVector.begin() );
+            v.append( QString( "%1 ]" ).arg( *it ) );
             }
           else
             {
-              QString v( "[ ");
-              unsigned int i = 0;
-              for ( typename TContainer::const_iterator it = iVector.begin();
-                    it != iVector.end();
-                    ++it, ++i )
-                {
-                  if ( i == ( size - 1 ) )
-                    v.append( QString( "%1 ]" ).arg( *it ) );
-                  else
-                    v.append( QString( "%1 ; " ).arg( *it ) );
-                }
-              return v;
+            v.append( QString( "%1 ; " ).arg( *it ) );
             }
+          }
+        return v;
         }
+      }
     }
 
-    void setupUi( QWidget* Form );
-    void retranslateUi(QWidget* Form);
-  private:
-    QGoImageInfo( const QGoImageInfo& );
-    void operator = ( const QGoImageInfo& );
-  };
+  void setupUi( QWidget* Form );
+  void retranslateUi(QWidget* Form);
+
+private:
+  QGoImageInfo( const QGoImageInfo& );
+  void operator = ( const QGoImageInfo& );
+};
 
 #endif

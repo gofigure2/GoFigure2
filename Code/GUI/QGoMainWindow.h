@@ -1,4 +1,11 @@
 /*=========================================================================
+  URL: $HeadURL:$
+  Author: $Author:$  // Author of last commit
+  Version: $Revision:$  // Revision of last commit
+  Date: $Date:$  // Date of last commit
+=========================================================================*/
+
+/*=========================================================================
  Authors: The GoFigure Dev. Team.
  at Megason Lab, Systems biology, Harvard Medical school, 2009
 
@@ -69,15 +76,15 @@ class QGoMainWindow : public QMainWindow,
   Q_OBJECT
 
 public:
-  typedef itk::Image< unsigned char, 3 > ImageType;
-  typedef ImageType::Pointer ImagePointer;
+  typedef itk::Image< unsigned char, 3 >  ImageType;
+  typedef ImageType::Pointer              ImagePointer;
 
-  typedef itk::Image< float, 3 > LevelSetImageType;
+  typedef itk::Image< float, 3 >          LevelSetImageType;
 //   typedef itk::ChanAndVeseSegmentationFilter< LevelSetImageType, ImageType >
 //     LocalChanAndVeseSegmentationFilterType;
 
   typedef itk::ImageToVTKImageFilter< ImageType > VTKConvertImageType;
-  typedef VTKConvertImageType::Pointer VTKConvertImagePointer;
+  typedef VTKConvertImageType::Pointer            VTKConvertImagePointer;
 
   QGoMainWindow( );
   virtual ~QGoMainWindow();
@@ -93,11 +100,12 @@ protected slots:
 
   void on_actionOpen_Mesh_activated( );
 
-// #ifdef VTK_USE_MYSQL
-  void on_actionCreate_DataBase_activated( ) { QGoCreateDBDialog dialog; }//QGoCreateDBDialog* dialog = new QGoCreateDBDialog; delete dialog;};
+  // #ifdef VTK_USE_MYSQL
+  void on_actionCreate_DataBase_activated( ) { QGoCreateDBDialog dialog; }
+  //{QGoCreateDBDialog* dialog = new QGoCreateDBDialog; delete dialog;};
   void on_actionImport_Dataset_in_DataBase_activated( ) {};
   void on_actionOpen_DataBase_activated( ) {};
-// #endif
+  // #endif
 
   void on_actionClose_activated( );
   void on_actionClose_all_activated( );
@@ -192,24 +200,22 @@ protected:
   void setCurrentFile(const QString &fileName,const bool& IsSerie);
 
   /** \brief */
-   enum { MaxRecentFiles = 5 };
+  enum { MaxRecentFiles = 5 };
   QAction *recentSingleFileActions[MaxRecentFiles];
   QAction *recentMultipleFileActions[MaxRecentFiles];
 
   void updateRecentFileActions( QStringList list, QMenu *menu, QAction *recentFileActions[MaxRecentFiles]);
 
   /** \brief Open Image with given iFileName
-      \param[in] iFileName
-  */
+  \param[in] iFileName  */
   void OpenImage( const QString& iFileName );
 
   /** \brief Display Image in a "quad-view" widget in a tab.
-    The title of the tab is given by iTag.
-      \param[in] iTag
-  */
+  The title of the tab is given by iTag.
+  \param[in] iTag  */
   void DisplayImage( const QString& iTag );
 
-  /** \brief Create Fullscreengroup*/
+  /** \brief Create Fullscreengroup */
   void Fullscreenbuttons();
 
   /** \brief */
