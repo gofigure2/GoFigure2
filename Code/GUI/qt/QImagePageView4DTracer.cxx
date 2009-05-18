@@ -1,6 +1,13 @@
 /*=========================================================================
+  URL: $HeadURL:$
+  Author: $Author:$  // Author of last commit
+  Version: $Revision:$  // Revision of last commit
+  Date: $Date:$  // Date of last commit
+=========================================================================*/
+
+/*=========================================================================
  Authors: The GoFigure Dev. Team.
- while at Megason Lab, Systems biology, Harvard Medical school, 2009
+ at Megason Lab, Systems biology, Harvard Medical school, 2009
 
  Copyright (c) 2009, President and Fellows of Harvard College.
  All rights reserved.
@@ -78,28 +85,28 @@ QImagePageView4DTracer::QImagePageView4DTracer( QWidget* parent ) : QWidget( par
 
   this->Whatever = new QImagePageViewTracer( );
 
-  this->slider1 = new QSlider( Qt::Horizontal );
+  this->Slider1 = new QSlider( Qt::Horizontal );
 
-  this->button2 = new QPushButton("Switch between greyscale and color when multichannel");
+  this->Button2 = new QPushButton("Switch between greyscale and color when multichannel");
 
-  this->button1 = new QPushButton("Run &Movie");
+  this->Button1 = new QPushButton("Run &Movie");
 
   this->LayOut1 = new QVBoxLayout;
   this->LayOut1->addWidget( this->Whatever );
-  this->LayOut1->addWidget( this->button2 );
-  this->LayOut1->addWidget( this->slider1 );
+  this->LayOut1->addWidget( this->Button2 );
+  this->LayOut1->addWidget( this->Slider1 );
   //NOTE ALEX: button for movie
-  // this->LayOut1->addWidget( this->button1 );
+  // this->LayOut1->addWidget( this->Button1 );
 
   this->LayOutWidget1 = new QWidget( this );
   this->LayOutWidget1->setLayout( this->LayOut1 );
   // this->setLayout( this->LayOut1 );
 
-  QObject::connect( this->slider1, SIGNAL( valueChanged( int ) ),
+  QObject::connect( this->Slider1, SIGNAL( valueChanged( int ) ),
     this, SLOT( SetView( int ) ) );
-  QObject::connect( this->button1, SIGNAL( clicked( ) ),
+  QObject::connect( this->Button1, SIGNAL( clicked( ) ),
     this, SLOT( RunMovie( ) ) );
-  QObject::connect( this->button2, SIGNAL( clicked( ) ),
+  QObject::connect( this->Button2, SIGNAL( clicked( ) ),
     this, SLOT( SwitchColorMode( ) ) );
 
   this->ColorVizu = false;
@@ -131,20 +138,20 @@ ReadMultiFile( const int& TimePoint )
     if( this->IsLsm )
       {
       itk::Lsm3DSerieImport::Pointer  importFileInfoList = itk::Lsm3DSerieImport::New();
-	  importFileInfoList->SetFileName( this->FileName );
+      importFileInfoList->SetFileName( this->FileName );
       importFileInfoList->SetGroupId( 1 );
       importFileInfoList->Update();
-	  // NOTE ALEX: the pointer might be wrong when the object go out of scope
-	  // because it's not a smart pointer
-	  this->FileList = *(importFileInfoList->GetOutput());
-	  }
-	if( this->IsMegaCapture )
-	  {
-	  itk::MegaCaptureImport::Pointer  importFileInfoList = itk::MegaCaptureImport::New();
+      // NOTE ALEX: the pointer might be wrong when the object go out of scope
+      // because it's not a smart pointer
+      this->FileList = *(importFileInfoList->GetOutput());
+      }
+    if( this->IsMegaCapture )
+      {
+      itk::MegaCaptureImport::Pointer  importFileInfoList = itk::MegaCaptureImport::New();
       importFileInfoList->SetFileName( this->FileName );
       importFileInfoList->Update();
       this->FileList = *(importFileInfoList->GetOutput());
-	  }
+      }
     }
 
   //  itk::MultiFileReader* reader = itk::MultiFileReader::New();
@@ -156,14 +163,14 @@ ReadMultiFile( const int& TimePoint )
     reader->SetChannel( 0 );
     }
   if( this->IsMegaCapture )
-    { 
-	reader->SetDimensionality( 2 );
+    {
+    reader->SetDimensionality( 2 );
     reader->SetFileType( JPEG );
     }
-  if( this->ColorVizu ) 
-	{
+  if( this->ColorVizu )
+    {
     reader->SetMultiChannelImagesON();
-	}
+    }
   else
     {
     reader->SetMultiChannelImagesOFF();
@@ -171,17 +178,17 @@ ReadMultiFile( const int& TimePoint )
   reader->SetTimePoint( TimePoint );
   reader->Update();
 
-  this->slider1->setMinimum( 0 );
+  this->Slider1->setMinimum( 0 );
   this->NumberOfTimePoints = reader->GetNumberOfTimePoints();
   if( this->NumberOfTimePoints > 1)
     {
-    this->slider1->setMaximum( this->NumberOfTimePoints );
+    this->Slider1->setMaximum( this->NumberOfTimePoints );
     }
   else
     {
     // NOTE ALEX: this quickly remove the horizontal slider problem
     // had better make it visible / invisble if possible, not to mess up with the layout.
-    this->LayOut1->removeWidget( this->slider1 );
+    this->LayOut1->removeWidget( this->Slider1 );
     }
 
   this->Image = reader->GetOutput();
@@ -217,23 +224,23 @@ void QImagePageView4DTracer::ReadLSMFile( const int& TimePoint )
 {
   // have to redirect that to a Multifile reader with only one file,
   // so we will have less duplicated code, and less maintenance.
-  
+
   vtkImageData* myImage_ch1 = vtkImageData::New();
   vtkLSMReader* reader = vtkLSMReader::New();
   reader->SetFileName( this->FileName );
   reader->SetUpdateTimePoint( TimePoint );
   reader->Update();
-  this->slider1->setMinimum( 0 );
+  this->Slider1->setMinimum( 0 );
   this->NumberOfTimePoints = reader->GetNumberOfTimePoints();
   if( this->NumberOfTimePoints > 1)
     {
-    this->slider1->setMaximum( this->NumberOfTimePoints );
+    this->Slider1->setMaximum( this->NumberOfTimePoints );
     }
   else
     {
-    this->LayOut1->removeWidget( this->slider1 );
+    this->LayOut1->removeWidget( this->Slider1 );
     }
- 
+
   int NumberOfChannels = reader->GetNumberOfChannels();
   myImage_ch1->ShallowCopy( reader->GetOutput() );
   reader->Delete();
@@ -350,13 +357,12 @@ void QImagePageView4DTracer::RunMovie( )
   // std::cout << "Enjoy movie mode." << std::endl;
   // for( unsigned int i = 0; i < this->NumberOfTimePoints; i++)
   //  {
-  //  this->slider1->setValue( i );
+  //  this->Slider1->setValue( i );
   //  }
 }
 
 void QImagePageView4DTracer::SwitchColorMode( )
 {
   this->ColorVizu = !this->ColorVizu;
-  this->SetView( this->slider1->value() );
+  this->SetView( this->Slider1->value() );
 }
-

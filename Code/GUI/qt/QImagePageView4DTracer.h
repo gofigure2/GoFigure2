@@ -1,6 +1,13 @@
 /*=========================================================================
+  URL: $HeadURL:$
+  Author: $Author:$  // Author of last commit
+  Version: $Revision:$  // Revision of last commit
+  Date: $Date:$  // Date of last commit
+=========================================================================*/
+
+/*=========================================================================
  Authors: The GoFigure Dev. Team.
- while at Megason Lab, Systems biology, Harvard Medical school, 2009
+ at Megason Lab, Systems biology, Harvard Medical school, 2009
 
  Copyright (c) 2009, President and Fellows of Harvard College.
  All rights reserved.
@@ -67,41 +74,41 @@ public:
 
   QMEGAVTKADDON2_EXPORT void SetFileName( const char* name );
   QMEGAVTKADDON2_EXPORT void SetColorVizu( const bool& value )
-    { this->ColorVizu = value; };
+    { this->ColorVizu = value; }
   QMEGAVTKADDON2_EXPORT void GetBackgroundColor( double& r, double& g, double& b )
-    { return this->Whatever->GetBackgroundColor( r, g, b ); };
+    { return this->Whatever->GetBackgroundColor( r, g, b ); }
   QMEGAVTKADDON2_EXPORT double* GetBackgroundColor()
-    { return this->Whatever->GetBackgroundColor(); };
+    { return this->Whatever->GetBackgroundColor(); }
   QMEGAVTKADDON2_EXPORT int GetCellId( ) const
-    { return this->Whatever->GetCellId(); };
+    { return this->Whatever->GetCellId(); }
   QMEGAVTKADDON2_EXPORT int GetFullScreenView( ) const
-    { return this->Whatever->GetFullScreenView( ); };
+    { return this->Whatever->GetFullScreenView( ); }
   QMEGAVTKADDON2_EXPORT bool GetVolumeRendering( ) const
-    { return this->Whatever->GetVolumeRendering( ); };
+    { return this->Whatever->GetVolumeRendering( ); }
   QMEGAVTKADDON2_EXPORT bool GetTracerStatus( ) const
     { return this->Whatever->GetTracerStatus(); }
   QMEGAVTKADDON2_EXPORT void SaveStateSplitters()
     { return this->Whatever->SaveStateSplitters(); }
   QMEGAVTKADDON2_EXPORT void SetFileTypeToSerie( )
-    { this->IsSerie = true; };
+    { this->IsSerie = true; }
   QMEGAVTKADDON2_EXPORT void SetSerieType( const int& value )
-    { 
-	if( value == 0 ) 
-	  {
-	  this->IsLsm = true;
-	  this->IsMegaCapture = false;
-	  }
-	else
-	  {
-	  this->IsLsm = false;
-	  this->IsMegaCapture = true;
+    {
+    if( value == 0 )
+      {
+      this->IsLsm = true;
+      this->IsMegaCapture = false;
       }
-	this->IsFileListComputed = false;
-    };
+    else
+      {
+      this->IsLsm = false;
+      this->IsMegaCapture = true;
+      }
+    this->IsFileListComputed = false;
+    }
   QMEGAVTKADDON2_EXPORT void SetSerieTypeToLsm( )
-    { this->SetSerieType( 0 ); };
+    { this->SetSerieType( 0 ); }
   QMEGAVTKADDON2_EXPORT void SetSerieTypeToMegaCapture( )
-    { this->SetSerieType( 1 ); };
+    { this->SetSerieType( 1 ); }
 
 public slots:
   QMEGAVTKADDON2_EXPORT void SetView( const int& value );
@@ -113,65 +120,65 @@ public slots:
     const int& iId,
     const QColor& iColor,
     const bool& iSave )
-    { this->Whatever->ValidateContour( iId, iColor, iSave ); };
+    { this->Whatever->ValidateContour( iId, iColor, iSave ); }
   QMEGAVTKADDON2_EXPORT void ReinitializeContour( )
-    { this->Whatever->ReinitializeContour( ); };
+    { this->Whatever->ReinitializeContour( ); }
   QMEGAVTKADDON2_EXPORT void SetBackgroundColor( const double& r, const double& g, const double& b )
-    { this->Whatever->SetBackgroundColor( r, g, b ); };
+    { this->Whatever->SetBackgroundColor( r, g, b ); }
   QMEGAVTKADDON2_EXPORT void SetBackgroundColor( double rgb[3] )
-    { this->Whatever->SetBackgroundColor( rgb ); };
+    { this->Whatever->SetBackgroundColor( rgb ); }
   QMEGAVTKADDON2_EXPORT void SetBackgroundColor( const QColor& iColor )
-    { this->Whatever->SetBackgroundColor( iColor ); };
+    { this->Whatever->SetBackgroundColor( iColor ); }
   QMEGAVTKADDON2_EXPORT void SetFullScreenView( const int& iS )
-    { this->Whatever->SetFullScreenView( iS ); };
+    { this->Whatever->SetFullScreenView( iS ); }
   QMEGAVTKADDON2_EXPORT void quadview()
-    { this->Whatever->quadview(); };
+    { this->Whatever->quadview(); }
   QMEGAVTKADDON2_EXPORT void FullScreenViewXY()
-    { this->Whatever->FullScreenViewXY(); };
+    { this->Whatever->FullScreenViewXY(); }
   QMEGAVTKADDON2_EXPORT void FullScreenView2()
-    { this->Whatever->FullScreenView2(); };
+    { this->Whatever->FullScreenView2(); }
   QMEGAVTKADDON2_EXPORT void FullScreenView3()
-    { this->Whatever->FullScreenView3(); };
+    { this->Whatever->FullScreenView3(); }
   QMEGAVTKADDON2_EXPORT void FullScreenViewXYZ()
-    { this->Whatever->FullScreenViewXYZ(); };
+    { this->Whatever->FullScreenViewXYZ(); }
   QMEGAVTKADDON2_EXPORT void SetView3DToTriPlanarMode()
-    { this->Whatever->SetView3DToTriPlanarMode(); };
+    { this->Whatever->SetView3DToTriPlanarMode(); }
   QMEGAVTKADDON2_EXPORT void SetView3DToVolumeRenderingMode()
-    { this->Whatever->SetView3DToVolumeRenderingMode(); };
+    { this->Whatever->SetView3DToVolumeRenderingMode(); }
   QMEGAVTKADDON2_EXPORT void SetTracerON()
-    { this->Whatever->SetTracerON(); };
+    { this->Whatever->SetTracerON(); }
   QMEGAVTKADDON2_EXPORT void SetTracerOFF()
-    { this->Whatever->SetTracerOFF(); };
+    { this->Whatever->SetTracerOFF(); }
   QMEGAVTKADDON2_EXPORT void SetShowScalarBar( const bool& what )
-    { 
+    {
     if( ( this->Image->GetNumberOfScalarComponents() == 1 ) || ( !ColorVizu ) )
-      this->Whatever->SetShowScalarBar( what ); 
-    };
+      this->Whatever->SetShowScalarBar( what );
+    }
   QMEGAVTKADDON2_EXPORT void SetLookupTable( vtkLookupTable* lut )
     {
     if( ( this->Image->GetNumberOfScalarComponents() == 1 ) || ( !ColorVizu ) )
       this->Whatever->SetLookupTable( lut );
-    };
+    }
   QMEGAVTKADDON2_EXPORT void SetSeedingON()
-    { this->Whatever->SetSeedingOFF(); };
+    { this->Whatever->SetSeedingOFF(); }
   QMEGAVTKADDON2_EXPORT void SetSeedingOFF()
-    { this->Whatever->SetSeedingOFF(); };
+    { this->Whatever->SetSeedingOFF(); }
   QMEGAVTKADDON2_EXPORT void SetSeeding( const bool& iState )
-    { this->Whatever->SetSeeding( iState ); };
+    { this->Whatever->SetSeeding( iState ); }
   QMEGAVTKADDON2_EXPORT bool GetSeedingStatus( ) const
-    { return this->Whatever->GetSeedingStatus(); };
+    { return this->Whatever->GetSeedingStatus(); }
 
   QMEGAVTKADDON2_EXPORT vtkPoints* GetAllSeeds()
-    { return this->Whatever->GetAllSeeds(); };
+    { return this->Whatever->GetAllSeeds(); }
   QMEGAVTKADDON2_EXPORT void ClearAllSeeds()
-    { this->Whatever->ClearAllSeeds(); };
+    { this->Whatever->ClearAllSeeds(); }
 
 protected:
   QWidget*      LayOutWidget1;
   QVBoxLayout*  LayOut1;
-  QSlider*      slider1;
-  QPushButton*  button1;
-  QPushButton*  button2;
+  QSlider*      Slider1;
+  QPushButton*  Button1;
+  QPushButton*  Button2;
 
   void ReadMultiFile( const int& TimePoint );
   void ReadLSMFile( const int& TimePoint );

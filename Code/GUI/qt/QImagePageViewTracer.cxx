@@ -1,6 +1,13 @@
 /*=========================================================================
+  URL: $HeadURL:$
+  Author: $Author:$  // Author of last commit
+  Version: $Revision:$  // Revision of last commit
+  Date: $Date:$  // Date of last commit
+=========================================================================*/
+
+/*=========================================================================
  Authors: The GoFigure Dev. Team.
- while at Megason Lab, Systems biology, Harvard Medical school, 2009
+ at Megason Lab, Systems biology, Harvard Medical school, 2009
 
  Copyright (c) 2009, President and Fellows of Harvard College.
  All rights reserved.
@@ -75,38 +82,38 @@ QImagePageViewTracer::QImagePageViewTracer( QWidget* parent ) : QWidget( parent 
   Pool = vtkViewImage2DWithContourWidgetCollection::New();
   View3D = vtkViewImage3D::New();
 
-  vtkEventQtConnector = vtkEventQtSlotConnect::New();
+  VtkEventQtConnector = vtkEventQtSlotConnect::New();
 
   setupUi( this );
-  QObject::connect( this->slider1, SIGNAL( valueChanged( int ) ),
+  QObject::connect( this->Slider1, SIGNAL( valueChanged( int ) ),
     this, SLOT( SetSlideView1( int ) ) );
-  QObject::connect( this->slider2, SIGNAL( valueChanged( int ) ),
+  QObject::connect( this->Slider2, SIGNAL( valueChanged( int ) ),
     this, SLOT( SetSlideView2( int ) ) );
-  QObject::connect( this->slider3, SIGNAL( valueChanged( int ) ),
+  QObject::connect( this->Slider3, SIGNAL( valueChanged( int ) ),
     this, SLOT( SetSlideView3( int ) ) );
 
-  QObject::connect( this->htSplitter, SIGNAL( splitterMoved( int, int ) ),
-    this->hbSplitter, SLOT( moveSplitter( int, int ) ) );
-  QObject::connect(this->hbSplitter, SIGNAL( splitterMoved( int, int ) ),
-    this->htSplitter, SLOT( moveSplitter( int, int ) ) );
+  QObject::connect( this->HtSplitter, SIGNAL( splitterMoved( int, int ) ),
+    this->HbSplitter, SLOT( moveSplitter( int, int ) ) );
+  QObject::connect(this->HbSplitter, SIGNAL( splitterMoved( int, int ) ),
+    this->HtSplitter, SLOT( moveSplitter( int, int ) ) );
 
 }
 
 QImagePageViewTracer::~QImagePageViewTracer()
 {
-  delete htSplitter;
-  delete hbSplitter;
+  delete HtSplitter;
+  delete HbSplitter;
 
   for( unsigned int i = 0; i < this->SeedWidget.size(); i++ )
-  {
+    {
     Handle[i]->Delete();
     SeedRep[i]->Delete();
     SeedWidget[i]->Delete();
-  }
+    }
 
   Pool->Delete();
   View3D->Delete();
-  vtkEventQtConnector->Delete();
+  VtkEventQtConnector->Delete();
 }
 
 void QImagePageViewTracer::setupUi( QWidget* parent )
@@ -120,55 +127,55 @@ void QImagePageViewTracer::setupUi( QWidget* parent )
   list_size.push_back( 10 );
   list_size.push_back( 10 );
 
-  this->vSplitter  = new QSplitter( Qt::Vertical, parent );
+  this->VSplitter  = new QSplitter( Qt::Vertical, parent );
 
-  this->htSplitter = new QSplitterchild( this->vSplitter );
-  this->hbSplitter = new QSplitterchild( this->vSplitter );
+  this->HtSplitter = new QSplitterchild( this->VSplitter );
+  this->HbSplitter = new QSplitterchild( this->VSplitter );
 
-  this->vSplitter->addWidget(this->htSplitter);
-  this->vSplitter->addWidget(this->hbSplitter);
-  this->vSplitter->setSizes( list_size );
-  this->vSplitter->resize( 800, 800 );
+  this->VSplitter->addWidget(this->HtSplitter);
+  this->VSplitter->addWidget(this->HbSplitter);
+  this->VSplitter->setSizes( list_size );
+  this->VSplitter->resize( 800, 800 );
 
-  this->qvtkWidget_XY = new QVTKWidget;
-  this->slider1 = new QSlider( Qt::Vertical );
+  this->QvtkWidget_XY = new QVTKWidget;
+  this->Slider1 = new QSlider( Qt::Vertical );
   this->LayOut1 = new QHBoxLayout;
-  this->LayOut1->addWidget( this->qvtkWidget_XY );
-  this->LayOut1->addWidget( this->slider1 );
+  this->LayOut1->addWidget( this->QvtkWidget_XY );
+  this->LayOut1->addWidget( this->Slider1 );
   this->LayOutWidget1 = new QWidget;
   this->LayOutWidget1->setLayout( this->LayOut1 );
-  this->htSplitter->addWidget( this->LayOutWidget1 );
+  this->HtSplitter->addWidget( this->LayOutWidget1 );
 
-  this->qvtkWidget_2 = new QVTKWidget;
-  this->slider2 = new QSlider( Qt::Vertical );
+  this->QvtkWidget_2 = new QVTKWidget;
+  this->Slider2 = new QSlider( Qt::Vertical );
   this->LayOut2 = new QHBoxLayout;
-  this->LayOut2->addWidget( this->qvtkWidget_2 );
-  this->LayOut2->addWidget( this->slider2 );
+  this->LayOut2->addWidget( this->QvtkWidget_2 );
+  this->LayOut2->addWidget( this->Slider2 );
   this->LayOutWidget2 = new QWidget;
   this->LayOutWidget2->setLayout( this->LayOut2 );
-  this->hbSplitter->addWidget( this->LayOutWidget2 );
-//   this->htSplitter->setSizes( list_size );
+  this->HbSplitter->addWidget( this->LayOutWidget2 );
+//   this->HtSplitter->setSizes( list_size );
 
-  this->qvtkWidget_3 = new QVTKWidget;
-  this->slider3 = new QSlider( Qt::Vertical );
+  this->QvtkWidget_3 = new QVTKWidget;
+  this->Slider3 = new QSlider( Qt::Vertical );
   this->LayOut3 = new QHBoxLayout;
-  this->LayOut3->addWidget( this->qvtkWidget_3 );
-  this->LayOut3->addWidget( this->slider3 );
+  this->LayOut3->addWidget( this->QvtkWidget_3 );
+  this->LayOut3->addWidget( this->Slider3 );
   this->LayOutWidget3 = new QWidget;
   this->LayOutWidget3->setLayout( this->LayOut3 );
-  this->htSplitter->addWidget( this->LayOutWidget3 );
+  this->HtSplitter->addWidget( this->LayOutWidget3 );
 
-  this->qvtkWidget_XYZ = new QVTKWidget;
+  this->QvtkWidget_XYZ = new QVTKWidget;
   this->Spacer = new QSpacerItem( 27, 10,
     QSizePolicy::Minimum, QSizePolicy::Minimum);
   this->LayOut4 = new QHBoxLayout;
-  this->LayOut4->addWidget( this->qvtkWidget_XYZ );
+  this->LayOut4->addWidget( this->QvtkWidget_XYZ );
   this->LayOut4->addItem( this->Spacer );
   this->LayOutWidget4 = new QWidget;
   this->LayOutWidget4->setLayout( this->LayOut4 );
-  this->hbSplitter->addWidget( this->LayOutWidget4 );
+  this->HbSplitter->addWidget( this->LayOutWidget4 );
 
-  vtkRenderWindow* renwin4 = this->qvtkWidget_XYZ->GetRenderWindow( );
+  vtkRenderWindow* renwin4 = this->QvtkWidget_XYZ->GetRenderWindow( );
   View3D->SetRenderWindow( renwin4 );
 
   retranslateUi(parent);
@@ -390,79 +397,85 @@ QString QImagePageViewTracer::SnapshotView( QVTKWidget* iWidget,
 QString QImagePageViewTracer::SnapshotViewXY( const SnapshotImageType& iType,
     const QString& iBaseName )
 {
-  return SnapshotView( qvtkWidget_XY, iType, iBaseName );
+  return SnapshotView( QvtkWidget_XY, iType, iBaseName );
 }
 
 QString QImagePageViewTracer::SnapshotView2( const SnapshotImageType& iType,
     const QString& iBaseName )
 {
-  return SnapshotView( qvtkWidget_2, iType, iBaseName );
+  return SnapshotView( QvtkWidget_2, iType, iBaseName );
 }
 QString QImagePageViewTracer::SnapshotView3( const SnapshotImageType& iType,
     const QString& iBaseName )
 {
-  return SnapshotView( qvtkWidget_3, iType, iBaseName );
+  return SnapshotView( QvtkWidget_3, iType, iBaseName );
 }
 QString QImagePageViewTracer::SnapshotViewXYZ( const SnapshotImageType& iType,
     const QString& iBaseName )
 {
-  return SnapshotView( qvtkWidget_XYZ, iType, iBaseName );
+  return SnapshotView( QvtkWidget_XYZ, iType, iBaseName );
 }
 
 void QImagePageViewTracer::SetFullScreenView( const int& iS )
 {
-
-  if( this->Is2DImage ) return;
+  if( this->Is2DImage )
+    {
+    return;
+    }
 
   if( IsFullScreen == iS )
+    {
     IsFullScreen = 0;
+    }
   else
+    {
     IsFullScreen = iS;
+    }
 
   switch( IsFullScreen )
-  {
-  default:
-  case 0:
     {
+    default:
+    case 0:
+      {
       LayOutWidget1->show();
       LayOutWidget2->show();
       LayOutWidget3->show();
       LayOutWidget4->show();
       break;
-    }
-  case 1:
-    {
+      }
+    case 1:
+      {
       LayOutWidget1->show();
       LayOutWidget2->hide();
       LayOutWidget3->hide();
       LayOutWidget4->hide();
       break;
-    }
-  case 2:
-    {
+      }
+    case 2:
+      {
       LayOutWidget1->hide();
       LayOutWidget2->show();
       LayOutWidget3->hide();
       LayOutWidget4->hide();
       break;
-    }
-  case 3:
-    {
+      }
+    case 3:
+      {
       LayOutWidget1->hide();
       LayOutWidget2->hide();
       LayOutWidget3->show();
       LayOutWidget4->hide();
       break;
-    }
-  case 4:
-    {
+      }
+    case 4:
+      {
       LayOutWidget1->hide();
       LayOutWidget2->hide();
       LayOutWidget3->hide();
       LayOutWidget4->show();
       break;
+      }
     }
-  }
 }
 
 int QImagePageViewTracer::GetFullScreenView( ) const
@@ -502,14 +515,14 @@ const double& g, const double& b )
   this->Pool->SyncSetBackground( rgb );
 
   for( int i = 0; i < 3; i++ )
-  {
+    {
     vtkTextProperty* property = this->Pool->GetItem( i )->GetTextProperty();
     property->SetFontFamilyToArial();
     property->SetFontSize( 14 );
     property->SetColor( textcolor );
-  }
+    }
 
-//   this->Pool->SyncSetTextProperty( property );
+  //   this->Pool->SyncSetTextProperty( property );
 }
 
 void QImagePageViewTracer::SetBackgroundColor( double rgb[3] )
@@ -522,13 +535,13 @@ void QImagePageViewTracer::SetBackgroundColor( double rgb[3] )
   this->Pool->SyncSetBackground( rgb );
 
   for( int i = 0; i < 3; i++ )
-  {
+    {
     vtkTextProperty* property = this->Pool->GetItem( i )->GetTextProperty();
     property->SetFontFamilyToArial();
     property->SetFontSize( 14 );
     property->SetColor( textcolor );
-  }
-//   this->Pool->SyncSetTextProperty( property );
+    }
+  //   this->Pool->SyncSetTextProperty( property );
 }
 
 void QImagePageViewTracer::SetBackgroundColor( const QColor& iColor )
@@ -548,58 +561,58 @@ void QImagePageViewTracer::SetBackgroundColor( const QColor& iColor )
   this->Pool->SyncSetBackground( rgb );
 
   for( int i = 0; i < 3; i++ )
-  {
+    {
     vtkTextProperty* property = this->Pool->GetItem( i )->GetTextProperty();
     property->SetFontFamilyToArial();
     property->SetFontSize( 14 );
     property->SetColor( textcolor );
-  }
-//   this->Pool->SyncSetTextProperty( property );
+    }
+  //   this->Pool->SyncSetTextProperty( property );
 }
 
 QVTKWidget* QImagePageViewTracer::GetActiveQVTKWidget( )
 {
   if( !this->Is2DImage )
-  {
-    switch(this->IsFullScreen)
     {
-    case 1 :
-      return qvtkWidget_XY;
-    case 2 :
-      return qvtkWidget_2;
-    case 3 :
-      return qvtkWidget_3;
-    default :
-      return qvtkWidget_XYZ;
+    switch(this->IsFullScreen)
+      {
+      case 1 :
+        return QvtkWidget_XY;
+      case 2 :
+        return QvtkWidget_2;
+      case 3 :
+        return QvtkWidget_3;
+      default :
+        return QvtkWidget_XYZ;
+      }
     }
-  }
   else
-  {
-    return qvtkWidget_XY;
-  }
+    {
+    return QvtkWidget_XY;
+    }
 }
 
 
 vtkViewImage* QImagePageViewTracer::GetActiveView()
 {
   if( !this->Is2DImage )
-  {
-    switch(this->IsFullScreen)
     {
-    case 1 :
-      return this->Pool->GetItem(0);
-    case 2 :
-      return this->Pool->GetItem(1);
-    case 3 :
-      return this->Pool->GetItem(2);
-    default :
-      return this->Pool->GetItem(3);
+    switch(this->IsFullScreen)
+      {
+      case 1 :
+        return this->Pool->GetItem(0);
+      case 2 :
+        return this->Pool->GetItem(1);
+      case 3 :
+        return this->Pool->GetItem(2);
+      default :
+        return this->Pool->GetItem(3);
+      }
     }
-  }
   else
-  {
+    {
     return this->Pool->GetItem(0);
-  }
+    }
 }
 
 void QImagePageViewTracer::SetLookupTable( vtkLookupTable* lut )
@@ -617,56 +630,66 @@ void QImagePageViewTracer::SetLookupTable( vtkLookupTable* lut )
 void QImagePageViewTracer::quadview()
 {
   if( !this->Is2DImage )
-   SetFullScreenView( 0 );
+    {
+    SetFullScreenView( 0 );
+    }
 }
 
 void QImagePageViewTracer::FullScreenViewXY ()
 {
   if( !this->Is2DImage )
+    {
     SetFullScreenView( 1 );
+    }
 }
 
 
 void QImagePageViewTracer::FullScreenView2( )
 {
   if( !this->Is2DImage )
+    {
     SetFullScreenView( 2 );
+    }
 }
 
 
 void QImagePageViewTracer::FullScreenView3( )
 {
   if( !this->Is2DImage )
+    {
     SetFullScreenView( 3 );
+    }
 }
 
 
 void QImagePageViewTracer::FullScreenViewXYZ ( )
 {
   if( !this->Is2DImage )
+    {
     SetFullScreenView( 4 );
+    }
 }
 
 void QImagePageViewTracer::SetView3DToTriPlanarMode()
 {
   if( !this->Is2DImage )
-  {
+    {
     View3D->SetTriPlanarRenderingOn();
     View3D->SetVolumeRenderingOff();
     View3D->Render();
     IsVolumeRendering = false;
-  }
+    }
 }
 //
 void QImagePageViewTracer::SetView3DToVolumeRenderingMode()
 {
   if( !this->Is2DImage )
-  {
+    {
     View3D->SetTriPlanarRenderingOff();
     View3D->SetVolumeRenderingOn();
     View3D->Render();
     IsVolumeRendering = true;
-  }
+    }
 }
 
 #ifdef MegaVTK_USE_ITK
@@ -674,9 +697,9 @@ template< class TImage >
 void QImagePageViewTracer::SetITKImage( TImage::Pointer itkImage )
 {
   if( itkImage.IsNull() )
-  {
+    {
     return;
-  }
+    }
 
   typedef itk::ImageToVTKImageFilter< TImage > ConverterType;
   ConverterType::Pointer myConverter = ConverterType::New();
@@ -695,9 +718,9 @@ void QImagePageViewTracer::Set3DImage( vtkImageData* input )
     vtkViewImage2DWithContourWidget::New();
   View1->SetInput( this->Image );
 
-  vtkRenderWindow* renwin1 = this->qvtkWidget_XY->GetRenderWindow( );
+  vtkRenderWindow* renwin1 = this->QvtkWidget_XY->GetRenderWindow( );
   //     renwin1->GetRenderers()->RemoveAllItems();
-  View1->SetupInteractor( this->qvtkWidget_XY->GetInteractor() );
+  View1->SetupInteractor( this->QvtkWidget_XY->GetInteractor() );
   View1->SetRenderWindow( renwin1 );
   View1->SetRenderer( renwin1->GetRenderers()->GetFirstRenderer() );
 
@@ -710,12 +733,12 @@ void QImagePageViewTracer::Set3DImage( vtkImageData* input )
 
   int *range = View1->GetSliceRange();
 
-  this->slider1->setMinimum( range[0] );
-  this->slider1->setMaximum( range[1] );
+  this->Slider1->setMinimum( range[0] );
+  this->Slider1->setMaximum( range[1] );
 
   // Event connection between vtk and qt
   // when SliceMoveEvent occurs in the XY View, Slider1 moves.
-  vtkEventQtConnector->Connect(
+  VtkEventQtConnector->Connect(
     reinterpret_cast< vtkObject* >( View1->GetInteractorStyle() ),
     vtkViewImage2DCommand::SliceMoveEvent,
     this, SLOT( MoveSlider1() ) );
@@ -723,12 +746,12 @@ void QImagePageViewTracer::Set3DImage( vtkImageData* input )
   // Event connection between vtk and qt
   // when RequestedPositionEvent occurs in the XY View (double-click),
   // Slider2 and Slider3 move.
-  vtkEventQtConnector->Connect(
+  VtkEventQtConnector->Connect(
     reinterpret_cast< vtkObject* >( View1->GetInteractorStyle() ),
     vtkViewImage2DCommand::RequestedPositionEvent,
     this, SLOT( MoveSlider2() ) );
 
-  vtkEventQtConnector->Connect(
+  VtkEventQtConnector->Connect(
     reinterpret_cast< vtkObject* >( View1->GetInteractorStyle() ),
     vtkViewImage2DCommand::RequestedPositionEvent,
     this, SLOT( MoveSlider3() ) );
@@ -739,10 +762,10 @@ void QImagePageViewTracer::Set3DImage( vtkImageData* input )
     vtkViewImage2DWithContourWidget::New();
   View2->SetInput( this->Image );
 
-  vtkRenderWindow* renwin2 = this->qvtkWidget_2->GetRenderWindow( );
+  vtkRenderWindow* renwin2 = this->QvtkWidget_2->GetRenderWindow( );
   View2->SetRenderWindow( renwin2 );
   View2->SetRenderer( renwin2->GetRenderers()->GetFirstRenderer() );
-  View2->SetupInteractor( this->qvtkWidget_2->GetInteractor() );
+  View2->SetupInteractor( this->QvtkWidget_2->GetInteractor() );
 
   View2->SetViewConvention( vtkViewImage2D::VIEW_CONVENTION_NEUROLOGICAL );
   View2->SetViewOrientation (vtkViewImage2D::VIEW_ORIENTATION_CORONAL);
@@ -755,11 +778,11 @@ void QImagePageViewTracer::Set3DImage( vtkImageData* input )
   this->View3D->Add2DPhantom( 1, View2->GetImageActor(), View2->GetSlicePlane() );
 
   range = View2->GetSliceRange();
-  this->slider2->setMinimum( range[0] );
-  this->slider2->setMaximum( range[1] );
+  this->Slider2->setMinimum( range[0] );
+  this->Slider2->setMaximum( range[1] );
   // Event connection between vtk and qt
   // when SliceMoveEvent occurs in the XY View, Slider1 moves.
-  vtkEventQtConnector->Connect(
+  VtkEventQtConnector->Connect(
     reinterpret_cast< vtkObject* >( View2->GetInteractorStyle() ),
     vtkViewImage2DCommand::SliceMoveEvent,
     this, SLOT( MoveSlider2() ) );
@@ -767,12 +790,12 @@ void QImagePageViewTracer::Set3DImage( vtkImageData* input )
   // Event connection between vtk and qt
   // when RequestedPositionEvent occurs in the XY View (double-click),
   // Slider2 and Slider3 move.
-  vtkEventQtConnector->Connect(
+  VtkEventQtConnector->Connect(
     reinterpret_cast< vtkObject* >( View2->GetInteractorStyle() ),
     vtkViewImage2DCommand::RequestedPositionEvent,
     this, SLOT( MoveSlider1() ) );
 
-  vtkEventQtConnector->Connect(
+  VtkEventQtConnector->Connect(
     reinterpret_cast< vtkObject* >( View2->GetInteractorStyle() ),
     vtkViewImage2DCommand::RequestedPositionEvent,
     this, SLOT( MoveSlider3() ) );
@@ -783,10 +806,10 @@ void QImagePageViewTracer::Set3DImage( vtkImageData* input )
     vtkViewImage2DWithContourWidget::New();
   View3->SetInput( this->Image );
 
-  vtkRenderWindow* renwin3 = this->qvtkWidget_3->GetRenderWindow( );
+  vtkRenderWindow* renwin3 = this->QvtkWidget_3->GetRenderWindow( );
   View3->SetRenderWindow( renwin3 );
   View3->SetRenderer( renwin3->GetRenderers()->GetFirstRenderer() );
-  View3->SetupInteractor( this->qvtkWidget_3->GetInteractor() );
+  View3->SetupInteractor( this->QvtkWidget_3->GetInteractor() );
 
   View3->SetViewConvention( vtkViewImage2D::VIEW_CONVENTION_NEUROLOGICAL );
   View3->SetViewOrientation (vtkViewImage2D::VIEW_ORIENTATION_SAGITTAL);
@@ -799,12 +822,12 @@ void QImagePageViewTracer::Set3DImage( vtkImageData* input )
   this->View3D->Add2DPhantom( 2, View3->GetImageActor(), View3->GetSlicePlane() );
 
   range = View3->GetSliceRange();
-  this->slider3->setMinimum( range[0] );
-  this->slider3->setMaximum( range[1] );
+  this->Slider3->setMinimum( range[0] );
+  this->Slider3->setMaximum( range[1] );
 
   // Event connection between vtk and qt
   // when SliceMoveEvent occurs in the XY View, Slider1 moves.
-  vtkEventQtConnector->Connect(
+  VtkEventQtConnector->Connect(
     reinterpret_cast< vtkObject* >( View3->GetInteractorStyle() ),
     vtkViewImage2DCommand::SliceMoveEvent,
     this, SLOT( MoveSlider3() ) );
@@ -812,12 +835,12 @@ void QImagePageViewTracer::Set3DImage( vtkImageData* input )
   // Event connection between vtk and qt
   // when RequestedPositionEvent occurs in the XY View (double-click),
   // Slider2 and Slider3 move.
-  vtkEventQtConnector->Connect(
+  VtkEventQtConnector->Connect(
     reinterpret_cast< vtkObject* >( View3->GetInteractorStyle() ),
     vtkViewImage2DCommand::RequestedPositionEvent,
     this, SLOT( MoveSlider1() ) );
 
-  vtkEventQtConnector->Connect(
+  VtkEventQtConnector->Connect(
     reinterpret_cast< vtkObject* >( View3->GetInteractorStyle() ),
     vtkViewImage2DCommand::RequestedPositionEvent,
     this, SLOT( MoveSlider2() ) );
@@ -827,9 +850,9 @@ void QImagePageViewTracer::Set3DImage( vtkImageData* input )
   int size[2] = {400, 400};
   this->Pool->SyncSetSize (size);
 
-  vtkRenderWindow* renwin4 = this->qvtkWidget_XYZ->GetRenderWindow( );
+  vtkRenderWindow* renwin4 = this->QvtkWidget_XYZ->GetRenderWindow( );
   //     this->View3D->SetRenderWindow( renwin4 );
-  this->View3D->SetupInteractor( this->qvtkWidget_XYZ->GetInteractor() );
+  this->View3D->SetupInteractor( this->QvtkWidget_XYZ->GetInteractor() );
   this->View3D->SetInput( this->Image );
   this->View3D->SetVolumeRenderingOff();
   this->View3D->SetShowScalarBar( false );
@@ -841,10 +864,10 @@ void QImagePageViewTracer::Set3DImage( vtkImageData* input )
   this->Pool->SyncSetShowAnnotations( true );
 
   for( int i = 0; i < 3; i++ )
-  {
+    {
     this->Pool->GetItem(i)->GetTextProperty()->SetFontFamilyToArial();
     this->Pool->GetItem(i)->GetTextProperty()->SetFontSize( 14 );
-  }
+    }
 
   this->Pool->SyncSetShowScalarBar( false );
 
@@ -853,16 +876,16 @@ void QImagePageViewTracer::Set3DImage( vtkImageData* input )
   this->Pool->SyncRender();
   this->Pool->SyncReset();
 
-  this->slider1->setValue( (this->slider1->minimum()+this->slider1->maximum())/2 );
-  this->slider2->setValue( (this->slider2->minimum()+this->slider2->maximum())/2 );
-  this->slider3->setValue( (this->slider3->minimum()+this->slider3->maximum())/2 );
+  this->Slider1->setValue( (this->Slider1->minimum()+this->Slider1->maximum())/2 );
+  this->Slider2->setValue( (this->Slider2->minimum()+this->Slider2->maximum())/2 );
+  this->Slider3->setValue( (this->Slider3->minimum()+this->Slider3->maximum())/2 );
 
   this->Handle.resize( this->Pool->GetNumberOfItems() );
   this->SeedRep.resize( this->Pool->GetNumberOfItems() );
   this->SeedWidget.resize( this->Pool->GetNumberOfItems() );
 
   for( int i = 0; i < this->Pool->GetNumberOfItems(); i++)
-  {
+    {
     this->Handle[i] = vtkPointHandleRepresentation2D::New();
     this->Handle[i]->GetProperty()->SetColor(1,0,0);
 
@@ -872,11 +895,11 @@ void QImagePageViewTracer::Set3DImage( vtkImageData* input )
     this->SeedWidget[i] = vtkSeedWidget::New();
     this->SeedWidget[i]->SetPriority( 10.0 );
     this->SeedWidget[i]->SetRepresentation( this->SeedRep[i] );
-  }
+    }
 
-  this->SeedWidget[0]->SetInteractor( this->qvtkWidget_XY->GetInteractor() );
-  this->SeedWidget[1]->SetInteractor( this->qvtkWidget_2->GetInteractor() );
-  this->SeedWidget[2]->SetInteractor( this->qvtkWidget_3->GetInteractor() );
+  this->SeedWidget[0]->SetInteractor( this->QvtkWidget_XY->GetInteractor() );
+  this->SeedWidget[1]->SetInteractor( this->QvtkWidget_2->GetInteractor() );
+  this->SeedWidget[2]->SetInteractor( this->QvtkWidget_3->GetInteractor() );
 }
 
 void QImagePageViewTracer::Set2DImage( vtkImageData* input )
@@ -885,9 +908,9 @@ void QImagePageViewTracer::Set2DImage( vtkImageData* input )
     vtkViewImage2DWithContourWidget::New();
   View1->SetInput( this->Image );
 
-  vtkRenderWindow* renwin1 = this->qvtkWidget_XY->GetRenderWindow( );
+  vtkRenderWindow* renwin1 = this->QvtkWidget_XY->GetRenderWindow( );
   //     renwin1->GetRenderers()->RemoveAllItems();
-  View1->SetupInteractor( this->qvtkWidget_XY->GetInteractor() );
+  View1->SetupInteractor( this->QvtkWidget_XY->GetInteractor() );
   View1->SetRenderWindow( renwin1 );
   View1->SetRenderer( renwin1->GetRenderers()->GetFirstRenderer() );
 
@@ -922,7 +945,7 @@ void QImagePageViewTracer::Set2DImage( vtkImageData* input )
   this->SeedWidget[0] = vtkSeedWidget::New();
   this->SeedWidget[0]->SetPriority( 10.0 );
   this->SeedWidget[0]->SetRepresentation( this->SeedRep[0] );
-  this->SeedWidget[0]->SetInteractor( this->qvtkWidget_XY->GetInteractor() );
+  this->SeedWidget[0]->SetInteractor( this->QvtkWidget_XY->GetInteractor() );
 
   LayOutWidget2->hide();
   LayOutWidget3->hide();
@@ -932,9 +955,11 @@ void QImagePageViewTracer::Set2DImage( vtkImageData* input )
 void QImagePageViewTracer::SetImage( vtkImageData* input )
 {
   if( !input )
+    {
     return;
+    }
   else
-  {
+    {
     this->Image = input;
 
     int extent[6];
@@ -944,20 +969,20 @@ void QImagePageViewTracer::SetImage( vtkImageData* input )
       || ( extent[4] == extent[5] );
 
     if( !this->Is2DImage )
-    {
+      {
       Set3DImage( input );
-    }
+      }
     else
-    {
+      {
       Set2DImage( input );
+      }
     }
-  }
 }
 
 void QImagePageViewTracer::SetShowScalarBar( const bool& state )
 {
   this->Pool->SyncSetShowScalarBar(state);
-//   this->View3D->SetShowScalarBar( state );
+  //   this->View3D->SetShowScalarBar( state );
   this->Pool->SyncRender();
 }
 
@@ -994,59 +1019,63 @@ int QImagePageViewTracer::GetCellId() const
 bool QImagePageViewTracer::GetTracerStatus() const
 {
   if( this->Pool->GetNumberOfItems() )
+    {
     return this->Pool->GetItem( 0 )->GetContourWidgetEnabled( );
+    }
   else
+    {
     return false;
+    }
 }
 
 void QImagePageViewTracer::SetTracerON()
 {
   for( int i = 0; i < this->Pool->GetNumberOfItems(); i++ )
-  {
+    {
     this->Pool->GetItem( i )->SetContourWidgetInteractionOn();
-  }
+    }
 }
 
 void QImagePageViewTracer::SetTracerOFF()
 {
   for( int i = 0; i < this->Pool->GetNumberOfItems(); i++ )
-  {
+    {
     this->Pool->GetItem( i )->SetContourWidgetInteractionOff();
-  }
+    }
 }
 
 void QImagePageViewTracer::SetTracer( const bool& iState )
 {
   for( int i = 0; i < this->Pool->GetNumberOfItems(); i++ )
-  {
+    {
     this->Pool->GetItem( i )->SetContourWidgetInteraction( iState );
-  }
+    }
 }
 
 void QImagePageViewTracer::SetSeedingON()
 {
   for( int i = 0; i < this->Pool->GetNumberOfItems(); i++ )
-  {
+    {
     this->Pool->GetItem( i )->SetContourWidgetInteractionOff();
     this->SeedWidget[i]->On();
-  }
+    }
 }
 
 void QImagePageViewTracer::SetSeedingOFF()
 {
   for( int i = 0; i < this->Pool->GetNumberOfItems(); i++ )
-  {
+    {
     this->Pool->GetItem( i )->SetContourWidgetInteractionOff();
     this->SeedWidget[i]->Off();
-  }
+    }
 }
 
 void QImagePageViewTracer::SetSeeding( const bool& iState )
 {
   for( unsigned int i = 0; i < this->SeedWidget.size(); i++ )
-  {
+    {
     this->SeedWidget[i]->SetEnabled( iState );
-  }
+    }
 }
 bool QImagePageViewTracer::GetSeedingStatus( ) const
 {
@@ -1060,15 +1089,15 @@ vtkPoints* QImagePageViewTracer::GetAllSeeds()
   vtkPoints* oPoints = vtkPoints::New();
 
   for( unsigned int i = 0; i < this->SeedWidget.size(); i++ )
-  {
+    {
     int N = this->SeedRep[i]->GetNumberOfSeeds();
 
     for( int j = 0; j < N; j++ )
-    {
+      {
       this->SeedRep[i]->GetSeedWorldPosition( j, pos );
       oPoints->InsertNextPoint( pos );
+      }
     }
-  }
 
   return oPoints;
 }
@@ -1076,20 +1105,20 @@ vtkPoints* QImagePageViewTracer::GetAllSeeds()
 void QImagePageViewTracer::ClearAllSeeds()
 {
   for( unsigned int i = 0; i < this->SeedWidget.size(); i++ )
-  {
+    {
     int N = this->SeedRep[i]->GetNumberOfSeeds();
     int k = N - 1;
     for( int j = 0; j < N; j++ )
-    {
+      {
       this->SeedWidget[i]->DeleteSeed( k-- );
+      }
     }
-  }
 }
 
 void QImagePageViewTracer::resizeEvent( QResizeEvent* event )
 {
   QWidget::resizeEvent( event );
-  vSplitter->resize( event->size() );
+  VSplitter->resize( event->size() );
 }
 
 
@@ -1115,14 +1144,14 @@ void QImagePageViewTracer::ValidateContour(
   CellId = iId;
 
   for( int i = 0; i < this->Pool->GetNumberOfItems(); i++ )
-   {
+    {
     contour_rep = this->Pool->GetItem( i )->GetContourRepresentation();
     contour = contour_rep->GetContourRepresentationAsPolyData( );
 
     if( contour )
-    {
-      if( contour->GetNumberOfPoints() > 2 )
       {
+      if( contour->GetNumberOfPoints() > 2 )
+        {
         double bounds[6];
         contour->GetBounds( bounds );
 
@@ -1141,7 +1170,7 @@ void QImagePageViewTracer::ValidateContour(
         std::cout <<"Max = [" <<max_idx[0] <<" " <<max_idx[1] <<" " <<max_idx[2] <<"]" <<std::endl;
 
         if( iSave )
-        {
+          {
           QString identifier = QString( "_id%1" ).arg( CellId );
           QString MinString = QString( "_m%1_%2_%3" ).arg( min_idx[0] ).arg( min_idx[1] ).arg( min_idx[2] );
           QString MaxString = QString( "_M%1_%2_%3" ).arg( max_idx[0] ).arg( max_idx[1] ).arg( max_idx[2] );
@@ -1171,38 +1200,38 @@ void QImagePageViewTracer::ValidateContour(
           double pos[3];
 
           for( int ii = 0; ii < NbOfNodes; ii++ )
-          {
+            {
             contour_rep->GetNthNodeWorldPosition( ii, pos );
             myfile <<pos[0] <<" " <<pos[1] <<" " <<pos[2] <<std::endl;
-          }
+            }
           myfile.close();
-        }
+          }
 
         vtkPolyData* contour_copy = vtkPolyData::New();
         contour_copy->ShallowCopy( contour );
 
         for( int j = 0; j < this->Pool->GetNumberOfItems(); j++ )
-        {
+          {
           this->Pool->GetItem( j )->AddDataSet( contour_copy, contour_property, true );
-        }
+          }
         contour_copy->Delete();
-//         this->Pool->GetItem( i )->GetContourWidget()->Initialize( 0 );
+        //         this->Pool->GetItem( i )->GetContourWidget()->Initialize( 0 );
+        }
       }
-    }
 
-  }
+    }
   contour_property->Delete();
   this->Pool->SyncRender();
-//   this->Pool->SyncMaskImage();
+  //   this->Pool->SyncMaskImage();
 }
 //
 
 void QImagePageViewTracer::ReinitializeContour( )
 {
   for( int i = 0; i < this->Pool->GetNumberOfItems(); i++ )
-  {
+    {
     this->Pool->GetItem( i )->GetContourWidget()->Initialize( 0 );
-  }
+    }
   this->Pool->SyncRender();
 }
 
@@ -1226,23 +1255,23 @@ void QImagePageViewTracer::SetSlideView3( const int& iSlice )
 
 void QImagePageViewTracer::MoveSlider1( )
 {
-  this->slider1->setValue( this->Pool->GetItem( 0 )->GetSlice() );
+  this->Slider1->setValue( this->Pool->GetItem( 0 )->GetSlice() );
 }
 
 void QImagePageViewTracer::MoveSlider2( )
 {
-  this->slider2->setValue( this->Pool->GetItem( 1 )->GetSlice() );
+  this->Slider2->setValue( this->Pool->GetItem( 1 )->GetSlice() );
 }
 
 void QImagePageViewTracer::MoveSlider3( )
 {
-  this->slider3->setValue( this->Pool->GetItem( 2 )->GetSlice() );
+  this->Slider3->setValue( this->Pool->GetItem( 2 )->GetSlice() );
 }
 
 void QImagePageViewTracer::SaveStateSplitters()
 {
   QSettings settings;
-  settings.setValue("vSplitterSizes", vSplitter->saveState());
-  settings.setValue("htSplitterSizes", htSplitter->saveState());
-  settings.setValue("hbSplitterSizes", hbSplitter->saveState());
+  settings.setValue("VSplitterSizes", VSplitter->saveState());
+  settings.setValue("HtSplitterSizes", HtSplitter->saveState());
+  settings.setValue("HbSplitterSizes", HbSplitter->saveState());
 }

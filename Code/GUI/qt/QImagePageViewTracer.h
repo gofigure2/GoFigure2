@@ -1,6 +1,13 @@
 /*=========================================================================
+  URL: $HeadURL:$
+  Author: $Author:$  // Author of last commit
+  Version: $Revision:$  // Revision of last commit
+  Date: $Date:$  // Date of last commit
+=========================================================================*/
+
+/*=========================================================================
  Authors: The GoFigure Dev. Team.
- while at Megason Lab, Systems biology, Harvard Medical school, 2009
+ at Megason Lab, Systems biology, Harvard Medical school, 2009
 
  Copyright (c) 2009, President and Fellows of Harvard College.
  All rights reserved.
@@ -127,33 +134,33 @@ public:
     TPropertyContainer& iProperty,
     const bool& iIntersection = true,
     const bool& iVizu3D = false )
-  {
+    {
     this->Pool->SyncAddContours( iContours, iProperty, iIntersection );
 
     if( iVizu3D )
-    {
+      {
       typename TContourContainer::iterator c_it = iContours.begin();
       typename TPropertyContainer::iterator p_it = iProperty.begin();
 
-      for( ; c_it != iContours.end(); ++c_it, ++p_it )
-      {
+      for(; c_it != iContours.end(); ++c_it, ++p_it )
+        {
         this->View3D->AddDataSet( *c_it, *p_it, false );
+        }
       }
     }
-  }
 
   template< typename TPolyDataContainer >
   QMEGAVTKADDON2_EXPORT
   void RemoveContours( TPolyDataContainer& iContours )
-  {
+    {
     this->Pool->SyncRemoveContours( iContours );
     typename TPolyDataContainer::iterator c_it = iContours.begin();
 
-    for( ; c_it != iContours.end(); ++c_it )
-    {
+    for(; c_it != iContours.end(); ++c_it )
+      {
       this->View3D->RemoveDataSet( *c_it );
+      }
     }
-  }
 
   QMEGAVTKADDON2_EXPORT void SaveStateSplitters();
 
@@ -196,58 +203,58 @@ public slots:
     const QColor& iColor,
     const bool& iSave );
   QMEGAVTKADDON2_EXPORT void ReinitializeContour( );
-//   void Render( );
+  //   void Render( );
 
 protected:
-  QSplitter*    vSplitter;
-  QSplitterchild*    htSplitter;
-  QSplitterchild*    hbSplitter;
+  QSplitter*          VSplitter;
+  QSplitterchild*     HtSplitter;
+  QSplitterchild*     HbSplitter;
 
   QWidget*      LayOutWidget1;
   QHBoxLayout*  LayOut1;
-  QSlider*      slider1;
-  QVTKWidget*   qvtkWidget_XY;
+  QSlider*      Slider1;
+  QVTKWidget*   QvtkWidget_XY;
 
   QWidget*      LayOutWidget2;
   QHBoxLayout*  LayOut2;
-  QSlider*      slider2;
-  QVTKWidget*   qvtkWidget_2;
+  QSlider*      Slider2;
+  QVTKWidget*   QvtkWidget_2;
 
   QWidget*      LayOutWidget3;
   QHBoxLayout*  LayOut3;
-  QSlider*      slider3;
-  QVTKWidget*   qvtkWidget_3;
+  QSlider*      Slider3;
+  QVTKWidget*   QvtkWidget_3;
 
   QWidget*      LayOutWidget4;
   QHBoxLayout*  LayOut4;
-  QVTKWidget*   qvtkWidget_XYZ;
+  QVTKWidget*   QvtkWidget_XYZ;
   QSpacerItem*  Spacer;
+
   vtkViewImage3D* View3D;
 
-  vtkImageData* Image;
-  vtkEventQtSlotConnect* vtkEventQtConnector;
+  vtkImageData*           Image;
+  vtkEventQtSlotConnect*  VtkEventQtConnector;
 
-  vtkViewImage2DWithContourWidgetCollection* Pool;
-  std::vector< vtkPointHandleRepresentation2D* > Handle;
-  std::vector< vtkSeedRepresentation* > SeedRep;
-  std::vector< vtkSeedWidget* > SeedWidget;
+  vtkViewImage2DWithContourWidgetCollection*      Pool;
+  std::vector< vtkPointHandleRepresentation2D* >  Handle;
+  std::vector< vtkSeedRepresentation* >           SeedRep;
+  std::vector< vtkSeedWidget* >                   SeedWidget;
 
   QString Tag;
 
 #ifdef MegaVTK_USE_ITK
   /**
-     This pointer is used to store internally a reference to the
-     current ITK->VTK converter, in order to prevent the image buffer
-     to be deleted unexpectdely. See the SetITKImageInXXX for more
-     information.
-   */
+  This pointer is used to store internally a reference to the
+  current ITK->VTK converter, in order to prevent the image buffer
+  to be deleted unexpectdely. See the SetITKImageInXXX for more
+  information. */
   //BTX
   itk::ProcessObject::Pointer ImageConverter;
   //ETX
 #endif
 
   virtual void resizeEvent( QResizeEvent* event );
-//   virtual void dragEnterEvent ( QDragEnterEvent * event );
+  //   virtual void dragEnterEvent ( QDragEnterEvent * event );
 
   QString SnapshotView( QVTKWidget* iWidget,
     const SnapshotImageType& iType,
@@ -261,14 +268,11 @@ protected:
   void Set2DImage( vtkImageData* input );
   void Set3DImage( vtkImageData* input );
 
-  int SnapshotId;
-
-  int IsFullScreen;
-  bool IsVolumeRendering;
-
-  int CellId;
-
-  bool Is2DImage;
+  int   SnapshotId;
+  int   IsFullScreen;
+  bool  IsVolumeRendering;
+  int   CellId;
+  bool  Is2DImage;
 
 protected slots:
   void MoveSlider1();

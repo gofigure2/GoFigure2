@@ -1,6 +1,13 @@
 /*=========================================================================
+  URL: $HeadURL:$
+  Author: $Author:$  // Author of last commit
+  Version: $Revision:$  // Revision of last commit
+  Date: $Date:$  // Date of last commit
+=========================================================================*/
+
+/*=========================================================================
  Authors: The GoFigure Dev. Team.
- while at Megason Lab, Systems biology, Harvard Medical school, 2009
+ at Megason Lab, Systems biology, Harvard Medical school, 2009
 
  Copyright (c) 2009, President and Fellows of Harvard College.
  All rights reserved.
@@ -36,8 +43,8 @@
 
 QSplitterchild::QSplitterchild( QWidget* parent ): QSplitter( parent )
 {
-  prevpos=0;
-  previndex=0;
+  Prevpos=0;
+  Previndex=0;
 }
 
 QSplitterchild::QSplitterchild( Qt::Orientation orientation, QWidget* parent) :
@@ -47,14 +54,12 @@ QSplitterchild::QSplitterchild( Qt::Orientation orientation, QWidget* parent) :
 QSplitterchild::~QSplitterchild()
 {}
 
-
-
 void QSplitterchild::moveSplitter( int pos,int index )
 {
-  if( ( prevpos != pos ) || ( previndex != index ) )
-  {
-    prevpos=pos;
-    previndex=index;
+  if( ( Prevpos != pos ) || ( Previndex != index ) )
+    {
+    Prevpos=pos;
+    Previndex=index;
     QSplitter::moveSplitter( pos, index );
-  }
+    }
 }

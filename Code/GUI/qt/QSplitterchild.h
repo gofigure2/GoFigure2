@@ -1,6 +1,13 @@
 /*=========================================================================
+  URL: $HeadURL:$
+  Author: $Author:$  // Author of last commit
+  Version: $Revision:$  // Revision of last commit
+  Date: $Date:$  // Date of last commit
+=========================================================================*/
+
+/*=========================================================================
  Authors: The GoFigure Dev. Team.
- while at Megason Lab, Systems biology, Harvard Medical school, 2009
+ at Megason Lab, Systems biology, Harvard Medical school, 2009
 
  Copyright (c) 2009, President and Fellows of Harvard College.
  All rights reserved.
@@ -39,8 +46,8 @@
 #include "MegaVTK2Configure.h"
 
 /**
-  \class QSplitterchild
-  \brief in the QSplitter class, the method moveSplitter is protected, so it is
+\class QSplitterchild
+\brief in the QSplitter class, the method moveSplitter is protected, so it is
 not possible to use connect between the QSplitter to synchronize them.
 that's the reason for the creation of QSplitterchild.
 */
@@ -58,8 +65,8 @@ public slots:
   QMEGAVTKADDON2_EXPORT void moveSplitter(int pos,int index);
 
 protected:
-  int prevpos;
-  int previndex;
+  int Prevpos;
+  int Previndex;
 };
 
 #endif

@@ -41,76 +41,76 @@ SetFileName( char * name )
 }
 //-----------------------------------------------------------------------------
 
-    
-    
+
+
 //-----------------------------------------------------------------------------
 void
 MegaCaptureImport::
 CreateOutput()
 {
-    std::vector<std::string>::iterator nit;
-    for( nit = m_FileNameS.begin();
-         nit != m_FileNameS.end();
-         nit++)
+  std::vector<std::string>::iterator nit;
+  for( nit = m_FileNameS.begin();
+       nit != m_FileNameS.end();
+       nit++)
+    {
+    GoFigureFileInfoHelper tempInfo;
+    tempInfo.Filename = (*nit);
+    std::string origFileName =
+      itksys::SystemTools::GetFilenameName( (*nit).c_str() );
+
+    IntVectorType::reverse_iterator numGroupLengthItr =
+      m_numGroupLength.rbegin();
+    IntVectorType::reverse_iterator numGroupStartItr  =
+      m_numGroupStart.rbegin();
+    unsigned int* NumericalValues = new unsigned int[6];
+    int megaCaptureNumericalGroupCounter = 0;
+    while( numGroupLengthItr != m_numGroupLength.rend() &&
+           numGroupStartItr != m_numGroupStart.rend()   &&
+           megaCaptureNumericalGroupCounter < 6 )
       {
-      GoFigureFileInfoHelper tempInfo;
-      tempInfo.Filename = (*nit);
-      std::string origFileName = 
-        itksys::SystemTools::GetFilenameName( (*nit).c_str() );
-      
-      IntVectorType::reverse_iterator numGroupLengthItr = 
-        m_numGroupLength.rbegin();
-      IntVectorType::reverse_iterator numGroupStartItr  = 
-        m_numGroupStart.rbegin();
-      unsigned int* NumericalValues = new unsigned int[6];
-      int megaCaptureNumericalGroupCounter = 0;
-      while( numGroupLengthItr != m_numGroupLength.rend() &&
-             numGroupStartItr != m_numGroupStart.rend()   &&
-             megaCaptureNumericalGroupCounter < 6 )
-        {
-	std::string ValueAsString( 
-          origFileName, 
-	  (*numGroupStartItr)-(6-megaCaptureNumericalGroupCounter), 
-	  (*numGroupLengthItr) ); 
-        NumericalValues[5-megaCaptureNumericalGroupCounter]
-	  = atof( ValueAsString.c_str() );
-        ++numGroupLengthItr;
-        ++numGroupStartItr;
-        ++megaCaptureNumericalGroupCounter;
+      std::string ValueAsString(
+        origFileName,
+        (*numGroupStartItr)-(6-megaCaptureNumericalGroupCounter),
+        (*numGroupLengthItr) );
+      NumericalValues[5-megaCaptureNumericalGroupCounter]
+        = atof( ValueAsString.c_str() );
+      ++numGroupLengthItr;
+      ++numGroupStartItr;
+      ++megaCaptureNumericalGroupCounter;
 
-        } // end for each numerical group
+      } // end for each numerical group
 
-      tempInfo.CTile     = NumericalValues[0];
-      tempInfo.RTile     = NumericalValues[1];
-      tempInfo.YOffset   = NumericalValues[2];
-      tempInfo.XOffset   = NumericalValues[3];
-      tempInfo.TimePoint = NumericalValues[4];
-      tempInfo.ZDepth    = NumericalValues[5];
- 
-      m_OutputFileList.push_back( tempInfo );
-      
-      } // end for each filename
+    tempInfo.CTile     = NumericalValues[0];
+    tempInfo.RTile     = NumericalValues[1];
+    tempInfo.YOffset   = NumericalValues[2];
+    tempInfo.XOffset   = NumericalValues[3];
+    tempInfo.TimePoint = NumericalValues[4];
+    tempInfo.ZDepth    = NumericalValues[5];
 
-    m_FileNameS.clear();
-  
-    std::sort( m_OutputFileList.begin(), m_OutputFileList.end() );
-   
-    FileListType::iterator myIt = m_OutputFileList.begin();
-    while( myIt != m_OutputFileList.end() )
-      {
-      itkDebugMacro(
+    m_OutputFileList.push_back( tempInfo );
+
+    } // end for each filename
+
+  m_FileNameS.clear();
+
+  std::sort( m_OutputFileList.begin(), m_OutputFileList.end() );
+
+  FileListType::iterator myIt = m_OutputFileList.begin();
+  while( myIt != m_OutputFileList.end() )
+    {
+    itkDebugMacro(
         << (*myIt).Filename
         << " " << (*myIt).Channel
         << " " << (*myIt).TimePoint
-        << " " << (*myIt).ZDepth );     
+        << " " << (*myIt).ZDepth );
       myIt++;
-      }
+    }
 }
 //-----------------------------------------------------------------------------
 
-  
+
 //-----------------------------------------------------------------------------
-void 
+void
 MegaCaptureImport::
 Glob()
 {
@@ -126,9 +126,9 @@ Glob()
       }
 
     // Parse the fileNameName and fileNamePath
-    std::string origFileName = 
+    std::string origFileName =
       itksys::SystemTools::GetFilenameName( unixArchetype.c_str() );
-    std::string fileNamePath = 
+    std::string fileNamePath =
       itksys::SystemTools::GetFilenamePath( unixArchetype.c_str() );
     std::string pathPrefix;
 
@@ -138,8 +138,8 @@ Glob()
     for( unsigned int j = 0; j < origFileName.length(); j++ )
       {
       char oneChar = origFileName[j];
-      if( 
-		oneChar == '^' ||
+      if(
+        oneChar == '^' ||
         oneChar == '$' ||
         oneChar == '.' ||
         oneChar == '[' ||
@@ -155,9 +155,9 @@ Glob()
         }
       fileName += oneChar;
       }
-    
+
     // If there is no "/" in the name, the directory is not specified.
-    // In that case, use the default ".". 
+    // In that case, use the default ".".
     // This is necessary for the RegularExpressionSeriesFileNames.
     if (fileNamePath == "")
       {
@@ -171,7 +171,7 @@ Glob()
 
     std::string regExpString = "([0-9]+)";
     int sIndex;
-	// parse and keep it for ouput generation
+    // parse and keep it for ouput generation
     std::string::iterator sit;
     for (sit = fileName.begin(); sit < fileName.end(); sit++)
       {
@@ -180,15 +180,15 @@ Glob()
         {
         sIndex = static_cast< int >( sit - fileName.begin() );
         m_numGroupStart.push_back( sIndex );
-      
+
         // Loop to one past the end of the group of numbers.
         while ( sit != fileName.end() && (*sit) >= '0' && (*sit) <= '9' )
           {
           ++sit;
           }
-      
+
         m_numGroupLength.push_back( static_cast< int >(sit - fileName.begin()) - sIndex );
-        
+
         if( sit == fileName.end() )
           {
           break;
@@ -203,7 +203,7 @@ Glob()
     int megaCaptureNumericalGroupCounter = 0;
     while( numGroupLengthItr != m_numGroupLength.rend() &&
            numGroupStartItr != m_numGroupStart.rend()   &&
-	       megaCaptureNumericalGroupCounter < 6 )
+           megaCaptureNumericalGroupCounter < 6 )
       {
       regExpFileName.replace(*numGroupStartItr,*numGroupLengthItr,regExpString);
       ++numGroupLengthItr;
@@ -225,6 +225,3 @@ Glob()
     m_FileNameS = fit->GetFileNames();
 }
 //-----------------------------------------------------------------------------
-
-  
-  
