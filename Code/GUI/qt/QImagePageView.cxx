@@ -1,35 +1,42 @@
 /*=========================================================================
+  URL: $HeadURL:$
+  Author: $Author:$  // Author of last commit
+  Version: $Revision:$  // Revision of last commit
+  Date: $Date:$  // Date of last commit
+=========================================================================*/
+
+/*=========================================================================
  Authors: The GoFigure Dev. Team.
- while at Megason Lab, Systems biology, Harvard Medical school, 2009 
- 
+ at Megason Lab, Systems biology, Harvard Medical school, 2009
+
  Copyright (c) 2009, President and Fellows of Harvard College.
  All rights reserved.
- 
+
  Redistribution and use in source and binary forms, with or without
  modification, are permitted provided that the following conditions are met:
- 
- Redistributions of source code must retain the above copyright notice, 
+
+ Redistributions of source code must retain the above copyright notice,
  this list of conditions and the following disclaimer.
  Redistributions in binary form must reproduce the above copyright notice,
- this list of conditions and the following disclaimer in the documentation 
+ this list of conditions and the following disclaimer in the documentation
  and/or other materials provided with the distribution.
- Neither the name of the  President and Fellows of Harvard College 
+ Neither the name of the  President and Fellows of Harvard College
  nor the names of its contributors may be used to endorse or promote
- products derived from this software without specific prior written 
+ products derived from this software without specific prior written
  permission.
- 
- THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
- THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+ THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
  PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS
  BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
- OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT 
- OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; 
- OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
- WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
- OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF 
+ OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
+ OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+ OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- 
+
  =========================================================================*/
 
 #include "QImagePageView.h"
@@ -69,14 +76,14 @@ QImagePageView::~QImagePageView()
   Pool->Delete();
   View3D->Delete();
 
-//   delete qvtkWidget_4;
-//   delete qvtkWidget_3;
-//   delete qvtkWidget_2;
-//   delete qvtkWidget_1;
-//
-//   delete htSplitter;
-//   delete hbSplitter;
-//   delete vSplitter;
+  //   delete QvtkWidget_4;
+  //   delete QvtkWidget_3;
+  //   delete QvtkWidget_2;
+  //   delete QvtkWidget_1;
+  //
+  //   delete HtSplitter;
+  //   delete HbSplitter;
+  //   delete VSplitter;
 }
 
 void QImagePageView::setupUi( QWidget* parent )
@@ -90,52 +97,52 @@ void QImagePageView::setupUi( QWidget* parent )
   list_size.push_back( 10 );
   list_size.push_back( 10 );
 
-  vSplitter  = new QSplitter( Qt::Vertical, parent );
-  htSplitter = new QSplitter( vSplitter );
-  hbSplitter = new QSplitter( vSplitter );
-  vSplitter->addWidget(htSplitter);
-  vSplitter->addWidget(hbSplitter);
-  vSplitter->setSizes( list_size );
-  vSplitter->resize( 800, 800 );
+  VSplitter  = new QSplitter( Qt::Vertical, parent );
+  HtSplitter = new QSplitter( VSplitter );
+  HbSplitter = new QSplitter( VSplitter );
+  VSplitter->addWidget(HtSplitter);
+  VSplitter->addWidget(HbSplitter);
+  VSplitter->setSizes( list_size );
+  VSplitter->resize( 800, 800 );
 
-  qvtkWidget_1 = new QVTKWidget;
-  slider1 = new QSlider( Qt::Vertical );
+  QvtkWidget_1 = new QVTKWidget;
+  Slider1 = new QSlider( Qt::Vertical );
   LayOut1 = new QHBoxLayout;
-  LayOut1->addWidget( qvtkWidget_1 );
-  LayOut1->addWidget( slider1 );
+  LayOut1->addWidget( QvtkWidget_1 );
+  LayOut1->addWidget( Slider1 );
   LayOutWidget1 = new QWidget;
   LayOutWidget1->setLayout( LayOut1 );
-  htSplitter->addWidget( LayOutWidget1 );
+  HtSplitter->addWidget( LayOutWidget1 );
 
-  qvtkWidget_2 = new QVTKWidget;
-  slider2 = new QSlider( Qt::Vertical );
+  QvtkWidget_2 = new QVTKWidget;
+  Slider2 = new QSlider( Qt::Vertical );
   LayOut2 = new QHBoxLayout;
-  LayOut2->addWidget( qvtkWidget_2 );
-  LayOut2->addWidget( slider2 );
+  LayOut2->addWidget( QvtkWidget_2 );
+  LayOut2->addWidget( Slider2 );
   LayOutWidget2 = new QWidget;
   LayOutWidget2->setLayout( LayOut2 );
-  htSplitter->addWidget( LayOutWidget2 );
-  htSplitter->setSizes( list_size );
+  HtSplitter->addWidget( LayOutWidget2 );
+  HtSplitter->setSizes( list_size );
 
-  qvtkWidget_3 = new QVTKWidget;
-  slider3 = new QSlider( Qt::Vertical );
+  QvtkWidget_3 = new QVTKWidget;
+  Slider3 = new QSlider( Qt::Vertical );
   LayOut3 = new QHBoxLayout;
-  LayOut3->addWidget( qvtkWidget_3 );
-  LayOut3->addWidget( slider3 );
+  LayOut3->addWidget( QvtkWidget_3 );
+  LayOut3->addWidget( Slider3 );
   LayOutWidget3 = new QWidget;
   LayOutWidget3->setLayout( LayOut3 );
-  hbSplitter->addWidget( LayOutWidget3 );
+  HbSplitter->addWidget( LayOutWidget3 );
 
-  qvtkWidget_4 = new QVTKWidget;
+  QvtkWidget_4 = new QVTKWidget;
   Spacer = new QSpacerItem( 27, 10,
     QSizePolicy::Minimum, QSizePolicy::Minimum);
   LayOut4 = new QHBoxLayout;
-  LayOut4->addWidget( qvtkWidget_4 );
+  LayOut4->addWidget( QvtkWidget_4 );
   LayOut4->addItem( Spacer );
   LayOutWidget4 = new QWidget;
   LayOutWidget4->setLayout( LayOut4 );
-  hbSplitter->addWidget( LayOutWidget4 );
-  hbSplitter->setSizes( list_size );
+  HbSplitter->addWidget( LayOutWidget4 );
+  HbSplitter->setSizes( list_size );
 
   retranslateUi(parent);
 
@@ -306,7 +313,7 @@ void QImagePageView::SnapshotView( QVTKWidget* iWidget,
       bmp_writer->Write();
       bmp_writer->Delete();
       }
-      break;
+    break;
     case EPS:
       {
       filename.append( ".eps" );
@@ -355,76 +362,80 @@ void QImagePageView::SnapshotView( QVTKWidget* iWidget,
 void QImagePageView::SnapshotView1( const SnapshotImageType& iType,
     const QString& iBaseName )
 {
-  SnapshotView( qvtkWidget_1, iType, iBaseName );
+  SnapshotView( QvtkWidget_1, iType, iBaseName );
 }
 
 void QImagePageView::SnapshotView2( const SnapshotImageType& iType,
     const QString& iBaseName )
 {
-  SnapshotView( qvtkWidget_2, iType, iBaseName );
+  SnapshotView( QvtkWidget_2, iType, iBaseName );
 }
 void QImagePageView::SnapshotView3( const SnapshotImageType& iType,
     const QString& iBaseName )
 {
-  SnapshotView( qvtkWidget_3, iType, iBaseName );
+  SnapshotView( QvtkWidget_3, iType, iBaseName );
 }
 void QImagePageView::SnapshotView4( const SnapshotImageType& iType,
     const QString& iBaseName )
 {
-  SnapshotView( qvtkWidget_4, iType, iBaseName );
+  SnapshotView( QvtkWidget_4, iType, iBaseName );
 }*/
 
 void QImagePageView::SetFullScreenView( const int& iS )
 {
   if( IsFullScreen == iS )
+    {
     IsFullScreen = 0;
+    }
   else
+    {
     IsFullScreen = iS;
+    }
 
   switch( IsFullScreen )
-  {
-  default:
-  case 0:
     {
-      qvtkWidget_1->show();
-      qvtkWidget_2->show();
-      qvtkWidget_3->show();
-      qvtkWidget_4->show();
+    default:
+    case 0:
+      {
+      QvtkWidget_1->show();
+      QvtkWidget_2->show();
+      QvtkWidget_3->show();
+      QvtkWidget_4->show();
       break;
-    }
-  case 1:
-    {
-      qvtkWidget_1->show();
-      qvtkWidget_2->hide();
-      qvtkWidget_3->hide();
-      qvtkWidget_4->hide();
+      }
+    case 1:
+      {
+      QvtkWidget_1->show();
+      QvtkWidget_2->hide();
+      QvtkWidget_3->hide();
+      QvtkWidget_4->hide();
       break;
-    }
-  case 2:
-    {
-      qvtkWidget_1->hide();
-      qvtkWidget_2->show();
-      qvtkWidget_3->hide();
-      qvtkWidget_4->hide();
+      }
+    case 2:
+      {
+      QvtkWidget_1->hide();
+      QvtkWidget_2->show();
+      QvtkWidget_3->hide();
+      QvtkWidget_4->hide();
       break;
-    }
-  case 3:
-    {
-      qvtkWidget_1->hide();
-      qvtkWidget_2->hide();
-      qvtkWidget_3->show();
-      qvtkWidget_4->hide();
+      }
+    case 3:
+      {
+      QvtkWidget_1->hide();
+      QvtkWidget_2->hide();
+      QvtkWidget_3->show();
+      QvtkWidget_4->hide();
       break;
-    }
-  case 4:
-    {
-      qvtkWidget_1->hide();
-      qvtkWidget_2->hide();
-      qvtkWidget_3->hide();
-      qvtkWidget_4->show();
+      }
+    case 4:
+      {
+      QvtkWidget_1->hide();
+      QvtkWidget_2->hide();
+      QvtkWidget_3->hide();
+      QvtkWidget_4->show();
       break;
+      }
     }
-  }
 }
 
 int QImagePageView::GetFullScreenView( ) const
@@ -448,17 +459,17 @@ const double& g, const double& b )
   textcolor[1] = 1. - g;
   textcolor[2] = 1. - b;
 
-//   View1->SetBackground( r, g, b );
-//   View1->GetTextProperty()->SetColor( textcolor );
-//
-//   View2->SetBackground( r, g, b );
-//   View1->GetTextProperty()->SetColor( textcolor );
-//
-//   View3->SetBackground( r, g, b );
-//   View3->GetTextProperty()->SetColor( textcolor );
-//
-//   View4->SetBackground( r, g, b );
-//   View4->GetTextProperty()->SetColor( textcolor );
+  //   View1->SetBackground( r, g, b );
+  //   View1->GetTextProperty()->SetColor( textcolor );
+  //
+  //   View2->SetBackground( r, g, b );
+  //   View1->GetTextProperty()->SetColor( textcolor );
+  //
+  //   View3->SetBackground( r, g, b );
+  //   View3->GetTextProperty()->SetColor( textcolor );
+  //
+  //   View4->SetBackground( r, g, b );
+  //   View4->GetTextProperty()->SetColor( textcolor );
 }
 
 void QImagePageView::SetBackgroundColor( double rgb[3] )
@@ -468,17 +479,17 @@ void QImagePageView::SetBackgroundColor( double rgb[3] )
   textcolor[1] = 1. - rgb[1];
   textcolor[2] = 1. - rgb[2];
 
-//   View1->SetBackground( rgb[0], rgb[1], rgb[2] );
-//   View1->GetTextProperty()->SetColor( textcolor );
-//
-//   View2->SetBackground( rgb[0], rgb[1], rgb[2] );
-//   View2->GetTextProperty()->SetColor( textcolor );
-//
-//   View3->SetBackground( rgb[0], rgb[1], rgb[2] );
-//   View3->GetTextProperty()->SetColor( textcolor );
-//
-//   View4->SetBackground( rgb[0], rgb[1], rgb[2] );
-//   View4->GetTextProperty()->SetColor( textcolor );
+  //   View1->SetBackground( rgb[0], rgb[1], rgb[2] );
+  //   View1->GetTextProperty()->SetColor( textcolor );
+  //
+  //   View2->SetBackground( rgb[0], rgb[1], rgb[2] );
+  //   View2->GetTextProperty()->SetColor( textcolor );
+  //
+  //   View3->SetBackground( rgb[0], rgb[1], rgb[2] );
+  //   View3->GetTextProperty()->SetColor( textcolor );
+  //
+  //   View4->SetBackground( rgb[0], rgb[1], rgb[2] );
+  //   View4->GetTextProperty()->SetColor( textcolor );
 }
 
 void QImagePageView::SetBackgroundColor( const QColor& iColor )
@@ -495,49 +506,49 @@ void QImagePageView::SetBackgroundColor( const QColor& iColor )
   textcolor[1] = 1. - rgb[1];
   textcolor[2] = 1. - rgb[2];
 
-//   View1->SetBackground( rgb[0], rgb[1], rgb[2] );
-//   View1->GetTextProperty()->SetColor( textcolor );
-//
-//   View2->SetBackground( rgb[0], rgb[1], rgb[2] );
-//   View2->GetTextProperty()->SetColor( textcolor );
-//
-//   View3->SetBackground( rgb[0], rgb[1], rgb[2] );
-//   View3->GetTextProperty()->SetColor( textcolor );
-//
-//   View4->SetBackground( rgb[0], rgb[1], rgb[2] );
-//   View4->GetTextProperty()->SetColor( textcolor );
+  //   View1->SetBackground( rgb[0], rgb[1], rgb[2] );
+  //   View1->GetTextProperty()->SetColor( textcolor );
+  //
+  //   View2->SetBackground( rgb[0], rgb[1], rgb[2] );
+  //   View2->GetTextProperty()->SetColor( textcolor );
+  //
+  //   View3->SetBackground( rgb[0], rgb[1], rgb[2] );
+  //   View3->GetTextProperty()->SetColor( textcolor );
+  //
+  //   View4->SetBackground( rgb[0], rgb[1], rgb[2] );
+  //   View4->GetTextProperty()->SetColor( textcolor );
 }
 
 QVTKWidget* QImagePageView::GetActiveQVTKWidget( )
 {
 
   switch(this->IsFullScreen)
-  {
-  case 1 :
-    return qvtkWidget_1;
-  case 2 :
-    return qvtkWidget_2;
-  case 3 :
-    return qvtkWidget_3;
-  default :
-    return qvtkWidget_4;
-  }
+    {
+    case 1 :
+      return QvtkWidget_1;
+    case 2 :
+      return QvtkWidget_2;
+    case 3 :
+      return QvtkWidget_3;
+    default :
+      return QvtkWidget_4;
+    }
 }
 
 
 vtkViewImage* QImagePageView::GetActiveView()
 {
   switch(this->IsFullScreen)
-  {
-  case 1 :
-    return this->Pool->GetItem(0);
-  case 2 :
-    return this->Pool->GetItem(1);
-  case 3 :
-    return this->Pool->GetItem(2);
-  default :
-    return this->Pool->GetItem(3);
-  }
+    {
+    case 1 :
+      return this->Pool->GetItem(0);
+    case 2 :
+      return this->Pool->GetItem(1);
+    case 3 :
+      return this->Pool->GetItem(2);
+    default :
+      return this->Pool->GetItem(3);
+    }
 }
 
 void QImagePageView::SetLookupTable( vtkLookupTable* lut )
@@ -577,17 +588,17 @@ void QImagePageView::FullScreenView4 ( )
 
 void QImagePageView::CreateAllViews()
 {
-//   ConfigureView( this->Pool->GetItem(0), qvtkWidget_1 );
-//   ConfigureView( this->Pool->GetItem(1), qvtkWidget_2 );
-//   ConfigureView( this->Pool->GetItem(2), qvtkWidget_3 );
-//   ConfigureView( this->Pool->GetItem(3), qvtkWidget_4 );
+  //   ConfigureView( this->Pool->GetItem(0), QvtkWidget_1 );
+  //   ConfigureView( this->Pool->GetItem(1), QvtkWidget_2 );
+  //   ConfigureView( this->Pool->GetItem(2), QvtkWidget_3 );
+  //   ConfigureView( this->Pool->GetItem(3), QvtkWidget_4 );
 
   this->Pool->GetItem(0)->SetBackground(0.,0.,0.);
   this->Pool->GetItem(1)->SetBackground(0.,0.,0.);
   this->Pool->GetItem(2)->SetBackground(0.,0.,0.);
-//   this->Pool->GetItem(3)->SetBackground(0.,0.,0.);
+  //   this->Pool->GetItem(3)->SetBackground(0.,0.,0.);
 
-//   this->SetView4ToTriPlanarMode();
+  //   this->SetView4ToTriPlanarMode();
 }
 
 // void QImagePageView::SetView4ToTriPlanarMode()
@@ -630,9 +641,9 @@ void QImagePageView::SetImage( vtkImageData* input )
 
     vtkViewImage2D* View1 = vtkViewImage2D::New();
     View1->SetViewConvention( vtkViewImage2D::VIEW_CONVENTION_NEUROLOGICAL );
-    vtkRenderWindow* renwin1 = this->qvtkWidget_1->GetRenderWindow( );
+    vtkRenderWindow* renwin1 = this->QvtkWidget_1->GetRenderWindow( );
 //     renwin1->GetRenderers()->RemoveAllItems();
-    View1->SetupInteractor( this->qvtkWidget_1->GetInteractor() );
+    View1->SetupInteractor( this->QvtkWidget_1->GetInteractor() );
     View1->SetRenderWindow( renwin1 );
     View1->SetRenderer( renwin1->GetRenderers()->GetFirstRenderer() );
     View1->SetViewOrientation( vtkViewImage2D::VIEW_ORIENTATION_AXIAL );
@@ -644,10 +655,10 @@ void QImagePageView::SetImage( vtkImageData* input )
 
     vtkViewImage2D* View2 = vtkViewImage2D::New();
     View2->SetViewConvention( vtkViewImage2D::VIEW_CONVENTION_NEUROLOGICAL );
-    vtkRenderWindow* renwin2 = this->qvtkWidget_2->GetRenderWindow( );
+    vtkRenderWindow* renwin2 = this->QvtkWidget_2->GetRenderWindow( );
     View2->SetRenderWindow( renwin2 );
     View2->SetRenderer( renwin2->GetRenderers()->GetFirstRenderer() );
-    View2->SetupInteractor( this->qvtkWidget_2->GetInteractor() );
+    View2->SetupInteractor( this->QvtkWidget_2->GetInteractor() );
     View2->SetViewOrientation (vtkViewImage2D::VIEW_ORIENTATION_CORONAL);
     View2->SetInput( this->Image );
 
@@ -657,10 +668,10 @@ void QImagePageView::SetImage( vtkImageData* input )
 
     vtkViewImage2D* View3 = vtkViewImage2D::New();
     View2->SetViewConvention( vtkViewImage2D::VIEW_CONVENTION_NEUROLOGICAL );
-    vtkRenderWindow* renwin3 = this->qvtkWidget_3->GetRenderWindow( );
+    vtkRenderWindow* renwin3 = this->QvtkWidget_3->GetRenderWindow( );
     View3->SetRenderWindow( renwin3 );
     View3->SetRenderer( renwin3->GetRenderers()->GetFirstRenderer() );
-    View3->SetupInteractor( this->qvtkWidget_3->GetInteractor() );
+    View3->SetupInteractor( this->QvtkWidget_3->GetInteractor() );
     View3->SetViewOrientation (vtkViewImage2D::VIEW_ORIENTATION_SAGITTAL);
     View3->SetInput( this->Image );
 
@@ -671,9 +682,9 @@ void QImagePageView::SetImage( vtkImageData* input )
     int size[2] = {400, 400};
     this->Pool->SyncSetSize (size);
 
-    vtkRenderWindow* renwin4 = this->qvtkWidget_4->GetRenderWindow( );
+    vtkRenderWindow* renwin4 = this->QvtkWidget_4->GetRenderWindow( );
     this->View3D->SetRenderWindow( renwin4 );
-    this->View3D->SetupInteractor( this->qvtkWidget_4->GetInteractor() );
+    this->View3D->SetupInteractor( this->QvtkWidget_4->GetInteractor() );
     this->View3D->SetInput( this->Image );
 
     this->View3D->ResetCamera();
@@ -721,7 +732,7 @@ void QImagePageView::resizeEvent( QResizeEvent* event )
 {
   QWidget::resizeEvent( event );
   QSize size = event->size();
-  vSplitter->resize( size );
+  VSplitter->resize( size );
 //   gridLayoutWidget->setGeometry(
 //     QRect(0, 0, size.width(), size.height() ) );
 }

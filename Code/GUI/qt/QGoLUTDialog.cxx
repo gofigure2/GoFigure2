@@ -108,7 +108,7 @@ void QGoLUTDialog::setupUi( QDialog* LUTDialog )
   this->Label->setObjectName(QString::fromUtf8("Label"));
   this->Label->setText( tr("Lookup Table") );
 
-  this->HorizontalLayout->addWidget(label);
+  this->HorizontalLayout->addWidget(Label);
 
   this->LUTComboBox = new QComboBox;
   this->LUTComboBox->setObjectName(QString::fromUtf8("LUTComboBox"));
@@ -144,7 +144,7 @@ void QGoLUTDialog::setupUi( QDialog* LUTDialog )
   this->HorizontalLayout_2->setContentsMargins(0, 0, 0, 0);
 
   this->HorizontalSpacer = new QSpacerItem(166, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-  this->HorizontalLayout_2->addItem(horizontalSpacer);
+  this->HorizontalLayout_2->addItem(HorizontalSpacer);
 
   this->ButtonBox = new QDialogButtonBox;
   this->ButtonBox->setObjectName( QString::fromUtf8("buttonBox") );
@@ -153,7 +153,7 @@ void QGoLUTDialog::setupUi( QDialog* LUTDialog )
   this->ButtonBox->setStandardButtons( QDialogButtonBox::Cancel |
   QDialogButtonBox::Ok );
   this->ButtonBox->setCenterButtons(false);
-  this->HorizontalLayout_2->addWidget(buttonBox);
+  this->HorizontalLayout_2->addWidget(ButtonBox);
 
   this->VerticalLayout->addLayout( this->HorizontalLayout_2 );
 
