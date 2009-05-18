@@ -208,7 +208,9 @@ IF( VTK_FOUND )
     ENDIF( BUILD_PACKAGE )
   ENDIF( QT4_FOUND AND QT_VERSION_MINOR GREATER 4 )
 
-  SUBDIRS( Examples )
+  SUBDIRS( Examples 
+           KWStyle
+  )
 
 ENDIF( VTK_FOUND )
 

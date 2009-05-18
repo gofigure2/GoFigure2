@@ -15,7 +15,7 @@
 
 int main( int argc, char** argv )
 {
-const unsigned int Dimension = 2;
+  const unsigned int Dimension = 2;
   typedef itk::Image< float, Dimension > LevelSetImageType;
   typedef itk::Image< unsigned char, Dimension > FeatureImageType;
 

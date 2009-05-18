@@ -1317,28 +1317,26 @@ void QGoMainWindow::OneClickSegmentation()
   std::cout <<radius <<std::endl;
   double pos[3];
   if( myPageView )
-    {
+  {
     vtkPoints* seeds = myPageView->GetAllSeeds();
     for( int i = 0; i < seeds->GetNumberOfPoints(); i++ )
-      {
+    {
       seeds->GetPoint( i, pos );
       std::cout <<i <<" [" <<pos[0] <<" " <<pos[1] <<" " <<pos[2] <<"]" <<std::endl;
-      }
-//  myPageView->ClearAllSeeds();
-    return;
     }
+//  myPageView->ClearAllSeeds();
+  }
+
   QImagePageView4DTracer* myPageView2 =
     dynamic_cast<QImagePageView4DTracer*>( m_PageView[idx] );
   if( myPageView2 )
-    {
+  {
     vtkPoints* seeds = myPageView2->GetAllSeeds();
     for( int i = 0; i < seeds->GetNumberOfPoints(); i++ )
-      {
+    {
       seeds->GetPoint( i, pos );
       std::cout <<i <<" [" <<pos[0] <<" " <<pos[1] <<" " <<pos[2] <<"]" <<std::endl;
-      }
-//  myPageView2->SetTracerOFF();
-    return;
     }
+  }
 }
 
