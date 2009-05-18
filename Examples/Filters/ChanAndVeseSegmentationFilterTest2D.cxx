@@ -1,121 +1,82 @@
-#include "itkVTKPolyDataWriter.h"
-
 #include <iostream>
 
 #include "itkImageFileReader.h"
-#include "itkCastImageFilter.h"
-#include "itkScalarChanAndVeseLevelSetFunction.h"
-#include "itkScalarChanAndVeseLevelSetFunctionData.h"
-#include "itkConstrainedRegionBasedLevelSetFunctionSharedData.h"
-#include "itkScalarChanAndVeseSparseLevelSetImageFilter.h"
-#include "itkThresholdImageFilter.h"
-#include "itkDanielssonDistanceMapImageFilter.h"
-#include "itkAtanRegularizedHeavisideStepFunction.h"
+#include "itkChanAndVeseSegmentationFilter.h"
+#include "vtkImageData.h"
+#include "vtkMarchingSquares.h"
+#include "vtkPolyDataMapper.h"
+#include "vtkActor.h"
+#include "vtkImageActor.h"
+#include "vtkProperty.h"
+#include "vtkRenderer.h"
+#include "vtkRenderWindowInteractor.h"
+#include "vtkRenderWindow.h"
 
-#include "itkImage.h"
 
 int main( int argc, char** argv )
 {
-  const unsigned int Dimension = 2;
-  typedef float ScalarPixelType;
-  typedef itk::Image< ScalarPixelType, Dimension > LevelSetImageType;
-  typedef LevelSetImageType::PointType LevelSetPointType;
-  typedef LevelSetImageType::IndexType LevelSetIndexType;
-  typedef LevelSetIndexType::IndexValueType LevelSetIndexValueType;
-  typedef LevelSetImageType::SizeType LevelSetSizeType;
-  typedef LevelSetSizeType::SizeValueType LevelSetSizeValueType;
-  typedef LevelSetImageType::RegionType LevelSetRegionType;
+const unsigned int Dimension = 2;
+  typedef itk::Image< float, Dimension > LevelSetImageType;
+  typedef itk::Image< unsigned char, Dimension > FeatureImageType;
 
-  typedef itk::Image< ScalarPixelType, Dimension > FeatureImageType;
+  typedef itk::ChanAndVeseSegmentationFilter< LevelSetImageType, FeatureImageType >
+    SegmentationFilterType;
 
-typedef itk::ScalarChanAndVeseLevelSetFunctionData< LevelSetImageType, FeatureImageType >
-    DataHelperType;
+  typedef itk::ImageFileReader< FeatureImageType > ReaderType;
 
-  typedef itk::ConstrainedRegionBasedLevelSetFunctionSharedData< LevelSetImageType, FeatureImageType, DataHelperType >
-    SharedDataHelperType;
+  ReaderType::Pointer reader = ReaderType::New();
+  reader->SetFileName( argv[1] );
+  reader->Update();
 
+  LevelSetImageType::PointType pt;
 
-  typedef itk::ScalarChanAndVeseLevelSetFunction< LevelSetImageType,
-    FeatureImageType, SharedDataHelperType > LevelSetFunctionType;
-  typedef itk::ScalarChanAndVeseSparseLevelSetImageFilter< LevelSetImageType,
-    FeatureImageType, LevelSetImageType, LevelSetFunctionType, SharedDataHelperType > MultiLevelSetType;
-
-  typedef itk::ImageFileReader< FeatureImageType > FeatureReaderType;
-  typedef itk::DanielssonDistanceMapImageFilter< LevelSetImageType,LevelSetImageType >
-    DistanceFilterType;
-
-  FeatureReaderType::Pointer featureReader = FeatureReaderType::New();
-  featureReader->SetFileName( argv[1] );
-  featureReader->Update();
-
-  double pt[3];
-  pt[0] = atof( argv[2] );
-  pt[1] = atof( argv[3] );
-  pt[2] = atof( argv[4] );
-
-  double cellRadius = atof( argv[5] );
-
-  FeatureImageType::Pointer featureImage = featureReader->GetOutput();
-
-  FeatureImageType::SpacingType spacing = featureImage->GetSpacing();
-  FeatureImageType::SizeType inputSize = featureImage->GetLargestPossibleRegion().GetSize();
-
-  LevelSetIndexType start;
-  LevelSetPointType origin;
-  LevelSetIndexType cen;
-  LevelSetSizeType cellSize;
-  for( unsigned int j = 0; j < Dimension; j++ )
+  for( unsigned int dim = 0; dim < Dimension; dim++ )
   {
-    cellSize[j] =
-      static_cast<LevelSetSizeValueType>( 2*cellRadius/spacing[j] );
-    start[j] = 0;
-    origin[j] = pt[j] - cellRadius;
-    cen[j] =
-      static_cast<LevelSetIndexValueType>( cellRadius/spacing[j] );
+    pt[dim] = atof( argv[dim+1] );
   }
 
-  LevelSetRegionType region;
-  region.SetSize( cellSize );
-  region.SetIndex( start );
+  double cellRadius = atof( argv[Dimension+1] );
 
-  LevelSetImageType::Pointer levelSet = LevelSetImageType::New();
-  levelSet->SetRegions( region );
-  levelSet->Allocate();
-  levelSet->FillBuffer( 0 );
-  levelSet->SetSpacing( spacing );
-  levelSet->SetOrigin( origin );
-  levelSet->SetPixel( cen, 1);
+  SegmentationFilterType::Pointer filter = SegmentationFilterType::New();
+  filter->SetFeatureImage( reader->GetOutput() );
+  filter->SetRadius( cellRadius );
+  filter->SetCenter( pt );
+  filter->Update();
 
-  DistanceFilterType::Pointer Dist = DistanceFilterType::New();
-  Dist->SetInput( levelSet );
-  Dist->InputIsBinaryOn();
-  Dist->SetUseImageSpacing( 1 );
-  Dist->Update();
+  vtkImageData* image = filter->GetOutput();
 
-  LevelSetImageType::Pointer contourImage = Dist->GetOutput();
+  // create iso-contours
+  vtkMarchingSquares *contours = vtkMarchingSquares::New();
+  contours->SetInput( image );
+  contours->GenerateValues ( 1, 0, 0 );
 
-  typedef itk::AtanRegularizedHeavisideStepFunction< ScalarPixelType, ScalarPixelType >  DomainFunctionType;
-  DomainFunctionType::Pointer domainFunction = DomainFunctionType::New();
-  domainFunction->SetEpsilon( 1. );
+  // map to graphics library
+  vtkPolyDataMapper *map = vtkPolyDataMapper::New();
+  map->SetInput( contours->GetOutput() );
 
-  typedef std::vector< unsigned int > VectorType;
-  VectorType lookUp( 1, 1 );
+  // actor coordinates geometry, properties, transformation
+  vtkActor *contActor = vtkActor::New();
+  contActor->SetMapper( map );
 
-  MultiLevelSetType::Pointer levelSetFilter = MultiLevelSetType::New();
-  levelSetFilter->SetFunctionCount( 1 );
-  levelSetFilter->SetLookup( lookUp );
-  levelSetFilter->SetFeatureImage( featureImage );
-  levelSetFilter->SetLevelSet( 0, contourImage );
-  levelSetFilter->SetNumberOfIterations( 50 );
-  levelSetFilter->SetMaximumRMSError( 0 );
-  levelSetFilter->SetUseImageSpacing( 0 );
+  vtkRenderer *ren = vtkRenderer::New();
+  ren->AddActor ( contActor );
 
-  levelSetFilter->GetDifferenceFunction(0)->SetDomainFunction( domainFunction );
-  levelSetFilter->GetDifferenceFunction(0)->SetCurvatureWeight( 0. );
-  levelSetFilter->GetDifferenceFunction(0)->SetAreaWeight( 0. );
-  levelSetFilter->GetDifferenceFunction(0)->SetLambda1( 1. );
-  levelSetFilter->GetDifferenceFunction(0)->SetLambda2( 1. );
-  levelSetFilter->GetOutput();
+  vtkRenderWindow *renWin1 = vtkRenderWindow::New();
+  renWin1->AddRenderer ( ren );
+
+  vtkRenderWindowInteractor *iren = vtkRenderWindowInteractor::New();
+  iren->SetRenderWindow ( renWin1 );
+
+  renWin1->Render();
+  iren->Start();
+
+  iren->Delete();
+  renWin1->Delete();
+  ren->Delete();
+  contActor->Delete();
+  map->Delete();
+  contours->Delete();
+  image->Delete();
 
   return EXIT_SUCCESS;
 }

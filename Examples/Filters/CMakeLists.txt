@@ -5,5 +5,6 @@ SET( EXAMPLES_FILTER
 
 FOREACH( var ${EXAMPLES_FILTER} )
   ADD_EXECUTABLE( ${var} ${var}.cxx )
-  TARGET_LINK_LIBRARIES( ${var} ITKIO ITKQuadEdgeMesh ITKCommon )
+  TARGET_LINK_LIBRARIES( ${var} ITKIO ITKQuadEdgeMesh ITKCommon
+    ITKBasicFilters vtkGraphics vtkRendering)
 ENDFOREACH( var ${EXAMPLES_FILTER} )
