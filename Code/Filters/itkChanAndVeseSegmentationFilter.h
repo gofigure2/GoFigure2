@@ -166,6 +166,7 @@ protected:
   LevelSetPointType     m_Center;
   LevelSetSizeType      m_Size;
   LevelSetCoordRepType  m_Radius;
+  LevelSetImagePointer  m_Output;
 
 
   void GenerateData()
@@ -181,18 +182,22 @@ protected:
     LevelSetIndexType start;
     LevelSetPointType origin;
     LevelSetIndexType cen;
-    LevelSetSizeType cellSize;
 
     for( unsigned int j = 0; j < Dimension; j++ )
       {
       m_Size[j] =
         static_cast<LevelSetSizeValueType>( 2. * m_Radius / spacing[j] );
       start[j] = 0;
+      cen[j] = static_cast< LevelSetSizeValueType >( m_Size[j] / 2. );
       origin[j] = m_Center[j] - m_Radius;
       }
 
+    std::cout <<m_Radius <<std::endl;
+    std::cout <<"spacing : " <<spacing <<std::endl;
+    std::cout <<"m_Size : " <<m_Size <<std::endl;
+
     LevelSetRegionType region;
-    region.SetSize( cellSize );
+    region.SetSize( m_Size );
     region.SetIndex( start );
 
     LevelSetImagePointer levelset = LevelSetImageType::New();
@@ -231,13 +236,17 @@ protected:
     levelSetFilter->GetDifferenceFunction(0)->SetAreaWeight( 0. );
     levelSetFilter->GetDifferenceFunction(0)->SetLambda1( 1. );
     levelSetFilter->GetDifferenceFunction(0)->SetLambda2( 1. );
-    levelSetFilter->GetOutput();
+    levelSetFilter->Update();
 
+    m_Output = levelSetFilter->GetOutput();
+//     m_Output->DisconnectPipeline();
 
-    m_Converter->SetInput( levelSetFilter->GetOutput() );
+    m_Converter->SetInput( m_Output );
     m_Converter->Update();
 
     m_VTKImage = m_Converter->GetOutput();
+    std::cout <<m_VTKImage->GetDimensions()[0] <<" " <<m_VTKImage->GetDimensions()[1] <<" "
+      <<m_VTKImage->GetDimensions()[2] <<std::endl;
     }
 
 private:

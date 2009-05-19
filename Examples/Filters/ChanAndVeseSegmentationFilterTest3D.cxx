@@ -31,7 +31,7 @@ int main( int argc, char** argv )
 
   for( unsigned int dim = 0; dim < Dimension; dim++ )
   {
-    pt[dim] = atof( argv[dim+1] );
+    pt[dim] = atof( argv[dim+2] );
   }
 
   double cellRadius = atof( argv[Dimension+2] );
