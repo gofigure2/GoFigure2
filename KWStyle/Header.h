@@ -1,5 +1,4 @@
 /*=========================================================================
-  URL: $HeadURL$
   Author: $Author$  // Author of last commit
   Version: $Rev$  // Revision of last commit
   Date: $Date$  // Date of last commit
