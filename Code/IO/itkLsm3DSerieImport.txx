@@ -1,83 +1,123 @@
+/*=========================================================================
+  Author: $Author$  // Author of last commit
+  Version: $Rev$  // Revision of last commit
+  Date: $Date$  // Date of last commit
+=========================================================================*/
+
+/*=========================================================================
+ Authors: The GoFigure Dev. Team.
+ at Megason Lab, Systems biology, Harvard Medical school, 2009
+
+ Copyright (c) 2009, President and Fellows of Harvard College.
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are met:
+
+ Redistributions of source code must retain the above copyright notice,
+ this list of conditions and the following disclaimer.
+ Redistributions in binary form must reproduce the above copyright notice,
+ this list of conditions and the following disclaimer in the documentation
+ and/or other materials provided with the distribution.
+ Neither the name of the  President and Fellows of Harvard College
+ nor the names of its contributors may be used to endorse or promote
+ products derived from this software without specific prior written
+ permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS
+ BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
+ OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+ OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+ =========================================================================*/
+
 void
 Lsm3DSerieImport::
 SetFileName( char * name )
 {
-    if ( this->m_FileName && name && (!strcmp(this->m_FileName,name)))
-      {
-      return;
-      }
-    if (!name && !this->m_FileName)
-      {
-      return;
-      }
-    if (this->m_FileName)
-      {
-      delete [] this->m_FileName;
-      }
-    if (name)
-      {
-      this->m_FileName = new char[strlen(name) + 1];
-      strcpy(this->m_FileName, name);
-      }
-    else
-      {
-      this->m_FileName = NULL;
-      }
-    this->Modified();
+  if ( this->m_FileName && name && (!strcmp(this->m_FileName,name)))
+    {
+    return;
+    }
+  if (!name && !this->m_FileName)
+    {
+    return;
+    }
+  if (this->m_FileName)
+    {
+    delete [] this->m_FileName;
+    }
+  if (name)
+    {
+    this->m_FileName = new char[strlen(name) + 1];
+    strcpy(this->m_FileName, name);
+    }
+  else
+    {
+    this->m_FileName = NULL;
+    }
+  this->Modified();
 }
-		
-FileListType* 
+
+FileListType*
 Lsm3DSerieImport::
 GetOutput()
 {
   return( &(this->m_OutputFileList) );
 };
-		
-void 
+
+void
 Lsm3DSerieImport::
 Update(void)
 {
   Glob();
   CreateOutput();
 };
- 
-void 
+
+void
 Lsm3DSerieImport::
 SetGroupId( int Uservalue )
-{ 
-  this->m_GroupId = Uservalue; 
-  this->Modified(); 
+{
+  this->m_GroupId = Uservalue;
+  this->Modified();
 };
-		
-void 
+
+void
 Lsm3DSerieImport::
 Glob()
 {
-    m_numGroupStart.clear();
-    m_numGroupLength.clear();
-		
-    // glob all jpeg file names
-    std::string unixArchetype = m_FileName;
-    itksys::SystemTools::ConvertToUnixSlashes(unixArchetype);
-    if (itksys::SystemTools::FileIsDirectory( unixArchetype.c_str() ))
-      {
-      return;
-      }
-			
-    // Parse the fileNameName and fileNamePath
-   std::string origFileName = 
-   itksys::SystemTools::GetFilenameName( unixArchetype.c_str() );
-   std::string fileNamePath = 
-   itksys::SystemTools::GetFilenamePath( unixArchetype.c_str() );
-   std::string pathPrefix;
-			
-   // "Clean" the filename by escaping any special characters with backslashes.
-   // This allows us to pass in filenames that include these special characters.
-   std::string fileName;
-   for( unsigned int j = 0; j < origFileName.length(); j++ )
-     {
-     char oneChar = origFileName[j];
-     if( 
+  m_numGroupStart.clear();
+  m_numGroupLength.clear();
+
+  // glob all jpeg file names
+  std::string unixArchetype = m_FileName;
+  itksys::SystemTools::ConvertToUnixSlashes(unixArchetype);
+  if (itksys::SystemTools::FileIsDirectory( unixArchetype.c_str() ))
+    {
+    return;
+    }
+
+  // Parse the fileNameName and fileNamePath
+  std::string origFileName =
+  itksys::SystemTools::GetFilenameName( unixArchetype.c_str() );
+  std::string fileNamePath =
+  itksys::SystemTools::GetFilenamePath( unixArchetype.c_str() );
+  std::string pathPrefix;
+
+  // "Clean" the filename by escaping any special characters with backslashes.
+  // This allows us to pass in filenames that include these special characters.
+  std::string fileName;
+  for( unsigned int j = 0; j < origFileName.length(); j++ )
+    {
+    char oneChar = origFileName[j];
+    if(
        oneChar == '^' ||
        oneChar == '$' ||
        oneChar == '.' ||
@@ -94,9 +134,9 @@ Glob()
       }
     fileName += oneChar;
     }
-			
+
   // If there is no "/" in the name, the directory is not specified.
-  // In that case, use the default ".". 
+  // In that case, use the default ".".
   // This is necessary for the RegularExpressionSeriesFileNames.
   if (fileNamePath == "")
     {
@@ -107,7 +147,7 @@ Glob()
     {
     pathPrefix = "";
     }
-			
+
   std::string regExpString = "([0-9]+)";
   int sIndex;
   // parse and keep it for ouput generation
@@ -119,22 +159,22 @@ Glob()
       {
       sIndex = static_cast< int >( sit - fileName.begin() );
       m_numGroupStart.push_back( sIndex );
-					
+
       // Loop to one past the end of the group of numbers.
       while ( sit != fileName.end() && (*sit) >= '0' && (*sit) <= '9' )
         {
         ++sit;
         }
-					
+
       m_numGroupLength.push_back( static_cast< int >(sit - fileName.begin()) - sIndex );
-					
+
       if( sit == fileName.end() )
         {
         break;
         }
       }
     }
-			
+
   // create the regular expression to glob the entire set of file
   std::string regExpFileName = fileName;
   IntVectorType::reverse_iterator numGroupLengthItr = m_numGroupLength.rbegin();
@@ -152,12 +192,12 @@ Glob()
     ++numGroupStartItr;
     ++NumGroupCounter;
     }
-			
+
   // Include only filenames that exactly match this regular expression.  Don't
   // match filenames that have this string as a substring (ie. that have extra
   // prefixes or suffixes).
   regExpFileName = "^" + regExpFileName + "$";
-			
+
   // Use a RegularExpressionSeriesFileNames to find the files to return
   itk::RegularExpressionSeriesFileNames::Pointer fit = itk::RegularExpressionSeriesFileNames::New();
   fit->SetDirectory( fileNamePath.c_str() );
@@ -165,10 +205,10 @@ Glob()
   fit->SetSubMatch(1);
   fit->NumericSortOn();
   m_FileNameS = fit->GetFileNames();
-};
-		
-		
-void 
+}
+
+
+void
 Lsm3DSerieImport::
 CreateOutput()
 {
@@ -179,12 +219,12 @@ CreateOutput()
     {
     GoFigureFileInfoHelper tempInfo;
     tempInfo.Filename = (*nit);
-    std::string origFileName = 
+    std::string origFileName =
     itksys::SystemTools::GetFilenameName( (*nit).c_str() );
-		
-    IntVectorType::reverse_iterator numGroupLengthItr = 
+
+    IntVectorType::reverse_iterator numGroupLengthItr =
       m_numGroupLength.rbegin();
-    IntVectorType::reverse_iterator numGroupStartItr  = 
+    IntVectorType::reverse_iterator numGroupStartItr  =
       m_numGroupStart.rbegin();
     int NumGroupCounter = 0;
     while( numGroupLengthItr != m_numGroupLength.rend() &&
@@ -192,10 +232,10 @@ CreateOutput()
       {
       if( NumGroupCounter  == m_GroupId  )
         {
-        std::string ValueAsString( 
-          origFileName, 
-          (*numGroupStartItr)-(1-NumGroupCounter), 
-          (*numGroupLengthItr) ); 
+        std::string ValueAsString(
+          origFileName,
+          (*numGroupStartItr)-(1-NumGroupCounter),
+          (*numGroupLengthItr) );
         tempInfo.TimePoint = atof( ValueAsString.c_str() );
         m_OutputFileList.push_back( tempInfo );
         break;
@@ -203,32 +243,32 @@ CreateOutput()
       ++numGroupLengthItr;
       ++numGroupStartItr;
       ++NumGroupCounter;
-				
+
       } // end for each numerical group
-				
+
     } // end for each filename
-			
+
     m_FileNameS.clear();
     std::sort( m_OutputFileList.begin(), m_OutputFileList.end() );
-			
+
     FileListType::iterator myIt = m_OutputFileList.begin();
     while( myIt != m_OutputFileList.end() )
       {
-      itkDebugMacro( 
-		<< (*myIt).Filename\
+      itkDebugMacro(
+    << (*myIt).Filename\
         << " " << (*myIt).Channel\
         << " " << (*myIt).TimePoint\
-        << " " << (*myIt).ZDepth );     
+        << " " << (*myIt).ZDepth );
       myIt++;
       }
-};
-		
+}
+
 Lsm3DSerieImport::
-~Lsm3DSerieImport() 
+~Lsm3DSerieImport()
 {
   if (this->m_FileName)
     {
     delete [] this->m_FileName;
     this->m_FileName = NULL;
     }
-};
+}

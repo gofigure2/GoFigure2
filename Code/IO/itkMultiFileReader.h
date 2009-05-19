@@ -1,8 +1,7 @@
 /*=========================================================================
-  URL: $HeadURL:$
-  Author: $Author:$  // Author of last commit
-  Version: $Revision:$  // Revision of last commit
-  Date: $Date:$  // Date of last commit
+  Author: $Author$  // Author of last commit
+  Version: $Rev$  // Revision of last commit
+  Date: $Date$  // Date of last commit
 =========================================================================*/
 
 /*=========================================================================
@@ -39,8 +38,8 @@
 
  =========================================================================*/
 
-#ifndef __itkMultiFileReader_h__
-#define __itkMultiFileReader_h__
+#ifndef __itkMultiFileReader_h
+#define __itkMultiFileReader_h
 
 #include "itkLightProcessObject.h"
 
@@ -125,7 +124,7 @@ public:
   // so pipeline mechanism would not work.
   void Update(void);
 
-  // protected:
+// protected:
 
   /** \brief Mandatory PrintSelf */
   void PrintSelf( std::ostream& os, Indent indent) const;

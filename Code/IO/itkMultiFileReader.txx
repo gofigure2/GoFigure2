@@ -1,8 +1,7 @@
 /*=========================================================================
-  URL: $HeadURL:$
-  Author: $Author:$  // Author of last commit
-  Version: $Revision:$  // Revision of last commit
-  Date: $Date:$  // Date of last commit
+  Author: $Author$  // Author of last commit
+  Version: $Rev$  // Revision of last commit
+  Date: $Date$  // Date of last commit
 =========================================================================*/
 
 /*=========================================================================
@@ -39,8 +38,8 @@
 
  =========================================================================*/
 
-#ifndef __itkMultiFileReader_txx_
-#define __itkMultiFileReader_txx_
+#ifndef __itkMultiFileReader_txx
+#define __itkMultiFileReader_txx
 
 #include "vtkImageAppendComponents.h"
 #include "vtkImageExtractComponents.h"
