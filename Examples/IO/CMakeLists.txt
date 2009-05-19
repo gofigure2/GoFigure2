@@ -3,19 +3,21 @@ SET( EXAMPLES_QT_NOT_REQUIRED
   GoDBRecordSetTest
   3DLsmSerie2mha
   MegaCapture2mha
-  lsm2jpg 
+  lsm2jpg
   lsm2vtk
-  lsm2mha 
+  lsm2mha
   )
 
 FOREACH( var ${EXAMPLES_QT_NOT_REQUIRED} )
 
-  ADD_EXECUTABLE( ${var} 
-    ${var}.cxx 
+  ADD_EXECUTABLE( ${var}
+    ${var}.cxx
     ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/vtkLSM/vtkLSMReader.cxx
-    ${GOFIGURE2_SOURCE_DIR}/Code/IO/CreateDataBaseHelper.cxx )
+#     ${GOFIGURE2_SOURCE_DIR}/Code/IO/CreateDataBaseHelper.cxx
+ )
   TARGET_LINK_LIBRARIES( ${var}
-    ITKCommon 
+    QGoIO
+    ITKCommon
     ITKIO
     vtkIO
     vtkImaging
@@ -25,13 +27,13 @@ FOREACH( var ${EXAMPLES_QT_NOT_REQUIRED} )
 ENDFOREACH( var )
 
 IF( QT4_FOUND AND QT_VERSION_MINOR GREATER 4 )
-  SET( EXAMPLES_QT_REQUIRED 
-    lsmColorVizu 
+  SET( EXAMPLES_QT_REQUIRED
+    lsmColorVizu
     lsmColorVizuCollection )
 
   FOREACH( var ${EXAMPLES_QT_REQUIRED} )
 
-     ADD_EXECUTABLE( ${var} 
+     ADD_EXECUTABLE( ${var}
        ${var}.cxx
        ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/vtkLSM/vtkLSMReader.cxx )
 

@@ -41,10 +41,11 @@ ADD_LIBRARY( QMegaVTKAddOn2
   ${QMegaVTKAddOn_SRC2}
   ${QSplitterchild_MOC_SRC2}
   ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/vtkLSM/vtkLSMReader.cxx
-  ${GOFIGURE2_SOURCE_DIR}/Code/IO/CreateDataBaseHelper.cxx
+#   ${GOFIGURE2_SOURCE_DIR}/Code/IO/CreateDataBaseHelper.cxx
   )
 
 SET( QMegaVTKAddOn2_LIBS
+  QGoIO
   vtkIO
   ITKIO
   ITKCommon

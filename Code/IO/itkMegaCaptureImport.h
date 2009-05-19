@@ -86,7 +86,7 @@ public:
   void Update(void) { Glob(); CreateOutput(); }
 
 protected:
-  MegaCaptureImport() { this->m_FileName = NULL; }
+  MegaCaptureImport();
   ~MegaCaptureImport();
 
 
@@ -101,10 +101,6 @@ private:
   char*            m_FileName;
 
 };
-
-#ifndef ITK_MANUAL_INSTANTIATION
-#include "itkMegaCaptureImport.txx"
-#endif
 
 }
 

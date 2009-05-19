@@ -38,8 +38,7 @@
 
 =========================================================================*/
 
-#ifndef __itkMultiFileReader_txx
-#define __itkMultiFileReader_txx
+#include "itkMultiFileReader.h"
 
 #include "vtkImageAppendComponents.h"
 #include "vtkImageExtractComponents.h"
@@ -458,5 +457,3 @@ MultiFileReader::~MultiFileReader()
 //-----------------------------------------------------------------------------
 
 }
-
-#endif

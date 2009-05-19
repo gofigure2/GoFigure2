@@ -102,9 +102,9 @@ private:
 
 };
 
-#ifndef ITK_MANUAL_INSTANTIATION
-#include "itkLsm3DSerieImport.txx"
-#endif
+// #ifndef ITK_MANUAL_INSTANTIATION
+// #include "itkLsm3DSerieImport.txx"
+// #endif
 
 }
 

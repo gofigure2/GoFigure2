@@ -38,8 +38,32 @@
 
 =========================================================================*/
 
+#include "itkMegaCaptureImport.h"
+
+namespace itk
+{
+MegaCaptureImport::
+MegaCaptureImport( )
+{
+  this->m_FileName = NULL;
+}
+//-----------------------------------------------------------------------------
+
+MegaCaptureImport::
+~MegaCaptureImport()
+{
+  if( this->m_FileName )
+    {
+    delete [] this->m_FileName;
+    this->m_FileName = NULL;
+    }
+}
+//-----------------------------------------------------------------------------
+
+
+//-----------------------------------------------------------------------------
 void
-Lsm3DSerieImport::
+MegaCaptureImport::
 SetFileName( char * name )
 {
   if ( this->m_FileName && name && (!strcmp(this->m_FileName,name)))
@@ -65,32 +89,77 @@ SetFileName( char * name )
     }
   this->Modified();
 }
+//-----------------------------------------------------------------------------
 
-FileListType*
-Lsm3DSerieImport::
-GetOutput()
-{
-  return( &(this->m_OutputFileList) );
-};
-
+//-----------------------------------------------------------------------------
 void
-Lsm3DSerieImport::
-Update(void)
+MegaCaptureImport::
+CreateOutput()
 {
-  Glob();
-  CreateOutput();
-};
+  std::vector<std::string>::iterator nit;
+  for( nit = m_FileNameS.begin();
+       nit != m_FileNameS.end();
+       nit++)
+    {
+    GoFigureFileInfoHelper tempInfo;
+    tempInfo.Filename = (*nit);
+    std::string origFileName =
+      itksys::SystemTools::GetFilenameName( (*nit).c_str() );
 
-void
-Lsm3DSerieImport::
-SetGroupId( int Uservalue )
-{
-  this->m_GroupId = Uservalue;
-  this->Modified();
-};
+    IntVectorType::reverse_iterator numGroupLengthItr =
+      m_numGroupLength.rbegin();
+    IntVectorType::reverse_iterator numGroupStartItr  =
+      m_numGroupStart.rbegin();
+    unsigned int* NumericalValues = new unsigned int[6];
+    int megaCaptureNumericalGroupCounter = 0;
+    while( numGroupLengthItr != m_numGroupLength.rend() &&
+           numGroupStartItr != m_numGroupStart.rend()   &&
+           megaCaptureNumericalGroupCounter < 6 )
+      {
+      std::string ValueAsString(
+        origFileName,
+        (*numGroupStartItr)-(6-megaCaptureNumericalGroupCounter),
+        (*numGroupLengthItr) );
+      NumericalValues[5-megaCaptureNumericalGroupCounter]
+        = atof( ValueAsString.c_str() );
+      ++numGroupLengthItr;
+      ++numGroupStartItr;
+      ++megaCaptureNumericalGroupCounter;
 
+      } // end for each numerical group
+
+    tempInfo.CTile     = NumericalValues[0];
+    tempInfo.RTile     = NumericalValues[1];
+    tempInfo.YOffset   = NumericalValues[2];
+    tempInfo.XOffset   = NumericalValues[3];
+    tempInfo.TimePoint = NumericalValues[4];
+    tempInfo.ZDepth    = NumericalValues[5];
+
+    m_OutputFileList.push_back( tempInfo );
+
+    } // end for each filename
+
+  m_FileNameS.clear();
+
+  std::sort( m_OutputFileList.begin(), m_OutputFileList.end() );
+
+  FileListType::iterator myIt = m_OutputFileList.begin();
+  while( myIt != m_OutputFileList.end() )
+    {
+    itkDebugMacro(
+        << (*myIt).Filename
+        << " " << (*myIt).Channel
+        << " " << (*myIt).TimePoint
+        << " " << (*myIt).ZDepth );
+      myIt++;
+    }
+}
+//-----------------------------------------------------------------------------
+
+
+//-----------------------------------------------------------------------------
 void
-Lsm3DSerieImport::
+MegaCaptureImport::
 Glob()
 {
   m_numGroupStart.clear();
@@ -106,9 +175,9 @@ Glob()
 
   // Parse the fileNameName and fileNamePath
   std::string origFileName =
-  itksys::SystemTools::GetFilenameName( unixArchetype.c_str() );
+    itksys::SystemTools::GetFilenameName( unixArchetype.c_str() );
   std::string fileNamePath =
-  itksys::SystemTools::GetFilenamePath( unixArchetype.c_str() );
+    itksys::SystemTools::GetFilenamePath( unixArchetype.c_str() );
   std::string pathPrefix;
 
   // "Clean" the filename by escaping any special characters with backslashes.
@@ -118,17 +187,17 @@ Glob()
     {
     char oneChar = origFileName[j];
     if(
-       oneChar == '^' ||
-       oneChar == '$' ||
-       oneChar == '.' ||
-       oneChar == '[' ||
-       oneChar == ']' ||
-       oneChar == '-' ||
-       oneChar == '*' ||
-       oneChar == '+' ||
-       oneChar == '?' ||
-       oneChar == '(' ||
-       oneChar == ')' )
+      oneChar == '^' ||
+      oneChar == '$' ||
+      oneChar == '.' ||
+      oneChar == '[' ||
+      oneChar == ']' ||
+      oneChar == '-' ||
+      oneChar == '*' ||
+      oneChar == '+' ||
+      oneChar == '?' ||
+      oneChar == '(' ||
+      oneChar == ')' )
       {
       fileName += "\\";
       }
@@ -179,18 +248,15 @@ Glob()
   std::string regExpFileName = fileName;
   IntVectorType::reverse_iterator numGroupLengthItr = m_numGroupLength.rbegin();
   IntVectorType::reverse_iterator numGroupStartItr  = m_numGroupStart.rbegin();
-  int NumGroupCounter = 0;
+  int megaCaptureNumericalGroupCounter = 0;
   while( numGroupLengthItr != m_numGroupLength.rend() &&
-    numGroupStartItr != m_numGroupStart.rend() )
+         numGroupStartItr != m_numGroupStart.rend()   &&
+         megaCaptureNumericalGroupCounter < 6 )
     {
-    if( NumGroupCounter  == m_GroupId  )
-      {
-      regExpFileName.replace(*numGroupStartItr,*numGroupLengthItr,regExpString);
-      break;
-      }
+    regExpFileName.replace(*numGroupStartItr,*numGroupLengthItr,regExpString);
     ++numGroupLengthItr;
     ++numGroupStartItr;
-    ++NumGroupCounter;
+    ++megaCaptureNumericalGroupCounter;
     }
 
   // Include only filenames that exactly match this regular expression.  Don't
@@ -206,69 +272,6 @@ Glob()
   fit->NumericSortOn();
   m_FileNameS = fit->GetFileNames();
 }
+//-----------------------------------------------------------------------------
 
-
-void
-Lsm3DSerieImport::
-CreateOutput()
-{
-  std::vector<std::string>::iterator nit;
-  for( nit = m_FileNameS.begin();
-    nit != m_FileNameS.end();
-    nit++)
-    {
-    GoFigureFileInfoHelper tempInfo;
-    tempInfo.Filename = (*nit);
-    std::string origFileName =
-    itksys::SystemTools::GetFilenameName( (*nit).c_str() );
-
-    IntVectorType::reverse_iterator numGroupLengthItr =
-      m_numGroupLength.rbegin();
-    IntVectorType::reverse_iterator numGroupStartItr  =
-      m_numGroupStart.rbegin();
-    int NumGroupCounter = 0;
-    while( numGroupLengthItr != m_numGroupLength.rend() &&
-      numGroupStartItr != m_numGroupStart.rend() )
-      {
-      if( NumGroupCounter  == m_GroupId  )
-        {
-        std::string ValueAsString(
-          origFileName,
-          (*numGroupStartItr)-(1-NumGroupCounter),
-          (*numGroupLengthItr) );
-        tempInfo.TimePoint = atof( ValueAsString.c_str() );
-        m_OutputFileList.push_back( tempInfo );
-        break;
-        }
-      ++numGroupLengthItr;
-      ++numGroupStartItr;
-      ++NumGroupCounter;
-
-      } // end for each numerical group
-
-    } // end for each filename
-
-    m_FileNameS.clear();
-    std::sort( m_OutputFileList.begin(), m_OutputFileList.end() );
-
-    FileListType::iterator myIt = m_OutputFileList.begin();
-    while( myIt != m_OutputFileList.end() )
-      {
-      itkDebugMacro(
-    << (*myIt).Filename\
-        << " " << (*myIt).Channel\
-        << " " << (*myIt).TimePoint\
-        << " " << (*myIt).ZDepth );
-      myIt++;
-      }
-}
-
-Lsm3DSerieImport::
-~Lsm3DSerieImport()
-{
-  if (this->m_FileName)
-    {
-    delete [] this->m_FileName;
-    this->m_FileName = NULL;
-    }
 }
