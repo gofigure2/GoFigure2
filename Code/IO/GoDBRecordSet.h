@@ -1,5 +1,44 @@
-#ifndef _GoDBRecordSet_h__
-#define _GoDBRecordSet_h__
+/*=========================================================================
+  Author: $Author$  // Author of last commit
+  Version: $Rev$  // Revision of last commit
+  Date: $Date$  // Date of last commit
+=========================================================================*/
+
+/*=========================================================================
+ Authors: The GoFigure Dev. Team.
+ at Megason Lab, Systems biology, Harvard Medical school, 2009
+
+ Copyright (c) 2009, President and Fellows of Harvard College.
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are met:
+
+ Redistributions of source code must retain the above copyright notice,
+ this list of conditions and the following disclaimer.
+ Redistributions in binary form must reproduce the above copyright notice,
+ this list of conditions and the following disclaimer in the documentation
+ and/or other materials provided with the distribution.
+ Neither the name of the  President and Fellows of Harvard College
+ nor the names of its contributors may be used to endorse or promote
+ products derived from this software without specific prior written
+ permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS
+ BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
+ OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+ OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+=========================================================================*/
+#ifndef __GoDBRecordSet_h
+#define __GoDBRecordSet_h
 
 #include <algorithm>
 #include <utility>
@@ -26,14 +65,14 @@ public:
 
   // Add New Object
   void AddObject( OriginalObjectType& object )
-    { 
-    m_RowContainer.push_back( InternalObjectType( false, object ) ); 
-    };
+    {
+    m_RowContainer.push_back( InternalObjectType( false, object ) );
+    }
 
   // Insert Object
   void InsertObject( const int& pos, OriginalObjectType& object )
-    { 
-    if( pos > m_RowContainer.size() ) 
+    {
+    if( pos > m_RowContainer.size() )
       {
       AddObject( object );
       return;
@@ -41,48 +80,26 @@ public:
     InternalObjectType& temp =  m_RowContainer[pos];
     m_RowContainer[pos] = InternalObjectType( true, object );
     delete temp;
-    };
+    }
 
   void SetServerName( const char* ServerName )
-    { this->ServerName = ServerName; };
+    { this->ServerName = ServerName; }
 
   void SetDataBaseName( const char* DataBaseName )
-    { this->DataBaseName = DataBaseName; };
+    { this->DataBaseName = DataBaseName; }
 
   void SetTableName( const char* TableName )
-    { this->TableName = TableName; };
+    { this->TableName = TableName; }
 
   void SetUser( const char* User )
-    { this->User = User; };
+    { this->User = User; }
 
   void SetPassword( const char* Password )
-    { this->PassWord = Password; };
+    { this->PassWord = Password; }
 
   // read content from DB
   void PopulateFromDB()
-    { 
-    if( !CanConnectToServer( 
-        this->ServerName,
-        this->User,
-        this->PassWord )
-        /* 
-        !CanConnectToDatabase(
-        this->ServerName,
-        this->User,
-        this->PassWord,
-        this->DataBaseName
-        )*/ ) 
-      {
-      // throw exception
-      return;
-      }
-    };
-
-  // save content to DB - ASYNCHRONOUS
-  void SaveInDB()
     {
-    if( m_RowContainer.size() == 0 ) return;
-    
     if( !CanConnectToServer(
         this->ServerName,
         this->User,
@@ -93,23 +110,45 @@ public:
         this->User,
         this->PassWord,
         this->DataBaseName
-        )*/ ) 
+        )*/ )
       {
       // throw exception
       return;
       }
-  
+    }
+
+  // save content to DB - ASYNCHRONOUS
+  void SaveInDB()
+    {
+    if( m_RowContainer.size() == 0 ) return;
+
+    if( !CanConnectToServer(
+        this->ServerName,
+        this->User,
+        this->PassWord )
+        /*
+        !CanConnectToDatabase(
+        this->ServerName,
+        this->User,
+        this->PassWord,
+        this->DataBaseName
+        )*/ )
+      {
+      // throw exception
+      return;
+      }
+
     myIteratorType start = m_RowContainer.begin();
-    myIteratorType end   = m_RowContainer.end(); 
+    myIteratorType end   = m_RowContainer.end();
     // while( start != end )
       {
       // std::cout << (*start).second.PrintValues()  << std::endl;
       // start++;
-      }   
- 
-	// start = m_RowContainer.begin();
+      }
+
+    // start = m_RowContainer.begin();
     std::sort( start, end, IsLess() );
- 
+
     this->PopulateColumnNamesContainer();
 
     std::pair<std::string, std::string> Query = this->SetUpInsertQueryStrings();
@@ -143,7 +182,7 @@ public:
     DataBaseConnector->Close();
     DataBaseConnector->Delete();
     query->Delete();
-  };
+  }
 
 private:
   // functor to sort our RowContainer and optimize SQL requests
@@ -155,7 +194,7 @@ private:
       // Dirty first
       if( A.first && !B.first ) return true;
       return false;
-      };
+      }
     };
 
   // underlying container
@@ -174,8 +213,8 @@ private:
   const char* DataBaseName;
   const char* TableName;
   const char* User;
-  const char* PassWord; 
-  bool  IsOpen;
+  const char* PassWord;
+  bool        IsOpen;
 
 };
 
@@ -184,7 +223,7 @@ private:
 // entry with the same primary Key
 // another one with the usual INSERT command for new entries.
 template< class TObject >
-std::pair<std::string, std::string> 
+std::pair<std::string, std::string>
 GoDBRecordSet<TObject>::
 SetUpInsertQueryStrings()
 {
@@ -199,31 +238,31 @@ SetUpInsertQueryStrings()
     firstQuery = ComputeQuery( "REPLACE ", start, end );
     }
   else
-    { 
+    {
     firstQuery = "";
     }
 
   start = end;
   end = m_RowContainer.end();
 
-  std::string secondQuery; 
+  std::string secondQuery;
   if( end-start > 0 )
     {
-    secondQuery = ComputeQuery( "INSERT ", start, end );;
+    secondQuery = ComputeQuery( "INSERT ", start, end );
     }
   else
     {
     secondQuery = "";
-    } 
- 
+    }
+
   std::pair< std::string, std::string > result( firstQuery, secondQuery );
 
   return result;
-};
+}
 
 
 template< class TObject >
-std::string 
+std::string
 GoDBRecordSet<TObject>::
 ComputeQuery( std::string what, myIteratorType start, myIteratorType end )
 {
@@ -233,16 +272,16 @@ ComputeQuery( std::string what, myIteratorType start, myIteratorType end )
     // throw exception
     std::cerr << "Could not extract column names." << std::endl;
     }
-  
+
   std::stringstream query;
 
-  // main query 
+  // main query
   query << what  << "INTO " << this->TableName;
 
   // column names
   query << " ( ";
   std::vector<std::string>::iterator It = m_ColumnNamesContainer.begin();
-  for( unsigned int i = 0; i < NbOfCol-1 ; i++, It++ )
+  for( unsigned int i = 0; i < NbOfCol-1; i++, It++ )
     {
     query << (*It) << ", ";
     }
@@ -255,16 +294,16 @@ ComputeQuery( std::string what, myIteratorType start, myIteratorType end )
   for( int i = 0; i < end-start-1 && rowIt != end; i++, rowIt++ )
     {
     query << "(" << (*rowIt).second.PrintValues() << "),";
-    } 
+    }
   query << "(" << (*rowIt).second.PrintValues() << ")";
 
   // and ... voila!
   query << ";";
 
   std::cout << query.str() << std::endl;
-  
-  return query.str(); 
-};
+
+  return query.str();
+}
 
 template< class TObject >
 void
@@ -303,7 +342,5 @@ PopulateColumnNamesContainer()
   DataBaseConnector->Close();
   DataBaseConnector->Delete();
 
-};
-
+}
 #endif
-

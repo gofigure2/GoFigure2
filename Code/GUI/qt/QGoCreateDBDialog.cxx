@@ -1,6 +1,12 @@
 /*=========================================================================
- Authors: the GoFigure Dev. Team.
- while at Megason Lab, Systems biology, Harvard Medical school, 2009
+  Author: $Author$  // Author of last commit
+  Version: $Rev$  // Revision of last commit
+  Date: $Date$  // Date of last commit
+=========================================================================*/
+
+/*=========================================================================
+ Authors: The GoFigure Dev. Team.
+ at Megason Lab, Systems biology, Harvard Medical school, 2009
 
  Copyright (c) 2009, President and Fellows of Harvard College.
  All rights reserved.
@@ -30,7 +36,7 @@
  OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
- =========================================================================*/
+=========================================================================*/
 
 #include <QInputDialog>
 #include <QMessageBox>
@@ -45,7 +51,7 @@
 QGoCreateDBDialog::QGoCreateDBDialog( QObject* parent )
 : QObject( parent )
 {
-  bool ok = true;;
+  bool ok = true;
   bool CouldConnect = false;
   bool CouldCreate  = false;
   QString ServerName;

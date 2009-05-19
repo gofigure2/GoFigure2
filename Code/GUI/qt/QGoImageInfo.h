@@ -1,5 +1,4 @@
 /*=========================================================================
-  URL: $HeadURL$
   Author: $Author$  // Author of last commit
   Version: $Revision$  // Revision of last commit
   Date: $Date$  // Date of last commit
@@ -37,8 +36,7 @@
  OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
- =========================================================================*/
-
+=========================================================================*/
 
 #ifndef __QGoImageInfo_h
 #define __QGoImageInfo_h

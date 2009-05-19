@@ -1,3 +1,43 @@
+/*=========================================================================
+  Author: $Author$  // Author of last commit
+  Version: $Rev$  // Revision of last commit
+  Date: $Date$  // Date of last commit
+=========================================================================*/
+
+/*=========================================================================
+ Authors: The GoFigure Dev. Team.
+ at Megason Lab, Systems biology, Harvard Medical school, 2009
+
+ Copyright (c) 2009, President and Fellows of Harvard College.
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are met:
+
+ Redistributions of source code must retain the above copyright notice,
+ this list of conditions and the following disclaimer.
+ Redistributions in binary form must reproduce the above copyright notice,
+ this list of conditions and the following disclaimer in the documentation
+ and/or other materials provided with the distribution.
+ Neither the name of the  President and Fellows of Harvard College
+ nor the names of its contributors may be used to endorse or promote
+ products derived from this software without specific prior written
+ permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS
+ BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
+ OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+ OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+=========================================================================*/
+
 #include "CreateDataBaseHelper.h"
 
 #include "vtkMySQLDatabase.h"
@@ -21,7 +61,7 @@ bool CanConnectToServer(
   DataBaseConnector->SetPassword( Password );
   DataBaseConnector->Open("");
   return DataBaseConnector->IsOpen();
-};
+}
 
 std::vector<std::string> ListDataBases(
   const char* ServerName, const char* login,
@@ -63,7 +103,7 @@ std::vector<std::string> ListDataBases(
   query->Delete();
 
   return result;
-};
+}
 
 std::vector<std::string> ListTables(
   const char* ServerName, const char* login,
@@ -106,7 +146,7 @@ std::vector<std::string> ListTables(
   query->Delete();
 
   return result;
-};
+}
 
 void DropDatabase(
   const char* ServerName, const char* login,
@@ -137,7 +177,7 @@ void DropDatabase(
   DataBaseConnector->Close();
   DataBaseConnector->Delete();
   query->Delete();
-};
+}
 
 void DropTable(
   const char* ServerName, const char* login,
@@ -170,7 +210,7 @@ void DropTable(
   DataBaseConnector->Close();
   DataBaseConnector->Delete();
   query->Delete();
-};
+}
 
 bool DoesDataBaseExist(
   const char* ServerName, const char* login,
@@ -183,12 +223,12 @@ bool DoesDataBaseExist(
   std::vector< std::string >::iterator end   = list.end();
   while( start != end )
     {
-	if( (*start) == myString ) return true;
-	start++;
+    if( (*start) == myString ) return true;
+    start++;
     }
   return false;
 
-};
+}
 
 bool DoesTableExist(
   const char* ServerName, const char* login,
@@ -202,12 +242,12 @@ bool DoesTableExist(
   std::vector< std::string >::iterator end   = list.end();
   while( start != end )
     {
-	if( (*start) == myString ) return true;
-	start++;
+    if( (*start) == myString ) return true;
+    start++;
     }
   return false;
 
-};
+}
 
 bool IsDatabaseOfGoFigureType(
   const char* ServerName, const char* login,
@@ -216,21 +256,20 @@ bool IsDatabaseOfGoFigureType(
   if(  DoesTableExist( ServerName, login, Password, DBName, "bookmarks" )
     && DoesTableExist( ServerName, login, Password, DBName, "figure" )
     && DoesTableExist( ServerName, login, Password, DBName, "lineage" )
-	&& DoesTableExist( ServerName, login, Password, DBName, "mesh" )
+    && DoesTableExist( ServerName, login, Password, DBName, "mesh" )
     && DoesTableExist( ServerName, login, Password, DBName, "seriesgrid" )
     && DoesTableExist( ServerName, login, Password, DBName, "track" ) )
     {
-	return true;
+    return true;
     }
   return false;
-};
-
+}
 
 void CreateDataBaseMain(
   const char* ServerName, const char* login,
   const char* Password, const char* DBName )
 {
-//   if( CanConnectToDatabase(    ServerName, login, Password, DBName ) )
+  //   if( CanConnectToDatabase(    ServerName, login, Password, DBName ) )
   if( CanConnectToServer(    ServerName, login, Password ) )
     {
     CreateDataBase(            ServerName, login, Password, DBName );
@@ -249,7 +288,7 @@ void CreateDataBaseMain(
     }
   else
     {
-	// throw exception
+    // throw exception
     }
 }
 
