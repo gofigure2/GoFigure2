@@ -222,89 +222,102 @@ void QGoMainWindow::on_actionOpen_Mesh_activated( )
 
   if( idx >= 0 )
     {
-    QString filename = QFileDialog::getOpenFileName(
+    QStringList filename = QFileDialog::getOpenFileNames(
       this,
       tr( "Select one mesh or contour"), "",
-      tr( "vtkPolyData (*.vtk);; PLY (*.ply)" ) );
+      tr( "vtk - vtkPolyData (*.vtk);;ply - Polygon File Format (*.ply)" ) );
 
     if( !filename.isEmpty() )
       {
-      if( QFile::exists( filename ) )
+      QStringList::Iterator it = filename.begin();
+      std::list< vtkPolyData* > mesh_list;
+      std::list< vtkProperty* > property_list;
+      property_list.push_back( 0 );
+
+      while( it != filename.end() )
         {
-        QString extension = QFileInfo( filename ).suffix();
-
-        vtkPolyData* mesh = vtkPolyData::New();
-        std::list< vtkPolyData* > mesh_list;
-        std::list< vtkProperty* > property_list;
-        property_list.push_back( 0 );
-
-        if( extension.compare( "vtk", Qt::CaseInsensitive ) == 0 )
+        if( QFile::exists( *it ) )
           {
-          vtkPolyDataReader* mesh_reader = vtkPolyDataReader::New();
-          mesh_reader->SetFileName( filename.toAscii( ).data( ) );
-          mesh_reader->Update();
+          QString extension = QFileInfo( *it ).suffix();
 
-          mesh->ShallowCopy( mesh_reader->GetOutput() );
-          mesh_list.push_back( mesh );
-          mesh_reader->Delete();
-          }
-        else
-          {
-          if( extension.compare( "ply", Qt::CaseInsensitive ) == 0 )
+          vtkPolyData* mesh = vtkPolyData::New();
+
+          if( extension.compare( "vtk", Qt::CaseInsensitive ) == 0 )
             {
-            vtkPLYReader* mesh_reader = vtkPLYReader::New();
-            mesh_reader->SetFileName( filename.toAscii( ).data( ) );
+            vtkPolyDataReader* mesh_reader = vtkPolyDataReader::New();
+            mesh_reader->SetFileName( (*it).toAscii( ).data( ) );
             mesh_reader->Update();
 
             mesh->ShallowCopy( mesh_reader->GetOutput() );
             mesh_list.push_back( mesh );
             mesh_reader->Delete();
             }
-          }
-
-        if( !mesh_list.empty() )
-          {
-          double mesh_bounds[6];
-          mesh_list.front()->GetBounds( mesh_bounds );
-          bool IsContour = false;
-
-          for( int i = 0; ( i < 3 ) && ( !IsContour ); ++i )
+          else
             {
-            if( mesh_bounds[2*i] == mesh_bounds[2*i+1] )
+            if( extension.compare( "ply", Qt::CaseInsensitive ) == 0 )
               {
-              IsContour = true;
+              vtkPLYReader* mesh_reader = vtkPLYReader::New();
+              mesh_reader->SetFileName( (*it).toAscii( ).data( ) );
+              mesh_reader->Update();
+
+              mesh->ShallowCopy( mesh_reader->GetOutput() );
+              mesh_list.push_back( mesh );
+              mesh_reader->Delete();
               }
             }
+          }
+        ++it;
+        }
 
-          QImagePageViewTracer* myPageView =
-            dynamic_cast<QImagePageViewTracer*>( m_PageView[idx] );
-          if( myPageView )
+      if( !mesh_list.empty() )
+        {
+        double mesh_bounds[6];
+        mesh_list.front()->GetBounds( mesh_bounds );
+        bool IsContour = false;
+
+        for( int i = 0; ( i < 3 ) && ( !IsContour ); ++i )
+          {
+          if( mesh_bounds[2*i] == mesh_bounds[2*i+1] )
             {
-            myPageView->AddContours( mesh_list, property_list, true, true );
+            IsContour = true;
+            }
+          }
+
+        QImagePageViewTracer* myPageView =
+          dynamic_cast<QImagePageViewTracer*>( m_PageView[idx] );
+        if( myPageView )
+          {
+          myPageView->AddContours( mesh_list, property_list, true, true );
             // if( IsContour )
             //{
             //
             // }
-            }
-          else
+          }
+        else
+          {
+          QImagePageView4DTracer* myPageView4D =
+            dynamic_cast<QImagePageView4DTracer*>( m_PageView[ idx ] );
+          if( myPageView4D )
             {
-            QImagePageView4DTracer* myPageView4D =
-              dynamic_cast<QImagePageView4DTracer*>( m_PageView[ idx ] );
-            if( myPageView4D )
-              {
-              // myPageView4D->AddContours< std::list< vtkPolyData* >,
-              // std::list< vtkProperty* > >( mesh_list, property_list, true );
-              // if( IsContour )
-              //   {
-              //   }
-              // else
-              //  {
-              //  }
-              }
+            // myPageView4D->AddContours< std::list< vtkPolyData* >,
+            // std::list< vtkProperty* > >( mesh_list, property_list, true );
+            // if( IsContour )
+            //   {
+            //   }
+            // else
+            //  {
+            //  }
             }
           }
+        }
 
-        mesh->Delete();
+      while( !mesh_list.empty() )
+        {
+        if( mesh_list.back() )
+          {
+          mesh_list.back()->Delete();
+          }
+        mesh_list.pop_back();
         }
       }
     }
