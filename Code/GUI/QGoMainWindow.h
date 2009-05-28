@@ -103,7 +103,6 @@ protected slots:
 
   // #ifdef VTK_USE_MYSQL
   void on_actionCreate_DataBase_activated( ) { QGoCreateDBDialog dialog; }
-  //{QGoCreateDBDialog* dialog = new QGoCreateDBDialog; delete dialog;};
   void on_actionImport_Dataset_in_DataBase_activated( ) {};
   void on_actionOpen_DataBase_activated( ) {};
   // #endif

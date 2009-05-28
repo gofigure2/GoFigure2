@@ -229,7 +229,8 @@ protected:
     levelSetFilter->SetLevelSet( 0, Dist->GetOutput() );
     levelSetFilter->SetNumberOfIterations( 50 );
     levelSetFilter->SetMaximumRMSError( 0 );
-    levelSetFilter->SetUseImageSpacing( true );
+    levelSetFilter->SetUseImageSpacing( false );
+    levelSetFilter->SetInPlace( false );
 
     levelSetFilter->GetDifferenceFunction(0)->SetDomainFunction( domainFunction );
     levelSetFilter->GetDifferenceFunction(0)->SetCurvatureWeight( 0. );

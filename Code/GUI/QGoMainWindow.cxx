@@ -288,10 +288,10 @@ void QGoMainWindow::on_actionOpen_Mesh_activated( )
         if( myPageView )
           {
           myPageView->AddContours( mesh_list, property_list, true, true );
-            // if( IsContour )
-            //{
-            //
-            // }
+          // if( IsContour )
+          //{
+          //
+          // }
           }
         else
           {
@@ -920,34 +920,53 @@ void QGoMainWindow::SetFileName( const QString& iFile, const bool& IsSerie )
 {
   if( QFile::exists( iFile ) )
     {
+    this->setCurrentFile( iFile, IsSerie );
+
     // parse extension
     QString ext = QFileInfo( iFile ).suffix();
-    if( IsSerie )
+    if( ext.compare( "lsm", Qt::CaseInsensitive ) == 0 )
       {
-      this->setCurrentFile( iFile, true );
-      if( ext.compare( "lsm", Qt::CaseInsensitive ) == 0 )
-        {
-        this->OpenAndDisplay( m_CurrentFile, IsSerie, 0 );
-        }
-      else
-        {
-        this->OpenAndDisplay( m_CurrentFile, IsSerie, 1 );
-        }
+      this->OpenAndDisplay( m_CurrentFile, IsSerie, 0 );
       }
     else
       {
-      this->setCurrentFile( iFile, false );
-      if( ext.compare( "lsm", Qt::CaseInsensitive ) == 0 )
+      if( IsSerie )
         {
-        this->OpenAndDisplay( m_CurrentFile, IsSerie, 0 );
+        this->OpenAndDisplay( m_CurrentFile, IsSerie, 1 );
         }
-      else // NOTE ALEX: last case to be unified
+      else
         {
         this->OpenImage( m_CurrentFile );
         this->DisplayImage( m_CurrentFile );
         }
       }
     }
+  //     if( IsSerie )
+  //       {
+  //       this->setCurrentFile( iFile, true );
+  //       if( ext.compare( "lsm", Qt::CaseInsensitive ) == 0 )
+  //         {
+  //         this->OpenAndDisplay( m_CurrentFile, IsSerie, 0 );
+  //         }
+  //       else
+  //         {
+  //         this->OpenAndDisplay( m_CurrentFile, IsSerie, 1 );
+  //         }
+  //       }
+  //     else
+  //       {
+  //       this->setCurrentFile( iFile, false );
+  //       if( ext.compare( "lsm", Qt::CaseInsensitive ) == 0 )
+  //         {
+  //         this->OpenAndDisplay( m_CurrentFile, IsSerie, 0 );
+  //         }
+  //       else // NOTE ALEX: last case to be unified
+  //         {
+  //         this->OpenImage( m_CurrentFile );
+  //         this->DisplayImage( m_CurrentFile );
+  //         }
+  //       }
+  //     }
 }
 
 // *************************************************************************

@@ -3,10 +3,10 @@ PROJECT( GOFIGURE2 )
 SET( GOFIGURE2_MAJOR_VERSION "0" )
 SET( GOFIGURE2_MINOR_VERSION "5" )
 
-# NOTE: It is possible to get the revision number by calling in bash the 
+# NOTE: It is possible to get the revision number by calling in bash the
 # svnversion command
 #ADD_CUSTOM_COMMAND( TARGET yo PRE_BUILD
-#  COMMAND svnversion ARGS ${GOFIGURE2_SOURCE_DIR} 
+#  COMMAND svnversion ARGS ${GOFIGURE2_SOURCE_DIR}
 #)
 
 SET( GOFIGURE2_VERSION
@@ -163,19 +163,26 @@ IF( VTK_FOUND )
 
     INCLUDE( CTest )
 
+    SUBDIRS( Examples
+           KWStyle
+    )
+
+#---------------------------------------------------------------------------
+# PACKAGE With CPack
+#---------------------------------------------------------------------------
     IF( BUILD_PACKAGE )
       INCLUDE( InstallRequiredSystemLibraries )
       SET( CPACK_PACKAGE_DESCRIPTION_SUMMARY "GoFigure2" )
       SET( CPACK_PACKAGE_VENDOR "Megason Lab, Systems Biology, HMS" )
-#     SET( CPACK_PACKAGE_DESCRIPTION_FILE
-#       "${CMAKE_CURRENT_SOURCE_DIR}/ReadMe.txt")
-#     SET( CPACK_RESOURCE_FILE_LICENSE
-#       "${CMAKE_CURRENT_SOURCE_DIR}/Copyright.txt")
+      SET( CPACK_PACKAGE_DESCRIPTION_FILE
+        "${GOFIGURE2_SOURCE_DIR}/ReadMe.txt")
+      SET( CPACK_RESOURCE_FILE_LICENSE
+        "${GOFIGURE2_SOURCE_DIR}/Copyright.txt")
       SET( CPACK_PACKAGE_VERSION_MAJOR ${GOFIGURE2_MAJOR_VERSION} )
       SET( CPACK_PACKAGE_VERSION_MINOR ${GOFIGURE2_MINOR_VERSION} )
       SET( CPACK_PACKAGE_VERSION_PATCH "0" )
       SET( CPACK_PACKAGE_INSTALL_DIRECTORY
-        "GoFigure2-${GOFIGURE2_MAJOR_VERSION}.${GOFIGURE2_MINOR_VERSION}" )
+        "GoFigure2 ${GOFIGURE2_MAJOR_VERSION}.${GOFIGURE2_MINOR_VERSION}" )
 
       IF( WIN32 AND NOT UNIX )
         # There is a bug in NSI that does not handle full unix paths properly.
@@ -195,22 +202,18 @@ IF( VTK_FOUND )
         SET( CPACK_SOURCE_STRIP_FILES "" )
       ENDIF( WIN32 AND NOT UNIX )
 
-      SET( CPACK_PACKAGE_EXECUTABLES "gofigure" "Gofigure2" )
+#       SET( CPACK_PACKAGE_EXECUTABLES "gofigure" "Gofigure2" )
 
-      IF( UNIX )
-        SET( CPACK_BINARY_RPM ON )
-        SET( CPACK_RPM_PACKAGE_DEBUG "1" )
-        SET( CPACK_RPM_SPEC_INSTALL_POST "/bin/true" )
-      ENDIF( UNIX )
+#       IF( UNIX )
+#         SET( CPACK_BINARY_RPM ON )
+#         SET( CPACK_RPM_PACKAGE_DEBUG "1" )
+#         SET( CPACK_RPM_SPEC_INSTALL_POST "/bin/true" )
+#       ENDIF( UNIX )
 
       INCLUDE( CPack )
 
     ENDIF( BUILD_PACKAGE )
   ENDIF( QT4_FOUND AND QT_VERSION_MINOR GREATER 4 )
-
-  SUBDIRS( Examples 
-           KWStyle
-  )
 
 ENDIF( VTK_FOUND )
 
