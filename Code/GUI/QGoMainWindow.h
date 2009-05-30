@@ -68,7 +68,7 @@
 #include "QGoLUTDialog.h"
 #include "ui_go.h"
 
-#include "itkChanAndVeseSegmentationFilter.h"
+//#include "itkChanAndVeseSegmentationFilter.h"
 // #include <qsettings.h>
 
 class QGoMainWindow : public QMainWindow,
@@ -80,9 +80,9 @@ public:
   typedef itk::Image< unsigned char, 3 >  ImageType;
   typedef ImageType::Pointer              ImagePointer;
 
-  typedef itk::Image< float, 3 >          LevelSetImageType;
-  typedef itk::ChanAndVeseSegmentationFilter< LevelSetImageType, ImageType >
-    LocalChanAndVeseSegmentationFilterType;
+ // typedef itk::Image< float, 3 >          LevelSetImageType;
+ // typedef itk::ChanAndVeseSegmentationFilter< LevelSetImageType, ImageType >
+//    LocalChanAndVeseSegmentationFilterType;
 
   typedef itk::ImageToVTKImageFilter< ImageType > VTKConvertImageType;
   typedef VTKConvertImageType::Pointer            VTKConvertImagePointer;

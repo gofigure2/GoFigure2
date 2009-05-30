@@ -5,6 +5,12 @@ INCLUDE_DIRECTORIES( BEFORE
   ${MEGAVTK2_BINARY_DIR}/vtkRenderingAddOn
 )
 
+SET(QPRINTDATABASE_UIS
+QPrintDatabase.ui
+)
+
+QT4_WRAP_UI(QPRINTDATABASE_UIS_H ${QPRINTDATABASE_UIS})
+QT4_WRAP_CPP(QPRINTDATABASE_MOC_UI ${QPRINTDATABASE_UIS_H})
 
 SET( QMegaVTKAddOn_NAME2
   QGoImageInfo
@@ -14,6 +20,7 @@ SET( QMegaVTKAddOn_NAME2
   QImagePageViewTracer
   QImagePageView4DTracer
   QSplitterchild
+  QPrintDatabase	
   )
 
 SET( QMegaVTKAddOn_SRC2
@@ -24,6 +31,7 @@ SET( QMegaVTKAddOn_SRC2
   QImagePageViewTracer.cxx
   QImagePageView4DTracer.cxx
   QSplitterchild.cxx
+  QPrintDatabase.cxx
   )
 
 FOREACH( src ${QMegaVTKAddOn_NAME2} )
@@ -40,6 +48,8 @@ ADD_LIBRARY( QMegaVTKAddOn2
   ${QImagePageView4DTracer_MOC_SRC2}
   ${QMegaVTKAddOn_SRC2}
   ${QSplitterchild_MOC_SRC2}
+  ${QPrintDatabase_MOC_SRC2}
+  ${QPRINTDATABASE_MOC_UI}		
   ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/vtkLSM/vtkLSMReader.cxx
 #   ${GOFIGURE2_SOURCE_DIR}/Code/IO/CreateDataBaseHelper.cxx
   )

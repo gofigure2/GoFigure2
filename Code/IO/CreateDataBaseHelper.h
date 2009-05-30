@@ -51,6 +51,19 @@ std::vector<std::string> ListTables(
   const char* ServerName, const char* login,
   const char* Password, const char* DBName );
 
+std::vector<std::string> ListExpID(
+  const char* ServerName, const char* login,
+  const char* Password, const char* DBName);
+
+std::vector<std::string> ListValuesforID(
+  const char* ServerName, const char* login,
+  const char* Password, const char* DBName,
+  const char* TableName, const char* field,const char* ID);
+
+std::vector<std::string> ListImageIDforExpID(
+  const char* ServerName, const char* login,
+  const char* Password, const char* DBName, const char* ID);
+
 bool CanConnectToServer(
   const char* ServerName, const char* login,
   const char* Password);

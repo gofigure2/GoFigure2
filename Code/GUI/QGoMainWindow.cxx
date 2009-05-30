@@ -1338,7 +1338,7 @@ void QGoMainWindow::StartSeedWidget()
 
 void QGoMainWindow::OneClickSegmentation()
 {
-  int idx = this->CentralImageTabWidget->currentIndex();
+  /*int idx = this->CentralImageTabWidget->currentIndex();
   QImagePageViewTracer* myPageView =
     dynamic_cast<QImagePageViewTracer*>( m_PageView[idx] );
 
@@ -1390,4 +1390,4 @@ void QGoMainWindow::OneClickSegmentation()
         }
       }
     }
-}
+*/}

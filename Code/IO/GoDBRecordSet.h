@@ -341,6 +341,7 @@ PopulateColumnNamesContainer()
 
   DataBaseConnector->Close();
   DataBaseConnector->Delete();
+  query->Delete();
 
 }
 #endif

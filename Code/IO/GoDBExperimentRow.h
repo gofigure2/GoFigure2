@@ -40,12 +40,14 @@
 #ifndef __GoDBExperimentRow_h
 #define __GoDBExperimentRow_h
 
+#include <string>
+
 class GoDBExperimentRow
 {
 public:
   int           experimentID;
-  const char*   name;
-  const char*   description;
+  std::string   name;
+  std::string   description;
   int           timeInterval;
   int           tileHeight;
   int           tileWidth;

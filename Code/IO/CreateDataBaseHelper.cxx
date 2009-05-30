@@ -44,6 +44,7 @@
 #include "vtkSQLQuery.h"
 #include "vtkStdString.h"
 #include "vtkVariant.h"
+#include <sstream>
 
 // NOTE ALEX
 //
@@ -59,9 +60,12 @@ bool CanConnectToServer(
   DataBaseConnector->SetHostName( ServerName );
   DataBaseConnector->SetUser( login );
   DataBaseConnector->SetPassword( Password );
-  DataBaseConnector->Open("");
-  return DataBaseConnector->IsOpen();
-}
+  DataBaseConnector->Open();
+  bool IsOpen = DataBaseConnector->IsOpen();
+  DataBaseConnector->Delete();
+  return IsOpen;
+  
+};
 
 std::vector<std::string> ListDataBases(
   const char* ServerName, const char* login,
@@ -77,6 +81,7 @@ std::vector<std::string> ListDataBases(
     {
     std::cerr << "Could not open database." << std::endl;
     std::cerr << "DB will not be created."  << std::endl;
+    DataBaseConnector->Delete();
     return result;
     }
 
@@ -86,6 +91,8 @@ std::vector<std::string> ListDataBases(
     {
     cerr << "Show Databases query failed" << endl;
     DataBaseConnector->Close();
+    DataBaseConnector->Delete();
+    query->Delete();
     return result;
     }
 
@@ -103,7 +110,7 @@ std::vector<std::string> ListDataBases(
   query->Delete();
 
   return result;
-}
+};
 
 std::vector<std::string> ListTables(
   const char* ServerName, const char* login,
@@ -120,6 +127,7 @@ std::vector<std::string> ListTables(
     {
     std::cerr << "Could not open database." << std::endl;
     std::cerr << "DB will not be created."  << std::endl;
+    DataBaseConnector->Delete();
     return result;
     }
 
@@ -129,6 +137,8 @@ std::vector<std::string> ListTables(
     {
     cerr << "Show tables query failed" << endl;
     DataBaseConnector->Close();
+    DataBaseConnector->Delete();
+    query->Delete();
     return result;
     }
 
@@ -146,9 +156,56 @@ std::vector<std::string> ListTables(
   query->Delete();
 
   return result;
-}
+};
 
-void DropDatabase(
+std::vector<std::string> ListExpID(
+  const char* ServerName, const char* login,
+  const char* Password, const char* DBName)
+{
+  std::vector< std::string > result;
+
+  vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
+  DataBaseConnector->SetHostName( ServerName );
+  DataBaseConnector->SetUser( login );
+  DataBaseConnector->SetPassword( Password );
+  DataBaseConnector->SetDatabaseName( DBName );
+  if( !DataBaseConnector->Open() )
+    {
+    std::cerr << "Could not open database." << std::endl;
+    std::cerr << "DB will not be created."  << std::endl;
+    DataBaseConnector->Delete();
+    return result;
+    }
+
+  vtkSQLQuery* query = DataBaseConnector->GetQueryInstance();
+  query->SetQuery( "SELECT EXPERIMENTID FROM EXPERIMENT;" );
+  
+  if ( !query->Execute() )
+    {
+    cerr << "List of all fields query failed" << endl;
+    DataBaseConnector->Close();
+    DataBaseConnector->Delete();
+    query->Delete();
+    return result;
+    }
+
+  // all set, proceed
+
+  // iterate over lines, we know there is only one column
+  // and as many rows as there is databases
+  while( query->NextRow() )
+    {
+    result.push_back( query->DataValue( 0 ).ToString() );
+    }
+
+  DataBaseConnector->Close();
+  DataBaseConnector->Delete();
+  query->Delete();
+
+  return result;
+};
+
+void DropDatabase( 
   const char* ServerName, const char* login,
   const char* Password, const char* DBName )
 {
@@ -161,23 +218,28 @@ void DropDatabase(
     {
     std::cerr << "Could not open database." << std::endl;
     std::cerr << "DB will not be created."  << std::endl;
+    DataBaseConnector->Delete();
     return;
     }
 
   vtkSQLQuery* query = DataBaseConnector->GetQueryInstance();
-  char insertQuery[200];
-  sprintf( insertQuery, "DROP DATABASE %s", DBName );
-  query->SetQuery( insertQuery );
+  std::ostringstream insertQuery;
+  insertQuery <<"DROP DATABASE "<< DBName;
+  //char insertQuery[200];
+  //sprintf( insertQuery, "DROP DATABASE %s", DBName );
+  query->SetQuery( insertQuery.str().c_str() );
   if ( !query->Execute() )
     {
     cerr << "Drop query failed" << endl;
     DataBaseConnector->Close();
+    DataBaseConnector->Delete();
+    query->Delete();
     return;
     }
   DataBaseConnector->Close();
   DataBaseConnector->Delete();
   query->Delete();
-}
+};
 
 void DropTable(
   const char* ServerName, const char* login,
@@ -194,23 +256,26 @@ void DropTable(
     {
     std::cerr << "Could not open database." << std::endl;
     std::cerr << "DB will not be created."  << std::endl;
+    DataBaseConnector->Delete();
     return;
     }
 
   vtkSQLQuery* query = DataBaseConnector->GetQueryInstance();
-  char insertQuery[200];
-  sprintf( insertQuery, "DROP TABLE %s", TableName );
-  query->SetQuery( insertQuery );
+  std::ostringstream insertQuery;
+  insertQuery<< "DROP TABLE "<< TableName;
+  query->SetQuery( insertQuery.str().c_str() );
   if ( !query->Execute() )
     {
     cerr << "Drop query failed" << endl;
     DataBaseConnector->Close();
+    DataBaseConnector->Delete();
+    query->Delete();
     return;
     }
   DataBaseConnector->Close();
   DataBaseConnector->Delete();
   query->Delete();
-}
+};
 
 bool DoesDataBaseExist(
   const char* ServerName, const char* login,
@@ -223,12 +288,12 @@ bool DoesDataBaseExist(
   std::vector< std::string >::iterator end   = list.end();
   while( start != end )
     {
-    if( (*start) == myString ) return true;
-    start++;
+	if( (*start) == myString ) return true;
+	start++;
     }
   return false;
 
-}
+};
 
 bool DoesTableExist(
   const char* ServerName, const char* login,
@@ -242,8 +307,8 @@ bool DoesTableExist(
   std::vector< std::string >::iterator end   = list.end();
   while( start != end )
     {
-    if( (*start) == myString ) return true;
-    start++;
+	if( (*start) == myString ) return true;
+	start++;
     }
   return false;
 
@@ -254,13 +319,13 @@ bool IsDatabaseOfGoFigureType(
   const char* Password, const char* DBName )
 {
   if(  DoesTableExist( ServerName, login, Password, DBName, "bookmarks" )
-    && DoesTableExist( ServerName, login, Password, DBName, "figure" )
-    && DoesTableExist( ServerName, login, Password, DBName, "lineage" )
-    && DoesTableExist( ServerName, login, Password, DBName, "mesh" )
+    && DoesTableExist( ServerName, login, Password, DBName, "figure" )  
+    && DoesTableExist( ServerName, login, Password, DBName, "lineage" )     
+	&& DoesTableExist( ServerName, login, Password, DBName, "mesh" ) 
     && DoesTableExist( ServerName, login, Password, DBName, "seriesgrid" )
     && DoesTableExist( ServerName, login, Password, DBName, "track" ) )
     {
-    return true;
+	return true;
     }
   return false;
 }
@@ -269,7 +334,6 @@ void CreateDataBaseMain(
   const char* ServerName, const char* login,
   const char* Password, const char* DBName )
 {
-  //   if( CanConnectToDatabase(    ServerName, login, Password, DBName ) )
   if( CanConnectToServer(    ServerName, login, Password ) )
     {
     CreateDataBase(            ServerName, login, Password, DBName );
@@ -288,7 +352,7 @@ void CreateDataBaseMain(
     }
   else
     {
-    // throw exception
+	// throw exception
     }
 }
 
@@ -304,17 +368,20 @@ void CreateDataBase(
     {
     std::cerr << "Could not open database." << std::endl;
     std::cerr << "DB will not be created."  << std::endl;
+    DataBaseConnector->Delete();
     return;
     }
 
   vtkSQLQuery* query = DataBaseConnector->GetQueryInstance();
-  char insertQuery[200];
-  sprintf( insertQuery, "CREATE DATABASE %s", DBName );
-  query->SetQuery( insertQuery );
+  std::ostringstream insertQuery;
+  insertQuery<< "CREATE DATABASE "<< DBName;
+  query->SetQuery( insertQuery.str().c_str() );
   if ( !query->Execute() )
     {
     cerr << "Create query failed" << endl;
     DataBaseConnector->Close();
+    DataBaseConnector->Delete();
+    query->Delete();
     return;
     }
   DataBaseConnector->Close();
@@ -934,4 +1001,112 @@ void CreateTrackFlavor(
   DataBaseConnector->Close();
   DataBaseConnector->Delete();
   query->Delete();
-}
+};
+
+std::vector<std::string> ListValuesforID(
+  const char* ServerName, const char* login,
+  const char* Password, const char* DBName,
+  const char* TableName, const char* field,
+  const char* ID)
+{
+  std::vector< std::string > result;
+
+  vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
+  DataBaseConnector->SetHostName( ServerName );
+  DataBaseConnector->SetUser( login );
+  DataBaseConnector->SetPassword( Password );
+  DataBaseConnector->SetDatabaseName( DBName );
+  if( !DataBaseConnector->Open() )
+    {
+    std::cerr << "Could not open database." << std::endl;
+    std::cerr << "DB will not be created."  << std::endl;
+    DataBaseConnector->Delete();
+    return result;
+    }
+
+  vtkSQLQuery* query = DataBaseConnector->GetQueryInstance();
+  std::stringstream querystream;
+  querystream << "SELECT * FROM ";
+  querystream << TableName;
+  querystream << " WHERE ";
+  querystream << field;
+  querystream << " = ";
+  querystream << ID;
+  querystream << ";";
+
+  /*vtkSQLQuery* query = DataBaseConnector->GetQueryInstance();
+  std::ostringstream insertQuery;
+  insertQuery<<"select * from experiment where experimentID="<<ID<<";";*/
+
+  query->SetQuery( querystream.str().c_str() );
+  if ( !query->Execute() )
+    {
+    cerr << "List of all values of ExpID query failed" << endl;
+    DataBaseConnector->Close();
+    DataBaseConnector->Delete();
+    query->Delete();
+    return result;
+    }
+  
+  std::cout<<"result of the query where ID=1, 2nd value "<<query->GetNumberOfFields()<<std::endl;
+  
+  while (query->NextRow())  
+  {   for(  int i = 0; i < query->GetNumberOfFields() ; i++) 
+      {
+        result.push_back( query->DataValue( i ).ToString() );
+      }  
+  }
+ 
+  DataBaseConnector->Close();
+  DataBaseConnector->Delete();
+  query->Delete();
+
+  return result;
+};
+
+std::vector<std::string> ListImageIDforExpID(
+  const char* ServerName, const char* login,
+  const char* Password, const char* DBName, const char* ID)
+{
+  std::vector< std::string > result;
+
+  vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
+  DataBaseConnector->SetHostName( ServerName );
+  DataBaseConnector->SetUser( login );
+  DataBaseConnector->SetPassword( Password );
+  DataBaseConnector->SetDatabaseName( DBName );
+  if( !DataBaseConnector->Open() )
+    {
+    std::cerr << "Could not open database." << std::endl;
+    std::cerr << "DB will not be created."  << std::endl;
+    DataBaseConnector->Delete();
+    return result;
+    }
+
+  vtkSQLQuery* query = DataBaseConnector->GetQueryInstance();
+  std::stringstream querystream;
+  querystream << "SELECT IMAGEID FROM SERIESGRID";
+  querystream << " WHERE EXPERIMENTID = ";
+  querystream << ID;
+  querystream << ";";
+
+  query->SetQuery( querystream.str().c_str() );
+  if ( !query->Execute() )
+    {
+    // replace by exception
+    std::cerr << "Create query failed" << std::endl;
+    }
+  else
+    {
+    while( query->NextRow() )
+      {
+      result.push_back( query->DataValue( 0 ).ToString() );
+      }
+    }
+  DataBaseConnector->Close();
+  DataBaseConnector->Delete();
+  query->Delete();
+
+  return result;
+
+};
