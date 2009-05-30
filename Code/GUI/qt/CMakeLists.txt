@@ -20,7 +20,8 @@ SET( QMegaVTKAddOn_NAME2
   QImagePageViewTracer
   QImagePageView4DTracer
   QSplitterchild
-  QPrintDatabase	
+  QPrintDatabase
+  QGoWizardDB	
   )
 
 SET( QMegaVTKAddOn_SRC2
@@ -32,6 +33,7 @@ SET( QMegaVTKAddOn_SRC2
   QImagePageView4DTracer.cxx
   QSplitterchild.cxx
   QPrintDatabase.cxx
+  QGoWizardDB.cxx
   )
 
 FOREACH( src ${QMegaVTKAddOn_NAME2} )
@@ -49,7 +51,8 @@ ADD_LIBRARY( QMegaVTKAddOn2
   ${QMegaVTKAddOn_SRC2}
   ${QSplitterchild_MOC_SRC2}
   ${QPrintDatabase_MOC_SRC2}
-  ${QPRINTDATABASE_MOC_UI}		
+  ${QPRINTDATABASE_MOC_UI}
+  ${QGoWizardDB_MOC_SRC2}		
   ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/vtkLSM/vtkLSMReader.cxx
 #   ${GOFIGURE2_SOURCE_DIR}/Code/IO/CreateDataBaseHelper.cxx
   )
