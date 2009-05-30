@@ -4,5 +4,6 @@ SUBDIRS(
   QImagePageView4DTracer
   QGoLUTDialog
   QGoCreateDBDialog
+  QGoWizardDB
   QGoImageInfo
    )
