@@ -98,14 +98,14 @@ OpenOrCreate_Page::OpenOrCreate_Page(QWidget *parent)
   formLayout = new QFormLayout;
   ChoiceDB = new QComboBox;
 
-  openDBRadioButton = new QRadioButton(tr("&Open an existing Database"));
-  createDBRadioButton = new QRadioButton(tr("&Create a new Database"));
+  openDBRadioButton = new QRadioButton;
+  createDBRadioButton = new QRadioButton;
   createDBRadioButton->setChecked(true);
   lineNewDBName = new QLineEdit;
 
-  formLayout->addWidget(createDBRadioButton);
+  formLayout->addRow(tr("Create a new Database"),createDBRadioButton);
   formLayout->addRow( tr("&Name of the new DB to create:"), lineNewDBName );
-  formLayout->addWidget(openDBRadioButton);
+  formLayout->addRow(tr("Open an existing Database"),openDBRadioButton);
   formLayout->addRow(tr("Name of the DB to open:"),ChoiceDB);
 
   setLayout(formLayout);
@@ -229,13 +229,13 @@ Create_ExperimentPage::Create_ExperimentPage( QWidget *parent )
   formLayout = new QFormLayout;
   ChoiceExp  = new QComboBox;
 
-  openExpRadioButton   = new QRadioButton( tr("&Open an existing Experiment") );
-  createExpRadioButton = new QRadioButton( tr("&Create a new Experiment")     );
+  openExpRadioButton   = new QRadioButton;
+  createExpRadioButton = new QRadioButton;
   openExpRadioButton->setChecked(false);
   createExpRadioButton->setChecked(false);
 
-  formLayout->addWidget( createExpRadioButton );
-  formLayout->addWidget( openExpRadioButton );
+  formLayout->addRow(tr("Create a new Experiment"), createExpRadioButton );
+  formLayout->addRow(tr("Open an existing Experiment"), openExpRadioButton );
   formLayout->addRow( tr("Experiment to open:"), ChoiceExp );
 
 //  ExperimentID = new QLineEdit;
@@ -512,38 +512,42 @@ bool Create_ExperimentPage::validatePage()
 Import_SerieGridPage::Import_SerieGridPage( QWidget *parent )
 : QWizardPage( parent )
 {
-  formlayout= new QFormLayout;
+  gridlayout= new QGridLayout;
   OpenOrCreateSeriesGrid_fake = new QLineEdit;
-  ImageID_fake = new QLineEdit;
+  //ImageID_fake = new QLineEdit;
   BrowseButton = new QPushButton("&Browse", this);
 
-  ChoiceSeriesGrid = new QComboBox;
+  //ChoiceSeriesGrid = new QComboBox;
   openSeriesGridRadioButton = new QRadioButton(tr("&Open an existing SeriesGrid"));
-  //createSeriesGridRadioButton = new QRadioButton(tr("&Import a new SeriesGrid"));
+  ImportSeriesGridRadioButton = new QRadioButton(tr("&Import a new SeriesGrid"));
 
   //formlayout->setHorizontalSpacing(200);
 
-  //formlayout->addWidget( createSeriesGridRadioButton );
-  formlayout->addRow( tr("Import MultiFiles: "),BrowseButton );
-  formlayout->addWidget( openSeriesGridRadioButton );
-  formlayout->addRow( tr("SeriesGrid to open:"), ChoiceSeriesGrid );
+  gridlayout->addWidget( ImportSeriesGridRadioButton );
+  gridlayout->addWidget( BrowseButton,0,1 );
+  gridlayout->addWidget( openSeriesGridRadioButton );
+  gridlayout->setColumnStretch ( 0, 1);
+  //formlayout->addRow( tr("SeriesGrid to open:"), ChoiceSeriesGrid );
 
-  setLayout(formlayout);
+  setLayout(gridlayout);
 
   registerField("OpenOrCreateSeriesGrid",OpenOrCreateSeriesGrid_fake);
-  registerField("ImageID",ImageID_fake);
+  //registerField("ImageID",ImageID_fake);
+
+  /*QObject::connect( this->openSeriesGridRadioButton,SIGNAL( clicked() ),
+  this,SLOT( PrintListSeriesGrid() ));*/
+
+  QObject::connect( this->ImportSeriesGridRadioButton,SIGNAL( clicked() ),
+  this,SLOT( SelectImportSeriesGrid() ));
 
   QObject::connect( this->openSeriesGridRadioButton,SIGNAL( clicked() ),
-  this,SLOT( PrintListSeriesGrid() ));
-
-  //QObject::connect( this->createSeriesGridRadioButton,SIGNAL( clicked() ),
-  //this,SLOT( EnterInfoSeriesGrid() ));
+  this,SLOT( SelectOpenSeriesGrid() ));
 
   QObject::connect( this->BrowseButton,SIGNAL( clicked() ),
   this,SLOT( EnterInfoSeriesGrid() ));
 
-  QObject::connect( this->ChoiceSeriesGrid,SIGNAL( currentIndexChanged(int) ),
-  this,SLOT( PrintValuesImageID(int) ));
+ /* QObject::connect( this->ChoiceSeriesGrid,SIGNAL( currentIndexChanged(int) ),
+  this,SLOT( PrintValuesImageID(int) ));*/
 
 }
 //------------------------------------------------------------------------------
@@ -553,7 +557,7 @@ Import_SerieGridPage::Import_SerieGridPage( QWidget *parent )
 //------------------------------------------------------------------------------
 void Import_SerieGridPage::initializePage()
 {
-
+  BrowseButton->setVisible(false);
   if (field("OpenOrCreateExp")=="Create")
     {
 
@@ -613,8 +617,9 @@ void Import_SerieGridPage::initializePage()
 //------------------------------------------------------------------------------
 
 
-void Import_SerieGridPage::PrintListSeriesGrid()
+/*void Import_SerieGridPage::PrintListSeriesGrid()
 {
+  BrowseButton->setVisible(false);
   m_ListImageID.clear();
   ChoiceSeriesGrid->clear();
 
@@ -636,13 +641,32 @@ void Import_SerieGridPage::PrintListSeriesGrid()
 
   setField("OpenOrCreateSeriesGrid","Open");
 
+}*/
+
+//------------------------------------------------------------------------------
+
+
+
+//------------------------------------------------------------------------------
+void Import_SerieGridPage::SelectImportSeriesGrid()
+{
+    BrowseButton->setVisible(true);
+    //ChoiceSeriesGrid->setVisible(false);
 }
 //------------------------------------------------------------------------------
 
 
 
 //------------------------------------------------------------------------------
+void Import_SerieGridPage::SelectOpenSeriesGrid()
+{
+    BrowseButton->setVisible(false);
+}
+//------------------------------------------------------------------------------
 
+
+
+//------------------------------------------------------------------------------
 void Import_SerieGridPage::EnterInfoSeriesGrid()
 {
   QString filename = QFileDialog::getOpenFileName(
@@ -662,11 +686,13 @@ void Import_SerieGridPage::EnterInfoSeriesGrid()
     typedef FileListType::iterator myFilesIteratorType;
     myFilesIteratorType It  = importFileInfoList->GetOutput()->begin();
     myFilesIteratorType end = importFileInfoList->GetOutput()->end();
-    
-    
+
+
     while( It != end )
       {
-      GoDBSeriesGridRow myNewImage; 
+      GoDBSeriesGridRow myNewImage;
+      //row.filename = filename.toAscii().data();
+
 
       myNewImage.experimentID = field("ExpID").toInt();
       myNewImage.RCoord = (*It).RTile;
@@ -706,7 +732,7 @@ void Import_SerieGridPage::EnterInfoSeriesGrid()
 
 
 
-  ChoiceSeriesGrid->setVisible(false);
+  //ChoiceSeriesGrid->setVisible(false);
   setField("OpenOrCreateSeriesGrid","Create");
 }
 //------------------------------------------------------------------------------
@@ -715,7 +741,7 @@ void Import_SerieGridPage::EnterInfoSeriesGrid()
 
 //------------------------------------------------------------------------------
 
-void Import_SerieGridPage::PrintValuesImageID(int ImageID)
+/*void Import_SerieGridPage::PrintValuesImageID(int ImageID)
 {
   if( ImageID != -1 )
   {
@@ -744,7 +770,7 @@ void Import_SerieGridPage::PrintValuesImageID(int ImageID)
     std::cout<<"ImageID is "<<field("ImageID").toString().toAscii().data()<<std::endl;
     }
   }
-}
+} */
 //------------------------------------------------------------------------------
 
 

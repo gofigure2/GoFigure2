@@ -8,6 +8,7 @@
 #include <QLabel>
 #include <QRadioButton>
 #include <QFormLayout>
+#include <QGridLayout>
 #include <QComboBox>
 #include <QStringList>
 #include <QString>
@@ -153,19 +154,21 @@ public:
   void initializePage();
 
 protected:
-  QFormLayout* formlayout;
+  QGridLayout* gridlayout;
   QLineEdit* OpenOrCreateSeriesGrid_fake;
-  QLineEdit* ImageID_fake;
-  QComboBox* ChoiceSeriesGrid;
+  //QLineEdit* ImageID_fake;
+  //QComboBox* ChoiceSeriesGrid;
   QRadioButton* openSeriesGridRadioButton;
-  //QRadioButton* createSeriesGridRadioButton;
+  QRadioButton* ImportSeriesGridRadioButton;
   QPushButton* BrowseButton;
-  QStringList m_ListImageID;
+  //QStringList m_ListImageID;
 
 protected slots:
-  void PrintListSeriesGrid();
+  //void PrintListSeriesGrid();
+  void SelectImportSeriesGrid();
+  void SelectOpenSeriesGrid();
   void EnterInfoSeriesGrid();
-  void PrintValuesImageID(int ImageID);
+  //void PrintValuesImageID(int ImageID);
 
 
 };
