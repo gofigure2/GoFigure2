@@ -154,13 +154,6 @@ public:
 
 protected:
   QFormLayout* formlayout;
-  QLineEdit* RCoord;
-  QLineEdit* CCoord;
-  QLineEdit* TCoord;
-  QLineEdit* YCoord;
-  QLineEdit* XCoord;
-  QLineEdit* ZCoord;
-  QLineEdit* FileName;
   QLineEdit* OpenOrCreateSeriesGrid_fake;
   QLineEdit* ImageID_fake;
   QComboBox* ChoiceSeriesGrid;

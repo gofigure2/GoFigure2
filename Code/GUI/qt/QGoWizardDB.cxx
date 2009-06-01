@@ -513,13 +513,6 @@ Import_SerieGridPage::Import_SerieGridPage( QWidget *parent )
 : QWizardPage( parent )
 {
   formlayout= new QFormLayout;
-  RCoord    = new QLineEdit;
-  CCoord    = new QLineEdit;
-  TCoord    = new QLineEdit;
-  YCoord    = new QLineEdit;
-  XCoord    = new QLineEdit;
-  ZCoord    = new QLineEdit;
-  FileName  = new QLineEdit;
   OpenOrCreateSeriesGrid_fake = new QLineEdit;
   ImageID_fake = new QLineEdit;
   BrowseButton = new QPushButton("&Browse", this);
@@ -535,23 +528,8 @@ Import_SerieGridPage::Import_SerieGridPage( QWidget *parent )
   formlayout->addWidget( openSeriesGridRadioButton );
   formlayout->addRow( tr("SeriesGrid to open:"), ChoiceSeriesGrid );
 
-  formlayout->addRow("FileName: ",FileName);
-  formlayout->addRow("RCoord: ",RCoord);
-  formlayout->addRow("CCoord: ",CCoord);
-  formlayout->addRow("TCoord: ",TCoord);
-  formlayout->addRow("YCoord: ",YCoord);
-  formlayout->addRow("XCoord: ",XCoord);
-  formlayout->addRow("ZCoord: ",ZCoord);
-
   setLayout(formlayout);
 
-  registerField("RCoord",RCoord);
-  registerField("CCoord",CCoord);
-  registerField("TCoord",TCoord);
-  registerField("YCoord",YCoord);
-  registerField("XCoord",XCoord);
-  registerField("ZCoord",ZCoord);
-  registerField("FileName",FileName);
   registerField("OpenOrCreateSeriesGrid",OpenOrCreateSeriesGrid_fake);
   registerField("ImageID",ImageID_fake);
 
@@ -641,15 +619,6 @@ void Import_SerieGridPage::PrintListSeriesGrid()
   ChoiceSeriesGrid->clear();
 
   ChoiceSeriesGrid->setVisible(true);
-  RCoord->setEnabled(false);
-  CCoord->setEnabled(false);
-  TCoord->setEnabled(false);
-  YCoord->setEnabled(false);
-  XCoord->setEnabled(false);
-  ZCoord->setEnabled(false);
-  FileName->setEnabled(false);
-
-
   std::vector<std::string> vectListImageID = ListImageIDforExpID(
     field("ServerName").toString().toAscii().data(),
         field("User").toString().toAscii().data(),
@@ -701,17 +670,11 @@ void Import_SerieGridPage::EnterInfoSeriesGrid()
 
       myNewImage.experimentID = field("ExpID").toInt();
       myNewImage.RCoord = (*It).RTile;
-      setField("RCoord",myNewImage.RCoord);
       myNewImage.CCoord = (*It).CTile;
-      setField("CCoord",myNewImage.CCoord);
       myNewImage.TCoord = (*It).TimePoint;
-      setField("TCoord",myNewImage.TCoord);
       myNewImage.YCoord = (*It).YOffset;
-      setField("YCoord",myNewImage.YCoord);
       myNewImage.XCoord = (*It).XOffset;
-      setField("XCoord",myNewImage.XCoord);
       myNewImage.ZCoord = (*It).ZDepth;
-      setField("ZCoord",myNewImage.ZCoord);
       myNewImage.filename = (*It).Filename.c_str();
 
       RecordValues_inTable<GoDBSeriesGridRow>(field("ServerName").toString().toAscii().data(),
@@ -744,14 +707,6 @@ void Import_SerieGridPage::EnterInfoSeriesGrid()
 
 
   ChoiceSeriesGrid->setVisible(false);
-  RCoord->setEnabled(true);
-  CCoord->setEnabled(true);
-  TCoord->setEnabled(true);
-  YCoord->setEnabled(true);
-  XCoord->setEnabled(true);
-  ZCoord->setEnabled(true);
-  FileName->setEnabled(true);
-
   setField("OpenOrCreateSeriesGrid","Create");
 }
 //------------------------------------------------------------------------------
