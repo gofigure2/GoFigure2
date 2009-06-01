@@ -226,7 +226,7 @@ bool OpenOrCreate_Page::validatePage()
 Create_ExperimentPage::Create_ExperimentPage( QWidget *parent )
 : QWizardPage( parent )
 {
-   formLayout = new QFormLayout;
+  formLayout = new QFormLayout;
   ChoiceExp  = new QComboBox;
 
   openExpRadioButton   = new QRadioButton( tr("&Open an existing Experiment") );
@@ -690,41 +690,37 @@ void Import_SerieGridPage::EnterInfoSeriesGrid()
     importFileInfoList->SetFileName( filename.toAscii().data() );
     importFileInfoList->Update();
 
-    typedef GoDBRecordSet< GoDBSeriesGridRow > myRecordSetType;
-    myRecordSetType* RecordSet = new myRecordSetType;
-    RecordSet->SetServerName(field("ServerName").toString().toAscii().data());
-    RecordSet->SetUser( field("User").toString().toAscii().data());
-    RecordSet->SetPassword(field("Password").toString().toAscii().data());
-	RecordSet->SetDataBaseName(field("NameDB").toString().toAscii().data());
-    RecordSet->SetTableName( field("ExpID").toString().toAscii().data());
-
     typedef FileListType::iterator myFilesIteratorType;
     myFilesIteratorType It  = importFileInfoList->GetOutput()->begin();
     myFilesIteratorType end = importFileInfoList->GetOutput()->end();
+    
+    
     while( It != end )
       {
-      GoDBSeriesGridRow row;
-      row.experimentID = field("ExpID").toInt();
-      row.RCoord = (*It).RTile;
-      setField("RCoord",row.RCoord);
-      row.CCoord = (*It).CTile;
-      setField("CCoord",row.CCoord);
-      row.TCoord = (*It).TimePoint;
-      setField("TCoord",row.TCoord);
-      row.YCoord = (*It).YOffset;
-      setField("YCoord",row.YCoord);
-      row.XCoord = (*It).XOffset;
-      setField("XCoord",row.XCoord);
-      row.ZCoord = (*It).ZDepth;
-      setField("ZCoord",row.ZCoord);
-      row.filename = (*It).Filename.c_str();
+      GoDBSeriesGridRow myNewImage; 
 
-      RecordSet->AddObject( row );
+      myNewImage.experimentID = field("ExpID").toInt();
+      myNewImage.RCoord = (*It).RTile;
+      setField("RCoord",myNewImage.RCoord);
+      myNewImage.CCoord = (*It).CTile;
+      setField("CCoord",myNewImage.CCoord);
+      myNewImage.TCoord = (*It).TimePoint;
+      setField("TCoord",myNewImage.TCoord);
+      myNewImage.YCoord = (*It).YOffset;
+      setField("YCoord",myNewImage.YCoord);
+      myNewImage.XCoord = (*It).XOffset;
+      setField("XCoord",myNewImage.XCoord);
+      myNewImage.ZCoord = (*It).ZDepth;
+      setField("ZCoord",myNewImage.ZCoord);
+      myNewImage.filename = (*It).Filename.c_str();
+
+      RecordValues_inTable<GoDBSeriesGridRow>(field("ServerName").toString().toAscii().data(),
+      field("User").toString().toAscii().data(),
+      field("Password").toString().toAscii().data(),
+      field("NameDB").toString().toAscii().data(),"seriesgrid", myNewImage);
 
       It++;
       }
-
-    RecordSet->SaveInDB();
     }
   catch( const itk::ExceptionObject& e )
     {
@@ -814,7 +810,7 @@ void Import_ManualSegmentationPage::initializePage()
 {
   if (field("OpenOrCreateSeriesGrid")=="Create")
     {
-        GoDBSeriesGridRow myNewObject;
+      /*  GoDBSeriesGridRow myNewObject;
 
         myNewObject.experimentID = field("ExpID").toInt();
         myNewObject.RCoord  = field("RCoord").toInt();
@@ -830,11 +826,11 @@ void Import_ManualSegmentationPage::initializePage()
         std::cout<<"myNewObject.experimentID of my exp is : "<<myNewObject.experimentID<<std::endl;
         std::cout<<"myNewObject.filename of my exp is : "<<myNewObject.filename<<std::endl;
 
-        RecordValues_inTable< GoDBSeriesGridRow >(
+          RecordValues_inTable< GoDBSeriesGridRow >(
           field("ServerName").toString().toAscii().data(),
           field("User").toString().toAscii().data(),
           field("Password").toString().toAscii().data(),
-          field("NameDB").toString().toAscii().data(),"seriesgrid", myNewObject);
+          field("NameDB").toString().toAscii().data(),"seriesgrid", myNewObject);*/
 
 
        std::vector<std::string> vectListExpID =

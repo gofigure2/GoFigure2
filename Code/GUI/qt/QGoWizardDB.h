@@ -13,6 +13,8 @@
 #include <QString>
 #include <iostream>
 
+#include "MegaVTK2Configure.h"
+
 
 template< class myT >
 void RecordValues_inTable(const char* ServerName,const char* User,
@@ -41,7 +43,7 @@ Q_OBJECT
 public:
   //enum { Page_Connect_Server, Page_OpenOrCreateDB, Page_CreateExperiment};
 
-  QGoWizardDB(QWidget *parent = 0);
+  QMEGAVTKADDON2_EXPORT QGoWizardDB(QWidget *parent = 0);
 
 };
 
