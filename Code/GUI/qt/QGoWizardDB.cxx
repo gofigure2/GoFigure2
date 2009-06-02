@@ -73,9 +73,9 @@ void OpenOrCreate_Page::initializePage()
    // std::cout<<Password<<std::endl;
 
   if( !CanConnectToServer(
-        field("ServerName").toString().toAscii().data(),
-        field("User").toString().toAscii().data(),
-        field("Password").toString().toAscii().data()))
+        field("ServerName").toString().toStdString(),
+        field("User").toString().toStdString(),
+        field("Password").toString().toStdString()))
     {
     this->setSubTitle(tr("Unable to connect to server: please go back and make sure you have the right Server Name"));
     openDBRadioButton->hide();
@@ -133,17 +133,17 @@ void OpenOrCreate_Page::PrintListDB ()
   {
     std::vector<std::string> vectListDB =
       ListDataBases(
-        field("ServerName").toString().toAscii().data(),
-        field("User").toString().toAscii().data(),
-        field("Password").toString().toAscii().data()
+        field("ServerName").toString().toStdString(),
+        field("User").toString().toStdString(),
+        field("Password").toString().toStdString()
         );
 
     for(unsigned int i = 0; i < vectListDB.size(); ++i )
       {
       if( IsDatabaseOfGoFigureType(
-            field("ServerName").toString().toAscii().data(),
-            field("User").toString().toAscii().data(),
-            field("Password").toString().toAscii().data(),
+            field("ServerName").toString().toStdString(),
+            field("User").toString().toStdString(),
+            field("Password").toString().toStdString(),
             vectListDB[i].c_str( )
             )
           )
@@ -200,10 +200,10 @@ bool OpenOrCreate_Page::validatePage()
      }
      else
      {
-      if( !IsDatabaseOfGoFigureType(field("ServerName").toString().toAscii().data(),
-            field("User").toString().toAscii().data(),
-            field("Password").toString().toAscii().data(),
-            NameDB.toAscii().data() ) )
+      if( !IsDatabaseOfGoFigureType(field("ServerName").toString().toStdString(),
+            field("User").toString().toStdString(),
+            field("Password").toString().toStdString(),
+            NameDB.toStdString() ) )
         {
         setTitle(tr("The Database %1 is not a Gofigure Database").arg(NameDB));
         Ok = false;
@@ -344,10 +344,10 @@ void Create_ExperimentPage::initializePage()
 
   if (!field("DBNametoCreate").toString().isEmpty())
     {
-    CreateDataBaseMain(field("ServerName").toString().toAscii().data(),
-      field("User").toString().toAscii().data(),
-      field("Password").toString().toAscii().data(),
-      field("DBNametoCreate").toString().toAscii().data());
+    CreateDataBaseMain(field("ServerName").toString().toStdString(),
+      field("User").toString().toStdString(),
+      field("Password").toString().toStdString(),
+      field("DBNametoCreate").toString().toStdString());
     setTitle(tr("You are currently using The Database %1 ").arg(field("DBNametoCreate").toString()));
     setField("NameDB",field("DBNametoCreate"));
     }
@@ -434,10 +434,10 @@ void Create_ExperimentPage::PrintListExp()
 
     std::vector<std::string> vectListExpID =
       ListExpID(
-        field("ServerName").toString().toAscii().data(),
-        field("User").toString().toAscii().data(),
-        field("Password").toString().toAscii().data(),
-        field("NameDB").toString().toAscii().data());
+        field("ServerName").toString().toStdString(),
+        field("User").toString().toStdString(),
+        field("Password").toString().toStdString(),
+        field("NameDB").toString().toStdString());
 
 
    for(unsigned int i = 0; i < vectListExpID.size(); ++i )
@@ -465,11 +465,11 @@ void Create_ExperimentPage::PrintValuesExpID(QString ExpID)
 
   std::vector<std::string> myvect =
     ListValuesforID(
-        field("ServerName").toString().toAscii().data(),
-        field("User").toString().toAscii().data(),
-        field("Password").toString().toAscii().data(),
-        field("NameDB").toString().toAscii().data(),"experiment",
-        "experimentID",ExpID.toLatin1().data());
+        field("ServerName").toString().toStdString(),
+        field("User").toString().toStdString(),
+        field("Password").toString().toStdString(),
+        field("NameDB").toString().toStdString(),"experiment",
+        "experimentID",ExpID.toStdString());
 
   std::cout<<"Nb of values in myvect: "<< myvect.size()<<std::endl;
 
@@ -564,8 +564,8 @@ void Import_SerieGridPage::initializePage()
 
     GoDBExperimentRow myNewObject;
 
-    myNewObject.name         = field("Name").toString().toAscii().data();
-    myNewObject.description  = field("Description").toString().toAscii().data();
+    myNewObject.name         = field("Name").toString().toStdString();
+    myNewObject.description  = field("Description").toString().toStdString();
     myNewObject.timeInterval = field("TimeInterval").toInt();
     myNewObject.tileHeight   = field("TileHeight").toInt();
     myNewObject.tileWidth    = field("TileWidth").toInt();
@@ -579,24 +579,24 @@ void Import_SerieGridPage::initializePage()
     myNewObject.nSlices      = field("nSlices").toInt();
     myNewObject.nRows        = field("nRows").toInt();
     myNewObject.nColumns     = field("nColumns").toInt();
-    myNewObject.filePattern  = field("FilePattern").toString().toAscii().data();
+    myNewObject.filePattern  = field("FilePattern").toString().toStdString();
 
 
     std::cout<<"myNewObject.name of my exp is : "<<myNewObject.name<<std::endl;
     std::cout<<"myNewObject.tileWidth of my exp is : "<<myNewObject.tileWidth<<std::endl;
 
     RecordValues_inTable< GoDBExperimentRow >(
-      field("ServerName").toString().toAscii().data(),
-      field("User").toString().toAscii().data(),
-      field("Password").toString().toAscii().data(),
-      field("NameDB").toString().toAscii().data(),"experiment", myNewObject);
+      field("ServerName").toString().toStdString(),
+      field("User").toString().toStdString(),
+      field("Password").toString().toStdString(),
+      field("NameDB").toString().toStdString(),"experiment", myNewObject);
 
     std::vector<std::string> vectListExpID =
       ListExpID(
-        field("ServerName").toString().toAscii().data(),
-        field("User").toString().toAscii().data(),
-        field("Password").toString().toAscii().data(),
-        field("NameDB").toString().toAscii().data());
+        field("ServerName").toString().toStdString(),
+        field("User").toString().toStdString(),
+        field("Password").toString().toStdString(),
+        field("NameDB").toString().toStdString());
 
     setField( "ExpID", (unsigned int)vectListExpID.size() );
     std::cout << "create" << std::endl;
@@ -688,7 +688,6 @@ void Import_SerieGridPage::EnterInfoSeriesGrid()
     myFilesIteratorType It  = importFileInfoList->GetOutput()->begin();
     myFilesIteratorType end = importFileInfoList->GetOutput()->end();
 
-
     while( It != end )
       {
       GoDBSeriesGridRow myNewImage;
@@ -704,10 +703,10 @@ void Import_SerieGridPage::EnterInfoSeriesGrid()
       myNewImage.ZCoord = (*It).ZDepth;
       myNewImage.filename = (*It).Filename.c_str();
 
-      RecordValues_inTable<GoDBSeriesGridRow>(field("ServerName").toString().toAscii().data(),
-      field("User").toString().toAscii().data(),
-      field("Password").toString().toAscii().data(),
-      field("NameDB").toString().toAscii().data(),"seriesgrid", myNewImage);
+      RecordValues_inTable<GoDBSeriesGridRow>(field("ServerName").toString().toStdString(),
+      field("User").toString().toStdString(),
+      field("Password").toString().toStdString(),
+      field("NameDB").toString().toStdString(),"seriesgrid", myNewImage);
 
       It++;
       }
@@ -817,10 +816,10 @@ void Import_ManualSegmentationPage::initializePage()
 
        std::vector<std::string> vectListExpID =
         ListExpID(
-          field("ServerName").toString().toAscii().data(),
-          field("User").toString().toAscii().data(),
-          field("Password").toString().toAscii().data(),
-          field("NameDB").toString().toAscii().data());
+          field("ServerName").toString().toStdString(),
+          field("User").toString().toStdString(),
+          field("Password").toString().toStdString(),
+          field("NameDB").toString().toStdString());
 
       setField("ImageID",(unsigned int)vectListExpID.size());
       std::cout<<"create"<<std::endl;

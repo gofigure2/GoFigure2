@@ -75,7 +75,7 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
 
-  void SetFileName( char * name );
+  void SetFileName( char* name );
 
   void Glob();
 

@@ -157,7 +157,7 @@ public:
     vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
     DataBaseConnector->SetHostName(this->ServerName.c_str());
     DataBaseConnector->SetUser(this->User.c_str());
-    DataBaseConnector->SetPassword(this->PassWord.c_str(0);
+    DataBaseConnector->SetPassword(this->PassWord.c_str());
     DataBaseConnector->SetDatabaseName( this->DataBaseName.c_str() );
     
     if( !DataBaseConnector->Open() )
@@ -319,10 +319,10 @@ GoDBRecordSet<TObject>::
 PopulateColumnNamesContainer()
 {
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
-  DataBaseConnector->SetHostName(this->ServerName);
-  DataBaseConnector->SetUser(this->User);
-  DataBaseConnector->SetPassword(this->PassWord);
-  DataBaseConnector->SetDatabaseName( this->DataBaseName );
+  DataBaseConnector->SetHostName(this->ServerName.c_str());
+  DataBaseConnector->SetUser(this->User.c_str());
+  DataBaseConnector->SetPassword(this->PassWord.c_str());
+  DataBaseConnector->SetDatabaseName( this->DataBaseName.c_str() );
  
   if (!DataBaseConnector->Open())
   { 
