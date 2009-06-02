@@ -3,6 +3,7 @@
 #include <qwidget.h>
 
 #include "ui_QPrintDatabase.h"
+#include "MegaVTK2Configure.h"
 
 class QPrintDatabase : public QWidget,
   private Ui::WidgetPrintDatabase
@@ -10,8 +11,8 @@ class QPrintDatabase : public QWidget,
   Q_OBJECT
 
 public:
-  QPrintDatabase(QString NameDB);
-  virtual ~QPrintDatabase();
+  explicit QMEGAVTKADDON2_EXPORT QPrintDatabase(QString NameDB);
+  virtual QMEGAVTKADDON2_EXPORT ~QPrintDatabase();
 
 
 protected:

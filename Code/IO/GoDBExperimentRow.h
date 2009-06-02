@@ -61,7 +61,7 @@ public:
   int           nSlices;
   int           nRows;
   int           nColumns;
-  const char*   filePattern;
+  std::string   filePattern;
 
   GoDBExperimentRow()
     {

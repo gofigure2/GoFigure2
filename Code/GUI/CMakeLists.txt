@@ -24,8 +24,8 @@ SET( GOFIGURE_APPLICATION_SOURCE_LIST
     gofigure.cxx
     ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/itkQt/itkQtProgressBar.cxx
     ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/vtkLSM/vtkLSMReader.cxx
-#     ${GOFIGURE2_SOURCE_DIR}/Code/GUI/qt/QGoCreateDBDialog.cxx
-#     ${GOFIGURE2_SOURCE_DIR}/Code/IO/CreateDataBaseHelper.cxx
+    ${GOFIGURE2_SOURCE_DIR}/Code/GUI/qt/QGoCreateDBDialog.cxx
+    ${GOFIGURE2_SOURCE_DIR}/Code/IO/CreateDataBaseHelper.cxx
     ${QGOMAINWINDOW_SRC}
     ${QGOMAINWINDOW_MOC_SRC}
     ${QGOMAINWINDOW_QRC}

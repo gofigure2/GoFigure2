@@ -10,12 +10,12 @@ QPrintDatabase.ui
 )
 
 QT4_WRAP_UI(QPRINTDATABASE_UIS_H ${QPRINTDATABASE_UIS})
-QT4_WRAP_CPP(QPRINTDATABASE_MOC_UI ${QPRINTDATABASE_UIS_H})
+#QT4_WRAP_CPP(QPRINTDATABASE_MOC_UI ${QPRINTDATABASE_UIS_H})
 
 SET( QMegaVTKAddOn_NAME2
-  QGoImageInfo
   QGoLUTDialog
   QGoCreateDBDialog
+  QGoImageInfo
   QImagePageView
   QImagePageViewTracer
   QImagePageView4DTracer
@@ -25,9 +25,9 @@ SET( QMegaVTKAddOn_NAME2
   )
 
 SET( QMegaVTKAddOn_SRC2
-  QGoImageInfo.cxx
   QGoLUTDialog.cxx
   QGoCreateDBDialog.cxx
+  QGoImageInfo.cxx
   QImagePageView.cxx
   QImagePageViewTracer.cxx
   QImagePageView4DTracer.cxx
@@ -42,19 +42,18 @@ ENDFOREACH( src )
 
 ADD_LIBRARY( QMegaVTKAddOn2
   ${LIBS_STYLE}
-  ${QGoImageInfo_MOC_SRC2}
-  ${QGoCreateDBDialog_MOC_SRC2}
   ${QGoLUTDialog_MOC_SRC2}
+  ${QGoCreateDBDialog_MOC_SRC2}
+  ${QGoImageInfo_MOC_SRC2}
   ${QImagePageView_MOC_SRC2}
   ${QImagePageViewTracer_MOC_SRC2}
   ${QImagePageView4DTracer_MOC_SRC2}
   ${QMegaVTKAddOn_SRC2}
   ${QSplitterchild_MOC_SRC2}
   ${QPrintDatabase_MOC_SRC2}
-  ${QPRINTDATABASE_MOC_UI}
+  ${QPRINTDATABASE_UIS_H}
   ${QGoWizardDB_MOC_SRC2}		
   ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/vtkLSM/vtkLSMReader.cxx
-#   ${GOFIGURE2_SOURCE_DIR}/Code/IO/CreateDataBaseHelper.cxx
   )
 
 SET( QMegaVTKAddOn2_LIBS

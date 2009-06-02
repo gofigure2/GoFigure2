@@ -82,19 +82,20 @@ public:
     delete temp;
     }
 
-  void SetServerName( const char* ServerName )
+ 
+  void SetServerName( std::string ServerName )
     { this->ServerName = ServerName; }
 
-  void SetDataBaseName( const char* DataBaseName )
+  void SetDataBaseName( std::string DataBaseName )
     { this->DataBaseName = DataBaseName; }
 
-  void SetTableName( const char* TableName )
+  void SetTableName( std::string TableName )
     { this->TableName = TableName; }
 
-  void SetUser( const char* User )
+  void SetUser( std::string User )
     { this->User = User; }
 
-  void SetPassword( const char* Password )
+  void SetPassword( std::string Password )
     { this->PassWord = Password; }
 
   // read content from DB
@@ -154,12 +155,19 @@ public:
     std::pair<std::string, std::string> Query = this->SetUpInsertQueryStrings();
 
     vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
-    DataBaseConnector->SetHostName(this->ServerName);
-    DataBaseConnector->SetUser(this->User);
-    DataBaseConnector->SetPassword(this->PassWord);
-    DataBaseConnector->SetDatabaseName( this->DataBaseName );
-    DataBaseConnector->Open();
-
+    DataBaseConnector->SetHostName(this->ServerName.c_str());
+    DataBaseConnector->SetUser(this->User.c_str());
+    DataBaseConnector->SetPassword(this->PassWord.c_str(0);
+    DataBaseConnector->SetDatabaseName( this->DataBaseName.c_str() );
+    
+    if( !DataBaseConnector->Open() )
+    {
+    std::cerr << "Could not open database." << std::endl;
+    std::cerr << "DB will not be created."  << std::endl;
+    DataBaseConnector->Delete();
+    return;
+    }
+    
     vtkSQLQuery* query = DataBaseConnector->GetQueryInstance();
     if( Query.first != "")
       {
@@ -209,11 +217,11 @@ private:
   std::vector< std::string >        m_ColumnNamesContainer;
 
   // DB variables
-  const char* ServerName;
-  const char* DataBaseName;
-  const char* TableName;
-  const char* User;
-  const char* PassWord;
+  std::string ServerName;
+  std::string DataBaseName;
+  std::string TableName;
+  std::string User;
+  std::string PassWord;
   bool        IsOpen;
 
 };
@@ -315,7 +323,13 @@ PopulateColumnNamesContainer()
   DataBaseConnector->SetUser(this->User);
   DataBaseConnector->SetPassword(this->PassWord);
   DataBaseConnector->SetDatabaseName( this->DataBaseName );
-  DataBaseConnector->Open();
+ 
+  if (!DataBaseConnector->Open())
+  { 
+    std::cerr << "Can not open DB"  << std::endl;
+    DataBaseConnector->Delete();
+    return;
+  }
 
   vtkSQLQuery* query = DataBaseConnector->GetQueryInstance();
   std::stringstream querystream;

@@ -24,7 +24,7 @@ int main( int argc, char * argv[] )
     RecordSet->SetServerName( argv[2] );
     RecordSet->SetUser( argv[3] );
     RecordSet->SetPassword( argv[4] );
-	RecordSet->SetDataBaseName( argv[5] );
+	  RecordSet->SetDataBaseName( argv[5] );
     RecordSet->SetTableName( "seriesgrid" );
 
     typedef FileListType::iterator myFilesIteratorType;

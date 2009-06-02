@@ -40,6 +40,8 @@
 #ifndef __GoDBSeriesGridRow_h
 #define __GoDBSeriesGridRow_h
 
+#include <string>
+
 class GoDBSeriesGridRow
 {
 public:
@@ -52,7 +54,7 @@ public:
   int         YCoord;
   int         XCoord;
   int         ZCoord;
-  const char* filename;
+  std::string filename;
 
   std::string PrintValues()
     {

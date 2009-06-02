@@ -41,6 +41,8 @@
 #ifndef __GoFigureFileInfoHelper_h
 #define __GoFigureFileInfoHelper_h
 
+#include <string>
+
 class GoFigureFileInfoHelper
 {
 public:

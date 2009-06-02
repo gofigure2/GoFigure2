@@ -7,7 +7,7 @@ int main( int argc, char** argv )
 {
   QApplication app(argc, argv);
 
-  QGoCreateDBDialog* dialog = new QGoCreateDBDialog;
+  QGoCreateDBDialog dialog;
 
-  return 0;
+  return EXIT_SUCCESS;
 }

@@ -18,22 +18,23 @@
 
 
 template< class myT >
-void RecordValues_inTable(const char* ServerName,const char* User,
-          const char* Password,const char* NameDB,const char* TableName, myT& myNewObject )
+void RecordValues_inTable(std::string ServerName,std::string User,
+          std::string Password,std::string NameDB,std::string TableName, myT& myNewObject )
 {
   typedef GoDBRecordSet< myT >   SetType;
 
-  SetType* mySet = new SetType;
-  mySet->SetServerName(ServerName);
-  mySet->SetDataBaseName(NameDB);
-  mySet->SetTableName( TableName );
-  mySet->SetUser( User);
-  mySet->SetPassword( Password);
-  mySet->PopulateFromDB();
-  mySet->AddObject( myNewObject );
-  mySet->SaveInDB();
+  //SetType* mySet = new SetType;
+  SetType mySet;
+  mySet.SetServerName(ServerName);
+  mySet.SetDataBaseName(NameDB);
+  mySet.SetTableName( TableName );
+  mySet.SetUser( User);
+  mySet.SetPassword( Password);
+  mySet.PopulateFromDB();
+  mySet.AddObject( myNewObject );
+  mySet.SaveInDB();
 
-  delete mySet;
+//  delete mySet;
   return;
 };
 

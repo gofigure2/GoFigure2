@@ -13,6 +13,7 @@
 #include <QRect>
 #include <QFileDialog>
 #include <QPushButton>
+#include <string>
 
 //------------------------------------------------------------------------------
 QGoWizardDB::QGoWizardDB( QWidget *parent )
@@ -518,8 +519,8 @@ Import_SerieGridPage::Import_SerieGridPage( QWidget *parent )
   BrowseButton = new QPushButton("&Browse", this);
 
   //ChoiceSeriesGrid = new QComboBox;
-  openSeriesGridRadioButton = new QRadioButton(tr("&Open an existing SeriesGrid"));
-  ImportSeriesGridRadioButton = new QRadioButton(tr("&Import a new SeriesGrid"));
+  openSeriesGridRadioButton = new QRadioButton(tr("&Open the existing Image Set"));
+  ImportSeriesGridRadioButton = new QRadioButton(tr("&Import a new Image Set"));
 
   //formlayout->setHorizontalSpacing(200);
 

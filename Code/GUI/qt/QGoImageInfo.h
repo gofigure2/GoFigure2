@@ -58,7 +58,7 @@ class QGoImageInfo : public QWidget
   Q_OBJECT
 public:
     explicit QMEGAVTKADDON2_EXPORT QGoImageInfo( QWidget* parent = 0 );
-    virtual QMEGAVTKADDON2_EXPORT  ~QGoImageInfo( );
+    virtual QMEGAVTKADDON2_EXPORT ~QGoImageInfo( );
 
 public slots:
     QMEGAVTKADDON2_EXPORT void setDimension( const unsigned int& );

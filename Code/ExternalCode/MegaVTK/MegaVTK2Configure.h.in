@@ -1,5 +1,5 @@
-#ifndef _MegaVTK2_Configure_h_
-#define _MegaVTK2_Configure_h_
+#ifndef __MegaVTK2Configure_h
+#define __MegaVTK2Configure_h
 
 /* Whether we are building shared libraries.  */
 #if defined (WIN32) && defined (VTK_BUILD_SHARED_LIBS)

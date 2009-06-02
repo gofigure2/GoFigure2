@@ -44,94 +44,94 @@
 #include <string>
 
 std::vector<std::string> ListDataBases(
-  const char* ServerName, const char* login,
-  const char* Password);
+  std::string ServerName, std::string login,
+  std::string Password);
 
 std::vector<std::string> ListTables(
-  const char* ServerName, const char* login,
-  const char* Password, const char* DBName );
+  std::string ServerName, std::string login,
+  std::string Password, std::string DBName );
 
 std::vector<std::string> ListExpID(
-  const char* ServerName, const char* login,
-  const char* Password, const char* DBName);
+  std::string ServerName, std::string login,
+  std::string Password, std::string DBName);
 
 std::vector<std::string> ListValuesforID(
-  const char* ServerName, const char* login,
-  const char* Password, const char* DBName,
-  const char* TableName, const char* field,const char* ID);
+  std::string ServerName, std::string login,
+  std::string Password, std::string DBName,
+  std::string TableName, std::string field,std::string ID);
 
 std::vector<std::string> ListImageIDforExpID(
-  const char* ServerName, const char* login,
-  const char* Password, const char* DBName, const char* ID);
+  std::string ServerName, std::string login,
+  std::string Password, std::string DBName, std::string ID);
 
 bool CanConnectToServer(
-  const char* ServerName, const char* login,
-  const char* Password);
+  std::string ServerName, std::string login,
+  std::string Password);
 
 void DropDatabase(
-  const char* ServerName, const char* login,
-  const char* Password, const char* DBName );
+  std::string ServerName, std::string login,
+  std::string Password, std::string DBName );
 
 void DropTable(
-  const char* ServerName, const char* login,
-  const char* Password, const char* DBName,
-  const char* TableName );
+  std::string ServerName, std::string login,
+  std::string Password, std::string DBName,
+  std::string TableName );
 
 bool DoesDataBaseExist(
-  const char* ServerName, const char* login,
-  const char* Password, const char* DBName );
+  std::string ServerName, std::string login,
+  std::string Password, std::string DBName );
 
 bool DoesTableExist(
-  const char* ServerName, const char* login,
-  const char* Password, const char* DBName,
-  const char* TableName );
+  std::string ServerName, std::string login,
+  std::string Password, std::string DBName,
+  std::string TableName );
 
 bool IsDatabaseOfGoFigureType(
-  const char* ServerName, const char* login,
-  const char* Password, const char* DBName );
+  std::string ServerName, std::string login,
+  std::string Password, std::string DBName );
 
 void CreateDataBase(
-  const char* ServerName, const char* login,
-  const char* Password, const char* DBName );
+  std::string ServerName, std::string login,
+  std::string Password, std::string DBName );
 void CreateBookmarksTable(
-  const char* ServerName, const char* login,
-  const char* Password, const char* DBName );
+  std::string ServerName, std::string login,
+  std::string Password, std::string DBName );
 void CreateCollectionInfoTable(
-  const char* ServerName, const char* login,
-  const char* Password, const char* DBName );
+  std::string ServerName, std::string login,
+  std::string Password, std::string DBName );
 void CreateExperimentTable(
-  const char* ServerName, const char* login,
-  const char* Password, const char* DBName );
+  std::string ServerName, std::string login,
+  std::string Password, std::string DBName );
 void CreateFigureTable(
-  const char* ServerName, const char* login,
-  const char* Password, const char* DBName );
+  std::string ServerName, std::string login,
+  std::string Password, std::string DBName );
 void CreateFigureFlavorTable(
-  const char* ServerName, const char* login,
-  const char* Password, const char* DBName );
+  std::string ServerName, std::string login,
+  std::string Password, std::string DBName );
 void CreateLineageTable(
-  const char* ServerName, const char* login,
-  const char* Password, const char* DBName );
+  std::string ServerName, std::string login,
+  std::string Password, std::string DBName );
 void CreateLineageFlavorTable(
-  const char* ServerName, const char* login,
-  const char* Password, const char* DBName );
+  std::string ServerName, std::string login,
+  std::string Password, std::string DBName );
 void CreateMeshTable(
-  const char* ServerName, const char* login,
-  const char* Password, const char* DBName );
+  std::string ServerName, std::string login,
+  std::string Password, std::string DBName );
 void CreateMeshFlavor(
-  const char* ServerName, const char* login,
-  const char* Password, const char* DBName );
+  std::string ServerName, std::string login,
+  std::string Password, std::string DBName );
 void CreateSeriesGridTable(
-  const char* ServerName, const char* login,
-  const char* Password, const char* DBName );
+  std::string ServerName, std::string login,
+  std::string Password, std::string DBName );
 void CreateTrackTable(
-  const char* ServerName, const char* login,
-  const char* Password, const char* DBName );
+  std::string ServerName, std::string login,
+  std::string Password, std::string DBName );
 void CreateTrackFlavor(
-  const char* ServerName, const char* login,
-  const char* Password, const char* DBName );
+  std::string ServerName, std::string login,
+  std::string Password, std::string DBName );
 
 void CreateDataBaseMain(
-  const char* ServerName, const char* login,
-  const char* Password, const char* DBName );
+  std::string ServerName, std::string login,
+  std::string Password, std::string DBName );
 
 #endif

@@ -53,8 +53,8 @@ class QGoCreateDBDialog : public QObject
 {
   Q_OBJECT
 public:
-  explicit QGoCreateDBDialog( QObject* parent = 0 );
-  virtual  QMEGAVTKADDON2_EXPORT ~QGoCreateDBDialog() {};
+  explicit QMEGAVTKADDON2_EXPORT QGoCreateDBDialog( QObject* parent = 0 );
+  virtual QMEGAVTKADDON2_EXPORT ~QGoCreateDBDialog() {};
 
 private:
   QGoCreateDBDialog( const QGoCreateDBDialog& );

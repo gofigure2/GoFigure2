@@ -45,6 +45,7 @@
 #include "vtkStdString.h"
 #include "vtkVariant.h"
 #include <sstream>
+#include <string>
 
 // NOTE ALEX
 //
@@ -53,13 +54,13 @@
 // database with same name already exists.
 
 bool CanConnectToServer(
-  const char* ServerName, const char* login,
-  const char* Password)
+  std::string ServerName, std::string login,
+  std::string Password)
 {
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
-  DataBaseConnector->SetHostName( ServerName );
-  DataBaseConnector->SetUser( login );
-  DataBaseConnector->SetPassword( Password );
+  DataBaseConnector->SetHostName( ServerName.c_str() );
+  DataBaseConnector->SetUser( login.c_str() );
+  DataBaseConnector->SetPassword( Password.c_str() );
   DataBaseConnector->Open();
   bool IsOpen = DataBaseConnector->IsOpen();
   DataBaseConnector->Delete();
@@ -68,15 +69,15 @@ bool CanConnectToServer(
 };
 
 std::vector<std::string> ListDataBases(
-  const char* ServerName, const char* login,
-  const char* Password)
+  std::string ServerName, std::string login,
+  std::string Password)
 {
   std::vector< std::string > result;
 
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
-  DataBaseConnector->SetHostName( ServerName );
-  DataBaseConnector->SetUser( login );
-  DataBaseConnector->SetPassword( Password );
+  DataBaseConnector->SetHostName( ServerName.c_str() );
+  DataBaseConnector->SetUser( login.c_str() );
+  DataBaseConnector->SetPassword( Password.c_str() );
   if( !DataBaseConnector->Open() )
     {
     std::cerr << "Could not open database." << std::endl;
@@ -113,16 +114,16 @@ std::vector<std::string> ListDataBases(
 };
 
 std::vector<std::string> ListTables(
-  const char* ServerName, const char* login,
-  const char* Password, const char* DBName )
+  std::string ServerName, std::string login,
+  std::string Password, std::string DBName )
 {
   std::vector< std::string > result;
 
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
-  DataBaseConnector->SetHostName( ServerName );
-  DataBaseConnector->SetUser( login );
-  DataBaseConnector->SetPassword( Password );
-  DataBaseConnector->SetDatabaseName( DBName );
+  DataBaseConnector->SetHostName( ServerName.c_str() );
+  DataBaseConnector->SetUser( login.c_str() );
+  DataBaseConnector->SetPassword( Password.c_str() );
+  DataBaseConnector->SetDatabaseName( DBName.c_str() );
   if( !DataBaseConnector->Open() )
     {
     std::cerr << "Could not open database." << std::endl;
@@ -159,16 +160,16 @@ std::vector<std::string> ListTables(
 };
 
 std::vector<std::string> ListExpID(
-  const char* ServerName, const char* login,
-  const char* Password, const char* DBName)
+  std::string ServerName, std::string login,
+  std::string Password, std::string DBName)
 {
   std::vector< std::string > result;
 
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
-  DataBaseConnector->SetHostName( ServerName );
-  DataBaseConnector->SetUser( login );
-  DataBaseConnector->SetPassword( Password );
-  DataBaseConnector->SetDatabaseName( DBName );
+  DataBaseConnector->SetHostName( ServerName.c_str() );
+  DataBaseConnector->SetUser( login.c_str() );
+  DataBaseConnector->SetPassword( Password.c_str() );
+  DataBaseConnector->SetDatabaseName( DBName.c_str() );
   if( !DataBaseConnector->Open() )
     {
     std::cerr << "Could not open database." << std::endl;
@@ -206,14 +207,14 @@ std::vector<std::string> ListExpID(
 };
 
 void DropDatabase( 
-  const char* ServerName, const char* login,
-  const char* Password, const char* DBName )
+  std::string ServerName, std::string login,
+  std::string Password, std::string DBName )
 {
   // if( CanOpenDatabase && DoesDataBaseExist )
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
-  DataBaseConnector->SetHostName( ServerName );
-  DataBaseConnector->SetUser( login );
-  DataBaseConnector->SetPassword( Password );
+  DataBaseConnector->SetHostName( ServerName.c_str() );
+  DataBaseConnector->SetUser( login.c_str() );
+  DataBaseConnector->SetPassword( Password.c_str() );
   if( !DataBaseConnector->Open() )
     {
     std::cerr << "Could not open database." << std::endl;
@@ -242,16 +243,16 @@ void DropDatabase(
 };
 
 void DropTable(
-  const char* ServerName, const char* login,
-  const char* Password, const char* DBName,
-  const char* TableName )
+  std::string ServerName, std::string login,
+  std::string Password, std::string DBName,
+  std::string TableName )
 {
   // if( CanOpenDatabase && DoesDataBaseExist && DoesTableExist )
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
-  DataBaseConnector->SetHostName( ServerName );
-  DataBaseConnector->SetUser( login );
-  DataBaseConnector->SetPassword( Password );
-  DataBaseConnector->SetDatabaseName( DBName );
+  DataBaseConnector->SetHostName( ServerName.c_str() );
+  DataBaseConnector->SetUser( login.c_str() );
+  DataBaseConnector->SetPassword( Password.c_str() );
+  DataBaseConnector->SetDatabaseName( DBName.c_str() );
   if( !DataBaseConnector->Open() )
     {
     std::cerr << "Could not open database." << std::endl;
@@ -278,8 +279,8 @@ void DropTable(
 };
 
 bool DoesDataBaseExist(
-  const char* ServerName, const char* login,
-  const char* Password, const char* DBName )
+  std::string ServerName, std::string login,
+  std::string Password, std::string DBName )
 {
   std::vector< std::string > list;
   list = ListDataBases( ServerName, login, Password );
@@ -296,9 +297,9 @@ bool DoesDataBaseExist(
 };
 
 bool DoesTableExist(
-  const char* ServerName, const char* login,
-  const char* Password, const char* DBName,
-  const char* TableName )
+  std::string ServerName, std::string login,
+  std::string Password, std::string DBName,
+  std::string TableName )
 {
   std::vector< std::string > list;
   list = ListTables( ServerName, login, Password, DBName );
@@ -315,8 +316,8 @@ bool DoesTableExist(
 }
 
 bool IsDatabaseOfGoFigureType(
-  const char* ServerName, const char* login,
-  const char* Password, const char* DBName )
+  std::string ServerName, std::string login,
+  std::string Password, std::string DBName )
 {
   if(  DoesTableExist( ServerName, login, Password, DBName, "bookmarks" )
     && DoesTableExist( ServerName, login, Password, DBName, "figure" )  
@@ -331,8 +332,8 @@ bool IsDatabaseOfGoFigureType(
 }
 
 void CreateDataBaseMain(
-  const char* ServerName, const char* login,
-  const char* Password, const char* DBName )
+  std::string ServerName, std::string login,
+  std::string Password, std::string DBName )
 {
   if( CanConnectToServer(    ServerName, login, Password ) )
     {
@@ -357,13 +358,13 @@ void CreateDataBaseMain(
 }
 
 void CreateDataBase(
-  const char* ServerName, const char* login,
-  const char* Password, const char* DBName )
+  std::string ServerName, std::string login,
+  std::string Password, std::string DBName )
 {
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
-  DataBaseConnector->SetHostName( ServerName );
-  DataBaseConnector->SetUser( login );
-  DataBaseConnector->SetPassword( Password );
+  DataBaseConnector->SetHostName( ServerName.c_str() );
+  DataBaseConnector->SetUser( login.c_str() );
+  DataBaseConnector->SetPassword( Password.c_str() );
   if( !DataBaseConnector->Open() )
     {
     std::cerr << "Could not open database." << std::endl;
@@ -390,14 +391,14 @@ void CreateDataBase(
 }
 
 void CreateBookmarksTable(
-  const char* ServerName, const char* login,
-  const char* Password, const char* DBName )
+  std::string ServerName, std::string login,
+  std::string Password, std::string DBName )
 {
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
-  DataBaseConnector->SetHostName( ServerName );
-  DataBaseConnector->SetUser( login );
-  DataBaseConnector->SetPassword( Password );
-  DataBaseConnector->SetDatabaseName( DBName );
+  DataBaseConnector->SetHostName( ServerName.c_str() );
+  DataBaseConnector->SetUser( login.c_str() );
+  DataBaseConnector->SetPassword( Password.c_str() );
+  DataBaseConnector->SetDatabaseName( DBName.c_str() );
   if( !DataBaseConnector->Open() )
     {
     std::cerr << "Could not open database." << std::endl;
@@ -438,13 +439,13 @@ void CreateBookmarksTable(
 }
 
 void CreateCollectionInfoTable(
-  const char* ServerName, const char* login, const char* Password, const char* DBName )
+  std::string ServerName, std::string login, std::string Password, std::string DBName )
 {
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
-  DataBaseConnector->SetHostName( ServerName );
-  DataBaseConnector->SetUser( login );
-  DataBaseConnector->SetPassword( Password );
-  DataBaseConnector->SetDatabaseName( DBName );
+  DataBaseConnector->SetHostName( ServerName.c_str() );
+  DataBaseConnector->SetUser( login.c_str() );
+  DataBaseConnector->SetPassword( Password.c_str() );
+  DataBaseConnector->SetDatabaseName( DBName.c_str() );
   if( !DataBaseConnector->Open() )
     {
     std::cerr << "Could not open database." << std::endl;
@@ -482,13 +483,13 @@ void CreateCollectionInfoTable(
 }
 
 void CreateExperimentTable(
-  const char* ServerName, const char* login, const char* Password, const char* DBName )
+  std::string ServerName, std::string login, std::string Password, std::string DBName )
 {
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
-  DataBaseConnector->SetHostName( ServerName );
-  DataBaseConnector->SetUser( login );
-  DataBaseConnector->SetPassword( Password );
-  DataBaseConnector->SetDatabaseName( DBName );
+  DataBaseConnector->SetHostName( ServerName.c_str() );
+  DataBaseConnector->SetUser( login.c_str() );
+  DataBaseConnector->SetPassword( Password.c_str() );
+  DataBaseConnector->SetDatabaseName( DBName.c_str() );
   if( !DataBaseConnector->Open() )
     {
     std::cerr << "Could not open database." << std::endl;
@@ -536,13 +537,13 @@ void CreateExperimentTable(
 }
 
 void CreateFigureTable(
-  const char* ServerName, const char* login, const char* Password, const char* DBName )
+  std::string ServerName, std::string login, std::string Password, std::string DBName )
 {
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
-  DataBaseConnector->SetHostName( ServerName );
-  DataBaseConnector->SetUser( login );
-  DataBaseConnector->SetPassword( Password );
-  DataBaseConnector->SetDatabaseName( DBName );
+  DataBaseConnector->SetHostName( ServerName.c_str() );
+  DataBaseConnector->SetUser( login.c_str() );
+  DataBaseConnector->SetPassword( Password.c_str() );
+  DataBaseConnector->SetDatabaseName( DBName.c_str() );
   if( !DataBaseConnector->Open() )
     {
     std::cerr << "Could not open database." << std::endl;
@@ -595,13 +596,13 @@ void CreateFigureTable(
 }
 
 void CreateFigureFlavorTable(
-  const char* ServerName, const char* login, const char* Password, const char* DBName )
+  std::string ServerName, std::string login, std::string Password, std::string DBName )
 {
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
-  DataBaseConnector->SetHostName( ServerName );
-  DataBaseConnector->SetUser( login );
-  DataBaseConnector->SetPassword( Password );
-  DataBaseConnector->SetDatabaseName( DBName );
+  DataBaseConnector->SetHostName( ServerName.c_str() );
+  DataBaseConnector->SetUser( login.c_str() );
+  DataBaseConnector->SetPassword( Password.c_str() );
+  DataBaseConnector->SetDatabaseName( DBName.c_str() );
   if( !DataBaseConnector->Open() )
     {
     std::cerr << "Could not open database." << std::endl;
@@ -636,13 +637,13 @@ void CreateFigureFlavorTable(
 }
 
 void CreateLineageTable(
-  const char* ServerName, const char* login, const char* Password, const char* DBName )
+  std::string ServerName, std::string login, std::string Password, std::string DBName )
 {
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
-  DataBaseConnector->SetHostName( ServerName );
-  DataBaseConnector->SetUser( login );
-  DataBaseConnector->SetPassword( Password );
-  DataBaseConnector->SetDatabaseName( DBName );
+  DataBaseConnector->SetHostName( ServerName.c_str() );
+  DataBaseConnector->SetUser( login.c_str() );
+  DataBaseConnector->SetPassword( Password.c_str() );
+  DataBaseConnector->SetDatabaseName( DBName.c_str() );
   if( !DataBaseConnector->Open() )
     {
     std::cerr << "Could not open database." << std::endl;
@@ -698,13 +699,13 @@ void CreateLineageTable(
 }
 
 void CreateLineageFlavorTable(
-  const char* ServerName, const char* login, const char* Password, const char* DBName )
+  std::string ServerName, std::string login, std::string Password, std::string DBName )
 {
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
-  DataBaseConnector->SetHostName( ServerName );
-  DataBaseConnector->SetUser( login );
-  DataBaseConnector->SetPassword( Password );
-  DataBaseConnector->SetDatabaseName( DBName );
+  DataBaseConnector->SetHostName( ServerName.c_str() );
+  DataBaseConnector->SetUser( login.c_str() );
+  DataBaseConnector->SetPassword( Password.c_str() );
+  DataBaseConnector->SetDatabaseName( DBName.c_str() );
   if( !DataBaseConnector->Open() )
     {
     std::cerr << "Could not open database." << std::endl;
@@ -739,13 +740,13 @@ void CreateLineageFlavorTable(
 }
 
 void CreateMeshTable(
-  const char* ServerName, const char* login, const char* Password, const char* DBName )
+  std::string ServerName, std::string login, std::string Password, std::string DBName )
 {
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
-  DataBaseConnector->SetHostName( ServerName );
-  DataBaseConnector->SetUser( login );
-  DataBaseConnector->SetPassword( Password );
-  DataBaseConnector->SetDatabaseName( DBName );
+  DataBaseConnector->SetHostName( ServerName.c_str() );
+  DataBaseConnector->SetUser( login.c_str() );
+  DataBaseConnector->SetPassword( Password.c_str() );
+  DataBaseConnector->SetDatabaseName( DBName.c_str() );
   if( !DataBaseConnector->Open() )
     {
     std::cerr << "Could not open database." << std::endl;
@@ -801,13 +802,13 @@ void CreateMeshTable(
 }
 
 void CreateMeshFlavor(
-  const char* ServerName, const char* login, const char* Password, const char* DBName )
+  std::string ServerName, std::string login, std::string Password, std::string DBName )
 {
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
-  DataBaseConnector->SetHostName( ServerName );
-  DataBaseConnector->SetUser( login );
-  DataBaseConnector->SetPassword( Password );
-  DataBaseConnector->SetDatabaseName( DBName );
+  DataBaseConnector->SetHostName( ServerName.c_str() );
+  DataBaseConnector->SetUser( login.c_str() );
+  DataBaseConnector->SetPassword( Password.c_str() );
+  DataBaseConnector->SetDatabaseName( DBName.c_str() );
   if( !DataBaseConnector->Open() )
     {
     std::cerr << "Could not open database." << std::endl;
@@ -842,13 +843,13 @@ void CreateMeshFlavor(
 }
 
 void CreateSeriesGridTable(
-  const char* ServerName, const char* login, const char* Password, const char* DBName )
+  std::string ServerName, std::string login, std::string Password, std::string DBName )
 {
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
-  DataBaseConnector->SetHostName( ServerName );
-  DataBaseConnector->SetUser( login );
-  DataBaseConnector->SetPassword( Password );
-  DataBaseConnector->SetDatabaseName( DBName );
+  DataBaseConnector->SetHostName( ServerName.c_str() );
+  DataBaseConnector->SetUser( login.c_str() );
+  DataBaseConnector->SetPassword( Password.c_str() );
+  DataBaseConnector->SetDatabaseName( DBName.c_str() );
   if( !DataBaseConnector->Open() )
     {
     std::cerr << "Could not open database." << std::endl;
@@ -888,13 +889,13 @@ void CreateSeriesGridTable(
 }
 
 void CreateTrackTable(
-  const char* ServerName, const char* login, const char* Password, const char* DBName )
+  std::string ServerName, std::string login, std::string Password, std::string DBName )
 {
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
-  DataBaseConnector->SetHostName( ServerName );
-  DataBaseConnector->SetUser( login );
-  DataBaseConnector->SetPassword( Password );
-  DataBaseConnector->SetDatabaseName( DBName );
+  DataBaseConnector->SetHostName( ServerName.c_str() );
+  DataBaseConnector->SetUser( login.c_str() );
+  DataBaseConnector->SetPassword( Password.c_str() );
+  DataBaseConnector->SetDatabaseName( DBName.c_str() );
   if( !DataBaseConnector->Open() )
     {
     std::cerr << "Could not open database." << std::endl;
@@ -958,7 +959,7 @@ void CreateTrackTable(
 
 
 void CreateTrackFlavor(
-  const char* ServerName, const char* login, const char* Password, const char* DBName )
+  std::string ServerName, std::string login, std::string Password, std::string DBName )
 {
   (void) ServerName;
   (void) login;
@@ -969,7 +970,7 @@ void CreateTrackFlavor(
   DataBaseConnector->SetHostName("localhost");
   DataBaseConnector->SetUser("gofigure");
   DataBaseConnector->SetPassword("gofigure");
-  DataBaseConnector->SetDatabaseName( DBName );
+  DataBaseConnector->SetDatabaseName( DBName.c_str() );
   if( !DataBaseConnector->Open() )
     {
     std::cerr << "Could not open database." << std::endl;
@@ -1004,18 +1005,18 @@ void CreateTrackFlavor(
 };
 
 std::vector<std::string> ListValuesforID(
-  const char* ServerName, const char* login,
-  const char* Password, const char* DBName,
-  const char* TableName, const char* field,
-  const char* ID)
+  std::string ServerName, std::string login,
+  std::string Password, std::string DBName,
+  std::string TableName, std::string field,
+  std::string ID)
 {
   std::vector< std::string > result;
 
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
-  DataBaseConnector->SetHostName( ServerName );
-  DataBaseConnector->SetUser( login );
-  DataBaseConnector->SetPassword( Password );
-  DataBaseConnector->SetDatabaseName( DBName );
+  DataBaseConnector->SetHostName( ServerName.c_str() );
+  DataBaseConnector->SetUser( login.c_str() );
+  DataBaseConnector->SetPassword( Password.c_str() );
+  DataBaseConnector->SetDatabaseName( DBName.c_str() );
   if( !DataBaseConnector->Open() )
     {
     std::cerr << "Could not open database." << std::endl;
@@ -1065,16 +1066,16 @@ std::vector<std::string> ListValuesforID(
 };
 
 std::vector<std::string> ListImageIDforExpID(
-  const char* ServerName, const char* login,
-  const char* Password, const char* DBName, const char* ID)
+  std::string ServerName, std::string login,
+  std::string Password, std::string DBName, std::string ID)
 {
   std::vector< std::string > result;
 
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
-  DataBaseConnector->SetHostName( ServerName );
-  DataBaseConnector->SetUser( login );
-  DataBaseConnector->SetPassword( Password );
-  DataBaseConnector->SetDatabaseName( DBName );
+  DataBaseConnector->SetHostName( ServerName.c_str() );
+  DataBaseConnector->SetUser( login.c_str() );
+  DataBaseConnector->SetPassword( Password.c_str() );
+  DataBaseConnector->SetDatabaseName( DBName.c_str() );
   if( !DataBaseConnector->Open() )
     {
     std::cerr << "Could not open database." << std::endl;
