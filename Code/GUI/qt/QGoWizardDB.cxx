@@ -41,6 +41,8 @@ Connect_ServerPage::Connect_ServerPage( QWidget *parent )
   lineServerName = new QLineEdit( tr("localhost") );
   lineUserName = new QLineEdit( tr("gofigure") );
   linePassword = new QLineEdit( tr("gofigure") );
+  linePassword->setEchoMode(QLineEdit::Password);
+  linePassword->displayText();
 
   formLayout->addRow( tr("&ServerName:"), lineServerName );
   formLayout->addRow( tr("&User:"),       lineUserName );
