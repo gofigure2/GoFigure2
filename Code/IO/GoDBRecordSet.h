@@ -119,9 +119,9 @@ public:
     }
 
   // save content to DB - ASYNCHRONOUS
-  void SaveInDB()
+  bool SaveInDB()
     {
-    if( m_RowContainer.size() == 0 ) return;
+    if( m_RowContainer.size() == 0 ) return true;
 
     if( !CanConnectToServer(
         this->ServerName,
@@ -136,7 +136,7 @@ public:
         )*/ )
       {
       // throw exception
-      return;
+      return false;
       }
 
     myIteratorType start = m_RowContainer.begin();
@@ -165,7 +165,7 @@ public:
     std::cerr << "Could not open database." << std::endl;
     std::cerr << "DB will not be created."  << std::endl;
     DataBaseConnector->Delete();
-    return;
+    return false;
     }
     
     vtkSQLQuery* query = DataBaseConnector->GetQueryInstance();
@@ -176,6 +176,10 @@ public:
         {
         // replace by exception
         std::cerr << "Create query failed" << std::endl;
+        DataBaseConnector->Close();
+        DataBaseConnector->Delete();
+        query->Delete();
+        return false;
         }
       }
     if( Query.second != "" )
@@ -185,11 +189,16 @@ public:
         {
         // replace by exception
         std::cerr << "Create query failed" << std::endl;
+        DataBaseConnector->Close();
+        DataBaseConnector->Delete();
+        query->Delete();
+        return false;
         }
       }
     DataBaseConnector->Close();
     DataBaseConnector->Delete();
     query->Delete();
+    return true;
   }
 
 private:
@@ -308,7 +317,7 @@ ComputeQuery( std::string what, myIteratorType start, myIteratorType end )
   // and ... voila!
   query << ";";
 
-  std::cout << query.str() << std::endl;
+  // std::cout << query.str() << std::endl;
 
   return query.str();
 }

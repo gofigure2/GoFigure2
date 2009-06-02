@@ -47,7 +47,14 @@ int main( int argc, char * argv[] )
       It++;
       }
 
-    RecordSet->SaveInDB();
+    if( RecordSet->SaveInDB() )
+      {
+      return EXIT_SUCCESS;
+      }
+    else
+      {
+      return EXIT_FAILURE;
+      }
 
     }
   catch( const itk::ExceptionObject& e )
