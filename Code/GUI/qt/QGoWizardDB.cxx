@@ -244,17 +244,29 @@ Create_ExperimentPage::Create_ExperimentPage( QWidget *parent )
 {
   formLayout = new QFormLayout;
   ChoiceExp  = new QComboBox;
+  ExpID = new QLabel(tr("ExperimentID"));
+  ID = new QLineEdit;
+  textName = new QLabel(tr("Name"));
+  Name = new QLineEdit;
 
-  openExpRadioButton   = new QRadioButton;
-  createExpRadioButton = new QRadioButton;
+  openExpRadioButton   = new QRadioButton(tr("Open an existing Experiment"));
+  createExpRadioButton = new QRadioButton(tr("Create a new Experiment"));
   openExpRadioButton->setChecked(false);
   createExpRadioButton->setChecked(false);
 
-  formLayout->addRow(tr("Create a new Experiment"), createExpRadioButton );
-  formLayout->addRow(tr("Open an existing Experiment"), openExpRadioButton );
-  formLayout->addRow( tr("Experiment to open:"), ChoiceExp );
+  QVBoxLayout* vlayout = new QVBoxLayout;
+  vlayout->addWidget(createExpRadioButton);
+  vlayout->addWidget(openExpRadioButton);
+  textChoiceExp = new QLabel(tr("Experiment to open:"));
+  QGridLayout* gridlayout = new QGridLayout;
+  gridlayout->addWidget(textChoiceExp,0,0);
+  gridlayout->addWidget(ChoiceExp,0,1);
+  gridlayout->addWidget(ExpID,1,0);
+  gridlayout->addWidget(ID,1,1);
+  gridlayout->addWidget(textName,3,0);
+  gridlayout->addWidget(Name,3,1);
+  vlayout->addLayout(gridlayout);
 
-  Name         = new QLineEdit;
   Description  = new QLineEdit;
   TimeInterval = new QLineEdit;
   TileHeight   = new QLineEdit;
@@ -271,10 +283,7 @@ Create_ExperimentPage::Create_ExperimentPage( QWidget *parent )
   nColumns    = new QLineEdit;
   FilePattern = new QLineEdit;
   OpenOrCreateExp_fake = new QLineEdit;
-  ExpID_fake = new QLineEdit;
 
-
-  formLayout->addRow( tr("&Name:"),         Name );
   formLayout->addRow( tr("&Description:"),  Description );
   formLayout->addRow( tr("&TimeInterval:"), TimeInterval );
   formLayout->addRow( tr("&TileHeight:"),   TileHeight );
@@ -292,6 +301,10 @@ Create_ExperimentPage::Create_ExperimentPage( QWidget *parent )
   formLayout->addRow( tr("&FilePattern:"),  FilePattern );
 
   ChoiceExp->setVisible(false);
+  textChoiceExp->setVisible(false);
+  ExpID->setVisible(false);
+  ID->setVisible(false);
+  ID->setEnabled(false);
   Name ->setEnabled(false);
   Description ->setEnabled(false);
   TimeInterval ->setEnabled(false);
@@ -326,11 +339,11 @@ Create_ExperimentPage::Create_ExperimentPage( QWidget *parent )
   registerField( "nColumns", nColumns );
   registerField( "FilePattern", FilePattern );
   registerField("OpenOrCreateExp",OpenOrCreateExp_fake);
-  registerField("ExpID", ExpID_fake);
+  registerField("ExpID", ID);
 
+  vlayout->addLayout(formLayout);
 
-
-  setLayout( formLayout );
+  setLayout( vlayout );
 
   QObject::connect( this->openExpRadioButton,SIGNAL( clicked() ),
   this,SLOT( PrintListExp() ));
@@ -339,7 +352,7 @@ Create_ExperimentPage::Create_ExperimentPage( QWidget *parent )
   this,SLOT( EnterInfoExp() ));
 
   QObject::connect( this->ChoiceExp,SIGNAL( currentIndexChanged(QString) ),
-  this,SLOT( PrintValuesExpID(QString) ));
+  this,SLOT( PrintValuesExpName(QString) ));
 
 
 };
@@ -395,7 +408,10 @@ void Create_ExperimentPage::EnterInfoExp()
   nColumns->clear();
   FilePattern->clear();
 
+  textChoiceExp->setVisible(false);
   ChoiceExp->setVisible(false);
+  Name->setVisible(true);
+  textName->setVisible(true);
   Name ->setEnabled(true);
   Description ->setEnabled(true);
   TimeInterval ->setEnabled(true);
@@ -423,9 +439,12 @@ void Create_ExperimentPage::EnterInfoExp()
 void Create_ExperimentPage::PrintListExp()
 {
 
-
+  textChoiceExp->setVisible(true);
   ChoiceExp->setVisible(true);
-  Name ->setEnabled(false);
+  ExpID->setVisible(true);
+  ID->setVisible(true);
+  Name ->setVisible(false);
+  textName->setVisible(false);
   Description ->setEnabled(false);
   TimeInterval ->setEnabled(false);
   TileHeight ->setEnabled(false);
@@ -443,8 +462,24 @@ void Create_ExperimentPage::PrintListExp()
   FilePattern ->setEnabled(false);
 
 
+    m_ListExpName.clear();
     m_ListExpID.clear();
     ChoiceExp->clear();
+
+    std::vector<std::string> vectListExpName =
+      ListExpName(
+        field("ServerName").toString().toStdString(),
+        field("User").toString().toStdString(),
+        field("Password").toString().toStdString(),
+        field("NameDB").toString().toStdString());
+
+   if (!vectListExpName.empty())
+   {
+   for(unsigned int i = 0; i < vectListExpName.size(); ++i )
+      {
+        m_ListExpName.append( vectListExpName[i].c_str( ) );
+      }
+   }
 
     std::vector<std::string> vectListExpID =
       ListExpID(
@@ -453,12 +488,14 @@ void Create_ExperimentPage::PrintListExp()
         field("Password").toString().toStdString(),
         field("NameDB").toString().toStdString());
 
-
+   if (!vectListExpID.empty())
+   {
    for(unsigned int i = 0; i < vectListExpID.size(); ++i )
       {
         m_ListExpID.append( vectListExpID[i].c_str( ) );
       }
-    ChoiceExp->addItems( m_ListExpID );
+   }
+    ChoiceExp->addItems( m_ListExpName );
     ChoiceExp->show();
 
     setField("OpenOrCreateExp","Open");
@@ -473,22 +510,23 @@ void Create_ExperimentPage::PrintListExp()
 //------------------------------------------------------------------------------
 
 
-void Create_ExperimentPage::PrintValuesExpID(QString ExpID)
+void Create_ExperimentPage::PrintValuesExpName(QString ExpName)
 {
-  std::cout<<ExpID.toAscii().data()<<std::endl;
+  std::cout<<ExpName.toAscii().data()<<std::endl;
 
   std::vector<std::string> myvect =
-    ListValuesforID(
+    ListValuesfor1Row(
         field("ServerName").toString().toStdString(),
         field("User").toString().toStdString(),
         field("Password").toString().toStdString(),
         field("NameDB").toString().toStdString(),"experiment",
-        "experimentID",ExpID.toStdString());
+        "name",ExpName.toStdString());
 
   std::cout<<"Nb of values in myvect: "<< myvect.size()<<std::endl;
 
   if ( !myvect.empty() )
     {
+    setField("ExpID",myvect[0].c_str());
     setField("Name",myvect[1].c_str());
     setField("Description",myvect[2].c_str());
     setField("TimeInterval",myvect[3].c_str());
@@ -507,7 +545,7 @@ void Create_ExperimentPage::PrintValuesExpID(QString ExpID)
     setField("FilePattern",myvect[16].c_str());
     }
 
-  setField("ExpID", ExpID.toInt());
+  //setField("ExpID", ExpID.toInt());
 }
 //------------------------------------------------------------------------------
 

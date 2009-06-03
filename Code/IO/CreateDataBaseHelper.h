@@ -55,7 +55,11 @@ std::vector<std::string> ListExpID(
   std::string ServerName, std::string login,
   std::string Password, std::string DBName);
 
-std::vector<std::string> ListValuesforID(
+std::vector<std::string> ListExpName(
+  std::string ServerName, std::string login,
+  std::string Password, std::string DBName);
+
+std::vector<std::string> ListValuesfor1Row(
   std::string ServerName, std::string login,
   std::string Password, std::string DBName,
   std::string TableName, std::string field,std::string ID);

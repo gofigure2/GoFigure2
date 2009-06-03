@@ -65,7 +65,7 @@ bool CanConnectToServer(
   bool IsOpen = DataBaseConnector->IsOpen();
   DataBaseConnector->Delete();
   return IsOpen;
-  
+
 };
 
 std::vector<std::string> ListDataBases(
@@ -180,7 +180,7 @@ std::vector<std::string> ListExpID(
 
   vtkSQLQuery* query = DataBaseConnector->GetQueryInstance();
   query->SetQuery( "SELECT EXPERIMENTID FROM EXPERIMENT;" );
-  
+
   if ( !query->Execute() )
     {
     cerr << "List of all fields query failed" << endl;
@@ -204,9 +204,58 @@ std::vector<std::string> ListExpID(
   query->Delete();
 
   return result;
-};
+}
 
-void DropDatabase( 
+std::vector<std::string> ListExpName(
+  std::string ServerName, std::string login,
+  std::string Password, std::string DBName)
+{
+   std::vector< std::string > result;
+
+  vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
+  DataBaseConnector->SetHostName( ServerName.c_str() );
+  DataBaseConnector->SetUser( login.c_str() );
+  DataBaseConnector->SetPassword( Password.c_str() );
+  DataBaseConnector->SetDatabaseName( DBName.c_str() );
+  if( !DataBaseConnector->Open() )
+    {
+    std::cerr << "Could not open database." << std::endl;
+    std::cerr << "DB will not be created."  << std::endl;
+    DataBaseConnector->Close();
+    DataBaseConnector->Delete();
+    return result;
+    }
+
+  vtkSQLQuery* query = DataBaseConnector->GetQueryInstance();
+  query->SetQuery( "SELECT NAME FROM EXPERIMENT;" );
+
+  if ( !query->Execute() )
+    {
+    cerr << "List of all fields query failed" << endl;
+    DataBaseConnector->Close();
+    DataBaseConnector->Delete();
+    query->Delete();
+    return result;
+    }
+
+  // all set, proceed
+
+  // iterate over lines, we know there is only one column
+  // and as many rows as there is databases
+  while( query->NextRow() )
+    {
+    result.push_back( query->DataValue( 0 ).ToString() );
+    }
+
+  DataBaseConnector->Close();
+  DataBaseConnector->Delete();
+  query->Delete();
+
+  return result;
+}
+
+
+void DropDatabase(
   std::string ServerName, std::string login,
   std::string Password, std::string DBName )
 {
@@ -320,9 +369,9 @@ bool IsDatabaseOfGoFigureType(
   std::string Password, std::string DBName )
 {
   if(  DoesTableExist( ServerName, login, Password, DBName, "bookmarks" )
-    && DoesTableExist( ServerName, login, Password, DBName, "figure" )  
-    && DoesTableExist( ServerName, login, Password, DBName, "lineage" )     
-	&& DoesTableExist( ServerName, login, Password, DBName, "mesh" ) 
+    && DoesTableExist( ServerName, login, Password, DBName, "figure" )
+    && DoesTableExist( ServerName, login, Password, DBName, "lineage" )
+	&& DoesTableExist( ServerName, login, Password, DBName, "mesh" )
     && DoesTableExist( ServerName, login, Password, DBName, "seriesgrid" )
     && DoesTableExist( ServerName, login, Password, DBName, "track" ) )
     {
@@ -1004,7 +1053,7 @@ void CreateTrackFlavor(
   query->Delete();
 };
 
-std::vector<std::string> ListValuesforID(
+std::vector<std::string> ListValuesfor1Row(
   std::string ServerName, std::string login,
   std::string Password, std::string DBName,
   std::string TableName, std::string field,
@@ -1031,9 +1080,9 @@ std::vector<std::string> ListValuesforID(
   querystream << TableName;
   querystream << " WHERE ";
   querystream << field;
-  querystream << " = ";
+  querystream << " = '";
   querystream << ID;
-  querystream << ";";
+  querystream << "';";
 
   /*vtkSQLQuery* query = DataBaseConnector->GetQueryInstance();
   std::ostringstream insertQuery;
@@ -1048,22 +1097,23 @@ std::vector<std::string> ListValuesforID(
     query->Delete();
     return result;
     }
-  
+
   std::cout<<"result of the query where ID=1, 2nd value "<<query->GetNumberOfFields()<<std::endl;
-  
-  while (query->NextRow())  
-  {   for(  int i = 0; i < query->GetNumberOfFields() ; i++) 
+
+  while (query->NextRow())
+  {   for(  int i = 0; i < query->GetNumberOfFields() ; i++)
       {
         result.push_back( query->DataValue( i ).ToString() );
-      }  
+      }
   }
- 
+
   DataBaseConnector->Close();
   DataBaseConnector->Delete();
   query->Delete();
 
   return result;
-};
+}
+
 
 std::vector<std::string> ListImageIDforExpID(
   std::string ServerName, std::string login,

@@ -120,6 +120,7 @@ protected:
   QRadioButton* createExpRadioButton;
  // QLineEdit* ExperimentID;
   QLineEdit* Name;
+  QLabel* textName;
   QLineEdit* Description;
   QLineEdit* TimeInterval;
   QLineEdit* TileHeight;
@@ -136,15 +137,18 @@ protected:
   QLineEdit* nColumns;
   QLineEdit* FilePattern;
   QLineEdit* OpenOrCreateExp_fake;
-  QLineEdit* ExpID_fake;
   QLineEdit* NameDB_fake;
+  QLabel* textChoiceExp;
+  QLabel* ExpID;
+  QLineEdit* ID;
+  QStringList m_ListExpName;
   QStringList m_ListExpID;
 
 
 protected slots:
   void PrintListExp();
   void EnterInfoExp();
-  void PrintValuesExpID(QString ExpID);
+  void PrintValuesExpName(QString ExpName);
 
 
 };
