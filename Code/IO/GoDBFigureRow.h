@@ -40,15 +40,13 @@
 #ifndef __GoDBFigureRow_h
 #define __GoDBFigureRow_h
 
-#include "vtkPolyData.h"
-
 class GoDBFigureRow
 {
 public:
   int           figureID;
   int           imageID;
   int           meshID;
-  vtkPolyData*  points;
+  std::string   points;
   int           cellTypeID;
   int           flavorID;
   int           meanRed;

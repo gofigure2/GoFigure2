@@ -608,7 +608,7 @@ void CreateFigureTable(
     `figureID` INTEGER NOT NULL  NOT NULL  AUTO_INCREMENT , \
     `imageID` INTEGER NOT NULL  DEFAULT 0, \
     `meshID` INTEGER NOT NULL  DEFAULT 0, \
-    `points` blob, \
+    `points` TEXT, \
     `cellTypeID` INTEGER NOT NULL  DEFAULT 0, \
     `flavorID` INTEGER NOT NULL  DEFAULT 0, \
     `meanRed` SMALLINT DEFAULT 0, \
@@ -832,7 +832,7 @@ void CreateMeshTable(
     `XCoord` INTEGER NOT NULL  DEFAULT -1, \
     `ZCoordMin` INTEGER NOT NULL  DEFAULT -1, \
     `ZCoordMax` INTEGER NOT NULL  DEFAULT -1, \
-    `points` blob,\
+    `points` TEXT,\
     PRIMARY KEY (meshID)\
     )";
 
