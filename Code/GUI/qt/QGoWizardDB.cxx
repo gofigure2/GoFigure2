@@ -14,6 +14,8 @@
 #include <QFileDialog>
 #include <QPushButton>
 #include <string>
+#include <QLabel>
+#include <Qt>
 
 //------------------------------------------------------------------------------
 QGoWizardDB::QGoWizardDB( QWidget *parent )
@@ -87,29 +89,42 @@ void OpenOrCreate_Page::initializePage()
 OpenOrCreate_Page::OpenOrCreate_Page(QWidget *parent)
 :QWizardPage(parent)
 {
-  formLayout = new QFormLayout;
+  gridLayout = new QGridLayout;
   ChoiceDB = new QComboBox;
+  ChoiceDB->hide();
+  textChoiceDB = new QLabel(tr("Name of the DB to open"));
+  textChoiceDB->hide();
 
-  openDBRadioButton = new QRadioButton;
-  createDBRadioButton = new QRadioButton;
-  createDBRadioButton->setChecked(true);
+  openDBRadioButton = new QRadioButton(tr("Open an exisiting DataBase"));
+  openDBRadioButton->setChecked(false);
+  createDBRadioButton = new QRadioButton(tr("Create a new DataBase        "));
+  createDBRadioButton->setChecked(false);
+  textNewDBName = new QLabel(tr("Name of the new DB to create:"));
+  textNewDBName->hide();
   lineNewDBName = new QLineEdit;
+  lineNewDBName->hide();
 
-  formLayout->addRow(tr("Create a new Database"),createDBRadioButton);
-  formLayout->addRow( tr("&Name of the new DB to create:"), lineNewDBName );
-  formLayout->addRow(tr("Open an existing Database"),openDBRadioButton);
-  formLayout->addRow(tr("Name of the DB to open:"),ChoiceDB);
+  gridLayout->addWidget(createDBRadioButton,0,0,1,2);
+  gridLayout->addWidget(textNewDBName,3,0);
+  gridLayout->addWidget(lineNewDBName,3,1);
+  gridLayout->addWidget(openDBRadioButton,5,0,1,2);
+  gridLayout->addWidget(textChoiceDB,6,0);
+  gridLayout->addWidget(ChoiceDB,6,1);
 
-  setLayout(formLayout);
+  gridLayout->setAlignment(openDBRadioButton,Qt::AlignHCenter);
+  gridLayout->setAlignment(createDBRadioButton,Qt::AlignHCenter);
+
+  setLayout(gridLayout);
 
   QObject::connect( this->openDBRadioButton,SIGNAL( clicked() ),
   this,SLOT( PrintListDB() ));
 
   QObject::connect( this->createDBRadioButton,SIGNAL( clicked() ),
   this,SLOT( EnterNameDB() ));
+
   registerField( "DBIndextoOpen", ChoiceDB);
   registerField("DBNametoCreate",lineNewDBName);
- };
+ }
 //------------------------------------------------------------------------------
 
 
@@ -117,8 +132,14 @@ OpenOrCreate_Page::OpenOrCreate_Page(QWidget *parent)
 //------------------------------------------------------------------------------
 void OpenOrCreate_Page::PrintListDB ()
 {
+  textChoiceDB->show();
+  ChoiceDB->show();
+
+  textNewDBName->hide();
   lineNewDBName->hide();
   lineNewDBName->setText("");
+
+
 
   if (m_ListDB.isEmpty())
   {
@@ -145,7 +166,7 @@ void OpenOrCreate_Page::PrintListDB ()
     ChoiceDB->addItems( m_ListDB );
     }
   ChoiceDB->show();
-};
+}
 //------------------------------------------------------------------------------
 
 
@@ -155,9 +176,12 @@ void OpenOrCreate_Page::EnterNameDB ()
 {
   m_ListDB.clear();
   ChoiceDB->clear();
+
   lineNewDBName->show();
+  textNewDBName->show();
   ChoiceDB->hide();
-};
+  textChoiceDB->hide();
+}
 //------------------------------------------------------------------------------
 
 
@@ -513,7 +537,9 @@ Import_SerieGridPage::Import_SerieGridPage( QWidget *parent )
   gridlayout->addWidget( ImportSeriesGridRadioButton );
   gridlayout->addWidget( BrowseButton,0,1 );
   gridlayout->addWidget( openSeriesGridRadioButton );
-  gridlayout->setColumnStretch ( 0, 1);
+  gridlayout->setColumnStretch ( 0, 3);
+  gridlayout->setColumnStretch ( 1, 1);
+
 
   setLayout(gridlayout);
 

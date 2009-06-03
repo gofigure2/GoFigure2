@@ -80,7 +80,7 @@ public:
  // int nextId() const;
   void initializePage();
   bool validatePage();
-  QFormLayout* formLayout;
+  QGridLayout* gridLayout;
   QLineEdit* lineNewDBName;
   //QComboBox* ChoiceDB;
  // char* Server;
@@ -93,6 +93,8 @@ private:
   QRadioButton *createDBRadioButton;
   QLineEdit* DBNametoOpen_fake;
   QComboBox* ChoiceDB;
+  QLabel* textChoiceDB;
+  QLabel* textNewDBName;
   QString m_NameDB;
   QStringList m_ListDB;
 
