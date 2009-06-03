@@ -481,20 +481,6 @@ void Create_ExperimentPage::PrintListExp()
       }
    }
 
-    std::vector<std::string> vectListExpID =
-      ListExpID(
-        field("ServerName").toString().toStdString(),
-        field("User").toString().toStdString(),
-        field("Password").toString().toStdString(),
-        field("NameDB").toString().toStdString());
-
-   if (!vectListExpID.empty())
-   {
-   for(unsigned int i = 0; i < vectListExpID.size(); ++i )
-      {
-        m_ListExpID.append( vectListExpID[i].c_str( ) );
-      }
-   }
     ChoiceExp->addItems( m_ListExpName );
     ChoiceExp->show();
 
@@ -554,7 +540,44 @@ void Create_ExperimentPage::PrintValuesExpName(QString ExpName)
 //------------------------------------------------------------------------------
 bool Create_ExperimentPage::validatePage()
 {
- return openExpRadioButton->isChecked() != createExpRadioButton->isChecked();
+ if (createExpRadioButton->isChecked())
+ {
+     if (field("Name")=="")
+     {
+     return false;
+     }
+     else
+     {
+         QStringList ListExistingNames;
+         std::vector<std::string> vectListExpName =
+         ListExpName(
+          field("ServerName").toString().toStdString(),
+          field("User").toString().toStdString(),
+          field("Password").toString().toStdString(),
+          field("NameDB").toString().toStdString());
+
+         if (!vectListExpName.empty())
+         {
+          for(unsigned int i = 0; i < vectListExpName.size(); ++i )
+          {
+           ListExistingNames.append( vectListExpName[i].c_str( ) );
+          }
+         }
+         if (ListExistingNames.contains ( field("Name").toString(),Qt::CaseInsensitive ))
+         {
+             return false;
+         }
+         else
+         {
+             return true;
+         }
+
+     }
+ }
+ else
+ {
+     return openExpRadioButton->isChecked();
+ }
 }
 
 //------------------------------------------------------------------------------
