@@ -100,7 +100,7 @@ public:
     figureID = 0;
     imageID  = 0;
     meshID   = 0;
-    points   = 0;
+    points   = "";
     cellTypeID = 0;
     flavorID   = 0;
     meanRed    = 0;

@@ -1193,6 +1193,10 @@ void QImagePageViewTracer::ValidateContour(
           myfile.open( ctrlpt_filename.toAscii().constData() );
           myfile <<contour_rep->GetClosedLoop() <<std::endl;
 
+//           GoDBFigureRow row;
+//           row.meshID = CellId;
+//           row.points = contour;
+
           int NbOfNodes = contour_rep->GetNumberOfNodes();
 
           myfile <<NbOfNodes <<std::endl;
