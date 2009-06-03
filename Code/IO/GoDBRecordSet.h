@@ -152,8 +152,6 @@ public:
 
     this->PopulateColumnNamesContainer();
 
-    std::pair<std::string, std::string> Query = this->SetUpInsertQueryStrings();
-
     vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
     DataBaseConnector->SetHostName(this->ServerName.c_str());
     DataBaseConnector->SetUser(this->User.c_str());
@@ -169,36 +167,21 @@ public:
     }
     
     vtkSQLQuery* query = DataBaseConnector->GetQueryInstance();
-    if( Query.first != "")
+    
+    if( this->SaveEachRow( query ) )
       {
-      query->SetQuery( Query.first.c_str());
-      if ( !query->Execute() )
-        {
-        // replace by exception
-        std::cerr << "Create query failed" << std::endl;
-        DataBaseConnector->Close();
-        DataBaseConnector->Delete();
-        query->Delete();
-        return false;
-        }
+      DataBaseConnector->Close();
+      DataBaseConnector->Delete();
+      query->Delete();
+      return true;
       }
-    if( Query.second != "" )
-      {
-      query->SetQuery( Query.second.c_str());
-      if ( !query->Execute() )
-        {
-        // replace by exception
-        std::cerr << "Create query failed" << std::endl;
-        DataBaseConnector->Close();
-        DataBaseConnector->Delete();
-        query->Delete();
-        return false;
-        }
-      }
-    DataBaseConnector->Close();
-    DataBaseConnector->Delete();
-    query->Delete();
-    return true;
+    else
+     {
+      DataBaseConnector->Close();
+      DataBaseConnector->Delete();
+      query->Delete();
+      return false;
+     }
   }
 
 private:
@@ -217,10 +200,10 @@ private:
   // underlying container
   typedef typename std::vector< InternalObjectType >::iterator  myIteratorType;
   std::vector< InternalObjectType > m_RowContainer;
-
-  std::pair<std::string, std::string> SetUpInsertQueryStrings();
-  std::string ComputeQuery( std::string, myIteratorType start, myIteratorType end );
   void PopulateColumnNamesContainer();
+
+  bool SaveEachRow( vtkSQLQuery* query );
+  bool SaveRows( vtkSQLQuery* query, std::string what, myIteratorType start, myIteratorType end );
 
   // colum names container
   std::vector< std::string >        m_ColumnNamesContainer;
@@ -235,91 +218,85 @@ private:
 
 };
 
-// this method generates two SQL query strings
-// one using the (mysql only) REPLACE command which overwrite existing
-// entry with the same primary Key
-// another one with the usual INSERT command for new entries.
 template< class TObject >
-std::pair<std::string, std::string>
+bool
 GoDBRecordSet<TObject>::
-SetUpInsertQueryStrings()
+SaveEachRow( vtkSQLQuery *query )
 {
 
+  // modified rows
   myIteratorType start = m_RowContainer.begin();
   myIteratorType end   = m_RowContainer.begin();
   while( (*end).first && end != m_RowContainer.end() ) end++;
-
-  std::string firstQuery;
   if( end-start > 0 )
     {
-    firstQuery = ComputeQuery( "REPLACE ", start, end );
-    }
-  else
-    {
-    firstQuery = "";
+    if( !SaveRows( query, "REPLACE ", start, end ) )
+      {
+      return false;
+      }
     }
 
+  // new rows
   start = end;
   end = m_RowContainer.end();
-
-  std::string secondQuery;
   if( end-start > 0 )
     {
-    secondQuery = ComputeQuery( "INSERT ", start, end );
-    }
-  else
-    {
-    secondQuery = "";
+    if( !SaveRows( query, "INSERT ", start, end ) )
+      { 
+      return false;
+      }
     }
 
-  std::pair< std::string, std::string > result( firstQuery, secondQuery );
-
-  return result;
+  return true;
 }
 
 
 template< class TObject >
-std::string
+bool
 GoDBRecordSet<TObject>::
-ComputeQuery( std::string what, myIteratorType start, myIteratorType end )
+SaveRows( vtkSQLQuery * query, std::string what, myIteratorType start, myIteratorType end )
 {
+  // safe test
   unsigned int NbOfCol = m_ColumnNamesContainer.size();
   if( NbOfCol == 0 )
     {
     // throw exception
     std::cerr << "Could not extract column names." << std::endl;
+    return false;
     }
 
-  std::stringstream query;
-
-  // main query
-  query << what  << "INTO " << this->TableName;
-
-  // column names
-  query << " ( ";
+  // invariant part of the query
+  std::stringstream queryString;
+  queryString << what  << "INTO " << this->TableName;
+  queryString << " ( ";
   std::vector<std::string>::iterator It = m_ColumnNamesContainer.begin();
   for( unsigned int i = 0; i < NbOfCol-1; i++, It++ )
     {
-    query << (*It) << ", ";
+    queryString << (*It) << ", ";
     }
-  query << (*It);
-  query << " ) ";
+  queryString << (*It);
+  queryString << " ) ";
+  queryString << " VALUES ";
 
-  // now the values
-  query << " VALUES ";
+  // row dependent part of the query
   myIteratorType rowIt = start;
-  for( int i = 0; i < end-start-1 && rowIt != end; i++, rowIt++ )
+  while( rowIt != end )
     {
-    query << "(" << (*rowIt).second.PrintValues() << "),";
+    std::stringstream rowQueryString;
+    rowQueryString << queryString.str();
+    rowQueryString << "(" << (*rowIt).second.PrintValues() << ");";
+    query->SetQuery( rowQueryString.str().c_str());
+    if ( !query->Execute() )
+      {
+      // replace by exception
+      std::cerr << "Save query failed: ";
+      std::cerr << rowQueryString.str().c_str() << std::endl;
+      return false;    
+      }    
+    rowIt++;
     }
-  query << "(" << (*rowIt).second.PrintValues() << ")";
 
-  // and ... voila!
-  query << ";";
-
-  // std::cout << query.str() << std::endl;
-
-  return query.str();
+  return true; 
 }
 
 template< class TObject >
@@ -334,11 +311,11 @@ PopulateColumnNamesContainer()
   DataBaseConnector->SetDatabaseName( this->DataBaseName.c_str() );
  
   if (!DataBaseConnector->Open())
-  { 
+    { 
     std::cerr << "Can not open DB"  << std::endl;
     DataBaseConnector->Delete();
     return;
-  }
+    }
 
   vtkSQLQuery* query = DataBaseConnector->GetQueryInstance();
   std::stringstream querystream;
