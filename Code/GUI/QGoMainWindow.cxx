@@ -84,8 +84,6 @@ QGoMainWindow::QGoMainWindow( )
 
 
   m_LUTDialog = new QGoLUTDialog( this );
-  m_Wizard = new QGoWizardDB;
-  m_Wizard->hide();
   QObject::connect( this->m_LUTDialog, SIGNAL( accepted( ) ),
     this, SLOT( ChangeLookupTable( ) ) );
 
@@ -431,12 +429,7 @@ void QGoMainWindow::SetBackgroundColor( T* PageView )
 
 
 // *************************************************************************
-/*void QGoMainWindow::on_actionUse_DataBase_activated( )
-{
-  m_Wizard->show();
-}*/
 
-// *************************************************************************
 void QGoMainWindow::on_actionLookup_Table_activated( )
 {
   m_LUTDialog->show();

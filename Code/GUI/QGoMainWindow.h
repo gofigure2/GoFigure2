@@ -104,7 +104,8 @@ protected slots:
 
   // #ifdef VTK_USE_MYSQL
   void on_actionCreate_DataBase_activated( ) { QGoCreateDBDialog dialog; }
-  void on_actionUse_DataBase_activated() {m_Wizard->show();}
+  void on_actionUse_DataBase_activated() {QGoWizardDB* m_Wizard = new QGoWizardDB;
+   m_Wizard->show();}
   void on_actionImport_Dataset_in_DataBase_activated( ) {};
   void on_actionOpen_DataBase_activated( ) {};
   // #endif
@@ -186,8 +187,6 @@ protected:
 
   /** \brief Look-up Table dialog */
   QGoLUTDialog* m_LUTDialog;
-
-  QGoWizardDB* m_Wizard;
 
   /** \brief */
   QHash< unsigned int, QColor > m_IdColorMap;

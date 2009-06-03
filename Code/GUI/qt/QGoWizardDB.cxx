@@ -24,7 +24,7 @@ QGoWizardDB::QGoWizardDB( QWidget *parent )
   addPage( new Create_ExperimentPage);
   addPage( new Import_SerieGridPage);
   addPage( new Import_ManualSegmentationPage);
-  setWindowTitle( tr("My First wizard") );
+  setWindowTitle( tr("Use DataBase") );
 };
 //------------------------------------------------------------------------------
 
@@ -63,17 +63,6 @@ Connect_ServerPage::Connect_ServerPage( QWidget *parent )
 //------------------------------------------------------------------------------
 void OpenOrCreate_Page::initializePage()
 {
-   //  pb when adding the variables Server,User,Password :
-   //  when clicking next/back between the 2 pages, can connect
-   //  sometimes.(once every 4 try...) :
-
-   // Server = field("ServerName").toString().toAscii().data() );
-   // std::cout<<Server<<std::endl;
-   // User = field("User").toString().toAscii().data();
-   // std::cout<<User<<std::endl;
-   // Password = field("Password").toString().toAscii().data();
-   // std::cout<<Password<<std::endl;
-
   if( !CanConnectToServer(
         field("ServerName").toString().toStdString(),
         field("User").toString().toStdString(),
@@ -241,7 +230,6 @@ Create_ExperimentPage::Create_ExperimentPage( QWidget *parent )
   formLayout->addRow(tr("Open an existing Experiment"), openExpRadioButton );
   formLayout->addRow( tr("Experiment to open:"), ChoiceExp );
 
-//  ExperimentID = new QLineEdit;
   Name         = new QLineEdit;
   Description  = new QLineEdit;
   TimeInterval = new QLineEdit;
@@ -261,7 +249,7 @@ Create_ExperimentPage::Create_ExperimentPage( QWidget *parent )
   OpenOrCreateExp_fake = new QLineEdit;
   ExpID_fake = new QLineEdit;
 
- // formLayout->addRow( tr("&ExperimentID:"), ExperimentID );
+
   formLayout->addRow( tr("&Name:"),         Name );
   formLayout->addRow( tr("&Description:"),  Description );
   formLayout->addRow( tr("&TimeInterval:"), TimeInterval );
@@ -517,28 +505,19 @@ Import_SerieGridPage::Import_SerieGridPage( QWidget *parent )
 {
   gridlayout= new QGridLayout;
   OpenOrCreateSeriesGrid_fake = new QLineEdit;
-  //ImageID_fake = new QLineEdit;
   BrowseButton = new QPushButton("&Browse", this);
 
-  //ChoiceSeriesGrid = new QComboBox;
   openSeriesGridRadioButton = new QRadioButton(tr("&Open the existing Image Set"));
   ImportSeriesGridRadioButton = new QRadioButton(tr("&Import a new Image Set"));
-
-  //formlayout->setHorizontalSpacing(200);
 
   gridlayout->addWidget( ImportSeriesGridRadioButton );
   gridlayout->addWidget( BrowseButton,0,1 );
   gridlayout->addWidget( openSeriesGridRadioButton );
   gridlayout->setColumnStretch ( 0, 1);
-  //formlayout->addRow( tr("SeriesGrid to open:"), ChoiceSeriesGrid );
 
   setLayout(gridlayout);
 
   registerField("OpenOrCreateSeriesGrid",OpenOrCreateSeriesGrid_fake);
-  //registerField("ImageID",ImageID_fake);
-
-  /*QObject::connect( this->openSeriesGridRadioButton,SIGNAL( clicked() ),
-  this,SLOT( PrintListSeriesGrid() ));*/
 
   QObject::connect( this->ImportSeriesGridRadioButton,SIGNAL( clicked() ),
   this,SLOT( SelectImportSeriesGrid() ));
@@ -549,8 +528,6 @@ Import_SerieGridPage::Import_SerieGridPage( QWidget *parent )
   QObject::connect( this->BrowseButton,SIGNAL( clicked() ),
   this,SLOT( EnterInfoSeriesGrid() ));
 
- /* QObject::connect( this->ChoiceSeriesGrid,SIGNAL( currentIndexChanged(int) ),
-  this,SLOT( PrintValuesImageID(int) ));*/
 
 }
 //------------------------------------------------------------------------------
@@ -618,43 +595,9 @@ void Import_SerieGridPage::initializePage()
 
 
 //------------------------------------------------------------------------------
-
-
-/*void Import_SerieGridPage::PrintListSeriesGrid()
-{
-  BrowseButton->setVisible(false);
-  m_ListImageID.clear();
-  ChoiceSeriesGrid->clear();
-
-  ChoiceSeriesGrid->setVisible(true);
-  std::vector<std::string> vectListImageID = ListImageIDforExpID(
-    field("ServerName").toString().toAscii().data(),
-        field("User").toString().toAscii().data(),
-        field("Password").toString().toAscii().data(),
-        field("NameDB").toString().toAscii().data(),
-        field("ExpID").toString().toAscii().data());
-
-   for(unsigned int i = 0; i < vectListImageID.size(); ++i )
-      {
-        m_ListImageID.append( vectListImageID[i].c_str( ) );
-      }
-
-    ChoiceSeriesGrid->addItems( m_ListImageID );
-    ChoiceSeriesGrid->show();
-
-  setField("OpenOrCreateSeriesGrid","Open");
-
-}*/
-
-//------------------------------------------------------------------------------
-
-
-
-//------------------------------------------------------------------------------
 void Import_SerieGridPage::SelectImportSeriesGrid()
 {
     BrowseButton->setVisible(true);
-    //ChoiceSeriesGrid->setVisible(false);
 }
 //------------------------------------------------------------------------------
 
@@ -693,8 +636,6 @@ void Import_SerieGridPage::EnterInfoSeriesGrid()
     while( It != end )
       {
       GoDBSeriesGridRow myNewImage;
-      //row.filename = filename.toAscii().data();
-
 
       myNewImage.experimentID = field("ExpID").toInt();
       myNewImage.RCoord = (*It).RTile;
@@ -732,47 +673,8 @@ void Import_SerieGridPage::EnterInfoSeriesGrid()
     }
   }
 
-
-
-  //ChoiceSeriesGrid->setVisible(false);
   setField("OpenOrCreateSeriesGrid","Create");
 }
-//------------------------------------------------------------------------------
-
-
-
-//------------------------------------------------------------------------------
-
-/*void Import_SerieGridPage::PrintValuesImageID(int ImageID)
-{
-  if( ImageID != -1 )
-  {
-  std::vector<std::string> myvect =
-    ListValuesforID(
-        field("ServerName").toString().toAscii().data(),
-        field("User").toString().toAscii().data(),
-        field("Password").toString().toAscii().data(),
-        field("NameDB").toString().toAscii().data(),
-        "seriesgrid", "ImageID",QString( "%1").arg( ImageID ).toLatin1().data());
-
-  if( !myvect.empty() )
-    {
-    std::cout<<"Nb of values in myvect: "<< myvect.size()<<std::endl;
-
-    //setField("ExpID", ExpID.toInt());
-    setField("RCoord",myvect[2].c_str());
-    setField("CCoord",myvect[3].c_str());
-    setField("TCoord",myvect[4].c_str());
-    setField("YCoord",myvect[5].c_str());
-    setField("XCoord",myvect[6].c_str());
-    setField("ZCoord",myvect[7].c_str());
-    setField("FileName",myvect[8].c_str());
-
-    setField("ImageID",ImageID);
-    std::cout<<"ImageID is "<<field("ImageID").toString().toAscii().data()<<std::endl;
-    }
-  }
-} */
 //------------------------------------------------------------------------------
 
 
@@ -791,9 +693,9 @@ Import_ManualSegmentationPage::Import_ManualSegmentationPage(QWidget *parent)
 
 void Import_ManualSegmentationPage::initializePage()
 {
-  if (field("OpenOrCreateSeriesGrid")=="Create")
+  /*if (field("OpenOrCreateSeriesGrid")=="Create")
     {
-      /*  GoDBSeriesGridRow myNewObject;
+        GoDBSeriesGridRow myNewObject;
 
         myNewObject.experimentID = field("ExpID").toInt();
         myNewObject.RCoord  = field("RCoord").toInt();
@@ -813,7 +715,7 @@ void Import_ManualSegmentationPage::initializePage()
           field("ServerName").toString().toAscii().data(),
           field("User").toString().toAscii().data(),
           field("Password").toString().toAscii().data(),
-          field("NameDB").toString().toAscii().data(),"seriesgrid", myNewObject);*/
+          field("NameDB").toString().toAscii().data(),"seriesgrid", myNewObject);
 
 
        std::vector<std::string> vectListExpID =
@@ -831,7 +733,7 @@ void Import_ManualSegmentationPage::initializePage()
   else
   {
 
-  }
+  }*/
    setTitle(tr("Experiment %1,'%2' from the database %3").arg(field("ExpID")
      .toString()).arg(field("Name").toString()).arg(field("NameDB").toString()));
 }
