@@ -93,7 +93,7 @@ OpenOrCreate_Page::OpenOrCreate_Page(QWidget *parent)
   gridLayout = new QGridLayout;
   ChoiceDB = new QComboBox;
   ChoiceDB->hide();
-  textChoiceDB = new QLabel(tr("Name of the DB to open"));
+  textChoiceDB = new QLabel(tr("Name of the DB to open :"));
   textChoiceDB->hide();
 
   openDBRadioButton = new QRadioButton(tr("Open an exisiting DataBase"));
@@ -247,17 +247,22 @@ Create_ExperimentPage::Create_ExperimentPage( QWidget *parent )
   ChoiceExp  = new QComboBox;
   ExpID = new QLabel(tr("ExperimentID"));
   ID = new QLineEdit;
-  textName = new QLabel(tr("Name"));
+  textName = new QLabel(tr("Name of the Experiment: "));
   Name = new QLineEdit;
 
   openExpRadioButton   = new QRadioButton(tr("Open an existing Experiment"));
-  createExpRadioButton = new QRadioButton(tr("Create a new Experiment"));
+  createExpRadioButton = new QRadioButton(tr("Create a new Experiment    "));
   openExpRadioButton->setChecked(false);
   createExpRadioButton->setChecked(false);
 
   QVBoxLayout* vlayout = new QVBoxLayout;
-  vlayout->addWidget(createExpRadioButton);
-  vlayout->addWidget(openExpRadioButton);
+  QVBoxLayout* RadioButtonLayout = new QVBoxLayout;
+  RadioButtonLayout->addWidget(createExpRadioButton);
+  //vlayout->setAlignment(createExpRadioButton,Qt::AlignHCenter);
+  RadioButtonLayout->addWidget(openExpRadioButton);
+  //vlayout->setAlignment(openExpRadioButton,Qt::AlignHCenter);
+  vlayout->addLayout(RadioButtonLayout);
+  vlayout->setAlignment(RadioButtonLayout,Qt::AlignHCenter);
   textChoiceExp = new QLabel(tr("Experiment to open:"));
   QGridLayout* gridlayout = new QGridLayout;
   gridlayout->addWidget(textChoiceExp,0,0);
@@ -442,8 +447,8 @@ void Create_ExperimentPage::PrintListExp()
 
   textChoiceExp->setVisible(true);
   ChoiceExp->setVisible(true);
-  ExpID->setVisible(true);
-  ID->setVisible(true);
+  //ExpID->setVisible(true);
+  //ID->setVisible(true);
   Name ->setVisible(false);
   textName->setVisible(false);
   Description ->setEnabled(false);
