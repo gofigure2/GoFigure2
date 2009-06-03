@@ -1,6 +1,13 @@
 #ifndef __vtkPolyDataMYSQLTextReader_h
 #define __vtkPolyDataMYSQLTextReader_h
 
+#include "vtkObject.h"
+#include "vtkPolyData.h"
+#include "vtkCellArray.h"
+
+#include <string>
+#include <sstream>
+
 class vtkPolyDataMYSQLTextReader : public vtkObject
 {
   public:
@@ -41,12 +48,15 @@ class vtkPolyDataMYSQLTextReader : public vtkObject
       oContour->SetPoints( points );
 
       vtkCellArray* cells = vtkCellArray::New();
-
+      vtkIdList* id_list = vtkIdList::New();
+      id_list->SetNumberOfIds(2);
       for( vtkIdType i = 0; i < N-1; i++ )
         {
-        cells->InsertNextCell( 2, i, i+1 );
+        id_list->SetId( 0, i );
+        id_list->SetId( 1, i+1 );
+        cells->InsertNextCell( id_list );
         }
-      oContour->SetCell( cells );
+      oContour->SetPolys( cells );
       return oContour;
       }
 
@@ -74,6 +84,9 @@ class vtkPolyDataMYSQLTextReader : public vtkObject
       str >>N;
 
       vtkIdList* cell_points = vtkIdList::New();
+      vtkIdType NbOfPointsInCell;
+      vtkIdType id;
+
       for( vtkIdType i = 0; i < N; i++ )
         {
         str >>NbOfPointsInCell;
@@ -85,12 +98,12 @@ class vtkPolyDataMYSQLTextReader : public vtkObject
           }
         cells->InsertNextCell( cell_points );
         }
-      oMesh->SetCell( cells );
+      oMesh->SetPolys( cells );
       return oMesh;
       }
   private:
     vtkPolyDataMYSQLTextReader( const vtkPolyDataMYSQLTextReader& );
-    void operator = ( const Self& );
+    void operator = ( const vtkPolyDataMYSQLTextReader& );
 };
 
 #endif

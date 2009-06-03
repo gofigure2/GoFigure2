@@ -2,6 +2,8 @@
 #define __vtkPolyDataMYSQLTextWriter_h
 
 #include <string>
+#include <sstream>
+
 #include "vtkPolyData.h"
 #include "vtkMath.h"
 #include "vtkIdList.h"
@@ -60,7 +62,7 @@ protected:
       m_PolyData->GetPoint( i, pt );
       oMyString <<pt[0] <<" " <<pt[1] <<" " <<pt[2] <<" ";
       }
-    return oMyString.string();
+    return oMyString.str();
     }
 
   std::string MeshProcessing()
@@ -94,10 +96,11 @@ protected:
         oMyString <<cell_points->GetId( k ) <<" ";
         }
       }
+    return oMyString.str();
+    }
 
     private:
       vtkPolyDataMYSQLTextWriter( const vtkPolyDataMYSQLTextWriter& );
       void operator = ( const vtkPolyDataMYSQLTextWriter& ) ;
-    }
 };
 #endif
