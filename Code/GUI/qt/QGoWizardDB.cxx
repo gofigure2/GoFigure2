@@ -16,6 +16,7 @@
 #include <string>
 #include <QLabel>
 #include <Qt>
+#include <QMessageBox>
 
 //------------------------------------------------------------------------------
 QGoWizardDB::QGoWizardDB( QWidget *parent )
@@ -544,6 +545,9 @@ bool Create_ExperimentPage::validatePage()
  {
      if (field("Name")=="")
      {
+     QMessageBox msgBox;
+     msgBox.setText(tr("Please enter a name for your experiment."));
+     msgBox.exec();
      return false;
      }
      else
@@ -565,6 +569,9 @@ bool Create_ExperimentPage::validatePage()
          }
          if (ListExistingNames.contains ( field("Name").toString(),Qt::CaseInsensitive ))
          {
+             QMessageBox msgBox;
+             msgBox.setText(tr("The name you entered for your experiment already exists."));
+             msgBox.exec();
              return false;
          }
          else
