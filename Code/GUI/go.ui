@@ -59,7 +59,7 @@
      <x>0</x>
      <y>0</y>
      <width>1434</width>
-     <height>24</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -100,6 +100,7 @@
     <addaction name="actionOpen_Mesh"/>
     <addaction name="separator"/>
     <addaction name="actionCreate_DataBase"/>
+    <addaction name="actionUse_DataBase"/>
     <addaction name="actionImport_Dataset_in_DataBase"/>
     <addaction name="actionOpen_DataBase"/>
     <addaction name="separator"/>
@@ -285,8 +286,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>201</width>
-        <height>287</height>
+        <width>96</width>
+        <height>26</height>
        </rect>
       </property>
       <attribute name="label">
@@ -469,8 +470,8 @@ Radius</string>
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>201</width>
-        <height>287</height>
+        <width>96</width>
+        <height>26</height>
        </rect>
       </property>
       <attribute name="label">
@@ -635,8 +636,8 @@ Weight</string>
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>201</width>
-        <height>287</height>
+        <width>211</width>
+        <height>276</height>
        </rect>
       </property>
       <attribute name="label">
@@ -1690,6 +1691,11 @@ Component</string>
    </property>
    <property name="visible">
     <bool>true</bool>
+   </property>
+  </action>
+  <action name="actionUse_DataBase">
+   <property name="text">
+    <string>Use DataBase</string>
    </property>
   </action>
  </widget>
