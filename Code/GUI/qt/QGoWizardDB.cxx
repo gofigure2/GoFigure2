@@ -26,12 +26,10 @@ QGoWizardDB::QGoWizardDB( QWidget *parent )
 {
   QFont font;
   font.setBold(true);
-  font.setPointSize(12);
   this->setFont(font);
 
   QFont font2;
   font2.setBold(false);
-  font2.setPointSize(10);
 
   QPushButton* nextButton = new QPushButton(tr("Next"));
   nextButton->setFont(font2);
@@ -39,9 +37,7 @@ QGoWizardDB::QGoWizardDB( QWidget *parent )
   QPushButton* backButton = new QPushButton(tr("Back"));
   backButton->setFont(font2);
   this->setButton ( QWizard::BackButton, backButton );
-  QPushButton* cancelButton = new QPushButton(tr("Cancel"));
-  cancelButton->setFont(font2);
-  this->setButton ( QWizard::CancelButton, cancelButton );
+  this->setOptions(QWizard::NoCancelButton);
   QPushButton* finishButton = new QPushButton(tr("Finish"));
   finishButton->setFont(font2);
   this->setButton ( QWizard::FinishButton, finishButton );
@@ -63,9 +59,8 @@ Connect_ServerPage::Connect_ServerPage( QWidget *parent )
 {
   QFont font;
   font.setBold(false);
-  font.setPointSize(10);
   this->setFont(font);
-  setSubTitle( tr("Step 1: Connect to a MySQL DataBase Server."));
+  setSubTitle( tr("Step 1: Connect to a MySQL DataBase Server:"));
   //setPixmap(QWizard::WatermarkPixmap, QPixmap(":/images/watermark.png"));
  
   QFormLayout* formLayout = new QFormLayout;
@@ -133,7 +128,6 @@ OpenOrCreate_Page::OpenOrCreate_Page(QWidget *parent)
 {
   QFont font;
   font.setBold(false);
-  font.setPointSize(10);
   this->setFont(font);
 
   gridLayout = new QGridLayout;
@@ -295,7 +289,6 @@ Create_ExperimentPage::Create_ExperimentPage( QWidget *parent )
 {
   QFont font;
   font.setBold(false);
-  font.setPointSize(10);
   this->setFont(font);
 
   ChoiceExp  = new QComboBox;
@@ -694,7 +687,6 @@ Import_SerieGridPage::Import_SerieGridPage( QWidget *parent )
 {
   QFont font;
   font.setBold(false);
-  font.setPointSize(10);
   this->setFont(font);
   this->adjustSize();
 
