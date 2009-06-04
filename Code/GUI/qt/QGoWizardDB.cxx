@@ -17,19 +17,42 @@
 #include <QLabel>
 #include <Qt>
 #include <QMessageBox>
+#include <QFont>
+#include <QPushButton>
 
 //------------------------------------------------------------------------------
 QGoWizardDB::QGoWizardDB( QWidget *parent )
 : QWizard( parent )
 {
-  setMaximumWidth(100);
+  QFont font;
+  font.setBold(true);
+  font.setPointSize(12);
+  this->setFont(font);
+
+  QFont font2;
+  font2.setBold(false);
+  font2.setPointSize(10);
+
+  QPushButton* nextButton = new QPushButton(tr("Next"));
+  nextButton->setFont(font2);
+  this->setButton ( QWizard::NextButton, nextButton );
+  QPushButton* backButton = new QPushButton(tr("Back"));
+  backButton->setFont(font2);
+  this->setButton ( QWizard::BackButton, backButton );
+  QPushButton* cancelButton = new QPushButton(tr("Cancel"));
+  cancelButton->setFont(font2);
+  this->setButton ( QWizard::CancelButton, cancelButton );
+  QPushButton* finishButton = new QPushButton(tr("Finish"));
+  finishButton->setFont(font2);
+  this->setButton ( QWizard::FinishButton, finishButton );
+
   addPage( new Connect_ServerPage );
   addPage( new OpenOrCreate_Page);
   addPage( new Create_ExperimentPage);
   addPage( new Import_SerieGridPage);
   addPage( new Import_ManualSegmentationPage);
   setWindowTitle( tr("Use DataBase") );
-};
+}
 //------------------------------------------------------------------------------
 
 
@@ -38,9 +61,13 @@ QGoWizardDB::QGoWizardDB( QWidget *parent )
 Connect_ServerPage::Connect_ServerPage( QWidget *parent )
 : QWizardPage( parent )
 {
-  setTitle( tr("Step 1: Connect to a MySQL DataBase Server."));
+  QFont font;
+  font.setBold(false);
+  font.setPointSize(10);
+  this->setFont(font);
+  setSubTitle( tr("Step 1: Connect to a MySQL DataBase Server."));
   //setPixmap(QWizard::WatermarkPixmap, QPixmap(":/images/watermark.png"));
-
+ 
   QFormLayout* formLayout = new QFormLayout;
   lineServerName = new QLineEdit( tr("localhost") );
   lineUserName = new QLineEdit( tr("gofigure") );
@@ -59,7 +86,31 @@ Connect_ServerPage::Connect_ServerPage( QWidget *parent )
   registerField( "User",       lineUserName );
   registerField( "Password",   linePassword );
 
-};
+}
+//------------------------------------------------------------------------------
+
+
+
+//------------------------------------------------------------------------------
+bool Connect_ServerPage::validatePage()
+{
+  if( !CanConnectToServer(
+        field("ServerName").toString().toStdString(),
+        field("User").toString().toStdString(),
+        field("Password").toString().toStdString()))
+    {
+      QMessageBox msgBox;
+      msgBox.setText(tr
+   ("Unable to connect to the server: please make sure you entered the right fields."));
+      msgBox.exec();
+      return false;
+    }
+  else
+  {
+    return true;
+  }
+
+}
 //------------------------------------------------------------------------------
 
 
@@ -67,22 +118,11 @@ Connect_ServerPage::Connect_ServerPage( QWidget *parent )
 //------------------------------------------------------------------------------
 void OpenOrCreate_Page::initializePage()
 {
-  if( !CanConnectToServer(
-        field("ServerName").toString().toStdString(),
-        field("User").toString().toStdString(),
-        field("Password").toString().toStdString()))
-    {
-    this->setSubTitle(tr("Unable to connect to server: please go back and make sure you have the right Server Name"));
-    openDBRadioButton->hide();
-    createDBRadioButton->hide();
-    }
-  else
-    {
-    this->setTitle(tr("Step 2: Chose what you want to do next:"));
+    this->setSubTitle(tr("Step 2: Chose what you want to do next:"));
     openDBRadioButton->show();
     createDBRadioButton->show();
-    }
-};
+  
+}
 //------------------------------------------------------------------------------
 
 
@@ -91,6 +131,11 @@ void OpenOrCreate_Page::initializePage()
 OpenOrCreate_Page::OpenOrCreate_Page(QWidget *parent)
 :QWizardPage(parent)
 {
+  QFont font;
+  font.setBold(false);
+  font.setPointSize(10);
+  this->setFont(font);
+
   gridLayout = new QGridLayout;
   ChoiceDB = new QComboBox;
   ChoiceDB->hide();
@@ -200,7 +245,6 @@ bool OpenOrCreate_Page::validatePage()
   if( ( i > -1 ) && ( i < m_ListDB.size() ) )
     {
     NameDB = m_ListDB[i];
-    std::cout<<"this is the name of the DB to open: "<< NameDB.toAscii().data() << std::endl;
     }
   else
     {
@@ -224,20 +268,23 @@ bool OpenOrCreate_Page::validatePage()
             field("Password").toString().toStdString(),
             NameDB.toStdString() ) )
         {
-        setTitle(tr("The Database %1 is not a Gofigure Database").arg(NameDB));
+        
+        QMessageBox msgBox;
+        msgBox.setText(tr("The Database %1 is not a Gofigure Database").arg(NameDB));
+        msgBox.exec();
+        //setTitle(tr("The Database %1 is not a Gofigure Database").arg(NameDB));
         Ok = false;
         }
       else
         {
         registerField( "DBNametoOpen", DBNametoOpen_fake );
         setField( "DBNametoOpen",NameDB );
-        std::cout << "DBNametoOpen is " << field( "DBNametoOpen" ).toString().toAscii().data() << std::endl;
         Ok = true;
         }
       }
     }
  return Ok;
-};
+}
 //------------------------------------------------------------------------------
 
 
@@ -246,6 +293,11 @@ bool OpenOrCreate_Page::validatePage()
 Create_ExperimentPage::Create_ExperimentPage( QWidget *parent )
 : QWizardPage( parent )
 {
+  QFont font;
+  font.setBold(false);
+  font.setPointSize(10);
+  this->setFont(font);
+
   ChoiceExp  = new QComboBox;
   ExpID = new QLabel(tr("ExperimentID"));
   ID = new QLineEdit;
@@ -392,7 +444,7 @@ Create_ExperimentPage::Create_ExperimentPage( QWidget *parent )
   this,SLOT( PrintValuesExpName(QString) ));
 
 
-};
+}
 //------------------------------------------------------------------------------
 
 
@@ -405,6 +457,7 @@ void Create_ExperimentPage::initializePage()
 
   NameDB_fake = new QLineEdit;
   registerField("NameDB",NameDB_fake);
+ 
 
   if (!field("DBNametoCreate").toString().isEmpty())
     {
@@ -412,15 +465,15 @@ void Create_ExperimentPage::initializePage()
       field("User").toString().toStdString(),
       field("Password").toString().toStdString(),
       field("DBNametoCreate").toString().toStdString());
-    setTitle(tr("You are currently using The Database %1 ").arg(field("DBNametoCreate").toString()));
+    setSubTitle(tr("You are currently using The Database %1 ").arg(field("DBNametoCreate").toString()));
     setField("NameDB",field("DBNametoCreate"));
     }
   else
     {
-    setTitle(tr("You are currently using The Database %1 ").arg(field("DBNametoOpen").toString()));
+    setSubTitle(tr("You are currently using The Database %1 ").arg(field("DBNametoOpen").toString()));
     setField("NameDB",field("DBNametoOpen"));
     }
-};
+}
 //------------------------------------------------------------------------------
 
 
@@ -467,7 +520,7 @@ void Create_ExperimentPage::EnterInfoExp()
   FilePattern ->setEnabled(true);
 
   setField("OpenOrCreateExp","Create");
- };
+ }
 //------------------------------------------------------------------------------
 
 
@@ -525,7 +578,7 @@ void Create_ExperimentPage::PrintListExp()
 
 
 
-};
+}
 //------------------------------------------------------------------------------
 
 
@@ -535,8 +588,7 @@ void Create_ExperimentPage::PrintListExp()
 
 void Create_ExperimentPage::PrintValuesExpName(QString ExpName)
 {
-  std::cout<<ExpName.toAscii().data()<<std::endl;
-
+  
   std::vector<std::string> myvect =
     ListValuesfor1Row(
         field("ServerName").toString().toStdString(),
@@ -544,8 +596,6 @@ void Create_ExperimentPage::PrintValuesExpName(QString ExpName)
         field("Password").toString().toStdString(),
         field("NameDB").toString().toStdString(),"experiment",
         "name",ExpName.toStdString());
-
-  std::cout<<"Nb of values in myvect: "<< myvect.size()<<std::endl;
 
   if ( !myvect.empty() )
     {
@@ -619,7 +669,18 @@ bool Create_ExperimentPage::validatePage()
  }
  else
  {
-     return openExpRadioButton->isChecked();
+    if (field("Name")=="")
+    {
+     QMessageBox msgBox;
+     msgBox.setText(tr
+       ("There is no existing Experiment in this DataBase, please create a new one."));
+     msgBox.exec();
+     return false;
+    }
+    else
+    {
+      return openExpRadioButton->isChecked();
+    }
  }
 }
 
@@ -631,6 +692,12 @@ bool Create_ExperimentPage::validatePage()
 Import_SerieGridPage::Import_SerieGridPage( QWidget *parent )
 : QWizardPage( parent )
 {
+  QFont font;
+  font.setBold(false);
+  font.setPointSize(10);
+  this->setFont(font);
+  this->adjustSize();
+
   gridlayout= new QGridLayout;
   OpenOrCreateSeriesGrid_fake = new QLineEdit;
   BrowseButton = new QPushButton("&Browse", this);
@@ -690,10 +757,6 @@ void Import_SerieGridPage::initializePage()
     myNewObject.nColumns     = field("nColumns").toInt();
     myNewObject.filePattern  = field("FilePattern").toString().toStdString();
 
-
-    std::cout<<"myNewObject.name of my exp is : "<<myNewObject.name<<std::endl;
-    std::cout<<"myNewObject.tileWidth of my exp is : "<<myNewObject.tileWidth<<std::endl;
-
     RecordValues_inTable< GoDBExperimentRow >(
       field("ServerName").toString().toStdString(),
       field("User").toString().toStdString(),
@@ -708,17 +771,11 @@ void Import_SerieGridPage::initializePage()
         field("NameDB").toString().toStdString());
 
     setField( "ExpID", (unsigned int)vectListExpID.size() );
-    std::cout << "create" << std::endl;
-    std::cout << field("ExpID").toString().toAscii().data() << std::endl;
     }
-  else
-    {
-    std::cout<<"open"<<std::endl;
-    std::cout<<field("ExpID").toString().toAscii().data()<<std::endl;
-    }
-  setTitle(
-    tr("Experiment %1,'%2' from the database %3").arg(field("ExpID")
-     .toString()).arg(field("Name").toString()).arg(field("NameDB").toString()));
+
+  setSubTitle(
+    tr("Experiment: '%1'. DataBase: '%2'")
+     .arg(field("Name").toString()).arg(field("NameDB").toString()));
 }
 //------------------------------------------------------------------------------
 
@@ -864,7 +921,7 @@ void Import_ManualSegmentationPage::initializePage()
   {
 
   }*/
-   setTitle(tr("Experiment %1,'%2' from the database %3").arg(field("ExpID")
+  setTitle(tr("Experiment %1,'%2' from the database %3").arg(field("ExpID")
      .toString()).arg(field("Name").toString()).arg(field("NameDB").toString()));
 }
 //------------------------------------------------------------------------------

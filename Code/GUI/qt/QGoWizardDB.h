@@ -61,6 +61,7 @@ Q_OBJECT
 
 public:
   Connect_ServerPage(QWidget *parent = 0);
+  bool validatePage();
 
   //int nextId() const;
 
