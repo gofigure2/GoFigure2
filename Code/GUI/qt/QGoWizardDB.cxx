@@ -22,6 +22,7 @@
 QGoWizardDB::QGoWizardDB( QWidget *parent )
 : QWizard( parent )
 {
+  setMaximumWidth(100);
   addPage( new Connect_ServerPage );
   addPage( new OpenOrCreate_Page);
   addPage( new Create_ExperimentPage);
@@ -96,24 +97,26 @@ OpenOrCreate_Page::OpenOrCreate_Page(QWidget *parent)
   textChoiceDB = new QLabel(tr("Name of the DB to open :"));
   textChoiceDB->hide();
 
-  openDBRadioButton = new QRadioButton(tr("Open an exisiting DataBase"));
+  openDBRadioButton = new QRadioButton(tr("Open an existing DataBase"));
   openDBRadioButton->setChecked(false);
-  createDBRadioButton = new QRadioButton(tr("Create a new DataBase        "));
+  createDBRadioButton = new QRadioButton(tr("Create a new DataBase"));
   createDBRadioButton->setChecked(false);
   textNewDBName = new QLabel(tr("Name of the new DB to create:"));
   textNewDBName->hide();
   lineNewDBName = new QLineEdit;
   lineNewDBName->hide();
 
-  gridLayout->addWidget(createDBRadioButton,0,0,1,2);
-  gridLayout->addWidget(textNewDBName,3,0);
-  gridLayout->addWidget(lineNewDBName,3,1);
-  gridLayout->addWidget(openDBRadioButton,5,0,1,2);
-  gridLayout->addWidget(textChoiceDB,6,0);
-  gridLayout->addWidget(ChoiceDB,6,1);
+  gridLayout->addWidget(createDBRadioButton,0,0,1,1);
+  gridLayout->addWidget(textNewDBName,3,0,1,2);
+  gridLayout->addWidget(lineNewDBName,3,1,1,1);
+  gridLayout->addWidget(openDBRadioButton,5,0,1,1);
+  gridLayout->addWidget(textChoiceDB,6,0,1,1);
+  gridLayout->addWidget(ChoiceDB,6,1,1,1);
 
-  gridLayout->setAlignment(openDBRadioButton,Qt::AlignHCenter);
-  gridLayout->setAlignment(createDBRadioButton,Qt::AlignHCenter);
+  gridLayout->setAlignment(openDBRadioButton,Qt::AlignLeft);
+  gridLayout->setAlignment(createDBRadioButton,Qt::AlignLeft);
+  gridLayout->setAlignment(textNewDBName,Qt::AlignLeft);
+  gridLayout->setAlignment(textChoiceDB,Qt::AlignLeft);
 
   setLayout(gridLayout);
 
@@ -243,7 +246,6 @@ bool OpenOrCreate_Page::validatePage()
 Create_ExperimentPage::Create_ExperimentPage( QWidget *parent )
 : QWizardPage( parent )
 {
-  formLayout = new QFormLayout;
   ChoiceExp  = new QComboBox;
   ExpID = new QLabel(tr("ExperimentID"));
   ID = new QLineEdit;
@@ -271,40 +273,71 @@ Create_ExperimentPage::Create_ExperimentPage( QWidget *parent )
   gridlayout->addWidget(ID,1,1);
   gridlayout->addWidget(textName,3,0);
   gridlayout->addWidget(Name,3,1);
-  vlayout->addLayout(gridlayout);
 
   Description  = new QLineEdit;
+  QLabel* TextDescription = new QLabel(tr("Description"));
   TimeInterval = new QLineEdit;
+  QLabel* TextTimeInterval = new QLabel(tr("TimeInterval"));
   TileHeight   = new QLineEdit;
+  QLabel* TextTileHeight = new QLabel(tr("TileHeight"));
   TileWidth    = new QLineEdit;
+  QLabel* TextTileWidth = new QLabel(tr("TileWidth"));
   PixelDepth   = new QLineEdit;
+  QLabel* TextPixelDepth = new QLabel(tr("PixelDepth"));
   PixelHeight  = new QLineEdit;
+  QLabel* TextPixelHeight = new QLabel(tr("PixelHeight"));
   PixelWidth   = new QLineEdit;
+  QLabel* TextPixelWidth = new QLabel(tr("PixelWidth"));
   ColorDepth   = new QLineEdit;
+  QLabel* TextColorDepth = new QLabel(tr("ColorDepth"));
   nTimePoints  = new QLineEdit;
+  QLabel* TextnTimePoints = new QLabel(tr("nTimePoints"));
   nYTiles = new QLineEdit;
+  QLabel* TextnYTiles = new QLabel(tr("nYTiles"));
   nXTiles = new QLineEdit;
+  QLabel* TextnXTiles = new QLabel(tr("nXTiles"));
   nSlices = new QLineEdit;
+  QLabel* TextnSlices = new QLabel(tr("nSlices"));
   nRows       = new QLineEdit;
+  QLabel* TextnRows = new QLabel(tr("nRows"));
   nColumns    = new QLineEdit;
+  QLabel* TextnColumns = new QLabel(tr("nColumns"));
   FilePattern = new QLineEdit;
+  QLabel* TextFilePattern = new QLabel(tr("FilePattern"));
   OpenOrCreateExp_fake = new QLineEdit;
 
-  formLayout->addRow( tr("&Description:"),  Description );
-  formLayout->addRow( tr("&TimeInterval:"), TimeInterval );
-  formLayout->addRow( tr("&TileHeight:"),   TileHeight );
-  formLayout->addRow( tr("&TileWidth:"),    TileWidth );
-  formLayout->addRow( tr("&PixelDepth:"),   PixelDepth );
-  formLayout->addRow( tr("&PixelHeight:"),  PixelHeight );
-  formLayout->addRow( tr("&PixelWidth:"),   PixelWidth );
-  formLayout->addRow( tr("&ColorDepth:"),   ColorDepth );
-  formLayout->addRow( tr("&nTimePoints:"),  nTimePoints );
-  formLayout->addRow( tr("&nYTiles:"),      nYTiles );
-  formLayout->addRow( tr("&nXTiles:"),      nXTiles );
-  formLayout->addRow( tr("&nSlices:"),      nSlices );
-  formLayout->addRow( tr("&nRows:"),        nRows );
-  formLayout->addRow( tr("&nColumns:"),     nColumns );
-  formLayout->addRow( tr("&FilePattern:"),  FilePattern );
+  gridlayout->addWidget(TextDescription,4,0);
+  gridlayout->addWidget(Description,4,1);
+  gridlayout->addWidget(TextTimeInterval,5,0);
+  gridlayout->addWidget(TimeInterval,5,1);
+  gridlayout->addWidget(TextTileHeight,6,0);
+  gridlayout->addWidget(TileHeight,6,1);
+  gridlayout->addWidget(TextTileWidth,7,0);
+  gridlayout->addWidget(TileWidth,7,1);
+  gridlayout->addWidget(TextPixelDepth,8,0);
+  gridlayout->addWidget(PixelDepth,8,1);
+  gridlayout->addWidget(TextPixelHeight,9,0);
+  gridlayout->addWidget(PixelHeight,9,1);
+  gridlayout->addWidget(TextPixelWidth,10,0);
+  gridlayout->addWidget(PixelWidth,10,1);
+  gridlayout->addWidget(TextColorDepth,11,0);
+  gridlayout->addWidget(ColorDepth,11,1);
+  gridlayout->addWidget(TextnTimePoints,12,0);
+  gridlayout->addWidget(nTimePoints,12,1);
+  gridlayout->addWidget(TextnYTiles,13,0);
+  gridlayout->addWidget(nYTiles,13,1);
+  gridlayout->addWidget(TextnXTiles,14,0);
+  gridlayout->addWidget(nXTiles,14,1);
+  gridlayout->addWidget(TextnSlices,15,0);
+  gridlayout->addWidget(nSlices,15,1);
+  gridlayout->addWidget(TextnRows,16,0);
+  gridlayout->addWidget(nRows,16,1);
+  gridlayout->addWidget(TextnColumns,17,0);
+  gridlayout->addWidget(nColumns,17,1);
+  gridlayout->addWidget(TextFilePattern,18,0);
+  gridlayout->addWidget(FilePattern,18,1);
+
+  vlayout->addLayout(gridlayout);
 
   ChoiceExp->setVisible(false);
   textChoiceExp->setVisible(false);
@@ -346,8 +379,6 @@ Create_ExperimentPage::Create_ExperimentPage( QWidget *parent )
   registerField( "FilePattern", FilePattern );
   registerField("OpenOrCreateExp",OpenOrCreateExp_fake);
   registerField("ExpID", ID);
-
-  vlayout->addLayout(formLayout);
 
   setLayout( vlayout );
 

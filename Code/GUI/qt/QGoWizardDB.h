@@ -114,7 +114,6 @@ public:
  bool validatePage();
 
 protected:
-  QFormLayout* formLayout;
   QComboBox* ChoiceExp;
   QRadioButton* openExpRadioButton;
   QRadioButton* createExpRadioButton;
