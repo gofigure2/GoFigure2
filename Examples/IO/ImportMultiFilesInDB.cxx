@@ -16,15 +16,20 @@ int main( int argc, char * argv[] )
   try
     {
     itk::MegaCaptureImport::Pointer  importFileInfoList = itk::MegaCaptureImport::New();
-    importFileInfoList->SetFileName( argv[1] );
+    
+    //importFileInfoList->SetFileName( argv[1] );
     importFileInfoList->Update();
 
     typedef GoDBRecordSet< GoDBSeriesGridRow > myRecordSetType;
     myRecordSetType* RecordSet = new myRecordSetType;
-    RecordSet->SetServerName( argv[2] );
-    RecordSet->SetUser( argv[3] );
-    RecordSet->SetPassword( argv[4] );
-	  RecordSet->SetDataBaseName( argv[5] );
+    RecordSet->SetServerName( "localhost" );
+    //RecordSet->SetServerName( argv[2] );
+    RecordSet->SetUser( "gofigure" );
+    //RecordSet->SetUser( argv[3] );
+    RecordSet->SetPassword( "gofigure" );
+    //RecordSet->SetPassword( argv[4] );
+	  RecordSet->SetDataBaseName( "allnewdb" );
+    //RecordSet->SetDataBaseName( argv[5] );
     RecordSet->SetTableName( "seriesgrid" );
 
     typedef FileListType::iterator myFilesIteratorType;
@@ -33,7 +38,8 @@ int main( int argc, char * argv[] )
     while( It != end )
       {
       GoDBSeriesGridRow row;
-      row.experimentID = atoi( argv[6] );
+      row.experimentID = 5;
+      //row.experimentID = atoi( argv[6] );
       row.RCoord = (*It).RTile;
       row.CCoord = (*It).CTile;
       row.TCoord = (*It).TimePoint;

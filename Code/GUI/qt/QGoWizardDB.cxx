@@ -802,7 +802,65 @@ void Import_SerieGridPage::EnterInfoSeriesGrid()
 
   if( !filename.isEmpty( ) )
   {
-  try
+    try
+    {
+    itk::MegaCaptureImport::Pointer  importFileInfoList = itk::MegaCaptureImport::New();
+    importFileInfoList->SetFileName( filename.toAscii().data() );
+    importFileInfoList->Update();
+
+    typedef GoDBRecordSet< GoDBSeriesGridRow > myRecordSetType;
+    myRecordSetType* RecordSet = new myRecordSetType;
+    RecordSet->SetServerName(field("ServerName").toString().toStdString());
+    RecordSet->SetUser(field("User").toString().toStdString());
+    RecordSet->SetPassword(field("Password").toString().toStdString());
+	  RecordSet->SetDataBaseName(field("NameDB").toString().toStdString());
+    RecordSet->SetTableName( "seriesgrid" );
+
+    typedef FileListType::iterator myFilesIteratorType;
+    myFilesIteratorType It  = importFileInfoList->GetOutput()->begin();
+    myFilesIteratorType end = importFileInfoList->GetOutput()->end();    
+    while( It != end )
+      {
+      GoDBSeriesGridRow row;
+      row.experimentID = field("ExpID").toInt();
+      row.RCoord = (*It).RTile;
+      row.CCoord = (*It).CTile;
+      row.TCoord = (*It).TimePoint;
+      row.YCoord = (*It).YOffset;
+      row.XCoord = (*It).XOffset;
+      row.ZCoord = (*It).ZDepth;
+      row.filename = (*It).Filename.c_str();
+
+      RecordSet->AddObject( row );
+
+      It++;
+      }
+
+    if( !RecordSet->SaveInDB() )
+      {
+        return;
+      }
+      delete RecordSet;
+    }
+  catch( const itk::ExceptionObject& e )
+    {
+    std::cerr << " caught an ITK exception: " << std::endl;
+    e.Print( std::cerr);
+    return;
+    }
+  catch( const std::exception& e )
+    {
+    std::cerr << " caught an std exception: " << std::endl;
+    std::cerr << e.what() << std::endl;
+    return;
+    }
+  catch( ... )
+    {
+    std::cerr << " caught an unknown exception!" << std::endl;
+    return;
+    }
+  
+  /*try
     {
     itk::MegaCaptureImport::Pointer  importFileInfoList = itk::MegaCaptureImport::New();
     importFileInfoList->SetFileName( filename.toAscii().data() );
@@ -849,7 +907,7 @@ void Import_SerieGridPage::EnterInfoSeriesGrid()
     {
     std::cerr << " caught an unknown exception!" << std::endl;
     return;
-    }
+    }*/
   }
 
   setField("OpenOrCreateSeriesGrid","Create");

@@ -1016,9 +1016,9 @@ void CreateTrackFlavor(
   (void) DBName;
 
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
-  DataBaseConnector->SetHostName("localhost");
-  DataBaseConnector->SetUser("gofigure");
-  DataBaseConnector->SetPassword("gofigure");
+  DataBaseConnector->SetHostName(ServerName.c_str());
+  DataBaseConnector->SetUser(login.c_str());
+  DataBaseConnector->SetPassword(Password.c_str());
   DataBaseConnector->SetDatabaseName( DBName.c_str() );
   if( !DataBaseConnector->Open() )
     {
