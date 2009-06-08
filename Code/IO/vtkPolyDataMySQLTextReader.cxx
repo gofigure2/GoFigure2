@@ -56,8 +56,14 @@ vtkPolyDataMYSQLTextReader::vtkPolyDataMYSQLTextReader() :
 vtkPolyDataMYSQLTextReader::~vtkPolyDataMYSQLTextReader()
 {}
 
-vtkPolyData* vtkPolyDataMYSQLTextReader::GetPolyData( std::string iString )
+void vtkPolyDataMYSQLTextReader::SetIsContour( const bool& iContour )
 {
+  IsContour = iContour;
+}
+
+vtkPolyData* vtkPolyDataMYSQLTextReader::GetPolyData( const std::string& iString )
+{
+  m_Text = iString;
   if( IsContour )
     {
     return GetContour();
@@ -88,17 +94,22 @@ vtkPolyData* vtkPolyDataMYSQLTextReader::GetContour( )
     points->SetPoint( i, pt );
     }
   oContour->SetPoints( points );
+  points->Delete();
 
   vtkCellArray* cells = vtkCellArray::New();
   vtkIdList* id_list = vtkIdList::New();
-  id_list->SetNumberOfIds(2);
-  for( vtkIdType i = 0; i < N-1; i++ )
+
+  for( vtkIdType i = 0; i < N; i++ )
     {
-    id_list->SetId( 0, i );
-    id_list->SetId( 1, i+1 );
-    cells->InsertNextCell( id_list );
+    id_list->InsertNextId( i );
     }
+  id_list->InsertNextId( 0 );
+  cells->InsertNextCell( id_list );
   oContour->SetPolys( cells );
+
+  cells->Delete();
+  id_list->Delete();
+
   return oContour;
 }
 
@@ -122,6 +133,8 @@ vtkPolyData* vtkPolyDataMYSQLTextReader::GetMesh( )
     }
   oMesh->SetPoints( points );
 
+  points->Delete();
+
   vtkCellArray* cells = vtkCellArray::New();
   str >>N;
 
@@ -141,5 +154,9 @@ vtkPolyData* vtkPolyDataMYSQLTextReader::GetMesh( )
     cells->InsertNextCell( cell_points );
     }
   oMesh->SetPolys( cells );
+
+  cells->Delete();
+  cell_points->Delete();
+
   return oMesh;
 }

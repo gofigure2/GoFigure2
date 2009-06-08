@@ -52,8 +52,9 @@ vtkStandardNewMacro(vtkPolyDataMYSQLTextWriter);
 std::string vtkPolyDataMYSQLTextWriter::GetMySQLText( vtkPolyData* iPolyData )
 {
   m_PolyData = iPolyData;
+  IsContour = IsPlanarContour();
 
-  if( IsPlanarContour() )
+  if( IsContour )
     {
     return ContourProcessing();
     }
@@ -63,7 +64,8 @@ std::string vtkPolyDataMYSQLTextWriter::GetMySQLText( vtkPolyData* iPolyData )
     }
 }
 
-vtkPolyDataMYSQLTextWriter::vtkPolyDataMYSQLTextWriter() : m_PolyData(0) {}
+vtkPolyDataMYSQLTextWriter::vtkPolyDataMYSQLTextWriter() : m_PolyData(0),
+  IsContour( true ) {}
 vtkPolyDataMYSQLTextWriter::~vtkPolyDataMYSQLTextWriter() {}
 
 bool vtkPolyDataMYSQLTextWriter::IsPlanarContour()

@@ -55,12 +55,14 @@ public:
   vtkTypeRevisionMacro( vtkPolyDataMYSQLTextWriter, vtkObject );
 
   std::string GetMySQLText( vtkPolyData* iPolyData );
+  bool GetIsContour() const {return IsContour;}
 
 protected:
   vtkPolyDataMYSQLTextWriter();
   ~vtkPolyDataMYSQLTextWriter();
 
   vtkPolyData* m_PolyData;
+  bool IsContour;
 
   bool IsPlanarContour();
 

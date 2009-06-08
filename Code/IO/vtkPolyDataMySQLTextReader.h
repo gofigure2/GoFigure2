@@ -52,7 +52,8 @@ public:
   static vtkPolyDataMYSQLTextReader* New();
   vtkTypeRevisionMacro( vtkPolyDataMYSQLTextReader, vtkObject );
 
-  vtkPolyData* GetPolyData( std::string iString );
+  vtkPolyData* GetPolyData( const std::string& iString );
+  void SetIsContour( const bool& );
 
 protected:
   vtkPolyDataMYSQLTextReader();

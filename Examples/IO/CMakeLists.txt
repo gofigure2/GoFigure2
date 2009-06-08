@@ -52,3 +52,13 @@ IF( QT4_FOUND AND QT_VERSION_MINOR GREATER 4 )
 
 ENDIF( QT4_FOUND AND QT_VERSION_MINOR GREATER 4 )
 
+ADD_EXECUTABLE( vtkPolyDataMySQLTextReader
+  vtkPolyDataMySQLTextReader.cxx )
+
+TARGET_LINK_LIBRARIES( vtkPolyDataMySQLTextReader
+  QGoIO
+  vtkIO
+  vtkRendering 
+)
+  
+
