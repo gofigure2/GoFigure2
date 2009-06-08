@@ -46,11 +46,12 @@
 #include <iostream>
 #include <qpixmap.h>
 
-void maximizeMainWindow(QGoMainWindow& form1);
+//void maximizeMainWindow(QGoMainWindow& form1);
 
 int main( int argc, char** argv )
 {
   QApplication app(argc, argv);
+
   QCoreApplication::setOrganizationName("MegasonLab");
   QCoreApplication::setApplicationName("GoFigure2");
 
@@ -71,12 +72,11 @@ int main( int argc, char** argv )
     }
 
   app.setMainWidget( &form );
-  //maximizeMainWindow(form);
 
   form.show( );
 
   splash->showMessage("Application ready");
-  // app.processEvents();
+  app.processEvents();
   splash->finish(&form);
   delete splash;
 
@@ -84,7 +84,7 @@ int main( int argc, char** argv )
 }
 
 
-void maximizeMainWindow(QGoMainWindow& form1)
+/*void maximizeMainWindow(QGoMainWindow& form1)
 {
   QDesktopWidget * Screen;
   Screen=QApplication::desktop();
@@ -100,4 +100,4 @@ void maximizeMainWindow(QGoMainWindow& form1)
   form1.setGeometry(10,10,width-50,height-50);
   // form1.setRect(width,height,0,0);
   // form1.resize(width,height);
-}
+}*/

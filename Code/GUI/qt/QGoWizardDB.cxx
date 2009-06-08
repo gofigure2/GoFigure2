@@ -768,6 +768,26 @@ void Import_SerieGridPage::initializePage()
   setSubTitle(
     tr("Experiment: '%1'. DataBase: '%2'")
      .arg(field("Name").toString()).arg(field("NameDB").toString()));
+
+  std::vector<std::string> myvect =
+    ListValuesfor1Row(
+        field("ServerName").toString().toStdString(),
+        field("User").toString().toStdString(),
+        field("Password").toString().toStdString(),
+        field("NameDB").toString().toStdString(),"seriesgrid",
+        "experimentID",field("ExpID").toString().toStdString());
+
+  if (myvect.empty())
+  {
+    BrowseButton->setVisible(true);
+    ImportSeriesGridRadioButton->setChecked(true);
+    openSeriesGridRadioButton->setVisible(false);
+  }
+  else
+  {
+    BrowseButton->setVisible(false);
+    openSeriesGridRadioButton->setVisible(true);
+  }
 }
 //------------------------------------------------------------------------------
 
@@ -800,6 +820,24 @@ void Import_SerieGridPage::EnterInfoSeriesGrid()
     tr( "Images (*.png *.bmp *.jpg *.jpeg *.tiff *.mha *.mhd *.img *.lsm)" )
     );
 
+  std::vector<std::string> myvect =
+    ListValuesfor1Row(
+        field("ServerName").toString().toStdString(),
+        field("User").toString().toStdString(),
+        field("Password").toString().toStdString(),
+        field("NameDB").toString().toStdString(),"seriesgrid",
+        "experimentID",field("ExpID").toString().toStdString());
+  
+  if (!myvect.empty())
+  {
+    QMessageBox msgBox;
+     msgBox.setText(tr
+       ("There is already an Image Set for this Experiment."));
+     msgBox.exec();
+     return;
+  }
+  else
+  {
   if( !filename.isEmpty( ) )
   {
     try
@@ -859,57 +897,8 @@ void Import_SerieGridPage::EnterInfoSeriesGrid()
     std::cerr << " caught an unknown exception!" << std::endl;
     return;
     }
-  
-  /*try
-    {
-    itk::MegaCaptureImport::Pointer  importFileInfoList = itk::MegaCaptureImport::New();
-    importFileInfoList->SetFileName( filename.toAscii().data() );
-    importFileInfoList->Update();
-
-    typedef FileListType::iterator myFilesIteratorType;
-    myFilesIteratorType It  = importFileInfoList->GetOutput()->begin();
-    myFilesIteratorType end = importFileInfoList->GetOutput()->end();
-
-    while( It != end )
-      {
-      GoDBSeriesGridRow myNewImage;
-
-      myNewImage.experimentID = field("ExpID").toInt();
-      myNewImage.RCoord = (*It).RTile;
-      myNewImage.CCoord = (*It).CTile;
-      myNewImage.TCoord = (*It).TimePoint;
-      myNewImage.YCoord = (*It).YOffset;
-      myNewImage.XCoord = (*It).XOffset;
-      myNewImage.ZCoord = (*It).ZDepth;
-      myNewImage.filename = (*It).Filename.c_str();
-
-      RecordValues_inTable<GoDBSeriesGridRow>(field("ServerName").toString().toStdString(),
-      field("User").toString().toStdString(),
-      field("Password").toString().toStdString(),
-      field("NameDB").toString().toStdString(),"seriesgrid", myNewImage);
-
-      It++;
-      }
-    }
-  catch( const itk::ExceptionObject& e )
-    {
-    std::cerr << " caught an ITK exception: " << std::endl;
-    e.Print( std::cerr);
-    return;
-    }
-  catch( const std::exception& e )
-    {
-    std::cerr << " caught an std exception: " << std::endl;
-    std::cerr << e.what() << std::endl;
-    return;
-    }
-  catch( ... )
-    {
-    std::cerr << " caught an unknown exception!" << std::endl;
-    return;
-    }*/
   }
-
+  }
   setField("OpenOrCreateSeriesGrid","Create");
 }
 //------------------------------------------------------------------------------
