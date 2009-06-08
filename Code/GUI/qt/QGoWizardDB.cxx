@@ -46,7 +46,7 @@ QGoWizardDB::QGoWizardDB( QWidget *parent )
   addPage( new OpenOrCreate_Page);
   addPage( new Create_ExperimentPage);
   addPage( new Import_SerieGridPage);
-  addPage( new Import_ManualSegmentationPage);
+  addPage( new Finish_Page);
   setWindowTitle( tr("Use DataBase") );
 }
 //------------------------------------------------------------------------------
@@ -899,7 +899,6 @@ void Import_SerieGridPage::EnterInfoSeriesGrid()
     }
   }
   }
-  setField("OpenOrCreateSeriesGrid","Create");
 }
 //------------------------------------------------------------------------------
 
@@ -907,7 +906,7 @@ void Import_SerieGridPage::EnterInfoSeriesGrid()
 
 //------------------------------------------------------------------------------
 
-Import_ManualSegmentationPage::Import_ManualSegmentationPage(QWidget *parent)
+Finish_Page::Finish_Page(QWidget *parent)
 :QWizardPage(parent)
 {
 }
@@ -917,52 +916,23 @@ Import_ManualSegmentationPage::Import_ManualSegmentationPage(QWidget *parent)
 
 //------------------------------------------------------------------------------
 
-void Import_ManualSegmentationPage::initializePage()
+void Finish_Page::initializePage()
 {
-  /*if (field("OpenOrCreateSeriesGrid")=="Create")
-    {
-        GoDBSeriesGridRow myNewObject;
-
-        myNewObject.experimentID = field("ExpID").toInt();
-        myNewObject.RCoord  = field("RCoord").toInt();
-        myNewObject.CCoord = field("CCoord").toInt();
-        myNewObject.TCoord   = field("TCoord").toInt();
-        myNewObject.YCoord    = field("YCoord").toInt();
-        myNewObject.XCoord   = field("XCoord").toInt();
-        myNewObject.ZCoord  = field("ZCoord").toInt();
-        myNewObject.filename   = field("filename").toString().toAscii().data();
-
-
-
-        std::cout<<"myNewObject.experimentID of my exp is : "<<myNewObject.experimentID<<std::endl;
-        std::cout<<"myNewObject.filename of my exp is : "<<myNewObject.filename<<std::endl;
-
-          RecordValues_inTable< GoDBSeriesGridRow >(
-          field("ServerName").toString().toAscii().data(),
-          field("User").toString().toAscii().data(),
-          field("Password").toString().toAscii().data(),
-          field("NameDB").toString().toAscii().data(),"seriesgrid", myNewObject);
-
-
-       std::vector<std::string> vectListExpID =
-        ListExpID(
-          field("ServerName").toString().toStdString(),
-          field("User").toString().toStdString(),
-          field("Password").toString().toStdString(),
-          field("NameDB").toString().toStdString());
-
-      setField("ImageID",(unsigned int)vectListExpID.size());
-      std::cout<<"create"<<std::endl;
-      std::cout<<field("ExpID").toString().toAscii().data()<<std::endl;
-
-    }
-  else
-  {
-
-  }*/
-  setTitle(tr("Experiment %1,'%2' from the database %3").arg(field("ExpID")
-     .toString()).arg(field("Name").toString()).arg(field("NameDB").toString()));
+  setTitle(tr("When you click on finish, the Image Set of the Experiment %1 from the DataBase %2 will be opened.")
+  .arg(field("Name").toString()).arg(field("NameDB").toString()));
 }
+
+std::vector<std::string> Finish_Page::ListFilenames()
+{
+  std::vector<std::string> listFilenames = ListValuesfor1Column(
+  field("ServerName").toString().toStdString(),
+        field("User").toString().toStdString(),
+        field("Password").toString().toStdString(),
+        field("NameDB").toString().toStdString(),"seriesgrid",
+        "filename","experimentID",field("ExpID").toString().toStdString());
+  return listFilenames;
+}
+
 //------------------------------------------------------------------------------
 
 

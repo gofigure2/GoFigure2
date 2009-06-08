@@ -68,6 +68,13 @@ std::vector<std::string> ListImageIDforExpID(
   std::string ServerName, std::string login,
   std::string Password, std::string DBName, std::string ID);
 
+std::vector<std::string> ListValuesfor1Column(
+  std::string ServerName, std::string login,
+  std::string Password, std::string DBName,
+  std::string TableName, std::string ColumnName,
+  std::string field,std::string ID);
+
+
 bool CanConnectToServer(
   std::string ServerName, std::string login,
   std::string Password);

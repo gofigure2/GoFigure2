@@ -47,14 +47,12 @@ public:
 
   QMEGAVTKADDON2_EXPORT QGoWizardDB(QWidget *parent = 0);
 
-};
-
 /*class MyQWizardPage : public QWizardPage
 {
 public:
   void MyMethod()
 };*/
-
+};
 class Connect_ServerPage : public QWizardPage
 {
 Q_OBJECT
@@ -180,14 +178,14 @@ protected slots:
 
 };
 
-class Import_ManualSegmentationPage : public QWizardPage
+class Finish_Page : public QWizardPage
 {
 Q_OBJECT
 
 public:
-  Import_ManualSegmentationPage(QWidget *parent = 0);
+  Finish_Page(QWidget *parent = 0);
   void initializePage();
-
+  std::vector<std::string>ListFilenames();
 };
 
 #endif

@@ -1069,7 +1069,8 @@ std::vector<std::string> ListValuesfor1Row(
   if( !DataBaseConnector->Open() )
     {
     std::cerr << "Could not open database." << std::endl;
-    std::cerr << "DB will not be created."  << std::endl;
+    std::cerr << "The list of the values for the row will not be read."  << std::endl;
+    DataBaseConnector->Close();
     DataBaseConnector->Delete();
     return result;
     }
@@ -1160,4 +1161,64 @@ std::vector<std::string> ListImageIDforExpID(
 
   return result;
 
-};
+}
+
+std::vector<std::string> ListValuesfor1Column(
+  std::string ServerName, std::string login,
+  std::string Password, std::string DBName,
+  std::string TableName, std::string ColumnName,
+  std::string field,std::string ID)
+
+{ std::vector< std::string > result;
+
+  vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
+  DataBaseConnector->SetHostName( ServerName.c_str() );
+  DataBaseConnector->SetUser( login.c_str() );
+  DataBaseConnector->SetPassword( Password.c_str() );
+  DataBaseConnector->SetDatabaseName( DBName.c_str() );
+  if( !DataBaseConnector->Open() )
+    {
+    std::cerr << "Could not open database." << std::endl;
+    std::cerr << "List of the Values for the column can not be read."<< std::endl;
+    DataBaseConnector->Close();
+    DataBaseConnector->Delete();
+    return result;
+    }
+
+  vtkSQLQuery* query = DataBaseConnector->GetQueryInstance();
+  std::stringstream querystream;
+  querystream << "SELECT ";
+  querystream << ColumnName;
+  querystream << " FROM ";
+  querystream << TableName;
+  querystream << " WHERE ";
+  querystream << field;
+  querystream << " = '";
+  querystream << ID;
+  querystream << "';";
+
+  query->SetQuery( querystream.str().c_str() );
+  if ( !query->Execute() )
+    {
+    cerr << "List of all values of ExpID query failed" << endl;
+    DataBaseConnector->Close();
+    DataBaseConnector->Delete();
+    query->Delete();
+    return result;
+    }
+
+  std::cout<<"result of the query where ID=1, 2nd value "<<query->GetNumberOfFields()<<std::endl;
+
+  while (query->NextRow())
+  {   for(  int i = 0; i < query->GetNumberOfFields() ; i++)
+      {
+        result.push_back( query->DataValue( i ).ToString() );
+      }
+  }
+
+  DataBaseConnector->Close();
+  DataBaseConnector->Delete();
+  query->Delete();
+
+  return result;
+}
