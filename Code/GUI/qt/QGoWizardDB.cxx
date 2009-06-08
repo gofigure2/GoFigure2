@@ -54,6 +54,23 @@ QGoWizardDB::QGoWizardDB( QWidget *parent )
 
 
 //------------------------------------------------------------------------------
+
+std::vector<std::string> QGoWizardDB::ListFilenames()
+{
+  std::vector<std::string> listFilenames = ListValuesfor1Column(
+  field("ServerName").toString().toStdString(),
+        field("User").toString().toStdString(),
+        field("Password").toString().toStdString(),
+        field("NameDB").toString().toStdString(),"seriesgrid",
+        "filename","experimentID",field("ExpID").toString().toStdString());
+  return listFilenames;
+}
+//------------------------------------------------------------------------------
+
+
+
+//------------------------------------------------------------------------------
+
 Connect_ServerPage::Connect_ServerPage( QWidget *parent )
 : QWizardPage( parent )
 {
@@ -922,7 +939,7 @@ void Finish_Page::initializePage()
   .arg(field("Name").toString()).arg(field("NameDB").toString()));
 }
 
-std::vector<std::string> Finish_Page::ListFilenames()
+/*std::vector<std::string> Finish_Page::ListFilenames()
 {
   std::vector<std::string> listFilenames = ListValuesfor1Column(
   field("ServerName").toString().toStdString(),
@@ -931,7 +948,7 @@ std::vector<std::string> Finish_Page::ListFilenames()
         field("NameDB").toString().toStdString(),"seriesgrid",
         "filename","experimentID",field("ExpID").toString().toStdString());
   return listFilenames;
-}
+}*/
 
 //------------------------------------------------------------------------------
 

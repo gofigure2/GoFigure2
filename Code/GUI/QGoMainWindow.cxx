@@ -214,6 +214,25 @@ void QGoMainWindow::on_actionOpen_Multiple_Files_activated( )
     }
 }
 
+void QGoMainWindow::on_actionUse_DataBase_activated() 
+{
+   QGoWizardDB* m_Wizard = new QGoWizardDB;
+   m_Wizard->show();
+   if (m_Wizard->hasVisitedPage(5))
+   {std::vector<std::string> vectListFilenames = m_Wizard->ListFilenames();
+   
+   if (!vectListFilenames.empty())
+         {
+          for(unsigned int i = 0; i < vectListFilenames.size(); ++i )
+          {
+            std::cout<<"Filename "<<i<<" is "<<vectListFilenames[i].c_str()<<std::endl;
+            //ListExistingNames.append( vectListExpName[i].c_str( ) );
+          }
+         }
+   }
+}
+
+
 // *************************************************************************
 void QGoMainWindow::on_actionOpen_Mesh_activated( )
 {
