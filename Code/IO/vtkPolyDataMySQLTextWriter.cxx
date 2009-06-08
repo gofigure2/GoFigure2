@@ -128,5 +128,7 @@ std::string vtkPolyDataMYSQLTextWriter::MeshProcessing()
       oMyString <<cell_points->GetId( k ) <<" ";
       }
     }
+
+  cell_points->Delete();
   return oMyString.str();
 }

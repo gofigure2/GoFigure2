@@ -6,6 +6,7 @@ SET( EXAMPLES_QT_NOT_REQUIRED
   lsm2jpg
   lsm2vtk
   lsm2mha
+  vtkPolyDataMySQLTextWriter
   )
 
 FOREACH( var ${EXAMPLES_QT_NOT_REQUIRED} )
