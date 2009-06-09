@@ -55,15 +55,25 @@ QGoWizardDB::QGoWizardDB( QWidget *parent )
 
 //------------------------------------------------------------------------------
 
-std::vector<std::string> QGoWizardDB::ListFilenames()
+QStringList QGoWizardDB::ListFilenames()
 {
-  std::vector<std::string> listFilenames = ListValuesfor1Column(
+  QStringList ListFilenames;
+  std::vector<std::string> vectListFilenames = ListValuesfor1Column(
   field("ServerName").toString().toStdString(),
         field("User").toString().toStdString(),
         field("Password").toString().toStdString(),
         field("NameDB").toString().toStdString(),"seriesgrid",
         "filename","experimentID",field("ExpID").toString().toStdString());
-  return listFilenames;
+
+  if (!vectListFilenames.empty())
+     {
+     for(unsigned int i = 0; i < vectListFilenames.size(); ++i )
+        {
+          ListFilenames.append( vectListFilenames[i].c_str( ) );
+        }
+     }
+
+  return ListFilenames;
 }
 //------------------------------------------------------------------------------
 
@@ -79,7 +89,7 @@ Connect_ServerPage::Connect_ServerPage( QWidget *parent )
   this->setFont(font);
   setSubTitle( tr("Step 1: Connect to a MySQL DataBase Server:"));
   //setPixmap(QWizard::WatermarkPixmap, QPixmap(":/images/watermark.png"));
- 
+
   QFormLayout* formLayout = new QFormLayout;
   lineServerName = new QLineEdit( tr("localhost") );
   lineUserName = new QLineEdit( tr("gofigure") );
@@ -133,7 +143,7 @@ void OpenOrCreate_Page::initializePage()
     this->setSubTitle(tr("Step 2: Chose what you want to do next:"));
     openDBRadioButton->show();
     createDBRadioButton->show();
-  
+
 }
 //------------------------------------------------------------------------------
 
@@ -279,7 +289,7 @@ bool OpenOrCreate_Page::validatePage()
             field("Password").toString().toStdString(),
             NameDB.toStdString() ) )
         {
-        
+
         QMessageBox msgBox;
         msgBox.setText(tr("The Database %1 is not a Gofigure Database").arg(NameDB));
         msgBox.exec();
@@ -467,7 +477,7 @@ void Create_ExperimentPage::initializePage()
 
   NameDB_fake = new QLineEdit;
   registerField("NameDB",NameDB_fake);
- 
+
 
   if (!field("DBNametoCreate").toString().isEmpty())
     {
@@ -598,7 +608,7 @@ void Create_ExperimentPage::PrintListExp()
 
 void Create_ExperimentPage::PrintValuesExpName(QString ExpName)
 {
-  
+
   std::vector<std::string> myvect =
     ListValuesfor1Row(
         field("ServerName").toString().toStdString(),
@@ -844,7 +854,7 @@ void Import_SerieGridPage::EnterInfoSeriesGrid()
         field("Password").toString().toStdString(),
         field("NameDB").toString().toStdString(),"seriesgrid",
         "experimentID",field("ExpID").toString().toStdString());
-  
+
   if (!myvect.empty())
   {
     QMessageBox msgBox;
@@ -873,7 +883,7 @@ void Import_SerieGridPage::EnterInfoSeriesGrid()
 
     typedef FileListType::iterator myFilesIteratorType;
     myFilesIteratorType It  = importFileInfoList->GetOutput()->begin();
-    myFilesIteratorType end = importFileInfoList->GetOutput()->end();    
+    myFilesIteratorType end = importFileInfoList->GetOutput()->end();
     while( It != end )
       {
       GoDBSeriesGridRow row;

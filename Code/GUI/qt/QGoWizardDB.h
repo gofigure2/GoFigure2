@@ -46,7 +46,7 @@ public:
   //enum { Page_Connect_Server, Page_OpenOrCreateDB, Page_CreateExperiment};
 
   QMEGAVTKADDON2_EXPORT QGoWizardDB(QWidget *parent = 0);
-  QMEGAVTKADDON2_EXPORT std::vector<std::string>ListFilenames();
+  QMEGAVTKADDON2_EXPORT QStringList ListFilenames();
 
 /*class MyQWizardPage : public QWizardPage
 {

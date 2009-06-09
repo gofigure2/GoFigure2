@@ -215,13 +215,13 @@ void QGoMainWindow::on_actionOpen_Multiple_Files_activated( )
     }
 }
 
-void QGoMainWindow::on_actionUse_DataBase_activated() 
+void QGoMainWindow::on_actionUse_DataBase_activated()
 {
    m_Wizard = new QGoWizardDB;
    m_Wizard->show();
    connect( m_Wizard, SIGNAL( accepted() ),
    this, SLOT( openFilesfromDB() ) );
-   
+
 }
 
 // *************************************************************************
@@ -230,23 +230,19 @@ void QGoMainWindow::openFilesfromDB()
   std::cout<<"signal worked"<<std::endl;
   if (m_Wizard->hasVisitedPage(4))
     {
-    std::vector<std::string> vectListFilenames = m_Wizard->ListFilenames();
-     
-    if (!vectListFilenames.empty())
+    QStringList ListFilenames = m_Wizard->ListFilenames();
+
+    if (!ListFilenames.isEmpty())
       {
-      for(unsigned int i = 0; i < vectListFilenames.size(); ++i )
+      for(unsigned int i = 0; i < ListFilenames.size(); ++i )
         {
-        std::cout<<"Filename "<<i<<" is "<<vectListFilenames[i].c_str()<<std::endl;
+        std::cout<<"Filename "<<i<<" is "<<ListFilenames[i].toStdString().c_str()<<std::endl;
         //ListExistingNames.append( vectListExpName[i].c_str( ) );
         }
       }
-      if (vectListFilenames.size()==1)
-        {
-          //SetFileName(vectListFilenames[0].c_str(),false);
-        }
       else
       {
-        SetFileName(vectListFilenames[1].c_str(),true);
+        SetFileName(ListFilenames[1],true);
       }
     }
 }
