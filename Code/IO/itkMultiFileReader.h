@@ -75,7 +75,7 @@ namespace itk
 *
 *
 */
-class ITK_EXPORT MultiFileReader : public LightProcessObject
+class ITK_EXPORT MultiFileReader
 {
 public:
 
@@ -85,12 +85,6 @@ public:
   typedef LightProcessObject          Superclass;
   typedef SmartPointer< Self >        Pointer;
   typedef SmartPointer< const Self >  ConstPointer;
-
-  /** Run-time type information (and related methods). */
-  itkTypeMacro( MultiFileReader, LightProcessObject );
-
-  /** Method for creation through the object factory. */
-  itkNewMacro(Self);
 
   /** \brief set the time point you want to extract
       and load in memory.                              */
@@ -124,16 +118,13 @@ public:
   // so pipeline mechanism would not work.
   void Update(void);
 
-// protected:
+  MultiFileReader( );
+  ~MultiFileReader();
 
   /** \brief Mandatory PrintSelf */
   void PrintSelf( std::ostream& os, Indent indent) const;
 
-  MultiFileReader( );
-  ~MultiFileReader();
-
 private:
-
   void ComputeUpdateFileList();
 
   MultiFileReader(const Self&); //purposely not implemented
@@ -153,9 +144,5 @@ private:
 };
 
 } // end of namespace itk
-
-// #ifndef ITK_MANUAL_INSTANTIATION
-// #include "itkMultiFileReader.txx"
-// #endif
 
 #endif

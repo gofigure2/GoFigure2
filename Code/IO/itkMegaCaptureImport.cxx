@@ -107,9 +107,9 @@ CreateOutput()
       itksys::SystemTools::GetFilenameName( (*nit).c_str() );
 
     IntVectorType::reverse_iterator numGroupLengthItr =
-      m_numGroupLength.rbegin();
+      this->m_numGroupLength.rbegin();
     IntVectorType::reverse_iterator numGroupStartItr  =
-      m_numGroupStart.rbegin();
+      this->m_numGroupStart.rbegin();
     unsigned int* NumericalValues = new unsigned int[6];
     int megaCaptureNumericalGroupCounter = 0;
     while( numGroupLengthItr != m_numGroupLength.rend() &&
