@@ -60,6 +60,7 @@
 #include <vtkPLYReader.h>
 #include <vtkPolyData.h>
 #include <vtkProperty.h>
+#include <QDialog>
 
 //#include "ContourContainerFileSystem.h"
 
@@ -216,23 +217,39 @@ void QGoMainWindow::on_actionOpen_Multiple_Files_activated( )
 
 void QGoMainWindow::on_actionUse_DataBase_activated() 
 {
-   QGoWizardDB* m_Wizard = new QGoWizardDB;
+   m_Wizard = new QGoWizardDB;
    m_Wizard->show();
-   if (m_Wizard->hasVisitedPage(5))
-   {std::vector<std::string> vectListFilenames = m_Wizard->ListFilenames();
+   connect( m_Wizard, SIGNAL( accepted() ),
+   this, SLOT( openFilesfromDB() ) );
    
-   if (!vectListFilenames.empty())
-         {
-          for(unsigned int i = 0; i < vectListFilenames.size(); ++i )
-          {
-            std::cout<<"Filename "<<i<<" is "<<vectListFilenames[i].c_str()<<std::endl;
-            //ListExistingNames.append( vectListExpName[i].c_str( ) );
-          }
-         }
-   }
 }
 
-
+// *************************************************************************
+void QGoMainWindow::openFilesfromDB()
+{
+  std::cout<<"signal worked"<<std::endl;
+  if (m_Wizard->hasVisitedPage(4))
+    {
+    std::vector<std::string> vectListFilenames = m_Wizard->ListFilenames();
+     
+    if (!vectListFilenames.empty())
+      {
+      for(unsigned int i = 0; i < vectListFilenames.size(); ++i )
+        {
+        std::cout<<"Filename "<<i<<" is "<<vectListFilenames[i].c_str()<<std::endl;
+        //ListExistingNames.append( vectListExpName[i].c_str( ) );
+        }
+      }
+      if (vectListFilenames.size()==1)
+        {
+          //SetFileName(vectListFilenames[0].c_str(),false);
+        }
+      else
+      {
+        SetFileName(vectListFilenames[1].c_str(),true);
+      }
+    }
+}
 // *************************************************************************
 void QGoMainWindow::on_actionOpen_Mesh_activated( )
 {
