@@ -138,6 +138,11 @@ void MultiFileReader::PrintSelf( std::ostream& os, Indent indent) const
 //-----------------------------------------------------------------------------
 void MultiFileReader::Update( void )
 {
+  if( this->m_OutputImage )
+	{
+	this->m_OutputImage->Delete();
+	}
+
   this->ComputeUpdateFileList();
 
   FileListType::iterator startIt;
@@ -168,6 +173,7 @@ void MultiFileReader::Update( void )
           reader->Update();
 
           volumeBuilder->SetInput( counter, reader->GetOutput( ) );
+		  reader->Delete();
           break;
           }
         case BMP:
@@ -209,7 +215,9 @@ void MultiFileReader::Update( void )
 
     if( this->m_AreImagesMultiChannel )
       {
-      m_OutputImage = volumeBuilder->GetOutput();
+	  m_OutputImage = vtkImageData::New();
+	  m_OutputImage->ShallowCopy( volumeBuilder->GetOutput() );
+	  volumeBuilder->Delete();
       }
     else
       {
@@ -217,7 +225,10 @@ void MultiFileReader::Update( void )
       extractComp->SetComponents( this->m_UpdateChannel );
       extractComp->SetInput( volumeBuilder->GetOutput() );
       extractComp->Update( );
-      m_OutputImage = extractComp->GetOutput();
+	  volumeBuilder->Delete();
+	  m_OutputImage = vtkImageData::New();
+	  m_OutputImage->ShallowCopy( extractComp->GetOutput() );
+	  extractComp->Delete();
       }
 
     } // end of dimensionality == 2

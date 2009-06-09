@@ -120,16 +120,22 @@ QImagePageView4DTracer::QImagePageView4DTracer( QWidget* parent ) : QWidget( par
 QImagePageView4DTracer::~QImagePageView4DTracer()
 {
   delete this->Whatever;
-  // NOTE ALEX: bug come from here
-  // commenting this line lead to huge memory leaks, don t even think about it.
-  // the error comes from very very deep in the vtk hierarchy. I can't explain it.
-  Image->Delete();
+  if( this->Image )
+    {
+    this->Image->Delete();
+    this->Image = (vtkImageData*)(0);
+    }
 }
 
 void
 QImagePageView4DTracer::
 ReadMultiFile( const int& TimePoint )
 {
+  if( this->Image )
+    {
+    this->Image->Delete();
+    }
+
   itk::MultiFileReader* reader = new itk::MultiFileReader;
 
   if( ! this->IsFileListComputed )
@@ -140,8 +146,6 @@ ReadMultiFile( const int& TimePoint )
       importFileInfoList->SetFileName( this->FileName );
       importFileInfoList->SetGroupId( 1 );
       importFileInfoList->Update();
-      // NOTE ALEX: the pointer might be wrong when the object go out of scope
-      // because it's not a smart pointer
       this->FileList = *(importFileInfoList->GetOutput());
       }
     if( this->IsMegaCapture )
@@ -153,7 +157,6 @@ ReadMultiFile( const int& TimePoint )
       }
     }
 
-  //  itk::MultiFileReader* reader = itk::MultiFileReader::New();
   reader->SetInput( &(this->FileList) );
   if( this->IsLsm )
     {
@@ -185,12 +188,13 @@ ReadMultiFile( const int& TimePoint )
     }
   else
     {
-    // NOTE ALEX: this quickly remove the horizontal slider problem
-    // had better make it visible / invisble if possible, not to mess up with the layout.
     this->LayOut1->removeWidget( this->Slider1 );
     }
 
-  this->Image = reader->GetOutput();
+  // disconnect the pipeline
+  this->Image = vtkImageData::New();
+  this->Image->ShallowCopy( reader->GetOutput() );
+  delete reader;
 }
 
 void

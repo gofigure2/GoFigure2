@@ -960,32 +960,6 @@ void QGoMainWindow::SetFileName( const QString& iFile, const bool& IsSerie )
         }
       }
     }
-  //     if( IsSerie )
-  //       {
-  //       this->setCurrentFile( iFile, true );
-  //       if( ext.compare( "lsm", Qt::CaseInsensitive ) == 0 )
-  //         {
-  //         this->OpenAndDisplay( m_CurrentFile, IsSerie, 0 );
-  //         }
-  //       else
-  //         {
-  //         this->OpenAndDisplay( m_CurrentFile, IsSerie, 1 );
-  //         }
-  //       }
-  //     else
-  //       {
-  //       this->setCurrentFile( iFile, false );
-  //       if( ext.compare( "lsm", Qt::CaseInsensitive ) == 0 )
-  //         {
-  //         this->OpenAndDisplay( m_CurrentFile, IsSerie, 0 );
-  //         }
-  //       else // NOTE ALEX: last case to be unified
-  //         {
-  //         this->OpenImage( m_CurrentFile );
-  //         this->DisplayImage( m_CurrentFile );
-  //         }
-  //       }
-  //     }
 }
 
 // *************************************************************************
