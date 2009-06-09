@@ -42,11 +42,11 @@ QGoWizardDB::QGoWizardDB( QWidget *parent )
   finishButton->setFont(font2);
   this->setButton ( QWizard::FinishButton, finishButton );
 
-  addPage( new Connect_ServerPage );
-  addPage( new OpenOrCreate_Page);
-  addPage( new Create_ExperimentPage);
-  addPage( new Import_SerieGridPage);
-  addPage( new Finish_Page);
+  setPage(Connect_Server, new Connect_ServerPage );
+  setPage(OpenOrCreateDB, new OpenOrCreate_Page);
+  setPage(Create_Experiment, new Create_ExperimentPage);
+  setPage(Import, new Import_SerieGridPage);
+  setPage(Finish, new Finish_Page);
   setWindowTitle( tr("Use DataBase") );
 }
 //------------------------------------------------------------------------------
@@ -604,7 +604,38 @@ void Create_ExperimentPage::PrintListExp()
 
 
 //------------------------------------------------------------------------------
+int Create_ExperimentPage::nextId() const
+{
+    if (field("OpenOrCreateExp")=="Open")
+      {
+      std::vector<std::string> List = ListValuesfor1Column(
+      field("ServerName").toString().toStdString(),
+      field("User").toString().toStdString(),
+      field("Password").toString().toStdString(),
+      field("NameDB").toString().toStdString(),"seriesgrid",
+      "filename","experimentID",field("ExpID").toString().toStdString());
 
+      if (!List.empty())
+        {
+        std::cout<<"last page"<<std::endl;
+        return QGoWizardDB::Finish;
+        }
+      else
+        {
+        return QGoWizardDB::Import;
+        }
+
+      }
+    else
+      {
+      return QGoWizardDB::Import;
+      }
+}
+//------------------------------------------------------------------------------
+
+
+
+//------------------------------------------------------------------------------
 
 void Create_ExperimentPage::PrintValuesExpName(QString ExpName)
 {
@@ -709,6 +740,8 @@ bool Create_ExperimentPage::validatePage()
 
 
 //------------------------------------------------------------------------------
+
+
 Import_SerieGridPage::Import_SerieGridPage( QWidget *parent )
 : QWizardPage( parent )
 {

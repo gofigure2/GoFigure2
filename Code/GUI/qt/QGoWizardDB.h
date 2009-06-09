@@ -43,7 +43,8 @@ class QGoWizardDB : public QWizard
 Q_OBJECT
 
 public:
-  //enum { Page_Connect_Server, Page_OpenOrCreateDB, Page_CreateExperiment};
+  enum { Connect_Server, OpenOrCreateDB,Create_Experiment, Import,
+  Finish};
 
   QMEGAVTKADDON2_EXPORT QGoWizardDB(QWidget *parent = 0);
   QMEGAVTKADDON2_EXPORT QStringList ListFilenames();
@@ -112,6 +113,7 @@ public:
  Create_ExperimentPage( QWidget *parent = 0 );
  void initializePage();
  bool validatePage();
+ int nextId() const;
 
 protected:
   QComboBox* ChoiceExp;
