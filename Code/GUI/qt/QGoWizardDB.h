@@ -164,20 +164,10 @@ public:
 protected:
   QGridLayout* gridlayout;
   QLineEdit* OpenOrCreateSeriesGrid_fake;
-  //QLineEdit* ImageID_fake;
-  //QComboBox* ChoiceSeriesGrid;
-  QRadioButton* openSeriesGridRadioButton;
-  QRadioButton* ImportSeriesGridRadioButton;
   QPushButton* BrowseButton;
-  //QStringList m_ListImageID;
 
 protected slots:
-  //void PrintListSeriesGrid();
-  void SelectImportSeriesGrid();
-  void SelectOpenSeriesGrid();
-  void EnterInfoSeriesGrid();
-  //void PrintValuesImageID(int ImageID);
-
+  void SelectSeriesGrid();
 
 };
 

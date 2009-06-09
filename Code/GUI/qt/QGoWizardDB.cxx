@@ -668,8 +668,6 @@ void Create_ExperimentPage::PrintValuesExpName(QString ExpName)
     setField("nColumns",myvect[15].c_str());
     setField("FilePattern",myvect[16].c_str());
     }
-
-  //setField("ExpID", ExpID.toInt());
 }
 //------------------------------------------------------------------------------
 
@@ -751,31 +749,16 @@ Import_SerieGridPage::Import_SerieGridPage( QWidget *parent )
   this->adjustSize();
 
   gridlayout= new QGridLayout;
-  OpenOrCreateSeriesGrid_fake = new QLineEdit;
   BrowseButton = new QPushButton("&Browse", this);
-
-  openSeriesGridRadioButton = new QRadioButton(tr("&Open the existing Image Set"));
-  ImportSeriesGridRadioButton = new QRadioButton(tr("&Import a new Image Set"));
-
-  gridlayout->addWidget( ImportSeriesGridRadioButton );
   gridlayout->addWidget( BrowseButton,0,1 );
-  gridlayout->addWidget( openSeriesGridRadioButton );
   gridlayout->setColumnStretch ( 0, 3);
   gridlayout->setColumnStretch ( 1, 1);
 
 
   setLayout(gridlayout);
 
-  registerField("OpenOrCreateSeriesGrid",OpenOrCreateSeriesGrid_fake);
-
-  QObject::connect( this->ImportSeriesGridRadioButton,SIGNAL( clicked() ),
-  this,SLOT( SelectImportSeriesGrid() ));
-
-  QObject::connect( this->openSeriesGridRadioButton,SIGNAL( clicked() ),
-  this,SLOT( SelectOpenSeriesGrid() ));
-
   QObject::connect( this->BrowseButton,SIGNAL( clicked() ),
-  this,SLOT( EnterInfoSeriesGrid() ));
+  this,SLOT( SelectSeriesGrid() ));
 
 
 }
@@ -786,7 +769,7 @@ Import_SerieGridPage::Import_SerieGridPage( QWidget *parent )
 //------------------------------------------------------------------------------
 void Import_SerieGridPage::initializePage()
 {
-  BrowseButton->setVisible(false);
+  BrowseButton->setVisible(true);
   if (field("OpenOrCreateExp")=="Create")
     {
 
@@ -825,54 +808,17 @@ void Import_SerieGridPage::initializePage()
     setField( "ExpID", (unsigned int)vectListExpID.size() );
     }
 
-  setSubTitle(
+    setTitle(
     tr("Experiment: '%1'. DataBase: '%2'")
      .arg(field("Name").toString()).arg(field("NameDB").toString()));
-
-  std::vector<std::string> myvect =
-    ListValuesfor1Row(
-        field("ServerName").toString().toStdString(),
-        field("User").toString().toStdString(),
-        field("Password").toString().toStdString(),
-        field("NameDB").toString().toStdString(),"seriesgrid",
-        "experimentID",field("ExpID").toString().toStdString());
-
-  if (myvect.empty())
-  {
-    BrowseButton->setVisible(true);
-    ImportSeriesGridRadioButton->setChecked(true);
-    openSeriesGridRadioButton->setVisible(false);
-  }
-  else
-  {
-    BrowseButton->setVisible(false);
-    openSeriesGridRadioButton->setVisible(true);
-  }
+  setSubTitle(tr("Click on the 'browse' button and select only 1 file from the Image Set you want to import:"));
 }
 //------------------------------------------------------------------------------
 
 
 
 //------------------------------------------------------------------------------
-void Import_SerieGridPage::SelectImportSeriesGrid()
-{
-    BrowseButton->setVisible(true);
-}
-//------------------------------------------------------------------------------
-
-
-
-//------------------------------------------------------------------------------
-void Import_SerieGridPage::SelectOpenSeriesGrid()
-{
-    BrowseButton->setVisible(false);
-}
-//------------------------------------------------------------------------------
-
-
-
-//------------------------------------------------------------------------------
-void Import_SerieGridPage::EnterInfoSeriesGrid()
+void Import_SerieGridPage::SelectSeriesGrid()
 {
   QString filename = QFileDialog::getOpenFileName(
     this,
@@ -981,18 +927,6 @@ void Finish_Page::initializePage()
   setTitle(tr("When you click on finish, the Image Set of the Experiment %1 from the DataBase %2 will be opened.")
   .arg(field("Name").toString()).arg(field("NameDB").toString()));
 }
-
-/*std::vector<std::string> Finish_Page::ListFilenames()
-{
-  std::vector<std::string> listFilenames = ListValuesfor1Column(
-  field("ServerName").toString().toStdString(),
-        field("User").toString().toStdString(),
-        field("Password").toString().toStdString(),
-        field("NameDB").toString().toStdString(),"seriesgrid",
-        "filename","experimentID",field("ExpID").toString().toStdString());
-  return listFilenames;
-}*/
-
 //------------------------------------------------------------------------------
 
 
