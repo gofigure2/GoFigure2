@@ -586,7 +586,7 @@ void Create_ExperimentPage::PrintListExp()
 
    if (!vectListExpName.empty())
    {
-   for(unsigned int i = 1; i < vectListExpName.size(); ++i )
+   for(unsigned int i = 0; i < vectListExpName.size(); ++i )
       {
         m_ListExpName.append( vectListExpName[i].c_str( ) );
       }
