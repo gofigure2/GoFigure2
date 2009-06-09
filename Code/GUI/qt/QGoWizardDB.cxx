@@ -31,7 +31,7 @@ QGoWizardDB::QGoWizardDB( QWidget *parent )
   QFont font2;
   font2.setBold(false);
 
-  QPushButton* nextButton = new QPushButton(tr("Next"));
+  nextButton = new QPushButton(tr("Next"));
   nextButton->setFont(font2);
   this->setButton ( QWizard::NextButton, nextButton );
   QPushButton* backButton = new QPushButton(tr("Back"));
@@ -474,6 +474,7 @@ void Create_ExperimentPage::initializePage()
 {
   openExpRadioButton->setChecked(false);
   createExpRadioButton->setChecked(false);
+  setFinalPage(false);
 
   NameDB_fake = new QLineEdit;
   registerField("NameDB",NameDB_fake);
@@ -585,7 +586,7 @@ void Create_ExperimentPage::PrintListExp()
 
    if (!vectListExpName.empty())
    {
-   for(unsigned int i = 0; i < vectListExpName.size(); ++i )
+   for(unsigned int i = 1; i < vectListExpName.size(); ++i )
       {
         m_ListExpName.append( vectListExpName[i].c_str( ) );
       }
@@ -608,17 +609,20 @@ int Create_ExperimentPage::nextId() const
 {
     if (field("OpenOrCreateExp")=="Open")
       {
-      std::vector<std::string> List = ListValuesfor1Column(
+      std::vector<std::string> ListFinalPage;
+      ListFinalPage.clear();
+      ListFinalPage = ListValuesfor1Column(
       field("ServerName").toString().toStdString(),
       field("User").toString().toStdString(),
       field("Password").toString().toStdString(),
       field("NameDB").toString().toStdString(),"seriesgrid",
       "filename","experimentID",field("ExpID").toString().toStdString());
 
-      if (!List.empty())
+      if (!ListFinalPage.empty())
         {
-        std::cout<<"last page"<<std::endl;
-        return QGoWizardDB::Finish;
+        std::cout<<"last page ID"<<std::endl;
+        //return QGoWizardDB::Finish;
+        return -1;
         }
       else
         {
@@ -639,8 +643,7 @@ int Create_ExperimentPage::nextId() const
 
 void Create_ExperimentPage::PrintValuesExpName(QString ExpName)
 {
-
-  std::vector<std::string> myvect =
+std::vector<std::string> myvect =
     ListValuesfor1Row(
         field("ServerName").toString().toStdString(),
         field("User").toString().toStdString(),
@@ -668,6 +671,27 @@ void Create_ExperimentPage::PrintValuesExpName(QString ExpName)
     setField("nColumns",myvect[15].c_str());
     setField("FilePattern",myvect[16].c_str());
     }
+
+  std::vector<std::string> List;
+  List.clear();
+  List = ListValuesfor1Column(
+  field("ServerName").toString().toStdString(),
+  field("User").toString().toStdString(),
+  field("Password").toString().toStdString(),
+  field("NameDB").toString().toStdString(),"seriesgrid",
+  "filename","experimentID",field("ExpID").toString().toStdString());
+
+  if (!List.empty())
+    {
+    std::cout<<"last page"<<std::endl;
+    isFinalPage();
+    setFinalPage(true);
+    //QWizard::NextButton->setEnabled(false);
+     }
+  else
+     {
+     setFinalPage(false);
+     }
 }
 //------------------------------------------------------------------------------
 

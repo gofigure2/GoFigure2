@@ -228,7 +228,7 @@ void QGoMainWindow::on_actionUse_DataBase_activated()
 void QGoMainWindow::openFilesfromDB()
 {
   std::cout<<"signal worked"<<std::endl;
-  if (m_Wizard->hasVisitedPage(4))
+  if (m_Wizard->hasVisitedPage(3))
     {
     QStringList ListFilenames = m_Wizard->ListFilenames();
 

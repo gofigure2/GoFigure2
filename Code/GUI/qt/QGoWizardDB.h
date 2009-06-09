@@ -48,13 +48,10 @@ public:
 
   QMEGAVTKADDON2_EXPORT QGoWizardDB(QWidget *parent = 0);
   QMEGAVTKADDON2_EXPORT QStringList ListFilenames();
+  QPushButton* nextButton;
 
-/*class MyQWizardPage : public QWizardPage
-{
-public:
-  void MyMethod()
-};*/
 };
+
 class Connect_ServerPage : public QWizardPage
 {
 Q_OBJECT
