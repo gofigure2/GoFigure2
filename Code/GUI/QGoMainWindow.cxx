@@ -215,7 +215,9 @@ void QGoMainWindow::on_actionOpen_Multiple_Files_activated( )
     }
 }
 
-void QGoMainWindow::on_actionUse_DataBase_activated()
+
+//--------------------------------------------------------------------------------
+void QGoMainWindow::on_actionUse_DataBase_activated() 
 {
    m_Wizard = new QGoWizardDB;
    m_Wizard->show();
@@ -223,6 +225,7 @@ void QGoMainWindow::on_actionUse_DataBase_activated()
    this, SLOT( openFilesfromDB() ) );
 
 }
+//--------------------------------------------------------------------------------
 
 // *************************************************************************
 void QGoMainWindow::openFilesfromDB()
@@ -352,8 +355,11 @@ void QGoMainWindow::on_actionOpen_Mesh_activated( )
         }
       }
     }
-}
-// *****************************************************************************
+}//--------------------------------------------------------------------------------
+
+
+
+//--------------------------------------------------------------------------------
 void QGoMainWindow::on_actionClose_activated( )
 {
   int idx = this->CentralImageTabWidget->currentIndex();
@@ -389,6 +395,9 @@ void QGoMainWindow::on_actionClose_activated( )
 
   writeSettings();
 }
+//--------------------------------------------------------------------------------
+
+
 
 // *************************************************************************
 void QGoMainWindow::on_actionClose_all_activated( )
@@ -417,6 +426,9 @@ void QGoMainWindow::on_actionClose_all_activated( )
     writeSettings();
     }
 }
+//--------------------------------------------------------------------------------
+
+
 
 
 // *************************************************************************
@@ -425,6 +437,9 @@ void QGoMainWindow::on_actionQuit_activated( )
   this->close();
   writeSettings();
 }
+//--------------------------------------------------------------------------------
+
+
 
 // *************************************************************************
 void QGoMainWindow::on_actionBackground_activated( )
@@ -446,8 +461,11 @@ void QGoMainWindow::on_actionBackground_activated( )
       }
     }
 }
+//--------------------------------------------------------------------------------
 
 
+
+//--------------------------------------------------------------------------------
 template< class T >
 void QGoMainWindow::SetBackgroundColor( T* PageView )
 {
@@ -458,16 +476,20 @@ void QGoMainWindow::SetBackgroundColor( T* PageView )
     static_cast< int >( 255. * rgb[2] ) );
   PageView->SetBackgroundColor( QColorDialog::getColor( color, this ) );
 }
+//--------------------------------------------------------------------------------
 
 
-// *************************************************************************
 
+//--------------------------------------------------------------------------------
 void QGoMainWindow::on_actionLookup_Table_activated( )
 {
   m_LUTDialog->show();
 }
+//--------------------------------------------------------------------------------
 
-// *************************************************************************
+
+
+//--------------------------------------------------------------------------------
 void QGoMainWindow::on_actionQuad_View_activated( )
 {
   if (this->CentralImageTabWidget->count() != 0)
@@ -476,16 +498,21 @@ void QGoMainWindow::on_actionQuad_View_activated( )
     this->actionSnapshot->setEnabled(false);
     }
 }
+//--------------------------------------------------------------------------------
 
-// *************************************************************************
+
+
+//--------------------------------------------------------------------------------
 template< class T >
 void
 QGoMainWindow::SetFullScreen( const int & ViewID, T* PageView )
 {
   PageView->SetFullScreenView( ViewID );
 }
+//--------------------------------------------------------------------------------
 
-// *************************************************************************
+
+//--------------------------------------------------------------------------------
 void
 QGoMainWindow::SetFullScreenDispatch( const int & ViewID )
 {
@@ -507,9 +534,10 @@ QGoMainWindow::SetFullScreenDispatch( const int & ViewID )
     }
   actionSnapshot->setEnabled(true);
 }
+//--------------------------------------------------------------------------------
 
 
-// *************************************************************************
+//--------------------------------------------------------------------------------
 void QGoMainWindow::on_actionFull_screen_XY_activated( )
 {
   if (this->CentralImageTabWidget->count() != 0)
@@ -517,8 +545,11 @@ void QGoMainWindow::on_actionFull_screen_XY_activated( )
     this->SetFullScreenDispatch( 1 );
     }
 }
+//--------------------------------------------------------------------------------
 
-// *************************************************************************
+
+
+//--------------------------------------------------------------------------------
 void QGoMainWindow::on_actionFull_screen_YZ_activated( )
 {
   if (this->CentralImageTabWidget->count() != 0)
@@ -526,8 +557,11 @@ void QGoMainWindow::on_actionFull_screen_YZ_activated( )
     this->SetFullScreenDispatch( 2 );
     }
 }
+//--------------------------------------------------------------------------------
 
-// *************************************************************************
+
+
+//--------------------------------------------------------------------------------
 void QGoMainWindow::on_actionFull_screen_XZ_activated( )
 {
   if (this->CentralImageTabWidget->count() != 0)
@@ -535,8 +569,11 @@ void QGoMainWindow::on_actionFull_screen_XZ_activated( )
     this->SetFullScreenDispatch( 3 );
     }
 }
+//--------------------------------------------------------------------------------
 
-// *************************************************************************
+
+
+//--------------------------------------------------------------------------------
 void QGoMainWindow::on_actionFull_screen_XYZ_activated( )
 {
   if (this->CentralImageTabWidget->count() != 0)
@@ -544,8 +581,11 @@ void QGoMainWindow::on_actionFull_screen_XYZ_activated( )
     this->SetFullScreenDispatch( 4 );
     }
 }
+//--------------------------------------------------------------------------------
 
-// *************************************************************************
+
+
+//--------------------------------------------------------------------------------
 void QGoMainWindow::on_actionVolume_rendering_XYZ_activated( )
 {
   if (this->CentralImageTabWidget->count() != 0)
@@ -568,8 +608,11 @@ void QGoMainWindow::on_actionVolume_rendering_XYZ_activated( )
       }
     }
 }
+//--------------------------------------------------------------------------------
 
-// *************************************************************************
+
+
+//--------------------------------------------------------------------------------
 template< class T >
 void
 QGoMainWindow::SetRendering( T* myPageView )
@@ -583,8 +626,11 @@ QGoMainWindow::SetRendering( T* myPageView )
     myPageView->SetView3DToTriPlanarMode();
     }
 }
+//--------------------------------------------------------------------------------
 
-// *************************************************************************
+
+
+//--------------------------------------------------------------------------------
 void QGoMainWindow::on_actionScale_bars_activated( )
 {
   if (this->CentralImageTabWidget->count() != 0)
@@ -607,8 +653,11 @@ void QGoMainWindow::on_actionScale_bars_activated( )
       }
     }
 }
+//--------------------------------------------------------------------------------
 
-// *************************************************************************
+
+
+//--------------------------------------------------------------------------------
 // \todo ALEX: implement support for LSM
 //
 void QGoMainWindow::on_actionSnapshot_activated( )
@@ -654,9 +703,11 @@ void QGoMainWindow::on_actionSnapshot_activated( )
       }
     }
 }
+//--------------------------------------------------------------------------------
 
 
-// *************************************************************************
+
+//--------------------------------------------------------------------------------
 void QGoMainWindow::SetContourTracerOn(const bool& iChecked)
 {
   if( iChecked )
@@ -678,8 +729,11 @@ void QGoMainWindow::SetContourTracerOn(const bool& iChecked)
       }
     }
 }
+//--------------------------------------------------------------------------------
 
-// *************************************************************************
+
+
+//--------------------------------------------------------------------------------
 void QGoMainWindow::SetSeedWidgetOn(const bool& iChecked)
 {
   if( iChecked )
@@ -700,9 +754,12 @@ void QGoMainWindow::SetSeedWidgetOn(const bool& iChecked)
       return;
       }
     }
-
 }
-// *************************************************************************
+//--------------------------------------------------------------------------------
+
+
+
+//--------------------------------------------------------------------------------
 void QGoMainWindow::SetSeedWidgetOff(const bool& iChecked)
 {
   if( iChecked )
@@ -723,9 +780,12 @@ void QGoMainWindow::SetSeedWidgetOff(const bool& iChecked)
       return;
       }
     }
-
 }
-// *************************************************************************
+//--------------------------------------------------------------------------------
+
+
+
+//--------------------------------------------------------------------------------
 void QGoMainWindow::SetContourTracerOff(const bool& iChecked)
 {
   if( iChecked )
@@ -747,6 +807,8 @@ void QGoMainWindow::SetContourTracerOff(const bool& iChecked)
       }
     }
 }
+//--------------------------------------------------------------------------------
+
 
 
 // void QGoMainWindow::SetTracerToPolygonTracer()
@@ -779,7 +841,7 @@ void QGoMainWindow::SetContourTracerOff(const bool& iChecked)
 // }
 
 
-// *************************************************************************
+//--------------------------------------------------------------------------------
 void QGoMainWindow::ChangeLookupTable( )
 {
   int idx = this->CentralImageTabWidget->currentIndex();
@@ -801,7 +863,7 @@ void QGoMainWindow::ChangeLookupTable( )
     }
 }
 
-// *************************************************************************
+//--------------------------------------------------------------------------------
 void QGoMainWindow::SetColorForGivenId( const bool& iSelect )
 {
   unsigned int cell_id = IdContourBox->value();
@@ -880,9 +942,11 @@ void QGoMainWindow::SetColorForGivenId( const bool& iSelect )
     m_IdColorMap[ cell_id ] = color;
     }
 }
+//--------------------------------------------------------------------------------
 
 
-// *************************************************************************
+
+//--------------------------------------------------------------------------------
 void QGoMainWindow::ValidateContourTracer( )
 {
   int idx = this->CentralImageTabWidget->currentIndex();
@@ -902,14 +966,21 @@ void QGoMainWindow::ValidateContourTracer( )
       }
     }
 }
+//--------------------------------------------------------------------------------
 
 
+
+//--------------------------------------------------------------------------------
 void QGoMainWindow::ReinitializeAndIncrementContourTracer( )
 {
   ReinitializeContourTracer( );
   this->IdContourBox->setValue( 1 + this->IdContourBox->value() );
 }
-// *************************************************************************
+//--------------------------------------------------------------------------------
+
+
+
+//--------------------------------------------------------------------------------
 template< class T >
 void QGoMainWindow::ValidateContourTracerHelper( T* PageView )
 {
@@ -925,8 +996,11 @@ void QGoMainWindow::ValidateContourTracerHelper( T* PageView )
     m_IdColorMap[ cell_id ],
     this->SaveContourCheckBox->isChecked() );
 }
+//--------------------------------------------------------------------------------
 
-// *************************************************************************
+
+
+//--------------------------------------------------------------------------------
 void QGoMainWindow::ReinitializeContourTracer()
 {
   int idx = this->CentralImageTabWidget->currentIndex();
@@ -946,8 +1020,11 @@ void QGoMainWindow::ReinitializeContourTracer()
       }
     }
 }
+//--------------------------------------------------------------------------------
 
-// *************************************************************************
+
+
+//--------------------------------------------------------------------------------
 void QGoMainWindow::SetFileName( const QString& iFile, const bool& IsSerie )
 {
   if( QFile::exists( iFile ) )
@@ -974,8 +1051,11 @@ void QGoMainWindow::SetFileName( const QString& iFile, const bool& IsSerie )
       }
     }
 }
+//--------------------------------------------------------------------------------
 
-// *************************************************************************
+
+
+//--------------------------------------------------------------------------------
 void QGoMainWindow::OpenImage( const QString& iFile )
 {
   typedef itk::ImageFileReader< ImageType > ImageReaderType;
@@ -993,9 +1073,10 @@ void QGoMainWindow::OpenImage( const QString& iFile )
   m_ITKImage.push_back( reader->GetOutput() );
   m_ITKImage.last()->DisconnectPipeline();
 }
+//--------------------------------------------------------------------------------
 
 
-// *************************************************************************
+//--------------------------------------------------------------------------------
 void QGoMainWindow::DisplayImage( const QString& iTag )
 {
   m_Convert.push_back( VTKConvertImageType::New() );
@@ -1017,9 +1098,11 @@ void QGoMainWindow::DisplayImage( const QString& iTag )
   int idx = this->CentralImageTabWidget->addTab( m_PageView.last(), iTag );
   this->CentralImageTabWidget->setCurrentIndex( idx );
 }
+//--------------------------------------------------------------------------------
 
 
-// *************************************************************************
+
+//--------------------------------------------------------------------------------
 void QGoMainWindow::OpenAndDisplay(
   const QString& iTag,
   const bool& IsSerie,
@@ -1039,8 +1122,10 @@ void QGoMainWindow::OpenAndDisplay(
   int idx = this->CentralImageTabWidget->addTab( m_PageView.last(), iTag );
   this->CentralImageTabWidget->setCurrentIndex( idx );
 }
+//--------------------------------------------------------------------------------
 
-// *************************************************************************
+
+//--------------------------------------------------------------------------------
 void QGoMainWindow::on_actionAbout_activated( )
 {
   // NOTE ALEX: is there anyway to link that with version definition
@@ -1063,14 +1148,18 @@ void QGoMainWindow::on_actionAbout_activated( )
 
   QMessageBox::about( this, tr( "<*)0|00|0>< About GoFigure" ), message );
 }
+//--------------------------------------------------------------------------------
 
-// *************************************************************************
+
+//--------------------------------------------------------------------------------
 void QGoMainWindow::on_actionAbout_Qt_activated( )
 {
   QMessageBox::aboutQt( this, tr( "About Qt" ) );
 }
+//--------------------------------------------------------------------------------
 
-// *************************************************************************
+
+//--------------------------------------------------------------------------------
 void QGoMainWindow::Fullscreenbuttons()
 {
   m_FullscreenGroup = new QActionGroup (this);
@@ -1080,8 +1169,10 @@ void QGoMainWindow::Fullscreenbuttons()
   m_FullscreenGroup->addAction( this->actionFull_screen_XYZ );
   m_FullscreenGroup->addAction( this->actionQuad_View );
 }
+//--------------------------------------------------------------------------------
 
-// *************************************************************************
+
+//--------------------------------------------------------------------------------
 void QGoMainWindow::setCurrentFile(const QString &fileName,const bool& IsSerie)
 {
   m_CurrentFile = fileName;
@@ -1104,14 +1195,18 @@ void QGoMainWindow::setCurrentFile(const QString &fileName,const bool& IsSerie)
       }
     }
 }
+//--------------------------------------------------------------------------------
 
-// *************************************************************************
+
+//--------------------------------------------------------------------------------
 QString QGoMainWindow::strippedName(const QString &fullFileName)
 {
   return QFileInfo(fullFileName).fileName();
 }
+//--------------------------------------------------------------------------------
 
-// *************************************************************************
+
+//--------------------------------------------------------------------------------
 void QGoMainWindow::updateRecentFileActions(QStringList list, QMenu *menu, QAction *recentFileActions[MaxRecentFiles] )
 {
   QMutableStringListIterator i(list);
@@ -1140,8 +1235,11 @@ void QGoMainWindow::updateRecentFileActions(QStringList list, QMenu *menu, QActi
       }
     }
 }
+//--------------------------------------------------------------------------------
 
-// *************************************************************************
+
+
+//--------------------------------------------------------------------------------
 void QGoMainWindow::openRecentFile(const bool& IsSerie)
 {
   QAction* action = qobject_cast< QAction* >( sender() );
@@ -1150,21 +1248,29 @@ void QGoMainWindow::openRecentFile(const bool& IsSerie)
     SetFileName( action->data().toString(), IsSerie );
     }
 }
+//--------------------------------------------------------------------------------
 
-// *************************************************************************
+
+
+//--------------------------------------------------------------------------------
 void QGoMainWindow::openRecentSingleFile()
 {
   openRecentFile(false);
 }
+//--------------------------------------------------------------------------------
 
-// *************************************************************************
+
+
+//--------------------------------------------------------------------------------
 void QGoMainWindow::openRecentMultipleFile()
 {
   openRecentFile(true);
 }
+//--------------------------------------------------------------------------------
 
 
-// *************************************************************************
+
+//--------------------------------------------------------------------------------
 void QGoMainWindow::readSettings()
 {
   QSettings settings( "MegasonLab", "Gofigure2" );
@@ -1189,8 +1295,11 @@ void QGoMainWindow::readSettings()
   //  settings.setValue("vsplitterSizes", vSplitter->saveState());
   settings.endGroup();
 }
+//--------------------------------------------------------------------------------
 
-// *************************************************************************
+
+
+//--------------------------------------------------------------------------------
 void QGoMainWindow::writeSettings()
 {
   QSettings settings;
@@ -1201,14 +1310,20 @@ void QGoMainWindow::writeSettings()
   settings.setValue("pos", pos());
   settings.endGroup();
 }
+//--------------------------------------------------------------------------------
 
-// *************************************************************************
+
+
+//--------------------------------------------------------------------------------
 template< class T >
 void QGoMainWindow::writeSettingsPageView(T* PageView )
 {
   PageView->SaveStateSplitters();
 }
-// *************************************************************************
+//--------------------------------------------------------------------------------
+
+
+//--------------------------------------------------------------------------------
 void QGoMainWindow::ShowProgressLoading( itk::Object * myFilter )
 {
   m_Bar.setValue(50);
@@ -1220,14 +1335,20 @@ void QGoMainWindow::ShowProgressLoading( itk::Object * myFilter )
   QObject::connect( &m_SignalAdaptor, SIGNAL(Signal()),
     &(this->m_Bar), SLOT(hide()) );
 }
+//--------------------------------------------------------------------------------
 
-// *************************************************************************
+
+
+//--------------------------------------------------------------------------------
 void QGoMainWindow::HideProgressLoading()
 {
   m_Bar.hide();
 }
+//--------------------------------------------------------------------------------
 
-// *************************************************************************
+
+
+//--------------------------------------------------------------------------------
 void QGoMainWindow::UpdateTracerButtons( const int& idx)
 {
   if( (idx>=0) && (idx<m_PageView.size()))
@@ -1263,9 +1384,11 @@ void QGoMainWindow::UpdateTracerButtons( const int& idx)
       }
     }
 }
+//--------------------------------------------------------------------------------
 
 
-// *************************************************************************
+
+//--------------------------------------------------------------------------------
 void QGoMainWindow::UpdateToolBarViewButtons( const int& idx )
 {
   if( (idx>=0) && (idx<m_PageView.size()))
@@ -1289,8 +1412,11 @@ void QGoMainWindow::UpdateToolBarViewButtons( const int& idx )
       }
     }
 }
+//--------------------------------------------------------------------------------
 
-// *************************************************************************
+
+
+//--------------------------------------------------------------------------------
 template< class T >
 void QGoMainWindow::UpdateFullScreenViewButtonsHelper( T* PageView )
 {
@@ -1330,18 +1456,27 @@ void QGoMainWindow::UpdateFullScreenViewButtonsHelper( T* PageView )
       }
     }
 }
+//--------------------------------------------------------------------------------
 
+
+//--------------------------------------------------------------------------------
 template< class T >
 void QGoMainWindow::UpdateVolumeRenderingButton( T* PageView)
 {
   actionVolume_rendering_XYZ->setChecked( PageView->GetVolumeRendering() );
 }
+//--------------------------------------------------------------------------------
 
+
+//--------------------------------------------------------------------------------
 void QGoMainWindow::StartSeedWidget()
 {
 
 }
+//--------------------------------------------------------------------------------
 
+
+//--------------------------------------------------------------------------------
 void QGoMainWindow::OneClickSegmentation()
 {
   /*int idx = this->CentralImageTabWidget->currentIndex();
@@ -1396,4 +1531,6 @@ void QGoMainWindow::OneClickSegmentation()
         }
       }
     }
-*/}
+*/
+}
+//--------------------------------------------------------------------------------

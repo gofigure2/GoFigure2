@@ -126,7 +126,11 @@ QImagePageView4DTracer::~QImagePageView4DTracer()
     this->Image = (vtkImageData*)(0);
     }
 }
+//--------------------------------------------------------------------------------
 
+
+
+//--------------------------------------------------------------------------------
 void
 QImagePageView4DTracer::
 ReadMultiFile( const int& TimePoint )
@@ -196,7 +200,11 @@ ReadMultiFile( const int& TimePoint )
   this->Image->ShallowCopy( reader->GetOutput() );
   delete reader;
 }
+//--------------------------------------------------------------------------------
 
+
+
+//--------------------------------------------------------------------------------
 void
 QImagePageView4DTracer::SetFileName(const char* name )
 {
@@ -222,7 +230,10 @@ QImagePageView4DTracer::SetFileName(const char* name )
   this->SetView( 0 );
   this->IsFileListComputed = false;
 }
+//--------------------------------------------------------------------------------
 
+
+//--------------------------------------------------------------------------------
 void QImagePageView4DTracer::ReadLSMFile( const int& TimePoint )
 {
   // have to redirect that to a Multifile reader with only one file,
