@@ -463,6 +463,8 @@ Create_ExperimentPage::Create_ExperimentPage( QWidget *parent )
   QObject::connect( this->ChoiceExp,SIGNAL( currentIndexChanged(QString) ),
   this,SLOT( PrintValuesExpName(QString) ));
 
+  NameDB_fake = new QLineEdit;
+  registerField("NameDB",NameDB_fake);
 
 }
 //------------------------------------------------------------------------------
@@ -475,10 +477,6 @@ void Create_ExperimentPage::initializePage()
   openExpRadioButton->setChecked(false);
   createExpRadioButton->setChecked(false);
   setFinalPage(false);
-
-  NameDB_fake = new QLineEdit;
-  registerField("NameDB",NameDB_fake);
-
 
   if (!field("DBNametoCreate").toString().isEmpty())
     {
@@ -493,6 +491,7 @@ void Create_ExperimentPage::initializePage()
     {
     setSubTitle(tr("You are currently using The Database %1 ").arg(field("DBNametoOpen").toString()));
     setField("NameDB",field("DBNametoOpen"));
+    PrintListExp();
     }
 }
 //------------------------------------------------------------------------------
