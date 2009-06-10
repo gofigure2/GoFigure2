@@ -188,15 +188,11 @@ OpenOrCreate_Page::OpenOrCreate_Page(QWidget *parent)
 //------------------------------------------------------------------------------
 void OpenOrCreate_Page::initializePage()
 {
-    this->setSubTitle(tr("Step 2: Chose what you want to do next:"));
-    //openDBRadioButton->setChecked(true);
-    //createDBRadioButton->setChecked(false);
-    ChoiceDB->hide();
-    textChoiceDB->hide();
-    textNewDBName->hide();
-    lineNewDBName->hide();
-
-
+  this->setSubTitle(tr("Step 2: Chose what you want to do next:"));
+  ChoiceDB->hide();
+  textChoiceDB->hide();
+  textNewDBName->hide();
+  lineNewDBName->hide();
 }
 //------------------------------------------------------------------------------
 
@@ -216,23 +212,20 @@ void OpenOrCreate_Page::PrintListDB ()
 
 
   if (m_ListDB.isEmpty())
-  {
+    {
     std::vector<std::string> vectListDB =
-      ListDataBases(
-        field("ServerName").toString().toStdString(),
-        field("User").toString().toStdString(),
-        field("Password").toString().toStdString()
-        );
+    ListDataBases(
+    field("ServerName").toString().toStdString(),
+    field("User").toString().toStdString(),
+    field("Password").toString().toStdString());
 
     for(unsigned int i = 0; i < vectListDB.size(); ++i )
       {
-      if( IsDatabaseOfGoFigureType(
-            field("ServerName").toString().toStdString(),
-            field("User").toString().toStdString(),
-            field("Password").toString().toStdString(),
-            vectListDB[i].c_str( )
-            )
-          )
+      if (IsDatabaseOfGoFigureType(
+         field("ServerName").toString().toStdString(),
+         field("User").toString().toStdString(),
+         field("Password").toString().toStdString(),
+         vectListDB[i].c_str( )))
         {
         m_ListDB.append( vectListDB[i].c_str( ) );
         }
@@ -276,28 +269,26 @@ bool OpenOrCreate_Page::validatePage()
     NameDB = "Null";
     }
 
-  if (field("DBNametoCreate").toString().isEmpty()&& NameDB=="Null")
+  if (field("DBNametoCreate").toString().isEmpty() && NameDB=="Null")
     {
     Ok = false;
     }
   else
     {
-     if (NameDB=="Null")
-     {
-       Ok = true;
-     }
-     else
-     {
-      if( !IsDatabaseOfGoFigureType(field("ServerName").toString().toStdString(),
+    if (NameDB=="Null")
+      {
+      Ok = true;
+      }
+    else
+      {
+      if ( !IsDatabaseOfGoFigureType(field("ServerName").toString().toStdString(),
             field("User").toString().toStdString(),
             field("Password").toString().toStdString(),
             NameDB.toStdString() ) )
         {
-
         QMessageBox msgBox;
         msgBox.setText(tr("The Database %1 is not a Gofigure Database").arg(NameDB));
         msgBox.exec();
-        //setTitle(tr("The Database %1 is not a Gofigure Database").arg(NameDB));
         Ok = false;
         }
       else
@@ -330,8 +321,6 @@ Create_ExperimentPage::Create_ExperimentPage( QWidget *parent )
 
   openExpRadioButton   = new QRadioButton(tr("Open an existing Experiment"));
   createExpRadioButton = new QRadioButton(tr("Create a new Experiment    "));
-  //openExpRadioButton->setChecked(false);
-  //createExpRadioButton->setChecked(false);
 
   QVBoxLayout* vlayout = new QVBoxLayout;
   QVBoxLayout* RadioButtonLayout = new QVBoxLayout;
@@ -414,28 +403,6 @@ Create_ExperimentPage::Create_ExperimentPage( QWidget *parent )
   gridlayout->addWidget(FilePattern,18,1);
 
   vlayout->addLayout(gridlayout);
-
-  /*ChoiceExp->setVisible(false);
-  textChoiceExp->setVisible(false);
-  ExpID->setVisible(false);
-  ID->setVisible(false);
-  ID->setEnabled(false);
-  Name ->setEnabled(false);
-  Description ->setEnabled(false);
-  TimeInterval ->setEnabled(false);
-  TileHeight ->setEnabled(false);
-  TileWidth ->setEnabled(false);
-  PixelDepth ->setEnabled(false);
-  PixelHeight ->setEnabled(false);
-  PixelWidth ->setEnabled(false);
-  ColorDepth ->setEnabled(false);
-  nTimePoints ->setEnabled(false);
-  nYTiles ->setEnabled(false);
-  nXTiles ->setEnabled(false);
-  nSlices ->setEnabled(false);
-  nRows ->setEnabled(false);
-  nColumns ->setEnabled(false);
-  FilePattern ->setEnabled(false);*/
 
   registerField( "Name", Name );
   registerField( "Description", Description );
