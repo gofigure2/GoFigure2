@@ -144,7 +144,7 @@ protected:
 
 
 protected slots:
-  void PrintListExp();
+  bool PrintListExp();
   void EnterInfoExp();
   void PrintValuesExpName(QString ExpName);
 

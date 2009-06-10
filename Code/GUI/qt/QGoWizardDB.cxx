@@ -138,18 +138,6 @@ bool Connect_ServerPage::validatePage()
 
 
 //------------------------------------------------------------------------------
-void OpenOrCreate_Page::initializePage()
-{
-    this->setSubTitle(tr("Step 2: Chose what you want to do next:"));
-    openDBRadioButton->show();
-    createDBRadioButton->show();
-
-}
-//------------------------------------------------------------------------------
-
-
-
-//------------------------------------------------------------------------------
 OpenOrCreate_Page::OpenOrCreate_Page(QWidget *parent)
 :QWizardPage(parent)
 {
@@ -159,18 +147,16 @@ OpenOrCreate_Page::OpenOrCreate_Page(QWidget *parent)
 
   gridLayout = new QGridLayout;
   ChoiceDB = new QComboBox;
-  ChoiceDB->hide();
   textChoiceDB = new QLabel(tr("Name of the DB to open :"));
-  textChoiceDB->hide();
 
   openDBRadioButton = new QRadioButton(tr("Open an existing DataBase"));
-  openDBRadioButton->setChecked(false);
   createDBRadioButton = new QRadioButton(tr("Create a new DataBase"));
+  openDBRadioButton->setChecked(false);
   createDBRadioButton->setChecked(false);
   textNewDBName = new QLabel(tr("Name of the new DB to create:"));
-  textNewDBName->hide();
+  //textNewDBName->hide();
   lineNewDBName = new QLineEdit;
-  lineNewDBName->hide();
+  //lineNewDBName->hide();
 
   gridLayout->addWidget(createDBRadioButton,0,0,1,1);
   gridLayout->addWidget(textNewDBName,3,0,1,2);
@@ -200,6 +186,24 @@ OpenOrCreate_Page::OpenOrCreate_Page(QWidget *parent)
 
 
 //------------------------------------------------------------------------------
+void OpenOrCreate_Page::initializePage()
+{
+    this->setSubTitle(tr("Step 2: Chose what you want to do next:"));
+    //openDBRadioButton->setChecked(true);
+    //createDBRadioButton->setChecked(false);
+    ChoiceDB->hide();
+    textChoiceDB->hide();
+    textNewDBName->hide();
+    lineNewDBName->hide();
+
+
+}
+//------------------------------------------------------------------------------
+
+
+
+//------------------------------------------------------------------------------
+
 void OpenOrCreate_Page::PrintListDB ()
 {
   textChoiceDB->show();
@@ -326,18 +330,18 @@ Create_ExperimentPage::Create_ExperimentPage( QWidget *parent )
 
   openExpRadioButton   = new QRadioButton(tr("Open an existing Experiment"));
   createExpRadioButton = new QRadioButton(tr("Create a new Experiment    "));
-  openExpRadioButton->setChecked(false);
-  createExpRadioButton->setChecked(false);
+  //openExpRadioButton->setChecked(false);
+  //createExpRadioButton->setChecked(false);
 
   QVBoxLayout* vlayout = new QVBoxLayout;
   QVBoxLayout* RadioButtonLayout = new QVBoxLayout;
   RadioButtonLayout->addWidget(createExpRadioButton);
-  //vlayout->setAlignment(createExpRadioButton,Qt::AlignHCenter);
   RadioButtonLayout->addWidget(openExpRadioButton);
-  //vlayout->setAlignment(openExpRadioButton,Qt::AlignHCenter);
   vlayout->addLayout(RadioButtonLayout);
   vlayout->setAlignment(RadioButtonLayout,Qt::AlignHCenter);
+
   textChoiceExp = new QLabel(tr("Experiment to open:"));
+
   QGridLayout* gridlayout = new QGridLayout;
   gridlayout->addWidget(textChoiceExp,0,0);
   gridlayout->addWidget(ChoiceExp,0,1);
@@ -411,7 +415,7 @@ Create_ExperimentPage::Create_ExperimentPage( QWidget *parent )
 
   vlayout->addLayout(gridlayout);
 
-  ChoiceExp->setVisible(false);
+  /*ChoiceExp->setVisible(false);
   textChoiceExp->setVisible(false);
   ExpID->setVisible(false);
   ID->setVisible(false);
@@ -431,7 +435,7 @@ Create_ExperimentPage::Create_ExperimentPage( QWidget *parent )
   nSlices ->setEnabled(false);
   nRows ->setEnabled(false);
   nColumns ->setEnabled(false);
-  FilePattern ->setEnabled(false);
+  FilePattern ->setEnabled(false);*/
 
   registerField( "Name", Name );
   registerField( "Description", Description );
@@ -474,25 +478,38 @@ Create_ExperimentPage::Create_ExperimentPage( QWidget *parent )
 //------------------------------------------------------------------------------
 void Create_ExperimentPage::initializePage()
 {
-  openExpRadioButton->setChecked(false);
-  createExpRadioButton->setChecked(false);
+  ExpID->setVisible(false);
+  ID->setVisible(false);
+  ID->setEnabled(false);
   setFinalPage(false);
 
   if (!field("DBNametoCreate").toString().isEmpty())
     {
     CreateDataBaseMain(field("ServerName").toString().toStdString(),
-      field("User").toString().toStdString(),
-      field("Password").toString().toStdString(),
-      field("DBNametoCreate").toString().toStdString());
+    field("User").toString().toStdString(),
+    field("Password").toString().toStdString(),
+    field("DBNametoCreate").toString().toStdString());
     setSubTitle(tr("You are currently using The Database %1 ").arg(field("DBNametoCreate").toString()));
     setField("NameDB",field("DBNametoCreate"));
+    openExpRadioButton->setChecked(false);
+    createExpRadioButton->setChecked(true);
+    EnterInfoExp();
     }
   else
     {
     setSubTitle(tr("You are currently using The Database %1 ").arg(field("DBNametoOpen").toString()));
     setField("NameDB",field("DBNametoOpen"));
+    openExpRadioButton->setChecked(true);
+    createExpRadioButton->setChecked(false);
     PrintListExp();
+    if (!PrintListExp())
+      {
+      EnterInfoExp();
+      openExpRadioButton->setChecked(false);
+      createExpRadioButton->setChecked(true);
+      }
     }
+
 }
 //------------------------------------------------------------------------------
 
@@ -546,13 +563,12 @@ void Create_ExperimentPage::EnterInfoExp()
 
 
 //------------------------------------------------------------------------------
-void Create_ExperimentPage::PrintListExp()
+bool Create_ExperimentPage::PrintListExp()
 {
+  bool ok;
 
   textChoiceExp->setVisible(true);
   ChoiceExp->setVisible(true);
-  //ExpID->setVisible(true);
-  //ID->setVisible(true);
   Name ->setVisible(false);
   textName->setVisible(false);
   Description ->setEnabled(false);
@@ -584,19 +600,24 @@ void Create_ExperimentPage::PrintListExp()
         field("NameDB").toString().toStdString());
 
    if (!vectListExpName.empty())
-   {
-   for(unsigned int i = 0; i < vectListExpName.size(); ++i )
-      {
-        m_ListExpName.append( vectListExpName[i].c_str( ) );
-      }
-   }
+     {
+     for(unsigned int i = 0; i < vectListExpName.size(); ++i )
+       {
+       m_ListExpName.append( vectListExpName[i].c_str( ) );
+       }
+     ok = true;
+     }
+   else
+     {
+     ok = false;
+     }
 
     ChoiceExp->addItems( m_ListExpName );
     ChoiceExp->show();
 
     setField("OpenOrCreateExp","Open");
 
-
+  return ok;
 
 }
 //------------------------------------------------------------------------------
