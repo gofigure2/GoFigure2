@@ -65,8 +65,7 @@ bool CanConnectToServer(
   bool IsOpen = DataBaseConnector->IsOpen();
   DataBaseConnector->Delete();
   return IsOpen;
-
-};
+}
 
 std::vector<std::string> ListDataBases(
   std::string ServerName, std::string login,
@@ -111,7 +110,7 @@ std::vector<std::string> ListDataBases(
   query->Delete();
 
   return result;
-};
+}
 
 std::vector<std::string> ListTables(
   std::string ServerName, std::string login,
@@ -157,7 +156,7 @@ std::vector<std::string> ListTables(
   query->Delete();
 
   return result;
-};
+}
 
 std::vector<std::string> ListExpID(
   std::string ServerName, std::string login,
@@ -210,7 +209,7 @@ std::vector<std::string> ListExpName(
   std::string ServerName, std::string login,
   std::string Password, std::string DBName)
 {
-   std::vector< std::string > result;
+  std::vector< std::string > result;
 
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
   DataBaseConnector->SetHostName( ServerName.c_str() );
@@ -289,7 +288,7 @@ void DropDatabase(
   DataBaseConnector->Close();
   DataBaseConnector->Delete();
   query->Delete();
-};
+}
 
 void DropTable(
   std::string ServerName, std::string login,
@@ -325,7 +324,7 @@ void DropTable(
   DataBaseConnector->Close();
   DataBaseConnector->Delete();
   query->Delete();
-};
+}
 
 bool DoesDataBaseExist(
   std::string ServerName, std::string login,
@@ -338,12 +337,15 @@ bool DoesDataBaseExist(
   std::vector< std::string >::iterator end   = list.end();
   while( start != end )
     {
-	if( (*start) == myString ) return true;
-	start++;
+    if( (*start) == myString ) 
+      {
+      return true;
+      }
+    start++;
     }
   return false;
 
-};
+}
 
 bool DoesTableExist(
   std::string ServerName, std::string login,
@@ -357,8 +359,11 @@ bool DoesTableExist(
   std::vector< std::string >::iterator end   = list.end();
   while( start != end )
     {
-	if( (*start) == myString ) return true;
-	start++;
+    if( (*start) == myString ) 
+      {
+      return true;
+      }
+    start++;
     }
   return false;
 
@@ -375,7 +380,7 @@ bool IsDatabaseOfGoFigureType(
     && DoesTableExist( ServerName, login, Password, DBName, "seriesgrid" )
     && DoesTableExist( ServerName, login, Password, DBName, "track" ) )
     {
-	return true;
+    return true;
     }
   return false;
 }
@@ -402,7 +407,7 @@ void CreateDataBaseMain(
     }
   else
     {
-	// throw exception
+    // throw exception
     }
 }
 
@@ -1051,7 +1056,7 @@ void CreateTrackFlavor(
   DataBaseConnector->Close();
   DataBaseConnector->Delete();
   query->Delete();
-};
+}
 
 std::vector<std::string> ListValuesfor1Row(
   std::string ServerName, std::string login,
@@ -1102,11 +1107,12 @@ std::vector<std::string> ListValuesfor1Row(
   std::cout<<"result of the query where ID=1, 2nd value "<<query->GetNumberOfFields()<<std::endl;
 
   while (query->NextRow())
-  {   for(  int i = 0; i < query->GetNumberOfFields() ; i++)
+    {
+    for(  int i = 0; i < query->GetNumberOfFields() ; i++)
       {
-        result.push_back( query->DataValue( i ).ToString() );
+      result.push_back( query->DataValue( i ).ToString() );
       }
-  }
+    }
 
   DataBaseConnector->Close();
   DataBaseConnector->Delete();
@@ -1210,11 +1216,12 @@ std::vector<std::string> ListValuesfor1Column(
   std::cout<<"result of the query where ID=1, 2nd value "<<query->GetNumberOfFields()<<std::endl;
 
   while (query->NextRow())
-  {   for(  int i = 0; i < query->GetNumberOfFields() ; i++)
+    {   
+    for(  int i = 0; i < query->GetNumberOfFields() ; i++)
       {
-        result.push_back( query->DataValue( i ).ToString() );
+      result.push_back( query->DataValue( i ).ToString() );
       }
-  }
+    }
 
   DataBaseConnector->Close();
   DataBaseConnector->Delete();
@@ -1222,3 +1229,4 @@ std::vector<std::string> ListValuesfor1Column(
 
   return result;
 }
+

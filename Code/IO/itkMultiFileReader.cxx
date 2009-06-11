@@ -134,9 +134,9 @@ void MultiFileReader::PrintSelf( std::ostream& os, Indent indent) const
 void MultiFileReader::Update( void )
 {
   if( this->m_OutputImage )
-	{
-	this->m_OutputImage->Delete();
-	}
+    {
+    this->m_OutputImage->Delete();
+    }
 
   this->ComputeUpdateFileList();
 
@@ -168,7 +168,7 @@ void MultiFileReader::Update( void )
           reader->Update();
 
           volumeBuilder->SetInput( counter, reader->GetOutput( ) );
-		  reader->Delete();
+          reader->Delete();
           break;
           }
         case BMP:
@@ -210,9 +210,9 @@ void MultiFileReader::Update( void )
 
     if( this->m_AreImagesMultiChannel )
       {
-	  m_OutputImage = vtkImageData::New();
-	  m_OutputImage->ShallowCopy( volumeBuilder->GetOutput() );
-	  volumeBuilder->Delete();
+      m_OutputImage = vtkImageData::New();
+      m_OutputImage->ShallowCopy( volumeBuilder->GetOutput() );
+        volumeBuilder->Delete();
       }
     else
       {
@@ -317,9 +317,9 @@ void MultiFileReader::Update( void )
           reader->Update();
           this->m_NumberOfChannels = reader->GetOutput()->GetNumberOfScalarComponents();
           this->UpdateChannel();
-		  m_OutputImage = vtkImageData::New();
-		  m_OutputImage->ShallowCopy( reader->GetOutput() );
-		  reader->Delete();
+          m_OutputImage = vtkImageData::New();
+          m_OutputImage->ShallowCopy( reader->GetOutput() );
+          reader->Delete();
           }
         break;
         }
@@ -330,7 +330,6 @@ void MultiFileReader::Update( void )
     }
 }
 //-----------------------------------------------------------------------------
-
 
 //-----------------------------------------------------------------------------
 void MultiFileReader::ComputeUpdateFileList()

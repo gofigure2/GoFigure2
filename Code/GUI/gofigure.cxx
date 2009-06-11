@@ -100,4 +100,5 @@ int main( int argc, char** argv )
   form1.setGeometry(10,10,width-50,height-50);
   // form1.setRect(width,height,0,0);
   // form1.resize(width,height);
-}*/
+}
+*/

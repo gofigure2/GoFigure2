@@ -36,7 +36,7 @@
  OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
- =========================================================================*/
+=========================================================================*/
 
 #ifndef __vtkPolyDataMySQLTextWriter_h
 #define __vtkPolyDataMySQLTextWriter_h
@@ -62,7 +62,7 @@ protected:
   ~vtkPolyDataMYSQLTextWriter();
 
   vtkPolyData* m_PolyData;
-  bool IsContour;
+  bool         IsContour;
 
   bool IsPlanarContour();
 

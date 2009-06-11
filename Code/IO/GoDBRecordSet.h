@@ -159,12 +159,12 @@ public:
     DataBaseConnector->SetDatabaseName( this->DataBaseName.c_str() );
     
     if( !DataBaseConnector->Open() )
-    {
-    std::cerr << "Could not open database." << std::endl;
-    std::cerr << "DB will not be created."  << std::endl;
-    DataBaseConnector->Delete();
-    return false;
-    }
+      {
+      std::cerr << "Could not open database." << std::endl;
+      std::cerr << "DB will not be created."  << std::endl;
+      DataBaseConnector->Delete();
+      return false;
+      }
     
     vtkSQLQuery* query = DataBaseConnector->GetQueryInstance();
     
@@ -176,12 +176,12 @@ public:
       return true;
       }
     else
-     {
+      {
       DataBaseConnector->Close();
       DataBaseConnector->Delete();
       query->Delete();
       return false;
-     }
+      }
   }
 
 private:
@@ -291,8 +291,8 @@ SaveRows( vtkSQLQuery * query, std::string what, myIteratorType start, myIterato
       // replace by exception
       std::cerr << "Save query failed: ";
       std::cerr << rowQueryString.str().c_str() << std::endl;
-      return false;    
-      }    
+      return false; 
+      } 
     rowIt++;
     }
 

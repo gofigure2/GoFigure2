@@ -219,11 +219,10 @@ void QGoMainWindow::on_actionOpen_Multiple_Files_activated( )
 //--------------------------------------------------------------------------------
 void QGoMainWindow::on_actionUse_DataBase_activated()
 {
-   m_Wizard = new QGoWizardDB;
-   m_Wizard->show();
-   connect( m_Wizard, SIGNAL( accepted() ),
-   this, SLOT( openFilesfromDB() ) );
-
+  m_Wizard = new QGoWizardDB;
+  m_Wizard->show();
+  connect( m_Wizard, SIGNAL( accepted() ),
+  this, SLOT( openFilesfromDB() ) );
 }
 //--------------------------------------------------------------------------------
 
@@ -352,8 +351,6 @@ void QGoMainWindow::on_actionOpen_Mesh_activated( )
     }
 }//--------------------------------------------------------------------------------
 
-
-
 //--------------------------------------------------------------------------------
 void QGoMainWindow::on_actionClose_activated( )
 {
@@ -423,9 +420,6 @@ void QGoMainWindow::on_actionClose_all_activated( )
 }
 //--------------------------------------------------------------------------------
 
-
-
-
 // *************************************************************************
 void QGoMainWindow::on_actionQuit_activated( )
 {
@@ -433,8 +427,6 @@ void QGoMainWindow::on_actionQuit_activated( )
   writeSettings();
 }
 //--------------------------------------------------------------------------------
-
-
 
 // *************************************************************************
 void QGoMainWindow::on_actionBackground_activated( )
@@ -458,8 +450,6 @@ void QGoMainWindow::on_actionBackground_activated( )
 }
 //--------------------------------------------------------------------------------
 
-
-
 //--------------------------------------------------------------------------------
 template< class T >
 void QGoMainWindow::SetBackgroundColor( T* PageView )
@@ -473,16 +463,12 @@ void QGoMainWindow::SetBackgroundColor( T* PageView )
 }
 //--------------------------------------------------------------------------------
 
-
-
 //--------------------------------------------------------------------------------
 void QGoMainWindow::on_actionLookup_Table_activated( )
 {
   m_LUTDialog->show();
 }
 //--------------------------------------------------------------------------------
-
-
 
 //--------------------------------------------------------------------------------
 void QGoMainWindow::on_actionQuad_View_activated( )
@@ -495,8 +481,6 @@ void QGoMainWindow::on_actionQuad_View_activated( )
 }
 //--------------------------------------------------------------------------------
 
-
-
 //--------------------------------------------------------------------------------
 template< class T >
 void
@@ -505,7 +489,6 @@ QGoMainWindow::SetFullScreen( const int & ViewID, T* PageView )
   PageView->SetFullScreenView( ViewID );
 }
 //--------------------------------------------------------------------------------
-
 
 //--------------------------------------------------------------------------------
 void
@@ -531,7 +514,6 @@ QGoMainWindow::SetFullScreenDispatch( const int & ViewID )
 }
 //--------------------------------------------------------------------------------
 
-
 //--------------------------------------------------------------------------------
 void QGoMainWindow::on_actionFull_screen_XY_activated( )
 {
@@ -541,8 +523,6 @@ void QGoMainWindow::on_actionFull_screen_XY_activated( )
     }
 }
 //--------------------------------------------------------------------------------
-
-
 
 //--------------------------------------------------------------------------------
 void QGoMainWindow::on_actionFull_screen_YZ_activated( )
@@ -554,8 +534,6 @@ void QGoMainWindow::on_actionFull_screen_YZ_activated( )
 }
 //--------------------------------------------------------------------------------
 
-
-
 //--------------------------------------------------------------------------------
 void QGoMainWindow::on_actionFull_screen_XZ_activated( )
 {
@@ -566,8 +544,6 @@ void QGoMainWindow::on_actionFull_screen_XZ_activated( )
 }
 //--------------------------------------------------------------------------------
 
-
-
 //--------------------------------------------------------------------------------
 void QGoMainWindow::on_actionFull_screen_XYZ_activated( )
 {
@@ -577,8 +553,6 @@ void QGoMainWindow::on_actionFull_screen_XYZ_activated( )
     }
 }
 //--------------------------------------------------------------------------------
-
-
 
 //--------------------------------------------------------------------------------
 void QGoMainWindow::on_actionVolume_rendering_XYZ_activated( )
@@ -605,8 +579,6 @@ void QGoMainWindow::on_actionVolume_rendering_XYZ_activated( )
 }
 //--------------------------------------------------------------------------------
 
-
-
 //--------------------------------------------------------------------------------
 template< class T >
 void
@@ -622,8 +594,6 @@ QGoMainWindow::SetRendering( T* myPageView )
     }
 }
 //--------------------------------------------------------------------------------
-
-
 
 //--------------------------------------------------------------------------------
 void QGoMainWindow::on_actionScale_bars_activated( )
@@ -649,8 +619,6 @@ void QGoMainWindow::on_actionScale_bars_activated( )
     }
 }
 //--------------------------------------------------------------------------------
-
-
 
 //--------------------------------------------------------------------------------
 // \todo ALEX: implement support for LSM
@@ -700,8 +668,6 @@ void QGoMainWindow::on_actionSnapshot_activated( )
 }
 //--------------------------------------------------------------------------------
 
-
-
 //--------------------------------------------------------------------------------
 void QGoMainWindow::SetContourTracerOn(const bool& iChecked)
 {
@@ -725,8 +691,6 @@ void QGoMainWindow::SetContourTracerOn(const bool& iChecked)
     }
 }
 //--------------------------------------------------------------------------------
-
-
 
 //--------------------------------------------------------------------------------
 void QGoMainWindow::SetSeedWidgetOn(const bool& iChecked)
@@ -752,8 +716,6 @@ void QGoMainWindow::SetSeedWidgetOn(const bool& iChecked)
 }
 //--------------------------------------------------------------------------------
 
-
-
 //--------------------------------------------------------------------------------
 void QGoMainWindow::SetSeedWidgetOff(const bool& iChecked)
 {
@@ -778,8 +740,6 @@ void QGoMainWindow::SetSeedWidgetOff(const bool& iChecked)
 }
 //--------------------------------------------------------------------------------
 
-
-
 //--------------------------------------------------------------------------------
 void QGoMainWindow::SetContourTracerOff(const bool& iChecked)
 {
@@ -803,8 +763,6 @@ void QGoMainWindow::SetContourTracerOff(const bool& iChecked)
     }
 }
 //--------------------------------------------------------------------------------
-
-
 
 // void QGoMainWindow::SetTracerToPolygonTracer()
 // {
