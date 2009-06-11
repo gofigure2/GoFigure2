@@ -6,4 +6,5 @@ SUBDIRS(
   QGoCreateDBDialog
   QGoWizardDB
   QGoImageInfo
+  QGoPrintDatabase
    )
