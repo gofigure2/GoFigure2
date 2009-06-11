@@ -48,6 +48,13 @@ public:
 
   QMEGAVTKADDON2_EXPORT QGoWizardDB(QWidget *parent = 0);
   QMEGAVTKADDON2_EXPORT QStringList ListFilenames();
+  QMEGAVTKADDON2_EXPORT QString NameDB();
+  QMEGAVTKADDON2_EXPORT int ExpID();
+  QMEGAVTKADDON2_EXPORT QString ExpName();
+  QMEGAVTKADDON2_EXPORT QString Server();
+  QMEGAVTKADDON2_EXPORT QString login();
+  QMEGAVTKADDON2_EXPORT QString Password();
+
   QPushButton* nextButton;
 
 };

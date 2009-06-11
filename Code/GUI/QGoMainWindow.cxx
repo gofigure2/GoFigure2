@@ -49,6 +49,7 @@
 
 #include "itkQtAdaptor.h"
 #include "itkQtProgressBar.h"
+#include "QGoPrintDatabase.h"
 
 #include <itkImageFileReader.h>
 #include <vnl/vnl_random.h>
@@ -87,6 +88,10 @@ QGoMainWindow::QGoMainWindow( )
   m_LUTDialog = new QGoLUTDialog( this );
   QObject::connect( this->m_LUTDialog, SIGNAL( accepted( ) ),
     this, SLOT( ChangeLookupTable( ) ) );
+
+  m_DBTables = new QGoPrintDatabase() ;
+  m_DBTables->hide();
+
 
   /*  QObject::connect( this->TracerPolygonBtn, SIGNAL( released( ) ),
   this, SLOT( SetTracerToPolygonTracer() ) );
@@ -143,7 +148,7 @@ QGoMainWindow::QGoMainWindow( )
   Fullscreenbuttons();
 
   for( int i = 0; i < MaxRecentFiles; ++i )
-  {
+    {
     recentSingleFileActions[i] = new QAction(this);
     recentSingleFileActions[i]->setVisible(false);
     QObject::connect(this->recentSingleFileActions[i], SIGNAL(triggered()),
@@ -234,13 +239,11 @@ void QGoMainWindow::openFilesfromDB()
 
   if (!ListFilenames.isEmpty())
     {
-    for(signed int i = 0; i < ListFilenames.size(); ++i )
-      {
-      std::cout<<"Filename "<<i<<" is "<<ListFilenames[i].toStdString().c_str()<<std::endl;
-      //ListExistingNames.append( vectListExpName[i].c_str( ) );
-      }
-
     SetFileName(ListFilenames[1],true);
+    m_DBTables->Fill_Database(m_Wizard->Server(),m_Wizard->login(),
+      m_Wizard->Password(), m_Wizard->NameDB(),
+      m_Wizard->ExpID(), m_Wizard->ExpName());
+    m_DBTables->show();
     }
 }
 // *************************************************************************

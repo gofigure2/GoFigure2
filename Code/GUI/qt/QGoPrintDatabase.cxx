@@ -1,6 +1,46 @@
+/*=========================================================================
+  Author: $Author: lsouhait $  // Author of last commit
+  Version: $Revision: 270 $  // Revision of last commit
+  Date: $Date: 2009-06-11 15:11:56 -0400 (Thu, 11 Jun 2009) $  // Date of last commit
+=========================================================================*/
+
+/*=========================================================================
+ Authors: The GoFigure Dev. Team.
+ at Megason Lab, Systems biology, Harvard Medical school, 2009
+
+ Copyright (c) 2009, President and Fellows of Harvard College.
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are met:
+
+ Redistributions of source code must retain the above copyright notice,
+ this list of conditions and the following disclaimer.
+ Redistributions in binary form must reproduce the above copyright notice,
+ this list of conditions and the following disclaimer in the documentation
+ and/or other materials provided with the distribution.
+ Neither the name of the  President and Fellows of Harvard College
+ nor the names of its contributors may be used to endorse or promote
+ products derived from this software without specific prior written
+ permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS
+ BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
+ OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+ OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+=========================================================================*/
+
+
 #include <qstringlist.h>
 #include <qwidget.h>
-//#include <QtGui>
 #include <QTableWidgetItem>
 #include "QGoPrintDatabase.h"
 #include "vtkMySQLDatabase.h"
@@ -14,11 +54,6 @@ QGoPrintDatabase::QGoPrintDatabase()
   DBTabWidget->setTabPosition(QTabWidget::West);
   DBTabWidget->setTabShape(QTabWidget::Triangular);
   DBTabWidget->removeTab(0);
-
- /* QPrintColumnNames ("figure", QFigureTable);
-  QPrintColumnNames ("mesh", QMeshTable);
-  QPrintColumnNames ("track", QTrackTable);
-  QPrintColumnNames ("lineage", QLineageTable);*/
 
 }
 
@@ -44,10 +79,10 @@ QStringList QGoPrintDatabase::GetTableContentFromDB(QString TableName)
   // CONNECT TO SERVER
   DataBaseConnector->Open("");
   if( ! DataBaseConnector->IsOpen() )
-  {
+    {
     DataBaseConnector->Delete();
     exit(0);
-  }
+    }
 
   vtkSQLQuery* query = DataBaseConnector->GetQueryInstance();
   SQLquery=QString("select * from %1;").arg(TableName);
@@ -56,27 +91,27 @@ QStringList QGoPrintDatabase::GetTableContentFromDB(QString TableName)
   query->SetQuery( createQuery.c_str() );
 
   if( !query->Execute() )
-  {
+    {
     std::cerr << "Create query failed" << std::endl;
     DataBaseConnector->Delete();
     query->Delete();
     exit(0);
-  }
+    }
 
   for( int col = 0; col < query->GetNumberOfFields(); ++col )
-  {
+    {
     List <<query->GetFieldName( col );
-  }
+    }
 
   while ( query->NextRow() )
-  {
-    for ( int field = 0; field < query->GetNumberOfFields(); ++ field )
     {
+    for ( int field = 0; field < query->GetNumberOfFields(); ++ field )
+      {
       if ( field > 0 ) std::cout << ", ";
       List << query->DataValue( field ).ToString().c_str();
-    }
+      }
     std::cout << endl;
-  }
+    }
 
   DataBaseConnector->Close();
   DataBaseConnector->Delete();
@@ -108,13 +143,13 @@ void QGoPrintDatabase::QPrintColumnNames (QString TableName)
 }
 
 void QGoPrintDatabase::Fill_Database(QString ServerName,QString login,
-    QString Password, QString DBName, QString ExpID)
+    QString Password, QString DBName, int ExpID, QString ExpName)
 {
   m_Server = ServerName;
   m_User = login;
   m_Password = Password;
   m_NameDB=DBName;
-  this->setWindowTitle(DBName);
+  this->setWindowTitle(QString("DB: %1 - Exp: %2").arg(DBName).arg(ExpName));
 
   QPrintColumnNames ("figure");
   QPrintColumnNames ("mesh");

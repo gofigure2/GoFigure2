@@ -60,6 +60,7 @@
 // #endif
 #include "QGoCreateDBDialog.h"
 #include "QGoWizardDB.h"
+#include "QGoPrintDatabase.h"
 
 #include <qactiongroup.h>
 #include <qvector.h>
@@ -189,6 +190,7 @@ protected:
   QGoLUTDialog* m_LUTDialog;
 
   QGoWizardDB* m_Wizard;
+  QGoPrintDatabase* m_DBTables;
 
   /** \brief */
   QHash< unsigned int, QColor > m_IdColorMap;
