@@ -142,10 +142,10 @@ public:
     myIteratorType start = m_RowContainer.begin();
     myIteratorType end   = m_RowContainer.end();
     // while( start != end )
-      {
-      // std::cout << (*start).second.PrintValues()  << std::endl;
-      // start++;
-      }
+    //  {
+    // std::cout << (*start).second.PrintValues()  << std::endl;
+    // start++;
+    //  }
 
     // start = m_RowContainer.begin();
     std::sort( start, end, IsLess() );
@@ -182,7 +182,7 @@ public:
       query->Delete();
       return false;
       }
-  }
+    }
 
 private:
   // functor to sort our RowContainer and optimize SQL requests

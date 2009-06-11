@@ -205,7 +205,6 @@ public slots:
   //   void Render( );
 
 protected:
-
   QSplitter*          VSplitter;
   QSplitterchild*     HtSplitter;
   QSplitterchild*     HbSplitter;

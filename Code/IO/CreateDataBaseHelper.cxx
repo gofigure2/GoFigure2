@@ -376,7 +376,7 @@ bool IsDatabaseOfGoFigureType(
   if(  DoesTableExist( ServerName, login, Password, DBName, "bookmarks" )
     && DoesTableExist( ServerName, login, Password, DBName, "figure" )
     && DoesTableExist( ServerName, login, Password, DBName, "lineage" )
-	&& DoesTableExist( ServerName, login, Password, DBName, "mesh" )
+    && DoesTableExist( ServerName, login, Password, DBName, "mesh" )
     && DoesTableExist( ServerName, login, Password, DBName, "seriesgrid" )
     && DoesTableExist( ServerName, login, Password, DBName, "track" ) )
     {
@@ -1108,7 +1108,7 @@ std::vector<std::string> ListValuesfor1Row(
 
   while (query->NextRow())
     {
-    for(  int i = 0; i < query->GetNumberOfFields() ; i++)
+    for(  int i = 0; i < query->GetNumberOfFields(); i++)
       {
       result.push_back( query->DataValue( i ).ToString() );
       }
@@ -1217,7 +1217,7 @@ std::vector<std::string> ListValuesfor1Column(
 
   while (query->NextRow())
     {   
-    for(  int i = 0; i < query->GetNumberOfFields() ; i++)
+    for( int i = 0; i < query->GetNumberOfFields(); i++)
       {
       result.push_back( query->DataValue( i ).ToString() );
       }

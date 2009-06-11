@@ -104,8 +104,8 @@ QGoCreateDBDialog::QGoCreateDBDialog( QObject* parent )
           ServerName.toAscii( ).data(),
           "gofigure",
           "gofigure",
-          DataBaseName.toAscii().data()
-          );
+          DataBaseName.toAscii().data() );
+        
         // NOTE ALEX: make a real test here
         CouldCreate = true;
         }

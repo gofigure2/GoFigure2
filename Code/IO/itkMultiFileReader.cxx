@@ -220,10 +220,10 @@ void MultiFileReader::Update( void )
       extractComp->SetComponents( this->m_UpdateChannel );
       extractComp->SetInput( volumeBuilder->GetOutput() );
       extractComp->Update( );
-	  volumeBuilder->Delete();
-	  m_OutputImage = vtkImageData::New();
-	  m_OutputImage->ShallowCopy( extractComp->GetOutput() );
-	  extractComp->Delete();
+      volumeBuilder->Delete();
+      m_OutputImage = vtkImageData::New();
+      m_OutputImage->ShallowCopy( extractComp->GetOutput() );
+      extractComp->Delete();
       }
 
     } // end of dimensionality == 2

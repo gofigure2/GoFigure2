@@ -240,7 +240,7 @@ protected:
     levelSetFilter->Update();
 
     m_Output = levelSetFilter->GetOutput();
-//     m_Output->DisconnectPipeline();
+    //     m_Output->DisconnectPipeline();
 
     m_Converter->SetInput( m_Output );
     m_Converter->Update();

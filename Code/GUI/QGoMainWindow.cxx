@@ -229,19 +229,19 @@ void QGoMainWindow::on_actionUse_DataBase_activated()
 // *************************************************************************
 void QGoMainWindow::openFilesfromDB()
 {
-    std::cout<<"signal worked"<<std::endl;
-    QStringList ListFilenames = m_Wizard->ListFilenames();
+  std::cout<<"signal worked"<<std::endl;
+  QStringList ListFilenames = m_Wizard->ListFilenames();
 
-    if (!ListFilenames.isEmpty())
+  if (!ListFilenames.isEmpty())
+    {
+    for(signed int i = 0; i < ListFilenames.size(); ++i )
       {
-      for(signed int i = 0; i < ListFilenames.size(); ++i )
-        {
-        std::cout<<"Filename "<<i<<" is "<<ListFilenames[i].toStdString().c_str()<<std::endl;
-        //ListExistingNames.append( vectListExpName[i].c_str( ) );
-        }
-
-      SetFileName(ListFilenames[1],true);
+      std::cout<<"Filename "<<i<<" is "<<ListFilenames[i].toStdString().c_str()<<std::endl;
+      //ListExistingNames.append( vectListExpName[i].c_str( ) );
       }
+
+    SetFileName(ListFilenames[1],true);
+    }
 }
 // *************************************************************************
 void QGoMainWindow::on_actionOpen_Mesh_activated( )
@@ -388,8 +388,6 @@ void QGoMainWindow::on_actionClose_activated( )
   writeSettings();
 }
 //--------------------------------------------------------------------------------
-
-
 
 // *************************************************************************
 void QGoMainWindow::on_actionClose_all_activated( )
@@ -897,8 +895,6 @@ void QGoMainWindow::SetColorForGivenId( const bool& iSelect )
 }
 //--------------------------------------------------------------------------------
 
-
-
 //--------------------------------------------------------------------------------
 void QGoMainWindow::ValidateContourTracer( )
 {
@@ -921,8 +917,6 @@ void QGoMainWindow::ValidateContourTracer( )
 }
 //--------------------------------------------------------------------------------
 
-
-
 //--------------------------------------------------------------------------------
 void QGoMainWindow::ReinitializeAndIncrementContourTracer( )
 {
@@ -930,8 +924,6 @@ void QGoMainWindow::ReinitializeAndIncrementContourTracer( )
   this->IdContourBox->setValue( 1 + this->IdContourBox->value() );
 }
 //--------------------------------------------------------------------------------
-
-
 
 //--------------------------------------------------------------------------------
 template< class T >
@@ -950,8 +942,6 @@ void QGoMainWindow::ValidateContourTracerHelper( T* PageView )
     this->SaveContourCheckBox->isChecked() );
 }
 //--------------------------------------------------------------------------------
-
-
 
 //--------------------------------------------------------------------------------
 void QGoMainWindow::ReinitializeContourTracer()
@@ -974,8 +964,6 @@ void QGoMainWindow::ReinitializeContourTracer()
     }
 }
 //--------------------------------------------------------------------------------
-
-
 
 //--------------------------------------------------------------------------------
 void QGoMainWindow::SetFileName( const QString& iFile, const bool& IsSerie )
@@ -1006,8 +994,6 @@ void QGoMainWindow::SetFileName( const QString& iFile, const bool& IsSerie )
 }
 //--------------------------------------------------------------------------------
 
-
-
 //--------------------------------------------------------------------------------
 void QGoMainWindow::OpenImage( const QString& iFile )
 {
@@ -1027,7 +1013,6 @@ void QGoMainWindow::OpenImage( const QString& iFile )
   m_ITKImage.last()->DisconnectPipeline();
 }
 //--------------------------------------------------------------------------------
-
 
 //--------------------------------------------------------------------------------
 void QGoMainWindow::DisplayImage( const QString& iTag )
@@ -1053,8 +1038,6 @@ void QGoMainWindow::DisplayImage( const QString& iTag )
 }
 //--------------------------------------------------------------------------------
 
-
-
 //--------------------------------------------------------------------------------
 void QGoMainWindow::OpenAndDisplay(
   const QString& iTag,
@@ -1076,7 +1059,6 @@ void QGoMainWindow::OpenAndDisplay(
   this->CentralImageTabWidget->setCurrentIndex( idx );
 }
 //--------------------------------------------------------------------------------
-
 
 //--------------------------------------------------------------------------------
 void QGoMainWindow::on_actionAbout_activated( )
@@ -1103,14 +1085,12 @@ void QGoMainWindow::on_actionAbout_activated( )
 }
 //--------------------------------------------------------------------------------
 
-
 //--------------------------------------------------------------------------------
 void QGoMainWindow::on_actionAbout_Qt_activated( )
 {
   QMessageBox::aboutQt( this, tr( "About Qt" ) );
 }
 //--------------------------------------------------------------------------------
-
 
 //--------------------------------------------------------------------------------
 void QGoMainWindow::Fullscreenbuttons()
@@ -1123,7 +1103,6 @@ void QGoMainWindow::Fullscreenbuttons()
   m_FullscreenGroup->addAction( this->actionQuad_View );
 }
 //--------------------------------------------------------------------------------
-
 
 //--------------------------------------------------------------------------------
 void QGoMainWindow::setCurrentFile(const QString &fileName,const bool& IsSerie)
@@ -1150,14 +1129,12 @@ void QGoMainWindow::setCurrentFile(const QString &fileName,const bool& IsSerie)
 }
 //--------------------------------------------------------------------------------
 
-
 //--------------------------------------------------------------------------------
 QString QGoMainWindow::strippedName(const QString &fullFileName)
 {
   return QFileInfo(fullFileName).fileName();
 }
 //--------------------------------------------------------------------------------
-
 
 //--------------------------------------------------------------------------------
 void QGoMainWindow::updateRecentFileActions(QStringList list, QMenu *menu, QAction *recentFileActions[MaxRecentFiles] )
@@ -1190,8 +1167,6 @@ void QGoMainWindow::updateRecentFileActions(QStringList list, QMenu *menu, QActi
 }
 //--------------------------------------------------------------------------------
 
-
-
 //--------------------------------------------------------------------------------
 void QGoMainWindow::openRecentFile(const bool& IsSerie)
 {
@@ -1203,8 +1178,6 @@ void QGoMainWindow::openRecentFile(const bool& IsSerie)
 }
 //--------------------------------------------------------------------------------
 
-
-
 //--------------------------------------------------------------------------------
 void QGoMainWindow::openRecentSingleFile()
 {
@@ -1212,16 +1185,12 @@ void QGoMainWindow::openRecentSingleFile()
 }
 //--------------------------------------------------------------------------------
 
-
-
 //--------------------------------------------------------------------------------
 void QGoMainWindow::openRecentMultipleFile()
 {
   openRecentFile(true);
 }
 //--------------------------------------------------------------------------------
-
-
 
 //--------------------------------------------------------------------------------
 void QGoMainWindow::readSettings()
@@ -1250,8 +1219,6 @@ void QGoMainWindow::readSettings()
 }
 //--------------------------------------------------------------------------------
 
-
-
 //--------------------------------------------------------------------------------
 void QGoMainWindow::writeSettings()
 {
@@ -1265,8 +1232,6 @@ void QGoMainWindow::writeSettings()
 }
 //--------------------------------------------------------------------------------
 
-
-
 //--------------------------------------------------------------------------------
 template< class T >
 void QGoMainWindow::writeSettingsPageView(T* PageView )
@@ -1274,7 +1239,6 @@ void QGoMainWindow::writeSettingsPageView(T* PageView )
   PageView->SaveStateSplitters();
 }
 //--------------------------------------------------------------------------------
-
 
 //--------------------------------------------------------------------------------
 void QGoMainWindow::ShowProgressLoading( itk::Object * myFilter )
@@ -1290,16 +1254,12 @@ void QGoMainWindow::ShowProgressLoading( itk::Object * myFilter )
 }
 //--------------------------------------------------------------------------------
 
-
-
 //--------------------------------------------------------------------------------
 void QGoMainWindow::HideProgressLoading()
 {
   m_Bar.hide();
 }
 //--------------------------------------------------------------------------------
-
-
 
 //--------------------------------------------------------------------------------
 void QGoMainWindow::UpdateTracerButtons( const int& idx)
@@ -1339,8 +1299,6 @@ void QGoMainWindow::UpdateTracerButtons( const int& idx)
 }
 //--------------------------------------------------------------------------------
 
-
-
 //--------------------------------------------------------------------------------
 void QGoMainWindow::UpdateToolBarViewButtons( const int& idx )
 {
@@ -1366,8 +1324,6 @@ void QGoMainWindow::UpdateToolBarViewButtons( const int& idx )
     }
 }
 //--------------------------------------------------------------------------------
-
-
 
 //--------------------------------------------------------------------------------
 template< class T >
@@ -1411,7 +1367,6 @@ void QGoMainWindow::UpdateFullScreenViewButtonsHelper( T* PageView )
 }
 //--------------------------------------------------------------------------------
 
-
 //--------------------------------------------------------------------------------
 template< class T >
 void QGoMainWindow::UpdateVolumeRenderingButton( T* PageView)
@@ -1420,14 +1375,12 @@ void QGoMainWindow::UpdateVolumeRenderingButton( T* PageView)
 }
 //--------------------------------------------------------------------------------
 
-
 //--------------------------------------------------------------------------------
 void QGoMainWindow::StartSeedWidget()
 {
 
 }
 //--------------------------------------------------------------------------------
-
 
 //--------------------------------------------------------------------------------
 void QGoMainWindow::OneClickSegmentation()
