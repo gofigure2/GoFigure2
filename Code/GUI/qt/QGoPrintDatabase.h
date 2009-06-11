@@ -11,14 +11,19 @@ class QGoPrintDatabase : public QWidget,
   Q_OBJECT
 
 public:
-  explicit QMEGAVTKADDON2_EXPORT QGoPrintDatabase(QString NameDB);
+  explicit QMEGAVTKADDON2_EXPORT QGoPrintDatabase(QString ServerName,QString login,
+      QString Password, QString DBName);
   virtual QMEGAVTKADDON2_EXPORT ~QGoPrintDatabase();
 
 
 protected:
   QStringList GetTableContentFromDB(QString TableName);
-  void QPrintColumnNames (QString TableName, QTableWidget* QTabname);
+  void QPrintColumnNames (QString TableName);
+
   QString m_NameDB;
+  QString m_Server;
+  QString m_User;
+  QString m_Password;
 };
 
 #endif
