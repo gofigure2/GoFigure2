@@ -217,7 +217,7 @@ void QGoMainWindow::on_actionOpen_Multiple_Files_activated( )
 
 
 //--------------------------------------------------------------------------------
-void QGoMainWindow::on_actionUse_DataBase_activated() 
+void QGoMainWindow::on_actionUse_DataBase_activated()
 {
    m_Wizard = new QGoWizardDB;
    m_Wizard->show();
@@ -230,24 +230,19 @@ void QGoMainWindow::on_actionUse_DataBase_activated()
 // *************************************************************************
 void QGoMainWindow::openFilesfromDB()
 {
-  std::cout<<"signal worked"<<std::endl;
-  if (m_Wizard->hasVisitedPage(3))
-    {
+    std::cout<<"signal worked"<<std::endl;
     QStringList ListFilenames = m_Wizard->ListFilenames();
 
     if (!ListFilenames.isEmpty())
       {
-      for(unsigned int i = 0; i < ListFilenames.size(); ++i )
+      for(signed int i = 0; i < ListFilenames.size(); ++i )
         {
         std::cout<<"Filename "<<i<<" is "<<ListFilenames[i].toStdString().c_str()<<std::endl;
         //ListExistingNames.append( vectListExpName[i].c_str( ) );
         }
+
+      SetFileName(ListFilenames[1],true);
       }
-      else
-      {
-        SetFileName(ListFilenames[1],true);
-      }
-    }
 }
 // *************************************************************************
 void QGoMainWindow::on_actionOpen_Mesh_activated( )
