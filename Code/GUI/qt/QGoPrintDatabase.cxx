@@ -2,13 +2,13 @@
 #include <qwidget.h>
 //#include <QtGui>
 #include <QTableWidgetItem>
-#include "QPrintDatabase.h"
+#include "QGoPrintDatabase.h"
 #include "vtkMySQLDatabase.h"
 #include "vtkSQLQuery.h"
 #include "vtkStringArray.h"
 #include "vtkStdString.h"
 
-QPrintDatabase::QPrintDatabase(QString NameDB)
+QGoPrintDatabase::QGoPrintDatabase(QString NameDB)
 {
   this->setupUi( this );
   this->setWindowTitle(NameDB);
@@ -23,12 +23,12 @@ QPrintDatabase::QPrintDatabase(QString NameDB)
 
 }
 
-QPrintDatabase::~QPrintDatabase()
+QGoPrintDatabase::~QGoPrintDatabase()
 {
 }
 
 
-QStringList QPrintDatabase::GetTableContentFromDB(QString TableName)
+QStringList QGoPrintDatabase::GetTableContentFromDB(QString TableName)
 {
   QStringList List;
   QString SQLquery;
@@ -82,7 +82,7 @@ QStringList QPrintDatabase::GetTableContentFromDB(QString TableName)
   return List;
 }
 
-void QPrintDatabase::QPrintColumnNames (QString TableName, QTableWidget* QTabName)
+void QGoPrintDatabase::QPrintColumnNames (QString TableName, QTableWidget* QTabName)
 {
   QStringList listColumnNames;
   listColumnNames=GetTableContentFromDB(TableName);
