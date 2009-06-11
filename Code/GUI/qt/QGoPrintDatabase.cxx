@@ -8,26 +8,13 @@
 #include "vtkStringArray.h"
 #include "vtkStdString.h"
 
-QGoPrintDatabase::QGoPrintDatabase(QString ServerName,QString login,
-    QString Password, QString DBName)
+QGoPrintDatabase::QGoPrintDatabase()
 {
-  m_Server = ServerName;
-  m_User = login;
-  m_Password = Password;
-  m_NameDB=DBName;
-
   this->setupUi( this );
-  this->setWindowTitle(DBName);
-
   DBTabWidget->setTabPosition(QTabWidget::West);
   DBTabWidget->setTabShape(QTabWidget::Triangular);
-
-
-  QPrintColumnNames ("figure");
-  QPrintColumnNames ("mesh");
-  QPrintColumnNames ("track");
   DBTabWidget->removeTab(0);
-  QPrintColumnNames ("lineage");
+
  /* QPrintColumnNames ("figure", QFigureTable);
   QPrintColumnNames ("mesh", QMeshTable);
   QPrintColumnNames ("track", QTrackTable);
@@ -118,4 +105,20 @@ void QGoPrintDatabase::QPrintColumnNames (QString TableName)
     HeaderCol->setFont(serifFont);
     QTabName->setHorizontalHeaderItem(i,HeaderCol);
     }
+}
+
+void QGoPrintDatabase::Fill_Database(QString ServerName,QString login,
+    QString Password, QString DBName, QString ExpID)
+{
+  m_Server = ServerName;
+  m_User = login;
+  m_Password = Password;
+  m_NameDB=DBName;
+  this->setWindowTitle(DBName);
+
+  QPrintColumnNames ("figure");
+  QPrintColumnNames ("mesh");
+  QPrintColumnNames ("track");
+  QPrintColumnNames ("lineage");
+
 }

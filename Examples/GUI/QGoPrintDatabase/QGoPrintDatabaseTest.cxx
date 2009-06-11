@@ -3,14 +3,17 @@
 
 int main(int argc, char * argv[])
 {
-  //if( argc != 3 )
-   // return false;
+  if( argc != 3 )
+    {
+    return false;
+    }
 
   QApplication app(argc, argv);
 
-  QGoPrintDatabase win( QString("localhost"),QString("gofigure"),QString("gofigure"),QString(argv[1]));
+  QGoPrintDatabase win;
+  win.Fill_Database("localhost","gofigure",
+      "gofigure", argv[1], argv[2]);
   win.show();
-
 
   return app.exec();
 }

@@ -11,9 +11,10 @@ class QGoPrintDatabase : public QWidget,
   Q_OBJECT
 
 public:
-  explicit QMEGAVTKADDON2_EXPORT QGoPrintDatabase(QString ServerName,QString login,
-      QString Password, QString DBName);
+  explicit QMEGAVTKADDON2_EXPORT QGoPrintDatabase();
   virtual QMEGAVTKADDON2_EXPORT ~QGoPrintDatabase();
+  void Fill_Database(QString ServerName,QString login,
+      QString Password, QString DBName, QString ExpID);
 
 
 protected:
