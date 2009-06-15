@@ -48,7 +48,6 @@ QGoWizardDB::QGoWizardDB( QWidget *parent )
   setPage(OpenOrCreateDB, new OpenOrCreate_Page);
   setPage(Create_Experiment, new Create_ExperimentPage);
   setPage(Import, new Import_SerieGridPage);
-  setPage(Finish, new Finish_Page);
   setWindowTitle( tr("Use DataBase") );
 }
 //------------------------------------------------------------------------------
@@ -612,6 +611,7 @@ void Create_ExperimentPage::EnterInfoExp()
 
   setField("OpenOrCreateExp","Create");
   setFinalPage(false);
+  nextId();
  }
 //------------------------------------------------------------------------------
 
@@ -671,6 +671,7 @@ bool Create_ExperimentPage::PrintListExp()
     ChoiceExp->show();
 
     setField("OpenOrCreateExp","Open");
+    nextId();
 
   return ok;
 
@@ -696,7 +697,6 @@ int Create_ExperimentPage::nextId() const
       if (!ListFinalPage.empty())
         {
         std::cout<<"last page ID"<<std::endl;
-        //return QGoWizardDB::Finish;
         return -1;
         }
       else
@@ -760,10 +760,12 @@ std::vector<std::string> myvect =
     {
     std::cout<<"last page"<<std::endl;
     setFinalPage(true);
+    nextId();
     }
   else
     {
     setFinalPage(false);
+    nextId();
     }
 }
 //------------------------------------------------------------------------------
@@ -844,6 +846,7 @@ Import_SerieGridPage::Import_SerieGridPage( QWidget *parent )
   font.setBold(false);
   this->setFont(font);
   this->adjustSize();
+  newfilename.clear();
 
   gridlayout= new QGridLayout;
   BrowseButton = new QPushButton("&Browse", this);
@@ -853,9 +856,11 @@ Import_SerieGridPage::Import_SerieGridPage( QWidget *parent )
 
 
   setLayout(gridlayout);
+  Line_filename = new QLineEdit;
 
   QObject::connect( this->BrowseButton,SIGNAL( clicked() ),
   this,SLOT( SelectSeriesGrid() ));
+  //QObject::connect(this->Line_filename,SIGNAL(textChanged()), this,SIGNAL(completeChanged()) );
 
 
 }
@@ -866,6 +871,11 @@ Import_SerieGridPage::Import_SerieGridPage( QWidget *parent )
 //------------------------------------------------------------------------------
 void Import_SerieGridPage::initializePage()
 {
+  newfilename.clear();
+  //isComplete();
+  completeChanged();
+  //Line_filename->setText(newfilename);
+  //Line_filename->setText("");
   BrowseButton->setVisible(true);
   if (field("OpenOrCreateExp")=="Create")
     {
@@ -917,7 +927,7 @@ void Import_SerieGridPage::initializePage()
 //------------------------------------------------------------------------------
 void Import_SerieGridPage::SelectSeriesGrid()
 {
-  QString filename = QFileDialog::getOpenFileName(
+    newfilename = QFileDialog::getOpenFileName(
     this,
     tr( "Import Image" ),"",
     tr( "Images (*.png *.bmp *.jpg *.jpeg *.tiff *.mha *.mhd *.img *.lsm)" )
@@ -941,12 +951,12 @@ void Import_SerieGridPage::SelectSeriesGrid()
   }
   else
   {
-  if( !filename.isEmpty( ) )
+  if( !newfilename.isEmpty( ) )
   {
     try
     {
     itk::MegaCaptureImport::Pointer  importFileInfoList = itk::MegaCaptureImport::New();
-    importFileInfoList->SetFileName( filename.toAscii().data() );
+    importFileInfoList->SetFileName( newfilename.toAscii().data() );
     importFileInfoList->Update();
 
     typedef GoDBRecordSet< GoDBSeriesGridRow > myRecordSetType;
@@ -1002,6 +1012,10 @@ void Import_SerieGridPage::SelectSeriesGrid()
     }
   }
   }
+  //Line_filename->setText(newfilename);
+  completeChanged();
+  setSubTitle(tr("When you click on finish, the Image Set of the Experiment %1 from the DataBase %2 will be opened.")
+    .arg(field("Name").toString()).arg(field("NameDB").toString()));
 }
 //------------------------------------------------------------------------------
 
@@ -1009,23 +1023,7 @@ void Import_SerieGridPage::SelectSeriesGrid()
 
 //------------------------------------------------------------------------------
 
-Finish_Page::Finish_Page(QWidget *parent)
-:QWizardPage(parent)
+bool Import_SerieGridPage::isComplete() const
 {
+  return (!newfilename.isEmpty());
 }
-//------------------------------------------------------------------------------
-
-
-
-//------------------------------------------------------------------------------
-
-void Finish_Page::initializePage()
-{
-  setTitle(tr("When you click on finish, the Image Set of the Experiment %1 from the DataBase %2 will be opened.")
-  .arg(field("Name").toString()).arg(field("NameDB").toString()));
-}
-//------------------------------------------------------------------------------
-
-
-
-//------------------------------------------------------------------------------

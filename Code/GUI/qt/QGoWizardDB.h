@@ -44,8 +44,7 @@ class QGoWizardDB : public QWizard
 Q_OBJECT
 
 public:
-  enum { Connect_Server, OpenOrCreateDB,Create_Experiment, Import,
-  Finish};
+  enum { Connect_Server, OpenOrCreateDB,Create_Experiment, Import};
 
   QMEGAVTKADDON2_EXPORT QGoWizardDB(QWidget *parent = 0);
   QMEGAVTKADDON2_EXPORT QStringList ListFilenames();
@@ -68,7 +67,6 @@ public:
   Connect_ServerPage(QWidget *parent = 0);
   bool validatePage();
 
-  //int nextId() const;
 
 private:
   QLineEdit* lineServerName;
@@ -83,16 +81,10 @@ Q_OBJECT
 
 public:
   OpenOrCreate_Page(QWidget *parent = 0);
- // int nextId() const;
   void initializePage();
   bool validatePage();
   QGridLayout* gridLayout;
   QLineEdit* lineNewDBName;
-  //QComboBox* ChoiceDB;
- // char* Server;
- // char* User;
- // char* Password;
-//public slot:
 
 private:
   QCheckBox *openDBCheckBox;
@@ -165,25 +157,19 @@ Q_OBJECT
 public:
   Import_SerieGridPage(QWidget *parent = 0);
   void initializePage();
+  bool isComplete() const;
+  QLineEdit* Line_filename;
 
 protected:
   QGridLayout* gridlayout;
   QLineEdit* OpenOrCreateSeriesGrid_fake;
   QPushButton* BrowseButton;
+  QString newfilename;
 
 protected slots:
   void SelectSeriesGrid();
 
 };
 
-class Finish_Page : public QWizardPage
-{
-Q_OBJECT
-
-public:
-  Finish_Page(QWidget *parent = 0);
-  void initializePage();
-  //std::vector<std::string>ListFilenames();
-};
 
 #endif
