@@ -158,7 +158,6 @@ public:
   Import_SerieGridPage(QWidget *parent = 0);
   void initializePage();
   bool isComplete() const;
-  QLineEdit* Line_filename;
 
 protected:
   QGridLayout* gridlayout;

@@ -517,6 +517,7 @@ void Create_ExperimentPage::initializePage()
   ID->setEnabled(false);
   setFinalPage(false);
 
+
   if (!field("DBNametoCreate").toString().isEmpty())
     {
     CreateDataBaseMain(field("ServerName").toString().toStdString(),
@@ -611,7 +612,6 @@ void Create_ExperimentPage::EnterInfoExp()
 
   setField("OpenOrCreateExp","Create");
   setFinalPage(false);
-  nextId();
  }
 //------------------------------------------------------------------------------
 
@@ -671,7 +671,7 @@ bool Create_ExperimentPage::PrintListExp()
     ChoiceExp->show();
 
     setField("OpenOrCreateExp","Open");
-    nextId();
+    setFinalPage(false);
 
   return ok;
 
@@ -756,17 +756,7 @@ std::vector<std::string> myvect =
   field("NameDB").toString().toStdString(),"seriesgrid",
   "filename","experimentID",field("ExpID").toString().toStdString());
 
-  if (!List.empty())
-    {
-    std::cout<<"last page"<<std::endl;
-    setFinalPage(true);
-    nextId();
-    }
-  else
-    {
-    setFinalPage(false);
-    nextId();
-    }
+  setFinalPage(false);
 }
 //------------------------------------------------------------------------------
 
@@ -856,12 +846,9 @@ Import_SerieGridPage::Import_SerieGridPage( QWidget *parent )
 
 
   setLayout(gridlayout);
-  Line_filename = new QLineEdit;
 
   QObject::connect( this->BrowseButton,SIGNAL( clicked() ),
   this,SLOT( SelectSeriesGrid() ));
-  //QObject::connect(this->Line_filename,SIGNAL(textChanged()), this,SIGNAL(completeChanged()) );
-
 
 }
 //------------------------------------------------------------------------------
@@ -872,10 +859,7 @@ Import_SerieGridPage::Import_SerieGridPage( QWidget *parent )
 void Import_SerieGridPage::initializePage()
 {
   newfilename.clear();
-  //isComplete();
   completeChanged();
-  //Line_filename->setText(newfilename);
-  //Line_filename->setText("");
   BrowseButton->setVisible(true);
   if (field("OpenOrCreateExp")=="Create")
     {
@@ -1012,7 +996,6 @@ void Import_SerieGridPage::SelectSeriesGrid()
     }
   }
   }
-  //Line_filename->setText(newfilename);
   completeChanged();
   setSubTitle(tr("When you click on finish, the Image Set of the Experiment %1 from the DataBase %2 will be opened.")
     .arg(field("Name").toString()).arg(field("NameDB").toString()));
