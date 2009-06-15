@@ -13,6 +13,7 @@
 #include <QStringList>
 #include <QString>
 #include <iostream>
+#include <QCheckBox>
 
 #include "MegaVTK2Configure.h"
 
@@ -94,8 +95,8 @@ public:
 //public slot:
 
 private:
-  QRadioButton *openDBRadioButton;
-  QRadioButton *createDBRadioButton;
+  QCheckBox *openDBCheckBox;
+  QCheckBox *createDBCheckBox;
   QLineEdit* DBNametoOpen_fake;
   QComboBox* ChoiceDB;
   QLabel* textChoiceDB;

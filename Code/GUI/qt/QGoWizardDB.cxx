@@ -19,6 +19,8 @@
 #include <QMessageBox>
 #include <QFont>
 #include <QPushButton>
+#include <QCheckBox>
+
 
 //------------------------------------------------------------------------------
 QGoWizardDB::QGoWizardDB( QWidget *parent )
@@ -201,33 +203,33 @@ OpenOrCreate_Page::OpenOrCreate_Page(QWidget *parent)
   ChoiceDB = new QComboBox;
   textChoiceDB = new QLabel(tr("Name of the DB to open :"));
 
-  openDBRadioButton = new QRadioButton(tr("Open an existing DataBase"));
-  createDBRadioButton = new QRadioButton(tr("Create a new DataBase"));
-  openDBRadioButton->setChecked(false);
-  createDBRadioButton->setChecked(false);
+  openDBCheckBox = new QCheckBox(tr("Open an existing DataBase"));
+  createDBCheckBox = new QCheckBox(tr("Create a new DataBase"));
+  openDBCheckBox->setChecked(false);
+  createDBCheckBox->setChecked(false);
   textNewDBName = new QLabel(tr("Name of the new DB to create:"));
   //textNewDBName->hide();
   lineNewDBName = new QLineEdit;
   //lineNewDBName->hide();
 
-  gridLayout->addWidget(createDBRadioButton,0,0,1,1);
+  gridLayout->addWidget(createDBCheckBox,0,0,1,1);
   gridLayout->addWidget(textNewDBName,3,0,1,2);
   gridLayout->addWidget(lineNewDBName,3,1,1,1);
-  gridLayout->addWidget(openDBRadioButton,5,0,1,1);
+  gridLayout->addWidget(openDBCheckBox,5,0,1,1);
   gridLayout->addWidget(textChoiceDB,6,0,1,1);
   gridLayout->addWidget(ChoiceDB,6,1,1,1);
 
-  gridLayout->setAlignment(openDBRadioButton,Qt::AlignLeft);
-  gridLayout->setAlignment(createDBRadioButton,Qt::AlignLeft);
+  //gridLayout->setAlignment(openDBCheckBox,Qt::AlignLeft);
+  //gridLayout->setAlignment(createDBCheckBox,Qt::AlignLeft);
   gridLayout->setAlignment(textNewDBName,Qt::AlignLeft);
   gridLayout->setAlignment(textChoiceDB,Qt::AlignLeft);
 
   setLayout(gridLayout);
 
-  QObject::connect( this->openDBRadioButton,SIGNAL( clicked() ),
+  QObject::connect( this->openDBCheckBox,SIGNAL( clicked() ),
   this,SLOT( PrintListDB() ));
 
-  QObject::connect( this->createDBRadioButton,SIGNAL( clicked() ),
+  QObject::connect( this->createDBCheckBox,SIGNAL( clicked() ),
   this,SLOT( EnterNameDB() ));
 
   registerField( "DBIndextoOpen", ChoiceDB);
@@ -245,6 +247,10 @@ void OpenOrCreate_Page::initializePage()
   textChoiceDB->hide();
   textNewDBName->hide();
   lineNewDBName->hide();
+  openDBCheckBox->setChecked(false);
+  createDBCheckBox->setChecked(false);
+  field("DBIndextoOpen").clear();
+  field("DBNametoCreate").clear();
 }
 //------------------------------------------------------------------------------
 
@@ -254,14 +260,14 @@ void OpenOrCreate_Page::initializePage()
 
 void OpenOrCreate_Page::PrintListDB ()
 {
+  createDBCheckBox->setChecked(false);
+  field("DBNametoCreate").clear();
   textChoiceDB->show();
   ChoiceDB->show();
 
   textNewDBName->hide();
   lineNewDBName->hide();
   lineNewDBName->setText("");
-
-
 
   if (m_ListDB.isEmpty())
     {
@@ -274,10 +280,10 @@ void OpenOrCreate_Page::PrintListDB ()
     for(unsigned int i = 0; i < vectListDB.size(); ++i )
       {
       if (IsDatabaseOfGoFigureType(
-         field("ServerName").toString().toStdString(),
-         field("User").toString().toStdString(),
-         field("Password").toString().toStdString(),
-         vectListDB[i].c_str( )))
+       field("ServerName").toString().toStdString(),
+       field("User").toString().toStdString(),
+       field("Password").toString().toStdString(),
+       vectListDB[i].c_str( )))
         {
         m_ListDB.append( vectListDB[i].c_str( ) );
         }
@@ -285,6 +291,7 @@ void OpenOrCreate_Page::PrintListDB ()
     ChoiceDB->addItems( m_ListDB );
     }
   ChoiceDB->show();
+
 }
 //------------------------------------------------------------------------------
 
@@ -293,13 +300,18 @@ void OpenOrCreate_Page::PrintListDB ()
 //------------------------------------------------------------------------------
 void OpenOrCreate_Page::EnterNameDB ()
 {
-  m_ListDB.clear();
-  ChoiceDB->clear();
+  if (createDBCheckBox->isChecked())
+    {
+    openDBCheckBox->setChecked(false);
+    field("DBIndextoOpen").clear();
+    m_ListDB.clear();
+    ChoiceDB->clear();
 
-  lineNewDBName->show();
-  textNewDBName->show();
-  ChoiceDB->hide();
-  textChoiceDB->hide();
+    lineNewDBName->show();
+    textNewDBName->show();
+    ChoiceDB->hide();
+    textChoiceDB->hide();
+    }
 }
 //------------------------------------------------------------------------------
 
@@ -312,6 +324,14 @@ bool OpenOrCreate_Page::validatePage()
   DBNametoOpen_fake = new QLineEdit;
   bool Ok;
   int i = field("DBIndextoOpen").toInt();
+  if (!openDBCheckBox->isChecked() && !createDBCheckBox->isChecked())
+    {
+    QMessageBox msgBox;
+    msgBox.setText(tr("Please select one option").arg(NameDB));
+    msgBox.exec();
+    return false;
+    }
+
   if( ( i > -1 ) && ( i < m_ListDB.size() ) )
     {
     NameDB = m_ListDB[i];
@@ -323,35 +343,31 @@ bool OpenOrCreate_Page::validatePage()
 
   if (field("DBNametoCreate").toString().isEmpty() && NameDB=="Null")
     {
-    Ok = false;
+    QMessageBox msgBox;
+    msgBox.setText(tr("Please enter a name for your new DataBase").arg(NameDB));
+    msgBox.exec();
+    return false;
     }
-  else
-    {
-    if (NameDB=="Null")
+
+  if (NameDB=="Null")
       {
-      Ok = true;
+      return true;
       }
-    else
-      {
-      if ( !IsDatabaseOfGoFigureType(field("ServerName").toString().toStdString(),
+
+  if ( !IsDatabaseOfGoFigureType(field("ServerName").toString().toStdString(),
             field("User").toString().toStdString(),
             field("Password").toString().toStdString(),
             NameDB.toStdString() ) )
-        {
-        QMessageBox msgBox;
-        msgBox.setText(tr("The Database %1 is not a Gofigure Database").arg(NameDB));
-        msgBox.exec();
-        Ok = false;
-        }
-      else
-        {
-        registerField( "DBNametoOpen", DBNametoOpen_fake );
-        setField( "DBNametoOpen",NameDB );
-        Ok = true;
-        }
-      }
+    {
+    QMessageBox msgBox;
+    msgBox.setText(tr("The Database %1 is not a Gofigure Database").arg(NameDB));
+    msgBox.exec();
+    return false;
     }
- return Ok;
+
+  registerField( "DBNametoOpen", DBNametoOpen_fake );
+  setField( "DBNametoOpen",NameDB );
+  return true;
 }
 //------------------------------------------------------------------------------
 
