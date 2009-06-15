@@ -322,7 +322,7 @@ bool OpenOrCreate_Page::validatePage()
 {
   QString NameDB;
   DBNametoOpen_fake = new QLineEdit;
-  bool Ok;
+
   int i = field("DBIndextoOpen").toInt();
   if (!openDBCheckBox->isChecked() && !createDBCheckBox->isChecked())
     {
@@ -545,6 +545,25 @@ void Create_ExperimentPage::initializePage()
       }
     }
 
+  field( "Name").clear();
+  field( "Description").clear();
+  field( "TimeInterval").clear();
+  field( "TileHeight").clear();
+  field( "TileWidth").clear();
+  field( "PixelDepth").clear();
+  field( "PixelHeight").clear();
+  field( "PixelWidth").clear();
+  field( "ColorDepth").clear();
+  field( "nTimePoints").clear();
+  field( "nYTiles").clear();
+  field( "nXTiles").clear();
+  field( "nSlices").clear();
+  field( "nRows").clear();
+  field( "nColumns").clear();
+  field( "FilePattern").clear();
+  field("OpenOrCreateExp").clear();
+  field("ExpID").clear();
+
 }
 //------------------------------------------------------------------------------
 
@@ -592,6 +611,7 @@ void Create_ExperimentPage::EnterInfoExp()
   FilePattern ->setEnabled(true);
 
   setField("OpenOrCreateExp","Create");
+  setFinalPage(false);
  }
 //------------------------------------------------------------------------------
 
@@ -739,14 +759,12 @@ std::vector<std::string> myvect =
   if (!List.empty())
     {
     std::cout<<"last page"<<std::endl;
-    isFinalPage();
     setFinalPage(true);
-    //QWizard::NextButton->setEnabled(false);
-     }
+    }
   else
-     {
-     setFinalPage(false);
-     }
+    {
+    setFinalPage(false);
+    }
 }
 //------------------------------------------------------------------------------
 
