@@ -27,6 +27,16 @@ FOREACH( var ${EXAMPLES_QT_NOT_REQUIRED} )
 
 ENDFOREACH( var )
 
+ADD_TEST( vtkPolyDataMySQLTextWriterTEST1 
+  ${EXECUTABLE_OUTPUT_PATH}/vtkPolyDataMySQLTextWriter 
+  ${TESTING_DATA_PATH}/contour.vtk
+)
+
+ADD_TEST( vtkPolyDataMySQLTextWriterTEST2
+  ${EXECUTABLE_OUTPUT_PATH}/vtkPolyDataMySQLTextWriter 
+  ${TESTING_DATA_PATH}/sphere.vtk
+)
+
 IF( QT4_FOUND AND QT_VERSION_MINOR GREATER 4 )
   SET( EXAMPLES_QT_REQUIRED
     lsmColorVizu

@@ -50,9 +50,15 @@ SET(EXECUTABLE_OUTPUT_PATH
  ${GOFIGURE2_BINARY_DIR}/bin
  CACHE PATH "Single output directory for building all executables."
 )
+
 SET(LIBRARY_OUTPUT_PATH
  ${GOFIGURE2_BINARY_DIR}/lib
  CACHE PATH "Single output directory for building all libraries."
+)
+
+FIND_FILE( TESTING_DATA_PATH
+  contour.vtk
+  ${GOFIGURE2_SOURCE_DIR}/Testing/Data
 )
 
 #---------------------------------------------------------------------------
