@@ -17,7 +17,7 @@ int main( int argc, char** argv )
   reader->SetFileName( argv[1] );
   reader->Update();
 
-  vtkPolyDataMYSQLTextWriter* convert = vtkPolyDataMYSQLTextWriter::New();
+  vtkPolyDataMySQLTextWriter* convert = vtkPolyDataMySQLTextWriter::New();
   std::cout <<convert->GetMySQLText( reader->GetOutput() ) <<std::endl;
 
   convert->Delete();

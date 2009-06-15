@@ -68,6 +68,9 @@
 #include <vtkMath.h>
 #include <qsettings.h>
 
+#include "vtkPolyDataMySQLTextWriter.h"
+#include "GoDBFigureRow.h"
+
 QImagePageViewTracer::QImagePageViewTracer( QWidget* parent ) : QWidget( parent )
 {
   IsFullScreen = 0;
@@ -1193,14 +1196,38 @@ void QImagePageViewTracer::ValidateContour(
           myfile.open( ctrlpt_filename.toAscii().constData() );
           myfile <<contour_rep->GetClosedLoop() <<std::endl;
 
-//           GoDBFigureRow row;
-//           row.meshID = CellId;
-//           row.points = contour;
+          // *** Save in database ***
+          vtkPolyDataMySQLTextWriter* db_convert = vtkPolyDataMySQLTextWriter::New();
+          GoDBFigureRow row;
+          row.meshID = CellId;
+          row.points = db_convert->GetMySQLText( contour );
+
+          double pos[3], prev[3];
+          contour->GetPoint( 0, prev );
+          double perimeter = 0;
+          double center[3] = {0, 0, 0};
+
+          for( int ii = 1; ii < contour->GetNumberOfPoints(); ii++ )
+            {
+            contour->GetPoint( ii, pos );
+            perimeter += sqrt( vtkMath::Distance2BetweenPoints( prev, pos ) );
+
+            for( int dim = 0; dim < 3; dim++ )
+              {
+              center[dim] += pos[dim];
+              prev[dim] = pos[dim];
+              }
+            }
+          row.perimeter = static_cast< int >( perimeter );
+          row.xCenter = static_cast< int >( center[0] / contour->GetNumberOfPoints() );
+          row.yCenter = static_cast< int >( center[1] / contour->GetNumberOfPoints() );
+
+
+          // ************************
 
           int NbOfNodes = contour_rep->GetNumberOfNodes();
 
           myfile <<NbOfNodes <<std::endl;
-          double pos[3];
 
           for( int ii = 0; ii < NbOfNodes; ii++ )
             {
@@ -1217,6 +1244,7 @@ void QImagePageViewTracer::ValidateContour(
           {
           this->Pool->GetItem( j )->AddDataSet( contour_copy, contour_property, true );
           }
+        this->View3D->AddDataSet( contour_copy, contour_property, false );
         contour_copy->Delete();
         //         this->Pool->GetItem( i )->GetContourWidget()->Initialize( 0 );
         }

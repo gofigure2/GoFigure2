@@ -45,23 +45,23 @@
 
 #include <sstream>
 
-vtkCxxRevisionMacro(vtkPolyDataMYSQLTextReader, "$Revision$");
-vtkStandardNewMacro(vtkPolyDataMYSQLTextReader);
+vtkCxxRevisionMacro(vtkPolyDataMySQLTextReader, "$Revision$");
+vtkStandardNewMacro(vtkPolyDataMySQLTextReader);
 
 
-vtkPolyDataMYSQLTextReader::vtkPolyDataMYSQLTextReader() :
+vtkPolyDataMySQLTextReader::vtkPolyDataMySQLTextReader() :
   m_Text(""), IsContour( true )
 {}
 
-vtkPolyDataMYSQLTextReader::~vtkPolyDataMYSQLTextReader()
+vtkPolyDataMySQLTextReader::~vtkPolyDataMySQLTextReader()
 {}
 
-void vtkPolyDataMYSQLTextReader::SetIsContour( const bool& iContour )
+void vtkPolyDataMySQLTextReader::SetIsContour( const bool& iContour )
 {
   IsContour = iContour;
 }
 
-vtkPolyData* vtkPolyDataMYSQLTextReader::GetPolyData( const std::string& iString )
+vtkPolyData* vtkPolyDataMySQLTextReader::GetPolyData( const std::string& iString )
 {
   m_Text = iString;
   if( IsContour )
@@ -75,7 +75,7 @@ vtkPolyData* vtkPolyDataMYSQLTextReader::GetPolyData( const std::string& iString
 }
 
 
-vtkPolyData* vtkPolyDataMYSQLTextReader::GetContour( )
+vtkPolyData* vtkPolyDataMySQLTextReader::GetContour( )
 {
   vtkPolyData* oContour = vtkPolyData::New();
   vtkPoints* points = vtkPoints::New();
@@ -113,7 +113,7 @@ vtkPolyData* vtkPolyDataMYSQLTextReader::GetContour( )
   return oContour;
 }
 
-vtkPolyData* vtkPolyDataMYSQLTextReader::GetMesh( )
+vtkPolyData* vtkPolyDataMySQLTextReader::GetMesh( )
 {
   vtkPolyData* oMesh = vtkPolyData::New();
   vtkPoints* points = vtkPoints::New();

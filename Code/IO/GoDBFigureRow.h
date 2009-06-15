@@ -40,6 +40,8 @@
 #ifndef __GoDBFigureRow_h
 #define __GoDBFigureRow_h
 
+#include <string>
+
 class GoDBFigureRow
 {
 public:

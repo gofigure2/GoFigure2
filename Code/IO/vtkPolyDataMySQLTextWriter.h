@@ -48,18 +48,18 @@
 #include "vtkMath.h"
 #include "vtkIdList.h"
 
-class vtkPolyDataMYSQLTextWriter : public vtkObject
+class vtkPolyDataMySQLTextWriter : public vtkObject
 {
 public:
-  static vtkPolyDataMYSQLTextWriter* New();
-  vtkTypeRevisionMacro( vtkPolyDataMYSQLTextWriter, vtkObject );
+  static vtkPolyDataMySQLTextWriter* New();
+  vtkTypeRevisionMacro( vtkPolyDataMySQLTextWriter, vtkObject );
 
   std::string GetMySQLText( vtkPolyData* iPolyData );
   bool GetIsContour() const {return IsContour;}
 
 protected:
-  vtkPolyDataMYSQLTextWriter();
-  ~vtkPolyDataMYSQLTextWriter();
+  vtkPolyDataMySQLTextWriter();
+  ~vtkPolyDataMySQLTextWriter();
 
   vtkPolyData* m_PolyData;
   bool         IsContour;
@@ -71,7 +71,7 @@ protected:
   std::string MeshProcessing();
 
 private:
-  vtkPolyDataMYSQLTextWriter( const vtkPolyDataMYSQLTextWriter& );
-  void operator = ( const vtkPolyDataMYSQLTextWriter& );
+  vtkPolyDataMySQLTextWriter( const vtkPolyDataMySQLTextWriter& );
+  void operator = ( const vtkPolyDataMySQLTextWriter& );
 };
 #endif

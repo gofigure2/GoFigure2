@@ -188,6 +188,8 @@ QGoMainWindow::~QGoMainWindow()
     m_PageView.pop_back();
     }
   delete m_LUTDialog;
+//   delete m_Wizard;
+//   delete m_DBTables;
 }
 
 // *************************************************************************

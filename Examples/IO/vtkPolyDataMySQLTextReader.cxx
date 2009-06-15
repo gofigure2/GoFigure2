@@ -22,12 +22,12 @@ int main( int argc, char** argv )
   vtk_reader->SetFileName( argv[1] );
   vtk_reader->Update();
 
-  vtkPolyDataMYSQLTextWriter* convert_writer =
-    vtkPolyDataMYSQLTextWriter::New();
+  vtkPolyDataMySQLTextWriter* convert_writer =
+    vtkPolyDataMySQLTextWriter::New();
   std::string polydata_string = convert_writer->GetMySQLText( vtk_reader->GetOutput() );
 
-  vtkPolyDataMYSQLTextReader* convert_reader =
-    vtkPolyDataMYSQLTextReader::New();
+  vtkPolyDataMySQLTextReader* convert_reader =
+    vtkPolyDataMySQLTextReader::New();
   convert_reader->SetIsContour( convert_writer->GetIsContour() );
   vtkPolyData* output = convert_reader->GetPolyData( polydata_string );
 

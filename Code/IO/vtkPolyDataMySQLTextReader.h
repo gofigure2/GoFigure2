@@ -46,18 +46,18 @@
 
 #include <string>
 
-class vtkPolyDataMYSQLTextReader : public vtkObject
+class vtkPolyDataMySQLTextReader : public vtkObject
 {
 public:
-  static vtkPolyDataMYSQLTextReader* New();
-  vtkTypeRevisionMacro( vtkPolyDataMYSQLTextReader, vtkObject );
+  static vtkPolyDataMySQLTextReader* New();
+  vtkTypeRevisionMacro( vtkPolyDataMySQLTextReader, vtkObject );
 
   vtkPolyData* GetPolyData( const std::string& iString );
   void SetIsContour( const bool& );
 
 protected:
-  vtkPolyDataMYSQLTextReader();
-  ~vtkPolyDataMYSQLTextReader();
+  vtkPolyDataMySQLTextReader();
+  ~vtkPolyDataMySQLTextReader();
 
   std::string m_Text;
   bool        IsContour;
@@ -66,8 +66,8 @@ protected:
   vtkPolyData* GetMesh( );
 
 private:
-  vtkPolyDataMYSQLTextReader( const vtkPolyDataMYSQLTextReader& );
-  void operator = ( const vtkPolyDataMYSQLTextReader& );
+  vtkPolyDataMySQLTextReader( const vtkPolyDataMySQLTextReader& );
+  void operator = ( const vtkPolyDataMySQLTextReader& );
 };
 
 #endif

@@ -46,10 +46,10 @@
 #include "vtkMath.h"
 #include "vtkIdList.h"
 
-vtkCxxRevisionMacro(vtkPolyDataMYSQLTextWriter, "$Revision$");
-vtkStandardNewMacro(vtkPolyDataMYSQLTextWriter);
+vtkCxxRevisionMacro(vtkPolyDataMySQLTextWriter, "$Revision$");
+vtkStandardNewMacro(vtkPolyDataMySQLTextWriter);
 
-std::string vtkPolyDataMYSQLTextWriter::GetMySQLText( vtkPolyData* iPolyData )
+std::string vtkPolyDataMySQLTextWriter::GetMySQLText( vtkPolyData* iPolyData )
 {
   m_PolyData = iPolyData;
   IsContour = IsPlanarContour();
@@ -64,11 +64,11 @@ std::string vtkPolyDataMYSQLTextWriter::GetMySQLText( vtkPolyData* iPolyData )
     }
 }
 
-vtkPolyDataMYSQLTextWriter::vtkPolyDataMYSQLTextWriter() : m_PolyData(0),
+vtkPolyDataMySQLTextWriter::vtkPolyDataMySQLTextWriter() : m_PolyData(0),
   IsContour( true ) {}
-vtkPolyDataMYSQLTextWriter::~vtkPolyDataMYSQLTextWriter() {}
+vtkPolyDataMySQLTextWriter::~vtkPolyDataMySQLTextWriter() {}
 
-bool vtkPolyDataMYSQLTextWriter::IsPlanarContour()
+bool vtkPolyDataMySQLTextWriter::IsPlanarContour()
 {
   double bounds[6];
   m_PolyData->GetBounds( bounds );
@@ -83,7 +83,7 @@ bool vtkPolyDataMYSQLTextWriter::IsPlanarContour()
   return false;
 }
 
-std::string vtkPolyDataMYSQLTextWriter::ContourProcessing()
+std::string vtkPolyDataMySQLTextWriter::ContourProcessing()
 {
   vtkIdType N = m_PolyData->GetNumberOfPoints();
 
@@ -99,7 +99,7 @@ std::string vtkPolyDataMYSQLTextWriter::ContourProcessing()
   return oMyString.str();
 }
 
-std::string vtkPolyDataMYSQLTextWriter::MeshProcessing()
+std::string vtkPolyDataMySQLTextWriter::MeshProcessing()
 {
   vtkIdType N = m_PolyData->GetNumberOfPoints();
   double pt[3];
