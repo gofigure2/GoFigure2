@@ -92,6 +92,7 @@ QGoMainWindow::QGoMainWindow( )
   m_Wizard = new QGoWizardDB;
   m_Wizard->hide();
 
+  CreateSignalSlotsConnection();
   Fullscreenbuttons();
   readSettings();
 }
