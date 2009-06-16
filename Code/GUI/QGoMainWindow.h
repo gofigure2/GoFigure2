@@ -104,11 +104,11 @@ protected slots:
   void on_actionOpen_Mesh_activated( );
 
   // #ifdef VTK_USE_MYSQL
-  void on_actionCreate_DataBase_activated( ) { QGoCreateDBDialog dialog; }
+  //void on_actionCreate_DataBase_activated( ) { QGoCreateDBDialog dialog; }
   void on_actionUse_DataBase_activated();
   void openFilesfromDB();
-  void on_actionImport_Dataset_in_DataBase_activated( ) {};
-  void on_actionOpen_DataBase_activated( ) {};
+ // void on_actionImport_Dataset_in_DataBase_activated( ) {};
+  //void on_actionOpen_DataBase_activated( ) {};
   // #endif
 
   void on_actionClose_activated( );

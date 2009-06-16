@@ -59,7 +59,7 @@
      <x>0</x>
      <y>0</y>
      <width>1434</width>
-     <height>22</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -99,10 +99,7 @@
     <addaction name="separator"/>
     <addaction name="actionOpen_Mesh"/>
     <addaction name="separator"/>
-    <addaction name="actionCreate_DataBase"/>
     <addaction name="actionUse_DataBase"/>
-    <addaction name="actionImport_Dataset_in_DataBase"/>
-    <addaction name="actionOpen_DataBase"/>
     <addaction name="separator"/>
     <addaction name="actionSave_Single_File_As"/>
     <addaction name="actionSave_Multiple_Files_As"/>
@@ -286,8 +283,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>96</width>
-        <height>26</height>
+        <width>211</width>
+        <height>297</height>
        </rect>
       </property>
       <attribute name="label">
@@ -470,8 +467,8 @@ Radius</string>
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>96</width>
-        <height>26</height>
+        <width>211</width>
+        <height>297</height>
        </rect>
       </property>
       <attribute name="label">
@@ -637,7 +634,7 @@ Weight</string>
         <x>0</x>
         <y>0</y>
         <width>211</width>
-        <height>276</height>
+        <height>297</height>
        </rect>
       </property>
       <attribute name="label">
