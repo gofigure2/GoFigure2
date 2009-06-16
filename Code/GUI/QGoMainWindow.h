@@ -233,6 +233,8 @@ protected:
 
   void StartSeedWidget();
 
+  void CreateSignalSlotsConnection();
+
   /** \brief */
   itk::QtSignalAdaptor m_SignalAdaptor;
 

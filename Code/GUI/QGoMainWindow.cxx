@@ -84,85 +84,16 @@ QGoMainWindow::QGoMainWindow( )
 
   this->CentralImageTabWidget->setTabsClosable( true );
 
-
   m_LUTDialog = new QGoLUTDialog( this );
-  QObject::connect( this->m_LUTDialog, SIGNAL( accepted( ) ),
-    this, SLOT( ChangeLookupTable( ) ) );
 
   m_DBTables = new QGoPrintDatabase() ;
   m_DBTables->hide();
 
-  m_Wizard = 0;
+  m_Wizard = new QGoWizardDB;
+  m_Wizard->hide();
 
-
-  /*  QObject::connect( this->TracerPolygonBtn, SIGNAL( released( ) ),
-  this, SLOT( SetTracerToPolygonTracer() ) );
-  QObject::connect( this->TracerFreeLineBtn, SIGNAL( released( ) ),
-  this, SLOT( SetTracerToFreeLineTracer() ) );
-  QObject::connect( this->TracerTranslationBtn, SIGNAL( released() ),
-  this, SLOT( SetTracerToTranslateContourTracer() ) );
-  QObject::connect( this->TracerRotationBtn, SIGNAL( released() ),
-  this, SLOT( SetTracerToRotateContourTracer() ) );
-  QObject::connect( this->TracerScalingBtn, SIGNAL( released() ),
-  this, SLOT( SetTracerToScaleContourTracer() ) );*/
-  QObject::connect( this->ManualSegmentationOnRadioBtn,
-    SIGNAL( toggled(bool) ),
-    this,
-    SLOT( SetContourTracerOn(bool) ) );
-  QObject::connect( this->ManualSegmentationOffRadioBtn,
-    SIGNAL( toggled(bool) ),
-    this,
-    SLOT( SetContourTracerOff(bool) ) );
-
-  QObject::connect( this->SeedWidgetOnRadioBtn,
-    SIGNAL( toggled(bool) ),
-    this,
-    SLOT( SetSeedWidgetOn(bool) ) );
-  QObject::connect( this->SeedWidgetOffRadioBtn,
-    SIGNAL( toggled(bool) ),
-    this,
-    SLOT( SetSeedWidgetOff(bool) ) );
-
-  QObject::connect( this->IdContourColorBtn, SIGNAL( released( ) ),
-    this, SLOT( SetColorForGivenId( ) ) );
-  QObject::connect( this->TracerValidationBtn, SIGNAL( released( ) ),
-    this, SLOT( ValidateContourTracer() ) );
-  QObject::connect( this->TracerReinitializeBtn, SIGNAL( released() ),
-    this, SLOT( ReinitializeContourTracer() ) );
-  QObject::connect( this->TracerReinitializeIncrementBtn, SIGNAL( released() ),
-    this, SLOT( ReinitializeAndIncrementContourTracer() ) );
-
-  QObject::connect( this->OneClickBtnBox, SIGNAL( accepted() ),
-    this, SLOT( OneClickSegmentation( ) ) );
-
-  //QObject::connect( this->actionOpen, SIGNAL( activated( ) ),
-    //this, SLOT( showprogressloading() ) );
-  QObject::connect( this->CentralImageTabWidget,
-    SIGNAL( currentChanged( int ) ),
-    this, SLOT( UpdateToolBarViewButtons( int ) ) );
-  QObject::connect( this->CentralImageTabWidget,
-    SIGNAL( currentChanged( int ) ),
-    this, SLOT( UpdateTracerButtons( int ) ) );
-
-  QObject::connect(this->CentralImageTabWidget,
-    SIGNAL(tabCloseRequested(int)),
-    this, SLOT( on_actionClose_activated( ) ) );
   Fullscreenbuttons();
-
-  for( int i = 0; i < MaxRecentFiles; ++i )
-    {
-    recentSingleFileActions[i] = new QAction(this);
-    recentSingleFileActions[i]->setVisible(false);
-    QObject::connect(this->recentSingleFileActions[i], SIGNAL(triggered()),
-      this, SLOT(openRecentSingleFile()));
-
-    recentMultipleFileActions[i] = new QAction(this);
-    recentMultipleFileActions[i]->setVisible(false);
-    QObject::connect(this->recentMultipleFileActions[i], SIGNAL(triggered()),
-      this, SLOT(openRecentMultipleFile()));
-    }
-
- readSettings();
+  readSettings();
 }
 
 // *************************************************************************
@@ -190,8 +121,88 @@ QGoMainWindow::~QGoMainWindow()
     m_PageView.pop_back();
     }
   delete m_LUTDialog;
-//   delete m_Wizard;
-//   delete m_DBTables;
+  delete m_Wizard;
+  delete m_DBTables;
+}
+
+// *************************************************************************
+void QGoMainWindow::CreateSignalSlotsConnection()
+{
+    /*  QObject::connect( this->TracerPolygonBtn, SIGNAL( released( ) ),
+  this, SLOT( SetTracerToPolygonTracer() ) );
+  QObject::connect( this->TracerFreeLineBtn, SIGNAL( released( ) ),
+  this, SLOT( SetTracerToFreeLineTracer() ) );
+  QObject::connect( this->TracerTranslationBtn, SIGNAL( released() ),
+  this, SLOT( SetTracerToTranslateContourTracer() ) );
+  QObject::connect( this->TracerRotationBtn, SIGNAL( released() ),
+  this, SLOT( SetTracerToRotateContourTracer() ) );
+  QObject::connect( this->TracerScalingBtn, SIGNAL( released() ),
+  this, SLOT( SetTracerToScaleContourTracer() ) );*/
+  QObject::connect( this->ManualSegmentationOnRadioBtn,
+    SIGNAL( toggled(bool) ),
+    this,
+    SLOT( SetContourTracerOn(bool) ) );
+  QObject::connect( this->ManualSegmentationOffRadioBtn,
+    SIGNAL( toggled(bool) ),
+    this,
+    SLOT( SetContourTracerOff(bool) ) );
+
+  QObject::connect( this->SeedWidgetOnRadioBtn,
+    SIGNAL( toggled(bool) ),
+    this,
+    SLOT( SetSeedWidgetOn(bool) ) );
+  QObject::connect( this->SeedWidgetOffRadioBtn,
+    SIGNAL( toggled(bool) ),
+    this,
+    SLOT( SetSeedWidgetOff(bool) ) );
+
+  QObject::connect( this->m_LUTDialog, SIGNAL( accepted( ) ),
+    this, SLOT( ChangeLookupTable( ) ) );
+
+  QObject::connect( this->IdContourColorBtn, SIGNAL( released( ) ),
+    this, SLOT( SetColorForGivenId( ) ) );
+  QObject::connect( this->TracerValidationBtn, SIGNAL( released( ) ),
+    this, SLOT( ValidateContourTracer() ) );
+  QObject::connect( this->TracerReinitializeBtn, SIGNAL( released() ),
+    this, SLOT( ReinitializeContourTracer() ) );
+  QObject::connect( this->TracerReinitializeIncrementBtn, SIGNAL( released() ),
+    this, SLOT( ReinitializeAndIncrementContourTracer() ) );
+
+  QObject::connect( this->OneClickBtnBox, SIGNAL( accepted() ),
+    this, SLOT( OneClickSegmentation( ) ) );
+
+  //QObject::connect( this->actionOpen, SIGNAL( activated( ) ),
+    //this, SLOT( showprogressloading() ) );
+  QObject::connect( this->CentralImageTabWidget,
+    SIGNAL( currentChanged( int ) ),
+    this, SLOT( UpdateToolBarViewButtons( int ) ) );
+  QObject::connect( this->CentralImageTabWidget,
+    SIGNAL( currentChanged( int ) ),
+    this, SLOT( UpdateTracerButtons( int ) ) );
+
+  QObject::connect(this->CentralImageTabWidget,
+    SIGNAL(tabCloseRequested(int)),
+    this, SLOT( on_actionClose_activated( ) ) );
+
+  QObject::connect( m_Wizard, SIGNAL( accepted() ),
+    this, SLOT( openFilesfromDB() ) );
+
+  QObject::connect( &m_SignalAdaptor, SIGNAL(Signal()),
+    &(this->m_Bar), SLOT(hide()) );
+
+  for( int i = 0; i < MaxRecentFiles; ++i )
+    {
+    recentSingleFileActions[i] = new QAction(this);
+    recentSingleFileActions[i]->setVisible(false);
+    QObject::connect(this->recentSingleFileActions[i], SIGNAL(triggered()),
+      this, SLOT(openRecentSingleFile()));
+
+    recentMultipleFileActions[i] = new QAction(this);
+    recentMultipleFileActions[i]->setVisible(false);
+    QObject::connect(this->recentMultipleFileActions[i], SIGNAL(triggered()),
+      this, SLOT(openRecentMultipleFile()));
+    }
+
 }
 
 // *************************************************************************
@@ -228,10 +239,7 @@ void QGoMainWindow::on_actionOpen_Multiple_Files_activated( )
 //--------------------------------------------------------------------------------
 void QGoMainWindow::on_actionUse_DataBase_activated()
 {
-  m_Wizard = new QGoWizardDB;
   m_Wizard->show();
-  connect( m_Wizard, SIGNAL( accepted() ),
-  this, SLOT( openFilesfromDB() ) );
 }
 //--------------------------------------------------------------------------------
 
@@ -1261,9 +1269,6 @@ void QGoMainWindow::ShowProgressLoading( itk::Object * myFilter )
   m_Bar.Observe( myFilter );
 
   myFilter->AddObserver( itk::EndEvent(),  m_SignalAdaptor.GetCommand() );
-
-  QObject::connect( &m_SignalAdaptor, SIGNAL(Signal()),
-    &(this->m_Bar), SLOT(hide()) );
 }
 //--------------------------------------------------------------------------------
 
