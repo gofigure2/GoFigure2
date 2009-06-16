@@ -125,6 +125,10 @@ public:
   QMEGAVTKADDON2_EXPORT void GetBackgroundColor( double& r, double& g, double& b );
   QMEGAVTKADDON2_EXPORT double* GetBackgroundColor();
 
+  QMEGAVTKADDON2_EXPORT void SetDatabaseRelatedVariables( const QString& iServer,
+    const QString& iLogin, const QString& iPassword, const QString& iDatabaseName,
+    const int& iExperimentID, const QString& iExperimentName );
+
 
   template< typename TContourContainer,
             typename TPropertyContainer >
@@ -240,6 +244,13 @@ protected:
   std::vector< vtkSeedWidget* >                   SeedWidget;
 
   QString Tag;
+
+  QString m_DBServer;
+  QString m_DBLogin;
+  QString m_DBPassword;
+  QString m_DBName;
+  int     m_DBExperimentID;
+  QString m_DBExperimentName;
 
 #ifdef MegaVTK_USE_ITK
   /**

@@ -941,6 +941,9 @@ void QGoMainWindow::ValidateContourTracerHelper( T* PageView )
     SetColorForGivenId( false );
     }
   //DATABASE
+  PageView->SetDatabaseRelatedVariables( m_Wizard->Server(), m_Wizard->login(),
+    m_Wizard->Password(), m_Wizard->NameDB(), m_Wizard->ExpID(),
+    m_Wizard->ExpName() );
   PageView->ValidateContour(
     cell_id,
     m_IdColorMap[ cell_id ],

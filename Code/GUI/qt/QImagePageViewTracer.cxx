@@ -70,6 +70,7 @@
 
 #include "vtkPolyDataMySQLTextWriter.h"
 #include "GoDBFigureRow.h"
+#include "GoDBRecordSet.h"
 
 QImagePageViewTracer::QImagePageViewTracer( QWidget* parent ) : QWidget( parent )
 {
@@ -83,6 +84,8 @@ QImagePageViewTracer::QImagePageViewTracer( QWidget* parent ) : QWidget( parent 
 
   Pool = vtkViewImage2DWithContourWidgetCollection::New();
   View3D = vtkViewImage3D::New();
+
+  m_DBExperimentID = -1;
 
   VtkEventQtConnector = vtkEventQtSlotConnect::New();
 
@@ -1197,38 +1200,58 @@ void QImagePageViewTracer::ValidateContour(
           myfile <<contour_rep->GetClosedLoop() <<std::endl;
 
           // *** Save in database ***
-          vtkPolyDataMySQLTextWriter* db_convert = vtkPolyDataMySQLTextWriter::New();
-          GoDBFigureRow row;
-          row.meshID = CellId;
-          row.points = db_convert->GetMySQLText( contour );
+          bool database_info = ( m_DBExperimentID == -1 ) && m_DBLogin.isNull() &&
+            m_DBExperimentName.isNull() && m_DBName.isNull() &&
+            m_DBServer.isNull() && m_DBPassword.isNull();
 
-          double pos[3], prev[3];
-          contour->GetPoint( 0, prev );
-          double perimeter = 0;
-          double center[3] = {0, 0, 0};
-
-          for( int ii = 1; ii < contour->GetNumberOfPoints(); ii++ )
+          if( !database_info )
             {
-            contour->GetPoint( ii, pos );
-            perimeter += sqrt( vtkMath::Distance2BetweenPoints( prev, pos ) );
+            vtkPolyDataMySQLTextWriter* db_convert = vtkPolyDataMySQLTextWriter::New();
+            GoDBFigureRow row;
+            row.meshID = CellId;
+            row.points = db_convert->GetMySQLText( contour );
+            db_convert->Delete();
 
-            for( int dim = 0; dim < 3; dim++ )
+            double pos[3], prev[3];
+            contour->GetPoint( 0, prev );
+            double perimeter = 0;
+            double center[3] = {0, 0, 0};
+
+            for( int ii = 1; ii < contour->GetNumberOfPoints(); ii++ )
               {
-              center[dim] += pos[dim];
-              prev[dim] = pos[dim];
-              }
-            }
-          row.perimeter = static_cast< int >( perimeter );
-          row.xCenter = static_cast< int >( center[0] / contour->GetNumberOfPoints() );
-          row.yCenter = static_cast< int >( center[1] / contour->GetNumberOfPoints() );
+              contour->GetPoint( ii, pos );
+              perimeter += sqrt( vtkMath::Distance2BetweenPoints( prev, pos ) );
 
+              for( int dim = 0; dim < 3; dim++ )
+                {
+                center[dim] += pos[dim];
+                prev[dim] = pos[dim];
+                }
+              }
+            row.perimeter = static_cast< int >( perimeter );
+            row.xCenter = static_cast< int >( center[0] / contour->GetNumberOfPoints() );
+            row.yCenter = static_cast< int >( center[1] / contour->GetNumberOfPoints() );
+
+            typedef GoDBRecordSet< GoDBFigureRow >   SetType;
+            SetType* mySet = new SetType;
+            mySet->SetServerName( m_DBServer.toStdString() );
+            mySet->SetDataBaseName( m_DBName.toStdString() );
+            mySet->SetTableName( "figure" );
+            mySet->SetUser( m_DBLogin.toStdString() );
+            mySet->SetPassword( m_DBPassword.toStdString() );
+            mySet->PopulateFromDB();
+            mySet->AddObject( row );
+            mySet->SaveInDB();
+
+            delete mySet;
+            }
 
           // ************************
 
           int NbOfNodes = contour_rep->GetNumberOfNodes();
 
           myfile <<NbOfNodes <<std::endl;
-
+          double pos[3];
           for( int ii = 0; ii < NbOfNodes; ii++ )
             {
             contour_rep->GetNthNodeWorldPosition( ii, pos );
@@ -1305,4 +1328,17 @@ void QImagePageViewTracer::SaveStateSplitters()
   settings.setValue("VSplitterSizes", VSplitter->saveState());
   settings.setValue("HtSplitterSizes", HtSplitter->saveState());
   settings.setValue("HbSplitterSizes", HbSplitter->saveState());
+}
+
+
+void QImagePageViewTracer::SetDatabaseRelatedVariables( const QString& iServer,
+  const QString& iLogin, const QString& iPassword, const QString& iDatabaseName,
+  const int& iExperimentID, const QString& iExperimentName )
+{
+  m_DBServer = iServer;
+  m_DBLogin = iLogin;
+  m_DBPassword = iPassword;
+  m_DBName = iDatabaseName;
+  m_DBExperimentID = iExperimentID;
+  m_DBExperimentName = iExperimentName;
 }

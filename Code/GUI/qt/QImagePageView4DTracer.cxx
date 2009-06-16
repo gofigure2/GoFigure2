@@ -376,3 +376,11 @@ void QImagePageView4DTracer::SwitchColorMode( )
   this->ColorVizu = !this->ColorVizu;
   this->SetView( this->Slider1->value() );
 }
+
+void QImagePageView4DTracer::SetDatabaseRelatedVariables( const QString& iServer,
+  const QString& iLogin, const QString& iPassword, const QString& iDatabaseName,
+  const int& iExperimentID, const QString& iExperimentName )
+{
+  this->Whatever->SetDatabaseRelatedVariables( iServer, iLogin, iPassword,
+    iDatabaseName, iExperimentID, iExperimentName );
+}

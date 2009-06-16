@@ -109,6 +109,10 @@ public:
   QMEGAVTKADDON2_EXPORT void SetSerieTypeToMegaCapture( )
     { this->SetSerieType( 1 ); }
 
+  QMEGAVTKADDON2_EXPORT void SetDatabaseRelatedVariables( const QString& iServer,
+    const QString& iLogin, const QString& iPassword, const QString& iDatabaseName,
+    const int& iExperimentID, const QString& iExperimentName );
+
 public slots:
   QMEGAVTKADDON2_EXPORT void SetView( const int& value );
   QMEGAVTKADDON2_EXPORT void RunMovie();
