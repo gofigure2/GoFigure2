@@ -1,1 +1,3 @@
-SUBDIRS( MegaVTK )
+SUBDIRS( itkQt
+  MegaVTK 
+)

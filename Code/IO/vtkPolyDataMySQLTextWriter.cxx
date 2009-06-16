@@ -125,10 +125,11 @@ std::string vtkPolyDataMySQLTextWriter::MeshProcessing()
     NbOfPointsInCell = cell_points->GetNumberOfIds();
     oMyString <<NbOfPointsInCell <<" ";
 
-    for( vtkIdType k = 0; k < NbOfPointsInCell; k++ )
+    for( vtkIdType k = 0; k < NbOfPointsInCell - 1; k++ )
       {
       oMyString <<cell_points->GetId( k ) <<" ";
       }
+    oMyString <<cell_points->GetId( NbOfPointsInCell - 1 );
     }
 
   cell_points->Delete();
