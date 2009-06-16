@@ -89,13 +89,14 @@ std::string vtkPolyDataMySQLTextWriter::ContourProcessing()
 
   double pt[3];
   std::stringstream oMyString;
-  oMyString <<N <<" ";
+  oMyString <<"\""<<N <<" ";
 
   for( vtkIdType i = 0; i < N; i++ )
     {
     m_PolyData->GetPoint( i, pt );
     oMyString <<pt[0] <<" " <<pt[1] <<" " <<pt[2] <<" ";
     }
+  oMyString <<"\"";
   return oMyString.str();
 }
 
@@ -125,11 +126,10 @@ std::string vtkPolyDataMySQLTextWriter::MeshProcessing()
     NbOfPointsInCell = cell_points->GetNumberOfIds();
     oMyString <<NbOfPointsInCell <<" ";
 
-    for( vtkIdType k = 0; k < NbOfPointsInCell - 1; k++ )
+    for( vtkIdType k = 0; k < NbOfPointsInCell; k++ )
       {
       oMyString <<cell_points->GetId( k ) <<" ";
       }
-    oMyString <<cell_points->GetId( NbOfPointsInCell - 1 );
     }
 
   cell_points->Delete();

@@ -1209,6 +1209,7 @@ void QImagePageViewTracer::ValidateContour(
             vtkPolyDataMySQLTextWriter* db_convert = vtkPolyDataMySQLTextWriter::New();
             GoDBFigureRow row;
             row.meshID = CellId;
+            row.experimentID = m_DBExperimentID;
             row.points = db_convert->GetMySQLText( contour );
             db_convert->Delete();
 
