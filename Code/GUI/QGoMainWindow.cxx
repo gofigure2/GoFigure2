@@ -92,6 +92,8 @@ QGoMainWindow::QGoMainWindow( )
   m_DBTables = new QGoPrintDatabase() ;
   m_DBTables->hide();
 
+  m_Wizard = 0;
+
 
   /*  QObject::connect( this->TracerPolygonBtn, SIGNAL( released( ) ),
   this, SLOT( SetTracerToPolygonTracer() ) );
@@ -941,9 +943,12 @@ void QGoMainWindow::ValidateContourTracerHelper( T* PageView )
     SetColorForGivenId( false );
     }
   //DATABASE
-  PageView->SetDatabaseRelatedVariables( m_Wizard->Server(), m_Wizard->login(),
-    m_Wizard->Password(), m_Wizard->NameDB(), m_Wizard->ExpID(),
-    m_Wizard->ExpName() );
+  if( m_Wizard )
+    {
+    PageView->SetDatabaseRelatedVariables( m_Wizard->Server(), m_Wizard->login(),
+      m_Wizard->Password(), m_Wizard->NameDB(), m_Wizard->ExpID(),
+      m_Wizard->ExpName() );
+    }
   PageView->ValidateContour(
     cell_id,
     m_IdColorMap[ cell_id ],

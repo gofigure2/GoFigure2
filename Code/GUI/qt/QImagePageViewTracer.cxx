@@ -1144,7 +1144,7 @@ void QImagePageViewTracer::ValidateContour(
   vtkProperty* contour_property = vtkProperty::New();
   contour_property->SetRepresentationToWireframe();
   contour_property->SetColor( rgb );
-  contour_property->SetLineWidth( 3. );
+//   contour_property->SetLineWidth( 3. );
 
   CellId = iId;
 
