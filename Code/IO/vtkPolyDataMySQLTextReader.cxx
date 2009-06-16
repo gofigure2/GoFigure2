@@ -83,7 +83,8 @@ vtkPolyData* vtkPolyDataMySQLTextReader::GetContour( )
   std::stringstream str( m_Text );
 
   vtkIdType N;
-  str >>N;
+  char quote;
+  str >>quote >>N;
   points->SetNumberOfPoints( N );
 
   double pt[3];
@@ -121,7 +122,8 @@ vtkPolyData* vtkPolyDataMySQLTextReader::GetMesh( )
   std::stringstream str( m_Text );
 
   vtkIdType N;
-  str >>N;
+  char quote;
+  str >>quote >>N;
   points->SetNumberOfPoints( N );
 
   double pt[3];
