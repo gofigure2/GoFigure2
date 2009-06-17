@@ -92,23 +92,46 @@ public:
     { this->IsSerie = true; }
   QMEGAVTKADDON2_EXPORT void SetSerieType( const int& value )
     {
-    if( value == 0 )
+      switch( value )
       {
-      this->IsLsm = true;
-      this->IsMegaCapture = false;
+      case 0:
+        {
+        this->IsLsm = true;
+        this->IsMegaCapture = false;
+        this->IsFileListComputed = false;
+        break;
+        }
+      case 1:
+        {
+        this->IsLsm = false;
+        this->IsMegaCapture = true;
+        this->IsFileListComputed = false;
+        break;
+        }
+      case 2:
+        {
+        this->IsLsm = false;
+        this->IsMegaCapture = true;
+        this->IsFileListComputed = true;
+        break;
+        }
+      default:
+        {
+        std::cout<<"wrong serietype"<<std::endl;
+        break;
+        }
       }
-    else
-      {
-      this->IsLsm = false;
-      this->IsMegaCapture = true;
-      }
-    this->IsFileListComputed = false;
     }
   QMEGAVTKADDON2_EXPORT void SetSerieTypeToLsm( )
     { this->SetSerieType( 0 ); }
   QMEGAVTKADDON2_EXPORT void SetSerieTypeToMegaCapture( )
     { this->SetSerieType( 1 ); }
-
+  QMEGAVTKADDON2_EXPORT void SetSerieTypeToDataBase(FileListType FileListFromDB)
+      { this->SetSerieType( 2 );
+        this->FileList = FileListFromDB;
+      }
+  QMEGAVTKADDON2_EXPORT void DisplayFromDB()
+      { this->SetView( 0 );}
   QMEGAVTKADDON2_EXPORT void SetDatabaseRelatedVariables( const QString& iServer,
     const QString& iLogin, const QString& iPassword, const QString& iDatabaseName,
     const int& iExperimentID, const QString& iExperimentName );
@@ -175,7 +198,7 @@ public slots:
     { return this->Whatever->GetAllSeeds(); }
   QMEGAVTKADDON2_EXPORT void ClearAllSeeds()
     { this->Whatever->ClearAllSeeds(); }
-  QMEGAVTKADDON2_EXPORT void ReadMultiFileFromDB(FileListType FileListFromDB,const int& TimePoint);
+
 
 protected:
   QWidget*      LayOutWidget1;

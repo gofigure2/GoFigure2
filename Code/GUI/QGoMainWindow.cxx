@@ -247,30 +247,14 @@ void QGoMainWindow::on_actionUse_DataBase_activated()
 // *************************************************************************
 void QGoMainWindow::openFilesfromDB()
 {
-  std::cout<<"signal worked"<<std::endl;
-  FileListType ListFilenames = m_Wizard->ListFilenames();
 
-  if (!ListFilenames.empty())
-    {
-    m_PageView.push_back( new QImagePageView4DTracer );
-    QImagePageView4DTracer* myPageView;
-    myPageView = static_cast< QImagePageView4DTracer*>( m_PageView.last() );
-    /*if( IsSerie )
-      {
-      myPageView->SetFileTypeToSerie( );
-      if( Type == 0 ) myPageView->SetSerieTypeToLsm( );
-      if( Type == 1 ) myPageView->SetSerieTypeToMegaCapture( );
-      }*/
-    myPageView->ReadMultiFileFromDB (ListFilenames,0);
-
-    int idx = this->CentralImageTabWidget->addTab( m_PageView.last(),"" );
-    this->CentralImageTabWidget->setCurrentIndex( idx );
+    OpenAndDisplay("",true,2);
 
     m_DBTables->Fill_Database(m_Wizard->Server(),m_Wizard->login(),
     m_Wizard->Password(), m_Wizard->NameDB(),
     m_Wizard->ExpID(), m_Wizard->ExpName());
     m_DBTables->show();
-    }
+
 }
 // *************************************************************************
 void QGoMainWindow::on_actionOpen_Mesh_activated( )
@@ -1087,8 +1071,20 @@ void QGoMainWindow::OpenAndDisplay(
     myPageView->SetFileTypeToSerie( );
     if( Type == 0 ) myPageView->SetSerieTypeToLsm( );
     if( Type == 1 ) myPageView->SetSerieTypeToMegaCapture( );
+    if( Type == 2)
+      {
+      FileListType ListFilenames = m_Wizard->ListFilenames();
+      if(!ListFilenames.empty())
+        {
+        myPageView->SetSerieTypeToDataBase(ListFilenames);
+        myPageView->DisplayFromDB();
+        }
+      }
     }
-  myPageView->SetFileName( iTag.toAscii( ).data( ) );
+  if(!Type == 2)
+    {
+    myPageView->SetFileName( iTag.toAscii( ).data( ) );
+    }
 
   int idx = this->CentralImageTabWidget->addTab( m_PageView.last(), iTag );
   this->CentralImageTabWidget->setCurrentIndex( idx );

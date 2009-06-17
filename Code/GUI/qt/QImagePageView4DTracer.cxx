@@ -201,7 +201,7 @@ ReadMultiFile( const int& TimePoint )
 //--------------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------------
-void QImagePageView4DTracer::ReadMultiFileFromDB (FileListType FileListFromDB,const int& TimePoint)
+/*void QImagePageView4DTracer::DisplayFromDB (FileListType FileListFromDB,const int& TimePoint)
 {
   this->FileList = FileListFromDB;
   this->IsFileListComputed = true;
@@ -209,7 +209,7 @@ void QImagePageView4DTracer::ReadMultiFileFromDB (FileListType FileListFromDB,co
   this->IsMegaCapture = true;
   this->SetView(TimePoint);
 
-}
+}*/
 //--------------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------------
