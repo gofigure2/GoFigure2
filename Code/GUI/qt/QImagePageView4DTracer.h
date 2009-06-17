@@ -175,6 +175,7 @@ public slots:
     { return this->Whatever->GetAllSeeds(); }
   QMEGAVTKADDON2_EXPORT void ClearAllSeeds()
     { this->Whatever->ClearAllSeeds(); }
+  QMEGAVTKADDON2_EXPORT void ReadMultiFileFromDB(FileListType FileListFromDB,const int& TimePoint);
 
 protected:
   QWidget*      LayOutWidget1;
@@ -184,7 +185,6 @@ protected:
   QPushButton*  Button2;
 
   void ReadMultiFile( const int& TimePoint );
-  void ReadMultiFileFromDB(FileListType FileListFromDB,const int& TimePoint);
   void ReadLSMFile( const int& TimePoint );
   virtual void resizeEvent( QResizeEvent* event );
 

@@ -252,10 +252,23 @@ void QGoMainWindow::openFilesfromDB()
 
   if (!ListFilenames.empty())
     {
-    //SetFileName(ListFilenames[1],true);
+    m_PageView.push_back( new QImagePageView4DTracer );
+    QImagePageView4DTracer* myPageView;
+    myPageView = static_cast< QImagePageView4DTracer*>( m_PageView.last() );
+    /*if( IsSerie )
+      {
+      myPageView->SetFileTypeToSerie( );
+      if( Type == 0 ) myPageView->SetSerieTypeToLsm( );
+      if( Type == 1 ) myPageView->SetSerieTypeToMegaCapture( );
+      }*/
+    myPageView->ReadMultiFileFromDB (ListFilenames,0);
+
+    int idx = this->CentralImageTabWidget->addTab( m_PageView.last(),"" );
+    this->CentralImageTabWidget->setCurrentIndex( idx );
+
     m_DBTables->Fill_Database(m_Wizard->Server(),m_Wizard->login(),
-      m_Wizard->Password(), m_Wizard->NameDB(),
-      m_Wizard->ExpID(), m_Wizard->ExpName());
+    m_Wizard->Password(), m_Wizard->NameDB(),
+    m_Wizard->ExpID(), m_Wizard->ExpName());
     m_DBTables->show();
     }
 }
