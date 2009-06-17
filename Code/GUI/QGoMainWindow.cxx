@@ -248,11 +248,11 @@ void QGoMainWindow::on_actionUse_DataBase_activated()
 void QGoMainWindow::openFilesfromDB()
 {
   std::cout<<"signal worked"<<std::endl;
-  QStringList ListFilenames = m_Wizard->ListFilenames();
+  FileListType ListFilenames = m_Wizard->ListFilenames();
 
-  if (!ListFilenames.isEmpty())
+  if (!ListFilenames.empty())
     {
-    SetFileName(ListFilenames[1],true);
+    //SetFileName(ListFilenames[1],true);
     m_DBTables->Fill_Database(m_Wizard->Server(),m_Wizard->login(),
       m_Wizard->Password(), m_Wizard->NameDB(),
       m_Wizard->ExpID(), m_Wizard->ExpName());

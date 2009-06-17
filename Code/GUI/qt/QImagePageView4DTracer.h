@@ -184,6 +184,7 @@ protected:
   QPushButton*  Button2;
 
   void ReadMultiFile( const int& TimePoint );
+  void ReadMultiFileFromDB(FileListType FileListFromDB,const int& TimePoint);
   void ReadLSMFile( const int& TimePoint );
   virtual void resizeEvent( QResizeEvent* event );
 

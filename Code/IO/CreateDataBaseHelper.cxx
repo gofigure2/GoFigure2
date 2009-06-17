@@ -337,7 +337,7 @@ bool DoesDataBaseExist(
   std::vector< std::string >::iterator end   = list.end();
   while( start != end )
     {
-    if( (*start) == myString ) 
+    if( (*start) == myString )
       {
       return true;
       }
@@ -359,7 +359,7 @@ bool DoesTableExist(
   std::vector< std::string >::iterator end   = list.end();
   while( start != end )
     {
-    if( (*start) == myString ) 
+    if( (*start) == myString )
       {
       return true;
       }
@@ -1058,7 +1058,7 @@ void CreateTrackFlavor(
   query->Delete();
 }
 
-std::vector<std::string> ListValuesfor1Row(
+std::vector<std::string> ListValuesForRow(
   std::string ServerName, std::string login,
   std::string Password, std::string DBName,
   std::string TableName, std::string field,
@@ -1169,7 +1169,7 @@ std::vector<std::string> ListImageIDforExpID(
 
 }
 
-std::vector<std::string> ListValuesfor1Column(
+std::vector<std::string> ListValuesForOneColumn(
   std::string ServerName, std::string login,
   std::string Password, std::string DBName,
   std::string TableName, std::string ColumnName,
@@ -1216,7 +1216,7 @@ std::vector<std::string> ListValuesfor1Column(
   std::cout<<"result of the query where ID=1, 2nd value "<<query->GetNumberOfFields()<<std::endl;
 
   while (query->NextRow())
-    {   
+    {
     for( int i = 0; i < query->GetNumberOfFields(); i++)
       {
       result.push_back( query->DataValue( i ).ToString() );

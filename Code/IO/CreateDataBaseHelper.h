@@ -59,7 +59,7 @@ std::vector<std::string> ListExpName(
   std::string ServerName, std::string login,
   std::string Password, std::string DBName);
 
-std::vector<std::string> ListValuesfor1Row(
+std::vector<std::string> ListValuesForRow(
   std::string ServerName, std::string login,
   std::string Password, std::string DBName,
   std::string TableName, std::string field,std::string ID);
@@ -68,7 +68,7 @@ std::vector<std::string> ListImageIDforExpID(
   std::string ServerName, std::string login,
   std::string Password, std::string DBName, std::string ID);
 
-std::vector<std::string> ListValuesfor1Column(
+std::vector<std::string> ListValuesForOneColumn(
   std::string ServerName, std::string login,
   std::string Password, std::string DBName,
   std::string TableName, std::string ColumnName,

@@ -201,6 +201,56 @@ ReadMultiFile( const int& TimePoint )
 //--------------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------------
+void QImagePageView4DTracer::ReadMultiFileFromDB (FileListType FileListFromDB,const int& TimePoint)
+{
+  if( this->Image )
+    {
+    this->Image->Delete();
+    }
+
+  itk::MultiFileReader* reader = new itk::MultiFileReader;
+  reader->SetInput( &(FileListFromDB) );
+    if( this->IsLsm )
+      {
+      reader->SetDimensionality( 3 );
+      reader->SetFileType( LSM );
+      reader->SetChannel( 0 );
+      }
+    if( this->IsMegaCapture )
+      {
+      reader->SetDimensionality( 2 );
+      reader->SetFileType( JPEG );
+      }
+    if( this->ColorVizu )
+      {
+      reader->SetMultiChannelImagesON();
+      }
+    else
+      {
+      reader->SetMultiChannelImagesOFF();
+      }
+    reader->SetTimePoint( TimePoint );
+    reader->Update();
+
+    this->Slider1->setMinimum( 0 );
+    this->NumberOfTimePoints = reader->GetNumberOfTimePoints();
+    if( this->NumberOfTimePoints > 1)
+      {
+      this->Slider1->setMaximum( this->NumberOfTimePoints );
+      }
+    else
+      {
+      this->LayOut1->removeWidget( this->Slider1 );
+      }
+
+    // disconnect the pipeline
+    this->Image = vtkImageData::New();
+    this->Image->ShallowCopy( reader->GetOutput() );
+    delete reader;
+}
+//--------------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------------
 void
 QImagePageView4DTracer::SetFileName(const char* name )
 {

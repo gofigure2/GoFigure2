@@ -16,6 +16,7 @@
 #include <QCheckBox>
 
 #include "MegaVTK2Configure.h"
+#include "GoFigureFileInfoHelper.h"
 
 
 template< class myT >
@@ -47,7 +48,7 @@ public:
   enum { Connect_Server, OpenOrCreateDB,Create_Experiment, Import};
 
   QMEGAVTKADDON2_EXPORT QGoWizardDB(QWidget *parent = 0);
-  QMEGAVTKADDON2_EXPORT QStringList ListFilenames();
+  QMEGAVTKADDON2_EXPORT FileListType ListFilenames();
   QMEGAVTKADDON2_EXPORT QString NameDB();
   QMEGAVTKADDON2_EXPORT int ExpID();
   QMEGAVTKADDON2_EXPORT QString ExpName();

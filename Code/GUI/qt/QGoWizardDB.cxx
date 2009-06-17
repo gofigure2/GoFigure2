@@ -56,24 +56,32 @@ QGoWizardDB::QGoWizardDB( QWidget *parent )
 
 //------------------------------------------------------------------------------
 
-QStringList QGoWizardDB::ListFilenames()
+FileListType QGoWizardDB::ListFilenames()
 {
-  QStringList ListFilenames;
-  std::vector<std::string> vectListFilenames = ListValuesfor1Column(
+  FileListType ListFilenames;
+  std::vector<std::string> vectListFilenames = ListValuesForRow(
   field("ServerName").toString().toStdString(),
         field("User").toString().toStdString(),
         field("Password").toString().toStdString(),
         field("NameDB").toString().toStdString(),"seriesgrid",
-        "filename","experimentID",field("ExpID").toString().toStdString());
+        "experimentID",field("ExpID").toString().toStdString());
 
   if (!vectListFilenames.empty())
      {
-     for(unsigned int i = 0; i < vectListFilenames.size(); ++i )
+     for(unsigned int i = 0; i < vectListFilenames.size();)
         {
-          ListFilenames.append( vectListFilenames[i].c_str( ) );
+          GoFigureFileInfoHelper tempInfo;
+          tempInfo.Filename = vectListFilenames[i+8];
+          tempInfo.TimePoint = atoi(vectListFilenames[i+4].c_str());
+          tempInfo.ZDepth = atoi(vectListFilenames[i+7].c_str());
+          tempInfo.CTile = atoi(vectListFilenames[i+3].c_str());
+          tempInfo.RTile = atoi(vectListFilenames[i+2].c_str());
+          tempInfo.YOffset = atoi(vectListFilenames[i+5].c_str());
+          tempInfo.XOffset = atoi(vectListFilenames[i+6].c_str());
+          ListFilenames.push_back( tempInfo );
+          i = i+9;
         }
      }
-
   return ListFilenames;
 }
 //------------------------------------------------------------------------------
@@ -687,7 +695,7 @@ int Create_ExperimentPage::nextId() const
       {
       std::vector<std::string> ListFinalPage;
       ListFinalPage.clear();
-      ListFinalPage = ListValuesfor1Column(
+      ListFinalPage = ListValuesForOneColumn(
       field("ServerName").toString().toStdString(),
       field("User").toString().toStdString(),
       field("Password").toString().toStdString(),
@@ -719,7 +727,7 @@ int Create_ExperimentPage::nextId() const
 void Create_ExperimentPage::PrintValuesExpName(QString ExpName)
 {
 std::vector<std::string> myvect =
-    ListValuesfor1Row(
+    ListValuesForRow(
         field("ServerName").toString().toStdString(),
         field("User").toString().toStdString(),
         field("Password").toString().toStdString(),
@@ -749,7 +757,7 @@ std::vector<std::string> myvect =
 
   std::vector<std::string> List;
   List.clear();
-  List = ListValuesfor1Column(
+  List = ListValuesForOneColumn(
   field("ServerName").toString().toStdString(),
   field("User").toString().toStdString(),
   field("Password").toString().toStdString(),
@@ -918,7 +926,7 @@ void Import_SerieGridPage::SelectSeriesGrid()
     );
 
   std::vector<std::string> myvect =
-    ListValuesfor1Row(
+    ListValuesForRow(
         field("ServerName").toString().toStdString(),
         field("User").toString().toStdString(),
         field("Password").toString().toStdString(),
