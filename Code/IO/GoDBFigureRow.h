@@ -126,43 +126,123 @@ public:
   bool SetFieldValueAsString( unsigned int FieldID, std::string ValueAsString )
     {
     switch( FieldID )
-	  {
-	  case 0:
+      {
+      case 0:
         {
         this->figureID = atoi( ValueAsString.c_str() );
         break;
-		}
-
-  int           imageID;
-  int           meshID;
-  std::string   points;
-  int           cellTypeID;
-  int           flavorID;
-  int           meanRed;
-  int           meanGreen;
-  int           meanBlue;
-  int           area;
-  int           perimeter;
-  int           AP;
-  int           score;
-  int           xCenter;
-  int           yCenter;
-  int           experimentID;
-  int           RCoord;
-  int           CCoord;
-  int           TCoord;
-  int           YCoord;
-  int           XCoord;
-  int           ZCoord;
-
-
-
-	  default:
-		{
-			return false;
-		}
-	  } 
-	return true;
+        }
+      case 1:
+        {
+        this->imageID = atoi( ValueAsString.c_str() );
+        break;
+        }
+      case 2:
+        {
+        this->meshID = atoi( ValueAsString.c_str() );
+        break;
+        }
+      case 3:
+        {
+        this->points = ValueAsString;
+        break;
+        }
+      case 4:
+        {
+        this->cellTypeID = atoi( ValueAsString.c_str() );
+        break;
+        }
+      case 5:
+        {
+        this->flavorID = atoi( ValueAsString.c_str() );
+        break;
+        }
+      case 6:
+        {
+        this->meanRed = atoi( ValueAsString.c_str() );
+        break;
+        }
+      case 7:
+        {
+        this->meanGreen = atoi( ValueAsString.c_str() );
+        break;
+        }
+      case 8:
+        {
+        this->meanBlue = atoi( ValueAsString.c_str() );
+        break;
+        }
+      case 9:
+        {
+        this->area = atoi( ValueAsString.c_str() );
+        break;
+        }
+      case 10:
+        {
+        this->perimeter = atoi( ValueAsString.c_str() );
+        break;
+        }
+      case 11:
+        {
+        this->AP = atoi( ValueAsString.c_str() );
+        break;
+        }
+      case 12:
+        {
+        this->score = atoi( ValueAsString.c_str() );
+        break;
+        }
+      case 13:
+        {
+        this->xCenter = atoi( ValueAsString.c_str() );
+        break;
+        }
+      case 14:
+        {
+        this->yCenter = atoi( ValueAsString.c_str() );
+        break;
+        }
+      case 15:
+        {
+        this->experimentID = atoi( ValueAsString.c_str() );
+        break;
+        }
+      case 16:
+        {
+        this->RCoord = atoi( ValueAsString.c_str() );
+        break;
+        }
+      case 17:
+        {
+        this->CCoord = atoi( ValueAsString.c_str() );
+        break;
+        }
+      case 18:
+        {
+        this->TCoord = atoi( ValueAsString.c_str() );
+        break;
+        }
+      case 19:
+        {
+        this->YCoord = atoi( ValueAsString.c_str() );
+        break;
+        }
+      case 20:
+        {
+        this->XCoord = atoi( ValueAsString.c_str() );
+        break;
+        }
+      case 21:
+        {
+        this->ZCoord = atoi( ValueAsString.c_str() );
+        break;
+        }
+      default:
+        {
+        return false;
+        }
+      }
+    return true;
     }
 
 };

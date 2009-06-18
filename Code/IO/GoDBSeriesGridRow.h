@@ -88,18 +88,58 @@ public:
 
     bool SetFieldValueAsString( unsigned int FieldID, std::string ValueAsString )
     {
-    switch( FieldID )
-	  {
-	  case 0:
+      switch( FieldID )
         {
-		break;
-		}
-	  default:
-		{
-			return false;
-		}
-	  } 
-	return true;
+case 0:
+          {
+          this->imageID = atoi( ValueAsString.c_str() );
+          break;
+          }
+        case 1:
+          {
+          this->experimentID = atoi( ValueAsString.c_str() );
+          break;
+          }
+        case 2:
+          {
+          this->RCoord = atoi( ValueAsString.c_str() );
+          break;
+          }
+        case 3:
+          {
+          this->CCoord = atoi( ValueAsString.c_str() );
+          break;
+          }
+        case 4:
+          {
+          this->TCoord = atoi( ValueAsString.c_str() );
+          break;
+          }
+        case 5:
+          {
+          this->YCoord = atoi( ValueAsString.c_str() );
+          break;
+          }
+        case 6:
+          {
+          this->XCoord = atoi( ValueAsString.c_str() );
+          break;
+          }
+        case 7:
+          {
+          this->ZCoord = atoi( ValueAsString.c_str() );
+          break;
+          }
+        case 8:
+          {
+          this->filename = ValueAsString;
+          }
+        default:
+          {
+          return false;
+          }
+        }
+      return true;
     }
 
 };

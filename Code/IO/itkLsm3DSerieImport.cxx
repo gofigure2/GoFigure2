@@ -211,7 +211,7 @@ Glob()
   fit->NumericSortOn();
   m_FileNameS = fit->GetFileNames();
 
-  // re parse the indexes and length without the escape caracters 
+  // re parse the indexes and length without the escape caracters
   for (sit = origFileName.begin(); sit < origFileName.end(); sit++)
     {
     // If the element is a number, find its starting index and length.
@@ -277,19 +277,19 @@ CreateOutput()
 
     } // end for each filename
 
-    m_FileNameS.clear();
-    std::sort( m_OutputFileList.begin(), m_OutputFileList.end() );
+  m_FileNameS.clear();
+  std::sort( m_OutputFileList.begin(), m_OutputFileList.end() );
 
-    FileListType::iterator myIt = m_OutputFileList.begin();
-    while( myIt != m_OutputFileList.end() )
-      {
-      itkDebugMacro(
+  FileListType::iterator myIt = m_OutputFileList.begin();
+  while( myIt != m_OutputFileList.end() )
+    {
+    itkDebugMacro(
         << (*myIt).Filename\
         << " " << (*myIt).Channel\
         << " " << (*myIt).TimePoint\
         << " " << (*myIt).ZDepth );
       myIt++;
-      }
+    }
 }
 
 Lsm3DSerieImport::

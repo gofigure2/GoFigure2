@@ -117,21 +117,21 @@ public:
       return;
       }
 
-	vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
+    vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
     DataBaseConnector->SetHostName(this->ServerName.c_str());
     DataBaseConnector->SetUser(this->User.c_str());
     DataBaseConnector->SetPassword(this->PassWord.c_str());
     DataBaseConnector->SetDatabaseName( this->DataBaseName.c_str() );
- 
+
     if (!DataBaseConnector->Open())
-      { 
+      {
       std::cerr << "Can not open DB"  << std::endl;
       DataBaseConnector->Delete();
       return;
       }
 
-	this->PopulateColumnNamesContainer();
-	std::stringstream queryString;
+    this->PopulateColumnNamesContainer();
+    std::stringstream queryString;
     queryString << "SELECT * FROM " << this->TableName << ";";
 
     vtkSQLQuery* query = DataBaseConnector->GetQueryInstance();
@@ -142,21 +142,23 @@ public:
       std::cerr << "Create query failed" << std::endl;
       }
     else
-	  {
-	  if( m_RowContainer.size() > 0 )
-	    {
-		m_RowContainer.clear();
-	    }
-	  while( query->NextRow() )
+      {
+      if( m_RowContainer.size() > 0 )
         {
-		OriginalObjectType object;
-		for( unsigned int colID = 0; colID < m_ColumnNamesContainer.size(); colID++ )
-		  {
-	      object.SetFieldValueAsString( colID, query->DataValue( 0 ).ToString() );
-		  }
+        m_RowContainer.clear();
+        }
+      while( query->NextRow() )
+        {
+        OriginalObjectType object;
+        for( unsigned int colID = 0; colID < m_ColumnNamesContainer.size(); colID++ )
+          {
+          object.SetFieldValueAsString( colID, query->DataValue( 0 ).ToString() );
+          }
         m_RowContainer.push_back( InternalObjectType( true, object ) );
         }
-	  }
+      }
+    DataBaseConnector->Delete();
+    query->Delete();
     }
 
   // save content to DB - ASYNCHRONOUS
@@ -261,7 +263,6 @@ bool
 GoDBRecordSet<TObject>::
 SaveEachRow( vtkSQLQuery *query )
 {
-
   // modified rows
   myIteratorType start = m_RowContainer.begin();
   myIteratorType end   = m_RowContainer.begin();
@@ -345,7 +346,7 @@ PopulateColumnNamesContainer()
 
   if( m_ColumnNamesContainer.size() > 0 )
     {
-	m_ColumnNamesContainer.clear();
+    m_ColumnNamesContainer.clear();
     }
 
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
