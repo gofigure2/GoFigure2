@@ -210,6 +210,30 @@ Glob()
   fit->SetSubMatch(1);
   fit->NumericSortOn();
   m_FileNameS = fit->GetFileNames();
+
+  // re parse the indexes and length without the escape caracters 
+  for (sit = origFileName.begin(); sit < origFileName.end(); sit++)
+    {
+    // If the element is a number, find its starting index and length.
+    if ((*sit) >= '0' && (*sit) <= '9')
+      {
+      sIndex = static_cast< int >( sit - origFileName.begin() );
+      m_numGroupStart.push_back( sIndex );
+
+      // Loop to one past the end of the group of numbers.
+      while ( sit != origFileName.end() && (*sit) >= '0' && (*sit) <= '9' )
+        {
+        ++sit;
+        }
+
+      m_numGroupLength.push_back( static_cast< int >(sit - origFileName.begin()) - sIndex );
+
+      if( sit == origFileName.end() )
+        {
+        break;
+        }
+      }
+    }
 }
 
 
@@ -239,7 +263,7 @@ CreateOutput()
         {
         std::string ValueAsString(
           origFileName,
-          (*numGroupStartItr)-(1-NumGroupCounter),
+          (*numGroupStartItr),
           (*numGroupLengthItr) );
         tempInfo.TimePoint = atof( ValueAsString.c_str() );
         m_OutputFileList.push_back( tempInfo );
@@ -260,7 +284,7 @@ CreateOutput()
     while( myIt != m_OutputFileList.end() )
       {
       itkDebugMacro(
-    << (*myIt).Filename\
+        << (*myIt).Filename\
         << " " << (*myIt).Channel\
         << " " << (*myIt).TimePoint\
         << " " << (*myIt).ZDepth );

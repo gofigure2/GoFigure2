@@ -116,6 +116,47 @@ public:
       // throw exception
       return;
       }
+
+	vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
+    DataBaseConnector->SetHostName(this->ServerName.c_str());
+    DataBaseConnector->SetUser(this->User.c_str());
+    DataBaseConnector->SetPassword(this->PassWord.c_str());
+    DataBaseConnector->SetDatabaseName( this->DataBaseName.c_str() );
+ 
+    if (!DataBaseConnector->Open())
+      { 
+      std::cerr << "Can not open DB"  << std::endl;
+      DataBaseConnector->Delete();
+      return;
+      }
+
+	this->PopulateColumnNamesContainer();
+	std::stringstream queryString;
+    queryString << "SELECT * FROM " << this->TableName << ";";
+
+    vtkSQLQuery* query = DataBaseConnector->GetQueryInstance();
+    query->SetQuery( queryString.str().c_str() );
+    if ( !query->Execute() )
+      {
+      // replace by exception
+      std::cerr << "Create query failed" << std::endl;
+      }
+    else
+	  {
+	  if( m_RowContainer.size() > 0 )
+	    {
+		m_RowContainer.clear();
+	    }
+	  while( query->NextRow() )
+        {
+		OriginalObjectType object;
+		for( unsigned int colID = 0; colID < m_ColumnNamesContainer.size(); colID++ )
+		  {
+	      object.SetFieldValueAsString( colID, query->DataValue( 0 ).ToString() );
+		  }
+        m_RowContainer.push_back( InternalObjectType( true, object ) );
+        }
+	  }
     }
 
   // save content to DB - ASYNCHRONOUS
@@ -144,13 +185,7 @@ public:
 
     myIteratorType start = m_RowContainer.begin();
     myIteratorType end   = m_RowContainer.end();
-    // while( start != end )
-    //  {
-    // std::cout << (*start).second.PrintValues()  << std::endl;
-    // start++;
-    //  }
 
-    // start = m_RowContainer.begin();
     std::sort( start, end, IsLess() );
 
     this->PopulateColumnNamesContainer();
@@ -307,6 +342,12 @@ void
 GoDBRecordSet<TObject>::
 PopulateColumnNamesContainer()
 {
+
+  if( m_ColumnNamesContainer.size() > 0 )
+    {
+	m_ColumnNamesContainer.clear();
+    }
+
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
   DataBaseConnector->SetHostName(this->ServerName.c_str());
   DataBaseConnector->SetUser(this->User.c_str());

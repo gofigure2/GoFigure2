@@ -86,6 +86,22 @@ public:
     filename = "";
     }
 
+    bool SetFieldValueAsString( unsigned int FieldID, std::string ValueAsString )
+    {
+    switch( FieldID )
+	  {
+	  case 0:
+        {
+		break;
+		}
+	  default:
+		{
+			return false;
+		}
+	  } 
+	return true;
+    }
+
 };
 
 #endif

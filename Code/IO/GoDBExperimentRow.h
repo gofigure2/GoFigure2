@@ -109,6 +109,103 @@ public:
     return myString.str();
     }
 
+  bool SetFieldValueAsString( unsigned int FieldID, std::string ValueAsString )
+    {
+    switch( FieldID )
+	  {
+	  case 0:
+        {
+		this->experimentID = atoi( ValueAsString.c_str() );
+		break;
+		}
+	  case 1:
+		{
+		this->name = ValueAsString;
+		break;
+		}
+	  case 2:
+		{
+        this->description = ValueAsString;
+        break;
+		}
+	  case 3:
+		{
+        this->timeInterval = atoi( ValueAsString.c_str() );
+        break;
+		}
+	  case 4:
+		{
+        this->tileHeight = atoi( ValueAsString.c_str() );
+        break;
+		}
+	  case 5:
+	    {
+        this->tileWidth= atoi( ValueAsString.c_str() );
+        break;
+		}
+	  case 6:
+	    {
+        this->pixelDepth = atof( ValueAsString.c_str() );
+        break;
+		}
+	  case 7:
+		{
+        this->pixelHeight = atof( ValueAsString.c_str() );
+        break;
+		}
+	  case 8:
+		{
+        this->pixelWidth = atof( ValueAsString.c_str() );
+        break;
+		}
+	  case 9:
+		{
+        this->colorDepth= atoi( ValueAsString.c_str() );
+        break;
+		}
+	  case 10:
+		{
+        this->nTimePoints= atoi( ValueAsString.c_str() );
+        break;
+		}
+	  case 11:
+		{
+        this->nYTiles= atoi( ValueAsString.c_str() );
+        break;
+		}
+	  case 12:
+		{
+        this->nXTiles= atoi( ValueAsString.c_str() );
+        break;
+		}
+	  case 13:
+		{
+        this->nSlices= atoi( ValueAsString.c_str() );
+        break;
+		}
+	  case 14:
+		{
+        this->nRows= atoi( ValueAsString.c_str() );
+        break;
+		}
+	  case 15:
+		{
+        this->nColumns= atoi( ValueAsString.c_str() );
+        break;
+		}
+	  case 16:
+		{
+        this->filePattern= ValueAsString;
+        break;
+	    }
+	  default:
+		{
+		return false;
+		}
+	  } 
+	return true;
+    }
+
 };
 
 #endif

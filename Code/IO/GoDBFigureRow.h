@@ -123,6 +123,48 @@ public:
     ZCoord = -1;
     }
 
+  bool SetFieldValueAsString( unsigned int FieldID, std::string ValueAsString )
+    {
+    switch( FieldID )
+	  {
+	  case 0:
+        {
+        this->figureID = atoi( ValueAsString.c_str() );
+        break;
+		}
+
+  int           imageID;
+  int           meshID;
+  std::string   points;
+  int           cellTypeID;
+  int           flavorID;
+  int           meanRed;
+  int           meanGreen;
+  int           meanBlue;
+  int           area;
+  int           perimeter;
+  int           AP;
+  int           score;
+  int           xCenter;
+  int           yCenter;
+  int           experimentID;
+  int           RCoord;
+  int           CCoord;
+  int           TCoord;
+  int           YCoord;
+  int           XCoord;
+  int           ZCoord;
+
+
+
+	  default:
+		{
+			return false;
+		}
+	  } 
+	return true;
+    }
+
 };
 
 #endif

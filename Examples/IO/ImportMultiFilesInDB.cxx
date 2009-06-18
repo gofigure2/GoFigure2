@@ -6,30 +6,25 @@
 
 int main( int argc, char * argv[] )
 {
-  if( argc < 7 )
+  if( argc < 2 )
     {
     std::cout << "Usage: ";
-    std::cout << "<bin> ImageName ServerName Login Pass DataBaseName ExperimentID" << std::endl; 
+    std::cout << "<bin> ImageName" << std::endl; 
     return EXIT_FAILURE;
     }
 
   try
     {
     itk::MegaCaptureImport::Pointer  importFileInfoList = itk::MegaCaptureImport::New();
-    
-    //importFileInfoList->SetFileName( argv[1] );
+    importFileInfoList->SetFileName( argv[1] );
     importFileInfoList->Update();
 
     typedef GoDBRecordSet< GoDBSeriesGridRow > myRecordSetType;
     myRecordSetType* RecordSet = new myRecordSetType;
     RecordSet->SetServerName( "localhost" );
-    //RecordSet->SetServerName( argv[2] );
     RecordSet->SetUser( "gofigure" );
-    //RecordSet->SetUser( argv[3] );
     RecordSet->SetPassword( "gofigure" );
-    //RecordSet->SetPassword( argv[4] );
-	  RecordSet->SetDataBaseName( "allnewdb" );
-    //RecordSet->SetDataBaseName( argv[5] );
+    RecordSet->SetDataBaseName( "allnewdb" );
     RecordSet->SetTableName( "seriesgrid" );
 
     typedef FileListType::iterator myFilesIteratorType;
@@ -39,7 +34,6 @@ int main( int argc, char * argv[] )
       {
       GoDBSeriesGridRow row;
       row.experimentID = 5;
-      //row.experimentID = atoi( argv[6] );
       row.RCoord = (*It).RTile;
       row.CCoord = (*It).CTile;
       row.TCoord = (*It).TimePoint;
