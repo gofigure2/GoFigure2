@@ -49,7 +49,7 @@ int main( int argc, char * argv[] )
   DropDatabase( ServerName.c_str(), Login.c_str(),
     Password.c_str(), DataBaseName.c_str() );
 
-  return 1;
+  return EXIT_SUCCESS;
 }
 
 

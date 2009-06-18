@@ -1081,7 +1081,7 @@ void QGoMainWindow::OpenAndDisplay(
         }
       }
     }
-  if(!Type == 2)
+  if( Type != 2 )
     {
     myPageView->SetFileName( iTag.toAscii( ).data( ) );
     }
