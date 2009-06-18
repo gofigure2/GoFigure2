@@ -82,6 +82,8 @@ FileListType QGoWizardDB::ListFilenames()
           i = i+9;
         }
      }
+
+  std::sort( ListFilenames.begin(), ListFilenames.end() );
   return ListFilenames;
 }
 //------------------------------------------------------------------------------

@@ -66,7 +66,8 @@ namespace itk
 *  \class MultiFileReader
 *
 *  \brief
-*  Class that implement a reader for a stack of files
+*  Class that implement a reader for a stack of files. Note that the list of files
+*  is supposed to be sorted before using this class.
 *
 *  files can be of any dimensionality (we expect 2, 3 or 4D)
 *  files can be of the following types: JPG, PNG, BMP, TIFF, MHA, LSM

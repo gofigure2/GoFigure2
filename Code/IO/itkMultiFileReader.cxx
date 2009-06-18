@@ -334,7 +334,7 @@ void MultiFileReader::Update( void )
 //-----------------------------------------------------------------------------
 void MultiFileReader::ComputeUpdateFileList()
 {
-  if( m_FileList->size() == 0 )
+  if( m_FileList->empty() )
     {
     itkGenericExceptionMacro( << "The File List is empty." );
     return;
