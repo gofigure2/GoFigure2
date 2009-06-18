@@ -82,7 +82,7 @@ public:
     delete temp;
     }
 
- 
+
   void SetServerName( std::string ServerName )
     { this->ServerName = ServerName; }
 
@@ -121,7 +121,10 @@ public:
   // save content to DB - ASYNCHRONOUS
   bool SaveInDB()
     {
-    if( m_RowContainer.size() == 0 ) return true;
+    if( m_RowContainer.empty() )
+      {
+      return true;
+      }
 
     if( !CanConnectToServer(
         this->ServerName,
@@ -157,7 +160,7 @@ public:
     DataBaseConnector->SetUser(this->User.c_str());
     DataBaseConnector->SetPassword(this->PassWord.c_str());
     DataBaseConnector->SetDatabaseName( this->DataBaseName.c_str() );
-    
+
     if( !DataBaseConnector->Open() )
       {
       std::cerr << "Could not open database." << std::endl;
@@ -165,9 +168,9 @@ public:
       DataBaseConnector->Delete();
       return false;
       }
-    
+
     vtkSQLQuery* query = DataBaseConnector->GetQueryInstance();
-    
+
     if( this->SaveEachRow( query ) )
       {
       DataBaseConnector->Close();
@@ -242,7 +245,7 @@ SaveEachRow( vtkSQLQuery *query )
   if( end-start > 0 )
     {
     if( !SaveRows( query, "INSERT ", start, end ) )
-      { 
+      {
       return false;
       }
     }
@@ -291,12 +294,12 @@ SaveRows( vtkSQLQuery * query, std::string what, myIteratorType start, myIterato
       // replace by exception
       std::cerr << "Save query failed: ";
       std::cerr << rowQueryString.str().c_str() << std::endl;
-      return false; 
-      } 
+      return false;
+      }
     rowIt++;
     }
 
-  return true; 
+  return true;
 }
 
 template< class TObject >
@@ -309,9 +312,9 @@ PopulateColumnNamesContainer()
   DataBaseConnector->SetUser(this->User.c_str());
   DataBaseConnector->SetPassword(this->PassWord.c_str());
   DataBaseConnector->SetDatabaseName( this->DataBaseName.c_str() );
- 
+
   if (!DataBaseConnector->Open())
-    { 
+    {
     std::cerr << "Can not open DB"  << std::endl;
     DataBaseConnector->Delete();
     return;

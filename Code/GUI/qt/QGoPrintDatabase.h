@@ -37,11 +37,10 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
+#ifndef __QGoPrintDatabase_h
+#define __QGoPrintDatabase_h
 
-
-#ifndef QGOPRINTDATABASE_H
-#define QGOPRINTDATABASE_H
-#include <qwidget.h>
+#include <QWidget>
 
 #include "ui_QGoPrintDatabase.h"
 #include "MegaVTK2Configure.h"

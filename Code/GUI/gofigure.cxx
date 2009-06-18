@@ -56,7 +56,9 @@ int main( int argc, char** argv )
   QCoreApplication::setApplicationName("GoFigure2");
 
   QPixmap pixmap(":/fig/splash.jpg");
-  QSplashScreen *splash = new QSplashScreen(pixmap.scaledToWidth(800,Qt::SmoothTransformation),Qt::WindowStaysOnTopHint);
+  QSplashScreen *splash = new QSplashScreen(
+    pixmap.scaledToWidth( 800, Qt::SmoothTransformation ),
+    Qt::WindowStaysOnTopHint );
 
   splash->show();
 

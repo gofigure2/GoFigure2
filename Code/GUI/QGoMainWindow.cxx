@@ -247,13 +247,13 @@ void QGoMainWindow::on_actionUse_DataBase_activated()
 // *************************************************************************
 void QGoMainWindow::openFilesfromDB()
 {
+  OpenAndDisplay("",true,2);
 
-    OpenAndDisplay("",true,2);
-
-    m_DBTables->Fill_Database(m_Wizard->Server(),m_Wizard->login(),
+  m_DBTables->Fill_Database( m_Wizard->Server(), m_Wizard->login(),
     m_Wizard->Password(), m_Wizard->NameDB(),
-    m_Wizard->ExpID(), m_Wizard->ExpName());
-    m_DBTables->show();
+    m_Wizard->ExpID(), m_Wizard->ExpName() );
+
+  m_DBTables->show();
 
 }
 // *************************************************************************
@@ -1069,15 +1069,32 @@ void QGoMainWindow::OpenAndDisplay(
   if( IsSerie )
     {
     myPageView->SetFileTypeToSerie( );
-    if( Type == 0 ) myPageView->SetSerieTypeToLsm( );
-    if( Type == 1 ) myPageView->SetSerieTypeToMegaCapture( );
-    if( Type == 2)
+    switch( Type )
       {
-      FileListType ListFilenames = m_Wizard->ListFilenames();
-      if(!ListFilenames.empty())
+      case 0:
         {
-        myPageView->SetSerieTypeToDataBase(ListFilenames);
-        myPageView->DisplayFromDB();
+        myPageView->SetSerieTypeToLsm( );
+        break;
+        }
+      case 1:
+        {
+        myPageView->SetSerieTypeToMegaCapture( );
+        break;
+        }
+      case 2:
+        {
+        FileListType ListFilenames = m_Wizard->ListFilenames();
+        if(!ListFilenames.empty())
+          {
+          myPageView->SetSerieTypeToDataBase(ListFilenames);
+          myPageView->DisplayFromDB();
+          }
+        break;
+        }
+      default:
+        {
+        std::cout <<"QGoMainWindow::OpenAndDisplay: Type != 0, 1 or 2" <<std::endl;
+        return;
         }
       }
     }

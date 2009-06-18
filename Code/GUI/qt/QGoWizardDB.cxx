@@ -1,3 +1,42 @@
+/*=========================================================================
+  Author: $Author:$  // Author of last commit
+  Version: $Rev:$  // Revision of last commit
+  Date: $Date:$  // Date of last commit
+=========================================================================*/
+
+/*=========================================================================
+ Authors: The GoFigure Dev. Team.
+ at Megason Lab, Systems biology, Harvard Medical school, 2009
+
+ Copyright (c) 2009, President and Fellows of Harvard College.
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are met:
+
+ Redistributions of source code must retain the above copyright notice,
+ this list of conditions and the following disclaimer.
+ Redistributions in binary form must reproduce the above copyright notice,
+ this list of conditions and the following disclaimer in the documentation
+ and/or other materials provided with the distribution.
+ Neither the name of the  President and Fellows of Harvard College
+ nor the names of its contributors may be used to endorse or promote
+ products derived from this software without specific prior written
+ permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS
+ BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
+ OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+ OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+=========================================================================*/
 #include "QGoWizardDB.h"
 #include "CreateDataBaseHelper.h"
 #include "GoDBRecordSet.h"
@@ -52,10 +91,7 @@ QGoWizardDB::QGoWizardDB( QWidget *parent )
 }
 //------------------------------------------------------------------------------
 
-
-
 //------------------------------------------------------------------------------
-
 FileListType QGoWizardDB::ListFilenames()
 {
   FileListType ListFilenames;
@@ -67,28 +103,26 @@ FileListType QGoWizardDB::ListFilenames()
         "experimentID",field("ExpID").toString().toStdString());
 
   if (!vectListFilenames.empty())
-     {
-     for(unsigned int i = 0; i < vectListFilenames.size();)
-        {
-          GoFigureFileInfoHelper tempInfo;
-          tempInfo.Filename = vectListFilenames[i+8];
-          tempInfo.TimePoint = atoi(vectListFilenames[i+4].c_str());
-          tempInfo.ZDepth = atoi(vectListFilenames[i+7].c_str());
-          tempInfo.CTile = atoi(vectListFilenames[i+3].c_str());
-          tempInfo.RTile = atoi(vectListFilenames[i+2].c_str());
-          tempInfo.YOffset = atoi(vectListFilenames[i+5].c_str());
-          tempInfo.XOffset = atoi(vectListFilenames[i+6].c_str());
-          ListFilenames.push_back( tempInfo );
-          i = i+9;
-        }
-     }
+    {
+    for(unsigned int i = 0; i < vectListFilenames.size();)
+      {
+      GoFigureFileInfoHelper tempInfo;
+      tempInfo.Filename = vectListFilenames[i+8];
+      tempInfo.TimePoint = atoi(vectListFilenames[i+4].c_str());
+      tempInfo.ZDepth = atoi(vectListFilenames[i+7].c_str());
+      tempInfo.CTile = atoi(vectListFilenames[i+3].c_str());
+      tempInfo.RTile = atoi(vectListFilenames[i+2].c_str());
+      tempInfo.YOffset = atoi(vectListFilenames[i+5].c_str());
+      tempInfo.XOffset = atoi(vectListFilenames[i+6].c_str());
+      ListFilenames.push_back( tempInfo );
+      i = i+9;
+      }
+    }
 
   std::sort( ListFilenames.begin(), ListFilenames.end() );
   return ListFilenames;
 }
 //------------------------------------------------------------------------------
-
-
 
 //------------------------------------------------------------------------------
 QString QGoWizardDB::NameDB()
@@ -97,16 +131,12 @@ QString QGoWizardDB::NameDB()
 }
 //------------------------------------------------------------------------------
 
-
-
 //------------------------------------------------------------------------------
 int QGoWizardDB::ExpID()
 {
   return field("ExpID").toInt();
 }
 //------------------------------------------------------------------------------
-
-
 
 //------------------------------------------------------------------------------
 QString QGoWizardDB::ExpName()
@@ -120,30 +150,21 @@ QString QGoWizardDB::Server()
 }
 //------------------------------------------------------------------------------
 
-
-
 //------------------------------------------------------------------------------
-
 QString QGoWizardDB::login()
 {
   return field("User").toString();
 }
 //------------------------------------------------------------------------------
 
-
-
 //------------------------------------------------------------------------------
-
 QString QGoWizardDB::Password()
 {
   return field("Password").toString();
 }
 //------------------------------------------------------------------------------
 
-
-
 //------------------------------------------------------------------------------
-
 Connect_ServerPage::Connect_ServerPage( QWidget *parent )
 : QWizardPage( parent )
 {
@@ -174,31 +195,26 @@ Connect_ServerPage::Connect_ServerPage( QWidget *parent )
 }
 //------------------------------------------------------------------------------
 
-
-
 //------------------------------------------------------------------------------
 bool Connect_ServerPage::validatePage()
 {
   if( !CanConnectToServer(
         field("ServerName").toString().toStdString(),
         field("User").toString().toStdString(),
-        field("Password").toString().toStdString()))
+        field("Password").toString().toStdString() ) )
     {
-      QMessageBox msgBox;
-      msgBox.setText(tr
-   ("Unable to connect to the server: please make sure you entered the right fields."));
-      msgBox.exec();
-      return false;
+    QMessageBox msgBox;
+    msgBox.setText(
+      tr("Unable to connect to the server: please make sure you entered the right fields.") );
+    msgBox.exec();
+    return false;
     }
   else
-  {
+    {
     return true;
-  }
-
+    }
 }
 //------------------------------------------------------------------------------
-
-
 
 //------------------------------------------------------------------------------
 OpenOrCreate_Page::OpenOrCreate_Page(QWidget *parent)
@@ -243,10 +259,8 @@ OpenOrCreate_Page::OpenOrCreate_Page(QWidget *parent)
 
   registerField( "DBIndextoOpen", ChoiceDB);
   registerField("DBNametoCreate",lineNewDBName);
- }
+}
 //------------------------------------------------------------------------------
-
-
 
 //------------------------------------------------------------------------------
 void OpenOrCreate_Page::initializePage()
@@ -263,10 +277,7 @@ void OpenOrCreate_Page::initializePage()
 }
 //------------------------------------------------------------------------------
 
-
-
 //------------------------------------------------------------------------------
-
 void OpenOrCreate_Page::PrintListDB ()
 {
   createDBCheckBox->setChecked(false);
@@ -278,21 +289,19 @@ void OpenOrCreate_Page::PrintListDB ()
   lineNewDBName->hide();
   lineNewDBName->setText("");
 
-  if (m_ListDB.isEmpty())
+  if( m_ListDB.isEmpty() )
     {
-    std::vector<std::string> vectListDB =
-    ListDataBases(
-    field("ServerName").toString().toStdString(),
-    field("User").toString().toStdString(),
-    field("Password").toString().toStdString());
+    std::vector<std::string> vectListDB = ListDataBases(
+      field("ServerName").toString().toStdString(),
+      field("User").toString().toStdString(),
+      field("Password").toString().toStdString() );
 
-    for(unsigned int i = 0; i < vectListDB.size(); ++i )
+    for( unsigned int i = 0; i < vectListDB.size(); ++i )
       {
-      if (IsDatabaseOfGoFigureType(
-       field("ServerName").toString().toStdString(),
-       field("User").toString().toStdString(),
-       field("Password").toString().toStdString(),
-       vectListDB[i].c_str( )))
+      if( IsDatabaseOfGoFigureType( field("ServerName").toString().toStdString(),
+            field("User").toString().toStdString(),
+            field("Password").toString().toStdString(),
+            vectListDB[i].c_str( ) ) )
         {
         m_ListDB.append( vectListDB[i].c_str( ) );
         }
@@ -304,12 +313,10 @@ void OpenOrCreate_Page::PrintListDB ()
 }
 //------------------------------------------------------------------------------
 
-
-
 //------------------------------------------------------------------------------
 void OpenOrCreate_Page::EnterNameDB ()
 {
-  if (createDBCheckBox->isChecked())
+  if( createDBCheckBox->isChecked() )
     {
     openDBCheckBox->setChecked(false);
     field("DBIndextoOpen").clear();
@@ -324,8 +331,6 @@ void OpenOrCreate_Page::EnterNameDB ()
 }
 //------------------------------------------------------------------------------
 
-
-
 //------------------------------------------------------------------------------
 bool OpenOrCreate_Page::validatePage()
 {
@@ -333,7 +338,7 @@ bool OpenOrCreate_Page::validatePage()
   DBNametoOpen_fake = new QLineEdit;
 
   int i = field("DBIndextoOpen").toInt();
-  if (!openDBCheckBox->isChecked() && !createDBCheckBox->isChecked())
+  if( !openDBCheckBox->isChecked() && !createDBCheckBox->isChecked() )
     {
     QMessageBox msgBox;
     msgBox.setText(tr("Please select one option").arg(NameDB));
@@ -350,7 +355,7 @@ bool OpenOrCreate_Page::validatePage()
     NameDB = "Null";
     }
 
-  if (field("DBNametoCreate").toString().isEmpty() && NameDB=="Null")
+  if( field("DBNametoCreate").toString().isEmpty() && ( NameDB=="Null" ) )
     {
     QMessageBox msgBox;
     msgBox.setText(tr("Please enter a name for your new DataBase").arg(NameDB));
@@ -358,12 +363,12 @@ bool OpenOrCreate_Page::validatePage()
     return false;
     }
 
-  if (NameDB=="Null")
+  if( NameDB=="Null" )
       {
       return true;
       }
 
-  if ( !IsDatabaseOfGoFigureType(field("ServerName").toString().toStdString(),
+  if( !IsDatabaseOfGoFigureType(field("ServerName").toString().toStdString(),
             field("User").toString().toStdString(),
             field("Password").toString().toStdString(),
             NameDB.toStdString() ) )
@@ -379,8 +384,6 @@ bool OpenOrCreate_Page::validatePage()
   return true;
 }
 //------------------------------------------------------------------------------
-
-
 
 //------------------------------------------------------------------------------
 Create_ExperimentPage::Create_ExperimentPage( QWidget *parent )
@@ -513,11 +516,8 @@ Create_ExperimentPage::Create_ExperimentPage( QWidget *parent )
 
   NameDB_fake = new QLineEdit;
   registerField("NameDB",NameDB_fake);
-
 }
 //------------------------------------------------------------------------------
-
-
 
 //------------------------------------------------------------------------------
 void Create_ExperimentPage::initializePage()
@@ -527,15 +527,17 @@ void Create_ExperimentPage::initializePage()
   ID->setEnabled(false);
   setFinalPage(false);
 
-
-  if (!field("DBNametoCreate").toString().isEmpty())
+  if( !field("DBNametoCreate").toString().isEmpty() )
     {
     CreateDataBaseMain(field("ServerName").toString().toStdString(),
-    field("User").toString().toStdString(),
-    field("Password").toString().toStdString(),
-    field("DBNametoCreate").toString().toStdString());
-    setSubTitle(tr("You are currently using The Database %1 ").arg(field("DBNametoCreate").toString()));
-    setField("NameDB",field("DBNametoCreate"));
+      field("User").toString().toStdString(),
+      field("Password").toString().toStdString(),
+      field("DBNametoCreate").toString().toStdString());
+
+    setSubTitle(
+      tr("You are currently using The Database %1 ").arg(
+        field("DBNametoCreate").toString() ) );
+    setField( "NameDB", field("DBNametoCreate") );
     openExpRadioButton->setChecked(false);
     createExpRadioButton->setChecked(true);
     EnterInfoExp();
@@ -576,8 +578,6 @@ void Create_ExperimentPage::initializePage()
 
 }
 //------------------------------------------------------------------------------
-
-
 
 //------------------------------------------------------------------------------
 void Create_ExperimentPage::EnterInfoExp()
@@ -622,10 +622,8 @@ void Create_ExperimentPage::EnterInfoExp()
 
   setField("OpenOrCreateExp","Create");
   setFinalPage(false);
- }
+}
 //------------------------------------------------------------------------------
-
-
 
 //------------------------------------------------------------------------------
 bool Create_ExperimentPage::PrintListExp()
@@ -653,82 +651,72 @@ bool Create_ExperimentPage::PrintListExp()
   FilePattern ->setEnabled(false);
 
 
-    m_ListExpName.clear();
-    m_ListExpID.clear();
-    ChoiceExp->clear();
+  m_ListExpName.clear();
+  m_ListExpID.clear();
+  ChoiceExp->clear();
 
-    std::vector<std::string> vectListExpName =
-      ListExpName(
-        field("ServerName").toString().toStdString(),
-        field("User").toString().toStdString(),
-        field("Password").toString().toStdString(),
-        field("NameDB").toString().toStdString());
+  std::vector<std::string> vectListExpName =
+    ListExpName( field("ServerName").toString().toStdString(),
+      field("User").toString().toStdString(),
+      field("Password").toString().toStdString(),
+      field("NameDB").toString().toStdString());
 
-   if (!vectListExpName.empty())
-     {
-     for(unsigned int i = 0; i < vectListExpName.size(); ++i )
-       {
-       m_ListExpName.append( vectListExpName[i].c_str( ) );
-       }
-     ok = true;
-     }
-   else
-     {
-     ok = false;
-     }
+  if (!vectListExpName.empty())
+    {
+    for(unsigned int i = 0; i < vectListExpName.size(); ++i )
+      {
+      m_ListExpName.append( vectListExpName[i].c_str( ) );
+      }
+    ok = true;
+    }
+  else
+    {
+    ok = false;
+    }
 
-    ChoiceExp->addItems( m_ListExpName );
-    ChoiceExp->show();
+  ChoiceExp->addItems( m_ListExpName );
+  ChoiceExp->show();
 
-    setField("OpenOrCreateExp","Open");
-    setFinalPage(false);
+  setField("OpenOrCreateExp","Open");
+  setFinalPage(false);
 
   return ok;
-
 }
 //------------------------------------------------------------------------------
-
-
 
 //------------------------------------------------------------------------------
 int Create_ExperimentPage::nextId() const
 {
-    if (field("OpenOrCreateExp")=="Open")
-      {
-      std::vector<std::string> ListFinalPage;
-      ListFinalPage.clear();
-      ListFinalPage = ListValuesForOneColumn(
+  if( field( "OpenOrCreateExp" ) == "Open" )
+    {
+    std::vector< std::string > ListFinalPage = ListValuesForOneColumn(
       field("ServerName").toString().toStdString(),
       field("User").toString().toStdString(),
       field("Password").toString().toStdString(),
-      field("NameDB").toString().toStdString(),"seriesgrid",
-      "filename","experimentID",field("ExpID").toString().toStdString());
+      field("NameDB").toString().toStdString(), "seriesgrid",
+      "filename", "experimentID", field("ExpID").toString().toStdString());
 
-      if (!ListFinalPage.empty())
-        {
-        std::cout<<"last page ID"<<std::endl;
-        return -1;
-        }
-      else
-        {
-        return QGoWizardDB::Import;
-        }
-
+    if( !ListFinalPage.empty() )
+      {
+      std::cout<<"last page ID"<<std::endl;
+      return -1;
       }
     else
       {
       return QGoWizardDB::Import;
       }
+    }
+  else
+    {
+    return QGoWizardDB::Import;
+    }
 }
 //------------------------------------------------------------------------------
 
-
-
 //------------------------------------------------------------------------------
-
 void Create_ExperimentPage::PrintValuesExpName(QString ExpName)
 {
-std::vector<std::string> myvect =
+  std::vector<std::string> myvect =
     ListValuesForRow(
         field("ServerName").toString().toStdString(),
         field("User").toString().toStdString(),
@@ -760,85 +748,77 @@ std::vector<std::string> myvect =
   std::vector<std::string> List;
   List.clear();
   List = ListValuesForOneColumn(
-  field("ServerName").toString().toStdString(),
-  field("User").toString().toStdString(),
-  field("Password").toString().toStdString(),
-  field("NameDB").toString().toStdString(),"seriesgrid",
-  "filename","experimentID",field("ExpID").toString().toStdString());
+    field("ServerName").toString().toStdString(),
+    field("User").toString().toStdString(),
+    field("Password").toString().toStdString(),
+    field("NameDB").toString().toStdString(), "seriesgrid",
+    "filename", "experimentID", field("ExpID").toString().toStdString() );
 
   setFinalPage(false);
 }
 //------------------------------------------------------------------------------
 
-
-
 //------------------------------------------------------------------------------
 bool Create_ExperimentPage::validatePage()
 {
- if (createExpRadioButton->isChecked())
- {
-     if (field("Name")=="")
-     {
-     QMessageBox msgBox;
-     msgBox.setText(tr("Please enter a name for your experiment."));
-     msgBox.exec();
-     return false;
-     }
-     else
-     {
-         QStringList ListExistingNames;
-         std::vector<std::string> vectListExpName =
-         ListExpName(
+  if (createExpRadioButton->isChecked())
+    {
+    if( field("Name").isNull() )
+      {
+      QMessageBox msgBox;
+      msgBox.setText(tr("Please enter a name for your experiment."));
+      msgBox.exec();
+      return false;
+      }
+    else
+      {
+      QStringList ListExistingNames;
+      std::vector<std::string> vectListExpName =
+        ListExpName(
           field("ServerName").toString().toStdString(),
           field("User").toString().toStdString(),
           field("Password").toString().toStdString(),
-          field("NameDB").toString().toStdString());
+          field("NameDB").toString().toStdString() );
 
-         if (!vectListExpName.empty())
-         {
-          for(unsigned int i = 0; i < vectListExpName.size(); ++i )
+      if( !vectListExpName.empty() )
+        {
+        for( unsigned int i = 0; i < vectListExpName.size(); ++i )
           {
-           ListExistingNames.append( vectListExpName[i].c_str( ) );
+          ListExistingNames.append( vectListExpName[i].c_str( ) );
           }
-         }
-         if (ListExistingNames.contains ( field("Name").toString(),Qt::CaseInsensitive ))
-         {
-             QMessageBox msgBox;
-             msgBox.setText(tr("The name you entered for your experiment already exists."));
-             msgBox.exec();
-             return false;
-         }
-         else
-         {
-             return true;
-         }
-
-     }
- }
- else
- {
-    if (field("Name")=="")
-    {
-     QMessageBox msgBox;
-     msgBox.setText(tr
-       ("There is no existing Experiment in this DataBase, please create a new one."));
-     msgBox.exec();
-     return false;
+        }
+      if( ListExistingNames.contains( field("Name").toString(), Qt::CaseInsensitive ) )
+        {
+        QMessageBox msgBox;
+        msgBox.setText( tr( "The name you entered for your experiment already exists." ) );
+        msgBox.exec();
+        return false;
+        }
+      else
+        {
+        return true;
+        }
+      }
     }
+  else
+    {
+    if( field("Name").isNull() )
+      {
+      QMessageBox msgBox;
+      msgBox.setText(
+        tr("There is no existing Experiment in this DataBase, please create a new one."));
+      msgBox.exec();
+      return false;
+      }
     else
-    {
+      {
       return openExpRadioButton->isChecked();
+      }
     }
- }
 }
-
 //------------------------------------------------------------------------------
 
-
-
 //------------------------------------------------------------------------------
-
-
 Import_SerieGridPage::Import_SerieGridPage( QWidget *parent )
 : QWizardPage( parent )
 {
@@ -854,16 +834,12 @@ Import_SerieGridPage::Import_SerieGridPage( QWidget *parent )
   gridlayout->setColumnStretch ( 0, 3);
   gridlayout->setColumnStretch ( 1, 1);
 
-
   setLayout(gridlayout);
 
   QObject::connect( this->BrowseButton,SIGNAL( clicked() ),
   this,SLOT( SelectSeriesGrid() ));
-
 }
 //------------------------------------------------------------------------------
-
-
 
 //------------------------------------------------------------------------------
 void Import_SerieGridPage::initializePage()
@@ -871,9 +847,9 @@ void Import_SerieGridPage::initializePage()
   newfilename.clear();
   completeChanged();
   BrowseButton->setVisible(true);
-  if (field("OpenOrCreateExp")=="Create")
-    {
 
+  if( field( "OpenOrCreateExp" ) == "Create" )
+    {
     GoDBExperimentRow myNewObject;
 
     myNewObject.name         = field("Name").toString().toStdString();
@@ -897,7 +873,7 @@ void Import_SerieGridPage::initializePage()
       field("ServerName").toString().toStdString(),
       field("User").toString().toStdString(),
       field("Password").toString().toStdString(),
-      field("NameDB").toString().toStdString(),"experiment", myNewObject);
+      field("NameDB").toString().toStdString(), "experiment", myNewObject );
 
     std::vector<std::string> vectListExpID =
       ListExpID(
@@ -909,19 +885,16 @@ void Import_SerieGridPage::initializePage()
     setField( "ExpID", (unsigned int)vectListExpID.size() );
     }
 
-    setTitle(
-    tr("Experiment: '%1'. DataBase: '%2'")
-     .arg(field("Name").toString()).arg(field("NameDB").toString()));
+  setTitle( tr("Experiment: '%1'. DataBase: '%2'")
+    .arg(field("Name").toString()).arg(field("NameDB").toString()) );
   setSubTitle(tr("Click on the 'browse' button and select only 1 file from the Image Set you want to import:"));
 }
 //------------------------------------------------------------------------------
 
-
-
 //------------------------------------------------------------------------------
 void Import_SerieGridPage::SelectSeriesGrid()
 {
-    newfilename = QFileDialog::getOpenFileName(
+  newfilename = QFileDialog::getOpenFileName(
     this,
     tr( "Import Image" ),"",
     tr( "Images (*.png *.bmp *.jpg *.jpeg *.tiff *.mha *.mhd *.img *.lsm)" )
@@ -935,88 +908,84 @@ void Import_SerieGridPage::SelectSeriesGrid()
         field("NameDB").toString().toStdString(),"seriesgrid",
         "experimentID",field("ExpID").toString().toStdString());
 
-  if (!myvect.empty())
-  {
+  if( !myvect.empty() )
+    {
     QMessageBox msgBox;
-     msgBox.setText(tr
-       ("There is already an Image Set for this Experiment."));
-     msgBox.exec();
-     return;
-  }
+    msgBox.setText( tr("There is already an Image Set for this Experiment.") );
+    msgBox.exec();
+    return;
+    }
   else
-  {
-  if( !newfilename.isEmpty( ) )
-  {
-    try
     {
-    itk::MegaCaptureImport::Pointer  importFileInfoList = itk::MegaCaptureImport::New();
-    importFileInfoList->SetFileName( newfilename.toAscii().data() );
-    importFileInfoList->Update();
-
-    typedef GoDBRecordSet< GoDBSeriesGridRow > myRecordSetType;
-    myRecordSetType* RecordSet = new myRecordSetType;
-    RecordSet->SetServerName(field("ServerName").toString().toStdString());
-    RecordSet->SetUser(field("User").toString().toStdString());
-    RecordSet->SetPassword(field("Password").toString().toStdString());
-	  RecordSet->SetDataBaseName(field("NameDB").toString().toStdString());
-    RecordSet->SetTableName( "seriesgrid" );
-
-    typedef FileListType::iterator myFilesIteratorType;
-    myFilesIteratorType It  = importFileInfoList->GetOutput()->begin();
-    myFilesIteratorType end = importFileInfoList->GetOutput()->end();
-    while( It != end )
+    if( !newfilename.isEmpty( ) )
       {
-      GoDBSeriesGridRow row;
-      row.experimentID = field("ExpID").toInt();
-      row.RCoord = (*It).RTile;
-      row.CCoord = (*It).CTile;
-      row.TCoord = (*It).TimePoint;
-      row.YCoord = (*It).YOffset;
-      row.XCoord = (*It).XOffset;
-      row.ZCoord = (*It).ZDepth;
-      row.filename = (*It).Filename.c_str();
+      try
+        {
+        itk::MegaCaptureImport::Pointer  importFileInfoList = itk::MegaCaptureImport::New();
+        importFileInfoList->SetFileName( newfilename.toAscii().data() );
+        importFileInfoList->Update();
 
-      RecordSet->AddObject( row );
+        typedef GoDBRecordSet< GoDBSeriesGridRow > myRecordSetType;
+        myRecordSetType* RecordSet = new myRecordSetType;
+        RecordSet->SetServerName(field("ServerName").toString().toStdString());
+        RecordSet->SetUser(field("User").toString().toStdString());
+        RecordSet->SetPassword(field("Password").toString().toStdString());
+        RecordSet->SetDataBaseName(field("NameDB").toString().toStdString());
+        RecordSet->SetTableName( "seriesgrid" );
 
-      It++;
-      }
+        typedef FileListType::iterator myFilesIteratorType;
+        myFilesIteratorType It  = importFileInfoList->GetOutput()->begin();
+        myFilesIteratorType end = importFileInfoList->GetOutput()->end();
+        while( It != end )
+          {
+          GoDBSeriesGridRow row;
+          row.experimentID = field("ExpID").toInt();
+          row.RCoord = (*It).RTile;
+          row.CCoord = (*It).CTile;
+          row.TCoord = (*It).TimePoint;
+          row.YCoord = (*It).YOffset;
+          row.XCoord = (*It).XOffset;
+          row.ZCoord = (*It).ZDepth;
+          row.filename = (*It).Filename.c_str();
 
-    if( !RecordSet->SaveInDB() )
-      {
+          RecordSet->AddObject( row );
+
+          It++;
+          }
+
+        if( !RecordSet->SaveInDB() )
+          {
+          return;
+          }
+        delete RecordSet;
+        }
+      catch( const itk::ExceptionObject& e )
+        {
+        std::cerr << " caught an ITK exception: " << std::endl;
+        e.Print( std::cerr);
         return;
+        }
+      catch( const std::exception& e )
+        {
+        std::cerr << " caught an std exception: " << std::endl;
+        std::cerr << e.what() << std::endl;
+        return;
+        }
+      catch( ... )
+        {
+        std::cerr << " caught an unknown exception!" << std::endl;
+        return;
+        }
       }
-      delete RecordSet;
     }
-  catch( const itk::ExceptionObject& e )
-    {
-    std::cerr << " caught an ITK exception: " << std::endl;
-    e.Print( std::cerr);
-    return;
-    }
-  catch( const std::exception& e )
-    {
-    std::cerr << " caught an std exception: " << std::endl;
-    std::cerr << e.what() << std::endl;
-    return;
-    }
-  catch( ... )
-    {
-    std::cerr << " caught an unknown exception!" << std::endl;
-    return;
-    }
-  }
-  }
   completeChanged();
   setSubTitle(tr("When you click on finish, the Image Set of the Experiment %1 from the DataBase %2 will be opened.")
-    .arg(field("Name").toString()).arg(field("NameDB").toString()));
+    .arg( field("Name").toString() ).arg( field("NameDB").toString() ) );
 }
 //------------------------------------------------------------------------------
 
-
-
 //------------------------------------------------------------------------------
-
 bool Import_SerieGridPage::isComplete() const
 {
-  return (!newfilename.isEmpty());
+  return ( !newfilename.isEmpty() );
 }

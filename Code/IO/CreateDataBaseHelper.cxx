@@ -1229,4 +1229,3 @@ std::vector<std::string> ListValuesForOneColumn(
 
   return result;
 }
-

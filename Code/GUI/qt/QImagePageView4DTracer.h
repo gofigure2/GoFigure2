@@ -92,7 +92,7 @@ public:
     { this->IsSerie = true; }
   QMEGAVTKADDON2_EXPORT void SetSerieType( const int& value )
     {
-      switch( value )
+    switch( value )
       {
       case 0:
         {
@@ -127,11 +127,12 @@ public:
   QMEGAVTKADDON2_EXPORT void SetSerieTypeToMegaCapture( )
     { this->SetSerieType( 1 ); }
   QMEGAVTKADDON2_EXPORT void SetSerieTypeToDataBase(FileListType FileListFromDB)
-      { this->SetSerieType( 2 );
-        this->FileList = FileListFromDB;
-      }
+    {
+    this->SetSerieType( 2 );
+    this->FileList = FileListFromDB;
+    }
   QMEGAVTKADDON2_EXPORT void DisplayFromDB()
-      { this->SetView( 0 );}
+    { this->SetView( 0 );}
   QMEGAVTKADDON2_EXPORT void SetDatabaseRelatedVariables( const QString& iServer,
     const QString& iLogin, const QString& iPassword, const QString& iDatabaseName,
     const int& iExperimentID, const QString& iExperimentName );
