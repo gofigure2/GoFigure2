@@ -61,7 +61,7 @@ public:
 
   // decorate the row type to know if it was modified
   // allows for optimization when synchronising the data
-  typedef std::pair< bool , OriginalObjectType > InternalObjectType;
+  typedef std::pair< bool, OriginalObjectType > InternalObjectType;
 
   // Add New Object
   void AddObject( OriginalObjectType& object )
