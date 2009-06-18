@@ -178,7 +178,7 @@ std::vector<std::string> ListExpID(
     }
 
   vtkSQLQuery* query = DataBaseConnector->GetQueryInstance();
-  query->SetQuery( "SELECT EXPERIMENTID FROM EXPERIMENT;" );
+  query->SetQuery( "SELECT experimentID FROM experiment;" );
 
   if ( !query->Execute() )
     {
@@ -226,7 +226,7 @@ std::vector<std::string> ListExpName(
     }
 
   vtkSQLQuery* query = DataBaseConnector->GetQueryInstance();
-  query->SetQuery( "SELECT NAME FROM EXPERIMENT;" );
+  query->SetQuery( "SELECT name FROM experiment;" );
 
   if ( !query->Execute() )
     {
@@ -1143,8 +1143,8 @@ std::vector<std::string> ListImageIDforExpID(
 
   vtkSQLQuery* query = DataBaseConnector->GetQueryInstance();
   std::stringstream querystream;
-  querystream << "SELECT IMAGEID FROM SERIESGRID";
-  querystream << " WHERE EXPERIMENTID = ";
+  querystream << "SELECT imageID FROM seriesgrid";
+  querystream << " WHERE experimentID = ";
   querystream << ID;
   querystream << ";";
 
