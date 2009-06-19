@@ -103,8 +103,9 @@ QImagePageView4DTracer::QImagePageView4DTracer( QWidget* parent ) : QWidget( par
 
   QObject::connect( this->Slider1, SIGNAL( valueChanged( int ) ),
     this, SLOT( SetView( int ) ) );
-  QObject::connect( this->Button1, SIGNAL( clicked( ) ),
-    this, SLOT( RunMovie( ) ) );
+//Commented for the time being (Button1 is not created)
+//  QObject::connect( this->Button1, SIGNAL( clicked( ) ),
+//    this, SLOT( RunMovie( ) ) );
   QObject::connect( this->Button2, SIGNAL( clicked( ) ),
     this, SLOT( SwitchColorMode( ) ) );
 
