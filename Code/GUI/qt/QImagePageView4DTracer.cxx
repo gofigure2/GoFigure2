@@ -190,8 +190,7 @@ ReadMultiFile( const int& TimePoint )
     }
   else
     {
-    //this->LayOut1->removeWidget( this->Slider1 );
-      this->Slider1->hide();
+    this->Slider1->hide();
     }
 
   // disconnect the pipeline
@@ -276,6 +275,7 @@ void QImagePageView4DTracer::ReadLSMFile( const int& TimePoint )
       this->Image->Delete();
       }
     this->Image = myImage_ch1;
+    this->Button2->hide();
     return;
     }
   else
