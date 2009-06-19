@@ -90,7 +90,7 @@ public:
     {
       switch( FieldID )
         {
-case 0:
+        case 0:
           {
           this->imageID = atoi( ValueAsString.c_str() );
           break;
