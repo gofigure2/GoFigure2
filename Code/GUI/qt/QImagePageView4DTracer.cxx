@@ -88,7 +88,7 @@ QImagePageView4DTracer::QImagePageView4DTracer( QWidget* parent ) : QWidget( par
 
   this->Button2 = new QPushButton("Switch between greyscale and color when multichannel");
 
-  this->Button1 = new QPushButton("Run &Movie");
+//   this->Button1 = new QPushButton("Run &Movie");
 
   this->LayOut1 = new QVBoxLayout;
   this->LayOut1->addWidget( this->Whatever );
@@ -260,7 +260,7 @@ void QImagePageView4DTracer::ReadLSMFile( const int& TimePoint )
     }
   else
     {
-    this->LayOut1->removeWidget( this->Slider1 );
+    this->Slider1->hide();
     }
 
   int NumberOfChannels = reader->GetNumberOfChannels();
