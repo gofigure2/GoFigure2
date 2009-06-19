@@ -190,7 +190,8 @@ ReadMultiFile( const int& TimePoint )
     }
   else
     {
-    this->LayOut1->removeWidget( this->Slider1 );
+    //this->LayOut1->removeWidget( this->Slider1 );
+      this->Slider1->hide();
     }
 
   // disconnect the pipeline
