@@ -247,7 +247,9 @@ void QGoMainWindow::on_actionUse_DataBase_activated()
 // *************************************************************************
 void QGoMainWindow::openFilesfromDB()
 {
-  OpenAndDisplay("",true,2);
+  QString Title;
+  Title = (tr("From Database: %1 Experiment: %2").arg(m_Wizard->NameDB()).arg(m_Wizard->ExpName()));
+  OpenAndDisplay(Title,true,2);
 
   m_DBTables->Fill_Database( m_Wizard->Server(), m_Wizard->login(),
     m_Wizard->Password(), m_Wizard->NameDB(),
