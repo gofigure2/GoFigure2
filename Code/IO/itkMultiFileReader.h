@@ -106,6 +106,7 @@ public:
   void SetDimensionality( int UserDimensionality );
 
   int GetNumberOfTimePoints( ) const { return m_NumberOfTimePoints; }
+  int GetNumberOfChannels( ) const { return m_NumberOfChannels; }
 
   /** \brief  */
   void SetMultiChannelImages( int value );

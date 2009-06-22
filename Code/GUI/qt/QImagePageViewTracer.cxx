@@ -860,6 +860,7 @@ void QImagePageViewTracer::Set3DImage( vtkImageData* input )
   this->View3D->SetupInteractor( this->QvtkWidget_XYZ->GetInteractor() );
   this->View3D->SetInput( this->Image );
   this->View3D->SetVolumeRenderingOff();
+  this->View3D->SetTriPlanarRenderingOn();
   this->View3D->SetShowScalarBar( false );
   this->View3D->ResetCamera();
   this->Pool->SetExtraRenderWindow( renwin4 );

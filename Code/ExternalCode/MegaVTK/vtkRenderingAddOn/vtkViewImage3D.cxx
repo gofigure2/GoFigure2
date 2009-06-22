@@ -377,13 +377,12 @@ void vtkViewImage3D::Render()
   if (this->FirstRender)
   {
     // Initialize the size if not set yet
-
     vtkImageData *input = this->GetInput();
     if (this->RenderWindow->GetSize()[0] == 0 && input)
     {
       if (this->Renderer)
       {
-        this->Renderer->ResetCamera();
+        this->ResetCamera();
       }
       this->FirstRender = 0;
     }
@@ -417,7 +416,7 @@ void vtkViewImage3D::SetVolumeRenderingOn()
     }
 
     this->SetupVolumeRendering();
-    
+
     int NbOfComp = image->GetNumberOfScalarComponents();
     if( NbOfComp > 1 && NbOfComp != 4 && NbOfComp < 5 )
       {
@@ -430,7 +429,7 @@ void vtkViewImage3D::SetVolumeRenderingOn()
       addComp->AddInput( image );
       addComp->AddInput( extComp->GetOutput() );
       addComp->Update();
-     
+
       if( addComp->GetOutput()->GetNumberOfScalarComponents() == 4 )
         {
         this->VolumeMapper3D->SetInput( addComp->GetOutput() );
@@ -442,16 +441,19 @@ void vtkViewImage3D::SetVolumeRenderingOn()
         addComp->SetInput( 0, temp );
         addComp->Update();
         this->VolumeMapper3D->SetInput( addComp->GetOutput() );
-        }        
+        }
       }
     else
       {
-      if( NbOfComp == 1 || NbOfComp == 4 ) 
+      if( NbOfComp == 1 || NbOfComp == 4 )
         {
         this->VolumeMapper3D->SetInput( image );
         }
       }
-    if( !this->IsColor ) this->VolumeRayCastMapper->SetInput( image );
+    if( !this->IsColor )
+      {
+      this->VolumeRayCastMapper->SetInput( image );
+      }
 
     this->SetupTextureMapper();
 
@@ -493,7 +495,9 @@ void vtkViewImage3D::Add2DPhantom(const unsigned int& i,
   vtkPolyData* in_bounds )
 {
   if( i >= 3 )
+    {
     return;
+    }
 
   vtkRenderer* ren = this->GetRenderer();
   if( ren )

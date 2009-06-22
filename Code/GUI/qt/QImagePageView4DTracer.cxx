@@ -276,7 +276,10 @@ void QImagePageView4DTracer::ReadLSMFile( const int& TimePoint )
       this->Image->Delete();
       }
     this->Image = myImage_ch1;
-    this->Button2->hide();
+    if( NumberOfChannels == 1 )
+      {
+      this->Button2->hide();
+      }
     return;
     }
   else
