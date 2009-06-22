@@ -449,7 +449,7 @@ Create_ExperimentPage::Create_ExperimentPage( QWidget *parent )
   QLabel* TextnColumns = new QLabel(tr("nColumns"));
   FilePattern = new QLineEdit;
   QLabel* TextFilePattern = new QLabel(tr("FilePattern"));
-  OpenOrCreateExp_fake = new QLineEdit;
+  OpenOrCreateExp_fake = new QLineEdit; /** \todo TO BE DELETED */
 
   gridlayout->addWidget(TextDescription,4,0);
   gridlayout->addWidget(Description,4,1);
@@ -514,7 +514,7 @@ Create_ExperimentPage::Create_ExperimentPage( QWidget *parent )
   QObject::connect( this->ChoiceExp,SIGNAL( currentIndexChanged(QString) ),
   this,SLOT( PrintValuesExpName(QString) ));
 
-  NameDB_fake = new QLineEdit;
+  NameDB_fake = new QLineEdit; /** \todo TO BE DELETED */
   registerField("NameDB",NameDB_fake);
 }
 //------------------------------------------------------------------------------

@@ -140,7 +140,7 @@ CreateOutput()
     tempInfo.ZDepth    = NumericalValues[5];
 
     m_OutputFileList.push_back( tempInfo );
-
+    delete NumericalValues; /** \todo check if delete or delete[]*/
     } // end for each filename
 
   m_FileNameS.clear();
@@ -276,7 +276,7 @@ Glob()
   fit->NumericSortOn();
   m_FileNameS = fit->GetFileNames();
 
-  // re parse the indexes and length without the escape caracters 
+  // re parse the indexes and length without the escape caracters
   for (sit = origFileName.begin(); sit < origFileName.end(); sit++)
     {
     // If the element is a number, find its starting index and length.

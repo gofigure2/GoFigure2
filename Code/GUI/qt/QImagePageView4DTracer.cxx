@@ -232,7 +232,7 @@ QImagePageView4DTracer::SetFileName(const char* name )
     }
   if (name)
     {
-    this->FileName = new char[strlen(name) + 1];
+    this->FileName = new char[strlen(name) + 1]; /** \todo TO BE DELETED */
     strcpy(this->FileName, name);
     }
 
