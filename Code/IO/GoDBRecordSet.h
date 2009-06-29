@@ -63,6 +63,16 @@ public:
   // allows for optimization when synchronising the data
   typedef std::pair< bool, OriginalObjectType > InternalObjectType;
 
+  std::vector< std::string >  GetColumnNamesContainer()  
+  {
+    return m_ColumnNamesContainer;
+  }
+
+  std::vector< InternalObjectType > GetRowContainer()  
+  {
+    return m_RowContainer;
+  }
+
   // Add New Object
   void AddObject( OriginalObjectType& object )
     {
@@ -388,5 +398,6 @@ PopulateColumnNamesContainer()
   DataBaseConnector->Delete();
   query->Delete();
 
-}
+};
+
 #endif

@@ -44,6 +44,8 @@
 
 #include "ui_QGoPrintDatabase.h"
 #include "MegaVTK2Configure.h"
+#include "GoDBRecordSet.h"
+#include "GoDBFigureRow.h"
 
 class QGoPrintDatabase : public QWidget,
   private Ui::WidgetPrintDatabase
@@ -57,16 +59,23 @@ public:
   void QMEGAVTKADDON2_EXPORT Fill_Database(QString ServerName,QString login,
       QString Password, QString DBName,
       int ExpID,QString ExpName);
-
+  
 
 protected:
   QStringList GetTableContentFromDB(QString TableName);
+  void QPrintTable(QString TableName);
   void QPrintColumnNames (QString TableName);
+  template< class myT > void GetContentFromDB( QString ServerName, QString User,
+  QString Password, QString NameDB,QString TableName );
 
+  std::vector< std::string > m_ColumnNamesContainer;
   QString m_NameDB;
   QString m_Server;
   QString m_User;
   QString m_Password;
+  
+  //std::vector< InternalObjectType > m_RowContainer;
+  
 };
 
 #endif

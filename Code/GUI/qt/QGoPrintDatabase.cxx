@@ -47,6 +47,8 @@
 #include "vtkSQLQuery.h"
 #include "vtkStringArray.h"
 #include "vtkStdString.h"
+#include "GoDBRecordSet.h"
+#include "GoDBFigureRow.h"
 
 QGoPrintDatabase::QGoPrintDatabase()
 {
@@ -61,70 +63,9 @@ QGoPrintDatabase::~QGoPrintDatabase()
 {
 }
 
-
-QStringList QGoPrintDatabase::GetTableContentFromDB(QString TableName)
-{
-  QStringList List;
-  QString SQLquery;
-
-  // CONFIGURE CONNECTOR
-  vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
-  //DataBaseConnector->SetHostName("localhost");
-  DataBaseConnector->SetHostName(m_Server.toAscii().data());
-  DataBaseConnector->SetUser(m_User.toAscii().data());
-  DataBaseConnector->SetPassword(m_Password.toAscii().data());
-  DataBaseConnector->SetDatabaseName(m_NameDB.toStdString().c_str());
-
-
-  // CONNECT TO SERVER
-  DataBaseConnector->Open("");
-  if( ! DataBaseConnector->IsOpen() )
-    {
-    DataBaseConnector->Delete();
-    exit(0);
-    }
-
-  vtkSQLQuery* query = DataBaseConnector->GetQueryInstance();
-  SQLquery=QString("select * from %1;").arg(TableName);
-  vtkStdString createQuery(SQLquery.toStdString());
-
-  query->SetQuery( createQuery.c_str() );
-
-  if( !query->Execute() )
-    {
-    std::cerr << "Create query failed" << std::endl;
-    DataBaseConnector->Delete();
-    query->Delete();
-    exit(0);
-    }
-
-  for( int col = 0; col < query->GetNumberOfFields(); ++col )
-    {
-    List <<query->GetFieldName( col );
-    }
-
-  while ( query->NextRow() )
-    {
-    for ( int field = 0; field < query->GetNumberOfFields(); ++ field )
-      {
-      if ( field > 0 ) std::cout << ", ";
-      List << query->DataValue( field ).ToString().c_str();
-      }
-    std::cout << endl;
-    }
-
-  DataBaseConnector->Close();
-  DataBaseConnector->Delete();
-  query->Delete();
-
-  return List;
-}
-
 void QGoPrintDatabase::QPrintColumnNames (QString TableName)
 {
-  QStringList listColumnNames;
-  listColumnNames=GetTableContentFromDB(TableName);
-  int numberCol=listColumnNames.size();
+  int numberCol=m_ColumnNamesContainer.size();
   QTableWidget* QTabName = new QTableWidget;
   this->DBTabWidget->addTab(QTabName,TableName);
   QTabName->setRowCount(15);
@@ -133,13 +74,14 @@ void QGoPrintDatabase::QPrintColumnNames (QString TableName)
   for ( int i = 0; i < numberCol; i++ )
     {
     QTableWidgetItem* HeaderCol=new QTableWidgetItem;
-    QString NameHeader;
-    NameHeader=listColumnNames[i];
-    HeaderCol->setText(NameHeader);
+    std::string NameHeader;
+    NameHeader = m_ColumnNamesContainer[i];
+    HeaderCol->setText(NameHeader.c_str());
     QFont serifFont("Arial", 10, QFont::Bold);
     HeaderCol->setFont(serifFont);
     QTabName->setHorizontalHeaderItem(i,HeaderCol);
     }
+
 }
 
 void QGoPrintDatabase::Fill_Database(QString ServerName,QString login,
@@ -151,9 +93,40 @@ void QGoPrintDatabase::Fill_Database(QString ServerName,QString login,
   m_NameDB=DBName;
   this->setWindowTitle(QString("DB: %1 - Exp: %2").arg(DBName).arg(ExpName));
 
-  QPrintColumnNames ("figure");
-  QPrintColumnNames ("mesh");
-  QPrintColumnNames ("track");
-  QPrintColumnNames ("lineage");
+  GetContentFromDB< GoDBFigureRow     >( m_Server, m_User, m_Password, m_NameDB,"figure");
+  
+  QPrintTable ("figure");
+  //Need to create GoDBMeshRow,etc...first
+  //QPrintTable ("mesh");
+  //QPrintTable ("track");
+  //QPrintTable ("lineage");
 
+}
+
+void QGoPrintDatabase::QPrintTable(QString TableName)
+{
+  
+  QPrintColumnNames(TableName);
+}
+
+template< class myT >
+void QGoPrintDatabase::GetContentFromDB( QString ServerName, QString User,
+  QString Password, QString NameDB,QString TableName )
+{
+  typedef GoDBRecordSet< myT >   SetType;
+
+  SetType* mySet = new SetType;
+  mySet->SetServerName( ServerName.toStdString() );
+  mySet->SetDataBaseName( NameDB.toStdString() );
+  mySet->SetTableName( TableName.toStdString() );
+  mySet->SetUser( User.toStdString());
+  mySet->SetPassword( Password.toStdString() );
+  mySet->PopulateFromDB();
+  myT myNewObject;
+  mySet->AddObject( myNewObject );
+  m_ColumnNamesContainer = mySet->GetColumnNamesContainer();
+  //m_RowContainer = mySet->GetRowContainer();
+
+  delete mySet;
+  return;
 }
