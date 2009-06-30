@@ -197,12 +197,14 @@ public:
   Import_SerieGridPage(QWidget *parent = 0);
   void initializePage();
   bool isComplete() const;
+  QLabel* Explanation;
+  QPushButton* BrowseButton;
 
 protected:
   QGridLayout* gridlayout;
   QLineEdit* OpenOrCreateSeriesGrid_fake;
-  QPushButton* BrowseButton;
   QString newfilename;
+  
 
 protected slots:
   void SelectSeriesGrid();

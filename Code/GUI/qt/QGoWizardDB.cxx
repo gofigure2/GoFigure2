@@ -830,7 +830,9 @@ Import_SerieGridPage::Import_SerieGridPage( QWidget *parent )
 
   gridlayout= new QGridLayout;
   BrowseButton = new QPushButton("&Browse", this);
+  Explanation = new QLabel(tr("Click on the 'browse' button and select only 1 file from the Image Set you want to import:"));
   gridlayout->addWidget( BrowseButton,0,1 );
+  gridlayout->addWidget(Explanation,0,0);
   gridlayout->setColumnStretch ( 0, 3);
   gridlayout->setColumnStretch ( 1, 1);
 
@@ -885,9 +887,11 @@ void Import_SerieGridPage::initializePage()
     setField( "ExpID", (unsigned int)vectListExpID.size() );
     }
 
-  setTitle( tr("Experiment: '%1'. DataBase: '%2'")
-    .arg(field("Name").toString()).arg(field("NameDB").toString()) );
-  setSubTitle(tr("Click on the 'browse' button and select only 1 file from the Image Set you want to import:"));
+  //setTitle( tr("Experiment: '%1'. DataBase: '%2'")
+    //.arg(field("Name").toString()).arg(field("NameDB").toString()) );
+  setTitle(tr("Experiment: '%1'").arg(field("Name").toString()));
+  setSubTitle(tr("Database: '%1'").arg(field("NameDB").toString()));
+  //setSubTitle(tr("Click on the 'browse' button and select only 1 file from the Image Set you want to import:"));
 }
 //------------------------------------------------------------------------------
 
@@ -979,8 +983,14 @@ void Import_SerieGridPage::SelectSeriesGrid()
       }
     }
   completeChanged();
-  setSubTitle(tr("When you click on finish, the Image Set of the Experiment %1 from the DataBase %2 will be opened.")
+  if (isComplete())
+  {
+    BrowseButton->hide();
+    Explanation->setText(tr("When you click on finish, the Image Set of the Experiment %1 from the DataBase %2 will be opened.")
     .arg( field("Name").toString() ).arg( field("NameDB").toString() ) );
+  }
+  //setSubTitle(tr("When you click on finish, the Image Set of the Experiment %1 from the DataBase %2 will be opened.")
+    //.arg( field("Name").toString() ).arg( field("NameDB").toString() ) );
 }
 //------------------------------------------------------------------------------
 
