@@ -93,6 +93,13 @@ QGoWizardDB::QGoWizardDB( QWidget *parent )
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
+int QGoWizardDB::IsLsm()
+{
+  return field("IsLsm").toInt();
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
 FileListType QGoWizardDB::ListFilenames()
 {
   FileListType ListFilenames;
@@ -838,6 +845,8 @@ Import_SerieGridPage::Import_SerieGridPage( QWidget *parent )
   gridlayout->setColumnStretch ( 1, 1);
 
   setLayout(gridlayout);
+  IsLsm = new QLabel;
+  registerField( "IsLsm", IsLsm );
 
   QObject::connect( this->BrowseButton,SIGNAL( clicked() ),
   this,SLOT( SelectSeriesGrid() ));
@@ -924,6 +933,7 @@ void Import_SerieGridPage::SelectSeriesGrid()
       QString ext = QFileInfo( newfilename ).suffix();
       if( ext.compare( "lsm", Qt::CaseInsensitive ) == 0 )
         {
+          setField("IsLsm","1");
           std::cout<<"lsm files"<<std::endl;
           try
           {
@@ -986,7 +996,8 @@ void Import_SerieGridPage::SelectSeriesGrid()
         }
       else
         {
-        try
+        setField("IsLsm","0");
+          try
           {
           itk::MegaCaptureImport::Pointer  importFileInfoList = itk::MegaCaptureImport::New();
           importFileInfoList->SetFileName( newfilename.toAscii().data() );

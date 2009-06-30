@@ -249,7 +249,15 @@ void QGoMainWindow::openFilesfromDB()
 {
   QString Title;
   Title = (tr("From Database: %1 Experiment: %2").arg(m_Wizard->NameDB()).arg(m_Wizard->ExpName()));
-  OpenAndDisplay(Title,true,2);
+  
+  if (m_Wizard->IsLsm() == 1)
+   {
+   OpenAndDisplay(Title,true,3);
+   }
+  else
+   {
+   OpenAndDisplay(Title,true,2);
+   }
 
   m_DBTables->Fill_Database( m_Wizard->Server(), m_Wizard->login(),
     m_Wizard->Password(), m_Wizard->NameDB(),
@@ -1088,10 +1096,19 @@ void QGoMainWindow::OpenAndDisplay(
         FileListType ListFilenames = m_Wizard->ListFilenames();
         if(!ListFilenames.empty())
           {
-          myPageView->SetSerieTypeToDataBase(ListFilenames);
+          myPageView->SetSerieTypeToMegaCaptureDB(ListFilenames);
           myPageView->DisplayFromDB();
           }
         break;
+        }
+      case 3:
+        {
+        FileListType ListFilenames = m_Wizard->ListFilenames();
+        if(!ListFilenames.empty())
+          {
+          myPageView->SetSerieTypeToLsmDB(ListFilenames);
+          myPageView->DisplayFromDB();
+          }
         }
       default:
         {

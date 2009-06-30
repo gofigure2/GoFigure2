@@ -115,6 +115,13 @@ public:
         this->IsFileListComputed = true;
         break;
         }
+      case 3:
+        {
+        this->IsLsm = true;
+        this->IsMegaCapture = false;
+        this->IsFileListComputed = true;
+        break;
+        }
       default:
         {
         std::cout<<"wrong serietype"<<std::endl;
@@ -129,6 +136,11 @@ public:
   QMEGAVTKADDON2_EXPORT void SetSerieTypeToDataBase(FileListType FileListFromDB)
     {
     this->SetSerieType( 2 );
+    this->FileList = FileListFromDB;
+    }
+  QMEGAVTKADDON2_EXPORT void SetSerieTypeToLsmDB(FileListType FileListFromDB)
+    {
+    this->SetSerieType( 3 );
     this->FileList = FileListFromDB;
     }
   QMEGAVTKADDON2_EXPORT void DisplayFromDB()
