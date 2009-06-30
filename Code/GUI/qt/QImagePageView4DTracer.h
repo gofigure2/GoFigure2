@@ -194,7 +194,6 @@ public slots:
     { this->Whatever->SetSeeding( iState ); }
   QMEGAVTKADDON2_EXPORT bool GetSeedingStatus( ) const
     { return this->Whatever->GetSeedingStatus(); }
-
   QMEGAVTKADDON2_EXPORT vtkPoints* GetAllSeeds()
     { return this->Whatever->GetAllSeeds(); }
   QMEGAVTKADDON2_EXPORT void ClearAllSeeds()

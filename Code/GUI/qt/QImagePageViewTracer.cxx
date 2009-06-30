@@ -69,9 +69,13 @@
 #include <qsettings.h>
 
 #include "vtkPolyDataMySQLTextWriter.h"
+#include "vtkPolyDataMySQLTextReader.h"
+
 #include "GoDBFigureRow.h"
 #include "GoDBRecordSet.h"
 
+
+//------------------------------------------------------------------------------
 QImagePageViewTracer::QImagePageViewTracer( QWidget* parent ) : QWidget( parent )
 {
   IsFullScreen = 0;
@@ -103,7 +107,11 @@ QImagePageViewTracer::QImagePageViewTracer( QWidget* parent ) : QWidget( parent 
     this->HtSplitter, SLOT( moveSplitter( int, int ) ) );
 
 }
+//------------------------------------------------------------------------------
 
+
+
+//------------------------------------------------------------------------------
 QImagePageViewTracer::~QImagePageViewTracer()
 {
   delete HtSplitter;
@@ -120,7 +128,11 @@ QImagePageViewTracer::~QImagePageViewTracer()
   View3D->Delete();
   VtkEventQtConnector->Delete();
 }
+//------------------------------------------------------------------------------
 
+
+
+//------------------------------------------------------------------------------
 void QImagePageViewTracer::setupUi( QWidget* parent )
 {
   if(parent->objectName().isEmpty())
@@ -187,13 +199,24 @@ void QImagePageViewTracer::setupUi( QWidget* parent )
 
   QMetaObject::connectSlotsByName(parent);
 } // setupUi
+//------------------------------------------------------------------------------
 
+
+
+
+//------------------------------------------------------------------------------
 void QImagePageViewTracer::retranslateUi(QWidget *parent)
 {
   parent->setWindowTitle( this->Tag );
   Q_UNUSED(parent);
 }
+//------------------------------------------------------------------------------
 
+
+
+
+
+//------------------------------------------------------------------------------
 bool QImagePageViewTracer::BuildScreenshotFromImage( vtkImageData* image,
   vtkImageData* screenshot,
   int size )
@@ -310,7 +333,12 @@ bool QImagePageViewTracer::BuildScreenshotFromImage( vtkImageData* image,
 
   return true;
 }
+//------------------------------------------------------------------------------
 
+
+
+
+//------------------------------------------------------------------------------
 bool QImagePageViewTracer::BuildScreenshotFromRenderWindow(
   vtkRenderWindow *win,
   vtkImageData* screenshot,
@@ -329,7 +357,12 @@ bool QImagePageViewTracer::BuildScreenshotFromRenderWindow(
     }
   return false;
 }
+//------------------------------------------------------------------------------
 
+
+
+
+//------------------------------------------------------------------------------
 QString QImagePageViewTracer::SnapshotView( QVTKWidget* iWidget,
   const SnapshotImageType& iType,
   const QString& iBaseName )
@@ -398,29 +431,51 @@ QString QImagePageViewTracer::SnapshotView( QVTKWidget* iWidget,
   image->Delete();
   return filename;
 }
+//------------------------------------------------------------------------------
 
+
+
+
+//------------------------------------------------------------------------------
 QString QImagePageViewTracer::SnapshotViewXY( const SnapshotImageType& iType,
     const QString& iBaseName )
 {
   return SnapshotView( QvtkWidget_XY, iType, iBaseName );
 }
+//------------------------------------------------------------------------------
 
+
+
+//------------------------------------------------------------------------------
 QString QImagePageViewTracer::SnapshotView2( const SnapshotImageType& iType,
     const QString& iBaseName )
 {
   return SnapshotView( QvtkWidget_2, iType, iBaseName );
 }
+//------------------------------------------------------------------------------
+
+
+
+//------------------------------------------------------------------------------
 QString QImagePageViewTracer::SnapshotView3( const SnapshotImageType& iType,
     const QString& iBaseName )
 {
   return SnapshotView( QvtkWidget_3, iType, iBaseName );
 }
+//------------------------------------------------------------------------------
+
+
+//------------------------------------------------------------------------------
 QString QImagePageViewTracer::SnapshotViewXYZ( const SnapshotImageType& iType,
     const QString& iBaseName )
 {
   return SnapshotView( QvtkWidget_XYZ, iType, iBaseName );
 }
+//------------------------------------------------------------------------------
 
+
+
+//------------------------------------------------------------------------------
 void QImagePageViewTracer::SetFullScreenView( const int& iS )
 {
   if( this->Is2DImage )
@@ -482,22 +537,38 @@ void QImagePageViewTracer::SetFullScreenView( const int& iS )
       }
     }
 }
+//------------------------------------------------------------------------------
 
+
+
+//------------------------------------------------------------------------------
 int QImagePageViewTracer::GetFullScreenView( ) const
 {
   return IsFullScreen;
 }
+//------------------------------------------------------------------------------
 
+
+
+//------------------------------------------------------------------------------
 bool QImagePageViewTracer::GetVolumeRendering( ) const
 {
   return IsVolumeRendering;
 }
+//------------------------------------------------------------------------------
 
+
+
+//------------------------------------------------------------------------------
 double* QImagePageViewTracer::GetBackgroundColor()
 {
   return this->Pool->GetItem( 0 )->GetBackground();
 }
+//------------------------------------------------------------------------------
 
+
+
+//------------------------------------------------------------------------------
 void QImagePageViewTracer::GetBackgroundColor( double& r,
   double& g, double& b )
 {
@@ -506,7 +577,11 @@ void QImagePageViewTracer::GetBackgroundColor( double& r,
   g = rgb[1];
   b = rgb[2];
 }
+//------------------------------------------------------------------------------
 
+
+
+//------------------------------------------------------------------------------
 void QImagePageViewTracer::SetBackgroundColor( const double& r,
 const double& g, const double& b )
 {
@@ -529,7 +604,12 @@ const double& g, const double& b )
 
   //   this->Pool->SyncSetTextProperty( property );
 }
+//------------------------------------------------------------------------------
 
+
+
+
+//------------------------------------------------------------------------------
 void QImagePageViewTracer::SetBackgroundColor( double rgb[3] )
 {
   double textcolor[3];
@@ -548,7 +628,11 @@ void QImagePageViewTracer::SetBackgroundColor( double rgb[3] )
     }
   //   this->Pool->SyncSetTextProperty( property );
 }
+//------------------------------------------------------------------------------
 
+
+
+//------------------------------------------------------------------------------
 void QImagePageViewTracer::SetBackgroundColor( const QColor& iColor )
 {
   int r, g, b;
@@ -574,7 +658,11 @@ void QImagePageViewTracer::SetBackgroundColor( const QColor& iColor )
     }
   //   this->Pool->SyncSetTextProperty( property );
 }
+//------------------------------------------------------------------------------
 
+
+
+//------------------------------------------------------------------------------
 QVTKWidget* QImagePageViewTracer::GetActiveQVTKWidget( )
 {
   if( !this->Is2DImage )
@@ -596,8 +684,12 @@ QVTKWidget* QImagePageViewTracer::GetActiveQVTKWidget( )
     return QvtkWidget_XY;
     }
 }
+//------------------------------------------------------------------------------
 
 
+
+
+//------------------------------------------------------------------------------
 vtkViewImage* QImagePageViewTracer::GetActiveView()
 {
   if( !this->Is2DImage )
@@ -619,7 +711,12 @@ vtkViewImage* QImagePageViewTracer::GetActiveView()
     return this->Pool->GetItem(0);
     }
 }
+//------------------------------------------------------------------------------
 
+
+
+
+//------------------------------------------------------------------------------
 void QImagePageViewTracer::SetLookupTable( vtkLookupTable* lut )
 {
   if( !lut )
@@ -631,7 +728,11 @@ void QImagePageViewTracer::SetLookupTable( vtkLookupTable* lut )
     this->Pool->SyncSetLookupTable( lut );
     }
 }
+//------------------------------------------------------------------------------
 
+
+
+//------------------------------------------------------------------------------
 void QImagePageViewTracer::quadview()
 {
   if( !this->Is2DImage )
@@ -639,7 +740,11 @@ void QImagePageViewTracer::quadview()
     SetFullScreenView( 0 );
     }
 }
+//------------------------------------------------------------------------------
 
+
+
+//------------------------------------------------------------------------------
 void QImagePageViewTracer::FullScreenViewXY ()
 {
   if( !this->Is2DImage )
@@ -647,8 +752,10 @@ void QImagePageViewTracer::FullScreenViewXY ()
     SetFullScreenView( 1 );
     }
 }
+//------------------------------------------------------------------------------
 
 
+//------------------------------------------------------------------------------
 void QImagePageViewTracer::FullScreenView2( )
 {
   if( !this->Is2DImage )
@@ -656,8 +763,12 @@ void QImagePageViewTracer::FullScreenView2( )
     SetFullScreenView( 2 );
     }
 }
+//------------------------------------------------------------------------------
 
 
+
+
+//------------------------------------------------------------------------------
 void QImagePageViewTracer::FullScreenView3( )
 {
   if( !this->Is2DImage )
@@ -665,8 +776,12 @@ void QImagePageViewTracer::FullScreenView3( )
     SetFullScreenView( 3 );
     }
 }
+//------------------------------------------------------------------------------
 
 
+
+
+//------------------------------------------------------------------------------
 void QImagePageViewTracer::FullScreenViewXYZ ( )
 {
   if( !this->Is2DImage )
@@ -674,7 +789,11 @@ void QImagePageViewTracer::FullScreenViewXYZ ( )
     SetFullScreenView( 4 );
     }
 }
+//------------------------------------------------------------------------------
 
+
+
+//------------------------------------------------------------------------------
 void QImagePageViewTracer::SetView3DToTriPlanarMode()
 {
   if( !this->Is2DImage )
@@ -685,7 +804,11 @@ void QImagePageViewTracer::SetView3DToTriPlanarMode()
     IsVolumeRendering = false;
     }
 }
+//------------------------------------------------------------------------------
+
+
 //
+//------------------------------------------------------------------------------
 void QImagePageViewTracer::SetView3DToVolumeRenderingMode()
 {
   if( !this->Is2DImage )
@@ -696,7 +819,11 @@ void QImagePageViewTracer::SetView3DToVolumeRenderingMode()
     IsVolumeRendering = true;
     }
 }
+//------------------------------------------------------------------------------
 
+
+
+//------------------------------------------------------------------------------
 #ifdef MegaVTK_USE_ITK
 template< class TImage >
 void QImagePageViewTracer::SetITKImage( TImage::Pointer itkImage )
@@ -716,7 +843,11 @@ void QImagePageViewTracer::SetITKImage( TImage::Pointer itkImage )
   this->ImageConverter = myConverter;
 }
 #endif
+//------------------------------------------------------------------------------
 
+
+
+//------------------------------------------------------------------------------
 void QImagePageViewTracer::Set3DImage( vtkImageData* input )
 {
   vtkViewImage2DWithContourWidget* View1 =
@@ -907,7 +1038,11 @@ void QImagePageViewTracer::Set3DImage( vtkImageData* input )
   this->SeedWidget[1]->SetInteractor( this->QvtkWidget_2->GetInteractor() );
   this->SeedWidget[2]->SetInteractor( this->QvtkWidget_3->GetInteractor() );
 }
+//------------------------------------------------------------------------------
 
+
+
+//------------------------------------------------------------------------------
 void QImagePageViewTracer::Set2DImage( vtkImageData* input )
 {
   vtkViewImage2DWithContourWidget* View1 =
@@ -957,7 +1092,11 @@ void QImagePageViewTracer::Set2DImage( vtkImageData* input )
   LayOutWidget3->hide();
   LayOutWidget4->hide();
 }
+//------------------------------------------------------------------------------
 
+
+
+//------------------------------------------------------------------------------
 void QImagePageViewTracer::SetImage( vtkImageData* input )
 {
   if( !input )
@@ -984,44 +1123,76 @@ void QImagePageViewTracer::SetImage( vtkImageData* input )
       }
     }
 }
+//------------------------------------------------------------------------------
 
+
+
+//------------------------------------------------------------------------------
 void QImagePageViewTracer::SetShowScalarBar( const bool& state )
 {
   this->Pool->SyncSetShowScalarBar(state);
   //   this->View3D->SetShowScalarBar( state );
   this->Pool->SyncRender();
 }
+//------------------------------------------------------------------------------
 
+
+
+//------------------------------------------------------------------------------
 void QImagePageViewTracer::SetShowAnnotations( const bool& iState )
 {
   this->Pool->SyncSetShowAnnotations( iState );
 }
+//------------------------------------------------------------------------------
 
+
+
+//------------------------------------------------------------------------------
 void QImagePageViewTracer::SetColorWindow( const double& iValue )
 {
   this->Pool->SyncSetColorWindow( iValue );
 }
+//------------------------------------------------------------------------------
 
+
+
+//------------------------------------------------------------------------------
 void QImagePageViewTracer::SetColorLevel( const double& iValue )
 {
   this->Pool->SyncSetColorLevel( iValue );
 }
+//------------------------------------------------------------------------------
 
+
+
+//------------------------------------------------------------------------------
 void QImagePageViewTracer::SetTag( const QString& iTag )
 {
   this->Tag = iTag;
 }
+//------------------------------------------------------------------------------
 
+
+
+//------------------------------------------------------------------------------
 QString QImagePageViewTracer::GetTag( ) const
 {
   return this->Tag;
 }
+//------------------------------------------------------------------------------
 
+
+
+//------------------------------------------------------------------------------
 int QImagePageViewTracer::GetCellId() const
 {
   return this->CellId;
 }
+//------------------------------------------------------------------------------
 
+
+
+//------------------------------------------------------------------------------
 bool QImagePageViewTracer::GetTracerStatus() const
 {
   if( this->Pool->GetNumberOfItems() )
@@ -1033,7 +1204,11 @@ bool QImagePageViewTracer::GetTracerStatus() const
     return false;
     }
 }
+//------------------------------------------------------------------------------
 
+
+
+//------------------------------------------------------------------------------
 void QImagePageViewTracer::SetTracerON()
 {
   for( int i = 0; i < this->Pool->GetNumberOfItems(); i++ )
@@ -1041,7 +1216,11 @@ void QImagePageViewTracer::SetTracerON()
     this->Pool->GetItem( i )->SetContourWidgetInteractionOn();
     }
 }
+//------------------------------------------------------------------------------
 
+
+
+//------------------------------------------------------------------------------
 void QImagePageViewTracer::SetTracerOFF()
 {
   for( int i = 0; i < this->Pool->GetNumberOfItems(); i++ )
@@ -1049,7 +1228,11 @@ void QImagePageViewTracer::SetTracerOFF()
     this->Pool->GetItem( i )->SetContourWidgetInteractionOff();
     }
 }
+//------------------------------------------------------------------------------
 
+
+
+//------------------------------------------------------------------------------
 void QImagePageViewTracer::SetTracer( const bool& iState )
 {
   for( int i = 0; i < this->Pool->GetNumberOfItems(); i++ )
@@ -1057,7 +1240,11 @@ void QImagePageViewTracer::SetTracer( const bool& iState )
     this->Pool->GetItem( i )->SetContourWidgetInteraction( iState );
     }
 }
+//------------------------------------------------------------------------------
 
+
+
+//------------------------------------------------------------------------------
 void QImagePageViewTracer::SetSeedingON()
 {
   for( int i = 0; i < this->Pool->GetNumberOfItems(); i++ )
@@ -1066,7 +1253,11 @@ void QImagePageViewTracer::SetSeedingON()
     this->SeedWidget[i]->On();
     }
 }
+//------------------------------------------------------------------------------
 
+
+
+//------------------------------------------------------------------------------
 void QImagePageViewTracer::SetSeedingOFF()
 {
   for( int i = 0; i < this->Pool->GetNumberOfItems(); i++ )
@@ -1075,7 +1266,10 @@ void QImagePageViewTracer::SetSeedingOFF()
     this->SeedWidget[i]->Off();
     }
 }
+//------------------------------------------------------------------------------
 
+
+//------------------------------------------------------------------------------
 void QImagePageViewTracer::SetSeeding( const bool& iState )
 {
   for( unsigned int i = 0; i < this->SeedWidget.size(); i++ )
@@ -1083,12 +1277,19 @@ void QImagePageViewTracer::SetSeeding( const bool& iState )
     this->SeedWidget[i]->SetEnabled( iState );
     }
 }
+//------------------------------------------------------------------------------
+
+
+//------------------------------------------------------------------------------
 bool QImagePageViewTracer::GetSeedingStatus( ) const
 {
   return this->SeedWidget.front()->GetEnabled();
 }
+//------------------------------------------------------------------------------
 
 
+
+//------------------------------------------------------------------------------
 vtkPoints* QImagePageViewTracer::GetAllSeeds()
 {
   double pos[3];
@@ -1107,7 +1308,11 @@ vtkPoints* QImagePageViewTracer::GetAllSeeds()
 
   return oPoints;
 }
+//------------------------------------------------------------------------------
 
+
+
+//------------------------------------------------------------------------------
 void QImagePageViewTracer::ClearAllSeeds()
 {
   for( unsigned int i = 0; i < this->SeedWidget.size(); i++ )
@@ -1120,14 +1325,20 @@ void QImagePageViewTracer::ClearAllSeeds()
       }
     }
 }
+//------------------------------------------------------------------------------
 
+
+
+//------------------------------------------------------------------------------
 void QImagePageViewTracer::resizeEvent( QResizeEvent* event )
 {
   QWidget::resizeEvent( event );
   VSplitter->resize( event->size() );
 }
+//------------------------------------------------------------------------------
 
 
+//------------------------------------------------------------------------------
 // void QImagePageViewTracer::ValidateContour( const int& iId )
 void QImagePageViewTracer::ValidateContour(
   const int& iId,
@@ -1169,17 +1380,23 @@ void QImagePageViewTracer::ValidateContour(
         Min[2] = bounds[4];
         Max[2] = bounds[5];
 
-        int* min_idx = this->Pool->GetItem( i )->GetImageCoordinatesFromWorldCoordinates( Min );
-        int* max_idx = this->Pool->GetItem( i )->GetImageCoordinatesFromWorldCoordinates( Max );
+        int* min_idx 
+           = this->Pool->GetItem( i )->GetImageCoordinatesFromWorldCoordinates( Min );
+        int* max_idx i
+           = this->Pool->GetItem( i )->GetImageCoordinatesFromWorldCoordinates( Max );
 
-        std::cout <<"Min = [" <<min_idx[0] <<" " <<min_idx[1] <<" " <<min_idx[2] <<"]" <<std::endl;
-        std::cout <<"Max = [" <<max_idx[0] <<" " <<max_idx[1] <<" " <<max_idx[2] <<"]" <<std::endl;
+        std::cout << "Min = [" << min_idx[0];
+        std::cout << " " << min_idx[1] << " " << min_idx[2] << "]" << std::endl;
+        std::cout << "Max = [" <<max_idx[0];
+        std::cout << " " << max_idx[1] << " " << max_idx[2] << "]" << std::endl;
 
         if( iSave )
           {
           QString identifier = QString( "_id%1" ).arg( CellId );
-          QString MinString = QString( "_m%1_%2_%3" ).arg( min_idx[0] ).arg( min_idx[1] ).arg( min_idx[2] );
-          QString MaxString = QString( "_M%1_%2_%3" ).arg( max_idx[0] ).arg( max_idx[1] ).arg( max_idx[2] );
+          QString MinString = QString( "_m%1_%2_%3" )
+            .arg( min_idx[0] ).arg( min_idx[1] ).arg( min_idx[2] );
+          QString MaxString = QString( "_M%1_%2_%3" )
+            .arg( max_idx[0] ).arg( max_idx[1] ).arg( max_idx[2] );
 
           QString filename_prefix = QString( "contour%1%2%3" )
             .arg( identifier ).arg( MinString ).arg( MaxString );
@@ -1271,7 +1488,7 @@ void QImagePageViewTracer::ValidateContour(
           }
         this->View3D->AddDataSet( contour_copy, contour_property, false );
         contour_copy->Delete();
-        //         this->Pool->GetItem( i )->GetContourWidget()->Initialize( 0 );
+        // this->Pool->GetItem( i )->GetContourWidget()->Initialize( 0 );
         }
       }
 
@@ -1280,8 +1497,11 @@ void QImagePageViewTracer::ValidateContour(
   this->Pool->SyncRender();
   //   this->Pool->SyncMaskImage();
 }
-//
+//------------------------------------------------------------------------------
 
+
+
+//------------------------------------------------------------------------------
 void QImagePageViewTracer::ReinitializeContour( )
 {
   for( int i = 0; i < this->Pool->GetNumberOfItems(); i++ )
@@ -1290,40 +1510,69 @@ void QImagePageViewTracer::ReinitializeContour( )
     }
   this->Pool->SyncRender();
 }
+//------------------------------------------------------------------------------
 
+
+
+//------------------------------------------------------------------------------
 void QImagePageViewTracer::SetSlideView1( const int& iSlice )
 {
   this->Pool->GetItem( 0 )->SetSlice( iSlice );
   this->Pool->SyncRender();
 }
+//------------------------------------------------------------------------------
 
+
+
+
+//------------------------------------------------------------------------------
 void QImagePageViewTracer::SetSlideView2( const int& iSlice )
 {
   this->Pool->GetItem( 1 )->SetSlice( iSlice );
   this->Pool->SyncRender();
 }
+//------------------------------------------------------------------------------
 
+
+
+//------------------------------------------------------------------------------
 void QImagePageViewTracer::SetSlideView3( const int& iSlice )
 {
   this->Pool->GetItem( 2 )->SetSlice( iSlice );
   this->Pool->SyncRender();
 }
+//------------------------------------------------------------------------------
 
+
+
+//------------------------------------------------------------------------------
 void QImagePageViewTracer::MoveSlider1( )
 {
   this->Slider1->setValue( this->Pool->GetItem( 0 )->GetSlice() );
 }
+//------------------------------------------------------------------------------
 
+
+
+//------------------------------------------------------------------------------
 void QImagePageViewTracer::MoveSlider2( )
 {
   this->Slider2->setValue( this->Pool->GetItem( 1 )->GetSlice() );
 }
+//------------------------------------------------------------------------------
 
+
+
+//------------------------------------------------------------------------------
 void QImagePageViewTracer::MoveSlider3( )
 {
   this->Slider3->setValue( this->Pool->GetItem( 2 )->GetSlice() );
 }
+//------------------------------------------------------------------------------
 
+
+
+//------------------------------------------------------------------------------
 void QImagePageViewTracer::SaveStateSplitters()
 {
   QSettings settings;
@@ -1331,8 +1580,10 @@ void QImagePageViewTracer::SaveStateSplitters()
   settings.setValue("HtSplitterSizes", HtSplitter->saveState());
   settings.setValue("HbSplitterSizes", HbSplitter->saveState());
 }
+//------------------------------------------------------------------------------
 
 
+//------------------------------------------------------------------------------
 void QImagePageViewTracer::SetDatabaseRelatedVariables( const QString& iServer,
   const QString& iLogin, const QString& iPassword, const QString& iDatabaseName,
   const int& iExperimentID, const QString& iExperimentName )
@@ -1344,3 +1595,4 @@ void QImagePageViewTracer::SetDatabaseRelatedVariables( const QString& iServer,
   m_DBExperimentID = iExperimentID;
   m_DBExperimentName = iExperimentName;
 }
+//------------------------------------------------------------------------------
