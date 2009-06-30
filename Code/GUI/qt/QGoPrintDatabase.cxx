@@ -113,9 +113,9 @@ template< class myT >
 void QGoPrintDatabase::GetContentFromDB( QString ServerName, QString User,
   QString Password, QString NameDB,QString TableName )
 {
-  typedef GoDBRecordSet< myT >        SetType; 
-  typedef SetType::InternalObjectType InternalObjectType;
-  typedef SetType::RowContainerType   RowContainerType;
+  typedef GoDBRecordSet< myT >                  SetType; 
+  typedef typename SetType::InternalObjectType  InternalObjectType;
+  typedef typename SetType::RowContainerType    RowContainerType;
 
   RowContainerType* RowContainer;
 
