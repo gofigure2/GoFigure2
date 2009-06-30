@@ -105,7 +105,7 @@ public:
     myString << nRows        << ", ";
     myString << nColumns     << ", ";
     myString << "\"" << filePattern << "\"";
-
+    
     return myString.str();
     }
 

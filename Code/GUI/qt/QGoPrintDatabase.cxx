@@ -113,7 +113,11 @@ template< class myT >
 void QGoPrintDatabase::GetContentFromDB( QString ServerName, QString User,
   QString Password, QString NameDB,QString TableName )
 {
-  typedef GoDBRecordSet< myT >   SetType;
+  typedef GoDBRecordSet< myT >        SetType; 
+  typedef SetType::InternalObjectType InternalObjectType;
+  typedef SetType::RowContainerType   RowContainerType;
+
+  RowContainerType* RowContainer;
 
   SetType* mySet = new SetType;
   mySet->SetServerName( ServerName.toStdString() );
@@ -122,10 +126,13 @@ void QGoPrintDatabase::GetContentFromDB( QString ServerName, QString User,
   mySet->SetUser( User.toStdString());
   mySet->SetPassword( Password.toStdString() );
   mySet->PopulateFromDB();
+
   myT myNewObject;
   mySet->AddObject( myNewObject );
+
   m_ColumnNamesContainer = mySet->GetColumnNamesContainer();
-  //m_RowContainer = mySet->GetRowContainer();
+  
+  RowContainer = mySet->GetRowContainer();
 
   delete mySet;
   return;

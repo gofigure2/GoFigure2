@@ -73,9 +73,7 @@ protected:
   QString m_Server;
   QString m_User;
   QString m_Password;
-  
-  //std::vector< InternalObjectType > m_RowContainer;
-  
+   
 };
 
 #endif

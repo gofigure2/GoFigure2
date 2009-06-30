@@ -62,15 +62,16 @@ public:
   // decorate the row type to know if it was modified
   // allows for optimization when synchronising the data
   typedef std::pair< bool, OriginalObjectType > InternalObjectType;
+  typedef std::vector< InternalObjectType >     RowContainerType;
 
   std::vector< std::string >  GetColumnNamesContainer()  
   {
     return m_ColumnNamesContainer;
   }
 
-  std::vector< InternalObjectType > GetRowContainer()  
+  RowContainerType* GetRowContainer()  
   {
-    return m_RowContainer;
+    return &m_RowContainer;
   }
 
   // Add New Object
@@ -250,6 +251,7 @@ private:
   // underlying container
   typedef typename std::vector< InternalObjectType >::iterator  myIteratorType;
   std::vector< InternalObjectType > m_RowContainer;
+
   void PopulateColumnNamesContainer();
 
   bool SaveEachRow( vtkSQLQuery* query );
