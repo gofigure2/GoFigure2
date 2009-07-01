@@ -1382,7 +1382,7 @@ void QImagePageViewTracer::ValidateContour(
 
         int* min_idx 
            = this->Pool->GetItem( i )->GetImageCoordinatesFromWorldCoordinates( Min );
-        int* max_idx i
+        int* max_idx 
            = this->Pool->GetItem( i )->GetImageCoordinatesFromWorldCoordinates( Max );
 
         std::cout << "Min = [" << min_idx[0];
