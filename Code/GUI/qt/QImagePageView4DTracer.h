@@ -58,6 +58,7 @@
 
 #include "QImagePageViewTracer.h"
 #include "MegaVTK2Configure.h"
+#include "QGoPrintDatabase.h"
 
 #include "GoFigureFileInfoHelper.h"
 
@@ -148,6 +149,7 @@ public:
   QMEGAVTKADDON2_EXPORT void SetDatabaseRelatedVariables( const QString& iServer,
     const QString& iLogin, const QString& iPassword, const QString& iDatabaseName,
     const int& iExperimentID, const QString& iExperimentName );
+  QMEGAVTKADDON2_EXPORT void FillTablesWidget();
 
 public slots:
   QMEGAVTKADDON2_EXPORT void SetView( const int& value );
@@ -218,6 +220,7 @@ protected:
   QSlider*      Slider1;
   QPushButton*  Button1;
   QPushButton*  Button2;
+  QGoPrintDatabase* m_DBTables;
 
   void ReadMultiFile( const int& TimePoint );
   void ReadLSMFile( const int& TimePoint );
@@ -233,6 +236,7 @@ protected:
   bool                  IsLsm;
   bool                  IsMegaCapture;
   bool                  IsFileListComputed;
+
 };
 
 #endif

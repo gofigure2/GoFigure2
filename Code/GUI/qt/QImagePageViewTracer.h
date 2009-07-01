@@ -167,6 +167,13 @@ public:
 
   QMEGAVTKADDON2_EXPORT void SaveStateSplitters();
 
+  QMEGAVTKADDON2_EXPORT QString m_DBServer;
+  QMEGAVTKADDON2_EXPORT QString m_DBLogin;
+  QMEGAVTKADDON2_EXPORT QString m_DBPassword;
+  QMEGAVTKADDON2_EXPORT QString m_DBName;
+  QMEGAVTKADDON2_EXPORT int     m_DBExperimentID;
+  QMEGAVTKADDON2_EXPORT QString m_DBExperimentName;
+
 public slots:
 
   QMEGAVTKADDON2_EXPORT void SetBackgroundColor( const double& r, const double& g, const double& b );
@@ -245,12 +252,12 @@ protected:
 
   QString Tag;
 
-  QString m_DBServer;
+/*  QString m_DBServer;
   QString m_DBLogin;
   QString m_DBPassword;
   QString m_DBName;
   int     m_DBExperimentID;
-  QString m_DBExperimentName;
+  QString m_DBExperimentName;*/
 
 #ifdef MegaVTK_USE_ITK
   /**

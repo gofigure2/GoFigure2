@@ -62,13 +62,12 @@ public:
   
 
 protected:
-  QStringList GetTableContentFromDB(QString TableName);
-  void QPrintTable(QString TableName);
-  void QPrintColumnNames (QString TableName);
-  template< class myT > void GetContentFromDB( QString ServerName, QString User,
+  //QStringList GetTableContentAndDisplayFromDB(QString TableName);
+  //void QPrintTable(QString TableName);
+  void QPrintColumnNames (QString TableName, std::vector< std::string > ColumnNames);
+  template< class myT > void GetContentAndDisplayFromDB( QString ServerName, QString User,
   QString Password, QString NameDB,QString TableName );
 
-  std::vector< std::string > m_ColumnNamesContainer;
   QString m_NameDB;
   QString m_Server;
   QString m_User;

@@ -49,7 +49,6 @@
 
 #include "itkQtAdaptor.h"
 #include "itkQtProgressBar.h"
-#include "QGoPrintDatabase.h"
 
 #include <itkImageFileReader.h>
 #include <vnl/vnl_random.h>
@@ -86,9 +85,6 @@ QGoMainWindow::QGoMainWindow( )
 
   m_LUTDialog = new QGoLUTDialog( this );
 
-  m_DBTables = new QGoPrintDatabase() ;
-  m_DBTables->hide();
-
   m_Wizard = new QGoWizardDB;
   m_Wizard->hide();
 
@@ -123,7 +119,6 @@ QGoMainWindow::~QGoMainWindow()
     }
   delete m_LUTDialog;
   delete m_Wizard;
-  delete m_DBTables;
 }
 
 // *************************************************************************
@@ -259,11 +254,16 @@ void QGoMainWindow::openFilesfromDB()
    OpenAndDisplay(Title,true,2);
    }
 
-  m_DBTables->Fill_Database( m_Wizard->Server(), m_Wizard->login(),
+   /* m_PageView.SetDatabaseRelatedVariables(m_Wizard->Server(), m_Wizard->login(),
+    m_Wizard->Password(), m_Wizard->NameDB(),
+    m_Wizard->ExpID(), m_Wizard->ExpName());
+
+    m_PageView.FillTablesWidget;
+    m_DBTables->Fill_Database( m_Wizard->Server(), m_Wizard->login(),
     m_Wizard->Password(), m_Wizard->NameDB(),
     m_Wizard->ExpID(), m_Wizard->ExpName() );
 
-  m_DBTables->show();
+  m_DBTables->show();*/
 
 }
 // *************************************************************************
@@ -1098,6 +1098,9 @@ void QGoMainWindow::OpenAndDisplay(
           {
           myPageView->SetSerieTypeToMegaCaptureDB(ListFilenames);
           myPageView->DisplayFromDB();  
+          myPageView->SetDatabaseRelatedVariables(m_Wizard->Server(), m_Wizard->login(),
+             m_Wizard->Password(), m_Wizard->NameDB(),m_Wizard->ExpID(), m_Wizard->ExpName());
+          myPageView->FillTablesWidget();
           }
         break;
         }
@@ -1108,6 +1111,9 @@ void QGoMainWindow::OpenAndDisplay(
           {
           myPageView->SetSerieTypeToLsmDB(ListFilenames);
           myPageView->DisplayFromDB();
+          myPageView->SetDatabaseRelatedVariables(m_Wizard->Server(), m_Wizard->login(),
+             m_Wizard->Password(), m_Wizard->NameDB(),m_Wizard->ExpID(), m_Wizard->ExpName());
+          myPageView->FillTablesWidget();
           }
         break;
         }

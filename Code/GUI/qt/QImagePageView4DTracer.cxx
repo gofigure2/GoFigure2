@@ -42,6 +42,7 @@
 
 #include "QSplitterchild.h"
 #include "vtkViewImage2DCommand.h"
+#include "QGoPrintDatabase.h"
 
 #include <QResizeEvent>
 #include <vtkImageAppendComponents.h>
@@ -116,6 +117,8 @@ QImagePageView4DTracer::QImagePageView4DTracer( QWidget* parent ) : QWidget( par
   this->IsLsm = false;
   this->IsMegaCapture = false;
   this->IsFileListComputed = false;
+  m_DBTables = new QGoPrintDatabase() ;
+  m_DBTables->hide();
 }
 
 QImagePageView4DTracer::~QImagePageView4DTracer()
@@ -126,6 +129,7 @@ QImagePageView4DTracer::~QImagePageView4DTracer()
     this->Image->Delete();
     this->Image = (vtkImageData*)(0);
     }
+  delete m_DBTables;
 }
 //--------------------------------------------------------------------------------
 
@@ -400,4 +404,14 @@ void QImagePageView4DTracer::SetDatabaseRelatedVariables( const QString& iServer
 {
   this->Whatever->SetDatabaseRelatedVariables( iServer, iLogin, iPassword,
     iDatabaseName, iExperimentID, iExperimentName );
+}
+
+void QImagePageView4DTracer::FillTablesWidget()
+{
+  m_DBTables->Fill_Database( Whatever->m_DBServer,Whatever->m_DBLogin,
+    Whatever->m_DBPassword, Whatever->m_DBName,
+    Whatever->m_DBExperimentID, Whatever->m_DBExperimentName );
+
+  m_DBTables->show();
+
 }

@@ -63,9 +63,9 @@ QGoPrintDatabase::~QGoPrintDatabase()
 {
 }
 
-void QGoPrintDatabase::QPrintColumnNames (QString TableName)
+void QGoPrintDatabase::QPrintColumnNames (QString TableName,std::vector< std::string > ColumnNames )
 {
-  int numberCol=m_ColumnNamesContainer.size();
+  int numberCol=ColumnNames.size();
   QTableWidget* QTabName = new QTableWidget;
   this->DBTabWidget->addTab(QTabName,TableName);
   QTabName->setRowCount(15);
@@ -75,7 +75,7 @@ void QGoPrintDatabase::QPrintColumnNames (QString TableName)
     {
     QTableWidgetItem* HeaderCol=new QTableWidgetItem;
     std::string NameHeader;
-    NameHeader = m_ColumnNamesContainer[i];
+    NameHeader =ColumnNames[i];
     HeaderCol->setText(NameHeader.c_str());
     QFont serifFont("Arial", 10, QFont::Bold);
     HeaderCol->setFont(serifFont);
@@ -93,9 +93,8 @@ void QGoPrintDatabase::Fill_Database(QString ServerName,QString login,
   m_NameDB=DBName;
   this->setWindowTitle(QString("DB: %1 - Exp: %2").arg(DBName).arg(ExpName));
 
-  GetContentFromDB< GoDBFigureRow     >( m_Server, m_User, m_Password, m_NameDB,"figure");
+  GetContentAndDisplayFromDB< GoDBFigureRow     >( m_Server, m_User, m_Password, m_NameDB,"figure");
   
-  QPrintTable ("figure");
   //Need to create GoDBMeshRow,etc...first
   //QPrintTable ("mesh");
   //QPrintTable ("track");
@@ -103,16 +102,18 @@ void QGoPrintDatabase::Fill_Database(QString ServerName,QString login,
 
 }
 
-void QGoPrintDatabase::QPrintTable(QString TableName)
+/*void QGoPrintDatabase::QPrintTable(QString TableName)
 {
   
   QPrintColumnNames(TableName);
-}
+
+}*/
 
 template< class myT >
-void QGoPrintDatabase::GetContentFromDB( QString ServerName, QString User,
+void QGoPrintDatabase::GetContentAndDisplayFromDB( QString ServerName, QString User,
   QString Password, QString NameDB,QString TableName )
 {
+  std::vector< std::string > ColumnNamesContainer;
   typedef GoDBRecordSet< myT >                  SetType; 
   typedef typename SetType::InternalObjectType  InternalObjectType;
   typedef typename SetType::RowContainerType    RowContainerType;
@@ -130,9 +131,10 @@ void QGoPrintDatabase::GetContentFromDB( QString ServerName, QString User,
   myT myNewObject;
   mySet->AddObject( myNewObject );
 
-  m_ColumnNamesContainer = mySet->GetColumnNamesContainer();
-  
+  ColumnNamesContainer = mySet->GetColumnNamesContainer();
+  QPrintColumnNames(TableName, ColumnNamesContainer);
   RowContainer = mySet->GetRowContainer();
+  
 
   delete mySet;
   return;
