@@ -93,9 +93,10 @@ QGoWizardDB::QGoWizardDB( QWidget *parent )
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-int QGoWizardDB::IsLsm()
+int QGoWizardDB::IsLsmSerie()
 {
-  return field("IsLsm").toInt();
+  std::cout<<"islsm value"<<IsLsm<<std::endl;
+  return IsLsm;
 }
 //------------------------------------------------------------------------------
 
@@ -112,19 +113,30 @@ FileListType QGoWizardDB::ListFilenames()
 
   if (!vectListFilenames.empty())
     {
-    for(unsigned int i = 0; i < vectListFilenames.size();)
-      {
-      GoFigureFileInfoHelper tempInfo;
-      tempInfo.Filename = vectListFilenames[i+8];
-      tempInfo.TimePoint = atoi(vectListFilenames[i+4].c_str());
-      tempInfo.ZDepth = atoi(vectListFilenames[i+7].c_str());
-      tempInfo.CTile = atoi(vectListFilenames[i+3].c_str());
-      tempInfo.RTile = atoi(vectListFilenames[i+2].c_str());
-      tempInfo.YOffset = atoi(vectListFilenames[i+5].c_str());
-      tempInfo.XOffset = atoi(vectListFilenames[i+6].c_str());
-      ListFilenames.push_back( tempInfo );
-      i = i+9;
-      }
+      QString newfilename = vectListFilenames[0].c_str();
+      QString ext = QFileInfo( newfilename ).suffix();
+      if( ext.compare( "lsm", Qt::CaseInsensitive ) == 0 )
+        {
+        IsLsm = true;
+        }
+      else
+        {
+        IsLsm = false;
+        }
+
+      for(unsigned int i = 0; i < vectListFilenames.size();)
+        {
+        GoFigureFileInfoHelper tempInfo;
+        tempInfo.Filename = vectListFilenames[i+8];
+        tempInfo.TimePoint = atoi(vectListFilenames[i+4].c_str());
+        tempInfo.ZDepth = atoi(vectListFilenames[i+7].c_str());
+        tempInfo.CTile = atoi(vectListFilenames[i+3].c_str());
+        tempInfo.RTile = atoi(vectListFilenames[i+2].c_str());
+        tempInfo.YOffset = atoi(vectListFilenames[i+5].c_str());
+        tempInfo.XOffset = atoi(vectListFilenames[i+6].c_str());
+        ListFilenames.push_back( tempInfo );
+        i = i+9;
+        }
     }
 
   std::sort( ListFilenames.begin(), ListFilenames.end() );
@@ -845,8 +857,6 @@ Import_SerieGridPage::Import_SerieGridPage( QWidget *parent )
   gridlayout->setColumnStretch ( 1, 1);
 
   setLayout(gridlayout);
-  IsLsm = new QLabel;
-  registerField( "IsLsm", IsLsm );
 
   QObject::connect( this->BrowseButton,SIGNAL( clicked() ),
   this,SLOT( SelectSeriesGrid() ));
@@ -933,8 +943,6 @@ void Import_SerieGridPage::SelectSeriesGrid()
       QString ext = QFileInfo( newfilename ).suffix();
       if( ext.compare( "lsm", Qt::CaseInsensitive ) == 0 )
         {
-          setField("IsLsm","1");
-          std::cout<<"lsm files"<<std::endl;
           try
           {
             itk::Lsm3DSerieImport::Pointer  importFileInfoList = itk::Lsm3DSerieImport::New();
@@ -996,7 +1004,6 @@ void Import_SerieGridPage::SelectSeriesGrid()
         }
       else
         {
-        setField("IsLsm","0");
           try
           {
           itk::MegaCaptureImport::Pointer  importFileInfoList = itk::MegaCaptureImport::New();

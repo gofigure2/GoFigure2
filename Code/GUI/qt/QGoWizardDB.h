@@ -93,9 +93,12 @@ public:
   QMEGAVTKADDON2_EXPORT QString Server();
   QMEGAVTKADDON2_EXPORT QString login();
   QMEGAVTKADDON2_EXPORT QString Password();
-  QMEGAVTKADDON2_EXPORT int IsLsm();
+  QMEGAVTKADDON2_EXPORT int IsLsmSerie();
 
   QPushButton* nextButton;
+
+protected:
+  bool IsLsm;
 
 };
 
@@ -205,7 +208,6 @@ protected:
   QGridLayout* gridlayout;
   QLineEdit* OpenOrCreateSeriesGrid_fake;
   QString newfilename;
-  QLabel* IsLsm;
   
 
 protected slots:

@@ -133,7 +133,7 @@ public:
     { this->SetSerieType( 0 ); }
   QMEGAVTKADDON2_EXPORT void SetSerieTypeToMegaCapture( )
     { this->SetSerieType( 1 ); }
-  QMEGAVTKADDON2_EXPORT void SetSerieTypeToDataBase(FileListType FileListFromDB)
+  QMEGAVTKADDON2_EXPORT void SetSerieTypeToMegaCaptureDB(FileListType FileListFromDB)
     {
     this->SetSerieType( 2 );
     this->FileList = FileListFromDB;

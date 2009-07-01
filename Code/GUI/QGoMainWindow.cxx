@@ -250,7 +250,7 @@ void QGoMainWindow::openFilesfromDB()
   QString Title;
   Title = (tr("From Database: %1 Experiment: %2").arg(m_Wizard->NameDB()).arg(m_Wizard->ExpName()));
   
-  if (m_Wizard->IsLsm() == 1)
+  if (m_Wizard->IsLsmSerie())
    {
    OpenAndDisplay(Title,true,3);
    }
@@ -1097,7 +1097,7 @@ void QGoMainWindow::OpenAndDisplay(
         if(!ListFilenames.empty())
           {
           myPageView->SetSerieTypeToMegaCaptureDB(ListFilenames);
-          myPageView->DisplayFromDB();
+          myPageView->DisplayFromDB();  
           }
         break;
         }
@@ -1109,15 +1109,16 @@ void QGoMainWindow::OpenAndDisplay(
           myPageView->SetSerieTypeToLsmDB(ListFilenames);
           myPageView->DisplayFromDB();
           }
+        break;
         }
       default:
         {
-        std::cout <<"QGoMainWindow::OpenAndDisplay: Type != 0, 1 or 2" <<std::endl;
+        std::cout <<"QGoMainWindow::OpenAndDisplay: Type != 0, 1 or 2 or 3" <<std::endl;
         return;
         }
       }
     }
-  if( Type != 2 )
+  if( Type != 2 && Type != 3)
     {
     myPageView->SetFileName( iTag.toAscii( ).data( ) );
     }
