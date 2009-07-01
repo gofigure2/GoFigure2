@@ -104,16 +104,22 @@ int QGoWizardDB::IsLsmSerie()
 FileListType QGoWizardDB::ListFilenames()
 {
   FileListType ListFilenames;
+  ListFilenames.clear();
   std::vector<std::string> vectListFilenames = ListValuesForRow(
   field("ServerName").toString().toStdString(),
         field("User").toString().toStdString(),
         field("Password").toString().toStdString(),
         field("NameDB").toString().toStdString(),"seriesgrid",
         "experimentID",field("ExpID").toString().toStdString());
+  std::cout<<field("ServerName").toString().toStdString().c_str()<<std::endl;
+  std::cout<<field("User").toString().toStdString().c_str()<<std::endl;
+  std::cout<<field("Password").toString().toStdString().c_str()<<std::endl;
+  std::cout<<field("NameDB").toString().toStdString().c_str()<<std::endl;
+  std::cout<<field("ExpID").toString().toStdString().c_str()<<std::endl;
 
   if (!vectListFilenames.empty())
     {
-      QString newfilename = vectListFilenames[0].c_str();
+      QString newfilename = vectListFilenames[8].c_str();
       QString ext = QFileInfo( newfilename ).suffix();
       if( ext.compare( "lsm", Qt::CaseInsensitive ) == 0 )
         {

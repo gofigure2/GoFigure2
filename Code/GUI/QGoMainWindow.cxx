@@ -235,6 +235,7 @@ void QGoMainWindow::on_actionOpen_Multiple_Files_activated( )
 //--------------------------------------------------------------------------------
 void QGoMainWindow::on_actionUse_DataBase_activated()
 {
+  m_Wizard->restart();
   m_Wizard->show();
 }
 //--------------------------------------------------------------------------------
@@ -264,6 +265,7 @@ void QGoMainWindow::openFilesfromDB()
     m_Wizard->ExpID(), m_Wizard->ExpName() );
 
   m_DBTables->show();*/
+  m_Wizard->hide();
 
 }
 // *************************************************************************
@@ -1096,6 +1098,7 @@ void QGoMainWindow::OpenAndDisplay(
         FileListType ListFilenames = m_Wizard->ListFilenames();
         if(!ListFilenames.empty())
           {
+          std::cout<<"Ok, I have a ListFilenames"<<std::endl;
           myPageView->SetSerieTypeToMegaCaptureDB(ListFilenames);
           myPageView->DisplayFromDB();  
           myPageView->SetDatabaseRelatedVariables(m_Wizard->Server(), m_Wizard->login(),
@@ -1109,6 +1112,7 @@ void QGoMainWindow::OpenAndDisplay(
         FileListType ListFilenames = m_Wizard->ListFilenames();
         if(!ListFilenames.empty())
           {
+          std::cout<<"Ok, I have a ListFilenames"<<std::endl;
           myPageView->SetSerieTypeToLsmDB(ListFilenames);
           myPageView->DisplayFromDB();
           myPageView->SetDatabaseRelatedVariables(m_Wizard->Server(), m_Wizard->login(),
