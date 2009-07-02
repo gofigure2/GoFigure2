@@ -93,9 +93,10 @@ QGoWizardDB::QGoWizardDB( QWidget *parent )
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-int QGoWizardDB::IsLsmSerie()
+bool QGoWizardDB::IsLsmSerie()
 {
   std::cout<<"islsm value"<<IsLsm<<std::endl;
+  std::cout<<IsLsm<<std::endl;
   return IsLsm;
 }
 //------------------------------------------------------------------------------

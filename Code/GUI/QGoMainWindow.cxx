@@ -246,14 +246,7 @@ void QGoMainWindow::openFilesfromDB()
   QString Title;
   Title = (tr("From Database: %1 Experiment: %2").arg(m_Wizard->NameDB()).arg(m_Wizard->ExpName()));
   
-  if (m_Wizard->IsLsmSerie())
-   {
-   OpenAndDisplay(Title,true,3);
-   }
-  else
-   {
-   OpenAndDisplay(Title,true,2);
-   }
+  OpenAndDisplay(Title,true,2);
 
    /* m_PageView.SetDatabaseRelatedVariables(m_Wizard->Server(), m_Wizard->login(),
     m_Wizard->Password(), m_Wizard->NameDB(),
@@ -1099,36 +1092,29 @@ void QGoMainWindow::OpenAndDisplay(
         if(!ListFilenames.empty())
           {
           std::cout<<"Ok, I have a ListFilenames"<<std::endl;
-          myPageView->SetSerieTypeToMegaCaptureDB(ListFilenames);
-          myPageView->DisplayFromDB();  
-          myPageView->SetDatabaseRelatedVariables(m_Wizard->Server(), m_Wizard->login(),
-             m_Wizard->Password(), m_Wizard->NameDB(),m_Wizard->ExpID(), m_Wizard->ExpName());
-          myPageView->FillTablesWidget();
-          }
-        break;
-        }
-      case 3:
-        {
-        FileListType ListFilenames = m_Wizard->ListFilenames();
-        if(!ListFilenames.empty())
+          if (m_Wizard->IsLsmSerie())
           {
-          std::cout<<"Ok, I have a ListFilenames"<<std::endl;
-          myPageView->SetSerieTypeToLsmDB(ListFilenames);
+            myPageView->SetSerieTypeToLsmDB(ListFilenames);
+          }
+          else
+          {
+            myPageView->SetSerieTypeToMegaCaptureDB(ListFilenames);
+          }
           myPageView->DisplayFromDB();
           myPageView->SetDatabaseRelatedVariables(m_Wizard->Server(), m_Wizard->login(),
-             m_Wizard->Password(), m_Wizard->NameDB(),m_Wizard->ExpID(), m_Wizard->ExpName());
+          m_Wizard->Password(), m_Wizard->NameDB(),m_Wizard->ExpID(), m_Wizard->ExpName());
           myPageView->FillTablesWidget();
           }
         break;
         }
       default:
         {
-        std::cout <<"QGoMainWindow::OpenAndDisplay: Type != 0, 1 or 2 or 3" <<std::endl;
+        std::cout <<"QGoMainWindow::OpenAndDisplay: Type != 0, 1 or 2" <<std::endl;
         return;
         }
       }
     }
-  if( Type != 2 && Type != 3)
+  if( Type != 2)
     {
     myPageView->SetFileName( iTag.toAscii( ).data( ) );
     }

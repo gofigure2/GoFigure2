@@ -93,7 +93,7 @@ public:
   QMEGAVTKADDON2_EXPORT QString Server();
   QMEGAVTKADDON2_EXPORT QString login();
   QMEGAVTKADDON2_EXPORT QString Password();
-  QMEGAVTKADDON2_EXPORT int IsLsmSerie();
+  QMEGAVTKADDON2_EXPORT bool IsLsmSerie();
 
   QPushButton* nextButton;
 
