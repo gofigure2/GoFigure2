@@ -1346,9 +1346,9 @@ void QImagePageViewTracer::ValidateContour(
 {
   // color object
   double rgb[3];
-  rgb[0] = static_cast< double >( iColor.red() ) / 255.;
+  rgb[0] = static_cast< double >( iColor.red() )   / 255.;
   rgb[1] = static_cast< double >( iColor.green() ) / 255.;
-  rgb[2] = static_cast< double >( iColor.blue() ) / 255.;
+  rgb[2] = static_cast< double >( iColor.blue() )  / 255.;
 
   // The spline representation of the figure
   vtkOrientedGlyphContourRepresentation* contour_rep;
@@ -1485,7 +1485,6 @@ void QImagePageViewTracer::ValidateContour(
             row.points = db_convert->GetMySQLText( contour );
             db_convert->Delete();
 
-
             // compute perimeter and center
             double pos[3]; // curent point
             double prev[3];// previous point
@@ -1546,6 +1545,53 @@ void QImagePageViewTracer::ValidateContour(
 //------------------------------------------------------------------------------
 
 
+#if 0
+//------------------------------------------------------------------------------
+void QImagePageViewTracer::LoadFiguresFromDB( )
+{
+
+  // NOTE ALEX: this will load all figures from the the DB
+  // even if they belong to different ExpID
+
+  bool database_info = ( m_DBExperimentID == -1 ) && m_DBLogin.isNull()
+    && m_DBExperimentName.isNull() && m_DBName.isNull()
+    && m_DBServer.isNull() && m_DBPassword.isNull();
+  if( !database_info )
+    {
+    //typedef GoDBRecordSet< GoDBFigureRow >   SetType;
+    SetType* mySet = new SetType;
+    mySet->SetServerName( m_DBServer.toStdString() );
+    mySet->SetDataBaseName( m_DBName.toStdString() );
+    mySet->SetTableName( "figure" );
+    mySet->SetUser( m_DBLogin.toStdString() );
+    mySet->SetPassword( m_DBPassword.toStdString() );
+    mySet->PopulateFromDB();
+    
+    // FOR EACH CONTOUR IN THE RECORDSET
+ 
+    // USE POLYDATADBREADER TO TRANSFORM STRING IN PD
+
+    // SET PROPOERTY
+    vtkProperty* contour_property = vtkProperty::New();
+    contour_property->SetRepresentationToWireframe();
+
+    // COPY FOR EACH VIEW
+    vtkPolyData* contour_copy = vtkPolyData::New();
+    contour_copy->ShallowCopy( contour );
+    for( int j = 0; j < this->Pool->GetNumberOfItems(); j++ )
+      {
+      this->Pool->GetItem( j )->AddDataSet( 
+      contour_copy, contour_property, true );
+      }
+    this->View3D->AddDataSet( contour_copy, contour_property, false );
+    contour_copy->Delete();
+
+    delete mySet;
+
+    }
+}
+//------------------------------------------------------------------------------
+#endif
 
 //------------------------------------------------------------------------------
 void QImagePageViewTracer::ReinitializeContour( )
