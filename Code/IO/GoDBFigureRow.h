@@ -250,31 +250,31 @@ public:
 
  std::map<std::string,std::string> LinkColumnNamesAndValues ()
  {
-   std::map<std::string,std::string> map;
-   map["figureID"] = figureID;
-   map["imageID"] = imageID;
-   map["meshID"] = meshID;
-   map["points"] = points;
-   map["cellTypeID"] = cellTypeID;
-   map["flavorID"] = flavorID;
-   map["meanRed"] = meanRed;
-   map["meanGreen"] = meanGreen;
-   map["meanBlue"] = meanBlue;
-   map["area"] = area;
-   map["perimeter"] = perimeter;
-   map["AP"] = AP;
-   map["score"] = score;
-   map["xCenter"] = xCenter;
-   map["yCenter"] = yCenter;
-   map["experimentID"] = experimentID;
-   map["RCoord"] = RCoord;
-   map["CCoord"] = CCoord;
-   map["TCoord"] = TCoord;
-   map["XCoord"] = XCoord;
-   map["YCoord"] = YCoord;
-   map["ZCoord"] = ZCoord;
+   std::map<std::string,std::string> Map;
+   Map["figureID"] = figureID;
+   Map["imageID"] = imageID;
+   Map["meshID"] = meshID;
+   Map["points"] = points;
+   Map["cellTypeID"] = cellTypeID;
+   Map["flavorID"] = flavorID;
+   Map["meanRed"] = meanRed;
+   Map["meanGreen"] = meanGreen;
+   Map["meanBlue"] = meanBlue;
+   Map["area"] = area;
+   Map["perimeter"] = perimeter;
+   Map["AP"] = AP;
+   Map["score"] = score;
+   Map["xCenter"] = xCenter;
+   Map["yCenter"] = yCenter;
+   Map["experimentID"] = experimentID;
+   Map["RCoord"] = RCoord;
+   Map["CCoord"] = CCoord;
+   Map["TCoord"] = TCoord;
+   Map["XCoord"] = XCoord;
+   Map["YCoord"] = YCoord;
+   Map["ZCoord"] = ZCoord;
 
-   return map;
+   return Map;
  }
 };
 

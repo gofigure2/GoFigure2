@@ -63,7 +63,7 @@ QGoPrintDatabase::~QGoPrintDatabase()
 {
 }
 
-void QGoPrintDatabase::QPrintColumnNames (QString TableName,std::vector< std::string > ColumnNames )
+QTableWidget* QGoPrintDatabase::QPrintColumnNames (QString TableName,std::vector< std::string > ColumnNames )
 {
   int numberCol=ColumnNames.size();
   QTableWidget* QTabName = new QTableWidget;
@@ -81,7 +81,7 @@ void QGoPrintDatabase::QPrintColumnNames (QString TableName,std::vector< std::st
     HeaderCol->setFont(serifFont);
     QTabName->setHorizontalHeaderItem(i,HeaderCol);
     }
-
+  return QTabName;
 }
 
 void QGoPrintDatabase::Fill_Database(QString ServerName,QString login,
@@ -132,29 +132,45 @@ void QGoPrintDatabase::GetContentAndDisplayFromDB( QString ServerName, QString U
   mySet->AddObject( myNewObject );
 
   ColumnNamesContainer = mySet->GetColumnNamesContainer();
-  QPrintColumnNames(TableName, ColumnNamesContainer);
+  QTableWidget* NewTable = new QTableWidget;
+  NewTable = QPrintColumnNames(TableName, ColumnNamesContainer);
   RowContainer = mySet->GetRowContainer();
-
-
+  PrintOutContentFromDB< myT >(RowContainer, NewTable);
 
   delete mySet;
-  return;
 }
 
 template<class myT>
-void QGoPrintDatabase::PrintOutContentFromDB(typename GoDBRecordSet< myT >::RowContainerType RowContainer,
-    QTableWidget TableToFill)
+void QGoPrintDatabase::PrintOutContentFromDB(typename GoDBRecordSet< myT >::RowContainerType *RowContainer,
+    QTableWidget* TableToFill)
 {
-  /* for ( int i = 0; i< RowContainer.size()); ++i )
+  for ( int i = 0; i< RowContainer->size(); ++i )
      {
-
-     if (TableToFill->columnCount() <> Row.size())
+     std::map<std::string,std::string> Map = (*RowContainer)[i].second.LinkColumnNamesAndValues();
+     if (TableToFill->columnCount() != Map.size())
        {
-         std::cout<<"Pb, row is not the same size as the number of col"<<std::endl;
-         return;
+       std::cout<<"Pb, row is not the same size as the number of col"<<std::endl;
+       return;
        }
-     }*/
-
-
+     else
+       {
+       for (int j = 0; j< TableToFill->columnCount();j++)
+         {
+         QTableWidgetItem* HeaderCol = new QTableWidgetItem;
+         HeaderCol = TableToFill->horizontalHeaderItem(i);
+         std::map<std::string,std::string>::iterator it = Map.find(HeaderCol->text().toStdString());
+         if (it == Map.end())
+           {
+           return;
+           }
+         else
+           {
+           QTableWidgetItem* CellTable = new QTableWidgetItem;
+           CellTable->setText(it->second.c_str());
+           TableToFill->setItem(i,j,CellTable);
+           }
+         }
+       }
+     }
 }
 
