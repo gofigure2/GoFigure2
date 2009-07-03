@@ -42,6 +42,8 @@
 
 #include <string>
 #include <map>
+#include <iostream>
+#include <sstream>
 
 class GoDBFigureRow
 {
@@ -248,34 +250,42 @@ public:
     return true;
     }
 
+ std::string Convert(int ToConvert)
+ {
+  std::stringstream st;
+  st << ToConvert;
+  std::string mystring = st.str();
+  return mystring;
+ }
+
  std::map<std::string,std::string> LinkColumnNamesAndValues ()
  {
    std::map<std::string,std::string> Map;
-   Map["figureID"] = figureID;
-   Map["imageID"] = imageID;
-   Map["meshID"] = meshID;
+   Map["figureID"] = Convert(figureID);
+   Map["imageID"] = Convert(imageID);
+   Map["meshID"] = Convert(meshID);
    Map["points"] = points;
-   Map["cellTypeID"] = cellTypeID;
-   Map["flavorID"] = flavorID;
-   Map["meanRed"] = meanRed;
-   Map["meanGreen"] = meanGreen;
-   Map["meanBlue"] = meanBlue;
-   Map["area"] = area;
-   Map["perimeter"] = perimeter;
-   Map["AP"] = AP;
-   Map["score"] = score;
-   Map["xCenter"] = xCenter;
-   Map["yCenter"] = yCenter;
-   Map["experimentID"] = experimentID;
-   Map["RCoord"] = RCoord;
-   Map["CCoord"] = CCoord;
-   Map["TCoord"] = TCoord;
-   Map["XCoord"] = XCoord;
-   Map["YCoord"] = YCoord;
-   Map["ZCoord"] = ZCoord;
+   Map["cellTypeID"] = Convert(cellTypeID);
+   Map["flavorID"] = Convert(flavorID);
+   Map["meanRed"] = Convert(meanRed);
+   Map["meanGreen"] = Convert(meanGreen);
+   Map["meanBlue"] = Convert(meanBlue);
+   Map["area"] = Convert(area);
+   Map["perimeter"] = Convert(perimeter);
+   Map["AP"] = Convert(AP);
+   Map["score"] = Convert(score);
+   Map["xCenter"] = Convert(xCenter);
+   Map["yCenter"] = Convert(yCenter);
+   Map["experimentID"] = Convert(experimentID);
+   Map["RCoord"] = Convert(RCoord);
+   Map["CCoord"] = Convert(CCoord);
+   Map["TCoord"] = Convert(TCoord);
+   Map["XCoord"] = Convert(XCoord);
+   Map["YCoord"] = Convert(YCoord);
+   Map["ZCoord"] = Convert(ZCoord); 
 
    return Map;
  }
-};
+ };
 
 #endif

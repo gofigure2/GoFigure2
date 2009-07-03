@@ -65,10 +65,78 @@ protected:
   //QStringList GetTableContentAndDisplayFromDB(QString TableName);
   //void QPrintTable(QString TableName);
   QTableWidget* QPrintColumnNames (QString TableName, std::vector< std::string > ColumnNames);
-  template< class myT > void GetContentAndDisplayFromDB( QString ServerName, QString User,
-  QString Password, QString NameDB,QString TableName );
-  template<class myT> void PrintOutContentFromDB(typename GoDBRecordSet< myT >::RowContainerType* RowContainer,
-  QTableWidget* TableToFill);
+
+  template< class myT >
+  void GetContentAndDisplayFromDB( QString ServerName, QString User,
+    QString Password, QString NameDB,QString TableName )
+  {
+    std::vector< std::string > ColumnNamesContainer;
+    typedef GoDBRecordSet< myT >                  SetType;
+    typedef typename SetType::InternalObjectType  InternalObjectType;
+    typedef typename SetType::RowContainerType    RowContainerType;
+
+    RowContainerType* RowContainer;
+
+    SetType* mySet = new SetType;
+    mySet->SetServerName( ServerName.toStdString() );
+    mySet->SetDataBaseName( NameDB.toStdString() );
+    mySet->SetTableName( TableName.toStdString() );
+    mySet->SetUser( User.toStdString());
+    mySet->SetPassword( Password.toStdString() );
+    mySet->PopulateFromDB();
+
+    myT myNewObject;
+    mySet->AddObject( myNewObject );
+
+    ColumnNamesContainer = mySet->GetColumnNamesContainer();
+    QTableWidget* NewTable = new QTableWidget;
+    NewTable = QPrintColumnNames(TableName, ColumnNamesContainer);
+    RowContainer = mySet->GetRowContainer();
+    if (RowContainer->size()<2)
+      {
+        std::cout<<"Table empty"<<std::endl;
+      }
+    else
+      {
+        std::cout<<"Row container size: "<<RowContainer->size()<<std::endl;
+        PrintOutContentFromDB< myT >(RowContainer, NewTable);
+      }
+    delete mySet;
+  };
+
+  template<class myT>
+  void PrintOutContentFromDB(typename GoDBRecordSet< myT >::RowContainerType *RowContainer,
+    QTableWidget* TableToFill)
+    {
+      for ( int i = 1; i< RowContainer->size(); ++i )
+         {
+         std::map<std::string,std::string> Map = (*RowContainer)[i].second.LinkColumnNamesAndValues();
+         if (TableToFill->columnCount() != Map.size())
+           {
+           std::cout<<"Pb, row is not the same size as the number of col"<<std::endl;
+           return;
+           }
+         else
+           {
+           for (int j = 0; j< TableToFill->columnCount();j++)
+             {
+             QTableWidgetItem* HeaderCol = new QTableWidgetItem;
+             HeaderCol = TableToFill->horizontalHeaderItem(i);
+             std::map<std::string,std::string>::iterator it = Map.find(HeaderCol->text().toStdString());
+             if (it == Map.end())
+               {
+               return;
+               }
+             else
+               {
+               QTableWidgetItem* CellTable = new QTableWidgetItem;
+               CellTable->setText(it->second.c_str());
+               TableToFill->setItem(i-1,j,CellTable);
+               }
+             }
+           }
+         }
+    };
 
   QString m_NameDB;
   QString m_Server;
