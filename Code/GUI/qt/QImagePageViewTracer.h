@@ -130,8 +130,7 @@ public:
     const int& iExperimentID, const QString& iExperimentName );
 
 
-  template< typename TContourContainer,
-            typename TPropertyContainer >
+  template< typename TContourContainer, typename TPropertyContainer >
   QMEGAVTKADDON2_EXPORT
   void AddContours( TContourContainer& iContours,
     TPropertyContainer& iProperty,

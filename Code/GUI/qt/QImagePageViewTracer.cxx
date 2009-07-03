@@ -1339,36 +1339,55 @@ void QImagePageViewTracer::resizeEvent( QResizeEvent* event )
 
 
 //------------------------------------------------------------------------------
-// void QImagePageViewTracer::ValidateContour( const int& iId )
 void QImagePageViewTracer::ValidateContour(
   const int& iId,
   const QColor& iColor,
   const bool& iSave )
 {
+  // color object
   double rgb[3];
   rgb[0] = static_cast< double >( iColor.red() ) / 255.;
   rgb[1] = static_cast< double >( iColor.green() ) / 255.;
   rgb[2] = static_cast< double >( iColor.blue() ) / 255.;
 
+  // The spline representation of the figure
   vtkOrientedGlyphContourRepresentation* contour_rep;
+  
+  // The polydata (discrete mesh) representation of the figure
   vtkPolyData* contour;
 
+  // properties (representation style and color) of the figure
   vtkProperty* contour_property = vtkProperty::New();
   contour_property->SetRepresentationToWireframe();
   contour_property->SetColor( rgb );
-//   contour_property->SetLineWidth( 3. );
 
+  // the correponding cell ID (several figures can have the same id
+  // as several 2D contours belong to the same 3D cell
   CellId = iId;
 
+  // For each vizualization window
+  // NOTE ALEX: make that a seperated private method
+  //            to reduce the size of this method
+  // NOTE ALEX: why are we making a loop over 2D views here? Don't we know in
+  //            which view we are editing?
   for( int i = 0; i < this->Pool->GetNumberOfItems(); i++ )
     {
+
+    // Get the figure as a spline and transform it into a polydata
     contour_rep = this->Pool->GetItem( i )->GetContourRepresentation();
     contour = contour_rep->GetContourRepresentationAsPolyData( );
 
+    // if we were succesfull and the contour is no degenrated, proceed
+    // NOTE ALEX: what if not?
     if( contour )
       {
       if( contour->GetNumberOfPoints() > 2 )
         {
+        
+        // -------
+        // BOUNDS COMPUTATION
+        // -------
+
         double bounds[6];
         contour->GetBounds( bounds );
 
@@ -1385,62 +1404,98 @@ void QImagePageViewTracer::ValidateContour(
         int* max_idx 
            = this->Pool->GetItem( i )->GetImageCoordinatesFromWorldCoordinates( Max );
 
+        // NOTE ALEX: use itk debug / vtk debug or a debug flag here
+    
         std::cout << "Min = [" << min_idx[0];
         std::cout << " " << min_idx[1] << " " << min_idx[2] << "]" << std::endl;
         std::cout << "Max = [" <<max_idx[0];
         std::cout << " " << max_idx[1] << " " << max_idx[2] << "]" << std::endl;
 
+        // make a copy for each view
+        vtkPolyData* contour_copy = vtkPolyData::New();
+        contour_copy->ShallowCopy( contour );
+        for( int j = 0; j < this->Pool->GetNumberOfItems(); j++ )
+          {
+          this->Pool->GetItem( j )->AddDataSet( 
+            contour_copy, contour_property, true );
+          }
+        this->View3D->AddDataSet( contour_copy, contour_property, false );
+        contour_copy->Delete();
+
+        // ------
+        // SAVE AS A FILE AND IN DB
+        // ------
+        
+        // NOTE ALEX: separate method
+        // NOTE ALEX: shoudn't saving in a file and in the DB
+        //            be mutually exclusive?
         if( iSave )
           {
+
+          // build up the base file name
           QString identifier = QString( "_id%1" ).arg( CellId );
           QString MinString = QString( "_m%1_%2_%3" )
             .arg( min_idx[0] ).arg( min_idx[1] ).arg( min_idx[2] );
           QString MaxString = QString( "_M%1_%2_%3" )
             .arg( max_idx[0] ).arg( max_idx[1] ).arg( max_idx[2] );
-
           QString filename_prefix = QString( "contour%1%2%3" )
             .arg( identifier ).arg( MinString ).arg( MaxString );
           QString vtk_filename = filename_prefix;
+  
+          // write the polydata in a file
           vtk_filename.append( ".vtk");
-
           vtkPolyDataWriter* writer = vtkPolyDataWriter::New();
           writer->SetInput( contour );
           writer->SetFileName( vtk_filename.toAscii().constData() );
           writer->Write();
-
           writer->Delete();
 
+          // write the spline contour in a file 
           QString ctrlpt_filename = filename_prefix;
           ctrlpt_filename.append( ".scpts" );
-
           std::ofstream myfile;
           myfile.open( ctrlpt_filename.toAscii().constData() );
           myfile << contour_rep->GetClosedLoop() <<std::endl;
+          int NbOfNodes = contour_rep->GetNumberOfNodes();
+          myfile <<  NbOfNodes << std::endl;
+          double pos[3];
+          for( int ii = 0; ii < NbOfNodes; ii++ )
+            {
+            contour_rep->GetNthNodeWorldPosition( ii, pos );
+            myfile << pos[0] << " " << pos[1] << " " << pos[2] << std::endl;
+            }
+          myfile.close();
 
-          // *** Save in database ***
-          bool database_info = ( m_DBExperimentID == -1 ) && m_DBLogin.isNull() &&
-            m_DBExperimentName.isNull() && m_DBName.isNull() &&
-            m_DBServer.isNull() && m_DBPassword.isNull();
-
+          // Save in database*
+          // NOTE ALEX: separate method
+          bool database_info = ( m_DBExperimentID == -1 ) && m_DBLogin.isNull()
+            && m_DBExperimentName.isNull() && m_DBName.isNull()
+            && m_DBServer.isNull() && m_DBPassword.isNull();
           if( !database_info )
             {
-            vtkPolyDataMySQLTextWriter* db_convert = vtkPolyDataMySQLTextWriter::New();
+   
+            // set up a Figure Table's row object
             GoDBFigureRow row;
             row.meshID = CellId;
             row.experimentID = m_DBExperimentID;
+
+            // transform the PolyData into a suitable String
+            vtkPolyDataMySQLTextWriter* db_convert 
+              = vtkPolyDataMySQLTextWriter::New();
             row.points = db_convert->GetMySQLText( contour );
             db_convert->Delete();
 
-            double pos[3], prev[3];
+
+            // compute perimeter and center
+            double pos[3]; // curent point
+            double prev[3];// previous point
             contour->GetPoint( 0, prev );
             double perimeter = 0;
             double center[3] = {0, 0, 0};
-
             for( int ii = 1; ii < contour->GetNumberOfPoints(); ii++ )
               {
               contour->GetPoint( ii, pos );
               perimeter += sqrt( vtkMath::Distance2BetweenPoints( prev, pos ) );
-
               for( int dim = 0; dim < 3; dim++ )
                 {
                 center[dim] += pos[dim];
@@ -1448,9 +1503,13 @@ void QImagePageViewTracer::ValidateContour(
                 }
               }
             row.perimeter = static_cast< int >( perimeter );
-            row.xCenter = static_cast< int >( center[0] / contour->GetNumberOfPoints() );
-            row.yCenter = static_cast< int >( center[1] / contour->GetNumberOfPoints() );
+            row.xCenter = static_cast< int >( 
+              center[0] / contour->GetNumberOfPoints() );
+            row.yCenter = static_cast< int >( 
+              center[1] / contour->GetNumberOfPoints() );
 
+
+            // Set up A RecordSet to connect to the DataBase
             typedef GoDBRecordSet< GoDBFigureRow >   SetType;
             SetType* mySet = new SetType;
             mySet->SetServerName( m_DBServer.toStdString() );
@@ -1468,41 +1527,21 @@ void QImagePageViewTracer::ValidateContour(
             mySet->PopulateFromDB();
             mySet->AddObject( row );
             mySet->SaveInDB();
-
             delete mySet;
-            }
 
-          // ************************
+            }  // ENDOF Save in DB
 
-          int NbOfNodes = contour_rep->GetNumberOfNodes();
+          }  // ENDOF Save in a File
 
-          myfile <<NbOfNodes <<std::endl;
-          double pos[3];
-          for( int ii = 0; ii < NbOfNodes; ii++ )
-            {
-            contour_rep->GetNthNodeWorldPosition( ii, pos );
-            myfile <<pos[0] <<" " <<pos[1] <<" " <<pos[2] <<std::endl;
-            }
-          myfile.close();
-          }
+        } // ENDOF degenerated contour 
+     
+      } // ENDOF if contour
 
-        vtkPolyData* contour_copy = vtkPolyData::New();
-        contour_copy->ShallowCopy( contour );
+    } // ENDOF for each pool item
 
-        for( int j = 0; j < this->Pool->GetNumberOfItems(); j++ )
-          {
-          this->Pool->GetItem( j )->AddDataSet( contour_copy, contour_property, true );
-          }
-        this->View3D->AddDataSet( contour_copy, contour_property, false );
-        contour_copy->Delete();
-        // this->Pool->GetItem( i )->GetContourWidget()->Initialize( 0 );
-        }
-      }
-
-    }
   contour_property->Delete();
   this->Pool->SyncRender();
-  //   this->Pool->SyncMaskImage();
+
 }
 //------------------------------------------------------------------------------
 
