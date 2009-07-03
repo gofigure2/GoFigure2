@@ -94,7 +94,7 @@ void QGoPrintDatabase::Fill_Database(QString ServerName,QString login,
   this->setWindowTitle(QString("DB: %1 - Exp: %2").arg(DBName).arg(ExpName));
 
   GetContentAndDisplayFromDB< GoDBFigureRow     >( m_Server, m_User, m_Password, m_NameDB,"figure");
-  
+
   //Need to create GoDBMeshRow,etc...first
   //QPrintTable ("mesh");
   //QPrintTable ("track");
@@ -104,7 +104,7 @@ void QGoPrintDatabase::Fill_Database(QString ServerName,QString login,
 
 /*void QGoPrintDatabase::QPrintTable(QString TableName)
 {
-  
+
   QPrintColumnNames(TableName);
 
 }*/
@@ -114,7 +114,7 @@ void QGoPrintDatabase::GetContentAndDisplayFromDB( QString ServerName, QString U
   QString Password, QString NameDB,QString TableName )
 {
   std::vector< std::string > ColumnNamesContainer;
-  typedef GoDBRecordSet< myT >                  SetType; 
+  typedef GoDBRecordSet< myT >                  SetType;
   typedef typename SetType::InternalObjectType  InternalObjectType;
   typedef typename SetType::RowContainerType    RowContainerType;
 
@@ -134,8 +134,27 @@ void QGoPrintDatabase::GetContentAndDisplayFromDB( QString ServerName, QString U
   ColumnNamesContainer = mySet->GetColumnNamesContainer();
   QPrintColumnNames(TableName, ColumnNamesContainer);
   RowContainer = mySet->GetRowContainer();
-  
+
+
 
   delete mySet;
   return;
 }
+
+template<class myT>
+void QGoPrintDatabase::PrintOutContentFromDB(typename GoDBRecordSet< myT >::RowContainerType RowContainer,
+    QTableWidget TableToFill)
+{
+  /* for ( int i = 0; i< RowContainer.size()); ++i )
+     {
+
+     if (TableToFill->columnCount() <> Row.size())
+       {
+         std::cout<<"Pb, row is not the same size as the number of col"<<std::endl;
+         return;
+       }
+     }*/
+
+
+}
+

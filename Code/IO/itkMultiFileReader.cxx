@@ -139,6 +139,11 @@ void MultiFileReader::Update( void )
     }
 
   this->ComputeUpdateFileList();
+  if( m_UpdateFileList.empty() )
+    {
+    std::cout <<"Problem: m_UpdateFileList is empty :-/ (after ComputeUpdateFileList)" <<std::endl;
+    return;
+    }
 
   FileListType::iterator startIt;
   FileListType::iterator endIt;

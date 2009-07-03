@@ -41,6 +41,7 @@
 #define __GoDBFigureRow_h
 
 #include <string>
+#include <map>
 
 class GoDBFigureRow
 {
@@ -67,6 +68,8 @@ public:
   int           YCoord;
   int           XCoord;
   int           ZCoord;
+
+
 
   std::string PrintValues()
     {
@@ -245,6 +248,34 @@ public:
     return true;
     }
 
+ std::map<std::string,std::string> LinkColumnNamesAndValues ()
+ {
+   std::map<std::string,std::string> map;
+   map["figureID"] = figureID;
+   map["imageID"] = imageID;
+   map["meshID"] = meshID;
+   map["points"] = points;
+   map["cellTypeID"] = cellTypeID;
+   map["flavorID"] = flavorID;
+   map["meanRed"] = meanRed;
+   map["meanGreen"] = meanGreen;
+   map["meanBlue"] = meanBlue;
+   map["area"] = area;
+   map["perimeter"] = perimeter;
+   map["AP"] = AP;
+   map["score"] = score;
+   map["xCenter"] = xCenter;
+   map["yCenter"] = yCenter;
+   map["experimentID"] = experimentID;
+   map["RCoord"] = RCoord;
+   map["CCoord"] = CCoord;
+   map["TCoord"] = TCoord;
+   map["XCoord"] = XCoord;
+   map["YCoord"] = YCoord;
+   map["ZCoord"] = ZCoord;
+
+   return map;
+ }
 };
 
 #endif

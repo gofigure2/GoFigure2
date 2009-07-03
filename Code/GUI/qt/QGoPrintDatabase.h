@@ -59,7 +59,7 @@ public:
   void QMEGAVTKADDON2_EXPORT Fill_Database(QString ServerName,QString login,
       QString Password, QString DBName,
       int ExpID,QString ExpName);
-  
+
 
 protected:
   //QStringList GetTableContentAndDisplayFromDB(QString TableName);
@@ -67,12 +67,14 @@ protected:
   void QPrintColumnNames (QString TableName, std::vector< std::string > ColumnNames);
   template< class myT > void GetContentAndDisplayFromDB( QString ServerName, QString User,
   QString Password, QString NameDB,QString TableName );
+  template<class myT> void QGoPrintDatabase::PrintOutContentFromDB(typename GoDBRecordSet< myT >::RowContainerType RowContainer,
+  QTableWidget TableToFill);
 
   QString m_NameDB;
   QString m_Server;
   QString m_User;
   QString m_Password;
-   
+
 };
 
 #endif
