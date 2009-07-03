@@ -1415,7 +1415,7 @@ void QImagePageViewTracer::ValidateContour(
 
           std::ofstream myfile;
           myfile.open( ctrlpt_filename.toAscii().constData() );
-          myfile <<contour_rep->GetClosedLoop() <<std::endl;
+          myfile << contour_rep->GetClosedLoop() <<std::endl;
 
           // *** Save in database ***
           bool database_info = ( m_DBExperimentID == -1 ) && m_DBLogin.isNull() &&
@@ -1458,6 +1458,13 @@ void QImagePageViewTracer::ValidateContour(
             mySet->SetTableName( "figure" );
             mySet->SetUser( m_DBLogin.toStdString() );
             mySet->SetPassword( m_DBPassword.toStdString() );
+            // NOTE ALEX: this should be unecessary if this is a new object.
+            //            in that case reading all the table just to add one
+            //            contour is a performance overkill
+            // NOTE ALEX: this should load only the figures related to 
+            //            ONE EXPERIMENT. Have to find the good generic design
+            //            for that. The easiest way is to pass the good query
+            //            Here instead of hardcoding it in RecordSet.
             mySet->PopulateFromDB();
             mySet->AddObject( row );
             mySet->SaveInDB();
