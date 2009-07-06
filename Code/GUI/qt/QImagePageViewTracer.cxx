@@ -1558,7 +1558,9 @@ void QImagePageViewTracer::LoadFiguresFromDB( )
     && m_DBServer.isNull() && m_DBPassword.isNull();
   if( !database_info )
     {
-    //typedef GoDBRecordSet< GoDBFigureRow >   SetType;
+    typedef GoDBRecordSet< GoDBFigureRow >   SetType;
+    typedef SetType::SetContainerType        SetContainerType;
+
     SetType* mySet = new SetType;
     mySet->SetServerName( m_DBServer.toStdString() );
     mySet->SetDataBaseName( m_DBName.toStdString() );
@@ -1568,27 +1570,33 @@ void QImagePageViewTracer::LoadFiguresFromDB( )
     mySet->PopulateFromDB();
     
     // FOR EACH CONTOUR IN THE RECORDSET
- 
-    // USE POLYDATADBREADER TO TRANSFORM STRING IN PD
-
-    // SET PROPOERTY
-    vtkProperty* contour_property = vtkProperty::New();
-    contour_property->SetRepresentationToWireframe();
-
-    // COPY FOR EACH VIEW
-    vtkPolyData* contour_copy = vtkPolyData::New();
-    contour_copy->ShallowCopy( contour );
-    for( int j = 0; j < this->Pool->GetNumberOfItems(); j++ )
+    SetContainerType * myRowContainer = mySet->GetRowContainer();
+    for( int i = 0; i < myRowContainer->size(); i++
       {
-      this->Pool->GetItem( j )->AddDataSet( 
-      contour_copy, contour_property, true );
-      }
-    this->View3D->AddDataSet( contour_copy, contour_property, false );
-    contour_copy->Delete();
+      // USE POLYDATADBREADER TO TRANSFORM STRING IN PD
+      vtkPolyData* contour = vtkPolyData::New(); 
+      vtkPolyDataMySQLReader* = vtkPolyDataMySQLReader::New();
+
+      // SET PROPOERTY
+      vtkProperty* contour_property = vtkProperty::New();
+      contour_property->SetRepresentationToWireframe();
+
+      // COPY FOR EACH VIEW
+      vtkPolyData* contour_copy = vtkPolyData::New();
+      contour_copy->ShallowCopy( contour );
+      for( int j = 0; j < this->Pool->GetNumberOfItems(); j++ )
+        {
+        this->Pool->GetItem( j )->AddDataSet( 
+        contour_copy, contour_property, true );
+        }
+      this->View3D->AddDataSet( contour_copy, contour_property, false );
+      contour_copy->Delete();
+
+      } // ENDFOR
 
     delete mySet;
 
-    }
+    } //ENDIF
 }
 //------------------------------------------------------------------------------
 #endif
