@@ -110,7 +110,7 @@ protected:
     typename GoDBRecordSet< myT >::RowContainerType *RowContainer,
     QTableWidget* TableToFill )
     {
-    for( unsigned int i = 1; i < RowContainer->size(); ++i )
+    for( unsigned int i = 0; i < RowContainer->size(); ++i )
        {
        std::map<std::string,std::string> Map 
          = (*RowContainer)[i].second.LinkColumnNamesAndValues();
@@ -125,7 +125,7 @@ protected:
          for( int j = 0; j< TableToFill->columnCount();j++)
            {
            QTableWidgetItem* HeaderCol = new QTableWidgetItem;
-           HeaderCol = TableToFill->horizontalHeaderItem(i);
+           HeaderCol = TableToFill->horizontalHeaderItem(j);
            std::map<std::string,std::string>::iterator it = Map.find(HeaderCol->text().toStdString());
            if (it == Map.end())
              {
@@ -135,7 +135,7 @@ protected:
              {
              QTableWidgetItem* CellTable = new QTableWidgetItem;
              CellTable->setText(it->second.c_str());
-             TableToFill->setItem(i-1,j,CellTable);
+             TableToFill->setItem(i,j,CellTable);
              }
 
            } // ENDFOR
