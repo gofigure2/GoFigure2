@@ -214,6 +214,9 @@ public slots:
   QMEGAVTKADDON2_EXPORT void ReinitializeContour( );
   //   void Render( );
 
+
+  QMEGAVTKADDON2_EXPORT void QImagePageViewTracer::LoadFiguresFromDB( );
+
 protected:
   QSplitter*          VSplitter;
   QSplitterchild*     HtSplitter;
@@ -283,6 +286,7 @@ protected:
 
   void Set2DImage( vtkImageData* input );
   void Set3DImage( vtkImageData* input );
+
 
   int   SnapshotId;
   int   IsFullScreen;

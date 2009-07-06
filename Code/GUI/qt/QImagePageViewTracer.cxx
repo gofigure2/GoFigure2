@@ -1545,7 +1545,6 @@ void QImagePageViewTracer::ValidateContour(
 //------------------------------------------------------------------------------
 
 
-#if 0
 //------------------------------------------------------------------------------
 void QImagePageViewTracer::LoadFiguresFromDB( )
 {
@@ -1559,7 +1558,7 @@ void QImagePageViewTracer::LoadFiguresFromDB( )
   if( !database_info )
     {
     typedef GoDBRecordSet< GoDBFigureRow >   SetType;
-    typedef SetType::SetContainerType        SetContainerType;
+    typedef SetType::RowContainerType        SetContainerType;
 
     SetType* mySet = new SetType;
     mySet->SetServerName( m_DBServer.toStdString() );
@@ -1571,11 +1570,13 @@ void QImagePageViewTracer::LoadFiguresFromDB( )
     
     // FOR EACH CONTOUR IN THE RECORDSET
     SetContainerType * myRowContainer = mySet->GetRowContainer();
-    for( int i = 0; i < myRowContainer->size(); i++
+    for( unsigned int i = 0; i < myRowContainer->size(); i++ )
       {
       // USE POLYDATADBREADER TO TRANSFORM STRING IN PD
       vtkPolyData* contour = vtkPolyData::New(); 
-      vtkPolyDataMySQLReader* = vtkPolyDataMySQLReader::New();
+      vtkPolyDataMySQLTextReader* reader = vtkPolyDataMySQLTextReader::New();
+      std::string PolyDataAsString = (*myRowContainer)[i].second.points; 
+      contour = reader->GetPolyData( PolyDataAsString );
 
       // SET PROPOERTY
       vtkProperty* contour_property = vtkProperty::New();
@@ -1599,7 +1600,6 @@ void QImagePageViewTracer::LoadFiguresFromDB( )
     } //ENDIF
 }
 //------------------------------------------------------------------------------
-#endif
 
 //------------------------------------------------------------------------------
 void QImagePageViewTracer::ReinitializeContour( )

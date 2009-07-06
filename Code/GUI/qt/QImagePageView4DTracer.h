@@ -145,7 +145,7 @@ public:
     this->FileList = FileListFromDB;
     }
   QMEGAVTKADDON2_EXPORT void DisplayFromDB()
-    { this->SetView( 0 );}
+    { this->SetView( 0 ); this->Whatever->LoadFiguresFromDB(); }
   QMEGAVTKADDON2_EXPORT void SetDatabaseRelatedVariables( const QString& iServer,
     const QString& iLogin, const QString& iPassword, const QString& iDatabaseName,
     const int& iExperimentID, const QString& iExperimentName );
