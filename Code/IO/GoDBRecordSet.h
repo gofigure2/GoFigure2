@@ -279,6 +279,9 @@ SaveEachRow( vtkSQLQuery *query )
   myIteratorType start = m_RowContainer.begin();
   myIteratorType end   = m_RowContainer.begin();
   while( (*end).first && end != m_RowContainer.end() ) end++;
+
+// Here we suppose read and write only, no overwrite
+#if 0
   if( end-start > 0 )
     {
     if( !SaveRows( query, "REPLACE ", start, end ) )
@@ -286,6 +289,7 @@ SaveEachRow( vtkSQLQuery *query )
       return false;
       }
     }
+#endif
 
   // new rows
   start = end;
