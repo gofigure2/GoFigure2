@@ -215,7 +215,7 @@ public slots:
   //   void Render( );
 
 
-  QMEGAVTKADDON2_EXPORT void QImagePageViewTracer::LoadFiguresFromDB( );
+  QMEGAVTKADDON2_EXPORT void LoadFiguresFromDB( );
 
 protected:
   QSplitter*          VSplitter;
