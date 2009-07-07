@@ -163,9 +163,7 @@ public:
         OriginalObjectType object;
         for( unsigned int colID = 0; colID < m_ColumnNamesContainer.size(); colID++ )
           {
-            std::string Test = query->DataValue( 0 ).ToString();
-            object.SetFieldValueAsString( colID, query->DataValue( colID ).ToString() );
-            //object.SetFieldValueAsString( colID, query->DataValue( 0 ).ToString() );
+          object.SetFieldValueAsString( colID, query->DataValue( colID ).ToString() );
           }
         m_RowContainer.push_back( InternalObjectType( true, object ) );
         }

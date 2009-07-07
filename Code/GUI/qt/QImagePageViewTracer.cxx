@@ -39,6 +39,7 @@
 =========================================================================*/
 
 #include "QImagePageViewTracer.h"
+
 #include "QSplitterchild.h"
 #include "vtkViewImage2DCommand.h"
 
@@ -1588,7 +1589,7 @@ void QImagePageViewTracer::LoadFiguresFromDB( )
       for( int j = 0; j < this->Pool->GetNumberOfItems(); j++ )
         {
         this->Pool->GetItem( j )->AddDataSet( 
-        contour_copy, contour_property, true );
+          contour_copy, contour_property, true );
         }
       this->View3D->AddDataSet( contour_copy, contour_property, false );
       contour_copy->Delete();

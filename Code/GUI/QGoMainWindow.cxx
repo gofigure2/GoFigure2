@@ -245,19 +245,9 @@ void QGoMainWindow::openFilesfromDB()
 {
   QString Title;
   Title = (tr("From Database: %1 Experiment: %2").arg(m_Wizard->NameDB()).arg(m_Wizard->ExpName()));
-  
+
   OpenAndDisplay(Title,true,2);
 
-   /* m_PageView.SetDatabaseRelatedVariables(m_Wizard->Server(), m_Wizard->login(),
-    m_Wizard->Password(), m_Wizard->NameDB(),
-    m_Wizard->ExpID(), m_Wizard->ExpName());
-
-    m_PageView.FillTablesWidget;
-    m_DBTables->Fill_Database( m_Wizard->Server(), m_Wizard->login(),
-    m_Wizard->Password(), m_Wizard->NameDB(),
-    m_Wizard->ExpID(), m_Wizard->ExpName() );
-
-  m_DBTables->show();*/
   m_Wizard->hide();
 
 }
@@ -1088,21 +1078,23 @@ void QGoMainWindow::OpenAndDisplay(
         }
       case 2:
         {
+        myPageView->SetDatabaseRelatedVariables( m_Wizard->Server(), m_Wizard->login(),
+        m_Wizard->Password(), m_Wizard->NameDB(), m_Wizard->ExpID(),
+        m_Wizard->ExpName() );
+
         FileListType ListFilenames = m_Wizard->ListFilenames();
         if(!ListFilenames.empty())
           {
           std::cout<<"Ok, I have a ListFilenames"<<std::endl;
           if (m_Wizard->IsLsmSerie())
-          {
+            {
             myPageView->SetSerieTypeToLsmDB(ListFilenames);
-          }
+            }
           else
-          {
+            {
             myPageView->SetSerieTypeToMegaCaptureDB(ListFilenames);
-          }
+            }
           myPageView->DisplayFromDB();
-          myPageView->SetDatabaseRelatedVariables(m_Wizard->Server(), m_Wizard->login(),
-          m_Wizard->Password(), m_Wizard->NameDB(),m_Wizard->ExpID(), m_Wizard->ExpName());
           myPageView->FillTablesWidget();
           }
         break;
