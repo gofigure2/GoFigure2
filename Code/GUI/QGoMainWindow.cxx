@@ -627,21 +627,21 @@ void QGoMainWindow::on_actionScale_bars_activated( )
 //--------------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------------
-// \todo ALEX: implement support for LSM
-//
 void QGoMainWindow::on_actionSnapshot_activated( )
 {
   int idx = this->CentralImageTabWidget->currentIndex();
   QImagePageViewTracer* myPageView =
     dynamic_cast<QImagePageViewTracer*>( m_PageView[idx] );
+  QString SnapshotFileName;
+
   if( myPageView )
     {
     int whichview = myPageView->GetFullScreenView();
     if( whichview != 0 )
       {
-      QString SnapshotFileName;
       switch( whichview )
         {
+        default:
         case 1:
           {
           SnapshotFileName = myPageView->SnapshotViewXY(
@@ -667,10 +667,52 @@ void QGoMainWindow::on_actionSnapshot_activated( )
           break;
           }
         }
-      statusbar->showMessage(
-        tr("%1 has been saved").arg(SnapshotFileName) );
       }
     }
+  else
+    {
+    QImagePageView4DTracer* pageView4D =
+        dynamic_cast<QImagePageView4DTracer*>( m_PageView[idx] );
+    if( pageView4D )
+      {
+      int whichview = pageView4D->GetFullScreenView();
+      if( whichview != 0 )
+        {
+        QString SnapshotFileName;
+        switch( whichview )
+          {
+          default:
+          case 1:
+            {
+            SnapshotFileName = pageView4D->SnapshotViewXY(
+              QImagePageViewTracer::PNG);
+            break;
+            }
+          case 2:
+            {
+            SnapshotFileName = pageView4D->SnapshotView2(
+              QImagePageViewTracer::PNG);
+            break;
+            }
+          case 3:
+            {
+            SnapshotFileName = pageView4D->SnapshotView3(
+              QImagePageViewTracer::PNG);
+            break;
+            }
+          case 4:
+            {
+            SnapshotFileName = pageView4D->SnapshotViewXYZ(
+              QImagePageViewTracer::PNG);
+            break;
+            }
+          }
+        }
+      }
+    }
+
+  statusbar->showMessage(
+        tr("%1 has been saved").arg(SnapshotFileName) );
 }
 //--------------------------------------------------------------------------------
 

@@ -213,6 +213,19 @@ public slots:
   QMEGAVTKADDON2_EXPORT void ClearAllSeeds()
     { this->Whatever->ClearAllSeeds(); }
 
+  QMEGAVTKADDON2_EXPORT QString SnapshotViewXY( const QImagePageViewTracer::SnapshotImageType& iType,
+    const QString& iBaseName = QString( "snapshot" ) )
+    { return this->Whatever->SnapshotViewXY( iType, iBaseName ); }
+  QMEGAVTKADDON2_EXPORT QString SnapshotView2( const QImagePageViewTracer::SnapshotImageType& iType,
+    const QString& iBaseName = QString( "snapshot" ) )
+    { return this->Whatever->SnapshotView2( iType, iBaseName ); }
+  QMEGAVTKADDON2_EXPORT QString SnapshotView3( const QImagePageViewTracer::SnapshotImageType& iType,
+    const QString& iBaseName = QString( "snapshot" ) )
+    { return this->Whatever->SnapshotView3( iType, iBaseName ); }
+  QMEGAVTKADDON2_EXPORT QString SnapshotViewXYZ( const QImagePageViewTracer::SnapshotImageType& iType,
+    const QString& iBaseName = QString( "snapshot" ) )
+    { return this->Whatever->SnapshotViewXYZ( iType, iBaseName ); }
+
 
 protected:
   QWidget*      LayOutWidget1;

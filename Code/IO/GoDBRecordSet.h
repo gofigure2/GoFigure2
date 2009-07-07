@@ -64,12 +64,12 @@ public:
   typedef std::pair< bool, OriginalObjectType > InternalObjectType;
   typedef std::vector< InternalObjectType >     RowContainerType;
 
-  std::vector< std::string >  GetColumnNamesContainer()  
+  std::vector< std::string >  GetColumnNamesContainer()
   {
     return m_ColumnNamesContainer;
   }
 
-  RowContainerType* GetRowContainer()  
+  RowContainerType* GetRowContainer()
   {
     return &m_RowContainer;
   }
