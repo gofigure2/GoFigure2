@@ -1,5 +1,6 @@
 #include <string>
 #include "vtkPolyDataReader.h"
+#include "vtkPolyDataWriter.h"
 #include "vtkPolyData.h"
 #include "vtkPolyDataMySQLTextWriter.h"
 #include "vtkPolyDataMySQLTextReader.h"
@@ -30,6 +31,12 @@ int main( int argc, char** argv )
     vtkPolyDataMySQLTextReader::New();
   convert_reader->SetIsContour( convert_writer->GetIsContour() );
   vtkPolyData* output = convert_reader->GetPolyData( polydata_string );
+
+  vtkPolyDataWriter* temp_writer = vtkPolyDataWriter::New();
+  temp_writer->SetInput( output );
+  temp_writer->SetFileName( "temp.vtk" );
+  temp_writer->Update();
+  temp_writer->Delete();
 
   vtkPolyDataMapper* mapper = vtkPolyDataMapper::New();
   mapper->SetInput( output );
