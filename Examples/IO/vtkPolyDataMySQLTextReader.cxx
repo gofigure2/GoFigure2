@@ -29,8 +29,6 @@ int main( int argc, char** argv )
     vtkPolyDataMySQLTextWriter::New();
   std::string polydata_string = convert_writer->GetMySQLText( input );
 
-  std::cout <<polydata_string <<std::endl;
-
   vtkPolyDataMySQLTextReader* convert_reader =
     vtkPolyDataMySQLTextReader::New();
   convert_reader->SetIsContour( convert_writer->GetIsContour() );
