@@ -85,8 +85,8 @@ int main( int argc, char** argv )
   return app.exec();
 }
 
-
-/*void maximizeMainWindow(QGoMainWindow& form1)
+/*
+void maximizeMainWindow(QGoMainWindow& form1)
 {
   QDesktopWidget * Screen;
   Screen=QApplication::desktop();

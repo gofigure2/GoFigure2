@@ -111,37 +111,36 @@ protected:
     QTableWidget* TableToFill )
     {
     for( unsigned int i = 0; i < RowContainer->size()-1; ++i )
-       {
-       std::map<std::string,std::string> Map 
-         = (*RowContainer)[i].second.LinkColumnNamesAndValues();
-       if( TableToFill->columnCount() != (int)(Map.size()) )
-         {
-         std::cout << "Pb, row is not the same size as the number of col";
-         std::cout << std::endl;
-         return;
-         }
-       else
-         {
-         for( int j = 0; j< TableToFill->columnCount();j++)
-           {
-           QTableWidgetItem* HeaderCol = new QTableWidgetItem;
-           HeaderCol = TableToFill->horizontalHeaderItem(j);
-           std::map<std::string,std::string>::iterator it = Map.find(HeaderCol->text().toStdString());
-           if (it == Map.end())
-             {
-             return;
-             }
-           else
-             {
-             QTableWidgetItem* CellTable = new QTableWidgetItem;
-             CellTable->setText(it->second.c_str());
-             TableToFill->setItem(i,j,CellTable);
-             }
+      {
+      std::map<std::string,std::string> Map
+        = (*RowContainer)[i].second.LinkColumnNamesAndValues();
+      if( TableToFill->columnCount() != (int)(Map.size()) )
+        {
+        std::cout << "Pb, row is not the same size as the number of col";
+        std::cout << std::endl;
+        return;
+        }
+      else
+        {
+        for( int j = 0; j< TableToFill->columnCount();j++)
+          {
+          QTableWidgetItem* HeaderCol = new QTableWidgetItem;
+          HeaderCol = TableToFill->horizontalHeaderItem(j);
+          std::map<std::string,std::string>::iterator it = Map.find(HeaderCol->text().toStdString());
+          if (it == Map.end())
+            {
+            return;
+            }
+          else
+            {
+            QTableWidgetItem* CellTable = new QTableWidgetItem;
+            CellTable->setText(it->second.c_str());
+            TableToFill->setItem(i,j,CellTable);
+            }
 
-           } // ENDFOR
-
-         }
-       }
+          } // ENDFOR
+        }
+      }
     };
 
   QString m_NameDB;

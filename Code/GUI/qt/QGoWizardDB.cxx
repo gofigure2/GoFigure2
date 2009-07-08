@@ -950,48 +950,48 @@ void Import_SerieGridPage::SelectSeriesGrid()
       QString ext = QFileInfo( newfilename ).suffix();
       if( ext.compare( "lsm", Qt::CaseInsensitive ) == 0 )
         {
-          try
+        try
           {
-            itk::Lsm3DSerieImport::Pointer  importFileInfoList = itk::Lsm3DSerieImport::New();
-            importFileInfoList->SetFileName( newfilename.toAscii().data() );
-            importFileInfoList->SetGroupId( 1 );
-            importFileInfoList->Update();
+          itk::Lsm3DSerieImport::Pointer  importFileInfoList = itk::Lsm3DSerieImport::New();
+          importFileInfoList->SetFileName( newfilename.toAscii().data() );
+          importFileInfoList->SetGroupId( 1 );
+          importFileInfoList->Update();
 
-            typedef GoDBRecordSet< GoDBSeriesGridRow > myRecordSetType;
-            myRecordSetType* RecordSet = new myRecordSetType;
-            RecordSet->SetServerName(field("ServerName").toString().toStdString());
-            RecordSet->SetUser(field("User").toString().toStdString());
-            RecordSet->SetPassword(field("Password").toString().toStdString());
-            RecordSet->SetDataBaseName(field("NameDB").toString().toStdString());
-            RecordSet->SetTableName( "seriesgrid" );
+          typedef GoDBRecordSet< GoDBSeriesGridRow > myRecordSetType;
+          myRecordSetType* RecordSet = new myRecordSetType;
+          RecordSet->SetServerName(field("ServerName").toString().toStdString());
+          RecordSet->SetUser(field("User").toString().toStdString());
+          RecordSet->SetPassword(field("Password").toString().toStdString());
+          RecordSet->SetDataBaseName(field("NameDB").toString().toStdString());
+          RecordSet->SetTableName( "seriesgrid" );
 
-            typedef FileListType::iterator myFilesIteratorType;
-            myFilesIteratorType It  = importFileInfoList->GetOutput()->begin();
-            myFilesIteratorType end = importFileInfoList->GetOutput()->end();
-            while( It != end )
-              {
-              GoDBSeriesGridRow row;
-              row.experimentID = field("ExpID").toInt();
-              row.RCoord = (*It).RTile;
-              row.CCoord = (*It).CTile;
-              row.TCoord = (*It).TimePoint;
-              row.YCoord = (*It).YOffset;
-              row.XCoord = (*It).XOffset;
-              row.ZCoord = (*It).ZDepth;
-              row.filename = (*It).Filename.c_str();
+          typedef FileListType::iterator myFilesIteratorType;
+          myFilesIteratorType It  = importFileInfoList->GetOutput()->begin();
+          myFilesIteratorType end = importFileInfoList->GetOutput()->end();
+          while( It != end )
+            {
+            GoDBSeriesGridRow row;
+            row.experimentID = field("ExpID").toInt();
+            row.RCoord = (*It).RTile;
+            row.CCoord = (*It).CTile;
+            row.TCoord = (*It).TimePoint;
+            row.YCoord = (*It).YOffset;
+            row.XCoord = (*It).XOffset;
+            row.ZCoord = (*It).ZDepth;
+            row.filename = (*It).Filename.c_str();
 
-              RecordSet->AddObject( row );
+            RecordSet->AddObject( row );
 
-              It++;
-              }
+            It++;
+            }
 
-            if( !RecordSet->SaveInDB() )
-              {
-              return;
-              }
+          if( !RecordSet->SaveInDB() )
+            {
+            return;
+            }
           delete RecordSet;
           }
-          catch( const itk::ExceptionObject& e )
+        catch( const itk::ExceptionObject& e )
           {
           std::cerr << " caught an ITK exception: " << std::endl;
           e.Print( std::cerr);
@@ -1011,7 +1011,7 @@ void Import_SerieGridPage::SelectSeriesGrid()
         }
       else
         {
-          try
+        try
           {
           itk::MegaCaptureImport::Pointer  importFileInfoList = itk::MegaCaptureImport::New();
           importFileInfoList->SetFileName( newfilename.toAscii().data() );
@@ -1051,7 +1051,7 @@ void Import_SerieGridPage::SelectSeriesGrid()
             }
           delete RecordSet;
           }
-         
+
         catch( const itk::ExceptionObject& e )
           {
           std::cerr << " caught an ITK exception: " << std::endl;
@@ -1069,17 +1069,17 @@ void Import_SerieGridPage::SelectSeriesGrid()
           std::cerr << " caught an unknown exception!" << std::endl;
           return;
           }
-        }      
+        }
       }
     }
-    
+
   completeChanged();
   if (isComplete())
-  {
+    {
     BrowseButton->hide();
     Explanation->setText(tr("When you click on finish, the Image Set of the Experiment %1 from the DataBase %2 will be opened.")
     .arg( field("Name").toString() ).arg( field("NameDB").toString() ) );
-  }
+    }
   //setSubTitle(tr("When you click on finish, the Image Set of the Experiment %1 from the DataBase %2 will be opened.")
     //.arg( field("Name").toString() ).arg( field("NameDB").toString() ) );
 }

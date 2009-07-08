@@ -102,12 +102,9 @@ void QGoPrintDatabase::Fill_Database(QString ServerName,QString login,
 
 }
 
-/*void QGoPrintDatabase::QPrintTable(QString TableName)
+/*
+void QGoPrintDatabase::QPrintTable(QString TableName)
 {
-
   QPrintColumnNames(TableName);
-
-}*/
-
-
-
+}
+*/
