@@ -23,21 +23,36 @@ int main( int argc, char** argv )
   vtk_reader->SetFileName( argv[1] );
   vtk_reader->Update();
 
+  vtkPolyData* input = vtk_reader->GetOutput();
+
+  std::cout <<input->GetNumberOfPoints() <<std::endl;
   vtkPolyDataMySQLTextWriter* convert_writer =
     vtkPolyDataMySQLTextWriter::New();
-  std::string polydata_string = convert_writer->GetMySQLText( vtk_reader->GetOutput() );
+  std::string polydata_string = convert_writer->GetMySQLText( input );
+
+  std::cout <<polydata_string <<std::endl;
 
   vtkPolyDataMySQLTextReader* convert_reader =
     vtkPolyDataMySQLTextReader::New();
   convert_reader->SetIsContour( convert_writer->GetIsContour() );
   vtkPolyData* output = convert_reader->GetPolyData( polydata_string );
 
+  if( output->GetNumberOfPoints() != input->GetNumberOfPoints() )
+    {
+    std::cout <<"Number of points have changed!!!" <<std::endl;
+    std::cout <<"output->GetNumberOfPoints() " <<output->GetNumberOfPoints()
+      <<std::endl;
+    std::cout <<"input->GetNumberOfPoints() " <<input->GetNumberOfPoints()
+      <<std::endl;
+    return EXIT_FAILURE;
+    }
+
   vtkPolyDataWriter* temp_writer = vtkPolyDataWriter::New();
   temp_writer->SetInput( output );
   temp_writer->SetFileName( "temp.vtk" );
   temp_writer->Update();
   temp_writer->Delete();
-
+/*
   vtkPolyDataMapper* mapper = vtkPolyDataMapper::New();
   mapper->SetInput( output );
 
@@ -66,7 +81,7 @@ int main( int argc, char** argv )
   convert_reader->Delete();
   convert_writer->Delete();
   vtk_reader->Delete();
-
+*/
   return EXIT_SUCCESS;
 }
 

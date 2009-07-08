@@ -27,6 +27,16 @@ FOREACH( var ${EXAMPLES_QT_NOT_REQUIRED} )
 
 ENDFOREACH( var )
 
+ADD_TEST( vtkPolyDataMySQLTextReaderTEST1
+  ${EXECUTABLE_OUTPUT_PATH}/vtkPolyDataMySQLTextReader 
+  ${TESTING_DATA_PATH}/contour.vtk
+)
+
+ADD_TEST( vtkPolyDataMySQLTextReaderTEST2
+  ${EXECUTABLE_OUTPUT_PATH}/vtkPolyDataMySQLTextReader 
+  ${TESTING_DATA_PATH}/sphere.vtk
+)
+
 ADD_TEST( vtkPolyDataMySQLTextWriterTEST1 
   ${EXECUTABLE_OUTPUT_PATH}/vtkPolyDataMySQLTextWriter 
   ${TESTING_DATA_PATH}/contour.vtk

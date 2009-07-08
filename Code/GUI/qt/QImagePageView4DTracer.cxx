@@ -332,7 +332,7 @@ void QImagePageView4DTracer::ReadLSMFile( const int& TimePoint )
 
 void QImagePageView4DTracer::SetView( const int& value )
 {
-  clock_t start,finish;
+  clock_t start, finish;
   double time;
 
   start = clock();
@@ -374,7 +374,7 @@ void QImagePageView4DTracer::SetView( const int& value )
 
   start = clock();
   this->Whatever->SetImage( this->Image );
-  this->Whatever->
+  //this->Whatever->
   finish = clock();
   time = (double(finish)-double(start))/CLOCKS_PER_SEC;
   std::cout << "Set image in widget: " << time << "s" << std::endl;

@@ -56,8 +56,7 @@ SET(LIBRARY_OUTPUT_PATH
  CACHE PATH "Single output directory for building all libraries."
 )
 
-FIND_FILE( TESTING_DATA_PATH
-  contour.vtk
+SET( TESTING_DATA_PATH
   ${GOFIGURE2_SOURCE_DIR}/Testing/Data
 )
 
