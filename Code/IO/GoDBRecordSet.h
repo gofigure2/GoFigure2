@@ -65,14 +65,14 @@ public:
   typedef std::vector< InternalObjectType >     RowContainerType;
 
   std::vector< std::string >  GetColumnNamesContainer()
-  {
+    {
     return m_ColumnNamesContainer;
-  }
+    }
 
   RowContainerType* GetRowContainer()
-  {
+    {
     return &m_RowContainer;
-  }
+    }
 
   // Add New Object
   void AddObject( OriginalObjectType& object )
@@ -280,7 +280,7 @@ SaveEachRow( vtkSQLQuery *query )
   myIteratorType end   = m_RowContainer.begin();
   while( (*end).first && end != m_RowContainer.end() ) end++;
 
-// Here we suppose read and write only, no overwrite
+  // Here we suppose read and write only, no overwrite
 #if 0
   if( end-start > 0 )
     {

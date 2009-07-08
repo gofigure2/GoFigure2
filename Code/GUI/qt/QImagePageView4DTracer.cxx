@@ -357,14 +357,14 @@ void QImagePageView4DTracer::SetView( const int& value )
   // as all orientation, DB informations and so on are reseted in the process.
   this->LayOut1->removeWidget( this->Whatever );
   QImagePageViewTracer* tempPVT = new QImagePageViewTracer( );
-  tempPVT->SetDatabaseRelatedVariables( 
-	  this->Whatever->m_DBServer, 
-	  this->Whatever->m_DBLogin, 
-	  this->Whatever->m_DBPassword, 
-	  this->Whatever->m_DBName,
-      this->Whatever->m_DBExperimentID,  
-	  this->Whatever->m_DBExperimentName 
-	  );
+  tempPVT->SetDatabaseRelatedVariables(
+    this->Whatever->m_DBServer,
+    this->Whatever->m_DBLogin,
+    this->Whatever->m_DBPassword,
+    this->Whatever->m_DBName,
+    this->Whatever->m_DBExperimentID,
+    this->Whatever->m_DBExperimentName
+    );
   delete this->Whatever;
   this->Whatever = tempPVT;
   this->LayOut1->insertWidget( 0, this->Whatever );

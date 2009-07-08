@@ -114,10 +114,10 @@ vtkPolyData* vtkPolyDataMySQLTextReader::GetContour( )
   // use edges for figures.
   for( vtkIdType i = 1; i <= N; i++ )
     {
-	id_list->Reset();
+    id_list->Reset();
     id_list->InsertNextId( i-1 );
-	id_list->InsertNextId( i%N );
-	cells->InsertNextCell( id_list );
+    id_list->InsertNextId( i%N );
+    cells->InsertNextCell( id_list );
     }
 
   oContour->SetLines( cells );

@@ -105,7 +105,7 @@ public:
     myString << nRows        << ", ";
     myString << nColumns     << ", ";
     myString << "\"" << filePattern << "\"";
-    
+
     return myString.str();
     }
 
@@ -116,13 +116,13 @@ public:
       case 0:
         {
         this->experimentID = atoi( ValueAsString.c_str() );
-	break;
-	}
+        break;
+        }
       case 1:
         {
         this->name = ValueAsString;
         break;
-	}
+        }
       case 2:
         {
         this->description = ValueAsString;
@@ -132,7 +132,7 @@ public:
         {
         this->timeInterval = atoi( ValueAsString.c_str() );
         break;
-	}
+        }
       case 4:
         {
         this->tileHeight = atoi( ValueAsString.c_str() );
@@ -202,7 +202,7 @@ public:
         {
         return false;
         }
-      } 
+      }
     return true;
     }
 

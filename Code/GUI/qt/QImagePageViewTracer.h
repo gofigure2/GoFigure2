@@ -214,7 +214,6 @@ public slots:
   QMEGAVTKADDON2_EXPORT void ReinitializeContour( );
   //   void Render( );
 
-
   QMEGAVTKADDON2_EXPORT void LoadFiguresFromDB( );
 
 protected:
@@ -254,12 +253,14 @@ protected:
 
   QString Tag;
 
-/*  QString m_DBServer;
+  /*
+  QString m_DBServer;
   QString m_DBLogin;
   QString m_DBPassword;
   QString m_DBName;
   int     m_DBExperimentID;
-  QString m_DBExperimentName;*/
+  QString m_DBExperimentName;
+  */
 
 #ifdef MegaVTK_USE_ITK
   /**

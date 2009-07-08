@@ -71,8 +71,6 @@ public:
   int           XCoord;
   int           ZCoord;
 
-
-
   std::string PrintValues()
     {
     std::stringstream myString;
@@ -250,42 +248,43 @@ public:
     return true;
     }
 
- std::string Convert(int ToConvert)
- {
-  std::stringstream st;
-  st << ToConvert;
-  std::string mystring = st.str();
-  return mystring;
- }
+  template< typename T >
+  std::string ConvertToString( const T& ToConvert)
+    {
+    std::stringstream st;
+    st << ToConvert;
+    std::string mystring = st.str();
+    return mystring;
+    }
 
- std::map<std::string,std::string> LinkColumnNamesAndValues ()
- {
-   std::map<std::string,std::string> Map;
-   Map["figureID"] = Convert(figureID);
-   Map["imageID"] = Convert(imageID);
-   Map["meshID"] = Convert(meshID);
-   Map["points"] = points;
-   Map["cellTypeID"] = Convert(cellTypeID);
-   Map["flavorID"] = Convert(flavorID);
-   Map["meanRed"] = Convert(meanRed);
-   Map["meanGreen"] = Convert(meanGreen);
-   Map["meanBlue"] = Convert(meanBlue);
-   Map["area"] = Convert(area);
-   Map["perimeter"] = Convert(perimeter);
-   Map["AP"] = Convert(AP);
-   Map["score"] = Convert(score);
-   Map["xCenter"] = Convert(xCenter);
-   Map["yCenter"] = Convert(yCenter);
-   Map["experimentID"] = Convert(experimentID);
-   Map["RCoord"] = Convert(RCoord);
-   Map["CCoord"] = Convert(CCoord);
-   Map["TCoord"] = Convert(TCoord);
-   Map["XCoord"] = Convert(XCoord);
-   Map["YCoord"] = Convert(YCoord);
-   Map["ZCoord"] = Convert(ZCoord); 
+  std::map<std::string,std::string> LinkColumnNamesAndValues ()
+    {
+    std::map<std::string,std::string> Map;
+    Map["figureID"] = ConvertToString<int>(figureID);
+    Map["imageID"] = ConvertToString<int>(imageID);
+    Map["meshID"] = ConvertToString<int>(meshID);
+    Map["points"] = points;
+    Map["cellTypeID"] = ConvertToString<int>(cellTypeID);
+    Map["flavorID"] = ConvertToString<int>(flavorID);
+    Map["meanRed"] = ConvertToString<int>(meanRed);
+    Map["meanGreen"] = ConvertToString<int>(meanGreen);
+    Map["meanBlue"] = ConvertToString<int>(meanBlue);
+    Map["area"] = ConvertToString<int>(area);
+    Map["perimeter"] = ConvertToString<int>(perimeter);
+    Map["AP"] = ConvertToString<int>(AP);
+    Map["score"] = ConvertToString<int>(score);
+    Map["xCenter"] = ConvertToString<int>(xCenter);
+    Map["yCenter"] = ConvertToString<int>(yCenter);
+    Map["experimentID"] = ConvertToString<int>(experimentID);
+    Map["RCoord"] = ConvertToString<int>(RCoord);
+    Map["CCoord"] = ConvertToString<int>(CCoord);
+    Map["TCoord"] = ConvertToString<int>(TCoord);
+    Map["XCoord"] = ConvertToString<int>(XCoord);
+    Map["YCoord"] = ConvertToString<int>(YCoord);
+    Map["ZCoord"] = ConvertToString<int>(ZCoord);
 
-   return Map;
- }
- };
+    return Map;
+    }
+};
 
 #endif
