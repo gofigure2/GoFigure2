@@ -43,44 +43,20 @@ int main( int argc, char** argv )
       <<std::endl;
     std::cout <<"input->GetNumberOfPoints() " <<input->GetNumberOfPoints()
       <<std::endl;
+
+    output->Delete();
+    convert_reader->Delete();
+    convert_writer->Delete();
+    vtk_reader->Delete();
+
     return EXIT_FAILURE;
     }
-
-  vtkPolyDataWriter* temp_writer = vtkPolyDataWriter::New();
-  temp_writer->SetInput( output );
-  temp_writer->SetFileName( "temp.vtk" );
-  temp_writer->Update();
-  temp_writer->Delete();
-/*
-  vtkPolyDataMapper* mapper = vtkPolyDataMapper::New();
-  mapper->SetInput( output );
-
-  vtkActor* actor = vtkActor::New();
-  actor->SetMapper( mapper );
-
-  vtkRenderer* ren = vtkRenderer::New();
-  ren->AddActor( actor );
-
-  vtkRenderWindow* renwin = vtkRenderWindow::New();
-  renwin->AddRenderer( ren );
-
-  vtkRenderWindowInteractor* iren = vtkRenderWindowInteractor::New();
-  iren->SetRenderWindow( renwin );
-
-  ren->Render();
-  iren->Start();
-
-  iren->Delete();
-  renwin->Delete();
-  ren->Delete();
-  actor->Delete();
-  mapper->Delete();
 
   output->Delete();
   convert_reader->Delete();
   convert_writer->Delete();
   vtk_reader->Delete();
-*/
+
   return EXIT_SUCCESS;
 }
 
