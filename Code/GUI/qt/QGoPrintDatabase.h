@@ -110,7 +110,7 @@ protected:
     typename GoDBRecordSet< myT >::RowContainerType *RowContainer,
     QTableWidget* TableToFill )
     {
-    for( unsigned int i = 0; i < RowContainer->size(); ++i )
+    for( unsigned int i = 0; i < RowContainer->size()-1; ++i )
        {
        std::map<std::string,std::string> Map 
          = (*RowContainer)[i].second.LinkColumnNamesAndValues();
