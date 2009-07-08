@@ -124,7 +124,7 @@ QGoMainWindow::~QGoMainWindow()
 // *************************************************************************
 void QGoMainWindow::CreateSignalSlotsConnection()
 {
-    /*  QObject::connect( this->TracerPolygonBtn, SIGNAL( released( ) ),
+  /*  QObject::connect( this->TracerPolygonBtn, SIGNAL( released( ) ),
   this, SLOT( SetTracerToPolygonTracer() ) );
   QObject::connect( this->TracerFreeLineBtn, SIGNAL( released( ) ),
   this, SLOT( SetTracerToFreeLineTracer() ) );

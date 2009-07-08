@@ -25,7 +25,6 @@ int main( int argc, char** argv )
 
   vtkPolyData* input = vtk_reader->GetOutput();
 
-  std::cout <<input->GetNumberOfPoints() <<std::endl;
   vtkPolyDataMySQLTextWriter* convert_writer =
     vtkPolyDataMySQLTextWriter::New();
   std::string polydata_string = convert_writer->GetMySQLText( input );

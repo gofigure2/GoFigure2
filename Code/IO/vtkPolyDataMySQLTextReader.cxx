@@ -83,7 +83,7 @@ vtkPolyData* vtkPolyDataMySQLTextReader::GetContour( )
   std::stringstream str( m_Text );
 
   vtkIdType N;
-  // char quote;
+  char quote;
   // NOTE ALEX:
   // As expected the problem is here in the Reader ....
   // the following line takes the first char of the string off
@@ -91,7 +91,7 @@ vtkPolyData* vtkPolyDataMySQLTextReader::GetContour( )
   // in the case I m dealing with, there is no characters to skip
   // Thus resulting dropping the frist 1 of 111 to make it eleven.
   // great ...
-  str >> N;
+  str >>quote >> N;
   points->SetNumberOfPoints( N );
 
   double pt[3];
