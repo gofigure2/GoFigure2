@@ -1578,6 +1578,10 @@ void QImagePageViewTracer::LoadFiguresFromDB( )
       vtkPolyDataMySQLTextReader* reader = vtkPolyDataMySQLTextReader::New();
       std::string PolyDataAsString = (*myRowContainer)[i].second.points; 
       contour = reader->GetPolyData( PolyDataAsString );
+	  vtkPolyDataWriter* writer = vtkPolyDataWriter::New();
+	  writer->SetInput( contour );
+	  writer->SetFileName( "Test.vtk" );
+	  writer->Write();
 
       // SET PROPOERTY
       vtkProperty* contour_property = vtkProperty::New();

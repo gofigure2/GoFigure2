@@ -83,7 +83,7 @@ vtkPolyData* vtkPolyDataMySQLTextReader::GetContour( )
   std::stringstream str( m_Text );
 
   vtkIdType N;
-  char quote;
+  // char quote;
   // NOTE ALEX:
   // As expected the problem is here in the Reader ....
   // the following line takes the first char of the string off
@@ -107,13 +107,20 @@ vtkPolyData* vtkPolyDataMySQLTextReader::GetContour( )
   vtkCellArray* cells = vtkCellArray::New();
   vtkIdList* id_list = vtkIdList::New();
 
-  for( vtkIdType i = 0; i < N; i++ )
+
+  // NOTE ALEX:
+  // one big cell does not do it.
+  // during the vizualization the cell is triangulated
+  // use edges for figures.
+  for( vtkIdType i = 1; i <= N; i++ )
     {
-    id_list->InsertNextId( i );
+	id_list->Reset();
+    id_list->InsertNextId( i-1 );
+	id_list->InsertNextId( i%N );
+	cells->InsertNextCell( id_list );
     }
-  id_list->InsertNextId( 0 );
-  cells->InsertNextCell( id_list );
-  oContour->SetPolys( cells );
+
+  oContour->SetLines( cells );
 
   cells->Delete();
   id_list->Delete();
@@ -153,7 +160,7 @@ vtkPolyData* vtkPolyDataMySQLTextReader::GetMesh( )
 
   for( vtkIdType i = 0; i < N; i++ )
     {
-    str >>NbOfPointsInCell;
+    str >> NbOfPointsInCell;
     cell_points->Reset();
     for( vtkIdType k = 0; k < NbOfPointsInCell; k++ )
       {
