@@ -83,7 +83,6 @@ vtkPolyData* vtkPolyDataMySQLTextReader::GetContour( )
   std::stringstream str( m_Text );
 
   vtkIdType N;
-  char quote;
   // NOTE ALEX:
   // As expected the problem is here in the Reader ....
   // the following line takes the first char of the string off
@@ -136,8 +135,7 @@ vtkPolyData* vtkPolyDataMySQLTextReader::GetMesh( )
   std::stringstream str( m_Text );
 
   vtkIdType N;
-  char quote;
-  str >>quote >>N;
+  str >>N;
   points->SetNumberOfPoints( N );
 
   double pt[3];

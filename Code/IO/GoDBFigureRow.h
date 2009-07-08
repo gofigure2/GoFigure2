@@ -77,7 +77,7 @@ public:
     myString << figureID     << ", ";
     myString << imageID      << ", ";
     myString << meshID       << ", ";
-    myString << points       << ", ";
+    myString <<"\"" <<points <<"\"" << ", ";
     myString << cellTypeID   << ", ";
     myString << flavorID     << ", ";
     myString << meanRed      << ", ";
