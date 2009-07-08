@@ -91,7 +91,7 @@ vtkPolyData* vtkPolyDataMySQLTextReader::GetContour( )
   // in the case I m dealing with, there is no characters to skip
   // Thus resulting dropping the frist 1 of 111 to make it eleven.
   // great ...
-  str >>quote >> N;
+  str >> N;
   points->SetNumberOfPoints( N );
 
   double pt[3];
