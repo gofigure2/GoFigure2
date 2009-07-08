@@ -56,7 +56,7 @@
 // ALEX: have to make a conditional flag to check if
 // vtk has been compiled with the good drivers
 // #ifdef VTK_USE_MYSQL
-  #include "CreateDataBaseHelper.h"
+#include "CreateDataBaseHelper.h"
 // #endif
 #include "QGoCreateDBDialog.h"
 #include "QGoWizardDB.h"
