@@ -41,11 +41,13 @@
 #define __QGoPrintDatabase_h
 
 #include <QWidget>
+#include <QTableWidget>
 
 #include "ui_QGoPrintDatabase.h"
 #include "MegaVTK2Configure.h"
 #include "GoDBRecordSet.h"
 #include "GoDBFigureRow.h"
+#include "QTableWidgetChild.h"
 
 class QGoPrintDatabase : public QWidget,
   private Ui::WidgetPrintDatabase
@@ -60,14 +62,14 @@ public:
       QString Password, QString DBName,
       int ExpID,QString ExpName);
 
-
 protected:
   //QStringList GetTableContentAndDisplayFromDB(QString TableName);
   //void QPrintTable(QString TableName);
-  QTableWidget* QPrintColumnNames (QString TableName, std::vector< std::string > ColumnNames);
+  QTableWidgetChild* QPrintColumnNames (QString TableName, std::vector< std::string > ColumnNames);
+  QTableWidgetChild* FigureTable;
 
   template< class myT >
-  void GetContentAndDisplayFromDB( QString ServerName, QString User,
+  QTableWidgetChild* GetContentAndDisplayFromDB( QString ServerName, QString User,
     QString Password, QString NameDB,QString TableName )
     {
     std::vector< std::string > ColumnNamesContainer;
@@ -90,7 +92,7 @@ protected:
     mySet->AddObject( myNewObject );
 
     ColumnNamesContainer = mySet->GetColumnNamesContainer();
-    QTableWidget* NewTable = new QTableWidget;
+    QTableWidgetChild* NewTable = new QTableWidgetChild;
     NewTable = QPrintColumnNames( TableName, ColumnNamesContainer );
     RowContainer = mySet->GetRowContainer();
     if( RowContainer->size() < 2 )
@@ -102,7 +104,9 @@ protected:
       std::cout << "Row container size: " << RowContainer->size() << std::endl;
       PrintOutContentFromDB< myT >( RowContainer, NewTable );
       }
+    
     delete mySet;
+    return NewTable;
   };
 
   template<class myT>
@@ -111,36 +115,37 @@ protected:
     QTableWidget* TableToFill )
     {
     for( unsigned int i = 0; i < RowContainer->size()-1; ++i )
-      {
-      std::map<std::string,std::string> Map
-        = (*RowContainer)[i].second.LinkColumnNamesAndValues();
-      if( TableToFill->columnCount() != (int)(Map.size()) )
-        {
-        std::cout << "Pb, row is not the same size as the number of col";
-        std::cout << std::endl;
-        return;
-        }
-      else
-        {
-        for( int j = 0; j< TableToFill->columnCount();j++)
-          {
-          QTableWidgetItem* HeaderCol = new QTableWidgetItem;
-          HeaderCol = TableToFill->horizontalHeaderItem(j);
-          std::map<std::string,std::string>::iterator it = Map.find(HeaderCol->text().toStdString());
-          if (it == Map.end())
-            {
-            return;
-            }
-          else
-            {
-            QTableWidgetItem* CellTable = new QTableWidgetItem;
-            CellTable->setText(it->second.c_str());
-            TableToFill->setItem(i,j,CellTable);
-            }
+       {
+       std::map<std::string,std::string> Map 
+         = (*RowContainer)[i].second.LinkColumnNamesAndValues();
+       if( TableToFill->columnCount() != (int)(Map.size()) )
+         {
+         std::cout << "Pb, row is not the same size as the number of col";
+         std::cout << std::endl;
+         return;
+         }
+       else
+         {
+         for( int j = 0; j< TableToFill->columnCount();j++)
+           {
+           QTableWidgetItem* HeaderCol = new QTableWidgetItem;
+           HeaderCol = TableToFill->horizontalHeaderItem(j);
+           std::map<std::string,std::string>::iterator it = Map.find(HeaderCol->text().toStdString());
+           if (it == Map.end())
+             {
+             return;
+             }
+           else
+             {
+             QTableWidgetItem* CellTable = new QTableWidgetItem;
+             CellTable->setText(it->second.c_str());
+             TableToFill->setItem(i,j,CellTable);
+             }
 
-          } // ENDFOR
-        }
-      }
+           } // ENDFOR
+
+         }
+       }
     };
 
   QString m_NameDB;
