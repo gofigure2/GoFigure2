@@ -42,7 +42,6 @@
 
 #include <QWidget>
 #include <QTableWidget>
-
 #include "ui_QGoPrintDatabase.h"
 #include "MegaVTK2Configure.h"
 #include "GoDBRecordSet.h"
@@ -63,13 +62,10 @@ public:
       int ExpID,QString ExpName);
 
 protected:
-  //QStringList GetTableContentAndDisplayFromDB(QString TableName);
-  //void QPrintTable(QString TableName);
   QTableWidgetChild* QPrintColumnNames (QString TableName, std::vector< std::string > ColumnNames);
-  QTableWidgetChild* FigureTable;
 
   template< class myT >
-  QTableWidgetChild* GetContentAndDisplayFromDB( QString ServerName, QString User,
+  void GetContentAndDisplayFromDB( QString ServerName, QString User,
     QString Password, QString NameDB,QString TableName )
     {
     std::vector< std::string > ColumnNamesContainer;
@@ -106,8 +102,7 @@ protected:
       }
     
     delete mySet;
-    return NewTable;
-  };
+   };
 
   template<class myT>
   void PrintOutContentFromDB(

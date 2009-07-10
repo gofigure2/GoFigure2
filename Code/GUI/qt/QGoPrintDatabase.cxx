@@ -82,17 +82,20 @@ QTableWidgetChild* QGoPrintDatabase::QPrintColumnNames (QString TableName,std::v
     QFont serifFont("Arial", 10, QFont::Bold);
     HeaderCol->setFont(serifFont);
     QTabName->setHorizontalHeaderItem(i,HeaderCol);
-    //QTabName->horizontalHeader()->setSortIndicatorShown(true);
-    //QTabName->horizontalHeader()->setMovable(true);
+    
     }
+ 
+  QTabName->horizontalHeader()->setSortIndicatorShown(true);
+  QTabName->setSortingEnabled(true);
+  QTabName->horizontalHeader()->setMovable(true);
 
-  /*QObject::connect( QTabName->horizontalHeader(),
+  QObject::connect( QTabName->horizontalHeader(),
     SIGNAL( sortIndicatorChanged(int,Qt::SortOrder) ),
-    QTabName,
-    SLOT( std::cout<<int<<std::endl ));*/
-    //SLOT( sortItems(int,Qt::SortOrder)) );
+    QTabName,SLOT( sortItems(int,Qt::SortOrder)) );
+
   return QTabName;
 }
+  
 
 void QGoPrintDatabase::Fill_Database(QString ServerName,QString login,
     QString Password, QString DBName, int ExpID, QString ExpName)
@@ -102,29 +105,11 @@ void QGoPrintDatabase::Fill_Database(QString ServerName,QString login,
   m_Password = Password;
   m_NameDB=DBName;
   this->setWindowTitle(QString("DB: %1 - Exp: %2").arg(DBName).arg(ExpName));
-  FigureTable = new QTableWidgetChild;
-  FigureTable = GetContentAndDisplayFromDB< GoDBFigureRow     >( m_Server, m_User, m_Password, m_NameDB,"figure");
-  FigureTable->horizontalHeader()->setSortIndicatorShown(true);
-  FigureTable->setSortingEnabled(true);
-  FigureTable->horizontalHeader()->setMovable(true);
-
-
-  QObject::connect( FigureTable->horizontalHeader(),
-    SIGNAL( sortIndicatorChanged(int,Qt::SortOrder) ),
-    FigureTable,
-    SLOT( sortItems(int,Qt::SortOrder)) );
-
+  GetContentAndDisplayFromDB< GoDBFigureRow     >( m_Server, m_User, m_Password, m_NameDB,"figure");
+ 
   //Need to create GoDBMeshRow,etc...first
   //QPrintTable ("mesh");
   //QPrintTable ("track");
   //QPrintTable ("lineage");
 
 }
-
-/*void QGoPrintDatabase::QPrintTable(QString TableName)
-{
-
-  QPrintColumnNames(TableName);
-
-}*/
-
