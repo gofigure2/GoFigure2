@@ -93,6 +93,8 @@ public:
     delete temp;
     }
 
+  void SetWhereString( std::string whereString )
+    { this->m_WhereString = whereString; this->IsWhereStringSet = true; } 
 
   void SetServerName( std::string ServerName )
     { this->ServerName = ServerName; }
@@ -143,7 +145,12 @@ public:
 
     this->PopulateColumnNamesContainer();
     std::stringstream queryString;
-    queryString << "SELECT * FROM " << this->TableName << ";";
+    queryString << "SELECT * FROM " << this->TableName;
+    if( IsWhereStringSet )
+      {
+      queryString << " WHERE " << m_WhereString;
+      }
+    queryString << ";";
 
     vtkSQLQuery* query = DataBaseConnector->GetQueryInstance();
     query->SetQuery( queryString.str().c_str() );
@@ -266,6 +273,8 @@ private:
   std::string TableName;
   std::string User;
   std::string PassWord;
+  std::string m_WhereString;
+  bool        IsWhereStringSet;
   bool        IsOpen;
 
 };

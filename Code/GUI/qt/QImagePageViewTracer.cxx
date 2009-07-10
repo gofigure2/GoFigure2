@@ -90,6 +90,7 @@ QImagePageViewTracer::QImagePageViewTracer( QWidget* parent ) : QWidget( parent 
   View3D = vtkViewImage3D::New();
 
   m_DBExperimentID = -1;
+  m_TimePoint      = -1;
 
   VtkEventQtConnector = vtkEventQtSlotConnect::New();
 
@@ -1370,6 +1371,7 @@ void QImagePageViewTracer::ValidateContour(
             GoDBFigureRow row;
             row.meshID = CellId;
             row.experimentID = m_DBExperimentID;
+            row.TCoord = this->m_TimePoint;
 
             // transform the PolyData into a suitable String
             vtkPolyDataMySQLTextWriter* db_convert
@@ -1415,6 +1417,8 @@ void QImagePageViewTracer::ValidateContour(
             //            ONE EXPERIMENT. Have to find the good generic design
             //            for that. The easiest way is to pass the good query
             //            Here instead of hardcoding it in RecordSet.
+            // NOTE ALEX: should restrict it to the time point and experimentID
+            //            instead of loading the entire DB
             mySet->PopulateFromDB();
             mySet->AddObject( row );
             mySet->SaveInDB();
@@ -1457,6 +1461,9 @@ void QImagePageViewTracer::LoadFiguresFromDB( )
     mySet->SetTableName( "figure" );
     mySet->SetUser( m_DBLogin.toStdString() );
     mySet->SetPassword( m_DBPassword.toStdString() );
+    std::stringstream whereString;
+    whereString << "TCoord = " << this->m_TimePoint;
+    mySet->SetWhereString( whereString.str() );
     mySet->PopulateFromDB();
 
     // FOR EACH CONTOUR IN THE RECORDSET

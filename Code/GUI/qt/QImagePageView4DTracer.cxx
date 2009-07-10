@@ -374,10 +374,11 @@ void QImagePageView4DTracer::SetView( const int& value )
 
   start = clock();
   this->Whatever->SetImage( this->Image );
-  //this->Whatever->
+  this->Whatever->SetTimePoint( value );
+  this->Whatever->LoadFiguresFromDB();
   finish = clock();
   time = (double(finish)-double(start))/CLOCKS_PER_SEC;
-  std::cout << "Set image in widget: " << time << "s" << std::endl;
+  std::cout << "Set image in widget and load contours from DB: " << time << "s" << std::endl;
 }
 
 void QImagePageView4DTracer::resizeEvent( QResizeEvent* event )

@@ -216,6 +216,9 @@ public slots:
 
   QMEGAVTKADDON2_EXPORT void LoadFiguresFromDB( );
 
+  QMEGAVTKADDON2_EXPORT void SetTimePoint( int TimePoint ) 
+    { this->m_TimePoint = TimePoint; };
+
 protected:
   QSplitter*          VSplitter;
   QSplitterchild*     HtSplitter;
@@ -288,12 +291,12 @@ protected:
   void Set2DImage( vtkImageData* input );
   void Set3DImage( vtkImageData* input );
 
-
   int   SnapshotId;
   int   IsFullScreen;
   bool  IsVolumeRendering;
   int   CellId;
   bool  Is2DImage;
+  int   m_TimePoint;
 
 protected slots:
   void MoveSlider1();
