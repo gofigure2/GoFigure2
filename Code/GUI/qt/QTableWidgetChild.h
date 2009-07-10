@@ -61,7 +61,7 @@ public:
   virtual QMEGAVTKADDON2_EXPORT ~QTableWidgetChild();
 
 protected:
-  int PrevRow;
+  int PrevCol;
   int PrevOrder;
 
 public slots:

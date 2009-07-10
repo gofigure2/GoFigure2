@@ -104,10 +104,8 @@ void QGoPrintDatabase::Fill_Database(QString ServerName,QString login,
   this->setWindowTitle(QString("DB: %1 - Exp: %2").arg(DBName).arg(ExpName));
   FigureTable = new QTableWidgetChild;
   FigureTable = GetContentAndDisplayFromDB< GoDBFigureRow     >( m_Server, m_User, m_Password, m_NameDB,"figure");
-  
-  
-  
   FigureTable->horizontalHeader()->setSortIndicatorShown(true);
+  FigureTable->setSortingEnabled(true);
   FigureTable->horizontalHeader()->setMovable(true);
 
 

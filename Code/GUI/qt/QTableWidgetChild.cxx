@@ -43,7 +43,7 @@
 
 QTableWidgetChild::QTableWidgetChild( QWidget* parent ): QTableWidget( parent )
 {
-  PrevRow = -1;
+  PrevCol = -1;
   PrevOrder = -1;
 }
 
@@ -57,15 +57,15 @@ QTableWidgetChild::~QTableWidgetChild()
 }
 
 
-void QTableWidgetChild::sortItems(int row, Qt::SortOrder order)
+void QTableWidgetChild::sortItems(int column, Qt::SortOrder order)
 {
-  std::cout<<"Row"<<row<<std::endl;
+  std::cout<<"column"<<column<<std::endl;
   std::cout<<"order"<<order<<std::endl;  
-  if ( row != PrevRow && order !=PrevOrder)
+  if ( column != PrevCol && order !=PrevOrder)
   {
-    PrevRow = row;
+    PrevCol = column;
     PrevOrder = order;
-    QTableWidget::sortItems(row,order);
+    QTableWidget::sortItems(column,order);
     
   }
     
