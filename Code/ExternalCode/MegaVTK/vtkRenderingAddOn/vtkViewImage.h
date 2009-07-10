@@ -190,6 +190,8 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage : public vtkImageViewer2
   */
   vtkGetObjectMacro (TextProperty, vtkTextProperty);
   virtual void SetTextProperty (vtkTextProperty* textproperty);
+
+  vtkGetObjectMacro( Prop3DCollection, vtkProp3DCollection );
   /**
      The world is not always what we think it is ...
 
@@ -198,7 +200,7 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage : public vtkImageViewer2
      the slice plane. If the given position is outside the bounds
      of the image, then the slice will be as close as possible.
   */
-  virtual void SetWorldCoordinates( const double& x, 
+  virtual void SetWorldCoordinates( const double& x,
     const double& y, const double& z )
   {
     double pos[3] = {x,y,z};
@@ -286,7 +288,7 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage : public vtkImageViewer2
      Show/Hide the annotations.
   */
   vtkBooleanMacro (ShowScalarBar, int);
-  
+
   // Description:
   // Set window and level for mapping pixels to colors.
   virtual void SetColorWindow( const double& s);

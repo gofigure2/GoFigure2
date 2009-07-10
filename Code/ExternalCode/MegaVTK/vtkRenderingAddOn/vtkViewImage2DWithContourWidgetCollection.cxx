@@ -67,8 +67,13 @@
 
 #include "vtkViewImage2DWithContourWidgetCollection.h"
 
-#include <vtkInteractorStyleImage.h>
 #include "vtkInteractorStyleImage2D.h"
+
+#include <vtkInteractorStyleImage.h>
+#include <vtkProp3DCollection.h>
+#include <vtkCellPicker.h>
+#include <vtkAssemblyPath.h>
+#include <vtkProp.h>
 #include <vtkProperty.h>
 #include <vtkMath.h>
 #include <vtkCamera.h>
@@ -312,7 +317,10 @@ void vtkViewImage2DWithContourWidgetCollectionCommand::Execute(vtkObject *caller
   while(v)
   {
     if (isi == v->GetInteractorStyle())
+    {
       viewer = v;
+      break;
+    }
     v = this->GetCollection()->GetNextItem();
   }
 
@@ -403,6 +411,30 @@ void vtkViewImage2DWithContourWidgetCollectionCommand::Execute(vtkObject *caller
     if( event == vtkViewImage2DCommand::ContourPickingEvent )
     {
       std::cout <<"Picking!!!" <<std::endl;
+      vtkCellPicker* picker = viewer->GetContourPicker();
+      vtkRenderWindowInteractor *rwi =
+        viewer->GetRenderWindow()->GetInteractor();
+
+      picker->Pick( rwi->GetEventPosition()[0], rwi->GetEventPosition()[1], 0,
+        viewer->GetRenderer() );
+
+      vtkAssemblyPath* path = picker->GetPath();
+      if( path )
+      {
+        vtkProp* prop = path->GetFirstNode()->GetViewProp();
+        viewer->GetProp3DCollection()->InitTraversal();
+        vtkProp3D* prop_temp = viewer->GetProp3DCollection()->GetNextProp3D();
+
+        while( prop_temp )
+        {
+          if( prop_temp == prop )
+          {
+            std::cout <<"yo" <<std::endl;
+//             break;
+          }
+          prop_temp = viewer->GetProp3DCollection()->GetNextProp3D();
+        }
+      }
     }
   }
 }
