@@ -77,6 +77,7 @@ class vtkPlane;
 class vtkViewImage2DCommand;
 class vtkTransform;
 class vtkImageBlendWithMask;
+class vtkCellPicker;
 
 /**
 
@@ -132,6 +133,8 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage2D : public vtkViewImage
     VIEW_CONVENTION_NEUROLOGICAL = 1
   };
   //ETX
+
+  vtkGetObjectMacro( ContourPicker, vtkCellPicker );
 
   /**
      The SliceImplicitPlane instance (GetImplicitSlicePlane()) is the
@@ -303,11 +306,12 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage2D : public vtkViewImage
   virtual void InstallPipeline();
 
   vtkMatrix4x4* ConventionMatrix;
-  vtkPlane* SliceImplicitPlane;
+  vtkPlane*     SliceImplicitPlane;
   vtkTransform* AdjustmentTransform;
-  vtkPolyData* SlicePlane;
+  vtkPolyData*  SlicePlane;
 
-  vtkViewImage2DCommand* Command;
+  vtkViewImage2DCommand*  Command;
+  vtkCellPicker*          ContourPicker;
 
   int ViewOrientation;
   int ViewConvention;

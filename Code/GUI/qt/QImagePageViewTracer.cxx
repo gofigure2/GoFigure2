@@ -1475,11 +1475,12 @@ void QImagePageViewTracer::LoadFiguresFromDB( )
       vtkPolyDataMySQLTextReader* reader = vtkPolyDataMySQLTextReader::New();
       std::string PolyDataAsString = (*myRowContainer)[i].second.points;
       contour = reader->GetPolyData( PolyDataAsString );
+      reader->Delete();
 
-      vtkPolyDataWriter* writer = vtkPolyDataWriter::New();
-      writer->SetInput( contour );
-      writer->SetFileName( "Test.vtk" );
-      writer->Write();
+//       vtkPolyDataWriter* writer = vtkPolyDataWriter::New();
+//       writer->SetInput( contour );
+//       writer->SetFileName( "Test.vtk" );
+//       writer->Write();
 
       // SET PROPOERTY
       vtkProperty* contour_property = vtkProperty::New();
@@ -1495,7 +1496,7 @@ void QImagePageViewTracer::LoadFiguresFromDB( )
         }
       this->View3D->AddDataSet( contour_copy, contour_property, false );
       contour_copy->Delete();
-
+      contour->Delete();
       } // ENDFOR
 
     delete mySet;

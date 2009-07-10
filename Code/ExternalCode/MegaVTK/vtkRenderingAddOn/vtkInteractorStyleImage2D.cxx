@@ -149,6 +149,10 @@ void vtkInteractorStyleImage2D::OnLeftButtonDown()
     this->RequestedPosition[1] = y;
     this->InvokeEvent (vtkViewImage2DCommand::RequestedPositionEvent);
   }
+  else
+  {
+    this->InvokeEvent( vtkViewImage2DCommand::ContourPickingEvent );
+  }
 
   this->Superclass::OnLeftButtonDown();
 }

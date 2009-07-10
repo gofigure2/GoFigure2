@@ -70,6 +70,8 @@
 #endif
 
 #include <vtkAbstractPropPicker.h>
+#include <vtkAssemblyPath.h>
+#include <vtkCellPicker.h>
 #include <vtkRenderer.h>
 #include <vtkRenderWindow.h>
 #include <vtkRenderWindowInteractor.h>
@@ -133,6 +135,23 @@ vtkViewImage2DCommand::Execute( vtkObject*    caller,
   {
     this->Windowing( isi );
     return;
+  }
+
+  if( event == vtkViewImage2DCommand::ContourPickingEvent )
+  {
+    vtkCellPicker* picker = this->Viewer->GetContourPicker();
+    vtkRenderWindowInteractor *rwi =
+      this->Viewer->GetRenderWindow()->GetInteractor();
+
+    picker->Pick( rwi->GetEventPosition()[0], rwi->GetEventPosition()[1], 0,
+      this->Viewer->GetRenderer() );
+
+    vtkAssemblyPath* path = picker->GetPath();
+    if( path )
+    {
+      vtkProp* prop = path->GetFirstNode()->GetViewProp();
+      std::cout <<"yo" <<std::endl;
+    }
   }
 
   if (event == vtkCommand::KeyPressEvent)

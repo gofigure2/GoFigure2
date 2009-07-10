@@ -86,6 +86,7 @@
 #include "vtkMath.h"
 #include "vtkPlane.h"
 #include "vtkCutter.h"
+#include "vtkCellPicker.h"
 #include "vtkClipPolyData.h"
 #include "vtkActor.h"
 #include "vtkPolyDataMapper.h"
@@ -116,6 +117,7 @@ vtkViewImage2D::vtkViewImage2D()
   this->AdjustmentTransform = vtkTransform::New();
   this->SlicePlane = vtkPolyData::New();
   this->Command = vtkViewImage2DCommand::New();
+  this->ContourPicker = vtkCellPicker::New();
 
   this->Command->SetViewer( this);
 
@@ -146,6 +148,7 @@ vtkViewImage2D::~vtkViewImage2D()
   this->SlicePlane->Delete();
   this->AdjustmentTransform->Delete();
   this->Command->Delete();
+  this->ContourPicker->Delete();
 }
 
 //----------------------------------------------------------------------------
@@ -792,6 +795,8 @@ void vtkViewImage2D::AddDataSet( vtkPolyData* dataset,
     actor->SetProperty( property );
 
   actor->SetUserTransform( this->AdjustmentTransform );
+  this->ContourPicker->AddPickList( actor );
+  this->ContourPicker->PickFromListOn();
 
   this->Renderer->AddViewProp( actor );
   this->DataSetCollection->AddItem( dataset );
@@ -832,6 +837,8 @@ void vtkViewImage2D::AddDataSet( vtkDataSet* dataset,
     actor->SetProperty( property );
 
   actor->SetUserTransform( this->AdjustmentTransform );
+  this->ContourPicker->AddPickList( actor );
+  this->ContourPicker->PickFromListOn();
 
   this->Renderer->AddViewProp( actor );
   this->DataSetCollection->AddItem( dataset );

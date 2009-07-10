@@ -139,6 +139,9 @@ AddItem( vtkViewImage2DWithContourWidget* a )
   a->GetInteractorStyle()->AddObserver(
     vtkViewImage2DCommand::ResetViewerEvent,
     this->Command );
+  a->GetInteractorStyle()->AddObserver(
+    vtkViewImage2DCommand::ContourPickingEvent,
+    this->Command );
 }
 
 
@@ -396,6 +399,10 @@ void vtkViewImage2DWithContourWidgetCollectionCommand::Execute(vtkObject *caller
         isi->GetRequestedPosition ());
       this->Collection->SyncSetWorldCoordinates(position);
       this->Collection->SyncRender();
+    }
+    if( event == vtkViewImage2DCommand::ContourPickingEvent )
+    {
+      std::cout <<"Picking!!!" <<std::endl;
     }
   }
 }
