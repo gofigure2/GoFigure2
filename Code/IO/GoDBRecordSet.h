@@ -59,6 +59,9 @@ public:
   // row type
   typedef TObject OriginalObjectType;
 
+  GoDBRecordSet()
+  { IsWhereStringSet = false; }
+
   // decorate the row type to know if it was modified
   // allows for optimization when synchronising the data
   typedef std::pair< bool, OriginalObjectType > InternalObjectType;
