@@ -64,6 +64,8 @@ public:
 protected:
   QTableWidgetChild* QPrintColumnNames (QString TableName, std::vector< std::string > ColumnNames);
 
+  /*get the columns names and the values of the table (type T) from the database, then display them in the
+  QTableWidgetchild: */
   template< class myT >
   void GetContentAndDisplayFromDB( QString ServerName, QString User,
     QString Password, QString NameDB,QString TableName )
@@ -97,17 +99,17 @@ protected:
       }
     else
       {
-      std::cout << "Row container size: " << RowContainer->size() << std::endl;
       PrintOutContentFromDB< myT >( RowContainer, NewTable );
       }
-    
     delete mySet;
    };
 
+  /*Display the values stored in the RowContainer (list of type T)
+  in the QTableWidgetChild TableToFill: */
   template<class myT>
   void PrintOutContentFromDB(
     typename GoDBRecordSet< myT >::RowContainerType *RowContainer,
-    QTableWidget* TableToFill )
+    QTableWidgetChild* TableToFill )
     {
     for( unsigned int i = 0; i < RowContainer->size()-1; ++i )
        {

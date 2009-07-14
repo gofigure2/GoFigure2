@@ -60,15 +60,15 @@ public:
   explicit QMEGAVTKADDON2_EXPORT QTableWidgetChild ( int rows, int columns, 
     QWidget * parent = 0);
   virtual QMEGAVTKADDON2_EXPORT ~QTableWidgetChild();
+  // return the row index where the figureID is located:
+  int findFigureID(int FigureID);
 
 protected:
   int PrevCol;
   int PrevOrder;
-  // return the row index where the figureID is located:
-  int findFigureID(QString FigureID, QStringList ColumnsHeader);
   //return the column index who has a column header matching ColumnName:
   int findColumnName(QString ColumnName,QStringList ColumnsHeader);
-  //return a List of all the header names of the columns:
+  //return a List of all the header names of the columns, :
   QStringList recordHeaderNamesOrder();
 
 

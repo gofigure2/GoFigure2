@@ -72,20 +72,34 @@ void QTableWidgetChild::sortItems(int column, Qt::SortOrder order)
     PrevOrder = order;
     QTableWidget::sortItems(column,order);
     }
-    
 }
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-int QTableWidgetChild::findFigureID(QString FigureID, QStringList ColumnsHeader)
+int QTableWidgetChild::findFigureID(int FigureID)
 {
-  int ColumnIndex = findColumnName("figureID",ColumnsHeader);
-  for (int i=0;i<rowCount();i++)
+  QStringList ColumnsHeader = recordHeaderNamesOrder();
+  if (ColumnsHeader.isEmpty())
     {
-      if (this->item(i,ColumnIndex)->text()== FigureID)
+    std::cout<<"The QStringlist ColumnsHeader is empty"<<std::endl;
+    return -1;
+    }
+
+  int ColumnIndex = findColumnName("figureID",ColumnsHeader);
+  if (ColumnIndex == -1)
+    {
+    std::cout<<"The column figureID has not been found"<<std::endl;
+    return -1;
+    }
+  else
+    {
+    for (int i=0;i<rowCount();i++)
+      {
+      if (this->item(i,ColumnIndex)->text().toInt() == FigureID)
         {
-          return i;
+        return i;
         }
+      }
     }
   return -1;
 }
@@ -102,9 +116,11 @@ int QTableWidgetChild::findColumnName(QString ColumnName, QStringList ColumnsHea
 QStringList QTableWidgetChild::recordHeaderNamesOrder()
 {
   QStringList ColumnNamesOrder;
-  for (int i=0; i<columnCount();i++)
+  for (int i=0; i<this->columnCount();i++)
     {
-      ColumnNamesOrder.append(this->item(0,i)->text());
+    ColumnNamesOrder.append(this->horizontalHeaderItem(i)->text());
+    std::cout<<"Column Name is: "<<this->horizontalHeaderItem(i)->text().toAscii().data()<<std::endl;
     }
+
   return ColumnNamesOrder;
 }
