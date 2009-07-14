@@ -40,6 +40,7 @@
 
 #include "QTableWidgetChild.h"
 #include <iostream>
+#include <QTableWidgetSelectionRange>
 
 QTableWidgetChild::QTableWidgetChild( QWidget* parent ): QTableWidget( parent )
 {
@@ -76,7 +77,7 @@ void QTableWidgetChild::sortItems(int column, Qt::SortOrder order)
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-int QTableWidgetChild::findFigureID(int FigureID)
+int QTableWidgetChild::findValueGivenColumn(int Value, QString Column)
 {
   QStringList ColumnsHeader = recordHeaderNamesOrder();
   if (ColumnsHeader.isEmpty())
@@ -85,7 +86,7 @@ int QTableWidgetChild::findFigureID(int FigureID)
     return -1;
     }
 
-  int ColumnIndex = findColumnName("figureID",ColumnsHeader);
+  int ColumnIndex = findColumnName(Column,ColumnsHeader);
   if (ColumnIndex == -1)
     {
     std::cout<<"The column figureID has not been found"<<std::endl;
@@ -95,7 +96,7 @@ int QTableWidgetChild::findFigureID(int FigureID)
     {
     for (int i=0;i<rowCount();i++)
       {
-      if (this->item(i,ColumnIndex)->text().toInt() == FigureID)
+      if (this->item(i,ColumnIndex)->text().toInt() == Value)
         {
         return i;
         }
@@ -123,4 +124,14 @@ QStringList QTableWidgetChild::recordHeaderNamesOrder()
     }
 
   return ColumnNamesOrder;
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+void QTableWidgetChild::SelectRowFigureID (int FigureID)
+{
+  int RowIndex = this->findValueGivenColumn(FigureID, "figureID");
+  std::cout<<"the row index where figureID is "<<RowIndex<<std::endl;
+  QTableWidgetSelectionRange RangeToSelect(RowIndex,0,RowIndex,columnCount()-1);
+  this->setRangeSelected(RangeToSelect,true);
 }

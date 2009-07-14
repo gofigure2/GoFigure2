@@ -60,12 +60,14 @@ public:
   explicit QMEGAVTKADDON2_EXPORT QTableWidgetChild ( int rows, int columns, 
     QWidget * parent = 0);
   virtual QMEGAVTKADDON2_EXPORT ~QTableWidgetChild();
-  // return the row index where the figureID is located:
-  int findFigureID(int FigureID);
+  
 
 protected:
   int PrevCol;
   int PrevOrder;
+  /* return the row index where the given value is located when specifying
+  the column name: */
+  int findValueGivenColumn(int Value, QString Column);
   //return the column index who has a column header matching ColumnName:
   int findColumnName(QString ColumnName,QStringList ColumnsHeader);
   //return a List of all the header names of the columns, :
@@ -74,6 +76,8 @@ protected:
 
 public slots:
   QMEGAVTKADDON2_EXPORT void sortItems(int row, Qt::SortOrder order);
+  //select the row corresponding to the given FigureID:
+  QMEGAVTKADDON2_EXPORT void SelectRowFigureID (int FigureID);
 
 };
 
