@@ -42,6 +42,7 @@
 #define __QTableWidgetChild_h
 
 #include <QTableWidget>
+#include <QStringList>
 #include "MegaVTK2Configure.h"
 
 /**
@@ -63,6 +64,13 @@ public:
 protected:
   int PrevCol;
   int PrevOrder;
+  // return the row index where the figureID is located:
+  int findFigureID(QString FigureID, QStringList ColumnsHeader);
+  //return the column index who has a column header matching ColumnName:
+  int findColumnName(QString ColumnName,QStringList ColumnsHeader);
+  //return a List of all the header names of the columns:
+  QStringList recordHeaderNamesOrder();
+
 
 public slots:
   QMEGAVTKADDON2_EXPORT void sortItems(int row, Qt::SortOrder order);

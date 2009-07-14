@@ -46,27 +46,65 @@ QTableWidgetChild::QTableWidgetChild( QWidget* parent ): QTableWidget( parent )
   PrevCol = -1;
   PrevOrder = -1;
 }
+//------------------------------------------------------------------------------
 
+//------------------------------------------------------------------------------
 QTableWidgetChild::QTableWidgetChild ( int rows, int columns, 
                   QWidget * parent ):QTableWidget(rows,columns,parent)
 {
 }
+//------------------------------------------------------------------------------
 
+//------------------------------------------------------------------------------
 QTableWidgetChild::~QTableWidgetChild()
 {
 }
+//------------------------------------------------------------------------------
 
-
+//------------------------------------------------------------------------------
 void QTableWidgetChild::sortItems(int column, Qt::SortOrder order)
 {
   std::cout<<"column"<<column<<std::endl;
   std::cout<<"order"<<order<<std::endl;  
   if ( column != PrevCol && order !=PrevOrder)
-  {
+    {
     PrevCol = column;
     PrevOrder = order;
     QTableWidget::sortItems(column,order);
+    }
     
-  }
-    
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+int QTableWidgetChild::findFigureID(QString FigureID, QStringList ColumnsHeader)
+{
+  int ColumnIndex = findColumnName("figureID",ColumnsHeader);
+  for (int i=0;i<rowCount();i++)
+    {
+      if (this->item(i,ColumnIndex)->text()== FigureID)
+        {
+          return i;
+        }
+    }
+  return -1;
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+int QTableWidgetChild::findColumnName(QString ColumnName, QStringList ColumnsHeader)
+{
+  return ColumnsHeader.indexOf(ColumnName,0);
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+QStringList QTableWidgetChild::recordHeaderNamesOrder()
+{
+  QStringList ColumnNamesOrder;
+  for (int i=0; i<columnCount();i++)
+    {
+      ColumnNamesOrder.append(this->item(0,i)->text());
+    }
+  return ColumnNamesOrder;
 }
