@@ -78,6 +78,9 @@ public slots:
   QMEGAVTKADDON2_EXPORT void sortItems(int row, Qt::SortOrder order);
   //select the row corresponding to the given FigureID:
   QMEGAVTKADDON2_EXPORT void SelectRowFigureID (int FigureID);
+  /*return the list of the contours from the widget,
+  to be highlighten in the visualization: */
+  QMEGAVTKADDON2_EXPORT QList<int> ContoursToHighlight();
 
 };
 

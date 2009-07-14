@@ -135,3 +135,29 @@ void QTableWidgetChild::SelectRowFigureID (int FigureID)
   QTableWidgetSelectionRange RangeToSelect(RowIndex,0,RowIndex,columnCount()-1);
   this->setRangeSelected(RangeToSelect,true);
 }
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+QList<int> QTableWidgetChild::ContoursToHighlight()
+{
+  QList<int> ListContoursFromWidget;
+  QList<QTableWidgetSelectionRange> Selection;
+  Selection = this->selectedRanges();
+  QStringList ColumnsHeader = this->recordHeaderNamesOrder();
+  int figureIDIndex = findColumnName("figureID",ColumnsHeader);
+  
+  for (int i=0;i<Selection.size();i++)
+    {
+    if (Selection[i].columnCount() == 22)
+      {
+      int TopRowSelected = Selection[i].topRow();
+      int BottomRowSelected = Selection[i].bottomRow();
+      for (int j = TopRowSelected; j<BottomRowSelected;j++)
+        {
+        ListContoursFromWidget.append(this->item(j,figureIDIndex)->text().toInt());
+        }
+      }
+    
+    }
+  return ListContoursFromWidget;
+}
