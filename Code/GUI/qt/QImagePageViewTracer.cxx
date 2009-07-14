@@ -64,6 +64,7 @@
 #include <vtkPolyDataWriter.h>
 
 #include <vtkPolyData.h>
+#include <vtkPointData.h>
 #include <vtkPoints.h>
 #include <vtkCellArray.h>
 #include <vtkMath.h>
@@ -1277,6 +1278,20 @@ void QImagePageViewTracer::ValidateContour(
       if( contour->GetNumberOfPoints() > 2 )
         {
 
+        vtkIntArray* dumb_array = vtkIntArray::New();
+        dumb_array->SetNumberOfValues( contour->GetNumberOfPoints() );
+        dumb_array->SetName( "dumb" );
+
+        dumb_array->SetValue( 0, CellId );
+        dumb_array->SetValue( 1, iColor.red() );
+        dumb_array->SetValue( 2, iColor.green() );
+        dumb_array->SetValue( 3, iColor.blue() );
+
+        for( int ii=4; ii < contour->GetNumberOfPoints(); ii++ )
+        {
+          dumb_array->SetValue( ii, 0 );
+        }
+
         // -------
         // BOUNDS COMPUTATION
         // -------
@@ -1307,13 +1322,16 @@ void QImagePageViewTracer::ValidateContour(
         // make a copy for each view
         vtkPolyData* contour_copy = vtkPolyData::New();
         contour_copy->ShallowCopy( contour );
+        contour_copy->GetPointData()->SetScalars( dumb_array );
+
         for( int j = 0; j < this->Pool->GetNumberOfItems(); j++ )
           {
           this->Pool->GetItem( j )->AddDataSet(
-            contour_copy, contour_property, true );
+            contour_copy, contour_property, true, false );
           }
-        this->View3D->AddDataSet( contour_copy, contour_property, false );
+        this->View3D->AddDataSet( contour_copy, contour_property, false, false );
         contour_copy->Delete();
+        dumb_array->Delete();
 
         // ------
         // SAVE AS A FILE AND IN DB

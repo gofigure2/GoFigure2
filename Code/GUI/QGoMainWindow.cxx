@@ -872,7 +872,7 @@ void QGoMainWindow::SetColorForGivenId( const bool& iSelect )
   vnl_random random( 12 );
   QColor color;
 
-  if( cell_id < 7 )
+  if( cell_id < 6 )
     {
     switch( cell_id )
       {
@@ -880,19 +880,23 @@ void QGoMainWindow::SetColorForGivenId( const bool& iSelect )
       case 1:
         color.setHsv( 0, 255, 255 );
         break;
+      //case 2:
+      //  color.setHsv( 60, 255, 255 );
+      //  break;
+      //case 3:
       case 2:
-        color.setHsv( 60, 255, 255 );
-        break;
-      case 3:
         color.setHsv( 120, 255, 255 );
         break;
-      case 4:
+      //case 4:
+      case 3:
         color.setHsv( 180, 255, 255 );
         break;
-      case 5:
+      //case 5:
+      case 4:
         color.setHsv( 240, 255, 255 );
         break;
-      case 6:
+      //case 6:
+      case 5:
         color.setHsv( 300, 255, 255 );
         break;
       }
@@ -902,32 +906,32 @@ void QGoMainWindow::SetColorForGivenId( const bool& iSelect )
     switch( cell_id % 6 )
       {
       case 0:
-        color.setHsv( random.lrand32( 0, 60 ),
+        color.setHsv( random.lrand32( 0, 59 ),
           random.lrand32( 0, 255 ),
           random.lrand32( 0, 255 ) );
         break;
       case 1:
-        color.setHsv( random.lrand32( 60, 120 ),
+        color.setHsv( random.lrand32( 61, 120 ),
           random.lrand32( 0, 255 ),
           random.lrand32( 0, 255 ) );
         break;
       case 2:
-        color.setHsv( random.lrand32( 120, 180 ),
+        color.setHsv( random.lrand32( 121, 180 ),
           random.lrand32( 0, 255 ),
           random.lrand32( 0, 255 ) );
         break;
       case 3:
-        color.setHsv( random.lrand32( 180, 240 ),
+        color.setHsv( random.lrand32( 181, 240 ),
           random.lrand32( 0, 255 ),
           random.lrand32( 0, 255 ) );
         break;
       case 4:
-        color.setHsv( random.lrand32( 240, 300 ),
+        color.setHsv( random.lrand32( 241, 300 ),
           random.lrand32( 0, 255 ),
           random.lrand32( 0, 255 ) );
         break;
       case 5:
-        color.setHsv( random.lrand32( 300, 360 ),
+        color.setHsv( random.lrand32( 301, 360 ),
           random.lrand32( 0, 255 ),
           random.lrand32( 0, 255 ) );
         break;
@@ -1235,8 +1239,9 @@ QString QGoMainWindow::strippedName(const QString &fullFileName)
 //--------------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------------
-void QGoMainWindow::updateRecentFileActions
-(QStringList list, QMenu *menu, QAction *recentFileActions[MaxRecentFiles] )
+void QGoMainWindow::updateRecentFileActions( QStringList list, 
+  QMenu *menu, 
+  QAction *recentFileActions[MaxRecentFiles] )
 {
   QMutableStringListIterator i(list);
   while (i.hasNext())

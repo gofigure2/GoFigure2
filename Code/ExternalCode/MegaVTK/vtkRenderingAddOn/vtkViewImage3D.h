@@ -136,7 +136,8 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage3D : public vtkViewImage
   */
   virtual void AddDataSet (vtkDataSet* dataset,
     vtkProperty* property = NULL,
-    const bool& intersection = true );
+    const bool& intersection = true,
+    const bool& iDataVisibility = true );
   /**
      Set/Get the current slice to display (depending on the orientation
      this can be in X, Y or Z).

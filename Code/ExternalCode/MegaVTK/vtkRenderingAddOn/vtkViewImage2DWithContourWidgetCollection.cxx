@@ -423,9 +423,9 @@ void vtkViewImage2DWithContourWidgetCollectionCommand::Execute(vtkObject *caller
         vtkProp* prop = path->GetFirstNode()->GetViewProp();
         viewer->GetProp3DCollection()->InitTraversal();
         vtkProp3D* prop_temp = viewer->GetProp3DCollection()->GetNextProp3D(); // image
-        prop_temp = viewer->GetProp3DCollection()->GetNextProp3D(); // 1st plane
-        prop_temp = viewer->GetProp3DCollection()->GetNextProp3D(); // 2nd plane
-        prop_temp = viewer->GetProp3DCollection()->GetNextProp3D(); // 3rd plane
+//         prop_temp = viewer->GetProp3DCollection()->GetNextProp3D(); // 1st plane
+//         prop_temp = viewer->GetProp3DCollection()->GetNextProp3D(); // 2nd plane
+//         prop_temp = viewer->GetProp3DCollection()->GetNextProp3D(); // 3rd plane
 
         while( prop_temp )
         {

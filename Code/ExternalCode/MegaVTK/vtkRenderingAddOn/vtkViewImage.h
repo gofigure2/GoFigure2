@@ -220,7 +220,8 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage : public vtkImageViewer2
   */
   virtual void AddDataSet (vtkDataSet* dataset,
     vtkProperty* property = NULL,
-    const bool& intersection = true ) = 0;
+    const bool& intersection = true,
+    const bool& iDataVisibility = true ) = 0;
   virtual bool RemoveDataSet (vtkDataSet* dataset);
 
   /**

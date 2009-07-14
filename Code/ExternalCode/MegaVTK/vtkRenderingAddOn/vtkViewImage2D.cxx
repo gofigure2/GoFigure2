@@ -224,11 +224,11 @@ void vtkViewImage2D::InitializeSlicePlane(void)
 {
   vtkPoints* points = vtkPoints::New();
   this->SlicePlane->SetPoints( points);
-  points->InsertNextPoint( 0, 0, 0);
-  points->InsertNextPoint( 1, 0, 0);
-  points->InsertNextPoint( 0, 1, 0);
-  points->InsertNextPoint( 1, 1, 0);
-  this->SlicePlane->Allocate( 4);
+  points->InsertNextPoint( 0, 0, 0 );
+  points->InsertNextPoint( 1, 0, 0 );
+  points->InsertNextPoint( 0, 1, 0 );
+  points->InsertNextPoint( 1, 1, 0 );
+  this->SlicePlane->Allocate( 4 );
 
   vtkIdType pts[4];
   pts[0] = 0; pts[1] = 1; pts[2] = 3; pts[3] = 2;
@@ -238,16 +238,16 @@ void vtkViewImage2D::InitializeSlicePlane(void)
   points->Delete();
 
   vtkUnsignedCharArray* array = vtkUnsignedCharArray::New();
-  array->SetName( "Colors");
-  array->SetNumberOfComponents( 3);
+  array->SetName( "Colors" );
+  array->SetNumberOfComponents( 3 );
   unsigned char vals[3];
   vals[0] = 255; vals[1] = 0; vals[2] = 0;
-  array->InsertNextTupleValue( vals);
-  array->InsertNextTupleValue( vals);
-  array->InsertNextTupleValue( vals);
-  array->InsertNextTupleValue( vals);
+  array->InsertNextTupleValue( vals );
+  array->InsertNextTupleValue( vals );
+  array->InsertNextTupleValue( vals );
+  array->InsertNextTupleValue( vals );
 
-  this->SlicePlane->GetPointData()->SetScalars( array);
+  this->SlicePlane->GetPointData()->SetScalars( array );
   array->Delete();
 }
 
@@ -767,13 +767,16 @@ int vtkViewImage2D::GetInterpolate(void)
 //----------------------------------------------------------------------------
 void vtkViewImage2D::AddDataSet( vtkPolyData* dataset,
   vtkProperty* property,
-  const bool& intersection )
+  const bool& intersection,
+  const bool& iDataVisibility )
 {
   vtkCamera *cam = this->Renderer ? this->Renderer->GetActiveCamera() : NULL;
   if( !cam )
     return;
 
   vtkPolyDataMapper* mapper = vtkPolyDataMapper::New();
+  mapper->SetScalarVisibility( iDataVisibility );
+
   vtkActor* actor = vtkActor::New();
 
   vtkClipPolyData* cutter = vtkClipPolyData::New();
@@ -810,13 +813,16 @@ void vtkViewImage2D::AddDataSet( vtkPolyData* dataset,
 //----------------------------------------------------------------------------
 void vtkViewImage2D::AddDataSet( vtkDataSet* dataset,
   vtkProperty* property,
-  const bool& intersection )
+  const bool& intersection,
+  const bool& iDataVisibility )
 {
   vtkCamera *cam = this->Renderer ? this->Renderer->GetActiveCamera() : NULL;
   if( !cam )
     return;
 
   vtkPolyDataMapper* mapper = vtkPolyDataMapper::New();
+  mapper->SetScalarVisibility( iDataVisibility );
+
   vtkActor* actor = vtkActor::New();
 
   vtkCutter* cutter = vtkCutter::New();

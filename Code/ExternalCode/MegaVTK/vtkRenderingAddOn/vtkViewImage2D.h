@@ -244,11 +244,13 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage2D : public vtkViewImage
   */
   virtual void AddDataSet (vtkDataSet* dataset,
     vtkProperty* property = NULL,
-    const bool& intersection = true );
+    const bool& intersection = true,
+    const bool& iDataVisibility = true );
 
   virtual void AddDataSet( vtkPolyData* polydata,
     vtkProperty* property = NULL,
-    const bool& intersection = true );
+    const bool& intersection = true,
+    const bool& iDataVisibility = true );
 
   template< class TContourContainer,
             class TPropertyContainer >

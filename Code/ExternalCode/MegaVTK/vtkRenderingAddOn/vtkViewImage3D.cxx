@@ -567,13 +567,16 @@ void vtkViewImage3D::InstallPipeline()
 
 void vtkViewImage3D::AddDataSet( vtkDataSet* dataset,
   vtkProperty* property,
-  const bool& intersection )
+  const bool& intersection,
+  const bool& iDataVisibility )
 {
   vtkCamera *cam = this->Renderer ? this->Renderer->GetActiveCamera() : NULL;
   if( !cam )
     return;
 
   vtkPolyDataMapper* mapper = vtkPolyDataMapper::New();
+  mapper->SetScalarVisibility( iDataVisibility );
+
   vtkActor* actor = vtkActor::New();
 
   vtkClipPolyData* cutter = vtkClipPolyData::New();
