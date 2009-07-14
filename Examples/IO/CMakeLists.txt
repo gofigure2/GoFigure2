@@ -1,8 +1,5 @@
 SET( EXAMPLES_QT_NOT_REQUIRED
-  ImportMultiFilesInDB
   GoDBRecordSetTest
-  3DLsmSerie2mha
-  MegaCapture2mha
   lsm2jpg
   lsm2vtk
   lsm2mha
@@ -50,7 +47,11 @@ ADD_TEST( vtkPolyDataMySQLTextWriterTEST2
 IF( QT4_FOUND AND QT_VERSION_MINOR GREATER 4 )
   SET( EXAMPLES_QT_REQUIRED
     lsmColorVizu
-    lsmColorVizuCollection )
+    lsmColorVizuCollection
+    3DLsmSerie2mha
+    ImportMultiFilesInDB
+    MegaCapture2mha
+  )
 
   FOREACH( var ${EXAMPLES_QT_REQUIRED} )
 
@@ -59,8 +60,12 @@ IF( QT4_FOUND AND QT_VERSION_MINOR GREATER 4 )
        ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/vtkLSM/vtkLSMReader.cxx )
 
      TARGET_LINK_LIBRARIES( ${var}
+       QGoIO
+       ITKCommon
+       ITKIO
        vtkIO
        vtkImaging
+       vtkCommon 
        vtkRendering
        vtkRenderingAddOn2
        vtkFiltering

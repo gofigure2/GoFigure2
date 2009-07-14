@@ -139,10 +139,10 @@ void MultiFileReader::Update( void )
     }
 
   if( this->IsProgressBarSet )
-	{
-	this->m_ProgressBar->show();
-	this->m_ProgressBar->setValue( 1 );
-	}
+  {
+    this->m_ProgressBar->show();
+    this->m_ProgressBar->setValue( 1 );
+  }
 
   this->ComputeUpdateFileList();
   if( m_UpdateFileList.empty() )
