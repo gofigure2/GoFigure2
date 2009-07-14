@@ -1235,7 +1235,8 @@ QString QGoMainWindow::strippedName(const QString &fullFileName)
 //--------------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------------
-void QGoMainWindow::updateRecentFileActions(QStringList list, QMenu *menu, QAction *recentFileActions[MaxRecentFiles] )
+void QGoMainWindow::updateRecentFileActions
+(QStringList list, QMenu *menu, QAction *recentFileActions[MaxRecentFiles] )
 {
   QMutableStringListIterator i(list);
   while (i.hasNext())

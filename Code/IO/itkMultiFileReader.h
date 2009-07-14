@@ -50,6 +50,8 @@
 #include "GoFigureFileInfoHelper.h"
 #include "MegaVTK2Configure.h"
 
+#include <QProgressBar>
+
 enum FILETYPE
 {
   BMP = 0,
@@ -123,6 +125,10 @@ public:
   MultiFileReader( );
   ~MultiFileReader();
 
+  void SetProgressBar( QProgressBar* PB )
+  { this->m_ProgressBar = PB; this->IsProgressBarSet = true; }
+
+
   /** \brief Mandatory PrintSelf */
   void PrintSelf( std::ostream& os, Indent indent) const;
 
@@ -143,6 +149,10 @@ private:
   int            m_UpdateTimePoint;
   int            m_UpdateChannel;
   bool           m_AreImagesMultiChannel;
+  
+  QProgressBar*    m_ProgressBar;
+  bool             IsProgressBarSet;
+
 };
 
 } // end of namespace itk

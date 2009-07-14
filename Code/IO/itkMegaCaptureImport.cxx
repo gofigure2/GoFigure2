@@ -48,6 +48,7 @@ MegaCaptureImport::
 MegaCaptureImport( )
 {
   this->m_FileName = NULL;
+  this->IsProgressBarSet = false;
 }
 //-----------------------------------------------------------------------------
 
@@ -100,6 +101,12 @@ void
 MegaCaptureImport::
 CreateOutput()
 {
+  if( this->IsProgressBarSet )
+	{
+	this->m_ProgressBar->setValue( 60 );
+	}
+
+  float counter = 0;
   std::vector<std::string>::iterator nit;
   for( nit = m_FileNameS.begin();
        nit != m_FileNameS.end();
@@ -141,11 +148,26 @@ CreateOutput()
 
     m_OutputFileList.push_back( tempInfo );
     delete NumericalValues; /** \todo check if delete or delete[]*/
+
+	if( this->IsProgressBarSet )
+	  {
+	  int value = 60 + 30 * ( (float)(counter) / (float)(m_FileNameS.size()) );
+      this->m_ProgressBar->setValue( value );
+	  }
+
+	counter++;
+
     } // end for each filename
 
   m_FileNameS.clear();
 
   std::sort( m_OutputFileList.begin(), m_OutputFileList.end() );
+
+  if( this->IsProgressBarSet )
+	{
+    this->m_ProgressBar->setValue( 99 );
+	}
+
 
   FileListType::iterator myIt = m_OutputFileList.begin();
   while( myIt != m_OutputFileList.end() )
@@ -166,6 +188,12 @@ void
 MegaCaptureImport::
 Glob()
 {
+	if( this->IsProgressBarSet )
+	{
+		this->m_ProgressBar->show();
+		this->m_ProgressBar->setValue( 1 );
+	}
+
   m_numGroupStart.clear();
   m_numGroupLength.clear();
 
@@ -263,6 +291,11 @@ Glob()
     ++megaCaptureNumericalGroupCounter;
     }
 
+  	if( this->IsProgressBarSet )
+	{
+		this->m_ProgressBar->setValue( 5 );
+	}
+
   // Include only filenames that exactly match this regular expression.  Don't
   // match filenames that have this string as a substring (ie. that have extra
   // prefixes or suffixes).
@@ -274,7 +307,13 @@ Glob()
   fit->SetRegularExpression( regExpFileName.c_str() );
   fit->SetSubMatch(1);
   fit->NumericSortOn();
+
   m_FileNameS = fit->GetFileNames();
+
+  	if( this->IsProgressBarSet )
+	{
+		this->m_ProgressBar->setValue( 45 );
+	}
 
   // re parse the indexes and length without the escape caracters
   for (sit = origFileName.begin(); sit < origFileName.end(); sit++)
@@ -299,6 +338,12 @@ Glob()
         }
       }
     }
+
+	if( this->IsProgressBarSet )
+	{
+		this->m_ProgressBar->setValue( 55 );
+	}
+
 }
 //-----------------------------------------------------------------------------
 

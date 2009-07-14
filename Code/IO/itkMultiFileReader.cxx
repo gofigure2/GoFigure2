@@ -138,12 +138,22 @@ void MultiFileReader::Update( void )
     this->m_OutputImage->Delete();
     }
 
+  if( this->IsProgressBarSet )
+	{
+	this->m_ProgressBar->show();
+	this->m_ProgressBar->setValue( 1 );
+	}
+
   this->ComputeUpdateFileList();
   if( m_UpdateFileList.empty() )
     {
     std::cout <<"Problem: m_UpdateFileList is empty :-/ (after ComputeUpdateFileList)" <<std::endl;
     return;
     }
+  if( this->IsProgressBarSet )
+	{
+	this->m_ProgressBar->setValue( 5 );
+	}
 
   FileListType::iterator startIt;
   FileListType::iterator endIt;
@@ -174,6 +184,11 @@ void MultiFileReader::Update( void )
 
           volumeBuilder->SetInput( counter, reader->GetOutput( ) );
           reader->Delete();
+
+		  if( this->IsProgressBarSet )
+	        {
+	        this->m_ProgressBar->setValue( float( counter * 80 ) / float( m_UpdateFileList.size() ) );
+	        }
           break;
           }
         case BMP:
@@ -261,6 +276,11 @@ void MultiFileReader::Update( void )
           myImage_ch1->ShallowCopy( reader->GetOutput() );
           reader->Delete();
 
+		  if( this->IsProgressBarSet )
+	        {
+	        this->m_ProgressBar->setValue( 20 );
+	        }
+
           if( ( NumberOfChannels == 1 ) )
             {
             m_OutputImage = myImage_ch1;
@@ -275,6 +295,11 @@ void MultiFileReader::Update( void )
           myImage_ch2->ShallowCopy( reader2->GetOutput() );
           reader2->Delete();
 
+		  if( this->IsProgressBarSet )
+	        {
+	        this->m_ProgressBar->setValue( 40 );
+	        }
+
           vtkImageData* myImage2 = vtkImageData::New();
           vtkImageAppendComponents* appendFilter1 = vtkImageAppendComponents::New();
           appendFilter1->AddInput( myImage_ch1 );
@@ -283,6 +308,11 @@ void MultiFileReader::Update( void )
           myImage2->ShallowCopy( appendFilter1->GetOutput() );
           appendFilter1->Delete();
           myImage_ch2->Delete();
+
+		  if( this->IsProgressBarSet )
+	        {
+	        this->m_ProgressBar->setValue( 60 );
+	        }
 
           vtkImageData* myImage_ch3 = vtkImageData::New();
           if( NumberOfChannels == 2 )
@@ -300,6 +330,11 @@ void MultiFileReader::Update( void )
             }
           myImage_ch1->Delete();
 
+		  if( this->IsProgressBarSet )
+	        {
+	        this->m_ProgressBar->setValue( 80 );
+	        }
+
           vtkImageData* myImage3 = vtkImageData::New();
           vtkImageAppendComponents* appendFilter2 = vtkImageAppendComponents::New();
           appendFilter2->AddInput( myImage2    );
@@ -309,6 +344,11 @@ void MultiFileReader::Update( void )
           appendFilter2->Delete();
           myImage2->Delete();
           myImage_ch3->Delete();
+
+		  if( this->IsProgressBarSet )
+	        {
+	        this->m_ProgressBar->setValue( 100 );
+	        }
 
           m_OutputImage = myImage3;
           this->m_NumberOfChannels = m_OutputImage->GetNumberOfScalarComponents();

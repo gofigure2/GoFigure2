@@ -52,6 +52,8 @@
 
 #include "GoFigureFileInfoHelper.h"
 
+#include <QProgressBar>
+
 namespace itk
 {
 
@@ -77,6 +79,9 @@ public:
 
   void SetFileName( char* name );
 
+  void SetProgressBar( QProgressBar* PB )
+  { this->m_ProgressBar = PB; this->IsProgressBarSet = true; }
+
   void Glob();
 
   void CreateOutput();
@@ -89,7 +94,6 @@ protected:
   MegaCaptureImport();
   ~MegaCaptureImport();
 
-
 private:
   MegaCaptureImport (const Self&); //purposely not implemented
   void operator=(const Self&); //purposely not implemented
@@ -99,6 +103,8 @@ private:
   StringVectorType m_FileNameS;
   FileListType     m_OutputFileList;
   char*            m_FileName;
+  QProgressBar*    m_ProgressBar;
+  bool             IsProgressBarSet;
 
 };
 

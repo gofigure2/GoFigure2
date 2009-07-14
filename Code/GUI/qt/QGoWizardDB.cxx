@@ -1015,6 +1015,8 @@ void Import_SerieGridPage::SelectSeriesGrid()
           {
           itk::MegaCaptureImport::Pointer  importFileInfoList = itk::MegaCaptureImport::New();
           importFileInfoList->SetFileName( newfilename.toAscii().data() );
+		  QProgressBar pBar;
+		  importFileInfoList->SetProgressBar( &pBar );
           importFileInfoList->Update();
 
           typedef GoDBRecordSet< GoDBSeriesGridRow > myRecordSetType;
