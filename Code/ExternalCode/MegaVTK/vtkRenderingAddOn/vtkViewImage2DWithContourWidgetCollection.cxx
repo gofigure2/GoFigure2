@@ -410,7 +410,6 @@ void vtkViewImage2DWithContourWidgetCollectionCommand::Execute(vtkObject *caller
     }
     if( event == vtkViewImage2DCommand::ContourPickingEvent )
     {
-      std::cout <<"Picking!!!" <<std::endl;
       vtkCellPicker* picker = viewer->GetContourPicker();
       vtkRenderWindowInteractor *rwi =
         viewer->GetRenderWindow()->GetInteractor();
@@ -432,8 +431,12 @@ void vtkViewImage2DWithContourWidgetCollectionCommand::Execute(vtkObject *caller
         {
           if( prop_temp == prop )
           {
-            std::cout <<"yo" <<std::endl;
-//             break;
+            viewer->HighlightContour( prop_temp, true );
+            // just in case, something else have to be done here
+          }
+          else
+          {
+            viewer->HighlightContour( prop_temp, false );
           }
           prop_temp = viewer->GetProp3DCollection()->GetNextProp3D();
         }

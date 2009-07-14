@@ -115,6 +115,7 @@ TARGET_LINK_LIBRARIES( gofigure
   QVTK
   ITKBasicFilters
   ITKNumerics
+  ITKIO
   vtkImaging
   itkQt
   )

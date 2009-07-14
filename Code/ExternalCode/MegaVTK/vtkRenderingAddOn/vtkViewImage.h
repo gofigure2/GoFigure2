@@ -124,6 +124,7 @@ class vtkProperty;
 class vtkProp3DCollection;
 class vtkDataSetCollection;
 class vtkMatrixToLinearTransform;
+class vtkProp3D;
 
 /**
 
@@ -299,6 +300,8 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage : public vtkImageViewer2
   virtual vtkRenderWindowInteractor* GetRenderWindowInteractor();
 
   virtual void SetInput( vtkImageData* );
+
+  virtual void HighlightContour( vtkProp3D* iProp, const bool& iToDo );
 
 
  protected:

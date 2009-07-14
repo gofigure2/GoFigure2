@@ -88,6 +88,7 @@
 #include "vtkMath.h"
 #include "vtkPlane.h"
 #include "vtkCutter.h"
+#include "vtkProperty.h"
 #include "vtkActor.h"
 #include "vtkPolyDataMapper.h"
 #include "vtkProp3DCollection.h"
@@ -450,4 +451,26 @@ vtkRenderWindowInteractor* vtkViewImage::GetRenderWindowInteractor()
     return NULL;
   else
     return this->GetRenderWindow()->GetInteractor();
+}
+
+
+void vtkViewImage::HighlightContour( vtkProp3D* iProp, const bool& iToDo )
+{
+  if( !iProp )
+    {
+    return;
+    }
+  else
+    {
+    vtkActor* temp = static_cast< vtkActor* >( iProp );
+    if( iToDo )
+      {
+      temp->GetProperty()->SetColor( 1., 1., 0. );
+      temp->GetProperty()->SetLineWidth( 3. );
+      }
+    else
+      {
+      temp->GetProperty()->SetLineWidth( 1. );
+      }
+    }
 }
