@@ -42,7 +42,13 @@
 
 #include "vtkImageAppendComponents.h"
 #include "vtkImageExtractComponents.h"
+
 #include "vtkLSMReader.h"
+#include "vtkMetaImageReader.h"
+#include "vtkBMPReader.h"
+#include "vtkTiffReader.h"
+#include "vtkJPEGReader.h"
+#include "vtkPNGReader.h"
 
 namespace itk
 {
@@ -193,27 +199,69 @@ void MultiFileReader::Update( void )
           }
         case BMP:
           {
-          itkGenericExceptionMacro( << "BMP is not supported at this time." );
+          vtkBMPReader* reader = vtkBMPReader::New();
+          reader->SetFileName( (*It).Filename.c_str() );
+          reader->SetFileDimensionality( this->m_Dimensionality );
+          reader->Update();
+
+          volumeBuilder->SetInput( counter, reader->GetOutput( ) );
+          reader->Delete();
+
+		  if( this->IsProgressBarSet )
+	        {
+	        this->m_ProgressBar->setValue( float( counter * 80 ) / float( m_UpdateFileList.size() ) );
+	        }
           break;
           }
         case PNG:
           {
-          itkGenericExceptionMacro( << "PNG is not supported at this time." );
-          break;
+          vtkPNGReader* reader = vtkPNGReader::New();
+          reader->SetFileName( (*It).Filename.c_str() );
+          reader->SetFileDimensionality( this->m_Dimensionality );
+          reader->Update();
+
+          volumeBuilder->SetInput( counter, reader->GetOutput( ) );
+          reader->Delete();
+
+		  if( this->IsProgressBarSet )
+	        {
+	        this->m_ProgressBar->setValue( float( counter * 80 ) / float( m_UpdateFileList.size() ) );
+	        }          break;
           }
         case TIFF:
           {
-          itkGenericExceptionMacro( << "TIFF is not supported at this time." );
+          vtkTIFFReader* reader = vtkTIFFReader::New();
+          reader->SetFileName( (*It).Filename.c_str() );
+          reader->SetFileDimensionality( this->m_Dimensionality );
+          reader->Update();
+
+          volumeBuilder->SetInput( counter, reader->GetOutput( ) );
+          reader->Delete();
+
+		  if( this->IsProgressBarSet )
+	        {
+	        this->m_ProgressBar->setValue( float( counter * 80 ) / float( m_UpdateFileList.size() ) );
+	        }
           break;
           }
         case MHA:
           {
-          itkGenericExceptionMacro( << "MHA is not supported at this time." );
-          break;
+          vtkMetaImageReader* reader = vtkMetaImageReader::New();
+          reader->SetFileName( (*It).Filename.c_str() );
+          reader->SetFileDimensionality( this->m_Dimensionality );
+          reader->Update();
+
+          volumeBuilder->SetInput( counter, reader->GetOutput( ) );
+          reader->Delete();
+
+		  if( this->IsProgressBarSet )
+	        {
+	        this->m_ProgressBar->setValue( float( counter * 80 ) / float( m_UpdateFileList.size() ) );
+	        }          break;
           }
         case LSM:
           {
-          itkGenericExceptionMacro( << "LSM is not supported at this time." );
+          itkGenericExceptionMacro( << "stacks of 2D LSM are not supported at this time." );
           break;
           }
         default:
