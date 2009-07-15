@@ -46,7 +46,7 @@
 #include "vtkLSMReader.h"
 #include "vtkMetaImageReader.h"
 #include "vtkBMPReader.h"
-#include "vtkTiffReader.h"
+#include "vtkTIFFReader.h"
 #include "vtkJPEGReader.h"
 #include "vtkPNGReader.h"
 
@@ -306,11 +306,27 @@ void MultiFileReader::Update( void )
         itkGenericExceptionMacro( << "JPEG/BMP/PNG cannot be of dimensionality 3." );
         break;
       case TIFF:
-        itkGenericExceptionMacro( << "TIFF is not supported at this time." );
+		  {
+        vtkTIFFReader* reader = vtkTIFFReader::New();
+        reader->SetFileName( (*It).Filename.c_str() );
+        reader->SetFileDimensionality( this->m_Dimensionality );
+        reader->Update();
+		m_OutputImage = vtkImageData::New();
+        m_OutputImage->ShallowCopy( reader->GetOutput() );
+        reader->Delete();
         break;
+		  }
       case MHA:
-        itkGenericExceptionMacro( << "MHA is not supported at this time." );
-        break;
+		  {
+        vtkMetaImageReader* reader = vtkMetaImageReader::New();
+        reader->SetFileName( (*It).Filename.c_str() );
+        reader->SetFileDimensionality( this->m_Dimensionality );
+        reader->Update();
+		m_OutputImage = vtkImageData::New();
+        m_OutputImage->ShallowCopy( reader->GetOutput() );
+        reader->Delete();       
+		break;
+		  }
       case LSM:
         {
         It = m_UpdateFileList.begin();
