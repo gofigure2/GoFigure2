@@ -65,8 +65,6 @@ QTableWidgetChild::~QTableWidgetChild()
 //------------------------------------------------------------------------------
 void QTableWidgetChild::sortItems(int column, Qt::SortOrder order)
 {
-  std::cout<<"column"<<column<<std::endl;
-  std::cout<<"order"<<order<<std::endl;  
   if ( column != PrevCol && order !=PrevOrder)
     {
     PrevCol = column;
@@ -82,14 +80,18 @@ int QTableWidgetChild::findValueGivenColumn(int Value, QString Column)
   QStringList ColumnsHeader = recordHeaderNamesOrder();
   if (ColumnsHeader.isEmpty())
     {
-    std::cout<<"The QStringlist ColumnsHeader is empty"<<std::endl;
+    std::cout<<"The QStringlist ColumnsHeader is empty";
+    std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
+    std::cout << std::endl;
     return -1;
     }
 
   int ColumnIndex = findColumnName(Column,ColumnsHeader);
   if (ColumnIndex == -1)
     {
-    std::cout<<"The column figureID has not been found"<<std::endl;
+    std::cout<<"The column figureID has not been found";
+    std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
+    std::cout << std::endl;
     return -1;
     }
   else
@@ -120,7 +122,6 @@ QStringList QTableWidgetChild::recordHeaderNamesOrder()
   for (int i=0; i<this->columnCount();i++)
     {
     ColumnNamesOrder.append(this->horizontalHeaderItem(i)->text());
-    std::cout<<"Column Name is: "<<this->horizontalHeaderItem(i)->text().toAscii().data()<<std::endl;
     }
 
   return ColumnNamesOrder;
@@ -131,9 +132,17 @@ QStringList QTableWidgetChild::recordHeaderNamesOrder()
 void QTableWidgetChild::SelectRowFigureID (int FigureID)
 {
   int RowIndex = this->findValueGivenColumn(FigureID, "figureID");
-  std::cout<<"the row index where figureID is "<<RowIndex<<std::endl;
-  QTableWidgetSelectionRange RangeToSelect(RowIndex,0,RowIndex,columnCount()-1);
-  this->setRangeSelected(RangeToSelect,true);
+  if (RowIndex == -1)
+    {
+    std::cout<<"The contour "<<FigureID<<"has not been found ";
+    std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
+    std::cout << std::endl;
+    }
+  else
+    {
+    QTableWidgetSelectionRange RangeToSelect(RowIndex,0,RowIndex,columnCount()-1);
+    this->setRangeSelected(RangeToSelect,true);
+    }
 }
 //------------------------------------------------------------------------------
 
@@ -152,12 +161,18 @@ QList<int> QTableWidgetChild::ContoursToHighlight()
       {
       int TopRowSelected = Selection[i].topRow();
       int BottomRowSelected = Selection[i].bottomRow();
-      for (int j = TopRowSelected; j<BottomRowSelected;j++)
+      for (int j = TopRowSelected; j<BottomRowSelected+1;j++)
         {
         ListContoursFromWidget.append(this->item(j,figureIDIndex)->text().toInt());
         }
       }
     
+    }
+  for (int i=0; i<ListContoursFromWidget.size();i++)
+    {
+    std::cout<<"figureID to highlight: "<<ListContoursFromWidget[i];
+    std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
+    std::cout << std::endl;
     }
   return ListContoursFromWidget;
 }

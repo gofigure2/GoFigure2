@@ -58,7 +58,6 @@ QGoPrintDatabase::QGoPrintDatabase()
   DBTabWidget->setTabPosition(QTabWidget::West);
   DBTabWidget->setTabShape(QTabWidget::Triangular);
   DBTabWidget->removeTab(0);
-
 }
 
 QGoPrintDatabase::~QGoPrintDatabase()
@@ -82,7 +81,6 @@ QTableWidgetChild* QGoPrintDatabase::QPrintColumnNames (QString TableName,std::v
     QFont serifFont("Arial", 10, QFont::Bold);
     HeaderCol->setFont(serifFont);
     QTabName->setHorizontalHeaderItem(i,HeaderCol);
-    
     }
  
   QTabName->horizontalHeader()->setSortIndicatorShown(true);
@@ -92,6 +90,9 @@ QTableWidgetChild* QGoPrintDatabase::QPrintColumnNames (QString TableName,std::v
   QObject::connect( QTabName->horizontalHeader(),
     SIGNAL( sortIndicatorChanged(int,Qt::SortOrder) ),
     QTabName,SLOT( sortItems(int,Qt::SortOrder)) );
+
+  QObject::connect(QTabName,SIGNAL(itemSelectionChanged()),
+    QTabName,SLOT(ContoursToHighlight()));
 
   return QTabName;
 }
