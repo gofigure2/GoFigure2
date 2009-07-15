@@ -95,7 +95,9 @@ protected:
     RowContainer = mySet->GetRowContainer();
     if( RowContainer->size() < 2 )
       {
-      std::cout<<"Table empty"<<std::endl;
+      std::cout<<"Table empty";
+      std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
+      std::cout << std::endl;
       }
     else
       {
@@ -118,6 +120,7 @@ protected:
        if( TableToFill->columnCount() != (int)(Map.size()) )
          {
          std::cout << "Pb, row is not the same size as the number of col";
+         std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
          std::cout << std::endl;
          return;
          }

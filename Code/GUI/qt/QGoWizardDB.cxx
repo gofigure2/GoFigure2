@@ -120,30 +120,30 @@ FileListType QGoWizardDB::ListFilenames()
 
   if (!vectListFilenames.empty())
     {
-      QString newfilename = vectListFilenames[8].c_str();
-      QString ext = QFileInfo( newfilename ).suffix();
-      if( ext.compare( "lsm", Qt::CaseInsensitive ) == 0 )
-        {
-        IsLsm = true;
-        }
-      else
-        {
-        IsLsm = false;
-        }
+    QString newfilename = vectListFilenames[8].c_str();
+    QString ext = QFileInfo( newfilename ).suffix();
+    if( ext.compare( "lsm", Qt::CaseInsensitive ) == 0 )
+      {
+      IsLsm = true;
+      }
+    else
+      {
+      IsLsm = false;
+      }
 
-      for(unsigned int i = 0; i < vectListFilenames.size();)
-        {
-        GoFigureFileInfoHelper tempInfo;
-        tempInfo.Filename = vectListFilenames[i+8];
-        tempInfo.TimePoint = atoi(vectListFilenames[i+4].c_str());
-        tempInfo.ZDepth = atoi(vectListFilenames[i+7].c_str());
-        tempInfo.CTile = atoi(vectListFilenames[i+3].c_str());
-        tempInfo.RTile = atoi(vectListFilenames[i+2].c_str());
-        tempInfo.YOffset = atoi(vectListFilenames[i+5].c_str());
-        tempInfo.XOffset = atoi(vectListFilenames[i+6].c_str());
-        ListFilenames.push_back( tempInfo );
-        i = i+9;
-        }
+    for(unsigned int i = 0; i < vectListFilenames.size();)
+      {
+      GoFigureFileInfoHelper tempInfo;
+      tempInfo.Filename = vectListFilenames[i+8];
+      tempInfo.TimePoint = atoi(vectListFilenames[i+4].c_str());
+      tempInfo.ZDepth = atoi(vectListFilenames[i+7].c_str());
+      tempInfo.CTile = atoi(vectListFilenames[i+3].c_str());
+      tempInfo.RTile = atoi(vectListFilenames[i+2].c_str());
+      tempInfo.YOffset = atoi(vectListFilenames[i+5].c_str());
+      tempInfo.XOffset = atoi(vectListFilenames[i+6].c_str());
+      ListFilenames.push_back( tempInfo );
+      i = i+9;
+      }
     }
 
   std::sort( ListFilenames.begin(), ListFilenames.end() );
@@ -170,7 +170,9 @@ QString QGoWizardDB::ExpName()
 {
   return field("Name").toString();
 }
+//------------------------------------------------------------------------------
 
+//------------------------------------------------------------------------------
 QString QGoWizardDB::Server()
 {
   return field("ServerName").toString();
@@ -199,7 +201,6 @@ Connect_ServerPage::Connect_ServerPage( QWidget *parent )
   font.setBold(false);
   this->setFont(font);
   setSubTitle( tr("Step 1: Connect to a MySQL DataBase Server:"));
-  //setPixmap(QWizard::WatermarkPixmap, QPixmap(":/images/watermark.png"));
 
   QFormLayout* formLayout = new QFormLayout;
   lineServerName = new QLineEdit( tr("localhost") );
@@ -218,7 +219,6 @@ Connect_ServerPage::Connect_ServerPage( QWidget *parent )
   registerField( "ServerName", lineServerName );
   registerField( "User",       lineUserName );
   registerField( "Password",   linePassword );
-
 }
 //------------------------------------------------------------------------------
 
@@ -260,9 +260,8 @@ OpenOrCreate_Page::OpenOrCreate_Page(QWidget *parent)
   openDBCheckBox->setChecked(false);
   createDBCheckBox->setChecked(false);
   textNewDBName = new QLabel(tr("Name of the new DB to create:"));
-  //textNewDBName->hide();
   lineNewDBName = new QLineEdit;
-  //lineNewDBName->hide();
+  DBNametoOpen_fake = new QLineEdit;
 
   gridLayout->addWidget(createDBCheckBox,0,0,1,1);
   gridLayout->addWidget(textNewDBName,3,0,1,2);
@@ -271,8 +270,6 @@ OpenOrCreate_Page::OpenOrCreate_Page(QWidget *parent)
   gridLayout->addWidget(textChoiceDB,6,0,1,1);
   gridLayout->addWidget(ChoiceDB,6,1,1,1);
 
-  //gridLayout->setAlignment(openDBCheckBox,Qt::AlignLeft);
-  //gridLayout->setAlignment(createDBCheckBox,Qt::AlignLeft);
   gridLayout->setAlignment(textNewDBName,Qt::AlignLeft);
   gridLayout->setAlignment(textChoiceDB,Qt::AlignLeft);
 
@@ -286,6 +283,7 @@ OpenOrCreate_Page::OpenOrCreate_Page(QWidget *parent)
 
   registerField( "DBIndextoOpen", ChoiceDB);
   registerField("DBNametoCreate",lineNewDBName);
+  registerField( "DBNametoOpen", DBNametoOpen_fake );
 }
 //------------------------------------------------------------------------------
 
@@ -362,7 +360,7 @@ void OpenOrCreate_Page::EnterNameDB ()
 bool OpenOrCreate_Page::validatePage()
 {
   QString NameDB;
-  DBNametoOpen_fake = new QLineEdit;
+  //DBNametoOpen_fake = new QLineEdit;
 
   int i = field("DBIndextoOpen").toInt();
   if( !openDBCheckBox->isChecked() && !createDBCheckBox->isChecked() )
@@ -391,9 +389,9 @@ bool OpenOrCreate_Page::validatePage()
     }
 
   if( NameDB=="Null" )
-      {
-      return true;
-      }
+    {
+    return true;
+    }
 
   if( !IsDatabaseOfGoFigureType(field("ServerName").toString().toStdString(),
             field("User").toString().toStdString(),
@@ -406,7 +404,7 @@ bool OpenOrCreate_Page::validatePage()
     return false;
     }
 
-  registerField( "DBNametoOpen", DBNametoOpen_fake );
+  //registerField( "DBNametoOpen", DBNametoOpen_fake );
   setField( "DBNametoOpen",NameDB );
   return true;
 }
@@ -477,6 +475,7 @@ Create_ExperimentPage::Create_ExperimentPage( QWidget *parent )
   FilePattern = new QLineEdit;
   QLabel* TextFilePattern = new QLabel(tr("FilePattern"));
   OpenOrCreateExp_fake = new QLineEdit; /** \todo TO BE DELETED */
+  NameDB_fake = new QLineEdit; /** \todo TO BE DELETED */
 
   gridlayout->addWidget(TextDescription,4,0);
   gridlayout->addWidget(Description,4,1);
@@ -529,6 +528,7 @@ Create_ExperimentPage::Create_ExperimentPage( QWidget *parent )
   registerField( "FilePattern", FilePattern );
   registerField("OpenOrCreateExp",OpenOrCreateExp_fake);
   registerField("ExpID", ID);
+  registerField("NameDB",NameDB_fake);
 
   setLayout( vlayout );
 
@@ -540,9 +540,6 @@ Create_ExperimentPage::Create_ExperimentPage( QWidget *parent )
 
   QObject::connect( this->ChoiceExp,SIGNAL( currentIndexChanged(QString) ),
   this,SLOT( PrintValuesExpName(QString) ));
-
-  NameDB_fake = new QLineEdit; /** \todo TO BE DELETED */
-  registerField("NameDB",NameDB_fake);
 }
 //------------------------------------------------------------------------------
 
@@ -723,9 +720,13 @@ int Create_ExperimentPage::nextId() const
       field("NameDB").toString().toStdString(), "seriesgrid",
       "filename", "experimentID", field("ExpID").toString().toStdString());
 
-    if( !ListFinalPage.empty() )
+    //if( !ListFinalPage.empty() )
+    std::cout<<"ListFinalPage.size() is "<<ListFinalPage.size()<<std::endl;
+    if( ListFinalPage.size()!=0)
       {
-      std::cout<<"last page ID"<<std::endl;
+      std::cout<<"last page ID ";
+      std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
+      std::cout << std::endl;
       return -1;
       }
     else
@@ -857,7 +858,8 @@ Import_SerieGridPage::Import_SerieGridPage( QWidget *parent )
 
   gridlayout= new QGridLayout;
   BrowseButton = new QPushButton("&Browse", this);
-  Explanation = new QLabel(tr("Click on the 'browse' button and select only 1 file from the Image Set you want to import:"));
+  Explanation = new QLabel
+  (tr("Click on the 'browse' button and select only 1 file\n from the Image Set you want to import:"));
   gridlayout->addWidget( BrowseButton,0,1 );
   gridlayout->addWidget(Explanation,0,0);
   gridlayout->setColumnStretch ( 0, 3);
@@ -914,11 +916,8 @@ void Import_SerieGridPage::initializePage()
     setField( "ExpID", (unsigned int)vectListExpID.size() );
     }
 
-  //setTitle( tr("Experiment: '%1'. DataBase: '%2'")
-    //.arg(field("Name").toString()).arg(field("NameDB").toString()) );
   setTitle(tr("Experiment: '%1'").arg(field("Name").toString()));
   setSubTitle(tr("Database: '%1'").arg(field("NameDB").toString()));
-  //setSubTitle(tr("Click on the 'browse' button and select only 1 file from the Image Set you want to import:"));
 }
 //------------------------------------------------------------------------------
 
@@ -1079,11 +1078,10 @@ void Import_SerieGridPage::SelectSeriesGrid()
   if (isComplete())
     {
     BrowseButton->hide();
-    Explanation->setText(tr("When you click on finish, the Image Set of the Experiment %1 from the DataBase %2 will be opened.")
+    Explanation->setText
+    (tr("When you click on finish, the Image Set of the \n Experiment %1 from the DataBase %2 will be opened.")
     .arg( field("Name").toString() ).arg( field("NameDB").toString() ) );
     }
-  //setSubTitle(tr("When you click on finish, the Image Set of the Experiment %1 from the DataBase %2 will be opened.")
-    //.arg( field("Name").toString() ).arg( field("NameDB").toString() ) );
 }
 //------------------------------------------------------------------------------
 
