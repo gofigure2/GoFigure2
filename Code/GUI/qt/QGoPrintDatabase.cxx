@@ -41,8 +41,11 @@
 
 #include <qstringlist.h>
 #include <qwidget.h>
+#include <QDialog>
 #include <QTableWidgetItem>
 #include <QHeaderView>
+#include <QLabel>
+#include <QFormLayout>
 #include "QGoPrintDatabase.h"
 #include "QTableWidgetChild.h"
 #include "vtkMySQLDatabase.h"
@@ -51,6 +54,8 @@
 #include "vtkStdString.h"
 #include "GoDBRecordSet.h"
 #include "GoDBFigureRow.h"
+#include <iostream>
+#include <QCloseEvent>
 
 QGoPrintDatabase::QGoPrintDatabase()
 {
@@ -58,6 +63,9 @@ QGoPrintDatabase::QGoPrintDatabase()
   DBTabWidget->setTabPosition(QTabWidget::West);
   DBTabWidget->setTabShape(QTabWidget::Triangular);
   DBTabWidget->removeTab(0);
+
+  //QObject::connect(this->closeButton, SIGNAL(clicked()),
+    //  this, SLOT( on_actionClose_activated( ) ) );
 }
 
 QGoPrintDatabase::~QGoPrintDatabase()
@@ -82,7 +90,7 @@ QTableWidgetChild* QGoPrintDatabase::QPrintColumnNames (QString TableName,std::v
     HeaderCol->setFont(serifFont);
     QTabName->setHorizontalHeaderItem(i,HeaderCol);
     }
- 
+
   QTabName->horizontalHeader()->setSortIndicatorShown(true);
   QTabName->setSortingEnabled(true);
   QTabName->horizontalHeader()->setMovable(true);
@@ -96,7 +104,7 @@ QTableWidgetChild* QGoPrintDatabase::QPrintColumnNames (QString TableName,std::v
 
   return QTabName;
 }
-  
+
 
 void QGoPrintDatabase::Fill_Database(QString ServerName,QString login,
     QString Password, QString DBName, int ExpID, QString ExpName)
@@ -107,10 +115,24 @@ void QGoPrintDatabase::Fill_Database(QString ServerName,QString login,
   m_NameDB=DBName;
   this->setWindowTitle(QString("DB: %1 - Exp: %2").arg(DBName).arg(ExpName));
   GetContentAndDisplayFromDB< GoDBFigureRow     >( m_Server, m_User, m_Password, m_NameDB,"figure");
- 
+
   //Need to create GoDBMeshRow,etc...first
   //QPrintTable ("mesh");
   //QPrintTable ("track");
   //QPrintTable ("lineage");
 
 }
+
+void QGoPrintDatabase::CloseEvent(QCloseEvent* event)
+{
+  //std::cout<<"Close event work"<<std::endl;
+  QDialog* Message = new QDialog(this);
+  QLabel* text = new QLabel(tr("Are you sure you want to close permanently the table ?"));
+  QFormLayout* layout = new QFormLayout;
+  layout->addWidget(text);
+  setLayout(layout);
+  Message->exec();
+  event->ignore();
+
+}
+

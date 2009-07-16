@@ -58,10 +58,11 @@ class QTableWidgetChild : public QTableWidget
 
 public:
   explicit QTableWidgetChild( QWidget* parent = 0 );
-  explicit QMEGAVTKADDON2_EXPORT QTableWidgetChild ( int rows, int columns, 
+  explicit QMEGAVTKADDON2_EXPORT QTableWidgetChild ( int rows, int columns,
     QWidget * parent = 0);
   virtual QMEGAVTKADDON2_EXPORT ~QTableWidgetChild();
-  
+  QStringList QMEGAVTKADDON2_EXPORT recordHeaderNamesOrder();
+
 
 protected:
   int PrevCol;
@@ -72,7 +73,7 @@ protected:
   //return the column index who has a column header matching ColumnName:
   int findColumnName(QString ColumnName,QStringList ColumnsHeader);
   //return a List of all the header names of the columns, :
-  QStringList recordHeaderNamesOrder();
+
 
 
 public slots:
