@@ -124,6 +124,18 @@ QImagePageViewTracer::~QImagePageViewTracer()
     SeedWidget[i]->Delete();
     }
 
+  ContourIdActorMapIterator it = m_ContourIdActorMap.begin();
+  ContourIdActorMapIterator end = m_ContourIdActorMap.end();
+
+  while( it != end )
+    {
+    (*it).second.Actor->Delete();
+    ++it;
+    }
+
+  m_ContourIdActorMap.clear();
+  m_ActorContourIdMap.clear();
+
   Pool->Delete();
   View3D->Delete();
   VtkEventQtConnector->Delete();
@@ -1324,12 +1336,30 @@ void QImagePageViewTracer::ValidateContour(
         contour_copy->ShallowCopy( contour );
         contour_copy->GetPointData()->SetScalars( dumb_array );
 
+        vtkActor* temp;
         for( int j = 0; j < this->Pool->GetNumberOfItems(); j++ )
           {
-          this->Pool->GetItem( j )->AddDataSet(
-            contour_copy, contour_property, true, false );
+          temp = this->Pool->GetItem( j )->AddDataSet(
+                  contour_copy, contour_property, true, false );
+          m_ContourIdActorMap.insert(
+            std::pair< unsigned int, ContourStructure >( i,
+              ContourStructure( temp,
+                CellId, //Id
+                j, //Direction
+                this->m_TimePoint, //TimePoint
+                rgb[0],
+                rgb[1],
+                rgb[2],
+                false ) ) );
+
+          m_ActorContourIdMap[ temp ] = CellId;
           }
-        this->View3D->AddDataSet( contour_copy, contour_property, false, false );
+
+        temp = this->View3D->AddDataSet( contour_copy, contour_property,
+          false, false );
+
+        temp->Delete();
+
         contour_copy->Delete();
         dumb_array->Delete();
 
@@ -1507,12 +1537,27 @@ void QImagePageViewTracer::LoadFiguresFromDB( )
       // COPY FOR EACH VIEW
       vtkPolyData* contour_copy = vtkPolyData::New();
       contour_copy->ShallowCopy( contour );
+
+      vtkActor* temp;
       for( int j = 0; j < this->Pool->GetNumberOfItems(); j++ )
         {
-        this->Pool->GetItem( j )->AddDataSet(
-          contour_copy, contour_property, true );
+        temp = this->Pool->GetItem( j )->AddDataSet(
+                  contour_copy, contour_property, true, false );
+        m_ContourIdActorMap.insert(
+            std::pair< unsigned int, ContourStructure >( i,
+              ContourStructure( temp,
+                CellId, //Id
+                j, //Direction
+                this->m_TimePoint, //TimePoint
+                1., 1., 1., // rgb => white by default
+                false ) ) );
+
+        m_ActorContourIdMap[ temp ] = CellId;
         }
-      this->View3D->AddDataSet( contour_copy, contour_property, false );
+
+      temp = this->View3D->AddDataSet( contour_copy, contour_property, false );
+      temp->Delete();
+
       contour_copy->Delete();
       contour->Delete();
       } // ENDFOR
@@ -1600,5 +1645,24 @@ void QImagePageViewTracer::SetDatabaseRelatedVariables( const QString& iServer,
   m_DBName = iDatabaseName;
   m_DBExperimentID = iExperimentID;
   m_DBExperimentName = iExperimentName;
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+void QImagePageViewTracer::HighlighContour( const unsigned int& iId )
+{
+  std::pair< ContourIdActorMapIterator, ContourIdActorMapIterator>
+    result = m_ContourIdActorMap.equal_range( iId );
+
+  ContourIdActorMapIterator it = result.first;
+  while( it != result.second )
+    {
+    int dir = (*it).second.Direction;
+    vtkActor* actor = (*it).second.Actor;
+    bool highlighted = (*it).second.Highlighted;
+    this->Pool->GetItem( dir )->HighlightContour( actor, !highlighted );
+    (*it).second.Highlighted = !highlighted;
+    ++it;
+    }
 }
 //------------------------------------------------------------------------------

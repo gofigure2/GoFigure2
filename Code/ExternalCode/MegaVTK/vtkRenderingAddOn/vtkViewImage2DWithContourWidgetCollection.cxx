@@ -191,9 +191,10 @@ Initialize()
   {
     for (int j=0; j<this->GetNumberOfItems(); j++)
     {
-      this->GetItem( j )->AddDataSet(
+      vtkActor* temp = this->GetItem( j )->AddDataSet(
         static_cast<vtkDataSet*>( this->GetItem( i )->GetSlicePlane() ),
         plane_property, ( i != j ) );
+      temp->Delete();
     }
   }
   plane_property->Delete();
@@ -425,9 +426,9 @@ void vtkViewImage2DWithContourWidgetCollectionCommand::Execute(vtkObject *caller
 //         vtkProp* prop = path->GetFirstNode()->GetViewProp();
         viewer->GetProp3DCollection()->InitTraversal();
         vtkProp3D* prop_temp = viewer->GetProp3DCollection()->GetNextProp3D(); // image
-//         prop_temp = viewer->GetProp3DCollection()->GetNextProp3D(); // 1st plane
-//         prop_temp = viewer->GetProp3DCollection()->GetNextProp3D(); // 2nd plane
-//         prop_temp = viewer->GetProp3DCollection()->GetNextProp3D(); // 3rd plane
+        prop_temp = viewer->GetProp3DCollection()->GetNextProp3D(); // 1st plane
+        prop_temp = viewer->GetProp3DCollection()->GetNextProp3D(); // 2nd plane
+        prop_temp = viewer->GetProp3DCollection()->GetNextProp3D(); // 3rd plane
 
         while( prop_temp )
         {

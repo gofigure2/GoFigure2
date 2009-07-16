@@ -76,6 +76,34 @@ class QImagePageViewTracer : public QWidget
 {
   Q_OBJECT
 public:
+
+  typedef std::map< vtkActor*, unsigned int > ActorContourIdMapType;
+  typedef ActorContourIdMapType::iterator ActorContourIdMapIterator;
+
+  struct ContourStructure {
+    ContourStructure( vtkActor* iActor, const unsigned int& iId,
+      const int& iDir, const double& iTimePoint, const double& r,
+      const double& g, const double& b, const bool& iHighlighted )
+    {
+      Actor = iActor;
+      Id = iId;
+      Direction = iDir;
+      TimePoint = iTimePoint;
+      rgb[0] = r;   rgb[1] = r;   rgb[2] = r;
+      Highlighted = iHighlighted;
+    }
+
+    vtkActor* Actor;
+    unsigned int Id;
+    int Direction;
+    double TimePoint;
+    double rgb[3];
+    bool Highlighted;
+  };
+
+  typedef std::multimap< unsigned int, ContourStructure > ContourIdActorMapType;
+  typedef ContourIdActorMapType::iterator ContourIdActorMapIterator;
+
   explicit QMEGAVTKADDON2_EXPORT QImagePageViewTracer( QWidget* parent = 0 );
   QMEGAVTKADDON2_EXPORT  ~QImagePageViewTracer();
 
@@ -130,39 +158,39 @@ public:
     const int& iExperimentID, const QString& iExperimentName );
 
 
-  template< typename TContourContainer, typename TPropertyContainer >
-  QMEGAVTKADDON2_EXPORT
-  void AddContours( TContourContainer& iContours,
-    TPropertyContainer& iProperty,
-    const bool& iIntersection = true,
-    const bool& iVizu3D = false )
-    {
-    this->Pool->SyncAddContours( iContours, iProperty, iIntersection );
-
-    if( iVizu3D )
-      {
-      typename TContourContainer::iterator c_it = iContours.begin();
-      typename TPropertyContainer::iterator p_it = iProperty.begin();
-
-      for(; c_it != iContours.end(); ++c_it, ++p_it )
-        {
-        this->View3D->AddDataSet( *c_it, *p_it, false );
-        }
-      }
-    }
-
-  template< typename TPolyDataContainer >
-  QMEGAVTKADDON2_EXPORT
-  void RemoveContours( TPolyDataContainer& iContours )
-    {
-    this->Pool->SyncRemoveContours( iContours );
-    typename TPolyDataContainer::iterator c_it = iContours.begin();
-
-    for(; c_it != iContours.end(); ++c_it )
-      {
-      this->View3D->RemoveDataSet( *c_it );
-      }
-    }
+//   template< typename TContourContainer, typename TPropertyContainer >
+//   QMEGAVTKADDON2_EXPORT
+//   void AddContours( TContourContainer& iContours,
+//     TPropertyContainer& iProperty,
+//     const bool& iIntersection = true,
+//     const bool& iVizu3D = false )
+//     {
+//     this->Pool->SyncAddContours( iContours, iProperty, iIntersection );
+//
+//     if( iVizu3D )
+//       {
+//       typename TContourContainer::iterator c_it = iContours.begin();
+//       typename TPropertyContainer::iterator p_it = iProperty.begin();
+//
+//       for(; c_it != iContours.end(); ++c_it, ++p_it )
+//         {
+//         this->View3D->AddDataSet( *c_it, *p_it, false );
+//         }
+//       }
+//     }
+//
+//   template< typename TPolyDataContainer >
+//   QMEGAVTKADDON2_EXPORT
+//   void RemoveContours( TPolyDataContainer& iContours )
+//     {
+//     this->Pool->SyncRemoveContours( iContours );
+//     typename TPolyDataContainer::iterator c_it = iContours.begin();
+//
+//     for(; c_it != iContours.end(); ++c_it )
+//       {
+//       this->View3D->RemoveDataSet( *c_it );
+//       }
+//     }
 
   QMEGAVTKADDON2_EXPORT void SaveStateSplitters();
 
@@ -216,8 +244,10 @@ public slots:
 
   QMEGAVTKADDON2_EXPORT void LoadFiguresFromDB( );
 
-  QMEGAVTKADDON2_EXPORT void SetTimePoint( int TimePoint ) 
+  QMEGAVTKADDON2_EXPORT void SetTimePoint( int TimePoint )
     { this->m_TimePoint = TimePoint; };
+
+  QMEGAVTKADDON2_EXPORT void HighlighContour( const unsigned int& iId );
 
 protected:
   QSplitter*          VSplitter;
@@ -253,6 +283,9 @@ protected:
   std::vector< vtkPointHandleRepresentation2D* >  Handle;
   std::vector< vtkSeedRepresentation* >           SeedRep;
   std::vector< vtkSeedWidget* >                   SeedWidget;
+
+  ContourIdActorMapType m_ContourIdActorMap;
+  ActorContourIdMapType m_ActorContourIdMap;
 
   QString Tag;
 

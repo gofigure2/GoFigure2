@@ -766,14 +766,14 @@ int vtkViewImage2D::GetInterpolate(void)
 }
 
 //----------------------------------------------------------------------------
-void vtkViewImage2D::AddDataSet( vtkPolyData* dataset,
+vtkActor* vtkViewImage2D::AddDataSet( vtkPolyData* dataset,
   vtkProperty* property,
   const bool& intersection,
   const bool& iDataVisibility )
 {
   vtkCamera *cam = this->Renderer ? this->Renderer->GetActiveCamera() : NULL;
   if( !cam )
-    return;
+    return 0;
 
   vtkPolyDataMapper* mapper = vtkPolyDataMapper::New();
   mapper->SetScalarVisibility( iDataVisibility );
@@ -808,18 +808,19 @@ void vtkViewImage2D::AddDataSet( vtkPolyData* dataset,
 
   cutter->Delete();
   mapper->Delete();
-  actor->Delete();
+//   actor->Delete();
+  return actor;
 }
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
-void vtkViewImage2D::AddDataSet( vtkDataSet* dataset,
+vtkActor* vtkViewImage2D::AddDataSet( vtkDataSet* dataset,
   vtkProperty* property,
   const bool& intersection,
   const bool& iDataVisibility )
 {
   vtkCamera *cam = this->Renderer ? this->Renderer->GetActiveCamera() : NULL;
   if( !cam )
-    return;
+    return 0;
 
   vtkPolyDataMapper* mapper = vtkPolyDataMapper::New();
   mapper->SetScalarVisibility( iDataVisibility );
@@ -853,7 +854,8 @@ void vtkViewImage2D::AddDataSet( vtkDataSet* dataset,
 
   cutter->Delete();
   mapper->Delete();
-  actor->Delete();
+//   actor->Delete();
+  return actor;
 }
 
 //----------------------------------------------------------------------------

@@ -471,23 +471,7 @@ void vtkViewImage::HighlightContour( vtkProp3D* iProp, const bool& iToDo )
     else
       {
       temp->GetProperty()->SetLineWidth( 1. );
-//       vtkPolyData* pd = static_cast< vtkPolyData* >( temp->GetMapper()->GetInput() );
-//       vtkIntArray* dumb_array = static_cast< vtkIntArray* >( pd->GetPointData()->GetScalars( "dumb" ) );
-//
-//       if( dumb_array )
-//         {
-//         int red = dumb_array->GetValue( 1 );
-//         int green = dumb_array->GetValue( 2 );
-//         int blue = dumb_array->GetValue( 3 );
-//         temp->GetProperty()->SetColor(
-//           static_cast< double >( red / 255. ),
-//           static_cast< double >( green / 255. ),
-//           static_cast< double >( blue / 255. ) );
-//         }
-//       else
-//         {
-        temp->GetProperty()->SetColor( 1., 1., 1. );
-//         }
+      temp->GetProperty()->SetColor( 1., 1., 1. );
       }
     }
 }

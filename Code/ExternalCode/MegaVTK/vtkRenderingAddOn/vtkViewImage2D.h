@@ -242,12 +242,12 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage2D : public vtkViewImage
     as triangles, triangles as lines, lines as points.
     A vtkProperty of the dataset can be specified.
   */
-  virtual void AddDataSet (vtkDataSet* dataset,
+  virtual vtkActor* AddDataSet (vtkDataSet* dataset,
     vtkProperty* property = NULL,
     const bool& intersection = true,
     const bool& iDataVisibility = true );
 
-  virtual void AddDataSet( vtkPolyData* polydata,
+  virtual vtkActor* AddDataSet( vtkPolyData* polydata,
     vtkProperty* property = NULL,
     const bool& intersection = true,
     const bool& iDataVisibility = true );
