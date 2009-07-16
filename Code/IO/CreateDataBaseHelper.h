@@ -42,6 +42,7 @@
 
 #include <vector>
 #include <string>
+#include "itkMacro.h"
 
 std::vector<std::string> ListDataBases(
   std::string ServerName, std::string login,

@@ -47,12 +47,8 @@
 #include <sstream>
 #include <string>
 
-// NOTE ALEX
-//
-// use exception for the following problems:
-// could not open database
-// database with same name already exists.
 
+//------------------------------------------------------------------------------
 bool CanConnectToServer(
   std::string ServerName, std::string login,
   std::string Password)
@@ -66,7 +62,9 @@ bool CanConnectToServer(
   DataBaseConnector->Delete();
   return IsOpen;
 }
+//------------------------------------------------------------------------------
 
+//------------------------------------------------------------------------------
 std::vector<std::string> ListDataBases(
   std::string ServerName, std::string login,
   std::string Password)
@@ -79,8 +77,7 @@ std::vector<std::string> ListDataBases(
   DataBaseConnector->SetPassword( Password.c_str() );
   if( !DataBaseConnector->Open() )
     {
-    std::cerr << "Could not open database." << std::endl;
-    std::cerr << "DB will not be created."  << std::endl;
+    itkGenericExceptionMacro( << "Could not open the Database." );
     DataBaseConnector->Delete();
     return result;
     }
@@ -89,7 +86,9 @@ std::vector<std::string> ListDataBases(
   query->SetQuery( "Show Databases;" );
   if ( !query->Execute() )
     {
-    cerr << "Show Databases query failed" << endl;
+    itkGenericExceptionMacro( 
+      << "Show Databases query failed." 
+      << query->GetLastErrorText() );
     DataBaseConnector->Close();
     DataBaseConnector->Delete();
     query->Delete();
@@ -111,7 +110,9 @@ std::vector<std::string> ListDataBases(
 
   return result;
 }
+//------------------------------------------------------------------------------
 
+//------------------------------------------------------------------------------
 std::vector<std::string> ListTables(
   std::string ServerName, std::string login,
   std::string Password, std::string DBName )
@@ -125,8 +126,9 @@ std::vector<std::string> ListTables(
   DataBaseConnector->SetDatabaseName( DBName.c_str() );
   if( !DataBaseConnector->Open() )
     {
-    std::cerr << "Could not open database." << std::endl;
-    std::cerr << "DB will not be created."  << std::endl;
+    itkGenericExceptionMacro( 
+      << "Could not open database." 
+      << "DB will not be created." );
     DataBaseConnector->Delete();
     return result;
     }
@@ -135,7 +137,9 @@ std::vector<std::string> ListTables(
   query->SetQuery( "Show tables;" );
   if ( !query->Execute() )
     {
-    cerr << "Show tables query failed" << endl;
+    itkGenericExceptionMacro( 
+      << "Show tables query failed"
+      << query->GetLastErrorText() );
     DataBaseConnector->Close();
     DataBaseConnector->Delete();
     query->Delete();
@@ -157,7 +161,9 @@ std::vector<std::string> ListTables(
 
   return result;
 }
+//------------------------------------------------------------------------------
 
+//------------------------------------------------------------------------------
 std::vector<std::string> ListExpID(
   std::string ServerName, std::string login,
   std::string Password, std::string DBName)
@@ -182,7 +188,9 @@ std::vector<std::string> ListExpID(
 
   if ( !query->Execute() )
     {
-    cerr << "List of all fields query failed" << endl;
+    itkGenericExceptionMacro( 
+      << "List of all fields query failed"
+      << query->GetLastErrorText() );
     DataBaseConnector->Close();
     DataBaseConnector->Delete();
     query->Delete();
@@ -204,7 +212,9 @@ std::vector<std::string> ListExpID(
 
   return result;
 }
+//------------------------------------------------------------------------------
 
+//------------------------------------------------------------------------------
 std::vector<std::string> ListExpName(
   std::string ServerName, std::string login,
   std::string Password, std::string DBName)
@@ -230,7 +240,9 @@ std::vector<std::string> ListExpName(
 
   if ( !query->Execute() )
     {
-    cerr << "List of all fields query failed" << endl;
+    itkGenericExceptionMacro( 
+      << "List of all fields query failed"
+      << query->GetLastErrorText() );
     DataBaseConnector->Close();
     DataBaseConnector->Delete();
     query->Delete();
@@ -252,8 +264,10 @@ std::vector<std::string> ListExpName(
 
   return result;
 }
+//------------------------------------------------------------------------------
 
 
+//------------------------------------------------------------------------------
 void DropDatabase(
   std::string ServerName, std::string login,
   std::string Password, std::string DBName )
@@ -274,12 +288,12 @@ void DropDatabase(
   vtkSQLQuery* query = DataBaseConnector->GetQueryInstance();
   std::ostringstream insertQuery;
   insertQuery <<"DROP DATABASE "<< DBName;
-  //char insertQuery[200];
-  //sprintf( insertQuery, "DROP DATABASE %s", DBName );
   query->SetQuery( insertQuery.str().c_str() );
   if ( !query->Execute() )
     {
-    cerr << "Drop query failed" << endl;
+    itkGenericExceptionMacro( 
+      << "Drop query failed"
+      << query->GetLastErrorText() );
     DataBaseConnector->Close();
     DataBaseConnector->Delete();
     query->Delete();
@@ -289,7 +303,9 @@ void DropDatabase(
   DataBaseConnector->Delete();
   query->Delete();
 }
+//------------------------------------------------------------------------------
 
+//------------------------------------------------------------------------------
 void DropTable(
   std::string ServerName, std::string login,
   std::string Password, std::string DBName,
@@ -315,7 +331,9 @@ void DropTable(
   query->SetQuery( insertQuery.str().c_str() );
   if ( !query->Execute() )
     {
-    cerr << "Drop query failed" << endl;
+    itkGenericExceptionMacro( 
+      << "Drop query failed"
+      << query->GetLastErrorText() );
     DataBaseConnector->Close();
     DataBaseConnector->Delete();
     query->Delete();
@@ -325,7 +343,9 @@ void DropTable(
   DataBaseConnector->Delete();
   query->Delete();
 }
+//------------------------------------------------------------------------------
 
+//------------------------------------------------------------------------------
 bool DoesDataBaseExist(
   std::string ServerName, std::string login,
   std::string Password, std::string DBName )
@@ -346,7 +366,9 @@ bool DoesDataBaseExist(
   return false;
 
 }
+//------------------------------------------------------------------------------
 
+//------------------------------------------------------------------------------
 bool DoesTableExist(
   std::string ServerName, std::string login,
   std::string Password, std::string DBName,
@@ -368,7 +390,9 @@ bool DoesTableExist(
   return false;
 
 }
+//------------------------------------------------------------------------------
 
+//------------------------------------------------------------------------------
 bool IsDatabaseOfGoFigureType(
   std::string ServerName, std::string login,
   std::string Password, std::string DBName )
@@ -384,7 +408,9 @@ bool IsDatabaseOfGoFigureType(
     }
   return false;
 }
+//------------------------------------------------------------------------------
 
+//------------------------------------------------------------------------------
 void CreateDataBaseMain(
   std::string ServerName, std::string login,
   std::string Password, std::string DBName )
@@ -405,12 +431,10 @@ void CreateDataBaseMain(
     CreateTrackTable(          ServerName, login, Password, DBName );
     CreateTrackFlavor(         ServerName, login, Password, DBName );
     }
-  else
-    {
-    // throw exception
-    }
 }
+//------------------------------------------------------------------------------
 
+//------------------------------------------------------------------------------
 void CreateDataBase(
   std::string ServerName, std::string login,
   std::string Password, std::string DBName )
@@ -433,7 +457,9 @@ void CreateDataBase(
   query->SetQuery( insertQuery.str().c_str() );
   if ( !query->Execute() )
     {
-    cerr << "Create query failed" << endl;
+    itkGenericExceptionMacro( 
+      << "Create query failed"
+      << query->GetLastErrorText() );
     DataBaseConnector->Close();
     DataBaseConnector->Delete();
     query->Delete();
@@ -443,7 +469,9 @@ void CreateDataBase(
   DataBaseConnector->Delete();
   query->Delete();
 }
+//------------------------------------------------------------------------------
 
+//------------------------------------------------------------------------------
 void CreateBookmarksTable(
   std::string ServerName, std::string login,
   std::string Password, std::string DBName )
@@ -481,7 +509,9 @@ void CreateBookmarksTable(
   query->SetQuery( insertQuery );
   if ( !query->Execute() )
     {
-    cerr << "Create query failed" << endl;
+    itkGenericExceptionMacro( 
+      << "Create query failed"
+      << query->GetLastErrorText() );
     DataBaseConnector->Close();
     DataBaseConnector->Delete();
     query->Delete();
@@ -491,9 +521,14 @@ void CreateBookmarksTable(
   DataBaseConnector->Delete();
   query->Delete();
 }
+//------------------------------------------------------------------------------
 
+//------------------------------------------------------------------------------
 void CreateCollectionInfoTable(
-  std::string ServerName, std::string login, std::string Password, std::string DBName )
+  std::string ServerName, 
+  std::string login, 
+  std::string Password, 
+  std::string DBName )
 {
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
   DataBaseConnector->SetHostName( ServerName.c_str() );
@@ -525,7 +560,9 @@ void CreateCollectionInfoTable(
   query->SetQuery( insertQuery );
   if ( !query->Execute() )
     {
-    cerr << "Create query failed" << endl;
+    itkGenericExceptionMacro( 
+      << "Create query failed"
+      << query->GetLastErrorText() );
     DataBaseConnector->Close();
     DataBaseConnector->Delete();
     query->Delete();
@@ -535,9 +572,14 @@ void CreateCollectionInfoTable(
   DataBaseConnector->Delete();
   query->Delete();
 }
+//------------------------------------------------------------------------------
 
+//------------------------------------------------------------------------------
 void CreateExperimentTable(
-  std::string ServerName, std::string login, std::string Password, std::string DBName )
+  std::string ServerName, 
+  std::string login, 
+  std::string Password, 
+  std::string DBName )
 {
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
   DataBaseConnector->SetHostName( ServerName.c_str() );
@@ -579,7 +621,9 @@ void CreateExperimentTable(
   query->SetQuery( insertQuery );
   if ( !query->Execute() )
     {
-    cerr << "Create query failed" << endl;
+    itkGenericExceptionMacro( 
+      << "Create query failed"
+      << query->GetLastErrorText() );
     DataBaseConnector->Close();
     DataBaseConnector->Delete();
     query->Delete();
@@ -589,9 +633,14 @@ void CreateExperimentTable(
   DataBaseConnector->Delete();
   query->Delete();
 }
+//------------------------------------------------------------------------------
 
+//------------------------------------------------------------------------------
 void CreateFigureTable(
-  std::string ServerName, std::string login, std::string Password, std::string DBName )
+  std::string ServerName, 
+  std::string login, 
+  std::string Password, 
+  std::string DBName )
 {
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
   DataBaseConnector->SetHostName( ServerName.c_str() );
@@ -638,7 +687,9 @@ void CreateFigureTable(
   query->SetQuery( insertQuery );
   if ( !query->Execute() )
     {
-    cerr << "Create query failed" << endl;
+    itkGenericExceptionMacro( 
+      << "Create query failed"
+      << query->GetLastErrorText() );
     DataBaseConnector->Close();
     DataBaseConnector->Delete();
     query->Delete();
@@ -648,9 +699,14 @@ void CreateFigureTable(
   DataBaseConnector->Delete();
   query->Delete();
 }
+//------------------------------------------------------------------------------
 
+//------------------------------------------------------------------------------
 void CreateFigureFlavorTable(
-  std::string ServerName, std::string login, std::string Password, std::string DBName )
+  std::string ServerName, 
+  std::string login, 
+  std::string Password, 
+  std::string DBName )
 {
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
   DataBaseConnector->SetHostName( ServerName.c_str() );
@@ -679,7 +735,9 @@ void CreateFigureFlavorTable(
   query->SetQuery( insertQuery );
   if ( !query->Execute() )
     {
-    cerr << "Create query failed" << endl;
+    itkGenericExceptionMacro( 
+      << "Create query failed"
+      << query->GetLastErrorText() );
     DataBaseConnector->Close();
     DataBaseConnector->Delete();
     query->Delete();
@@ -689,9 +747,14 @@ void CreateFigureFlavorTable(
   DataBaseConnector->Delete();
   query->Delete();
 }
+//------------------------------------------------------------------------------
 
+//------------------------------------------------------------------------------
 void CreateLineageTable(
-  std::string ServerName, std::string login, std::string Password, std::string DBName )
+  std::string ServerName, 
+  std::string login, 
+  std::string Password, 
+  std::string DBName )
 {
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
   DataBaseConnector->SetHostName( ServerName.c_str() );
@@ -741,7 +804,9 @@ void CreateLineageTable(
   query->SetQuery( insertQuery );
   if ( !query->Execute() )
     {
-    cerr << "Create query failed" << endl;
+    itkGenericExceptionMacro( 
+      << "Create query failed"
+      << query->GetLastErrorText() );
     DataBaseConnector->Close();
     DataBaseConnector->Delete();
     query->Delete();
@@ -751,9 +816,14 @@ void CreateLineageTable(
   DataBaseConnector->Delete();
   query->Delete();
 }
+//------------------------------------------------------------------------------
 
+//------------------------------------------------------------------------------
 void CreateLineageFlavorTable(
-  std::string ServerName, std::string login, std::string Password, std::string DBName )
+  std::string ServerName, 
+  std::string login, 
+  std::string Password, 
+  std::string DBName )
 {
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
   DataBaseConnector->SetHostName( ServerName.c_str() );
@@ -782,7 +852,9 @@ void CreateLineageFlavorTable(
   query->SetQuery( insertQuery );
   if ( !query->Execute() )
     {
-    cerr << "Create query failed" << endl;
+    itkGenericExceptionMacro( 
+      << "Create query failed"
+      << query->GetLastErrorText() );
     DataBaseConnector->Close();
     DataBaseConnector->Delete();
     query->Delete();
@@ -792,9 +864,14 @@ void CreateLineageFlavorTable(
   DataBaseConnector->Delete();
   query->Delete();
 }
+//------------------------------------------------------------------------------
 
+//------------------------------------------------------------------------------
 void CreateMeshTable(
-  std::string ServerName, std::string login, std::string Password, std::string DBName )
+  std::string ServerName, 
+  std::string login, 
+  std::string Password, 
+  std::string DBName )
 {
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
   DataBaseConnector->SetHostName( ServerName.c_str() );
@@ -844,7 +921,9 @@ void CreateMeshTable(
   query->SetQuery( insertQuery );
   if ( !query->Execute() )
     {
-    cerr << "Create query failed" << endl;
+    itkGenericExceptionMacro( 
+      << "Create query failed"
+      << query->GetLastErrorText() );
     DataBaseConnector->Close();
     DataBaseConnector->Delete();
     query->Delete();
@@ -854,9 +933,14 @@ void CreateMeshTable(
   DataBaseConnector->Delete();
   query->Delete();
 }
+//------------------------------------------------------------------------------
 
+//------------------------------------------------------------------------------
 void CreateMeshFlavor(
-  std::string ServerName, std::string login, std::string Password, std::string DBName )
+  std::string ServerName, 
+  std::string login, 
+  std::string Password, 
+  std::string DBName )
 {
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
   DataBaseConnector->SetHostName( ServerName.c_str() );
@@ -885,7 +969,9 @@ void CreateMeshFlavor(
   query->SetQuery( insertQuery );
   if ( !query->Execute() )
     {
-    cerr << "Create query failed" << endl;
+    itkGenericExceptionMacro( 
+      << "Create query failed"
+      << query->GetLastErrorText() );
     DataBaseConnector->Close();
     DataBaseConnector->Delete();
     query->Delete();
@@ -895,9 +981,14 @@ void CreateMeshFlavor(
   DataBaseConnector->Delete();
   query->Delete();
 }
+//------------------------------------------------------------------------------
 
+//------------------------------------------------------------------------------
 void CreateSeriesGridTable(
-  std::string ServerName, std::string login, std::string Password, std::string DBName )
+  std::string ServerName, 
+  std::string login, 
+  std::string Password, 
+  std::string DBName )
 {
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
   DataBaseConnector->SetHostName( ServerName.c_str() );
@@ -931,7 +1022,9 @@ void CreateSeriesGridTable(
   query->SetQuery( insertQuery );
   if ( !query->Execute() )
     {
-    cerr << "Create query failed" << endl;
+    itkGenericExceptionMacro( 
+      << "Create query failed"
+      << query->GetLastErrorText() );
     DataBaseConnector->Close();
     DataBaseConnector->Delete();
     query->Delete();
@@ -941,9 +1034,14 @@ void CreateSeriesGridTable(
   DataBaseConnector->Delete();
   query->Delete();
 }
+//------------------------------------------------------------------------------
 
+//------------------------------------------------------------------------------
 void CreateTrackTable(
-  std::string ServerName, std::string login, std::string Password, std::string DBName )
+  std::string ServerName, 
+  std::string login, 
+  std::string Password, 
+  std::string DBName )
 {
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
   DataBaseConnector->SetHostName( ServerName.c_str() );
@@ -1000,7 +1098,9 @@ void CreateTrackTable(
   query->SetQuery( insertQuery );
   if ( !query->Execute() )
     {
-    cerr << "Create query failed" << endl;
+    itkGenericExceptionMacro( 
+      << "Create query failed"
+      << query->GetLastErrorText() );
     DataBaseConnector->Close();
     DataBaseConnector->Delete();
     query->Delete();
@@ -1010,10 +1110,15 @@ void CreateTrackTable(
   DataBaseConnector->Delete();
   query->Delete();
 }
+//------------------------------------------------------------------------------
 
 
+//------------------------------------------------------------------------------
 void CreateTrackFlavor(
-  std::string ServerName, std::string login, std::string Password, std::string DBName )
+  std::string ServerName, 
+  std::string login, 
+  std::string Password, 
+  std::string DBName )
 {
   (void) ServerName;
   (void) login;
@@ -1047,7 +1152,9 @@ void CreateTrackFlavor(
   query->SetQuery( insertQuery );
   if ( !query->Execute() )
     {
-    cerr << "Create query failed" << endl;
+    itkGenericExceptionMacro( 
+      << "Create query failed"
+      << query->GetLastErrorText() );
     DataBaseConnector->Close();
     DataBaseConnector->Delete();
     query->Delete();
@@ -1057,7 +1164,9 @@ void CreateTrackFlavor(
   DataBaseConnector->Delete();
   query->Delete();
 }
+//------------------------------------------------------------------------------
 
+//------------------------------------------------------------------------------
 std::vector<std::string> ListValuesForRow(
   std::string ServerName, std::string login,
   std::string Password, std::string DBName,
@@ -1074,7 +1183,8 @@ std::vector<std::string> ListValuesForRow(
   if( !DataBaseConnector->Open() )
     {
     std::cerr << "Could not open database." << std::endl;
-    std::cerr << "The list of the values for the row will not be read."  << std::endl;
+    std::cerr << "The list of the values for the row will not be read.";
+    std::cerr << std::endl;
     DataBaseConnector->Close();
     DataBaseConnector->Delete();
     return result;
@@ -1090,21 +1200,18 @@ std::vector<std::string> ListValuesForRow(
   querystream << ID;
   querystream << "';";
 
-  /*vtkSQLQuery* query = DataBaseConnector->GetQueryInstance();
-  std::ostringstream insertQuery;
-  insertQuery<<"select * from experiment where experimentID="<<ID<<";";*/
-
   query->SetQuery( querystream.str().c_str() );
   if ( !query->Execute() )
     {
-    cerr << "List of all values of ExpID query failed" << endl;
+    itkGenericExceptionMacro( 
+      << "List of all values of ExpID query failed"
+      << query->GetLastErrorText() );
+    DataBaseConnector->Close();
     DataBaseConnector->Close();
     DataBaseConnector->Delete();
     query->Delete();
     return result;
     }
-
-  std::cout<<"result of the query where ID=1, 2nd value "<<query->GetNumberOfFields()<<std::endl;
 
   while (query->NextRow())
     {
@@ -1120,8 +1227,10 @@ std::vector<std::string> ListValuesForRow(
 
   return result;
 }
+//------------------------------------------------------------------------------
 
 
+//------------------------------------------------------------------------------
 std::vector<std::string> ListImageIDforExpID(
   std::string ServerName, std::string login,
   std::string Password, std::string DBName, std::string ID)
@@ -1151,8 +1260,9 @@ std::vector<std::string> ListImageIDforExpID(
   query->SetQuery( querystream.str().c_str() );
   if ( !query->Execute() )
     {
-    // replace by exception
-    std::cerr << "Create query failed" << std::endl;
+    itkGenericExceptionMacro( 
+      << "Create query failed"
+      << query->GetLastErrorText() );
     }
   else
     {
@@ -1168,7 +1278,9 @@ std::vector<std::string> ListImageIDforExpID(
   return result;
 
 }
+//------------------------------------------------------------------------------
 
+//------------------------------------------------------------------------------
 std::vector<std::string> ListValuesForOneColumn(
   std::string ServerName, std::string login,
   std::string Password, std::string DBName,
@@ -1206,14 +1318,14 @@ std::vector<std::string> ListValuesForOneColumn(
   query->SetQuery( querystream.str().c_str() );
   if ( !query->Execute() )
     {
-    cerr << "List of all values of ExpID query failed" << endl;
+    itkGenericExceptionMacro( 
+      << "List of all values of ExpID query failed"
+      << query->GetLastErrorText() );
     DataBaseConnector->Close();
     DataBaseConnector->Delete();
     query->Delete();
     return result;
     }
-
-  std::cout<<"result of the query where ID=1, 2nd value "<<query->GetNumberOfFields()<<std::endl;
 
   while (query->NextRow())
     {
@@ -1229,3 +1341,5 @@ std::vector<std::string> ListValuesForOneColumn(
 
   return result;
 }
+//------------------------------------------------------------------------------
+
