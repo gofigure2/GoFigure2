@@ -86,6 +86,8 @@
 
 #include "vtkViewImage2DCommand.h"
 
+#include <vtkPointData.h>
+
 vtkCxxRevisionMacro(vtkViewImage2DWithContourWidgetCollection, "$Revision$");
 vtkStandardNewMacro(vtkViewImage2DWithContourWidgetCollection);
 
@@ -417,10 +419,10 @@ void vtkViewImage2DWithContourWidgetCollectionCommand::Execute(vtkObject *caller
       picker->Pick( rwi->GetEventPosition()[0], rwi->GetEventPosition()[1], 0,
         viewer->GetRenderer() );
 
-      vtkAssemblyPath* path = picker->GetPath();
-      if( path )
+      vtkProp3D* prop = picker->GetProp3D();
+      if( prop )
       {
-        vtkProp* prop = path->GetFirstNode()->GetViewProp();
+//         vtkProp* prop = path->GetFirstNode()->GetViewProp();
         viewer->GetProp3DCollection()->InitTraversal();
         vtkProp3D* prop_temp = viewer->GetProp3DCollection()->GetNextProp3D(); // image
 //         prop_temp = viewer->GetProp3DCollection()->GetNextProp3D(); // 1st plane
@@ -438,6 +440,7 @@ void vtkViewImage2DWithContourWidgetCollectionCommand::Execute(vtkObject *caller
           {
             viewer->HighlightContour( prop_temp, false );
           }
+          prop_temp->Modified();
           prop_temp = viewer->GetProp3DCollection()->GetNextProp3D();
         }
       }
