@@ -247,7 +247,8 @@ public slots:
   QMEGAVTKADDON2_EXPORT void SetTimePoint( int TimePoint )
     { this->m_TimePoint = TimePoint; };
 
-  QMEGAVTKADDON2_EXPORT void HighlighContour( const unsigned int& iId );
+  QMEGAVTKADDON2_EXPORT void HighlightContour( const unsigned int& iId );
+  QMEGAVTKADDON2_EXPORT void HighlightContours( const std::list< unsigned int>& iIds );
 
 protected:
   QSplitter*          VSplitter;

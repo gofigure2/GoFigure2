@@ -1646,10 +1646,10 @@ void QImagePageViewTracer::SetDatabaseRelatedVariables( const QString& iServer,
   m_DBExperimentID = iExperimentID;
   m_DBExperimentName = iExperimentName;
 }
-//------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
-void QImagePageViewTracer::HighlighContour( const unsigned int& iId )
+//-------------------------------------------------------------------------
+void QImagePageViewTracer::HighlightContour( const unsigned int& iId )
 {
   std::pair< ContourIdActorMapIterator, ContourIdActorMapIterator>
     result = m_ContourIdActorMap.equal_range( iId );
@@ -1665,4 +1665,16 @@ void QImagePageViewTracer::HighlighContour( const unsigned int& iId )
     ++it;
     }
 }
-//------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
+void QImagePageViewTracer::HighlightContours( const std::list< unsigned int >& iIds )
+{
+  std::list< unsigned int >::const_iterator it = iIds.begin();
+  std::list< unsigned int >::const_iterator end = iIds.end();
+
+  while( it != end )
+    {
+    HighlightContour( *it );
+    ++it;
+    }
+}
+
