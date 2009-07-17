@@ -60,7 +60,7 @@ public:
   void QMEGAVTKADDON2_EXPORT Fill_Database(QString ServerName,QString login,
       QString Password, QString DBName,
       int ExpID,QString ExpName);
-  void CloseEvent(QCloseEvent* event);
+
 
 protected:
   QTableWidgetChild* QPrintColumnNames (QString TableName, std::vector< std::string > ColumnNames);
@@ -148,7 +148,7 @@ protected:
          }
        }
     };
-
+  void closeEvent(QCloseEvent* event);
 
   QString m_NameDB;
   QString m_Server;

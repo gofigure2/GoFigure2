@@ -44,8 +44,7 @@
 #include <QDialog>
 #include <QTableWidgetItem>
 #include <QHeaderView>
-#include <QLabel>
-#include <QFormLayout>
+#include <QMessageBox>
 #include "QGoPrintDatabase.h"
 #include "QTableWidgetChild.h"
 #include "vtkMySQLDatabase.h"
@@ -123,16 +122,21 @@ void QGoPrintDatabase::Fill_Database(QString ServerName,QString login,
 
 }
 
-void QGoPrintDatabase::CloseEvent(QCloseEvent* event)
+void QGoPrintDatabase::closeEvent(QCloseEvent* event)
 {
-  //std::cout<<"Close event work"<<std::endl;
-  QDialog* Message = new QDialog(this);
-  QLabel* text = new QLabel(tr("Are you sure you want to close permanently the table ?"));
-  QFormLayout* layout = new QFormLayout;
-  layout->addWidget(text);
-  setLayout(layout);
-  Message->exec();
-  event->ignore();
+  int r = QMessageBox::warning(this, tr(""),
+                        tr("Are you sure you want to close\n"
+                           "permanently the table?"),
+                          QMessageBox::Yes,
+                          QMessageBox::No|QMessageBox::Default);
+  if (r == QMessageBox::Yes)
+    {
+    event->accept();
+    }
+  else
+    {
+    event->ignore();
+    }
 
 }
 
