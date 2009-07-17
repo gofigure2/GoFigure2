@@ -50,7 +50,8 @@
 
 //------------------------------------------------------------------------------
 bool CanConnectToServer(
-  std::string ServerName, std::string login,
+  std::string ServerName,
+  std::string login,
   std::string Password)
 {
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
