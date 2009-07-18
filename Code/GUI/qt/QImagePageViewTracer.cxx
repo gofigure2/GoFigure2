@@ -795,6 +795,8 @@ void QImagePageViewTracer::SetITKImage( TImage::Pointer itkImage )
 //------------------------------------------------------------------------------
 void QImagePageViewTracer::Set3DImage( vtkImageData* input )
 {
+  this->Pool->RemoveAllItems();
+
   vtkViewImage2DWithContourWidget* View1 =
     vtkViewImage2DWithContourWidget::New();
   View1->SetInput( this->Image );
@@ -810,7 +812,8 @@ void QImagePageViewTracer::Set3DImage( vtkImageData* input )
 
   //     View1->SetContourWidgetInteractionOn();
   this->Pool->AddItem( View1 );
-  this->View3D->Add2DPhantom( 0, View1->GetImageActor(), View1->GetSlicePlane() );
+  this->View3D->Add2DPhantom( 
+    0, View1->GetImageActor(), View1->GetSlicePlane() );
 
   int *range = View1->GetSliceRange();
 
@@ -851,12 +854,9 @@ void QImagePageViewTracer::Set3DImage( vtkImageData* input )
   View2->SetViewConvention( vtkViewImage2D::VIEW_CONVENTION_NEUROLOGICAL );
   View2->SetViewOrientation (vtkViewImage2D::VIEW_ORIENTATION_CORONAL);
 
-//       View2->GetTextProperty()->SetFontFamilyToArial();
-//       View2->GetTextProperty()->SetFontSize( 14 );
-  //     View2->SetContourWidgetInteractionOn();
-
   this->Pool->AddItem( View2 );
-  this->View3D->Add2DPhantom( 1, View2->GetImageActor(), View2->GetSlicePlane() );
+  this->View3D->Add2DPhantom( 
+    1, View2->GetImageActor(), View2->GetSlicePlane() );
 
   range = View2->GetSliceRange();
   this->Slider2->setMinimum( range[0] );
@@ -895,12 +895,9 @@ void QImagePageViewTracer::Set3DImage( vtkImageData* input )
   View3->SetViewConvention( vtkViewImage2D::VIEW_CONVENTION_NEUROLOGICAL );
   View3->SetViewOrientation (vtkViewImage2D::VIEW_ORIENTATION_SAGITTAL);
 
-//       View3->GetTextProperty()->SetFontFamilyToArial();
-//       View3->GetTextProperty()->SetFontSize( 14 );
-  //     View3->SetContourWidgetInteractionOn();
-
   this->Pool->AddItem( View3 );
-  this->View3D->Add2DPhantom( 2, View3->GetImageActor(), View3->GetSlicePlane() );
+  this->View3D->Add2DPhantom( 
+    2, View3->GetImageActor(), View3->GetSlicePlane() );
 
   range = View3->GetSliceRange();
   this->Slider3->setMinimum( range[0] );
@@ -952,9 +949,6 @@ void QImagePageViewTracer::Set3DImage( vtkImageData* input )
     }
 
   this->Pool->SyncSetShowScalarBar( false );
-
-//   this->Pool->SyncSetTextProperty( this->Pool->GetItem(0)->GetTextProperty());
-  //     this->Pool->SyncMaskImage();
   this->Pool->SyncRender();
   this->Pool->SyncReset();
 

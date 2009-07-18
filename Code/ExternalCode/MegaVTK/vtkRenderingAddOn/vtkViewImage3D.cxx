@@ -501,7 +501,9 @@ void vtkViewImage3D::Add2DPhantom(const unsigned int& i,
 
   vtkRenderer* ren = this->GetRenderer();
   if( ren )
-  {
+    {
+    ren->RemoveActor( this->Phantom[i] );
+   
     this->Phantom[i]->SetInput (input->GetInput());
     this->Phantom[i]->SetDisplayExtent (input->GetDisplayExtent());
     this->Phantom[i]->SetUserMatrix (input->GetUserMatrix());
@@ -522,6 +524,8 @@ void vtkViewImage3D::Add2DPhantom(const unsigned int& i,
 
     if( in_bounds )
     {
+      ren->RemoveActor( this->BoundsActor[i] );
+
       vtkPolyDataMapper* bounds_mapper = vtkPolyDataMapper::New();
       bounds_mapper->SetInput( in_bounds );
 

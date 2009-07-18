@@ -38,6 +38,8 @@
 
 =========================================================================*/
 
+#define NOT_ALEX_DEBUG 1
+
 #include "QImagePageView4DTracer.h"
 
 #include "QSplitterchild.h"
@@ -78,7 +80,9 @@
 
 #include <ctime>
 
-QImagePageView4DTracer::QImagePageView4DTracer( QWidget* parent ) : QWidget( parent )
+//------------------------------------------------------------------------------
+QImagePageView4DTracer::QImagePageView4DTracer( QWidget* parent ) : 
+  QWidget( parent )
 {
   this->NumberOfTimePoints = 0;
   this->Image = (vtkImageData*)(0);
@@ -120,7 +124,9 @@ QImagePageView4DTracer::QImagePageView4DTracer( QWidget* parent ) : QWidget( par
   m_DBTables = new QGoPrintDatabase() ;
   m_DBTables->hide();
 }
+//------------------------------------------------------------------------------
 
+//------------------------------------------------------------------------------
 QImagePageView4DTracer::~QImagePageView4DTracer()
 {
   delete this->Whatever;
@@ -131,9 +137,9 @@ QImagePageView4DTracer::~QImagePageView4DTracer()
     }
   delete m_DBTables;
 }
-//--------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//--------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 void
 QImagePageView4DTracer::
 ReadMultiFile( const int& TimePoint )
@@ -207,9 +213,9 @@ ReadMultiFile( const int& TimePoint )
   this->Image->ShallowCopy( reader->GetOutput() );
   delete reader;
 }
-//--------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//--------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 void
 QImagePageView4DTracer::SetFileName(const char* name )
 {
@@ -235,10 +241,10 @@ QImagePageView4DTracer::SetFileName(const char* name )
   this->SetView( 0 );
   this->IsFileListComputed = false;
 }
-//--------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 
-//--------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 void QImagePageView4DTracer::ReadLSMFile( const int& TimePoint )
 {
   // have to redirect that to a Multifile reader with only one file,
@@ -333,7 +339,10 @@ void QImagePageView4DTracer::ReadLSMFile( const int& TimePoint )
 
   this->Image = myImage3;
 }
+//------------------------------------------------------------------------------
 
+
+//------------------------------------------------------------------------------
 void QImagePageView4DTracer::SetView( const int& value )
 {
   clock_t start, finish;
@@ -352,7 +361,7 @@ void QImagePageView4DTracer::SetView( const int& value )
   time = (double(finish)-double(start))/CLOCKS_PER_SEC;
   std::cout << "Reading Time: " << time << "s" << std::endl;
 
-
+#if NOT_ALEX_DEBUG
   start = clock();
   // NOTE ALEX:
   // Should be able to update the ImageData without recreating
@@ -375,6 +384,7 @@ void QImagePageView4DTracer::SetView( const int& value )
   finish = clock();
   time = (double(finish)-double(start))/CLOCKS_PER_SEC;
   std::cout << "Replace widget: " << time << "s" << std::endl;
+#endif
 
   start = clock();
   this->Whatever->SetImage( this->Image );
@@ -382,15 +392,20 @@ void QImagePageView4DTracer::SetView( const int& value )
   this->Whatever->LoadFiguresFromDB();
   finish = clock();
   time = (double(finish)-double(start))/CLOCKS_PER_SEC;
-  std::cout << "Set image in widget and load contours from DB: " << time << "s" << std::endl;
+  std::cout << "Set image in widget and load contours from DB: ";
+  std::cout << time << "s" << std::endl;
 }
+//------------------------------------------------------------------------------
 
+//------------------------------------------------------------------------------
 void QImagePageView4DTracer::resizeEvent( QResizeEvent* event )
 {
   QWidget::resizeEvent( event );
   this->LayOutWidget1->resize( event->size() );
 }
+//------------------------------------------------------------------------------
 
+//------------------------------------------------------------------------------
 void QImagePageView4DTracer::RunMovie( )
 {
   // NOTE ALEX: movie trials
@@ -400,13 +415,17 @@ void QImagePageView4DTracer::RunMovie( )
   //  this->Slider1->setValue( i );
   //  }
 }
+//------------------------------------------------------------------------------
 
+//------------------------------------------------------------------------------
 void QImagePageView4DTracer::SwitchColorMode( )
 {
   this->ColorVizu = !this->ColorVizu;
   this->SetView( this->Slider1->value() );
 }
+//------------------------------------------------------------------------------
 
+//------------------------------------------------------------------------------
 void QImagePageView4DTracer::SetDatabaseRelatedVariables( const QString& iServer,
   const QString& iLogin, const QString& iPassword, const QString& iDatabaseName,
   const int& iExperimentID, const QString& iExperimentName )
@@ -414,7 +433,9 @@ void QImagePageView4DTracer::SetDatabaseRelatedVariables( const QString& iServer
   this->Whatever->SetDatabaseRelatedVariables( iServer, iLogin, iPassword,
     iDatabaseName, iExperimentID, iExperimentName );
 }
+//------------------------------------------------------------------------------
 
+//------------------------------------------------------------------------------
 void QImagePageView4DTracer::FillTablesWidget()
 {
   m_DBTables->Fill_Database( Whatever->m_DBServer,Whatever->m_DBLogin,
@@ -424,3 +445,4 @@ void QImagePageView4DTracer::FillTablesWidget()
   m_DBTables->show();
 
 }
+//------------------------------------------------------------------------------
