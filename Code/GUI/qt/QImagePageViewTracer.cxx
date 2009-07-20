@@ -802,7 +802,7 @@ void QImagePageViewTracer::Set3DImage( vtkImageData* input )
   View1->SetInput( this->Image );
 
   vtkRenderWindow* renwin1 = this->QvtkWidget_XY->GetRenderWindow( );
-  //     renwin1->GetRenderers()->RemoveAllItems();
+  renwin1->GetRenderers()->RemoveAllItems();
   View1->SetupInteractor( this->QvtkWidget_XY->GetInteractor() );
   View1->SetRenderWindow( renwin1 );
   View1->SetRenderer( renwin1->GetRenderers()->GetFirstRenderer() );
@@ -847,6 +847,7 @@ void QImagePageViewTracer::Set3DImage( vtkImageData* input )
   View2->SetInput( this->Image );
 
   vtkRenderWindow* renwin2 = this->QvtkWidget_2->GetRenderWindow( );
+  renwin2->GetRenderers()->RemoveAllItems();
   View2->SetRenderWindow( renwin2 );
   View2->SetRenderer( renwin2->GetRenderers()->GetFirstRenderer() );
   View2->SetupInteractor( this->QvtkWidget_2->GetInteractor() );
@@ -888,6 +889,7 @@ void QImagePageViewTracer::Set3DImage( vtkImageData* input )
   View3->SetInput( this->Image );
 
   vtkRenderWindow* renwin3 = this->QvtkWidget_3->GetRenderWindow( );
+  renwin3->GetRenderers()->RemoveAllItems();
   View3->SetRenderWindow( renwin3 );
   View3->SetRenderer( renwin3->GetRenderers()->GetFirstRenderer() );
   View3->SetupInteractor( this->QvtkWidget_3->GetInteractor() );

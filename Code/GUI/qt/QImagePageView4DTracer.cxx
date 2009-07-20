@@ -38,7 +38,7 @@
 
 =========================================================================*/
 
-#define NOT_ALEX_DEBUG 1
+#define NOT_ALEX_DEBUG 0
 
 #include "QImagePageView4DTracer.h"
 
