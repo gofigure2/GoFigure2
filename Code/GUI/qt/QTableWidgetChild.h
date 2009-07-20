@@ -67,22 +67,34 @@ public:
 protected:
   int PrevCol;
   int PrevOrder;
-  /* return the row index where the given value is located when specifying
+
+  /** \brief return the row index where the given value is located when specifying
   the column name: */
   int findValueGivenColumn(int Value, QString Column);
-  //return the column index who has a column header matching ColumnName:
+
+  /** \brief return the column index who has a column header matching ColumnName */
   int findColumnName(QString ColumnName,QStringList ColumnsHeader);
   //return a List of all the header names of the columns, :
 
-
-
 public slots:
-  QMEGAVTKADDON2_EXPORT void sortItems(int row, Qt::SortOrder order);
-  //select the row corresponding to the given FigureID:
+  /** \brief sort items given one column and one sort order. */
+  QMEGAVTKADDON2_EXPORT void sortItems(int column, Qt::SortOrder order);
+
+  /** \brief select the row corresponding to the given FigureID.
+      \todo Change the name of the method (one instance of this class is not necessarily
+      containing contours, but could be a mesh, tracks, etc...). So the purpose
+      of this method is to be able to select one row given an id. What about:
+      void SelectRowWithGivenColumnNameAndValue( QString iColumnName, int iId )?
+  */
   QMEGAVTKADDON2_EXPORT void SelectRowFigureID (int FigureID);
-  /*return the list of the contours from the widget where the user
-  selected the entire rows,
-  to be highlighten in the visualization: */
+
+  /** \brief return the list of the contours from the widget where the user
+      selected the entire rows, to be highlighten in the visualization.
+      \todo Change the name of the method (see todo note written above).
+      what about std::list<int> GetListOfSelectedRows() ?
+      \todo Overload this method to be able to return a std::map<int,bool> where
+      the key is the id of the rows (for example FigureID) and the value is to know
+      if it is selected. */
   QMEGAVTKADDON2_EXPORT QList<int> ContoursToHighlight();
 
 };

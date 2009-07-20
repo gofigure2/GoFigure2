@@ -57,7 +57,15 @@
 #include "MegaVTK2Configure.h"
 #include "GoFigureFileInfoHelper.h"
 
-
+/** \brief
+\param[in] ServerName
+\param[in] User
+\param[in] Password
+\param[in] TableName
+\param[in] myNewObject
+\todo This function should be moved in Code/IO/GoDBRecordSet.h or in a new file
+Code/IO/GoDBRecordSetHelper.h
+*/
 template< class T >
 void RecordValues_inTable( const std::string& ServerName, const std::string& User,
   const std::string& Password, const std::string& NameDB,
@@ -78,12 +86,16 @@ void RecordValues_inTable( const std::string& ServerName, const std::string& Use
   return;
 };
 
+/**
+\class QGoWizardDB
+\brief
+*/
 class QGoWizardDB : public QWizard
 {
   Q_OBJECT
 
 public:
-  enum { Connect_Server, OpenOrCreateDB,Create_Experiment, Import};
+  enum { Connect_Server, OpenOrCreateDB, Create_Experiment, Import};
 
   QMEGAVTKADDON2_EXPORT QGoWizardDB(QWidget *parent = 0);
   QMEGAVTKADDON2_EXPORT FileListType ListFilenames();
@@ -102,6 +114,11 @@ protected:
 
 };
 
+/**
+\class Connect_ServerPage
+\brief
+\todo One simple rule to try to follow as much as possible: 1 class per file
+*/
 class Connect_ServerPage : public QWizardPage
 {
   Q_OBJECT
@@ -118,6 +135,11 @@ private:
 
 };
 
+/**
+\class OpenOrCreate_Page
+\brief
+\todo One simple rule to try to follow as much as possible: 1 class per file
+*/
 class OpenOrCreate_Page : public QWizardPage
 {
   Q_OBJECT
@@ -142,9 +164,13 @@ private:
 protected slots:
   void PrintListDB ();
   void EnterNameDB ();
-
-
 };
+
+/**
+\class Create_ExperimentPage
+\brief
+\todo One simple rule to try to follow as much as possible: 1 class per file
+*/
 class Create_ExperimentPage : public QWizardPage
 {
   Q_OBJECT
@@ -193,6 +219,12 @@ protected slots:
 
 
 };
+
+/**
+\class Import_SerieGridPage
+\brief
+\todo One simple rule to try to follow as much as possible: 1 class per file
+*/
 class Import_SerieGridPage : public QWizardPage
 {
   Q_OBJECT
@@ -208,7 +240,7 @@ protected:
   QGridLayout* gridlayout;
   QLineEdit* OpenOrCreateSeriesGrid_fake;
   QString newfilename;
-  
+
 
 protected slots:
   void SelectSeriesGrid();

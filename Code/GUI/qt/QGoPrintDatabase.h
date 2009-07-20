@@ -63,11 +63,14 @@ public:
 
 
 protected:
-  QTableWidgetChild* QPrintColumnNames (QString TableName, std::vector< std::string > ColumnNames);
+  QTableWidgetChild* QPrintColumnNames( QString TableName,
+    std::vector< std::string > ColumnNames );
   QTableWidgetChild* m_Table;
 
-  /*get the columns names and the values of the table (type T) from the database, then display them in the
-  QTableWidgetchild: */
+  /**
+    \brief get the columns names and the values of the table (type T) from the
+    database, then display them in the QTableWidgetchild.
+  */
   template< class myT >
   void GetContentAndDisplayFromDB( QString ServerName, QString User,
     QString Password, QString NameDB,QString TableName )
@@ -106,9 +109,9 @@ protected:
       PrintOutContentFromDB< myT >( RowContainer, m_Table );
       }
     delete mySet;
-   };
+    }
 
-  /*Display the values stored in the RowContainer (list of type T)
+  /** \brief Display the values stored in the RowContainer (list of type T)
   in the QTableWidgetChild TableToFill: */
   template<class myT>
   void PrintOutContentFromDB(
@@ -116,39 +119,39 @@ protected:
     QTableWidgetChild* TableToFill )
     {
     for( unsigned int i = 0; i < RowContainer->size()-1; ++i )
-       {
-       std::map<std::string,std::string> Map
+      {
+      std::map<std::string,std::string> Map
          = (*RowContainer)[i].second.LinkColumnNamesAndValues();
-       if( TableToFill->columnCount() != (int)(Map.size()) )
-         {
-         std::cout << "Pb, row is not the same size as the number of col";
-         std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
-         std::cout << std::endl;
-         return;
-         }
-       else
-         {
-         for( int j = 0; j< TableToFill->columnCount();j++)
-           {
-           QTableWidgetItem* HeaderCol = new QTableWidgetItem;
-           HeaderCol = TableToFill->horizontalHeaderItem(j);
-           std::map<std::string,std::string>::iterator it = Map.find(HeaderCol->text().toStdString());
-           if (it == Map.end())
-             {
-             return;
-             }
-           else
-             {
-             QTableWidgetItem* CellTable = new QTableWidgetItem;
-             CellTable->setText(it->second.c_str());
-             TableToFill->setItem(i,j,CellTable);
-             }
+      if( TableToFill->columnCount() != (int)(Map.size()) )
+        {
+        std::cout << "Pb, row is not the same size as the number of col";
+        std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
+        std::cout << std::endl;
+        return;
+        }
+      else
+        {
+        for( int j = 0; j< TableToFill->columnCount();j++)
+          {
+          QTableWidgetItem* HeaderCol = new QTableWidgetItem;
+          HeaderCol = TableToFill->horizontalHeaderItem(j);
+          std::map<std::string,std::string>::iterator it = Map.find(HeaderCol->text().toStdString());
+          if (it == Map.end())
+            {
+            return;
+            }
+          else
+            {
+            QTableWidgetItem* CellTable = new QTableWidgetItem;
+            CellTable->setText(it->second.c_str());
+            TableToFill->setItem(i,j,CellTable);
+            }
 
-           } // ENDFOR
+          } // ENDFOR
+        }
+      }
+    }
 
-         }
-       }
-    };
   void closeEvent(QCloseEvent* event);
 
   QString m_NameDB;

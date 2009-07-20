@@ -812,7 +812,7 @@ void QImagePageViewTracer::Set3DImage( vtkImageData* input )
 
   //     View1->SetContourWidgetInteractionOn();
   this->Pool->AddItem( View1 );
-  this->View3D->Add2DPhantom( 
+  this->View3D->Add2DPhantom(
     0, View1->GetImageActor(), View1->GetSlicePlane() );
 
   int *range = View1->GetSliceRange();
@@ -855,7 +855,7 @@ void QImagePageViewTracer::Set3DImage( vtkImageData* input )
   View2->SetViewOrientation (vtkViewImage2D::VIEW_ORIENTATION_CORONAL);
 
   this->Pool->AddItem( View2 );
-  this->View3D->Add2DPhantom( 
+  this->View3D->Add2DPhantom(
     1, View2->GetImageActor(), View2->GetSlicePlane() );
 
   range = View2->GetSliceRange();
@@ -896,7 +896,7 @@ void QImagePageViewTracer::Set3DImage( vtkImageData* input )
   View3->SetViewOrientation (vtkViewImage2D::VIEW_ORIENTATION_SAGITTAL);
 
   this->Pool->AddItem( View3 );
-  this->View3D->Add2DPhantom( 
+  this->View3D->Add2DPhantom(
     2, View3->GetImageActor(), View3->GetSlicePlane() );
 
   range = View3->GetSliceRange();
@@ -1283,21 +1283,6 @@ void QImagePageViewTracer::ValidateContour(
       {
       if( contour->GetNumberOfPoints() > 2 )
         {
-
-        vtkIntArray* dumb_array = vtkIntArray::New();
-        dumb_array->SetNumberOfValues( contour->GetNumberOfPoints() );
-        dumb_array->SetName( "dumb" );
-
-        dumb_array->SetValue( 0, CellId );
-        dumb_array->SetValue( 1, iColor.red() );
-        dumb_array->SetValue( 2, iColor.green() );
-        dumb_array->SetValue( 3, iColor.blue() );
-
-        for( int ii=4; ii < contour->GetNumberOfPoints(); ii++ )
-        {
-          dumb_array->SetValue( ii, 0 );
-        }
-
         // -------
         // BOUNDS COMPUTATION
         // -------
@@ -1328,7 +1313,6 @@ void QImagePageViewTracer::ValidateContour(
         // make a copy for each view
         vtkPolyData* contour_copy = vtkPolyData::New();
         contour_copy->ShallowCopy( contour );
-        contour_copy->GetPointData()->SetScalars( dumb_array );
 
         vtkActor* temp;
         for( int j = 0; j < this->Pool->GetNumberOfItems(); j++ )
@@ -1355,7 +1339,6 @@ void QImagePageViewTracer::ValidateContour(
         temp->Delete();
 
         contour_copy->Delete();
-        dumb_array->Delete();
 
         // ------
         // SAVE AS A FILE AND IN DB
@@ -1643,9 +1626,10 @@ void QImagePageViewTracer::SetDatabaseRelatedVariables( const QString& iServer,
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QImagePageViewTracer::HighlightContour( const unsigned int& iId )
+void QImagePageViewTracer::HighlightContour( const unsigned int& iId,
+  const bool& iToBeHighlighted )
 {
-  std::pair< ContourIdActorMapIterator, ContourIdActorMapIterator>
+  std::pair< ContourIdActorMapIterator, ContourIdActorMapIterator >
     result = m_ContourIdActorMap.equal_range( iId );
 
   ContourIdActorMapIterator it = result.first;
@@ -1654,21 +1638,26 @@ void QImagePageViewTracer::HighlightContour( const unsigned int& iId )
     int dir = (*it).second.Direction;
     vtkActor* actor = (*it).second.Actor;
     bool highlighted = (*it).second.Highlighted;
-    this->Pool->GetItem( dir )->HighlightContour( actor, !highlighted );
-    (*it).second.Highlighted = !highlighted;
+
+    if( highlighted != iToBeHighlighted )
+      {
+      this->Pool->GetItem( dir )->HighlightContour( actor, !highlighted );
+      (*it).second.Highlighted = !highlighted;
+      }
     ++it;
     }
 }
 //-------------------------------------------------------------------------
-void QImagePageViewTracer::HighlightContours( const std::list< unsigned int >& iIds )
+
+//-------------------------------------------------------------------------
+void QImagePageViewTracer::HighlightContours( const std::map< unsigned int, bool >& iIds )
 {
-  std::list< unsigned int >::const_iterator it = iIds.begin();
-  std::list< unsigned int >::const_iterator end = iIds.end();
+  std::map< unsigned int, bool >::const_iterator it = iIds.begin();
+  std::map< unsigned int, bool >::const_iterator end = iIds.end();
 
   while( it != end )
     {
-    HighlightContour( *it );
+    HighlightContour( it->first, it->second );
     ++it;
     }
 }
-

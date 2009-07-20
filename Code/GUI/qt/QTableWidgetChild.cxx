@@ -50,7 +50,7 @@ QTableWidgetChild::QTableWidgetChild( QWidget* parent ): QTableWidget( parent )
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-QTableWidgetChild::QTableWidgetChild ( int rows, int columns, 
+QTableWidgetChild::QTableWidgetChild ( int rows, int columns,
                   QWidget * parent ):QTableWidget(rows,columns,parent)
 {
 }
@@ -154,7 +154,7 @@ QList<int> QTableWidgetChild::ContoursToHighlight()
   Selection = this->selectedRanges();
   QStringList ColumnsHeader = this->recordHeaderNamesOrder();
   int figureIDIndex = findColumnName("figureID",ColumnsHeader);
-  
+
   for (int i=0;i<Selection.size();i++)
     {
     if (Selection[i].columnCount() == 22)
@@ -166,7 +166,7 @@ QList<int> QTableWidgetChild::ContoursToHighlight()
         ListContoursFromWidget.append(this->item(j,figureIDIndex)->text().toInt());
         }
       }
-    
+
     }
   for (int i=0; i<ListContoursFromWidget.size();i++)
     {

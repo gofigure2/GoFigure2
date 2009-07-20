@@ -59,8 +59,7 @@ public:
   // row type
   typedef TObject OriginalObjectType;
 
-  GoDBRecordSet()
-  { IsWhereStringSet = false; }
+  GoDBRecordSet() : IsWhereStringSet( false ) {}
 
   // decorate the row type to know if it was modified
   // allows for optimization when synchronising the data
@@ -97,7 +96,7 @@ public:
     }
 
   void SetWhereString( std::string whereString )
-    { this->m_WhereString = whereString; this->IsWhereStringSet = true; } 
+    { this->m_WhereString = whereString; this->IsWhereStringSet = true; }
 
   void SetServerName( std::string ServerName )
     { this->ServerName = ServerName; }

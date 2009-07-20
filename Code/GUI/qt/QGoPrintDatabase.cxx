@@ -144,6 +144,4 @@ void QGoPrintDatabase::closeEvent(QCloseEvent* event)
     {
     event->ignore();
     }
-
 }
-

@@ -719,7 +719,7 @@ int Create_ExperimentPage::nextId() const
       "filename", "experimentID", field("ExpID").toString().toStdString());
 
     std::cout<<"ListFinalPage.size() is "<<ListFinalPage.size()<<std::endl;
-    if( ListFinalPage.size()!=0)
+    if( ListFinalPage.size() != 0 )
       {
       std::cout<<"last page ID ";
       std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
@@ -1011,8 +1011,9 @@ void Import_SerieGridPage::SelectSeriesGrid()
           {
           itk::MegaCaptureImport::Pointer  importFileInfoList = itk::MegaCaptureImport::New();
           importFileInfoList->SetFileName( newfilename.toAscii().data() );
-		  QProgressBar pBar;
-		  importFileInfoList->SetProgressBar( &pBar );
+
+          QProgressBar pBar;
+          importFileInfoList->SetProgressBar( &pBar );
           importFileInfoList->Update();
 
           typedef GoDBRecordSet< GoDBSeriesGridRow > myRecordSetType;

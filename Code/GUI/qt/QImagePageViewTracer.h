@@ -78,28 +78,28 @@ class QImagePageViewTracer : public QWidget
 public:
 
   typedef std::map< vtkActor*, unsigned int > ActorContourIdMapType;
-  typedef ActorContourIdMapType::iterator ActorContourIdMapIterator;
+  typedef ActorContourIdMapType::iterator     ActorContourIdMapIterator;
 
   struct ContourStructure {
     ContourStructure( vtkActor* iActor, const unsigned int& iId,
       const int& iDir, const double& iTimePoint, const double& r,
       const double& g, const double& b, const bool& iHighlighted )
-    {
+      {
       Actor = iActor;
       Id = iId;
       Direction = iDir;
       TimePoint = iTimePoint;
       rgb[0] = r;   rgb[1] = r;   rgb[2] = r;
       Highlighted = iHighlighted;
-    }
+      }
 
-    vtkActor* Actor;
-    unsigned int Id;
-    int Direction;
-    double TimePoint;
-    double rgb[3];
-    bool Highlighted;
-  };
+    vtkActor*     Actor;
+    unsigned int  Id;
+    int           Direction;
+    double        TimePoint;
+    double        rgb[3];
+    bool          Highlighted;
+    };
 
   typedef std::multimap< unsigned int, ContourStructure > ContourIdActorMapType;
   typedef ContourIdActorMapType::iterator ContourIdActorMapIterator;
@@ -157,43 +157,44 @@ public:
     const QString& iLogin, const QString& iPassword, const QString& iDatabaseName,
     const int& iExperimentID, const QString& iExperimentName );
 
-
-//   template< typename TContourContainer, typename TPropertyContainer >
-//   QMEGAVTKADDON2_EXPORT
-//   void AddContours( TContourContainer& iContours,
-//     TPropertyContainer& iProperty,
-//     const bool& iIntersection = true,
-//     const bool& iVizu3D = false )
-//     {
-//     this->Pool->SyncAddContours( iContours, iProperty, iIntersection );
-//
-//     if( iVizu3D )
-//       {
-//       typename TContourContainer::iterator c_it = iContours.begin();
-//       typename TPropertyContainer::iterator p_it = iProperty.begin();
-//
-//       for(; c_it != iContours.end(); ++c_it, ++p_it )
-//         {
-//         this->View3D->AddDataSet( *c_it, *p_it, false );
-//         }
-//       }
-//     }
-//
-//   template< typename TPolyDataContainer >
-//   QMEGAVTKADDON2_EXPORT
-//   void RemoveContours( TPolyDataContainer& iContours )
-//     {
-//     this->Pool->SyncRemoveContours( iContours );
-//     typename TPolyDataContainer::iterator c_it = iContours.begin();
-//
-//     for(; c_it != iContours.end(); ++c_it )
-//       {
-//       this->View3D->RemoveDataSet( *c_it );
-//       }
-//     }
+  /** \note Commented by arnaudgelas (temporary)*/
+  //   template< typename TContourContainer, typename TPropertyContainer >
+  //   QMEGAVTKADDON2_EXPORT
+  //   void AddContours( TContourContainer& iContours,
+  //     TPropertyContainer& iProperty,
+  //     const bool& iIntersection = true,
+  //     const bool& iVizu3D = false )
+  //     {
+  //     this->Pool->SyncAddContours( iContours, iProperty, iIntersection );
+  //
+  //     if( iVizu3D )
+  //       {
+  //       typename TContourContainer::iterator c_it = iContours.begin();
+  //       typename TPropertyContainer::iterator p_it = iProperty.begin();
+  //
+  //       for(; c_it != iContours.end(); ++c_it, ++p_it )
+  //         {
+  //         this->View3D->AddDataSet( *c_it, *p_it, false );
+  //         }
+  //       }
+  //     }
+  //
+  //   template< typename TPolyDataContainer >
+  //   QMEGAVTKADDON2_EXPORT
+  //   void RemoveContours( TPolyDataContainer& iContours )
+  //     {
+  //     this->Pool->SyncRemoveContours( iContours );
+  //     typename TPolyDataContainer::iterator c_it = iContours.begin();
+  //
+  //     for(; c_it != iContours.end(); ++c_it )
+  //       {
+  //       this->View3D->RemoveDataSet( *c_it );
+  //       }
+  //     }
 
   QMEGAVTKADDON2_EXPORT void SaveStateSplitters();
 
+  /** \todo Why are the following variables public? */
   QMEGAVTKADDON2_EXPORT QString m_DBServer;
   QMEGAVTKADDON2_EXPORT QString m_DBLogin;
   QMEGAVTKADDON2_EXPORT QString m_DBPassword;
@@ -247,8 +248,10 @@ public slots:
   QMEGAVTKADDON2_EXPORT void SetTimePoint( int TimePoint )
     { this->m_TimePoint = TimePoint; };
 
-  QMEGAVTKADDON2_EXPORT void HighlightContour( const unsigned int& iId );
-  QMEGAVTKADDON2_EXPORT void HighlightContours( const std::list< unsigned int>& iIds );
+  QMEGAVTKADDON2_EXPORT void HighlightContour( const unsigned int& iId,
+    const bool& iToBeHighlighted );
+  QMEGAVTKADDON2_EXPORT void HighlightContours(
+    const std::map< unsigned int, bool >& iIds );
 
 protected:
   QSplitter*          VSplitter;
@@ -289,15 +292,6 @@ protected:
   ActorContourIdMapType m_ActorContourIdMap;
 
   QString Tag;
-
-  /*
-  QString m_DBServer;
-  QString m_DBLogin;
-  QString m_DBPassword;
-  QString m_DBName;
-  int     m_DBExperimentID;
-  QString m_DBExperimentName;
-  */
 
 #ifdef MegaVTK_USE_ITK
   /**

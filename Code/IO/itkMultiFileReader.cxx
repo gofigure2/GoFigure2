@@ -157,9 +157,9 @@ void MultiFileReader::Update( void )
     return;
     }
   if( this->IsProgressBarSet )
-	{
-	this->m_ProgressBar->setValue( 5 );
-	}
+    {
+    this->m_ProgressBar->setValue( 5 );
+    }
 
   FileListType::iterator startIt;
   FileListType::iterator endIt;
@@ -190,11 +190,6 @@ void MultiFileReader::Update( void )
 
           volumeBuilder->SetInput( counter, reader->GetOutput( ) );
           reader->Delete();
-
-		  if( this->IsProgressBarSet )
-	        {
-	        this->m_ProgressBar->setValue( float( counter * 80 ) / float( m_UpdateFileList.size() ) );
-	        }
           break;
           }
         case BMP:
@@ -206,11 +201,6 @@ void MultiFileReader::Update( void )
 
           volumeBuilder->SetInput( counter, reader->GetOutput( ) );
           reader->Delete();
-
-		  if( this->IsProgressBarSet )
-	        {
-	        this->m_ProgressBar->setValue( float( counter * 80 ) / float( m_UpdateFileList.size() ) );
-	        }
           break;
           }
         case PNG:
@@ -222,11 +212,7 @@ void MultiFileReader::Update( void )
 
           volumeBuilder->SetInput( counter, reader->GetOutput( ) );
           reader->Delete();
-
-		  if( this->IsProgressBarSet )
-	        {
-	        this->m_ProgressBar->setValue( float( counter * 80 ) / float( m_UpdateFileList.size() ) );
-	        }          break;
+          break;
           }
         case TIFF:
           {
@@ -237,11 +223,6 @@ void MultiFileReader::Update( void )
 
           volumeBuilder->SetInput( counter, reader->GetOutput( ) );
           reader->Delete();
-
-		  if( this->IsProgressBarSet )
-	        {
-	        this->m_ProgressBar->setValue( float( counter * 80 ) / float( m_UpdateFileList.size() ) );
-	        }
           break;
           }
         case MHA:
@@ -253,11 +234,7 @@ void MultiFileReader::Update( void )
 
           volumeBuilder->SetInput( counter, reader->GetOutput( ) );
           reader->Delete();
-
-		  if( this->IsProgressBarSet )
-	        {
-	        this->m_ProgressBar->setValue( float( counter * 80 ) / float( m_UpdateFileList.size() ) );
-	        }          break;
+          break;
           }
         case LSM:
           {
@@ -265,8 +242,16 @@ void MultiFileReader::Update( void )
           break;
           }
         default:
+          {
           itkGenericExceptionMacro( << "unsupported type: " << this->m_FileType << "." );
-        break;
+          break;
+          }
+        }
+
+      if( this->IsProgressBarSet )
+        {
+        this->m_ProgressBar->setValue(
+          float( counter * 80 ) / float( m_UpdateFileList.size() ) );
         }
       It++;
       counter++;
@@ -306,27 +291,27 @@ void MultiFileReader::Update( void )
         itkGenericExceptionMacro( << "JPEG/BMP/PNG cannot be of dimensionality 3." );
         break;
       case TIFF:
-		  {
+        {
         vtkTIFFReader* reader = vtkTIFFReader::New();
         reader->SetFileName( (*It).Filename.c_str() );
         reader->SetFileDimensionality( this->m_Dimensionality );
         reader->Update();
-		m_OutputImage = vtkImageData::New();
+        m_OutputImage = vtkImageData::New();
         m_OutputImage->ShallowCopy( reader->GetOutput() );
         reader->Delete();
         break;
-		  }
+        }
       case MHA:
-		  {
+        {
         vtkMetaImageReader* reader = vtkMetaImageReader::New();
         reader->SetFileName( (*It).Filename.c_str() );
         reader->SetFileDimensionality( this->m_Dimensionality );
         reader->Update();
-		m_OutputImage = vtkImageData::New();
+        m_OutputImage = vtkImageData::New();
         m_OutputImage->ShallowCopy( reader->GetOutput() );
-        reader->Delete();       
-		break;
-		  }
+        reader->Delete();
+        break;
+        }
       case LSM:
         {
         It = m_UpdateFileList.begin();
@@ -340,10 +325,10 @@ void MultiFileReader::Update( void )
           myImage_ch1->ShallowCopy( reader->GetOutput() );
           reader->Delete();
 
-		  if( this->IsProgressBarSet )
-	        {
-	        this->m_ProgressBar->setValue( 20 );
-	        }
+          if( this->IsProgressBarSet )
+            {
+            this->m_ProgressBar->setValue( 20 );
+            }
 
           if( ( NumberOfChannels == 1 ) )
             {
@@ -359,10 +344,10 @@ void MultiFileReader::Update( void )
           myImage_ch2->ShallowCopy( reader2->GetOutput() );
           reader2->Delete();
 
-		  if( this->IsProgressBarSet )
-	        {
-	        this->m_ProgressBar->setValue( 40 );
-	        }
+          if( this->IsProgressBarSet )
+            {
+            this->m_ProgressBar->setValue( 40 );
+            }
 
           vtkImageData* myImage2 = vtkImageData::New();
           vtkImageAppendComponents* appendFilter1 = vtkImageAppendComponents::New();
@@ -373,10 +358,10 @@ void MultiFileReader::Update( void )
           appendFilter1->Delete();
           myImage_ch2->Delete();
 
-		  if( this->IsProgressBarSet )
-	        {
-	        this->m_ProgressBar->setValue( 60 );
-	        }
+          if( this->IsProgressBarSet )
+            {
+            this->m_ProgressBar->setValue( 60 );
+            }
 
           vtkImageData* myImage_ch3 = vtkImageData::New();
           if( NumberOfChannels == 2 )
@@ -394,10 +379,10 @@ void MultiFileReader::Update( void )
             }
           myImage_ch1->Delete();
 
-		  if( this->IsProgressBarSet )
-	        {
-	        this->m_ProgressBar->setValue( 80 );
-	        }
+          if( this->IsProgressBarSet )
+            {
+            this->m_ProgressBar->setValue( 80 );
+            }
 
           vtkImageData* myImage3 = vtkImageData::New();
           vtkImageAppendComponents* appendFilter2 = vtkImageAppendComponents::New();
@@ -409,10 +394,10 @@ void MultiFileReader::Update( void )
           myImage2->Delete();
           myImage_ch3->Delete();
 
-		  if( this->IsProgressBarSet )
-	        {
-	        this->m_ProgressBar->setValue( 100 );
-	        }
+          if( this->IsProgressBarSet )
+            {
+            this->m_ProgressBar->setValue( 100 );
+            }
 
           m_OutputImage = myImage3;
           this->m_NumberOfChannels = m_OutputImage->GetNumberOfScalarComponents();
@@ -450,7 +435,7 @@ void MultiFileReader::ComputeUpdateFileList()
     }
 
   if( this->m_Dimensionality < 4 )
-  {
+    {
     // extract files of interest
     FileListType::iterator startIt;
     FileListType::iterator endIt;
@@ -489,7 +474,6 @@ void MultiFileReader::ComputeUpdateFileList()
       m_UpdateFileList.push_back( (*It) );
       It++;
       }
-
     }
   else
     {
@@ -506,14 +490,12 @@ void MultiFileReader::SetFileType( const FILETYPE UserFileType )
 }
 //-----------------------------------------------------------------------------
 
-
 //-----------------------------------------------------------------------------
 void MultiFileReader::SetDimensionality( int UserDimensionality )
 {
   this->m_Dimensionality = UserDimensionality;
 }
 //-----------------------------------------------------------------------------
-
 
 //-----------------------------------------------------------------------------
 void MultiFileReader::SetMultiChannelImages( int value )
@@ -528,7 +510,6 @@ void MultiFileReader::SetMultiChannelImages( int value )
     }
 }
 //-----------------------------------------------------------------------------
-
 
 //-----------------------------------------------------------------------------
 MultiFileReader::MultiFileReader( )
