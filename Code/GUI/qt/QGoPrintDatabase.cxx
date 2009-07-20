@@ -45,6 +45,7 @@
 #include <QTableWidgetItem>
 #include <QHeaderView>
 #include <QMessageBox>
+#include <QSettings>
 #include "QGoPrintDatabase.h"
 #include "QTableWidgetChild.h"
 #include "vtkMySQLDatabase.h"
@@ -101,6 +102,9 @@ QTableWidgetChild* QGoPrintDatabase::QPrintColumnNames (QString TableName,std::v
   QObject::connect(QTabName,SIGNAL(itemSelectionChanged()),
     QTabName,SLOT(ContoursToHighlight()));
 
+  QSettings settings( "MegasonLab", "Gofigure2" );
+  QByteArray stateTableWidget = settings.value("StateTableWidget").toByteArray();
+  QTabName->horizontalHeader()->restoreState(stateTableWidget);
   return QTabName;
 }
 
@@ -132,6 +136,9 @@ void QGoPrintDatabase::closeEvent(QCloseEvent* event)
   if (r == QMessageBox::Yes)
     {
     event->accept();
+    QByteArray state = m_Table->horizontalHeader()->saveState();
+    QSettings settings( "MegasonLab", "Gofigure2" );
+    settings.setValue("StateTableWidget", state);
     }
   else
     {

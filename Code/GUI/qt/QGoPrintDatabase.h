@@ -64,6 +64,7 @@ public:
 
 protected:
   QTableWidgetChild* QPrintColumnNames (QString TableName, std::vector< std::string > ColumnNames);
+  QTableWidgetChild* m_Table;
 
   /*get the columns names and the values of the table (type T) from the database, then display them in the
   QTableWidgetchild: */
@@ -91,8 +92,8 @@ protected:
     mySet->AddObject( myNewObject );
 
     ColumnNamesContainer = mySet->GetColumnNamesContainer();
-    QTableWidgetChild* NewTable = new QTableWidgetChild;
-    NewTable = QPrintColumnNames( TableName, ColumnNamesContainer );
+    m_Table = new QTableWidgetChild;
+    m_Table = QPrintColumnNames( TableName, ColumnNamesContainer );
     RowContainer = mySet->GetRowContainer();
     if( RowContainer->size() < 2 )
       {
@@ -102,7 +103,7 @@ protected:
       }
     else
       {
-      PrintOutContentFromDB< myT >( RowContainer, NewTable );
+      PrintOutContentFromDB< myT >( RowContainer, m_Table );
       }
     delete mySet;
    };

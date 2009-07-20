@@ -360,7 +360,6 @@ void OpenOrCreate_Page::EnterNameDB ()
 bool OpenOrCreate_Page::validatePage()
 {
   QString NameDB;
-  //DBNametoOpen_fake = new QLineEdit;
 
   int i = field("DBIndextoOpen").toInt();
   if( !openDBCheckBox->isChecked() && !createDBCheckBox->isChecked() )
@@ -404,7 +403,6 @@ bool OpenOrCreate_Page::validatePage()
     return false;
     }
 
-  //registerField( "DBNametoOpen", DBNametoOpen_fake );
   setField( "DBNametoOpen",NameDB );
   return true;
 }
@@ -720,7 +718,6 @@ int Create_ExperimentPage::nextId() const
       field("NameDB").toString().toStdString(), "seriesgrid",
       "filename", "experimentID", field("ExpID").toString().toStdString());
 
-    //if( !ListFinalPage.empty() )
     std::cout<<"ListFinalPage.size() is "<<ListFinalPage.size()<<std::endl;
     if( ListFinalPage.size()!=0)
       {
