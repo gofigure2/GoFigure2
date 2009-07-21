@@ -108,6 +108,9 @@ QImagePageViewTracer::QImagePageViewTracer( QWidget* parent ) : QWidget( parent 
   QObject::connect(this->HbSplitter, SIGNAL( splitterMoved( int, int ) ),
     this->HtSplitter, SLOT( moveSplitter( int, int ) ) );
 
+  //QObject::connect(this->tablewidgetchild, SIGNAL(???),
+  //  this, SLOT( HighlightContours() ) );
+
 }
 //------------------------------------------------------------------------------
 

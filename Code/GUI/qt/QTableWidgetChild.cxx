@@ -146,33 +146,33 @@ void QTableWidgetChild::SelectRowFigureID (int FigureID)
 }
 //------------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
-QList<int> QTableWidgetChild::ContoursToHighlight()
+/** \note quick and nasty...*/
+std::map< int, bool > QTableWidgetChild::ContoursToHighlight()
 {
-  QList<int> ListContoursFromWidget;
+  std::map<int,bool> oMapRows;
   QList<QTableWidgetSelectionRange> Selection;
   Selection = this->selectedRanges();
   QStringList ColumnsHeader = this->recordHeaderNamesOrder();
   int figureIDIndex = findColumnName("figureID",ColumnsHeader);
 
-  for (int i=0;i<Selection.size();i++)
+  for( int i=0; i < this->rowCount(); i++ )
     {
-    if (Selection[i].columnCount() == 22)
+    oMapRows[i] = false;
+    }
+
+  for (int i=0; i<Selection.size(); i++)
+    {
+    if (Selection[i].columnCount() == this->columnCount() )
       {
       int TopRowSelected = Selection[i].topRow();
       int BottomRowSelected = Selection[i].bottomRow();
+
       for (int j = TopRowSelected; j<BottomRowSelected+1;j++)
         {
-        ListContoursFromWidget.append(this->item(j,figureIDIndex)->text().toInt());
+        oMapRows[(this->item(j,figureIDIndex)->text().toInt())] = true;
         }
       }
 
     }
-  for (int i=0; i<ListContoursFromWidget.size();i++)
-    {
-    std::cout<<"figureID to highlight: "<<ListContoursFromWidget[i];
-    std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
-    std::cout << std::endl;
-    }
-  return ListContoursFromWidget;
+  return oMapRows;
 }

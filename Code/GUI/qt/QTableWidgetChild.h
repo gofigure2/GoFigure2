@@ -95,8 +95,7 @@ public slots:
       \todo Overload this method to be able to return a std::map<int,bool> where
       the key is the id of the rows (for example FigureID) and the value is to know
       if it is selected. */
-  QMEGAVTKADDON2_EXPORT QList<int> ContoursToHighlight();
-
+  QMEGAVTKADDON2_EXPORT std::map<int,bool> ContoursToHighlight( );
 };
 
 #endif
