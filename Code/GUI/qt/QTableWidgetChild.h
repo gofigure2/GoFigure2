@@ -69,12 +69,11 @@ protected:
   int PrevOrder;
 
   /** \brief return the row index where the given value is located when specifying
-  the column name: */
+  the column name:*/
   int findValueGivenColumn(int Value, QString Column);
 
   /** \brief return the column index who has a column header matching ColumnName */
   int findColumnName(QString ColumnName,QStringList ColumnsHeader);
-  //return a List of all the header names of the columns, :
 
 public slots:
   /** \brief sort items given one column and one sort order. */
@@ -95,7 +94,8 @@ public slots:
       \todo Overload this method to be able to return a std::map<int,bool> where
       the key is the id of the rows (for example FigureID) and the value is to know
       if it is selected. */
-  QMEGAVTKADDON2_EXPORT std::map<int,bool> ContoursToHighlight( );
+
+  QMEGAVTKADDON2_EXPORT std::map<unsigned int,bool> ContoursToHighlight( );
 };
 
 #endif

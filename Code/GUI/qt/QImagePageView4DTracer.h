@@ -212,6 +212,9 @@ public slots:
     { return this->Whatever->GetAllSeeds(); }
   QMEGAVTKADDON2_EXPORT void ClearAllSeeds()
     { this->Whatever->ClearAllSeeds(); }
+  QMEGAVTKADDON2_EXPORT void HighlightContours(
+    std::map< unsigned int, bool > iIds )
+    { this->Whatever->HighlightContours(iIds);}
 
   QMEGAVTKADDON2_EXPORT QString SnapshotViewXY( const QImagePageViewTracer::SnapshotImageType& iType,
     const QString& iBaseName = QString( "snapshot" ) )
@@ -249,6 +252,9 @@ protected:
   bool                  IsLsm;
   bool                  IsMegaCapture;
   bool                  IsFileListComputed;
+
+  protected slots:
+  void ConnectSelectContoursWidgetAndHighlightContours();
 
 };
 

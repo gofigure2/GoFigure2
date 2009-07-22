@@ -123,6 +123,10 @@ QImagePageView4DTracer::QImagePageView4DTracer( QWidget* parent ) :
   this->IsFileListComputed = false;
   m_DBTables = new QGoPrintDatabase() ;
   m_DBTables->hide();
+
+  //commented: doesn't work for the moment
+//  QObject::connect(this->m_DBTables->m_Table, SIGNAL(itemSelectionChanged ()),
+//    this, SLOT(ConnectSelectContoursWidgetAndHighlightContours()));
 }
 //------------------------------------------------------------------------------
 
@@ -446,3 +450,10 @@ void QImagePageView4DTracer::FillTablesWidget()
 
 }
 //------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+
+void QImagePageView4DTracer::ConnectSelectContoursWidgetAndHighlightContours()
+{
+  this->HighlightContours(m_DBTables->m_Table->ContoursToHighlight());
+}

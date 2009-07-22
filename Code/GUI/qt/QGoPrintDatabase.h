@@ -60,12 +60,12 @@ public:
   void QMEGAVTKADDON2_EXPORT Fill_Database(QString ServerName,QString login,
       QString Password, QString DBName,
       int ExpID,QString ExpName);
+  QMEGAVTKADDON2_EXPORT QTableWidgetChild* m_Table;
 
 
 protected:
   QTableWidgetChild* QPrintColumnNames( QString TableName,
     std::vector< std::string > ColumnNames );
-  QTableWidgetChild* m_Table;
 
   /**
     \brief get the columns names and the values of the table (type T) from the

@@ -1684,7 +1684,7 @@ void QImagePageViewTracer::HighlightContour( const unsigned int& iId,
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QImagePageViewTracer::HighlightContours( const std::map< unsigned int, bool >& iIds )
+void QImagePageViewTracer::HighlightContours( std::map< unsigned int, bool > iIds )
 {
   std::map< unsigned int, bool >::const_iterator it = iIds.begin();
   std::map< unsigned int, bool >::const_iterator end = iIds.end();

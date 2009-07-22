@@ -257,7 +257,7 @@ public slots:
   QMEGAVTKADDON2_EXPORT void HighlightContour( const unsigned int& iId,
     const bool& iToBeHighlighted );
   QMEGAVTKADDON2_EXPORT void HighlightContours(
-    const std::map< unsigned int, bool >& iIds );
+    std::map< unsigned int, bool > iIds );
 
 protected:
   QSplitter*          VSplitter;

@@ -147,9 +147,9 @@ void QTableWidgetChild::SelectRowFigureID (int FigureID)
 //------------------------------------------------------------------------------
 
 /** \note quick and nasty...*/
-std::map< int, bool > QTableWidgetChild::ContoursToHighlight()
+std::map< unsigned int, bool > QTableWidgetChild::ContoursToHighlight()
 {
-  std::map<int,bool> oMapRows;
+  std::map<unsigned int,bool> oMapRows;
   QList<QTableWidgetSelectionRange> Selection;
   Selection = this->selectedRanges();
   QStringList ColumnsHeader = this->recordHeaderNamesOrder();
