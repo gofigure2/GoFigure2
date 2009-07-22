@@ -44,6 +44,8 @@
 #include "vtkViewImage2DCommand.h"
 
 #include <QResizeEvent>
+#include <QMessageBox>
+
 #include <vtkRendererCollection.h>
 #include <vtkRenderWindow.h>
 #include <vtkCamera.h>
@@ -1271,7 +1273,7 @@ void QImagePageViewTracer::ValidateContour(
     // NOTE ALEX: what if not?
     if( contour )
       {
-      if( contour->GetNumberOfPoints() > 2 )
+      if( contour_rep->GetNumberOfNodes() > 2 )
         {
         // color object
         double rgb[3];
