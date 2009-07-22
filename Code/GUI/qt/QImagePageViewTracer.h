@@ -81,19 +81,23 @@ public:
   typedef ActorContourIdMapType::iterator     ActorContourIdMapIterator;
 
   struct ContourStructure {
-    ContourStructure( vtkActor* iActor, const unsigned int& iId,
-      const int& iDir, const double& iTimePoint, const double& r,
-      const double& g, const double& b, const bool& iHighlighted )
+    ContourStructure( vtkActor* iActor, vtkPolyData* iNodes,
+      const unsigned int& iId, const int& iDir, const double& iTimePoint,
+      const double& r, const double& g, const double& b, const bool& iHighlighted )
       {
       Actor = iActor;
+      Nodes = iNodes;
       Id = iId;
       Direction = iDir;
       TimePoint = iTimePoint;
-      rgb[0] = r;   rgb[1] = r;   rgb[2] = r;
+      rgb[0] = r;
+      rgb[1] = g;
+      rgb[2] = b;
       Highlighted = iHighlighted;
       }
 
     vtkActor*     Actor;
+    vtkPolyData*  Nodes;
     unsigned int  Id;
     int           Direction;
     double        TimePoint;
@@ -103,6 +107,8 @@ public:
 
   typedef std::multimap< unsigned int, ContourStructure > ContourIdActorMapType;
   typedef ContourIdActorMapType::iterator ContourIdActorMapIterator;
+
+  void ReeditContour( const unsigned int& iId );
 
   explicit QMEGAVTKADDON2_EXPORT QImagePageViewTracer( QWidget* parent = 0 );
   QMEGAVTKADDON2_EXPORT  ~QImagePageViewTracer();
@@ -330,6 +336,14 @@ protected slots:
   void MoveSlider1();
   void MoveSlider2();
   void MoveSlider3();
+
+private:
+  /** \brief Save contour in database. */
+  void SaveValidatedContourInDatabase( vtkPolyData* contour );
+
+  /** \brief Save contour in iBaseName.vtk and nodes in iBaseName.scpts*/
+  void SaveValidatedContourAndNodesInFile( vtkPolyData* contour,
+  vtkPolyData* nodes, QString iBaseName );
 
 };
 
