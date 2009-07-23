@@ -150,7 +150,7 @@ public:
     const QString& iLogin, const QString& iPassword, const QString& iDatabaseName,
     const int& iExperimentID, const QString& iExperimentName );
   QMEGAVTKADDON2_EXPORT void FillTablesWidget();
-
+  
 public slots:
   QMEGAVTKADDON2_EXPORT void SetView( const int& value );
   QMEGAVTKADDON2_EXPORT void RunMovie();
@@ -161,7 +161,9 @@ public slots:
     const int& iId,
     const QColor& iColor,
     const bool& iSave )
-    { this->Whatever->ValidateContour( iId, iColor, iSave ); }
+    { this->Whatever->ValidateContour( iId, iColor, iSave );
+      this->m_DBTables->UpdateTableFromDB();
+    }
   QMEGAVTKADDON2_EXPORT void ReinitializeContour( )
     { this->Whatever->ReinitializeContour( ); }
   QMEGAVTKADDON2_EXPORT void SetBackgroundColor( const double& r, const double& g, const double& b )
@@ -253,7 +255,7 @@ protected:
   bool                  IsMegaCapture;
   bool                  IsFileListComputed;
 
-  protected slots:
+protected slots:
   void ConnectSelectContoursWidgetAndHighlightContours();
 
 };

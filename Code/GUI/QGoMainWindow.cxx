@@ -40,6 +40,7 @@
 
 #include "QGoMainWindow.h"
 #include "QImagePageView4DTracer.h"
+#include "QGoPrintDatabase.cxx"
 
 #include <iostream>
 
@@ -1000,6 +1001,7 @@ void QGoMainWindow::ValidateContourTracerHelper( T* PageView )
     cell_id,
     m_IdColorMap[ cell_id ],
     this->SaveContourCheckBox->isChecked() );
+  
 }
 //--------------------------------------------------------------------------------
 
