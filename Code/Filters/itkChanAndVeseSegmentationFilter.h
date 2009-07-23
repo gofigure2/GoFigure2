@@ -191,12 +191,18 @@ protected:
       origin[j] = m_Center[j] - cen[j];
       }
 
+    std::cout << "Spacing: " << spacing << std::endl;
+    std::cout << "Input Size: " << inputSize << std::endl;
+    std::cout << "Origin: " << origin << std::endl;
+    std::cout << "Radius: " << m_Radius << std::endl;
+    std::cout << "Center: " << cen << std::endl;
+
     InternalRegionType region;
     region.SetSize( m_Size );
     region.SetIndex( start );
 
     NodeType node;
-    node.SetValue( - m_Radius );
+    node.SetValue( - m_Radius/3 );
     node.SetIndex( cen );
 
     typename NodeContainer::Pointer seeds = NodeContainer::New();

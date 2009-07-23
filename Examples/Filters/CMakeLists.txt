@@ -24,7 +24,33 @@ ADD_TEST( ChanAndVeseSegmentationFilterTest3D
   15
   15
   15
-  5
+  14
   1
 )
 
+ADD_TEST( ChanAndVeseSegmentationFilterTest2D
+  ${EXECUTABLE_OUTPUT_PATH}/ChanAndVeseSegmentationFilterTest2D
+  ${TESTING_DATA_PATH}/Multiphase2D.png
+  48
+  48
+  30
+  1
+)
+
+ADD_TEST( ChanAndVeseSegmentationFilterTest2D
+  ${EXECUTABLE_OUTPUT_PATH}/ChanAndVeseSegmentationFilterTest2D
+  ${TESTING_DATA_PATH}/Multiphase2D.png
+  66
+  77
+  30
+  1
+)
+
+ADD_TEST( ChanAndVeseSegmentationFilterTest2D
+  ${EXECUTABLE_OUTPUT_PATH}/ChanAndVeseSegmentationFilterTest2D
+  ${TESTING_DATA_PATH}/Multiphase2D.png
+  80
+  40
+  30
+  1
+)
