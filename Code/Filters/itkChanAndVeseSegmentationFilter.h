@@ -246,8 +246,9 @@ protected:
     m_Converter->Update();
 
     m_VTKImage = m_Converter->GetOutput();
-    std::cout <<m_VTKImage->GetDimensions()[0] <<" " <<m_VTKImage->GetDimensions()[1] <<" "
-      <<m_VTKImage->GetDimensions()[2] <<std::endl;
+    std::cout <<"Output Image Size: " <<m_VTKImage->GetDimensions()[0]
+      <<" " <<m_VTKImage->GetDimensions()[1]
+      <<" " <<m_VTKImage->GetDimensions()[2] <<std::endl;
     }
 
 private:

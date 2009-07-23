@@ -1257,6 +1257,10 @@ void QImagePageViewTracer::ValidateContour(
   // The polydata (discrete mesh) representation of the figure
   vtkPolyData* contour;
 
+  vtkViewImage2DWithContourWidget* view;
+
+  bool degenerated = true;
+
   // For each vizualization window
   // NOTE ALEX: make that a seperated private method
   //            to reduce the size of this method
@@ -1264,9 +1268,10 @@ void QImagePageViewTracer::ValidateContour(
   //            which view we are editing?
   for( int i = 0; i < this->Pool->GetNumberOfItems(); i++ )
     {
+    view = this->Pool->GetItem( i );
 
     // Get the figure as a spline and transform it into a polydata
-    contour_rep = this->Pool->GetItem( i )->GetContourRepresentation();
+    contour_rep = view->GetContourRepresentation();
     contour = contour_rep->GetContourRepresentationAsPolyData( );
 
     // if we were succesfull and the contour is no degenrated, proceed
@@ -1275,6 +1280,8 @@ void QImagePageViewTracer::ValidateContour(
       {
       if( contour_rep->GetNumberOfNodes() > 2 )
         {
+        degenerated = false;
+
         // color object
         double rgb[3];
         rgb[0] = static_cast< double >( iColor.red() )   / 255.;
@@ -1304,10 +1311,8 @@ void QImagePageViewTracer::ValidateContour(
         Min[2] = bounds[4];
         Max[2] = bounds[5];
 
-        int* min_idx
-           = this->Pool->GetItem( i )->GetImageCoordinatesFromWorldCoordinates( Min );
-        int* max_idx
-           = this->Pool->GetItem( i )->GetImageCoordinatesFromWorldCoordinates( Max );
+        int* min_idx = view->GetImageCoordinatesFromWorldCoordinates( Min );
+        int* max_idx = view->GetImageCoordinatesFromWorldCoordinates( Max );
 
         // NOTE ALEX: use itk debug / vtk debug or a debug flag here
 
@@ -1390,17 +1395,17 @@ void QImagePageViewTracer::ValidateContour(
         contour_property->Delete();
 
         } // ENDOF degenerated contour
-      else //degenerated contour
-        {
-        QMessageBox::warning( this, tr("Degenerated Contour"),
-          tr("You can not validate degenerated contour...") );
-        return;
-        }
 
       } // ENDOF if contour
 
     } // ENDOF for each pool item
 
+  if( degenerated )
+    {
+    QMessageBox::warning( this, tr("Degenerated Contour"),
+      tr("You can not validate degenerated contour...") );
+    return;
+    }
 
   this->Pool->SyncRender();
 
