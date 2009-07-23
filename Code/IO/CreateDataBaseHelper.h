@@ -52,24 +52,22 @@ std::vector<std::string> ListTables(
   std::string ServerName, std::string login,
   std::string Password, std::string DBName );
 
-std::vector<std::string> ListExpID(
+//query: "SELECT ColumnName FROM TableName"
+std::vector<std::string> ListAllValuesForOneColumn(
   std::string ServerName, std::string login,
-  std::string Password, std::string DBName);
-
-std::vector<std::string> ListExpName(
-  std::string ServerName, std::string login,
-  std::string Password, std::string DBName);
+  std::string Password, std::string DBName,
+  std::string ColumnName, std::string TableName);
 
 //query: "SELECT * FROM TableName WHERE field = value"
 //if field is a primary key, will return only the values for 
 //one row
-std::vector<std::string> ListValuesForRow(
+  std::vector<std::string> ListSpecificValuesForRow(
   std::string ServerName, std::string login,
   std::string Password, std::string DBName,
   std::string TableName, std::string field,std::string value);
 
 //query: "SELECT ColumnName FROM TableName WHERE field = value"
-std::vector<std::string> ListValuesForOneColumn(
+std::vector<std::string> ListSpecificValuesForOneColumn(
   std::string ServerName, std::string login,
   std::string Password, std::string DBName,
   std::string TableName, std::string ColumnName,

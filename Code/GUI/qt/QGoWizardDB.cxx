@@ -106,7 +106,7 @@ FileListType QGoWizardDB::ListFilenames()
 {
   FileListType ListFilenames;
   ListFilenames.clear();
-  std::vector<std::string> vectListFilenames = ListValuesForRow(
+  std::vector<std::string> vectListFilenames = ListSpecificValuesForRow(
   field("ServerName").toString().toStdString(),
         field("User").toString().toStdString(),
         field("Password").toString().toStdString(),
@@ -677,11 +677,11 @@ bool Create_ExperimentPage::PrintListExp()
   m_ListExpID.clear();
   ChoiceExp->clear();
 
-  std::vector<std::string> vectListExpName =
-    ListExpName( field("ServerName").toString().toStdString(),
+  std::vector<std::string> vectListExpName = 
+  ListAllValuesForOneColumn( field("ServerName").toString().toStdString(),
       field("User").toString().toStdString(),
       field("Password").toString().toStdString(),
-      field("NameDB").toString().toStdString());
+      field("NameDB").toString().toStdString(),"name","experiment");
 
   if (!vectListExpName.empty())
     {
@@ -711,7 +711,7 @@ int Create_ExperimentPage::nextId() const
 {
   if( field( "OpenOrCreateExp" ) == "Open" )
     {
-    std::vector< std::string > ListFinalPage = ListValuesForOneColumn(
+    std::vector< std::string > ListFinalPage = ListSpecificValuesForOneColumn(
       field("ServerName").toString().toStdString(),
       field("User").toString().toStdString(),
       field("Password").toString().toStdString(),
@@ -742,7 +742,7 @@ int Create_ExperimentPage::nextId() const
 void Create_ExperimentPage::PrintValuesExpName(QString ExpName)
 {
   std::vector<std::string> myvect =
-    ListValuesForRow(
+    ListSpecificValuesForRow(
         field("ServerName").toString().toStdString(),
         field("User").toString().toStdString(),
         field("Password").toString().toStdString(),
@@ -772,7 +772,7 @@ void Create_ExperimentPage::PrintValuesExpName(QString ExpName)
 
   std::vector<std::string> List;
   List.clear();
-  List = ListValuesForOneColumn(
+  List = ListSpecificValuesForOneColumn(
     field("ServerName").toString().toStdString(),
     field("User").toString().toStdString(),
     field("Password").toString().toStdString(),
@@ -798,13 +798,13 @@ bool Create_ExperimentPage::validatePage()
     else
       {
       QStringList ListExistingNames;
-      std::vector<std::string> vectListExpName =
-        ListExpName(
-          field("ServerName").toString().toStdString(),
-          field("User").toString().toStdString(),
-          field("Password").toString().toStdString(),
-          field("NameDB").toString().toStdString() );
-
+      std::vector<std::string> vectListExpName = 
+      ListAllValuesForOneColumn(
+        field("ServerName").toString().toStdString(),
+        field("User").toString().toStdString(),
+        field("Password").toString().toStdString(),
+        field("NameDB").toString().toStdString(),"name","experiment"); 
+  
       if( !vectListExpName.empty() )
         {
         for( unsigned int i = 0; i < vectListExpName.size(); ++i )
@@ -904,11 +904,12 @@ void Import_SerieGridPage::initializePage()
       field("NameDB").toString().toStdString(), "experiment", myNewObject );
 
     std::vector<std::string> vectListExpID =
-      ListExpID(
+        ListAllValuesForOneColumn(
         field("ServerName").toString().toStdString(),
         field("User").toString().toStdString(),
         field("Password").toString().toStdString(),
-        field("NameDB").toString().toStdString());
+        field("NameDB").toString().toStdString(),
+        "experimentID","experiment");
 
     setField( "ExpID", (unsigned int)vectListExpID.size() );
     }
@@ -925,7 +926,7 @@ void Import_SerieGridPage::SelectSeriesGrid()
     this,tr( "Import Image" ),"",tr( "Images (*.png *.bmp *.jpg *.jpeg *.tiff *.mha *.mhd *.img *.lsm)" ));
 
   std::vector<std::string> myvect =
-    ListValuesForRow(
+    ListSpecificValuesForRow(
         field("ServerName").toString().toStdString(),
         field("User").toString().toStdString(),
         field("Password").toString().toStdString(),

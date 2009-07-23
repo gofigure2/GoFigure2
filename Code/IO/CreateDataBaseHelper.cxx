@@ -165,60 +165,10 @@ std::vector<std::string> ListTables(
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-std::vector<std::string> ListExpID(
+std::vector<std::string> ListAllValuesForOneColumn(
   std::string ServerName, std::string login,
-  std::string Password, std::string DBName)
-{
-  std::vector< std::string > result;
-
-  vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
-  DataBaseConnector->SetHostName( ServerName.c_str() );
-  DataBaseConnector->SetUser( login.c_str() );
-  DataBaseConnector->SetPassword( Password.c_str() );
-  DataBaseConnector->SetDatabaseName( DBName.c_str() );
-  if( !DataBaseConnector->Open() )
-    {
-    std::cerr << "Could not open database." << std::endl;
-    std::cerr << "DB will not be created."  << std::endl;
-    DataBaseConnector->Delete();
-    return result;
-    }
-
-  vtkSQLQuery* query = DataBaseConnector->GetQueryInstance();
-  query->SetQuery( "SELECT experimentID FROM experiment;" );
-
-  if ( !query->Execute() )
-    {
-    itkGenericExceptionMacro(
-      << "List of all fields query failed"
-      << query->GetLastErrorText() );
-    DataBaseConnector->Close();
-    DataBaseConnector->Delete();
-    query->Delete();
-    return result;
-    }
-
-  // all set, proceed
-
-  // iterate over lines, we know there is only one column
-  // and as many rows as there is databases
-  while( query->NextRow() )
-    {
-    result.push_back( query->DataValue( 0 ).ToString() );
-    }
-
-  DataBaseConnector->Close();
-  DataBaseConnector->Delete();
-  query->Delete();
-
-  return result;
-}
-//------------------------------------------------------------------------------
-
-//------------------------------------------------------------------------------
-std::vector<std::string> ListExpName(
-  std::string ServerName, std::string login,
-  std::string Password, std::string DBName)
+  std::string Password, std::string DBName,
+  std::string ColumnName, std::string TableName)
 {
   std::vector< std::string > result;
 
@@ -237,8 +187,14 @@ std::vector<std::string> ListExpName(
     }
 
   vtkSQLQuery* query = DataBaseConnector->GetQueryInstance();
-  query->SetQuery( "SELECT name FROM experiment;" );
+  std::stringstream querystream;
+  querystream << "SELECT ";
+  querystream << ColumnName;
+  querystream << " FROM ";
+  querystream << TableName;
+  querystream << ";";
 
+  query->SetQuery( querystream.str().c_str() );
   if ( !query->Execute() )
     {
     itkGenericExceptionMacro(
@@ -249,11 +205,6 @@ std::vector<std::string> ListExpName(
     query->Delete();
     return result;
     }
-
-  // all set, proceed
-
-  // iterate over lines, we know there is only one column
-  // and as many rows as there is databases
   while( query->NextRow() )
     {
     result.push_back( query->DataValue( 0 ).ToString() );
@@ -1210,7 +1161,7 @@ void CreateTrackFlavor(
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-std::vector<std::string> ListValuesForRow(
+std::vector<std::string> ListSpecificValuesForRow(
   std::string ServerName, std::string login,
   std::string Password, std::string DBName,
   std::string TableName, std::string field,
@@ -1274,7 +1225,7 @@ std::vector<std::string> ListValuesForRow(
 
 
 //------------------------------------------------------------------------------
-std::vector<std::string> ListValuesForOneColumn(
+std::vector<std::string> ListSpecificValuesForOneColumn(
   std::string ServerName, std::string login,
   std::string Password, std::string DBName,
   std::string TableName, std::string ColumnName,
