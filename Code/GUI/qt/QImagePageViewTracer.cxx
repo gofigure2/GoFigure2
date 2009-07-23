@@ -1701,6 +1701,7 @@ void QImagePageViewTracer::HighlightContours( std::map< unsigned int, bool > iId
     HighlightContour( it->first, it->second );
     ++it;
     }
+  this->Pool->SyncRender();
 }
 //-------------------------------------------------------------------------
 

@@ -153,11 +153,14 @@ std::map< unsigned int, bool > QTableWidgetChild::ContoursToHighlight()
   QList<QTableWidgetSelectionRange> Selection;
   Selection = this->selectedRanges();
   QStringList ColumnsHeader = this->recordHeaderNamesOrder();
+
   int figureIDIndex = findColumnName("figureID",ColumnsHeader);
+  unsigned int t;
 
   for( int i=0; i < this->rowCount(); i++ )
     {
-    oMapRows[i] = false;
+    t = this->item(i,figureIDIndex)->text().toUInt();
+    oMapRows[t] = false;
     }
 
   for (int i=0; i<Selection.size(); i++)
@@ -168,9 +171,9 @@ std::map< unsigned int, bool > QTableWidgetChild::ContoursToHighlight()
       int BottomRowSelected = Selection[i].bottomRow();
 
       for (int j = TopRowSelected; j<BottomRowSelected+1;j++)
-        {    
-        unsigned int t = (this->item(j,figureIDIndex)->text().toInt());
-        oMapRows[t] = true;       
+        {
+        t = this->item(j,figureIDIndex)->text().toUInt();
+        oMapRows[t] = true;
         }
       }
 
