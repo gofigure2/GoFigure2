@@ -60,12 +60,12 @@ public:
   void QMEGAVTKADDON2_EXPORT Fill_Database(QString ServerName,QString login,
       QString Password, QString DBName,
       int ExpID,QString ExpName);
-  QMEGAVTKADDON2_EXPORT QTableWidgetChild* m_Table;
+  QMEGAVTKADDON2_EXPORT QTableWidgetChild* FigureTable;
 
 
 protected:
-  QTableWidgetChild* QPrintColumnNames( QString TableName,
-    std::vector< std::string > ColumnNames );
+  void QPrintColumnNames( QString TableName,
+    std::vector< std::string > ColumnNames, QTableWidgetChild* QTabTableName );
 
   /**
     \brief get the columns names and the values of the table (type T) from the
@@ -73,7 +73,7 @@ protected:
   */
   template< class myT >
   void GetContentAndDisplayFromDB( QString ServerName, QString User,
-    QString Password, QString NameDB,QString TableName )
+    QString Password, QString NameDB,QString TableName, QTableWidgetChild* Table )
     {
     std::vector< std::string > ColumnNamesContainer;
 
@@ -95,8 +95,7 @@ protected:
     mySet->AddObject( myNewObject );
 
     ColumnNamesContainer = mySet->GetColumnNamesContainer();
-    m_Table = new QTableWidgetChild;
-    m_Table = QPrintColumnNames( TableName, ColumnNamesContainer );
+    QPrintColumnNames( TableName, ColumnNamesContainer, Table );
     RowContainer = mySet->GetRowContainer();
     if( RowContainer->size() < 2 )
       {
@@ -106,7 +105,7 @@ protected:
       }
     else
       {
-      PrintOutContentFromDB< myT >( RowContainer, m_Table );
+      PrintOutContentFromDB< myT >( RowContainer, Table );
       }
     delete mySet;
     }

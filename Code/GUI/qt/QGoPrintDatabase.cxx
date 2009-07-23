@@ -63,6 +63,7 @@ QGoPrintDatabase::QGoPrintDatabase()
   DBTabWidget->setTabPosition(QTabWidget::West);
   DBTabWidget->setTabShape(QTabWidget::Triangular);
   DBTabWidget->removeTab(0);
+  FigureTable = new QTableWidgetChild;
 
   //QObject::connect(this->closeButton, SIGNAL(clicked()),
     //  this, SLOT( on_actionClose_activated( ) ) );
@@ -72,13 +73,14 @@ QGoPrintDatabase::~QGoPrintDatabase()
 {
 }
 
-QTableWidgetChild* QGoPrintDatabase::QPrintColumnNames (QString TableName,std::vector< std::string > ColumnNames )
+void QGoPrintDatabase::QPrintColumnNames (QString TableName,
+     std::vector< std::string > ColumnNames, QTableWidgetChild* QTabTableName )
 {
   int numberCol=ColumnNames.size();
-  QTableWidgetChild* QTabName = new QTableWidgetChild;
-  this->DBTabWidget->addTab(QTabName,TableName);
-  QTabName->setRowCount(15);
-  QTabName->setColumnCount(numberCol);
+  this->DBTabWidget->addTab(QTabTableName,TableName);
+  //Note Lydie: to adjust the number of row with the exisiting data
+  QTabTableName->setRowCount(15);
+  QTabTableName->setColumnCount(numberCol);
 
   for ( int i = 0; i < numberCol; i++ )
     {
@@ -88,24 +90,23 @@ QTableWidgetChild* QGoPrintDatabase::QPrintColumnNames (QString TableName,std::v
     HeaderCol->setText(NameHeader.c_str());
     QFont serifFont("Arial", 10, QFont::Bold);
     HeaderCol->setFont(serifFont);
-    QTabName->setHorizontalHeaderItem(i,HeaderCol);
+    QTabTableName->setHorizontalHeaderItem(i,HeaderCol);
     }
 
-  QTabName->horizontalHeader()->setSortIndicatorShown(true);
-  QTabName->setSortingEnabled(true);
-  QTabName->horizontalHeader()->setMovable(true);
+  QTabTableName->horizontalHeader()->setSortIndicatorShown(true);
+  QTabTableName->setSortingEnabled(true);
+  QTabTableName->horizontalHeader()->setMovable(true);
 
-  QObject::connect( QTabName->horizontalHeader(),
+  QObject::connect( QTabTableName->horizontalHeader(),
     SIGNAL( sortIndicatorChanged(int,Qt::SortOrder) ),
-    QTabName,SLOT( sortItems(int,Qt::SortOrder)) );
+    QTabTableName,SLOT( sortItems(int,Qt::SortOrder)) );
 
-  QObject::connect(QTabName,SIGNAL(itemSelectionChanged()),
-    QTabName,SLOT(ContoursToHighlight()));
+ // QObject::connect(QTabTableName,SIGNAL(itemSelectionChanged()),
+   // QTabTableName,SLOT(ContoursToHighlight()));
 
   QSettings settings( "MegasonLab", "Gofigure2" );
   QByteArray stateTableWidget = settings.value("StateTableWidget").toByteArray();
-  QTabName->horizontalHeader()->restoreState(stateTableWidget);
-  return QTabName;
+  QTabTableName->horizontalHeader()->restoreState(stateTableWidget);
 }
 
 
@@ -117,7 +118,8 @@ void QGoPrintDatabase::Fill_Database(QString ServerName,QString login,
   m_Password = Password;
   m_NameDB=DBName;
   this->setWindowTitle(QString("DB: %1 - Exp: %2").arg(DBName).arg(ExpName));
-  GetContentAndDisplayFromDB< GoDBFigureRow     >( m_Server, m_User, m_Password, m_NameDB,"figure");
+  GetContentAndDisplayFromDB< GoDBFigureRow     >( m_Server, m_User, m_Password, m_NameDB,
+    "figure", FigureTable);
 
   //Need to create GoDBMeshRow,etc...first
   //QPrintTable ("mesh");
@@ -136,7 +138,7 @@ void QGoPrintDatabase::closeEvent(QCloseEvent* event)
   if (r == QMessageBox::Yes)
     {
     event->accept();
-    QByteArray state = m_Table->horizontalHeader()->saveState();
+    QByteArray state = FigureTable->horizontalHeader()->saveState();
     QSettings settings( "MegasonLab", "Gofigure2" );
     settings.setValue("StateTableWidget", state);
     }
