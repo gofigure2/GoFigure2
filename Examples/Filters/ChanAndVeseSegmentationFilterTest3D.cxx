@@ -14,11 +14,11 @@
 
 int main( int argc, char** argv )
 {
-  if( argc < 6 )
+  if( argc < 7 )
     {
     std::cerr << "Missing arguments" << std::endl;
     std::cerr << "Usage: " << std::endl;
-    std::cerr << argv[0] << " inputFeatureImage seedX seedY seedY";
+    std::cerr << argv[0] << " inputFeatureImage seedX seedY seedZ";
     std::cerr << " radius test" << std::endl;
     return EXIT_FAILURE;
     }
@@ -42,7 +42,7 @@ int main( int argc, char** argv )
     pt[dim] = atof( argv[dim+2] );
   }
 
-  double cellRadius = atof( argv[Dimension+3] );
+  double cellRadius = atof( argv[Dimension+2] );
 
   SegmentationFilterType::Pointer filter = SegmentationFilterType::New();
   filter->SetFeatureImage( reader->GetOutput() );
@@ -79,7 +79,7 @@ int main( int argc, char** argv )
   vtkRenderWindowInteractor *iren = vtkRenderWindowInteractor::New();
   iren->SetRenderWindow ( renWin1 );
 
-  bool test = atoi( argv[Dimension+4] );
+  bool test = atoi( argv[Dimension+3] );
   renWin1->Render();
 
   if( !test )

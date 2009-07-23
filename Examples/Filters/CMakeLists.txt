@@ -14,16 +14,17 @@ ADD_TEST( ChanAndVeseSegmentationFilterTest2D
   ${TESTING_DATA_PATH}/Circle.png
   50
   50
-  3
+  10
   1
 )
 
-# ADD_TEST( ChanAndVeseSegmentationFilterTest3D
-#   ${EXECUTABLE_OUTPUT_PATH}/ChanAndVeseSegmentationFilterTest3D
-#   ${TESTING_DATA_PATH}/?????
-#   50
-#   50
-#   50
-#   3
-#   1
-# )
+ADD_TEST( ChanAndVeseSegmentationFilterTest3D
+  ${EXECUTABLE_OUTPUT_PATH}/ChanAndVeseSegmentationFilterTest3D
+  ${TESTING_DATA_PATH}/Circle3D.mhd
+  15
+  15
+  15
+  5
+  1
+)
+

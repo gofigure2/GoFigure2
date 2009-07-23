@@ -16,7 +16,7 @@
 
 int main( int argc, char** argv )
 {
-  if( argc < 5 )
+  if( argc < 6 )
     {
     std::cerr << "Missing arguments" << std::endl;
     std::cerr << "Usage: " << std::endl;
