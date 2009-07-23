@@ -329,6 +329,7 @@ protected:
   int   IsFullScreen;
   bool  IsVolumeRendering;
   int   CellId;
+  unsigned int ContourId;
   bool  Is2DImage;
   int   m_TimePoint;
 

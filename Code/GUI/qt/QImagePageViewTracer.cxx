@@ -84,7 +84,8 @@ QImagePageViewTracer::QImagePageViewTracer( QWidget* parent ) : QWidget( parent 
   IsFullScreen = 0;
   SnapshotId = 1;
   IsVolumeRendering = false;
-  CellId = 1;
+  CellId = 0;
+  ContourId = 0;
 
   Tag = QString( "QImagePageViewTracer" );
   Image = 0;
@@ -109,10 +110,6 @@ QImagePageViewTracer::QImagePageViewTracer( QWidget* parent ) : QWidget( parent 
     this->HbSplitter, SLOT( moveSplitter( int, int ) ) );
   QObject::connect(this->HbSplitter, SIGNAL( splitterMoved( int, int ) ),
     this->HtSplitter, SLOT( moveSplitter( int, int ) ) );
-
-  //QObject::connect(this->tablewidgetchild, SIGNAL(???),
-  //  this, SLOT( HighlightContours() ) );
-
 }
 //------------------------------------------------------------------------------
 
@@ -135,6 +132,7 @@ QImagePageViewTracer::~QImagePageViewTracer()
   while( it != end )
     {
     (*it).second.Actor->Delete();
+//     (*it).second.Nodes->Delete();
     ++it;
     }
 
@@ -1334,10 +1332,10 @@ void QImagePageViewTracer::ValidateContour(
           temp = this->Pool->GetItem( j )->AddDataSet(
                   contour_copy, contour_property, true, false );
           m_ContourIdActorMap.insert(
-            std::pair< unsigned int, ContourStructure >( i,
+            std::pair< unsigned int, ContourStructure >( ContourId,
               ContourStructure( temp,
                 ControlPointsPolyData, //control points of the spline representation
-                CellId, //Id
+                CellId, //MeshId
                 j, //Direction
                 this->m_TimePoint, //TimePoint
                 rgb[0],
@@ -1345,7 +1343,7 @@ void QImagePageViewTracer::ValidateContour(
                 rgb[2],
                 false ) ) );
 
-          m_ActorContourIdMap[ temp ] = CellId;
+          m_ActorContourIdMap[ temp ] = ContourId;
           }
 
 
@@ -1399,6 +1397,10 @@ void QImagePageViewTracer::ValidateContour(
       } // ENDOF if contour
 
     } // ENDOF for each pool item
+
+  //NOTE: we should only add the contour of the widget in which we were drawing
+  // and avoid adding too many contours at the same time
+  ContourId++;
 
   if( degenerated )
     {
@@ -1568,7 +1570,7 @@ void QImagePageViewTracer::LoadFiguresFromDB( )
                 1., 1., 1., // rgb => white by default
                 false ) ) );
 
-        m_ActorContourIdMap[ temp ] = CellId;
+        m_ActorContourIdMap[ temp ] = (*myRowContainer)[i].second.figureID;
         }
 
       temp = this->View3D->AddDataSet( contour_copy, contour_property, false );
