@@ -12,9 +12,9 @@ ENDFOREACH( var ${EXAMPLES_FILTER} )
 ADD_TEST( ChanAndVeseSegmentationFilterTest2D
   ${EXECUTABLE_OUTPUT_PATH}/ChanAndVeseSegmentationFilterTest2D
   ${TESTING_DATA_PATH}/Circle.png
-  50
-  50
-  10
+  49
+  49
+  49
   1
 )
 
@@ -28,27 +28,27 @@ ADD_TEST( ChanAndVeseSegmentationFilterTest3D
   1
 )
 
-ADD_TEST( ChanAndVeseSegmentationFilterTest2D
+ADD_TEST( ChanAndVeseSegmentationFilterReal1Test2D
   ${EXECUTABLE_OUTPUT_PATH}/ChanAndVeseSegmentationFilterTest2D
-  ${TESTING_DATA_PATH}/Multiphase2D.png
+  ${TESTING_DATA_PATH}/MultiphaseCells2D.png
   48
   48
   30
   1
 )
 
-ADD_TEST( ChanAndVeseSegmentationFilterTest2D
+ADD_TEST( ChanAndVeseSegmentationFilterReal2Test2D
   ${EXECUTABLE_OUTPUT_PATH}/ChanAndVeseSegmentationFilterTest2D
-  ${TESTING_DATA_PATH}/Multiphase2D.png
+  ${TESTING_DATA_PATH}/MultiphaseCells2D.png
   66
   77
   30
   1
 )
 
-ADD_TEST( ChanAndVeseSegmentationFilterTest2D
+ADD_TEST( ChanAndVeseSegmentationFilterReal3Test2D
   ${EXECUTABLE_OUTPUT_PATH}/ChanAndVeseSegmentationFilterTest2D
-  ${TESTING_DATA_PATH}/Multiphase2D.png
+  ${TESTING_DATA_PATH}/MultiphaseCells2D.png
   80
   40
   30
