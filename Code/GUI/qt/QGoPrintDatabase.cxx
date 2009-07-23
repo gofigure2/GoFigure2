@@ -78,8 +78,6 @@ void QGoPrintDatabase::QPrintColumnNames (QString TableName,
 {
   int numberCol=ColumnNames.size();
   this->DBTabWidget->addTab(QTabTableName,TableName);
-  //Note Lydie: to adjust the number of row with the exisiting data
-  QTabTableName->setRowCount(15);
   QTabTableName->setColumnCount(numberCol);
 
   for ( int i = 0; i < numberCol; i++ )
@@ -100,9 +98,6 @@ void QGoPrintDatabase::QPrintColumnNames (QString TableName,
   QObject::connect( QTabTableName->horizontalHeader(),
     SIGNAL( sortIndicatorChanged(int,Qt::SortOrder) ),
     QTabTableName,SLOT( sortItems(int,Qt::SortOrder)) );
-
- // QObject::connect(QTabTableName,SIGNAL(itemSelectionChanged()),
-   // QTabTableName,SLOT(ContoursToHighlight()));
 
   QSettings settings( "MegasonLab", "Gofigure2" );
   QByteArray stateTableWidget = settings.value("StateTableWidget").toByteArray();

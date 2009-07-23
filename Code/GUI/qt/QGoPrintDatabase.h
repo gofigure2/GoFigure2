@@ -117,6 +117,7 @@ protected:
     typename GoDBRecordSet< myT >::RowContainerType *RowContainer,
     QTableWidgetChild* TableToFill )
     {
+    TableToFill->setRowCount(RowContainer->size()-1);
     for( unsigned int i = 0; i < RowContainer->size()-1; ++i )
       {
       std::map<std::string,std::string> Map
