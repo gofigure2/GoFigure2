@@ -1,6 +1,6 @@
-SET( EXAMPLES_FILTER 
-  ChanAndVeseSegmentationFilterTest2D 
-  ChanAndVeseSegmentationFilterTest3D 
+SET( EXAMPLES_FILTER
+  ChanAndVeseSegmentationFilterTest2D
+  ChanAndVeseSegmentationFilterTest3D
   )
 
 FOREACH( var ${EXAMPLES_FILTER} )
@@ -8,3 +8,22 @@ FOREACH( var ${EXAMPLES_FILTER} )
   TARGET_LINK_LIBRARIES( ${var} ITKIO ITKQuadEdgeMesh ITKCommon
     ITKBasicFilters vtkGraphics vtkRendering)
 ENDFOREACH( var ${EXAMPLES_FILTER} )
+
+ADD_TEST( ChanAndVeseSegmentationFilterTest2D
+  ${EXECUTABLE_OUTPUT_PATH}/ChanAndVeseSegmentationFilterTest2D
+  ${TESTING_DATA_PATH}/Circle.png
+  50
+  50
+  3
+  1
+)
+
+# ADD_TEST( ChanAndVeseSegmentationFilterTest3D
+#   ${EXECUTABLE_OUTPUT_PATH}/ChanAndVeseSegmentationFilterTest3D
+#   ${TESTING_DATA_PATH}/?????
+#   50
+#   50
+#   50
+#   3
+#   1
+# )

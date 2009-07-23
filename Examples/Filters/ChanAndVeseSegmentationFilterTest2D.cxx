@@ -45,6 +45,12 @@ int main( int argc, char** argv )
 
   vtkImageData* image = filter->GetOutput();
 
+  if( !image )
+    {
+    std::cout <<"No output" <<std::endl;
+    return EXIT_FAILURE;
+    }
+
   // create iso-contours
   vtkMarchingSquares *contours = vtkMarchingSquares::New();
   contours->SetInput( image );
@@ -67,8 +73,13 @@ int main( int argc, char** argv )
   vtkRenderWindowInteractor *iren = vtkRenderWindowInteractor::New();
   iren->SetRenderWindow ( renWin1 );
 
+  bool test = atoi( argv[Dimension+3] );
   renWin1->Render();
-  iren->Start();
+
+  if( !test )
+    {
+    iren->Start();
+    }
 
   iren->Delete();
   renWin1->Delete();

@@ -34,7 +34,7 @@ int main( int argc, char** argv )
     pt[dim] = atof( argv[dim+2] );
   }
 
-  double cellRadius = atof( argv[Dimension+2] );
+  double cellRadius = atof( argv[Dimension+3] );
 
   SegmentationFilterType::Pointer filter = SegmentationFilterType::New();
   filter->SetFeatureImage( reader->GetOutput() );
@@ -66,8 +66,13 @@ int main( int argc, char** argv )
   vtkRenderWindowInteractor *iren = vtkRenderWindowInteractor::New();
   iren->SetRenderWindow ( renWin1 );
 
+  bool test = atoi( argv[Dimension+4] );
   renWin1->Render();
-  iren->Start();
+
+  if( !test )
+    {
+    iren->Start();
+    }
 
   iren->Delete();
   renWin1->Delete();
