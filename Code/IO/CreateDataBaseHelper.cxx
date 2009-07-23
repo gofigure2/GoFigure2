@@ -347,6 +347,48 @@ void DropTable(
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
+void DropRow(
+  std::string ServerName, std::string login,
+  std::string Password, std::string DBName,
+  std::string TableName, std::string field, std::string value )
+{
+  vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
+  DataBaseConnector->SetHostName( ServerName.c_str() );
+  DataBaseConnector->SetUser( login.c_str() );
+  DataBaseConnector->SetPassword( Password.c_str() );
+  DataBaseConnector->SetDatabaseName( DBName.c_str() );
+  if( !DataBaseConnector->Open() )
+    {
+    std::cerr << "Could not open database." << std::endl;
+    std::cerr << "DB will not be created."  << std::endl;
+    }
+
+  vtkSQLQuery* query = DataBaseConnector->GetQueryInstance();
+  std::stringstream querystream;
+  querystream << "DELETE FROM ";
+  querystream << TableName;
+  querystream << " WHERE ";
+  querystream << field;
+  querystream << " = '";
+  querystream << value;
+  querystream << "';";
+
+  query->SetQuery( querystream.str().c_str() );
+
+  if ( !query->Execute() )
+    {
+    itkGenericExceptionMacro(
+      << "Delete row query failed"
+      << query->GetLastErrorText() );
+    }
+
+  DataBaseConnector->Close();
+  DataBaseConnector->Delete();
+  query->Delete();
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
 bool DoesDataBaseExist(
   std::string ServerName, std::string login,
   std::string Password, std::string DBName )

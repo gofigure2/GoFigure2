@@ -89,6 +89,11 @@ void DropTable(
   std::string Password, std::string DBName,
   std::string TableName );
 
+void DropRow(
+  std::string ServerName, std::string login,
+  std::string Password, std::string DBName,
+  std::string TableName, std::string field, std::string value);
+
 bool DoesDataBaseExist(
   std::string ServerName, std::string login,
   std::string Password, std::string DBName );
