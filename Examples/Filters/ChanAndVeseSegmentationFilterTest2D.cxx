@@ -12,14 +12,23 @@
 #include "vtkRenderWindowInteractor.h"
 #include "vtkRenderWindow.h"
 
+#include "itkImageToVTKImageFilter.h"
 
 int main( int argc, char** argv )
 {
-  const unsigned int Dimension = 2;
-  typedef itk::Image< float, Dimension > LevelSetImageType;
-  typedef itk::Image< unsigned char, Dimension > FeatureImageType;
+  if( argc < 5 )
+    {
+    std::cerr << "Missing arguments" << std::endl;
+    std::cerr << "Usage: " << std::endl;
+    std::cerr << argv[0] << " inputFeatureImage seedX seedY";
+    std::cerr << " radius test" << std::endl;
+    return EXIT_FAILURE;
+    }
 
-  typedef itk::ChanAndVeseSegmentationFilter< LevelSetImageType, FeatureImageType >
+  const unsigned int Dimension = 2;
+  typedef itk::Image< float, Dimension > FeatureImageType;
+
+  typedef itk::ChanAndVeseSegmentationFilter< FeatureImageType >
     SegmentationFilterType;
 
   typedef itk::ImageFileReader< FeatureImageType > ReaderType;
@@ -28,12 +37,12 @@ int main( int argc, char** argv )
   reader->SetFileName( argv[1] );
   reader->Update();
 
-  LevelSetImageType::PointType pt;
+  FeatureImageType::PointType pt;
 
   for( unsigned int dim = 0; dim < Dimension; dim++ )
-  {
+    {
     pt[dim] = atof( argv[dim+2] );
-  }
+    }
 
   double cellRadius = atof( argv[Dimension+2] );
 
@@ -47,7 +56,7 @@ int main( int argc, char** argv )
 
   if( !image )
     {
-    std::cout <<"No output" <<std::endl;
+    std::cout << "No output" << std::endl;
     return EXIT_FAILURE;
     }
 
@@ -59,13 +68,18 @@ int main( int argc, char** argv )
   // map to graphics library
   vtkPolyDataMapper *map = vtkPolyDataMapper::New();
   map->SetInput( contours->GetOutput() );
+  map->SetScalarRange ( -10, 10 );
 
   // actor coordinates geometry, properties, transformation
   vtkActor *contActor = vtkActor::New();
   contActor->SetMapper( map );
+  contActor->GetProperty()->SetLineWidth ( 1.5 );
+  contActor->GetProperty()->SetColor ( 0,0,1 ); // sphere color blue
+  contActor->GetProperty()->SetOpacity ( 1.0 );
 
   vtkRenderer *ren = vtkRenderer::New();
   ren->AddActor ( contActor );
+  ren->SetBackground ( 1., 1., 1. );
 
   vtkRenderWindow *renWin1 = vtkRenderWindow::New();
   renWin1->AddRenderer ( ren );
@@ -87,7 +101,6 @@ int main( int argc, char** argv )
   contActor->Delete();
   map->Delete();
   contours->Delete();
-  image->Delete();
 
   return EXIT_SUCCESS;
 }
