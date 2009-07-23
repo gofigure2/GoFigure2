@@ -1214,7 +1214,7 @@ std::vector<std::string> ListValuesForRow(
   std::string ServerName, std::string login,
   std::string Password, std::string DBName,
   std::string TableName, std::string field,
-  std::string ID)
+  std::string value)
 {
   std::vector< std::string > result;
 
@@ -1240,7 +1240,7 @@ std::vector<std::string> ListValuesForRow(
   querystream << " WHERE ";
   querystream << field;
   querystream << " = '";
-  querystream << ID;
+  querystream << value;
   querystream << "';";
 
   query->SetQuery( querystream.str().c_str() );
@@ -1274,61 +1274,11 @@ std::vector<std::string> ListValuesForRow(
 
 
 //------------------------------------------------------------------------------
-std::vector<std::string> ListImageIDforExpID(
-  std::string ServerName, std::string login,
-  std::string Password, std::string DBName, std::string ID)
-{
-  std::vector< std::string > result;
-
-  vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
-  DataBaseConnector->SetHostName( ServerName.c_str() );
-  DataBaseConnector->SetUser( login.c_str() );
-  DataBaseConnector->SetPassword( Password.c_str() );
-  DataBaseConnector->SetDatabaseName( DBName.c_str() );
-  if( !DataBaseConnector->Open() )
-    {
-    std::cerr << "Could not open database." << std::endl;
-    std::cerr << "DB will not be created."  << std::endl;
-    DataBaseConnector->Delete();
-    return result;
-    }
-
-  vtkSQLQuery* query = DataBaseConnector->GetQueryInstance();
-  std::stringstream querystream;
-  querystream << "SELECT imageID FROM seriesgrid";
-  querystream << " WHERE experimentID = ";
-  querystream << ID;
-  querystream << ";";
-
-  query->SetQuery( querystream.str().c_str() );
-  if ( !query->Execute() )
-    {
-    itkGenericExceptionMacro(
-      << "Create query failed"
-      << query->GetLastErrorText() );
-    }
-  else
-    {
-    while( query->NextRow() )
-      {
-      result.push_back( query->DataValue( 0 ).ToString() );
-      }
-    }
-  DataBaseConnector->Close();
-  DataBaseConnector->Delete();
-  query->Delete();
-
-  return result;
-
-}
-//------------------------------------------------------------------------------
-
-//------------------------------------------------------------------------------
 std::vector<std::string> ListValuesForOneColumn(
   std::string ServerName, std::string login,
   std::string Password, std::string DBName,
   std::string TableName, std::string ColumnName,
-  std::string field,std::string ID)
+  std::string field,std::string value)
 
 { std::vector< std::string > result;
 
@@ -1355,7 +1305,7 @@ std::vector<std::string> ListValuesForOneColumn(
   querystream << " WHERE ";
   querystream << field;
   querystream << " = '";
-  querystream << ID;
+  querystream << value;
   querystream << "';";
 
   query->SetQuery( querystream.str().c_str() );
