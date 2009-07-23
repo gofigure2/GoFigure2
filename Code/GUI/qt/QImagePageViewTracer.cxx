@@ -1559,10 +1559,10 @@ void QImagePageViewTracer::LoadFiguresFromDB( )
         //TODO It requires to create a new method where we can add control points
         // and the added contour is generated from these points.
         m_ContourIdActorMap.insert(
-            std::pair< unsigned int, ContourStructure >( i,
+            std::pair< unsigned int, ContourStructure >( (*myRowContainer)[i].second.figureID,
               ContourStructure( temp,
                 contour_copy,
-                CellId, //Id
+                (*myRowContainer)[i].second.meshID, //MeshId
                 j, //Direction
                 this->m_TimePoint, //TimePoint
                 1., 1., 1., // rgb => white by default

@@ -87,7 +87,7 @@ public:
       {
       Actor = iActor;
       Nodes = iNodes;
-      Id = iId;
+      MeshId = iId;
       Direction = iDir;
       TimePoint = iTimePoint;
       rgb[0] = r;
@@ -98,7 +98,7 @@ public:
 
     vtkActor*     Actor;
     vtkPolyData*  Nodes;
-    unsigned int  Id;
+    unsigned int  MeshId;
     int           Direction;
     double        TimePoint;
     double        rgb[3];
