@@ -64,7 +64,7 @@ QGoPrintDatabase::QGoPrintDatabase()
   DBTabWidget->setTabShape(QTabWidget::Triangular);
   DBTabWidget->removeTab(0);
   FigureTable = new QTableWidgetChild;
-
+  
   //QObject::connect(this->closeButton, SIGNAL(clicked()),
     //  this, SLOT( on_actionClose_activated( ) ) );
 }
@@ -105,16 +105,18 @@ void QGoPrintDatabase::QPrintColumnNames (QString TableName,
 }
 
 
-void QGoPrintDatabase::Fill_Database(QString ServerName,QString login,
-    QString Password, QString DBName, int ExpID, QString ExpName)
+void QGoPrintDatabase::FillTableFromDatabase(QString iNameDB,QString iServer,QString iUser,
+  QString iPassword,int iExpID,QString iExpName)
 {
-  m_Server = ServerName;
-  m_User = login;
-  m_Password = Password;
-  m_NameDB=DBName;
-  this->setWindowTitle(QString("DB: %1 - Exp: %2").arg(DBName).arg(ExpName));
-  GetContentAndDisplayFromDB< GoDBFigureRow     >( m_Server, m_User, m_Password, m_NameDB,
-    "figure", FigureTable);
+  m_NameDB = iNameDB;
+  m_Server = iServer;
+  m_User = iUser;
+  m_Password = iPassword;
+  m_ExpID = iExpID;
+  m_ExpName = iExpName;
+  
+  this->setWindowTitle(QString("DB: %1 - Exp: %2").arg(m_NameDB).arg(m_ExpName));
+  GetContentAndDisplayFromDB< GoDBFigureRow     >("figure", FigureTable);
 
   //Need to create GoDBMeshRow,etc...first
   //QPrintTable ("mesh");
@@ -141,4 +143,9 @@ void QGoPrintDatabase::closeEvent(QCloseEvent* event)
     {
     event->ignore();
     }
+}
+
+void QGoPrintDatabase::UpdateTableFromDB()
+{  
+  UpdateContentAndDisplayFromDB< GoDBFigureRow >("figure", FigureTable);
 }

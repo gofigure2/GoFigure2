@@ -121,7 +121,8 @@ QImagePageView4DTracer::QImagePageView4DTracer( QWidget* parent ) :
   this->IsLsm = false;
   this->IsMegaCapture = false;
   this->IsFileListComputed = false;
-  m_DBTables = new QGoPrintDatabase() ;
+  m_DBTables = new QGoPrintDatabase;
+
   m_DBTables->hide();
 
  
@@ -442,10 +443,8 @@ void QImagePageView4DTracer::SetDatabaseRelatedVariables( const QString& iServer
 //------------------------------------------------------------------------------
 void QImagePageView4DTracer::FillTablesWidget()
 {
-  m_DBTables->Fill_Database( Whatever->m_DBServer,Whatever->m_DBLogin,
-    Whatever->m_DBPassword, Whatever->m_DBName,
-    Whatever->m_DBExperimentID, Whatever->m_DBExperimentName );
-
+  m_DBTables->FillTableFromDatabase(Whatever->m_DBName,Whatever->m_DBServer,Whatever->m_DBLogin,
+           Whatever->m_DBPassword,Whatever->m_DBExperimentID,Whatever->m_DBExperimentName);
   m_DBTables->show();
 
 }

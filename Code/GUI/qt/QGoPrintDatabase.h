@@ -57,10 +57,16 @@ public:
 
   explicit QMEGAVTKADDON2_EXPORT QGoPrintDatabase();
   virtual QMEGAVTKADDON2_EXPORT ~QGoPrintDatabase();
-  void QMEGAVTKADDON2_EXPORT Fill_Database(QString ServerName,QString login,
-      QString Password, QString DBName,
-      int ExpID,QString ExpName);
+
+  /** \brief Create the QTableWidgetChild,get the columns names and the values stored
+  in the database and display them in the QTableWidgetChild */
+  //void QMEGAVTKADDON2_EXPORT FillTableFromDatabase(QString ServerName,QString login,
+    //  QString Password, QString DBName,
+    //  int ExpID,QString ExpName);
+  void QMEGAVTKADDON2_EXPORT FillTableFromDatabase(QString iNameDB,QString iServer,QString iUser,
+  QString iPassword,int iExpID,QString iExpName);
   QMEGAVTKADDON2_EXPORT QTableWidgetChild* FigureTable;
+  void QMEGAVTKADDON2_EXPORT UpdateTableFromDB();
 
 
 protected:
@@ -72,8 +78,7 @@ protected:
     database, then display them in the QTableWidgetchild.
   */
   template< class myT >
-  void GetContentAndDisplayFromDB( QString ServerName, QString User,
-    QString Password, QString NameDB,QString TableName, QTableWidgetChild* Table )
+  void GetContentAndDisplayFromDB( QString TableName, QTableWidgetChild* Table )
     {
     std::vector< std::string > ColumnNamesContainer;
 
@@ -84,11 +89,11 @@ protected:
     RowContainerType* RowContainer;
 
     SetType* mySet = new SetType;
-    mySet->SetServerName( ServerName.toStdString() );
-    mySet->SetDataBaseName( NameDB.toStdString() );
+    mySet->SetServerName( m_Server.toStdString() );
+    mySet->SetDataBaseName( m_NameDB.toStdString() );
     mySet->SetTableName( TableName.toStdString() );
-    mySet->SetUser( User.toStdString());
-    mySet->SetPassword( Password.toStdString() );
+    mySet->SetUser( m_User.toStdString());
+    mySet->SetPassword( m_Password.toStdString() );
     mySet->PopulateFromDB();
 
     myT myNewObject;
@@ -96,6 +101,43 @@ protected:
 
     ColumnNamesContainer = mySet->GetColumnNamesContainer();
     QPrintColumnNames( TableName, ColumnNamesContainer, Table );
+    RowContainer = mySet->GetRowContainer();
+    if( RowContainer->size() < 2 )
+      {
+      std::cout<<"Table empty";
+      std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
+      std::cout << std::endl;
+      }
+    else
+      {
+      PrintOutContentFromDB< myT >( RowContainer, Table );
+      }
+    delete mySet;
+    }
+
+  /**
+    \brief get the values of the table (type T) from the
+    database, then display them in the QTableWidgetchild.
+  */
+  template< class myT >
+  void UpdateContentAndDisplayFromDB( QString TableName, QTableWidgetChild* Table )
+    {
+    typedef GoDBRecordSet< myT >                  SetType;
+    typedef typename SetType::InternalObjectType  InternalObjectType;
+    typedef typename SetType::RowContainerType    RowContainerType;
+
+    RowContainerType* RowContainer;
+
+    SetType* mySet = new SetType;
+    mySet->SetServerName( m_Server.toStdString() );
+    mySet->SetDataBaseName( m_NameDB.toStdString() );
+    mySet->SetTableName( TableName.toStdString() );
+    mySet->SetUser( m_User.toStdString());
+    mySet->SetPassword( m_Password.toStdString() );
+    mySet->PopulateFromDB();
+
+    myT myNewObject;
+    mySet->AddObject( myNewObject );
     RowContainer = mySet->GetRowContainer();
     if( RowContainer->size() < 2 )
       {
@@ -158,6 +200,8 @@ protected:
   QString m_Server;
   QString m_User;
   QString m_Password;
+  int m_ExpID;
+  QString m_ExpName;
 
 };
 
