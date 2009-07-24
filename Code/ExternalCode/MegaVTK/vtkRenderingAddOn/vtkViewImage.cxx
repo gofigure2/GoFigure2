@@ -462,16 +462,20 @@ void vtkViewImage::HighlightContour( vtkProp3D* iProp, const bool& iToDo )
     }
   else
     {
-    vtkActor* temp = static_cast< vtkActor* >( iProp );
-    if( iToDo )
+    vtkActor* temp = dynamic_cast< vtkActor* >( iProp );
+
+    if( temp )
       {
-      temp->GetProperty()->SetColor( 1., 1., 0. );
-      temp->GetProperty()->SetLineWidth( 3. );
-      }
-    else
-      {
-      temp->GetProperty()->SetLineWidth( 1. );
-      temp->GetProperty()->SetColor( 1., 1., 1. );
+      if( iToDo )
+        {
+        temp->GetProperty()->SetColor( 1., 1., 0. );
+        temp->GetProperty()->SetLineWidth( 3. );
+        }
+      else
+        {
+        temp->GetProperty()->SetLineWidth( 1. );
+        temp->GetProperty()->SetColor( 1., 1., 1. );
+        }
       }
     }
 }
