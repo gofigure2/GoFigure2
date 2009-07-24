@@ -194,6 +194,7 @@ protected:
       }
     }
 
+
   void closeEvent(QCloseEvent* event);
 
   QString m_NameDB;
@@ -202,6 +203,10 @@ protected:
   QString m_Password;
   int m_ExpID;
   QString m_ExpName;
+
+protected slots:
+  void createContextMenu(const QPoint &pos);
+  void DeleteContour();
 
 };
 

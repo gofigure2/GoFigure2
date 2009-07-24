@@ -46,6 +46,7 @@
 #include <QHeaderView>
 #include <QMessageBox>
 #include <QSettings>
+#include <QMenu>
 #include "QGoPrintDatabase.h"
 #include "QTableWidgetChild.h"
 #include "vtkMySQLDatabase.h"
@@ -54,6 +55,7 @@
 #include "vtkStdString.h"
 #include "GoDBRecordSet.h"
 #include "GoDBFigureRow.h"
+#include "CreateDataBaseHelper.h"
 #include <iostream>
 #include <QCloseEvent>
 
@@ -64,11 +66,15 @@ QGoPrintDatabase::QGoPrintDatabase()
   DBTabWidget->setTabShape(QTabWidget::Triangular);
   DBTabWidget->removeTab(0);
   FigureTable = new QTableWidgetChild;
-  
-  //QObject::connect(this->closeButton, SIGNAL(clicked()),
-    //  this, SLOT( on_actionClose_activated( ) ) );
-}
+  this->setContextMenuPolicy(Qt::CustomContextMenu);
 
+  
+  connect(this, SIGNAL(customContextMenuRequested(const QPoint &)),
+    this, SLOT(createContextMenu(const QPoint &)));
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
 QGoPrintDatabase::~QGoPrintDatabase()
 {
 }
@@ -103,8 +109,9 @@ void QGoPrintDatabase::QPrintColumnNames (QString TableName,
   QByteArray stateTableWidget = settings.value("StateTableWidget").toByteArray();
   QTabTableName->horizontalHeader()->restoreState(stateTableWidget);
 }
+//------------------------------------------------------------------------------
 
-
+//------------------------------------------------------------------------------
 void QGoPrintDatabase::FillTableFromDatabase(QString iNameDB,QString iServer,QString iUser,
   QString iPassword,int iExpID,QString iExpName)
 {
@@ -124,7 +131,9 @@ void QGoPrintDatabase::FillTableFromDatabase(QString iNameDB,QString iServer,QSt
   //QPrintTable ("lineage");
 
 }
+//------------------------------------------------------------------------------
 
+//------------------------------------------------------------------------------
 void QGoPrintDatabase::closeEvent(QCloseEvent* event)
 {
   int r = QMessageBox::warning(this, tr(""),
@@ -144,8 +153,26 @@ void QGoPrintDatabase::closeEvent(QCloseEvent* event)
     event->ignore();
     }
 }
+//------------------------------------------------------------------------------
 
+//------------------------------------------------------------------------------
 void QGoPrintDatabase::UpdateTableFromDB()
 {  
   UpdateContentAndDisplayFromDB< GoDBFigureRow >("figure", FigureTable);
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+void QGoPrintDatabase::createContextMenu(const QPoint &pos)
+{
+  QMenu* ContourMenu = new QMenu;
+  ContourMenu->addAction(tr("Delete Contour"));
+  ContourMenu->addAction(tr("Create Mesh"));
+  //ContourMenu->addAction(tr("Delete Contour"),this,slot());
+  ContourMenu->exec(this->mapToGlobal(pos));
+
+}
+void QGoPrintDatabase::DeleteContour()
+{
+  
 }

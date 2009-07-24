@@ -3,16 +3,20 @@
 
 int main(int argc, char * argv[])
 {
-  if( argc != 4 )
+ /* if( argc != 4 )
     {
     return false;
-    }
+    }*/
 
   QApplication app(argc, argv);
 
   QGoPrintDatabase win;
-  win.FillTableFromDatabase("localhost","gofigure",
-      "gofigure", argv[1], atoi(argv[2]), argv[3]);
+ // win.FillTableFromDatabase(argv[1],"localhost","gofigure",
+ //     "gofigure",atoi(argv[2]), argv[3]);
+
+  win.FillTableFromDatabase("db23july","localhost","gofigure",
+    "gofigure",3, "megacapture+contour");
+
   win.show();
 
   return app.exec();

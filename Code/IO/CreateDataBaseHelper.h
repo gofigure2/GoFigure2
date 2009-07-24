@@ -88,7 +88,7 @@ void DropTable(
   std::string TableName );
 
 // query: "DELETE FROM TableName WHERE field = value"
-void DropRow(
+void DeleteRow(
   std::string ServerName, std::string login,
   std::string Password, std::string DBName,
   std::string TableName, std::string field, std::string value);
