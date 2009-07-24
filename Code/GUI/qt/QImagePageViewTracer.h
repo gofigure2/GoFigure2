@@ -80,13 +80,23 @@ public:
   typedef std::map< vtkActor*, unsigned int > ActorContourIdMapType;
   typedef ActorContourIdMapType::iterator     ActorContourIdMapIterator;
 
+  /** \todo this structure is containing too many information leading to keep
+    too many objects in memory. This is due to the visualization.
+    For example
+      <li> Contour is needed to be able to use the method
+        vtkViewImage::RemoveDataSet</li>
+      <li> Actor is needed to be able to highlight a contour.</li>
+      <li> rgb is needed to be able to get the original contour before
+        highlighting.</li>
+     */
   struct ContourStructure {
-    ContourStructure( vtkActor* iActor, vtkPolyData* iNodes,
+    ContourStructure( vtkActor* iActor, vtkPolyData* iNodes, vtkPolyData* iContour,
       const unsigned int& iId, const int& iDir, const double& iTimePoint,
       const double& r, const double& g, const double& b, const bool& iHighlighted )
       {
       Actor = iActor;
       Nodes = iNodes;
+      Contour = iContour;
       MeshId = iId;
       Direction = iDir;
       TimePoint = iTimePoint;
@@ -98,6 +108,7 @@ public:
 
     vtkActor*     Actor;
     vtkPolyData*  Nodes;
+    vtkPolyData*  Contour;
     unsigned int  MeshId;
     int           Direction;
     double        TimePoint;
@@ -107,8 +118,6 @@ public:
 
   typedef std::multimap< unsigned int, ContourStructure > ContourIdActorMapType;
   typedef ContourIdActorMapType::iterator ContourIdActorMapIterator;
-
-  void ReeditContour( const unsigned int& iId );
 
   explicit QMEGAVTKADDON2_EXPORT QImagePageViewTracer( QWidget* parent = 0 );
   QMEGAVTKADDON2_EXPORT  ~QImagePageViewTracer();
@@ -258,6 +267,8 @@ public slots:
     const bool& iToBeHighlighted );
   QMEGAVTKADDON2_EXPORT void HighlightContours(
     std::map< unsigned int, bool > iIds );
+
+  QMEGAVTKADDON2_EXPORT void ReeditContour( const unsigned int& iId );
 
 protected:
   QSplitter*          VSplitter;

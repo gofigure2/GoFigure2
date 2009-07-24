@@ -1260,8 +1260,6 @@ void QImagePageViewTracer::ValidateContour(
   bool degenerated = true;
 
   // For each vizualization window
-  // NOTE ALEX: make that a seperated private method
-  //            to reduce the size of this method
   // NOTE ALEX: why are we making a loop over 2D views here? Don't we know in
   //            which view we are editing?
   for( int i = 0; i < this->Pool->GetNumberOfItems(); i++ )
@@ -1273,7 +1271,6 @@ void QImagePageViewTracer::ValidateContour(
     contour = contour_rep->GetContourRepresentationAsPolyData( );
 
     // if we were succesfull and the contour is no degenrated, proceed
-    // NOTE ALEX: what if not?
     if( contour )
       {
       if( contour_rep->GetNumberOfNodes() > 2 )
@@ -1328,13 +1325,16 @@ void QImagePageViewTracer::ValidateContour(
         contour_rep->GetNodePolyData( ControlPointsPolyData );
 
         for( int j = 0; j < this->Pool->GetNumberOfItems(); j++ )
+//         for( int j = 0; j < 1; j++ )
           {
           temp = this->Pool->GetItem( j )->AddDataSet(
                   contour_copy, contour_property, true, false );
+
           m_ContourIdActorMap.insert(
             std::pair< unsigned int, ContourStructure >( ContourId,
               ContourStructure( temp,
                 ControlPointsPolyData, //control points of the spline representation
+                contour_copy, // vtkPolyData corresponding to the displaid contour
                 CellId, //MeshId
                 j, //Direction
                 this->m_TimePoint, //TimePoint
@@ -1352,7 +1352,7 @@ void QImagePageViewTracer::ValidateContour(
 
         temp->Delete();
 
-        contour_copy->Delete();
+//         contour_copy->Delete();
 
         // ------
         // SAVE AS A FILE AND IN DB
@@ -1376,21 +1376,21 @@ void QImagePageViewTracer::ValidateContour(
           SaveValidatedContourAndNodesInFile( contour, ControlPointsPolyData,
             filename_prefix );
 
-          ControlPointsPolyData->Delete();
-
           // Save in database*
-          // NOTE ALEX: separate method
           bool database_info = ( m_DBExperimentID == -1 ) && m_DBLogin.isNull()
             && m_DBExperimentName.isNull() && m_DBName.isNull()
             && m_DBServer.isNull() && m_DBPassword.isNull();
           if( !database_info )
             {
             SaveValidatedContourInDatabase( contour );
+//             SaveValidatedContourInDatabase( ControlPointsPolyData );
             }
 
           }  // ENDOF Save in a File
 
-        contour_property->Delete();
+//         ControlPointsPolyData->Delete();
+
+//         contour_property->Delete();
 
         } // ENDOF degenerated contour
 
@@ -1529,30 +1529,42 @@ void QImagePageViewTracer::LoadFiguresFromDB( )
     for( unsigned int i = 0; i < myRowContainer->size(); i++ )
       {
       // USE POLYDATADBREADER TO TRANSFORM STRING IN PD
-      vtkPolyData* contour = vtkPolyData::New();
+      vtkPolyData* nodes = vtkPolyData::New();
       vtkPolyDataMySQLTextReader* reader = vtkPolyDataMySQLTextReader::New();
+      reader->SetIsContour( true );
       std::string PolyDataAsString = (*myRowContainer)[i].second.points;
-      contour = reader->GetPolyData( PolyDataAsString );
+      nodes = reader->GetPolyData( PolyDataAsString );
       reader->Delete();
-
-//       vtkPolyDataWriter* writer = vtkPolyDataWriter::New();
-//       writer->SetInput( contour );
-//       writer->SetFileName( "Test.vtk" );
-//       writer->Write();
 
       // SET PROPOERTY
       vtkProperty* contour_property = vtkProperty::New();
       contour_property->SetRepresentationToWireframe();
 
       // COPY FOR EACH VIEW
-      vtkPolyData* contour_copy = vtkPolyData::New();
-      contour_copy->ShallowCopy( contour );
+      vtkPolyData* nodes_copy = vtkPolyData::New();
+      nodes_copy->ShallowCopy( nodes );
 
       vtkActor* temp;
       for( int j = 0; j < this->Pool->GetNumberOfItems(); j++ )
+//       for( int j = 0; j < 1; j++ )
         {
+        //TODO  apply comments 07/24 16:44 arnaudgelas. These changes are working,
+        // but requires modifications in the database design!!!
+        // Following lines must be uncommented:
+        //07/24 16:44 arnaudgelas /*
+//         this->Pool->GetItem( j )->SetContourWidgetInteractionOn();
+//         this->Pool->GetItem( j )->GetContourWidget()->Initialize( nodes_copy );
+
+//         ValidateContour( (*myRowContainer)[i].second.meshID, QColor( Qt::white ),
+//           false );
+
+//         this->Pool->GetItem( j )->SetContourWidgetInteractionOff();
+        //07/24 16:44 arnaudgelas */
+
+        // Following lines MUST be commented
+        //07/24 16:44 arnaudgelas /*
         temp = this->Pool->GetItem( j )->AddDataSet(
-                  contour_copy, contour_property, true, false );
+                  nodes_copy, contour_property, true, false );
 
         //TODO the second argument for the constructor of ContourStructure MUST
         // be the control points of the spline representation. For the time being
@@ -1563,7 +1575,8 @@ void QImagePageViewTracer::LoadFiguresFromDB( )
         m_ContourIdActorMap.insert(
             std::pair< unsigned int, ContourStructure >( (*myRowContainer)[i].second.figureID,
               ContourStructure( temp,
-                contour_copy,
+                nodes_copy,
+                nodes_copy,
                 (*myRowContainer)[i].second.meshID, //MeshId
                 j, //Direction
                 this->m_TimePoint, //TimePoint
@@ -1573,11 +1586,12 @@ void QImagePageViewTracer::LoadFiguresFromDB( )
         m_ActorContourIdMap[ temp ] = (*myRowContainer)[i].second.figureID;
         }
 
-      temp = this->View3D->AddDataSet( contour_copy, contour_property, false );
+      temp = this->View3D->AddDataSet( nodes_copy, contour_property, false );
       temp->Delete();
 
-      contour_copy->Delete();
-      contour->Delete();
+      nodes_copy->Delete();
+      nodes->Delete();
+      //07/24 16:44 arnaudgelas*/
       } // ENDFOR
 
     delete mySet;
@@ -1674,18 +1688,27 @@ void QImagePageViewTracer::HighlightContour( const unsigned int& iId,
     result = m_ContourIdActorMap.equal_range( iId );
 
   ContourIdActorMapIterator it = result.first;
-  while( it != result.second )
-    {
-    int dir = (*it).second.Direction;
-    vtkActor* actor = (*it).second.Actor;
-    bool highlighted = (*it).second.Highlighted;
+  unsigned int tempid = it->first;
 
-    if( highlighted != iToBeHighlighted )
+  if( tempid != iId )
+    {
+    return;
+    }
+  else
+    {
+    do
       {
-      this->Pool->GetItem( dir )->HighlightContour( actor, !highlighted );
-      (*it).second.Highlighted = !highlighted;
-      }
-    ++it;
+      int dir = it->second.Direction;
+      vtkActor* actor = it->second.Actor;
+      bool highlighted = it->second.Highlighted;
+
+      if( highlighted != iToBeHighlighted )
+        {
+        this->Pool->GetItem( dir )->HighlightContour( actor, !highlighted );
+        it->second.Highlighted = !highlighted;
+        }
+      ++it;
+      } while( it != result.second );
     }
 }
 //-------------------------------------------------------------------------
@@ -1695,6 +1718,7 @@ void QImagePageViewTracer::HighlightContours( std::map< unsigned int, bool > iId
 {
   std::map< unsigned int, bool >::const_iterator it = iIds.begin();
   std::map< unsigned int, bool >::const_iterator end = iIds.end();
+  size_t size = iIds.size();
 
   while( it != end )
     {
@@ -1712,22 +1736,49 @@ void QImagePageViewTracer::ReeditContour( const unsigned int& iId )
     result = m_ContourIdActorMap.equal_range( iId );
 
   ContourIdActorMapIterator it = result.first;
-  int dir = 0;
-  vtkActor* ContourActor = 0;
+  unsigned int temp = it->first;
 
-  while( it != result.second )
+  if( temp != iId )
     {
-    // First let's get in which view is the contour to be reedited
-    dir = (it->second).Direction;
+    return;
+    }
+  else
+    {
+    int dir = 0;
+    vtkActor* ContourActor = 0;
+    vtkPolyData* Contour = 0;
+    vtkPolyData* Nodes = 0;
+    unsigned int MeshId = 0;
+    unsigned int tempId = 0;
 
-    // Then get the corresponding actor
-    ContourActor = (it->second).Actor;
+    do
+      {
+      // First let's get in which view is the contour to be reedited
+      dir = (it->second).Direction;
 
-    // Remove the actor from the visualization
+      // Then get the corresponding actor
+      ContourActor = (it->second).Actor;
 
-    // Reintialize the contour widget with corresponding control points (nodes).
-    this->Pool->GetItem( dir )->GetContourWidget()->Initialize( (it->second).Nodes );
-    ++it;
+      Nodes = (it->second).Nodes;
+
+      MeshId = (it->second).MeshId;
+
+      tempId = it->first;
+
+      // Remove the actor from the visualization
+      this->Pool->GetItem( dir )->GetRenderer()->RemoveActor( ContourActor );
+
+      //TODO still have to work around to remove properly all corresponding
+      // actors on the different views.
+
+//       // RemoveDataSet( Contour );
+//       // this->View3D->RemoveDataSet( Contour );
+
+      // Reintialize the contour widget with corresponding control points (nodes).
+      this->Pool->GetItem( dir )->SetContourWidgetInteractionOn();
+      this->Pool->GetItem( dir )->GetContourWidget()->Initialize( Nodes );
+      ++it;
+      } while( it != result.second );
     }
 }
 //-------------------------------------------------------------------------

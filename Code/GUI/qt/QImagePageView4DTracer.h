@@ -145,12 +145,12 @@ public:
     this->FileList = FileListFromDB;
     }
   QMEGAVTKADDON2_EXPORT void DisplayFromDB()
-    { this->SetView( 0 ); } 
+    { this->SetView( 0 ); }
   QMEGAVTKADDON2_EXPORT void SetDatabaseRelatedVariables( const QString& iServer,
     const QString& iLogin, const QString& iPassword, const QString& iDatabaseName,
     const int& iExperimentID, const QString& iExperimentName );
   QMEGAVTKADDON2_EXPORT void FillTablesWidget();
-  
+
 public slots:
   QMEGAVTKADDON2_EXPORT void SetView( const int& value );
   QMEGAVTKADDON2_EXPORT void RunMovie();
@@ -216,7 +216,19 @@ public slots:
     { this->Whatever->ClearAllSeeds(); }
   QMEGAVTKADDON2_EXPORT void HighlightContours(
     std::map< unsigned int, bool > iIds )
-    { this->Whatever->HighlightContours(iIds);}
+    {
+      this->Whatever->HighlightContours(iIds);
+//       for( std::map< unsigned int, bool >::iterator it = iIds.begin();
+//           it != iIds.end();
+//           it++ )
+//         {
+//         if( it->second )
+//           {
+//           this->Whatever->ReeditContour( it->first );
+//           break;
+//           }
+//         }
+    }
 
   QMEGAVTKADDON2_EXPORT QString SnapshotViewXY( const QImagePageViewTracer::SnapshotImageType& iType,
     const QString& iBaseName = QString( "snapshot" ) )
