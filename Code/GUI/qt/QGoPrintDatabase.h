@@ -68,6 +68,9 @@ public:
   QMEGAVTKADDON2_EXPORT QTableWidgetChild* FigureTable;
   void QMEGAVTKADDON2_EXPORT UpdateTableFromDB();
 
+signals:
+  void TableContentChanged();
+
 
 protected:
   void QPrintColumnNames( QString TableName,
@@ -145,10 +148,7 @@ protected:
       std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
       std::cout << std::endl;
       }
-    else
-      {
       PrintOutContentFromDB< myT >( RowContainer, Table );
-      }
     delete mySet;
     }
 

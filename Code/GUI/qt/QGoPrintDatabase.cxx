@@ -180,5 +180,7 @@ void QGoPrintDatabase::DeleteContour()
     DeleteRow(m_Server.toStdString(), m_User.toStdString(), m_Password.toStdString(),
       m_NameDB.toStdString(),"figure", "figureID", ID);
     }
-  UpdateContentAndDisplayFromDB< GoDBFigureRow     >("figure", FigureTable);
+  emit TableContentChanged();
+  UpdateContentAndDisplayFromDB<GoDBFigureRow>("figure", FigureTable);
+  
 }

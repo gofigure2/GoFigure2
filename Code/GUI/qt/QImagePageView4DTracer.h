@@ -230,7 +230,7 @@ public slots:
   QMEGAVTKADDON2_EXPORT QString SnapshotViewXYZ( const QImagePageViewTracer::SnapshotImageType& iType,
     const QString& iBaseName = QString( "snapshot" ) )
     { return this->Whatever->SnapshotViewXYZ( iType, iBaseName ); }
-
+  QMEGAVTKADDON2_EXPORT void DeleteContourVisu();
 
 protected:
   QWidget*      LayOutWidget1;

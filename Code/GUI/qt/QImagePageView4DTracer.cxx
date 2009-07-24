@@ -128,6 +128,9 @@ QImagePageView4DTracer::QImagePageView4DTracer( QWidget* parent ) :
  
  QObject::connect(this->m_DBTables->FigureTable, SIGNAL(itemSelectionChanged ()),
     this, SLOT(ConnectSelectContoursWidgetAndHighlightContours()));
+ QObject::connect(this->m_DBTables, SIGNAL(TableContentChanged()),
+   this, SLOT(DeleteContourVisu()));
+
 }
 //------------------------------------------------------------------------------
 
@@ -455,4 +458,13 @@ void QImagePageView4DTracer::FillTablesWidget()
 void QImagePageView4DTracer::ConnectSelectContoursWidgetAndHighlightContours()
 {
   this->HighlightContours(m_DBTables->FigureTable->ContoursToHighlight());
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+void QImagePageView4DTracer::DeleteContourVisu()
+{
+  QStringList QContourToDelete;
+  QContourToDelete = this->m_DBTables->FigureTable->ValuesForSelectedRows("figureID");
+  //todo: after implemtation of the method to delete the contour, use it here.
 }
