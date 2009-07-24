@@ -113,7 +113,7 @@ void QGoPrintDatabase::QPrintColumnNames (QString TableName,
 
 //------------------------------------------------------------------------------
 void QGoPrintDatabase::FillTableFromDatabase(QString iNameDB,QString iServer,QString iUser,
-  QString iPassword,int iExpID,QString iExpName)
+  QString iPassword,unsigned int iExpID,QString iExpName)
 {
   m_NameDB = iNameDB;
   m_Server = iServer;
@@ -166,13 +166,19 @@ void QGoPrintDatabase::UpdateTableFromDB()
 void QGoPrintDatabase::createContextMenu(const QPoint &pos)
 {
   QMenu* ContourMenu = new QMenu;
-  ContourMenu->addAction(tr("Delete Contour"));
+  ContourMenu->addAction(tr("Delete Contour"),this,SLOT(DeleteContour()));
   ContourMenu->addAction(tr("Create Mesh"));
-  //ContourMenu->addAction(tr("Delete Contour"),this,slot());
   ContourMenu->exec(this->mapToGlobal(pos));
 
 }
 void QGoPrintDatabase::DeleteContour()
 {
-  
+  QStringList ContourToDelete = this->FigureTable->ValuesForSelectedRows("figureID");
+  for (int i = 0; i<ContourToDelete.size();i++)
+    {
+    std::string ID = ContourToDelete.at(i).toStdString();
+    DeleteRow(m_Server.toStdString(), m_User.toStdString(), m_Password.toStdString(),
+      m_NameDB.toStdString(),"figure", "figureID", ID);
+    }
+  UpdateContentAndDisplayFromDB< GoDBFigureRow     >("figure", FigureTable);
 }

@@ -87,15 +87,14 @@ public slots:
   */
   QMEGAVTKADDON2_EXPORT void SelectRowFigureID (int FigureID);
 
-  /** \brief return the list of the contours from the widget where the user
-      selected the entire rows, to be highlighten in the visualization.
-      \todo Change the name of the method (see todo note written above).
-      what about std::list<int> GetListOfSelectedRows() ?
-      \todo Overload this method to be able to return a std::map<int,bool> where
-      the key is the id of the rows (for example FigureID) and the value is to know
-      if it is selected. */
-
+  /** \brief return a map of all the existing contours with a flag to true if the user
+       has selected one cell related to the contour in the QTableWidgetChild which have to
+       be highlighten in the visualization.*/
   QMEGAVTKADDON2_EXPORT std::map<unsigned int,bool> ContoursToHighlight( );
+
+  /** \brief return a list of the values of a specific column for the rows where the user 
+       has selected at least one cell.*/
+  QMEGAVTKADDON2_EXPORT QStringList ValuesForSelectedRows(QString ColumnName );
 };
 
 #endif

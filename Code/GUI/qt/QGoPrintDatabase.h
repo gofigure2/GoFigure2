@@ -64,7 +64,7 @@ public:
     //  QString Password, QString DBName,
     //  int ExpID,QString ExpName);
   void QMEGAVTKADDON2_EXPORT FillTableFromDatabase(QString iNameDB,QString iServer,QString iUser,
-  QString iPassword,int iExpID,QString iExpName);
+  QString iPassword,unsigned int iExpID,QString iExpName);
   QMEGAVTKADDON2_EXPORT QTableWidgetChild* FigureTable;
   void QMEGAVTKADDON2_EXPORT UpdateTableFromDB();
 
@@ -201,7 +201,7 @@ protected:
   QString m_Server;
   QString m_User;
   QString m_Password;
-  int m_ExpID;
+  unsigned int m_ExpID;
   QString m_ExpName;
 
 protected slots:

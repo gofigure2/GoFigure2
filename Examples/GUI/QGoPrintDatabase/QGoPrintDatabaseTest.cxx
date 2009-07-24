@@ -3,7 +3,7 @@
 
 int main(int argc, char * argv[])
 {
- /* if( argc != 4 )
+ /* if( argc != 2 )
     {
     return false;
     }*/
@@ -12,10 +12,10 @@ int main(int argc, char * argv[])
 
   QGoPrintDatabase win;
  // win.FillTableFromDatabase(argv[1],"localhost","gofigure",
- //     "gofigure",atoi(argv[2]), argv[3]);
+  //    "gofigure",atoi(argv[2]), argv[3]);
 
   win.FillTableFromDatabase("db23july","localhost","gofigure",
-    "gofigure",3, "megacapture+contour");
+   "gofigure",3, "megacapture+contour");
 
   win.show();
 

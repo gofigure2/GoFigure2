@@ -146,6 +146,7 @@ void QTableWidgetChild::SelectRowFigureID (int FigureID)
 }
 //------------------------------------------------------------------------------
 
+//------------------------------------------------------------------------------
 /** \note quick and nasty...*/
 std::map< unsigned int, bool > QTableWidgetChild::ContoursToHighlight()
 {
@@ -165,8 +166,6 @@ std::map< unsigned int, bool > QTableWidgetChild::ContoursToHighlight()
 
   for (int i=0; i<Selection.size(); i++)
     {
-    if (Selection[i].columnCount() == this->columnCount() )
-      {
       int TopRowSelected = Selection[i].topRow();
       int BottomRowSelected = Selection[i].bottomRow();
 
@@ -175,8 +174,30 @@ std::map< unsigned int, bool > QTableWidgetChild::ContoursToHighlight()
         t = this->item(j,figureIDIndex)->text().toUInt();
         oMapRows[t] = true;
         }
-      }
-
     }
   return oMapRows;
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+QStringList QTableWidgetChild::ValuesForSelectedRows(QString ColumnName)
+{
+  QList<QTableWidgetSelectionRange> Selection;
+  Selection = this->selectedRanges();
+
+  QStringList ColumnsHeader = this->recordHeaderNamesOrder();
+  int ColumnIndex = findColumnName(ColumnName,ColumnsHeader);
+
+  QList<QString> Values;
+  for( int i=0; i< Selection.size(); i++)
+    {
+    int TopRowSelected = Selection[i].topRow();
+    int BottomRowSelected = Selection[i].bottomRow();
+
+    for (int j = TopRowSelected; j<BottomRowSelected+1;j++)
+      {
+      Values.append(this->item(j,ColumnIndex)->text());
+      }
+    }
+   return Values;
 }
