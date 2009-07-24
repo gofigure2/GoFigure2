@@ -466,5 +466,5 @@ void QImagePageView4DTracer::DeleteContourVisu()
 {
   QStringList QContourToDelete;
   QContourToDelete = this->m_DBTables->FigureTable->ValuesForSelectedRows("figureID");
-  //todo: after implemtation of the method to delete the contour, use it here.
+  //todo: after implementation of the method to delete the contour, use it here.
 }

@@ -951,7 +951,7 @@ void CreateMeshFlavor(
 
   vtkSQLQuery* query = DataBaseConnector->GetQueryInstance();
   vtkStdString insertQuery = "\
-    CREATE TABLE `mesh flavor` \
+    CREATE TABLE `meshflavor` \
     (\
     `flavorID` INTEGER NOT NULL  NOT NULL  AUTO_INCREMENT , \
     `FlavorName` varchar (50), \
