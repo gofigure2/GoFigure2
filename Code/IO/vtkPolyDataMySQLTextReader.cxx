@@ -104,8 +104,21 @@ vtkPolyData* vtkPolyDataMySQLTextReader::GetContour( )
   points->Delete();
 
   vtkCellArray* cells = vtkCellArray::New();
-  vtkIdList* id_list = vtkIdList::New();
+  vtkIdType* ids = new vtkIdType[N+1];
 
+  for( vtkIdType i = 0; i < N; i++ )
+    {
+    ids[i] = i;
+    }
+
+  ids[N] = 0;
+  cells->InsertNextCell( N+1, ids );
+  oContour->SetLines( cells );
+
+  delete[] ids;
+  cells->Delete();
+
+/*   vtkIdList* id_list = vtkIdList::New();
 
   // NOTE ALEX:
   // one big cell does not do it.
@@ -122,7 +135,7 @@ vtkPolyData* vtkPolyDataMySQLTextReader::GetContour( )
   oContour->SetLines( cells );
 
   cells->Delete();
-  id_list->Delete();
+  id_list->Delete();*/
 
   return oContour;
 }
