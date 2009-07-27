@@ -1286,3 +1286,54 @@ std::vector<std::string> ListSpecificValuesForOneColumn(
   return result;
 }
 //------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+void UpdateValueInDB(std::string ServerName, std::string login,
+  std::string Password, std::string DBName,
+  std::string TableName, std::string field, std::string newValue,
+  std::string ColumnName, std::string value)
+
+{ vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
+  DataBaseConnector->SetHostName( ServerName.c_str() );
+  DataBaseConnector->SetUser( login.c_str() );
+  DataBaseConnector->SetPassword( Password.c_str() );
+  DataBaseConnector->SetDatabaseName( DBName.c_str() );
+  if( !DataBaseConnector->Open() )
+    {
+    std::cerr << "Could not open database." << std::endl;
+    std::cerr << "Update Values can not be done."<< std::endl;
+    DataBaseConnector->Close();
+    DataBaseConnector->Delete();
+    return;
+    }
+
+  vtkSQLQuery* query = DataBaseConnector->GetQueryInstance();
+  std::stringstream querystream;
+  querystream << "UPDATE ";
+  querystream << TableName;
+  querystream << " SET ";
+  querystream << field;
+  querystream << " = '";
+  querystream << newValue;
+  querystream << " WHERE ";
+  querystream << ColumnName;
+  querystream << " = '";
+  querystream << value;
+  querystream << "';";
+
+  query->SetQuery( querystream.str().c_str() );
+  if ( !query->Execute() )
+    {
+    itkGenericExceptionMacro(
+      << "replace value in DB query failed"
+      << query->GetLastErrorText() );
+    DataBaseConnector->Close();
+    DataBaseConnector->Delete();
+    query->Delete();
+    return;
+    }
+
+  DataBaseConnector->Close();
+  DataBaseConnector->Delete();
+  query->Delete();
+}

@@ -73,6 +73,11 @@ std::vector<std::string> ListSpecificValuesForOneColumn(
   std::string TableName, std::string ColumnName,
   std::string field,std::string value);
 
+//query: "UPDATE TableName SET field = newValue WHERE ColumnName = value"
+void UpdateValueInDB(std::string ServerName, std::string login,
+  std::string Password, std::string DBName,
+  std::string TableName, std::string field, std::string newValue,
+  std::string ColumnName, std::string value);
 
 bool CanConnectToServer(
   std::string ServerName, std::string login,
@@ -106,6 +111,7 @@ bool IsDatabaseOfGoFigureType(
   std::string ServerName, std::string login,
   std::string Password, std::string DBName );
 
+//all the following method are used to create a Gofigure Database:
 void CreateDataBase(
   std::string ServerName, std::string login,
   std::string Password, std::string DBName );
