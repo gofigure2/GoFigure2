@@ -1324,8 +1324,11 @@ void QImagePageViewTracer::ValidateContour(
         vtkPolyData* ControlPointsPolyData = vtkPolyData::New();
         contour_rep->GetNodePolyData( ControlPointsPolyData );
 
+#ifndef TEMPARNAUD
         for( int j = 0; j < this->Pool->GetNumberOfItems(); j++ )
-//         for( int j = 0; j < 1; j++ )
+#else
+        for( int j = 0; j < 1; j++ )
+#endif
           {
           temp = this->Pool->GetItem( j )->AddDataSet(
                   contour_copy, contour_property, true, false );
@@ -1382,8 +1385,11 @@ void QImagePageViewTracer::ValidateContour(
             && m_DBServer.isNull() && m_DBPassword.isNull();
           if( !database_info )
             {
+#ifndef TEMPARNAUD
             SaveValidatedContourInDatabase( contour );
-//             SaveValidatedContourInDatabase( ControlPointsPolyData );
+#else
+            SaveValidatedContourInDatabase( ControlPointsPolyData );
+#endif
             }
 
           }  // ENDOF Save in a File
@@ -1545,24 +1551,9 @@ void QImagePageViewTracer::LoadFiguresFromDB( )
       nodes_copy->ShallowCopy( nodes );
 
       vtkActor* temp;
+#ifndef TEMPARNAUD
       for( int j = 0; j < this->Pool->GetNumberOfItems(); j++ )
-//       for( int j = 0; j < 1; j++ )
         {
-        //TODO  apply comments 07/24 16:44 arnaudgelas. These changes are working,
-        // but requires modifications in the database design!!!
-        // Following lines must be uncommented:
-        //07/24 16:44 arnaudgelas /*
-//         this->Pool->GetItem( j )->SetContourWidgetInteractionOn();
-//         this->Pool->GetItem( j )->GetContourWidget()->Initialize( nodes_copy );
-
-//         ValidateContour( (*myRowContainer)[i].second.meshID, QColor( Qt::white ),
-//           false );
-
-//         this->Pool->GetItem( j )->SetContourWidgetInteractionOff();
-        //07/24 16:44 arnaudgelas */
-
-        // Following lines MUST be commented
-        //07/24 16:44 arnaudgelas /*
         temp = this->Pool->GetItem( j )->AddDataSet(
                   nodes_copy, contour_property, true, false );
 
@@ -1591,7 +1582,18 @@ void QImagePageViewTracer::LoadFiguresFromDB( )
 
       nodes_copy->Delete();
       nodes->Delete();
-      //07/24 16:44 arnaudgelas*/
+#else
+      for( int j = 0; j < 1; j++ )
+        {
+        this->Pool->GetItem( j )->SetContourWidgetInteractionOn();
+        this->Pool->GetItem( j )->GetContourWidget()->Initialize( nodes_copy );
+
+        ValidateContour( (*myRowContainer)[i].second.meshID, QColor( Qt::white ),
+          false );
+
+        this->Pool->GetItem( j )->SetContourWidgetInteractionOff();
+        } // ENDFOR
+#endif
       } // ENDFOR
 
     delete mySet;

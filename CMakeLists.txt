@@ -66,6 +66,20 @@ SET( TESTING_DATA_PATH
 OPTION( BUILD_DOCUMENTATION "Build Doxygen Documentation" OFF )
 OPTION( BUILD_PACKAGE "Software packaging" OFF )
 
+#---------------------------------------------------------------------------
+# Temporary option to be able to chosse between experimental spline nodes or
+# contour points
+#---------------------------------------------------------------------------
+OPTION( BUILD_TEMPARNAUD "Use spline nodes instead of contour points" OFF )
+MARK_AS_ADVANCED( FORCE BUILD_TEMPARNAUD )
+
+IF( BUILD_TEMPARNAUD )
+  ADD_DEFINITIONS( -DTEMPARNAUD )
+ELSE( BUILD_TEMPARNAUD )
+  REMOVE_DEFINITIONS( -DTEMPARNAUD )
+ENDIF( BUILD_TEMPARNAUD )
+
+#---------------------------------------------------------------------------
 IF( BUILD_DOCUMENTATION )
   FIND_PACKAGE( Doxygen )
   IF( DOXYGEN_FOUND )
