@@ -205,8 +205,9 @@ protected:
   QString m_ExpName;
 
 protected slots:
-  void createContextMenu(const QPoint &pos);
+  void CreateContextMenu(const QPoint &pos);
   void DeleteContour();
+  void AddContoursToMesh(int MeshID);
 
 };
 

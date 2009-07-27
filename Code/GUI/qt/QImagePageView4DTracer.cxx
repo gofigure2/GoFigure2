@@ -128,6 +128,7 @@ QImagePageView4DTracer::QImagePageView4DTracer( QWidget* parent ) :
  
  QObject::connect(this->m_DBTables->FigureTable, SIGNAL(itemSelectionChanged ()),
     this, SLOT(ConnectSelectContoursWidgetAndHighlightContours()));
+ 
  QObject::connect(this->m_DBTables, SIGNAL(TableContentChanged()),
    this, SLOT(DeleteContourVisu()));
 

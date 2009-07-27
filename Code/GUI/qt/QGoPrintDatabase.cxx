@@ -70,7 +70,7 @@ QGoPrintDatabase::QGoPrintDatabase()
 
   
   connect(this, SIGNAL(customContextMenuRequested(const QPoint &)),
-    this, SLOT(createContextMenu(const QPoint &)));
+    this, SLOT(CreateContextMenu(const QPoint &)));
 }
 //------------------------------------------------------------------------------
 
@@ -163,7 +163,7 @@ void QGoPrintDatabase::UpdateTableFromDB()
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-void QGoPrintDatabase::createContextMenu(const QPoint &pos)
+void QGoPrintDatabase::CreateContextMenu(const QPoint &pos)
 {
   QMenu* ContourMenu = new QMenu;
   ContourMenu->addAction(tr("Delete Contour"),this,SLOT(DeleteContour()));
@@ -171,6 +171,9 @@ void QGoPrintDatabase::createContextMenu(const QPoint &pos)
   ContourMenu->exec(this->mapToGlobal(pos));
 
 }
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
 void QGoPrintDatabase::DeleteContour()
 {
   QStringList ContourToDelete = this->FigureTable->ValuesForSelectedRows("figureID");
@@ -183,4 +186,19 @@ void QGoPrintDatabase::DeleteContour()
   emit TableContentChanged();
   UpdateContentAndDisplayFromDB<GoDBFigureRow>("figure", FigureTable);
   
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+void QGoPrintDatabase::AddContoursToMesh(int MeshID)
+{
+ /* QStringList ListFigures = this->FigureTable->ValuesForSelectedRows("figureID");
+  for (int i=0; i<ListFigures.size();i++)
+    {
+    UpdateValueInDB(m_Server.toStdString(), m_User.toStdString(),
+      m_Password.toStdString(), m_NameDB.toStdString(),
+      "figure", "meshID", MeshID,
+      "figureID", ListFigures.at(i).toStdString());
+    }
+  */
 }
