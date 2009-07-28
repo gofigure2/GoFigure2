@@ -1720,7 +1720,8 @@ void QImagePageViewTracer::HighlightContours( std::map< unsigned int, bool > iId
 {
   std::map< unsigned int, bool >::const_iterator it = iIds.begin();
   std::map< unsigned int, bool >::const_iterator end = iIds.end();
-  size_t size = iIds.size();
+  // NOTE ALEX: unused variable
+  //size_t size = iIds.size();
 
   while( it != end )
     {
@@ -1748,7 +1749,8 @@ void QImagePageViewTracer::ReeditContour( const unsigned int& iId )
     {
     int dir = 0;
     vtkActor* ContourActor = 0;
-    vtkPolyData* Contour = 0;
+    // NOTE ALEX: unused variable
+    // vtkPolyData* Contour = 0;
     vtkPolyData* Nodes = 0;
     unsigned int MeshId = 0;
     unsigned int tempId = 0;
