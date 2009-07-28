@@ -59,7 +59,7 @@
      <x>0</x>
      <y>0</y>
      <width>1434</width>
-     <height>21</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -283,8 +283,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>211</width>
-        <height>297</height>
+        <width>94</width>
+        <height>24</height>
        </rect>
       </property>
       <attribute name="label">
@@ -467,8 +467,8 @@ Radius</string>
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>211</width>
-        <height>297</height>
+        <width>94</width>
+        <height>24</height>
        </rect>
       </property>
       <attribute name="label">
@@ -633,8 +633,8 @@ Weight</string>
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>211</width>
-        <height>297</height>
+        <width>201</width>
+        <height>287</height>
        </rect>
       </property>
       <attribute name="label">
@@ -977,10 +977,13 @@ Component</string>
       <item>
        <widget class="QSpinBox" name="IdContourBox">
         <property name="minimum">
-         <number>1</number>
+         <number>0</number>
         </property>
         <property name="maximum">
          <number>10000</number>
+        </property>
+        <property name="value">
+         <number>0</number>
         </property>
        </widget>
       </item>
