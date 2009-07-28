@@ -57,35 +57,6 @@
 #include "MegaVTK2Configure.h"
 #include "GoFigureFileInfoHelper.h"
 
-/** \brief
-\param[in] ServerName
-\param[in] User
-\param[in] Password
-\param[in] TableName
-\param[in] myNewObject
-\todo This function should be moved in Code/IO/GoDBRecordSet.h or in a new file
-Code/IO/GoDBRecordSetHelper.h
-*/
-template< class T >
-void RecordValues_inTable( const std::string& ServerName, const std::string& User,
-  const std::string& Password, const std::string& NameDB,
-  const std::string& TableName, T& myNewObject )
-{
-  typedef GoDBRecordSet< T >   SetType;
-
-  SetType mySet;
-  mySet.SetServerName( ServerName );
-  mySet.SetDataBaseName( NameDB );
-  mySet.SetTableName( TableName );
-  mySet.SetUser( User );
-  mySet.SetPassword( Password );
-  mySet.PopulateFromDB();
-  mySet.AddObject( myNewObject );
-  mySet.SaveInDB();
-
-  return;
-};
-
 /**
 \class QGoWizardDB
 \brief

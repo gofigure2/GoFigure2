@@ -40,6 +40,7 @@
 #include "QGoWizardDB.h"
 #include "CreateDataBaseHelper.h"
 #include "GoDBRecordSet.h"
+#include "GoDBRecordSetHelper.h"
 #include "GoDBFigureRow.h"
 #include "GoDBExperimentRow.h"
 #include "GoDBSeriesGridRow.h"
@@ -897,7 +898,7 @@ void Import_SerieGridPage::initializePage()
     myNewObject.nColumns     = field("nColumns").toInt();
     myNewObject.filePattern  = field("FilePattern").toString().toStdString();
 
-    RecordValues_inTable< GoDBExperimentRow >(
+    AddNewObjectInTable< GoDBExperimentRow >(
       field("ServerName").toString().toStdString(),
       field("User").toString().toStdString(),
       field("Password").toString().toStdString(),

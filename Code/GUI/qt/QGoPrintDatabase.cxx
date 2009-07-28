@@ -54,8 +54,11 @@
 #include "vtkStringArray.h"
 #include "vtkStdString.h"
 #include "GoDBRecordSet.h"
+#include "GoDBRecordSetHelper.h"
 #include "GoDBFigureRow.h"
+#include "GoDBMeshRow.h"
 #include "CreateDataBaseHelper.h"
+#include "ConvertToStringHelper.h"
 #include <iostream>
 #include <QCloseEvent>
 
@@ -190,15 +193,29 @@ void QGoPrintDatabase::DeleteContour()
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-void QGoPrintDatabase::AddContoursToMesh(int MeshID)
+void QGoPrintDatabase::AddSelectedContoursToMesh(int MeshID)
 {
- /* QStringList ListFigures = this->FigureTable->ValuesForSelectedRows("figureID");
-  for (int i=0; i<ListFigures.size();i++)
+  std::string MeshIDstring = ConvertToString<int>(MeshID);
+  QStringList ListSelectedFigures = this->FigureTable->ValuesForSelectedRows("figureID");
+  for (int i=0; i<ListSelectedFigures.size();i++)
     {
     UpdateValueInDB(m_Server.toStdString(), m_User.toStdString(),
       m_Password.toStdString(), m_NameDB.toStdString(),
-      "figure", "meshID", MeshID,
-      "figureID", ListFigures.at(i).toStdString());
+      "figure", "meshID", MeshIDstring,
+      "figureID", ListSelectedFigures.at(i).toStdString());
     }
-  */
 }
+int QGoPrintDatabase::CreateNewMesh()
+{
+  typedef GoDBRecordSet< GoDBMeshRow > myRecordSetType;
+  myRecordSetType* RecordSet = new myRecordSetType;
+  RecordSet->SetServerName(m_Server.toStdString());
+  RecordSet->SetUser(m_User.toStdString());
+  RecordSet->SetPassword(m_Password.toStdString());
+  RecordSet->SetDataBaseName(m_NameDB.toStdString());
+  RecordSet->SetTableName( "mesh" );
+
+  return 1;
+
+
+ }

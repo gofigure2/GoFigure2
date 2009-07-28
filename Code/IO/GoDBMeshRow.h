@@ -159,7 +159,7 @@ public:
         }
       case 4:
         {
-        this->heigth = atoi( ValueAsString.c_str() );
+        this->height = atoi( ValueAsString.c_str() );
         break;
         }
       case 5:
@@ -270,30 +270,30 @@ public:
   std::map<std::string,std::string> LinkColumnNamesAndValues ()
     {
     std::map<std::string,std::string> Map;
-    Map["meshID"] = ConvertToString<int>(figureID);
-    Map["flavorMeshID"] = ConvertToString<int>(imageID);
-    Map["cellTypeID"] = ConvertToString<int>(meshID);
-    Map["width"] = ConvertToString<int>(cellTypeID);
-    Map["height"] = ConvertToString<int>(flavorID);
-    Map["depth"] = ConvertToString<int>(meanRed);
-    Map["xCenter"] = ConvertToString<int>(meanGreen);
-    Map["yCenter"] = ConvertToString<int>(meanBlue);
-    Map["zCenter"] = ConvertToString<int>(area);
-    Map["trackID"] = ConvertToString<int>(perimeter);
-    Map["meanBlue"] = ConvertToString<int>(AP);
-    Map["meanGreen"] = ConvertToString<int>(score);
-    Map["meanRed"] = ConvertToString<int>(xCenter);
-    Map["score"] = ConvertToString<int>(yCenter);
-    Map["surfaceArea"] = ConvertToString<int>(experimentID);
-    Map["volume"] = ConvertToString<int>(RCoord);
-    Map["experimentID"] = ConvertToString<int>(CCoord);
-    Map["RCoord"] = ConvertToString<int>(TCoord);
-    Map["CCoord"] = ConvertToString<int>(XCoord);
-    Map["TCoord"] = ConvertToString<int>(YCoord);
-    Map["YCoord"] = ConvertToString<int>(ZCoord);
-    Map["XCoord"] = ConvertToString<int>(ZCoord);
-    Map["ZCoordMin"] = ConvertToString<int>(ZCoord);
-    Map["ZCoordMax"] = ConvertToString<int>(ZCoord);
+    Map["meshID"] = ConvertToString<int>(meshID);
+    Map["flavorMeshID"] = ConvertToString<int>(flavorMeshID);
+    Map["cellTypeID"] = ConvertToString<int>(cellTypeID);
+    Map["width"] = ConvertToString<int>(width);
+    Map["height"] = ConvertToString<int>(height);
+    Map["depth"] = ConvertToString<int>(depth);
+    Map["xCenter"] = ConvertToString<int>(xCenter);
+    Map["yCenter"] = ConvertToString<int>(yCenter);
+    Map["zCenter"] = ConvertToString<int>(zCenter);
+    Map["trackID"] = ConvertToString<int>(trackID);
+    Map["meanBlue"] = ConvertToString<int>(meanBlue);
+    Map["meanGreen"] = ConvertToString<int>(meanGreen);
+    Map["meanRed"] = ConvertToString<int>(meanRed);
+    Map["score"] = ConvertToString<int>(score);
+    Map["surfaceArea"] = ConvertToString<int>(surfaceArea);
+    Map["volume"] = ConvertToString<int>(volume);
+    Map["experimentID"] = ConvertToString<int>(experimentID);
+    Map["RCoord"] = ConvertToString<int>(RCoord);
+    Map["CCoord"] = ConvertToString<int>(CCoord);
+    Map["TCoord"] = ConvertToString<int>(TCoord);
+    Map["YCoord"] = ConvertToString<int>(YCoord);
+    Map["XCoord"] = ConvertToString<int>(XCoord);
+    Map["ZCoordMin"] = ConvertToString<int>(ZCoordMin);
+    Map["ZCoordMax"] = ConvertToString<int>(ZCoordMax);
     Map["points"] = points;
 
     return Map;

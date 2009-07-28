@@ -207,7 +207,8 @@ protected:
 protected slots:
   void CreateContextMenu(const QPoint &pos);
   void DeleteContour();
-  void AddContoursToMesh(int MeshID);
+  void AddSelectedContoursToMesh(int MeshID);
+  int  CreateNewMesh();
 
 };
 
