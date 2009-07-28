@@ -98,6 +98,16 @@ void DeleteRow(
   std::string Password, std::string DBName,
   std::string TableName, std::string field, std::string value);
 
+//query: "SELECT LAST_INSERT_ID(): ????"
+/*int LastInsertID(std::string ServerName, std::string login,
+  std::string Password, std::string DBName);*/
+
+//query: "SELECT MAX(ColumnName) FROM TableName"
+int MaxValueForOneColumnInTable(
+  std::string ServerName, std::string login,
+  std::string Password, std::string DBName,
+  std::string ColumnName,std::string TableName );
+
 bool DoesDataBaseExist(
   std::string ServerName, std::string login,
   std::string Password, std::string DBName );

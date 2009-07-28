@@ -1337,3 +1337,96 @@ void UpdateValueInDB(std::string ServerName, std::string login,
   DataBaseConnector->Delete();
   query->Delete();
 }
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+/*int LastInsertID(std::string ServerName, std::string login,
+  std::string Password, std::string DBName)
+{
+  int ID = -1;
+  vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
+  DataBaseConnector->SetHostName( ServerName.c_str() );
+  DataBaseConnector->SetUser( login.c_str() );
+  DataBaseConnector->SetPassword( Password.c_str() );
+  DataBaseConnector->SetDatabaseName( DBName.c_str() );
+  if( !DataBaseConnector->Open() )
+    {
+    std::cerr << "Could not open database." << std::endl;
+    std::cerr << "Find last insert ID can not be done."<< std::endl;
+    DataBaseConnector->Close();
+    DataBaseConnector->Delete();
+    return ID;
+    }
+
+  vtkSQLQuery* query = DataBaseConnector->GetQueryInstance();
+  query->SetQuery( "SELECT LAST_INSERT_ID();" );
+
+  if ( !query->Execute() )
+    {
+    itkGenericExceptionMacro(
+      << "replace value in DB query failed"
+      << query->GetLastErrorText() );
+    DataBaseConnector->Close();
+    DataBaseConnector->Delete();
+    query->Delete();
+    return ID;
+    }
+
+  ID = query->DataValue(0).ToInt();
+  DataBaseConnector->Close();
+  DataBaseConnector->Delete();
+  query->Delete();
+
+  return ID;
+
+}*/
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+int MaxValueForOneColumnInTable(
+  std::string ServerName, std::string login,
+  std::string Password, std::string DBName,
+  std::string ColumnName,std::string TableName )
+{ 
+  int MaxValue = -1;
+  vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
+  DataBaseConnector->SetHostName( ServerName.c_str() );
+  DataBaseConnector->SetUser( login.c_str() );
+  DataBaseConnector->SetPassword( Password.c_str() );
+  DataBaseConnector->SetDatabaseName( DBName.c_str() );
+  if( !DataBaseConnector->Open() )
+    {
+    std::cerr << "Could not open database." << std::endl;
+    std::cerr << "Update Values can not be done."<< std::endl;
+    DataBaseConnector->Close();
+    DataBaseConnector->Delete();
+    return MaxValue;
+    }
+
+  vtkSQLQuery* query = DataBaseConnector->GetQueryInstance();
+  std::stringstream querystream;
+  querystream << "SELECT MAX(";
+  querystream << ColumnName;
+  querystream << ") FROM ";
+  querystream << TableName;
+  querystream << ";";
+
+  query->SetQuery( querystream.str().c_str() );
+  if ( !query->Execute() )
+    {
+    itkGenericExceptionMacro(
+      << "find max value query failed"
+      << query->GetLastErrorText() );
+    DataBaseConnector->Close();
+    DataBaseConnector->Delete();
+    query->Delete();
+    return MaxValue;
+    }
+  
+  MaxValue = query->DataValue(0).ToInt();
+  DataBaseConnector->Close();
+  DataBaseConnector->Delete();
+  query->Delete();
+
+  return MaxValue;
+}
