@@ -188,7 +188,7 @@ protected:
             CellTable->setText(it->second.c_str());
             TableToFill->setItem(i,j,CellTable);
             }
-
+          TableToFill->setRowHeight(i,18);
           } // ENDFOR
         }
       }
