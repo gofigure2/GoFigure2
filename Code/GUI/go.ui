@@ -1233,6 +1233,28 @@ Component</string>
       <enum>Qt::Horizontal</enum>
      </property>
     </widget>
+    <widget class="QWidget" name="">
+     <property name="geometry">
+      <rect>
+       <x>80</x>
+       <y>20</y>
+       <width>110</width>
+       <height>28</height>
+      </rect>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_21">
+      <item>
+       <widget class="QLabel" name="label_17">
+        <property name="text">
+         <string>Channel</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QSpinBox" name="OneClickDockWidgetChannelSpinBox"/>
+      </item>
+     </layout>
+    </widget>
    </widget>
   </widget>
   <action name="actionOpen_Single_File">
