@@ -1,7 +1,7 @@
 /*=========================================================================
-  Author: $Author: arnaudgelas $  // Author of last commit
-  Version: $Rev: 323 $  // Revision of last commit
-  Date: $Date: 2009-06-18 15:53:05 -0400 (Thu, 18 Jun 2009) $  // Date of last commit
+  Author: $Author$  // Author of last commit
+  Version: $Rev$  // Revision of last commit
+  Date: $Date$  // Date of last commit
 =========================================================================*/
 
 /*=========================================================================
