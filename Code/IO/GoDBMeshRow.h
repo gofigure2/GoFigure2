@@ -41,6 +41,7 @@
 #define __GoDBMeshRow_h
 
 #include <string>
+#include "ConvertToStringHelper.h"
 
 class GoDBMeshRow
 {
@@ -264,15 +265,6 @@ public:
         }
       }
     return true;
-    }
-
-template< typename T >
-  std::string ConvertToString( const T& ToConvert)
-    {
-    std::stringstream st;
-    st << ToConvert;
-    std::string mystring = st.str();
-    return mystring;
     }
 
   std::map<std::string,std::string> LinkColumnNamesAndValues ()
