@@ -4,6 +4,7 @@
 #include "itkChanAndVeseSegmentationFilter.h"
 #include "vtkImageData.h"
 #include "vtkMarchingSquares.h"
+#include "vtkPolyDataWriter.h"
 #include "vtkPolyDataMapper.h"
 #include "vtkActor.h"
 #include "vtkImageActor.h"
@@ -26,7 +27,7 @@ int main( int argc, char** argv )
     }
 
   const unsigned int Dimension = 2;
-  typedef itk::Image< float, Dimension > FeatureImageType;
+  typedef itk::Image< unsigned char, Dimension > FeatureImageType;
 
   typedef itk::ChanAndVeseSegmentationFilter< FeatureImageType >
     SegmentationFilterType;
@@ -64,6 +65,11 @@ int main( int argc, char** argv )
   vtkMarchingSquares *contours = vtkMarchingSquares::New();
   contours->SetInput( image );
   contours->GenerateValues ( 1, 0, 0 );
+
+  vtkPolyDataWriter* writer = vtkPolyDataWriter::New();
+  writer->SetInput( contours->GetOutput() );
+  writer->Write();
+  writer->Delete();
 
   // map to graphics library
   vtkPolyDataMapper *map = vtkPolyDataMapper::New();

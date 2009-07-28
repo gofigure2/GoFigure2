@@ -46,6 +46,7 @@
 #include "itkScalarChanAndVeseLevelSetFunctionData.h"
 #include "itkConstrainedRegionBasedLevelSetFunctionSharedData.h"
 #include "itkAtanRegularizedHeavisideStepFunction.h"
+#include "itkCastImageFilter.h"
 
 #include "itkFastMarchingImageFilter.h"
 
@@ -85,6 +86,7 @@ public:
   typedef typename InternalSizeType::SizeValueType    InternalSizeValueType;
   typedef typename InternalImageType::RegionType      InternalRegionType;
   typedef typename InternalImageType::PixelType       InternalPixelType;
+  typedef typename InternalImageType::SpacingType      InternalSpacingType;
 
   typedef TFeatureImage                               FeatureImageType;
   typedef typename FeatureImageType::Pointer          FeatureImagePointer;
@@ -112,6 +114,9 @@ public:
   typedef typename FastMarchingFilterType::NodeContainer  NodeContainer;
   typedef typename FastMarchingFilterType::NodeType       NodeType;
 
+  typedef CastImageFilter< FeatureImageType, InternalImageType > FeatureCastType;
+  typedef typename FeatureCastType::Pointer FeatureCastPointer;
+
   typedef ImageToVTKImageFilter< InternalImageType >  ConverterType;
   typedef typename ConverterType::Pointer             ConverterPointer;
 
@@ -135,7 +140,11 @@ public:
 
   void SetFeatureImage( FeatureImageType* iImage )
     {
-    m_FeatureImage = iImage;
+    FeatureCastPointer caster = FeatureCastType::New();
+    caster->SetInput( iImage );
+    caster->Update();
+
+    m_FeatureImage = caster->GetOutput();
     }
 
   void Update()
@@ -161,7 +170,7 @@ protected:
 
   vtkImageData*         m_VTKImage;
   ConverterPointer      m_Converter;
-  FeatureImagePointer   m_FeatureImage; // Raw image -- very large in size
+  InternalImagePointer  m_FeatureImage; // Raw image -- very large in size
   InternalPointType     m_Center; // Center of the cell/nucleus
   InternalSizeType      m_Size; // Level-set image size
   InternalCoordRepType  m_Radius; // Radius of the cell
@@ -175,8 +184,8 @@ protected:
       std::cerr <<"m_FeatureImage is Null" <<std::endl;
       return;
       }
-    FeatureSpacingType spacing = m_FeatureImage->GetSpacing();
-    FeatureSizeType inputSize = m_FeatureImage->GetLargestPossibleRegion().GetSize();
+    InternalSpacingType spacing = m_FeatureImage->GetSpacing();
+    InternalSizeType inputSize = m_FeatureImage->GetLargestPossibleRegion().GetSize();
 
     InternalIndexType start;
     InternalPointType origin;
