@@ -37,8 +37,6 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-
-
 #include <qstringlist.h>
 #include <qwidget.h>
 #include <QDialog>
