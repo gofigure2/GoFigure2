@@ -83,15 +83,7 @@ ENDIF( BUILD_TEMPARNAUD )
 IF( BUILD_DOCUMENTATION )
   FIND_PACKAGE( Doxygen )
   IF( DOXYGEN_FOUND )
-    CONFIGURE_FILE (
-      ${GOFIGURE2_SOURCE_DIR}/Doxyfile.txt.in
-      ${GOFIGURE2_BINARY_DIR}/Doxyfile.txt
-    )
-
-    ADD_CUSTOM_TARGET(doc ALL
-      ${DOXYGEN_EXECUTABLE} ${GOFIGURE2_BINARY_DIR}/Doxyfile.txt
-      DEPENDS ${GOFIGURE2_BINARY_DIR}/Doxyfile.txt
-    )
+    ADD_SUBDIRECTORY( Documentation )
   ELSE( DOXYGEN_FOUND )
     MESSAGE( STATUS "Warning: Doxygen not found - Documentation will not be created")
   ENDIF( DOXYGEN_FOUND )

@@ -6,7 +6,7 @@
 DOXYFILE_ENCODING      = UTF-8
 PROJECT_NAME           = @PROJECT_NAME@
 PROJECT_NUMBER         = @GOFIGURE2_VERSION@
-OUTPUT_DIRECTORY       = 
+OUTPUT_DIRECTORY       = @GOFIGURE2_BINARY_DIR@/Documentation 
 CREATE_SUBDIRS         = NO
 OUTPUT_LANGUAGE        = English
 BRIEF_MEMBER_DESC      = YES
@@ -113,6 +113,7 @@ FILE_PATTERNS          = *.c \
                          *.hxx \
                          *.hpp \
                          *.h++ \
+                         *.txx \
                          *.idl \
                          *.odl \
                          *.cs \
@@ -190,7 +191,7 @@ HTML_OUTPUT            = html
 HTML_FILE_EXTENSION    = .html
 HTML_HEADER            = 
 HTML_FOOTER            = 
-HTML_STYLESHEET        = 
+HTML_STYLESHEET        = DoxygenStyle.css
 HTML_ALIGN_MEMBERS     = YES
 HTML_DYNAMIC_SECTIONS  = NO
 GENERATE_DOCSET        = NO
