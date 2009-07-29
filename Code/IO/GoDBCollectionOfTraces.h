@@ -68,7 +68,7 @@ protected:
   QString m_TracesName;
   QString m_TracesIDName;
 
-  /** brief Delete in the Database all the traces listed in the QStringList: */
+  /** \brief Delete in the Database all the traces listed in the QStringList */
   void DeleteTraces(QStringList TracesToDelete);
   void SetDatabaseVariables(QString Server,QString User,QString Password, QString NameDB);
   void AddSelectedTracesToCollection(QStringList ListSelectedTraces,int CollectionID);
@@ -79,6 +79,7 @@ protected:
   int CreateNewCollection()
   {
   myT myNewObject;
+  /*  
   AddNewObjectInTable< myT >(
       m_Server.toStdString(),
       m_User.toStdString(),
@@ -88,11 +89,13 @@ protected:
   int ID = MaxValueForOneColumnInTable(
     m_Server.toStdString(), m_User.toStdString(),
     m_Password.toStdString(),m_NameDB.toStdString(),
-    m_CollectionIDName,m_CollectionName );
+    m_CollectionIDName,m_CollectionName ); 
 
   //UpdateContentAndDisplayFromDB<GoDBMeshRow>("mesh", MeshTable);
 
-  return ID;
+  return ID; 
+  */
+  return 0;
   }
 
 
