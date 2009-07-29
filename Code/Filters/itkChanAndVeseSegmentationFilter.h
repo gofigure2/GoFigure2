@@ -46,7 +46,6 @@
 #include "itkScalarChanAndVeseLevelSetFunctionData.h"
 #include "itkConstrainedRegionBasedLevelSetFunctionSharedData.h"
 #include "itkAtanRegularizedHeavisideStepFunction.h"
-#include "itkCastImageFilter.h"
 
 #include "itkFastMarchingImageFilter.h"
 
@@ -86,7 +85,7 @@ public:
   typedef typename InternalSizeType::SizeValueType    InternalSizeValueType;
   typedef typename InternalImageType::RegionType      InternalRegionType;
   typedef typename InternalImageType::PixelType       InternalPixelType;
-  typedef typename InternalImageType::SpacingType      InternalSpacingType;
+  typedef typename InternalImageType::SpacingType     InternalSpacingType;
 
   typedef TFeatureImage                               FeatureImageType;
   typedef typename FeatureImageType::Pointer          FeatureImagePointer;
@@ -94,15 +93,15 @@ public:
   typedef typename FeatureImageType::SpacingType      FeatureSpacingType;
 
   typedef ScalarChanAndVeseLevelSetFunctionData< InternalImageType,
-    InternalImageType >    DataHelperType;
+    FeatureImageType > DataHelperType;
 
   typedef ConstrainedRegionBasedLevelSetFunctionSharedData< InternalImageType,
-    InternalImageType, DataHelperType > SharedDataHelperType;
+    FeatureImageType, DataHelperType > SharedDataHelperType;
 
   typedef ScalarChanAndVeseLevelSetFunction< InternalImageType,
-    InternalImageType, SharedDataHelperType > FunctionType;
+    FeatureImageType, SharedDataHelperType > FunctionType;
   typedef ScalarChanAndVeseSparseLevelSetImageFilter< InternalImageType,
-    InternalImageType, InternalImageType, FunctionType, SharedDataHelperType > MultiLevelSetType;
+    FeatureImageType, FeatureImageType, FunctionType, SharedDataHelperType > MultiLevelSetType;
   typedef typename MultiLevelSetType::Pointer MultiLevelSetPointer;
 
   typedef AtanRegularizedHeavisideStepFunction< InternalPixelType, InternalPixelType >
@@ -113,9 +112,6 @@ public:
     InternalImageType >    FastMarchingFilterType;
   typedef typename FastMarchingFilterType::NodeContainer  NodeContainer;
   typedef typename FastMarchingFilterType::NodeType       NodeType;
-
-  typedef CastImageFilter< FeatureImageType, InternalImageType > FeatureCastType;
-  typedef typename FeatureCastType::Pointer FeatureCastPointer;
 
   typedef ImageToVTKImageFilter< InternalImageType >  ConverterType;
   typedef typename ConverterType::Pointer             ConverterPointer;
@@ -140,11 +136,7 @@ public:
 
   void SetFeatureImage( FeatureImageType* iImage )
     {
-    FeatureCastPointer caster = FeatureCastType::New();
-    caster->SetInput( iImage );
-    caster->Update();
-
-    m_FeatureImage = caster->GetOutput();
+    m_FeatureImage = iImage;
     }
 
   void Update()
@@ -170,7 +162,7 @@ protected:
 
   vtkImageData*         m_VTKImage;
   ConverterPointer      m_Converter;
-  InternalImagePointer  m_FeatureImage; // Raw image -- very large in size
+  FeatureImagePointer   m_FeatureImage; // Raw image -- very large in size
   InternalPointType     m_Center; // Center of the cell/nucleus
   InternalSizeType      m_Size; // Level-set image size
   InternalCoordRepType  m_Radius; // Radius of the cell
@@ -184,8 +176,8 @@ protected:
       std::cerr <<"m_FeatureImage is Null" <<std::endl;
       return;
       }
-    InternalSpacingType spacing = m_FeatureImage->GetSpacing();
-    InternalSizeType inputSize = m_FeatureImage->GetLargestPossibleRegion().GetSize();
+    FeatureSpacingType spacing = m_FeatureImage->GetSpacing();
+    FeatureSizeType inputSize = m_FeatureImage->GetLargestPossibleRegion().GetSize();
 
     InternalIndexType start;
     InternalPointType origin;
