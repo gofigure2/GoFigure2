@@ -1315,7 +1315,7 @@ void UpdateValueInDB(std::string ServerName, std::string login,
   querystream << field;
   querystream << " = '";
   querystream << newValue;
-  querystream << " WHERE ";
+  querystream << "' WHERE ";
   querystream << ColumnName;
   querystream << " = '";
   querystream << value;
@@ -1422,11 +1422,16 @@ int MaxValueForOneColumnInTable(
     query->Delete();
     return MaxValue;
     }
-  
-  MaxValue = query->DataValue(0).ToInt();
+
+  if (query->NextRow())
+    {
+    MaxValue = query->DataValue(0).ToInt();
+    }
+
   DataBaseConnector->Close();
   DataBaseConnector->Delete();
   query->Delete();
 
   return MaxValue;
+  
 }

@@ -207,7 +207,18 @@ protected:
 protected slots:
   void CreateContextMenu(const QPoint &pos);
   void DeleteContour();
+
+  //Note Lydie: to do it in a separate file to use it as a collection of traces:
+  /** brief Change the meshID of the selected contours in the table figure to the
+  int MeshID: */
   void AddSelectedContoursToMesh(int MeshID);
+
+  /** brief Create a New Mesh Row in the table mesh and change the meshID of the
+  selected contours to the new MeshID created:*/
+  void CreateNewMeshFromSelection();
+
+  /**brief Create a new mesh Row in the table mesh and return the meshID from the 
+  created row: */
   int  CreateNewMesh();
 
 };

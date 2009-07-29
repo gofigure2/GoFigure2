@@ -170,7 +170,7 @@ void QGoPrintDatabase::CreateContextMenu(const QPoint &pos)
 {
   QMenu* ContourMenu = new QMenu;
   ContourMenu->addAction(tr("Delete Contour"),this,SLOT(DeleteContour()));
-  ContourMenu->addAction(tr("Create Mesh"));
+  ContourMenu->addAction(tr("Create Mesh"),this,SLOT(CreateNewMeshFromSelection()));
   ContourMenu->exec(this->mapToGlobal(pos));
 
 }
@@ -205,17 +205,33 @@ void QGoPrintDatabase::AddSelectedContoursToMesh(int MeshID)
       "figureID", ListSelectedFigures.at(i).toStdString());
     }
 }
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
 int QGoPrintDatabase::CreateNewMesh()
 {
-  typedef GoDBRecordSet< GoDBMeshRow > myRecordSetType;
-  myRecordSetType* RecordSet = new myRecordSetType;
-  RecordSet->SetServerName(m_Server.toStdString());
-  RecordSet->SetUser(m_User.toStdString());
-  RecordSet->SetPassword(m_Password.toStdString());
-  RecordSet->SetDataBaseName(m_NameDB.toStdString());
-  RecordSet->SetTableName( "mesh" );
+  GoDBMeshRow myNewObject;  
+  AddNewObjectInTable< GoDBMeshRow >(
+      m_Server.toStdString(),
+      m_User.toStdString(),
+      m_Password.toStdString(),
+      m_NameDB.toStdString(), "mesh", myNewObject );  
+  
+  int ID = MaxValueForOneColumnInTable(
+    m_Server.toStdString(), m_User.toStdString(),
+    m_Password.toStdString(),m_NameDB.toStdString(),
+    "meshID","mesh" );
 
-  return 1;
+  std::cout<<"the last insert ID is: "<<ID<<std::endl;
 
+  return ID;
 
  }
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+void QGoPrintDatabase::CreateNewMeshFromSelection()
+{
+  int NewMeshID = this->CreateNewMesh();
+  AddSelectedContoursToMesh(NewMeshID);
+}
