@@ -66,6 +66,7 @@ public:
   void QMEGAVTKADDON2_EXPORT FillTableFromDatabase(QString iNameDB,QString iServer,QString iUser,
   QString iPassword,unsigned int iExpID,QString iExpName);
   QMEGAVTKADDON2_EXPORT QTableWidgetChild* FigureTable;
+  QMEGAVTKADDON2_EXPORT QTableWidgetChild* MeshTable;
   void QMEGAVTKADDON2_EXPORT UpdateTableFromDB();
 
 signals:

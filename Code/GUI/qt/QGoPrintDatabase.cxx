@@ -69,6 +69,7 @@ QGoPrintDatabase::QGoPrintDatabase()
   DBTabWidget->setTabShape(QTabWidget::Triangular);
   DBTabWidget->removeTab(0);
   FigureTable = new QTableWidgetChild;
+  MeshTable = new QTableWidgetChild;
   this->setContextMenuPolicy(Qt::CustomContextMenu);
 
   
@@ -126,12 +127,8 @@ void QGoPrintDatabase::FillTableFromDatabase(QString iNameDB,QString iServer,QSt
   m_ExpName = iExpName;
   
   this->setWindowTitle(QString("DB: %1 - Exp: %2").arg(m_NameDB).arg(m_ExpName));
-  GetContentAndDisplayFromDB< GoDBFigureRow     >("figure", FigureTable);
-
-  //Need to create GoDBMeshRow,etc...first
-  //QPrintTable ("mesh");
-  //QPrintTable ("track");
-  //QPrintTable ("lineage");
+  GetContentAndDisplayFromDB< GoDBFigureRow >("figure", FigureTable);
+  GetContentAndDisplayFromDB< GoDBMeshRow   >("mesh", MeshTable);
 
 }
 //------------------------------------------------------------------------------
@@ -204,6 +201,7 @@ void QGoPrintDatabase::AddSelectedContoursToMesh(int MeshID)
       "figure", "meshID", MeshIDstring,
       "figureID", ListSelectedFigures.at(i).toStdString());
     }
+  UpdateContentAndDisplayFromDB<GoDBFigureRow>("figure", FigureTable);
 }
 //------------------------------------------------------------------------------
 
@@ -222,7 +220,7 @@ int QGoPrintDatabase::CreateNewMesh()
     m_Password.toStdString(),m_NameDB.toStdString(),
     "meshID","mesh" );
 
-  std::cout<<"the last insert ID is: "<<ID<<std::endl;
+  UpdateContentAndDisplayFromDB<GoDBMeshRow>("mesh", MeshTable);
 
   return ID;
 
