@@ -89,7 +89,7 @@ protected:
   int ID = MaxValueForOneColumnInTable(
     m_Server.toStdString(), m_User.toStdString(),
     m_Password.toStdString(),m_NameDB.toStdString(),
-    m_CollectionIDName,m_CollectionName ); 
+    m_CollectionIDName.toStdString(),m_CollectionName.toStdString()); 
 
   //UpdateContentAndDisplayFromDB<GoDBMeshRow>("mesh", MeshTable);
 
