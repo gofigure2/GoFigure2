@@ -68,6 +68,10 @@ QGoPrintDatabase::QGoPrintDatabase()
   DBTabWidget->removeTab(0);
   FigureTable = new QTableWidgetChild;
   MeshTable = new QTableWidgetChild;
+  CollectionOfFigures = new GoDBCollectionOfTraces("Mesh", 
+  "MeshID","figure", "figureID");
+  CollectionOfMeshes = new GoDBCollectionOfTraces( "Track",
+  "TrackID", "mesh", "meshID");
   this->setContextMenuPolicy(Qt::CustomContextMenu);
 
   
@@ -125,8 +129,11 @@ void QGoPrintDatabase::FillTableFromDatabase(QString iNameDB,QString iServer,QSt
   m_ExpName = iExpName;
   
   this->setWindowTitle(QString("DB: %1 - Exp: %2").arg(m_NameDB).arg(m_ExpName));
+
   GetContentAndDisplayFromDB< GoDBFigureRow >("figure", FigureTable);
+  CollectionOfFigures->SetDatabaseVariables(m_Server,m_User,m_Password,m_NameDB);
   GetContentAndDisplayFromDB< GoDBMeshRow   >("mesh", MeshTable);
+  CollectionOfMeshes->SetDatabaseVariables(m_Server,m_User,m_Password,m_NameDB);
 
 }
 //------------------------------------------------------------------------------
@@ -142,9 +149,11 @@ void QGoPrintDatabase::closeEvent(QCloseEvent* event)
   if (r == QMessageBox::Yes)
     {
     event->accept();
-    QByteArray state = FigureTable->horizontalHeader()->saveState();
+    QByteArray stateFigureTable = FigureTable->horizontalHeader()->saveState();
+    QByteArray stateMeshTable = MeshTable->horizontalHeader()->saveState();
     QSettings settings( "MegasonLab", "Gofigure2" );
-    settings.setValue("StateTableWidget", state);
+    settings.setValue("StateFigureTable", stateFigureTable);
+    settings.setValue("StateMeshTable", stateMeshTable);
     }
   else
     {
@@ -165,7 +174,7 @@ void QGoPrintDatabase::CreateContextMenu(const QPoint &pos)
 {
   QMenu* ContourMenu = new QMenu;
   ContourMenu->addAction(tr("Delete Contour"),this,SLOT(DeleteContour()));
-  ContourMenu->addAction(tr("Create Mesh"),this,SLOT(CreateNewMeshFromSelection()));
+  ContourMenu->addAction(tr("Create New Collection"),this,SLOT(CreateCorrespondingCollection()));
   ContourMenu->exec(this->mapToGlobal(pos));
 
 }
@@ -188,46 +197,57 @@ void QGoPrintDatabase::DeleteContour()
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-void QGoPrintDatabase::AddSelectedContoursToMesh(int MeshID)
+void QGoPrintDatabase::CreateCorrespondingCollection()
 {
-  std::string MeshIDstring = ConvertToString<int>(MeshID);
-  QStringList ListSelectedFigures = this->FigureTable->ValuesForSelectedRows("figureID");
-  for (int i=0; i<ListSelectedFigures.size();i++)
+  QString TabName = InWhichTableAreWe();
+  int TabIndex;
+
+  if (TabName == "figure")
     {
-    UpdateValueInDB(m_Server.toStdString(), m_User.toStdString(),
-      m_Password.toStdString(), m_NameDB.toStdString(),
-      "figure", "meshID", MeshIDstring,
-      "figureID", ListSelectedFigures.at(i).toStdString());
+    TabIndex = 0;
     }
-  UpdateContentAndDisplayFromDB<GoDBFigureRow>("figure", FigureTable);
-}
-//------------------------------------------------------------------------------
+  if (TabName == "mesh")
+    {
+    TabIndex = 1;
+    }
 
-//------------------------------------------------------------------------------
-int QGoPrintDatabase::CreateNewMesh()
-{
-  GoDBMeshRow myNewObject;  
-  AddNewObjectInTable< GoDBMeshRow >(
-      m_Server.toStdString(),
-      m_User.toStdString(),
-      m_Password.toStdString(),
-      m_NameDB.toStdString(), "mesh", myNewObject );  
+  const QString figure("figure");
+  switch (TabIndex)
+    {
+    case 0: //figure
+      {
+      //add the tableWidgetChild in the CollectionOfTraces?
+      QStringList ListSelectedTraces = this->FigureTable->ValuesForSelectedRows("figureID");
+      CollectionOfFigures->CreateNewCollectionFromSelection<GoDBMeshRow>(ListSelectedTraces);
+      this->UpdateContentAndDisplayFromDB<GoDBFigureRow>("Figure", FigureTable);
+      this->UpdateContentAndDisplayFromDB<GoDBMeshRow>("Mesh",MeshTable);
+      break;
+      }
+    case 1: //mesh
+      {
+      //QStringList ListSelectedFigures = this->MeshTable->ValuesForSelectedRows("meshID");
+      //CollectionOfMeshes->CreateNewCollectionFromSelection<GoDBTrackRow>();
+      //this->UpdateContentAndDisplayFromDB<GoDBMeshRow>("Mesh",MeshTable);
+      //this->UpdateContentAndDisplayFromDB<GoDBTrackRow>("Track",TrackTable);
+      break;
+      }
+    default:
+      {
+      std::cout<<"error, tab doesn't exist";
+      std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
+      std::cout << std::endl;
+      break;
+      }
+    }
   
-  int ID = MaxValueForOneColumnInTable(
-    m_Server.toStdString(), m_User.toStdString(),
-    m_Password.toStdString(),m_NameDB.toStdString(),
-    "meshID","mesh" );
-
-  UpdateContentAndDisplayFromDB<GoDBMeshRow>("mesh", MeshTable);
-
-  return ID;
-
- }
-//------------------------------------------------------------------------------
-
-//------------------------------------------------------------------------------
-void QGoPrintDatabase::CreateNewMeshFromSelection()
-{
-  int NewMeshID = this->CreateNewMesh();
-  AddSelectedContoursToMesh(NewMeshID);
 }
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+QString QGoPrintDatabase::InWhichTableAreWe ()
+{
+  int CurrentIndex = this->DBTabWidget->currentIndex();
+  QString TabName = this->DBTabWidget->tabText(CurrentIndex);
+  return TabName;
+}
+  

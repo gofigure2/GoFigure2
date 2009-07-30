@@ -51,13 +51,24 @@ class GoDBCollectionOfTraces
 
 public:
 
-  explicit QMEGAVTKADDON2_EXPORT GoDBCollectionOfTraces( 
-    QString CollectionName, QString CollectionIDName, 
-    QString Traces,QString TracesIDName );
+  explicit QMEGAVTKADDON2_EXPORT GoDBCollectionOfTraces();
+  explicit QMEGAVTKADDON2_EXPORT GoDBCollectionOfTraces (QString CollectionName,
+    QString CollectionIDName, QString Traces,QString TracesIDName);
   virtual QMEGAVTKADDON2_EXPORT ~GoDBCollectionOfTraces();
+  void QMEGAVTKADDON2_EXPORT SetDatabaseVariables(
+    QString Server,QString User,QString Password, QString NameDB);
 
-//signal:
- // void TableContentChanged();
+  template< class myT >
+  void QMEGAVTKADDON2_EXPORT CreateNewCollectionFromSelection(QStringList ListSelectedTraces)
+  {
+  int NewCollectionID = this->CreateNewCollection<myT>();
+  AddSelectedTracesToCollection(ListSelectedTraces,NewCollectionID);
+  }
+
+  QString CollectionName()
+    { return m_CollectionName;}
+  QString TracesName()
+    { return m_TracesName;}
 
 protected:
 
@@ -72,36 +83,33 @@ protected:
 
   /** \brief Delete in the Database all the traces listed in the QStringList */
   void DeleteTraces(QStringList TracesToDelete);
-  void SetDatabaseVariables(QString Server, 
-    QString User,
-    QString Password, 
-    QString NameDB);
-  void AddSelectedTracesToCollection( QStringList ListSelectedTraces, 
-    int CollectionID);
+
+  /** \bried Update the collectionID of the selected traces in the DB traces table
+  with the new collectionID: */
+  void AddSelectedTracesToCollection(QStringList ListSelectedTraces,int newCollectionID);
+
+  /** \brief Create a new collection Row in the collection table and return the 
+  collectionID from the created row: */
   int  CreateNewCollection();
-  void CreateNewCollectionFromSelection( QStringList ListSelectedTraces );
+ 
 
   template< class myT >
   int CreateNewCollection()
-    {
-    myT myNewObject;  
-    AddNewObjectInTable< myT >( m_Server.toStdString(),
+  {
+  myT myNewObject;  
+  AddNewObjectInTable< myT >(
+      m_Server.toStdString(),
       m_User.toStdString(),
       m_Password.toStdString(),
       m_NameDB.toStdString(), 
-      m_CollectionName, 
-      myNewObject );  
+      m_CollectionName.toStdString(), myNewObject );  
   
-    int ID = MaxValueForOneColumnInTable(
-      m_Server.toStdString(), m_User.toStdString(),
-      m_Password.toStdString(), m_NameDB.toStdString(),
-      m_CollectionIDName.toStdString(), m_CollectionName.toStdString() ); 
+  int ID = MaxValueForOneColumnInTable(
+    m_Server.toStdString(), m_User.toStdString(),
+    m_Password.toStdString(),m_NameDB.toStdString(),
+    m_CollectionIDName.toStdString(),m_CollectionName.toStdString()); 
 
-  //UpdateContentAndDisplayFromDB<GoDBMeshRow>("mesh", MeshTable);
-
-    return ID; 
-    }
-
+  return ID; 
+  }
 };
 #endif
-

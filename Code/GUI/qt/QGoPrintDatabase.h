@@ -47,6 +47,7 @@
 #include "GoDBRecordSet.h"
 #include "GoDBFigureRow.h"
 #include "QTableWidgetChild.h"
+#include "GoDBCollectionOfTraces.h"
 
 class QGoPrintDatabase : public QWidget,
   private Ui::WidgetPrintDatabase
@@ -76,6 +77,11 @@ signals:
 protected:
   void QPrintColumnNames( QString TableName,
     std::vector< std::string > ColumnNames, QTableWidgetChild* QTabTableName );
+  GoDBCollectionOfTraces* CollectionOfFigures;
+  GoDBCollectionOfTraces* CollectionOfMeshes;
+  
+  /** \brief Return the name of the tab currently used: */
+  QString InWhichTableAreWe ();
 
   /**
     \brief get the columns names and the values of the table (type T) from the
@@ -208,19 +214,10 @@ protected:
 protected slots:
   void CreateContextMenu(const QPoint &pos);
   void DeleteContour();
-
-  //Note Lydie: to do it in a separate file to use it as a collection of traces:
-  /** brief Change the meshID of the selected contours in the table figure to the
-  int MeshID: */
-  void AddSelectedContoursToMesh(int MeshID);
-
-  /** brief Create a New Mesh Row in the table mesh and change the meshID of the
-  selected contours to the new MeshID created:*/
-  void CreateNewMeshFromSelection();
-
-  /**brief Create a new mesh Row in the table mesh and return the meshID from the 
-  created row: */
-  int  CreateNewMesh();
+  
+  /** brief Create a new Collection row in the collection table and change the collection ID of the
+  selected contours to the new CollectionID created:*/
+  void CreateCorrespondingCollection();
 
 };
 

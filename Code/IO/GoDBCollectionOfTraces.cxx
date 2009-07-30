@@ -44,6 +44,13 @@
 #include <QString>
 #include <string>
 
+
+GoDBCollectionOfTraces::GoDBCollectionOfTraces()
+ {
+ }
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
 GoDBCollectionOfTraces::GoDBCollectionOfTraces(QString CollectionName, 
   QString CollectionIDName,QString TracesName, QString TracesIDName)
 {
@@ -90,48 +97,14 @@ void GoDBCollectionOfTraces::DeleteTraces(QStringList TracesToDelete)
 
 //------------------------------------------------------------------------------
 void GoDBCollectionOfTraces::AddSelectedTracesToCollection(QStringList ListSelectedTraces,
-  int CollectionID)
+  int newCollectionID)
 {
-  std::string CollectionIDstring = ConvertToString<int>(CollectionID);
- // QStringList ListSelectedFigures = this->FigureTable->ValuesForSelectedRows("figureID");
-  
+  std::string newCollectionIDstring = ConvertToString<int>(newCollectionID);
   for (int i=0; i<ListSelectedTraces.size();i++)
     {
     UpdateValueInDB(m_Server.toStdString(), m_User.toStdString(),
       m_Password.toStdString(), m_NameDB.toStdString(),
-      m_TracesName.toStdString(), m_CollectionIDName.toStdString(), CollectionIDstring,
+      m_TracesName.toStdString(), m_CollectionIDName.toStdString(), newCollectionIDstring,
       m_TracesIDName.toStdString(), ListSelectedTraces.at(i).toStdString());
     }
- // UpdateContentAndDisplayFromDB<GoDBFigureRow>("figure", FigureTable);
-}
-//------------------------------------------------------------------------------
-
-//------------------------------------------------------------------------------
-//to be a template function with type: GoDBMeshRow, GoDBLineageRow.....
-/*int GoDBCollectionOfTraces::CreateNewCollection()
-{
-  GoDBMeshRow myNewObject;  
-  AddNewObjectInTable< GoDBMeshRow >(
-      m_Server.toStdString(),
-      m_User.toStdString(),
-      m_Password.toStdString(),
-      m_NameDB.toStdString(), m_CollectionName, myNewObject );  
-  
-  int ID = MaxValueForOneColumnInTable(
-    m_Server.toStdString(), m_User.toStdString(),
-    m_Password.toStdString(),m_NameDB.toStdString(),
-    m_CollectionIDName,m_CollectionName );
-
-  //UpdateContentAndDisplayFromDB<GoDBMeshRow>("mesh", MeshTable);
-
-  return ID;
-
- }*/
-//------------------------------------------------------------------------------
-
-//------------------------------------------------------------------------------
-void GoDBCollectionOfTraces::CreateNewCollectionFromSelection(QStringList ListSelectedTraces)
-{
-  int NewCollectionID = this->CreateNewCollection();
-  AddSelectedTracesToCollection(ListSelectedTraces,NewCollectionID);
 }
