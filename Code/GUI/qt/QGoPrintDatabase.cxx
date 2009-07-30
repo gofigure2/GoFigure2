@@ -173,7 +173,7 @@ void QGoPrintDatabase::UpdateTableFromDB()
 void QGoPrintDatabase::CreateContextMenu(const QPoint &pos)
 {
   QMenu* ContourMenu = new QMenu;
-  ContourMenu->addAction(tr("Delete Contour"),this,SLOT(DeleteContour()));
+  ContourMenu->addAction(tr("Delete Traces"),this,SLOT(DeleteTraces()));
   ContourMenu->addAction(tr("Create New Collection"),this,SLOT(CreateCorrespondingCollection()));
   ContourMenu->exec(this->mapToGlobal(pos));
 
@@ -181,17 +181,48 @@ void QGoPrintDatabase::CreateContextMenu(const QPoint &pos)
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-void QGoPrintDatabase::DeleteContour()
+void QGoPrintDatabase::DeleteTraces()
 {
-  QStringList ContourToDelete = this->FigureTable->ValuesForSelectedRows("figureID");
-  for (int i = 0; i<ContourToDelete.size();i++)
+  QString TabName = InWhichTableAreWe();
+  int TabIndex;
+
+  if (TabName == "figure")
     {
-    std::string ID = ContourToDelete.at(i).toStdString();
-    DeleteRow(m_Server.toStdString(), m_User.toStdString(), m_Password.toStdString(),
-      m_NameDB.toStdString(),"figure", "figureID", ID);
+    TabIndex = 0;
     }
-  emit TableContentChanged();
-  UpdateContentAndDisplayFromDB<GoDBFigureRow>("figure", FigureTable);
+  if (TabName == "mesh")
+    {
+    TabIndex = 1;
+    }
+
+  const QString figure("figure");
+  switch (TabIndex)
+    {
+    case 0: //figure
+      {
+      //add the tableWidgetChild in the CollectionOfTraces?
+      QStringList FiguresToDelete = this->FigureTable->ValuesForSelectedRows("figureID");
+      CollectionOfFigures->DeleteTraces(FiguresToDelete);
+      this->UpdateContentAndDisplayFromDB<GoDBFigureRow>("Figure", FigureTable);
+      emit TableContentChanged();
+      break;
+      }
+    case 1: //mesh
+      {
+      QStringList MeshesToDelete = this->MeshTable->ValuesForSelectedRows("meshID");
+      CollectionOfMeshes->DeleteTraces(MeshesToDelete);   
+      this->UpdateContentAndDisplayFromDB<GoDBMeshRow>("Mesh",MeshTable);
+      emit TableContentChanged();
+      break;
+      }
+    default:
+      {
+      std::cout<<"error, tab doesn't exist";
+      std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
+      std::cout << std::endl;
+      break;
+      }
+    }
   
 }
 //------------------------------------------------------------------------------
@@ -225,7 +256,7 @@ void QGoPrintDatabase::CreateCorrespondingCollection()
       }
     case 1: //mesh
       {
-      //QStringList ListSelectedFigures = this->MeshTable->ValuesForSelectedRows("meshID");
+      //QStringList ListSelectedMeshes = this->MeshTable->ValuesForSelectedRows("meshID");
       //CollectionOfMeshes->CreateNewCollectionFromSelection<GoDBTrackRow>();
       //this->UpdateContentAndDisplayFromDB<GoDBMeshRow>("Mesh",MeshTable);
       //this->UpdateContentAndDisplayFromDB<GoDBTrackRow>("Track",TrackTable);

@@ -82,16 +82,12 @@ void GoDBCollectionOfTraces::SetDatabaseVariables(QString Server,QString User,
 //------------------------------------------------------------------------------
 void GoDBCollectionOfTraces::DeleteTraces(QStringList TracesToDelete)
 {
-  //QStringList ContourToDelete = this->FigureTable->ValuesForSelectedRows("figureID");
   for (int i = 0; i<TracesToDelete.size();i++)
     {
     std::string ID = TracesToDelete.at(i).toStdString();
     DeleteRow(m_Server.toStdString(), m_User.toStdString(), m_Password.toStdString(),
       m_NameDB.toStdString(),m_TracesName.toStdString(), m_TracesIDName.toStdString(), ID);
     }
- // emit TableContentChanged();
- // UpdateContentAndDisplayFromDB<GoDBFigureRow>("figure", FigureTable);
-  
 }
 //------------------------------------------------------------------------------
 

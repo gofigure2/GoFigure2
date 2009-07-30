@@ -58,6 +58,9 @@ public:
   void QMEGAVTKADDON2_EXPORT SetDatabaseVariables(
     QString Server,QString User,QString Password, QString NameDB);
 
+  /** \brief Delete in the Database all the traces listed in the QStringList */
+  void QMEGAVTKADDON2_EXPORT DeleteTraces(QStringList TracesToDelete);
+
   template< class myT >
   void QMEGAVTKADDON2_EXPORT CreateNewCollectionFromSelection(QStringList ListSelectedTraces)
   {
@@ -80,9 +83,6 @@ protected:
   QString m_CollectionIDName;
   QString m_TracesName;
   QString m_TracesIDName;
-
-  /** \brief Delete in the Database all the traces listed in the QStringList */
-  void DeleteTraces(QStringList TracesToDelete);
 
   /** \bried Update the collectionID of the selected traces in the DB traces table
   with the new collectionID: */
