@@ -51,8 +51,9 @@ class GoDBCollectionOfTraces
 
 public:
 
-  explicit QMEGAVTKADDON2_EXPORT GoDBCollectionOfTraces (QString CollectionName,
-    QString CollectionIDName, QString Traces,QString TracesIDName);
+  explicit QMEGAVTKADDON2_EXPORT GoDBCollectionOfTraces( 
+    QString CollectionName, QString CollectionIDName, 
+    QString Traces,QString TracesIDName );
   virtual QMEGAVTKADDON2_EXPORT ~GoDBCollectionOfTraces();
 
 //signal:
@@ -71,31 +72,36 @@ protected:
 
   /** \brief Delete in the Database all the traces listed in the QStringList */
   void DeleteTraces(QStringList TracesToDelete);
-  void SetDatabaseVariables(QString Server,QString User,QString Password, QString NameDB);
-  void AddSelectedTracesToCollection(QStringList ListSelectedTraces,int CollectionID);
+  void SetDatabaseVariables(QString Server, 
+    QString User,
+    QString Password, 
+    QString NameDB);
+  void AddSelectedTracesToCollection( QStringList ListSelectedTraces, 
+    int CollectionID);
   int  CreateNewCollection();
-  void CreateNewCollectionFromSelection(QStringList ListSelectedTraces);
+  void CreateNewCollectionFromSelection( QStringList ListSelectedTraces );
 
   template< class myT >
   int CreateNewCollection()
-  {
-  myT myNewObject;  
-  AddNewObjectInTable< myT >(
-      m_Server.toStdString(),
+    {
+    myT myNewObject;  
+    AddNewObjectInTable< myT >( m_Server.toStdString(),
       m_User.toStdString(),
       m_Password.toStdString(),
-      m_NameDB.toStdString(), m_CollectionName, myNewObject );  
+      m_NameDB.toStdString(), 
+      m_CollectionName, 
+      myNewObject );  
   
-  int ID = MaxValueForOneColumnInTable(
-    m_Server.toStdString(), m_User.toStdString(),
-    m_Password.toStdString(),m_NameDB.toStdString(),
-    m_CollectionIDName.toStdString(),m_CollectionName.toStdString()); 
+    int ID = MaxValueForOneColumnInTable(
+      m_Server.toStdString(), m_User.toStdString(),
+      m_Password.toStdString(), m_NameDB.toStdString(),
+      m_CollectionIDName.toStdString(), m_CollectionName.toStdString() ); 
 
   //UpdateContentAndDisplayFromDB<GoDBMeshRow>("mesh", MeshTable);
 
-  return ID; 
-  }
-
+    return ID; 
+    }
 
 };
 #endif
+

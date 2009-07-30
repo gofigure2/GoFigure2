@@ -40,15 +40,15 @@
 #ifndef __ConvertToStringHelper_h
 #define __ConvertToStringHelper_h
 
-
+#include <string>
 
 template< typename T >
-  std::string ConvertToString( const T& ToConvert)
-    {
-    std::stringstream st;
-    st << ToConvert;
-    std::string mystring = st.str();
-    return mystring;
-    }
+std::string ConvertToString( const T& ToConvert )
+  {
+  std::stringstream st;
+  st << ToConvert;
+  return st.str();
+  }
 
 #endif
+

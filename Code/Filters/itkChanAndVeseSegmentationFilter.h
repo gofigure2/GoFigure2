@@ -106,10 +106,11 @@ public:
 
   typedef AtanRegularizedHeavisideStepFunction< InternalPixelType, InternalPixelType >
     DomainFunctionType;
-  typedef typename DomainFunctionType::Pointer DomainFunctionPointer;
+  typedef typename DomainFunctionType::Pointer 
+    DomainFunctionPointer;
 
   typedef  FastMarchingImageFilter< InternalImageType,
-    InternalImageType >    FastMarchingFilterType;
+    InternalImageType >                                   FastMarchingFilterType;
   typedef typename FastMarchingFilterType::NodeContainer  NodeContainer;
   typedef typename FastMarchingFilterType::NodeType       NodeType;
 

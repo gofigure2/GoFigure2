@@ -69,7 +69,6 @@ void AddNewObjectInTable( const std::string& ServerName,
   mySet.SaveInDB();
 
   return;
- }
-
+}
 #endif
 
