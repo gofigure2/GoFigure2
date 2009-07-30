@@ -16,6 +16,8 @@ using namespace std;
 
 int main(int argc,char* argv[])
 {
+  const unsigned int Dimension = 3;
+
   if ( argc<5 )
   {
     std::cout << "Usage: ";
@@ -30,14 +32,22 @@ int main(int argc,char* argv[])
     return 0;
   }
 
-  //read the LSM file:
+  //read the LSM file - can be multiple channels and time-points:
   vtkLSMReader* reader=vtkLSMReader::New();
   reader->SetFileName(argv[1]);
   reader->Update();
 
+  // Get the number of time-points
   int NumberOfTimePoints = reader->GetNumberOfTimePoints();
+
+  // Get the number of channels
   int NumberOfChannels = reader->GetNumberOfChannels();
 
+  // Print out the number of time points and channels
+  std::cout << NumberOfTimePoints << std::endl;
+  std::cout << NumberOfChannels << std::endl;
+
+  // Get the name of the file without the path
   unsigned int j, len = strlen(argv[1]);
   for( unsigned int i = len-1; i >= 0; i-- )
   {
@@ -54,7 +64,7 @@ int main(int argc,char* argv[])
     fname[i]  = argv[1][j+i];
 
   vtkMetaImageWriter * writer = vtkMetaImageWriter::New();
-  writer->SetFileDimensionality( 3 );
+  writer->SetFileDimensionality( Dimension );
 
   for( int timePoint = 0;timePoint < NumberOfTimePoints; timePoint++)
   {
@@ -62,12 +72,12 @@ int main(int argc,char* argv[])
     {
       for( int channel = 0; channel < NumberOfChannels; channel++)
       {
-        vtkLSMReader* treader = vtkLSMReader::New();
-        treader->SetFileName(argv[1]);
-        treader->SetUpdateTimePoint( timePoint );
-        treader->SetUpdateChannel( channel );
-        treader->Update();
+        // Select the specified time-point and channel for write-out
+        reader->SetUpdateTimePoint( timePoint );
+        reader->SetUpdateChannel( channel );
+        reader->Update();
 
+        // Determine the name of the file
         std::stringstream namebuffer;
         namebuffer << argv[3 + channel];
         namebuffer << fname;
@@ -75,8 +85,10 @@ int main(int argc,char* argv[])
         namebuffer << "_C_"  << channel;
         namebuffer << ".mha";
         std::cout << namebuffer.str().c_str() << std::endl;
+
+        // Write-out
         writer->SetFileName(namebuffer.str().c_str());
-        writer->SetInputConnection( treader->GetOutputPort( ) );
+        writer->SetInputConnection( reader->GetOutputPort( ) );
         writer->Write();
 	    }
     }
@@ -165,5 +177,6 @@ int main(int argc,char* argv[])
       }
     }
   }
+
   return EXIT_SUCCESS;
 }
