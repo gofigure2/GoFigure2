@@ -51,9 +51,10 @@ in the database: add a new experiment, new seriesgrid, new mesh...
 \param[in] myNewObject
 */
 template< class T >
-void AddNewObjectInTable( const std::string& ServerName, const std::string& User,
-  const std::string& Password, const std::string& NameDB,
-  const std::string& TableName, T& myNewObject )
+void AddNewObjectInTable( const std::string& ServerName, 
+  const std::string& User, const std::string& Password, 
+  const std::string& NameDB, const std::string& TableName, 
+  T& myNewObject )
 {
   typedef GoDBRecordSet< T >   SetType;
 

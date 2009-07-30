@@ -71,41 +71,41 @@ int main( int argc, char** argv )
   writer->Write();
   writer->Delete();
 
-  // map to graphics library
-  vtkPolyDataMapper *map = vtkPolyDataMapper::New();
-  map->SetInput( contours->GetOutput() );
-  map->SetScalarRange ( -10, 10 );
-
-  // actor coordinates geometry, properties, transformation
-  vtkActor *contActor = vtkActor::New();
-  contActor->SetMapper( map );
-  contActor->GetProperty()->SetLineWidth ( 1.5 );
-  contActor->GetProperty()->SetColor ( 0,0,1 ); // sphere color blue
-  contActor->GetProperty()->SetOpacity ( 1.0 );
-
-  vtkRenderer *ren = vtkRenderer::New();
-  ren->AddActor ( contActor );
-  ren->SetBackground ( 1., 1., 1. );
-
-  vtkRenderWindow *renWin1 = vtkRenderWindow::New();
-  renWin1->AddRenderer ( ren );
-
-  vtkRenderWindowInteractor *iren = vtkRenderWindowInteractor::New();
-  iren->SetRenderWindow ( renWin1 );
-
   bool test = atoi( argv[Dimension+3] );
-  renWin1->Render();
-
   if( !test )
     {
+    // map to graphics library
+    vtkPolyDataMapper *map = vtkPolyDataMapper::New();
+    map->SetInput( contours->GetOutput() );
+    map->SetScalarRange ( -10, 10 );
+
+    // actor coordinates geometry, properties, transformation
+    vtkActor *contActor = vtkActor::New();
+    contActor->SetMapper( map );
+    contActor->GetProperty()->SetLineWidth ( 1.5 );
+    contActor->GetProperty()->SetColor ( 0,0,1 ); // sphere color blue
+    contActor->GetProperty()->SetOpacity ( 1.0 );
+
+    vtkRenderer *ren = vtkRenderer::New();
+    ren->AddActor ( contActor );
+    ren->SetBackground ( 1., 1., 1. );
+
+    vtkRenderWindow *renWin1 = vtkRenderWindow::New();
+    renWin1->AddRenderer ( ren );
+
+    vtkRenderWindowInteractor *iren = vtkRenderWindowInteractor::New();
+    iren->SetRenderWindow ( renWin1 );
+
+    renWin1->Render();
     iren->Start();
+
+    iren->Delete();
+    renWin1->Delete();
+    ren->Delete();
+    contActor->Delete();
+    map->Delete();
     }
 
-  iren->Delete();
-  renWin1->Delete();
-  ren->Delete();
-  contActor->Delete();
-  map->Delete();
   contours->Delete();
 
   return EXIT_SUCCESS;
