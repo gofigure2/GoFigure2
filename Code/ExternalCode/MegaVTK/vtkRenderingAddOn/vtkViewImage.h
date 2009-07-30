@@ -140,12 +140,6 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage : public vtkImageViewer2
   vtkTypeRevisionMacro(vtkViewImage, vtkImageViewer2);
 
   /**
-     Get the orientation annotation. This annotation describes the orientation
-     of the slice plane, according to the rule
-     Right(R)-Left(L) Anterior(A)-Posterior(P) Inferior(I)-Superior(S)
-  */
-  vtkGetObjectMacro (OrientationAnnotation, vtkOrientationAnnotation);
-  /**
      Get the corner annotation.
   */
   ///\todo make the corner annotation such that it follows the slice number, the
@@ -254,18 +248,7 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage : public vtkImageViewer2
      Reset position - zoom - window/level to default
   */
   virtual void Reset(void);
-  /**
-     Show/Hide the annotations.
-  */
-  vtkGetMacro (ShowAnnotations, int);
-  /**
-     Show/Hide the annotations.
-  */
-  virtual void SetShowAnnotations( const bool& );
-  /**
-     Show/Hide the annotations.
-  */
-  vtkBooleanMacro( ShowAnnotations, int );
+
   /**
      Enable or Disable interaction on the view.
   */
@@ -313,7 +296,6 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage : public vtkImageViewer2
   // Description:
   vtkMatrix4x4*               OrientationMatrix;
   vtkCornerAnnotation*        CornerAnnotation;
-  vtkOrientationAnnotation*   OrientationAnnotation;
   vtkTextProperty*            TextProperty;
   vtkLookupTable*             LookupTable;
   vtkScalarBarActor*          ScalarBarActor;

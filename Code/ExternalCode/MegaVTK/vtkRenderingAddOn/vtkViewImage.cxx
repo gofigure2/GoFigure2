@@ -113,7 +113,6 @@ vtkCxxRevisionMacro(vtkViewImage, "$Revision$");
 vtkViewImage::vtkViewImage()
 {
   this->OrientationMatrix = vtkMatrix4x4::New();
-  this->OrientationAnnotation = vtkOrientationAnnotation::New();
   this->CornerAnnotation = vtkCornerAnnotation::New();
   this->TextProperty = vtkTextProperty::New();
   this->LookupTable = vtkLookupTable::New();
@@ -126,7 +125,7 @@ vtkViewImage::vtkViewImage()
   this->CornerAnnotation->SetNonlinearFontScaleFactor (0.35);
   this->CornerAnnotation->SetTextProperty ( this->TextProperty );
 //   this->OrientationAnnotation->SetNonlinearFontScaleFactor (0.3);
-  this->OrientationAnnotation->SetTextProperty ( this->TextProperty );
+
   this->ScalarBarActor->GetLabelTextProperty()->BoldOff();
   this->ScalarBarActor->GetLabelTextProperty()->ItalicOff();
   this->ScalarBarActor->SetNumberOfLabels (3);
@@ -147,7 +146,6 @@ vtkViewImage::vtkViewImage()
   this->ScalarBarActor->SetLookupTable (this->LookupTable);
 
   this->Renderer->AddViewProp ( this->CornerAnnotation );
-  this->Renderer->AddViewProp ( this->OrientationAnnotation );
 
   this->Renderer->AddViewProp ( this->ScalarBarActor );
 
@@ -182,7 +180,6 @@ void vtkViewImage::SetInput( vtkImageData* in )
 vtkViewImage::~vtkViewImage()
 {
   this->OrientationMatrix->Delete();
-  this->OrientationAnnotation->Delete();
   this->CornerAnnotation->Delete();
   this->LookupTable->Delete();
   this->ScalarBarActor->Delete();
@@ -423,13 +420,6 @@ bool vtkViewImage::GetEnabled (void)
   return ( this->Interactor->GetEnabled() == 1 );
 }
 
-//----------------------------------------------------------------------------
-void vtkViewImage::SetShowAnnotations(const bool& val )
-{
-  this->ShowAnnotations = val;
-  this->CornerAnnotation->SetVisibility(val);
-  this->OrientationAnnotation->SetVisibility(val);
-}
 //----------------------------------------------------------------------------
 void vtkViewImage::SetShowScalarBar( const bool& val )
 {

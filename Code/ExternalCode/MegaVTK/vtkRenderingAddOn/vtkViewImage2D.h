@@ -134,6 +134,13 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage2D : public vtkViewImage
   };
   //ETX
 
+   /**
+     Get the orientation annotation. This annotation describes the orientation
+     of the slice plane, according to the rule
+     Right(R)-Left(L) Anterior(A)-Posterior(P) Inferior(I)-Superior(S)
+  */
+  vtkGetObjectMacro (OrientationAnnotation, vtkOrientationAnnotation);
+
   vtkGetObjectMacro( ContourPicker, vtkCellPicker );
 
   /**
@@ -163,6 +170,20 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage2D : public vtkViewImage
      this can be in X, Y or Z).
   */
   virtual void SetSlice(int s);
+
+  /**
+     Show/Hide the annotations.
+  */
+  vtkGetMacro (ShowAnnotations, int);
+
+  /**
+     Show/Hide the annotations.
+  */
+  vtkBooleanMacro( ShowAnnotations, int );
+  /**
+     Show/Hide the annotations.
+  */
+  virtual void SetShowAnnotations( const bool& );
 
   /**
      Instead of setting the slice orientation to an axis (YZ - XZ - XY),
@@ -311,6 +332,7 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage2D : public vtkViewImage
   vtkPlane*     SliceImplicitPlane;
   vtkTransform* AdjustmentTransform;
   vtkPolyData*  SlicePlane;
+  vtkOrientationAnnotation*   OrientationAnnotation;
 
   vtkViewImage2DCommand*  Command;
   vtkCellPicker*          ContourPicker;

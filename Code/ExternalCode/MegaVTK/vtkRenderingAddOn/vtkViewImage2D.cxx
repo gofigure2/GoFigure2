@@ -137,6 +137,10 @@ vtkViewImage2D::vtkViewImage2D()
   this->ConventionMatrix->SetElement( 1,3, -1);
   this->ConventionMatrix->SetElement( 2,3, -1);
 
+  this->OrientationAnnotation = vtkOrientationAnnotation::New();
+  this->OrientationAnnotation->SetTextProperty( this->TextProperty );
+  this->Renderer->AddViewProp ( this->OrientationAnnotation );
+
   this->InitializeSlicePlane();
   this->Zoom = 1.;
 }
@@ -144,6 +148,7 @@ vtkViewImage2D::vtkViewImage2D()
 //----------------------------------------------------------------------------
 vtkViewImage2D::~vtkViewImage2D()
 {
+  this->OrientationAnnotation->Delete();
   this->ConventionMatrix->Delete();
   this->SliceImplicitPlane->Delete();
   this->SlicePlane->Delete();
@@ -189,6 +194,13 @@ void vtkViewImage2D::SetViewConvention(int convention)
   this->ConventionMatrix->SetElement( 2,3, z_watcher);
 
   this->UpdateOrientation();
+}
+//----------------------------------------------------------------------------
+void vtkViewImage2D::SetShowAnnotations(const bool& val )
+{
+  this->ShowAnnotations = val;
+  this->CornerAnnotation->SetVisibility(val);
+  this->OrientationAnnotation->SetVisibility(val);
 }
 
 //----------------------------------------------------------------------------
