@@ -41,6 +41,7 @@
 #define __GoDBCollectionOfTraces_h
 
 #include <QString>
+#include <QStringList>
 #include <QObject>
 #include "MegaVTK2Configure.h"
 #include "GoDBRecordSetHelper.h"
