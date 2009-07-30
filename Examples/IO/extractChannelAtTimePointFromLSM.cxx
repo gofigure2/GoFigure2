@@ -15,7 +15,7 @@ int main(int argc,char* argv[])
 {
   const unsigned int Dimension = 3;
 
-  if ( argc<5 )
+  if ( argc < 4 )
   {
     std::cout << "Usage: ";
     std::cout << "(exe) FileName TimePoint DirCh1 DirCh2";
@@ -35,6 +35,10 @@ int main(int argc,char* argv[])
   unsigned int NumberOfTimePoints = reader->GetNumberOfTimePoints();
   unsigned int timePoint = atoi( argv[2] );
 
+  if ( timePoint > NumberOfTimePoints )
+    {
+    std::cout << "The selected time-point exceeds the last time-point in the acquisition" << std::endl;
+    }
   // Print out the number of time points and channels
   std::cout << NumberOfTimePoints << std::endl;
   std::cout << NumberOfChannels << std::endl;
@@ -67,7 +71,7 @@ int main(int argc,char* argv[])
 
     // Determine the name of the file
     std::stringstream namebuffer;
-    namebuffer << argv[4 + channel];
+    namebuffer << argv[3 + channel];
     namebuffer << fname;
     namebuffer << "_T_"  << timePoint;
     namebuffer << "_C_"  << channel;
