@@ -172,10 +172,11 @@ void QGoPrintDatabase::UpdateTableFromDB()
 //------------------------------------------------------------------------------
 void QGoPrintDatabase::CreateContextMenu(const QPoint &pos)
 {
-  QMenu* ContourMenu = new QMenu;
-  ContourMenu->addAction(tr("Delete Traces"),this,SLOT(DeleteTraces()));
-  ContourMenu->addAction(tr("Create New Collection"),this,SLOT(CreateCorrespondingCollection()));
-  ContourMenu->exec(this->mapToGlobal(pos));
+  QMenu* ContextMenu = new QMenu;
+  ContextMenu->addAction(tr("Delete Traces"),this,SLOT(DeleteTraces()));
+  ContextMenu->addAction(tr("Create New Collection"),this,SLOT(CreateCorrespondingCollection()));
+  ContextMenu->addAction(tr("Add to existing Collection"),this,SLOT(AddToExistingCollection()));
+  ContextMenu->exec(this->mapToGlobal(pos));
 
 }
 //------------------------------------------------------------------------------
@@ -194,8 +195,6 @@ void QGoPrintDatabase::DeleteTraces()
     {
     TabIndex = 1;
     }
-
-  const QString figure("figure");
   switch (TabIndex)
     {
     case 0: //figure
@@ -241,8 +240,6 @@ void QGoPrintDatabase::CreateCorrespondingCollection()
     {
     TabIndex = 1;
     }
-
-  const QString figure("figure");
   switch (TabIndex)
     {
     case 0: //figure
@@ -281,4 +278,56 @@ QString QGoPrintDatabase::InWhichTableAreWe ()
   QString TabName = this->DBTabWidget->tabText(CurrentIndex);
   return TabName;
 }
-  
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+void QGoPrintDatabase::AddToExistingCollection()
+{
+  //input dialog with collection id to get from.
+/*
+  QStringList items;
+  items : to make a query to retrieve all the existing IDs.
+  int CollectionID = QInputDialog::getItem(this, tr("Collection ID"),
+                                          tr("Choose the collectionID you want the traces to be part of:"), items,
+                                          0,false, &ok);
+
+  QString TabName = InWhichTableAreWe();
+  int TabIndex;
+
+  if (TabName == "figure")
+    {
+    TabIndex = 0;
+    }
+  if (TabName == "mesh")
+    {
+    TabIndex = 1;
+    }
+
+  switch (TabIndex)
+    {
+    case 0: //figure
+      {
+      //add the tableWidgetChild in the CollectionOfTraces?
+      QStringList FiguresToDelete = this->FigureTable->ValuesForSelectedRows("figureID");
+      CollectionOfFigures->DeleteTraces(FiguresToDelete);
+      this->UpdateContentAndDisplayFromDB<GoDBFigureRow>("Figure", FigureTable);
+      emit TableContentChanged();
+      break;
+      }
+    case 1: //mesh
+      {
+      QStringList MeshesToDelete = this->MeshTable->ValuesForSelectedRows("meshID");
+      CollectionOfMeshes->DeleteTraces(MeshesToDelete);   
+      this->UpdateContentAndDisplayFromDB<GoDBMeshRow>("Mesh",MeshTable);
+      emit TableContentChanged();
+      break;
+      }
+    default:
+      {
+      std::cout<<"error, tab doesn't exist";
+      std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
+      std::cout << std::endl;
+      break;
+      }
+    }*/
+}
