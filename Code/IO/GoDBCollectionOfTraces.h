@@ -78,8 +78,7 @@ protected:
   template< class myT >
   int CreateNewCollection()
   {
-  myT myNewObject;
-  /*  
+  myT myNewObject;  
   AddNewObjectInTable< myT >(
       m_Server.toStdString(),
       m_User.toStdString(),
@@ -94,8 +93,6 @@ protected:
   //UpdateContentAndDisplayFromDB<GoDBMeshRow>("mesh", MeshTable);
 
   return ID; 
-  */
-  return 0;
   }
 
 
