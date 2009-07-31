@@ -357,6 +357,10 @@ private:
   void SaveValidatedContourAndNodesInFile( vtkPolyData* contour,
   vtkPolyData* nodes, QString iBaseName );
 
+  void SetupViewGivenQVTKWidget(
+  vtkViewImage2DWithContourWidget* iView,
+  QVTKWidget* iWidget );
+
 };
 
 

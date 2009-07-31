@@ -78,6 +78,16 @@
 #include "GoDBFigureRow.h"
 #include "GoDBRecordSet.h"
 
+void QImagePageViewTracer::SetupViewGivenQVTKWidget(
+  vtkViewImage2DWithContourWidget* iView,
+  QVTKWidget* iWidget )
+{
+  vtkRenderWindow* renwin = iWidget->GetRenderWindow( );
+  iView->SetRenderWindow( renwin );
+  iView->SetRenderer( renwin->GetRenderers()->GetFirstRenderer() );
+  iView->SetupInteractor( iWidget->GetInteractor() );
+}
+
 //------------------------------------------------------------------------------
 QImagePageViewTracer::QImagePageViewTracer( QWidget* parent ) : QWidget( parent )
 {
@@ -90,11 +100,9 @@ QImagePageViewTracer::QImagePageViewTracer( QWidget* parent ) : QWidget( parent 
   Tag = QString( "QImagePageViewTracer" );
   Image = 0;
 
-  Pool = vtkViewImage2DWithContourWidgetCollection::New();
-  View3D = vtkViewImage3D::New();
-
   m_DBExperimentID = -1;
   m_TimePoint      = -1;
+  Is2DImage = false;
 
   VtkEventQtConnector = vtkEventQtSlotConnect::New();
 
@@ -110,6 +118,44 @@ QImagePageViewTracer::QImagePageViewTracer( QWidget* parent ) : QWidget( parent 
     this->HbSplitter, SLOT( moveSplitter( int, int ) ) );
   QObject::connect(this->HbSplitter, SIGNAL( splitterMoved( int, int ) ),
     this->HtSplitter, SLOT( moveSplitter( int, int ) ) );
+
+  Pool = vtkViewImage2DWithContourWidgetCollection::New();
+  View3D = vtkViewImage3D::New();
+
+  vtkViewImage2DWithContourWidget* View1 =
+    vtkViewImage2DWithContourWidget::New();
+  View1->SetViewOrientation( vtkViewImage2D::VIEW_ORIENTATION_AXIAL );
+  View1->SetViewConvention( vtkViewImage2D::VIEW_CONVENTION_NEUROLOGICAL );
+
+  this->SetupViewGivenQVTKWidget( View1, this->QvtkWidget_XY );
+
+  this->Pool->AddItem( View1 );
+  View1->Delete();
+
+  vtkViewImage2DWithContourWidget* View2 =
+    vtkViewImage2DWithContourWidget::New();
+  View2->SetViewConvention( vtkViewImage2D::VIEW_CONVENTION_NEUROLOGICAL );
+  View2->SetViewOrientation (vtkViewImage2D::VIEW_ORIENTATION_CORONAL);
+
+  this->SetupViewGivenQVTKWidget( View2, this->QvtkWidget_2 );
+
+  this->Pool->AddItem( View2 );
+  View2->Delete();
+
+  vtkViewImage2DWithContourWidget* View3 =
+    vtkViewImage2DWithContourWidget::New();
+  View3->SetViewConvention( vtkViewImage2D::VIEW_CONVENTION_NEUROLOGICAL );
+  View3->SetViewOrientation( vtkViewImage2D::VIEW_ORIENTATION_SAGITTAL );
+
+  this->SetupViewGivenQVTKWidget( View3, this->QvtkWidget_3 );
+
+  this->Pool->AddItem( View3 );
+  View3->Delete();
+
+  vtkRenderWindow* renwin4 = this->QvtkWidget_XYZ->GetRenderWindow( );
+  this->View3D->SetRenderWindow( renwin4 );
+  this->View3D->SetupInteractor( this->QvtkWidget_XYZ->GetInteractor() );
+  this->Pool->SetExtraRenderWindow( renwin4 );
 }
 //------------------------------------------------------------------------------
 
@@ -204,9 +250,6 @@ void QImagePageViewTracer::setupUi( QWidget* parent )
   this->LayOutWidget4 = new QWidget;
   this->LayOutWidget4->setLayout( this->LayOut4 );
   this->HbSplitter->addWidget( this->LayOutWidget4 );
-
-  vtkRenderWindow* renwin4 = this->QvtkWidget_XYZ->GetRenderWindow( );
-  View3D->SetRenderWindow( renwin4 );
 
   retranslateUi(parent);
 
@@ -798,23 +841,12 @@ void QImagePageViewTracer::SetITKImage( TImage::Pointer itkImage )
 //------------------------------------------------------------------------------
 void QImagePageViewTracer::Set3DImage( vtkImageData* input )
 {
-  this->Pool->RemoveAllItems();
+//   this->Pool->RemoveAllItems();
 
-  vtkViewImage2DWithContourWidget* View1 =
-    vtkViewImage2DWithContourWidget::New();
+  vtkViewImage2DWithContourWidget* View1 = this->Pool->GetItem( 0 );
   View1->SetInput( this->Image );
 
-  vtkRenderWindow* renwin1 = this->QvtkWidget_XY->GetRenderWindow( );
-  renwin1->GetRenderers()->RemoveAllItems();
-  View1->SetupInteractor( this->QvtkWidget_XY->GetInteractor() );
-  View1->SetRenderWindow( renwin1 );
-  View1->SetRenderer( renwin1->GetRenderers()->GetFirstRenderer() );
-
-  View1->SetViewOrientation( vtkViewImage2D::VIEW_ORIENTATION_AXIAL );
-  View1->SetViewConvention( vtkViewImage2D::VIEW_CONVENTION_NEUROLOGICAL );
-
-  //     View1->SetContourWidgetInteractionOn();
-  this->Pool->AddItem( View1 );
+//   this->Pool->AddItem( View1 );
   this->View3D->Add2DPhantom(
     0, View1->GetImageActor(), View1->GetSlicePlane() );
 
@@ -843,22 +875,9 @@ void QImagePageViewTracer::Set3DImage( vtkImageData* input )
     vtkViewImage2DCommand::RequestedPositionEvent,
     this, SLOT( MoveSlider3() ) );
 
-  View1->Delete();
-
-  vtkViewImage2DWithContourWidget* View2 =
-    vtkViewImage2DWithContourWidget::New();
+  vtkViewImage2DWithContourWidget* View2 = this->Pool->GetItem( 1 );
   View2->SetInput( this->Image );
 
-  vtkRenderWindow* renwin2 = this->QvtkWidget_2->GetRenderWindow( );
-  renwin2->GetRenderers()->RemoveAllItems();
-  View2->SetRenderWindow( renwin2 );
-  View2->SetRenderer( renwin2->GetRenderers()->GetFirstRenderer() );
-  View2->SetupInteractor( this->QvtkWidget_2->GetInteractor() );
-
-  View2->SetViewConvention( vtkViewImage2D::VIEW_CONVENTION_NEUROLOGICAL );
-  View2->SetViewOrientation (vtkViewImage2D::VIEW_ORIENTATION_CORONAL);
-
-  this->Pool->AddItem( View2 );
   this->View3D->Add2DPhantom(
     1, View2->GetImageActor(), View2->GetSlicePlane() );
 
@@ -885,22 +904,9 @@ void QImagePageViewTracer::Set3DImage( vtkImageData* input )
     vtkViewImage2DCommand::RequestedPositionEvent,
     this, SLOT( MoveSlider3() ) );
 
-  View2->Delete();
-
-  vtkViewImage2DWithContourWidget* View3 =
-    vtkViewImage2DWithContourWidget::New();
+  vtkViewImage2DWithContourWidget* View3 = this->Pool->GetItem( 2 );
   View3->SetInput( this->Image );
 
-  vtkRenderWindow* renwin3 = this->QvtkWidget_3->GetRenderWindow( );
-  renwin3->GetRenderers()->RemoveAllItems();
-  View3->SetRenderWindow( renwin3 );
-  View3->SetRenderer( renwin3->GetRenderers()->GetFirstRenderer() );
-  View3->SetupInteractor( this->QvtkWidget_3->GetInteractor() );
-
-  View3->SetViewConvention( vtkViewImage2D::VIEW_CONVENTION_NEUROLOGICAL );
-  View3->SetViewOrientation (vtkViewImage2D::VIEW_ORIENTATION_SAGITTAL);
-
-  this->Pool->AddItem( View3 );
   this->View3D->Add2DPhantom(
     2, View3->GetImageActor(), View3->GetSlicePlane() );
 
@@ -928,22 +934,17 @@ void QImagePageViewTracer::Set3DImage( vtkImageData* input )
     vtkViewImage2DCommand::RequestedPositionEvent,
     this, SLOT( MoveSlider2() ) );
 
-  View3->Delete();
+//   int size[2] = {400, 400};
+//   this->Pool->SyncSetSize (size);
 
-  int size[2] = {400, 400};
-  this->Pool->SyncSetSize (size);
-
-  vtkRenderWindow* renwin4 = this->QvtkWidget_XYZ->GetRenderWindow( );
-  //     this->View3D->SetRenderWindow( renwin4 );
-  this->View3D->SetupInteractor( this->QvtkWidget_XYZ->GetInteractor() );
   this->View3D->SetInput( this->Image );
   this->View3D->SetVolumeRenderingOff();
   this->View3D->SetTriPlanarRenderingOn();
   this->View3D->SetShowScalarBar( false );
   this->View3D->ResetCamera();
-  this->Pool->SetExtraRenderWindow( renwin4 );
 
   this->Pool->Initialize();
+  this->Pool->InitializeAllObservers();
   this->Pool->SyncSetBackground( this->Pool->GetItem(0)->GetBackground() );
   this->Pool->SyncSetShowAnnotations( true );
 
@@ -988,7 +989,7 @@ void QImagePageViewTracer::Set3DImage( vtkImageData* input )
 void QImagePageViewTracer::Set2DImage( vtkImageData* input )
 {
   vtkViewImage2DWithContourWidget* View1 =
-    vtkViewImage2DWithContourWidget::New();
+    this->Pool->GetItem( 0 );
   View1->SetInput( this->Image );
 
   vtkRenderWindow* renwin1 = this->QvtkWidget_XY->GetRenderWindow( );
@@ -1005,9 +1006,9 @@ void QImagePageViewTracer::Set2DImage( vtkImageData* input )
 
   //     View1->SetContourWidgetInteractionOn();
   this->Pool->AddItem( View1 );
-  View1->Delete();
 
   this->Pool->Initialize();
+  this->Pool->InitializeAllObservers();
   this->Pool->SyncSetShowAnnotations( true );
   this->Pool->SyncSetShowScalarBar( false );
   this->Pool->SyncSetBackground( this->Pool->GetItem(0)->GetBackground() );
@@ -1029,10 +1030,6 @@ void QImagePageViewTracer::Set2DImage( vtkImageData* input )
   this->SeedWidget[0]->SetPriority( 10.0 );
   this->SeedWidget[0]->SetRepresentation( this->SeedRep[0] );
   this->SeedWidget[0]->SetInteractor( this->QvtkWidget_XY->GetInteractor() );
-
-  LayOutWidget2->hide();
-  LayOutWidget3->hide();
-  LayOutWidget4->hide();
 }
 //------------------------------------------------------------------------------
 
@@ -1045,20 +1042,60 @@ void QImagePageViewTracer::SetImage( vtkImageData* input )
     }
   else
     {
+    bool Is2DImagePrevious = this->Is2DImage;
+
     this->Image = input;
 
     int extent[6];
     this->Image->GetExtent( extent );
 
-    this->Is2DImage = ( extent[0] == extent[1] ) || ( extent[2] == extent[3] )
+    this->Is2DImage = ( extent[0] == extent[1] )
+      || ( extent[2] == extent[3] )
       || ( extent[4] == extent[5] );
 
     if( !this->Is2DImage )
       {
+      if( this->Is2DImage != Is2DImagePrevious )
+        {
+        vtkViewImage2DWithContourWidget* View2 =
+          vtkViewImage2DWithContourWidget::New();
+        View2->SetViewConvention( vtkViewImage2D::VIEW_CONVENTION_NEUROLOGICAL );
+        View2->SetViewOrientation (vtkViewImage2D::VIEW_ORIENTATION_CORONAL);
+
+        this->SetupViewGivenQVTKWidget( View2, this->QvtkWidget_2 );
+
+        this->Pool->AddItem( View2 );
+        View2->Delete();
+
+        vtkViewImage2DWithContourWidget* View3 =
+          vtkViewImage2DWithContourWidget::New();
+        View3->SetViewConvention( vtkViewImage2D::VIEW_CONVENTION_NEUROLOGICAL );
+        View3->SetViewOrientation( vtkViewImage2D::VIEW_ORIENTATION_SAGITTAL );
+
+        this->SetupViewGivenQVTKWidget( View3, this->QvtkWidget_3 );
+
+        this->Pool->AddItem( View3 );
+        View3->Delete();
+
+        LayOutWidget2->show();
+        LayOutWidget3->show();
+        LayOutWidget4->show();
+        }
+
       Set3DImage( input );
       }
     else
       {
+      if( this->Is2DImage != Is2DImagePrevious )
+        {
+        this->Pool->RemoveItem( 1 );
+        this->Pool->RemoveItem( 2 );
+
+        LayOutWidget2->hide();
+        LayOutWidget3->hide();
+        LayOutWidget4->hide();
+        }
+
       Set2DImage( input );
       }
     }
