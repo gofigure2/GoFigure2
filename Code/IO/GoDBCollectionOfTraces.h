@@ -45,7 +45,7 @@
 #include <QObject>
 #include "MegaVTK2Configure.h"
 #include "GoDBRecordSetHelper.h"
-
+#include <QStringList>
 
 class GoDBCollectionOfTraces
 {
@@ -90,28 +90,28 @@ protected:
   QString m_TracesName;
   QString m_TracesIDName;
 
-  /** \brief Create a new collection Row in the collection table and return the 
+  /** \brief Create a new collection Row in the collection table and return the
   collectionID from the created row: */
   int  CreateNewCollection();
- 
+
 
   template< class myT >
   int CreateNewCollection()
   {
-  myT myNewObject;  
+  myT myNewObject;
   AddNewObjectInTable< myT >(
       m_Server.toStdString(),
       m_User.toStdString(),
       m_Password.toStdString(),
-      m_NameDB.toStdString(), 
-      m_CollectionName.toStdString(), myNewObject );  
-  
+      m_NameDB.toStdString(),
+      m_CollectionName.toStdString(), myNewObject );
+
   int ID = MaxValueForOneColumnInTable(
     m_Server.toStdString(), m_User.toStdString(),
     m_Password.toStdString(),m_NameDB.toStdString(),
-    m_CollectionIDName.toStdString(),m_CollectionName.toStdString()); 
+    m_CollectionIDName.toStdString(),m_CollectionName.toStdString());
 
-  return ID; 
+  return ID;
   }
 };
 #endif
