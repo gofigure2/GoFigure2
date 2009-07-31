@@ -3,9 +3,9 @@
 Program:   vtkINRIA3D
 Module:    $Id: vtkImageBlendWithMask.cxx 477 2007-11-20 17:46:10Z filus $
 Language:  C++
-Author:    $Author: filus $
-Date:      $Date: 2007-11-20 12:46:10 -0500 (Tue, 20 Nov 2007) $
-Version:   $Revision: 477 $
+Author:    $Author$
+Date:      $Date$
+Version:   $Revision$
 
 Copyright (c) 2007 INRIA - Asclepios Project. All rights reserved.
 

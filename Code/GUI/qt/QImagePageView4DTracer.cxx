@@ -81,7 +81,7 @@
 #include <ctime>
 
 //------------------------------------------------------------------------------
-QImagePageView4DTracer::QImagePageView4DTracer( QWidget* parent ) : 
+QImagePageView4DTracer::QImagePageView4DTracer( QWidget* parent ) :
   QWidget( parent )
 {
   this->NumberOfTimePoints = 0;
@@ -125,10 +125,10 @@ QImagePageView4DTracer::QImagePageView4DTracer( QWidget* parent ) :
 
   m_DBTables->hide();
 
- 
+
  QObject::connect(this->m_DBTables->FigureTable, SIGNAL(itemSelectionChanged ()),
     this, SLOT(ConnectSelectContoursWidgetAndHighlightContours()));
- 
+
  QObject::connect(this->m_DBTables, SIGNAL(TableContentChanged()),
    this, SLOT(DeleteContourVisu()));
 
@@ -162,7 +162,7 @@ ReadMultiFile( const int& TimePoint )
   QProgressBar pBar;
   reader->SetProgressBar( &pBar );
 
-  if( ! this->IsFileListComputed )
+  if( !this->IsFileListComputed )
     {
     if( this->IsLsm )
       {

@@ -3,9 +3,9 @@
 Program:   vtkINRIA3D
 Module:    $Id: vtkLookupTableManager.h 700 2008-02-22 16:19:25Z filus $
 Language:  C++
-Author:    $Author: filus $
-Date:      $Date: 2008-02-22 11:19:25 -0500 (Fri, 22 Feb 2008) $
-Version:   $Revision: 700 $
+Author:    $Author$
+Date:      $Date$
+Version:   $Revision$
 
 Copyright (c) 2007 INRIA - Asclepios Project. All rights reserved.
 

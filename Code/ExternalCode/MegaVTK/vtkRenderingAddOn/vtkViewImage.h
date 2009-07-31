@@ -128,8 +128,36 @@ class vtkProp3D;
 class vtkProp;
 
 /**
-  \class vtkViewImage
-  \brief
+   
+   \class vtkViewImage 
+   \brief This class is a top-level convenience class for displaying a scalar - or RGB
+   image in a 2D or 3D scene.
+
+   It inherits from the vtkImageViewer2 class, which is initially designed for 2D scene
+   visualization. However, vtkViewImage overrides some of its parents' methods (SetSlice())
+   in order to generalize its purpose to 2D AND 3D scene visualization.
+
+   As a high-level class, it provides the user with convinient functionalities
+   such as a colormap (SetLookupTable()), a scalar bar (ScalarBarActor), some corner annotations
+   (CornerAnnotation), access to the background color (SetBackground()), the
+   annotation text properties (SetTextProperty()), or a call for reseting to default values
+   (Reset() or ResetCamera()).
+
+   
+   The principle add-on of this class is to tacke the common issue of placing
+   different objects in a same consistent reference frame. In a world coordinates system, an
+   volume image can be localized by its origin and its spacing, and an orientation vector defining
+   how to rotate the volume to be consistent with reality.
+
+   The vtkImageData class has among its attributes the origin and the spacing information.
+   However, the orientation information is missing.
+
+   The vtkViewImage class tackle this lack by providing the user the possibility to set an
+   orientation matrix with SetOrientationMatrix(). This matrix will directly be applied to the
+   actor describing the image in the 2D - or 3D - scene. The rotation 3x3 component of this matrix
+   has to be orthogonal (no scaling). The offset component may contain the origin information.
+   In this case the user will have to make sure that this information is absent from the vtkImageData
+   instance given in SetInput(). For that you can call : view->GetInput()->SetOrigin(0,0,0).
 */
 class VTK_RENDERINGADDON2_EXPORT vtkViewImage : public vtkImageViewer2
 {

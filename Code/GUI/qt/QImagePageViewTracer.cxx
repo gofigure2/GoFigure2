@@ -954,8 +954,8 @@ void QImagePageViewTracer::Set3DImage( vtkImageData* input )
     }
 
   this->Pool->SyncSetShowScalarBar( false );
-  this->Pool->SyncRender();
   this->Pool->SyncReset();
+  this->Pool->SyncRender();
 
   this->Slider1->setValue( (this->Slider1->minimum()+this->Slider1->maximum())/2 );
   this->Slider2->setValue( (this->Slider2->minimum()+this->Slider2->maximum())/2 );

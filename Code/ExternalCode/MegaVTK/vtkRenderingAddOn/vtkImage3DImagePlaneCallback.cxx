@@ -3,9 +3,9 @@
 Program:   vtkINRIA3D
 Module:    $Id: vtkImage3DImagePlaneCallback.cxx 665 2008-02-11 12:31:28Z ntoussaint $
 Language:  C++
-Author:    $Author: ntoussaint $
-Date:      $Date: 2008-02-11 13:31:28 +0100 (Mon, 11 Feb 2008) $
-Version:   $Revision: 665 $
+Author:    $Author$
+Date:      $Date$
+Version:   $Revision$
 
 Copyright (c) 2007 INRIA - Asclepios Project. All rights reserved.
 
