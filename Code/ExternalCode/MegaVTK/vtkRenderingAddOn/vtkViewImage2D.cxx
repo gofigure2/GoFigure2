@@ -533,7 +533,7 @@ void vtkViewImage2D::SetSlicePlaneToConvention(unsigned int axis)
 }
 
 //----------------------------------------------------------------------------
-void vtkViewImage2D::SetSlice( int s )
+void vtkViewImage2D::SetSlice( int slice )
 {
   vtkCamera *cam = this->Renderer ? this->Renderer->GetActiveCamera() : NULL;
   if( !cam )
@@ -541,21 +541,36 @@ void vtkViewImage2D::SetSlice( int s )
     return;
     }
   int *range = this->GetSliceRange();
-  if(  range &&( s >= range[0]) &&( s <= range[1]) )
+  if ( range )
     {
-    double* pos = this->GetWorldCoordinatesForSlice( s);
-    this->SliceImplicitPlane->SetOrigin( pos);
-    this->Superclass::SetSlice(s);
-    this->UpdateSlicePlane();
+    if( slice < range[0] )
+      {
+      slice = range[0];
+      }
+    else
+      {
+      if( slice > range[1] )
+        {
+        slice = range[1];
+        }
+      }
+    }
+
+  if( this->Slice == slice )
+    {
+    return;
     }
   else
     {
-    this->Superclass::SetSlice(s);
+    double* pos = this->GetWorldCoordinatesForSlice( slice );
+    this->SliceImplicitPlane->SetOrigin( pos );
+    this->Superclass::SetSlice( slice );
+    this->UpdateSlicePlane();
     }
 }
 
 //----------------------------------------------------------------------------
-void vtkViewImage2D::UpdateSlicePlane( void)
+void vtkViewImage2D::UpdateSlicePlane( void )
 {
   vtkPoints* oldpoints = vtkPoints::New();
   vtkPoints* points = vtkPoints::New();

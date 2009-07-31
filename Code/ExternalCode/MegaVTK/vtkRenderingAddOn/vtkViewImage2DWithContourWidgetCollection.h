@@ -128,6 +128,8 @@ public:
   // Initialize the viewers togethers.
   void Initialize(void);
 
+  void InitializeAllObservers(void);
+
   vtkGetObjectMacro (ExtraRenderWindow, vtkRenderWindow);
   void SetExtraRenderWindow (vtkRenderWindow* win)
   { this->ExtraRenderWindow = win; }

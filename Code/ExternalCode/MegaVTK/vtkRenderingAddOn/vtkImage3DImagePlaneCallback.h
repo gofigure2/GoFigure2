@@ -115,9 +115,6 @@ class VTK_RENDERINGADDON2_EXPORT vtkImage3DImagePlaneCallback: public vtkCommand
     return this->ResliceAxes;
   }
 
-
-
-
  protected:
  vtkImage3DImagePlaneCallback()
  {

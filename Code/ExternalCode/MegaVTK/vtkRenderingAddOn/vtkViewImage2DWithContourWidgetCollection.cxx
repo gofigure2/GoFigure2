@@ -107,48 +107,60 @@ vtkViewImage2DWithContourWidgetCollection::
 
 void
 vtkViewImage2DWithContourWidgetCollection::
+InitializeAllObservers()
+{
+  this->InitTraversal();
+  vtkViewImage2DWithContourWidget* a = this->GetNextItem();
+  while(a)
+    {
+    if( a->GetIsColor() )
+      {
+      a->GetInteractorStyle()->RemoveObservers(
+        vtkCommand::ResetWindowLevelEvent );
+      a->GetInteractorStyle()->RemoveObservers(
+        vtkCommand::WindowLevelEvent );
+      }
+    a->GetInteractorStyle()->RemoveObservers(
+      vtkViewImage2DCommand::SliceMoveEvent );
+    a->GetInteractorStyle()->RemoveObservers(
+      vtkViewImage2DCommand::ResetViewerEvent );
+    a->GetInteractorStyle()->RemoveObservers( vtkViewImage2DCommand::
+      RequestedPositionEvent );
+
+    if( !a->GetIsColor() )
+      {
+      a->GetInteractorStyle()->AddObserver( vtkCommand::ResetWindowLevelEvent,
+        this->Command );
+      a->GetInteractorStyle()->AddObserver( vtkCommand::WindowLevelEvent,
+        this->Command );
+      }
+    a->GetInteractorStyle()->AddObserver(
+      vtkViewImage2DCommand::SliceMoveEvent,
+      this->Command );
+    a->GetInteractorStyle()->AddObserver(
+      vtkViewImage2DCommand::ZoomEvent,
+      this->Command );
+    a->GetInteractorStyle()->AddObserver(
+      vtkViewImage2DCommand::PanEvent,
+      this->Command );
+    a->GetInteractorStyle()->AddObserver(
+      vtkViewImage2DCommand::RequestedPositionEvent,
+      this->Command );
+    a->GetInteractorStyle()->AddObserver(
+      vtkViewImage2DCommand::ResetViewerEvent,
+      this->Command );
+    a->GetInteractorStyle()->AddObserver(
+      vtkViewImage2DCommand::ContourPickingEvent,
+      this->Command );
+    a = this->GetNextItem();
+    }
+}
+
+void
+vtkViewImage2DWithContourWidgetCollection::
 AddItem( vtkViewImage2DWithContourWidget* a )
 {
   this->Superclass::AddItem (a);
-  if( a->GetIsColor() )
-  {
-    a->GetInteractorStyle()->RemoveObservers(
-      vtkCommand::ResetWindowLevelEvent );
-    a->GetInteractorStyle()->RemoveObservers(
-      vtkCommand::WindowLevelEvent );
-  }
-  a->GetInteractorStyle()->RemoveObservers(
-    vtkViewImage2DCommand::SliceMoveEvent );
-  a->GetInteractorStyle()->RemoveObservers(
-    vtkViewImage2DCommand::ResetViewerEvent );
-  a->GetInteractorStyle()->RemoveObservers( vtkViewImage2DCommand::
-    RequestedPositionEvent );
-
-  if( !a->GetIsColor() )
-  {
-    a->GetInteractorStyle()->AddObserver( vtkCommand::ResetWindowLevelEvent,
-      this->Command );
-    a->GetInteractorStyle()->AddObserver( vtkCommand::WindowLevelEvent,
-      this->Command );
-  }
-  a->GetInteractorStyle()->AddObserver(
-    vtkViewImage2DCommand::SliceMoveEvent,
-    this->Command );
-  a->GetInteractorStyle()->AddObserver(
-    vtkViewImage2DCommand::ZoomEvent,
-    this->Command );
-  a->GetInteractorStyle()->AddObserver(
-    vtkViewImage2DCommand::PanEvent,
-    this->Command );
-  a->GetInteractorStyle()->AddObserver(
-    vtkViewImage2DCommand::RequestedPositionEvent,
-    this->Command );
-  a->GetInteractorStyle()->AddObserver(
-    vtkViewImage2DCommand::ResetViewerEvent,
-    this->Command );
-  a->GetInteractorStyle()->AddObserver(
-    vtkViewImage2DCommand::ContourPickingEvent,
-    this->Command );
 }
 
 
