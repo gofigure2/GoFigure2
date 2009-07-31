@@ -245,6 +245,10 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage : public vtkImageViewer2
   */
   virtual void ResetCamera(void);
   /**
+     Reset the window level
+  */
+  virtual void ResetWindowLevel(void);
+  /**
      Reset position - zoom - window/level to default
   */
   virtual void Reset(void);

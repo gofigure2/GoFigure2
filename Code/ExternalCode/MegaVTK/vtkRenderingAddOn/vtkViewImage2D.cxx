@@ -557,27 +557,16 @@ double* vtkViewImage2D::GetWorldCoordinatesForSlice(int slice)
 //----------------------------------------------------------------------------
 void vtkViewImage2D::ResetPosition( void )
 {
-  if( !this->GetInput())
+  if( !this->GetInput() )
+    {
     return;
+    }
 
   int *range = this->GetSliceRange();
-  this->SetSlice( vtkMath::Round( static_cast<double>(0.5*(range[1]-range[0]))) );
-}
-//----------------------------------------------------------------------------
-void vtkViewImage2D::ResetWindowLevel( void )
-{
-  if( !this->GetInput())
-    return;
-
-  if( !this->IsColor )
-  {
-    double* range = this->GetInput()->GetScalarRange();
-    double window = range[1]-range[0];
-    double level = 0.5*(range[1]+range[0]);
-
-    this->SetColorWindow(  window );
-    this->SetColorLevel(  level );
-  }
+  if( range )
+    {
+    this->SetSlice( vtkMath::Round( static_cast<double>(0.5*(range[1]-range[0]))) );
+    }
 }
 
 //----------------------------------------------------------------------------
