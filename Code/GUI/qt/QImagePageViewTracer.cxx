@@ -156,6 +156,27 @@ QImagePageViewTracer::QImagePageViewTracer( QWidget* parent ) : QWidget( parent 
   this->View3D->SetRenderWindow( renwin4 );
   this->View3D->SetupInteractor( this->QvtkWidget_XYZ->GetInteractor() );
   this->Pool->SetExtraRenderWindow( renwin4 );
+
+  this->Handle.resize( this->Pool->GetNumberOfItems() );
+  this->SeedRep.resize( this->Pool->GetNumberOfItems() );
+  this->SeedWidget.resize( this->Pool->GetNumberOfItems() );
+
+  for( int i = 0; i < this->Pool->GetNumberOfItems(); i++)
+    {
+    this->Handle[i] = vtkPointHandleRepresentation2D::New();
+    this->Handle[i]->GetProperty()->SetColor(1,0,0);
+
+    this->SeedRep[i] = vtkSeedRepresentation::New();
+    this->SeedRep[i]->SetHandleRepresentation(this->Handle[i]);
+
+    this->SeedWidget[i] = vtkSeedWidget::New();
+    this->SeedWidget[i]->SetPriority( 10.0 );
+    this->SeedWidget[i]->SetRepresentation( this->SeedRep[i] );
+    }
+
+  this->SeedWidget[0]->SetInteractor( this->QvtkWidget_XY->GetInteractor() );
+  this->SeedWidget[1]->SetInteractor( this->QvtkWidget_2->GetInteractor() );
+  this->SeedWidget[2]->SetInteractor( this->QvtkWidget_3->GetInteractor() );
 }
 //------------------------------------------------------------------------------
 
@@ -961,27 +982,6 @@ void QImagePageViewTracer::Set3DImage( vtkImageData* input )
   this->Slider1->setValue( (this->Slider1->minimum()+this->Slider1->maximum())/2 );
   this->Slider2->setValue( (this->Slider2->minimum()+this->Slider2->maximum())/2 );
   this->Slider3->setValue( (this->Slider3->minimum()+this->Slider3->maximum())/2 );
-
-  this->Handle.resize( this->Pool->GetNumberOfItems() );
-  this->SeedRep.resize( this->Pool->GetNumberOfItems() );
-  this->SeedWidget.resize( this->Pool->GetNumberOfItems() );
-
-  for( int i = 0; i < this->Pool->GetNumberOfItems(); i++)
-    {
-    this->Handle[i] = vtkPointHandleRepresentation2D::New();
-    this->Handle[i]->GetProperty()->SetColor(1,0,0);
-
-    this->SeedRep[i] = vtkSeedRepresentation::New();
-    this->SeedRep[i]->SetHandleRepresentation(this->Handle[i]);
-
-    this->SeedWidget[i] = vtkSeedWidget::New();
-    this->SeedWidget[i]->SetPriority( 10.0 );
-    this->SeedWidget[i]->SetRepresentation( this->SeedRep[i] );
-    }
-
-  this->SeedWidget[0]->SetInteractor( this->QvtkWidget_XY->GetInteractor() );
-  this->SeedWidget[1]->SetInteractor( this->QvtkWidget_2->GetInteractor() );
-  this->SeedWidget[2]->SetInteractor( this->QvtkWidget_3->GetInteractor() );
 }
 //------------------------------------------------------------------------------
 

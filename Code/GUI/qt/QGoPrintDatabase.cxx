@@ -66,15 +66,15 @@ QGoPrintDatabase::QGoPrintDatabase()
   DBTabWidget->setTabPosition(QTabWidget::West);
   DBTabWidget->setTabShape(QTabWidget::Triangular);
   DBTabWidget->removeTab(0);
-  FigureTable = new QTableWidgetChild;
-  MeshTable = new QTableWidgetChild;
-  CollectionOfFigures = new GoDBCollectionOfTraces("Mesh", 
+  FigureTable = new QTableWidgetChild( this );
+  MeshTable = new QTableWidgetChild( this );
+  CollectionOfFigures = new GoDBCollectionOfTraces("Mesh",
   "MeshID","figure", "figureID");
   CollectionOfMeshes = new GoDBCollectionOfTraces( "Track",
   "TrackID", "mesh", "meshID");
   this->setContextMenuPolicy(Qt::CustomContextMenu);
 
-  
+
   connect(this, SIGNAL(customContextMenuRequested(const QPoint &)),
     this, SLOT(CreateContextMenu(const QPoint &)));
 }
@@ -127,7 +127,7 @@ void QGoPrintDatabase::FillTableFromDatabase(QString iNameDB,QString iServer,QSt
   m_Password = iPassword;
   m_ExpID = iExpID;
   m_ExpName = iExpName;
-  
+
   this->setWindowTitle(QString("DB: %1 - Exp: %2").arg(m_NameDB).arg(m_ExpName));
 
   GetContentAndDisplayFromDB< GoDBFigureRow >("figure", FigureTable);
@@ -164,7 +164,7 @@ void QGoPrintDatabase::closeEvent(QCloseEvent* event)
 
 //------------------------------------------------------------------------------
 void QGoPrintDatabase::UpdateTableFromDB()
-{  
+{
   UpdateContentAndDisplayFromDB< GoDBFigureRow >("figure", FigureTable);
 }
 //------------------------------------------------------------------------------
@@ -209,7 +209,7 @@ void QGoPrintDatabase::DeleteTraces()
     case 1: //mesh
       {
       QStringList MeshesToDelete = this->MeshTable->ValuesForSelectedRows("meshID");
-      CollectionOfMeshes->DeleteTraces(MeshesToDelete);   
+      CollectionOfMeshes->DeleteTraces(MeshesToDelete);
       this->UpdateContentAndDisplayFromDB<GoDBMeshRow>("Mesh",MeshTable);
       emit TableContentChanged();
       break;
@@ -222,7 +222,7 @@ void QGoPrintDatabase::DeleteTraces()
       break;
       }
     }
-  
+
 }
 //------------------------------------------------------------------------------
 
@@ -267,7 +267,7 @@ void QGoPrintDatabase::CreateCorrespondingCollection()
       break;
       }
     }
-  
+
 }
 //------------------------------------------------------------------------------
 
@@ -317,7 +317,7 @@ void QGoPrintDatabase::AddToExistingCollection()
     case 1: //mesh
       {
       QStringList MeshesToDelete = this->MeshTable->ValuesForSelectedRows("meshID");
-      CollectionOfMeshes->DeleteTraces(MeshesToDelete);   
+      CollectionOfMeshes->DeleteTraces(MeshesToDelete);
       this->UpdateContentAndDisplayFromDB<GoDBMeshRow>("Mesh",MeshTable);
       emit TableContentChanged();
       break;
