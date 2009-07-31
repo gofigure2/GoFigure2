@@ -125,12 +125,12 @@ class vtkProp3DCollection;
 class vtkDataSetCollection;
 class vtkMatrixToLinearTransform;
 class vtkProp3D;
+class vtkProp;
 
 /**
-
+  \class vtkViewImage
+  \brief
 */
-
-
 class VTK_RENDERINGADDON2_EXPORT vtkViewImage : public vtkImageViewer2
 {
 
@@ -140,20 +140,21 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage : public vtkImageViewer2
   vtkTypeRevisionMacro(vtkViewImage, vtkImageViewer2);
 
   /**
-     Get the corner annotation.
+     \brief Get the corner annotation.
+     \todo make the corner annotation such that it follows the slice number, the
+    image scalar value at cursor, the spacing, etc
   */
-  ///\todo make the corner annotation such that it follows the slice number, the
-  ///image scalar value at cursor, the spacing, etc
-  vtkGetObjectMacro (CornerAnnotation, vtkCornerAnnotation);
+  vtkGetObjectMacro( CornerAnnotation, vtkCornerAnnotation );
   /**
-     Get the scalar bar actor. This instance follows the color window/level
+     \brief Get the scalar bar actor. This instance follows the color window/level
      of the viewer.
+     \todo make this scalar bar actually follow the WindowLevel filter. It does
+    not seems to work yet
   */
-  ///\todo make this scalar bar actually follow the WindowLevel filter. It does
-  /// not seems to work yet
-  vtkGetObjectMacro (ScalarBarActor, vtkScalarBarActor);
+  vtkGetObjectMacro( ScalarBarActor, vtkScalarBarActor );
   /**
-     The OrientationMatrix instance (GetOrientationMatrix()) is a very important
+     \brief
+      The OrientationMatrix instance (GetOrientationMatrix()) is a very important
      added feature of this viewer. It describes the rotation and translation to
      apply to the image bouding box (axis aligned) to the world coordinate
      system.
@@ -170,41 +171,38 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage : public vtkImageViewer2
      and provide this origin information in the OrientationMatrix.
 
   */
-  vtkGetObjectMacro (OrientationMatrix, vtkMatrix4x4);
-  virtual void SetOrientationMatrix (vtkMatrix4x4* matrix);
+  vtkGetObjectMacro( OrientationMatrix, vtkMatrix4x4 );
+  virtual void SetOrientationMatrix( vtkMatrix4x4* matrix );
   /**
      The LookupTable instance (GetLookupTable()) can be used to set a
      user-defined color-table to the viewer. Default is a linear black to
      white table.
   */
-  vtkGetObjectMacro (LookupTable, vtkLookupTable);
-  virtual void SetLookupTable (vtkLookupTable* lookuptable);
-  /**
-     The TextProperty instance (GetTextProperty()) describes the font and
-     other settings of the CornerAnnotation instance (GetCornerAnnotation())
+  vtkGetObjectMacro( LookupTable, vtkLookupTable );
+  virtual void SetLookupTable( vtkLookupTable* lookuptable );
+
+  /** \brief  The TextProperty instance (GetTextProperty()) describes the font
+    and other settings of the CornerAnnotation instance (GetCornerAnnotation())
   */
-  vtkGetObjectMacro (TextProperty, vtkTextProperty);
-  virtual void SetTextProperty (vtkTextProperty* textproperty);
+  vtkGetObjectMacro( TextProperty, vtkTextProperty );
+  virtual void SetTextProperty( vtkTextProperty* textproperty );
 
   vtkGetObjectMacro( Prop3DCollection, vtkProp3DCollection );
-  /**
-     The world is not always what we think it is ...
+  vtkGetObjectMacro( DataSetCollection, vtkDataSetCollection );
 
+  /**
+     \brief The world is not always what we think it is ...
      Use this method to move the viewer slice such that the position
      (in world coordinates) given by the arguments is contained by
      the slice plane. If the given position is outside the bounds
      of the image, then the slice will be as close as possible.
   */
   virtual void SetWorldCoordinates( const double& x,
-    const double& y, const double& z )
-  {
-    double pos[3] = {x,y,z};
-    this->SetWorldCoordinates (pos);
-  }
-  virtual void SetWorldCoordinates (double pos[3]) = 0;
+    const double& y, const double& z );
+  virtual void SetWorldCoordinates( double pos[3] ) = 0;
 
   /**
-    Add a dataset to the view (has to be subclass of vtkPointSet).
+    \brief Add a dataset to the view (has to be subclass of vtkPointSet).
     The dataset will be cut through the implicit slice plane
     (GetImplicitSlicePlane()).
 
@@ -216,70 +214,72 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage : public vtkImageViewer2
     vtkProperty* property = NULL,
     const bool& intersection = true,
     const bool& iDataVisibility = true ) = 0;
-  virtual bool RemoveDataSet (vtkDataSet* dataset);
+  virtual bool RemoveDataSet( vtkDataSet* dataset );
+  virtual void RemoveProp( vtkProp* iProp );
 
   /**
-     Convert an indices coordinate point (image coordinates) into a world
+     \brief Convert an indices coordinate point (image coordinates) into a world
      coordinate point
   */
   virtual double* GetWorldCoordinatesFromImageCoordinates( int indices[3] );
   /**
-     Convert a world coordinate point into an image indices coordinate point
+     \brief Convert a world coordinate point into an image indices coordinate point
   */
   virtual int* GetImageCoordinatesFromWorldCoordinates( double position[3] );
   /**
-     Get the pixel value at a given world coordinate point in space, return
+     \brief Get the pixel value at a given world coordinate point in space, return
      zero if out of bounds.
   */
   virtual double GetValueAtPosition(double worldcoordinates[3],
     int component=0 );
   /**
-     Set the background color. Format is RGB, 0 <= R,G,B <=1
+     \brief Set the background color. Format is RGB, 0 <= R,G,B <=1
      Example: SetBackground(0.9,0.9,0.9) for grey-white.
   */
   virtual void SetBackground(double rgb[3]);
-  virtual void SetBackground(const double& r, const double& g, const double& b);
-  virtual double* GetBackground(void);
+  virtual void SetBackground( const double& r,
+    const double& g,
+    const double& b );
+  virtual double* GetBackground( void );
   /**
-     Reset the camera
+     \brief Reset the camera
   */
-  virtual void ResetCamera(void);
+  virtual void ResetCamera( void );
   /**
-     Reset the window level
+     \brief Reset the window level
   */
-  virtual void ResetWindowLevel(void);
+  virtual void ResetWindowLevel( void );
   /**
-     Reset position - zoom - window/level to default
+     \brief Reset position - zoom - window/level to default
   */
-  virtual void Reset(void);
+  virtual void Reset( void );
 
   /**
-     Enable or Disable interaction on the view.
+     \brief Enable or Disable interaction on the view.
   */
   virtual void Enable( void );
   /**
-     Enable or Disable interaction on the view.
+     \brief Enable or Disable interaction on the view.
   */
   virtual void Disable( void );
   /**
-     Enable or Disable interaction on the view.
+     \brief Enable or Disable interaction on the view.
   */
-  virtual bool GetEnabled (void);
+  virtual bool GetEnabled (void );
   /**
-     Show/Hide the annotations.
+     \brief Show/Hide scalar bar.
   */
-  vtkGetMacro (ShowScalarBar, int);
+  vtkGetMacro( ShowScalarBar, int );
   /**
-     Show/Hide the annotations.
+     \brief Show/Hide scalar bar.
   */
   virtual void SetShowScalarBar( const bool& );
   /**
-     Show/Hide the annotations.
+     \brief Show/Hide scalar bar.
   */
-  vtkBooleanMacro (ShowScalarBar, int);
+  vtkBooleanMacro( ShowScalarBar, int );
 
-  // Description:
-  // Set window and level for mapping pixels to colors.
+  /** \brief Set window and level for mapping pixels to colors. */
   virtual void SetColorWindow( const double& s);
   virtual void SetColorLevel( const double& s );
 
@@ -297,7 +297,6 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage : public vtkImageViewer2
   vtkViewImage();
   ~vtkViewImage();
 
-  // Description:
   vtkMatrix4x4*               OrientationMatrix;
   vtkCornerAnnotation*        CornerAnnotation;
   vtkTextProperty*            TextProperty;

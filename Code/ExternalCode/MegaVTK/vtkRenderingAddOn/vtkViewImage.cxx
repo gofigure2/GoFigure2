@@ -124,7 +124,6 @@ vtkViewImage::vtkViewImage()
   this->OrientationMatrix->Identity();
   this->CornerAnnotation->SetNonlinearFontScaleFactor (0.35);
   this->CornerAnnotation->SetTextProperty ( this->TextProperty );
-//   this->OrientationAnnotation->SetNonlinearFontScaleFactor (0.3);
 
   this->ScalarBarActor->GetLabelTextProperty()->BoldOff();
   this->ScalarBarActor->GetLabelTextProperty()->ItalicOff();
@@ -160,7 +159,7 @@ void vtkViewImage::SetInput( vtkImageData* in )
     {
     Superclass::SetInput( in );
 
-    this->IsColor = (in->GetNumberOfScalarComponents() > 1);
+    this->IsColor = ( in->GetNumberOfScalarComponents() > 1 );
 
     if( this->IsColor )
       {
@@ -179,23 +178,29 @@ void vtkViewImage::SetInput( vtkImageData* in )
 //----------------------------------------------------------------------------
 vtkViewImage::~vtkViewImage()
 {
-  this->OrientationMatrix->Delete();
+  this->OrientationTransform->SetInput( NULL );
+
+  if( this->OrientationMatrix )
+    {
+    this->OrientationMatrix->Delete();
+    }
+
+  this->OrientationTransform->Delete();
+  this->TextProperty->Delete();
   this->CornerAnnotation->Delete();
   this->LookupTable->Delete();
   this->ScalarBarActor->Delete();
   this->Prop3DCollection->Delete();
   this->DataSetCollection->Delete();
-  this->OrientationTransform->Delete();
-  this->TextProperty->Delete();
 }
 
 
 //----------------------------------------------------------------------------
 void vtkViewImage::SetOrientationMatrix (vtkMatrix4x4* matrix)
 {
-  vtkSetObjectMacro2Body (OrientationMatrix, vtkMatrix4x4, matrix);
-  this->ImageActor->SetUserMatrix (this->OrientationMatrix);
-  this->OrientationTransform->SetInput (this->OrientationMatrix);
+  vtkSetObjectMacro2Body( OrientationMatrix, vtkMatrix4x4, matrix );
+  this->ImageActor->SetUserMatrix( this->OrientationMatrix );
+  this->OrientationTransform->SetInput( this->OrientationMatrix );
 
   this->UpdateOrientation();
 }
@@ -204,16 +209,16 @@ void vtkViewImage::SetOrientationMatrix (vtkMatrix4x4* matrix)
 void vtkViewImage::SetLookupTable (vtkLookupTable* lookuptable)
 {
   if( !this->IsColor )
-  {
-    vtkSetObjectMacro2Body (LookupTable, vtkLookupTable, lookuptable);
-    this->WindowLevel->SetLookupTable(this->LookupTable);
-    this->ScalarBarActor->SetLookupTable(this->LookupTable);
-  }
+    {
+    vtkSetObjectMacro2Body( LookupTable, vtkLookupTable, lookuptable );
+    this->WindowLevel->SetLookupTable( this->LookupTable );
+    this->ScalarBarActor->SetLookupTable( this->LookupTable );
+    }
   else
-  {
+    {
     this->ShowScalarBar = false;
     this->ScalarBarActor->SetVisibility( this->ShowScalarBar );
-  }
+    }
 }
 
 //----------------------------------------------------------------------------
@@ -269,9 +274,15 @@ void vtkViewImage::SetColorLevel( const double& s)
     }
 }
 
-
 //----------------------------------------------------------------------------
-double vtkViewImage::GetValueAtPosition(double worldcoordinates[3],
+void vtkViewImage::SetWorldCoordinates( const double& x,
+    const double& y, const double& z )
+{
+  double pos[3] = {x,y,z};
+  this->SetWorldCoordinates( pos );
+}
+//----------------------------------------------------------------------------
+double vtkViewImage::GetValueAtPosition( double worldcoordinates[3],
   int component )
 {
   if( !this->GetInput() )
@@ -279,7 +290,8 @@ double vtkViewImage::GetValueAtPosition(double worldcoordinates[3],
     return 0.0;
     }
 
-  int* indices = this->GetImageCoordinatesFromWorldCoordinates (worldcoordinates);
+  int* indices =
+    this->GetImageCoordinatesFromWorldCoordinates( worldcoordinates );
   vtkImageData* input = this->GetInput();
 
   int* extent = input->GetWholeExtent();
@@ -292,30 +304,38 @@ double vtkViewImage::GetValueAtPosition(double worldcoordinates[3],
     }
   else
     {
-    return input->GetScalarComponentAsDouble (indices[0], indices[1],
-      indices[2], component);
+    return input->GetScalarComponentAsDouble( indices[0], indices[1],
+      indices[2], component );
     }
 }
 
 
 //----------------------------------------------------------------------------
-bool vtkViewImage::RemoveDataSet (vtkDataSet* dataset)
+bool vtkViewImage::RemoveDataSet( vtkDataSet* dataset )
 {
-  unsigned int index = this->DataSetCollection->IsItemPresent(dataset);
+  unsigned int index = this->DataSetCollection->IsItemPresent( dataset );
 
-  if(!index)
+  if( !index )
     {
     return false;
     }
   else
     {
     this->Renderer->RemoveViewProp (
-      vtkProp::SafeDownCast(this->Prop3DCollection->GetItemAsObject(index)));
+      vtkProp::SafeDownCast( this->Prop3DCollection->GetItemAsObject( index ) ) );
     this->DataSetCollection->RemoveItem(index);
     this->Prop3DCollection->RemoveItem(index);
-    }
 
-  return true;
+    return true;
+    }
+}
+
+void vtkViewImage::RemoveProp( vtkProp* prop )
+{
+  this->Renderer->RemoveViewProp( prop );
+
+  unsigned int index = this->DataSetCollection->IsItemPresent( prop );
+  this->Prop3DCollection->RemoveItem(index);
 }
 
 //----------------------------------------------------------------------------
@@ -399,7 +419,7 @@ int* vtkViewImage::GetImageCoordinatesFromWorldCoordinates(double position[3])
 //----------------------------------------------------------------------------
 void vtkViewImage::SetBackground(double rgb[3])
 {
-  if (this->Renderer)
+  if( this->Renderer )
     {
     this->Renderer->SetBackground(rgb);
     }
@@ -407,7 +427,7 @@ void vtkViewImage::SetBackground(double rgb[3])
 //----------------------------------------------------------------------------
 void vtkViewImage::SetBackground( const double& r, const double& g, const double& b)
 {
-  if (this->Renderer)
+  if( this->Renderer )
     {
     this->Renderer->SetBackground(r,g,b);
     }
@@ -449,7 +469,7 @@ void vtkViewImage::ResetWindowLevel( void )
 //----------------------------------------------------------------------------
 void vtkViewImage::ResetCamera (void)
 {
-  if (this->Renderer)
+  if( this->Renderer )
     {
     this->Renderer->ResetCamera();
     }

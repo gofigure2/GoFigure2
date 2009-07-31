@@ -162,7 +162,9 @@ void vtkViewImage2D::SetViewConvention(int convention)
 {
   if( ( convention < vtkViewImage2D::VIEW_CONVENTION_RADIOLOGICAL) ||
     convention == this->ViewConvention)
+    {
     return;
+    }
 
   this->ViewConvention = convention;
 
@@ -174,17 +176,21 @@ void vtkViewImage2D::SetViewConvention(int convention)
 
   switch(convention)
   {
-    case vtkViewImage2D::VIEW_CONVENTION_RADIOLOGICAL:
     default:
+    case vtkViewImage2D::VIEW_CONVENTION_RADIOLOGICAL:
+      {
       x_watcher =  1;
       y_watcher = -1;
       z_watcher = -1;
       break;
+      }
     case vtkViewImage2D::VIEW_CONVENTION_NEUROLOGICAL:
+      {
       x_watcher = 1;
       y_watcher = 1;
       z_watcher = 1;
       break;
+      }
 	///\todo why not adding cardiologic conventions with oblique points of view ?
   /// actually we can't: oblique point of view implies resampling data: loss of
   /// data... and we don't want that, do we ?
@@ -196,7 +202,7 @@ void vtkViewImage2D::SetViewConvention(int convention)
   this->UpdateOrientation();
 }
 //----------------------------------------------------------------------------
-void vtkViewImage2D::SetShowAnnotations(const bool& val )
+void vtkViewImage2D::SetShowAnnotations( const bool& val )
 {
   this->ShowAnnotations = val;
   this->CornerAnnotation->SetVisibility(val);
@@ -209,17 +215,21 @@ void vtkViewImage2D::SetViewOrientation(int orientation)
   ///\todo: in terms of view orientation here we can add some cardiac specific:
   /// short axis, long axis, and 4-chambers !!! exiting !
   if( ( orientation < vtkViewImage2D::VIEW_ORIENTATION_SAGITTAL) ||
-        orientation == this->ViewOrientation)
+        orientation == this->ViewOrientation )
+    {
     return;
+    }
 
   this->ViewOrientation = orientation;
   unsigned int sliceorientation = 2;
   double dot = 0;
-  for( unsigned int i=0; i<3; i++)
-    if( dot < fabs( this->GetOrientationMatrix()->GetElement( orientation, i)))
+  for( unsigned int i=0; i<3; i++ )
     {
+    if( dot < fabs( this->GetOrientationMatrix()->GetElement( orientation, i)))
+      {
       dot = fabs( this->GetOrientationMatrix()->GetElement( orientation, i));
       sliceorientation = i;
+      }
     }
   this->SetSliceOrientation( sliceorientation);
 }
@@ -287,8 +297,10 @@ int vtkViewImage2D::SetCameraToConvention(void)
 {
 
   vtkCamera *cam = this->Renderer ? this->Renderer->GetActiveCamera() : NULL;
-  if( !cam)
+  if( !cam )
+    {
     return -1;
+    }
 
   double position[4], focalpoint[4], viewup[4];
   double conventionposition[4];
@@ -302,13 +314,13 @@ int vtkViewImage2D::SetCameraToConvention(void)
   // Recover also information from the convention matrix
   unsigned int i;
   for( i=0; i<3; i++ )
-  {
+    {
     position[i] = cam->GetPosition()[i];
     focalpoint[i] = cam->GetFocalPoint()[i];
     conventionposition[i] = this->ConventionMatrix->GetElement( i,3);
     conventionview[i] = this->ConventionMatrix->GetElement( i,
       this->SliceOrientation );
-  }
+   }
 
   position[3] = 1;
   focalpoint[3] = 1;
@@ -324,21 +336,27 @@ int vtkViewImage2D::SetCameraToConvention(void)
 
   // Compute the vector perpendicular to the view
   for( i=0; i<3; i++ )
+    {
     focaltoposition[i] = position[i] - focalpoint[i];
+    }
 
   // Deal with the position :
   // invert it if necessary( symetry among the focal point)
   inverseposition =( vtkMath::Dot( focaltoposition, conventionposition ) < 0 );
-  if( inverseposition)
+  if( inverseposition )
+    {
     for( i=0; i<3; i++ )
+      {
       position[i] -= 2*focaltoposition[i];
+      }
+    }
 
   // Now we now we have 4 choices for the View-Up information
   for( i=0; i<3; i++ )
-  {
+    {
     first[i] = conventionview[i];
     second[i] = -conventionview[i];
-  }
+    }
 
   vtkMath::Cross( first, focaltoposition, third );
   vtkMath::Cross( second, focaltoposition, fourth );
@@ -355,33 +373,39 @@ int vtkViewImage2D::SetCameraToConvention(void)
   unsigned int id = 0;
   double dot = 0;
   for( i=0; i<3; i++ )
-  {
-    if( dot < fabs( focaltoposition[i] ) )
     {
+    if( dot < fabs( focaltoposition[i] ) )
+      {
       dot = fabs( focaltoposition[i] );
       id = i;
+      }
     }
-  }
 
   // Then we choose the convention matrix vector correspondant to the
   // one we just found
   for( i=0; i<3; i++ )
+    {
     conventionview[i] = this->ConventionMatrix->GetElement( i, id );
+    }
 
   // Then we pick from the 4 solutions the closest to the
   // vector just found
   unsigned int id2 = 0;
   double dot2 = 0;
   for( i=0; i<viewupchoices.size(); i++ )
-    if( dot2 < vtkMath::Dot( viewupchoices[i], conventionview ) )
     {
+    if( dot2 < vtkMath::Dot( viewupchoices[i], conventionview ) )
+      {
       dot2 = vtkMath::Dot( viewupchoices[i], conventionview );
       id2 = i;
+      }
     }
 
   // We found the solution
   for( i=0; i<3; i++ )
+    {
     viewup[i] = viewupchoices[id2][i];
+    }
 
   cam->SetPosition(position[0], position[1], position[2]);
   cam->SetFocalPoint(focalpoint[0], focalpoint[1], focalpoint[2]);
@@ -394,13 +418,17 @@ int vtkViewImage2D::SetCameraToConvention(void)
 
   // Rotation of the( Anterior-Posterior)( Ventral-Dorsal) View
   if( this->ViewOrientation == 0 )
+    {
     cam->Roll( -90. );
+    }
 
   // these lines are meant to fix the bug that make the line
   // actor appear behind the 2D scene...
   double translation[3];
   for( i=0; i<3; i++ )
+    {
     translation[i] = 0.01 * view_plane_normal[i];
+    }
   this->AdjustmentTransform->Identity();
   this->AdjustmentTransform->Translate( translation);
 
@@ -411,8 +439,10 @@ int vtkViewImage2D::SetCameraToConvention(void)
 void vtkViewImage2D::SetAnnotationToConvention(void)
 {
   vtkCamera *cam = this->Renderer ? this->Renderer->GetActiveCamera() : NULL;
-  if( !cam)
+  if( !cam )
+    {
     return;
+    }
 
   std::string matrix[3][2];
   matrix[0][0] = "R";matrix[0][1] = "L";
@@ -436,43 +466,49 @@ void vtkViewImage2D::SetAnnotationToConvention(void)
   double dot3 = 0;
 
   for( unsigned int i=0; i<3; i++)
-  {
-    if( dot1 <= fabs( viewup[i]))
     {
+    if( dot1 <= fabs( viewup[i]))
+      {
       dot1 = fabs( viewup[i]);
       id1 = i;
-    }
+      }
     if( dot2 <= fabs( rightvector[i]))
-    {
+      {
       dot2 = fabs( rightvector[i]);
       id2 = i;
-    }
+      }
     if( dot3 <= fabs( normal[i]))
-    {
+      {
       dot3 = fabs( normal[i]);
       id3 = i;
+      }
     }
-  }
 
-  if( viewup[id1] > 0)
-  {
+  if( viewup[id1] > 0 )
+    {
     solution[3] = matrix[id1][0];
     solution[1] = matrix[id1][1];
-  } else {
+    }
+  else
+    {
     solution[3] = matrix[id1][1];
     solution[1] = matrix[id1][0];
-  }
-  if( rightvector[id2] > 0)
-  {
+    }
+  if( rightvector[id2] > 0 )
+    {
     solution[0] = matrix[id2][0];
     solution[2] = matrix[id2][1];
-  } else {
+    }
+  else
+    {
     solution[0] = matrix[id2][1];
     solution[2] = matrix[id2][0];
-  }
+    }
 
-  for( unsigned int i=0; i<4; i++)
+  for( unsigned int i=0; i<4; i++ )
+    {
     this->OrientationAnnotation->SetText( i, solution[i].c_str());
+    }
 }
 
 
@@ -485,8 +521,10 @@ void vtkViewImage2D::SetSlicePlaneToConvention(unsigned int axis)
   vtkUnsignedCharArray* array = vtkUnsignedCharArray::SafeDownCast(
     this->SlicePlane->GetPointData()->GetScalars() );
 
-  if( !array)
+  if( !array )
+    {
     return;
+    }
 
   array->SetTupleValue( 0, vals);
   array->SetTupleValue( 1, vals);
@@ -495,21 +533,25 @@ void vtkViewImage2D::SetSlicePlaneToConvention(unsigned int axis)
 }
 
 //----------------------------------------------------------------------------
-void vtkViewImage2D::SetSlice( int s)
+void vtkViewImage2D::SetSlice( int s )
 {
   vtkCamera *cam = this->Renderer ? this->Renderer->GetActiveCamera() : NULL;
-  if( !cam)
+  if( !cam )
+    {
     return;
+    }
   int *range = this->GetSliceRange();
   if(  range &&( s >= range[0]) &&( s <= range[1]) )
-  {
+    {
     double* pos = this->GetWorldCoordinatesForSlice( s);
     this->SliceImplicitPlane->SetOrigin( pos);
     this->Superclass::SetSlice(s);
     this->UpdateSlicePlane();
-  }
+    }
   else
+    {
     this->Superclass::SetSlice(s);
+    }
 }
 
 //----------------------------------------------------------------------------
@@ -523,7 +565,7 @@ void vtkViewImage2D::UpdateSlicePlane( void)
   unsigned int added2;
 
   for( unsigned int i=0; i<4; i++)
-  {
+    {
     added1 =( !(i%2)) ? 1 : 0;
     added2 =( i<2) ? 1 : 0;
     x[(this->SliceOrientation+1)%3] =
@@ -532,14 +574,20 @@ void vtkViewImage2D::UpdateSlicePlane( void)
       bounds[2*((this->SliceOrientation+2)%3)+added2];
     x[this->SliceOrientation] = bounds[2*this->SliceOrientation];
     oldpoints->InsertPoint(i,x);
-  }
+    }
   this->OrientationTransform->TransformPoints( oldpoints, points);
   this->SlicePlane->SetPoints( points);
   oldpoints->Delete();
   points->Delete();
 }
 
-
+//----------------------------------------------------------------------------
+double* vtkViewImage2D::GetWorldCoordinatesFromDisplayPosition( const int& x,
+  const int& y )
+{
+  int xy[2] = {x,y};
+  return this->GetWorldCoordinatesFromDisplayPosition( xy );
+}
 //----------------------------------------------------------------------------
 int vtkViewImage2D::GetSliceForWorldCoordinates(double pos[3])
 {
@@ -551,7 +599,7 @@ int vtkViewImage2D::GetSliceForWorldCoordinates(double pos[3])
 double* vtkViewImage2D::GetWorldCoordinatesForSlice(int slice)
 {
   int indices[3] = {slice, slice, slice};
-  return this->GetWorldCoordinatesFromImageCoordinates( indices);
+  return this->GetWorldCoordinatesFromImageCoordinates( indices );
 }
 
 //----------------------------------------------------------------------------
@@ -641,15 +689,15 @@ void vtkViewImage2D::SetCameraFocalAndPosition( double focal[3], double pos[3] )
   vtkRenderer* ren = this->GetRenderer();
 
   if( !ren )
-  {
+    {
     return;
-  }
+    }
   vtkCamera* camera = ren->GetActiveCamera();
 
   if( !camera )
-  {
+    {
     return;
-  }
+    }
 
   camera->SetFocalPoint( focal[0], focal[1], focal[2] );
   camera->SetPosition( pos[0], pos[1], pos[2] );
@@ -660,15 +708,15 @@ void vtkViewImage2D::GetCameraFocalAndPosition( double focal[3], double pos[3] )
   vtkRenderer* ren = this->GetRenderer();
 
   if( !ren )
-  {
+    {
     return;
-  }
+    }
   vtkCamera* camera = ren->GetActiveCamera();
 
   if( !camera )
-  {
+    {
     return;
-  }
+    }
 
   camera->GetPosition( pos );
   camera->GetFocalPoint( focal );
@@ -676,13 +724,12 @@ void vtkViewImage2D::GetCameraFocalAndPosition( double focal[3], double pos[3] )
 //----------------------------------------------------------------------------
 double* vtkViewImage2D::GetWorldCoordinatesFromDisplayPosition( int xy[2] )
 {
-
   if( !this->GetInput() || !this->GetRenderer())
-  {
+    {
     double* nullpos = new double[3];
     nullpos[0] = 0; nullpos[1] = 0; nullpos[2] = 0;
     return nullpos;
-  }
+    }
 
   double* slicepos = this->GetWorldCoordinatesForSlice( this->GetSlice());
   this->GetRenderer()->SetWorldPoint( slicepos[0], slicepos[1], slicepos[2],
@@ -699,14 +746,14 @@ double* vtkViewImage2D::GetWorldCoordinatesFromDisplayPosition( int xy[2] )
 void vtkViewImage2D::InstallPipeline()
 {
   if( this->RenderWindow && this->Renderer)
-  {
+    {
     this->RenderWindow->AddRenderer(this->Renderer);
-  }
+    }
 
   if( this->Interactor)
-  {
-    if( !this->InteractorStyle)
     {
+    if( !this->InteractorStyle)
+      {
       this->InteractorStyle = vtkInteractorStyleImage2D::New();
       this->Interactor->SetInteractorStyle(this->InteractorStyle);
       if( !this->IsColor )
@@ -732,21 +779,21 @@ void vtkViewImage2D::InstallPipeline()
         vtkViewImage2DCommand::PanEvent, this->Command);
       this->InteractorStyle->AddObserver( vtkCommand::InteractionEvent,
         this->Command);
-    }
+      }
 
     this->Interactor->SetInteractorStyle(this->InteractorStyle);
     this->Interactor->SetRenderWindow(this->RenderWindow);
-  }
+    }
 
   if( this->Renderer && this->ImageActor)
-  {
+    {
     this->Renderer->AddViewProp(this->ImageActor);
-  }
+    }
 
   if( this->ImageActor && this->WindowLevel)
-  {
+    {
     this->ImageActor->SetInput(this->WindowLevel->GetOutput());
-  }
+    }
 }
 
 //----------------------------------------------------------------------------
@@ -762,8 +809,13 @@ void vtkViewImage2D::SetInterpolate(const int& val )
 int vtkViewImage2D::GetInterpolate(void)
 {
   if( this->ImageActor)
+    {
     return this->ImageActor->GetInterpolate();
-  return 0;
+    }
+  else
+    {
+    return 0;
+    }
 }
 
 //----------------------------------------------------------------------------
@@ -774,7 +826,9 @@ vtkActor* vtkViewImage2D::AddDataSet( vtkPolyData* dataset,
 {
   vtkCamera *cam = this->Renderer ? this->Renderer->GetActiveCamera() : NULL;
   if( !cam )
+    {
     return 0;
+    }
 
   vtkPolyDataMapper* mapper = vtkPolyDataMapper::New();
   mapper->SetScalarVisibility( iDataVisibility );
@@ -784,20 +838,22 @@ vtkActor* vtkViewImage2D::AddDataSet( vtkPolyData* dataset,
   vtkClipPolyData* cutter = vtkClipPolyData::New();
 
   if( intersection )
-  {
+    {
     cutter->SetInputConnection( 0, dataset->GetProducerPort());
     cutter->SetClipFunction( this->SliceImplicitPlane );
     cutter->InsideOutOn();
     mapper->SetInputConnection( 0, cutter->GetOutputPort());
-  }
+    }
   else
-  {
+    {
     mapper->SetInput( dataset );
-  }
+    }
 
   actor->SetMapper( mapper );
   if( property )
+    {
     actor->SetProperty( property );
+    }
 
   actor->SetUserTransform( this->AdjustmentTransform );
   this->ContourPicker->AddPickList( actor );
@@ -821,7 +877,9 @@ vtkActor* vtkViewImage2D::AddDataSet( vtkDataSet* dataset,
 {
   vtkCamera *cam = this->Renderer ? this->Renderer->GetActiveCamera() : NULL;
   if( !cam )
+    {
     return 0;
+    }
 
   vtkPolyDataMapper* mapper = vtkPolyDataMapper::New();
   mapper->SetScalarVisibility( iDataVisibility );
@@ -831,19 +889,21 @@ vtkActor* vtkViewImage2D::AddDataSet( vtkDataSet* dataset,
   vtkCutter* cutter = vtkCutter::New();
 
   if( intersection )
-  {
+    {
     cutter->SetInputConnection( 0, dataset->GetProducerPort());
     cutter->SetCutFunction( this->SliceImplicitPlane );
     mapper->SetInputConnection( 0, cutter->GetOutputPort());
-  }
+    }
   else
-  {
+    {
     mapper->SetInput( vtkPolyData::SafeDownCast( dataset ) );
-  }
+    }
 
   actor->SetMapper( mapper );
   if( property )
+    {
     actor->SetProperty( property );
+    }
 
   actor->SetUserTransform( this->AdjustmentTransform );
   this->ContourPicker->AddPickList( actor );

@@ -76,14 +76,12 @@
 class vtkPlane;
 class vtkViewImage2DCommand;
 class vtkTransform;
-class vtkImageBlendWithMask;
 class vtkCellPicker;
 
 /**
-
+  \class vtkViewImage2D
+  \brief
 */
-
-
 class VTK_RENDERINGADDON2_EXPORT vtkViewImage2D : public vtkViewImage
 {
 
@@ -92,16 +90,13 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage2D : public vtkViewImage
   static vtkViewImage2D* New();
   vtkTypeRevisionMacro(vtkViewImage2D, vtkViewImage);
   /**
-     Description:
-     The orientation of the view is a abstract representation of the object
+     \brief The orientation of the view is a abstract representation of the object
      we are looking at. It results from the acquisition plane. Setting the View
      Orientation by calling SetViewOrientation() will imply the view to set its
      inner "slice" orientation. (slice orientation == 2 means plane of
      acquisition.)
 
-     IMPORTANT NOTE:
-
-     The view orientations defined here are orthogonal to the normal basis
+     \note The view orientations defined here are orthogonal to the normal basis
      in the scanner. A very interesting improvement would be to define "oblique"
      view orientations for cardiac imaging, something like:
 
@@ -135,106 +130,105 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage2D : public vtkViewImage
   //ETX
 
    /**
-     Get the orientation annotation. This annotation describes the orientation
-     of the slice plane, according to the rule
-     Right(R)-Left(L) Anterior(A)-Posterior(P) Inferior(I)-Superior(S)
+     \brief Get the orientation annotation. This annotation describes the
+      orientation of the slice plane, according to the rule
+      Right(R)-Left(L) Anterior(A)-Posterior(P) Inferior(I)-Superior(S)
   */
-  vtkGetObjectMacro (OrientationAnnotation, vtkOrientationAnnotation);
+  vtkGetObjectMacro( OrientationAnnotation, vtkOrientationAnnotation );
 
   vtkGetObjectMacro( ContourPicker, vtkCellPicker );
 
   /**
-     The SliceImplicitPlane instance (GetImplicitSlicePlane()) is the
+     \brief The SliceImplicitPlane instance (GetImplicitSlicePlane()) is the
      implicit function that cuts every dataset that is added with AddDataSet().
   */
-  vtkGetObjectMacro (SliceImplicitPlane, vtkPlane);
+  vtkGetObjectMacro( SliceImplicitPlane, vtkPlane );
   /**
-     The SlicePlane instance (GetSlicePlane()) is the polygonal
+     \brief The SlicePlane instance (GetSlicePlane()) is the polygonal
      square corresponding to the slice plane,
      it is updated each time the slice changes,
      and is color-coded according to conventions
   */
-  vtkGetObjectMacro (SlicePlane, vtkPolyData);
+  vtkGetObjectMacro( SlicePlane, vtkPolyData );
   /**
-     The world is not always what we think it is ...
+     \brief The world is not always what we think it is ...
 
      Use this method to move the viewer slice such that the position
      (in world coordinates) given by the arguments is contained by
      the slice plane. If the given position is outside the bounds
      of the image, then the slice will be as close as possible.
   */
-  virtual void SetWorldCoordinates (double pos[3]);
+  virtual void SetWorldCoordinates( double pos[3] );
 
   /**
-     Set/Get the current slice to display (depending on the orientation
+     \brief Set/Get the current slice to display (depending on the orientation
      this can be in X, Y or Z).
   */
-  virtual void SetSlice(int s);
+  virtual void SetSlice( int s );
 
   /**
-     Show/Hide the annotations.
+     \brief Show/Hide the annotations.
   */
-  vtkGetMacro (ShowAnnotations, int);
+  vtkGetMacro( ShowAnnotations, int );
 
   /**
-     Show/Hide the annotations.
+     \brief Show/Hide the annotations.
   */
   vtkBooleanMacro( ShowAnnotations, int );
   /**
-     Show/Hide the annotations.
+     \brief Show/Hide the annotations.
   */
   virtual void SetShowAnnotations( const bool& );
 
   /**
-     Instead of setting the slice orientation to an axis (YZ - XZ - XY),
+     \brief Instead of setting the slice orientation to an axis (YZ - XZ - XY),
      you can force the view to be axial (foot-head), coronal (front-back),
      or sagittal (left-right). It will just use the OrientationMatrix
      (GetOrientationMatrix()) to check which slice orientation to pick.
   */
-  vtkGetMacro (ViewOrientation, int);
-  virtual void SetViewOrientation (int orientation);
-  virtual void SetOrientationMatrix (vtkMatrix4x4* matrix);
+  vtkGetMacro( ViewOrientation, int );
+  virtual void SetViewOrientation( int orientation );
+  virtual void SetOrientationMatrix( vtkMatrix4x4* matrix );
 
   /**
-     The ViewConvention instance explains where to place the camera around
+     \brief The ViewConvention instance explains where to place the camera around
      the patient. Default behaviour is Radiological convention, meaning
      we respectively look at the patient from his feet, his face and his left
      ear.
 
      For Neurological convention, we respectively look from the top of his head,
      the the back of his head, and his left ear.
+
+     \todo Why not adding cardiologic conventions where we look at the patient in
+    oblique angles ?
   */
-  ///\todo Why not adding cardiologic conventions where we look at the patient in
-  /// oblique angles ?
-  vtkGetMacro (ViewConvention, int);
-  virtual void SetViewConvention (int convention);
+  vtkGetMacro( ViewConvention, int );
+  virtual void SetViewConvention( int convention );
   /**
-     Convert an indices coordinate point (image coordinates) into a world
+     \brief Convert an indices coordinate point (image coordinates) into a world
      coordinate point
   */
-  virtual double* GetWorldCoordinatesForSlice (int slice);
+  virtual double* GetWorldCoordinatesForSlice( int slice );
   /**
-     Convert a world coordinate point into an image indices coordinate point
+     \brief Convert a world coordinate point into an image indices coordinate point
   */
-  virtual int GetSliceForWorldCoordinates(double pos[3]);
+  virtual int GetSliceForWorldCoordinates( double pos[3] );
 
-  virtual void ResetCamera(void);
+  virtual void ResetCamera( void );
   /**
-     Reset the 3D position to center
+     \brief Reset the 3D position to center
   */
-  virtual void ResetPosition(void);
+  virtual void ResetPosition( void );
   /**
-     Reset position - zoom - window/level to default
+     \brief Reset position - zoom - window/level to default
   */
-  virtual void Reset(void);
+  virtual void Reset( void );
   /**
+  \brief
    */
   virtual double* GetWorldCoordinatesFromDisplayPosition( int xy[2] );
-  virtual double* GetWorldCoordinatesFromDisplayPosition( const int& x, const int& y )
-  {
-    int xy[2] = {x,y};
-    return this->GetWorldCoordinatesFromDisplayPosition( xy );
-  }
+  virtual double* GetWorldCoordinatesFromDisplayPosition( const int& x,
+    const int& y );
 
   vtkSetMacro( Zoom, double );
   vtkGetMacro( Zoom, double );
@@ -245,13 +239,13 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage2D : public vtkViewImage
   void SetCameraFocalAndPosition( double focal[3], double pos[3] );
   void GetCameraFocalAndPosition( double focal[3], double pos[3] );
 
-  vtkGetObjectMacro (Command, vtkViewImage2DCommand);
+  vtkGetObjectMacro( Command, vtkViewImage2DCommand );
 
   virtual void SetInterpolate( const int& val );
   virtual int GetInterpolate ();
-  vtkBooleanMacro (Interpolate, int);
+  vtkBooleanMacro( Interpolate, int );
   /**
-    Add a dataset to the view (has to be subclass of vtkPointSet).
+    \brief Add a dataset to the view (has to be subclass of vtkPointSet).
     The dataset will be cut through the implicit slice plane
     (GetImplicitSlicePlane()).
 
@@ -259,7 +253,7 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage2D : public vtkViewImage
     as triangles, triangles as lines, lines as points.
     A vtkProperty of the dataset can be specified.
   */
-  virtual vtkActor* AddDataSet (vtkDataSet* dataset,
+  virtual vtkActor* AddDataSet( vtkDataSet* dataset,
     vtkProperty* property = NULL,
     const bool& intersection = true,
     const bool& iDataVisibility = true );
@@ -317,17 +311,17 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage2D : public vtkViewImage
 
   // Description:
   virtual void UpdateOrientation();
-  virtual int SetCameraToConvention (void);
-  virtual void SetAnnotationToConvention(void);
-  virtual void InitializeSlicePlane (void);
-  virtual void UpdateSlicePlane (void);
-  virtual void SetSlicePlaneToConvention (unsigned int axis);
+  virtual int SetCameraToConvention( void );
+  virtual void SetAnnotationToConvention( void );
+  virtual void InitializeSlicePlane( void );
+  virtual void UpdateSlicePlane( void );
+  virtual void SetSlicePlaneToConvention( unsigned int axis );
   virtual void InstallPipeline();
 
-  vtkMatrix4x4* ConventionMatrix;
-  vtkPlane*     SliceImplicitPlane;
-  vtkTransform* AdjustmentTransform;
-  vtkPolyData*  SlicePlane;
+  vtkMatrix4x4*               ConventionMatrix;
+  vtkPlane*                   SliceImplicitPlane;
+  vtkTransform*               AdjustmentTransform;
+  vtkPolyData*                SlicePlane;
   vtkOrientationAnnotation*   OrientationAnnotation;
 
   vtkViewImage2DCommand*  Command;
