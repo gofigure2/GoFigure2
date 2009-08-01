@@ -12,6 +12,7 @@ ENDFOREACH( var ${EXAMPLES_FILTER} )
 ADD_TEST( ChanAndVeseSegmentationFilterTest2D
   ${EXECUTABLE_OUTPUT_PATH}/ChanAndVeseSegmentationFilterTest2D
   ${TESTING_DATA_PATH}/Circle.png
+  ${TESTING_DATA_PATH}/temp.mha
   49
   49
   49
@@ -21,6 +22,7 @@ ADD_TEST( ChanAndVeseSegmentationFilterTest2D
 ADD_TEST( ChanAndVeseSegmentationFilterTest3D
   ${EXECUTABLE_OUTPUT_PATH}/ChanAndVeseSegmentationFilterTest3D
   ${TESTING_DATA_PATH}/Circle3D.mhd
+  ${TESTING_DATA_PATH}/temp.mha
   15
   15
   15
@@ -31,6 +33,7 @@ ADD_TEST( ChanAndVeseSegmentationFilterTest3D
 ADD_TEST( ChanAndVeseSegmentationFilterReal1Test2D
   ${EXECUTABLE_OUTPUT_PATH}/ChanAndVeseSegmentationFilterTest2D
   ${TESTING_DATA_PATH}/MultiphaseCells2D.png
+  ${TESTING_DATA_PATH}/temp.mha
   48
   48
   30
@@ -40,6 +43,7 @@ ADD_TEST( ChanAndVeseSegmentationFilterReal1Test2D
 ADD_TEST( ChanAndVeseSegmentationFilterReal2Test2D
   ${EXECUTABLE_OUTPUT_PATH}/ChanAndVeseSegmentationFilterTest2D
   ${TESTING_DATA_PATH}/MultiphaseCells2D.png
+  ${TESTING_DATA_PATH}/temp.mha
   66
   77
   30
@@ -49,6 +53,7 @@ ADD_TEST( ChanAndVeseSegmentationFilterReal2Test2D
 ADD_TEST( ChanAndVeseSegmentationFilterReal3Test2D
   ${EXECUTABLE_OUTPUT_PATH}/ChanAndVeseSegmentationFilterTest2D
   ${TESTING_DATA_PATH}/MultiphaseCells2D.png
+  ${TESTING_DATA_PATH}/temp.mha
   80
   40
   30

@@ -106,7 +106,7 @@ public:
 
   typedef AtanRegularizedHeavisideStepFunction< InternalPixelType, InternalPixelType >
     DomainFunctionType;
-  typedef typename DomainFunctionType::Pointer 
+  typedef typename DomainFunctionType::Pointer
     DomainFunctionPointer;
 
   typedef  FastMarchingImageFilter< InternalImageType,
@@ -121,6 +121,7 @@ public:
     {
     m_Center = iC;
     }
+
   InternalPointType GetCenter( ) const
     {
     return m_Center;
@@ -187,14 +188,15 @@ protected:
     for( unsigned int j = 0; j < Dimension; j++ )
       {
       m_Size[j] =
-        1 + 2. * static_cast<InternalSizeValueType>( m_Radius / spacing[j] );
+        1 + 2. * static_cast< InternalSizeValueType >( m_Radius / spacing[j] );
       start[j] = 0;
       cen[j] = static_cast< InternalSizeValueType >( m_Radius / spacing[j] );
-      origin[j] = m_Center[j] - cen[j];
+      origin[j] = m_Center[j] - m_Radius;
       }
 
     std::cout << "Spacing: " << spacing << std::endl;
     std::cout << "Input Size: " << inputSize << std::endl;
+    std::cout << "Output Size: " << m_Size << std::endl;
     std::cout << "Origin: " << origin << std::endl;
     std::cout << "Radius: " << m_Radius << std::endl;
     std::cout << "Center: " << cen << std::endl;

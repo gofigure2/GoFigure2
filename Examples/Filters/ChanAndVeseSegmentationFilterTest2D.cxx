@@ -1,5 +1,5 @@
 #include <iostream>
-
+#include "itkImage.h"
 #include "itkImageFileReader.h"
 #include "itkChanAndVeseSegmentationFilter.h"
 #include "vtkImageData.h"
@@ -42,10 +42,16 @@ int main( int argc, char** argv )
 
   for( unsigned int dim = 0; dim < Dimension; dim++ )
     {
-    pt[dim] = atof( argv[dim+2] );
+    pt[dim] = atof( argv[dim+3] );
     }
 
-  double cellRadius = atof( argv[Dimension+2] );
+FeatureImageType::IndexType p;
+p[0] = 10; p[1] = 10;
+
+std::cout << reader->GetOutput()->GetPixel( p ) << std::endl;
+
+
+  double cellRadius = atof( argv[Dimension+3] );
 
   SegmentationFilterType::Pointer filter = SegmentationFilterType::New();
   filter->SetFeatureImage( reader->GetOutput() );
@@ -68,10 +74,11 @@ int main( int argc, char** argv )
 
   vtkPolyDataWriter* writer = vtkPolyDataWriter::New();
   writer->SetInput( contours->GetOutput() );
+  writer->SetFileName( argv[2] );
   writer->Write();
   writer->Delete();
 
-  bool test = atoi( argv[Dimension+3] );
+  bool test = atoi( argv[Dimension+4] );
   if( !test )
     {
     // map to graphics library
