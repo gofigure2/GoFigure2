@@ -39,9 +39,9 @@ int main( int argc, char** argv )
   FeatureImageType::PointType pt;
 
   for( unsigned int dim = 0; dim < Dimension; dim++ )
-  {
+    {
     pt[dim] = atof( argv[dim+3] );
-  }
+    }
 
   double cellRadius = atof( argv[Dimension+3] );
 
