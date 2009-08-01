@@ -45,11 +45,10 @@ int main( int argc, char** argv )
     pt[dim] = atof( argv[dim+3] );
     }
 
-FeatureImageType::IndexType p;
-p[0] = 10; p[1] = 10;
+  FeatureImageType::IndexType p;
+  p[0] = 10; p[1] = 10;
 
-std::cout << reader->GetOutput()->GetPixel( p ) << std::endl;
-
+  std::cout << reader->GetOutput()->GetPixel( p ) << std::endl;
 
   double cellRadius = atof( argv[Dimension+3] );
 
