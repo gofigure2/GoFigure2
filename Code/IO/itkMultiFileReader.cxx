@@ -67,6 +67,19 @@ void MultiFileReader::SetTimePoint( const int& UserTimePoint )
 }
 //-----------------------------------------------------------------------------
 
+//-----------------------------------------------------------------------------
+void MultiFileReader::SetZDepth( const int& iZ )
+{
+  if( iZ <= m_NumberOfZSlices )
+    {
+    this->m_UpdateZSlice = iZ;
+    }
+  else
+    {
+    this->m_UpdateZSlice = m_NumberOfZSlices;
+    }
+}
+//-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
 void MultiFileReader::SetChannel( const int& UserChannel )
@@ -90,30 +103,48 @@ void MultiFileReader::UpdateChannel()
 }
 //-----------------------------------------------------------------------------
 
-
 //-----------------------------------------------------------------------------
 void MultiFileReader::SetInput( FileListType* UserFileList )
 {
-  if( UserFileList->size() == 0 ) return;
+  if( UserFileList->empty() )
+    {
+    return;
+    }
 
   this->m_FileList = UserFileList;
 
   FileListType::iterator endIt;
   FileListType::iterator It = m_FileList->begin();
-  unsigned int CurrentTimePoint = (*It).TimePoint;
-  this->m_NumberOfTimePoints = 1;
-  while( It != m_FileList->end())
+  if( this->m_TimeBased )
     {
-    if( (*It).TimePoint > CurrentTimePoint )
+    unsigned int CurrentTimePoint = (*It).TimePoint;
+    this->m_NumberOfTimePoints = 1;
+    while( It != m_FileList->end())
       {
-      CurrentTimePoint = (*It).TimePoint;
-      this->m_NumberOfTimePoints++;
+      if( (*It).TimePoint > CurrentTimePoint )
+        {
+        CurrentTimePoint = (*It).TimePoint;
+        this->m_NumberOfTimePoints++;
+        }
+      It++;
       }
-    It++;
+    }
+  else
+    {
+    unsigned int CurrentZSlice = (*It).ZDepth;
+    this->m_NumberOfZSlices = 1;
+    while( It != m_FileList->end() )
+      {
+      if( (*It).ZDepth > CurrentZSlice )
+        {
+        CurrentZSlice = (*It).ZDepth;
+        this->m_NumberOfZSlices++;
+        }
+      It++;
+      }
     }
 }
 //-----------------------------------------------------------------------------
-
 
 //-----------------------------------------------------------------------------
 void MultiFileReader::PrintSelf( std::ostream& os, Indent indent) const
@@ -145,10 +176,10 @@ void MultiFileReader::Update( void )
     }
 
   if( this->IsProgressBarSet )
-  {
+    {
     this->m_ProgressBar->show();
     this->m_ProgressBar->setValue( 1 );
-  }
+    }
 
   this->ComputeUpdateFileList();
   if( m_UpdateFileList.empty() )
@@ -442,10 +473,21 @@ void MultiFileReader::ComputeUpdateFileList()
     FileListType::iterator It = m_FileList->begin();
 
     // get the first file
-    while( It != m_FileList->end()
-           && (int)((*It).TimePoint) < this->m_UpdateTimePoint )
+    if( m_TimeBased )
       {
-      It++;
+      while( It != m_FileList->end()
+            && (int)((*It).TimePoint) < this->m_UpdateTimePoint )
+        {
+        It++;
+        }
+      }
+    else
+      {
+      while( It != m_FileList->end()
+            && (int)((*It).ZDepth) < this->m_UpdateZSlice )
+        {
+        It++;
+        }
       }
     startIt = It;
 
@@ -457,11 +499,23 @@ void MultiFileReader::ComputeUpdateFileList()
       }
     else // find all the 2D files needed for the 3D volume
       {
-      while( It != m_FileList->end()
-             && (int)((*It).TimePoint) == this->m_UpdateTimePoint )
+      if( m_TimeBased )
         {
-        It++;
-        counter++;
+        while( It != m_FileList->end()
+               && (int)((*It).TimePoint) == this->m_UpdateTimePoint )
+          {
+          It++;
+          counter++;
+          }
+        }
+      else
+        {
+        while( It != m_FileList->end()
+               && (int)((*It).ZDepth) == this->m_UpdateZSlice )
+          {
+          It++;
+          counter++;
+          }
         }
       }
     endIt = It;
@@ -498,6 +552,13 @@ void MultiFileReader::SetDimensionality( int UserDimensionality )
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
+void MultiFileReader::SetVolumePerTimePoint( const bool& iBool )
+{
+  m_TimeBased = iBool;
+}
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
 void MultiFileReader::SetMultiChannelImages( int value )
 {
   if( value )
@@ -520,8 +581,11 @@ MultiFileReader::MultiFileReader( )
   m_NumberOfChannels = -1;
   m_NumberOfTimePoints = -1;
   m_UpdateTimePoint  = -1;
+  m_NumberOfZSlices = -1;
+  m_UpdateZSlice    = -1;
   m_UpdateChannel    = -1;
   m_AreImagesMultiChannel = false;
+  m_TimeBased = true;
 }
 //-----------------------------------------------------------------------------
 

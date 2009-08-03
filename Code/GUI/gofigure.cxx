@@ -53,6 +53,7 @@ int main( int argc, char** argv )
   QApplication app(argc, argv);
 
   QCoreApplication::setOrganizationName("MegasonLab");
+  QCoreApplication::setOrganizationDomain( "http://sourceforge.net/projects/gofigure2/");
   QCoreApplication::setApplicationName("GoFigure2");
 
   QPixmap pixmap(":/fig/splash.jpg");

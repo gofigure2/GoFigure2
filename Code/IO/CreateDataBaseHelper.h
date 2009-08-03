@@ -59,7 +59,7 @@ std::vector<std::string> ListAllValuesForOneColumn(
   std::string ColumnName, std::string TableName);
 
 //query: "SELECT * FROM TableName WHERE field = value"
-//if field is a primary key, will return only the values for 
+//if field is a primary key, will return only the values for
 //one row
   std::vector<std::string> ListSpecificValuesForRow(
   std::string ServerName, std::string login,

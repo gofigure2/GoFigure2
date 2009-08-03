@@ -89,9 +89,15 @@ public:
   typedef SmartPointer< Self >        Pointer;
   typedef SmartPointer< const Self >  ConstPointer;
 
-  /** \brief set the time point you want to extract
-      and load in memory.                              */
+  /** \brief set the time point you want to extract and load in memory the
+  corresponding XYZ volume. */
   void SetTimePoint( const int& UserTimePoint );
+  /** \brief set the z slice you want to extract and load in memory the
+  corresponding XYT volume. */
+  void SetZDepth( const int& iZ );
+
+  /** \brief */
+  void SetVolumePerTimePoint( const bool& iBool );
 
   /** \brief set the channel you want to extract
       and load in memory. -1 for all channels.         */
@@ -108,6 +114,7 @@ public:
   void SetDimensionality( int UserDimensionality );
 
   int GetNumberOfTimePoints( ) const { return m_NumberOfTimePoints; }
+  int GetNumberOfZSlices( ) const { return m_NumberOfZSlices; }
   int GetNumberOfChannels( ) const { return m_NumberOfChannels; }
 
   /** \brief  */
@@ -146,10 +153,13 @@ private:
   int            m_DataScalarType;  // suppose same type for all files
   int            m_NumberOfChannels;// OfScalarComponents;
   int            m_NumberOfTimePoints;
+  int            m_NumberOfZSlices;
   int            m_UpdateTimePoint;
+  int            m_UpdateZSlice;
   int            m_UpdateChannel;
   bool           m_AreImagesMultiChannel;
-  
+  bool           m_TimeBased;
+
   QProgressBar*    m_ProgressBar;
   bool             IsProgressBarSet;
 

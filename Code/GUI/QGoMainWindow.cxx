@@ -1300,7 +1300,7 @@ void QGoMainWindow::openRecentMultipleFile()
 //--------------------------------------------------------------------------------
 void QGoMainWindow::readSettings()
 {
-  QSettings settings( "MegasonLab", "Gofigure2" );
+  QSettings settings;
   m_RecentSingleFiles = settings.value( "RecentSingleFiles" ).toStringList( );
   m_RecentMultipleFiles = settings.value( "RecentMultipleFiles" ).toStringList( );
   updateRecentFileActions(m_RecentSingleFiles, menuSingle_Files, recentSingleFileActions );
