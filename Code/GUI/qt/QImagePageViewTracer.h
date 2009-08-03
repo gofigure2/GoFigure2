@@ -173,39 +173,39 @@ public:
     const int& iExperimentID, const QString& iExperimentName );
 
   /** \note Commented by arnaudgelas (temporary)*/
-  //   template< typename TContourContainer, typename TPropertyContainer >
-  //   QMEGAVTKADDON2_EXPORT
-  //   void AddContours( TContourContainer& iContours,
-  //     TPropertyContainer& iProperty,
-  //     const bool& iIntersection = true,
-  //     const bool& iVizu3D = false )
-  //     {
-  //     this->Pool->SyncAddContours( iContours, iProperty, iIntersection );
-  //
-  //     if( iVizu3D )
-  //       {
-  //       typename TContourContainer::iterator c_it = iContours.begin();
-  //       typename TPropertyContainer::iterator p_it = iProperty.begin();
-  //
-  //       for(; c_it != iContours.end(); ++c_it, ++p_it )
-  //         {
-  //         this->View3D->AddDataSet( *c_it, *p_it, false );
-  //         }
-  //       }
-  //     }
-  //
-  //   template< typename TPolyDataContainer >
-  //   QMEGAVTKADDON2_EXPORT
-  //   void RemoveContours( TPolyDataContainer& iContours )
-  //     {
-  //     this->Pool->SyncRemoveContours( iContours );
-  //     typename TPolyDataContainer::iterator c_it = iContours.begin();
-  //
-  //     for(; c_it != iContours.end(); ++c_it )
-  //       {
-  //       this->View3D->RemoveDataSet( *c_it );
-  //       }
-  //     }
+    template< typename TContourContainer, typename TPropertyContainer >
+    QMEGAVTKADDON2_EXPORT
+    void AddContours( TContourContainer& iContours,
+      TPropertyContainer& iProperty,
+      const bool& iIntersection = true,
+      const bool& iVizu3D = false )
+      {
+      this->Pool->SyncAddContours( iContours, iProperty, iIntersection );
+
+      if( iVizu3D )
+        {
+        typename TContourContainer::iterator c_it = iContours.begin();
+        typename TPropertyContainer::iterator p_it = iProperty.begin();
+
+        for(; c_it != iContours.end(); ++c_it, ++p_it )
+          {
+          this->View3D->AddDataSet( *c_it, *p_it, false );
+          }
+        }
+      }
+
+    template< typename TPolyDataContainer >
+    QMEGAVTKADDON2_EXPORT
+    void RemoveContours( TPolyDataContainer& iContours )
+      {
+      this->Pool->SyncRemoveContours( iContours );
+      typename TPolyDataContainer::iterator c_it = iContours.begin();
+
+      for(; c_it != iContours.end(); ++c_it )
+        {
+        this->View3D->RemoveDataSet( *c_it );
+        }
+      }
 
   QMEGAVTKADDON2_EXPORT void SaveStateSplitters();
 

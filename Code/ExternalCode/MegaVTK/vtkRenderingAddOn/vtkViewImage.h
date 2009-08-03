@@ -128,8 +128,8 @@ class vtkProp3D;
 class vtkProp;
 
 /**
-   
-   \class vtkViewImage 
+
+   \class vtkViewImage
    \brief This class is a top-level convenience class for displaying a scalar - or RGB
    image in a 2D or 3D scene.
 
@@ -143,7 +143,7 @@ class vtkProp;
    annotation text properties (SetTextProperty()), or a call for reseting to default values
    (Reset() or ResetCamera()).
 
-   
+
    The principle add-on of this class is to tacke the common issue of placing
    different objects in a same consistent reference frame. In a world coordinates system, an
    volume image can be localized by its origin and its spacing, and an orientation vector defining
@@ -333,6 +333,8 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage : public vtkImageViewer2
   vtkProp3DCollection*        Prop3DCollection;
   vtkDataSetCollection*       DataSetCollection;
   vtkMatrixToLinearTransform* OrientationTransform;
+
+  std::string DirectionAnnotationMatrix[3][2];
 
   bool ShowAnnotations;
   bool ShowScalarBar;

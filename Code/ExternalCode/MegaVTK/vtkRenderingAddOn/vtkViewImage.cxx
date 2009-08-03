@@ -149,6 +149,15 @@ vtkViewImage::vtkViewImage()
   this->Renderer->AddViewProp ( this->ScalarBarActor );
 
   this->IsColor = false;
+
+  // default DirectionAnnotation
+  this->DirectionAnnotationMatrix[0][0] = "R";
+  this->DirectionAnnotationMatrix[0][1] = "L";
+  this->DirectionAnnotationMatrix[1][0] = "A";
+  this->DirectionAnnotationMatrix[1][1] = "P";
+  this->DirectionAnnotationMatrix[2][0] = "V";
+  this->DirectionAnnotationMatrix[2][1] = "D";
+
 }
 
 

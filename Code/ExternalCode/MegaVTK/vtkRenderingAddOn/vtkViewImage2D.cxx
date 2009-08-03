@@ -445,11 +445,6 @@ void vtkViewImage2D::SetAnnotationToConvention(void)
     return;
     }
 
-  std::string matrix[3][2];
-  matrix[0][0] = "R";matrix[0][1] = "L";
-  matrix[1][0] = "A";matrix[1][1] = "P";
-  matrix[2][0] = "V";matrix[2][1] = "D";
-
   std::string solution[4];
 
   ///\todo surely there is a simpler way to do all of that !
@@ -487,23 +482,23 @@ void vtkViewImage2D::SetAnnotationToConvention(void)
 
   if( viewup[id1] > 0 )
     {
-    solution[3] = matrix[id1][0];
-    solution[1] = matrix[id1][1];
+    solution[3] = this->DirectionAnnotationMatrix[id1][0];
+    solution[1] = this->DirectionAnnotationMatrix[id1][1];
     }
   else
     {
-    solution[3] = matrix[id1][1];
-    solution[1] = matrix[id1][0];
+    solution[3] = this->DirectionAnnotationMatrix[id1][1];
+    solution[1] = this->DirectionAnnotationMatrix[id1][0];
     }
   if( rightvector[id2] > 0 )
     {
-    solution[0] = matrix[id2][0];
-    solution[2] = matrix[id2][1];
+    solution[0] = this->DirectionAnnotationMatrix[id2][0];
+    solution[2] = this->DirectionAnnotationMatrix[id2][1];
     }
   else
     {
-    solution[0] = matrix[id2][1];
-    solution[2] = matrix[id2][0];
+    solution[0] = this->DirectionAnnotationMatrix[id2][1];
+    solution[2] = this->DirectionAnnotationMatrix[id2][0];
     }
 
   for( unsigned int i=0; i<4; i++ )

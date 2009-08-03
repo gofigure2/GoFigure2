@@ -315,22 +315,21 @@ void vtkViewImage3D::SetupVolumeRendering()
 //----------------------------------------------------------------------------
 void vtkViewImage3D::SetupWidgets()
 {
-
   // Create an annotated cube actor (directions)
   this->Cube = vtkAnnotatedCubeActor::New();
-  this->Cube->SetXPlusFaceText ("L");
-  this->Cube->SetXMinusFaceText ("R");
-  this->Cube->SetYPlusFaceText ("P");
-  this->Cube->SetYMinusFaceText ("A");
-  this->Cube->SetZPlusFaceText ("D");
-  this->Cube->SetZMinusFaceText ("V");
-  this->Cube->SetZFaceTextRotation (90);
-  this->Cube->SetFaceTextScale (0.65);
-  this->Cube->GetCubeProperty()->SetColor (0.5, 1, 1);
-  this->Cube->GetTextEdgesProperty()->SetLineWidth (1);
-  this->Cube->GetTextEdgesProperty()->SetDiffuse (0);
-  this->Cube->GetTextEdgesProperty()->SetAmbient (1);
-  this->Cube->GetTextEdgesProperty()->SetColor (0.18, 0.28, 0.23);
+  this->Cube->SetXPlusFaceText( this->DirectionAnnotationMatrix[0][1].c_str() );
+  this->Cube->SetXMinusFaceText( this->DirectionAnnotationMatrix[0][0].c_str() );
+  this->Cube->SetYPlusFaceText( this->DirectionAnnotationMatrix[1][1].c_str() );
+  this->Cube->SetYMinusFaceText( this->DirectionAnnotationMatrix[1][0].c_str() );
+  this->Cube->SetZPlusFaceText( this->DirectionAnnotationMatrix[2][1].c_str() );
+  this->Cube->SetZMinusFaceText( this->DirectionAnnotationMatrix[2][0].c_str() );
+  this->Cube->SetZFaceTextRotation( 90 );
+  this->Cube->SetFaceTextScale( 0.65 );
+  this->Cube->GetCubeProperty()->SetColor( 0.5, 1, 1 );
+  this->Cube->GetTextEdgesProperty()->SetLineWidth( 1 );
+  this->Cube->GetTextEdgesProperty()->SetDiffuse( 0 );
+  this->Cube->GetTextEdgesProperty()->SetAmbient( 1 );
+  this->Cube->GetTextEdgesProperty()->SetColor( 0.18, 0.28, 0.23 );
 
 #if VTK_MAJOR_VERSION==5 && VTK_MINOR_VERSION>=1
   this->Cube->SetTextEdgesVisibility (1);
@@ -503,7 +502,7 @@ void vtkViewImage3D::Add2DPhantom(const unsigned int& i,
   if( ren )
     {
     ren->RemoveActor( this->Phantom[i] );
-   
+
     this->Phantom[i]->SetInput (input->GetInput());
     this->Phantom[i]->SetDisplayExtent (input->GetDisplayExtent());
     this->Phantom[i]->SetUserMatrix (input->GetUserMatrix());

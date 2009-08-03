@@ -324,7 +324,7 @@ void QGoMainWindow::on_actionOpen_Mesh_activated( )
           dynamic_cast<QImagePageViewTracer*>( m_PageView[idx] );
         if( myPageView )
           {
-//           myPageView->AddContours( mesh_list, property_list, true, true );
+          myPageView->AddContours( mesh_list, property_list, true, true );
           // if( IsContour )
           //{
           //
@@ -336,8 +336,7 @@ void QGoMainWindow::on_actionOpen_Mesh_activated( )
             dynamic_cast<QImagePageView4DTracer*>( m_PageView[ idx ] );
           if( myPageView4D )
             {
-            // myPageView4D->AddContours< std::list< vtkPolyData* >,
-            // std::list< vtkProperty* > >( mesh_list, property_list, true );
+//             myPageView4D->AddContours( mesh_list, property_list, true, true );
             // if( IsContour )
             //   {
             //   }
@@ -1001,7 +1000,7 @@ void QGoMainWindow::ValidateContourTracerHelper( T* PageView )
     cell_id,
     m_IdColorMap[ cell_id ],
     this->SaveContourCheckBox->isChecked() );
-  
+
 }
 //--------------------------------------------------------------------------------
 
