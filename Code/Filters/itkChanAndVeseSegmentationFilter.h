@@ -92,6 +92,9 @@ public:
   typedef typename FeatureImageType::SizeType         FeatureSizeType;
   typedef typename FeatureImageType::SpacingType      FeatureSpacingType;
 
+  typedef TFeatureImage                               OutputImageType;
+  typedef typename OutputImageType::Pointer           OutputImagePointer;
+
   typedef ScalarChanAndVeseLevelSetFunctionData< InternalImageType,
     FeatureImageType > DataHelperType;
 
@@ -101,7 +104,7 @@ public:
   typedef ScalarChanAndVeseLevelSetFunction< InternalImageType,
     FeatureImageType, SharedDataHelperType > FunctionType;
   typedef ScalarChanAndVeseSparseLevelSetImageFilter< InternalImageType,
-    FeatureImageType, FeatureImageType, FunctionType, SharedDataHelperType > MultiLevelSetType;
+    FeatureImageType, OutputImageType, FunctionType, SharedDataHelperType > MultiLevelSetType;
   typedef typename MultiLevelSetType::Pointer MultiLevelSetPointer;
 
   typedef AtanRegularizedHeavisideStepFunction< InternalPixelType, InternalPixelType >
@@ -245,7 +248,6 @@ protected:
     LevelSetFilter->Update();
 
     m_Output = LevelSetFilter->GetLevelSet( 0 );
-    //     m_Output->DisconnectPipeline();
 
     m_Converter->SetInput( m_Output );
     m_Converter->Update();
