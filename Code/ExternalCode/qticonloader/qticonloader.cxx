@@ -3,7 +3,7 @@
 ** Copyright (C) 2009 Nokia Corporation and/or its subsidiary(-ies).
 ** Contact: Qt Software Information (qt-info@nokia.com)
 **
-** This file is part of the QtIconLoader project on Qt Software Labs.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
 ** Commercial Usage
 ** Licensees holding valid Qt Commercial licenses may use this file in
@@ -11,18 +11,29 @@
 ** Software or, alternatively, in accordance with the terms contained in
 ** a written agreement between you and Nokia.
 **
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 2.1 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU Lesser General Public License version 2.1 requirements
+** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+**
+** In addition, as a special exception, Nokia gives you certain
+** additional rights. These rights are described in the Nokia Qt LGPL
+** Exception version 1.0, included in the file LGPL_EXCEPTION.txt in this
+** package.
 **
 ** GNU General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU
-** General Public License versions 2.0 or 3.0 as published by the Free
-** Software Foundation and appearing in the file LICENSE.GPL included in
-** the packaging of this file.  Please review the following information
-** to ensure GNU General Public Licensing requirements will be met:
-** http://www.fsf.org/licensing/licenses/info/GPLv2.html and
-** http://www.gnu.org/copyleft/gpl.html.  In addition, as a special
-** exception, Nokia gives you certain additional rights. These rights
-** are described in the Nokia Qt GPL Exception version 1.3, included in
-** the file GPL_EXCEPTION.txt in this package.
+** General Public License version 3.0 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU General Public License version 3.0 requirements will be
+** met: http://www.gnu.org/copyleft/gpl.html.
+**
+** If you are unsure which license is appropriate for your use, please
+** contact the sales department at qt-sales@nokia.com.
 **
 ****************************************************************************/
 
@@ -94,17 +105,14 @@ QIcon QtIconLoader::icon(const QString &name, const QIcon &fallback)
 #ifdef Q_WS_X11
     QString pngExtension(QLatin1String(".png"));
     QList<int> iconSizes;
-    iconSizes << 16 << 24 << 32 << 64;
-    foreach (int size, iconSizes) {
+    iconSizes << 16 << 24 << 32 << 48 << 64;
+    Q_FOREACH (int size, iconSizes) {
         icon.addPixmap(iconLoaderInstance()->findIcon(size, name + pngExtension));
     }
-
+#endif
     if (icon.isNull())
         icon = fallback;
-#else
     Q_UNUSED(name);
-    Q_UNUSED(fallback);
-#endif // Q_WS_X11
     return icon;
 }
 
@@ -135,9 +143,7 @@ extern "C" {
 
 static int kdeVersion()
 {
-    static int version = -1;
-    if (version == -1)
-        version = qgetenv("KDE_SESSION_VERSION").toInt();
+    static int version = qgetenv("KDE_SESSION_VERSION").toInt();
     return version;
 }
 
@@ -145,9 +151,9 @@ static QString kdeHome()
 {
     static QString kdeHomePath;
     if (kdeHomePath.isEmpty()) {
-        kdeHomePath = QString::fromLocal8Bit(qgetenv("KDEHOME"));
+        kdeHomePath = QFile::decodeName(qgetenv("KDEHOME"));
         if (kdeHomePath.isEmpty()) {
-            int kdeSessionVersion = QString::fromLocal8Bit(qgetenv("KDE_SESSION_VERSION")).toInt();
+            int kdeSessionVersion = kdeVersion();
             QDir homeDir(QDir::homePath());
             QString kdeConfDir(QLatin1String("/.kde"));
             if (4 == kdeSessionVersion && homeDir.exists(QLatin1String(".kde4")))
@@ -162,12 +168,12 @@ void QtIconLoaderImplementation::lookupIconTheme() const
 {
     
 #ifdef Q_WS_X11
-    QString dataDirs = QLatin1String(getenv("XDG_DATA_DIRS"));
+    QString dataDirs = QFile::decodeName(getenv("XDG_DATA_DIRS"));
     if (dataDirs.isEmpty())
         dataDirs = QLatin1String("/usr/local/share/:/usr/share/");
     
     dataDirs.prepend(QDir::homePath() + QLatin1String("/:"));
-    iconDirs = dataDirs.split(QLatin1String(":"));
+    iconDirs = dataDirs.split(QLatin1Char(':'));
     
     // If we are running GNOME we resolve and use GConf. In all other
     // cases we currently use the KDE icon theme
@@ -217,15 +223,14 @@ void QtIconLoaderImplementation::lookupIconTheme() const
     
     dataDirs += QLatin1Char(':') + kdeHome() + QLatin1String("/share");
     dataDirs.prepend(QDir::homePath() + QLatin1String("/:"));
-    QStringList kdeDirs = QString::fromLocal8Bit(getenv("KDEDIRS")).split(QLatin1Char(':'));
-    foreach (const QString dirName, kdeDirs)
-        dataDirs.append(QLatin1String(":") + dirName + QLatin1String("/share"));
+    QStringList kdeDirs = QFile::decodeName(getenv("KDEDIRS")).split(QLatin1Char(':'));
+    Q_FOREACH (const QString dirName, kdeDirs)
+        dataDirs.append(QLatin1Char(':') + dirName + QLatin1String("/share"));
     iconDirs = dataDirs.split(QLatin1Char(':'));
     
     QFileInfo fileInfo(QLatin1String("/usr/share/icons/default.kde"));
     QDir dir(fileInfo.canonicalFilePath());
-    int kdeVersion = qgetenv("KDE_SESSION_VERSION").toInt();
-    QString kdeDefault = kdeVersion >= 4 ? QString::fromLatin1("oxygen") : QString::fromLatin1("crystalsvg");
+    QString kdeDefault = kdeVersion() >= 4 ? QString::fromLatin1("oxygen") : QString::fromLatin1("crystalsvg");
     QString defaultTheme = fileInfo.exists() ? dir.dirName() : kdeDefault;
     QSettings settings(kdeHome() + QLatin1String("/share/config/kdeglobals"), QSettings::IniFormat);
     settings.beginGroup(QLatin1String("Icons"));
@@ -239,41 +244,25 @@ QIconTheme QtIconLoaderImplementation::parseIndexFile(const QString &themeName) 
     QFile themeIndex;
     QStringList parents;
     QHash <int, QString> dirList;
+
     for ( int i = 0 ; i < iconDirs.size() && !themeIndex.exists() ; ++i) {
         const QString &contentDir = QLatin1String(iconDirs[i].startsWith(QDir::homePath()) ? "/.icons/" : "/icons/");
         themeIndex.setFileName(iconDirs[i] + contentDir + themeName + QLatin1String("/index.theme"));
     }
-    
-    if (themeIndex.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        
-        QTextStream in(&themeIndex);
-        
-        while (!in.atEnd()) {
-            
-            QString line = in.readLine();
-            
-            if (line.startsWith(QLatin1String("Inherits="))) {
-                line = line.right(line.length() - 9);
-                parents = line.split(QLatin1Char(','));
-            }
-            
-            if (line.startsWith(QLatin1String("["))) {
-                line = line.trimmed();
-                line.chop(1);
-                QString dirName = line.right(line.length() - 1);
-                if (!in.atEnd()) {
-                    line = in.readLine();
-                    int size;
-                    if (line.startsWith(QLatin1String("Size="))) {
-                        size = line.right(line.length() - 5).toInt();
-                        if (size)
-                            dirList.insertMulti(size, dirName);
-                    }
-                }
+
+    if (themeIndex.exists()) {
+        QSettings indexReader(themeIndex.fileName(), QSettings::IniFormat);
+        Q_FOREACH (const QString &key, indexReader.allKeys()) {
+            if (key.endsWith("/Size")) {
+                if (int size = indexReader.value(key).toInt())
+                    dirList.insertMulti(size, key.left(key.size() - 5));
             }
         }
+
+        // Parent themes provide fallbacks for missing icons
+        parents = indexReader.value(QLatin1String("Icon Theme/Inherits")).toStringList();
     }
-    
+
     if (kdeVersion() >= 3) {
         QFileInfo fileInfo(QLatin1String("/usr/share/icons/default.kde"));
         QDir dir(fileInfo.canonicalFilePath());
