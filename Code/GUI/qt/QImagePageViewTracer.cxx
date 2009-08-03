@@ -862,12 +862,9 @@ void QImagePageViewTracer::SetITKImage( TImage::Pointer itkImage )
 //------------------------------------------------------------------------------
 void QImagePageViewTracer::Set3DImage( vtkImageData* input )
 {
-//   this->Pool->RemoveAllItems();
-
   vtkViewImage2DWithContourWidget* View1 = this->Pool->GetItem( 0 );
   View1->SetInput( this->Image );
 
-//   this->Pool->AddItem( View1 );
   this->View3D->Add2DPhantom(
     0, View1->GetImageActor(), View1->GetSlicePlane() );
 
@@ -955,8 +952,6 @@ void QImagePageViewTracer::Set3DImage( vtkImageData* input )
     vtkViewImage2DCommand::RequestedPositionEvent,
     this, SLOT( MoveSlider2() ) );
 
-//   int size[2] = {400, 400};
-//   this->Pool->SyncSetSize (size);
 
   this->View3D->SetInput( this->Image );
   this->View3D->SetVolumeRenderingOff();
@@ -992,20 +987,8 @@ void QImagePageViewTracer::Set2DImage( vtkImageData* input )
     this->Pool->GetItem( 0 );
   View1->SetInput( this->Image );
 
-  vtkRenderWindow* renwin1 = this->QvtkWidget_XY->GetRenderWindow( );
-  //     renwin1->GetRenderers()->RemoveAllItems();
-  View1->SetupInteractor( this->QvtkWidget_XY->GetInteractor() );
-  View1->SetRenderWindow( renwin1 );
-  View1->SetRenderer( renwin1->GetRenderers()->GetFirstRenderer() );
-
-  View1->SetViewOrientation( vtkViewImage2D::VIEW_ORIENTATION_AXIAL );
-  View1->SetViewConvention( vtkViewImage2D::VIEW_CONVENTION_NEUROLOGICAL );
-
   View1->GetTextProperty()->SetFontFamilyToArial();
   View1->GetTextProperty()->SetFontSize( 20 );
-
-  //     View1->SetContourWidgetInteractionOn();
-  this->Pool->AddItem( View1 );
 
   this->Pool->Initialize();
   this->Pool->InitializeAllObservers();
@@ -1013,23 +996,9 @@ void QImagePageViewTracer::Set2DImage( vtkImageData* input )
   this->Pool->SyncSetShowScalarBar( false );
   this->Pool->SyncSetBackground( this->Pool->GetItem(0)->GetBackground() );
   this->Pool->SyncSetTextProperty( this->Pool->GetItem(0)->GetTextProperty());
-  //     this->Pool->SyncMaskImage();
+
   this->Pool->SyncRender();
   this->Pool->SyncReset();
-
-  this->Handle.resize( this->Pool->GetNumberOfItems() );
-  this->Handle[0] = vtkPointHandleRepresentation2D::New();
-  this->Handle[0]->GetProperty()->SetColor(1,0,0);
-
-  this->SeedRep.resize( this->Pool->GetNumberOfItems() );
-  this->SeedRep[0] = vtkSeedRepresentation::New();
-  this->SeedRep[0]->SetHandleRepresentation(this->Handle[0]);
-
-  this->SeedWidget.resize( this->Pool->GetNumberOfItems() );
-  this->SeedWidget[0] = vtkSeedWidget::New();
-  this->SeedWidget[0]->SetPriority( 10.0 );
-  this->SeedWidget[0]->SetRepresentation( this->SeedRep[0] );
-  this->SeedWidget[0]->SetInteractor( this->QvtkWidget_XY->GetInteractor() );
 }
 //------------------------------------------------------------------------------
 
@@ -1077,9 +1046,10 @@ void QImagePageViewTracer::SetImage( vtkImageData* input )
         this->Pool->AddItem( View3 );
         View3->Delete();
 
-        LayOutWidget2->show();
-        LayOutWidget3->show();
-        LayOutWidget4->show();
+        this->Slider1->show();
+        this->LayOutWidget2->show();
+        this->LayOutWidget3->show();
+        this->LayOutWidget4->show();
         }
 
       Set3DImage( input );
@@ -1088,12 +1058,21 @@ void QImagePageViewTracer::SetImage( vtkImageData* input )
       {
       if( this->Is2DImage != Is2DImagePrevious )
         {
-        this->Pool->RemoveItem( 1 );
-        this->Pool->RemoveItem( 2 );
+        this->Pool->InitTraversal();
+        vtkViewImage2DWithContourWidget* item = this->Pool->GetNextItem();
+        item = this->Pool->GetNextItem();
 
-        LayOutWidget2->hide();
-        LayOutWidget3->hide();
-        LayOutWidget4->hide();
+        int index = this->Pool->GetNumberOfItems() - 1;
+        while( this->Pool->GetNumberOfItems() != 1 )
+          {
+          this->Pool->RemoveItem( index );
+          index--;
+          }
+
+        this->Slider1->hide();
+        this->LayOutWidget2->hide();
+        this->LayOutWidget3->hide();
+        this->LayOutWidget4->hide();
         }
 
       Set2DImage( input );

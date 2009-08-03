@@ -143,6 +143,7 @@ vtkViewImage2D::vtkViewImage2D()
 
   this->InitializeSlicePlane();
   this->Zoom = 1.;
+  this->Slice = -1;
 }
 
 //----------------------------------------------------------------------------
@@ -556,11 +557,11 @@ void vtkViewImage2D::SetSlice( int slice )
       }
     }
 
-  if( this->Slice == slice )
-    {
-    return;
-    }
-  else
+//   if( this->Slice == slice )
+//     {
+//     return;
+//     }
+//   else
     {
     double* pos = this->GetWorldCoordinatesForSlice( slice );
     this->SliceImplicitPlane->SetOrigin( pos );
