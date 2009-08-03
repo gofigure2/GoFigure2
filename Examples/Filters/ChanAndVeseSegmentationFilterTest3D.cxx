@@ -13,6 +13,8 @@
 #include "vtkRenderWindowInteractor.h"
 #include "vtkRenderWindow.h"
 
+#include "itkImageToVTKImageFilter.h"
+
 int main( int argc, char** argv )
 {
   if( argc < 7 )
@@ -53,6 +55,12 @@ int main( int argc, char** argv )
 
   vtkImageData* image = filter->GetOutput();
 
+  if( !image )
+    {
+    std::cout << "No output" << std::endl;
+    return EXIT_FAILURE;
+    }
+
   // create iso-contours
   vtkMarchingCubes *contours = vtkMarchingCubes::New();
   contours->SetInput( image );
@@ -65,7 +73,6 @@ int main( int argc, char** argv )
   writer->Delete();
 
   bool test = atoi( argv[Dimension+4] );
-
   if( !test )
     {
     // map to graphics library
