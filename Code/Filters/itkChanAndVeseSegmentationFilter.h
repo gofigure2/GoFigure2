@@ -53,7 +53,9 @@
 
 #include "vtkImageData.h"
 
-#include "itkCellPreprocess.h"
+//arnaudgelas: What is this file? 
+//missing on server side
+//#include "itkCellPreprocess.h"
 #include "itkRegionOfInterestImageFilter.h"
 
 namespace itk
@@ -110,9 +112,10 @@ public:
     FeatureImageType, OutputImageType, FunctionType, SharedDataHelperType > MultiLevelSetType;
   typedef typename MultiLevelSetType::Pointer MultiLevelSetPointer;
 
-  typedef itk::CellPreprocess< FeatureImageType, FeatureImageType >
-  PreprocessFilterType;
-  typedef typename PreprocessFilterType::Pointer PreprocessFilterPointer;
+  //arnaudgelas: itk::CellPreprocess what is supposed to do?
+  //typedef itk::CellPreprocess< FeatureImageType, FeatureImageType >
+  //PreprocessFilterType;
+  //typedef typename PreprocessFilterType::Pointer PreprocessFilterPointer;
 
   typedef RegionOfInterestImageFilter<
     FeatureImageType, FeatureImageType >              ROIFilterType;
