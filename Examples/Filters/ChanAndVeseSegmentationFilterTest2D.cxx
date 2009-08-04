@@ -51,6 +51,7 @@ int main( int argc, char** argv )
   filter->SetFeatureImage( reader->GetOutput() );
   filter->SetRadius( cellRadius );
   filter->SetCenter( pt );
+  filter->SetPreprocess( 1 );
   filter->Update();
 
   vtkImageData* image = filter->GetOutput();

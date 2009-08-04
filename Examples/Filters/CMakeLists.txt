@@ -1,3 +1,7 @@
+INCLUDE_DIRECTORIES(
+${GOFIGURE2_SOURCE_DIR}/../branch/Unstable/3DCellSegmentation/CellPreprocess
+)
+
 SET( EXAMPLES_FILTER
   ChanAndVeseSegmentationFilterTest2D
   ChanAndVeseSegmentationFilterTest3D
@@ -22,7 +26,7 @@ ADD_TEST( ChanAndVeseSegmentationFilterTest2D
 ADD_TEST( ChanAndVeseSegmentationFilterTest3D
   ${EXECUTABLE_OUTPUT_PATH}/ChanAndVeseSegmentationFilterTest3D
   ${TESTING_DATA_PATH}/Circle3D.mhd
-  temp.vtk 
+  temp.vtk
   15
   15
   15

@@ -53,6 +53,9 @@
 
 #include "vtkImageData.h"
 
+#include "itkCellPreprocess.h"
+#include "itkRegionOfInterestImageFilter.h"
+
 namespace itk
 {
 /**
@@ -107,6 +110,14 @@ public:
     FeatureImageType, OutputImageType, FunctionType, SharedDataHelperType > MultiLevelSetType;
   typedef typename MultiLevelSetType::Pointer MultiLevelSetPointer;
 
+  typedef itk::CellPreprocess< FeatureImageType, FeatureImageType >
+  PreprocessFilterType;
+  typedef typename PreprocessFilterType::Pointer PreprocessFilterPointer;
+
+  typedef RegionOfInterestImageFilter<
+    FeatureImageType, FeatureImageType >              ROIFilterType;
+  typedef typename ROIFilterType::Pointer             ROIFilterPointer;
+
   typedef AtanRegularizedHeavisideStepFunction< InternalPixelType, InternalPixelType >
     DomainFunctionType;
   typedef typename DomainFunctionType::Pointer
@@ -154,6 +165,9 @@ public:
     return m_VTKImage;
     }
 
+  itkGetConstMacro ( Preprocess, bool );
+  itkSetMacro ( Preprocess, bool );
+
 protected:
   ChanAndVeseSegmentationFilter() : m_VTKImage( 0 ), m_FeatureImage( 0 )
     {
@@ -161,6 +175,7 @@ protected:
     m_Center.Fill( 0. );
     m_Size.Fill( 0 );
     m_Radius = 0.;
+    m_Preprocess = false;
     }
 
   ~ChanAndVeseSegmentationFilter()  {}
@@ -172,6 +187,7 @@ protected:
   InternalSizeType      m_Size; // Level-set image size
   InternalCoordRepType  m_Radius; // Radius of the cell
   InternalImagePointer  m_Output;
+  bool                  m_Preprocess;
 
 
   void GenerateData()
@@ -191,10 +207,10 @@ protected:
     for( unsigned int j = 0; j < Dimension; j++ )
       {
       m_Size[j] =
-        1 + 2. * static_cast< InternalSizeValueType >( m_Radius / spacing[j] );
+        1 + 4. * static_cast< InternalSizeValueType >( m_Radius / spacing[j] );
       start[j] = 0;
-      cen[j] = static_cast< InternalSizeValueType >( m_Radius / spacing[j] );
-      origin[j] = m_Center[j] - m_Radius;
+      cen[j] = static_cast< InternalSizeValueType >( 2 * m_Radius / spacing[j] );
+      origin[j] = m_Center[j] - 2 * m_Radius;
       }
 
     std::cout << "Spacing: " << spacing << std::endl;
@@ -209,7 +225,7 @@ protected:
     region.SetIndex( start );
 
     NodeType node;
-    node.SetValue( - m_Radius/3 );
+    node.SetValue( - m_Radius/2 );
     node.SetIndex( cen );
 
     typename NodeContainer::Pointer seeds = NodeContainer::New();
@@ -224,6 +240,27 @@ protected:
     fastMarching->SetTrialPoints(  seeds  );
     fastMarching->Update();
 
+    FeatureImagePointer feature;
+    if ( m_Preprocess )
+      {
+      ROIFilterPointer roi = ROIFilterType::New();
+      roi->SetInput( m_FeatureImage );
+      roi->SetRegionOfInterest( region );
+      roi->Update();
+
+      PreprocessFilterPointer preprocess = PreprocessFilterType::New();
+      preprocess->SetInput ( roi->GetOutput() );
+      preprocess->SetLargestCellRadius ( m_Radius ); // in real coordinates
+      preprocess->Update();
+
+      feature = preprocess->GetOutput();
+      feature->SetOrigin( origin );
+      }
+    else
+      {
+      feature = m_FeatureImage;
+      }
+
     DomainFunctionPointer domainFunction = DomainFunctionType::New();
     domainFunction->SetEpsilon( 1. );
 
@@ -233,7 +270,7 @@ protected:
     MultiLevelSetPointer LevelSetFilter = MultiLevelSetType::New();
     LevelSetFilter->SetFunctionCount( 1 );
     LevelSetFilter->SetLookup( lookUp );
-    LevelSetFilter->SetFeatureImage( m_FeatureImage );
+    LevelSetFilter->SetFeatureImage( feature );
     LevelSetFilter->SetLevelSet( 0, fastMarching->GetOutput() );
     LevelSetFilter->SetNumberOfIterations( 50 );
     LevelSetFilter->SetMaximumRMSError( 0 );
