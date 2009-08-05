@@ -1,0 +1,2 @@
+# SUBDIRS( Preprocessing )
+SUBDIRS( Segmentation )
