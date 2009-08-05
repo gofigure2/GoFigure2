@@ -1,7 +1,3 @@
-INCLUDE_DIRECTORIES(
-${GOFIGURE2_SOURCE_DIR}/../branch/Unstable/3DCellSegmentation/CellPreprocess
-)
-
 SET( EXAMPLES_FILTER
   ChanAndVeseSegmentationFilterTest2D
   ChanAndVeseSegmentationFilterTest3D
