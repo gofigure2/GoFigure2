@@ -15,7 +15,7 @@ ADD_TEST( ChanAndVeseSegmentationFilterTest2D
   temp.vtk
   49
   49
-  49
+  24
   1
 )
 
@@ -26,7 +26,7 @@ ADD_TEST( ChanAndVeseSegmentationFilterTest3D
   15
   15
   15
-  14
+  7
   1
 )
 
@@ -36,7 +36,7 @@ ADD_TEST( ChanAndVeseSegmentationFilterReal1Test2D
   temp.vtk
   48
   48
-  30
+  7
   1
 )
 
@@ -46,7 +46,7 @@ ADD_TEST( ChanAndVeseSegmentationFilterReal2Test2D
   temp.vtk
   66
   77
-  30
+  7
   1
 )
 
@@ -56,6 +56,6 @@ ADD_TEST( ChanAndVeseSegmentationFilterReal3Test2D
   temp.vtk
   80
   40
-  30
+  7
   1
 )
