@@ -42,18 +42,19 @@
 
 #include "GoDBRecordSet.h"
 
-/** \brief help add a new object of type T in the table "TableName" 
+/** \brief help add a new object of type T in the table "TableName"
 in the database: add a new experiment, new seriesgrid, new mesh...
 \param[in] ServerName
 \param[in] User
 \param[in] Password
+\param[in] NameDB
 \param[in] TableName
 \param[in] myNewObject
 */
 template< class T >
-void AddNewObjectInTable( const std::string& ServerName, 
-  const std::string& User, const std::string& Password, 
-  const std::string& NameDB, const std::string& TableName, 
+void AddNewObjectInTable( const std::string& ServerName,
+  const std::string& User, const std::string& Password,
+  const std::string& NameDB, const std::string& TableName,
   T& myNewObject )
 {
   typedef GoDBRecordSet< T >   SetType;

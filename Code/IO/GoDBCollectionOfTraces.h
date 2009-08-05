@@ -62,7 +62,7 @@ public:
   /** \brief Delete in the Database all the traces listed in the QStringList */
   void QMEGAVTKADDON2_EXPORT DeleteTraces(QStringList TracesToDelete);
 
-  /** \bried Update the collectionID of the selected traces in the DB traces table
+  /** \brief Update the collectionID of the selected traces in the DB traces table
   with the new collectionID: */
   void QMEGAVTKADDON2_EXPORT AddSelectedTracesToCollection(
     QStringList ListSelectedTraces,int newCollectionID);

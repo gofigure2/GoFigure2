@@ -102,14 +102,14 @@ class VTK_RENDERINGADDON2_EXPORT vtkFillImageWithPolyData :
   ~vtkFillImageWithPolyData();
 
 
-  virtual int RequestInformation (vtkInformation *,
-                                  vtkInformationVector **,
-                                  vtkInformationVector *);
+  virtual int RequestInformation (vtkInformation *vtkNotUsed(request),
+                                  vtkInformationVector **inputVector,
+                                  vtkInformationVector *outputVector);
 
 
-  virtual void ThreadedRequestData(vtkInformation *request,
-                                   vtkInformationVector **inputVector,
-                                   vtkInformationVector *outputVector,
+  virtual void ThreadedRequestData(vtkInformation *vtkNotUsed( request ),
+                                   vtkInformationVector **vtkNotUsed( inputVector ),
+                                   vtkInformationVector *vtkNotUsed( outputVector ),
                                    vtkImageData ***inData,
                                    vtkImageData **outData,
                                    int extent[6], int threadId);

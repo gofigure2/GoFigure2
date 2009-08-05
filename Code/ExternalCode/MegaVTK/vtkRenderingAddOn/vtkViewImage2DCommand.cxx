@@ -97,7 +97,7 @@ vtkViewImage2DCommand::vtkViewImage2DCommand() : Viewer( 0 )
 void
 vtkViewImage2DCommand::Execute( vtkObject*    caller,
                                 unsigned long event,
-                                void*         callData)
+                                void*         vtkNotUsed(callData))
 {
   vtkInteractorStyleImage2D *isi =
     static_cast<vtkInteractorStyleImage2D *>(caller);

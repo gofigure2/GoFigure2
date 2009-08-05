@@ -83,11 +83,13 @@ public:
   /** \todo this structure is containing too many information leading to keep
     too many objects in memory. This is due to the visualization.
     For example
+    <ul>
       <li> Contour is needed to be able to use the method
         vtkViewImage::RemoveDataSet</li>
       <li> Actor is needed to be able to highlight a contour.</li>
       <li> rgb is needed to be able to get the original contour before
         highlighting.</li>
+    </ul>
      */
   struct ContourStructure {
     ContourStructure( vtkActor* iActor, vtkPolyData* iNodes, vtkPolyData* iContour,
