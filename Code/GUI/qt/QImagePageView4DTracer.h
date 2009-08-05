@@ -161,8 +161,9 @@ public slots:
     const int& iId,
     const QColor& iColor,
     const bool& iSave )
-    { this->Whatever->ValidateContour( iId, iColor, iSave );
-      this->m_DBTables->UpdateTableFromDB();
+    {
+    this->Whatever->ValidateContour( iId, iColor, iSave );
+    this->m_DBTables->UpdateTableFromDB();
     }
   QMEGAVTKADDON2_EXPORT void ReinitializeContour( )
     { this->Whatever->ReinitializeContour( ); }

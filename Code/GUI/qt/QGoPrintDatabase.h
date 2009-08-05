@@ -56,7 +56,7 @@ class QGoPrintDatabase : public QWidget,
 
 public:
 
-  explicit QMEGAVTKADDON2_EXPORT QGoPrintDatabase();
+  QMEGAVTKADDON2_EXPORT QGoPrintDatabase();
   virtual QMEGAVTKADDON2_EXPORT ~QGoPrintDatabase();
 
   /** \brief Create the QTableWidgetChild,get the columns names and the values stored
@@ -79,7 +79,7 @@ protected:
     std::vector< std::string > ColumnNames, QTableWidgetChild* QTabTableName );
   GoDBCollectionOfTraces* CollectionOfFigures;
   GoDBCollectionOfTraces* CollectionOfMeshes;
-  
+
   /** \brief Return the name of the tab currently used: */
   QString InWhichTableAreWe ();
 
@@ -127,8 +127,7 @@ protected:
 
   /**
     \brief get the values of the table (type T) from the
-    database, then display them in the QTableWidgetchild.
-  */
+    database, then display them in the QTableWidgetchild. */
   template< class myT >
   void UpdateContentAndDisplayFromDB( QString TableName, QTableWidgetChild* Table )
     {
@@ -204,17 +203,17 @@ protected:
 
   void closeEvent(QCloseEvent* event);
 
-  QString m_NameDB;
-  QString m_Server;
-  QString m_User;
-  QString m_Password;
-  unsigned int m_ExpID;
-  QString m_ExpName;
+  QString       m_NameDB;
+  QString       m_Server;
+  QString       m_User;
+  QString       m_Password;
+  unsigned int  m_ExpID;
+  QString       m_ExpName;
 
 protected slots:
   void CreateContextMenu(const QPoint &pos);
   void DeleteTraces();
-  
+
   /** brief Create a new Collection row in the collection table and change the collection ID of the
   selected contours to the new CollectionID created:*/
   void CreateCorrespondingCollection();

@@ -69,11 +69,12 @@ protected:
   int PrevOrder;
 
   /** \brief return the row index where the given value is located when specifying
-  the column name:*/
+  the column name: */
   int findValueGivenColumn(int Value, QString Column);
 
-  /** \brief return the column index who has a column header matching ColumnName */
-  int findColumnName(QString ColumnName,QStringList ColumnsHeader);
+  /** \brief return the column index who has a column header matching
+  ColumnName */
+  int findColumnName( QString ColumnName, QStringList ColumnsHeader );
 
 public slots:
   /** \brief sort items given one column and one sort order. */
@@ -92,7 +93,7 @@ public slots:
        be highlighten in the visualization.*/
   QMEGAVTKADDON2_EXPORT std::map<unsigned int,bool> ContoursToHighlight( );
 
-  /** \brief return a list of the values of a specific column for the rows where the user 
+  /** \brief return a list of the values of a specific column for the rows where the user
        has selected at least one cell.*/
   QMEGAVTKADDON2_EXPORT QStringList ValuesForSelectedRows(QString ColumnName );
 };

@@ -166,14 +166,14 @@ std::map< unsigned int, bool > QTableWidgetChild::ContoursToHighlight()
 
   for (int i=0; i<Selection.size(); i++)
     {
-      int TopRowSelected = Selection[i].topRow();
-      int BottomRowSelected = Selection[i].bottomRow();
+    int TopRowSelected = Selection[i].topRow();
+    int BottomRowSelected = Selection[i].bottomRow();
 
-      for (int j = TopRowSelected; j<BottomRowSelected+1;j++)
-        {
-        t = this->item(j,figureIDIndex)->text().toUInt();
-        oMapRows[t] = true;
-        }
+    for (int j = TopRowSelected; j<BottomRowSelected+1;j++)
+      {
+      t = this->item(j,figureIDIndex)->text().toUInt();
+      oMapRows[t] = true;
+      }
     }
   return oMapRows;
 }

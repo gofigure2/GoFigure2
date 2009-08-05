@@ -80,17 +80,18 @@ public:
   typedef std::map< vtkActor*, unsigned int > ActorContourIdMapType;
   typedef ActorContourIdMapType::iterator     ActorContourIdMapIterator;
 
-  /** \todo this structure is containing too many information leading to keep
-    too many objects in memory. This is due to the visualization.
-    For example
-    <ul>
-      <li> Contour is needed to be able to use the method
-        vtkViewImage::RemoveDataSet</li>
-      <li> Actor is needed to be able to highlight a contour.</li>
-      <li> rgb is needed to be able to get the original contour before
-        highlighting.</li>
-    </ul>
-     */
+  /**
+  * \todo this structure is containing too many information leading to keep
+  *  too many objects in memory. This is due to the visualization.
+  * For example
+  * <ul>
+  *   <li> Contour is needed to be able to use the method
+  *     vtkViewImage::RemoveDataSet</li>
+  *   <li> Actor is needed to be able to highlight a contour.</li>
+  *   <li> rgb is needed to be able to get the original contour before
+  *     highlighting.</li>
+  *  </ul>
+  */
   struct ContourStructure {
     ContourStructure( vtkActor* iActor, vtkPolyData* iNodes, vtkPolyData* iContour,
       const unsigned int& iId, const int& iDir, const double& iTimePoint,
@@ -175,39 +176,39 @@ public:
     const int& iExperimentID, const QString& iExperimentName );
 
   /** \note Commented by arnaudgelas (temporary)*/
-    template< typename TContourContainer, typename TPropertyContainer >
-    QMEGAVTKADDON2_EXPORT
-    void AddContours( TContourContainer& iContours,
-      TPropertyContainer& iProperty,
-      const bool& iIntersection = true,
-      const bool& iVizu3D = false )
+  template< typename TContourContainer, typename TPropertyContainer >
+  QMEGAVTKADDON2_EXPORT
+  void AddContours( TContourContainer& iContours,
+    TPropertyContainer& iProperty,
+    const bool& iIntersection = true,
+    const bool& iVizu3D = false )
+    {
+    this->Pool->SyncAddContours( iContours, iProperty, iIntersection );
+
+    if( iVizu3D )
       {
-      this->Pool->SyncAddContours( iContours, iProperty, iIntersection );
+      typename TContourContainer::iterator c_it = iContours.begin();
+      typename TPropertyContainer::iterator p_it = iProperty.begin();
 
-      if( iVizu3D )
+      for(; c_it != iContours.end(); ++c_it, ++p_it )
         {
-        typename TContourContainer::iterator c_it = iContours.begin();
-        typename TPropertyContainer::iterator p_it = iProperty.begin();
-
-        for(; c_it != iContours.end(); ++c_it, ++p_it )
-          {
-          this->View3D->AddDataSet( *c_it, *p_it, false );
-          }
+        this->View3D->AddDataSet( *c_it, *p_it, false );
         }
       }
+    }
 
-    template< typename TPolyDataContainer >
-    QMEGAVTKADDON2_EXPORT
-    void RemoveContours( TPolyDataContainer& iContours )
+  template< typename TPolyDataContainer >
+  QMEGAVTKADDON2_EXPORT
+  void RemoveContours( TPolyDataContainer& iContours )
+    {
+    this->Pool->SyncRemoveContours( iContours );
+    typename TPolyDataContainer::iterator c_it = iContours.begin();
+
+    for(; c_it != iContours.end(); ++c_it )
       {
-      this->Pool->SyncRemoveContours( iContours );
-      typename TPolyDataContainer::iterator c_it = iContours.begin();
-
-      for(; c_it != iContours.end(); ++c_it )
-        {
-        this->View3D->RemoveDataSet( *c_it );
-        }
+      this->View3D->RemoveDataSet( *c_it );
       }
+    }
 
   QMEGAVTKADDON2_EXPORT void SaveStateSplitters();
 
