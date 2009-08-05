@@ -113,7 +113,7 @@ CreateOutput()
        nit++)
     {
     GoFigureFileInfoHelper tempInfo;
-    tempInfo.Filename = (*nit);
+    tempInfo.m_Filename = (*nit);
     std::string origFileName =
       itksys::SystemTools::GetFilenameName( (*nit).c_str() );
 
@@ -139,12 +139,12 @@ CreateOutput()
 
       } // end for each numerical group
 
-    tempInfo.CTile     = NumericalValues[0];
-    tempInfo.RTile     = NumericalValues[1];
-    tempInfo.YOffset   = NumericalValues[2];
-    tempInfo.XOffset   = NumericalValues[3];
-    tempInfo.TimePoint = NumericalValues[4];
-    tempInfo.ZDepth    = NumericalValues[5];
+    tempInfo.m_CTile     = NumericalValues[0];
+    tempInfo.m_RTile     = NumericalValues[1];
+    tempInfo.m_YOffset   = NumericalValues[2];
+    tempInfo.m_XOffset   = NumericalValues[3];
+    tempInfo.m_TimePoint = NumericalValues[4];
+    tempInfo.m_ZDepth    = NumericalValues[5];
 
     m_OutputFileList.push_back( tempInfo );
     delete NumericalValues; /** \todo check if delete or delete[]*/
@@ -167,17 +167,18 @@ CreateOutput()
     this->m_ProgressBar->setValue( 99 );
     }
 
-
+#if !defined(ITK_LEAN_AND_MEAN) && !defined(__BORLANDC__) && !defined(NDEBUG)
   FileListType::iterator myIt = m_OutputFileList.begin();
   while( myIt != m_OutputFileList.end() )
     {
     itkDebugMacro(
-        << (*myIt).Filename
-        << " " << (*myIt).Channel
-        << " " << (*myIt).TimePoint
-        << " " << (*myIt).ZDepth );
+        << (*myIt).m_Filename
+        << " " << (*myIt).m_Channel
+        << " " << (*myIt).m_TimePoint
+        << " " << (*myIt).m_ZDepth );
       myIt++;
     }
+#endif
 }
 //-----------------------------------------------------------------------------
 

@@ -247,7 +247,7 @@ CreateOutput()
     nit++)
     {
     GoFigureFileInfoHelper tempInfo;
-    tempInfo.Filename = (*nit);
+    tempInfo.m_Filename = (*nit);
     std::string origFileName =
     itksys::SystemTools::GetFilenameName( (*nit).c_str() );
 
@@ -265,7 +265,7 @@ CreateOutput()
           origFileName,
           (*numGroupStartItr),
           (*numGroupLengthItr) );
-        tempInfo.TimePoint = atof( ValueAsString.c_str() );
+        tempInfo.m_TimePoint = atof( ValueAsString.c_str() );
         m_OutputFileList.push_back( tempInfo );
         break;
         }
@@ -280,16 +280,18 @@ CreateOutput()
   m_FileNameS.clear();
   std::sort( m_OutputFileList.begin(), m_OutputFileList.end() );
 
+#if !defined(ITK_LEAN_AND_MEAN) && !defined(__BORLANDC__) && !defined(NDEBUG)
   FileListType::iterator myIt = m_OutputFileList.begin();
   while( myIt != m_OutputFileList.end() )
     {
     itkDebugMacro(
-        << (*myIt).Filename\
-        << " " << (*myIt).Channel\
-        << " " << (*myIt).TimePoint\
-        << " " << (*myIt).ZDepth );
+        << (*myIt).m_Filename\
+        << " " << (*myIt).m_Channel\
+        << " " << (*myIt).m_TimePoint\
+        << " " << (*myIt).m_ZDepth );
       myIt++;
     }
+#endif
 }
 
 Lsm3DSerieImport::

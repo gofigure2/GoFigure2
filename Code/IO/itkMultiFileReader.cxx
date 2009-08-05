@@ -115,15 +115,16 @@ void MultiFileReader::SetInput( FileListType* UserFileList )
 
   FileListType::iterator endIt;
   FileListType::iterator It = m_FileList->begin();
+
   if( this->m_TimeBased )
     {
-    unsigned int CurrentTimePoint = (*It).TimePoint;
+    unsigned int CurrentTimePoint = (*It).m_TimePoint;
     this->m_NumberOfTimePoints = 1;
     while( It != m_FileList->end())
       {
-      if( (*It).TimePoint > CurrentTimePoint )
+      if( (*It).m_TimePoint > CurrentTimePoint )
         {
-        CurrentTimePoint = (*It).TimePoint;
+        CurrentTimePoint = (*It).m_TimePoint;
         this->m_NumberOfTimePoints++;
         }
       It++;
@@ -131,13 +132,13 @@ void MultiFileReader::SetInput( FileListType* UserFileList )
     }
   else
     {
-    unsigned int CurrentZSlice = (*It).ZDepth;
+    unsigned int CurrentZSlice = (*It).m_ZDepth;
     this->m_NumberOfZSlices = 1;
     while( It != m_FileList->end() )
       {
-      if( (*It).ZDepth > CurrentZSlice )
+      if( (*It).m_ZDepth > CurrentZSlice )
         {
-        CurrentZSlice = (*It).ZDepth;
+        CurrentZSlice = (*It).m_ZDepth;
         this->m_NumberOfZSlices++;
         }
       It++;
@@ -215,7 +216,7 @@ void MultiFileReader::Update( void )
         case JPEG:
           {
           vtkJPEGReader* reader = vtkJPEGReader::New();
-          reader->SetFileName( (*It).Filename.c_str() );
+          reader->SetFileName( (*It).m_Filename.c_str() );
           reader->SetFileDimensionality( this->m_Dimensionality );
           reader->Update();
 
@@ -226,7 +227,7 @@ void MultiFileReader::Update( void )
         case BMP:
           {
           vtkBMPReader* reader = vtkBMPReader::New();
-          reader->SetFileName( (*It).Filename.c_str() );
+          reader->SetFileName( (*It).m_Filename.c_str() );
           reader->SetFileDimensionality( this->m_Dimensionality );
           reader->Update();
 
@@ -237,7 +238,7 @@ void MultiFileReader::Update( void )
         case PNG:
           {
           vtkPNGReader* reader = vtkPNGReader::New();
-          reader->SetFileName( (*It).Filename.c_str() );
+          reader->SetFileName( (*It).m_Filename.c_str() );
           reader->SetFileDimensionality( this->m_Dimensionality );
           reader->Update();
 
@@ -248,7 +249,7 @@ void MultiFileReader::Update( void )
         case TIFF:
           {
           vtkTIFFReader* reader = vtkTIFFReader::New();
-          reader->SetFileName( (*It).Filename.c_str() );
+          reader->SetFileName( (*It).m_Filename.c_str() );
           reader->SetFileDimensionality( this->m_Dimensionality );
           reader->Update();
 
@@ -259,7 +260,7 @@ void MultiFileReader::Update( void )
         case MHA:
           {
           vtkMetaImageReader* reader = vtkMetaImageReader::New();
-          reader->SetFileName( (*It).Filename.c_str() );
+          reader->SetFileName( (*It).m_Filename.c_str() );
           reader->SetFileDimensionality( this->m_Dimensionality );
           reader->Update();
 
@@ -324,7 +325,7 @@ void MultiFileReader::Update( void )
       case TIFF:
         {
         vtkTIFFReader* reader = vtkTIFFReader::New();
-        reader->SetFileName( (*It).Filename.c_str() );
+        reader->SetFileName( (*It).m_Filename.c_str() );
         reader->SetFileDimensionality( this->m_Dimensionality );
         reader->Update();
         m_OutputImage = vtkImageData::New();
@@ -335,7 +336,7 @@ void MultiFileReader::Update( void )
       case MHA:
         {
         vtkMetaImageReader* reader = vtkMetaImageReader::New();
-        reader->SetFileName( (*It).Filename.c_str() );
+        reader->SetFileName( (*It).m_Filename.c_str() );
         reader->SetFileDimensionality( this->m_Dimensionality );
         reader->Update();
         m_OutputImage = vtkImageData::New();
@@ -350,7 +351,7 @@ void MultiFileReader::Update( void )
           {
           vtkImageData* myImage_ch1 = vtkImageData::New();
           vtkLSMReader* reader = vtkLSMReader::New();
-          reader->SetFileName( (*It).Filename.c_str() );
+          reader->SetFileName( (*It).m_Filename.c_str() );
           reader->Update();
           int NumberOfChannels = reader->GetNumberOfChannels();
           myImage_ch1->ShallowCopy( reader->GetOutput() );
@@ -369,7 +370,7 @@ void MultiFileReader::Update( void )
 
           vtkImageData* myImage_ch2 = vtkImageData::New();
           vtkLSMReader* reader2=vtkLSMReader::New();
-          reader2->SetFileName( (*It).Filename.c_str() );
+          reader2->SetFileName( (*It).m_Filename.c_str() );
           reader2->SetUpdateChannel( 1 );
           reader2->Update();
           myImage_ch2->ShallowCopy( reader2->GetOutput() );
@@ -402,7 +403,7 @@ void MultiFileReader::Update( void )
           else
             {
             vtkLSMReader* reader3 = vtkLSMReader::New();
-            reader3->SetFileName( (*It).Filename.c_str() );
+            reader3->SetFileName( (*It).m_Filename.c_str() );
             reader3->SetUpdateChannel( 2 );
             reader3->Update();
             myImage_ch3->ShallowCopy( reader3->GetOutput() );
@@ -437,7 +438,7 @@ void MultiFileReader::Update( void )
         else
           {
           vtkLSMReader* reader = vtkLSMReader::New();
-          reader->SetFileName( (*It).Filename.c_str() );
+          reader->SetFileName( (*It).m_Filename.c_str() );
           reader->SetUpdateChannel( m_UpdateChannel );
           reader->Update();
           this->m_NumberOfChannels = reader->GetOutput()->GetNumberOfScalarComponents();
@@ -476,7 +477,7 @@ void MultiFileReader::ComputeUpdateFileList()
     if( m_TimeBased )
       {
       while( It != m_FileList->end()
-            && (int)((*It).TimePoint) < this->m_UpdateTimePoint )
+            && (int)((*It).m_TimePoint) < this->m_UpdateTimePoint )
         {
         It++;
         }
@@ -484,7 +485,7 @@ void MultiFileReader::ComputeUpdateFileList()
     else
       {
       while( It != m_FileList->end()
-            && (int)((*It).ZDepth) < this->m_UpdateZSlice )
+            && (int)((*It).m_ZDepth) < this->m_UpdateZSlice )
         {
         It++;
         }
@@ -502,7 +503,7 @@ void MultiFileReader::ComputeUpdateFileList()
       if( m_TimeBased )
         {
         while( It != m_FileList->end()
-               && (int)((*It).TimePoint) == this->m_UpdateTimePoint )
+               && (int)((*It).m_TimePoint) == this->m_UpdateTimePoint )
           {
           It++;
           counter++;
@@ -511,7 +512,7 @@ void MultiFileReader::ComputeUpdateFileList()
       else
         {
         while( It != m_FileList->end()
-               && (int)((*It).ZDepth) == this->m_UpdateZSlice )
+               && (int)((*It).m_ZDepth) == this->m_UpdateZSlice )
           {
           It++;
           counter++;
@@ -585,7 +586,7 @@ MultiFileReader::MultiFileReader( )
   m_UpdateZSlice    = -1;
   m_UpdateChannel    = -1;
   m_AreImagesMultiChannel = false;
-  m_TimeBased = true;
+  m_TimeBased = false;
 }
 //-----------------------------------------------------------------------------
 

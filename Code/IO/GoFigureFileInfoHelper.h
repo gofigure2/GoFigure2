@@ -46,32 +46,50 @@
 class GoFigureFileInfoHelper
 {
 public:
-  std::string    Filename;
-  unsigned int   TimePoint;
-  unsigned int   ZDepth;
-  unsigned int   Channel;
-  unsigned int   CTile;
-  unsigned int   RTile;
-  unsigned int   YOffset;
-  unsigned int   XOffset;
+  std::string     m_Filename;
+  unsigned int    m_TimePoint;
+  unsigned int    m_ZDepth;
+  unsigned int    m_Channel;
+  unsigned int    m_CTile;
+  unsigned int    m_RTile;
+  unsigned int    m_YOffset;
+  unsigned int    m_XOffset;
+  bool            m_TimeBased;
 
   bool operator<( const GoFigureFileInfoHelper& other ) const
     {
-    if( this->Channel < other.Channel )
+    if( this->m_Channel < other.m_Channel )
       {
       return true;
       }
-    if( this->Channel == other.Channel )
+    if( this->m_Channel == other.m_Channel )
       {
-      if( this->TimePoint < other.TimePoint )
+      if( m_TimeBased )
         {
-        return true;
-        }
-      if( this->TimePoint == other.TimePoint )
-        {
-        if( this->ZDepth < other.ZDepth )
+        if( this->m_TimePoint < other.m_TimePoint )
           {
           return true;
+          }
+        if( this->m_TimePoint == other.m_TimePoint )
+          {
+          if( this->m_ZDepth < other.m_ZDepth )
+            {
+            return true;
+            }
+          }
+        }
+      else
+        {
+        if( this->m_ZDepth < other.m_ZDepth )
+          {
+          return true;
+          }
+        if( this->m_ZDepth == other.m_ZDepth )
+          {
+          if( this->m_TimePoint < other.m_TimePoint )
+            {
+            return true;
+            }
           }
         }
       }
@@ -80,14 +98,15 @@ public:
 
   GoFigureFileInfoHelper()
     {
-    Filename  = "";
-    TimePoint = 0;
-    ZDepth    = 0;
-    Channel   = 0;
-    CTile     = 0;
-    RTile     = 0;
-    YOffset   = 0;
-    XOffset   = 0;
+    m_Filename  = "";
+    m_TimePoint = 0;
+    m_ZDepth    = 0;
+    m_Channel   = 0;
+    m_CTile     = 0;
+    m_RTile     = 0;
+    m_YOffset   = 0;
+    m_XOffset   = 0;
+    m_TimeBased = false;
     }
 };
 

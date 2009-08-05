@@ -9,7 +9,7 @@ int main( int argc, char * argv[] )
   if( argc < 2 )
     {
     std::cout << "Usage: ";
-    std::cout << "<bin> ImageName" << std::endl; 
+    std::cout << "<bin> ImageName" << std::endl;
     return EXIT_FAILURE;
     }
 
@@ -29,18 +29,18 @@ int main( int argc, char * argv[] )
 
     typedef FileListType::iterator myFilesIteratorType;
     myFilesIteratorType It  = importFileInfoList->GetOutput()->begin();
-    myFilesIteratorType end = importFileInfoList->GetOutput()->end();    
+    myFilesIteratorType end = importFileInfoList->GetOutput()->end();
     while( It != end )
       {
       GoDBSeriesGridRow row;
       row.experimentID = 5;
-      row.RCoord = (*It).RTile;
-      row.CCoord = (*It).CTile;
-      row.TCoord = (*It).TimePoint;
-      row.YCoord = (*It).YOffset;
-      row.XCoord = (*It).XOffset;
-      row.ZCoord = (*It).ZDepth;
-      row.filename = (*It).Filename.c_str();
+      row.RCoord = (*It).m_RTile;
+      row.CCoord = (*It).m_CTile;
+      row.TCoord = (*It).m_TimePoint;
+      row.YCoord = (*It).m_YOffset;
+      row.XCoord = (*It).m_XOffset;
+      row.ZCoord = (*It).m_ZDepth;
+      row.filename = (*It).m_Filename.c_str();
 
       RecordSet->AddObject( row );
 

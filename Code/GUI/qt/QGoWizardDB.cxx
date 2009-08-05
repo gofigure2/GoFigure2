@@ -135,13 +135,13 @@ FileListType QGoWizardDB::ListFilenames()
     for(unsigned int i = 0; i < vectListFilenames.size();)
       {
       GoFigureFileInfoHelper tempInfo;
-      tempInfo.Filename = vectListFilenames[i+8];
-      tempInfo.TimePoint = atoi(vectListFilenames[i+4].c_str());
-      tempInfo.ZDepth = atoi(vectListFilenames[i+7].c_str());
-      tempInfo.CTile = atoi(vectListFilenames[i+3].c_str());
-      tempInfo.RTile = atoi(vectListFilenames[i+2].c_str());
-      tempInfo.YOffset = atoi(vectListFilenames[i+5].c_str());
-      tempInfo.XOffset = atoi(vectListFilenames[i+6].c_str());
+      tempInfo.m_Filename = vectListFilenames[i+8];
+      tempInfo.m_TimePoint = atoi(vectListFilenames[i+4].c_str());
+      tempInfo.m_ZDepth = atoi(vectListFilenames[i+7].c_str());
+      tempInfo.m_CTile = atoi(vectListFilenames[i+3].c_str());
+      tempInfo.m_RTile = atoi(vectListFilenames[i+2].c_str());
+      tempInfo.m_YOffset = atoi(vectListFilenames[i+5].c_str());
+      tempInfo.m_XOffset = atoi(vectListFilenames[i+6].c_str());
       ListFilenames.push_back( tempInfo );
       i = i+9;
       }
@@ -678,7 +678,7 @@ bool Create_ExperimentPage::PrintListExp()
   m_ListExpID.clear();
   ChoiceExp->clear();
 
-  std::vector<std::string> vectListExpName = 
+  std::vector<std::string> vectListExpName =
   ListAllValuesForOneColumn( field("ServerName").toString().toStdString(),
       field("User").toString().toStdString(),
       field("Password").toString().toStdString(),
@@ -799,13 +799,13 @@ bool Create_ExperimentPage::validatePage()
     else
       {
       QStringList ListExistingNames;
-      std::vector<std::string> vectListExpName = 
+      std::vector<std::string> vectListExpName =
       ListAllValuesForOneColumn(
         field("ServerName").toString().toStdString(),
         field("User").toString().toStdString(),
         field("Password").toString().toStdString(),
-        field("NameDB").toString().toStdString(),"name","experiment"); 
-  
+        field("NameDB").toString().toStdString(),"name","experiment");
+
       if( !vectListExpName.empty() )
         {
         for( unsigned int i = 0; i < vectListExpName.size(); ++i )
@@ -970,13 +970,13 @@ void Import_SerieGridPage::SelectSeriesGrid()
             {
             GoDBSeriesGridRow row;
             row.experimentID = field("ExpID").toInt();
-            row.RCoord = (*It).RTile;
-            row.CCoord = (*It).CTile;
-            row.TCoord = (*It).TimePoint;
-            row.YCoord = (*It).YOffset;
-            row.XCoord = (*It).XOffset;
-            row.ZCoord = (*It).ZDepth;
-            row.filename = (*It).Filename.c_str();
+            row.RCoord = (*It).m_RTile;
+            row.CCoord = (*It).m_CTile;
+            row.TCoord = (*It).m_TimePoint;
+            row.YCoord = (*It).m_YOffset;
+            row.XCoord = (*It).m_XOffset;
+            row.ZCoord = (*It).m_ZDepth;
+            row.filename = (*It).m_Filename.c_str();
 
             RecordSet->AddObject( row );
 
@@ -1033,13 +1033,13 @@ void Import_SerieGridPage::SelectSeriesGrid()
             {
             GoDBSeriesGridRow row;
             row.experimentID = field("ExpID").toInt();
-            row.RCoord = (*It).RTile;
-            row.CCoord = (*It).CTile;
-            row.TCoord = (*It).TimePoint;
-            row.YCoord = (*It).YOffset;
-            row.XCoord = (*It).XOffset;
-            row.ZCoord = (*It).ZDepth;
-            row.filename = (*It).Filename.c_str();
+            row.RCoord = (*It).m_RTile;
+            row.CCoord = (*It).m_CTile;
+            row.TCoord = (*It).m_TimePoint;
+            row.YCoord = (*It).m_YOffset;
+            row.XCoord = (*It).m_XOffset;
+            row.ZCoord = (*It).m_ZDepth;
+            row.filename = (*It).m_Filename.c_str();
 
             RecordSet->AddObject( row );
 

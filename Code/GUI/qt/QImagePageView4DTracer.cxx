@@ -192,6 +192,7 @@ ReadMultiFile( const int& TimePoint )
     {
     reader->SetDimensionality( 2 );
     reader->SetFileType( JPEG );
+//     reader->SetZDepth( 50 );
     }
   if( this->ColorVizu )
     {
