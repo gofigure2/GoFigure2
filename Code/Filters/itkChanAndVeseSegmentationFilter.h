@@ -53,9 +53,10 @@
 
 #include "vtkImageData.h"
 
-//arnaudgelas: What is this file? 
+//arnaudgelas: What is this file?
 //missing on server side
-//#include "itkCellPreprocess.h"
+//krm15: branch/Unstable/3DCellSegmentation/CellPreprocess
+#include "itkCellPreprocess.h"
 #include "itkRegionOfInterestImageFilter.h"
 
 namespace itk
@@ -104,18 +105,21 @@ public:
     FeatureImageType > DataHelperType;
 
   typedef ConstrainedRegionBasedLevelSetFunctionSharedData< InternalImageType,
-    FeatureImageType, DataHelperType > SharedDataHelperType;
+    FeatureImageType, DataHelperType >                SharedDataHelperType;
 
   typedef ScalarChanAndVeseLevelSetFunction< InternalImageType,
-    FeatureImageType, SharedDataHelperType > FunctionType;
+    FeatureImageType, SharedDataHelperType >          FunctionType;
   typedef ScalarChanAndVeseSparseLevelSetImageFilter< InternalImageType,
-    FeatureImageType, OutputImageType, FunctionType, SharedDataHelperType > MultiLevelSetType;
-  typedef typename MultiLevelSetType::Pointer MultiLevelSetPointer;
+    FeatureImageType, OutputImageType, FunctionType, SharedDataHelperType >
+                                                      MultiLevelSetType;
+  typedef typename MultiLevelSetType::Pointer         MultiLevelSetPointer;
 
   //arnaudgelas: itk::CellPreprocess what is supposed to do?
-  //typedef itk::CellPreprocess< FeatureImageType, FeatureImageType >
-  //PreprocessFilterType;
-  //typedef typename PreprocessFilterType::Pointer PreprocessFilterPointer;
+  // Denoise images - remove median noise and perform morphological reconstruction
+  // Makes it easier to segment and prevents formation of holes in the segmentation
+  typedef itk::CellPreprocess< FeatureImageType, FeatureImageType >
+                                                      PreprocessFilterType;
+  typedef typename PreprocessFilterType::Pointer PreprocessFilterPointer;
 
   typedef RegionOfInterestImageFilter<
     FeatureImageType, FeatureImageType >              ROIFilterType;
@@ -127,9 +131,10 @@ public:
     DomainFunctionPointer;
 
   typedef  FastMarchingImageFilter< InternalImageType,
-    InternalImageType >                                   FastMarchingFilterType;
-  typedef typename FastMarchingFilterType::NodeContainer  NodeContainer;
-  typedef typename FastMarchingFilterType::NodeType       NodeType;
+    InternalImageType >                               FastMarchingFilterType;
+  typedef typename FastMarchingFilterType::NodeContainer
+                                                      NodeContainer;
+  typedef typename FastMarchingFilterType::NodeType   NodeType;
 
   typedef ImageToVTKImageFilter< InternalImageType >  ConverterType;
   typedef typename ConverterType::Pointer             ConverterPointer;
