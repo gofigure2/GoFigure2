@@ -53,9 +53,6 @@
 
 #include "vtkImageData.h"
 
-//arnaudgelas: What is this file?
-//missing on server side
-//krm15: branch/Unstable/3DCellSegmentation/CellPreprocess
 #include "itkCellPreprocess.h"
 #include "itkRegionOfInterestImageFilter.h"
 
@@ -114,9 +111,6 @@ public:
                                                       MultiLevelSetType;
   typedef typename MultiLevelSetType::Pointer         MultiLevelSetPointer;
 
-  //arnaudgelas: itk::CellPreprocess what is supposed to do?
-  // Denoise images - remove median noise and perform morphological reconstruction
-  // Makes it easier to segment and prevents formation of holes in the segmentation
   typedef itk::CellPreprocess< FeatureImageType, FeatureImageType >
                                                       PreprocessFilterType;
   typedef typename PreprocessFilterType::Pointer PreprocessFilterPointer;

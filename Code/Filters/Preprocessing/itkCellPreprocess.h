@@ -58,8 +58,10 @@ namespace itk
 {
 
  /** \class CellPreprocess
- *  \brief
- *  \todo Kishore could you write a brief documentation of this class, pls?
+ *  \brief Denoise images - remove median noise and perform morphological
+ * reconstruction. Makes it easier to segment and prevents formation of holes
+ * in the segmentation.
+ * \todo Change class name
  */
   template < class TInputImage, class TOutputImage = TInputImage >
   class ITK_EXPORT CellPreprocess : public ImageToImageFilter<
