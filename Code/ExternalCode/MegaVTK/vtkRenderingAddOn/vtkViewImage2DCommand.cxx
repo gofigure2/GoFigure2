@@ -146,12 +146,13 @@ vtkViewImage2DCommand::Execute( vtkObject*    caller,
     picker->Pick( rwi->GetEventPosition()[0], rwi->GetEventPosition()[1], 0,
       this->Viewer->GetRenderer() );
 
-    vtkAssemblyPath* path = picker->GetPath();
-    if( path )
-    {
-      vtkProp* prop = path->GetFirstNode()->GetViewProp();
-      std::cout <<"yo" <<std::endl;
-    }
+    /// \todo check the utility of next lines.
+//     vtkAssemblyPath* path = picker->GetPath();
+//     if( path )
+//     {
+//       vtkProp* prop = path->GetFirstNode()->GetViewProp();
+//       std::cout <<"yo" <<std::endl;
+//     }
   }
 
   if (event == vtkCommand::KeyPressEvent)
