@@ -1,4 +1,14 @@
 ADD_LIBRARY( itkQt
   itkQtProgressBar.cxx
-  itkQtAdaptor.h 
+  itkQtAdaptor.h
 )
+
+INSTALL_TARGETS(/lib itkQt)
+
+INSTALL_FILES(/include "(\\.h|\\.txx)$")
+
+INSTALL( TARGETS itkQt
+  ARCHIVE
+  DESTINATION lib
+  COMPONENT libraries
+  )

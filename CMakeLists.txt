@@ -1,17 +1,6 @@
 PROJECT( GOFIGURE2 )
 
-SET( GOFIGURE2_MAJOR_VERSION "0" )
-SET( GOFIGURE2_MINOR_VERSION "5" )
-
-# NOTE: It is possible to get the revision number by calling in bash the
-# svnversion command
-#ADD_CUSTOM_COMMAND( TARGET yo PRE_BUILD
-#  COMMAND svnversion ARGS ${GOFIGURE2_SOURCE_DIR}
-#)
-
-SET( GOFIGURE2_VERSION
-"${GOFIGURE2_MAJOR_VERSION}.${GOFIGURE2_MINOR_VERSION}" )
-
+# CMake >= 2.6 MUST be installed
 CMAKE_MINIMUM_REQUIRED( VERSION 2.6 )
 
 IF( COMMAND CMAKE_POLICY )
@@ -19,6 +8,21 @@ IF( COMMAND CMAKE_POLICY )
   CMAKE_POLICY( SET CMP0005 OLD )
   CMAKE_POLICY( SET CMP0003 NEW )
 ENDIF(COMMAND CMAKE_POLICY)
+
+SET( GOFIGURE2_MAJOR_VERSION "0" )
+SET( GOFIGURE2_MINOR_VERSION "5" )
+
+# Subversion
+FIND_PACKAGE( Subversion )
+
+IF( Subversion_FOUND )
+  Subversion_WC_INFO( ${GOFIGURE2_SOURCE_DIR} GOFIGURE2 )
+ELSE( Subversion_FOUND )
+  SET( GOFIGURE2_WC_REVISION "0" )
+ENDIF( Subversion_FOUND )
+
+SET( GOFIGURE2_VERSION
+"${GOFIGURE2_MAJOR_VERSION}.${GOFIGURE2_MINOR_VERSION}.${GOFIGURE2_WC_REVISION}" )
 
 # On Visual Studio 8 MS deprecated C. This removes all 1.276E1265 security
 # warnings. Copied from ITK CMakeLists.
@@ -220,6 +224,11 @@ IF( VTK_FOUND )
       SET( CPACK_PACKAGE_VERSION_PATCH "0" )
       SET( CPACK_PACKAGE_INSTALL_DIRECTORY
         "GoFigure2 ${GOFIGURE2_MAJOR_VERSION}.${GOFIGURE2_MINOR_VERSION}" )
+      SET( CPACK_COMPONENTS_ALL
+            applications
+            libraries
+#             headers
+          )
 
       IF( WIN32 AND NOT UNIX )
         # There is a bug in NSI that does not handle full unix paths properly.

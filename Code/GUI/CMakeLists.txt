@@ -121,9 +121,13 @@ TARGET_LINK_LIBRARIES( gofigure
   itkQt
   )
 
+INSTALL_FILES(/include "(\\.h|\\.txx)$")
+
 INSTALL( TARGETS gofigure
       RUNTIME DESTINATION bin
       BUNDLE  DESTINATION bin
       LIBRARY DESTINATION lib
       ARCHIVE DESTINATION lib/static
+      COMPONENT applications
       )
+
