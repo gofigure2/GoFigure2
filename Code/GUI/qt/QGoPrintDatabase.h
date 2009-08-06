@@ -80,8 +80,8 @@ protected:
   GoDBCollectionOfTraces* CollectionOfFigures;
   GoDBCollectionOfTraces* CollectionOfMeshes;
 
-  /** \brief Return the name of the tab currently used: */
-  QString InWhichTableAreWe ();
+  /** \brief Return the Index of the tab currently used: */
+  int InWhichTableAreWe ();
 
   /**
     \brief get the columns names and the values of the table (type T) from the
@@ -217,6 +217,7 @@ protected slots:
   /** brief Create a new Collection row in the collection table and change the collection ID of the
   selected contours to the new CollectionID created:*/
   void CreateCorrespondingCollection();
+
   void AddToExistingCollection();
 
 };

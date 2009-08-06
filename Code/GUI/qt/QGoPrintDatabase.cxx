@@ -184,17 +184,8 @@ void QGoPrintDatabase::CreateContextMenu(const QPoint &pos)
 //------------------------------------------------------------------------------
 void QGoPrintDatabase::DeleteTraces()
 {
-  QString TabName = InWhichTableAreWe();
-  int TabIndex;
-
-  if (TabName == "figure")
-    {
-    TabIndex = 0;
-    }
-  if (TabName == "mesh")
-    {
-    TabIndex = 1;
-    }
+  int TabIndex = InWhichTableAreWe();
+ 
   switch (TabIndex)
     {
     case 0: //figure
@@ -229,17 +220,8 @@ void QGoPrintDatabase::DeleteTraces()
 //------------------------------------------------------------------------------
 void QGoPrintDatabase::CreateCorrespondingCollection()
 {
-  QString TabName = InWhichTableAreWe();
-  int TabIndex;
-
-  if (TabName == "figure")
-    {
-    TabIndex = 0;
-    }
-  if (TabName == "mesh")
-    {
-    TabIndex = 1;
-    }
+  int TabIndex = InWhichTableAreWe();
+    
   switch (TabIndex)
     {
     case 0: //figure
@@ -272,17 +254,29 @@ void QGoPrintDatabase::CreateCorrespondingCollection()
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-QString QGoPrintDatabase::InWhichTableAreWe ()
+int QGoPrintDatabase::InWhichTableAreWe ()
 {
   int CurrentIndex = this->DBTabWidget->currentIndex();
   QString TabName = this->DBTabWidget->tabText(CurrentIndex);
-  return TabName;
+  
+  int TabIndex;
+  if (TabName == "figure")
+    {
+    TabIndex = 0;
+    }
+  if (TabName == "mesh")
+    {
+    TabIndex = 1;
+    }
+
+  return TabIndex;
 }
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
 void QGoPrintDatabase::AddToExistingCollection()
 {
+  
   //input dialog with collection id to get from.
 /*
   QStringList items;
