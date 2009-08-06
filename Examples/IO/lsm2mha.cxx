@@ -73,9 +73,11 @@ int main(int argc,char* argv[])
       for( int channel = 0; channel < NumberOfChannels; channel++)
       {
         // Select the specified time-point and channel for write-out
-        reader->SetUpdateTimePoint( timePoint );
-        reader->SetUpdateChannel( channel );
-        reader->Update();
+        vtkLSMReader* treader=vtkLSMReader::New();
+        treader->SetFileName(argv[1]);
+        treader->SetUpdateTimePoint( timePoint );
+        treader->SetUpdateChannel( channel );
+        treader->Update();
 
         // Determine the name of the file
         std::stringstream namebuffer;
@@ -88,7 +90,7 @@ int main(int argc,char* argv[])
 
         // Write-out
         writer->SetFileName(namebuffer.str().c_str());
-        writer->SetInputConnection( reader->GetOutputPort( ) );
+        writer->SetInputConnection( treader->GetOutputPort( ) );
         writer->Write();
 	    }
     }
