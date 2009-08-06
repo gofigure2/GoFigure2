@@ -69,10 +69,10 @@ QGoPrintDatabase::QGoPrintDatabase()
   DBTabWidget->removeTab(0);
   FigureTable = new QTableWidgetChild( this );
   MeshTable = new QTableWidgetChild( this );
-  CollectionOfFigures = new GoDBCollectionOfTraces("Mesh",
-  "MeshID","figure", "figureID");
-  CollectionOfMeshes = new GoDBCollectionOfTraces( "Track",
-  "TrackID", "mesh", "meshID");
+  CollectionOfFigures = new GoDBCollectionOfTraces("mesh",
+  "meshID","figure", "figureID");
+  CollectionOfMeshes = new GoDBCollectionOfTraces( "track",
+  "trackID", "mesh", "meshID");
   this->setContextMenuPolicy(Qt::CustomContextMenu);
 
 
@@ -85,7 +85,9 @@ QGoPrintDatabase::QGoPrintDatabase()
 QGoPrintDatabase::~QGoPrintDatabase()
 {
 }
+//------------------------------------------------------------------------------
 
+//------------------------------------------------------------------------------
 void QGoPrintDatabase::QPrintColumnNames (QString TableName,
      std::vector< std::string > ColumnNames, QTableWidgetChild* QTabTableName )
 {
@@ -194,14 +196,14 @@ void QGoPrintDatabase::DeleteTraces()
       //add the tableWidgetChild in the CollectionOfTraces?
       QStringList FiguresToDelete = this->FigureTable->ValuesForSelectedRows("figureID");
       CollectionOfFigures->DeleteTraces(FiguresToDelete);
-      this->UpdateContentAndDisplayFromDB<GoDBFigureRow>("Figure", FigureTable);
+      this->UpdateContentAndDisplayFromDB<GoDBFigureRow>("figure", FigureTable);
       break;
       }
     case 1: //mesh
       {
       QStringList MeshesToDelete = this->MeshTable->ValuesForSelectedRows("meshID");
       CollectionOfMeshes->DeleteTraces(MeshesToDelete);
-      this->UpdateContentAndDisplayFromDB<GoDBMeshRow>("Mesh",MeshTable);
+      this->UpdateContentAndDisplayFromDB<GoDBMeshRow>("mesh",MeshTable);
       break;
       }
     default:
@@ -228,8 +230,8 @@ void QGoPrintDatabase::CreateCorrespondingCollection()
       //add the tableWidgetChild in the CollectionOfTraces?
       QStringList ListSelectedTraces = this->FigureTable->ValuesForSelectedRows("figureID");
       CollectionOfFigures->CreateNewCollectionFromSelection<GoDBMeshRow>(ListSelectedTraces);
-      this->UpdateContentAndDisplayFromDB<GoDBFigureRow>("Figure", FigureTable);
-      this->UpdateContentAndDisplayFromDB<GoDBMeshRow>("Mesh",MeshTable);
+      this->UpdateContentAndDisplayFromDB<GoDBFigureRow>("figure", FigureTable);
+      this->UpdateContentAndDisplayFromDB<GoDBMeshRow>("mesh",MeshTable);
       break;
       }
     case 1: //mesh
