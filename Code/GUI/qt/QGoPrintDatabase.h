@@ -156,6 +156,7 @@ protected:
       }
       PrintOutContentFromDB< myT >( RowContainer, Table );
     delete mySet;
+    emit TableContentChanged();
     }
 
   /** \brief Display the values stored in the RowContainer (list of type T)

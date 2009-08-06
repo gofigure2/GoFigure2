@@ -40,6 +40,7 @@
 #include <qstringlist.h>
 #include <qwidget.h>
 #include <QDialog>
+#include <QInputDialog>
 #include <QTableWidgetItem>
 #include <QHeaderView>
 #include <QMessageBox>
@@ -194,7 +195,6 @@ void QGoPrintDatabase::DeleteTraces()
       QStringList FiguresToDelete = this->FigureTable->ValuesForSelectedRows("figureID");
       CollectionOfFigures->DeleteTraces(FiguresToDelete);
       this->UpdateContentAndDisplayFromDB<GoDBFigureRow>("Figure", FigureTable);
-      emit TableContentChanged();
       break;
       }
     case 1: //mesh
@@ -202,7 +202,6 @@ void QGoPrintDatabase::DeleteTraces()
       QStringList MeshesToDelete = this->MeshTable->ValuesForSelectedRows("meshID");
       CollectionOfMeshes->DeleteTraces(MeshesToDelete);
       this->UpdateContentAndDisplayFromDB<GoDBMeshRow>("Mesh",MeshTable);
-      emit TableContentChanged();
       break;
       }
     default:
@@ -276,44 +275,23 @@ int QGoPrintDatabase::InWhichTableAreWe ()
 //------------------------------------------------------------------------------
 void QGoPrintDatabase::AddToExistingCollection()
 {
-  
-  //input dialog with collection id to get from.
-/*
   QStringList items;
-  items : to make a query to retrieve all the existing IDs.
-  int CollectionID = QInputDialog::getItem(this, tr("Collection ID"),
-                                          tr("Choose the collectionID you want the traces to be part of:"), items,
-                                          0,false, &ok);
-
-  QString TabName = InWhichTableAreWe();
-  int TabIndex;
-
-  if (TabName == "figure")
-    {
-    TabIndex = 0;
-    }
-  if (TabName == "mesh")
-    {
-    TabIndex = 1;
-    }
-
+  QString LabelDialog;
+  int TabIndex = InWhichTableAreWe();
+  
   switch (TabIndex)
     {
     case 0: //figure
       {
-      //add the tableWidgetChild in the CollectionOfTraces?
-      QStringList FiguresToDelete = this->FigureTable->ValuesForSelectedRows("figureID");
-      CollectionOfFigures->DeleteTraces(FiguresToDelete);
-      this->UpdateContentAndDisplayFromDB<GoDBFigureRow>("Figure", FigureTable);
-      emit TableContentChanged();
+      items = CollectionOfFigures->ListCollectionID();
+      LabelDialog = tr("Choose the Mesh ID you want\n the selected figures to be part of: ");
+
       break;
       }
     case 1: //mesh
       {
-      QStringList MeshesToDelete = this->MeshTable->ValuesForSelectedRows("meshID");
-      CollectionOfMeshes->DeleteTraces(MeshesToDelete);
-      this->UpdateContentAndDisplayFromDB<GoDBMeshRow>("Mesh",MeshTable);
-      emit TableContentChanged();
+      items = CollectionOfMeshes->ListCollectionID();
+      LabelDialog = tr("Choose the Track ID you want\n the selected meshes to be part of: ");
       break;
       }
     default:
@@ -323,5 +301,37 @@ void QGoPrintDatabase::AddToExistingCollection()
       std::cout << std::endl;
       break;
       }
-    }*/
+    }
+  bool ok;
+  QString CollectionID = QInputDialog::getItem(this, tr("Collection ID"),
+                         LabelDialog, items,0,false,&ok);
+  
+  if (ok && !CollectionID.isEmpty())
+    {
+    switch (TabIndex)
+      {
+      case 0: //figure
+        {
+        QStringList ListFigures = this->FigureTable->ValuesForSelectedRows("figureID");
+        CollectionOfFigures->AddSelectedTracesToCollection(ListFigures,CollectionID.toInt());
+        this->UpdateContentAndDisplayFromDB<GoDBFigureRow>("Figure", FigureTable);
+        break;
+        }
+      case 1: //mesh
+        {
+        //QStringList ListMeshes = this->FigureTable->ValuesForSelectedRows("meshID");
+        //CollectionOfMeshes->AddSelectedTracesToCollection(ListMeshes,CollectionID.toInt());
+        //this->UpdateContentAndDisplayFromDB<GoDBMeshRow>("Mesh", MeshTable);
+        break;
+        }
+      default:
+        {
+        std::cout<<"error, tab doesn't exist";
+        std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
+        std::cout << std::endl;
+        break;
+        }
+      }
+    }
+
 }
