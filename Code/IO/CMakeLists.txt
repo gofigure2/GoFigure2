@@ -8,6 +8,7 @@ SET( QGOIO_SRC
 #   LIST( APPEND
 #     ${QGOIO_SRC}
     CreateDataBaseHelper.cxx
+    QueryDataBaseHelper.cxx
     GoDBCollectionOfTraces.cxx
     vtkPolyDataMySQLTextReader.cxx
     vtkPolyDataMySQLTextWriter.cxx

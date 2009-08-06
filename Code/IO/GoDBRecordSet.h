@@ -48,6 +48,7 @@
 
 #include "vtkVariant.h"
 #include "CreateDataBaseHelper.h"
+#include "QueryDataBaseHelper.h"
 
 #include "vtkMySQLDatabase.h"
 #include "vtkSQLQuery.h"

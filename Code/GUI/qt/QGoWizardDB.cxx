@@ -39,6 +39,7 @@
 =========================================================================*/
 #include "QGoWizardDB.h"
 #include "CreateDataBaseHelper.h"
+#include "QueryDataBaseHelper.h"
 #include "GoDBRecordSet.h"
 #include "GoDBRecordSetHelper.h"
 #include "GoDBFigureRow.h"

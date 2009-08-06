@@ -39,6 +39,7 @@
 =========================================================================*/
 #include "GoDBCollectionOfTraces.h"
 #include "CreateDataBaseHelper.h"
+#include "QueryDataBaseHelper.h"
 #include "ConvertToStringHelper.h"
 #include <QStringList>
 #include <QString>

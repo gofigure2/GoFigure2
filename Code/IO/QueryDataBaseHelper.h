@@ -1,7 +1,7 @@
 /*=========================================================================
-  Author: $Author$  // Author of last commit
-  Version: $Rev$  // Revision of last commit
-  Date: $Date$  // Date of last commit
+  Author: $Author: LydieSouhait $  // Author of last commit
+  Version: $Rev: 503 $  // Revision of last commit
+  Date: $Date: 2009-08-03 17:42:52 -0400 (Mon, 03 Aug 2009) $  // Date of last commit
 =========================================================================*/
 
 /*=========================================================================
@@ -37,59 +37,84 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#ifndef __CreateDataBaseHelper_h
-#define __CreateDataBaseHelper_h
+#ifndef __QueryDataBaseHelper_h
+#define __QueryDataBaseHelper_h
 
 #include <vector>
 #include <string>
 #include "itkMacro.h"
 
-bool IsDatabaseOfGoFigureType(
+std::vector<std::string> ListDataBases(
+  std::string ServerName, std::string login,
+  std::string Password);
+
+std::vector<std::string> ListTables(
   std::string ServerName, std::string login,
   std::string Password, std::string DBName );
 
-void CreateDataBase(
+//query: "SELECT ColumnName FROM TableName"
+std::vector<std::string> ListAllValuesForOneColumn(
   std::string ServerName, std::string login,
-  std::string Password, std::string DBName );
-void CreateBookmarksTable(
+  std::string Password, std::string DBName,
+  std::string ColumnName, std::string TableName);
+
+//query: "SELECT * FROM TableName WHERE field = value"
+//if field is a primary key, will return only the values for
+//one row
+  std::vector<std::string> ListSpecificValuesForRow(
   std::string ServerName, std::string login,
-  std::string Password, std::string DBName );
-void CreateCollectionInfoTable(
+  std::string Password, std::string DBName,
+  std::string TableName, std::string field,std::string value);
+
+//query: "SELECT ColumnName FROM TableName WHERE field = value"
+std::vector<std::string> ListSpecificValuesForOneColumn(
   std::string ServerName, std::string login,
-  std::string Password, std::string DBName );
-void CreateExperimentTable(
+  std::string Password, std::string DBName,
+  std::string TableName, std::string ColumnName,
+  std::string field,std::string value);
+
+//query: "UPDATE TableName SET field = newValue WHERE ColumnName = value"
+void UpdateValueInDB(std::string ServerName, std::string login,
+  std::string Password, std::string DBName,
+  std::string TableName, std::string field, std::string newValue,
+  std::string ColumnName, std::string value);
+
+bool CanConnectToServer(
   std::string ServerName, std::string login,
-  std::string Password, std::string DBName );
-void CreateFigureTable(
-  std::string ServerName, std::string login,
-  std::string Password, std::string DBName );
-void CreateFigureFlavorTable(
-  std::string ServerName, std::string login,
-  std::string Password, std::string DBName );
-void CreateLineageTable(
-  std::string ServerName, std::string login,
-  std::string Password, std::string DBName );
-void CreateLineageFlavorTable(
-  std::string ServerName, std::string login,
-  std::string Password, std::string DBName );
-void CreateMeshTable(
-  std::string ServerName, std::string login,
-  std::string Password, std::string DBName );
-void CreateMeshFlavor(
-  std::string ServerName, std::string login,
-  std::string Password, std::string DBName );
-void CreateSeriesGridTable(
-  std::string ServerName, std::string login,
-  std::string Password, std::string DBName );
-void CreateTrackTable(
-  std::string ServerName, std::string login,
-  std::string Password, std::string DBName );
-void CreateTrackFlavor(
+  std::string Password);
+
+void DropDatabase(
   std::string ServerName, std::string login,
   std::string Password, std::string DBName );
 
-void CreateDataBaseMain(
+void DropTable(
+  std::string ServerName, std::string login,
+  std::string Password, std::string DBName,
+  std::string TableName );
+
+// query: "DELETE FROM TableName WHERE field = value"
+void DeleteRow(
+  std::string ServerName, std::string login,
+  std::string Password, std::string DBName,
+  std::string TableName, std::string field, std::string value);
+
+//query: "SELECT LAST_INSERT_ID(): ????"
+/*int LastInsertID(std::string ServerName, std::string login,
+  std::string Password, std::string DBName);*/
+
+//query: "SELECT MAX(ColumnName) FROM TableName"
+int MaxValueForOneColumnInTable(
+  std::string ServerName, std::string login,
+  std::string Password, std::string DBName,
+  std::string ColumnName,std::string TableName );
+
+bool DoesDataBaseExist(
   std::string ServerName, std::string login,
   std::string Password, std::string DBName );
+
+bool DoesTableExist(
+  std::string ServerName, std::string login,
+  std::string Password, std::string DBName,
+  std::string TableName );
 
 #endif

@@ -43,6 +43,7 @@
 
 #include "QGoCreateDBDialog.h"
 #include "CreateDataBaseHelper.h"
+#include "QueryDataBaseHelper.h"
 
 #include "stdio.h"
 
