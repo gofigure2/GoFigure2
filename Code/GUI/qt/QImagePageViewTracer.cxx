@@ -1566,12 +1566,36 @@ void QImagePageViewTracer::LoadFiguresFromDB( )
       vtkPolyData* nodes_copy = vtkPolyData::New();
       nodes_copy->ShallowCopy( nodes );
 
+      double bounds[6];
+      nodes->GetBounds( bounds );
+
+      int dir = -1;
+
+      if( bounds[4] == bounds[5] )
+        {
+        dir = 0; //XY
+        }
+      else
+        {
+        if( bounds[2] == bounds[3] )
+          {
+          dir = 1;//XZ
+          }
+        else
+          {
+          if( bounds[0] == bounds[1] )
+            {
+            dir = 2;
+            }
+          }
+        }
+
       vtkActor* temp;
 #ifndef TEMPARNAUD
       for( int j = 0; j < this->Pool->GetNumberOfItems(); j++ )
         {
         temp = this->Pool->GetItem( j )->AddDataSet(
-                  nodes_copy, contour_property, false, false );
+                  nodes_copy, contour_property, true, false );
 
         //TODO the second argument for the constructor of ContourStructure MUST
         // be the control points of the spline representation. For the time being
