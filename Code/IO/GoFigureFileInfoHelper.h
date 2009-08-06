@@ -106,7 +106,7 @@ public:
     m_RTile     = 0;
     m_YOffset   = 0;
     m_XOffset   = 0;
-    m_TimeBased = false;
+    m_TimeBased = true;
     }
 };
 

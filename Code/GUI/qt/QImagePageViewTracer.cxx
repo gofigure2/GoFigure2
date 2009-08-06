@@ -1571,7 +1571,7 @@ void QImagePageViewTracer::LoadFiguresFromDB( )
       for( int j = 0; j < this->Pool->GetNumberOfItems(); j++ )
         {
         temp = this->Pool->GetItem( j )->AddDataSet(
-                  nodes_copy, contour_property, true, false );
+                  nodes_copy, contour_property, false, false );
 
         //TODO the second argument for the constructor of ContourStructure MUST
         // be the control points of the spline representation. For the time being

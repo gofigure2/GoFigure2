@@ -586,7 +586,7 @@ MultiFileReader::MultiFileReader( )
   m_UpdateZSlice    = -1;
   m_UpdateChannel    = -1;
   m_AreImagesMultiChannel = false;
-  m_TimeBased = false;
+  m_TimeBased = true;
 }
 //-----------------------------------------------------------------------------
 
