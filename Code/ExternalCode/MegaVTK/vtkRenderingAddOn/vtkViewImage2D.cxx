@@ -835,8 +835,13 @@ vtkActor* vtkViewImage2D::AddDataSet( vtkPolyData* dataset,
   const bool& intersection,
   const bool& iDataVisibility )
 {
-  vtkCamera *cam = this->Renderer ? this->Renderer->GetActiveCamera() : NULL;
-  if( !cam )
+  vtkCamera *cam = 0;
+
+  if( this->Renderer )
+    {
+    cam = this->Renderer->GetActiveCamera();
+    }
+  else
     {
     return 0;
     }
@@ -846,13 +851,12 @@ vtkActor* vtkViewImage2D::AddDataSet( vtkPolyData* dataset,
 
   vtkActor* actor = vtkActor::New();
 
-  vtkClipPolyData* cutter = vtkClipPolyData::New();
+  vtkCutter* cutter = vtkCutter::New();
 
   if( intersection )
     {
     cutter->SetInputConnection( 0, dataset->GetProducerPort());
-    cutter->SetClipFunction( this->SliceImplicitPlane );
-    cutter->InsideOutOn();
+    cutter->SetCutFunction( this->SliceImplicitPlane );
     mapper->SetInputConnection( 0, cutter->GetOutputPort());
     }
   else
@@ -886,7 +890,9 @@ vtkActor* vtkViewImage2D::AddDataSet( vtkDataSet* dataset,
   const bool& intersection,
   const bool& iDataVisibility )
 {
-  vtkCamera *cam = this->Renderer ? this->Renderer->GetActiveCamera() : NULL;
+  return this->AddDataSet( vtkPolyData::SafeDownCast( dataset ),
+    property, intersection, iDataVisibility );
+/*   vtkCamera *cam = this->Renderer ? this->Renderer->GetActiveCamera() : NULL;
   if( !cam )
     {
     return 0;
@@ -927,7 +933,7 @@ vtkActor* vtkViewImage2D::AddDataSet( vtkDataSet* dataset,
   cutter->Delete();
   mapper->Delete();
 //   actor->Delete();
-  return actor;
+  return actor;*/
 }
 
 //----------------------------------------------------------------------------
