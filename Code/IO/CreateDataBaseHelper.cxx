@@ -820,4 +820,3 @@ void CreateTrackFlavor(
   DataBaseConnector->Delete();
   query->Delete();
 }
-

@@ -53,7 +53,8 @@ class GoDBCollectionOfTraces
 public:
 
   explicit QMEGAVTKADDON2_EXPORT GoDBCollectionOfTraces();
-  explicit QMEGAVTKADDON2_EXPORT GoDBCollectionOfTraces (QString CollectionName,
+  explicit QMEGAVTKADDON2_EXPORT GoDBCollectionOfTraces(
+    QString CollectionName,
     QString CollectionIDName, QString Traces,QString TracesIDName);
   virtual QMEGAVTKADDON2_EXPORT ~GoDBCollectionOfTraces();
   void QMEGAVTKADDON2_EXPORT SetDatabaseVariables(
@@ -68,11 +69,12 @@ public:
     QStringList ListSelectedTraces,int newCollectionID);
 
   template< class myT >
-  void QMEGAVTKADDON2_EXPORT CreateNewCollectionFromSelection(QStringList ListSelectedTraces)
-  {
-  int NewCollectionID = this->CreateNewCollection<myT>();
-  AddSelectedTracesToCollection(ListSelectedTraces,NewCollectionID);
-  }
+  void QMEGAVTKADDON2_EXPORT CreateNewCollectionFromSelection(
+    QStringList ListSelectedTraces)
+    {
+    int NewCollectionID = this->CreateNewCollection<myT>();
+    AddSelectedTracesToCollection(ListSelectedTraces,NewCollectionID);
+    }
 
   QStringList QMEGAVTKADDON2_EXPORT ListCollectionID();
 
@@ -81,7 +83,7 @@ public:
   QString TracesName()
     { return m_TracesName;}
 
-  
+
 
 protected:
 
@@ -94,28 +96,28 @@ protected:
   QString m_TracesName;
   QString m_TracesIDName;
 
-  /** \brief Create a new collection Row in the collection table and return the
-  collectionID from the created row: */
+  /** \brief Create a new collection Row in the collection table and
+  return the collectionID from the created row: */
   int  CreateNewCollection();
 
 
   template< class myT >
   int CreateNewCollection()
-  {
-  myT myNewObject;
-  AddNewObjectInTable< myT >(
+    {
+    myT myNewObject;
+    AddNewObjectInTable< myT >(
       m_Server.toStdString(),
       m_User.toStdString(),
       m_Password.toStdString(),
       m_NameDB.toStdString(),
       m_CollectionName.toStdString(), myNewObject );
 
-  int ID = MaxValueForOneColumnInTable(
-    m_Server.toStdString(), m_User.toStdString(),
-    m_Password.toStdString(),m_NameDB.toStdString(),
-    m_CollectionIDName.toStdString(),m_CollectionName.toStdString());
+    int ID = MaxValueForOneColumnInTable(
+      m_Server.toStdString(), m_User.toStdString(),
+      m_Password.toStdString(),m_NameDB.toStdString(),
+      m_CollectionIDName.toStdString(),m_CollectionName.toStdString());
 
-  return ID;
-  }
+    return ID;
+    }
 };
 #endif

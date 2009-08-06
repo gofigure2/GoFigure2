@@ -81,16 +81,16 @@ public:
   typedef ActorContourIdMapType::iterator     ActorContourIdMapIterator;
 
   /**
-  * \todo this structure is containing too many information leading to keep
+  *  \todo this structure is containing too many information leading to keep
   *  too many objects in memory. This is due to the visualization.
-  * For example
-  * <ul>
+  *  For example
+  *   <ul>
   *   <li> Contour is needed to be able to use the method
-  *     vtkViewImage::RemoveDataSet</li>
+  *    vtkViewImage::RemoveDataSet</li>
   *   <li> Actor is needed to be able to highlight a contour.</li>
   *   <li> rgb is needed to be able to get the original contour before
-  *     highlighting.</li>
-  *  </ul>
+  *    highlighting.</li>
+  *   </ul>
   */
   struct ContourStructure {
     ContourStructure( vtkActor* iActor, vtkPolyData* iNodes, vtkPolyData* iContour,
@@ -264,7 +264,7 @@ public slots:
   QMEGAVTKADDON2_EXPORT void LoadFiguresFromDB( );
 
   QMEGAVTKADDON2_EXPORT void SetTimePoint( int TimePoint )
-    { this->m_TimePoint = TimePoint; };
+    { this->m_TimePoint = TimePoint; }
 
   QMEGAVTKADDON2_EXPORT void HighlightContour( const unsigned int& iId,
     const bool& iToBeHighlighted );
@@ -339,13 +339,13 @@ protected:
   void Set2DImage( vtkImageData* input );
   void Set3DImage( vtkImageData* input );
 
-  int   SnapshotId;
-  int   IsFullScreen;
-  bool  IsVolumeRendering;
-  int   CellId;
-  unsigned int ContourId;
-  bool  Is2DImage;
-  int   m_TimePoint;
+  int           SnapshotId;
+  int           IsFullScreen;
+  bool          IsVolumeRendering;
+  int           CellId;
+  unsigned int  ContourId;
+  bool          Is2DImage;
+  int           m_TimePoint;
 
 protected slots:
   void MoveSlider1();

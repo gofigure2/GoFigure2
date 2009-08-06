@@ -72,4 +72,3 @@ void AddNewObjectInTable( const std::string& ServerName,
   return;
 }
 #endif
-

@@ -218,17 +218,17 @@ public slots:
   QMEGAVTKADDON2_EXPORT void HighlightContours(
     std::map< unsigned int, bool > iIds )
     {
-      this->Whatever->HighlightContours(iIds);
-//       for( std::map< unsigned int, bool >::iterator it = iIds.begin();
-//           it != iIds.end();
-//           it++ )
-//         {
-//         if( it->second )
-//           {
-//           this->Whatever->ReeditContour( it->first );
-//           break;
-//           }
-//         }
+    this->Whatever->HighlightContours(iIds);
+    //  for( std::map< unsigned int, bool >::iterator it = iIds.begin();
+    //           it != iIds.end();
+    //           it++ )
+    //         {
+    //         if( it->second )
+    //           {
+    //           this->Whatever->ReeditContour( it->first );
+    //           break;
+    //           }
+    //         }
     }
 
   QMEGAVTKADDON2_EXPORT QString SnapshotViewXY( const QImagePageViewTracer::SnapshotImageType& iType,

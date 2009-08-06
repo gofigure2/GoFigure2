@@ -79,17 +79,17 @@ QGoPrintDatabase::QGoPrintDatabase()
   connect(this, SIGNAL(customContextMenuRequested(const QPoint &)),
     this, SLOT(CreateContextMenu(const QPoint &)));
 }
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 QGoPrintDatabase::~QGoPrintDatabase()
 {
 }
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 void QGoPrintDatabase::QPrintColumnNames (QString TableName,
-     std::vector< std::string > ColumnNames, QTableWidgetChild* QTabTableName )
+  std::vector< std::string > ColumnNames, QTableWidgetChild* QTabTableName )
 {
   int numberCol=ColumnNames.size();
   this->DBTabWidget->addTab(QTabTableName,TableName);
@@ -118,11 +118,12 @@ void QGoPrintDatabase::QPrintColumnNames (QString TableName,
   QByteArray stateTableWidget = settings.value("StateTableWidget").toByteArray();
   QTabTableName->horizontalHeader()->restoreState(stateTableWidget);
 }
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
-void QGoPrintDatabase::FillTableFromDatabase(QString iNameDB,QString iServer,QString iUser,
-  QString iPassword,unsigned int iExpID,QString iExpName)
+//--------------------------------------------------------------------------
+void QGoPrintDatabase::FillTableFromDatabase( QString iNameDB,
+  QString iServer, QString iUser,
+  QString iPassword, unsigned int iExpID, QString iExpName )
 {
   m_NameDB = iNameDB;
   m_Server = iServer;
@@ -139,9 +140,9 @@ void QGoPrintDatabase::FillTableFromDatabase(QString iNameDB,QString iServer,QSt
   CollectionOfMeshes->SetDatabaseVariables(m_Server,m_User,m_Password,m_NameDB);
 
 }
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 void QGoPrintDatabase::closeEvent(QCloseEvent* event)
 {
   int r = QMessageBox::warning(this, tr(""),
@@ -163,16 +164,16 @@ void QGoPrintDatabase::closeEvent(QCloseEvent* event)
     event->ignore();
     }
 }
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 void QGoPrintDatabase::UpdateTableFromDB()
 {
   UpdateContentAndDisplayFromDB< GoDBFigureRow >("figure", FigureTable);
 }
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 void QGoPrintDatabase::CreateContextMenu(const QPoint &pos)
 {
   QMenu* ContextMenu = new QMenu;
@@ -182,30 +183,30 @@ void QGoPrintDatabase::CreateContextMenu(const QPoint &pos)
   ContextMenu->exec(this->mapToGlobal(pos));
 
 }
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 void QGoPrintDatabase::DeleteTraces()
 {
   int TabIndex = InWhichTableAreWe();
- 
+
   switch (TabIndex)
     {
     case 0: //figure
-      {
-      //add the tableWidgetChild in the CollectionOfTraces?
-      QStringList FiguresToDelete = this->FigureTable->ValuesForSelectedRows("figureID");
-      CollectionOfFigures->DeleteTraces(FiguresToDelete);
-      this->UpdateContentAndDisplayFromDB<GoDBFigureRow>("figure", FigureTable);
-      break;
-      }
+        {
+        //add the tableWidgetChild in the CollectionOfTraces?
+        QStringList FiguresToDelete = this->FigureTable->ValuesForSelectedRows("figureID");
+        CollectionOfFigures->DeleteTraces(FiguresToDelete);
+        this->UpdateContentAndDisplayFromDB<GoDBFigureRow>("figure", FigureTable);
+        break;
+        }
     case 1: //mesh
-      {
-      QStringList MeshesToDelete = this->MeshTable->ValuesForSelectedRows("meshID");
-      CollectionOfMeshes->DeleteTraces(MeshesToDelete);
-      this->UpdateContentAndDisplayFromDB<GoDBMeshRow>("mesh",MeshTable);
-      break;
-      }
+        {
+        QStringList MeshesToDelete = this->MeshTable->ValuesForSelectedRows("meshID");
+        CollectionOfMeshes->DeleteTraces(MeshesToDelete);
+        this->UpdateContentAndDisplayFromDB<GoDBMeshRow>("mesh",MeshTable);
+        break;
+        }
     default:
       {
       std::cout<<"error, tab doesn't exist";
@@ -216,32 +217,32 @@ void QGoPrintDatabase::DeleteTraces()
     }
 
 }
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 void QGoPrintDatabase::CreateCorrespondingCollection()
 {
   int TabIndex = InWhichTableAreWe();
-    
+
   switch (TabIndex)
     {
     case 0: //figure
-      {
-      //add the tableWidgetChild in the CollectionOfTraces?
-      QStringList ListSelectedTraces = this->FigureTable->ValuesForSelectedRows("figureID");
-      CollectionOfFigures->CreateNewCollectionFromSelection<GoDBMeshRow>(ListSelectedTraces);
-      this->UpdateContentAndDisplayFromDB<GoDBFigureRow>("figure", FigureTable);
-      this->UpdateContentAndDisplayFromDB<GoDBMeshRow>("mesh",MeshTable);
-      break;
-      }
+        {
+        //add the tableWidgetChild in the CollectionOfTraces?
+        QStringList ListSelectedTraces = this->FigureTable->ValuesForSelectedRows("figureID");
+        CollectionOfFigures->CreateNewCollectionFromSelection<GoDBMeshRow>(ListSelectedTraces);
+        this->UpdateContentAndDisplayFromDB<GoDBFigureRow>("figure", FigureTable);
+        this->UpdateContentAndDisplayFromDB<GoDBMeshRow>("mesh",MeshTable);
+        break;
+        }
     case 1: //mesh
-      {
-      //QStringList ListSelectedMeshes = this->MeshTable->ValuesForSelectedRows("meshID");
-      //CollectionOfMeshes->CreateNewCollectionFromSelection<GoDBTrackRow>();
-      //this->UpdateContentAndDisplayFromDB<GoDBMeshRow>("Mesh",MeshTable);
-      //this->UpdateContentAndDisplayFromDB<GoDBTrackRow>("Track",TrackTable);
-      break;
-      }
+        {
+        //QStringList ListSelectedMeshes = this->MeshTable->ValuesForSelectedRows("meshID");
+        //CollectionOfMeshes->CreateNewCollectionFromSelection<GoDBTrackRow>();
+        //this->UpdateContentAndDisplayFromDB<GoDBMeshRow>("Mesh",MeshTable);
+        //this->UpdateContentAndDisplayFromDB<GoDBTrackRow>("Track",TrackTable);
+        break;
+        }
     default:
       {
       std::cout<<"error, tab doesn't exist";
@@ -252,14 +253,14 @@ void QGoPrintDatabase::CreateCorrespondingCollection()
     }
 
 }
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 int QGoPrintDatabase::InWhichTableAreWe ()
 {
   int CurrentIndex = this->DBTabWidget->currentIndex();
   QString TabName = this->DBTabWidget->tabText(CurrentIndex);
-  
+
   int TabIndex;
   if (TabName == "figure")
     {
@@ -272,30 +273,30 @@ int QGoPrintDatabase::InWhichTableAreWe ()
 
   return TabIndex;
 }
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 void QGoPrintDatabase::AddToExistingCollection()
 {
   QStringList items;
   QString LabelDialog;
   int TabIndex = InWhichTableAreWe();
-  
+
   switch (TabIndex)
     {
     case 0: //figure
-      {
-      items = CollectionOfFigures->ListCollectionID();
-      LabelDialog = tr("Choose the Mesh ID you want\n the selected figures to be part of: ");
+        {
+        items = CollectionOfFigures->ListCollectionID();
+        LabelDialog = tr("Choose the Mesh ID you want\n the selected figures to be part of: ");
 
-      break;
-      }
+        break;
+        }
     case 1: //mesh
-      {
-      items = CollectionOfMeshes->ListCollectionID();
-      LabelDialog = tr("Choose the Track ID you want\n the selected meshes to be part of: ");
-      break;
-      }
+        {
+        items = CollectionOfMeshes->ListCollectionID();
+        LabelDialog = tr("Choose the Track ID you want\n the selected meshes to be part of: ");
+        break;
+        }
     default:
       {
       std::cout<<"error, tab doesn't exist";
@@ -307,25 +308,25 @@ void QGoPrintDatabase::AddToExistingCollection()
   bool ok;
   QString CollectionID = QInputDialog::getItem(this, tr("Collection ID"),
                          LabelDialog, items,0,false,&ok);
-  
+
   if (ok && !CollectionID.isEmpty())
     {
     switch (TabIndex)
       {
       case 0: //figure
-        {
-        QStringList ListFigures = this->FigureTable->ValuesForSelectedRows("figureID");
-        CollectionOfFigures->AddSelectedTracesToCollection(ListFigures,CollectionID.toInt());
-        this->UpdateContentAndDisplayFromDB<GoDBFigureRow>("Figure", FigureTable);
-        break;
-        }
+          {
+          QStringList ListFigures = this->FigureTable->ValuesForSelectedRows("figureID");
+          CollectionOfFigures->AddSelectedTracesToCollection(ListFigures,CollectionID.toInt());
+          this->UpdateContentAndDisplayFromDB<GoDBFigureRow>("Figure", FigureTable);
+          break;
+          }
       case 1: //mesh
-        {
-        //QStringList ListMeshes = this->FigureTable->ValuesForSelectedRows("meshID");
-        //CollectionOfMeshes->AddSelectedTracesToCollection(ListMeshes,CollectionID.toInt());
-        //this->UpdateContentAndDisplayFromDB<GoDBMeshRow>("Mesh", MeshTable);
-        break;
-        }
+          {
+          //QStringList ListMeshes = this->FigureTable->ValuesForSelectedRows("meshID");
+          //CollectionOfMeshes->AddSelectedTracesToCollection(ListMeshes,CollectionID.toInt());
+          //this->UpdateContentAndDisplayFromDB<GoDBMeshRow>("Mesh", MeshTable);
+          break;
+          }
       default:
         {
         std::cout<<"error, tab doesn't exist";

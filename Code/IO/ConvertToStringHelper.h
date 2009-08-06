@@ -44,11 +44,9 @@
 
 template< typename T >
 std::string ConvertToString( const T& ToConvert )
-  {
+{
   std::stringstream st;
   st << ToConvert;
   return st.str();
-  }
-
+}
 #endif
-

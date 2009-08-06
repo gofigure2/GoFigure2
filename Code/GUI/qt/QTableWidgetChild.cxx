@@ -199,5 +199,5 @@ QStringList QTableWidgetChild::ValuesForSelectedRows(QString ColumnName)
       Values.append(this->item(j,ColumnIndex)->text());
       }
     }
-   return Values;
+  return Values;
 }

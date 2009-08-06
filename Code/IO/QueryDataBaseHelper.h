@@ -61,7 +61,7 @@ std::vector<std::string> ListAllValuesForOneColumn(
 //query: "SELECT * FROM TableName WHERE field = value"
 //if field is a primary key, will return only the values for
 //one row
-  std::vector<std::string> ListSpecificValuesForRow(
+std::vector<std::string> ListSpecificValuesForRow(
   std::string ServerName, std::string login,
   std::string Password, std::string DBName,
   std::string TableName, std::string field,std::string value);

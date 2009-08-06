@@ -564,7 +564,8 @@ void UpdateValueInDB(std::string ServerName, std::string login,
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-/*int LastInsertID(std::string ServerName, std::string login,
+/*
+int LastInsertID(std::string ServerName, std::string login,
   std::string Password, std::string DBName)
 {
   int ID = -1;
@@ -602,8 +603,8 @@ void UpdateValueInDB(std::string ServerName, std::string login,
   query->Delete();
 
   return ID;
-
-}*/
+}
+*/
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
@@ -611,7 +612,7 @@ int MaxValueForOneColumnInTable(
   std::string ServerName, std::string login,
   std::string Password, std::string DBName,
   std::string ColumnName,std::string TableName )
-{ 
+{
   int MaxValue = -1;
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
   DataBaseConnector->SetHostName( ServerName.c_str() );
@@ -657,5 +658,4 @@ int MaxValueForOneColumnInTable(
   query->Delete();
 
   return MaxValue;
-  
 }

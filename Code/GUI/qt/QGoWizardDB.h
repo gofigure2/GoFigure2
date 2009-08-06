@@ -119,17 +119,17 @@ public:
   OpenOrCreate_Page(QWidget *parent = 0);
   void initializePage();
   bool validatePage();
-  QGridLayout* gridLayout;
-  QLineEdit* lineNewDBName;
+  QGridLayout*  gridLayout;
+  QLineEdit*    lineNewDBName;
 
 private:
-  QCheckBox *openDBCheckBox;
-  QCheckBox *createDBCheckBox;
-  QLineEdit* DBNametoOpen_fake;
-  QComboBox* ChoiceDB;
-  QLabel* textChoiceDB;
-  QLabel* textNewDBName;
-  QString m_NameDB;
+  QCheckBox*  openDBCheckBox;
+  QCheckBox*  createDBCheckBox;
+  QLineEdit*  DBNametoOpen_fake;
+  QComboBox*  ChoiceDB;
+  QLabel*     textChoiceDB;
+  QLabel*     textNewDBName;
+  QString     m_NameDB;
   QStringList m_ListDB;
 
 protected slots:
@@ -157,28 +157,28 @@ protected:
   QRadioButton* openExpRadioButton;
   QRadioButton* createExpRadioButton;
  // QLineEdit* ExperimentID;
-  QLineEdit* Name;
-  QLabel* textName;
-  QLineEdit* Description;
-  QLineEdit* TimeInterval;
-  QLineEdit* TileHeight;
-  QLineEdit* TileWidth;
-  QLineEdit* PixelDepth;
-  QLineEdit* PixelHeight;
-  QLineEdit* PixelWidth;
-  QLineEdit* ColorDepth;
-  QLineEdit* nTimePoints;
-  QLineEdit* nYTiles;
-  QLineEdit* nXTiles;
-  QLineEdit* nSlices;
-  QLineEdit* nRows;
-  QLineEdit* nColumns;
-  QLineEdit* FilePattern;
-  QLineEdit* OpenOrCreateExp_fake;
-  QLineEdit* NameDB_fake;
-  QLabel* textChoiceExp;
-  QLabel* ExpID;
-  QLineEdit* ID;
+  QLineEdit*  Name;
+  QLabel*     textName;
+  QLineEdit*  Description;
+  QLineEdit*  TimeInterval;
+  QLineEdit*  TileHeight;
+  QLineEdit*  TileWidth;
+  QLineEdit*  PixelDepth;
+  QLineEdit*  PixelHeight;
+  QLineEdit*  PixelWidth;
+  QLineEdit*  ColorDepth;
+  QLineEdit*  nTimePoints;
+  QLineEdit*  nYTiles;
+  QLineEdit*  nXTiles;
+  QLineEdit*  nSlices;
+  QLineEdit*  nRows;
+  QLineEdit*  nColumns;
+  QLineEdit*  FilePattern;
+  QLineEdit*  OpenOrCreateExp_fake;
+  QLineEdit*  NameDB_fake;
+  QLabel*     textChoiceExp;
+  QLabel*     ExpID;
+  QLineEdit*  ID;
   QStringList m_ListExpName;
   QStringList m_ListExpID;
 
@@ -204,13 +204,13 @@ public:
   Import_SerieGridPage(QWidget *parent = 0);
   void initializePage();
   bool isComplete() const;
-  QLabel* Explanation;
-  QPushButton* BrowseButton;
+  QLabel*       Explanation;
+  QPushButton*  BrowseButton;
 
 protected:
-  QGridLayout* gridlayout;
-  QLineEdit* OpenOrCreateSeriesGrid_fake;
-  QString newfilename;
+  QGridLayout*  gridlayout;
+  QLineEdit*    OpenOrCreateSeriesGrid_fake;
+  QString       newfilename;
 
 
 protected slots:
