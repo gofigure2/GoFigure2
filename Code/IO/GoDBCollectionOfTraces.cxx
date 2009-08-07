@@ -49,38 +49,38 @@
 GoDBCollectionOfTraces::GoDBCollectionOfTraces()
 {
 }
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
-GoDBCollectionOfTraces::GoDBCollectionOfTraces(QString CollectionName,
-  QString CollectionIDName,QString TracesName, QString TracesIDName)
+//--------------------------------------------------------------------------
+GoDBCollectionOfTraces::GoDBCollectionOfTraces( QString iCollectionName, 
+  QString iCollectionIDName,QString iTracesName, QString iTracesIDName )
 {
-  m_CollectionName = CollectionName;
-  m_CollectionIDName = CollectionIDName;
-  m_TracesName = TracesName;
-  m_TracesIDName = TracesIDName;
+  m_CollectionName = iCollectionName;
+  m_CollectionIDName = iCollectionIDName;
+  m_TracesName = iTracesName;
+  m_TracesIDName = iTracesIDName;
 
 }
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 GoDBCollectionOfTraces::~GoDBCollectionOfTraces()
 {
 }
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
-void GoDBCollectionOfTraces::SetDatabaseVariables(QString Server,QString User,
-  QString Password, QString NameDB)
+//--------------------------------------------------------------------------
+void GoDBCollectionOfTraces::SetDatabaseVariables( QString Server, 
+  QString User, QString Password, QString NameDB)
 {
   m_Server = Server;
   m_User = User;
   m_Password = Password;
   m_NameDB = NameDB;
 }
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 void GoDBCollectionOfTraces::DeleteTraces(QStringList TracesToDelete)
 {
   for (int i = 0; i<TracesToDelete.size();i++)
@@ -90,9 +90,9 @@ void GoDBCollectionOfTraces::DeleteTraces(QStringList TracesToDelete)
       m_NameDB.toStdString(),m_TracesName.toStdString(), m_TracesIDName.toStdString(), ID);
     }
 }
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 void GoDBCollectionOfTraces::AddSelectedTracesToCollection(QStringList ListSelectedTraces,
   int newCollectionID)
 {
@@ -105,20 +105,4 @@ void GoDBCollectionOfTraces::AddSelectedTracesToCollection(QStringList ListSelec
       m_TracesIDName.toStdString(), ListSelectedTraces.at(i).toStdString());
     }
 }
-//------------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
-QStringList GoDBCollectionOfTraces::ListCollectionID()
-{
-  QStringList ListIDs;
-  std::vector<std::string> vectListIDs = ListAllValuesForOneColumn(m_Server.toStdString(), m_User.toStdString(),
-  m_Password.toStdString(), m_NameDB.toStdString(),m_CollectionIDName.toStdString(),
-  m_CollectionName.toStdString());
-
-  for( unsigned int i = 0; i < vectListIDs.size(); ++i )
-    {
-    ListIDs.append( vectListIDs[i].c_str( ) );
-    }
-
-  return ListIDs;
-}

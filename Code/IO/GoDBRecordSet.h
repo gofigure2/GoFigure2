@@ -99,20 +99,20 @@ public:
   void SetWhereString( std::string whereString )
     { this->m_WhereString = whereString; this->IsWhereStringSet = true; }
 
-  void SetServerName( std::string ServerName )
-    { this->ServerName = ServerName; }
+  void SetServerName( std::string iServerName )
+    { this->ServerName = iServerName; }
 
-  void SetDataBaseName( std::string DataBaseName )
-    { this->DataBaseName = DataBaseName; }
+  void SetDataBaseName( std::string iDataBaseName )
+    { this->DataBaseName = iDataBaseName; }
 
-  void SetTableName( std::string TableName )
-    { this->TableName = TableName; }
+  void SetTableName( std::string iTableName )
+    { this->TableName = iTableName; }
 
-  void SetUser( std::string User )
-    { this->User = User; }
+  void SetUser( std::string iUser )
+    { this->User = iUser; }
 
-  void SetPassword( std::string Password )
-    { this->PassWord = Password; }
+  void SetPassword( std::string iPassword )
+    { this->PassWord = iPassword; }
 
   // read content from DB
   void PopulateFromDB()
