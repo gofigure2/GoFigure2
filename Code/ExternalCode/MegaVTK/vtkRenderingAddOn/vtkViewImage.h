@@ -225,7 +225,7 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage : public vtkImageViewer2
      the slice plane. If the given position is outside the bounds
      of the image, then the slice will be as close as possible.
   */
-  virtual void SetWorldCoordinates( const double& x,
+  void SetWorldCoordinates( const double& x,
     const double& y, const double& z );
   virtual void SetWorldCoordinates( double pos[3] ) = 0;
 
@@ -308,8 +308,8 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage : public vtkImageViewer2
   vtkBooleanMacro( ShowScalarBar, int );
 
   /** \brief Set window and level for mapping pixels to colors. */
-  virtual void SetColorWindow( const double& s);
-  virtual void SetColorLevel( const double& s );
+  virtual void SetColorWindow( double s);
+  virtual void SetColorLevel( double s );
 
   vtkGetMacro( IsColor, int );
 

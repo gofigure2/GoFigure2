@@ -238,7 +238,7 @@ void vtkViewImage::SetTextProperty (vtkTextProperty* textproperty)
 }
 
 //----------------------------------------------------------------------------
-void vtkViewImage::SetColorWindow( const double& s )
+void vtkViewImage::SetColorWindow( double s )
 {
   double t = s;
 
@@ -265,7 +265,7 @@ void vtkViewImage::SetColorWindow( const double& s )
 }
 
 //----------------------------------------------------------------------------
-void vtkViewImage::SetColorLevel( const double& s)
+void vtkViewImage::SetColorLevel( double s)
 {
   Superclass::SetColorLevel(s);
 

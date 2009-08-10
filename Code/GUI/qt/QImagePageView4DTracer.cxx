@@ -174,7 +174,6 @@ ReadMultiFile( const int& TimePoint )
       {
       itk::MegaCaptureImport::Pointer  importFileInfoList = itk::MegaCaptureImport::New();
       importFileInfoList->SetFileName( this->FileName );
-      QProgressBar pBar;
       importFileInfoList->SetProgressBar( &pBar );
       importFileInfoList->Update();
       this->FileList = *(importFileInfoList->GetOutput());

@@ -142,8 +142,8 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage3D : public vtkViewImage
      Set/Get the current slice to display (depending on the orientation
      this can be in X, Y or Z).
   */
-  virtual void SetSlice(int s){};
-  virtual void SetSliceOrientation(int orientation){};
+  virtual void SetSlice(int s){ (void) s; }
+  virtual void SetSliceOrientation(int orientation){ (void) orientation; }
   // Description:
   // Update the display extent manually so that the proper slice for the
   // given orientation is displayed. It will also try to set a
@@ -257,7 +257,7 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage3D : public vtkViewImage
   vtkGetObjectMacro (VolumeProperty, vtkVolumeProperty);
   vtkGetObjectMacro (BoxWidget, vtkOrientedBoxWidget);
 
-  virtual void SetWorldCoordinates (double pos[3]) {}
+  virtual void SetWorldCoordinates (double pos[3]) { (void) pos;}
 
  protected:
 
