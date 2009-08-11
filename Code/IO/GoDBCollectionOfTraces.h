@@ -76,7 +76,7 @@ public:
     AddSelectedTracesToCollection(ListSelectedTraces,NewCollectionID);
     }
 
-  QStringList QMEGAVTKADDON2_EXPORT ListCollectionID()  {return QStringList();}
+  QStringList QMEGAVTKADDON2_EXPORT ListCollectionID();
 
   QString CollectionName()
     { return m_CollectionName;}

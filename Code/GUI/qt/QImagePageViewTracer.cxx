@@ -1764,7 +1764,7 @@ void QImagePageViewTracer::HighlightContours( std::map< unsigned int, bool > iId
   std::map< unsigned int, bool >::const_iterator it = iIds.begin();
   std::map< unsigned int, bool >::const_iterator end = iIds.end();
   // NOTE ALEX: unused variable
-  //size_t size = iIds.size();
+  size_t size = iIds.size();
 
   while( it != end )
     {

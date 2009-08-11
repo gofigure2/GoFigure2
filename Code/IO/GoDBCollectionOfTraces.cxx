@@ -105,4 +105,20 @@ void GoDBCollectionOfTraces::AddSelectedTracesToCollection(QStringList ListSelec
       m_TracesIDName.toStdString(), ListSelectedTraces.at(i).toStdString());
     }
 }
+//--------------------------------------------------------------------------
 
+//--------------------------------------------------------------------------
+QStringList GoDBCollectionOfTraces::ListCollectionID()
+ {
+   QStringList ListIDs; 
+   std::vector<std::string> vectListIDs = ListAllValuesForOneColumn(m_Server.toStdString(), m_User.toStdString(),
+   m_Password.toStdString(), m_NameDB.toStdString(),m_CollectionIDName.toStdString(),
+   m_CollectionName.toStdString());
+ 
+   for( unsigned int i = 0; i < vectListIDs.size(); ++i )
+     {
+     ListIDs.append( vectListIDs[i].c_str( ) );
+     }
+ 
+   return ListIDs;
+ }

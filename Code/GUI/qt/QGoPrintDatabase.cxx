@@ -288,7 +288,6 @@ void QGoPrintDatabase::AddToExistingCollection()
         {
         items = CollectionOfFigures->ListCollectionID();
         LabelDialog = tr("Choose the Mesh ID you want\n the selected figures to be part of: ");
-
         break;
         }
     case 1: //mesh
