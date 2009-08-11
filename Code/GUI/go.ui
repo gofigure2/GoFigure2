@@ -59,7 +59,7 @@
      <x>0</x>
      <y>0</y>
      <width>1434</width>
-     <height>24</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -283,8 +283,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>94</width>
-        <height>24</height>
+        <width>98</width>
+        <height>28</height>
        </rect>
       </property>
       <attribute name="label">
@@ -467,8 +467,8 @@ Radius</string>
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>94</width>
-        <height>24</height>
+        <width>98</width>
+        <height>28</height>
        </rect>
       </property>
       <attribute name="label">
@@ -633,8 +633,8 @@ Weight</string>
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>201</width>
-        <height>287</height>
+        <width>211</width>
+        <height>291</height>
        </rect>
       </property>
       <attribute name="label">
@@ -1078,7 +1078,7 @@ Component</string>
        <x>10</x>
        <y>80</y>
        <width>121</width>
-       <height>48</height>
+       <height>50</height>
       </rect>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -1113,7 +1113,7 @@ Component</string>
        <x>10</x>
        <y>150</y>
        <width>191</width>
-       <height>50</height>
+       <height>52</height>
       </rect>
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout_20">
@@ -1233,7 +1233,7 @@ Component</string>
       <enum>Qt::Horizontal</enum>
      </property>
     </widget>
-    <widget class="QWidget" name="">
+    <widget class="QWidget" name="layoutWidget">
      <property name="geometry">
       <rect>
        <x>80</x>
@@ -1280,30 +1280,6 @@ Component</string>
     <string>Open Multiple Files</string>
    </property>
   </action>
-  <action name="actionCreate_DataBase">
-   <property name="enabled">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Create DataBase</string>
-   </property>
-  </action>
-  <action name="actionImport_Dataset_in_DataBase">
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
-   <property name="text">
-    <string>Import Dataset in DB</string>
-   </property>
-  </action>
-  <action name="actionOpen_DataBase">
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
-   <property name="text">
-    <string>Open DataBase</string>
-   </property>
-  </action>
   <action name="actionSave_Multiple_Files_As">
    <property name="enabled">
     <bool>false</bool>
@@ -1343,11 +1319,6 @@ Component</string>
    </property>
    <property name="visible">
     <bool>true</bool>
-   </property>
-  </action>
-  <action name="actionNew_Tab">
-   <property name="text">
-    <string>New Tab</string>
    </property>
   </action>
   <action name="actionClose">
@@ -1481,86 +1452,6 @@ Component</string>
     <string>Volume Rendering XYZ</string>
    </property>
   </action>
-  <action name="actionFree_Line">
-   <property name="text">
-    <string>Free-Line</string>
-   </property>
-  </action>
-  <action name="actionPolygon">
-   <property name="text">
-    <string>Polygon</string>
-   </property>
-  </action>
-  <action name="actionTranslation">
-   <property name="text">
-    <string>Translation</string>
-   </property>
-  </action>
-  <action name="actionRotation">
-   <property name="text">
-    <string>Rotation</string>
-   </property>
-  </action>
-  <action name="actionScaling">
-   <property name="text">
-    <string>Scaling</string>
-   </property>
-  </action>
-  <action name="actionMove_Node">
-   <property name="text">
-    <string>Move Node</string>
-   </property>
-  </action>
-  <action name="actionAdd_Node">
-   <property name="text">
-    <string>Add Node</string>
-   </property>
-  </action>
-  <action name="actionRemove_Node">
-   <property name="text">
-    <string>Remove Node</string>
-   </property>
-  </action>
-  <action name="actionTranslation_2">
-   <property name="text">
-    <string>Translation</string>
-   </property>
-  </action>
-  <action name="actionRotation_2">
-   <property name="text">
-    <string>Rotation</string>
-   </property>
-  </action>
-  <action name="actionScaling_2">
-   <property name="text">
-    <string>Scaling</string>
-   </property>
-  </action>
-  <action name="actionMove_node">
-   <property name="text">
-    <string>Move node</string>
-   </property>
-  </action>
-  <action name="actionAdd_node">
-   <property name="text">
-    <string>Add node</string>
-   </property>
-  </action>
-  <action name="actionDelete_node">
-   <property name="text">
-    <string>Delete node</string>
-   </property>
-  </action>
-  <action name="actionCopy">
-   <property name="text">
-    <string>Copy</string>
-   </property>
-  </action>
-  <action name="actionAdd_Contour">
-   <property name="text">
-    <string>Add Contour</string>
-   </property>
-  </action>
   <action name="actionManual_Segmentation">
    <property name="checkable">
     <bool>true</bool>
@@ -1661,11 +1552,6 @@ Component</string>
     <string>Scalar bars</string>
    </property>
   </action>
-  <action name="action">
-   <property name="text">
-    <string>???</string>
-   </property>
-  </action>
   <action name="actionOne_Click_Segmentation">
    <property name="checkable">
     <bool>true</bool>
@@ -1692,27 +1578,6 @@ Component</string>
   <action name="actionOpen_Mesh">
    <property name="text">
     <string>Open Mesh / Contour</string>
-   </property>
-  </action>
-  <action name="actionOpen_Contour">
-   <property name="text">
-    <string>Open Contour</string>
-   </property>
-  </action>
-  <action name="actionTest2">
-   <property name="text">
-    <string>test2</string>
-   </property>
-   <property name="visible">
-    <bool>true</bool>
-   </property>
-  </action>
-  <action name="actionTest3">
-   <property name="text">
-    <string>test3</string>
-   </property>
-   <property name="visible">
-    <bool>true</bool>
    </property>
   </action>
   <action name="actionUse_DataBase">
@@ -1762,22 +1627,6 @@ Component</string>
   <include location="resources/axes.qrc"/>
  </resources>
  <connections>
-  <connection>
-   <sender>actionCopy</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>KishoreSegDockWidget</receiver>
-   <slot>setVisible(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>107</x>
-     <y>252</y>
-    </hint>
-   </hints>
-  </connection>
   <connection>
    <sender>actionManual_Segmentation</sender>
    <signal>toggled(bool)</signal>
