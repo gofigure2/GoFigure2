@@ -1730,27 +1730,30 @@ void QImagePageViewTracer::HighlightContour( const unsigned int& iId,
     result = m_ContourIdActorMap.equal_range( iId );
 
   ContourIdActorMapIterator it = result.first;
-  unsigned int tempid = it->first;
+  if( it != m_ContourIdActorMap.end() )
+    {
+    unsigned int tempid = it->first;
 
-  if( tempid != iId )
-    {
-    return;
-    }
-  else
-    {
-    do
+    if( tempid != iId )
       {
-      int dir = it->second.Direction;
-      vtkActor* actor = it->second.Actor;
-      bool highlighted = it->second.Highlighted;
-
-      if( highlighted != iToBeHighlighted )
+      return;
+      }
+    else
+      {
+      do
         {
-        this->Pool->GetItem( dir )->HighlightContour( actor, !highlighted );
-        it->second.Highlighted = !highlighted;
-        }
-      ++it;
-      } while( it != result.second );
+        int dir = it->second.Direction;
+        vtkActor* actor = it->second.Actor;
+        bool highlighted = it->second.Highlighted;
+
+        if( highlighted != iToBeHighlighted )
+          {
+          this->Pool->GetItem( dir )->HighlightContour( actor, !highlighted );
+          it->second.Highlighted = !highlighted;
+          }
+        ++it;
+        } while( it != result.second );
+      }
     }
 }
 //-------------------------------------------------------------------------
