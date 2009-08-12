@@ -46,7 +46,6 @@
 #include <vtkImageData.h>
 #include <itkImage.h>
 
-// ALEX: Have to use decorator pattern here
 #include "itkImageToVTKImageFilter.h"
 #include "itkQtProgressBar.h"
 #include "itkQtAdaptor.h"
@@ -58,10 +57,10 @@
 #include "CreateDataBaseHelper.h"
 // #endif
 
-#include <qactiongroup.h>
-#include <qvector.h>
-#include <qhash.h>
-#include <qprogressbar.h>
+#include <QActionGroup>
+#include <QVector>
+#include <QHash>
+#include <QProgressBar>
 
 #include "QGoLUTDialog.h"
 #include "ui_go.h"
@@ -95,6 +94,8 @@ protected slots:
   void openRecentMultipleFile();
 
   void on_actionGoFigure2_Website_activated( );
+  void on_actionUser_mailing_list_activated();
+  void on_actionDeveloper_mailing_list_activated();
 
   void on_actionOpen_Mesh_activated( );
 

@@ -316,9 +316,9 @@ void QGoMainWindow::on_actionQuit_activated( )
   this->close();
   this->WriteSettings();
 }
-//--------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 
-//--------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 void QGoMainWindow::SetSingleFileName( const QString& iFile )
 {
   if( QFile::exists( iFile ) )
@@ -338,9 +338,9 @@ void QGoMainWindow::SetSingleFileName( const QString& iFile )
       }
     }
 }
-//--------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 
-//--------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 void QGoMainWindow::OpenLSMImage( const QString& iFile, const int& iTimePoint )
 {
   vtkLSMReader* reader = vtkLSMReader::New();
@@ -376,12 +376,14 @@ void QGoMainWindow::OpenLSMImage( const QString& iFile, const int& iTimePoint )
       {
       QGoTabImageView2D* w2 = new QGoTabImageView2D;
       w2->SetImage( reader->GetOutput() );
+      w2->setWindowTitle( iFile );
 //       w2->SetLSMReader( reader );
       w2->Update();
+      this->CentralTabWidget->addTab( w2, iFile );
       break;
       }
     case 3:
-      {
+      {  
 //       QGoTabImageView3D* w3 = new QGoTabImageView3D;
 //       w3->SetImage( reader->GetOutput() );
 //       w3->SetLSMReader( reader );
@@ -430,18 +432,19 @@ void QGoMainWindow::OpenImageWithITK( const QString& iFile )
   int dim[3];
   VTKImage->GetDimensions( dim );
 
-  if( dim[0] == 1 || dim[1] ==1 || dim[2] == 1 )
+  if( ( dim[0] == 1 ) || ( dim[1] == 1 ) || ( dim[2] == 1 ) )
     {
     QGoTabImageView2D* w2 = new QGoTabImageView2D;
     w2->SetImage( VTKImage );
-//     w2->SetTitle( title );
+    w2->setWindowTitle( iFile );
     w2->Update();
+    this->CentralTabWidget->addTab( w2, iFile );
     }
   else
     {
 //     QGoTabImageView3D* w3 = new QGoTabImageView3D;
 //     w3->SetImage( VTKImage );
-//     w2->SetTitle( title );
+//     w2->setWindowTitle( title );
 //     w3->Update();
     }
 }
@@ -477,14 +480,25 @@ void QGoMainWindow::on_actionAbout_Qt_activated( )
 }
 //--------------------------------------------------------------------------------
 
-//--------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 void QGoMainWindow::on_actionGoFigure2_Website_activated( )
 {
   QDesktopServices::openUrl( QUrl("https://sourceforge.net/projects/gofigure2/") );
 }
-//--------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 
-//--------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
+void QGoMainWindow::on_actionUser_mailing_list_activated( )
+{
+  QDesktopServices::openUrl( QUrl("mailto:users@gofigure2.com?subject=About GoFigure2") );
+}
+//--------------------------------------------------------------------------
+void QGoMainWindow::on_actionDeveloper_mailing_list_activated( )
+{
+  QDesktopServices::openUrl( QUrl("mailto:developers@gofigure2.com?subject=About Gofigure2" ) );
+}
+
+//--------------------------------------------------------------------------
 void QGoMainWindow::SetCurrentSingleFile( const QString &fileName )
 {
   m_CurrentFile = fileName;
@@ -499,8 +513,9 @@ void QGoMainWindow::SetCurrentSingleFile( const QString &fileName )
       recentSingleFileActions );
     }
 }
-//--------------------------------------------------------------------------------
-//--------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
 void QGoMainWindow::SetCurrentMultiFile( const QString &fileName )
 {
   m_CurrentFile = fileName;
@@ -516,14 +531,14 @@ void QGoMainWindow::SetCurrentMultiFile( const QString &fileName )
     }
 }
 
-//--------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 QString QGoMainWindow::strippedName(const QString &fullFileName)
 {
   return QFileInfo(fullFileName).fileName();
 }
-//--------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 
-//--------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 void QGoMainWindow::UpdateRecentFileActions( QStringList list,
   QMenu *menu,
   QAction *recentFileActions[MaxRecentFiles] )
@@ -554,9 +569,9 @@ void QGoMainWindow::UpdateRecentFileActions( QStringList list,
       }
     }
 }
-//--------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 
-//--------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 void QGoMainWindow::openRecentSingleFile()
 {
   QAction* action = qobject_cast< QAction* >( sender() );

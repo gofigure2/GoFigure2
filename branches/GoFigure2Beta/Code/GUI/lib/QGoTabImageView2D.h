@@ -15,6 +15,10 @@ class vtkEventQtSlotConnect;
 
 #include "vtkViewImage2DWithContourWidget.h"
 
+/**
+\class QGoTabImageView2D
+\brief Element of the QTabWidget to be used to visualized 2D images.
+*/
 class QGoTabImageView2D : public QGoTabImageViewElementBase
 {
   Q_OBJECT
@@ -40,8 +44,6 @@ protected:
   vtkViewImage2DWithContourWidget*  m_View;
   vtkImageData*                     m_Image;
   vtkEventQtSlotConnect*            m_VTKEventQtConnector;
-
-  QString                           m_Title;
 
   void setupUi( QWidget* parent );
 

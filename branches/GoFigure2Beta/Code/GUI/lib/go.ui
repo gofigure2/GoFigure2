@@ -59,7 +59,7 @@
      <x>0</x>
      <y>0</y>
      <width>1434</width>
-     <height>23</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -126,6 +126,8 @@
     <addaction name="actionAbout_Qt"/>
     <addaction name="separator"/>
     <addaction name="actionGoFigure2_Website"/>
+    <addaction name="actionUser_mailing_list"/>
+    <addaction name="actionDeveloper_mailing_list"/>
    </widget>
    <widget class="QMenu" name="menuSegmentation">
     <property name="enabled">
@@ -300,6 +302,16 @@
   <action name="actionGoFigure2_Website">
    <property name="text">
     <string>GoFigure2 website</string>
+   </property>
+  </action>
+  <action name="actionUser_mailing_list">
+   <property name="text">
+    <string>User mailing list</string>
+   </property>
+  </action>
+  <action name="actionDeveloper_mailing_list">
+   <property name="text">
+    <string>Developer mailing list</string>
    </property>
   </action>
  </widget>
