@@ -6,6 +6,8 @@
 #include "vtkImageData.h"
 #include "vtkTextProperty.h"
 
+#include <QSplitter>
+
 //--------------------------------------------------------------------------
 QGoTabImageView2D::QGoTabImageView2D( QWidget* parent )
 {
@@ -14,7 +16,6 @@ QGoTabImageView2D::QGoTabImageView2D( QWidget* parent )
   m_VTKEventQtConnector = vtkEventQtSlotConnect::New();
 
   this->setupUi( this );
-  this->setWindowTitle( tr( "QGoTabImageView2D" ) );
 
   m_View = vtkViewImage2DWithContourWidget::New();
   m_View->SetViewOrientation( vtkViewImage2D::VIEW_ORIENTATION_AXIAL );
@@ -46,13 +47,25 @@ void QGoTabImageView2D::setupUi( QWidget* parent )
     parent->resize(800, 800);
     }
 
-  m_QVTKWidgetXY = new QVTKWidget( parent );
+  m_QVTKWidgetXY = new QVTKWidget;
+  m_QVTKWidgetXY->resize(800,800);
 
-//   retranslateUi(parent);
+  m_LayOut = new QHBoxLayout( parent );
+  m_LayOut->addWidget( m_QVTKWidgetXY  );
+
+  retranslateUi(parent);
 
   QMetaObject::connectSlotsByName(parent);
 } // setupUi
 //--------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+void QGoTabImageView2D::retranslateUi(QWidget *parent)
+{
+  parent->setWindowTitle( tr( "QGoTabImageView2D" ) );
+  Q_UNUSED(parent);
+}
+//------------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void QGoTabImageView2D::SetImage( vtkImageData* iImage )

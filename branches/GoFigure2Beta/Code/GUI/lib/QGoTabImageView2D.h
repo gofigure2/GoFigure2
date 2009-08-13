@@ -6,6 +6,7 @@ class vtkImageData;
 class QAction;
 class QToolBar;
 class QDockWidget;
+class QSplitter;
 
 class QVTKWidget;
 class vtkEventQtSlotConnect;
@@ -26,6 +27,9 @@ public:
   QGoTabImageView2D( QWidget* parent = 0 );
   virtual ~QGoTabImageView2D();
 
+  void setupUi( QWidget* parent );
+  void retranslateUi(QWidget *Form);
+
   void SetImage( vtkImageData* iImage );
   void Update();
 
@@ -40,13 +44,13 @@ public:
 protected:
   QGoLUTDialog*                     m_LUTDialog;
 
+  QSplitter*                        m_Splitter;
+  QWidget*                          m_LayOutWidget;
+  QHBoxLayout*                      m_LayOut;
   QVTKWidget*                       m_QVTKWidgetXY;
   vtkViewImage2DWithContourWidget*  m_View;
   vtkImageData*                     m_Image;
   vtkEventQtSlotConnect*            m_VTKEventQtConnector;
-
-  void setupUi( QWidget* parent );
-
 
 private:
   QGoTabImageView2D( const QGoTabImageView2D& );
