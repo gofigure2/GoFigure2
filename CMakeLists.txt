@@ -212,53 +212,9 @@ IF( VTK_FOUND )
 # PACKAGE With CPack
 #---------------------------------------------------------------------------
     IF( BUILD_PACKAGE )
-      INCLUDE( InstallRequiredSystemLibraries )
-      SET( CPACK_PACKAGE_DESCRIPTION_SUMMARY "GoFigure2" )
-      SET( CPACK_PACKAGE_VENDOR "Megason Lab, Systems Biology, HMS" )
-      SET( CPACK_PACKAGE_DESCRIPTION_FILE
-        "${GOFIGURE2_SOURCE_DIR}/ReadMe.txt")
-      SET( CPACK_RESOURCE_FILE_LICENSE
-        "${GOFIGURE2_SOURCE_DIR}/Copyright.txt")
-      SET( CPACK_PACKAGE_VERSION_MAJOR ${GOFIGURE2_MAJOR_VERSION} )
-      SET( CPACK_PACKAGE_VERSION_MINOR ${GOFIGURE2_MINOR_VERSION} )
-      SET( CPACK_PACKAGE_VERSION_PATCH ${GOFIGURE2_WC_REVISION} )
-      SET( CPACK_PACKAGE_INSTALL_DIRECTORY
-        "GoFigure2 ${GOFIGURE2_VERSION}" )
-      SET( CPACK_COMPONENTS_ALL
-            applications
-            libraries
-#             headers
-          )
-
-      IF( WIN32 AND NOT UNIX )
-        # There is a bug in NSI that does not handle full unix paths properly.
-        # Make sure there is at least one set of four (4) backslashes.
-#       SET( CPACK_PACKAGE_ICON
-#         "${CMake_SOURCE_DIR}/Utilities/Release\\\\InstallIcon.bmp" )
-        SET( CPACK_NSIS_INSTALLED_ICON_NAME "bin\\\\gofigure.exe")
-        SET( CPACK_NSIS_DISPLAY_NAME "${CPACK_PACKAGE_INSTALL_DIRECTORY}
-          GoFigure2" )
-        SET( CPACK_NSIS_HELP_LINK
-          "http:\\\\\\\\sourceforget.net\\\\projects\\\\gofigure2" )
-        SET( CPACK_NSIS_URL_INFO_ABOUT "http:\\\\megason.med.harvard.edu" )
-#       SET( CPACK_NSIS_CONTACT "me@my-personal-home-page.com" )
-        SET( CPACK_NSIS_MODIFY_PATH ON )
-      ELSE( WIN32 AND NOT UNIX )
-        SET( CPACK_STRIP_FILES "bin/gofigure" )
-        SET( CPACK_SOURCE_STRIP_FILES "" )
-      ENDIF( WIN32 AND NOT UNIX )
-
-#       SET( CPACK_PACKAGE_EXECUTABLES "gofigure" "Gofigure2" )
-
-#       IF( UNIX )
-#         SET( CPACK_BINARY_RPM ON )
-#         SET( CPACK_RPM_PACKAGE_DEBUG "1" )
-#         SET( CPACK_RPM_SPEC_INSTALL_POST "/bin/true" )
-#       ENDIF( UNIX )
-
-      INCLUDE( CPack )
-
+      INCLUDE( GOFIGURE2CPack.cmake )
     ENDIF( BUILD_PACKAGE )
+
   ENDIF( QT4_FOUND AND QT_VERSION_MINOR GREATER 4 )
 
 ENDIF( VTK_FOUND )

@@ -74,12 +74,10 @@ TARGET_LINK_LIBRARIES( QMegaVTKAddOn2
   ${QMegaVTKAddOn2_LIBS}
   )
 
-INSTALL_TARGETS(/lib QMegaVTKAddOn2)
-
-INSTALL_FILES(/include "(\\.h|\\.txx)$")
-
 INSTALL( TARGETS QMegaVTKAddOn2
   ARCHIVE
   DESTINATION lib
   COMPONENT libraries
   )
+
+INSTALL_FILES(/include "(\\.h|\\.txx)$")

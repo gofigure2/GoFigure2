@@ -1,3 +1,9 @@
 SUBDIRS( itkQt
   MegaVTK 
 )
+
+INSTALL( DIRECTORY itkQt vtkLSM
+  DESTINATION include/
+  FILES_MATCHING PATTERN "*.h|*.txx"
+)
+

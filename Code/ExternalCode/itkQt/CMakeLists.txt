@@ -3,8 +3,6 @@ ADD_LIBRARY( itkQt
   itkQtAdaptor.h
 )
 
-INSTALL_TARGETS(/lib itkQt)
-
 INSTALL_FILES(/include "(\\.h|\\.txx)$")
 
 INSTALL( TARGETS itkQt
@@ -12,3 +10,4 @@ INSTALL( TARGETS itkQt
   DESTINATION lib
   COMPONENT libraries
   )
+

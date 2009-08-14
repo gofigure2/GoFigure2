@@ -52,7 +52,7 @@ GoDBCollectionOfTraces::GoDBCollectionOfTraces()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-GoDBCollectionOfTraces::GoDBCollectionOfTraces( QString iCollectionName, 
+GoDBCollectionOfTraces::GoDBCollectionOfTraces( QString iCollectionName,
   QString iCollectionIDName,QString iTracesName, QString iTracesIDName )
 {
   m_CollectionName = iCollectionName;
@@ -70,7 +70,7 @@ GoDBCollectionOfTraces::~GoDBCollectionOfTraces()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void GoDBCollectionOfTraces::SetDatabaseVariables( QString Server, 
+void GoDBCollectionOfTraces::SetDatabaseVariables( QString Server,
   QString User, QString Password, QString NameDB)
 {
   m_Server = Server;

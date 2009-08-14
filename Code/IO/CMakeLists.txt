@@ -19,12 +19,10 @@ ADD_LIBRARY( QGoIO
   ${QGOIO_SRC}
 )
 
-INSTALL_TARGETS(/lib QGoIO)
-
-INSTALL_FILES(/include "(\\.h|\\.txx)$")
-
 INSTALL( TARGETS QGoIO
   ARCHIVE
   DESTINATION lib
   COMPONENT libraries
   )
+
+INSTALL_FILES(/include "(\\.h|\\.txx)$")
