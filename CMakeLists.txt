@@ -50,12 +50,12 @@ ENDIF( WIN32 )
 #---------------------------------------------------------------------------
 # Define EXECUTABLE_OUTPUT_PATH and LIBRARY_OUTPUT_PATH
 #---------------------------------------------------------------------------
-SET(EXECUTABLE_OUTPUT_PATH
+SET(RUNTIME_OUTPUT_DIRECTORY
  ${GOFIGURE2_BINARY_DIR}/bin
  CACHE PATH "Single output directory for building all executables."
 )
 
-SET(LIBRARY_OUTPUT_PATH
+SET(LIBRARY_OUTPUT_DIRECTORY
  ${GOFIGURE2_BINARY_DIR}/lib
  CACHE PATH "Single output directory for building all libraries."
 )
