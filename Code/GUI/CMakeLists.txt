@@ -41,6 +41,12 @@ SET( GOFIGURE_APPLICATION_SOURCE_LIST
     )
 
 IF( APPLE )
+
+  ADD_EXECUTABLE( gofigure
+    MACOSX_BUNDLE
+    ${GOFIGURE_APPLICATION_SOURCE_LIST}
+    )
+
   IF( BUILD_PACKAGE )
     SET( MACOSX_BUNDLE_ICON_FILE
       ${GOFIGURE2_SOURCE_DIR}/Code/GUI/resources/myapp.icns
@@ -54,27 +60,16 @@ IF( APPLE )
     SET( MACOSX_BUNDLE_LONG_VERSION_STRING
       Version ${GOFIGURE2_VERSION}
       )
+    
   ENDIF( BUILD_PACKAGE )
-
-  ADD_EXECUTABLE( gofigure
-    MACOSX_BUNDLE
-    ${GOFIGURE_APPLICATION_SOURCE_LIST}
-    )
-
-  IF( BUILD_PACKAGE )
-    IF( EXISTS ${EXECUTABLE_OUTPUT_PATH}/gofigure.app/Contents/Resources )
-      ADD_CUSTOM_COMMAND( TARGET gofigure POST_BUILD
-      COMMAND cp ARGS ${MACOSX_BUNDLE_ICON_FILE} ${EXECUTABLE_OUTPUT_PATH}/gofigure.app/Contents/Resources
-#      COMMAND cp ARGS *.qm ${EXECUTABLE_OUTPUT_PATH}/gofigure.app/Contents/Resources 
+  
+  ADD_CUSTOM_COMMAND( TARGET gofigure POST_BUILD
+    COMMAND mkdir ARGS -p
+      ${EXECUTABLE_OUTPUT_PATH}/gofigure.app/Contents/Resources
+    COMMAND cp ARGS 
+      ${MACOSX_BUNDLE_ICON_FILE} 
+      ${EXECUTABLE_OUTPUT_PATH}/gofigure.app/Contents/Resources
       )
-    ELSE( EXISTS ${EXECUTABLE_OUTPUT_PATH}/gofigure.app/Contents/Resources )
-      ADD_CUSTOM_COMMAND( TARGET gofigure POST_BUILD
-      COMMAND mkdir ARGS ${EXECUTABLE_OUTPUT_PATH}/gofigure.app/Contents/Resources
-      COMMAND cp ARGS ${MACOSX_BUNDLE_ICON_FILE} ${EXECUTABLE_OUTPUT_PATH}/gofigure.app/Contents/Resources
-#      COMMAND cp ARGS *.qm ${EXECUTABLE_OUTPUT_PATH}/gofigure.app/Contents/Resources 
-      )
-    ENDIF( EXISTS ${EXECUTABLE_OUTPUT_PATH}/gofigure.app/Contents/Resources )
-  ENDIF( BUILD_PACKAGE )
 
 ELSE( APPLE )
 
@@ -123,13 +118,23 @@ TARGET_LINK_LIBRARIES( gofigure
   itkQt
   )
 
-INSTALL_FILES(/include "(\\.h|\\.txx)$")
-
-INSTALL( TARGETS gofigure
-      RUNTIME DESTINATION bin
-      BUNDLE  DESTINATION bin
-      LIBRARY DESTINATION lib
-      ARCHIVE DESTINATION lib/static
-      COMPONENT applications
-      )
+#IF( WIN32 )
+#  INSTALL( TARGETS gofigure
+#    RUNTIME DESTINATION bin
+#    COMPONENT applications
+#    )
+#ELSE( WIN32 )
+#  IF( UNIX )
+    IF( APPLE )
+      INSTALL( TARGETS gofigure
+        BUNDLE DESTINATION ../Applications 
+        COMPONENT applications
+        )
+#    ELSE( APPLE )
+#      INSTALL( TARGETS gofigure
+#        RUNTIME DESTINATION bin
+#        )
+    ENDIF( APPLE )
+#  ENDIF( UNIX )
+#ENDIF( WIN32 )
 
