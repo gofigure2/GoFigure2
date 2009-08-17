@@ -379,11 +379,18 @@ void QGoMainWindow::OpenLSMImage( const QString& iFile, const int& iTimePoint )
       w2->setWindowTitle( iFile );
 //       w2->SetLSMReader( reader );
       w2->Update();
+
       this->CentralTabWidget->addTab( w2, iFile );
+      std::vector< QMenu* > w2_menus = w2->Menus();
+
+      for( size_t i = 0; i < w2_menus.size(); i++ )
+        {
+        this->menubar->addMenu( w2_menus[i] );
+        }
       break;
       }
     case 3:
-      {  
+      {
 //       QGoTabImageView3D* w3 = new QGoTabImageView3D;
 //       w3->SetImage( reader->GetOutput() );
 //       w3->SetLSMReader( reader );

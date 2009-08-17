@@ -6,7 +6,7 @@
 #include "vtkImageData.h"
 #include "vtkTextProperty.h"
 
-#include <QSplitter>
+#include <QMenu>
 
 //--------------------------------------------------------------------------
 QGoTabImageView2D::QGoTabImageView2D( QWidget* parent )
@@ -98,10 +98,32 @@ void QGoTabImageView2D::Update( )
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-std::list< QAction* > QGoTabImageView2D::Actions()
+std::vector< QMenu* > QGoTabImageView2D::Menus()
 {
-  std::list< QAction* > oList;
-  return oList;
+  std::vector< QMenu* > oMenuVector;
+
+  QMenu* ViewMenu = new QMenu( tr( "&View" ) );
+  QAction* LookupTableAction = new QAction( tr( "Lookup Table" ), this );
+  LookupTableAction->setStatusTip( tr(" Change the associated lookup table" ) );
+
+  // Here write the connection
+//   QObject::connect( LookupTableAction, SIGNAL( triggered() ),
+//     this, SLOT( ChooseLookupTable() ) );
+
+  ViewMenu->addAction( LookupTableAction );
+
+  QAction* ScalarBarAction = new QAction( tr( "Display Scalar Bar"), this );
+  ViewMenu->addAction( ScalarBarAction );
+
+  oMenuVector.push_back( ViewMenu );
+
+  QMenu* PropertiesMenu = new QMenu( "&Properties" );
+  QAction* BackgroundColorAction = new QAction( tr("Background Color"), this );
+  PropertiesMenu->addAction( BackgroundColorAction );
+
+  oMenuVector.push_back( PropertiesMenu );
+
+  return oMenuVector;
 }
 //--------------------------------------------------------------------------
 

@@ -59,7 +59,7 @@
      <x>0</x>
      <y>0</y>
      <width>1434</width>
-     <height>22</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -110,14 +110,6 @@
     <addaction name="separator"/>
     <addaction name="actionQuit"/>
    </widget>
-   <widget class="QMenu" name="menuView">
-    <property name="enabled">
-     <bool>false</bool>
-    </property>
-    <property name="title">
-     <string>View</string>
-    </property>
-   </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
      <string>Help</string>
@@ -129,53 +121,7 @@
     <addaction name="actionUser_mailing_list"/>
     <addaction name="actionDeveloper_mailing_list"/>
    </widget>
-   <widget class="QMenu" name="menuSegmentation">
-    <property name="enabled">
-     <bool>false</bool>
-    </property>
-    <property name="title">
-     <string>Segmentation</string>
-    </property>
-   </widget>
-   <widget class="QMenu" name="menuTracking">
-    <property name="enabled">
-     <bool>false</bool>
-    </property>
-    <property name="title">
-     <string>Tracking</string>
-    </property>
-   </widget>
-   <widget class="QMenu" name="menuLineage">
-    <property name="enabled">
-     <bool>false</bool>
-    </property>
-    <property name="title">
-     <string>Lineage</string>
-    </property>
-   </widget>
-   <widget class="QMenu" name="menuProperties">
-    <property name="enabled">
-     <bool>false</bool>
-    </property>
-    <property name="title">
-     <string>Properties</string>
-    </property>
-   </widget>
-   <widget class="QMenu" name="menuTools">
-    <property name="enabled">
-     <bool>false</bool>
-    </property>
-    <property name="title">
-     <string>Tools</string>
-    </property>
-   </widget>
    <addaction name="menuFile"/>
-   <addaction name="menuView"/>
-   <addaction name="menuProperties"/>
-   <addaction name="menuSegmentation"/>
-   <addaction name="menuTracking"/>
-   <addaction name="menuLineage"/>
-   <addaction name="menuTools"/>
    <addaction name="menuHelp"/>
   </widget>
   <widget class="QStatusBar" name="statusbar">

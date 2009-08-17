@@ -6,7 +6,6 @@ class vtkImageData;
 class QAction;
 class QToolBar;
 class QDockWidget;
-class QSplitter;
 
 class QVTKWidget;
 class vtkEventQtSlotConnect;
@@ -33,7 +32,7 @@ public:
   void SetImage( vtkImageData* iImage );
   void Update();
 
-  std::list< QAction* > Actions();
+  std::vector< QMenu* > Menus();
   std::list< QToolBar* > ToolBar();
   std::list< QDockWidget* > DockWidget();
   std::list< QWidget* > AdditionalWidget();
@@ -44,8 +43,6 @@ public:
 protected:
   QGoLUTDialog*                     m_LUTDialog;
 
-  QSplitter*                        m_Splitter;
-  QWidget*                          m_LayOutWidget;
   QHBoxLayout*                      m_LayOut;
   QVTKWidget*                       m_QVTKWidgetXY;
   vtkViewImage2DWithContourWidget*  m_View;

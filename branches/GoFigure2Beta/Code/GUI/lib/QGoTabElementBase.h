@@ -44,6 +44,7 @@
 #include <QWidget>
 
 class QAction;
+class QMenu;
 class QToolBar;
 class QDockWidget;
 
@@ -54,7 +55,7 @@ public:
   QGoTabElementBase( QWidget* parent = 0 ) : QWidget( parent ) {}
   virtual ~QGoTabElementBase() {}
 
-  virtual std::list< QAction* > Actions() = 0;
+  virtual std::vector< QMenu* > Menus() = 0;
   virtual std::list< QToolBar* > ToolBar() = 0;
   virtual std::list< QDockWidget* > DockWidget() = 0;
   virtual std::list< QWidget* > AdditionalWidget() = 0;
