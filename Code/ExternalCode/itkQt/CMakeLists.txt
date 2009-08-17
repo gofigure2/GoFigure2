@@ -3,11 +3,11 @@ ADD_LIBRARY( itkQt
   itkQtAdaptor.h
 )
 
-INSTALL_FILES(/include "(\\.h|\\.txx)$")
-
+#INSTALL_FILES(/include "(\\.h|\\.txx)$")
+IF( NOT APPLE )
 INSTALL( TARGETS itkQt
   ARCHIVE
   DESTINATION lib
   COMPONENT libraries
   )
-
+ENDIF( NOT APPLE )

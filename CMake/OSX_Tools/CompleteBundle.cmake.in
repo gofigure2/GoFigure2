@@ -1,8 +1,8 @@
-#-- Need this for link line stuff?
-IF( COMMAND cmake_policy )
+# Avoid following symlinks encountered during FILE GLOB_RECURSE calls:
+#
+IF( COMMAND CMAKE_POLICY )
   CMAKE_POLICY( SET CMP0009 NEW )
-ENDIF( COMMAND cmake_policy )
-
+ENDIF( COMMAND CMAKE_POLICYcmake_policy )
 
 # gp_item_default_embedded_path item default_embedded_path_var
 #

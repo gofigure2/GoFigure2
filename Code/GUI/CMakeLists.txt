@@ -69,13 +69,13 @@ IF( APPLE )
     MACOSX_PACKAGE_LOCATION Resources
     )
 
-  ADD_CUSTOM_COMMAND( TARGET gofigure POST_BUILD
-    COMMAND mkdir ARGS -p
-      ${EXECUTABLE_OUTPUT_PATH}/gofigure.app/Contents/Resources
-    COMMAND cp ARGS
-      ${MACOSX_BUNDLE_ICON_FILE}
-      ${EXECUTABLE_OUTPUT_PATH}/gofigure.app/Contents/Resources
-      )
+#  ADD_CUSTOM_COMMAND( TARGET gofigure POST_BUILD
+#    COMMAND mkdir ARGS -p
+#      ${EXECUTABLE_OUTPUT_PATH}/gofigure.app/Contents/Resources
+#    COMMAND cp ARGS
+#      ${MACOSX_BUNDLE_ICON_FILE}
+#      ${EXECUTABLE_OUTPUT_PATH}/gofigure.app/Contents/Resources
+#      )
 ENDIF( APPLE )
 
 IF( WIN32 )
@@ -110,25 +110,34 @@ TARGET_LINK_LIBRARIES( gofigure
   itkQt
   )
 
+#SET_TARGET_PROPERTIES( gofigure
+#  PROPERTIES
+#  DEBUG_OUTPUT_NAME gofigure_debug
+#  RELEASE_OUTPUT_NAME gofigure
+#)
+
+
 IF( APPLE )
   FUNCTION( MakeOSXBundleApp target binary_dir )
-    SET( OSX_MAKE_STANDALONE_BUNDLE_CMAKE_SCRIPT "${binary_dir}/${target}_OSX_MakeStandAloneBundle.cmake" )
-    SET( OSX_MAKE_STANDALONE_BUNDLE_BASH_SCRIPT "${binary_dir}/${target}_OSX_MakeStandAloneBundle.sh" )
+    SET( OSX_MAKE_STANDALONE_BUNDLE_CMAKE_SCRIPT 
+      "${binary_dir}/${target}_OSX_MakeStandAloneBundle.cmake" )
+    SET( OSX_MAKE_STANDALONE_BUNDLE_BASH_SCRIPT 
+      "${binary_dir}/${target}_OSX_MakeStandAloneBundle.sh" )
 
     CONFIGURE_FILE( "${GOFIGURE2_SOURCE_DIR}/CMake/OSX_Tools/CompleteBundle.cmake.in"
       "${OSX_MAKE_STANDALONE_BUNDLE_CMAKE_SCRIPT}" @ONLY IMMEDIATE
-      )
+    )
     CONFIGURE_FILE( "${GOFIGURE2_SOURCE_DIR}/CMake/OSX_Tools/CreateBundle.sh.in"
       "${OSX_MAKE_STANDALONE_BUNDLE_BASH_SCRIPT}" @ONLY IMMEDIATE
-      )
+    )
     INSTALL( SCRIPT "${OSX_MAKE_STANDALONE_BUNDLE_CMAKE_SCRIPT}" )
   ENDFUNCTION( MakeOSXBundleApp )
 
-  IF( CMAKE_BUILD_TYPE MATCHES "Debug" )
-    MakeOSXBundleApp( "gofigure_debug" ${GOFIGURE2_BINARY_DIR} )
-  ELSE( CMAKE_BUILD_TYPE MATCHES "Debug" )
+#  IF( CMAKE_BUILD_TYPE MATCHES "Debug" )
+#    MakeOSXBundleApp( "gofigure_debug" ${GOFIGURE2_BINARY_DIR} )
+#  ELSE( CMAKE_BUILD_TYPE MATCHES "Debug" )
     MakeOSXBundleApp( "gofigure" ${GOFIGURE2_BINARY_DIR} )
-  ENDIF( CMAKE_BUILD_TYPE MATCHES "Debug" )
+#  ENDIF( CMAKE_BUILD_TYPE MATCHES "Debug" )
 
 ELSE( APPLE )
   INCLUDE( ${GOFIGURE2_SOURCE_DIR}/CMake/InstallSupportLibraries.cmake )

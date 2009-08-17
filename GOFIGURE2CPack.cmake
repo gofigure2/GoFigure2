@@ -10,10 +10,11 @@ SET( CPACK_PACKAGE_VERSION_MAJOR ${GOFIGURE2_MAJOR_VERSION} )
 SET( CPACK_PACKAGE_VERSION_MINOR ${GOFIGURE2_MINOR_VERSION} )
 SET( CPACK_PACKAGE_VERSION_PATCH ${GOFIGURE2_WC_REVISION} )
 SET( CPACK_PACKAGE_INSTALL_DIRECTORY "GoFigure2 ${GOFIGURE2_VERSION}" )
+
 SET( CPACK_COMPONENTS_ALL
   applications
   libraries
-  headers
+#  headers
 )
 
 IF( CMAKE_SYSTEM_PROCESSOR MATCHES "unknown" )
@@ -37,27 +38,34 @@ IF( NOT DEFINED CPACK_PACKAGE_FILE_NAME )
   "GOFIGURE2-${GOFIGURE2_VERSION}-${CPACK_SYSTEM_NAME}" )
 ENDIF( NOT DEFINED CPACK_PACKAGE_FILE_NAME )
 
-IF( WIN32 AND NOT UNIX )
-  # There is a bug in NSI that does not handle full unix paths properly.
-  # Make sure there is at least one set of four (4) backslashes.
-  # SET( CPACK_PACKAGE_ICON
-  #   "${CMake_SOURCE_DIR}/Utilities/Release\\\\InstallIcon.bmp" )
-  SET( CPACK_NSIS_INSTALLED_ICON_NAME "bin\\\\gofigure.exe")
-  SET( CPACK_NSIS_DISPLAY_NAME "${CPACK_PACKAGE_INSTALL_DIRECTORY}
-    GoFigure2" )
-  SET( CPACK_NSIS_HELP_LINK
-    "http:\\\\\\\\sourceforget.net\\\\projects\\\\gofigure2" )
-  SET( CPACK_NSIS_URL_INFO_ABOUT "http:\\\\megason.med.harvard.edu" )
-#       SET( CPACK_NSIS_CONTACT "me@my-personal-home-page.com" )
-  SET( CPACK_NSIS_MODIFY_PATH ON )
-ELSE( WIN32 AND NOT UNIX )
-  SET( CPACK_STRIP_FILES "bin/gofigure" )
-  SET( CPACK_SOURCE_STRIP_FILES "" )
-ENDIF( WIN32 AND NOT UNIX )
+IF( UNIX )
+  IF( APPLE )
+    SET( CPACK_PACKAGE_EXECUTABLES "gofigure;gofigure" )
+  ELSE( APPLE )
+  ENDIF( APPLE )
+ELSE( UNIX )
+  IF( WIN32 )
+    # There is a bug in NSI that does not handle full unix paths properly.
+    # Make sure there is at least one set of four (4) backslashes.
+    # SET( CPACK_PACKAGE_ICON
+    #   "${CMake_SOURCE_DIR}/Utilities/Release\\\\InstallIcon.bmp" )
+    SET( CPACK_NSIS_INSTALLED_ICON_NAME "bin\\\\gofigure.exe")
+    SET( CPACK_NSIS_DISPLAY_NAME "${CPACK_PACKAGE_INSTALL_DIRECTORY}
+      GoFigure2" )
+    SET( CPACK_NSIS_HELP_LINK
+      "http:\\\\\\\\sourceforget.net\\\\projects\\\\gofigure2" )
+    SET( CPACK_NSIS_URL_INFO_ABOUT "http:\\\\megason.med.harvard.edu" )
+  #       SET( CPACK_NSIS_CONTACT "me@my-personal-home-page.com" )
+    SET( CPACK_NSIS_MODIFY_PATH ON )
+  ELSE( WIN32 )
+    SET( CPACK_STRIP_FILES "bin/gofigure" )
+    SET( CPACK_SOURCE_STRIP_FILES "" )
+  ENDIF( WIN32 )
+ENDIF( UNIX )
 
-IF( CPACK_GENERATOR STREQUAL "DragNDrop" )
+IF( CPACK_GENERATOR STREQUAL "PackageMaker" )
   SET( CPACK_INSTALL_CMAKE_PROJECTS
-  "@GOFIGURE2_BINARY_DIR@;gofigure Mac Bundle;Bundle;/" )
-ENDIF( CPACK_GENERATOR STREQUAL "DragNDrop" )
+  "${CMAKE_BINARY_DIR};${CMAKE_PROJECT_NAME};ALL;/" )
+ENDIF( CPACK_GENERATOR STREQUAL "PackageMaker" )
 
 INCLUDE( CPack )

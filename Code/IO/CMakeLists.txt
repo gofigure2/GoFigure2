@@ -18,11 +18,11 @@ SET( QGOIO_SRC
 ADD_LIBRARY( QGoIO
   ${QGOIO_SRC}
 )
-
-INSTALL( TARGETS QGoIO
-  ARCHIVE
-  DESTINATION lib
-  COMPONENT libraries
-  )
-
-INSTALL_FILES(/include "(\\.h|\\.txx)$")
+IF( NOT APPLE )
+  INSTALL( TARGETS QGoIO
+    ARCHIVE
+    DESTINATION lib
+    COMPONENT libraries
+    )
+ENDIF( NOT APPLE )
+#INSTALL_FILES(/include "(\\.h|\\.txx)$")

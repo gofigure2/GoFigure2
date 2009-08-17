@@ -23,10 +23,11 @@ TARGET_LINK_LIBRARIES( vtkRenderingAddOn2
   ${vtkRenderingAddOn_LIBS2}
   )
 
+IF( NOT APPLE )
 INSTALL( TARGETS vtkRenderingAddOn2
   ARCHIVE
   DESTINATION lib
   COMPONENT libraries
   )
-
-INSTALL_FILES(/include "(\\.h|\\.txx)$")
+ENDIF( NOT APPLE )
+#INSTALL_FILES(/include "(\\.h|\\.txx)$")
