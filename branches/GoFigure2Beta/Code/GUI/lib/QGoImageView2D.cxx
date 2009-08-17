@@ -1,10 +1,12 @@
 #include "QGoImageView2D.h"
 
+#include "QVTKWidget.h"
 #include "vtkEventQtSlotConnect.h"
 #include "vtkRenderWindow.h"
 #include "vtkRendererCollection.h"
 #include "vtkImageData.h"
 #include "vtkTextProperty.h"
+#include "vtkViewImage2DWithContourWidget.h"
 
 //--------------------------------------------------------------------------
 QGoImageView2D::QGoImageView2D( QWidget* parent )
@@ -63,7 +65,7 @@ void QGoImageView2D::retranslateUi(QWidget *parent)
 //------------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoTabImageView2D::SetImage( vtkImageData* iImage )
+void QGoImageView2D::SetImage( vtkImageData* iImage )
 {
   int dim[3];
   iImage->GetDimensions( dim );
@@ -81,7 +83,7 @@ void QGoTabImageView2D::SetImage( vtkImageData* iImage )
     }
 }
 //--------------------------------------------------------------------------
-void QGoTabImageView2D::Update( )
+void QGoImageView2D::Update( )
 {
   m_View->SetInput( this->m_Image );
   m_View->GetTextProperty()->SetFontFamilyToArial();

@@ -1,12 +1,14 @@
 SET( QGoLIB_SRC
   QGoLUTDialog.cxx
   QGoMainWindow.cxx
+  QGoImageView2D.cxx
   QGoTabImageView2D.cxx
 )
 
 SET( QGoLIB_HDRS
   QGoLUTDialog.h
   QGoMainWindow.h
+  QGoImageView2D.h
   QGoTabImageView2D.h
   QGoTabImageViewElementBase.h
   QGoTabElementBase.h
