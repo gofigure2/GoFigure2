@@ -21,11 +21,12 @@ QT4_ADD_RESOURCES( QGOMAINWINDOW_QRC
   )
 
 ## DockWidgets ##
-QT4_WRAP_UI( MANUALSEGMENTATION_UI ManualSegmentationDockWidget.ui )
-QT4_WRAP_UI( ONECLICKSEGMENTATION_UI OneClickSegmentationDockWidget.ui )
-QT4_WRAP_UI( GEODESICSEGMENTATION_UI GeodesicActiveContourDockWidget.ui )
+# QT4_WRAP_UI( MANUALSEGMENTATION_UI ManualSegmentationDockWidget.ui )
+# QT4_WRAP_UI( ONECLICKSEGMENTATION_UI OneClickSegmentationDockWidget.ui )
+# QT4_WRAP_UI( GEODESICSEGMENTATION_UI GeodesicActiveContourDockWidget.ui )
 #################
 
+SET( GUI_TYPE )
 
 SET( GOFIGURE_APPLICATION_SOURCE_LIST
     gofigure.cxx
@@ -41,70 +42,61 @@ SET( GOFIGURE_APPLICATION_SOURCE_LIST
     )
 
 IF( APPLE )
+  SET( GUI_TYPE MACOSX_BUNDLE )
 
-  ADD_EXECUTABLE( gofigure
-    MACOSX_BUNDLE
-    ${GOFIGURE_APPLICATION_SOURCE_LIST}
+  SET( MACOSX_BUNDLE_ICON_FILE
+    ${GOFIGURE2_SOURCE_DIR}/Code/GUI/resources/myapp.icns
     )
 
-  IF( BUILD_PACKAGE )
-    SET( MACOSX_BUNDLE_ICON_FILE
-      ${GOFIGURE2_SOURCE_DIR}/Code/GUI/resources/myapp.icns
-      )
-    SET( MACOSX_BUNDLE_SHORT_VERSION_STRING
-      ${GOFIGURE2_VERSION}
-      )
-    SET( MACOSX_BUNDLE_VERSION
-      ${GOFIGURE2_VERSION}
-      )
-    SET( MACOSX_BUNDLE_LONG_VERSION_STRING
-      Version ${GOFIGURE2_VERSION}
-      )
-    
-  ENDIF( BUILD_PACKAGE )
-  
+  SET( GOFIGURE_APPLICATION_SOURCE_LIST
+    ${GOFIGURE_APPLICATION_SOURCE_LIST}
+    ${MACOSX_BUNDLE_ICON_FILE}
+    )
+
+  SET( MACOSX_BUNDLE_SHORT_VERSION_STRING
+    ${GOFIGURE2_VERSION}
+    )
+
+  SET( MACOSX_BUNDLE_VERSION
+    ${GOFIGURE2_VERSION}
+    )
+
+  SET( MACOSX_BUNDLE_LONG_VERSION_STRING
+    Version ${GOFIGURE2_VERSION}
+    )
+
+  SET_SOURCE_FILES_PROPERTIES( ${MACOSX_BUNDLE_ICON_FILE} PROPERTIES
+    MACOSX_PACKAGE_LOCATION Resources
+    )
+
   ADD_CUSTOM_COMMAND( TARGET gofigure POST_BUILD
     COMMAND mkdir ARGS -p
       ${EXECUTABLE_OUTPUT_PATH}/gofigure.app/Contents/Resources
-    COMMAND cp ARGS 
-      ${MACOSX_BUNDLE_ICON_FILE} 
+    COMMAND cp ARGS
+      ${MACOSX_BUNDLE_ICON_FILE}
       ${EXECUTABLE_OUTPUT_PATH}/gofigure.app/Contents/Resources
       )
-
-ELSE( APPLE )
-
-  IF( WIN32 )
-
-    IF( MINGW )
-      ADD_CUSTOM_COMMAND( OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/myapp.o
-        COMMAND windres.exe -I${CMAKE_CURRENT_SOURCE_DIR}
-          -i ${GOFIGURE2_SOURCE_DIR}/Code/GUI/resources/myapp.rc
-          -o ${CMAKE_CURRENT_BINARY_DIR}/myapp.o
-          )
-      SET( ${GOFIGURE_APPLICATION_SOURCE_LIST}
-        ${GOFIGURE_APPLICATION_SOURCE_LIST}
-        ${CMAKE_CURRENT_BINARY_DIR}/myapp.o
-        )
-      ADD_EXECUTABLE( gofigure
-        ${GOFIGURE_APPLICATION_SOURCE_LIST}
-        )
-
-    ELSE( MINGW ) # borland or MSVC
-      ADD_EXECUTABLE( gofigure
-        ${GOFIGURE_APPLICATION_SOURCE_LIST}
-        #${GOFIGURE2_SOURCE_DIR}/Code/GUI/resources/myapp.rc
-        )
-
-    ENDIF( MINGW )
-
-  ELSE( WIN32 ) # linux / UNIX / solaris, ....
-    ADD_EXECUTABLE( gofigure
-      ${GOFIGURE_APPLICATION_SOURCE_LIST}
-      )
-
-  ENDIF( WIN32 )
-
 ENDIF( APPLE )
+
+IF( WIN32 )
+  SET( GUI_TYPE WIN32 )
+
+  IF( MINGW )
+    ADD_CUSTOM_COMMAND( OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/myapp.o
+      COMMAND windres.exe -I${CMAKE_CURRENT_SOURCE_DIR}
+        -i ${GOFIGURE2_SOURCE_DIR}/Code/GUI/resources/myapp.rc
+        -o ${CMAKE_CURRENT_BINARY_DIR}/myapp.o
+        )
+    SET( ${GOFIGURE_APPLICATION_SOURCE_LIST}
+      ${GOFIGURE_APPLICATION_SOURCE_LIST}
+      ${CMAKE_CURRENT_BINARY_DIR}/myapp.o
+      )
+  ENDIF( MINGW )
+ENDIF( WIN32 )
+
+ADD_EXECUTABLE( gofigure ${GUI_TYPE}
+  ${GOFIGURE_APPLICATION_SOURCE_LIST}
+  )
 
 TARGET_LINK_LIBRARIES( gofigure
   QMegaVTKAddOn2
@@ -118,6 +110,40 @@ TARGET_LINK_LIBRARIES( gofigure
   itkQt
   )
 
+IF( APPLE )
+  FUNCTION( MakeOSXBundleApp target binary_dir )
+    SET( OSX_MAKE_STANDALONE_BUNDLE_CMAKE_SCRIPT "${binary_dir}/${target}_OSX_MakeStandAloneBundle.cmake" )
+    SET( OSX_MAKE_STANDALONE_BUNDLE_BASH_SCRIPT "${binary_dir}/${target}_OSX_MakeStandAloneBundle.sh" )
+
+    CONFIGURE_FILE( "${GOFIGURE2_SOURCE_DIR}/CMake/OSX_Tools/CompleteBundle.cmake.in"
+      "${OSX_MAKE_STANDALONE_BUNDLE_CMAKE_SCRIPT}" @ONLY IMMEDIATE
+      )
+    CONFIGURE_FILE( "${GOFIGURE2_SOURCE_DIR}/CMake/OSX_Tools/CreateBundle.sh.in"
+      "${OSX_MAKE_STANDALONE_BUNDLE_BASH_SCRIPT}" @ONLY IMMEDIATE
+      )
+    INSTALL( SCRIPT "${OSX_MAKE_STANDALONE_BUNDLE_CMAKE_SCRIPT}" )
+  ENDFUNCTION( MakeOSXBundleApp )
+
+  IF( CMAKE_BUILD_TYPE MATCHES "Debug" )
+    MakeOSXBundleApp( "gofigure_debug" ${GOFIGURE2_BINARY_DIR} )
+  ELSE( CMAKE_BUILD_TYPE MATCHES "Debug" )
+    MakeOSXBundleApp( "gofigure" ${GOFIGURE2_BINARY_DIR} )
+  ENDIF( CMAKE_BUILD_TYPE MATCHES "Debug" )
+
+ELSE( APPLE )
+  INCLUDE( ${GOFIGURE2_SOURCE_DIR}/CMake/InstallSupportLibraries.cmake )
+
+  IF( WIN32 )
+    INSTALL( TARGETS gofigure
+      LIBRARY DESTINATION lib
+      ARCHIVE DESTINATION lib
+      RUNTIME DESTINATION bin
+      COMPONENT Runtime
+    )
+  ENDIF( WIN32 )
+
+ENDIF( APPLE )
+
 #IF( WIN32 )
 #  INSTALL( TARGETS gofigure
 #    RUNTIME DESTINATION bin
@@ -125,16 +151,16 @@ TARGET_LINK_LIBRARIES( gofigure
 #    )
 #ELSE( WIN32 )
 #  IF( UNIX )
-    IF( APPLE )
-      INSTALL( TARGETS gofigure
-        BUNDLE DESTINATION ../Applications 
-        COMPONENT applications
-        )
+#     IF( APPLE )
+#       INSTALL( TARGETS gofigure
+#         BUNDLE DESTINATION ../Applications
+#         COMPONENT applications
+#         )
 #    ELSE( APPLE )
 #      INSTALL( TARGETS gofigure
 #        RUNTIME DESTINATION bin
 #        )
-    ENDIF( APPLE )
+#     ENDIF( APPLE )
 #  ENDIF( UNIX )
 #ENDIF( WIN32 )
 
