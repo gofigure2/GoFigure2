@@ -56,7 +56,7 @@
 #include <vtkPNGWriter.h>
 #include <vtkTIFFWriter.h>
 
-QImagePageView::QImagePageView( QWidget* parent ) : QWidget( parent )
+QImagePageView::QImagePageView( QWidget* iParent ) : QWidget( iParent )
 {
   IsFullScreen = 0;
   SnapshotId = 1;
@@ -85,18 +85,18 @@ QImagePageView::~QImagePageView()
   //   delete VSplitter;
 }
 
-void QImagePageView::setupUi( QWidget* parent )
+void QImagePageView::setupUi( QWidget* iParent )
 {
-  if(parent->objectName().isEmpty())
+  if( iParent->objectName().isEmpty() )
     {
-    parent->resize(800, 800);
+    iParent->resize(800, 800);
     }
 
   QList< int > list_size;
   list_size.push_back( 10 );
   list_size.push_back( 10 );
 
-  VSplitter  = new QSplitter( Qt::Vertical, parent );
+  VSplitter  = new QSplitter( Qt::Vertical, iParent );
   HtSplitter = new QSplitter( VSplitter );
   HbSplitter = new QSplitter( VSplitter );
   VSplitter->addWidget(HtSplitter);
@@ -143,15 +143,15 @@ void QImagePageView::setupUi( QWidget* parent )
   HbSplitter->addWidget( LayOutWidget4 );
   HbSplitter->setSizes( list_size );
 
-  retranslateUi(parent);
+  retranslateUi(iParent);
 
-  QMetaObject::connectSlotsByName(parent);
+  QMetaObject::connectSlotsByName(iParent);
 } // setupUi
 
-void QImagePageView::retranslateUi(QWidget *parent)
+void QImagePageView::retranslateUi(QWidget *iParent)
 {
-  parent->setWindowTitle( this->Tag );
-  Q_UNUSED(parent);
+  iParent->setWindowTitle( this->Tag );
+  Q_UNUSED(iParent);
 }
 
 // bool QImagePageView::BuildScreenshotFromImage( vtkImageData* image,
@@ -678,8 +678,8 @@ void QImagePageView::SetImage( vtkImageData* input )
     this->View3D->Add2DPhantom( 2, View3->GetImageActor(), View3->GetSlicePlane() );
     View3->Delete();
 
-    int size[2] = {400, 400};
-    this->Pool->SyncSetSize (size);
+    int tsize[2] = {400, 400};
+    this->Pool->SyncSetSize( tsize );
 
     vtkRenderWindow* renwin4 = this->QvtkWidget_4->GetRenderWindow( );
     this->View3D->SetRenderWindow( renwin4 );
@@ -727,12 +727,12 @@ QString QImagePageView::GetTag( ) const
   return this->Tag;
 }
 
-void QImagePageView::resizeEvent( QResizeEvent* event )
+void QImagePageView::resizeEvent( QResizeEvent* iEvent )
 {
-  QWidget::resizeEvent( event );
-  QSize size = event->size();
-  VSplitter->resize( size );
+  QWidget::resizeEvent( iEvent );
+  QSize tsize = iEvent->size();
+  VSplitter->resize( tsize );
 //   gridLayoutWidget->setGeometry(
 //     QRect(0, 0, size.width(), size.height() ) );
 }
-//
+

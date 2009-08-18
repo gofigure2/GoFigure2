@@ -78,9 +78,9 @@
 
 #include <ctime>
 
-//------------------------------------------------------------------------------
-QImagePageView4DTracer::QImagePageView4DTracer( QWidget* parent ) :
-  QWidget( parent )
+//--------------------------------------------------------------------------
+QImagePageView4DTracer::QImagePageView4DTracer( QWidget* iParent ) :
+  QWidget( iParent )
 {
   this->NumberOfTimePoints = 0;
   this->Image = (vtkImageData*)(0);
@@ -131,9 +131,9 @@ QImagePageView4DTracer::QImagePageView4DTracer( QWidget* parent ) :
    this, SLOT(DeleteContourVisu()));
 
 }
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 QImagePageView4DTracer::~QImagePageView4DTracer()
 {
   delete this->Whatever;
@@ -144,9 +144,9 @@ QImagePageView4DTracer::~QImagePageView4DTracer()
     }
   delete m_DBTables;
 }
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 void
 QImagePageView4DTracer::
 ReadMultiFile( const int& TimePoint )
@@ -220,17 +220,17 @@ ReadMultiFile( const int& TimePoint )
   this->Image->ShallowCopy( reader->GetOutput() );
   delete reader;
 }
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 void
-QImagePageView4DTracer::SetFileName(const char* name )
+QImagePageView4DTracer::SetFileName(const char* iName )
 {
-  if ( this->FileName && name && (!strcmp(this->FileName,name)))
+  if ( this->FileName && iName && ( !strcmp( this->FileName, iName ) ) )
     {
     return;
     }
-  if (!name && !this->FileName)
+  if (!iName && !this->FileName)
     {
     return;
     }
@@ -239,19 +239,19 @@ QImagePageView4DTracer::SetFileName(const char* name )
     delete [] this->FileName;
     this->FileName = NULL;
     }
-  if (name)
+  if (iName)
     {
-    this->FileName = new char[strlen(name) + 1]; /** \todo TO BE DELETED */
-    strcpy(this->FileName, name);
+    this->FileName = new char[strlen(iName) + 1]; /** \todo TO BE DELETED */
+    strcpy(this->FileName, iName);
     }
 
   this->SetView( 0 );
   this->IsFileListComputed = false;
 }
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 void QImagePageView4DTracer::ReadLSMFile( const int& TimePoint )
 {
   // have to redirect that to a Multifile reader with only one file,
@@ -346,10 +346,10 @@ void QImagePageView4DTracer::ReadLSMFile( const int& TimePoint )
 
   this->Image = myImage3;
 }
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 void QImagePageView4DTracer::SetView( const int& value )
 {
   clock_t start, finish;
@@ -377,17 +377,17 @@ void QImagePageView4DTracer::SetView( const int& value )
   std::cout << "Set image in widget and load contours from DB: ";
   std::cout << time << "s" << std::endl;
 }
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
-void QImagePageView4DTracer::resizeEvent( QResizeEvent* event )
+//--------------------------------------------------------------------------
+void QImagePageView4DTracer::resizeEvent( QResizeEvent* iEvent )
 {
-  QWidget::resizeEvent( event );
-  this->LayOutWidget1->resize( event->size() );
+  QWidget::resizeEvent( iEvent );
+  this->LayOutWidget1->resize( iEvent->size() );
 }
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 void QImagePageView4DTracer::RunMovie( )
 {
   // NOTE ALEX: movie trials
@@ -397,48 +397,56 @@ void QImagePageView4DTracer::RunMovie( )
   //  this->Slider1->setValue( i );
   //  }
 }
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 void QImagePageView4DTracer::SwitchColorMode( )
 {
   this->ColorVizu = !this->ColorVizu;
   this->SetView( this->Slider1->value() );
 }
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
-void QImagePageView4DTracer::SetDatabaseRelatedVariables( const QString& iServer,
-  const QString& iLogin, const QString& iPassword, const QString& iDatabaseName,
-  const int& iExperimentID, const QString& iExperimentName )
+//--------------------------------------------------------------------------
+void QImagePageView4DTracer::SetDatabaseRelatedVariables( 
+  const QString& iServer, const QString& iLogin, const QString& iPassword, 
+  const QString& iDatabaseName, const int& iExperimentID, 
+  const QString& iExperimentName )
 {
   this->Whatever->SetDatabaseRelatedVariables( iServer, iLogin, iPassword,
     iDatabaseName, iExperimentID, iExperimentName );
 }
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 void QImagePageView4DTracer::FillTablesWidget()
 {
-  m_DBTables->FillTableFromDatabase(Whatever->m_DBName,Whatever->m_DBServer,Whatever->m_DBLogin,
-           Whatever->m_DBPassword,Whatever->m_DBExperimentID,Whatever->m_DBExperimentName);
+  m_DBTables->FillTableFromDatabase( Whatever->m_DBName, 
+    Whatever->m_DBServer, Whatever->m_DBLogin,
+    Whatever->m_DBPassword, Whatever->m_DBExperimentID, 
+    Whatever->m_DBExperimentName );
+
   m_DBTables->show();
 
 }
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 
-void QImagePageView4DTracer::ConnectSelectContoursWidgetAndHighlightContours()
+void QImagePageView4DTracer::
+ConnectSelectContoursWidgetAndHighlightContours()
 {
   this->HighlightContours(m_DBTables->FigureTable->ContoursToHighlight());
 }
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 void QImagePageView4DTracer::DeleteContourVisu()
 {
   QStringList QContourToDelete;
-  QContourToDelete = this->m_DBTables->FigureTable->ValuesForSelectedRows("figureID");
-  //todo: after implementation of the method to delete the contour, use it here.
+  QContourToDelete = 
+    this->m_DBTables->FigureTable->ValuesForSelectedRows("figureID");
+  /// \todo: after implementation of the method to delete the contour, 
+  /// use it here.
 }
+

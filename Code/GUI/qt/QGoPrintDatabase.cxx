@@ -143,7 +143,7 @@ void QGoPrintDatabase::FillTableFromDatabase( QString iNameDB,
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoPrintDatabase::closeEvent(QCloseEvent* event)
+void QGoPrintDatabase::closeEvent(QCloseEvent* iEvent)
 {
   int r = QMessageBox::warning(this, tr(""),
                         tr("Are you sure you want to close\n"
@@ -152,7 +152,7 @@ void QGoPrintDatabase::closeEvent(QCloseEvent* event)
                           QMessageBox::No|QMessageBox::Default);
   if (r == QMessageBox::Yes)
     {
-    event->accept();
+    iEvent->accept();
     QByteArray stateFigureTable = FigureTable->horizontalHeader()->saveState();
     QByteArray stateMeshTable = MeshTable->horizontalHeader()->saveState();
     QSettings settings( "MegasonLab", "Gofigure2" );
@@ -161,7 +161,7 @@ void QGoPrintDatabase::closeEvent(QCloseEvent* event)
     }
   else
     {
-    event->ignore();
+    iEvent->ignore();
     }
 }
 //--------------------------------------------------------------------------
@@ -174,13 +174,13 @@ void QGoPrintDatabase::UpdateTableFromDB()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoPrintDatabase::CreateContextMenu(const QPoint &pos)
+void QGoPrintDatabase::CreateContextMenu(const QPoint &iPos)
 {
   QMenu* ContextMenu = new QMenu;
   ContextMenu->addAction(tr("Delete Traces"),this,SLOT(DeleteTraces()));
   ContextMenu->addAction(tr("Create New Collection"),this,SLOT(CreateCorrespondingCollection()));
   ContextMenu->addAction(tr("Add to existing Collection"),this,SLOT(AddToExistingCollection()));
-  ContextMenu->exec(this->mapToGlobal(pos));
+  ContextMenu->exec(this->mapToGlobal(iPos));
 
 }
 //--------------------------------------------------------------------------

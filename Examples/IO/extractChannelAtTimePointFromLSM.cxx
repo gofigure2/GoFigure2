@@ -44,8 +44,8 @@ int main(int argc,char* argv[])
   std::cout << NumberOfChannels << std::endl;
 
   // Get the name of the file without the path
-  unsigned int j, len = strlen(argv[1]);
-  for( unsigned int i = len-1; i >= 0; i-- )
+  size_t j, len = strlen(argv[1]);
+  for( size_t  i = len-1; i >= 0; i-- )
   {
     if ( argv[1][i] == '/' )
     {
@@ -56,7 +56,7 @@ int main(int argc,char* argv[])
   j++;
 
   char* fname = new char[len-j+1];
-  for( unsigned int i = 0; i < len-j+1; i++ )
+  for( size_t i = 0; i < len-j+1; i++ )
     fname[i]  = argv[1][j+i];
 
   vtkMetaImageWriter * writer = vtkMetaImageWriter::New();

@@ -64,13 +64,13 @@
 #include <QCheckBox>
 
 
-//------------------------------------------------------------------------------
-QGoWizardDB::QGoWizardDB( QWidget *parent )
-: QWizard( parent )
+//-------------------------------------------------------------------------
+QGoWizardDB::QGoWizardDB( QWidget *iParent )
+: QWizard( iParent )
 {
-  QFont font;
-  font.setBold(true);
-  this->setFont(font);
+  QFont tfont;
+  tfont.setBold(true);
+  this->setFont(tfont);
 
   QFont font2;
   font2.setBold(false);
@@ -92,22 +92,22 @@ QGoWizardDB::QGoWizardDB( QWidget *parent )
   setPage(Import, new Import_SerieGridPage);
   setWindowTitle( tr("Use DataBase") );
 }
-//------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 bool QGoWizardDB::IsLsmSerie()
 {
   std::cout<<"islsm value"<<IsLsm<<std::endl;
   std::cout<<IsLsm<<std::endl;
   return IsLsm;
 }
-//------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 FileListType QGoWizardDB::ListFilenames()
 {
-  FileListType ListFilenames;
-  ListFilenames.clear();
+  FileListType oListFilenames;
+  oListFilenames.clear();
   std::vector<std::string> vectListFilenames = ListSpecificValuesForRow(
   field("ServerName").toString().toStdString(),
         field("User").toString().toStdString(),
@@ -143,65 +143,65 @@ FileListType QGoWizardDB::ListFilenames()
       tempInfo.m_RTile = atoi(vectListFilenames[i+2].c_str());
       tempInfo.m_YOffset = atoi(vectListFilenames[i+5].c_str());
       tempInfo.m_XOffset = atoi(vectListFilenames[i+6].c_str());
-      ListFilenames.push_back( tempInfo );
+      oListFilenames.push_back( tempInfo );
       i = i+9;
       }
     }
 
-  std::sort( ListFilenames.begin(), ListFilenames.end() );
-  return ListFilenames;
+  std::sort( oListFilenames.begin(), oListFilenames.end() );
+  return oListFilenames;
 }
-//------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 QString QGoWizardDB::NameDB()
 {
   return field("NameDB").toString();
 }
-//------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 int QGoWizardDB::ExpID()
 {
   return field("ExpID").toInt();
 }
-//------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 QString QGoWizardDB::ExpName()
 {
   return field("Name").toString();
 }
-//------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 QString QGoWizardDB::Server()
 {
   return field("ServerName").toString();
 }
-//------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 QString QGoWizardDB::login()
 {
   return field("User").toString();
 }
-//------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 QString QGoWizardDB::Password()
 {
   return field("Password").toString();
 }
-//------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
-Connect_ServerPage::Connect_ServerPage( QWidget *parent )
-: QWizardPage( parent )
+//-------------------------------------------------------------------------
+Connect_ServerPage::Connect_ServerPage( QWidget *iParent )
+: QWizardPage( iParent )
 {
-  QFont font;
-  font.setBold(false);
-  this->setFont(font);
+  QFont tfont;
+  tfont.setBold(false);
+  this->setFont(tfont);
   setSubTitle( tr("Step 1: Connect to a MySQL DataBase Server:"));
 
   QFormLayout* formLayout = new QFormLayout;
@@ -222,9 +222,9 @@ Connect_ServerPage::Connect_ServerPage( QWidget *parent )
   registerField( "User",       lineUserName );
   registerField( "Password",   linePassword );
 }
-//------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 bool Connect_ServerPage::validatePage()
 {
   if( !CanConnectToServer(
@@ -243,15 +243,15 @@ bool Connect_ServerPage::validatePage()
     return true;
     }
 }
-//------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
-OpenOrCreate_Page::OpenOrCreate_Page(QWidget *parent)
-:QWizardPage(parent)
+//-------------------------------------------------------------------------
+OpenOrCreate_Page::OpenOrCreate_Page(QWidget *iParent)
+:QWizardPage(iParent)
 {
-  QFont font;
-  font.setBold(false);
-  this->setFont(font);
+  QFont tfont;
+  tfont.setBold(false);
+  this->setFont(tfont);
 
   gridLayout = new QGridLayout;
   ChoiceDB = new QComboBox;
@@ -287,9 +287,9 @@ OpenOrCreate_Page::OpenOrCreate_Page(QWidget *parent)
   registerField("DBNametoCreate",lineNewDBName);
   registerField( "DBNametoOpen", DBNametoOpen_fake );
 }
-//------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 void OpenOrCreate_Page::initializePage()
 {
   this->setSubTitle(tr("Step 2: Chose what you want to do next:"));
@@ -302,9 +302,9 @@ void OpenOrCreate_Page::initializePage()
   field("DBIndextoOpen").clear();
   field("DBNametoCreate").clear();
 }
-//------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 void OpenOrCreate_Page::PrintListDB ()
 {
   createDBCheckBox->setChecked(false);
@@ -325,7 +325,8 @@ void OpenOrCreate_Page::PrintListDB ()
 
     for( unsigned int i = 0; i < vectListDB.size(); ++i )
       {
-      if( IsDatabaseOfGoFigureType( field("ServerName").toString().toStdString(),
+      if( IsDatabaseOfGoFigureType( 
+            field("ServerName").toString().toStdString(),
             field("User").toString().toStdString(),
             field("Password").toString().toStdString(),
             vectListDB[i].c_str( ) ) )
@@ -338,9 +339,9 @@ void OpenOrCreate_Page::PrintListDB ()
   ChoiceDB->show();
 
 }
-//------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 void OpenOrCreate_Page::EnterNameDB ()
 {
   if( createDBCheckBox->isChecked() )
@@ -356,9 +357,9 @@ void OpenOrCreate_Page::EnterNameDB ()
     textChoiceDB->hide();
     }
 }
-//------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 bool OpenOrCreate_Page::validatePage()
 {
   QString NameDB;
@@ -384,7 +385,8 @@ bool OpenOrCreate_Page::validatePage()
   if( field("DBNametoCreate").toString().isEmpty() && ( NameDB=="Null" ) )
     {
     QMessageBox msgBox;
-    msgBox.setText(tr("Please enter a name for your new DataBase").arg(NameDB));
+    msgBox.setText( 
+      tr( "Please enter a name for your new DataBase" ).arg( NameDB ) );
     msgBox.exec();
     return false;
     }
@@ -394,13 +396,15 @@ bool OpenOrCreate_Page::validatePage()
     return true;
     }
 
-  if( !IsDatabaseOfGoFigureType(field("ServerName").toString().toStdString(),
-            field("User").toString().toStdString(),
-            field("Password").toString().toStdString(),
-            NameDB.toStdString() ) )
+  if( !IsDatabaseOfGoFigureType( 
+        field("ServerName").toString().toStdString(),
+        field("User").toString().toStdString(),
+        field("Password").toString().toStdString(),
+        NameDB.toStdString() ) )
     {
     QMessageBox msgBox;
-    msgBox.setText(tr("The Database %1 is not a Gofigure Database").arg(NameDB));
+    msgBox.setText( 
+      tr( "The Database %1 is not a Gofigure Database").arg( NameDB ) );
     msgBox.exec();
     return false;
     }
@@ -408,15 +412,15 @@ bool OpenOrCreate_Page::validatePage()
   setField( "DBNametoOpen",NameDB );
   return true;
 }
-//------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
-Create_ExperimentPage::Create_ExperimentPage( QWidget *parent )
-: QWizardPage( parent )
+//-------------------------------------------------------------------------
+Create_ExperimentPage::Create_ExperimentPage( QWidget *iParent )
+: QWizardPage( iParent )
 {
-  QFont font;
-  font.setBold(false);
-  this->setFont(font);
+  QFont tfont;
+  tfont.setBold(false);
+  this->setFont(tfont);
 
   ChoiceExp  = new QComboBox;
   ExpID = new QLabel(tr("ExperimentID"));
@@ -424,8 +428,10 @@ Create_ExperimentPage::Create_ExperimentPage( QWidget *parent )
   textName = new QLabel(tr("Name of the Experiment: "));
   Name = new QLineEdit;
 
-  openExpRadioButton   = new QRadioButton(tr("Open an existing Experiment"));
-  createExpRadioButton = new QRadioButton(tr("Create a new Experiment    "));
+  openExpRadioButton   = 
+    new QRadioButton(tr("Open an existing Experiment"));
+  createExpRadioButton = 
+    new QRadioButton(tr("Create a new Experiment    "));
 
   QVBoxLayout* vlayout = new QVBoxLayout;
   QVBoxLayout* RadioButtonLayout = new QVBoxLayout;
@@ -541,9 +547,9 @@ Create_ExperimentPage::Create_ExperimentPage( QWidget *parent )
   QObject::connect( this->ChoiceExp,SIGNAL( currentIndexChanged(QString) ),
   this,SLOT( PrintValuesExpName(QString) ));
 }
-//------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 void Create_ExperimentPage::initializePage()
 {
   ExpID->setVisible(false);
@@ -601,9 +607,9 @@ void Create_ExperimentPage::initializePage()
   field("ExpID").clear();
 
 }
-//------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 void Create_ExperimentPage::EnterInfoExp()
 {
   Name->clear();
@@ -647,9 +653,9 @@ void Create_ExperimentPage::EnterInfoExp()
   setField("OpenOrCreateExp","Create");
   setFinalPage(false);
 }
-//------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 bool Create_ExperimentPage::PrintListExp()
 {
   bool ok;
@@ -706,9 +712,9 @@ bool Create_ExperimentPage::PrintListExp()
 
   return ok;
 }
-//------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 int Create_ExperimentPage::nextId() const
 {
   if( field( "OpenOrCreateExp" ) == "Open" )
@@ -738,9 +744,9 @@ int Create_ExperimentPage::nextId() const
     return QGoWizardDB::Import;
     }
 }
-//------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 void Create_ExperimentPage::PrintValuesExpName(QString ExpName)
 {
   std::vector<std::string> myvect =
@@ -783,9 +789,9 @@ void Create_ExperimentPage::PrintValuesExpName(QString ExpName)
 
   setFinalPage(false);
 }
-//------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 bool Create_ExperimentPage::validatePage()
 {
   if (createExpRadioButton->isChecked())
@@ -843,15 +849,15 @@ bool Create_ExperimentPage::validatePage()
       }
     }
 }
-//------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
-Import_SerieGridPage::Import_SerieGridPage( QWidget *parent )
-: QWizardPage( parent )
+//-------------------------------------------------------------------------
+Import_SerieGridPage::Import_SerieGridPage( QWidget *iParent )
+: QWizardPage( iParent )
 {
-  QFont font;
-  font.setBold(false);
-  this->setFont(font);
+  QFont tfont;
+  tfont.setBold(false);
+  this->setFont(tfont);
   this->adjustSize();
   newfilename.clear();
 
@@ -869,9 +875,9 @@ Import_SerieGridPage::Import_SerieGridPage( QWidget *parent )
   QObject::connect( this->BrowseButton,SIGNAL( clicked() ),
   this,SLOT( SelectSeriesGrid() ));
 }
-//------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 void Import_SerieGridPage::initializePage()
 {
   newfilename.clear();
@@ -919,9 +925,9 @@ void Import_SerieGridPage::initializePage()
   setTitle(tr("Experiment: '%1'").arg(field("Name").toString()));
   setSubTitle(tr("Database: '%1'").arg(field("NameDB").toString()));
 }
-//------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 void Import_SerieGridPage::SelectSeriesGrid()
 {
   newfilename = QFileDialog::getOpenFileName(
@@ -1084,10 +1090,11 @@ void Import_SerieGridPage::SelectSeriesGrid()
     .arg( field("Name").toString() ).arg( field("NameDB").toString() ) );
     }
 }
-//------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 bool Import_SerieGridPage::isComplete() const
 {
   return ( !newfilename.isEmpty() );
 }
+

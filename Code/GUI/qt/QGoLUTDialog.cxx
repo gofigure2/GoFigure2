@@ -47,8 +47,8 @@
 #include <vtkRendererCollection.h>
 #include <vtkRenderWindow.h>
 
-QGoLUTDialog::QGoLUTDialog( QWidget* parent ) :
-  QDialog( parent ),
+QGoLUTDialog::QGoLUTDialog( QWidget* iParent ) :
+  QDialog( iParent ),
   LUT( 0 )
 {
   setupUi( this );

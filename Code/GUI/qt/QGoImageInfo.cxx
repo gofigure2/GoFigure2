@@ -41,7 +41,7 @@
 #include "QGoImageInfo.h"
 #include <iostream>
 
-QGoImageInfo::QGoImageInfo( QWidget* parent ) :QWidget( parent )
+QGoImageInfo::QGoImageInfo( QWidget* iParent ) :QWidget( iParent )
 {
   setupUi( this );
 }
@@ -55,11 +55,12 @@ void QGoImageInfo::setupUi( QWidget *ImageInfo )
   if (ImageInfo->objectName().isEmpty())
     ImageInfo->setObjectName(QString::fromUtf8("ImageInfo"));
   ImageInfo->resize(293, 315);
-  QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-  sizePolicy.setHorizontalStretch(0);
-  sizePolicy.setVerticalStretch(0);
-  sizePolicy.setHeightForWidth(ImageInfo->sizePolicy().hasHeightForWidth());
-  ImageInfo->setSizePolicy(sizePolicy);
+  QSizePolicy tsizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+  tsizePolicy.setHorizontalStretch(0);
+  tsizePolicy.setVerticalStretch(0);
+  tsizePolicy.setHeightForWidth( 
+    ImageInfo->sizePolicy().hasHeightForWidth() );
+  ImageInfo->setSizePolicy( tsizePolicy );
   verticalLayout = new QVBoxLayout(ImageInfo);
   verticalLayout->setContentsMargins(3, -1, 3, -1);
   scrollArea = new QScrollArea(ImageInfo);

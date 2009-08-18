@@ -678,7 +678,6 @@ void QGoMainWindow::on_actionSnapshot_activated( )
       int whichview = pageView4D->GetFullScreenView();
       if( whichview != 0 )
         {
-        QString SnapshotFileName;
         switch( whichview )
           {
           default:
@@ -1307,11 +1306,11 @@ void QGoMainWindow::readSettings()
   updateRecentFileActions(m_RecentMultipleFiles, menuMultiple_Files, recentMultipleFileActions );
 
   settings.beginGroup( "MainWindow" );
-  QSize size = settings.value( "size" ).toSize();
+  QSize tsize = settings.value( "size" ).toSize();
 
-  if( size.isValid() )
+  if( tsize.isValid() )
     {
-    this->resize( size );
+    this->resize( tsize );
     this->move( settings.value("pos").toPoint() );
     }
   else

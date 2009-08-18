@@ -42,39 +42,39 @@
 #include <iostream>
 #include <QTableWidgetSelectionRange>
 
-QTableWidgetChild::QTableWidgetChild( QWidget* parent ): QTableWidget( parent )
+QTableWidgetChild::QTableWidgetChild( QWidget* iParent ): QTableWidget( iParent )
 {
   PrevCol = -1;
   PrevOrder = -1;
 }
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 QTableWidgetChild::QTableWidgetChild ( int rows, int columns,
-                  QWidget * parent ):QTableWidget(rows,columns,parent)
+                  QWidget * iParent ):QTableWidget(rows,columns,iParent)
 {
 }
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 QTableWidgetChild::~QTableWidgetChild()
 {
 }
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
-void QTableWidgetChild::sortItems(int column, Qt::SortOrder order)
+//--------------------------------------------------------------------------
+void QTableWidgetChild::sortItems( int iColumn, Qt::SortOrder iOrder )
 {
-  if ( column != PrevCol && order !=PrevOrder)
+  if ( ( iColumn != PrevCol ) && ( iOrder != PrevOrder ) )
     {
-    PrevCol = column;
-    PrevOrder = order;
-    QTableWidget::sortItems(column,order);
+    PrevCol = iColumn;
+    PrevOrder = iOrder;
+    QTableWidget::sortItems( iColumn, iOrder );
     }
 }
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 int QTableWidgetChild::findValueGivenColumn(int Value, QString Column)
 {
   QStringList ColumnsHeader = recordHeaderNamesOrder();
@@ -106,16 +106,16 @@ int QTableWidgetChild::findValueGivenColumn(int Value, QString Column)
     }
   return -1;
 }
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 int QTableWidgetChild::findColumnName(QString ColumnName, QStringList ColumnsHeader)
 {
   return ColumnsHeader.indexOf(ColumnName,0);
 }
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 QStringList QTableWidgetChild::recordHeaderNamesOrder()
 {
   QStringList ColumnNamesOrder;
@@ -126,9 +126,9 @@ QStringList QTableWidgetChild::recordHeaderNamesOrder()
 
   return ColumnNamesOrder;
 }
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 void QTableWidgetChild::SelectRowFigureID (int FigureID)
 {
   int RowIndex = this->findValueGivenColumn(FigureID, "figureID");
@@ -144,9 +144,9 @@ void QTableWidgetChild::SelectRowFigureID (int FigureID)
     this->setRangeSelected(RangeToSelect,true);
     }
 }
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 /** \note quick and nasty...*/
 std::map< unsigned int, bool > QTableWidgetChild::ContoursToHighlight()
 {
@@ -177,9 +177,9 @@ std::map< unsigned int, bool > QTableWidgetChild::ContoursToHighlight()
     }
   return oMapRows;
 }
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 QStringList QTableWidgetChild::ValuesForSelectedRows(QString ColumnName)
 {
   QList<QTableWidgetSelectionRange> Selection;
@@ -201,3 +201,4 @@ QStringList QTableWidgetChild::ValuesForSelectedRows(QString ColumnName)
     }
   return Values;
 }
+

@@ -40,25 +40,26 @@
 
 #include "QSplitterchild.h"
 
-QSplitterchild::QSplitterchild( QWidget* parent ): QSplitter( parent )
+QSplitterchild::QSplitterchild( QWidget* iParent ): QSplitter( iParent )
 {
   Prevpos=0;
   Previndex=0;
 }
 
-QSplitterchild::QSplitterchild( Qt::Orientation orientation, QWidget* parent) :
-  QSplitter( orientation, parent )
+QSplitterchild::QSplitterchild( Qt::Orientation iOrientation, 
+  QWidget* iParent) : QSplitter( iOrientation, iParent )
 {}
 
 QSplitterchild::~QSplitterchild()
 {}
 
-void QSplitterchild::moveSplitter( int pos,int index )
+void QSplitterchild::moveSplitter( int iPos, int index )
 {
-  if( ( Prevpos != pos ) || ( Previndex != index ) )
+  if( ( Prevpos != iPos ) || ( Previndex != index ) )
     {
-    Prevpos=pos;
+    Prevpos=iPos;
     Previndex=index;
-    QSplitter::moveSplitter( pos, index );
+    QSplitter::moveSplitter( iPos, index );
     }
 }
+

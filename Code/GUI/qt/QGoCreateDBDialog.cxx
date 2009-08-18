@@ -49,8 +49,8 @@
 
 #include <vtkTextProperty.h>
 
-QGoCreateDBDialog::QGoCreateDBDialog( QObject* parent )
-: QObject( parent )
+QGoCreateDBDialog::QGoCreateDBDialog( QObject* iParent )
+: QObject( iParent )
 {
   bool ok = true;
   bool CouldConnect = false;

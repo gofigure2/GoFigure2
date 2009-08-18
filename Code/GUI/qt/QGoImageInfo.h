@@ -125,9 +125,9 @@ protected:
       }
     else
       {
-      size_t size = iVector.size();
+      size_t tsize = iVector.size();
 
-      if ( size == 1 )
+      if ( tsize == 1 )
         {
         return QString( "%1" ).arg( *iVector.begin() );
         }
@@ -139,7 +139,7 @@ protected:
             it != iVector.end();
             ++it, ++i )
           {
-          if ( i == ( size - 1 ) )
+          if ( i == ( tsize - 1 ) )
             {
             v.append( QString( "%1 ]" ).arg( *it ) );
             }
