@@ -74,8 +74,8 @@ public:
 
   
   /** Manage a Progress event */
-  void ProcessEvent(itk::Object * caller, const itk::EventObject & event );
-  void ConstProcessEvent(const itk::Object * caller, const itk::EventObject & event );
+  void ProcessEvent(itk::Object * caller, const itk::EventObject & iEvent );
+  void ConstProcessEvent(const itk::Object * caller, const itk::EventObject & iEvent );
  
 
   /** Manage a Progress event */
@@ -85,11 +85,9 @@ private:
 
   RedrawCommandType::Pointer m_RedrawCommand;
  
-
-
 };
-
 
 }  // end of namespace
 
 #endif
+

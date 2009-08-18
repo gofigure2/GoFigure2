@@ -29,6 +29,9 @@ void Test( const char* DBName,  const char* TableName )
 
 int main( int argc, char * argv[] )
 {
+  (void) argc;
+  (void) argv;
+
   std::string ServerName( "localhost" );
   std::string DataBaseName( "MyTestDB" );
   std::string Login( "gofigure" );

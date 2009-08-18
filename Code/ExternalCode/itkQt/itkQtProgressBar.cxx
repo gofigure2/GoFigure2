@@ -57,7 +57,7 @@
 namespace itk {
 
 /** Constructor */
-QtProgressBar::QtProgressBar( QWidget *parent ):QProgressBar(parent)
+QtProgressBar::QtProgressBar( QWidget *parent ) : QProgressBar(parent)
 {
   m_RedrawCommand = RedrawCommandType::New();
   m_RedrawCommand->SetCallbackFunction( this, &QtProgressBar::ProcessEvent );
@@ -66,7 +66,6 @@ QtProgressBar::QtProgressBar( QWidget *parent ):QProgressBar(parent)
   this->setMinimum(   0 );
   this->setMaximum( 100 );
   this->reset();
-
 }
 
   
@@ -84,17 +83,17 @@ QtProgressBar::GetRedrawCommand( void ) const
 /** Manage a Progress event */
 void 
 QtProgressBar::ProcessEvent( itk::Object * caller, 
-                           const itk::EventObject & event )
+                           const itk::EventObject & iEvent )
 {
-  if( typeid( itk::ProgressEvent )   ==  typeid( event ) )
+  if( typeid( itk::ProgressEvent )   ==  typeid( iEvent ) )
     {
     ::itk::ProcessObject::Pointer  process = 
              dynamic_cast< itk::ProcessObject *>( caller );
 
-    const int value = static_cast<int>( 
+    const int tvalue = static_cast<int>( 
                         process->GetProgress() * this->maximum() );
-    std::cout << "New Value : " << value << std::endl;
-    this->setValue( value );
+    std::cout << "New Value : " << tvalue << std::endl;
+    this->setValue( tvalue );
     }
 }
 
@@ -103,9 +102,9 @@ QtProgressBar::ProcessEvent( itk::Object * caller,
 
 void 
 QtProgressBar::ConstProcessEvent( const itk::Object * caller, 
-                                const itk::EventObject & event )
+                                const itk::EventObject & iEvent )
 {
-  if( typeid( itk::ProgressEvent )   ==  typeid( event ) ) 
+  if( typeid( itk::ProgressEvent )   ==  typeid( iEvent ) ) 
     {
     itk::ProcessObject::ConstPointer  process = 
               dynamic_cast< const itk::ProcessObject *>( caller );
@@ -127,6 +126,6 @@ QtProgressBar::Observe( itk::Object *caller )
 
   
 
-} // end namespace fltk
+} // end namespace itk
 
 
