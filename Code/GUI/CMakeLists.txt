@@ -30,15 +30,9 @@ SET( GUI_TYPE )
 
 SET( GOFIGURE_APPLICATION_SOURCE_LIST
     gofigure.cxx
-#    ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/itkQt/itkQtProgressBar.cxx
-#    ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/vtkLSM/vtkLSMReader.cxx
-#    ${GOFIGURE2_SOURCE_DIR}/Code/GUI/qt/QGoCreateDBDialog.cxx
-#    ${GOFIGURE2_SOURCE_DIR}/Code/IO/CreateDataBaseHelper.cxx
-
     ${QGOMAINWINDOW_SRC}
     ${QGOMAINWINDOW_MOC_SRC}
     ${QGOMAINWINDOW_QRC}
-#    ${MY_MOC_SRC}
     )
 
 IF( APPLE )
@@ -101,12 +95,8 @@ ADD_EXECUTABLE( gofigure ${GUI_TYPE}
 TARGET_LINK_LIBRARIES( gofigure
   QMegaVTKAddOn2
   QGoIO
-  ${QT_LIBRARIES}
-  QVTK
   ITKBasicFilters
   ITKNumerics
-  ITKIO
-  vtkImaging
   itkQt
   )
 

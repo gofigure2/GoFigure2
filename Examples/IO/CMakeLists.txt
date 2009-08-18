@@ -11,17 +11,10 @@ FOREACH( var ${EXAMPLES_QT_NOT_REQUIRED} )
 
   ADD_EXECUTABLE( ${var}
     ${var}.cxx
-    ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/vtkLSM/vtkLSMReader.cxx
-#     ${GOFIGURE2_SOURCE_DIR}/Code/IO/CreateDataBaseHelper.cxx
- )
+  )
   TARGET_LINK_LIBRARIES( ${var}
     QGoIO
-    ITKCommon
-    ITKIO
-    vtkIO
-    vtkImaging
-    vtkFiltering
-    vtkCommon )
+  )
 
 ENDFOREACH( var )
 
@@ -58,21 +51,12 @@ IF( QT4_FOUND AND QT_VERSION_MINOR GREATER 4 )
 
      ADD_EXECUTABLE( ${var}
        ${var}.cxx
-       ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/vtkLSM/vtkLSMReader.cxx )
+    )
 
      TARGET_LINK_LIBRARIES( ${var}
        QGoIO
-       ITKCommon
-       ITKIO
-       vtkIO
-       vtkImaging
-       vtkCommon
-       vtkRendering
-       vtkRenderingAddOn2
-       vtkFiltering
        QMegaVTKAddOn2
-       ${QT_LIBRARIES}
-       QVTK )
+       )
 
   ENDFOREACH( var )
 
@@ -83,7 +67,6 @@ ADD_EXECUTABLE( vtkPolyDataMySQLTextReader
 
 TARGET_LINK_LIBRARIES( vtkPolyDataMySQLTextReader
   QGoIO
-  vtkIO
   vtkRendering
 )
 
