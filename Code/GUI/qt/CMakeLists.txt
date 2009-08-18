@@ -74,10 +74,11 @@ TARGET_LINK_LIBRARIES( QMegaVTKAddOn2
   ${QMegaVTKAddOn2_LIBS}
   )
 
+IF( NOT APPLE )
 INSTALL( TARGETS QMegaVTKAddOn2
   ARCHIVE
   DESTINATION lib
   COMPONENT libraries
   )
-
-INSTALL_FILES(/include "(\\.h|\\.txx)$")
+ENDIF( NOT APPLE )
+#INSTALL_FILES(/include "(\\.h|\\.txx)$")
