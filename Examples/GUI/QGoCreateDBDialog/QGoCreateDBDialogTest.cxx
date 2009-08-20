@@ -9,5 +9,5 @@ int main( int argc, char** argv )
 
   QGoCreateDBDialog dialog;
 
-  return EXIT_SUCCESS;
+  return app.exec();
 }
