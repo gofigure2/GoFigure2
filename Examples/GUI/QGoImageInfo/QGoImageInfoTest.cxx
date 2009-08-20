@@ -8,8 +8,6 @@ int main( int argc, char** argv )
   QApplication app(argc, argv);
   QGoImageInfo info;
 
-  app.setMainWidget( &info );
-
   const unsigned int Dim3 = 3;
   info.setDimension( Dim3 );
   info.setNumberOfChannels( Dim3 );
@@ -49,5 +47,8 @@ int main( int argc, char** argv )
 
   info.show( );
 
-  return app.exec();
+  int output = app.exec();
+  app.closeAllWindows();
+
+  return output;
 }

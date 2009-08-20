@@ -101,39 +101,39 @@ public:
 
 
 protected slots:
-  void on_actionOpen_Single_File_activated( );
+  void on_actionOpen_Single_File_triggered( );
   void openRecentSingleFile();
-  void on_actionOpen_Multiple_Files_activated( );
+  void on_actionOpen_Multiple_Files_triggered( );
   void openRecentMultipleFile();
 
-  void on_actionOpen_Mesh_activated( );
+  void on_actionOpen_Mesh_triggered( );
 
   // #ifdef VTK_USE_MYSQL
-  //void on_actionCreate_DataBase_activated( ) { QGoCreateDBDialog dialog; }
-  void on_actionUse_DataBase_activated();
+  //void on_actionCreate_DataBase_triggered( ) { QGoCreateDBDialog dialog; }
+  void on_actionUse_DataBase_triggered();
   void openFilesfromDB();
- // void on_actionImport_Dataset_in_DataBase_activated( ) {};
-  //void on_actionOpen_DataBase_activated( ) {};
+ // void on_actionImport_Dataset_in_DataBase_triggered( ) {};
+  //void on_actionOpen_DataBase_triggered( ) {};
   // #endif
 
-  void on_actionClose_activated( );
-  void on_actionClose_all_activated( );
-  void on_actionQuit_activated( );
+  void on_actionClose_triggered( );
+  void on_actionClose_all_triggered( );
+  void on_actionQuit_triggered( );
 
-  void on_actionBackground_activated( );
-  void on_actionLookup_Table_activated( );
+  void on_actionBackground_triggered( );
+  void on_actionLookup_Table_triggered( );
 
-  void on_actionQuad_View_activated( );
-  void on_actionFull_screen_XY_activated( );
-  void on_actionFull_screen_YZ_activated( );
-  void on_actionFull_screen_XZ_activated( );
-  void on_actionFull_screen_XYZ_activated( );
-  void on_actionVolume_rendering_XYZ_activated( );
-  void on_actionScale_bars_activated( );
-  void on_actionSnapshot_activated( );
+  void on_actionQuad_View_triggered( );
+  void on_actionFull_screen_XY_triggered( );
+  void on_actionFull_screen_YZ_triggered( );
+  void on_actionFull_screen_XZ_triggered( );
+  void on_actionFull_screen_XYZ_triggered( );
+  void on_actionVolume_rendering_XYZ_triggered( );
+  void on_actionScale_bars_triggered( );
+  void on_actionSnapshot_triggered( );
 
-  void on_actionAbout_activated( );
-  void on_actionAbout_Qt_activated( );
+  void on_actionAbout_triggered( );
+  void on_actionAbout_Qt_triggered( );
 
   void SetContourTracerOn( const bool& iChecked );
   void SetContourTracerOff( const bool& iChecked );

@@ -168,7 +168,7 @@ void QGoMainWindow::CreateSignalSlotsConnection()
   QObject::connect( this->OneClickBtnBox, SIGNAL( accepted() ),
     this, SLOT( OneClickSegmentation( ) ) );
 
-  //QObject::connect( this->actionOpen, SIGNAL( activated( ) ),
+  //QObject::connect( this->actionOpen, SIGNAL( triggered( ) ),
     //this, SLOT( showprogressloading() ) );
   QObject::connect( this->CentralImageTabWidget,
     SIGNAL( currentChanged( int ) ),
@@ -179,7 +179,7 @@ void QGoMainWindow::CreateSignalSlotsConnection()
 
   QObject::connect(this->CentralImageTabWidget,
     SIGNAL(tabCloseRequested(int)),
-    this, SLOT( on_actionClose_activated( ) ) );
+    this, SLOT( on_actionClose_triggered( ) ) );
 
   QObject::connect( m_Wizard, SIGNAL( accepted() ),
     this, SLOT( openFilesfromDB() ) );
@@ -203,7 +203,7 @@ void QGoMainWindow::CreateSignalSlotsConnection()
 }
 
 // *************************************************************************
-void QGoMainWindow::on_actionOpen_Single_File_activated( )
+void QGoMainWindow::on_actionOpen_Single_File_triggered( )
 {
   QString filename = QFileDialog::getOpenFileName(
     this,
@@ -218,7 +218,7 @@ void QGoMainWindow::on_actionOpen_Single_File_activated( )
 }
 
 // *************************************************************************
-void QGoMainWindow::on_actionOpen_Multiple_Files_activated( )
+void QGoMainWindow::on_actionOpen_Multiple_Files_triggered( )
 {
   QString filename = QFileDialog::getOpenFileName(
     this,
@@ -234,7 +234,7 @@ void QGoMainWindow::on_actionOpen_Multiple_Files_activated( )
 
 
 //--------------------------------------------------------------------------------
-void QGoMainWindow::on_actionUse_DataBase_activated()
+void QGoMainWindow::on_actionUse_DataBase_triggered()
 {
   m_Wizard->restart();
   m_Wizard->show();
@@ -253,7 +253,7 @@ void QGoMainWindow::openFilesfromDB()
 
 }
 // *************************************************************************
-void QGoMainWindow::on_actionOpen_Mesh_activated( )
+void QGoMainWindow::on_actionOpen_Mesh_triggered( )
 {
   int idx = this->CentralImageTabWidget->currentIndex();
 
@@ -360,7 +360,7 @@ void QGoMainWindow::on_actionOpen_Mesh_activated( )
 }//--------------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------------
-void QGoMainWindow::on_actionClose_activated( )
+void QGoMainWindow::on_actionClose_triggered( )
 {
   int idx = this->CentralImageTabWidget->currentIndex();
   this->CentralImageTabWidget->removeTab( idx );
@@ -391,14 +391,14 @@ void QGoMainWindow::on_actionClose_activated( )
   // by default to release memory
   //
   // We should check if it was the last tab, in which case,
-  // the close option shoudl be disactivated
+  // the close option shoudl be distriggered
 
   writeSettings();
 }
 //--------------------------------------------------------------------------------
 
 // *************************************************************************
-void QGoMainWindow::on_actionClose_all_activated( )
+void QGoMainWindow::on_actionClose_all_triggered( )
 {
   this->CentralImageTabWidget->clear( );
   while( !m_PageView.empty() )
@@ -427,7 +427,7 @@ void QGoMainWindow::on_actionClose_all_activated( )
 //--------------------------------------------------------------------------------
 
 // *************************************************************************
-void QGoMainWindow::on_actionQuit_activated( )
+void QGoMainWindow::on_actionQuit_triggered( )
 {
   this->close();
   writeSettings();
@@ -435,7 +435,7 @@ void QGoMainWindow::on_actionQuit_activated( )
 //--------------------------------------------------------------------------------
 
 // *************************************************************************
-void QGoMainWindow::on_actionBackground_activated( )
+void QGoMainWindow::on_actionBackground_triggered( )
 {
   int idx = this->CentralImageTabWidget->currentIndex();
   QImagePageViewTracer* myPageView =
@@ -470,14 +470,14 @@ void QGoMainWindow::SetBackgroundColor( T* PageView )
 //--------------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------------
-void QGoMainWindow::on_actionLookup_Table_activated( )
+void QGoMainWindow::on_actionLookup_Table_triggered( )
 {
   m_LUTDialog->show();
 }
 //--------------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------------
-void QGoMainWindow::on_actionQuad_View_activated( )
+void QGoMainWindow::on_actionQuad_View_triggered( )
 {
   if (this->CentralImageTabWidget->count() != 0)
     {
@@ -521,7 +521,7 @@ QGoMainWindow::SetFullScreenDispatch( const int & ViewID )
 //--------------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------------
-void QGoMainWindow::on_actionFull_screen_XY_activated( )
+void QGoMainWindow::on_actionFull_screen_XY_triggered( )
 {
   if (this->CentralImageTabWidget->count() != 0)
     {
@@ -531,7 +531,7 @@ void QGoMainWindow::on_actionFull_screen_XY_activated( )
 //--------------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------------
-void QGoMainWindow::on_actionFull_screen_YZ_activated( )
+void QGoMainWindow::on_actionFull_screen_YZ_triggered( )
 {
   if (this->CentralImageTabWidget->count() != 0)
     {
@@ -541,7 +541,7 @@ void QGoMainWindow::on_actionFull_screen_YZ_activated( )
 //--------------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------------
-void QGoMainWindow::on_actionFull_screen_XZ_activated( )
+void QGoMainWindow::on_actionFull_screen_XZ_triggered( )
 {
   if (this->CentralImageTabWidget->count() != 0)
     {
@@ -551,7 +551,7 @@ void QGoMainWindow::on_actionFull_screen_XZ_activated( )
 //--------------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------------
-void QGoMainWindow::on_actionFull_screen_XYZ_activated( )
+void QGoMainWindow::on_actionFull_screen_XYZ_triggered( )
 {
   if (this->CentralImageTabWidget->count() != 0)
     {
@@ -561,7 +561,7 @@ void QGoMainWindow::on_actionFull_screen_XYZ_activated( )
 //--------------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------------
-void QGoMainWindow::on_actionVolume_rendering_XYZ_activated( )
+void QGoMainWindow::on_actionVolume_rendering_XYZ_triggered( )
 {
   if (this->CentralImageTabWidget->count() != 0)
     {
@@ -602,7 +602,7 @@ QGoMainWindow::SetRendering( T* myPageView )
 //--------------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------------
-void QGoMainWindow::on_actionScale_bars_activated( )
+void QGoMainWindow::on_actionScale_bars_triggered( )
 {
   if (this->CentralImageTabWidget->count() != 0)
     {
@@ -627,7 +627,7 @@ void QGoMainWindow::on_actionScale_bars_activated( )
 //--------------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------------
-void QGoMainWindow::on_actionSnapshot_activated( )
+void QGoMainWindow::on_actionSnapshot_triggered( )
 {
   int idx = this->CentralImageTabWidget->currentIndex();
   QImagePageViewTracer* myPageView =
@@ -1163,7 +1163,7 @@ void QGoMainWindow::OpenAndDisplay(
 //--------------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------------
-void QGoMainWindow::on_actionAbout_activated( )
+void QGoMainWindow::on_actionAbout_triggered( )
 {
   // NOTE ALEX: is there anyway to link that with version definition
   // in the cmakelist.txt?
@@ -1188,7 +1188,7 @@ void QGoMainWindow::on_actionAbout_activated( )
 //--------------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------------
-void QGoMainWindow::on_actionAbout_Qt_activated( )
+void QGoMainWindow::on_actionAbout_Qt_triggered( )
 {
   QMessageBox::aboutQt( this, tr( "About Qt" ) );
 }

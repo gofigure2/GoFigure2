@@ -74,8 +74,6 @@ int main( int argc, char** argv )
     form.SetFileName( argv[1], false );
     }
 
-  app.setMainWidget( &form );
-
   form.show( );
 
   splash->showMessage("Application ready");
@@ -83,7 +81,11 @@ int main( int argc, char** argv )
   splash->finish(&form);
   delete splash;
 
-  return app.exec();
+  int output = app.exec();
+
+  app.closeAllWindows();
+
+  return output;
 }
 
 /*

@@ -14,8 +14,11 @@ int main( int argc, char** argv )
   //form.SetSerieTypeToMegaCapture();
   // filename must come last
   form.SetFileName( argv[1] );
-  app.setMainWidget( &form );
   form.show( );
 
-  return app.exec();
+  int output = app.exec();
+  app.closeAllWindows();
+
+  return output;
 }
+
