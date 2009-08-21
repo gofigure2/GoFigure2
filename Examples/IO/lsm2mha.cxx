@@ -49,7 +49,7 @@ int main(int argc,char* argv[])
 
   // Get the name of the file without the path
   unsigned int j, len = strlen(argv[1]);
-  for( unsigned int i = len-1; i >= 0; i-- )
+  for( unsigned int i = len-1; i != 0; i-- )
   {
     if ( argv[1][i] == '/' )
     {

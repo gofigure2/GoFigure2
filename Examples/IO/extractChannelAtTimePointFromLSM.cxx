@@ -8,24 +8,24 @@
 #include "vtkImageData.h"
 using namespace std;
 
-// This code extracts a specified channel at a given time-point from an LSM file
-// and writes out as an mha file
+// This code extracts a specified channel at a given time-point 
+// from an LSM file and writes out as an mha file
 
-int main(int argc,char* argv[])
+int main( int argc, char* argv[] )
 {
   const unsigned int Dimension = 3;
 
   if ( argc < 4 )
-  {
+    {
     std::cout << "Usage: ";
     std::cout << "(exe) FileName TimePoint DirCh1 DirCh2";
     std::cout << std::endl;
-    return 0;
-  }
+    return EXIT_FAILURE;
+    }
 
   //read the LSM file - can be multiple channels and time-points:
-  vtkLSMReader* reader=vtkLSMReader::New();
-  reader->SetFileName(argv[1]);
+  vtkLSMReader* reader = vtkLSMReader::New();
+  reader->SetFileName( argv[1] );
   reader->Update();
 
   // Get the number of channels
@@ -44,22 +44,25 @@ int main(int argc,char* argv[])
   std::cout << NumberOfChannels << std::endl;
 
   // Get the name of the file without the path
-  size_t j, len = strlen(argv[1]);
-  for( size_t  i = len-1; i >= 0; i-- )
-  {
-    if ( argv[1][i] == '/' )
+  // NOTE: the input filename MUST NOT be located 
+  size_t i, j, len = strlen( argv[1] );
+  for( i = len-1; i != 0; i-- )
     {
+    if( argv[1][i] == '/' )
+      {
       j = i;
       break;
+      }
     }
-  }
   j++;
 
   char* fname = new char[len-j+1];
-  for( size_t i = 0; i < len-j+1; i++ )
+  for( i = 0; i < len-j+1; i++ )
+    {
     fname[i]  = argv[1][j+i];
+    }
 
-  vtkMetaImageWriter * writer = vtkMetaImageWriter::New();
+  vtkMetaImageWriter* writer = vtkMetaImageWriter::New();
   writer->SetFileDimensionality( Dimension );
 
   // Select the specified time-point and channel for write-out
@@ -86,3 +89,4 @@ int main(int argc,char* argv[])
 
   return EXIT_SUCCESS;
 }
+
