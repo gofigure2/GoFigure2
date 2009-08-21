@@ -134,8 +134,6 @@ ELSE( APPLE )
 
   IF( WIN32 )
     INSTALL( TARGETS gofigure
-      LIBRARY DESTINATION lib
-      ARCHIVE DESTINATION lib
       RUNTIME DESTINATION bin
       COMPONENT Runtime
     )
