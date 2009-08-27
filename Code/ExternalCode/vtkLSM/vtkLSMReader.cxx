@@ -675,7 +675,7 @@ int vtkLSMReader::ReadScanInformation(ifstream* f, unsigned long pos)
     unsigned int subblocksOpen = 0;
     char* name;
     double gain;
-    double wavelength;
+    double wavelength = 0.0;
     int mode;
     char* chName;
     int chIsOn = 0, trackIsOn = 0, isOn = 0;
