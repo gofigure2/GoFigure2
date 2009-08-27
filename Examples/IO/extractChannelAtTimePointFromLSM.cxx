@@ -45,7 +45,9 @@ int main( int argc, char* argv[] )
 
   // Get the name of the file without the path
   // NOTE: the input filename MUST NOT be located 
-  size_t i, j, len = strlen( argv[1] );
+  size_t i = 0;
+  size_t j = 0;
+  size_t len = strlen( argv[1] );
   for( i = len-1; i != 0; i-- )
     {
     if( argv[1][i] == '/' )

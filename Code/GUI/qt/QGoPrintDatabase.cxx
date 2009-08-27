@@ -256,12 +256,18 @@ void QGoPrintDatabase::CreateCorrespondingCollection()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+//
+//  Return negative value on error
+//  Return 0 if we are in the FIgure Table
+//  Return 1 if we are in the Mesh   Table
+//
 int QGoPrintDatabase::InWhichTableAreWe ()
 {
   int CurrentIndex = this->DBTabWidget->currentIndex();
   QString TabName = this->DBTabWidget->tabText(CurrentIndex);
 
-  int TabIndex;
+  int TabIndex = -1; // Default value. 
+
   if (TabName == "figure")
     {
     TabIndex = 0;

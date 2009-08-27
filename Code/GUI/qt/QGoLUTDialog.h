@@ -51,6 +51,7 @@
 
 #include <vtkLookupTable.h>
 #include <vtkScalarBarActor.h>
+#include <vtkRenderer.h>
 
 #include "QVTKWidget.h"
 #include "MegaVTK2Configure.h"
