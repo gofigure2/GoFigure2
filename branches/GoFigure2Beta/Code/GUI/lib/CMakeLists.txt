@@ -1,18 +1,7 @@
-SET( QGoLIB_SRC
-  QGoLUTDialog.cxx
-  QGoMainWindow.cxx
-  QGoImageView2D.cxx
-  QGoTabImageView2D.cxx
-)
+ADD_SUBDIRECTORY( QGoImageView )
 
-SET( QGoLIB_HDRS
-  QGoLUTDialog.h
-  QGoMainWindow.h
-  QGoImageView2D.h
-  QGoTabImageView2D.h
-  QGoTabImageViewElementBase.h
-  QGoTabElementBase.h
-)
+FILE( GLOB QGoLIB_SRC *.cxx )
+FILE( GLOB QGoLIB_HDRS *.h )
 
 SET( QGoMainWindow_UI
   go.ui
@@ -42,8 +31,7 @@ ADD_LIBRARY( QGoLib
 
 TARGET_LINK_LIBRARIES( QGoLib
   QGoLib
-  itkQt
   QGoIO
-  ${QT_LIBRARIES}
-  vtkRenderingAddOn2
+  QGoImageView
+  itkQt
 )

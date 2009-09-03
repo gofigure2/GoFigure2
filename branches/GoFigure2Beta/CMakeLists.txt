@@ -62,6 +62,7 @@ SET(LIBRARY_OUTPUT_PATH
 
 SET( TESTING_DATA_PATH
   ${GOFIGURE2_SOURCE_DIR}/Testing/Data
+  CACHE PATH "Directory which contains data for testing."
 )
 
 #---------------------------------------------------------------------------
@@ -144,7 +145,7 @@ IF( VTK_FOUND )
   FIND_PACKAGE( Qt4 )
   IF( QT4_FOUND AND QT_VERSION_MINOR GREATER 4 )
     IF( QT_USE_FILE )
-      SET( QT_USE_QT3SUPPORT TRUE )
+      SET( QT_USE_QT3SUPPORT FALSE )
       INCLUDE( ${QT_USE_FILE} )
     ELSE( QT_USE_FILE )
       SET( QT_LIBRARIES ${QT_QT_LIBRARY} )
@@ -189,6 +190,8 @@ IF( VTK_FOUND )
       ${GOFIGURE2_BINARY_DIR}/Code/GUI/
       ${GOFIGURE2_SOURCE_DIR}/Code/GUI/lib
       ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib
+      ${GOFIGURE2_SOURCE_DIR}/Code/GUI/lib/QGoImageView
+      ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/QGoImageView
       ${MEGAVTK2_SOURCE_DIR}
       ${MEGAVTK2_BINARY_DIR}
       ${MEGAVTK2_SOURCE_DIR}/vtkItk
@@ -198,9 +201,11 @@ IF( VTK_FOUND )
       ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/vtkLSM
       ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/itkQt )
 
-    SUBDIRS( Code )
+    INCLUDE( CTest )
 
-#     INCLUDE( CTest )
+    ADD_SUBDIRECTORY( Code )
+    ADD_SUBDIRECTORY( Examples )
+
 
 #     SUBDIRS( Examples
 #            KWStyle

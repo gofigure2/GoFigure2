@@ -6,7 +6,8 @@
 #include "vtkRendererCollection.h"
 #include "vtkImageData.h"
 #include "vtkTextProperty.h"
-#include "vtkViewImage2DWithContourWidget.h"
+#include "vtkViewImage2DCollection.h"
+#include "vtkViewImage2D.h"
 
 //--------------------------------------------------------------------------
 QGoImageView2D::QGoImageView2D( QWidget* parent )
@@ -17,21 +18,26 @@ QGoImageView2D::QGoImageView2D( QWidget* parent )
 
   this->setupUi( this );
 
-  m_View = vtkViewImage2DWithContourWidget::New();
-  m_View->SetViewOrientation( vtkViewImage2D::VIEW_ORIENTATION_AXIAL );
-  m_View->SetViewConvention( vtkViewImage2D::VIEW_CONVENTION_NEUROLOGICAL );
+  m_Pool = vtkViewImage2DCollection::New();
+
+  vtkViewImage2D* View = vtkViewImage2D::New();
+  View->SetViewOrientation( vtkViewImage2D::VIEW_ORIENTATION_AXIAL );
+  View->SetViewConvention( vtkViewImage2D::VIEW_CONVENTION_NEUROLOGICAL );
 
   vtkRenderWindow* renwin = m_QVTKWidgetXY->GetRenderWindow( );
-  m_View->SetRenderWindow( renwin );
-  m_View->SetRenderer( renwin->GetRenderers()->GetFirstRenderer() );
-  m_View->SetupInteractor( m_QVTKWidgetXY->GetInteractor() );
+  View->SetRenderWindow( renwin );
+  View->SetRenderer( renwin->GetRenderers()->GetFirstRenderer() );
+  View->SetupInteractor( m_QVTKWidgetXY->GetInteractor() );
+
+  m_Pool->AddItem( View );
+  View->Delete();
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 QGoImageView2D::~QGoImageView2D()
 {
-  m_View->Delete();
+  m_Pool->Delete();
   m_VTKEventQtConnector->Delete();
 }
 //--------------------------------------------------------------------------
@@ -85,12 +91,17 @@ void QGoImageView2D::SetImage( vtkImageData* iImage )
 //--------------------------------------------------------------------------
 void QGoImageView2D::Update( )
 {
-  m_View->SetInput( this->m_Image );
-  m_View->GetTextProperty()->SetFontFamilyToArial();
-  m_View->GetTextProperty()->SetFontSize( 20 );
+  vtkViewImage2D* View = m_Pool->GetItem( 0 );
+  View->SetInput( this->m_Image );
+  View->GetTextProperty()->SetFontFamilyToArial();
+  View->GetTextProperty()->SetFontSize( 20 );
 
-  m_View->Render();
-  m_View->Reset();
+  m_Pool->Initialize();
+//     m_Pool->InitializeAllObservers();
+  m_Pool->SyncSetShowAnnotations( true );
+  m_Pool->SyncSetShowScalarBar( false );
+  m_Pool->SyncRender();
+  m_Pool->SyncReset();
 }
 //--------------------------------------------------------------------------
 

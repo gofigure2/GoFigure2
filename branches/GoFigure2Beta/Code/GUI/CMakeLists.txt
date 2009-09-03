@@ -10,8 +10,9 @@ ADD_EXECUTABLE( gofigure
 
 TARGET_LINK_LIBRARIES( gofigure
   QGoLib
-  ${QT_LIBRARIES}
-  QVTK
+#   QGoImageView
+#   ${QT_LIBRARIES}
+#   QVTK
   ITKBasicFilters
   ITKNumerics
   ITKIO

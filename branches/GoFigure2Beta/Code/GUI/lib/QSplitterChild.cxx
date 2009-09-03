@@ -1,7 +1,7 @@
 /*=========================================================================
-  Author: $Author:$  // Author of last commit
-  Version: $Revision:$  // Revision of last commit
-  Date: $Date:$  // Date of last commit
+  Author: $Author: arnaudgelas $  // Author of last commit
+  Version: $Rev: 577 $  // Revision of last commit
+  Date: $Date: 2009-08-18 10:45:50 -0400 (Tue, 18 Aug 2009) $  // Date of last commit
 =========================================================================*/
 
 /*=========================================================================
@@ -38,44 +38,28 @@
 
 =========================================================================*/
 
-#include <QApplication>
-#include <QSplashScreen>
-#include <QDesktopWidget>
-#include <QCoreApplication>
-#include <QPixmap>
+#include "QSplitterChild.h"
 
-#include <iostream>
-
-#include "QGoMainWindow.h"
-
-int main( int argc, char** argv )
+QSplitterChild::QSplitterChild( QWidget* iParent ): QSplitter( iParent )
 {
-  QApplication app(argc, argv);
-
-  QCoreApplication::setOrganizationName( "MegasonLab" );
-  QCoreApplication::setOrganizationDomain(
-    "http://sourceforge.net/projects/gofigure2/" );
-  QCoreApplication::setApplicationName( "GoFigure2" );
-
-  QPixmap pixmap( ":/fig/splash.jpg" );
-  QSplashScreen *splash = new QSplashScreen(
-    pixmap.scaledToWidth( 800, Qt::SmoothTransformation ),
-    Qt::WindowStaysOnTopHint );
-
-  splash->show();
-
-  app.processEvents();
-  splash->showMessage( "Application loading... please wait" );
-
-  QGoMainWindow form;
-//   app.setMainWidget( &form );
-
-  form.show( );
-
-  splash->showMessage( "Application ready" );
-  app.processEvents();
-  splash->finish( &form );
-  delete splash;
-
-  return app.exec();
+  Prevpos=0;
+  Previndex=0;
 }
+
+QSplitterChild::QSplitterChild( Qt::Orientation iOrientation,
+  QWidget* iParent) : QSplitter( iOrientation, iParent )
+{}
+
+QSplitterChild::~QSplitterChild()
+{}
+
+void QSplitterChild::moveSplitter( int iPos, int index )
+{
+  if( ( Prevpos != iPos ) || ( Previndex != index ) )
+    {
+    Prevpos=iPos;
+    Previndex=index;
+    QSplitter::moveSplitter( iPos, index );
+    }
+}
+

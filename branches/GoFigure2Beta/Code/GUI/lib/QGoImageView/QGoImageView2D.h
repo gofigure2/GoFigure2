@@ -1,13 +1,13 @@
 #ifndef __QGoImageView2D_h
 #define __QGoImageView2D_h
 
-#include <QWidget>
+#include <QtGui/QWidget>
 #include <QHBoxLayout>
 
 class vtkImageData;
+class vtkViewImage2DCollection;
 class QVTKWidget;
 class vtkEventQtSlotConnect;
-class vtkViewImage2DWithContourWidget;
 
 
 /**
@@ -16,26 +16,26 @@ class vtkViewImage2DWithContourWidget;
 */
 class QGoImageView2D : public QWidget
 {
+  Q_OBJECT
   public:
-    QGoImageView2D( QWidget* parent = 0 );
-    ~QGoImageView2D();
+    explicit QGoImageView2D( QWidget* parent = 0 );
+    virtual ~QGoImageView2D();
 
     void SetImage( vtkImageData* iImage );
     void Update();
 
     void setupUi( QWidget* parent );
     void retranslateUi(QWidget *parent);
+  public slots:
+    void yoyo() {}
 
   protected:
+    vtkViewImage2DCollection*         m_Pool;
     QHBoxLayout*                      m_LayOut;
     QVTKWidget*                       m_QVTKWidgetXY;
-    vtkViewImage2DWithContourWidget*  m_View;
     vtkImageData*                     m_Image;
     vtkEventQtSlotConnect*            m_VTKEventQtConnector;
 
-  private:
-    QGoImageView2D( const QGoImageView2D& );
-    void operator = ( const QGoImageView2D& );
 };
 #endif
 

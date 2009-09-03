@@ -7,13 +7,9 @@ class QAction;
 class QToolBar;
 class QDockWidget;
 
-class QVTKWidget;
-class vtkEventQtSlotConnect;
-
 #include "QGoTabImageViewElementBase.h"
 #include "QGoLUTDialog.h"
 
-#include "vtkViewImage2DWithContourWidget.h"
 #include "QGoImageView2D.h"
 
 /**

@@ -1,0 +1,13 @@
+SET( QGOIMAGEVIEW_EXAMPLE_SRC
+  qgoimageview2d
+)
+
+FOREACH( var ${QGOIMAGEVIEW_EXAMPLE_SRC} )
+
+  ADD_EXECUTABLE( ${var} ${var} )
+  TARGET_LINK_LIBRARIES( ${var}
+    QGoImageView
+  )
+
+ENDFOREACH( var ${QGOIMAGEVIEW_EXAMPLE_SRC} )
+
