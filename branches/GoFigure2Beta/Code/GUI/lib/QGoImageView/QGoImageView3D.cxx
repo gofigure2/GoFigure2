@@ -19,6 +19,7 @@
 
 #include "vtkViewImage2DCommand.h"
 
+//-------------------------------------------------------------------------
 void QGoImageView3D::SetupViewGivenQVTKWidget(
   vtkViewImage2D* iView,
   QVTKWidget* iWidget )
@@ -28,6 +29,7 @@ void QGoImageView3D::SetupViewGivenQVTKWidget(
   iView->SetRenderer( renwin->GetRenderers()->GetFirstRenderer() );
   iView->SetupInteractor( iWidget->GetInteractor() );
 }
+//-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 QGoImageView3D::QGoImageView3D( QWidget* iParent ) : QWidget( iParent )
@@ -42,11 +44,11 @@ QGoImageView3D::QGoImageView3D( QWidget* iParent ) : QWidget( iParent )
 
   setupUi( this );
   QObject::connect( this->SliderXY, SIGNAL( valueChanged( int ) ),
-    this, SLOT( SetSlideView1( int ) ) );
+    this, SLOT( SetSlideViewXY( int ) ) );
   QObject::connect( this->SliderXZ, SIGNAL( valueChanged( int ) ),
-    this, SLOT( SetSlideView2( int ) ) );
+    this, SLOT( SetSlideViewXZ( int ) ) );
   QObject::connect( this->SliderYZ, SIGNAL( valueChanged( int ) ),
-    this, SLOT( SetSlideView3( int ) ) );
+    this, SLOT( SetSlideViewYZ( int ) ) );
 
   QObject::connect( this->HtSplitter, SIGNAL( splitterMoved( int, int ) ),
     this->HbSplitter, SLOT( moveSplitter( int, int ) ) );
@@ -88,7 +90,9 @@ QGoImageView3D::QGoImageView3D( QWidget* iParent ) : QWidget( iParent )
   this->View3D->SetupInteractor( this->QvtkWidget_XYZ->GetInteractor() );
   this->Pool->SetExtraRenderWindow( renwin4 );
 }
+//-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
 QGoImageView3D::~QGoImageView3D()
 {
   delete HtSplitter;
@@ -98,6 +102,7 @@ QGoImageView3D::~QGoImageView3D()
   View3D->Delete();
   VtkEventQtConnector->Delete();
 }
+//-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void QGoImageView3D::setupUi( QWidget* iParent )
@@ -274,7 +279,7 @@ void QGoImageView3D::Update()
     this->View3D->ResetCamera();
 
     this->Pool->Initialize();
-//     this->Pool->InitializeAllObservers();
+    this->Pool->InitializeAllObservers();
     this->Pool->SyncSetBackground( this->Pool->GetItem(0)->GetBackground() );
     this->Pool->SyncSetShowAnnotations( true );
 
