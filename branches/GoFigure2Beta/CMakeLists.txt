@@ -205,6 +205,7 @@ IF( VTK_FOUND )
 
     ADD_SUBDIRECTORY( Code )
     ADD_SUBDIRECTORY( Examples )
+    ADD_SUBDIRECTORY( Main )
 
 
 #     SUBDIRS( Examples
