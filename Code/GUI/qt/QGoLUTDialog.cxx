@@ -147,7 +147,7 @@ void QGoLUTDialog::setupUi( QDialog* LUTDialog )
 
   this->ButtonBox = new QDialogButtonBox;
   this->ButtonBox->setObjectName( QString::fromUtf8("buttonBox") );
-  this->ButtonBox->setGeometry(QRect(60, 160, 252, 32));
+  this->ButtonBox->setGeometry( QRect( 60, 160, 252, 32 ) );
   this->ButtonBox->setOrientation(Qt::Horizontal);
   this->ButtonBox->setStandardButtons( QDialogButtonBox::Cancel |
   QDialogButtonBox::Ok );

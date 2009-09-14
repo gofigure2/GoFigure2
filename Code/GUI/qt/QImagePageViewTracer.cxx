@@ -942,7 +942,7 @@ void QImagePageViewTracer::Set3DImage( vtkImageData* iInput )
   // when SliceMoveEvent occurs in the XY View, Slider1 moves.
   VtkEventQtConnector->Connect(
     reinterpret_cast< vtkObject* >( View3->GetInteractorStyle() ),
-    vtkViewImage2DCommand::SliceMoveEvent,
+    vtkCommand::ModifiedEvent,
     this, SLOT( MoveSlider3() ) );
 
   // Event connection between vtk and qt
