@@ -1,10 +1,10 @@
 #include <QApplication>
 #include <QTimer>
 
-#include "vtkPNGReader.h"
+#include "vtkMetaImageReader.h"
 #include "vtkImageData.h"
 
-#include "QGoImageView2D.h"
+#include "QGoImageView3D.h"
 
 int main( int argc, char** argv )
 {
@@ -19,11 +19,13 @@ int main( int argc, char** argv )
   QCoreApplication::setOrganizationName("MegasonLab");
   QCoreApplication::setOrganizationDomain( "http://gofigure2.sourceforge.net" );
 
-  QGoImageView2D* viewer = new QGoImageView2D;
+  QGoImageView3D* viewer = new QGoImageView3D;
 
-  vtkPNGReader* reader = vtkPNGReader::New();
+  vtkMetaImageReader* reader = vtkMetaImageReader::New();
   reader->SetFileName( argv[1] );
   reader->Update();
+
+  vtkImageData* image = reader->GetOutput();
 
   QTimer* timer = new QTimer;
   timer->setSingleShot( true );

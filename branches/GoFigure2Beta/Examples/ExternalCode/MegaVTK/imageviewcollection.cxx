@@ -66,9 +66,14 @@ int main( int argc, char** argv )
   view3d->SetInput( image );
 
   pool->SetExtraRenderWindow( view3d->GetRenderWindow() );
+  pool->InitializeAllObservers();
   pool->Initialize();
   pool->SyncSetBackground( pool->GetItem(0)->GetBackground() );
   pool->SyncSetShowAnnotations( true );
+
+  int size[2] = {400, 400};
+  pool->SyncSetSize( size );
+  pool->SyncPan();
   pool->SyncRender();
   pool->SyncReset();
 

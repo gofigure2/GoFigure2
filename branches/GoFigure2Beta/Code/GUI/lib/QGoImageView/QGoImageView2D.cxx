@@ -97,7 +97,7 @@ void QGoImageView2D::Update( )
   View->GetTextProperty()->SetFontSize( 20 );
 
   m_Pool->Initialize();
-//     m_Pool->InitializeAllObservers();
+  m_Pool->InitializeAllObservers();
   m_Pool->SyncSetShowAnnotations( true );
   m_Pool->SyncSetShowScalarBar( false );
   m_Pool->SyncRender();

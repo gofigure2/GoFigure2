@@ -12,7 +12,7 @@ class vtkViewImage2DCollectionCommand :
   static vtkViewImage2DCollectionCommand *New()
     {return new vtkViewImage2DCollectionCommand;};
 
-  vtkViewImage2DCollection* GetCollection (void)
+  vtkViewImage2DCollection* GetCollection()
   { return this->Collection;};
   void SetCollection (vtkViewImage2DCollection* p);
 

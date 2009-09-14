@@ -171,18 +171,11 @@ void QGoImageView3D::retranslateUi(QWidget *iParent)
   iParent->setWindowTitle( this->m_Tag );
   Q_UNUSED(iParent);
 }
-//-------------------------------------------------------------------------
-void QGoImageView3D::SetImage( vtkImageData* input )
-{
-  if( !input )
-    {
-    return;
-    }
-  else
-    {
-    this->m_Image = input;
 
-    vtkViewImage2D* View1 = this->Pool->GetItem( 0 );
+//-------------------------------------------------------------------------
+void QGoImageView3D::Update()
+{
+  vtkViewImage2D* View1 = this->Pool->GetItem( 0 );
     View1->SetInput( this->m_Image );
 
     this->View3D->Add2DPhantom( 0,
@@ -298,6 +291,18 @@ void QGoImageView3D::SetImage( vtkImageData* input )
     this->SliderXY->setValue( (this->SliderXY->minimum()+this->SliderXY->maximum())/2 );
     this->SliderXZ->setValue( (this->SliderXZ->minimum()+this->SliderXZ->maximum())/2 );
     this->SliderYZ->setValue( (this->SliderYZ->minimum()+this->SliderYZ->maximum())/2 );
+}
+
+//-------------------------------------------------------------------------
+void QGoImageView3D::SetImage( vtkImageData* input )
+{
+  if( !input )
+    {
+    return;
+    }
+  else
+    {
+    this->m_Image = input;
     }
 }
 
@@ -605,6 +610,39 @@ void QGoImageView3D::SetFullScreenView( const int& iS )
 }
 //-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
+void QGoImageView3D::Quadview()
+{
+  this->SetFullScreenView( 0 );
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoImageView3D::FullScreenViewXY()
+{
+  this->SetFullScreenView( 1 );
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoImageView3D::FullScreenViewXZ()
+{
+  this->SetFullScreenView( 2 );
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoImageView3D::FullScreenViewYZ()
+{
+  this->SetFullScreenView( 3 );
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoImageView3D::FullScreenViewXYZ()
+{
+  this->SetFullScreenView( 4 );
+}
 //-------------------------------------------------------------------------
 int QGoImageView3D::GetFullScreenView( ) const
 {

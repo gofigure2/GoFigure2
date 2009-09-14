@@ -1,5 +1,6 @@
 SET( QGOIMAGEVIEW_EXAMPLE_SRC
   qgoimageview2d
+  qgoimageview3d
 )
 
 FOREACH( var ${QGOIMAGEVIEW_EXAMPLE_SRC} )
