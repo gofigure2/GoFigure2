@@ -41,7 +41,7 @@
 #ifndef __QGoMainWindow_h
 #define __QGoMainWindow_h
 
-#include <qmainwindow.h>
+#include <QMainWindow>
 
 #include <vtkImageData.h>
 #include <itkImage.h>
@@ -57,12 +57,6 @@
 #include "CreateDataBaseHelper.h"
 // #endif
 
-#include <QActionGroup>
-#include <QVector>
-#include <QHash>
-#include <QProgressBar>
-
-#include "QGoLUTDialog.h"
 #include "ui_go.h"
 
 #ifdef ITKLEVELSETCODE

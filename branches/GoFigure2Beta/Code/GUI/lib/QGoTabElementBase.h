@@ -52,13 +52,13 @@ class QGoTabElementBase : public QWidget
 {
   Q_OBJECT
 public:
-  QGoTabElementBase( QWidget* parent = 0 ) : QWidget( parent ) {}
-  virtual ~QGoTabElementBase() {}
+  QGoTabElementBase( QWidget* parent = 0 );
+  virtual ~QGoTabElementBase();
 
-  virtual std::vector< QMenu* > Menus() = 0;
-  virtual std::list< QToolBar* > ToolBar() = 0;
-  virtual std::list< QDockWidget* > DockWidget() = 0;
-  virtual std::list< QWidget* > AdditionalWidget() = 0;
+  virtual std::vector< QMenu* > Menus();
+  virtual std::list< QToolBar* > ToolBar();
+  virtual std::list< QDockWidget* > DockWidget();
+  virtual std::list< QWidget* > AdditionalWidget();
 
   virtual void WriteSettings() = 0;
   virtual void ReadSettings() = 0;

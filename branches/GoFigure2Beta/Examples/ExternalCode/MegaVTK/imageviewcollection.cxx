@@ -46,6 +46,7 @@ int main( int argc, char** argv )
   view2->SetInput (image);
   view2->SetViewOrientation (vtkViewImage2D::VIEW_ORIENTATION_CORONAL);
   view3d->Add2DPhantom( 1, view2->GetImageActor(), view2->GetSlicePlane() );
+  pool->AddItem( view2 );
 
   iren2->Delete();
   view2->Delete();
@@ -56,6 +57,7 @@ int main( int argc, char** argv )
   view3->SetInput (image);
   view3->SetViewOrientation (vtkViewImage2D::VIEW_ORIENTATION_SAGITTAL);
   view3d->Add2DPhantom( 2, view3->GetImageActor(), view3->GetSlicePlane() );
+  pool->AddItem( view3 );
 
   iren3->Delete();
   view3->Delete();

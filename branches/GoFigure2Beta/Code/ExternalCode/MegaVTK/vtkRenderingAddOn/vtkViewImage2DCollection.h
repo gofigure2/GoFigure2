@@ -174,7 +174,8 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage2DCollection : public vtkCollection
 
   // Description:
   // Initialize the viewers togethers.
-  void Initialize(void);
+  void Initialize();
+  void InitializeAllObservers();
 
 
   vtkGetObjectMacro (Command, vtkViewImage2DCollectionCommand);
@@ -199,11 +200,13 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage2DCollection : public vtkCollection
   vtkSyncSetObjectMacro (Size, int, vtkViewImage2D);
   vtkSyncSetObjectMacro (Position, int, vtkViewImage2D);
   vtkSyncSetObjectMacro (WorldCoordinates, double, vtkViewImage2D);
-  vtkSyncSetObjectMacro (Background, double, vtkViewImage2D);
 
-  void SyncRender (void);
-  void SyncResetWindowLevel (void);
-  void SyncReset (void);
+  void SyncSetBackground( double* rgb );
+  void SyncRender();
+  void SyncResetWindowLevel();
+  void SyncReset();
+  void SyncPan();
+  void SyncSetZoomAndParallelScale( double Zoom, double ParallelScale );
 
  protected:
 
@@ -213,45 +216,6 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage2DCollection : public vtkCollection
   vtkViewImage2DCollectionCommand* Command;
   vtkRenderWindow* ExtraRenderWindow;
 };
-
-
-
-
-class vtkViewImage2DCollectionCommand :
-  public vtkCommand
-{
-
- public:
-
-  static vtkViewImage2DCollectionCommand *New()
-    {return new vtkViewImage2DCollectionCommand;};
-
-  vtkViewImage2DCollection* GetCollection (void)
-  { return this->Collection;};
-  void SetCollection (vtkViewImage2DCollection* p);
-
-  // Description:
-  // Satisfy the superclass API for callbacks. Recall that the caller is
-  // the instance invoking the event; eid is the event id (see
-  // vtkCommand.h); and calldata is information sent when the callback
-  // was invoked (e.g., progress value in the vtkCommand::ProgressEvent).
-  virtual void Execute(vtkObject *caller,unsigned long event,
-    void *vtkNotUsed(callData));
-
- protected:
-
-  vtkViewImage2DCollectionCommand();
-  ~vtkViewImage2DCollectionCommand(){};
-
- private:
-  vtkViewImage2DCollection* Collection;
-
-  double InitialWindow;
-  double InitialLevel;
-
-};
-
-
 
 
 #endif /* _vtkViewImage2DCollection_h_ */

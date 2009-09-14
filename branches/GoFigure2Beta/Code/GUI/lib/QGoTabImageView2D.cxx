@@ -50,7 +50,7 @@ std::vector< QMenu* > QGoTabImageView2D::Menus()
 
   ViewMenu->addAction( LookupTableAction );
 
-  QAction* ScalarBarAction = new QAction( tr( "Display Scalar Bar"), this );
+  QAction* ScalarBarAction = new QAction( tr( "Display Scalar Bar" ), this );
   ViewMenu->addAction( ScalarBarAction );
 
   oMenuVector.push_back( ViewMenu );
