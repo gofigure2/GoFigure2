@@ -68,7 +68,7 @@ SET( TESTING_DATA_PATH
 #---------------------------------------------------------------------------
 # Handle Documentation
 #---------------------------------------------------------------------------
-# OPTION( BUILD_DOCUMENTATION "Build Doxygen Documentation" OFF )
+OPTION( BUILD_DOCUMENTATION "Build Doxygen Documentation" OFF )
 # OPTION( BUILD_PACKAGE "Software packaging" OFF )d
 
 #---------------------------------------------------------------------------
@@ -85,19 +85,19 @@ SET( TESTING_DATA_PATH
 # ENDIF( BUILD_TEMPARNAUD )
 
 #---------------------------------------------------------------------------
-# IF( BUILD_DOCUMENTATION )
-#   FIND_PACKAGE( Doxygen )
-#   IF( DOXYGEN_FOUND )
-#     IF( DOXYGEN_DOT_FOUND )
-#       ADD_SUBDIRECTORY( Documentation )
-#     ELSE( DOXYGEN_DOT_FOUND )
-#      MESSAGE( STATUS "Warning: Dot (from GraphViz) not found - Documentation
-# will not ce generated" )
-#     ENDIF( DOXYGEN_DOT_FOUND )
-#   ELSE( DOXYGEN_FOUND AND )
-#     MESSAGE( STATUS "Warning: Doxygen not found - Documentation will not be created")
-#   ENDIF( DOXYGEN_FOUND )
-# ENDIF( BUILD_DOCUMENTATION )
+IF( BUILD_DOCUMENTATION )
+  FIND_PACKAGE( Doxygen )
+  IF( DOXYGEN_FOUND )
+    IF( DOXYGEN_DOT_FOUND )
+      ADD_SUBDIRECTORY( Documentation )
+    ELSE( DOXYGEN_DOT_FOUND )
+      MESSAGE( STATUS "Warning: Dot (from GraphViz) not found - Documentation
+will not ce generated" )
+    ENDIF( DOXYGEN_DOT_FOUND )
+  ELSE( DOXYGEN_FOUND AND )
+    MESSAGE( STATUS "Warning: Doxygen not found - Documentation will not be created")
+  ENDIF( DOXYGEN_FOUND )
+ENDIF( BUILD_DOCUMENTATION )
 
 #---------------------------------------------------------------------------
 # Main GoFigure Settings
