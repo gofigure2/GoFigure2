@@ -1,3 +1,5 @@
+#include <QApplication>
+
 #include "QGoTabElementBase.h"
 
 class QGoTabElementTestHelper : public QGoTabElementBase
@@ -17,6 +19,10 @@ class QGoTabElementTestHelper : public QGoTabElementBase
 
 int main( int argc, char** argv )
 {
+  QApplication app( argc, argv );
+  QCoreApplication::setOrganizationName("MegasonLab");
+  QCoreApplication::setOrganizationDomain( "http://gofigure2.sourceforge.net" );
+
   QGoTabElementTestHelper* test = new QGoTabElementTestHelper;
   delete test;
 
