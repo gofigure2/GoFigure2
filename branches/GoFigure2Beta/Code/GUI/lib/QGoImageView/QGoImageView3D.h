@@ -49,6 +49,10 @@ public:
 
   void SaveStateSplitters();
 
+  int GetSliceViewXY() const;
+  int GetSliceViewXZ() const;
+  int GetSliceViewYZ() const;
+
 public slots:
   QString SnapshotViewXY( const SnapshotImageType& iType,
     const QString& iBaseName = QString( "snapshot" ) );
@@ -59,9 +63,9 @@ public slots:
   QString SnapshotViewXYZ( const SnapshotImageType& iType,
     const QString& iBaseName = QString( "snapshot" ) );
 
-  void SetSlideViewXY( const int& );
-  void SetSlideViewXZ( const int& );
-  void SetSlideViewYZ( const int& );
+  void SetSliceViewXY( const int& );
+  void SetSliceViewXZ( const int& );
+  void SetSliceViewYZ( const int& );
 
   void SetFullScreenView( const int& iS );
   void Quadview();
@@ -111,6 +115,7 @@ protected:
   virtual void resizeEvent( QResizeEvent* event );
 
   void SetupViewGivenQVTKWidget( vtkViewImage2D* iView, QVTKWidget* iWidget );
+  void SetupVTKtoQtConnections();
 
   QString SnapshotView( QVTKWidget* iWidget,
     const SnapshotImageType& iType,

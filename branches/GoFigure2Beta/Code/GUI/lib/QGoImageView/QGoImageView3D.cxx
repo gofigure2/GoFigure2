@@ -44,11 +44,11 @@ QGoImageView3D::QGoImageView3D( QWidget* iParent ) : QWidget( iParent )
 
   setupUi( this );
   QObject::connect( this->SliderXY, SIGNAL( valueChanged( int ) ),
-    this, SLOT( SetSlideViewXY( int ) ) );
+    this, SLOT( SetSliceViewXY( int ) ) );
   QObject::connect( this->SliderXZ, SIGNAL( valueChanged( int ) ),
-    this, SLOT( SetSlideViewXZ( int ) ) );
+    this, SLOT( SetSliceViewXZ( int ) ) );
   QObject::connect( this->SliderYZ, SIGNAL( valueChanged( int ) ),
-    this, SLOT( SetSlideViewYZ( int ) ) );
+    this, SLOT( SetSliceViewYZ( int ) ) );
 
   QObject::connect( this->HtSplitter, SIGNAL( splitterMoved( int, int ) ),
     this->HbSplitter, SLOT( moveSplitter( int, int ) ) );
@@ -59,27 +59,18 @@ QGoImageView3D::QGoImageView3D( QWidget* iParent ) : QWidget( iParent )
   View3D = vtkViewImage3D::New();
 
   vtkViewImage2D* View1 = vtkViewImage2D::New();
-  View1->SetViewOrientation( vtkViewImage2D::VIEW_ORIENTATION_AXIAL );
-  View1->SetViewConvention( vtkViewImage2D::VIEW_CONVENTION_NEUROLOGICAL );
-
   this->SetupViewGivenQVTKWidget( View1, this->QvtkWidget_XY );
 
   this->Pool->AddItem( View1 );
   View1->Delete();
 
   vtkViewImage2D* View2 = vtkViewImage2D::New();
-  View2->SetViewConvention( vtkViewImage2D::VIEW_CONVENTION_NEUROLOGICAL );
-  View2->SetViewOrientation (vtkViewImage2D::VIEW_ORIENTATION_CORONAL);
-
   this->SetupViewGivenQVTKWidget( View2, this->QvtkWidget_XZ );
 
   this->Pool->AddItem( View2 );
   View2->Delete();
 
   vtkViewImage2D* View3 = vtkViewImage2D::New();
-  View3->SetViewConvention( vtkViewImage2D::VIEW_CONVENTION_NEUROLOGICAL );
-  View3->SetViewOrientation( vtkViewImage2D::VIEW_ORIENTATION_SAGITTAL );
-
   this->SetupViewGivenQVTKWidget( View3, this->QvtkWidget_YZ );
 
   this->Pool->AddItem( View3 );
@@ -176,127 +167,146 @@ void QGoImageView3D::retranslateUi(QWidget *iParent)
   iParent->setWindowTitle( this->m_Tag );
   Q_UNUSED(iParent);
 }
+//-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void QGoImageView3D::Update()
 {
   vtkViewImage2D* View1 = this->Pool->GetItem( 0 );
-    View1->SetInput( this->m_Image );
+  View1->SetInput( this->m_Image );
+  View1->SetViewOrientation( vtkViewImage2D::VIEW_ORIENTATION_AXIAL );
+  View1->SetViewConvention( vtkViewImage2D::VIEW_CONVENTION_NEUROLOGICAL );
 
-    this->View3D->Add2DPhantom( 0,
+  this->View3D->Add2DPhantom( 0,
       View1->GetImageActor(), View1->GetSlicePlane() );
 
-    int *range = View1->GetSliceRange();
+  int *range = View1->GetSliceRange();
 
-    this->SliderXY->setMinimum( range[0] );
-    this->SliderXY->setMaximum( range[1] );
+  this->SliderXY->setMinimum( range[0] );
+  this->SliderXY->setMaximum( range[1] );
 
-    // Event connection between vtk and qt
-    // when SliceMoveEvent occurs in the XY View, SliderXY moves.
-    VtkEventQtConnector->Connect(
-      reinterpret_cast< vtkObject* >( View1->GetInteractorStyle() ),
-      vtkViewImage2DCommand::SliceMoveEvent,
-      this, SLOT( MoveSliderXY() ) );
+  vtkViewImage2D* View2 = this->Pool->GetItem( 1 );
+  View2->SetInput( this->m_Image );
+  View2->SetViewConvention( vtkViewImage2D::VIEW_CONVENTION_NEUROLOGICAL );
+  View2->SetViewOrientation (vtkViewImage2D::VIEW_ORIENTATION_CORONAL);
 
-    // Event connection between vtk and qt
-    // when RequestedPositionEvent occurs in the XY View (double-click),
-    // SliderXZ and SliderYZ move.
-    VtkEventQtConnector->Connect(
-      reinterpret_cast< vtkObject* >( View1->GetInteractorStyle() ),
-      vtkViewImage2DCommand::RequestedPositionEvent,
-      this, SLOT( MoveSliderXZ() ) );
+  this->View3D->Add2DPhantom( 1,
+    View2->GetImageActor(), View2->GetSlicePlane() );
 
-    VtkEventQtConnector->Connect(
-      reinterpret_cast< vtkObject* >( View1->GetInteractorStyle() ),
-      vtkViewImage2DCommand::RequestedPositionEvent,
-      this, SLOT( MoveSliderYZ() ) );
+  range = View2->GetSliceRange();
 
-    vtkViewImage2D* View2 = this->Pool->GetItem( 1 );
-    View2->SetInput( this->m_Image );
+  this->SliderXZ->setMinimum( range[0] );
+  this->SliderXZ->setMaximum( range[1] );
 
-    this->View3D->Add2DPhantom( 1,
-      View2->GetImageActor(), View2->GetSlicePlane() );
+  vtkViewImage2D* View3 = this->Pool->GetItem( 2 );
+  View3->SetInput( this->m_Image );
+  View3->SetViewConvention( vtkViewImage2D::VIEW_CONVENTION_NEUROLOGICAL );
+  View3->SetViewOrientation( vtkViewImage2D::VIEW_ORIENTATION_SAGITTAL );
 
-    range = View2->GetSliceRange();
+  this->View3D->Add2DPhantom(
+    2, View3->GetImageActor(), View3->GetSlicePlane() );
 
-    this->SliderXZ->setMinimum( range[0] );
-    this->SliderXZ->setMaximum( range[1] );
-    // Event connection between vtk and qt
-    // when SliceMoveEvent occurs in the XY View, SliderXY moves.
-    VtkEventQtConnector->Connect(
-      reinterpret_cast< vtkObject* >( View2->GetInteractorStyle() ),
-      vtkViewImage2DCommand::SliceMoveEvent,
-      this, SLOT( MoveSliderXZ() ) );
+  range = View3->GetSliceRange();
+  this->SliderYZ->setMinimum( range[0] );
+  this->SliderYZ->setMaximum( range[1] );
 
-    // Event connection between vtk and qt
-    // when RequestedPositionEvent occurs in the XY View (double-click),
-    // SliderXZ and SliderYZ move.
-    VtkEventQtConnector->Connect(
-      reinterpret_cast< vtkObject* >( View2->GetInteractorStyle() ),
-      vtkViewImage2DCommand::RequestedPositionEvent,
-      this, SLOT( MoveSliderXY() ) );
+  this->View3D->SetInput( this->m_Image );
+  this->View3D->SetVolumeRenderingOff();
+  this->View3D->SetTriPlanarRenderingOn();
+  this->View3D->SetShowScalarBar( false );
+  this->View3D->ResetCamera();
 
-    VtkEventQtConnector->Connect(
-      reinterpret_cast< vtkObject* >( View2->GetInteractorStyle() ),
-      vtkViewImage2DCommand::RequestedPositionEvent,
-      this, SLOT( MoveSliderYZ() ) );
+  this->Pool->Initialize();
+  this->Pool->InitializeAllObservers();
+  this->Pool->SyncSetBackground( this->Pool->GetItem(0)->GetBackground() );
+  this->Pool->SyncSetShowAnnotations( true );
 
-    vtkViewImage2D* View3 = this->Pool->GetItem( 2 );
-    View3->SetInput( this->m_Image );
+  for( int i = 0; i < 3; i++ )
+    {
+    this->Pool->GetItem(i)->GetTextProperty()->SetFontFamilyToArial();
+    this->Pool->GetItem(i)->GetTextProperty()->SetFontSize( 14 );
+    }
 
-    this->View3D->Add2DPhantom(
-      2, View3->GetImageActor(), View3->GetSlicePlane() );
+  this->Pool->SyncSetShowScalarBar( false );
+  this->Pool->SyncRender();
+  this->Pool->SyncReset();
 
-    range = View3->GetSliceRange();
-    this->SliderYZ->setMinimum( range[0] );
-    this->SliderYZ->setMaximum( range[1] );
+  this->SliderXY->setValue( (this->SliderXY->minimum()+this->SliderXY->maximum())/2 );
+  this->SliderXZ->setValue( (this->SliderXZ->minimum()+this->SliderXZ->maximum())/2 );
+  this->SliderYZ->setValue( (this->SliderYZ->minimum()+this->SliderYZ->maximum())/2 );
 
-    // Event connection between vtk and qt
-    // when SliceMoveEvent occurs in the XY View, SliderXY moves.
-    VtkEventQtConnector->Connect(
-      reinterpret_cast< vtkObject* >( View3->GetInteractorStyle() ),
-      vtkViewImage2DCommand::SliceMoveEvent,
-      this, SLOT( MoveSliderYZ() ) );
-
-    // Event connection between vtk and qt
-    // when RequestedPositionEvent occurs in the XY View (double-click),
-    // SliderXZ and SliderYZ move.
-    VtkEventQtConnector->Connect(
-      reinterpret_cast< vtkObject* >( View3->GetInteractorStyle() ),
-      vtkViewImage2DCommand::RequestedPositionEvent,
-      this, SLOT( MoveSliderXY() ) );
-
-    VtkEventQtConnector->Connect(
-      reinterpret_cast< vtkObject* >( View3->GetInteractorStyle() ),
-      vtkViewImage2DCommand::RequestedPositionEvent,
-      this, SLOT( MoveSliderXZ() ) );
-
-
-    this->View3D->SetInput( this->m_Image );
-    this->View3D->SetVolumeRenderingOff();
-    this->View3D->SetTriPlanarRenderingOn();
-    this->View3D->SetShowScalarBar( false );
-    this->View3D->ResetCamera();
-
-    this->Pool->Initialize();
-    this->Pool->InitializeAllObservers();
-    this->Pool->SyncSetBackground( this->Pool->GetItem(0)->GetBackground() );
-    this->Pool->SyncSetShowAnnotations( true );
-
-    for( int i = 0; i < 3; i++ )
-      {
-      this->Pool->GetItem(i)->GetTextProperty()->SetFontFamilyToArial();
-      this->Pool->GetItem(i)->GetTextProperty()->SetFontSize( 14 );
-      }
-
-    this->Pool->SyncSetShowScalarBar( false );
-    this->Pool->SyncRender();
-    this->Pool->SyncReset();
-
-    this->SliderXY->setValue( (this->SliderXY->minimum()+this->SliderXY->maximum())/2 );
-    this->SliderXZ->setValue( (this->SliderXZ->minimum()+this->SliderXZ->maximum())/2 );
-    this->SliderYZ->setValue( (this->SliderYZ->minimum()+this->SliderYZ->maximum())/2 );
+  SetupVTKtoQtConnections();
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoImageView3D::SetupVTKtoQtConnections()
+{
+  vtkViewImage2D* View1 = this->Pool->GetItem( 0 );
+  vtkViewImage2D* View2 = this->Pool->GetItem( 1 );
+  vtkViewImage2D* View3 = this->Pool->GetItem( 2 );
+
+  // Event connection between vtk and qt
+  // when RequestedPositionEvent occurs in the XY View (double-click),
+  // SliderXZ and SliderYZ move.
+  VtkEventQtConnector->Connect(
+    reinterpret_cast< vtkObject* >( View1->GetInteractorStyle() ),
+    vtkViewImage2DCommand::RequestedPositionEvent,
+    this, SLOT( MoveSliderXZ() ) );
+
+  VtkEventQtConnector->Connect(
+    reinterpret_cast< vtkObject* >( View1->GetInteractorStyle() ),
+    vtkViewImage2DCommand::RequestedPositionEvent,
+    this, SLOT( MoveSliderYZ() ) );
+
+  // Event connection between vtk and qt
+  // when RequestedPositionEvent occurs in the XY View (double-click),
+  // SliderXZ and SliderYZ move.
+  VtkEventQtConnector->Connect(
+    reinterpret_cast< vtkObject* >( View2->GetInteractorStyle() ),
+    vtkViewImage2DCommand::RequestedPositionEvent,
+    this, SLOT( MoveSliderXY() ) );
+
+  VtkEventQtConnector->Connect(
+    reinterpret_cast< vtkObject* >( View2->GetInteractorStyle() ),
+    vtkViewImage2DCommand::RequestedPositionEvent,
+    this, SLOT( MoveSliderYZ() ) );
+
+  // Event connection between vtk and qt
+  // when SliceMoveEvent occurs in the XY View, SliderXY moves.
+  VtkEventQtConnector->Connect(
+    reinterpret_cast< vtkObject* >( View3->GetInteractorStyle() ),
+    vtkViewImage2DCommand::SliceMoveEvent,
+    this, SLOT( MoveSliderYZ() ) );
+
+  // Event connection between vtk and qt
+  // when RequestedPositionEvent occurs in the XY View (double-click),
+  // SliderXZ and SliderYZ move.
+  VtkEventQtConnector->Connect(
+    reinterpret_cast< vtkObject* >( View3->GetInteractorStyle() ),
+    vtkViewImage2DCommand::RequestedPositionEvent,
+    this, SLOT( MoveSliderXY() ) );
+
+  VtkEventQtConnector->Connect(
+    reinterpret_cast< vtkObject* >( View3->GetInteractorStyle() ),
+    vtkViewImage2DCommand::RequestedPositionEvent,
+    this, SLOT( MoveSliderXZ() ) );
+
+   // Event connection between vtk and qt
+  // when SliceMoveEvent occurs in the XY View, SliderXY moves.
+  VtkEventQtConnector->Connect(
+    reinterpret_cast< vtkObject* >( View2->GetInteractorStyle() ),
+    vtkViewImage2DCommand::SliceMoveEvent,
+    this, SLOT( MoveSliderXZ() ) );
+
+  // Event connection between vtk and qt
+  // when SliceMoveEvent occurs in the XY View, SliderXY moves.
+  VtkEventQtConnector->Connect(
+    reinterpret_cast< vtkObject* >( View1->GetInteractorStyle() ),
+    vtkViewImage2DCommand::SliceMoveEvent,
+    this, SLOT( MoveSliderXY() ) );
+}
+//-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void QGoImageView3D::SetImage( vtkImageData* input )
@@ -310,6 +320,7 @@ void QGoImageView3D::SetImage( vtkImageData* input )
     this->m_Image = input;
     }
 }
+//-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 bool QGoImageView3D::BuildScreenshotFromImage( vtkImageData* image,
@@ -678,9 +689,20 @@ void QGoImageView3D::SetBackgroundColor( const double& r,
 const double& g, const double& b )
 {
   double textcolor[3];
-  textcolor[0] = 1. - r;
-  textcolor[1] = 1. - g;
-  textcolor[2] = 1. - b;
+  double avg = ( r + g + b ) / 3.;
+
+  if( ( r != 0.5 ) && ( g != 0.5 ) && ( b != 0.5 ) )
+    {
+    textcolor[0] = 1. - r;
+    textcolor[1] = 1. - g;
+    textcolor[2] = 1. - b;
+    }
+  else
+    {
+    textcolor[0] = 1.;
+    textcolor[1] = 1.;
+    textcolor[2] = 0.;
+    }
 
   double rgb[3] = {r, g, b };
 
@@ -727,29 +749,38 @@ void QGoImageView3D::resizeEvent( QResizeEvent* iEvent )
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoImageView3D::SetSlideViewXY( const int& iSlice )
+void QGoImageView3D::SetSliceViewXY( const int& iSlice )
 {
   this->Pool->GetItem( 0 )->SetSlice( iSlice );
   this->Pool->SyncRender();
 }
 //-------------------------------------------------------------------------
-
+int QGoImageView3D::GetSliceViewXY() const
+{
+  return this->Pool->GetItem( 0 )->GetSlice();
+}
 //-------------------------------------------------------------------------
-void QGoImageView3D::SetSlideViewXZ( const int& iSlice )
+void QGoImageView3D::SetSliceViewXZ( const int& iSlice )
 {
   this->Pool->GetItem( 1 )->SetSlice( iSlice );
   this->Pool->SyncRender();
 }
 //-------------------------------------------------------------------------
-
+int QGoImageView3D::GetSliceViewXZ() const
+{
+  return this->Pool->GetItem( 1 )->GetSlice();
+}
 //-------------------------------------------------------------------------
-void QGoImageView3D::SetSlideViewYZ( const int& iSlice )
+void QGoImageView3D::SetSliceViewYZ( const int& iSlice )
 {
   this->Pool->GetItem( 2 )->SetSlice( iSlice );
   this->Pool->SyncRender();
 }
 //-------------------------------------------------------------------------
-
+int QGoImageView3D::GetSliceViewYZ() const
+{
+  return this->Pool->GetItem( 2 )->GetSlice();
+}
 //-------------------------------------------------------------------------
 void QGoImageView3D::MoveSliderXY( )
 {

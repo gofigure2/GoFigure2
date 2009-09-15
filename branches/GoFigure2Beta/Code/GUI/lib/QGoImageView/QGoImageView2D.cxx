@@ -50,7 +50,7 @@ void QGoImageView2D::setupUi( QWidget* parent )
     parent->resize(800, 800);
     }
 
-  m_QVTKWidgetXY = new QVTKWidget;
+  m_QVTKWidgetXY = new QVTKWidget( this );
   m_QVTKWidgetXY->resize(800,800);
 
   m_LayOut = new QHBoxLayout( parent );

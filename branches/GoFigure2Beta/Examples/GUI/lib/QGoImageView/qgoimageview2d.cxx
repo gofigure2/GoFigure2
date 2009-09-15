@@ -44,6 +44,7 @@ int main( int argc, char** argv )
 
   app.closeAllWindows();
 
+  reader->Delete();
   delete timer;
   delete viewer;
 
