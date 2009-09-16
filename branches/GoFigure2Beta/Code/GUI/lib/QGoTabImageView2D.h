@@ -26,6 +26,9 @@ public:
   void SetImage( vtkImageData* iImage );
   void Update();
 
+  void setupUi( QWidget* parent );
+  void retranslateUi( QWidget *parent );
+
   std::vector< QMenu* > Menus();
   std::list< QToolBar* > ToolBar();
   std::list< QDockWidget* > DockWidget();
@@ -34,9 +37,12 @@ public:
   void WriteSettings();
   void ReadSettings();
 
+public slots:
+  void ChangeBackgroundColor();
+
 protected:
   QGoLUTDialog*     m_LUTDialog;
-
+  QHBoxLayout*      m_LayOut;
   QGoImageView2D*   m_ImageView;
 
 private:

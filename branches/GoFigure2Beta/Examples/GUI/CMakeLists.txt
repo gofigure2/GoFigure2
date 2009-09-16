@@ -4,7 +4,7 @@ SET( QGoLIB_EXAMPLES_SRC
   qgolutdialog
   qgotabelementbase
   qgotabimageviewelementbase
-
+  qgotabimageview2d
 )
 
 FOREACH( var ${QGoLIB_EXAMPLES_SRC} )

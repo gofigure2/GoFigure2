@@ -26,8 +26,14 @@ class QGoImageView2D : public QWidget
 
     void setupUi( QWidget* parent );
     void retranslateUi(QWidget *parent);
+
+    void GetBackgroundColor( double& r, double& g, double& b );
+    double* GetBackgroundColor();
+
   public slots:
-    void yoyo() {}
+    void SetBackgroundColor( const double& r, const double& g, const double& b );
+    void SetBackgroundColor( double rgb[3] );
+    void SetBackgroundColor( const QColor& iColor );
 
   protected:
     vtkViewImage2DCollection*         m_Pool;

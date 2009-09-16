@@ -33,7 +33,7 @@ int main( int argc, char** argv )
   app.closeAllWindows();
 
   delete lut;
-  delete time;
+  delete timer;
 
   return output;
 }
