@@ -2,6 +2,7 @@
 
 #include "QVTKWidget.h"
 #include "vtkEventQtSlotConnect.h"
+#include "vtkLookupTable.h"
 #include "vtkRenderWindow.h"
 #include "vtkRendererCollection.h"
 #include "vtkImageData.h"
@@ -172,5 +173,19 @@ void QGoImageView2D::SetBackgroundColor( const QColor& iColor )
   SetBackgroundColor( static_cast< double >( r ) / 255.,
     static_cast< double >( g ) / 255.,
     static_cast< double >( b ) / 255. );
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoImageView2D::SetLookupTable( vtkLookupTable* iLut )
+{
+  m_Pool->SyncSetLookupTable( iLut );
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoImageView2D::ShowScalarBar( const bool& iShow )
+{
+  m_Pool->SyncSetShowScalarBar( iShow );
 }
 //--------------------------------------------------------------------------

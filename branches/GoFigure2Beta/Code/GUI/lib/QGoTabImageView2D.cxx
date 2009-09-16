@@ -75,13 +75,19 @@ std::vector< QMenu* > QGoTabImageView2D::Menus()
   LookupTableAction->setStatusTip( tr(" Change the associated lookup table" ) );
 
   // Here write the connection
-//   QObject::connect( LookupTableAction, SIGNAL( triggered() ),
-//     this, SLOT( ChooseLookupTable() ) );
+  QObject::connect( LookupTableAction, SIGNAL( triggered() ),
+    m_LUTDialog, SLOT( show() ) );
+  QObject::connect( m_LUTDialog, SIGNAL( accepted() ),
+    this, SLOT( ChangeLookupTable() ) );
 
   ViewMenu->addAction( LookupTableAction );
 
   QAction* ScalarBarAction = new QAction( tr( "Display Scalar Bar" ), this );
+  ScalarBarAction->setCheckable( true );
   ViewMenu->addAction( ScalarBarAction );
+
+  QObject::connect( ScalarBarAction, SIGNAL( toggled( bool ) ),
+    this, SLOT( ShowScalarBar( bool ) ) );
 
   oMenuVector.push_back( ViewMenu );
 
@@ -93,6 +99,12 @@ std::vector< QMenu* > QGoTabImageView2D::Menus()
     this, SLOT( ChangeBackgroundColor() ) );
 
   oMenuVector.push_back( PropertiesMenu );
+
+  QMenu* SegmentationMenu = new QMenu( tr( "&Segmentation" ) );
+  SegmentationMenu->setDisabled( true );
+
+  oMenuVector.push_back( SegmentationMenu );
+
 
   return oMenuVector;
 }
@@ -111,6 +123,20 @@ void QGoTabImageView2D::ChangeBackgroundColor()
     tr( "Choose Background Color" ) );
 
   m_ImageView->SetBackgroundColor( color );
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoTabImageView2D::ChangeLookupTable()
+{
+  m_ImageView->SetLookupTable( m_LUTDialog->GetLookupTable() );
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoTabImageView2D::ShowScalarBar( const bool& iShow )
+{
+  m_ImageView->ShowScalarBar( iShow );
 }
 //--------------------------------------------------------------------------
 

@@ -39,6 +39,8 @@ public:
 
 public slots:
   void ChangeBackgroundColor();
+  void ChangeLookupTable();
+  void ShowScalarBar( const bool& );
 
 protected:
   QGoLUTDialog*     m_LUTDialog;

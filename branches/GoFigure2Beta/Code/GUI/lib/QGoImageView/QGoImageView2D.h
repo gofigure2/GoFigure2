@@ -8,7 +8,7 @@ class vtkImageData;
 class vtkViewImage2DCollection;
 class QVTKWidget;
 class vtkEventQtSlotConnect;
-
+class vtkLookupTable;
 
 /**
 \class QGoImageView2D
@@ -22,6 +22,7 @@ class QGoImageView2D : public QWidget
     virtual ~QGoImageView2D();
 
     void SetImage( vtkImageData* iImage );
+    void SetColor( const bool& );
     void Update();
 
     void setupUi( QWidget* parent );
@@ -34,6 +35,9 @@ class QGoImageView2D : public QWidget
     void SetBackgroundColor( const double& r, const double& g, const double& b );
     void SetBackgroundColor( double rgb[3] );
     void SetBackgroundColor( const QColor& iColor );
+
+    void SetLookupTable( vtkLookupTable* iLut );
+    void ShowScalarBar( const bool& );
 
   protected:
     vtkViewImage2DCollection*         m_Pool;
