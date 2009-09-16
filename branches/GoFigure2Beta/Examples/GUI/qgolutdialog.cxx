@@ -1,6 +1,8 @@
 #include <QApplication>
 #include <QTimer>
 
+#include "vtkLookupTable.h"
+
 #include "QGoLUTDialog.h"
 
 int main( int argc, char** argv )
@@ -20,17 +22,12 @@ int main( int argc, char** argv )
     {
     timer->start( 2000 );
     }
-  lut->ChangeLookupTable( 0 );
-  lut->ChangeLookupTable( 1 );
-  lut->ChangeLookupTable( 2 );
-  lut->ChangeLookupTable( 3 );
-  lut->ChangeLookupTable( 4 );
-  lut->ChangeLookupTable( 5 );
-  lut->ChangeLookupTable( 6 );
-  lut->ChangeLookupTable( 7 );
-  lut->ChangeLookupTable( 8 );
-  lut->ChangeLookupTable( 9 );
-  lut->ChangeLookupTable( 10 );
+
+  for( int i = 0; i < 10; i++ )
+    {
+    lut->ChangeLookupTable( i );
+    vtkLookupTable* temp = lut->GetLookupTable();
+    }
 
   int output = app.exec();
   app.closeAllWindows();

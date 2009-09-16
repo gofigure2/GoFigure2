@@ -1,8 +1,10 @@
 ADD_SUBDIRECTORY( lib )
 
 SET( QGoLIB_EXAMPLES_SRC
-  qgotabelementbase
   qgolutdialog
+  qgotabelementbase
+  qgotabimageviewelementbase
+
 )
 
 FOREACH( var ${QGoLIB_EXAMPLES_SRC} )
@@ -16,6 +18,10 @@ ENDFOREACH( var ${QGoLIB_EXAMPLES_SRC} )
 
 ADD_TEST( qgotabelementbaseTest
   ${EXECUTABLE_OUTPUT_PATH}/qgotabelementbase
+)
+
+ADD_TEST( qgotabimageviewelementbaseTest
+  ${EXECUTABLE_OUTPUT_PATH}/qgotabimageviewelementbase
 )
 
 ADD_TEST( qgolutdialogtest

@@ -61,6 +61,7 @@ public:
 
 protected:
   bool m_Color;
+
 private:
   QGoTabImageViewElementBase( const QGoTabImageViewElementBase& );
   void operator = ( const QGoTabImageViewElementBase& );
