@@ -67,6 +67,9 @@ public:
 
   vtkLookupTable* GetLookupTable( );
 
+  static vtkLookupTable* GetLookupTable( QWidget* iParent,
+    const QString& iTitle );
+
 public slots:
   void ChangeLookupTable( const int& );
 

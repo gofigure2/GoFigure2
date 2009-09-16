@@ -1,5 +1,7 @@
 #include "QGoTabImageView2D.h"
 
+#include "QGoLUTDialog.h"
+
 #include "vtkEventQtSlotConnect.h"
 #include "vtkRenderWindow.h"
 #include "vtkRendererCollection.h"
@@ -13,9 +15,6 @@
 QGoTabImageView2D::QGoTabImageView2D( QWidget* parent )
 {
   setupUi( this );
-
-  m_LUTDialog = new QGoLUTDialog( this );
-  m_LUTDialog->hide();
 }
 //--------------------------------------------------------------------------
 
@@ -76,8 +75,6 @@ std::vector< QMenu* > QGoTabImageView2D::Menus()
 
   // Here write the connection
   QObject::connect( LookupTableAction, SIGNAL( triggered() ),
-    m_LUTDialog, SLOT( show() ) );
-  QObject::connect( m_LUTDialog, SIGNAL( accepted() ),
     this, SLOT( ChangeLookupTable() ) );
 
   ViewMenu->addAction( LookupTableAction );
@@ -129,7 +126,11 @@ void QGoTabImageView2D::ChangeBackgroundColor()
 //--------------------------------------------------------------------------
 void QGoTabImageView2D::ChangeLookupTable()
 {
-  m_ImageView->SetLookupTable( m_LUTDialog->GetLookupTable() );
+  vtkLookupTable* lut = vtkLookupTable::New();
+  lut->DeepCopy( QGoLUTDialog::GetLookupTable( this,
+    tr( "Choose one look-up table") ) );
+  m_ImageView->SetLookupTable( lut );
+  lut->Delete();
 }
 //--------------------------------------------------------------------------
 

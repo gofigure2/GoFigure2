@@ -8,7 +8,6 @@ class QToolBar;
 class QDockWidget;
 
 #include "QGoTabImageViewElementBase.h"
-#include "QGoLUTDialog.h"
 
 #include "QGoImageView2D.h"
 
@@ -43,7 +42,6 @@ public slots:
   void ShowScalarBar( const bool& );
 
 protected:
-  QGoLUTDialog*     m_LUTDialog;
   QHBoxLayout*      m_LayOut;
   QGoImageView2D*   m_ImageView;
 

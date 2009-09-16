@@ -85,6 +85,18 @@ vtkLookupTable* QGoLUTDialog::GetLookupTable( )
   return this->LUT;
 }
 
+vtkLookupTable* QGoLUTDialog::GetLookupTable( QWidget* iParent,
+    const QString& iTitle )
+{
+  QGoLUTDialog dlg( iParent );
+  if( !iTitle.isEmpty() )
+    {
+    dlg.setWindowTitle( iTitle );
+    }
+  dlg.exec();
+  return dlg.GetLookupTable();
+}
+
 void QGoLUTDialog::setupUi( QDialog* LUTDialog )
 {
   if( LUTDialog->objectName().isEmpty() )
