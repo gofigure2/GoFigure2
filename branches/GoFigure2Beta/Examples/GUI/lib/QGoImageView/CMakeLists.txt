@@ -15,9 +15,11 @@ ENDFOREACH( var ${QGOIMAGEVIEW_EXAMPLE_SRC} )
 ADD_TEST( qgoimageview2dTest
   ${EXECUTABLE_OUTPUT_PATH}/qgoimageview2d
   ${TESTING_DATA_PATH}/Circle.png
+  1
 )
 
 ADD_TEST( qgoimageview3dTest
   ${EXECUTABLE_OUTPUT_PATH}/qgoimageview3d
-  ${TESTING_DATA_PATH}/Circle3d.mhd
+  ${TESTING_DATA_PATH}/Circle3D.mhd
+  1
 )

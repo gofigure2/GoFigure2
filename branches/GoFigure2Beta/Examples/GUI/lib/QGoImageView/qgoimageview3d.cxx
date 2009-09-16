@@ -10,8 +10,8 @@ int main( int argc, char** argv )
 {
   if( argc != 3 )
     {
-    std::cout <<"Usage : qgoimageview2d(.exe) " <<std::endl;
-    std::cout << "1-file.png" <<std::endl;
+    std::cout <<"Usage : qgoimageview3d(.exe) " <<std::endl;
+    std::cout << "1-file.mhd" <<std::endl;
     std::cout << "2-test (boolean)" <<std::endl;
     return EXIT_FAILURE;
     }
@@ -31,13 +31,13 @@ int main( int argc, char** argv )
   timer->setSingleShot( true );
   QObject::connect( timer, SIGNAL( timeout() ), viewer, SLOT( close() ) );
 
-  viewer->SetImage( reader->GetOutput() );
+  viewer->SetImage( image );
   viewer->Update();
   viewer->show();
 
   if( atoi( argv[2] ) == 1 )
     {
-    timer->start( 2000 );
+    timer->start( 1000 );
 
     viewer->FullScreenViewXY();
     if( viewer->GetFullScreenView() != 1 )

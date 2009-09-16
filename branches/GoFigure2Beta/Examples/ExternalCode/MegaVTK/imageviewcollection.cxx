@@ -81,7 +81,10 @@ int main( int argc, char** argv )
     {
     iren3d->CreateOneShotTimer( 1 );
     }
-  iren3d->Start();
+  else
+    {
+    iren3d->Start();
+    }
 
   pool->Delete();
 

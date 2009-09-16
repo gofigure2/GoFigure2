@@ -33,7 +33,7 @@ int main( int argc, char** argv )
 
   if( atoi( argv[2] ) == 1 )
     {
-    timer->start( 2000 );
+    timer->start( 1000 );
     }
   viewer->Update();
   viewer->show();

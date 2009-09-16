@@ -20,7 +20,7 @@ int main( int argc, char** argv )
 
   if( atoi( argv[1] ) == 1 )
     {
-    timer->start( 2000 );
+    timer->start( 1000 );
     }
 
   for( int i = 0; i < 10; i++ )
@@ -31,6 +31,9 @@ int main( int argc, char** argv )
 
   int output = app.exec();
   app.closeAllWindows();
+
+  delete lut;
+  delete time;
 
   return output;
 }
