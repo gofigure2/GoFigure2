@@ -35,3 +35,7 @@ std::list< QWidget* > QGoTabElementBase::AdditionalWidget()
   return std::list< QWidget* >();
 }
 
+// QStatusBar* QGoTabElementBase::StatusBar()
+// {
+//   return 0;
+// }

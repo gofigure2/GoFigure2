@@ -192,6 +192,8 @@ IF( VTK_FOUND )
       ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib
       ${GOFIGURE2_SOURCE_DIR}/Code/GUI/lib/QGoImageView
       ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/QGoImageView
+      ${GOFIGURE2_SOURCE_DIR}/Code/GUI/lib/Plugins
+      ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/Plugins
       ${MEGAVTK2_SOURCE_DIR}
       ${MEGAVTK2_BINARY_DIR}
       ${MEGAVTK2_SOURCE_DIR}/vtkItk

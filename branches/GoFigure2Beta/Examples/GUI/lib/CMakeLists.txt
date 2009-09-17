@@ -1,1 +1,2 @@
 ADD_SUBDIRECTORY( QGoImageView )
+ADD_SUBDIRECTORY( Plugins )

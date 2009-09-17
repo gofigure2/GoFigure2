@@ -59,6 +59,7 @@ public:
   virtual std::list< QToolBar* > ToolBar();
   virtual std::list< QDockWidget* > DockWidget();
   virtual std::list< QWidget* > AdditionalWidget();
+//   virtual QStatusBar* StatusBar();
 
   virtual void WriteSettings() = 0;
   virtual void ReadSettings() = 0;
