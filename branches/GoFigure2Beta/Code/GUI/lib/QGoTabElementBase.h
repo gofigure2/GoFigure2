@@ -42,6 +42,7 @@
 #define __QGoTabElementBase_h
 
 #include <QWidget>
+#include <QDir>
 
 class QAction;
 class QMenu;
@@ -63,6 +64,11 @@ public:
 
   virtual void WriteSettings() = 0;
   virtual void ReadSettings() = 0;
+
+protected:
+  virtual void LoadPlugins();
+  QDir        m_PluginsDir;
+  QStringList m_PluginFileNames;
 
 private:
   QGoTabElementBase( const QGoTabElementBase& );

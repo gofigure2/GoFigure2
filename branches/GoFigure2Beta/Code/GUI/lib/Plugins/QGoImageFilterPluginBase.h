@@ -22,9 +22,9 @@ class QGoImageFilterPluginBase
     virtual ~QGoImageFilterPluginBase() {}
 
 
-    void SetInput( std::vector< vtkImageData* > iInput )
+    void SetInput( vtkImageData* iInput )
       { m_VTKInput = iInput; }
-    std::vector< vtkImageData* > GetOutput()
+    vtkImageData* GetOutput()
       { return m_VTKOutput; }
 
     virtual std::vector< QAction* > Actions() = 0;
@@ -36,8 +36,8 @@ class QGoImageFilterPluginBase
     virtual void ReadSettings() = 0;
 
   protected:
-    std::vector< vtkImageData* > m_VTKInput;
-    std::vector< vtkImageData* > m_VTKOutput;
+    vtkImageData* m_VTKInput;
+    vtkImageData* m_VTKOutput;
 
     virtual void Process( ) = 0;
 

@@ -21,9 +21,6 @@ class identityplugin : public QObject, public QGoImageFilterPluginBase
     virtual void ReadSettings();
 
   protected:
-    std::vector< vtkImageData* > m_VTKInput;
-    std::vector< vtkImageData* > m_VTKOutput;
-
     virtual void Process( );
 
   private:
