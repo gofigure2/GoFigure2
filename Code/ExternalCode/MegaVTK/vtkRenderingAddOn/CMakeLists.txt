@@ -22,12 +22,9 @@ SET(vtkRenderingAddOn_LIBS2
 TARGET_LINK_LIBRARIES( vtkRenderingAddOn2
   ${vtkRenderingAddOn_LIBS2}
   )
-
 IF( NOT APPLE )
-INSTALL( TARGETS vtkRenderingAddOn2
-  ARCHIVE
-  DESTINATION lib
+  INSTALL( TARGETS vtkRenderingAddOn2
+    ARCHIVE DESTINATION  ${GOFIGURE2_LIB_INSTALL_DIR}
   COMPONENT libraries
   )
 ENDIF( NOT APPLE )
-#INSTALL_FILES(/include "(\\.h|\\.txx)$")

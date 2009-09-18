@@ -7,3 +7,4 @@ TARGET_LINK_LIBRARIES( vtkLSMReader
   vtkCommon 
   vtkFiltering
   )
+

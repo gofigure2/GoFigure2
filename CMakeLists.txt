@@ -98,6 +98,11 @@ will not ce generated" )
   ENDIF( DOXYGEN_FOUND )
 ENDIF( BUILD_DOCUMENTATION )
 
+IF( NOT APPLE )
+  SET( GOFIGURE2_BIN_INSTALL_DIR "gofigure2-${GOFIGURE2_VERSION}/bin" )
+  SET( GOFIGURE2_LIB_INSTALL_DIR "gofigure2-${GOFIGURE2_VERSION}/lib" )
+ENDIF( NOT APPLE )
+
 #---------------------------------------------------------------------------
 # Main GoFigure Settings
 #---------------------------------------------------------------------------
@@ -216,6 +221,14 @@ IF( VTK_FOUND )
 # PACKAGE With CPack
 #---------------------------------------------------------------------------
     IF( BUILD_PACKAGE )
+      # add the uninstall support
+      CONFIGURE_FILE(
+	"${CMAKE_CURRENT_SOURCE_DIR}/GOFIGURE2Uninstall.cmake.in"
+	"${CMAKE_CURRENT_BINARY_DIR}/GOFIGURE2Uninstall.cmake"
+	@ONLY
+	)
+      ADD_CUSTOM_TARGET(uninstall
+	"${CMAKE_COMMAND}" -P "${CMAKE_CURRENT_BINARY_DIR}/GOFIGURE2Uninstall.cmake" )
       INCLUDE( GOFIGURE2CPack.cmake )
     ENDIF( BUILD_PACKAGE )
 

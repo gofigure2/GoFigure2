@@ -89,7 +89,7 @@ void QImagePageViewTracer::SetupViewGivenQVTKWidget(
 }
 
 //-------------------------------------------------------------------------
-QImagePageViewTracer::QImagePageViewTracer( QWidget* iiParent ) : 
+QImagePageViewTracer::QImagePageViewTracer( QWidget* iiParent ) :
   QWidget( iiParent )
 {
   IsFullScreen = 0;
@@ -515,7 +515,7 @@ QString QImagePageViewTracer::SnapshotView2( const SnapshotImageType& iType,
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-QString QImagePageViewTracer::SnapshotView3( 
+QString QImagePageViewTracer::SnapshotView3(
     const SnapshotImageType& iType,
     const QString& iBaseName )
 {
@@ -524,7 +524,7 @@ QString QImagePageViewTracer::SnapshotView3(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-QString QImagePageViewTracer::SnapshotViewXYZ( 
+QString QImagePageViewTracer::SnapshotViewXYZ(
   const SnapshotImageType& iType,
   const QString& iBaseName )
 {
@@ -643,7 +643,7 @@ const double& g, const double& b )
 
   for( int i = 0; i < 3; i++ )
     {
-    vtkTextProperty* tproperty = 
+    vtkTextProperty* tproperty =
       this->Pool->GetItem( i )->GetTextProperty();
     tproperty->SetFontFamilyToArial();
     tproperty->SetFontSize( 14 );
@@ -666,7 +666,7 @@ void QImagePageViewTracer::SetBackgroundColor( double rgb[3] )
 
   for( int i = 0; i < 3; i++ )
     {
-    vtkTextProperty* tproperty = 
+    vtkTextProperty* tproperty =
       this->Pool->GetItem( i )->GetTextProperty();
     tproperty->SetFontFamilyToArial();
     tproperty->SetFontSize( 14 );
@@ -695,7 +695,7 @@ void QImagePageViewTracer::SetBackgroundColor( const QColor& iColor )
 
   for( int i = 0; i < 3; i++ )
     {
-    vtkTextProperty* tproperty = 
+    vtkTextProperty* tproperty =
       this->Pool->GetItem( i )->GetTextProperty();
     tproperty->SetFontFamilyToArial();
     tproperty->SetFontSize( 14 );

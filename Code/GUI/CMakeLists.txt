@@ -63,13 +63,6 @@ IF( APPLE )
     MACOSX_PACKAGE_LOCATION Resources
     )
 
-#  ADD_CUSTOM_COMMAND( TARGET gofigure POST_BUILD
-#    COMMAND mkdir ARGS -p
-#      ${EXECUTABLE_OUTPUT_PATH}/gofigure.app/Contents/Resources
-#    COMMAND cp ARGS
-#      ${MACOSX_BUNDLE_ICON_FILE}
-#      ${EXECUTABLE_OUTPUT_PATH}/gofigure.app/Contents/Resources
-#      )
 ENDIF( APPLE )
 
 IF( WIN32 )
@@ -100,12 +93,16 @@ TARGET_LINK_LIBRARIES( gofigure
   itkQt
   )
 
-#SET_TARGET_PROPERTIES( gofigure
+# # ----------------------------------------------------------------------
+# # NOTE:
+# # The following lines are to be used to be distinguish the generated
+# # executable in between the release and the debug version
+# SET_TARGET_PROPERTIES( gofigure
 #  PROPERTIES
 #  DEBUG_OUTPUT_NAME gofigure_debug
 #  RELEASE_OUTPUT_NAME gofigure
-#)
-
+# )
+# # ----------------------------------------------------------------------
 
 IF( APPLE )
   FUNCTION( MakeOSXBundleApp target binary_dir )
@@ -132,32 +129,12 @@ IF( APPLE )
 ELSE( APPLE )
   INCLUDE( ${GOFIGURE2_SOURCE_DIR}/CMake/InstallSupportLibraries.cmake )
 
-  IF( WIN32 )
-    INSTALL( TARGETS gofigure
-      RUNTIME DESTINATION bin
-      COMPONENT Runtime
+  INSTALL( TARGETS gofigure
+    ARCHIVE DESTINATION ${GOFIGURE2_LIB_INSTALL_DIR}
+    LIBRARY DESTINATION ${GOFIGURE2_LIB_INSTALL_DIR}
+    RUNTIME DESTINATION ${GOFIGURE2_BIN_INSTALL_DIR}
+    COMPONENT applications
     )
-  ENDIF( WIN32 )
 
 ENDIF( APPLE )
-
-#IF( WIN32 )
-#  INSTALL( TARGETS gofigure
-#    RUNTIME DESTINATION bin
-#    COMPONENT applications
-#    )
-#ELSE( WIN32 )
-#  IF( UNIX )
-#     IF( APPLE )
-#       INSTALL( TARGETS gofigure
-#         BUNDLE DESTINATION ../Applications
-#         COMPONENT applications
-#         )
-#    ELSE( APPLE )
-#      INSTALL( TARGETS gofigure
-#        RUNTIME DESTINATION bin
-#        )
-#     ENDIF( APPLE )
-#  ENDIF( UNIX )
-#ENDIF( WIN32 )
 
