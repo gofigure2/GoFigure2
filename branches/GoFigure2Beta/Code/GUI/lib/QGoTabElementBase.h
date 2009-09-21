@@ -45,6 +45,7 @@
 #include <QDir>
 
 class QAction;
+class QActionGroup;
 class QMenu;
 class QToolBar;
 class QDockWidget;
@@ -65,8 +66,14 @@ public:
   virtual void WriteSettings() = 0;
   virtual void ReadSettings() = 0;
 
+  QDir DirectoryOf( const QString& iSubdir );
+
 protected:
   virtual void LoadPlugins();
+  virtual void PopulateMenus( QObject* );
+  virtual void AddToMenu( QObject*, const QStringList&, QMenu*,
+    const char*, QActionGroup* );
+
   QDir        m_PluginsDir;
   QStringList m_PluginFileNames;
 

@@ -1,9 +1,13 @@
 #include "QGoTabElementBase.h"
 
+#include <QApplication>
 #include <QAction>
 #include <QMenu>
 #include <QToolBar>
 #include <QDockWidget>
+#include <QPluginLoader>
+
+#include "QGoImageFilterPluginBase.h"
 
 QGoTabElementBase::QGoTabElementBase( QWidget* parent ) : QWidget( parent )
 {}
@@ -35,67 +39,78 @@ std::list< QWidget* > QGoTabElementBase::AdditionalWidget()
   return std::list< QWidget* >();
 }
 
-void QGoTabElementBase::LoadPlugins()
+QDir QGoTabElementBase::DirectoryOf( const QString& iSubdir )
 {
-//   foreach( QObject *plugin, QPluginLoader::staticInstances() )
-//     {
-//     populateMenus(plugin);
-//     }
-//
-//   m_PluginsDir = QDir( qApp->applicationDirPath() );
-//
-// #if defined(Q_OS_WIN)
-//   if( ( m_PluginsDir.dirName().toLower() == "debug" ) ||
-//       ( m_PluginsDir.dirName().toLower() == "release" ) )
-//     {
-//     m_PluginsDir.cdUp();
-//     }
-//  #elif defined(Q_OS_MAC)
-//   if( m_PluginsDir.dirName() == "MacOS" )
-//     {
-//     m_PluginsDir.cdUp();
-//     m_PluginsDir.cdUp();
-//     m_PluginsDir.cdUp();
-//     }
-//  #endif
-//
-//   m_PluginsDir.cd( "plugins" );
-//
-//   foreach( QString fileName, m_PluginsDir.entryList( QDir::Files ) )
-//     {
-//     QPluginLoader loader( m_PluginsDir.absoluteFilePath( fileName ) );
-//     QObject* plugin = loader.instance();
-//     if( plugin )
-//       {
-//       populateMenus( plugin );
-//       m_PluginFileNames += fileName;
-//       }
-//     }
+  QDir dir = QDir( QApplication::applicationDirPath() );
+
+#if defined(Q_OS_WIN)
+  if( ( dir.dirName().toLower() == "debug" ) ||
+      ( dir.dirName().toLower() == "release" ) )
+    {
+    dir.cdUp();
+    }
+#elif defined(Q_OS_MAC)
+  if( dir.dirName() == "MacOS" )
+    {
+    dir.cdUp();
+    dir.cdUp();
+    dir.cdUp();
+    }
+#endif
+  dir.cd( iSubdir );
+
+  return dir;
 }
 
-// void QGoTabElementBase::populateMenus( QObject *plugin )
-// {
-//   BrushInterface *iBrush = qobject_cast<BrushInterface *>(plugin);
-//   if( iBrush )
-//     {
-//     addToMenu( plugin, iBrush->brushes(), brushMenu,
-//       SLOT( changeBrush() ), brushActionGroup );
-//     }
+void QGoTabElementBase::LoadPlugins()
+{
+  foreach( QObject *plugin, QPluginLoader::staticInstances() )
+    {
+    PopulateMenus( plugin );
+    }
 
-//   ShapeInterface *iShape = qobject_cast<ShapeInterface *>(plugin);
-//   if( iShape )
-//     {
-//     addToMenu(plugin, iShape->shapes(), shapesMenu, SLOT(insertShape()));
-//     }
+  m_PluginsDir = DirectoryOf( "plugins" );
 
-//   FilterInterface *iFilter = qobject_cast<FilterInterface *>(plugin);
-//   if( iFilter )
-//     {
-//     addToMenu(plugin, iFilter->filters(), filterMenu, SLOT(applyFilter()));
-//     }
-//  }
+  foreach( QString fileName, m_PluginsDir.entryList( QDir::Files ) )
+    {
+    QPluginLoader loader( m_PluginsDir.absoluteFilePath( fileName ) );
+    QObject* plugin = loader.instance();
+    if( plugin )
+      {
+      PopulateMenus( plugin );
+      m_PluginFileNames += fileName;
+      }
+    }
+}
 
+void QGoTabElementBase::PopulateMenus( QObject *plugin )
+{
+  QGoImageFilterPluginBase* filter =
+    qobject_cast< QGoImageFilterPluginBase* >( plugin );
+  if( filter )
+    {
+//     AddToMenu( plugin, filter->Name(), m_FilteringMenu, SLOT( temp() ), 0 );
+    }
+ }
 
+void QGoTabElementBase::AddToMenu(
+  QObject *plugin, const QStringList &texts,
+  QMenu* menu, const char *member,
+  QActionGroup *actionGroup )
+{
+  foreach( QString text, texts )
+    {
+    QAction *action = new QAction(text, plugin);
+    connect(action, SIGNAL(triggered()), this, member);
+    menu->addAction(action);
+
+    if (actionGroup)
+      {
+      action->setCheckable(true);
+      actionGroup->addAction(action);
+      }
+    }
+}
 // QStatusBar* QGoTabElementBase::StatusBar()
 // {
 //   return 0;

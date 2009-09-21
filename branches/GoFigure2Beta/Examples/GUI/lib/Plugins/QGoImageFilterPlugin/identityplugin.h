@@ -22,7 +22,7 @@ class identityplugin : public QObject, public QGoImageFilterPluginBase
 
   protected:
     virtual void Process( );
-
+    void SetAllRequiredInformation();
   private:
     identityplugin( const identityplugin& );
     void operator = ( const identityplugin& );

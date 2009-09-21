@@ -4,6 +4,8 @@
 #include <vector>
 #include <QtPlugin>
 
+#include "PluginInformationBase.h"
+
 class vtkImageData;
 
 class QAction;
@@ -18,14 +20,11 @@ class QWidget;
 class QGoImageFilterPluginBase
 {
   public:
-    QGoImageFilterPluginBase() : m_VTKInput( 0 ), m_VTKOutput( 0 ) {}
-    virtual ~QGoImageFilterPluginBase() {}
+    QGoImageFilterPluginBase();
+    virtual ~QGoImageFilterPluginBase();
 
-
-    void SetInput( vtkImageData* iInput )
-      { m_VTKInput = iInput; }
-    vtkImageData* GetOutput()
-      { return m_VTKOutput; }
+    void SetInput( vtkImageData* iInput );
+    vtkImageData* GetOutput();
 
     virtual std::vector< QAction* > Actions() = 0;
     virtual QToolBar* ToolBar() = 0;
@@ -35,10 +34,21 @@ class QGoImageFilterPluginBase
     virtual void WriteSettings() = 0;
     virtual void ReadSettings() = 0;
 
+    QString Name() const;
+    QString Version() const;
+    QString GoFigureCompatibilityVersion() const;
+    QString Distributor() const;
+    QString Copyright() const;
+    QString License() const;
+    QString Description() const;
+
   protected:
     vtkImageData* m_VTKInput;
     vtkImageData* m_VTKOutput;
 
+    PluginInformationBase m_Information;
+
+    virtual void SetAllRequiredInformation( ) = 0;
     virtual void Process( ) = 0;
 
   private:
@@ -46,7 +56,7 @@ class QGoImageFilterPluginBase
     void operator = ( const QGoImageFilterPluginBase& );
 };
 
-Q_DECLARE_INTERFACE( QGoImageFilterPluginBase, "GoFigure2.QGoImageFilterPluingBase" )
+Q_DECLARE_INTERFACE( QGoImageFilterPluginBase, "GoFigure2.QGoImageFilterPluingBase/1.0" )
 
 #endif
 

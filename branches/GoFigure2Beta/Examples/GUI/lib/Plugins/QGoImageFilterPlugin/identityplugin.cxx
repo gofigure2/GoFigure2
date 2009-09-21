@@ -2,7 +2,7 @@
 
 #include <QAction>
 
-identityplugin::identityplugin()
+identityplugin::identityplugin() : QGoImageFilterPluginBase()
 {}
 identityplugin::~identityplugin()
 {}
@@ -42,4 +42,15 @@ void identityplugin::ReadSettings()
 void identityplugin::Process( )
 {
   m_VTKOutput = m_VTKInput;
+}
+
+void identityplugin::SetAllRequiredInformation()
+{
+  this->m_Information.Name = "Identity";
+  this->m_Information.Version = "1.0";
+  this->m_Information.GoFigureCompatibilityVersion = "1.0";
+  this->m_Information.Distributor = "Megason Lab";
+  this->m_Information.Copyright = "Harvard Medical School";
+  this->m_Information.License = "BSD";
+  this->m_Information.Description = "Test: plugin which copy the input to the output";
 }

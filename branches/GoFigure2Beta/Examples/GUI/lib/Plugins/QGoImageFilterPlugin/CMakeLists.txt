@@ -8,6 +8,7 @@ ADD_EXECUTABLE( identityimagepluginExample
   identitypluginMain.cxx
   ${IMAGEIDENTITY_PLUGIN_MOC}
   ${IMAGEIDENTITY_PLUGIN_SRC}
+  ${QGOPLUGIN_SRC}
 )
 
 TARGET_LINK_LIBRARIES( identityimagepluginExample
