@@ -66,7 +66,7 @@ void QGoTabElementBase::LoadPlugins()
 {
   foreach( QObject *plugin, QPluginLoader::staticInstances() )
     {
-    PopulateMenus( plugin );
+    this->PopulateMenus( plugin );
     }
 
   m_PluginsDir = DirectoryOf( "plugins" );
@@ -77,21 +77,11 @@ void QGoTabElementBase::LoadPlugins()
     QObject* plugin = loader.instance();
     if( plugin )
       {
-      PopulateMenus( plugin );
+      this->PopulateMenus( plugin );
       m_PluginFileNames += fileName;
       }
     }
 }
-
-void QGoTabElementBase::PopulateMenus( QObject *plugin )
-{
-  QGoImageFilterPluginBase* filter =
-    qobject_cast< QGoImageFilterPluginBase* >( plugin );
-  if( filter )
-    {
-//     AddToMenu( plugin, filter->Name(), m_FilteringMenu, SLOT( temp() ), 0 );
-    }
- }
 
 void QGoTabElementBase::AddToMenu(
   QObject *plugin, const QStringList &texts,

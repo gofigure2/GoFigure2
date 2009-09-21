@@ -48,7 +48,7 @@ class QGoImageFilterPluginBase
 
     PluginInformationBase m_Information;
 
-    virtual void SetAllRequiredInformation( ) = 0;
+    virtual void SetAllRequiredInformation( ) {}
     virtual void Process( ) = 0;
 
   private:

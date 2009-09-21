@@ -15,13 +15,19 @@ public:
 
   virtual void WriteSettings() {}
   virtual void ReadSettings() {}
+protected:
+  virtual void PopulateMenus( QObject* iPlugin )
+    {
+    (void) iPlugin;
+    }
 };
 
 int main( int argc, char** argv )
 {
   QApplication app( argc, argv );
-  QCoreApplication::setOrganizationName("MegasonLab");
+  QCoreApplication::setOrganizationName( "MegasonLab" );
   QCoreApplication::setOrganizationDomain( "http://gofigure2.sourceforge.net" );
+  QCoreApplication::setApplicationName( "qgotabimageviewelementbase" );
 
   QGoTabImageViewElementBaseTestHelper* test =
     new QGoTabImageViewElementBaseTestHelper;

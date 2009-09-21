@@ -12,6 +12,9 @@ class QGoTabElementTestHelper : public QGoTabElementBase
     virtual void WriteSettings() {}
     virtual void ReadSettings() {}
 
+  protected:
+    virtual void PopulateMenus( QObject* iPlugin )
+      { (void) iPlugin; }
   private:
     QGoTabElementTestHelper( const QGoTabElementTestHelper& );
     void operator = ( const QGoTabElementTestHelper& );

@@ -45,6 +45,13 @@ protected:
   QHBoxLayout*      m_LayOut;
   QGoImageView2D*   m_ImageView;
 
+  QMenu* m_ViewMenu;
+  QMenu* m_PropertiesMenu;
+  QMenu* m_FilteringMenu;
+  QMenu* m_SegmentationMenu;
+
+  void PopulateMenus( QObject* );
+
 private:
   QGoTabImageView2D( const QGoTabImageView2D& );
   void operator = ( const QGoTabImageView2D& );

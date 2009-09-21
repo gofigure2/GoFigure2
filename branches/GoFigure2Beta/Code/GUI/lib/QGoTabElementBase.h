@@ -70,7 +70,7 @@ public:
 
 protected:
   virtual void LoadPlugins();
-  virtual void PopulateMenus( QObject* );
+  virtual void PopulateMenus( QObject* ) = 0;
   virtual void AddToMenu( QObject*, const QStringList&, QMenu*,
     const char*, QActionGroup* );
 

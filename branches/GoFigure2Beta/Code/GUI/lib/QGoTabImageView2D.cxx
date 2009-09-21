@@ -8,6 +8,8 @@
 #include "vtkImageData.h"
 #include "vtkTextProperty.h"
 
+#include "QGoImageFilterPluginBase.h"
+
 #include <QMenu>
 #include <QColorDialog>
 
@@ -15,6 +17,36 @@
 QGoTabImageView2D::QGoTabImageView2D( QWidget* parent )
 {
   setupUi( this );
+
+  m_ViewMenu = new QMenu( tr( "&View" ) );
+  QAction* LookupTableAction = new QAction( tr( "Lookup Table" ), this );
+  LookupTableAction->setStatusTip( tr(" Change the associated lookup table" ) );
+
+  // Here write the connection
+  QObject::connect( LookupTableAction, SIGNAL( triggered() ),
+    this, SLOT( ChangeLookupTable() ) );
+
+  m_ViewMenu->addAction( LookupTableAction );
+
+  QAction* ScalarBarAction = new QAction( tr( "Display Scalar Bar" ), this );
+  ScalarBarAction->setCheckable( true );
+  m_ViewMenu->addAction( ScalarBarAction );
+
+  QObject::connect( ScalarBarAction, SIGNAL( toggled( bool ) ),
+    this, SLOT( ShowScalarBar( bool ) ) );
+
+  m_PropertiesMenu = new QMenu( "&Properties" );
+  QAction* BackgroundColorAction = new QAction( tr("Background Color"), this );
+  m_PropertiesMenu->addAction( BackgroundColorAction );
+
+  QObject::connect( BackgroundColorAction, SIGNAL( triggered() ),
+    this, SLOT( ChangeBackgroundColor() ) );
+
+  m_FilteringMenu = new QMenu( tr( "&Filtering" ) );
+  m_FilteringMenu->setDisabled( true );
+
+  m_SegmentationMenu = new QMenu( tr( "&Segmentation" ) );
+  m_SegmentationMenu->setDisabled( true );
 }
 //--------------------------------------------------------------------------
 
@@ -68,40 +100,10 @@ void QGoTabImageView2D::Update( )
 std::vector< QMenu* > QGoTabImageView2D::Menus()
 {
   std::vector< QMenu* > oMenuVector;
-
-  QMenu* ViewMenu = new QMenu( tr( "&View" ) );
-  QAction* LookupTableAction = new QAction( tr( "Lookup Table" ), this );
-  LookupTableAction->setStatusTip( tr(" Change the associated lookup table" ) );
-
-  // Here write the connection
-  QObject::connect( LookupTableAction, SIGNAL( triggered() ),
-    this, SLOT( ChangeLookupTable() ) );
-
-  ViewMenu->addAction( LookupTableAction );
-
-  QAction* ScalarBarAction = new QAction( tr( "Display Scalar Bar" ), this );
-  ScalarBarAction->setCheckable( true );
-  ViewMenu->addAction( ScalarBarAction );
-
-  QObject::connect( ScalarBarAction, SIGNAL( toggled( bool ) ),
-    this, SLOT( ShowScalarBar( bool ) ) );
-
-  oMenuVector.push_back( ViewMenu );
-
-  QMenu* PropertiesMenu = new QMenu( "&Properties" );
-  QAction* BackgroundColorAction = new QAction( tr("Background Color"), this );
-  PropertiesMenu->addAction( BackgroundColorAction );
-
-  QObject::connect( BackgroundColorAction, SIGNAL( triggered() ),
-    this, SLOT( ChangeBackgroundColor() ) );
-
-  oMenuVector.push_back( PropertiesMenu );
-
-  QMenu* SegmentationMenu = new QMenu( tr( "&Segmentation" ) );
-  SegmentationMenu->setDisabled( true );
-
-  oMenuVector.push_back( SegmentationMenu );
-
+  oMenuVector.push_back( m_ViewMenu );
+  oMenuVector.push_back( m_PropertiesMenu );
+  oMenuVector.push_back( m_FilteringMenu );
+  oMenuVector.push_back( m_SegmentationMenu );
 
   return oMenuVector;
 }
@@ -177,3 +179,15 @@ void QGoTabImageView2D::ReadSettings()
 }
 //--------------------------------------------------------------------------
 
+//--------------------------------------------------------------------------
+void QGoTabImageView2D::PopulateMenus( QObject *plugin )
+{
+  QGoImageFilterPluginBase* filter =
+    qobject_cast< QGoImageFilterPluginBase* >( plugin );
+  if( filter )
+    {
+    this->AddToMenu( plugin, QStringList( filter->Name() ),
+      m_FilteringMenu, SLOT( temp() ), 0 );
+    }
+ }
+//--------------------------------------------------------------------------
