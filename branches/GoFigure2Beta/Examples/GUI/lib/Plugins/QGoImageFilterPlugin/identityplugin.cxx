@@ -2,6 +2,8 @@
 
 #include <QAction>
 
+Q_EXPORT_PLUGIN2( QGoIdentityImageFilterPlugin, identityplugin )
+
 identityplugin::identityplugin() : QGoImageFilterPluginBase()
 {}
 identityplugin::~identityplugin()

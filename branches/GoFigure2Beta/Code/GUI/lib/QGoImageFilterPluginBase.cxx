@@ -18,6 +18,7 @@ QGoImageFilterPluginBase::~QGoImageFilterPluginBase()
 
 void QGoImageFilterPluginBase::SetInput( vtkImageData* iInput )
 {
+  QMessageBox::information( 0, "Title", "QGoImageFilterPluginBase::setInput" );
   m_VTKInput = iInput;
 }
 

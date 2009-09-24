@@ -10,7 +10,9 @@
 #include "QGoImageFilterPluginBase.h"
 
 QGoTabElementBase::QGoTabElementBase( QWidget* parent ) : QWidget( parent )
-{}
+{
+  this->LoadPlugins();
+}
 
 QGoTabElementBase::~QGoTabElementBase()
 {}
