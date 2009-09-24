@@ -77,7 +77,7 @@ int main( int argc, char** argv )
   pool->SyncRender();
   pool->SyncReset();
 
-  if( atoi( argv[1] ) == 0 )
+  if( atoi( argv[2] ) == 1 )
     {
     iren3d->CreateOneShotTimer( 1 );
     }

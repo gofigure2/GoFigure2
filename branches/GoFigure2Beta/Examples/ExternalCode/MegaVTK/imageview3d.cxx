@@ -53,7 +53,7 @@ int main( int argc, char** argv )
 
   view3d->Render();
 
-  if( atoi( argv[1] ) == 0 )
+  if( atoi( argv[2] ) == 1 )
     {
     iren3d->CreateOneShotTimer( 1 );
     }

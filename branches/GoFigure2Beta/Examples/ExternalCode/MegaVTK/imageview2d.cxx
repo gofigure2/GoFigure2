@@ -26,7 +26,7 @@ int main( int argc, char** argv )
   view->SetViewOrientation (vtkViewImage2D::VIEW_ORIENTATION_AXIAL);
   view->Render();
 
-  if( atoi( argv[1] ) == 0 )
+  if( atoi( argv[2] ) == 1 )
     {
     iren->CreateOneShotTimer( 1 );
     }
