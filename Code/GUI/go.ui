@@ -911,6 +911,9 @@ Component</string>
      <property name="shortcut">
       <string>Ctrl+C, Ctrl+S</string>
      </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
     </widget>
     <widget class="QWidget" name="layoutWidget5">
      <property name="geometry">

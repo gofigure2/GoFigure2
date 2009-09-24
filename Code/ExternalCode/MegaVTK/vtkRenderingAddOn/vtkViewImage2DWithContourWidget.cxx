@@ -74,6 +74,7 @@
 #include <vtkCommand.h>
 #include <vtkPolyData.h>
 #include <vtkImageData.h>
+#include <vtkProperty.h>
 
 #include "vtkFillImageWithPolyData.h"
 
@@ -86,6 +87,9 @@ vtkViewImage2DWithContourWidget::vtkViewImage2DWithContourWidget()
   this->ContourWidgetEnabled = false;
 
   this->ContourRepresentation = vtkOrientedGlyphContourRepresentation::New();
+  this->ContourRepresentation->GetProperty()->SetColor( 0., 1., 1. );
+  this->ContourRepresentation->GetLinesProperty()->SetColor( 1., 0., 1. );
+  this->ContourRepresentation->GetActiveProperty()->SetColor( 1., 1., 0. );
 
   this->ContourWidget = vtkContourWidget::New();
   this->ContourWidget->SetPriority( 10.0 );
