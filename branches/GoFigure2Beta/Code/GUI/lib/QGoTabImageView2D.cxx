@@ -16,6 +16,8 @@
 //--------------------------------------------------------------------------
 QGoTabImageView2D::QGoTabImageView2D( QWidget* parent )
 {
+  m_Image = 0;
+
   setupUi( this );
 
   m_ViewMenu = new QMenu( tr( "&View" ) );
@@ -43,10 +45,12 @@ QGoTabImageView2D::QGoTabImageView2D( QWidget* parent )
     this, SLOT( ChangeBackgroundColor() ) );
 
   m_FilteringMenu = new QMenu( tr( "&Filtering" ) );
-  m_FilteringMenu->setDisabled( true );
+//   m_FilteringMenu->setDisabled( true );
 
   m_SegmentationMenu = new QMenu( tr( "&Segmentation" ) );
-  m_SegmentationMenu->setDisabled( true );
+//   m_SegmentationMenu->setDisabled( true );
+
+  this->LoadPlugins();
 }
 //--------------------------------------------------------------------------
 
@@ -86,6 +90,7 @@ void QGoTabImageView2D::retranslateUi(QWidget *parent)
 void QGoTabImageView2D::SetImage( vtkImageData* iImage )
 {
   m_ImageView->SetImage( iImage );
+  m_Image = iImage;
 }
 //--------------------------------------------------------------------------
 
@@ -186,8 +191,19 @@ void QGoTabImageView2D::PopulateMenus( QObject *plugin )
     qobject_cast< QGoImageFilterPluginBase* >( plugin );
   if( filter )
     {
-    this->AddToMenu( plugin, QStringList( "yo" ),
-      m_FilteringMenu, SLOT( temp() ), 0 );
+    this->AddToMenu( plugin, QStringList( filter->Name() ),
+      m_FilteringMenu, SLOT( ApplyImageFilter() ), 0 );
     }
  }
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoTabImageView2D::ApplyImageFilter()
+{
+  QAction *action = qobject_cast< QAction* >( sender( ) );
+  QGoImageFilterPluginBase* filter =
+    qobject_cast< QGoImageFilterPluginBase* >( action->parent() );
+  filter->SetInput( this->m_Image );
+  filter->Update();
+}
 //--------------------------------------------------------------------------

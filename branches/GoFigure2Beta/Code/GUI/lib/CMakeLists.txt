@@ -1,26 +1,29 @@
+INCLUDE_DIRECTORIES( BEFORE Interfaces )
+
 ADD_SUBDIRECTORY( QGoImageView )
+ADD_SUBDIRECTORY( Interfaces )
 
-# FILE( GLOB QGoLIB_SRC *.cxx )
-# FILE( GLOB QGoLIB_HDRS *.h )
+FILE( GLOB QGoLIB_SRC *.cxx )
+FILE( GLOB QGoLIB_HDRS *.h )
 
-SET( QGoLIB_SRC
-  QGoLUTDialog.cxx
-#   QGoImageFilterPluginBase.cxx
-  QGoTabElementBase.cxx
-  QGoTabImageView2D.cxx
-  QGoTabImageView3D.cxx
-  QGoMainWindow.cxx
-)
-
-SET( QGoLIB_HDRS
-  QGoLUTDialog.h
-#   QGoImageFilterPluginBase.h
-  QGoTabElementBase.h
-  QGoTabImageViewElementBase.h
-  QGoTabImageView2D.h
-  QGoTabImageView3D.h
-  QGoMainWindow.h
-)
+# SET( QGoLIB_SRC
+#   QGoLUTDialog.cxx
+# #   QGoImageFilterPluginBase.cxx
+#   QGoTabElementBase.cxx
+#   QGoTabImageView2D.cxx
+#   QGoTabImageView3D.cxx
+#   QGoMainWindow.cxx
+# )
+#
+# SET( QGoLIB_HDRS
+#   QGoLUTDialog.h
+# #   QGoImageFilterPluginBase.h
+#   QGoTabElementBase.h
+#   QGoTabImageViewElementBase.h
+#   QGoTabImageView2D.h
+#   QGoTabImageView3D.h
+#   QGoMainWindow.h
+# )
 
 SET( QGoMainWindow_UI
   go.ui
@@ -50,6 +53,7 @@ ADD_LIBRARY( QGoLib
 
 TARGET_LINK_LIBRARIES( QGoLib
   QGoLib
+  interface
   QGoIO
   QGoImageView
   itkQt

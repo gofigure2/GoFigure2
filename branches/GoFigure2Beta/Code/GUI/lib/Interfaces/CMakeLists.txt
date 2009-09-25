@@ -1,0 +1,5 @@
+FILE( GLOB INTERFACES_SRC *.cxx )
+
+ADD_LIBRARY( interface
+  ${INTERFACES_SRC}
+)

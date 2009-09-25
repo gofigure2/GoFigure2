@@ -48,18 +48,28 @@ IF( WIN32 )
 ENDIF( WIN32 )
 
 #---------------------------------------------------------------------------
-# Define EXECUTABLE_OUTPUT_PATH and LIBRARY_OUTPUT_PATH
+# Define CMAKE_whatever_OUTPUT_DIRECTORY
 #---------------------------------------------------------------------------
-SET(EXECUTABLE_OUTPUT_PATH
- ${GOFIGURE2_BINARY_DIR}/bin
- CACHE PATH "Single output directory for building all executables."
+# all target executables will be
+# in ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
+SET( CMAKE_RUNTIME_OUTPUT_DIRECTORY
+  ${GOFIGURE2_BINARY_DIR}/bin
 )
 
-SET(LIBRARY_OUTPUT_PATH
- ${GOFIGURE2_BINARY_DIR}/lib
- CACHE PATH "Single output directory for building all libraries."
+# all target static libraries will be in ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
+SET( CMAKE_ARCHIVE_OUTPUT_DIRECTORY
+  ${GOFIGURE2_BINARY_DIR}/lib
 )
 
+# all shared libraries will be in ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
+# Note that modules (plugins) are considered as shared libraries
+SET( CMAKE_LIBRARY_OUTPUT_DIRECTORY
+  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/plugins
+)
+
+#---------------------------------------------------------------------------
+# Define TESTING_DATA_PATH
+#---------------------------------------------------------------------------
 SET( TESTING_DATA_PATH
   ${GOFIGURE2_SOURCE_DIR}/Testing/Data
   CACHE PATH "Directory which contains data for testing."
@@ -69,20 +79,6 @@ SET( TESTING_DATA_PATH
 # Handle Documentation
 #---------------------------------------------------------------------------
 OPTION( BUILD_DOCUMENTATION "Build Doxygen Documentation" OFF )
-# OPTION( BUILD_PACKAGE "Software packaging" OFF )d
-
-#---------------------------------------------------------------------------
-# Temporary option to be able to chosse between experimental spline nodes or
-# contour points
-#---------------------------------------------------------------------------
-# OPTION( BUILD_TEMPARNAUD "Use spline nodes instead of contour points" OFF )
-# MARK_AS_ADVANCED( FORCE BUILD_TEMPARNAUD )
-#
-# IF( BUILD_TEMPARNAUD )
-#   ADD_DEFINITIONS( -DTEMPARNAUD )
-# ELSE( BUILD_TEMPARNAUD )
-#   REMOVE_DEFINITIONS( -DTEMPARNAUD )
-# ENDIF( BUILD_TEMPARNAUD )
 
 #---------------------------------------------------------------------------
 IF( BUILD_DOCUMENTATION )
@@ -152,9 +148,6 @@ IF( VTK_FOUND )
     ENDIF( QT_USE_FILE )
 
     SET( QT_PLUGIN_LIBS ${QT_LIBRARIES} )
-    ADD_DEFINITIONS( ${QT_DEFINITIONS} )
-    ADD_DEFINITIONS( -DQT_PLUGIN )
-    ADD_DEFINITIONS( -DQT_SHARED )
 
     SET( GOFIGURE2_EXTERNAL_SOURCE_DIR
       ${GOFIGURE2_SOURCE_DIR}/Code/ExternalCode )

@@ -4,8 +4,6 @@
 #include <vector>
 #include <QtPlugin>
 
-#include "PluginInformationBase.h"
-
 class vtkImageData;
 
 class QAction;
@@ -17,30 +15,15 @@ class QWidget;
  * \class QGoImageFilterPluginBase
  * \brief
 */
-class QGoImageFilterPluginBase
+class QGoImageFilterPluginBase : public QGoPlugin
 {
   public:
     QGoImageFilterPluginBase();
     virtual ~QGoImageFilterPluginBase();
 
-    void SetInput( vtkImageData* iInput );
-    vtkImageData* GetOutput();
-
-    virtual std::vector< QAction* > Actions() = 0;
-    virtual QToolBar* ToolBar() = 0;
-    virtual QDockWidget* DockWidget() = 0;
-    virtual QWidget* AdditionalWidget() = 0;
-
-    virtual void WriteSettings() = 0;
-    virtual void ReadSettings() = 0;
-
-    QString Name() const;
-    QString Version() const;
-    QString GoFigureCompatibilityVersion() const;
-    QString Distributor() const;
-    QString Copyright() const;
-    QString License() const;
-    QString Description() const;
+    virtual void SetInput( vtkImageData* iInput );
+    virtual void Update();
+    virtual vtkImageData* GetOutput();
 
   protected:
     vtkImageData* m_VTKInput;
@@ -48,7 +31,6 @@ class QGoImageFilterPluginBase
 
     PluginInformationBase m_Information;
 
-    virtual void SetAllRequiredInformation( ) {}
     virtual void Process( ) = 0;
 
   private:

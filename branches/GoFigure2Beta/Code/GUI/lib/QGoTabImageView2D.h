@@ -40,10 +40,12 @@ public slots:
   void ChangeBackgroundColor();
   void ChangeLookupTable();
   void ShowScalarBar( const bool& );
+  void ApplyImageFilter();
 
 protected:
   QHBoxLayout*      m_LayOut;
   QGoImageView2D*   m_ImageView;
+  vtkImageData*     m_Image;
 
   QMenu* m_ViewMenu;
   QMenu* m_PropertiesMenu;

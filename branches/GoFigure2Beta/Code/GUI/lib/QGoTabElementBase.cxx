@@ -8,15 +8,22 @@
 #include <QPluginLoader>
 
 #include "QGoImageFilterPluginBase.h"
+#include "QGoPluginHelper.h"
 
+#include <iostream>
+
+//--------------------------------------------------------------------------
 QGoTabElementBase::QGoTabElementBase( QWidget* parent ) : QWidget( parent )
 {
-  this->LoadPlugins();
 }
+//--------------------------------------------------------------------------
 
+//--------------------------------------------------------------------------
 QGoTabElementBase::~QGoTabElementBase()
 {}
+//--------------------------------------------------------------------------
 
+//--------------------------------------------------------------------------
 std::vector< QMenu* > QGoTabElementBase::Menus()
 {
   QMenu* ViewMenu = new QMenu( QObject::tr( "&View" ) );
@@ -26,44 +33,30 @@ std::vector< QMenu* > QGoTabElementBase::Menus()
 
   return oMenuVector;
 }
+//--------------------------------------------------------------------------
 
+//--------------------------------------------------------------------------
 std::list< QToolBar* > QGoTabElementBase::ToolBar()
 {
   return std::list< QToolBar* >();
 }
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
 std::list< QDockWidget* > QGoTabElementBase::DockWidget()
 {
   return std::list< QDockWidget* >();
 }
+//--------------------------------------------------------------------------
 
+//--------------------------------------------------------------------------
 std::list< QWidget* > QGoTabElementBase::AdditionalWidget()
 {
   return std::list< QWidget* >();
 }
+//--------------------------------------------------------------------------
 
-QDir QGoTabElementBase::DirectoryOf( const QString& iSubdir )
-{
-  QDir dir = QDir( QApplication::applicationDirPath() );
-
-#if defined(Q_OS_WIN)
-  if( ( dir.dirName().toLower() == "debug" ) ||
-      ( dir.dirName().toLower() == "release" ) )
-    {
-    dir.cdUp();
-    }
-#elif defined(Q_OS_MAC)
-  if( dir.dirName() == "MacOS" )
-    {
-    dir.cdUp();
-    dir.cdUp();
-    dir.cdUp();
-    }
-#endif
-  dir.cd( iSubdir );
-
-  return dir;
-}
-
+//--------------------------------------------------------------------------
 void QGoTabElementBase::LoadPlugins()
 {
   foreach( QObject *plugin, QPluginLoader::staticInstances() )
@@ -71,7 +64,7 @@ void QGoTabElementBase::LoadPlugins()
     this->PopulateMenus( plugin );
     }
 
-  m_PluginsDir = DirectoryOf( "plugins" );
+  m_PluginsDir = FindPluginDirectory( "plugins" );
 
   foreach( QString fileName, m_PluginsDir.entryList( QDir::Files ) )
     {
@@ -84,7 +77,9 @@ void QGoTabElementBase::LoadPlugins()
       }
     }
 }
+//--------------------------------------------------------------------------
 
+//--------------------------------------------------------------------------
 void QGoTabElementBase::AddToMenu(
   QObject *plugin, const QStringList &texts,
   QMenu* menu, const char *member,
@@ -92,8 +87,10 @@ void QGoTabElementBase::AddToMenu(
 {
   foreach( QString text, texts )
     {
+    std::cout <<text.constData()->toAscii() <<std::endl;
+
     QAction *action = new QAction(text, plugin);
-    connect(action, SIGNAL(triggered()), this, member);
+    connect( action, SIGNAL(triggered()), this, member);
     menu->addAction(action);
 
     if (actionGroup)
@@ -103,6 +100,7 @@ void QGoTabElementBase::AddToMenu(
       }
     }
 }
+//--------------------------------------------------------------------------
 // QStatusBar* QGoTabElementBase::StatusBar()
 // {
 //   return 0;
