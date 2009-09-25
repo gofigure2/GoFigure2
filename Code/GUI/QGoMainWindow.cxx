@@ -1486,12 +1486,39 @@ void QGoMainWindow::StartSeedWidget()
 //--------------------------------------------------------------------------------
 void QGoMainWindow::OneClickSegmentation()
 {
-#ifdef ITKLEVELSETCODE
-
   int idx = this->CentralImageTabWidget->currentIndex();
+
+  double pos[3];
+  std::vector< double* > corners( 8 );
+  double radius = this->RadiusSpinBox->value();
+
   QImagePageViewTracer* myPageView =
     dynamic_cast<QImagePageViewTracer*>( m_PageView[idx] );
 
+  if( myPageView )
+    {
+    vtkPoints* seeds = myPageView->GetAllSeeds();
+    seeds->GetPoint( 0, pos );
+
+    // In each direction (x,y,z), get corresponding coordinates
+    // for example:
+    // in direction x
+    // * Solve for each slice, find the intersection of the corresponding circle
+    // with the axis y and z.
+    // * Trace the contour (using the contour widget) passing through
+    // these 4 points
+
+    }
+  else
+    {
+    QImagePageView4DTracer* myPageView2 =
+      dynamic_cast<QImagePageView4DTracer*>( m_PageView[idx] );
+    if( myPageView2 )
+      {
+      }
+    }
+
+#ifdef ITKLEVELSETCODE
   if( m_ITKImage[idx].IsNotNull() )
     {
     LocalChanAndVeseSegmentationFilterType::Pointer localsegmentation =

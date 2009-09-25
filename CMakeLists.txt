@@ -113,13 +113,13 @@ FIND_PACKAGE( VTK )
 IF( VTK_FOUND )
   INCLUDE( ${VTK_USE_FILE} )
 
-  IF( ${VTK_USE_MYSQL} )
+  IF( ${VTK_USE_MYSQL} MATCHES "OFF" )
     MESSAGE( SEND_ERROR "VTK must be compiled with MySQL support" )
     # TODO (arnaudgelas)
     # Here add a definition to be able to compile and use GoFigure
     # without any database support
     # ADD_DEFINITION( -DNODBSUPPORT )
-  ENDIF( ${VTK_USE_MYSQL} )
+  ENDIF( ${VTK_USE_MYSQL} MATCHES "OFF" )
 
   IF( VTK_BUILD_SHARED_LIBS )
     SET( LIBS_STYLE "SHARED" )
