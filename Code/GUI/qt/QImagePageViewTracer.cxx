@@ -1299,129 +1299,8 @@ void QImagePageViewTracer::ValidateContour(
         {
         degenerated = false;
 
-        // color object
-        double rgb[3];
-        rgb[0] = static_cast< double >( iColor.red() )   / 255.;
-        rgb[1] = static_cast< double >( iColor.green() ) / 255.;
-        rgb[2] = static_cast< double >( iColor.blue() )  / 255.;
-
-        // the correponding cell ID (several figures can have the same id
-        // as several 2D contours belong to the same 3D cell
-        CellId = iId;
-
-        // properties (representation style and color) of the figure
-        vtkProperty* contour_property = vtkProperty::New();
-        contour_property->SetRepresentationToWireframe();
-        contour_property->SetColor( rgb );
-
-        // -------
-        // BOUNDS COMPUTATION
-        // -------
-        double bounds[6];
-        contour->GetBounds( bounds );
-
-        double Min[3], Max[3];
-        Min[0] = bounds[0];
-        Max[0] = bounds[1];
-        Min[1] = bounds[2];
-        Max[1] = bounds[3];
-        Min[2] = bounds[4];
-        Max[2] = bounds[5];
-
-        int* min_idx = view->GetImageCoordinatesFromWorldCoordinates( Min );
-        int* max_idx = view->GetImageCoordinatesFromWorldCoordinates( Max );
-
-        // NOTE ALEX: use itk debug / vtk debug or a debug flag here
-
-//         std::cout << "Min = [" << min_idx[0];
-//         std::cout << " " << min_idx[1] << " " << min_idx[2] << "]" << std::endl;
-//         std::cout << "Max = [" <<max_idx[0];
-//         std::cout << " " << max_idx[1] << " " << max_idx[2] << "]" << std::endl;
-
-        // make a copy for each view
-        vtkPolyData* contour_copy = vtkPolyData::New();
-        contour_copy->ShallowCopy( contour );
-
-        vtkActor* temp;
-        vtkPolyData* ControlPointsPolyData = vtkPolyData::New();
-        contour_rep->GetNodePolyData( ControlPointsPolyData );
-
-#ifndef TEMPARNAUD
-        for( int j = 0; j < this->Pool->GetNumberOfItems(); j++ )
-#else
-        for( int j = 0; j < 1; j++ )
-#endif
-          {
-          temp = this->Pool->GetItem( j )->AddDataSet(
-                  contour_copy, contour_property, true, false );
-
-          m_ContourIdActorMap.insert(
-            std::pair< unsigned int, ContourStructure >( ContourId,
-              ContourStructure( temp,
-                ControlPointsPolyData, //control points of the spline representation
-                contour_copy, // vtkPolyData corresponding to the displaid contour
-                CellId, //MeshId
-                j, //Direction
-                this->m_TimePoint, //TimePoint
-                rgb[0],
-                rgb[1],
-                rgb[2],
-                false ) ) );
-
-          m_ActorContourIdMap[ temp ] = ContourId;
-          }
-
-
-        temp = this->View3D->AddDataSet( contour_copy, contour_property,
-          false, false );
-
-        temp->Delete();
-
-//         contour_copy->Delete();
-
-        // ------
-        // SAVE AS A FILE AND IN DB
-        // ------
-
-        // NOTE ALEX: separate method
-        // NOTE ALEX: shoudn't saving in a file and in the DB
-        //            be mutually exclusive?
-        if( iSave )
-          {
-
-          // build up the base file name
-          QString identifier = QString( "_id%1" ).arg( CellId );
-          QString MinString = QString( "_m%1_%2_%3" )
-            .arg( min_idx[0] ).arg( min_idx[1] ).arg( min_idx[2] );
-          QString MaxString = QString( "_M%1_%2_%3" )
-            .arg( max_idx[0] ).arg( max_idx[1] ).arg( max_idx[2] );
-          QString filename_prefix = QString( "contour%1%2%3" )
-            .arg( identifier ).arg( MinString ).arg( MaxString );
-
-          SaveValidatedContourAndNodesInFile( contour, ControlPointsPolyData,
-            filename_prefix );
-
-          // Save in database*
-          bool database_info = ( m_DBExperimentID == -1 ) && m_DBLogin.isNull()
-            && m_DBExperimentName.isNull() && m_DBName.isNull()
-            && m_DBServer.isNull() && m_DBPassword.isNull();
-          if( !database_info )
-            {
-#ifndef TEMPARNAUD
-            SaveValidatedContourInDatabase( contour );
-#else
-            SaveValidatedContourInDatabase( ControlPointsPolyData );
-#endif
-            }
-
-          }  // ENDOF Save in a File
-
-//         ControlPointsPolyData->Delete();
-
-//         contour_property->Delete();
-
-        } // ENDOF degenerated contour
-
+        SaveAndDisplayContour( iId, iColor, iSave, view, contour, contour_rep );
+        }
       } // ENDOF if contour
 
     } // ENDOF for each pool item
@@ -1438,6 +1317,141 @@ void QImagePageViewTracer::ValidateContour(
     }
 
   this->Pool->SyncRender();
+
+}
+
+void QImagePageViewTracer::SaveAndDisplayContour(
+  const int& iId,
+  const QColor& iColor,
+  const bool& iSave,
+  vtkViewImage2DWithContourWidget* iView,
+  vtkPolyData* iContour,
+  vtkOrientedGlyphContourRepresentation* iContour_rep
+)
+{
+  // color object
+  double rgb[3];
+  rgb[0] = static_cast< double >( iColor.red() )   / 255.;
+  rgb[1] = static_cast< double >( iColor.green() ) / 255.;
+  rgb[2] = static_cast< double >( iColor.blue() )  / 255.;
+
+  // the correponding cell ID (several figures can have the same id
+  // as several 2D contours belong to the same 3D cell
+  CellId = iId;
+
+  // properties (representation style and color) of the figure
+  vtkProperty* contour_property = vtkProperty::New();
+  contour_property->SetRepresentationToWireframe();
+  contour_property->SetColor( rgb );
+
+  // -------
+  // BOUNDS COMPUTATION
+  // -------
+  double bounds[6];
+  iContour->GetBounds( bounds );
+
+  double Min[3], Max[3];
+  Min[0] = bounds[0];
+  Max[0] = bounds[1];
+  Min[1] = bounds[2];
+  Max[1] = bounds[3];
+  Min[2] = bounds[4];
+  Max[2] = bounds[5];
+
+  int* min_idx = iView->GetImageCoordinatesFromWorldCoordinates( Min );
+  int* max_idx = iView->GetImageCoordinatesFromWorldCoordinates( Max );
+
+  // NOTE ALEX: use itk debug / vtk debug or a debug flag here
+
+//         std::cout << "Min = [" << min_idx[0];
+//         std::cout << " " << min_idx[1] << " " << min_idx[2] << "]" << std::endl;
+//         std::cout << "Max = [" <<max_idx[0];
+//         std::cout << " " << max_idx[1] << " " << max_idx[2] << "]" << std::endl;
+
+  // make a copy for each view
+  vtkPolyData* contour_copy = vtkPolyData::New();
+  contour_copy->ShallowCopy( iContour );
+
+  vtkActor* temp;
+  vtkPolyData* ControlPointsPolyData = vtkPolyData::New();
+
+  if( iContour_rep )
+    {
+    iContour_rep->GetNodePolyData( ControlPointsPolyData );
+    }
+
+// #ifndef TEMPARNAUD
+  for( int j = 0; j < this->Pool->GetNumberOfItems(); j++ )
+// #else
+//   for( int j = 0; j < 1; j++ )
+// #endif
+    {
+    temp = this->Pool->GetItem( j )->AddDataSet(
+      contour_copy, contour_property, true, false );
+
+    m_ContourIdActorMap.insert(
+      std::pair< unsigned int, ContourStructure >( ContourId,
+        ContourStructure( temp,
+        ControlPointsPolyData, //control points of the spline representation
+        contour_copy, // vtkPolyData corresponding to the displaid contour
+        CellId, //MeshId
+        j, //Direction
+        this->m_TimePoint, //TimePoint
+        rgb[0],
+        rgb[1],
+        rgb[2],
+        false ) ) );
+
+    m_ActorContourIdMap[ temp ] = ContourId;
+    }
+
+
+    temp = this->View3D->AddDataSet( contour_copy, contour_property,
+      false, false );
+
+    temp->Delete();
+
+//         contour_copy->Delete();
+
+    // ------
+    // SAVE AS A FILE AND IN DB
+    // ------
+
+    // NOTE ALEX: separate method
+    // NOTE ALEX: shoudn't saving in a file and in the DB
+    //            be mutually exclusive?
+    if( iSave )
+      {
+      // build up the base file name
+      QString identifier = QString( "_id%1" ).arg( CellId );
+      QString MinString = QString( "_m%1_%2_%3" )
+        .arg( min_idx[0] ).arg( min_idx[1] ).arg( min_idx[2] );
+      QString MaxString = QString( "_M%1_%2_%3" )
+        .arg( max_idx[0] ).arg( max_idx[1] ).arg( max_idx[2] );
+      QString filename_prefix = QString( "contour%1%2%3" )
+        .arg( identifier ).arg( MinString ).arg( MaxString );
+
+      SaveValidatedContourAndNodesInFile( iContour, ControlPointsPolyData,
+        filename_prefix );
+
+      // Save in database*
+      bool database_info = ( m_DBExperimentID == -1 ) && m_DBLogin.isNull()
+        && m_DBExperimentName.isNull() && m_DBName.isNull()
+        && m_DBServer.isNull() && m_DBPassword.isNull();
+      if( !database_info )
+        {
+// #ifndef TEMPARNAUD
+        SaveValidatedContourInDatabase( iContour );
+// #else
+//         SaveValidatedContourInDatabase( ControlPointsPolyData );
+// #endif
+        }
+
+      }  // ENDOF Save in a File
+
+//         ControlPointsPolyData->Delete();
+
+//         contour_property->Delete();
 
 }
 //-------------------------------------------------------------------------
@@ -1597,7 +1611,7 @@ void QImagePageViewTracer::LoadFiguresFromDB( )
         }
 
       vtkActor* temp;
-#ifndef TEMPARNAUD
+// #ifndef TEMPARNAUD
       for( int j = 0; j < this->Pool->GetNumberOfItems(); j++ )
         {
         temp = this->Pool->GetItem( j )->AddDataSet(
@@ -1628,18 +1642,18 @@ void QImagePageViewTracer::LoadFiguresFromDB( )
 
       nodes_copy->Delete();
       nodes->Delete();
-#else
-      for( int j = 0; j < 1; j++ )
-        {
-        this->Pool->GetItem( j )->SetContourWidgetInteractionOn();
-        this->Pool->GetItem( j )->GetContourWidget()->Initialize( nodes_copy );
-
-        ValidateContour( (*myRowContainer)[i].second.meshID, QColor( Qt::white ),
-          false );
-
-        this->Pool->GetItem( j )->SetContourWidgetInteractionOff();
-        } // ENDFOR
-#endif
+// #else
+//       for( int j = 0; j < 1; j++ )
+//         {
+//         this->Pool->GetItem( j )->SetContourWidgetInteractionOn();
+//         this->Pool->GetItem( j )->GetContourWidget()->Initialize( nodes_copy );
+//
+//         ValidateContour( (*myRowContainer)[i].second.meshID, QColor( Qt::white ),
+//           false );
+//
+//         this->Pool->GetItem( j )->SetContourWidgetInteractionOff();
+//         } // ENDFOR
+// #endif
       } // ENDFOR
 
     delete mySet;
@@ -1835,3 +1849,225 @@ void QImagePageViewTracer::ReeditContour( const unsigned int& iId )
     }
 }
 //-------------------------------------------------------------------------
+
+vtkPolyData* QImagePageViewTracer::GenerateCircleFromGivenSphereAndGivenX( double iC[3],
+  const double& iRadius, double iX, const int& iN )
+{
+  double res = ( iC[0] - iX );
+  res *= res;
+  res = iRadius * iRadius - res;
+
+  if( res < 0 )
+    {
+    return 0;
+    }
+  else
+    {
+    vtkPolyData* oCircle = vtkPolyData::New();
+    vtkPoints    *points      = vtkPoints::New();
+    vtkCellArray *lines       = vtkCellArray::New();
+    vtkIdType    *lineIndices = new vtkIdType[iN+1];
+
+    double theta = 0.;
+    double r = std::sqrt( res );
+
+    for( int i = 0; i < iN; i++ )
+      {
+      theta = 2. * i * vtkMath::Pi() / static_cast< double >( iN );
+      points->InsertPoint( static_cast< vtkIdType>( i ), iX,
+        iC[1] + r * std::cos( theta ), iC[2] + r * std::sin( theta ) );
+      lineIndices[i] = static_cast<vtkIdType>(i);
+      }
+
+    lineIndices[iN] = 0;
+    lines->InsertNextCell(iN+1,lineIndices);
+    delete [] lineIndices;
+    oCircle->SetPoints( points );
+    oCircle->SetLines(lines);
+
+    return oCircle;
+    }
+}
+
+vtkPolyData* QImagePageViewTracer::GenerateCircleFromGivenSphereAndGivenY( double iC[3],
+  const double& iRadius, double iY, const int& iN )
+{
+  double res = ( iC[1] - iY );
+  res *= res;
+  res = iRadius * iRadius - res;
+
+  if( res < 0 )
+    {
+    return 0;
+    }
+  else
+    {
+    vtkPolyData* oCircle = vtkPolyData::New();
+    vtkPoints    *points      = vtkPoints::New();
+    vtkCellArray *lines       = vtkCellArray::New();
+    vtkIdType    *lineIndices = new vtkIdType[iN+1];
+
+    double theta = 0.;
+    double r = std::sqrt( res );
+
+    for( int i = 0; i < iN; i++ )
+      {
+      theta = 2. * i * vtkMath::Pi() / static_cast< double >( iN );
+      points->InsertPoint( static_cast< vtkIdType>( i ),
+        iC[0] + r * std::cos( theta ), iY, iC[2] + r * std::sin( theta ) );
+      lineIndices[i] = static_cast<vtkIdType>(i);
+      }
+
+    lineIndices[iN] = 0;
+    lines->InsertNextCell(iN+1,lineIndices);
+    delete [] lineIndices;
+    oCircle->SetPoints( points );
+    oCircle->SetLines(lines);
+
+    return oCircle;
+    }
+}
+
+vtkPolyData* QImagePageViewTracer::GenerateCircleFromGivenSphereAndGivenZ( double iC[3],
+  const double& iRadius, double iZ, const int& iN )
+{
+  double res = ( iC[2] - iZ );
+  res *= res;
+  res = iRadius * iRadius - res;
+
+  if( res < 0 )
+    {
+    return 0;
+    }
+  else
+    {
+    vtkPolyData* oCircle = vtkPolyData::New();
+    vtkPoints    *points      = vtkPoints::New();
+    vtkCellArray *lines       = vtkCellArray::New();
+    vtkIdType    *lineIndices = new vtkIdType[iN+1];
+
+    double theta = 0.;
+    double r = std::sqrt( res );
+
+    for( int i = 0; i < iN; i++ )
+      {
+      theta = 2. * i * vtkMath::Pi() / static_cast< double >( iN );
+      points->InsertPoint( static_cast< vtkIdType>( i ),
+        iC[0] + r * std::cos( theta ), iC[1] + r * std::sin( theta ), iZ );
+      lineIndices[i] = static_cast<vtkIdType>(i);
+      }
+
+    lineIndices[iN] = 0;
+    lines->InsertNextCell(iN+1,lineIndices);
+    delete [] lineIndices;
+    oCircle->SetPoints( points );
+    oCircle->SetLines(lines);
+
+    return oCircle;
+    }
+}
+
+void QImagePageViewTracer::JustForNick( double iCenter[3], double iRadius )
+{
+  vtkViewImage2DWithContourWidget* view = this->Pool->GetItem( 0 );
+  int* center_id = view->GetImageCoordinatesFromWorldCoordinates( iCenter );
+
+  double corner[3];
+  corner[0] = iCenter[0] - iRadius;
+  corner[1] = iCenter[1];
+  corner[2] = iCenter[2];
+
+  int* corner_id = view->GetImageCoordinatesFromWorldCoordinates( corner );
+  int xlength = 2 * std::abs( center_id[0] - corner_id[0] );
+
+  int idx[3];
+  idx[0] = corner_id[0];
+  idx[1] = corner_id[1];
+  idx[2] = corner_id[2];
+
+  double* pos;
+
+//   for( int i = 0; i < xlength; i++, idx[0]++ )
+//     {
+//     pos = view->GetWorldCoordinatesFromImageCoordinates( idx );
+//     vtkPolyData* circle = GenerateCircleFromGivenSphereAndGivenX( iCenter, iRadius,
+//       pos[0], 20 );
+//
+//     if( circle )
+//       {
+// //       for( int j = 0; j < 3; j++ )
+//         {
+//         SaveAndDisplayContour(
+//           CellId,
+//           QColor( 255, 0, 0 ),
+//           true,
+//           this->Pool->GetItem( 0 ),
+//           circle,  0 );
+//         }
+//       }
+//     }
+
+//   corner[0] = iCenter[0];
+//   corner[1] = iCenter[1] - iRadius;
+//   corner[2] = iCenter[2];
+//
+//   corner_id = view->GetImageCoordinatesFromWorldCoordinates( corner );
+//   int ylength = 2 * std::abs( center_id[1] - corner_id[1] );
+//
+//   idx[0] = corner_id[0];
+//   idx[1] = corner_id[1];
+//   idx[2] = corner_id[2];
+//
+//   for( int i = 0; i < ylength; i++, idx[1]++ )
+//     {
+//     pos = view->GetWorldCoordinatesFromImageCoordinates( idx );
+//     vtkPolyData* circle = GenerateCircleFromGivenSphereAndGivenY( iCenter, iRadius,
+//       pos[1], 20 );
+//
+//     if( circle )
+//       {
+//       for( int j = 0; j < 3; j++ )
+//         {
+//         SaveAndDisplayContour(
+//           CellId,
+//           QColor( 255, 0, 0 ),
+//           true,
+//           this->Pool->GetItem( j ),
+//           circle,  0 );
+//         }
+//       }
+//     }
+//
+  corner[0] = iCenter[0];
+  corner[1] = iCenter[1];
+  corner[2] = iCenter[2] - iRadius;
+
+  corner_id = view->GetImageCoordinatesFromWorldCoordinates( corner );
+  int zlength = 2 * std::abs( center_id[2] - corner_id[2] );
+
+  idx[0] = corner_id[0];
+  idx[1] = corner_id[1];
+  idx[2] = corner_id[2];
+
+  for( int i = 0; i < zlength; i++, idx[2]++ )
+    {
+    pos = view->GetWorldCoordinatesFromImageCoordinates( idx );
+    vtkPolyData* circle = GenerateCircleFromGivenSphereAndGivenZ( iCenter, iRadius,
+      pos[2], 20 );
+
+    if( circle )
+      {
+//       for( int j = 0; j < 3; j++ )
+        {
+        SaveAndDisplayContour(
+          CellId,
+          QColor( 255, 0, 0 ),
+          true,
+          this->Pool->GetItem( 0 ),
+          circle,  0 );
+        }
+      }
+    }
+
+  CellId++;
+}

@@ -141,6 +141,8 @@ public:
   QMEGAVTKADDON2_EXPORT QVTKWidget* GetActiveQVTKWidget( );
   QMEGAVTKADDON2_EXPORT vtkViewImage* GetActiveView();
 
+  QMEGAVTKADDON2_EXPORT void JustForNick( double iCenter[3], double iRadius );
+
   enum SnapshotImageType
     {
     BMP = 0,
@@ -356,6 +358,13 @@ private:
   /** \brief Save contour in database. */
   void SaveValidatedContourInDatabase( vtkPolyData* contour );
 
+  void SaveAndDisplayContour( const int& iId,
+  const QColor& iColor,
+  const bool& iSave,
+  vtkViewImage2DWithContourWidget* iView,
+  vtkPolyData* iContour,
+  vtkOrientedGlyphContourRepresentation* iContour_rep );
+
   /** \brief Save contour in iBaseName.vtk and nodes in iBaseName.scpts*/
   void SaveValidatedContourAndNodesInFile( vtkPolyData* contour,
   vtkPolyData* nodes, QString iBaseName );
@@ -363,6 +372,15 @@ private:
   void SetupViewGivenQVTKWidget(
   vtkViewImage2DWithContourWidget* iView,
   QVTKWidget* iWidget );
+
+  vtkPolyData* GenerateCircleFromGivenSphereAndGivenX( double iC[3],
+  const double& iRadius, double iX, const int& iN );
+
+  vtkPolyData* GenerateCircleFromGivenSphereAndGivenY( double iC[3],
+  const double& iRadius, double iY, const int& iN );
+
+  vtkPolyData* GenerateCircleFromGivenSphereAndGivenZ( double iC[3],
+  const double& iRadius, double iZ, const int& iN );
 
 };
 

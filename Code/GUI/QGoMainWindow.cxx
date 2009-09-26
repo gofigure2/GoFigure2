@@ -1489,7 +1489,7 @@ void QGoMainWindow::OneClickSegmentation()
   int idx = this->CentralImageTabWidget->currentIndex();
 
   double pos[3];
-  std::vector< double* > corners( 8 );
+//   std::vector< double* > corners( 8 );
   double radius = this->RadiusSpinBox->value();
 
   QImagePageViewTracer* myPageView =
@@ -1500,14 +1500,7 @@ void QGoMainWindow::OneClickSegmentation()
     vtkPoints* seeds = myPageView->GetAllSeeds();
     seeds->GetPoint( 0, pos );
 
-    // In each direction (x,y,z), get corresponding coordinates
-    // for example:
-    // in direction x
-    // * Solve for each slice, find the intersection of the corresponding circle
-    // with the axis y and z.
-    // * Trace the contour (using the contour widget) passing through
-    // these 4 points
-
+    myPageView->JustForNick( pos, radius );
     }
   else
     {
@@ -1518,55 +1511,56 @@ void QGoMainWindow::OneClickSegmentation()
       }
     }
 
-#ifdef ITKLEVELSETCODE
-  if( m_ITKImage[idx].IsNotNull() )
-    {
-    LocalChanAndVeseSegmentationFilterType::Pointer localsegmentation =
-      LocalChanAndVeseSegmentationFilterType::New();
-    localsegmentation->SetFeatureImage( m_ITKImage[idx] );
-    localsegmentation->SetRadius( this->RadiusSpinBox->value() );
-
-    LevelSetImageType::PointType itk_pt;
-    double* pos = itk_pt.GetDataPointer();
-    std::list< vtkPolyData* > results;
-    std::list< vtkProperty* > property_list;
-
-    if( myPageView )
-      {
-      vtkPoints* seeds = myPageView->GetAllSeeds();
-      for( int i = 0; i < seeds->GetNumberOfPoints(); i++ )
-        {
-        seeds->GetPoint( i, pos );
-        localsegmentation->SetCenter( itk_pt );
-        localsegmentation->Update();
-
-        vtkImageData* image = localsegmentation->GetOutput();
-
-        // create iso-contours
-        vtkMarchingCubes *contours = vtkMarchingCubes::New();
-        contours->SetInput( image );
-        contours->GenerateValues ( 1, 0, 0 );
-
-        results.push_back( contours->GetOutput() );
-        property_list.push_back( vtkProperty::New() );
+// #ifdef ITKLEVELSETCODE
+//   if( m_ITKImage[idx].IsNotNull() )
+//     {
+//     LocalChanAndVeseSegmentationFilterType::Pointer localsegmentation =
+//       LocalChanAndVeseSegmentationFilterType::New();
+//     localsegmentation->SetFeatureImage( m_ITKImage[idx] );
+//     localsegmentation->SetRadius( this->RadiusSpinBox->value() );
+//
+//     LevelSetImageType::PointType itk_pt;
+//     double* pos = itk_pt.GetDataPointer();
+//     std::list< vtkPolyData* > results;
+//     std::list< vtkProperty* > property_list;
+//
+//     if( myPageView )
+//       {
+//       vtkPoints* seeds = myPageView->GetAllSeeds();
+//       for( int i = 0; i < seeds->GetNumberOfPoints(); i++ )
+//         {
+//         seeds->GetPoint( i, pos );
+//         localsegmentation->SetCenter( itk_pt );
+//         localsegmentation->Update();
+//
+//         vtkImageData* image = localsegmentation->GetOutput();
+//
+//         // create iso-contours
+//         vtkMarchingCubes *contours = vtkMarchingCubes::New();
+//         contours->SetInput( image );
+//         contours->GenerateValues ( 1, 0, 0 );
+//
+//         results.push_back( contours->GetOutput() );
+//         property_list.push_back( vtkProperty::New() );
+// //         std::cout <<i <<" [" <<pos[0] <<" " <<pos[1] <<" " <<pos[2] <<"]" <<std::endl;
+//         }
+//       myPageView->AddContours( results, property_list );
+//   //  myPageView->ClearAllSeeds();
+//       }
+//
+//     QImagePageView4DTracer* myPageView2 =
+//       dynamic_cast<QImagePageView4DTracer*>( m_PageView[idx] );
+//     if( myPageView2 )
+//       {
+//       vtkPoints* seeds = myPageView2->GetAllSeeds();
+//       for( int i = 0; i < seeds->GetNumberOfPoints(); i++ )
+//         {
+//         seeds->GetPoint( i, pos );
 //         std::cout <<i <<" [" <<pos[0] <<" " <<pos[1] <<" " <<pos[2] <<"]" <<std::endl;
-        }
-      myPageView->AddContours( results, property_list );
-  //  myPageView->ClearAllSeeds();
-      }
-
-    QImagePageView4DTracer* myPageView2 =
-      dynamic_cast<QImagePageView4DTracer*>( m_PageView[idx] );
-    if( myPageView2 )
-      {
-      vtkPoints* seeds = myPageView2->GetAllSeeds();
-      for( int i = 0; i < seeds->GetNumberOfPoints(); i++ )
-        {
-        seeds->GetPoint( i, pos );
-        std::cout <<i <<" [" <<pos[0] <<" " <<pos[1] <<" " <<pos[2] <<"]" <<std::endl;
-        }
-      }
-    }
-#endif
+//         }
+//       }
+//     }
+// #endif
 }
 //--------------------------------------------------------------------------------
+
