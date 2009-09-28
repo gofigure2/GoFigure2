@@ -11,6 +11,8 @@ class QToolBar;
 class QDockWidget;
 class QWidget;
 
+#include "QGoPlugin.h"
+
 /**
  * \class QGoImageFilterPluginBase
  * \brief
@@ -28,8 +30,6 @@ class QGoImageFilterPluginBase : public QGoPlugin
   protected:
     vtkImageData* m_VTKInput;
     vtkImageData* m_VTKOutput;
-
-    PluginInformationBase m_Information;
 
     virtual void Process( ) = 0;
 

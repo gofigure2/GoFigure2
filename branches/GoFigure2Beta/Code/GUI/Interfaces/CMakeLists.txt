@@ -1,0 +1,2 @@
+FILE( GLOB QGoGUI_INTERFACES_SRC *.cxx )
+

@@ -2,7 +2,6 @@
 
 QGoPlugin::QGoPlugin()
 {
-  this->SetAllRequiredInformation();
 }
 
 QGoPlugin::~QGoPlugin()

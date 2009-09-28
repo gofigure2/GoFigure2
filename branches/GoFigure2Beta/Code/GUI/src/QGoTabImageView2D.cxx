@@ -191,8 +191,8 @@ void QGoTabImageView2D::PopulateMenus( QObject *plugin )
     qobject_cast< QGoImageFilterPluginBase* >( plugin );
   if( filter )
     {
-    this->AddToMenu( plugin, QStringList( filter->Name() ),
-      m_FilteringMenu, SLOT( ApplyImageFilter() ), 0 );
+//     this->AddToMenu( plugin, QStringList( filter->Name() ),
+//       m_FilteringMenu, SLOT( ApplyImageFilter() ), 0 );
     }
  }
 //--------------------------------------------------------------------------

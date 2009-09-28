@@ -49,6 +49,7 @@ class QActionGroup;
 class QMenu;
 class QToolBar;
 class QDockWidget;
+class QGoPluginManager;
 
 class QGoTabElementBase : public QWidget
 {
@@ -74,6 +75,7 @@ protected:
   virtual void AddToMenu( QObject*, const QStringList&, QMenu*,
     const char*, QActionGroup* );
 
+  QGoPluginManager* m_PluginManager;
   QDir        m_PluginsDir;
   QStringList m_PluginFileNames;
 

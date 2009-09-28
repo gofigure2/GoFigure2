@@ -9,12 +9,14 @@
 
 #include "QGoImageFilterPluginBase.h"
 #include "QGoPluginHelper.h"
+#include "QGoPluginManager.h"
 
 #include <iostream>
 
 //--------------------------------------------------------------------------
 QGoTabElementBase::QGoTabElementBase( QWidget* parent ) : QWidget( parent )
 {
+  m_PluginManager = new QGoPluginManager();
 }
 //--------------------------------------------------------------------------
 
