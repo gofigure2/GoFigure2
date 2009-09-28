@@ -1498,9 +1498,13 @@ void QGoMainWindow::OneClickSegmentation()
   if( myPageView )
     {
     vtkPoints* seeds = myPageView->GetAllSeeds();
-    seeds->GetPoint( 0, pos );
 
-    myPageView->JustForNick( pos, radius );
+    for( int i = 0; i < seeds->GetNumberOfPoints(); i++ )
+      {
+      seeds->GetPoint( i, pos );
+      myPageView->JustForNick( pos, radius );
+      }
+    myPageView->ClearAllSeeds();
     }
   else
     {

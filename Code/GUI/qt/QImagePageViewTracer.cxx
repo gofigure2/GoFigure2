@@ -70,6 +70,7 @@
 #include <vtkPoints.h>
 #include <vtkCellArray.h>
 #include <vtkMath.h>
+#include <vtkPlane.h>
 #include <qsettings.h>
 
 #include "vtkPolyDataMySQLTextWriter.h"
@@ -164,7 +165,7 @@ QImagePageViewTracer::QImagePageViewTracer( QWidget* iiParent ) :
 
   for( int i = 0; i < this->Pool->GetNumberOfItems(); i++)
     {
-    this->Handle[i] = vtkPointHandleRepresentation2D::New();
+    this->Handle[i] = vtkConstrainedPointHandleRepresentation::New();
     this->Handle[i]->GetProperty()->SetColor(1,0,0);
 
     this->SeedRep[i] = vtkSeedRepresentation::New();
@@ -174,6 +175,10 @@ QImagePageViewTracer::QImagePageViewTracer( QWidget* iiParent ) :
     this->SeedWidget[i]->SetPriority( 10.0 );
     this->SeedWidget[i]->SetRepresentation( this->SeedRep[i] );
     }
+
+  this->Handle[0]->SetProjectionNormal( vtkViewImage2D::VIEW_ORIENTATION_AXIAL );
+  this->Handle[1]->SetProjectionNormal( vtkViewImage2D::VIEW_ORIENTATION_CORONAL );
+  this->Handle[2]->SetProjectionNormal( vtkViewImage2D::VIEW_ORIENTATION_SAGITTAL );
 
   this->SeedWidget[0]->SetInteractor( this->QvtkWidget_XY->GetInteractor() );
   this->SeedWidget[1]->SetInteractor( this->QvtkWidget_2->GetInteractor() );
@@ -976,6 +981,43 @@ void QImagePageViewTracer::Set3DImage( vtkImageData* iInput )
     this->Pool->GetItem(i)->GetTextProperty()->SetFontSize( 14 );
     }
 
+  this->Handle[0]->SetPosition( View1->GetImageActor()->GetCenter() );
+  this->Handle[0]->SetProjectionPosition(
+    View1->GetImageActor()->GetCenter()[vtkViewImage2D::VIEW_ORIENTATION_AXIAL] );
+  this->Handle[1]->SetPosition( View2->GetImageActor()->GetCenter() );
+  this->Handle[1]->SetProjectionPosition(
+    View2->GetImageActor()->GetCenter()[vtkViewImage2D::VIEW_ORIENTATION_CORONAL] );
+  this->Handle[2]->SetPosition( View3->GetImageActor()->GetCenter() );
+  this->Handle[2]->SetProjectionPosition(
+    View3->GetImageActor()->GetCenter()[vtkViewImage2D::VIEW_ORIENTATION_SAGITTAL] );
+
+  double bounds[6];
+  iInput->GetBounds( bounds );
+
+  vtkPlane* p1 = vtkPlane::New();
+  p1->SetOrigin( bounds[0], bounds[2], bounds[4] );
+  p1->SetNormal( 1.0, 0.0, 0.0 );
+
+  vtkPlane* p2 = vtkPlane::New();
+  p2->SetOrigin( bounds[0], bounds[2], bounds[4] );
+  p2->SetNormal( 0.0, 0.0, 1.0 );
+
+  vtkPlane *p3 = vtkPlane::New();
+  p3->SetOrigin( bounds[1], bounds[3], bounds[5] );
+  p3->SetNormal( -1.0, 0.0, 0.0 );
+
+  vtkPlane *p4 = vtkPlane::New();
+  p4->SetOrigin( bounds[1], bounds[3], bounds[5] );
+  p4->SetNormal( 0.0, 0.0, -1.0 );
+
+  for( int i = 0; i < 3; i++ )
+    {
+    this->Handle[i]->AddBoundingPlane( p1 );
+    this->Handle[i]->AddBoundingPlane( p2 );
+    this->Handle[i]->AddBoundingPlane( p3 );
+    this->Handle[i]->AddBoundingPlane( p4 );
+    }
+
   this->Pool->SyncSetShowScalarBar( false );
   this->Pool->SyncRender();
   this->Pool->SyncReset();
@@ -1005,6 +1047,34 @@ void QImagePageViewTracer::Set2DImage( vtkImageData* iInput )
 
   this->Pool->SyncRender();
   this->Pool->SyncReset();
+
+  this->Handle[0]->SetPosition( View1->GetImageActor()->GetCenter() );
+  this->Handle[0]->SetProjectionPosition(
+    View1->GetImageActor()->GetCenter()[vtkViewImage2D::VIEW_ORIENTATION_AXIAL] );
+
+  double bounds[6];
+  iInput->GetBounds( bounds );
+
+  vtkPlane* p1 = vtkPlane::New();
+  p1->SetOrigin( bounds[0], bounds[2], bounds[4] );
+  p1->SetNormal( 1.0, 0.0, 0.0 );
+
+  vtkPlane* p2 = vtkPlane::New();
+  p2->SetOrigin( bounds[0], bounds[2], bounds[4] );
+  p2->SetNormal( 0.0, 0.0, 1.0 );
+
+  vtkPlane *p3 = vtkPlane::New();
+  p3->SetOrigin( bounds[1], bounds[3], bounds[5] );
+  p3->SetNormal( -1.0, 0.0, 0.0 );
+
+  vtkPlane *p4 = vtkPlane::New();
+  p4->SetOrigin( bounds[1], bounds[3], bounds[5] );
+  p4->SetNormal( 0.0, 0.0, -1.0 );
+
+  this->Handle[0]->AddBoundingPlane( p1 );
+  this->Handle[0]->AddBoundingPlane( p2 );
+  this->Handle[0]->AddBoundingPlane( p3 );
+  this->Handle[0]->AddBoundingPlane( p4 );
 }
 //-------------------------------------------------------------------------
 
@@ -1252,6 +1322,7 @@ void QImagePageViewTracer::ClearAllSeeds()
     for( int j = 0; j < N; j++ )
       {
       this->SeedWidget[i]->DeleteSeed( k-- );
+      this->SeedRep[i]->RemoveLastHandle();
       }
     }
 }
@@ -1987,57 +2058,57 @@ void QImagePageViewTracer::JustForNick( double iCenter[3], double iRadius )
 
   double* pos;
 
-//   for( int i = 0; i < xlength; i++, idx[0]++ )
-//     {
-//     pos = view->GetWorldCoordinatesFromImageCoordinates( idx );
-//     vtkPolyData* circle = GenerateCircleFromGivenSphereAndGivenX( iCenter, iRadius,
-//       pos[0], 20 );
-//
-//     if( circle )
-//       {
-// //       for( int j = 0; j < 3; j++ )
-//         {
-//         SaveAndDisplayContour(
-//           CellId,
-//           QColor( 255, 0, 0 ),
-//           true,
-//           this->Pool->GetItem( 0 ),
-//           circle,  0 );
-//         }
-//       }
-//     }
+  for( int i = 0; i < xlength; i++, idx[0]++ )
+    {
+    pos = view->GetWorldCoordinatesFromImageCoordinates( idx );
+    vtkPolyData* circle = GenerateCircleFromGivenSphereAndGivenX( iCenter, iRadius,
+      pos[0], 20 );
 
-//   corner[0] = iCenter[0];
-//   corner[1] = iCenter[1] - iRadius;
-//   corner[2] = iCenter[2];
-//
-//   corner_id = view->GetImageCoordinatesFromWorldCoordinates( corner );
-//   int ylength = 2 * std::abs( center_id[1] - corner_id[1] );
-//
-//   idx[0] = corner_id[0];
-//   idx[1] = corner_id[1];
-//   idx[2] = corner_id[2];
-//
-//   for( int i = 0; i < ylength; i++, idx[1]++ )
-//     {
-//     pos = view->GetWorldCoordinatesFromImageCoordinates( idx );
-//     vtkPolyData* circle = GenerateCircleFromGivenSphereAndGivenY( iCenter, iRadius,
-//       pos[1], 20 );
-//
-//     if( circle )
-//       {
+    if( circle )
+      {
 //       for( int j = 0; j < 3; j++ )
-//         {
-//         SaveAndDisplayContour(
-//           CellId,
-//           QColor( 255, 0, 0 ),
-//           true,
-//           this->Pool->GetItem( j ),
-//           circle,  0 );
-//         }
-//       }
-//     }
-//
+        {
+        SaveAndDisplayContour(
+          CellId,
+          QColor( 255, 0, 0 ),
+          true,
+          this->Pool->GetItem( 0 ),
+          circle,  0 );
+        }
+      }
+    }
+
+  corner[0] = iCenter[0];
+  corner[1] = iCenter[1] - iRadius;
+  corner[2] = iCenter[2];
+
+  corner_id = view->GetImageCoordinatesFromWorldCoordinates( corner );
+  int ylength = 2 * std::abs( center_id[1] - corner_id[1] );
+
+  idx[0] = corner_id[0];
+  idx[1] = corner_id[1];
+  idx[2] = corner_id[2];
+
+  for( int i = 0; i < ylength; i++, idx[1]++ )
+    {
+    pos = view->GetWorldCoordinatesFromImageCoordinates( idx );
+    vtkPolyData* circle = GenerateCircleFromGivenSphereAndGivenY( iCenter, iRadius,
+      pos[1], 20 );
+
+    if( circle )
+      {
+      for( int j = 0; j < 3; j++ )
+        {
+        SaveAndDisplayContour(
+          CellId,
+          QColor( 255, 0, 0 ),
+          true,
+          this->Pool->GetItem( j ),
+          circle,  0 );
+        }
+      }
+    }
+
   corner[0] = iCenter[0];
   corner[1] = iCenter[1];
   corner[2] = iCenter[2] - iRadius;

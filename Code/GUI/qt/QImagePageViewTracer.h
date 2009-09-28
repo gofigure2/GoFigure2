@@ -61,7 +61,7 @@
 #include "QSplitterchild.h"
 #include "MegaVTK2Configure.h"
 
-#include <vtkPointHandleRepresentation2D.h>
+#include <vtkConstrainedPointHandleRepresentation.h>
 #include <vtkSeedRepresentation.h>
 #include <vtkSeedWidget.h>
 #include <vtkProperty2D.h>
@@ -306,7 +306,7 @@ protected:
   vtkEventQtSlotConnect*  VtkEventQtConnector;
 
   vtkViewImage2DWithContourWidgetCollection*      Pool;
-  std::vector< vtkPointHandleRepresentation2D* >  Handle;
+  std::vector< vtkConstrainedPointHandleRepresentation* >  Handle;
   std::vector< vtkSeedRepresentation* >           SeedRep;
   std::vector< vtkSeedWidget* >                   SeedWidget;
 
