@@ -19,11 +19,11 @@ QT4_WRAP_CPP( IMAGEIDENTITY_PLUGIN_MOC
 ADD_LIBRARY( ImageIdentityPlugin MODULE
   ${IMAGEIDENTITY_PLUGIN_MOC}
   ${IMAGEIDENTITY_PLUGIN_SRC}
-  ${GOFIGURE2_SOURCE_DIR}/Code/GUI/lib/Interfaces/QGoImageFilterPluginBase.cxx
+  ${INTERFACES_SRC}
 )
 
 TARGET_LINK_LIBRARIES( ImageIdentityPlugin
-  interface
+#   interface
   QGoLib
 )
 

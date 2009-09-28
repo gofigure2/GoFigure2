@@ -22,6 +22,11 @@ std::vector< QAction* > identityplugin::Actions()
   return oActionList;
 }
 
+QMenu* identityplugin::Menu()
+{
+  return 0;
+}
+
 QToolBar* identityplugin::ToolBar()
 {
   return 0;
