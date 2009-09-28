@@ -1010,13 +1010,30 @@ void QImagePageViewTracer::Set3DImage( vtkImageData* iInput )
   p4->SetOrigin( bounds[1], bounds[3], bounds[5] );
   p4->SetNormal( 0.0, 0.0, -1.0 );
 
+  vtkPlane *p5 = vtkPlane::New();
+  p5->SetOrigin( bounds[0], bounds[2], bounds[4] );
+  p5->SetNormal( 0.0, 1.0, 0.0 );
+
+  vtkPlane *p6 = vtkPlane::New();
+  p6->SetOrigin( bounds[1], bounds[3], bounds[5] );
+  p6->SetNormal( 0.0, -1.0, 0.0 );
+
   for( int i = 0; i < 3; i++ )
     {
     this->Handle[i]->AddBoundingPlane( p1 );
     this->Handle[i]->AddBoundingPlane( p2 );
     this->Handle[i]->AddBoundingPlane( p3 );
     this->Handle[i]->AddBoundingPlane( p4 );
+    this->Handle[i]->AddBoundingPlane( p5 );
+    this->Handle[i]->AddBoundingPlane( p6 );
     }
+
+  p1->Delete();
+  p2->Delete();
+  p3->Delete();
+  p4->Delete();
+  p5->Delete();
+  p6->Delete();
 
   this->Pool->SyncSetShowScalarBar( false );
   this->Pool->SyncRender();
@@ -1071,10 +1088,27 @@ void QImagePageViewTracer::Set2DImage( vtkImageData* iInput )
   p4->SetOrigin( bounds[1], bounds[3], bounds[5] );
   p4->SetNormal( 0.0, 0.0, -1.0 );
 
+  vtkPlane *p5 = vtkPlane::New();
+  p5->SetOrigin( bounds[0], bounds[2], bounds[4] );
+  p5->SetNormal( 0.0, 1.0, 0.0 );
+
+  vtkPlane *p6 = vtkPlane::New();
+  p6->SetOrigin( bounds[1], bounds[3], bounds[5] );
+  p6->SetNormal( 0.0, -1.0, 0.0 );
+
   this->Handle[0]->AddBoundingPlane( p1 );
   this->Handle[0]->AddBoundingPlane( p2 );
   this->Handle[0]->AddBoundingPlane( p3 );
   this->Handle[0]->AddBoundingPlane( p4 );
+  this->Handle[0]->AddBoundingPlane( p5 );
+  this->Handle[0]->AddBoundingPlane( p6 );
+
+  p1->Delete();
+  p2->Delete();
+  p3->Delete();
+  p4->Delete();
+  p5->Delete();
+  p6->Delete();
 }
 //-------------------------------------------------------------------------
 

@@ -1512,6 +1512,14 @@ void QGoMainWindow::OneClickSegmentation()
       dynamic_cast<QImagePageView4DTracer*>( m_PageView[idx] );
     if( myPageView2 )
       {
+      vtkPoints* seeds = myPageView2->GetAllSeeds();
+
+      for( int i = 0; i < seeds->GetNumberOfPoints(); i++ )
+        {
+        seeds->GetPoint( i, pos );
+        myPageView2->JustForNick( pos, radius );
+        }
+      myPageView2->ClearAllSeeds();
       }
     }
 

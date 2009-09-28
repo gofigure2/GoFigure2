@@ -151,6 +151,11 @@ public:
     const int& iExperimentID, const QString& iExperimentName );
   QMEGAVTKADDON2_EXPORT void FillTablesWidget();
 
+  QMEGAVTKADDON2_EXPORT void JustForNick( double iCenter[3], double iRadius )
+    {
+      this->Whatever->JustForNick( iCenter, iRadius );
+    }
+
 public slots:
   QMEGAVTKADDON2_EXPORT void SetView( const int& value );
   QMEGAVTKADDON2_EXPORT void RunMovie();
@@ -204,7 +209,7 @@ public slots:
       this->Whatever->SetLookupTable( lut );
     }
   QMEGAVTKADDON2_EXPORT void SetSeedingON()
-    { this->Whatever->SetSeedingOFF(); }
+    { this->Whatever->SetSeedingON(); }
   QMEGAVTKADDON2_EXPORT void SetSeedingOFF()
     { this->Whatever->SetSeedingOFF(); }
   QMEGAVTKADDON2_EXPORT void SetSeeding( const bool& iState )
