@@ -188,10 +188,10 @@ IF( VTK_FOUND )
       ${GOFIGURE2_BINARY_DIR}/Code/GUI/
       ${GOFIGURE2_SOURCE_DIR}/Code/GUI/lib
       ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib
-      ${GOFIGURE2_SOURCE_DIR}/Code/GUI/lib/QGoImageView
-      ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/QGoImageView
-      ${GOFIGURE2_SOURCE_DIR}/Code/GUI/lib/Plugins
-      ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/Plugins
+      ${GOFIGURE2_SOURCE_DIR}/Code/GUI/Interfaces
+      ${GOFIGURE2_BINARY_DIR}/Code/GUI/Interfaces
+      ${GOFIGURE2_SOURCE_DIR}/Code/GUI/src/
+      ${GOFIGURE2_BINARY_DIR}/Code/GUI/src/
       ${MEGAVTK2_SOURCE_DIR}
       ${MEGAVTK2_BINARY_DIR}
       ${MEGAVTK2_SOURCE_DIR}/vtkItk
@@ -203,7 +203,44 @@ IF( VTK_FOUND )
 
     INCLUDE( CTest )
 
-    ADD_SUBDIRECTORY( Code )
+    SET( QGoGUISRC_CXX
+      ${GOFIGURE2_SOURCE_DIR}/Code/GUI/src/QGoMainWindow.cxx
+      ${GOFIGURE2_SOURCE_DIR}/Code/GUI/src/QGoTabElementBase.cxx
+      ${GOFIGURE2_SOURCE_DIR}/Code/GUI/src/QGoPluginManager.cxx
+      ${GOFIGURE2_SOURCE_DIR}/Code/GUI/src/QGoTabImageView2D.cxx
+      ${GOFIGURE2_SOURCE_DIR}/Code/GUI/src/QGoTabImageView3D.cxx
+    )
+    SET( QGoGUISRC_HDRS
+      ${GOFIGURE2_SOURCE_DIR}/Code/GUI/src/QGoMainWindow.h
+      ${GOFIGURE2_SOURCE_DIR}/Code/GUI/src/QGoTabElementBase.h
+      ${GOFIGURE2_SOURCE_DIR}/Code/GUI/src/QGoTabImageView3D.h
+      ${GOFIGURE2_SOURCE_DIR}/Code/GUI/src/QGoPluginManager.h
+      ${GOFIGURE2_SOURCE_DIR}/Code/GUI/src/QGoTabImageView2D.h
+      ${GOFIGURE2_SOURCE_DIR}/Code/GUI/src/QGoTabImageViewElementBase.h
+    )
+
+    SET( QGoMainWindow_UI
+      ${GOFIGURE2_SOURCE_DIR}/Code/GUI/src/go.ui
+    )
+
+    SET( QGoGUISRC_SRC
+      ${QGoGUISRC_CXX}
+    #   ${QGoMainWindow_QRC}
+      ${QGoGUISRC_MOC}
+    )
+
+  SET( QGoGUIINTERFACES_SRC
+    ${GOFIGURE2_SOURCE_DIR}/Code/GUI/Interfaces/QGoPlugin.cxx
+    ${GOFIGURE2_SOURCE_DIR}/Code/GUI/Interfaces/QGoImageFilterPluginBase.cxx
+  )
+
+#   MESSAGE( SEND_ERROR ${QGoGUIINTERFACES_SRC} )
+  SET( QGoGUI_SRC
+    ${QGoGUIINTERFACES_SRC}
+    ${QGoGUISRC_SRC}
+  )
+
+ADD_SUBDIRECTORY( Code )
     ADD_SUBDIRECTORY( Examples )
     ADD_SUBDIRECTORY( Main )
 

@@ -13,19 +13,19 @@ ENDFOREACH( var ${MEGAVTK_EXAMPLE_SRC} )
 
 
 ADD_TEST( imageview2dTest
-  ${EXECUTABLE_OUTPUT_PATH}/imageview2d
+  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/imageview2d
   ${TESTING_DATA_PATH}/Circle.png
   1
 )
 
 ADD_TEST( imageview3dTest
-  ${EXECUTABLE_OUTPUT_PATH}/imageview3d
+  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/imageview3d
   ${TESTING_DATA_PATH}/Circle3d.mhd
   1
 )
 
 ADD_TEST( imageviewcollectionTest
-  ${EXECUTABLE_OUTPUT_PATH}/imageviewcollection
+  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/imageviewcollection
   ${TESTING_DATA_PATH}/Circle3d.mhd
   1
 )

@@ -11,8 +11,6 @@ QGoImageFilterPluginBase::QGoImageFilterPluginBase()
 {
   this->m_VTKInput = 0;
   this->m_VTKOutput = 0;
-
-  this->SetAllRequiredInformation();
 }
 
 QGoImageFilterPluginBase::~QGoImageFilterPluginBase()
