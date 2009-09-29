@@ -1,6 +1,7 @@
 #include "identityplugin.h"
 
 #include <QAction>
+#include <iostream>
 
 Q_EXPORT_PLUGIN2( QGoIdentityImageFilterPlugin, identityplugin )
 
@@ -51,6 +52,7 @@ void identityplugin::ReadSettings()
 void identityplugin::Process( )
 {
   m_VTKOutput = m_VTKInput;
+  std::cout <<"identityplugin::Process" <<std::endl;
 }
 
 void identityplugin::SetAllRequiredInformation()

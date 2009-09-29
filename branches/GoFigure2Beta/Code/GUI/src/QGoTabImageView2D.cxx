@@ -198,8 +198,8 @@ void QGoTabImageView2D::PopulateMenus( QObject *plugin )
 
 
     QMessageBox::warning( 0, "PopulateMenus", t );
-//     this->AddToMenu( plugin, QStringList( filter->Name() ),
-//       m_FilteringMenu, SLOT( ApplyImageFilter() ), 0 );
+    this->AddToMenu( plugin, QStringList( filter->Name() ),
+      m_FilteringMenu, SLOT( ApplyImageFilter() ), 0 );
     }
  }
 //--------------------------------------------------------------------------
