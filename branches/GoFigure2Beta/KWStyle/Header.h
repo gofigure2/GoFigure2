@@ -1,7 +1,7 @@
 /*=========================================================================
-  Author: $Author:$  // Author of last commit
-  Version: $Rev:$  // Revision of last commit
-  Date: $Date:$  // Date of last commit
+  Author: $Author$  // Author of last commit
+  Version: $Rev$  // Revision of last commit
+  Date: $Date$  // Date of last commit
 =========================================================================*/
 
 /*=========================================================================
@@ -37,50 +37,3 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-
-#ifndef __QGoTabElementBase_h
-#define __QGoTabElementBase_h
-
-#include <QWidget>
-#include <QDir>
-
-class QAction;
-class QActionGroup;
-class QMenu;
-class QToolBar;
-class QDockWidget;
-class QGoPluginManager;
-
-class QGoTabElementBase : public QWidget
-{
-  Q_OBJECT
-public:
-  QGoTabElementBase( QWidget* parent = 0 );
-  virtual ~QGoTabElementBase();
-
-  virtual std::vector< QMenu* > Menus();
-  virtual std::list< QToolBar* > ToolBar();
-  virtual std::list< QDockWidget* > DockWidget();
-  virtual std::list< QWidget* > AdditionalWidget();
-//   virtual QStatusBar* StatusBar();
-
-  virtual void WriteSettings() = 0;
-  virtual void ReadSettings() = 0;
-
-//   QDir DirectoryOf( const QString& iSubdir );
-
-protected:
-  virtual void LoadPlugins();
-  virtual void PopulateMenus( QObject* ) = 0;
-  virtual void AddToMenu( QObject*, const QStringList&, QMenu*,
-    const char*, QActionGroup* );
-
-  QGoPluginManager* m_PluginManager;
-  QDir              m_PluginsDir;
-  QStringList       m_PluginFileNames;
-
-private:
-  QGoTabElementBase( const QGoTabElementBase& );
-  void operator = ( const QGoTabElementBase& );
-};
-#endif

@@ -13,13 +13,13 @@ SET( GOFIGURE2_MAJOR_VERSION "0" )
 SET( GOFIGURE2_MINOR_VERSION "5" )
 
 # Subversion
-# FIND_PACKAGE( Subversion )
-#
-# IF( Subversion_FOUND )
-#   Subversion_WC_INFO( ${GOFIGURE2_SOURCE_DIR} GOFIGURE2 )
-# ELSE( Subversion_FOUND )
+FIND_PACKAGE( Subversion )
+
+IF( Subversion_FOUND )
+  Subversion_WC_INFO( ${GOFIGURE2_SOURCE_DIR} GOFIGURE2 )
+ELSE( Subversion_FOUND )
   SET( GOFIGURE2_WC_REVISION "0" )
-# ENDIF( Subversion_FOUND )
+ENDIF( Subversion_FOUND )
 
 SET( GOFIGURE2_VERSION
 "${GOFIGURE2_MAJOR_VERSION}.${GOFIGURE2_MINOR_VERSION}.${GOFIGURE2_WC_REVISION}" )
@@ -105,19 +105,23 @@ FIND_PACKAGE( VTK )
 IF( VTK_FOUND )
   INCLUDE( ${VTK_USE_FILE} )
 
-  IF( ${VTK_USE_MYSQL} )
+  IF( ${VTK_USE_MYSQL} MATCHES "OFF" )
     MESSAGE( SEND_ERROR "VTK must be compiled with MySQL support" )
     # TODO (arnaudgelas)
     # Here add a definition to be able to compile and use GoFigure
     # without any database support
     # ADD_DEFINITION( -DNODBSUPPORT )
-  ENDIF( ${VTK_USE_MYSQL} )
+  ENDIF( ${VTK_USE_MYSQL} MATCHES "OFF" )
 
   IF( VTK_BUILD_SHARED_LIBS )
-    SET(LIBS_STYLE "SHARED")
+    SET( LIBS_STYLE "SHARED" )
   ELSE( VTK_BUILD_SHARED_LIBS )
-    SET(LIBS_STYLE "STATIC")
+    SET( LIBS_STYLE "STATIC" )
   ENDIF( VTK_BUILD_SHARED_LIBS )
+
+  IF( APPLE )
+    SET( LIBS_STYLE "SHARED" )
+  ENDIF( APPLE )
 
   # Then find ITK
   FIND_PACKAGE( ITK )
@@ -240,66 +244,28 @@ IF( VTK_FOUND )
     ${QGoGUISRC_SRC}
   )
 
-ADD_SUBDIRECTORY( Code )
-    ADD_SUBDIRECTORY( Examples )
-    ADD_SUBDIRECTORY( Main )
+  ADD_SUBDIRECTORY( Code )
+  ADD_SUBDIRECTORY( Examples )
+#  ADD_SUBDIRECTORY( KWStyle )
+  ADD_SUBDIRECTORY( Main )
 
-
-#     SUBDIRS( Examples
-#            KWStyle
-#     )
 
 #---------------------------------------------------------------------------
 # PACKAGE With CPack
 #---------------------------------------------------------------------------
-#     IF( BUILD_PACKAGE )
-#       INCLUDE( InstallRequiredSystemLibraries )
-#       SET( CPACK_PACKAGE_DESCRIPTION_SUMMARY "GoFigure2" )
-#       SET( CPACK_PACKAGE_VENDOR "Megason Lab, Systems Biology, HMS" )
-#       SET( CPACK_PACKAGE_DESCRIPTION_FILE
-#         "${GOFIGURE2_SOURCE_DIR}/ReadMe.txt")
-#       SET( CPACK_RESOURCE_FILE_LICENSE
-#         "${GOFIGURE2_SOURCE_DIR}/Copyright.txt")
-#       SET( CPACK_PACKAGE_VERSION_MAJOR ${GOFIGURE2_MAJOR_VERSION} )
-#       SET( CPACK_PACKAGE_VERSION_MINOR ${GOFIGURE2_MINOR_VERSION} )
-#       SET( CPACK_PACKAGE_VERSION_PATCH ${GOFIGURE2_WC_REVISION} )
-#       SET( CPACK_PACKAGE_INSTALL_DIRECTORY
-#         "GoFigure2 ${GOFIGURE2_VERSION}" )
-#       SET( CPACK_COMPONENTS_ALL
-#             applications
-#             libraries
-# #             headers
-#           )
-#
-#       IF( WIN32 AND NOT UNIX )
-#         # There is a bug in NSI that does not handle full unix paths properly.
-#         # Make sure there is at least one set of four (4) backslashes.
-# #       SET( CPACK_PACKAGE_ICON
-# #         "${CMake_SOURCE_DIR}/Utilities/Release\\\\InstallIcon.bmp" )
-#         SET( CPACK_NSIS_INSTALLED_ICON_NAME "bin\\\\gofigure.exe")
-#         SET( CPACK_NSIS_DISPLAY_NAME "${CPACK_PACKAGE_INSTALL_DIRECTORY}
-#           GoFigure2" )
-#         SET( CPACK_NSIS_HELP_LINK
-#           "http:\\\\\\\\sourceforget.net\\\\projects\\\\gofigure2" )
-#         SET( CPACK_NSIS_URL_INFO_ABOUT "http:\\\\megason.med.harvard.edu" )
-# #       SET( CPACK_NSIS_CONTACT "me@my-personal-home-page.com" )
-#         SET( CPACK_NSIS_MODIFY_PATH ON )
-#       ELSE( WIN32 AND NOT UNIX )
-#         SET( CPACK_STRIP_FILES "bin/gofigure" )
-#         SET( CPACK_SOURCE_STRIP_FILES "" )
-#       ENDIF( WIN32 AND NOT UNIX )
-#
-# #       SET( CPACK_PACKAGE_EXECUTABLES "gofigure" "Gofigure2" )
-#
-# #       IF( UNIX )
-# #         SET( CPACK_BINARY_RPM ON )
-# #         SET( CPACK_RPM_PACKAGE_DEBUG "1" )
-# #         SET( CPACK_RPM_SPEC_INSTALL_POST "/bin/true" )
-# #       ENDIF( UNIX )
-#
-#       INCLUDE( CPack )
-#
-#     ENDIF( BUILD_PACKAGE )
+  # add the uninstall support
+  CONFIGURE_FILE(
+    "${CMAKE_CURRENT_SOURCE_DIR}/GOFIGURE2Uninstall.cmake.in"
+	"${CMAKE_CURRENT_BINARY_DIR}/GOFIGURE2Uninstall.cmake"
+	@ONLY
+    )
+
+  ADD_CUSTOM_TARGET(uninstall
+	"${CMAKE_COMMAND}" -P "${CMAKE_CURRENT_BINARY_DIR}/GOFIGURE2Uninstall.cmake" 
+    )
+
+  INCLUDE( GOFIGURE2CPack.cmake )
+    
   ENDIF( QT4_FOUND AND QT_VERSION_MINOR GREATER 4 )
 
 ENDIF( VTK_FOUND )
