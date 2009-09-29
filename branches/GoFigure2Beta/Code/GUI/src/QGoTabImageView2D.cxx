@@ -12,6 +12,7 @@
 
 #include <QMenu>
 #include <QColorDialog>
+#include <QMessageBox>
 
 //--------------------------------------------------------------------------
 QGoTabImageView2D::QGoTabImageView2D( QWidget* parent )
@@ -191,6 +192,12 @@ void QGoTabImageView2D::PopulateMenus( QObject *plugin )
     qobject_cast< QGoImageFilterPluginBase* >( plugin );
   if( filter )
     {
+//     std::cout << <<std::endl;
+    QString t( "At least the plugin is loaded: " );
+    t.append( filter->Name() );
+
+
+    QMessageBox::warning( 0, "PopulateMenus", t );
 //     this->AddToMenu( plugin, QStringList( filter->Name() ),
 //       m_FilteringMenu, SLOT( ApplyImageFilter() ), 0 );
     }
