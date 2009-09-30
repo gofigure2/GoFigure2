@@ -10,6 +10,9 @@ public:
     : QGoTabImageViewElementBase( parent ) {}
   virtual ~QGoTabImageViewElementBaseTestHelper() {}
 
+  GoFigure::TabDimensionType GetTabDimensionType( ) const
+    { return GoFigure::TWO_D; }
+
   virtual void SetImage( vtkImageData* ) {}
   virtual void Update() {}
 

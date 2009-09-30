@@ -69,16 +69,6 @@ public:
 
 //   QDir DirectoryOf( const QString& iSubdir );
 
-protected:
-  virtual void LoadPlugins();
-  virtual void PopulateMenus( QObject* ) = 0;
-  virtual void AddToMenu( QObject*, const QStringList&, QMenu*,
-    const char*, QActionGroup* );
-
-  QGoPluginManager* m_PluginManager;
-  QDir              m_PluginsDir;
-  QStringList       m_PluginFileNames;
-
 private:
   QGoTabElementBase( const QGoTabElementBase& );
   void operator = ( const QGoTabElementBase& );

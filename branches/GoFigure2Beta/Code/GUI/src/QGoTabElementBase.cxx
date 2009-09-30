@@ -7,16 +7,11 @@
 #include <QDockWidget>
 #include <QPluginLoader>
 
-#include "QGoImageFilterPluginBase.h"
-#include "QGoPluginHelper.h"
-#include "QGoPluginManager.h"
-
 #include <iostream>
 
 //--------------------------------------------------------------------------
 QGoTabElementBase::QGoTabElementBase( QWidget* parent ) : QWidget( parent )
 {
-  m_PluginManager = new QGoPluginManager();
 }
 //--------------------------------------------------------------------------
 
@@ -58,52 +53,3 @@ std::list< QWidget* > QGoTabElementBase::AdditionalWidget()
 }
 //--------------------------------------------------------------------------
 
-//--------------------------------------------------------------------------
-void QGoTabElementBase::LoadPlugins()
-{
-  foreach( QObject *plugin, QPluginLoader::staticInstances() )
-    {
-    this->PopulateMenus( plugin );
-    }
-
-  m_PluginsDir = FindPluginDirectory( "plugins" );
-
-  foreach( QString fileName, m_PluginsDir.entryList( QDir::Files ) )
-    {
-    QPluginLoader loader( m_PluginsDir.absoluteFilePath( fileName ) );
-    QObject* plugin = loader.instance();
-    if( plugin )
-      {
-      this->PopulateMenus( plugin );
-      m_PluginFileNames += fileName;
-      }
-    }
-}
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-void QGoTabElementBase::AddToMenu(
-  QObject *plugin, const QStringList &texts,
-  QMenu* menu, const char *member,
-  QActionGroup *actionGroup )
-{
-  foreach( QString text, texts )
-    {
-    std::cout <<text.constData()->toAscii() <<std::endl;
-
-    QAction *action = new QAction(text, plugin);
-    connect( action, SIGNAL(triggered()), this, member);
-    menu->addAction(action);
-
-    if (actionGroup)
-      {
-      action->setCheckable(true);
-      actionGroup->addAction(action);
-      }
-    }
-}
-//--------------------------------------------------------------------------
-// QStatusBar* QGoTabElementBase::StatusBar()
-// {
-//   return 0;
-// }

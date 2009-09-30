@@ -25,6 +25,8 @@ class identityplugin : public QObject, public QGoImageFilterPluginBase
     virtual void OnTabMoved( const int& , const int& ) {}
     virtual void OnTabClosed( const int& ) {}
 
+    std::list< GoFigure::TabDimensionType > TabElementCompatibility() const;
+
   protected:
     virtual void Process( );
     void SetAllRequiredInformation();

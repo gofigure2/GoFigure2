@@ -234,6 +234,7 @@ IF( VTK_FOUND )
     )
 
   SET( QGoGUIINTERFACES_SRC
+    ${GOFIGURE2_SOURCE_DIR}/Code/GUI/Interfaces/QGoPluginHelper.cxx
     ${GOFIGURE2_SOURCE_DIR}/Code/GUI/Interfaces/QGoPlugin.cxx
     ${GOFIGURE2_SOURCE_DIR}/Code/GUI/Interfaces/QGoImageFilterPluginBase.cxx
   )
@@ -246,7 +247,7 @@ IF( VTK_FOUND )
 
   ADD_SUBDIRECTORY( Code )
   ADD_SUBDIRECTORY( Examples )
-#  ADD_SUBDIRECTORY( KWStyle )
+  ADD_SUBDIRECTORY( KWStyle )
   ADD_SUBDIRECTORY( Main )
 
 
@@ -261,11 +262,11 @@ IF( VTK_FOUND )
     )
 
   ADD_CUSTOM_TARGET(uninstall
-	"${CMAKE_COMMAND}" -P "${CMAKE_CURRENT_BINARY_DIR}/GOFIGURE2Uninstall.cmake" 
+	"${CMAKE_COMMAND}" -P "${CMAKE_CURRENT_BINARY_DIR}/GOFIGURE2Uninstall.cmake"
     )
 
   INCLUDE( GOFIGURE2CPack.cmake )
-    
+
   ENDIF( QT4_FOUND AND QT_VERSION_MINOR GREATER 4 )
 
 ENDIF( VTK_FOUND )

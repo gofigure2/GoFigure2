@@ -42,46 +42,58 @@
 #include "QGoTabElementBase.h"
 #include "QGoTabImageView2D.h"
 
-#include <QDesktopServices>
-#include <QUrl>
-
-#include <iostream>
-
-#include <QFileDialog>
-#include <QMessageBox>
+// Plugin stuff
+#include "QGoPluginHelper.h"
+#include "QGoImageFilterPluginBase.h"
 
 #include "itkQtAdaptor.h"
 #include "itkQtProgressBar.h"
 
-#include <itkImageFileReader.h>
+#include <iostream>
+
+// Qt includes
+#include <QDesktopServices>
+#include <QUrl>
+#include <QFileDialog>
+#include <QMessageBox>
+#include <QDialog>
+#include <QPluginLoader>
 #include <QSettings>
 
-#include <vtkImageAppendComponents.h>
-#include <vtkMarchingCubes.h>
-#include <vtkPolyDataReader.h>
-#include <vtkPLYReader.h>
-#include <vtkPolyData.h>
-#include <vtkProperty.h>
-#include <QDialog>
+// itk includes
+#include "itkImageFileReader.h"
+
+// vtk includes
+// #include "vtkImageAppendComponents.h"
+// #include "vtkMarchingCubes.h"
+#include "vtkPolyDataReader.h"
+#include "vtkPLYReader.h"
+#include "vtkPolyData.h"
+#include "vtkProperty.h"
+
+
 
 // *************************************************************************
 QGoMainWindow::QGoMainWindow( )
 {
+  QString title( "<*)0|00|0>< ~~ <*)0|00|0><     GoFigure    ><0|00|0(*> ~~ ><0|00|0(*>");
   this->setupUi( this );
   this->setCentralWidget( this->CentralTabWidget );
-  this->setWindowTitle( tr( "<*)0|00|0>< ~~ <*)0|00|0><     GoFigure    ><0|00|0(*> ~~ ><0|00|0(*>") );
+  this->setWindowTitle( title );
   this->statusbar->showMessage( tr( "No data" ) );
 
   this->CentralTabWidget->clear();
   this->CentralTabWidget->setTabsClosable( true );
 
   this->statusbar->addPermanentWidget( &m_Bar );
+
   m_Bar.hide();
   SetCurrentSingleFile( QString() );
   SetCurrentMultiFile( QString() );
 
   CreateSignalSlotsConnection();
   ReadSettings();
+  LoadPlugins();
 }
 
 // *************************************************************************
@@ -460,7 +472,7 @@ void QGoMainWindow::OpenImageWithITK( const QString& iFile )
 //--------------------------------------------------------------------------------
 void QGoMainWindow::on_actionAbout_activated( )
 {
-  QString version( tr( "v0.5" ) );
+  QString version( "v0.5" );
 
   QString about_gofigure( tr( "GoFigure V2 \n\n" ) );
 
@@ -469,6 +481,7 @@ void QGoMainWindow::on_actionAbout_activated( )
   authors.append( " * 2007-2009 ~ A. Gouaillard\n" );
   authors.append( " * 2008 ~ K. Mosaliganti\n" );
   authors.append( " * 2008 ~ L. Souhait\n\n" );
+  authors.append( " * 2009 ~ N. Rannou\n\n" );
   authors.append( " * Principal Investigator\n" );
   authors.append( " * S. Megason\n" );
 
@@ -519,6 +532,81 @@ void QGoMainWindow::SetCurrentSingleFile( const QString &fileName )
     UpdateRecentFileActions( m_RecentSingleFiles, menuSingle_Files,
       recentSingleFileActions );
     }
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoMainWindow::LoadPlugins()
+{
+  foreach( QObject *plugin, QPluginLoader::staticInstances() )
+    {
+    this->PopulateMenus( plugin );
+    }
+
+  m_PluginsDir = FindPluginDirectory( "plugins" );
+
+  foreach( QString fileName, m_PluginsDir.entryList( QDir::Files ) )
+    {
+    QPluginLoader loader( m_PluginsDir.absoluteFilePath( fileName ) );
+    QObject* plugin = loader.instance();
+    if( plugin )
+      {
+      this->PopulateMenus( plugin );
+      m_PluginFileNames += fileName;
+      }
+    }
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoMainWindow::PopulateMenus( QObject *plugin )
+{
+  QGoImageFilterPluginBase* filter =
+    qobject_cast< QGoImageFilterPluginBase* >( plugin );
+  if( filter )
+    {
+    this->AddToMenu( plugin, QStringList( filter->Name() ),
+      this->menuFiltering, SLOT( ApplyImageFilter() ), 0 );
+    }
+  else
+    {
+    std::cout <<"This is not QGoImageFilterPlugin" <<std::endl;
+    }
+ }
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoMainWindow::AddToMenu(
+  QObject *plugin, const QStringList &texts,
+  QMenu* menu, const char *member,
+  QActionGroup *actionGroup )
+{
+  foreach( QString text, texts )
+    {
+    std::cout <<text.constData()->toAscii() <<std::endl;
+
+    QAction *action = new QAction(text, plugin);
+    action->setDisabled( true );
+    connect( action, SIGNAL(triggered()), this, member);
+    menu->addAction(action);
+
+    if (actionGroup)
+      {
+      action->setCheckable(true);
+      actionGroup->addAction(action);
+      }
+    }
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoMainWindow::ApplyImageFilter()
+{
+  QAction *action = qobject_cast< QAction* >( sender( ) );
+  QGoImageFilterPluginBase* filter =
+    qobject_cast< QGoImageFilterPluginBase* >( action->parent() );
+//   filter->SetInput( this->m_Image );
+  filter->Update();
 }
 //--------------------------------------------------------------------------
 

@@ -34,3 +34,5 @@ vtkImageData* QGoImageFilterPluginBase::GetOutput()
 {
   return m_VTKOutput;
 }
+
+

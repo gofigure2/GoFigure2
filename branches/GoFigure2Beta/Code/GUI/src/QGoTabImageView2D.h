@@ -22,6 +22,8 @@ public:
   QGoTabImageView2D( QWidget* parent = 0 );
   virtual ~QGoTabImageView2D();
 
+  GoFigure::TabDimensionType GetTabDimensionType( ) const;
+
   void SetImage( vtkImageData* iImage );
   void Update();
 
@@ -40,7 +42,6 @@ public slots:
   void ChangeBackgroundColor();
   void ChangeLookupTable();
   void ShowScalarBar( const bool& );
-  void ApplyImageFilter();
 
 protected:
   QHBoxLayout*      m_LayOut;
@@ -51,8 +52,6 @@ protected:
   QMenu* m_PropertiesMenu;
   QMenu* m_FilteringMenu;
   QMenu* m_SegmentationMenu;
-
-  void PopulateMenus( QObject* );
 
 private:
   QGoTabImageView2D( const QGoTabImageView2D& );

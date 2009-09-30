@@ -42,6 +42,7 @@
 #define __QGoMainWindow_h
 
 #include <QMainWindow>
+#include <QDir>
 
 #include <vtkImageData.h>
 #include <itkImage.h>
@@ -62,8 +63,6 @@
 #ifdef ITKLEVELSETCODE
   #include "itkChanAndVeseSegmentationFilter.h"
 #endif
-
-// #include <qsettings.h>
 
 class QGoMainWindow : public QMainWindow,
   private Ui::go_mainwindow
@@ -108,6 +107,8 @@ protected slots:
   void on_actionAbout_activated( );
   void on_actionAbout_Qt_activated( );
 
+  void ApplyImageFilter();
+
 protected:
 
   /** \brief */
@@ -129,6 +130,16 @@ protected:
   \param[in] iFileName  */
   void OpenImageWithITK( const QString& iFileName );
   void OpenLSMImage( const QString& iFile, const int& iTimePoint );
+
+  void LoadPlugins();
+  void PopulateMenus( QObject *plugin );
+  void AddToMenu( QObject*, const QStringList&, QMenu*,
+    const char*, QActionGroup* );
+
+
+  QMenu*            m_FilteringMenu;
+  QDir              m_PluginsDir;
+  QStringList       m_PluginFileNames;
 
   /** \brief Display Image in a "quad-view" widget in a tab.
   The title of the tab is given by iTag.

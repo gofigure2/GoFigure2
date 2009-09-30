@@ -9,6 +9,8 @@ class QGoTabImageView3D : public QGoTabImageViewElementBase
     QGoTabImageView3D( QWidget* parent = 0 );
     virtual ~QGoTabImageView3D();
 
+    GoFigure::TabDimensionType GetTabDimensionType( ) const;
+
     void SetImage( vtkImageData* iImage ) {}
     void Update() {}
 

@@ -1,25 +1,46 @@
 SET( GOFIGURE_APPLICATION_SOURCE_LIST
     gofigure.cxx
     )
+INCLUDE_DIRECTORIES( ${GOFIGURE2_BINARY_DIR}/Examples/GUI/src/  )
 
-#ADD_EXECUTABLE( gofigure
-#  ${GOFIGURE_APPLICATION_SOURCE_LIST}
-#  ${QGoGUI_SRC}
-#  )
-#
-#TARGET_LINK_LIBRARIES( gofigure
-#  QGoGui
-#  ITKBasicFilters
-#  ITKNumerics
-#  ITKIO
-#  vtkImaging
-#  )
-#
-#INSTALL( TARGETS gofigure
-#      RUNTIME DESTINATION bin
-#      BUNDLE  DESTINATION bin
-#      LIBRARY DESTINATION lib
-#      ARCHIVE DESTINATION lib/static
-#      COMPONENT applications
-#      )
-#
+QT4_WRAP_UI( QGoMainWindow_UI_H ${QGoMainWindow_UI} )
+
+QT4_WRAP_CPP( QGoGUISRC_MOC ${QGoGUISRC_HDRS} )
+
+SET_SOURCE_FILES_PROPERTIES( ${QGoGUISRC_CXX} PROPERTIES
+  OBJECT_DEPENDS "${QGoMainWindow_UI_H}"
+  )
+
+SET_SOURCE_FILES_PROPERTIES( ${QGoGUISRC_MOC} PROPERTIES
+  OBJECT_DEPENDS "${QGoMainWindow_UI_H}"
+  )
+
+QT4_ADD_RESOURCES( QGoMainWindow_QRC
+  ${GOFIGURE2_SOURCE_DIR}/Code/GUI/src/resources/axes.qrc
+  )
+
+ADD_EXECUTABLE( gofigure
+ ${GOFIGURE_APPLICATION_SOURCE_LIST}
+ ${QGoGUI_SRC}
+ ${QGoGUISRC_MOC}
+ ${QGoMainWindow_QRC}
+ )
+
+TARGET_LINK_LIBRARIES( gofigure
+    QGoGui
+    QGoIO
+    ITKBasicFilters
+    ITKNumerics
+    ITKCommon
+    ITKIO
+    itkQt
+ )
+
+INSTALL( TARGETS gofigure
+     RUNTIME DESTINATION bin
+     BUNDLE  DESTINATION bin
+     LIBRARY DESTINATION lib
+     ARCHIVE DESTINATION lib/static
+     COMPONENT applications
+     )
+

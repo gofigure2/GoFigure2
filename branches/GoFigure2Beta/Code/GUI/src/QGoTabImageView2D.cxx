@@ -50,14 +50,19 @@ QGoTabImageView2D::QGoTabImageView2D( QWidget* parent )
 
   m_SegmentationMenu = new QMenu( tr( "&Segmentation" ) );
 //   m_SegmentationMenu->setDisabled( true );
-
-  this->LoadPlugins();
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 QGoTabImageView2D::~QGoTabImageView2D()
 {}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+GoFigure::TabDimensionType QGoTabImageView2D::GetTabDimensionType( ) const
+{
+  return GoFigure::TWO_D;
+}
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
@@ -185,32 +190,3 @@ void QGoTabImageView2D::ReadSettings()
 }
 //--------------------------------------------------------------------------
 
-//--------------------------------------------------------------------------
-void QGoTabImageView2D::PopulateMenus( QObject *plugin )
-{
-  QGoImageFilterPluginBase* filter =
-    qobject_cast< QGoImageFilterPluginBase* >( plugin );
-  if( filter )
-    {
-//     std::cout << <<std::endl;
-    QString t( "At least the plugin is loaded: " );
-    t.append( filter->Name() );
-
-
-    QMessageBox::warning( 0, "PopulateMenus", t );
-    this->AddToMenu( plugin, QStringList( filter->Name() ),
-      m_FilteringMenu, SLOT( ApplyImageFilter() ), 0 );
-    }
- }
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-void QGoTabImageView2D::ApplyImageFilter()
-{
-  QAction *action = qobject_cast< QAction* >( sender( ) );
-  QGoImageFilterPluginBase* filter =
-    qobject_cast< QGoImageFilterPluginBase* >( action->parent() );
-  filter->SetInput( this->m_Image );
-  filter->Update();
-}
-//--------------------------------------------------------------------------

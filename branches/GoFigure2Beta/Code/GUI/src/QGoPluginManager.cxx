@@ -12,54 +12,51 @@
 #include <QToolBar>
 
 #include "QGoPlugin.h"
-#include "QGoMainWindow.h"
+#include "QGoPluginHelper.h"
+// #include "QGoMainWindow.h"
 
-class QGoPluginManager::Interior
+// class QGoPluginManager::Interior
+// {
+// public:
+//   Interior() {}
+//   ~Interior() {}
+//
+//   /** \todo check later on if it is already loaded. */
+//   bool AddPlugin( QGoPlugin* plugin )
+//   {
+//     if( plugin )
+//       {
+//       m_Plugins.push_back( plugin );
+//       return true;
+//       }
+//     else
+//       {
+//       return false;
+//       }
+//   }
+//
+//   std::list< QGoPlugin* > m_Plugins;
+// };
+
+
+QGoPluginManager::QGoPluginManager( ) : QObject()
 {
-public:
-  Interior()
-  {
-//     m_MainWindow = 0;
-  }
-  ~Interior() {}
-
-  /** \todo check later on if it is already loaded. */
-  bool AddPlugin( QGoPlugin* plugin )
-  {
-    m_Plugins.push_back( plugin );
-    return true;
-  }
-
-//   QGoMainWindow* m_MainWindow;
-  std::list< QGoPlugin* > m_Plugins;
-
-  //	stores and manages dock windows (shows and hides when active engine is changed
-  std::list< QDockWidget* > m_Docks;
-
-  //	stores all plugins' context menu actions
-  std::list< QAction* > m_ContextMenuActions;
-};
-
-
-QGoPluginManager::QGoPluginManager( /*QGoMainWindow* iMw*/ ) : QObject()
-{
-  m_InternalManager = new Interior();
-//   m_InternalManager->m_MainWindow = iMw;
+//   m_InternalManager = new Interior();
 }
 
 QGoPluginManager::~QGoPluginManager()
 {
-  delete m_InternalManager;
+//   delete m_InternalManager;
 }
 
-////////////////////////////////////////////////////////////
-//	Plugins Events
-
+//--------------------------------------------------------------------------
+// Tab events to be handled by plugins
+//--------------------------------------------------------------------------
 void QGoPluginManager::NotifyTabActivated( const int& iId )
 {
   for( std::list< QGoPlugin* >::iterator
-        it = m_InternalManager->m_Plugins.begin();
-       it != m_InternalManager->m_Plugins.end();
+        it = m_PluginList.begin();
+       it != m_PluginList.end();
        ++it )
     {
     if( ( *it ) )
@@ -72,8 +69,8 @@ void QGoPluginManager::NotifyTabActivated( const int& iId )
 void QGoPluginManager::NotifyTabClosed( const int& iId )
 {
   for( std::list< QGoPlugin* >::iterator
-        it = m_InternalManager->m_Plugins.begin();
-       it != m_InternalManager->m_Plugins.end();
+        it = m_PluginList.begin();
+       it != m_PluginList.end();
        ++it )
     {
     if( ( *it ) )
@@ -83,12 +80,12 @@ void QGoPluginManager::NotifyTabClosed( const int& iId )
     }
 }
 
-#if QT_VERSION >= 0x040500
+
 void QGoPluginManager::NotifyTabMoved( const int& from, const int& to )
 {
   for( std::list< QGoPlugin* >::iterator
-        it = m_InternalManager->m_Plugins.begin();
-       it != m_InternalManager->m_Plugins.end();
+        it = m_PluginList.begin();
+       it != m_PluginList.end();
        ++it )
     {
     if( ( *it ) )
@@ -97,15 +94,14 @@ void QGoPluginManager::NotifyTabMoved( const int& from, const int& to )
       }
     }
 }
-#endif
 
-////////////////////////////////////////////////////////////
+//--------------------------------------------------------------------------
 
 bool QGoPluginManager::IsPluginAlreadyLoaded( const QString& iName )
 {
   for( std::list< QGoPlugin* >::iterator
-        it = m_InternalManager->m_Plugins.begin();
-       it != m_InternalManager->m_Plugins.end();
+        it = m_PluginList.begin();
+       it != m_PluginList.end();
        ++it )
     {
     if( ( *it ) )
@@ -132,29 +128,24 @@ void QGoPluginManager::LoadPlugin( const QString& path )
   if( obj )
     {
     QGoPlugin* plugin = qobject_cast<QGoPlugin*>(obj);
-    if ( plugin )
+    if( plugin )
       {
 
       //	Check if plugin with the same name was already loaded.
       //	If is was then exit.
-      if ( IsPluginAlreadyLoaded( plugin->Name() ) )
+      if( IsPluginAlreadyLoaded( plugin->Name() ) )
         {
         return;
         }
 
-      if ( m_InternalManager->AddPlugin(plugin) )
+      if( plugin )
         {
+        m_PluginList.push_back( plugin );
         std::cout <<"Plugin LOADED" <<std::endl;
-
-        //	context menu actions
-//         QString type = plugin->targetEngine();
-//         m_InternalManager->m_ContextMenuActions[type] << plugin->contextMenuActions();
-
-        //	settings page
-//         m_InternalManager->m_MainWindow->addPluginSettingsPage(plugin->Name(), plugin->settingsPage());
         }
       else
         {
+        //note that for now this case can never happen!
         loader.unload();
         }
       }
@@ -171,55 +162,43 @@ void QGoPluginManager::LoadPlugin( const QString& path )
 
 void QGoPluginManager::LoadPlugins()
 {
-  //	user's plugins
-//   QDir pluginDir( AppInfo::configDirPath() + "/plugins" );
-//   foreach (QString fileName, pluginDir.entryList(QDir::Files))
-//     {
-//     QString path = pluginDir.absoluteFilePath(fileName);
-//     LoadPlugin( path );
-//     }
-
   //	global plugins
-  QDir gPluginDir(QApplication::applicationDirPath() + "/plugins");
+  QDir gPluginDir = FindPluginDirectory( "plugins" );
   foreach (QString fileName, gPluginDir.entryList(QDir::Files))
     {
     QString path = gPluginDir.absoluteFilePath(fileName);
     LoadPlugin(path);
     }
 
-  std::list< QDockWidget* >::iterator it
-    = m_InternalManager->m_Docks.begin();
-  std::list< QDockWidget* >::iterator end
-    = m_InternalManager->m_Docks.end();
-
-  for( ; it != end; ++it )
-    {
+//   std::list< QDockWidget* >::iterator it
+//     = m_InternalManager->m_Docks.begin();
+//   std::list< QDockWidget* >::iterator end
+//     = m_InternalManager->m_Docks.end();
+//
+//   for( ; it != end; ++it )
+//     {
 //     m_InternalManager->m_MainWindow->AddDockWidget( *it );
-    }
+//     }
 }
 
-void QGoPluginManager::applySettings()
+void QGoPluginManager::ApplySettings()
 {
-  std::list< QGoPlugin* >::iterator it = m_InternalManager->m_Plugins.begin();
-  std::list< QGoPlugin* >::iterator end = m_InternalManager->m_Plugins.end();
+  std::list< QGoPlugin* >::iterator it = m_PluginList.begin();
+  std::list< QGoPlugin* >::iterator end = m_PluginList.end();
 
   for( ; it != end; ++it )
     {
-//     (*it)->applySettings();
+    (*it)->ReadSettings();
     }
 }
 
-
-
-////////////////////////////////////////////////////////////
-//	GUI controls
 
 std::list< QMenu* > QGoPluginManager::GetMenus( )
 {
   std::list< QMenu* > oMenuList;
 
-  std::list< QGoPlugin* >::iterator it = m_InternalManager->m_Plugins.begin();
-  std::list< QGoPlugin* >::iterator end = m_InternalManager->m_Plugins.end();
+  std::list< QGoPlugin* >::iterator it = m_PluginList.begin();
+  std::list< QGoPlugin* >::iterator end = m_PluginList.end();
 
   for( ; it!= end; ++it )
     {
@@ -231,49 +210,4 @@ std::list< QMenu* > QGoPluginManager::GetMenus( )
 
   return oMenuList;
 }
-
-// ActionList QGoPluginManager::GetMainMenuActions(const QString& engine, MenuID id)
-// {
-//   ActionList list;
-//   foreach (QGoPlugin* plugin, m_InternalManager->m_Plugins[engine])
-//     {
-//     list << plugin->mainMenuActions(id);
-//     }
-//   return list;
-// }
-
-// ToolBarList QGoPluginManager::getToolBars(const QString& engine)
-// {
-//   ToolBarList list;
-//   foreach (QGoPlugin* plugin, m_InternalManager->m_Plugins[engine])
-//     {
-//     if ( plugin->toolBar() )
-//       {
-//       list << plugin->toolBar();
-//       }
-//     }
-//   return list;
-// }
-
-// QWidgetList QGoPluginManager::getDocks(const QString& engine)
-// {
-//   QWidgetList list;
-//   foreach (QGoPlugin* plugin, m_InternalManager->m_Plugins[engine])
-//     {
-//     list << plugin->dockList();
-//     }
-//   return list;
-// }
-
-// ActionList QGoPluginManager::getContextMenuActions(const QString& engine)
-// {
-//   if ( m_InternalManager->m_ContextMenuActions.contains(engine) )
-//     {
-//     return m_InternalManager->m_ContextMenuActions[engine];
-//     }
-//   else
-//     {
-//     return ActionList();
-//     }
-// }
 

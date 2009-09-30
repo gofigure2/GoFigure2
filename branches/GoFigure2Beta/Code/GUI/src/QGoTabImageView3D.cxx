@@ -8,3 +8,8 @@ QGoTabImageView3D::QGoTabImageView3D( QWidget* parent )
 QGoTabImageView3D::~QGoTabImageView3D( )
 {
 }
+
+GoFigure::TabDimensionType QGoTabImageView3D::GetTabDimensionType( ) const
+{
+  return GoFigure::THREE_D;
+}

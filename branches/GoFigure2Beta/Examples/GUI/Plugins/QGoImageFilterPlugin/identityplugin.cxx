@@ -65,3 +65,13 @@ void identityplugin::SetAllRequiredInformation()
   this->m_Information.License = "BSD";
   this->m_Information.Description = "Test: plugin which copy the input to the output";
 }
+
+std::list< GoFigure::TabDimensionType >
+identityplugin::TabElementCompatibility() const
+{
+  std::list< GoFigure::TabDimensionType > oCompatibility;
+  oCompatibility.push_back( GoFigure::TWO_D );
+  oCompatibility.push_back( GoFigure::THREE_D );
+
+  return oCompatibility;
+}
