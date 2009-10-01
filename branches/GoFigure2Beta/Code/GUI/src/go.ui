@@ -254,6 +254,9 @@
    </property>
   </action>
   <action name="actionOpen_Mesh">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Open Mesh / Contour</string>
    </property>
@@ -276,6 +279,66 @@
   <action name="actionDeveloper_mailing_list">
    <property name="text">
     <string>Developer mailing list</string>
+   </property>
+  </action>
+  <action name="actionQuadView">
+   <property name="text">
+    <string>QuadView XYT</string>
+   </property>
+  </action>
+  <action name="actionFullScreen_XY">
+   <property name="text">
+    <string>FullScreen  XY</string>
+   </property>
+  </action>
+  <action name="actionFull_screen_XZ">
+   <property name="text">
+    <string>Full screen XZ</string>
+   </property>
+  </action>
+  <action name="actionFull_screen_YZ">
+   <property name="text">
+    <string>Full screen YZ</string>
+   </property>
+  </action>
+  <action name="actionFull_screen_XYZ">
+   <property name="text">
+    <string>Full screen XYZ</string>
+   </property>
+  </action>
+  <action name="actionXYT_View">
+   <property name="text">
+    <string>XYT View</string>
+   </property>
+  </action>
+  <action name="actionQuadView_XYZ">
+   <property name="text">
+    <string>QuadView XYZ</string>
+   </property>
+  </action>
+  <action name="actionFull_screen_XY">
+   <property name="text">
+    <string>Full screen XY</string>
+   </property>
+  </action>
+  <action name="actionFull_screen_XT">
+   <property name="text">
+    <string>Full screen XT</string>
+   </property>
+  </action>
+  <action name="actionFull_screen_YT">
+   <property name="text">
+    <string>Full screen YT</string>
+   </property>
+  </action>
+  <action name="actionFull_screen_XYT">
+   <property name="text">
+    <string>Full screen XYT</string>
+   </property>
+  </action>
+  <action name="action">
+   <property name="text">
+    <string>Full screen XY</string>
    </property>
   </action>
  </widget>

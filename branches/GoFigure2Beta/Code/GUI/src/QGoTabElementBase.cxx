@@ -21,21 +21,16 @@ QGoTabElementBase::~QGoTabElementBase()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-std::vector< QMenu* > QGoTabElementBase::Menus()
+std::vector< QAction* > QGoTabElementBase::ViewActions()
 {
-  QMenu* ViewMenu = new QMenu( QObject::tr( "&View" ) );
-
-  std::vector< QMenu* > oMenuVector;
-  oMenuVector.push_back( ViewMenu );
-
-  return oMenuVector;
+  return std::vector< QAction* > ();
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-std::list< QToolBar* > QGoTabElementBase::ToolBar()
+std::vector< QToolBar* > QGoTabElementBase::ToolBar()
 {
-  return std::list< QToolBar* >();
+  return std::vector< QToolBar* >();
 }
 //--------------------------------------------------------------------------
 

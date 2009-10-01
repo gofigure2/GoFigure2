@@ -21,7 +21,8 @@ QGoTabImageView2D::QGoTabImageView2D( QWidget* parent )
 
   setupUi( this );
 
-  m_ViewMenu = new QMenu( tr( "&View" ) );
+  m_ViewToolBar = new QToolBar( tr( "View" ) );
+
   QAction* LookupTableAction = new QAction( tr( "Lookup Table" ), this );
   LookupTableAction->setStatusTip( tr(" Change the associated lookup table" ) );
 
@@ -29,27 +30,23 @@ QGoTabImageView2D::QGoTabImageView2D( QWidget* parent )
   QObject::connect( LookupTableAction, SIGNAL( triggered() ),
     this, SLOT( ChangeLookupTable() ) );
 
-  m_ViewMenu->addAction( LookupTableAction );
+  m_ViewActions.push_back( LookupTableAction );
+  m_ViewToolBar->addAction( LookupTableAction );
 
   QAction* ScalarBarAction = new QAction( tr( "Display Scalar Bar" ), this );
   ScalarBarAction->setCheckable( true );
-  m_ViewMenu->addAction( ScalarBarAction );
+  m_ViewActions.push_back( ScalarBarAction );
+  m_ViewToolBar->addAction( ScalarBarAction );
 
   QObject::connect( ScalarBarAction, SIGNAL( toggled( bool ) ),
     this, SLOT( ShowScalarBar( bool ) ) );
 
-  m_PropertiesMenu = new QMenu( "&Properties" );
   QAction* BackgroundColorAction = new QAction( tr("Background Color"), this );
-  m_PropertiesMenu->addAction( BackgroundColorAction );
+  m_ViewActions.push_back( BackgroundColorAction );
+  m_ViewToolBar->addAction( BackgroundColorAction );
 
   QObject::connect( BackgroundColorAction, SIGNAL( triggered() ),
     this, SLOT( ChangeBackgroundColor() ) );
-
-  m_FilteringMenu = new QMenu( tr( "&Filtering" ) );
-//   m_FilteringMenu->setDisabled( true );
-
-  m_SegmentationMenu = new QMenu( tr( "&Segmentation" ) );
-//   m_SegmentationMenu->setDisabled( true );
 }
 //--------------------------------------------------------------------------
 
@@ -108,15 +105,9 @@ void QGoTabImageView2D::Update( )
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-std::vector< QMenu* > QGoTabImageView2D::Menus()
+std::vector< QAction* > QGoTabImageView2D::ViewActions()
 {
-  std::vector< QMenu* > oMenuVector;
-  oMenuVector.push_back( m_ViewMenu );
-  oMenuVector.push_back( m_PropertiesMenu );
-  oMenuVector.push_back( m_FilteringMenu );
-  oMenuVector.push_back( m_SegmentationMenu );
-
-  return oMenuVector;
+  return m_ViewActions;
 }
 //--------------------------------------------------------------------------
 
@@ -155,9 +146,10 @@ void QGoTabImageView2D::ShowScalarBar( const bool& iShow )
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-std::list< QToolBar* > QGoTabImageView2D::ToolBar()
+std::vector< QToolBar* > QGoTabImageView2D::ToolBar()
 {
-  std::list< QToolBar* > oList;
+  std::vector< QToolBar* > oList;
+  oList.push_back( m_ViewToolBar );
   return oList;
 }
 //--------------------------------------------------------------------------

@@ -87,6 +87,8 @@ QGoMainWindow::QGoMainWindow( )
 
   this->statusbar->addPermanentWidget( &m_Bar );
 
+  m_PreviousTabIndex = -1;
+
   m_Bar.hide();
   SetCurrentSingleFile( QString() );
   SetCurrentMultiFile( QString() );
@@ -107,9 +109,14 @@ void QGoMainWindow::CreateSignalSlotsConnection()
 {
   //QObject::connect( this->actionOpen, SIGNAL( activated( ) ),
     //this, SLOT( showprogressloading() ) );
-  QObject::connect(this->CentralTabWidget,
-    SIGNAL(tabCloseRequested(int)),
+  QObject::connect( this->CentralTabWidget,
+    SIGNAL( tabCloseRequested( int ) ),
     this, SLOT( on_actionClose_activated( ) ) );
+
+  QObject::connect( this->CentralTabWidget,
+    SIGNAL( currentChanged( int ) ),
+    this, SLOT( OnCurrentTabChanged( ) )
+  );
 
   QObject::connect( &m_SignalAdaptor, SIGNAL(Signal()),
     &(this->m_Bar), SLOT(hide()) );
@@ -299,9 +306,9 @@ void QGoMainWindow::on_actionClose_activated( )
         this->CentralTabWidget->widget( idx ) );
     w->WriteSettings();
     delete w;
-    }
 
-  this->CentralTabWidget->removeTab( idx );
+    this->CentralTabWidget->removeTab( idx );
+    }
 }
 //--------------------------------------------------------------------------------
 
@@ -393,12 +400,13 @@ void QGoMainWindow::OpenLSMImage( const QString& iFile, const int& iTimePoint )
       w2->Update();
 
       this->CentralTabWidget->addTab( w2, iFile );
-      std::vector< QMenu* > w2_menus = w2->Menus();
+      std::vector< QAction* > view_actions = w2->ViewActions();
 
-      for( size_t i = 0; i < w2_menus.size(); i++ )
+      for( size_t i = 0; i < view_actions.size(); i++ )
         {
-        this->menubar->addMenu( w2_menus[i] );
+        this->menuView->addAction( view_actions[i] );
         }
+      this->addToolBar( Qt::TopToolBarArea, w2->ToolBar()[0] );
       break;
       }
     case 3:
@@ -642,7 +650,9 @@ void QGoMainWindow::UpdateRecentFileActions( QStringList list,
   while (i.hasNext())
     {
     if (!QFile::exists(i.next()))
+      {
       i.remove();
+      }
     }
   if (!list.isEmpty())
     {
@@ -730,5 +740,64 @@ void QGoMainWindow::WriteSettings()
   settings.setValue("size", size());
   settings.setValue("pos", pos());
   settings.endGroup();
+}
+//--------------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------------
+void QGoMainWindow::OnCurrentTabChanged( int iIdx )
+{
+  if( m_PreviousTabIndex != -1 )
+    {
+    QGoTabElementBase* w =
+      dynamic_cast< QGoTabElementBase* >(
+        this->CentralTabWidget->widget( m_PreviousTabIndex ) );
+    if( w )
+      {
+      // First remove all toolbar related to the previous tab
+      std::vector< QToolBar* > toolbar_vector = w->ToolBar();
+
+      for( std::vector< QToolBar* >::iterator it = toolbar_vector.begin();
+            it != toolbar_vector.end();
+            ++it )
+        {
+        this->removeToolBar( *it );
+        }
+
+      // Then remove all actions related to the previous tab from menuView
+      this->menuView->clear();
+      }
+    }
+
+  if( iIdx != -1 )
+    {
+    QGoTabElementBase* w2 =
+      dynamic_cast< QGoTabElementBase* >(
+        this->CentralTabWidget->widget( iIdx ) );
+
+    if( w2 )
+      {
+      // Add all toolbar related to the new tab
+      std::vector< QToolBar* > toolbar_vector2 = w2->ToolBar();
+
+      for( std::vector< QToolBar* >::iterator it = toolbar_vector2.begin();
+        it != toolbar_vector2.end();
+        ++it )
+        {
+        this->addToolBar( *it );
+        }
+
+      // Then add all actions related to the new tab from menuView
+      std::vector< QAction* > action_vector2 = w2->ViewActions();
+
+      for( std::vector< QAction* >::iterator it = action_vector2.begin();
+        it != action_vector2.end();
+        ++it )
+        {
+        this->menuView->addAction( *it );
+        }
+      }
+    }
+
+  m_PreviousTabIndex = iIdx;
 }
 //--------------------------------------------------------------------------------

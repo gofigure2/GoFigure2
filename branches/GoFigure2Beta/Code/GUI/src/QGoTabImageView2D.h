@@ -30,8 +30,8 @@ public:
   void setupUi( QWidget* parent );
   void retranslateUi( QWidget *parent );
 
-  std::vector< QMenu* > Menus();
-  std::list< QToolBar* > ToolBar();
+  std::vector< QAction* > ViewActions();
+  std::vector< QToolBar* > ToolBar();
   std::list< QDockWidget* > DockWidget();
   std::list< QWidget* > AdditionalWidget();
 
@@ -48,11 +48,8 @@ protected:
   QGoImageView2D*   m_ImageView;
   vtkImageData*     m_Image;
 
-  QMenu* m_ViewMenu;
-  QMenu* m_PropertiesMenu;
-  QMenu* m_FilteringMenu;
-  QMenu* m_SegmentationMenu;
-
+  std::vector< QAction* > m_ViewActions;
+  QToolBar* m_ViewToolBar;
 private:
   QGoTabImageView2D( const QGoTabImageView2D& );
   void operator = ( const QGoTabImageView2D& );

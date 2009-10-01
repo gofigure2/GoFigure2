@@ -30,13 +30,13 @@ int main( int argc, char** argv )
   tab->show();
 
   QMenuBar* menubar = new QMenuBar;
-  std::vector< QMenu* > menu_vector = tab->Menus();
+  std::vector< QAction* > action_vector = tab->ViewActions();
 
-  for( std::vector< QMenu* >::iterator q_it = menu_vector.begin();
-    q_it != menu_vector.end();
+  for( std::vector< QAction* >::iterator q_it = action_vector.begin();
+    q_it != action_vector.end();
     q_it++ )
     {
-    menubar->addMenu( *q_it );
+    menubar->addAction( *q_it );
     }
   menubar->show();
 

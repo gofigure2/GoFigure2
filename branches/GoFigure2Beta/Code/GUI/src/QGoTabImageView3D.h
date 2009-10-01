@@ -14,8 +14,8 @@ class QGoTabImageView3D : public QGoTabImageViewElementBase
     void SetImage( vtkImageData* iImage ) {}
     void Update() {}
 
-    std::vector< QMenu* > Menus() {}
-    std::list< QToolBar* > ToolBar() {}
+    std::vector< QAction* > ViewActions() {}
+    std::vector< QToolBar* > ToolBar() {}
     std::list< QDockWidget* > DockWidget() {}
     std::list< QWidget* > AdditionalWidget() {}
 

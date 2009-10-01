@@ -58,8 +58,8 @@ public:
   QGoTabElementBase( QWidget* parent = 0 );
   virtual ~QGoTabElementBase();
 
-  virtual std::vector< QMenu* > Menus();
-  virtual std::list< QToolBar* > ToolBar();
+  virtual std::vector< QAction* > ViewActions();
+  virtual std::vector< QToolBar* > ToolBar();
   virtual std::list< QDockWidget* > DockWidget();
   virtual std::list< QWidget* > AdditionalWidget();
 //   virtual QStatusBar* StatusBar();

@@ -108,6 +108,7 @@ protected slots:
   void on_actionAbout_Qt_activated( );
 
   void ApplyImageFilter();
+  void OnCurrentTabChanged( int );
 
 protected:
 
@@ -136,7 +137,7 @@ protected:
   void AddToMenu( QObject*, const QStringList&, QMenu*,
     const char*, QActionGroup* );
 
-
+  int m_PreviousTabIndex;
   QMenu*            m_FilteringMenu;
   QDir              m_PluginsDir;
   QStringList       m_PluginFileNames;
