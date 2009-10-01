@@ -46,6 +46,7 @@ protected:
   QHBoxLayout*      m_LayOut;
   QGoImageView2D*   m_ImageView;
   vtkImageData*     m_Image;
+//   QColor            m_BackgroundColor;
 
   std::vector< QAction* > m_ViewActions;
 private:

@@ -13,6 +13,8 @@
 #include <QMenu>
 #include <QColorDialog>
 #include <QMessageBox>
+#include <QSettings>
+#include <QVariant>
 
 //--------------------------------------------------------------------------
 QGoTabImageView2D::QGoTabImageView2D( QWidget* parent )
@@ -159,12 +161,30 @@ std::list< QWidget* > QGoTabImageView2D::AdditionalWidget()
 //--------------------------------------------------------------------------
 void QGoTabImageView2D::WriteSettings()
 {
+  double r, g, b;
+  m_ImageView->GetBackgroundColor( r, g, b );
+  QColor initcolor( static_cast< int >( 255. * r ),
+    static_cast< int >( 255. * g ),
+    static_cast< int >( 255. * b ) );
+
+  QSettings settings;
+  settings.beginGroup( "QGoTabImageView2D" );
+  settings.setValue( "BackgroundColor", initcolor );
+  settings.endGroup();
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void QGoTabImageView2D::ReadSettings()
 {
+  QSettings settings;
+  settings.beginGroup( "QGoTabImageView2D" );
+  QVariant var = settings.value( "BackgroundColor" );
+  QColor color = var.value< QColor >();
+
+  m_ImageView->SetBackgroundColor( color );
+
+  settings.endGroup();
 }
 //--------------------------------------------------------------------------
 

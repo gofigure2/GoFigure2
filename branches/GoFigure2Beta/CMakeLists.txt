@@ -208,6 +208,7 @@ IF( VTK_FOUND )
     INCLUDE( CTest )
 
     SET( QGoGUISRC_CXX
+      ${GOFIGURE2_SOURCE_DIR}/Code/GUI/src/QGoTabManager.cxx
       ${GOFIGURE2_SOURCE_DIR}/Code/GUI/src/QGoMainWindow.cxx
       ${GOFIGURE2_SOURCE_DIR}/Code/GUI/src/QGoTabElementBase.cxx
       ${GOFIGURE2_SOURCE_DIR}/Code/GUI/src/QGoPluginManager.cxx
@@ -215,6 +216,7 @@ IF( VTK_FOUND )
       ${GOFIGURE2_SOURCE_DIR}/Code/GUI/src/QGoTabImageView3D.cxx
     )
     SET( QGoGUISRC_HDRS
+      ${GOFIGURE2_SOURCE_DIR}/Code/GUI/src/QGoTabManager.h
       ${GOFIGURE2_SOURCE_DIR}/Code/GUI/src/QGoMainWindow.h
       ${GOFIGURE2_SOURCE_DIR}/Code/GUI/src/QGoTabElementBase.h
       ${GOFIGURE2_SOURCE_DIR}/Code/GUI/src/QGoTabImageView3D.h
