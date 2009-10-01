@@ -61,11 +61,9 @@
 //NOTE: this include is required to define GoFigure::TabDimensionType
 #include "QGoPlugin.h"
 
-#include "ui_go.h"
+class QGoTabManager;
 
-#ifdef ITKLEVELSETCODE
-  #include "itkChanAndVeseSegmentationFilter.h"
-#endif
+#include "ui_go.h"
 
 class QGoMainWindow : public QMainWindow,
   private Ui::go_mainwindow
@@ -81,6 +79,13 @@ public:
   virtual ~QGoMainWindow();
 
   void SetSingleFileName( const QString& iFileName );
+
+  void ClearViewMenu();
+  void AddActionToViewMenu( QAction* );
+
+  void ClearViewToolBar();
+
+  std::map< GoFigure::TabDimensionType, std::list< QAction* > > m_TabDimPluginActionMap;
 
 
 protected slots:
@@ -111,7 +116,6 @@ protected slots:
   void on_actionAbout_Qt_activated( );
 
   void ApplyImageFilter();
-  void OnCurrentTabChanged( int );
 
 protected:
 
@@ -140,12 +144,11 @@ protected:
   void AddToMenu( QObject*, const QStringList&, QMenu*,
     const char*, QActionGroup* );
 
-  int m_PreviousTabIndex;
-  QToolBar*         m_ViewToolBar;
   QMenu*            m_FilteringMenu;
   QDir              m_PluginsDir;
   QStringList       m_PluginFileNames;
-  std::map< GoFigure::TabDimensionType, std::list< QAction* > > m_TabDimPluginActionMap;
+  QGoTabManager*    m_TabManager;
+  QToolBar*         m_ViewToolBar;
 
   /** \brief */
   void ReadSettings();
