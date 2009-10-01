@@ -12,6 +12,9 @@ class QGoTabElementTestHelper : public QGoTabElementBase
     virtual void WriteSettings() {}
     virtual void ReadSettings() {}
 
+    virtual GoFigure::TabDimensionType GetTabDimensionType( ) const
+    { return GoFigure::TWO_D; }
+
   protected:
     virtual void PopulateMenus( QObject* iPlugin )
       { (void) iPlugin; }

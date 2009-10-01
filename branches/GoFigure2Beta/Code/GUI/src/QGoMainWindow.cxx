@@ -84,10 +84,13 @@ QGoMainWindow::QGoMainWindow( )
 
   this->CentralTabWidget->clear();
   this->CentralTabWidget->setTabsClosable( true );
+  this->CentralTabWidget->setMovable( true );
 
   this->statusbar->addPermanentWidget( &m_Bar );
 
   m_PreviousTabIndex = -1;
+  this->m_ViewToolBar = new QToolBar( tr("View"), this );
+  this->addToolBar( Qt::TopToolBarArea, this->m_ViewToolBar );
 
   m_Bar.hide();
   SetCurrentSingleFile( QString() );
@@ -115,7 +118,7 @@ void QGoMainWindow::CreateSignalSlotsConnection()
 
   QObject::connect( this->CentralTabWidget,
     SIGNAL( currentChanged( int ) ),
-    this, SLOT( OnCurrentTabChanged( ) )
+    this, SLOT( OnCurrentTabChanged( int ) )
   );
 
   QObject::connect( &m_SignalAdaptor, SIGNAL(Signal()),
@@ -304,8 +307,12 @@ void QGoMainWindow::on_actionClose_activated( )
     QGoTabElementBase* w =
       dynamic_cast< QGoTabElementBase* >(
         this->CentralTabWidget->widget( idx ) );
-    w->WriteSettings();
-    delete w;
+
+    if( w )
+      {
+      w->WriteSettings();
+      delete w;
+      }
 
     this->CentralTabWidget->removeTab( idx );
     }
@@ -322,10 +329,16 @@ void QGoMainWindow::on_actionClose_all_activated( )
     QGoTabElementBase* w =
       dynamic_cast< QGoTabElementBase* >(
         this->CentralTabWidget->widget( i ) );
-    w->WriteSettings();
-    delete w;
+
+    if( w )
+      {
+      w->WriteSettings();
+      delete w;
+      }
     }
-  this->CentralTabWidget->clear();
+
+    this->m_ViewToolBar->clear( );
+    this->CentralTabWidget->clear( );
 }
 //--------------------------------------------------------------------------------
 
@@ -399,14 +412,28 @@ void QGoMainWindow::OpenLSMImage( const QString& iFile, const int& iTimePoint )
 //       w2->SetLSMReader( reader );
       w2->Update();
 
-      this->CentralTabWidget->addTab( w2, iFile );
-      std::vector< QAction* > view_actions = w2->ViewActions();
-
-      for( size_t i = 0; i < view_actions.size(); i++ )
+      for( std::list< QAction* >::iterator
+            list_it = m_TabDimPluginActionMap[w2->GetTabDimensionType()].begin();
+          list_it != m_TabDimPluginActionMap[w2->GetTabDimensionType()].end();
+          list_it++
+         )
         {
-        this->menuView->addAction( view_actions[i] );
+        (*list_it)->setEnabled( true );
         }
-      this->addToolBar( Qt::TopToolBarArea, w2->ToolBar()[0] );
+
+      w2->SetPluginActions( m_TabDimPluginActionMap[w2->GetTabDimensionType()] );
+
+      int idx = this->CentralTabWidget->addTab( w2, iFile );
+//       std::vector< QAction* > view_actions = w2->ViewActions();
+//
+//       for( size_t i = 0; i < view_actions.size(); i++ )
+//         {
+//         this->menuView->addAction( view_actions[i] );
+//         }
+      this->menuView->setEnabled( true );
+      this->menuFiltering->setEnabled( true );
+      this->CentralTabWidget->setCurrentIndex( idx );
+//       this->addToolBar( Qt::TopToolBarArea, w2->ToolBar()[0] );
       break;
       }
     case 3:
@@ -589,14 +616,28 @@ void QGoMainWindow::AddToMenu(
   QMenu* menu, const char *member,
   QActionGroup *actionGroup )
 {
+  std::list< GoFigure::TabDimensionType > dim_list;
+
+  QGoPlugin* temp = dynamic_cast< QGoPlugin* >( plugin );
+
+  if( temp )
+    {
+    dim_list = temp->TabElementCompatibility();
+    }
+
   foreach( QString text, texts )
     {
-    std::cout <<text.constData()->toAscii() <<std::endl;
-
     QAction *action = new QAction(text, plugin);
     action->setDisabled( true );
     connect( action, SIGNAL(triggered()), this, member);
     menu->addAction(action);
+
+    for( std::list< GoFigure::TabDimensionType >::iterator it = dim_list.begin();
+      it != dim_list.end();
+      ++it )
+      {
+      m_TabDimPluginActionMap[ *it ].push_back( action );
+      }
 
     if (actionGroup)
       {
@@ -629,7 +670,8 @@ void QGoMainWindow::SetCurrentMultiFile( const QString &fileName )
     shownName = strippedName( m_CurrentFile );
     m_RecentMultipleFiles.removeAll( m_CurrentFile );
     m_RecentMultipleFiles.prepend( m_CurrentFile );
-    UpdateRecentFileActions( m_RecentMultipleFiles, menuMultiple_Files,
+    UpdateRecentFileActions( m_RecentMultipleFiles,
+      menuMultiple_Files,
       recentMultipleFileActions );
     }
 }
@@ -754,17 +796,25 @@ void QGoMainWindow::OnCurrentTabChanged( int iIdx )
     if( w )
       {
       // First remove all toolbar related to the previous tab
-      std::vector< QToolBar* > toolbar_vector = w->ToolBar();
-
-      for( std::vector< QToolBar* >::iterator it = toolbar_vector.begin();
-            it != toolbar_vector.end();
-            ++it )
-        {
-        this->removeToolBar( *it );
-        }
+      m_ViewToolBar->clear();
 
       // Then remove all actions related to the previous tab from menuView
       this->menuView->clear();
+
+      GoFigure::TabDimensionType dim = w->GetTabDimensionType();
+
+      std::map< GoFigure::TabDimensionType, std::list< QAction* > >::iterator
+        map_it = m_TabDimPluginActionMap.find( dim );
+
+      if( map_it != m_TabDimPluginActionMap.end() )
+        {
+        for( std::list< QAction* >::iterator list_it = (map_it->second).begin();
+          list_it != (map_it->second).end();
+          list_it++ )
+          {
+          (*list_it)->setDisabled( true );
+          }
+        }
       }
     }
 
@@ -776,16 +826,6 @@ void QGoMainWindow::OnCurrentTabChanged( int iIdx )
 
     if( w2 )
       {
-      // Add all toolbar related to the new tab
-      std::vector< QToolBar* > toolbar_vector2 = w2->ToolBar();
-
-      for( std::vector< QToolBar* >::iterator it = toolbar_vector2.begin();
-        it != toolbar_vector2.end();
-        ++it )
-        {
-        this->addToolBar( *it );
-        }
-
       // Then add all actions related to the new tab from menuView
       std::vector< QAction* > action_vector2 = w2->ViewActions();
 
@@ -794,6 +834,22 @@ void QGoMainWindow::OnCurrentTabChanged( int iIdx )
         ++it )
         {
         this->menuView->addAction( *it );
+        m_ViewToolBar->addAction( *it );
+        }
+
+      GoFigure::TabDimensionType dim = w2->GetTabDimensionType();
+
+      std::map< GoFigure::TabDimensionType, std::list< QAction* > >::iterator
+        map_it = m_TabDimPluginActionMap.find( dim );
+
+      if( map_it != m_TabDimPluginActionMap.end() )
+        {
+        for( std::list< QAction* >::iterator list_it = (map_it->second).begin();
+          list_it != (map_it->second).end();
+          list_it++ )
+          {
+          (*list_it)->setEnabled( true );
+          }
         }
       }
     }

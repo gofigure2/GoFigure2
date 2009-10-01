@@ -28,13 +28,6 @@ std::vector< QAction* > QGoTabElementBase::ViewActions()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-std::vector< QToolBar* > QGoTabElementBase::ToolBar()
-{
-  return std::vector< QToolBar* >();
-}
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
 std::list< QDockWidget* > QGoTabElementBase::DockWidget()
 {
   return std::list< QDockWidget* >();
@@ -48,3 +41,16 @@ std::list< QWidget* > QGoTabElementBase::AdditionalWidget()
 }
 //--------------------------------------------------------------------------
 
+//--------------------------------------------------------------------------
+std::list< QAction* > QGoTabElementBase::GetPluginActions()
+{
+  return m_PluginActionList;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoTabElementBase::SetPluginActions( std::list< QAction* > iList )
+{
+  m_PluginActionList = iList;
+}
+//--------------------------------------------------------------------------

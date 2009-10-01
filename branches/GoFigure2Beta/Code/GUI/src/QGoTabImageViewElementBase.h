@@ -42,7 +42,6 @@
 #define __QGoTabImageViewElementBase_h
 
 #include "QGoTabElementBase.h"
-#include "QGoPlugin.h"
 
 class vtkImageData;
 
@@ -56,8 +55,6 @@ public:
 
   virtual void SetImage( vtkImageData* iImage ) = 0;
   virtual void Update() = 0;
-
-  virtual GoFigure::TabDimensionType GetTabDimensionType( ) const = 0;
 
   virtual void SetColor( const bool& iColor )
     { m_Color = iColor; }

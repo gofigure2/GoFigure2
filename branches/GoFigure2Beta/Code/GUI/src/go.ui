@@ -122,16 +122,25 @@
     <addaction name="actionDeveloper_mailing_list"/>
    </widget>
    <widget class="QMenu" name="menuView">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="title">
      <string>View</string>
     </property>
    </widget>
    <widget class="QMenu" name="menuFiltering">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="title">
      <string>Filtering</string>
     </property>
    </widget>
    <widget class="QMenu" name="menuSegmentation">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="title">
      <string>Segmentation</string>
     </property>

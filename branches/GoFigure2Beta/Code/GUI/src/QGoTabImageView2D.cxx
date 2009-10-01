@@ -21,8 +21,6 @@ QGoTabImageView2D::QGoTabImageView2D( QWidget* parent )
 
   setupUi( this );
 
-  m_ViewToolBar = new QToolBar( tr( "View" ) );
-
   QAction* LookupTableAction = new QAction( tr( "Lookup Table" ), this );
   LookupTableAction->setStatusTip( tr(" Change the associated lookup table" ) );
 
@@ -31,19 +29,16 @@ QGoTabImageView2D::QGoTabImageView2D( QWidget* parent )
     this, SLOT( ChangeLookupTable() ) );
 
   m_ViewActions.push_back( LookupTableAction );
-  m_ViewToolBar->addAction( LookupTableAction );
 
   QAction* ScalarBarAction = new QAction( tr( "Display Scalar Bar" ), this );
   ScalarBarAction->setCheckable( true );
   m_ViewActions.push_back( ScalarBarAction );
-  m_ViewToolBar->addAction( ScalarBarAction );
 
   QObject::connect( ScalarBarAction, SIGNAL( toggled( bool ) ),
     this, SLOT( ShowScalarBar( bool ) ) );
 
   QAction* BackgroundColorAction = new QAction( tr("Background Color"), this );
   m_ViewActions.push_back( BackgroundColorAction );
-  m_ViewToolBar->addAction( BackgroundColorAction );
 
   QObject::connect( BackgroundColorAction, SIGNAL( triggered() ),
     this, SLOT( ChangeBackgroundColor() ) );
@@ -142,15 +137,6 @@ void QGoTabImageView2D::ChangeLookupTable()
 void QGoTabImageView2D::ShowScalarBar( const bool& iShow )
 {
   m_ImageView->ShowScalarBar( iShow );
-}
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-std::vector< QToolBar* > QGoTabImageView2D::ToolBar()
-{
-  std::vector< QToolBar* > oList;
-  oList.push_back( m_ViewToolBar );
-  return oList;
 }
 //--------------------------------------------------------------------------
 

@@ -24,19 +24,18 @@ public:
 
   GoFigure::TabDimensionType GetTabDimensionType( ) const;
 
-  void SetImage( vtkImageData* iImage );
-  void Update();
+  virtual void SetImage( vtkImageData* iImage );
+  virtual void Update();
 
   void setupUi( QWidget* parent );
   void retranslateUi( QWidget *parent );
 
-  std::vector< QAction* > ViewActions();
-  std::vector< QToolBar* > ToolBar();
-  std::list< QDockWidget* > DockWidget();
-  std::list< QWidget* > AdditionalWidget();
+  virtual std::vector< QAction* > ViewActions();
+  virtual std::list< QDockWidget* > DockWidget();
+  virtual std::list< QWidget* > AdditionalWidget();
 
-  void WriteSettings();
-  void ReadSettings();
+  virtual void WriteSettings();
+  virtual void ReadSettings();
 
 public slots:
   void ChangeBackgroundColor();
@@ -49,7 +48,6 @@ protected:
   vtkImageData*     m_Image;
 
   std::vector< QAction* > m_ViewActions;
-  QToolBar* m_ViewToolBar;
 private:
   QGoTabImageView2D( const QGoTabImageView2D& );
   void operator = ( const QGoTabImageView2D& );

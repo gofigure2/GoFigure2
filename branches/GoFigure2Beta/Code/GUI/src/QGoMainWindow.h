@@ -58,6 +58,9 @@
 #include "CreateDataBaseHelper.h"
 // #endif
 
+//NOTE: this include is required to define GoFigure::TabDimensionType
+#include "QGoPlugin.h"
+
 #include "ui_go.h"
 
 #ifdef ITKLEVELSETCODE
@@ -138,14 +141,11 @@ protected:
     const char*, QActionGroup* );
 
   int m_PreviousTabIndex;
+  QToolBar*         m_ViewToolBar;
   QMenu*            m_FilteringMenu;
   QDir              m_PluginsDir;
   QStringList       m_PluginFileNames;
-
-  /** \brief Display Image in a "quad-view" widget in a tab.
-  The title of the tab is given by iTag.
-  \param[in] iTag  */
-//   void DisplayImage( const QString& iTag );
+  std::map< GoFigure::TabDimensionType, std::list< QAction* > > m_TabDimPluginActionMap;
 
   /** \brief */
   void ReadSettings();
@@ -157,6 +157,7 @@ protected:
 
   /** \brief */
   itk::QtSignalAdaptor m_SignalAdaptor;
+  itk::QtProgressBar m_Bar;
 
   /** \brief list of recent files */
   QStringList m_RecentSingleFiles;
@@ -168,7 +169,6 @@ protected:
   /** \brief Remove path from a given FileName*/
   QString strippedName(const QString &fullFileName);
 
-  itk::QtProgressBar m_Bar;
 
 private:
   QGoMainWindow( const QGoMainWindow& );

@@ -44,6 +44,8 @@
 #include <QWidget>
 #include <QDir>
 
+#include "QGoPlugin.h"
+
 class QAction;
 class QActionGroup;
 class QMenu;
@@ -58,16 +60,21 @@ public:
   QGoTabElementBase( QWidget* parent = 0 );
   virtual ~QGoTabElementBase();
 
+  virtual GoFigure::TabDimensionType GetTabDimensionType( ) const = 0;
+
   virtual std::vector< QAction* > ViewActions();
-  virtual std::vector< QToolBar* > ToolBar();
   virtual std::list< QDockWidget* > DockWidget();
   virtual std::list< QWidget* > AdditionalWidget();
 //   virtual QStatusBar* StatusBar();
 
+  virtual std::list< QAction* > GetPluginActions();
+  virtual void SetPluginActions( std::list< QAction* > iList );
+
   virtual void WriteSettings() = 0;
   virtual void ReadSettings() = 0;
 
-//   QDir DirectoryOf( const QString& iSubdir );
+protected:
+  std::list< QAction* > m_PluginActionList;
 
 private:
   QGoTabElementBase( const QGoTabElementBase& );
