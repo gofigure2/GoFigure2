@@ -71,7 +71,7 @@ identityplugin::TabElementCompatibility() const
 {
   std::list< GoFigure::TabDimensionType > oCompatibility;
   oCompatibility.push_back( GoFigure::TWO_D );
-  oCompatibility.push_back( GoFigure::THREE_D );
+//   oCompatibility.push_back( GoFigure::THREE_D );
 
   return oCompatibility;
 }

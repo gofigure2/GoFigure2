@@ -11,16 +11,18 @@ class QGoTabImageView3D : public QGoTabImageViewElementBase
 
     GoFigure::TabDimensionType GetTabDimensionType( ) const;
 
-    void SetImage( vtkImageData* iImage ) {}
-    void Update() {}
+    virtual void SetImage( vtkImageData* iImage ) {}
+    virtual void Update() {}
 
-    std::vector< QAction* > ViewActions() {}
-    std::vector< QToolBar* > ToolBar() {}
-    std::list< QDockWidget* > DockWidget() {}
-    std::list< QWidget* > AdditionalWidget() {}
+    virtual std::vector< QAction* > ViewActions()
+      {return std::vector< QAction* >(); }
+    virtual std::list< QDockWidget* > DockWidget()
+      {return std::list< QDockWidget* >(); }
+    virtual std::list< QWidget* > AdditionalWidget()
+      {return std::list< QWidget* >(); }
 
-    void WriteSettings() {}
-    void ReadSettings() {}
+    virtual void WriteSettings() {}
+    virtual void ReadSettings() {}
 
   protected:
   private:

@@ -41,6 +41,7 @@
 #include "QGoMainWindow.h"
 #include "QGoTabElementBase.h"
 #include "QGoTabImageView2D.h"
+#include "QGoTabImageView3D.h"
 
 // Plugin stuff
 #include "QGoPluginHelper.h"
@@ -424,24 +425,35 @@ void QGoMainWindow::OpenLSMImage( const QString& iFile, const int& iTimePoint )
       w2->SetPluginActions( m_TabDimPluginActionMap[w2->GetTabDimensionType()] );
 
       int idx = this->CentralTabWidget->addTab( w2, iFile );
-//       std::vector< QAction* > view_actions = w2->ViewActions();
-//
-//       for( size_t i = 0; i < view_actions.size(); i++ )
-//         {
-//         this->menuView->addAction( view_actions[i] );
-//         }
       this->menuView->setEnabled( true );
       this->menuFiltering->setEnabled( true );
+      this->menuSegmentation->setEnabled( true );
       this->CentralTabWidget->setCurrentIndex( idx );
-//       this->addToolBar( Qt::TopToolBarArea, w2->ToolBar()[0] );
       break;
       }
     case 3:
       {
-//       QGoTabImageView3D* w3 = new QGoTabImageView3D;
-//       w3->SetImage( reader->GetOutput() );
+      QGoTabImageView3D* w3 = new QGoTabImageView3D;
+      w3->SetImage( reader->GetOutput() );
 //       w3->SetLSMReader( reader );
-//       w3->Update();
+      w3->Update();
+
+      for( std::list< QAction* >::iterator
+            list_it = m_TabDimPluginActionMap[w3->GetTabDimensionType()].begin();
+          list_it != m_TabDimPluginActionMap[w3->GetTabDimensionType()].end();
+          list_it++
+         )
+        {
+        (*list_it)->setEnabled( true );
+        }
+
+      w3->SetPluginActions( m_TabDimPluginActionMap[w3->GetTabDimensionType()] );
+
+      int idx = this->CentralTabWidget->addTab( w3, iFile );
+      this->menuView->setEnabled( true );
+      this->menuFiltering->setEnabled( true );
+      this->menuSegmentation->setEnabled( true );
+      this->CentralTabWidget->setCurrentIndex( idx );
       break;
       }
     case 4:
@@ -492,7 +504,22 @@ void QGoMainWindow::OpenImageWithITK( const QString& iFile )
     w2->SetImage( VTKImage );
     w2->setWindowTitle( iFile );
     w2->Update();
-    this->CentralTabWidget->addTab( w2, iFile );
+
+    for( std::list< QAction* >::iterator
+            list_it = m_TabDimPluginActionMap[w2->GetTabDimensionType()].begin();
+          list_it != m_TabDimPluginActionMap[w2->GetTabDimensionType()].end();
+          list_it++
+         )
+      {
+      (*list_it)->setEnabled( true );
+      }
+
+    w2->SetPluginActions( m_TabDimPluginActionMap[w2->GetTabDimensionType()] );
+
+    int idx = this->CentralTabWidget->addTab( w2, iFile );
+    this->menuView->setEnabled( true );
+    this->menuFiltering->setEnabled( true );
+    this->CentralTabWidget->setCurrentIndex( idx );
     }
   else
     {
@@ -500,6 +527,26 @@ void QGoMainWindow::OpenImageWithITK( const QString& iFile )
 //     w3->SetImage( VTKImage );
 //     w2->setWindowTitle( title );
 //     w3->Update();
+    QGoTabImageView3D* w3 = new QGoTabImageView3D;
+    w3->SetImage( VTKImage );
+//       w3->SetLSMReader( reader );
+    w3->Update();
+
+    for( std::list< QAction* >::iterator
+            list_it = m_TabDimPluginActionMap[w3->GetTabDimensionType()].begin();
+          list_it != m_TabDimPluginActionMap[w3->GetTabDimensionType()].end();
+          list_it++
+         )
+        {
+        (*list_it)->setEnabled( true );
+        }
+
+      w3->SetPluginActions( m_TabDimPluginActionMap[w3->GetTabDimensionType()] );
+
+      int idx = this->CentralTabWidget->addTab( w3, iFile );
+      this->menuView->setEnabled( true );
+      this->menuFiltering->setEnabled( true );
+      this->CentralTabWidget->setCurrentIndex( idx );
     }
 }
 //--------------------------------------------------------------------------------
