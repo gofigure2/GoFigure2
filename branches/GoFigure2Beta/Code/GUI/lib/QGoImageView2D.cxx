@@ -14,6 +14,7 @@
 QGoImageView2D::QGoImageView2D( QWidget* parent )
 {
   m_Image = 0;
+  m_SnapshotId = 0;
 
   m_VTKEventQtConnector = vtkEventQtSlotConnect::New();
 
@@ -187,5 +188,17 @@ void QGoImageView2D::SetLookupTable( vtkLookupTable* iLut )
 void QGoImageView2D::ShowScalarBar( const bool& iShow )
 {
   m_Pool->SyncSetShowScalarBar( iShow );
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+QString QGoImageView2D::SnapshotViewXY( const GoFigure::SnapshotImageType& iType,
+      const QString& iBaseName )
+{
+  QString filename = SnapshotView( this->m_QVTKWidgetXY, iType,
+    iBaseName, m_SnapshotId );
+
+  m_SnapshotId++;
+  return filename;
 }
 //--------------------------------------------------------------------------

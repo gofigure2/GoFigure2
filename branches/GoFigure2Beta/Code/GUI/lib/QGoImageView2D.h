@@ -4,6 +4,8 @@
 #include <QtGui/QWidget>
 #include <QHBoxLayout>
 
+#include "SnapshotHelper.h"
+
 class vtkImageData;
 class vtkViewImage2DCollection;
 class QVTKWidget;
@@ -39,12 +41,16 @@ class QGoImageView2D : public QWidget
     void SetLookupTable( vtkLookupTable* iLut );
     void ShowScalarBar( const bool& );
 
+    QString SnapshotViewXY( const GoFigure::SnapshotImageType& iType,
+      const QString& iBaseName );
+
   protected:
     vtkViewImage2DCollection*         m_Pool;
     QHBoxLayout*                      m_LayOut;
     QVTKWidget*                       m_QVTKWidgetXY;
     vtkImageData*                     m_Image;
     vtkEventQtSlotConnect*            m_VTKEventQtConnector;
+    unsigned int                      m_SnapshotId;
 
 };
 #endif

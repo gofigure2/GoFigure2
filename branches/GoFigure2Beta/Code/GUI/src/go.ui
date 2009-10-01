@@ -145,10 +145,17 @@
      <string>Segmentation</string>
     </property>
    </widget>
+   <widget class="QMenu" name="menuTools">
+    <property name="title">
+     <string>Tools</string>
+    </property>
+    <addaction name="actionSnapshot"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuView"/>
    <addaction name="menuFiltering"/>
    <addaction name="menuSegmentation"/>
+   <addaction name="menuTools"/>
    <addaction name="menuHelp"/>
   </widget>
   <widget class="QStatusBar" name="statusbar">
@@ -348,6 +355,11 @@
   <action name="action">
    <property name="text">
     <string>Full screen XY</string>
+   </property>
+  </action>
+  <action name="actionSnapshot">
+   <property name="text">
+    <string>Snapshot</string>
    </property>
   </action>
  </widget>
