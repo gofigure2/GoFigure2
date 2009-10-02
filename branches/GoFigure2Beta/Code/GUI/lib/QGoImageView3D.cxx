@@ -25,9 +25,6 @@ QGoImageView3D::QGoImageView3D( QWidget* iParent ) : QGoImageView( iParent )
 {
   IsFullScreen = 0;
 
-  m_Tag = QString( "QGoImageView3D" );
-  m_Image = 0;
-
   VtkEventQtConnector = vtkEventQtSlotConnect::New();
 
   setupUi( this );

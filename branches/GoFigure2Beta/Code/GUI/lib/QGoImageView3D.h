@@ -26,7 +26,7 @@ class QGoImageView3D : public QGoImageView
 {
   Q_OBJECT
 public:
-  QGoImageView3D( QWidget* parent = 0 );
+  explicit QGoImageView3D( QWidget* parent = 0 );
   virtual ~QGoImageView3D();
 
   virtual void SetImage( vtkImageData* iImage );

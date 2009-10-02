@@ -13,9 +13,6 @@
 //--------------------------------------------------------------------------
 QGoImageView2D::QGoImageView2D( QWidget* parent ) : QGoImageView( parent )
 {
-//   m_Image = 0;
-//   m_SnapshotId = 0;
-
   m_VTKEventQtConnector = vtkEventQtSlotConnect::New();
 
   this->setupUi( this );
@@ -59,7 +56,7 @@ void QGoImageView2D::setupUi( QWidget* parent )
 //------------------------------------------------------------------------------
 void QGoImageView2D::retranslateUi(QWidget *parent)
 {
-  parent->setWindowTitle( tr( "QGoImageView2D" ) );
+  parent->setWindowTitle( this->m_Tag );
   Q_UNUSED(parent);
 }
 //------------------------------------------------------------------------------

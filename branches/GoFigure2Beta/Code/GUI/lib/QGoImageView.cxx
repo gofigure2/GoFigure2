@@ -14,7 +14,8 @@
 QGoImageView::QGoImageView( QWidget* parent ) : QWidget( parent ),
   m_Image( 0 ),
   m_SnapshotId( 0 ),
-  m_Pool( 0 )
+  m_Pool( 0 ),
+  m_Tag( m_Tag = "QGoImageView" )
 {
   m_Pool = vtkViewImage2DCollection::New();
 }

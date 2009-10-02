@@ -7,12 +7,16 @@ class vtkLookupTable;
 class vtkImageData;
 class vtkViewImage2DCollection;
 
+/**
+\class QGoImageView
+\brief Abstract class for image visualization.
+*/
 class QGoImageView : public QWidget
 {
   Q_OBJECT
 
   public:
-    QGoImageView( QWidget* parent = 0 );
+    explicit QGoImageView( QWidget* parent = 0 );
     virtual ~QGoImageView();
 
     virtual void SetImage( vtkImageData* iImage ) = 0;
@@ -38,6 +42,7 @@ class QGoImageView : public QWidget
     vtkViewImage2DCollection*         m_Pool;
     vtkImageData*                     m_Image;
     unsigned int                      m_SnapshotId;
+    QString                           m_Tag;
 };
 
 #endif
