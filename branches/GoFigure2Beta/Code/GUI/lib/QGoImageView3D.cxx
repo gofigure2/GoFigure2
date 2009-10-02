@@ -527,8 +527,8 @@ void QGoImageView3D::MoveSliderYZ( )
 void QGoImageView3D::SaveStateSplitters()
 {
   QSettings settings;
-  settings.setValue("VSplitterSizes", VSplitter->saveState());
-  settings.setValue("HtSplitterSizes", HtSplitter->saveState());
-  settings.setValue("HbSplitterSizes", HbSplitter->saveState());
+  settings.setValue( "VSplitterSizes", VSplitter->saveState() );
+  settings.setValue( "HtSplitterSizes", HtSplitter->saveState() );
+  settings.setValue( "HbSplitterSizes", HbSplitter->saveState() );
 }
 //-------------------------------------------------------------------------

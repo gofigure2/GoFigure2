@@ -36,7 +36,7 @@ class QGoImageView2D : public QGoImageView
     void ShowScalarBar( const bool& );
 
     QString SnapshotViewXY( const GoFigure::SnapshotImageType& iType,
-      const QString& iBaseName );
+      const QString& iBaseName = tr( "Snapshot" ) );
 
   protected:
     QHBoxLayout*                      m_LayOut;

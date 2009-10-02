@@ -19,6 +19,9 @@ class QGoImageView : public QWidget
     explicit QGoImageView( QWidget* parent = 0 );
     virtual ~QGoImageView();
 
+    void SetTag( const QString& iTag );
+    QString GetTag() const;
+
     virtual void SetImage( vtkImageData* iImage ) = 0;
     virtual void Update() = 0;
 

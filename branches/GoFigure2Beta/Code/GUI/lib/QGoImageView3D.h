@@ -98,7 +98,6 @@ protected:
 
   vtkEventQtSlotConnect*    VtkEventQtConnector;
   int                       IsFullScreen;
-  QString                   m_Tag;
 
   virtual void resizeEvent( QResizeEvent* event );
 
