@@ -3,6 +3,15 @@
 
 #include "QGoTabImageViewElementBase.h"
 
+#include <QHBoxLayout>
+class vtkImageData;
+
+class QAction;
+class QToolBar;
+class QDockWidget;
+
+class QGoImageView3D;
+
 class QGoTabImageView3D : public QGoTabImageViewElementBase
 {
   public:
@@ -11,8 +20,11 @@ class QGoTabImageView3D : public QGoTabImageViewElementBase
 
     GoFigure::TabDimensionType GetTabDimensionType( ) const;
 
-    virtual void SetImage( vtkImageData* iImage ) {}
-    virtual void Update() {}
+    virtual void SetImage( vtkImageData* iImage );
+    virtual void Update();
+
+    void setupUi( QWidget* parent );
+    void retranslateUi( QWidget *parent );
 
     virtual std::vector< QAction* > ViewActions()
       {return std::vector< QAction* >(); }
@@ -25,8 +37,15 @@ class QGoTabImageView3D : public QGoTabImageViewElementBase
     virtual void ReadSettings() {}
 
   protected:
+    QHBoxLayout*      m_LayOut;
+    QGoImageView3D*   m_ImageView;
+    vtkImageData*     m_Image;
+
+    std::vector< QAction* > m_ViewActions;
+
     void GetBackgroundColorFromImageViewer( ) {}
     void SetBackgroundColorToImageViewer( ) {}
+
   private:
 };
 #endif

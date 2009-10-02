@@ -20,8 +20,6 @@
 QGoTabImageView2D::QGoTabImageView2D( QWidget* parent )
 {
   m_Image = 0;
-  m_BackgroundColor = QColor( Qt::black );
-
   setupUi( this );
 
   QAction* LookupTableAction = new QAction( tr( "Lookup Table" ), this );
@@ -127,20 +125,6 @@ void QGoTabImageView2D::GetBackgroundColorFromImageViewer( )
   this->m_BackgroundColor.setRgbF( r, g, b );
 }
 //--------------------------------------------------------------------------
-
-// //--------------------------------------------------------------------------
-// void QGoTabImageView2D::ChangeBackgroundColor()
-// {
-//   double r, g, b;
-//   m_ImageView->GetBackgroundColor( r, g, b );
-//   this->m_BackgroundColor.setRgbF( r, g, b );
-//
-//   this->m_BackgroundColor = QColorDialog::getColor( this->m_BackgroundColor,
-//     this, tr( "Choose Background Color" ) );
-//
-//   m_ImageView->SetBackgroundColor( this->m_BackgroundColor );
-// }
-// //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void QGoTabImageView2D::ChangeLookupTable()
