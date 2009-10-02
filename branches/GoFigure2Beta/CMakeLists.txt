@@ -214,6 +214,7 @@ IF( VTK_FOUND )
       ${GOFIGURE2_SOURCE_DIR}/Code/GUI/src/QGoPluginManager.cxx
       ${GOFIGURE2_SOURCE_DIR}/Code/GUI/src/QGoTabImageView2D.cxx
       ${GOFIGURE2_SOURCE_DIR}/Code/GUI/src/QGoTabImageView3D.cxx
+      ${GOFIGURE2_SOURCE_DIR}/Code/GUI/src/QGoTabImageViewElementBase.cxx
     )
     SET( QGoGUISRC_HDRS
       ${GOFIGURE2_SOURCE_DIR}/Code/GUI/src/QGoTabManager.h

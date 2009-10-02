@@ -49,18 +49,26 @@ class QGoTabImageViewElementBase : public QGoTabElementBase
 {
   Q_OBJECT
 public:
-  QGoTabImageViewElementBase( QWidget* parent = 0 ) : QGoTabElementBase( parent )
-    {}
-  ~QGoTabImageViewElementBase() {}
+  explicit QGoTabImageViewElementBase( QWidget* parent = 0 );
+  virtual ~QGoTabImageViewElementBase();
 
   virtual void SetImage( vtkImageData* iImage ) = 0;
   virtual void Update() = 0;
 
-  virtual void SetColor( const bool& iColor )
-    { m_Color = iColor; }
+  virtual void SetColor( const bool& iColor );
+
+  virtual void WriteSettings();
+  virtual void ReadSettings();
+
+public slots:
+  void ChangeBackgroundColor();
 
 protected:
-  bool m_Color;
+  bool    m_Color;
+  QColor  m_BackgroundColor;
+
+  virtual void GetBackgroundColorFromImageViewer( ) = 0;
+  virtual void SetBackgroundColorToImageViewer( ) = 0;
 
 private:
   QGoTabImageViewElementBase( const QGoTabImageViewElementBase& );

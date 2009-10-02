@@ -113,18 +113,34 @@ std::vector< QAction* > QGoTabImageView2D::ViewActions()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoTabImageView2D::ChangeBackgroundColor()
+void QGoTabImageView2D::SetBackgroundColorToImageViewer()
+{
+  m_ImageView->SetBackgroundColor( this->m_BackgroundColor );
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoTabImageView2D::GetBackgroundColorFromImageViewer( )
 {
   double r, g, b;
   m_ImageView->GetBackgroundColor( r, g, b );
-  m_BackgroundColor.setRgbF( r, g, b );
-
-  m_BackgroundColor = QColorDialog::getColor( m_BackgroundColor, this,
-    tr( "Choose Background Color" ) );
-
-  m_ImageView->SetBackgroundColor( m_BackgroundColor );
+  this->m_BackgroundColor.setRgbF( r, g, b );
 }
 //--------------------------------------------------------------------------
+
+// //--------------------------------------------------------------------------
+// void QGoTabImageView2D::ChangeBackgroundColor()
+// {
+//   double r, g, b;
+//   m_ImageView->GetBackgroundColor( r, g, b );
+//   this->m_BackgroundColor.setRgbF( r, g, b );
+//
+//   this->m_BackgroundColor = QColorDialog::getColor( this->m_BackgroundColor,
+//     this, tr( "Choose Background Color" ) );
+//
+//   m_ImageView->SetBackgroundColor( this->m_BackgroundColor );
+// }
+// //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void QGoTabImageView2D::ChangeLookupTable()
@@ -163,24 +179,14 @@ std::list< QWidget* > QGoTabImageView2D::AdditionalWidget()
 //--------------------------------------------------------------------------
 void QGoTabImageView2D::WriteSettings()
 {
-  QSettings settings;
-  settings.beginGroup( "QGoTabImageView2D" );
-  settings.setValue( "BackgroundColor", m_BackgroundColor );
-  settings.endGroup();
+  QGoTabImageViewElementBase::WriteSettings();
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void QGoTabImageView2D::ReadSettings()
 {
-  QSettings settings;
-  settings.beginGroup( "QGoTabImageView2D" );
-  QVariant var = settings.value( "BackgroundColor" );
-  m_BackgroundColor = var.value< QColor >();
-
-  m_ImageView->SetBackgroundColor( m_BackgroundColor );
-
-  settings.endGroup();
+  QGoTabImageViewElementBase::ReadSettings();
 }
 //--------------------------------------------------------------------------
 

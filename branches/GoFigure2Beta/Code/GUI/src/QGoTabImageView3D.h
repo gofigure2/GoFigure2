@@ -25,6 +25,8 @@ class QGoTabImageView3D : public QGoTabImageViewElementBase
     virtual void ReadSettings() {}
 
   protected:
+    void GetBackgroundColorFromImageViewer( ) {}
+    void SetBackgroundColorToImageViewer( ) {}
   private:
 };
 #endif

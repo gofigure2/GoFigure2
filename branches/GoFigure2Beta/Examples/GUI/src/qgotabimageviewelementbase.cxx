@@ -23,6 +23,8 @@ protected:
     {
     (void) iPlugin;
     }
+  virtual void GetBackgroundColorFromImageViewer( ) {}
+  virtual void SetBackgroundColorToImageViewer( ) {}
 };
 
 int main( int argc, char** argv )

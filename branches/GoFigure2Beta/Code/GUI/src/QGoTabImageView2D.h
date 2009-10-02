@@ -38,7 +38,6 @@ public:
   virtual void ReadSettings();
 
 public slots:
-  void ChangeBackgroundColor();
   void ChangeLookupTable();
   void ShowScalarBar( const bool& );
 
@@ -46,9 +45,12 @@ protected:
   QHBoxLayout*      m_LayOut;
   QGoImageView2D*   m_ImageView;
   vtkImageData*     m_Image;
-  QColor            m_BackgroundColor;
 
   std::vector< QAction* > m_ViewActions;
+
+  void GetBackgroundColorFromImageViewer( );
+  void SetBackgroundColorToImageViewer( );
+
 private:
   QGoTabImageView2D( const QGoTabImageView2D& );
   void operator = ( const QGoTabImageView2D& );
