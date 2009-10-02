@@ -1,6 +1,7 @@
 #include "SnapshotHelper.h"
 
 #include "vtkRenderWindow.h"
+#include "vtkRendererCollection.h"
 #include "vtkImageData.h"
 
 #include <vtkImageClip.h>
@@ -206,3 +207,11 @@ QString SnapshotView( QVTKWidget* iWidget,
   return filename;
 }
 //-------------------------------------------------------------------------
+
+void SetupViewGivenQVTKWidget( vtkViewImage2D* iView, QVTKWidget* iWidget )
+{
+  vtkRenderWindow* renwin = iWidget->GetRenderWindow( );
+  iView->SetRenderWindow( renwin );
+  iView->SetRenderer( renwin->GetRenderers()->GetFirstRenderer() );
+  iView->SetupInteractor( iWidget->GetInteractor() );
+}

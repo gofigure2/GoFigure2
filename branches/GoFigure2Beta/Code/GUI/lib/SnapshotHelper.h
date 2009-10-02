@@ -16,6 +16,7 @@
 #include <vtkTIFFWriter.h>
 
 #include "QVTKWidget.h"
+#include "vtkViewImage2D.h"
 
 namespace GoFigure
 {
@@ -62,5 +63,6 @@ QString SnapshotView( QVTKWidget* iWidget,
   const unsigned int& iSnapshotId );
 //-------------------------------------------------------------------------
 
+void SetupViewGivenQVTKWidget( vtkViewImage2D* iView, QVTKWidget* iWidget );
 
 #endif

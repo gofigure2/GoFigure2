@@ -20,6 +20,7 @@
 QGoTabImageView2D::QGoTabImageView2D( QWidget* parent )
 {
   m_Image = 0;
+  m_BackgroundColor = QColor( Qt::black );
 
   setupUi( this );
 
@@ -44,6 +45,8 @@ QGoTabImageView2D::QGoTabImageView2D( QWidget* parent )
 
   QObject::connect( BackgroundColorAction, SIGNAL( triggered() ),
     this, SLOT( ChangeBackgroundColor() ) );
+
+  ReadSettings();
 }
 //--------------------------------------------------------------------------
 
@@ -68,6 +71,7 @@ void QGoTabImageView2D::setupUi( QWidget* parent )
     }
 
   m_ImageView = new QGoImageView2D( this );
+  m_ImageView->SetBackgroundColor( m_BackgroundColor );
 
   m_LayOut = new QHBoxLayout( parent );
   m_LayOut->addWidget( m_ImageView  );
@@ -113,14 +117,12 @@ void QGoTabImageView2D::ChangeBackgroundColor()
 {
   double r, g, b;
   m_ImageView->GetBackgroundColor( r, g, b );
-  QColor initcolor( static_cast< int >( 255. * r ),
-    static_cast< int >( 255. * g ),
-    static_cast< int >( 255. * b ) );
+  m_BackgroundColor.setRgbF( r, g, b );
 
-  QColor color = QColorDialog::getColor( initcolor, this,
+  m_BackgroundColor = QColorDialog::getColor( m_BackgroundColor, this,
     tr( "Choose Background Color" ) );
 
-  m_ImageView->SetBackgroundColor( color );
+  m_ImageView->SetBackgroundColor( m_BackgroundColor );
 }
 //--------------------------------------------------------------------------
 
@@ -161,15 +163,9 @@ std::list< QWidget* > QGoTabImageView2D::AdditionalWidget()
 //--------------------------------------------------------------------------
 void QGoTabImageView2D::WriteSettings()
 {
-  double r, g, b;
-  m_ImageView->GetBackgroundColor( r, g, b );
-  QColor initcolor( static_cast< int >( 255. * r ),
-    static_cast< int >( 255. * g ),
-    static_cast< int >( 255. * b ) );
-
   QSettings settings;
   settings.beginGroup( "QGoTabImageView2D" );
-  settings.setValue( "BackgroundColor", initcolor );
+  settings.setValue( "BackgroundColor", m_BackgroundColor );
   settings.endGroup();
 }
 //--------------------------------------------------------------------------
@@ -180,9 +176,9 @@ void QGoTabImageView2D::ReadSettings()
   QSettings settings;
   settings.beginGroup( "QGoTabImageView2D" );
   QVariant var = settings.value( "BackgroundColor" );
-  QColor color = var.value< QColor >();
+  m_BackgroundColor = var.value< QColor >();
 
-  m_ImageView->SetBackgroundColor( color );
+  m_ImageView->SetBackgroundColor( m_BackgroundColor );
 
   settings.endGroup();
 }
