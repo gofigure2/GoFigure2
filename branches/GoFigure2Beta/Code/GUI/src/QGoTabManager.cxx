@@ -125,6 +125,16 @@ void QGoTabManager::CloseTab( int idx )
 
     m_TabWidget->removeTab( idx );
 
+    std::list< QDockWidget* > dock_list = w->DockWidget();
+
+    for( std::list< QDockWidget* >::iterator
+      dck_it = dock_list.begin();
+      dck_it != dock_list.end();
+      ++dck_it )
+      {
+      m_MainWindow->removeDockWidget( (*dck_it) );
+      }
+
     if( w )
       {
       w->WriteSettings();
@@ -139,11 +149,22 @@ void QGoTabManager::CloseAllTabs( )
 
   for( int i = 0; i < NumberOfTabs; i++ )
     {
+    int k = NumberOfTabs - 1 - i;
     QGoTabElementBase* w =
-      dynamic_cast< QGoTabElementBase* >( m_TabWidget->widget( i ) );
+      dynamic_cast< QGoTabElementBase* >( m_TabWidget->widget( k ) );
 
     if( w )
       {
+      std::list< QDockWidget* > dock_list = w->DockWidget();
+
+      for( std::list< QDockWidget* >::iterator
+        dck_it = dock_list.begin();
+        dck_it != dock_list.end();
+        ++dck_it )
+        {
+        m_MainWindow->removeDockWidget( (*dck_it) );
+        }
+
       w->WriteSettings();
       delete w;
       }
