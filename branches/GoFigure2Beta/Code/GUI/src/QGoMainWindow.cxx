@@ -465,6 +465,16 @@ void QGoMainWindow::CreateNewTabFor3DImage( vtkImageData* iInput, const QString&
 
   w3->SetPluginActions( m_TabDimPluginActionMap[w3->GetTabDimensionType()] );
 
+  std::list< QDockWidget* > dock_list = w3->DockWidget();
+
+  for( std::list< QDockWidget* >::iterator
+    dck_it = dock_list.begin();
+    dck_it != dock_list.end();
+    ++dck_it )
+    {
+    this->addDockWidget( Qt::LeftDockWidgetArea, (*dck_it) );//->show();
+    }
+
   int idx = this->CentralTabWidget->addTab( w3, iFile );
   this->menuView->setEnabled( true );
   this->menuFiltering->setEnabled( true );

@@ -41,6 +41,16 @@ void QGoTabManager::ChangeCurrentTab( int iIdx )
       // Then remove all actions related to the previous tab from menuView
       m_MainWindow->ClearViewMenu();
 
+      std::list< QDockWidget* > dock_list = w->DockWidget();
+
+      for( std::list< QDockWidget* >::iterator
+        dck_it = dock_list.begin();
+        dck_it != dock_list.end();
+        ++dck_it )
+        {
+        (*dck_it)->hide();
+        }
+
       GoFigure::TabDimensionType dim = w->GetTabDimensionType();
 
       std::map< GoFigure::TabDimensionType, std::list< QAction* > >::iterator
@@ -74,6 +84,16 @@ void QGoTabManager::ChangeCurrentTab( int iIdx )
         ++it )
         {
         m_MainWindow->AddActionToViewMenu( *it );
+        }
+
+      std::list< QDockWidget* > dock_list = w2->DockWidget();
+
+      for( std::list< QDockWidget* >::iterator
+        dck_it = dock_list.begin();
+        dck_it != dock_list.end();
+        ++dck_it )
+        {
+        (*dck_it)->show();
         }
 
       GoFigure::TabDimensionType dim = w2->GetTabDimensionType();

@@ -70,7 +70,7 @@ QGoTabImageView3D::QGoTabImageView3D( QWidget* parent )
     this, SLOT( ChangeBackgroundColor() ) );
 
   m_DockWidget = new QDockWidget( tr( "Slice" ) );
-  m_DockWidget->setFloating( true );
+//   m_DockWidget->setFloating( true );
   m_DockWidget->resize( 120, 300 );
 
   QWidget* temp = new QWidget();
