@@ -96,8 +96,6 @@ QGoTabImageView3D::QGoTabImageView3D( QWidget* parent )
 
   m_DockWidget->layout()->addWidget( temp );
 
-  m_DockWidget->show();
-
   ReadSettings();
 }
 //--------------------------------------------------------------------------
@@ -295,5 +293,14 @@ void QGoTabImageView3D::SetBackgroundColorToImageViewer( )
 std::vector< QAction* > QGoTabImageView3D::ViewActions()
 {
   return m_ViewActions;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+std::list< QDockWidget* > QGoTabImageView3D::DockWidget()
+{
+  std::list< QDockWidget* > oList;
+  oList.push_back( m_DockWidget );
+  return oList;
 }
 //--------------------------------------------------------------------------

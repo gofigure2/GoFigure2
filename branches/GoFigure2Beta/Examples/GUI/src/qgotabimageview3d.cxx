@@ -40,6 +40,15 @@ int main( int argc, char** argv )
     }
   menubar->show();
 
+  std::list< QDockWidget* > dockwidget_list = tab->DockWidget();
+
+  for( std::list< QDockWidget* >::iterator it = dockwidget_list.begin();
+    it != dockwidget_list.end();
+    it++ )
+    {
+    (*it)->show();
+    }
+
   QTimer* timer = new QTimer;
   timer->setSingleShot( true );
   QObject::connect( timer, SIGNAL( timeout() ), tab, SLOT( close() ) );

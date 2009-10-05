@@ -72,6 +72,9 @@
 #include "vtkPolyData.h"
 #include "vtkProperty.h"
 
+#include "vtkImageReader2Factory.h"
+#include "vtkImageReader2.h"
+
 #include "QGoTabManager.h"
 
 // *************************************************************************
@@ -357,9 +360,31 @@ void QGoMainWindow::SetSingleFileName( const QString& iFile )
       }
     else
       {
-      this->OpenImageWithITK( m_CurrentFile );
-//       this->DisplayImage( m_CurrentFile );
+      vtkImageReader2Factory* r_factory = vtkImageReader2Factory::New();
+      vtkImageReader2* reader = r_factory->CreateImageReader2( iFile.toAscii().data() );
+
+      reader->SetFileName( iFile.toAscii().data() );
+      reader->Update();
+
+      vtkImageData* image = reader->GetOutput();
+
+      int dim[3];
+      image->GetDimensions( dim );
+
+      if( ( dim[0] != 1 ) && ( dim[1] != 1 ) && ( dim[2] != 1 ) )
+        {
+        CreateNewTabFor3DImage( image, iFile );
+        }
+      else
+        {
+        CreateNewTabFor2DImage( image, iFile );
+        }
+      reader->Delete();
+      r_factory->Delete();
       }
+
+//       this->OpenImageWithITK( m_CurrentFile );
+//       this->DisplayImage( m_CurrentFile );
     }
 }
 //--------------------------------------------------------------------------
@@ -398,53 +423,12 @@ void QGoMainWindow::OpenLSMImage( const QString& iFile, const int& iTimePoint )
     {
     case 2:
       {
-      QGoTabImageView2D* w2 = new QGoTabImageView2D;
-      w2->SetImage( reader->GetOutput() );
-      w2->setWindowTitle( iFile );
-//       w2->SetLSMReader( reader );
-      w2->Update();
-
-      for( std::list< QAction* >::iterator
-            list_it = m_TabDimPluginActionMap[w2->GetTabDimensionType()].begin();
-          list_it != m_TabDimPluginActionMap[w2->GetTabDimensionType()].end();
-          list_it++
-         )
-        {
-        (*list_it)->setEnabled( true );
-        }
-
-      w2->SetPluginActions( m_TabDimPluginActionMap[w2->GetTabDimensionType()] );
-
-      int idx = this->CentralTabWidget->addTab( w2, iFile );
-      this->menuView->setEnabled( true );
-      this->menuFiltering->setEnabled( true );
-      this->menuSegmentation->setEnabled( true );
-      this->CentralTabWidget->setCurrentIndex( idx );
+      CreateNewTabFor2DImage( reader->GetOutput(), iFile );
       break;
       }
     case 3:
       {
-      QGoTabImageView3D* w3 = new QGoTabImageView3D;
-      w3->SetImage( reader->GetOutput() );
-//       w3->SetLSMReader( reader );
-      w3->Update();
-
-      for( std::list< QAction* >::iterator
-            list_it = m_TabDimPluginActionMap[w3->GetTabDimensionType()].begin();
-          list_it != m_TabDimPluginActionMap[w3->GetTabDimensionType()].end();
-          list_it++
-         )
-        {
-        (*list_it)->setEnabled( true );
-        }
-
-      w3->SetPluginActions( m_TabDimPluginActionMap[w3->GetTabDimensionType()] );
-
-      int idx = this->CentralTabWidget->addTab( w3, iFile );
-      this->menuView->setEnabled( true );
-      this->menuFiltering->setEnabled( true );
-      this->menuSegmentation->setEnabled( true );
-      this->CentralTabWidget->setCurrentIndex( idx );
+      CreateNewTabFor3DImage( reader->GetOutput(), iFile );
       break;
       }
     case 4:
@@ -460,6 +444,59 @@ void QGoMainWindow::OpenLSMImage( const QString& iFile, const int& iTimePoint )
 
   reader->Delete();
 }
+//--------------------------------------------------------------------------------
+
+void QGoMainWindow::CreateNewTabFor3DImage( vtkImageData* iInput, const QString& iFile )
+{
+  QGoTabImageView3D* w3 = new QGoTabImageView3D;
+  w3->SetImage( iInput );
+//       w3->SetLSMReader( reader );
+  w3->Update();
+
+  for( std::list< QAction* >::iterator
+    list_it = m_TabDimPluginActionMap[w3->GetTabDimensionType()].begin();
+    list_it != m_TabDimPluginActionMap[w3->GetTabDimensionType()].end();
+    list_it++
+    )
+    {
+    (*list_it)->setEnabled( true );
+    }
+
+  w3->SetPluginActions( m_TabDimPluginActionMap[w3->GetTabDimensionType()] );
+
+  int idx = this->CentralTabWidget->addTab( w3, iFile );
+  this->menuView->setEnabled( true );
+  this->menuFiltering->setEnabled( true );
+  this->menuSegmentation->setEnabled( true );
+  this->CentralTabWidget->setCurrentIndex( idx );
+}
+//--------------------------------------------------------------------------------
+void QGoMainWindow::CreateNewTabFor2DImage( vtkImageData* iInput, const QString& iFile )
+{
+  QGoTabImageView2D* w2 = new QGoTabImageView2D;
+  w2->SetImage( iInput );
+  w2->setWindowTitle( iFile );
+//       w2->SetLSMReader( reader );
+  w2->Update();
+
+  for( std::list< QAction* >::iterator
+    list_it = m_TabDimPluginActionMap[w2->GetTabDimensionType()].begin();
+    list_it != m_TabDimPluginActionMap[w2->GetTabDimensionType()].end();
+    list_it++
+    )
+    {
+    (*list_it)->setEnabled( true );
+    }
+
+  w2->SetPluginActions( m_TabDimPluginActionMap[w2->GetTabDimensionType()] );
+
+  int idx = this->CentralTabWidget->addTab( w2, iFile );
+  this->menuView->setEnabled( true );
+  this->menuFiltering->setEnabled( true );
+  this->menuSegmentation->setEnabled( true );
+  this->CentralTabWidget->setCurrentIndex( idx );
+}
+//--------------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------------
 void QGoMainWindow::OpenImageWithITK( const QString& iFile )

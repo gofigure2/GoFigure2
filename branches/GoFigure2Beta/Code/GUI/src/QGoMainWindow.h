@@ -134,6 +134,9 @@ protected:
   void UpdateRecentFileActions( QStringList list, QMenu *menu,
     QAction *recentFileActions[MaxRecentFiles] );
 
+  void CreateNewTabFor3DImage( vtkImageData*, const QString& );
+  void CreateNewTabFor2DImage( vtkImageData*, const QString& );
+
   /** \brief Open Image with given iFileName
   \param[in] iFileName  */
   void OpenImageWithITK( const QString& iFileName );
