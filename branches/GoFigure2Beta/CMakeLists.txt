@@ -204,20 +204,20 @@ IF( VTK_FOUND )
     SET( QGoGUISRC_CXX
       ${GOFIGURE2_SOURCE_DIR}/Code/GUI/src/QGoTabManager.cxx
       ${GOFIGURE2_SOURCE_DIR}/Code/GUI/src/QGoMainWindow.cxx
-      ${GOFIGURE2_SOURCE_DIR}/Code/GUI/src/QGoTabElementBase.cxx
+#      ${GOFIGURE2_SOURCE_DIR}/Code/GUI/src/QGoTabElementBase.cxx
       ${GOFIGURE2_SOURCE_DIR}/Code/GUI/src/QGoPluginManager.cxx
-      ${GOFIGURE2_SOURCE_DIR}/Code/GUI/src/QGoTabImageView2D.cxx
-      ${GOFIGURE2_SOURCE_DIR}/Code/GUI/src/QGoTabImageView3D.cxx
-      ${GOFIGURE2_SOURCE_DIR}/Code/GUI/src/QGoTabImageViewElementBase.cxx
+#      ${GOFIGURE2_SOURCE_DIR}/Code/GUI/src/QGoTabImageView2D.cxx
+#      ${GOFIGURE2_SOURCE_DIR}/Code/GUI/src/QGoTabImageView3D.cxx
+#      ${GOFIGURE2_SOURCE_DIR}/Code/GUI/src/QGoTabImageViewElementBase.cxx
     )
     SET( QGoGUISRC_HDRS
       ${GOFIGURE2_SOURCE_DIR}/Code/GUI/src/QGoTabManager.h
       ${GOFIGURE2_SOURCE_DIR}/Code/GUI/src/QGoMainWindow.h
-      ${GOFIGURE2_SOURCE_DIR}/Code/GUI/src/QGoTabElementBase.h
-      ${GOFIGURE2_SOURCE_DIR}/Code/GUI/src/QGoTabImageView3D.h
+#      ${GOFIGURE2_SOURCE_DIR}/Code/GUI/src/QGoTabElementBase.h
+#      ${GOFIGURE2_SOURCE_DIR}/Code/GUI/src/QGoTabImageView3D.h
       ${GOFIGURE2_SOURCE_DIR}/Code/GUI/src/QGoPluginManager.h
-      ${GOFIGURE2_SOURCE_DIR}/Code/GUI/src/QGoTabImageView2D.h
-      ${GOFIGURE2_SOURCE_DIR}/Code/GUI/src/QGoTabImageViewElementBase.h
+#      ${GOFIGURE2_SOURCE_DIR}/Code/GUI/src/QGoTabImageView2D.h
+#      ${GOFIGURE2_SOURCE_DIR}/Code/GUI/src/QGoTabImageViewElementBase.h
     )
 
     SET( QGoMainWindow_UI
