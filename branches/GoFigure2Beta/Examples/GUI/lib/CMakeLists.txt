@@ -2,6 +2,11 @@ SET( QGOGUILIB_EXAMPLE_SRC
   qgoimageview2d
   qgoimageview3d
   qgolutdialog
+  qgotabelementbase
+  qgotabimageviewelementbase
+  qgotabimageview2d
+  qgotabimageview3d
+
 )
 
 FOREACH( var ${QGOGUILIB_EXAMPLE_SRC} )
@@ -27,5 +32,25 @@ ADD_TEST( qgoimageview3dTest
 
 ADD_TEST( qgolutdialogTest
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qgolutdialog
+  1
+)
+
+ADD_TEST( qgotabelementbaseTest
+  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qgotabelementbase
+)
+
+ADD_TEST( qgotabimageviewelementbaseTest
+  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qgotabimageviewelementbase
+)
+
+ADD_TEST( qgotabimageview2dTest
+  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qgotabimageview2d
+  ${TESTING_DATA_PATH}/Circle.png
+  1
+)
+
+ADD_TEST( qgotabimageview3dTest
+  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qgotabimageview3d
+  ${TESTING_DATA_PATH}/Circle3D.mhd
   1
 )
