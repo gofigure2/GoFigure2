@@ -95,8 +95,9 @@ QGoMainWindow::QGoMainWindow( )
   this->addToolBar( Qt::TopToolBarArea, this->m_ViewToolBar );
 
   m_Bar.hide();
-  SetCurrentSingleFile( QString() );
-  SetCurrentMultiFile( QString() );
+  QString temp;
+  SetCurrentSingleFile( temp );
+  SetCurrentMultiFile( temp );
 
   CreateSignalSlotsConnection();
   ReadSettings();
@@ -111,7 +112,7 @@ QGoMainWindow::~QGoMainWindow()
 // *************************************************************************
 void QGoMainWindow::ClearViewMenu()
 {
-  return this->menuView->clear();
+  this->menuView->clear();
 }
 // *************************************************************************
 

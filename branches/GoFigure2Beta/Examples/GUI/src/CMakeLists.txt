@@ -2,6 +2,7 @@ SET( QGoLIB_EXAMPLES_SRC
   qgotabelementbase
   qgotabimageviewelementbase
   qgotabimageview2d
+  qgotabimageview3d
 )
 
 INCLUDE_DIRECTORIES( ${GOFIGURE2_BINARY_DIR}/Examples/GUI/src/  )
