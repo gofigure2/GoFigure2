@@ -52,3 +52,15 @@ ADD_TEST( qgotabimageviewelementbaseTest
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qgotabimageviewelementbase
 )
 
+ADD_TEST( qgotabimageview2dTest
+  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qgotabimageview2d
+  ${TESTING_DATA_PATH}/Circle.png
+  1
+)
+
+ADD_TEST( qgotabimageview3dTest
+  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qgotabimageview3d
+  ${TESTING_DATA_PATH}/Circle3D.mhd
+  1
+)
+
