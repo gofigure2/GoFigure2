@@ -96,14 +96,14 @@ void QGoTabManager::ChangeCurrentTab( int iIdx )
   m_PreviousTabIndex = iIdx;
 }
 
-void QGoTabManager::CloseCurrentTab( )
+void QGoTabManager::CloseTab( int idx )
 {
-  int idx = m_TabWidget->currentIndex();
-
   if( idx >= 0 )
     {
     QGoTabElementBase* w =
       dynamic_cast< QGoTabElementBase* >( m_TabWidget->widget( idx ) );
+
+    m_TabWidget->removeTab( idx );
 
     if( w )
       {
@@ -111,8 +111,6 @@ void QGoTabManager::CloseCurrentTab( )
       delete w;
       }
     }
-
-  m_TabWidget->removeTab( idx );
 }
 
 void QGoTabManager::CloseAllTabs( )

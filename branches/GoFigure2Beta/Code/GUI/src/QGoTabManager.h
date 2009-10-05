@@ -18,7 +18,7 @@ class QGoTabManager : public QObject
 
   public slots:
     void ChangeCurrentTab( int iIdx );
-    void CloseCurrentTab( );
+    void CloseTab( int idx );
     void CloseAllTabs( );
 
   private:

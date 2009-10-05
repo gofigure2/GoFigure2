@@ -141,7 +141,7 @@ void QGoMainWindow::CreateSignalSlotsConnection()
     //this, SLOT( showprogressloading() ) );
   QObject::connect( this->CentralTabWidget,
     SIGNAL( tabCloseRequested( int ) ),
-    m_TabManager, SLOT( CloseCurrentTab( ) ) );
+    m_TabManager, SLOT( CloseTab( int ) ) );
 
   QObject::connect( this->CentralTabWidget,
     SIGNAL( currentChanged( int ) ),
@@ -218,7 +218,8 @@ void QGoMainWindow::on_actionClose_all_activated()
 // *************************************************************************
 void QGoMainWindow::on_actionClose_activated()
 {
-  m_TabManager->CloseCurrentTab();
+  int idx = this->CentralTabWidget->currentIndex();
+  m_TabManager->CloseTab( idx );
 }
 // *************************************************************************
 void QGoMainWindow::on_actionOpen_Mesh_activated( )
