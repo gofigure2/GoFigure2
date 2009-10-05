@@ -17,35 +17,63 @@ QGoTabImageView3D::QGoTabImageView3D( QWidget* parent )
 
   setupUi( this );
 
+  QActionGroup* group = new QActionGroup( this );
+
   QAction* QuadViewAction = new QAction( tr("Quad-View"), this );
+  QuadViewAction->setCheckable( true );
+  QuadViewAction->setChecked( true );
+
+  group->addAction( QuadViewAction );
+
   m_ViewActions.push_back( QuadViewAction );
 
   QObject::connect( QuadViewAction, SIGNAL( triggered() ),
     this, SLOT( Quadview() ) );
 
   QAction* FullScreenXYAction = new QAction( tr( "Full-Screen XY" ), this );
+  FullScreenXYAction->setCheckable( true );
+
+  group->addAction( FullScreenXYAction );
+
   m_ViewActions.push_back( FullScreenXYAction );
 
   QObject::connect( FullScreenXYAction, SIGNAL( triggered() ),
     this, SLOT( FullScreenViewXY() ) );
 
   QAction* FullScreenXZAction = new QAction( tr( "Full-Screen XZ" ), this );
+  FullScreenXZAction->setCheckable( true );
+
+  group->addAction( FullScreenXZAction );
+
   m_ViewActions.push_back( FullScreenXZAction );
 
   QObject::connect( FullScreenXZAction, SIGNAL( triggered() ),
     this, SLOT( FullScreenViewXZ() ) );
 
   QAction* FullScreenYZAction = new QAction( tr( "Full-Screen YZ" ), this );
+  FullScreenYZAction->setCheckable( true );
+
+  group->addAction( FullScreenYZAction );
+
   m_ViewActions.push_back( FullScreenYZAction );
 
   QObject::connect( FullScreenYZAction, SIGNAL( triggered() ),
     this, SLOT( FullScreenViewYZ() ) );
 
   QAction* FullScreenXYZAction = new QAction( tr( "Full-Screen XYZ" ), this );
+  FullScreenXYZAction->setCheckable( true );
+
+  group->addAction( FullScreenXYZAction );
+
   m_ViewActions.push_back( FullScreenXYZAction );
 
   QObject::connect( FullScreenXYZAction, SIGNAL( triggered() ),
     this, SLOT( FullScreenViewXYZ() ) );
+
+  QAction* separator = new QAction( this );
+  separator->setSeparator( true );
+
+  m_ViewActions.push_back( separator );
 
   QAction* LookupTableAction = new QAction( tr( "Lookup Table" ), this );
   LookupTableAction->setStatusTip( tr(" Change the associated lookup table" ) );
@@ -70,7 +98,6 @@ QGoTabImageView3D::QGoTabImageView3D( QWidget* parent )
     this, SLOT( ChangeBackgroundColor() ) );
 
   m_DockWidget = new QDockWidget( tr( "Slice" ) );
-//   m_DockWidget->setFloating( true );
   m_DockWidget->resize( 120, 300 );
 
   QWidget* temp = new QWidget();
