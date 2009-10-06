@@ -6,6 +6,7 @@ SET( QGOGUILIB_EXAMPLE_SRC
   qgotabimageviewelementbase
   qgotabimageview2d
   qgotabimageview3d
+  qgotabimageview3dwt
 
 )
 

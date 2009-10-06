@@ -19,7 +19,7 @@ namespace GoFigure
     {
     TWO_D = 2,
     THREE_D,
-    THREE_D_T,
+    THREE_D_WITH_T,
     FOUR_D
     };
 }

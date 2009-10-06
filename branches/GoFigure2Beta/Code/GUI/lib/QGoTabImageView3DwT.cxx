@@ -1,9 +1,10 @@
-#include "QGoTabImageView3D.h"
+#include "QGoTabImageView3DwT.h"
 
 #include "QGoImageView3D.h"
 #include "QGoLUTDialog.h"
 
 #include "vtkLookupTable.h"
+#include "vtkImageAppendComponents.h"
 
 #include <QLabel>
 #include <QDockWidget>
@@ -11,11 +12,16 @@
 #include <QVBoxLayout>
 
 //--------------------------------------------------------------------------
-QGoTabImageView3D::QGoTabImageView3D( QWidget* parent ) :
-  QGoTabImageViewElementBase( parent ),
-  m_Image( 0 )
+QGoTabImageView3DwT::QGoTabImageView3DwT( QWidget* parent ) :
+  QGoTabElementBase( parent ),
+  m_LSMReader( 0 ),
+  m_Image( 0 ),
+  m_BackgroundColor( Qt::black ),
+  m_TimePoint( 0 )
 {
   setupUi( this );
+
+  m_MultiFileReader = itk::MultiFileReader::New();
 
   QActionGroup* group = new QActionGroup( this );
 
@@ -121,6 +127,11 @@ QGoTabImageView3D::QGoTabImageView3D( QWidget* parent ) :
   QSpinBox* ZSliceSpinBox = new QSpinBox( );
   layout->addWidget( ZSliceSpinBox, 2, 1 );
 
+  QLabel* SliceT = new QLabel( "T Time" );
+  layout->addWidget( SliceT, 3, 0 );
+  QSpinBox* TSliceSpinBox = new QSpinBox( );
+  layout->addWidget( TSliceSpinBox, 3, 1 );
+
   m_DockWidget->layout()->addWidget( temp );
 
   ReadSettings();
@@ -128,13 +139,18 @@ QGoTabImageView3D::QGoTabImageView3D( QWidget* parent ) :
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-QGoTabImageView3D::~QGoTabImageView3D( )
+QGoTabImageView3DwT::~QGoTabImageView3DwT( )
 {
+  if( m_Image )
+    {
+    m_Image->Delete();
+    m_Image = 0;
+    }
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoTabImageView3D::setupUi( QWidget* parent )
+void QGoTabImageView3DwT::setupUi( QWidget* parent )
 {
   if(parent->objectName().isEmpty())
     {
@@ -154,37 +170,146 @@ void QGoTabImageView3D::setupUi( QWidget* parent )
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoTabImageView3D::retranslateUi(QWidget *parent)
+void QGoTabImageView3DwT::retranslateUi(QWidget *parent)
 {
-  parent->setWindowTitle( tr( "QGoTabImageView2D" ) );
+  parent->setWindowTitle( tr( "QGoTabImageView3DwT" ) );
   Q_UNUSED(parent);
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-GoFigure::TabDimensionType QGoTabImageView3D::GetTabDimensionType( ) const
+GoFigure::TabDimensionType QGoTabImageView3DwT::GetTabDimensionType( ) const
 {
-  return GoFigure::THREE_D;
+  return GoFigure::THREE_D_WITH_T;
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoTabImageView3D::SetImage( vtkImageData* iImage )
+void QGoTabImageView3DwT::SetLSMReader( vtkLSMReader* iReader,
+  const int& iTimePoint )
 {
-  m_ImageView->SetImage( iImage );
-  m_Image = iImage;
+//   int dim[5];
+//   iReader->GetDimensions( dim );
+  m_TimePoint = iTimePoint;
+
+  if( iReader )
+    {
+    m_LSMReader = iReader;
+    m_LSMReader->SetUpdateTimePoint( m_TimePoint );
+    m_LSMReader->Update();
+
+    int NumberOfChannels = m_LSMReader->GetNumberOfChannels();
+    std::cout <<"NumberOfChannels " <<NumberOfChannels <<std::endl;
+
+    if( NumberOfChannels > 1 )
+      {
+      std::vector< vtkImageData* > temp_image( NumberOfChannels );
+      vtkImageAppendComponents* append_filter = vtkImageAppendComponents::New();
+
+      for( int i = 0; i < NumberOfChannels; i++ )
+        {
+        std::cout <<i <<std::endl;
+        m_LSMReader->SetUpdateChannel( i );
+        m_LSMReader->Update();
+
+        temp_image[i] = vtkImageData::New();
+        temp_image[i]->ShallowCopy( m_LSMReader->GetOutput() );
+        append_filter->AddInput( temp_image[i] );
+        }
+      // This is really stupid!!!
+      if( NumberOfChannels < 3 )
+        {
+        for( int i = NumberOfChannels; i < 3; i++ )
+          {
+          append_filter->AddInput( temp_image[0] );
+          }
+        }
+      append_filter->Update();
+
+      // Do we really need to delete m_Image?
+      if( !m_Image )
+        {
+        m_Image = vtkImageData::New();
+        }
+
+      m_Image->ShallowCopy( append_filter->GetOutput() );
+      append_filter->Delete();
+
+      for( int i = 0; i < NumberOfChannels; i++ )
+        {
+        temp_image[i]->Delete();
+        }
+      }
+    else
+      {
+      m_Image = m_LSMReader->GetOutput();
+      }
+    }
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoTabImageView3D::Update()
+void QGoTabImageView3DwT::SetMultiFiles( FileListType& iFileList,
+  const int& iSerieType,
+  const int& iTimePoint )
 {
+  m_TimePoint = iTimePoint;
+  m_FileList = iFileList;
+  m_MultiFileReader->SetInput( &m_FileList );
+
+  if( iSerieType == 0 ) //IsLSM
+    {
+    m_MultiFileReader->SetDimensionality( 3 );
+    m_MultiFileReader->SetFileType( LSM );
+    m_MultiFileReader->SetChannel( 0 );
+    }
+  if( iSerieType == 1 ) //IsMegaCapture
+    {
+    m_MultiFileReader->SetDimensionality( 2 );
+    m_MultiFileReader->SetFileType( JPEG );
+    }
+  m_MultiFileReader->SetMultiChannelImagesON();
+  m_MultiFileReader->SetTimePoint( m_TimePoint );
+  m_MultiFileReader->Update();
+
+  m_Image = m_MultiFileReader->GetOutput();
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoTabImageView3DwT::SetTimePoint( const int& iTimePoint )
+{
+  m_TimePoint = iTimePoint;
+
+  if( m_LSMReader )
+    {
+    m_LSMReader->SetUpdateTimePoint( m_TimePoint );
+    m_LSMReader->Update();
+    m_Image = m_LSMReader->GetOutput();
+    }
+  else
+    {
+    if( !m_FileList.empty() )
+      {
+      }
+    else
+      {
+      // no lsm reader, no file list. did you really provide any input?
+      }
+    }
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoTabImageView3DwT::Update()
+{
+  m_ImageView->SetImage( m_Image );
   m_ImageView->Update();
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoTabImageView3D::ChangeLookupTable()
+void QGoTabImageView3DwT::ChangeLookupTable()
 {
   vtkLookupTable* lut = vtkLookupTable::New();
   lut->DeepCopy( QGoLUTDialog::GetLookupTable( this,
@@ -195,14 +320,14 @@ void QGoTabImageView3D::ChangeLookupTable()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoTabImageView3D::ShowScalarBar( const bool& iShow )
+void QGoTabImageView3DwT::ShowScalarBar( const bool& iShow )
 {
   m_ImageView->ShowScalarBar( iShow );
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-QString QGoTabImageView3D::SnapshotViewXY(
+QString QGoTabImageView3DwT::SnapshotViewXY(
   const GoFigure::SnapshotImageType& iType,
   const QString& iBaseName )
 {
@@ -211,7 +336,7 @@ QString QGoTabImageView3D::SnapshotViewXY(
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-QString QGoTabImageView3D::SnapshotView2(
+QString QGoTabImageView3DwT::SnapshotView2(
   const GoFigure::SnapshotImageType& iType,
   const QString& iBaseName )
 {
@@ -220,7 +345,7 @@ QString QGoTabImageView3D::SnapshotView2(
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-QString QGoTabImageView3D::SnapshotView3(
+QString QGoTabImageView3DwT::SnapshotView3(
   const GoFigure::SnapshotImageType& iType,
   const QString& iBaseName )
 {
@@ -229,7 +354,7 @@ QString QGoTabImageView3D::SnapshotView3(
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-QString QGoTabImageView3D::SnapshotViewXYZ(
+QString QGoTabImageView3DwT::SnapshotViewXYZ(
   const GoFigure::SnapshotImageType& iType,
   const QString& iBaseName )
 {
@@ -238,93 +363,93 @@ QString QGoTabImageView3D::SnapshotViewXYZ(
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoTabImageView3D::SetSliceViewXY( const int& iS )
+void QGoTabImageView3DwT::SetSliceViewXY( const int& iS )
 {
   m_ImageView->SetSliceViewXY( iS );
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoTabImageView3D::SetSliceViewXZ( const int& iS )
+void QGoTabImageView3DwT::SetSliceViewXZ( const int& iS )
 {
   m_ImageView->SetSliceViewXZ( iS );
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoTabImageView3D::SetSliceViewYZ( const int& iS )
+void QGoTabImageView3DwT::SetSliceViewYZ( const int& iS )
 {
   m_ImageView->SetSliceViewYZ( iS );
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoTabImageView3D::SetFullScreenView( const int& iS )
+void QGoTabImageView3DwT::SetFullScreenView( const int& iS )
 {
   m_ImageView->SetFullScreenView( iS );
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoTabImageView3D::Quadview()
+void QGoTabImageView3DwT::Quadview()
 {
   m_ImageView->Quadview();
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoTabImageView3D::FullScreenViewXY()
+void QGoTabImageView3DwT::FullScreenViewXY()
 {
   m_ImageView->FullScreenViewXY();
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoTabImageView3D::FullScreenViewXZ()
+void QGoTabImageView3DwT::FullScreenViewXZ()
 {
   m_ImageView->FullScreenViewXZ();
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoTabImageView3D::FullScreenViewYZ()
+void QGoTabImageView3DwT::FullScreenViewYZ()
 {
   m_ImageView->FullScreenViewYZ();
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoTabImageView3D::FullScreenViewXYZ()
+void QGoTabImageView3DwT::FullScreenViewXYZ()
 {
   m_ImageView->FullScreenViewXYZ();
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoTabImageView3D::GetBackgroundColorFromImageViewer( )
+void QGoTabImageView3DwT::GetBackgroundColorFromImageViewer( )
 {
   double r, g, b;
   m_ImageView->GetBackgroundColor( r, g, b );
-  this->m_BackgroundColor.setRgbF( r, g, b );
+  m_BackgroundColor.setRgbF( r, g, b );
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoTabImageView3D::SetBackgroundColorToImageViewer( )
+void QGoTabImageView3DwT::SetBackgroundColorToImageViewer( )
 {
-  m_ImageView->SetBackgroundColor( this->m_BackgroundColor );
+  m_ImageView->SetBackgroundColor( m_BackgroundColor );
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-std::vector< QAction* > QGoTabImageView3D::ViewActions()
+std::vector< QAction* > QGoTabImageView3DwT::ViewActions()
 {
   return m_ViewActions;
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-std::list< QDockWidget* > QGoTabImageView3D::DockWidget()
+std::list< QDockWidget* > QGoTabImageView3DwT::DockWidget()
 {
   std::list< QDockWidget* > oList;
   oList.push_back( m_DockWidget );

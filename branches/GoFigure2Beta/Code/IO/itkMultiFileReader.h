@@ -78,7 +78,7 @@ namespace itk
 *
 *
 */
-class ITK_EXPORT MultiFileReader
+class ITK_EXPORT MultiFileReader : public LightProcessObject
 {
 public:
 
@@ -88,6 +88,10 @@ public:
   typedef LightProcessObject          Superclass;
   typedef SmartPointer< Self >        Pointer;
   typedef SmartPointer< const Self >  ConstPointer;
+
+  itkNewMacro( Self );
+
+  itkTypeMacro( MultiFileReader, LightProcessObject );
 
   /** \brief set the time point you want to extract and load in memory the
   corresponding XYZ volume. */
@@ -129,15 +133,16 @@ public:
   // so pipeline mechanism would not work.
   void Update(void);
 
-  MultiFileReader( );
-  ~MultiFileReader();
-
   void SetProgressBar( QProgressBar* PB )
   { this->m_ProgressBar = PB; this->IsProgressBarSet = true; }
 
 
   /** \brief Mandatory PrintSelf */
   void PrintSelf( std::ostream& os, Indent indent) const;
+
+protected:
+  MultiFileReader( );
+  virtual ~MultiFileReader( );
 
 private:
   void ComputeUpdateFileList();
