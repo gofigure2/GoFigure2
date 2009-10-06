@@ -15,7 +15,7 @@ class QGoTabImageView4D : public QGoTabElementBase
 {
   Q_OBJECT
   public:
-    QGoTabImageView4D( QWidget* parent );
+    QGoTabImageView4D( QWidget* parent = 0 );
     virtual ~QGoTabImageView4D();
 
     GoFigure::TabDimensionType GetTabDimensionType( ) const;
@@ -51,18 +51,31 @@ class QGoTabImageView4D : public QGoTabElementBase
     QString SnapshotViewXYZ( const GoFigure::SnapshotImageType& iType,
       const QString& iBaseName = QString( "snapshot" ) );
 
+    QString SnapshotViewXT( const GoFigure::SnapshotImageType& iType,
+      const QString& iBaseName = QString( "snapshot" ) ) {return QString();}
+    QString SnapshotViewYT( const GoFigure::SnapshotImageType& iType,
+      const QString& iBaseName = QString( "snapshot" ) ) {return QString();}
+    QString SnapshotViewXYT( const GoFigure::SnapshotImageType& iType,
+      const QString& iBaseName = QString( "snapshot" ) ) {return QString();}
+
     void SetSliceViewXY( const int& );
     void SetSliceViewXZ( const int& );
     void SetSliceViewYZ( const int& );
-    void SetSliceViewXT( const int& );
-    void SetSliceViewYT( const int& );
+    void SetSliceViewXT( const int& ) {}
+    void SetSliceViewYT( const int& ) {}
 
     void SetFullScreenView( const int& iS );
-    void Quadview();
+
+    void Octview();
+    void QuadviewXYZ();
+    void QuadviewXYT();
     void FullScreenViewXY();
     void FullScreenViewXZ();
     void FullScreenViewYZ();
     void FullScreenViewXYZ();
+    void FullScreenViewXT();
+    void FullScreenViewYT();
+    void FullScreenViewXYT();
 
     void ChangeLookupTable();
     void ShowScalarBar( const bool& );

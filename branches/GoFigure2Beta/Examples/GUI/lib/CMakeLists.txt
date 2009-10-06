@@ -7,7 +7,7 @@ SET( QGOGUILIB_EXAMPLE_SRC
   qgotabimageview2d
   qgotabimageview3d
   qgotabimageview3dwt
-
+  qgotabimageview4d
 )
 
 FOREACH( var ${QGOGUILIB_EXAMPLE_SRC} )

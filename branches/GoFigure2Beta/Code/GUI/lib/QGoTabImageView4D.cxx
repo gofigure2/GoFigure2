@@ -341,9 +341,26 @@ void QGoTabImageView4D::SetFullScreenView( const int& iS )
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoTabImageView4D::Quadview()
+void QGoTabImageView4D::Octview()
 {
   m_XYZImageView->Quadview();
+  m_XYTImageView->Quadview();
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoTabImageView4D::QuadviewXYZ()
+{
+  m_XYZImageView->Quadview();
+  m_XYTImageView->hide();
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoTabImageView4D::QuadviewXYT()
+{
+  m_XYTImageView->Quadview();
+  m_XYZImageView->hide();
 }
 //--------------------------------------------------------------------------
 
@@ -351,6 +368,7 @@ void QGoTabImageView4D::Quadview()
 void QGoTabImageView4D::FullScreenViewXY()
 {
   m_XYZImageView->FullScreenViewXY();
+  m_XYTImageView->hide();
 }
 //--------------------------------------------------------------------------
 
@@ -358,6 +376,7 @@ void QGoTabImageView4D::FullScreenViewXY()
 void QGoTabImageView4D::FullScreenViewXZ()
 {
   m_XYZImageView->FullScreenViewXZ();
+  m_XYTImageView->hide();
 }
 //--------------------------------------------------------------------------
 
@@ -365,6 +384,7 @@ void QGoTabImageView4D::FullScreenViewXZ()
 void QGoTabImageView4D::FullScreenViewYZ()
 {
   m_XYZImageView->FullScreenViewYZ();
+  m_XYTImageView->hide();
 }
 //--------------------------------------------------------------------------
 
@@ -372,9 +392,33 @@ void QGoTabImageView4D::FullScreenViewYZ()
 void QGoTabImageView4D::FullScreenViewXYZ()
 {
   m_XYZImageView->FullScreenViewXYZ();
+  m_XYTImageView->hide();
 }
 //--------------------------------------------------------------------------
 
+//--------------------------------------------------------------------------
+void QGoTabImageView4D::FullScreenViewXT()
+{
+  m_XYTImageView->FullScreenViewXZ();
+  m_XYZImageView->hide();
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoTabImageView4D::FullScreenViewYT()
+{
+  m_XYTImageView->FullScreenViewYZ();
+  m_XYZImageView->hide();
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoTabImageView4D::FullScreenViewXYT()
+{
+  m_XYTImageView->FullScreenViewXYZ();
+  m_XYZImageView->hide();
+}
+//--------------------------------------------------------------------------
 //--------------------------------------------------------------------------
 void QGoTabImageView4D::GetBackgroundColorFromImageViewer( )
 {
