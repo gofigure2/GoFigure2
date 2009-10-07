@@ -111,15 +111,24 @@ QGoTabImageView3D::QGoTabImageView3D( QWidget* parent ) :
   QSpinBox* XSliceSpinBox = new QSpinBox();
   layout->addWidget( XSliceSpinBox, 0, 1 );
 
+  QObject::connect( XSliceSpinBox, SIGNAL( valueChanged( int ) ),
+    this, SLOT( SetSliceViewYZ( int ) ) );
+
   QLabel* SliceY = new QLabel( "Y Slice" );
   layout->addWidget( SliceY, 1, 0 );
   QSpinBox* YSliceSpinBox = new QSpinBox( );
   layout->addWidget( YSliceSpinBox, 1, 1 );
 
+  QObject::connect( YSliceSpinBox, SIGNAL( valueChanged( int ) ),
+    this, SLOT( SetSliceViewXZ( int ) ) );
+
   QLabel* SliceZ = new QLabel( "Z Slice" );
   layout->addWidget( SliceZ, 2, 0 );
   QSpinBox* ZSliceSpinBox = new QSpinBox( );
   layout->addWidget( ZSliceSpinBox, 2, 1 );
+
+  QObject::connect( ZSliceSpinBox, SIGNAL( valueChanged( int ) ),
+    this, SLOT( SetSliceViewXY( int ) ) );
 
   m_DockWidget->layout()->addWidget( temp );
 

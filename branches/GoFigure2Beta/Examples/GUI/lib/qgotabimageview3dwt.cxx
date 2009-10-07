@@ -29,8 +29,8 @@ int main( int argc, char** argv )
   tab->Update();
   tab->show();
 
-  tab->SetTimePoint( 1 );
-  tab->SetTimePoint( 2 );
+//   tab->SetTimePoint( 1 );
+//   tab->SetTimePoint( 2 );
 
   QMenuBar* menubar = new QMenuBar;
   std::vector< QAction* > action_vector = tab->ViewActions();
