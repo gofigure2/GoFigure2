@@ -270,7 +270,10 @@ void QGoTabImageView3DwT::SetTimePoint( const int& iTimePoint )
       }
     m_TimePoint = iTimePoint;
     int NumberOfChannels = m_LSMReader->GetNumberOfChannels();
+    std::cout <<"NumberOfChannels: " <<NumberOfChannels <<std::endl;
+//     m_LSMReader->SetUpdateChannel( 1 );
     m_LSMReader->SetUpdateTimePoint( m_TimePoint );
+
 
     if( NumberOfChannels > 1 )
       {
@@ -292,7 +295,7 @@ void QGoTabImageView3DwT::SetTimePoint( const int& iTimePoint )
         {
         for( int i = NumberOfChannels; i < 3; i++ )
           {
-          append_filter->AddInput( temp_image[0] );
+          append_filter->AddInput( temp_image[1] );
           }
         }
       append_filter->Update();

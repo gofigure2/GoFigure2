@@ -1222,6 +1222,7 @@ int vtkLSMReader::RequestData(
   // we use maximum
   timepoint = (this->IntUpdateExtent[3]>this->GetNumberOfTimePoints()-1?this->GetNumberOfTimePoints()-1:this->IntUpdateExtent[3]);
   channel = this->GetUpdateChannel();
+  std::cout <<"**** CHANNEL: " <<channel <<std::endl;
 //  int nSlices = (outExtent[5]-outExtent[4])+1;
   // std::cout <<"Timepoint="<<timepoint<<", channel="<<channel<<", "<<nSlices<<" slices"<< std::endl;
   numberOfPixels = this->Dimensions[0]*this->Dimensions[1]*(outExtent[5]-outExtent[4]+1 );
@@ -1315,11 +1316,8 @@ int vtkLSMReader::RequestUpdateExtent (
 }
 
 int vtkLSMReader::RequestInformation (
-
   vtkInformation       * vtkNotUsed( request ),
-
   vtkInformationVector** vtkNotUsed( inputVector ),
-
   vtkInformationVector * outputVector)
 {
   unsigned long startPos;
@@ -1388,6 +1386,7 @@ int vtkLSMReader::RequestInformation (
     this->NumberOfScalarComponents = 1;
 
   int channel = this->GetUpdateChannel();
+  std::cout <<"** CHANNEL: " <<channel <<std::endl;
   dataType = this->GetDataTypeForChannel(channel);
   if(dataType > 1)
     {
@@ -1454,7 +1453,7 @@ void vtkLSMReader::SetUpdateChannel(int ch)
     return;
     }
   this->IntUpdateExtent[4] = ch;
-  // std::cout << "Update channel is now " << ch << std::endl;
+//   std::cout << "Update channel is now " << ch << std::endl;
   this->Modified();
 }
 
