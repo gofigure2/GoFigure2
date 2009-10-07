@@ -12,9 +12,9 @@
 
 //--------------------------------------------------------------------------
 QGoImageView::QGoImageView( QWidget* parent ) : QWidget( parent ),
+  m_Pool( 0 ),
   m_Image( 0 ),
   m_SnapshotId( 0 ),
-  m_Pool( 0 ),
   m_Tag( "QGoImageView" )
 {
   m_Pool = vtkViewImage2DCollection::New();
@@ -71,7 +71,6 @@ void QGoImageView::SetBackgroundColor( const double& r,
   const double& b )
 {
   double textcolor[3];
-  double avg = ( r + g + b ) / 3.;
 
   if( ( r != 0.5 ) && ( g != 0.5 ) && ( b != 0.5 ) )
     {

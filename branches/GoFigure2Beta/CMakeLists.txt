@@ -181,12 +181,6 @@ IF( VTK_FOUND )
 
     INCLUDE_DIRECTORIES( BEFORE
       ${QT_INCLUDES}
-      ${GOFIGURE2_SOURCE_DIR}/Code/Filters/
-      ${GOFIGURE2_BINARY_DIR}/Code/Filters/
-      ${GOFIGURE2_SOURCE_DIR}/Code/Filters/Preprocessing/
-      ${GOFIGURE2_SOURCE_DIR}/Code/Filters/Segmentation/
-      ${GOFIGURE2_BINARY_DIR}/Code/Filters/Preprocessing/
-      ${GOFIGURE2_BINARY_DIR}/Code/Filters/Segmentation/
       ${GOFIGURE2_SOURCE_DIR}/Code/IO/
       ${GOFIGURE2_BINARY_DIR}/Code/IO/
       ${GOFIGURE2_SOURCE_DIR}/Code/GUI/
