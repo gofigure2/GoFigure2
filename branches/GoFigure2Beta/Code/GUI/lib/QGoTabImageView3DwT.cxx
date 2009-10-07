@@ -17,7 +17,7 @@ QGoTabImageView3DwT::QGoTabImageView3DwT( QWidget* parent ) :
   m_LSMReader( 0 ),
   m_Image( 0 ),
   m_BackgroundColor( Qt::black ),
-  m_TimePoint( 0 )
+  m_TimePoint( -1 )
 {
   setupUi( this );
 
@@ -114,34 +114,34 @@ QGoTabImageView3DwT::QGoTabImageView3DwT( QWidget* parent ) :
 
   QLabel* SliceX = new QLabel( "X Slice" );
   layout->addWidget( SliceX, 0, 0 );
-  QSpinBox* XSliceSpinBox = new QSpinBox();
-  layout->addWidget( XSliceSpinBox, 0, 1 );
+  m_XSliceSpinBox = new QSpinBox();
+  layout->addWidget( m_XSliceSpinBox, 0, 1 );
 
-  QObject::connect( XSliceSpinBox, SIGNAL( valueChanged( int ) ),
+  QObject::connect( m_XSliceSpinBox, SIGNAL( valueChanged( int ) ),
     this, SLOT( SetSliceViewYZ( int ) ) );
 
   QLabel* SliceY = new QLabel( "Y Slice" );
   layout->addWidget( SliceY, 1, 0 );
-  QSpinBox* YSliceSpinBox = new QSpinBox( );
-  layout->addWidget( YSliceSpinBox, 1, 1 );
+  m_YSliceSpinBox = new QSpinBox( );
+  layout->addWidget( m_YSliceSpinBox, 1, 1 );
 
-  QObject::connect( YSliceSpinBox, SIGNAL( valueChanged( int ) ),
+  QObject::connect( m_YSliceSpinBox, SIGNAL( valueChanged( int ) ),
     this, SLOT( SetSliceViewXZ( int ) ) );
 
   QLabel* SliceZ = new QLabel( "Z Slice" );
   layout->addWidget( SliceZ, 2, 0 );
-  QSpinBox* ZSliceSpinBox = new QSpinBox( );
-  layout->addWidget( ZSliceSpinBox, 2, 1 );
+  m_ZSliceSpinBox = new QSpinBox( );
+  layout->addWidget( m_ZSliceSpinBox, 2, 1 );
 
-  QObject::connect( ZSliceSpinBox, SIGNAL( valueChanged( int ) ),
+  QObject::connect( m_ZSliceSpinBox, SIGNAL( valueChanged( int ) ),
     this, SLOT( SetSliceViewXY( int ) ) );
 
   QLabel* SliceT = new QLabel( "T Time" );
   layout->addWidget( SliceT, 3, 0 );
-  QSpinBox* TSliceSpinBox = new QSpinBox( );
-  layout->addWidget( TSliceSpinBox, 3, 1 );
+  m_TSliceSpinBox = new QSpinBox( );
+  layout->addWidget( m_TSliceSpinBox, 3, 1 );
 
-  QObject::connect( TSliceSpinBox, SIGNAL( valueChanged( int ) ),
+  QObject::connect( m_TSliceSpinBox, SIGNAL( valueChanged( int ) ),
     this, SLOT( SetTimePoint( int ) ) );
 
   m_DockWidget->layout()->addWidget( temp );
@@ -200,61 +200,31 @@ GoFigure::TabDimensionType QGoTabImageView3DwT::GetTabDimensionType( ) const
 void QGoTabImageView3DwT::SetLSMReader( vtkLSMReader* iReader,
   const int& iTimePoint )
 {
-//   int dim[5];
-//   iReader->GetDimensions( dim );
-  m_TimePoint = iTimePoint;
-
   if( iReader )
     {
-    m_LSMReader = iReader;
-    m_LSMReader->SetUpdateTimePoint( m_TimePoint );
-    m_LSMReader->Update();
-
-    int NumberOfChannels = m_LSMReader->GetNumberOfChannels();
-    std::cout <<"NumberOfChannels " <<NumberOfChannels <<std::endl;
-
-    if( NumberOfChannels > 1 )
+    if( iReader != m_LSMReader )
       {
-      std::vector< vtkImageData* > temp_image( NumberOfChannels );
-      vtkImageAppendComponents* append_filter = vtkImageAppendComponents::New();
+      m_LSMReader = iReader;
+      m_LSMReader->Update();
 
-      for( int i = 0; i < NumberOfChannels; i++ )
-        {
-        std::cout <<i <<std::endl;
-        m_LSMReader->SetUpdateChannel( i );
-        m_LSMReader->Update();
+      int dim[5];
+      m_LSMReader->GetDimensions( dim );
+      m_XSliceSpinBox->setMinimum( 0 );
+      m_XSliceSpinBox->setMaximum( dim[0] - 1 );
 
-        temp_image[i] = vtkImageData::New();
-        temp_image[i]->ShallowCopy( m_LSMReader->GetOutput() );
-        append_filter->AddInput( temp_image[i] );
-        }
-      // This is really stupid!!!
-      if( NumberOfChannels < 3 )
-        {
-        for( int i = NumberOfChannels; i < 3; i++ )
-          {
-          append_filter->AddInput( temp_image[0] );
-          }
-        }
-      append_filter->Update();
+      m_YSliceSpinBox->setMinimum( 0 );
+      m_YSliceSpinBox->setMaximum( dim[1] - 1 );
 
-      // Do we really need to delete m_Image?
-      if( !m_Image )
-        {
-        m_Image = vtkImageData::New();
-        }
+      m_ZSliceSpinBox->setMinimum( 0 );
+      m_ZSliceSpinBox->setMaximum( dim[2] - 1 );
 
-      m_Image->ShallowCopy( append_filter->GetOutput() );
-      append_filter->Delete();
-
-      for( int i = 0; i < NumberOfChannels; i++ )
-        {
-        temp_image[i]->Delete();
-        }
+      m_TSliceSpinBox->setMinimum( 0 );
+      m_TSliceSpinBox->setMaximum( dim[3] - 1 );
+      m_TSliceSpinBox->setValue( iTimePoint );
       }
-    else
+    if( m_TimePoint != iTimePoint )
       {
-      m_Image = m_LSMReader->GetOutput();
+      SetTimePoint( iTimePoint );
       }
     }
 }
@@ -275,11 +245,11 @@ void QGoTabImageView3DwT::SetMultiFiles( FileListType& iFileList,
     m_MultiFileReader->SetFileType( LSM );
     m_MultiFileReader->SetChannel( 0 );
     }
-  if( iSerieType == 1 ) //IsMegaCapture
-    {
-    m_MultiFileReader->SetDimensionality( 2 );
-    m_MultiFileReader->SetFileType( JPEG );
-    }
+//   if( iSerieType == 1 ) //IsMegaCapture must now use the 4D!!!
+//     {
+//     m_MultiFileReader->SetDimensionality( 2 );
+//     m_MultiFileReader->SetFileType( JPEG );
+//     }
   m_MultiFileReader->SetMultiChannelImagesON();
   m_MultiFileReader->SetTimePoint( m_TimePoint );
   m_MultiFileReader->Update();
@@ -298,6 +268,7 @@ void QGoTabImageView3DwT::SetTimePoint( const int& iTimePoint )
       {
       return;
       }
+    m_TimePoint = iTimePoint;
     int NumberOfChannels = m_LSMReader->GetNumberOfChannels();
     m_LSMReader->SetUpdateTimePoint( m_TimePoint );
 
@@ -342,7 +313,13 @@ void QGoTabImageView3DwT::SetTimePoint( const int& iTimePoint )
       }
     else
       {
-      m_Image = m_LSMReader->GetOutput();
+      m_LSMReader->Update();
+
+      if( !m_Image )
+        {
+        m_Image = vtkImageData::New();
+        }
+      m_Image->ShallowCopy( m_LSMReader->GetOutput() );
       }
     Update();
     }

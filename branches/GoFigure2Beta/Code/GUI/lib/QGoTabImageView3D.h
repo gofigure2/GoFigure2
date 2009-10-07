@@ -5,6 +5,7 @@
 #include "SnapshotHelper.h"
 
 #include <QHBoxLayout>
+#include <QSpinBox>
 
 class vtkImageData;
 
@@ -67,6 +68,9 @@ class QGoTabImageView3D : public QGoTabImageViewElementBase
     QHBoxLayout*      m_LayOut;
     QGoImageView3D*   m_ImageView;
     vtkImageData*     m_Image;
+    QSpinBox*         m_XSliceSpinBox;
+    QSpinBox*         m_YSliceSpinBox;
+    QSpinBox*         m_ZSliceSpinBox;
 
     std::vector< QAction* > m_ViewActions;
     QDockWidget* m_DockWidget;

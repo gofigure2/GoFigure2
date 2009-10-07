@@ -22,6 +22,7 @@ int main( int argc, char** argv )
 
   vtkLSMReader* reader = vtkLSMReader::New();
   reader->SetFileName( argv[1] );
+  reader->SetUpdateTimePoint( 0 );
   reader->Update();
 
   QGoTabImageView3DwT* tab = new QGoTabImageView3DwT;

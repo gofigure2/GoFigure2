@@ -3,6 +3,7 @@
 
 #include "QGoTabElementBase.h"
 #include <QHBoxLayout>
+#include <QSpinBox>
 
 #include "QGoPlugin.h"
 #include "QGoImageView3D.h"
@@ -77,6 +78,10 @@ protected:
   FileListType          m_FileList;
   QColor                m_BackgroundColor;
   int                   m_TimePoint;
+  QSpinBox*             m_XSliceSpinBox;
+  QSpinBox*             m_YSliceSpinBox;
+  QSpinBox*             m_ZSliceSpinBox;
+  QSpinBox*             m_TSliceSpinBox;
 
   std::vector< QAction* > m_ViewActions;
   QDockWidget* m_DockWidget;
