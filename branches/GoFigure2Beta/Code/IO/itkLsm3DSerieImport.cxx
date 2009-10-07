@@ -42,32 +42,31 @@
 
 namespace itk
 {
+Lsm3DSerieImport::Lsm3DSerieImport()
+{ 
+  m_FileName.clear(); 
+  m_GroupId = 0; 
+}
+
+Lsm3DSerieImport::
+~Lsm3DSerieImport()
+{
+}
+
 
 void
 Lsm3DSerieImport::
-SetFileName( char * name )
+SetFileName( std::string name )
 {
-  if ( this->m_FileName && name && (!strcmp(this->m_FileName,name)))
+  if (!m_FileName.empty()&& !name.empty()&& m_FileName.compare(name)!= 0)
     {
     return;
     }
-  if (!name && !this->m_FileName)
+  if (name.empty() && m_FileName.empty())
     {
     return;
     }
-  if (this->m_FileName)
-    {
-    delete [] this->m_FileName;
-    }
-  if (name)
-    {
-    this->m_FileName = new char[strlen(name) + 1];
-    strcpy(this->m_FileName, name);
-    }
-  else
-    {
-    this->m_FileName = NULL;
-    }
+  m_FileName = name;
   this->Modified();
 }
 
@@ -265,7 +264,7 @@ CreateOutput()
           origFileName,
           (*numGroupStartItr),
           (*numGroupLengthItr) );
-        tempInfo.m_TimePoint = atof( ValueAsString.c_str() );
+        tempInfo.m_TCoord = atof( ValueAsString.c_str() );
         m_OutputFileList.push_back( tempInfo );
         break;
         }
@@ -278,7 +277,9 @@ CreateOutput()
     } // end for each filename
 
   m_FileNameS.clear();
-  std::sort( m_OutputFileList.begin(), m_OutputFileList.end() );
+
+  GoFigureFileInfoHelperTimeBasedCompare comparison;
+  std::sort( m_OutputFileList.begin(), m_OutputFileList.end(), comparison );
 
 #if !defined(ITK_LEAN_AND_MEAN) && !defined(__BORLANDC__) && !defined(NDEBUG)
   FileListType::iterator myIt = m_OutputFileList.begin();
@@ -287,21 +288,11 @@ CreateOutput()
     itkDebugMacro(
         << (*myIt).m_Filename\
         << " " << (*myIt).m_Channel\
-        << " " << (*myIt).m_TimePoint\
-        << " " << (*myIt).m_ZDepth );
+        << " " << (*myIt).m_TCoord\
+        << " " << (*myIt).m_ZCoord );
       myIt++;
     }
 #endif
-}
-
-Lsm3DSerieImport::
-~Lsm3DSerieImport()
-{
-  if (this->m_FileName)
-    {
-    delete [] this->m_FileName;
-    this->m_FileName = NULL;
-    }
 }
 
 }

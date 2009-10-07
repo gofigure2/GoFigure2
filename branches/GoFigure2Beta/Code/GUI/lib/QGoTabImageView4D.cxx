@@ -18,9 +18,16 @@ QGoTabImageView4D::QGoTabImageView4D( QWidget* parent ) :
   m_XYTImage( 0 ),
   m_BackgroundColor( Qt::black )
 {
+  m_ThreadedReader1 = new QGoThreadedMultiFileReader( this );
+  m_ThreadedReader2 = new QGoThreadedMultiFileReader( this );
+
   setupUi( this );
 
-  m_MultiFileReader = itk::MultiFileReader::New();
+  QObject::connect( m_ThreadedReader1, SIGNAL( ),
+    this, SLOT( finished() ) );
+
+  QObject::connect( m_ThreadedReader2, SIGNAL( ),
+    this, SLOT( finished() ) );
 
   QActionGroup* group = new QActionGroup( this );
 
@@ -194,53 +201,44 @@ GoFigure::TabDimensionType QGoTabImageView4D::GetTabDimensionType( ) const
 
 //--------------------------------------------------------------------------
 void QGoTabImageView4D::SetMultiFiles( FileListType& iFileList,
-  const int& iSerieType,
-  const int& iTimePoint )
+  const int& iTimePoint,
+  const int& iZDepth )
 {
-//   m_TimePoint = iTimePoint;
-  m_FileList = iFileList;
-  m_MultiFileReader->SetInput( &m_FileList );
+  m_TimePoint = iTimePoint;
+  m_ZDepth = iZDepth;
 
-  if( iSerieType == 0 ) //IsLSM
-    {
-    m_MultiFileReader->SetDimensionality( 3 );
-    m_MultiFileReader->SetFileType( LSM );
-    m_MultiFileReader->SetChannel( 0 );
-    }
-  if( iSerieType == 1 ) //IsMegaCapture
-    {
-    m_MultiFileReader->SetDimensionality( 2 );
-    m_MultiFileReader->SetFileType( JPEG );
-    }
-  m_MultiFileReader->SetMultiChannelImagesON();
-//   m_MultiFileReader->SetTimePoint( m_TimePoint );
-  m_MultiFileReader->Update();
+  m_ThreadedReader1->SetInput( iFileList, JPEG, true );
+  m_ThreadedReader1->SetTimePoint( m_TimePoint );
 
-  m_XYZImage = m_MultiFileReader->GetOutput();
+  m_ThreadedReader1->start();
+
+  m_ThreadedReader2->SetInput( iFileList, JPEG, false );
+  m_ThreadedReader2->SetZDepth( m_ZDepth );
+
+  m_ThreadedReader2->start();
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoTabImageView4D::ReceiveXYZImage()
+{
+  m_XYZImage = m_ThreadedReader1->GetOutput();
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoTabImageView4D::ReceiveXYTImage()
+{
+  m_XYTImage = m_ThreadedReader2->GetOutput();
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void QGoTabImageView4D::SetTimePoint( const int& iTimePoint )
 {
-//   m_TimePoint = iTimePoint;
-
-//   if( m_LSMReader )
-//     {
-//     m_LSMReader->SetUpdateTimePoint( m_TimePoint );
-//     m_LSMReader->Update();
-//     m_XYZImage = m_LSMReader->GetOutput();
-//     }
-//   else
-//     {
-//     if( !m_FileList.empty() )
-//       {
-//       }
-//     else
-//       {
-//       // no lsm reader, no file list. did you really provide any input?
-//       }
-//     }
+  m_TimePoint = iTimePoint;
+  m_ThreadedReader1->SetTimePoint( m_TimePoint );
+  m_ThreadedReader1->start();
 }
 //--------------------------------------------------------------------------
 

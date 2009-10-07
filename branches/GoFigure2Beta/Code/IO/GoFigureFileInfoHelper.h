@@ -43,73 +43,80 @@
 
 #include <string>
 
-class GoFigureFileInfoHelper
+struct GoFigureFileInfoHelper
 {
-public:
   std::string     m_Filename;
-  unsigned int    m_TimePoint;
-  unsigned int    m_ZDepth;
+  unsigned int    m_TCoord;
+  unsigned int    m_ZCoord;
   unsigned int    m_Channel;
   unsigned int    m_CTile;
   unsigned int    m_RTile;
-  unsigned int    m_YOffset;
-  unsigned int    m_XOffset;
-  bool            m_TimeBased;
+  unsigned int    m_YCoord;
+  unsigned int    m_XCoord;
 
-  bool operator<( const GoFigureFileInfoHelper& other ) const
-    {
-    if( this->m_Channel < other.m_Channel )
-      {
-      return true;
-      }
-    if( this->m_Channel == other.m_Channel )
-      {
-      if( m_TimeBased )
-        {
-        if( this->m_TimePoint < other.m_TimePoint )
-          {
-          return true;
-          }
-        if( this->m_TimePoint == other.m_TimePoint )
-          {
-          if( this->m_ZDepth < other.m_ZDepth )
-            {
-            return true;
-            }
-          }
-        }
-      else
-        {
-        if( this->m_ZDepth < other.m_ZDepth )
-          {
-          return true;
-          }
-        if( this->m_ZDepth == other.m_ZDepth )
-          {
-          if( this->m_TimePoint < other.m_TimePoint )
-            {
-            return true;
-            }
-          }
-        }
-      }
-    return false;
-    }
+  GoFigureFileInfoHelper() : m_Filename( "" ), m_TCoord( 0 ),
+    m_ZCoord( 0 ), m_Channel( 0 ), m_CTile( 0 ), m_RTile( 0 ),
+    m_YCoord( 0 ), m_XCoord( 0 )
+    {}
 
-  GoFigureFileInfoHelper()
-    {
-    m_Filename  = "";
-    m_TimePoint = 0;
-    m_ZDepth    = 0;
-    m_Channel   = 0;
-    m_CTile     = 0;
-    m_RTile     = 0;
-    m_YOffset   = 0;
-    m_XOffset   = 0;
-    m_TimeBased = true;
-    }
+  ~GoFigureFileInfoHelper()
+    {}
 };
 
 typedef std::vector< GoFigureFileInfoHelper > FileListType;
+
+struct GoFigureFileInfoHelperTimeBasedCompare
+{
+  bool operator() ( const GoFigureFileInfoHelper& iA, const GoFigureFileInfoHelper& other )
+    {
+    if( iA.m_Channel < other.m_Channel )
+      {
+      return true;
+      }
+    if( iA.m_Channel == other.m_Channel )
+      {
+        if( iA.m_TCoord < other.m_TCoord )
+          {
+          return true;
+          }
+        if( iA.m_TCoord == other.m_TCoord )
+          {
+          if( iA.m_ZCoord < other.m_ZCoord )
+            {
+            return true;
+            }
+          }
+      }
+    return false;
+    }
+};
+
+
+struct GoFigureFileInfoHelperZCoordBasedCompare
+{
+  bool operator() ( const GoFigureFileInfoHelper& iA, const GoFigureFileInfoHelper& other )
+    {
+    if( iA.m_Channel < other.m_Channel )
+      {
+      return true;
+      }
+    if( iA.m_Channel == other.m_Channel )
+      {
+        if( iA.m_ZCoord < other.m_ZCoord )
+          {
+          return true;
+          }
+        if( iA.m_ZCoord == other.m_ZCoord )
+          {
+          if( iA.m_TCoord < other.m_TCoord )
+            {
+            return true;
+            }
+          }
+      }
+    return false;
+    }
+};
+
 
 #endif

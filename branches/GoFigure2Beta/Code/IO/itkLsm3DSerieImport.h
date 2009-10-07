@@ -73,7 +73,7 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
 
-  void SetFileName( char * name );
+  void SetFileName( std::string name );
 
   FileListType* GetOutput();
 
@@ -82,12 +82,12 @@ public:
   void SetGroupId( int Uservalue );
 
 protected:
-  void Glob();
-
-  void CreateOutput();
-
-  Lsm3DSerieImport() { this->m_FileName = NULL; this->m_GroupId = 0; }
+  Lsm3DSerieImport();
   ~Lsm3DSerieImport();
+
+  void Glob();
+  void CreateOutput();
+  
 
 private:
   Lsm3DSerieImport (const Self&); //purposely not implemented
@@ -98,7 +98,7 @@ private:
   int              m_GroupId;
   StringVectorType m_FileNameS;
   FileListType     m_OutputFileList;
-  char*            m_FileName;
+  std::string      m_FileName;
 
 };
 

@@ -6,7 +6,7 @@
 #include "QGoPlugin.h"
 #include "QGoImageView3D.h"
 
-#include "itkMultiFileReader.h"
+#include "QGoThreadedMultiFileReader.h"
 
 #include "GoFigureFileInfoHelper.h"
 #include "SnapshotHelper.h"
@@ -80,15 +80,22 @@ class QGoTabImageView4D : public QGoTabElementBase
     void ChangeLookupTable();
     void ShowScalarBar( const bool& );
 
+  protected slots:
+    void ReceiveXYZImage();
+    void ReceiveXYTImage();
+
   protected:
     QSplitter*            m_Splitter;
     QGoImageView3D*       m_XYZImageView;
     QGoImageView3D*       m_XYTImageView;
     vtkImageData*         m_XYZImage;
     vtkImageData*         m_XYTImage;
-    itk::MultiFileReader* m_MultiFileReader;
-    FileListType          m_FileList;
     QColor                m_BackgroundColor;
+    int                   m_TimePoint;
+    int                   m_ZDepth;
+
+    QGoThreadedMultiFileReader* m_ThreadedReader1;
+    QGoThreadedMultiFileReader* m_ThreadedReader2;
 
     std::vector< QAction* > m_ViewActions;
     QDockWidget* m_DockWidget;

@@ -53,6 +53,10 @@
 namespace itk
 {
 
+void MultiFileReader::SetTimeBased( const bool& iBool )
+{
+  m_TimeBased = iBool;
+}
 //-----------------------------------------------------------------------------
 void MultiFileReader::SetTimePoint( const int& UserTimePoint )
 {
@@ -118,13 +122,13 @@ void MultiFileReader::SetInput( FileListType* UserFileList )
 
   if( this->m_TimeBased )
     {
-    unsigned int CurrentTimePoint = (*It).m_TimePoint;
+    unsigned int CurrentTimePoint = (*It).m_TCoord;
     this->m_NumberOfTimePoints = 1;
     while( It != m_FileList->end())
       {
-      if( (*It).m_TimePoint > CurrentTimePoint )
+      if( (*It).m_TCoord > CurrentTimePoint )
         {
-        CurrentTimePoint = (*It).m_TimePoint;
+        CurrentTimePoint = (*It).m_TCoord;
         this->m_NumberOfTimePoints++;
         }
       It++;
@@ -132,13 +136,13 @@ void MultiFileReader::SetInput( FileListType* UserFileList )
     }
   else
     {
-    unsigned int CurrentZSlice = (*It).m_ZDepth;
+    unsigned int CurrentZSlice = (*It).m_ZCoord;
     this->m_NumberOfZSlices = 1;
     while( It != m_FileList->end() )
       {
-      if( (*It).m_ZDepth > CurrentZSlice )
+      if( (*It).m_ZCoord > CurrentZSlice )
         {
-        CurrentZSlice = (*It).m_ZDepth;
+        CurrentZSlice = (*It).m_ZCoord;
         this->m_NumberOfZSlices++;
         }
       It++;
@@ -470,22 +474,22 @@ void MultiFileReader::ComputeUpdateFileList()
     {
     // extract files of interest
     FileListType::iterator startIt;
-    FileListType::iterator endIt;
+    FileListType::iterator endIt = m_FileList->end();
     FileListType::iterator It = m_FileList->begin();
 
     // get the first file
     if( m_TimeBased )
       {
-      while( It != m_FileList->end()
-            && (int)((*It).m_TimePoint) < this->m_UpdateTimePoint )
+      while( It != endIt
+            && static_cast< int >( (*It).m_TCoord ) < this->m_UpdateTimePoint )
         {
         It++;
         }
       }
     else
       {
-      while( It != m_FileList->end()
-            && (int)((*It).m_ZDepth) < this->m_UpdateZSlice )
+      while( It != endIt
+            && static_cast< int >( (*It).m_ZCoord ) < this->m_UpdateZSlice )
         {
         It++;
         }
@@ -502,8 +506,8 @@ void MultiFileReader::ComputeUpdateFileList()
       {
       if( m_TimeBased )
         {
-        while( It != m_FileList->end()
-               && (int)((*It).m_TimePoint) == this->m_UpdateTimePoint )
+        while( It != endIt
+               && ( static_cast< int >( (*It).m_TCoord ) == this->m_UpdateTimePoint ) )
           {
           It++;
           counter++;
@@ -511,8 +515,8 @@ void MultiFileReader::ComputeUpdateFileList()
         }
       else
         {
-        while( It != m_FileList->end()
-               && (int)((*It).m_ZDepth) == this->m_UpdateZSlice )
+        while( It != endIt
+               && static_cast< int >( (*It).m_ZCoord ) == this->m_UpdateZSlice )
           {
           It++;
           counter++;
@@ -532,7 +536,7 @@ void MultiFileReader::ComputeUpdateFileList()
     }
   else
     {
-    // TBD (ex LSM 4D)
+    /// \todo to be defined (ex LSM 4D)
     }
 }
 //-----------------------------------------------------------------------------

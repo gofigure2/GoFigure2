@@ -45,53 +45,50 @@ namespace itk
 
 //--------------------------------------------------------------------------------
 MegaCaptureImport::
-MegaCaptureImport( )
+MegaCaptureImport( ) : IsProgressBarSet( false ), m_TimeBased( true )
 {
-  this->m_FileName = NULL;
-  this->IsProgressBarSet = false;
 }
 //-----------------------------------------------------------------------------
 
 
-//--------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 MegaCaptureImport::
 ~MegaCaptureImport()
 {
-  if( this->m_FileName )
-    {
-    delete [] this->m_FileName;
-    this->m_FileName = NULL;
-    }
 }
 //-----------------------------------------------------------------------------
 
+//-----------------------------------------------------------------------------
+void MegaCaptureImport::SetTimeBased( const bool& iBool )
+{
+  m_TimeBased = iBool;
+}
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
+void MegaCaptureImport::SetProgressBar( QProgressBar* PB )
+{
+  if( PB )
+    {
+    m_ProgressBar = PB;
+    IsProgressBarSet = true;
+    }
+}
 
 //-----------------------------------------------------------------------------
 void
 MegaCaptureImport::
-SetFileName( char * name )
+SetFileName( std::string name )
 {
-  if ( this->m_FileName && name && (!strcmp(this->m_FileName,name)))
+  if (!m_FileName.empty()&& !name.empty()&& m_FileName.compare(name)!= 0)
     {
     return;
     }
-  if (!name && !this->m_FileName)
+  if (name.empty() && m_FileName.empty())
     {
     return;
     }
-  if (this->m_FileName)
-    {
-    delete [] this->m_FileName;
-    }
-  if (name)
-    {
-    this->m_FileName = new char[strlen(name) + 1];
-    strcpy(this->m_FileName, name);
-    }
-  else
-    {
-    this->m_FileName = NULL;
-    }
+  m_FileName = name;
   this->Modified();
 }
 //-----------------------------------------------------------------------------
@@ -106,7 +103,7 @@ CreateOutput()
     this->m_ProgressBar->setValue( 60 );
     }
 
-  float counter = 0;
+  unsigned int counter = 0;
   std::vector<std::string>::iterator nit;
   for( nit = m_FileNameS.begin();
        nit != m_FileNameS.end();
@@ -121,7 +118,7 @@ CreateOutput()
       this->m_numGroupLength.rbegin();
     IntVectorType::reverse_iterator numGroupStartItr  =
       this->m_numGroupStart.rbegin();
-    unsigned int* NumericalValues = new unsigned int[6];
+    std::vector< unsigned int > NumericalValues( 6, 0 );
     int megaCaptureNumericalGroupCounter = 0;
     while( numGroupLengthItr != m_numGroupLength.rend() &&
            numGroupStartItr != m_numGroupStart.rend()   &&
@@ -139,19 +136,19 @@ CreateOutput()
 
       } // end for each numerical group
 
-    tempInfo.m_CTile     = NumericalValues[0];
-    tempInfo.m_RTile     = NumericalValues[1];
-    tempInfo.m_YOffset   = NumericalValues[2];
-    tempInfo.m_XOffset   = NumericalValues[3];
-    tempInfo.m_TimePoint = NumericalValues[4];
-    tempInfo.m_ZDepth    = NumericalValues[5];
+    tempInfo.m_CTile  = NumericalValues[0];
+    tempInfo.m_RTile  = NumericalValues[1];
+    tempInfo.m_YCoord = NumericalValues[2];
+    tempInfo.m_XCoord = NumericalValues[3];
+    tempInfo.m_TCoord = NumericalValues[4];
+    tempInfo.m_ZCoord = NumericalValues[5];
 
     m_OutputFileList.push_back( tempInfo );
-    delete NumericalValues; /** \todo check if delete or delete[]*/
 
     if( this->IsProgressBarSet )
       {
-      int value = 60 + 30 * ( (float)(counter) / (float)(m_FileNameS.size()) );
+      int value = 60 + 30 * ( static_cast< float >(counter) /
+          static_cast< float >( m_FileNameS.size() ) );
       this->m_ProgressBar->setValue( value );
       }
 
@@ -160,7 +157,16 @@ CreateOutput()
 
   m_FileNameS.clear();
 
-  std::sort( m_OutputFileList.begin(), m_OutputFileList.end() );
+  if( m_TimeBased )
+    {
+    GoFigureFileInfoHelperTimeBasedCompare comparison;
+    std::sort( m_OutputFileList.begin(), m_OutputFileList.end(), comparison );
+    }
+  else
+    {
+    GoFigureFileInfoHelperZCoordBasedCompare comparison;
+    std::sort( m_OutputFileList.begin(), m_OutputFileList.end(), comparison );
+    }
 
   if( this->IsProgressBarSet )
     {
@@ -174,8 +180,8 @@ CreateOutput()
     itkDebugMacro(
         << (*myIt).m_Filename
         << " " << (*myIt).m_Channel
-        << " " << (*myIt).m_TimePoint
-        << " " << (*myIt).m_ZDepth );
+        << " " << (*myIt).m_TCoord
+        << " " << (*myIt).m_ZCoord );
       myIt++;
     }
 #endif
@@ -259,6 +265,8 @@ Glob()
     if ((*sit) >= '0' && (*sit) <= '9')
       {
       sIndex = static_cast< int >( sit - fileName.begin() );
+      //numGroupStart contains the index of all the starting numbers of
+      //the numerical group:
       m_numGroupStart.push_back( sIndex );
 
       // Loop to one past the end of the group of numbers.

@@ -77,10 +77,10 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
 
-  void SetFileName( char* name );
+  void SetFileName( std::string name );
 
-  void SetProgressBar( QProgressBar* PB )
-  { this->m_ProgressBar = PB; this->IsProgressBarSet = true; }
+  void SetTimeBased( const bool& iBool );
+  void SetProgressBar( QProgressBar* PB );
 
   void Glob();
 
@@ -102,9 +102,10 @@ private:
   IntVectorType    m_numGroupLength;
   StringVectorType m_FileNameS;
   FileListType     m_OutputFileList;
-  char*            m_FileName;
+  std::string      m_FileName;
   QProgressBar*    m_ProgressBar;
   bool             IsProgressBarSet;
+  bool             m_TimeBased;
 
 };
 

@@ -93,6 +93,8 @@ public:
 
   itkTypeMacro( MultiFileReader, LightProcessObject );
 
+  void SetTimeBased( const bool& iBool );
+
   /** \brief set the time point you want to extract and load in memory the
   corresponding XYZ volume. */
   void SetTimePoint( const int& UserTimePoint );
