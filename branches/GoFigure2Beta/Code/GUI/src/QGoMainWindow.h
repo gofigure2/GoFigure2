@@ -134,6 +134,7 @@ protected:
   void UpdateRecentFileActions( QStringList list, QMenu *menu,
     QAction *recentFileActions[MaxRecentFiles] );
 
+  void CreateNewTabFor3DwtImage( vtkLSMReader* iReader, const QString& iFile );
   void CreateNewTabFor3DImage( vtkImageData*, const QString& );
   void CreateNewTabFor2DImage( vtkImageData*, const QString& );
 
@@ -152,6 +153,7 @@ protected:
   QStringList       m_PluginFileNames;
   QGoTabManager*    m_TabManager;
   QToolBar*         m_ViewToolBar;
+  vtkLSMReader*     m_LSMReader;
 
   /** \brief */
   void ReadSettings();

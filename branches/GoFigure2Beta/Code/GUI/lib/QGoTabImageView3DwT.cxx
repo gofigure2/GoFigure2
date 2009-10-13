@@ -23,6 +23,57 @@ QGoTabImageView3DwT::QGoTabImageView3DwT( QWidget* parent ) :
 
   m_MultiFileReader = itk::MultiFileReader::New();
 
+  m_DockWidget = new QDockWidget( tr( "Slice" ) );
+  m_DockWidget->resize( 120, 300 );
+
+  QWidget* temp = new QWidget();
+  temp->resize( 100, 150 );
+
+  QGridLayout* layout = new QGridLayout( temp );
+  layout->setContentsMargins(3, -1, 3, -1);
+
+  QLabel* SliceX = new QLabel( "X Slice" );
+  layout->addWidget( SliceX, 0, 0 );
+  m_XSliceSpinBox = new QSpinBox();
+  layout->addWidget( m_XSliceSpinBox, 0, 1 );
+
+  QObject::connect( m_XSliceSpinBox, SIGNAL( valueChanged( int ) ),
+    this, SLOT( SetSliceViewYZ( int ) ) );
+
+  QLabel* SliceY = new QLabel( "Y Slice" );
+  layout->addWidget( SliceY, 1, 0 );
+  m_YSliceSpinBox = new QSpinBox( );
+  layout->addWidget( m_YSliceSpinBox, 1, 1 );
+
+  QObject::connect( m_YSliceSpinBox, SIGNAL( valueChanged( int ) ),
+    this, SLOT( SetSliceViewXZ( int ) ) );
+
+  QLabel* SliceZ = new QLabel( "Z Slice" );
+  layout->addWidget( SliceZ, 2, 0 );
+  m_ZSliceSpinBox = new QSpinBox( );
+  layout->addWidget( m_ZSliceSpinBox, 2, 1 );
+
+  QObject::connect( m_ZSliceSpinBox, SIGNAL( valueChanged( int ) ),
+    this, SLOT( SetSliceViewXY( int ) ) );
+
+  QLabel* SliceT = new QLabel( "T Time" );
+  layout->addWidget( SliceT, 3, 0 );
+  m_TSliceSpinBox = new QSpinBox( );
+  layout->addWidget( m_TSliceSpinBox, 3, 1 );
+
+  QObject::connect( m_TSliceSpinBox, SIGNAL( valueChanged( int ) ),
+    this, SLOT( SetTimePoint( int ) ) );
+
+  m_DockWidget->layout()->addWidget( temp );
+
+  CreateAllViewActions();
+  ReadSettings();
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoTabImageView3DwT::CreateAllViewActions()
+{
   QActionGroup* group = new QActionGroup( this );
 
   QAction* QuadViewAction = new QAction( tr("Quad-View"), this );
@@ -81,6 +132,10 @@ QGoTabImageView3DwT::QGoTabImageView3DwT( QWidget* parent ) :
 
   m_ViewActions.push_back( separator );
 
+  QAction* toggleviewaction = m_DockWidget->toggleViewAction();
+  toggleviewaction->setText( tr( "Slide Location" ) );
+  m_ViewActions.push_back( toggleviewaction );
+
   QAction* LookupTableAction = new QAction( tr( "Lookup Table" ), this );
   LookupTableAction->setStatusTip( tr(" Change the associated lookup table" ) );
 
@@ -102,51 +157,6 @@ QGoTabImageView3DwT::QGoTabImageView3DwT( QWidget* parent ) :
 
   QObject::connect( BackgroundColorAction, SIGNAL( triggered() ),
     this, SLOT( ChangeBackgroundColor() ) );
-
-  m_DockWidget = new QDockWidget( tr( "Slice" ) );
-  m_DockWidget->resize( 120, 300 );
-
-  QWidget* temp = new QWidget();
-  temp->resize( 100, 150 );
-
-  QGridLayout* layout = new QGridLayout( temp );
-  layout->setContentsMargins(3, -1, 3, -1);
-
-  QLabel* SliceX = new QLabel( "X Slice" );
-  layout->addWidget( SliceX, 0, 0 );
-  m_XSliceSpinBox = new QSpinBox();
-  layout->addWidget( m_XSliceSpinBox, 0, 1 );
-
-  QObject::connect( m_XSliceSpinBox, SIGNAL( valueChanged( int ) ),
-    this, SLOT( SetSliceViewYZ( int ) ) );
-
-  QLabel* SliceY = new QLabel( "Y Slice" );
-  layout->addWidget( SliceY, 1, 0 );
-  m_YSliceSpinBox = new QSpinBox( );
-  layout->addWidget( m_YSliceSpinBox, 1, 1 );
-
-  QObject::connect( m_YSliceSpinBox, SIGNAL( valueChanged( int ) ),
-    this, SLOT( SetSliceViewXZ( int ) ) );
-
-  QLabel* SliceZ = new QLabel( "Z Slice" );
-  layout->addWidget( SliceZ, 2, 0 );
-  m_ZSliceSpinBox = new QSpinBox( );
-  layout->addWidget( m_ZSliceSpinBox, 2, 1 );
-
-  QObject::connect( m_ZSliceSpinBox, SIGNAL( valueChanged( int ) ),
-    this, SLOT( SetSliceViewXY( int ) ) );
-
-  QLabel* SliceT = new QLabel( "T Time" );
-  layout->addWidget( SliceT, 3, 0 );
-  m_TSliceSpinBox = new QSpinBox( );
-  layout->addWidget( m_TSliceSpinBox, 3, 1 );
-
-  QObject::connect( m_TSliceSpinBox, SIGNAL( valueChanged( int ) ),
-    this, SLOT( SetTimePoint( int ) ) );
-
-  m_DockWidget->layout()->addWidget( temp );
-
-  ReadSettings();
 }
 //--------------------------------------------------------------------------
 

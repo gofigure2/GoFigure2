@@ -88,6 +88,7 @@ protected:
 
   void GetBackgroundColorFromImageViewer( );
   void SetBackgroundColorToImageViewer( );
+  void CreateAllViewActions();
 };
 
 #endif

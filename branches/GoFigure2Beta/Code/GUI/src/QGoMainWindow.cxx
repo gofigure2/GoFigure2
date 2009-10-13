@@ -42,6 +42,7 @@
 #include "QGoTabElementBase.h"
 #include "QGoTabImageView2D.h"
 #include "QGoTabImageView3D.h"
+#include "QGoTabImageView3DwT.h"
 
 // Plugin stuff
 #include "QGoPluginHelper.h"
@@ -97,6 +98,8 @@ QGoMainWindow::QGoMainWindow( )
   this->m_ViewToolBar = new QToolBar( tr("View"), this );
   this->addToolBar( Qt::TopToolBarArea, this->m_ViewToolBar );
 
+  m_LSMReader = vtkLSMReader::New();
+
   m_Bar.hide();
   QString temp;
   SetCurrentSingleFile( temp );
@@ -110,6 +113,7 @@ QGoMainWindow::QGoMainWindow( )
 // *************************************************************************
 QGoMainWindow::~QGoMainWindow()
 {
+  m_LSMReader->Delete();
   this->WriteSettings();
 }
 // *************************************************************************
@@ -393,13 +397,12 @@ void QGoMainWindow::SetSingleFileName( const QString& iFile )
 //--------------------------------------------------------------------------
 void QGoMainWindow::OpenLSMImage( const QString& iFile, const int& iTimePoint )
 {
-  vtkLSMReader* reader = vtkLSMReader::New();
-  reader->SetFileName( iFile.toAscii().data() );
-  reader->SetUpdateTimePoint( iTimePoint );
-  reader->Update();
+  m_LSMReader->SetFileName( iFile.toAscii().data() );
+  m_LSMReader->SetUpdateTimePoint( iTimePoint );
+  m_LSMReader->Update();
 
   int dim[5];
-  reader->GetDimensions( dim );
+  m_LSMReader->GetDimensions( dim );
 
   int ImageDimensionality = 4;
 //   bool Color = ( dim[4] > 1 );
@@ -424,28 +427,56 @@ void QGoMainWindow::OpenLSMImage( const QString& iFile, const int& iTimePoint )
     {
     case 2:
       {
-      CreateNewTabFor2DImage( reader->GetOutput(), iFile );
+      CreateNewTabFor2DImage( m_LSMReader->GetOutput(), iFile );
       break;
       }
     case 3:
       {
-      CreateNewTabFor3DImage( reader->GetOutput(), iFile );
+      CreateNewTabFor3DImage( m_LSMReader->GetOutput(), iFile );
       break;
       }
     case 4:
       {
-//       QGoTabImageView3Dt* w3dt = new QGoTabImageView3Dt;
-//       w3dt->SetImage( reader->GetOutput() );
-//       w3dt->SetTimePoint( iTimePoint );
-//       w3dt->SetLSMReader( reader );
-//       w3dt->Update();
+      CreateNewTabFor3DwtImage( m_LSMReader, iFile );
       break;
       }
     }
-
-  reader->Delete();
 }
 //--------------------------------------------------------------------------------
+
+void QGoMainWindow::CreateNewTabFor3DwtImage( vtkLSMReader* iReader, const QString& iFile )
+{
+  QGoTabImageView3DwT* w3t = new QGoTabImageView3DwT;
+  w3t->SetLSMReader( iReader, 0 );
+  w3t->Update();
+
+  for( std::list< QAction* >::iterator
+    list_it = m_TabDimPluginActionMap[w3t->GetTabDimensionType()].begin();
+    list_it != m_TabDimPluginActionMap[w3t->GetTabDimensionType()].end();
+    list_it++
+    )
+    {
+    (*list_it)->setEnabled( true );
+    }
+
+  w3t->SetPluginActions( m_TabDimPluginActionMap[w3t->GetTabDimensionType()] );
+
+  std::list< QDockWidget* > dock_list = w3t->DockWidget();
+
+  for( std::list< QDockWidget* >::iterator
+    dck_it = dock_list.begin();
+    dck_it != dock_list.end();
+    ++dck_it )
+    {
+    this->addDockWidget( Qt::LeftDockWidgetArea, (*dck_it) );//->show();
+    }
+
+  int idx = this->CentralTabWidget->addTab( w3t, iFile );
+  this->menuView->setEnabled( true );
+  this->menuFiltering->setEnabled( true );
+  this->menuSegmentation->setEnabled( true );
+  this->CentralTabWidget->setCurrentIndex( idx );
+}
 
 void QGoMainWindow::CreateNewTabFor3DImage( vtkImageData* iInput, const QString& iFile )
 {
