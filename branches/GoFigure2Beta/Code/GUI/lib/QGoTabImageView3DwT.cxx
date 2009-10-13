@@ -288,7 +288,7 @@ void QGoTabImageView3DwT::SetMultiFiles( FileListType& iFileList,
       {
       m_MultiFileReader->SetDimensionality( 3 );
       m_MultiFileReader->SetFileType( LSM );
-//       m_MultiFileReader->SetChannel( 0 );
+      m_MultiFileReader->SetChannel( 0 );
       break;
       }
     case MHA:
@@ -309,7 +309,8 @@ void QGoTabImageView3DwT::SetMultiFiles( FileListType& iFileList,
 //     m_MultiFileReader->SetDimensionality( 2 );
 //     m_MultiFileReader->SetFileType( JPEG );
 //     }
-  m_MultiFileReader->SetMultiChannelImagesON();
+  m_MultiFileReader->SetMultiChannelImagesOFF();
+  m_MultiFileReader->SetTimeBased( true );
   m_MultiFileReader->SetTimePoint( m_TimePoint );
   m_MultiFileReader->Update();
 

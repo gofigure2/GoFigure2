@@ -52,6 +52,9 @@
 #include "itkQtAdaptor.h"
 #include "vtkLSMReader.h"
 
+#include "GoFigureFileInfoHelper.h"
+#include "itkMultiFileReader.h"
+
 // ALEX: have to make a conditional flag to check if
 // vtk has been compiled with the good drivers
 // #ifdef VTK_USE_MYSQL
@@ -134,6 +137,8 @@ protected:
   void UpdateRecentFileActions( QStringList list, QMenu *menu,
     QAction *recentFileActions[MaxRecentFiles] );
 
+  void CreateNewTabFor3DwtImage( FileListType& iFileList,
+    const FILETYPE& iFileType, const int& iTimePoint );
   void CreateNewTabFor3DwtImage( vtkLSMReader* iReader, const QString& iFile );
   void CreateNewTabFor3DImage( vtkImageData*, const QString& );
   void CreateNewTabFor2DImage( vtkImageData*, const QString& );

@@ -88,7 +88,21 @@ void MultiFileReader::SetZDepth( const int& iZ )
 //-----------------------------------------------------------------------------
 void MultiFileReader::SetChannel( const int& UserChannel )
 {
-  this->m_UpdateChannel = UserChannel;
+  if( UserChannel < m_NumberOfChannels )
+    {
+    if( UserChannel > 0 )
+      {
+      this->m_UpdateChannel = UserChannel;
+      }
+    else
+      {
+      this->m_UpdateChannel = 0;
+      }
+    }
+  else
+    {
+    this->m_UpdateChannel = m_NumberOfChannels - 1;
+    }
 }
 //-----------------------------------------------------------------------------
 
@@ -98,7 +112,7 @@ void MultiFileReader::UpdateChannel()
 {
   if( this->m_UpdateChannel > m_NumberOfChannels )
     {
-    this->m_UpdateChannel = m_NumberOfChannels;
+    this->m_UpdateChannel = m_NumberOfChannels - 1;
     }
   if( this->m_UpdateChannel < 0 )
     {
@@ -171,105 +185,50 @@ void MultiFileReader::PrintSelf( std::ostream& os, Indent indent) const
 }
 //-----------------------------------------------------------------------------
 
-
-//-----------------------------------------------------------------------------
-void MultiFileReader::Update( void )
+void MultiFileReader::BuildVolumeFrom2DImages()
 {
-  if( this->m_OutputImage )
-    {
-    this->m_OutputImage->Delete();
-    }
+  // prepare the final output
+  vtkImageAppend* volumeBuilder = vtkImageAppend::New();
+  volumeBuilder->SetAppendAxis( 2 ); //append along Z
 
-  if( this->IsProgressBarSet )
+  // read the files and feed the volume builder
+  // NOTE ALEX: sould convert to a vtkStringArray and use SetFileNames
+  // note the S at  the end of the method name
+  FileListType::iterator endIt = m_UpdateFileList.end();
+  FileListType::iterator It    = m_UpdateFileList.begin();
+  int counter = 0;
+  while( It != endIt )
     {
-    this->m_ProgressBar->show();
-    this->m_ProgressBar->setValue( 1 );
-    }
-
-  this->ComputeUpdateFileList();
-  if( m_UpdateFileList.empty() )
-    {
-    std::cout <<"Problem: m_UpdateFileList is empty :-/ (after ComputeUpdateFileList)" <<std::endl;
-    return;
-    }
-  if( this->IsProgressBarSet )
-    {
-    this->m_ProgressBar->setValue( 5 );
-    }
-
-  FileListType::iterator startIt;
-  FileListType::iterator endIt;
-  FileListType::iterator It;
-
-  if( this->m_Dimensionality == 2 )
-    {
-    // prepare the final output
-    vtkImageAppend* volumeBuilder = vtkImageAppend::New();
-    volumeBuilder->SetAppendAxis( 2 ); //append along Z
-
-    // read the files and feed the volume builder
-    // NOTE ALEX: sould convert to a vtkStringArray and use SetFileNames
-    // note the S at  the end of the method name
-    endIt = m_UpdateFileList.end();
-    It    = m_UpdateFileList.begin();
-    int counter = 0;
-    while( It != endIt )
-      {
-      switch( this->m_FileType )
+    switch( this->m_FileType )
         {
         case JPEG:
           {
-          vtkJPEGReader* reader = vtkJPEGReader::New();
-          reader->SetFileName( (*It).m_Filename.c_str() );
-          reader->SetFileDimensionality( this->m_Dimensionality );
-          reader->Update();
-
-          volumeBuilder->SetInput( counter, reader->GetOutput( ) );
-          reader->Delete();
+          AddToVolumeBuilder< vtkJPEGReader >( counter, (*It).m_Filename.c_str(),
+            m_Dimensionality, volumeBuilder );
           break;
           }
         case BMP:
           {
-          vtkBMPReader* reader = vtkBMPReader::New();
-          reader->SetFileName( (*It).m_Filename.c_str() );
-          reader->SetFileDimensionality( this->m_Dimensionality );
-          reader->Update();
-
-          volumeBuilder->SetInput( counter, reader->GetOutput( ) );
-          reader->Delete();
+          AddToVolumeBuilder< vtkBMPReader >( counter, (*It).m_Filename.c_str(),
+            m_Dimensionality, volumeBuilder );
           break;
           }
         case PNG:
           {
-          vtkPNGReader* reader = vtkPNGReader::New();
-          reader->SetFileName( (*It).m_Filename.c_str() );
-          reader->SetFileDimensionality( this->m_Dimensionality );
-          reader->Update();
-
-          volumeBuilder->SetInput( counter, reader->GetOutput( ) );
-          reader->Delete();
+          AddToVolumeBuilder< vtkPNGReader >( counter, (*It).m_Filename.c_str(),
+            m_Dimensionality, volumeBuilder );
           break;
           }
         case TIFF:
           {
-          vtkTIFFReader* reader = vtkTIFFReader::New();
-          reader->SetFileName( (*It).m_Filename.c_str() );
-          reader->SetFileDimensionality( this->m_Dimensionality );
-          reader->Update();
-
-          volumeBuilder->SetInput( counter, reader->GetOutput( ) );
-          reader->Delete();
+          AddToVolumeBuilder< vtkTIFFReader >( counter, (*It).m_Filename.c_str(),
+            m_Dimensionality, volumeBuilder );
           break;
           }
         case MHA:
           {
-          vtkMetaImageReader* reader = vtkMetaImageReader::New();
-          reader->SetFileName( (*It).m_Filename.c_str() );
-          reader->SetFileDimensionality( this->m_Dimensionality );
-          reader->Update();
-
-          volumeBuilder->SetInput( counter, reader->GetOutput( ) );
-          reader->Delete();
+          AddToVolumeBuilder< vtkMetaImageReader >( counter, (*It).m_Filename.c_str(),
+            m_Dimensionality, volumeBuilder );
           break;
           }
         case LSM:
@@ -287,7 +246,8 @@ void MultiFileReader::Update( void )
       if( this->IsProgressBarSet )
         {
         this->m_ProgressBar->setValue(
-          float( counter * 80 ) / float( m_UpdateFileList.size() ) );
+          static_cast< float >( counter * 80 ) /
+          static_cast< float >( m_UpdateFileList.size() ) );
         }
       It++;
       counter++;
@@ -314,12 +274,57 @@ void MultiFileReader::Update( void )
       m_OutputImage->ShallowCopy( extractComp->GetOutput() );
       extractComp->Delete();
       }
+}
 
+//-----------------------------------------------------------------------------
+void MultiFileReader::Update( void )
+{
+  if( this->m_OutputImage )
+    {
+    this->m_OutputImage->Delete();
+    this->m_OutputImage = 0;
+    }
+
+  if( this->IsProgressBarSet )
+    {
+    if( m_ProgressBar )
+      {
+      this->m_ProgressBar->show();
+      this->m_ProgressBar->setValue( 1 );
+      }
+    }
+
+  this->ComputeUpdateFileList();
+  if( m_UpdateFileList.empty() )
+    {
+    std::cout <<"Problem: m_UpdateFileList is empty :-/ (after ComputeUpdateFileList)" <<std::endl;
+    return;
+    }
+  if( this->IsProgressBarSet )
+    {
+    this->m_ProgressBar->setValue( 5 );
+    }
+
+  FileListType::iterator startIt;
+  FileListType::iterator endIt;
+  FileListType::iterator It;
+
+  if( this->m_Dimensionality == 2 )
+    {
+    BuildVolumeFrom2DImages();
     } // end of dimensionality == 2
 
   if( this->m_Dimensionality == 3 )
     {
-    switch( this->m_FileType )
+    CreateVolumeFromOne3DImageFile();
+    }
+}
+//-----------------------------------------------------------------------------
+void MultiFileReader::CreateVolumeFromOne3DImageFile()
+{
+  FileListType::iterator It    = m_UpdateFileList.begin();
+
+  switch( this->m_FileType )
       {
       case JPEG: // fallthrough
       case BMP:  // falltrhough
@@ -328,29 +333,21 @@ void MultiFileReader::Update( void )
         break;
       case TIFF:
         {
-        vtkTIFFReader* reader = vtkTIFFReader::New();
-        reader->SetFileName( (*It).m_Filename.c_str() );
-        reader->SetFileDimensionality( this->m_Dimensionality );
-        reader->Update();
         m_OutputImage = vtkImageData::New();
-        m_OutputImage->ShallowCopy( reader->GetOutput() );
-        reader->Delete();
+        Copy3DImage< vtkTIFFReader >( m_OutputImage, (*It).m_Filename.c_str(),
+          this->m_Dimensionality );
         break;
         }
       case MHA:
         {
-        vtkMetaImageReader* reader = vtkMetaImageReader::New();
-        reader->SetFileName( (*It).m_Filename.c_str() );
-        reader->SetFileDimensionality( this->m_Dimensionality );
-        reader->Update();
         m_OutputImage = vtkImageData::New();
-        m_OutputImage->ShallowCopy( reader->GetOutput() );
-        reader->Delete();
+        Copy3DImage< vtkMetaImageReader >( m_OutputImage, (*It).m_Filename.c_str(),
+          this->m_Dimensionality );
         break;
         }
       case LSM:
         {
-        It = m_UpdateFileList.begin();
+        /// \note this is still the old way to proceed...
         if( this->m_AreImagesMultiChannel )
           {
           vtkImageData* myImage_ch1 = vtkImageData::New();
@@ -457,10 +454,7 @@ void MultiFileReader::Update( void )
         itkGenericExceptionMacro( << "unsupported type: " << this->m_FileType << "." );
         break;
       }
-    }
 }
-//-----------------------------------------------------------------------------
-
 //-----------------------------------------------------------------------------
 void MultiFileReader::ComputeUpdateFileList()
 {
@@ -591,6 +585,7 @@ MultiFileReader::MultiFileReader( )
   m_UpdateChannel    = -1;
   m_AreImagesMultiChannel = false;
   m_TimeBased = true;
+  m_ProgressBar = 0;
 }
 //-----------------------------------------------------------------------------
 

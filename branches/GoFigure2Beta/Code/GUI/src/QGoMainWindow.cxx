@@ -65,6 +65,8 @@
 // itk includes
 #include "itkImageFileReader.h"
 
+#include "itkLsm3DSerieImport.h"
+
 // vtk includes
 // #include "vtkImageAppendComponents.h"
 // #include "vtkMarchingCubes.h"
@@ -190,21 +192,44 @@ void QGoMainWindow::on_actionOpen_Multiple_Files_activated( )
   QString filename = QFileDialog::getOpenFileName(
     this,
     tr( "Select one Image from the Dataset" ),"",
-    tr( "Images (*.jpg *.jpeg *.lsm)" )
+    tr( "Images (*.mha *.lsm)" )
     );
 
-//   if( !filename.isEmpty( ) )
-//     {
-//     SetFileName( filename, true );
-//     }
+  if( !filename.isEmpty( ) )
+    {
+    if( QFile::exists( filename ) )
+      {
+      QString ext = QFileInfo( filename ).suffix();
+      if( ext.compare( "lsm", Qt::CaseInsensitive ) == 0 )
+        {
+        std::cout <<"Multifile LSM" <<std::endl;
+
+        itk::Lsm3DSerieImport::Pointer  importFileInfoList = itk::Lsm3DSerieImport::New();
+        importFileInfoList->SetFileName( filename.toStdString() );
+        importFileInfoList->SetGroupId( 1 );
+        importFileInfoList->Update();
+
+        std::cout <<"** " <<importFileInfoList->GetOutput()->size() <<std::endl;
+        CreateNewTabFor3DwtImage( *(importFileInfoList->GetOutput()), LSM, 0 );
+        }
+      else
+        {
+        if( ext.compare( "mha", Qt::CaseInsensitive ) == 0 )
+          {
+          std::cout <<"Multifile mha" <<std::endl;
+//           CreateNewTabFor3DwtImage( filelist, MHA, 0 );
+          }
+        }
+      }
+    }
 }
 
 
-//--------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 void QGoMainWindow::on_actionUse_DataBase_activated()
 {
 }
-//--------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 
 // *************************************************************************
 void QGoMainWindow::openFilesfromDB()
@@ -441,6 +466,43 @@ void QGoMainWindow::OpenLSMImage( const QString& iFile, const int& iTimePoint )
       break;
       }
     }
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoMainWindow::CreateNewTabFor3DwtImage( FileListType& iFileList,
+  const FILETYPE& iFileType, const int& iTimePoint )
+{
+  QGoTabImageView3DwT* w3t = new QGoTabImageView3DwT;
+  w3t->SetMultiFiles( iFileList, iFileType, 0 );
+  w3t->Update();
+
+  for( std::list< QAction* >::iterator
+    list_it = m_TabDimPluginActionMap[w3t->GetTabDimensionType()].begin();
+    list_it != m_TabDimPluginActionMap[w3t->GetTabDimensionType()].end();
+    list_it++
+    )
+    {
+    (*list_it)->setEnabled( true );
+    }
+
+  w3t->SetPluginActions( m_TabDimPluginActionMap[w3t->GetTabDimensionType()] );
+
+  std::list< QDockWidget* > dock_list = w3t->DockWidget();
+
+  for( std::list< QDockWidget* >::iterator
+    dck_it = dock_list.begin();
+    dck_it != dock_list.end();
+    ++dck_it )
+    {
+    this->addDockWidget( Qt::LeftDockWidgetArea, (*dck_it) );//->show();
+    }
+
+  int idx = this->CentralTabWidget->addTab( w3t, QString() );//iFile );
+  this->menuView->setEnabled( true );
+  this->menuFiltering->setEnabled( true );
+  this->menuSegmentation->setEnabled( true );
+  this->CentralTabWidget->setCurrentIndex( idx );
 }
 //--------------------------------------------------------------------------
 

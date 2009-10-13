@@ -170,6 +170,35 @@ private:
   QProgressBar*    m_ProgressBar;
   bool             IsProgressBarSet;
 
+  template< class TReader >
+  void AddToVolumeBuilder( const int& iId, const std::string& iFileName,
+    const int& iDim, vtkImageAppend* iBuilder )
+    {
+    typedef TReader ReaderType;
+    ReaderType* reader = ReaderType::New();
+    reader->SetFileName( iFileName.c_str() );
+    reader->SetFileDimensionality( iDim );
+    reader->Update();
+
+    iBuilder->SetInput( iId, reader->GetOutput( ) );
+    reader->Delete();
+    }
+
+  template< class TReader >
+  void Copy3DImage( vtkImageData* ioImage, const std::string& iFileName,
+    const int& iDim )
+    {
+    typedef TReader ReaderType;
+    ReaderType* reader = ReaderType::New();
+    reader->SetFileName( iFileName.c_str() );
+    reader->SetFileDimensionality( iDim );
+    reader->Update();
+    ioImage->ShallowCopy( reader->GetOutput() );
+    reader->Delete();
+    }
+
+  void BuildVolumeFrom2DImages();
+  void CreateVolumeFromOne3DImageFile();
 };
 
 } // end of namespace itk
