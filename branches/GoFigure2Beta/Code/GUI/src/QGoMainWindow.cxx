@@ -442,8 +442,9 @@ void QGoMainWindow::OpenLSMImage( const QString& iFile, const int& iTimePoint )
       }
     }
 }
-//--------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 
+//--------------------------------------------------------------------------
 void QGoMainWindow::CreateNewTabFor3DwtImage( vtkLSMReader* iReader, const QString& iFile )
 {
   QGoTabImageView3DwT* w3t = new QGoTabImageView3DwT;
@@ -477,7 +478,9 @@ void QGoMainWindow::CreateNewTabFor3DwtImage( vtkLSMReader* iReader, const QStri
   this->menuSegmentation->setEnabled( true );
   this->CentralTabWidget->setCurrentIndex( idx );
 }
+//--------------------------------------------------------------------------
 
+//--------------------------------------------------------------------------
 void QGoMainWindow::CreateNewTabFor3DImage( vtkImageData* iInput, const QString& iFile )
 {
   QGoTabImageView3D* w3 = new QGoTabImageView3D;
@@ -512,7 +515,9 @@ void QGoMainWindow::CreateNewTabFor3DImage( vtkImageData* iInput, const QString&
   this->menuSegmentation->setEnabled( true );
   this->CentralTabWidget->setCurrentIndex( idx );
 }
-//--------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
 void QGoMainWindow::CreateNewTabFor2DImage( vtkImageData* iInput, const QString& iFile )
 {
   QGoTabImageView2D* w2 = new QGoTabImageView2D;
@@ -538,9 +543,9 @@ void QGoMainWindow::CreateNewTabFor2DImage( vtkImageData* iInput, const QString&
   this->menuSegmentation->setEnabled( true );
   this->CentralTabWidget->setCurrentIndex( idx );
 }
-//--------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 
-//--------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 void QGoMainWindow::OpenImageWithITK( const QString& iFile )
 {
   typedef itk::ImageFileReader< ImageType > ImageReaderType;
