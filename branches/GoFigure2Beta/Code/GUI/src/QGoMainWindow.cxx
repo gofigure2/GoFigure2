@@ -415,7 +415,7 @@ void QGoMainWindow::OpenLSMImage( const QString& iFile, const int& iTimePoint )
       }
     else
       {
-      ImageDimensionality = 3;
+      ImageDimensionality = 4;
       }
     }
   else
@@ -485,7 +485,6 @@ void QGoMainWindow::CreateNewTabFor3DImage( vtkImageData* iInput, const QString&
 {
   QGoTabImageView3D* w3 = new QGoTabImageView3D;
   w3->SetImage( iInput );
-//       w3->SetLSMReader( reader );
   w3->Update();
 
   for( std::list< QAction* >::iterator
@@ -523,7 +522,6 @@ void QGoMainWindow::CreateNewTabFor2DImage( vtkImageData* iInput, const QString&
   QGoTabImageView2D* w2 = new QGoTabImageView2D;
   w2->SetImage( iInput );
   w2->setWindowTitle( iFile );
-//       w2->SetLSMReader( reader );
   w2->Update();
 
   for( std::list< QAction* >::iterator
@@ -598,13 +596,8 @@ void QGoMainWindow::OpenImageWithITK( const QString& iFile )
     }
   else
     {
-//     QGoTabImageView3D* w3 = new QGoTabImageView3D;
-//     w3->SetImage( VTKImage );
-//     w2->setWindowTitle( title );
-//     w3->Update();
     QGoTabImageView3D* w3 = new QGoTabImageView3D;
     w3->SetImage( VTKImage );
-//       w3->SetLSMReader( reader );
     w3->Update();
 
     for( std::list< QAction* >::iterator

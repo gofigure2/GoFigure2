@@ -25,7 +25,7 @@ public:
 
     void SetLSMReader( vtkLSMReader* iReader, const int& iTimePoint );
     void SetMultiFiles( FileListType& iFileList,
-      const int& iSerieType,
+      const FILETYPE& iFileType,
       const int& iTimePoint );
 
     virtual void Update();

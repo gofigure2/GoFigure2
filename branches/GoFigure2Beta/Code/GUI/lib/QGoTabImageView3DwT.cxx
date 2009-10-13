@@ -23,7 +23,7 @@ QGoTabImageView3DwT::QGoTabImageView3DwT( QWidget* parent ) :
 
   m_MultiFileReader = itk::MultiFileReader::New();
 
-  m_DockWidget = new QDockWidget( tr( "Slice" ) );
+  m_DockWidget = new QDockWidget( tr( "Slice" ), this );
   m_DockWidget->resize( 120, 300 );
 
   QWidget* temp = new QWidget();
@@ -65,6 +65,8 @@ QGoTabImageView3DwT::QGoTabImageView3DwT( QWidget* parent ) :
     this, SLOT( SetTimePoint( int ) ) );
 
   m_DockWidget->layout()->addWidget( temp );
+  m_DockWidget->setFeatures( QDockWidget::DockWidgetMovable |
+    QDockWidget::DockWidgetFloatable );
 
   CreateAllViewActions();
   ReadSettings();
@@ -132,9 +134,10 @@ void QGoTabImageView3DwT::CreateAllViewActions()
 
   m_ViewActions.push_back( separator );
 
-  QAction* toggleviewaction = m_DockWidget->toggleViewAction();
-  toggleviewaction->setText( tr( "Slide Location" ) );
-  m_ViewActions.push_back( toggleviewaction );
+//   QAction* toggleviewaction = m_DockWidget->toggleViewAction();
+//   toggleviewaction->setText( tr( "Slide Location" ) );
+//   toggleviewaction->setParent( this );
+//   m_ViewActions.push_back( toggleviewaction );
 
   QAction* LookupTableAction = new QAction( tr( "Lookup Table" ), this );
   LookupTableAction->setStatusTip( tr(" Change the associated lookup table" ) );
@@ -272,18 +275,34 @@ void QGoTabImageView3DwT::SetLSMReader( vtkLSMReader* iReader,
 
 //--------------------------------------------------------------------------
 void QGoTabImageView3DwT::SetMultiFiles( FileListType& iFileList,
-  const int& iSerieType,
+  const FILETYPE& iFileType,
   const int& iTimePoint )
 {
   m_TimePoint = iTimePoint;
   m_FileList = iFileList;
   m_MultiFileReader->SetInput( &m_FileList );
 
-  if( iSerieType == 0 ) //IsLSM
+  switch( iFileType ) //IsLSM
     {
-    m_MultiFileReader->SetDimensionality( 3 );
-    m_MultiFileReader->SetFileType( LSM );
-    m_MultiFileReader->SetChannel( 0 );
+    case LSM:
+      {
+      m_MultiFileReader->SetDimensionality( 3 );
+      m_MultiFileReader->SetFileType( LSM );
+//       m_MultiFileReader->SetChannel( 0 );
+      break;
+      }
+    case MHA:
+      {
+      m_MultiFileReader->SetDimensionality( 3 );
+      m_MultiFileReader->SetFileType( MHA );
+      break;
+      }
+    default:
+      {
+      std::cout <<"MegaCapture files MUST now use QGoTabImageView4D instead!!!"
+        <<std::endl;
+      return;
+      }
     }
 //   if( iSerieType == 1 ) //IsMegaCapture must now use the 4D!!!
 //     {

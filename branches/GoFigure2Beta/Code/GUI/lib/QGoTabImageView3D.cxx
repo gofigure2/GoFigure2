@@ -17,7 +17,7 @@ QGoTabImageView3D::QGoTabImageView3D( QWidget* parent ) :
 {
   setupUi( this );
 
-  m_DockWidget = new QDockWidget( tr( "Slice" ) );
+  m_DockWidget = new QDockWidget( tr( "Slice" ), this );
   m_DockWidget->resize( 120, 300 );
 
   QWidget* temp = new QWidget();
@@ -51,6 +51,8 @@ QGoTabImageView3D::QGoTabImageView3D( QWidget* parent ) :
     this, SLOT( SetSliceViewXY( int ) ) );
 
   m_DockWidget->layout()->addWidget( temp );
+  m_DockWidget->setFeatures( QDockWidget::DockWidgetMovable |
+    QDockWidget::DockWidgetFloatable );
 
   CreateAllViewActions();
 
@@ -119,9 +121,9 @@ void QGoTabImageView3D::CreateAllViewActions()
 
   m_ViewActions.push_back( separator );
 
-  QAction* toggleviewaction = m_DockWidget->toggleViewAction();
-  toggleviewaction->setText( tr( "Slide Location" ) );
-  m_ViewActions.push_back( toggleviewaction );
+//   QAction* toggleviewaction = m_DockWidget->toggleViewAction();
+//   toggleviewaction->setText( tr( "Slide Location" ) );
+//   m_ViewActions.push_back( toggleviewaction );
 
   QAction* LookupTableAction = new QAction( tr( "Lookup Table" ), this );
   LookupTableAction->setStatusTip( tr(" Change the associated lookup table" ) );
