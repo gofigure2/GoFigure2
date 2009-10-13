@@ -217,10 +217,12 @@ void QGoTabImageView3DwT::SetLSMReader( vtkLSMReader* iReader,
 
       m_ZSliceSpinBox->setMinimum( 0 );
       m_ZSliceSpinBox->setMaximum( dim[2] - 1 );
-
+  
       m_TSliceSpinBox->setMinimum( 0 );
       m_TSliceSpinBox->setMaximum( dim[3] - 1 );
       m_TSliceSpinBox->setValue( iTimePoint );
+//      m_TSliceSpinBox->setVisible( dim[3] != 1 );
+///\todo TSliceLabel should follor the same pattern.
       }
     if( m_TimePoint != iTimePoint )
       {
@@ -277,25 +279,33 @@ void QGoTabImageView3DwT::SetTimePoint( const int& iTimePoint )
 
     if( NumberOfChannels > 1 )
       {
+      char* filename = m_LSMReader->GetFileName();
+
       std::vector< vtkImageData* > temp_image( NumberOfChannels );
       vtkImageAppendComponents* append_filter = vtkImageAppendComponents::New();
 
       for( int i = 0; i < NumberOfChannels; i++ )
         {
         std::cout <<i <<std::endl;
+        m_LSMReader->SetFileName( 0 );
+        m_LSMReader->SetFileName( filename );
         m_LSMReader->SetUpdateChannel( i );
+        std::cout <<"~~ GetUpdateChannel(): " <<m_LSMReader->GetUpdateChannel() <<std::endl;
         m_LSMReader->Update();
 
         temp_image[i] = vtkImageData::New();
-        temp_image[i]->ShallowCopy( m_LSMReader->GetOutput() );
-        append_filter->AddInput( temp_image[i] );
+        temp_image[i]->ShallowCopy( m_LSMReader->GetOutput( ) );
+        append_filter->SetInput( i, temp_image[i] );
         }
+      vtkPNGWriter* toto = vtkPNGWriter::New();
+      toto->SetFileName( yo );
+      toto->SetInput( m_L
       // This is really stupid!!!
       if( NumberOfChannels < 3 )
         {
         for( int i = NumberOfChannels; i < 3; i++ )
           {
-          append_filter->AddInput( temp_image[1] );
+          append_filter->SetInput( i, temp_image[1] );
           }
         }
       append_filter->Update();
