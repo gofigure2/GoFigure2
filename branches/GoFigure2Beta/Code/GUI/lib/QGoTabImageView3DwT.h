@@ -72,7 +72,7 @@ public slots:
 protected:
   QHBoxLayout*          m_LayOut;
   QGoImageView3D*       m_ImageView;
-  vtkLSMReader*         m_LSMReader;
+  std::vector< vtkLSMReader* > m_LSMReader;
   vtkImageData*         m_Image;
   itk::MultiFileReader* m_MultiFileReader;
   FileListType          m_FileList;
