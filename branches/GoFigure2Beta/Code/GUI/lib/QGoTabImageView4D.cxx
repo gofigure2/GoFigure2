@@ -207,12 +207,12 @@ void QGoTabImageView4D::SetMultiFiles( FileListType& iFileList,
   m_TimePoint = iTimePoint;
   m_ZDepth = iZDepth;
 
-  m_ThreadedReader1->SetInput( iFileList, JPEG, true );
+  m_ThreadedReader1->SetInput( iFileList, itk::MultiFileReader::JPEG, true );
   m_ThreadedReader1->SetTimePoint( m_TimePoint );
 
   m_ThreadedReader1->start();
 
-  m_ThreadedReader2->SetInput( iFileList, JPEG, false );
+  m_ThreadedReader2->SetInput( iFileList, itk::MultiFileReader::JPEG, false );
   m_ThreadedReader2->SetZDepth( m_ZDepth );
 
   m_ThreadedReader2->start();

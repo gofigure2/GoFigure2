@@ -284,17 +284,17 @@ void QGoTabImageView3DwT::SetMultiFiles( FileListType& iFileList,
 
   switch( iFileType ) //IsLSM
     {
-    case LSM:
+    case itk::MultiFileReader::LSM:
       {
       m_MultiFileReader->SetDimensionality( 3 );
-      m_MultiFileReader->SetFileType( LSM );
+      m_MultiFileReader->SetFileType( iFileType );
       m_MultiFileReader->SetChannel( 0 );
       break;
       }
-    case MHA:
+    case itk::MultiFileReader::MHA:
       {
       m_MultiFileReader->SetDimensionality( 3 );
-      m_MultiFileReader->SetFileType( MHA );
+      m_MultiFileReader->SetFileType( iFileType );
       break;
       }
     default:

@@ -21,6 +21,8 @@ public:
     QGoTabImageView3DwT( QWidget* parent = 0 );
     virtual ~QGoTabImageView3DwT();
 
+    typedef itk::MultiFileReader::FILETYPE FILETYPE;
+
     GoFigure::TabDimensionType GetTabDimensionType( ) const;
 
     void SetLSMReader( vtkLSMReader* iReader, const int& iTimePoint );

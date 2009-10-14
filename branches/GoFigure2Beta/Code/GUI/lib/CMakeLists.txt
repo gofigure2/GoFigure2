@@ -1,7 +1,18 @@
 FILE( GLOB QGoGUILIB_SRC *.cxx )
 FILE( GLOB QGoGUILIB_HDRS *.h )
 
+QT4_WRAP_UI( ManualSegmentationSettingsDlg_UI_H 
+  ManualSegmentationSettingsDlg.ui )
+
 QT4_WRAP_CPP( QGoGUILIB_MOC ${QGoGUILIB_HDRS} )
+
+SET_SOURCE_FILES_PROPERTIES( ${QGoGUILIB_SRC} PROPERTIES
+  OBJECT_DEPENDS "${ManualSegmentationSettingsDlg_UI_H}"
+  )
+
+SET_SOURCE_FILES_PROPERTIES( ${QGoGUILIB_MOC} PROPERTIES
+  OBJECT_DEPENDS "${ManualSegmentationSettingsDlg_UI_H}"
+  )
 
 ADD_LIBRARY( QGoGui
   ${QGoGUILIB_SRC}
