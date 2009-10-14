@@ -93,8 +93,6 @@ public:
 
   itkTypeMacro( MultiFileReader, LightProcessObject );
 
-  void SetTimeBased( const bool& iBool );
-
   /** \brief set the time point you want to extract and load in memory the
   corresponding XYZ volume. */
   void SetTimePoint( const int& UserTimePoint );
@@ -103,7 +101,8 @@ public:
   void SetZDepth( const int& iZ );
 
   /** \brief */
-  void SetVolumePerTimePoint( const bool& iBool );
+  itkBooleanMacro( TimeBased );
+  itkSetMacro( TimeBased, bool );
 
   /** \brief set the channel you want to extract
       and load in memory. -1 for all channels.         */
@@ -114,29 +113,28 @@ public:
   void SetInput( FileListType* UserFileList );
 
   /** \brief  */
-  void SetFileType( const FILETYPE UserFileType );
+  itkSetMacro( FileType, FILETYPE );
 
   /** \brief  */
-  void SetDimensionality( int UserDimensionality );
+  itkSetMacro( Dimensionality, int );
+  itkGetConstMacro( Dimensionality, int );
 
-  int GetNumberOfTimePoints( ) const { return m_NumberOfTimePoints; }
-  int GetNumberOfZSlices( ) const { return m_NumberOfZSlices; }
-  int GetNumberOfChannels( ) const { return m_NumberOfChannels; }
-
-  /** \brief  */
-  void SetMultiChannelImages( int value );
-  void SetMultiChannelImagesON( )  { SetMultiChannelImages( 1 ); }
-  void SetMultiChannelImagesOFF( ) { SetMultiChannelImages( 0 ); }
+  itkGetConstMacro( NumberOfTimePoints, int );
+  itkGetConstMacro( NumberOfSlices, int );
+  itkGetConstMacro( NumberOfChannels, int );
 
   /** \brief  */
-  vtkImageData* GetOutput( ) const { return( m_OutputImage ); }
+  itkSetMacro( MultiChannelImages, bool );
+  itkBooleanMacro( MultiChannelImages );
+
+  /** \brief  */
+  vtkImageData* GetOutput( ) const;
 
   // Fake It. The output is not of itkDataObject type
   // so pipeline mechanism would not work.
-  void Update(void);
+  void Update( );
 
-  void SetProgressBar( QProgressBar* PB )
-  { this->m_ProgressBar = PB; this->IsProgressBarSet = true; }
+  void SetProgressBar( QProgressBar* PB );
 
 
   /** \brief Mandatory PrintSelf */
@@ -160,15 +158,17 @@ private:
   int            m_DataScalarType;  // suppose same type for all files
   int            m_NumberOfChannels;// OfScalarComponents;
   int            m_NumberOfTimePoints;
-  int            m_NumberOfZSlices;
+  int            m_NumberOfSlices;
   int            m_UpdateTimePoint;
   int            m_UpdateZSlice;
   int            m_UpdateChannel;
-  bool           m_AreImagesMultiChannel;
+  bool           m_MultiChannelImages;
   bool           m_TimeBased;
 
   QProgressBar*    m_ProgressBar;
-  bool             IsProgressBarSet;
+  bool             m_IsProgressBarSet;
+
+  virtual void GenerateData();
 
   template< class TReader >
   void AddToVolumeBuilder( const int& iId, const std::string& iFileName,

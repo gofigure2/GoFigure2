@@ -53,10 +53,29 @@
 namespace itk
 {
 
-void MultiFileReader::SetTimeBased( const bool& iBool )
+//-----------------------------------------------------------------------------
+MultiFileReader::MultiFileReader( ) : m_OutputImage( 0 ), m_FileList( 0 ),
+  m_Dimensionality( 0 ), m_DataScalarType( -1 ), m_NumberOfChannels( -1 ),
+  m_NumberOfTimePoints( -1 ), m_NumberOfSlices( -1 ), m_UpdateTimePoint( -1 ),
+  m_UpdateZSlice( -1 ), m_UpdateChannel( -1 ), m_MultiChannelImages( false ),
+  m_TimeBased( true ), m_ProgressBar( 0 ), m_IsProgressBarSet( false )
 {
-  m_TimeBased = iBool;
 }
+//-----------------------------------------------------------------------------
+
+
+//-----------------------------------------------------------------------------
+MultiFileReader::~MultiFileReader()
+{
+  if( m_OutputImage )
+    {
+    m_OutputImage->Delete();
+    m_OutputImage = 0;
+    }
+}
+//-----------------------------------------------------------------------------
+
+
 //-----------------------------------------------------------------------------
 void MultiFileReader::SetTimePoint( const int& UserTimePoint )
 {
@@ -74,13 +93,13 @@ void MultiFileReader::SetTimePoint( const int& UserTimePoint )
 //-----------------------------------------------------------------------------
 void MultiFileReader::SetZDepth( const int& iZ )
 {
-  if( iZ <= m_NumberOfZSlices )
+  if( iZ <= m_NumberOfSlices )
     {
     this->m_UpdateZSlice = iZ;
     }
   else
     {
-    this->m_UpdateZSlice = m_NumberOfZSlices;
+    this->m_UpdateZSlice = m_NumberOfSlices;
     }
 }
 //-----------------------------------------------------------------------------
@@ -151,13 +170,13 @@ void MultiFileReader::SetInput( FileListType* UserFileList )
   else
     {
     unsigned int CurrentZSlice = (*It).m_ZCoord;
-    this->m_NumberOfZSlices = 1;
+    this->m_NumberOfSlices = 1;
     while( It != m_FileList->end() )
       {
       if( (*It).m_ZCoord > CurrentZSlice )
         {
         CurrentZSlice = (*It).m_ZCoord;
-        this->m_NumberOfZSlices++;
+        this->m_NumberOfSlices++;
         }
       It++;
       }
@@ -181,7 +200,7 @@ void MultiFileReader::PrintSelf( std::ostream& os, Indent indent) const
   os << indent << "Update Channel: "
      << m_UpdateChannel << std::endl;
   os << indent << "Are Images multichannel? "
-     << m_AreImagesMultiChannel << std::endl;
+     << m_MultiChannelImages << std::endl;
 }
 //-----------------------------------------------------------------------------
 
@@ -243,7 +262,7 @@ void MultiFileReader::BuildVolumeFrom2DImages()
           }
         }
 
-      if( this->IsProgressBarSet )
+      if( m_IsProgressBarSet )
         {
         this->m_ProgressBar->setValue(
           static_cast< float >( counter * 80 ) /
@@ -257,7 +276,7 @@ void MultiFileReader::BuildVolumeFrom2DImages()
     this->m_NumberOfChannels = volumeBuilder->GetOutput()->GetNumberOfScalarComponents();
     this->UpdateChannel();
 
-    if( this->m_AreImagesMultiChannel )
+    if( this->m_MultiChannelImages )
       {
       m_OutputImage = vtkImageData::New();
       m_OutputImage->ShallowCopy( volumeBuilder->GetOutput() );
@@ -275,9 +294,35 @@ void MultiFileReader::BuildVolumeFrom2DImages()
       extractComp->Delete();
       }
 }
+//-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
-void MultiFileReader::Update( void )
+void MultiFileReader::SetProgressBar( QProgressBar* PB )
+{
+  if( PB )
+    {
+    m_ProgressBar = PB;
+    m_IsProgressBarSet = true;
+    }
+}
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
+vtkImageData* MultiFileReader::GetOutput() const
+{
+  return m_OutputImage;
+}
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
+void MultiFileReader::Update()
+{
+  this->GenerateData();
+}
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
+void MultiFileReader::GenerateData( )
 {
   if( this->m_OutputImage )
     {
@@ -285,7 +330,7 @@ void MultiFileReader::Update( void )
     this->m_OutputImage = 0;
     }
 
-  if( this->IsProgressBarSet )
+  if( m_IsProgressBarSet )
     {
     if( m_ProgressBar )
       {
@@ -300,14 +345,10 @@ void MultiFileReader::Update( void )
     std::cout <<"Problem: m_UpdateFileList is empty :-/ (after ComputeUpdateFileList)" <<std::endl;
     return;
     }
-  if( this->IsProgressBarSet )
+  if( m_IsProgressBarSet )
     {
     this->m_ProgressBar->setValue( 5 );
     }
-
-  FileListType::iterator startIt;
-  FileListType::iterator endIt;
-  FileListType::iterator It;
 
   if( this->m_Dimensionality == 2 )
     {
@@ -322,7 +363,7 @@ void MultiFileReader::Update( void )
 //-----------------------------------------------------------------------------
 void MultiFileReader::CreateVolumeFromOne3DImageFile()
 {
-  FileListType::iterator It    = m_UpdateFileList.begin();
+  FileListType::iterator It = m_UpdateFileList.begin();
 
   switch( this->m_FileType )
       {
@@ -348,7 +389,7 @@ void MultiFileReader::CreateVolumeFromOne3DImageFile()
       case LSM:
         {
         /// \note this is still the old way to proceed...
-        if( this->m_AreImagesMultiChannel )
+        if( this->m_MultiChannelImages )
           {
           vtkImageData* myImage_ch1 = vtkImageData::New();
           vtkLSMReader* reader = vtkLSMReader::New();
@@ -358,9 +399,9 @@ void MultiFileReader::CreateVolumeFromOne3DImageFile()
           myImage_ch1->ShallowCopy( reader->GetOutput() );
           reader->Delete();
 
-          if( this->IsProgressBarSet )
+          if( m_IsProgressBarSet )
             {
-            this->m_ProgressBar->setValue( 20 );
+            m_ProgressBar->setValue( 20 );
             }
 
           if( ( NumberOfChannels == 1 ) )
@@ -377,9 +418,9 @@ void MultiFileReader::CreateVolumeFromOne3DImageFile()
           myImage_ch2->ShallowCopy( reader2->GetOutput() );
           reader2->Delete();
 
-          if( this->IsProgressBarSet )
+          if( m_IsProgressBarSet )
             {
-            this->m_ProgressBar->setValue( 40 );
+            m_ProgressBar->setValue( 40 );
             }
 
           vtkImageData* myImage2 = vtkImageData::New();
@@ -391,9 +432,9 @@ void MultiFileReader::CreateVolumeFromOne3DImageFile()
           appendFilter1->Delete();
           myImage_ch2->Delete();
 
-          if( this->IsProgressBarSet )
+          if( m_IsProgressBarSet )
             {
-            this->m_ProgressBar->setValue( 60 );
+            m_ProgressBar->setValue( 60 );
             }
 
           vtkImageData* myImage_ch3 = vtkImageData::New();
@@ -412,9 +453,9 @@ void MultiFileReader::CreateVolumeFromOne3DImageFile()
             }
           myImage_ch1->Delete();
 
-          if( this->IsProgressBarSet )
+          if( m_IsProgressBarSet )
             {
-            this->m_ProgressBar->setValue( 80 );
+            m_ProgressBar->setValue( 80 );
             }
 
           vtkImageData* myImage3 = vtkImageData::New();
@@ -427,9 +468,9 @@ void MultiFileReader::CreateVolumeFromOne3DImageFile()
           myImage2->Delete();
           myImage_ch3->Delete();
 
-          if( this->IsProgressBarSet )
+          if( m_IsProgressBarSet )
             {
-            this->m_ProgressBar->setValue( 100 );
+            m_ProgressBar->setValue( 100 );
             }
 
           m_OutputImage = myImage3;
@@ -534,71 +575,4 @@ void MultiFileReader::ComputeUpdateFileList()
     }
 }
 //-----------------------------------------------------------------------------
-
-
-//-----------------------------------------------------------------------------
-void MultiFileReader::SetFileType( const FILETYPE UserFileType )
-{
-  this->m_FileType = UserFileType;
-}
-//-----------------------------------------------------------------------------
-
-//-----------------------------------------------------------------------------
-void MultiFileReader::SetDimensionality( int UserDimensionality )
-{
-  this->m_Dimensionality = UserDimensionality;
-}
-//-----------------------------------------------------------------------------
-
-//-----------------------------------------------------------------------------
-void MultiFileReader::SetVolumePerTimePoint( const bool& iBool )
-{
-  m_TimeBased = iBool;
-}
-//-----------------------------------------------------------------------------
-
-//-----------------------------------------------------------------------------
-void MultiFileReader::SetMultiChannelImages( int value )
-{
-  if( value )
-    {
-    m_AreImagesMultiChannel = true;
-    }
-  else
-    {
-    m_AreImagesMultiChannel = false;
-    }
-}
-//-----------------------------------------------------------------------------
-
-//-----------------------------------------------------------------------------
-MultiFileReader::MultiFileReader( )
-{
-  m_OutputImage = (vtkImageData*)(0);
-  m_Dimensionality   = 0;
-  m_DataScalarType   = -1;
-  m_NumberOfChannels = -1;
-  m_NumberOfTimePoints = -1;
-  m_UpdateTimePoint  = -1;
-  m_NumberOfZSlices = -1;
-  m_UpdateZSlice    = -1;
-  m_UpdateChannel    = -1;
-  m_AreImagesMultiChannel = false;
-  m_TimeBased = true;
-  m_ProgressBar = 0;
-}
-//-----------------------------------------------------------------------------
-
-
-//-----------------------------------------------------------------------------
-MultiFileReader::~MultiFileReader()
-{
-  if( m_OutputImage )
-    {
-    m_OutputImage->Delete();
-    m_OutputImage = (vtkImageData*)(0);
-    }
-}
-//-----------------------------------------------------------------------------
-
 }

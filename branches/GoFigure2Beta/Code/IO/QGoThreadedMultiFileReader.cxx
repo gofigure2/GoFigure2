@@ -66,7 +66,7 @@ void QGoThreadedMultiFileReader::run()
   m_MultiFileReader->SetInput( &m_FileList );
   m_MultiFileReader->SetDimensionality( 2 );
   m_MultiFileReader->SetFileType( m_FileType );
-  m_MultiFileReader->SetMultiChannelImagesON();
+  m_MultiFileReader->MultiChannelImagesOn();
   m_MultiFileReader->SetTimeBased( m_TimeBased );
   m_MultiFileReader->Update();
   m_Image = m_MultiFileReader->GetOutput();

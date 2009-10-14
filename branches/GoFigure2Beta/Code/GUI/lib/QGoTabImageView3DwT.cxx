@@ -309,7 +309,7 @@ void QGoTabImageView3DwT::SetMultiFiles( FileListType& iFileList,
 //     m_MultiFileReader->SetDimensionality( 2 );
 //     m_MultiFileReader->SetFileType( JPEG );
 //     }
-  m_MultiFileReader->SetMultiChannelImagesOFF();
+  m_MultiFileReader->MultiChannelImagesOff();
   m_MultiFileReader->SetTimeBased( true );
   m_MultiFileReader->SetTimePoint( m_TimePoint );
   m_MultiFileReader->Update();
