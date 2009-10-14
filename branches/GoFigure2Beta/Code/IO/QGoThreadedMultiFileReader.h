@@ -14,6 +14,8 @@ class QGoThreadedMultiFileReader : public QThread
     QGoThreadedMultiFileReader( QObject* iParent = 0 );
     ~QGoThreadedMultiFileReader();
 
+    typedef itk::MultiFileReader::FILETYPE FILETYPE;
+
     void SetInput( FileListType iFileList,
       const FILETYPE& iFileType,
       const bool& iBool );

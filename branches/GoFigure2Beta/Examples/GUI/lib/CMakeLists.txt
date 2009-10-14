@@ -8,6 +8,7 @@ SET( QGOGUILIB_EXAMPLE_SRC
   qgotabimageview3d
   qgotabimageview3dwt
   qgotabimageview4d
+  qgomanualsegmentationsettingsdialog
 )
 
 FOREACH( var ${QGOGUILIB_EXAMPLE_SRC} )
@@ -55,3 +56,10 @@ ADD_TEST( qgotabimageview3dTest
   ${TESTING_DATA_PATH}/Circle3D.mhd
   1
 )
+
+ADD_TEST( qgomanualsegmentationsettingsdialogTest
+  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qgomanualsegmentationsettingsdialog
+  1
+)
+
+

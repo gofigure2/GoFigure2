@@ -8,6 +8,7 @@
 class vtkOrientedGlyphContourRepresentation;
 class vtkContourWidget;
 class vtkRenderer;
+class vtkPolyData;
 
 class QGoManualSegmentationSettingsDialog :
   public QDialog,
@@ -42,5 +43,6 @@ private:
   vtkOrientedGlyphContourRepresentation* m_ContourRepresentation;
   vtkContourWidget* m_ContourWidget;
   vtkRenderer*      m_Renderer;
+  vtkPolyData*      m_InitPD;
 };
 #endif

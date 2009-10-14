@@ -210,7 +210,8 @@ void QGoMainWindow::on_actionOpen_Multiple_Files_activated( )
         importFileInfoList->Update();
 
         std::cout <<"** " <<importFileInfoList->GetOutput()->size() <<std::endl;
-        CreateNewTabFor3DwtImage( *(importFileInfoList->GetOutput()), LSM, 0 );
+        CreateNewTabFor3DwtImage( *(importFileInfoList->GetOutput()),
+          itk::MultiFileReader::LSM, 0 );
         }
       else
         {

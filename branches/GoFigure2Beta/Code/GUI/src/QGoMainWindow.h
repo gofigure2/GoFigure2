@@ -78,6 +78,8 @@ public:
   typedef itk::ImageToVTKImageFilter< ImageType > VTKConvertImageType;
   typedef VTKConvertImageType::Pointer            VTKConvertImagePointer;
 
+  typedef itk::MultiFileReader::FILETYPE FILETYPE;
+
   QGoMainWindow( );
   virtual ~QGoMainWindow();
 

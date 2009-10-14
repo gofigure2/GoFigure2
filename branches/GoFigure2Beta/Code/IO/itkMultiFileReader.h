@@ -52,16 +52,6 @@
 
 #include <QProgressBar>
 
-enum FILETYPE
-{
-  BMP = 0,
-  JPEG,
-  PNG,
-  TIFF,
-  MHA,
-  LSM
-};
-
 namespace itk
 {
 /**
@@ -92,6 +82,16 @@ public:
   itkNewMacro( Self );
 
   itkTypeMacro( MultiFileReader, LightProcessObject );
+
+  enum FILETYPE
+  {
+    BMP = 0,
+    JPEG,
+    PNG,
+    TIFF,
+    MHA,
+    LSM
+  };
 
   /** \brief set the time point you want to extract and load in memory the
   corresponding XYZ volume. */
@@ -172,12 +172,12 @@ private:
 
   template< class TReader >
   void AddToVolumeBuilder( const int& iId, const std::string& iFileName,
-    const int& iDim, vtkImageAppend* iBuilder )
+    vtkImageAppend* iBuilder )
     {
     typedef TReader ReaderType;
     ReaderType* reader = ReaderType::New();
     reader->SetFileName( iFileName.c_str() );
-    reader->SetFileDimensionality( iDim );
+    reader->SetFileDimensionality( 2 );
     reader->Update();
 
     iBuilder->SetInput( iId, reader->GetOutput( ) );
@@ -185,13 +185,12 @@ private:
     }
 
   template< class TReader >
-  void Copy3DImage( vtkImageData* ioImage, const std::string& iFileName,
-    const int& iDim )
+  void Copy3DImage( vtkImageData* ioImage, const std::string& iFileName )
     {
     typedef TReader ReaderType;
     ReaderType* reader = ReaderType::New();
     reader->SetFileName( iFileName.c_str() );
-    reader->SetFileDimensionality( iDim );
+    reader->SetFileDimensionality( 3 );
     reader->Update();
     ioImage->ShallowCopy( reader->GetOutput() );
     reader->Delete();

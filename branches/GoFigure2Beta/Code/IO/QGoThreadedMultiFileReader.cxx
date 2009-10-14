@@ -5,7 +5,7 @@
 QGoThreadedMultiFileReader::
 QGoThreadedMultiFileReader( QObject* parent ) : QThread( parent ),
   m_Image( 0 ),
-  m_FileType( JPEG ),
+  m_FileType( itk::MultiFileReader::JPEG ),
   m_TimeBased( true ),
   m_TimePoint( 0 ),
   m_ZDepth( 0 )

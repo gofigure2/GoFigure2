@@ -107,21 +107,9 @@ void MultiFileReader::SetZDepth( const int& iZ )
 //-----------------------------------------------------------------------------
 void MultiFileReader::SetChannel( const int& UserChannel )
 {
-  if( UserChannel < m_NumberOfChannels )
-    {
-    if( UserChannel > 0 )
-      {
-      this->m_UpdateChannel = UserChannel;
-      }
-    else
-      {
-      this->m_UpdateChannel = 0;
-      }
-    }
-  else
-    {
-    this->m_UpdateChannel = m_NumberOfChannels - 1;
-    }
+  m_UpdateChannel = UserChannel;
+
+  UpdateChannel();
 }
 //-----------------------------------------------------------------------------
 
@@ -143,6 +131,11 @@ void MultiFileReader::UpdateChannel()
 //-----------------------------------------------------------------------------
 void MultiFileReader::SetInput( FileListType* UserFileList )
 {
+  if( !UserFileList )
+    {
+    return;
+    }
+
   if( UserFileList->empty() )
     {
     return;
@@ -150,35 +143,35 @@ void MultiFileReader::SetInput( FileListType* UserFileList )
 
   this->m_FileList = UserFileList;
 
-  FileListType::iterator endIt;
+  FileListType::iterator endIt = m_FileList->end();
   FileListType::iterator It = m_FileList->begin();
 
   if( this->m_TimeBased )
     {
     unsigned int CurrentTimePoint = (*It).m_TCoord;
     this->m_NumberOfTimePoints = 1;
-    while( It != m_FileList->end())
+    while( It != endIt )
       {
       if( (*It).m_TCoord > CurrentTimePoint )
         {
         CurrentTimePoint = (*It).m_TCoord;
-        this->m_NumberOfTimePoints++;
+        ++m_NumberOfTimePoints;
         }
-      It++;
+      ++It;
       }
     }
   else
     {
     unsigned int CurrentZSlice = (*It).m_ZCoord;
     this->m_NumberOfSlices = 1;
-    while( It != m_FileList->end() )
+    while( It != endIt )
       {
       if( (*It).m_ZCoord > CurrentZSlice )
         {
         CurrentZSlice = (*It).m_ZCoord;
-        this->m_NumberOfSlices++;
+        ++m_NumberOfSlices;
         }
-      It++;
+      ++It;
       }
     }
 }
@@ -219,76 +212,80 @@ void MultiFileReader::BuildVolumeFrom2DImages()
   while( It != endIt )
     {
     switch( this->m_FileType )
+      {
+      case JPEG:
         {
-        case JPEG:
-          {
-          AddToVolumeBuilder< vtkJPEGReader >( counter, (*It).m_Filename.c_str(),
-            m_Dimensionality, volumeBuilder );
-          break;
-          }
-        case BMP:
-          {
-          AddToVolumeBuilder< vtkBMPReader >( counter, (*It).m_Filename.c_str(),
-            m_Dimensionality, volumeBuilder );
-          break;
-          }
-        case PNG:
-          {
-          AddToVolumeBuilder< vtkPNGReader >( counter, (*It).m_Filename.c_str(),
-            m_Dimensionality, volumeBuilder );
-          break;
-          }
-        case TIFF:
-          {
-          AddToVolumeBuilder< vtkTIFFReader >( counter, (*It).m_Filename.c_str(),
-            m_Dimensionality, volumeBuilder );
-          break;
-          }
-        case MHA:
-          {
-          AddToVolumeBuilder< vtkMetaImageReader >( counter, (*It).m_Filename.c_str(),
-            m_Dimensionality, volumeBuilder );
-          break;
-          }
-        case LSM:
-          {
-          itkGenericExceptionMacro( << "stacks of 2D LSM are not supported at this time." );
-          break;
-          }
-        default:
-          {
-          itkGenericExceptionMacro( << "unsupported type: " << this->m_FileType << "." );
-          break;
-          }
+        AddToVolumeBuilder< vtkJPEGReader >( counter, (*It).m_Filename.c_str(),
+          volumeBuilder );
+        break;
         }
-
-      if( m_IsProgressBarSet )
+      case BMP:
         {
-        this->m_ProgressBar->setValue(
-          static_cast< float >( counter * 80 ) /
-          static_cast< float >( m_UpdateFileList.size() ) );
+        AddToVolumeBuilder< vtkBMPReader >( counter, (*It).m_Filename.c_str(),
+          volumeBuilder );
+        break;
         }
-      It++;
-      counter++;
+      case PNG:
+        {
+        AddToVolumeBuilder< vtkPNGReader >( counter, (*It).m_Filename.c_str(),
+          volumeBuilder );
+        break;
+        }
+      case TIFF:
+        {
+        AddToVolumeBuilder< vtkTIFFReader >( counter, (*It).m_Filename.c_str(),
+          volumeBuilder );
+        break;
+        }
+      case MHA:
+        {
+        AddToVolumeBuilder< vtkMetaImageReader >( counter, (*It).m_Filename.c_str(),
+          volumeBuilder );
+        break;
+        }
+      case LSM:
+        {
+        itkGenericExceptionMacro( << "stacks of 2D LSM are not supported at this time." );
+        break;
+        }
+      default:
+        {
+        itkGenericExceptionMacro( << "unsupported type: " << this->m_FileType << "." );
+        break;
+        }
       }
 
-    volumeBuilder->Update();
-    this->m_NumberOfChannels = volumeBuilder->GetOutput()->GetNumberOfScalarComponents();
-    this->UpdateChannel();
+    if( m_IsProgressBarSet )
+      {
+      m_ProgressBar->setValue(
+          static_cast< float >( counter * 80 ) /
+          static_cast< float >( m_UpdateFileList.size() ) );
+      }
+      ++It;
+      ++counter;
+    }
 
-    if( this->m_MultiChannelImages )
+    volumeBuilder->Update();
+    vtkImageData* temp_output = volumeBuilder->GetOutput();
+    m_NumberOfChannels = temp_output->GetNumberOfScalarComponents();
+
+    UpdateChannel();
+
+    if( m_MultiChannelImages )
       {
       m_OutputImage = vtkImageData::New();
-      m_OutputImage->ShallowCopy( volumeBuilder->GetOutput() );
-        volumeBuilder->Delete();
+      m_OutputImage->ShallowCopy( temp_output );
+      volumeBuilder->Delete();
       }
     else
       {
       vtkImageExtractComponents* extractComp = vtkImageExtractComponents::New();
-      extractComp->SetComponents( this->m_UpdateChannel );
-      extractComp->SetInput( volumeBuilder->GetOutput() );
+      extractComp->SetComponents( m_UpdateChannel );
+      extractComp->SetInput( temp_output );
       extractComp->Update( );
+
       volumeBuilder->Delete();
+
       m_OutputImage = vtkImageData::New();
       m_OutputImage->ShallowCopy( extractComp->GetOutput() );
       extractComp->Delete();
@@ -324,22 +321,22 @@ void MultiFileReader::Update()
 //-----------------------------------------------------------------------------
 void MultiFileReader::GenerateData( )
 {
-  if( this->m_OutputImage )
+  if( m_OutputImage )
     {
-    this->m_OutputImage->Delete();
-    this->m_OutputImage = 0;
+    m_OutputImage->Delete();
+    m_OutputImage = 0;
     }
 
   if( m_IsProgressBarSet )
     {
     if( m_ProgressBar )
       {
-      this->m_ProgressBar->show();
-      this->m_ProgressBar->setValue( 1 );
+      m_ProgressBar->show();
+      m_ProgressBar->setValue( 1 );
       }
     }
 
-  this->ComputeUpdateFileList();
+  ComputeUpdateFileList();
   if( m_UpdateFileList.empty() )
     {
     std::cout <<"Problem: m_UpdateFileList is empty :-/ (after ComputeUpdateFileList)" <<std::endl;
@@ -366,135 +363,132 @@ void MultiFileReader::CreateVolumeFromOne3DImageFile()
   FileListType::iterator It = m_UpdateFileList.begin();
 
   switch( this->m_FileType )
+    {
+    case JPEG: // fallthrough
+    case BMP:  // falltrhough
+    case PNG:  // fallthrough
       {
-      case JPEG: // fallthrough
-      case BMP:  // falltrhough
-      case PNG:  // fallthrough
-        itkGenericExceptionMacro( << "JPEG/BMP/PNG cannot be of dimensionality 3." );
-        break;
-      case TIFF:
+      itkGenericExceptionMacro( << "JPEG/BMP/PNG cannot be of dimensionality 3." );
+      break;
+      }
+    case TIFF:
+      {
+      m_OutputImage = vtkImageData::New();
+      Copy3DImage< vtkTIFFReader >( m_OutputImage, (*It).m_Filename.c_str() );
+      break;
+      }
+    case MHA:
+      {
+      m_OutputImage = vtkImageData::New();
+      Copy3DImage< vtkMetaImageReader >( m_OutputImage, (*It).m_Filename.c_str() );
+      break;
+      }
+    case LSM:
+      {
+      /// \note this is still the old way to proceed...
+      if( m_MultiChannelImages )
         {
-        m_OutputImage = vtkImageData::New();
-        Copy3DImage< vtkTIFFReader >( m_OutputImage, (*It).m_Filename.c_str(),
-          this->m_Dimensionality );
-        break;
-        }
-      case MHA:
-        {
-        m_OutputImage = vtkImageData::New();
-        Copy3DImage< vtkMetaImageReader >( m_OutputImage, (*It).m_Filename.c_str(),
-          this->m_Dimensionality );
-        break;
-        }
-      case LSM:
-        {
-        /// \note this is still the old way to proceed...
-        if( this->m_MultiChannelImages )
+        vtkImageData* myImage_ch1 = vtkImageData::New();
+        vtkLSMReader* reader = vtkLSMReader::New();
+        reader->SetFileName( (*It).m_Filename.c_str() );
+        reader->Update();
+        int NumberOfChannels = reader->GetNumberOfChannels();
+        myImage_ch1->ShallowCopy( reader->GetOutput() );
+        reader->Delete();
+
+        if( m_IsProgressBarSet )
           {
-          vtkImageData* myImage_ch1 = vtkImageData::New();
-          vtkLSMReader* reader = vtkLSMReader::New();
-          reader->SetFileName( (*It).m_Filename.c_str() );
-          reader->Update();
-          int NumberOfChannels = reader->GetNumberOfChannels();
-          myImage_ch1->ShallowCopy( reader->GetOutput() );
-          reader->Delete();
+          m_ProgressBar->setValue( 20 );
+          }
 
-          if( m_IsProgressBarSet )
-            {
-            m_ProgressBar->setValue( 20 );
-            }
+        if( ( NumberOfChannels == 1 ) )
+          {
+          m_OutputImage = myImage_ch1;
+          return;
+          }
 
-          if( ( NumberOfChannels == 1 ) )
-            {
-            m_OutputImage = myImage_ch1;
-            return;
-            }
+        vtkImageData* myImage_ch2 = vtkImageData::New();
+        vtkLSMReader* reader2=vtkLSMReader::New();
+        reader2->SetFileName( (*It).m_Filename.c_str() );
+        reader2->SetUpdateChannel( 1 );
+        reader2->Update();
+        myImage_ch2->ShallowCopy( reader2->GetOutput() );
+        reader2->Delete();
 
-          vtkImageData* myImage_ch2 = vtkImageData::New();
-          vtkLSMReader* reader2=vtkLSMReader::New();
-          reader2->SetFileName( (*It).m_Filename.c_str() );
-          reader2->SetUpdateChannel( 1 );
-          reader2->Update();
-          myImage_ch2->ShallowCopy( reader2->GetOutput() );
-          reader2->Delete();
+        if( m_IsProgressBarSet )
+          {
+          m_ProgressBar->setValue( 40 );
+          }
 
-          if( m_IsProgressBarSet )
-            {
-            m_ProgressBar->setValue( 40 );
-            }
+        vtkImageAppendComponents* appendFilter = vtkImageAppendComponents::New();
+        appendFilter->AddInput( myImage_ch1 );
+        appendFilter->AddInput( myImage_ch2 );
 
-          vtkImageData* myImage2 = vtkImageData::New();
-          vtkImageAppendComponents* appendFilter1 = vtkImageAppendComponents::New();
-          appendFilter1->AddInput( myImage_ch1 );
-          appendFilter1->AddInput( myImage_ch2 );
-          appendFilter1->Update();
-          myImage2->ShallowCopy( appendFilter1->GetOutput() );
-          appendFilter1->Delete();
-          myImage_ch2->Delete();
+        if( m_IsProgressBarSet )
+          {
+          m_ProgressBar->setValue( 60 );
+          }
 
-          if( m_IsProgressBarSet )
-            {
-            m_ProgressBar->setValue( 60 );
-            }
-
-          vtkImageData* myImage_ch3 = vtkImageData::New();
-          if( NumberOfChannels == 2 )
-            {
-            myImage_ch3->ShallowCopy( myImage_ch1 );
-            }
-          else
-            {
-            vtkLSMReader* reader3 = vtkLSMReader::New();
-            reader3->SetFileName( (*It).m_Filename.c_str() );
-            reader3->SetUpdateChannel( 2 );
-            reader3->Update();
-            myImage_ch3->ShallowCopy( reader3->GetOutput() );
-            reader3->Delete();
-            }
-          myImage_ch1->Delete();
-
-          if( m_IsProgressBarSet )
-            {
-            m_ProgressBar->setValue( 80 );
-            }
-
-          vtkImageData* myImage3 = vtkImageData::New();
-          vtkImageAppendComponents* appendFilter2 = vtkImageAppendComponents::New();
-          appendFilter2->AddInput( myImage2    );
-          appendFilter2->AddInput( myImage_ch3 );
-          appendFilter2->Update();
-          myImage3->ShallowCopy( appendFilter2->GetOutput() );
-          appendFilter2->Delete();
-          myImage2->Delete();
-          myImage_ch3->Delete();
-
-          if( m_IsProgressBarSet )
-            {
-            m_ProgressBar->setValue( 100 );
-            }
-
-          m_OutputImage = myImage3;
-          this->m_NumberOfChannels = m_OutputImage->GetNumberOfScalarComponents();
-          this->UpdateChannel();
+        vtkImageData* myImage_ch3 = vtkImageData::New();
+        if( NumberOfChannels == 2 )
+          {
+          myImage_ch3->ShallowCopy( myImage_ch1 );
           }
         else
           {
-          vtkLSMReader* reader = vtkLSMReader::New();
-          reader->SetFileName( (*It).m_Filename.c_str() );
-          reader->SetUpdateChannel( m_UpdateChannel );
-          reader->Update();
-          this->m_NumberOfChannels = reader->GetOutput()->GetNumberOfScalarComponents();
-          this->UpdateChannel();
-          m_OutputImage = vtkImageData::New();
-          m_OutputImage->ShallowCopy( reader->GetOutput() );
-          reader->Delete();
+          vtkLSMReader* reader3 = vtkLSMReader::New();
+          reader3->SetFileName( (*It).m_Filename.c_str() );
+          reader3->SetUpdateChannel( 2 );
+          reader3->Update();
+          myImage_ch3->ShallowCopy( reader3->GetOutput() );
+          reader3->Delete();
           }
-        break;
+
+        if( m_IsProgressBarSet )
+          {
+          m_ProgressBar->setValue( 80 );
+          }
+
+        appendFilter->AddInput( myImage_ch3 );
+        appendFilter->Update();
+
+        vtkImageData* myImage3 = vtkImageData::New();
+        myImage3->ShallowCopy( appendFilter->GetOutput() );
+
+        appendFilter->Delete();
+        myImage_ch3->Delete();
+        myImage_ch2->Delete();
+        myImage_ch1->Delete();
+
+        if( m_IsProgressBarSet )
+          {
+          m_ProgressBar->setValue( 100 );
+          }
+
+        m_OutputImage = myImage3;
         }
-      default:
-        itkGenericExceptionMacro( << "unsupported type: " << this->m_FileType << "." );
-        break;
+      else
+        {
+        vtkLSMReader* reader = vtkLSMReader::New();
+        reader->SetFileName( (*It).m_Filename.c_str() );
+        reader->SetUpdateChannel( m_UpdateChannel );
+        reader->Update();
+
+        m_OutputImage = vtkImageData::New();
+        m_OutputImage->ShallowCopy( reader->GetOutput() );
+        reader->Delete();
+        }
+      break;
       }
+    default:
+      {
+      itkGenericExceptionMacro( << "unsupported type: " << this->m_FileType << "." );
+      break;
+      }
+    }
+
+  m_NumberOfChannels = m_OutputImage->GetNumberOfScalarComponents();
+  UpdateChannel();
 }
 //-----------------------------------------------------------------------------
 void MultiFileReader::ComputeUpdateFileList()
