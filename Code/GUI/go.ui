@@ -283,8 +283,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>98</width>
-        <height>28</height>
+        <width>211</width>
+        <height>291</height>
        </rect>
       </property>
       <attribute name="label">
@@ -467,8 +467,8 @@ Radius</string>
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>98</width>
-        <height>28</height>
+        <width>211</width>
+        <height>291</height>
        </rect>
       </property>
       <attribute name="label">
@@ -874,7 +874,7 @@ Component</string>
          <string>On</string>
         </property>
         <property name="shortcut">
-         <string>Ctrl+C, Ctrl+Y</string>
+         <string>Ctrl+Y</string>
         </property>
         <property name="checked">
          <bool>true</bool>
@@ -887,7 +887,7 @@ Component</string>
          <string>Off</string>
         </property>
         <property name="shortcut">
-         <string>Ctrl+C, Ctrl+N</string>
+         <string>Ctrl+N</string>
         </property>
         <property name="checked">
          <bool>false</bool>
@@ -931,7 +931,7 @@ Component</string>
          <string>Reinitialize</string>
         </property>
         <property name="shortcut">
-         <string>Ctrl+C, Ctrl+R</string>
+         <string>Ctrl+R</string>
         </property>
        </widget>
       </item>
@@ -941,7 +941,7 @@ Component</string>
          <string>Validate</string>
         </property>
         <property name="shortcut">
-         <string>Ctrl+C, Ctrl+V</string>
+         <string>Ctrl+V</string>
         </property>
        </widget>
       </item>
@@ -951,7 +951,7 @@ Component</string>
          <string>Reinitialize + Increment</string>
         </property>
         <property name="shortcut">
-         <string>Ctrl+C, Ctrl+I</string>
+         <string>Ctrl+I</string>
         </property>
        </widget>
       </item>
