@@ -23,7 +23,6 @@ class QGoTabImageView4D : public QGoTabElementBase
     GoFigure::TabDimensionType GetTabDimensionType( ) const;
 
     void SetMultiFiles( FileListType* iFileList,
-      const int& iSerieType,
       const int& iTimePoint );
 
     virtual void Update();
@@ -82,9 +81,9 @@ class QGoTabImageView4D : public QGoTabElementBase
     void ChangeLookupTable();
     void ShowScalarBar( const bool& );
 
-  protected slots:
-    void ReceiveXYZImage();
-    void ReceiveXYTImage();
+//   protected slots:
+//     void ReceiveXYZImage();
+//     void ReceiveXYTImage();
 
   protected:
     QSplitter*            m_Splitter;
@@ -96,12 +95,18 @@ class QGoTabImageView4D : public QGoTabElementBase
     int                   m_TimePoint;
     int                   m_ZDepth;
 
-    QGoThreadedMultiFileReader* m_ThreadedReader1;
-    QGoThreadedMultiFileReader* m_ThreadedReader2;
+    itk::MultiFileReader::Pointer m_Reader1;
+    itk::MultiFileReader::Pointer m_Reader2;
+
+    FileListType* m_XYZFileList;
+    FileListType* m_XYTFileList;
+//     QGoThreadedMultiFileReader* m_ThreadedReader1;
+//     QGoThreadedMultiFileReader* m_ThreadedReader2;
 
     std::vector< QAction* > m_ViewActions;
     QDockWidget* m_DockWidget;
 
+    void CreateAllViewActions();
     void GetBackgroundColorFromImageViewer( );
     void SetBackgroundColorToImageViewer( );
 

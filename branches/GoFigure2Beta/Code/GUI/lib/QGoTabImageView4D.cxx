@@ -11,6 +11,8 @@
 #include <QSpinBox>
 #include <QVBoxLayout>
 
+#include <algorithm>
+
 //--------------------------------------------------------------------------
 QGoTabImageView4D::QGoTabImageView4D( QWidget* parent ) :
   QGoTabElementBase( parent ),
@@ -18,19 +20,64 @@ QGoTabImageView4D::QGoTabImageView4D( QWidget* parent ) :
   m_XYTImage( 0 ),
   m_BackgroundColor( Qt::black )
 {
-  m_ThreadedReader1 = new QGoThreadedMultiFileReader( this );
-  m_ThreadedReader2 = new QGoThreadedMultiFileReader( this );
+  m_Reader1 = itk::MultiFileReader::New();
+  m_Reader2 = itk::MultiFileReader::New();
+
+  m_XYZFileList = new FileListType;
+  m_XYTFileList = new FileListType;
+//   m_ThreadedReader1 = new QGoThreadedMultiFileReader( this );
+//   m_ThreadedReader2 = new QGoThreadedMultiFileReader( this );
 
   setupUi( this );
 
-  QObject::connect( m_ThreadedReader1, SIGNAL( finished() ),
-    this, SLOT( ReceiveXYZImage() ) );
+//   QObject::connect( m_ThreadedReader1, SIGNAL( finished() ),
+//     this, SLOT( ReceiveXYZImage() ) );
 
-  QObject::connect( m_ThreadedReader1, SIGNAL( finished() ),
-    m_ThreadedReader2, SLOT( start() ) );
-  QObject::connect( m_ThreadedReader2, SIGNAL( finished() ),
-    this, SLOT( ReceiveXYTImage() ) );
+//   QObject::connect( m_ThreadedReader1, SIGNAL( finished() ),
+//     m_ThreadedReader2, SLOT( start() ) );
+//   QObject::connect( m_ThreadedReader2, SIGNAL( finished() ),
+//     this, SLOT( ReceiveXYTImage() ) );
 
+  CreateAllViewActions();
+
+  m_DockWidget = new QDockWidget( tr( "Slice" ) );
+  m_DockWidget->resize( 120, 300 );
+
+  QWidget* temp = new QWidget();
+  temp->resize( 100, 150 );
+
+  QGridLayout* layout = new QGridLayout( temp );
+  layout->setContentsMargins(3, -1, 3, -1);
+
+  QLabel* SliceX = new QLabel( "X Slice" );
+  layout->addWidget( SliceX, 0, 0 );
+  QSpinBox* XSliceSpinBox = new QSpinBox();
+  layout->addWidget( XSliceSpinBox, 0, 1 );
+
+  QLabel* SliceY = new QLabel( "Y Slice" );
+  layout->addWidget( SliceY, 1, 0 );
+  QSpinBox* YSliceSpinBox = new QSpinBox( );
+  layout->addWidget( YSliceSpinBox, 1, 1 );
+
+  QLabel* SliceZ = new QLabel( "Z Slice" );
+  layout->addWidget( SliceZ, 2, 0 );
+  QSpinBox* ZSliceSpinBox = new QSpinBox( );
+  layout->addWidget( ZSliceSpinBox, 2, 1 );
+
+  QLabel* SliceT = new QLabel( "T Time" );
+  layout->addWidget( SliceT, 3, 0 );
+  QSpinBox* TSliceSpinBox = new QSpinBox( );
+  layout->addWidget( TSliceSpinBox, 3, 1 );
+
+  m_DockWidget->layout()->addWidget( temp );
+
+  ReadSettings();
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoTabImageView4D::CreateAllViewActions()
+{
   QActionGroup* group = new QActionGroup( this );
 
   QAction* QuadViewAction = new QAction( tr("Quad-View"), this );
@@ -110,39 +157,6 @@ QGoTabImageView4D::QGoTabImageView4D( QWidget* parent ) :
 
   QObject::connect( BackgroundColorAction, SIGNAL( triggered() ),
     this, SLOT( ChangeBackgroundColor() ) );
-
-  m_DockWidget = new QDockWidget( tr( "Slice" ) );
-  m_DockWidget->resize( 120, 300 );
-
-  QWidget* temp = new QWidget();
-  temp->resize( 100, 150 );
-
-  QGridLayout* layout = new QGridLayout( temp );
-  layout->setContentsMargins(3, -1, 3, -1);
-
-  QLabel* SliceX = new QLabel( "X Slice" );
-  layout->addWidget( SliceX, 0, 0 );
-  QSpinBox* XSliceSpinBox = new QSpinBox();
-  layout->addWidget( XSliceSpinBox, 0, 1 );
-
-  QLabel* SliceY = new QLabel( "Y Slice" );
-  layout->addWidget( SliceY, 1, 0 );
-  QSpinBox* YSliceSpinBox = new QSpinBox( );
-  layout->addWidget( YSliceSpinBox, 1, 1 );
-
-  QLabel* SliceZ = new QLabel( "Z Slice" );
-  layout->addWidget( SliceZ, 2, 0 );
-  QSpinBox* ZSliceSpinBox = new QSpinBox( );
-  layout->addWidget( ZSliceSpinBox, 2, 1 );
-
-  QLabel* SliceT = new QLabel( "T Time" );
-  layout->addWidget( SliceT, 3, 0 );
-  QSpinBox* TSliceSpinBox = new QSpinBox( );
-  layout->addWidget( TSliceSpinBox, 3, 1 );
-
-  m_DockWidget->layout()->addWidget( temp );
-
-  ReadSettings();
 }
 //--------------------------------------------------------------------------
 
@@ -219,56 +233,100 @@ GoFigure::TabDimensionType QGoTabImageView4D::GetTabDimensionType( ) const
 
 //--------------------------------------------------------------------------
 void QGoTabImageView4D::SetMultiFiles( FileListType* iFileList,
-  const int& iTimePoint,
-  const int& iZDepth )
+  const int& iTimePoint )
 {
   m_TimePoint = iTimePoint;
-  m_ZDepth = iZDepth;
 
-  m_ThreadedReader1->SetInput( iFileList, itk::MultiFileReader::JPEG, true );
-  m_ThreadedReader1->SetTimePoint( m_TimePoint );
+  m_Reader1->SetFileType( itk::MultiFileReader::JPEG );
+  m_Reader1->SetTimeBased( true );
+  m_Reader1->SetDimensionality( 2 );
+  m_Reader1->MultiChannelImagesOn();
 
-  m_ThreadedReader1->start();
+  m_Reader2->SetFileType( itk::MultiFileReader::JPEG );
+  m_Reader2->SetTimeBased( false );
+  m_Reader2->SetDimensionality( 2 );
+  m_Reader2->MultiChannelImagesOn();
 
-  m_ThreadedReader2->SetInput( iFileList, itk::MultiFileReader::JPEG, false );
-  m_ThreadedReader2->SetZDepth( m_ZDepth );
+  m_XYZFileList->resize( iFileList->size() );
+  m_XYTFileList->resize( iFileList->size() );
+
+  std::copy( iFileList->begin(), iFileList->end(), m_XYZFileList->begin() );
+  std::copy( iFileList->begin(), iFileList->end(), m_XYTFileList->begin() );
+
+  std::sort( m_XYZFileList->begin(), m_XYZFileList->end(),
+      GoFigureFileInfoHelperTimeBasedCompare() );
+
+  std::sort( m_XYTFileList->begin(), m_XYTFileList->end(),
+      GoFigureFileInfoHelperZCoordBasedCompare() );
+
+  m_Reader1->SetInput( m_XYZFileList );
+  m_Reader1->SetTimePoint( m_TimePoint );
+  m_Reader1->Update();
+
+
+//   m_ThreadedReader1->SetInput( iFileList, itk::MultiFileReader::JPEG, true );
+//   m_ThreadedReader1->SetTimePoint( m_TimePoint );
+
+//   m_ThreadedReader1->start();
+
+//   m_ThreadedReader2->SetInput( iFileList, itk::MultiFileReader::JPEG, false );
+//   m_ThreadedReader2->SetZDepth( m_ZDepth );
 
 //   m_ThreadedReader2->start();
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoTabImageView4D::ReceiveXYZImage()
-{
-  m_XYZImage = m_ThreadedReader1->GetOutput();
-  m_XYZImageView->SetImage( m_XYZImage );
-  m_XYZImageView->Update();
-}
+// void QGoTabImageView4D::ReceiveXYZImage()
+// {
+//   m_XYZImage = m_ThreadedReader1->GetOutput();
+//   m_XYZImageView->SetImage( m_XYZImage );
+//   m_XYZImageView->Update();
+// }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoTabImageView4D::ReceiveXYTImage()
-{
-  m_XYTImage = m_ThreadedReader2->GetOutput();
-  m_XYTImageView->SetImage( m_XYTImage );
-  m_XYTImageView->Update();
-
-  this->show();
-}
+// void QGoTabImageView4D::ReceiveXYTImage()
+// {
+//   m_XYTImage = m_ThreadedReader2->GetOutput();
+//   m_XYTImageView->SetImage( m_XYTImage );
+//   m_XYTImageView->Update();
+//
+//   this->show();
+// }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void QGoTabImageView4D::SetTimePoint( const int& iTimePoint )
 {
   m_TimePoint = iTimePoint;
-  m_ThreadedReader1->SetTimePoint( m_TimePoint );
-  m_ThreadedReader1->start();
+  m_Reader1->SetTimePoint( m_TimePoint );
+//   m_ThreadedReader1->SetTimePoint( m_TimePoint );
+//   m_ThreadedReader1->start();
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void QGoTabImageView4D::Update()
 {
+  m_XYZImage = m_Reader1->GetOutput();
+  m_XYZImageView->SetImage( m_XYZImage );
+  m_XYZImageView->Update();
+
+  m_ZDepth = m_XYZImageView->GetSliceViewXY();
+
+  m_Reader2->SetInput( m_XYTFileList );
+  m_Reader2->SetZDepth( m_ZDepth );
+  m_Reader2->Update();
+
+  m_XYTImage = m_Reader2->GetOutput();
+  m_XYTImageView->SetImage( m_XYTImage );
+  m_XYTImageView->Update();
+
+  int tslice = m_XYTImageView->GetSliceViewXY();
+
+//   std::cout <<"Z Slice : " <<zslice <<std::endl;
+//   std::cout <<"T Slice : " <<tslice <<std::endl;
 }
 //--------------------------------------------------------------------------
 
