@@ -1,0 +1,16 @@
+TODO
+ +++ Synchronization DockWidget <-> Visualization (3d/3dwt)
+ +++ Channel Extraction   (3d/w3dwt)
+ +++ Manual Segmentation   
+ +++ DataBase Integration  
+ +++ Manual Editing        
+ ++ Track Visualization   
+ ++ Mesh Construction from Contours 
+ ++ Demo/Video 
+ + QGoTabImageView4D  
+   * Internal Synchonization 
+   * Synchronization DockWidget <-> Visualization 
+   * Manual Segmentation 
+   * Channel Extraction  
+
+ 
