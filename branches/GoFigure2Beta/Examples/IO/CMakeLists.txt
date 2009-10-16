@@ -1,5 +1,6 @@
 SET( QGOIO_EXAMPLES_SRC
   megacaptureimport
+  multifilereader
 )
 
 FOREACH( var ${QGOIO_EXAMPLES_SRC} )
