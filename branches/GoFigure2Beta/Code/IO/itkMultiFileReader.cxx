@@ -58,7 +58,7 @@ MultiFileReader::MultiFileReader( ) : m_OutputImage( 0 ), m_FileList( 0 ),
   m_Dimensionality( 0 ), m_DataScalarType( -1 ), m_NumberOfChannels( -1 ),
   m_NumberOfTimePoints( -1 ), m_NumberOfSlices( -1 ), m_UpdateTimePoint( -1 ),
   m_UpdateZSlice( -1 ), m_UpdateChannel( -1 ), m_MultiChannelImages( false ),
-  m_TimeBased( true ), m_ProgressBar( 0 ), m_IsProgressBarSet( false )
+  m_TimeBased( true )//, m_ProgressBar( 0 ), m_IsProgressBarSet( false )
 {
 }
 //-----------------------------------------------------------------------------
@@ -67,11 +67,6 @@ MultiFileReader::MultiFileReader( ) : m_OutputImage( 0 ), m_FileList( 0 ),
 //-----------------------------------------------------------------------------
 MultiFileReader::~MultiFileReader()
 {
-  if( m_OutputImage )
-    {
-    m_OutputImage->Delete();
-    m_OutputImage = 0;
-    }
 }
 //-----------------------------------------------------------------------------
 
@@ -215,31 +210,31 @@ void MultiFileReader::BuildVolumeFrom2DImages()
       {
       case JPEG:
         {
-        AddToVolumeBuilder< vtkJPEGReader >( counter, (*It).m_Filename.c_str(),
+        AddToVolumeBuilder< vtkJPEGReader >( counter, (*It).m_Filename,
           volumeBuilder );
         break;
         }
       case BMP:
         {
-        AddToVolumeBuilder< vtkBMPReader >( counter, (*It).m_Filename.c_str(),
+        AddToVolumeBuilder< vtkBMPReader >( counter, (*It).m_Filename,
           volumeBuilder );
         break;
         }
       case PNG:
         {
-        AddToVolumeBuilder< vtkPNGReader >( counter, (*It).m_Filename.c_str(),
+        AddToVolumeBuilder< vtkPNGReader >( counter, (*It).m_Filename,
           volumeBuilder );
         break;
         }
       case TIFF:
         {
-        AddToVolumeBuilder< vtkTIFFReader >( counter, (*It).m_Filename.c_str(),
+        AddToVolumeBuilder< vtkTIFFReader >( counter, (*It).m_Filename,
           volumeBuilder );
         break;
         }
       case MHA:
         {
-        AddToVolumeBuilder< vtkMetaImageReader >( counter, (*It).m_Filename.c_str(),
+        AddToVolumeBuilder< vtkMetaImageReader >( counter, (*It).m_Filename,
           volumeBuilder );
         break;
         }
@@ -255,12 +250,12 @@ void MultiFileReader::BuildVolumeFrom2DImages()
         }
       }
 
-    if( m_IsProgressBarSet )
-      {
-      m_ProgressBar->setValue(
-          static_cast< float >( counter * 80 ) /
-          static_cast< float >( m_UpdateFileList.size() ) );
-      }
+//     if( m_IsProgressBarSet )
+//       {
+//       m_ProgressBar->setValue(
+//           static_cast< float >( counter * 80 ) /
+//           static_cast< float >( m_UpdateFileList.size() ) );
+//       }
       ++It;
       ++counter;
     }
@@ -294,14 +289,14 @@ void MultiFileReader::BuildVolumeFrom2DImages()
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
-void MultiFileReader::SetProgressBar( QProgressBar* PB )
-{
-  if( PB )
-    {
-    m_ProgressBar = PB;
-    m_IsProgressBarSet = true;
-    }
-}
+// void MultiFileReader::SetProgressBar( QProgressBar* PB )
+// {
+//   if( PB )
+//     {
+//     m_ProgressBar = PB;
+//     m_IsProgressBarSet = true;
+//     }
+// }
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
@@ -327,14 +322,14 @@ void MultiFileReader::GenerateData( )
     m_OutputImage = 0;
     }
 
-  if( m_IsProgressBarSet )
-    {
-    if( m_ProgressBar )
-      {
-      m_ProgressBar->show();
-      m_ProgressBar->setValue( 1 );
-      }
-    }
+//   if( m_IsProgressBarSet )
+//     {
+//     if( m_ProgressBar )
+//       {
+//       m_ProgressBar->show();
+//       m_ProgressBar->setValue( 1 );
+//       }
+//     }
 
   ComputeUpdateFileList();
   if( m_UpdateFileList.empty() )
@@ -342,10 +337,10 @@ void MultiFileReader::GenerateData( )
     std::cout <<"Problem: m_UpdateFileList is empty :-/ (after ComputeUpdateFileList)" <<std::endl;
     return;
     }
-  if( m_IsProgressBarSet )
-    {
-    this->m_ProgressBar->setValue( 5 );
-    }
+//   if( m_IsProgressBarSet )
+//     {
+//     this->m_ProgressBar->setValue( 5 );
+//     }
 
   if( this->m_Dimensionality == 2 )
     {
@@ -396,10 +391,10 @@ void MultiFileReader::CreateVolumeFromOne3DImageFile()
         myImage_ch1->ShallowCopy( reader->GetOutput() );
         reader->Delete();
 
-        if( m_IsProgressBarSet )
-          {
-          m_ProgressBar->setValue( 20 );
-          }
+//         if( m_IsProgressBarSet )
+//           {
+//           m_ProgressBar->setValue( 20 );
+//           }
 
         if( ( NumberOfChannels == 1 ) )
           {
@@ -415,19 +410,19 @@ void MultiFileReader::CreateVolumeFromOne3DImageFile()
         myImage_ch2->ShallowCopy( reader2->GetOutput() );
         reader2->Delete();
 
-        if( m_IsProgressBarSet )
-          {
-          m_ProgressBar->setValue( 40 );
-          }
+//         if( m_IsProgressBarSet )
+//           {
+//           m_ProgressBar->setValue( 40 );
+//           }
 
         vtkImageAppendComponents* appendFilter = vtkImageAppendComponents::New();
         appendFilter->AddInput( myImage_ch1 );
         appendFilter->AddInput( myImage_ch2 );
 
-        if( m_IsProgressBarSet )
-          {
-          m_ProgressBar->setValue( 60 );
-          }
+//         if( m_IsProgressBarSet )
+//           {
+//           m_ProgressBar->setValue( 60 );
+//           }
 
         vtkImageData* myImage_ch3 = vtkImageData::New();
         if( NumberOfChannels == 2 )
@@ -444,10 +439,10 @@ void MultiFileReader::CreateVolumeFromOne3DImageFile()
           reader3->Delete();
           }
 
-        if( m_IsProgressBarSet )
-          {
-          m_ProgressBar->setValue( 80 );
-          }
+//         if( m_IsProgressBarSet )
+//           {
+//           m_ProgressBar->setValue( 80 );
+//           }
 
         appendFilter->AddInput( myImage_ch3 );
         appendFilter->Update();
@@ -460,10 +455,10 @@ void MultiFileReader::CreateVolumeFromOne3DImageFile()
         myImage_ch2->Delete();
         myImage_ch1->Delete();
 
-        if( m_IsProgressBarSet )
-          {
-          m_ProgressBar->setValue( 100 );
-          }
+//         if( m_IsProgressBarSet )
+//           {
+//           m_ProgressBar->setValue( 100 );
+//           }
 
         m_OutputImage = myImage3;
         }

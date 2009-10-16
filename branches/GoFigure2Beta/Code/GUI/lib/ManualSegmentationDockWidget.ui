@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>190</width>
-    <height>299</height>
+    <width>199</width>
+    <height>311</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>DockWidget</string>
+   <string>Manual Segmentation</string>
   </property>
   <widget class="QWidget" name="dockWidgetContents">
    <widget class="QScrollArea" name="scrollArea">
@@ -19,15 +19,27 @@
      <rect>
       <x>0</x>
       <y>0</y>
-      <width>181</width>
-      <height>271</height>
+      <width>191</width>
+      <height>281</height>
      </rect>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::NoFrame</enum>
     </property>
     <property name="frameShadow">
      <enum>QFrame::Sunken</enum>
     </property>
     <property name="lineWidth">
      <number>0</number>
+    </property>
+    <property name="midLineWidth">
+     <number>0</number>
+    </property>
+    <property name="verticalScrollBarPolicy">
+     <enum>Qt::ScrollBarAlwaysOn</enum>
+    </property>
+    <property name="horizontalScrollBarPolicy">
+     <enum>Qt::ScrollBarAlwaysOn</enum>
     </property>
     <property name="widgetResizable">
      <bool>true</bool>
@@ -37,11 +49,11 @@
       <rect>
        <x>0</x>
        <y>0</y>
-       <width>179</width>
-       <height>269</height>
+       <width>177</width>
+       <height>267</height>
       </rect>
      </property>
-     <widget class="QWidget" name="">
+     <widget class="QWidget" name="layoutWidget">
       <property name="geometry">
        <rect>
         <x>10</x>
@@ -74,6 +86,9 @@
        </item>
        <item>
         <widget class="QPushButton" name="SettingsBtn">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
          <property name="text">
           <string>Settings...</string>
          </property>
@@ -85,18 +100,28 @@
           <layout class="QHBoxLayout" name="horizontalLayout">
            <item>
             <widget class="QLabel" name="label">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
              <property name="text">
               <string>Id</string>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QSpinBox" name="IdSpinBox"/>
+            <widget class="QSpinBox" name="IdSpinBox">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+            </widget>
            </item>
           </layout>
          </item>
          <item>
           <widget class="QPushButton" name="IdContourColorBtn">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
            <property name="autoFillBackground">
             <bool>false</bool>
            </property>
@@ -114,6 +139,9 @@
         <layout class="QVBoxLayout" name="verticalLayout_2">
          <item>
           <widget class="QPushButton" name="ReinitializeBtn">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
            <property name="text">
             <string>Reinitialize</string>
            </property>
@@ -124,6 +152,9 @@
          </item>
          <item>
           <widget class="QPushButton" name="ValidateBtn">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
            <property name="text">
             <string>Validate</string>
            </property>
@@ -134,6 +165,9 @@
          </item>
          <item>
           <widget class="QPushButton" name="ReinitializeIncrementBtn">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
            <property name="text">
             <string>Reinitialize + Increment</string>
            </property>
@@ -146,12 +180,123 @@
        </item>
       </layout>
      </widget>
-     <zorder></zorder>
-     <zorder></zorder>
     </widget>
    </widget>
   </widget>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>OffRBtn</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>SettingsBtn</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>33</x>
+     <y>82</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>71</x>
+     <y>111</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>OffRBtn</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>ReinitializeBtn</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>146</x>
+     <y>82</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>158</x>
+     <y>213</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>OffRBtn</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>ValidateBtn</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>115</x>
+     <y>86</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>117</x>
+     <y>233</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>OffRBtn</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>ReinitializeIncrementBtn</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>96</x>
+     <y>80</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>93</x>
+     <y>263</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>OffRBtn</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>IdContourColorBtn</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>141</x>
+     <y>81</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>133</x>
+     <y>161</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>OffRBtn</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>IdSpinBox</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>49</x>
+     <y>79</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>53</x>
+     <y>152</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>OffRBtn</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>label</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>32</x>
+     <y>84</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>157</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

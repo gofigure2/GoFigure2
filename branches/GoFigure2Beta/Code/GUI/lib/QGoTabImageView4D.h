@@ -11,6 +11,8 @@
 #include "GoFigureFileInfoHelper.h"
 #include "SnapshotHelper.h"
 
+#include <QResizeEvent>
+
 class QGoTabImageView4D : public QGoTabElementBase
 {
   Q_OBJECT
@@ -20,7 +22,7 @@ class QGoTabImageView4D : public QGoTabElementBase
 
     GoFigure::TabDimensionType GetTabDimensionType( ) const;
 
-    void SetMultiFiles( FileListType& iFileList,
+    void SetMultiFiles( FileListType* iFileList,
       const int& iSerieType,
       const int& iTimePoint );
 
@@ -102,5 +104,7 @@ class QGoTabImageView4D : public QGoTabElementBase
 
     void GetBackgroundColorFromImageViewer( );
     void SetBackgroundColorToImageViewer( );
+
+    virtual void resizeEvent( QResizeEvent* event );
 };
 #endif

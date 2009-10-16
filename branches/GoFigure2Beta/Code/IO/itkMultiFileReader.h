@@ -50,7 +50,7 @@
 #include "GoFigureFileInfoHelper.h"
 #include "MegaVTK2Configure.h"
 
-#include <QProgressBar>
+// #include <QProgressBar>
 
 namespace itk
 {
@@ -134,7 +134,7 @@ public:
   // so pipeline mechanism would not work.
   void Update( );
 
-  void SetProgressBar( QProgressBar* PB );
+//   void SetProgressBar( QProgressBar* PB );
 
 
   /** \brief Mandatory PrintSelf */
@@ -165,8 +165,8 @@ private:
   bool           m_MultiChannelImages;
   bool           m_TimeBased;
 
-  QProgressBar*    m_ProgressBar;
-  bool             m_IsProgressBarSet;
+//   QProgressBar*    m_ProgressBar;
+//   bool             m_IsProgressBarSet;
 
   virtual void GenerateData();
 

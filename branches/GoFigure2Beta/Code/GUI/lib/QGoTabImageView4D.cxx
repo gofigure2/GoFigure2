@@ -23,11 +23,13 @@ QGoTabImageView4D::QGoTabImageView4D( QWidget* parent ) :
 
   setupUi( this );
 
-  QObject::connect( m_ThreadedReader1, SIGNAL( ),
-    this, SLOT( finished() ) );
+  QObject::connect( m_ThreadedReader1, SIGNAL( finished() ),
+    this, SLOT( ReceiveXYZImage() ) );
 
-  QObject::connect( m_ThreadedReader2, SIGNAL( ),
-    this, SLOT( finished() ) );
+  QObject::connect( m_ThreadedReader1, SIGNAL( finished() ),
+    m_ThreadedReader2, SLOT( start() ) );
+  QObject::connect( m_ThreadedReader2, SIGNAL( finished() ),
+    this, SLOT( ReceiveXYTImage() ) );
 
   QActionGroup* group = new QActionGroup( this );
 
@@ -147,6 +149,16 @@ QGoTabImageView4D::QGoTabImageView4D( QWidget* parent ) :
 //--------------------------------------------------------------------------
 QGoTabImageView4D::~QGoTabImageView4D( )
 {
+  if( m_XYZImageView )
+    {
+    delete m_XYZImageView;
+    m_XYZImageView = 0;
+    }
+  if( m_XYTImageView )
+    {
+    delete m_XYTImageView;
+    m_XYTImageView = 0;
+    }
   if( m_XYZImage )
     {
     m_XYZImage->Delete();
@@ -168,15 +180,21 @@ void QGoTabImageView4D::setupUi( QWidget* parent )
     parent->resize(800, 800);
     }
 
+  QList< int > list_size;
+  list_size.push_back( 10 );
+  list_size.push_back( 10 );
+
   m_XYZImageView = new QGoImageView3D;
   m_XYZImageView->SetBackgroundColor( m_BackgroundColor );
 
   m_XYTImageView = new QGoImageView3D;
   m_XYTImageView->SetBackgroundColor( m_BackgroundColor );
 
-  m_Splitter = new QSplitter( Qt::Vertical, this );
+  m_Splitter = new QSplitter( Qt::Horizontal, parent );
   m_Splitter->addWidget( m_XYZImageView );
   m_Splitter->addWidget( m_XYTImageView );
+  m_Splitter->setSizes( list_size );
+  m_Splitter->resize( 800, 800 );
 
   retranslateUi(parent);
 
@@ -200,7 +218,7 @@ GoFigure::TabDimensionType QGoTabImageView4D::GetTabDimensionType( ) const
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoTabImageView4D::SetMultiFiles( FileListType& iFileList,
+void QGoTabImageView4D::SetMultiFiles( FileListType* iFileList,
   const int& iTimePoint,
   const int& iZDepth )
 {
@@ -215,7 +233,7 @@ void QGoTabImageView4D::SetMultiFiles( FileListType& iFileList,
   m_ThreadedReader2->SetInput( iFileList, itk::MultiFileReader::JPEG, false );
   m_ThreadedReader2->SetZDepth( m_ZDepth );
 
-  m_ThreadedReader2->start();
+//   m_ThreadedReader2->start();
 }
 //--------------------------------------------------------------------------
 
@@ -223,6 +241,8 @@ void QGoTabImageView4D::SetMultiFiles( FileListType& iFileList,
 void QGoTabImageView4D::ReceiveXYZImage()
 {
   m_XYZImage = m_ThreadedReader1->GetOutput();
+  m_XYZImageView->SetImage( m_XYZImage );
+  m_XYZImageView->Update();
 }
 //--------------------------------------------------------------------------
 
@@ -230,6 +250,10 @@ void QGoTabImageView4D::ReceiveXYZImage()
 void QGoTabImageView4D::ReceiveXYTImage()
 {
   m_XYTImage = m_ThreadedReader2->GetOutput();
+  m_XYTImageView->SetImage( m_XYTImage );
+  m_XYTImageView->Update();
+
+  this->show();
 }
 //--------------------------------------------------------------------------
 
@@ -245,11 +269,6 @@ void QGoTabImageView4D::SetTimePoint( const int& iTimePoint )
 //--------------------------------------------------------------------------
 void QGoTabImageView4D::Update()
 {
-  m_XYZImageView->SetImage( m_XYZImage );
-  m_XYZImageView->Update();
-
-  m_XYTImageView->SetImage( m_XYTImage );
-  m_XYTImageView->Update();
 }
 //--------------------------------------------------------------------------
 
@@ -449,3 +468,12 @@ std::list< QDockWidget* > QGoTabImageView4D::DockWidget()
   return oList;
 }
 //--------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoTabImageView4D::resizeEvent( QResizeEvent* iEvent )
+{
+  QWidget::resizeEvent( iEvent );
+  m_Splitter->resize( iEvent->size() );
+}
+//-------------------------------------------------------------------------
+

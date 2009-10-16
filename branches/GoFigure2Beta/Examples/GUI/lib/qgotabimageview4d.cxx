@@ -18,9 +18,15 @@ int main( int argc, char** argv )
   QGoTabImageView4D* tab = new QGoTabImageView4D;
   tab->SetMultiFiles( importFileInfoList->GetOutput(), 0, 0 );
   tab->Update();
-  tab->show();
+
+//   tab->show();
+  app.processEvents();
+
+  int output = app.exec();
+
+  app.closeAllWindows();
 
   delete tab;
 
-  return EXIT_SUCCESS;
+  return output;
 }

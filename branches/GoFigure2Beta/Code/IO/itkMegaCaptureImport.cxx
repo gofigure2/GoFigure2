@@ -45,7 +45,8 @@ namespace itk
 
 //--------------------------------------------------------------------------------
 MegaCaptureImport::
-MegaCaptureImport( ) : IsProgressBarSet( false ), m_TimeBased( true )
+MegaCaptureImport( ) : //IsProgressBarSet( false ),
+  m_TimeBased( true )
 {
 }
 //-----------------------------------------------------------------------------
@@ -66,14 +67,14 @@ void MegaCaptureImport::SetTimeBased( const bool& iBool )
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
-void MegaCaptureImport::SetProgressBar( QProgressBar* PB )
-{
-  if( PB )
-    {
-    m_ProgressBar = PB;
-    IsProgressBarSet = true;
-    }
-}
+// void MegaCaptureImport::SetProgressBar( QProgressBar* PB )
+// {
+//   if( PB )
+//     {
+//     m_ProgressBar = PB;
+//     IsProgressBarSet = true;
+//     }
+// }
 
 //-----------------------------------------------------------------------------
 void
@@ -98,10 +99,10 @@ void
 MegaCaptureImport::
 CreateOutput()
 {
-  if( this->IsProgressBarSet )
-    {
-    this->m_ProgressBar->setValue( 60 );
-    }
+//   if( this->IsProgressBarSet )
+//     {
+//     this->m_ProgressBar->setValue( 60 );
+//     }
 
   unsigned int counter = 0;
   std::vector<std::string>::iterator nit;
@@ -145,12 +146,12 @@ CreateOutput()
 
     m_OutputFileList.push_back( tempInfo );
 
-    if( this->IsProgressBarSet )
-      {
-      int value = 60 + 30 * ( static_cast< float >(counter) /
-          static_cast< float >( m_FileNameS.size() ) );
-      this->m_ProgressBar->setValue( value );
-      }
+//     if( this->IsProgressBarSet )
+//       {
+//       int value = 60 + 30 * ( static_cast< float >(counter) /
+//           static_cast< float >( m_FileNameS.size() ) );
+//       this->m_ProgressBar->setValue( value );
+//       }
 
     counter++;
     } // end for each filename
@@ -168,10 +169,10 @@ CreateOutput()
     std::sort( m_OutputFileList.begin(), m_OutputFileList.end(), comparison );
     }
 
-  if( this->IsProgressBarSet )
-    {
-    this->m_ProgressBar->setValue( 99 );
-    }
+//   if( this->IsProgressBarSet )
+//     {
+//     this->m_ProgressBar->setValue( 99 );
+//     }
 
 #if !defined(ITK_LEAN_AND_MEAN) && !defined(__BORLANDC__) && !defined(NDEBUG)
   FileListType::iterator myIt = m_OutputFileList.begin();
@@ -194,11 +195,11 @@ void
 MegaCaptureImport::
 Glob()
 {
-  if( this->IsProgressBarSet )
-    {
-    this->m_ProgressBar->show();
-    this->m_ProgressBar->setValue( 1 );
-    }
+//   if( this->IsProgressBarSet )
+//     {
+//     this->m_ProgressBar->show();
+//     this->m_ProgressBar->setValue( 1 );
+//     }
 
   m_numGroupStart.clear();
   m_numGroupLength.clear();
@@ -299,10 +300,10 @@ Glob()
     ++megaCaptureNumericalGroupCounter;
     }
 
-  if( this->IsProgressBarSet )
-    {
-    this->m_ProgressBar->setValue( 5 );
-    }
+//   if( this->IsProgressBarSet )
+//     {
+//     this->m_ProgressBar->setValue( 5 );
+//     }
 
   // Include only filenames that exactly match this regular expression.  Don't
   // match filenames that have this string as a substring (ie. that have extra
@@ -318,10 +319,10 @@ Glob()
 
   m_FileNameS = fit->GetFileNames();
 
-  if( this->IsProgressBarSet )
-    {
-    this->m_ProgressBar->setValue( 45 );
-    }
+//   if( this->IsProgressBarSet )
+//     {
+//     this->m_ProgressBar->setValue( 45 );
+//     }
 
   // re parse the indexes and length without the escape caracters
   for (sit = origFileName.begin(); sit < origFileName.end(); sit++)
@@ -347,10 +348,10 @@ Glob()
       }
     }
 
-  if( this->IsProgressBarSet )
-    {
-    this->m_ProgressBar->setValue( 55 );
-    }
+//   if( this->IsProgressBarSet )
+//     {
+//     this->m_ProgressBar->setValue( 55 );
+//     }
 
 }
 //-----------------------------------------------------------------------------

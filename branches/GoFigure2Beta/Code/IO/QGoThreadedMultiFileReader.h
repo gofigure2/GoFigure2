@@ -2,6 +2,7 @@
 #define __QGoThreadedMultiFileReader_h
 
 #include <QThread>
+#include <QReadWriteLock>
 
 #include "vtkImageData.h"
 #include "itkMultiFileReader.h"
@@ -16,7 +17,7 @@ class QGoThreadedMultiFileReader : public QThread
 
     typedef itk::MultiFileReader::FILETYPE FILETYPE;
 
-    void SetInput( FileListType iFileList,
+    void SetInput( FileListType* iFileList,
       const FILETYPE& iFileType,
       const bool& iBool );
     void SetTimePoint( const int& iT );
@@ -28,9 +29,10 @@ class QGoThreadedMultiFileReader : public QThread
     void run();
 
   private:
+    QReadWriteLock                  m_Lock;
     itk::MultiFileReader::Pointer   m_MultiFileReader;
     vtkImageData*                   m_Image;
-    FileListType                    m_FileList;
+    FileListType*                   m_FileList;
     FILETYPE                        m_FileType;
     bool                            m_TimeBased;
     int                             m_TimePoint;

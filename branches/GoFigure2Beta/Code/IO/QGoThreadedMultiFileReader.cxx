@@ -17,24 +17,18 @@ QGoThreadedMultiFileReader::~QGoThreadedMultiFileReader()
 {
 }
 
-void QGoThreadedMultiFileReader::SetInput( FileListType iFileList,
+void QGoThreadedMultiFileReader::SetInput( FileListType* iFileList,
   const FILETYPE& iFileType,
   const bool& iBool )
 {
   m_FileList = iFileList;
   m_FileType = iFileType;
-  m_TimeBased = true;
+  m_TimeBased = iBool;
 
-  if( m_TimeBased )
-    {
-    std::sort( m_FileList.begin(), m_FileList.end(),
-      GoFigureFileInfoHelperTimeBasedCompare() );
-    }
-  else
-    {
-    std::sort( m_FileList.begin(), m_FileList.end(),
-      GoFigureFileInfoHelperZCoordBasedCompare() );
-    }
+  m_MultiFileReader->SetFileType( m_FileType );
+  m_MultiFileReader->SetTimeBased( m_TimeBased );
+  m_MultiFileReader->SetDimensionality( 2 );
+  m_MultiFileReader->MultiChannelImagesOn();
 }
 
 void QGoThreadedMultiFileReader::SetTimePoint( const int& iT )
@@ -56,6 +50,19 @@ void QGoThreadedMultiFileReader::run()
 {
   if( m_TimeBased )
     {
+    std::sort( m_FileList->begin(), m_FileList->end(),
+      GoFigureFileInfoHelperTimeBasedCompare() );
+    }
+  else
+    {
+    std::sort( m_FileList->begin(), m_FileList->end(),
+      GoFigureFileInfoHelperZCoordBasedCompare() );
+    }
+//   m_Lock.lockForRead();
+  m_MultiFileReader->SetInput( m_FileList );
+
+  if( m_TimeBased )
+    {
     m_MultiFileReader->SetTimePoint( m_TimePoint );
     }
   else
@@ -63,13 +70,9 @@ void QGoThreadedMultiFileReader::run()
     m_MultiFileReader->SetZDepth( m_ZDepth );
     }
 
-  m_MultiFileReader->SetInput( &m_FileList );
-  m_MultiFileReader->SetDimensionality( 2 );
-  m_MultiFileReader->SetFileType( m_FileType );
-  m_MultiFileReader->MultiChannelImagesOn();
-  m_MultiFileReader->SetTimeBased( m_TimeBased );
   m_MultiFileReader->Update();
-  m_Image = m_MultiFileReader->GetOutput();
+//   m_Lock.unlock();
 
-  exec();
+  m_Image = m_MultiFileReader->GetOutput();
+  std::cout <<"end" <<std::endl;
 }

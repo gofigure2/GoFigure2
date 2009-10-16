@@ -52,7 +52,7 @@
 
 #include "GoFigureFileInfoHelper.h"
 
-#include <QProgressBar>
+// #include <QProgressBar>
 
 namespace itk
 {
@@ -80,7 +80,7 @@ public:
   void SetFileName( std::string name );
 
   void SetTimeBased( const bool& iBool );
-  void SetProgressBar( QProgressBar* PB );
+//   void SetProgressBar( QProgressBar* PB );
 
   void Glob();
 
@@ -103,8 +103,8 @@ private:
   StringVectorType m_FileNameS;
   FileListType     m_OutputFileList;
   std::string      m_FileName;
-  QProgressBar*    m_ProgressBar;
-  bool             IsProgressBarSet;
+//   QProgressBar*    m_ProgressBar;
+//   bool             IsProgressBarSet;
   bool             m_TimeBased;
 
 };

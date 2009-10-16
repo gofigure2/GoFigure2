@@ -28,8 +28,11 @@ ADD_LIBRARY( QGoIO
 
 TARGET_LINK_LIBRARIES( QGoIO
   QGoIO
+  vtkIO
+  vtkImaging
   vtkLSMReader
   ITKCommon
+  ITKIO
 )
 
 INSTALL_TARGETS(/lib QGoIO)
