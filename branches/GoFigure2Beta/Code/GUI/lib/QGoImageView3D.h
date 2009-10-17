@@ -43,6 +43,13 @@ public:
   int GetSliceViewXZ() const;
   int GetSliceViewYZ() const;
 
+signals:
+  void SliceViewXYChanged( int Slice );
+  void SliceViewXZChanged( int Slice );
+  void SliceViewYZChanged( int Slice );
+
+  void FullScreenViewChanged( int View );
+
 public slots:
   QString SnapshotViewXY( const GoFigure::SnapshotImageType& iType,
     const QString& iBaseName = QString( "snapshot" ) );

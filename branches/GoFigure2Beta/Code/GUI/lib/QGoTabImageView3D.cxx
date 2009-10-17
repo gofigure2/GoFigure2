@@ -34,6 +34,9 @@ QGoTabImageView3D::QGoTabImageView3D( QWidget* parent ) :
   QObject::connect( m_XSliceSpinBox, SIGNAL( valueChanged( int ) ),
     this, SLOT( SetSliceViewYZ( int ) ) );
 
+  QObject::connect( this, SIGNAL( SliceViewYZChanged( int ) ),
+    m_XSliceSpinBox, SLOT( setValue( int ) ) );
+
   QLabel* SliceY = new QLabel( "Y Slice" );
   layout->addWidget( SliceY, 1, 0 );
   m_YSliceSpinBox = new QSpinBox( );
@@ -42,6 +45,9 @@ QGoTabImageView3D::QGoTabImageView3D( QWidget* parent ) :
   QObject::connect( m_YSliceSpinBox, SIGNAL( valueChanged( int ) ),
     this, SLOT( SetSliceViewXZ( int ) ) );
 
+  QObject::connect( this, SIGNAL( SliceViewXZChanged( int ) ),
+    m_YSliceSpinBox, SLOT( setValue( int ) ) );
+
   QLabel* SliceZ = new QLabel( "Z Slice" );
   layout->addWidget( SliceZ, 2, 0 );
   m_ZSliceSpinBox = new QSpinBox( );
@@ -49,6 +55,9 @@ QGoTabImageView3D::QGoTabImageView3D( QWidget* parent ) :
 
   QObject::connect( m_ZSliceSpinBox, SIGNAL( valueChanged( int ) ),
     this, SLOT( SetSliceViewXY( int ) ) );
+
+  QObject::connect( this, SIGNAL( SliceViewXYChanged( int ) ),
+    m_ZSliceSpinBox, SLOT( setValue( int ) ) );
 
   m_DockWidget->layout()->addWidget( temp );
   m_DockWidget->setFeatures( QDockWidget::DockWidgetMovable |
@@ -165,6 +174,18 @@ void QGoTabImageView3D::setupUi( QWidget* parent )
 
   m_ImageView = new QGoImageView3D( this );
   m_ImageView->SetBackgroundColor( m_BackgroundColor );
+
+  QObject::connect( m_ImageView, SIGNAL( SliceViewXYChanged( int ) ),
+    this, SIGNAL( SliceViewXYChanged( int ) ) );
+
+  QObject::connect( m_ImageView, SIGNAL( SliceViewXZChanged( int ) ),
+    this, SIGNAL( SliceViewXZChanged( int ) ) );
+
+  QObject::connect( m_ImageView, SIGNAL( SliceViewYZChanged( int ) ),
+    this, SIGNAL( SliceViewYZChanged( int ) ) );
+
+  QObject::connect( m_ImageView, SIGNAL( FullScreenViewChanged( int ) ),
+    this, SIGNAL( FullScreenViewChanged( int ) ) );
 
   m_LayOut = new QHBoxLayout( parent );
   m_LayOut->addWidget( m_ImageView  );

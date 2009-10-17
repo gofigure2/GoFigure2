@@ -40,6 +40,13 @@ class QGoTabImageView3D : public QGoTabImageViewElementBase
     virtual void WriteSettings() {}
     virtual void ReadSettings() {}
 
+  signals:
+    void SliceViewXYChanged( int Slice );
+    void SliceViewXZChanged( int Slice );
+    void SliceViewYZChanged( int Slice );
+
+    void FullScreenViewChanged( int View );    
+
   public slots:
     QString SnapshotViewXY( const GoFigure::SnapshotImageType& iType,
       const QString& iBaseName = QString( "snapshot" ) );

@@ -323,7 +323,7 @@ void QGoTabImageView4D::Update()
   m_XYTImageView->SetImage( m_XYTImage );
   m_XYTImageView->Update();
 
-  int tslice = m_XYTImageView->GetSliceViewXY();
+//  int tslice = m_XYTImageView->GetSliceViewXY();
 
 //   std::cout <<"Z Slice : " <<zslice <<std::endl;
 //   std::cout <<"T Slice : " <<tslice <<std::endl;

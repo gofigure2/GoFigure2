@@ -21,13 +21,15 @@
 
 
 //-------------------------------------------------------------------------
-QGoImageView3D::QGoImageView3D( QWidget* iParent ) : QGoImageView( iParent )
+QGoImageView3D::
+QGoImageView3D( QWidget* iParent ) : 
+  QGoImageView( iParent ), 
+  IsFullScreen( 0 )
 {
-  IsFullScreen = 0;
-
   VtkEventQtConnector = vtkEventQtSlotConnect::New();
 
   setupUi( this );
+  
   QObject::connect( this->SliderXY, SIGNAL( valueChanged( int ) ),
     this, SLOT( SetSliceViewXY( int ) ) );
   QObject::connect( this->SliderXZ, SIGNAL( valueChanged( int ) ),
@@ -418,6 +420,7 @@ void QGoImageView3D::SetFullScreenView( const int& iS )
       break;
       }
     }
+  emit FullScreenViewChanged( IsFullScreen );
 }
 //-------------------------------------------------------------------------
 
@@ -472,8 +475,14 @@ void QGoImageView3D::resizeEvent( QResizeEvent* iEvent )
 //-------------------------------------------------------------------------
 void QGoImageView3D::SetSliceViewXY( const int& iSlice )
 {
-  this->m_Pool->GetItem( 0 )->SetSlice( iSlice );
-  this->m_Pool->SyncRender();
+  int s = GetSliceViewXY();
+
+  if( iSlice != s )
+    {
+    this->m_Pool->GetItem( 0 )->SetSlice( iSlice );
+    this->m_Pool->SyncRender();
+    emit SliceViewXYChanged( iSlice );
+    }
 }
 //-------------------------------------------------------------------------
 int QGoImageView3D::GetSliceViewXY() const
@@ -483,8 +492,14 @@ int QGoImageView3D::GetSliceViewXY() const
 //-------------------------------------------------------------------------
 void QGoImageView3D::SetSliceViewXZ( const int& iSlice )
 {
-  this->m_Pool->GetItem( 1 )->SetSlice( iSlice );
-  this->m_Pool->SyncRender();
+  int s = GetSliceViewXZ();
+
+  if( s != iSlice )
+    {
+    this->m_Pool->GetItem( 1 )->SetSlice( iSlice );
+    this->m_Pool->SyncRender();
+    emit SliceViewXZChanged( iSlice );
+    }
 }
 //-------------------------------------------------------------------------
 int QGoImageView3D::GetSliceViewXZ() const
@@ -494,8 +509,14 @@ int QGoImageView3D::GetSliceViewXZ() const
 //-------------------------------------------------------------------------
 void QGoImageView3D::SetSliceViewYZ( const int& iSlice )
 {
-  this->m_Pool->GetItem( 2 )->SetSlice( iSlice );
-  this->m_Pool->SyncRender();
+  int s = GetSliceViewYZ();
+
+  if( s != iSlice )
+    {
+    this->m_Pool->GetItem( 2 )->SetSlice( iSlice );
+    this->m_Pool->SyncRender();
+    emit SliceViewYZChanged( iSlice );
+    }
 }
 //-------------------------------------------------------------------------
 int QGoImageView3D::GetSliceViewYZ() const
@@ -505,21 +526,40 @@ int QGoImageView3D::GetSliceViewYZ() const
 //-------------------------------------------------------------------------
 void QGoImageView3D::MoveSliderXY( )
 {
-  this->SliderXY->setValue( this->m_Pool->GetItem( 0 )->GetSlice() );
+  int s = GetSliceViewXY();
+
+  if( s != this->SliderXY->value() )
+    {
+    this->SliderXY->setValue( s );
+    emit SliceViewXYChanged( s );
+    }
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void QGoImageView3D::MoveSliderXZ( )
 {
-  this->SliderXZ->setValue( this->m_Pool->GetItem( 1 )->GetSlice() );
+  int s = GetSliceViewXZ();
+
+  if( s != this->SliderXZ->value() )
+    {  
+    this->SliderXZ->setValue( s );
+    emit SliceViewXZChanged( s );
+    }
+
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void QGoImageView3D::MoveSliderYZ( )
 {
-  this->SliderYZ->setValue( this->m_Pool->GetItem( 2 )->GetSlice() );
+  int s = GetSliceViewYZ();
+
+  if( s != this->SliderYZ->value() )
+    {
+    this->SliderYZ->setValue( s );
+    emit SliceViewYZChanged( s );
+    }
 }
 //-------------------------------------------------------------------------
 

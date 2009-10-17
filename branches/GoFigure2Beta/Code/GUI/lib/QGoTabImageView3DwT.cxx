@@ -194,6 +194,18 @@ void QGoTabImageView3DwT::setupUi( QWidget* parent )
   m_ImageView = new QGoImageView3D( this );
   m_ImageView->SetBackgroundColor( m_BackgroundColor );
 
+  QObject::connect( m_ImageView, SIGNAL( SliceViewXYChanged( int ) ),
+    this, SIGNAL( SliceViewXYChanged( int ) ) );
+
+  QObject::connect( m_ImageView, SIGNAL( SliceViewXZChanged( int ) ),
+    this, SIGNAL( SliceViewXZChanged( int ) ) );
+  
+  QObject::connect( m_ImageView, SIGNAL( SliceViewYZChanged( int ) ),
+    this, SIGNAL( SliceViewYZChanged( int ) ) );
+
+  QObject::connect( m_ImageView, SIGNAL( FullScreenViewChanged( int ) ),
+    this, SIGNAL( FullScreenViewChanged( int ) ) );
+  
   m_LayOut = new QHBoxLayout( parent );
   m_LayOut->addWidget( m_ImageView  );
 
@@ -339,7 +351,8 @@ void QGoTabImageView3DwT::SetTimePoint( const int& iTimePoint )
       temp_image[0] = vtkImageData::New();
       temp_image[0]->ShallowCopy( m_LSMReader[0]->GetOutput() );
 
-      vtkImageAppendComponents* append_filter = vtkImageAppendComponents::New();
+      vtkImageAppendComponents* append_filter = 
+        vtkImageAppendComponents::New();
       append_filter->AddInput( temp_image[0] );
 
       for( int i = 1; i < NumberOfChannels; i++ )
@@ -386,6 +399,8 @@ void QGoTabImageView3DwT::SetTimePoint( const int& iTimePoint )
       m_Image->ShallowCopy( m_LSMReader[0]->GetOutput() );
       }
     Update();
+
+    emit TimePointChanged( m_TimePoint );
     }
   else
     {

@@ -74,5 +74,5 @@ int main( int argc, char** argv )
   delete tab;
   reader->Delete();
 
-  return EXIT_SUCCESS;
+  return output;
 }

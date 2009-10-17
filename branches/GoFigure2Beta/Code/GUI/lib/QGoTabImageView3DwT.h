@@ -45,6 +45,13 @@ public:
     virtual void WriteSettings() {}
     virtual void ReadSettings() {}
 
+signals:
+    void TimePointChanged( int TimePoint );
+    void SliceViewXYChanged( int Slice );
+    void SliceViewXZChanged( int Slice );
+    void SliceViewYZChanged( int Slice );
+    void FullScreenViewChanged( int FullScreen );
+
 public slots:
     void SetTimePoint( const int& );
 
