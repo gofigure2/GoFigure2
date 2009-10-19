@@ -3,6 +3,8 @@
 QGoChannelVisualizationDockWidget::
 QGoChannelVisualizationDockWidget( QWidget* parent ) : QDockWidget( parent )
 {
+  this->setupUi( this );
+
   QObject::connect( this->buttonBox, SIGNAL( accepted() ),
     this, SLOT( Accept() ) );
 }

@@ -11,7 +11,7 @@ class QGoChannelVisualizationDockWidget :
   Q_OBJECT
 
   public:
-    QGoChannelVisualizationDockWidget( QWidget* parent );
+    QGoChannelVisualizationDockWidget( QWidget* parent = 0 );
     ~QGoChannelVisualizationDockWidget();
 
     void SetNumberOfChannels( const unsigned int& iN );
