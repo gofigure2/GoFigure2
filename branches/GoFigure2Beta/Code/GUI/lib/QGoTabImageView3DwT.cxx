@@ -64,6 +64,9 @@ QGoTabImageView3DwT::QGoTabImageView3DwT( QWidget* parent ) :
   QObject::connect( m_TSliceSpinBox, SIGNAL( valueChanged( int ) ),
     this, SLOT( SetTimePoint( int ) ) );
 
+  QObject::connect( this, SIGNAL( TimePointChanged( int ) ),
+    m_TSliceSpinBox, SLOT( setValue( int ) ) );
+
   m_DockWidget->layout()->addWidget( temp );
   m_DockWidget->setFeatures( QDockWidget::DockWidgetMovable |
     QDockWidget::DockWidgetFloatable );
