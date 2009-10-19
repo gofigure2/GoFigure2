@@ -214,8 +214,9 @@ GoFigure::TabDimensionType QGoTabImageView3D::GetTabDimensionType( ) const
 //--------------------------------------------------------------------------
 void QGoTabImageView3D::SetImage( vtkImageData* iImage )
 {
-  m_ImageView->SetImage( iImage );
   m_Image = iImage;
+
+  m_ImageView->SetImage( iImage );
 
   int extent[6];
   m_Image->GetExtent( extent );
@@ -234,6 +235,12 @@ void QGoTabImageView3D::SetImage( vtkImageData* iImage )
 void QGoTabImageView3D::Update()
 {
   m_ImageView->Update();
+  m_XSliceSpinBox->setValue(
+    ( m_XSliceSpinBox->minimum() + m_XSliceSpinBox->maximum() ) / 2 );
+  m_YSliceSpinBox->setValue(
+    ( m_YSliceSpinBox->minimum() + m_YSliceSpinBox->maximum() ) / 2 );
+  m_ZSliceSpinBox->setValue(
+    ( m_ZSliceSpinBox->minimum() + m_ZSliceSpinBox->maximum() ) / 2 );
 }
 //--------------------------------------------------------------------------
 

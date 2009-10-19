@@ -77,6 +77,7 @@ public slots:
 
     void ChangeLookupTable();
     void ShowScalarBar( const bool& );
+    void ChangeBackgroundColor();
 
 protected:
   QHBoxLayout*          m_LayOut;

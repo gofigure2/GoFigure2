@@ -43,9 +43,13 @@ void QGoTabImageViewElementBase::ChangeBackgroundColor()
 {
   this->GetBackgroundColorFromImageViewer();
 
-  m_BackgroundColor = QColorDialog::getColor( m_BackgroundColor,
+  QColor temp = QColorDialog::getColor( m_BackgroundColor,
     this, tr( "Choose Background Color" ) );
 
-  this->SetBackgroundColorToImageViewer();
+  if( temp != m_BackgroundColor )
+    {
+    m_BackgroundColor = temp;
+    this->SetBackgroundColorToImageViewer();
+    }
 }
 //--------------------------------------------------------------------------

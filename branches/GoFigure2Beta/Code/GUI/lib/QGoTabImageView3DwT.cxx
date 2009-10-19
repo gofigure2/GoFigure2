@@ -10,6 +10,7 @@
 #include <QDockWidget>
 #include <QSpinBox>
 #include <QVBoxLayout>
+#include <QColorDialog>
 
 //--------------------------------------------------------------------------
 QGoTabImageView3DwT::QGoTabImageView3DwT( QWidget* parent ) :
@@ -40,6 +41,9 @@ QGoTabImageView3DwT::QGoTabImageView3DwT( QWidget* parent ) :
   QObject::connect( m_XSliceSpinBox, SIGNAL( valueChanged( int ) ),
     this, SLOT( SetSliceViewYZ( int ) ) );
 
+  QObject::connect( this, SIGNAL( SliceViewYZChanged( int ) ),
+    m_XSliceSpinBox, SLOT( setValue( int ) ) );
+
   QLabel* SliceY = new QLabel( "Y Slice" );
   layout->addWidget( SliceY, 1, 0 );
   m_YSliceSpinBox = new QSpinBox( );
@@ -48,6 +52,9 @@ QGoTabImageView3DwT::QGoTabImageView3DwT( QWidget* parent ) :
   QObject::connect( m_YSliceSpinBox, SIGNAL( valueChanged( int ) ),
     this, SLOT( SetSliceViewXZ( int ) ) );
 
+  QObject::connect( this, SIGNAL( SliceViewXZChanged( int ) ),
+    m_YSliceSpinBox, SLOT( setValue( int ) ) );
+
   QLabel* SliceZ = new QLabel( "Z Slice" );
   layout->addWidget( SliceZ, 2, 0 );
   m_ZSliceSpinBox = new QSpinBox( );
@@ -55,6 +62,9 @@ QGoTabImageView3DwT::QGoTabImageView3DwT( QWidget* parent ) :
 
   QObject::connect( m_ZSliceSpinBox, SIGNAL( valueChanged( int ) ),
     this, SLOT( SetSliceViewXY( int ) ) );
+
+  QObject::connect( this, SIGNAL( SliceViewXYChanged( int ) ),
+    m_ZSliceSpinBox, SLOT( setValue( int ) ) );
 
   QLabel* SliceT = new QLabel( "T Time" );
   layout->addWidget( SliceT, 3, 0 );
@@ -202,13 +212,13 @@ void QGoTabImageView3DwT::setupUi( QWidget* parent )
 
   QObject::connect( m_ImageView, SIGNAL( SliceViewXZChanged( int ) ),
     this, SIGNAL( SliceViewXZChanged( int ) ) );
-  
+
   QObject::connect( m_ImageView, SIGNAL( SliceViewYZChanged( int ) ),
     this, SIGNAL( SliceViewYZChanged( int ) ) );
 
   QObject::connect( m_ImageView, SIGNAL( FullScreenViewChanged( int ) ),
     this, SIGNAL( FullScreenViewChanged( int ) ) );
-  
+
   m_LayOut = new QHBoxLayout( parent );
   m_LayOut->addWidget( m_ImageView  );
 
@@ -257,12 +267,18 @@ void QGoTabImageView3DwT::SetLSMReader( vtkLSMReader* iReader,
     m_LSMReader[0]->GetDimensions( dim );
     m_XSliceSpinBox->setMinimum( 0 );
     m_XSliceSpinBox->setMaximum( dim[0] - 1 );
+    m_XSliceSpinBox->setValue(
+      ( m_XSliceSpinBox->minimum() + m_XSliceSpinBox->maximum() ) / 2 );
 
     m_YSliceSpinBox->setMinimum( 0 );
     m_YSliceSpinBox->setMaximum( dim[1] - 1 );
+    m_YSliceSpinBox->setValue(
+      ( m_YSliceSpinBox->minimum() + m_YSliceSpinBox->maximum() ) / 2 );
 
     m_ZSliceSpinBox->setMinimum( 0 );
     m_ZSliceSpinBox->setMaximum( dim[2] - 1 );
+    m_ZSliceSpinBox->setValue(
+      ( m_ZSliceSpinBox->minimum() + m_ZSliceSpinBox->maximum() ) / 2 );
 
     m_TSliceSpinBox->setMinimum( 0 );
     m_TSliceSpinBox->setMaximum( dim[3] - 1 );
@@ -354,7 +370,7 @@ void QGoTabImageView3DwT::SetTimePoint( const int& iTimePoint )
       temp_image[0] = vtkImageData::New();
       temp_image[0]->ShallowCopy( m_LSMReader[0]->GetOutput() );
 
-      vtkImageAppendComponents* append_filter = 
+      vtkImageAppendComponents* append_filter =
         vtkImageAppendComponents::New();
       append_filter->AddInput( temp_image[0] );
 
@@ -574,3 +590,20 @@ std::list< QDockWidget* > QGoTabImageView3DwT::DockWidget()
   return oList;
 }
 //--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoTabImageView3DwT::ChangeBackgroundColor()
+{
+  double r, g, b;
+  m_ImageView->GetBackgroundColor( r, g, b );
+  m_BackgroundColor.setRgbF( r, g, b );
+
+  QColor temp = QColorDialog::getColor( m_BackgroundColor,
+    this, tr( "Choose Background Color" ) );
+
+  if( temp != m_BackgroundColor )
+    {
+    m_BackgroundColor = temp;
+    m_ImageView->SetBackgroundColor( m_BackgroundColor );
+    }
+}
