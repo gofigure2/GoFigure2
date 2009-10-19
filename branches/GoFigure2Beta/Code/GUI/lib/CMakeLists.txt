@@ -4,6 +4,7 @@ FILE( GLOB QGoGUILIB_HDRS *.h )
 SET( QGoGUILIB_UI
   ManualSegmentationSettingsDlg.ui 
   ManualSegmentationDockWidget.ui
+  ChannelVisualizationDockWidget.ui
 )
 
 QT4_WRAP_UI( QGoGUILIB_UI_H 
