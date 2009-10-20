@@ -9,7 +9,6 @@ SET( QGOGUILIB_EXAMPLE_SRC
   qgotabimageview3dwt
   qgotabimageview4d
   qgomanualsegmentationsettingsdialog
-  qgochannelvisualizationdockwidget
   qgovisualizationdockwidget
 )
 
@@ -62,11 +61,6 @@ ADD_TEST( qgotabimageview3dTest
 
 ADD_TEST( qgomanualsegmentationsettingsdialogTest
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qgomanualsegmentationsettingsdialog
-  1
-)
-
-ADD_TEST( qgochannelvisualizationdockwidgetTest
-  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qgochannelvisualizationdockwidget
   1
 )
 
