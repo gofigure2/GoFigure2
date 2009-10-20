@@ -42,6 +42,7 @@
 #define __QGoTabImageViewElementBase_h
 
 #include "QGoTabElementBase.h"
+#include "QGoVisualizationDockWidget.h"
 
 class vtkImageData;
 
@@ -66,6 +67,8 @@ public slots:
 protected:
   bool    m_Color;
   QColor  m_BackgroundColor;
+
+  QGoVisualizationDockWidget* m_VisuDockWidget;
 
   virtual void GetBackgroundColorFromImageViewer( ) = 0;
   virtual void SetBackgroundColorToImageViewer( ) = 0;

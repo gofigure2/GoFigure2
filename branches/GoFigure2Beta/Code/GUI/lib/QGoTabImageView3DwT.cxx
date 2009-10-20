@@ -7,7 +7,6 @@
 #include "vtkImageAppendComponents.h"
 
 #include <QLabel>
-#include <QDockWidget>
 #include <QSpinBox>
 #include <QVBoxLayout>
 #include <QColorDialog>
@@ -24,62 +23,37 @@ QGoTabImageView3DwT::QGoTabImageView3DwT( QWidget* parent ) :
 
   m_MultiFileReader = itk::MultiFileReader::New();
 
-  m_DockWidget = new QDockWidget( tr( "Slice" ), this );
-  m_DockWidget->resize( 120, 300 );
+  m_VisuDockWidget = new QGoVisualizationDockWidget( this, 4 );
 
-  QWidget* temp = new QWidget();
-  temp->resize( 100, 150 );
-
-  QGridLayout* layout = new QGridLayout( temp );
-  layout->setContentsMargins(3, -1, 3, -1);
-
-  QLabel* SliceX = new QLabel( "X Slice" );
-  layout->addWidget( SliceX, 0, 0 );
-  m_XSliceSpinBox = new QSpinBox();
-  layout->addWidget( m_XSliceSpinBox, 0, 1 );
-
-  QObject::connect( m_XSliceSpinBox, SIGNAL( valueChanged( int ) ),
+  QObject::connect( m_VisuDockWidget, SIGNAL( XSliceChanged( int ) ),
     this, SLOT( SetSliceViewYZ( int ) ) );
 
   QObject::connect( this, SIGNAL( SliceViewYZChanged( int ) ),
-    m_XSliceSpinBox, SLOT( setValue( int ) ) );
+    m_VisuDockWidget, SLOT( SetXSlice( int ) ) );
 
-  QLabel* SliceY = new QLabel( "Y Slice" );
-  layout->addWidget( SliceY, 1, 0 );
-  m_YSliceSpinBox = new QSpinBox( );
-  layout->addWidget( m_YSliceSpinBox, 1, 1 );
-
-  QObject::connect( m_YSliceSpinBox, SIGNAL( valueChanged( int ) ),
+  QObject::connect( m_VisuDockWidget, SIGNAL( YSliceChanged( int ) ),
     this, SLOT( SetSliceViewXZ( int ) ) );
 
   QObject::connect( this, SIGNAL( SliceViewXZChanged( int ) ),
-    m_YSliceSpinBox, SLOT( setValue( int ) ) );
+    m_VisuDockWidget, SLOT( SetYSlice( int ) ) );
 
-  QLabel* SliceZ = new QLabel( "Z Slice" );
-  layout->addWidget( SliceZ, 2, 0 );
-  m_ZSliceSpinBox = new QSpinBox( );
-  layout->addWidget( m_ZSliceSpinBox, 2, 1 );
-
-  QObject::connect( m_ZSliceSpinBox, SIGNAL( valueChanged( int ) ),
+  QObject::connect( m_VisuDockWidget, SIGNAL( ZSliceChanged( int ) ),
     this, SLOT( SetSliceViewXY( int ) ) );
 
   QObject::connect( this, SIGNAL( SliceViewXYChanged( int ) ),
-    m_ZSliceSpinBox, SLOT( setValue( int ) ) );
+    m_VisuDockWidget, SLOT( SetZSlice( int ) ) );
 
-  QLabel* SliceT = new QLabel( "T Time" );
-  layout->addWidget( SliceT, 3, 0 );
-  m_TSliceSpinBox = new QSpinBox( );
-  layout->addWidget( m_TSliceSpinBox, 3, 1 );
-
-  QObject::connect( m_TSliceSpinBox, SIGNAL( valueChanged( int ) ),
+  QObject::connect( m_VisuDockWidget, SIGNAL( TSliceChanged( int ) ),
     this, SLOT( SetTimePoint( int ) ) );
 
   QObject::connect( this, SIGNAL( TimePointChanged( int ) ),
-    m_TSliceSpinBox, SLOT( setValue( int ) ) );
+    m_VisuDockWidget, SLOT( SetTSlice( int ) ) );
 
-  m_DockWidget->layout()->addWidget( temp );
-  m_DockWidget->setFeatures( QDockWidget::DockWidgetMovable |
-    QDockWidget::DockWidgetFloatable );
+  QObject::connect( m_VisuDockWidget, SIGNAL( ShowAllChannelsChanged( bool ) ),
+    this, SLOT( ShowAllChannels( bool ) ) );
+
+  QObject::connect( m_VisuDockWidget, SIGNAL( ShowOneChannelChanged( int ) ),
+    this, SLOT( ShowOneChannel( int ) ) );
 
   CreateAllViewActions();
   ReadSettings();
@@ -147,7 +121,7 @@ void QGoTabImageView3DwT::CreateAllViewActions()
 
   m_ViewActions.push_back( separator );
 
-//   QAction* toggleviewaction = m_DockWidget->toggleViewAction();
+//   QAction* toggleviewaction = m_VisuDockWidget->toggleViewAction();
 //   toggleviewaction->setText( tr( "Slide Location" ) );
 //   toggleviewaction->setParent( this );
 //   m_ViewActions.push_back( toggleviewaction );
@@ -265,31 +239,29 @@ void QGoTabImageView3DwT::SetLSMReader( vtkLSMReader* iReader,
 
     int dim[5];
     m_LSMReader[0]->GetDimensions( dim );
-    m_XSliceSpinBox->setMinimum( 0 );
-    m_XSliceSpinBox->setMaximum( dim[0] - 1 );
-    m_XSliceSpinBox->setValue(
-      ( m_XSliceSpinBox->minimum() + m_XSliceSpinBox->maximum() ) / 2 );
+    m_VisuDockWidget->SetXMinimumAndMaximum( 0, dim[0] - 1 );
+    m_VisuDockWidget->SetXSlice( ( dim[0] - 1 ) / 2 );
 
-    m_YSliceSpinBox->setMinimum( 0 );
-    m_YSliceSpinBox->setMaximum( dim[1] - 1 );
-    m_YSliceSpinBox->setValue(
-      ( m_YSliceSpinBox->minimum() + m_YSliceSpinBox->maximum() ) / 2 );
+    m_VisuDockWidget->SetYMinimumAndMaximum( 0, dim[1] - 1 );
+    m_VisuDockWidget->SetYSlice( ( dim[1] - 1 ) / 2 );
 
-    m_ZSliceSpinBox->setMinimum( 0 );
-    m_ZSliceSpinBox->setMaximum( dim[2] - 1 );
-    m_ZSliceSpinBox->setValue(
-      ( m_ZSliceSpinBox->minimum() + m_ZSliceSpinBox->maximum() ) / 2 );
+    m_VisuDockWidget->SetZMinimumAndMaximum( 0, dim[2] - 1 );
+    m_VisuDockWidget->SetZSlice( ( dim[2] - 1 ) / 2 );
 
-    m_TSliceSpinBox->setMinimum( 0 );
-    m_TSliceSpinBox->setMaximum( dim[3] - 1 );
-    m_TSliceSpinBox->setValue( iTimePoint );
+    m_VisuDockWidget->SetTMinimumAndMaximum( 0, dim[3] - 1 );
+    m_VisuDockWidget->SetTSlice( iTimePoint );
 
     int NumberOfChannels = m_LSMReader[0]->GetNumberOfChannels();
+    m_VisuDockWidget->SetNumberOfChannels( NumberOfChannels );
 
     if( NumberOfChannels > 1 )
       {
+      m_VisuDockWidget->SetChannel( 0 );
+
       for( int i = 1; i < NumberOfChannels; i++ )
         {
+        m_VisuDockWidget->SetChannel( i );
+
         m_LSMReader.push_back( vtkLSMReader::New() );
         m_LSMReader.back()->SetFileName( m_LSMReader[0]->GetFileName() );
         m_LSMReader.back()->SetUpdateChannel( i );
@@ -586,7 +558,7 @@ std::vector< QAction* > QGoTabImageView3DwT::ViewActions()
 std::list< QDockWidget* > QGoTabImageView3DwT::DockWidget()
 {
   std::list< QDockWidget* > oList;
-  oList.push_back( m_DockWidget );
+  oList.push_back( m_VisuDockWidget );
   return oList;
 }
 //--------------------------------------------------------------------------
@@ -605,5 +577,73 @@ void QGoTabImageView3DwT::ChangeBackgroundColor()
     {
     m_BackgroundColor = temp;
     m_ImageView->SetBackgroundColor( m_BackgroundColor );
+    }
+}
+
+//--------------------------------------------------------------------------
+void QGoTabImageView3DwT::ShowAllChannels( bool iChecked )
+{
+  if( iChecked )
+    {
+    int NumberOfChannels = m_LSMReader[0]->GetNumberOfChannels();
+
+    std::vector< vtkImageData* > temp_image( NumberOfChannels );
+    temp_image[0] = vtkImageData::New();
+    temp_image[0]->ShallowCopy( m_LSMReader[0]->GetOutput() );
+
+    vtkImageAppendComponents* append_filter =
+      vtkImageAppendComponents::New();
+    append_filter->AddInput( temp_image[0] );
+
+    for( int i = 1; i < NumberOfChannels; i++ )
+      {
+      m_LSMReader[i]->SetUpdateTimePoint( m_TimePoint );
+      m_LSMReader[i]->Update();
+
+      temp_image[i] = vtkImageData::New();
+      temp_image[i]->ShallowCopy( m_LSMReader[i]->GetOutput() );
+      append_filter->AddInput( temp_image[i] );
+      }
+    // This is really stupid!!!
+    if( NumberOfChannels < 3 )
+      {
+      for( int i = NumberOfChannels; i < 3; i++ )
+        {
+        append_filter->AddInput( temp_image[0] );
+        }
+      }
+    append_filter->Update();
+
+    m_Image->ShallowCopy( append_filter->GetOutput() );
+    Update();
+
+    append_filter->Delete();
+
+    for( int i = 0; i < NumberOfChannels; i++ )
+      {
+      temp_image[i]->Delete();
+      }
+    }
+  else
+    {
+    int ch = this->m_VisuDockWidget->GetCurrentChannel();
+    if( ch != -1 )
+      {
+      m_Image->ShallowCopy( m_LSMReader[ch]->GetOutput() );
+      Update();
+      }
+    }
+}
+
+void QGoTabImageView3DwT::
+ShowOneChannel( int iChannel )
+{
+  if( !m_LSMReader.empty() && m_Image )
+    {
+    if( iChannel != -1 )
+      {
+      m_Image->ShallowCopy( m_LSMReader[iChannel]->GetOutput() );
+      Update();
+      }
     }
 }

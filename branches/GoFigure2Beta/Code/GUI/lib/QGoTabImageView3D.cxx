@@ -5,6 +5,8 @@
 
 #include "vtkLookupTable.h"
 
+#include "vtkImageExtractComponents.h"
+
 #include <QLabel>
 #include <QDockWidget>
 #include <QSpinBox>
@@ -17,8 +19,8 @@ QGoTabImageView3D::QGoTabImageView3D( QWidget* parent ) :
 {
   setupUi( this );
 
-  m_DockWidget = new QDockWidget( tr( "Slice" ), this );
-  m_DockWidget->resize( 120, 300 );
+  m_VisuDockWidget = new QGoVisualizationDockWidget( this, 3 );
+  m_VisuDockWidget->resize( 120, 300 );
 
   QWidget* temp = new QWidget();
   temp->resize( 100, 150 );
@@ -26,42 +28,26 @@ QGoTabImageView3D::QGoTabImageView3D( QWidget* parent ) :
   QGridLayout* layout = new QGridLayout( temp );
   layout->setContentsMargins(3, -1, 3, -1);
 
-  QLabel* SliceX = new QLabel( "X Slice" );
-  layout->addWidget( SliceX, 0, 0 );
-  m_XSliceSpinBox = new QSpinBox();
-  layout->addWidget( m_XSliceSpinBox, 0, 1 );
-
-  QObject::connect( m_XSliceSpinBox, SIGNAL( valueChanged( int ) ),
+  QObject::connect( m_VisuDockWidget, SIGNAL( XSliceChanged( int ) ),
     this, SLOT( SetSliceViewYZ( int ) ) );
 
   QObject::connect( this, SIGNAL( SliceViewYZChanged( int ) ),
-    m_XSliceSpinBox, SLOT( setValue( int ) ) );
+    m_VisuDockWidget, SLOT( SetXSlice( int ) ) );
 
-  QLabel* SliceY = new QLabel( "Y Slice" );
-  layout->addWidget( SliceY, 1, 0 );
-  m_YSliceSpinBox = new QSpinBox( );
-  layout->addWidget( m_YSliceSpinBox, 1, 1 );
-
-  QObject::connect( m_YSliceSpinBox, SIGNAL( valueChanged( int ) ),
+  QObject::connect( m_VisuDockWidget, SIGNAL( YSliceChanged( int ) ),
     this, SLOT( SetSliceViewXZ( int ) ) );
 
   QObject::connect( this, SIGNAL( SliceViewXZChanged( int ) ),
-    m_YSliceSpinBox, SLOT( setValue( int ) ) );
+    m_VisuDockWidget, SLOT( SetYSlice( int ) ) );
 
-  QLabel* SliceZ = new QLabel( "Z Slice" );
-  layout->addWidget( SliceZ, 2, 0 );
-  m_ZSliceSpinBox = new QSpinBox( );
-  layout->addWidget( m_ZSliceSpinBox, 2, 1 );
-
-  QObject::connect( m_ZSliceSpinBox, SIGNAL( valueChanged( int ) ),
+  QObject::connect( m_VisuDockWidget, SIGNAL( ZSliceChanged( int ) ),
     this, SLOT( SetSliceViewXY( int ) ) );
 
   QObject::connect( this, SIGNAL( SliceViewXYChanged( int ) ),
-    m_ZSliceSpinBox, SLOT( setValue( int ) ) );
+    m_VisuDockWidget, SLOT( SetZSlice( int ) ) );
 
-  m_DockWidget->layout()->addWidget( temp );
-  m_DockWidget->setFeatures( QDockWidget::DockWidgetMovable |
-    QDockWidget::DockWidgetFloatable );
+  QObject::connect( m_VisuDockWidget, SIGNAL( ShowAllChannelsChanged( bool ) ),
+    this, SLOT( ShowAllChannels( bool ) ) );
 
   CreateAllViewActions();
 
@@ -220,14 +206,20 @@ void QGoTabImageView3D::SetImage( vtkImageData* iImage )
 
   int extent[6];
   m_Image->GetExtent( extent );
-  m_XSliceSpinBox->setMinimum( extent[0] );
-  m_XSliceSpinBox->setMaximum( extent[1] );
+  m_VisuDockWidget->SetXMinimumAndMaximum( extent[0], extent[1] );
+  m_VisuDockWidget->SetYMinimumAndMaximum( extent[2], extent[3] );
+  m_VisuDockWidget->SetZMinimumAndMaximum( extent[4], extent[5] );
 
-  m_YSliceSpinBox->setMinimum( extent[2] );
-  m_YSliceSpinBox->setMaximum( extent[3] );
+  int nb_channels = m_Image->GetNumberOfScalarComponents();
+  m_VisuDockWidget->SetNumberOfChannels( nb_channels );
 
-  m_ZSliceSpinBox->setMinimum( extent[4] );
-  m_ZSliceSpinBox->setMaximum( extent[5] );
+  if( nb_channels > 1 )
+    {
+    for( unsigned int i = 0; i < nb_channels; i++ )
+      {
+      m_VisuDockWidget->SetChannel( i );
+      }
+    }
 }
 //--------------------------------------------------------------------------
 
@@ -235,12 +227,12 @@ void QGoTabImageView3D::SetImage( vtkImageData* iImage )
 void QGoTabImageView3D::Update()
 {
   m_ImageView->Update();
-  m_XSliceSpinBox->setValue(
-    ( m_XSliceSpinBox->minimum() + m_XSliceSpinBox->maximum() ) / 2 );
-  m_YSliceSpinBox->setValue(
-    ( m_YSliceSpinBox->minimum() + m_YSliceSpinBox->maximum() ) / 2 );
-  m_ZSliceSpinBox->setValue(
-    ( m_ZSliceSpinBox->minimum() + m_ZSliceSpinBox->maximum() ) / 2 );
+  int extent[6];
+  m_Image->GetExtent( extent );
+
+  m_VisuDockWidget->SetXSlice( ( extent[0] + extent[1] ) / 2 );
+  m_VisuDockWidget->SetYSlice( ( extent[2] + extent[3] ) / 2 );
+  m_VisuDockWidget->SetZSlice( ( extent[4] + extent[5] ) / 2 );
 }
 //--------------------------------------------------------------------------
 
@@ -388,7 +380,33 @@ std::vector< QAction* > QGoTabImageView3D::ViewActions()
 std::list< QDockWidget* > QGoTabImageView3D::DockWidget()
 {
   std::list< QDockWidget* > oList;
-  oList.push_back( m_DockWidget );
+  oList.push_back( static_cast< QDockWidget* >( m_VisuDockWidget ) );
   return oList;
 }
 //--------------------------------------------------------------------------
+
+void QGoTabImageView3D::
+ShowAllChannels( bool iChecked )
+{
+  if( iChecked )
+    {
+    m_ImageView->SetImage( m_Image );
+    m_ImageView->Update();
+    }
+  else
+    {
+    int ch = this->m_VisuDockWidget->GetCurrentChannel();
+    if( ch != -1 )
+      {
+      vtkImageExtractComponents* extract = vtkImageExtractComponents::New();
+      extract->SetInput( m_Image );
+      extract->SetComponents( ch );
+      extract->Update();
+
+      m_ImageView->SetImage( extract->GetOutput() );
+      m_ImageView->Update();
+
+      extract->Delete();
+      }
+    }
+}

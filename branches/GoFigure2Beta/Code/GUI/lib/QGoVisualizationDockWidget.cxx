@@ -86,6 +86,7 @@ SetNumberOfChannels( const unsigned int& iN )
     this->line->setVisible( false );
     this->AllChannelsBtn->setVisible( false );
     this->OneChannelBtn->setVisible( false );
+    this->ChannelComboBox->setVisible( false );
     }
   else
     {
@@ -109,20 +110,38 @@ SetChannel( const unsigned int& i, const QString& iText )
   this->ChannelComboBox->insertItem( i, input );
 }
 
-void
-QGoVisualizationDockWidget::
-AddChannel( const QString& iText )
+void QGoVisualizationDockWidget::
+SetXMinimumAndMaximum( const int& iMin, const int& iMax )
 {
-  int n = this->ChannelComboBox->count();
+  this->XSliceSpinBox->setMinimum( iMin );
+  this->XSliceSpinBox->setMaximum( iMax );
+}
 
-  QString input = QString( "Ch.%1" ).arg( n );
+void QGoVisualizationDockWidget::
+SetYMinimumAndMaximum( const int& iMin, const int& iMax )
+{
+  this->YSliceSpinBox->setMinimum( iMin );
+  this->YSliceSpinBox->setMaximum( iMax );
+}
 
-  if( !iText.isEmpty() )
-    {
-    input.append( iText );
-    }
-  this->ChannelComboBox->addItem( input );
+void QGoVisualizationDockWidget::
+SetZMinimumAndMaximum( const int& iMin, const int& iMax )
+{
+  this->ZSliceSpinBox->setMinimum( iMin );
+  this->ZSliceSpinBox->setMaximum( iMax );
+}
+
+void QGoVisualizationDockWidget::
+SetTMinimumAndMaximum( const int& iMin, const int& iMax )
+{
+  this->TSliceSpinBox->setMinimum( iMin );
+  this->TSliceSpinBox->setMaximum( iMax );
 }
 
 
+int QGoVisualizationDockWidget::
+GetCurrentChannel() const
+{
+  return this->ChannelComboBox->currentIndex();
+}
 

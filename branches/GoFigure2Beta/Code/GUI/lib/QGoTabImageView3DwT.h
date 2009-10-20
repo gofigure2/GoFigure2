@@ -7,6 +7,7 @@
 
 #include "QGoPlugin.h"
 #include "QGoImageView3D.h"
+#include "QGoVisualizationDockWidget.h"
 
 #include "vtkLSMReader.h"
 #include "itkMultiFileReader.h"
@@ -79,6 +80,9 @@ public slots:
     void ShowScalarBar( const bool& );
     void ChangeBackgroundColor();
 
+    void ShowAllChannels( bool iChecked );
+    void ShowOneChannel( int iChannel );
+
 protected:
   QHBoxLayout*          m_LayOut;
   QGoImageView3D*       m_ImageView;
@@ -88,13 +92,9 @@ protected:
   FileListType          m_FileList;
   QColor                m_BackgroundColor;
   int                   m_TimePoint;
-  QSpinBox*             m_XSliceSpinBox;
-  QSpinBox*             m_YSliceSpinBox;
-  QSpinBox*             m_ZSliceSpinBox;
-  QSpinBox*             m_TSliceSpinBox;
 
   std::vector< QAction* > m_ViewActions;
-  QDockWidget* m_DockWidget;
+  QGoVisualizationDockWidget* m_VisuDockWidget;
 
   void GetBackgroundColorFromImageViewer( );
   void SetBackgroundColorToImageViewer( );

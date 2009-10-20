@@ -7,7 +7,8 @@ QGoTabImageViewElementBase::
 QGoTabImageViewElementBase( QWidget* parent ) :
   QGoTabElementBase( parent ),
   m_Color( false ),
-  m_BackgroundColor( Qt::black )
+  m_BackgroundColor( Qt::black ),
+  m_VisuDockWidget( 0 )
 {}
 
 QGoTabImageViewElementBase::~QGoTabImageViewElementBase()

@@ -18,7 +18,11 @@ class QGoVisualizationDockWidget :
     void SetNumberOfChannels( const unsigned int& iN );
     void SetChannel( const unsigned int& i, const QString& iText = QString() );
 
-    void AddChannel( const QString& iText = QString() );
+    void SetXMinimumAndMaximum( const int& iMin, const int& iMax );
+    void SetYMinimumAndMaximum( const int& iMin, const int& iMax );
+    void SetZMinimumAndMaximum( const int& iMin, const int& iMax );
+    void SetTMinimumAndMaximum( const int& iMin, const int& iMax );
+    int GetCurrentChannel() const;
 
   public slots:
     void SetXSlice( int iSlice );

@@ -45,7 +45,7 @@ class QGoTabImageView3D : public QGoTabImageViewElementBase
     void SliceViewXZChanged( int Slice );
     void SliceViewYZChanged( int Slice );
 
-    void FullScreenViewChanged( int View );    
+    void FullScreenViewChanged( int View );
 
   public slots:
     QString SnapshotViewXY( const GoFigure::SnapshotImageType& iType,
@@ -71,16 +71,14 @@ class QGoTabImageView3D : public QGoTabImageViewElementBase
     void ChangeLookupTable();
     void ShowScalarBar( const bool& );
 
+    void ShowAllChannels( bool iChecked );
+
   protected:
     QHBoxLayout*      m_LayOut;
     QGoImageView3D*   m_ImageView;
     vtkImageData*     m_Image;
-    QSpinBox*         m_XSliceSpinBox;
-    QSpinBox*         m_YSliceSpinBox;
-    QSpinBox*         m_ZSliceSpinBox;
 
     std::vector< QAction* > m_ViewActions;
-    QDockWidget* m_DockWidget;
 
     void GetBackgroundColorFromImageViewer( );
     void SetBackgroundColorToImageViewer( );
