@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>VisualizationDockWidget</class>
+ <widget class="QDockWidget" name="VisualizationDockWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>128</width>
+    <height>258</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>DockWidget</string>
+  </property>
+  <widget class="QWidget" name="dockWidgetContents">
+   <widget class="QWidget" name="">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>0</y>
+      <width>111</width>
+      <height>223</height>
+     </rect>
+    </property>
+    <layout class="QVBoxLayout" name="verticalLayout_2">
+     <item>
+      <layout class="QGridLayout" name="gridLayout">
+       <property name="spacing">
+        <number>6</number>
+       </property>
+       <item row="0" column="0">
+        <widget class="QLabel" name="XSliceLbl">
+         <property name="text">
+          <string>XSlice</string>
+         </property>
+         <property name="buddy">
+          <cstring>XSliceSpinBox</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QSpinBox" name="XSliceSpinBox"/>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="YSliceLbl">
+         <property name="text">
+          <string>YSlice</string>
+         </property>
+         <property name="buddy">
+          <cstring>YSliceSpinBox</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QSpinBox" name="YSliceSpinBox"/>
+       </item>
+       <item row="2" column="1">
+        <widget class="QSpinBox" name="ZSliceSpinBox"/>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="ZSliceLbl">
+         <property name="text">
+          <string>ZSlice</string>
+         </property>
+         <property name="buddy">
+          <cstring>ZSliceSpinBox</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QLabel" name="TSliceLbl">
+         <property name="text">
+          <string>TSlice</string>
+         </property>
+         <property name="buddy">
+          <cstring>TSliceSpinBox</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="QSpinBox" name="TSliceSpinBox"/>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <widget class="Line" name="line">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <item>
+        <widget class="QRadioButton" name="AllChannelsBtn">
+         <property name="text">
+          <string>All Channels</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QRadioButton" name="OneChannelBtn">
+         <property name="text">
+          <string>One Channel</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="ChannelComboBox">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="currentIndex">
+          <number>-1</number>
+         </property>
+         <property name="frame">
+          <bool>true</bool>
+         </property>
+         <property name="modelColumn">
+          <number>0</number>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+ </widget>
+ <tabstops>
+  <tabstop>XSliceSpinBox</tabstop>
+  <tabstop>YSliceSpinBox</tabstop>
+  <tabstop>ZSliceSpinBox</tabstop>
+  <tabstop>TSliceSpinBox</tabstop>
+  <tabstop>AllChannelsBtn</tabstop>
+  <tabstop>OneChannelBtn</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>OneChannelBtn</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>ChannelComboBox</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>82</x>
+     <y>201</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>86</x>
+     <y>231</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

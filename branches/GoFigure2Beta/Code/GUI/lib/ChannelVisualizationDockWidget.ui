@@ -10,6 +10,9 @@
     <height>145</height>
    </rect>
   </property>
+  <property name="toolTip">
+   <string/>
+  </property>
   <property name="windowTitle">
    <string>DockWidget</string>
   </property>

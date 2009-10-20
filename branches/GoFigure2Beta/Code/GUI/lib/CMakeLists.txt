@@ -5,6 +5,7 @@ SET( QGoGUILIB_UI
   ManualSegmentationSettingsDlg.ui 
   ManualSegmentationDockWidget.ui
   ChannelVisualizationDockWidget.ui
+  VisualizationDockWidget.ui
 )
 
 QT4_WRAP_UI( QGoGUILIB_UI_H 

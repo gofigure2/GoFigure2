@@ -10,7 +10,9 @@ SET( QGOGUILIB_EXAMPLE_SRC
   qgotabimageview4d
   qgomanualsegmentationsettingsdialog
   qgochannelvisualizationdockwidget
+  qgovisualizationdockwidget
 )
+
 
 FOREACH( var ${QGOGUILIB_EXAMPLE_SRC} )
 
@@ -67,3 +69,9 @@ ADD_TEST( qgochannelvisualizationdockwidgetTest
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qgochannelvisualizationdockwidget
   1
 )
+
+ADD_TEST( qgovisualizationdockwidgetTest
+  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qgovisualizationdockwidget
+  1
+)
+
