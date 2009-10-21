@@ -184,7 +184,7 @@ void QGoTabImageView3D::setupUi( QWidget* parent )
 //--------------------------------------------------------------------------
 void QGoTabImageView3D::retranslateUi(QWidget *parent)
 {
-  parent->setWindowTitle( tr( "QGoTabImageView2D" ) );
+  parent->setWindowTitle( tr( "QGoTabImageView3D" ) );
   Q_UNUSED(parent);
 }
 //--------------------------------------------------------------------------

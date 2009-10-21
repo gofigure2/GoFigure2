@@ -7,11 +7,9 @@
  * \class QGoImageFilterPluginBase
  * \brief
 */
-QGoImageFilterPluginBase::QGoImageFilterPluginBase()
-{
-  this->m_VTKInput = 0;
-  this->m_VTKOutput = 0;
-}
+QGoImageFilterPluginBase::
+QGoImageFilterPluginBase() : m_VTKInput( 0 ), m_VTKOutput( 0 )
+{}
 
 QGoImageFilterPluginBase::~QGoImageFilterPluginBase()
 {}

@@ -38,7 +38,8 @@ class QGoImageFilterPluginBase : public QGoPlugin
     void operator = ( const QGoImageFilterPluginBase& );
 };
 
-Q_DECLARE_INTERFACE( QGoImageFilterPluginBase, "GoFigure2.QGoImageFilterPluingBase/1.0" )
+Q_DECLARE_INTERFACE( QGoImageFilterPluginBase,
+  "GoFigure2.QGoImageFilterPluginBase/1.0" )
 
 #endif
 

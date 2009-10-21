@@ -97,7 +97,19 @@ SetImage( vtkImageData* iImage )
       }
     }
 
+  int extent[6];
+  m_Image->GetExtent( extent );
+
   this->SetImageToImageViewer( m_Image );
+
+  m_VisuDockWidget->SetXMinimumAndMaximum( extent[0], extent[1] );
+  m_VisuDockWidget->SetXSlice( (extent[0]+extent[1])/2 );
+
+  m_VisuDockWidget->SetYMinimumAndMaximum( extent[2], extent[3] );
+  m_VisuDockWidget->SetYSlice( (extent[2]+extent[3])/2 );
+
+  m_VisuDockWidget->SetZMinimumAndMaximum( extent[4], extent[5] );
+  m_VisuDockWidget->SetZSlice( (extent[4]+extent[5])/2 );
 }
 //--------------------------------------------------------------------------
 
