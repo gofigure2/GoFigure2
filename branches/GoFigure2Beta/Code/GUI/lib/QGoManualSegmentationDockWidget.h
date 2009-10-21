@@ -4,6 +4,8 @@
 #include <QDockWidget>
 #include "ui_ManualSegmentationDockWidget.h"
 
+#include "QGoManualSegmentationSettingsDialog.h"
+
 class QGoManualSegmentationDockWidget :
   public QDockWidget,
   private Ui::ManualSegmentationDockWidget
@@ -15,12 +17,23 @@ class QGoManualSegmentationDockWidget :
 
   public slots:
     void OnSetColorPressed();
-    void OnReinitializePressed();
-    void OnValidatePressed();
-    void OnReinitializeAndIncrementPressed();
+    void SetContourColor();
+    void GenerateRandomColorForGivenId( int iId );
+
+  signals:
+    void ReinitializePressed();
+    void ValidatePressed();
+    void ReinitializeAndIncrementPressed();
 
   protected:
-    QHash< unsigned int, QColor > m_IdValidatedColor;
+    std::vector< unsigned int >   m_OrderVector;
+    QColor                        m_ValidatedColor;
+//     QHash< unsigned int, QColor > m_IdValidatedColor;
+    QGoManualSegmentationSettingsDialog* m_SettingsDialog;
+
+    void GenerateOrderVector( const QColor& iSelectedColor );
+
+
   private:
 };
 

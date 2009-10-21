@@ -10,6 +10,7 @@ SET( QGOGUILIB_EXAMPLE_SRC
   qgotabimageview4d
   qgomanualsegmentationsettingsdialog
   qgovisualizationdockwidget
+  qgomanualsegmentationdockwidget
 )
 
 
@@ -66,6 +67,11 @@ ADD_TEST( qgomanualsegmentationsettingsdialogTest
 
 ADD_TEST( qgovisualizationdockwidgetTest
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qgovisualizationdockwidget
+  1
+)
+
+ADD_TEST( qgomanualsegmentationdockwidgetTest
+  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qgomanualsegmentationdockwidget
   1
 )
 
