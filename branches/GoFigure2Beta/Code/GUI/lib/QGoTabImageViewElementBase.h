@@ -53,7 +53,7 @@ public:
   explicit QGoTabImageViewElementBase( QWidget* parent = 0 );
   virtual ~QGoTabImageViewElementBase();
 
-  virtual void SetImage( vtkImageData* iImage ) = 0;
+  virtual void SetImage( vtkImageData* iImage );
   virtual void Update() = 0;
 
   virtual void SetColor( const bool& iColor );
@@ -63,15 +63,21 @@ public:
 
 public slots:
   void ChangeBackgroundColor();
+  void ShowAllChannels( bool iChecked );
+  void ShowOneChannel( int iChannel );
 
 protected:
   bool    m_Color;
   QColor  m_BackgroundColor;
 
+  QHBoxLayout*  m_LayOut;
+  vtkImageData* m_Image;
+
   QGoVisualizationDockWidget* m_VisuDockWidget;
 
   virtual void GetBackgroundColorFromImageViewer( ) = 0;
   virtual void SetBackgroundColorToImageViewer( ) = 0;
+  virtual void SetImageToImageViewer( vtkImageData* image ) = 0;
 
 private:
   QGoTabImageViewElementBase( const QGoTabImageViewElementBase& );

@@ -13,7 +13,6 @@ public:
   GoFigure::TabDimensionType GetTabDimensionType( ) const
     { return GoFigure::TWO_D; }
 
-  virtual void SetImage( vtkImageData* ) {}
   virtual void Update() {}
 
   virtual void WriteSettings() {}
@@ -25,6 +24,10 @@ protected:
     }
   virtual void GetBackgroundColorFromImageViewer( ) {}
   virtual void SetBackgroundColorToImageViewer( ) {}
+  virtual void SetImageToImageViewer( vtkImageData* image )
+    {
+    (void) image;
+    }
 };
 
 int main( int argc, char** argv )

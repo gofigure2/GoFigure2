@@ -14,8 +14,7 @@
 
 //--------------------------------------------------------------------------
 QGoTabImageView3D::QGoTabImageView3D( QWidget* parent ) :
-  QGoTabImageViewElementBase( parent ),
-  m_Image( 0 )
+  QGoTabImageViewElementBase( parent )
 {
   setupUi( this );
 
@@ -173,8 +172,8 @@ void QGoTabImageView3D::setupUi( QWidget* parent )
   QObject::connect( m_ImageView, SIGNAL( FullScreenViewChanged( int ) ),
     this, SIGNAL( FullScreenViewChanged( int ) ) );
 
-  m_LayOut = new QHBoxLayout( parent );
-  m_LayOut->addWidget( m_ImageView  );
+  this->m_LayOut = new QHBoxLayout( parent );
+  this->m_LayOut->addWidget( m_ImageView  );
 
   retranslateUi(parent);
 
@@ -194,32 +193,6 @@ void QGoTabImageView3D::retranslateUi(QWidget *parent)
 GoFigure::TabDimensionType QGoTabImageView3D::GetTabDimensionType( ) const
 {
   return GoFigure::THREE_D;
-}
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-void QGoTabImageView3D::SetImage( vtkImageData* iImage )
-{
-  m_Image = iImage;
-
-  m_ImageView->SetImage( iImage );
-
-  int extent[6];
-  m_Image->GetExtent( extent );
-  m_VisuDockWidget->SetXMinimumAndMaximum( extent[0], extent[1] );
-  m_VisuDockWidget->SetYMinimumAndMaximum( extent[2], extent[3] );
-  m_VisuDockWidget->SetZMinimumAndMaximum( extent[4], extent[5] );
-
-  int nb_channels = m_Image->GetNumberOfScalarComponents();
-  m_VisuDockWidget->SetNumberOfChannels( nb_channels );
-
-  if( nb_channels > 1 )
-    {
-    for( unsigned int i = 0; i < nb_channels; i++ )
-      {
-      m_VisuDockWidget->SetChannel( i );
-      }
-    }
 }
 //--------------------------------------------------------------------------
 
@@ -385,28 +358,10 @@ std::list< QDockWidget* > QGoTabImageView3D::DockWidget()
 }
 //--------------------------------------------------------------------------
 
-void QGoTabImageView3D::
-ShowAllChannels( bool iChecked )
+//--------------------------------------------------------------------------
+void QGoTabImageView3D::SetImageToImageViewer( vtkImageData* image )
 {
-  if( iChecked )
-    {
-    m_ImageView->SetImage( m_Image );
-    m_ImageView->Update();
-    }
-  else
-    {
-    int ch = this->m_VisuDockWidget->GetCurrentChannel();
-    if( ch != -1 )
-      {
-      vtkImageExtractComponents* extract = vtkImageExtractComponents::New();
-      extract->SetInput( m_Image );
-      extract->SetComponents( ch );
-      extract->Update();
-
-      m_ImageView->SetImage( extract->GetOutput() );
-      m_ImageView->Update();
-
-      extract->Delete();
-      }
-    }
+  m_ImageView->SetImage( image );
+  m_ImageView->Update();
 }
+//--------------------------------------------------------------------------

@@ -7,6 +7,7 @@
 #include "vtkRendererCollection.h"
 #include "vtkImageData.h"
 #include "vtkTextProperty.h"
+#include "vtkImageExtractComponents.h"
 
 #include "QGoImageFilterPluginBase.h"
 
@@ -21,6 +22,9 @@ QGoTabImageView2D::QGoTabImageView2D( QWidget* parent )
 {
   m_Image = 0;
   setupUi( this );
+
+  m_VisuDockWidget = new QGoVisualizationDockWidget( this, 2 );
+  m_VisuDockWidget->resize( 120, 300 );
 
   QAction* LookupTableAction = new QAction( tr( "Lookup Table" ), this );
   LookupTableAction->setStatusTip( tr(" Change the associated lookup table" ) );
@@ -43,6 +47,12 @@ QGoTabImageView2D::QGoTabImageView2D( QWidget* parent )
 
   QObject::connect( BackgroundColorAction, SIGNAL( triggered() ),
     this, SLOT( ChangeBackgroundColor() ) );
+
+  QObject::connect( m_VisuDockWidget, SIGNAL( ShowAllChannelsChanged( bool ) ),
+    this, SLOT( ShowAllChannels( bool ) ) );
+
+  QObject::connect( m_VisuDockWidget, SIGNAL( ShowOneChannelChanged( int ) ),
+    this, SLOT( ShowOneChannel( int ) ) );
 
   ReadSettings();
 }
@@ -71,8 +81,8 @@ void QGoTabImageView2D::setupUi( QWidget* parent )
   m_ImageView = new QGoImageView2D( this );
   m_ImageView->SetBackgroundColor( m_BackgroundColor );
 
-  m_LayOut = new QHBoxLayout( parent );
-  m_LayOut->addWidget( m_ImageView  );
+  this->m_LayOut = new QHBoxLayout( parent );
+  this->m_LayOut->addWidget( m_ImageView  );
 
   retranslateUi(parent);
 
@@ -85,14 +95,6 @@ void QGoTabImageView2D::retranslateUi(QWidget *parent)
 {
   parent->setWindowTitle( tr( "QGoTabImageView2D" ) );
   Q_UNUSED(parent);
-}
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-void QGoTabImageView2D::SetImage( vtkImageData* iImage )
-{
-  m_ImageView->SetImage( iImage );
-  m_Image = iImage;
 }
 //--------------------------------------------------------------------------
 
@@ -174,3 +176,10 @@ void QGoTabImageView2D::ReadSettings()
 }
 //--------------------------------------------------------------------------
 
+//--------------------------------------------------------------------------
+void QGoTabImageView2D::SetImageToImageViewer( vtkImageData* iImage )
+{
+  m_ImageView->SetImage( iImage );
+  m_ImageView->Update();
+}
+//--------------------------------------------------------------------------

@@ -24,7 +24,6 @@ class QGoTabImageView3D : public QGoTabImageViewElementBase
 
     GoFigure::TabDimensionType GetTabDimensionType( ) const;
 
-    virtual void SetImage( vtkImageData* iImage );
     virtual void Update();
 
     void setupUi( QWidget* parent );
@@ -71,18 +70,16 @@ class QGoTabImageView3D : public QGoTabImageViewElementBase
     void ChangeLookupTable();
     void ShowScalarBar( const bool& );
 
-    void ShowAllChannels( bool iChecked );
-
   protected:
-    QHBoxLayout*      m_LayOut;
     QGoImageView3D*   m_ImageView;
-    vtkImageData*     m_Image;
 
     std::vector< QAction* > m_ViewActions;
 
     void GetBackgroundColorFromImageViewer( );
     void SetBackgroundColorToImageViewer( );
     void CreateAllViewActions();
+
+    void SetImageToImageViewer( vtkImageData* image );
 
 //   private:
 };

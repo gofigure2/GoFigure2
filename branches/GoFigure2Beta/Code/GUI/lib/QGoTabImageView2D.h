@@ -24,7 +24,6 @@ public:
 
   GoFigure::TabDimensionType GetTabDimensionType( ) const;
 
-  virtual void SetImage( vtkImageData* iImage );
   virtual void Update();
 
   void setupUi( QWidget* parent );
@@ -42,14 +41,14 @@ public slots:
   void ShowScalarBar( const bool& );
 
 protected:
-  QHBoxLayout*      m_LayOut;
   QGoImageView2D*   m_ImageView;
-  vtkImageData*     m_Image;
 
   std::vector< QAction* > m_ViewActions;
 
   void GetBackgroundColorFromImageViewer( );
   void SetBackgroundColorToImageViewer( );
+
+  void SetImageToImageViewer( vtkImageData* image );
 
 private:
   QGoTabImageView2D( const QGoTabImageView2D& );
