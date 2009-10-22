@@ -6,6 +6,8 @@
 class vtkLookupTable;
 class vtkImageData;
 class vtkViewImage2DCollection;
+class vtkImageActor;
+class QVTKInteractor;
 
 /**
 \class QGoImageView
@@ -23,7 +25,12 @@ class QGoImageView : public QWidget
     QString GetTag() const;
 
     virtual void SetImage( vtkImageData* iImage ) = 0;
+    virtual vtkImageData* GetImage() = 0;
+
     virtual void Update() = 0;
+
+    virtual vtkImageActor* GetImageActor( const int& ) = 0;
+    virtual QVTKInteractor* GetInteractor( const int& ) = 0;
 
     virtual void setupUi( QWidget* parent ) = 0;
     virtual void retranslateUi(QWidget *parent) = 0;

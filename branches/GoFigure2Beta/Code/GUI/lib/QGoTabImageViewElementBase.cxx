@@ -6,7 +6,11 @@
 
 #include "vtkImageData.h"
 #include "vtkImageExtractComponents.h"
+#include "vtkContourWidget.h"
+#include "vtkOrientedGlyphContourRepresentation.h"
+#include "vtkImageActorPointPlacer.h"
 
+//--------------------------------------------------------------------------
 QGoTabImageViewElementBase::
 QGoTabImageViewElementBase( QWidget* parent ) :
   QGoTabElementBase( parent ),
@@ -15,15 +19,21 @@ QGoTabImageViewElementBase( QWidget* parent ) :
   m_Image( 0 ),
   m_VisuDockWidget( 0 )
 {}
+//--------------------------------------------------------------------------
 
+//--------------------------------------------------------------------------
 QGoTabImageViewElementBase::~QGoTabImageViewElementBase()
 {}
+//--------------------------------------------------------------------------
 
+//--------------------------------------------------------------------------
 void QGoTabImageViewElementBase::SetColor( const bool& iColor )
 {
   m_Color = iColor;
 }
+//--------------------------------------------------------------------------
 
+//--------------------------------------------------------------------------
 void QGoTabImageViewElementBase::WriteSettings()
 {
   QSettings settings;
@@ -31,7 +41,9 @@ void QGoTabImageViewElementBase::WriteSettings()
   settings.setValue( "BackgroundColor", m_BackgroundColor );
   settings.endGroup();
 }
+//--------------------------------------------------------------------------
 
+//--------------------------------------------------------------------------
 void QGoTabImageViewElementBase::ReadSettings()
 {
   QSettings settings;
@@ -43,6 +55,7 @@ void QGoTabImageViewElementBase::ReadSettings()
 
   settings.endGroup();
 }
+//--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void QGoTabImageViewElementBase::ChangeBackgroundColor()
@@ -137,8 +150,9 @@ ShowAllChannels( bool iChecked )
       }
     }
 }
+//--------------------------------------------------------------------------
 
-
+//--------------------------------------------------------------------------
 void QGoTabImageViewElementBase::
 ShowOneChannel( int iChannel )
 {
@@ -157,3 +171,32 @@ ShowOneChannel( int iChannel )
       }
     }
 }
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoTabImageViewElementBase::
+ActivateManualSegmentationEditor( const bool& iActivate )
+{
+  std::vector< vtkContourWidget* >::iterator it = m_ContourWidget.begin();
+  while( it != m_ContourWidget.end() )
+    {
+    if( iActivate )
+      {
+      (*it)->On();
+      }
+    else
+      {
+      (*it)->Off();
+      }
+    ++it;
+    }
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+// void QGoTabImageViewElementBase::
+// ValidateContour( const int& iId )
+// {
+//   m_ContourRepresentation[iId]->GetContourRepresentationAsPolyData();
+// }
+//--------------------------------------------------------------------------

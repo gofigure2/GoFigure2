@@ -45,6 +45,8 @@
 #include "QGoVisualizationDockWidget.h"
 
 class vtkImageData;
+class vtkContourWidget;
+class vtkOrientedGlyphContourRepresentation;
 
 class QGoTabImageViewElementBase : public QGoTabElementBase
 {
@@ -65,6 +67,7 @@ public slots:
   void ChangeBackgroundColor();
   void ShowAllChannels( bool iChecked );
   void ShowOneChannel( int iChannel );
+  void ActivateManualSegmentationEditor( const bool& iActivate );
 
 protected:
   bool    m_Color;
@@ -72,6 +75,8 @@ protected:
 
   QHBoxLayout*  m_LayOut;
   vtkImageData* m_Image;
+  std::vector< vtkContourWidget* > m_ContourWidget;
+  std::vector< vtkOrientedGlyphContourRepresentation* > m_ContourRepresentation;
 
   QGoVisualizationDockWidget* m_VisuDockWidget;
 

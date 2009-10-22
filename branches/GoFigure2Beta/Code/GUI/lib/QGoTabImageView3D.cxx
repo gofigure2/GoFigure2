@@ -4,6 +4,10 @@
 #include "QGoLUTDialog.h"
 
 #include "vtkLookupTable.h"
+#include "vtkContourWidget.h"
+#include "vtkOrientedGlyphContourRepresentation.h"
+#include "vtkImageActorPointPlacer.h"
+#include "vtkProperty.h"
 
 #include "vtkImageExtractComponents.h"
 
@@ -17,6 +21,19 @@ QGoTabImageView3D::QGoTabImageView3D( QWidget* parent ) :
   QGoTabImageViewElementBase( parent )
 {
   setupUi( this );
+
+  for( int i = 0; i < 3; i++ )
+    {
+    this->m_ContourRepresentation.push_back( vtkOrientedGlyphContourRepresentation::New() );
+    this->m_ContourRepresentation.back()->GetProperty()->SetColor( 0., 1., 1. );
+    this->m_ContourRepresentation.back()->GetLinesProperty()->SetColor( 1., 0., 1. );
+    this->m_ContourRepresentation.back()->GetActiveProperty()->SetColor( 1., 1., 0. );
+
+    this->m_ContourWidget.push_back( vtkContourWidget::New() );
+    this->m_ContourWidget.back()->SetPriority( 10.0 );
+    this->m_ContourWidget.back()->SetInteractor( m_ImageView->GetInteractor( i ) );
+    this->m_ContourWidget.back()->Off();
+    }
 
   m_VisuDockWidget = new QGoVisualizationDockWidget( this, 3 );
   m_VisuDockWidget->resize( 120, 300 );
@@ -363,5 +380,16 @@ void QGoTabImageView3D::SetImageToImageViewer( vtkImageData* image )
 {
   m_ImageView->SetImage( image );
   m_ImageView->Update();
+
+  for( int i = 0; i < 3; i++ )
+    {
+    vtkImageActorPointPlacer* point_placer = vtkImageActorPointPlacer::New();
+    point_placer->SetImageActor( m_ImageView->GetImageActor( i ) );
+
+    this->m_ContourRepresentation[i]->SetPointPlacer( point_placer );
+    point_placer->Delete();
+
+    this->m_ContourWidget[i]->SetRepresentation( this->m_ContourRepresentation[i] );
+    }
 }
 //--------------------------------------------------------------------------

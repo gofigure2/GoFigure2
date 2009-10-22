@@ -30,7 +30,12 @@ public:
   virtual ~QGoImageView3D();
 
   virtual void SetImage( vtkImageData* iImage );
+  virtual vtkImageData* GetImage();
+
   virtual void Update();
+
+  vtkImageActor* GetImageActor( const int& );
+  QVTKInteractor* GetInteractor( const int& );
 
   virtual void setupUi( QWidget* parent );
   virtual void retranslateUi(QWidget *parent);

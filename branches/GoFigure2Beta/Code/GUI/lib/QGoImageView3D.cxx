@@ -22,14 +22,14 @@
 
 //-------------------------------------------------------------------------
 QGoImageView3D::
-QGoImageView3D( QWidget* iParent ) : 
-  QGoImageView( iParent ), 
+QGoImageView3D( QWidget* iParent ) :
+  QGoImageView( iParent ),
   IsFullScreen( 0 )
 {
   VtkEventQtConnector = vtkEventQtSlotConnect::New();
 
   setupUi( this );
-  
+
   QObject::connect( this->SliderXY, SIGNAL( valueChanged( int ) ),
     this, SLOT( SetSliceViewXY( int ) ) );
   QObject::connect( this->SliderXZ, SIGNAL( valueChanged( int ) ),
@@ -315,6 +315,60 @@ void QGoImageView3D::SetImage( vtkImageData* input )
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+vtkImageData* QGoImageView3D::GetImage()
+{
+  return m_Image;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+vtkImageActor* QGoImageView3D::GetImageActor( const int& iId )
+{
+  if( ( iId < 0 ) || ( iId > 2 ) )
+    {
+    return 0;
+    }
+  else
+    {
+    vtkViewImage2D* View = m_Pool->GetItem( iId );
+    return View->GetImageActor();
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+QVTKInteractor* QGoImageView3D::GetInteractor( const int& iId )
+{
+  if( ( iId < 0 ) || ( iId > 2 ) )
+    {
+    return 0;
+    }
+  else
+    {
+    switch( iId )
+      {
+      case 0:
+        {
+        return this->QvtkWidget_XY->GetInteractor();
+        }
+      case 1:
+        {
+        return this->QvtkWidget_XZ->GetInteractor();
+        }
+      case 2:
+        {
+        return this->QvtkWidget_XZ->GetInteractor();
+        }
+      case 3:
+        {
+        return this->QvtkWidget_XYZ->GetInteractor();
+        }
+      }
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 QString QGoImageView3D::SnapshotViewXY( const GoFigure::SnapshotImageType& iType,
     const QString& iBaseName )
 {
@@ -542,7 +596,7 @@ void QGoImageView3D::MoveSliderXZ( )
   int s = GetSliceViewXZ();
 
   if( s != this->SliderXZ->value() )
-    {  
+    {
     this->SliderXZ->setValue( s );
     emit SliceViewXZChanged( s );
     }

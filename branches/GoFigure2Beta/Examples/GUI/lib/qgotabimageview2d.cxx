@@ -27,6 +27,7 @@ int main( int argc, char** argv )
   QGoTabImageView2D* tab = new QGoTabImageView2D;
   tab->SetImage( reader->GetOutput() );
   tab->Update();
+  tab->ActivateManualSegmentationEditor( true );
   tab->show();
 
   QMenuBar* menubar = new QMenuBar;

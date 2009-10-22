@@ -80,6 +80,44 @@ void QGoImageView2D::SetImage( vtkImageData* iImage )
     }
 }
 //--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+vtkImageData* QGoImageView2D::GetImage( )
+{
+  return m_Image;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+vtkImageActor* QGoImageView2D::GetImageActor( const int& i )
+{
+  if( i == 0 )
+    {
+    vtkViewImage2D* View = m_Pool->GetItem( i );
+    return View->GetImageActor();
+    }
+  else
+    {
+    return 0;
+    }
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+QVTKInteractor* QGoImageView2D::GetInteractor( const int& i )
+{
+  if( i == 0 )
+    {
+    return m_QVTKWidgetXY->GetInteractor();
+    }
+  else
+    {
+    return 0;
+    }
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
 void QGoImageView2D::Update( )
 {
   vtkViewImage2D* View = m_Pool->GetItem( 0 );

@@ -26,6 +26,11 @@ class QGoImageView2D : public QGoImageView
     ~QGoImageView2D();
 
     void SetImage( vtkImageData* iImage );
+    vtkImageData* GetImage();
+
+    vtkImageActor* GetImageActor( const int& i = 0 );
+    QVTKInteractor* GetInteractor( const int& i = 0 );
+
     void Update();
 
     void setupUi( QWidget* parent );
