@@ -11,6 +11,7 @@ SET( QGOGUILIB_EXAMPLE_SRC
   qgomanualsegmentationsettingsdialog
   qgovisualizationdockwidget
   qgomanualsegmentationdockwidget
+  contourstructurehelpertest
 )
 
 
@@ -73,5 +74,9 @@ ADD_TEST( qgovisualizationdockwidgetTest
 ADD_TEST( qgomanualsegmentationdockwidgetTest
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qgomanualsegmentationdockwidget
   1
+)
+
+ADD_TEST( contourstructurehelperTest
+  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/contourstructurehelpertest
 )
 
