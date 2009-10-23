@@ -26,7 +26,7 @@ int main( int argc, char** argv )
   for( int i = 0; i < 10; i++ )
     {
     lut->ChangeLookupTable( i );
-    vtkLookupTable* temp = lut->GetLookupTable();
+//     vtkLookupTable* temp = lut->GetLookupTable();
     }
 
   int output = app.exec();

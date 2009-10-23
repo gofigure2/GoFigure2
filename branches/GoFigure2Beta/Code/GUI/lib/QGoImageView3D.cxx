@@ -347,6 +347,7 @@ QVTKInteractor* QGoImageView3D::GetInteractor( const int& iId )
     {
     switch( iId )
       {
+      default:
       case 0:
         {
         return this->QvtkWidget_XY->GetInteractor();
