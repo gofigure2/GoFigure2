@@ -2,6 +2,7 @@ SET( QGOIO_EXAMPLES_SRC
   megacaptureimport
   multifilereader
   qgothreadedmultifilereader
+  gofigurefileinfomultiindexcontainerhelper
 )
 
 FOREACH( var ${QGOIO_EXAMPLES_SRC} )
@@ -11,3 +12,6 @@ FOREACH( var ${QGOIO_EXAMPLES_SRC} )
     ${QT_LIBRARIES}
   )
 ENDFOREACH( var ${QGOIO_EXAMPLES_SRC} )
+
+ADD_TEST( gofigurefileinfomultiindexcontainerhelperTest
+  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/gofigurefileinfomultiindexcontainerhelper )

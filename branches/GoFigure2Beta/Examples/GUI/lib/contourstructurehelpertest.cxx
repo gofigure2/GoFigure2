@@ -22,7 +22,7 @@ int main( int argc, char** argv )
 
     id = i / 4;
     container.insert( ContourStructure( i, ActorVector[i], NodesVector[i],
-      id, t, ( i == 10 ) ) );
+      id, t, ( i == 10 ), 0.5, 0.5, 0.5 ) );
     }
 
   ContourStructure c = FindContourGivenContourId( container, 10 );
