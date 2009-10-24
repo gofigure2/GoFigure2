@@ -470,7 +470,7 @@ void QGoMainWindow::OpenLSMImage( const QString& iFile, const int& iTimePoint )
 }
 //--------------------------------------------------------------------------
 
-//--------------------------------------------------------------------------
+//--------------------------------------------------------------------------/** \todo why not using iTimePoint instead of 0, in SetMultiFiles? */
 void QGoMainWindow::CreateNewTabFor3DwtImage( FileListType& iFileList,
   const FILETYPE& iFileType, const int& iTimePoint )
 {
@@ -805,22 +805,22 @@ void QGoMainWindow::AddToMenu(
 
   foreach( QString text, texts )
     {
-    QAction *action = new QAction(text, plugin);
-    action->setDisabled( true );
+    QAction *taction = new QAction(text, plugin);
+    taction->setDisabled( true );
     connect( action, SIGNAL(triggered()), this, member);
-    menu->addAction(action);
+    menu->addAction(taction);
 
     for( std::list< GoFigure::TabDimensionType >::iterator it = dim_list.begin();
       it != dim_list.end();
       ++it )
       {
-      m_TabDimPluginActionMap[ *it ].push_back( action );
+      m_TabDimPluginActionMap[ *it ].push_back( taction );
       }
 
     if (actionGroup)
       {
-      action->setCheckable(true);
-      actionGroup->addAction(action);
+      taction->setCheckable(true);
+      actionGroup->addAction(taction);
       }
     }
 }
@@ -829,9 +829,9 @@ void QGoMainWindow::AddToMenu(
 //--------------------------------------------------------------------------
 void QGoMainWindow::ApplyImageFilter()
 {
-  QAction *action = qobject_cast< QAction* >( sender( ) );
+  QAction *taction = qobject_cast< QAction* >( sender( ) );
   QGoImageFilterPluginBase* filter =
-    qobject_cast< QGoImageFilterPluginBase* >( action->parent() );
+    qobject_cast< QGoImageFilterPluginBase* >( taction->parent() );
 //   filter->SetInput( this->m_Image );
   filter->Update();
 }
@@ -899,10 +899,10 @@ void QGoMainWindow::UpdateRecentFileActions( QStringList list,
 //--------------------------------------------------------------------------
 void QGoMainWindow::openRecentSingleFile()
 {
-  QAction* action = qobject_cast< QAction* >( sender() );
+  QAction* taction = qobject_cast< QAction* >( sender() );
   if( action )
     {
-    this->SetSingleFileName( action->data().toString() );
+    this->SetSingleFileName( taction->data().toString() );
     }
 }
 //--------------------------------------------------------------------------------
@@ -910,10 +910,10 @@ void QGoMainWindow::openRecentSingleFile()
 //--------------------------------------------------------------------------------
 void QGoMainWindow::openRecentMultipleFile()
 {
-  QAction* action = qobject_cast< QAction* >( sender() );
-  if( action )
+  QAction* taction = qobject_cast< QAction* >( sender() );
+  if( taction )
     {
-//     this->SetMultiFileName( action->data().toString() );
+//     this->SetMultiFileName( taction->data().toString() );
     }
 }
 //--------------------------------------------------------------------------------
@@ -933,11 +933,11 @@ void QGoMainWindow::ReadSettings()
     this->menuMultiple_Files, this->recentMultipleFileActions );
 
   settings.beginGroup( "MainWindow" );
-  QSize size = settings.value( "size" ).toSize();
+  QSize tsize = settings.value( "size" ).toSize();
 
-  if( size.isValid() )
+  if( tsize.isValid() )
     {
-    this->resize( size );
+    this->resize( tsize );
     this->move( settings.value("pos").toPoint() );
     }
   else

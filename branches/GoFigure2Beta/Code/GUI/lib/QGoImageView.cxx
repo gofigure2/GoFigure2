@@ -11,7 +11,7 @@
 #include "vtkViewImage2D.h"
 
 //--------------------------------------------------------------------------
-QGoImageView::QGoImageView( QWidget* parent ) : QWidget( parent ),
+QGoImageView::QGoImageView( QWidget* iParent ) : QWidget( iParent ),
   m_Pool( 0 ),
   m_Image( 0 ),
   m_SnapshotId( 0 ),

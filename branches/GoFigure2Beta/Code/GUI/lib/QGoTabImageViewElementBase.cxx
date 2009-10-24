@@ -12,8 +12,8 @@
 
 //--------------------------------------------------------------------------
 QGoTabImageViewElementBase::
-QGoTabImageViewElementBase( QWidget* parent ) :
-  QGoTabElementBase( parent ),
+QGoTabImageViewElementBase( QWidget* iParent ) :
+  QGoTabElementBase( iParent ),
   m_Color( false ),
   m_BackgroundColor( Qt::black ),
   m_Image( 0 ),

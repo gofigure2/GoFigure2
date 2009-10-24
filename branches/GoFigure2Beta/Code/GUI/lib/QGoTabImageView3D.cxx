@@ -17,8 +17,8 @@
 #include <QVBoxLayout>
 
 //--------------------------------------------------------------------------
-QGoTabImageView3D::QGoTabImageView3D( QWidget* parent ) :
-  QGoTabImageViewElementBase( parent )
+QGoTabImageView3D::QGoTabImageView3D( QWidget* iParent ) :
+  QGoTabImageViewElementBase( iParent )
 {
   setupUi( this );
 
@@ -41,8 +41,8 @@ QGoTabImageView3D::QGoTabImageView3D( QWidget* parent ) :
   QWidget* temp = new QWidget();
   temp->resize( 100, 150 );
 
-  QGridLayout* layout = new QGridLayout( temp );
-  layout->setContentsMargins(3, -1, 3, -1);
+  QGridLayout* gridlayout = new QGridLayout( temp );
+  gridlayout->setContentsMargins(3, -1, 3, -1);
 
   QObject::connect( m_VisuDockWidget, SIGNAL( XSliceChanged( int ) ),
     this, SLOT( SetSliceViewYZ( int ) ) );
@@ -167,11 +167,11 @@ QGoTabImageView3D::~QGoTabImageView3D( )
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoTabImageView3D::setupUi( QWidget* parent )
+void QGoTabImageView3D::setupUi( QWidget* iParent )
 {
-  if(parent->objectName().isEmpty())
+  if(iParent->objectName().isEmpty())
     {
-    parent->resize(800, 800);
+    iParent->resize(800, 800);
     }
 
   m_ImageView = new QGoImageView3D( this );
@@ -189,20 +189,20 @@ void QGoTabImageView3D::setupUi( QWidget* parent )
   QObject::connect( m_ImageView, SIGNAL( FullScreenViewChanged( int ) ),
     this, SIGNAL( FullScreenViewChanged( int ) ) );
 
-  this->m_LayOut = new QHBoxLayout( parent );
+  this->m_LayOut = new QHBoxLayout( iParent );
   this->m_LayOut->addWidget( m_ImageView  );
 
-  retranslateUi(parent);
+  retranslateUi(iParent);
 
-  QMetaObject::connectSlotsByName(parent);
+  QMetaObject::connectSlotsByName(iParent);
 } // setupUi
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoTabImageView3D::retranslateUi(QWidget *parent)
+void QGoTabImageView3D::retranslateUi(QWidget *iParent)
 {
-  parent->setWindowTitle( tr( "QGoTabImageView3D" ) );
-  Q_UNUSED(parent);
+  iParent->setWindowTitle( tr( "QGoTabImageView3D" ) );
+  Q_UNUSED(iParent);
 }
 //--------------------------------------------------------------------------
 

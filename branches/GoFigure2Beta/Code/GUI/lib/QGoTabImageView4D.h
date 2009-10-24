@@ -52,10 +52,13 @@ class QGoTabImageView4D : public QGoTabElementBase
     QString SnapshotViewXYZ( const GoFigure::SnapshotImageType& iType,
       const QString& iBaseName = QString( "snapshot" ) );
 
+    /** \todo to be implemented */
     QString SnapshotViewXT( const GoFigure::SnapshotImageType& iType,
       const QString& iBaseName = QString( "snapshot" ) ) {return QString();}
+    /** \todo to be implemented */
     QString SnapshotViewYT( const GoFigure::SnapshotImageType& iType,
       const QString& iBaseName = QString( "snapshot" ) ) {return QString();}
+    /** \todo to be implemented */
     QString SnapshotViewXYT( const GoFigure::SnapshotImageType& iType,
       const QString& iBaseName = QString( "snapshot" ) ) {return QString();}
 

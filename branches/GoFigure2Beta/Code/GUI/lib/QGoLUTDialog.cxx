@@ -47,8 +47,8 @@
 #include <vtkRendererCollection.h>
 #include <vtkRenderWindow.h>
 
-QGoLUTDialog::QGoLUTDialog( QWidget* parent ) :
-  QDialog( parent ),
+QGoLUTDialog::QGoLUTDialog( QWidget* iParent ) :
+  QDialog( iParent ),
   LUT( 0 )
 {
   setupUi( this );
@@ -85,10 +85,10 @@ vtkLookupTable* QGoLUTDialog::GetLookupTable( )
   return this->LUT;
 }
 
-vtkLookupTable* QGoLUTDialog::GetLookupTable( QWidget* iParent,
+vtkLookupTable* QGoLUTDialog::GetLookupTable( QWidget* iiParent,
     const QString& iTitle )
 {
-  QGoLUTDialog dlg( iParent );
+  QGoLUTDialog dlg( iiParent );
   if( !iTitle.isEmpty() )
     {
     dlg.setWindowTitle( iTitle );

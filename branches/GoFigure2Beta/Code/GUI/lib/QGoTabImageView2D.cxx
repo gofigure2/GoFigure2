@@ -22,7 +22,8 @@
 #include <QVariant>
 
 //--------------------------------------------------------------------------
-QGoTabImageView2D::QGoTabImageView2D( QWidget* parent )
+QGoTabImageView2D::
+QGoTabImageView2D( QWidget* iParent ) : QGoTabImageViewElementBase( iParent )
 {
   m_Image = 0;
   setupUi( this );
@@ -85,30 +86,30 @@ GoFigure::TabDimensionType QGoTabImageView2D::GetTabDimensionType( ) const
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoTabImageView2D::setupUi( QWidget* parent )
+void QGoTabImageView2D::setupUi( QWidget* iParent )
 {
-  if(parent->objectName().isEmpty())
+  if(iParent->objectName().isEmpty())
     {
-    parent->resize(800, 800);
+    iParent->resize(800, 800);
     }
 
   m_ImageView = new QGoImageView2D( this );
   m_ImageView->SetBackgroundColor( m_BackgroundColor );
 
-  this->m_LayOut = new QHBoxLayout( parent );
+  this->m_LayOut = new QHBoxLayout( iParent );
   this->m_LayOut->addWidget( m_ImageView  );
 
-  retranslateUi(parent);
+  retranslateUi(iParent);
 
-  QMetaObject::connectSlotsByName(parent);
+  QMetaObject::connectSlotsByName(iParent);
 } // setupUi
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoTabImageView2D::retranslateUi(QWidget *parent)
+void QGoTabImageView2D::retranslateUi(QWidget *iParent)
 {
-  parent->setWindowTitle( tr( "QGoTabImageView2D" ) );
-  Q_UNUSED(parent);
+  iParent->setWindowTitle( tr( "QGoTabImageView2D" ) );
+  Q_UNUSED(iParent);
 }
 //--------------------------------------------------------------------------
 

@@ -11,7 +11,7 @@
 #include "vtkViewImage2D.h"
 
 //--------------------------------------------------------------------------
-QGoImageView2D::QGoImageView2D( QWidget* parent ) : QGoImageView( parent )
+QGoImageView2D::QGoImageView2D( QWidget* iiParent ) : QGoImageView( iiParent )
 {
   m_VTKEventQtConnector = vtkEventQtSlotConnect::New();
 
@@ -34,30 +34,30 @@ QGoImageView2D::~QGoImageView2D()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoImageView2D::setupUi( QWidget* parent )
+void QGoImageView2D::setupUi( QWidget* iiParent )
 {
-  if(parent->objectName().isEmpty())
+  if(iiParent->objectName().isEmpty())
     {
-    parent->resize(800, 800);
+    iiParent->resize(800, 800);
     }
 
   m_QVTKWidgetXY = new QVTKWidget( this );
   m_QVTKWidgetXY->resize(800,800);
 
-  m_LayOut = new QHBoxLayout( parent );
+  m_LayOut = new QHBoxLayout( iiParent );
   m_LayOut->addWidget( m_QVTKWidgetXY  );
 
-  retranslateUi(parent);
+  retranslateUi(iiParent);
 
-  QMetaObject::connectSlotsByName(parent);
+  QMetaObject::connectSlotsByName(iiParent);
 } // setupUi
 //--------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-void QGoImageView2D::retranslateUi(QWidget *parent)
+void QGoImageView2D::retranslateUi(QWidget *iParent)
 {
-  parent->setWindowTitle( this->m_Tag );
-  Q_UNUSED(parent);
+  iParent->setWindowTitle( this->m_Tag );
+  Q_UNUSED(iParent);
 }
 //------------------------------------------------------------------------------
 

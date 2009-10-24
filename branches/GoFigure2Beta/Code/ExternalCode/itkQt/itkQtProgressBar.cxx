@@ -57,7 +57,7 @@
 namespace itk {
 
 /** Constructor */
-QtProgressBar::QtProgressBar( QWidget *parent ):QProgressBar(parent)
+QtProgressBar::QtProgressBar( QWidget *iParent ):QProgressBar(iParent)
 {
   m_RedrawCommand = RedrawCommandType::New();
   m_RedrawCommand->SetCallbackFunction( this, &QtProgressBar::ProcessEvent );
@@ -84,17 +84,17 @@ QtProgressBar::GetRedrawCommand( void ) const
 /** Manage a Progress event */
 void 
 QtProgressBar::ProcessEvent( itk::Object * caller, 
-                           const itk::EventObject & event )
+                           const itk::EventObject & iEvent )
 {
-  if( typeid( itk::ProgressEvent )   ==  typeid( event ) )
+  if( typeid( itk::ProgressEvent )   ==  typeid( iEvent ) )
     {
     ::itk::ProcessObject::Pointer  process = 
              dynamic_cast< itk::ProcessObject *>( caller );
 
-    const int value = static_cast<int>( 
+    const int tempvalue = static_cast<int>( 
                         process->GetProgress() * this->maximum() );
-    std::cout << "New Value : " << value << std::endl;
-    this->setValue( value );
+    std::cout << "New Value : " << tempvalue << std::endl;
+    this->setValue( tempvalue );
     }
 }
 
@@ -103,17 +103,17 @@ QtProgressBar::ProcessEvent( itk::Object * caller,
 
 void 
 QtProgressBar::ConstProcessEvent( const itk::Object * caller, 
-                                const itk::EventObject & event )
+                                const itk::EventObject & iEvent )
 {
-  if( typeid( itk::ProgressEvent )   ==  typeid( event ) ) 
+  if( typeid( itk::ProgressEvent )   ==  typeid( iEvent ) ) 
     {
     itk::ProcessObject::ConstPointer  process = 
               dynamic_cast< const itk::ProcessObject *>( caller );
 
-    const int value = static_cast<int>( 
+    const int temp_value = static_cast<int>( 
                         process->GetProgress() * this->maximum() );
-    std::cout << "New Value : " << value << std::endl;
-    this->setValue( value );
+    std::cout << "New Value : " << temp_value << std::endl;
+    this->setValue( temp_value );
     }
 }
  

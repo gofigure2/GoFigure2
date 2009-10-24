@@ -1242,7 +1242,7 @@ int vtkLSMReader::RequestData(
 
     vtkDebugMacro(<<"Offset to tp  "<<timepoint<<", slice " <<i<<" = "<<offset<<", strip byte count: " << readSize<<"\n");
 
-    for(int i=0;i<readSize;i++)tempBuf[i] = 0;
+    for(int ii=0;ii<readSize;ii++)tempBuf[ii] = 0;
 
     int bytes = this->ReadFile(this->GetFile(),&offset,readSize,(char *)tempBuf,1);
 
@@ -1296,6 +1296,9 @@ int vtkLSMReader::RequestUpdateExtent (
   vtkInformationVector** inputVector,
   vtkInformationVector* outputVector)
 {
+  (void) request;
+  (void) inputVector;
+
   int uext[6], ext[6];
 
   vtkInformation* outInfo = outputVector->GetInformationObject(0);
@@ -1601,6 +1604,8 @@ int vtkLSMReader::ReadFile(ifstream *f,unsigned long *pos,int size,char *buf,boo
   if(swap) {
     vtkByteSwap::SwapLERange(buf,size);
   }
+#else
+  (void) swap;
 #endif
   //if(f->fail() || f->eof()) ret=0;
   ret = f->gcount();

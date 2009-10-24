@@ -4,8 +4,8 @@
 #include <cstdlib>
 
 QGoManualSegmentationDockWidget::
-QGoManualSegmentationDockWidget( QWidget* parent ) :
-  QDockWidget( parent ),
+QGoManualSegmentationDockWidget( QWidget* iParent ) :
+  QDockWidget( iParent ),
   m_OrderVector( 5, 0 ),
   m_ValidatedColor( Qt::red )
 {

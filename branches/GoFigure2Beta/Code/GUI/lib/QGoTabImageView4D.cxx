@@ -14,8 +14,8 @@
 #include <algorithm>
 
 //--------------------------------------------------------------------------
-QGoTabImageView4D::QGoTabImageView4D( QWidget* parent ) :
-  QGoTabElementBase( parent ),
+QGoTabImageView4D::QGoTabImageView4D( QWidget* iParent ) :
+  QGoTabElementBase( iParent ),
   m_XYZImage( 0 ),
   m_XYTImage( 0 ),
   m_BackgroundColor( Qt::black )
@@ -46,28 +46,28 @@ QGoTabImageView4D::QGoTabImageView4D( QWidget* parent ) :
   QWidget* temp = new QWidget();
   temp->resize( 100, 150 );
 
-  QGridLayout* layout = new QGridLayout( temp );
-  layout->setContentsMargins(3, -1, 3, -1);
+  QGridLayout* gridlayout = new QGridLayout( temp );
+  gridlayout->setContentsMargins(3, -1, 3, -1);
 
   QLabel* SliceX = new QLabel( "X Slice" );
-  layout->addWidget( SliceX, 0, 0 );
+  gridlayout->addWidget( SliceX, 0, 0 );
   QSpinBox* XSliceSpinBox = new QSpinBox();
-  layout->addWidget( XSliceSpinBox, 0, 1 );
+  gridlayout->addWidget( XSliceSpinBox, 0, 1 );
 
   QLabel* SliceY = new QLabel( "Y Slice" );
-  layout->addWidget( SliceY, 1, 0 );
+  gridlayout->addWidget( SliceY, 1, 0 );
   QSpinBox* YSliceSpinBox = new QSpinBox( );
-  layout->addWidget( YSliceSpinBox, 1, 1 );
+  gridlayout->addWidget( YSliceSpinBox, 1, 1 );
 
   QLabel* SliceZ = new QLabel( "Z Slice" );
-  layout->addWidget( SliceZ, 2, 0 );
+  gridlayout->addWidget( SliceZ, 2, 0 );
   QSpinBox* ZSliceSpinBox = new QSpinBox( );
-  layout->addWidget( ZSliceSpinBox, 2, 1 );
+  gridlayout->addWidget( ZSliceSpinBox, 2, 1 );
 
   QLabel* SliceT = new QLabel( "T Time" );
-  layout->addWidget( SliceT, 3, 0 );
+  gridlayout->addWidget( SliceT, 3, 0 );
   QSpinBox* TSliceSpinBox = new QSpinBox( );
-  layout->addWidget( TSliceSpinBox, 3, 1 );
+  gridlayout->addWidget( TSliceSpinBox, 3, 1 );
 
   m_DockWidget->layout()->addWidget( temp );
 
@@ -187,11 +187,11 @@ QGoTabImageView4D::~QGoTabImageView4D( )
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoTabImageView4D::setupUi( QWidget* parent )
+void QGoTabImageView4D::setupUi( QWidget* iParent )
 {
-  if(parent->objectName().isEmpty())
+  if(iParent->objectName().isEmpty())
     {
-    parent->resize(800, 800);
+    iParent->resize(800, 800);
     }
 
   QList< int > list_size;
@@ -204,23 +204,23 @@ void QGoTabImageView4D::setupUi( QWidget* parent )
   m_XYTImageView = new QGoImageView3D;
   m_XYTImageView->SetBackgroundColor( m_BackgroundColor );
 
-  m_Splitter = new QSplitter( Qt::Horizontal, parent );
+  m_Splitter = new QSplitter( Qt::Horizontal, iParent );
   m_Splitter->addWidget( m_XYZImageView );
   m_Splitter->addWidget( m_XYTImageView );
   m_Splitter->setSizes( list_size );
   m_Splitter->resize( 800, 800 );
 
-  retranslateUi(parent);
+  retranslateUi(iParent);
 
-  QMetaObject::connectSlotsByName(parent);
+  QMetaObject::connectSlotsByName(iParent);
 } // setupUi
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoTabImageView4D::retranslateUi(QWidget *parent)
+void QGoTabImageView4D::retranslateUi(QWidget *iParent)
 {
-  parent->setWindowTitle( tr( "QGoTabImageView4D" ) );
-  Q_UNUSED(parent);
+  iParent->setWindowTitle( tr( "QGoTabImageView4D" ) );
+  Q_UNUSED(iParent);
 }
 //--------------------------------------------------------------------------
 

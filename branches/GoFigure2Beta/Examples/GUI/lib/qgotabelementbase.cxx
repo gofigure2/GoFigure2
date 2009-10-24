@@ -5,8 +5,8 @@
 class QGoTabElementTestHelper : public QGoTabElementBase
 {
   public:
-    QGoTabElementTestHelper( QWidget* parent = 0 ) :
-      QGoTabElementBase( parent ) {}
+    QGoTabElementTestHelper( QWidget* iParent = 0 ) :
+      QGoTabElementBase( iParent ) {}
     virtual ~QGoTabElementTestHelper() {}
 
     virtual void WriteSettings() {}

@@ -13,11 +13,11 @@
 #include "vtkMath.h"
 
 QGoManualSegmentationSettingsDialog::
-QGoManualSegmentationSettingsDialog( QWidget* parent,
+QGoManualSegmentationSettingsDialog( QWidget* iParent,
   const double& iWidth,
   const QColor& iLineColor,
   const QColor& iNodeColor,
-  const QColor& iActivatedNodeColor ) : QDialog( parent ),
+  const QColor& iActivatedNodeColor ) : QDialog( iParent ),
     m_LineWidth( iWidth ),
     m_LineColor( iLineColor ),
     m_NodeColor( iNodeColor ),
@@ -113,6 +113,7 @@ QColor QGoManualSegmentationSettingsDialog::GetActivatedNodeColor( ) const
   return m_ActivatedNodeColor;
 }
 
+/// \todo check the implementation of this method. strange that iValue is not used at all
 void QGoManualSegmentationSettingsDialog::SetLineWidth( const double& iValue )
 {
   m_LineWidth = this->LineWidthSpinBox->value();

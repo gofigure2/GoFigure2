@@ -3,7 +3,7 @@
 #include <algorithm>
 
 QGoThreadedMultiFileReader::
-QGoThreadedMultiFileReader( QObject* parent ) : QThread( parent ),
+QGoThreadedMultiFileReader( QObject* iParent ) : QThread( iParent ),
   m_Image( 0 ),
   m_FileType( itk::MultiFileReader::JPEG ),
   m_TimeBased( true ),

@@ -77,7 +77,7 @@ public slots:
   void FullScreenViewXYZ();
 
   ///\todo MUST be implemented!
-  virtual void SetLookupTable( vtkLookupTable* iLut ) {}
+  virtual void SetLookupTable( vtkLookupTable* ) {}
   ///\todo MUST be implemented!
   virtual void ShowScalarBar( const bool& ) {}
 

@@ -102,6 +102,8 @@ int vtkFillImageWithPolyData::RequestInformation (
   vtkInformationVector **inputVector,
   vtkInformationVector *outputVector)
 {
+  (void) inputVector;
+
   // get the info objects
   vtkInformation* outInfo = outputVector->GetInformationObject(0);
 

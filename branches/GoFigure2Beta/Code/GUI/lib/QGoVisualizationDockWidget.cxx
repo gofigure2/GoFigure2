@@ -1,8 +1,8 @@
 #include "QGoVisualizationDockWidget.h"
 
 QGoVisualizationDockWidget::
-QGoVisualizationDockWidget( QWidget* parent, const unsigned int& iDim ) :
-  QDockWidget( parent ),
+QGoVisualizationDockWidget( QWidget* iParent, const unsigned int& iDim ) :
+  QDockWidget( iParent ),
   m_Dimension( iDim )
 {
   this->setupUi( this );

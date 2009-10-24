@@ -6,8 +6,8 @@ class QGoTabImageViewElementBaseTestHelper :
   public QGoTabImageViewElementBase
 {
 public:
-  QGoTabImageViewElementBaseTestHelper( QWidget* parent = 0 )
-    : QGoTabImageViewElementBase( parent ) {}
+  QGoTabImageViewElementBaseTestHelper( QWidget* iParent = 0 )
+    : QGoTabImageViewElementBase( iParent ) {}
   virtual ~QGoTabImageViewElementBaseTestHelper() {}
 
   GoFigure::TabDimensionType GetTabDimensionType( ) const

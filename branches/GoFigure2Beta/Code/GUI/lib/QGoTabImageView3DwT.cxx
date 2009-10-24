@@ -12,8 +12,8 @@
 #include <QColorDialog>
 
 //--------------------------------------------------------------------------
-QGoTabImageView3DwT::QGoTabImageView3DwT( QWidget* parent ) :
-  QGoTabElementBase( parent ),
+QGoTabImageView3DwT::QGoTabImageView3DwT( QWidget* iParent ) :
+  QGoTabElementBase( iParent ),
   m_LSMReader( 0 ),
   m_Image( 0 ),
   m_BackgroundColor( Qt::black ),
@@ -123,7 +123,7 @@ void QGoTabImageView3DwT::CreateAllViewActions()
 
 //   QAction* toggleviewaction = m_VisuDockWidget->toggleViewAction();
 //   toggleviewaction->setText( tr( "Slide Location" ) );
-//   toggleviewaction->setParent( this );
+//   toggleviewaction->setiParent( this );
 //   m_ViewActions.push_back( toggleviewaction );
 
   QAction* LookupTableAction = new QAction( tr( "Lookup Table" ), this );
@@ -171,11 +171,11 @@ QGoTabImageView3DwT::~QGoTabImageView3DwT( )
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoTabImageView3DwT::setupUi( QWidget* parent )
+void QGoTabImageView3DwT::setupUi( QWidget* iParent )
 {
-  if(parent->objectName().isEmpty())
+  if(iParent->objectName().isEmpty())
     {
-    parent->resize(800, 800);
+    iParent->resize(800, 800);
     }
 
   m_ImageView = new QGoImageView3D( this );
@@ -193,20 +193,20 @@ void QGoTabImageView3DwT::setupUi( QWidget* parent )
   QObject::connect( m_ImageView, SIGNAL( FullScreenViewChanged( int ) ),
     this, SIGNAL( FullScreenViewChanged( int ) ) );
 
-  m_LayOut = new QHBoxLayout( parent );
+  m_LayOut = new QHBoxLayout( iParent );
   m_LayOut->addWidget( m_ImageView  );
 
-  retranslateUi(parent);
+  retranslateUi(iParent);
 
-  QMetaObject::connectSlotsByName(parent);
+  QMetaObject::connectSlotsByName(iParent);
 } // setupUi
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoTabImageView3DwT::retranslateUi(QWidget *parent)
+void QGoTabImageView3DwT::retranslateUi(QWidget *iParent)
 {
-  parent->setWindowTitle( tr( "QGoTabImageView3DwT" ) );
-  Q_UNUSED(parent);
+  iParent->setWindowTitle( tr( "QGoTabImageView3DwT" ) );
+  Q_UNUSED(iParent);
 }
 //--------------------------------------------------------------------------
 

@@ -10,7 +10,8 @@
 #include <iostream>
 
 //--------------------------------------------------------------------------
-QGoTabElementBase::QGoTabElementBase( QWidget* parent ) : QWidget( parent )
+QGoTabElementBase::
+QGoTabElementBase( QWidget* iParent ) : QWidget( iParent )
 {
 }
 //--------------------------------------------------------------------------
