@@ -4,6 +4,8 @@
 #include "vtkPNGReader.h"
 #include "vtkImageData.h"
 
+#include "vtkLookupTable.h"
+
 #include "QGoImageView2D.h"
 
 int main( int argc, char** argv )
@@ -37,6 +39,21 @@ int main( int argc, char** argv )
     }
   viewer->Update();
   viewer->show();
+
+  viewer->ShowScalarBar( true );
+  viewer->SnapshotViewXY( GoFigure::JPEG );
+
+  std::cout <<viewer->GetImageActor( 0 ) <<std::endl;
+  std::cout <<viewer->GetImageActor( 1 ) <<std::endl;
+
+  std::cout <<viewer->GetInteractor( 0 ) <<std::endl;
+  std::cout <<viewer->GetInteractor( 1 ) <<std::endl;
+
+  std::cout <<viewer->GetImage() <<std::endl;
+
+  vtkLookupTable* lut = vtkLookupTable::New();
+  viewer->SetLookupTable( lut );
+  lut->Delete();
 
   app.processEvents();
 

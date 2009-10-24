@@ -30,6 +30,12 @@ int main( int argc, char** argv )
   QCoreApplication::setOrganizationDomain( "http://gofigure2.sourceforge.net" );
 
   QGoTabElementTestHelper* test = new QGoTabElementTestHelper;
+  test->ViewActions();
+  test->DockWidget();
+  test->AdditionalWidget();
+  test->GetPluginActions();
+  test->SetPluginActions( std::list< QAction* >() );
+
   delete test;
 
   return EXIT_SUCCESS;

@@ -163,6 +163,11 @@ void QGoTabImageView3D::CreateAllViewActions()
 //--------------------------------------------------------------------------
 QGoTabImageView3D::~QGoTabImageView3D( )
 {
+  for( int i = 0; i < 3; i++ )
+    {
+    this->m_ContourRepresentation[i]->Delete();
+    this->m_ContourWidget[i]->Delete();
+    }
 }
 //--------------------------------------------------------------------------
 

@@ -39,6 +39,8 @@ int main( int argc, char** argv )
 
   QGoTabImageViewElementBaseTestHelper* test =
     new QGoTabImageViewElementBaseTestHelper;
+  test->SetColor( true );
+  
   delete test;
 
   return EXIT_SUCCESS;

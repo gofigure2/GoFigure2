@@ -75,7 +75,10 @@ QGoTabImageView2D( QWidget* iParent ) : QGoTabImageViewElementBase( iParent )
 
 //--------------------------------------------------------------------------
 QGoTabImageView2D::~QGoTabImageView2D()
-{}
+{
+  this->m_ContourRepresentation[0]->Delete();
+  this->m_ContourWidget[0]->Delete();
+}
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
