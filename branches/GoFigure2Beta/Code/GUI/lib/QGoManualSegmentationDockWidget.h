@@ -27,6 +27,7 @@ class QGoManualSegmentationDockWidget :
     void ReinitializePressed();
     void ValidatePressed();
     void ReinitializeAndIncrementPressed();
+    void ActivateManualSegmentationToggled( bool );
 
   protected:
     std::vector< unsigned int >   m_OrderVector;

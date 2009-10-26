@@ -27,6 +27,10 @@ QGoTabImageViewElementBase( QWidget* iParent ) :
 
   QObject::connect( m_ManualSegmentationDockWidget, SIGNAL( ValidatePressed() ),
     this, SLOT( ValidateContour() ) );
+
+  QObject::connect( m_ManualSegmentationDockWidget,
+      SIGNAL( ActivateManualSegmentationToggled( bool ) ),
+    this, SLOT( ActivateManualSegmentationEditor( ) ) );
 }
 //--------------------------------------------------------------------------
 
