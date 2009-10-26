@@ -69,7 +69,7 @@ QGoManualSegmentationSettingsDialog( QWidget* iParent,
   m_Renderer->ResetCamera();
   renwin->Render();
 
-  QObject::connect( this->LineWidthSpinBox, SIGNAL( valueChanged( double) ),
+  QObject::connect( this->LineWidthSpinBox, SIGNAL( valueChanged( double ) ),
     this, SLOT( SetLineWidth( double ) ) );
 
   QObject::connect( this->LineColorBtn, SIGNAL( pressed() ),
@@ -126,28 +126,39 @@ void QGoManualSegmentationSettingsDialog::SelectLineColor( )
 {
   m_LineColor = QColorDialog::getColor( m_LineColor, this,
     tr( "Select Line Color" ) );
-  m_ContourRepresentation->GetLinesProperty()->SetColor( m_LineColor.redF(),
-    m_LineColor.greenF(), m_LineColor.blueF() );
-  m_ContourWidget->Render();
-  m_Renderer->Render();
+
+  if( m_LineColor.isValid() )
+    {
+    m_ContourRepresentation->GetLinesProperty()->SetColor( m_LineColor.redF(),
+      m_LineColor.greenF(), m_LineColor.blueF() );
+    m_ContourWidget->Render();
+    m_Renderer->Render();
+    }
 }
 
 void QGoManualSegmentationSettingsDialog::SelectNodeColor( )
 {
   m_NodeColor = QColorDialog::getColor( m_NodeColor, this,
     tr( "Select Node Color" ) );
-  m_ContourRepresentation->GetProperty()->SetColor( m_NodeColor.redF(),
-    m_NodeColor.greenF(), m_NodeColor.blueF() );
-  m_ContourWidget->Render();
-  m_Renderer->Render();
+  if( m_NodeColor.isValid() )
+    {
+    m_ContourRepresentation->GetProperty()->SetColor( m_NodeColor.redF(),
+      m_NodeColor.greenF(), m_NodeColor.blueF() );
+    m_ContourWidget->Render();
+    m_Renderer->Render();
+    }
 }
 
 void QGoManualSegmentationSettingsDialog::SelectActivatedNodeColor( )
 {
   m_ActivatedNodeColor = QColorDialog::getColor( m_ActivatedNodeColor, this,
     tr( "Select Activated Node Color" ) );
-  m_ContourRepresentation->GetActiveProperty()->SetColor( m_ActivatedNodeColor.redF(),
-    m_ActivatedNodeColor.greenF(), m_ActivatedNodeColor.blueF() );
-  m_ContourWidget->Render();
-  m_Renderer->Render();
+  if( m_ActivatedNodeColor.isValid() )
+    {
+    m_ContourRepresentation->GetActiveProperty()->SetColor(
+      m_ActivatedNodeColor.redF(), m_ActivatedNodeColor.greenF(),
+      m_ActivatedNodeColor.blueF() );
+    m_ContourWidget->Render();
+    m_Renderer->Render();
+    }
 }

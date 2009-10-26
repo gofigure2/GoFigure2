@@ -79,7 +79,7 @@
         </layout>
        </item>
        <item>
-        <widget class="QPushButton" name="IdContourColorBtn">
+        <widget class="QPushButton" name="ValidatedContourColorBtn">
          <property name="enabled">
           <bool>false</bool>
          </property>
@@ -141,8 +141,6 @@
      </item>
     </layout>
    </widget>
-   <zorder>layoutWidget</zorder>
-   <zorder>layoutWidget</zorder>
   </widget>
  </widget>
  <resources/>
@@ -214,7 +212,7 @@
   <connection>
    <sender>OffRBtn</sender>
    <signal>toggled(bool)</signal>
-   <receiver>IdContourColorBtn</receiver>
+   <receiver>ValidatedContourColorBtn</receiver>
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">

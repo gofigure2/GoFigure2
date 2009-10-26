@@ -24,6 +24,9 @@ QGoTabImageViewElementBase( QWidget* iParent ) :
   m_VisuDockWidget( 0 )
 {
   m_ManualSegmentationDockWidget = new QGoManualSegmentationDockWidget( this );
+
+  QObject::connect( m_ManualSegmentationDockWidget, SIGNAL( ValidatePressed() ),
+    this, SLOT( ValidateContour() ) );
 }
 //--------------------------------------------------------------------------
 
@@ -244,8 +247,12 @@ ValidateContour( const int& iId )
   m_ContourRepresentation[iId]->GetNodePolyData( contour_nodes );
 
   // get corresponding actor from visualization
+  vtkPolyData* contour_copy = vtkPolyData::New();
+  contour_copy->ShallowCopy( contour );
+
   std::vector< vtkActor* > contour_actor =
-    this->AddDataSet( static_cast< vtkDataSet* >( contour ), contour_property, true, false );
+    this->AddDataSet( static_cast< vtkDataSet* >( contour_copy ), contour_property,
+      true, false );
 
   // get meshid from the dock widget (SpinBox)
   unsigned int meshid = m_ManualSegmentationDockWidget->GetMeshId();
@@ -254,7 +261,7 @@ ValidateContour( const int& iId )
   bool highlighted = false;
 
   // fill the container
-  for( int i = 0; contour_actor.size(); i++ )
+  for( int i = 0; i < contour_actor.size(); i++ )
     {
     ContourStructure temp( m_ContourId, contour_actor[i], contour_nodes, meshid,
       timepoint, highlighted, r, g, b, i );
@@ -264,3 +271,12 @@ ValidateContour( const int& iId )
   m_ContourId++;
 }
 //--------------------------------------------------------------------------
+
+void QGoTabImageViewElementBase::
+ValidateContour( )
+{
+  for( int i = 0; i < m_ContourWidget.size(); i++ )
+    {
+    ValidateContour( i );
+    }
+}

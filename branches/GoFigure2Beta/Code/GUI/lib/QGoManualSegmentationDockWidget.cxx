@@ -10,6 +10,7 @@ QGoManualSegmentationDockWidget( QWidget* iParent ) :
   m_ValidatedColor( Qt::red )
 {
   m_SettingsDialog = new QGoManualSegmentationSettingsDialog( this );
+  GenerateOrderVector( m_ValidatedColor );
 
   this->setupUi( this );
 
@@ -21,6 +22,9 @@ QGoManualSegmentationDockWidget( QWidget* iParent ) :
 
   QObject::connect( this->IdSpinBox, SIGNAL( valueChanged( int ) ),
     this, SLOT( GenerateRandomColorForGivenId( int ) ) );
+
+  QObject::connect( this->ValidatedContourColorBtn, SIGNAL( pressed() ),
+    this, SLOT( OnSetColorPressed() ) );
 
   QObject::connect( this->ReinitializeBtn, SIGNAL( pressed() ),
     this, SIGNAL( ReinitializePressed() ) );
@@ -61,7 +65,7 @@ OnSetColorPressed()
   if( temp != m_ValidatedColor )
     {
     m_ValidatedColor = temp;
-//     SetContourColor( m_ValidatedColor );
+    GenerateOrderVector( m_ValidatedColor );
     }
 }
 
