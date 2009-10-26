@@ -9,6 +9,9 @@
 #include "vtkContourWidget.h"
 #include "vtkOrientedGlyphContourRepresentation.h"
 #include "vtkImageActorPointPlacer.h"
+#include "vtkPolyData.h"
+#include "vtkActor.h"
+#include "vtkProperty.h"
 
 //--------------------------------------------------------------------------
 QGoTabImageViewElementBase::
@@ -16,14 +19,26 @@ QGoTabImageViewElementBase( QWidget* iParent ) :
   QGoTabElementBase( iParent ),
   m_Color( false ),
   m_BackgroundColor( Qt::black ),
+  m_ContourId( 0 ),
   m_Image( 0 ),
   m_VisuDockWidget( 0 )
-{}
+{
+  m_ManualSegmentationDockWidget = new QGoManualSegmentationDockWidget( this );
+}
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 QGoTabImageViewElementBase::~QGoTabImageViewElementBase()
-{}
+{
+  ContourStructureMultiIndexContainer::iterator it = m_ContourContainer.begin();
+  ContourStructureMultiIndexContainer::iterator end = m_ContourContainer.begin();
+
+  while( it != end )
+    {
+    it->Nodes->Delete();
+    it->Actor->Delete();
+    }
+}
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
@@ -194,9 +209,58 @@ ActivateManualSegmentationEditor( const bool& iActivate )
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-// void QGoTabImageViewElementBase::
-// ValidateContour( const int& iId )
-// {
-//   m_ContourRepresentation[iId]->GetContourRepresentationAsPolyData();
-// }
+void QGoTabImageViewElementBase::
+ValidateContour( const int& iId )
+{
+  vtkPolyData* contour =
+    m_ContourRepresentation[iId]->GetContourRepresentationAsPolyData();
+
+  // get color from the dock widget
+  double r, g ,b;
+  QColor color = m_ManualSegmentationDockWidget->GetValidatedColor();
+  color.getRgbF( &r, &g, &b );
+
+  vtkProperty* contour_property = vtkProperty::New();
+  contour_property->SetRepresentationToWireframe();
+  contour_property->SetColor( r, g, b );
+
+  // Compute Bounding Box
+  double bounds[6];
+  contour->GetBounds( bounds );
+
+  // Extract Min and Max from bounds
+  double Min[3], Max[3];
+  int k = 0;
+  for( int i = 0; i < 3; i++ )
+    {
+    Min[i] = bounds[k++];
+    Max[i] = bounds[k++];
+    }
+
+  int* min_idx = this->GetImageCoordinatesFromWorldCoordinates( Min );
+  int* max_idx = this->GetImageCoordinatesFromWorldCoordinates( Max );
+
+  vtkPolyData* contour_nodes = vtkPolyData::New();
+  m_ContourRepresentation[iId]->GetNodePolyData( contour_nodes );
+
+  // get corresponding actor from visualization
+  std::vector< vtkActor* > contour_actor =
+    this->AddDataSet( static_cast< vtkDataSet* >( contour ), contour_property, true, false );
+
+  // get meshid from the dock widget (SpinBox)
+  unsigned int meshid = m_ManualSegmentationDockWidget->GetMeshId();
+
+  unsigned int timepoint = 0;
+  bool highlighted = false;
+
+  // fill the container
+  for( int i = 0; contour_actor.size(); i++ )
+    {
+    ContourStructure temp( m_ContourId, contour_actor[i], contour_nodes, meshid,
+      timepoint, highlighted, r, g, b, i );
+    m_ContourContainer.insert( temp );
+    }
+
+  m_ContourId++;
+}
 //--------------------------------------------------------------------------

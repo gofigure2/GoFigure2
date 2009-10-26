@@ -211,3 +211,22 @@ void QGoTabImageView2D::SetImageToImageViewer( vtkImageData* iImage )
 }
 //--------------------------------------------------------------------------
 
+//--------------------------------------------------------------------------
+int* QGoTabImageView2D::
+GetImageCoordinatesFromWorldCoordinates( double pos[3] )
+{
+  return m_ImageView->GetImageCoordinatesFromWorldCoordinates( pos );
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+std::vector< vtkActor* >
+QGoTabImageView2D::
+AddDataSet( vtkDataSet* dataset,
+  vtkProperty* property,
+  const bool& intersection,
+  const bool& iDataVisibility )
+{
+  return m_ImageView->AddDataSet( dataset, property, intersection, iDataVisibility );
+}
+//--------------------------------------------------------------------------

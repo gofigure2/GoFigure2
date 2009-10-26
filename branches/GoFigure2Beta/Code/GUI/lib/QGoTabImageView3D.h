@@ -80,6 +80,12 @@ class QGoTabImageView3D : public QGoTabImageViewElementBase
     void CreateAllViewActions();
 
     void SetImageToImageViewer( vtkImageData* image );
+    int* GetImageCoordinatesFromWorldCoordinates( double pos[3] );
+
+    virtual std::vector< vtkActor* > AddDataSet( vtkDataSet* dataset,
+      vtkProperty* property = NULL,
+      const bool& intersection = true,
+      const bool& iDataVisibility = true );
 
 //   private:
 };

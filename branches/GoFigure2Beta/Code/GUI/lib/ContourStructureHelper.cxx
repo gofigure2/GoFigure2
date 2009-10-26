@@ -3,22 +3,26 @@
 using boost::multi_index_container;
 using namespace boost::multi_index;
 
-ContourStructure
+std::list< ContourStructure >
 FindContourGivenContourId(
   ContourStructureMultiIndexContainer iContainer,
   const unsigned int& iId )
 {
+  std::list< ContourStructure > oList;
+
   ContourStructureMultiIndexContainer::index< ContourId >::type::iterator
     it = iContainer.get< ContourId >().find( iId );
 
   if( it != iContainer.get< ContourId >().end() )
     {
-    return (*it);
+    while( it->ContourId == iId )
+      {
+      oList.push_back( *it );
+      ++it;
+      }
     }
-  else
-    {
-    return ContourStructure();
-    }
+
+  return oList;
 }
 
 

@@ -15,6 +15,9 @@ class QGoManualSegmentationDockWidget :
     QGoManualSegmentationDockWidget( QWidget* parent = 0 );
     ~QGoManualSegmentationDockWidget();
 
+    QColor GetValidatedColor() const;
+    unsigned int GetMeshId() const;
+
   public slots:
     void OnSetColorPressed();
     void SetContourColor();

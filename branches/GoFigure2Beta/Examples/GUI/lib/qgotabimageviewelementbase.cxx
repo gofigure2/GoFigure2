@@ -24,9 +24,19 @@ protected:
     }
   virtual void GetBackgroundColorFromImageViewer( ) {}
   virtual void SetBackgroundColorToImageViewer( ) {}
-  virtual void SetImageToImageViewer( vtkImageData* image )
+  virtual void SetImageToImageViewer( vtkImageData* ) {}
+  virtual int* GetImageCoordinatesFromWorldCoordinates( double pos[3] )
     {
-    (void) image;
+    (void) pos;
+    return 0;
+    }
+
+  virtual std::vector< vtkActor* > AddDataSet( vtkDataSet* dataset,
+      vtkProperty* property = NULL,
+      const bool& intersection = true,
+      const bool& iDataVisibility = true )
+    {
+    return std::vector< vtkActor* >();
     }
 };
 
@@ -40,7 +50,7 @@ int main( int argc, char** argv )
   QGoTabImageViewElementBaseTestHelper* test =
     new QGoTabImageViewElementBaseTestHelper;
   test->SetColor( true );
-  
+
   delete test;
 
   return EXIT_SUCCESS;

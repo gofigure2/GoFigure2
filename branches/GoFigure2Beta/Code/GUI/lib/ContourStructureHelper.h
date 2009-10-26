@@ -7,6 +7,8 @@
 #include <boost/multi_index/member.hpp>
 #include <boost/multi_index/ordered_index.hpp>
 
+#include <list>
+
 using boost::multi_index_container;
 using namespace boost::multi_index;
 
@@ -17,7 +19,7 @@ typedef multi_index_container<
         tag<ContourId>, BOOST_MULTI_INDEX_MEMBER(ContourStructure,unsigned int,ContourId)>,
       ordered_unique<
         tag<Actor>, BOOST_MULTI_INDEX_MEMBER(ContourStructure,ContourStructure::vtkActorPointer,Actor)>,
-      ordered_unique<
+      ordered_non_unique<
         tag<Nodes>, BOOST_MULTI_INDEX_MEMBER(ContourStructure,ContourStructure::vtkPolyDataPointer,Nodes)>,
       ordered_non_unique<
         tag<MeshId>, BOOST_MULTI_INDEX_MEMBER(ContourStructure,unsigned int,MeshId)>,
@@ -57,7 +59,7 @@ typedef multi_index_container<
 
 
 
-ContourStructure
+std::list< ContourStructure >
 FindContourGivenContourId(
   ContourStructureMultiIndexContainer iContainer,
   const unsigned int& iId );

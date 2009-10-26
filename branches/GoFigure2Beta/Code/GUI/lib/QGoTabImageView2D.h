@@ -49,6 +49,11 @@ protected:
   void SetBackgroundColorToImageViewer( );
 
   void SetImageToImageViewer( vtkImageData* image );
+  int* GetImageCoordinatesFromWorldCoordinates( double pos[3] );
+  std::vector< vtkActor* > AddDataSet( vtkDataSet* dataset,
+      vtkProperty* property = NULL,
+      const bool& intersection = true,
+      const bool& iDataVisibility = true );
 
 private:
   QGoTabImageView2D( const QGoTabImageView2D& );

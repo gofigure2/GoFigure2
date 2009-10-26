@@ -627,3 +627,15 @@ void QGoImageView3D::SaveStateSplitters()
   settings.setValue( "HbSplitterSizes", HbSplitter->saveState() );
 }
 //-------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+std::vector< vtkActor* >
+QGoImageView3D::
+AddDataSet( vtkDataSet* dataset, vtkProperty* property,
+      const bool& intersection, const bool& iDataVisibility )
+{
+  View3D->AddDataSet( dataset, property, false, false );
+
+  return QGoImageView::AddDataSet( dataset, property, intersection, iDataVisibility );
+}
+//--------------------------------------------------------------------------

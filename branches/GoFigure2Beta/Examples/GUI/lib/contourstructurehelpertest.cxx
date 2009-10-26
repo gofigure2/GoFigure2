@@ -22,10 +22,12 @@ int main( int , char** )
 
     id = i / 4;
     container.insert( ContourStructure( i, ActorVector[i], NodesVector[i],
-      id, t, ( i == 10 ), 0.5, 0.5, 0.5 ) );
+      id, t, ( i == 10 ), 0.5, 0.5, 0.5, 0 ) );
     }
 
-  ContourStructure c = FindContourGivenContourId( container, 10 );
+  std::list< ContourStructure > list = FindContourGivenContourId( container, 10 );
+  ContourStructure c = list.front();
+
   if( c.Actor != ActorVector[10]  )
     {
     std::cerr <<"c.Actor != ActorVector[10]" <<std::endl;

@@ -37,6 +37,20 @@ QGoManualSegmentationDockWidget::
 {
 }
 
+QColor
+QGoManualSegmentationDockWidget::
+GetValidatedColor() const
+{
+  return m_ValidatedColor;
+}
+
+unsigned int
+QGoManualSegmentationDockWidget::
+GetMeshId() const
+{
+  return static_cast< unsigned int >( this->IdSpinBox->value() );
+}
+
 void
 QGoManualSegmentationDockWidget::
 OnSetColorPressed()

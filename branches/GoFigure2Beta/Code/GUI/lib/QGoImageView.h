@@ -5,8 +5,12 @@
 
 class vtkLookupTable;
 class vtkImageData;
+class vtkViewImage2D;
 class vtkViewImage2DCollection;
 class vtkImageActor;
+class vtkActor;
+class vtkDataSet;
+class vtkProperty;
 class QVTKInteractor;
 
 /**
@@ -27,6 +31,9 @@ class QGoImageView : public QWidget
     virtual void SetImage( vtkImageData* iImage ) = 0;
     virtual vtkImageData* GetImage() = 0;
 
+    /** \brief Get Image Coordinates from World Coordinates*/
+    int* GetImageCoordinatesFromWorldCoordinates( double pos[3] );
+
     virtual void Update() = 0;
 
     virtual vtkImageActor* GetImageActor( const int& ) = 0;
@@ -37,6 +44,14 @@ class QGoImageView : public QWidget
 
     void GetBackgroundColor( double& r, double& g, double& b );
     double* GetBackgroundColor();
+
+    vtkViewImage2D* GetImageViewer( const int& iId );
+    int GetNumberOfImageViewers();
+
+    virtual std::vector< vtkActor* > AddDataSet( vtkDataSet* dataset,
+      vtkProperty* property = NULL,
+      const bool& intersection = true,
+      const bool& iDataVisibility = true );
 
   public slots:
     void SetBackgroundColor( const double& r,

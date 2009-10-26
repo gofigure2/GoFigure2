@@ -398,3 +398,25 @@ void QGoTabImageView3D::SetImageToImageViewer( vtkImageData* image )
     }
 }
 //--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+int* QGoTabImageView3D::
+GetImageCoordinatesFromWorldCoordinates( double pos[3] )
+{
+  return m_ImageView->GetImageCoordinatesFromWorldCoordinates( pos );
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+std::vector< vtkActor* >
+QGoTabImageView3D::
+AddDataSet( vtkDataSet* dataset,
+  vtkProperty* property,
+  const bool& intersection,
+  const bool& iDataVisibility )
+{
+  return this->m_ImageView->AddDataSet( dataset, property,
+    intersection, iDataVisibility );
+}
+//--------------------------------------------------------------------------
+

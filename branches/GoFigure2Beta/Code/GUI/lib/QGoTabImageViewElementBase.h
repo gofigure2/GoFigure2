@@ -43,10 +43,14 @@
 
 #include "QGoTabElementBase.h"
 #include "QGoVisualizationDockWidget.h"
+#include "QGoManualSegmentationDockWidget.h"
+#include "ContourStructureHelper.h"
 
 class vtkImageData;
 class vtkContourWidget;
 class vtkOrientedGlyphContourRepresentation;
+class vtkDataSet;
+class vtkProperty;
 
 class QGoTabImageViewElementBase : public QGoTabElementBase
 {
@@ -63,6 +67,8 @@ public:
   virtual void WriteSettings();
   virtual void ReadSettings();
 
+  virtual void ValidateContour( const int& iId );
+
 public slots:
   void ChangeBackgroundColor();
   void ShowAllChannels( bool iChecked );
@@ -70,19 +76,29 @@ public slots:
   void ActivateManualSegmentationEditor( const bool& iActivate );
 
 protected:
-  bool    m_Color;
-  QColor  m_BackgroundColor;
+  bool          m_Color;
+  QColor        m_BackgroundColor;
+  unsigned int  m_ContourId;
 
   QHBoxLayout*  m_LayOut;
   vtkImageData* m_Image;
-  std::vector< vtkContourWidget* > m_ContourWidget;
-  std::vector< vtkOrientedGlyphContourRepresentation* > m_ContourRepresentation;
 
-  QGoVisualizationDockWidget* m_VisuDockWidget;
+  std::vector< vtkContourWidget* >                      m_ContourWidget;
+  std::vector< vtkOrientedGlyphContourRepresentation* > m_ContourRepresentation;
+  ContourStructureMultiIndexContainer                   m_ContourContainer;
+
+  QGoVisualizationDockWidget*       m_VisuDockWidget;
+  QGoManualSegmentationDockWidget*  m_ManualSegmentationDockWidget;
 
   virtual void GetBackgroundColorFromImageViewer( ) = 0;
   virtual void SetBackgroundColorToImageViewer( ) = 0;
   virtual void SetImageToImageViewer( vtkImageData* image ) = 0;
+  virtual int* GetImageCoordinatesFromWorldCoordinates( double pos[3] ) = 0;
+
+  virtual std::vector< vtkActor* > AddDataSet( vtkDataSet* dataset,
+      vtkProperty* property = NULL,
+      const bool& intersection = true,
+      const bool& iDataVisibility = true ) = 0;
 
 private:
   QGoTabImageViewElementBase( const QGoTabImageViewElementBase& );

@@ -117,3 +117,48 @@ void QGoImageView::SetBackgroundColor( const QColor& iColor )
 }
 //--------------------------------------------------------------------------
 
+//--------------------------------------------------------------------------
+int* QGoImageView::
+GetImageCoordinatesFromWorldCoordinates( double pos[3] )
+{
+  vtkViewImage2D* View = m_Pool->GetItem( 0 );
+  return View->GetImageCoordinatesFromWorldCoordinates( pos );
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+vtkViewImage2D* QGoImageView::
+GetImageViewer( const int& iId )
+{
+  return m_Pool->GetItem( iId );
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+int QGoImageView::
+GetNumberOfImageViewers()
+{
+  return m_Pool->GetNumberOfItems();
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+std::vector< vtkActor* >
+QGoImageView::
+AddDataSet( vtkDataSet* dataset, vtkProperty* property,
+      const bool& intersection, const bool& iDataVisibility )
+{
+  int n = m_Pool->GetNumberOfItems();
+  std::vector< vtkActor* > oActorVector;
+
+  for( int i = 0; i < n; i++ )
+    {
+    vtkViewImage2D* viewer = m_Pool->GetItem( i );
+    vtkActor* temp = viewer->AddDataSet( dataset, property,
+      intersection, iDataVisibility );
+    oActorVector.push_back( temp );
+    }
+
+  return oActorVector;
+}
+//--------------------------------------------------------------------------

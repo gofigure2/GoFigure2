@@ -37,6 +37,11 @@ public:
   vtkImageActor* GetImageActor( const int& );
   QVTKInteractor* GetInteractor( const int& );
 
+  std::vector< vtkActor* > AddDataSet( vtkDataSet* dataset,
+      vtkProperty* property = NULL,
+      const bool& intersection = true,
+      const bool& iDataVisibility = true  );
+
   virtual void setupUi( QWidget* parent );
   virtual void retranslateUi(QWidget *parent);
 
