@@ -69,6 +69,8 @@ public:
 
   virtual void ValidateContour( const int& iId );
 
+  virtual std::list< QDockWidget* > DockWidget();
+
 public slots:
   void ChangeBackgroundColor();
   void ShowAllChannels( bool iChecked );

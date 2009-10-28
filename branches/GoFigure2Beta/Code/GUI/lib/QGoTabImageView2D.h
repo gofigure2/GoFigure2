@@ -30,7 +30,6 @@ public:
   void retranslateUi( QWidget *parent );
 
   virtual std::vector< QAction* > ViewActions();
-  virtual std::list< QDockWidget* > DockWidget();
   virtual std::list< QWidget* > AdditionalWidget();
 
   virtual void WriteSettings();

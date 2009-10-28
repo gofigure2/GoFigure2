@@ -23,7 +23,8 @@
 
 //--------------------------------------------------------------------------
 QGoTabImageView2D::
-QGoTabImageView2D( QWidget* iParent ) : QGoTabImageViewElementBase( iParent )
+QGoTabImageView2D( QWidget* iParent )
+ : QGoTabImageViewElementBase( iParent )
 {
   m_Image = 0;
   setupUi( this );
@@ -161,14 +162,6 @@ void QGoTabImageView2D::ChangeLookupTable()
 void QGoTabImageView2D::ShowScalarBar( const bool& iShow )
 {
   m_ImageView->ShowScalarBar( iShow );
-}
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-std::list< QDockWidget* > QGoTabImageView2D::DockWidget()
-{
-  std::list< QDockWidget* > oList;
-  return oList;
 }
 //--------------------------------------------------------------------------
 

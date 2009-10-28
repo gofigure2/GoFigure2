@@ -31,8 +31,6 @@ class QGoTabImageView3D : public QGoTabImageViewElementBase
 
     virtual std::vector< QAction* > ViewActions();
 
-    virtual std::list< QDockWidget* > DockWidget();
-
     virtual std::list< QWidget* > AdditionalWidget()
       {return std::list< QWidget* >(); }
 

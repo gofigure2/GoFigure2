@@ -91,10 +91,13 @@ void QGoTabImageViewElementBase::ChangeBackgroundColor()
   QColor temp = QColorDialog::getColor( m_BackgroundColor,
     this, tr( "Choose Background Color" ) );
 
-  if( temp != m_BackgroundColor )
+  if( temp.isValid() )
     {
-    m_BackgroundColor = temp;
-    this->SetBackgroundColorToImageViewer();
+    if( temp != m_BackgroundColor )
+      {
+      m_BackgroundColor = temp;
+      this->SetBackgroundColorToImageViewer();
+      }
     }
 }
 //--------------------------------------------------------------------------
@@ -317,5 +320,18 @@ ChangeContourRepresentationProperty()
     m_ContourRepresentation[i]->GetProperty()->SetColor( rn, gn, bn );
     m_ContourRepresentation[i]->GetActiveProperty()->SetColor( ra, ga, ba );
     }
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+std::list< QDockWidget* >
+QGoTabImageViewElementBase::
+DockWidget()
+{
+  std::list< QDockWidget* > oList;
+  oList.push_back( m_VisuDockWidget );
+  oList.push_back( m_ManualSegmentationDockWidget );
+
+  return oList;
 }
 //--------------------------------------------------------------------------

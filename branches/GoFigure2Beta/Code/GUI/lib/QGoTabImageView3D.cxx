@@ -17,8 +17,9 @@
 #include <QVBoxLayout>
 
 //--------------------------------------------------------------------------
-QGoTabImageView3D::QGoTabImageView3D( QWidget* iParent ) :
-  QGoTabImageViewElementBase( iParent )
+QGoTabImageView3D::
+QGoTabImageView3D( QWidget* iParent )
+  : QGoTabImageViewElementBase( iParent )
 {
   setupUi( this );
 
@@ -37,12 +38,6 @@ QGoTabImageView3D::QGoTabImageView3D( QWidget* iParent ) :
 
   m_VisuDockWidget = new QGoVisualizationDockWidget( this, 3 );
   m_VisuDockWidget->resize( 120, 300 );
-
-  QWidget* temp = new QWidget();
-  temp->resize( 100, 150 );
-
-  QGridLayout* gridlayout = new QGridLayout( temp );
-  gridlayout->setContentsMargins(3, -1, 3, -1);
 
   QObject::connect( m_VisuDockWidget, SIGNAL( XSliceChanged( int ) ),
     this, SLOT( SetSliceViewYZ( int ) ) );
@@ -368,15 +363,6 @@ void QGoTabImageView3D::SetBackgroundColorToImageViewer( )
 std::vector< QAction* > QGoTabImageView3D::ViewActions()
 {
   return m_ViewActions;
-}
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-std::list< QDockWidget* > QGoTabImageView3D::DockWidget()
-{
-  std::list< QDockWidget* > oList;
-  oList.push_back( static_cast< QDockWidget* >( m_VisuDockWidget ) );
-  return oList;
 }
 //--------------------------------------------------------------------------
 

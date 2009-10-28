@@ -470,7 +470,8 @@ void QGoMainWindow::OpenLSMImage( const QString& iFile, const int& iTimePoint )
 }
 //--------------------------------------------------------------------------
 
-//--------------------------------------------------------------------------/** \todo why not using iTimePoint instead of 0, in SetMultiFiles? */
+//--------------------------------------------------------------------------
+/** \todo why not using iTimePoint instead of 0, in SetMultiFiles? */
 void QGoMainWindow::CreateNewTabFor3DwtImage( FileListType& iFileList,
   const FILETYPE& iFileType, const int& iTimePoint )
 {
@@ -597,6 +598,16 @@ void QGoMainWindow::CreateNewTabFor2DImage( vtkImageData* iInput, const QString&
     }
 
   w2->SetPluginActions( m_TabDimPluginActionMap[w2->GetTabDimensionType()] );
+
+  std::list< QDockWidget* > dock_list = w2->DockWidget();
+
+  for( std::list< QDockWidget* >::iterator
+    dck_it = dock_list.begin();
+    dck_it != dock_list.end();
+    ++dck_it )
+    {
+    this->addDockWidget( Qt::LeftDockWidgetArea, (*dck_it) );//->show();
+    }
 
   int idx = this->CentralTabWidget->addTab( w2, iFile );
   this->menuView->setEnabled( true );
