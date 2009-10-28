@@ -9,7 +9,7 @@ class vtkViewImage2D;
 class vtkViewImage2DCollection;
 class vtkImageActor;
 class vtkActor;
-class vtkDataSet;
+class vtkPolyData;
 class vtkProperty;
 class QVTKInteractor;
 
@@ -48,10 +48,9 @@ class QGoImageView : public QWidget
     vtkViewImage2D* GetImageViewer( const int& iId );
     int GetNumberOfImageViewers();
 
-    virtual std::vector< vtkActor* > AddDataSet( vtkDataSet* dataset,
-      vtkProperty* property = NULL,
-      const bool& intersection = true,
-      const bool& iDataVisibility = true );
+    virtual std::vector< vtkActor* > AddContour( const int& iId,
+      vtkPolyData* dataset,
+      vtkProperty* property = NULL );
 
   public slots:
     void SetBackgroundColor( const double& r,

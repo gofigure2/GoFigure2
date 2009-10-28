@@ -96,10 +96,9 @@ protected:
   virtual void SetImageToImageViewer( vtkImageData* image ) = 0;
   virtual int* GetImageCoordinatesFromWorldCoordinates( double pos[3] ) = 0;
 
-  virtual std::vector< vtkActor* > AddDataSet( vtkDataSet* dataset,
-      vtkProperty* property = NULL,
-      const bool& intersection = true,
-      const bool& iDataVisibility = true ) = 0;
+  virtual std::vector< vtkActor* > AddContour( const int& iId,
+      vtkPolyData* dataset,
+      vtkProperty* property = NULL ) = 0;
 
 private:
   QGoTabImageViewElementBase( const QGoTabImageViewElementBase& );

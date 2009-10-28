@@ -30,7 +30,7 @@ QGoTabImageViewElementBase( QWidget* iParent ) :
 
   QObject::connect( m_ManualSegmentationDockWidget,
       SIGNAL( ActivateManualSegmentationToggled( bool ) ),
-    this, SLOT( ActivateManualSegmentationEditor( ) ) );
+    this, SLOT( ActivateManualSegmentationEditor( bool ) ) );
 }
 //--------------------------------------------------------------------------
 
@@ -255,8 +255,8 @@ ValidateContour( const int& iId )
   contour_copy->ShallowCopy( contour );
 
   std::vector< vtkActor* > contour_actor =
-    this->AddDataSet( static_cast< vtkDataSet* >( contour_copy ), contour_property,
-      true, false );
+    this->AddContour( iId, contour_copy,
+      contour_property );
 
   // get meshid from the dock widget (SpinBox)
   unsigned int meshid = m_ManualSegmentationDockWidget->GetMeshId();

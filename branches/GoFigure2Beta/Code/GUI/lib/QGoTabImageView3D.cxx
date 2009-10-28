@@ -410,13 +410,11 @@ GetImageCoordinatesFromWorldCoordinates( double pos[3] )
 //--------------------------------------------------------------------------
 std::vector< vtkActor* >
 QGoTabImageView3D::
-AddDataSet( vtkDataSet* dataset,
-  vtkProperty* property,
-  const bool& intersection,
-  const bool& iDataVisibility )
+AddContour( const int& iId,
+  vtkPolyData* dataset,
+  vtkProperty* property )
 {
-  return this->m_ImageView->AddDataSet( dataset, property,
-    intersection, iDataVisibility );
+  return this->m_ImageView->AddContour( iId, dataset, property );
 }
 //--------------------------------------------------------------------------
 

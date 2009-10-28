@@ -145,8 +145,7 @@ GetNumberOfImageViewers()
 //--------------------------------------------------------------------------
 std::vector< vtkActor* >
 QGoImageView::
-AddDataSet( vtkDataSet* dataset, vtkProperty* property,
-      const bool& intersection, const bool& iDataVisibility )
+AddContour( const int& iId, vtkPolyData* dataset, vtkProperty* property )
 {
   int n = m_Pool->GetNumberOfItems();
   std::vector< vtkActor* > oActorVector;
@@ -155,7 +154,7 @@ AddDataSet( vtkDataSet* dataset, vtkProperty* property,
     {
     vtkViewImage2D* viewer = m_Pool->GetItem( i );
     vtkActor* temp = viewer->AddDataSet( dataset, property,
-      intersection, iDataVisibility );
+      true, false );
     oActorVector.push_back( temp );
     }
 

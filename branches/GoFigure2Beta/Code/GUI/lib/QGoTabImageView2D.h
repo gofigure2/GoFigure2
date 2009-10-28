@@ -50,10 +50,8 @@ protected:
 
   void SetImageToImageViewer( vtkImageData* image );
   int* GetImageCoordinatesFromWorldCoordinates( double pos[3] );
-  std::vector< vtkActor* > AddDataSet( vtkDataSet* dataset,
-      vtkProperty* property = NULL,
-      const bool& intersection = true,
-      const bool& iDataVisibility = true );
+  std::vector< vtkActor* > AddContour( const int& iId, vtkPolyData* dataset,
+      vtkProperty* property = NULL );
 
 private:
   QGoTabImageView2D( const QGoTabImageView2D& );

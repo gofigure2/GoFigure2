@@ -25,17 +25,17 @@ protected:
   virtual void GetBackgroundColorFromImageViewer( ) {}
   virtual void SetBackgroundColorToImageViewer( ) {}
   virtual void SetImageToImageViewer( vtkImageData* ) {}
-  virtual int* GetImageCoordinatesFromWorldCoordinates( double pos[3] )
+  virtual int* GetImageCoordinatesFromWorldCoordinates( double iPos[3] )
     {
-    (void) pos;
+    (void) iPos;
     return 0;
     }
 
-  virtual std::vector< vtkActor* > AddDataSet( vtkDataSet* dataset,
-      vtkProperty* property = NULL,
-      const bool& intersection = true,
-      const bool& iDataVisibility = true )
+  virtual std::vector< vtkActor* > AddContour( const int&,
+      vtkPolyData*,
+      vtkProperty* iProperty = NULL )
     {
+    (void) iProperty;
     return std::vector< vtkActor* >();
     }
 };

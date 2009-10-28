@@ -14,7 +14,7 @@ QGoManualSegmentationDockWidget( QWidget* iParent ) :
 
   this->setupUi( this );
 
-  QObject::connect( this->OnRBtn, SIGNAL( toogled( bool ) ),
+  QObject::connect( this->OnRBtn, SIGNAL( toggled( bool ) ),
     this, SIGNAL( ActivateManualSegmentationToggled( bool ) ) );
 
   QObject::connect( this->SettingsBtn, SIGNAL( pressed() ),

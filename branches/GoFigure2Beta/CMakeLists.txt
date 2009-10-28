@@ -255,7 +255,7 @@ IF( VTK_FOUND )
   ADD_SUBDIRECTORY( Code )
   ADD_SUBDIRECTORY( Examples )
   ADD_SUBDIRECTORY( KWStyle )
-  ADD_SUBDIRECTORY( Main )
+#  ADD_SUBDIRECTORY( Main )
 
 
 #---------------------------------------------------------------------------

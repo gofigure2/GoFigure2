@@ -631,11 +631,11 @@ void QGoImageView3D::SaveStateSplitters()
 //--------------------------------------------------------------------------
 std::vector< vtkActor* >
 QGoImageView3D::
-AddDataSet( vtkDataSet* dataset, vtkProperty* property,
-      const bool& intersection, const bool& iDataVisibility )
+AddContour( const int& iId, vtkPolyData* dataset, vtkProperty* iProperty )
 {
-  View3D->AddDataSet( dataset, property, false, false );
+  vtkActor* temp = View3D->AddDataSet( (vtkDataSet*) dataset,
+    iProperty, false, false );
 
-  return QGoImageView::AddDataSet( dataset, property, intersection, iDataVisibility );
+  return QGoImageView::AddContour( iId, dataset, iProperty );
 }
 //--------------------------------------------------------------------------
