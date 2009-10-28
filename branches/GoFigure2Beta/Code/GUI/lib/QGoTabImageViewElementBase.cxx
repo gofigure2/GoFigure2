@@ -31,6 +31,10 @@ QGoTabImageViewElementBase( QWidget* iParent ) :
   QObject::connect( m_ManualSegmentationDockWidget,
       SIGNAL( ActivateManualSegmentationToggled( bool ) ),
     this, SLOT( ActivateManualSegmentationEditor( bool ) ) );
+
+  QObject::connect( m_ManualSegmentationDockWidget,
+    SIGNAL( ContourRepresentationPropertiesChanged() ),
+    this, SLOT( ChangeContourRepresentationProperty() ) );
 }
 //--------------------------------------------------------------------------
 
@@ -276,6 +280,7 @@ ValidateContour( const int& iId )
 }
 //--------------------------------------------------------------------------
 
+//--------------------------------------------------------------------------
 void QGoTabImageViewElementBase::
 ValidateContour( )
 {
@@ -284,3 +289,33 @@ ValidateContour( )
     ValidateContour( i );
     }
 }
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoTabImageViewElementBase::
+ChangeContourRepresentationProperty()
+{
+  double linewidth = m_ManualSegmentationDockWidget->GetLinesWidth();
+  QColor linecolor = m_ManualSegmentationDockWidget->GetLinesColor();
+  QColor nodecolor = m_ManualSegmentationDockWidget->GetNodesColor();
+  QColor activenodecolor = m_ManualSegmentationDockWidget->GetActiveNodesColor();
+
+  double rl, gl, bl;
+  linecolor.getRgbF( &rl, &gl, &bl );
+
+  double rn, gn, bn;
+  nodecolor.getRgbF( &rn, &gn, &bn );
+
+  double ra, ga, ba;
+  activenodecolor.getRgbF( &ra, &ga, &ba );
+
+  for( int i = 0; i < m_ContourRepresentation.size(); i++ )
+    {
+    m_ContourRepresentation[i]->GetLinesProperty()->SetLineWidth( linewidth );
+    m_ContourRepresentation[i]->GetLinesProperty()->SetColor( rl, gl, bl );
+
+    m_ContourRepresentation[i]->GetProperty()->SetColor( rn, gn, bn );
+    m_ContourRepresentation[i]->GetActiveProperty()->SetColor( ra, ga, ba );
+    }
+}
+//--------------------------------------------------------------------------

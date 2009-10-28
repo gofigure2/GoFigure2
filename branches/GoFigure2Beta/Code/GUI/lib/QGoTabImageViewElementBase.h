@@ -75,6 +75,7 @@ public slots:
   void ShowOneChannel( int iChannel );
   void ActivateManualSegmentationEditor( const bool& iActivate );
   void ValidateContour();
+  void ChangeContourRepresentationProperty();
 
 protected:
   bool          m_Color;

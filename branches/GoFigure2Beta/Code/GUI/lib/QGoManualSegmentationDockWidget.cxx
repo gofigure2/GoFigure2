@@ -21,6 +21,9 @@ QGoManualSegmentationDockWidget( QWidget* iParent ) :
     m_SettingsDialog, SLOT( exec() ) );
 
   QObject::connect( m_SettingsDialog, SIGNAL( accepted() ),
+    this, SLOT( GenerateContourRepresentationProperties( ) ) );
+
+  QObject::connect( m_SettingsDialog, SIGNAL( accepted() ),
     this, SLOT( SetContourColor() ) );
 
   QObject::connect( this->IdSpinBox, SIGNAL( valueChanged( int ) ),
@@ -107,4 +110,41 @@ GenerateRandomColorForGivenId( int iId )
   int t = 60 * static_cast< int >( m_OrderVector[k] );
 
   m_ValidatedColor.setHsv( rand() % 60 + t, rand() % 256, rand() % 128 + 127 );
+}
+
+
+QColor
+QGoManualSegmentationDockWidget::GetLinesColor() const
+{
+  return m_LinesColor;
+}
+
+double
+QGoManualSegmentationDockWidget::GetLinesWidth() const
+{
+  return m_LinesWidth;
+}
+
+QColor
+QGoManualSegmentationDockWidget::GetNodesColor() const
+{
+  return m_NodesColor;
+}
+
+QColor
+QGoManualSegmentationDockWidget::GetActiveNodesColor() const
+{
+  return m_ActiveNodesColor;
+}
+
+void
+QGoManualSegmentationDockWidget::
+GenerateContourRepresentationProperties()
+{
+  m_LinesWidth = m_SettingsDialog->GetLineWidth();
+  m_LinesColor = m_SettingsDialog->GetLineColor();
+  m_NodesColor = m_SettingsDialog->GetNodeColor();
+  m_ActiveNodesColor = m_SettingsDialog->GetActivatedNodeColor();
+
+  emit ContourRepresentationPropertiesChanged();
 }
