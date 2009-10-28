@@ -497,7 +497,8 @@ void QGoMainWindow::CreateNewTabFor3DwtImage( FileListType& iFileList,
     dck_it != dock_list.end();
     ++dck_it )
     {
-    this->addDockWidget( Qt::LeftDockWidgetArea, (*dck_it) );//->show();
+    this->addDockWidget( Qt::LeftDockWidgetArea, (*dck_it) );
+    (*dck_it)->show();
     }
 
   int idx = this->CentralTabWidget->addTab( w3t, QString() );//iFile );
@@ -533,7 +534,8 @@ void QGoMainWindow::CreateNewTabFor3DwtImage( vtkLSMReader* iReader, const QStri
     dck_it != dock_list.end();
     ++dck_it )
     {
-    this->addDockWidget( Qt::LeftDockWidgetArea, (*dck_it) );//->show();
+    this->addDockWidget( Qt::LeftDockWidgetArea, (*dck_it) );
+    (*dck_it)->show();
     }
 
   int idx = this->CentralTabWidget->addTab( w3t, iFile );
@@ -569,7 +571,8 @@ void QGoMainWindow::CreateNewTabFor3DImage( vtkImageData* iInput, const QString&
     dck_it != dock_list.end();
     ++dck_it )
     {
-    this->addDockWidget( Qt::LeftDockWidgetArea, (*dck_it) );//->show();
+    this->addDockWidget( Qt::LeftDockWidgetArea, (*dck_it) );
+    (*dck_it)->show();
     }
 
   int idx = this->CentralTabWidget->addTab( w3, iFile );
@@ -606,7 +609,8 @@ void QGoMainWindow::CreateNewTabFor2DImage( vtkImageData* iInput, const QString&
     dck_it != dock_list.end();
     ++dck_it )
     {
-    this->addDockWidget( Qt::LeftDockWidgetArea, (*dck_it) );//->show();
+    this->addDockWidget( Qt::LeftDockWidgetArea, (*dck_it) );
+    (*dck_it)->show();
     }
 
   int idx = this->CentralTabWidget->addTab( w2, iFile );

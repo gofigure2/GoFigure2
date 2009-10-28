@@ -48,7 +48,7 @@ void QGoTabManager::ChangeCurrentTab( int iIdx )
         dck_it != dock_list.end();
         ++dck_it )
         {
-        (*dck_it)->hide();
+        m_MainWindow->removeDockWidget( *dck_it );
         }
 
       GoFigure::TabDimensionType dim = w->GetTabDimensionType();
@@ -93,6 +93,7 @@ void QGoTabManager::ChangeCurrentTab( int iIdx )
         dck_it != dock_list.end();
         ++dck_it )
         {
+        m_MainWindow->addDockWidget( Qt::LeftDockWidgetArea, *dck_it );
         (*dck_it)->show();
         }
 
