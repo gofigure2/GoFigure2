@@ -37,7 +37,7 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#include "SelectQueryDataBaseHelper.h"
+#include "SelectQueryDatabaseHelper.h"
 #include "vtkMySQLDatabase.h"
 #include "vtkSQLQuery.h"
 #include "vtkStdString.h"

@@ -42,6 +42,7 @@
 
 #include "GoDBRecordSet.h"
 #include "QueryDataBaseHelper.h"
+#include "SelectQueryDatabaseHelper.h"
 
 /** \brief help add a new object of type T in the table "TableName"
 in the database: add a new ImagingSession, new Image, new Mesh...
