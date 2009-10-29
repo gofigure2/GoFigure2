@@ -1974,13 +1974,13 @@ vtkPolyData* QImagePageViewTracer::GenerateCircleFromGivenSphereAndGivenX( doubl
     vtkIdType    *lineIndices = new vtkIdType[iN+1];
 
     double theta = 0.;
-    double r = std::sqrt( res );
+    double r = sqrt( res );
 
     for( int i = 0; i < iN; i++ )
       {
       theta = 2. * i * vtkMath::Pi() / static_cast< double >( iN );
       points->InsertPoint( static_cast< vtkIdType>( i ), iX,
-        iC[1] + r * std::cos( theta ), iC[2] + r * std::sin( theta ) );
+        iC[1] + r * cos( theta ), iC[2] + r * sin( theta ) );
       lineIndices[i] = static_cast<vtkIdType>(i);
       }
 
@@ -2013,13 +2013,13 @@ vtkPolyData* QImagePageViewTracer::GenerateCircleFromGivenSphereAndGivenY( doubl
     vtkIdType    *lineIndices = new vtkIdType[iN+1];
 
     double theta = 0.;
-    double r = std::sqrt( res );
+    double r = sqrt( res );
 
     for( int i = 0; i < iN; i++ )
       {
       theta = 2. * i * vtkMath::Pi() / static_cast< double >( iN );
       points->InsertPoint( static_cast< vtkIdType>( i ),
-        iC[0] + r * std::cos( theta ), iY, iC[2] + r * std::sin( theta ) );
+        iC[0] + r * cos( theta ), iY, iC[2] + r * sin( theta ) );
       lineIndices[i] = static_cast<vtkIdType>(i);
       }
 
@@ -2052,13 +2052,13 @@ vtkPolyData* QImagePageViewTracer::GenerateCircleFromGivenSphereAndGivenZ( doubl
     vtkIdType    *lineIndices = new vtkIdType[iN+1];
 
     double theta = 0.;
-    double r = std::sqrt( res );
+    double r = sqrt( res );
 
     for( int i = 0; i < iN; i++ )
       {
       theta = 2. * i * vtkMath::Pi() / static_cast< double >( iN );
       points->InsertPoint( static_cast< vtkIdType>( i ),
-        iC[0] + r * std::cos( theta ), iC[1] + r * std::sin( theta ), iZ );
+        iC[0] + r * cos( theta ), iC[1] + r * sin( theta ), iZ );
       lineIndices[i] = static_cast<vtkIdType>(i);
       }
 

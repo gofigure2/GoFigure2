@@ -1,2 +1,14 @@
-ADD_EXECUTABLE( renderBoxContent3D RenderBoxContent3D.cxx )
-TARGET_LINK_LIBRARIES( renderBoxContent3D vtkRendering vtkIO vtkImaging )
+SET( EXAMPLES_QT_NOT_REQUIRED
+  RenderBoxContent3D
+  )
+
+FOREACH( var ${EXAMPLES_QT_NOT_REQUIRED} )
+
+  ADD_EXECUTABLE( ${var}
+    ${var}.cxx
+  )
+  TARGET_LINK_LIBRARIES( ${var}
+    QGoIO vtkRenderingAddOn2
+  )
+
+ENDFOREACH( var )
