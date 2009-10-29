@@ -12,6 +12,7 @@ SET( QGOGUILIB_EXAMPLE_SRC
   qgovisualizationdockwidget
   qgomanualsegmentationdockwidget
   contourstructurehelpertest
+  QGoWizardDBTest
 )
 
 
