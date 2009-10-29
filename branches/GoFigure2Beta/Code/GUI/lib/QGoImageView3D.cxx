@@ -156,7 +156,7 @@ void QGoImageView3D::setupUi( QWidget* iParent )
 //-------------------------------------------------------------------------
 void QGoImageView3D::retranslateUi(QWidget *iParent)
 {
-  iParent->setWindowTitle( this->m_Tag );
+  iParent->setWindowTitle( tr("QGoImageView3D") );
   Q_UNUSED(iParent);
 }
 //-------------------------------------------------------------------------
@@ -637,5 +637,15 @@ AddContour( const int& iId, vtkPolyData* dataset, vtkProperty* iProperty )
     iProperty, false, false );
 
   return QGoImageView::AddContour( iId, dataset, iProperty );
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+QGoImageView3D::
+HighlightContour( vtkProp3D* iProp, const bool& iToDo )
+{
+  View3D->HighlightContour( iProp, iToDo );
+  QGoImageView::HighlightContour( iProp, iToDo );
 }
 //--------------------------------------------------------------------------

@@ -11,6 +11,7 @@ class vtkImageActor;
 class vtkActor;
 class vtkPolyData;
 class vtkProperty;
+class vtkProp3D;
 class QVTKInteractor;
 
 /**
@@ -25,24 +26,29 @@ class QGoImageView : public QWidget
     explicit QGoImageView( QWidget* parent = 0 );
     virtual ~QGoImageView();
 
-    void SetTag( const QString& iTag );
-    QString GetTag() const;
-
     virtual void SetImage( vtkImageData* iImage ) = 0;
     virtual vtkImageData* GetImage() = 0;
 
-    /** \brief Get Image Coordinates from World Coordinates*/
+    /** \brief Get Image Coordinates from World Coordinates. */
     int* GetImageCoordinatesFromWorldCoordinates( double pos[3] );
 
     virtual void Update() = 0;
 
+    /** \brief Returns Image actor rendered on one given view. */
     virtual vtkImageActor* GetImageActor( const int& ) = 0;
+
+    /** \brief Returns the interactor for one given view. */
     virtual QVTKInteractor* GetInteractor( const int& ) = 0;
 
     virtual void setupUi( QWidget* parent ) = 0;
     virtual void retranslateUi(QWidget *parent) = 0;
 
+    /** \brief Returns used background color by viewers.
+        \param[out] r red
+        \param[out] g green
+        \param[out] b blue    */
     void GetBackgroundColor( double& r, double& g, double& b );
+    /** \overload */
     double* GetBackgroundColor();
 
     vtkViewImage2D* GetImageViewer( const int& iId );
@@ -52,11 +58,20 @@ class QGoImageView : public QWidget
       vtkPolyData* dataset,
       vtkProperty* property = NULL );
 
+    /** \brief Highlight a given contour (iProp) if iToDo is true. */
+    virtual void HighlightContour( vtkProp3D* iProp, const bool& iToDo );
+
   public slots:
+    /** \brief Set background color for all views.
+        \param[in] r red
+        \param[in] g green
+        \param[in] b blue    */
     void SetBackgroundColor( const double& r,
       const double& g,
       const double& b );
+    /** \overload */
     void SetBackgroundColor( double rgb[3] );
+    /** \overload */
     void SetBackgroundColor( const QColor& iColor );
 
     virtual void SetLookupTable( vtkLookupTable* iLut ) = 0;
@@ -66,7 +81,6 @@ class QGoImageView : public QWidget
     vtkViewImage2DCollection*         m_Pool;
     vtkImageData*                     m_Image;
     unsigned int                      m_SnapshotId;
-    QString                           m_Tag;
 };
 
 #endif

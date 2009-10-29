@@ -52,6 +52,8 @@ public:
   int GetSliceViewXZ() const;
   int GetSliceViewYZ() const;
 
+  virtual void HighlightContour( vtkProp3D* iProp, const bool& iToDo );
+
 signals:
   void SliceViewXYChanged( int Slice );
   void SliceViewXZChanged( int Slice );

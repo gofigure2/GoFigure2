@@ -56,7 +56,7 @@ void QGoImageView2D::setupUi( QWidget* iiParent )
 //------------------------------------------------------------------------------
 void QGoImageView2D::retranslateUi(QWidget *iParent)
 {
-  iParent->setWindowTitle( this->m_Tag );
+  iParent->setWindowTitle( tr("QGoImageView2D") );
   Q_UNUSED(iParent);
 }
 //------------------------------------------------------------------------------

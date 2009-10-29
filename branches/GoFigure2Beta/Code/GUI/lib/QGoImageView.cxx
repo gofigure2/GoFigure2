@@ -14,8 +14,7 @@
 QGoImageView::QGoImageView( QWidget* iParent ) : QWidget( iParent ),
   m_Pool( 0 ),
   m_Image( 0 ),
-  m_SnapshotId( 0 ),
-  m_Tag( "QGoImageView" )
+  m_SnapshotId( 0 )
 {
   m_Pool = vtkViewImage2DCollection::New();
 }
@@ -31,21 +30,6 @@ QGoImageView::~QGoImageView()
     }
 }
 //--------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void QGoImageView::SetTag( const QString& iTag )
-{
-  m_Tag = iTag;
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-QString QGoImageView::GetTag( ) const
-{
-  return m_Tag;
-}
-//-------------------------------------------------------------------------
-
 
 //-------------------------------------------------------------------------
 void QGoImageView::GetBackgroundColor( double& r,
@@ -159,5 +143,20 @@ AddContour( const int& iId, vtkPolyData* dataset, vtkProperty* property )
     }
 
   return oActorVector;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+QGoImageView::
+HighlightContour( vtkProp3D* iProp, const bool& iToDo )
+{
+  int n = m_Pool->GetNumberOfItems();
+
+  for( int i = 0; i < n; i++ )
+    {
+    vtkViewImage2D* viewer = m_Pool->GetItem( i );
+    viewer->HighlightContour( iProp, iToDo );
+    }
 }
 //--------------------------------------------------------------------------
