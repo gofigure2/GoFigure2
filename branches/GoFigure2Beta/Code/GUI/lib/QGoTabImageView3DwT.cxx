@@ -2,9 +2,18 @@
 
 #include "QGoImageView3D.h"
 #include "QGoLUTDialog.h"
+#include "QGoVisualizationDockWidget.h"
+#include "QGoManualSegmentationDockWidget.h"
+
+#include "vtkLSMReader.h"
 
 #include "vtkLookupTable.h"
 #include "vtkImageAppendComponents.h"
+#include "vtkOrientedGlyphContourRepresentation.h"
+#include "vtkContourWidget.h"
+#include "vtkProperty.h"
+#include "vtkPolyData.h"
+#include "vtkImageActorPointPlacer.h"
 
 #include <QLabel>
 #include <QSpinBox>
@@ -17,12 +26,27 @@ QGoTabImageView3DwT::QGoTabImageView3DwT( QWidget* iParent ) :
   m_LSMReader( 0 ),
   m_Image( 0 ),
   m_BackgroundColor( Qt::black ),
-  m_TimePoint( -1 )
+  m_TimePoint( -1 ),
+  m_ContourId( 0 )
 {
   setupUi( this );
 
+  for( int i = 0; i < 3; i++ )
+    {
+    this->m_ContourRepresentation.push_back( vtkOrientedGlyphContourRepresentation::New() );
+    this->m_ContourRepresentation.back()->GetProperty()->SetColor( 0., 1., 1. );
+    this->m_ContourRepresentation.back()->GetLinesProperty()->SetColor( 1., 0., 1. );
+    this->m_ContourRepresentation.back()->GetActiveProperty()->SetColor( 1., 1., 0. );
+
+    this->m_ContourWidget.push_back( vtkContourWidget::New() );
+    this->m_ContourWidget.back()->SetPriority( 10.0 );
+    this->m_ContourWidget.back()->SetInteractor( m_ImageView->GetInteractor( i ) );
+    this->m_ContourWidget.back()->Off();
+    }
+
   m_MultiFileReader = itk::MultiFileReader::New();
 
+  // Visualization dock widget related stuffs
   m_VisuDockWidget = new QGoVisualizationDockWidget( this, 4 );
 
   QObject::connect( m_VisuDockWidget, SIGNAL( XSliceChanged( int ) ),
@@ -55,6 +79,23 @@ QGoTabImageView3DwT::QGoTabImageView3DwT( QWidget* iParent ) :
   QObject::connect( m_VisuDockWidget, SIGNAL( ShowOneChannelChanged( int ) ),
     this, SLOT( ShowOneChannel( int ) ) );
 
+  // Manual Segmentation related stuffs
+  m_ManualSegmentationDockWidget = new QGoManualSegmentationDockWidget( this );
+
+  QObject::connect( m_ManualSegmentationDockWidget, SIGNAL( ValidatePressed() ),
+    this, SLOT( ValidateContour() ) );
+
+  QObject::connect( m_ManualSegmentationDockWidget,
+      SIGNAL( ActivateManualSegmentationToggled( bool ) ),
+    this, SLOT( ActivateManualSegmentationEditor( bool ) ) );
+
+  QObject::connect( m_ManualSegmentationDockWidget,
+    SIGNAL( ContourRepresentationPropertiesChanged() ),
+    this, SLOT( ChangeContourRepresentationProperty() ) );
+
+  this->m_SegmentationActions.push_back(
+    m_ManualSegmentationDockWidget->toggleViewAction() );
+
   CreateAllViewActions();
   ReadSettings();
 }
@@ -71,7 +112,7 @@ void QGoTabImageView3DwT::CreateAllViewActions()
 
   group->addAction( QuadViewAction );
 
-  m_ViewActions.push_back( QuadViewAction );
+  this->m_ViewActions.push_back( QuadViewAction );
 
   QObject::connect( QuadViewAction, SIGNAL( triggered() ),
     this, SLOT( Quadview() ) );
@@ -81,7 +122,7 @@ void QGoTabImageView3DwT::CreateAllViewActions()
 
   group->addAction( FullScreenXYAction );
 
-  m_ViewActions.push_back( FullScreenXYAction );
+  this->m_ViewActions.push_back( FullScreenXYAction );
 
   QObject::connect( FullScreenXYAction, SIGNAL( triggered() ),
     this, SLOT( FullScreenViewXY() ) );
@@ -91,7 +132,7 @@ void QGoTabImageView3DwT::CreateAllViewActions()
 
   group->addAction( FullScreenXZAction );
 
-  m_ViewActions.push_back( FullScreenXZAction );
+  this->m_ViewActions.push_back( FullScreenXZAction );
 
   QObject::connect( FullScreenXZAction, SIGNAL( triggered() ),
     this, SLOT( FullScreenViewXZ() ) );
@@ -101,7 +142,7 @@ void QGoTabImageView3DwT::CreateAllViewActions()
 
   group->addAction( FullScreenYZAction );
 
-  m_ViewActions.push_back( FullScreenYZAction );
+  this->m_ViewActions.push_back( FullScreenYZAction );
 
   QObject::connect( FullScreenYZAction, SIGNAL( triggered() ),
     this, SLOT( FullScreenViewYZ() ) );
@@ -111,7 +152,7 @@ void QGoTabImageView3DwT::CreateAllViewActions()
 
   group->addAction( FullScreenXYZAction );
 
-  m_ViewActions.push_back( FullScreenXYZAction );
+  this->m_ViewActions.push_back( FullScreenXYZAction );
 
   QObject::connect( FullScreenXYZAction, SIGNAL( triggered() ),
     this, SLOT( FullScreenViewXYZ() ) );
@@ -119,12 +160,7 @@ void QGoTabImageView3DwT::CreateAllViewActions()
   QAction* separator = new QAction( this );
   separator->setSeparator( true );
 
-  m_ViewActions.push_back( separator );
-
-//   QAction* toggleviewaction = m_VisuDockWidget->toggleViewAction();
-//   toggleviewaction->setText( tr( "Slide Location" ) );
-//   toggleviewaction->setiParent( this );
-//   m_ViewActions.push_back( toggleviewaction );
+  this->m_ViewActions.push_back( separator );
 
   QAction* LookupTableAction = new QAction( tr( "Lookup Table" ), this );
   LookupTableAction->setStatusTip( tr(" Change the associated lookup table" ) );
@@ -133,20 +169,26 @@ void QGoTabImageView3DwT::CreateAllViewActions()
   QObject::connect( LookupTableAction, SIGNAL( triggered() ),
     this, SLOT( ChangeLookupTable() ) );
 
-  m_ViewActions.push_back( LookupTableAction );
+  this->m_ViewActions.push_back( LookupTableAction );
 
   QAction* ScalarBarAction = new QAction( tr( "Display Scalar Bar" ), this );
   ScalarBarAction->setCheckable( true );
-  m_ViewActions.push_back( ScalarBarAction );
+  this->m_ViewActions.push_back( ScalarBarAction );
 
   QObject::connect( ScalarBarAction, SIGNAL( toggled( bool ) ),
     this, SLOT( ShowScalarBar( bool ) ) );
 
   QAction* BackgroundColorAction = new QAction( tr("Background Color"), this );
-  m_ViewActions.push_back( BackgroundColorAction );
+  this->m_ViewActions.push_back( BackgroundColorAction );
 
   QObject::connect( BackgroundColorAction, SIGNAL( triggered() ),
     this, SLOT( ChangeBackgroundColor() ) );
+
+  QAction* separator2 = new QAction( this );
+  separator2->setSeparator( true );
+  this->m_ViewActions.push_back( separator2 );
+
+  this->m_ViewActions.push_back( m_VisuDockWidget->toggleViewAction() );
 }
 //--------------------------------------------------------------------------
 
@@ -158,14 +200,19 @@ QGoTabImageView3DwT::~QGoTabImageView3DwT( )
     m_Image->Delete();
     m_Image = 0;
     }
-  int NumberOfChannels = m_LSMReader[0]->GetNumberOfChannels();
-
-  if( NumberOfChannels > 1 )
+  for( int i = 1; i < m_LSMReader.size(); i++ )
     {
-    for( int i = 1; i < NumberOfChannels; i++ )
+    if( m_LSMReader[i] )
       {
       m_LSMReader[i]->Delete();
+      m_LSMReader[i] = 0;
       }
+    }
+
+  for( int i = 0; i < 3; i++ )
+    {
+    this->m_ContourRepresentation[i]->Delete();
+    this->m_ContourWidget[i]->Delete();
     }
 }
 //--------------------------------------------------------------------------
@@ -411,6 +458,17 @@ void QGoTabImageView3DwT::Update()
 {
   m_ImageView->SetImage( m_Image );
   m_ImageView->Update();
+
+  for( int i = 0; i < 3; i++ )
+    {
+    vtkImageActorPointPlacer* point_placer = vtkImageActorPointPlacer::New();
+    point_placer->SetImageActor( m_ImageView->GetImageActor( i ) );
+
+    this->m_ContourRepresentation[i]->SetPointPlacer( point_placer );
+    point_placer->Delete();
+
+    this->m_ContourWidget[i]->SetRepresentation( this->m_ContourRepresentation[i] );
+    }
 }
 //--------------------------------------------------------------------------
 
@@ -548,17 +606,11 @@ void QGoTabImageView3DwT::SetBackgroundColorToImageViewer( )
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-std::vector< QAction* > QGoTabImageView3DwT::ViewActions()
-{
-  return m_ViewActions;
-}
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
 std::list< QDockWidget* > QGoTabImageView3DwT::DockWidget()
 {
   std::list< QDockWidget* > oList;
   oList.push_back( m_VisuDockWidget );
+  oList.push_back( m_ManualSegmentationDockWidget );
   return oList;
 }
 //--------------------------------------------------------------------------
@@ -647,3 +699,143 @@ ShowOneChannel( int iChannel )
       }
     }
 }
+
+//--------------------------------------------------------------------------
+void QGoTabImageView3DwT::
+ValidateContour( const int& iId )
+{
+  vtkPolyData* contour =
+    m_ContourRepresentation[iId]->GetContourRepresentationAsPolyData();
+
+  // get color from the dock widget
+  double r, g ,b;
+  QColor color = m_ManualSegmentationDockWidget->GetValidatedColor();
+  color.getRgbF( &r, &g, &b );
+
+  vtkProperty* contour_property = vtkProperty::New();
+  contour_property->SetRepresentationToWireframe();
+  contour_property->SetColor( r, g, b );
+
+  // Compute Bounding Box
+  double bounds[6];
+  contour->GetBounds( bounds );
+
+  // Extract Min and Max from bounds
+  double Min[3], Max[3];
+  int k = 0;
+  for( int i = 0; i < 3; i++ )
+    {
+    Min[i] = bounds[k++];
+    Max[i] = bounds[k++];
+    }
+
+  int* min_idx = this->GetImageCoordinatesFromWorldCoordinates( Min );
+  int* max_idx = this->GetImageCoordinatesFromWorldCoordinates( Max );
+
+  vtkPolyData* contour_nodes = vtkPolyData::New();
+  m_ContourRepresentation[iId]->GetNodePolyData( contour_nodes );
+
+  // get corresponding actor from visualization
+  vtkPolyData* contour_copy = vtkPolyData::New();
+  contour_copy->ShallowCopy( contour );
+
+  std::vector< vtkActor* > contour_actor =
+    this->AddContour( iId, contour_copy,
+      contour_property );
+
+  // get meshid from the dock widget (SpinBox)
+  unsigned int meshid = m_ManualSegmentationDockWidget->GetMeshId();
+
+  unsigned int timepoint = 0;
+  bool highlighted = false;
+
+  // fill the container
+  for( int i = 0; i < contour_actor.size(); i++ )
+    {
+    ContourStructure temp( m_ContourId, contour_actor[i], contour_nodes, meshid,
+      timepoint, highlighted, r, g, b, i );
+    m_ContourContainer.insert( temp );
+    }
+
+  m_ContourId++;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoTabImageView3DwT::
+ValidateContour( )
+{
+  for( int i = 0; i < m_ContourWidget.size(); i++ )
+    {
+    ValidateContour( i );
+    }
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoTabImageView3DwT::
+ChangeContourRepresentationProperty()
+{
+  double linewidth = m_ManualSegmentationDockWidget->GetLinesWidth();
+  QColor linecolor = m_ManualSegmentationDockWidget->GetLinesColor();
+  QColor nodecolor = m_ManualSegmentationDockWidget->GetNodesColor();
+  QColor activenodecolor = m_ManualSegmentationDockWidget->GetActiveNodesColor();
+
+  double rl, gl, bl;
+  linecolor.getRgbF( &rl, &gl, &bl );
+
+  double rn, gn, bn;
+  nodecolor.getRgbF( &rn, &gn, &bn );
+
+  double ra, ga, ba;
+  activenodecolor.getRgbF( &ra, &ga, &ba );
+
+  for( int i = 0; i < m_ContourRepresentation.size(); i++ )
+    {
+    m_ContourRepresentation[i]->GetLinesProperty()->SetLineWidth( linewidth );
+    m_ContourRepresentation[i]->GetLinesProperty()->SetColor( rl, gl, bl );
+
+    m_ContourRepresentation[i]->GetProperty()->SetColor( rn, gn, bn );
+    m_ContourRepresentation[i]->GetActiveProperty()->SetColor( ra, ga, ba );
+    }
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+int* QGoTabImageView3DwT::
+GetImageCoordinatesFromWorldCoordinates( double pos[3] )
+{
+  return m_ImageView->GetImageCoordinatesFromWorldCoordinates( pos );
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+std::vector< vtkActor* >
+QGoTabImageView3DwT::
+AddContour( const int& iId,
+  vtkPolyData* dataset,
+  vtkProperty* property )
+{
+  return this->m_ImageView->AddContour( iId, dataset, property );
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoTabImageView3DwT::
+ActivateManualSegmentationEditor( const bool& iActivate )
+{
+  std::vector< vtkContourWidget* >::iterator it = m_ContourWidget.begin();
+  while( it != m_ContourWidget.end() )
+    {
+    if( iActivate )
+      {
+      (*it)->On();
+      }
+    else
+      {
+      (*it)->Off();
+      }
+    ++it;
+    }
+}
+//--------------------------------------------------------------------------

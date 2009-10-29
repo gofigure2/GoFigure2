@@ -2,7 +2,7 @@
 #include <QTimer>
 #include <QMenuBar>
 
-#include "vtkMetaImageReader.h"
+#include "vtkLSMReader.h"
 #include "vtkImageData.h"
 
 #include "QGoTabImageView3DwT.h"

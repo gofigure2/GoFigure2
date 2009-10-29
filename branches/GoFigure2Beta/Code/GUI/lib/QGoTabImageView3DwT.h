@@ -2,18 +2,24 @@
 #define __QGoTabImageView3DwT_h
 
 #include "QGoTabElementBase.h"
+
+#include "QGoPlugin.h"
+
+#include "itkMultiFileReader.h"
+#include "GoFigureFileInfoHelper.h"
+#include "SnapshotHelper.h"
+#include "ContourStructureHelper.h"
+
 #include <QHBoxLayout>
 #include <QSpinBox>
 
-#include "QGoPlugin.h"
-#include "QGoImageView3D.h"
-#include "QGoVisualizationDockWidget.h"
+class QGoImageView3D;
+class QGoVisualizationDockWidget;
+class QGoManualSegmentationDockWidget;
+class vtkLSMReader;
+class vtkContourWidget;
+class vtkOrientedGlyphContourRepresentation;
 
-#include "vtkLSMReader.h"
-#include "itkMultiFileReader.h"
-
-#include "GoFigureFileInfoHelper.h"
-#include "SnapshotHelper.h"
 
 class QGoTabImageView3DwT : public QGoTabElementBase
 {
@@ -36,8 +42,6 @@ public:
     void setupUi( QWidget* parent );
     void retranslateUi( QWidget *parent );
 
-    virtual std::vector< QAction* > ViewActions();
-
     virtual std::list< QDockWidget* > DockWidget();
 
     virtual std::list< QWidget* > AdditionalWidget()
@@ -45,6 +49,8 @@ public:
 
     virtual void WriteSettings() {}
     virtual void ReadSettings() {}
+
+    virtual void ValidateContour( const int& iId );
 
 signals:
     void TimePointChanged( int TimePoint );
@@ -54,34 +60,38 @@ signals:
     void FullScreenViewChanged( int FullScreen );
 
 public slots:
-    void SetTimePoint( const int& );
+  void SetTimePoint( const int& );
 
-    QString SnapshotViewXY( const GoFigure::SnapshotImageType& iType,
-      const QString& iBaseName = QString( "snapshot" ) );
-    QString SnapshotView2( const GoFigure::SnapshotImageType& iType,
-      const QString& iBaseName = QString( "snapshot" ) );
-    QString SnapshotView3( const GoFigure::SnapshotImageType& iType,
-      const QString& iBaseName = QString( "snapshot" ) );
-    QString SnapshotViewXYZ( const GoFigure::SnapshotImageType& iType,
-      const QString& iBaseName = QString( "snapshot" ) );
+  QString SnapshotViewXY( const GoFigure::SnapshotImageType& iType,
+    const QString& iBaseName = QString( "snapshot" ) );
+  QString SnapshotView2( const GoFigure::SnapshotImageType& iType,
+    const QString& iBaseName = QString( "snapshot" ) );
+  QString SnapshotView3( const GoFigure::SnapshotImageType& iType,
+    const QString& iBaseName = QString( "snapshot" ) );
+  QString SnapshotViewXYZ( const GoFigure::SnapshotImageType& iType,
+    const QString& iBaseName = QString( "snapshot" ) );
 
-    void SetSliceViewXY( const int& );
-    void SetSliceViewXZ( const int& );
-    void SetSliceViewYZ( const int& );
+  void SetSliceViewXY( const int& );
+  void SetSliceViewXZ( const int& );
+  void SetSliceViewYZ( const int& );
 
-    void SetFullScreenView( const int& iS );
-    void Quadview();
-    void FullScreenViewXY();
-    void FullScreenViewXZ();
-    void FullScreenViewYZ();
-    void FullScreenViewXYZ();
+  void SetFullScreenView( const int& iS );
+  void Quadview();
+  void FullScreenViewXY();
+  void FullScreenViewXZ();
+  void FullScreenViewYZ();
+  void FullScreenViewXYZ();
 
-    void ChangeLookupTable();
-    void ShowScalarBar( const bool& );
-    void ChangeBackgroundColor();
+  void ChangeLookupTable();
+  void ShowScalarBar( const bool& );
+  void ChangeBackgroundColor();
 
-    void ShowAllChannels( bool iChecked );
-    void ShowOneChannel( int iChannel );
+  void ShowAllChannels( bool iChecked );
+  void ShowOneChannel( int iChannel );
+
+  void ActivateManualSegmentationEditor( const bool& iActivate );
+  void ValidateContour();
+  void ChangeContourRepresentationProperty();
 
 protected:
   QHBoxLayout*          m_LayOut;
@@ -92,13 +102,24 @@ protected:
   FileListType          m_FileList;
   QColor                m_BackgroundColor;
   int                   m_TimePoint;
+  unsigned int          m_ContourId;
 
-  std::vector< QAction* > m_ViewActions;
-  QGoVisualizationDockWidget* m_VisuDockWidget;
+  QGoVisualizationDockWidget*       m_VisuDockWidget;
+  QGoManualSegmentationDockWidget*  m_ManualSegmentationDockWidget;
+
+  std::vector< vtkContourWidget* >                      m_ContourWidget;
+  std::vector< vtkOrientedGlyphContourRepresentation* > m_ContourRepresentation;
+  ContourStructureMultiIndexContainer                   m_ContourContainer;
 
   void GetBackgroundColorFromImageViewer( );
   void SetBackgroundColorToImageViewer( );
   void CreateAllViewActions();
+
+  int* GetImageCoordinatesFromWorldCoordinates( double pos[3] );
+
+  std::vector< vtkActor* > AddContour( const int& iId,
+      vtkPolyData* dataset,
+      vtkProperty* property = NULL );
 };
 
 #endif
