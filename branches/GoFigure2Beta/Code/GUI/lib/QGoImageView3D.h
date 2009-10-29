@@ -22,14 +22,25 @@
 
 #include "QSplitterChild.h"
 
+/**
+\class QGoImageView3D
+\brief class for the visualization of 3D Image represented by one vtkImageData*.
+\example GUI/lib/qgoimageview3d.cxx
+*/
 class QGoImageView3D : public QGoImageView
 {
   Q_OBJECT
 public:
+  /** \brief Constructor by default */
   explicit QGoImageView3D( QWidget* parent = 0 );
+
+  /** \brief Destructor. */
   virtual ~QGoImageView3D();
 
+  /** \brief Set the image to be displaid. */
   virtual void SetImage( vtkImageData* iImage );
+
+  /** \brief Get the displaid image.*/
   virtual vtkImageData* GetImage();
 
   virtual void Update();

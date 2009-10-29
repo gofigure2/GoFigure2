@@ -16,17 +16,23 @@ class QVTKInteractor;
 
 /**
 \class QGoImageView
-\brief Abstract class for image visualization.
+\brief Abstract class for the visualization of 3D Image represented by one vtkImageData*.
 */
 class QGoImageView : public QWidget
 {
   Q_OBJECT
 
   public:
+    /** \brief Default Constructor. */
     explicit QGoImageView( QWidget* parent = 0 );
+
+    /** \brief Destructor. */
     virtual ~QGoImageView();
 
+    /** \brief Set the image to displaid. */
     virtual void SetImage( vtkImageData* iImage ) = 0;
+
+    /** \brief Get the displaid image.*/
     virtual vtkImageData* GetImage() = 0;
 
     /** \brief Get Image Coordinates from World Coordinates. */
