@@ -13,8 +13,8 @@ SET( GOFIGURE2_MAJOR_VERSION "0" )
 SET( GOFIGURE2_MINOR_VERSION "5" )
 
 # Get the date!
-INCLUDE( ${GOFIGURE2_SOURCE_DIR}/CMake/TodayDate.cmake )
-TODAY( DATE )
+#INCLUDE( ${GOFIGURE2_SOURCE_DIR}/CMake/TodayDate.cmake )
+#TODAY( DATE )
 
 # Subversion
 FIND_PACKAGE( Subversion )
