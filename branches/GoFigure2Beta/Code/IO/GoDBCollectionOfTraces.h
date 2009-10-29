@@ -45,6 +45,7 @@
 #include <QObject>
 #include "MegaVTK2Configure.h"
 #include "GoDBRecordSetHelper.h"
+#include "vtkMySQLDatabase.h"
 #include <QStringList>
 
 class GoDBCollectionOfTraces
@@ -54,11 +55,13 @@ public:
 
   explicit QMEGAVTKADDON2_EXPORT GoDBCollectionOfTraces();
   explicit QMEGAVTKADDON2_EXPORT GoDBCollectionOfTraces(
-    QString CollectionName,
-    QString CollectionIDName, QString Traces,QString TracesIDName);
-  virtual QMEGAVTKADDON2_EXPORT ~GoDBCollectionOfTraces();
-  void QMEGAVTKADDON2_EXPORT SetDatabaseVariables(
-    QString Server,QString User,QString Password, QString NameDB);
+    QString CollectionName,QString CollectionIDName,
+    QString Traces,QString TracesIDName);
+  virtual  QMEGAVTKADDON2_EXPORT ~GoDBCollectionOfTraces();
+  void     QMEGAVTKADDON2_EXPORT OpenDatabaseConnection(
+    QString Server,QString User, QString Password, QString NameDB);
+  /*void QMEGAVTKADDON2_EXPORT SetDatabaseVariables(
+    QString Server,QString User,QString Password, QString NameDB);*/
 
   /** \brief Delete in the Database all the traces listed in the QStringList */
   void QMEGAVTKADDON2_EXPORT DeleteTraces(QStringList TracesToDelete);
@@ -91,6 +94,8 @@ protected:
   QString m_User;
   QString m_Password;
   QString m_NameDB;
+  vtkMySQLDatabase* m_DatabaseConnector;
+
   QString m_CollectionName;
   QString m_CollectionIDName;
   QString m_TracesName;

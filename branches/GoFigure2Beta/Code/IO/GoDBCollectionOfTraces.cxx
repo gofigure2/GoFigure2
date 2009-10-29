@@ -39,6 +39,7 @@
 =========================================================================*/
 #include "GoDBCollectionOfTraces.h"
 #include "CreateDataBaseHelper.h"
+#include "SelectQueryDatabaseHelper.h"
 #include "QueryDataBaseHelper.h"
 #include "ConvertToStringHelper.h"
 #include <QStringList>
@@ -70,13 +71,32 @@ GoDBCollectionOfTraces::~GoDBCollectionOfTraces()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void GoDBCollectionOfTraces::SetDatabaseVariables( QString Server,
+/*void GoDBCollectionOfTraces::SetDatabaseVariables( QString Server,
   QString User, QString Password, QString NameDB)
 {
   m_Server = Server;
   m_User = User;
   m_Password = Password;
   m_NameDB = NameDB;
+}*/
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void GoDBCollectionOfTraces::OpenDatabaseConnection(QString Server,
+  QString User, QString Password, QString NameDB)
+{
+  std::pair<bool,vtkMySQLDatabase*> ConnectionDatabase = ConnectToDatabase(
+    Server.toStdString(),User.toStdString(),Password.toStdString(),
+    NameDB.toStdString());
+
+  if (!ConnectionDatabase.first)
+    {
+    std::cout<<"No connection open for QGoOpenOrCreateImgSession"<<std::endl;
+    std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
+    std::cout << std::endl;
+    }
+
+  m_DatabaseConnector = ConnectionDatabase.second;
 }
 //--------------------------------------------------------------------------
 
@@ -86,8 +106,8 @@ void GoDBCollectionOfTraces::DeleteTraces(QStringList TracesToDelete)
   for (int i = 0; i<TracesToDelete.size();i++)
     {
     std::string ID = TracesToDelete.at(i).toStdString();
-    DeleteRow(m_Server.toStdString(), m_User.toStdString(), m_Password.toStdString(),
-      m_NameDB.toStdString(),m_TracesName.toStdString(), m_TracesIDName.toStdString(), ID);
+    DeleteRow(m_DatabaseConnector,m_TracesName.toStdString(),
+      m_TracesIDName.toStdString(),ID);
     }
 }
 //--------------------------------------------------------------------------
@@ -99,9 +119,8 @@ void GoDBCollectionOfTraces::AddSelectedTracesToCollection(QStringList ListSelec
   std::string newCollectionIDstring = ConvertToString<int>(newCollectionID);
   for (int i=0; i<ListSelectedTraces.size();i++)
     {
-    UpdateValueInDB(m_Server.toStdString(), m_User.toStdString(),
-      m_Password.toStdString(), m_NameDB.toStdString(),
-      m_TracesName.toStdString(), m_CollectionIDName.toStdString(), newCollectionIDstring,
+    UpdateValueInDB(m_DatabaseConnector,m_TracesName.toStdString(), 
+      m_CollectionIDName.toStdString(), newCollectionIDstring,
       m_TracesIDName.toStdString(), ListSelectedTraces.at(i).toStdString());
     }
 }
@@ -111,9 +130,9 @@ void GoDBCollectionOfTraces::AddSelectedTracesToCollection(QStringList ListSelec
 QStringList GoDBCollectionOfTraces::ListCollectionID()
  {
    QStringList ListIDs; 
-   std::vector<std::string> vectListIDs = ListAllValuesForOneColumn(m_Server.toStdString(), m_User.toStdString(),
-   m_Password.toStdString(), m_NameDB.toStdString(),m_CollectionIDName.toStdString(),
-   m_CollectionName.toStdString());
+   std::vector<std::string> vectListIDs = ListAllValuesForOneColumn(
+     m_DatabaseConnector,m_CollectionIDName.toStdString(),
+     m_CollectionName.toStdString());
  
    for( unsigned int i = 0; i < vectListIDs.size(); ++i )
      {
