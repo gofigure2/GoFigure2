@@ -35,6 +35,9 @@ QGoTabImageViewElementBase( QWidget* iParent ) :
   QObject::connect( m_ManualSegmentationDockWidget,
     SIGNAL( ContourRepresentationPropertiesChanged() ),
     this, SLOT( ChangeContourRepresentationProperty() ) );
+
+  this->m_SegmentationActions.push_back(
+    m_ManualSegmentationDockWidget->toggleViewAction() );
 }
 //--------------------------------------------------------------------------
 
@@ -335,3 +338,4 @@ DockWidget()
   return oList;
 }
 //--------------------------------------------------------------------------
+

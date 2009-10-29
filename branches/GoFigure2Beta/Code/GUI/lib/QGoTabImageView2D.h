@@ -29,7 +29,6 @@ public:
   void setupUi( QWidget* parent );
   void retranslateUi( QWidget *parent );
 
-  virtual std::vector< QAction* > ViewActions();
   virtual std::list< QWidget* > AdditionalWidget();
 
   virtual void WriteSettings();
@@ -41,8 +40,6 @@ public slots:
 
 protected:
   QGoImageView2D*   m_ImageView;
-
-  std::vector< QAction* > m_ViewActions;
 
   void GetBackgroundColorFromImageViewer( );
   void SetBackgroundColorToImageViewer( );

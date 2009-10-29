@@ -5,27 +5,131 @@
 #include "QGoMainWindow.h"
 #include "QGoTabElementBase.h"
 
-QGoTabManager::QGoTabManager( QGoMainWindow* iMW, QTabWidget* iTW )
+//--------------------------------------------------------------------------
+QGoTabManager::
+QGoTabManager( QGoMainWindow* iMW, QTabWidget* iTW ) : m_MainWindow( iMW ),
+  m_TabWidget( iTW ), m_PreviousTabIndex( -1 )
 {
-  m_MainWindow = iMW;
-  m_TabWidget = iTW;
-  m_PreviousTabIndex = -1;
 }
+//--------------------------------------------------------------------------
 
+//--------------------------------------------------------------------------
 QGoTabManager::~QGoTabManager()
 {
 }
+//--------------------------------------------------------------------------
 
+//--------------------------------------------------------------------------
 void QGoTabManager::SetMainWindow( QGoMainWindow* iMW )
 {
   m_MainWindow = iMW;
 }
+//--------------------------------------------------------------------------
 
+//--------------------------------------------------------------------------
 void QGoTabManager::SetTabWidget( QTabWidget* iTW )
 {
   m_TabWidget = iTW;
 }
+//--------------------------------------------------------------------------
 
+//--------------------------------------------------------------------------
+void QGoTabManager::ClearTabElement( QGoTabElementBase* iE )
+{
+  if( iE )
+    {
+    // First remove all toolbar related to the previous tab
+    m_MainWindow->m_ViewToolBar->clear();
+
+    // Then remove all actions related to the previous tab from menuView
+    m_MainWindow->menuView->clear();
+
+    // Then remove all actions from the segmentation menu
+    m_MainWindow->menuSegmentation->clear();
+
+    std::list< QDockWidget* > dock_list = iE->DockWidget();
+
+    for( std::list< QDockWidget* >::iterator
+        dck_it = dock_list.begin();
+        dck_it != dock_list.end();
+        ++dck_it )
+      {
+      m_MainWindow->removeDockWidget( *dck_it );
+      }
+
+    GoFigure::TabDimensionType dim = iE->GetTabDimensionType();
+
+    std::map< GoFigure::TabDimensionType, std::list< QAction* > >::iterator
+      map_it = m_MainWindow->m_TabDimPluginActionMap.find( dim );
+
+    if( map_it != m_MainWindow->m_TabDimPluginActionMap.end() )
+      {
+      for( std::list< QAction* >::iterator list_it = (map_it->second).begin();
+            list_it != (map_it->second).end();
+            list_it++ )
+        {
+        (*list_it)->setDisabled( true );
+        }
+      }
+    }
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoTabManager::SetUpTabElement( QGoTabElementBase* iE )
+{
+  if( iE )
+    {
+    // Then add all actions related to the new tab from menuView
+    std::vector< QAction* > action_vector2 = iE->ViewActions();
+
+    for( std::vector< QAction* >::iterator it = action_vector2.begin();
+        it != action_vector2.end();
+        ++it )
+      {
+      m_MainWindow->menuView->addAction( *it );
+      m_MainWindow->m_ViewToolBar->addAction( *it );
+      }
+
+    action_vector2 = iE->SegmentationActions();
+
+    for( std::vector< QAction* >::iterator it = action_vector2.begin();
+        it != action_vector2.end();
+        ++it )
+      {
+      m_MainWindow->menuSegmentation->addAction( *it );
+      }
+
+    std::list< QDockWidget* > dock_list = iE->DockWidget();
+
+    for( std::list< QDockWidget* >::iterator
+          dck_it = dock_list.begin();
+          dck_it != dock_list.end();
+          ++dck_it )
+      {
+      m_MainWindow->addDockWidget( Qt::LeftDockWidgetArea, *dck_it );
+      (*dck_it)->show();
+      }
+
+    GoFigure::TabDimensionType dim = iE->GetTabDimensionType();
+
+    std::map< GoFigure::TabDimensionType, std::list< QAction* > >::iterator
+      map_it = m_MainWindow->m_TabDimPluginActionMap.find( dim );
+
+    if( map_it != m_MainWindow->m_TabDimPluginActionMap.end() )
+      {
+      for( std::list< QAction* >::iterator list_it = (map_it->second).begin();
+            list_it != (map_it->second).end();
+            list_it++ )
+        {
+        (*list_it)->setEnabled( true );
+        }
+      }
+    }
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
 void QGoTabManager::ChangeCurrentTab( int iIdx )
 {
   if( m_PreviousTabIndex != -1 )
@@ -33,39 +137,8 @@ void QGoTabManager::ChangeCurrentTab( int iIdx )
     QGoTabElementBase* w =
       dynamic_cast< QGoTabElementBase* >(
         m_TabWidget->widget( m_PreviousTabIndex ) );
-    if( w )
-      {
-      // First remove all toolbar related to the previous tab
-      m_MainWindow->ClearViewToolBar();
 
-      // Then remove all actions related to the previous tab from menuView
-      m_MainWindow->ClearViewMenu();
-
-      std::list< QDockWidget* > dock_list = w->DockWidget();
-
-      for( std::list< QDockWidget* >::iterator
-        dck_it = dock_list.begin();
-        dck_it != dock_list.end();
-        ++dck_it )
-        {
-        m_MainWindow->removeDockWidget( *dck_it );
-        }
-
-      GoFigure::TabDimensionType dim = w->GetTabDimensionType();
-
-      std::map< GoFigure::TabDimensionType, std::list< QAction* > >::iterator
-        map_it = m_MainWindow->m_TabDimPluginActionMap.find( dim );
-
-      if( map_it != m_MainWindow->m_TabDimPluginActionMap.end() )
-        {
-        for( std::list< QAction* >::iterator list_it = (map_it->second).begin();
-          list_it != (map_it->second).end();
-          list_it++ )
-          {
-          (*list_it)->setDisabled( true );
-          }
-        }
-      }
+    ClearTabElement( w );
     }
 
   if( iIdx != -1 )
@@ -74,49 +147,14 @@ void QGoTabManager::ChangeCurrentTab( int iIdx )
       dynamic_cast< QGoTabElementBase* >(
         m_TabWidget->widget( iIdx ) );
 
-    if( w2 )
-      {
-      // Then add all actions related to the new tab from menuView
-      std::vector< QAction* > action_vector2 = w2->ViewActions();
-
-      for( std::vector< QAction* >::iterator it = action_vector2.begin();
-        it != action_vector2.end();
-        ++it )
-        {
-        m_MainWindow->AddActionToViewMenu( *it );
-        }
-
-      std::list< QDockWidget* > dock_list = w2->DockWidget();
-
-      for( std::list< QDockWidget* >::iterator
-        dck_it = dock_list.begin();
-        dck_it != dock_list.end();
-        ++dck_it )
-        {
-        m_MainWindow->addDockWidget( Qt::LeftDockWidgetArea, *dck_it );
-        (*dck_it)->show();
-        }
-
-      GoFigure::TabDimensionType dim = w2->GetTabDimensionType();
-
-      std::map< GoFigure::TabDimensionType, std::list< QAction* > >::iterator
-        map_it = m_MainWindow->m_TabDimPluginActionMap.find( dim );
-
-      if( map_it != m_MainWindow->m_TabDimPluginActionMap.end() )
-        {
-        for( std::list< QAction* >::iterator list_it = (map_it->second).begin();
-          list_it != (map_it->second).end();
-          list_it++ )
-          {
-          (*list_it)->setEnabled( true );
-          }
-        }
-      }
+    SetUpTabElement( w2 );
     }
 
   m_PreviousTabIndex = iIdx;
 }
+//--------------------------------------------------------------------------
 
+//--------------------------------------------------------------------------
 void QGoTabManager::CloseTab( int idx )
 {
   if( idx >= 0 )
@@ -126,24 +164,18 @@ void QGoTabManager::CloseTab( int idx )
 
     m_TabWidget->removeTab( idx );
 
-    std::list< QDockWidget* > dock_list = w->DockWidget();
-
-    for( std::list< QDockWidget* >::iterator
-      dck_it = dock_list.begin();
-      dck_it != dock_list.end();
-      ++dck_it )
-      {
-      m_MainWindow->removeDockWidget( (*dck_it) );
-      }
-
     if( w )
       {
+      ClearTabElement( w );
+
       w->WriteSettings();
       delete w;
       }
     }
 }
+//--------------------------------------------------------------------------
 
+//--------------------------------------------------------------------------
 void QGoTabManager::CloseAllTabs( )
 {
   int NumberOfTabs = m_TabWidget->count();
@@ -156,21 +188,14 @@ void QGoTabManager::CloseAllTabs( )
 
     if( w )
       {
-      std::list< QDockWidget* > dock_list = w->DockWidget();
-
-      for( std::list< QDockWidget* >::iterator
-        dck_it = dock_list.begin();
-        dck_it != dock_list.end();
-        ++dck_it )
-        {
-        m_MainWindow->removeDockWidget( (*dck_it) );
-        }
+      ClearTabElement( w );
 
       w->WriteSettings();
       delete w;
       }
     }
 
-    m_MainWindow->ClearViewToolBar();
+    m_MainWindow->m_ViewToolBar->clear();
     m_TabWidget->clear( );
 }
+//--------------------------------------------------------------------------

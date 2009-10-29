@@ -119,26 +119,6 @@ QGoMainWindow::~QGoMainWindow()
   this->WriteSettings();
 }
 // *************************************************************************
-void QGoMainWindow::ClearViewMenu()
-{
-  this->menuView->clear();
-}
-// *************************************************************************
-
-// *************************************************************************
-void QGoMainWindow::AddActionToViewMenu( QAction* iAction )
-{
-  this->menuView->addAction( iAction );
-  m_ViewToolBar->addAction( iAction );
-}
-// *************************************************************************
-
-// *************************************************************************
-void QGoMainWindow::ClearViewToolBar()
-{
-  return m_ViewToolBar->clear();
-}
-// *************************************************************************
 
 // *************************************************************************
 void QGoMainWindow::CreateSignalSlotsConnection()

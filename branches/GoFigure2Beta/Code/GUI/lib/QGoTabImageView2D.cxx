@@ -49,17 +49,17 @@ QGoTabImageView2D( QWidget* iParent )
   QObject::connect( LookupTableAction, SIGNAL( triggered() ),
     this, SLOT( ChangeLookupTable() ) );
 
-  m_ViewActions.push_back( LookupTableAction );
+  this->m_ViewActions.push_back( LookupTableAction );
 
   QAction* ScalarBarAction = new QAction( tr( "Display Scalar Bar" ), this );
   ScalarBarAction->setCheckable( true );
-  m_ViewActions.push_back( ScalarBarAction );
+  this->m_ViewActions.push_back( ScalarBarAction );
 
   QObject::connect( ScalarBarAction, SIGNAL( toggled( bool ) ),
     this, SLOT( ShowScalarBar( bool ) ) );
 
   QAction* BackgroundColorAction = new QAction( tr("Background Color"), this );
-  m_ViewActions.push_back( BackgroundColorAction );
+  this->m_ViewActions.push_back( BackgroundColorAction );
 
   QObject::connect( BackgroundColorAction, SIGNAL( triggered() ),
     this, SLOT( ChangeBackgroundColor() ) );
@@ -69,6 +69,12 @@ QGoTabImageView2D( QWidget* iParent )
 
   QObject::connect( m_VisuDockWidget, SIGNAL( ShowOneChannelChanged( int ) ),
     this, SLOT( ShowOneChannel( int ) ) );
+
+  QAction* separator2 = new QAction( this );
+  separator2->setSeparator( true );
+  this->m_ViewActions.push_back( separator2 );
+
+  this->m_ViewActions.push_back( m_VisuDockWidget->toggleViewAction() );
 
   ReadSettings();
 }
@@ -121,13 +127,6 @@ void QGoTabImageView2D::retranslateUi(QWidget *iParent)
 void QGoTabImageView2D::Update( )
 {
   m_ImageView->Update();
-}
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-std::vector< QAction* > QGoTabImageView2D::ViewActions()
-{
-  return m_ViewActions;
 }
 //--------------------------------------------------------------------------
 

@@ -63,6 +63,8 @@ public:
   virtual GoFigure::TabDimensionType GetTabDimensionType( ) const = 0;
 
   virtual std::vector< QAction* > ViewActions();
+  virtual std::vector< QAction* > SegmentationActions();
+
   virtual std::list< QDockWidget* > DockWidget();
   virtual std::list< QWidget* > AdditionalWidget();
 //   virtual QStatusBar* StatusBar();
@@ -75,6 +77,9 @@ public:
 
 protected:
   std::list< QAction* > m_PluginActionList;
+
+  std::vector< QAction* > m_ViewActions;
+  std::vector< QAction* > m_SegmentationActions;
 
 private:
   QGoTabElementBase( const QGoTabElementBase& );

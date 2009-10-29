@@ -29,8 +29,6 @@ class QGoTabImageView3D : public QGoTabImageViewElementBase
     void setupUi( QWidget* parent );
     void retranslateUi( QWidget *parent );
 
-    virtual std::vector< QAction* > ViewActions();
-
     virtual std::list< QWidget* > AdditionalWidget()
       {return std::list< QWidget* >(); }
 
@@ -70,8 +68,6 @@ class QGoTabImageView3D : public QGoTabImageViewElementBase
 
   protected:
     QGoImageView3D*   m_ImageView;
-
-    std::vector< QAction* > m_ViewActions;
 
     void GetBackgroundColorFromImageViewer( );
     void SetBackgroundColorToImageViewer( );

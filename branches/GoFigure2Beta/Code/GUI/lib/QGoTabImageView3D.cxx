@@ -77,7 +77,7 @@ void QGoTabImageView3D::CreateAllViewActions()
 
   group->addAction( QuadViewAction );
 
-  m_ViewActions.push_back( QuadViewAction );
+  this->m_ViewActions.push_back( QuadViewAction );
 
   QObject::connect( QuadViewAction, SIGNAL( triggered() ),
     this, SLOT( Quadview() ) );
@@ -87,7 +87,7 @@ void QGoTabImageView3D::CreateAllViewActions()
 
   group->addAction( FullScreenXYAction );
 
-  m_ViewActions.push_back( FullScreenXYAction );
+  this->m_ViewActions.push_back( FullScreenXYAction );
 
   QObject::connect( FullScreenXYAction, SIGNAL( triggered() ),
     this, SLOT( FullScreenViewXY() ) );
@@ -97,7 +97,7 @@ void QGoTabImageView3D::CreateAllViewActions()
 
   group->addAction( FullScreenXZAction );
 
-  m_ViewActions.push_back( FullScreenXZAction );
+  this->m_ViewActions.push_back( FullScreenXZAction );
 
   QObject::connect( FullScreenXZAction, SIGNAL( triggered() ),
     this, SLOT( FullScreenViewXZ() ) );
@@ -107,7 +107,7 @@ void QGoTabImageView3D::CreateAllViewActions()
 
   group->addAction( FullScreenYZAction );
 
-  m_ViewActions.push_back( FullScreenYZAction );
+  this->m_ViewActions.push_back( FullScreenYZAction );
 
   QObject::connect( FullScreenYZAction, SIGNAL( triggered() ),
     this, SLOT( FullScreenViewYZ() ) );
@@ -117,7 +117,7 @@ void QGoTabImageView3D::CreateAllViewActions()
 
   group->addAction( FullScreenXYZAction );
 
-  m_ViewActions.push_back( FullScreenXYZAction );
+  this->m_ViewActions.push_back( FullScreenXYZAction );
 
   QObject::connect( FullScreenXYZAction, SIGNAL( triggered() ),
     this, SLOT( FullScreenViewXYZ() ) );
@@ -125,11 +125,7 @@ void QGoTabImageView3D::CreateAllViewActions()
   QAction* separator = new QAction( this );
   separator->setSeparator( true );
 
-  m_ViewActions.push_back( separator );
-
-//   QAction* toggleviewaction = m_DockWidget->toggleViewAction();
-//   toggleviewaction->setText( tr( "Slide Location" ) );
-//   m_ViewActions.push_back( toggleviewaction );
+  this->m_ViewActions.push_back( separator );
 
   QAction* LookupTableAction = new QAction( tr( "Lookup Table" ), this );
   LookupTableAction->setStatusTip( tr(" Change the associated lookup table" ) );
@@ -138,20 +134,27 @@ void QGoTabImageView3D::CreateAllViewActions()
   QObject::connect( LookupTableAction, SIGNAL( triggered() ),
     this, SLOT( ChangeLookupTable() ) );
 
-  m_ViewActions.push_back( LookupTableAction );
+  this->m_ViewActions.push_back( LookupTableAction );
 
   QAction* ScalarBarAction = new QAction( tr( "Display Scalar Bar" ), this );
   ScalarBarAction->setCheckable( true );
-  m_ViewActions.push_back( ScalarBarAction );
+  this->m_ViewActions.push_back( ScalarBarAction );
 
   QObject::connect( ScalarBarAction, SIGNAL( toggled( bool ) ),
     this, SLOT( ShowScalarBar( bool ) ) );
 
   QAction* BackgroundColorAction = new QAction( tr("Background Color"), this );
-  m_ViewActions.push_back( BackgroundColorAction );
+  this->m_ViewActions.push_back( BackgroundColorAction );
 
   QObject::connect( BackgroundColorAction, SIGNAL( triggered() ),
     this, SLOT( ChangeBackgroundColor() ) );
+
+  QAction* separator2 = new QAction( this );
+  separator2->setSeparator( true );
+  this->m_ViewActions.push_back( separator2 );
+
+  this->m_ViewActions.push_back( m_VisuDockWidget->toggleViewAction() );
+
 }
 //--------------------------------------------------------------------------
 
@@ -356,13 +359,6 @@ void QGoTabImageView3D::GetBackgroundColorFromImageViewer( )
 void QGoTabImageView3D::SetBackgroundColorToImageViewer( )
 {
   m_ImageView->SetBackgroundColor( this->m_BackgroundColor );
-}
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-std::vector< QAction* > QGoTabImageView3D::ViewActions()
-{
-  return m_ViewActions;
 }
 //--------------------------------------------------------------------------
 

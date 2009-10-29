@@ -74,6 +74,8 @@ class QGoMainWindow : public QMainWindow,
   Q_OBJECT
 
 public:
+  friend class QGoTabManager;
+
   typedef itk::Image< unsigned char, 3 > ImageType;
   typedef itk::ImageToVTKImageFilter< ImageType > VTKConvertImageType;
   typedef VTKConvertImageType::Pointer            VTKConvertImagePointer;
@@ -85,15 +87,7 @@ public:
 
   void SetSingleFileName( const QString& iFileName );
 
-  void ClearViewMenu();
-  void AddActionToViewMenu( QAction* );
-
-  void ClearViewToolBar();
-
-  std::map< GoFigure::TabDimensionType, std::list< QAction* > > m_TabDimPluginActionMap;
-
-
-protected slots:
+private slots:
   void on_actionOpen_Single_File_activated( );
   void openRecentSingleFile();
   void on_actionOpen_Multiple_Files_activated( );
@@ -122,7 +116,10 @@ protected slots:
 
   void ApplyImageFilter();
 
-protected:
+private:
+
+  std::map< GoFigure::TabDimensionType, std::list< QAction* > >
+    m_TabDimPluginActionMap;
 
   /** \brief */
   void openRecentFile(const bool& IsSerie);
@@ -183,7 +180,6 @@ protected:
 
   /** \brief Remove path from a given FileName*/
   QString strippedName(const QString &fullFileName);
-
 
 private:
   QGoMainWindow( const QGoMainWindow& );

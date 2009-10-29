@@ -24,7 +24,14 @@ QGoTabElementBase::~QGoTabElementBase()
 //--------------------------------------------------------------------------
 std::vector< QAction* > QGoTabElementBase::ViewActions()
 {
-  return std::vector< QAction* > ();
+  return m_ViewActions;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+std::vector< QAction* > QGoTabElementBase::SegmentationActions()
+{
+  return m_SegmentationActions;
 }
 //--------------------------------------------------------------------------
 

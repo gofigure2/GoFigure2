@@ -5,11 +5,13 @@
 
 class QTabWidget;
 class QGoMainWindow;
+class QGoTabElementBase;
 
 class QGoTabManager : public QObject
 {
   Q_OBJECT
   public:
+
     QGoTabManager( QGoMainWindow* iMW = 0, QTabWidget* iTW = 0 );
     ~QGoTabManager();
 
@@ -25,5 +27,8 @@ class QGoTabManager : public QObject
     QGoMainWindow*  m_MainWindow;
     QTabWidget*     m_TabWidget;
     int             m_PreviousTabIndex;
+
+    void ClearTabElement( QGoTabElementBase* iE );
+    void SetUpTabElement( QGoTabElementBase* iE );
 };
 #endif
