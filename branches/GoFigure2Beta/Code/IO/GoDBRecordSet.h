@@ -77,13 +77,17 @@ public:
     return &m_RowContainer;
     }
 
-  // Add New Object
+  /**\brief Add a new Object of OriginalObjectType (exp: GoDBprojectRow) in
+  the m_RowContainer and set the bool to false*/
   void AddObject( OriginalObjectType& object )
     {
     m_RowContainer.push_back( InternalObjectType( false, object ) );
     }
 
-  // Insert Object
+  /* Insert Object
+  note lydie:overwrite the object at the pos position in the
+  m_RowContainer (not yet used)wouldn't that be better to call it "ReplaceObject" ?
+  if the object has changed, why put the bool to true ??? */
   void InsertObject( const int& pos, OriginalObjectType& object )
     {
     if( pos > m_RowContainer.size() )
@@ -95,7 +99,9 @@ public:
     m_RowContainer[pos] = InternalObjectType( true, object );
     delete temp;
     }
-
+ 
+  /** \brief is there to be used in case there is a "WHERE" condition 
+  to add for the selection in PopulateFromDB()*/
   void SetWhereString( std::string whereString )
     { this->m_WhereString = whereString; this->IsWhereStringSet = true; }
 
@@ -114,39 +120,18 @@ public:
   void SetPassword( std::string iPassword )
     { this->PassWord = iPassword; }
 
-  // read content from DB
+  void SetConnector(vtkMySQLDatabase * iDatabaseConnector)
+    { this->m_DatabaseConnector = iDatabaseConnector;}
+
+  /** \brief help read content from DB: select all the fields for a given table (TableName)in the database
+  and fills the m_RowContainer with the results: each row from the database will fill an
+  InternalObjectType with true and an OriginalObjectType (exp; GoProjectRow).
+  if there is a need to add a condition on the selection ( add a WHERE), have to use the function
+  SetWhereString( std::string whereString ) from the same class. */
   void PopulateFromDB()
     {
-    if( !CanConnectToServer(
-        this->ServerName,
-        this->User,
-        this->PassWord )
-        /*
-        !CanConnectToDatabase(
-        this->ServerName,
-        this->User,
-        this->PassWord,
-        this->DataBaseName
-        )*/ )
-      {
-      // throw exception
-      return;
-      }
-
-    vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
-    DataBaseConnector->SetHostName(this->ServerName.c_str());
-    DataBaseConnector->SetUser(this->User.c_str());
-    DataBaseConnector->SetPassword(this->PassWord.c_str());
-    DataBaseConnector->SetDatabaseName( this->DataBaseName.c_str() );
-
-    if (!DataBaseConnector->Open())
-      {
-      std::cerr << "Can not open DB"  << std::endl;
-      DataBaseConnector->Delete();
-      return;
-      }
-
     this->PopulateColumnNamesContainer();
+
     std::stringstream queryString;
     queryString << "SELECT * FROM " << this->TableName;
     if( IsWhereStringSet )
@@ -155,7 +140,7 @@ public:
       }
     queryString << ";";
 
-    vtkSQLQuery* query = DataBaseConnector->GetQueryInstance();
+    vtkSQLQuery* query = m_DatabaseConnector->GetQueryInstance();
     query->SetQuery( queryString.str().c_str() );
     if ( !query->Execute() )
       {
@@ -168,17 +153,21 @@ public:
         {
         m_RowContainer.clear();
         }
+
+      //here the m_RowContainer is filled with all the results of the previous query:
+      //SELECT * FROM table:
       while( query->NextRow() )
         {
         OriginalObjectType object;
         for( unsigned int colID = 0; colID < m_ColumnNamesContainer.size(); colID++ )
           {
-          object.SetFieldValueAsString( colID, query->DataValue( colID ).ToString() );
+          std::string ColumnName = m_ColumnNamesContainer[colID];
+          object.SetField(ColumnName,query->DataValue(colID).ToString());
           }
         m_RowContainer.push_back( InternalObjectType( true, object ) );
         }
       }
-    DataBaseConnector->Delete();
+    //DataBaseConnector->Delete();
     query->Delete();
     }
 
@@ -190,22 +179,6 @@ public:
       return true;
       }
 
-    if( !CanConnectToServer(
-        this->ServerName,
-        this->User,
-        this->PassWord )
-        /*
-        !CanConnectToDatabase(
-        this->ServerName,
-        this->User,
-        this->PassWord,
-        this->DataBaseName
-        )*/ )
-      {
-      // throw exception
-      return false;
-      }
-
     myIteratorType start = m_RowContainer.begin();
     myIteratorType end   = m_RowContainer.end();
 
@@ -213,47 +186,34 @@ public:
 
     this->PopulateColumnNamesContainer();
 
-    vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
-    DataBaseConnector->SetHostName(this->ServerName.c_str());
-    DataBaseConnector->SetUser(this->User.c_str());
-    DataBaseConnector->SetPassword(this->PassWord.c_str());
-    DataBaseConnector->SetDatabaseName( this->DataBaseName.c_str() );
+    vtkSQLQuery* query = m_DatabaseConnector->GetQueryInstance();
 
-    if( !DataBaseConnector->Open() )
+    if( this->SaveEachRow( query) )
       {
-      std::cerr << "Could not open database." << std::endl;
-      std::cerr << "DB will not be created."  << std::endl;
-      DataBaseConnector->Delete();
-      return false;
-      }
-
-    vtkSQLQuery* query = DataBaseConnector->GetQueryInstance();
-
-    if( this->SaveEachRow( query ) )
-      {
-      DataBaseConnector->Close();
-      DataBaseConnector->Delete();
       query->Delete();
       return true;
       }
     else
       {
-      DataBaseConnector->Close();
-      DataBaseConnector->Delete();
       query->Delete();
       return false;
       }
     }
 
 private:
-  // functor to sort our RowContainer and optimize SQL requests
-  class IsLess
+  /** functor to sort our RowContainer and optimize SQL requests
+  \todo Why not do the opposite: false first and true later?
+  Like this, we won't have to iterate on all the true first!
+  Well, it needs to be more investigated!!!*/
+  struct IsLess
     {
-    public:
     bool operator()( const InternalObjectType& A, const InternalObjectType& B )
       {
       // Dirty first
-      if( A.first && !B.first ) return true;
+      if( A.first && !B.first ) 
+        {
+        return true;
+        }
       return false;
       }
     };
@@ -264,13 +224,14 @@ private:
 
   void PopulateColumnNamesContainer();
 
-  bool SaveEachRow( vtkSQLQuery* query );
-  bool SaveRows( vtkSQLQuery* query, std::string what, myIteratorType start, myIteratorType end );
+  bool SaveEachRow( vtkSQLQuery* query);
+  bool SaveRows( vtkSQLQuery* query, std::string what, myIteratorType start, myIteratorType end);
 
   // colum names container
   std::vector< std::string >        m_ColumnNamesContainer;
 
   // DB variables
+  vtkMySQLDatabase* m_DatabaseConnector;
   std::string ServerName;
   std::string DataBaseName;
   std::string TableName;
@@ -285,30 +246,31 @@ private:
 template< class TObject >
 bool
 GoDBRecordSet<TObject>::
-SaveEachRow( vtkSQLQuery *query )
+SaveEachRow( vtkSQLQuery *query)
 {
   // modified rows
   myIteratorType start = m_RowContainer.begin();
-  myIteratorType end   = m_RowContainer.begin();
-  while( (*end).first && end != m_RowContainer.end() ) end++;
+  myIteratorType firstFalseElement = start;
+  myIteratorType end = m_RowContainer.end();
+
+  while( (*firstFalseElement ).first && firstFalseElement  != end )
+    {
+    firstFalseElement++;
+    }
 
   // Here we suppose read and write only, no overwrite
-#if 0
-  if( end-start > 0 )
-    {
-    if( !SaveRows( query, "REPLACE ", start, end ) )
-      {
-      return false;
-      }
-    }
-#endif
+  //if( end-start > 0 )
+  //  {
+  //  if( !SaveRows( query, "REPLACE ", start, end ) )
+  //    {
+  //    return false;
+  //    }
+  //  }
 
   // new rows
-  start = end;
-  end = m_RowContainer.end();
-  if( end-start > 0 )
+  if( end-firstFalseElement > 0 )
     {
-    if( !SaveRows( query, "INSERT ", start, end ) )
+    if( !SaveRows( query, "INSERT ", firstFalseElement, end) )
       {
       return false;
       }
@@ -317,42 +279,44 @@ SaveEachRow( vtkSQLQuery *query )
   return true;
 }
 
-
+/**\brief uses the INSERT or REPLACE query to save all the objects GoDB..Row currently
+in the m_RowContainer located between start and end */
 template< class TObject >
 bool
 GoDBRecordSet<TObject>::
-SaveRows( vtkSQLQuery * query, std::string what, myIteratorType start, myIteratorType end )
+SaveRows( vtkSQLQuery * query, std::string what, myIteratorType start, myIteratorType end)
 {
   // safe test
-  unsigned int NbOfCol = m_ColumnNamesContainer.size();
+  /*unsigned int NbOfCol = m_ColumnNamesContainer.size();
   if( NbOfCol == 0 )
     {
     // throw exception
     std::cerr << "Could not extract column names." << std::endl;
     return false;
-    }
+    }*/
 
-  // invariant part of the query
+  // invariant part of the query: corresponds to the insert/replace into table 
+  //(names of all the columns):
+  myIteratorType rowIt = start;
+
   std::stringstream queryString;
   queryString << what  << "INTO " << this->TableName;
   queryString << " ( ";
-  std::vector<std::string>::iterator It = m_ColumnNamesContainer.begin();
-  for( unsigned int i = 0; i < NbOfCol-1; i++, It++ )
-    {
-    queryString << (*It) << ", ";
-    }
-  queryString << (*It);
+  queryString << rowIt->second.PrintColumnNames();
   queryString << " ) ";
   queryString << " VALUES ";
-
-  // row dependent part of the query
-  myIteratorType rowIt = start;
+ 
+  // row dependent part of the query: one row corresponds to the values of one
+  //OriginalObjectType (exp:GoProjectRow)to be saved into the Database. So this part
+  //saves the values for all the OriginalObjectType contained in the vector m_RowContainer: 
   while( rowIt != end )
     {
     std::stringstream rowQueryString;
     rowQueryString << queryString.str();
-    rowQueryString << "(" << (*rowIt).second.PrintValues() << ");";
-    query->SetQuery( rowQueryString.str().c_str());
+    rowQueryString << "(";
+    rowQueryString << rowIt->second.PrintValues();
+    rowQueryString << ");";
+    query->SetQuery(rowQueryString.str().c_str());
     if ( !query->Execute() )
       {
       // replace by exception
@@ -362,10 +326,12 @@ SaveRows( vtkSQLQuery * query, std::string what, myIteratorType start, myIterato
       }
     rowIt++;
     }
-
   return true;
 }
 
+/**\brief fills the vector m_ColumnNamesContainer with the column names gotten from
+the database and in the same order as the query results will be given:(only way
+to retrieve which query->datavalue corresponds to which field). */
 template< class TObject >
 void
 GoDBRecordSet<TObject>::
@@ -377,25 +343,12 @@ PopulateColumnNamesContainer()
     m_ColumnNamesContainer.clear();
     }
 
-  vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
-  DataBaseConnector->SetHostName(this->ServerName.c_str());
-  DataBaseConnector->SetUser(this->User.c_str());
-  DataBaseConnector->SetPassword(this->PassWord.c_str());
-  DataBaseConnector->SetDatabaseName( this->DataBaseName.c_str() );
-
-  if (!DataBaseConnector->Open())
-    {
-    std::cerr << "Can not open DB"  << std::endl;
-    DataBaseConnector->Delete();
-    return;
-    }
-
-  vtkSQLQuery* query = DataBaseConnector->GetQueryInstance();
+  vtkSQLQuery* query = m_DatabaseConnector->GetQueryInstance();
   std::stringstream querystream;
   querystream << "SHOW COLUMNS FROM ";
   querystream << this->TableName;
-  querystream << " FROM ";
-  querystream << this->DataBaseName;
+  //querystream << " FROM ";
+  //querystream << this->DataBaseName;
   querystream << ";";
 
   query->SetQuery( querystream.str().c_str() );
@@ -411,9 +364,6 @@ PopulateColumnNamesContainer()
       m_ColumnNamesContainer.push_back( query->DataValue( 0 ).ToString() );
       }
     }
-
-  DataBaseConnector->Close();
-  DataBaseConnector->Delete();
   query->Delete();
 
 };

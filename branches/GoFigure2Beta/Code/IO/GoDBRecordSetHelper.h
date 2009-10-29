@@ -41,34 +41,52 @@
 #define __GoDBRecordSetHelper_h
 
 #include "GoDBRecordSet.h"
+#include "QueryDataBaseHelper.h"
 
 /** \brief help add a new object of type T in the table "TableName"
-in the database: add a new experiment, new seriesgrid, new mesh...
+in the database: add a new ImagingSession, new Image, new Mesh...
 \param[in] ServerName
 \param[in] User
 \param[in] Password
-\param[in] NameDB
+\param[in] DBName
 \param[in] TableName
 \param[in] myNewObject
 */
 template< class T >
-void AddNewObjectInTable( const std::string& ServerName,
-  const std::string& User, const std::string& Password,
-  const std::string& NameDB, const std::string& TableName,
-  T& myNewObject )
+void AddOnlyOneNewObjectInTable( vtkMySQLDatabase* DatabaseConnector,
+  const std::string& TableName, T& myNewObject )
 {
   typedef GoDBRecordSet< T >   SetType;
 
   SetType mySet;
-  mySet.SetServerName( ServerName );
-  mySet.SetDataBaseName( NameDB );
+  mySet.SetConnector( DatabaseConnector );
+  //mySet.SetDataBaseName( DBName );
   mySet.SetTableName( TableName );
-  mySet.SetUser( User );
-  mySet.SetPassword( Password );
-  mySet.PopulateFromDB();
+  //mySet.SetUser( User );
+  //mySet.SetPassword( Password );
+  //mySet.PopulateFromDB();
+  mySet.AddObject( myNewObject );
+  mySet.SaveInDB();
+}
+
+template< class T >
+int AddOnlyOneNewObjectInTable( vtkMySQLDatabase* DatabaseConnector,
+  const std::string& TableName,T& myNewObject, const std::string IDColumnName )
+{
+  typedef GoDBRecordSet< T >   SetType;
+
+  SetType mySet;
+  mySet.SetConnector( DatabaseConnector );
+  //mySet.SetDataBaseName( DBName );
+  mySet.SetTableName( TableName );
+  //mySet.SetUser( User );
+  //mySet.SetPassword( Password );
+  //mySet.PopulateFromDB();
   mySet.AddObject( myNewObject );
   mySet.SaveInDB();
 
-  return;
+  return MaxValueForOneColumnInTable(DatabaseConnector,IDColumnName,TableName );
 }
+
+
 #endif

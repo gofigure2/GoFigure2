@@ -1,5 +1,5 @@
 /*=========================================================================
-  Author: $Author: arnaudgelas $  // Author of last commit
+  Author: $Author: lydiesouhait $  // Author of last commit
   Version: $Rev: 542 $  // Revision of last commit
   Date: $Date: 2009-08-06 16:08:10 -0400 (Thu, 06 Aug 2009) $  // Date of last commit
 =========================================================================*/
@@ -37,84 +37,53 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#ifndef __QueryDataBaseHelper_h
-#define __QueryDataBaseHelper_h
+#ifndef __QueryDatabaseHelper_h
+#define __QueryDatabaseHelper_h
 
 #include <vector>
 #include <string>
+#include <map>
 #include "itkMacro.h"
+#include "vtkMySQLDatabase.h"
 
-std::vector<std::string> ListDataBases(
+std::pair<bool,vtkMySQLDatabase*> ConnectToServer(
   std::string ServerName, std::string login,
   std::string Password);
 
+std::pair<bool,vtkMySQLDatabase*> ConnectToDatabase(
+  std::string ServerName,std::string login,
+  std::string Password,std::string DBName);
+
+std::vector<std::string> ListDatabases(
+  vtkMySQLDatabase* ServerConnector);
+
 std::vector<std::string> ListTables(
-  std::string ServerName, std::string login,
-  std::string Password, std::string DBName );
-
-//query: "SELECT ColumnName FROM TableName"
-std::vector<std::string> ListAllValuesForOneColumn(
-  std::string ServerName, std::string login,
-  std::string Password, std::string DBName,
-  std::string ColumnName, std::string TableName);
-
-//query: "SELECT * FROM TableName WHERE field = value"
-//if field is a primary key, will return only the values for
-//one row
-std::vector<std::string> ListSpecificValuesForRow(
-  std::string ServerName, std::string login,
-  std::string Password, std::string DBName,
-  std::string TableName, std::string field,std::string value);
-
-//query: "SELECT ColumnName FROM TableName WHERE field = value"
-std::vector<std::string> ListSpecificValuesForOneColumn(
-  std::string ServerName, std::string login,
-  std::string Password, std::string DBName,
-  std::string TableName, std::string ColumnName,
-  std::string field,std::string value);
+  vtkMySQLDatabase* DatabaseConnector );
 
 //query: "UPDATE TableName SET field = newValue WHERE ColumnName = value"
-void UpdateValueInDB(std::string ServerName, std::string login,
-  std::string Password, std::string DBName,
+void UpdateValueInDB(vtkMySQLDatabase* DatabaseConnector,
   std::string TableName, std::string field, std::string newValue,
   std::string ColumnName, std::string value);
 
-bool CanConnectToServer(
-  std::string ServerName, std::string login,
-  std::string Password);
-
-void DropDatabase(
-  std::string ServerName, std::string login,
-  std::string Password, std::string DBName );
+void DropDatabase( 
+  vtkMySQLDatabase* ServerConnector,
+  std::string DBName );
 
 void DropTable(
-  std::string ServerName, std::string login,
-  std::string Password, std::string DBName,
+  vtkMySQLDatabase* DatabaseConnector,
   std::string TableName );
 
 // query: "DELETE FROM TableName WHERE field = value"
 void DeleteRow(
-  std::string ServerName, std::string login,
-  std::string Password, std::string DBName,
+  vtkMySQLDatabase* DatabaseConnector,
   std::string TableName, std::string field, std::string value);
 
-//query: "SELECT LAST_INSERT_ID(): ????"
-/*int LastInsertID(std::string ServerName, std::string login,
-  std::string Password, std::string DBName);*/
-
-//query: "SELECT MAX(ColumnName) FROM TableName"
-int MaxValueForOneColumnInTable(
-  std::string ServerName, std::string login,
-  std::string Password, std::string DBName,
-  std::string ColumnName,std::string TableName );
-
-bool DoesDataBaseExist(
-  std::string ServerName, std::string login,
-  std::string Password, std::string DBName );
+bool DoesDatabaseExist(
+  vtkMySQLDatabase* ServerConnector,
+  std::string DBName );
 
 bool DoesTableExist(
-  std::string ServerName, std::string login,
-  std::string Password, std::string DBName,
+  vtkMySQLDatabase* DatabaseConnector,
   std::string TableName );
 
 #endif

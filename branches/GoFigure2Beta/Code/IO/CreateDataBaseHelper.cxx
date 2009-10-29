@@ -1,5 +1,5 @@
 /*=========================================================================
-  Author: $Author: arnaudgelas $  // Author of last commit
+  Author: $Author: lsouhait $  // Author of last commit
   Version: $Rev: 542 $  // Revision of last commit
   Date: $Date: 2009-08-06 16:08:10 -0400 (Thu, 06 Aug 2009) $  // Date of last commit
 =========================================================================*/
@@ -40,76 +40,101 @@
 
 #include "CreateDataBaseHelper.h"
 #include "QueryDataBaseHelper.h"
-
-#include "vtkMySQLDatabase.h"
 #include "vtkSQLQuery.h"
-#include "vtkStdString.h"
 #include "vtkVariant.h"
 #include <sstream>
 #include <string>
 
 
 //------------------------------------------------------------------------------
-bool IsDatabaseOfGoFigureType(
-  std::string ServerName, std::string login,
-  std::string Password, std::string DBName )
+bool IsDatabaseOfGoFigureType(vtkMySQLDatabase * DatabaseConnector)
 {
-  if(  DoesTableExist( ServerName, login, Password, DBName, "bookmarks" )
-    && DoesTableExist( ServerName, login, Password, DBName, "figure" )
-    && DoesTableExist( ServerName, login, Password, DBName, "lineage" )
-    && DoesTableExist( ServerName, login, Password, DBName, "mesh" )
-    && DoesTableExist( ServerName, login, Password, DBName, "seriesgrid" )
-    && DoesTableExist( ServerName, login, Password, DBName, "track" ) )
+  return (  DoesTableExist( DatabaseConnector, "bookmark" )
+    && DoesTableExist( DatabaseConnector, "contour" )
+    && DoesTableExist( DatabaseConnector, "lineage" )
+    && DoesTableExist( DatabaseConnector, "mesh" )
+    && DoesTableExist( DatabaseConnector, "image" )
+    && DoesTableExist( DatabaseConnector, "track" ) );
+
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+bool DoesDatabaseExit(vtkMySQLDatabase * DataBaseConnector,std::string DBName)
+{
+  vtkSQLQuery* query = DataBaseConnector->GetQueryInstance();
+  std::stringstream queryScript;
+  queryScript << "SHOW DATABASES LIKE '";
+  queryScript << DBName;
+  queryScript << "';";
+
+  query->SetQuery(queryScript.str().c_str());
+  if (!query->Execute())
     {
+    itkGenericExceptionMacro(
+    << "Does database already exist query failed."
+    << query->GetLastErrorText() );
+    query->Delete();
     return true;
     }
+
+  if( query->NextRow() )
+    {
+    query->Delete();
+    return true;
+    }
+
+  query->Delete();
   return false;
 }
+
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-void CreateDataBaseMain(
+void CreateGoFigureDataBase(
   std::string ServerName, std::string login,
   std::string Password, std::string DBName )
 {
-  if( CanConnectToServer(    ServerName, login, Password ) )
-    {
-    CreateDataBase(            ServerName, login, Password, DBName );
-    CreateBookmarksTable(      ServerName, login, Password, DBName );
-    CreateCollectionInfoTable( ServerName, login, Password, DBName );
-    CreateExperimentTable(     ServerName, login, Password, DBName );
-    CreateFigureTable(         ServerName, login, Password, DBName );
-    CreateFigureFlavorTable(   ServerName, login, Password, DBName );
-    CreateLineageTable(        ServerName, login, Password, DBName );
-    CreateLineageFlavorTable(  ServerName, login, Password, DBName );
-    CreateMeshTable(           ServerName, login, Password, DBName );
-    CreateMeshFlavor(          ServerName, login, Password, DBName );
-    CreateSeriesGridTable(     ServerName, login, Password, DBName );
-    CreateTrackTable(          ServerName, login, Password, DBName );
-    CreateTrackFlavor(         ServerName, login, Password, DBName );
-    }
-}
-//------------------------------------------------------------------------------
+  std::pair<bool,vtkMySQLDatabase*> ConnectionServer = ConnectToServer(
+    ServerName, login, Password );
 
-//------------------------------------------------------------------------------
-void CreateDataBase(
-  std::string ServerName, std::string login,
-  std::string Password, std::string DBName )
-{
-  vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
-  DataBaseConnector->SetHostName( ServerName.c_str() );
-  DataBaseConnector->SetUser( login.c_str() );
-  DataBaseConnector->SetPassword( Password.c_str() );
-  if( !DataBaseConnector->Open() )
+  if (!ConnectionServer.first)
     {
-    std::cerr << "Could not open database." << std::endl;
-    std::cerr << "DB will not be created."  << std::endl;
-    DataBaseConnector->Delete();
+    std::cout<<"Can not connect to the server"<<std::endl;
+    std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
+    std::cout << std::endl;
     return;
     }
 
+    vtkMySQLDatabase* ServerConnector = ConnectionServer.second;
+
+  if (!DoesDatabaseExit(ServerConnector,DBName))
+    {
+    CreateDataBase(ServerConnector,DBName);
+    ServerConnector->Close();
+    ServerConnector->Delete();
+
+    vtkMySQLDatabase * DataBaseConnector = ConnectToDatabase(ServerName, login,
+      Password,DBName).second;
+    CreateTables(DataBaseConnector);
+    CreateForeignKeys(DataBaseConnector);
+    DataBaseConnector->Close();
+    DataBaseConnector->Delete();
+    }
+   else
+     {
+     ServerConnector->Close();
+     ServerConnector->Delete();
+    }
+
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+void CreateDataBase( vtkMySQLDatabase* DataBaseConnector, std::string DBName )
+{
   vtkSQLQuery* query = DataBaseConnector->GetQueryInstance();
-  std::ostringstream insertQuery;
+  std::stringstream insertQuery;
   insertQuery<< "CREATE DATABASE "<< DBName;
   query->SetQuery( insertQuery.str().c_str() );
   if ( !query->Execute() )
@@ -117,706 +142,1309 @@ void CreateDataBase(
     itkGenericExceptionMacro(
       << "Create query failed"
       << query->GetLastErrorText() );
-    DataBaseConnector->Close();
-    DataBaseConnector->Delete();
+    std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
+    std::cout << std::endl;
     query->Delete();
     return;
     }
-  DataBaseConnector->Close();
-  DataBaseConnector->Delete();
   query->Delete();
-}
+ }
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-void CreateBookmarksTable(
-  std::string ServerName, std::string login,
-  std::string Password, std::string DBName )
+void CreateTables( vtkMySQLDatabase* DataBaseConnector )
 {
-  vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
-  DataBaseConnector->SetHostName( ServerName.c_str() );
-  DataBaseConnector->SetUser( login.c_str() );
-  DataBaseConnector->SetPassword( Password.c_str() );
-  DataBaseConnector->SetDatabaseName( DBName.c_str() );
-  if( !DataBaseConnector->Open() )
-    {
-    std::cerr << "Could not open database." << std::endl;
-    std::cerr << "DB will not be created."  << std::endl;
-    DataBaseConnector->Delete();
-    return;
-    }
+  Query(DataBaseConnector,AuthorTable());
+  Query(DataBaseConnector,BookmarkTable());
+  Query(DataBaseConnector,CalculatedValueTable());
+  Query(DataBaseConnector,CellTypeTable());
+  Query(DataBaseConnector,ChannelTable());
+  Query(DataBaseConnector,ColorTable());
+  Query(DataBaseConnector,ContourTable());
+  Query(DataBaseConnector,ContourValueTable());
+  Query(DataBaseConnector,CoordinateTable());
+  Query(DataBaseConnector,ImageTable());
+  Query(DataBaseConnector,ImageValueTable());
+  Query(DataBaseConnector,ImagingSessionTable());
+  Query(DataBaseConnector,ImagingSessionValueTable());
+  Query(DataBaseConnector,IntensityTable());
+  Query(DataBaseConnector,LineageTable());
+  Query(DataBaseConnector,LineageValueTable());
+  Query(DataBaseConnector,MeshTable());
+  Query(DataBaseConnector,MeshValueTable());
+  Query(DataBaseConnector,MicroscopeTable());
+  Query(DataBaseConnector,ProjectTable());
+  Query(DataBaseConnector,SubCellularTypeTable());
+  Query(DataBaseConnector,TrackFamilyTable());
+  Query(DataBaseConnector,TrackTable());
+  Query(DataBaseConnector,TrackValueTable());
+  Query(DataBaseConnector,ValuePerVectorCoordTable());
+  Query(DataBaseConnector,ValueTypeTable());
+}
+//----------------------------------------------------------------------------
 
+//----------------------------------------------------------------------------
+void CreateForeignKeys(vtkMySQLDatabase* DataBaseConnector)
+{
+
+  Query(DataBaseConnector,ProjectFK());
+  Query(DataBaseConnector,ImagingSessionFKMicroscopeName());
+  Query(DataBaseConnector,ImagingSessionFKProjectName());
+  Query(DataBaseConnector,TrackFamilyFKTrackIDDaughter1());
+  Query(DataBaseConnector,TrackFamilyFKTrackIDDaughter2());
+  Query(DataBaseConnector,TrackFamilyFKTrackIDMother());
+  Query(DataBaseConnector,TrackFKColor());
+  Query(DataBaseConnector,TrackFKLineage());
+  Query(DataBaseConnector,TrackFKCoordIDMax());
+  Query(DataBaseConnector,TrackFKCoordIDMin());
+  Query(DataBaseConnector,TrackFKTrackFamily());
+  Query(DataBaseConnector,MeshFKImagingSession());
+  Query(DataBaseConnector,MeshFKTrackID());
+  Query(DataBaseConnector,MeshFKColor());
+  Query(DataBaseConnector,MeshFKCoordIDMin());
+  Query(DataBaseConnector,MeshFKCoordIDMax());
+  Query(DataBaseConnector,MeshFKSubCellType());
+  Query(DataBaseConnector,MeshFKCellType());
+  Query(DataBaseConnector,ContourFKImagingSession());
+  Query(DataBaseConnector,ContourFKCoordIDMin());
+  Query(DataBaseConnector,ContourFKCoordIDMax());
+  Query(DataBaseConnector,ContourFKMesh());
+  Query(DataBaseConnector,ChannelFKColor());
+  Query(DataBaseConnector,ChannelFKImagingSession());
+  Query(DataBaseConnector,ImageFKChannel());
+  Query(DataBaseConnector,ImageFKCoordIDMin());
+  Query(DataBaseConnector,ImageFKImagingSession());
+  Query(DataBaseConnector,LineageFKImagingSession());
+  Query(DataBaseConnector,LineageFKTrackRoot());
+  Query(DataBaseConnector,LineageFKColor());
+  Query(DataBaseConnector,LineageFKCoordIDMin());
+  Query(DataBaseConnector,LineageFKCoordIDMax());
+  Query(DataBaseConnector,BookmarkFKCoord());
+  Query(DataBaseConnector,BookmarkFKImagingSession());
+  Query(DataBaseConnector,IntensityFKChannel());
+  Query(DataBaseConnector,IntensityFKMesh());
+  Query(DataBaseConnector,ValueperVectorCoordFKCalculatedValue());
+  Query(DataBaseConnector,CalculatedValueFKValueType());
+  Query(DataBaseConnector,MeshValueFKCalculatedValue());
+  Query(DataBaseConnector,MeshValueFKMesh());
+  Query(DataBaseConnector,TrackValueFKCalculatedValue());
+  Query(DataBaseConnector,TrackValueFKTrack());
+  Query(DataBaseConnector,ImageValueFKCalculatedValue());
+  Query(DataBaseConnector,ImageValueFKImage());
+  Query(DataBaseConnector,ImagingSessionValueFKCalculatedValue());
+  Query(DataBaseConnector,ImagingSessionValueFKImagingSession());
+  Query(DataBaseConnector,ContourValueFKCalculatedValue());
+  Query(DataBaseConnector,ContourValueFKContour());
+  Query(DataBaseConnector,LineageValueFKCalculatedValue());
+  Query(DataBaseConnector,LineageValueFKLineage());
+}
+//----------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------
+void Query(vtkMySQLDatabase* DataBaseConnector,std::string queryScript)
+{
   vtkSQLQuery* query = DataBaseConnector->GetQueryInstance();
-  vtkStdString insertQuery =
-    "CREATE TABLE bookmarks ( \
-    `BookmarkID` INTEGER NOT NULL  AUTO_INCREMENT, \
-    `BookmarkName` varchar (50), \
-    `BookmarkDesc` varchar (50), \
-    `experimentID` INTEGER NOT NULL  DEFAULT -1, \
-    `RCoord` INTEGER NOT NULL  DEFAULT -1, \
-    `CCoord` INTEGER NOT NULL  DEFAULT -1, \
-    `TCoord` INTEGER NOT NULL  DEFAULT -1, \
-    `YCoord` INTEGER NOT NULL  DEFAULT -1, \
-    `XCoord` INTEGER NOT NULL  DEFAULT -1, \
-    `ZCoord` INTEGER NOT NULL  DEFAULT -1, \
-    `DateCreated` datetime, \
-    PRIMARY KEY (BookmarkID) \
-    )";
-
-  query->SetQuery( insertQuery );
+  query->SetQuery( queryScript.c_str() );
   if ( !query->Execute() )
     {
     itkGenericExceptionMacro(
       << "Create query failed"
       << query->GetLastErrorText() );
-    DataBaseConnector->Close();
-    DataBaseConnector->Delete();
+    std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
+    std::cout << std::endl;
     query->Delete();
     return;
     }
-  DataBaseConnector->Close();
-  DataBaseConnector->Delete();
   query->Delete();
+
+ }
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::string CellTypeTable()
+{
+  return
+    "CREATE  TABLE IF NOT EXISTS `celltype`(\
+    `CellTypeID` INT NOT NULL AUTO_INCREMENT ,\
+    `CellTypeName` TEXT NOT NULL ,\
+    `Description` VARCHAR(45) NULL ,\
+    PRIMARY KEY (`CellTypeID`)\
+    );";
 }
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-void CreateCollectionInfoTable(
-  std::string ServerName,
-  std::string login,
-  std::string Password,
-  std::string DBName )
+std::string AuthorTable()
 {
-  vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
-  DataBaseConnector->SetHostName( ServerName.c_str() );
-  DataBaseConnector->SetUser( login.c_str() );
-  DataBaseConnector->SetPassword( Password.c_str() );
-  DataBaseConnector->SetDatabaseName( DBName.c_str() );
-  if( !DataBaseConnector->Open() )
-    {
-    std::cerr << "Could not open database." << std::endl;
-    std::cerr << "DB will not be created."  << std::endl;
-    DataBaseConnector->Delete();
-    return;
-    }
-
-  vtkSQLQuery* query = DataBaseConnector->GetQueryInstance();
-  vtkStdString insertQuery =
-    "CREATE TABLE `collectioninfo` \
-    (\
-    `CollectionInfoID` INTEGER (11) NOT NULL  AUTO_INCREMENT , \
-    `AuthorName` varchar (50), \
-    `CreationDate` varchar (50), \
-    `CollectionName` varchar (50), \
-    `CollectionDescription` varchar (50), \
-    `GoFigureVersion` DOUBLE DEFAULT 0, \
-    `GoFigureProductID` varchar (50),\
-    PRIMARY KEY (CollectionInfoID)\
-    )";
-
-  query->SetQuery( insertQuery );
-  if ( !query->Execute() )
-    {
-    itkGenericExceptionMacro(
-      << "Create query failed"
-      << query->GetLastErrorText() );
-    DataBaseConnector->Close();
-    DataBaseConnector->Delete();
-    query->Delete();
-    return;
-    }
-  DataBaseConnector->Close();
-  DataBaseConnector->Delete();
-  query->Delete();
+  return
+    "CREATE  TABLE IF NOT EXISTS `author` (\
+    `AuthorID` INT NOT NULL AUTO_INCREMENT ,\
+    `LastName` VARCHAR(45) NOT NULL ,\
+    `FirstName` VARCHAR(45) NOT NULL ,\
+    `MiddleName` VARCHAR(45) NOT NULL DEFAULT '<none>' ,\
+    UNIQUE INDEX UniqueAuthor (`LastName`,`FirstName`,`MiddleName`),\
+    PRIMARY KEY (`authorID`)\
+    );";
 }
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-void CreateExperimentTable(
-  std::string ServerName,
-  std::string login,
-  std::string Password,
-  std::string DBName )
+std::string SubCellularTypeTable()
 {
-  vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
-  DataBaseConnector->SetHostName( ServerName.c_str() );
-  DataBaseConnector->SetUser( login.c_str() );
-  DataBaseConnector->SetPassword( Password.c_str() );
-  DataBaseConnector->SetDatabaseName( DBName.c_str() );
-  if( !DataBaseConnector->Open() )
-    {
-    std::cerr << "Could not open database." << std::endl;
-    std::cerr << "DB will not be created."  << std::endl;
-    DataBaseConnector->Delete();
-    return;
-    }
-
-  vtkSQLQuery* query = DataBaseConnector->GetQueryInstance();
-  vtkStdString insertQuery =
-    "CREATE TABLE `experiment` \
-    (\
-    `experimentID` INTEGER NOT NULL  AUTO_INCREMENT , \
-    `name` varchar (50), \
-    `description` text, \
-    `timeInterval` INTEGER NOT NULL  DEFAULT 0, \
-    `tileHeight` INTEGER NOT NULL  DEFAULT 1024, \
-    `tileWidth` INTEGER NOT NULL  DEFAULT 1024, \
-    `pixelDepth` DOUBLE DEFAULT 0, \
-    `pixelHeight` DOUBLE DEFAULT 0, \
-    `pixelWidth` DOUBLE DEFAULT 0, \
-    `colorDepth` INTEGER DEFAULT 8, \
-    `nTimePoints` INTEGER DEFAULT -1, \
-    `nYTiles` INTEGER DEFAULT -1, \
-    `nXTiles` INTEGER DEFAULT -1, \
-    `nSlices` INTEGER NOT NULL  DEFAULT -1, \
-    `nRows` INTEGER DEFAULT -1, \
-    `nColumns` INTEGER DEFAULT -1, \
-    `filePattern` varchar (250),\
-    PRIMARY KEY (experimentID)\
-    )";
-
-  query->SetQuery( insertQuery );
-  if ( !query->Execute() )
-    {
-    itkGenericExceptionMacro(
-      << "Create query failed"
-      << query->GetLastErrorText() );
-    DataBaseConnector->Close();
-    DataBaseConnector->Delete();
-    query->Delete();
-    return;
-    }
-  DataBaseConnector->Close();
-  DataBaseConnector->Delete();
-  query->Delete();
+  return
+    "CREATE  TABLE IF NOT EXISTS `subcellulartype` (\
+    `SubCellularName` VARCHAR(45) NOT NULL ,\
+    `Description` VARCHAR(45) NULL ,\
+    `SubCellularID` INT NOT NULL AUTO_INCREMENT ,\
+    PRIMARY KEY (`SubCellularID`)\
+    );";
 }
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-void CreateFigureTable(
-  std::string ServerName,
-  std::string login,
-  std::string Password,
-  std::string DBName )
+std::string CoordinateTable()
 {
-  vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
-  DataBaseConnector->SetHostName( ServerName.c_str() );
-  DataBaseConnector->SetUser( login.c_str() );
-  DataBaseConnector->SetPassword( Password.c_str() );
-  DataBaseConnector->SetDatabaseName( DBName.c_str() );
-  if( !DataBaseConnector->Open() )
-    {
-    std::cerr << "Could not open database." << std::endl;
-    std::cerr << "DB will not be created."  << std::endl;
-    DataBaseConnector->Delete();
-    return;
-    }
+  return
+    "CREATE  TABLE IF NOT EXISTS `coordinate` (\
+    `CoordID` INT NOT NULL AUTO_INCREMENT ,\
+    `PCoord` TINYINT UNSIGNED NOT NULL DEFAULT 0,\
+    `RCoord` TINYINT UNSIGNED NOT NULL DEFAULT 0,\
+    `CCoord` TINYINT UNSIGNED NOT NULL DEFAULT 0,\
+    `XTileCoord` SMALLINT UNSIGNED NOT NULL DEFAULT 0,\
+    `YTileCoord` SMALLINT UNSIGNED NOT NULL DEFAULT 0,\
+    `ZTileCoord` SMALLINT UNSIGNED NOT NULL DEFAULT 0,\
+    `XCoord` FLOAT UNSIGNED NOT NULL DEFAULT 0,\
+    `YCoord` FLOAT UNSIGNED NOT NULL DEFAULT 0,\
+    `ZCoord` FLOAT UNSIGNED NOT NULL DEFAULT 0,\
+    `TCoord` FLOAT UNSIGNED NOT NULL DEFAULT 0,\
+    PRIMARY KEY (`CoordID`)\
+    );";
+}
+  //if needed:
+ // UNIQUE INDEX UniqueCoordinate (`PCoord`,`RCoord`,`CCoord`,`XTileCoord`,\
+ //   `YTileCoord`,`ZTileCoord`,`XCoord`,`YCoord`,`ZCoord`,`TCoord`),\
+//------------------------------------------------------------------------------
 
-  vtkSQLQuery* query = DataBaseConnector->GetQueryInstance();
-  vtkStdString insertQuery =
-  "CREATE TABLE `figure` \
-    (\
-    `figureID` INTEGER NOT NULL  NOT NULL  AUTO_INCREMENT , \
-    `imageID` INTEGER NOT NULL  DEFAULT 0, \
-    `meshID` INTEGER NOT NULL  DEFAULT 0, \
-    `points` TEXT, \
-    `cellTypeID` INTEGER NOT NULL  DEFAULT 0, \
-    `flavorID` INTEGER NOT NULL  DEFAULT 0, \
-    `meanRed` SMALLINT DEFAULT 0, \
-    `meanGreen` SMALLINT DEFAULT 0, \
-    `meanBlue` SMALLINT DEFAULT 0, \
-    `area` INTEGER NOT NULL  DEFAULT 0, \
-    `perimeter` INTEGER NOT NULL  DEFAULT 0, \
-    `AP` INTEGER NOT NULL  DEFAULT 0, \
-    `score` INTEGER NOT NULL  DEFAULT 0, \
-    `xCenter` INTEGER NOT NULL  DEFAULT 0, \
-    `yCenter` INTEGER NOT NULL  DEFAULT 0,\
-    `experimentID` INTEGER NOT NULL  DEFAULT -1, \
-    `RCoord` INTEGER NOT NULL  DEFAULT -1, \
-    `CCoord` INTEGER NOT NULL  DEFAULT -1, \
-    `TCoord` INTEGER NOT NULL  DEFAULT -1, \
-    `YCoord` INTEGER NOT NULL  DEFAULT -1, \
-    `XCoord` INTEGER NOT NULL  DEFAULT -1, \
-    `ZCoord` INTEGER NOT NULL  DEFAULT -1, \
-    PRIMARY KEY (figureID)\
-    )";
+//------------------------------------------------------------------------------
+std::string ColorTable()
+{
+  return
+    "CREATE  TABLE IF NOT EXISTS `color` (\
+    `ColorID` INT NOT NULL AUTO_INCREMENT ,\
+    `Name` VARCHAR(45) NULL ,\
+    `Red` TINYINT UNSIGNED NOT NULL ,\
+    `Green` TINYINT UNSIGNED NOT NULL ,\
+    `Blue` TINYINT UNSIGNED NOT NULL ,\
+    `Alpha` TINYINT UNSIGNED NOT NULL ,\
+    `Description` VARCHAR(1000) NULL ,\
+     UNIQUE INDEX UniqueColor (`Red`,`Green`,`Blue`,`Alpha`),\
+     PRIMARY KEY (`ColorID`)\
+     );";
+ }
+//------------------------------------------------------------------------------
 
-  query->SetQuery( insertQuery );
-  if ( !query->Execute() )
-    {
-    itkGenericExceptionMacro(
-      << "Create query failed"
-      << query->GetLastErrorText() );
-    DataBaseConnector->Close();
-    DataBaseConnector->Delete();
-    query->Delete();
-    return;
-    }
-  DataBaseConnector->Close();
-  DataBaseConnector->Delete();
-  query->Delete();
+//------------------------------------------------------------------------------
+std::string MicroscopeTable()
+{
+  return
+    "CREATE  TABLE IF NOT EXISTS `microscope` (\
+    `MicroscopeName` VARCHAR(255) NOT NULL ,\
+    PRIMARY KEY (`MicroscopeName`)\
+    );";
 }
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-void CreateFigureFlavorTable(
-  std::string ServerName,
-  std::string login,
-  std::string Password,
-  std::string DBName )
+std::string ProjectTable()
 {
-  vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
-  DataBaseConnector->SetHostName( ServerName.c_str() );
-  DataBaseConnector->SetUser( login.c_str() );
-  DataBaseConnector->SetPassword( Password.c_str() );
-  DataBaseConnector->SetDatabaseName( DBName.c_str() );
-  if( !DataBaseConnector->Open() )
-    {
-    std::cerr << "Could not open database." << std::endl;
-    std::cerr << "DB will not be created."  << std::endl;
-    DataBaseConnector->Delete();
-    return;
-    }
-
-  vtkSQLQuery* query = DataBaseConnector->GetQueryInstance();
-  vtkStdString insertQuery = "\
-    CREATE TABLE `figureflavor` \
-    (\
-    `flavorID` INTEGER NOT NULL  AUTO_INCREMENT , \
-    `FlavorName` varchar (50), \
-    `Colorref` INTEGER NOT NULL  DEFAULT 0, \
-    `ShowInCombo` tinyint (4),\
-    PRIMARY KEY (flavorID)\
-    )";
-
-  query->SetQuery( insertQuery );
-  if ( !query->Execute() )
-    {
-    itkGenericExceptionMacro(
-      << "Create query failed"
-      << query->GetLastErrorText() );
-    DataBaseConnector->Close();
-    DataBaseConnector->Delete();
-    query->Delete();
-    return;
-    }
-  DataBaseConnector->Close();
-  DataBaseConnector->Delete();
-  query->Delete();
+  return
+    "CREATE  TABLE IF NOT EXISTS `project` (\
+    `ProjectName` VARCHAR(255) NOT NULL ,\
+    `Description` VARCHAR(1000) NULL ,\
+    `AuthorID` INT NOT NULL ,\
+    `CreationDate` DATE NOT NULL ,\
+    `DatabaseVersion` VARCHAR(45) NOT NULL ,\
+    PRIMARY KEY (`ProjectName`) ,\
+    INDEX `FK_Project_AuthorID` (`AuthorID` ASC)\
+    );";
 }
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-void CreateLineageTable(
-  std::string ServerName,
-  std::string login,
-  std::string Password,
-  std::string DBName )
+std::string ImagingSessionTable()
 {
-  vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
-  DataBaseConnector->SetHostName( ServerName.c_str() );
-  DataBaseConnector->SetUser( login.c_str() );
-  DataBaseConnector->SetPassword( Password.c_str() );
-  DataBaseConnector->SetDatabaseName( DBName.c_str() );
-  if( !DataBaseConnector->Open() )
-    {
-    std::cerr << "Could not open database." << std::endl;
-    std::cerr << "DB will not be created."  << std::endl;
-    DataBaseConnector->Delete();
-    return;
-    }
-
-  vtkSQLQuery* query = DataBaseConnector->GetQueryInstance();
-  vtkStdString insertQuery = "\
-    CREATE TABLE `lineage` \
-    (\
-    `lineageID` INTEGER NOT NULL  NOT NULL  AUTO_INCREMENT , \
-    `tEnd` INTEGER NOT NULL  DEFAULT -1, \
-    `tStart` INTEGER NOT NULL  DEFAULT -1,\
-    `xStart` INTEGER NOT NULL  DEFAULT -1, \
-    `yStart` INTEGER NOT NULL  DEFAULT -1, \
-    `zStart` INTEGER NOT NULL  DEFAULT -1, \
-    `points` blob, \
-    `xEnd` INTEGER NOT NULL  DEFAULT -1, \
-    `yEnd` INTEGER NOT NULL  DEFAULT -1, \
-    `zEnd` INTEGER NOT NULL  DEFAULT -1, \
-    `cellTypeID` INTEGER NOT NULL  DEFAULT 0, \
-    `experimentID` INTEGER NOT NULL  DEFAULT -1, \
-    `RCoordMin` INTEGER NOT NULL  DEFAULT -1, \
-    `CCoordMin` INTEGER NOT NULL  DEFAULT -1, \
-    `TCoordMin` INTEGER NOT NULL  DEFAULT -1, \
-    `YCoordMin` INTEGER NOT NULL  DEFAULT -1, \
-    `XCoordMin` INTEGER NOT NULL  DEFAULT -1, \
-    `ZCoordMin` INTEGER NOT NULL  DEFAULT -1, \
-    `RCoordMax` INTEGER NOT NULL  DEFAULT -1, \
-    `CCoordMax` INTEGER NOT NULL  DEFAULT -1, \
-    `TCoordMax` INTEGER NOT NULL  DEFAULT -1, \
-    `YCoordMax` INTEGER NOT NULL  DEFAULT -1, \
-    `XCoordMax` INTEGER NOT NULL  DEFAULT -1, \
-    `ZCoordMax` INTEGER NOT NULL  DEFAULT -1, \
-    `flavorLineageID` INTEGER NOT NULL  DEFAULT -1,\
-    PRIMARY KEY (lineageID)\
-    )";
-
-  query->SetQuery( insertQuery );
-  if ( !query->Execute() )
-    {
-    itkGenericExceptionMacro(
-      << "Create query failed"
-      << query->GetLastErrorText() );
-    DataBaseConnector->Close();
-    DataBaseConnector->Delete();
-    query->Delete();
-    return;
-    }
-  DataBaseConnector->Close();
-  DataBaseConnector->Delete();
-  query->Delete();
+  return
+    "CREATE  TABLE IF NOT EXISTS `imagingsession` (\
+    `ImagingSessionID` INT NOT NULL AUTO_INCREMENT ,\
+    `CoordIDMax` INT NOT NULL DEFAULT 0 ,\
+    `CoordIDMin` INT NOT NULL DEFAULT 0,\
+    `Name` VARCHAR(255) NOT NULL ,\
+    `Description` VARCHAR(1000) NULL ,\
+    `ImagesTimeInterval` FLOAT UNSIGNED NULL ,\
+    `RealPixelDepth` FLOAT UNSIGNED NULL ,\
+    `RealPixelHeight` FLOAT UNSIGNED NULL ,\
+    `RealPixelWidth` FLOAT UNSIGNED NULL ,\
+    `ProjectName` VARCHAR(255) NOT NULL ,\
+    `MicroscopeName` VARCHAR(255) NOT NULL ,\
+    `CreationDate` DATETIME NOT NULL ,\
+    `XImageSize` INT NOT NULL,\
+    `YImageSize` INT NOT NULL,\
+    `XTileOverlap` FLOAT UNSIGNED DEFAULT 0,\
+    `YTileOverlap` FLOAT UNSIGNED DEFAULT 0,\
+    `ZTileOverlap` FLOAT UNSIGNED DEFAULT 0,\
+    UNIQUE INDEX UniqueImagingSession (`MicroscopeName`,`CreationDate`),\
+    PRIMARY KEY (`ImagingSessionID`) ,\
+    INDEX `FK_ImagingSession_CoordIDMax` (`CoordIDMax` ASC) ,\
+    INDEX `FK_ImagingSession_CoordIDMin` (`CoordIDMin` ASC) ,\
+    INDEX `FK_ImagingSession_ProjectName` (`ProjectName` ASC) ,\
+    INDEX `FK_ImagingSession_MicroscopeName` (`MicroscopeName` ASC)\
+    );";
 }
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-void CreateLineageFlavorTable(
-  std::string ServerName,
-  std::string login,
-  std::string Password,
-  std::string DBName )
+std::string TrackFamilyTable()
 {
-  vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
-  DataBaseConnector->SetHostName( ServerName.c_str() );
-  DataBaseConnector->SetUser( login.c_str() );
-  DataBaseConnector->SetPassword( Password.c_str() );
-  DataBaseConnector->SetDatabaseName( DBName.c_str() );
-  if( !DataBaseConnector->Open() )
-    {
-    std::cerr << "Could not open database." << std::endl;
-    std::cerr << "DB will not be created."  << std::endl;
-    DataBaseConnector->Delete();
-    return;
-    }
-
-  vtkSQLQuery* query = DataBaseConnector->GetQueryInstance();
-  vtkStdString insertQuery = "\
-    CREATE TABLE `lineageflavor` \
-    (\
-    `flavorID` INTEGER NOT NULL  NOT NULL  AUTO_INCREMENT , \
-    `FlavorName` varchar (50), \
-    `Colorref` INTEGER NOT NULL  DEFAULT 0, \
-    `ShowInCombo` tinyint (4),\
-    PRIMARY KEY (flavorID)\
-    )";
-
-  query->SetQuery( insertQuery );
-  if ( !query->Execute() )
-    {
-    itkGenericExceptionMacro(
-      << "Create query failed"
-      << query->GetLastErrorText() );
-    DataBaseConnector->Close();
-    DataBaseConnector->Delete();
-    query->Delete();
-    return;
-    }
-  DataBaseConnector->Close();
-  DataBaseConnector->Delete();
-  query->Delete();
+  return
+    "CREATE  TABLE IF NOT EXISTS `trackfamily` (\
+    `TrackFamilyID` INT NOT NULL AUTO_INCREMENT ,\
+    `TrackIDMother` INT NOT NULL ,\
+    `TrackIDDaughter1` INT NOT NULL ,\
+    `TrackIDDaughter2` INT NOT NULL ,\
+    PRIMARY KEY (`TrackFamilyID`) ,\
+    INDEX `FK_TrackFamily_TrackIDMother` (`TrackIDMother` ASC) ,\
+    INDEX `FK_TrackFamily_TrackIDDaughter1` (`TrackIDDaughter1` ASC) ,\
+    INDEX `FK_TrackFamily_TrackIDDaughter2` (`TrackIDDaughter2` ASC)\
+    );";
 }
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-void CreateMeshTable(
-  std::string ServerName,
-  std::string login,
-  std::string Password,
-  std::string DBName )
+std::string TrackTable()
 {
-  vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
-  DataBaseConnector->SetHostName( ServerName.c_str() );
-  DataBaseConnector->SetUser( login.c_str() );
-  DataBaseConnector->SetPassword( Password.c_str() );
-  DataBaseConnector->SetDatabaseName( DBName.c_str() );
-  if( !DataBaseConnector->Open() )
-    {
-    std::cerr << "Could not open database." << std::endl;
-    std::cerr << "DB will not be created."  << std::endl;
-    DataBaseConnector->Delete();
-    return;
-    }
-
-  vtkSQLQuery* query = DataBaseConnector->GetQueryInstance();
-  vtkStdString insertQuery = "\
-    CREATE TABLE `mesh` \
-    (\
-    `meshID` INTEGER NOT NULL  AUTO_INCREMENT , \
-    `flavorMeshID` INTEGER NOT NULL  DEFAULT 0, \
-    `cellTypeID` INTEGER NOT NULL  DEFAULT 0, \
-    `width` SMALLINT DEFAULT 0, \
-    `height` SMALLINT DEFAULT 0, \
-    `depth` SMALLINT DEFAULT 0, \
-    `xCenter` INTEGER DEFAULT 0, \
-    `yCenter` INTEGER DEFAULT 0, \
-    `zCenter` INTEGER DEFAULT 0, \
-    `trackID` bigint DEFAULT 0, \
-    `meanBlue` SMALLINT DEFAULT 0, \
-    `meanGreen` SMALLINT DEFAULT 0, \
-    `meanRed` SMALLINT DEFAULT 0, \
-    `score` INTEGER DEFAULT 0, \
-    `surfaceArea` INTEGER DEFAULT 0, \
-    `volume` INTEGER DEFAULT 0,\
-    `experimentID` INTEGER NOT NULL  DEFAULT -1, \
-    `RCoord` INTEGER NOT NULL  DEFAULT -1, \
-    `CCoord` INTEGER NOT NULL  DEFAULT -1, \
-    `TCoord` INTEGER NOT NULL  DEFAULT -1, \
-    `YCoord` INTEGER NOT NULL  DEFAULT -1, \
-    `XCoord` INTEGER NOT NULL  DEFAULT -1, \
-    `ZCoordMin` INTEGER NOT NULL  DEFAULT -1, \
-    `ZCoordMax` INTEGER NOT NULL  DEFAULT -1, \
-    `points` TEXT,\
-    PRIMARY KEY (meshID)\
-    )";
-
-  query->SetQuery( insertQuery );
-  if ( !query->Execute() )
-    {
-    itkGenericExceptionMacro(
-      << "Create query failed"
-      << query->GetLastErrorText() );
-    DataBaseConnector->Close();
-    DataBaseConnector->Delete();
-    query->Delete();
-    return;
-    }
-  DataBaseConnector->Close();
-  DataBaseConnector->Delete();
-  query->Delete();
+  return
+    "CREATE  TABLE IF NOT EXISTS `track` (\
+    `TrackID` INT NOT NULL AUTO_INCREMENT ,\
+    `LineageID` INT NULL ,\
+    `ColorID` INT NOT NULL ,\
+    `CoordIDMax` INT NOT NULL ,\
+    `CoordIDMin` INT NOT NULL ,\
+    `TrackFamilyID` INT NULL ,\
+    `Points` TEXT NULL ,\
+    `ImagingSessionID` INT NOT NULL ,\
+    PRIMARY KEY (`TrackID`) ,\
+    INDEX `FK_Track_ColorID` (`ColorID` ASC) ,\
+    INDEX `FK_Track_LineageID` (`LineageID` ASC) ,\
+    INDEX `FK_Track_CoordIDMax` (`CoordIDMax` ASC) ,\
+    INDEX `FK_Track_CoordIDMin` (`CoordIDMin` ASC) ,\
+    INDEX `FK_Track_TrackFamilyID` (`TrackFamilyID` ASC) ,\
+    INDEX `FK_Track_ImagingSessionID` (`ImagingSessionID` ASC)\
+    );";
 }
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-void CreateMeshFlavor(
-  std::string ServerName,
-  std::string login,
-  std::string Password,
-  std::string DBName )
+std::string MeshTable()
 {
-  vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
-  DataBaseConnector->SetHostName( ServerName.c_str() );
-  DataBaseConnector->SetUser( login.c_str() );
-  DataBaseConnector->SetPassword( Password.c_str() );
-  DataBaseConnector->SetDatabaseName( DBName.c_str() );
-  if( !DataBaseConnector->Open() )
-    {
-    std::cerr << "Could not open database." << std::endl;
-    std::cerr << "DB will not be created."  << std::endl;
-    DataBaseConnector->Delete();
-    return;
-    }
-
-  vtkSQLQuery* query = DataBaseConnector->GetQueryInstance();
-  vtkStdString insertQuery = "\
-    CREATE TABLE `meshflavor` \
-    (\
-    `flavorID` INTEGER NOT NULL  NOT NULL  AUTO_INCREMENT , \
-    `FlavorName` varchar (50), \
-    `Colorref` INTEGER NOT NULL  DEFAULT 0, \
-    `ShowInCombo` tinyint (4),\
-    PRIMARY KEY (flavorID)\
-    )";
-
-  query->SetQuery( insertQuery );
-  if ( !query->Execute() )
-    {
-    itkGenericExceptionMacro(
-      << "Create query failed"
-      << query->GetLastErrorText() );
-    DataBaseConnector->Close();
-    DataBaseConnector->Delete();
-    query->Delete();
-    return;
-    }
-  DataBaseConnector->Close();
-  DataBaseConnector->Delete();
-  query->Delete();
+  return
+    "CREATE  TABLE IF NOT EXISTS `mesh` (\
+    `MeshID` INT NULL AUTO_INCREMENT ,\
+    `CellTypeID` INT NOT NULL ,\
+    `SubCellularID` INT NOT NULL ,\
+    `CoordIDMax` INT NOT NULL ,\
+    `CoordIDMin` INT NOT NULL ,\
+    `ColorID` INT NOT NULL ,\
+    `TrackID` INT NULL ,\
+    `ImagingSessionID` INT NOT NULL ,\
+    `Points` TEXT NOT NULL ,\
+    PRIMARY KEY (`MeshID`) ,\
+    INDEX `FK_Mesh_CellTypeID` (`CellTypeID` ASC) ,\
+    INDEX `FK_Mesh_CoordIDMax` (`CoordIDMax` ASC) ,\
+    INDEX `FK_Mesh_CoordIDMin` (`CoordIDMin` ASC) ,\
+    INDEX `FK_Mesh_ColorID` (`ColorID` ASC) ,\
+    INDEX `FK_Mesh_TrackID` (`TrackID` ASC) ,\
+    INDEX `FK_Mesh_ImagingSessionID` (`ImagingSessionID` ASC) ,\
+    INDEX `FK_Mesh_SubCellularID` (`SubCellularID` ASC)\
+    );";
 }
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-void CreateSeriesGridTable(
-  std::string ServerName,
-  std::string login,
-  std::string Password,
-  std::string DBName )
+std::string ContourTable()
 {
-  vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
-  DataBaseConnector->SetHostName( ServerName.c_str() );
-  DataBaseConnector->SetUser( login.c_str() );
-  DataBaseConnector->SetPassword( Password.c_str() );
-  DataBaseConnector->SetDatabaseName( DBName.c_str() );
-  if( !DataBaseConnector->Open() )
-    {
-    std::cerr << "Could not open database." << std::endl;
-    std::cerr << "DB will not be created."  << std::endl;
-    DataBaseConnector->Delete();
-    return;
-    }
-
-  vtkSQLQuery* query = DataBaseConnector->GetQueryInstance();
-  vtkStdString insertQuery = "\
-    CREATE TABLE `seriesgrid` \
-    (\
-    `imageID` INTEGER NOT NULL  NOT NULL  AUTO_INCREMENT , \
-    `experimentID` INTEGER NOT NULL  DEFAULT -1, \
-    `RCoord` INTEGER NOT NULL  DEFAULT -1, \
-    `CCoord` INTEGER NOT NULL  DEFAULT -1, \
-    `TCoord` INTEGER NOT NULL  DEFAULT -1, \
-    `YCoord` INTEGER NOT NULL  DEFAULT -1, \
-    `XCoord` INTEGER NOT NULL  DEFAULT -1, \
-    `ZCoord` INTEGER NOT NULL  DEFAULT -1, \
-    `filename` varchar (250),\
-    PRIMARY KEY (imageID)\
-    )";
-
-  query->SetQuery( insertQuery );
-  if ( !query->Execute() )
-    {
-    itkGenericExceptionMacro(
-      << "Create query failed"
-      << query->GetLastErrorText() );
-    DataBaseConnector->Close();
-    DataBaseConnector->Delete();
-    query->Delete();
-    return;
-    }
-  DataBaseConnector->Close();
-  DataBaseConnector->Delete();
-  query->Delete();
+  return
+    "CREATE  TABLE IF NOT EXISTS `contour` (\
+    `ContourID` INT NOT NULL AUTO_INCREMENT ,\
+    `MeshID` INT NULL ,\
+    `ImagingSessionID` INT NULL ,\
+    `CoordIDMax` INT NOT NULL ,\
+    `CoordIDMin` INT NOT NULL ,\
+    `Points` TEXT NOT NULL ,\
+    PRIMARY KEY (`ContourID`) ,\
+    INDEX `FK_Contour_MeshID` (`MeshID` ASC) ,\
+    INDEX `FK_Contour_CoordIDMax` (`CoordIDMax` ASC) ,\
+    INDEX `FK_Contour_CoordIDMin` (`CoordIDMin` ASC) ,\
+    INDEX `FK_Contour_ImagingSessionID` (`ImagingSessionID` ASC) \
+    );";
 }
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-void CreateTrackTable(
-  std::string ServerName,
-  std::string login,
-  std::string Password,
-  std::string DBName )
+std::string ChannelTable()
 {
-  vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
-  DataBaseConnector->SetHostName( ServerName.c_str() );
-  DataBaseConnector->SetUser( login.c_str() );
-  DataBaseConnector->SetPassword( Password.c_str() );
-  DataBaseConnector->SetDatabaseName( DBName.c_str() );
-  if( !DataBaseConnector->Open() )
-    {
-    std::cerr << "Could not open database." << std::endl;
-    std::cerr << "DB will not be created."  << std::endl;
-    DataBaseConnector->Delete();
-    return;
-    }
-
-  vtkSQLQuery* query = DataBaseConnector->GetQueryInstance();
-  vtkStdString insertQuery = "\
-    CREATE TABLE `track` \
-    (\
-    `trackID` INTEGER NOT NULL  NOT NULL  AUTO_INCREMENT , \
-    `lineageID` INTEGER NOT NULL  DEFAULT 0, \
-    `flavorTrackID` INTEGER NOT NULL  DEFAULT 0, \
-    `tEnd` INTEGER NOT NULL  DEFAULT 0, \
-    `tStart` INTEGER NOT NULL  DEFAULT 0, \
-    `xEnd` INTEGER DEFAULT 0, \
-    `xStart` INTEGER DEFAULT 0, \
-    `yEnd` INTEGER DEFAULT 0, \
-    `yStart` INTEGER DEFAULT 0, \
-    `zStart` INTEGER DEFAULT 0, \
-    `zEnd` INTEGER DEFAULT 0, \
-    `score` INTEGER DEFAULT 0, \
-    `distance` INTEGER DEFAULT 0, \
-    `directionTheta` INTEGER DEFAULT 0, \
-    `directionPhi` INTEGER DEFAULT 0, \
-    `displacement` INTEGER DEFAULT 0, \
-    `speed` INTEGER DEFAULT 0, \
-    `cellTypeID` INTEGER NOT NULL  DEFAULT 0, \
-    `experimentID` INTEGER NOT NULL  DEFAULT -1, \
-    `RCoordMin` INTEGER NOT NULL  DEFAULT -1, \
-    `CCoordMin` INTEGER NOT NULL  DEFAULT -1, \
-    `TCoordMin` INTEGER NOT NULL  DEFAULT -1, \
-    `YCoordMin` INTEGER NOT NULL  DEFAULT -1, \
-    `XCoordMin` INTEGER NOT NULL  DEFAULT -1, \
-    `ZCoordMin` INTEGER NOT NULL  DEFAULT -1, \
-    `RCoordMax` INTEGER NOT NULL  DEFAULT -1, \
-    `CCoordMax` INTEGER NOT NULL  DEFAULT -1, \
-    `TCoordMax` INTEGER NOT NULL  DEFAULT -1, \
-    `YCoordMax` INTEGER NOT NULL  DEFAULT -1, \
-    `XCoordMax` INTEGER NOT NULL  DEFAULT -1, \
-    `ZCoordMax` INTEGER NOT NULL  DEFAULT -1, \
-    `points` blob,\
-    PRIMARY KEY (trackID)\
-    )";
-
-  query->SetQuery( insertQuery );
-  if ( !query->Execute() )
-    {
-    itkGenericExceptionMacro(
-      << "Create query failed"
-      << query->GetLastErrorText() );
-    DataBaseConnector->Close();
-    DataBaseConnector->Delete();
-    query->Delete();
-    return;
-    }
-  DataBaseConnector->Close();
-  DataBaseConnector->Delete();
-  query->Delete();
+  return
+    "CREATE  TABLE IF NOT EXISTS `channel` (\
+    `ChannelID` INT NOT NULL AUTO_INCREMENT ,\
+    `Name` VARCHAR(45) NULL ,\
+    `ImagingSessionID` INT NOT NULL,\
+    `ColorID` INT NOT NULL ,\
+    `ChannelNumber` INT NOT NULL ,\
+    `NumberOfBits` TINYINT UNSIGNED NOT NULL ,\
+    UNIQUE INDEX UniqueChannel (`ImagingSessionID`,`ChannelNumber`),\
+    PRIMARY KEY (`ChannelID`) ,\
+    INDEX `FK_Channel_ColorID` (`ColorID` ASC), \
+    INDEX `FK_Channel_ImagingSessionID`(`ImagingSessionID` ASC)\
+    );";
 }
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-void CreateTrackFlavor(
-  std::string ServerName,
-  std::string login,
-  std::string Password,
-  std::string DBName )
+std::string ImageTable()
 {
-  (void) ServerName;
-  (void) login;
-  (void) Password;
-  (void) DBName;
+  return
+    "CREATE  TABLE IF NOT EXISTS `image` (\
+    `ImageID` INT NOT NULL AUTO_INCREMENT ,\
+    `ImagingSessionID` INT NOT NULL ,\
+    `CoordIDMin` INT NOT NULL ,\
+    `Filename` TEXT NOT NULL ,\
+    `ChannelID` INT NOT NULL ,\
+    PRIMARY KEY (`ImageID`) ,\
+    INDEX `FK_Image_ImagingSessionID` (`ImagingSessionID` ASC) ,\
+    INDEX `FK_Image_CoordIDMin` (`CoordIDMin` ASC) ,\
+    INDEX `FK_Image_ChannelID` (`ChannelID` ASC)\
+    );";
+}
+//------------------------------------------------------------------------------
 
-  vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
-  DataBaseConnector->SetHostName(ServerName.c_str());
-  DataBaseConnector->SetUser(login.c_str());
-  DataBaseConnector->SetPassword(Password.c_str());
-  DataBaseConnector->SetDatabaseName( DBName.c_str() );
-  if( !DataBaseConnector->Open() )
-    {
-    std::cerr << "Could not open database." << std::endl;
-    std::cerr << "DB will not be created."  << std::endl;
-    DataBaseConnector->Delete();
-    return;
-    }
+//------------------------------------------------------------------------------
+std::string LineageTable()
+{
+  return
+    "CREATE  TABLE IF NOT EXISTS `lineage` (\
+    `LineageID` INT NOT NULL AUTO_INCREMENT ,\
+    `CoordIDMax` INT NOT NULL ,\
+    `CoordIDMin` INT NOT NULL ,\
+    `ColorID` INT NOT NULL ,\
+    `Points` TEXT NOT NULL ,\
+    `TrackIDRoot` INT NOT NULL ,\
+    `ImagingSessionID` INT NOT NULL ,\
+    PRIMARY KEY (`LineageID`) ,\
+    INDEX `FK_Lineage_CoordIDMax` (`CoordIDMax` ASC) ,\
+    INDEX `FK_Lineage_CoordIDMin` (`CoordIDMin` ASC) ,\
+    INDEX `FK_Lineage_ColorID` (`ColorID` ASC) ,\
+    INDEX `FK_Lineage_TrackIDRoot` (`TrackIDRoot` ASC) ,\
+    INDEX `FK_Lineage_ImagingSessionID` (`ImagingSessionID` ASC)\
+    );";
+}
+//------------------------------------------------------------------------------
 
-  vtkSQLQuery* query = DataBaseConnector->GetQueryInstance();
-  vtkStdString insertQuery = "\
-    CREATE TABLE `trackflavor` \
-    (\
-    `flavorID` INTEGER NOT NULL  NOT NULL  AUTO_INCREMENT , \
-    `FlavorName` varchar (50), \
-    `Colorref` INTEGER NOT NULL  DEFAULT 0, \
-    `ShowInCombo` tinyint (4),\
-    PRIMARY KEY (flavorID)\
-    )";
+//------------------------------------------------------------------------------
+std::string BookmarkTable()
+{
+  return
+    "CREATE  TABLE IF NOT EXISTS `bookmark` (\
+    `BookmarkID` INT NOT NULL AUTO_INCREMENT ,\
+    `ImagingSessionID` INT NOT NULL ,\
+    `CoordID` INT NOT NULL ,\
+    `Name` VARCHAR(45) NULL ,\
+    `Description` VARCHAR(45) NULL ,\
+    `CreationDate` DATETIME NOT NULL,\
+    PRIMARY KEY (`BookmarkID`) ,\
+    INDEX `FK_Bookmark_ImagingSessionID` (`ImagingSessionID` ASC) ,\
+    INDEX `FK_Bookmark_CoordID` (`CoordID` ASC) \
+    );";
+}
+//------------------------------------------------------------------------------
 
-  query->SetQuery( insertQuery );
-  if ( !query->Execute() )
-    {
-    itkGenericExceptionMacro(
-      << "Create query failed"
-      << query->GetLastErrorText() );
-    DataBaseConnector->Close();
-    DataBaseConnector->Delete();
-    query->Delete();
-    return;
-    }
-  DataBaseConnector->Close();
-  DataBaseConnector->Delete();
-  query->Delete();
+//------------------------------------------------------------------------------
+std::string IntensityTable()
+{
+  return
+    "CREATE  TABLE IF NOT EXISTS `intensity` (\
+    `IntensityID` INT NOT NULL AUTO_INCREMENT ,\
+    `Value` INT NOT NULL ,\
+    `MeshID` INT NOT NULL ,\
+    `ChannelID` INT NOT NULL ,\
+    PRIMARY KEY (`IntensityID`) ,\
+    INDEX `FK_Intensity_MeshID` (`MeshID` ASC) ,\
+    INDEX `FK_Intensity_ChannelID` (`ChannelID` ASC) \
+    );";
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::string ValueTypeTable()
+{
+  return
+    "CREATE  TABLE IF NOT EXISTS `valuetype` (\
+    `ValueTypeID` INT NOT NULL AUTO_INCREMENT ,\
+    `Name` VARCHAR(45) NOT NULL ,\
+    `Description` VARCHAR(45) NULL ,\
+    PRIMARY KEY (`ValueTypeID`) \
+    );";
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::string CalculatedValueTable()
+{
+  return
+    "CREATE  TABLE IF NOT EXISTS `calculatedvalue` (\
+    `CalculatedValueID` INT NOT NULL AUTO_INCREMENT ,\
+    `ValueTypeID` INT NOT NULL ,\
+    PRIMARY KEY (`CalculatedValueID`) ,\
+    INDEX `FK_CalculatedValue_ValueTypeID` (`ValueTypeID` ASC)\
+    );";
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::string ValuePerVectorCoordTable()
+{
+  return
+    "CREATE  TABLE IF NOT EXISTS `valuepervectorcoord` (\
+    `ValuePerVectorCoordID` INT NOT NULL AUTO_INCREMENT ,\
+    `Name` VARCHAR(45) NULL ,\
+    `VectorCoordNumber` INT NOT NULL ,\
+    `Value` DECIMAL(3) NOT NULL ,\
+    `CalculatedValueID` INT NOT NULL ,\
+    PRIMARY KEY (`ValuePerVectorCoordID`) ,\
+    INDEX `FK_ValuePerVectorCoord_CalculatedValueID` (`CalculatedValueID` ASC) \
+    );";
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::string MeshValueTable()
+{
+  return
+    "CREATE  TABLE IF NOT EXISTS `meshvalue` (\
+    `CalculatedValueID` INT NOT NULL ,\
+    `MeshID` INT NOT NULL ,\
+    PRIMARY KEY (`CalculatedValueID`, `MeshID`),\
+    INDEX `FK_MeshValue_MeshID` (`MeshID` ASC) ,\
+    INDEX `FK_MeshValue_CalculatedValueID` (`CalculatedValueID` ASC)\
+    );";
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::string TrackValueTable()
+{
+  return
+    "CREATE  TABLE IF NOT EXISTS `trackvalue` (\
+    `TrackID` INT NOT NULL ,\
+    `CalculatedValueID` INT NOT NULL ,\
+    PRIMARY KEY (`TrackID`, `CalculatedValueID`) ,\
+    INDEX `FK_TrackValue_TrackID` (`TrackID` ASC) ,\
+    INDEX `CalculatedValueID` (`CalculatedValueID` ASC)\
+    );";
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::string ImageValueTable()
+{
+  return
+    "CREATE  TABLE IF NOT EXISTS `imagevalue` (\
+    `ImageID` INT NOT NULL ,\
+    `CalculatedValueID` INT NOT NULL ,\
+    PRIMARY KEY (`ImageID`, `CalculatedValueID`),\
+    INDEX `FK_ImageValue_ImageID` (`ImageID` ASC) ,\
+    INDEX `FK_ImageValue_CalculatedValueID` (`CalculatedValueID` ASC)\
+    );";
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::string ImagingSessionValueTable()
+{
+  return
+    "CREATE  TABLE IF NOT EXISTS `imagingsessionvalue` (\
+    `ImagingSessionID` INT NOT NULL ,\
+    `CalculatedValueID` INT NOT NULL ,\
+    PRIMARY KEY (`ImagingSessionID`, `CalculatedValueID`) ,\
+    INDEX `ImagingSessionID` (`ImagingSessionID` ASC) ,\
+    INDEX `CalculatedValueID` (`CalculatedValueID` ASC)\
+    );";
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::string ContourValueTable()
+{
+  return
+    "CREATE  TABLE IF NOT EXISTS `contourvalue` (\
+    `ContourID` INT NOT NULL ,\
+    `CalculatedValueID` INT NOT NULL ,\
+    PRIMARY KEY (`ContourID`, `CalculatedValueID`),\
+    INDEX `FK_ContourValue_ContourID` (`ContourID` ASC) ,\
+    INDEX `FK_ContourValue_CalculatedValueID` (`CalculatedValueID` ASC)\
+    );";
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::string LineageValueTable()
+{
+  return
+    "CREATE  TABLE IF NOT EXISTS `lineagevalue` (\
+    `LineageID` INT NOT NULL ,\
+    `CalculatedValueID` INT NOT NULL ,\
+    PRIMARY KEY (`LineageID`, `CalculatedValueID`),\
+    INDEX `FK_LineageValue_LineageID` (`LineageID` ASC) ,\
+    INDEX `FK_LineageValue_CalculatedValueID` (`CalculatedValueID` ASC)\
+    );";
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::string ProjectFK()
+{
+  return
+    "ALTER TABLE `project` ADD\
+     CONSTRAINT `FK_Project_AuthorID`\
+     FOREIGN    KEY (`AuthorID`)\
+     REFERENCES `author`(`AuthorID`)\
+     ON DELETE NO ACTION\
+     ON UPDATE NO ACTION\
+     ;";
+ }
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::string ImagingSessionFKCoordIDMax()
+{
+  return
+    "ALTER TABLE `imagingsession` ADD\
+     CONSTRAINT `FK_ImagingSession_CoordIDMax`\
+     FOREIGN KEY (`CoordIDMax`)\
+     REFERENCES `coordinate`(`CoordID`)\
+     ON DELETE NO ACTION\
+     ON UPDATE NO ACTION\
+     ;";
+ }
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::string ImagingSessionFKCoordIDMin()
+{
+  return
+    "ALTER TABLE `imagingsession` ADD\
+     CONSTRAINT `FK_ImagingSession_CoordIDMin`\
+     FOREIGN KEY (`CoordIDMin`)\
+     REFERENCES `coordinate`(`CoordID`)\
+     ON DELETE NO ACTION\
+     ON UPDATE NO ACTION\
+     ;";
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::string ImagingSessionFKProjectName()
+{
+  return
+     "ALTER TABLE `imagingsession` ADD\
+      CONSTRAINT `FK_ImagingSession_ProjectName`\
+      FOREIGN KEY (`ProjectName`)\
+      REFERENCES `project`(`Projectname`)\
+      ON DELETE NO ACTION\
+      ON UPDATE NO ACTION\
+      ;";
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::string ImagingSessionFKMicroscopeName()
+{
+  return
+     "ALTER TABLE `imagingsession` ADD\
+      CONSTRAINT `FK_ImagingSession_MicroscopeName`\
+      FOREIGN KEY (`MicroscopeName`)\
+      REFERENCES `microscope`(`MicroscopeName`)\
+      ON DELETE NO ACTION\
+      ON UPDATE NO ACTION\
+      ;";
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::string TrackFamilyFKTrackIDMother()
+{
+  return
+     "ALTER TABLE `trackfamily` ADD\
+      CONSTRAINT `FK_TrackFamily_TrackIDMother`\
+      FOREIGN KEY (`TrackIDMother`)\
+      REFERENCES `track`(`TrackID`)\
+      ON DELETE NO ACTION\
+      ON UPDATE NO ACTION\
+      ;";
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::string TrackFamilyFKTrackIDDaughter1()
+{
+  return
+     "ALTER TABLE `trackfamily` ADD\
+      CONSTRAINT `FK_TrackFamily_TrackIDDaughter1`\
+      FOREIGN KEY (`TrackIDDaughter1`)\
+      REFERENCES `track`(`TrackID`)\
+      ON DELETE NO ACTION\
+      ON UPDATE NO ACTION\
+      ;";
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::string TrackFamilyFKTrackIDDaughter2()
+{
+  return
+     "ALTER TABLE `trackfamily` ADD\
+      CONSTRAINT `FK_TrackFamily_TrackIDDaughter2`\
+      FOREIGN KEY (`TrackIDDaughter2`)\
+      REFERENCES `track`(`TrackID`)\
+      ON DELETE NO ACTION\
+      ON UPDATE NO ACTION\
+      ;";
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::string TrackFKColor()
+{
+  return
+   "ALTER TABLE `track` ADD\
+    CONSTRAINT `FK_Track_ColorID`\
+    FOREIGN KEY (`ColorID`)\
+    REFERENCES `color`(`ColorID`)\
+    ON DELETE NO ACTION\
+    ON UPDATE NO ACTION\
+    ;";
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::string TrackFKLineage()
+{
+  return
+   "ALTER TABLE `track` ADD\
+    CONSTRAINT `FK_Track_LineageID`\
+    FOREIGN KEY (`LineageID`)\
+    REFERENCES `lineage`(`LineageID`)\
+    ON DELETE NO ACTION\
+    ON UPDATE NO ACTION\
+    ;";
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::string TrackFKCoordIDMax()
+{
+  return
+   "ALTER TABLE `track` ADD\
+    CONSTRAINT `FK_Track_CoordIDMax`\
+    FOREIGN KEY (`CoordIDMax`)\
+    REFERENCES `coordinate`(`CoordID`)\
+    ON DELETE NO ACTION\
+    ON UPDATE NO ACTION\
+    ;";
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::string TrackFKCoordIDMin()
+{
+  return
+   "ALTER TABLE `track` ADD\
+    CONSTRAINT `FK_Track_CoordIDMin`\
+    FOREIGN KEY (`CoordIDMin`)\
+    REFERENCES `coordinate`(`CoordID`)\
+    ON DELETE NO ACTION\
+    ON UPDATE NO ACTION\
+    ;";
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::string TrackFKTrackFamily()
+{
+  return
+   "ALTER TABLE `track` ADD\
+    CONSTRAINT `FK_Track_TrackFamilyID`\
+    FOREIGN KEY (`TrackFamilyID`)\
+    REFERENCES `trackfamily`(`TrackFamilyID`)\
+    ON DELETE NO ACTION\
+    ON UPDATE NO ACTION\
+    ;";
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::string TrackFKImagingSession()
+{
+  return
+   "ALTER TABLE `track` ADD\
+    CONSTRAINT `FK_Track_ImagingSessionID`\
+    FOREIGN KEY (`ImagingSessionID`)\
+    REFERENCES `imagingsession`(`ImagingSessionID`)\
+    ON DELETE NO ACTION\
+    ON UPDATE NO ACTION\
+    ;";
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::string MeshFKCellType()
+{
+  return
+   "ALTER TABLE `mesh` ADD\
+    CONSTRAINT `FK_Mesh_CellTypeID`\
+    FOREIGN KEY (`CellTypeID`)\
+    REFERENCES `celltype`(`CellTypeID`)\
+    ON DELETE NO ACTION\
+    ON UPDATE NO ACTION\
+    ;";
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::string MeshFKSubCellType()
+{
+  return
+   "ALTER TABLE `mesh` ADD\
+    CONSTRAINT `FK_Mesh_SubCellularID`\
+    FOREIGN KEY (`SubCellularID`)\
+    REFERENCES `subcellulartype`(`SubCellularID`)\
+    ON DELETE NO ACTION\
+    ON UPDATE NO ACTION\
+    ;";
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::string MeshFKCoordIDMax()
+{
+  return
+   "ALTER TABLE `mesh` ADD\
+    CONSTRAINT `FK_Mesh_CoordIDMax`\
+    FOREIGN KEY (`CoordIDMax`)\
+    REFERENCES `coordinate`(`CoordID`)\
+    ON DELETE NO ACTION\
+    ON UPDATE NO ACTION\
+    ;";
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::string MeshFKCoordIDMin()
+{
+  return
+   "ALTER TABLE `mesh` ADD\
+    CONSTRAINT `FK_Mesh_CoordIDMin`\
+    FOREIGN KEY (`CoordIDMin`)\
+    REFERENCES `coordinate`(`CoordID`)\
+    ON DELETE NO ACTION\
+    ON UPDATE NO ACTION\
+    ;";
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::string MeshFKColor()
+{
+  return
+   "ALTER TABLE `mesh` ADD\
+    CONSTRAINT `FK_Mesh_ColorID`\
+    FOREIGN KEY (`ColorID`)\
+    REFERENCES `color`(`ColorID`)\
+    ON DELETE NO ACTION\
+    ON UPDATE NO ACTION\
+    ;";
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::string MeshFKTrackID()
+{
+  return
+   "ALTER TABLE `mesh` ADD\
+    CONSTRAINT `FK_Mesh_TrackID`\
+    FOREIGN KEY (`TrackID`)\
+    REFERENCES `track`(`TrackID`)\
+    ON DELETE NO ACTION\
+    ON UPDATE NO ACTION\
+    ;";
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::string MeshFKImagingSession()
+{
+  return
+   "ALTER TABLE `mesh` ADD\
+    CONSTRAINT `FK_Mesh_ImagingSessionID`\
+    FOREIGN KEY (`ImagingSessionID`)\
+    REFERENCES `imagingSession`(`ImagingSessionID`)\
+    ON DELETE NO ACTION\
+    ON UPDATE NO ACTION\
+    ;";
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::string ContourFKMesh()
+{
+  return
+   "ALTER TABLE `contour` ADD\
+    CONSTRAINT `FK_Contour_MeshID`\
+    FOREIGN KEY (`MeshID`)\
+    REFERENCES `mesh`(`MeshID`)\
+    ON DELETE NO ACTION\
+    ON UPDATE NO ACTION\
+    ;";
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::string ContourFKCoordIDMax()
+{
+  return
+   "ALTER TABLE `contour` ADD\
+    CONSTRAINT `FK_Contour_CoordIDMax`\
+    FOREIGN KEY (`CoordIDMax`)\
+    REFERENCES `coordinate`(`CoordID`)\
+    ON DELETE NO ACTION\
+    ON UPDATE NO ACTION\
+    ;";
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::string ContourFKCoordIDMin()
+{
+  return
+   "ALTER TABLE `contour` ADD\
+    CONSTRAINT `FK_Contour_CoordIDMin`\
+    FOREIGN KEY (`CoordIDMin`)\
+    REFERENCES `coordinate`(`CoordID`)\
+    ON DELETE NO ACTION\
+    ON UPDATE NO ACTION\
+    ;";
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::string ContourFKImagingSession()
+{
+  return
+   "ALTER TABLE `contour` ADD\
+    CONSTRAINT `FK_Contour_ImagingSessionID`\
+    FOREIGN KEY (`ImagingSessionID`)\
+    REFERENCES `imagingsession`(`ImagingSessionID`)\
+    ON DELETE NO ACTION\
+    ON UPDATE NO ACTION\
+    ;";
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::string ChannelFKColor()
+{
+  return
+   "ALTER TABLE `channel` ADD\
+    CONSTRAINT `FK_Channel_ColorID`\
+    FOREIGN KEY (`ColorID`)\
+    REFERENCES `color`(`ColorID`)\
+    ON DELETE NO ACTION\
+    ON UPDATE NO ACTION\
+    ;";
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::string ChannelFKImagingSession()
+{
+  return
+   "ALTER TABLE `channel` ADD\
+    CONSTRAINT `FK_Channel_ImagingSessionID`\
+    FOREIGN KEY (`ImagingSessionID`)\
+    REFERENCES `imagingsession`(`ImagingSessionID`)\
+    ON DELETE NO ACTION\
+    ON UPDATE NO ACTION\
+    ;";
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::string ImageFKImagingSession()
+{
+  return
+   "ALTER TABLE `image` ADD\
+    CONSTRAINT `FK_Image_ImagingSessionID`\
+    FOREIGN KEY (`ImagingSessionID`)\
+    REFERENCES `imagingsession`(`ImagingSessionID`)\
+    ON DELETE NO ACTION\
+    ON UPDATE NO ACTION\
+    ;";
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::string ImageFKCoordIDMin()
+{
+  return
+   "ALTER TABLE `image` ADD\
+    CONSTRAINT `FK_Image_CoordIDMin`\
+    FOREIGN KEY (`CoordIDMin`)\
+    REFERENCES `coordinate`(`CoordID`)\
+    ON DELETE NO ACTION\
+    ON UPDATE NO ACTION\
+    ;";
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::string ImageFKChannel()
+{
+  return
+   "ALTER TABLE `image` ADD\
+    CONSTRAINT `FK_Image_ChannelID`\
+    FOREIGN KEY (`ChannelID`)\
+    REFERENCES `channel`(`ChannelID`)\
+    ON DELETE NO ACTION\
+    ON UPDATE NO ACTION\
+    ;";
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::string LineageFKCoordIDMax()
+{
+  return
+   "ALTER TABLE `lineage` ADD\
+    CONSTRAINT `FK_Lineage_CoordIDMax`\
+    FOREIGN KEY (`CoordIDMax`)\
+    REFERENCES `coordinate`(`CoordID`)\
+    ON DELETE NO ACTION\
+    ON UPDATE NO ACTION\
+    ;";
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::string LineageFKCoordIDMin()
+{
+  return
+   "ALTER TABLE `lineage` ADD\
+    CONSTRAINT `FK_Lineage_CoordIDMin`\
+    FOREIGN KEY (`CoordIDMin`)\
+    REFERENCES `coordinate`(`CoordID`)\
+    ON DELETE NO ACTION\
+    ON UPDATE NO ACTION\
+    ;";
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::string LineageFKColor()
+{
+  return
+   "ALTER TABLE `lineage` ADD\
+    CONSTRAINT `FK_Lineage_ColorID`\
+    FOREIGN KEY (`ColorID`)\
+    REFERENCES `color`(`ColorID`)\
+    ON DELETE NO ACTION\
+    ON UPDATE NO ACTION\
+    ;";
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::string LineageFKTrackRoot()
+{
+  return
+   "ALTER TABLE `lineage` ADD\
+    CONSTRAINT `FK_Lineage_TrackIDRoot`\
+    FOREIGN KEY (`TrackIDRoot`)\
+    REFERENCES `track`(`TrackID`)\
+    ON DELETE NO ACTION\
+    ON UPDATE NO ACTION\
+    ;";
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::string LineageFKImagingSession()
+{
+  return
+   "ALTER TABLE `lineage` ADD\
+    CONSTRAINT `FK_Lineage_ImagingSessionID`\
+    FOREIGN KEY (`ImagingSessionID`)\
+    REFERENCES `imagingsession`(`ImagingSessionID`)\
+    ON DELETE NO ACTION\
+    ON UPDATE NO ACTION\
+    ;";
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::string BookmarkFKImagingSession()
+{
+  return
+   "ALTER TABLE `bookmark` ADD\
+    CONSTRAINT `FK_Bookmark_ImagingSessionID`\
+    FOREIGN KEY (`ImagingSessionID`)\
+    REFERENCES `imagingsession`(`ImagingSessionID`)\
+    ON DELETE NO ACTION\
+    ON UPDATE NO ACTION\
+    ;";
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::string BookmarkFKCoord()
+{
+  return
+   "ALTER TABLE `bookmark` ADD\
+    CONSTRAINT `FK_Bookmark_CoordID`\
+    FOREIGN KEY (`CoordID`)\
+    REFERENCES `coordinate`(`CoordID`)\
+    ON DELETE NO ACTION\
+    ON UPDATE NO ACTION\
+    ;";
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::string IntensityFKMesh()
+{
+  return
+   "ALTER TABLE `intensity` ADD\
+    CONSTRAINT `FK_Intensity_MeshID`\
+    FOREIGN KEY (`MeshID`)\
+    REFERENCES `mesh`(`MeshID`)\
+    ON DELETE NO ACTION\
+    ON UPDATE NO ACTION\
+    ;";
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::string IntensityFKChannel()
+{
+  return
+   "ALTER TABLE `intensity` ADD\
+    CONSTRAINT `FK_Intensity_ChannelID`\
+    FOREIGN KEY (`ChannelID`)\
+    REFERENCES `channel`(`ChannelID`)\
+    ON DELETE NO ACTION\
+    ON UPDATE NO ACTION\
+    ;";
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::string CalculatedValueFKValueType()
+{
+  return
+   "ALTER TABLE `calculatedvalue` ADD\
+    CONSTRAINT `FK_CalculatedValue_ValueTypeID`\
+    FOREIGN KEY (`ValueTypeID`)\
+    REFERENCES `valuetype`(`ValueTypeID`)\
+    ON DELETE NO ACTION\
+    ON UPDATE NO ACTION\
+    ;";
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::string ValueperVectorCoordFKCalculatedValue()
+{
+  return
+   "ALTER TABLE `valuepervectorcoord` ADD\
+    CONSTRAINT `FK_ValuePerVectorCoord_CalculatedValueID`\
+    FOREIGN KEY (`CalculatedValueID`)\
+    REFERENCES `calculatedvalue`(`CalculatedValueID`)\
+    ON DELETE NO ACTION\
+    ON UPDATE NO ACTION\
+    ;";
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::string MeshValueFKMesh()
+{
+  return
+   "ALTER TABLE `meshvalue` ADD\
+    CONSTRAINT `FK_MeshValue_MeshID`\
+    FOREIGN KEY (`MeshID`)\
+    REFERENCES `mesh`(`MeshID`)\
+    ON DELETE NO ACTION\
+    ON UPDATE NO ACTION\
+    ;";
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::string MeshValueFKCalculatedValue()
+{
+  return
+   "ALTER TABLE `meshvalue` ADD\
+    CONSTRAINT `FK_MeshValue_CalculatedValueID`\
+    FOREIGN KEY (`CalculatedValueID`)\
+    REFERENCES `calculatedvalue`(`CalculatedValueID`)\
+    ON DELETE NO ACTION\
+    ON UPDATE NO ACTION\
+    ;";
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::string TrackValueFKTrack()
+{
+  return
+   "ALTER TABLE `trackvalue` ADD\
+    CONSTRAINT `FK_TrackValue_TrackID`\
+    FOREIGN KEY (`TrackID`)\
+    REFERENCES `track`(`TrackID`)\
+    ON DELETE NO ACTION\
+    ON UPDATE NO ACTION\
+    ;";
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::string TrackValueFKCalculatedValue()
+{
+  return
+   "ALTER TABLE `trackvalue` ADD\
+    CONSTRAINT `FK_TrackValue_CalculatedValueID`\
+    FOREIGN KEY (`CalculatedValueID`)\
+    REFERENCES `calculatedvalue`(`CalculatedValueID`)\
+    ON DELETE NO ACTION\
+    ON UPDATE NO ACTION\
+    ;";
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::string ImageValueFKImage()
+{
+  return
+   "ALTER TABLE `imagevalue` ADD\
+    CONSTRAINT `FK_ImageValue_ImageID`\
+    FOREIGN KEY (`ImageID`)\
+    REFERENCES `image`(`ImageID`)\
+    ON DELETE NO ACTION\
+    ON UPDATE NO ACTION\
+    ;";
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::string ImageValueFKCalculatedValue()
+{
+  return
+    "ALTER TABLE `imagevalue` ADD\
+    CONSTRAINT `FK_ImageValue_CalculatedValueID`\
+    FOREIGN KEY (`CalculatedValueID`)\
+    REFERENCES `calculatedvalue`(`CalculatedValueID`)\
+    ON DELETE NO ACTION\
+    ON UPDATE NO ACTION\
+    ;";
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::string ImagingSessionValueFKImagingSession()
+{
+  return
+   "ALTER TABLE `imagingsessionvalue` ADD\
+    CONSTRAINT `FK_ImagingSessionValue_ImagingSessionID`\
+    FOREIGN KEY (`ImagingSessionID`)\
+    REFERENCES `imagingsession`(`ImagingSessionID`)\
+    ON DELETE NO ACTION\
+    ON UPDATE NO ACTION\
+    ;";
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::string ImagingSessionValueFKCalculatedValue()
+{
+  return
+   "ALTER TABLE `imagingsessionvalue` ADD\
+    CONSTRAINT `FK_ImagingSessionValue_CalculatedValueID`\
+    FOREIGN KEY (`CalculatedValueID`)\
+    REFERENCES `calculatedvalue`(`CalculatedValueID`)\
+    ON DELETE NO ACTION\
+    ON UPDATE NO ACTION\
+    ;";
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::string ContourValueFKContour()
+{
+  return
+   "ALTER TABLE `contourvalue` ADD\
+    CONSTRAINT `FK_ContourValue_ContourID`\
+    FOREIGN KEY (`ContourID`)\
+    REFERENCES `contour`(`ContourID`)\
+    ON DELETE NO ACTION\
+    ON UPDATE NO ACTION\
+    ;";
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::string ContourValueFKCalculatedValue()
+{
+  return
+   "ALTER TABLE `contourvalue` ADD\
+    CONSTRAINT `FK_ContourValue_CalculatedValueID`\
+    FOREIGN KEY (`CalculatedValueID`)\
+    REFERENCES `calculatedvalue`(`CalculatedValueID`)\
+    ON DELETE NO ACTION\
+    ON UPDATE NO ACTION\
+    ;";
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::string LineageValueFKLineage()
+{
+  return
+   "ALTER TABLE `lineagevalue` ADD\
+    CONSTRAINT `FK_LineageValue_LineageID`\
+    FOREIGN KEY (`LineageID`)\
+    REFERENCES `lineage`(`LineageID`)\
+    ON DELETE NO ACTION\
+    ON UPDATE NO ACTION\
+    ;";
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::string LineageValueFKCalculatedValue()
+{
+  return
+   "ALTER TABLE `lineagevalue` ADD\
+    CONSTRAINT `FK_LineageValue_CalculatedValueID`\
+    FOREIGN KEY (`CalculatedValueID`)\
+    REFERENCES `calculatedvalue`(`CalculatedValueID`)\
+    ON DELETE NO ACTION\
+    ON UPDATE NO ACTION\
+    ;";
 }

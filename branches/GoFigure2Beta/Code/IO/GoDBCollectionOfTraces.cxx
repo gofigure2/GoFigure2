@@ -1,7 +1,7 @@
 /*=========================================================================
-  Author: $Author: arnaudgelas $  // Author of last commit
-  Version: $Revision: 544 $  // Revision of last commit
-  Date: $Date: 2009-08-07 11:26:26 -0400 (Fri, 07 Aug 2009) $  // Date of last commit
+  Author: $Author: lsouhait $  // Author of last commit
+  Version: $Revision: 590 $  // Revision of last commit
+  Date: $Date: 2009-08-21 17:48:12 -0400 (Fri, 21 Aug 2009) $  // Date of last commit
 =========================================================================*/
 
 /*=========================================================================
@@ -52,7 +52,7 @@ GoDBCollectionOfTraces::GoDBCollectionOfTraces()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-GoDBCollectionOfTraces::GoDBCollectionOfTraces( QString iCollectionName, 
+GoDBCollectionOfTraces::GoDBCollectionOfTraces( QString iCollectionName,
   QString iCollectionIDName,QString iTracesName, QString iTracesIDName )
 {
   m_CollectionName = iCollectionName;
@@ -70,7 +70,7 @@ GoDBCollectionOfTraces::~GoDBCollectionOfTraces()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void GoDBCollectionOfTraces::SetDatabaseVariables( QString Server, 
+void GoDBCollectionOfTraces::SetDatabaseVariables( QString Server,
   QString User, QString Password, QString NameDB)
 {
   m_Server = Server;
@@ -105,4 +105,20 @@ void GoDBCollectionOfTraces::AddSelectedTracesToCollection(QStringList ListSelec
       m_TracesIDName.toStdString(), ListSelectedTraces.at(i).toStdString());
     }
 }
+//--------------------------------------------------------------------------
 
+//--------------------------------------------------------------------------
+QStringList GoDBCollectionOfTraces::ListCollectionID()
+ {
+   QStringList ListIDs; 
+   std::vector<std::string> vectListIDs = ListAllValuesForOneColumn(m_Server.toStdString(), m_User.toStdString(),
+   m_Password.toStdString(), m_NameDB.toStdString(),m_CollectionIDName.toStdString(),
+   m_CollectionName.toStdString());
+ 
+   for( unsigned int i = 0; i < vectListIDs.size(); ++i )
+     {
+     ListIDs.append( vectListIDs[i].c_str( ) );
+     }
+ 
+   return ListIDs;
+ }

@@ -43,53 +43,106 @@
 #include <vector>
 #include <string>
 #include "itkMacro.h"
+#include "vtkMySQLDatabase.h"
+
 
 bool IsDatabaseOfGoFigureType(
-  std::string ServerName, std::string login,
-  std::string Password, std::string DBName );
+  vtkMySQLDatabase* DataBaseConnector);
+bool DoesDatabaseExit(std::string ServerName, std::string login, 
+  std::string Password, std::string DBName);
 
-void CreateDataBase(
-  std::string ServerName, std::string login,
-  std::string Password, std::string DBName );
-void CreateBookmarksTable(
-  std::string ServerName, std::string login,
-  std::string Password, std::string DBName );
-void CreateCollectionInfoTable(
-  std::string ServerName, std::string login,
-  std::string Password, std::string DBName );
-void CreateExperimentTable(
-  std::string ServerName, std::string login,
-  std::string Password, std::string DBName );
-void CreateFigureTable(
-  std::string ServerName, std::string login,
-  std::string Password, std::string DBName );
-void CreateFigureFlavorTable(
-  std::string ServerName, std::string login,
-  std::string Password, std::string DBName );
-void CreateLineageTable(
-  std::string ServerName, std::string login,
-  std::string Password, std::string DBName );
-void CreateLineageFlavorTable(
-  std::string ServerName, std::string login,
-  std::string Password, std::string DBName );
-void CreateMeshTable(
-  std::string ServerName, std::string login,
-  std::string Password, std::string DBName );
-void CreateMeshFlavor(
-  std::string ServerName, std::string login,
-  std::string Password, std::string DBName );
-void CreateSeriesGridTable(
-  std::string ServerName, std::string login,
-  std::string Password, std::string DBName );
-void CreateTrackTable(
-  std::string ServerName, std::string login,
-  std::string Password, std::string DBName );
-void CreateTrackFlavor(
-  std::string ServerName, std::string login,
-  std::string Password, std::string DBName );
+void Query(vtkMySQLDatabase* DataBaseConnector,
+           std::string queryScript);
 
-void CreateDataBaseMain(
+void CreateGoFigureDataBase(
   std::string ServerName, std::string login,
   std::string Password, std::string DBName );
+void CreateDataBase(vtkMySQLDatabase* DataBaseConnector,
+  std::string DBName);
+void CreateTables(
+  vtkMySQLDatabase* DataBaseConnector );
+void CreateForeignKeys(
+  vtkMySQLDatabase* DataBaseConnector );
+
+std::string CellTypeTable();
+std::string AuthorTable();
+std::string SubCellularTypeTable();
+std::string CoordinateTable();
+std::string ColorTable();
+std::string MicroscopeTable();
+std::string ProjectTable();
+std::string ImagingSessionTable();
+std::string TrackFamilyTable();
+std::string TrackTable();
+std::string MeshTable();
+std::string ContourTable();
+std::string ChannelTable();
+std::string ImageTable();
+std::string LineageTable();
+std::string BookmarkTable();
+std::string IntensityTable();
+std::string ValueTypeTable();
+std::string CalculatedValueTable();
+std::string ValuePerVectorCoordTable();
+std::string MeshValueTable();
+std::string TrackValueTable();
+std::string ImageValueTable();
+std::string ImagingSessionValueTable();
+std::string ContourValueTable();
+std::string LineageValueTable();
+
+std::string ProjectFK();
+std::string ImagingSessionFKMicroscopeName();
+std::string ImagingSessionFKProjectName();
+std::string ImagingSessionFKCoordIDMin();
+std::string ImagingSessionFKCoordIDMax();
+std::string TrackFamilyFKTrackIDDaughter1();
+std::string TrackFamilyFKTrackIDDaughter2();
+std::string TrackFamilyFKTrackIDMother();
+std::string TrackFKColor();
+std::string TrackFKLineage();
+std::string TrackFKCoordIDMax();
+std::string TrackFKCoordIDMin();
+std::string TrackFKTrackFamily();
+std::string TrackFKImagingSession();
+std::string MeshFKImagingSession();
+std::string MeshFKTrackID();
+std::string MeshFKColor();
+std::string MeshFKCoordIDMin();
+std::string MeshFKCoordIDMax();
+std::string MeshFKSubCellType();
+std::string MeshFKCellType();
+std::string ContourFKImagingSession();
+std::string ContourFKCoordIDMin();
+std::string ContourFKCoordIDMax();
+std::string ContourFKMesh();
+std::string ChannelFKColor();
+std::string ChannelFKImagingSession();
+std::string ImageFKChannel();
+std::string ImageFKCoordIDMin();
+std::string ImageFKImagingSession();
+std::string LineageFKImagingSession();
+std::string LineageFKTrackRoot();
+std::string LineageFKColor();
+std::string LineageFKCoordIDMin();
+std::string LineageFKCoordIDMax();
+std::string BookmarkFKCoord();
+std::string BookmarkFKImagingSession();
+std::string IntensityFKChannel();
+std::string IntensityFKMesh();
+std::string ValueperVectorCoordFKCalculatedValue();
+std::string CalculatedValueFKValueType();
+std::string MeshValueFKCalculatedValue();
+std::string MeshValueFKMesh();
+std::string TrackValueFKCalculatedValue();
+std::string TrackValueFKTrack();
+std::string ImageValueFKCalculatedValue();
+std::string ImageValueFKImage();
+std::string ImagingSessionValueFKCalculatedValue();
+std::string ImagingSessionValueFKImagingSession();
+std::string ContourValueFKCalculatedValue();
+std::string ContourValueFKContour();
+std::string LineageValueFKCalculatedValue();
+std::string LineageValueFKLineage();
 
 #endif

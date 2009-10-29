@@ -52,18 +52,25 @@
 
 #include "GoFigureFileInfoHelper.h"
 
-// #include <QProgressBar>
+#include <QProgressBar>
 
 namespace itk
 {
-
+/**\class MegaCaptureImport
+\brief
+\bug If the filenames imported are of old megacapture format(v2)
+and that the text of the beginning of the filename (before the values
+to be stored in the database) contains more than 3 numerical groups,
+the files are considered as new megacapture...*/
 class ITK_EXPORT MegaCaptureImport: public LightProcessObject
 {
 public:
-  typedef std::vector < int >         IntVectorType;
-  typedef std::vector < std::string > StringVectorType;
+  //typedef std::list<int>                     IntListType; 
+  typedef std::vector<int>                       IntVectorType;
+  typedef std::pair<IntVectorType,IntVectorType> PairIntVectorType;
+  typedef std::vector < std::string >            StringVectorType;
 
-   /** Standard class typedefs.      */
+   /** Standard class typedefs.      */ 
   typedef MegaCaptureImport           Self;
 
   typedef LightProcessObject          Superclass;
@@ -89,23 +96,45 @@ public:
   FileListType* GetOutput() { return( &(this->m_OutputFileList) ); }
 
   void Update(void) { Glob(); CreateOutput(); }
+  
+  std::string GetHeaderFilename();
+
+  /**\brief return true if the filename is of new megacapture format,
+  false if it is the old one*/
+  static bool IsNewMegaCapture (std::string filename);
+  /**\brief return a modified cleaned filename */
+  static std::string CleanFileName (std::string iFilename);
+  /**\brief return the list of the Index and the list of the length of
+  all the numerical group present in the filename*/
+  static PairIntVectorType GetStartAndLengthOfNumericalGroupFilename(
+    std::string iFilename);
+  static bool AreTheseNumericalGroupNewMegaCapture(
+    PairIntVectorType StartAndLengthNumericalGroup);
+
 
 protected:
   MegaCaptureImport();
   ~MegaCaptureImport();
+  /**\brief  Used for the database version1*/
+  void OldMegaCaptureFile(GoFigureFileInfoHelper tempInfo,
+    std::vector< unsigned int > NumericalValues);
+  /**\brief  Used for the database version2*/
+  void NewMegaCaptureFile(GoFigureFileInfoHelper tempInfo,
+    std::vector< unsigned int > NumericalValues);
 
 private:
   MegaCaptureImport (const Self&); //purposely not implemented
   void operator=(const Self&); //purposely not implemented
 
-  IntVectorType    m_numGroupStart;
-  IntVectorType    m_numGroupLength;
-  StringVectorType m_FileNameS;
-  FileListType     m_OutputFileList;
-  std::string      m_FileName;
-//   QProgressBar*    m_ProgressBar;
-//   bool             IsProgressBarSet;
-  bool             m_TimeBased;
+  PairIntVectorType m_StartAndLengthNumGroup;
+  StringVectorType  m_FileNameS;
+  FileListType      m_OutputFileList;
+  std::string       m_FileName;
+  std::string       m_fileNameModified;
+  std::string       m_HeaderFileName;
+  QProgressBar*     m_ProgressBar;
+  bool              IsProgressBarSet;
+  int               m_NbSignificantMegaCaptureNumGroup;
 
 };
 

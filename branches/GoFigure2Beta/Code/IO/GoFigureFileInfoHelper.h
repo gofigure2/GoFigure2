@@ -43,31 +43,45 @@
 
 #include <string>
 
-struct GoFigureFileInfoHelper
+class GoFigureFileInfoHelper
 {
+public:
   std::string     m_Filename;
-  unsigned int    m_TCoord;
-  unsigned int    m_ZCoord;
-  unsigned int    m_Channel;
-  unsigned int    m_CTile;
-  unsigned int    m_RTile;
-  unsigned int    m_YCoord;
+  unsigned int    m_PCoord;
+  unsigned int    m_RCoord;
+  unsigned int    m_CCoord;
+  unsigned int    m_XTileCoord;
+  unsigned int    m_YTileCoord;
+  unsigned int    m_ZTileCoord;
   unsigned int    m_XCoord;
+  unsigned int    m_YCoord;
+  unsigned int    m_ZCoord;
+  unsigned int    m_TCoord;
+  unsigned int    m_Channel;
+ 
 
-  GoFigureFileInfoHelper() : m_Filename( "" ), m_TCoord( 0 ),
-    m_ZCoord( 0 ), m_Channel( 0 ), m_CTile( 0 ), m_RTile( 0 ),
-    m_YCoord( 0 ), m_XCoord( 0 )
-    {}
-
-  ~GoFigureFileInfoHelper()
-    {}
+  GoFigureFileInfoHelper()
+    {
+    m_Filename   = "";
+    m_PCoord     = 0;
+    m_RCoord     = 0;
+    m_CCoord     = 0;
+    m_XTileCoord = 0;
+    m_YTileCoord = 0;
+    m_ZTileCoord = 0;
+    m_XCoord     = 0;
+    m_YCoord     = 0;
+    m_ZCoord     = 0;
+    m_TCoord     = 0;    
+    m_Channel    = 0;
+    }
 };
 
 typedef std::vector< GoFigureFileInfoHelper > FileListType;
 
 struct GoFigureFileInfoHelperTimeBasedCompare
 {
-  bool operator() ( const GoFigureFileInfoHelper& iA, const GoFigureFileInfoHelper& other )
+  bool operator() ( const GoFigureFileInfoHelper& iA, const GoFigureFileInfoHelper& other ) 
     {
     if( iA.m_Channel < other.m_Channel )
       {
@@ -94,7 +108,7 @@ struct GoFigureFileInfoHelperTimeBasedCompare
 
 struct GoFigureFileInfoHelperZCoordBasedCompare
 {
-  bool operator() ( const GoFigureFileInfoHelper& iA, const GoFigureFileInfoHelper& other )
+  bool operator() ( const GoFigureFileInfoHelper& iA, const GoFigureFileInfoHelper& other ) 
     {
     if( iA.m_Channel < other.m_Channel )
       {

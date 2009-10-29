@@ -41,6 +41,7 @@
 #define __ConvertToStringHelper_h
 
 #include <string>
+#include <sstream>
 
 template< typename T >
 std::string ConvertToString( const T& ToConvert )
