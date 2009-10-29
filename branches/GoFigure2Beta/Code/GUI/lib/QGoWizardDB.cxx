@@ -50,8 +50,6 @@
 #include "SelectQueryDatabaseHelper.h"
 #include "GoDBRecordSet.h"
 #include "GoDBRecordSetHelper.h"
-#include "GoDBFigureRow.h"
-#include "GoDBExperimentRow.h"
 #include "GoDBSeriesGridRow.h"
 #include "itkMegaCaptureImport.h"
 #include "itkLsm3DSerieImport.h"
@@ -94,7 +92,7 @@ QGoWizardDB::QGoWizardDB( QWidget *iParent )
   QPushButton* finishButton = new QPushButton(tr("Finish"));
   finishButton->setFont(font2);
   this->setButton ( QWizard::FinishButton, finishButton );
- 
+
   setPage(ConnectServerPageID, new QGoConnectServerPage );
   setPage(CreateDataBasePageID, new QGoCreateDataBasePage);
   setPage(OpenOrCreateProjectPageID, new QGoOpenCreateProjectPage);
@@ -126,9 +124,9 @@ std::vector<std::vector<std::string> > QGoWizardDB::GetFilenamesFromDB()
 
   vtkMySQLDatabase* DatabaseConnector = ConnectionDatabase.second;
 
-  //Get the number of channels with their id as a map 
+  //Get the number of channels with their id as a map
   //ListChannelsIDNumber[channelID]=ChannelNumber:
-  std::map<std::string,std::string> ListChannelsIDNumber = 
+  std::map<std::string,std::string> ListChannelsIDNumber =
     MapTwoColumnsFromTable(DatabaseConnector,"channelID", "ChannelNumber",
     "channel","ImagingSessionID",field("ImgSessionID").toString().toStdString());
   std::map<std::string,std::string>::iterator it = ListChannelsIDNumber.begin();
@@ -198,7 +196,7 @@ void QGoWizardDB::closeEvent(QCloseEvent* iEvent)
 {
   int CurrentPageID = this->currentId();
   QWizardPage* CurrentPage = this->currentPage();
-  
+
   switch (CurrentPageID)
     {
     case 0:

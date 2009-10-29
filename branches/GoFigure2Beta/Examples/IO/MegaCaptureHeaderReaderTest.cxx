@@ -5,6 +5,13 @@
 
 int main( int argc, char** argv )
 {
+  if( argc != 2 )
+    {
+    std::cerr <<"Requires 1 argument: " <<std::endl;
+    std::cerr <<"1-FileName (.meg)" <<std::endl;
+    return EXIT_FAILURE;
+    }
+
   MegaCaptureHeaderReader reader( argv[1] );
   reader.Read();
 
@@ -19,7 +26,8 @@ int main( int argc, char** argv )
 
   for( unsigned int i = 0; i < reader.m_NumberOfChannels; i++ )
     {
-    std::cout <<"Channel Color " <<i  <<" * [ " <<reader.m_ChannelColor[i][0]
+    std::cout <<"Channel Color " <<i  <<" * [ " 
+      <<reader.m_ChannelColor[i][0]
       <<", " <<reader.m_ChannelColor[i][1]
       <<", " <<reader.m_ChannelColor[i][2] <<" ]"<<std::endl;
     }

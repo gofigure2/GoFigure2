@@ -110,8 +110,8 @@ protected:
   int CreateNewCollection()
     {
     myT myNewObject;
-    return AddOnlyOneNewObjectInTable<myT>( 
-      vtkMySQLDatabase* DatabaseConnector,m_CollectionName.toStdString(),
+    return AddOnlyOneNewObjectInTable<myT>(
+      m_DatabaseConnector,m_CollectionName.toStdString(),
       myNewObject, m_CollectionIDName.toStdString() );
       /*AddNewObjectInTable< myT >(
       m_Server.toStdString(),
