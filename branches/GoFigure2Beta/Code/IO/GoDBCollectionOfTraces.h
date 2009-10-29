@@ -110,7 +110,10 @@ protected:
   int CreateNewCollection()
     {
     myT myNewObject;
-    AddNewObjectInTable< myT >(
+    return AddOnlyOneNewObjectInTable<myT>( 
+      vtkMySQLDatabase* DatabaseConnector,m_CollectionName.toStdString(),
+      myNewObject, m_CollectionIDName.toStdString() );
+      /*AddNewObjectInTable< myT >(
       m_Server.toStdString(),
       m_User.toStdString(),
       m_Password.toStdString(),
@@ -120,9 +123,7 @@ protected:
     int ID = MaxValueForOneColumnInTable(
       m_Server.toStdString(), m_User.toStdString(),
       m_Password.toStdString(),m_NameDB.toStdString(),
-      m_CollectionIDName.toStdString(),m_CollectionName.toStdString());
-
-    return ID;
+      m_CollectionIDName.toStdString(),m_CollectionName.toStdString());*/
     }
 };
 #endif
