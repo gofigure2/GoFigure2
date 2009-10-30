@@ -184,7 +184,7 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage : public vtkImageViewer2
      \brief
       The OrientationMatrix instance (GetOrientationMatrix()) is a very important
      added feature of this viewer. It describes the rotation and translation to
-     apply to the image bouding box (axis aligned) to the world coordinate
+     apply to the image bounding box (axis aligned) to the world coordinate
      system.
 
      Rotation part is usually given by the GetDirection() method on an itk::Image
