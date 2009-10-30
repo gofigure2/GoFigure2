@@ -54,6 +54,7 @@
 
 #include "GoFigureFileInfoHelper.h"
 #include "itkMultiFileReader.h"
+#include "QGoWizardDB.h"
 
 // ALEX: have to make a conditional flag to check if
 // vtk has been compiled with the good drivers
@@ -158,6 +159,7 @@ private:
   QGoTabManager*    m_TabManager;
   QToolBar*         m_ViewToolBar;
   vtkLSMReader*     m_LSMReader;
+  QGoWizardDB*      m_DBWizard;
 
   /** \brief */
   void ReadSettings();

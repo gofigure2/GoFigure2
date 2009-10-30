@@ -101,6 +101,8 @@ QGoMainWindow::QGoMainWindow( )
   this->addToolBar( Qt::TopToolBarArea, this->m_ViewToolBar );
 
   m_LSMReader = vtkLSMReader::New();
+  m_DBWizard  = new QGoWizardDB;
+  m_DBWizard->hide();
 
   m_Bar.hide();
   QString temp;
@@ -209,12 +211,15 @@ void QGoMainWindow::on_actionOpen_Multiple_Files_activated( )
 //--------------------------------------------------------------------------
 void QGoMainWindow::on_actionUse_DataBase_activated()
 {
+  m_DBWizard->show();
 }
 //--------------------------------------------------------------------------
 
 // *************************************************************************
 void QGoMainWindow::openFilesfromDB()
 {
+  std::vector<std::vector<std::string> > listFilenames = 
+    m_DBWizard->GetFilenamesFromDB();
 }
 // *************************************************************************
 
