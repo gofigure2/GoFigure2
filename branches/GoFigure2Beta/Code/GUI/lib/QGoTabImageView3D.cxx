@@ -17,6 +17,10 @@
 #include <QVBoxLayout>
 
 //--------------------------------------------------------------------------
+/**
+ * \brief Constructor
+ * @param iParent
+ */
 QGoTabImageView3D::
 QGoTabImageView3D( QWidget* iParent )
   : QGoTabImageViewElementBase( iParent )
@@ -67,6 +71,9 @@ QGoTabImageView3D( QWidget* iParent )
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+/**
+ *
+ */
 void QGoTabImageView3D::CreateAllViewActions()
 {
   QActionGroup* group = new QActionGroup( this );
@@ -159,17 +166,19 @@ void QGoTabImageView3D::CreateAllViewActions()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+/**
+ * \brief Destructor
+ */
 QGoTabImageView3D::~QGoTabImageView3D( )
 {
-  for( int i = 0; i < 3; i++ )
-    {
-    this->m_ContourRepresentation[i]->Delete();
-    this->m_ContourWidget[i]->Delete();
-    }
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+/**
+ *
+ * @param iParent
+ */
 void QGoTabImageView3D::setupUi( QWidget* iParent )
 {
   if(iParent->objectName().isEmpty())
@@ -202,6 +211,10 @@ void QGoTabImageView3D::setupUi( QWidget* iParent )
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+/**
+ *
+ * @param iParent
+ */
 void QGoTabImageView3D::retranslateUi(QWidget *iParent)
 {
   iParent->setWindowTitle( tr( "QGoTabImageView3D" ) );
@@ -210,6 +223,10 @@ void QGoTabImageView3D::retranslateUi(QWidget *iParent)
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+/**
+ *
+ * @return
+ */
 GoFigure::TabDimensionType QGoTabImageView3D::GetTabDimensionType( ) const
 {
   return GoFigure::THREE_D;
@@ -217,6 +234,9 @@ GoFigure::TabDimensionType QGoTabImageView3D::GetTabDimensionType( ) const
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+/**
+ *
+ */
 void QGoTabImageView3D::Update()
 {
   m_ImageView->Update();
@@ -230,6 +250,9 @@ void QGoTabImageView3D::Update()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+/**
+ *
+ */
 void QGoTabImageView3D::ChangeLookupTable()
 {
   vtkLookupTable* lut = vtkLookupTable::New();
@@ -241,6 +264,10 @@ void QGoTabImageView3D::ChangeLookupTable()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+/**
+ *
+ * @param iShow
+ */
 void QGoTabImageView3D::ShowScalarBar( const bool& iShow )
 {
   m_ImageView->ShowScalarBar( iShow );
@@ -248,6 +275,12 @@ void QGoTabImageView3D::ShowScalarBar( const bool& iShow )
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+/**
+ *
+ * @param iType
+ * @param iBaseName
+ * @return
+ */
 QString QGoTabImageView3D::SnapshotViewXY(
   const GoFigure::SnapshotImageType& iType,
   const QString& iBaseName )
@@ -257,6 +290,12 @@ QString QGoTabImageView3D::SnapshotViewXY(
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+/**
+ *
+ * @param iType
+ * @param iBaseName
+ * @return
+ */
 QString QGoTabImageView3D::SnapshotView2(
   const GoFigure::SnapshotImageType& iType,
   const QString& iBaseName )
@@ -266,6 +305,12 @@ QString QGoTabImageView3D::SnapshotView2(
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+/**
+ *
+ * @param iType
+ * @param iBaseName
+ * @return
+ */
 QString QGoTabImageView3D::SnapshotView3(
   const GoFigure::SnapshotImageType& iType,
   const QString& iBaseName )
@@ -275,6 +320,12 @@ QString QGoTabImageView3D::SnapshotView3(
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+/**
+ *
+ * @param iType
+ * @param iBaseName
+ * @return
+ */
 QString QGoTabImageView3D::SnapshotViewXYZ(
   const GoFigure::SnapshotImageType& iType,
   const QString& iBaseName )
@@ -284,6 +335,10 @@ QString QGoTabImageView3D::SnapshotViewXYZ(
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+/**
+ *
+ * @param iS
+ */
 void QGoTabImageView3D::SetSliceViewXY( const int& iS )
 {
   m_ImageView->SetSliceViewXY( iS );
@@ -291,6 +346,10 @@ void QGoTabImageView3D::SetSliceViewXY( const int& iS )
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+/**
+ *
+ * @param iS
+ */
 void QGoTabImageView3D::SetSliceViewXZ( const int& iS )
 {
   m_ImageView->SetSliceViewXZ( iS );
@@ -298,6 +357,10 @@ void QGoTabImageView3D::SetSliceViewXZ( const int& iS )
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+/**
+ *
+ * @param iS
+ */
 void QGoTabImageView3D::SetSliceViewYZ( const int& iS )
 {
   m_ImageView->SetSliceViewYZ( iS );
@@ -305,6 +368,10 @@ void QGoTabImageView3D::SetSliceViewYZ( const int& iS )
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+/**
+ *
+ * @param iS
+ */
 void QGoTabImageView3D::SetFullScreenView( const int& iS )
 {
   m_ImageView->SetFullScreenView( iS );
@@ -312,6 +379,9 @@ void QGoTabImageView3D::SetFullScreenView( const int& iS )
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+/**
+ *
+ */
 void QGoTabImageView3D::Quadview()
 {
   m_ImageView->Quadview();
@@ -319,6 +389,9 @@ void QGoTabImageView3D::Quadview()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+/**
+ *
+ */
 void QGoTabImageView3D::FullScreenViewXY()
 {
   m_ImageView->FullScreenViewXY();
@@ -326,6 +399,9 @@ void QGoTabImageView3D::FullScreenViewXY()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+/**
+ *
+ */
 void QGoTabImageView3D::FullScreenViewXZ()
 {
   m_ImageView->FullScreenViewXZ();
@@ -333,6 +409,9 @@ void QGoTabImageView3D::FullScreenViewXZ()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+/**
+ *
+ */
 void QGoTabImageView3D::FullScreenViewYZ()
 {
   m_ImageView->FullScreenViewYZ();
@@ -340,6 +419,9 @@ void QGoTabImageView3D::FullScreenViewYZ()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+/**
+ *
+ */
 void QGoTabImageView3D::FullScreenViewXYZ()
 {
   m_ImageView->FullScreenViewXYZ();
@@ -347,6 +429,9 @@ void QGoTabImageView3D::FullScreenViewXYZ()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+/**
+ *
+ */
 void QGoTabImageView3D::GetBackgroundColorFromImageViewer( )
 {
   double r, g, b;
@@ -356,6 +441,9 @@ void QGoTabImageView3D::GetBackgroundColorFromImageViewer( )
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+/**
+ *
+ */
 void QGoTabImageView3D::SetBackgroundColorToImageViewer( )
 {
   m_ImageView->SetBackgroundColor( this->m_BackgroundColor );
@@ -363,6 +451,10 @@ void QGoTabImageView3D::SetBackgroundColorToImageViewer( )
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+/**
+ *
+ * @param image
+ */
 void QGoTabImageView3D::SetImageToImageViewer( vtkImageData* image )
 {
   m_ImageView->SetImage( image );

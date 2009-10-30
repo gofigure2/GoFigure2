@@ -830,6 +830,14 @@ int vtkViewImage2D::GetInterpolate(void)
 }
 
 //----------------------------------------------------------------------------
+/**
+ *
+ * @param dataset
+ * @param property
+ * @param intersection
+ * @param iDataVisibility
+ * @return
+ */
 vtkActor* vtkViewImage2D::AddDataSet( vtkPolyData* dataset,
   vtkProperty* property,
   const bool& intersection,
@@ -856,11 +864,11 @@ vtkActor* vtkViewImage2D::AddDataSet( vtkPolyData* dataset,
 
   if( intersection )
     {
-    cutter->SetInputConnection( 0, dataset->GetProducerPort());
+    cutter->SetInput( dataset );
 //     cutter->SetCutFunction( this->SliceImplicitPlane );
     cutter->SetClipFunction( this->SliceImplicitPlane );
     cutter->InsideOutOn();
-    mapper->SetInputConnection( 0, cutter->GetOutputPort());
+    mapper->SetInput( cutter->GetOutput() );
     }
   else
     {
@@ -881,9 +889,10 @@ vtkActor* vtkViewImage2D::AddDataSet( vtkPolyData* dataset,
   this->DataSetCollection->AddItem( dataset );
   this->Prop3DCollection->AddItem( actor );
 
-  cutter->Delete();
-  mapper->Delete();
 //   actor->Delete();
+  mapper->Delete();
+  cutter->Delete();
+
   return actor;
 }
 //----------------------------------------------------------------------------

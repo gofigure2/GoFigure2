@@ -14,6 +14,10 @@
 #include "vtkProperty.h"
 
 //--------------------------------------------------------------------------
+/**
+ *
+ * @param iParent
+ */
 QGoTabImageViewElementBase::
 QGoTabImageViewElementBase( QWidget* iParent ) :
   QGoTabElementBase( iParent ),
@@ -42,20 +46,34 @@ QGoTabImageViewElementBase( QWidget* iParent ) :
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+/**
+ *
+ */
 QGoTabImageViewElementBase::~QGoTabImageViewElementBase()
 {
+  for( int i = 0; i < m_ContourRepresentation.size(); i++ )
+    {
+    m_ContourRepresentation[i]->Delete();
+    m_ContourWidget[i]->Delete();
+    }
+
   ContourStructureMultiIndexContainer::iterator it = m_ContourContainer.begin();
-  ContourStructureMultiIndexContainer::iterator end = m_ContourContainer.begin();
+  ContourStructureMultiIndexContainer::iterator end = m_ContourContainer.end();
 
   while( it != end )
     {
     it->Nodes->Delete();
     it->Actor->Delete();
+    ++it;
     }
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+/**
+ *
+ * @param iColor
+ */
 void QGoTabImageViewElementBase::SetColor( const bool& iColor )
 {
   m_Color = iColor;
@@ -63,6 +81,9 @@ void QGoTabImageViewElementBase::SetColor( const bool& iColor )
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+/**
+ *
+ */
 void QGoTabImageViewElementBase::WriteSettings()
 {
   QSettings settings;
@@ -73,6 +94,9 @@ void QGoTabImageViewElementBase::WriteSettings()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+/**
+ *
+ */
 void QGoTabImageViewElementBase::ReadSettings()
 {
   QSettings settings;
@@ -87,6 +111,9 @@ void QGoTabImageViewElementBase::ReadSettings()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+/**
+ *
+ */
 void QGoTabImageViewElementBase::ChangeBackgroundColor()
 {
   this->GetBackgroundColorFromImageViewer();
@@ -106,6 +133,10 @@ void QGoTabImageViewElementBase::ChangeBackgroundColor()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+/**
+ *
+ * @param[in] iImage
+ */
 void QGoTabImageViewElementBase::
 SetImage( vtkImageData* iImage )
 {
@@ -159,6 +190,10 @@ SetImage( vtkImageData* iImage )
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+/**
+ *
+ * @param[in] iChecked
+ */
 void QGoTabImageViewElementBase::
 ShowAllChannels( bool iChecked )
 {
@@ -185,6 +220,10 @@ ShowAllChannels( bool iChecked )
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+/**
+ *
+ * @param[in] iChannel
+ */
 void QGoTabImageViewElementBase::
 ShowOneChannel( int iChannel )
 {
@@ -206,6 +245,10 @@ ShowOneChannel( int iChannel )
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+/**
+ *
+ * @param[in] iActivate
+ */
 void QGoTabImageViewElementBase::
 ActivateManualSegmentationEditor( const bool& iActivate )
 {
@@ -226,6 +269,10 @@ ActivateManualSegmentationEditor( const bool& iActivate )
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+/**
+ *
+ * @param[in] iId
+ */
 void QGoTabImageViewElementBase::
 ValidateContour( const int& iId )
 {
@@ -268,6 +315,9 @@ ValidateContour( const int& iId )
     this->AddContour( iId, contour_copy,
       contour_property );
 
+  contour_copy->Delete();
+  contour_property->Delete();
+
   // get meshid from the dock widget (SpinBox)
   unsigned int meshid = m_ManualSegmentationDockWidget->GetMeshId();
 
@@ -287,6 +337,9 @@ ValidateContour( const int& iId )
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+/**
+ *
+ */
 void QGoTabImageViewElementBase::
 ValidateContour( )
 {
@@ -298,6 +351,9 @@ ValidateContour( )
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+/**
+ *
+ */
 void QGoTabImageViewElementBase::
 ChangeContourRepresentationProperty()
 {
@@ -327,6 +383,10 @@ ChangeContourRepresentationProperty()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+/**
+ *
+ * @return
+ */
 std::list< QDockWidget* >
 QGoTabImageViewElementBase::
 DockWidget()

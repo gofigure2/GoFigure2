@@ -193,6 +193,9 @@ protected:
 
 
 //----------------------------------------------------------------------------
+/**
+ *
+ */
 vtkViewImage3D::vtkViewImage3D()
 {
   this->VolumeProperty  = vtkVolumeProperty::New();
@@ -227,6 +230,9 @@ vtkViewImage3D::vtkViewImage3D()
 }
 
 //----------------------------------------------------------------------------
+/**
+ *
+ */
 vtkViewImage3D::~vtkViewImage3D()
 {
   // delete all vtk objetcts:
@@ -257,6 +263,9 @@ vtkViewImage3D::~vtkViewImage3D()
 
 
 //----------------------------------------------------------------------------
+/**
+ *
+ */
 void vtkViewImage3D::SetupVolumeRendering()
 {
   this->Blender->SetBlendModeToNormal();
@@ -313,6 +322,9 @@ void vtkViewImage3D::SetupVolumeRendering()
 
 
 //----------------------------------------------------------------------------
+/**
+ *
+ */
 void vtkViewImage3D::SetupWidgets()
 {
   // Create an annotated cube actor (directions)
@@ -370,6 +382,9 @@ void vtkViewImage3D::SetupWidgets()
 }
 
 //----------------------------------------------------------------------------
+/**
+ *
+ */
 void vtkViewImage3D::Render()
 {
 
@@ -392,12 +407,18 @@ void vtkViewImage3D::Render()
   }
 }
 
+/**
+ *
+ */
 void vtkViewImage3D::SetVolumeRenderingOff()
 {
   this->VolumeActor->SetVisibility (false);
   this->BoxWidget->Off();
 }
 
+/**
+ *
+ */
 void vtkViewImage3D::SetVolumeRenderingOn()
 {
   if( 1 ) //  !this->IsColor )
@@ -469,6 +490,9 @@ void vtkViewImage3D::SetVolumeRenderingOn()
   }
 }
 
+/**
+ *
+ */
 void vtkViewImage3D::SetTriPlanarRenderingOn()
 {
   this->VolumeActor->SetVisibility(false);
@@ -479,6 +503,9 @@ void vtkViewImage3D::SetTriPlanarRenderingOn()
   }
 }
 
+/**
+ *
+ */
 void vtkViewImage3D::SetTriPlanarRenderingOff()
 {
   this->VolumeActor->SetVisibility(true);
@@ -489,6 +516,12 @@ void vtkViewImage3D::SetTriPlanarRenderingOff()
   }
 }
 
+/**
+ *
+ * @param i
+ * @param input
+ * @param in_bounds
+ */
 void vtkViewImage3D::Add2DPhantom(const unsigned int& i,
   vtkImageActor* input,
   vtkPolyData* in_bounds )
@@ -541,6 +574,9 @@ void vtkViewImage3D::Add2DPhantom(const unsigned int& i,
 }
 
 //----------------------------------------------------------------------------
+/**
+ *
+ */
 void vtkViewImage3D::InstallPipeline()
 {
   if (this->RenderWindow && this->Renderer)
@@ -568,14 +604,30 @@ void vtkViewImage3D::InstallPipeline()
 
 }
 
+/**
+ *
+ * @param dataset
+ * @param property
+ * @param intersection
+ * @param iDataVisibility
+ * @return
+ */
 vtkActor* vtkViewImage3D::AddDataSet( vtkDataSet* dataset,
   vtkProperty* property,
   const bool& intersection,
   const bool& iDataVisibility )
 {
-  vtkCamera *cam = this->Renderer ? this->Renderer->GetActiveCamera() : NULL;
-  if( !cam )
+  if( !this->Renderer )
+    {
     return 0;
+    }
+
+  vtkCamera *cam = this->Renderer->GetActiveCamera();
+
+  if( !cam )
+    {
+    return 0;
+    }
 
   vtkPolyDataMapper* mapper = vtkPolyDataMapper::New();
   mapper->SetScalarVisibility( iDataVisibility );
@@ -585,21 +637,23 @@ vtkActor* vtkViewImage3D::AddDataSet( vtkDataSet* dataset,
   vtkClipPolyData* cutter = vtkClipPolyData::New();
 
   if( intersection )
-  {
+    {
     //TODO to be implemented
 //     cutter->SetInputConnection( 0, dataset->GetProducerPort());
 //     cutter->SetClipFunction( this->SliceImplicitPlane );
 //     cutter->InsideOutOn();
 //     mapper->SetInputConnection( 0, cutter->GetOutputPort());
-  }
+    }
   else
-  {
+    {
     mapper->SetInput( vtkPolyData::SafeDownCast( dataset ) );
-  }
+    }
 
   actor->SetMapper( mapper );
   if( property )
+    {
     actor->SetProperty( property );
+    }
 
 //   actor->SetUserTransform( this->AdjustmentTransform );
 
@@ -614,6 +668,10 @@ vtkActor* vtkViewImage3D::AddDataSet( vtkDataSet* dataset,
 }
 
 //----------------------------------------------------------------------------
+/**
+ *
+ * @param matrix
+ */
 void vtkViewImage3D::SetOrientationMatrix (vtkMatrix4x4* matrix)
 {
   this->Superclass::SetOrientationMatrix (matrix);
@@ -626,6 +684,9 @@ void vtkViewImage3D::SetOrientationMatrix (vtkMatrix4x4* matrix)
 
 
 //----------------------------------------------------------------------------
+/**
+ *
+ */
 void vtkViewImage3D::SetupTextureMapper()
 {
 

@@ -98,7 +98,7 @@ protected:
   QGoImageView3D*       m_ImageView;
   std::vector< vtkLSMReader* > m_LSMReader;
   vtkImageData*         m_Image;
-  itk::MultiFileReader* m_MultiFileReader;
+  itk::MultiFileReader::Pointer m_MultiFileReader;
   FileListType          m_FileList;
   QColor                m_BackgroundColor;
   int                   m_TimePoint;
@@ -114,6 +114,8 @@ protected:
   void GetBackgroundColorFromImageViewer( );
   void SetBackgroundColorToImageViewer( );
   void CreateAllViewActions();
+  void CreateVisuDockWidget();
+  void CreateManualSegmentationdockWidget();
 
   int* GetImageCoordinatesFromWorldCoordinates( double pos[3] );
 

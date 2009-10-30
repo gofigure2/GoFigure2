@@ -46,7 +46,75 @@ QGoTabImageView3DwT::QGoTabImageView3DwT( QWidget* iParent ) :
 
   m_MultiFileReader = itk::MultiFileReader::New();
 
-  // Visualization dock widget related stuffs
+  CreateVisuDockWidget();
+
+  CreateManualSegmentationdockWidget();
+
+  CreateAllViewActions();
+
+  ReadSettings();
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+QGoTabImageView3DwT::~QGoTabImageView3DwT( )
+{
+  if( m_Image )
+    {
+    m_Image->Delete();
+    m_Image = 0;
+    }
+  for( int i = 1; i < m_LSMReader.size(); i++ )
+    {
+    if( m_LSMReader[i] )
+      {
+      m_LSMReader[i]->Delete();
+      m_LSMReader[i] = 0;
+      }
+    }
+
+  for( int i = 0; i < 3; i++ )
+    {
+    m_ContourRepresentation[i]->Delete();
+    m_ContourWidget[i]->Delete();
+    }
+
+  ContourStructureMultiIndexContainer::iterator it = m_ContourContainer.begin();
+  ContourStructureMultiIndexContainer::iterator end = m_ContourContainer.end();
+
+  while( it != end )
+    {
+    it->Nodes->Delete();
+    it->Actor->Delete();
+    ++it;
+    }
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoTabImageView3DwT::CreateManualSegmentationdockWidget()
+{
+  m_ManualSegmentationDockWidget = new QGoManualSegmentationDockWidget( this );
+
+  QObject::connect( m_ManualSegmentationDockWidget, SIGNAL( ValidatePressed() ),
+    this, SLOT( ValidateContour() ) );
+
+  QObject::connect( m_ManualSegmentationDockWidget,
+      SIGNAL( ActivateManualSegmentationToggled( bool ) ),
+    this, SLOT( ActivateManualSegmentationEditor( bool ) ) );
+
+  QObject::connect( m_ManualSegmentationDockWidget,
+    SIGNAL( ContourRepresentationPropertiesChanged() ),
+    this, SLOT( ChangeContourRepresentationProperty() ) );
+
+  this->m_SegmentationActions.push_back(
+    m_ManualSegmentationDockWidget->toggleViewAction() );
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoTabImageView3DwT::CreateVisuDockWidget()
+{
   m_VisuDockWidget = new QGoVisualizationDockWidget( this, 4 );
 
   QObject::connect( m_VisuDockWidget, SIGNAL( XSliceChanged( int ) ),
@@ -78,26 +146,6 @@ QGoTabImageView3DwT::QGoTabImageView3DwT( QWidget* iParent ) :
 
   QObject::connect( m_VisuDockWidget, SIGNAL( ShowOneChannelChanged( int ) ),
     this, SLOT( ShowOneChannel( int ) ) );
-
-  // Manual Segmentation related stuffs
-  m_ManualSegmentationDockWidget = new QGoManualSegmentationDockWidget( this );
-
-  QObject::connect( m_ManualSegmentationDockWidget, SIGNAL( ValidatePressed() ),
-    this, SLOT( ValidateContour() ) );
-
-  QObject::connect( m_ManualSegmentationDockWidget,
-      SIGNAL( ActivateManualSegmentationToggled( bool ) ),
-    this, SLOT( ActivateManualSegmentationEditor( bool ) ) );
-
-  QObject::connect( m_ManualSegmentationDockWidget,
-    SIGNAL( ContourRepresentationPropertiesChanged() ),
-    this, SLOT( ChangeContourRepresentationProperty() ) );
-
-  this->m_SegmentationActions.push_back(
-    m_ManualSegmentationDockWidget->toggleViewAction() );
-
-  CreateAllViewActions();
-  ReadSettings();
 }
 //--------------------------------------------------------------------------
 
@@ -189,31 +237,6 @@ void QGoTabImageView3DwT::CreateAllViewActions()
   this->m_ViewActions.push_back( separator2 );
 
   this->m_ViewActions.push_back( m_VisuDockWidget->toggleViewAction() );
-}
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-QGoTabImageView3DwT::~QGoTabImageView3DwT( )
-{
-  if( m_Image )
-    {
-    m_Image->Delete();
-    m_Image = 0;
-    }
-  for( int i = 1; i < m_LSMReader.size(); i++ )
-    {
-    if( m_LSMReader[i] )
-      {
-      m_LSMReader[i]->Delete();
-      m_LSMReader[i] = 0;
-      }
-    }
-
-  for( int i = 0; i < 3; i++ )
-    {
-    this->m_ContourRepresentation[i]->Delete();
-    this->m_ContourWidget[i]->Delete();
-    }
 }
 //--------------------------------------------------------------------------
 
@@ -746,7 +769,7 @@ ValidateContour( const int& iId )
   // get meshid from the dock widget (SpinBox)
   unsigned int meshid = m_ManualSegmentationDockWidget->GetMeshId();
 
-  unsigned int timepoint = 0;
+  unsigned int timepoint = static_cast< unsigned int >( m_TimePoint );
   bool highlighted = false;
 
   // fill the container
