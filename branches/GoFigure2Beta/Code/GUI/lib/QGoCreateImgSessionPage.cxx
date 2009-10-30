@@ -169,7 +169,7 @@ std::string QGoCreateImgSessionPage::GetDescription()
 //-------------------------------------------------------------------------
 int QGoCreateImgSessionPage::CreateImgSession(vtkMySQLDatabase* DatabaseConnector)
 {
-  std::string m_ProjectName = field("ProjectName").toString().toStdString();  
+  std::string m_ProjectName = field("ProjectName").toString().toStdString();
   int TimeInterval = m_HeaderFileInfo.m_TimeInterval;
   float RealPixelHeight =m_HeaderFileInfo.m_VoxelSizeX;
   float RealPixelWidth =m_HeaderFileInfo.m_VoxelSizeY;
@@ -246,7 +246,7 @@ bool QGoCreateImgSessionPage::validatePage()
   if (!itk::MegaCaptureImport::IsNewMegaCapture(lineFilename->toPlainText().toStdString()))
     {
     QMessageBox msgBox;
-    msgBox.setText( 
+    msgBox.setText(
       tr( "The images you selected are of an old megacapture format, not supported by this database." ) );
     msgBox.exec();
     }
@@ -335,11 +335,11 @@ void QGoCreateImgSessionPage::ImportInfoFromMegacapture(QString newfilename)
     {
     m_importFileInfoList = itk::MegaCaptureImport::New();
     m_importFileInfoList->SetFileName( newfilename.toAscii().data() );
-          
-    QProgressBar pBar;
+
+//     QProgressBar pBar;
     //importFileInfoList->SetProgressBar( &pBar );
     m_importFileInfoList->Update();
-          
+
     //Get the headerfile once the headerfilename is gotten
     //from megacapture import:
     std::string HeaderFilename = m_importFileInfoList->GetHeaderFilename();
@@ -369,7 +369,7 @@ void QGoCreateImgSessionPage::ImportInfoFromMegacapture(QString newfilename)
 //-------------------------------------------------------------------------
 void QGoCreateImgSessionPage::CreateChannels( vtkMySQLDatabase* DatabaseConnector,
   int ImagingSessionID)
-{ 
+{
   //creation of the record set to be filled with all the new channels to save in DB:
   typedef GoDBRecordSet< GoDBChannelRow > myRecordSetType;
           myRecordSetType* RecordSet = new myRecordSetType;
@@ -387,14 +387,14 @@ void QGoCreateImgSessionPage::CreateChannels( vtkMySQLDatabase* DatabaseConnecto
     int Green = m_HeaderFileInfo.m_ChannelColor[i][1];
     int Blue  = m_HeaderFileInfo.m_ChannelColor[i][2];
     int Alpha = 255;
-     
+
     myNewColor.SetField("Name",ColorName);
     myNewColor.SetField("Red",Red);
     myNewColor.SetField("Green",Green);
     myNewColor.SetField("Blue",Blue );
     myNewColor.SetField("Alpha",Alpha);
     myNewColor.SetField("Description",Description);
-     
+
     //check if the color already exists, if so, the colorID saved in the new
     //channel will be the existing one, if no, the new color is saved in the DB:
     int ExistingColorID = myNewColor.DoesThisColorAlreadyExists(DatabaseConnector);
@@ -501,7 +501,7 @@ GoDBImageRow QGoCreateImgSessionPage::CreateImage(vtkMySQLDatabase* DatabaseConn
 //-------------------------------------------------------------------------
 void QGoCreateImgSessionPage::CreateImgSessionCoord(
   vtkMySQLDatabase* DatabaseConnector,int ImagingSessionID)
-{ 
+{
   int XImageSize = m_HeaderFileInfo.m_DimensionX;
   int YImageSize = m_HeaderFileInfo.m_DimensionY;
   m_ImgSessionCoordMax.SetField("XCoord",XImageSize);
@@ -560,12 +560,12 @@ void QGoCreateImgSessionPage::SaveInfoInDatabase()
   int ImgSessionID = CreateImgSession(m_DatabaseConnector);
   setField("ImgSessionID",ImgSessionID);
   if (ImgSessionID != -1)
-    {  
+    {
     QString ImgSessionName = lineNewImgSessionName->displayText();
     setField("ImgSessionName",ImgSessionName);
 
     /*Save in the DB the channels corresponding to the ImagingSession and
-          to the channelnumber of the images:*/          
+          to the channelnumber of the images:*/
     CreateChannels(m_DatabaseConnector,field("ImgSessionID").toInt());
 
     /*Record all the images from the image set into the DB, and fill the
@@ -582,7 +582,7 @@ void QGoCreateImgSessionPage::SaveInfoInDatabase()
 void QGoCreateImgSessionPage::CloseDatabaseConnection()
 {
   if (m_DatabaseConnector != 0)
-    {  
+    {
     m_DatabaseConnector->Close();
     m_DatabaseConnector->Delete();
     m_DatabaseConnector = 0;
