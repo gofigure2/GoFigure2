@@ -8,7 +8,7 @@
 #include "vtkImageData.h"
 using namespace std;
 
-// This code extracts a specified channel at a given time-point 
+// This code extracts a specified channel at a given time-point
 // from an LSM file and writes out as an mha file
 
 int main( int argc, char* argv[] )
@@ -24,15 +24,15 @@ int main( int argc, char* argv[] )
     }
 
   //read the LSM file - can be multiple channels and time-points:
-  vtkLSMReader* reader = vtkLSMReader::New();
-  reader->SetFileName( argv[1] );
-  reader->Update();
+  vtkLSMReader* reader1 = vtkLSMReader::New();
+  reader1->SetFileName( argv[1] );
+  reader1->Update();
 
   // Get the number of channels
-  unsigned int NumberOfChannels = reader->GetNumberOfChannels();
+  unsigned int NumberOfChannels = reader1->GetNumberOfChannels();
 
   // Get the number of time-points
-  unsigned int NumberOfTimePoints = reader->GetNumberOfTimePoints();
+  unsigned int NumberOfTimePoints = reader1->GetNumberOfTimePoints();
   unsigned int timePoint = atoi( argv[2] );
 
   if ( timePoint > NumberOfTimePoints )
@@ -44,7 +44,7 @@ int main( int argc, char* argv[] )
   std::cout << NumberOfChannels << std::endl;
 
   // Get the name of the file without the path
-  // NOTE: the input filename MUST NOT be located 
+  // NOTE: the input filename MUST NOT be located
   size_t i = 0;
   size_t j = 0;
   size_t len = strlen( argv[1] );
@@ -64,12 +64,11 @@ int main( int argc, char* argv[] )
     fname[i]  = argv[1][j+i];
     }
 
-  vtkMetaImageWriter* writer = vtkMetaImageWriter::New();
-  writer->SetFileDimensionality( Dimension );
-
   // Select the specified time-point and channel for write-out
   for( unsigned int channel = 0; channel < NumberOfChannels; channel++ )
     {
+    vtkLSMReader* reader = vtkLSMReader::New();
+    reader->SetFileName( argv[1] );
     reader->SetUpdateTimePoint( timePoint );
     reader->SetUpdateChannel( channel );
     reader->Update();
@@ -84,6 +83,8 @@ int main( int argc, char* argv[] )
     std::cout << namebuffer.str().c_str() << std::endl;
 
     // Write-out
+    vtkMetaImageWriter* writer = vtkMetaImageWriter::New();
+    writer->SetFileDimensionality( Dimension );
     writer->SetFileName( namebuffer.str().c_str() );
     writer->SetInputConnection( reader->GetOutputPort( ) );
     writer->Write();
