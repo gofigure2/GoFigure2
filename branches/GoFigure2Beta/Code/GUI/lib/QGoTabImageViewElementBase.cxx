@@ -15,8 +15,8 @@
 
 //--------------------------------------------------------------------------
 /**
- *
- * @param iParent
+ * \brief Default Constructor
+ * \param iParent
  */
 QGoTabImageViewElementBase::
 QGoTabImageViewElementBase( QWidget* iParent ) :
@@ -47,7 +47,7 @@ QGoTabImageViewElementBase( QWidget* iParent ) :
 
 //--------------------------------------------------------------------------
 /**
- *
+ * \brief Destructor
  */
 QGoTabImageViewElementBase::~QGoTabImageViewElementBase()
 {
@@ -82,7 +82,8 @@ void QGoTabImageViewElementBase::SetColor( const bool& iColor )
 
 //--------------------------------------------------------------------------
 /**
- *
+ * \brief Write settings:
+ * \li \c m_BackgroundColor
  */
 void QGoTabImageViewElementBase::WriteSettings()
 {
@@ -95,7 +96,8 @@ void QGoTabImageViewElementBase::WriteSettings()
 
 //--------------------------------------------------------------------------
 /**
- *
+ * \brief Read settings:
+ * \li \c m_BackgroundColor
  */
 void QGoTabImageViewElementBase::ReadSettings()
 {
@@ -112,7 +114,7 @@ void QGoTabImageViewElementBase::ReadSettings()
 
 //--------------------------------------------------------------------------
 /**
- *
+ * \brief Change background color
  */
 void QGoTabImageViewElementBase::ChangeBackgroundColor()
 {
@@ -134,8 +136,8 @@ void QGoTabImageViewElementBase::ChangeBackgroundColor()
 
 //--------------------------------------------------------------------------
 /**
- *
- * @param[in] iImage
+ * \brief Set the image to be displaid
+ * \param[in] iImage
  */
 void QGoTabImageViewElementBase::
 SetImage( vtkImageData* iImage )
@@ -191,8 +193,8 @@ SetImage( vtkImageData* iImage )
 
 //--------------------------------------------------------------------------
 /**
- *
- * @param[in] iChecked
+ * \brief
+ * \param[in] iChecked
  */
 void QGoTabImageViewElementBase::
 ShowAllChannels( bool iChecked )
@@ -221,8 +223,8 @@ ShowAllChannels( bool iChecked )
 
 //--------------------------------------------------------------------------
 /**
- *
- * @param[in] iChannel
+ * \brief
+ * \param[in] iChannel
  */
 void QGoTabImageViewElementBase::
 ShowOneChannel( int iChannel )
@@ -247,7 +249,7 @@ ShowOneChannel( int iChannel )
 //--------------------------------------------------------------------------
 /**
  *
- * @param[in] iActivate
+ * \param[in] iActivate
  */
 void QGoTabImageViewElementBase::
 ActivateManualSegmentationEditor( const bool& iActivate )
@@ -385,7 +387,7 @@ ChangeContourRepresentationProperty()
 //--------------------------------------------------------------------------
 /**
  *
- * @return
+ * \return
  */
 std::list< QDockWidget* >
 QGoTabImageViewElementBase::
@@ -398,4 +400,94 @@ DockWidget()
   return oList;
 }
 //--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+/**
+ * \brief Re-edit contour given by its id
+ * \param iId
+ */
+void
+QGoTabImageViewElementBase::
+ReEditContour( const unsigned int& iId )
+{
+  std::list< ContourStructure > c_list =
+    FindContourGivenContourId( this->m_ContourContainer, iId );
+
+  std::list< ContourStructure >::iterator c_it = c_list.begin();
+  std::list< ContourStructure >::iterator c_end = c_list.end();
+
+  int c_dir;
+  vtkActor* c_actor;
+  vtkPolyData* c_nodes;
+
+  while( c_it != c_end )
+    {
+    c_dir = (*c_it).Direction;
+    c_actor = (*c_it).Actor;
+    c_nodes = (*c_it).Nodes;
+
+    this->RemoveActorFromViewer( c_dir, c_actor );
+
+    // The contour actor is supposed to be deleted!!!
+    c_actor->Delete();
+
+    this->m_ContourWidget[c_dir]->On();
+    this->m_ContourWidget[c_dir]->Initialize( c_nodes );
+
+    ++c_it;
+    }
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+/**
+ * \brief Remove the contour (vtkActor) from the viewer (iId).
+ * Note that iActor is not deleted. It has to be deleted by the end-user.
+ * \param iId
+ * \param iActor
+ */
+// void
+// QGoTabImageViewElementBase::
+// RemoveContour( const int& iId, vtkActor* iActor )
+// {
+//   vtkViewImage2D* viewer = this->m_Pool->GetItem( iId );
+//   viewer->GetRenderer()->RemoveActor( iActor );
+// }
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+// void
+// QGoTabImageViewElementBase::
+// DisplayContour( const int& iId, vtkActor* iActor )
+// {
+//   vtkViewImage2D* viewer = this->m_Pool->GetItem( iId );
+//   viewer->GetRenderer()->AddActor( iActor );
+// }
+//--------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

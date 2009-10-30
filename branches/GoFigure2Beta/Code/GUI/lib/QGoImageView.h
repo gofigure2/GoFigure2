@@ -60,6 +60,10 @@ class QGoImageView : public QWidget
     vtkViewImage2D* GetImageViewer( const int& iId );
     int GetNumberOfImageViewers();
 
+    void RemoveActor( const int& iId, vtkActor* iActor );
+    void AddActor( const int& iId, vtkActor* iActor );
+
+
     virtual std::vector< vtkActor* > AddContour( const int& iId,
       vtkPolyData* dataset,
       vtkProperty* property = NULL );

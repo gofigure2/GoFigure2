@@ -766,6 +766,9 @@ ValidateContour( const int& iId )
     this->AddContour( iId, contour_copy,
       contour_property );
 
+  contour_copy->Delete();
+  contour_property->Delete();
+
   // get meshid from the dock widget (SpinBox)
   unsigned int meshid = m_ManualSegmentationDockWidget->GetMeshId();
 

@@ -49,6 +49,9 @@ protected:
   std::vector< vtkActor* > AddContour( const int& iId, vtkPolyData* dataset,
       vtkProperty* property = NULL );
 
+  virtual void RemoveActorFromViewer( const int& iId, vtkActor* iActor );
+  virtual void DisplayActorInViewer( const int& iId, vtkActor* iActor );
+
 private:
   QGoTabImageView2D( const QGoTabImageView2D& );
   void operator = ( const QGoTabImageView2D& );

@@ -45,22 +45,27 @@
 #include <sstream>
 #include <map>
 
+/**
+\class GoDBRow
+\todo define \code std::map< std::string, std::string > \endcode
+*/
 class GoDBRow
 {
 public:
 
   GoDBRow();
   ~GoDBRow();
- 
 
   template<typename T>
   void SetField( std::string key, T value )
     {
     m_MapRow[key] = ConvertToString<T>(value);
     }
-  /**\brief set value as the value of map[key] after having
-  put " at the beginning and at the end of the string, as value is a string
-  and it will be needed for the database queries*/
+
+  /**
+  \brief set value as the value of map[key] after having put " at the beginning
+  and at the end of the string, as value is a string and it will be needed for
+  the database queries */
   void SetField( std::string key, std::string value );
 
   std::string PrintValues();
@@ -68,9 +73,10 @@ public:
   std::map<std::string,std::string>::iterator MapBegin();
   std::map<std::string,std::string>::iterator MapEnd();
 
-  /**\brief return the value for the field map[key] after having removed the
-  " at the beginning and at the end of the value if it is a string in order to get
-  the original value*/
+  /**
+  \brief return the value for the field map[key] after having removed the "
+  at the beginning and at the end of the value if it is a string in order to get
+  the original value. */
   std::string GetMapValue (std::string key);
 
 protected:

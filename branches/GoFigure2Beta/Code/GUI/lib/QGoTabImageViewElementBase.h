@@ -78,6 +78,7 @@ public slots:
   void ActivateManualSegmentationEditor( const bool& iActivate );
   void ValidateContour();
   void ChangeContourRepresentationProperty();
+  void ReEditContour( const unsigned int& iId );
 
 protected:
   bool          m_Color;
@@ -98,6 +99,8 @@ protected:
   virtual void SetBackgroundColorToImageViewer( ) = 0;
   virtual void SetImageToImageViewer( vtkImageData* image ) = 0;
   virtual int* GetImageCoordinatesFromWorldCoordinates( double pos[3] ) = 0;
+  virtual void RemoveActorFromViewer( const int& iId, vtkActor* iActor ) = 0;
+  virtual void DisplayActorInViewer( const int& iId, vtkActor* iActor ) = 0;
 
   virtual std::vector< vtkActor* > AddContour( const int& iId,
       vtkPolyData* dataset,

@@ -31,6 +31,11 @@ protected:
     return 0;
     }
 
+  virtual void RemoveActorFromViewer( const int& , vtkActor* )
+    {}
+  virtual void DisplayActorInViewer( const int& , vtkActor* )
+    {}
+
   virtual std::vector< vtkActor* > AddContour( const int&,
       vtkPolyData*,
       vtkProperty* iProperty = NULL )

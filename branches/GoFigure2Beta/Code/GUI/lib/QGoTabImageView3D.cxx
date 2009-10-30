@@ -492,3 +492,19 @@ AddContour( const int& iId,
 }
 //--------------------------------------------------------------------------
 
+//--------------------------------------------------------------------------
+void
+QGoTabImageView3D::
+RemoveActorFromViewer( const int& iId, vtkActor* iActor )
+{
+  m_ImageView->RemoveActor( iId, iActor );
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoTabImageView3D::
+DisplayActorInViewer( const int& iId, vtkActor* iActor )
+{
+  m_ImageView->AddActor( iId, iActor );
+}
+//--------------------------------------------------------------------------

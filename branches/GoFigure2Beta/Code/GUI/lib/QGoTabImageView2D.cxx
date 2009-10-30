@@ -81,20 +81,25 @@ QGoTabImageView2D( QWidget* iParent )
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-QGoTabImageView2D::~QGoTabImageView2D()
+QGoTabImageView2D::
+~QGoTabImageView2D()
 {
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-GoFigure::TabDimensionType QGoTabImageView2D::GetTabDimensionType( ) const
+GoFigure::TabDimensionType
+QGoTabImageView2D::
+GetTabDimensionType( ) const
 {
   return GoFigure::TWO_D;
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoTabImageView2D::setupUi( QWidget* iParent )
+void
+QGoTabImageView2D::
+setupUi( QWidget* iParent )
 {
   if(iParent->objectName().isEmpty())
     {
@@ -114,7 +119,9 @@ void QGoTabImageView2D::setupUi( QWidget* iParent )
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoTabImageView2D::retranslateUi(QWidget *iParent)
+void
+QGoTabImageView2D::
+retranslateUi(QWidget *iParent)
 {
   iParent->setWindowTitle( tr( "QGoTabImageView2D" ) );
   Q_UNUSED(iParent);
@@ -122,21 +129,27 @@ void QGoTabImageView2D::retranslateUi(QWidget *iParent)
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoTabImageView2D::Update( )
+void
+QGoTabImageView2D::
+Update( )
 {
   m_ImageView->Update();
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoTabImageView2D::SetBackgroundColorToImageViewer()
+void
+QGoTabImageView2D::
+SetBackgroundColorToImageViewer()
 {
   m_ImageView->SetBackgroundColor( this->m_BackgroundColor );
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoTabImageView2D::GetBackgroundColorFromImageViewer( )
+void
+QGoTabImageView2D::
+GetBackgroundColorFromImageViewer( )
 {
   double r, g, b;
   m_ImageView->GetBackgroundColor( r, g, b );
@@ -145,7 +158,9 @@ void QGoTabImageView2D::GetBackgroundColorFromImageViewer( )
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoTabImageView2D::ChangeLookupTable()
+void
+QGoTabImageView2D::
+ChangeLookupTable()
 {
   vtkLookupTable* lut = vtkLookupTable::New();
   lut->DeepCopy( QGoLUTDialog::GetLookupTable( this,
@@ -156,14 +171,18 @@ void QGoTabImageView2D::ChangeLookupTable()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoTabImageView2D::ShowScalarBar( const bool& iShow )
+void
+QGoTabImageView2D::
+ShowScalarBar( const bool& iShow )
 {
   m_ImageView->ShowScalarBar( iShow );
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-std::list< QWidget* > QGoTabImageView2D::AdditionalWidget()
+std::list< QWidget* >
+QGoTabImageView2D::
+AdditionalWidget()
 {
   std::list< QWidget* > oList;
   return oList;
@@ -171,21 +190,27 @@ std::list< QWidget* > QGoTabImageView2D::AdditionalWidget()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoTabImageView2D::WriteSettings()
+void
+QGoTabImageView2D::
+WriteSettings()
 {
   QGoTabImageViewElementBase::WriteSettings();
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoTabImageView2D::ReadSettings()
+void
+QGoTabImageView2D::
+ReadSettings()
 {
   QGoTabImageViewElementBase::ReadSettings();
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoTabImageView2D::SetImageToImageViewer( vtkImageData* iImage )
+void
+QGoTabImageView2D::
+SetImageToImageViewer( vtkImageData* iImage )
 {
   m_ImageView->SetImage( iImage );
   m_ImageView->Update();
@@ -202,7 +227,8 @@ void QGoTabImageView2D::SetImageToImageViewer( vtkImageData* iImage )
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-int* QGoTabImageView2D::
+int*
+QGoTabImageView2D::
 GetImageCoordinatesFromWorldCoordinates( double pos[3] )
 {
   return m_ImageView->GetImageCoordinatesFromWorldCoordinates( pos );
@@ -216,5 +242,23 @@ AddContour( const int& iId, vtkPolyData* dataset,
   vtkProperty* property )
 {
   return m_ImageView->AddContour( iId, dataset, property );
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+QGoTabImageView2D::
+RemoveActorFromViewer( const int& iId, vtkActor* iActor )
+{
+  m_ImageView->RemoveActor( iId, iActor );
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+QGoTabImageView2D::
+DisplayActorInViewer( const int& iId, vtkActor* iActor )
+{
+  m_ImageView->AddActor( iId, iActor );
 }
 //--------------------------------------------------------------------------

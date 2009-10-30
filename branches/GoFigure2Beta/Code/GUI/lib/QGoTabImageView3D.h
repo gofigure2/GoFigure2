@@ -76,6 +76,9 @@ class QGoTabImageView3D : public QGoTabImageViewElementBase
     void SetImageToImageViewer( vtkImageData* image );
     int* GetImageCoordinatesFromWorldCoordinates( double pos[3] );
 
+    virtual void RemoveActorFromViewer( const int& iId, vtkActor* iActor );
+    virtual void DisplayActorInViewer( const int& iId, vtkActor* iActor );
+
     virtual std::vector< vtkActor* > AddContour( const int& iId,
       vtkPolyData* dataset,
       vtkProperty* property = NULL );
