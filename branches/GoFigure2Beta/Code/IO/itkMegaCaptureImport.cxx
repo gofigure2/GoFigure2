@@ -47,7 +47,7 @@ namespace itk
 MegaCaptureImport::
 MegaCaptureImport( )
 {
-  this->IsProgressBarSet = false;
+//   this->IsProgressBarSet = false;
 }
 //-----------------------------------------------------------------------------
 
@@ -81,10 +81,10 @@ void
 MegaCaptureImport::
 CreateOutput()
 {
-  if( this->IsProgressBarSet )
-    {
-    this->m_ProgressBar->setValue( 60 );
-    }
+//   if( this->IsProgressBarSet )
+//     {
+//     this->/*m_ProgressBar*/->setValue( 60 );
+//     }
 
   float counter = 0;
   std::vector<std::string>::iterator nit;
@@ -102,7 +102,7 @@ CreateOutput()
     IntVectorType::reverse_iterator numGroupStartItr  =
       this->m_StartAndLengthNumGroup.first.rbegin();
     int NbNumericalGroupsInFilename = this->m_StartAndLengthNumGroup.second.size();
-   
+
 
     std::vector< unsigned int > NumericalValues( m_NbSignificantMegaCaptureNumGroup, 0 );
 
@@ -121,7 +121,7 @@ CreateOutput()
       ++numGroupStartItr;
       ++megaCaptureNumericalGroupCounter;
       } // end for each numerical group
-    
+
     if (m_HeaderFileName == "")
       {
     /*get the beginning of the filename to look for the headerfile:
@@ -129,7 +129,7 @@ CreateOutput()
     corresponds to the PL number:*/
       numGroupStartItr = numGroupStartItr - 1;
 
-    /*then, substract the "PL-" from the position of the PL Number to find the position of the 
+    /*then, substract the "PL-" from the position of the PL Number to find the position of the
     last character to be part of the headerfile name:*/
       int LengthHeaderFile = *numGroupStartItr - 3;
 
@@ -138,7 +138,7 @@ CreateOutput()
         itksys::SystemTools::GetFilenamePath(m_FileName);
       m_HeaderFileName = fileNamePath + "/" + origFileName.substr(0,LengthHeaderFile)+ ".meg";
       }
-    
+
     if ( m_NbSignificantMegaCaptureNumGroup == 9)
       {
       NewMegaCaptureFile(tempInfo,NumericalValues);
@@ -147,12 +147,12 @@ CreateOutput()
       {
       OldMegaCaptureFile(tempInfo,NumericalValues);
       }
- 
-    if( this->IsProgressBarSet )
-      {
-      int value = 60 + 30 * ( (float)(counter) / (float)(m_FileNameS.size()) );
-      this->m_ProgressBar->setValue( value );
-      }
+
+//     if( this->IsProgressBarSet )
+//       {
+//       int value = 60 + 30 * ( (float)(counter) / (float)(m_FileNameS.size()) );
+//       this->m_ProgressBar->setValue( value );
+//       }
 
     counter++;
     } // end for each filename
@@ -160,13 +160,13 @@ CreateOutput()
   m_FileNameS.clear();
 
   GoFigureFileInfoHelperTimeBasedCompare comparison;
-  std::sort( 
+  std::sort(
     m_OutputFileList.begin(), m_OutputFileList.end(), comparison );
 
-  if( this->IsProgressBarSet )
-    {
-    this->m_ProgressBar->setValue( 99 );
-    }
+//   if( this->IsProgressBarSet )
+//     {
+//     this->m_ProgressBar->setValue( 99 );
+//     }
 
 #if !defined(ITK_LEAN_AND_MEAN) && !defined(__BORLANDC__) && !defined(NDEBUG)
   FileListType::iterator myIt = m_OutputFileList.begin();
@@ -188,18 +188,18 @@ void
 MegaCaptureImport::
 Glob()
 {
-  if( this->IsProgressBarSet )
-    {
-    this->m_ProgressBar->show();
-    this->m_ProgressBar->setValue( 1 );
-    }
+//   if( this->IsProgressBarSet )
+//     {
+//     this->m_ProgressBar->show();
+//     this->m_ProgressBar->setValue( 1 );
+//     }
   std::string FilenameModified = CleanFileName(m_FileName);
   m_StartAndLengthNumGroup = GetStartAndLengthOfNumericalGroupFilename(FilenameModified);
   // create the regular expression to glob the entire set of file
   std::string regExpFileName = FilenameModified;
   IntVectorType::reverse_iterator numGroupLengthItr = m_StartAndLengthNumGroup.second.rbegin();
   IntVectorType::reverse_iterator numGroupStartItr  = m_StartAndLengthNumGroup.first.rbegin();
-  
+
   if (MegaCaptureImport::AreTheseNumericalGroupNewMegaCapture(m_StartAndLengthNumGroup))
    {
     m_NbSignificantMegaCaptureNumGroup = 9;
@@ -213,7 +213,7 @@ Glob()
   int megaCaptureNumericalGroupCounter = 0;
   while( numGroupLengthItr != m_StartAndLengthNumGroup.second.rend() &&
          numGroupStartItr != m_StartAndLengthNumGroup.first.rend()   &&
-         megaCaptureNumericalGroupCounter < m_NbSignificantMegaCaptureNumGroup)       
+         megaCaptureNumericalGroupCounter < m_NbSignificantMegaCaptureNumGroup)
     {
     regExpFileName.replace(*numGroupStartItr,*numGroupLengthItr,regExpString);
     ++numGroupLengthItr;
@@ -221,10 +221,10 @@ Glob()
     ++megaCaptureNumericalGroupCounter;
     }
 
-  if( this->IsProgressBarSet )
-    {
-    this->m_ProgressBar->setValue( 5 );
-    }
+//   if( this->IsProgressBarSet )
+//     {
+//     this->m_ProgressBar->setValue( 5 );
+//     }
 
   // Include only filenames that exactly match this regular expression.  Don't
   // match filenames that have this string as a substring (ie. that have extra
@@ -248,10 +248,10 @@ Glob()
 
   m_FileNameS = fit->GetFileNames();
 
-  if( this->IsProgressBarSet )
-    {
-    this->m_ProgressBar->setValue( 45 );
-    }
+//   if( this->IsProgressBarSet )
+//     {
+//     this->m_ProgressBar->setValue( 45 );
+//     }
 
   // re parse the indexes and length without the escape caracters
   std::string::iterator sit;
@@ -278,11 +278,11 @@ Glob()
         }
       }
     }
-  
-  if( this->IsProgressBarSet )
-    {
-    this->m_ProgressBar->setValue( 55 );
-    }
+
+//   if( this->IsProgressBarSet )
+//     {
+//     this->m_ProgressBar->setValue( 55 );
+//     }
 }
 
 //-----------------------------------------------------------------------------
@@ -293,7 +293,7 @@ bool MegaCaptureImport::IsNewMegaCapture (std::string iFilename)
   std::string FilenameModified = CleanFileName(iFilename);
   PairIntVectorType StartAndLengthNumericalGroup =
     GetStartAndLengthOfNumericalGroupFilename(FilenameModified);
-  return AreTheseNumericalGroupNewMegaCapture(StartAndLengthNumericalGroup); 
+  return AreTheseNumericalGroupNewMegaCapture(StartAndLengthNumericalGroup);
 }
 //-----------------------------------------------------------------------------
 
@@ -383,10 +383,10 @@ MegaCaptureImport::PairIntVectorType MegaCaptureImport::GetStartAndLengthOfNumer
     if ((*sit) >= '0' && (*sit) <= '9')
       {
       int sIndex = static_cast< int >( sit - iFilename.begin() );
-      //the first vector of oStartAndLength contains the index of all the starting numbers of 
+      //the first vector of oStartAndLength contains the index of all the starting numbers of
       //the numerical group:
       oStartAndLength.first.push_back(sIndex);
-     
+
 
       // Loop to one past the end of the group of numbers.
       while ( sit != iFilename.end() && (*sit) >= '0' && (*sit) <= '9' )
@@ -435,7 +435,7 @@ void MegaCaptureImport::NewMegaCaptureFile(GoFigureFileInfoHelper tempInfo,
   tempInfo.m_TCoord     = NumericalValues[6];
   tempInfo.m_Channel    = NumericalValues[7];
   tempInfo.m_ZCoord     = NumericalValues[8];
-    
+
   m_OutputFileList.push_back( tempInfo );
 }
 //-----------------------------------------------------------------------------

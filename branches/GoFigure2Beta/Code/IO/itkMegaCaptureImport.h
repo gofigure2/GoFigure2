@@ -52,7 +52,7 @@
 
 #include "GoFigureFileInfoHelper.h"
 
-#include <QProgressBar>
+// #include <QProgressBar>
 
 namespace itk
 {
@@ -65,12 +65,12 @@ the files are considered as new megacapture...*/
 class ITK_EXPORT MegaCaptureImport: public LightProcessObject
 {
 public:
-  //typedef std::list<int>                     IntListType; 
+  //typedef std::list<int>                     IntListType;
   typedef std::vector<int>                       IntVectorType;
   typedef std::pair<IntVectorType,IntVectorType> PairIntVectorType;
   typedef std::vector < std::string >            StringVectorType;
 
-   /** Standard class typedefs.      */ 
+   /** Standard class typedefs.      */
   typedef MegaCaptureImport           Self;
 
   typedef LightProcessObject          Superclass;
@@ -96,7 +96,7 @@ public:
   FileListType* GetOutput() { return( &(this->m_OutputFileList) ); }
 
   void Update(void) { Glob(); CreateOutput(); }
-  
+
   std::string GetHeaderFilename();
 
   /**\brief return true if the filename is of new megacapture format,
@@ -132,8 +132,8 @@ private:
   std::string       m_FileName;
   std::string       m_fileNameModified;
   std::string       m_HeaderFileName;
-  QProgressBar*     m_ProgressBar;
-  bool              IsProgressBarSet;
+//   QProgressBar*     m_ProgressBar;
+//   bool              IsProgressBarSet;
   int               m_NbSignificantMegaCaptureNumGroup;
 
 };
