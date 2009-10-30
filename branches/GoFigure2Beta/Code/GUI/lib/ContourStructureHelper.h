@@ -74,4 +74,10 @@ FindContourGivenNodes(
   ContourStructureMultiIndexContainer iContainer,
   vtkPolyData* iNodes );
 
+std::list< ContourStructure >
+FindContourGivenTimePoint(
+  ContourStructureMultiIndexContainer iContainer,
+  const unsigned int& iTimePoint
+);
+
 #endif

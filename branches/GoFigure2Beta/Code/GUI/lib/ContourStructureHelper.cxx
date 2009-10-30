@@ -61,3 +61,21 @@ FindContourGivenNodes(
     return ContourStructure();
     }
 }
+
+std::list< ContourStructure >
+FindContourGivenTimePoint(
+  ContourStructureMultiIndexContainer iContainer,
+  const unsigned int& iTimePoint )
+{
+   ContourStructureMultiIndexContainer::nth_index< 4 >::type::iterator it0, it1;
+   boost::tuples::tie(it0,it1) = iContainer.get< 4 >().equal_range( iTimePoint );
+
+   std::list< ContourStructure > oList;
+
+    while( it0 != it1 )
+      {
+      oList.push_back( *it0 );
+      ++it1;
+      }
+    return oList;
+}

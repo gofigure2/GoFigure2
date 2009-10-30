@@ -117,11 +117,17 @@ protected:
   void CreateVisuDockWidget();
   void CreateManualSegmentationdockWidget();
 
+  void RemoveActorFromViewer( const int& iId, vtkActor* iActor );
+  void DisplayActorInViewer( const int& iId, vtkActor* iActor );
+
   int* GetImageCoordinatesFromWorldCoordinates( double pos[3] );
 
   std::vector< vtkActor* > AddContour( const int& iId,
       vtkPolyData* dataset,
       vtkProperty* property = NULL );
+
+  void RemoveAllContoursForPresentTimePoint();
+  void LoadAllContoursForGivenTimePoint( const unsigned int& iT );
 };
 
 #endif
