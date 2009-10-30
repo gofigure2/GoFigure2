@@ -101,7 +101,7 @@ QGoMainWindow::QGoMainWindow( )
   this->addToolBar( Qt::TopToolBarArea, this->m_ViewToolBar );
 
   m_LSMReader = vtkLSMReader::New();
-  m_DBWizard  = new QGoWizardDB;
+  m_DBWizard  = new QGoWizardDB(this);
   m_DBWizard->hide();
 
   m_Bar.hide();
@@ -150,6 +150,9 @@ void QGoMainWindow::CreateSignalSlotsConnection()
     QObject::connect(this->recentMultipleFileActions[i], SIGNAL(triggered()),
       this, SLOT(openRecentMultipleFile()));
     }
+
+  QObject::connect( m_DBWizard, SIGNAL( accepted() ),
+    this, SLOT( openFilesfromDB() ) );
 
 }
 
@@ -220,6 +223,14 @@ void QGoMainWindow::openFilesfromDB()
 {
   std::vector<std::vector<std::string> > listFilenames = 
     m_DBWizard->GetFilenamesFromDB();
+  /*for (unsigned int i =0; i < listFilenames.size(); i++)
+    {
+    for (unsigned int j = 0; j < listFilenames[i].size();j++)
+      {
+      std::cout<<"image filename with channel "
+        <<i <<" " <<listFilenames[i][j].c_str()<<std::endl;
+      }
+    }*/
 }
 // *************************************************************************
 
