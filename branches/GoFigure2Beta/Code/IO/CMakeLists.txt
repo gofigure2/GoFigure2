@@ -1,6 +1,6 @@
-QT4_WRAP_CPP( QGoThreadedMultiFileReader_MOC
-  QGoThreadedMultiFileReader.h
-)
+#QT4_WRAP_CPP( QGoThreadedMultiFileReader_MOC
+#  QGoThreadedMultiFileReader.h
+#)
 
 FILE( GLOB QGOIO_SRC *.cxx )
 
@@ -23,7 +23,7 @@ FILE( GLOB QGOIO_SRC *.cxx )
 
 ADD_LIBRARY( QGoIO
   ${QGOIO_SRC}
-  ${QGoThreadedMultiFileReader_MOC}
+#  ${QGoThreadedMultiFileReader_MOC}
 )
 
 TARGET_LINK_LIBRARIES( QGoIO

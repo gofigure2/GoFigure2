@@ -6,8 +6,7 @@
 #include "QGoPlugin.h"
 #include "QGoImageView3D.h"
 
-#include "QGoThreadedMultiFileReader.h"
-
+#include "itkMultiFileReader.h"
 #include "GoFigureFileInfoHelper.h"
 #include "SnapshotHelper.h"
 

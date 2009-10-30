@@ -1,7 +1,7 @@
 SET( QGOIO_EXAMPLES_SRC
   megacaptureimport
   multifilereader
-  qgothreadedmultifilereader
+#  qgothreadedmultifilereader
   gofigurefileinfomultiindexcontainerhelper
   MegaCaptureHeaderReaderTest
 )
