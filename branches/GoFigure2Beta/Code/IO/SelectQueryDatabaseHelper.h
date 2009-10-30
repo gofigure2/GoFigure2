@@ -95,6 +95,21 @@ int FindOneID(vtkMySQLDatabase* DatabaseConnector,
   std::string ColumnNameThree,std::string valueThree,
   std::string ColumnNameFour,std::string valueFour);
 
+//query: "SELECT ColumnName FROM TableName WHERE (field1 = value1
+//AND field2 = value2 AND field3 = value3 AND field4 = value4);
+int FindOneID(vtkMySQLDatabase* DatabaseConnector,
+  std::string TableName, std::string ColumnName,
+  std::string ColumnNameOne,std::string valueOne,
+  std::string ColumnNameTwo,std::string valueTwo,
+  std::string ColumnNameThree,std::string valueThree,
+  std::string ColumnNameFour,std::string valueFour,
+  std::string ColumnNameFive,std::string valueFive,
+  std::string ColumnNameSix,std::string valueSix,
+  std::string ColumnNameSeven,std::string valueSeven,
+  std::string ColumnNameEight,std::string valueEight,
+  std::string ColumnNameNine,std::string valueNine,
+  std::string ColumnNameTen,std::string valueTen);
+
 //query: "SELECT ColumnName FROM TableName WHERE field = value"
 std::vector<std::string> ListSpecificValuesForOneColumn(
   vtkMySQLDatabase* DatabaseConnector,

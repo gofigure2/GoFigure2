@@ -110,7 +110,7 @@ QGoCreateImgSessionPage::QGoCreateImgSessionPage( QWidget *iParent )
 void QGoCreateImgSessionPage::initializePage()
 {
   lineFilename->clear();
-  OpenDatabaseConnection();
+  OpenDBConnection();
   setSubTitle(
     tr("Import a new dataset for the project '%1'\n (*fields are required) and click on 'Finish' to load them:")
     .arg(field("ProjectName").toString() ) );
@@ -262,7 +262,7 @@ bool QGoCreateImgSessionPage::validatePage()
     return false;
     }
 
-  CloseDatabaseConnection();
+  CloseDatabaseConnection(m_DatabaseConnector);
   return true;
 }
 //-------------------------------------------------------------------------
@@ -270,7 +270,7 @@ bool QGoCreateImgSessionPage::validatePage()
 //-------------------------------------------------------------------------
 void QGoCreateImgSessionPage::cleanupPage()
 {
-  CloseDatabaseConnection();
+  CloseDatabaseConnection(m_DatabaseConnector);
 }
 //-------------------------------------------------------------------------
 
@@ -528,14 +528,15 @@ void QGoCreateImgSessionPage::CreateImgSessionCoord(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoCreateImgSessionPage::OpenDatabaseConnection()
+void QGoCreateImgSessionPage::OpenDBConnection()
 {
   std::string Server = field("ServerName").toString().toStdString();
   std::string User = field("User").toString().toStdString();
   std::string Password = field("Password").toString().toStdString();
   std::string DBName = field("DBName").toString().toStdString();
 
-  std::pair<bool,vtkMySQLDatabase*> ConnectionDatabase = ConnectToDatabase(
+  m_DatabaseConnector = OpenDatabaseConnection(Server,User,Password,DBName);
+  /*std::pair<bool,vtkMySQLDatabase*> ConnectionDatabase = ConnectToDatabase(
     Server,User,Password,DBName);
 
   if (!ConnectionDatabase.first)
@@ -545,7 +546,7 @@ void QGoCreateImgSessionPage::OpenDatabaseConnection()
     std::cout << std::endl;
     }
 
-  m_DatabaseConnector = ConnectionDatabase.second;
+  m_DatabaseConnector = ConnectionDatabase.second;*/
 }
 //-------------------------------------------------------------------------
 
@@ -579,7 +580,7 @@ void QGoCreateImgSessionPage::SaveInfoInDatabase()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoCreateImgSessionPage::CloseDatabaseConnection()
+/*void QGoCreateImgSessionPage::CloseDatabaseConnection()
 {
   if (m_DatabaseConnector != 0)
     {
@@ -587,4 +588,4 @@ void QGoCreateImgSessionPage::CloseDatabaseConnection()
     m_DatabaseConnector->Delete();
     m_DatabaseConnector = 0;
     }
-}
+}*/

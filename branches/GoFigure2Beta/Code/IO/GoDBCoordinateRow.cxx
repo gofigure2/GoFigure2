@@ -38,6 +38,7 @@
 
 =========================================================================*/
 #include "GoDBCoordinateRow.h"
+#include "SelectQueryDatabaseHelper.h"
 
 GoDBCoordinateRow::GoDBCoordinateRow()
 {
@@ -63,3 +64,17 @@ void GoDBCoordinateRow::InitializeMap()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+int GoDBCoordinateRow::DoesThisCoordinateExist(vtkMySQLDatabase* DatabaseConnector)
+{
+  return FindOneID(DatabaseConnector,"coordinate", "CoordID",
+    "PCoord",this->GetMapValue("PCoord"),
+    "RCoord",this->GetMapValue("RCoord"),
+    "CCoord",this->GetMapValue("CCoord"),
+    "XTileCoord",this->GetMapValue("XTileCoord"),
+    "YTileCoord",this->GetMapValue("YTileCoord"),
+    "ZTileCoord",this->GetMapValue("ZTileCoord"),
+    "XCoord",this->GetMapValue("XCoord"),
+    "YCoord",this->GetMapValue("YCoord"),
+    "ZCoord",this->GetMapValue("ZCoord"),
+    "TCoord",this->GetMapValue("TCoord"));
+}

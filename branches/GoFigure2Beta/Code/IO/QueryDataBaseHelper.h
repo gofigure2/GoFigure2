@@ -54,6 +54,15 @@ std::pair<bool,vtkMySQLDatabase*> ConnectToDatabase(
   std::string ServerName,std::string login,
   std::string Password,std::string DBName);
 
+vtkMySQLDatabase* OpenDatabaseConnection(
+  std::string ServerName,std::string login,
+  std::string Password,std::string DBName);
+
+/**\brief return true if the connection has been closed, false if
+the connection was already closed*/
+bool CloseDatabaseConnection(
+  vtkMySQLDatabase* DatabaseConnector);
+
 std::vector<std::string> ListDatabases(
   vtkMySQLDatabase* ServerConnector);
 

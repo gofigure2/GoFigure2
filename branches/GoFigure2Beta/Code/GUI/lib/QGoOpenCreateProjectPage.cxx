@@ -53,7 +53,7 @@
 
 
 QGoOpenCreateProjectPage::QGoOpenCreateProjectPage( QWidget *iParent )
-: QWizardPage( iParent )
+: QWizardPage( iParent ),m_DatabaseConnector(0)
 {
   QFont tfont;
   tfont.setBold(false);
@@ -127,7 +127,7 @@ void QGoOpenCreateProjectPage::initializePage()
    ChoiceProject->clear();
    }
 
-  OpenDatabaseConnection();
+  OpenDBConnection();
 
   setSubTitle(
       tr("You are currently using The Database %1 ").arg(
@@ -237,7 +237,7 @@ QStringList QGoOpenCreateProjectPage::GetListAuthors()
   QStringList ListAuthors;
   if (m_DatabaseConnector == 0)
     {
-    OpenDatabaseConnection();
+    OpenDBConnection();
     }
 
   std::vector<std::string> ListFirstNames = ListAllValuesForOneColumn(
@@ -353,7 +353,7 @@ void QGoOpenCreateProjectPage::DisplayInfoProject(QString ProjectName)
   
   if (m_DatabaseConnector == 0)
     {
-    OpenDatabaseConnection();
+    OpenDBConnection();
     }
   std::vector<std::string> ResultQuery;
   ResultQuery = ListSpecificValuesForOneColumn(
@@ -429,13 +429,16 @@ bool QGoOpenCreateProjectPage::validatePage()
       }
     CreateProject();
     }
-  if (m_DatabaseConnector == 0 )
+  if (m_DatabaseConnector == 0)
     {
-    OpenDatabaseConnection();
+    OpenDBConnection();
     }
   ExistingImgSession = DoesProjectHaveExistingImgSession();
 
-  this->CloseDatabaseConnection();
+  if(CloseDatabaseConnection(m_DatabaseConnector))
+    {
+    m_DatabaseConnector = 0;
+    }
   LeavingPage = true;
 
   return true;
@@ -445,7 +448,10 @@ bool QGoOpenCreateProjectPage::validatePage()
 //-------------------------------------------------------------------------
 void QGoOpenCreateProjectPage::cleanupPage()
 {
-  this->CloseDatabaseConnection();
+  if (CloseDatabaseConnection(m_DatabaseConnector))
+    {
+    m_DatabaseConnector = 0;
+    }
 }
 //-------------------------------------------------------------------------
 
@@ -467,43 +473,26 @@ int QGoOpenCreateProjectPage::nextId() const
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoOpenCreateProjectPage::OpenDatabaseConnection()const
+void QGoOpenCreateProjectPage::OpenDBConnection()const
 {
-  std::string m_Server = field("ServerName").toString().toStdString();
-  std::string m_User = field("User").toString().toStdString();
-  std::string m_Password = field("Password").toString().toStdString();
-  std::string m_DBName = field("DBName").toString().toStdString();
+  std::string Server = field("ServerName").toString().toStdString();
+  std::string User = field("User").toString().toStdString();
+  std::string Password = field("Password").toString().toStdString();
+  std::string DBName = field("DBName").toString().toStdString();
 
-  std::pair<bool,vtkMySQLDatabase*> ConnectionDatabase = ConnectToDatabase(
-  m_Server,m_User,m_Password,m_DBName);
-
-  if (!ConnectionDatabase.first)
-    {
-    std::cout<<"No connection open for QGoOpenCreateProject"<<std::endl;
-    std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
-    std::cout << std::endl;
-    }
-
-  m_DatabaseConnector = ConnectionDatabase.second;
+  m_DatabaseConnector = OpenDatabaseConnection(Server,User,Password,DBName);
   LeavingPage = false;
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void QGoOpenCreateProjectPage::CloseDatabaseConnection()
-{
-  if (m_DatabaseConnector != 0)
-    {
-    m_DatabaseConnector->Close();
-    m_DatabaseConnector->Delete();
-    m_DatabaseConnector = 0;
-    }
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 bool QGoOpenCreateProjectPage::DoesProjectHaveExistingImgSession()const
 {
+  if (m_DatabaseConnector == 0)
+    {
+    OpenDBConnection();
+    }
+
   std::vector<std::string> ListImgSessionID = ListSpecificValuesForOneColumn(
     m_DatabaseConnector,"imagingsession","imagingsessionID","projectName",
     field("ProjectName").toString().toStdString());
@@ -515,6 +504,6 @@ bool QGoOpenCreateProjectPage::DoesProjectHaveExistingImgSession()const
 //-------------------------------------------------------------------------
 void QGoOpenCreateProjectPage::BackFromNextPage()const
 {
-  this->OpenDatabaseConnection();
+  this->OpenDBConnection();
   this->GetListProject();
 }

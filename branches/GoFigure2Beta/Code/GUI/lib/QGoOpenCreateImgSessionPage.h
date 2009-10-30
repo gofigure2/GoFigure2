@@ -71,9 +71,8 @@ private:
   with the names only and return true if this list is not empty.*/
   bool GetListImgSession();
 
-  void OpenDatabaseConnection()const;
-  void CloseDatabaseConnection();
- 
+  void OpenDBConnection()const;
+  
   QLabel*       textDescription;
   QTextEdit*    lineDescription;
   QLabel*       textChoiceImgSession;

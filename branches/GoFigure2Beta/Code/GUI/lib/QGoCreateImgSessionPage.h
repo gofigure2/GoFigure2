@@ -110,8 +110,8 @@ private:
   the imaging session in the DB with the newly created coordinates*/
   void CreateImgSessionCoord(vtkMySQLDatabase* DatabaseConnector,int ImagingSessionID);
 
-  void OpenDatabaseConnection();
-  void CloseDatabaseConnection();
+  void OpenDBConnection();
+  //void CloseDatabaseConnection();
 
   void SaveInfoInDatabase();
 

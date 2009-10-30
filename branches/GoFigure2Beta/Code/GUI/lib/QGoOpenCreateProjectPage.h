@@ -85,10 +85,7 @@ private:
   int AuthorIDForNewProject();
 
    /** \brief open a connection to the database.*/
-  void OpenDatabaseConnection()const;
-
-  /** \brief close the connection to the database.*/
-  void CloseDatabaseConnection();
+  void OpenDBConnection()const;
 
   /** \brief get the list of the existing imaging session for the selected project
   and return true if the list is not empty.*/

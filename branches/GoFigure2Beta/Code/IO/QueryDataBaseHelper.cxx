@@ -101,6 +101,39 @@ std::pair<bool,vtkMySQLDatabase*> ConnectToDatabase(std::string ServerName,std::
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
+vtkMySQLDatabase* OpenDatabaseConnection(
+  std::string ServerName,std::string login,
+  std::string Password,std::string DBName)
+{
+  std::pair<bool,vtkMySQLDatabase*> ConnectionDatabase = ConnectToDatabase(
+    ServerName,login,Password,DBName);
+
+  if (!ConnectionDatabase.first)
+    {
+    std::cout<<"No connection open for QGoOpenOrCreateImgSession"<<std::endl;
+    std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
+    std::cout << std::endl;
+    }
+
+  return ConnectionDatabase.second;
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+bool CloseDatabaseConnection(
+  vtkMySQLDatabase* DatabaseConnector)
+{
+  if (DatabaseConnector != 0)
+    {
+    DatabaseConnector->Close();
+    DatabaseConnector->Delete();
+    return true;
+    }
+  return false;
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
 std::vector<std::string> ListDatabases(vtkMySQLDatabase* ServerConnector)
 {
   std::vector< std::string > result;

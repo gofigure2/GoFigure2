@@ -1,5 +1,5 @@
 /*=========================================================================
-  Author: $Author: arnaudgelas $  // Author of last commit
+  Author: $Author: lydiesouhait $  // Author of last commit
   Version: $Rev: 374 $  // Revision of last commit
   Date: $Date: 2009-07-08 10:24:11 -0400 (Wed, 08 Jul 2009) $  // Date of last commit
 =========================================================================*/
@@ -74,11 +74,12 @@ void GoDBImgSessionRow::InitializeMap()
 int GoDBImgSessionRow::DoesThisImagingSessionExist(
   vtkMySQLDatabase* DatabaseConnector)
 {
-  std::string MicroscopeName = this->GetMapValue("MicroscopeName");
-  std::string CreationDate = this->GetMapValue("CreationDate");
+  //std::string MicroscopeName = this->GetMapValue("MicroscopeName");
+  //std::string CreationDate = this->GetMapValue("CreationDate");
 
   return FindOneID(DatabaseConnector,"imagingsession", "ImagingSessionID",
-    "MicroscopeName",MicroscopeName,"CreationDate",CreationDate);
+    "MicroscopeName",this->GetMapValue("MicroscopeName"),
+    "CreationDate",this->GetMapValue("CreationDate"));
 }
 
 

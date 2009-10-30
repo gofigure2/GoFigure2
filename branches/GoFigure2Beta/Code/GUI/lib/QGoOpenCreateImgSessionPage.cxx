@@ -46,7 +46,7 @@
 
 
 QGoOpenCreateImgSessionPage::QGoOpenCreateImgSessionPage( QWidget *iParent )
-: QWizardPage( iParent )
+: QWizardPage( iParent ),m_DatabaseConnector(0)
 {
   QFont tfont;
   tfont.setBold(false);
@@ -99,7 +99,7 @@ void QGoOpenCreateImgSessionPage::initializePage()
    m_ListImgSession.clear();
    }
 
-   OpenDatabaseConnection();
+   OpenDBConnection();
    
   if (!GetListImgSession())
     {
@@ -152,7 +152,7 @@ int QGoOpenCreateImgSessionPage::nextId() const
   
   if (m_DatabaseConnector == 0 && !LeavingPage)
     {
-    OpenDatabaseConnection();
+    OpenDBConnection();
     }
 
   if (CreateImgSessionRadioButton->isChecked())
@@ -166,7 +166,10 @@ int QGoOpenCreateImgSessionPage::nextId() const
 //-------------------------------------------------------------------------
 bool QGoOpenCreateImgSessionPage::validatePage()
 {
-  CloseDatabaseConnection();
+  if (CloseDatabaseConnection(m_DatabaseConnector))
+    {
+    m_DatabaseConnector = 0;
+    }
   LeavingPage = true;
 
   //get the imagingsessionID from the selected imagingsession in the combobox
@@ -185,43 +188,24 @@ bool QGoOpenCreateImgSessionPage::validatePage()
 //-------------------------------------------------------------------------
 void QGoOpenCreateImgSessionPage::cleanupPage()
 { 
-  CloseDatabaseConnection();
+  if(CloseDatabaseConnection(m_DatabaseConnector))
+    {
+    m_DatabaseConnector = 0;
+    }
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoOpenCreateImgSessionPage::OpenDatabaseConnection()const
+void QGoOpenCreateImgSessionPage::OpenDBConnection()const
 {
-  std::string m_Server = field("ServerName").toString().toStdString();
-  std::string m_User = field("User").toString().toStdString();
-  std::string m_Password = field("Password").toString().toStdString();
-  std::string m_DBName = field("DBName").toString().toStdString();
+  std::string Server = field("ServerName").toString().toStdString();
+  std::string User = field("User").toString().toStdString();
+  std::string Password = field("Password").toString().toStdString();
+  std::string DBName = field("DBName").toString().toStdString();
 
-  std::pair<bool,vtkMySQLDatabase*> ConnectionDatabase = ConnectToDatabase(
-  m_Server,m_User,m_Password,m_DBName);
-
-  if (!ConnectionDatabase.first)
-    {
-    std::cout<<"No connection open for QGoOpenOrCreateImgSession"<<std::endl;
-    std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
-    std::cout << std::endl;
-    }
-
-  m_DatabaseConnector = ConnectionDatabase.second;
+  m_DatabaseConnector = OpenDatabaseConnection(Server,User,Password,DBName);
   
   LeavingPage = false;
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void QGoOpenCreateImgSessionPage::CloseDatabaseConnection()
-{ 
-  if (m_DatabaseConnector != 0)
-    {
-    m_DatabaseConnector->Close();
-    m_DatabaseConnector->Delete();  
-    m_DatabaseConnector = 0; 
-    }
 }
 //-------------------------------------------------------------------------
 
