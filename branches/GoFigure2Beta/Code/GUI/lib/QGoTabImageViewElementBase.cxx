@@ -51,7 +51,7 @@ QGoTabImageViewElementBase( QWidget* iParent ) :
  */
 QGoTabImageViewElementBase::~QGoTabImageViewElementBase()
 {
-  for( int i = 0; i < m_ContourRepresentation.size(); i++ )
+  for( unsigned int i = 0; i < m_ContourRepresentation.size(); i++ )
     {
     m_ContourRepresentation[i]->Delete();
     m_ContourWidget[i]->Delete();
@@ -327,7 +327,7 @@ ValidateContour( const int& iId )
   bool highlighted = false;
 
   // fill the container
-  for( int i = 0; i < contour_actor.size(); i++ )
+  for( unsigned int i = 0; i < contour_actor.size(); i++ )
     {
     ContourStructure temp( m_ContourId, contour_actor[i], contour_nodes, meshid,
       timepoint, highlighted, r, g, b, i );
@@ -345,7 +345,7 @@ ValidateContour( const int& iId )
 void QGoTabImageViewElementBase::
 ValidateContour( )
 {
-  for( int i = 0; i < m_ContourWidget.size(); i++ )
+  for( unsigned int i = 0; i < m_ContourWidget.size(); i++ )
     {
     ValidateContour( i );
     }
@@ -373,7 +373,7 @@ ChangeContourRepresentationProperty()
   double ra, ga, ba;
   activenodecolor.getRgbF( &ra, &ga, &ba );
 
-  for( int i = 0; i < m_ContourRepresentation.size(); i++ )
+  for( unsigned int i = 0; i < m_ContourRepresentation.size(); i++ )
     {
     m_ContourRepresentation[i]->GetLinesProperty()->SetLineWidth( linewidth );
     m_ContourRepresentation[i]->GetLinesProperty()->SetColor( rl, gl, bl );

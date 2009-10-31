@@ -138,10 +138,10 @@ void QGoImageView::SetBackgroundColor( const QColor& iColor )
  */
 int*
 QGoImageView::
-GetImageCoordinatesFromWorldCoordinates( double pos[3] )
+GetImageCoordinatesFromWorldCoordinates( double iPos[3] )
 {
   vtkViewImage2D* View = m_Pool->GetItem( 0 );
-  return View->GetImageCoordinatesFromWorldCoordinates( pos );
+  return View->GetImageCoordinatesFromWorldCoordinates( iPos );
 }
 //--------------------------------------------------------------------------
 
@@ -176,21 +176,24 @@ GetNumberOfImageViewers()
 /**
  * \brief Add contour with given property into the visualization.
  * \param[in] iId direction
- * \param[in] dataset contour
- * \param[in] property
+ * \param[in] iDataset contour
+ * \param[in] iProperty
  * \return vector of vtkActor rendered in each 2D viewer.
+ * \todo check the utility of iId.
  */
 std::vector< vtkActor* >
 QGoImageView::
-AddContour( const int& iId, vtkPolyData* dataset, vtkProperty* property )
+AddContour( const int& iId, vtkPolyData* iDataset, vtkProperty* iProperty )
 {
+  (void) iId;
+
   int n = m_Pool->GetNumberOfItems();
   std::vector< vtkActor* > oActorVector;
 
   for( int i = 0; i < n; i++ )
     {
     vtkViewImage2D* viewer = m_Pool->GetItem( i );
-    vtkActor* temp = viewer->AddDataSet( dataset, property,
+    vtkActor* temp = viewer->AddDataSet( iDataset, iProperty,
       true, false );
     oActorVector.push_back( temp );
     }

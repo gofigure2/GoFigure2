@@ -96,7 +96,8 @@ QGoCreateImgSessionPage::QGoCreateImgSessionPage( QWidget *iParent )
   vlayout->addLayout(gridlayout);
   vlayout->addLayout(BrowseButtonLayout);
   setLayout( vlayout );
-
+  
+  // \todo is ImgSessionID needed?
   QLineEdit* ImgSessionID = new QLineEdit;
   FirstImage = new QFileInfo;
   QObject::connect( this->BrowseButton,SIGNAL( clicked() ),
@@ -307,19 +308,19 @@ void QGoCreateImgSessionPage::ImportImages(vtkMySQLDatabase* DatabaseConnector)
         }
       delete RecordSet;
       }
-      catch( const itk::ExceptionObject& e )
+    catch( const itk::ExceptionObject& e )
       {
       std::cerr << " caught an ITK exception: " << std::endl;
       e.Print( std::cerr);
       return;
       }
-      catch( const std::exception& e )
+    catch( const std::exception& e )
       {
       std::cerr << " caught an std exception: " << std::endl;
       std::cerr << e.what() << std::endl;
       return;
       }
-      catch( ... )
+    catch( ... )
       {
       std::cerr << " caught an unknown exception!" << std::endl;
       return;
@@ -329,12 +330,12 @@ void QGoCreateImgSessionPage::ImportImages(vtkMySQLDatabase* DatabaseConnector)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoCreateImgSessionPage::ImportInfoFromMegacapture(QString newfilename)
+void QGoCreateImgSessionPage::ImportInfoFromMegacapture(QString iNewfilename)
 {
   try
     {
     m_importFileInfoList = itk::MegaCaptureImport::New();
-    m_importFileInfoList->SetFileName( newfilename.toAscii().data() );
+    m_importFileInfoList->SetFileName( iNewfilename.toAscii().data() );
 
 //     QProgressBar pBar;
     //importFileInfoList->SetProgressBar( &pBar );

@@ -475,9 +475,9 @@ void QGoTabImageView3D::SetImageToImageViewer( vtkImageData* image )
 
 //--------------------------------------------------------------------------
 int* QGoTabImageView3D::
-GetImageCoordinatesFromWorldCoordinates( double pos[3] )
+GetImageCoordinatesFromWorldCoordinates( double iPos[3] )
 {
-  return m_ImageView->GetImageCoordinatesFromWorldCoordinates( pos );
+  return m_ImageView->GetImageCoordinatesFromWorldCoordinates( iPos );
 }
 //--------------------------------------------------------------------------
 
@@ -486,9 +486,9 @@ std::vector< vtkActor* >
 QGoTabImageView3D::
 AddContour( const int& iId,
   vtkPolyData* dataset,
-  vtkProperty* property )
+  vtkProperty* iProperty )
 {
-  return this->m_ImageView->AddContour( iId, dataset, property );
+  return this->m_ImageView->AddContour( iId, dataset, iProperty );
 }
 //--------------------------------------------------------------------------
 

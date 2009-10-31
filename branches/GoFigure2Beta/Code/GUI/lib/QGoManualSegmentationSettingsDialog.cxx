@@ -113,7 +113,9 @@ QColor QGoManualSegmentationSettingsDialog::GetActivatedNodeColor( ) const
   return m_ActivatedNodeColor;
 }
 
-/// \todo check the implementation of this method. strange that iValue is not used at all
+/** 
+ * \todo check the implementation of this method. strange that iValue is not used at all 
+*/
 void QGoManualSegmentationSettingsDialog::SetLineWidth( const double& iValue )
 {
   m_LineWidth = this->LineWidthSpinBox->value();

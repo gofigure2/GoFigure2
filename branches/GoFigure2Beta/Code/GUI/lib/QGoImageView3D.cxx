@@ -776,7 +776,9 @@ std::vector< vtkActor* >
 QGoImageView3D::
 AddContour( const int& iId, vtkPolyData* dataset, vtkProperty* iProperty )
 {
-  vtkActor* temp = View3D->AddDataSet( (vtkDataSet*) dataset,
+  
+  // vtkActor* temp = 
+  View3D->AddDataSet( (vtkDataSet*) dataset,
     iProperty, false, false );
 
   return QGoImageView::AddContour( iId, dataset, iProperty );

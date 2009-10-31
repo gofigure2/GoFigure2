@@ -796,7 +796,7 @@ ValidateContour( const int& iId )
 void QGoTabImageView3DwT::
 ValidateContour( )
 {
-  for( int i = 0; i < m_ContourWidget.size(); i++ )
+  for( unsigned int i = 0; i < m_ContourWidget.size(); i++ )
     {
     ValidateContour( i );
     }
@@ -821,7 +821,7 @@ ChangeContourRepresentationProperty()
   double ra, ga, ba;
   activenodecolor.getRgbF( &ra, &ga, &ba );
 
-  for( int i = 0; i < m_ContourRepresentation.size(); i++ )
+  for( unsigned int i = 0; i < m_ContourRepresentation.size(); i++ )
     {
     m_ContourRepresentation[i]->GetLinesProperty()->SetLineWidth( linewidth );
     m_ContourRepresentation[i]->GetLinesProperty()->SetColor( rl, gl, bl );
@@ -834,9 +834,9 @@ ChangeContourRepresentationProperty()
 
 //--------------------------------------------------------------------------
 int* QGoTabImageView3DwT::
-GetImageCoordinatesFromWorldCoordinates( double pos[3] )
+GetImageCoordinatesFromWorldCoordinates( double iPos[3] )
 {
-  return m_ImageView->GetImageCoordinatesFromWorldCoordinates( pos );
+  return m_ImageView->GetImageCoordinatesFromWorldCoordinates( iPos );
 }
 //--------------------------------------------------------------------------
 
@@ -845,9 +845,9 @@ std::vector< vtkActor* >
 QGoTabImageView3DwT::
 AddContour( const int& iId,
   vtkPolyData* dataset,
-  vtkProperty* property )
+  vtkProperty* iProperty )
 {
-  return this->m_ImageView->AddContour( iId, dataset, property );
+  return this->m_ImageView->AddContour( iId, dataset, iProperty );
 }
 //--------------------------------------------------------------------------
 

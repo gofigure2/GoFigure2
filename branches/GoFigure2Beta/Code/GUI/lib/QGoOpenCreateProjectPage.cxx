@@ -251,7 +251,7 @@ QStringList QGoOpenCreateProjectPage::GetListAuthors()
 
   if (!ListFirstNames.empty())
     {
-    for (int i=0; i<ListFirstNames.size(); i++)
+    for (unsigned int i=0; i<ListFirstNames.size(); i++)
       {
       std::stringstream AuthorTotalName;
       AuthorTotalName << ListLastNames[i];
