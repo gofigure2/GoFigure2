@@ -1,6 +1,7 @@
 # setup CPack
 
-INCLUDE( InstallRequiredSystemLibraries )
+#INCLUDE( InstallRequiredSystemLibraries )
+INCLUDE( ${GOFIGURE2_SOURCE_DIR}/CMake/InstallSupportLibraries.cmake )
 
 CONFIGURE_FILE( "${GOFIGURE2_SOURCE_DIR}/GOFIGURE2CPackOptions.cmake.in"
     "${GOFIGURE2_BINARY_DIR}/GOFIGURE2CPackOptions.cmake" @ONLY 
