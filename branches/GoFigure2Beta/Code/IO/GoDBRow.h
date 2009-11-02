@@ -44,6 +44,7 @@
 #include <string>
 #include <sstream>
 #include <map>
+#include <vector>
 
 /**
 \class GoDBRow
@@ -70,6 +71,7 @@ public:
 
   std::string PrintValues();
   std::string PrintColumnNames();
+  std::vector<std::string> GetVectorColumnNames();
   std::map<std::string,std::string>::iterator MapBegin();
   std::map<std::string,std::string>::iterator MapEnd();
 

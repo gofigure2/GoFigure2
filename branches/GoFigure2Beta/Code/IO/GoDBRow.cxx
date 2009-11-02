@@ -89,6 +89,19 @@ std::string GoDBRow::PrintColumnNames()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+std::vector<std::string> GoDBRow::GetVectorColumnNames()
+{
+  std::vector<std::string> VectorColumnNames;
+  for( std::map<std::string, std::string>::iterator iter = m_MapRow.begin();
+      iter != m_MapRow.end(); ++iter )
+    {
+    VectorColumnNames.push_back(iter->first);
+    }
+  return VectorColumnNames;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 std::map<std::string,std::string>::iterator GoDBRow::MapBegin()
 {
   return m_MapRow.begin();

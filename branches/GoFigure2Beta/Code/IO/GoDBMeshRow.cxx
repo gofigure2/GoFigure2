@@ -37,29 +37,33 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#ifndef __GoDBMeshRow_h
-#define __GoDBMeshRow_h
+#include "GoDBMeshRow.h"
+#include "SelectQueryDatabaseHelper.h"
 
-#include <string>
-#include <map>
-#include <iostream>
-#include <sstream>
-#include "GoDBRow.h"
-#include "ConvertToStringHelper.h"
-#include "vtkMySQLDatabase.h"
-
-class GoDBMeshRow : public GoDBRow
+GoDBMeshRow::GoDBMeshRow()
 {
-public:
-  GoDBMeshRow();
-  
-  ~GoDBMeshRow()
-    {}
-  int DoesThisBoundingBoxMeshExist(vtkMySQLDatabase* DatabaseConnector);
+  this->InitializeMap();
+}
+//-------------------------------------------------------------------------
 
-protected:
-  virtual void InitializeMap();
-    
-};
+//-------------------------------------------------------------------------
+void GoDBMeshRow::InitializeMap()
+{
+  this->m_MapRow["ColorID"] = ConvertToString<int>(0);
+  this->m_MapRow["Name"] = "";
+  this->m_MapRow["Red"] = ConvertToString<int>(0);
+  this->m_MapRow["Green"] = ConvertToString<int>(0);
+  this->m_MapRow["Blue"] = ConvertToString<int>(0);
+  this->m_MapRow["Alpha"] = ConvertToString<int>(0);
+  this->m_MapRow["Description"] = "";
 
-#endif
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+int GoDBMeshRow::DoesThisBoundingBoxMeshExist(vtkMySQLDatabase* DatabaseConnector)
+{
+  return FindOneID(DatabaseConnector,"mesh","MeshID",
+    "CoordIDMax",this->GetMapValue("CoordIDMax"),
+    "CoordIDMin",this->GetMapValue("CoordIDMin"));
+}

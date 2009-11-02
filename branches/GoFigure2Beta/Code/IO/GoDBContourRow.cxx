@@ -1,7 +1,7 @@
 /*=========================================================================
-  Author: $Author: lsouhait $  // Author of last commit
-  Version: $Rev: 455 $  // Revision of last commit
-  Date: $Date: 2009-07-28 14:31:26 -0400 (Tue, 28 Jul 2009) $  // Date of last commit
+  Author: $Author: lydiesouhait $  // Author of last commit
+  Version: $Rev: 374 $  // Revision of last commit
+  Date: $Date: 2009-07-08 10:24:11 -0400 (Wed, 08 Jul 2009) $  // Date of last commit
 =========================================================================*/
 
 /*=========================================================================
@@ -37,29 +37,35 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#ifndef __GoDBMeshRow_h
-#define __GoDBMeshRow_h
+#include "GoDBContourRow.h"
+#include "SelectQueryDatabaseHelper.h"
 
-#include <string>
-#include <map>
-#include <iostream>
-#include <sstream>
-#include "GoDBRow.h"
-#include "ConvertToStringHelper.h"
-#include "vtkMySQLDatabase.h"
 
-class GoDBMeshRow : public GoDBRow
+GoDBContourRow::GoDBContourRow()
 {
-public:
-  GoDBMeshRow();
-  
-  ~GoDBMeshRow()
-    {}
-  int DoesThisBoundingBoxMeshExist(vtkMySQLDatabase* DatabaseConnector);
+  this->InitializeMap();
+}
+//-------------------------------------------------------------------------
 
-protected:
-  virtual void InitializeMap();
-    
-};
+//-------------------------------------------------------------------------
+void GoDBContourRow::InitializeMap()
+{
+  this->m_MapRow["ContourID"] = ConvertToString<int>(0);
+  this->m_MapRow["MeshID"] = ConvertToString<int>(0);
+  this->m_MapRow["ImagingSessionID"] = ConvertToString<int>(0);
+  this->m_MapRow["CoordIDMax"] = ConvertToString<int>(0);
+  this->m_MapRow["CoordIDMin"] = ConvertToString<int>(0);
+  this->m_MapRow["Points"] = "";
+}    
+//-------------------------------------------------------------------------
 
-#endif
+//-------------------------------------------------------------------------
+int GoDBContourRow::DoesThisBoundingBoxContourExist(
+  vtkMySQLDatabase* DatabaseConnector)
+{
+  return FindOneID(DatabaseConnector,"contour","ContourID",
+    "CoordIDMax",this->GetMapValue("CoordIDMax"),
+    "CoordIDMin",this->GetMapValue("CoordIDMin"));
+}
+
+

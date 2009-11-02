@@ -58,8 +58,7 @@ public:
     QString CollectionName,QString CollectionIDName,
     QString Traces,QString TracesIDName);
   virtual  QMEGAVTKADDON2_EXPORT ~GoDBCollectionOfTraces();
-  void     QMEGAVTKADDON2_EXPORT OpenDatabaseConnection(
-    QString Server,QString User, QString Password, QString NameDB);
+ 
   /*void QMEGAVTKADDON2_EXPORT SetDatabaseVariables(
     QString Server,QString User,QString Password, QString NameDB);*/
 
@@ -90,10 +89,10 @@ public:
 
 protected:
 
-  QString m_Server;
+  /*QString m_Server;
   QString m_User;
   QString m_Password;
-  QString m_NameDB;
+  QString m_NameDB;*/
   vtkMySQLDatabase* m_DatabaseConnector;
 
   QString m_CollectionName;

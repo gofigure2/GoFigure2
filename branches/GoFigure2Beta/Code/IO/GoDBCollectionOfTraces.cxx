@@ -82,25 +82,6 @@ GoDBCollectionOfTraces::~GoDBCollectionOfTraces()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void GoDBCollectionOfTraces::OpenDatabaseConnection(QString Server,
-  QString User, QString Password, QString NameDB)
-{
-  std::pair<bool,vtkMySQLDatabase*> ConnectionDatabase = ConnectToDatabase(
-    Server.toStdString(),User.toStdString(),Password.toStdString(),
-    NameDB.toStdString());
-
-  if (!ConnectionDatabase.first)
-    {
-    std::cout<<"No connection open for QGoOpenOrCreateImgSession"<<std::endl;
-    std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
-    std::cout << std::endl;
-    }
-
-  m_DatabaseConnector = ConnectionDatabase.second;
-}
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
 void GoDBCollectionOfTraces::DeleteTraces(QStringList TracesToDelete)
 {
   for (int i = 0; i<TracesToDelete.size();i++)

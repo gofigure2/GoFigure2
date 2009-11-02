@@ -1,7 +1,7 @@
 /*=========================================================================
-  Author: $Author: lsouhait $  // Author of last commit
-  Version: $Rev: 455 $  // Revision of last commit
-  Date: $Date: 2009-07-28 14:31:26 -0400 (Tue, 28 Jul 2009) $  // Date of last commit
+  Author: $Author: lydiesouhait $  // Author of last commit
+  Version: $Rev: 374 $  // Revision of last commit
+  Date: $Date: 2009-07-08 10:24:11 -0400 (Wed, 08 Jul 2009) $  // Date of last commit
 =========================================================================*/
 
 /*=========================================================================
@@ -37,29 +37,28 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#ifndef __GoDBMeshRow_h
-#define __GoDBMeshRow_h
+#ifndef __GoDBContourRow_h
+#define __GoDBContourRow_h
 
+#include "ConvertToStringHelper.h"
+#include "GoDBRow.h"
+#include "vtkMySQLDatabase.h"
 #include <string>
 #include <map>
-#include <iostream>
-#include <sstream>
-#include "GoDBRow.h"
-#include "ConvertToStringHelper.h"
-#include "vtkMySQLDatabase.h"
 
-class GoDBMeshRow : public GoDBRow
+class GoDBContourRow : public GoDBRow
 {
 public:
-  GoDBMeshRow();
-  
-  ~GoDBMeshRow()
+  GoDBContourRow();
+   
+  ~GoDBContourRow()
     {}
-  int DoesThisBoundingBoxMeshExist(vtkMySQLDatabase* DatabaseConnector);
+  /**\brief return the ContourID of the Contour with the same bounding box
+  already registered in the DB or -1 if not yet created*/
+ int DoesThisBoundingBoxContourExist(vtkMySQLDatabase* DatabaseConnector);
 
 protected:
   virtual void InitializeMap();
-    
-};
 
+ };
 #endif
