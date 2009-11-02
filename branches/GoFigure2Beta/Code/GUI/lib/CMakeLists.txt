@@ -3,14 +3,15 @@ SET( QGoGUILIB_SRC
   QGoConnectServerPage.cxx
   QGoCreateDataBasePage.cxx
   QGoCreateImgSessionPage.cxx
+  QGoImageView.cxx
   QGoImageView2D.cxx
   QGoImageView3D.cxx
-  QGoImageView.cxx
   QGoLUTDialog.cxx
   QGoManualSegmentationDockWidget.cxx
   QGoManualSegmentationSettingsDialog.cxx
   QGoOpenCreateImgSessionPage.cxx
   QGoOpenCreateProjectPage.cxx
+  QGoPrintDatabase.cxx
   QGoTabElementBase.cxx
   QGoTabImageView2D.cxx
   QGoTabImageView3D.cxx
@@ -20,6 +21,7 @@ SET( QGoGUILIB_SRC
   QGoVisualizationDockWidget.cxx
   QGoWizardDB.cxx
   QSplitterChild.cxx
+  QTableWidgetChild.cxx
   SnapshotHelper.cxx
 )
 
@@ -27,14 +29,15 @@ SET( QGoGUILIB_HDRS
   QGoConnectServerPage.h
   QGoCreateDataBasePage.h
   QGoCreateImgSessionPage.h
+  QGoImageView.h
   QGoImageView2D.h
   QGoImageView3D.h
-  QGoImageView.h
   QGoLUTDialog.h
   QGoManualSegmentationDockWidget.h
   QGoManualSegmentationSettingsDialog.h
   QGoOpenCreateImgSessionPage.h
   QGoOpenCreateProjectPage.h
+  QGoPrintDatabase.h
   QGoTabElementBase.h
   QGoTabImageView2D.h
   QGoTabImageView3D.h
@@ -44,12 +47,14 @@ SET( QGoGUILIB_HDRS
   QGoVisualizationDockWidget.h
   QGoWizardDB.h
   QSplitterChild.h
+  QTableWidgetChild.h
 )
 
 SET( QGoGUILIB_UI
   ManualSegmentationSettingsDlg.ui 
   ManualSegmentationDockWidget.ui
   VisualizationDockWidget.ui
+  QGoPrintDatabase.ui
 )
 
 QT4_WRAP_UI( QGoGUILIB_UI_H 

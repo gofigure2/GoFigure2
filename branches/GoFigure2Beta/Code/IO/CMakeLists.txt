@@ -3,17 +3,19 @@ SET( QGOIO_SRC
   GoDBChannelRow.cxx
   GoDBCollectionOfTraces.cxx
   GoDBColorRow.cxx
+  GoDBContourRow.cxx
   GoDBCoordinateRow.cxx
   GoDBImageRow.cxx
   GoDBImgSessionRow.cxx
+  GoDBMeshRow.cxx
   GoDBProjectRow.cxx
   GoDBRow.cxx
-  itkLsm3DSerieImport.cxx
-  itkMegaCaptureImport.cxx
-  itkMultiFileReader.cxx
   MegaCaptureHeaderReader.cxx
   QueryDataBaseHelper.cxx
   SelectQueryDatabaseHelper.cxx
+  itkLsm3DSerieImport.cxx
+  itkMegaCaptureImport.cxx
+  itkMultiFileReader.cxx
   vtkPolyDataMySQLTextReader.cxx
   vtkPolyDataMySQLTextWriter.cxx
 )
