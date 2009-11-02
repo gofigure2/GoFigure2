@@ -49,14 +49,15 @@ GoDBMeshRow::GoDBMeshRow()
 //-------------------------------------------------------------------------
 void GoDBMeshRow::InitializeMap()
 {
+  this->m_MapRow["MeshID"] = ConvertToString<int>(0);
+  this->m_MapRow["CellTypeID"] = ConvertToString<int>(0);
+  this->m_MapRow["SubCellularID"] = ConvertToString<int>(0);
+  this->m_MapRow["CoordIDMax"] = ConvertToString<int>(0);
+  this->m_MapRow["CoordIDMin"] = ConvertToString<int>(0);
   this->m_MapRow["ColorID"] = ConvertToString<int>(0);
-  this->m_MapRow["Name"] = "";
-  this->m_MapRow["Red"] = ConvertToString<int>(0);
-  this->m_MapRow["Green"] = ConvertToString<int>(0);
-  this->m_MapRow["Blue"] = ConvertToString<int>(0);
-  this->m_MapRow["Alpha"] = ConvertToString<int>(0);
-  this->m_MapRow["Description"] = "";
-
+  this->m_MapRow["TrackID"] = ConvertToString<int>(0);
+  this->m_MapRow["ImagingSessionID"] = ConvertToString<int>(0);
+  this->m_MapRow["Points"] = ConvertToString<int>(0);
 }
 //-------------------------------------------------------------------------
 
