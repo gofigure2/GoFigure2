@@ -168,10 +168,13 @@ protected:
     QTableWidgetChild* TableToFill )
     {
     TableToFill->setRowCount(RowContainer->size()-1);
-    for( unsigned int i = 0; i < RowContainer->size()-1; ++i )
+    int NbofRows = RowContainer->size()-1; //for test purpose, to delete
+    unsigned int i = 0;
+    while (i < NbofRows)
+    //for( unsigned int i = 0; i < RowContainer->size()-1; ++i )
       {
       //get the column names from the settype:
-      std::vector<std::string> VectorColumnNames =(*RowContainer)[0].second.GetVectorColumnNames();
+      std::vector<std::string> VectorColumnNames =(*RowContainer)[i].second.GetVectorColumnNames();
       //std::map<std::string,std::string> Map
         // = (*RowContainer)[i].second.LinkColumnNamesAndValues();
       //compare if the number of columns found in the database is the same as the one defined in the set type:
@@ -184,11 +187,13 @@ protected:
         }
       else
         {
+        int NbCol = TableToFill->columnCount();//for test purpose, to delete
         for( int j = 0; j< TableToFill->columnCount();j++)
           {
           QTableWidgetItem* HeaderCol = new QTableWidgetItem;
           HeaderCol = TableToFill->horizontalHeaderItem(j);
-          std::string Value = (*RowContainer)[0].second.GetMapValue (HeaderCol->text().toStdString());
+          QString NameCol = HeaderCol->text();//for test purpose, to delete
+          std::string Value = (*RowContainer)[i].second.GetMapValue (HeaderCol->text().toStdString());
           /*std::map<std::string,std::string>::iterator it = Map.find(HeaderCol->text().toStdString());
           if (it == Map.end())
             {
@@ -209,11 +214,12 @@ protected:
             QTableWidgetItem* CellTable = new QTableWidgetItem;
             CellTable->setText(Value.c_str());
             TableToFill->setItem(i,j,CellTable);
-            }
-          TableToFill->setRowHeight(i,18);
-          } // ENDFOR
-        }
-      }
+            }          
+          }//ENDFOR       
+         }// ENDELSE 
+      i++;
+      TableToFill->setRowHeight(i,18);
+      }//ENDFOR
     }
 
 
