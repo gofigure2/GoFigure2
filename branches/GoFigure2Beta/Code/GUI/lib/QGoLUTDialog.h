@@ -57,6 +57,7 @@
 /**
 \class QGoLUTDialog
 \brief Look-up Table Dialog
+\example GUI/lib/qgolutdialog.cxx
 */
 class QGoLUTDialog : public QDialog
 {

@@ -20,7 +20,11 @@ class vtkLSMReader;
 class vtkContourWidget;
 class vtkOrientedGlyphContourRepresentation;
 
-
+/**
+\class QGoTabImageView3DwT
+\brief
+\example GUI/lib/qgotabimageview3dwt.cxx
+*/
 class QGoTabImageView3DwT : public QGoTabElementBase
 {
   Q_OBJECT

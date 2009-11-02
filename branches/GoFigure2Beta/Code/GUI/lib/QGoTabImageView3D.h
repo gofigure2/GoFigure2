@@ -15,6 +15,11 @@ class QDockWidget;
 
 class QGoImageView3D;
 
+/**
+\class QGoTabImageView3D
+\brief
+\example GUI/lib/qgotabimageview3d.cxx
+*/
 class QGoTabImageView3D : public QGoTabImageViewElementBase
 {
   Q_OBJECT

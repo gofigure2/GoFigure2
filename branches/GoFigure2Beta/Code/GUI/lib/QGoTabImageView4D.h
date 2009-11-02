@@ -12,6 +12,11 @@
 
 #include <QResizeEvent>
 
+/**
+\class QGoTabImageView4D
+\brief
+\example GUI/lib/qgotabimageview4d.cxx
+*/
 class QGoTabImageView4D : public QGoTabElementBase
 {
   Q_OBJECT

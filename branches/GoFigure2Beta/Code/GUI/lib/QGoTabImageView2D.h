@@ -14,6 +14,7 @@ class QDockWidget;
 /**
 \class QGoTabImageView2D
 \brief Element of the QTabWidget to be used to visualized 2D images.
+\example GUI/lib/qgotabimageview2d.cxx
 */
 class QGoTabImageView2D : public QGoTabImageViewElementBase
 {

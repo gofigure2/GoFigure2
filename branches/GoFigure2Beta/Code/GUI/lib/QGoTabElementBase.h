@@ -53,6 +53,11 @@ class QToolBar;
 class QDockWidget;
 class QGoPluginManager;
 
+/**
+\class QGoTabImageView2D
+\brief
+\example GUI/lib/qgotabelementbase.cxx
+*/
 class QGoTabElementBase : public QWidget
 {
   Q_OBJECT

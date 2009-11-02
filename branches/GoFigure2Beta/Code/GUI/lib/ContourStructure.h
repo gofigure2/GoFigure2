@@ -49,6 +49,8 @@ struct ContourStructure
     os <<"Highlighted " <<c.Highlighted <<std::endl;
     os <<"RGB [" <<c.rgb[0] <<", " <<c.rgb[1] <<", " <<c.rgb[2] <<"]" <<std::endl;
     os <<"Direction " <<c.Direction <<std::endl;
+
+    return os;
     }
 };
 

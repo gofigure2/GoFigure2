@@ -52,6 +52,11 @@ class vtkOrientedGlyphContourRepresentation;
 class vtkDataSet;
 class vtkProperty;
 
+/**
+\class QGoTabImageViewElementBase
+\brief
+\example GUI/lib/qgotabimageviewelementbase.cxx
+*/
 class QGoTabImageViewElementBase : public QGoTabElementBase
 {
   Q_OBJECT
