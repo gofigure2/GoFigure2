@@ -104,6 +104,7 @@ protected:
 
     SetType* mySet = new SetType;
     mySet->SetConnector(m_DatabaseConnector);
+    mySet->SetTableName(TableName.toStdString());
     mySet->PopulateFromDB();
 
     myT myNewObject;

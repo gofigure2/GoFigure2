@@ -14,8 +14,8 @@ int main(int argc, char * argv[])
  // win.FillTableFromDatabase(argv[1],"localhost","gofigure",
   //    "gofigure",atoi(argv[2]), argv[3]);
 
-  win.FillTableFromDatabase("db23july","localhost","gofigure",
-   "gofigure",3, "megacapture+contour");
+  win.FillTableFromDatabase("gofiguredatabase","localhost","gofigure",
+   "gofigure",1, "ProjectOct30");
 
   win.show();
 
