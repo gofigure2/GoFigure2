@@ -402,7 +402,7 @@ void QGoTabImageView3DwT::SetTimePoint( const int& iTimePoint )
       return;
       }
 
-//     RemoveAllContoursForPresentTimePoint();
+    RemoveAllContoursForPresentTimePoint();
 
     m_TimePoint = iTimePoint;
     m_LSMReader[0]->SetUpdateTimePoint( m_TimePoint );
@@ -463,7 +463,7 @@ void QGoTabImageView3DwT::SetTimePoint( const int& iTimePoint )
       m_Image->ShallowCopy( m_LSMReader[0]->GetOutput() );
       }
 
-//     LoadAllContoursForGivenTimePoint( m_TimePoint );
+    LoadAllContoursForGivenTimePoint( m_TimePoint );
     Update();
 
     emit TimePointChanged( m_TimePoint );
@@ -783,12 +783,10 @@ ValidateContour( const int& iId )
   // fill the container
   for( int i = 0; i < contour_actor.size(); i++ )
     {
-    ContourStructure temp( m_ContourId, contour_actor[i], contour_nodes, meshid,
+    ContourStructure temp( m_ContourId++, contour_actor[i], contour_nodes, meshid,
       timepoint, highlighted, r, g, b, i );
     m_ContourContainer.insert( temp );
     }
-
-  m_ContourId++;
 }
 //--------------------------------------------------------------------------
 
@@ -905,7 +903,6 @@ RemoveAllContoursForPresentTimePoint( )
 
   while( it != c_list.end() )
     {
-    std::cout <<"remove" <<std::endl;
     c_dir = (*it).Direction;
     c_actor = (*it).Actor;
 

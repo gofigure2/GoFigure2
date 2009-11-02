@@ -63,6 +63,8 @@ int main( int , char** )
     return EXIT_FAILURE;
     }
 
+  std::cout <<c <<std::endl;
+
   unsigned int k = 0;
 
   for( int i = 0; i < 5; i++ )

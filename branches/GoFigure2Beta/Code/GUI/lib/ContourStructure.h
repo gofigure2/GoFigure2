@@ -4,6 +4,8 @@
 class vtkActor;
 class vtkPolyData;
 
+#include <ostream>
+
 struct ContourStructure
 {
   typedef vtkActor*     vtkActorPointer;
@@ -36,6 +38,18 @@ struct ContourStructure
 
   ~ContourStructure()
     {}
+
+  friend std::ostream& operator << ( std::ostream& os, const ContourStructure& c )
+    {
+    os <<"ContourId " <<c.ContourId <<std::endl;
+    os <<"Actor " <<c.Actor <<std::endl;
+    os <<"Nodes "<<c.Nodes <<std::endl;
+    os <<"MeshId " <<c.MeshId <<std::endl;
+    os <<"TCoord " <<c.TCoord <<std::endl;
+    os <<"Highlighted " <<c.Highlighted <<std::endl;
+    os <<"RGB [" <<c.rgb[0] <<", " <<c.rgb[1] <<", " <<c.rgb[2] <<"]" <<std::endl;
+    os <<"Direction " <<c.Direction <<std::endl;
+    }
 };
 
 struct ContourId {};
