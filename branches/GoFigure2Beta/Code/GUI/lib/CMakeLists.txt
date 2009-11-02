@@ -1,5 +1,50 @@
-FILE( GLOB QGoGUILIB_SRC *.cxx )
-FILE( GLOB QGoGUILIB_HDRS *.h )
+SET( QGoGUILIB_SRC
+  ContourStructureHelper.cxx
+  QGoConnectServerPage.cxx
+  QGoCreateDataBasePage.cxx
+  QGoCreateImgSessionPage.cxx
+  QGoImageView2D.cxx
+  QGoImageView3D.cxx
+  QGoImageView.cxx
+  QGoLUTDialog.cxx
+  QGoManualSegmentationDockWidget.cxx
+  QGoManualSegmentationSettingsDialog.cxx
+  QGoOpenCreateImgSessionPage.cxx
+  QGoOpenCreateProjectPage.cxx
+  QGoTabElementBase.cxx
+  QGoTabImageView2D.cxx
+  QGoTabImageView3D.cxx
+  QGoTabImageView3DwT.cxx
+  QGoTabImageView4D.cxx
+  QGoTabImageViewElementBase.cxx
+  QGoVisualizationDockWidget.cxx
+  QGoWizardDB.cxx
+  QSplitterChild.cxx
+  SnapshotHelper.cxx
+)
+
+SET( QGoGUILIB_HDRS
+  QGoConnectServerPage.h
+  QGoCreateDataBasePage.h
+  QGoCreateImgSessionPage.h
+  QGoImageView2D.h
+  QGoImageView3D.h
+  QGoImageView.h
+  QGoLUTDialog.h
+  QGoManualSegmentationDockWidget.h
+  QGoManualSegmentationSettingsDialog.h
+  QGoOpenCreateImgSessionPage.h
+  QGoOpenCreateProjectPage.h
+  QGoTabElementBase.h
+  QGoTabImageView2D.h
+  QGoTabImageView3D.h
+  QGoTabImageView3DwT.h
+  QGoTabImageView4D.h
+  QGoTabImageViewElementBase.h
+  QGoVisualizationDockWidget.h
+  QGoWizardDB.h
+  QSplitterChild.h
+)
 
 SET( QGoGUILIB_UI
   ManualSegmentationSettingsDlg.ui 

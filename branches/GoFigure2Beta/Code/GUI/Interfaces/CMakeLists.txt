@@ -1,2 +1,0 @@
-# FILE( GLOB QGoGUIINTERFACES_SRC *.cxx )
-

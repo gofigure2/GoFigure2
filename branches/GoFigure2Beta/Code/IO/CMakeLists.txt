@@ -1,29 +1,25 @@
-#QT4_WRAP_CPP( QGoThreadedMultiFileReader_MOC
-#  QGoThreadedMultiFileReader.h
-#)
-
-FILE( GLOB QGOIO_SRC *.cxx )
-
-#SET( QGOIO_SRC
-#  itkMegaCaptureImport.cxx
-#  itkLsm3DSerieImport.cxx
-#  itkMultiFileReader.cxx
-## )
-##
-## IF( MYSQL_DB_SUPPORT )
-##   LIST( APPEND
-##     ${QGOIO_SRC}
-#    CreateDataBaseHelper.cxx
-#    QueryDataBaseHelper.cxx
-#    GoDBCollectionOfTraces.cxx
-#    vtkPolyDataMySQLTextReader.cxx
-#    vtkPolyDataMySQLTextWriter.cxx
-#    )
-## ENDIF( MYSQL_DB_SUPPORT )
+SET( QGOIO_SRC
+  CreateDataBaseHelper.cxx
+  GoDBChannelRow.cxx
+  GoDBCollectionOfTraces.cxx
+  GoDBColorRow.cxx
+  GoDBCoordinateRow.cxx
+  GoDBImageRow.cxx
+  GoDBImgSessionRow.cxx
+  GoDBProjectRow.cxx
+  GoDBRow.cxx
+  itkLsm3DSerieImport.cxx
+  itkMegaCaptureImport.cxx
+  itkMultiFileReader.cxx
+  MegaCaptureHeaderReader.cxx
+  QueryDataBaseHelper.cxx
+  SelectQueryDatabaseHelper.cxx
+  vtkPolyDataMySQLTextReader.cxx
+  vtkPolyDataMySQLTextWriter.cxx
+)
 
 ADD_LIBRARY( QGoIO
   ${QGOIO_SRC}
-#  ${QGoThreadedMultiFileReader_MOC}
 )
 
 TARGET_LINK_LIBRARIES( QGoIO
@@ -44,3 +40,4 @@ INSTALL( TARGETS QGoIO
   DESTINATION lib
   COMPONENT libraries
   )
+
