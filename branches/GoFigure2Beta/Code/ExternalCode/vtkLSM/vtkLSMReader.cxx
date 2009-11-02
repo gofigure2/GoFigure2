@@ -103,6 +103,7 @@ vtkLSMReader::vtkLSMReader()
   this->TrackWavelengths = 0;
   this->ImageOffsets = 0;
   this->ReadSizes = 0;
+  this->Description = 0;
   this->Clean();
 }
 
@@ -764,7 +765,7 @@ int vtkLSMReader::ReadScanInformation(ifstream* f, unsigned long pos)
             case RECORDING_ENTRY_DESCRIPTION:
                 Description = new char[size+1];
                 this->ReadData(f, &pos, size, Description);
-                //printf("Description: %s\n", Description);
+//                 printf("Description: %s\n", Description);
                 continue;
                 break;
             case RECORDING_ENTRY_OBJETIVE:

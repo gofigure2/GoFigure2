@@ -3,6 +3,7 @@ SET( QGOIO_EXAMPLES_SRC
   multifilereader
   gofigurefileinfomultiindexcontainerhelper
   MegaCaptureHeaderReaderTest
+  lsmtomegacapture
 )
 
 FOREACH( var ${QGOIO_EXAMPLES_SRC} )

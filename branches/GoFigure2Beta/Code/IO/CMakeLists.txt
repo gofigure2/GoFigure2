@@ -18,6 +18,7 @@ SET( QGOIO_SRC
   itkMultiFileReader.cxx
   vtkPolyDataMySQLTextReader.cxx
   vtkPolyDataMySQLTextWriter.cxx
+  LSMToMegaCapture.cxx
 )
 
 ADD_LIBRARY( QGoIO
