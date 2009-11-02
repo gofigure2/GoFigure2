@@ -21,6 +21,7 @@ int main( int , char** )
     NodesVector[i] = vtkPolyData::New();
 
     id = i / 4;
+    t = id;
     container.insert( ContourStructure( i, ActorVector[i], NodesVector[i],
       id, t, ( i == 10 ), 0.5, 0.5, 0.5, 0 ) );
     }
@@ -60,6 +61,27 @@ int main( int , char** )
     {
     std::cerr <<"c.ContourId != 15" <<std::endl;
     return EXIT_FAILURE;
+    }
+
+  unsigned int k = 0;
+
+  for( int i = 0; i < 5; i++ )
+    {
+    list = FindContourGivenTimePoint( container, i );
+
+    std::list< ContourStructure >::iterator c_it = list.begin();
+
+    while( c_it != list.end() )
+      {
+      if( (*c_it).ContourId != k )
+        {
+        std::cerr <<"(*c_it).ContourId != k" <<std::endl;
+        std::cerr <<(*c_it).ContourId <<" != " <<k <<std::endl;
+        return EXIT_FAILURE;
+        }
+      ++c_it;
+      ++k;
+      }
     }
 
   for( int i = 0; i < 20; i++ )
