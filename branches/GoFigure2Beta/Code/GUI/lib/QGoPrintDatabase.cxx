@@ -58,7 +58,7 @@
 #include "GoDBContourRow.h"
 #include "GoDBMeshRow.h"
 //#include "CreateDataBaseHelper.h"
-#include "QueryDatabaseHelper.h"
+#include "QueryDataBaseHelper.h"
 #include "ConvertToStringHelper.h"
 #include <iostream>
 #include <QCloseEvent>
@@ -124,11 +124,11 @@ void QGoPrintDatabase::QPrintColumnNames (QString TableName,
 
 //--------------------------------------------------------------------------
 void QGoPrintDatabase::FillTableFromDatabase( std::string iNameDB,
-  std::string iServer, std::string iUser,std::string iPassword, 
+  std::string iServer, std::string iUser,std::string iPassword,
   unsigned int iImgSessionID, std::string iImgSessionName )
 {
   m_DatabaseConnector = OpenDatabaseConnection(iServer,iUser,iPassword,iNameDB);
-  
+
   m_ImgSessionID = iImgSessionID;
   m_ImgSessionName = iImgSessionName;
 
@@ -266,7 +266,7 @@ int QGoPrintDatabase::InWhichTableAreWe ()
   int CurrentIndex = this->DBTabWidget->currentIndex();
   QString TabName = this->DBTabWidget->tabText(CurrentIndex);
 
-  int TabIndex = -1; // Default value. 
+  int TabIndex = -1; // Default value.
 
   if (TabName == "contour")
     {
