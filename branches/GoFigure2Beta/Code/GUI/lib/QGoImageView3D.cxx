@@ -776,12 +776,15 @@ std::vector< vtkActor* >
 QGoImageView3D::
 AddContour( const int& iId, vtkPolyData* dataset, vtkProperty* iProperty )
 {
-  
-  // vtkActor* temp = 
-  View3D->AddDataSet( (vtkDataSet*) dataset,
+  std::vector< vtkActor* > oList =
+    QGoImageView::AddContour( iId, dataset, iProperty );
+
+  vtkActor* temp = View3D->AddDataSet( (vtkDataSet*) dataset,
     iProperty, false, false );
 
-  return QGoImageView::AddContour( iId, dataset, iProperty );
+  oList.push_back( temp );
+
+  return oList;
 }
 //--------------------------------------------------------------------------
 
@@ -797,5 +800,31 @@ HighlightContour( vtkProp3D* iProp, const bool& iToDo )
 {
   View3D->HighlightContour( iProp, iToDo );
   QGoImageView::HighlightContour( iProp, iToDo );
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+QGoImageView3D::
+RemoveActor( const int& iId, vtkActor* iActor )
+{
+  QGoImageView::RemoveActor( iId, iActor );
+  if( iId == 3 )
+    {
+    View3D->GetRenderer()->RemoveActor( iActor );
+    }
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+QGoImageView3D::
+AddActor( const int& iId, vtkActor* iActor )
+{
+  QGoImageView::AddActor( iId, iActor );
+  if( iId == 3 )
+    {
+    View3D->GetRenderer()->AddActor( iActor );
+    }
 }
 //--------------------------------------------------------------------------

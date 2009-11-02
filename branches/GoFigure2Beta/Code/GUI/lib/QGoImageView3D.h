@@ -48,6 +48,9 @@ public:
   vtkImageActor* GetImageActor( const int& );
   QVTKInteractor* GetInteractor( const int& );
 
+  virtual void RemoveActor( const int& iId, vtkActor* iActor );
+  virtual void AddActor( const int& iId, vtkActor* iActor );
+
   std::vector< vtkActor* > AddContour( const int& iId,
       vtkPolyData* dataset,
       vtkProperty* property = NULL );

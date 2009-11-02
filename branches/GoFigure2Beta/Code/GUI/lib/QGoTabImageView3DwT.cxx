@@ -20,6 +20,8 @@
 #include <QVBoxLayout>
 #include <QColorDialog>
 
+#include <set>
+
 //--------------------------------------------------------------------------
 QGoTabImageView3DwT::QGoTabImageView3DwT( QWidget* iParent ) :
   QGoTabElementBase( iParent ),
@@ -82,11 +84,22 @@ QGoTabImageView3DwT::~QGoTabImageView3DwT( )
   ContourStructureMultiIndexContainer::iterator it = m_ContourContainer.begin();
   ContourStructureMultiIndexContainer::iterator end = m_ContourContainer.end();
 
+  std::set< vtkPolyData* > NodeSet;
+
   while( it != end )
     {
-    it->Nodes->Delete();
+    NodeSet.insert( it->Nodes );
     it->Actor->Delete();
     ++it;
+    }
+
+  std::set< vtkPolyData* >::iterator NodeSetIt = NodeSet.begin();
+  std::set< vtkPolyData* >::iterator NodeSetEnd = NodeSet.end();
+
+  while( NodeSetIt != NodeSetEnd )
+    {
+    (*NodeSetIt)->Delete();
+    ++NodeSetIt;
     }
 }
 //--------------------------------------------------------------------------

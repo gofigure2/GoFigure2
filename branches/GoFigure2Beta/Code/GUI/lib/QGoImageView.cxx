@@ -227,8 +227,11 @@ void
 QGoImageView::
 RemoveActor( const int& iId, vtkActor* iActor )
 {
-  vtkViewImage2D* viewer = m_Pool->GetItem( iId );
-  viewer->GetRenderer()->RemoveActor( iActor );
+  if( ( iId >= 0 ) && ( iId < m_Pool->GetNumberOfItems() ) )
+    {
+    vtkViewImage2D* viewer = m_Pool->GetItem( iId );
+    viewer->GetRenderer()->RemoveActor( iActor );
+    }
 }
 //--------------------------------------------------------------------------
 
@@ -237,7 +240,10 @@ void
 QGoImageView::
 AddActor( const int& iId, vtkActor* iActor )
 {
-  vtkViewImage2D* viewer = m_Pool->GetItem( iId );
-  viewer->GetRenderer()->AddActor( iActor );
+  if( ( iId >= 0 ) && ( iId < m_Pool->GetNumberOfItems() ) )
+    {
+    vtkViewImage2D* viewer = m_Pool->GetItem( iId );
+    viewer->GetRenderer()->AddActor( iActor );
+    }
 }
 //--------------------------------------------------------------------------

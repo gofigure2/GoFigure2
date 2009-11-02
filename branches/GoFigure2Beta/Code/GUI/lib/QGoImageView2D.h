@@ -17,6 +17,7 @@ class vtkEventQtSlotConnect;
 /**
 \class QGoImageView2D
 \brief Widget to visualize a 2D image (represented as vtkImageData).
+\example GUI/lib/qgoimageview2d.cxx
 */
 class QGoImageView2D : public QGoImageView
 {
