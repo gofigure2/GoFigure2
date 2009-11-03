@@ -178,7 +178,7 @@ protected:
       //std::map<std::string,std::string> Map
         // = (*RowContainer)[i].second.LinkColumnNamesAndValues();
       //compare if the number of columns found in the database is the same as the one defined in the set type:
-      if( TableToFill->columnCount() != VectorColumnNames.size())//(int)(Map.size()) )
+      if( TableToFill->columnCount() != (int)VectorColumnNames.size())//(int)(Map.size()) )
         {
         std::cout << "Pb, row is not the same size as the number of col";
         std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;

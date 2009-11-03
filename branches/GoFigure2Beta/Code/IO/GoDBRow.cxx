@@ -38,6 +38,7 @@
 =========================================================================*/
 #include "GoDBRow.h"
 #include <map>
+#include <iostream>
 
 GoDBRow::GoDBRow()
 {
@@ -138,6 +139,8 @@ std::string GoDBRow::GetMapValue (std::string key)
         MapValue = MapValue.substr(1,MapValue.size()-2);
         return MapValue;
         }
+      std::cout<<MapValue.c_str()<<std::endl;
+
       return MapValue;
       }
     }

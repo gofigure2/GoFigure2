@@ -109,7 +109,8 @@ void QGoPrintDatabase::QPrintColumnNames (QString TableName,
     }
 
   QTabTableName->horizontalHeader()->setSortIndicatorShown(true);
-  QTabTableName->setSortingEnabled(true);
+  //QTabTableName->setSortingEnabled(true);
+  QTabTableName->setSortingEnabled(false);
   QTabTableName->horizontalHeader()->setMovable(true);
 
   QObject::connect( QTabTableName->horizontalHeader(),
