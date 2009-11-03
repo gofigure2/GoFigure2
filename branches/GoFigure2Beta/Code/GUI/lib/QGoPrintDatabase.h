@@ -123,6 +123,7 @@ protected:
     else
       {
       PrintOutContentFromDB< myT >( RowContainer, Table );
+      //sorting has to be enabled after populating the tables:
       Table->setSortingEnabled(true);
       }
     delete mySet;

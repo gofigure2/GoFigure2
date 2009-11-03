@@ -109,10 +109,8 @@ void QGoPrintDatabase::QPrintColumnNames (QString TableName,
     }
 
   QTabTableName->horizontalHeader()->setSortIndicatorShown(true);
-  //QTabTableName->setSortingEnabled(true);
   /*Need to disabled the Sorting while printing the values from the database in
   the table widget as the sorting is making trouble*/
-  //to do: enable the sorting again after it can't cause any trouble
   QTabTableName->setSortingEnabled(false);
   QTabTableName->horizontalHeader()->setMovable(true);
 
@@ -132,7 +130,6 @@ void QGoPrintDatabase::FillTableFromDatabase( std::string iNameDB,
   unsigned int iImgSessionID, std::string iImgSessionName )
 {
   m_DatabaseConnector = OpenDatabaseConnection(iServer,iUser,iPassword,iNameDB);
-
   m_ImgSessionID = iImgSessionID;
   m_ImgSessionName = iImgSessionName;
 
@@ -143,6 +140,7 @@ void QGoPrintDatabase::FillTableFromDatabase( std::string iNameDB,
   GetContentAndDisplayFromDB< GoDBMeshRow   >("mesh", MeshTable);
   //CollectionOfMeshes->SetDatabaseVariables(m_DatabaseConnector);
 
+  CloseDatabaseConnection(m_DatabaseConnector);
 }
 //--------------------------------------------------------------------------
 
