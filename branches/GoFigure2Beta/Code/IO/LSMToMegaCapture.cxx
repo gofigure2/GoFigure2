@@ -137,7 +137,10 @@ Export()
       for( int k = 0; k < dim[2]; k++ )
         {
         std::stringstream filename;
-        filename <<"image-PL00-CO00-RO00-ZT00-YT00-XT00-TM" <<i <<"-ch" <<j <<"-zs" <<k <<".png";
+        filename <<"image-PL00-CO00-RO00-ZT00-YT00-XT00-TM";
+        filename << setfill('0') << setw(2) <<i <<"-ch";
+        filename << setfill('0') << setw(4) <<j <<"-zs";
+        filename << setfill('0') << setw(4) <<k <<".png";
 
         file <<"<Image>"<<std::endl;
         file <<"Filename " <<filename.str() <<std::endl;
