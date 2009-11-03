@@ -48,6 +48,7 @@ SET( QGoGUILIB_HDRS
   QGoWizardDB.h
   QSplitterChild.h
   QTableWidgetChild.h
+  QTableWidgetNumericalItem.h
 )
 
 SET( QGoGUILIB_UI

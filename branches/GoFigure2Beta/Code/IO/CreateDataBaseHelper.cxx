@@ -456,7 +456,7 @@ std::string MeshTable()
     `ColorID` INT NOT NULL ,\
     `TrackID` INT NULL ,\
     `ImagingSessionID` INT NOT NULL ,\
-    `Points` TEXT NOT NULL ,\
+    `Points` TEXT NULL ,\
     PRIMARY KEY (`MeshID`) ,\
     INDEX `FK_Mesh_CellTypeID` (`CellTypeID` ASC) ,\
     INDEX `FK_Mesh_CoordIDMax` (`CoordIDMax` ASC) ,\
