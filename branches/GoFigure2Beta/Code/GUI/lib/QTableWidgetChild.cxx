@@ -155,7 +155,7 @@ std::map< unsigned int, bool > QTableWidgetChild::ContoursToHighlight()
   Selection = this->selectedRanges();
   QStringList ColumnsHeader = this->recordHeaderNamesOrder();
 
-  int figureIDIndex = findColumnName("figureID",ColumnsHeader);
+  int figureIDIndex = findColumnName("ContourID",ColumnsHeader);
   unsigned int t;
 
   for( int i=0; i < this->rowCount(); i++ )

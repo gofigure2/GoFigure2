@@ -42,6 +42,7 @@
 #include "SelectQueryDatabaseHelper.h"
 #include "QueryDataBaseHelper.h"
 #include "ConvertToStringHelper.h"
+#include "vtkMySQLDatabase.h"
 #include <QStringList>
 #include <QString>
 #include <string>
@@ -71,23 +72,13 @@ GoDBCollectionOfTraces::~GoDBCollectionOfTraces()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-/*void GoDBCollectionOfTraces::SetDatabaseVariables( QString Server,
-  QString User, QString Password, QString NameDB)
-{
-  m_Server = Server;
-  m_User = User;
-  m_Password = Password;
-  m_NameDB = NameDB;
-}*/
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-void GoDBCollectionOfTraces::DeleteTraces(QStringList TracesToDelete)
+void GoDBCollectionOfTraces::DeleteTraces(QStringList TracesToDelete,
+  vtkMySQLDatabase* DatabaseConnector)
 {
   for (int i = 0; i<TracesToDelete.size();i++)
     {
     std::string ID = TracesToDelete.at(i).toStdString();
-    DeleteRow(m_DatabaseConnector,m_TracesName.toStdString(),
+    DeleteRow(DatabaseConnector,m_TracesName.toStdString(),
       m_TracesIDName.toStdString(),ID);
     }
 }
@@ -95,12 +86,12 @@ void GoDBCollectionOfTraces::DeleteTraces(QStringList TracesToDelete)
 
 //--------------------------------------------------------------------------
 void GoDBCollectionOfTraces::AddSelectedTracesToCollection(QStringList ListSelectedTraces,
-  int newCollectionID)
+  int newCollectionID,vtkMySQLDatabase* DatabaseConnector)
 {
   std::string newCollectionIDstring = ConvertToString<int>(newCollectionID);
   for (int i=0; i<ListSelectedTraces.size();i++)
     {
-    UpdateValueInDB(m_DatabaseConnector,m_TracesName.toStdString(), 
+    UpdateValueInDB(DatabaseConnector,m_TracesName.toStdString(), 
       m_CollectionIDName.toStdString(), newCollectionIDstring,
       m_TracesIDName.toStdString(), ListSelectedTraces.at(i).toStdString());
     }
@@ -108,11 +99,12 @@ void GoDBCollectionOfTraces::AddSelectedTracesToCollection(QStringList ListSelec
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-QStringList GoDBCollectionOfTraces::ListCollectionID()
- {
+QStringList GoDBCollectionOfTraces::ListCollectionID(
+  vtkMySQLDatabase* DatabaseConnector)
+ {   
    QStringList ListIDs; 
    std::vector<std::string> vectListIDs = ListAllValuesForOneColumn(
-     m_DatabaseConnector,m_CollectionIDName.toStdString(),
+     DatabaseConnector,m_CollectionIDName.toStdString(),
      m_CollectionName.toStdString());
  
    for( unsigned int i = 0; i < vectListIDs.size(); ++i )
@@ -122,3 +114,6 @@ QStringList GoDBCollectionOfTraces::ListCollectionID()
  
    return ListIDs;
  }
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------

@@ -60,15 +60,15 @@ public:
 
   QMEGAVTKADDON2_EXPORT QGoPrintDatabase();
   virtual QMEGAVTKADDON2_EXPORT ~QGoPrintDatabase();
+  /**\brief set all the values needed for the database*/
+  void QMEGAVTKADDON2_EXPORT SetDatabaseVariables(
+    std::string iNameDB,std::string iServer,
+    std::string iUser,std::string iPassword,
+    unsigned int iImgSessionID,std::string iImgSessionName);
 
   /** \brief Create the QTableWidgetChild,get the columns names and the values stored
   in the database and display them in the QTableWidgetChild */
-  //void QMEGAVTKADDON2_EXPORT FillTableFromDatabase(QString ServerName,QString login,
-    //  QString Password, QString DBName,
-    //  int ExpID,QString ExpName);
-  void QMEGAVTKADDON2_EXPORT FillTableFromDatabase(std::string iNameDB,
-    std::string iServer,std::string iUser,std::string iPassword,
-    unsigned int iImgSessionID,std::string iImgSessionName);
+  void QMEGAVTKADDON2_EXPORT FillTableFromDatabase();
 
   QMEGAVTKADDON2_EXPORT QTableWidgetChild* ContourTable;
   QMEGAVTKADDON2_EXPORT QTableWidgetChild* MeshTable;
@@ -83,6 +83,9 @@ protected:
     std::vector< std::string > ColumnNames, QTableWidgetChild* QTabTableName );
   GoDBCollectionOfTraces* CollectionOfContours;
   GoDBCollectionOfTraces* CollectionOfMeshes;
+
+  void OpenDBConnectionForTables();
+  void CloseDBConnectionForTables();
 
   /** \brief Return the Index of the tab currently used: */
   int InWhichTableAreWe ();
@@ -135,8 +138,10 @@ protected:
   /**\todo check that the values hasn't been modified first, then update
   only in the database the modified ones*/
   template< class myT >
-  void UpdateContentAndDisplayFromDB( QString TableName, QTableWidgetChild* Table )
+  void UpdateContentAndDisplayFromDB( QString TableName, QTableWidgetChild* Table,
+    vtkMySQLDatabase* DatabaseConnector)
     {
+    Table->setSortingEnabled(false);
     typedef GoDBRecordSet< myT >                  SetType;
     typedef typename SetType::InternalObjectType  InternalObjectType;
     typedef typename SetType::RowContainerType    RowContainerType;
@@ -144,7 +149,7 @@ protected:
     RowContainerType* RowContainer;
 
     SetType* mySet = new SetType;
-    mySet->SetConnector(m_DatabaseConnector);   
+    mySet->SetConnector(DatabaseConnector);   
     mySet->SetTableName( TableName.toStdString() );
     mySet->PopulateFromDB();
 
@@ -160,6 +165,7 @@ protected:
       PrintOutContentFromDB< myT >( RowContainer, Table );
     delete mySet;
     emit TableContentChanged();
+    Table->setSortingEnabled(true);
     }
 
   /** \brief Display the values stored in the RowContainer (list of type T)
@@ -168,17 +174,14 @@ protected:
   void PrintOutContentFromDB(
     typename GoDBRecordSet< myT >::RowContainerType *RowContainer,
     QTableWidgetChild* TableToFill )
-    {
-    TableToFill->setRowCount(RowContainer->size()-1);
-    int NbofRows = RowContainer->size()-1; //for test purpose, to delete
+    { 
+    int NbofRows = RowContainer->size()-1;
+    TableToFill->setRowCount(NbofRows);
     unsigned int i = 0;
     while (i < NbofRows)
-    //for( unsigned int i = 0; i < RowContainer->size()-1; ++i )
       {
       //get the column names from the settype:
       std::vector<std::string> VectorColumnNames =(*RowContainer)[i].second.GetVectorColumnNames();
-      //std::map<std::string,std::string> Map
-        // = (*RowContainer)[i].second.LinkColumnNamesAndValues();
       //compare if the number of columns found in the database is the same as the one defined in the set type:
       if( TableToFill->columnCount() != (int)VectorColumnNames.size())//(int)(Map.size()) )
         {
@@ -189,24 +192,11 @@ protected:
         }
       else
         {
-        int NbCol = TableToFill->columnCount();//for test purpose, to delete
         for( int j = 0; j< TableToFill->columnCount();j++)
           {
           QTableWidgetItem* HeaderCol = new QTableWidgetItem;
           HeaderCol = TableToFill->horizontalHeaderItem(j);
-          QString NameCol = HeaderCol->text();//for test purpose, to delete
           std::string Value = (*RowContainer)[i].second.GetMapValue (HeaderCol->text().toStdString());
-          /*std::map<std::string,std::string>::iterator it = Map.find(HeaderCol->text().toStdString());
-          if (it == Map.end())
-            {
-            return;
-            }
-          else
-            {
-            QTableWidgetItem* CellTable = new QTableWidgetItem;
-            CellTable->setText(it->second.c_str());
-            TableToFill->setItem(i,j,CellTable);
-            }*/
           if (Value == "noValue")
             {
             return;
@@ -228,6 +218,10 @@ protected:
   void closeEvent(QCloseEvent* event);
   
   vtkMySQLDatabase* m_DatabaseConnector;
+  std::string       m_Server;
+  std::string       m_User;
+  std::string       m_Password;
+  std::string       m_DBName;
   unsigned int      m_ImgSessionID;
   std::string       m_ImgSessionName;
 

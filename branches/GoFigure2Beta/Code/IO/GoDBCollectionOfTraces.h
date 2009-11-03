@@ -59,26 +59,30 @@ public:
     QString Traces,QString TracesIDName);
   virtual  QMEGAVTKADDON2_EXPORT ~GoDBCollectionOfTraces();
  
-  /*void QMEGAVTKADDON2_EXPORT SetDatabaseVariables(
-    QString Server,QString User,QString Password, QString NameDB);*/
+  void QMEGAVTKADDON2_EXPORT SetDatabaseVariables(
+    QString Server,QString User,QString Password, QString NameDB);
 
   /** \brief Delete in the Database all the traces listed in the QStringList */
-  void QMEGAVTKADDON2_EXPORT DeleteTraces(QStringList TracesToDelete);
+  void QMEGAVTKADDON2_EXPORT DeleteTraces(QStringList TracesToDelete,
+  vtkMySQLDatabase* DatabaseConnector);
 
   /** \brief Update the collectionID of the selected traces in the DB traces table
   with the new collectionID: */
   void QMEGAVTKADDON2_EXPORT AddSelectedTracesToCollection(
-    QStringList ListSelectedTraces,int newCollectionID);
+    QStringList ListSelectedTraces,int newCollectionID,
+    vtkMySQLDatabase* DatabaseConnector);
 
   template< class myT >
   void QMEGAVTKADDON2_EXPORT CreateNewCollectionFromSelection(
-    QStringList ListSelectedTraces)
+    QStringList ListSelectedTraces, vtkMySQLDatabase* DatabaseConnector)
     {
-    int NewCollectionID = this->CreateNewCollection<myT>();
-    AddSelectedTracesToCollection(ListSelectedTraces,NewCollectionID);
+    int NewCollectionID = this->CreateNewCollection<myT>(DatabaseConnector);
+    AddSelectedTracesToCollection(ListSelectedTraces,
+      NewCollectionID, DatabaseConnector);
     }
 
-  QStringList QMEGAVTKADDON2_EXPORT ListCollectionID();
+  QStringList QMEGAVTKADDON2_EXPORT ListCollectionID(
+    vtkMySQLDatabase* DatabaseConnector);
 
   QString CollectionName()
     { return m_CollectionName;}
@@ -89,12 +93,6 @@ public:
 
 protected:
 
-  /*QString m_Server;
-  QString m_User;
-  QString m_Password;
-  QString m_NameDB;*/
-  vtkMySQLDatabase* m_DatabaseConnector;
-
   QString m_CollectionName;
   QString m_CollectionIDName;
   QString m_TracesName;
@@ -104,13 +102,12 @@ protected:
   return the collectionID from the created row: */
   int  CreateNewCollection();
 
-
   template< class myT >
-  int CreateNewCollection()
+  int CreateNewCollection(vtkMySQLDatabase* DatabaseConnector)
     {
     myT myNewObject;
     return AddOnlyOneNewObjectInTable<myT>(
-      m_DatabaseConnector,m_CollectionName.toStdString(),
+      DatabaseConnector,m_CollectionName.toStdString(),
       myNewObject, m_CollectionIDName.toStdString() );
       /*AddNewObjectInTable< myT >(
       m_Server.toStdString(),
