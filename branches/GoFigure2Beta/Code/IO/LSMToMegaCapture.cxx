@@ -11,12 +11,19 @@
 #include "vtkImageData.h"
 #include "vtkPNGWriter.h"
 
+/**
+ * \brief Constructor
+ */
 LSMToMegaCapture::LSMToMegaCapture( ) : m_Plaque( 0 ), m_Column( 0 ), m_Row( 0 ),
   m_XTile( 0 ), m_YTile( 0 ), m_ZTile( 0 )
 {
 }
 
-LSMToMegaCapture::~LSMToMegaCapture()
+/**
+ * \brief Destructor
+ */
+LSMToMegaCapture::
+~LSMToMegaCapture()
 {
   if( !m_LSMReaders.empty() )
     {
@@ -27,6 +34,52 @@ LSMToMegaCapture::~LSMToMegaCapture()
     }
 }
 
+void
+LSMToMegaCapture::
+SetPlaque( const unsigned int& iPlaque )
+{
+  m_Plaque = iPlaque;
+}
+
+void
+LSMToMegaCapture::
+SetRow( const unsigned int& iRow )
+{
+  m_Row = iRow;
+}
+
+void
+LSMToMegaCapture::
+SetColumn( const unsigned int& iCol )
+{
+  m_Column = iCol;
+}
+
+void
+LSMToMegaCapture::
+SetXTile( const unsigned int& iXt )
+{
+  m_XTile = iXt;
+}
+
+void
+LSMToMegaCapture::
+SetYTile( const unsigned int& iYt )
+{
+  m_YTile = iYt;
+}
+
+void
+LSMToMegaCapture::
+SetZTile( const unsigned int& iZt )
+{
+  m_ZTile = iZt;
+}
+
+/**
+ * \brief
+ * \param iFileName
+ */
 void
 LSMToMegaCapture::
 SetFileName( const std::string& iFileName )
@@ -45,9 +98,13 @@ SetFileName( const std::string& iFileName )
   m_LSMReaders.front()->Update();
 }
 
+/**
+ * \brief Export as MegaCapture
+ * \param[in] iHeaderFileName
+ */
 void
 LSMToMegaCapture::
-Export()
+Export( const std::string& iHeaderFileName )
 {
   m_NumberOfChannels = m_LSMReaders[0]->GetNumberOfChannels();
   m_NumberOfTimePoints = m_LSMReaders[0]->GetNumberOfTimePoints();
@@ -60,7 +117,7 @@ Export()
   int dim[5];
   m_LSMReaders[0]->GetDimensions( dim );
 
-  std::ofstream file( "test.txt" );
+  std::ofstream file( iHeaderFileName.c_str() );
   file <<"MegaCapture" <<std::endl;
   file <<"<ImageSessionData>" <<std::endl;
   file <<"Version 3.0" <<std::endl;
@@ -88,7 +145,8 @@ Export()
   file <<"DimensionZS " <<dim[2] <<std::endl;
   file <<"DimensionCH " <<m_NumberOfChannels <<std::endl;
 
-  for( unsigned int i = 0; i < m_NumberOfChannels; i++ )
+  unsigned int i, j, k;
+  for( i = 0; i < m_NumberOfChannels; i++ )
     {
     int r = m_LSMReaders[0]->GetChannelColorComponent( i, 0 );
     int g = m_LSMReaders[0]->GetChannelColorComponent( i, 1 );
@@ -103,7 +161,7 @@ Export()
 
   if( m_NumberOfChannels > 1 )
     {
-    for( unsigned int i = 1; i < m_NumberOfChannels; i++ )
+    for( i = 1; i < m_NumberOfChannels; i++ )
       {
       m_LSMReaders.push_back( vtkLSMReader::New() );
       m_LSMReaders[i]->SetFileName( m_FileName.c_str() );
@@ -121,26 +179,32 @@ Export()
     strftime(timeStr, 100, "%Y-%m-%d %H:%M:%S", localtime( &buf.st_mtime));
     }
 
-  for( unsigned int i = 0; i < m_NumberOfTimePoints; i++ )
+  for( i = 0; i < m_NumberOfTimePoints; i++ )
     {
-    for( int k = 0; k < m_NumberOfChannels; k++ )
+    for( k = 0; k < m_NumberOfChannels; k++ )
       {
       m_LSMReaders[k]->SetUpdateTimePoint( i );
       }
 
-    for( int j = 0; j < m_NumberOfChannels; j++ )
+    for( j = 0; j < m_NumberOfChannels; j++ )
       {
       m_LSMReaders[j]->Update();
       vtkImageData* image3d = m_LSMReaders[j]->GetOutput();
       image3d->GetExtent( extent );
 
-      for( int k = 0; k < dim[2]; k++ )
+      for( k = 0; k < dim[2]; k++ )
         {
         std::stringstream filename;
-        filename <<"image-PL00-CO00-RO00-ZT00-YT00-XT00-TM";
-        filename << setfill('0') << setw(2) <<i <<"-ch";
-        filename << setfill('0') << setw(4) <<j <<"-zs";
-        filename << setfill('0') << setw(4) <<k <<".png";
+        filename <<"image-PL" << setfill('0') << setw(2) <<m_Plaque;
+        filename <<"-CO" << setfill('0') << setw(2) <<m_Column;
+        filename <<"-RO" << setfill('0') << setw(2) <<m_Row;
+        filename <<"-ZT" << setfill('0') << setw(2) <<m_ZTile;
+        filename <<"-YT" << setfill('0') << setw(2) <<m_YTile;
+        filename <<"-XT" << setfill('0') << setw(2) <<m_XTile;
+        filename <<"-TM" << setfill('0') << setw(4) <<i;
+        filename <<"-ch" << setfill('0') << setw(2) <<j;
+        filename <<"-zs" << setfill('0') << setw(4) <<k;
+        filename <<".png";
 
         file <<"<Image>"<<std::endl;
         file <<"Filename " <<filename.str() <<std::endl;

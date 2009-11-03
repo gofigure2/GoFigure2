@@ -17,7 +17,15 @@ class LSMToMegaCapture
 
     void SetFileName( const std::string& iFileName );
 
-    void Export( );
+    void Export( const std::string& iHeaderFileName );
+
+    void SetPlaque( const unsigned int& iPlaque );
+    void SetRow( const unsigned int& iRow );
+    void SetColumn( const unsigned int& iCol );
+    void SetXTile( const unsigned int& iXt );
+    void SetYTile( const unsigned int& iYt );
+    void SetZTile( const unsigned int& iZt );
+
   protected:
     std::string m_FileName;
     std::vector< vtkLSMReader* > m_LSMReaders;
