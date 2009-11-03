@@ -123,6 +123,7 @@ protected:
     else
       {
       PrintOutContentFromDB< myT >( RowContainer, Table );
+      Table->setSortingEnabled(true);
       }
     delete mySet;
     }
@@ -219,7 +220,7 @@ protected:
          }// ENDELSE 
       i++;
       TableToFill->setRowHeight(i,18);
-      }//ENDFOR
+      }//ENDWHILE
     }
 
 
@@ -228,13 +229,6 @@ protected:
   vtkMySQLDatabase* m_DatabaseConnector;
   unsigned int      m_ImgSessionID;
   std::string       m_ImgSessionName;
-  /*QString       m_NameDB;
-  QString       m_Server;
-  QString       m_User;
-  QString       m_Password;*/
-  
-  
-  
 
 protected slots:
   void CreateContextMenu(const QPoint &pos);

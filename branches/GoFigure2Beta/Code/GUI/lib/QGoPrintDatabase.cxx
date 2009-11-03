@@ -110,6 +110,9 @@ void QGoPrintDatabase::QPrintColumnNames (QString TableName,
 
   QTabTableName->horizontalHeader()->setSortIndicatorShown(true);
   //QTabTableName->setSortingEnabled(true);
+  /*Need to disabled the Sorting while printing the values from the database in
+  the table widget as the sorting is making trouble*/
+  //to do: enable the sorting again after it can't cause any trouble
   QTabTableName->setSortingEnabled(false);
   QTabTableName->horizontalHeader()->setMovable(true);
 
