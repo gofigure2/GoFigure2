@@ -54,11 +54,11 @@ namespace itk
 {
 
 //-----------------------------------------------------------------------------
-MultiFileReader::MultiFileReader( ) : m_OutputImage( 0 ), m_FileList( 0 ),
-  m_Dimensionality( 0 ), m_DataScalarType( -1 ), m_NumberOfChannels( -1 ),
-  m_NumberOfTimePoints( -1 ), m_NumberOfSlices( -1 ), m_UpdateTimePoint( -1 ),
-  m_UpdateZSlice( -1 ), m_UpdateChannel( -1 ), m_MultiChannelImages( false ),
-  m_TimeBased( true )//, m_ProgressBar( 0 ), m_IsProgressBarSet( false )
+MultiFileReader::MultiFileReader( ) : m_OutputImage( 0 ),
+  m_Dimensionality( 0 ), m_DataScalarType( -1 ), m_NumberOfChannels( 0 ),
+  m_NumberOfTimePoints( 0 ), m_NumberOfSlices( 0 ), m_UpdateTimePoint( 0 ),
+  m_UpdateZSlice( 0 ), m_UpdateChannel( 0 ), m_MultiChannelImages( false ),
+  m_TimeBased( true )
 {
 }
 //-----------------------------------------------------------------------------
@@ -72,37 +72,44 @@ MultiFileReader::~MultiFileReader()
 
 
 //-----------------------------------------------------------------------------
-void MultiFileReader::SetTimePoint( const int& UserTimePoint )
+void MultiFileReader::SetTimePoint( const unsigned int& UserTimePoint )
 {
   if( UserTimePoint <= m_NumberOfTimePoints )
     {
-    this->m_UpdateTimePoint = UserTimePoint;
+    m_UpdateTimePoint = UserTimePoint;
     }
   else
     {
-    this->m_UpdateTimePoint = m_NumberOfTimePoints;
+    m_UpdateTimePoint = m_NumberOfTimePoints;
     }
 }
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
-void MultiFileReader::SetZDepth( const int& iZ )
+void MultiFileReader::SetZDepth( const unsigned int& iZ )
 {
   if( iZ <= m_NumberOfSlices )
     {
-    this->m_UpdateZSlice = iZ;
+    m_UpdateZSlice = iZ;
     }
   else
     {
-    this->m_UpdateZSlice = m_NumberOfSlices;
+    m_UpdateZSlice = m_NumberOfSlices;
     }
 }
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
-void MultiFileReader::SetChannel( const int& UserChannel )
+void MultiFileReader::SetChannel( const unsigned int& UserChannel )
 {
-  m_UpdateChannel = UserChannel;
+  if( UserChannel <= m_NumberOfChannels - 1 )
+    {
+    m_UpdateChannel = UserChannel;
+    }
+  else
+    {
+    m_UpdateChannel = m_NumberOfChannels - 1;
+    }
 
   UpdateChannel();
 }
@@ -112,63 +119,43 @@ void MultiFileReader::SetChannel( const int& UserChannel )
 //-----------------------------------------------------------------------------
 void MultiFileReader::UpdateChannel()
 {
-  if( this->m_UpdateChannel > m_NumberOfChannels )
+  if( m_UpdateChannel > m_NumberOfChannels )
     {
-    this->m_UpdateChannel = m_NumberOfChannels - 1;
-    }
-  if( this->m_UpdateChannel < 0 )
-    {
-    this->m_UpdateChannel = 0;
+    m_UpdateChannel = m_NumberOfChannels - 1;
     }
 }
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
-void MultiFileReader::SetInput( FileListType* UserFileList )
+void
+MultiFileReader::
+SetInput( const GoFigureFileInfoHelperMultiIndexContainer& iUserFileList )
 {
-  if( !UserFileList )
+  if( iUserFileList.empty() )
     {
     return;
     }
 
-  if( UserFileList->empty() )
-    {
-    return;
-    }
+  m_FileList = iUserFileList;
 
-  this->m_FileList = UserFileList;
+  // Get the number of time points
+  GoFigureFileInfoHelperMultiIndexContainer::index< m_TCoord >::type::reverse_iterator
+    r_tm_it = m_FileList.get< m_TCoord >().rbegin();
 
-  FileListType::iterator endIt = m_FileList->end();
-  FileListType::iterator It = m_FileList->begin();
+  m_NumberOfTimePoints = (*r_tm_it).m_TCoord;
 
-  if( this->m_TimeBased )
-    {
-    unsigned int CurrentTimePoint = (*It).m_TCoord;
-    this->m_NumberOfTimePoints = 1;
-    while( It != endIt )
-      {
-      if( (*It).m_TCoord > CurrentTimePoint )
-        {
-        CurrentTimePoint = (*It).m_TCoord;
-        ++m_NumberOfTimePoints;
-        }
-      ++It;
-      }
-    }
-  else
-    {
-    unsigned int CurrentZSlice = (*It).m_ZCoord;
-    this->m_NumberOfSlices = 1;
-    while( It != endIt )
-      {
-      if( (*It).m_ZCoord > CurrentZSlice )
-        {
-        CurrentZSlice = (*It).m_ZCoord;
-        ++m_NumberOfSlices;
-        }
-      ++It;
-      }
-    }
+  // get number of Z slices
+  GoFigureFileInfoHelperMultiIndexContainer::index< m_ZCoord >::type::reverse_iterator
+    r_zs_it = m_FileList.get< m_ZCoord >().rbegin();
+
+  m_NumberOfSlices = (*r_zs_it).m_ZCoord;
+
+  // get number of channels from iUserFileList
+  // (note that the real one could be different)
+  GoFigureFileInfoHelperMultiIndexContainer::index< m_Channel >::type::reverse_iterator
+    r_ch_it = m_FileList.get< m_Channel >().rbegin();
+
+  m_NumberOfChannels = (*r_ch_it).m_Channel;
 }
 //-----------------------------------------------------------------------------
 
@@ -198,11 +185,8 @@ void MultiFileReader::BuildVolumeFrom2DImages()
   vtkImageAppend* volumeBuilder = vtkImageAppend::New();
   volumeBuilder->SetAppendAxis( 2 ); //append along Z
 
-  // read the files and feed the volume builder
-  // NOTE ALEX: sould convert to a vtkStringArray and use SetFileNames
-  // note the S at  the end of the method name
-  FileListType::iterator endIt = m_UpdateFileList.end();
-  FileListType::iterator It    = m_UpdateFileList.begin();
+  std::list< std::string >::iterator endIt = m_UpdateFileList.end();
+  std::list< std::string >::iterator It    = m_UpdateFileList.begin();
   int counter = 0;
   while( It != endIt )
     {
@@ -210,31 +194,27 @@ void MultiFileReader::BuildVolumeFrom2DImages()
       {
       case JPEG:
         {
-        AddToVolumeBuilder< vtkJPEGReader >( counter, (*It).m_Filename,
-          volumeBuilder );
+        AddToVolumeBuilder< vtkJPEGReader >( counter, (*It), volumeBuilder );
         break;
         }
       case BMP:
         {
-        AddToVolumeBuilder< vtkBMPReader >( counter, (*It).m_Filename,
-          volumeBuilder );
+        AddToVolumeBuilder< vtkBMPReader >( counter, (*It), volumeBuilder );
         break;
         }
       case PNG:
         {
-        AddToVolumeBuilder< vtkPNGReader >( counter, (*It).m_Filename,
-          volumeBuilder );
+        AddToVolumeBuilder< vtkPNGReader >( counter, (*It), volumeBuilder );
         break;
         }
       case TIFF:
         {
-        AddToVolumeBuilder< vtkTIFFReader >( counter, (*It).m_Filename,
-          volumeBuilder );
+        AddToVolumeBuilder< vtkTIFFReader >( counter, (*It), volumeBuilder );
         break;
         }
       case MHA:
         {
-        AddToVolumeBuilder< vtkMetaImageReader >( counter, (*It).m_Filename,
+        AddToVolumeBuilder< vtkMetaImageReader >( counter, (*It),
           volumeBuilder );
         break;
         }
@@ -245,17 +225,11 @@ void MultiFileReader::BuildVolumeFrom2DImages()
         }
       default:
         {
-        itkGenericExceptionMacro( << "unsupported type: " << this->m_FileType << "." );
+        itkGenericExceptionMacro( << "unsupported type: " << m_FileType << "." );
         break;
         }
       }
 
-//     if( m_IsProgressBarSet )
-//       {
-//       m_ProgressBar->setValue(
-//           static_cast< float >( counter * 80 ) /
-//           static_cast< float >( m_UpdateFileList.size() ) );
-//       }
       ++It;
       ++counter;
     }
@@ -289,17 +263,6 @@ void MultiFileReader::BuildVolumeFrom2DImages()
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
-// void MultiFileReader::SetProgressBar( QProgressBar* PB )
-// {
-//   if( PB )
-//     {
-//     m_ProgressBar = PB;
-//     m_IsProgressBarSet = true;
-//     }
-// }
-//-----------------------------------------------------------------------------
-
-//-----------------------------------------------------------------------------
 vtkImageData* MultiFileReader::GetOutput() const
 {
   return m_OutputImage;
@@ -309,7 +272,15 @@ vtkImageData* MultiFileReader::GetOutput() const
 //-----------------------------------------------------------------------------
 void MultiFileReader::Update()
 {
-  this->GenerateData();
+  if( ( m_Dimensionality != 2 ) && ( m_Dimensionality != 3 ) )
+    {
+    std::cerr <<"( m_Dimensionality != 2 ) && ( m_Dimensionality != 3 )" <<std::endl;
+    return;
+    }
+  else
+    {
+    this->GenerateData();
+    }
 }
 //-----------------------------------------------------------------------------
 
@@ -322,32 +293,18 @@ void MultiFileReader::GenerateData( )
     m_OutputImage = 0;
     }
 
-//   if( m_IsProgressBarSet )
-//     {
-//     if( m_ProgressBar )
-//       {
-//       m_ProgressBar->show();
-//       m_ProgressBar->setValue( 1 );
-//       }
-//     }
-
   ComputeUpdateFileList();
   if( m_UpdateFileList.empty() )
     {
     std::cout <<"Problem: m_UpdateFileList is empty :-/ (after ComputeUpdateFileList)" <<std::endl;
     return;
     }
-//   if( m_IsProgressBarSet )
-//     {
-//     this->m_ProgressBar->setValue( 5 );
-//     }
-
-  if( this->m_Dimensionality == 2 )
+  if( m_Dimensionality == 2 )
     {
     BuildVolumeFrom2DImages();
     } // end of dimensionality == 2
 
-  if( this->m_Dimensionality == 3 )
+  if( m_Dimensionality == 3 )
     {
     CreateVolumeFromOne3DImageFile();
     }
@@ -391,11 +348,6 @@ void MultiFileReader::CreateVolumeFromOne3DImageFile()
         myImage_ch1->ShallowCopy( reader->GetOutput() );
         reader->Delete();
 
-//         if( m_IsProgressBarSet )
-//           {
-//           m_ProgressBar->setValue( 20 );
-//           }
-
         if( ( NumberOfChannels == 1 ) )
           {
           m_OutputImage = myImage_ch1;
@@ -410,19 +362,9 @@ void MultiFileReader::CreateVolumeFromOne3DImageFile()
         myImage_ch2->ShallowCopy( reader2->GetOutput() );
         reader2->Delete();
 
-//         if( m_IsProgressBarSet )
-//           {
-//           m_ProgressBar->setValue( 40 );
-//           }
-
         vtkImageAppendComponents* appendFilter = vtkImageAppendComponents::New();
         appendFilter->AddInput( myImage_ch1 );
         appendFilter->AddInput( myImage_ch2 );
-
-//         if( m_IsProgressBarSet )
-//           {
-//           m_ProgressBar->setValue( 60 );
-//           }
 
         vtkImageData* myImage_ch3 = vtkImageData::New();
         if( NumberOfChannels == 2 )
@@ -438,11 +380,6 @@ void MultiFileReader::CreateVolumeFromOne3DImageFile()
           myImage_ch3->ShallowCopy( reader3->GetOutput() );
           reader3->Delete();
           }
-
-//         if( m_IsProgressBarSet )
-//           {
-//           m_ProgressBar->setValue( 80 );
-//           }
 
         appendFilter->AddInput( myImage_ch3 );
         appendFilter->Update();
@@ -486,81 +423,17 @@ void MultiFileReader::CreateVolumeFromOne3DImageFile()
   UpdateChannel();
 }
 //-----------------------------------------------------------------------------
-void MultiFileReader::ComputeUpdateFileList()
+void MultiFileReader::ComputeUpdateFileList( const unsigned int& iChannel )
 {
-  if( m_FileList->empty() )
+  if( m_TimeBased )
     {
-    itkGenericExceptionMacro( << "The File List is empty." );
-    return;
-    }
-
-  if( this->m_Dimensionality < 4 )
-    {
-    // extract files of interest
-    FileListType::iterator startIt;
-    FileListType::iterator endIt = m_FileList->end();
-    FileListType::iterator It = m_FileList->begin();
-
-    // get the first file
-    if( m_TimeBased )
-      {
-      while( It != endIt
-            && static_cast< int >( (*It).m_TCoord ) < this->m_UpdateTimePoint )
-        {
-        It++;
-        }
-      }
-    else
-      {
-      while( It != endIt
-            && static_cast< int >( (*It).m_ZCoord ) < this->m_UpdateZSlice )
-        {
-        It++;
-        }
-      }
-    startIt = It;
-
-    // get the last file
-    unsigned int counter = 0;
-    if( this->m_Dimensionality == 3 )  // only one file
-      {
-      It++;
-      }
-    else // find all the 2D files needed for the 3D volume
-      {
-      if( m_TimeBased )
-        {
-        while( It != endIt
-               && ( static_cast< int >( (*It).m_TCoord ) == this->m_UpdateTimePoint ) )
-          {
-          It++;
-          counter++;
-          }
-        }
-      else
-        {
-        while( It != endIt
-               && static_cast< int >( (*It).m_ZCoord ) == this->m_UpdateZSlice )
-          {
-          It++;
-          counter++;
-          }
-        }
-      }
-    endIt = It;
-
-    // build up the file list;
-    m_UpdateFileList.clear();
-    It = startIt;
-    while( It != endIt )
-      {
-      m_UpdateFileList.push_back( (*It) );
-      It++;
-      }
+    m_UpdateFileList = GetAllFileNamesForGivenTCoordAndChannel( m_FileList,
+      m_UpdateTimePoint, iChannel );
     }
   else
     {
-    /// \todo to be defined (ex LSM 4D)
+    m_UpdateFileList = GetAllFileNamesForGivenZCoordPointAndChannel( m_FileList,
+      m_UpdateZSlice, iChannel );
     }
 }
 //-----------------------------------------------------------------------------

@@ -5,8 +5,9 @@
 
 #include "QGoPlugin.h"
 
-#include "itkMultiFileReader.h"
-#include "GoFigureFileInfoHelper.h"
+// #include "itkMultiFileReader.h"
+// #include "GoFigureFileInfoHelper.h"
+#include "GoFigureFileInfoMultiIndexContainerHelper.h"
 #include "SnapshotHelper.h"
 #include "ContourStructureHelper.h"
 
@@ -32,14 +33,14 @@ public:
     QGoTabImageView3DwT( QWidget* parent = 0 );
     virtual ~QGoTabImageView3DwT();
 
-    typedef itk::MultiFileReader::FILETYPE FILETYPE;
+//     typedef itk::MultiFileReader::FILETYPE FILETYPE;
 
     GoFigure::TabDimensionType GetTabDimensionType( ) const;
 
     void SetLSMReader( vtkLSMReader* iReader, const int& iTimePoint );
-    void SetMultiFiles( FileListType& iFileList,
-      const FILETYPE& iFileType,
-      const int& iTimePoint );
+//     void SetMultiFiles( FileListType& iFileList,
+//       const FILETYPE& iFileType,
+//       const int& iTimePoint );
 
     virtual void Update();
 
@@ -102,8 +103,8 @@ protected:
   QGoImageView3D*       m_ImageView;
   std::vector< vtkLSMReader* > m_LSMReader;
   vtkImageData*         m_Image;
-  itk::MultiFileReader::Pointer m_MultiFileReader;
-  FileListType          m_FileList;
+//   itk::MultiFileReader::Pointer m_MultiFileReader;
+  GoFigureFileInfoHelperMultiIndexContainer          m_FileList;
   QColor                m_BackgroundColor;
   int                   m_TimePoint;
   unsigned int          m_ContourId;

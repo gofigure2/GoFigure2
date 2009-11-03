@@ -1,5 +1,5 @@
-#ifndef __FileInfoHelperMultiIndexContainer_h
-#define __FileInfoHelperMultiIndexContainer_h
+#ifndef __GoFigureFileInfoHelperMultiIndexContainer_h
+#define __GoFigureFileInfoHelperMultiIndexContainer_h
 
 #if !defined(NDEBUG)
 #define BOOST_MULTI_INDEX_ENABLE_INVARIANT_CHECKING
@@ -24,7 +24,7 @@ using namespace boost::multi_index;
 // namespace GoFigure
 // {
 
-struct FileInfoHelper
+struct GoFigureFileInfoHelper
 {
   unsigned int    m_PCoord;
   unsigned int    m_RCoord;
@@ -40,7 +40,7 @@ struct FileInfoHelper
   std::string     m_Filename;
 
 
-  FileInfoHelper( const unsigned int& p, const unsigned int& r,
+  GoFigureFileInfoHelper( const unsigned int& p, const unsigned int& r,
                   const unsigned int& c, const unsigned int& xt,
                   const unsigned int& yt, const unsigned int& zt,
                   const unsigned int& xs, const unsigned int& ys,
@@ -52,13 +52,13 @@ struct FileInfoHelper
         m_Filename( iFile )
     {}
 
-  FileInfoHelper() : m_PCoord( 0 ), m_RCoord( 0 ), m_CCoord( 0 ),
+  GoFigureFileInfoHelper() : m_PCoord( 0 ), m_RCoord( 0 ), m_CCoord( 0 ),
     m_XTileCoord( 0 ), m_YTileCoord( 0 ), m_ZTileCoord( 0 ), m_XCoord( 0 ),
     m_YCoord( 0 ), m_ZCoord( 0 ), m_TCoord( 0 ), m_Channel( 0 ), m_Filename( "" )
     {}
 
-    ~FileInfoHelper() {}
-  };
+  ~GoFigureFileInfoHelper() {}
+};
 
   struct m_PCoord {};
   struct m_RCoord {};
@@ -73,111 +73,59 @@ struct FileInfoHelper
   struct m_Channel {};
 
   typedef multi_index_container<
-    FileInfoHelper,
+    GoFigureFileInfoHelper,
     indexed_by<
       ordered_non_unique<
-        tag<m_PCoord>, BOOST_MULTI_INDEX_MEMBER(FileInfoHelper,unsigned int,m_PCoord)>,
+        tag<m_PCoord>, BOOST_MULTI_INDEX_MEMBER(GoFigureFileInfoHelper,unsigned int,m_PCoord)>,
       ordered_non_unique<
-        tag<m_RCoord>, BOOST_MULTI_INDEX_MEMBER(FileInfoHelper,unsigned int,m_RCoord)>,
+        tag<m_RCoord>, BOOST_MULTI_INDEX_MEMBER(GoFigureFileInfoHelper,unsigned int,m_RCoord)>,
       ordered_non_unique<
-        tag<m_CCoord>, BOOST_MULTI_INDEX_MEMBER(FileInfoHelper,unsigned int,m_CCoord)>,
+        tag<m_CCoord>, BOOST_MULTI_INDEX_MEMBER(GoFigureFileInfoHelper,unsigned int,m_CCoord)>,
       ordered_non_unique<
-        tag<m_XTileCoord>, BOOST_MULTI_INDEX_MEMBER(FileInfoHelper,unsigned int,m_XTileCoord)>,
+        tag<m_XTileCoord>, BOOST_MULTI_INDEX_MEMBER(GoFigureFileInfoHelper,unsigned int,m_XTileCoord)>,
       ordered_non_unique<
-        tag<m_YTileCoord>, BOOST_MULTI_INDEX_MEMBER(FileInfoHelper,unsigned int,m_YTileCoord)>,
+        tag<m_YTileCoord>, BOOST_MULTI_INDEX_MEMBER(GoFigureFileInfoHelper,unsigned int,m_YTileCoord)>,
       ordered_non_unique<
-        tag<m_ZTileCoord>, BOOST_MULTI_INDEX_MEMBER(FileInfoHelper,unsigned int,m_ZTileCoord)>,
+        tag<m_ZTileCoord>, BOOST_MULTI_INDEX_MEMBER(GoFigureFileInfoHelper,unsigned int,m_ZTileCoord)>,
       ordered_non_unique<
-        tag<m_ZCoord>, BOOST_MULTI_INDEX_MEMBER(FileInfoHelper,unsigned int,m_ZCoord)>,
+        tag<m_ZCoord>, BOOST_MULTI_INDEX_MEMBER(GoFigureFileInfoHelper,unsigned int,m_ZCoord)>,
       ordered_non_unique<
-        tag<m_Channel>, BOOST_MULTI_INDEX_MEMBER(FileInfoHelper,unsigned int,m_Channel)>,
+        tag<m_Channel>, BOOST_MULTI_INDEX_MEMBER(GoFigureFileInfoHelper,unsigned int,m_Channel)>,
       ordered_non_unique<
-        tag<m_TCoord>, BOOST_MULTI_INDEX_MEMBER(FileInfoHelper,unsigned int,m_TCoord)>
+        tag<m_TCoord>, BOOST_MULTI_INDEX_MEMBER(GoFigureFileInfoHelper,unsigned int,m_TCoord)>
     >
-  > FileInfoHelperMultiIndexContainer;
+  > GoFigureFileInfoHelperMultiIndexContainer;
 
   typedef multi_index_container<
-    const FileInfoHelper*,
+    const GoFigureFileInfoHelper*,
     indexed_by<
-      ordered_non_unique<BOOST_MULTI_INDEX_MEMBER(FileInfoHelper,const unsigned int,m_ZCoord)>
+      ordered_non_unique<BOOST_MULTI_INDEX_MEMBER(GoFigureFileInfoHelper,const unsigned int,m_ZCoord)>
     >
-  > FileInfoHelperZCoordViewContainer;
+  > GoFigureFileInfoHelperZCoordViewContainer;
 
   typedef multi_index_container<
-    const FileInfoHelper*,
+    const GoFigureFileInfoHelper*,
     indexed_by<
-      ordered_non_unique<BOOST_MULTI_INDEX_MEMBER(FileInfoHelper,const unsigned int,m_TCoord)>
+      ordered_non_unique<BOOST_MULTI_INDEX_MEMBER(GoFigureFileInfoHelper,const unsigned int,m_TCoord)>
     >
-  > FileInfoHelperTCoordViewContainer;
+  > GoFigureFileInfoHelperTCoordViewContainer;
 
   typedef multi_index_container<
-    const FileInfoHelper*,
+    const GoFigureFileInfoHelper*,
     indexed_by<
-      ordered_non_unique<BOOST_MULTI_INDEX_MEMBER(FileInfoHelper,const unsigned int,m_Channel)>
+      ordered_non_unique<BOOST_MULTI_INDEX_MEMBER(GoFigureFileInfoHelper,const unsigned int,m_Channel)>
     >
-  > FileInfoHelperChannelViewContainer;
+  > GoFigureFileInfoHelperChannelViewContainer;
 // }
 
 std::list< std::string > GetAllFileNamesForGivenTCoordAndChannel(
-  FileInfoHelperMultiIndexContainer iContainer,
+  GoFigureFileInfoHelperMultiIndexContainer iContainer,
   const unsigned int& iT,
-  const unsigned int& iCh )
-{
-  std::list< std::string > oList;
-
-  boost::multi_index::index<FileInfoHelperMultiIndexContainer,m_TCoord>::type::iterator it0,it1;
-  boost::tuples::tie(it0,it1)=get<m_TCoord>(iContainer).equal_range( iT );
-
-  FileInfoHelperChannelViewContainer subset;
-
-  while( it0 != it1 )
-    {
-    subset.insert( &*it0 );
-    ++it0;
-    }
-
-  FileInfoHelperChannelViewContainer::iterator ic0, ic1;
-  ic0 = subset.lower_bound( iCh );
-  ic1 = subset.upper_bound( iCh );
-
-  while( ic0 != ic1 )
-    {
-    oList.push_back( (*ic0)->m_Filename );
-    ++ic0;
-    }
-
-  return oList;
-}
+  const unsigned int& iCh );
 
 std::list< std::string > GetAllFileNamesForGivenZCoordPointAndChannel(
-  FileInfoHelperMultiIndexContainer iContainer,
+  GoFigureFileInfoHelperMultiIndexContainer iContainer,
   const unsigned int& iZ,
-  const unsigned int& iCh )
-{
-  std::list< std::string > oList;
-
-  boost::multi_index::index<FileInfoHelperMultiIndexContainer,m_ZCoord>::type::iterator it0,it1;
-  boost::tuples::tie(it0,it1)=get<m_ZCoord>(iContainer).equal_range( iZ );
-
-  FileInfoHelperChannelViewContainer subset;
-
-  while( it0 != it1 )
-    {
-    subset.insert( &*it0 );
-    ++it0;
-    }
-
-  FileInfoHelperChannelViewContainer::iterator ic0, ic1;
-  ic0 = subset.lower_bound( iCh );
-  ic1 = subset.upper_bound( iCh );
-
-  while( ic0 != ic1 )
-    {
-    oList.push_back( (*ic0)->m_Filename );
-    ++ic0;
-    }
-
-  return oList;
-}
+  const unsigned int& iCh );
 
 #endif

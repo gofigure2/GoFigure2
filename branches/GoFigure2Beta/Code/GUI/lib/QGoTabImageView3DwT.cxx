@@ -23,7 +23,12 @@
 #include <set>
 
 //--------------------------------------------------------------------------
-QGoTabImageView3DwT::QGoTabImageView3DwT( QWidget* iParent ) :
+/**
+ * \brief Default Constructor
+ * \param iParent
+ */
+QGoTabImageView3DwT::
+QGoTabImageView3DwT( QWidget* iParent ) :
   QGoTabElementBase( iParent ),
   m_LSMReader( 0 ),
   m_Image( 0 ),
@@ -46,7 +51,7 @@ QGoTabImageView3DwT::QGoTabImageView3DwT( QWidget* iParent ) :
     this->m_ContourWidget.back()->Off();
     }
 
-  m_MultiFileReader = itk::MultiFileReader::New();
+//   m_MultiFileReader = itk::MultiFileReader::New();
 
   CreateVisuDockWidget();
 
@@ -59,7 +64,11 @@ QGoTabImageView3DwT::QGoTabImageView3DwT( QWidget* iParent ) :
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-QGoTabImageView3DwT::~QGoTabImageView3DwT( )
+/**
+ * \brief Destructor
+ */
+QGoTabImageView3DwT::
+~QGoTabImageView3DwT( )
 {
   if( m_Image )
     {
@@ -105,6 +114,9 @@ QGoTabImageView3DwT::~QGoTabImageView3DwT( )
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+/**
+ * \brief
+ */
 void QGoTabImageView3DwT::CreateManualSegmentationdockWidget()
 {
   m_ManualSegmentationDockWidget = new QGoManualSegmentationDockWidget( this );
@@ -126,6 +138,9 @@ void QGoTabImageView3DwT::CreateManualSegmentationdockWidget()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+/**
+ *
+ */
 void QGoTabImageView3DwT::CreateVisuDockWidget()
 {
   m_VisuDockWidget = new QGoVisualizationDockWidget( this, 4 );
@@ -163,6 +178,9 @@ void QGoTabImageView3DwT::CreateVisuDockWidget()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+/**
+ *
+ */
 void QGoTabImageView3DwT::CreateAllViewActions()
 {
   QActionGroup* group = new QActionGroup( this );
@@ -254,6 +272,10 @@ void QGoTabImageView3DwT::CreateAllViewActions()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+/**
+ * \brief
+ * \param iParent
+ */
 void QGoTabImageView3DwT::setupUi( QWidget* iParent )
 {
   if(iParent->objectName().isEmpty())
@@ -286,6 +308,10 @@ void QGoTabImageView3DwT::setupUi( QWidget* iParent )
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+/**
+ *
+ * \param iParent
+ */
 void QGoTabImageView3DwT::retranslateUi(QWidget *iParent)
 {
   iParent->setWindowTitle( tr( "QGoTabImageView3DwT" ) );
@@ -294,6 +320,10 @@ void QGoTabImageView3DwT::retranslateUi(QWidget *iParent)
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+/**
+ *
+ * \return
+ */
 GoFigure::TabDimensionType QGoTabImageView3DwT::GetTabDimensionType( ) const
 {
   return GoFigure::THREE_D_WITH_T;
@@ -301,6 +331,11 @@ GoFigure::TabDimensionType QGoTabImageView3DwT::GetTabDimensionType( ) const
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+/**
+ * \brief
+ * \param[in] iReader
+ * \param[in] iTimePoint
+ */
 void QGoTabImageView3DwT::SetLSMReader( vtkLSMReader* iReader,
   const int& iTimePoint )
 {
@@ -360,51 +395,61 @@ void QGoTabImageView3DwT::SetLSMReader( vtkLSMReader* iReader,
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoTabImageView3DwT::SetMultiFiles( FileListType& iFileList,
-  const FILETYPE& iFileType,
-  const int& iTimePoint )
-{
-  m_TimePoint = iTimePoint;
-  m_FileList = iFileList;
-  m_MultiFileReader->SetInput( &m_FileList );
-
-  switch( iFileType ) //IsLSM
-    {
-    case itk::MultiFileReader::LSM:
-      {
-      m_MultiFileReader->SetDimensionality( 3 );
-      m_MultiFileReader->SetFileType( iFileType );
-      m_MultiFileReader->SetChannel( 0 );
-      break;
-      }
-    case itk::MultiFileReader::MHA:
-      {
-      m_MultiFileReader->SetDimensionality( 3 );
-      m_MultiFileReader->SetFileType( iFileType );
-      break;
-      }
-    default:
-      {
-      std::cout <<"MegaCapture files MUST now use QGoTabImageView4D instead!!!"
-        <<std::endl;
-      return;
-      }
-    }
-//   if( iSerieType == 1 ) //IsMegaCapture must now use the 4D!!!
+/**
+ * \brief
+ * \param iFileList
+ * \param iFileType
+ * \param iTimePoint
+ */
+// void QGoTabImageView3DwT::SetMultiFiles( FileListType& iFileList,
+//   const FILETYPE& iFileType,
+//   const int& iTimePoint )
+// {
+//   m_TimePoint = iTimePoint;
+//   m_FileList = iFileList;
+//   m_MultiFileReader->SetInput( &m_FileList );
+//
+//   switch( iFileType ) //IsLSM
 //     {
-//     m_MultiFileReader->SetDimensionality( 2 );
-//     m_MultiFileReader->SetFileType( JPEG );
+//     case itk::MultiFileReader::LSM:
+//       {
+//       m_MultiFileReader->SetDimensionality( 3 );
+//       m_MultiFileReader->SetFileType( iFileType );
+//       m_MultiFileReader->SetChannel( 0 );
+//       break;
+//       }
+//     case itk::MultiFileReader::MHA:
+//       {
+//       m_MultiFileReader->SetDimensionality( 3 );
+//       m_MultiFileReader->SetFileType( iFileType );
+//       break;
+//       }
+//     default:
+//       {
+//       std::cout <<"MegaCapture files MUST now use QGoTabImageView4D instead!!!"
+//         <<std::endl;
+//       return;
+//       }
 //     }
-  m_MultiFileReader->MultiChannelImagesOff();
-  m_MultiFileReader->SetTimeBased( true );
-  m_MultiFileReader->SetTimePoint( m_TimePoint );
-  m_MultiFileReader->Update();
-
-  m_Image = m_MultiFileReader->GetOutput();
-}
+// //   if( iSerieType == 1 ) //IsMegaCapture must now use the 4D!!!
+// //     {
+// //     m_MultiFileReader->SetDimensionality( 2 );
+// //     m_MultiFileReader->SetFileType( JPEG );
+// //     }
+//   m_MultiFileReader->MultiChannelImagesOff();
+//   m_MultiFileReader->SetTimeBased( true );
+//   m_MultiFileReader->SetTimePoint( m_TimePoint );
+//   m_MultiFileReader->Update();
+//
+//   m_Image = m_MultiFileReader->GetOutput();
+// }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+/**
+ *
+ * \param iTimePoint
+ */
 void QGoTabImageView3DwT::SetTimePoint( const int& iTimePoint )
 {
   if( !m_LSMReader.empty() )
@@ -495,6 +540,9 @@ void QGoTabImageView3DwT::SetTimePoint( const int& iTimePoint )
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+/**
+ *
+ */
 void QGoTabImageView3DwT::Update()
 {
   m_ImageView->SetImage( m_Image );
@@ -514,6 +562,9 @@ void QGoTabImageView3DwT::Update()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+/**
+ *
+ */
 void QGoTabImageView3DwT::ChangeLookupTable()
 {
   vtkLookupTable* lut = vtkLookupTable::New();
@@ -525,6 +576,10 @@ void QGoTabImageView3DwT::ChangeLookupTable()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+/**
+ *
+ * \param[in] iShow
+ */
 void QGoTabImageView3DwT::ShowScalarBar( const bool& iShow )
 {
   m_ImageView->ShowScalarBar( iShow );
@@ -532,6 +587,12 @@ void QGoTabImageView3DwT::ShowScalarBar( const bool& iShow )
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+/**
+ *
+ * \param[in] iType
+ * \param[in] iBaseName
+ * \return
+ */
 QString QGoTabImageView3DwT::SnapshotViewXY(
   const GoFigure::SnapshotImageType& iType,
   const QString& iBaseName )
@@ -541,6 +602,12 @@ QString QGoTabImageView3DwT::SnapshotViewXY(
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+/**
+ *
+ * \param[in] iType
+ * \param[in] iBaseName
+ * \return
+ */
 QString QGoTabImageView3DwT::SnapshotView2(
   const GoFigure::SnapshotImageType& iType,
   const QString& iBaseName )
@@ -550,6 +617,12 @@ QString QGoTabImageView3DwT::SnapshotView2(
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+/**
+ *
+ * \param[in] iType
+ * \param[in] iBaseName
+ * \return
+ */
 QString QGoTabImageView3DwT::SnapshotView3(
   const GoFigure::SnapshotImageType& iType,
   const QString& iBaseName )
@@ -559,6 +632,12 @@ QString QGoTabImageView3DwT::SnapshotView3(
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+/**
+ *
+ * \param[in] iType
+ * \param[in] iBaseName
+ * \return
+ */
 QString QGoTabImageView3DwT::SnapshotViewXYZ(
   const GoFigure::SnapshotImageType& iType,
   const QString& iBaseName )
@@ -568,6 +647,10 @@ QString QGoTabImageView3DwT::SnapshotViewXYZ(
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+/**
+ *
+ * \param[in] iS
+ */
 void QGoTabImageView3DwT::SetSliceViewXY( const int& iS )
 {
   m_ImageView->SetSliceViewXY( iS );
@@ -575,6 +658,10 @@ void QGoTabImageView3DwT::SetSliceViewXY( const int& iS )
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+/**
+ *
+ * \param[in] iS
+ */
 void QGoTabImageView3DwT::SetSliceViewXZ( const int& iS )
 {
   m_ImageView->SetSliceViewXZ( iS );
@@ -582,6 +669,10 @@ void QGoTabImageView3DwT::SetSliceViewXZ( const int& iS )
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+/**
+ *
+ * \param[in] iS
+ */
 void QGoTabImageView3DwT::SetSliceViewYZ( const int& iS )
 {
   m_ImageView->SetSliceViewYZ( iS );
@@ -589,6 +680,10 @@ void QGoTabImageView3DwT::SetSliceViewYZ( const int& iS )
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+/**
+ *
+ * \param[in] iS
+ */
 void QGoTabImageView3DwT::SetFullScreenView( const int& iS )
 {
   m_ImageView->SetFullScreenView( iS );
@@ -596,6 +691,9 @@ void QGoTabImageView3DwT::SetFullScreenView( const int& iS )
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+/**
+ *
+ */
 void QGoTabImageView3DwT::Quadview()
 {
   m_ImageView->Quadview();
@@ -603,6 +701,9 @@ void QGoTabImageView3DwT::Quadview()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+/**
+ *
+ */
 void QGoTabImageView3DwT::FullScreenViewXY()
 {
   m_ImageView->FullScreenViewXY();
@@ -610,6 +711,9 @@ void QGoTabImageView3DwT::FullScreenViewXY()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+/**
+ *
+ */
 void QGoTabImageView3DwT::FullScreenViewXZ()
 {
   m_ImageView->FullScreenViewXZ();
@@ -617,6 +721,9 @@ void QGoTabImageView3DwT::FullScreenViewXZ()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+/**
+ *
+ */
 void QGoTabImageView3DwT::FullScreenViewYZ()
 {
   m_ImageView->FullScreenViewYZ();
@@ -624,6 +731,9 @@ void QGoTabImageView3DwT::FullScreenViewYZ()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+/**
+ *
+ */
 void QGoTabImageView3DwT::FullScreenViewXYZ()
 {
   m_ImageView->FullScreenViewXYZ();
@@ -631,6 +741,9 @@ void QGoTabImageView3DwT::FullScreenViewXYZ()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+/**
+ *
+ */
 void QGoTabImageView3DwT::GetBackgroundColorFromImageViewer( )
 {
   double r, g, b;
@@ -640,6 +753,9 @@ void QGoTabImageView3DwT::GetBackgroundColorFromImageViewer( )
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+/**
+ *
+ */
 void QGoTabImageView3DwT::SetBackgroundColorToImageViewer( )
 {
   m_ImageView->SetBackgroundColor( m_BackgroundColor );
@@ -647,6 +763,10 @@ void QGoTabImageView3DwT::SetBackgroundColorToImageViewer( )
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+/**
+ *
+ * \return
+ */
 std::list< QDockWidget* > QGoTabImageView3DwT::DockWidget()
 {
   std::list< QDockWidget* > oList;
@@ -657,6 +777,9 @@ std::list< QDockWidget* > QGoTabImageView3DwT::DockWidget()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+/**
+ *
+ */
 void QGoTabImageView3DwT::ChangeBackgroundColor()
 {
   double r, g, b;
@@ -674,6 +797,10 @@ void QGoTabImageView3DwT::ChangeBackgroundColor()
 }
 
 //--------------------------------------------------------------------------
+/**
+ *
+ * \param iChecked
+ */
 void QGoTabImageView3DwT::ShowAllChannels( bool iChecked )
 {
   if( iChecked )
@@ -742,6 +869,10 @@ ShowOneChannel( int iChannel )
 }
 
 //--------------------------------------------------------------------------
+/**
+ *
+ * \param iId
+ */
 void QGoTabImageView3DwT::
 ValidateContour( const int& iId )
 {
@@ -804,6 +935,9 @@ ValidateContour( const int& iId )
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+/**
+ *
+ */
 void QGoTabImageView3DwT::
 ValidateContour( )
 {
@@ -815,6 +949,9 @@ ValidateContour( )
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+/**
+ *
+ */
 void QGoTabImageView3DwT::
 ChangeContourRepresentationProperty()
 {
@@ -844,6 +981,11 @@ ChangeContourRepresentationProperty()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+/**
+ *
+ * \param[in] pos[]
+ * \return
+ */
 int* QGoTabImageView3DwT::
 GetImageCoordinatesFromWorldCoordinates( double iPos[3] )
 {
@@ -852,6 +994,13 @@ GetImageCoordinatesFromWorldCoordinates( double iPos[3] )
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+/**
+ *
+ * \param iId
+ * \param dataset
+ * \param property
+ * \return
+ */
 std::vector< vtkActor* >
 QGoTabImageView3DwT::
 AddContour( const int& iId,
@@ -863,6 +1012,10 @@ AddContour( const int& iId,
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+/**
+ *
+ * \param iActivate
+ */
 void
 QGoTabImageView3DwT::
 ActivateManualSegmentationEditor( const bool& iActivate )
@@ -884,6 +1037,11 @@ ActivateManualSegmentationEditor( const bool& iActivate )
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+/**
+ *
+ * \param iId
+ * \param iActor
+ */
 void
 QGoTabImageView3DwT::
 RemoveActorFromViewer( const int& iId, vtkActor* iActor )
@@ -893,6 +1051,11 @@ RemoveActorFromViewer( const int& iId, vtkActor* iActor )
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+/**
+ *
+ * \param iId
+ * \param iActor
+ */
 void
 QGoTabImageView3DwT::
 DisplayActorInViewer( const int& iId, vtkActor* iActor )
@@ -902,6 +1065,9 @@ DisplayActorInViewer( const int& iId, vtkActor* iActor )
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+/**
+ *
+ */
 void
 QGoTabImageView3DwT::
 RemoveAllContoursForPresentTimePoint( )
@@ -926,6 +1092,10 @@ RemoveAllContoursForPresentTimePoint( )
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+/**
+ *
+ * \param iT
+ */
 void
 QGoTabImageView3DwT::
 LoadAllContoursForGivenTimePoint( const unsigned int& iT )

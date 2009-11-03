@@ -52,8 +52,8 @@
 #include "itkQtAdaptor.h"
 #include "vtkLSMReader.h"
 
-#include "GoFigureFileInfoHelper.h"
-#include "itkMultiFileReader.h"
+// #include "itkMultiFileReader.h"
+#include "GoFigureFileInfoMultiIndexContainerHelper.h"
 #include "QGoWizardDB.h"
 
 // ALEX: have to make a conditional flag to check if
@@ -81,7 +81,7 @@ public:
   typedef itk::ImageToVTKImageFilter< ImageType > VTKConvertImageType;
   typedef VTKConvertImageType::Pointer            VTKConvertImagePointer;
 
-  typedef itk::MultiFileReader::FILETYPE FILETYPE;
+//   typedef itk::MultiFileReader::FILETYPE FILETYPE;
 
   QGoMainWindow( );
   virtual ~QGoMainWindow();
@@ -137,8 +137,8 @@ private:
   void UpdateRecentFileActions( QStringList list, QMenu *menu,
     QAction *recentFileActions[MaxRecentFiles] );
 
-  void CreateNewTabFor3DwtImage( FileListType& iFileList,
-    const FILETYPE& iFileType, const int& iTimePoint );
+//   void CreateNewTabFor3DwtImage( GoFigureFileInfoHelperMultiIndexContainer iFileList,
+//     const FILETYPE& iFileType, const int& iTimePoint );
   void CreateNewTabFor3DwtImage( vtkLSMReader* iReader, const QString& iFile );
   void CreateNewTabFor3DImage( vtkImageData*, const QString& );
   void CreateNewTabFor2DImage( vtkImageData*, const QString& );

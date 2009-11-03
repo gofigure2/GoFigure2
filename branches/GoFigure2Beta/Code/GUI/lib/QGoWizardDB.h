@@ -54,12 +54,13 @@
 #include <list>
 
 //#include "MegaVTK2Configure.h"
-#include "GoFigureFileInfoHelper.h"
+// #include "GoFigureFileInfoHelper.h"
+#include "GoFigureFileInfoMultiIndexContainerHelper.h"
 #include "vtkMySQLDatabase.h"
 
 /**
 \class QGoWizardDB
-\brief This class leads the user to chose its imagingsession and enables to get the 
+\brief This class leads the user to chose its imagingsession and enables to get the
 corresponding filenames from the database.
 */
 class QGoWizardDB : public QWizard

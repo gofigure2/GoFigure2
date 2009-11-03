@@ -61,17 +61,17 @@ MegaCaptureImport::
 //-----------------------------------------------------------------------------
 void
 MegaCaptureImport::
-SetFileName( std::string name )
+SetFileName( const std::string& iName )
 {
-  if (!m_FileName.empty()&& !name.empty()&& m_FileName.compare(name)!= 0)
+  if( !m_FileName.empty() && !iName.empty() && m_FileName.compare( iName )!= 0 )
     {
     return;
     }
-  if (name.empty() && m_FileName.empty())
+  if( iName.empty() && m_FileName.empty() )
     {
     return;
     }
-  m_FileName = name;
+  m_FileName = iName;
   this->Modified();
 }
 //-----------------------------------------------------------------------------
@@ -94,58 +94,66 @@ CreateOutput()
     {
     GoFigureFileInfoHelper tempInfo;
     tempInfo.m_Filename = (*nit);
+
     std::string origFileName =
       itksys::SystemTools::GetFilenameName( (*nit).c_str() );
 
     IntVectorType::reverse_iterator numGroupLengthItr =
-      this->m_StartAndLengthNumGroup.second.rbegin();
-    IntVectorType::reverse_iterator numGroupStartItr  =
-      this->m_StartAndLengthNumGroup.first.rbegin();
-    int NbNumericalGroupsInFilename = this->m_StartAndLengthNumGroup.second.size();
+      m_StartAndLengthNumGroup.second.rbegin();
 
+    IntVectorType::reverse_iterator numGroupStartItr  =
+      m_StartAndLengthNumGroup.first.rbegin();
+
+    int NbNumericalGroupsInFilename = m_StartAndLengthNumGroup.second.size();
 
     std::vector< unsigned int > NumericalValues( m_NbSignificantMegaCaptureNumGroup, 0 );
 
     int megaCaptureNumericalGroupCounter = 0;
-    while( numGroupLengthItr != m_StartAndLengthNumGroup.second.rend() &&
-           numGroupStartItr != m_StartAndLengthNumGroup.first.rend()   &&
-           megaCaptureNumericalGroupCounter < m_NbSignificantMegaCaptureNumGroup )
+
+    while( ( numGroupLengthItr != m_StartAndLengthNumGroup.second.rend() ) &&
+           ( numGroupStartItr != m_StartAndLengthNumGroup.first.rend() )   &&
+           ( megaCaptureNumericalGroupCounter < m_NbSignificantMegaCaptureNumGroup ) )
       {
       std::string ValueAsString(
         origFileName,
         (*numGroupStartItr),
         (*numGroupLengthItr) );
-      NumericalValues[m_NbSignificantMegaCaptureNumGroup-1-megaCaptureNumericalGroupCounter]
-        = atoi( ValueAsString.c_str() );
+
+      int tempidx = m_NbSignificantMegaCaptureNumGroup-1-megaCaptureNumericalGroupCounter;
+
+      NumericalValues[ tempidx ] = atoi( ValueAsString.c_str() );
+
       ++numGroupLengthItr;
       ++numGroupStartItr;
       ++megaCaptureNumericalGroupCounter;
       } // end for each numerical group
 
-    if (m_HeaderFileName == "")
+    if( m_HeaderFileName == "" )
       {
-    /*get the beginning of the filename to look for the headerfile:
-    first, get back to the starting position of the last numerical values group which
-    corresponds to the PL number:*/
+      // get the beginning of the filename to look for the headerfile:
+      // first, get back to the starting position of the last numerical values group which
+      // corresponds to the PL number:
       numGroupStartItr = numGroupStartItr - 1;
 
-    /*then, substract the "PL-" from the position of the PL Number to find the position of the
-    last character to be part of the headerfile name:*/
+      // then, substract the "PL-" from the position of the PL Number to find
+      // the position of the last character to be part of the headerfile name:
       int LengthHeaderFile = *numGroupStartItr - 3;
 
-    /*get the headerfile name and add the .meg*/
-      std::string fileNamePath =
-        itksys::SystemTools::GetFilenamePath(m_FileName);
-      m_HeaderFileName = fileNamePath + "/" + origFileName.substr(0,LengthHeaderFile)+ ".meg";
+      // get the headerfile name and add the .meg
+      std::string fileNamePath = itksys::SystemTools::GetFilenamePath( m_FileName );
+      m_HeaderFileName = fileNamePath + "/"
+        + origFileName.substr( 0, LengthHeaderFile ) + ".meg";
       }
 
-    if ( m_NbSignificantMegaCaptureNumGroup == 9)
+    if( m_NbSignificantMegaCaptureNumGroup == 9 )
       {
-      NewMegaCaptureFile(tempInfo,NumericalValues);
+      NewMegaCaptureFile( tempInfo, NumericalValues );
+      m_OutputFileList.insert( tempInfo );
       }
-    if (m_NbSignificantMegaCaptureNumGroup == 6)
+    if( m_NbSignificantMegaCaptureNumGroup == 6 )
       {
-      OldMegaCaptureFile(tempInfo,NumericalValues);
+      OldMegaCaptureFile( tempInfo, NumericalValues );
+      m_OutputFileList.insert( tempInfo );
       }
 
 //     if( this->IsProgressBarSet )
@@ -154,14 +162,14 @@ CreateOutput()
 //       this->m_ProgressBar->setValue( value );
 //       }
 
-    counter++;
+    counter += 1.;
     } // end for each filename
 
   m_FileNameS.clear();
 
-  GoFigureFileInfoHelperTimeBasedCompare comparison;
-  std::sort(
-    m_OutputFileList.begin(), m_OutputFileList.end(), comparison );
+//   GoFigureFileInfoHelperTimeBasedCompare comparison;
+//   std::sort(
+//     m_OutputFileList.begin(), m_OutputFileList.end(), comparison );
 
 //   if( this->IsProgressBarSet )
 //     {
@@ -169,7 +177,7 @@ CreateOutput()
 //     }
 
 #if !defined(ITK_LEAN_AND_MEAN) && !defined(__BORLANDC__) && !defined(NDEBUG)
-  FileListType::iterator myIt = m_OutputFileList.begin();
+  GoFigureFileInfoHelperMultiIndexContainer::iterator myIt = m_OutputFileList.begin();
   while( myIt != m_OutputFileList.end() )
     {
     itkDebugMacro(
@@ -180,6 +188,22 @@ CreateOutput()
       myIt++;
     }
 #endif
+}
+//-----------------------------------------------------------------------------
+GoFigureFileInfoHelperMultiIndexContainer
+MegaCaptureImport::GetOutput()
+{
+  return m_OutputFileList;
+}
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
+void
+MegaCaptureImport::
+Update()
+{
+  Glob();
+  CreateOutput();
 }
 //-----------------------------------------------------------------------------
 
@@ -193,17 +217,18 @@ Glob()
 //     this->m_ProgressBar->show();
 //     this->m_ProgressBar->setValue( 1 );
 //     }
-  std::string FilenameModified = CleanFileName(m_FileName);
-  m_StartAndLengthNumGroup = GetStartAndLengthOfNumericalGroupFilename(FilenameModified);
+  std::string FilenameModified = CleanFileName( m_FileName );
+  m_StartAndLengthNumGroup = GetStartAndLengthOfNumericalGroupFilename( FilenameModified );
+
   // create the regular expression to glob the entire set of file
   std::string regExpFileName = FilenameModified;
   IntVectorType::reverse_iterator numGroupLengthItr = m_StartAndLengthNumGroup.second.rbegin();
   IntVectorType::reverse_iterator numGroupStartItr  = m_StartAndLengthNumGroup.first.rbegin();
 
-  if (MegaCaptureImport::AreTheseNumericalGroupNewMegaCapture(m_StartAndLengthNumGroup))
-   {
+  if( AreTheseNumericalGroupNewMegaCapture( m_StartAndLengthNumGroup ) )
+    {
     m_NbSignificantMegaCaptureNumGroup = 9;
-   }
+    }
   else
     {
     m_NbSignificantMegaCaptureNumGroup = 6;
@@ -211,9 +236,10 @@ Glob()
 
   std::string regExpString = "([0-9]+)";
   int megaCaptureNumericalGroupCounter = 0;
+
   while( numGroupLengthItr != m_StartAndLengthNumGroup.second.rend() &&
          numGroupStartItr != m_StartAndLengthNumGroup.first.rend()   &&
-         megaCaptureNumericalGroupCounter < m_NbSignificantMegaCaptureNumGroup)
+         megaCaptureNumericalGroupCounter < m_NbSignificantMegaCaptureNumGroup )
     {
     regExpFileName.replace(*numGroupStartItr,*numGroupLengthItr,regExpString);
     ++numGroupLengthItr;
@@ -233,14 +259,18 @@ Glob()
 
   // Use a RegularExpressionSeriesFileNames to find the files to return
   std::string unixArchetype = m_FileName;
-  itksys::SystemTools::ConvertToUnixSlashes(unixArchetype);
+  itksys::SystemTools::ConvertToUnixSlashes( unixArchetype );
+
   std::string origFileName =
     itksys::SystemTools::GetFilenameName( unixArchetype.c_str() );
+
   std::string fileNamePath =
     itksys::SystemTools::GetFilenamePath( unixArchetype.c_str() );
+
   std::string pathPrefix;
 
-  itk::RegularExpressionSeriesFileNames::Pointer fit = itk::RegularExpressionSeriesFileNames::New();
+  itk::RegularExpressionSeriesFileNames::Pointer fit =
+    itk::RegularExpressionSeriesFileNames::New();
   fit->SetDirectory( fileNamePath.c_str() );
   fit->SetRegularExpression( regExpFileName.c_str() );
   fit->SetSubMatch(1);
@@ -254,29 +284,34 @@ Glob()
 //     }
 
   // re parse the indexes and length without the escape caracters
-  std::string::iterator sit;
-  for (sit = origFileName.begin(); sit < origFileName.end(); sit++)
+  std::string::iterator s_start = origFileName.begin();
+  std::string::iterator s_end = origFileName.end();
+  std::string::iterator s_it = s_start;
+  int sIndex;
+
+  while( s_it != s_end )
     {
     // If the element is a number, find its starting index and length.
-    if ((*sit) >= '0' && (*sit) <= '9')
+    if ((*s_it) >= '0' && (*s_it) <= '9')
       {
-      int sIndex = static_cast< int >( sit - origFileName.begin() );
+      sIndex = static_cast< int >( s_it - s_start );
       m_StartAndLengthNumGroup.first.push_back( sIndex );
 
       // Loop to one past the end of the group of numbers.
-      while ( sit != origFileName.end() && (*sit) >= '0' && (*sit) <= '9' )
+      while ( s_it != origFileName.end() && (*s_it) >= '0' && (*s_it) <= '9' )
         {
-        ++sit;
+        ++s_it;
         }
 
       m_StartAndLengthNumGroup.second.push_back( static_cast< int >
-        (sit - origFileName.begin()) - sIndex );
+        ( s_it - s_start ) - sIndex );
 
-      if( sit == origFileName.end() )
+      if( s_it == s_end )
         {
         break;
         }
       }
+    ++s_it;
     }
 
 //   if( this->IsProgressBarSet )
@@ -288,12 +323,14 @@ Glob()
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
-bool MegaCaptureImport::IsNewMegaCapture (std::string iFilename)
+bool MegaCaptureImport::IsNewMegaCapture( const std::string& iFilename )
 {
-  std::string FilenameModified = CleanFileName(iFilename);
+  std::string FilenameModified = CleanFileName( iFilename );
+
   PairIntVectorType StartAndLengthNumericalGroup =
-    GetStartAndLengthOfNumericalGroupFilename(FilenameModified);
-  return AreTheseNumericalGroupNewMegaCapture(StartAndLengthNumericalGroup);
+    GetStartAndLengthOfNumericalGroupFilename( FilenameModified );
+
+  return AreTheseNumericalGroupNewMegaCapture( StartAndLengthNumericalGroup );
 }
 //-----------------------------------------------------------------------------
 
@@ -301,27 +338,23 @@ bool MegaCaptureImport::IsNewMegaCapture (std::string iFilename)
 bool MegaCaptureImport::AreTheseNumericalGroupNewMegaCapture(
   MegaCaptureImport::PairIntVectorType StartAndLengthNumericalGroup)
 {
-   if (StartAndLengthNumericalGroup.first.size()< 9)
-    {
-    return false;
-    }
-  else
-    {
-    return true;
-    }
+   return( StartAndLengthNumericalGroup.first.size() >= 9 );
 }
 
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
-std::string MegaCaptureImport::CleanFileName (std::string iFilename)
+std::string MegaCaptureImport::CleanFileName( const std::string& iFilename )
 {
   // glob all jpeg file names
   std::string unixArchetype = iFilename;
-  itksys::SystemTools::ConvertToUnixSlashes(unixArchetype);
-  if (itksys::SystemTools::FileIsDirectory( unixArchetype.c_str() ))
+  itksys::SystemTools::ConvertToUnixSlashes( unixArchetype );
+  if( itksys::SystemTools::FileIsDirectory( unixArchetype.c_str() ) )
     {
-    return false;
+    // return type supposed to be one std::string!
+    std::cout <<"iFilename is directory" <<std::endl;
+    return std::string();
+//     return false;
     }
 
   // Parse the fileNameName and fileNamePath
@@ -371,72 +404,76 @@ std::string MegaCaptureImport::CleanFileName (std::string iFilename)
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
-MegaCaptureImport::PairIntVectorType MegaCaptureImport::GetStartAndLengthOfNumericalGroupFilename (
-  std::string iFilename)
+MegaCaptureImport::PairIntVectorType
+MegaCaptureImport::
+GetStartAndLengthOfNumericalGroupFilename( const std::string& iFilename )
 {
    // parse and keep it for ouput generation
   PairIntVectorType oStartAndLength;
-  std::string::iterator sit;
-  for (sit = iFilename.begin(); sit < iFilename.end(); sit++)
+
+  std::string::const_iterator s_start = iFilename.begin();
+  std::string::const_iterator s_it = s_start;
+  std::string::const_iterator s_end = iFilename.end();
+
+  int sIndex;
+
+  while( s_it != s_end )
     {
     // If the element is a number, find its starting index and length.
-    if ((*sit) >= '0' && (*sit) <= '9')
+    if ((*s_it) >= '0' && (*s_it) <= '9')
       {
-      int sIndex = static_cast< int >( sit - iFilename.begin() );
+      sIndex = static_cast< int >( s_it - s_start );
+
       //the first vector of oStartAndLength contains the index of all the starting numbers of
       //the numerical group:
-      oStartAndLength.first.push_back(sIndex);
-
+      oStartAndLength.first.push_back( sIndex );
 
       // Loop to one past the end of the group of numbers.
-      while ( sit != iFilename.end() && (*sit) >= '0' && (*sit) <= '9' )
+      while ( ( s_it != s_end ) && ( (*s_it) >= '0' ) && ( (*s_it) <= '9' ) )
         {
-        ++sit;
+        ++s_it;
         }
       //the second vector of oStartAndLength contains the length of the numerical group:
-      oStartAndLength.second.push_back(static_cast< int >(
-        sit - iFilename.begin()) - sIndex );
+      oStartAndLength.second.push_back(
+        static_cast< int >( s_it - s_start ) - sIndex );
 
-      if( sit == iFilename.end() )
+      if( s_it == s_end )
         {
         break;
         }
       }
+    ++s_it;
     }
   return oStartAndLength;
 }
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
-void MegaCaptureImport::OldMegaCaptureFile(GoFigureFileInfoHelper tempInfo,
-                                           std::vector< unsigned int > NumericalValues)
+void MegaCaptureImport::OldMegaCaptureFile( GoFigureFileInfoHelper& ioTempInfo,
+                                           const std::vector< unsigned int >& iNumericalValues )
 {
-  tempInfo.m_CCoord = NumericalValues[0];
-  tempInfo.m_RCoord = NumericalValues[1];
-  tempInfo.m_YCoord = NumericalValues[2];
-  tempInfo.m_XCoord = NumericalValues[3];
-  tempInfo.m_TCoord = NumericalValues[4];
-  tempInfo.m_ZCoord = NumericalValues[5];
-
-   m_OutputFileList.push_back( tempInfo );
+  ioTempInfo.m_CCoord = iNumericalValues[0];
+  ioTempInfo.m_RCoord = iNumericalValues[1];
+  ioTempInfo.m_YCoord = iNumericalValues[2];
+  ioTempInfo.m_XCoord = iNumericalValues[3];
+  ioTempInfo.m_TCoord = iNumericalValues[4];
+  ioTempInfo.m_ZCoord = iNumericalValues[5];
 }
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
-void MegaCaptureImport::NewMegaCaptureFile(GoFigureFileInfoHelper tempInfo,
-                                           std::vector< unsigned int > NumericalValues)
+void MegaCaptureImport::NewMegaCaptureFile( GoFigureFileInfoHelper& ioTempInfo,
+                                           const std::vector< unsigned int >& iNumericalValues )
 {
-  tempInfo.m_PCoord     = NumericalValues[0];
-  tempInfo.m_CCoord     = NumericalValues[1];
-  tempInfo.m_RCoord     = NumericalValues[2];
-  tempInfo.m_ZTileCoord = NumericalValues[3];
-  tempInfo.m_YTileCoord = NumericalValues[4];
-  tempInfo.m_XTileCoord = NumericalValues[5];
-  tempInfo.m_TCoord     = NumericalValues[6];
-  tempInfo.m_Channel    = NumericalValues[7];
-  tempInfo.m_ZCoord     = NumericalValues[8];
-
-  m_OutputFileList.push_back( tempInfo );
+  ioTempInfo.m_PCoord     = iNumericalValues[0];
+  ioTempInfo.m_CCoord     = iNumericalValues[1];
+  ioTempInfo.m_RCoord     = iNumericalValues[2];
+  ioTempInfo.m_ZTileCoord = iNumericalValues[3];
+  ioTempInfo.m_YTileCoord = iNumericalValues[4];
+  ioTempInfo.m_XTileCoord = iNumericalValues[5];
+  ioTempInfo.m_TCoord     = iNumericalValues[6];
+  ioTempInfo.m_Channel    = iNumericalValues[7];
+  ioTempInfo.m_ZCoord     = iNumericalValues[8];
 }
 //-----------------------------------------------------------------------------
 

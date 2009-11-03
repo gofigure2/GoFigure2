@@ -15,7 +15,9 @@ SET( QGOIO_SRC
   SelectQueryDatabaseHelper.cxx
   itkLsm3DSerieImport.cxx
   itkMegaCaptureImport.cxx
-  itkMultiFileReader.cxx
+  itkMegaCaptureReader.cxx
+  GoFigureFileInfoMultiIndexContainerHelper.cxx
+#   itkMultiFileReader.cxx
   vtkPolyDataMySQLTextReader.cxx
   vtkPolyDataMySQLTextWriter.cxx
   LSMToMegaCapture.cxx

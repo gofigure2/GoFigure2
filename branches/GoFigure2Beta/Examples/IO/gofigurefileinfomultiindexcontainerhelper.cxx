@@ -4,7 +4,7 @@
 
 int main( int , char** )
 {
-  FileInfoHelperMultiIndexContainer container;
+  GoFigureFileInfoHelperMultiIndexContainer container;
 
   int plaque = 0;
   int r = 0;
@@ -23,7 +23,7 @@ int main( int , char** )
         {
         std::stringstream filename;
         filename << "yo_p0_r0_c0_xt0_yt0_zt0_zs" <<z <<"_ch" <<ch <<"_t" <<t <<".png";
-        container. insert( FileInfoHelper( plaque, r, c, xtile, ytile, ztile,
+        container. insert( GoFigureFileInfoHelper( plaque, r, c, xtile, ytile, ztile,
                   xs, ys, z, t, ch, filename.str() ) );
         }
       }

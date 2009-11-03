@@ -43,9 +43,9 @@
 namespace itk
 {
 Lsm3DSerieImport::Lsm3DSerieImport()
-{ 
-  m_FileName.clear(); 
-  m_GroupId = 0; 
+{
+  m_FileName.clear();
+  m_GroupId = 0;
 }
 
 Lsm3DSerieImport::
@@ -70,11 +70,11 @@ SetFileName( std::string name )
   this->Modified();
 }
 
-FileListType*
+GoFigureFileInfoHelperMultiIndexContainer
 Lsm3DSerieImport::
 GetOutput()
 {
-  return( &(this->m_OutputFileList) );
+  return this->m_OutputFileList;
 };
 
 void
@@ -265,7 +265,7 @@ CreateOutput()
           (*numGroupStartItr),
           (*numGroupLengthItr) );
         tempInfo.m_TCoord = atof( ValueAsString.c_str() );
-        m_OutputFileList.push_back( tempInfo );
+        m_OutputFileList.insert( tempInfo );
         break;
         }
       ++numGroupLengthItr;
@@ -278,11 +278,11 @@ CreateOutput()
 
   m_FileNameS.clear();
 
-  GoFigureFileInfoHelperTimeBasedCompare comparison;
-  std::sort( m_OutputFileList.begin(), m_OutputFileList.end(), comparison );
+//   GoFigureFileInfoHelperTimeBasedCompare comparison;
+//   std::sort( m_OutputFileList.begin(), m_OutputFileList.end(), comparison );
 
 #if !defined(ITK_LEAN_AND_MEAN) && !defined(__BORLANDC__) && !defined(NDEBUG)
-  FileListType::iterator myIt = m_OutputFileList.begin();
+  GoFigureFileInfoHelperMultiIndexContainer::iterator myIt = m_OutputFileList.begin();
   while( myIt != m_OutputFileList.end() )
     {
     itkDebugMacro(

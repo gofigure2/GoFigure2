@@ -6,8 +6,8 @@
 #include "QGoPlugin.h"
 #include "QGoImageView3D.h"
 
-#include "itkMultiFileReader.h"
-#include "GoFigureFileInfoHelper.h"
+// #include "itkMultiFileReader.h"
+#include "GoFigureFileInfoMultiIndexContainerHelper.h"
 #include "SnapshotHelper.h"
 
 #include <QResizeEvent>
@@ -26,8 +26,8 @@ class QGoTabImageView4D : public QGoTabElementBase
 
     GoFigure::TabDimensionType GetTabDimensionType( ) const;
 
-    void SetMultiFiles( FileListType* iFileList,
-      const int& iTimePoint );
+//     void SetMultiFiles( FileListType* iFileList,
+//       const int& iTimePoint );
 
     virtual void Update();
 
@@ -102,11 +102,12 @@ class QGoTabImageView4D : public QGoTabElementBase
     int                   m_TimePoint;
     int                   m_ZDepth;
 
-    itk::MultiFileReader::Pointer m_Reader1;
-    itk::MultiFileReader::Pointer m_Reader2;
+//     itk::MultiFileReader::Pointer m_Reader1;
+//     itk::MultiFileReader::Pointer m_Reader2;
 
-    FileListType* m_XYZFileList;
-    FileListType* m_XYTFileList;
+    GoFigureFileInfoHelperMultiIndexContainer m_FileList;
+//     FileListType* m_XYZFileList;
+//     FileListType* m_XYTFileList;
 //     QGoThreadedMultiFileReader* m_ThreadedReader1;
 //     QGoThreadedMultiFileReader* m_ThreadedReader2;
 

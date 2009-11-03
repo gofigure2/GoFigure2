@@ -48,7 +48,7 @@
 #include "GoDBRecordSet.h"
 #include "GoDBContourRow.h"
 #include "QTableWidgetChild.h"
-#include "QTableWidgetNumericalItem.h"
+// #include "QTableWidgetNumericalItem.h"
 #include "vtkMySQLDatabase.h"
 #include "GoDBCollectionOfTraces.h"
 
@@ -150,7 +150,7 @@ protected:
     RowContainerType* RowContainer;
 
     SetType* mySet = new SetType;
-    mySet->SetConnector(DatabaseConnector);   
+    mySet->SetConnector(DatabaseConnector);
     mySet->SetTableName( TableName.toStdString() );
     mySet->PopulateFromDB();
 
@@ -175,7 +175,7 @@ protected:
   void PrintOutContentFromDB(
     typename GoDBRecordSet< myT >::RowContainerType *RowContainer,
     QTableWidgetChild* TableToFill )
-    { 
+    {
     int NbofRows = RowContainer->size()-1;
     TableToFill->setRowCount(NbofRows);
     unsigned int i = 0;
@@ -204,12 +204,12 @@ protected:
             }
           else
             {
-            QTableWidgetNumericalItem* CellTable = new QTableWidgetNumericalItem;
-            CellTable->setText(Value.c_str());
-            TableToFill->setItem(i,j,CellTable);
-            }          
-          }//ENDFOR       
-         }// ENDELSE 
+//             QTableWidgetNumericalItem* CellTable = new QTableWidgetNumericalItem;
+//             CellTable->setText(Value.c_str());
+//             TableToFill->setItem(i,j,CellTable);
+            }
+          }//ENDFOR
+         }// ENDELSE
       i++;
       TableToFill->setRowHeight(i,18);
       }//ENDWHILE
@@ -217,7 +217,7 @@ protected:
 
 
   void closeEvent(QCloseEvent* event);
-  
+
   vtkMySQLDatabase* m_DatabaseConnector;
   std::string       m_Server;
   std::string       m_User;

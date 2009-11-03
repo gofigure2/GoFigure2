@@ -50,7 +50,8 @@
 #include <itksys/SystemTools.hxx>
 #include "itkRegularExpressionSeriesFileNames.h"
 
-#include "GoFigureFileInfoHelper.h"
+#include "GoFigureFileInfoMultiIndexContainerHelper.h"
+// #include "GoFigureFileInfoHelper.h"
 
 // #include <QProgressBar>
 
@@ -66,9 +67,9 @@ class ITK_EXPORT MegaCaptureImport: public LightProcessObject
 {
 public:
   //typedef std::list<int>                     IntListType;
-  typedef std::vector<int>                       IntVectorType;
-  typedef std::pair<IntVectorType,IntVectorType> PairIntVectorType;
-  typedef std::vector < std::string >            StringVectorType;
+  typedef std::vector< int >                        IntVectorType;
+  typedef std::pair< IntVectorType, IntVectorType > PairIntVectorType;
+  typedef std::vector< std::string >                StringVectorType;
 
    /** Standard class typedefs.      */
   typedef MegaCaptureImport           Self;
@@ -84,7 +85,7 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
 
-  void SetFileName( std::string name );
+  void SetFileName( const std::string& iName );
 
   void SetTimeBased( const bool& iBool );
 //   void SetProgressBar( QProgressBar* PB );
@@ -93,21 +94,21 @@ public:
 
   void CreateOutput();
 
-  FileListType* GetOutput() { return( &(this->m_OutputFileList) ); }
+  GoFigureFileInfoHelperMultiIndexContainer GetOutput();
 
-  void Update(void) { Glob(); CreateOutput(); }
+  void Update();
 
   std::string GetHeaderFilename();
 
-  /**\brief return true if the filename is of new megacapture format,
+  /** \brief return true if the filename is of new megacapture format,
   false if it is the old one*/
-  static bool IsNewMegaCapture (std::string filename);
-  /**\brief return a modified cleaned filename */
-  static std::string CleanFileName (std::string iFilename);
-  /**\brief return the list of the Index and the list of the length of
+  static bool IsNewMegaCapture( const std::string& iFilename );
+  /** \brief return a modified cleaned filename */
+  static std::string CleanFileName( const std::string& iFilename );
+  /** \brief return the list of the Index and the list of the length of
   all the numerical group present in the filename*/
   static PairIntVectorType GetStartAndLengthOfNumericalGroupFilename(
-    std::string iFilename);
+    const std::string& iFilename);
   static bool AreTheseNumericalGroupNewMegaCapture(
     PairIntVectorType StartAndLengthNumericalGroup);
 
@@ -115,12 +116,13 @@ public:
 protected:
   MegaCaptureImport();
   ~MegaCaptureImport();
-  /**\brief  Used for the database version1*/
-  void OldMegaCaptureFile(GoFigureFileInfoHelper tempInfo,
-    std::vector< unsigned int > NumericalValues);
-  /**\brief  Used for the database version2*/
-  void NewMegaCaptureFile(GoFigureFileInfoHelper tempInfo,
-    std::vector< unsigned int > NumericalValues);
+
+  /** \brief  Used for the database version1*/
+  void OldMegaCaptureFile( GoFigureFileInfoHelper& ioTempInfo,
+    const std::vector< unsigned int >& iNumericalValues);
+  /** \brief  Used for the database version2*/
+  void NewMegaCaptureFile( GoFigureFileInfoHelper& ioTempInfo,
+    const std::vector< unsigned int >& iNumericalValues );
 
 private:
   MegaCaptureImport (const Self&); //purposely not implemented
@@ -128,7 +130,7 @@ private:
 
   PairIntVectorType m_StartAndLengthNumGroup;
   StringVectorType  m_FileNameS;
-  FileListType      m_OutputFileList;
+  GoFigureFileInfoHelperMultiIndexContainer      m_OutputFileList;
   std::string       m_FileName;
   std::string       m_fileNameModified;
   std::string       m_HeaderFileName;

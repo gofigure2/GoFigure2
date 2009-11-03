@@ -174,40 +174,40 @@ void QGoMainWindow::on_actionOpen_Single_File_activated( )
 // *************************************************************************
 void QGoMainWindow::on_actionOpen_Multiple_Files_activated( )
 {
-  QString filename = QFileDialog::getOpenFileName(
-    this,
-    tr( "Select one Image from the Dataset" ),"",
-    tr( "Images (*.mha *.lsm)" )
-    );
-
-  if( !filename.isEmpty( ) )
-    {
-    if( QFile::exists( filename ) )
-      {
-      QString ext = QFileInfo( filename ).suffix();
-      if( ext.compare( "lsm", Qt::CaseInsensitive ) == 0 )
-        {
-        std::cout <<"Multifile LSM" <<std::endl;
-
-        itk::Lsm3DSerieImport::Pointer  importFileInfoList = itk::Lsm3DSerieImport::New();
-        importFileInfoList->SetFileName( filename.toStdString() );
-        importFileInfoList->SetGroupId( 1 );
-        importFileInfoList->Update();
-
-        std::cout <<"** " <<importFileInfoList->GetOutput()->size() <<std::endl;
-        CreateNewTabFor3DwtImage( *(importFileInfoList->GetOutput()),
-          itk::MultiFileReader::LSM, 0 );
-        }
-      else
-        {
-        if( ext.compare( "mha", Qt::CaseInsensitive ) == 0 )
-          {
-          std::cout <<"Multifile mha" <<std::endl;
-//           CreateNewTabFor3DwtImage( filelist, MHA, 0 );
-          }
-        }
-      }
-    }
+//   QString filename = QFileDialog::getOpenFileName(
+//     this,
+//     tr( "Select one Image from the Dataset" ),"",
+//     tr( "Images (*.mha *.lsm)" )
+//     );
+//
+//   if( !filename.isEmpty( ) )
+//     {
+//     if( QFile::exists( filename ) )
+//       {
+//       QString ext = QFileInfo( filename ).suffix();
+//       if( ext.compare( "lsm", Qt::CaseInsensitive ) == 0 )
+//         {
+//         std::cout <<"Multifile LSM" <<std::endl;
+//
+//         itk::Lsm3DSerieImport::Pointer  importFileInfoList = itk::Lsm3DSerieImport::New();
+//         importFileInfoList->SetFileName( filename.toStdString() );
+//         importFileInfoList->SetGroupId( 1 );
+//         importFileInfoList->Update();
+//
+//         std::cout <<"** " <<importFileInfoList->GetOutput().size() <<std::endl;
+//         CreateNewTabFor3DwtImage( *(importFileInfoList->GetOutput()),
+//           itk::MultiFileReader::LSM, 0 );
+//         }
+//       else
+//         {
+//         if( ext.compare( "mha", Qt::CaseInsensitive ) == 0 )
+//           {
+//           std::cout <<"Multifile mha" <<std::endl;
+// //           CreateNewTabFor3DwtImage( filelist, MHA, 0 );
+//           }
+//         }
+//       }
+//     }
 }
 
 
@@ -221,7 +221,7 @@ void QGoMainWindow::on_actionUse_DataBase_activated()
 // *************************************************************************
 void QGoMainWindow::openFilesfromDB()
 {
-  std::vector<std::vector<std::string> > listFilenames = 
+  std::vector<std::vector<std::string> > listFilenames =
     m_DBWizard->GetFilenamesFromDB();
   /*for (unsigned int i =0; i < listFilenames.size(); i++)
     {
@@ -468,7 +468,7 @@ void QGoMainWindow::OpenLSMImage( const QString& iFile, const int& iTimePoint )
 
 //--------------------------------------------------------------------------
 /** \todo why not using iTimePoint instead of 0, in SetMultiFiles? */
-void QGoMainWindow::CreateNewTabFor3DwtImage( FileListType& iFileList,
+/*void QGoMainWindow::CreateNewTabFor3DwtImage( FileListType& iFileList,
   const FILETYPE& iFileType, const int& iTimePoint )
 {
   QGoTabImageView3DwT* w3t = new QGoTabImageView3DwT;
@@ -502,7 +502,7 @@ void QGoMainWindow::CreateNewTabFor3DwtImage( FileListType& iFileList,
   this->menuFiltering->setEnabled( true );
   this->menuSegmentation->setEnabled( true );
   this->CentralTabWidget->setCurrentIndex( idx );
-}
+}*/
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------

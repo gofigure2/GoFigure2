@@ -26,7 +26,7 @@ int main( int argc, char** argv )
   importFileInfoList->Update();
 
   QGoTabImageView4D* tab = new QGoTabImageView4D;
-  tab->SetMultiFiles( importFileInfoList->GetOutput(), 0 );
+//   tab->SetMultiFiles( importFileInfoList->GetOutput(), 0 );
   tab->Update();
   tab->show();
 

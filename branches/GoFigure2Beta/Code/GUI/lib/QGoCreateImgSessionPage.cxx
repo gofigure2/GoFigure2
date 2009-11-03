@@ -96,7 +96,7 @@ QGoCreateImgSessionPage::QGoCreateImgSessionPage( QWidget *iParent )
   vlayout->addLayout(gridlayout);
   vlayout->addLayout(BrowseButtonLayout);
   setLayout( vlayout );
-  
+
   // \todo is ImgSessionID needed?
   QLineEdit* ImgSessionID = new QLineEdit;
   FirstImage = new QFileInfo;
@@ -288,8 +288,8 @@ void QGoCreateImgSessionPage::ImportImages(vtkMySQLDatabase* DatabaseConnector)
       RecordSet->SetConnector(DatabaseConnector);
       RecordSet->SetTableName( "image" );
 
-      myFilesIteratorType It  = m_importFileInfoList->GetOutput()->begin();
-      myFilesIteratorType end = m_importFileInfoList->GetOutput()->end();
+      myFilesIteratorType It  = m_importFileInfoList->GetOutput().begin();
+      myFilesIteratorType end = m_importFileInfoList->GetOutput().end();
       while( It != end )
         {
         GoDBImageRow Image = CreateImage(DatabaseConnector,It,

@@ -48,18 +48,18 @@ SET( QGoGUILIB_HDRS
   QGoWizardDB.h
   QSplitterChild.h
   QTableWidgetChild.h
-  QTableWidgetNumericalItem.h
+#   QTableWidgetNumericalItem.h
 )
 
 SET( QGoGUILIB_UI
-  ManualSegmentationSettingsDlg.ui 
+  ManualSegmentationSettingsDlg.ui
   ManualSegmentationDockWidget.ui
   VisualizationDockWidget.ui
   QGoPrintDatabase.ui
 )
 
-QT4_WRAP_UI( QGoGUILIB_UI_H 
-  ${QGoGUILIB_UI} 
+QT4_WRAP_UI( QGoGUILIB_UI_H
+  ${QGoGUILIB_UI}
 )
 
 QT4_WRAP_CPP( QGoGUILIB_MOC ${QGoGUILIB_HDRS} )

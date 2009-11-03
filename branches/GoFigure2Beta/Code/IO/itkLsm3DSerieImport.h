@@ -50,7 +50,9 @@
 #include <itksys/SystemTools.hxx>
 #include "itkRegularExpressionSeriesFileNames.h"
 
-#include "GoFigureFileInfoHelper.h"
+#include "GoFigureFileInfoMultiIndexContainerHelper.h"
+
+// #include "GoFigureFileInfoHelper.h"
 
 namespace itk
 {
@@ -75,7 +77,7 @@ public:
 
   void SetFileName( std::string name );
 
-  FileListType* GetOutput();
+  GoFigureFileInfoHelperMultiIndexContainer GetOutput();
 
   void Update(void);
 
@@ -87,7 +89,7 @@ protected:
 
   void Glob();
   void CreateOutput();
-  
+
 
 private:
   Lsm3DSerieImport (const Self&); //purposely not implemented
@@ -97,7 +99,7 @@ private:
   IntVectorType    m_numGroupLength;
   int              m_GroupId;
   StringVectorType m_FileNameS;
-  FileListType     m_OutputFileList;
+  GoFigureFileInfoHelperMultiIndexContainer     m_OutputFileList;
   std::string      m_FileName;
 
 };

@@ -12,10 +12,10 @@ int main( int argc, char** argv )
   itk::MegaCaptureImport::Pointer importer = itk::MegaCaptureImport::New();
   importer->SetFileName( argv[1] );
   importer->Update();
-  FileListType* listoffiles = importer->GetOutput();
+  GoFigureFileInfoHelperMultiIndexContainer listoffiles = importer->GetOutput();
 
-  for( FileListType::iterator it = listoffiles->begin();
-    it != listoffiles->end();
+  for( GoFigureFileInfoHelperMultiIndexContainer::iterator it = listoffiles.begin();
+    it != listoffiles.end();
     ++it )
     {
     std::cout <<it->m_Filename <<std::endl;

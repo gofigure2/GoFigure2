@@ -54,7 +54,8 @@
 
 #include "GoDBImageRow.h"
 #include "GoDBCoordinateRow.h"
-#include "GoFigureFileInfoHelper.h"
+// #include "GoFigureFileInfoHelper.h"
+#include "GoFigureFileInfoMultiIndexContainerHelper.h"
 #include "vtkMySQLDatabase.h"
 #include "MegaCaptureHeaderReader.h"
 #include "itkMegaCaptureImport.h"
@@ -84,17 +85,17 @@ private:
   and Min of the imaging session into the DB*/
   void ImportImages(vtkMySQLDatabase* DatabaseConnector);//,QString newfilename);
 
-  
-  typedef FileListType::iterator myFilesIteratorType;
+
+  typedef GoFigureFileInfoHelperMultiIndexContainer::iterator myFilesIteratorType;
 
   /** \brief create the coordinate CoordMin in the DB, check and update if its values
-  are less than the other CoordMin created for the images belonging to the same imaging 
+  are less than the other CoordMin created for the images belonging to the same imaging
   session and return the CoordID of the coordinate just created */
   int CreateImageCoordMin(vtkMySQLDatabase* DatabaseConnector,myFilesIteratorType It);
 
-  /** \brief return the ChannelID from the DB corresponding to the imaging session and 
+  /** \brief return the ChannelID from the DB corresponding to the imaging session and
   to the channel number given by the image filename*/
-  int    FindChannelIDForImage(vtkMySQLDatabase* DatabaseConnector,int ImagingSessionID, 
+  int    FindChannelIDForImage(vtkMySQLDatabase* DatabaseConnector,int ImagingSessionID,
     int ChannelNumber);
 
   /**\brief return a GoDBImageRow filled with all the data corresponding */
@@ -106,7 +107,7 @@ private:
   void CreateChannels(vtkMySQLDatabase* DatabaseConnector, int ImagingSessionID);
 
   /**\brief create into the DB the coordinates corresponding to the CoordID
-  Min and Max for the Imaging Session and update the CoordIDMax and Min for 
+  Min and Max for the Imaging Session and update the CoordIDMax and Min for
   the imaging session in the DB with the newly created coordinates*/
   void CreateImgSessionCoord(vtkMySQLDatabase* DatabaseConnector,int ImagingSessionID);
 
@@ -116,14 +117,14 @@ private:
   void SaveInfoInDatabase();
 
   /**\brief fill m_importFileInfoList from the filenames of the images and m_HeaderFileInfo
-  from the header file*/  
+  from the header file*/
   void ImportInfoFromMegacapture(QString newfilename);
 
   QLabel*      textNewImgSessionName;
   QLineEdit*   lineNewImgSessionName;
   QLabel*      textDescription;
   QTextEdit*   lineDescription;
-  QLabel*      textChoiceMicroscope;                                 
+  QLabel*      textChoiceMicroscope;
   QComboBox*   ChoiceMicroscope;
   QPushButton* BrowseButton;
   QTextEdit*   lineFilename;
@@ -135,13 +136,13 @@ private:
   MegaCaptureHeaderReader          m_HeaderFileInfo;
   itk::MegaCaptureImport::Pointer  m_importFileInfoList;
 
-protected slots:  
+protected slots:
 
   void SelectImages();
 
-   /** \brief Prevent the user to enter more than 1000 characters in the 
+   /** \brief Prevent the user to enter more than 1000 characters in the
   QTextEdit and return the text entered */
-  std::string GetDescription(); 
+  std::string GetDescription();
 
 };
 #endif

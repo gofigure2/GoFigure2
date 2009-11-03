@@ -47,10 +47,8 @@
 #include "vtkImageData.h"
 #include "vtkImageAppend.h"
 
-#include "GoFigureFileInfoHelper.h"
 #include "MegaVTK2Configure.h"
-
-// #include <QProgressBar>
+#include "GoFigureFileInfoMultiIndexContainerHelper.h"
 
 namespace itk
 {
@@ -106,11 +104,11 @@ public:
 
   /** \brief set the channel you want to extract
       and load in memory. -1 for all channels.         */
-  void SetChannel( const int& UserChannel );
+  void SetChannel( const unsigned int& UserChannel );
   void UpdateChannel();
 
   /** \brief set the input as a GoFigure format file list */
-  void SetInput( FileListType* UserFileList );
+  void SetInput( GoFigureFileInfoHelperMultiIndexContainer UserFileList );
 
   /** \brief  */
   itkSetMacro( FileType, FILETYPE );
@@ -151,17 +149,18 @@ private:
   void operator=(const Self&); //purposely not implemented
 
   vtkImageData*  m_OutputImage;
-  FileListType*  m_FileList;
-  FileListType   m_UpdateFileList;
+  GoFigureFileInfoHelperMultiIndexContainer  m_FileList;
+  std::list< std::string > m_UpdateFileList;
+//   FileListType   m_UpdateFileList;
   FILETYPE       m_FileType;        // suppose same file format for all files
   int            m_Dimensionality;  // suppose same dimensionality for all files
   int            m_DataScalarType;  // suppose same type for all files
-  int            m_NumberOfChannels;// OfScalarComponents;
-  int            m_NumberOfTimePoints;
-  int            m_NumberOfSlices;
-  int            m_UpdateTimePoint;
-  int            m_UpdateZSlice;
-  int            m_UpdateChannel;
+  unsigned int   m_NumberOfChannels;// OfScalarComponents;
+  unsigned int   m_NumberOfTimePoints;
+  unsigned int   m_NumberOfSlices;
+  unsigned int   m_UpdateTimePoint;
+  unsigned int   m_UpdateZSlice;
+  unsigned int   m_UpdateChannel;
   bool           m_MultiChannelImages;
   bool           m_TimeBased;
 
@@ -169,20 +168,6 @@ private:
 //   bool             m_IsProgressBarSet;
 
   virtual void GenerateData();
-
-  template< class TReader >
-  void AddToVolumeBuilder( const int& iId, const std::string& iFileName,
-    vtkImageAppend* iBuilder )
-    {
-    typedef TReader ReaderType;
-    ReaderType* reader = ReaderType::New();
-    reader->SetFileName( iFileName.c_str() );
-    reader->SetFileDimensionality( 2 );
-    reader->Update();
-
-    iBuilder->SetInput( iId, reader->GetOutput( ) );
-    reader->Delete();
-    }
 
   template< class TReader >
   void Copy3DImage( vtkImageData* ioImage, const std::string& iFileName )

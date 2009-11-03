@@ -53,7 +53,8 @@
 #include "GoDBSeriesGridRow.h"
 #include "itkMegaCaptureImport.h"
 #include "itkLsm3DSerieImport.h"
-#include "GoFigureFileInfoHelper.h"
+#include "GoFigureFileInfoMultiIndexContainerHelper.h"
+// #include "GoFigureFileInfoHelper.h"
 
 #include <iostream>
 #include <QVariant>
@@ -127,9 +128,10 @@ std::vector<std::vector<std::string> > QGoWizardDB::GetFilenamesFromDB()
   //Get the number of channels with their id as a map
   //ListChannelsIDNumber[channelID]=ChannelNumber:
   std::map<std::string,std::string> ListChannelsIDNumber =
-    MapTwoColumnsFromTable(DatabaseConnector,"channelID", "ChannelNumber",
-    "channel","ImagingSessionID",field("ImgSessionID").toString().toStdString());
-  std::map<std::string,std::string>::iterator it = ListChannelsIDNumber.begin();
+    MapTwoColumnsFromTable( DatabaseConnector, "channelID", "ChannelNumber",
+      "channel", "ImagingSessionID", field("ImgSessionID").toString().toStdString() );
+
+  std::map< std::string, std::string >::iterator it = ListChannelsIDNumber.begin();
   oFilenames.resize(ListChannelsIDNumber.size());
   int i = 0;
   while (it != ListChannelsIDNumber.end())

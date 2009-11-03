@@ -20,13 +20,8 @@ QGoTabImageView4D::QGoTabImageView4D( QWidget* iParent ) :
   m_XYTImage( 0 ),
   m_BackgroundColor( Qt::black )
 {
-  m_Reader1 = itk::MultiFileReader::New();
-  m_Reader2 = itk::MultiFileReader::New();
-
-  m_XYZFileList = new FileListType;
-  m_XYTFileList = new FileListType;
-//   m_ThreadedReader1 = new QGoThreadedMultiFileReader( this );
-//   m_ThreadedReader2 = new QGoThreadedMultiFileReader( this );
+//   m_Reader1 = itk::MultiFileReader::New();
+//   m_Reader2 = itk::MultiFileReader::New();
 
   setupUi( this );
 
@@ -232,48 +227,37 @@ GoFigure::TabDimensionType QGoTabImageView4D::GetTabDimensionType( ) const
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoTabImageView4D::SetMultiFiles( FileListType* iFileList,
-  const int& iTimePoint )
-{
-  m_TimePoint = iTimePoint;
-
-  m_Reader1->SetFileType( itk::MultiFileReader::JPEG );
-  m_Reader1->SetTimeBased( true );
-  m_Reader1->SetDimensionality( 2 );
-  m_Reader1->MultiChannelImagesOn();
-
-  m_Reader2->SetFileType( itk::MultiFileReader::JPEG );
-  m_Reader2->SetTimeBased( false );
-  m_Reader2->SetDimensionality( 2 );
-  m_Reader2->MultiChannelImagesOn();
-
-  m_XYZFileList->resize( iFileList->size() );
-  m_XYTFileList->resize( iFileList->size() );
-
-  std::copy( iFileList->begin(), iFileList->end(), m_XYZFileList->begin() );
-  std::copy( iFileList->begin(), iFileList->end(), m_XYTFileList->begin() );
-
-  std::sort( m_XYZFileList->begin(), m_XYZFileList->end(),
-      GoFigureFileInfoHelperTimeBasedCompare() );
-
-  std::sort( m_XYTFileList->begin(), m_XYTFileList->end(),
-      GoFigureFileInfoHelperZCoordBasedCompare() );
-
-  m_Reader1->SetInput( m_XYZFileList );
-  m_Reader1->SetTimePoint( m_TimePoint );
-  m_Reader1->Update();
-
-
-//   m_ThreadedReader1->SetInput( iFileList, itk::MultiFileReader::JPEG, true );
-//   m_ThreadedReader1->SetTimePoint( m_TimePoint );
-
-//   m_ThreadedReader1->start();
-
-//   m_ThreadedReader2->SetInput( iFileList, itk::MultiFileReader::JPEG, false );
-//   m_ThreadedReader2->SetZDepth( m_ZDepth );
-
-//   m_ThreadedReader2->start();
-}
+// void QGoTabImageView4D::SetMultiFiles( FileListType* iFileList,
+//   const int& iTimePoint )
+// {
+//   m_TimePoint = iTimePoint;
+//
+//   m_Reader1->SetFileType( itk::MultiFileReader::JPEG );
+//   m_Reader1->SetTimeBased( true );
+//   m_Reader1->SetDimensionality( 2 );
+//   m_Reader1->MultiChannelImagesOn();
+//
+//   m_Reader2->SetFileType( itk::MultiFileReader::JPEG );
+//   m_Reader2->SetTimeBased( false );
+//   m_Reader2->SetDimensionality( 2 );
+//   m_Reader2->MultiChannelImagesOn();
+//
+//   m_XYZFileList->resize( iFileList->size() );
+//   m_XYTFileList->resize( iFileList->size() );
+//
+//   std::copy( iFileList->begin(), iFileList->end(), m_XYZFileList->begin() );
+//   std::copy( iFileList->begin(), iFileList->end(), m_XYTFileList->begin() );
+//
+//   std::sort( m_XYZFileList->begin(), m_XYZFileList->end(),
+//       GoFigureFileInfoHelperTimeBasedCompare() );
+//
+//   std::sort( m_XYTFileList->begin(), m_XYTFileList->end(),
+//       GoFigureFileInfoHelperZCoordBasedCompare() );
+//
+//   m_Reader1->SetInput( m_XYZFileList );
+//   m_Reader1->SetTimePoint( m_TimePoint );
+//   m_Reader1->Update();
+// }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
@@ -300,26 +284,24 @@ void QGoTabImageView4D::SetMultiFiles( FileListType* iFileList,
 void QGoTabImageView4D::SetTimePoint( const int& iTimePoint )
 {
   m_TimePoint = iTimePoint;
-  m_Reader1->SetTimePoint( m_TimePoint );
-//   m_ThreadedReader1->SetTimePoint( m_TimePoint );
-//   m_ThreadedReader1->start();
+//   m_Reader1->SetTimePoint( m_TimePoint );
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void QGoTabImageView4D::Update()
 {
-  m_XYZImage = m_Reader1->GetOutput();
-  m_XYZImageView->SetImage( m_XYZImage );
+//   m_XYZImage = m_Reader1->GetOutput();
+//   m_XYZImageView->SetImage( m_XYZImage );
   m_XYZImageView->Update();
 
   m_ZDepth = m_XYZImageView->GetSliceViewXY();
 
-  m_Reader2->SetInput( m_XYTFileList );
-  m_Reader2->SetZDepth( m_ZDepth );
-  m_Reader2->Update();
+//   m_Reader2->SetInput( m_XYTFileList );
+//   m_Reader2->SetZDepth( m_ZDepth );
+//   m_Reader2->Update();
 
-  m_XYTImage = m_Reader2->GetOutput();
+//   m_XYTImage = m_Reader2->GetOutput();
   m_XYTImageView->SetImage( m_XYTImage );
   m_XYTImageView->Update();
 
