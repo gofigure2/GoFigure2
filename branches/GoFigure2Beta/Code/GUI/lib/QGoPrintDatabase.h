@@ -48,7 +48,7 @@
 #include "GoDBRecordSet.h"
 #include "GoDBContourRow.h"
 #include "QTableWidgetChild.h"
-// #include "QTableWidgetNumericalItem.h"
+#include "QTableWidgetNumericalItem.h"
 #include "vtkMySQLDatabase.h"
 #include "GoDBCollectionOfTraces.h"
 
@@ -204,9 +204,9 @@ protected:
             }
           else
             {
-//             QTableWidgetNumericalItem* CellTable = new QTableWidgetNumericalItem;
-//             CellTable->setText(Value.c_str());
-//             TableToFill->setItem(i,j,CellTable);
+            QTableWidgetNumericalItem* CellTable = new QTableWidgetNumericalItem;
+            CellTable->setText(Value.c_str());
+            TableToFill->setItem(i,j,CellTable);
             }
           }//ENDFOR
          }// ENDELSE

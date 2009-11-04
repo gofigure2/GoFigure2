@@ -23,6 +23,7 @@ SET( QGoGUILIB_SRC
   QSplitterChild.cxx
   QTableWidgetChild.cxx
   SnapshotHelper.cxx
+  QGoCreateMeshDialog.cxx
 )
 
 SET( QGoGUILIB_HDRS
@@ -48,7 +49,8 @@ SET( QGoGUILIB_HDRS
   QGoWizardDB.h
   QSplitterChild.h
   QTableWidgetChild.h
-#   QTableWidgetNumericalItem.h
+  QTableWidgetNumericalItem.h
+  QGoCreateMeshDialog.h
 )
 
 SET( QGoGUILIB_UI

@@ -14,6 +14,7 @@ SET( QGOGUILIB_EXAMPLE_SRC
   contourstructurehelpertest
   QGoWizardDBTest
   QGoPrintDatabaseTest
+  qgocreatemeshdialogtest
 )
 
 
