@@ -1,5 +1,5 @@
 SET( QGOIO_SRC
-  CreateDatabaseHelper.cxx
+  CreateDataBaseHelper.cxx
   GoDBChannelRow.cxx
   GoDBCollectionOfTraces.cxx
   GoDBColorRow.cxx
