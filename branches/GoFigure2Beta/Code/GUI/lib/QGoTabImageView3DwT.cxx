@@ -51,7 +51,7 @@ QGoTabImageView3DwT( QWidget* iParent ) :
     this->m_ContourWidget.back()->Off();
     }
 
-//   m_MultiFileReader = itk::MultiFileReader::New();
+  m_MegaCaptureReader = itk::MegaCaptureReader::New();
 
   CreateVisuDockWidget();
 
@@ -395,12 +395,70 @@ void QGoTabImageView3DwT::SetLSMReader( vtkLSMReader* iReader,
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-/**
- * \brief
- * \param iFileList
- * \param iFileType
- * \param iTimePoint
- */
+void
+QGoTabImageView3DwT::
+SetMegaCaptureFile(
+  const GoFigureFileInfoHelperMultiIndexContainer& iContainer,
+  const GoFigure::FileType& iFileType,
+  const unsigned int& iTimePoint  )
+{
+  m_TimePoint = iTimePoint;
+  m_FileList = iContainer;
+  m_FileType = iFileType;
+
+  m_MegaCaptureReader->SetInput( m_FileList );
+  m_MegaCaptureReader->SetFileType( m_FileType );
+  m_MegaCaptureReader->SetTimeBased( true );
+  m_MegaCaptureReader->SetTimePoint( iTimePoint );
+  m_MegaCaptureReader->SetChannel( 0 );
+  m_MegaCaptureReader->Update();
+
+  unsigned int min_t = m_MegaCaptureReader->GetMinTimePoint();
+  unsigned int max_t = m_MegaCaptureReader->GetMaxTimePoint();
+
+  unsigned int min_ch = m_MegaCaptureReader->GetMinChannel();
+  unsigned int max_ch = m_MegaCaptureReader->GetMaxChannel();
+
+  int NumberOfChannels = max_ch - min_ch;
+
+  vtkImageData* temp = m_MegaCaptureReader->GetOutput();
+
+  int extent[6];
+  temp->GetExtent( extent );
+
+  m_VisuDockWidget->SetXMinimumAndMaximum( extent[0], extent[1] );
+  m_VisuDockWidget->SetXSlice( ( extent[0] + extent[1] ) / 2 );
+
+  m_VisuDockWidget->SetYMinimumAndMaximum( extent[2], extent[3] );
+  m_VisuDockWidget->SetYSlice( ( extent[2] + extent[3] ) / 2 );
+
+  m_VisuDockWidget->SetZMinimumAndMaximum( extent[4], extent[5] );
+  m_VisuDockWidget->SetZSlice( ( extent[4] + extent[5] ) / 2 );
+
+  m_VisuDockWidget->SetTMinimumAndMaximum( min_t, max_t );
+  m_VisuDockWidget->SetTSlice( iTimePoint );
+
+  m_VisuDockWidget->SetNumberOfChannels( NumberOfChannels );
+
+  if( NumberOfChannels > 1 )
+    {
+    m_VisuDockWidget->SetChannel( 0 );
+
+    for( int i = 1; i < NumberOfChannels; i++ )
+      {
+      m_VisuDockWidget->SetChannel( i );
+
+      m_LSMReader.push_back( vtkLSMReader::New() );
+      m_LSMReader.back()->SetFileName( m_LSMReader[0]->GetFileName() );
+      m_LSMReader.back()->SetUpdateChannel( i );
+      }
+    }
+
+  if( m_TimePoint != iTimePoint )
+    {
+    SetTimePoint( iTimePoint );
+    }
+}
 // void QGoTabImageView3DwT::SetMultiFiles( FileListType& iFileList,
 //   const FILETYPE& iFileType,
 //   const int& iTimePoint )
@@ -446,94 +504,199 @@ void QGoTabImageView3DwT::SetLSMReader( vtkLSMReader* iReader,
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+SetTimePointWithMegaCapture( const int& iTimePoint )
+{
+  RemoveAllContoursForPresentTimePoint();
+
+  m_TimePoint = iTimePoint;
+  m_MegaCaptureReader->SetChannel( 0 );
+  m_MegaCaptureReader->SetTimePoint( m_TimePoint );
+
+  unsigned int min_ch = m_MegaCaptureReader->GetMinChannel();
+  unsigned int max_ch = m_MegaCaptureReader->GetMaxChannel();
+
+  int NumberOfChannels = max_ch - min_ch;
+
+  if( NumberOfChannels > 1 )
+    {
+    m_MegaCaptureReader->Update();
+
+    std::vector< vtkImageData* > temp_image( NumberOfChannels );
+    temp_image[0] = vtkImageData::New();
+    temp_image[0]->ShallowCopy( m_MegaCaptureReader->GetOutput() );
+
+    vtkImageAppendComponents* append_filter =
+      vtkImageAppendComponents::New();
+    append_filter->AddInput( temp_image[0] );
+
+    for( int i = 1; i < NumberOfChannels; i++ )
+      {
+      m_MegaCaptureReader->SetChannel( i );
+      m_MegaCaptureReader->Update();
+
+      temp_image[i] = vtkImageData::New();
+      temp_image[i]->ShallowCopy( m_MegaCaptureReader->GetOutput() );
+      append_filter->AddInput( temp_image[i] );
+      }
+    // This is really stupid!!!
+    if( NumberOfChannels < 3 )
+      {
+      for( int i = NumberOfChannels; i < 3; i++ )
+        {
+        append_filter->AddInput( temp_image[0] );
+        }
+      }
+    append_filter->Update();
+
+    // Do we really need to delete m_Image?
+    if( !m_Image )
+      {
+      m_Image = vtkImageData::New();
+      }
+
+    m_Image->ShallowCopy( append_filter->GetOutput() );
+    append_filter->Delete();
+
+    for( int i = 0; i < NumberOfChannels; i++ )
+      {
+      temp_image[i]->Delete();
+      }
+    }
+  else
+    {
+    m_MegaCaptureReader->Update();
+
+    if( !m_Image )
+      {
+      m_Image = vtkImageData::New();
+      }
+    m_Image->ShallowCopy( m_MegaCaptureReader->GetOutput() );
+    }
+
+  LoadAllContoursForGivenTimePoint( m_TimePoint );
+  Update();
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+SetTimePointWithLSMReaders( const int& iTimePoint )
+{
+  RemoveAllContoursForPresentTimePoint();
+
+  m_TimePoint = iTimePoint;
+  m_LSMReader[0]->SetUpdateTimePoint( m_TimePoint );
+
+  int NumberOfChannels = m_LSMReader[0]->GetNumberOfChannels();
+
+  if( NumberOfChannels > 1 )
+    {
+    std::vector< vtkImageData* > temp_image( NumberOfChannels );
+    temp_image[0] = vtkImageData::New();
+    temp_image[0]->ShallowCopy( m_LSMReader[0]->GetOutput() );
+
+    vtkImageAppendComponents* append_filter =
+      vtkImageAppendComponents::New();
+    append_filter->AddInput( temp_image[0] );
+
+    for( int i = 1; i < NumberOfChannels; i++ )
+      {
+      m_LSMReader[i]->SetUpdateTimePoint( m_TimePoint );
+      m_LSMReader[i]->Update();
+
+      temp_image[i] = vtkImageData::New();
+      temp_image[i]->ShallowCopy( m_LSMReader[i]->GetOutput() );
+      append_filter->AddInput( temp_image[i] );
+      }
+    // This is really stupid!!!
+    if( NumberOfChannels < 3 )
+      {
+      for( int i = NumberOfChannels; i < 3; i++ )
+        {
+        append_filter->AddInput( temp_image[0] );
+        }
+      }
+    append_filter->Update();
+
+    // Do we really need to delete m_Image?
+    if( !m_Image )
+      {
+      m_Image = vtkImageData::New();
+      }
+
+    m_Image->ShallowCopy( append_filter->GetOutput() );
+    append_filter->Delete();
+
+    for( int i = 0; i < NumberOfChannels; i++ )
+      {
+      temp_image[i]->Delete();
+      }
+    }
+  else
+    {
+    m_LSMReader[0]->Update();
+
+    if( !m_Image )
+      {
+      m_Image = vtkImageData::New();
+      }
+    m_Image->ShallowCopy( m_LSMReader[0]->GetOutput() );
+    }
+
+  LoadAllContoursForGivenTimePoint( m_TimePoint );
+  Update();
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
 /**
  *
  * \param iTimePoint
  */
-void QGoTabImageView3DwT::SetTimePoint( const int& iTimePoint )
+void
+QGoTabImageView3DwT::
+SetTimePoint( const int& iTimePoint )
 {
+  if( iTimePoint == m_TimePoint )
+    {
+    return;
+    }
+
   if( !m_LSMReader.empty() )
     {
-    if( ( iTimePoint == m_TimePoint ) ||
-        ( iTimePoint >= m_LSMReader[0]->GetNumberOfTimePoints() ) )
+    if( iTimePoint >= m_LSMReader[0]->GetNumberOfTimePoints() )
       {
       return;
       }
-
-    RemoveAllContoursForPresentTimePoint();
-
-    m_TimePoint = iTimePoint;
-    m_LSMReader[0]->SetUpdateTimePoint( m_TimePoint );
-
-    int NumberOfChannels = m_LSMReader[0]->GetNumberOfChannels();
-
-    if( NumberOfChannels > 1 )
-      {
-      std::vector< vtkImageData* > temp_image( NumberOfChannels );
-      temp_image[0] = vtkImageData::New();
-      temp_image[0]->ShallowCopy( m_LSMReader[0]->GetOutput() );
-
-      vtkImageAppendComponents* append_filter =
-        vtkImageAppendComponents::New();
-      append_filter->AddInput( temp_image[0] );
-
-      for( int i = 1; i < NumberOfChannels; i++ )
-        {
-        m_LSMReader[i]->SetUpdateTimePoint( m_TimePoint );
-        m_LSMReader[i]->Update();
-
-        temp_image[i] = vtkImageData::New();
-        temp_image[i]->ShallowCopy( m_LSMReader[i]->GetOutput() );
-        append_filter->AddInput( temp_image[i] );
-        }
-      // This is really stupid!!!
-      if( NumberOfChannels < 3 )
-        {
-        for( int i = NumberOfChannels; i < 3; i++ )
-          {
-          append_filter->AddInput( temp_image[0] );
-          }
-        }
-      append_filter->Update();
-
-      // Do we really need to delete m_Image?
-      if( !m_Image )
-        {
-        m_Image = vtkImageData::New();
-        }
-
-      m_Image->ShallowCopy( append_filter->GetOutput() );
-      append_filter->Delete();
-
-      for( int i = 0; i < NumberOfChannels; i++ )
-        {
-        temp_image[i]->Delete();
-        }
-      }
     else
       {
-      m_LSMReader[0]->Update();
-
-      if( !m_Image )
-        {
-        m_Image = vtkImageData::New();
-        }
-      m_Image->ShallowCopy( m_LSMReader[0]->GetOutput() );
+      SetTimePointWithLSMReaders( iTimePoint );
+      emit TimePointChanged( m_TimePoint );
       }
-
-    LoadAllContoursForGivenTimePoint( m_TimePoint );
-    Update();
-
-    emit TimePointChanged( m_TimePoint );
     }
   else
     {
     if( !m_FileList.empty() )
       {
+      if( ( iTimePoint <= m_MegaCaptureReader->GetMinTimePoint() ) ||
+          ( iTimePoint >= m_MegaCaptureReader->GetMaxTimePoint() ) )
+        {
+        return;
+        }
+      else
+        {
+        SetTimePointWithMegaCapture( iTimePoint );
+        emit TimePointChanged( m_TimePoint );
+        }
       }
     else
       {
       // no lsm reader, no file list. did you really provide any input?
+      std::cerr <<"No lsm reader. No file list" <<std::endl;
+      return;
       }
     }
 }
@@ -594,7 +757,7 @@ void QGoTabImageView3DwT::ShowScalarBar( const bool& iShow )
  * \return
  */
 QString QGoTabImageView3DwT::SnapshotViewXY(
-  const GoFigure::SnapshotImageType& iType,
+  const GoFigure::FileType& iType,
   const QString& iBaseName )
 {
   return m_ImageView->SnapshotViewXY( iType, iBaseName );
@@ -609,7 +772,7 @@ QString QGoTabImageView3DwT::SnapshotViewXY(
  * \return
  */
 QString QGoTabImageView3DwT::SnapshotView2(
-  const GoFigure::SnapshotImageType& iType,
+  const GoFigure::FileType& iType,
   const QString& iBaseName )
 {
   return m_ImageView->SnapshotView2( iType, iBaseName );
@@ -624,7 +787,7 @@ QString QGoTabImageView3DwT::SnapshotView2(
  * \return
  */
 QString QGoTabImageView3DwT::SnapshotView3(
-  const GoFigure::SnapshotImageType& iType,
+  const GoFigure::FileType& iType,
   const QString& iBaseName )
 {
   return m_ImageView->SnapshotView3( iType, iBaseName );
@@ -639,7 +802,7 @@ QString QGoTabImageView3DwT::SnapshotView3(
  * \return
  */
 QString QGoTabImageView3DwT::SnapshotViewXYZ(
-  const GoFigure::SnapshotImageType& iType,
+  const GoFigure::FileType& iType,
   const QString& iBaseName )
 {
   return m_ImageView->SnapshotViewXYZ( iType, iBaseName );

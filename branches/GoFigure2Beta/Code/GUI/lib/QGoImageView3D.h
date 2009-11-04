@@ -76,13 +76,13 @@ signals:
   void FullScreenViewChanged( int View );
 
 public slots:
-  QString SnapshotViewXY( const GoFigure::SnapshotImageType& iType,
+  QString SnapshotViewXY( const GoFigure::FileType& iType,
     const QString& iBaseName = QString( "snapshot" ) );
-  QString SnapshotView2( const GoFigure::SnapshotImageType& iType,
+  QString SnapshotView2( const GoFigure::FileType& iType,
     const QString& iBaseName = QString( "snapshot" ) );
-  QString SnapshotView3( const GoFigure::SnapshotImageType& iType,
+  QString SnapshotView3( const GoFigure::FileType& iType,
     const QString& iBaseName = QString( "snapshot" ) );
-  QString SnapshotViewXYZ( const GoFigure::SnapshotImageType& iType,
+  QString SnapshotViewXYZ( const GoFigure::FileType& iType,
     const QString& iBaseName = QString( "snapshot" ) );
 
   void SetSliceViewXY( const int& );

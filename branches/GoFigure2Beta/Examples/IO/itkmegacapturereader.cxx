@@ -1,11 +1,12 @@
 #include "itkMegaCaptureImport.h"
 #include "itkMegaCaptureReader.h"
+#include "vtkImageData.h"
 
 int main( int argc, char** argv )
 {
   if( argc != 2 )
     {
-    std::cout <<"Usage: ./itkmegacapturereader(.exe)" <<std::endl;
+    std::cout <<"Usage: ./itkmegacapturereader(.exe) filename(.png)" <<std::endl;
     return EXIT_FAILURE;
     }
 
@@ -24,7 +25,7 @@ int main( int argc, char** argv )
   reader->Update();
 
   vtkImageData* image = reader->GetOutput();
-  std::cout <<image <<std::endl;
+  image->Delete();
 
   return EXIT_SUCCESS;
 }

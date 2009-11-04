@@ -415,7 +415,7 @@ QVTKInteractor* QGoImageView3D::GetInteractor( const int& iId )
  * @param iBaseName
  * @return
  */
-QString QGoImageView3D::SnapshotViewXY( const GoFigure::SnapshotImageType& iType,
+QString QGoImageView3D::SnapshotViewXY( const GoFigure::FileType& iType,
     const QString& iBaseName )
 {
   QString filename = SnapshotView( QvtkWidget_XY, iType,
@@ -433,7 +433,7 @@ QString QGoImageView3D::SnapshotViewXY( const GoFigure::SnapshotImageType& iType
  * @param iBaseName
  * @return
  */
-QString QGoImageView3D::SnapshotView2( const GoFigure::SnapshotImageType& iType,
+QString QGoImageView3D::SnapshotView2( const GoFigure::FileType& iType,
     const QString& iBaseName )
 {
   QString filename = SnapshotView( QvtkWidget_XZ, iType,
@@ -452,7 +452,7 @@ QString QGoImageView3D::SnapshotView2( const GoFigure::SnapshotImageType& iType,
  * @return
  */
 QString QGoImageView3D::SnapshotView3(
-    const GoFigure::SnapshotImageType& iType,
+    const GoFigure::FileType& iType,
     const QString& iBaseName )
 {
   QString filename = SnapshotView( QvtkWidget_YZ, iType,
@@ -471,7 +471,7 @@ QString QGoImageView3D::SnapshotView3(
  * @return
  */
 QString QGoImageView3D::SnapshotViewXYZ(
-  const GoFigure::SnapshotImageType& iType,
+  const GoFigure::FileType& iType,
   const QString& iBaseName )
 {
   QString filename = SnapshotView( QvtkWidget_XYZ, iType,

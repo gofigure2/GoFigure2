@@ -159,7 +159,7 @@ bool BuildScreenshotFromRenderWindow(
 
 //-------------------------------------------------------------------------
 QString SnapshotView( QVTKWidget* iWidget,
-  const GoFigure::SnapshotImageType& iType,
+  const GoFigure::FileType& iType,
   const QString& iBaseName,
   const unsigned int& iSnapshotId )
 {
@@ -171,37 +171,41 @@ QString SnapshotView( QVTKWidget* iWidget,
 
   switch( iType )
     {
-    default:
     case GoFigure::BMP:
       {
       filename.append( ".bmp" );
       WriteImage< vtkBMPWriter >( image, filename );
-      }
       break;
+      }
     case GoFigure::EPS:
       {
       filename.append( ".eps" );
       WriteImage< vtkPostScriptWriter >( image, filename );
-      }
       break;
+      }
     case GoFigure::JPEG:
       {
       filename.append( ".jpeg" );
       WriteImage< vtkJPEGWriter >( image, filename );
-      }
       break;
+      }
     case GoFigure::PNG:
       {
       filename.append( ".png" );
       WriteImage< vtkPNGWriter >( image, filename );
-      }
       break;
+      }
     case GoFigure::TIFF:
       {
       filename.append( ".tiff" );
       WriteImage< vtkTIFFWriter >( image, filename );
-      }
       break;
+      }
+    default:
+      {
+      std::cerr <<"FileType is not supported for Snapshot" <<std::endl;
+      return QString();
+      }
     }
   image->Delete();
   return filename;

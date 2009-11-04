@@ -151,7 +151,7 @@ void QGoImageView2D::ShowScalarBar( const bool& iShow )
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-QString QGoImageView2D::SnapshotViewXY( const GoFigure::SnapshotImageType& iType,
+QString QGoImageView2D::SnapshotViewXY( const GoFigure::FileType& iType,
       const QString& iBaseName )
 {
   QString filename = SnapshotView( this->m_QVTKWidgetXY, iType,

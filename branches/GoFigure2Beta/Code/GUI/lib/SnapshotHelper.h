@@ -18,17 +18,7 @@
 #include "QVTKWidget.h"
 #include "vtkViewImage2D.h"
 
-namespace GoFigure
-{
-  enum SnapshotImageType
-    {
-    BMP = 0,
-    EPS,
-    JPEG,
-    PNG,
-    TIFF
-    };
-}
+#include "GoFigureGlobalDefinition.h"
 
 //-------------------------------------------------------------------------
 template< class TWriter >
@@ -58,7 +48,7 @@ bool BuildScreenshotFromRenderWindow(
 
 //-------------------------------------------------------------------------
 QString SnapshotView( QVTKWidget* iWidget,
-  const GoFigure::SnapshotImageType& iType,
+  const GoFigure::FileType& iType,
   const QString& iBaseName,
   const unsigned int& iSnapshotId );
 //-------------------------------------------------------------------------

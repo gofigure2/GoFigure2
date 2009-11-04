@@ -41,7 +41,7 @@ class QGoImageView2D : public QGoImageView
     void SetLookupTable( vtkLookupTable* iLut );
     void ShowScalarBar( const bool& );
 
-    QString SnapshotViewXY( const GoFigure::SnapshotImageType& iType,
+    QString SnapshotViewXY( const GoFigure::FileType& iType,
       const QString& iBaseName = tr( "Snapshot" ) );
 
   protected:

@@ -1,23 +1,11 @@
 #ifndef __itkMegaCaptureReader_h
 #define __itkMegaCaptureReader_h
 
+#include "GoFigureGlobalDefinition.h"
 #include "itkLightProcessObject.h"
 #include "GoFigureFileInfoMultiIndexContainerHelper.h"
 
 class vtkImageData;
-
-namespace GoFigure
-{
-  enum FILETYPE
-    {
-      BMP = 0,
-      JPEG,
-      PNG,
-      TIFF,
-      MHA,
-      LSM
-    };
-}
 
 namespace itk
 {
@@ -38,7 +26,7 @@ namespace itk
     void SetInput( const GoFigureFileInfoHelperMultiIndexContainer& UserFileList );
 
     /** \brief  */
-    itkSetMacro( FileType, GoFigure::FILETYPE );
+    itkSetMacro( FileType, GoFigure::FileType );
     itkSetMacro( TimeBased, bool );
 
     void SetTimePoint( const unsigned int& iTm );
@@ -71,7 +59,7 @@ namespace itk
 
     vtkImageData*  m_OutputImage;
     GoFigureFileInfoHelperMultiIndexContainer  m_FileList;
-    GoFigure::FILETYPE m_FileType;
+    GoFigure::FileType m_FileType;
 
     unsigned int m_MinTimePoint;
     unsigned int m_MaxTimePoint;

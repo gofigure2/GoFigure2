@@ -5,9 +5,8 @@
 
 #include "QGoPlugin.h"
 
-// #include "itkMultiFileReader.h"
-// #include "GoFigureFileInfoHelper.h"
 #include "GoFigureFileInfoMultiIndexContainerHelper.h"
+#include "itkMegaCaptureReader.h"
 #include "SnapshotHelper.h"
 #include "ContourStructureHelper.h"
 
@@ -30,50 +29,49 @@ class QGoTabImageView3DwT : public QGoTabElementBase
 {
   Q_OBJECT
 public:
-    QGoTabImageView3DwT( QWidget* parent = 0 );
-    virtual ~QGoTabImageView3DwT();
+  QGoTabImageView3DwT( QWidget* parent = 0 );
+  virtual ~QGoTabImageView3DwT();
 
-//     typedef itk::MultiFileReader::FILETYPE FILETYPE;
+  GoFigure::TabDimensionType GetTabDimensionType( ) const;
 
-    GoFigure::TabDimensionType GetTabDimensionType( ) const;
+  void SetLSMReader( vtkLSMReader* iReader, const int& iTimePoint );
+  void SetMegaCaptureFile(
+    const GoFigureFileInfoHelperMultiIndexContainer& iContainer,
+    const GoFigure::FileType& iFileType,
+    const unsigned int& iTimePoint  );
 
-    void SetLSMReader( vtkLSMReader* iReader, const int& iTimePoint );
-//     void SetMultiFiles( FileListType& iFileList,
-//       const FILETYPE& iFileType,
-//       const int& iTimePoint );
+  virtual void Update();
 
-    virtual void Update();
+  void setupUi( QWidget* parent );
+  void retranslateUi( QWidget *parent );
 
-    void setupUi( QWidget* parent );
-    void retranslateUi( QWidget *parent );
+  virtual std::list< QDockWidget* > DockWidget();
 
-    virtual std::list< QDockWidget* > DockWidget();
+  virtual std::list< QWidget* > AdditionalWidget()
+    {return std::list< QWidget* >(); }
 
-    virtual std::list< QWidget* > AdditionalWidget()
-      {return std::list< QWidget* >(); }
+  virtual void WriteSettings() {}
+  virtual void ReadSettings() {}
 
-    virtual void WriteSettings() {}
-    virtual void ReadSettings() {}
-
-    virtual void ValidateContour( const int& iId );
+  virtual void ValidateContour( const int& iId );
 
 signals:
-    void TimePointChanged( int TimePoint );
-    void SliceViewXYChanged( int Slice );
-    void SliceViewXZChanged( int Slice );
-    void SliceViewYZChanged( int Slice );
-    void FullScreenViewChanged( int FullScreen );
+  void TimePointChanged( int TimePoint );
+  void SliceViewXYChanged( int Slice );
+  void SliceViewXZChanged( int Slice );
+  void SliceViewYZChanged( int Slice );
+  void FullScreenViewChanged( int FullScreen );
 
 public slots:
   void SetTimePoint( const int& );
 
-  QString SnapshotViewXY( const GoFigure::SnapshotImageType& iType,
+  QString SnapshotViewXY( const GoFigure::FileType& iType,
     const QString& iBaseName = QString( "snapshot" ) );
-  QString SnapshotView2( const GoFigure::SnapshotImageType& iType,
+  QString SnapshotView2( const GoFigure::FileType& iType,
     const QString& iBaseName = QString( "snapshot" ) );
-  QString SnapshotView3( const GoFigure::SnapshotImageType& iType,
+  QString SnapshotView3( const GoFigure::FileType& iType,
     const QString& iBaseName = QString( "snapshot" ) );
-  QString SnapshotViewXYZ( const GoFigure::SnapshotImageType& iType,
+  QString SnapshotViewXYZ( const GoFigure::FileType& iType,
     const QString& iBaseName = QString( "snapshot" ) );
 
   void SetSliceViewXY( const int& );
@@ -103,8 +101,10 @@ protected:
   QGoImageView3D*       m_ImageView;
   std::vector< vtkLSMReader* > m_LSMReader;
   vtkImageData*         m_Image;
-//   itk::MultiFileReader::Pointer m_MultiFileReader;
-  GoFigureFileInfoHelperMultiIndexContainer          m_FileList;
+
+  itk::MegaCaptureReader::Pointer           m_MegaCaptureReader;
+  GoFigureFileInfoHelperMultiIndexContainer m_FileList;
+  GoFigure::FileType    m_FileType;
   QColor                m_BackgroundColor;
   int                   m_TimePoint;
   unsigned int          m_ContourId;
@@ -133,6 +133,9 @@ protected:
 
   void RemoveAllContoursForPresentTimePoint();
   void LoadAllContoursForGivenTimePoint( const unsigned int& iT );
+
+  void SetTimePointWithLSMReaders( const int& iTimePoint );
+  void SetTimePointWithMegaCapture( const int& iTimePoint );
 };
 
 #endif

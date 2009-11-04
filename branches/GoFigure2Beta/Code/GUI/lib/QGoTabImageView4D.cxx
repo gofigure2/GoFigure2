@@ -334,7 +334,7 @@ void QGoTabImageView4D::ShowScalarBar( const bool& iShow )
 
 //--------------------------------------------------------------------------
 QString QGoTabImageView4D::SnapshotViewXY(
-  const GoFigure::SnapshotImageType& iType,
+  const GoFigure::FileType& iType,
   const QString& iBaseName )
 {
   return m_XYZImageView->SnapshotViewXY( iType, iBaseName );
@@ -343,7 +343,7 @@ QString QGoTabImageView4D::SnapshotViewXY(
 
 //--------------------------------------------------------------------------
 QString QGoTabImageView4D::SnapshotView2(
-  const GoFigure::SnapshotImageType& iType,
+  const GoFigure::FileType& iType,
   const QString& iBaseName )
 {
   return m_XYZImageView->SnapshotView2( iType, iBaseName );
@@ -352,7 +352,7 @@ QString QGoTabImageView4D::SnapshotView2(
 
 //--------------------------------------------------------------------------
 QString QGoTabImageView4D::SnapshotView3(
-  const GoFigure::SnapshotImageType& iType,
+  const GoFigure::FileType& iType,
   const QString& iBaseName )
 {
   return m_XYZImageView->SnapshotView3( iType, iBaseName );
@@ -361,7 +361,7 @@ QString QGoTabImageView4D::SnapshotView3(
 
 //--------------------------------------------------------------------------
 QString QGoTabImageView4D::SnapshotViewXYZ(
-  const GoFigure::SnapshotImageType& iType,
+  const GoFigure::FileType& iType,
   const QString& iBaseName )
 {
   return m_XYZImageView->SnapshotViewXYZ( iType, iBaseName );
