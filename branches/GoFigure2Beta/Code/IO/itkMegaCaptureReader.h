@@ -44,11 +44,20 @@ namespace itk
     void SetTimePoint( const unsigned int& iTm );
     itkGetConstMacro( UpdateTimePoint, unsigned int );
 
+    itkGetConstMacro( MinTimePoint, unsigned int );
+    itkGetConstMacro( MaxTimePoint, unsigned int );
+
     void SetZSlice( const unsigned int& iZs );
     itkGetConstMacro( UpdateZSlice, unsigned int );
 
+    itkGetConstMacro( MinZSlice, unsigned int );
+    itkGetConstMacro( MaxZSlice, unsigned int );
+
     void SetChannel( const unsigned int& iCh );
     itkGetConstMacro( UpdateChannel, unsigned int );
+
+    itkGetConstMacro( MinChannel, unsigned int );
+    itkGetConstMacro( MaxChannel, unsigned int );
 
     void Update();
 

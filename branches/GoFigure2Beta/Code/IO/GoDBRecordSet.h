@@ -47,7 +47,6 @@
 #include <sstream>
 
 #include "vtkVariant.h"
-#include "CreateDataBaseHelper.h"
 #include "QueryDataBaseHelper.h"
 
 #include "vtkMySQLDatabase.h"
@@ -99,8 +98,8 @@ public:
     m_RowContainer[pos] = InternalObjectType( true, object );
     delete temp;
     }
- 
-  /** \brief is there to be used in case there is a "WHERE" condition 
+
+  /** \brief is there to be used in case there is a "WHERE" condition
   to add for the selection in PopulateFromDB()*/
   void SetWhereString( std::string whereString )
     { this->m_WhereString = whereString; this->IsWhereStringSet = true; }
@@ -210,7 +209,7 @@ private:
     bool operator()( const InternalObjectType& A, const InternalObjectType& B )
       {
       // Dirty first
-      if( A.first && !B.first ) 
+      if( A.first && !B.first )
         {
         return true;
         }
@@ -295,7 +294,7 @@ SaveRows( vtkSQLQuery * query, std::string what, myIteratorType start, myIterato
     return false;
     }*/
 
-  // invariant part of the query: corresponds to the insert/replace into table 
+  // invariant part of the query: corresponds to the insert/replace into table
   //(names of all the columns):
   myIteratorType rowIt = start;
 
@@ -305,10 +304,10 @@ SaveRows( vtkSQLQuery * query, std::string what, myIteratorType start, myIterato
   queryString << rowIt->second.PrintColumnNames();
   queryString << " ) ";
   queryString << " VALUES ";
- 
+
   // row dependent part of the query: one row corresponds to the values of one
   //OriginalObjectType (exp:GoProjectRow)to be saved into the Database. So this part
-  //saves the values for all the OriginalObjectType contained in the vector m_RowContainer: 
+  //saves the values for all the OriginalObjectType contained in the vector m_RowContainer:
   while( rowIt != end )
     {
     std::stringstream rowQueryString;

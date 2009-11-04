@@ -38,7 +38,6 @@
 
 =========================================================================*/
 #include "GoDBCollectionOfTraces.h"
-#include "CreateDataBaseHelper.h"
 #include "SelectQueryDatabaseHelper.h"
 #include "QueryDataBaseHelper.h"
 #include "ConvertToStringHelper.h"
@@ -91,7 +90,7 @@ void GoDBCollectionOfTraces::AddSelectedTracesToCollection(QStringList ListSelec
   std::string newCollectionIDstring = ConvertToString<int>(newCollectionID);
   for (int i=0; i<ListSelectedTraces.size();i++)
     {
-    UpdateValueInDB(DatabaseConnector,m_TracesName.toStdString(), 
+    UpdateValueInDB(DatabaseConnector,m_TracesName.toStdString(),
       m_CollectionIDName.toStdString(), newCollectionIDstring,
       m_TracesIDName.toStdString(), ListSelectedTraces.at(i).toStdString());
     }
@@ -101,17 +100,17 @@ void GoDBCollectionOfTraces::AddSelectedTracesToCollection(QStringList ListSelec
 //--------------------------------------------------------------------------
 QStringList GoDBCollectionOfTraces::ListCollectionID(
   vtkMySQLDatabase* DatabaseConnector)
- {   
-   QStringList ListIDs; 
+ {
+   QStringList ListIDs;
    std::vector<std::string> vectListIDs = ListAllValuesForOneColumn(
      DatabaseConnector,m_CollectionIDName.toStdString(),
      m_CollectionName.toStdString());
- 
+
    for( unsigned int i = 0; i < vectListIDs.size(); ++i )
      {
      ListIDs.append( vectListIDs[i].c_str( ) );
      }
- 
+
    return ListIDs;
  }
 //--------------------------------------------------------------------------

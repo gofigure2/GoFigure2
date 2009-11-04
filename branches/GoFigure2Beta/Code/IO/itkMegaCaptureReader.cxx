@@ -173,6 +173,9 @@ ComputeBounds()
   m_MaxChannel = (*r_ch_it).m_Channel;
 }
 
+/**
+ *
+ */
 void
 MegaCaptureReader::
 Update()
@@ -253,6 +256,10 @@ Update()
     volumeBuilder->Delete();
 }
 
+/**
+ *
+ * \return
+ */
 vtkImageData*
 MegaCaptureReader::
 GetOutput()
@@ -260,4 +267,4 @@ GetOutput()
   return m_OutputImage;
 }
 
-}
+} //end of namespace
