@@ -54,7 +54,6 @@
 
 #include "GoDBImageRow.h"
 #include "GoDBCoordinateRow.h"
-// #include "GoFigureFileInfoHelper.h"
 #include "GoFigureFileInfoMultiIndexContainerHelper.h"
 #include "vtkMySQLDatabase.h"
 #include "MegaCaptureHeaderReader.h"
@@ -86,27 +85,30 @@ private:
   void ImportImages(vtkMySQLDatabase* DatabaseConnector);//,QString newfilename);
 
 
-  typedef GoFigureFileInfoHelperMultiIndexContainer::iterator myFilesIteratorType;
+  typedef GoFigureFileInfoHelperMultiIndexContainer::iterator
+    MultiIndexContainerIteratorType;
 
   /** \brief create the coordinate CoordMin in the DB, check and update if its values
   are less than the other CoordMin created for the images belonging to the same imaging
   session and return the CoordID of the coordinate just created */
-  int CreateImageCoordMin(vtkMySQLDatabase* DatabaseConnector,myFilesIteratorType It);
+  int CreateImageCoordMin( vtkMySQLDatabase* DatabaseConnector,
+    MultiIndexContainerIteratorType It );
 
   /** \brief return the ChannelID from the DB corresponding to the imaging session and
   to the channel number given by the image filename*/
-  int    FindChannelIDForImage(vtkMySQLDatabase* DatabaseConnector,int ImagingSessionID,
-    int ChannelNumber);
+  int FindChannelIDForImage( vtkMySQLDatabase* DatabaseConnector,
+    int ImagingSessionID,
+    int ChannelNumber );
 
-  /**\brief return a GoDBImageRow filled with all the data corresponding */
-  GoDBImageRow CreateImage(vtkMySQLDatabase* DatabaseConnector,
-    myFilesIteratorType It,int ImagingSessionID);
+  /** \brief return a GoDBImageRow filled with all the data corresponding */
+  GoDBImageRow CreateImage( vtkMySQLDatabase* DatabaseConnector,
+    MultiIndexContainerIteratorType It, int ImagingSessionID );
 
-  /**\brief create the channels and their corresponding colors in the database,
+  /** \brief create the channels and their corresponding colors in the database,
   from the data gotten from the headerfile*/
   void CreateChannels(vtkMySQLDatabase* DatabaseConnector, int ImagingSessionID);
 
-  /**\brief create into the DB the coordinates corresponding to the CoordID
+  /** \brief create into the DB the coordinates corresponding to the CoordID
   Min and Max for the Imaging Session and update the CoordIDMax and Min for
   the imaging session in the DB with the newly created coordinates*/
   void CreateImgSessionCoord(vtkMySQLDatabase* DatabaseConnector,int ImagingSessionID);
@@ -116,8 +118,8 @@ private:
 
   void SaveInfoInDatabase();
 
-  /**\brief fill m_importFileInfoList from the filenames of the images and m_HeaderFileInfo
-  from the header file*/
+  /** \brief fill m_importFileInfoList from the filenames of the images and
+  m_HeaderFileInfo from the header file*/
   void ImportInfoFromMegacapture(QString newfilename);
 
   QLabel*      textNewImgSessionName;

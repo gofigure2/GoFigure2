@@ -288,14 +288,18 @@ void QGoCreateImgSessionPage::ImportImages(vtkMySQLDatabase* DatabaseConnector)
       RecordSet->SetConnector(DatabaseConnector);
       RecordSet->SetTableName( "image" );
 
-      myFilesIteratorType It  = m_importFileInfoList->GetOutput().begin();
-      myFilesIteratorType end = m_importFileInfoList->GetOutput().end();
-      while( It != end )
+      GoFigureFileInfoHelperMultiIndexContainer
+        filelist = m_importFileInfoList->GetOutput();
+
+      MultiIndexContainerIteratorType f_it  = filelist.begin();
+      MultiIndexContainerIteratorType f_end = filelist.end();
+
+      while( f_it != f_end )
         {
-        GoDBImageRow Image = CreateImage(DatabaseConnector,It,
+        GoDBImageRow Image = CreateImage(DatabaseConnector,f_it,
           field("ImgSessionID").toInt());
         RecordSet->AddObject( Image );
-        It++;
+        ++f_it;
         }
 
       //Save all the images in the recordset in the Database:
@@ -428,7 +432,7 @@ void QGoCreateImgSessionPage::CreateChannels( vtkMySQLDatabase* DatabaseConnecto
 
 //-------------------------------------------------------------------------
 int QGoCreateImgSessionPage::CreateImageCoordMin(vtkMySQLDatabase* DatabaseConnector,
-  myFilesIteratorType It)
+  MultiIndexContainerIteratorType It)
 {
   GoDBCoordinateRow myNewImageCoordMin;
   myNewImageCoordMin.SetField("PCoord",It->m_PCoord);
@@ -475,7 +479,7 @@ int QGoCreateImgSessionPage::FindChannelIDForImage(vtkMySQLDatabase* DatabaseCon
 
 //-------------------------------------------------------------------------
 GoDBImageRow QGoCreateImgSessionPage::CreateImage(vtkMySQLDatabase* DatabaseConnector,
-  myFilesIteratorType It,int ImagingSessionID)
+  MultiIndexContainerIteratorType It,int ImagingSessionID)
 {
   GoDBImageRow myNewImage;
   myNewImage.SetField("ImagingSessionID", ImagingSessionID);
