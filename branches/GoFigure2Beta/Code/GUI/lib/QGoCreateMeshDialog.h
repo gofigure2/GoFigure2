@@ -79,9 +79,9 @@ protected:
   //QTextEdit*         DescriptionCell;
   //QTextEdit*         DescriptionSubCell;
   //QTextEdit*         DescriptionColor;
-  QLabel*            DescriptionCell;
-  QLabel*            DescriptionSubCell;
-  QLabel*            DescriptionColor;
+  QLineEdit*            DescriptionCell;
+  QLineEdit*            DescriptionSubCell;
+  QLineEdit*            DescriptionColor;
   QScrollArea*       ScrollDescrCell;
   QScrollArea*       ScrollDescrSubCell;
   QScrollArea*       ScrollDescrColor;

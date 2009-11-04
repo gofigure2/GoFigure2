@@ -326,9 +326,9 @@ std::string SubCellularTypeTable()
 {
   return
     "CREATE  TABLE IF NOT EXISTS `subcellulartype` (\
+    `SubCellularID` INT NOT NULL AUTO_INCREMENT ,\
     `SubCellularName` VARCHAR(45) NOT NULL ,\
     `Description` VARCHAR(45) NULL ,\
-    `SubCellularID` INT NOT NULL AUTO_INCREMENT ,\
     PRIMARY KEY (`SubCellularID`)\
     );";
 }
@@ -459,7 +459,7 @@ std::string TrackTable()
     "CREATE  TABLE IF NOT EXISTS `track` (\
     `TrackID` INT NOT NULL AUTO_INCREMENT ,\
     `LineageID` INT NULL ,\
-    `ColorID` INT NOT NULL ,\
+    `ColorID` INT NOT NULL DEFAULT '2',\
     `CoordIDMax` INT NOT NULL ,\
     `CoordIDMin` INT NOT NULL ,\
     `TrackFamilyID` INT NULL ,\
@@ -482,11 +482,11 @@ std::string MeshTable()
   return
     "CREATE  TABLE IF NOT EXISTS `mesh` (\
     `MeshID` INT NULL AUTO_INCREMENT ,\
-    `CellTypeID` INT NOT NULL ,\
-    `SubCellularID` INT NOT NULL ,\
+    `CellTypeID` INT NOT NULL DEFAULT '1',\
+    `SubCellularID` INT NOT NULL DEFAULT '1',\
     `CoordIDMax` INT NOT NULL ,\
     `CoordIDMin` INT NOT NULL ,\
-    `ColorID` INT NOT NULL ,\
+    `ColorID` INT NOT NULL DEFAULT '1',\
     `TrackID` INT NULL ,\
     `ImagingSessionID` INT NOT NULL ,\
     `Points` TEXT NULL ,\
@@ -567,7 +567,7 @@ std::string LineageTable()
     `LineageID` INT NOT NULL AUTO_INCREMENT ,\
     `CoordIDMax` INT NOT NULL ,\
     `CoordIDMin` INT NOT NULL ,\
-    `ColorID` INT NOT NULL ,\
+    `ColorID` INT NOT NULL DEFAULT '3',\
     `Points` TEXT NOT NULL ,\
     `TrackIDRoot` INT NOT NULL ,\
     `ImagingSessionID` INT NOT NULL ,\
