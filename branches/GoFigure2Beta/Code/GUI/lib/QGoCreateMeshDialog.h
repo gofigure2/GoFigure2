@@ -46,6 +46,7 @@
 #include <QComboBox>
 #include <QGridLayout>
 #include <QPushButton>
+#include <QScrollArea>
 #include "MegaVTK2Configure.h"
 
 class QGoCreateMeshDialog : public QDialog
@@ -75,9 +76,15 @@ protected:
   QComboBox*         SelectCellType;
   QComboBox*         SelectSubCellType;
   QComboBox*         SelectColor;
-  QTextEdit*         DescriptionCell;
-  QTextEdit*         DescriptionSubCell;
-  QTextEdit*         DescriptionColor;
+  //QTextEdit*         DescriptionCell;
+  //QTextEdit*         DescriptionSubCell;
+  //QTextEdit*         DescriptionColor;
+  QLabel*            DescriptionCell;
+  QLabel*            DescriptionSubCell;
+  QLabel*            DescriptionColor;
+  QScrollArea*       ScrollDescrCell;
+  QScrollArea*       ScrollDescrSubCell;
+  QScrollArea*       ScrollDescrColor;
   QPushButton*       OkButton;
   QPushButton*       CancelButton;
   QPushButton*       NewCellType;

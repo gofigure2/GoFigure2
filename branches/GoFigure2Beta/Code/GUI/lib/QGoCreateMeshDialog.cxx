@@ -55,9 +55,19 @@ QGoCreateMeshDialog::QGoCreateMeshDialog( QWidget* iParent ) :
   this->SelectCellType     = new QComboBox;
   this->SelectSubCellType  = new QComboBox;
   this->SelectColor        = new QComboBox;
-  this->DescriptionCell    = new QTextEdit;
-  this->DescriptionSubCell = new QTextEdit;
-  this->DescriptionColor   = new QTextEdit;
+  this->ScrollDescrCell    = new QScrollArea;
+  this->ScrollDescrSubCell = new QScrollArea;
+  this->ScrollDescrColor   = new QScrollArea;
+  this->DescriptionCell    = new QLabel;
+  this->DescriptionSubCell = new QLabel;
+  this->DescriptionColor   = new QLabel;
+
+  this->ScrollDescrCell->setWidget(this->DescriptionCell);
+  this->ScrollDescrSubCell->setWidget(this->DescriptionSubCell);
+  this->ScrollDescrColor->setWidget(this->DescriptionColor);
+  //this->DescriptionCell    = new QTextEdit;
+  //this->DescriptionSubCell = new QTextEdit;
+  //this->DescriptionColor   = new QTextEdit;
   this->ButtonBox          = new QDialogButtonBox;
   this->OkButton           = new QPushButton(tr("OK"));
   this->CancelButton       = new QPushButton(tr("Cancel"));
@@ -93,9 +103,13 @@ QGoCreateMeshDialog::QGoCreateMeshDialog( QWidget* iParent ) :
   this->GridLayout->addWidget(this->SelectSubCellType,2,2);
   this->GridLayout->addWidget(this->SelectColor,3,2);
   
-  this->GridLayout->addWidget(this->DescriptionCell,1,3);
+  /*this->GridLayout->addWidget(this->DescriptionCell,1,3);
   this->GridLayout->addWidget(this->DescriptionSubCell,2,3);
-  this->GridLayout->addWidget(this->DescriptionColor,3,3);
+  this->GridLayout->addWidget(this->DescriptionColor,3,3);*/
+  
+  this->GridLayout->addWidget(this->ScrollDescrCell,1,3);
+  this->GridLayout->addWidget(this->ScrollDescrSubCell,2,3);
+  this->GridLayout->addWidget(this->ScrollDescrColor,3,3);
 
   this->GridLayout->addWidget(this->NewCellType,1,4);
   this->GridLayout->addWidget(this->NewSubCellType,2,4);

@@ -95,7 +95,7 @@ QGoWizardDB::QGoWizardDB( QWidget *iParent )
   this->setButton ( QWizard::FinishButton, finishButton );
 
   setPage(ConnectServerPageID, new QGoConnectServerPage );
-  setPage(CreateDataBasePageID, new QGoCreateDataBasePage);
+  //setPage(CreateDataBasePageID, new QGoCreateDataBasePage);
   setPage(OpenOrCreateProjectPageID, new QGoOpenCreateProjectPage);
   setPage(OpenOrCreateImgSessionPageID, new QGoOpenCreateImgSessionPage);
   setPage(CreateImgSessionPageID, new QGoCreateImgSessionPage);
