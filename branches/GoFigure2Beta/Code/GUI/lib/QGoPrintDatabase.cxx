@@ -267,6 +267,13 @@ void QGoPrintDatabase::CreateCorrespondingCollection()
         {
         //add the tableWidgetChild in the CollectionOfTraces?
         QStringList ListSelectedTraces = this->ContourTable->ValuesForSelectedRows("contourID");
+        GoDBMeshRow myNewMesh;
+        myNewMesh.SetField("ImagingSessionID",this->m_ImgSessionID);
+        //myNewMesh.SetField("ColorID") = to be defined for some color chosen by the user
+        //myNewMesh.SetField("CellTypeID") = to be defined for some color chosen by the user
+        //myNewMesh.SetField("SubCellularTypeID") = to be defined for some color chosen by the user
+        //myNewMesh.SetField("CoordIDMax") = 
+        //myNewMesh.SetField("CoordIDMin") =
         CollectionOfContours->CreateNewCollectionFromSelection<GoDBMeshRow>(ListSelectedTraces,
           m_DatabaseConnector);
         this->UpdateContentAndDisplayFromDB<GoDBContourRow>("contour", 

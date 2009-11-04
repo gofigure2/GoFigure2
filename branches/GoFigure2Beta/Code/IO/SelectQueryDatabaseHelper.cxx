@@ -561,6 +561,137 @@ int MaxValueForOneColumnInTable(
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
+int MaxValueForOneColumnInTable(vtkMySQLDatabase* DatabaseConnector,
+  std::string ColumnName,std::string TableName,std::string field,
+  std::string value)
+{
+  int MaxValue = -1;
+
+  vtkSQLQuery* query = DatabaseConnector->GetQueryInstance();
+  std::stringstream querystream;
+  querystream << "SELECT MAX(";
+  querystream << ColumnName;
+  querystream << ") FROM ";
+  querystream << TableName;
+  querystream << " WHERE ";
+  querystream << field;
+  querystream << " = ";
+  querystream << value;
+  querystream << ";";
+
+  query->SetQuery( querystream.str().c_str() );
+  if ( !query->Execute() )
+    {
+    itkGenericExceptionMacro(
+      << "find max value query failed"
+      << query->GetLastErrorText() );
+    DatabaseConnector->Close();
+    DatabaseConnector->Delete();
+    query->Delete();
+    return MaxValue;
+    }
+
+  if (query->NextRow())
+    {
+    MaxValue = query->DataValue(0).ToInt();
+    }
+  query->Delete();
+
+  return MaxValue;
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+int MaxValueForOneColumnInTable(vtkMySQLDatabase* DatabaseConnector,
+  std::string ColumnName,std::string TableName,std::string field,
+  std::vector<std::string> VectorValue)
+{
+  int MaxValue = -1;
+
+  vtkSQLQuery* query = DatabaseConnector->GetQueryInstance();
+  std::stringstream querystream;
+  querystream << "SELECT MAX(";
+  querystream << ColumnName;
+  querystream << ") FROM ";
+  querystream << TableName;
+  querystream << " WHERE (";
+  for (int i = 0; i < VectorValue.size(); i++)
+    {
+    querystream << field;
+    querystream << " = ";
+    querystream << VectorValue[i];
+    querystream << " OR ";   
+    }
+  querystream << ";";
+
+  query->SetQuery( querystream.str().c_str() );
+  if ( !query->Execute() )
+    {
+    itkGenericExceptionMacro(
+      << "find max value query failed"
+      << query->GetLastErrorText() );
+    DatabaseConnector->Close();
+    DatabaseConnector->Delete();
+    query->Delete();
+    return MaxValue;
+    }
+
+  if (query->NextRow())
+    {
+    MaxValue = query->DataValue(0).ToInt();
+    }
+  query->Delete();
+
+  return MaxValue;
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+int MinValueForOneColumnInTable(vtkMySQLDatabase* DatabaseConnector,
+  std::string ColumnName,std::string TableName,std::string field,
+  std::vector<std::string> VectorValue)
+{
+  int MinValue = -1;
+
+  vtkSQLQuery* query = DatabaseConnector->GetQueryInstance();
+  std::stringstream querystream;
+  querystream << "SELECT MIN(";
+  querystream << ColumnName;
+  querystream << ") FROM ";
+  querystream << TableName;
+  querystream << " WHERE (";
+  for (int i = 0; i < VectorValue.size(); i++)
+    {
+    querystream << field;
+    querystream << " = ";
+    querystream << VectorValue[i];
+    querystream << " OR ";   
+    }
+  querystream << ";";
+
+  query->SetQuery( querystream.str().c_str() );
+  if ( !query->Execute() )
+    {
+    itkGenericExceptionMacro(
+      << "find min value query failed"
+      << query->GetLastErrorText() );
+    DatabaseConnector->Close();
+    DatabaseConnector->Delete();
+    query->Delete();
+    return MinValue;
+    }
+
+  if (query->NextRow())
+    {
+    MinValue = query->DataValue(0).ToInt();
+    }
+  query->Delete();
+
+  return MinValue;
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
 int LastInsertID(std::string ServerName, std::string login,
   std::string Password, std::string DBName)
 {

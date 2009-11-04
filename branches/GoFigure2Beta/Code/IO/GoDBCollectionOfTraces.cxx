@@ -42,6 +42,7 @@
 #include "QueryDataBaseHelper.h"
 #include "ConvertToStringHelper.h"
 #include "vtkMySQLDatabase.h"
+#include "GoDBCoordinateRow.h"
 #include <QStringList>
 #include <QString>
 #include <string>
@@ -116,3 +117,107 @@ QStringList GoDBCollectionOfTraces::ListCollectionID(
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+int GoDBCollectionOfTraces::GetCoordMinID(vtkMySQLDatabase* DatabaseConnector,
+  int CollectionID,QStringList ListSelectedTraces)
+{
+  //Get the max of the existing traces in the collection:
+  
+  GoDBCoordinateRow ExistingCoordMax = GetExistingCoordMax(
+    DatabaseConnector, CollectionID);
+
+  GoDBCoordinateRow ExistingCoordMin = GetExistingCoordMax(
+    DatabaseConnector, CollectionID);
+
+  //transform the QStringList to a vector<string>:
+  std::vector<std::string> VectorSelectedTraces;
+  for (int i = 0; i <ListSelectedTraces.size();i++)
+    {
+    VectorSelectedTraces[i] = ListSelectedTraces.at(i).toStdString();
+    }
+
+  //Get the max of the selecting traces to add:
+  GoDBCoordinateRow SelectingCoordMax = GetSelectingTracesCoordMax(
+    DatabaseConnector, VectorSelectedTraces );
+  GoDBCoordinateRow SelectingCoordMin = GetSelectingTracesCoordMin(
+    DatabaseConnector, VectorSelectedTraces );
+
+  //compare min of existing and selecting one and create the cooresponding 
+  //coordinate:
+  /*
+  CoordMin.SetField("PCoord") =
+  MaxValueForOneColumnInTable(DatabaseConnector,
+  "PCoord","coordinate",",
+  std::string value);*/
+  return -1;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+GoDBCoordinateRow GoDBCollectionOfTraces::GetExistingCoordMin(
+  vtkMySQLDatabase* DatabaseConnector, int CollectionID)
+{ 
+  std::vector<std::string> VectorCoordMin = ListSpecificValuesForOneColumn(
+    DatabaseConnector,"coordinate", "CoordIDMin",m_CollectionName.toStdString(),
+    ConvertToString<int>(CollectionID));
+
+  GoDBCoordinateRow CoordMin;
+  std::vector<std::string> ColumnNames = CoordMin.GetVectorColumnNames();
+  for (int i = 0; i <ColumnNames.size(); i++)
+    {
+    CoordMin.SetField(ColumnNames[i],MinValueForOneColumnInTable(DatabaseConnector,
+      ColumnNames[i],"coordinate","CoordID",VectorCoordMin));
+    }
+  return CoordMin;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+GoDBCoordinateRow GoDBCollectionOfTraces::GetExistingCoordMax(
+  vtkMySQLDatabase* DatabaseConnector, int CollectionID)
+{
+  std::vector<std::string> VectorCoordMax = ListSpecificValuesForOneColumn(
+    DatabaseConnector,"coordinate", "CoordIDMax",m_CollectionName.toStdString(),
+    ConvertToString<int>(CollectionID));
+
+  GoDBCoordinateRow CoordMax;
+  std::vector<std::string> ColumnNames = CoordMax.GetVectorColumnNames();
+  for (int i = 0; i <ColumnNames.size(); i++)
+    {
+    CoordMax.SetField(ColumnNames[i],MaxValueForOneColumnInTable(DatabaseConnector,
+      ColumnNames[i],"coordinate","CoordID",VectorCoordMax));
+    }
+
+  return CoordMax;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+GoDBCoordinateRow GoDBCollectionOfTraces::GetSelectingTracesCoordMin(
+  vtkMySQLDatabase* DatabaseConnector, 
+  std::vector<std::string> ListSelectedTraces )
+{ 
+  GoDBCoordinateRow CoordMin;
+  std::vector<std::string> ColumnNames = CoordMin.GetVectorColumnNames();
+  for (int i = 0; i <ColumnNames.size(); i++)
+    {
+    CoordMin.SetField(ColumnNames[i],MinValueForOneColumnInTable(
+      DatabaseConnector,ColumnNames[i],"coordinate","CoordID",ListSelectedTraces));
+    }
+  return CoordMin;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+GoDBCoordinateRow GoDBCollectionOfTraces::GetSelectingTracesCoordMax(
+  vtkMySQLDatabase* DatabaseConnector, 
+  std::vector<std::string> ListSelectedTraces )
+{ 
+  GoDBCoordinateRow CoordMax;
+  std::vector<std::string> ColumnNames = CoordMax.GetVectorColumnNames();
+  for (int i = 0; i <ColumnNames.size(); i++)
+    {
+    CoordMax.SetField(ColumnNames[i],MaxValueForOneColumnInTable(
+      DatabaseConnector,ColumnNames[i],"coordinate","CoordID",ListSelectedTraces));
+    }
+  return CoordMax;
+}

@@ -46,6 +46,7 @@
 #include "MegaVTK2Configure.h"
 #include "GoDBRecordSetHelper.h"
 #include "vtkMySQLDatabase.h"
+#include "GoDBCoordinateRow.h"
 #include <QStringList>
 
 class GoDBCollectionOfTraces
@@ -71,6 +72,15 @@ public:
   void QMEGAVTKADDON2_EXPORT AddSelectedTracesToCollection(
     QStringList ListSelectedTraces,int newCollectionID,
     vtkMySQLDatabase* DatabaseConnector);
+
+  /**\brief compare all the coordinate for all the traces inside the collection,
+  create the coordinate in the database with all the max and return it*/
+  int QMEGAVTKADDON2_EXPORT GetCoordMaxID(vtkMySQLDatabase* DatabaseConnector);
+  
+   /**\brief compare all the coordinate for all the traces inside the collection,
+  create the coordinate in the database with all the min and return it*/
+  int QMEGAVTKADDON2_EXPORT GetCoordMinID(vtkMySQLDatabase* DatabaseConnector,
+    int CollectionID,QStringList ListSelectedTraces);
 
   template< class myT >
   void QMEGAVTKADDON2_EXPORT CreateNewCollectionFromSelection(
@@ -121,5 +131,22 @@ protected:
       m_Password.toStdString(),m_NameDB.toStdString(),
       m_CollectionIDName.toStdString(),m_CollectionName.toStdString());*/
     }
+  /**\brief return the coordinate min of all the coordinates of the traces
+  already in the collection*/
+  GoDBCoordinateRow GetExistingCoordMin(vtkMySQLDatabase* DatabaseConnector,
+    int CollectionID);
+  /**\brief return the coordinate max of all the coordinates of the traces
+  already in the collection*/
+  GoDBCoordinateRow GetExistingCoordMax(vtkMySQLDatabase* DatabaseConnector, 
+    int CollectionID);
+  /**\brief return the coordinate min of all the coordinates of the 
+  selected traces*/
+  GoDBCoordinateRow GetSelectingTracesCoordMin(
+  vtkMySQLDatabase* DatabaseConnector, std::vector<std::string> ListSelectedTraces);
+
+  /**\brief return the coordinate max of all the coordinates of the 
+  selected traces*/
+  GoDBCoordinateRow GetSelectingTracesCoordMax(
+  vtkMySQLDatabase* DatabaseConnector, std::vector<std::string> ListSelectedTraces);
 };
 #endif
