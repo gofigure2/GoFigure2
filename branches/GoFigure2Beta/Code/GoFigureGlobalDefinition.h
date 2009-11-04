@@ -13,6 +13,14 @@ namespace GoFigure
       LSM,
       EPS
     };
+
+  enum TabDimensionType
+    {
+    TWO_D = 2,
+    THREE_D,
+    THREE_D_WITH_T,
+    FOUR_D
+    };
 }
 
 #endif

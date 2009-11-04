@@ -52,18 +52,12 @@
 #include "itkQtAdaptor.h"
 #include "vtkLSMReader.h"
 
-// #include "itkMultiFileReader.h"
 #include "GoFigureFileInfoMultiIndexContainerHelper.h"
 #include "QGoWizardDB.h"
 
-// ALEX: have to make a conditional flag to check if
-// vtk has been compiled with the good drivers
-// #ifdef VTK_USE_MYSQL
 #include "CreateDataBaseHelper.h"
-// #endif
 
-//NOTE: this include is required to define GoFigure::TabDimensionType
-#include "QGoPlugin.h"
+#include "GoFigureGlobalDefinition.h"
 
 class QGoTabManager;
 
@@ -89,31 +83,27 @@ public:
   void SetSingleFileName( const QString& iFileName );
 
 private slots:
-  void on_actionOpen_Single_File_activated( );
+  void on_actionOpen_Single_File_triggerred( );
   void openRecentSingleFile();
-  void on_actionOpen_Multiple_Files_activated( );
+//   void on_actionOpen_Multiple_Files_triggerred( );
+  void on_actionOpen_MegaCatpure_Files_triggerred( );
   void openRecentMultipleFile();
 
-  void on_actionGoFigure2_Website_activated( );
-  void on_actionUser_mailing_list_activated();
-  void on_actionDeveloper_mailing_list_activated();
+  void on_actionGoFigure2_Website_triggerred( );
+  void on_actionUser_mailing_list_triggerred();
+  void on_actionDeveloper_mailing_list_triggerred();
 
-  void on_actionOpen_Mesh_activated( );
+  void on_actionOpen_Mesh_triggerred( );
 
-  // #ifdef VTK_USE_MYSQL
-  //void on_actionCreate_DataBase_activated( ) { QGoCreateDBDialog dialog; }
-  void on_actionUse_DataBase_activated();
+  void on_actionUse_DataBase_triggerred();
   void openFilesfromDB();
- // void on_actionImport_Dataset_in_DataBase_activated( ) {};
-  //void on_actionOpen_DataBase_activated( ) {};
-  // #endif
 
-  void on_actionClose_activated( );
-  void on_actionClose_all_activated( );
-  void on_actionQuit_activated( );
+  void on_actionClose_triggerred( );
+  void on_actionClose_all_triggerred( );
+  void on_actionQuit_triggerred( );
 
-  void on_actionAbout_activated( );
-  void on_actionAbout_Qt_activated( );
+  void on_actionAbout_triggerred( );
+  void on_actionAbout_Qt_triggerred( );
 
   void ApplyImageFilter();
 

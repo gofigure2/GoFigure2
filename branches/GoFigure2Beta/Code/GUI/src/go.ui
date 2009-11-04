@@ -95,7 +95,7 @@
      <addaction name="menuMultiple_Files"/>
     </widget>
     <addaction name="actionOpen_Single_File"/>
-    <addaction name="actionOpen_Multiple_Files"/>
+    <addaction name="actionOpen_MegaCapture_Files"/>
     <addaction name="separator"/>
     <addaction name="actionOpen_Mesh"/>
     <addaction name="separator"/>
@@ -194,12 +194,12 @@
     <string>Ctrl+O</string>
    </property>
   </action>
-  <action name="actionOpen_Multiple_Files">
+  <action name="actionOpen_MegaCapture_Files">
    <property name="enabled">
     <bool>false</bool>
    </property>
    <property name="text">
-    <string>Open Multiple Files</string>
+    <string>Open MegaCapture Files</string>
    </property>
   </action>
   <action name="actionSave_Multiple_Files_As">

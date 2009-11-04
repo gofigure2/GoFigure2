@@ -12,17 +12,7 @@
 #include <QWidget>
 
 #include "PluginInformationBase.h"
-
-namespace GoFigure
-{
-  enum TabDimensionType
-    {
-    TWO_D = 2,
-    THREE_D,
-    THREE_D_WITH_T,
-    FOUR_D
-    };
-}
+#include "GoFigureGlobalDefinition.h"
 
 /**
 \class QGoPlugin

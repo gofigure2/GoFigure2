@@ -125,7 +125,7 @@ QGoMainWindow::~QGoMainWindow()
 // *************************************************************************
 void QGoMainWindow::CreateSignalSlotsConnection()
 {
-  //QObject::connect( this->actionOpen, SIGNAL( activated( ) ),
+  //QObject::connect( this->actionOpen, SIGNAL( triggerred( ) ),
     //this, SLOT( showprogressloading() ) );
   QObject::connect( this->CentralTabWidget,
     SIGNAL( tabCloseRequested( int ) ),
@@ -157,7 +157,7 @@ void QGoMainWindow::CreateSignalSlotsConnection()
 }
 
 // *************************************************************************
-void QGoMainWindow::on_actionOpen_Single_File_activated( )
+void QGoMainWindow::on_actionOpen_Single_File_triggerred( )
 {
   QString filename = QFileDialog::getOpenFileName(
     this,
@@ -172,8 +172,8 @@ void QGoMainWindow::on_actionOpen_Single_File_activated( )
 }
 
 // *************************************************************************
-void QGoMainWindow::on_actionOpen_Multiple_Files_activated( )
-{
+// void QGoMainWindow::on_actionOpen_Multiple_Files_triggerred( )
+// {
 //   QString filename = QFileDialog::getOpenFileName(
 //     this,
 //     tr( "Select one Image from the Dataset" ),"",
@@ -208,11 +208,34 @@ void QGoMainWindow::on_actionOpen_Multiple_Files_activated( )
 //         }
 //       }
 //     }
+// }
+
+//--------------------------------------------------------------------------
+void QGoMainWindow::on_actionOpen_MegaCatpure_Files_triggerred()
+{
+  QString filename = QFileDialog::getOpenFileName(
+    this,
+    tr( "Select One Image from the Dataset" ), "",
+    tr( "Images (*.png *.tif *.tiff)")
+    );
+
+  if( !filename.isEmpty() )
+    {
+    if( QFile::exists( filename ) )
+      {
+//       itk::MegaCaptureImport::Pointer importer = itk::MegaCaptureImport::New();
+//       importer->SetFileName( filename.toStdString() );
+//       importer->Update();
+
+//       CreateNewTabFor3DwtImage( importer->GetOutput(), )
+      }
+    }
 }
+//--------------------------------------------------------------------------
 
 
 //--------------------------------------------------------------------------
-void QGoMainWindow::on_actionUse_DataBase_activated()
+void QGoMainWindow::on_actionUse_DataBase_triggerred()
 {
   m_DBWizard->show();
 }
@@ -235,20 +258,20 @@ void QGoMainWindow::openFilesfromDB()
 // *************************************************************************
 
 // *************************************************************************
-void QGoMainWindow::on_actionClose_all_activated()
+void QGoMainWindow::on_actionClose_all_triggerred()
 {
   m_TabManager->CloseAllTabs();
 }
 // *************************************************************************
 
 // *************************************************************************
-void QGoMainWindow::on_actionClose_activated()
+void QGoMainWindow::on_actionClose_triggerred()
 {
   int idx = this->CentralTabWidget->currentIndex();
   m_TabManager->CloseTab( idx );
 }
 // *************************************************************************
-void QGoMainWindow::on_actionOpen_Mesh_activated( )
+void QGoMainWindow::on_actionOpen_Mesh_triggerred( )
 {
   if( this->CentralTabWidget->count() > 0 )
     {
@@ -365,7 +388,7 @@ void QGoMainWindow::on_actionOpen_Mesh_activated( )
 }//--------------------------------------------------------------------------------
 
 // *************************************************************************
-void QGoMainWindow::on_actionQuit_activated( )
+void QGoMainWindow::on_actionQuit_triggerred( )
 {
   this->close();
   this->WriteSettings();
@@ -694,7 +717,7 @@ void QGoMainWindow::OpenImageWithITK( const QString& iFile )
 //--------------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------------
-void QGoMainWindow::on_actionAbout_activated( )
+void QGoMainWindow::on_actionAbout_triggerred( )
 {
   QString version( "v0.5" );
 
@@ -718,26 +741,26 @@ void QGoMainWindow::on_actionAbout_activated( )
 //--------------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------------
-void QGoMainWindow::on_actionAbout_Qt_activated( )
+void QGoMainWindow::on_actionAbout_Qt_triggerred( )
 {
   QMessageBox::aboutQt( this, tr( "About Qt" ) );
 }
 //--------------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoMainWindow::on_actionGoFigure2_Website_activated( )
+void QGoMainWindow::on_actionGoFigure2_Website_triggerred( )
 {
   QDesktopServices::openUrl( QUrl("https://sourceforge.net/projects/gofigure2/") );
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoMainWindow::on_actionUser_mailing_list_activated( )
+void QGoMainWindow::on_actionUser_mailing_list_triggerred( )
 {
   QDesktopServices::openUrl( QUrl("mailto:users@gofigure2.com?subject=About GoFigure2") );
 }
 //--------------------------------------------------------------------------
-void QGoMainWindow::on_actionDeveloper_mailing_list_activated( )
+void QGoMainWindow::on_actionDeveloper_mailing_list_triggerred( )
 {
   QDesktopServices::openUrl( QUrl("mailto:developers@gofigure2.com?subject=About Gofigure2" ) );
 }

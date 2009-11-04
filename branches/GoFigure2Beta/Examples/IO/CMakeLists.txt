@@ -5,6 +5,8 @@ SET( QGOIO_EXAMPLES_SRC
   MegaCaptureHeaderReaderTest
   lsmtomegacapture
   itkmegacapturereader
+  GenerateImagingSessionPartInMegaCaptureHeaderFromMHA
+  mhatomegacapture
 )
 
 FOREACH( var ${QGOIO_EXAMPLES_SRC} )
