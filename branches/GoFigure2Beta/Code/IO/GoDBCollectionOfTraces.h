@@ -56,12 +56,13 @@ public:
 
   explicit QMEGAVTKADDON2_EXPORT GoDBCollectionOfTraces();
   explicit QMEGAVTKADDON2_EXPORT GoDBCollectionOfTraces(
-    QString CollectionName,QString CollectionIDName,
-    QString Traces,QString TracesIDName);
+    std::string CollectionName,std::string CollectionIDName,
+    std::string Traces,std::string TracesIDName);
   virtual  QMEGAVTKADDON2_EXPORT ~GoDBCollectionOfTraces();
  
-  void QMEGAVTKADDON2_EXPORT SetDatabaseVariables(
-    QString Server,QString User,QString Password, QString NameDB);
+  //void QMEGAVTKADDON2_EXPORT SetDatabaseVariables(
+    //QString Server,QString User,QString Password, QString NameDB);
+  void QMEGAVTKADDON2_EXPORT SetImgSessionID (unsigned int iImgSessionID);
 
   /** \brief Delete in the Database all the traces listed in the QStringList */
   void QMEGAVTKADDON2_EXPORT DeleteTraces(QStringList TracesToDelete,
@@ -73,21 +74,21 @@ public:
     QStringList ListSelectedTraces,int newCollectionID,
     vtkMySQLDatabase* DatabaseConnector);
 
-  /**\brief compare all the coordinate for all the traces inside the collection,
-  create the coordinate in the database with all the max and return it*/
-  int QMEGAVTKADDON2_EXPORT GetCoordMaxID(vtkMySQLDatabase* DatabaseConnector,
-    int CollectionID,QStringList ListSelectedTraces);
-  
-   /**\brief compare all the coordinate for all the traces inside the collection,
-  create the coordinate in the database with all the min and return it*/
-  int QMEGAVTKADDON2_EXPORT GetCoordMinID(vtkMySQLDatabase* DatabaseConnector,
-    int CollectionID,QStringList ListSelectedTraces);
-
   template< class myT >
   void QMEGAVTKADDON2_EXPORT CreateNewCollectionFromSelection(
     QStringList ListSelectedTraces, vtkMySQLDatabase* DatabaseConnector,
     myT& NewObject)
     {
+    //the following fields are common to all the collections, the one
+    //that are different are specified in QGoPrintDatabase:
+    NewObject.SetField("ImagingSessionID",this->m_ImgSessionID);
+      //the CollectionID is set to 0 as it is a new Collection that will be created, not
+       //contours to be added to an existing collection:
+    NewObject.SetField("CoordIDMax",this->GetCoordMaxID(
+      DatabaseConnector,0,ListSelectedTraces));
+    NewObject.SetField("CoordIDMin",this->GetCoordMinID(
+      DatabaseConnector,0,ListSelectedTraces));
+
     int NewCollectionID = this->CreateNewCollection<myT>(DatabaseConnector,NewObject);
     AddSelectedTracesToCollection(ListSelectedTraces,
       NewCollectionID, DatabaseConnector);
@@ -96,19 +97,20 @@ public:
   QStringList QMEGAVTKADDON2_EXPORT ListCollectionID(
     vtkMySQLDatabase* DatabaseConnector);
 
-  QString CollectionName()
+  std::string CollectionName()
     { return m_CollectionName;}
-  QString TracesName()
+  std::string TracesName()
     { return m_TracesName;}
 
 
 
 protected:
 
-  QString m_CollectionName;
-  QString m_CollectionIDName;
-  QString m_TracesName;
-  QString m_TracesIDName;
+  std::string  m_CollectionName;
+  std::string  m_CollectionIDName;
+  std::string  m_TracesName;
+  std::string  m_TracesIDName;
+  unsigned int m_ImgSessionID;
 
   /** \brief Create a new collection Row in the collection table and
   return the collectionID from the created row: */
@@ -118,9 +120,19 @@ protected:
   int CreateNewCollection(vtkMySQLDatabase* DatabaseConnector, myT& myNewObject)
     {
     return AddOnlyOneNewObjectInTable<myT>(
-      DatabaseConnector,m_CollectionName.toStdString(),
-      myNewObject, m_CollectionIDName.toStdString() );
+      DatabaseConnector,m_CollectionName,myNewObject, m_CollectionIDName);
     }
+
+  /**\brief compare all the coordinate for all the traces inside the collection,
+  create the coordinate in the database with all the max and return it*/
+  int GetCoordMaxID(vtkMySQLDatabase* DatabaseConnector,
+    int CollectionID,QStringList ListSelectedTraces);
+  
+   /**\brief compare all the coordinate for all the traces inside the collection,
+  create the coordinate in the database with all the min and return it*/
+  int GetCoordMinID(vtkMySQLDatabase* DatabaseConnector,
+    int CollectionID,QStringList ListSelectedTraces);
+
   /**\brief return the coordinate min of all the coordinates of the 
   selected traces*/
   GoDBCoordinateRow GetSelectingTracesCoordMin(

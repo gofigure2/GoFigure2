@@ -54,8 +54,9 @@ GoDBCollectionOfTraces::GoDBCollectionOfTraces()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-GoDBCollectionOfTraces::GoDBCollectionOfTraces( QString iCollectionName,
-  QString iCollectionIDName,QString iTracesName, QString iTracesIDName )
+GoDBCollectionOfTraces::GoDBCollectionOfTraces( std::string iCollectionName,
+  std::string iCollectionIDName,std::string iTracesName, 
+  std::string iTracesIDName)
 {
   m_CollectionName = iCollectionName;
   m_CollectionIDName = iCollectionIDName;
@@ -72,14 +73,20 @@ GoDBCollectionOfTraces::~GoDBCollectionOfTraces()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+void GoDBCollectionOfTraces::SetImgSessionID (unsigned int iImgSessionID)
+{
+  m_ImgSessionID = iImgSessionID;  
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
 void GoDBCollectionOfTraces::DeleteTraces(QStringList TracesToDelete,
   vtkMySQLDatabase* DatabaseConnector)
 {
   for (int i = 0; i<TracesToDelete.size();i++)
     {
     std::string ID = TracesToDelete.at(i).toStdString();
-    DeleteRow(DatabaseConnector,m_TracesName.toStdString(),
-      m_TracesIDName.toStdString(),ID);
+    DeleteRow(DatabaseConnector,m_TracesName,m_TracesIDName,ID);
     }
 }
 //--------------------------------------------------------------------------
@@ -91,9 +98,8 @@ void GoDBCollectionOfTraces::AddSelectedTracesToCollection(QStringList ListSelec
   std::string newCollectionIDstring = ConvertToString<int>(newCollectionID);
   for (int i=0; i<ListSelectedTraces.size();i++)
     {
-    UpdateValueInDB(DatabaseConnector,m_TracesName.toStdString(),
-      m_CollectionIDName.toStdString(), newCollectionIDstring,
-      m_TracesIDName.toStdString(), ListSelectedTraces.at(i).toStdString());
+    UpdateValueInDB(DatabaseConnector,m_TracesName,m_CollectionIDName, 
+      newCollectionIDstring,m_TracesIDName, ListSelectedTraces.at(i).toStdString());
     }
 }
 //--------------------------------------------------------------------------
@@ -104,8 +110,7 @@ QStringList GoDBCollectionOfTraces::ListCollectionID(
  {
    QStringList ListIDs;
    std::vector<std::string> vectListIDs = ListAllValuesForOneColumn(
-     DatabaseConnector,m_CollectionIDName.toStdString(),
-     m_CollectionName.toStdString());
+     DatabaseConnector,m_CollectionIDName,m_CollectionName);
 
    for( unsigned int i = 0; i < vectListIDs.size(); ++i )
      {
@@ -139,8 +144,7 @@ int GoDBCollectionOfTraces::GetCoordMinID(vtkMySQLDatabase* DatabaseConnector,
     { 
     //find the CoordIDMin of the existing collection:
     int CollectionCoordIDMin = FindOneID(DatabaseConnector,
-      this->m_CollectionName.toStdString(),"CoordIDMin",
-      this->m_CollectionIDName.toStdString(),
+      this->m_CollectionName,"CoordIDMin",this->m_CollectionIDName,
       ConvertToString<int>(CollectionID)); 
     //fill the ExistingCoordMin with the values from the DB of the coordinate values
     // of the coordMin for the existing collection
@@ -206,8 +210,7 @@ int GoDBCollectionOfTraces::GetCoordMaxID(vtkMySQLDatabase* DatabaseConnector,
     { 
     //find the CoordIDMax of the existing collection:
     int CollectionCoordIDMax = FindOneID(DatabaseConnector,
-      this->m_CollectionName.toStdString(),"CoordIDMax",
-      this->m_CollectionIDName.toStdString(),
+      this->m_CollectionName,"CoordIDMax",this->m_CollectionIDName,
       ConvertToString<int>(CollectionID)); 
     //fill the ExistingCoordMax with the values from the DB of the coordinate values
     // of the coordMax for the existing collection
@@ -260,8 +263,7 @@ GoDBCoordinateRow GoDBCollectionOfTraces::GetSelectingTracesCoordMin(
   //coordIDMin of the Contours selected:
   std::vector<std::string> ListSelectedTracesCoordIDMin = 
     ListSpecificValuesForOneColumn(DatabaseConnector,
-    this->m_TracesName.toStdString(),"CoordIDMin",
-    this->m_TracesIDName.toStdString(),ListSelectedTracesID);
+    this->m_TracesName,"CoordIDMin",this->m_TracesIDName,ListSelectedTracesID);
   //then, go to the coordinate table and compare the values for the coordID
   //corresponding to the coordIDMax of the selected contours:
   std::vector<std::string> ColumnNames = CoordMin.GetVectorColumnNames();
@@ -289,8 +291,7 @@ GoDBCoordinateRow GoDBCollectionOfTraces::GetSelectingTracesCoordMax(
   //coordIDMax of the Contours selected:
   std::vector<std::string> ListSelectedTracesCoordIDMax = 
     ListSpecificValuesForOneColumn(DatabaseConnector,
-    this->m_TracesName.toStdString(),"CoordIDMax",
-    this->m_TracesIDName.toStdString(),ListSelectedTracesID);
+    this->m_TracesName,"CoordIDMax",this->m_TracesIDName,ListSelectedTracesID);
   //then, go to the coordinate table and compare the values for the coordID
   //corresponding to the coordIDMax of the selected contours:
   std::vector<std::string> ColumnNames = CoordMax.GetVectorColumnNames();

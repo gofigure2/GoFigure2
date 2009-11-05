@@ -82,8 +82,8 @@ signals:
 protected:
   void QPrintColumnNames( QString TableName,
     std::vector< std::string > ColumnNames, QTableWidgetChild* QTabTableName );
-  GoDBCollectionOfTraces* CollectionOfContours;
-  GoDBCollectionOfTraces* CollectionOfMeshes;
+  GoDBCollectionOfTraces* m_CollectionOfContours;
+  GoDBCollectionOfTraces* m_CollectionOfMeshes;
 
   void OpenDBConnectionForTables();
   void CloseDBConnectionForTables();
