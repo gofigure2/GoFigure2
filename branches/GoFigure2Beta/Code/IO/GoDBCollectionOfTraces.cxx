@@ -173,7 +173,7 @@ int GoDBCollectionOfTraces::GetCoordMinID(vtkMySQLDatabase* DatabaseConnector,
     }
   //check if the coordinate already exists in the DB, if not, will be = -1:
    int ID = NewCollectionCoordMin.DoesThisCoordinateExist(DatabaseConnector);
-   if (ID == -1)
+   if (ID != -1)
      {
      return ID;
      }
@@ -240,7 +240,7 @@ int GoDBCollectionOfTraces::GetCoordMaxID(vtkMySQLDatabase* DatabaseConnector,
     }
   //check if the coordinate already exists in the DB, if not, will be = -1:
    int ID = NewCollectionCoordMax.DoesThisCoordinateExist(DatabaseConnector);
-   if (ID == -1)
+   if (ID != -1)
      {
      return ID;
      }
@@ -253,9 +253,17 @@ int GoDBCollectionOfTraces::GetCoordMaxID(vtkMySQLDatabase* DatabaseConnector,
 //--------------------------------------------------------------------------
 GoDBCoordinateRow GoDBCollectionOfTraces::GetSelectingTracesCoordMin(
   vtkMySQLDatabase* DatabaseConnector, 
-  std::vector<std::string> ListSelectedTraces )
+  std::vector<std::string> ListSelectedTracesID )
 { 
   GoDBCoordinateRow CoordMin;
+   //First, get the coordID in the contour table that corresponds to the
+  //coordIDMin of the Contours selected:
+  std::vector<std::string> ListSelectedTracesCoordIDMin = 
+    ListSpecificValuesForOneColumn(DatabaseConnector,
+    this->m_TracesName.toStdString(),"CoordIDMin",
+    this->m_TracesIDName.toStdString(),ListSelectedTracesID);
+  //then, go to the coordinate table and compare the values for the coordID
+  //corresponding to the coordIDMax of the selected contours:
   std::vector<std::string> ColumnNames = CoordMin.GetVectorColumnNames();
   for (int i = 0; i <ColumnNames.size(); i++)
     {
@@ -263,7 +271,8 @@ GoDBCoordinateRow GoDBCollectionOfTraces::GetSelectingTracesCoordMin(
     if (ColumnNames[i] != "CoordID")
       {
       CoordMin.SetField(ColumnNames[i],MinValueForOneColumnInTable(
-        DatabaseConnector,ColumnNames[i],"coordinate","CoordID",ListSelectedTraces));
+        DatabaseConnector,ColumnNames[i],"coordinate","CoordID",
+        ListSelectedTracesCoordIDMin));
       }
     }
   return CoordMin;
@@ -273,9 +282,17 @@ GoDBCoordinateRow GoDBCollectionOfTraces::GetSelectingTracesCoordMin(
 //--------------------------------------------------------------------------
 GoDBCoordinateRow GoDBCollectionOfTraces::GetSelectingTracesCoordMax(
   vtkMySQLDatabase* DatabaseConnector, 
-  std::vector<std::string> ListSelectedTraces )
+  std::vector<std::string> ListSelectedTracesID )
 { 
   GoDBCoordinateRow CoordMax;
+  //First, get the coordID in the contour table that corresponds to the
+  //coordIDMax of the Contours selected:
+  std::vector<std::string> ListSelectedTracesCoordIDMax = 
+    ListSpecificValuesForOneColumn(DatabaseConnector,
+    this->m_TracesName.toStdString(),"CoordIDMax",
+    this->m_TracesIDName.toStdString(),ListSelectedTracesID);
+  //then, go to the coordinate table and compare the values for the coordID
+  //corresponding to the coordIDMax of the selected contours:
   std::vector<std::string> ColumnNames = CoordMax.GetVectorColumnNames();
   for (int i = 0; i <ColumnNames.size(); i++)
     {
@@ -283,7 +300,8 @@ GoDBCoordinateRow GoDBCollectionOfTraces::GetSelectingTracesCoordMax(
     if (ColumnNames[i] != "CoordID")
       {
       CoordMax.SetField(ColumnNames[i],MaxValueForOneColumnInTable(
-        DatabaseConnector,ColumnNames[i],"coordinate","CoordID",ListSelectedTraces));
+        DatabaseConnector,ColumnNames[i],"coordinate","CoordID",
+        ListSelectedTracesCoordIDMax));
       }
     }
   return CoordMax;

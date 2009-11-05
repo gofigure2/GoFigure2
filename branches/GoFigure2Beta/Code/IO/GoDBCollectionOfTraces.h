@@ -120,27 +120,16 @@ protected:
     return AddOnlyOneNewObjectInTable<myT>(
       DatabaseConnector,m_CollectionName.toStdString(),
       myNewObject, m_CollectionIDName.toStdString() );
-      /*AddNewObjectInTable< myT >(
-      m_Server.toStdString(),
-      m_User.toStdString(),
-      m_Password.toStdString(),
-      m_NameDB.toStdString(),
-      m_CollectionName.toStdString(), myNewObject );
-
-    int ID = MaxValueForOneColumnInTable(
-      m_Server.toStdString(), m_User.toStdString(),
-      m_Password.toStdString(),m_NameDB.toStdString(),
-      m_CollectionIDName.toStdString(),m_CollectionName.toStdString());*/
     }
   /**\brief return the coordinate min of all the coordinates of the 
   selected traces*/
   GoDBCoordinateRow GetSelectingTracesCoordMin(
-  vtkMySQLDatabase* DatabaseConnector, std::vector<std::string> ListSelectedTraces);
+  vtkMySQLDatabase* DatabaseConnector, std::vector<std::string> ListSelectedTracesID);
 
   /**\brief return the coordinate max of all the coordinates of the 
   selected traces*/
   GoDBCoordinateRow GetSelectingTracesCoordMax(
-  vtkMySQLDatabase* DatabaseConnector, std::vector<std::string> ListSelectedTraces);
+  vtkMySQLDatabase* DatabaseConnector, std::vector<std::string> ListSelectedTracesID);
   
   /**\brief return the coordinate min for the existing Collection*/
   GoDBCoordinateRow GetExistingCoordMin(

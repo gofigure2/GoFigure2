@@ -121,17 +121,24 @@ std::vector<std::string> ListSpecificValuesForOneColumn(
   std::string TableName, std::string ColumnName,
   std::string field,std::string value);
 
+//query: "SELECT ColumnName FROM TableName WHERE (field = value1
+//or field = value2....)"
+std::vector<std::string> ListSpecificValuesForOneColumn(
+  vtkMySQLDatabase* DatabaseConnector,
+  std::string TableName, std::string ColumnName,
+  std::string field,std::vector<std::string> VectorValues);
+
 //query: "SELECT MAX(ColumnName) FROM TableName WHERE (field = 
 //value1 or field = value2...."
 int MaxValueForOneColumnInTable(vtkMySQLDatabase* DatabaseConnector,
   std::string ColumnName,std::string TableName,std::string field,
-  std::vector<std::string> VectorValue);
+  std::vector<std::string> VectorValues);
 
 //query: "SELECT MIN(ColumnName) FROM TableName WHERE (field = 
 //value1 or field = value2...."
 int MinValueForOneColumnInTable(vtkMySQLDatabase* DatabaseConnector,
   std::string ColumnName,std::string TableName,std::string field,
-  std::vector<std::string> VectorValue);
+  std::vector<std::string> VectorValues);
 
 //query: "SELECT ColunmName FROM TableName WHERE field=value top 1"
 //return only the first value if several are selected

@@ -66,7 +66,7 @@ void GoDBCoordinateRow::InitializeMap()
 //-------------------------------------------------------------------------
 int GoDBCoordinateRow::DoesThisCoordinateExist(vtkMySQLDatabase* DatabaseConnector)
 {
-  return FindOneID(DatabaseConnector,"coordinate", "CoordID",
+ return FindOneID(DatabaseConnector,"coordinate", "CoordID",
     "PCoord",this->GetMapValue("PCoord"),
     "RCoord",this->GetMapValue("RCoord"),
     "CCoord",this->GetMapValue("CCoord"),
