@@ -127,8 +127,8 @@ protected:
   create the coordinate in the database with all the max and return it*/
   int GetCoordMaxID(vtkMySQLDatabase* DatabaseConnector,
     int CollectionID,QStringList ListSelectedTraces);
-  
-   /**\brief compare all the coordinate for all the traces inside the collection,
+
+  /**\brief compare all the coordinate for all the traces inside the collection,
   create the coordinate in the database with all the min and return it*/
   int GetCoordMinID(vtkMySQLDatabase* DatabaseConnector,
     int CollectionID,QStringList ListSelectedTraces);

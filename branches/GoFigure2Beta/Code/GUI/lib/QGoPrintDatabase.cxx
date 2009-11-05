@@ -130,14 +130,14 @@ void QGoPrintDatabase::SetDatabaseVariables(
     std::string iUser,std::string iPassword,
     unsigned int iImgSessionID,std::string iImgSessionName)
 {
-  m_Server = iServer;
-  m_User   = iUser;
-  m_Password = iPassword;
-  m_DBName  = iNameDB;
-  m_ImgSessionID = iImgSessionID;
+  m_Server         = iServer;
+  m_User           = iUser;
+  m_Password       = iPassword;
+  m_DBName         = iNameDB;
+  m_ImgSessionID   = iImgSessionID;
   m_ImgSessionName = iImgSessionName;
-  m_CollectionOfContours->SetImgSessionID(m_ImgSessionID);
-  m_CollectionOfMeshes->SetImgSessionID(m_ImgSessionID); 
+  m_CollectionOfContours ->SetImgSessionID(m_ImgSessionID);
+  m_CollectionOfMeshes   ->SetImgSessionID(m_ImgSessionID); 
 }
 //--------------------------------------------------------------------------
 
@@ -370,7 +370,7 @@ void QGoPrintDatabase::AddToExistingCollection()
       {
       case 0: //contour
           {
-          QStringList ListContours = this->ContourTable->ValuesForSelectedRows("contourID");
+          QStringList ListContours = this->ContourTable->ValuesForSelectedRows("ContourID");
           m_CollectionOfContours->AddSelectedTracesToCollection(ListContours,
             CollectionID.toInt(),m_DatabaseConnector);
           this->UpdateContentAndDisplayFromDB<GoDBContourRow>("Contour", 

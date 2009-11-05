@@ -62,7 +62,6 @@ GoDBCollectionOfTraces::GoDBCollectionOfTraces( std::string iCollectionName,
   m_CollectionIDName = iCollectionIDName;
   m_TracesName = iTracesName;
   m_TracesIDName = iTracesIDName;
-
 }
 //--------------------------------------------------------------------------
 
@@ -347,3 +346,5 @@ GoDBCoordinateRow GoDBCollectionOfTraces::GetExistingCoordMax(
 
   return ExistingCoordMax;
 }
+
+ 
