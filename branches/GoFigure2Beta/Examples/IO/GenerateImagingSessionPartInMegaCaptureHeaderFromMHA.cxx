@@ -6,13 +6,12 @@
 
 int main( int argc, char** argv )
 {
-  if( argc != 6 )
+  if( argc != 5 )
     {
     std::cerr <<"1-mha filename" <<std::endl;
     std::cerr <<"2-megacapture header (*.meg)" <<std::endl;
     std::cerr <<"3-Time Interval (in sec)" <<std::endl;
     std::cerr <<"4-Number of time points" <<std::endl;
-    std::cerr <<"5-Number of channels" <<std::endl;
     return EXIT_FAILURE;
     }
 
@@ -33,7 +32,6 @@ int main( int argc, char** argv )
 
   double iTimeInterval = atof( argv[3] );
   int iNumberOfTimePoints = atoi( argv[4] );
-  int iNumberOfChannels = atoi( argv[5] );
 
   std::ofstream file( argv[2] );
   file <<"MegaCapture" <<std::endl;
@@ -56,7 +54,7 @@ int main( int argc, char** argv )
   file <<"DimensionXT 1" <<std::endl;
   file <<"DimensionTM " <<iNumberOfTimePoints <<std::endl;
   file <<"DimensionZS " <<dim[2] <<std::endl;
-  file <<"DimensionCH " <<iNumberOfChannels <<std::endl;
+  file <<"DimensionCH 3" <<std::endl;
 
   int red = 255;
   int green = 0;
@@ -77,7 +75,6 @@ int main( int argc, char** argv )
 
   file.close();
 
-  image->Delete();
   reader->Delete();
 
   return EXIT_SUCCESS;

@@ -97,7 +97,6 @@ int main( int argc, char** argv )
     }
   file.close();
 
-  image->Delete();
   reader->Delete();
 
   return EXIT_SUCCESS;
