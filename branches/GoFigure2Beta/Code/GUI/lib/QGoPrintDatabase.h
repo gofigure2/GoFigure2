@@ -73,6 +73,9 @@ public:
 
   QMEGAVTKADDON2_EXPORT QTableWidgetChild* ContourTable;
   QMEGAVTKADDON2_EXPORT QTableWidgetChild* MeshTable;
+  QMEGAVTKADDON2_EXPORT QTableWidgetChild* TrackTable;
+  QMEGAVTKADDON2_EXPORT QTableWidgetChild* LineageTable;
+
   void QMEGAVTKADDON2_EXPORT UpdateTableFromDB();
 
 signals:
@@ -84,6 +87,8 @@ protected:
     std::vector< std::string > ColumnNames, QTableWidgetChild* QTabTableName );
   GoDBCollectionOfTraces* m_CollectionOfContours;
   GoDBCollectionOfTraces* m_CollectionOfMeshes;
+  GoDBCollectionOfTraces* m_CollectionOfTracks;
+  GoDBCollectionOfTraces* m_CollectionOfLineages;
 
   void OpenDBConnectionForTables();
   void CloseDBConnectionForTables();

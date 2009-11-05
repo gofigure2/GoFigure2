@@ -10,6 +10,8 @@ SET( QGOIO_SRC
   GoDBMeshRow.cxx
   GoDBProjectRow.cxx
   GoDBRow.cxx
+  GoDBTrackRow.cxx
+  GoDBLineageRow.cxx
   MegaCaptureHeaderReader.cxx
   QueryDataBaseHelper.cxx
   SelectQueryDatabaseHelper.cxx
