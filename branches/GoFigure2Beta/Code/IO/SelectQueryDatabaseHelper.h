@@ -71,6 +71,11 @@ std::vector<std::string> ListSpecificValuesForRow(
   vtkMySQLDatabase* DatabaseConnector,
   std::string TableName, std::string field,std::string value);
 
+//query: "SELECT ColumnName FROM TableName WHERE field = value"
+int FindOneID(vtkMySQLDatabase* DatabaseConnector,
+  std::string TableName, std::string ColumnName,
+  std::string field, std::string value);
+
 //query: "SELECT ColumnName FROM TableName WHERE (field1 = value1
 //AND field2 = value2 AND field3 = value3);
 int FindOneID(vtkMySQLDatabase* DatabaseConnector,

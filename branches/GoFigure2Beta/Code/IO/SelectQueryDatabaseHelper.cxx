@@ -191,8 +191,47 @@ std::vector<std::string> ListSpecificValuesForRow(
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-//query: "SELECT ColumnName FROM TableName WHERE (field1 = value1
-//AND field2 = value2 AND field3 = value3);
+int FindOneID(vtkMySQLDatabase* DatabaseConnector,
+  std::string TableName, std::string ColumnName,
+  std::string field, std::string value)
+{
+  int ID = -1;
+
+  vtkSQLQuery* query = DatabaseConnector->GetQueryInstance();
+  std::stringstream querystream;
+  querystream << "SELECT ";
+  querystream << ColumnName;
+  querystream << " FROM ";
+  querystream << TableName;
+  querystream << " WHERE ";
+  querystream << field;
+  querystream << " = '";
+  querystream << value;
+  querystream << "');";
+
+  query->SetQuery( querystream.str().c_str() );
+  if ( !query->Execute() )
+    {
+    itkGenericExceptionMacro(
+      << "The FindOneID query failed"
+      << query->GetLastErrorText() );
+    DatabaseConnector->Close();
+    DatabaseConnector->Delete();
+    query->Delete();
+    return ID;
+    }
+
+  if (query->NextRow())
+    {
+    ID = query->DataValue(0).ToInt();
+    }
+  query->Delete();
+
+  return ID;
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
 int FindOneID(vtkMySQLDatabase* DatabaseConnector,
   std::string TableName, std::string ColumnName,
   std::string ColumnNameOne,std::string valueOne,
@@ -289,8 +328,6 @@ int FindOneID(vtkMySQLDatabase* DatabaseConnector,
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-//query: "SELECT ColumnName FROM TableName WHERE (field1 = value1
-//AND field2 = value2 AND field3 = value3 AND field4 = value4);
 int FindOneID(vtkMySQLDatabase* DatabaseConnector,
   std::string TableName, std::string ColumnName,
   std::string ColumnNameOne,std::string valueOne,
@@ -615,14 +652,18 @@ int MaxValueForOneColumnInTable(vtkMySQLDatabase* DatabaseConnector,
   querystream << ") FROM ";
   querystream << TableName;
   querystream << " WHERE (";
-  for (int i = 0; i < VectorValue.size(); i++)
+  int i;
+  for (i=0;i < VectorValue.size()-1; i++)
     {
     querystream << field;
-    querystream << " = ";
+    querystream << " = '";
     querystream << VectorValue[i];
-    querystream << " OR ";   
+    querystream << "' OR ";   
     }
-  querystream << ";";
+  querystream << field;
+  querystream << " = '";
+  querystream << VectorValue[i];
+  querystream << "');";
 
   query->SetQuery( querystream.str().c_str() );
   if ( !query->Execute() )
@@ -660,14 +701,18 @@ int MinValueForOneColumnInTable(vtkMySQLDatabase* DatabaseConnector,
   querystream << ") FROM ";
   querystream << TableName;
   querystream << " WHERE (";
-  for (int i = 0; i < VectorValue.size(); i++)
+  int i;
+  for (i=0;i < VectorValue.size()-1; i++)
     {
     querystream << field;
-    querystream << " = ";
+    querystream << " = '";
     querystream << VectorValue[i];
-    querystream << " OR ";   
+    querystream << "' OR ";   
     }
-  querystream << ";";
+  querystream << field;
+  querystream << " = '";
+  querystream << VectorValue[i];
+  querystream << "');";
 
   query->SetQuery( querystream.str().c_str() );
   if ( !query->Execute() )

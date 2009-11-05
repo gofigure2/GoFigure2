@@ -75,7 +75,8 @@ public:
 
   /**\brief compare all the coordinate for all the traces inside the collection,
   create the coordinate in the database with all the max and return it*/
-  int QMEGAVTKADDON2_EXPORT GetCoordMaxID(vtkMySQLDatabase* DatabaseConnector);
+  int QMEGAVTKADDON2_EXPORT GetCoordMaxID(vtkMySQLDatabase* DatabaseConnector,
+    int CollectionID,QStringList ListSelectedTraces);
   
    /**\brief compare all the coordinate for all the traces inside the collection,
   create the coordinate in the database with all the min and return it*/
@@ -84,9 +85,10 @@ public:
 
   template< class myT >
   void QMEGAVTKADDON2_EXPORT CreateNewCollectionFromSelection(
-    QStringList ListSelectedTraces, vtkMySQLDatabase* DatabaseConnector)
+    QStringList ListSelectedTraces, vtkMySQLDatabase* DatabaseConnector,
+    myT& NewObject)
     {
-    int NewCollectionID = this->CreateNewCollection<myT>(DatabaseConnector);
+    int NewCollectionID = this->CreateNewCollection<myT>(DatabaseConnector,NewObject);
     AddSelectedTracesToCollection(ListSelectedTraces,
       NewCollectionID, DatabaseConnector);
     }
@@ -113,9 +115,8 @@ protected:
   int  CreateNewCollection();
 
   template< class myT >
-  int CreateNewCollection(vtkMySQLDatabase* DatabaseConnector)
+  int CreateNewCollection(vtkMySQLDatabase* DatabaseConnector, myT& myNewObject)
     {
-    myT myNewObject;
     return AddOnlyOneNewObjectInTable<myT>(
       DatabaseConnector,m_CollectionName.toStdString(),
       myNewObject, m_CollectionIDName.toStdString() );
@@ -131,14 +132,6 @@ protected:
       m_Password.toStdString(),m_NameDB.toStdString(),
       m_CollectionIDName.toStdString(),m_CollectionName.toStdString());*/
     }
-  /**\brief return the coordinate min of all the coordinates of the traces
-  already in the collection*/
-  GoDBCoordinateRow GetExistingCoordMin(vtkMySQLDatabase* DatabaseConnector,
-    int CollectionID);
-  /**\brief return the coordinate max of all the coordinates of the traces
-  already in the collection*/
-  GoDBCoordinateRow GetExistingCoordMax(vtkMySQLDatabase* DatabaseConnector, 
-    int CollectionID);
   /**\brief return the coordinate min of all the coordinates of the 
   selected traces*/
   GoDBCoordinateRow GetSelectingTracesCoordMin(
@@ -148,5 +141,15 @@ protected:
   selected traces*/
   GoDBCoordinateRow GetSelectingTracesCoordMax(
   vtkMySQLDatabase* DatabaseConnector, std::vector<std::string> ListSelectedTraces);
+  
+  /**\brief return the coordinate min for the existing Collection*/
+  GoDBCoordinateRow GetExistingCoordMin(
+  vtkMySQLDatabase* DatabaseConnector, int CollectionCoordIDMin,
+  int CollectionID );
+
+   /**\brief return the coordinate max for the existing Collection*/
+  GoDBCoordinateRow GetExistingCoordMax(
+  vtkMySQLDatabase* DatabaseConnector, int CollectionCoordIDMax,
+  int CollectionID );
 };
 #endif

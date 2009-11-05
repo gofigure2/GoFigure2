@@ -51,7 +51,7 @@ GoDBContourRow::GoDBContourRow()
 void GoDBContourRow::InitializeMap()
 {
   this->m_MapRow["ContourID"] = ConvertToString<int>(0);
-  this->m_MapRow["MeshID"] = ConvertToString<int>(0);
+  this->m_MapRow["MeshID"] = "";
   this->m_MapRow["ImagingSessionID"] = ConvertToString<int>(0);
   this->m_MapRow["CoordIDMax"] = ConvertToString<int>(0);
   this->m_MapRow["CoordIDMin"] = ConvertToString<int>(0);

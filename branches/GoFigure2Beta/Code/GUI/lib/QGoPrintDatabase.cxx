@@ -266,16 +266,25 @@ void QGoPrintDatabase::CreateCorrespondingCollection()
     case 0: //contour
         {
         //add the tableWidgetChild in the CollectionOfTraces?
-        QStringList ListSelectedTraces = this->ContourTable->ValuesForSelectedRows("contourID");
+        QStringList ListSelectedTraces = this->ContourTable->ValuesForSelectedRows("ContourID");
         GoDBMeshRow myNewMesh;
         myNewMesh.SetField("ImagingSessionID",this->m_ImgSessionID);
         //myNewMesh.SetField("ColorID") = to be defined for some color chosen by the user
         //myNewMesh.SetField("CellTypeID") = to be defined for some color chosen by the user
         //myNewMesh.SetField("SubCellularTypeID") = to be defined for some color chosen by the user
-        //myNewMesh.SetField("CoordIDMax") = 
-        //myNewMesh.SetField("CoordIDMin") =
+        int CoordIDmax = CollectionOfContours->GetCoordMaxID(m_DatabaseConnector,
+          0,ListSelectedTraces);//test
+        myNewMesh.SetField("CoordIDMax",CollectionOfContours->GetCoordMaxID(m_DatabaseConnector,
+          0,ListSelectedTraces));
+
+        //the CollectionID is set to 0 as it is a new Collection that will be created, not
+        //contours to be added to an existing collection:
+        int CoordIDMin = CollectionOfContours->GetCoordMinID(m_DatabaseConnector,
+          0,ListSelectedTraces);//test
+        myNewMesh.SetField("CoordIDMin",CollectionOfContours->GetCoordMinID(m_DatabaseConnector,
+          0,ListSelectedTraces));
         CollectionOfContours->CreateNewCollectionFromSelection<GoDBMeshRow>(ListSelectedTraces,
-          m_DatabaseConnector);
+          m_DatabaseConnector,myNewMesh);
         this->UpdateContentAndDisplayFromDB<GoDBContourRow>("contour", 
           ContourTable,m_DatabaseConnector);
         this->UpdateContentAndDisplayFromDB<GoDBMeshRow>("mesh",
