@@ -114,6 +114,7 @@ void QGoPrintDatabase::QPrintColumnNames (QString TableName,
     QFont serifFont("Arial", 10, QFont::Bold);
     HeaderCol->setFont(serifFont);
     QTabTableName->setHorizontalHeaderItem(i,HeaderCol);
+    QTabTableName->resizeColumnToContents(i);
     }
 
   QTabTableName->horizontalHeader()->setSortIndicatorShown(true);
@@ -128,7 +129,7 @@ void QGoPrintDatabase::QPrintColumnNames (QString TableName,
 
   QSettings settings( "MegasonLab", "Gofigure2" );
   QByteArray stateTableWidget = settings.value("StateTableWidget").toByteArray();
-  QTabTableName->horizontalHeader()->restoreState(stateTableWidget);
+  //QTabTableName->horizontalHeader()->restoreState(stateTableWidget);
 }
 //--------------------------------------------------------------------------
 
