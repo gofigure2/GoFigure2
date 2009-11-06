@@ -111,6 +111,18 @@ SetChannel( const unsigned int& iCh )
 
 /**
  *
+ * \param iHeader
+ */
+void
+MegaCaptureReader::
+SetMegaCaptureHeader( const std::string& iHeader )
+{
+  m_HeaderReader.SetFileName( iHeader );
+  m_HeaderReader.Read();
+}
+
+/**
+ *
  * \param iUserFileList
  */
 void
@@ -249,8 +261,12 @@ Update()
     }
 
     volumeBuilder->Update();
+
     vtkImageData* temp_output = volumeBuilder->GetOutput();
-    std::cout <<temp_output->GetNumberOfScalarComponents() <<std::endl;
+
+    temp_output->SetSpacing( m_HeaderReader.m_VoxelSizeX,
+      m_HeaderReader.m_VoxelSizeY,
+      m_HeaderReader.m_VoxelSizeZ );
 
     m_OutputImage->ShallowCopy( temp_output );
     volumeBuilder->Delete();

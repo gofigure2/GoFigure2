@@ -113,9 +113,11 @@ struct GoFigureFileInfoHelper
   typedef multi_index_container<
     const GoFigureFileInfoHelper*,
     indexed_by<
-      ordered_non_unique<BOOST_MULTI_INDEX_MEMBER(GoFigureFileInfoHelper,const unsigned int,m_Channel)>
+      ordered_non_unique<BOOST_MULTI_INDEX_MEMBER(GoFigureFileInfoHelper,const unsigned int,m_Channel)>,
+      ordered_non_unique<BOOST_MULTI_INDEX_MEMBER(GoFigureFileInfoHelper,const unsigned int,m_ZCoord)>
     >
   > GoFigureFileInfoHelperChannelViewContainer;
+
 // }
 
 std::list< std::string > GetAllFileNamesForGivenTCoordAndChannel(

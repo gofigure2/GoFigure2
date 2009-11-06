@@ -20,14 +20,25 @@ std::list< std::string > GetAllFileNamesForGivenTCoordAndChannel(
     ++it0;
     }
 
-  GoFigureFileInfoHelperChannelViewContainer::iterator ic0, ic1;
-  ic0 = subset.lower_bound( iCh );
-  ic1 = subset.upper_bound( iCh );
+  GoFigureFileInfoHelperChannelViewContainer::nth_index<0>::type::iterator ic0, ic1;
+  ic0 = subset.get<0>().lower_bound( iCh );
+  ic1 = subset.get<0>().upper_bound( iCh );
+
+  GoFigureFileInfoHelperZCoordViewContainer final_container;
 
   while( ic0 != ic1 )
     {
-    oList.push_back( (*ic0)->m_Filename );
+    final_container.insert( *ic0 );
     ++ic0;
+    }
+
+  GoFigureFileInfoHelperZCoordViewContainer::iterator z_it0 = final_container.begin();
+  GoFigureFileInfoHelperZCoordViewContainer::iterator z_it1 = final_container.end();
+
+  while( z_it0 != z_it1 )
+    {
+    oList.push_back( (*z_it0)->m_Filename );
+    ++z_it0;
     }
 
   return oList;

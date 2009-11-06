@@ -66,6 +66,7 @@
 #include "itkImageFileReader.h"
 
 #include "itkLsm3DSerieImport.h"
+#include "itkMegaCaptureImport.h"
 
 // vtk includes
 // #include "vtkImageAppendComponents.h"
@@ -80,7 +81,7 @@
 
 #include "QGoTabManager.h"
 
-// *************************************************************************
+//--------------------------------------------------------------------------
 QGoMainWindow::QGoMainWindow( )
 {
   QString title( "<*)0|00|0>< ~~ <*)0|00|0><     GoFigure    ><0|00|0(*> ~~ ><0|00|0(*>");
@@ -114,18 +115,18 @@ QGoMainWindow::QGoMainWindow( )
   LoadPlugins();
 }
 
-// *************************************************************************
+//--------------------------------------------------------------------------
 QGoMainWindow::~QGoMainWindow()
 {
   m_LSMReader->Delete();
   this->WriteSettings();
 }
-// *************************************************************************
+//--------------------------------------------------------------------------
 
-// *************************************************************************
+//--------------------------------------------------------------------------
 void QGoMainWindow::CreateSignalSlotsConnection()
 {
-  //QObject::connect( this->actionOpen, SIGNAL( triggerred( ) ),
+  //QObject::connect( this->actionOpen, SIGNAL( triggered( ) ),
     //this, SLOT( showprogressloading() ) );
   QObject::connect( this->CentralTabWidget,
     SIGNAL( tabCloseRequested( int ) ),
@@ -156,8 +157,8 @@ void QGoMainWindow::CreateSignalSlotsConnection()
 
 }
 
-// *************************************************************************
-void QGoMainWindow::on_actionOpen_Single_File_triggerred( )
+//--------------------------------------------------------------------------
+void QGoMainWindow::on_actionOpen_Single_File_triggered( )
 {
   QString filename = QFileDialog::getOpenFileName(
     this,
@@ -171,8 +172,8 @@ void QGoMainWindow::on_actionOpen_Single_File_triggerred( )
     }
 }
 
-// *************************************************************************
-// void QGoMainWindow::on_actionOpen_Multiple_Files_triggerred( )
+//--------------------------------------------------------------------------
+// void QGoMainWindow::on_actionOpen_Multiple_Files_triggered( )
 // {
 //   QString filename = QFileDialog::getOpenFileName(
 //     this,
@@ -211,23 +212,53 @@ void QGoMainWindow::on_actionOpen_Single_File_triggerred( )
 // }
 
 //--------------------------------------------------------------------------
-void QGoMainWindow::on_actionOpen_MegaCatpure_Files_triggerred()
+void QGoMainWindow::on_actionOpen_MegaCapture_Files_triggered()
 {
   QString filename = QFileDialog::getOpenFileName(
     this,
     tr( "Select One Image from the Dataset" ), "",
-    tr( "Images (*.png *.tif *.tiff)")
+    tr( "Images (*.png *.tif *.tiff *.jpg *.jpeg)")
     );
 
   if( !filename.isEmpty() )
     {
     if( QFile::exists( filename ) )
       {
-//       itk::MegaCaptureImport::Pointer importer = itk::MegaCaptureImport::New();
-//       importer->SetFileName( filename.toStdString() );
-//       importer->Update();
+      QString extension = QFileInfo( filename ).suffix();
 
-//       CreateNewTabFor3DwtImage( importer->GetOutput(), )
+      itk::MegaCaptureImport::Pointer importer = itk::MegaCaptureImport::New();
+      importer->SetFileName( filename.toStdString() );
+      importer->Update();
+
+      GoFigure::FileType filetype;
+      if( extension.compare( "png", Qt::CaseInsensitive ) == 0 )
+        {
+        filetype = GoFigure::PNG;
+        }
+      else
+        {
+        if( ( extension.compare( "tif", Qt::CaseInsensitive ) == 0 ) ||
+            ( extension.compare( "tiff", Qt::CaseInsensitive ) == 0 ) )
+          {
+          filetype = GoFigure::TIFF;
+          }
+        else
+          {
+          if( ( extension.compare( "jpg", Qt::CaseInsensitive ) == 0 ) ||
+              ( extension.compare( "jpeg", Qt::CaseInsensitive ) == 0 ) )
+            {
+            filetype = GoFigure::JPEG;
+            }
+          else
+            {
+            std::cerr << "file not supported for megacapture!!!" <<std::endl;
+            return;
+            }
+          }
+        }
+
+      CreateNewTabFor3DwtImage( importer->GetOutput(), filetype,
+        importer->GetHeaderFilename(), 0 );
       }
     }
 }
@@ -235,13 +266,13 @@ void QGoMainWindow::on_actionOpen_MegaCatpure_Files_triggerred()
 
 
 //--------------------------------------------------------------------------
-void QGoMainWindow::on_actionUse_DataBase_triggerred()
+void QGoMainWindow::on_actionUse_DataBase_triggered()
 {
   m_DBWizard->show();
 }
 //--------------------------------------------------------------------------
 
-// *************************************************************************
+//--------------------------------------------------------------------------
 void QGoMainWindow::openFilesfromDB()
 {
   std::vector<std::vector<std::string> > listFilenames =
@@ -255,23 +286,23 @@ void QGoMainWindow::openFilesfromDB()
       }
     }*/
 }
-// *************************************************************************
+//--------------------------------------------------------------------------
 
-// *************************************************************************
-void QGoMainWindow::on_actionClose_all_triggerred()
+//--------------------------------------------------------------------------
+void QGoMainWindow::on_actionClose_all_triggered()
 {
   m_TabManager->CloseAllTabs();
 }
-// *************************************************************************
+//--------------------------------------------------------------------------
 
-// *************************************************************************
-void QGoMainWindow::on_actionClose_triggerred()
+//--------------------------------------------------------------------------
+void QGoMainWindow::on_actionClose_triggered()
 {
   int idx = this->CentralTabWidget->currentIndex();
   m_TabManager->CloseTab( idx );
 }
-// *************************************************************************
-void QGoMainWindow::on_actionOpen_Mesh_triggerred( )
+//--------------------------------------------------------------------------
+void QGoMainWindow::on_actionOpen_Mesh_triggered( )
 {
   if( this->CentralTabWidget->count() > 0 )
     {
@@ -385,10 +416,11 @@ void QGoMainWindow::on_actionOpen_Mesh_triggerred( )
       tr( "One image needs to be opened first to be able to load contours or meshes" ) );
     }
 
-}//--------------------------------------------------------------------------------
+}
+//--------------------------------------------------------------------------
 
-// *************************************************************************
-void QGoMainWindow::on_actionQuit_triggerred( )
+//--------------------------------------------------------------------------
+void QGoMainWindow::on_actionQuit_triggered( )
 {
   this->close();
   this->WriteSettings();
@@ -489,6 +521,45 @@ void QGoMainWindow::OpenLSMImage( const QString& iFile, const int& iTimePoint )
 }
 //--------------------------------------------------------------------------
 
+void QGoMainWindow::
+CreateNewTabFor3DwtImage(
+  GoFigureFileInfoHelperMultiIndexContainer iFileList,
+  const GoFigure::FileType& iFileType,
+  const std::string& iHeader,
+  const int& iTimePoint )
+{
+  QGoTabImageView3DwT* w3t = new QGoTabImageView3DwT;
+  w3t->SetMegaCaptureFile( iFileList, iFileType, iHeader, iTimePoint );
+  w3t->Update();
+
+  for( std::list< QAction* >::iterator
+    list_it = m_TabDimPluginActionMap[w3t->GetTabDimensionType()].begin();
+    list_it != m_TabDimPluginActionMap[w3t->GetTabDimensionType()].end();
+    list_it++
+    )
+    {
+    (*list_it)->setEnabled( true );
+    }
+
+  w3t->SetPluginActions( m_TabDimPluginActionMap[w3t->GetTabDimensionType()] );
+
+  std::list< QDockWidget* > dock_list = w3t->DockWidget();
+
+  for( std::list< QDockWidget* >::iterator
+    dck_it = dock_list.begin();
+    dck_it != dock_list.end();
+    ++dck_it )
+    {
+    this->addDockWidget( Qt::LeftDockWidgetArea, (*dck_it) );
+    (*dck_it)->show();
+    }
+
+  int idx = this->CentralTabWidget->addTab( w3t, QString() );//iFile );
+  this->menuView->setEnabled( true );
+  this->menuFiltering->setEnabled( true );
+  this->menuSegmentation->setEnabled( true );
+  this->CentralTabWidget->setCurrentIndex( idx );
+}
 //--------------------------------------------------------------------------
 /** \todo why not using iTimePoint instead of 0, in SetMultiFiles? */
 /*void QGoMainWindow::CreateNewTabFor3DwtImage( FileListType& iFileList,
@@ -717,7 +788,7 @@ void QGoMainWindow::OpenImageWithITK( const QString& iFile )
 //--------------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------------
-void QGoMainWindow::on_actionAbout_triggerred( )
+void QGoMainWindow::on_actionAbout_triggered( )
 {
   QString version( "v0.5" );
 
@@ -741,26 +812,26 @@ void QGoMainWindow::on_actionAbout_triggerred( )
 //--------------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------------
-void QGoMainWindow::on_actionAbout_Qt_triggerred( )
+void QGoMainWindow::on_actionAbout_Qt_triggered( )
 {
   QMessageBox::aboutQt( this, tr( "About Qt" ) );
 }
 //--------------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoMainWindow::on_actionGoFigure2_Website_triggerred( )
+void QGoMainWindow::on_actionGoFigure2_Website_triggered( )
 {
   QDesktopServices::openUrl( QUrl("https://sourceforge.net/projects/gofigure2/") );
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoMainWindow::on_actionUser_mailing_list_triggerred( )
+void QGoMainWindow::on_actionUser_mailing_list_triggered( )
 {
   QDesktopServices::openUrl( QUrl("mailto:users@gofigure2.com?subject=About GoFigure2") );
 }
 //--------------------------------------------------------------------------
-void QGoMainWindow::on_actionDeveloper_mailing_list_triggerred( )
+void QGoMainWindow::on_actionDeveloper_mailing_list_triggered( )
 {
   QDesktopServices::openUrl( QUrl("mailto:developers@gofigure2.com?subject=About Gofigure2" ) );
 }

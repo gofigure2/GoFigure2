@@ -11,7 +11,7 @@ int main( int argc, char** argv )
 
   LSMToMegaCapture converter;
   converter.SetFileName( argv[1] );
-  converter.Export( "test.meg" );
+  converter.Export( "image.meg" );
 
   return EXIT_SUCCESS;
 }

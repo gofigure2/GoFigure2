@@ -10,15 +10,18 @@ FindContourGivenContourId(
 {
   std::list< ContourStructure > oList;
 
-  ContourStructureMultiIndexContainer::index< ContourId >::type::iterator
-    it = iContainer.get< ContourId >().find( iId );
-
-  if( it != iContainer.get< ContourId >().end() )
+  if( !iContainer.empty() )
     {
-    while( it->ContourId == iId )
+    ContourStructureMultiIndexContainer::index< ContourId >::type::iterator
+      it = iContainer.get< ContourId >().find( iId );
+
+    if( it != iContainer.get< ContourId >().end() )
       {
-      oList.push_back( *it );
-      ++it;
+      while( it->ContourId == iId )
+        {
+        oList.push_back( *it );
+        ++it;
+        }
       }
     }
 
@@ -31,17 +34,21 @@ FindContourGivenActor(
   ContourStructureMultiIndexContainer iContainer,
   vtkActor* iActor )
 {
-  ContourStructureMultiIndexContainer::nth_index< 1 >::type::iterator
-    it = iContainer.get< 1 >().find( iActor );
+  if( !iContainer.empty() )
+    {
+    ContourStructureMultiIndexContainer::nth_index< 1 >::type::iterator
+      it = iContainer.get< 1 >().find( iActor );
 
-  if( it != iContainer.get< 1 >().end() )
-    {
-    return (*it);
+    if( it != iContainer.get< 1 >().end() )
+      {
+      return (*it);
+      }
+    else
+      {
+      return ContourStructure();
+      }
     }
-  else
-    {
-    return ContourStructure();
-    }
+  return ContourStructure();
 }
 
 ContourStructure
@@ -49,17 +56,17 @@ FindContourGivenNodes(
   ContourStructureMultiIndexContainer iContainer,
   vtkPolyData* iNodes )
 {
-  ContourStructureMultiIndexContainer::nth_index< 2 >::type::iterator
-    it = iContainer.get< 2 >().find( iNodes );
+  if( !iContainer.empty() )
+    {
+    ContourStructureMultiIndexContainer::nth_index< 2 >::type::iterator
+      it = iContainer.get< 2 >().find( iNodes );
 
-  if( it != iContainer.get< 2 >().end() )
-    {
-    return (*it);
+    if( it != iContainer.get< 2 >().end() )
+      {
+      return (*it);
+      }
     }
-  else
-    {
-    return ContourStructure();
-    }
+  return ContourStructure();
 }
 
 std::list< ContourStructure >
@@ -67,15 +74,19 @@ FindContourGivenTimePoint(
   ContourStructureMultiIndexContainer iContainer,
   const unsigned int& iTimePoint )
 {
-   ContourStructureMultiIndexContainer::index< TCoord >::type::iterator it0, it1;
-   boost::tuples::tie(it0,it1) = iContainer.get< TCoord >().equal_range( iTimePoint );
+  std::list< ContourStructure > oList;
 
-   std::list< ContourStructure > oList;
+  if( !iContainer.empty() )
+    {
+    ContourStructureMultiIndexContainer::index< TCoord >::type::iterator it0, it1;
+    boost::tuples::tie(it0,it1) = iContainer.get< TCoord >().equal_range( iTimePoint );
 
     while( it0 != it1 )
       {
       oList.push_back( *it0 );
       ++it0;
       }
-    return oList;
+    }
+
+  return oList;
 }

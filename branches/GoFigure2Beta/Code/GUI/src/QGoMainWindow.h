@@ -83,27 +83,27 @@ public:
   void SetSingleFileName( const QString& iFileName );
 
 private slots:
-  void on_actionOpen_Single_File_triggerred( );
+  void on_actionOpen_Single_File_triggered( );
   void openRecentSingleFile();
-//   void on_actionOpen_Multiple_Files_triggerred( );
-  void on_actionOpen_MegaCatpure_Files_triggerred( );
+//   void on_actionOpen_Multiple_Files_triggered( );
+  void on_actionOpen_MegaCapture_Files_triggered( );
   void openRecentMultipleFile();
 
-  void on_actionGoFigure2_Website_triggerred( );
-  void on_actionUser_mailing_list_triggerred();
-  void on_actionDeveloper_mailing_list_triggerred();
+  void on_actionGoFigure2_Website_triggered( );
+  void on_actionUser_mailing_list_triggered();
+  void on_actionDeveloper_mailing_list_triggered();
 
-  void on_actionOpen_Mesh_triggerred( );
+  void on_actionOpen_Mesh_triggered( );
 
-  void on_actionUse_DataBase_triggerred();
+  void on_actionUse_DataBase_triggered();
   void openFilesfromDB();
 
-  void on_actionClose_triggerred( );
-  void on_actionClose_all_triggerred( );
-  void on_actionQuit_triggerred( );
+  void on_actionClose_triggered( );
+  void on_actionClose_all_triggered( );
+  void on_actionQuit_triggered( );
 
-  void on_actionAbout_triggerred( );
-  void on_actionAbout_Qt_triggerred( );
+  void on_actionAbout_triggered( );
+  void on_actionAbout_Qt_triggered( );
 
   void ApplyImageFilter();
 
@@ -127,8 +127,12 @@ private:
   void UpdateRecentFileActions( QStringList list, QMenu *menu,
     QAction *recentFileActions[MaxRecentFiles] );
 
-//   void CreateNewTabFor3DwtImage( GoFigureFileInfoHelperMultiIndexContainer iFileList,
-//     const FILETYPE& iFileType, const int& iTimePoint );
+  void CreateNewTabFor3DwtImage(
+    GoFigureFileInfoHelperMultiIndexContainer iFileList,
+    const GoFigure::FileType& iFileType,
+    const std::string& iHeader,
+    const int& iTimePoint );
+
   void CreateNewTabFor3DwtImage( vtkLSMReader* iReader, const QString& iFile );
   void CreateNewTabFor3DImage( vtkImageData*, const QString& );
   void CreateNewTabFor2DImage( vtkImageData*, const QString& );

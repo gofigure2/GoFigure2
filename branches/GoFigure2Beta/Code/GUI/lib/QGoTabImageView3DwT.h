@@ -38,6 +38,7 @@ public:
   void SetMegaCaptureFile(
     const GoFigureFileInfoHelperMultiIndexContainer& iContainer,
     const GoFigure::FileType& iFileType,
+    const std::string& iHeader,
     const unsigned int& iTimePoint  );
 
   virtual void Update();

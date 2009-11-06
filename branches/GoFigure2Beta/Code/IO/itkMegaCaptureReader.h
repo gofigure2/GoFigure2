@@ -4,6 +4,7 @@
 #include "GoFigureGlobalDefinition.h"
 #include "itkLightProcessObject.h"
 #include "GoFigureFileInfoMultiIndexContainerHelper.h"
+#include "MegaCaptureHeaderReader.h"
 
 class vtkImageData;
 
@@ -24,6 +25,8 @@ namespace itk
 
     /** \brief set the input as a GoFigure format file list */
     void SetInput( const GoFigureFileInfoHelperMultiIndexContainer& UserFileList );
+
+    void SetMegaCaptureHeader( const std::string& iHeader );
 
     /** \brief  */
     itkSetMacro( FileType, GoFigure::FileType );
@@ -60,6 +63,7 @@ namespace itk
     vtkImageData*  m_OutputImage;
     GoFigureFileInfoHelperMultiIndexContainer  m_FileList;
     GoFigure::FileType m_FileType;
+    MegaCaptureHeaderReader m_HeaderReader;
 
     unsigned int m_MinTimePoint;
     unsigned int m_MaxTimePoint;
