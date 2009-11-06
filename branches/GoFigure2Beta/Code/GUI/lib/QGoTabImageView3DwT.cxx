@@ -420,7 +420,7 @@ SetMegaCaptureFile(
   unsigned int min_ch = m_MegaCaptureReader->GetMinChannel();
   unsigned int max_ch = m_MegaCaptureReader->GetMaxChannel();
 
-  int NumberOfChannels = max_ch - min_ch;
+  int NumberOfChannels = max_ch - min_ch + 1;
 
   vtkImageData* temp = m_MegaCaptureReader->GetOutput();
 
@@ -456,48 +456,6 @@ SetMegaCaptureFile(
     SetTimePoint( iTimePoint );
     }
 }
-// void QGoTabImageView3DwT::SetMultiFiles( FileListType& iFileList,
-//   const FILETYPE& iFileType,
-//   const int& iTimePoint )
-// {
-//   m_TimePoint = iTimePoint;
-//   m_FileList = iFileList;
-//   m_MultiFileReader->SetInput( &m_FileList );
-//
-//   switch( iFileType ) //IsLSM
-//     {
-//     case itk::MultiFileReader::LSM:
-//       {
-//       m_MultiFileReader->SetDimensionality( 3 );
-//       m_MultiFileReader->SetFileType( iFileType );
-//       m_MultiFileReader->SetChannel( 0 );
-//       break;
-//       }
-//     case itk::MultiFileReader::MHA:
-//       {
-//       m_MultiFileReader->SetDimensionality( 3 );
-//       m_MultiFileReader->SetFileType( iFileType );
-//       break;
-//       }
-//     default:
-//       {
-//       std::cout <<"MegaCapture files MUST now use QGoTabImageView4D instead!!!"
-//         <<std::endl;
-//       return;
-//       }
-//     }
-// //   if( iSerieType == 1 ) //IsMegaCapture must now use the 4D!!!
-// //     {
-// //     m_MultiFileReader->SetDimensionality( 2 );
-// //     m_MultiFileReader->SetFileType( JPEG );
-// //     }
-//   m_MultiFileReader->MultiChannelImagesOff();
-//   m_MultiFileReader->SetTimeBased( true );
-//   m_MultiFileReader->SetTimePoint( m_TimePoint );
-//   m_MultiFileReader->Update();
-//
-//   m_Image = m_MultiFileReader->GetOutput();
-// }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
@@ -958,6 +916,108 @@ void QGoTabImageView3DwT::ChangeBackgroundColor()
 
 //--------------------------------------------------------------------------
 /**
+ * \brief
+ */
+void QGoTabImageView3DwT::ShowAllChannelsWithLSMReaders( )
+{
+  int NumberOfChannels = m_LSMReader[0]->GetNumberOfChannels();
+
+  std::vector< vtkImageData* > temp_image( NumberOfChannels );
+  temp_image[0] = vtkImageData::New();
+  temp_image[0]->ShallowCopy( m_LSMReader[0]->GetOutput() );
+
+  vtkImageAppendComponents* append_filter = vtkImageAppendComponents::New();
+  append_filter->AddInput( temp_image[0] );
+
+  for( int i = 1; i < NumberOfChannels; i++ )
+    {
+    m_LSMReader[i]->SetUpdateTimePoint( m_TimePoint );
+    m_LSMReader[i]->Update();
+
+    temp_image[i] = vtkImageData::New();
+    temp_image[i]->ShallowCopy( m_LSMReader[i]->GetOutput() );
+    append_filter->AddInput( temp_image[i] );
+    }
+
+  // This is really stupid!!!
+  if( NumberOfChannels < 3 )
+    {
+    for( int i = NumberOfChannels; i < 3; i++ )
+      {
+      append_filter->AddInput( temp_image[0] );
+      }
+    }
+  append_filter->Update();
+
+  m_Image->ShallowCopy( append_filter->GetOutput() );
+  Update();
+
+  append_filter->Delete();
+
+  for( int i = 0; i < NumberOfChannels; i++ )
+    {
+    temp_image[i]->Delete();
+    }
+}
+//--------------------------------------------------------------------------
+
+
+//--------------------------------------------------------------------------
+/**
+ * \brief
+ */
+void QGoTabImageView3DwT::ShowAllChannelsWithMegaCapture()
+{
+  m_MegaCaptureReader->Update();
+
+  int NumberOfChannels = 1 +
+    m_MegaCaptureReader->GetMaxChannel() -
+    m_MegaCaptureReader->GetMinChannel();
+
+  std::vector< vtkImageData* > temp_image( NumberOfChannels );
+  temp_image[0] = vtkImageData::New();
+  temp_image[0]->ShallowCopy( m_MegaCaptureReader->GetOutput() );
+
+  vtkImageAppendComponents* append_filter = vtkImageAppendComponents::New();
+  append_filter->AddInput( temp_image[0] );
+
+  for( int i = 1; i < NumberOfChannels; i++ )
+    {
+    m_MegaCaptureReader->SetChannel( i );
+    m_MegaCaptureReader->Update();
+
+    temp_image[i] = vtkImageData::New();
+    temp_image[i]->ShallowCopy( m_MegaCaptureReader->GetOutput() );
+    append_filter->AddInput( temp_image[i] );
+    }
+  // This is really stupid!!!
+  if( NumberOfChannels < 3 )
+    {
+    for( int i = NumberOfChannels; i < 3; i++ )
+      {
+      append_filter->AddInput( temp_image[0] );
+      }
+    }
+  append_filter->Update();
+
+  // Do we really need to delete m_Image?
+  if( !m_Image )
+    {
+    m_Image = vtkImageData::New();
+    }
+
+  m_Image->ShallowCopy( append_filter->GetOutput() );
+  append_filter->Delete();
+
+  for( int i = 0; i < NumberOfChannels; i++ )
+    {
+    temp_image[i]->Delete();
+    }
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+/**
  *
  * \param iChecked
  */
@@ -967,121 +1027,30 @@ void QGoTabImageView3DwT::ShowAllChannels( bool iChecked )
     {
     if( !m_LSMReader.empty() )
       {
-      int NumberOfChannels = m_LSMReader[0]->GetNumberOfChannels();
-
-      std::vector< vtkImageData* > temp_image( NumberOfChannels );
-      temp_image[0] = vtkImageData::New();
-      temp_image[0]->ShallowCopy( m_LSMReader[0]->GetOutput() );
-
-      vtkImageAppendComponents* append_filter =
-        vtkImageAppendComponents::New();
-      append_filter->AddInput( temp_image[0] );
-
-      for( int i = 1; i < NumberOfChannels; i++ )
-        {
-        m_LSMReader[i]->SetUpdateTimePoint( m_TimePoint );
-        m_LSMReader[i]->Update();
-
-        temp_image[i] = vtkImageData::New();
-        temp_image[i]->ShallowCopy( m_LSMReader[i]->GetOutput() );
-        append_filter->AddInput( temp_image[i] );
-        }
-      // This is really stupid!!!
-      if( NumberOfChannels < 3 )
-        {
-        for( int i = NumberOfChannels; i < 3; i++ )
-          {
-          append_filter->AddInput( temp_image[0] );
-          }
-        }
-      append_filter->Update();
-
-      m_Image->ShallowCopy( append_filter->GetOutput() );
-      Update();
-
-      append_filter->Delete();
-
-      for( int i = 0; i < NumberOfChannels; i++ )
-        {
-        temp_image[i]->Delete();
-        }
+      ShowAllChannelsWithLSMReaders();
       }
     else
       {
       if( !m_FileList.empty() )
         {
-        m_MegaCaptureReader->Update();
-
-        int NumberOfChannels = 1 +
-          m_MegaCaptureReader->GetMaxChannel() -
-          m_MegaCaptureReader->GetMinChannel();
-
-        std::vector< vtkImageData* > temp_image( NumberOfChannels );
-        temp_image[0] = vtkImageData::New();
-        temp_image[0]->ShallowCopy( m_MegaCaptureReader->GetOutput() );
-
-        vtkImageAppendComponents* append_filter =
-          vtkImageAppendComponents::New();
-        append_filter->AddInput( temp_image[0] );
-
-        for( int i = 1; i < NumberOfChannels; i++ )
-          {
-          m_MegaCaptureReader->SetChannel( i );
-          m_MegaCaptureReader->Update();
-
-          temp_image[i] = vtkImageData::New();
-          temp_image[i]->ShallowCopy( m_MegaCaptureReader->GetOutput() );
-          append_filter->AddInput( temp_image[i] );
-          }
-        // This is really stupid!!!
-        if( NumberOfChannels < 3 )
-          {
-          for( int i = NumberOfChannels; i < 3; i++ )
-            {
-            append_filter->AddInput( temp_image[0] );
-            }
-          }
-        append_filter->Update();
-
-        // Do we really need to delete m_Image?
-        if( !m_Image )
-          {
-          m_Image = vtkImageData::New();
-          }
-
-        m_Image->ShallowCopy( append_filter->GetOutput() );
-        append_filter->Delete();
-
-        for( int i = 0; i < NumberOfChannels; i++ )
-          {
-          temp_image[i]->Delete();
-          }
+        ShowAllChannelsWithMegaCapture();
         }
       }
     }
   else
     {
     int ch = this->m_VisuDockWidget->GetCurrentChannel();
-    if( ch != -1 )
-      {
-      if( !m_LSMReader.empty() )
-        {
-        m_Image->ShallowCopy( m_LSMReader[ch]->GetOutput() );
-        }
-      else
-        {
-        if( !m_FileList.empty() )
-          {
-          m_MegaCaptureReader->SetChannel( ch );
-          m_MegaCaptureReader->Update();
-          m_Image->ShallowCopy( m_MegaCaptureReader->GetOutput() );
-          }
-        }
-      Update();
-      }
+    ShowOneChannel( ch );
     }
 }
+//--------------------------------------------------------------------------
 
+
+//--------------------------------------------------------------------------
+/**
+ * \brief
+ * \param[in] iChannel
+ */
 void QGoTabImageView3DwT::
 ShowOneChannel( int iChannel )
 {
@@ -1105,6 +1074,7 @@ ShowOneChannel( int iChannel )
       }
     }
 }
+//--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 /**
@@ -1310,21 +1280,25 @@ void
 QGoTabImageView3DwT::
 RemoveAllContoursForPresentTimePoint( )
 {
-  std::list< ContourStructure >
-    c_list = FindContourGivenTimePoint( m_ContourContainer, m_TimePoint );
+  if( m_TimePoint >= 0 )
+    { 
+    std::list< ContourStructure >
+      c_list = FindContourGivenTimePoint( m_ContourContainer, 
+        static_cast< int >( m_TimePoint ) );
 
-  int c_dir;
-  vtkActor* c_actor;
+    int c_dir;
+    vtkActor* c_actor;
 
-  std::list< ContourStructure >::iterator it = c_list.begin();
+    std::list< ContourStructure >::iterator it = c_list.begin();
 
-  while( it != c_list.end() )
-    {
-    c_dir = (*it).Direction;
-    c_actor = (*it).Actor;
+    while( it != c_list.end() )
+      {
+      c_dir = (*it).Direction;
+      c_actor = (*it).Actor;
 
-    RemoveActorFromViewer( c_dir, c_actor );
-    ++it;
+      RemoveActorFromViewer( c_dir, c_actor );
+      ++it;
+      }
     }
 }
 //--------------------------------------------------------------------------
@@ -1338,21 +1312,25 @@ void
 QGoTabImageView3DwT::
 LoadAllContoursForGivenTimePoint( const unsigned int& iT )
 {
-  std::list< ContourStructure >
-    c_list = FindContourGivenTimePoint( m_ContourContainer, iT );
-
-  int c_dir;
-  vtkActor* c_actor;
-
-  std::list< ContourStructure >::iterator it = c_list.begin();
-
-  while( it != c_list.end() )
+  if( iT >= 0 )
     {
-    c_dir = (*it).Direction;
-    c_actor = (*it).Actor;
+    std::list< ContourStructure >
+      c_list = FindContourGivenTimePoint( m_ContourContainer, 
+        static_cast< int >( iT ) );
 
-    DisplayActorInViewer( c_dir, c_actor );
-    ++it;
+    int c_dir;
+    vtkActor* c_actor;
+
+    std::list< ContourStructure >::iterator it = c_list.begin();
+
+    while( it != c_list.end() )
+      {
+      c_dir = (*it).Direction;
+      c_actor = (*it).Actor;
+
+      DisplayActorInViewer( c_dir, c_actor );
+      ++it;
+      }
     }
 }
 //--------------------------------------------------------------------------

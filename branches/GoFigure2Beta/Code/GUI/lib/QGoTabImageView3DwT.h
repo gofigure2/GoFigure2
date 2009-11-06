@@ -137,6 +137,9 @@ protected:
 
   void SetTimePointWithLSMReaders( const int& iTimePoint );
   void SetTimePointWithMegaCapture( const int& iTimePoint );
+
+  void ShowAllChannelsWithLSMReaders();
+  void ShowAllChannelsWithMegaCapture();
 };
 
 #endif

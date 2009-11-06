@@ -1,7 +1,7 @@
 #include "GoFigureFileInfoMultiIndexContainerHelper.h"
 
 std::list< std::string > GetAllFileNamesForGivenTCoordAndChannel(
-  GoFigureFileInfoHelperMultiIndexContainer iContainer,
+  const GoFigureFileInfoHelperMultiIndexContainer& iContainer,
   const unsigned int& iT,
   const unsigned int& iCh )
 {
@@ -45,7 +45,7 @@ std::list< std::string > GetAllFileNamesForGivenTCoordAndChannel(
 }
 
 std::list< std::string > GetAllFileNamesForGivenZCoordPointAndChannel(
-  GoFigureFileInfoHelperMultiIndexContainer iContainer,
+  const GoFigureFileInfoHelperMultiIndexContainer& iContainer,
   const unsigned int& iZ,
   const unsigned int& iCh )
 {

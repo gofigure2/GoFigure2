@@ -10,7 +10,7 @@ FindContourGivenContourId(
 {
   std::list< ContourStructure > oList;
 
-  if( !iContainer.empty() )
+  if( !iContainer.size() != 0 )
     {
     ContourStructureMultiIndexContainer::index< ContourId >::type::iterator
       it = iContainer.get< ContourId >().find( iId );
@@ -34,7 +34,7 @@ FindContourGivenActor(
   ContourStructureMultiIndexContainer iContainer,
   vtkActor* iActor )
 {
-  if( !iContainer.empty() )
+  if( !iContainer.size() != 0 )
     {
     ContourStructureMultiIndexContainer::nth_index< 1 >::type::iterator
       it = iContainer.get< 1 >().find( iActor );
@@ -76,7 +76,7 @@ FindContourGivenTimePoint(
 {
   std::list< ContourStructure > oList;
 
-  if( !iContainer.empty() )
+  if( iContainer.size() != 0 )
     {
     ContourStructureMultiIndexContainer::index< TCoord >::type::iterator it0, it1;
     boost::tuples::tie(it0,it1) = iContainer.get< TCoord >().equal_range( iTimePoint );

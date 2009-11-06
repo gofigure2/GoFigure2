@@ -113,20 +113,20 @@ struct GoFigureFileInfoHelper
   typedef multi_index_container<
     const GoFigureFileInfoHelper*,
     indexed_by<
-      ordered_non_unique<BOOST_MULTI_INDEX_MEMBER(GoFigureFileInfoHelper,const unsigned int,m_Channel)>,
-      ordered_non_unique<BOOST_MULTI_INDEX_MEMBER(GoFigureFileInfoHelper,const unsigned int,m_ZCoord)>
+      ordered_non_unique<BOOST_MULTI_INDEX_MEMBER(GoFigureFileInfoHelper,const unsigned int,m_Channel)>//,
+      //ordered_non_unique<BOOST_MULTI_INDEX_MEMBER(GoFigureFileInfoHelper,const unsigned int,m_ZCoord)>
     >
   > GoFigureFileInfoHelperChannelViewContainer;
 
 // }
 
 std::list< std::string > GetAllFileNamesForGivenTCoordAndChannel(
-  GoFigureFileInfoHelperMultiIndexContainer iContainer,
+  const GoFigureFileInfoHelperMultiIndexContainer& iContainer,
   const unsigned int& iT,
   const unsigned int& iCh );
 
 std::list< std::string > GetAllFileNamesForGivenZCoordPointAndChannel(
-  GoFigureFileInfoHelperMultiIndexContainer iContainer,
+  const GoFigureFileInfoHelperMultiIndexContainer& iContainer,
   const unsigned int& iZ,
   const unsigned int& iCh );
 
