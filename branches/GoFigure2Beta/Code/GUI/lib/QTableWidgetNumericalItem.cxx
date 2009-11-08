@@ -38,25 +38,18 @@
 
 =========================================================================*/
 
-#ifndef __QTableWidgetNumericalItem_h
-#define __QTableWidgetnumericalItem_h
+#include "QTableWidgetNumericalItem.h"
+ 
+QTableWidgetNumericalItem::
+QTableWidgetNumericalItem( int iType ): 
+  QTableWidgetItem(iType)
+{}
 
-#include <QTableWidgetItem>
-#include "MegaVTK2Configure.h"
-
-/**
-\class QTableWidgetItemchild
-\brief in the QTableWidget class, the method sorItems is comparing string 
-QTableWidgetItem, but we need it to compare integer and float also:
-that's the reason for the creation of QTableWidgetNumericalItem.
-*/
-class QTableWidgetNumericalItem : public QTableWidgetItem
+bool 
+QTableWidgetNumericalItem::operator < ( const QTableWidgetNumericalItem &other ) const
 {
+  const QVariant v1 = data(Qt::DisplayRole);
+  const QVariant v2 = other.data(Qt::DisplayRole);
+  return v1.toDouble() < v2.toDouble(); 
+} 
 
-public:
-  QTableWidgetNumericalItem( int type = QTableWidgetItem::Type);
-
-  virtual bool operator<(const QTableWidgetNumericalItem &other) const;
-};
-
-#endif

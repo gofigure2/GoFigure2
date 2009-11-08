@@ -5,12 +5,12 @@ using namespace boost::multi_index;
 
 std::list< ContourStructure >
 FindContourGivenContourId(
-  ContourStructureMultiIndexContainer iContainer,
+  const ContourStructureMultiIndexContainer& iContainer,
   const unsigned int& iId )
 {
   std::list< ContourStructure > oList;
 
-  if( !iContainer.size() != 0 )
+  if( iContainer.size() != 0 )
     {
     ContourStructureMultiIndexContainer::index< ContourId >::type::iterator
       it = iContainer.get< ContourId >().find( iId );
@@ -31,10 +31,10 @@ FindContourGivenContourId(
 
 ContourStructure
 FindContourGivenActor(
-  ContourStructureMultiIndexContainer iContainer,
+  const ContourStructureMultiIndexContainer& iContainer,
   vtkActor* iActor )
 {
-  if( !iContainer.size() != 0 )
+  if( iContainer.size() != 0 )
     {
     ContourStructureMultiIndexContainer::nth_index< 1 >::type::iterator
       it = iContainer.get< 1 >().find( iActor );
@@ -51,11 +51,13 @@ FindContourGivenActor(
   return ContourStructure();
 }
 
-ContourStructure
+std::list< ContourStructure >
 FindContourGivenNodes(
-  ContourStructureMultiIndexContainer iContainer,
+  const ContourStructureMultiIndexContainer& iContainer,
   vtkPolyData* iNodes )
 {
+  std::list< ContourStructure > oList;
+
   if( !iContainer.empty() )
     {
     ContourStructureMultiIndexContainer::nth_index< 2 >::type::iterator
@@ -63,15 +65,19 @@ FindContourGivenNodes(
 
     if( it != iContainer.get< 2 >().end() )
       {
-      return (*it);
+      while( it != iContainer.get< 2 >().end() )
+        {
+        oList.push_back( *it );
+        ++it;
+        }
       }
     }
-  return ContourStructure();
+  return oList;
 }
 
 std::list< ContourStructure >
 FindContourGivenTimePoint(
-  ContourStructureMultiIndexContainer iContainer,
+  const ContourStructureMultiIndexContainer& iContainer,
   const unsigned int& iTimePoint )
 {
   std::list< ContourStructure > oList;
@@ -79,7 +85,7 @@ FindContourGivenTimePoint(
   if( iContainer.size() != 0 )
     {
     ContourStructureMultiIndexContainer::index< TCoord >::type::iterator it0, it1;
-    boost::tuples::tie(it0,it1) = iContainer.get< TCoord >().equal_range( iTimePoint );
+    boost::tuples::tie(it0,it1) = get<TCoord>( iContainer ).equal_range( iTimePoint );
 
     while( it0 != it1 )
       {

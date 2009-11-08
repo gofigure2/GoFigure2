@@ -155,7 +155,7 @@ int GoDBCollectionOfTraces::GetCoordMinID(vtkMySQLDatabase* DatabaseConnector,
     bool SameCoord = true;
     //put the min between the existing coord value and the selecting ones in the 
     //NewCollectionCoorMin
-    for (int i = 0; i <ColumnNames.size(); i++)
+    for( unsigned int i = 0; i <ColumnNames.size(); i++ )
       {
       int ValueExistingCoordMin = atoi(ExistingCoordMin.GetMapValue(ColumnNames[i]).c_str());
       int ValueSelectingCoordMin = atoi(SelectingCoordMin.GetMapValue(ColumnNames[i]).c_str());
@@ -221,7 +221,7 @@ int GoDBCollectionOfTraces::GetCoordMaxID(vtkMySQLDatabase* DatabaseConnector,
     bool SameCoord = true;
     //put the min between the existing coord value and the selecting ones in the 
     //NewCollectionCoorMin
-    for (int i = 0; i <ColumnNames.size(); i++)
+    for( unsigned int i = 0; i <ColumnNames.size(); i++ )
       {
       int ValueExistingCoordMax = atoi(ExistingCoordMax.GetMapValue(ColumnNames[i]).c_str());
       int ValueSelectingCoordMax = atoi(SelectingCoordMax.GetMapValue(ColumnNames[i]).c_str());
@@ -266,7 +266,7 @@ GoDBCoordinateRow GoDBCollectionOfTraces::GetSelectingTracesCoordMin(
   //then, go to the coordinate table and compare the values for the coordID
   //corresponding to the coordIDMax of the selected contours:
   std::vector<std::string> ColumnNames = CoordMin.GetVectorColumnNames();
-  for (int i = 0; i <ColumnNames.size(); i++)
+  for( unsigned int i = 0; i <ColumnNames.size(); i++ )
     {
     //don't compare the coordID !!!:
     if (ColumnNames[i] != "CoordID")
@@ -294,7 +294,7 @@ GoDBCoordinateRow GoDBCollectionOfTraces::GetSelectingTracesCoordMax(
   //then, go to the coordinate table and compare the values for the coordID
   //corresponding to the coordIDMax of the selected contours:
   std::vector<std::string> ColumnNames = CoordMax.GetVectorColumnNames();
-  for (int i = 0; i <ColumnNames.size(); i++)
+  for( unsigned int i = 0; i <ColumnNames.size(); i++ )
     {
     //don't compare the coordID !!!:
     if (ColumnNames[i] != "CoordID")
@@ -319,7 +319,7 @@ GoDBCoordinateRow GoDBCollectionOfTraces::GetExistingCoordMin(
 
   std::vector<std::string> ColumnNames = ExistingCoordMin.GetVectorColumnNames();
 
-  for (int i = 0; i <ColumnNames.size(); i++)
+  for( unsigned int i = 0; i <ColumnNames.size(); i++ )
     {
     ExistingCoordMin.SetField(ColumnNames[i],VectorValuesExistingCoordMin[i]);
     }
@@ -339,7 +339,7 @@ GoDBCoordinateRow GoDBCollectionOfTraces::GetExistingCoordMax(
 
   std::vector<std::string> ColumnNames = ExistingCoordMax.GetVectorColumnNames();
 
-  for (int i = 0; i <ColumnNames.size(); i++)
+  for( unsigned int i = 0; i <ColumnNames.size(); i++ )
     {
     ExistingCoordMax.SetField(ColumnNames[i],VectorValuesExistingCoordMax[i]);
     }

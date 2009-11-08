@@ -33,6 +33,13 @@ typedef multi_index_container<
     >
 > ContourStructureMultiIndexContainer;
 
+typedef multi_index_container<
+  const ContourStructure*,
+  indexed_by<
+    ordered_unique<
+      BOOST_MULTI_INDEX_MEMBER(ContourStructure,const unsigned int,ContourId)>
+>
+> ContourStructureContourIdViewContainer;
 
 typedef multi_index_container<
     const ContourStructure*,
@@ -61,7 +68,7 @@ typedef multi_index_container<
 typedef multi_index_container<
     const ContourStructure*,
     indexed_by<
-      ordered_unique<
+      ordered_non_unique<
         BOOST_MULTI_INDEX_MEMBER(ContourStructure,const ContourStructure::vtkPolyDataPointer,Nodes)>
     >
   > ContourStructureNodesViewContainer;
@@ -70,22 +77,22 @@ typedef multi_index_container<
 
 std::list< ContourStructure >
 FindContourGivenContourId(
-  ContourStructureMultiIndexContainer iContainer,
+  const ContourStructureMultiIndexContainer& iContainer,
   const unsigned int& iId );
 
 ContourStructure
 FindContourGivenActor(
-  ContourStructureMultiIndexContainer iContainer,
+  const ContourStructureMultiIndexContainer& iContainer,
   vtkActor* iActor );
 
-ContourStructure
+std::list< ContourStructure >
 FindContourGivenNodes(
-  ContourStructureMultiIndexContainer iContainer,
+  const ContourStructureMultiIndexContainer& iContainer,
   vtkPolyData* iNodes );
 
 std::list< ContourStructure >
 FindContourGivenTimePoint(
-  ContourStructureMultiIndexContainer iContainer,
+  const ContourStructureMultiIndexContainer& iContainer,
   const unsigned int& iTimePoint
 );
 

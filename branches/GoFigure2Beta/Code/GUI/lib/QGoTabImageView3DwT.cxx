@@ -75,7 +75,7 @@ QGoTabImageView3DwT::
     m_Image->Delete();
     m_Image = 0;
     }
-  for( int i = 1; i < m_LSMReader.size(); i++ )
+  for( unsigned int i = 1; i < m_LSMReader.size(); i++ )
     {
     if( m_LSMReader[i] )
       {
@@ -420,7 +420,7 @@ SetMegaCaptureFile(
   unsigned int min_ch = m_MegaCaptureReader->GetMinChannel();
   unsigned int max_ch = m_MegaCaptureReader->GetMaxChannel();
 
-  int NumberOfChannels = max_ch - min_ch + 1;
+  unsigned int NumberOfChannels = max_ch - min_ch + 1;
 
   vtkImageData* temp = m_MegaCaptureReader->GetOutput();
 
@@ -445,13 +445,13 @@ SetMegaCaptureFile(
     {
     m_VisuDockWidget->SetChannel( 0 );
 
-    for( int i = 1; i < NumberOfChannels; i++ )
+    for( unsigned int i = 1; i < NumberOfChannels; i++ )
       {
       m_VisuDockWidget->SetChannel( i );
       }
     }
 
-  if( m_TimePoint != iTimePoint )
+  if( static_cast< unsigned int >( m_TimePoint ) != iTimePoint )
     {
     SetTimePoint( iTimePoint );
     }
@@ -636,8 +636,9 @@ SetTimePoint( const int& iTimePoint )
     {
     if( !m_FileList.empty() )
       {
-      if( ( iTimePoint < m_MegaCaptureReader->GetMinTimePoint() ) ||
-          ( iTimePoint > m_MegaCaptureReader->GetMaxTimePoint() ) )
+      unsigned int t = static_cast< unsigned int >( iTimePoint );
+      if( ( t < m_MegaCaptureReader->GetMinTimePoint() ) ||
+          ( t > m_MegaCaptureReader->GetMaxTimePoint() ) )
         {
         return;
         }
@@ -1112,6 +1113,9 @@ ValidateContour( const int& iId )
   int* min_idx = this->GetImageCoordinatesFromWorldCoordinates( Min );
   int* max_idx = this->GetImageCoordinatesFromWorldCoordinates( Max );
 
+  (void) min_idx;
+  (void) max_idx;
+
   vtkPolyData* contour_nodes = vtkPolyData::New();
   m_ContourRepresentation[iId]->GetNodePolyData( contour_nodes );
 
@@ -1133,10 +1137,10 @@ ValidateContour( const int& iId )
   bool highlighted = false;
 
   // fill the container
-  for( int i = 0; i < contour_actor.size(); i++ )
+  for( unsigned int i = 0; i < contour_actor.size(); i++ )
     {
-    ContourStructure temp( m_ContourId++, contour_actor[i], contour_nodes, meshid,
-      timepoint, highlighted, r, g, b, i );
+    ContourStructure temp( m_ContourId++, contour_actor[i], contour_nodes,
+       meshid, timepoint, highlighted, r, g, b, i );
     m_ContourContainer.insert( temp );
     }
 }
@@ -1312,25 +1316,22 @@ void
 QGoTabImageView3DwT::
 LoadAllContoursForGivenTimePoint( const unsigned int& iT )
 {
-  if( iT >= 0 )
+  std::list< ContourStructure >
+    c_list = FindContourGivenTimePoint( m_ContourContainer, 
+      static_cast< int >( iT ) );
+
+  int c_dir;
+  vtkActor* c_actor;
+
+  std::list< ContourStructure >::iterator it = c_list.begin();
+
+  while( it != c_list.end() )
     {
-    std::list< ContourStructure >
-      c_list = FindContourGivenTimePoint( m_ContourContainer, 
-        static_cast< int >( iT ) );
+    c_dir = (*it).Direction;
+    c_actor = (*it).Actor;
 
-    int c_dir;
-    vtkActor* c_actor;
-
-    std::list< ContourStructure >::iterator it = c_list.begin();
-
-    while( it != c_list.end() )
-      {
-      c_dir = (*it).Direction;
-      c_actor = (*it).Actor;
-
-      DisplayActorInViewer( c_dir, c_actor );
-      ++it;
-      }
+    DisplayActorInViewer( c_dir, c_actor );
+    ++it;
     }
 }
 //--------------------------------------------------------------------------

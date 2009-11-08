@@ -14,8 +14,8 @@
 /**
  * \brief Constructor
  */
-LSMToMegaCapture::LSMToMegaCapture( ) : m_Plaque( 0 ), m_Column( 0 ), m_Row( 0 ),
-  m_XTile( 0 ), m_YTile( 0 ), m_ZTile( 0 )
+LSMToMegaCapture::LSMToMegaCapture( ) : m_Plaque( 0 ), m_Row( 0 ), 
+  m_Column( 0 ), m_XTile( 0 ), m_YTile( 0 ), m_ZTile( 0 )
 {
 }
 
@@ -192,7 +192,7 @@ Export( const std::string& iHeaderFileName )
       vtkImageData* image3d = m_LSMReaders[j]->GetOutput();
       image3d->GetExtent( extent );
 
-      for( k = 0; k < dim[2]; k++ )
+      for( k = 0; k < static_cast< unsigned int >( dim[2] ); k++ )
         {
         std::stringstream filename;
         filename <<"image-PL" << setfill('0') << setw(2) <<m_Plaque;

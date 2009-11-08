@@ -181,7 +181,7 @@ protected:
     typename GoDBRecordSet< myT >::RowContainerType *RowContainer,
     QTableWidgetChild* TableToFill )
     {
-    int NbofRows = RowContainer->size()-1;
+    unsigned int NbofRows = RowContainer->size()-1;
     TableToFill->setRowCount(NbofRows);
     unsigned int i = 0;
     while (i < NbofRows)

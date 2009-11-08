@@ -12,6 +12,7 @@ SET( QGOGUILIB_EXAMPLE_SRC
   qgovisualizationdockwidget
   qgomanualsegmentationdockwidget
   contourstructurehelpertest
+  contourstructurehelpertest2
   QGoWizardDBTest
   QGoPrintDatabaseTest
   qgocreatemeshdialogtest
@@ -81,5 +82,9 @@ ADD_TEST( qgomanualsegmentationdockwidgetTest
 
 ADD_TEST( contourstructurehelperTest
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/contourstructurehelpertest
+)
+
+ADD_TEST( contourstructurehelperTest2
+  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/contourstructurehelpertest2
 )
 
