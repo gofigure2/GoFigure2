@@ -67,7 +67,10 @@ FindContourGivenNodes(
       {
       while( it != iContainer.get< 2 >().end() )
         {
-        oList.push_back( *it );
+        if( (*it).Nodes == iNodes )
+          {
+          oList.push_back( *it );
+          }
         ++it;
         }
       }
@@ -84,12 +87,18 @@ FindContourGivenTimePoint(
 
   if( iContainer.size() != 0 )
     {
-    ContourStructureMultiIndexContainer::index< TCoord >::type::iterator it0, it1;
-    boost::tuples::tie(it0,it1) = get<TCoord>( iContainer ).equal_range( iTimePoint );
+    boost::multi_index::index< ContourStructureMultiIndexContainer, TCoord>::type::iterator it0, it1;
 
-    while( it0 != it1 )
+    it0 = iContainer.get<TCoord>().find( iTimePoint );
+//    boost::tuples::tie(it0,it1) = get<TCoord>( iContainer ).equal_range( iTimePoint );
+
+    //while( it0 != it1 )
+    while( it0 != iContainer.get<TCoord>().end() )
       {
-      oList.push_back( *it0 );
+      if( (*it0).TCoord == iTimePoint )
+        {
+        oList.push_back( *it0 );
+        }
       ++it0;
       }
     }

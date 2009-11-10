@@ -15,7 +15,7 @@ using namespace boost::multi_index;
 typedef multi_index_container<
   ContourStructure,
     indexed_by<
-      ordered_unique<
+      ordered_non_unique<
         tag<ContourId>,
         BOOST_MULTI_INDEX_MEMBER(ContourStructure,unsigned int,ContourId)>,
       ordered_unique<
@@ -36,7 +36,7 @@ typedef multi_index_container<
 typedef multi_index_container<
   const ContourStructure*,
   indexed_by<
-    ordered_unique<
+    ordered_non_unique<
       BOOST_MULTI_INDEX_MEMBER(ContourStructure,const unsigned int,ContourId)>
 >
 > ContourStructureContourIdViewContainer;

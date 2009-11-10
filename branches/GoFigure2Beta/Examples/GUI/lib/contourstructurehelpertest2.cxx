@@ -10,8 +10,8 @@ int main( int , char** )
 {
   ContourStructureMultiIndexContainer container;
 
-  std::vector< vtkActor* > ActorVector( 9 );
-  std::vector< vtkPolyData* > NodesVector( 3 );
+  std::vector< vtkActor* > ActorVector( 12 );
+  std::vector< vtkPolyData* > NodesVector( 4 );
 
   unsigned int meshid = 0;
   unsigned int timepoint = 0;
@@ -22,72 +22,49 @@ int main( int , char** )
   
   unsigned int i;
 
-  for( i = 0; i < 9; i++ )
+  for( i = 0; i < ActorVector.size(); i++ )
     {
-    if( i < 3 )
+    if( i < NodesVector.size() )
       {
       NodesVector[i] = vtkPolyData::New();
       }
     ActorVector[i] = vtkActor::New();
 
-    container.insert( ContourStructure( i, ActorVector[i], NodesVector[i%3],
-      meshid, timepoint, highlighted, r, g, b, i ) );
+    container.insert( ContourStructure( i, ActorVector[i], 
+      NodesVector[i%NodesVector.size()],
+      meshid, timepoint, highlighted, r, g, b, i % 4 ) );
     }
 
-  std::list< ContourStructure > list = FindContourGivenContourId( container, 0 );
-  ContourStructure c = list.front();
-  std::cout <<c <<std::endl;
+  std::list< ContourStructure > list = 
+    FindContourGivenContourId( container, 0 );
 
-  if( c.Actor != ActorVector[0]  )
+  if( list.empty() )
     {
-    std::cerr <<"c.Actor != ActorVector[0]" <<std::endl;
-    for( i = 0; i < 9; i++ )
-      {
-      if( i < 3 )
-        {
-        NodesVector[i]->Delete();
-        }
-      ActorVector[i]->Delete();
-      }
+    std::cerr <<"empty list after FindContourGivenContourId" <<std::endl;
     return EXIT_FAILURE;
     }
-  if( c.Nodes != NodesVector.front() )
-    {
-    std::cerr <<"c.Nodes != NodesVector.front()" <<std::endl;
-    for( i = 0; i < 9; i++ )
-      {
-      if( i < 3 )
-        {
-        NodesVector[i]->Delete();
-        }
-      ActorVector[i]->Delete();
-      }
-    return EXIT_FAILURE;
-    }
-  if( c.Highlighted != false )
-    {
-    std::cerr <<"c.Highlighted != false" <<std::endl;
-    for( i = 0; i < 9; i++ )
-      {
-      if( i < 3 )
-        {
-        NodesVector[i]->Delete();
-        }
-      ActorVector[i]->Delete();
-      }
-    return EXIT_FAILURE;
-    }
+  
+  std::list< ContourStructure >::iterator list_it = list.begin();
+  ContourStructure c;
 
-  c.Highlighted = false;
-
+  while( list_it != list.end() )
+    {
+    if( (*list_it).ContourId != 0 )
+      {
+      std::cerr <<"(*list_it).ContourId != 0" <<std::endl;
+      return EXIT_FAILURE;
+      }
+    ++list_it;
+    }
+  
   c = FindContourGivenActor( container, ActorVector[2] );
 
   if( c.ContourId != 2 )
     {
     std::cerr <<"c.ContourId != 2" <<std::endl;
-    for( i = 0; i < 9; i++ )
+    for( i = 0; i < ActorVector.size(); i++ )
       {
-      if( i < 3 )
+      if( i < NodesVector.size() )
         {
         NodesVector[i]->Delete();
         }
@@ -97,18 +74,24 @@ int main( int , char** )
 
   list = FindContourGivenNodes( container, NodesVector.front());
 
-  std::list< ContourStructure >::iterator list_it = list.begin();
-  for( i = 0; i < 3; i++ )
+  if( list.empty() )
+    {
+    std::cerr <<"empty list after FindContourGivenNodes" <<std::endl;
+    return EXIT_FAILURE;
+    }
+
+  list_it = list.begin();
+  while( list_it != list.end() )
     {
     c = *list_it;
-    if( c.ContourId != 3*i )
+    if( c.Nodes != NodesVector.front() )
       {
-      std::cerr <<"c.ContourId !=" <<i <<std::endl;
+      std::cerr <<c.Nodes <<" != " <<NodesVector.front() <<std::endl;
       std::cerr <<c.ContourId <<std::endl;
 
-      for( i = 0; i < 9; i++ )
+      for( i = 0; i < ActorVector.size(); i++ )
         {
-        if( i < 3 )
+        if( i < NodesVector.size() )
           {
           NodesVector[i]->Delete();
           }
@@ -120,24 +103,28 @@ int main( int , char** )
     ++list_it;
     }
 
-  std::cout <<c <<std::endl;
-
   unsigned int k = 0;
 
   list = FindContourGivenTimePoint( container, 0 );
+
+  if( list.empty() )
+    {
+    std::cerr <<"empty list after FindContourGivenTimePoint" <<std::endl;
+    return EXIT_FAILURE;
+    }
 
   list_it = list.begin();
 
   while( list_it != list.end() )
     {
-    if( (*list_it).ContourId != k )
+    if( (*list_it).TCoord != 0 )
       {
       std::cerr <<"(*list_it).ContourId != k" <<std::endl;
       std::cerr <<(*list_it).ContourId <<" != " <<k <<std::endl;
       
-      for( i = 0; i < 9; i++ )
+      for( i = 0; i < ActorVector.size(); i++ )
         {
-        if( i < 3 )
+        if( i < NodesVector.size() )
           {
           NodesVector[i]->Delete();
           }
@@ -150,9 +137,11 @@ int main( int , char** )
     ++k;
     }
 
-  for( i = 0; i < 9; i++ )
+  std::cout <<c <<std::endl;
+
+  for( i = 0; i < ActorVector.size(); i++ )
     {
-    if( i < 3 )
+    if( i < NodesVector.size() )
       {
       NodesVector[i]->Delete();
       }

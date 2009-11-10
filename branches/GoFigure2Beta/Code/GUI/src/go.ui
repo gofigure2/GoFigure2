@@ -59,7 +59,7 @@
      <x>0</x>
      <y>0</y>
      <width>1434</width>
-     <height>23</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -151,7 +151,19 @@
     </property>
     <addaction name="actionSnapshot"/>
    </widget>
+   <widget class="QMenu" name="menuBookmarks">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="title">
+     <string>Bookmarks</string>
+    </property>
+    <addaction name="actionAdd_Bookmark"/>
+    <addaction name="actionManage_Bookmarks"/>
+    <addaction name="separator"/>
+   </widget>
    <addaction name="menuFile"/>
+   <addaction name="menuBookmarks"/>
    <addaction name="menuView"/>
    <addaction name="menuFiltering"/>
    <addaction name="menuSegmentation"/>
@@ -363,6 +375,24 @@
   <action name="actionSnapshot">
    <property name="text">
     <string>Snapshot</string>
+   </property>
+  </action>
+  <action name="actionSide_bar">
+   <property name="text">
+    <string>Side-bar</string>
+   </property>
+  </action>
+  <action name="actionAdd_Bookmark">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Add Bookmark</string>
+   </property>
+  </action>
+  <action name="actionManage_Bookmarks">
+   <property name="text">
+    <string>Manage Bookmarks</string>
    </property>
   </action>
  </widget>
