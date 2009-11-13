@@ -782,6 +782,7 @@ AddContour( const int& iId, vtkPolyData* dataset, vtkProperty* iProperty )
   vtkActor* temp = View3D->AddDataSet( (vtkDataSet*) dataset,
     iProperty, false, false );
 
+  View3D->Render();
   oList.push_back( temp );
 
   return oList;

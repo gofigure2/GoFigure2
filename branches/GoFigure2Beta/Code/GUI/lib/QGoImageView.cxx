@@ -195,6 +195,7 @@ AddContour( const int& iId, vtkPolyData* iDataset, vtkProperty* iProperty )
     vtkViewImage2D* viewer = m_Pool->GetItem( i );
     vtkActor* temp = viewer->AddDataSet( iDataset, iProperty,
       true, false );
+    viewer->Render();
     oActorVector.push_back( temp );
     }
 
