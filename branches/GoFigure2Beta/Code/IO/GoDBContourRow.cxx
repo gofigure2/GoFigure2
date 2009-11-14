@@ -39,11 +39,31 @@
 =========================================================================*/
 #include "GoDBContourRow.h"
 #include "SelectQueryDatabaseHelper.h"
+#include "GoDBRecordSetHelper.h"
+#include <iostream>
 
 
 GoDBContourRow::GoDBContourRow()
 {
   this->InitializeMap();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+GoDBContourRow::GoDBContourRow(vtkMySQLDatabase* DatabaseConnector,
+  vtkPolyData* ContourVisu,unsigned int ImgSessionID,GoDBCoordinateRow Min, 
+  GoDBCoordinateRow Max)
+{
+  this->InitializeMap();
+  vtkPolyDataMySQLTextWriter* convert = vtkPolyDataMySQLTextWriter::New();
+  this->m_MapRow["Points"] = convert->GetMySQLText( ContourVisu);
+  this->m_MapRow["ImagingSessionID"] = ConvertToString<unsigned int>(ImgSessionID);
+  
+  this->CreateBoundingBox(DatabaseConnector,Min,Max);
+  if (this->DoesThisBoundingBoxContourExist(DatabaseConnector))
+    {
+    std::cout<<"The bounding box alreaady exists"<<std::endl;
+    }
 }
 //-------------------------------------------------------------------------
 
@@ -67,5 +87,36 @@ int GoDBContourRow::DoesThisBoundingBoxContourExist(
     "CoordIDMax",this->GetMapValue("CoordIDMax"),
     "CoordIDMin",this->GetMapValue("CoordIDMin"));
 }
+//-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
+void GoDBContourRow::CreateBoundingBox(vtkMySQLDatabase* DatabaseConnector,
+  GoDBCoordinateRow Min,GoDBCoordinateRow Max)
+{
+  int CoordMin = Min.DoesThisCoordinateExist(DatabaseConnector);
+  if (CoordMin == -1)
+    {
+    CoordMin = AddOnlyOneNewObjectInTable<GoDBCoordinateRow>(DatabaseConnector,
+    "coordinate",Min, "CoordID");
+    }
+  this->m_MapRow["CoordIDMin"] = ConvertToString<int>(CoordMin);
 
+  int CoordMax = Max.DoesThisCoordinateExist(DatabaseConnector);
+  if (CoordMax == -1)
+    {
+    CoordMax = AddOnlyOneNewObjectInTable<GoDBCoordinateRow>(DatabaseConnector,
+    "coordinate",Max, "CoordID");
+    }
+  this->m_MapRow["CoordIDMax"] = ConvertToString<int>(CoordMax);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+int GoDBContourRow::SaveInDB(vtkMySQLDatabase* DatabaseConnector)
+{
+  return AddOnlyOneNewObjectInTable<GoDBContourRow>( DatabaseConnector,
+    "contour",*this, "ContourID");
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------

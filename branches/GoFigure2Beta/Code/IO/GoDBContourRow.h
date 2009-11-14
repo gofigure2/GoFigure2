@@ -42,7 +42,11 @@
 
 #include "ConvertToStringHelper.h"
 #include "GoDBRow.h"
+#include "GoDBCoordinateRow.h"
 #include "vtkMySQLDatabase.h"
+#include "vtkPolyData.h"
+#include "vtkPolyDataMySQLTextWriter.h"
+
 #include <string>
 #include <map>
 
@@ -50,15 +54,32 @@ class GoDBContourRow : public GoDBRow
 {
 public:
   GoDBContourRow();
-   
+
+  /**\brief fill the contour map with the values gotten from the visualization*/
+  GoDBContourRow(vtkMySQLDatabase* DatabaseConnector,vtkPolyData* ContourVisu,
+    unsigned int ImgSessionID,GoDBCoordinateRow Min, GoDBCoordinateRow Max);
+
   ~GoDBContourRow()
     {}
   /**\brief return the ContourID of the Contour with the same bounding box
   already registered in the DB or -1 if not yet created*/
  int DoesThisBoundingBoxContourExist(vtkMySQLDatabase* DatabaseConnector);
 
+ int SaveInDBfromVisu (vtkPolyData* ContourVisu,unsigned int
+  ImgSessionID,GoDBCoordinateRow Min, GoDBCoordinateRow Max);
+
 protected:
   virtual void InitializeMap();
 
+ /**\brief check in the database if the Coordinate Min adn Max already exits,
+ if yes fill the map["CoordIDMin"] and ["CoordIDmax"] with the existing CoordinateID
+ if not, create the coordinates in the database and fill the map with the new created ID,
+ if the bounding box already exits, a cout is generated*/
+ void CreateBoundingBox(vtkMySQLDatabase* DatabaseConnector,GoDBCoordinateRow Min,
+  GoDBCoordinateRow Max);
+
+ /**\brief save the contour in the database and return the ID of the new 
+ created contour*/
+ int SaveInDB(vtkMySQLDatabase* DatabaseConnector);
  };
 #endif

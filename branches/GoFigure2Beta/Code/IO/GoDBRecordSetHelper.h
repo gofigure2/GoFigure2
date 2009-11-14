@@ -61,11 +61,7 @@ void AddOnlyOneNewObjectInTable( vtkMySQLDatabase* DatabaseConnector,
 
   SetType mySet;
   mySet.SetConnector( DatabaseConnector );
-  //mySet.SetDataBaseName( DBName );
   mySet.SetTableName( TableName );
-  //mySet.SetUser( User );
-  //mySet.SetPassword( Password );
-  //mySet.PopulateFromDB();
   mySet.AddObject( myNewObject );
   mySet.SaveInDB();
 }
@@ -78,11 +74,7 @@ int AddOnlyOneNewObjectInTable( vtkMySQLDatabase* DatabaseConnector,
 
   SetType mySet;
   mySet.SetConnector( DatabaseConnector );
-  //mySet.SetDataBaseName( DBName );
   mySet.SetTableName( TableName );
-  //mySet.SetUser( User );
-  //mySet.SetPassword( Password );
-  //mySet.PopulateFromDB();
   mySet.AddObject( myNewObject );
   mySet.SaveInDB();
 

@@ -56,7 +56,7 @@ public:
   /**\brief return the CoordID of the coordinate with the same attributes
   already registered in the DB or -1 if not yet created*/
  int DoesThisCoordinateExist(vtkMySQLDatabase* DatabaseConnector);
-
+ 
 protected:
   virtual void InitializeMap();
 };
