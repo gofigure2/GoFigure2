@@ -16,6 +16,7 @@
 class QGoImageView3D;
 class QGoVisualizationDockWidget;
 class QGoManualSegmentationDockWidget;
+class QGoPrintDatabase;
 class vtkLSMReader;
 class vtkContourWidget;
 class vtkOrientedGlyphContourRepresentation;
@@ -29,31 +30,86 @@ class QGoTabImageView3DwT : public QGoTabElementBase
 {
   Q_OBJECT
 public:
+  /**
+   * \brief Default Constructor
+   * @param parent
+   */
   QGoTabImageView3DwT( QWidget* parent = 0 );
+
+
+  /**
+   * \brief Destructor
+   */
   virtual ~QGoTabImageView3DwT();
 
+
+  /**
+   * \brief
+   * @return
+   */
   GoFigure::TabDimensionType GetTabDimensionType( ) const;
 
+  /**
+   *
+   * @param iReader
+   * @param iTimePoint
+   */
   void SetLSMReader( vtkLSMReader* iReader, const int& iTimePoint );
+  /**
+   *
+   * @param iContainer
+   * @param iFileType
+   * @param iHeader
+   * @param iTimePoint
+   */
   void SetMegaCaptureFile(
     const GoFigureFileInfoHelperMultiIndexContainer& iContainer,
     const GoFigure::FileType& iFileType,
     const std::string& iHeader,
     const unsigned int& iTimePoint  );
 
+  /**
+   *
+   */
   virtual void Update();
 
+  /**
+   *
+   * @param parent
+   */
   void setupUi( QWidget* parent );
+  /**
+   *
+   * @param parent
+   */
   void retranslateUi( QWidget *parent );
 
+  /**
+   *
+   * @return
+   */
   virtual std::list< QDockWidget* > DockWidget();
 
+  /**
+   *
+   * @return
+   */
   virtual std::list< QWidget* > AdditionalWidget()
     {return std::list< QWidget* >(); }
 
+  /**
+   *
+   */
   virtual void WriteSettings() {}
+  /**
+   *
+   */
   virtual void ReadSettings() {}
 
+  /**
+   *
+   * @param iId
+   */
   virtual void ValidateContour( const int& iId );
 
 signals:
@@ -112,6 +168,7 @@ protected:
 
   QGoVisualizationDockWidget*       m_VisuDockWidget;
   QGoManualSegmentationDockWidget*  m_ManualSegmentationDockWidget;
+  QGoPrintDatabase*                 m_DataBaseTables;
 
   std::vector< vtkContourWidget* >                      m_ContourWidget;
   std::vector< vtkOrientedGlyphContourRepresentation* > m_ContourRepresentation;

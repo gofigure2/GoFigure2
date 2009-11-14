@@ -96,10 +96,13 @@ public slots:
   void FullScreenViewYZ();
   void FullScreenViewXYZ();
 
-  ///\todo MUST be implemented!
-  virtual void SetLookupTable( vtkLookupTable* ) {}
-  ///\todo MUST be implemented!
-  virtual void ShowScalarBar( const bool& ) {}
+  /**
+   *
+   * @param
+   */
+  virtual void SetLookupTable( vtkLookupTable* );
+
+  virtual void ShowScalarBar( const bool& );
 
 protected:
   QSplitter*          VSplitter;

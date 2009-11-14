@@ -829,3 +829,33 @@ AddActor( const int& iId, vtkActor* iActor )
     }
 }
 //--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+QGoImageView3D::
+SetLookupTable( vtkLookupTable* iLut )
+{
+  if( this->m_Image->GetNumberOfScalarComponents() == 1 )
+    {
+    m_Pool->SyncSetLookupTable( iLut );
+    m_Pool->SyncRender();
+    View3D->SetLookupTable( iLut );
+    View3D->Render();
+    }
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+QGoImageView3D::
+ShowScalarBar( const bool& iShow )
+{
+  if( this->m_Image->GetNumberOfScalarComponents() == 1 )
+    {
+    m_Pool->SyncSetShowScalarBar( iShow );
+    m_Pool->SyncRender();
+    View3D->SetShowScalarBar( iShow );
+    View3D->Render();
+    }
+}
+//--------------------------------------------------------------------------

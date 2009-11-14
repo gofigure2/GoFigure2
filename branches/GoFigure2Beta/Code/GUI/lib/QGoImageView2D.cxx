@@ -139,14 +139,20 @@ void QGoImageView2D::Update( )
 //--------------------------------------------------------------------------
 void QGoImageView2D::SetLookupTable( vtkLookupTable* iLut )
 {
-  m_Pool->SyncSetLookupTable( iLut );
+  if( this->m_Image->GetNumberOfScalarComponents() == 1 )
+    {
+    m_Pool->SyncSetLookupTable( iLut );
+    }
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void QGoImageView2D::ShowScalarBar( const bool& iShow )
 {
-  m_Pool->SyncSetShowScalarBar( iShow );
+  if( this->m_Image->GetNumberOfScalarComponents() == 1 )
+    {
+    m_Pool->SyncSetShowScalarBar( iShow );
+    }
 }
 //--------------------------------------------------------------------------
 

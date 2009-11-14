@@ -59,42 +59,55 @@ class QGoPrintDatabase : public QWidget,
 
 public:
 
-  QMEGAVTKADDON2_EXPORT QGoPrintDatabase();
-  virtual QMEGAVTKADDON2_EXPORT ~QGoPrintDatabase();
+  QGoPrintDatabase( QWidget* iParent = 0 );
+  virtual ~QGoPrintDatabase();
   /**\brief set all the values needed for the database*/
-  void QMEGAVTKADDON2_EXPORT SetDatabaseVariables(
-    std::string iNameDB,std::string iServer,
-    std::string iUser,std::string iPassword,
-    unsigned int iImgSessionID,std::string iImgSessionName);
+  void SetDatabaseVariables(
+    const std::string& iNameDB, const std::string& iServer,
+    const std::string& iUser, const std::string& iPassword,
+    const unsigned int& iImgSessionID, const std::string& iImgSessionName );
 
   /** \brief Create the QTableWidgetChild,get the columns names and the values stored
   in the database and display them in the QTableWidgetChild */
-  void QMEGAVTKADDON2_EXPORT FillTableFromDatabase();
+  void FillTableFromDatabase();
 
-  QMEGAVTKADDON2_EXPORT QTableWidgetChild* ContourTable;
-  QMEGAVTKADDON2_EXPORT QTableWidgetChild* MeshTable;
-  QMEGAVTKADDON2_EXPORT QTableWidgetChild* TrackTable;
-  QMEGAVTKADDON2_EXPORT QTableWidgetChild* LineageTable;
+  QTableWidgetChild* ContourTable;
+  QTableWidgetChild* MeshTable;
+  QTableWidgetChild* TrackTable;
+  QTableWidgetChild* LineageTable;
 
-  void QMEGAVTKADDON2_EXPORT UpdateTableFromDB();
+  void UpdateTableFromDB();
+
+  QAction* toggleViewAction();
 
 signals:
   void TableContentChanged();
 
 
 protected:
-  void QPrintColumnNames( QString TableName,
-    std::vector< std::string > ColumnNames, QTableWidgetChild* QTabTableName );
   GoDBCollectionOfTraces* m_CollectionOfContours;
   GoDBCollectionOfTraces* m_CollectionOfMeshes;
   GoDBCollectionOfTraces* m_CollectionOfTracks;
   GoDBCollectionOfTraces* m_CollectionOfLineages;
 
+  vtkMySQLDatabase* m_DatabaseConnector;
+  std::string       m_Server;
+  std::string       m_User;
+  std::string       m_Password;
+  std::string       m_DBName;
+  unsigned int      m_ImgSessionID;
+  std::string       m_ImgSessionName;
+
+  QAction* m_VisibilityAction;
+
+  void QPrintColumnNames( QString TableName,
+    std::vector< std::string > ColumnNames, QTableWidgetChild* QTabTableName );
+
   void OpenDBConnectionForTables();
   void CloseDBConnectionForTables();
 
   /** \brief Return the Index of the tab currently used: */
-  int InWhichTableAreWe ();
+  int InWhichTableAreWe();
 
   /**
     \brief get the columns names and the values of the table (type T) from the
@@ -222,14 +235,6 @@ protected:
 
 
   void closeEvent(QCloseEvent* event);
-
-  vtkMySQLDatabase* m_DatabaseConnector;
-  std::string       m_Server;
-  std::string       m_User;
-  std::string       m_Password;
-  std::string       m_DBName;
-  unsigned int      m_ImgSessionID;
-  std::string       m_ImgSessionName;
 
 protected slots:
   void CreateContextMenu(const QPoint &pos);

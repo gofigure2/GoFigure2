@@ -64,30 +64,39 @@
 #include <iostream>
 #include <QCloseEvent>
 
-QGoPrintDatabase::QGoPrintDatabase()
-{ 
-  m_DatabaseConnector = 0;
+QGoPrintDatabase::
+QGoPrintDatabase( QWidget* iParent ) :
+  QWidget( iParent ),
+  m_DatabaseConnector( 0 )
+{
   this->setupUi( this );
-  DBTabWidget->setTabPosition(QTabWidget::West);
-  DBTabWidget->setTabShape(QTabWidget::Triangular);
-  DBTabWidget->removeTab(0);
+
+  DBTabWidget->setTabPosition( QTabWidget::West );
+  DBTabWidget->setTabShape( QTabWidget::Triangular );
+  DBTabWidget->removeTab( 0 );
+
   ContourTable = new QTableWidgetChild( this );
   MeshTable = new QTableWidgetChild( this );
   TrackTable = new QTableWidgetChild( this );
   LineageTable = new QTableWidgetChild( this );
 
-  m_CollectionOfContours = new GoDBCollectionOfTraces("mesh",
-    "MeshID","contour", "ContourID");
+  m_CollectionOfContours = new GoDBCollectionOfTraces( "mesh",
+    "MeshID", "contour", "ContourID" );
   m_CollectionOfMeshes = new GoDBCollectionOfTraces( "track",
-    "TrackID", "mesh", "MeshID");
-  m_CollectionOfTracks = new GoDBCollectionOfTraces("lineage",
-    "LineageID","track","TrackID");
+    "TrackID", "mesh", "MeshID" );
+  m_CollectionOfTracks = new GoDBCollectionOfTraces( "lineage",
+    "LineageID", "track", "TrackID" );
 
-  this->setContextMenuPolicy(Qt::CustomContextMenu);
+  this->setContextMenuPolicy( Qt::CustomContextMenu );
 
+  m_VisibilityAction = new QAction( this );
+  m_VisibilityAction->setCheckable( true );
 
-  connect(this, SIGNAL(customContextMenuRequested(const QPoint &)),
-    this, SLOT(CreateContextMenu(const QPoint &)));
+  QObject::connect( m_VisibilityAction, SIGNAL( toggled( bool ) ),
+    this, SLOT( setVisible( bool ) ) );
+
+  QObject::connect( this, SIGNAL( customContextMenuRequested( const QPoint & ) ),
+    this, SLOT( CreateContextMenu( const QPoint & ) ) );
 }
 //--------------------------------------------------------------------------
 
@@ -98,7 +107,16 @@ QGoPrintDatabase::~QGoPrintDatabase()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoPrintDatabase::QPrintColumnNames (QString TableName,
+QAction*
+QGoPrintDatabase::
+toggleViewAction()
+{
+  return m_VisibilityAction;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoPrintDatabase::QPrintColumnNames( QString TableName,
   std::vector< std::string > ColumnNames, QTableWidgetChild* QTabTableName )
 {
   int numberCol=ColumnNames.size();
@@ -135,9 +153,9 @@ void QGoPrintDatabase::QPrintColumnNames (QString TableName,
 
 //--------------------------------------------------------------------------
 void QGoPrintDatabase::SetDatabaseVariables(
-    std::string iNameDB,std::string iServer,
-    std::string iUser,std::string iPassword,
-    unsigned int iImgSessionID,std::string iImgSessionName)
+  const std::string& iNameDB, const std::string& iServer,
+  const std::string& iUser, const std::string& iPassword,
+  const unsigned int& iImgSessionID, const std::string& iImgSessionName )
 {
   m_Server         = iServer;
   m_User           = iUser;
@@ -177,13 +195,15 @@ void QGoPrintDatabase::FillTableFromDatabase()
 {
   OpenDBConnectionForTables();
 
-  this->setWindowTitle(QString("Imaging Session: %1 ").arg(m_ImgSessionName.c_str()));
+  QString title = QString( "Imaging Session: %1 " ).arg( m_ImgSessionName.c_str() );
+  this->setWindowTitle( title );
+  m_VisibilityAction->setText( title );
 
-  GetContentAndDisplayFromDB< GoDBContourRow >("contour", ContourTable);
-  GetContentAndDisplayFromDB< GoDBMeshRow    >("mesh", MeshTable);
-  GetContentAndDisplayFromDB< GoDBTrackRow   >("track",TrackTable);
-  GetContentAndDisplayFromDB< GoDBLineageRow >("lineage",LineageTable);
- 
+  GetContentAndDisplayFromDB< GoDBContourRow >( "contour", ContourTable );
+  GetContentAndDisplayFromDB< GoDBMeshRow    >( "mesh", MeshTable );
+  GetContentAndDisplayFromDB< GoDBTrackRow   >( "track", TrackTable );
+  GetContentAndDisplayFromDB< GoDBLineageRow >( "lineage", LineageTable );
+
   CloseDBConnectionForTables();
 }
 //--------------------------------------------------------------------------
@@ -213,14 +233,16 @@ void QGoPrintDatabase::closeEvent(QCloseEvent* iEvent)
     {
     iEvent->ignore();
     }
+
+  m_VisibilityAction->setChecked( false );
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void QGoPrintDatabase::UpdateTableFromDB()
-{ 
+{
   //todo: make it ok for all tables
-  UpdateContentAndDisplayFromDB< GoDBContourRow >("contour", 
+  UpdateContentAndDisplayFromDB< GoDBContourRow >("contour",
     ContourTable,m_DatabaseConnector);
 }
 //--------------------------------------------------------------------------
@@ -250,7 +272,7 @@ void QGoPrintDatabase::DeleteTraces()
       //add the tableWidgetChild in the CollectionOfTraces?
       QStringList ContoursToDelete = this->ContourTable->ValuesForSelectedRows("ContourID");
       m_CollectionOfContours->DeleteTraces(ContoursToDelete,m_DatabaseConnector);
-      this->UpdateContentAndDisplayFromDB<GoDBContourRow>("contour", 
+      this->UpdateContentAndDisplayFromDB<GoDBContourRow>("contour",
         ContourTable,m_DatabaseConnector);
       break;
       }
@@ -310,7 +332,7 @@ void QGoPrintDatabase::CreateCorrespondingCollection()
 
         m_CollectionOfContours->CreateNewCollectionFromSelection<GoDBMeshRow>(ListSelectedContours,
           m_DatabaseConnector,myNewMesh);
-        this->UpdateContentAndDisplayFromDB<GoDBContourRow>("contour", 
+        this->UpdateContentAndDisplayFromDB<GoDBContourRow>("contour",
           ContourTable,m_DatabaseConnector);
         this->UpdateContentAndDisplayFromDB<GoDBMeshRow>("mesh",
           MeshTable,m_DatabaseConnector);
@@ -435,7 +457,7 @@ void QGoPrintDatabase::AddToExistingCollection()
           QStringList ListContours = this->ContourTable->ValuesForSelectedRows("ContourID");
           m_CollectionOfContours->AddSelectedTracesToCollection(ListContours,
             CollectionID.toInt(),m_DatabaseConnector);
-          this->UpdateContentAndDisplayFromDB<GoDBContourRow>("contour", 
+          this->UpdateContentAndDisplayFromDB<GoDBContourRow>("contour",
             ContourTable,m_DatabaseConnector);
           break;
           }
@@ -444,7 +466,7 @@ void QGoPrintDatabase::AddToExistingCollection()
           QStringList ListMeshes = this->ContourTable->ValuesForSelectedRows("MeshID");
           m_CollectionOfMeshes->AddSelectedTracesToCollection(ListMeshes,
             CollectionID.toInt(),m_DatabaseConnector);
-          this->UpdateContentAndDisplayFromDB<GoDBMeshRow>("mesh", 
+          this->UpdateContentAndDisplayFromDB<GoDBMeshRow>("mesh",
             MeshTable, m_DatabaseConnector);
           break;
           }
@@ -453,7 +475,7 @@ void QGoPrintDatabase::AddToExistingCollection()
         QStringList ListTracks = this->ContourTable->ValuesForSelectedRows("TrackID");
         m_CollectionOfTracks->AddSelectedTracesToCollection(ListTracks,
           CollectionID.toInt(),m_DatabaseConnector);
-        this->UpdateContentAndDisplayFromDB<GoDBTrackRow>("track", 
+        this->UpdateContentAndDisplayFromDB<GoDBTrackRow>("track",
           TrackTable, m_DatabaseConnector);
         break;
         }

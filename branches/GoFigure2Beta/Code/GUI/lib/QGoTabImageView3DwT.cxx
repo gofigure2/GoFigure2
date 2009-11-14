@@ -4,6 +4,7 @@
 #include "QGoLUTDialog.h"
 #include "QGoVisualizationDockWidget.h"
 #include "QGoManualSegmentationDockWidget.h"
+#include "QGoPrintDatabase.h"
 
 #include "vtkLSMReader.h"
 
@@ -37,6 +38,8 @@ QGoTabImageView3DwT( QWidget* iParent ) :
   m_ContourId( 0 )
 {
   setupUi( this );
+
+  m_DataBaseTables = new QGoPrintDatabase;
 
   for( int i = 0; i < 3; i++ )
     {
@@ -110,6 +113,8 @@ QGoTabImageView3DwT::
     (*NodeSetIt)->Delete();
     ++NodeSetIt;
     }
+
+  delete m_DataBaseTables;
 }
 //-------------------------------------------------------------------------
 
@@ -268,6 +273,12 @@ void QGoTabImageView3DwT::CreateAllViewActions()
   this->m_ViewActions.push_back( separator2 );
 
   this->m_ViewActions.push_back( m_VisuDockWidget->toggleViewAction() );
+
+  QAction* separator3 = new QAction( this );
+  separator3->setSeparator( true );
+  this->m_ViewActions.push_back( separator3 );
+
+  this->m_ViewActions.push_back( m_DataBaseTables->toggleViewAction() );
 }
 //-------------------------------------------------------------------------
 
@@ -686,11 +697,16 @@ void QGoTabImageView3DwT::Update()
  */
 void QGoTabImageView3DwT::ChangeLookupTable()
 {
-  vtkLookupTable* lut = vtkLookupTable::New();
-  lut->DeepCopy( QGoLUTDialog::GetLookupTable( this,
-    tr( "Choose one look-up table") ) );
-  m_ImageView->SetLookupTable( lut );
-  lut->Delete();
+  vtkImageData* image = m_ImageView->GetImage();
+
+  if( image->GetNumberOfScalarComponents() == 1 )
+    {
+    vtkLookupTable* lut = vtkLookupTable::New();
+    lut->DeepCopy( QGoLUTDialog::GetLookupTable( this,
+      tr( "Choose one look-up table") ) );
+    m_ImageView->SetLookupTable( lut );
+    lut->Delete();
+    }
 }
 //-------------------------------------------------------------------------
 
@@ -701,7 +717,12 @@ void QGoTabImageView3DwT::ChangeLookupTable()
  */
 void QGoTabImageView3DwT::ShowScalarBar( const bool& iShow )
 {
-  m_ImageView->ShowScalarBar( iShow );
+  vtkImageData* image = m_ImageView->GetImage();
+
+  if( image->GetNumberOfScalarComponents() == 1 )
+    {
+    m_ImageView->ShowScalarBar( iShow );
+    }
 }
 //------------------------------------------------------------------------
 
