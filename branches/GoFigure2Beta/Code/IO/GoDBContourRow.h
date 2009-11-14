@@ -65,9 +65,6 @@ public:
   already registered in the DB or -1 if not yet created*/
  int DoesThisBoundingBoxContourExist(vtkMySQLDatabase* DatabaseConnector);
 
- int SaveInDBfromVisu (vtkPolyData* ContourVisu,unsigned int
-  ImgSessionID,GoDBCoordinateRow Min, GoDBCoordinateRow Max);
-
 protected:
   virtual void InitializeMap();
 

@@ -45,20 +45,34 @@
 #include <iostream>
 #include <sstream>
 #include "GoDBRow.h"
+#include "GoDBCoordinateRow.h"
 #include "ConvertToStringHelper.h"
 #include "vtkMySQLDatabase.h"
+#include "vtkPolyData.h"
+#include "vtkPolyDataMySQLTextWriter.h"
 
 class GoDBMeshRow : public GoDBRow
 {
 public:
   GoDBMeshRow();
-  
+  /**\brief fill the mesh map with the values gotten from the visualization*/
+  GoDBMeshRow(vtkMySQLDatabase* DatabaseConnector,std::string CellTypeName,
+    std::string SubCellName,GoDBCoordinateRow Min, GoDBCoordinateRow Max,
+    std::vector<int> Color,unsigned int ImgSessionID,vtkPolyData* MeshVisu);
+
   ~GoDBMeshRow()
     {}
   int DoesThisBoundingBoxMeshExist(vtkMySQLDatabase* DatabaseConnector);
 
 protected:
   virtual void InitializeMap();
+
+  /**\brief check in the database if the Coordinate Min adn Max already exits,
+ if yes fill the map["CoordIDMin"] and ["CoordIDmax"] with the existing CoordinateID
+ if not, create the coordinates in the database and fill the map with the new created ID,
+ if the bounding box already exits, a cout is generated*/
+ void CreateBoundingBox(vtkMySQLDatabase* DatabaseConnector,GoDBCoordinateRow Min,
+  GoDBCoordinateRow Max);
     
 };
 

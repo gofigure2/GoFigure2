@@ -402,7 +402,7 @@ void QGoCreateImgSessionPage::CreateChannels( vtkMySQLDatabase* DatabaseConnecto
 
     //check if the color already exists, if so, the colorID saved in the new
     //channel will be the existing one, if no, the new color is saved in the DB:
-    int ExistingColorID = myNewColor.DoesThisColorAlreadyExists(DatabaseConnector);
+   /* int ExistingColorID = myNewColor.DoesThisColorAlreadyExists(DatabaseConnector);
     int ColorID;
     if (ExistingColorID == -1)
       {
@@ -413,6 +413,8 @@ void QGoCreateImgSessionPage::CreateChannels( vtkMySQLDatabase* DatabaseConnecto
       {
       ColorID = ExistingColorID;
       }
+    */
+    int ColorID = myNewColor.SaveInDB(DatabaseConnector);
 
     //creation of the corresponding channel:
     GoDBChannelRow myNewChannel;
@@ -462,8 +464,7 @@ int QGoCreateImgSessionPage::CreateImageCoordMin(vtkMySQLDatabase* DatabaseConne
     IterMaxCoord ++;
     }
 
-  return AddOnlyOneNewObjectInTable( DatabaseConnector, "coordinate",
-    myNewImageCoordMin, "CoordID" );
+  return myNewImageCoordMin.SaveInDB(DatabaseConnector);
 }
 //-------------------------------------------------------------------------
 
@@ -513,8 +514,7 @@ void QGoCreateImgSessionPage::CreateImgSessionCoord(
   m_ImgSessionCoordMax.SetField("YCoord",YImageSize);
 
   //add a new coordinate to enter the info for ImgSession CoordMax
-  int CoordIDMax = AddOnlyOneNewObjectInTable( DatabaseConnector,
-    "coordinate",m_ImgSessionCoordMax, "CoordID" );
+  int CoordIDMax = m_ImgSessionCoordMax.SaveInDB(DatabaseConnector);
 
   //update the CoordMaxID in Imgsession with the new created coordinate
   UpdateValueInDB(DatabaseConnector,"imagingsession",
@@ -522,8 +522,7 @@ void QGoCreateImgSessionPage::CreateImgSessionCoord(
     ConvertToString<int>(ImagingSessionID));
 
   //add a new coordinate to enter the info for ImgSession CoordMin
-  int CoordIDMin = AddOnlyOneNewObjectInTable( DatabaseConnector,
-    "coordinate",m_ImgSessionCoordMin, "CoordID" );
+  int CoordIDMin = m_ImgSessionCoordMin.SaveInDB(DatabaseConnector);
 
   //update the CoordMaxID in Imgsession with the new created coordinate
   UpdateValueInDB(DatabaseConnector,"imagingsession",

@@ -1,7 +1,7 @@
 /*=========================================================================
-  Author: $Author: lydiesouhait $  // Author of last commit
-  Version: $Rev: 374 $  // Revision of last commit
-  Date: $Date: 2009-07-08 10:24:11 -0400 (Wed, 08 Jul 2009) $  // Date of last commit
+  Author: $Author: lsouhait $  // Author of last commit
+  Version: $Rev: 455 $  // Revision of last commit
+  Date: $Date: 2009-07-28 14:31:26 -0400 (Tue, 28 Jul 2009) $  // Date of last commit
 =========================================================================*/
 
 /*=========================================================================
@@ -37,31 +37,38 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#ifndef __GoDBCoordinateRow_h
-#define __GoDBCoordinateRow_h
+#ifndef __GoDBTraceRow_h
+#define __GoDBTraceRow_h
 
-#include "ConvertToStringHelper.h"
-#include "GoDBRow.h"
 #include "vtkMySQLDatabase.h"
-#include <string>
-#include <map>
+#include "GoDBCoordinateRow.h"
+#include "vtkPolyData.h"
+#include "vtkPolyDataMySQLTextWriter.h"
 
-class GoDBCoordinateRow : public GoDBRow
+
+class GoDBTraceRow : public GoDBRow
 {
 public:
-  GoDBCoordinateRow();
-    
-  ~GoDBCoordinateRow()
+  GoDBTraceRow();
+  GoDBTraceRow(vtkMySQLDatabase* DatabaseConnector,
+  GoDBCoordinateRow Min, GoDBCoordinateRow Max,
+  unsigned int ImgSessionID,vtkPolyData* TraceVisu);
+  ~GoDBTraceRow()
     {}
-  /**\brief return the CoordID of the coordinate with the same attributes
+  
+/**\brief return the ContourID of the Contour with the same bounding box
   already registered in the DB or -1 if not yet created*/
- int DoesThisCoordinateExist(vtkMySQLDatabase* DatabaseConnector);
-
- /**\brief save the coordinate in the database and return the ID of the new 
- created coordinate*/
- int SaveInDB(vtkMySQLDatabase* DatabaseConnector);
+ int  DoesThisBoundingBoxExist(vtkMySQLDatabase* DatabaseConnector);
+ void SetColor(unsigned int Red, unsigned int Green, unsigned int Blue,
+   unsigned int Alpha);
 
 protected:
-  virtual void InitializeMap();
-};
+
+ /**\brief check in the database if the Coordinate Min adn Max already exits,
+ if yes fill the map["CoordIDMin"] and ["CoordIDmax"] with the existing CoordinateID
+ if not, create the coordinates in the database and fill the map with the new created ID,
+ if the bounding box already exits, a cout is generated*/
+ void CreateBoundingBox(vtkMySQLDatabase* DatabaseConnector,GoDBCoordinateRow Min,
+  GoDBCoordinateRow Max);
+ };
 #endif

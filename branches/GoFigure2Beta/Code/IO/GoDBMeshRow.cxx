@@ -38,11 +38,35 @@
 
 =========================================================================*/
 #include "GoDBMeshRow.h"
+#include "GoDBColorRow.h"
 #include "SelectQueryDatabaseHelper.h"
+#include "GoDBRecordSetHelper.h"
 
 GoDBMeshRow::GoDBMeshRow()
 {
   this->InitializeMap();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+GoDBMeshRow::GoDBMeshRow(vtkMySQLDatabase* DatabaseConnector,
+  std::string CellTypeName, std::string SubCellName,
+  GoDBCoordinateRow Min, GoDBCoordinateRow Max,std::vector<int> Color,
+  unsigned int ImgSessionID,vtkPolyData* MeshVisu)
+{
+  this->InitializeMap();
+  this->CreateBoundingBox(DatabaseConnector,Min,Max);
+  GoDBColorRow ColorRow;
+  ColorRow.SetField<int>("Red",Color[0]);
+  ColorRow.SetField<int>("Green",Color[1]);
+  ColorRow.SetField<int>("Blue",Color[2]);
+  ColorRow.SetField<int>("Alpha",Color[3]);
+  this->m_MapRow["ColorId"] = ColorRow.SaveInDB(DatabaseConnector);
+  this->m_MapRow["ImagingSessionID"] = 
+    ConvertToString<unsigned int>(ImgSessionID);
+  
+  vtkPolyDataMySQLTextWriter* convert = vtkPolyDataMySQLTextWriter::New();
+  this->m_MapRow["Points"] = convert->GetMySQLText(MeshVisu);
 }
 //-------------------------------------------------------------------------
 
@@ -68,3 +92,26 @@ int GoDBMeshRow::DoesThisBoundingBoxMeshExist(vtkMySQLDatabase* DatabaseConnecto
     "CoordIDMax",this->GetMapValue("CoordIDMax"),
     "CoordIDMin",this->GetMapValue("CoordIDMin"));
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void GoDBMeshRow::CreateBoundingBox(vtkMySQLDatabase* DatabaseConnector,
+  GoDBCoordinateRow Min,GoDBCoordinateRow Max)
+{
+  int CoordMin = Min.DoesThisCoordinateExist(DatabaseConnector);
+  if (CoordMin == -1)
+    {
+    CoordMin = Min.SaveInDB(DatabaseConnector);
+    }
+  this->m_MapRow["CoordIDMin"] = ConvertToString<int>(CoordMin);
+
+  int CoordMax = Max.DoesThisCoordinateExist(DatabaseConnector);
+  if (CoordMax == -1)
+    {
+    CoordMax = Max.SaveInDB(DatabaseConnector);
+    }
+  this->m_MapRow["CoordIDMax"] = ConvertToString<int>(CoordMax);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------

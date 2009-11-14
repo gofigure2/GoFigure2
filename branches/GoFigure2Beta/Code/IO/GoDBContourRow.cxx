@@ -96,16 +96,14 @@ void GoDBContourRow::CreateBoundingBox(vtkMySQLDatabase* DatabaseConnector,
   int CoordMin = Min.DoesThisCoordinateExist(DatabaseConnector);
   if (CoordMin == -1)
     {
-    CoordMin = AddOnlyOneNewObjectInTable<GoDBCoordinateRow>(DatabaseConnector,
-    "coordinate",Min, "CoordID");
+    CoordMin = Min.SaveInDB(DatabaseConnector);
     }
   this->m_MapRow["CoordIDMin"] = ConvertToString<int>(CoordMin);
 
   int CoordMax = Max.DoesThisCoordinateExist(DatabaseConnector);
   if (CoordMax == -1)
     {
-    CoordMax = AddOnlyOneNewObjectInTable<GoDBCoordinateRow>(DatabaseConnector,
-    "coordinate",Max, "CoordID");
+    CoordMax = Max.SaveInDB(DatabaseConnector);
     }
   this->m_MapRow["CoordIDMax"] = ConvertToString<int>(CoordMax);
 }

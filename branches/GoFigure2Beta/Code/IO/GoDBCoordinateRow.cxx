@@ -39,6 +39,7 @@
 =========================================================================*/
 #include "GoDBCoordinateRow.h"
 #include "SelectQueryDatabaseHelper.h"
+#include "GoDBRecordSetHelper.h"
 
 GoDBCoordinateRow::GoDBCoordinateRow()
 {
@@ -77,4 +78,12 @@ int GoDBCoordinateRow::DoesThisCoordinateExist(vtkMySQLDatabase* DatabaseConnect
     "YCoord",this->GetMapValue("YCoord"),
     "ZCoord",this->GetMapValue("ZCoord"),
     "TCoord",this->GetMapValue("TCoord"));
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+int GoDBCoordinateRow::SaveInDB(vtkMySQLDatabase* DatabaseConnector)
+{
+  return AddOnlyOneNewObjectInTable<GoDBCoordinateRow>( DatabaseConnector,
+    "coordinate",*this, "CoordID");
 }

@@ -510,6 +510,7 @@ std::string ContourTable()
     `ContourID` INT NOT NULL AUTO_INCREMENT ,\
     `MeshID` INT NULL ,\
     `ImagingSessionID` INT NULL ,\
+    `ColorID` INT NULL ,\
     `CoordIDMax` INT NOT NULL ,\
     `CoordIDMin` INT NOT NULL ,\
     `Points` TEXT NOT NULL ,\

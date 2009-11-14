@@ -41,6 +41,7 @@
 #define __GoDBRow_h
 
 #include "ConvertToStringHelper.h"
+#include "vtkMySQLDatabase.h"
 #include <string>
 #include <sstream>
 #include <map>
@@ -83,6 +84,7 @@ public:
 
 protected:
   virtual void InitializeMap() = 0;
+  //virtual void SaveInDB (vtkMySQLDatabase* DatabaseConnector) = 0;
   std::map<std::string,std::string> m_MapRow;
 
 };

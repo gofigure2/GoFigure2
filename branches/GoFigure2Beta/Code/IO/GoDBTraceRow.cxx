@@ -37,51 +37,71 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
+#include "GoDBTraceRow.h"
 #include "GoDBColorRow.h"
 #include "SelectQueryDatabaseHelper.h"
 #include "GoDBRecordSetHelper.h"
 
-GoDBColorRow::GoDBColorRow()
+GoDBTraceRow::GoDBTraceRow()
 {
   this->InitializeMap();
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void GoDBColorRow::InitializeMap()
+GoDBMTraceRow::GoDBTraceRow(vtkMySQLDatabase* DatabaseConnector,
+  GoDBCoordinateRow Min, GoDBCoordinateRow Max,
+  unsigned int ImgSessionID,vtkPolyData* TraceVisu)
 {
-  this->m_MapRow["ColorID"] = ConvertToString<int>(0);
-  this->m_MapRow["Name"] = "";
-  this->m_MapRow["Red"] = ConvertToString<int>(0);
-  this->m_MapRow["Green"] = ConvertToString<int>(0);
-  this->m_MapRow["Blue"] = ConvertToString<int>(0);
-  this->m_MapRow["Alpha"] = ConvertToString<int>(0);
-  this->m_MapRow["Description"] = "";
-
+  this->InitializeMap();
+  this->CreateBoundingBox(DatabaseConnector,Min,Max);
+  this->m_MapRow["ImagingSessionID"] = 
+    ConvertToString<unsigned int>(ImgSessionID);
+  
+  vtkPolyDataMySQLTextWriter* convert = vtkPolyDataMySQLTextWriter::New();
+  this->m_MapRow["Points"] = convert->GetMySQLText(MeshVisu);
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-int GoDBColorRow::DoesThisColorAlreadyExists(vtkMySQLDatabase* DatabaseConnector)
+void GoDBTraceRow::InitializeMap()
 {
-  std::string Red = this->GetMapValue("Red");
-  std::string Blue = this->GetMapValue("Blue");
-  std::string Green = this->GetMapValue("Green");
-  std::string Alpha = this->GetMapValue("Alpha");
-
-  return FindOneID(DatabaseConnector,"color", "ColorID","Red",Red,"Green",Green,
-  "Blue",Blue,"Alpha",Alpha);
-}
+  this->m_MapRow["ImagingSessionID"] = ConvertToString<int>(0);
+  this->m_MapRow["ColorID"] = ConvertToString<int>(1);
+  this->m_MapRow["CoordIDMax"] = ConvertToString<int>(0);
+  this->m_MapRow["CoordIDMin"] = ConvertToString<int>(0);
+  this->m_MapRow["Points"] = "";
+}    
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-int GoDBColorRow::SaveInDB(vtkMySQLDatabase* DatabaseConnector)
+void GoDBTraceRow::CreateBoundingBox(vtkMySQLDatabase* DatabaseConnector,
+  GoDBCoordinateRow Min,GoDBCoordinateRow Max)
 {
-  int ColorID = this->DoesThisColorAlreadyExists(DatabaseConnector);
-  if (ColorID == -1)
+  int CoordMin = Min.DoesThisCoordinateExist(DatabaseConnector);
+  if (CoordMin == -1)
     {
-    ColorID = AddOnlyOneNewObjectInTable<GoDBColorRow>( DatabaseConnector,
-    "color",*this, "ColorID");
+    CoordMin = Min.SaveInDB(DatabaseConnector);
     }
-  return ColorID;
+  this->m_MapRow["CoordIDMin"] = ConvertToString<int>(CoordMin);
+
+  int CoordMax = Max.DoesThisCoordinateExist(DatabaseConnector);
+  if (CoordMax == -1)
+    {
+    CoordMax = Max.SaveInDB(DatabaseConnector);
+    }
+  this->m_MapRow["CoordIDMax"] = ConvertToString<int>(CoordMax);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void GoDBTraceRow::SetColor(unsigned int Red, unsigned int Green, 
+  unsigned int Blue,unsigned int Alpha)
+{
+  GoDBColorRow ColorRow;
+  ColorRow.SetField<int>("Red",Color[0]);
+  ColorRow.SetField<int>("Green",Color[1]);
+  ColorRow.SetField<int>("Blue",Color[2]);
+  ColorRow.SetField<int>("Alpha",Color[3]);
+  this->m_MapRow["ColorId"] = ColorRow.SaveInDB(DatabaseConnector);
 }
