@@ -276,6 +276,15 @@ void QGoCreateImgSessionPage::cleanupPage()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+GoFigureFileInfoHelperMultiIndexContainer
+QGoCreateImgSessionPage::
+GetMultiIndexFileContainer()
+{
+  return m_importFileInfoList->GetOutput();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 void QGoCreateImgSessionPage::ImportImages(vtkMySQLDatabase* DatabaseConnector)
 {
   if( DatabaseConnector != 0 )
@@ -289,7 +298,7 @@ void QGoCreateImgSessionPage::ImportImages(vtkMySQLDatabase* DatabaseConnector)
       RecordSet->SetTableName( "image" );
 
       GoFigureFileInfoHelperMultiIndexContainer
-        filelist = m_importFileInfoList->GetOutput();
+        filelist = GetMultiIndexFileContainer();
 
       MultiIndexContainerIteratorType f_it  = filelist.begin();
       MultiIndexContainerIteratorType f_end = filelist.end();

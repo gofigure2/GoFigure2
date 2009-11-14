@@ -52,8 +52,10 @@
 #include <QComboBox>
 
 
-QGoOpenCreateProjectPage::QGoOpenCreateProjectPage( QWidget *iParent )
-: QWizardPage( iParent ),m_DatabaseConnector(0)
+QGoOpenCreateProjectPage::
+QGoOpenCreateProjectPage( QWidget *iParent ) :
+  QWizardPage( iParent ),
+  m_DatabaseConnector( 0 )
 {
   QFont tfont;
   tfont.setBold(false);
@@ -102,16 +104,16 @@ QGoOpenCreateProjectPage::QGoOpenCreateProjectPage( QWidget *iParent )
   registerField("Author",ChoiceAuthor);
 
   QObject::connect( this->OpenProjectRadioButton,SIGNAL( clicked() ),
-    this,SLOT(ChangeToOpenProjectDisplay()));
+    this, SLOT(ChangeToOpenProjectDisplay()));
 
   QObject::connect( this->CreateProjectRadioButton,SIGNAL( clicked() ),
-  this,SLOT( ChangeToCreateProjectDisplay() ));
+    this, SLOT( ChangeToCreateProjectDisplay() ));
 
   QObject::connect(this->lineDescription,SIGNAL(textChanged()),
-  this,SLOT(GetDescription()));
+    this, SLOT(GetDescription()));
 
   QObject::connect( this->ChoiceProject,SIGNAL( currentIndexChanged(QString) ),
-  this,SLOT(DisplayInfoProject(QString)));
+    this, SLOT(DisplayInfoProject(QString)));
 }
 //-------------------------------------------------------------------------
 
@@ -319,7 +321,7 @@ void QGoOpenCreateProjectPage::ChangeToCreateProjectDisplay()
 
 //-------------------------------------------------------------------------
 void QGoOpenCreateProjectPage::ChangeToOpenProjectDisplay()
-{ 
+{
   setSubTitle(
     tr("Select the project you want to open or choose 'Create a new project':"));
 
@@ -350,7 +352,7 @@ void QGoOpenCreateProjectPage::DisplayInfoProject(QString ProjectName)
  /*Display the description of the existing project "ProjectName" */
 
   QString Description;
-  
+
   if (m_DatabaseConnector == 0)
     {
     OpenDBConnection();

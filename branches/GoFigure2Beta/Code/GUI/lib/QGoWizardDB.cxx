@@ -54,7 +54,6 @@
 #include "itkMegaCaptureImport.h"
 #include "itkLsm3DSerieImport.h"
 #include "GoFigureFileInfoMultiIndexContainerHelper.h"
-// #include "GoFigureFileInfoHelper.h"
 
 #include <iostream>
 #include <QVariant>
@@ -248,3 +247,19 @@ void QGoWizardDB::closeEvent(QCloseEvent* iEvent)
   iEvent->accept();
 }
 
+GoFigureFileInfoHelperMultiIndexContainer
+QGoWizardDB::
+GetMultiIndexFileContainer()
+{
+  QGoCreateImgSessionPage* img_page =
+    dynamic_cast< QGoCreateImgSessionPage* >( this->page( CreateImgSessionPageID ) );
+
+  if( img_page )
+    {
+    return img_page->GetMultiIndexFileContainer();
+    }
+  else
+    {
+    GoFigureFileInfoHelperMultiIndexContainer();
+    }
+}

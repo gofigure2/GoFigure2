@@ -70,6 +70,8 @@ public:
   void cleanupPage();
   vtkMySQLDatabase* m_DatabaseConnector;
 
+  GoFigureFileInfoHelperMultiIndexContainer GetMultiIndexFileContainer();
+
 private:
   /**\brief get the list of the existing microscopes registered in the DB */
   QStringList GetListMicroscopes();

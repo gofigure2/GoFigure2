@@ -66,13 +66,16 @@ public:
   mutable vtkMySQLDatabase* m_DatabaseConnector;
 
 private:
-  /*\brief fill the m_MapImgSessionIDName with the names of the existing imaging
-  session stored in the database and their corresponding ID, fill the m_ListImgSession
-  with the names only and return true if this list is not empty.*/
+
+  /**
+   * \brief fill the m_MapImgSessionIDName with the names of the existing imaging
+   * session stored in the database and their corresponding ID, fill the m_ListImgSession
+   * with the names only and return true if this list is not empty.
+   */
   bool GetListImgSession();
 
   void OpenDBConnection()const;
-  
+
   QLabel*       textDescription;
   QTextEdit*    lineDescription;
   QLabel*       textChoiceImgSession;
@@ -81,13 +84,15 @@ private:
   QRadioButton* OpenImgSessionRadioButton;
   QRadioButton* CreateImgSessionRadioButton;
   mutable bool  LeavingPage;
- 
-  QStringList m_ListImgSession; 
+
+  QStringList m_ListImgSession;
   std::map<std::string,std::string> m_MapImgSessionIDName;
 
 protected slots:
-  /*\brief display in the description text the existing description stored
-  in the database for a given Imaging Session.*/
+  /**
+    * \brief display in the description text the existing description stored
+    * in the database for a given Imaging Session.
+    */
   void DisplayInfoImgSession(QString ImgSessionName);
   void ChangeToCreateImgSessionDisplay();
   void ChangeToOpenImgSessionDisplay();

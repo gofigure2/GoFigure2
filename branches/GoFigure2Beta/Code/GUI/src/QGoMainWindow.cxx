@@ -171,45 +171,8 @@ void QGoMainWindow::on_actionOpen_Single_File_triggered( )
     this->SetSingleFileName( filename );
     }
 }
-
 //--------------------------------------------------------------------------
-// void QGoMainWindow::on_actionOpen_Multiple_Files_triggered( )
-// {
-//   QString filename = QFileDialog::getOpenFileName(
-//     this,
-//     tr( "Select one Image from the Dataset" ),"",
-//     tr( "Images (*.mha *.lsm)" )
-//     );
-//
-//   if( !filename.isEmpty( ) )
-//     {
-//     if( QFile::exists( filename ) )
-//       {
-//       QString ext = QFileInfo( filename ).suffix();
-//       if( ext.compare( "lsm", Qt::CaseInsensitive ) == 0 )
-//         {
-//         std::cout <<"Multifile LSM" <<std::endl;
-//
-//         itk::Lsm3DSerieImport::Pointer  importFileInfoList = itk::Lsm3DSerieImport::New();
-//         importFileInfoList->SetFileName( filename.toStdString() );
-//         importFileInfoList->SetGroupId( 1 );
-//         importFileInfoList->Update();
-//
-//         std::cout <<"** " <<importFileInfoList->GetOutput().size() <<std::endl;
-//         CreateNewTabFor3DwtImage( *(importFileInfoList->GetOutput()),
-//           itk::MultiFileReader::LSM, 0 );
-//         }
-//       else
-//         {
-//         if( ext.compare( "mha", Qt::CaseInsensitive ) == 0 )
-//           {
-//           std::cout <<"Multifile mha" <<std::endl;
-// //           CreateNewTabFor3DwtImage( filelist, MHA, 0 );
-//           }
-//         }
-//       }
-//     }
-// }
+
 
 //--------------------------------------------------------------------------
 void QGoMainWindow::on_actionOpen_MegaCapture_Files_triggered()
@@ -275,16 +238,9 @@ void QGoMainWindow::on_actionUse_DataBase_triggered()
 //--------------------------------------------------------------------------
 void QGoMainWindow::openFilesfromDB()
 {
-  std::vector<std::vector<std::string> > listFilenames =
-    m_DBWizard->GetFilenamesFromDB();
-  /*for (unsigned int i =0; i < listFilenames.size(); i++)
-    {
-    for (unsigned int j = 0; j < listFilenames[i].size();j++)
-      {
-      std::cout<<"image filename with channel "
-        <<i <<" " <<listFilenames[i][j].c_str()<<std::endl;
-      }
-    }*/
+  /// \bug Works only for PNG (Pizza Talk)! (14th Nov 2009)
+  CreateNewTabFor3DwtImage( m_DBWizard->GetMultiIndexFileContainer(),
+    GoFigure::PNG, "Ear Project", 0 );
 }
 //--------------------------------------------------------------------------
 

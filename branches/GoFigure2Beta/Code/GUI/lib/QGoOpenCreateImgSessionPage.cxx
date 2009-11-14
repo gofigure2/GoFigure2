@@ -45,13 +45,15 @@
 #include <QGridLayout>
 
 
-QGoOpenCreateImgSessionPage::QGoOpenCreateImgSessionPage( QWidget *iParent )
-: QWizardPage( iParent ),m_DatabaseConnector(0)
+QGoOpenCreateImgSessionPage::
+QGoOpenCreateImgSessionPage( QWidget *iParent ) :
+  QWizardPage( iParent ),
+  m_DatabaseConnector( 0 )
 {
   QFont tfont;
   tfont.setBold(false);
   this->setFont(tfont);
- 
+
   CreateImgSessionRadioButton =
     new QRadioButton(tr("Create a new Imaging Session    "));
   OpenImgSessionRadioButton   =
@@ -100,7 +102,7 @@ void QGoOpenCreateImgSessionPage::initializePage()
    }
 
    OpenDBConnection();
-   
+
   if (!GetListImgSession())
     {
     std::cout<<"Pb, there is no existing Img session"<<std::endl;
@@ -117,7 +119,7 @@ void QGoOpenCreateImgSessionPage::initializePage()
     }
 
   lineDescription->setReadOnly(true);
-    
+
 }
 //-------------------------------------------------------------------------
 
@@ -127,11 +129,11 @@ bool QGoOpenCreateImgSessionPage::GetListImgSession()
   m_ListImgSession.clear();
   ChoiceImgSession->clear();
   m_MapImgSessionIDName.clear();
- 
+
   m_MapImgSessionIDName = MapTwoColumnsFromTable(m_DatabaseConnector,
     "Name","ImagingSessionID","imagingsession","ProjectName",
-    field("ProjectName").toString().toStdString()); 
-  
+    field("ProjectName").toString().toStdString());
+
   std::map<std::string,std::string>::iterator it = m_MapImgSessionIDName.begin();
   if (!m_MapImgSessionIDName.empty())
     {
@@ -149,7 +151,7 @@ bool QGoOpenCreateImgSessionPage::GetListImgSession()
 //-------------------------------------------------------------------------
 int QGoOpenCreateImgSessionPage::nextId() const
 {
-  
+
   if (m_DatabaseConnector == 0 && !LeavingPage)
     {
     OpenDBConnection();
@@ -176,7 +178,7 @@ bool QGoOpenCreateImgSessionPage::validatePage()
   //in case the user wants to open an imagingsession:
   if (OpenImgSessionRadioButton->isChecked())
     {
-    std::string ImgID = 
+    std::string ImgID =
       m_MapImgSessionIDName[ChoiceImgSession->currentText().toStdString()];
     setField("ImgSessionID",ImgID.c_str());
     std::cout<<"ImgID is: "<<ImgID.c_str()<<std::endl;
@@ -187,7 +189,7 @@ bool QGoOpenCreateImgSessionPage::validatePage()
 
 //-------------------------------------------------------------------------
 void QGoOpenCreateImgSessionPage::cleanupPage()
-{ 
+{
   if(CloseDatabaseConnection(m_DatabaseConnector))
     {
     m_DatabaseConnector = 0;
@@ -204,7 +206,7 @@ void QGoOpenCreateImgSessionPage::OpenDBConnection()const
   std::string DBName = field("DBName").toString().toStdString();
 
   m_DatabaseConnector = OpenDatabaseConnection(Server,User,Password,DBName);
-  
+
   LeavingPage = false;
 }
 //-------------------------------------------------------------------------
@@ -226,7 +228,7 @@ void QGoOpenCreateImgSessionPage::DisplayInfoImgSession(
         }
       it ++;
        }
-  
+
     std::vector<std::string> ListDescription = ListSpecificValuesForOneColumn(
       m_DatabaseConnector,"imagingsession", "Description",
       "ImagingSessionID",ImagingSessionID);
@@ -236,7 +238,7 @@ void QGoOpenCreateImgSessionPage::DisplayInfoImgSession(
       std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
       std::cout << std::endl;
       }
-    
+
     lineDescription->setText(ListDescription[0].c_str());
     }
  this->setFinalPage(false);
@@ -245,7 +247,7 @@ void QGoOpenCreateImgSessionPage::DisplayInfoImgSession(
 
 //-------------------------------------------------------------------------
 void QGoOpenCreateImgSessionPage::ChangeToCreateImgSessionDisplay()
-{  
+{
   setSubTitle(
     tr("Click on 'Next' if you want to import a new dataset\n or choose 'Open an imaging session':"));
   textChoiceImgSession->setVisible(false);
@@ -258,7 +260,7 @@ void QGoOpenCreateImgSessionPage::ChangeToCreateImgSessionDisplay()
 
 //-------------------------------------------------------------------------
 void QGoOpenCreateImgSessionPage::ChangeToOpenImgSessionDisplay()
-{ 
+{
   setSubTitle(
     tr("Select the imaging session you want to open and click on 'Finish' to load the corresponding images or choose 'Create a new imaging session':"));
   textChoiceImgSession->setVisible(true);

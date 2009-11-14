@@ -68,8 +68,13 @@ class QGoWizardDB : public QWizard
   Q_OBJECT
 
 public:
-  enum { ConnectServerPageID, CreateDataBasePageID, OpenOrCreateProjectPageID,
-         OpenOrCreateImgSessionPageID,CreateImgSessionPageID};
+  enum {
+    ConnectServerPageID = 0,
+    CreateDataBasePageID,
+    OpenOrCreateProjectPageID,
+    OpenOrCreateImgSessionPageID,
+    CreateImgSessionPageID
+  };
 
   QGoWizardDB(QWidget *parent = 0);
   QString GetNameDB();
@@ -80,9 +85,14 @@ public:
   int GetImagingSessionID();
 
   QPushButton* nextButton;
-  /**\brief return a list for each channel of the filenames for the images in the database
-  as a vector of vector*/
+
+  /**
+   * \brief return a list for each channel of the filenames for the images in
+   * the database  as a vector of vector
+   */
   std::vector<std::vector<std::string> > GetFilenamesFromDB();
+
+  GoFigureFileInfoHelperMultiIndexContainer GetMultiIndexFileContainer();
 
 
 protected:
