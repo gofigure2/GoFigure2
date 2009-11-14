@@ -263,3 +263,20 @@ GetMultiIndexFileContainer()
     GoFigureFileInfoHelperMultiIndexContainer();
     }
 }
+
+std::string
+QGoWizardDB::
+GetMegaCaptureHeaderFilename()
+{
+  QGoCreateImgSessionPage* img_page =
+    dynamic_cast< QGoCreateImgSessionPage* >( this->page( CreateImgSessionPageID ) );
+
+  std::string oFilename;
+
+  if( img_page )
+    {
+    oFilename = img_page->GetMegaCaptureHeaderFilename();
+    }
+
+  return oFilename;
+}

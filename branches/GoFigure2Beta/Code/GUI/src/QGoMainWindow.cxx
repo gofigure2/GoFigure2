@@ -240,7 +240,7 @@ void QGoMainWindow::openFilesfromDB()
 {
   /// \bug Works only for PNG (Pizza Talk)! (14th Nov 2009)
   CreateNewTabFor3DwtImage( m_DBWizard->GetMultiIndexFileContainer(),
-    GoFigure::PNG, "Ear Project", 0 );
+    GoFigure::PNG, m_DBWizard->GetMegaCaptureHeaderFilename(), 0 );
 }
 //--------------------------------------------------------------------------
 

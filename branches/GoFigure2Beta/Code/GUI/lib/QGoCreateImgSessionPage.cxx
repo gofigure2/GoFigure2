@@ -276,15 +276,6 @@ void QGoCreateImgSessionPage::cleanupPage()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-GoFigureFileInfoHelperMultiIndexContainer
-QGoCreateImgSessionPage::
-GetMultiIndexFileContainer()
-{
-  return m_importFileInfoList->GetOutput();
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
 void QGoCreateImgSessionPage::ImportImages(vtkMySQLDatabase* DatabaseConnector)
 {
   if( DatabaseConnector != 0 )
@@ -602,3 +593,21 @@ void QGoCreateImgSessionPage::SaveInfoInDatabase()
     m_DatabaseConnector = 0;
     }
 }*/
+
+//-------------------------------------------------------------------------
+GoFigureFileInfoHelperMultiIndexContainer
+QGoCreateImgSessionPage::
+GetMultiIndexFileContainer()
+{
+  return m_importFileInfoList->GetOutput();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::string
+QGoCreateImgSessionPage::
+GetMegaCaptureHeaderFilename()
+{
+  return m_importFileInfoList->GetHeaderFilename();
+}
+//-------------------------------------------------------------------------

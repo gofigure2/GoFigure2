@@ -93,6 +93,7 @@ public:
   std::vector<std::vector<std::string> > GetFilenamesFromDB();
 
   GoFigureFileInfoHelperMultiIndexContainer GetMultiIndexFileContainer();
+  std::string GetMegaCaptureHeaderFilename();
 
 
 protected:

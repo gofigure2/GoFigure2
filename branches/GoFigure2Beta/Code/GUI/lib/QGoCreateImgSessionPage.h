@@ -71,6 +71,7 @@ public:
   vtkMySQLDatabase* m_DatabaseConnector;
 
   GoFigureFileInfoHelperMultiIndexContainer GetMultiIndexFileContainer();
+  std::string GetMegaCaptureHeaderFilename();
 
 private:
   /**\brief get the list of the existing microscopes registered in the DB */
