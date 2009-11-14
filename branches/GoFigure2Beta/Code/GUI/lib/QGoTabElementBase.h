@@ -54,7 +54,7 @@ class QDockWidget;
 class QGoPluginManager;
 
 /**
-\class QGoTabImageView2D
+\class QGoTabElementBase
 \brief
 \example GUI/lib/qgotabelementbase.cxx
 */

@@ -63,14 +63,14 @@ int main( int argc, char** argv )
     }
 
   iren3->Delete();
-  view3->Delete();
   iren2->Delete();
-  view2->Delete();
   iren->Delete();
-  view->Delete();
-
   iren3d->Delete();
+
   view3d->Delete();
+  view3->Delete();
+  view2->Delete();
+  view->Delete();
 
   reader->Delete();
 

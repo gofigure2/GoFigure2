@@ -1289,10 +1289,10 @@ void
 QGoTabImageView3DwT::
 RemoveAllContoursForPresentTimePoint( )
 {
-  if( m_TimePoint >= 0 )
-    { 
+  if( ( m_TimePoint >= 0 ) && ( m_ContourContainer.size() > 0 ) )
+    {
     std::list< ContourStructure >
-      c_list = FindContourGivenTimePoint( m_ContourContainer, 
+      c_list = FindContourGivenTimePoint( m_ContourContainer,
         static_cast< unsigned int >( m_TimePoint ) );
 
     int c_dir;
@@ -1321,22 +1321,25 @@ void
 QGoTabImageView3DwT::
 LoadAllContoursForGivenTimePoint( const unsigned int& iT )
 {
-  std::list< ContourStructure >
-    c_list = FindContourGivenTimePoint( m_ContourContainer, 
-      static_cast< unsigned int >( iT ) );
-
-  int c_dir;
-  vtkActor* c_actor;
-
-  std::list< ContourStructure >::iterator it = c_list.begin();
-
-  while( it != c_list.end() )
+  if( m_ContourContainer.size() > 0 )
     {
-    c_dir = (*it).Direction;
-    c_actor = (*it).Actor;
+    std::list< ContourStructure >
+      c_list = FindContourGivenTimePoint( m_ContourContainer,
+        static_cast< unsigned int >( iT ) );
 
-    DisplayActorInViewer( c_dir, c_actor );
-    ++it;
+    int c_dir;
+    vtkActor* c_actor;
+
+    std::list< ContourStructure >::iterator it = c_list.begin();
+
+    while( it != c_list.end() )
+      {
+      c_dir = (*it).Direction;
+      c_actor = (*it).Actor;
+
+      DisplayActorInViewer( c_dir, c_actor );
+      ++it;
+      }
     }
 }
 //-------------------------------------------------------------------------

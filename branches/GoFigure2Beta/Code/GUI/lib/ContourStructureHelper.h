@@ -5,6 +5,7 @@
 
 #include <boost/multi_index_container.hpp>
 #include <boost/multi_index/member.hpp>
+#include <boost/multi_index/hashed_index.hpp>
 #include <boost/multi_index/ordered_index.hpp>
 
 #include <list>
@@ -15,16 +16,16 @@ using namespace boost::multi_index;
 typedef multi_index_container<
   ContourStructure,
     indexed_by<
-      ordered_non_unique<
+      hashed_non_unique<
         tag<ContourId>,
         BOOST_MULTI_INDEX_MEMBER(ContourStructure,unsigned int,ContourId)>,
-      ordered_unique<
+      hashed_unique<
         tag<Actor>,
         BOOST_MULTI_INDEX_MEMBER(ContourStructure,ContourStructure::vtkActorPointer,Actor)>,
-      ordered_non_unique<
+      hashed_non_unique<
         tag<Nodes>,
         BOOST_MULTI_INDEX_MEMBER(ContourStructure,ContourStructure::vtkPolyDataPointer,Nodes)>,
-      ordered_non_unique<
+      hashed_non_unique<
         tag<MeshId>,
         BOOST_MULTI_INDEX_MEMBER(ContourStructure,unsigned int,MeshId)>,
       ordered_non_unique<

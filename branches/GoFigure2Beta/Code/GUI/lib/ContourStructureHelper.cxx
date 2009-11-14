@@ -83,25 +83,15 @@ FindContourGivenTimePoint(
   const ContourStructureMultiIndexContainer& iContainer,
   const unsigned int& iTimePoint )
 {
-  std::list< ContourStructure > oList;
+   ContourStructureMultiIndexContainer::index< TCoord >::type::iterator it0, it1;
+   boost::tuples::tie(it0,it1) = iContainer.get< TCoord >().equal_range( iTimePoint );
 
-  if( iContainer.size() != 0 )
-    {
-    boost::multi_index::index< ContourStructureMultiIndexContainer, TCoord>::type::iterator it0, it1;
+   std::list< ContourStructure > oList;
 
-    it0 = iContainer.get<TCoord>().find( iTimePoint );
-//    boost::tuples::tie(it0,it1) = get<TCoord>( iContainer ).equal_range( iTimePoint );
-
-    //while( it0 != it1 )
-    while( it0 != iContainer.get<TCoord>().end() )
+    while( it0 != it1 )
       {
-      if( (*it0).TCoord == iTimePoint )
-        {
-        oList.push_back( *it0 );
-        }
+      oList.push_back( *it0 );
       ++it0;
       }
-    }
-
-  return oList;
+    return oList;
 }
