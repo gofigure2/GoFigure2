@@ -39,6 +39,8 @@
 =========================================================================*/
 #include "GoDBLineageRow.h"
 #include "SelectQueryDatabaseHelper.h"
+#include "GoDBRecordSetHelper.h"
+#include <iostream>
 
 GoDBLineageRow::GoDBLineageRow()
 {
@@ -47,15 +49,25 @@ GoDBLineageRow::GoDBLineageRow()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void GoDBLineageRow::InitializeMap()
+GoDBLineageRow::GoDBLineageRow(vtkMySQLDatabase* DatabaseConnector,
+  GoDBCoordinateRow Min, GoDBCoordinateRow Max,unsigned int ImgSessionID,
+  vtkPolyData* TraceVisu)
 {
+  GoDBTraceRow::GoDBTraceRow(DatabaseConnector,TraceVisu,Min,Max,
+    ImgSessionID);
+  if (this->DoesThisBoundingBoxLineageExist(DatabaseConnector))
+    {
+    std::cout<<"The bounding box alreaady exists for this lineage"<<std::endl;
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void GoDBLineageRow::InitializeMap()
+{ 
+  GoDBTraceRow::InitializeMap();
   this->m_MapRow["LineageID"] = ConvertToString<int>(0);
-  this->m_MapRow["CoordIDMax"] = ConvertToString<int>(0);
-  this->m_MapRow["CoordIDMin"] = ConvertToString<int>(0);
-  this->m_MapRow["ColorID"] = ConvertToString<int>(3);
-  this->m_MapRow["Points"] = ConvertToString<int>(0);
   this->m_MapRow["TrackIDRoot"] = ConvertToString<int>(0);
-  this->m_MapRow["ImagingSessionID"] = ConvertToString<int>(0);
  
 }
 //-------------------------------------------------------------------------
@@ -66,4 +78,12 @@ int GoDBLineageRow::DoesThisBoundingBoxLineageExist(vtkMySQLDatabase* DatabaseCo
   return FindOneID(DatabaseConnector,"lineage","LineageID",
     "CoordIDMax",this->GetMapValue("CoordIDMax"),
     "CoordIDMin",this->GetMapValue("CoordIDMin"));
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+int GoDBLineageRow::SaveInDB(vtkMySQLDatabase* DatabaseConnector)
+{
+  return AddOnlyOneNewObjectInTable<GoDBLineageRow>( DatabaseConnector,
+    "lineage",*this, "LineageID");
 }

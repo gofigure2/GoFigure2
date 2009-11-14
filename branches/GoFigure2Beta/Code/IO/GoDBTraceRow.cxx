@@ -49,9 +49,9 @@ GoDBTraceRow::GoDBTraceRow()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-GoDBMTraceRow::GoDBTraceRow(vtkMySQLDatabase* DatabaseConnector,
-  GoDBCoordinateRow Min, GoDBCoordinateRow Max,
-  unsigned int ImgSessionID,vtkPolyData* TraceVisu)
+GoDBTraceRow::GoDBTraceRow(vtkMySQLDatabase* DatabaseConnector,
+  vtkPolyData* TraceVisu,GoDBCoordinateRow Min, GoDBCoordinateRow Max,
+  unsigned int ImgSessionID)
 {
   this->InitializeMap();
   this->CreateBoundingBox(DatabaseConnector,Min,Max);
@@ -59,7 +59,7 @@ GoDBMTraceRow::GoDBTraceRow(vtkMySQLDatabase* DatabaseConnector,
     ConvertToString<unsigned int>(ImgSessionID);
   
   vtkPolyDataMySQLTextWriter* convert = vtkPolyDataMySQLTextWriter::New();
-  this->m_MapRow["Points"] = convert->GetMySQLText(MeshVisu);
+  this->m_MapRow["Points"] = convert->GetMySQLText(TraceVisu);
 }
 //-------------------------------------------------------------------------
 
@@ -96,12 +96,12 @@ void GoDBTraceRow::CreateBoundingBox(vtkMySQLDatabase* DatabaseConnector,
 
 //-------------------------------------------------------------------------
 void GoDBTraceRow::SetColor(unsigned int Red, unsigned int Green, 
-  unsigned int Blue,unsigned int Alpha)
+  unsigned int Blue,unsigned int Alpha, vtkMySQLDatabase* DatabaseConnector)
 {
   GoDBColorRow ColorRow;
-  ColorRow.SetField<int>("Red",Color[0]);
-  ColorRow.SetField<int>("Green",Color[1]);
-  ColorRow.SetField<int>("Blue",Color[2]);
-  ColorRow.SetField<int>("Alpha",Color[3]);
+  ColorRow.SetField<int>("Red",Red);
+  ColorRow.SetField<int>("Green",Green);
+  ColorRow.SetField<int>("Blue",Blue);
+  ColorRow.SetField<int>("Alpha",Alpha);
   this->m_MapRow["ColorId"] = ColorRow.SaveInDB(DatabaseConnector);
 }

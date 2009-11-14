@@ -41,21 +41,29 @@
 #define __GoDBTrackRow_h
 
 #include "ConvertToStringHelper.h"
-#include "GoDBRow.h"
+#include "GoDBTraceRow.h"
 #include "vtkMySQLDatabase.h"
 #include <string>
 #include <map>
 
-class GoDBTrackRow : public GoDBRow
+class GoDBTrackRow : public GoDBTraceRow
 {
 public:
   GoDBTrackRow();
    
   ~GoDBTrackRow()
     {}
-  /**\brief return the ContourID of the Contour with the same bounding box
+  /**\brief fill the track map with the values gotten from the visualization*/
+  GoDBTrackRow(vtkMySQLDatabase* DatabaseConnector,GoDBCoordinateRow Min, 
+    GoDBCoordinateRow Max,unsigned int ImgSessionID,vtkPolyData* TraceVisu);
+
+  /**\brief return the TrackID of the Track with the same bounding box
   already registered in the DB or -1 if not yet created*/
  int DoesThisBoundingBoxTrackExist(vtkMySQLDatabase* DatabaseConnector);
+
+ /**\brief save the track in the database and return the ID of the new 
+ created track*/
+ int SaveInDB(vtkMySQLDatabase* DatabaseConnector);
 
 protected:
   virtual void InitializeMap();

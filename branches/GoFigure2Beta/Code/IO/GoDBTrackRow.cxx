@@ -39,7 +39,8 @@
 =========================================================================*/
 #include "GoDBTrackRow.h"
 #include "SelectQueryDatabaseHelper.h"
-
+#include "GoDBRecordSetHelper.h"
+#include <iostream>
 
 GoDBTrackRow::GoDBTrackRow()
 {
@@ -48,16 +49,26 @@ GoDBTrackRow::GoDBTrackRow()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void GoDBTrackRow::InitializeMap()
+GoDBTrackRow::GoDBTrackRow(vtkMySQLDatabase* DatabaseConnector,
+  GoDBCoordinateRow Min, GoDBCoordinateRow Max,unsigned int ImgSessionID,
+  vtkPolyData* TraceVisu)
 {
+  GoDBTraceRow::GoDBTraceRow(DatabaseConnector,TraceVisu,Min,Max,
+    ImgSessionID);
+  if (this->DoesThisBoundingBoxTrackExist(DatabaseConnector))
+    {
+    std::cout<<"The bounding box already exists for this track"<<std::endl;
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void GoDBTrackRow::InitializeMap()
+{ 
+  GoDBTraceRow::InitializeMap();
   this->m_MapRow["TrackID"] = ConvertToString<int>(0);
-  this->m_MapRow["LineageID"] = "null";
-  this->m_MapRow["ColorID"]   =  ConvertToString<int>(2);
-  this->m_MapRow["CoordIDMax"] = ConvertToString<int>(0);
-  this->m_MapRow["CoordIDMin"] = ConvertToString<int>(0);
+  this->m_MapRow["LineageID"] = "null"; 
   this->m_MapRow["TrackFamilyID"] = "null";
-  this->m_MapRow["Points"] = "null";
-  this->m_MapRow["ImagingSessionID"] = ConvertToString<int>(0);
 }    
 //-------------------------------------------------------------------------
 
@@ -68,4 +79,12 @@ int GoDBTrackRow::DoesThisBoundingBoxTrackExist(
   return FindOneID(DatabaseConnector,"track","TrackID",
     "CoordIDMax",this->GetMapValue("CoordIDMax"),
     "CoordIDMin",this->GetMapValue("CoordIDMin"));
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+int GoDBTrackRow::SaveInDB(vtkMySQLDatabase* DatabaseConnector)
+{
+  return AddOnlyOneNewObjectInTable<GoDBTrackRow>( DatabaseConnector,
+    "track",*this, "TrackID");
 }

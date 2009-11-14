@@ -9,6 +9,7 @@ SET( QGOIO_SRC
   GoDBImgSessionRow.cxx
   GoDBMeshRow.cxx
   GoDBProjectRow.cxx
+  GoDBTraceRow.cxx
   GoDBRow.cxx
   GoDBTrackRow.cxx
   GoDBLineageRow.cxx

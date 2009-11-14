@@ -51,18 +51,14 @@ GoDBContourRow::GoDBContourRow()
 
 //-------------------------------------------------------------------------
 GoDBContourRow::GoDBContourRow(vtkMySQLDatabase* DatabaseConnector,
-  vtkPolyData* ContourVisu,unsigned int ImgSessionID,GoDBCoordinateRow Min, 
-  GoDBCoordinateRow Max)
+  GoDBCoordinateRow Min, GoDBCoordinateRow Max,unsigned int ImgSessionID,
+  vtkPolyData* TraceVisu)
 {
-  this->InitializeMap();
-  vtkPolyDataMySQLTextWriter* convert = vtkPolyDataMySQLTextWriter::New();
-  this->m_MapRow["Points"] = convert->GetMySQLText( ContourVisu);
-  this->m_MapRow["ImagingSessionID"] = ConvertToString<unsigned int>(ImgSessionID);
-  
-  this->CreateBoundingBox(DatabaseConnector,Min,Max);
+   GoDBTraceRow::GoDBTraceRow(DatabaseConnector,TraceVisu,Min,Max,
+    ImgSessionID);
   if (this->DoesThisBoundingBoxContourExist(DatabaseConnector))
     {
-    std::cout<<"The bounding box alreaady exists"<<std::endl;
+    std::cout<<"The bounding box alreaady exists for this contour"<<std::endl;
     }
 }
 //-------------------------------------------------------------------------
@@ -70,12 +66,9 @@ GoDBContourRow::GoDBContourRow(vtkMySQLDatabase* DatabaseConnector,
 //-------------------------------------------------------------------------
 void GoDBContourRow::InitializeMap()
 {
+  GoDBTraceRow::InitializeMap();
   this->m_MapRow["ContourID"] = ConvertToString<int>(0);
   this->m_MapRow["MeshID"] = "null";
-  this->m_MapRow["ImagingSessionID"] = ConvertToString<int>(0);
-  this->m_MapRow["CoordIDMax"] = ConvertToString<int>(0);
-  this->m_MapRow["CoordIDMin"] = ConvertToString<int>(0);
-  this->m_MapRow["Points"] = "";
 }    
 //-------------------------------------------------------------------------
 
@@ -86,26 +79,6 @@ int GoDBContourRow::DoesThisBoundingBoxContourExist(
   return FindOneID(DatabaseConnector,"contour","ContourID",
     "CoordIDMax",this->GetMapValue("CoordIDMax"),
     "CoordIDMin",this->GetMapValue("CoordIDMin"));
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void GoDBContourRow::CreateBoundingBox(vtkMySQLDatabase* DatabaseConnector,
-  GoDBCoordinateRow Min,GoDBCoordinateRow Max)
-{
-  int CoordMin = Min.DoesThisCoordinateExist(DatabaseConnector);
-  if (CoordMin == -1)
-    {
-    CoordMin = Min.SaveInDB(DatabaseConnector);
-    }
-  this->m_MapRow["CoordIDMin"] = ConvertToString<int>(CoordMin);
-
-  int CoordMax = Max.DoesThisCoordinateExist(DatabaseConnector);
-  if (CoordMax == -1)
-    {
-    CoordMax = Max.SaveInDB(DatabaseConnector);
-    }
-  this->m_MapRow["CoordIDMax"] = ConvertToString<int>(CoordMax);
 }
 //-------------------------------------------------------------------------
 

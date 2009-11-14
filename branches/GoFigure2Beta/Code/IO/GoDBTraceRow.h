@@ -50,9 +50,11 @@ class GoDBTraceRow : public GoDBRow
 {
 public:
   GoDBTraceRow();
-  GoDBTraceRow(vtkMySQLDatabase* DatabaseConnector,
-  GoDBCoordinateRow Min, GoDBCoordinateRow Max,
-  unsigned int ImgSessionID,vtkPolyData* TraceVisu);
+
+   /**\brief fill the trace map with the values gotten from the visualization*/
+  GoDBTraceRow(vtkMySQLDatabase* DatabaseConnector,vtkPolyData* TraceVisu,
+  GoDBCoordinateRow Min, GoDBCoordinateRow Max,unsigned int ImgSessionID);
+
   ~GoDBTraceRow()
     {}
   
@@ -60,10 +62,10 @@ public:
   already registered in the DB or -1 if not yet created*/
  int  DoesThisBoundingBoxExist(vtkMySQLDatabase* DatabaseConnector);
  void SetColor(unsigned int Red, unsigned int Green, unsigned int Blue,
-   unsigned int Alpha);
+   unsigned int Alpha, vtkMySQLDatabase* DatabaseConnector);
 
 protected:
-
+ virtual void InitializeMap();
  /**\brief check in the database if the Coordinate Min adn Max already exits,
  if yes fill the map["CoordIDMin"] and ["CoordIDmax"] with the existing CoordinateID
  if not, create the coordinates in the database and fill the map with the new created ID,

@@ -41,6 +41,7 @@
 #include "GoDBColorRow.h"
 #include "SelectQueryDatabaseHelper.h"
 #include "GoDBRecordSetHelper.h"
+#include <iostream>
 
 GoDBMeshRow::GoDBMeshRow()
 {
@@ -50,38 +51,26 @@ GoDBMeshRow::GoDBMeshRow()
 
 //-------------------------------------------------------------------------
 GoDBMeshRow::GoDBMeshRow(vtkMySQLDatabase* DatabaseConnector,
-  std::string CellTypeName, std::string SubCellName,
-  GoDBCoordinateRow Min, GoDBCoordinateRow Max,std::vector<int> Color,
-  unsigned int ImgSessionID,vtkPolyData* MeshVisu)
+  GoDBCoordinateRow Min, GoDBCoordinateRow Max,unsigned int ImgSessionID,
+  vtkPolyData* TraceVisu)
 {
-  this->InitializeMap();
-  this->CreateBoundingBox(DatabaseConnector,Min,Max);
-  GoDBColorRow ColorRow;
-  ColorRow.SetField<int>("Red",Color[0]);
-  ColorRow.SetField<int>("Green",Color[1]);
-  ColorRow.SetField<int>("Blue",Color[2]);
-  ColorRow.SetField<int>("Alpha",Color[3]);
-  this->m_MapRow["ColorId"] = ColorRow.SaveInDB(DatabaseConnector);
-  this->m_MapRow["ImagingSessionID"] = 
-    ConvertToString<unsigned int>(ImgSessionID);
-  
-  vtkPolyDataMySQLTextWriter* convert = vtkPolyDataMySQLTextWriter::New();
-  this->m_MapRow["Points"] = convert->GetMySQLText(MeshVisu);
+  GoDBTraceRow::GoDBTraceRow(DatabaseConnector,TraceVisu,Min,Max,
+    ImgSessionID);
+  if (this->DoesThisBoundingBoxMeshExist(DatabaseConnector))
+    {
+    std::cout<<"The bounding box alreaady exists for this Mesh"<<std::endl;
+    }
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void GoDBMeshRow::InitializeMap()
-{
+{ 
+  GoDBTraceRow::InitializeMap();
   this->m_MapRow["MeshID"] = ConvertToString<int>(0);
   this->m_MapRow["CellTypeID"] = ConvertToString<int>(1);
   this->m_MapRow["SubCellularID"] = ConvertToString<int>(1);
-  this->m_MapRow["CoordIDMax"] = ConvertToString<int>(0);
-  this->m_MapRow["CoordIDMin"] = ConvertToString<int>(0);
-  this->m_MapRow["ColorID"] = ConvertToString<int>(1);
   this->m_MapRow["TrackID"] = "null";
-  this->m_MapRow["ImagingSessionID"] = ConvertToString<int>(0);
-  this->m_MapRow["Points"] = ConvertToString<int>(0);
 }
 //-------------------------------------------------------------------------
 
@@ -95,23 +84,20 @@ int GoDBMeshRow::DoesThisBoundingBoxMeshExist(vtkMySQLDatabase* DatabaseConnecto
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void GoDBMeshRow::CreateBoundingBox(vtkMySQLDatabase* DatabaseConnector,
-  GoDBCoordinateRow Min,GoDBCoordinateRow Max)
+int GoDBMeshRow::SaveInDB(vtkMySQLDatabase* DatabaseConnector)
 {
-  int CoordMin = Min.DoesThisCoordinateExist(DatabaseConnector);
-  if (CoordMin == -1)
-    {
-    CoordMin = Min.SaveInDB(DatabaseConnector);
-    }
-  this->m_MapRow["CoordIDMin"] = ConvertToString<int>(CoordMin);
-
-  int CoordMax = Max.DoesThisCoordinateExist(DatabaseConnector);
-  if (CoordMax == -1)
-    {
-    CoordMax = Max.SaveInDB(DatabaseConnector);
-    }
-  this->m_MapRow["CoordIDMax"] = ConvertToString<int>(CoordMax);
+  return AddOnlyOneNewObjectInTable<GoDBMeshRow>( DatabaseConnector,
+    "mesh",*this, "MeshID");
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+void GoDBMeshRow::SetCellType(std::string CellTypeName)
+{
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void GoDBMeshRow::SetSubCellType(std::string SubCellTypeName)
+{
+}

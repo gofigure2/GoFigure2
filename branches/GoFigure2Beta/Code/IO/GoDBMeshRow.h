@@ -44,35 +44,34 @@
 #include <map>
 #include <iostream>
 #include <sstream>
-#include "GoDBRow.h"
+#include "GoDBTraceRow.h"
 #include "GoDBCoordinateRow.h"
 #include "ConvertToStringHelper.h"
 #include "vtkMySQLDatabase.h"
 #include "vtkPolyData.h"
 #include "vtkPolyDataMySQLTextWriter.h"
 
-class GoDBMeshRow : public GoDBRow
+class GoDBMeshRow : public GoDBTraceRow
 {
 public:
   GoDBMeshRow();
   /**\brief fill the mesh map with the values gotten from the visualization*/
-  GoDBMeshRow(vtkMySQLDatabase* DatabaseConnector,std::string CellTypeName,
-    std::string SubCellName,GoDBCoordinateRow Min, GoDBCoordinateRow Max,
-    std::vector<int> Color,unsigned int ImgSessionID,vtkPolyData* MeshVisu);
+  GoDBMeshRow(vtkMySQLDatabase* DatabaseConnector,
+  GoDBCoordinateRow Min, GoDBCoordinateRow Max,unsigned int ImgSessionID,
+  vtkPolyData* TraceVisu);
 
   ~GoDBMeshRow()
     {}
   int DoesThisBoundingBoxMeshExist(vtkMySQLDatabase* DatabaseConnector);
+  void SetCellType(std::string CellTypeName);/**\todo */
+  void SetSubCellType(std::string SubCellTypeName); /**\todo */
+
+  /**\brief save the contour in the database and return the ID of the new 
+  created contour*/
+  int SaveInDB(vtkMySQLDatabase* DatabaseConnector);
 
 protected:
   virtual void InitializeMap();
-
-  /**\brief check in the database if the Coordinate Min adn Max already exits,
- if yes fill the map["CoordIDMin"] and ["CoordIDmax"] with the existing CoordinateID
- if not, create the coordinates in the database and fill the map with the new created ID,
- if the bounding box already exits, a cout is generated*/
- void CreateBoundingBox(vtkMySQLDatabase* DatabaseConnector,GoDBCoordinateRow Min,
-  GoDBCoordinateRow Max);
     
 };
 
