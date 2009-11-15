@@ -20,3 +20,23 @@ ENDFOREACH( var ${QGOIO_EXAMPLES_SRC} )
 
 ADD_TEST( gofigurefileinfomultiindexcontainerhelperTest
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/gofigurefileinfomultiindexcontainerhelper )
+
+ADD_TEST( vtkPolyDataMySQLTextReaderTest1
+  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/vtkPolyDataMySQLTextReader
+  ${TESTING_DATA_PATH}/contour.vtk
+)
+
+ADD_TEST( vtkPolyDataMySQLTextReaderTest2
+  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/vtkPolyDataMySQLTextReader
+  ${TESTING_DATA_PATH}/sphere.vtk
+)
+
+ADD_TEST( vtkPolyDataMySQLTextWriterTest1
+  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/vtkPolyDataMySQLTextWriter
+  ${TESTING_DATA_PATH}/contour.vtk
+)
+
+ADD_TEST( vtkPolyDataMySQLTextWriterTest2
+  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/vtkPolyDataMySQLTextWriter
+  ${TESTING_DATA_PATH}/sphere.vtk
+)
