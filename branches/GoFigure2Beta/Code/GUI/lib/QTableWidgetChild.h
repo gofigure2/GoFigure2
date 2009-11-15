@@ -45,6 +45,7 @@
 #include <QStringList>
 #include <QList>
 #include "MegaVTK2Configure.h"
+#include "GoTraceToHighLightInfo.h"
 
 /**
 \class QTableWidgetchild
@@ -88,10 +89,12 @@ public slots:
   */
   QMEGAVTKADDON2_EXPORT void SelectRowFigureID (int FigureID);
 
-  /** \brief return a map of all the existing contours with a flag to true if the user
-       has selected one cell related to the contour in the QTableWidgetChild which have to
-       be highlighten in the visualization.*/
-  QMEGAVTKADDON2_EXPORT std::map<unsigned int,bool> ContoursToHighlight( );
+  /**\brief modify the ioTracesInfo in order to set the IsHighLighted parameter to false
+  for the traces not selected by the user and set it to true for the selected ones,
+  selected ones means at least one cell in the row has been selected by the user in 
+  the tableWidget. The TraceName has to be chosen between Contour and Mesh*/
+  QMEGAVTKADDON2_EXPORT void TracesToHighlight(std::string TraceName,
+    std::vector<GoTraceToHighLightInfo> & ioTracesInfo);
 
   /** \brief return a list of the values of a specific column for the rows where the user
        has selected at least one cell.*/

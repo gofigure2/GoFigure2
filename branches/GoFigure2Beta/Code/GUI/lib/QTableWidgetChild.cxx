@@ -40,7 +40,9 @@
 
 #include "QTableWidgetChild.h"
 #include <iostream>
+#include <sstream>
 #include <QTableWidgetSelectionRange>
+
 
 QTableWidgetChild::QTableWidgetChild( QWidget* iParent ): QTableWidget( iParent )
 {
@@ -148,34 +150,51 @@ void QTableWidgetChild::SelectRowFigureID (int FigureID)
 
 //--------------------------------------------------------------------------
 /** \note quick and nasty...*/
-std::map< unsigned int, bool > QTableWidgetChild::ContoursToHighlight()
+ void QTableWidgetChild::TracesToHighlight(
+  std::string TraceName,std::vector<GoTraceToHighLightInfo> & ioTracesInfo)
 {
-  std::map<unsigned int,bool> oMapRows;
+  //get the selected rows:
   QList<QTableWidgetSelectionRange> Selection;
   Selection = this->selectedRanges();
+  //get the index for the column with the traceID:
   QStringList ColumnsHeader = this->recordHeaderNamesOrder();
-
-  int figureIDIndex = findColumnName("ContourID",ColumnsHeader);
-  unsigned int t;
-
+  std::stringstream TraceID;
+  TraceID <<TraceName;
+  TraceID << "ID" ;
+  TraceID.str();
+  int TraceIDIndex = findColumnName(TraceID.str().c_str(),ColumnsHeader);
+  
+  //first set all the hightlighted traces to false:
   for( int i=0; i < this->rowCount(); i++ )
     {
-    t = this->item(i,figureIDIndex)->text().toUInt();
-    oMapRows[t] = false;
+    ioTracesInfo[i].IsHighLighted = false;
+    if (ioTracesInfo[i].TraceID != this->item(i,TraceIDIndex)->text().toUInt())
+      {
+      std::cout<<"Pb the traceID in the oTracesToHighlight is not the same\
+                   as the one in the tableWidget";
+      std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
+      std::cout << std::endl;
+      }
     }
-
+  //then, highlight the selected ones:
   for (int i=0; i<Selection.size(); i++)
     {
     int TopRowSelected = Selection[i].topRow();
     int BottomRowSelected = Selection[i].bottomRow();
 
     for (int j = TopRowSelected; j<BottomRowSelected+1;j++)
-      {
-      t = this->item(j,figureIDIndex)->text().toUInt();
-      oMapRows[t] = true;
+      { 
+      if (ioTracesInfo[j].TraceID != 
+        this->item(j,TraceIDIndex)->text().toUInt())
+        {
+        std::cout<<"Pb the traceID in the oTracesToHighlight is not the same\
+                   as the one in the tableWidget";
+        std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
+        std::cout << std::endl;
+        }
+      ioTracesInfo[j].IsHighLighted = true;
       }
     }
-  return oMapRows;
 }
 //--------------------------------------------------------------------------
 

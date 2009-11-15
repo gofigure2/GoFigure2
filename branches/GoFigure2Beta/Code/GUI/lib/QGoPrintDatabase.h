@@ -181,7 +181,7 @@ protected:
       std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
       std::cout << std::endl;
       }
-      PrintOutContentFromDB< myT >( RowContainer, Table );
+    PrintOutContentFromDB< myT >( RowContainer, Table );
     delete mySet;
     emit TableContentChanged();
     Table->setSortingEnabled(true);
