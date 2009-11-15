@@ -98,6 +98,7 @@
     <addaction name="actionOpen_MegaCapture_Files"/>
     <addaction name="separator"/>
     <addaction name="actionOpen_Mesh"/>
+    <addaction name="actionLoad_Segmentation_Results"/>
     <addaction name="separator"/>
     <addaction name="actionUse_DataBase"/>
     <addaction name="separator"/>
@@ -393,6 +394,11 @@
   <action name="actionManage_Bookmarks">
    <property name="text">
     <string>Manage Bookmarks</string>
+   </property>
+  </action>
+  <action name="actionLoad_Segmentation_Results">
+   <property name="text">
+    <string>Load Segmentation Results</string>
    </property>
   </action>
  </widget>

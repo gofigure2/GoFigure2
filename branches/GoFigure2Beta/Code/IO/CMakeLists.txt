@@ -24,6 +24,7 @@ SET( QGOIO_SRC
   vtkPolyDataMySQLTextReader.cxx
   vtkPolyDataMySQLTextWriter.cxx
   LSMToMegaCapture.cxx
+  MeshTextFileImport.cxx
 )
 
 ADD_LIBRARY( QGoIO
