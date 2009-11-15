@@ -97,6 +97,13 @@ QGoPrintDatabase( QWidget* iParent ) :
 
   QObject::connect( this, SIGNAL( customContextMenuRequested( const QPoint & ) ),
     this, SLOT( CreateContextMenu( const QPoint & ) ) );
+  
+  QObject::connect( this->ContourTable, SIGNAL(itemSelectionChanged()),
+    this, SLOT(ChangeTracesToHighLightInfo()));
+
+  QObject::connect( this->MeshTable, SIGNAL(itemSelectionChanged()),
+    this, SLOT(ChangeTracesToHighLightInfo()));
+
 }
 //--------------------------------------------------------------------------
 
@@ -502,4 +509,32 @@ void QGoPrintDatabase::LoadContoursAndMeshesFromDB(
     m_ImgSessionID);  
   m_MeshesInfo   = GetTracesInfoFromDB(DatabaseConnector,"mesh",
     m_ImgSessionID);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoPrintDatabase::ChangeTracesToHighLightInfo()
+{
+  int TabIndex = InWhichTableAreWe();
+  switch (TabIndex)
+    {
+    case 0: //contour
+        {
+        this->ContourTable->TracesToHighlight("Contour",m_ContoursInfo);
+        break;
+        }
+    case 1: //mesh
+        {
+        this->MeshTable->TracesToHighlight("Mesh",m_MeshesInfo);
+        break;
+        }
+    default:
+        {
+        std::cout<<"error, tab doesn't exist";
+        std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
+        std::cout << std::endl;
+        break;
+        }
+    }
+  emit SelectionTracesToHighLightChanged();
 }

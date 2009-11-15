@@ -947,9 +947,12 @@ std::vector<GoDBTraceInfoHelper> GetTracesInfoFromDB(
       vtkPolyDataMySQLTextReader* convert_reader =
       vtkPolyDataMySQLTextReader::New();
       std::string polydata_string = query->DataValue(1).ToString();
-      convert_reader->SetIsContour( true );
-      vtkPolyData* output = convert_reader->GetPolyData( polydata_string );
-      temp.Points = output;
+      if (!polydata_string.empty())
+        {
+        convert_reader->SetIsContour( true );
+        vtkPolyData* output = convert_reader->GetPolyData( polydata_string );
+        temp.Points = output;
+        }  
       temp.TimePoint = query->DataValue(2).ToUnsignedInt();
       temp.Red = query->DataValue(3).ToUnsignedInt();
       temp.Green = query->DataValue(4).ToUnsignedInt();

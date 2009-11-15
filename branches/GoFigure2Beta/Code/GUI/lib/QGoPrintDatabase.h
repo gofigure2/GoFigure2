@@ -87,6 +87,7 @@ public:
 
 signals:
   void TableContentChanged();
+  void SelectionTracesToHighLightChanged();
 
 
 protected:
@@ -254,6 +255,9 @@ protected slots:
   void CreateCorrespondingCollection();
 
   void AddToExistingCollection();
+
+  void ChangeTracesToHighLightInfo();
+
 
 };
 
