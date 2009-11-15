@@ -7,6 +7,8 @@ SET( QGOIO_EXAMPLES_SRC
   itkmegacapturereader
   GenerateImagingSessionPartInMegaCaptureHeaderFromMHA
   mhatomegacapture
+  vtkPolyDataMySQLTextReader
+  vtkPolyDataMySQLTextWriter
 )
 
 FOREACH( var ${QGOIO_EXAMPLES_SRC} )

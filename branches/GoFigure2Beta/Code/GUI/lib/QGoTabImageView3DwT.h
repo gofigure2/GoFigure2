@@ -9,6 +9,7 @@
 #include "itkMegaCaptureReader.h"
 #include "SnapshotHelper.h"
 #include "ContourStructureHelper.h"
+#include "vtkMySQLDatabase.h"
 
 #include <QHBoxLayout>
 #include <QSpinBox>
@@ -152,6 +153,8 @@ public slots:
   void ActivateManualSegmentationEditor( const bool& iActivate );
   void ValidateContour();
   void ChangeContourRepresentationProperty();
+  std::vector<std::pair<int, vtkPolyData* > > LoadContoursFromDB(
+  vtkMySQLDatabase* DatabaseConnector, unsigned int ImgSessionID);
 
 protected:
   QHBoxLayout*          m_LayOut;

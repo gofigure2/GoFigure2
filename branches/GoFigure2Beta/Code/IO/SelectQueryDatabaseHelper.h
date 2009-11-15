@@ -159,4 +159,12 @@ int MaxValueForOneColumnInTable(
 int MaxValueForOneColumnInTable(vtkMySQLDatabase* DatabaseConnector,
   std::string ColumnName,std::string TableName,std::string field,
   std::string value);
+
+//query: "SELECT TableOne.ColumnOne, TableTwo.ColumnTwo FROM TableOne
+//JOIN TableTwo ON (TableOne.Foreignkey = TableTwo.PrimaryKey) 
+//WHERE field = value;
+std::vector<std::pair<int,std::string> >ListSpecificValuesForTwoColumnsAndTwoTables(
+  vtkMySQLDatabase* DatabaseConnector,std::string TableOne, std::string ColumnOne,
+  std::string TableTwo, std::string ColumnTwo,std::string ForeignKey, 
+  std::string PrimaryKey, std::string field, std::string value);
 #endif

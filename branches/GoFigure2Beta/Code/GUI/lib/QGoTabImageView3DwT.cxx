@@ -14,7 +14,10 @@
 #include "vtkContourWidget.h"
 #include "vtkProperty.h"
 #include "vtkPolyData.h"
+#include "vtkPolyDataMySQLTextReader.h"
 #include "vtkImageActorPointPlacer.h"
+#include "SelectQueryDatabaseHelper.h"
+#include "ConvertToStringHelper.h"
 
 #include <QLabel>
 #include <QSpinBox>
@@ -1365,4 +1368,27 @@ LoadAllContoursForGivenTimePoint( const unsigned int& iT )
 }
 //-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
+std::vector<std::pair<int, vtkPolyData* > > QGoTabImageView3DwT::LoadContoursFromDB(
+  vtkMySQLDatabase* DatabaseConnector, unsigned int ImgSessionID)
+{
+  std::vector<std::pair<int, vtkPolyData* > > ContoursToLoadPolyData;
+
+  std::vector<std::pair<int,std::string> > ContoursToLoadString = 
+    ListSpecificValuesForTwoColumnsAndTwoTables(DatabaseConnector,
+  "coordinate", "TCoord","contour", "Points","CoordID", "CoordIDMin", 
+  "ImagingSessionID", ConvertToString<unsigned int>(ImgSessionID));
+
+  for (int i = 0; i < ContoursToLoadString.size();i++)
+    {
+    vtkPolyDataMySQLTextReader* convert_reader =
+    vtkPolyDataMySQLTextReader::New();
+    std::string polydata_string = ContoursToLoadString[i].second;
+    convert_reader->SetIsContour( true );
+    vtkPolyData* output = convert_reader->GetPolyData( polydata_string );
+    std::pair<int,vtkPolyData*> temp(ContoursToLoadString[i].first,output);
+    ContoursToLoadPolyData.push_back(temp);
+    }
+  return ContoursToLoadPolyData;  
+}
 

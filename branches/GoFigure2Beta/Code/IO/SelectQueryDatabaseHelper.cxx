@@ -832,3 +832,69 @@ int LastInsertID(std::string ServerName, std::string login,
 
   return ID;
 }
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+//query: "SELECT TableOne.ColumnOne, TableTwo.ColumnTwo FROM TableOne
+//JOIN TableTwo ON (TableOne.Foreignkey = TableTwo.PrimaryKey) 
+//WHERE field = value;
+std::vector<std::pair<int,std::string> > ListSpecificValuesForTwoColumnsAndTwoTables(
+  vtkMySQLDatabase* DatabaseConnector,std::string TableOne, std::string ColumnOne,
+  std::string TableTwo, std::string ColumnTwo,std::string ForeignKey, std::string PrimaryKey, 
+  std::string field, std::string value)
+{
+  std::vector<std::pair<int,std::string> > result;
+
+  vtkSQLQuery* query = DatabaseConnector->GetQueryInstance();
+  std::stringstream querystream;
+  querystream << "SELECT ";
+  querystream << TableOne;
+  querystream << ".";
+  querystream << ColumnOne;
+  querystream << ",";
+  querystream << TableTwo;
+  querystream << ".";
+  querystream << ColumnTwo;
+  querystream << " FROM ";
+  querystream << TableOne;
+  querystream << " JOIN ";
+  querystream << TableTwo;
+  querystream << " ON (";
+  querystream << TableOne;
+  querystream << ".";
+  querystream << ForeignKey;
+  querystream << " = ";
+  querystream << TableTwo;
+  querystream << ".";
+  querystream << PrimaryKey;
+  querystream << " WHERE ";
+  querystream << field;
+  querystream << " = '";
+  querystream << value;
+  querystream << "';";
+
+  query->SetQuery( querystream.str().c_str() );
+  if ( !query->Execute() )
+    {
+    itkGenericExceptionMacro(
+      << "join on 2 tables query failed"
+      << query->GetLastErrorText() );
+    DatabaseConnector->Close();
+    DatabaseConnector->Delete();
+    query->Delete();
+    return result;
+    }
+
+  while (query->NextRow())
+    {
+      {
+      std::pair<int, std::string> temp;
+      temp.first = query->DataValue(0).ToInt();
+      temp.second = query->DataValue(1).ToString();
+      result.push_back(temp);
+      }
+    }
+
+  return result;
+}
+
