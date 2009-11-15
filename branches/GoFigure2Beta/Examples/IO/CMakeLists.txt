@@ -9,6 +9,7 @@ SET( QGOIO_EXAMPLES_SRC
   mhatomegacapture
   vtkPolyDataMySQLTextReader
   vtkPolyDataMySQLTextWriter
+  kishmeshtextfilereader
 )
 
 FOREACH( var ${QGOIO_EXAMPLES_SRC} )

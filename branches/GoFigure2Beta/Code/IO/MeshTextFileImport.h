@@ -5,20 +5,31 @@
 #include <list>
 #include <vector>
 
+class vtkPolyData;
+class vtkMySQLDatabase;
+
 class MeshTextFileImport
 {
   public:
-    MeshTextFileImport();
+    MeshTextFileImport( const std::string& iServerName, const std::string& iLogin,
+      const std::string& iPassword, const std::string& iDBName,
+      const unsigned int& iImagingSessionId );
+
     ~MeshTextFileImport();
 
+    void SetDirectory( const std::string& );
     void SetFileName( const std::string& );
     void Read();
 
   private:
+    unsigned int m_ImagingSessionId;
     unsigned int m_NumberOfChannels;
     unsigned int m_NumberOfMeshes;
     std::string m_MegaCaptureHeaderFile;
+    std::string m_Directory;
     std::string m_FileName;
+
+    vtkMySQLDatabase* m_DBConnector;
 
     struct InternalMeshStructure
       {
@@ -34,11 +45,13 @@ class MeshTextFileImport
       unsigned int m_YMax;
       unsigned int m_ZMin;
       unsigned int m_ZMax;
-      std::string m_Points;
+      vtkPolyData* m_Points;
       std::vector< double > m_AverageIntensity;
       };
 
     std::list< InternalMeshStructure > m_ListOfMeshes;
+
+    void SaveMeshInDataBase( const InternalMeshStructure& iMesh );
 
 
 };

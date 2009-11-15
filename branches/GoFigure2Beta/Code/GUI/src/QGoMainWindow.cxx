@@ -326,32 +326,6 @@ void QGoMainWindow::on_actionOpen_Mesh_triggered( )
               IsContour = true;
               }
             }
-
-//           QImagePageViewTracer* myPageView =
-//             dynamic_cast<QImagePageViewTracer*>( m_PageView[idx] );
-//           if( myPageView )
-//             {
-//             myPageView->AddContours( mesh_list, property_list, true, true );
-//             // if( IsContour )
-//             //{
-//             //
-//             // }
-//             }
-//           else
-//             {
-//             QImagePageView4DTracer* myPageView4D =
-//               dynamic_cast<QImagePageView4DTracer*>( m_PageView[ idx ] );
-//             if( myPageView4D )
-//               {
-//   //             myPageView4D->AddContours( mesh_list, property_list, true, true );
-//               // if( IsContour )
-//               //   {
-//               //   }
-//               // else
-//               //  {
-//               //  }
-//               }
-//             }
           }
 
         while( !mesh_list.empty() )
@@ -368,6 +342,7 @@ void QGoMainWindow::on_actionOpen_Mesh_triggered( )
   else
     {
     /// \note Do we need to create a view mesh if there is no opened image?
+    /// \todo this action must be enabled only if there are tabs
     QMessageBox::warning( this, tr( "Open Mesh / Contour Warning" ),
       tr( "One image needs to be opened first to be able to load contours or meshes" ) );
     }
@@ -376,7 +351,8 @@ void QGoMainWindow::on_actionOpen_Mesh_triggered( )
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoMainWindow::on_actionQuit_triggered( )
+void QGoMainWindow::
+on_actionQuit_triggered( )
 {
   this->close();
   this->WriteSettings();
@@ -384,7 +360,8 @@ void QGoMainWindow::on_actionQuit_triggered( )
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoMainWindow::SetSingleFileName( const QString& iFile )
+void QGoMainWindow::
+SetSingleFileName( const QString& iFile )
 {
   if( QFile::exists( iFile ) )
     {
@@ -420,15 +397,13 @@ void QGoMainWindow::SetSingleFileName( const QString& iFile )
       reader->Delete();
       r_factory->Delete();
       }
-
-//       this->OpenImageWithITK( m_CurrentFile );
-//       this->DisplayImage( m_CurrentFile );
     }
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoMainWindow::OpenLSMImage( const QString& iFile, const int& iTimePoint )
+void QGoMainWindow::
+OpenLSMImage( const QString& iFile, const int& iTimePoint )
 {
   m_LSMReader->SetFileName( iFile.toAscii().data() );
   m_LSMReader->SetUpdateTimePoint( iTimePoint );
@@ -556,7 +531,8 @@ CreateNewTabFor3DwtImage(
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoMainWindow::CreateNewTabFor3DwtImage( vtkLSMReader* iReader, const QString& iFile )
+void QGoMainWindow::
+CreateNewTabFor3DwtImage( vtkLSMReader* iReader, const QString& iFile )
 {
   QGoTabImageView3DwT* w3t = new QGoTabImageView3DwT;
   w3t->SetLSMReader( iReader, 0 );
@@ -593,7 +569,8 @@ void QGoMainWindow::CreateNewTabFor3DwtImage( vtkLSMReader* iReader, const QStri
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoMainWindow::CreateNewTabFor3DImage( vtkImageData* iInput, const QString& iFile )
+void QGoMainWindow::
+CreateNewTabFor3DImage( vtkImageData* iInput, const QString& iFile )
 {
   QGoTabImageView3D* w3 = new QGoTabImageView3D;
   w3->SetImage( iInput );
@@ -630,7 +607,8 @@ void QGoMainWindow::CreateNewTabFor3DImage( vtkImageData* iInput, const QString&
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoMainWindow::CreateNewTabFor2DImage( vtkImageData* iInput, const QString& iFile )
+void QGoMainWindow::
+CreateNewTabFor2DImage( vtkImageData* iInput, const QString& iFile )
 {
   QGoTabImageView2D* w2 = new QGoTabImageView2D;
   w2->SetImage( iInput );
