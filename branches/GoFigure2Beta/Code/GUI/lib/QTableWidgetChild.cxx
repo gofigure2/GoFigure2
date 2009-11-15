@@ -131,58 +131,50 @@ QStringList QTableWidgetChild::recordHeaderNamesOrder()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QTableWidgetChild::SelectRowFigureID (int FigureID)
+void QTableWidgetChild::SetSelectRowTraceID (std::string TraceName, 
+  int TraceID, bool IsSelected)
 {
-  int RowIndex = this->findValueGivenColumn(FigureID, "figureID");
+  std::stringstream TraceIDName;
+  TraceIDName << TraceName;
+  TraceIDName <<"ID";
+
+  int RowIndex = this->findValueGivenColumn(TraceID, TraceIDName.str().c_str());
   if (RowIndex == -1)
     {
-    std::cout<<"The contour "<<FigureID<<"has not been found ";
+    std::cout<<"The contour "<<TraceID<<"has not been found ";
     std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
     std::cout << std::endl;
     }
   else
     {
     QTableWidgetSelectionRange RangeToSelect(RowIndex,0,RowIndex,columnCount()-1);
-    this->setRangeSelected(RangeToSelect,true);
+    this->setRangeSelected(RangeToSelect,IsSelected);
     }
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-/** \note quick and nasty...*/
  void QTableWidgetChild::TracesToHighlight(
   std::string TraceName,std::vector<GoDBTraceInfoHelper> & ioTracesInfo)
 {
-  //get the selected rows:
-  QList<QTableWidgetSelectionRange> Selection;
-  Selection = this->selectedRanges();
-  //get the index for the column with the traceID:
-  QStringList ColumnsHeader = this->recordHeaderNamesOrder();
-  std::stringstream TraceID;
-  TraceID <<TraceName;
-  TraceID << "ID" ;
-  TraceID.str();
-  int TraceIDIndex = findColumnName(TraceID.str().c_str(),ColumnsHeader);
-  
   //first set all the hightlighted traces to false:
   for( int i=0; i < ioTracesInfo.size(); i++ )
     {
     ioTracesInfo[i].IsHighLighted = false;
-    if (ioTracesInfo[i].TraceID != this->item(i,TraceIDIndex)->text().toUInt())
-      {
-      std::cout<<"Pb the traceID in the oTracesToHighlight is not the same\
-                   as the one in the tableWidget";
-      std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
-      std::cout << std::endl;
-      }
     }
-  //then, highlight the selected ones:
-    QStringList ListTraceIDToHighLight = ValuesForSelectedRows(TraceID.str().c_str());
-    for (int i = 0; i<ListTraceIDToHighLight.size();i++)
-      {
-      int j = ListTraceIDToHighLight.at(i).toInt()-1;
-      ioTracesInfo[j].IsHighLighted = true;
-      }
+  
+  //get the selected TraceID:
+  std::stringstream TraceID;
+  TraceID <<TraceName;
+  TraceID << "ID" ;
+  TraceID.str();
+  QStringList ListTraceIDToHighLight = ValuesForSelectedRows(TraceID.str().c_str());
+  //then, set to IsHighlight the selected ones:
+  for (int i = 0; i<ListTraceIDToHighLight.size();i++)
+    {
+    int j = ListTraceIDToHighLight.at(i).toInt()-1;
+    ioTracesInfo[j].IsHighLighted = true;
+    }
 }
 //--------------------------------------------------------------------------
 

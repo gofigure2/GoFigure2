@@ -81,13 +81,10 @@ public slots:
   /** \brief sort items given one column and one sort order. */
   QMEGAVTKADDON2_EXPORT void sortItems(int column, Qt::SortOrder order);
 
-  /** \brief select the row corresponding to the given FigureID.
-      \todo Change the name of the method (one instance of this class is not necessarily
-      containing contours, but could be a mesh, tracks, etc...). So the purpose
-      of this method is to be able to select one row given an id. What about:
-      void SelectRowWithGivenColumnNameAndValue( QString iColumnName, int iId )?
+  /** \brief select or unselect the row corresponding to the given TraceID.
   */
-  QMEGAVTKADDON2_EXPORT void SelectRowFigureID (int FigureID);
+  QMEGAVTKADDON2_EXPORT void SetSelectRowTraceID (std::string TraceName, int TraceID,
+    bool IsSelected);
 
   /**\brief modify the ioTracesInfo in order to set the IsHighLighted parameter to false
   for the traces not selected by the user and set it to true for the selected ones,

@@ -87,8 +87,8 @@ public:
 
 signals:
   void TableContentChanged();
-  void SelectionTracesToHighLightChanged();
-
+  void SelectionContoursToHighLightChanged();
+  void SelectionMeshesToHighLightChanged();
 
 protected:
   GoDBCollectionOfTraces* m_CollectionOfContours;
@@ -255,9 +255,14 @@ protected slots:
   void CreateCorrespondingCollection();
 
   void AddToExistingCollection();
-
-  void ChangeTracesToHighLightInfo();
-
+  
+  /**\brief Update the m_ContoursInfo or m_MeshesInfo depending on which table the user
+  had clicked with the selected traces and emit a signal to say which m_tracesInfo has
+  changed*/
+  void ChangeTracesToHighLightInfoFromTableWidget();
+  
+  void ChangeContoursToHighLightInfoFromVisu(
+  std::list<int> iListContoursHighLightedInVisu);
 
 };
 

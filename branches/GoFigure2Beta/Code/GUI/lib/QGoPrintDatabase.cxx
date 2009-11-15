@@ -99,10 +99,10 @@ QGoPrintDatabase( QWidget* iParent ) :
     this, SLOT( CreateContextMenu( const QPoint & ) ) );
   
   QObject::connect( this->ContourTable, SIGNAL(itemSelectionChanged()),
-    this, SLOT(ChangeTracesToHighLightInfo()));
+    this, SLOT(ChangeTracesToHighLightInfoFromTableWidget()));
 
   QObject::connect( this->MeshTable, SIGNAL(itemSelectionChanged()),
-    this, SLOT(ChangeTracesToHighLightInfo()));
+    this, SLOT(ChangeTracesToHighLightInfoFromTableWidget()));
 
 }
 //--------------------------------------------------------------------------
@@ -513,7 +513,7 @@ void QGoPrintDatabase::LoadContoursAndMeshesFromDB(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoPrintDatabase::ChangeTracesToHighLightInfo()
+void QGoPrintDatabase::ChangeTracesToHighLightInfoFromTableWidget()
 {
   int TabIndex = InWhichTableAreWe();
   switch (TabIndex)
@@ -521,11 +521,13 @@ void QGoPrintDatabase::ChangeTracesToHighLightInfo()
     case 0: //contour
         {
         this->ContourTable->TracesToHighlight("Contour",m_ContoursInfo);
+        emit SelectionContoursToHighLightChanged();
         break;
         }
     case 1: //mesh
         {
         this->MeshTable->TracesToHighlight("Mesh",m_MeshesInfo);
+        emit SelectionMeshesToHighLightChanged();
         break;
         }
     default:
@@ -536,5 +538,33 @@ void QGoPrintDatabase::ChangeTracesToHighLightInfo()
         break;
         }
     }
-  emit SelectionTracesToHighLightChanged();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoPrintDatabase::ChangeContoursToHighLightInfoFromVisu(
+  std::list<int> iListContoursHighLightedInVisu)
+{
+    int i = 0; 
+    std::list<int>::iterator it = iListContoursHighLightedInVisu.begin();
+    while (it != iListContoursHighLightedInVisu.end())
+      {
+      
+      for (int j = 0 ; j < m_ContoursInfo.size(); j++)
+        {
+        if (*it == j+1)
+          {
+          m_ContoursInfo[j].IsHighLighted = true;
+          this->ContourTable->SetSelectRowTraceID("Contour",
+            m_ContoursInfo[j].TraceID,true);
+          it++;
+          }
+        else
+          {
+          m_ContoursInfo[j].IsHighLighted = false;
+          this->ContourTable->SetSelectRowTraceID("Contour",
+            m_ContoursInfo[j].TraceID,false);
+          }
+        }
+      }
 }
