@@ -51,6 +51,7 @@
 #include "QTableWidgetNumericalItem.h"
 #include "vtkMySQLDatabase.h"
 #include "GoDBCollectionOfTraces.h"
+#include "GoDBTraceInfoHelper.h"
 
 class QGoPrintDatabase : public QWidget,
   private Ui::WidgetPrintDatabase
@@ -68,13 +69,17 @@ public:
     const unsigned int& iImgSessionID, const std::string& iImgSessionName );
 
   /** \brief Create the QTableWidgetChild,get the columns names and the values stored
-  in the database and display them in the QTableWidgetChild */
+  in the database, display them in the QTableWidgetChild and fill the info for the 
+  contours and meshes*/
   void FillTableFromDatabase();
 
   QTableWidgetChild* ContourTable;
   QTableWidgetChild* MeshTable;
   QTableWidgetChild* TrackTable;
   QTableWidgetChild* LineageTable;
+
+  std::vector<GoDBTraceInfoHelper> m_ContoursInfo;
+  std::vector<GoDBTraceInfoHelper> m_MeshesInfo;
 
   void UpdateTableFromDB();
 
@@ -108,6 +113,10 @@ protected:
 
   /** \brief Return the Index of the tab currently used: */
   int InWhichTableAreWe();
+
+  /**\brief initialize the m_ContoursInfo and m_MeshesInfo with the info from the
+  database*/
+  void LoadContoursAndMeshesFromDB(vtkMySQLDatabase* DatabaseConnector);
 
   /**
     \brief get the columns names and the values of the table (type T) from the

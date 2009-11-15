@@ -42,6 +42,8 @@
 #include "vtkSQLQuery.h"
 #include "vtkStdString.h"
 #include "vtkVariant.h"
+#include "GoDBTraceInfoHelper.h"
+#include "vtkPolyDataMySQLTextReader.h"
 #include <sstream>
 #include <string>
 
@@ -897,4 +899,64 @@ std::vector<std::pair<int,std::string> > ListSpecificValuesForTwoColumnsAndTwoTa
 
   return result;
 }
+//------------------------------------------------------------------------------
 
+//------------------------------------------------------------------------------
+std::vector<GoDBTraceInfoHelper> GetTracesInfoFromDB(
+  vtkMySQLDatabase* DatabaseConnector, std::string TraceName,
+  unsigned int ImgSessionID)
+{
+  std::vector<GoDBTraceInfoHelper> Results;
+  vtkSQLQuery* query = DatabaseConnector->GetQueryInstance();
+
+  std::stringstream Querystream;
+  Querystream << "SELECT ";
+  Querystream << TraceName;
+  Querystream << ".";
+  Querystream << TraceName;
+  Querystream << "ID, ";
+  Querystream << TraceName;
+  Querystream << ".Points, coordinate.TCoord, color.Red,\
+                 color.Green, color.Blue, color.Alpha from (";
+  Querystream << TraceName;
+  Querystream << " left join coordinate on coordinate.CoordID = ";
+  Querystream << TraceName;
+  Querystream << ".coordIDMax) left join color on ";
+  Querystream << TraceName;
+  Querystream << ".colorID = color.colorID  where ImagingSessionID = ";
+  Querystream << ImgSessionID;
+  Querystream << ";";
+
+  query->SetQuery(Querystream.str().c_str());
+  if ( !query->Execute() )
+    {
+    itkGenericExceptionMacro(
+      << "return info Contours query failed"
+      << query->GetLastErrorText() );
+    DatabaseConnector->Close();
+    DatabaseConnector->Delete();
+    query->Delete();
+    return Results;
+    }
+
+  while (query->NextRow())
+    {
+      {
+      GoDBTraceInfoHelper temp;
+      temp.TraceID = query->DataValue(0).ToInt();
+      vtkPolyDataMySQLTextReader* convert_reader =
+      vtkPolyDataMySQLTextReader::New();
+      std::string polydata_string = query->DataValue(1).ToString();
+      convert_reader->SetIsContour( true );
+      vtkPolyData* output = convert_reader->GetPolyData( polydata_string );
+      temp.Points = output;
+      temp.TimePoint = query->DataValue(2).ToUnsignedInt();
+      temp.Red = query->DataValue(3).ToUnsignedInt();
+      temp.Green = query->DataValue(4).ToUnsignedInt();
+      temp.Blue = query->DataValue(5).ToUnsignedInt();
+      temp.Alpha = query->DataValue(6).ToUnsignedInt();
+      Results.push_back(temp);
+      }
+    }
+  return Results;
+}

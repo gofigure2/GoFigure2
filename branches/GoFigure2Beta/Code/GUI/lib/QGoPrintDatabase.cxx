@@ -91,7 +91,7 @@ QGoPrintDatabase( QWidget* iParent ) :
 
   m_VisibilityAction = new QAction( this );
   m_VisibilityAction->setCheckable( true );
-
+  
   QObject::connect( m_VisibilityAction, SIGNAL( toggled( bool ) ),
     this, SLOT( setVisible( bool ) ) );
 
@@ -203,6 +203,8 @@ void QGoPrintDatabase::FillTableFromDatabase()
   GetContentAndDisplayFromDB< GoDBMeshRow    >( "mesh", MeshTable );
   GetContentAndDisplayFromDB< GoDBTrackRow   >( "track", TrackTable );
   GetContentAndDisplayFromDB< GoDBLineageRow >( "lineage", LineageTable );
+
+  LoadContoursAndMeshesFromDB(m_DatabaseConnector);
 
   CloseDBConnectionForTables();
 }
@@ -489,4 +491,15 @@ void QGoPrintDatabase::AddToExistingCollection()
       }
     }
   CloseDBConnectionForTables();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoPrintDatabase::LoadContoursAndMeshesFromDB(
+  vtkMySQLDatabase* DatabaseConnector)
+{  
+  m_ContoursInfo = GetTracesInfoFromDB(DatabaseConnector,"contour",
+    m_ImgSessionID);  
+  m_MeshesInfo   = GetTracesInfoFromDB(DatabaseConnector,"mesh",
+    m_ImgSessionID);
 }

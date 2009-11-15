@@ -151,7 +151,7 @@ void QTableWidgetChild::SelectRowFigureID (int FigureID)
 //--------------------------------------------------------------------------
 /** \note quick and nasty...*/
  void QTableWidgetChild::TracesToHighlight(
-  std::string TraceName,std::vector<GoTraceToHighLightInfo> & ioTracesInfo)
+  std::string TraceName,std::vector<GoDBTraceInfoHelper> & ioTracesInfo)
 {
   //get the selected rows:
   QList<QTableWidgetSelectionRange> Selection;
