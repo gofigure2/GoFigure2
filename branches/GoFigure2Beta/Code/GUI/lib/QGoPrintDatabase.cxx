@@ -135,11 +135,13 @@ void QGoPrintDatabase::QPrintColumnNames( QString TableName,
     QTableWidgetItem* HeaderCol=new QTableWidgetItem;
     std::string NameHeader;
     NameHeader =ColumnNames[i];
+    
     HeaderCol->setText(NameHeader.c_str());
     QFont serifFont("Arial", 10, QFont::Bold);
     HeaderCol->setFont(serifFont);
     QTabTableName->setHorizontalHeaderItem(i,HeaderCol);
     QTabTableName->resizeColumnToContents(i);
+    
     }
 
   QTabTableName->horizontalHeader()->setSortIndicatorShown(true);

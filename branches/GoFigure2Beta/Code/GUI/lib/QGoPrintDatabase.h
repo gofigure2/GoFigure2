@@ -225,17 +225,23 @@ protected:
           {
           QTableWidgetItem* HeaderCol = new QTableWidgetItem;
           HeaderCol = TableToFill->horizontalHeaderItem(j);
-          std::string Value = (*RowContainer)[i].second.GetMapValue (HeaderCol->text().toStdString());
-          if (Value == "noValue")
+          //don't print the contents for the column points:
+          if (HeaderCol->text().toStdString()!= "Points")     
+          //if (!ColumnName.empty()) //check that it is not the column empty (points):todo:make it cleaner
             {
-            return;
-            }
-          else
-            {
-            QTableWidgetNumericalItem* CellTable = new QTableWidgetNumericalItem;
-            CellTable->setText(Value.c_str());
-            TableToFill->setItem(i,j,CellTable);
-            }
+            std::string ColumnName = HeaderCol->text().toStdString();
+            std::string Value = (*RowContainer)[i].second.GetMapValue (HeaderCol->text().toStdString());
+            if (Value == "noValue")
+              {
+              return;
+              }
+            else
+              {
+              QTableWidgetNumericalItem* CellTable = new QTableWidgetNumericalItem;
+              CellTable->setText(Value.c_str());
+              TableToFill->setItem(i,j,CellTable);
+              }
+            }//ENDIF
           }//ENDFOR
          }// ENDELSE
       i++;
