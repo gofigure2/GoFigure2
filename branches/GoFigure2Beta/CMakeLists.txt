@@ -217,6 +217,8 @@ IF( VTK_FOUND )
 
     INCLUDE( CTest )
 
+    SET( QGoResourceFile ${GOFIGURE2_SOURCE_DIR}/Resources/axes.qrc )
+
     SET( QGoGUISRC_CXX
       ${GOFIGURE2_SOURCE_DIR}/Code/GUI/src/QGoTabManager.cxx
       ${GOFIGURE2_SOURCE_DIR}/Code/GUI/src/QGoMainWindow.cxx
