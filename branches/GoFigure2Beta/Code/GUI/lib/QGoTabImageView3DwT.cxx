@@ -43,7 +43,6 @@ QGoTabImageView3DwT( QWidget* iParent ) :
   setupUi( this );
 
   m_DataBaseTables = new QGoPrintDatabase;
-  //ConnectForTheDatabaseTables();
   
   for( int i = 0; i < 3; i++ )
     {

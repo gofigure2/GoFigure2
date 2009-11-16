@@ -43,6 +43,7 @@
 #include "QGoTabImageView2D.h"
 #include "QGoTabImageView3D.h"
 #include "QGoTabImageView3DwT.h"
+#include "QGoPrintDatabase.h"
 
 // Plugin stuff
 #include "QGoPluginHelper.h"
@@ -241,6 +242,7 @@ void QGoMainWindow::openFilesfromDB()
   /// \bug Works only for PNG (Pizza Talk)! (14th Nov 2009)
   CreateNewTabFor3DwtImage( m_DBWizard->GetMultiIndexFileContainer(),
     GoFigure::PNG, m_DBWizard->GetMegaCaptureHeaderFilename(), 0 );
+
 }
 //--------------------------------------------------------------------------
 
@@ -462,6 +464,12 @@ CreateNewTabFor3DwtImage(
   QGoTabImageView3DwT* w3t = new QGoTabImageView3DwT;
   w3t->SetMegaCaptureFile( iFileList, iFileType, iHeader, iTimePoint );
   w3t->Update();
+  //get the content of the tables fron the database to fill the table widget:
+  w3t->m_DataBaseTables->SetDatabaseVariables("gofiguredatabase",
+    m_DBWizard->GetServer().toStdString(),m_DBWizard->GetLogin().toStdString(),
+    m_DBWizard->GetPassword().toStdString(),m_DBWizard->GetImagingSessionID(),
+    m_DBWizard->GetImagingSessionName().toStdString());
+  w3t->m_DataBaseTables->FillTableFromDatabase();
 
   for( std::list< QAction* >::iterator
     list_it = m_TabDimPluginActionMap[w3t->GetTabDimensionType()].begin();

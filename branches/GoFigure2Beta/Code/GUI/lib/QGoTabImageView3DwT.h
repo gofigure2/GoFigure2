@@ -112,7 +112,7 @@ public:
    * @param iId
    */
   virtual void ValidateContour( const int& iId );
-
+  QGoPrintDatabase* m_DataBaseTables;
 signals:
   void TimePointChanged( int TimePoint );
   void SliceViewXYChanged( int Slice );
@@ -169,7 +169,7 @@ protected:
 
   QGoVisualizationDockWidget*       m_VisuDockWidget;
   QGoManualSegmentationDockWidget*  m_ManualSegmentationDockWidget;
-  QGoPrintDatabase*                 m_DataBaseTables;
+  
 
   std::vector< vtkContourWidget* >                      m_ContourWidget;
   std::vector< vtkOrientedGlyphContourRepresentation* > m_ContourRepresentation;
