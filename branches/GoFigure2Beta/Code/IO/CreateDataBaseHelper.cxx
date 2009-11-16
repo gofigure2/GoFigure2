@@ -463,7 +463,7 @@ std::string TrackTable()
     `CoordIDMax` INT NOT NULL ,\
     `CoordIDMin` INT NOT NULL ,\
     `TrackFamilyID` INT NULL ,\
-    `Points` TEXT NULL ,\
+    `Points` LONGTEXT NULL ,\
     `ImagingSessionID` INT NOT NULL ,\
     PRIMARY KEY (`TrackID`) ,\
     INDEX `FK_Track_ColorID` (`ColorID` ASC) ,\
@@ -489,7 +489,7 @@ std::string MeshTable()
     `ColorID` INT NOT NULL DEFAULT '1',\
     `TrackID` INT NULL ,\
     `ImagingSessionID` INT NOT NULL ,\
-    `Points` TEXT NULL ,\
+    `Points` LONGTEXT NULL ,\
     PRIMARY KEY (`MeshID`) ,\
     INDEX `FK_Mesh_CellTypeID` (`CellTypeID` ASC) ,\
     INDEX `FK_Mesh_CoordIDMax` (`CoordIDMax` ASC) ,\
@@ -513,7 +513,7 @@ std::string ContourTable()
     `ColorID` INT NULL ,\
     `CoordIDMax` INT NOT NULL ,\
     `CoordIDMin` INT NOT NULL ,\
-    `Points` TEXT NOT NULL ,\
+    `Points` LONGTEXT NOT NULL ,\
     PRIMARY KEY (`ContourID`) ,\
     INDEX `FK_Contour_MeshID` (`MeshID` ASC) ,\
     INDEX `FK_Contour_CoordIDMax` (`CoordIDMax` ASC) ,\
@@ -569,7 +569,7 @@ std::string LineageTable()
     `CoordIDMax` INT NOT NULL ,\
     `CoordIDMin` INT NOT NULL ,\
     `ColorID` INT NOT NULL DEFAULT '3',\
-    `Points` TEXT NOT NULL ,\
+    `Points` LONGTEXT NOT NULL ,\
     `TrackIDRoot` INT NOT NULL ,\
     `ImagingSessionID` INT NOT NULL ,\
     PRIMARY KEY (`LineageID`) ,\
