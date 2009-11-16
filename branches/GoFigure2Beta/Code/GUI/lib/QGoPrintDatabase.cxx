@@ -98,11 +98,11 @@ QGoPrintDatabase( QWidget* iParent ) :
   QObject::connect( this, SIGNAL( customContextMenuRequested( const QPoint & ) ),
     this, SLOT( CreateContextMenu( const QPoint & ) ) );
   
-  QObject::connect( this->ContourTable, SIGNAL(itemSelectionChanged()),
-    this, SLOT(ChangeTracesToHighLightInfoFromTableWidget()));
+ // QObject::connect( this->ContourTable, SIGNAL(itemSelectionChanged()),
+   // this, SLOT(ChangeTracesToHighLightInfoFromTableWidget()));
 
-  QObject::connect( this->MeshTable, SIGNAL(itemSelectionChanged()),
-    this, SLOT(ChangeTracesToHighLightInfoFromTableWidget()));
+ // QObject::connect( this->MeshTable, SIGNAL(itemSelectionChanged()),
+ //   this, SLOT(ChangeTracesToHighLightInfoFromTableWidget()));
 
 }
 //--------------------------------------------------------------------------
@@ -474,7 +474,7 @@ void QGoPrintDatabase::AddToExistingCollection()
           }
       case 1: //mesh
           {
-          QStringList ListMeshes = this->ContourTable->ValuesForSelectedRows("MeshID");
+          QStringList ListMeshes = this->MeshTable->ValuesForSelectedRows("MeshID");
           m_CollectionOfMeshes->AddSelectedTracesToCollection(ListMeshes,
             CollectionID.toInt(),m_DatabaseConnector);
           this->UpdateContentAndDisplayFromDB<GoDBMeshRow>("mesh",
@@ -483,7 +483,7 @@ void QGoPrintDatabase::AddToExistingCollection()
           }
       case 2: //track
         {
-        QStringList ListTracks = this->ContourTable->ValuesForSelectedRows("TrackID");
+        QStringList ListTracks = this->TrackTable->ValuesForSelectedRows("TrackID");
         m_CollectionOfTracks->AddSelectedTracesToCollection(ListTracks,
           CollectionID.toInt(),m_DatabaseConnector);
         this->UpdateContentAndDisplayFromDB<GoDBTrackRow>("track",
