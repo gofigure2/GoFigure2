@@ -81,7 +81,7 @@ Read()
 
     unsigned int ch;
 
-    for( unsigned int i = 0; m_NumberOfMeshes; i++ )
+    for( unsigned int i = 0; i < m_NumberOfMeshes; i++ )
       {
       InternalMeshStructure mesh( m_NumberOfChannels );
 

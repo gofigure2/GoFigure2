@@ -92,9 +92,12 @@ Read()
       {
       getline( ifs, line );
       }
-    std::string date;
-    ifs >>word >>date;
-    std::cout <<"** " <<date <<std::endl;
+    std::string date, hours;
+    ifs >>word >>date >>hours;
+    m_CreationDate = date;
+    m_CreationDate += hours;
+
+    std::cout <<"** " <<m_CreationDate <<std::endl;
     }
   else
     {
