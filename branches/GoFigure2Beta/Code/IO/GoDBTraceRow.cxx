@@ -59,7 +59,9 @@ GoDBTraceRow::GoDBTraceRow(vtkMySQLDatabase* DatabaseConnector,
     ConvertToString<unsigned int>(ImgSessionID);
 
   vtkPolyDataMySQLTextWriter* convert = vtkPolyDataMySQLTextWriter::New();
-  this->m_MapRow["Points"] = convert->GetMySQLText(TraceVisu);
+  std::string PointsString = convert->GetMySQLText(TraceVisu);
+  this->SetField("Points",PointsString);
+  //this->m_MapRow["Points"] = convert->GetMySQLText(TraceVisu);
 }
 //-------------------------------------------------------------------------
 
