@@ -46,7 +46,7 @@ GoDBRow::GoDBRow()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-GoDBRow::~GoDBRow() 
+GoDBRow::~GoDBRow()
 {
 
 }
@@ -117,6 +117,20 @@ std::map<std::string,std::string>::iterator GoDBRow::MapEnd()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+std::map<std::string,std::string>::const_iterator GoDBRow::ConstMapBegin()
+{
+  return m_MapRow.begin();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::map<std::string,std::string>::const_iterator GoDBRow::ConstMapEnd()
+{
+  return m_MapRow.end();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 std::string GoDBRow::GetMapValue (std::string key)
 {
   std::string MapValue = "noValue";
@@ -128,7 +142,7 @@ std::string GoDBRow::GetMapValue (std::string key)
       {
       MapValue = iter->second;
       /*Need to test if the value is not a string previously put in the map by SetField
-      if so, the value will be ""value"" and need to be transformed to "value". First, 
+      if so, the value will be ""value"" and need to be transformed to "value". First,
       find the 1rst character and save it as CharacterToCompare:*/
       std::string CharacterToCompare = MapValue.substr(0,1);
 
@@ -146,5 +160,5 @@ std::string GoDBRow::GetMapValue (std::string key)
     }
   return MapValue;
 }
-  
+
 

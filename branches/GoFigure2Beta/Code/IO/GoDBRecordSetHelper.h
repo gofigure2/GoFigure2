@@ -81,5 +81,19 @@ int AddOnlyOneNewObjectInTable( vtkMySQLDatabase* DatabaseConnector,
   return MaxValueForOneColumnInTable(DatabaseConnector,IDColumnName,TableName );
 }
 
+template< class T >
+int AddOnlyOneNewObjectInTable( vtkMySQLDatabase* DatabaseConnector,
+  const std::string& TableName,T* myNewObject, const std::string IDColumnName )
+{
+  typedef GoDBRecordSet< T >   SetType;
+
+  SetType mySet;
+  mySet.SetConnector( DatabaseConnector );
+  mySet.SetTableName( TableName );
+  mySet.AddObject( *myNewObject );
+  mySet.SaveInDB();
+
+  return MaxValueForOneColumnInTable(DatabaseConnector,IDColumnName,TableName );
+}
 
 #endif

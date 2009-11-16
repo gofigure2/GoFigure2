@@ -66,13 +66,25 @@ public:
   void SetCellType(std::string CellTypeName);/**\todo */
   void SetSubCellType(std::string SubCellTypeName); /**\todo */
 
-  /**\brief save the contour in the database and return the ID of the new 
+  /**\brief save the contour in the database and return the ID of the new
   created contour*/
   int SaveInDB(vtkMySQLDatabase* DatabaseConnector);
 
+  friend std::ostream& operator << ( std::ostream& os, const GoDBMeshRow& c )
+    {
+    for( std::map<std::string,std::string>::const_iterator it = c.m_MapRow.begin();
+        it != c.m_MapRow.end();
+        ++it )
+      {
+      os <<it->first <<" = " <<it->second <<std::endl;
+      }
+
+    return os;
+    }
+
 protected:
   virtual void InitializeMap();
-    
+
 };
 
 #endif

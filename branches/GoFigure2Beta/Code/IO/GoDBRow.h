@@ -74,13 +74,27 @@ public:
   std::string PrintColumnNames();
   std::vector<std::string> GetVectorColumnNames();
   std::map<std::string,std::string>::iterator MapBegin();
+  std::map<std::string,std::string>::const_iterator ConstMapBegin();
   std::map<std::string,std::string>::iterator MapEnd();
+  std::map<std::string,std::string>::const_iterator ConstMapEnd();
 
   /**
   \brief return the value for the field map[key] after having removed the "
   at the beginning and at the end of the value if it is a string in order to get
   the original value. */
   std::string GetMapValue (std::string key);
+
+  friend std::ostream& operator << ( std::ostream& os, const GoDBRow& c )
+    {
+    for( std::map<std::string,std::string>::const_iterator it = c.m_MapRow.begin();
+        it != c.m_MapRow.end();
+        ++it )
+      {
+      os <<it->first <<" = " <<it->second <<std::endl;
+      }
+
+    return os;
+    }
 
 protected:
   virtual void InitializeMap() = 0;
