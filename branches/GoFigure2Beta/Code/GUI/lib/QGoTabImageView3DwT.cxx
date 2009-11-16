@@ -197,6 +197,11 @@ void QGoTabImageView3DwT::CreateAllViewActions()
   QuadViewAction->setCheckable( true );
   QuadViewAction->setChecked( true );
 
+  QIcon quadviewicon;
+  quadviewicon.addPixmap( QPixmap(QString::fromUtf8(":/fig/4views.png")),
+    QIcon::Normal, QIcon::Off );
+  QuadViewAction->setIcon(quadviewicon);
+
   group->addAction( QuadViewAction );
 
   this->m_ViewActions.push_back( QuadViewAction );
@@ -206,6 +211,11 @@ void QGoTabImageView3DwT::CreateAllViewActions()
 
   QAction* FullScreenXYAction = new QAction( tr( "Full-Screen XY" ), this );
   FullScreenXYAction->setCheckable( true );
+
+  QIcon xyicon;
+  xyicon.addPixmap( QPixmap(QString::fromUtf8(":/fig/xy.png")),
+    QIcon::Normal, QIcon::Off );
+  FullScreenXYAction->setIcon( xyicon );
 
   group->addAction( FullScreenXYAction );
 
@@ -217,6 +227,11 @@ void QGoTabImageView3DwT::CreateAllViewActions()
   QAction* FullScreenXZAction = new QAction( tr( "Full-Screen XZ" ), this );
   FullScreenXZAction->setCheckable( true );
 
+  QIcon xzicon;
+  xzicon.addPixmap( QPixmap(QString::fromUtf8(":/fig/zx.png")),
+    QIcon::Normal, QIcon::Off );
+  FullScreenXZAction->setIcon( xzicon );
+
   group->addAction( FullScreenXZAction );
 
   this->m_ViewActions.push_back( FullScreenXZAction );
@@ -227,6 +242,11 @@ void QGoTabImageView3DwT::CreateAllViewActions()
   QAction* FullScreenYZAction = new QAction( tr( "Full-Screen YZ" ), this );
   FullScreenYZAction->setCheckable( true );
 
+  QIcon yzicon;
+  yzicon.addPixmap( QPixmap(QString::fromUtf8(":/fig/yz.png")),
+    QIcon::Normal, QIcon::Off );
+  FullScreenYZAction->setIcon( yzicon );
+
   group->addAction( FullScreenYZAction );
 
   this->m_ViewActions.push_back( FullScreenYZAction );
@@ -236,6 +256,11 @@ void QGoTabImageView3DwT::CreateAllViewActions()
 
   QAction* FullScreenXYZAction = new QAction( tr( "Full-Screen XYZ" ), this );
   FullScreenXYZAction->setCheckable( true );
+
+  QIcon xyzicon;
+  xyzicon.addPixmap( QPixmap(QString::fromUtf8(":/fig/xyz.png")),
+    QIcon::Normal, QIcon::Off );
+  FullScreenXYZAction->setIcon( xyzicon );
 
   group->addAction( FullScreenXYZAction );
 
@@ -252,6 +277,11 @@ void QGoTabImageView3DwT::CreateAllViewActions()
   QAction* LookupTableAction = new QAction( tr( "Lookup Table" ), this );
   LookupTableAction->setStatusTip( tr(" Change the associated lookup table" ) );
 
+  QIcon luticon;
+  luticon.addPixmap( QPixmap(QString::fromUtf8(":/fig/LookupTable.png")),
+    QIcon::Normal, QIcon::Off );
+  LookupTableAction->setIcon( luticon );
+
   // Here write the connection
   QObject::connect( LookupTableAction, SIGNAL( triggered() ),
     this, SLOT( ChangeLookupTable() ) );
@@ -260,6 +290,12 @@ void QGoTabImageView3DwT::CreateAllViewActions()
 
   QAction* ScalarBarAction = new QAction( tr( "Display Scalar Bar" ), this );
   ScalarBarAction->setCheckable( true );
+
+  QIcon scalarbaricon;
+  scalarbaricon.addPixmap( QPixmap(QString::fromUtf8(":/fig/scalarbar.png")),
+    QIcon::Normal, QIcon::Off );
+  ScalarBarAction->setIcon( scalarbaricon );
+
   this->m_ViewActions.push_back( ScalarBarAction );
 
   QObject::connect( ScalarBarAction, SIGNAL( toggled( bool ) ),
