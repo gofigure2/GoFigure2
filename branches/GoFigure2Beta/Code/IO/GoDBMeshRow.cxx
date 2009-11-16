@@ -43,7 +43,7 @@
 #include "GoDBRecordSetHelper.h"
 #include <iostream>
 
-GoDBMeshRow::GoDBMeshRow()
+GoDBMeshRow::GoDBMeshRow():GoDBTraceRow()
 {
   this->InitializeMap();
 }
@@ -52,21 +52,20 @@ GoDBMeshRow::GoDBMeshRow()
 //-------------------------------------------------------------------------
 GoDBMeshRow::GoDBMeshRow(vtkMySQLDatabase* DatabaseConnector,
   GoDBCoordinateRow Min, GoDBCoordinateRow Max,unsigned int ImgSessionID,
-  vtkPolyData* TraceVisu)
+  vtkPolyData* TraceVisu):GoDBTraceRow(DatabaseConnector,TraceVisu,Min,Max,
+    ImgSessionID)
 {
-  GoDBTraceRow::GoDBTraceRow(DatabaseConnector,TraceVisu,Min,Max,
-    ImgSessionID);
+  this->InitializeMap();
   if (this->DoesThisBoundingBoxMeshExist(DatabaseConnector))
     {
     std::cout<<"The bounding box alreaady exists for this Mesh"<<std::endl;
-    }
+    }   
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void GoDBMeshRow::InitializeMap()
 {
-  GoDBTraceRow::InitializeMap();
   this->m_MapRow["MeshID"] = ConvertToString<int>(0);
   this->m_MapRow["CellTypeID"] = ConvertToString<int>(1);
   this->m_MapRow["SubCellularID"] = ConvertToString<int>(1);
@@ -86,7 +85,7 @@ int GoDBMeshRow::DoesThisBoundingBoxMeshExist(vtkMySQLDatabase* DatabaseConnecto
 //-------------------------------------------------------------------------
 int GoDBMeshRow::SaveInDB(vtkMySQLDatabase* DatabaseConnector)
 {
-  std::cout <<*this <<std::endl;
+  //std::cout <<*this <<std::endl;
   return AddOnlyOneNewObjectInTable<GoDBMeshRow>( DatabaseConnector,
     "mesh", this, "MeshID");
 }
