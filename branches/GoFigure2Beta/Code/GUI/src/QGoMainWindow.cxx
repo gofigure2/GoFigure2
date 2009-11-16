@@ -237,12 +237,27 @@ void QGoMainWindow::on_actionUse_DataBase_triggered()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+/// \todo quick and nasty!!! Needs to be fixed :-$...
 void QGoMainWindow::openFilesfromDB()
 {
   /// \bug Works only for PNG (Pizza Talk)! (14th Nov 2009)
-  CreateNewTabFor3DwtImage( m_DBWizard->GetMultiIndexFileContainer(),
-    GoFigure::PNG, m_DBWizard->GetMegaCaptureHeaderFilename(), 0 );
+  if( m_DBWizard->GetMultiIndexFileContainer().size() != 0 )
+    {
+    CreateNewTabFor3DwtImage( m_DBWizard->GetMultiIndexFileContainer(),
+      GoFigure::PNG, m_DBWizard->GetMegaCaptureHeaderFilename(), 0 );
+    }
+  else
+    {
+    std::vector< std::vector< std::string > >
+      listoffiles = m_DBWizard->GetFilenamesFromDB();
 
+    itk::MegaCaptureImport::Pointer importer = itk::MegaCaptureImport::New();
+    importer->SetFileName( listoffiles[0][0] );
+    importer->Update();
+
+    CreateNewTabFor3DwtImage( importer->GetOutput(), GoFigure::PNG,
+        importer->GetHeaderFilename(), 0 );
+    }
 }
 //--------------------------------------------------------------------------
 
@@ -751,14 +766,14 @@ void QGoMainWindow::on_actionAbout_triggered( )
 
   QMessageBox::about( this, tr( "<*)0|00|0>< About GoFigure" ), message );
 }
-//--------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 
-//--------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 void QGoMainWindow::on_actionAbout_Qt_triggered( )
 {
   QMessageBox::aboutQt( this, tr( "About Qt" ) );
 }
-//--------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void QGoMainWindow::on_actionGoFigure2_Website_triggered( )

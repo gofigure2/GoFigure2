@@ -599,7 +599,14 @@ GoFigureFileInfoHelperMultiIndexContainer
 QGoCreateImgSessionPage::
 GetMultiIndexFileContainer()
 {
-  return m_importFileInfoList->GetOutput();
+  if( m_importFileInfoList.IsNotNull() )
+    {
+    return m_importFileInfoList->GetOutput();
+    }
+  else
+    {
+    return GoFigureFileInfoHelperMultiIndexContainer();
+    }
 }
 //-------------------------------------------------------------------------
 
