@@ -208,7 +208,7 @@ void QGoPrintDatabase::FillTableFromDatabase()
   this->setWindowTitle( title );
   m_VisibilityAction->setText( title );
 
-  GetContentAndDisplayFromDB< GoDBContourRow >( "contour", ContourTable );
+  GetContentAndDisplayFromDB< GoDBContourRow >( "contour", ContourTable);
   GetContentAndDisplayFromDB< GoDBMeshRow    >( "mesh", MeshTable );
   GetContentAndDisplayFromDB< GoDBTrackRow   >( "track", TrackTable );
   GetContentAndDisplayFromDB< GoDBLineageRow >( "lineage", LineageTable );
@@ -222,7 +222,7 @@ void QGoPrintDatabase::FillTableFromDatabase()
 //--------------------------------------------------------------------------
 void QGoPrintDatabase::closeEvent(QCloseEvent* iEvent)
 {
-  int r = QMessageBox::warning(this, tr(""),
+  /*int r = QMessageBox::warning(this, tr(""),
                         tr("Are you sure you want to close\n"
                            "permanently the table?"),
                           QMessageBox::Yes,
@@ -243,7 +243,7 @@ void QGoPrintDatabase::closeEvent(QCloseEvent* iEvent)
   else
     {
     iEvent->ignore();
-    }
+    }*/
 
   m_VisibilityAction->setChecked( false );
 }

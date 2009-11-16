@@ -124,7 +124,7 @@ protected:
     database, then display them in the QTableWidgetchild.
   */
   template< class myT >
-  void GetContentAndDisplayFromDB( QString TableName, QTableWidgetChild* Table )
+  void GetContentAndDisplayFromDB( QString TableName, QTableWidgetChild* Table)
     {
     std::vector< std::string > ColumnNamesContainer;
 
@@ -137,6 +137,12 @@ protected:
     SetType* mySet = new SetType;
     mySet->SetConnector(m_DatabaseConnector);
     mySet->SetTableName(TableName.toStdString());
+
+    std::stringstream WhereClause;
+    WhereClause << "ImagingSessionID = ";
+    WhereClause << m_ImgSessionID;
+    WhereClause << ";";
+    mySet->SetWhereString(WhereClause.str());
     mySet->PopulateFromDB();
 
     myT myNewObject;
@@ -180,6 +186,11 @@ protected:
     SetType* mySet = new SetType;
     mySet->SetConnector(DatabaseConnector);
     mySet->SetTableName( TableName.toStdString() );
+    std::stringstream WhereClause;
+    WhereClause << "ImagingSessionID = ";
+    WhereClause << m_ImgSessionID;
+    WhereClause << ";";
+    mySet->SetWhereString(WhereClause.str());
     mySet->PopulateFromDB();
 
     myT myNewObject;

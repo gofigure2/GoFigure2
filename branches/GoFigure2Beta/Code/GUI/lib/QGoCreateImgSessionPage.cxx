@@ -180,7 +180,7 @@ int QGoCreateImgSessionPage::CreateImgSession(vtkMySQLDatabase* DatabaseConnecto
   float XTileOverlap = 0; //todo get it from the header file
   float YTileOverlap = 0; //todo get it from the header file
   float ZTileOverlap = 0; //todo get it from the header file
-  std::string CreationDateTime = "2009-10-30 09:15:11"; //\todo: get the date+time creation date.
+  std::string CreationDateTime = "2009-10-30 09:15:16"; //\todo: get the date+time creation date.
 
   GoDBImgSessionRow myNewImgSession;
 
