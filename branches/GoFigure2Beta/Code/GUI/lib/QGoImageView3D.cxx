@@ -873,6 +873,11 @@ AddMesh( vtkPolyData* iMesh )
   vtkProperty* prop = vtkProperty::New();
   prop->SetColor( 0., 1., 1. );
 
-  View3D->AddDataSet( (vtkDataSet*) iMesh, prop, false );
+  for( unsigned int i = 0; i < m_Pool->GetNumberOfItems(); i++ )
+    {
+    vtkViewImage2D* viewer = m_Pool->GetItem( i );
+    viewer->AddDataSet( iMesh, prop, true, false );
+    }
+  View3D->AddDataSet( (vtkDataSet*) iMesh, prop, false, false );
 }
 //--------------------------------------------------------------------------

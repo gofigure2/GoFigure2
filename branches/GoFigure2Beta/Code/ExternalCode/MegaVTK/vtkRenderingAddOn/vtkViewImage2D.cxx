@@ -867,7 +867,10 @@ vtkActor* vtkViewImage2D::AddDataSet( vtkPolyData* dataset,
     cutter->SetInput( dataset );
 //     cutter->SetCutFunction( this->SliceImplicitPlane );
     cutter->SetClipFunction( this->SliceImplicitPlane );
-    cutter->InsideOutOn();
+
+/// \bug apparently it is necessary on yz and not on xz (or the opposite).
+//     cutter->InsideOutOn();
+
     mapper->SetInput( cutter->GetOutput() );
     }
   else
