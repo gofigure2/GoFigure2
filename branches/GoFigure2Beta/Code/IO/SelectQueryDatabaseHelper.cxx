@@ -540,7 +540,7 @@ std::vector<std::string> ListSpecificValuesForOneColumn(
     querystream << field;
     querystream << " = '";
     querystream << VectorValuess[i];
-    querystream << "' OR ";   
+    querystream << "' OR ";
     }
   querystream << field;
   querystream << " = '";
@@ -716,7 +716,7 @@ int MaxValueForOneColumnInTable(vtkMySQLDatabase* DatabaseConnector,
     querystream << field;
     querystream << " = '";
     querystream << VectorValues[i];
-    querystream << "' OR ";   
+    querystream << "' OR ";
     }
   querystream << field;
   querystream << " = '";
@@ -765,7 +765,7 @@ int MinValueForOneColumnInTable(vtkMySQLDatabase* DatabaseConnector,
     querystream << field;
     querystream << " = '";
     querystream << VectorValues[i];
-    querystream << "' OR ";   
+    querystream << "' OR ";
     }
   querystream << field;
   querystream << " = '";
@@ -838,11 +838,11 @@ int LastInsertID(std::string ServerName, std::string login,
 
 //------------------------------------------------------------------------------
 //query: "SELECT TableOne.ColumnOne, TableTwo.ColumnTwo FROM TableOne
-//JOIN TableTwo ON (TableOne.Foreignkey = TableTwo.PrimaryKey) 
+//JOIN TableTwo ON (TableOne.Foreignkey = TableTwo.PrimaryKey)
 //WHERE field = value;
 std::vector<std::pair<int,std::string> > ListSpecificValuesForTwoColumnsAndTwoTables(
   vtkMySQLDatabase* DatabaseConnector,std::string TableOne, std::string ColumnOne,
-  std::string TableTwo, std::string ColumnTwo,std::string ForeignKey, std::string PrimaryKey, 
+  std::string TableTwo, std::string ColumnTwo,std::string ForeignKey, std::string PrimaryKey,
   std::string field, std::string value)
 {
   std::vector<std::pair<int,std::string> > result;
@@ -949,10 +949,20 @@ std::vector<GoDBTraceInfoHelper> GetTracesInfoFromDB(
       std::string polydata_string = query->DataValue(1).ToString();
       if (!polydata_string.empty())
         {
-        convert_reader->SetIsContour( true );
+        if( TraceName.compare( "contour" ) == 0 )
+          {
+          convert_reader->SetIsContour( true );
+          }
+        else
+          {
+          if( TraceName.compare( "mesh" ) == 0 )
+            {
+            convert_reader->SetIsContour( false );
+            }
+          }
         vtkPolyData* output = convert_reader->GetPolyData( polydata_string );
         temp.Points = output;
-        }  
+        }
       temp.TimePoint = query->DataValue(2).ToUnsignedInt();
       temp.Red = query->DataValue(3).ToUnsignedInt();
       temp.Green = query->DataValue(4).ToUnsignedInt();

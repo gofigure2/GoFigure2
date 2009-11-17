@@ -43,7 +43,7 @@ QGoTabImageView3DwT( QWidget* iParent ) :
   setupUi( this );
 
   m_DataBaseTables = new QGoPrintDatabase;
-  
+
   for( int i = 0; i < 3; i++ )
     {
     this->m_ContourRepresentation.push_back( vtkOrientedGlyphContourRepresentation::New() );
@@ -1404,4 +1404,12 @@ LoadAllContoursForGivenTimePoint( const unsigned int& iT )
 }
 //-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+AddPolyData( vtkPolyData* iMesh )
+{
+  m_ImageView->AddMesh( iMesh );
+//   this->AddContour( 0, iMesh, 0 );
+}
 //-------------------------------------------------------------------------

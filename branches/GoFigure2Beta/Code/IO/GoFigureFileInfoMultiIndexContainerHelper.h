@@ -72,21 +72,22 @@ struct GoFigureFileInfoHelper
   struct m_TCoord {};
   struct m_Channel {};
 
+/// \todo commented for pizza talk
   typedef multi_index_container<
     GoFigureFileInfoHelper,
     indexed_by<
-      ordered_non_unique<
-        tag<m_PCoord>, BOOST_MULTI_INDEX_MEMBER(GoFigureFileInfoHelper,unsigned int,m_PCoord)>,
-      ordered_non_unique<
-        tag<m_RCoord>, BOOST_MULTI_INDEX_MEMBER(GoFigureFileInfoHelper,unsigned int,m_RCoord)>,
-      ordered_non_unique<
-        tag<m_CCoord>, BOOST_MULTI_INDEX_MEMBER(GoFigureFileInfoHelper,unsigned int,m_CCoord)>,
-      ordered_non_unique<
-        tag<m_XTileCoord>, BOOST_MULTI_INDEX_MEMBER(GoFigureFileInfoHelper,unsigned int,m_XTileCoord)>,
-      ordered_non_unique<
-        tag<m_YTileCoord>, BOOST_MULTI_INDEX_MEMBER(GoFigureFileInfoHelper,unsigned int,m_YTileCoord)>,
-      ordered_non_unique<
-        tag<m_ZTileCoord>, BOOST_MULTI_INDEX_MEMBER(GoFigureFileInfoHelper,unsigned int,m_ZTileCoord)>,
+//       ordered_non_unique<
+//         tag<m_PCoord>, BOOST_MULTI_INDEX_MEMBER(GoFigureFileInfoHelper,unsigned int,m_PCoord)>,
+//       ordered_non_unique<
+//         tag<m_RCoord>, BOOST_MULTI_INDEX_MEMBER(GoFigureFileInfoHelper,unsigned int,m_RCoord)>,
+//       ordered_non_unique<
+//         tag<m_CCoord>, BOOST_MULTI_INDEX_MEMBER(GoFigureFileInfoHelper,unsigned int,m_CCoord)>,
+//       ordered_non_unique<
+//         tag<m_XTileCoord>, BOOST_MULTI_INDEX_MEMBER(GoFigureFileInfoHelper,unsigned int,m_XTileCoord)>,
+//       ordered_non_unique<
+//         tag<m_YTileCoord>, BOOST_MULTI_INDEX_MEMBER(GoFigureFileInfoHelper,unsigned int,m_YTileCoord)>,
+//       ordered_non_unique<
+//         tag<m_ZTileCoord>, BOOST_MULTI_INDEX_MEMBER(GoFigureFileInfoHelper,unsigned int,m_ZTileCoord)>,
       ordered_non_unique<
         tag<m_ZCoord>, BOOST_MULTI_INDEX_MEMBER(GoFigureFileInfoHelper,unsigned int,m_ZCoord)>,
       ordered_non_unique<

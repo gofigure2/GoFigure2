@@ -4,6 +4,7 @@
 #include "vtkRendererCollection.h"
 #include "vtkRenderer.h"
 #include "vtkTextProperty.h"
+#include "vtkProperty.h"
 #include "vtkImageClip.h"
 #include "vtkImagePermute.h"
 #include "vtkImageResample.h"
@@ -857,5 +858,21 @@ ShowScalarBar( const bool& iShow )
     View3D->SetShowScalarBar( iShow );
     View3D->Render();
     }
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+
+/**
+ * \todo use dynamic_cast or more appropriate cast operator
+ */
+void
+QGoImageView3D::
+AddMesh( vtkPolyData* iMesh )
+{
+  vtkProperty* prop = vtkProperty::New();
+  prop->SetColor( 0., 1., 1. );
+
+  View3D->AddDataSet( (vtkDataSet*) iMesh, prop, false );
 }
 //--------------------------------------------------------------------------

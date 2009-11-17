@@ -62,14 +62,15 @@ public:
 
   QGoPrintDatabase( QWidget* iParent = 0 );
   virtual ~QGoPrintDatabase();
-  /**\brief set all the values needed for the database*/
+
+  /** \brief set all the values needed for the database*/
   void SetDatabaseVariables(
     const std::string& iNameDB, const std::string& iServer,
     const std::string& iUser, const std::string& iPassword,
     const unsigned int& iImgSessionID, const std::string& iImgSessionName );
 
   /** \brief Create the QTableWidgetChild,get the columns names and the values stored
-  in the database, display them in the QTableWidgetChild and fill the info for the 
+  in the database, display them in the QTableWidgetChild and fill the info for the
   contours and meshes*/
   void FillTableFromDatabase();
 
@@ -115,7 +116,7 @@ protected:
   /** \brief Return the Index of the tab currently used: */
   int InWhichTableAreWe();
 
-  /**\brief initialize the m_ContoursInfo and m_MeshesInfo with the info from the
+  /** \brief initialize the m_ContoursInfo and m_MeshesInfo with the info from the
   database*/
   void LoadContoursAndMeshesFromDB(vtkMySQLDatabase* DatabaseConnector);
 
@@ -169,9 +170,9 @@ protected:
 
   /**
     \brief get the values of the table (type T) from the
-    database, then display them in the QTableWidgetchild.*/
-  /**\todo check that the values hasn't been modified first, then update
-  only in the database the modified ones*/
+    database, then display them in the QTableWidgetchild.
+    \todo check that the values hasn't been modified first, then update
+    only in the database the modified ones*/
   template< class myT >
   void UpdateContentAndDisplayFromDB( QString TableName, QTableWidgetChild* Table,
     vtkMySQLDatabase* DatabaseConnector)
@@ -237,7 +238,7 @@ protected:
           QTableWidgetItem* HeaderCol = new QTableWidgetItem;
           HeaderCol = TableToFill->horizontalHeaderItem(j);
           //don't print the contents for the column points:
-          if (HeaderCol->text().toStdString()!= "Points")     
+          if (HeaderCol->text().toStdString()!= "Points")
           //if (!ColumnName.empty()) //check that it is not the column empty (points):todo:make it cleaner
             {
             std::string ColumnName = HeaderCol->text().toStdString();
@@ -267,17 +268,17 @@ protected slots:
   void CreateContextMenu(const QPoint &pos);
   void DeleteTraces();
 
-  /** brief Create a new Collection row in the collection table and change the collection ID of the
-  selected contours to the new CollectionID created:*/
+  /** \brief Create a new Collection row in the collection table and change the
+  collection ID of the selected contours to the new CollectionID created:*/
   void CreateCorrespondingCollection();
 
   void AddToExistingCollection();
-  
-  /**\brief Update the m_ContoursInfo or m_MeshesInfo depending on which table the user
-  had clicked with the selected traces and emit a signal to say which m_tracesInfo has
+
+  /** \brief Update the m_ContoursInfo or m_MeshesInfo depending on which table
+  the user had clicked with the selected traces and emit a signal to say which m_tracesInfo has
   changed*/
   void ChangeTracesToHighLightInfoFromTableWidget();
-  
+
   void ChangeContoursToHighLightInfoFromVisu(
   std::list<int> iListContoursHighLightedInVisu);
 

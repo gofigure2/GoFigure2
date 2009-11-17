@@ -51,6 +51,8 @@ public:
   virtual void RemoveActor( const int& iId, vtkActor* iActor );
   virtual void AddActor( const int& iId, vtkActor* iActor );
 
+  void AddMesh( vtkPolyData* iMesh );
+
   std::vector< vtkActor* > AddContour( const int& iId,
       vtkPolyData* dataset,
       vtkProperty* property = NULL );

@@ -60,6 +60,9 @@
 #include "GoFigureGlobalDefinition.h"
 
 class QGoTabManager;
+class QGoTabImageView3DwT;
+class QGoTabImageView3D;
+class QGoTabImageView2D;
 
 #include "ui_go.h"
 
@@ -127,15 +130,16 @@ private:
   void UpdateRecentFileActions( QStringList list, QMenu *menu,
     QAction *recentFileActions[MaxRecentFiles] );
 
-  void CreateNewTabFor3DwtImage(
+  QGoTabImageView3DwT* CreateNewTabFor3DwtImage(
     GoFigureFileInfoHelperMultiIndexContainer iFileList,
     const GoFigure::FileType& iFileType,
     const std::string& iHeader,
     const int& iTimePoint );
 
-  void CreateNewTabFor3DwtImage( vtkLSMReader* iReader, const QString& iFile );
-  void CreateNewTabFor3DImage( vtkImageData*, const QString& );
-  void CreateNewTabFor2DImage( vtkImageData*, const QString& );
+  QGoTabImageView3DwT* CreateNewTabFor3DwtImage(
+    vtkLSMReader* iReader, const QString& iFile );
+  QGoTabImageView3D* CreateNewTabFor3DImage( vtkImageData*, const QString& );
+  QGoTabImageView2D* CreateNewTabFor2DImage( vtkImageData*, const QString& );
 
   /** \brief Open Image with given iFileName
   \param[in] iFileName  */

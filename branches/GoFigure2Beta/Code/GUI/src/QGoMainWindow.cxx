@@ -255,8 +255,32 @@ void QGoMainWindow::openFilesfromDB()
     importer->SetFileName( listoffiles[0][0] );
     importer->Update();
 
-    CreateNewTabFor3DwtImage( importer->GetOutput(), GoFigure::PNG,
-        importer->GetHeaderFilename(), 0 );
+    QGoTabImageView3DwT* w3t = CreateNewTabFor3DwtImage( importer->GetOutput(),
+      GoFigure::PNG, importer->GetHeaderFilename(), 0 );
+
+//     std::vector< GoDBTraceInfoHelper >::iterator
+//       c_it = w3t->m_DataBaseTables->m_ContoursInfo.begin();
+//
+//     while( c_it != w3t->m_DataBaseTables->m_ContoursInfo.end() )
+//       {
+//       if( (*c_it).TimePoint == 0 )
+//         {
+//         w3t->AddPolyData( (*c_it).Points );
+//         }
+//       ++c_it;
+//       }
+    std::vector< GoDBTraceInfoHelper >::iterator
+      c_it = w3t->m_DataBaseTables->m_MeshesInfo.begin();
+
+//     while( c_it != w3t->m_DataBaseTables->m_MeshesInfo.end() )
+      {
+      if( (*c_it).TimePoint == 0 )
+        {
+        w3t->AddPolyData( (*c_it).Points );
+        }
+      ++c_it;
+//       ++k;
+      }
     }
 }
 //--------------------------------------------------------------------------
@@ -468,8 +492,16 @@ OpenLSMImage( const QString& iFile, const int& iTimePoint )
     }
 }
 //--------------------------------------------------------------------------
-
-void QGoMainWindow::
+/**
+ *
+ * @param iFileList
+ * @param iFileType
+ * @param iHeader
+ * @param iTimePoint
+ * \todo Change the way to provide information about the database
+ */
+QGoTabImageView3DwT*
+QGoMainWindow::
 CreateNewTabFor3DwtImage(
   GoFigureFileInfoHelperMultiIndexContainer iFileList,
   const GoFigure::FileType& iFileType,
@@ -479,12 +511,16 @@ CreateNewTabFor3DwtImage(
   QGoTabImageView3DwT* w3t = new QGoTabImageView3DwT;
   w3t->SetMegaCaptureFile( iFileList, iFileType, iHeader, iTimePoint );
   w3t->Update();
+
+  // **********************
+  // Database information
   //get the content of the tables fron the database to fill the table widget:
-  w3t->m_DataBaseTables->SetDatabaseVariables("gofiguredatabase",
-    m_DBWizard->GetServer().toStdString(),m_DBWizard->GetLogin().toStdString(),
-    m_DBWizard->GetPassword().toStdString(),m_DBWizard->GetImagingSessionID(),
-    m_DBWizard->GetImagingSessionName().toStdString());
+  w3t->m_DataBaseTables->SetDatabaseVariables( "gofiguredatabase",
+    m_DBWizard->GetServer().toStdString(), m_DBWizard->GetLogin().toStdString(),
+    m_DBWizard->GetPassword().toStdString(), m_DBWizard->GetImagingSessionID(),
+    m_DBWizard->GetImagingSessionName().toStdString() );
   w3t->m_DataBaseTables->FillTableFromDatabase();
+  // **********************
 
   for( std::list< QAction* >::iterator
     list_it = m_TabDimPluginActionMap[w3t->GetTabDimensionType()].begin();
@@ -513,6 +549,8 @@ CreateNewTabFor3DwtImage(
   this->menuFiltering->setEnabled( true );
   this->menuSegmentation->setEnabled( true );
   this->CentralTabWidget->setCurrentIndex( idx );
+
+  return w3t;
 }
 //--------------------------------------------------------------------------
 /** \todo why not using iTimePoint instead of 0, in SetMultiFiles? */
@@ -554,7 +592,8 @@ CreateNewTabFor3DwtImage(
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoMainWindow::
+QGoTabImageView3DwT*
+QGoMainWindow::
 CreateNewTabFor3DwtImage( vtkLSMReader* iReader, const QString& iFile )
 {
   QGoTabImageView3DwT* w3t = new QGoTabImageView3DwT;
@@ -588,11 +627,14 @@ CreateNewTabFor3DwtImage( vtkLSMReader* iReader, const QString& iFile )
   this->menuFiltering->setEnabled( true );
   this->menuSegmentation->setEnabled( true );
   this->CentralTabWidget->setCurrentIndex( idx );
+
+  return w3t;
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoMainWindow::
+QGoTabImageView3D*
+QGoMainWindow::
 CreateNewTabFor3DImage( vtkImageData* iInput, const QString& iFile )
 {
   QGoTabImageView3D* w3 = new QGoTabImageView3D;
@@ -626,11 +668,14 @@ CreateNewTabFor3DImage( vtkImageData* iInput, const QString& iFile )
   this->menuFiltering->setEnabled( true );
   this->menuSegmentation->setEnabled( true );
   this->CentralTabWidget->setCurrentIndex( idx );
+
+  return w3;
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoMainWindow::
+QGoTabImageView2D*
+QGoMainWindow::
 CreateNewTabFor2DImage( vtkImageData* iInput, const QString& iFile )
 {
   QGoTabImageView2D* w2 = new QGoTabImageView2D;
@@ -665,6 +710,8 @@ CreateNewTabFor2DImage( vtkImageData* iInput, const QString& iFile )
   this->menuFiltering->setEnabled( true );
   this->menuSegmentation->setEnabled( true );
   this->CentralTabWidget->setCurrentIndex( idx );
+
+  return w2;
 }
 //--------------------------------------------------------------------------
 

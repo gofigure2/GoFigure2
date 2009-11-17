@@ -69,6 +69,9 @@ public:
     const std::string& iHeader,
     const unsigned int& iTimePoint  );
 
+  /** \todo must modify container*/
+  void AddPolyData( vtkPolyData* iMesh );
+
   /**
    *
    */
@@ -112,7 +115,9 @@ public:
    * @param iId
    */
   virtual void ValidateContour( const int& iId );
+
   QGoPrintDatabase* m_DataBaseTables;
+
 signals:
   void TimePointChanged( int TimePoint );
   void SliceViewXYChanged( int Slice );
@@ -169,7 +174,7 @@ protected:
 
   QGoVisualizationDockWidget*       m_VisuDockWidget;
   QGoManualSegmentationDockWidget*  m_ManualSegmentationDockWidget;
-  
+
 
   std::vector< vtkContourWidget* >                      m_ContourWidget;
   std::vector< vtkOrientedGlyphContourRepresentation* > m_ContourRepresentation;

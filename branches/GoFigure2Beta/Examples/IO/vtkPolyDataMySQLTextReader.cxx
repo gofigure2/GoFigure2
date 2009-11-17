@@ -4,11 +4,6 @@
 #include "vtkPolyData.h"
 #include "vtkPolyDataMySQLTextWriter.h"
 #include "vtkPolyDataMySQLTextReader.h"
-#include "vtkPolyDataMapper.h"
-#include "vtkActor.h"
-#include "vtkRenderer.h"
-#include "vtkRenderWindow.h"
-#include "vtkRenderWindowInteractor.h"
 
 int main( int argc, char** argv )
 {
