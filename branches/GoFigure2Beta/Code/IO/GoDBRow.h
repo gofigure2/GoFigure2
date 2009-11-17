@@ -56,7 +56,7 @@ class GoDBRow
 public:
 
   GoDBRow();
-  ~GoDBRow();
+  virtual ~GoDBRow();
 
   template<typename T>
   void SetField( std::string key, T value )
