@@ -95,6 +95,7 @@ Read()
     std::string date, hours;
     ifs >>word >>date >>hours;
     m_CreationDate = date;
+    m_CreationDate += " ";
     m_CreationDate += hours;
 
     std::cout <<"** " <<m_CreationDate <<std::endl;
