@@ -54,14 +54,15 @@ GoDBCollectionOfTraces::GoDBCollectionOfTraces()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-GoDBCollectionOfTraces::GoDBCollectionOfTraces( std::string iCollectionName,
-  std::string iCollectionIDName,std::string iTracesName, 
-  std::string iTracesIDName)
+GoDBCollectionOfTraces::GoDBCollectionOfTraces( 
+  std::string iCollectionName,std::string iTracesName)
 {
   m_CollectionName = iCollectionName;
-  m_CollectionIDName = iCollectionIDName;
+  m_CollectionIDName = m_CollectionName;
+  m_CollectionIDName += "ID";
   m_TracesName = iTracesName;
-  m_TracesIDName = iTracesIDName;
+  m_TracesIDName = m_TracesName;
+  m_TracesIDName += "ID";
 }
 //--------------------------------------------------------------------------
 
@@ -349,3 +350,219 @@ GoDBCoordinateRow GoDBCollectionOfTraces::GetExistingCoordMax(
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+std::vector<GoDBTraceInfoForTableWidget> GoDBCollectionOfTraces
+  ::GetCommonColumnsInfoForTraceTable()
+{
+  std::vector<GoDBTraceInfoForTableWidget> ColumnsInfo;
+  GoDBTraceInfoForTableWidget temp;
+
+  //Get the info for the TraceID:
+  temp.InfoName = this->m_TracesIDName;
+  temp.ColumnNameDatabase = this->m_TracesIDName;
+  temp.ColumnNameTableWidget = this->m_TracesIDName;
+  temp.TableNameDatabase = this->m_TracesName;
+  ColumnsInfo.push_back(temp);
+
+  //Get the info for the CollectionID:
+  temp.InfoName   = this->m_CollectionIDName;
+  temp.ColumnNameDatabase = this->m_CollectionIDName;
+  temp.ColumnNameTableWidget = this->m_CollectionIDName;
+  temp.TableNameDatabase = this->m_CollectionName;
+  ColumnsInfo.push_back(temp);
+
+  //Get the info for the ColorID of the trace:
+  std::string ColorTrace = this->m_TracesName;
+  ColorTrace += "Color";
+  temp.ColumnNameDatabase = "ColorID";
+  temp.ColumnNameTableWidget = "None";
+  temp.TableNameDatabase = this->m_TracesName;
+  temp.InfoName = ColorTrace;
+  ColumnsInfo.push_back(temp);
+
+  //Get the info for the Red value of the trace:
+  temp.ColumnNameDatabase = "Red";
+  temp.ColumnNameTableWidget = "None";
+  temp.TableNameDatabase = "color";
+  std::string OtherInfo = "RedFor";
+  OtherInfo += this->m_TracesName;
+  temp.InfoName = OtherInfo;
+  ColumnsInfo.push_back(temp);
+
+  //Get the info for the Green value of the trace:
+  temp.ColumnNameDatabase = "Green";
+  temp.ColumnNameTableWidget = "None";
+  temp.TableNameDatabase = "color";
+  OtherInfo = "GreenFor";
+  OtherInfo += this->m_TracesName;
+  temp.InfoName = OtherInfo;
+  ColumnsInfo.push_back(temp);
+
+  //Get the info for the Blue value of the trace:
+  temp.ColumnNameDatabase = "Blue";
+  temp.ColumnNameTableWidget = "None";
+  temp.TableNameDatabase = "color";
+  OtherInfo = "BlueFor";
+  OtherInfo += this->m_TracesName;
+  temp.InfoName = OtherInfo;
+  ColumnsInfo.push_back(temp);
+
+  //Get the info for the ColorID of the collection:
+  std::string ColorCollection = this->m_CollectionName;
+  ColorCollection += "Color";
+  temp.ColumnNameDatabase = "ColorID";
+  temp.ColumnNameTableWidget = "None";
+  temp.TableNameDatabase = this->m_CollectionName;
+  temp.InfoName = ColorCollection;
+  ColumnsInfo.push_back(temp);
+
+  //Get the info for the Red value of the collection:
+  temp.ColumnNameDatabase = "Red";
+  temp.ColumnNameTableWidget = "None";
+  temp.TableNameDatabase = "color";
+  OtherInfo = "RedFor";
+  OtherInfo += this->m_CollectionName;
+  temp.InfoName = OtherInfo;
+  ColumnsInfo.push_back(temp);
+
+  //Get the info for the Green value of the collection:
+  temp.ColumnNameDatabase = "Green";
+  temp.ColumnNameTableWidget = "None";
+  temp.TableNameDatabase = "color";
+  OtherInfo = "GreenFor";
+  OtherInfo += this->m_CollectionName;
+  temp.InfoName = OtherInfo;
+  ColumnsInfo.push_back(temp);
+
+  //Get the info for the Blue value of the collection:
+  temp.ColumnNameDatabase = "Blue";
+  temp.ColumnNameTableWidget = "None";
+  temp.TableNameDatabase = "color";
+  OtherInfo = "BlueFor";
+  OtherInfo += this->m_CollectionName;
+  temp.InfoName = OtherInfo;
+  ColumnsInfo.push_back(temp);
+  
+  //Get the info for the PCoord:
+  temp.InfoName = "PCoord";
+  temp.ColumnNameDatabase = "PCoord";
+  temp.ColumnNameTableWidget = "Plaque";
+  temp.TableNameDatabase = "coordinate";
+  ColumnsInfo.push_back(temp);
+
+  //Get the info for the RCoord:
+  temp.InfoName = "RCoord";
+  temp.ColumnNameDatabase = "RCoord";
+  temp.ColumnNameTableWidget = "Row";
+  temp.TableNameDatabase = "coordinate";
+  ColumnsInfo.push_back(temp);
+
+  //Get the info for the CCoord:
+  temp.InfoName = "CCoord";
+  temp.ColumnNameDatabase = "CCoord";
+  temp.ColumnNameTableWidget = "Column";
+  temp.TableNameDatabase = "coordinate";
+  ColumnsInfo.push_back(temp);
+
+  //Get the info for the XTile:
+  temp.InfoName = "XTile";
+  temp.ColumnNameDatabase = "XTile";
+  temp.ColumnNameTableWidget = "XTile";
+  temp.TableNameDatabase = "coordinate";
+  ColumnsInfo.push_back(temp);
+  
+  //Get the info for the YTile:
+  temp.InfoName = "YTile";
+  temp.ColumnNameDatabase = "YTile";
+  temp.ColumnNameTableWidget = "YTile";
+  temp.TableNameDatabase = "coordinate";
+  ColumnsInfo.push_back(temp);
+
+  //Get the info for the ZTile:
+  temp.InfoName = "ZTile";
+  temp.ColumnNameDatabase = "ZTile";
+  temp.ColumnNameTableWidget = "ZTile";
+  temp.TableNameDatabase = "coordinate";
+  ColumnsInfo.push_back(temp);
+  
+  //Get the info for the XMin:
+  temp.InfoName = "XMin";
+  temp.ColumnNameDatabase = "XCoord";
+  temp.ColumnNameTableWidget = "XMin";
+  temp.TableNameDatabase = "coordinate";
+  ColumnsInfo.push_back(temp);
+  
+  //Get the info for the YMin:
+  temp.InfoName = "YMin";
+  temp.ColumnNameDatabase = "YCoord";
+  temp.ColumnNameTableWidget = "YMin";
+  temp.TableNameDatabase = "coordinate";
+  ColumnsInfo.push_back(temp);
+  
+  //Get the info for the ZMin:
+  temp.InfoName = "ZMin";
+  temp.ColumnNameDatabase = "ZCoord";
+  temp.ColumnNameTableWidget = "ZMin";
+  temp.TableNameDatabase = "coordinate";
+  ColumnsInfo.push_back(temp);
+  
+  //Get the info for the XMax:
+  temp.InfoName = "XMax";
+  temp.ColumnNameDatabase = "XCoord";
+  temp.ColumnNameTableWidget = "XMax";
+  temp.TableNameDatabase = "coordinate";
+  ColumnsInfo.push_back(temp);
+
+  //Get the info for the YMax:
+  temp.InfoName = "YMax";
+  temp.ColumnNameDatabase = "YCoord";
+  temp.ColumnNameTableWidget = "YMax";
+  temp.TableNameDatabase = "coordinate";
+  ColumnsInfo.push_back(temp);
+
+  //Get the info for the ZMax:
+  temp.InfoName = "ZMax";
+  temp.ColumnNameDatabase = "ZCoord";
+  temp.ColumnNameTableWidget = "ZMax";
+  temp.TableNameDatabase = "coordinate";
+  ColumnsInfo.push_back(temp);
+  
+  GetSpecificInfoForTraceTable(ColumnsInfo);
+
+  return ColumnsInfo;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void GoDBCollectionOfTraces::GetSpecificInfoForTraceTable(
+    std::vector<GoDBTraceInfoForTableWidget> &ioSpecificInfos)
+{
+  if (this->m_TracesName == "Contour" || this->m_TracesName == "Mesh")
+    {
+    GoDBTraceInfoForTableWidget temp;
+    
+    //Get the info for the Time Point:
+    temp.InfoName = "TimePoint";
+    temp.ColumnNameDatabase = "TCoord";
+    temp.ColumnNameTableWidget = "TimePoint";
+    temp.TableNameDatabase = "coordinate";
+    ioSpecificInfos.push_back(temp);
+    }
+  else
+    {
+    GoDBTraceInfoForTableWidget temp;
+    
+    //Get the info for the Time Point Min:
+    temp.InfoName = "TimePointMin";
+    temp.ColumnNameDatabase = "TCoord";
+    temp.ColumnNameTableWidget = "TimePointMin";
+    temp.TableNameDatabase = "coordinate";
+    ioSpecificInfos.push_back(temp);
+    
+    //Get the info for the Time Point Max:
+    temp.InfoName = "TimePointMax";
+    temp.ColumnNameDatabase = "TCoord";
+    temp.ColumnNameTableWidget = "TimePointMax";
+    temp.TableNameDatabase = "coordinate";
+    ioSpecificInfos.push_back(temp);
+    }
+}

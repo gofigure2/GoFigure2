@@ -47,6 +47,7 @@
 #include "GoDBRecordSetHelper.h"
 #include "vtkMySQLDatabase.h"
 #include "GoDBCoordinateRow.h"
+#include "GoDBTraceInfoForTableWidget.h"
 #include <QStringList>
 
 class GoDBCollectionOfTraces
@@ -56,8 +57,7 @@ public:
 
   explicit QMEGAVTKADDON2_EXPORT GoDBCollectionOfTraces();
   explicit QMEGAVTKADDON2_EXPORT GoDBCollectionOfTraces(
-    std::string CollectionName,std::string CollectionIDName,
-    std::string Traces,std::string TracesIDName);
+    std::string CollectionName,std::string Traces);
   virtual  QMEGAVTKADDON2_EXPORT ~GoDBCollectionOfTraces();
  
   //void QMEGAVTKADDON2_EXPORT SetDatabaseVariables(
@@ -73,6 +73,10 @@ public:
   void QMEGAVTKADDON2_EXPORT AddSelectedTracesToCollection(
     QStringList ListSelectedTraces,int newCollectionID,
     vtkMySQLDatabase* DatabaseConnector);
+  
+  /** \brief Fill a vector of GoDBTraceInfoForTableWidget with the info
+  needed to fill the table widget for all the traces*/ 
+  std::vector<GoDBTraceInfoForTableWidget> GetCommonColumnsInfoForTraceTable();
 
   template< class myT >
   void QMEGAVTKADDON2_EXPORT CreateNewCollectionFromSelection(
@@ -93,6 +97,7 @@ public:
     AddSelectedTracesToCollection(ListSelectedTraces,
       NewCollectionID, DatabaseConnector);
     }
+
 
   QStringList QMEGAVTKADDON2_EXPORT ListCollectionID(
     vtkMySQLDatabase* DatabaseConnector);
@@ -123,34 +128,40 @@ protected:
       DatabaseConnector,m_CollectionName,myNewObject, m_CollectionIDName);
     }
 
-  /**\brief compare all the coordinate for all the traces inside the collection,
+  /** \brief compare all the coordinate for all the traces inside the collection,
   create the coordinate in the database with all the max and return it*/
   int GetCoordMaxID(vtkMySQLDatabase* DatabaseConnector,
     int CollectionID,QStringList ListSelectedTraces);
 
-  /**\brief compare all the coordinate for all the traces inside the collection,
+  /** \brief compare all the coordinate for all the traces inside the collection,
   create the coordinate in the database with all the min and return it*/
   int GetCoordMinID(vtkMySQLDatabase* DatabaseConnector,
     int CollectionID,QStringList ListSelectedTraces);
 
-  /**\brief return the coordinate min of all the coordinates of the 
+  /** \brief return the coordinate min of all the coordinates of the 
   selected traces*/
   GoDBCoordinateRow GetSelectingTracesCoordMin(
   vtkMySQLDatabase* DatabaseConnector, std::vector<std::string> ListSelectedTracesID);
 
-  /**\brief return the coordinate max of all the coordinates of the 
+  /** \brief return the coordinate max of all the coordinates of the 
   selected traces*/
   GoDBCoordinateRow GetSelectingTracesCoordMax(
   vtkMySQLDatabase* DatabaseConnector, std::vector<std::string> ListSelectedTracesID);
   
-  /**\brief return the coordinate min for the existing Collection*/
+  /** \brief return the coordinate min for the existing Collection*/
   GoDBCoordinateRow GetExistingCoordMin(
   vtkMySQLDatabase* DatabaseConnector, int CollectionCoordIDMin,
   int CollectionID );
 
-   /**\brief return the coordinate max for the existing Collection*/
+   /** \brief return the coordinate max for the existing Collection*/
   GoDBCoordinateRow GetExistingCoordMax(
   vtkMySQLDatabase* DatabaseConnector, int CollectionCoordIDMax,
   int CollectionID );
+
+  /** \brief Fill the vector of GoDBTraceInfoForTableWidget with the info
+  common to 2 traces only*/  
+  void GetSpecificInfoForTraceTable(
+    std::vector<GoDBTraceInfoForTableWidget> &ioSpecificInfos);
+  
 };
 #endif
