@@ -37,12 +37,14 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#ifndef __GoDBTraceInfoHelper_h
-#define __GoDBTraceInfoHelper_h
+#ifndef __GoDBTraceInfoForVisu_h
+#define __GoDBTraceInfoForVisu_h
 
 #include "vtkPolyData.h"
 
-struct GoDBTraceInfoHelper
+/**\brief structure to pass the information between the visualization 
+and the Database*/
+struct GoDBTraceInfoForVisu
 {
   unsigned int    TraceID;
   vtkPolyData*    Points;
@@ -54,7 +56,7 @@ struct GoDBTraceInfoHelper
   bool            IsHighLighted;
   
   
-  GoDBTraceInfoHelper()
+  GoDBTraceInfoForVisu()
   {
   TraceID       = 0;
   Red           = 0;

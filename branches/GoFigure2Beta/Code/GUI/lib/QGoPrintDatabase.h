@@ -51,7 +51,7 @@
 #include "QTableWidgetNumericalItem.h"
 #include "vtkMySQLDatabase.h"
 #include "GoDBCollectionOfTraces.h"
-#include "GoDBTraceInfoHelper.h"
+#include "GoDBTraceInfoForVisu.h"
 
 class QGoPrintDatabase : public QWidget,
   private Ui::WidgetPrintDatabase
@@ -73,7 +73,7 @@ public:
   in the database, display them in the QTableWidgetChild and fill the info for the
   contours and meshes*/
   void FillTableFromDatabase();
-
+  
   unsigned int GetImagingSessionID() const;
 
   vtkMySQLDatabase* GetDatabaseConnector();
@@ -83,8 +83,8 @@ public:
   QTableWidgetChild* TrackTable;
   QTableWidgetChild* LineageTable;
 
-  std::vector<GoDBTraceInfoHelper> m_ContoursInfo;
-  std::vector<GoDBTraceInfoHelper> m_MeshesInfo;
+  std::vector<GoDBTraceInfoForVisu> m_ContoursInfo;
+  std::vector<GoDBTraceInfoForVisu> m_MeshesInfo;
 
   void UpdateTableFromDB();
 

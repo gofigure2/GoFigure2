@@ -346,5 +346,6 @@ GoDBCoordinateRow GoDBCollectionOfTraces::GetExistingCoordMax(
 
   return ExistingCoordMax;
 }
+//--------------------------------------------------------------------------
 
- 
+//--------------------------------------------------------------------------

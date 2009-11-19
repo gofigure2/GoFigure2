@@ -1205,8 +1205,8 @@ ValidateContour( const int& iId )
       coord_max.SetField< unsigned int >( "TCoord", m_TimePoint );
 
       GoDBContourRow contour_row( m_DataBaseTables->GetDatabaseConnector(),
-        coord_min, coord_max, m_DataBaseTables->GetImagingSessionId(), Nodes );
-      contour_row.SaveInDB( iDBConnector );
+        coord_min, coord_max, m_DataBaseTables->GetImagingSessionID(), contour_nodes );
+      contour_row.SaveInDB( m_DataBaseTables->GetDatabaseConnector());
       }
 
     contour_copy->Delete();

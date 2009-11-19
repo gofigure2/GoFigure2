@@ -155,10 +155,10 @@ void QTableWidgetChild::SetSelectRowTraceID (std::string TraceName,
 
 //--------------------------------------------------------------------------
  void QTableWidgetChild::TracesToHighlight(
-  std::string TraceName,std::vector<GoDBTraceInfoHelper> & ioTracesInfo)
+  std::string TraceName,std::vector<GoDBTraceInfoForVisu> & ioTracesInfo)
 {
   //first set all the hightlighted traces to false:
-  for( int i=0; i < ioTracesInfo.size(); i++ )
+  for( unsigned int i=0; i < ioTracesInfo.size(); i++ )
     {
     ioTracesInfo[i].IsHighLighted = false;
     }
@@ -200,4 +200,7 @@ QStringList QTableWidgetChild::ValuesForSelectedRows(QString ColumnName)
     }
   return Values;
 }
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
 

@@ -269,7 +269,7 @@ void QGoMainWindow::openFilesfromDB()
 //         }
 //       ++c_it;
 //       }
-    std::vector< GoDBTraceInfoHelper >::iterator
+    std::vector< GoDBTraceInfoForVisu >::iterator
       c_it = w3t->m_DataBaseTables->m_MeshesInfo.begin();
 
     while( c_it != w3t->m_DataBaseTables->m_MeshesInfo.end() )

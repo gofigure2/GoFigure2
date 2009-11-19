@@ -902,11 +902,11 @@ std::vector<std::pair<int,std::string> > ListSpecificValuesForTwoColumnsAndTwoTa
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-std::vector<GoDBTraceInfoHelper> GetTracesInfoFromDB(
+std::vector<GoDBTraceInfoForVisu> GetTracesInfoFromDB(
   vtkMySQLDatabase* DatabaseConnector, std::string TraceName,
   unsigned int ImgSessionID)
 {
-  std::vector<GoDBTraceInfoHelper> Results;
+  std::vector<GoDBTraceInfoForVisu> Results;
   vtkSQLQuery* query = DatabaseConnector->GetQueryInstance();
 
   std::stringstream Querystream;
@@ -942,7 +942,7 @@ std::vector<GoDBTraceInfoHelper> GetTracesInfoFromDB(
   while (query->NextRow())
     {
       {
-      GoDBTraceInfoHelper temp;
+      GoDBTraceInfoForVisu temp;
       temp.TraceID = query->DataValue(0).ToInt();
       vtkPolyDataMySQLTextReader* convert_reader =
       vtkPolyDataMySQLTextReader::New();

@@ -98,8 +98,8 @@ QGoPrintDatabase( QWidget* iParent ) :
   QObject::connect( this, SIGNAL( customContextMenuRequested( const QPoint & ) ),
     this, SLOT( CreateContextMenu( const QPoint & ) ) );
 
- // QObject::connect( this->ContourTable, SIGNAL(itemSelectionChanged()),
-   // this, SLOT(ChangeTracesToHighLightInfoFromTableWidget()));
+  QObject::connect( this->ContourTable, SIGNAL(itemSelectionChanged()),
+    this, SLOT(ChangeTracesToHighLightInfoFromTableWidget()));
 
  // QObject::connect( this->MeshTable, SIGNAL(itemSelectionChanged()),
  //   this, SLOT(ChangeTracesToHighLightInfoFromTableWidget()));
@@ -544,18 +544,14 @@ void QGoPrintDatabase::ChangeTracesToHighLightInfoFromTableWidget()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-unsigned int
-QGoPrintDatabase::
-GetImagingSessionID() const
+unsigned int QGoPrintDatabase::GetImagingSessionID() const
 {
   return m_ImgSessionID;
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-vtkMySQLDatabase*
-QGoPrintDatabase::
-GetDatabaseConnector()
+vtkMySQLDatabase*QGoPrintDatabase::GetDatabaseConnector()
 {
   return m_DatabaseConnector;
 }

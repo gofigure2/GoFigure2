@@ -45,7 +45,7 @@
 #include <map>
 #include "itkMacro.h"
 #include "vtkMySQLDatabase.h"
-#include "GoDBTraceInfoHelper.h"
+#include "GoDBTraceInfoForVisu.h"
 
 std::vector<std::string> ListAllValuesForOneColumn(
   vtkMySQLDatabase* DatabaseConnector,
@@ -169,7 +169,7 @@ std::vector<std::pair<int,std::string> >ListSpecificValuesForTwoColumnsAndTwoTab
   std::string TableTwo, std::string ColumnTwo,std::string ForeignKey, 
   std::string PrimaryKey, std::string field, std::string value);
 
-std::vector<GoDBTraceInfoHelper> GetTracesInfoFromDB(
+std::vector<GoDBTraceInfoForVisu> GetTracesInfoFromDB(
   vtkMySQLDatabase* DatabaseConnector,std::string TraceName,
   unsigned int ImgSessionID);
 

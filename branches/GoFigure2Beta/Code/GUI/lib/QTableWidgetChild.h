@@ -79,23 +79,23 @@ protected:
 
 public slots:
   /** \brief sort items given one column and one sort order. */
-  QMEGAVTKADDON2_EXPORT void sortItems(int column, Qt::SortOrder order);
+  void sortItems(int column, Qt::SortOrder order);
 
   /** \brief select or unselect the row corresponding to the given TraceID.
   */
-  QMEGAVTKADDON2_EXPORT void SetSelectRowTraceID (std::string TraceName, int TraceID,
+  void SetSelectRowTraceID (std::string TraceName, int TraceID,
     bool IsSelected);
 
-  /**\brief modify the ioTracesInfo in order to set the IsHighLighted parameter to false
+  /** \brief modify the ioTracesInfo in order to set the IsHighLighted parameter to false
   for the traces not selected by the user and set it to true for the selected ones,
   selected ones means at least one cell in the row has been selected by the user in 
   the tableWidget. The TraceName has to be chosen between Contour and Mesh*/
-  QMEGAVTKADDON2_EXPORT void TracesToHighlight(std::string TraceName,
-    std::vector<GoDBTraceInfoHelper> & ioTracesInfo);
+  void TracesToHighlight(std::string TraceName,
+    std::vector<GoDBTraceInfoForVisu> & ioTracesInfo);
 
   /** \brief return a list of the values of a specific column for the rows where the user
        has selected at least one cell.*/
-  QMEGAVTKADDON2_EXPORT QStringList ValuesForSelectedRows(QString ColumnName );
+  QStringList ValuesForSelectedRows(QString ColumnName );
 };
 
 #endif
