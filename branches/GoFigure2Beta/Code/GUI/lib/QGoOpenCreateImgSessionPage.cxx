@@ -182,7 +182,6 @@ bool QGoOpenCreateImgSessionPage::validatePage()
     std::string ImgID =
       m_MapImgSessionIDName[ChoiceImgSession->currentText().toStdString()];
     setField("ImgSessionID",ImgID.c_str());
-    std::cout<<"ImgID is: "<<ImgID.c_str()<<std::endl;
     setField("ImgSessionName",ChoiceImgSession->currentText());
     }
   return true;

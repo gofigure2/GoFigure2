@@ -98,7 +98,7 @@ QGoCreateImgSessionPage::QGoCreateImgSessionPage( QWidget *iParent )
   setLayout( vlayout );
 
   // \todo is ImgSessionID needed?
-  QLineEdit* ImgSessionID = new QLineEdit;
+  //QLineEdit* ImgSessionID = new QLineEdit;
   FirstImage = new QFileInfo;
   QObject::connect( this->BrowseButton,SIGNAL( clicked() ),
   this,SLOT( SelectImages() ));
@@ -265,6 +265,7 @@ bool QGoCreateImgSessionPage::validatePage()
     }
 
   CloseDatabaseConnection(m_DatabaseConnector);
+  setField("ImgSessionName",lineNewImgSessionName->text());
   return true;
 }
 //-------------------------------------------------------------------------
