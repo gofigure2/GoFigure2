@@ -64,6 +64,7 @@ QGoOpenCreateImgSessionPage( QWidget *iParent ) :
   textDescription = new QLabel(tr("Description:"));
   lineDescription  = new QTextEdit;
   QLineEdit* lineImgSessionID = new QLineEdit;
+  QLineEdit* lineImgSessionName = new QLineEdit;
 
   QVBoxLayout* vlayout = new QVBoxLayout;
   QVBoxLayout* RadioButtonLayout = new QVBoxLayout;
@@ -79,7 +80,7 @@ QGoOpenCreateImgSessionPage( QWidget *iParent ) :
   vlayout->addLayout(gridlayout);
   setLayout( vlayout );
 
-  registerField( "ImgSessionName", ChoiceImgSession );
+  registerField( "ImgSessionName", lineImgSessionName );
   registerField( "ImgSessionID" , lineImgSessionID);
 
   QObject::connect( this->ChoiceImgSession,SIGNAL( currentIndexChanged(QString) ),
@@ -182,6 +183,7 @@ bool QGoOpenCreateImgSessionPage::validatePage()
       m_MapImgSessionIDName[ChoiceImgSession->currentText().toStdString()];
     setField("ImgSessionID",ImgID.c_str());
     std::cout<<"ImgID is: "<<ImgID.c_str()<<std::endl;
+    setField("ImgSessionName",ChoiceImgSession->currentText());
     }
   return true;
 }

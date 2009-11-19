@@ -568,7 +568,7 @@ void QGoCreateImgSessionPage::SaveInfoInDatabase()
   if (ImgSessionID != -1)
     {
     QString ImgSessionName = lineNewImgSessionName->displayText();
-    setField("ImgSessionName",ImgSessionName);
+    //setField("ImgSessionName",ImgSessionName);
 
     /*Save in the DB the channels corresponding to the ImagingSession and
           to the channelnumber of the images:*/
