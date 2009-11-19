@@ -59,6 +59,7 @@
 #include "GoDBMeshRow.h"
 #include "GoDBTrackRow.h"
 #include "GoDBLineageRow.h"
+#include "GoDBCoordinateRow.h"
 #include "QueryDataBaseHelper.h"
 #include "ConvertToStringHelper.h"
 #include <iostream>
@@ -179,7 +180,7 @@ void QGoPrintDatabase::SetDatabaseVariables(
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoPrintDatabase::OpenDBConnectionForTables()
+void QGoPrintDatabase::OpenDBConnection()
 {
   if (m_DatabaseConnector == 0)
     {
@@ -190,7 +191,7 @@ void QGoPrintDatabase::OpenDBConnectionForTables()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoPrintDatabase::CloseDBConnectionForTables()
+void QGoPrintDatabase::CloseDBConnection()
 {
   if (CloseDatabaseConnection(m_DatabaseConnector))
     {
@@ -202,7 +203,7 @@ void QGoPrintDatabase::CloseDBConnectionForTables()
 //--------------------------------------------------------------------------
 void QGoPrintDatabase::FillTableFromDatabase()
 {
-  OpenDBConnectionForTables();
+  OpenDBConnection();
 
   QString title = QString( "Imaging Session: %1 " ).arg( m_ImgSessionName.c_str() );
   this->setWindowTitle( title );
@@ -215,36 +216,13 @@ void QGoPrintDatabase::FillTableFromDatabase()
 
   LoadContoursAndMeshesFromDB(m_DatabaseConnector);
 
-  CloseDBConnectionForTables();
+  CloseDBConnection();
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void QGoPrintDatabase::closeEvent(QCloseEvent* iEvent)
 {
-  /*int r = QMessageBox::warning(this, tr(""),
-                        tr("Are you sure you want to close\n"
-                           "permanently the table?"),
-                          QMessageBox::Yes,
-                          QMessageBox::No|QMessageBox::Default);
-  if (r == QMessageBox::Yes)
-    {
-    iEvent->accept();
-    QByteArray stateContourTable = ContourTable->horizontalHeader()->saveState();
-    QByteArray stateMeshTable = MeshTable->horizontalHeader()->saveState();
-    QByteArray stateTrackTable = TrackTable->horizontalHeader()->saveState();
-    QByteArray stateLineageTable = LineageTable->horizontalHeader()->saveState();
-    QSettings settings( "MegasonLab", "Gofigure2" );
-    settings.setValue("StateContourTable", stateContourTable);
-    settings.setValue("StateMeshTable", stateMeshTable);
-    settings.setValue("StateTrackTable",stateTrackTable);
-    settings.setValue("StateLineageTable",stateLineageTable);
-    }
-  else
-    {
-    iEvent->ignore();
-    }*/
-
   m_VisibilityAction->setChecked( false );
 }
 //--------------------------------------------------------------------------
@@ -273,7 +251,7 @@ void QGoPrintDatabase::CreateContextMenu(const QPoint &iPos)
 //--------------------------------------------------------------------------
 void QGoPrintDatabase::DeleteTraces()
 {
-  OpenDBConnectionForTables();
+  OpenDBConnection();
   int TabIndex = InWhichTableAreWe();
 
   switch (TabIndex)
@@ -319,14 +297,14 @@ void QGoPrintDatabase::DeleteTraces()
       break;
       }
     }
-  CloseDBConnectionForTables();
+  CloseDBConnection();
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void QGoPrintDatabase::CreateCorrespondingCollection()
 {
-  OpenDBConnectionForTables();
+  OpenDBConnection();
   int TabIndex = InWhichTableAreWe();
 
   switch (TabIndex)
@@ -379,7 +357,7 @@ void QGoPrintDatabase::CreateCorrespondingCollection()
       break;
       }
     }
-  CloseDBConnectionForTables();
+  CloseDBConnection();
 }
 //--------------------------------------------------------------------------
 
@@ -421,7 +399,7 @@ int QGoPrintDatabase::InWhichTableAreWe ()
 //--------------------------------------------------------------------------
 void QGoPrintDatabase::AddToExistingCollection()
 {
-  OpenDBConnectionForTables();
+  OpenDBConnection();
   QStringList items;
   QString LabelDialog;
   int TabIndex = InWhichTableAreWe();
@@ -499,7 +477,7 @@ void QGoPrintDatabase::AddToExistingCollection()
         }
       }
     }
-  CloseDBConnectionForTables();
+  CloseDBConnection();
 }
 //-------------------------------------------------------------------------
 
@@ -544,7 +522,7 @@ void QGoPrintDatabase::ChangeTracesToHighLightInfoFromTableWidget()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-unsigned int QGoPrintDatabase::GetImagingSessionID() const
+/*unsigned int QGoPrintDatabase::GetImagingSessionID() const
 {
   return m_ImgSessionID;
 }
@@ -555,7 +533,7 @@ vtkMySQLDatabase*QGoPrintDatabase::GetDatabaseConnector()
 {
   return m_DatabaseConnector;
 }
-
+*/
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -585,4 +563,36 @@ ChangeContoursToHighLightInfoFromVisu( std::list<int> iListContoursHighLightedIn
           }
         }
       }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoPrintDatabase::SaveContoursFromVisuInDB(unsigned int iXCoordMin,
+  unsigned int iYCoordMin,unsigned int iZCoordMin,unsigned int iTCoord,
+  unsigned int iXCoordMax,unsigned int iYCoordMax,unsigned int iZCoordMax,
+  vtkPolyData* iContourNodes)
+{
+  OpenDBConnection();
+
+  GoDBCoordinateRow coord_min;
+  coord_min.SetField< unsigned int >( "XCoord", iXCoordMin );
+  coord_min.SetField< unsigned int >( "YCoord", iYCoordMin );
+  coord_min.SetField< unsigned int >( "ZCoord", iZCoordMin );
+  coord_min.SetField< unsigned int >( "TCoord", iTCoord );
+
+  GoDBCoordinateRow coord_max;
+  coord_max.SetField< unsigned int >( "XCoord", iXCoordMax );
+  coord_max.SetField< unsigned int >( "YCoord", iYCoordMax );
+  coord_max.SetField< unsigned int >( "ZCoord", iZCoordMax );
+  coord_max.SetField< unsigned int >( "TCoord", iTCoord );
+
+  GoDBContourRow contour_row( this->m_DatabaseConnector,coord_min, coord_max, 
+    this->m_ImgSessionID, iContourNodes );
+
+  contour_row.SaveInDB( this->m_DatabaseConnector);
+  
+  UpdateContentAndDisplayFromDB< GoDBContourRow >("contour",
+    ContourTable,m_DatabaseConnector);
+
+  CloseDBConnection();
 }

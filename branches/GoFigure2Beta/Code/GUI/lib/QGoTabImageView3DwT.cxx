@@ -1192,21 +1192,9 @@ ValidateContour( const int& iId )
 
     // Save contour in database!
       {
-      GoDBCoordinateRow coord_min;
-      coord_min.SetField< unsigned int >( "XCoord", min_idx[0] );
-      coord_min.SetField< unsigned int >( "YCoord", min_idx[1] );
-      coord_min.SetField< unsigned int >( "ZCoord", min_idx[2] );
-      coord_min.SetField< unsigned int >( "TCoord", m_TimePoint );
-
-      GoDBCoordinateRow coord_max;
-      coord_max.SetField< unsigned int >( "XCoord", max_idx[0] );
-      coord_max.SetField< unsigned int >( "YCoord", max_idx[1] );
-      coord_max.SetField< unsigned int >( "ZCoord", max_idx[2] );
-      coord_max.SetField< unsigned int >( "TCoord", m_TimePoint );
-
-      GoDBContourRow contour_row( m_DataBaseTables->GetDatabaseConnector(),
-        coord_min, coord_max, m_DataBaseTables->GetImagingSessionID(), contour_nodes );
-      contour_row.SaveInDB( m_DataBaseTables->GetDatabaseConnector());
+      m_DataBaseTables->SaveContoursFromVisuInDB(min_idx[0],
+        min_idx[1],min_idx[2],m_TimePoint,max_idx[0],
+        max_idx[1],max_idx[2], contour_nodes);
       }
 
     contour_copy->Delete();

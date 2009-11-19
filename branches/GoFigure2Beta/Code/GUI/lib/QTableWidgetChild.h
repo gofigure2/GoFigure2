@@ -45,7 +45,7 @@
 #include <QStringList>
 #include <QList>
 #include "MegaVTK2Configure.h"
-#include "GoDBTraceInfoHelper.h"
+#include "GoDBTraceInfoForVisu.h"
 
 /**
 \class QTableWidgetchild

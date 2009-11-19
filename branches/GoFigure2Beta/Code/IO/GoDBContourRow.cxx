@@ -43,7 +43,7 @@
 #include <iostream>
 
 
-GoDBContourRow::GoDBContourRow()
+GoDBContourRow::GoDBContourRow():GoDBTraceRow()
 {
   this->InitializeMap();
 }
@@ -52,13 +52,13 @@ GoDBContourRow::GoDBContourRow()
 //-------------------------------------------------------------------------
 GoDBContourRow::GoDBContourRow(vtkMySQLDatabase* DatabaseConnector,
   GoDBCoordinateRow Min, GoDBCoordinateRow Max,unsigned int ImgSessionID,
-  vtkPolyData* TraceVisu)
+  vtkPolyData* TraceVisu):GoDBTraceRow(DatabaseConnector,TraceVisu,Min,Max,
+    ImgSessionID)
 {
-   GoDBTraceRow::GoDBTraceRow(DatabaseConnector,TraceVisu,Min,Max,
-    ImgSessionID);
+  this->InitializeMap();
   if (this->DoesThisBoundingBoxContourExist(DatabaseConnector))
     {
-    std::cout<<"The bounding box alreaady exists for this contour"<<std::endl;
+    std::cout<<"The bounding box already exists for this contour"<<std::endl;
     }
 }
 //-------------------------------------------------------------------------
@@ -66,7 +66,6 @@ GoDBContourRow::GoDBContourRow(vtkMySQLDatabase* DatabaseConnector,
 //-------------------------------------------------------------------------
 void GoDBContourRow::InitializeMap()
 {
-  GoDBTraceRow::InitializeMap();
   this->m_MapRow["ContourID"] = ConvertToString<int>(0);
   this->m_MapRow["MeshID"] = "null";
 }    

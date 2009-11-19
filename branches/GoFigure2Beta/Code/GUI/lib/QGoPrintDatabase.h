@@ -50,9 +50,11 @@
 #include "QTableWidgetChild.h"
 #include "QTableWidgetNumericalItem.h"
 #include "vtkMySQLDatabase.h"
+#include "vtkPolyData.h"
 #include "GoDBCollectionOfTraces.h"
 #include "GoDBTraceInfoForVisu.h"
 
+/** \brief Ensure the connection with the Database*/
 class QGoPrintDatabase : public QWidget,
   private Ui::WidgetPrintDatabase
 {
@@ -74,9 +76,9 @@ public:
   contours and meshes*/
   void FillTableFromDatabase();
   
-  unsigned int GetImagingSessionID() const;
+  //unsigned int GetImagingSessionID() const;
 
-  vtkMySQLDatabase* GetDatabaseConnector();
+  //vtkMySQLDatabase* GetDatabaseConnector();
 
   QTableWidgetChild* ContourTable;
   QTableWidgetChild* MeshTable;
@@ -87,6 +89,10 @@ public:
   std::vector<GoDBTraceInfoForVisu> m_MeshesInfo;
 
   void UpdateTableFromDB();
+  void SaveContoursFromVisuInDB(unsigned int iXCoordMin,
+    unsigned int iYCoordMin,unsigned int iZCoordMin,unsigned int iTCoord,
+    unsigned int iXCoordMax,unsigned int iYCoordMax,unsigned int iZCoordMax,
+    vtkPolyData* iContourNodes);
 
   QAction* toggleViewAction();
 
@@ -114,8 +120,8 @@ protected:
   void QPrintColumnNames( QString TableName,
     std::vector< std::string > ColumnNames, QTableWidgetChild* QTabTableName );
 
-  void OpenDBConnectionForTables();
-  void CloseDBConnectionForTables();
+  void OpenDBConnection();
+  void CloseDBConnection();
 
   /** \brief Return the Index of the tab currently used: */
   int InWhichTableAreWe();
