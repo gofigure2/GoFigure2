@@ -6,6 +6,10 @@
 #include "QGoManualSegmentationDockWidget.h"
 #include "QGoPrintDatabase.h"
 
+
+#include "GoDBContourRow.h"
+#include "GoDBCoordinateRow.h"
+
 #include "vtkLSMReader.h"
 
 #include "vtkLookupTable.h"
@@ -1175,9 +1179,6 @@ ValidateContour( const int& iId )
     int* min_idx = this->GetImageCoordinatesFromWorldCoordinates( Min );
     int* max_idx = this->GetImageCoordinatesFromWorldCoordinates( Max );
 
-    (void) min_idx;
-    (void) max_idx;
-
     vtkPolyData* contour_nodes = vtkPolyData::New();
     m_ContourRepresentation[iId]->GetNodePolyData( contour_nodes );
 
@@ -1188,6 +1189,25 @@ ValidateContour( const int& iId )
     std::vector< vtkActor* > contour_actor =
       this->AddContour( iId, contour_copy,
         contour_property );
+
+    // Save contour in database!
+      {
+      GoDBCoordinateRow coord_min;
+      coord_min.SetField< unsigned int >( "XCoord", min_idx[0] );
+      coord_min.SetField< unsigned int >( "YCoord", min_idx[1] );
+      coord_min.SetField< unsigned int >( "ZCoord", min_idx[2] );
+      coord_min.SetField< unsigned int >( "TCoord", m_TimePoint );
+
+      GoDBCoordinateRow coord_max;
+      coord_max.SetField< unsigned int >( "XCoord", max_idx[0] );
+      coord_max.SetField< unsigned int >( "YCoord", max_idx[1] );
+      coord_max.SetField< unsigned int >( "ZCoord", max_idx[2] );
+      coord_max.SetField< unsigned int >( "TCoord", m_TimePoint );
+
+      GoDBContourRow contour_row( m_DataBaseTables->GetDatabaseConnector(),
+        coord_min, coord_max, m_DataBaseTables->GetImagingSessionId(), Nodes );
+      contour_row.SaveInDB( iDBConnector );
+      }
 
     contour_copy->Delete();
     contour_property->Delete();

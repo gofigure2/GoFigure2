@@ -91,13 +91,13 @@ QGoPrintDatabase( QWidget* iParent ) :
 
   m_VisibilityAction = new QAction( this );
   m_VisibilityAction->setCheckable( true );
-  
+
   QObject::connect( m_VisibilityAction, SIGNAL( toggled( bool ) ),
     this, SLOT( setVisible( bool ) ) );
 
   QObject::connect( this, SIGNAL( customContextMenuRequested( const QPoint & ) ),
     this, SLOT( CreateContextMenu( const QPoint & ) ) );
-  
+
  // QObject::connect( this->ContourTable, SIGNAL(itemSelectionChanged()),
    // this, SLOT(ChangeTracesToHighLightInfoFromTableWidget()));
 
@@ -135,13 +135,13 @@ void QGoPrintDatabase::QPrintColumnNames( QString TableName,
     QTableWidgetItem* HeaderCol=new QTableWidgetItem;
     std::string NameHeader;
     NameHeader =ColumnNames[i];
-    
+
     HeaderCol->setText(NameHeader.c_str());
     QFont serifFont("Arial", 10, QFont::Bold);
     HeaderCol->setFont(serifFont);
     QTabTableName->setHorizontalHeaderItem(i,HeaderCol);
     QTabTableName->resizeColumnToContents(i);
-    
+
     }
 
   QTabTableName->horizontalHeader()->setSortIndicatorShown(true);
@@ -506,9 +506,9 @@ void QGoPrintDatabase::AddToExistingCollection()
 //-------------------------------------------------------------------------
 void QGoPrintDatabase::LoadContoursAndMeshesFromDB(
   vtkMySQLDatabase* DatabaseConnector)
-{  
+{
   m_ContoursInfo = GetTracesInfoFromDB(DatabaseConnector,"contour",
-    m_ImgSessionID);  
+    m_ImgSessionID);
   m_MeshesInfo   = GetTracesInfoFromDB(DatabaseConnector,"mesh",
     m_ImgSessionID);
 }
@@ -544,14 +544,34 @@ void QGoPrintDatabase::ChangeTracesToHighLightInfoFromTableWidget()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoPrintDatabase::ChangeContoursToHighLightInfoFromVisu(
-  std::list<int> iListContoursHighLightedInVisu)
+unsigned int
+QGoPrintDatabase::
+GetImagingSessionID() const
 {
-    int i = 0; 
+  return m_ImgSessionID;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+vtkMySQLDatabase*
+QGoPrintDatabase::
+GetDatabaseConnector()
+{
+  return m_DatabaseConnector;
+}
+
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoPrintDatabase::
+ChangeContoursToHighLightInfoFromVisu( std::list<int> iListContoursHighLightedInVisu)
+{
+    int i = 0;
     std::list<int>::iterator it = iListContoursHighLightedInVisu.begin();
     while (it != iListContoursHighLightedInVisu.end())
       {
-      
+
       for (int j = 0 ; j < m_ContoursInfo.size(); j++)
         {
         if (*it == j+1)

@@ -74,6 +74,10 @@ public:
   contours and meshes*/
   void FillTableFromDatabase();
 
+  unsigned int GetImagingSessionID() const;
+
+  vtkMySQLDatabase* GetDatabaseConnector();
+
   QTableWidgetChild* ContourTable;
   QTableWidgetChild* MeshTable;
   QTableWidgetChild* TrackTable;
