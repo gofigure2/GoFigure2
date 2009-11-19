@@ -896,7 +896,7 @@ std::vector<std::pair<int,std::string> > ListSpecificValuesForTwoColumnsAndTwoTa
       result.push_back(temp);
       }
     }
-
+  query->Delete();
   return result;
 }
 //------------------------------------------------------------------------------
@@ -971,5 +971,6 @@ std::vector<GoDBTraceInfoHelper> GetTracesInfoFromDB(
       Results.push_back(temp);
       }
     }
+  query->Delete();
   return Results;
 }
