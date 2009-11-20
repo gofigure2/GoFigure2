@@ -7,14 +7,18 @@
 #include <sys/stat.h>
 #include <stdio.h>
 
+#include "vtkImageWriterHelper.h"
 #include "vtkExtractVOI.h"
 #include "vtkImageData.h"
+#include "vtkLSMReader.h"
+
 #include "vtkPNGWriter.h"
+#include "vtkTIFFWriter.h"
 
 /**
  * \brief Constructor
  */
-LSMToMegaCapture::LSMToMegaCapture( ) : m_Plaque( 0 ), m_Row( 0 ), 
+LSMToMegaCapture::LSMToMegaCapture( ) : m_Plaque( 0 ), m_Row( 0 ),
   m_Column( 0 ), m_XTile( 0 ), m_YTile( 0 ), m_ZTile( 0 )
 {
 }
@@ -76,6 +80,13 @@ SetZTile( const unsigned int& iZt )
   m_ZTile = iZt;
 }
 
+void
+LSMToMegaCapture::
+SetOutputFileType( const GoFigure::FileType& iFileType )
+{
+  m_FileType = iFileType;
+}
+
 /**
  * \brief
  * \param iFileName
@@ -85,17 +96,39 @@ LSMToMegaCapture::
 SetFileName( const std::string& iFileName )
 {
   m_FileName = iFileName;
+  size_t point_idx = iFileName.rfind( ".lsm" );
 
-  if( !m_LSMReaders.empty() )
+  if( point_idx != std::string::npos )
     {
-    for( unsigned int i = 0; i < m_LSMReaders.size(); i++ )
+    size_t slash_idx = iFileName.rfind( '/' );
+    if( point_idx != std::string::npos )
       {
-      m_LSMReaders[i]->Delete();
+      m_BaseName = iFileName.substr( slash_idx, point_idx - slash_idx );
       }
+    else
+      {
+      slash_idx = iFileName.rfind( "\\" );
+      if( point_idx != std::string::npos )
+        {
+        m_BaseName = iFileName.substr( slash_idx, point_idx - slash_idx );
+        }
+      else
+        {
+        m_BaseName = iFileName.substr( 0, point_idx );
+        }
+      }
+
+    if( !m_LSMReaders.empty() )
+      {
+      for( unsigned int i = 0; i < m_LSMReaders.size(); i++ )
+        {
+        m_LSMReaders[i]->Delete();
+        }
+      }
+    m_LSMReaders.push_back( vtkLSMReader::New() );
+    m_LSMReaders.front()->SetFileName( iFileName.c_str() );
+    m_LSMReaders.front()->Update();
     }
-  m_LSMReaders.push_back( vtkLSMReader::New() );
-  m_LSMReaders.front()->SetFileName( iFileName.c_str() );
-  m_LSMReaders.front()->Update();
 }
 
 /**
@@ -104,7 +137,7 @@ SetFileName( const std::string& iFileName )
  */
 void
 LSMToMegaCapture::
-Export( const std::string& iHeaderFileName )
+Export( const std::string& iDirectoryPath )
 {
   m_NumberOfChannels = m_LSMReaders[0]->GetNumberOfChannels();
   m_NumberOfTimePoints = m_LSMReaders[0]->GetNumberOfTimePoints();
@@ -117,7 +150,11 @@ Export( const std::string& iHeaderFileName )
   int dim[5];
   m_LSMReaders[0]->GetDimensions( dim );
 
-  std::ofstream file( iHeaderFileName.c_str() );
+  std::string headerfilename = iDirectoryPath;
+  headerfilename += m_BaseName;
+  headerfilename += ".meg";
+
+  std::ofstream file( headerfilename.c_str() );
   file <<"MegaCapture" <<std::endl;
   file <<"<ImageSessionData>" <<std::endl;
   file <<"Version 3.0" <<std::endl;
@@ -204,7 +241,21 @@ Export( const std::string& iHeaderFileName )
         filename <<"-TM" << setfill('0') << setw(4) <<i;
         filename <<"-ch" << setfill('0') << setw(2) <<j;
         filename <<"-zs" << setfill('0') << setw(4) <<k;
-        filename <<".png";
+
+        switch( m_FileType )
+          {
+          default:
+          case GoFigure::PNG:
+            {
+            filename <<".png";
+            break;
+            }
+          case GoFigure::TIFF:
+            {
+            filename <<".tiff";
+            break;
+            }
+          }
 
         file <<"<Image>"<<std::endl;
         file <<"Filename " <<filename.str() <<std::endl;
@@ -223,18 +274,27 @@ Export( const std::string& iHeaderFileName )
 
         vtkImageData* image2d = extract->GetOutput();
 
-        vtkPNGWriter* writer2d = vtkPNGWriter::New();
-        writer2d->SetInput( image2d );
-        writer2d->SetFileName( filename.str().c_str() );
-        writer2d->Write();
+        std::string final_filename = iDirectoryPath;
+        final_filename += filename.str();
 
-        writer2d->Delete();
+        switch( m_FileType )
+          {
+          default:
+          case GoFigure::PNG:
+            {
+            vtkWriteImage< vtkPNGWriter >( image2d, final_filename );
+            break;
+            }
+          case GoFigure::TIFF:
+            {
+            vtkWriteImage< vtkTIFFWriter >( image2d, final_filename );
+            break;
+            }
+          }
         extract->Delete();
         }
       }
     }
   file.close();
-
-
 }
 

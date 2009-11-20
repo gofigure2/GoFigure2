@@ -3,8 +3,10 @@
 
 #include <vector>
 #include <string>
+#include "GoFigureGlobalDefinition.h"
 
-#include "vtkLSMReader.h"
+class vtkLSMReader;
+
 
 /**
 \brief Convert 1 LSM (5D file) into megacapture files
@@ -15,9 +17,19 @@ class LSMToMegaCapture
     LSMToMegaCapture( );
     ~LSMToMegaCapture( );
 
+    /**
+     * \brief Set input lsm file. (Extract m_BaseName)
+     * \param iFileName
+     */
     void SetFileName( const std::string& iFileName );
 
-    void Export( const std::string& iHeaderFileName );
+
+    /**
+     * \brief Set the output format: PNG (default) or TIFF
+     * \param iFileType
+     */
+    void SetOutputFileType( const GoFigure::FileType& iFileType );
+    void Export( const std::string& iDirectoryPath );
 
     void SetPlaque( const unsigned int& iPlaque );
     void SetRow( const unsigned int& iRow );
@@ -40,6 +52,8 @@ class LSMToMegaCapture
     double m_ZOverlap;
     unsigned int m_NumberOfChannels;
     unsigned int m_NumberOfTimePoints;
+    GoFigure::FileType m_FileType;
+    std::string m_BaseName;
 
 };
 #endif
