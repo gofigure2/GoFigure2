@@ -260,7 +260,7 @@ GetMultiIndexFileContainer()
     }
   else
     {
-    GoFigureFileInfoHelperMultiIndexContainer();
+    return GoFigureFileInfoHelperMultiIndexContainer();
     }
 }
 

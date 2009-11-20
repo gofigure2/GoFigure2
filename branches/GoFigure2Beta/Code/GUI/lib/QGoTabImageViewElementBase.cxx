@@ -303,8 +303,14 @@ ValidateContour( const int& iId )
     Max[i] = bounds[k++];
     }
 
-  int* min_idx = this->GetImageCoordinatesFromWorldCoordinates( Min );
-  int* max_idx = this->GetImageCoordinatesFromWorldCoordinates( Max );
+
+// *** Get the Bounding Box ***
+//   int* min_idx = this->GetImageCoordinatesFromWorldCoordinates( Min );
+//   int* max_idx = this->GetImageCoordinatesFromWorldCoordinates( Max );
+//
+//   (void) min_idx;
+//   (void) max_idx;
+// ****************************
 
   vtkPolyData* contour_nodes = vtkPolyData::New();
   m_ContourRepresentation[iId]->GetNodePolyData( contour_nodes );

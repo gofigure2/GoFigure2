@@ -104,7 +104,7 @@ CreateOutput()
     IntVectorType::reverse_iterator numGroupStartItr  =
       m_StartAndLengthNumGroup.first.rbegin();
 
-    int NbNumericalGroupsInFilename = m_StartAndLengthNumGroup.second.size();
+    // int NbNumericalGroupsInFilename = m_StartAndLengthNumGroup.second.size();
 
     std::vector< unsigned int > NumericalValues( m_NbSignificantMegaCaptureNumGroup, 0 );
 

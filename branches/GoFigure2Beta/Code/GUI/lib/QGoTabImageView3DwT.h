@@ -14,6 +14,8 @@
 #include <QHBoxLayout>
 #include <QSpinBox>
 
+#include "vtkSmartPointer.h"
+
 class QGoImageView3D;
 class QGoVisualizationDockWidget;
 class QGoManualSegmentationDockWidget;
@@ -162,8 +164,9 @@ public slots:
 protected:
   QHBoxLayout*          m_LayOut;
   QGoImageView3D*       m_ImageView;
-  std::vector< vtkLSMReader* > m_LSMReader;
-  vtkImageData*         m_Image;
+  std::vector< vtkSmartPointer< vtkLSMReader > > m_LSMReader;
+  std::vector< vtkSmartPointer< vtkImageData > > m_InternalImages;
+  vtkSmartPointer< vtkImageData > m_Image;
 
   itk::MegaCaptureReader::Pointer           m_MegaCaptureReader;
   GoFigureFileInfoHelperMultiIndexContainer m_FileList;
@@ -176,8 +179,8 @@ protected:
   QGoManualSegmentationDockWidget*  m_ManualSegmentationDockWidget;
 
 
-  std::vector< vtkContourWidget* >                      m_ContourWidget;
-  std::vector< vtkOrientedGlyphContourRepresentation* > m_ContourRepresentation;
+  std::vector< vtkSmartPointer< vtkContourWidget > >                      m_ContourWidget;
+  std::vector< vtkSmartPointer< vtkOrientedGlyphContourRepresentation > > m_ContourRepresentation;
   ContourStructureMultiIndexContainer                   m_ContourContainer;
 
   void GetBackgroundColorFromImageViewer( );
@@ -201,8 +204,6 @@ protected:
   void SetTimePointWithLSMReaders( const int& iTimePoint );
   void SetTimePointWithMegaCapture( const int& iTimePoint );
 
-  void ShowAllChannelsWithLSMReaders();
-  void ShowAllChannelsWithMegaCapture();
 };
 
 #endif

@@ -44,18 +44,22 @@ QGoTabImageView3DwT( QWidget* iParent ) :
   m_TimePoint( -1 ),
   m_ContourId( 0 )
 {
+  m_Image = vtkSmartPointer< vtkImageData >::New();
+
   setupUi( this );
 
   m_DataBaseTables = new QGoPrintDatabase;
 
   for( int i = 0; i < 3; i++ )
     {
-    this->m_ContourRepresentation.push_back( vtkOrientedGlyphContourRepresentation::New() );
+    this->m_ContourRepresentation.push_back(
+      vtkSmartPointer< vtkOrientedGlyphContourRepresentation >::New() );
     this->m_ContourRepresentation.back()->GetProperty()->SetColor( 0., 1., 1. );
     this->m_ContourRepresentation.back()->GetLinesProperty()->SetColor( 1., 0., 1. );
     this->m_ContourRepresentation.back()->GetActiveProperty()->SetColor( 1., 1., 0. );
 
-    this->m_ContourWidget.push_back( vtkContourWidget::New() );
+    this->m_ContourWidget.push_back(
+      vtkSmartPointer< vtkContourWidget >::New() );
     this->m_ContourWidget.back()->SetPriority( 10.0 );
     this->m_ContourWidget.back()->SetInteractor( m_ImageView->GetInteractor( i ) );
     this->m_ContourWidget.back()->Off();
@@ -80,26 +84,6 @@ QGoTabImageView3DwT( QWidget* iParent ) :
 QGoTabImageView3DwT::
 ~QGoTabImageView3DwT( )
 {
-  if( m_Image )
-    {
-    m_Image->Delete();
-    m_Image = 0;
-    }
-  for( unsigned int i = 1; i < m_LSMReader.size(); i++ )
-    {
-    if( m_LSMReader[i] )
-      {
-      m_LSMReader[i]->Delete();
-      m_LSMReader[i] = 0;
-      }
-    }
-
-  for( int i = 0; i < 3; i++ )
-    {
-    m_ContourRepresentation[i]->Delete();
-    m_ContourWidget[i]->Delete();
-    }
-
   ContourStructureMultiIndexContainer::iterator it = m_ContourContainer.begin();
   ContourStructureMultiIndexContainer::iterator end = m_ContourContainer.end();
 
@@ -424,17 +408,19 @@ void QGoTabImageView3DwT::SetLSMReader( vtkLSMReader* iReader,
     m_VisuDockWidget->SetTSlice( iTimePoint );
 
     int NumberOfChannels = m_LSMReader[0]->GetNumberOfChannels();
+
     m_VisuDockWidget->SetNumberOfChannels( NumberOfChannels );
 
     if( NumberOfChannels > 1 )
       {
       m_VisuDockWidget->SetChannel( 0 );
+      m_InternalImages.resize( NumberOfChannels );
 
       for( int i = 1; i < NumberOfChannels; i++ )
         {
         m_VisuDockWidget->SetChannel( i );
 
-        m_LSMReader.push_back( vtkLSMReader::New() );
+        m_LSMReader.push_back( vtkSmartPointer< vtkLSMReader >::New() );
         m_LSMReader.back()->SetFileName( m_LSMReader[0]->GetFileName() );
         m_LSMReader.back()->SetUpdateChannel( i );
         }
@@ -498,6 +484,7 @@ SetMegaCaptureFile(
   if( NumberOfChannels > 1 )
     {
     m_VisuDockWidget->SetChannel( 0 );
+    m_InternalImages.resize( NumberOfChannels, NULL );
 
     for( unsigned int i = 1; i < NumberOfChannels; i++ )
       {
@@ -532,55 +519,37 @@ SetTimePointWithMegaCapture( const int& iTimePoint )
     {
     m_MegaCaptureReader->Update();
 
-    std::vector< vtkImageData* > temp_image( NumberOfChannels );
-    temp_image[0] = vtkImageData::New();
-    temp_image[0]->ShallowCopy( m_MegaCaptureReader->GetOutput() );
+    vtkSmartPointer< vtkImageAppendComponents > append_filter =
+      vtkSmartPointer< vtkImageAppendComponents >::New();
 
-    vtkImageAppendComponents* append_filter =
-      vtkImageAppendComponents::New();
-    append_filter->AddInput( temp_image[0] );
-
-    for( int i = 1; i < NumberOfChannels; i++ )
+    for( int i = 0; i < NumberOfChannels; i++ )
       {
       m_MegaCaptureReader->SetChannel( i );
       m_MegaCaptureReader->Update();
 
-      temp_image[i] = vtkImageData::New();
-      temp_image[i]->ShallowCopy( m_MegaCaptureReader->GetOutput() );
-      append_filter->AddInput( temp_image[i] );
+      if( !m_InternalImages[i] )
+        {
+        m_InternalImages[i] = vtkSmartPointer< vtkImageData >::New();
+        }
+      m_InternalImages[i]->ShallowCopy( m_MegaCaptureReader->GetOutput() );
+      append_filter->AddInput( m_InternalImages[i] );
       }
     // This is really stupid!!!
     if( NumberOfChannels < 3 )
       {
       for( int i = NumberOfChannels; i < 3; i++ )
         {
-        append_filter->AddInput( temp_image[0] );
+        append_filter->AddInput( m_InternalImages[0] );
         }
       }
     append_filter->Update();
 
-    // Do we really need to delete m_Image?
-    if( !m_Image )
-      {
-      m_Image = vtkImageData::New();
-      }
-
     m_Image->ShallowCopy( append_filter->GetOutput() );
-    append_filter->Delete();
-
-    for( int i = 0; i < NumberOfChannels; i++ )
-      {
-      temp_image[i]->Delete();
-      }
     }
   else
     {
     m_MegaCaptureReader->Update();
 
-    if( !m_Image )
-      {
-      m_Image = vtkImageData::New();
-      }
     m_Image->ShallowCopy( m_MegaCaptureReader->GetOutput() );
     }
 
@@ -603,55 +572,36 @@ SetTimePointWithLSMReaders( const int& iTimePoint )
 
   if( NumberOfChannels > 1 )
     {
-    std::vector< vtkImageData* > temp_image( NumberOfChannels );
-    temp_image[0] = vtkImageData::New();
-    temp_image[0]->ShallowCopy( m_LSMReader[0]->GetOutput() );
+    m_InternalImages[0] = m_LSMReader[0]->GetOutput();
 
-    vtkImageAppendComponents* append_filter =
-      vtkImageAppendComponents::New();
-    append_filter->AddInput( temp_image[0] );
+    vtkSmartPointer< vtkImageAppendComponents > append_filter =
+      vtkSmartPointer< vtkImageAppendComponents >::New();
+    append_filter->AddInput( m_InternalImages[0] );
 
     for( int i = 1; i < NumberOfChannels; i++ )
       {
       m_LSMReader[i]->SetUpdateTimePoint( m_TimePoint );
       m_LSMReader[i]->Update();
 
-      temp_image[i] = vtkImageData::New();
-      temp_image[i]->ShallowCopy( m_LSMReader[i]->GetOutput() );
-      append_filter->AddInput( temp_image[i] );
+      m_InternalImages[i] = m_LSMReader[i]->GetOutput();
+      append_filter->AddInput( m_InternalImages[i] );
       }
     // This is really stupid!!!
     if( NumberOfChannels < 3 )
       {
       for( int i = NumberOfChannels; i < 3; i++ )
         {
-        append_filter->AddInput( temp_image[0] );
+        append_filter->AddInput( m_InternalImages[0] );
         }
       }
     append_filter->Update();
 
-    // Do we really need to delete m_Image?
-    if( !m_Image )
-      {
-      m_Image = vtkImageData::New();
-      }
-
     m_Image->ShallowCopy( append_filter->GetOutput() );
-    append_filter->Delete();
-
-    for( int i = 0; i < NumberOfChannels; i++ )
-      {
-      temp_image[i]->Delete();
-      }
     }
   else
     {
     m_LSMReader[0]->Update();
 
-    if( !m_Image )
-      {
-      m_Image = vtkImageData::New();
-      }
     m_Image->ShallowCopy( m_LSMReader[0]->GetOutput() );
     }
 
@@ -723,11 +673,11 @@ void QGoTabImageView3DwT::Update()
 
   for( int i = 0; i < 3; i++ )
     {
-    vtkImageActorPointPlacer* point_placer = vtkImageActorPointPlacer::New();
+    vtkSmartPointer< vtkImageActorPointPlacer > point_placer =
+      vtkSmartPointer< vtkImageActorPointPlacer >::New();
     point_placer->SetImageActor( m_ImageView->GetImageActor( i ) );
 
     this->m_ContourRepresentation[i]->SetPointPlacer( point_placer );
-    point_placer->Delete();
 
     this->m_ContourWidget[i]->SetRepresentation( this->m_ContourRepresentation[i] );
     }
@@ -744,11 +694,11 @@ void QGoTabImageView3DwT::ChangeLookupTable()
 
   if( image->GetNumberOfScalarComponents() == 1 )
     {
-    vtkLookupTable* lut = vtkLookupTable::New();
+    vtkSmartPointer< vtkLookupTable > lut =
+      vtkSmartPointer< vtkLookupTable >::New();
     lut->DeepCopy( QGoLUTDialog::GetLookupTable( this,
       tr( "Choose one look-up table") ) );
     m_ImageView->SetLookupTable( lut );
-    lut->Delete();
     }
 }
 //-------------------------------------------------------------------------
@@ -981,108 +931,6 @@ void QGoTabImageView3DwT::ChangeBackgroundColor()
 
 //-------------------------------------------------------------------------
 /**
- * \brief
- */
-void QGoTabImageView3DwT::ShowAllChannelsWithLSMReaders( )
-{
-  int NumberOfChannels = m_LSMReader[0]->GetNumberOfChannels();
-
-  std::vector< vtkImageData* > temp_image( NumberOfChannels );
-  temp_image[0] = vtkImageData::New();
-  temp_image[0]->ShallowCopy( m_LSMReader[0]->GetOutput() );
-
-  vtkImageAppendComponents* append_filter = vtkImageAppendComponents::New();
-  append_filter->AddInput( temp_image[0] );
-
-  for( int i = 1; i < NumberOfChannels; i++ )
-    {
-    m_LSMReader[i]->SetUpdateTimePoint( m_TimePoint );
-    m_LSMReader[i]->Update();
-
-    temp_image[i] = vtkImageData::New();
-    temp_image[i]->ShallowCopy( m_LSMReader[i]->GetOutput() );
-    append_filter->AddInput( temp_image[i] );
-    }
-
-  // This is really stupid!!!
-  if( NumberOfChannels < 3 )
-    {
-    for( int i = NumberOfChannels; i < 3; i++ )
-      {
-      append_filter->AddInput( temp_image[0] );
-      }
-    }
-  append_filter->Update();
-
-  m_Image->ShallowCopy( append_filter->GetOutput() );
-  Update();
-
-  append_filter->Delete();
-
-  for( int i = 0; i < NumberOfChannels; i++ )
-    {
-    temp_image[i]->Delete();
-    }
-}
-//-------------------------------------------------------------------------
-
-
-//-------------------------------------------------------------------------
-/**
- * \brief
- */
-void QGoTabImageView3DwT::ShowAllChannelsWithMegaCapture()
-{
-  m_MegaCaptureReader->Update();
-
-  int NumberOfChannels = 1 +
-    m_MegaCaptureReader->GetMaxChannel() -
-    m_MegaCaptureReader->GetMinChannel();
-
-  std::vector< vtkImageData* > temp_image( NumberOfChannels );
-  temp_image[0] = vtkImageData::New();
-  temp_image[0]->ShallowCopy( m_MegaCaptureReader->GetOutput() );
-
-  vtkImageAppendComponents* append_filter = vtkImageAppendComponents::New();
-  append_filter->AddInput( temp_image[0] );
-
-  for( int i = 1; i < NumberOfChannels; i++ )
-    {
-    m_MegaCaptureReader->SetChannel( i );
-    m_MegaCaptureReader->Update();
-
-    temp_image[i] = vtkImageData::New();
-    temp_image[i]->ShallowCopy( m_MegaCaptureReader->GetOutput() );
-    append_filter->AddInput( temp_image[i] );
-    }
-  // This is really stupid!!!
-  if( NumberOfChannels < 3 )
-    {
-    for( int i = NumberOfChannels; i < 3; i++ )
-      {
-      append_filter->AddInput( temp_image[0] );
-      }
-    }
-  append_filter->Update();
-
-  // Do we really need to delete m_Image?
-  if( !m_Image )
-    {
-    m_Image = vtkImageData::New();
-    }
-
-  m_Image->ShallowCopy( append_filter->GetOutput() );
-  append_filter->Delete();
-
-  for( int i = 0; i < NumberOfChannels; i++ )
-    {
-    temp_image[i]->Delete();
-    }
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-/**
  *
  * \param iChecked
  */
@@ -1090,22 +938,35 @@ void QGoTabImageView3DwT::ShowAllChannels( bool iChecked )
 {
   if( iChecked )
     {
-    if( !m_LSMReader.empty() )
+    vtkSmartPointer< vtkImageAppendComponents > append_filter =
+      vtkSmartPointer< vtkImageAppendComponents >::New();
+
+    for( unsigned int i = 0; i < m_InternalImages.size(); i++ )
       {
-      ShowAllChannelsWithLSMReaders();
+      append_filter->AddInput( m_InternalImages[i] );
       }
-    else
+
+    // This is really stupid!!!
+    if( m_InternalImages.size() < 3 )
       {
-      if( !m_FileList.empty() )
+      for( int i = m_InternalImages.size(); i < 3; i++ )
         {
-        ShowAllChannelsWithMegaCapture();
+        append_filter->AddInput( m_InternalImages[0] );
         }
       }
+    append_filter->Update();
+
+    m_Image->ShallowCopy( append_filter->GetOutput() );
+    Update();
     }
   else
     {
     int ch = this->m_VisuDockWidget->GetCurrentChannel();
-    ShowOneChannel( ch );
+    if( ch != -1 )
+      {
+      m_Image->ShallowCopy( m_InternalImages[ch] );
+      Update();
+      }
     }
 }
 //------------------------------------------------------------------------
@@ -1118,24 +979,10 @@ void QGoTabImageView3DwT::ShowAllChannels( bool iChecked )
 void QGoTabImageView3DwT::
 ShowOneChannel( int iChannel )
 {
-  if( ( m_Image ) && ( iChannel != -1 ) )
+  if( ( iChannel != -1 ) && ( !m_InternalImages.empty() ) )
     {
-    if( !m_LSMReader.empty() )
-      {
-      m_Image->ShallowCopy( m_LSMReader[iChannel]->GetOutput() );
-      Update();
-      }
-    else
-      {
-      if( !m_FileList.empty() )
-        {
-        m_MegaCaptureReader->SetChannel( iChannel );
-        m_MegaCaptureReader->Update();
-
-        m_Image->ShallowCopy( m_MegaCaptureReader->GetOutput() );
-        Update();
-        }
-      }
+    m_Image->ShallowCopy( m_InternalImages[iChannel] );
+    Update();
     }
 }
 //-------------------------------------------------------------------------
@@ -1305,7 +1152,8 @@ void
 QGoTabImageView3DwT::
 ActivateManualSegmentationEditor( const bool& iActivate )
 {
-  std::vector< vtkContourWidget* >::iterator it = m_ContourWidget.begin();
+  std::vector< vtkSmartPointer< vtkContourWidget > >::iterator
+    it = m_ContourWidget.begin();
   while( it != m_ContourWidget.end() )
     {
     if( iActivate )

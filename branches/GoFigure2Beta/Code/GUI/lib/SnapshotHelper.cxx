@@ -174,31 +174,31 @@ QString SnapshotView( QVTKWidget* iWidget,
     case GoFigure::BMP:
       {
       filename.append( ".bmp" );
-      WriteImage< vtkBMPWriter >( image, filename );
+      vtkWriteImage< vtkBMPWriter >( image, filename );
       break;
       }
     case GoFigure::EPS:
       {
       filename.append( ".eps" );
-      WriteImage< vtkPostScriptWriter >( image, filename );
+      vtkWriteImage< vtkPostScriptWriter >( image, filename );
       break;
       }
     case GoFigure::JPEG:
       {
       filename.append( ".jpeg" );
-      WriteImage< vtkJPEGWriter >( image, filename );
+      vtkWriteImage< vtkJPEGWriter >( image, filename );
       break;
       }
     case GoFigure::PNG:
       {
       filename.append( ".png" );
-      WriteImage< vtkPNGWriter >( image, filename );
+      vtkWriteImage< vtkPNGWriter >( image, filename );
       break;
       }
     case GoFigure::TIFF:
       {
       filename.append( ".tiff" );
-      WriteImage< vtkTIFFWriter >( image, filename );
+      vtkWriteImage< vtkTIFFWriter >( image, filename );
       break;
       }
     default:

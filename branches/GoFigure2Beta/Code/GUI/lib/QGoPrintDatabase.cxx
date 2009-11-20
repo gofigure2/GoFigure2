@@ -541,14 +541,14 @@ void
 QGoPrintDatabase::
 ChangeContoursToHighLightInfoFromVisu( std::list<int> iListContoursHighLightedInVisu)
 {
-    int i = 0;
+//     int i = 0;
     std::list<int>::iterator it = iListContoursHighLightedInVisu.begin();
     while (it != iListContoursHighLightedInVisu.end())
       {
 
-      for (int j = 0 ; j < m_ContoursInfo.size(); j++)
+      for (unsigned int j = 0 ; j < m_ContoursInfo.size(); j++)
         {
-        if (*it == j+1)
+        if (*it == static_cast< int >( j+1 ) )
           {
           m_ContoursInfo[j].IsHighLighted = true;
           this->ContourTable->SetSelectRowTraceID("Contour",
@@ -586,11 +586,11 @@ void QGoPrintDatabase::SaveContoursFromVisuInDB(unsigned int iXCoordMin,
   coord_max.SetField< unsigned int >( "ZCoord", iZCoordMax );
   coord_max.SetField< unsigned int >( "TCoord", iTCoord );
 
-  GoDBContourRow contour_row( this->m_DatabaseConnector,coord_min, coord_max, 
+  GoDBContourRow contour_row( this->m_DatabaseConnector,coord_min, coord_max,
     this->m_ImgSessionID, iContourNodes );
 
   contour_row.SaveInDB( this->m_DatabaseConnector);
-  
+
   UpdateContentAndDisplayFromDB< GoDBContourRow >("contour",
     ContourTable,m_DatabaseConnector);
 

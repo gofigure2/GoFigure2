@@ -42,7 +42,6 @@
 #include "vtkSQLQuery.h"
 #include "vtkStdString.h"
 #include "vtkVariant.h"
-#include "GoDBTraceInfoHelper.h"
 #include "vtkPolyDataMySQLTextReader.h"
 #include <sstream>
 #include <string>
@@ -181,7 +180,7 @@ std::vector<std::string> ListSpecificValuesForRow(
 
   while (query->NextRow())
     {
-    for(  int i = 0; i < query->GetNumberOfFields(); i++)
+    for( int i = 0; i < query->GetNumberOfFields(); i++)
       {
       result.push_back( query->DataValue( i ).ToString() );
       }
@@ -534,8 +533,8 @@ std::vector<std::string> ListSpecificValuesForOneColumn(
   querystream << " FROM ";
   querystream << TableName;
   querystream << " WHERE (";
-  int i;
-  for (i=0;i < VectorValuess.size()-1; i++)
+  unsigned int i;
+  for( i=0;i < VectorValuess.size()-1; i++ )
     {
     querystream << field;
     querystream << " = '";
@@ -561,9 +560,9 @@ std::vector<std::string> ListSpecificValuesForOneColumn(
 
   while (query->NextRow())
     {
-    for( int i = 0; i < query->GetNumberOfFields(); i++)
+    for( int k = 0; k < query->GetNumberOfFields(); k++)
       {
-      result.push_back( query->DataValue( i ).ToString() );
+      result.push_back( query->DataValue( k ).ToString() );
       }
     }
 
@@ -710,8 +709,8 @@ int MaxValueForOneColumnInTable(vtkMySQLDatabase* DatabaseConnector,
   querystream << ") FROM ";
   querystream << TableName;
   querystream << " WHERE (";
-  int i;
-  for (i=0;i < VectorValues.size()-1; i++)
+  unsigned int i;
+  for( i=0;i < VectorValues.size()-1; i++ )
     {
     querystream << field;
     querystream << " = '";
@@ -759,7 +758,7 @@ int MinValueForOneColumnInTable(vtkMySQLDatabase* DatabaseConnector,
   querystream << ") FROM ";
   querystream << TableName;
   querystream << " WHERE (";
-  int i;
+  unsigned int i;
   for (i=0;i < VectorValues.size()-1; i++)
     {
     querystream << field;
