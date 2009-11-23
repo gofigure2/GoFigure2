@@ -62,6 +62,7 @@
 #include "GoDBCoordinateRow.h"
 #include "QueryDataBaseHelper.h"
 #include "ConvertToStringHelper.h"
+#include "GoDBTraceInfoForTableWidget.h"
 #include <iostream>
 #include <QCloseEvent>
 
@@ -81,12 +82,9 @@ QGoPrintDatabase( QWidget* iParent ) :
   TrackTable = new QTableWidgetChild( this );
   LineageTable = new QTableWidgetChild( this );
 
-  m_CollectionOfContours = new GoDBCollectionOfTraces( "mesh",
-    "MeshID", "contour", "ContourID" );
-  m_CollectionOfMeshes = new GoDBCollectionOfTraces( "track",
-    "TrackID", "mesh", "MeshID" );
-  m_CollectionOfTracks = new GoDBCollectionOfTraces( "lineage",
-    "LineageID", "track", "TrackID" );
+  m_CollectionOfContours = new GoDBCollectionOfTraces( "mesh","contour");
+  m_CollectionOfMeshes = new GoDBCollectionOfTraces( "track","mesh");
+  m_CollectionOfTracks = new GoDBCollectionOfTraces( "lineage","track");
 
   this->setContextMenuPolicy( Qt::CustomContextMenu );
 
@@ -142,9 +140,9 @@ void QGoPrintDatabase::QPrintColumnNames( QString TableName,
     HeaderCol->setFont(serifFont);
     QTabTableName->setHorizontalHeaderItem(i,HeaderCol);
     QTabTableName->resizeColumnToContents(i);
-
     }
-
+  
+  
   QTabTableName->horizontalHeader()->setSortIndicatorShown(true);
   /*Need to disabled the Sorting while printing the values from the database in
   the table widget as the sorting is making trouble*/
@@ -519,21 +517,6 @@ void QGoPrintDatabase::ChangeTracesToHighLightInfoFromTableWidget()
         }
     }
 }
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-/*unsigned int QGoPrintDatabase::GetImagingSessionID() const
-{
-  return m_ImgSessionID;
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-vtkMySQLDatabase*QGoPrintDatabase::GetDatabaseConnector()
-{
-  return m_DatabaseConnector;
-}
-*/
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------

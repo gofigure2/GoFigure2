@@ -75,10 +75,6 @@ public:
   in the database, display them in the QTableWidgetChild and fill the info for the
   contours and meshes*/
   void FillTableFromDatabase();
-  
-  //unsigned int GetImagingSessionID() const;
-
-  //vtkMySQLDatabase* GetDatabaseConnector();
 
   QTableWidgetChild* ContourTable;
   QTableWidgetChild* MeshTable;

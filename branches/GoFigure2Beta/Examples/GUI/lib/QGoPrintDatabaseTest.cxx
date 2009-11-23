@@ -15,7 +15,7 @@ int main(int argc, char * argv[])
   //    "gofigure",atoi(argv[2]), argv[3]);
   win.SetDatabaseVariables(
     "gofiguredatabase","localhost","gofigure",
-   "gofigure",1, "ProjectOct30");
+   "gofigure",1, "Nov16");
   win.FillTableFromDatabase();
 
   win.show();
