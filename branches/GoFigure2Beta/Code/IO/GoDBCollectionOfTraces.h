@@ -49,6 +49,7 @@
 #include "GoDBCoordinateRow.h"
 #include "GoDBTraceInfoForTableWidget.h"
 #include <QStringList>
+#include <map>
 
 class GoDBCollectionOfTraces
 {
@@ -59,7 +60,9 @@ public:
   explicit QMEGAVTKADDON2_EXPORT GoDBCollectionOfTraces(
     std::string CollectionName,std::string Traces);
   virtual  QMEGAVTKADDON2_EXPORT ~GoDBCollectionOfTraces();
- 
+
+  typedef std::map<std::string,std::string> MapString;
+
   //void QMEGAVTKADDON2_EXPORT SetDatabaseVariables(
     //QString Server,QString User,QString Password, QString NameDB);
   void QMEGAVTKADDON2_EXPORT SetImgSessionID (unsigned int iImgSessionID);
@@ -76,7 +79,12 @@ public:
   
   /** \brief Fill a vector of GoDBTraceInfoForTableWidget with the info
   needed to fill the table widget for all the traces*/ 
-  std::vector<GoDBTraceInfoForTableWidget> GetCommonColumnsInfoForTraceTable();
+  std::vector<GoDBTraceInfoForTableWidget> GetColumnsInfoForTraceTable();
+
+  /** \brief Return a map with all the ColumnNames for the table widget to be 
+  completed by the value for each column:*/
+   std::map<std::string,std::string> GetColumnsNamesMapForTableWidget(
+    std::vector<GoDBTraceInfoForTableWidget> iColumnsInfos);
 
   template< class myT >
   void QMEGAVTKADDON2_EXPORT CreateNewCollectionFromSelection(

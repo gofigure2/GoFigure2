@@ -90,7 +90,7 @@ public:
     unsigned int iXCoordMax,unsigned int iYCoordMax,unsigned int iZCoordMax,
     vtkPolyData* iContourNodes);
 
-  QAction* toggleViewAction();
+  //QAction* toggleViewAction();
 
 signals:
   void TableContentChanged();
@@ -114,7 +114,7 @@ protected:
   QAction* m_VisibilityAction;
 
   void QPrintColumnNames( QString TableName,
-    std::vector< std::string > ColumnNames, QTableWidgetChild* QTabTableName );
+    std::map< std::string,std::string > ColumnNames, QTableWidgetChild* QTabTableName );
 
   void OpenDBConnection();
   void CloseDBConnection();
@@ -131,9 +131,10 @@ protected:
     database, then display them in the QTableWidgetchild.
   */
   template< class myT >
-  void GetContentAndDisplayFromDB( QString TableName, QTableWidgetChild* Table)
+  void GetContentAndDisplayFromDB( QString TableName, QTableWidgetChild* Table,
+    GoDBCollectionOfTraces* iCollectionOfTraces)
     {
-    std::vector< std::string > ColumnNamesContainer;
+    /*std::vector< std::string > ColumnNamesContainer;
 
     typedef GoDBRecordSet< myT >                  SetType;
     typedef typename SetType::InternalObjectType  InternalObjectType;
@@ -156,9 +157,19 @@ protected:
     mySet->AddObject( myNewObject );
 
     //Get the column names from the database:
-    ColumnNamesContainer = mySet->GetColumnNamesContainer();
-    QPrintColumnNames( TableName, ColumnNamesContainer, Table );
-    RowContainer = mySet->GetRowContainer();
+    ColumnNamesContainer = mySet->GetColumnNamesContainer();*/
+
+    //Get the infos for all the columns needed:
+    std::vector<GoDBTraceInfoForTableWidget> ColumnsInfoContainer;
+    ColumnsInfoContainer = iCollectionOfTraces->GetColumnsInfoForTraceTable();
+
+    //Get the column names to be displayed in the table widget:
+    std::map<std::string,std::string> ColumnsNames;
+    ColumnsNames = iCollectionOfTraces->GetColumnsNamesMapForTableWidget(
+      ColumnsInfoContainer);
+
+    QPrintColumnNames( TableName, ColumnsNames, Table );
+   /* RowContainer = mySet->GetRowContainer();
     if( RowContainer->size() < 2 ) //because the first row is for the column names
       {
       std::cout<<"Table empty";
@@ -166,12 +177,12 @@ protected:
       std::cout << std::endl;
       }
     else
-      {
-      PrintOutContentFromDB< myT >( RowContainer, Table );
+      {*/
+//      PrintOutContentFromDB< myT >( RowContainer, Table );
       //sorting has to be enabled after populating the tables:
       Table->setSortingEnabled(true);
-      }
-    delete mySet;
+      //}
+    //delete mySet;*/
     }
 
   /**

@@ -118,30 +118,33 @@ QGoPrintDatabase::
 toggleViewAction()
 {
   return m_VisibilityAction;
+
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void QGoPrintDatabase::QPrintColumnNames( QString TableName,
-  std::vector< std::string > ColumnNames, QTableWidgetChild* QTabTableName )
+ std::map<std::string,std::string> ColumnNames, QTableWidgetChild* QTabTableName )
 {
   int numberCol=ColumnNames.size();
   this->DBTabWidget->addTab(QTabTableName,TableName);
   QTabTableName->setColumnCount(numberCol);
-
-  for ( int i = 0; i < numberCol; i++ )
+  
+  int i = 0;
+  for ( std::map<std::string,std::string>::iterator iter = ColumnNames.begin(); 
+    iter!= ColumnNames.end();iter++)
     {
     QTableWidgetItem* HeaderCol=new QTableWidgetItem;
     std::string NameHeader;
-    NameHeader =ColumnNames[i];
+    NameHeader =iter->first;
 
     HeaderCol->setText(NameHeader.c_str());
     QFont serifFont("Arial", 10, QFont::Bold);
     HeaderCol->setFont(serifFont);
     QTabTableName->setHorizontalHeaderItem(i,HeaderCol);
     QTabTableName->resizeColumnToContents(i);
+    i++;
     }
-  
   
   QTabTableName->horizontalHeader()->setSortIndicatorShown(true);
   /*Need to disabled the Sorting while printing the values from the database in
@@ -173,7 +176,8 @@ void QGoPrintDatabase::SetDatabaseVariables(
   m_ImgSessionName = iImgSessionName;
   m_CollectionOfContours ->SetImgSessionID(m_ImgSessionID);
   m_CollectionOfMeshes   ->SetImgSessionID(m_ImgSessionID);
-  m_CollectionOfMeshes   ->SetImgSessionID(m_ImgSessionID);
+  m_CollectionOfTracks   ->SetImgSessionID(m_ImgSessionID);
+  //m_CollectionOfLineages ->SetImgSessionID(m_ImgSessionID);
 }
 //--------------------------------------------------------------------------
 
@@ -207,10 +211,14 @@ void QGoPrintDatabase::FillTableFromDatabase()
   this->setWindowTitle( title );
   m_VisibilityAction->setText( title );
 
-  GetContentAndDisplayFromDB< GoDBContourRow >( "contour", ContourTable);
-  GetContentAndDisplayFromDB< GoDBMeshRow    >( "mesh", MeshTable );
-  GetContentAndDisplayFromDB< GoDBTrackRow   >( "track", TrackTable );
-  GetContentAndDisplayFromDB< GoDBLineageRow >( "lineage", LineageTable );
+  GetContentAndDisplayFromDB< GoDBContourRow >( "contour", ContourTable, 
+    m_CollectionOfContours);
+  GetContentAndDisplayFromDB< GoDBMeshRow    >( "mesh", MeshTable,
+    m_CollectionOfMeshes);
+  GetContentAndDisplayFromDB< GoDBTrackRow   >( "track", TrackTable,
+    m_CollectionOfTracks);
+  //GetContentAndDisplayFromDB< GoDBLineageRow >( "lineage", LineageTable,
+    //m_CollectionOfLineages);
 
   LoadContoursAndMeshesFromDB(m_DatabaseConnector);
 

@@ -46,6 +46,7 @@
 #include <QStringList>
 #include <QString>
 #include <string>
+#include <map>
 
 
 GoDBCollectionOfTraces::GoDBCollectionOfTraces()
@@ -351,10 +352,17 @@ GoDBCoordinateRow GoDBCollectionOfTraces::GetExistingCoordMax(
 
 //--------------------------------------------------------------------------
 std::vector<GoDBTraceInfoForTableWidget> GoDBCollectionOfTraces
-  ::GetCommonColumnsInfoForTraceTable()
+  ::GetColumnsInfoForTraceTable()
 {
   std::vector<GoDBTraceInfoForTableWidget> ColumnsInfo;
   GoDBTraceInfoForTableWidget temp;
+  
+  //IsSelected column will correspond to the "IsHighLighted":
+  temp.InfoName = "Selected";
+  temp.ColumnNameDatabase = "None";
+  temp.ColumnNameTableWidget = "Selected";
+  temp.TableNameDatabase = "None";
+  ColumnsInfo.push_back(temp);
 
   //Get the info for the TraceID:
   temp.InfoName = this->m_TracesIDName;
@@ -565,4 +573,20 @@ void GoDBCollectionOfTraces::GetSpecificInfoForTraceTable(
     temp.TableNameDatabase = "coordinate";
     ioSpecificInfos.push_back(temp);
     }
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+ std::map<std::string,std::string> GoDBCollectionOfTraces::GetColumnsNamesMapForTableWidget(
+  std::vector<GoDBTraceInfoForTableWidget> iColumnsInfos)
+{
+  MapString ColumnNamesMap;
+  for (int i=0;i<iColumnsInfos.size();i++)
+    {
+    if (iColumnsInfos[i].ColumnNameTableWidget != "None")
+      {
+      ColumnNamesMap[iColumnsInfos[i].ColumnNameTableWidget] = "";
+      }
+    }
+  return ColumnNamesMap;
 }
