@@ -80,7 +80,7 @@ QGoPrintDatabase( QWidget* iParent ) :
   ContourTable = new QTableWidgetChild( this );
   MeshTable = new QTableWidgetChild( this );
   TrackTable = new QTableWidgetChild( this );
-  LineageTable = new QTableWidgetChild( this );
+  //LineageTable = new QTableWidgetChild( this );
 
   m_CollectionOfContours = new GoDBCollectionOfTraces( "mesh","contour");
   m_CollectionOfMeshes = new GoDBCollectionOfTraces( "track","mesh");

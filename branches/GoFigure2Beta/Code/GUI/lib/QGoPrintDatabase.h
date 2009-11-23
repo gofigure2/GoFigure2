@@ -90,7 +90,7 @@ public:
     unsigned int iXCoordMax,unsigned int iYCoordMax,unsigned int iZCoordMax,
     vtkPolyData* iContourNodes);
 
-  //QAction* toggleViewAction();
+  QAction* toggleViewAction();
 
 signals:
   void TableContentChanged();

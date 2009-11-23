@@ -544,7 +544,7 @@ std::vector<GoDBTraceInfoForTableWidget> GoDBCollectionOfTraces
 void GoDBCollectionOfTraces::GetSpecificInfoForTraceTable(
     std::vector<GoDBTraceInfoForTableWidget> &ioSpecificInfos)
 {
-  if (this->m_TracesName == "Contour" || this->m_TracesName == "Mesh")
+  if (this->m_TracesName == "contour" || this->m_TracesName == "mesh")
     {
     GoDBTraceInfoForTableWidget temp;
     
