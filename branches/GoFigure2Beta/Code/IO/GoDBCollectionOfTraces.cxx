@@ -58,12 +58,15 @@ GoDBCollectionOfTraces::GoDBCollectionOfTraces()
 GoDBCollectionOfTraces::GoDBCollectionOfTraces( 
   std::string iCollectionName,std::string iTracesName)
 {
-  m_CollectionName = iCollectionName;
+  m_CollectionName   = iCollectionName;
   m_CollectionIDName = m_CollectionName;
   m_CollectionIDName += "ID";
-  m_TracesName = iTracesName;
-  m_TracesIDName = m_TracesName;
-  m_TracesIDName += "ID";
+  m_TracesName       = iTracesName;
+  m_TracesIDName     = m_TracesName;
+  m_TracesIDName     += "ID";
+
+  m_ColumnsInfos     = GetColumnsInfoForTraceTable();
+  m_ColumnNamesMap   = GetColumnsNamesMapForTableWidget();
 }
 //--------------------------------------------------------------------------
 
@@ -353,196 +356,254 @@ GoDBCoordinateRow GoDBCollectionOfTraces::GetExistingCoordMax(
 //--------------------------------------------------------------------------
 std::vector<GoDBTraceInfoForTableWidget> GoDBCollectionOfTraces
   ::GetColumnsInfoForTraceTable()
-{
-  std::vector<GoDBTraceInfoForTableWidget> ColumnsInfo;
+{ 
   GoDBTraceInfoForTableWidget temp;
-  
   //IsSelected column will correspond to the "IsHighLighted":
   temp.InfoName = "Selected";
-  temp.ColumnNameDatabase = "None";
   temp.ColumnNameTableWidget = "Selected";
-  temp.TableNameDatabase = "None";
-  ColumnsInfo.push_back(temp);
+  m_ColumnsInfos.push_back(temp);
+  temp.Clear();
 
   //Get the info for the TraceID:
   temp.InfoName = this->m_TracesIDName;
   temp.ColumnNameDatabase = this->m_TracesIDName;
   temp.ColumnNameTableWidget = this->m_TracesIDName;
   temp.TableNameDatabase = this->m_TracesName;
-  ColumnsInfo.push_back(temp);
+  m_ColumnsInfos.push_back(temp);
+  temp.Clear();
 
   //Get the info for the CollectionID:
   temp.InfoName   = this->m_CollectionIDName;
   temp.ColumnNameDatabase = this->m_CollectionIDName;
   temp.ColumnNameTableWidget = this->m_CollectionIDName;
-  temp.TableNameDatabase = this->m_CollectionName;
-  ColumnsInfo.push_back(temp);
+  temp.TableNameDatabase = this->m_TracesName;
+  temp.TableForeignKeyDatabase = this->m_CollectionIDName;
+  temp.TableKeyDatabase = this->m_CollectionIDName;
+  m_ColumnsInfos.push_back(temp);
+  temp.Clear();
 
   //Get the info for the ColorID of the trace:
+  //check if it is needed in the query ??
   std::string ColorTrace = this->m_TracesName;
   ColorTrace += "Color";
   temp.ColumnNameDatabase = "ColorID";
-  temp.ColumnNameTableWidget = "None";
   temp.TableNameDatabase = this->m_TracesName;
   temp.InfoName = ColorTrace;
-  ColumnsInfo.push_back(temp);
+  temp.TableForeignKeyDatabase = "ColorID";
+  temp.TableKeyDatabase = "ColorID";
+  m_ColumnsInfos.push_back(temp);
+  temp.Clear();
 
   //Get the info for the Red value of the trace:
   temp.ColumnNameDatabase = "Red";
-  temp.ColumnNameTableWidget = "None";
   temp.TableNameDatabase = "color";
   std::string OtherInfo = "RedFor";
   OtherInfo += this->m_TracesName;
   temp.InfoName = OtherInfo;
-  ColumnsInfo.push_back(temp);
+  temp.TableForeignKeyDatabase = "ColorID";
+  temp.TableKeyDatabase = "ColorID";
+  m_ColumnsInfos.push_back(temp);
+  temp.Clear();
 
   //Get the info for the Green value of the trace:
   temp.ColumnNameDatabase = "Green";
-  temp.ColumnNameTableWidget = "None";
   temp.TableNameDatabase = "color";
   OtherInfo = "GreenFor";
   OtherInfo += this->m_TracesName;
   temp.InfoName = OtherInfo;
-  ColumnsInfo.push_back(temp);
+  temp.TableForeignKeyDatabase = "ColorID";
+  temp.TableKeyDatabase = "ColorID";
+  m_ColumnsInfos.push_back(temp);
+  temp.Clear();
 
   //Get the info for the Blue value of the trace:
   temp.ColumnNameDatabase = "Blue";
-  temp.ColumnNameTableWidget = "None";
   temp.TableNameDatabase = "color";
   OtherInfo = "BlueFor";
   OtherInfo += this->m_TracesName;
   temp.InfoName = OtherInfo;
-  ColumnsInfo.push_back(temp);
+  temp.TableForeignKeyDatabase = "ColorID";
+  temp.TableKeyDatabase = "ColorID";
+  m_ColumnsInfos.push_back(temp);
+  temp.Clear();
 
   //Get the info for the ColorID of the collection:
   std::string ColorCollection = this->m_CollectionName;
   ColorCollection += "Color";
   temp.ColumnNameDatabase = "ColorID";
-  temp.ColumnNameTableWidget = "None";
   temp.TableNameDatabase = this->m_CollectionName;
   temp.InfoName = ColorCollection;
-  ColumnsInfo.push_back(temp);
+  temp.TableForeignKeyDatabase = "ColorID";
+  temp.TableKeyDatabase = "ColorID";
+  temp.DisplayedDirectlyInTraceTable = false;
+  m_ColumnsInfos.push_back(temp);
+
+  temp.Clear();
 
   //Get the info for the Red value of the collection:
   temp.ColumnNameDatabase = "Red";
-  temp.ColumnNameTableWidget = "None";
   temp.TableNameDatabase = "color";
   OtherInfo = "RedFor";
   OtherInfo += this->m_CollectionName;
   temp.InfoName = OtherInfo;
-  ColumnsInfo.push_back(temp);
+  temp.TableForeignKeyDatabase = "ColorID";
+  temp.TableKeyDatabase = "ColorID";
+  temp.DisplayedDirectlyInTraceTable = false;
+  m_ColumnsInfos.push_back(temp);
+  temp.Clear();
 
   //Get the info for the Green value of the collection:
   temp.ColumnNameDatabase = "Green";
-  temp.ColumnNameTableWidget = "None";
   temp.TableNameDatabase = "color";
   OtherInfo = "GreenFor";
   OtherInfo += this->m_CollectionName;
   temp.InfoName = OtherInfo;
-  ColumnsInfo.push_back(temp);
+  temp.TableForeignKeyDatabase = "ColorID";
+  temp.TableKeyDatabase = "ColorID";
+  temp.DisplayedDirectlyInTraceTable = false;
+  m_ColumnsInfos.push_back(temp);
+  temp.Clear();
 
   //Get the info for the Blue value of the collection:
   temp.ColumnNameDatabase = "Blue";
-  temp.ColumnNameTableWidget = "None";
   temp.TableNameDatabase = "color";
   OtherInfo = "BlueFor";
   OtherInfo += this->m_CollectionName;
   temp.InfoName = OtherInfo;
-  ColumnsInfo.push_back(temp);
-  
+  temp.TableForeignKeyDatabase = "ColorID";
+  temp.TableKeyDatabase = "ColorID";
+  temp.DisplayedDirectlyInTraceTable = false;
+  m_ColumnsInfos.push_back(temp);
+  temp.Clear();
+
   //Get the info for the PCoord:
   temp.InfoName = "PCoord";
   temp.ColumnNameDatabase = "PCoord";
-  temp.ColumnNameTableWidget = "Plaque";
+  temp.ColumnNameTableWidget = "Plate";
   temp.TableNameDatabase = "coordinate";
-  ColumnsInfo.push_back(temp);
+  temp.TableForeignKeyDatabase = "CoordIDMin";
+  temp.TableKeyDatabase = "CoordID";
+  m_ColumnsInfos.push_back(temp);
+  temp.Clear();
 
   //Get the info for the RCoord:
   temp.InfoName = "RCoord";
   temp.ColumnNameDatabase = "RCoord";
   temp.ColumnNameTableWidget = "Row";
   temp.TableNameDatabase = "coordinate";
-  ColumnsInfo.push_back(temp);
+  temp.TableForeignKeyDatabase = "CoordIDMin";
+  temp.TableKeyDatabase = "CoordID";
+  m_ColumnsInfos.push_back(temp);
+  temp.Clear();
 
   //Get the info for the CCoord:
   temp.InfoName = "CCoord";
   temp.ColumnNameDatabase = "CCoord";
   temp.ColumnNameTableWidget = "Column";
   temp.TableNameDatabase = "coordinate";
-  ColumnsInfo.push_back(temp);
+  temp.TableForeignKeyDatabase = "CoordIDMin";
+  temp.TableKeyDatabase = "CoordID";
+  m_ColumnsInfos.push_back(temp);
+  temp.Clear();
 
   //Get the info for the XTile:
   temp.InfoName = "XTile";
   temp.ColumnNameDatabase = "XTile";
   temp.ColumnNameTableWidget = "XTile";
   temp.TableNameDatabase = "coordinate";
-  ColumnsInfo.push_back(temp);
-  
+  temp.TableForeignKeyDatabase = "CoordIDMin";
+  temp.TableKeyDatabase = "CoordID";
+  m_ColumnsInfos.push_back(temp);
+  temp.Clear();
+
   //Get the info for the YTile:
   temp.InfoName = "YTile";
   temp.ColumnNameDatabase = "YTile";
   temp.ColumnNameTableWidget = "YTile";
   temp.TableNameDatabase = "coordinate";
-  ColumnsInfo.push_back(temp);
+  temp.TableForeignKeyDatabase = "CoordIDMin";
+  temp.TableKeyDatabase = "CoordID";
+  m_ColumnsInfos.push_back(temp);
+  temp.Clear();
 
   //Get the info for the ZTile:
   temp.InfoName = "ZTile";
   temp.ColumnNameDatabase = "ZTile";
   temp.ColumnNameTableWidget = "ZTile";
   temp.TableNameDatabase = "coordinate";
-  ColumnsInfo.push_back(temp);
-  
+  temp.TableForeignKeyDatabase = "CoordIDMin";
+  temp.TableKeyDatabase = "CoordID";
+  m_ColumnsInfos.push_back(temp);
+  temp.Clear();
+
   //Get the info for the XMin:
-  temp.InfoName = "XMin";
+  temp.InfoName = "BDXMin";
   temp.ColumnNameDatabase = "XCoord";
   temp.ColumnNameTableWidget = "XMin";
   temp.TableNameDatabase = "coordinate";
-  ColumnsInfo.push_back(temp);
-  
+  temp.TableForeignKeyDatabase = "CoordIDMin";
+  temp.TableKeyDatabase = "CoordID";
+  m_ColumnsInfos.push_back(temp);
+  temp.Clear();
+
   //Get the info for the YMin:
-  temp.InfoName = "YMin";
+  temp.InfoName = "BDYMin";
   temp.ColumnNameDatabase = "YCoord";
   temp.ColumnNameTableWidget = "YMin";
   temp.TableNameDatabase = "coordinate";
-  ColumnsInfo.push_back(temp);
-  
+  temp.TableForeignKeyDatabase = "CoordIDMin";
+  temp.TableKeyDatabase = "CoordID";
+  m_ColumnsInfos.push_back(temp);
+  temp.Clear();
+
   //Get the info for the ZMin:
-  temp.InfoName = "ZMin";
+  temp.InfoName = "BDZMin";
   temp.ColumnNameDatabase = "ZCoord";
   temp.ColumnNameTableWidget = "ZMin";
   temp.TableNameDatabase = "coordinate";
-  ColumnsInfo.push_back(temp);
-  
+  temp.TableForeignKeyDatabase = "CoordIDMin";
+  temp.TableKeyDatabase = "CoordID";
+  m_ColumnsInfos.push_back(temp);
+  temp.Clear();
+
   //Get the info for the XMax:
-  temp.InfoName = "XMax";
+  temp.InfoName = "BDXMax";
   temp.ColumnNameDatabase = "XCoord";
   temp.ColumnNameTableWidget = "XMax";
   temp.TableNameDatabase = "coordinate";
-  ColumnsInfo.push_back(temp);
+  temp.TableForeignKeyDatabase = "CoordIDMax";
+  temp.TableKeyDatabase = "CoordID";
+  m_ColumnsInfos.push_back(temp);
+  temp.Clear();
 
   //Get the info for the YMax:
-  temp.InfoName = "YMax";
+  temp.InfoName = "BDYMax";
   temp.ColumnNameDatabase = "YCoord";
   temp.ColumnNameTableWidget = "YMax";
   temp.TableNameDatabase = "coordinate";
-  ColumnsInfo.push_back(temp);
+  temp.TableForeignKeyDatabase = "CoordIDMax";
+  temp.TableKeyDatabase = "CoordID";
+  m_ColumnsInfos.push_back(temp);
+  temp.Clear();
 
   //Get the info for the ZMax:
-  temp.InfoName = "ZMax";
+  temp.InfoName = "BDZMax";
   temp.ColumnNameDatabase = "ZCoord";
   temp.ColumnNameTableWidget = "ZMax";
   temp.TableNameDatabase = "coordinate";
-  ColumnsInfo.push_back(temp);
-  
-  GetSpecificInfoForTraceTable(ColumnsInfo);
+  temp.TableForeignKeyDatabase = "CoordIDMax";
+  temp.TableKeyDatabase = "CoordID";
+  m_ColumnsInfos.push_back(temp);
+  temp.Clear();
 
-  return ColumnsInfo;
+  GetSpecificInfoForTraceTable();
+
+  return m_ColumnsInfos;
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void GoDBCollectionOfTraces::GetSpecificInfoForTraceTable(
-    std::vector<GoDBTraceInfoForTableWidget> &ioSpecificInfos)
+void GoDBCollectionOfTraces::GetSpecificInfoForTraceTable()
 {
   if (this->m_TracesName == "contour" || this->m_TracesName == "mesh")
     {
@@ -553,7 +614,10 @@ void GoDBCollectionOfTraces::GetSpecificInfoForTraceTable(
     temp.ColumnNameDatabase = "TCoord";
     temp.ColumnNameTableWidget = "TimePoint";
     temp.TableNameDatabase = "coordinate";
-    ioSpecificInfos.push_back(temp);
+    temp.TableForeignKeyDatabase = "CoordIDMin";
+    temp.TableKeyDatabase = "CoordID";
+    m_ColumnsInfos.push_back(temp);
+    temp.Clear();
     }
   else
     {
@@ -564,29 +628,127 @@ void GoDBCollectionOfTraces::GetSpecificInfoForTraceTable(
     temp.ColumnNameDatabase = "TCoord";
     temp.ColumnNameTableWidget = "TimePointMin";
     temp.TableNameDatabase = "coordinate";
-    ioSpecificInfos.push_back(temp);
-    
+    temp.TableForeignKeyDatabase = "CoordIDMin";
+    temp.TableKeyDatabase = "CoordID";
+    m_ColumnsInfos.push_back(temp);
+    temp.Clear();
+
     //Get the info for the Time Point Max:
     temp.InfoName = "TimePointMax";
     temp.ColumnNameDatabase = "TCoord";
     temp.ColumnNameTableWidget = "TimePointMax";
     temp.TableNameDatabase = "coordinate";
-    ioSpecificInfos.push_back(temp);
+    temp.TableForeignKeyDatabase = "CoordIDMax";
+    temp.TableKeyDatabase = "CoordID";
+    m_ColumnsInfos.push_back(temp);
+    temp.Clear();
     }
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
- std::map<std::string,std::string> GoDBCollectionOfTraces::GetColumnsNamesMapForTableWidget(
-  std::vector<GoDBTraceInfoForTableWidget> iColumnsInfos)
+GoDBCollectionOfTraces::MapString GoDBCollectionOfTraces::
+GetColumnsNamesMapForTableWidget()
 {
-  MapString ColumnNamesMap;
-  for (int i=0;i<iColumnsInfos.size();i++)
+  for (int i=0;i<m_ColumnsInfos.size();i++)
     {
-    if (iColumnsInfos[i].ColumnNameTableWidget != "None")
+    if (m_ColumnsInfos[i].ColumnNameTableWidget != "None" &&
+      m_ColumnsInfos[i].ColumnNameTableWidget != "NoneID")
       {
-      ColumnNamesMap[iColumnsInfos[i].ColumnNameTableWidget] = "";
+      m_ColumnNamesMap[m_ColumnsInfos[i].ColumnNameTableWidget] = "";
       }
     }
-  return ColumnNamesMap;
+  return m_ColumnNamesMap;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+std::vector<GoDBCollectionOfTraces::MapString> GoDBCollectionOfTraces::
+  GetRowContainer()
+{
+  std::vector<GoDBCollectionOfTraces::MapString> RowContainer;
+ //Select directly from the Trace Table:
+  std::vector<std::string> JoinTablesOnTraceTable = 
+    GetQueryStringForTraceJoinedTables();
+  std::vector<std::string> SelectFields = GetQueryStringForSelectFieldsTables();
+    
+ return RowContainer;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+std::vector<std::string> GoDBCollectionOfTraces::
+GetQueryStringForTraceJoinedTables()
+{
+  std::list<std::string> SelectNamesColumns;
+  std::vector <std::string> SelectJoinTables;
+  int i=0;
+  while (i < m_ColumnsInfos.size())
+    {
+    if( m_ColumnsInfos[i].TableNameDatabase != "None")
+      {
+      std::vector<std::string>::iterator iter = SelectJoinTables.begin();
+      bool IsTableInTheList = false;
+      while (iter !=  SelectJoinTables.end()&& IsTableInTheList == false)
+        {
+        if (*iter == m_ColumnsInfos[i].TableNameDatabase )
+          {
+          IsTableInTheList = true;
+          }
+        iter++;
+        }
+      if (IsTableInTheList == false && 
+        m_ColumnsInfos[i].TableNameDatabase != this->m_TracesName &&
+        m_ColumnsInfos[i].DisplayedDirectlyInTraceTable == true)
+        {
+        SelectJoinTables.push_back(m_ColumnsInfos[i].TableNameDatabase);
+        std::string OnQuery = this->m_TracesName;
+        OnQuery += ".";
+        OnQuery += m_ColumnsInfos[i].TableForeignKeyDatabase;
+        OnQuery += "=";
+        OnQuery += m_ColumnsInfos[i].TableNameDatabase;
+        OnQuery += ".";
+        OnQuery += m_ColumnsInfos[i].TableKeyDatabase;
+        SelectJoinTables.push_back(OnQuery);
+        }
+      }
+    i++;
+    }
+  return SelectJoinTables;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+std::vector<std::string> GoDBCollectionOfTraces::
+GetQueryStringForSelectFieldsTables()
+{
+  std::vector<std::string> SelectFields;
+  int i=0;
+  while (i < m_ColumnsInfos.size())
+    {
+    if( m_ColumnsInfos[i].ColumnNameDatabase != "None" &&
+      m_ColumnsInfos[i].ColumnNameTableWidget != "None" &&
+      m_ColumnsInfos[i].ColumnNameTableWidget != "NoneID")
+      {
+      std::string temp = m_ColumnsInfos[i].TableNameDatabase;
+      temp += ".";
+      temp += m_ColumnsInfos[i].ColumnNameDatabase;
+      bool IsSelectFieldsInTheVector = false;
+      int j = 0;
+      while (IsSelectFieldsInTheVector == false && j<SelectFields.size())
+        {
+        if (SelectFields[j] == temp)
+          {
+          IsSelectFieldsInTheVector = true;
+          }
+        j++;
+        }
+      if (IsSelectFieldsInTheVector == false)
+        {
+        SelectFields.push_back(temp);
+        }
+      }
+    i++;
+    }
+  return SelectFields;
 }

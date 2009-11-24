@@ -83,8 +83,10 @@ public:
 
   /** \brief Return a map with all the ColumnNames for the table widget to be 
   completed by the value for each column:*/
-   std::map<std::string,std::string> GetColumnsNamesMapForTableWidget(
-    std::vector<GoDBTraceInfoForTableWidget> iColumnsInfos);
+   MapString GetColumnsNamesMapForTableWidget();
+  
+
+  std::vector<MapString> GetRowContainer();
 
   template< class myT >
   void QMEGAVTKADDON2_EXPORT CreateNewCollectionFromSelection(
@@ -124,6 +126,8 @@ protected:
   std::string  m_TracesName;
   std::string  m_TracesIDName;
   unsigned int m_ImgSessionID;
+  std::vector<GoDBTraceInfoForTableWidget> m_ColumnsInfos;
+  MapString    m_ColumnNamesMap;
 
   /** \brief Create a new collection Row in the collection table and
   return the collectionID from the created row: */
@@ -168,8 +172,14 @@ protected:
 
   /** \brief Fill the vector of GoDBTraceInfoForTableWidget with the info
   common to 2 traces only*/  
-  void GetSpecificInfoForTraceTable(
-    std::vector<GoDBTraceInfoForTableWidget> &ioSpecificInfos);
+  void GetSpecificInfoForTraceTable();
+
+  /** \brief return a vector of string with the tables to be joined with the 
+  trace table in the database query*/
+  std::vector<std::string> GetQueryStringForTraceJoinedTables();
+
+  /** \brief return a vector of the table.fields to be selected from the database*/
+  std::vector<std::string> GetQueryStringForSelectFieldsTables();
   
 };
 #endif

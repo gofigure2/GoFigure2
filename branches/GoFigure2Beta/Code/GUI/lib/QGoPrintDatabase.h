@@ -64,7 +64,8 @@ public:
 
   QGoPrintDatabase( QWidget* iParent = 0 );
   virtual ~QGoPrintDatabase();
-
+  
+  typedef GoDBCollectionOfTraces::MapString MapString;
   /** \brief set all the values needed for the database*/
   void SetDatabaseVariables(
     const std::string& iNameDB, const std::string& iServer,
@@ -164,9 +165,8 @@ protected:
     ColumnsInfoContainer = iCollectionOfTraces->GetColumnsInfoForTraceTable();
 
     //Get the column names to be displayed in the table widget:
-    std::map<std::string,std::string> ColumnsNames;
-    ColumnsNames = iCollectionOfTraces->GetColumnsNamesMapForTableWidget(
-      ColumnsInfoContainer);
+    MapString ColumnsNames;
+    ColumnsNames = iCollectionOfTraces->GetColumnsNamesMapForTableWidget();
 
     QPrintColumnNames( TableName, ColumnsNames, Table );
    /* RowContainer = mySet->GetRowContainer();
@@ -183,6 +183,7 @@ protected:
       Table->setSortingEnabled(true);
       //}
     //delete mySet;*/
+      std::vector<MapString> RowContainer = iCollectionOfTraces->GetRowContainer();
     }
 
   /**

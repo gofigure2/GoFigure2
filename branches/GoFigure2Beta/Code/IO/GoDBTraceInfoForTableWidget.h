@@ -49,6 +49,29 @@ struct GoDBTraceInfoForTableWidget
   std::string     ColumnNameTableWidget;
   std::string     ColumnNameDatabase;
   std::string     TableNameDatabase;
+  bool            DisplayedDirectlyInTraceTable;
+  std::string     TableKeyDatabase;
+  std::string     TableForeignKeyDatabase;
    
+  GoDBTraceInfoForTableWidget()
+    {
+    InfoName = "None";
+    ColumnNameTableWidget = "None";
+    ColumnNameDatabase = "None";
+    TableNameDatabase = "None";
+    TableKeyDatabase = "None";
+    TableForeignKeyDatabase = "None";
+    DisplayedDirectlyInTraceTable = true;
+    }
+  void Clear()
+    {
+    InfoName = "None";
+    ColumnNameTableWidget = "None";
+    ColumnNameDatabase = "None";
+    TableNameDatabase = "None";
+    TableKeyDatabase = "None";
+    TableForeignKeyDatabase = "None";
+    DisplayedDirectlyInTraceTable = true;
+    }
 };
 #endif

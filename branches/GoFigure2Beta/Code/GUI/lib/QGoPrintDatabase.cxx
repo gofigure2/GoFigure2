@@ -85,7 +85,7 @@ QGoPrintDatabase( QWidget* iParent ) :
   m_CollectionOfContours = new GoDBCollectionOfTraces( "mesh","contour");
   m_CollectionOfMeshes = new GoDBCollectionOfTraces( "track","mesh");
   m_CollectionOfTracks = new GoDBCollectionOfTraces( "lineage","track");
-  m_CollectionOfLineages = new GoDBCollectionOfTraces("none","lineage");
+  m_CollectionOfLineages = new GoDBCollectionOfTraces("None","lineage");
 
   this->setContextMenuPolicy( Qt::CustomContextMenu );
 
