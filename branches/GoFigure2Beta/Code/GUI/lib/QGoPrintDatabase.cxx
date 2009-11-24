@@ -80,11 +80,12 @@ QGoPrintDatabase( QWidget* iParent ) :
   ContourTable = new QTableWidgetChild( this );
   MeshTable = new QTableWidgetChild( this );
   TrackTable = new QTableWidgetChild( this );
-  //LineageTable = new QTableWidgetChild( this );
+  LineageTable = new QTableWidgetChild( this );
 
   m_CollectionOfContours = new GoDBCollectionOfTraces( "mesh","contour");
   m_CollectionOfMeshes = new GoDBCollectionOfTraces( "track","mesh");
   m_CollectionOfTracks = new GoDBCollectionOfTraces( "lineage","track");
+  m_CollectionOfLineages = new GoDBCollectionOfTraces("none","lineage");
 
   this->setContextMenuPolicy( Qt::CustomContextMenu );
 
@@ -177,7 +178,7 @@ void QGoPrintDatabase::SetDatabaseVariables(
   m_CollectionOfContours ->SetImgSessionID(m_ImgSessionID);
   m_CollectionOfMeshes   ->SetImgSessionID(m_ImgSessionID);
   m_CollectionOfTracks   ->SetImgSessionID(m_ImgSessionID);
-  //m_CollectionOfLineages ->SetImgSessionID(m_ImgSessionID);
+  m_CollectionOfLineages ->SetImgSessionID(m_ImgSessionID);
 }
 //--------------------------------------------------------------------------
 
@@ -217,8 +218,8 @@ void QGoPrintDatabase::FillTableFromDatabase()
     m_CollectionOfMeshes);
   GetContentAndDisplayFromDB< GoDBTrackRow   >( "track", TrackTable,
     m_CollectionOfTracks);
-  //GetContentAndDisplayFromDB< GoDBLineageRow >( "lineage", LineageTable,
-    //m_CollectionOfLineages);
+  GetContentAndDisplayFromDB< GoDBLineageRow >( "lineage", LineageTable,
+    m_CollectionOfLineages);
 
   LoadContoursAndMeshesFromDB(m_DatabaseConnector);
 
