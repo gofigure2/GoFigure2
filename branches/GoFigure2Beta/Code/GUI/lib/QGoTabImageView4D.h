@@ -52,14 +52,15 @@ class QGoTabImageView4D : public QGoTabElementBase
 signals:
   void TimePointChanged( int TimePoint );
   void ZSliceChanged( int ZSlice );
-  void SliceViewXYChanged( int Slice );
-  void SliceViewXZChanged( int Slice );
-  void SliceViewYZChanged( int Slice );
+  void YSliceChanged( int YSlice );
+  void XSliceChanged( int XSlice );
   void FullScreenViewChanged( int FullScreen );
 
   public slots:
     void SetTimePoint( const int& );
     void SetZSlice( const int& );
+    void SetYSlice( const int& );
+    void SetXSlice( const int& );
 
     QString SnapshotViewXY( const GoFigure::FileType& iType,
       const QString& iBaseName = QString( "snapshot" ) );
@@ -75,12 +76,6 @@ signals:
       const QString& iBaseName = QString( "snapshot" ) );
     QString SnapshotViewXYT( const GoFigure::FileType& iType,
       const QString& iBaseName = QString( "snapshot" ) );
-
-    void SetSliceViewXY( const int& );
-    void SetSliceViewXZ( const int& );
-    void SetSliceViewYZ( const int& );
-    void SetSliceViewXT( const int& );
-    void SetSliceViewYT( const int& );
 
     void SetFullScreenView( const int& iS );
 

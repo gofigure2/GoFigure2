@@ -194,19 +194,19 @@ void QGoTabImageView4D::CreateVisuDockWidget()
   QObject::connect( m_VisuDockWidget, SIGNAL( XSliceChanged( int ) ),
     this, SLOT( SetSliceViewYZ( int ) ) );
 
-  QObject::connect( this, SIGNAL( SliceViewYZChanged( int ) ),
+  QObject::connect( this, SIGNAL( XSliceChanged( int ) ),
     m_VisuDockWidget, SLOT( SetXSlice( int ) ) );
 
   QObject::connect( m_VisuDockWidget, SIGNAL( YSliceChanged( int ) ),
     this, SLOT( SetSliceViewXZ( int ) ) );
 
-  QObject::connect( this, SIGNAL( SliceViewXZChanged( int ) ),
+  QObject::connect( this, SIGNAL( YSliceChanged( int ) ),
     m_VisuDockWidget, SLOT( SetYSlice( int ) ) );
 
   QObject::connect( m_VisuDockWidget, SIGNAL( ZSliceChanged( int ) ),
-    this, SLOT( SetSliceViewXY( int ) ) );
+    this, SLOT( SetZSlice( int ) ) );
 
-  QObject::connect( this, SIGNAL( SliceViewXYChanged( int ) ),
+  QObject::connect( this, SIGNAL( ZSliceChanged( int ) ),
     m_VisuDockWidget, SLOT( SetZSlice( int ) ) );
 
   QObject::connect( m_VisuDockWidget, SIGNAL( TSliceChanged( int ) ),
@@ -287,6 +287,27 @@ void QGoTabImageView4D::setupUi( QWidget* iParent )
   m_Splitter->setSizes( list_size );
   m_Splitter->resize( 800, 800 );
 
+  QObject::connect( m_XYZImageView, SIGNAL( SliceViewXYChanged( int ) ),
+    this, SIGNAL( ZSliceChanged( int ) ) );
+
+  QObject::connect( m_XYZImageView, SIGNAL( SliceViewXZChanged( int ) ),
+    this, SIGNAL( YSliceChanged( int ) ) );
+
+  QObject::connect( m_XYZImageView, SIGNAL( SliceViewYZChanged( int ) ),
+    this, SIGNAL( XSliceChanged( int ) ) );
+
+  QObject::connect( m_XYTImageView, SIGNAL( SliceViewXYChanged( int ) ),
+    this, SIGNAL( TimePointChanged( int ) ) );
+
+  QObject::connect( m_XYTImageView, SIGNAL( SliceViewXZChanged( int ) ),
+    this, SIGNAL( YSliceChanged( int ) ) );
+
+  QObject::connect( m_XYTImageView, SIGNAL( SliceViewYZChanged( int ) ),
+    this, SIGNAL( XSliceChanged( int ) ) );
+
+//   QObject::connect( m_ImageView, SIGNAL( FullScreenViewChanged( int ) ),
+//     this, SIGNAL( FullScreenViewChanged( int ) ) );
+
   retranslateUi(iParent);
 
   QMetaObject::connectSlotsByName(iParent);
@@ -354,13 +375,8 @@ SetMegaCaptureFile(
   temp->GetExtent( extent );
 
   m_VisuDockWidget->SetXMinimumAndMaximum( extent[0], extent[1] );
-  m_VisuDockWidget->SetXSlice( ( extent[0] + extent[1] ) / 2 );
-
   m_VisuDockWidget->SetYMinimumAndMaximum( extent[2], extent[3] );
-  m_VisuDockWidget->SetYSlice( ( extent[2] + extent[3] ) / 2 );
-
   m_VisuDockWidget->SetZMinimumAndMaximum( extent[4], extent[5] );
-  m_VisuDockWidget->SetZSlice( zslice );
 
   unsigned int min_t = m_Reader1->GetMinTimePoint();
   unsigned int max_t = m_Reader1->GetMaxTimePoint();
@@ -385,6 +401,11 @@ SetMegaCaptureFile(
   SetTimePoint( 0 );
   SetZSlice( zslice );
   Update();
+
+  m_VisuDockWidget->SetXSlice( ( extent[0] + extent[1] ) / 2 );
+  m_VisuDockWidget->SetYSlice( ( extent[2] + extent[3] ) / 2 );
+  m_VisuDockWidget->SetZSlice( zslice );
+
 }
 //--------------------------------------------------------------------------
 
@@ -543,6 +564,9 @@ void QGoTabImageView4D::Update()
   m_XYTImageView->SetImage( m_XYTImage );
   m_XYTImageView->Update();
 
+  m_XYZImageView->SetSliceViewXY( m_ZSlice );
+  m_XYTImageView->SetSliceViewXY( m_TimePoint );
+
   m_FirstUpdate = false;
 }
 //--------------------------------------------------------------------------
@@ -637,37 +661,54 @@ QGoTabImageView4D::SnapshotViewXYT( const GoFigure::FileType& iType,
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoTabImageView4D::SetSliceViewXY( const int& iS )
+void QGoTabImageView4D::SetYSlice( const int& iS )
 {
-  m_XYZImageView->SetSliceViewXY( iS );
+  int slice = m_XYZImageView->GetSliceViewXZ();
+  bool tobesignaled = false;
+
+  if( slice != iS )
+    {
+    m_XYZImageView->SetSliceViewXZ( iS );
+    tobesignaled = true;
+    }
+  slice = m_XYTImageView->GetSliceViewXZ();
+
+  if( slice != iS )
+    {
+    m_XYTImageView->SetSliceViewXZ( iS );
+    tobesignaled = true;
+    }
+
+  if( tobesignaled )
+    {
+    emit YSliceChanged( iS );
+    }
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoTabImageView4D::SetSliceViewXZ( const int& iS )
+void QGoTabImageView4D::SetXSlice( const int& iS )
 {
-  m_XYZImageView->SetSliceViewXZ( iS );
-}
-//--------------------------------------------------------------------------
+  int slice = m_XYZImageView->GetSliceViewYZ();
+  bool tobesignaled = false;
 
-//--------------------------------------------------------------------------
-void QGoTabImageView4D::SetSliceViewYZ( const int& iS )
-{
-  m_XYZImageView->SetSliceViewYZ( iS );
-}
-//--------------------------------------------------------------------------
+  if( slice != iS )
+    {
+    m_XYZImageView->SetSliceViewYZ( iS );
+    tobesignaled = true;
+    }
+  slice = m_XYTImageView->GetSliceViewYZ();
 
-//--------------------------------------------------------------------------
-void QGoTabImageView4D::SetSliceViewXT( const int& iS )
-{
-  m_XYTImageView->SetSliceViewXZ( iS );
-}
-//--------------------------------------------------------------------------
+  if( slice != iS )
+    {
+    m_XYTImageView->SetSliceViewYZ( iS );
+    tobesignaled = true;
+    }
 
-//--------------------------------------------------------------------------
-void QGoTabImageView4D::SetSliceViewYT( const int& iS )
-{
-  m_XYTImageView->SetSliceViewYZ( iS );
+  if( tobesignaled )
+    {
+    emit XSliceChanged( iS );
+    }
 }
 //--------------------------------------------------------------------------
 
