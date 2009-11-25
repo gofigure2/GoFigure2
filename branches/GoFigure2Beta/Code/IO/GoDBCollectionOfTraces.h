@@ -86,7 +86,8 @@ public:
    MapString GetColumnsNamesMapForTableWidget();
   
 
-  std::vector<MapString> GetRowContainer();
+  std::vector<std::pair<GoDBTraceInfoForTableWidget, std::vector <std::string> > >
+    GetRowContainer(vtkMySQLDatabase* DatabaseConnector);
 
   template< class myT >
   void QMEGAVTKADDON2_EXPORT CreateNewCollectionFromSelection(
@@ -126,8 +127,10 @@ protected:
   std::string  m_TracesName;
   std::string  m_TracesIDName;
   unsigned int m_ImgSessionID;
-  std::vector<GoDBTraceInfoForTableWidget> m_ColumnsInfos;
-  MapString    m_ColumnNamesMap;
+
+  std::vector<GoDBTraceInfoForTableWidget>         m_ColumnsInfos;
+  MapString                         m_ColumnNamesMap;
+  std::vector<std::pair<GoDBTraceInfoForTableWidget, std::vector <std::string> > > m_RowContainer;
 
   /** \brief Create a new collection Row in the collection table and
   return the collectionID from the created row: */
@@ -180,6 +183,10 @@ protected:
 
   /** \brief return a vector of the table.fields to be selected from the database*/
   std::vector<std::string> GetQueryStringForSelectFieldsTables();
+
+  void FillRowContainer(
+    std::vector<std::vector<std::string> >iResultsFromQuery,
+    std::vector<std::string> iSelectFields);
   
 };
 #endif

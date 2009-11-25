@@ -362,6 +362,9 @@ std::vector<GoDBTraceInfoForTableWidget> GoDBCollectionOfTraces
   temp.InfoName = "Selected";
   temp.ColumnNameTableWidget = "Selected";
   m_ColumnsInfos.push_back(temp);
+  std::pair<GoDBTraceInfoForTableWidget,std::vector<std::string> > PairTemp;
+  PairTemp.first = temp;
+  m_RowContainer.push_back(PairTemp);
   temp.Clear();
 
   //Get the info for the TraceID:
@@ -370,6 +373,8 @@ std::vector<GoDBTraceInfoForTableWidget> GoDBCollectionOfTraces
   temp.ColumnNameTableWidget = this->m_TracesIDName;
   temp.TableNameDatabase = this->m_TracesName;
   m_ColumnsInfos.push_back(temp);
+  PairTemp.first = temp;
+  m_RowContainer.push_back(PairTemp);
   temp.Clear();
 
   //Get the info for the CollectionID:
@@ -380,6 +385,8 @@ std::vector<GoDBTraceInfoForTableWidget> GoDBCollectionOfTraces
   temp.TableForeignKeyDatabase = this->m_CollectionIDName;
   temp.TableKeyDatabase = this->m_CollectionIDName;
   m_ColumnsInfos.push_back(temp);
+  PairTemp.first = temp;
+  m_RowContainer.push_back(PairTemp);
   temp.Clear();
 
   //Get the info for the ColorID of the trace:
@@ -392,6 +399,8 @@ std::vector<GoDBTraceInfoForTableWidget> GoDBCollectionOfTraces
   temp.TableForeignKeyDatabase = "ColorID";
   temp.TableKeyDatabase = "ColorID";
   m_ColumnsInfos.push_back(temp);
+  PairTemp.first = temp;
+  m_RowContainer.push_back(PairTemp);
   temp.Clear();
 
   //Get the info for the Red value of the trace:
@@ -403,6 +412,8 @@ std::vector<GoDBTraceInfoForTableWidget> GoDBCollectionOfTraces
   temp.TableForeignKeyDatabase = "ColorID";
   temp.TableKeyDatabase = "ColorID";
   m_ColumnsInfos.push_back(temp);
+  PairTemp.first = temp;
+  m_RowContainer.push_back(PairTemp);
   temp.Clear();
 
   //Get the info for the Green value of the trace:
@@ -414,6 +425,8 @@ std::vector<GoDBTraceInfoForTableWidget> GoDBCollectionOfTraces
   temp.TableForeignKeyDatabase = "ColorID";
   temp.TableKeyDatabase = "ColorID";
   m_ColumnsInfos.push_back(temp);
+  PairTemp.first = temp;
+  m_RowContainer.push_back(PairTemp);
   temp.Clear();
 
   //Get the info for the Blue value of the trace:
@@ -425,6 +438,8 @@ std::vector<GoDBTraceInfoForTableWidget> GoDBCollectionOfTraces
   temp.TableForeignKeyDatabase = "ColorID";
   temp.TableKeyDatabase = "ColorID";
   m_ColumnsInfos.push_back(temp);
+  PairTemp.first = temp;
+  m_RowContainer.push_back(PairTemp);
   temp.Clear();
 
   //Get the info for the ColorID of the collection:
@@ -437,7 +452,8 @@ std::vector<GoDBTraceInfoForTableWidget> GoDBCollectionOfTraces
   temp.TableKeyDatabase = "ColorID";
   temp.DisplayedDirectlyInTraceTable = false;
   m_ColumnsInfos.push_back(temp);
-
+  PairTemp.first = temp;
+  m_RowContainer.push_back(PairTemp);
   temp.Clear();
 
   //Get the info for the Red value of the collection:
@@ -450,6 +466,8 @@ std::vector<GoDBTraceInfoForTableWidget> GoDBCollectionOfTraces
   temp.TableKeyDatabase = "ColorID";
   temp.DisplayedDirectlyInTraceTable = false;
   m_ColumnsInfos.push_back(temp);
+  PairTemp.first = temp;
+  m_RowContainer.push_back(PairTemp);
   temp.Clear();
 
   //Get the info for the Green value of the collection:
@@ -462,6 +480,8 @@ std::vector<GoDBTraceInfoForTableWidget> GoDBCollectionOfTraces
   temp.TableKeyDatabase = "ColorID";
   temp.DisplayedDirectlyInTraceTable = false;
   m_ColumnsInfos.push_back(temp);
+  PairTemp.first = temp;
+  m_RowContainer.push_back(PairTemp);
   temp.Clear();
 
   //Get the info for the Blue value of the collection:
@@ -474,6 +494,8 @@ std::vector<GoDBTraceInfoForTableWidget> GoDBCollectionOfTraces
   temp.TableKeyDatabase = "ColorID";
   temp.DisplayedDirectlyInTraceTable = false;
   m_ColumnsInfos.push_back(temp);
+  PairTemp.first = temp;
+  m_RowContainer.push_back(PairTemp);
   temp.Clear();
 
   //Get the info for the PCoord:
@@ -484,6 +506,8 @@ std::vector<GoDBTraceInfoForTableWidget> GoDBCollectionOfTraces
   temp.TableForeignKeyDatabase = "CoordIDMin";
   temp.TableKeyDatabase = "CoordID";
   m_ColumnsInfos.push_back(temp);
+  PairTemp.first = temp;
+  m_RowContainer.push_back(PairTemp);
   temp.Clear();
 
   //Get the info for the RCoord:
@@ -494,6 +518,8 @@ std::vector<GoDBTraceInfoForTableWidget> GoDBCollectionOfTraces
   temp.TableForeignKeyDatabase = "CoordIDMin";
   temp.TableKeyDatabase = "CoordID";
   m_ColumnsInfos.push_back(temp);
+  PairTemp.first = temp;
+  m_RowContainer.push_back(PairTemp);
   temp.Clear();
 
   //Get the info for the CCoord:
@@ -504,36 +530,44 @@ std::vector<GoDBTraceInfoForTableWidget> GoDBCollectionOfTraces
   temp.TableForeignKeyDatabase = "CoordIDMin";
   temp.TableKeyDatabase = "CoordID";
   m_ColumnsInfos.push_back(temp);
+  PairTemp.first = temp;
+  m_RowContainer.push_back(PairTemp);
   temp.Clear();
 
   //Get the info for the XTile:
   temp.InfoName = "XTile";
-  temp.ColumnNameDatabase = "XTile";
+  temp.ColumnNameDatabase = "XTileCoord";
   temp.ColumnNameTableWidget = "XTile";
   temp.TableNameDatabase = "coordinate";
   temp.TableForeignKeyDatabase = "CoordIDMin";
   temp.TableKeyDatabase = "CoordID";
   m_ColumnsInfos.push_back(temp);
+  PairTemp.first = temp;
+  m_RowContainer.push_back(PairTemp);
   temp.Clear();
 
   //Get the info for the YTile:
   temp.InfoName = "YTile";
-  temp.ColumnNameDatabase = "YTile";
+  temp.ColumnNameDatabase = "YTileCoord";
   temp.ColumnNameTableWidget = "YTile";
   temp.TableNameDatabase = "coordinate";
   temp.TableForeignKeyDatabase = "CoordIDMin";
   temp.TableKeyDatabase = "CoordID";
   m_ColumnsInfos.push_back(temp);
+  PairTemp.first = temp;
+  m_RowContainer.push_back(PairTemp);
   temp.Clear();
 
   //Get the info for the ZTile:
   temp.InfoName = "ZTile";
-  temp.ColumnNameDatabase = "ZTile";
+  temp.ColumnNameDatabase = "ZTileCoord";
   temp.ColumnNameTableWidget = "ZTile";
   temp.TableNameDatabase = "coordinate";
   temp.TableForeignKeyDatabase = "CoordIDMin";
   temp.TableKeyDatabase = "CoordID";
   m_ColumnsInfos.push_back(temp);
+  PairTemp.first = temp;
+  m_RowContainer.push_back(PairTemp);
   temp.Clear();
 
   //Get the info for the XMin:
@@ -544,6 +578,8 @@ std::vector<GoDBTraceInfoForTableWidget> GoDBCollectionOfTraces
   temp.TableForeignKeyDatabase = "CoordIDMin";
   temp.TableKeyDatabase = "CoordID";
   m_ColumnsInfos.push_back(temp);
+  PairTemp.first = temp;
+  m_RowContainer.push_back(PairTemp);
   temp.Clear();
 
   //Get the info for the YMin:
@@ -554,6 +590,8 @@ std::vector<GoDBTraceInfoForTableWidget> GoDBCollectionOfTraces
   temp.TableForeignKeyDatabase = "CoordIDMin";
   temp.TableKeyDatabase = "CoordID";
   m_ColumnsInfos.push_back(temp);
+  PairTemp.first = temp;
+  m_RowContainer.push_back(PairTemp);
   temp.Clear();
 
   //Get the info for the ZMin:
@@ -564,6 +602,8 @@ std::vector<GoDBTraceInfoForTableWidget> GoDBCollectionOfTraces
   temp.TableForeignKeyDatabase = "CoordIDMin";
   temp.TableKeyDatabase = "CoordID";
   m_ColumnsInfos.push_back(temp);
+  PairTemp.first = temp;
+  m_RowContainer.push_back(PairTemp);
   temp.Clear();
 
   //Get the info for the XMax:
@@ -574,6 +614,8 @@ std::vector<GoDBTraceInfoForTableWidget> GoDBCollectionOfTraces
   temp.TableForeignKeyDatabase = "CoordIDMax";
   temp.TableKeyDatabase = "CoordID";
   m_ColumnsInfos.push_back(temp);
+  PairTemp.first = temp;
+  m_RowContainer.push_back(PairTemp);
   temp.Clear();
 
   //Get the info for the YMax:
@@ -584,6 +626,8 @@ std::vector<GoDBTraceInfoForTableWidget> GoDBCollectionOfTraces
   temp.TableForeignKeyDatabase = "CoordIDMax";
   temp.TableKeyDatabase = "CoordID";
   m_ColumnsInfos.push_back(temp);
+  PairTemp.first = temp;
+  m_RowContainer.push_back(PairTemp);
   temp.Clear();
 
   //Get the info for the ZMax:
@@ -594,6 +638,8 @@ std::vector<GoDBTraceInfoForTableWidget> GoDBCollectionOfTraces
   temp.TableForeignKeyDatabase = "CoordIDMax";
   temp.TableKeyDatabase = "CoordID";
   m_ColumnsInfos.push_back(temp);
+  PairTemp.first = temp;
+  m_RowContainer.push_back(PairTemp);
   temp.Clear();
 
   GetSpecificInfoForTraceTable();
@@ -617,6 +663,9 @@ void GoDBCollectionOfTraces::GetSpecificInfoForTraceTable()
     temp.TableForeignKeyDatabase = "CoordIDMin";
     temp.TableKeyDatabase = "CoordID";
     m_ColumnsInfos.push_back(temp);
+    std::pair<GoDBTraceInfoForTableWidget,std::vector<std::string> > PairTemp;
+    PairTemp.first = temp;
+    m_RowContainer.push_back(PairTemp);
     temp.Clear();
     }
   else
@@ -631,6 +680,9 @@ void GoDBCollectionOfTraces::GetSpecificInfoForTraceTable()
     temp.TableForeignKeyDatabase = "CoordIDMin";
     temp.TableKeyDatabase = "CoordID";
     m_ColumnsInfos.push_back(temp);
+    std::pair<GoDBTraceInfoForTableWidget,std::vector<std::string> > PairTemp;
+    PairTemp.first = temp;
+    m_RowContainer.push_back(PairTemp);
     temp.Clear();
 
     //Get the info for the Time Point Max:
@@ -641,6 +693,8 @@ void GoDBCollectionOfTraces::GetSpecificInfoForTraceTable()
     temp.TableForeignKeyDatabase = "CoordIDMax";
     temp.TableKeyDatabase = "CoordID";
     m_ColumnsInfos.push_back(temp);
+    PairTemp.first = temp;
+    m_RowContainer.push_back(PairTemp);
     temp.Clear();
     }
 }
@@ -655,24 +709,27 @@ GetColumnsNamesMapForTableWidget()
     if (m_ColumnsInfos[i].ColumnNameTableWidget != "None" &&
       m_ColumnsInfos[i].ColumnNameTableWidget != "NoneID")
       {
-      m_ColumnNamesMap[m_ColumnsInfos[i].ColumnNameTableWidget] = "";
+      //m_ColumnNamesMap[m_ColumnsInfos[i].ColumnNameTableWidget] = "";
       }
     }
   return m_ColumnNamesMap;
+ 
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-std::vector<GoDBCollectionOfTraces::MapString> GoDBCollectionOfTraces::
-  GetRowContainer()
+std::vector<std::pair<GoDBTraceInfoForTableWidget, std::vector <std::string> > >
+  GoDBCollectionOfTraces::GetRowContainer(vtkMySQLDatabase* DatabaseConnector)
 {
-  std::vector<GoDBCollectionOfTraces::MapString> RowContainer;
  //Select directly from the Trace Table:
   std::vector<std::string> JoinTablesOnTraceTable = 
     GetQueryStringForTraceJoinedTables();
   std::vector<std::string> SelectFields = GetQueryStringForSelectFieldsTables();
-    
- return RowContainer;
+  std::vector<std::vector<std::string> >ResultsQuery = GetValuesFromSeveralTables(
+    DatabaseConnector,this->m_TracesName,SelectFields, "ImagingSessionID",
+    ConvertToString<unsigned int>(this->m_ImgSessionID),JoinTablesOnTraceTable);
+  FillRowContainer(ResultsQuery,SelectFields);
+ return m_RowContainer;
 }
 //--------------------------------------------------------------------------
 
@@ -751,4 +808,36 @@ GetQueryStringForSelectFieldsTables()
     i++;
     }
   return SelectFields;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void GoDBCollectionOfTraces::FillRowContainer(
+  std::vector<std::vector<std::string> >iResultsFromQuery,
+  std::vector<std::string> iSelectFields)
+{       
+  for ( int i=0; i < iSelectFields.size(); i++)
+     {
+     bool HasBeenFound = false;
+     for (int j=0; j<m_RowContainer.size()&& HasBeenFound == false ; j++)
+       {
+       std::string test = iSelectFields[i]; //for test purpose
+       std::string test2= m_RowContainer[j].first.ColumnNameDatabase; //for test purpose
+       int PosColumnNameFound = iSelectFields[i].find(m_RowContainer[j].first.ColumnNameDatabase);
+         
+       if (PosColumnNameFound > 0)
+         {
+         HasBeenFound = true;
+         for (int RowNumberForQueryResults = 0; RowNumberForQueryResults < iResultsFromQuery.size();
+           RowNumberForQueryResults++ )
+           {  
+           std::vector<std::string> ResultsFromQueryForOneTrace = 
+           iResultsFromQuery[RowNumberForQueryResults];
+           //j found corresponds to the vector in the row_container to be filled
+           //with the values from the results of the query corresponding to i column:
+           m_RowContainer[j].second.push_back(ResultsFromQueryForOneTrace[i]);
+           }
+         }
+       }
+    }  
 }

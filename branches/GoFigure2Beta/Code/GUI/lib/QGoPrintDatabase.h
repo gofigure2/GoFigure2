@@ -183,7 +183,8 @@ protected:
       Table->setSortingEnabled(true);
       //}
     //delete mySet;*/
-      std::vector<MapString> RowContainer = iCollectionOfTraces->GetRowContainer();
+      std::vector<std::pair<GoDBTraceInfoForTableWidget, std::vector <std::string> > >
+        RowContainer = iCollectionOfTraces->GetRowContainer(this->m_DatabaseConnector);
     }
 
   /**

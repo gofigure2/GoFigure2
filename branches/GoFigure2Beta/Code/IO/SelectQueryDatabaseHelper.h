@@ -173,4 +173,9 @@ std::vector<GoDBTraceInfoForVisu> GetTracesInfoFromDB(
   vtkMySQLDatabase* DatabaseConnector,std::string TraceName,
   unsigned int ImgSessionID);
 
+//return a pair with the number of fields in the query and a vector of the results:
+std::vector<std::vector<std::string> >GetValuesFromSeveralTables(
+  vtkMySQLDatabase* DatabaseConnector,std::string MainTable,
+  std::vector<std::string> SelectFields, std::string field,
+  std::string value,std::vector<std::string> JoinTablesOnTraceTable);
 #endif

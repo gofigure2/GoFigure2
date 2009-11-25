@@ -973,3 +973,67 @@ std::vector<GoDBTraceInfoForVisu> GetTracesInfoFromDB(
   query->Delete();
   return Results;
 }
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::vector<std::vector<std::string> >GetValuesFromSeveralTables(
+  vtkMySQLDatabase* DatabaseConnector,std::string MainTable,
+  std::vector<std::string> SelectFields, std::string field,
+  std::string value,std::vector<std::string> JoinTablesOnTraceTable)
+{
+  std::vector<std::vector<std::string> > Results;
+  vtkSQLQuery* query = DatabaseConnector->GetQueryInstance();
+
+  std::stringstream Querystream;
+  Querystream << "SELECT ";
+  int i;
+  for (i=0; i <SelectFields.size()-1;i++)
+    {
+    Querystream <<SelectFields[i];
+    Querystream << ",";
+    }
+  Querystream << SelectFields[i];
+  Querystream << " FROM ";
+  Querystream << MainTable;
+  int j =0;
+  while (j<JoinTablesOnTraceTable.size())
+    {
+    Querystream << " LEFT JOIN ";
+    Querystream << JoinTablesOnTraceTable[j];
+    Querystream << " ON ";
+    Querystream << JoinTablesOnTraceTable[j+1];
+    Querystream << " ";
+    j=j+2;
+    } 
+  Querystream << "WHERE ";
+  Querystream << field;
+  Querystream << " = ";
+  Querystream << value;
+  Querystream << ";";
+
+  query->SetQuery(Querystream.str().c_str());
+  if ( !query->Execute() )
+    {
+    itkGenericExceptionMacro(
+      << "return info Contours query failed"
+      << query->GetLastErrorText() );
+    DatabaseConnector->Close();
+    DatabaseConnector->Delete();
+    query->Delete();
+    return Results;
+    }
+  while (query->NextRow())
+    {
+    std::vector<std::string> ResultsForOneRow;
+    for( int i = 0; i < query->GetNumberOfFields(); i++)
+      {
+      ResultsForOneRow.push_back( query->DataValue( i ).ToString() );
+      }
+    Results.push_back(ResultsForOneRow);
+    }
+  
+  query->Delete();
+
+  return Results;
+
+}
