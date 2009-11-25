@@ -5,6 +5,8 @@
 #include "QGoVisualizationDockWidget.h"
 #include "QGoManualSegmentationDockWidget.h"
 
+#include "SnapshotHelper.h"
+
 #include "vtkLookupTable.h"
 #include "vtkImageAppendComponents.h"
 
@@ -609,7 +611,7 @@ SnapshotViewXYZ( const GoFigure::FileType& iType,
 QString
 QGoTabImageView4D::
 SnapshotViewXT( const GoFigure::FileType& iType,
-  const QString& iBaseName = QString( "snapshot" ) )
+  const QString& iBaseName )
 {
   return m_XYTImageView->SnapshotView2( iType, iBaseName );
 }
@@ -619,7 +621,7 @@ SnapshotViewXT( const GoFigure::FileType& iType,
 QString
 QGoTabImageView4D::
 SnapshotViewYT( const GoFigure::FileType& iType,
-  const QString& iBaseName = QString( "snapshot" ) )
+  const QString& iBaseName )
 {
   return m_XYTImageView->SnapshotView3( iType, iBaseName );
 }
@@ -628,7 +630,7 @@ SnapshotViewYT( const GoFigure::FileType& iType,
 //--------------------------------------------------------------------------
 QString
 QGoTabImageView4D::SnapshotViewXYT( const GoFigure::FileType& iType,
-  const QString& iBaseName = QString( "snapshot" ) )
+  const QString& iBaseName )
 {
   return m_XYTImageView->SnapshotViewXYZ( iType, iBaseName );
 }

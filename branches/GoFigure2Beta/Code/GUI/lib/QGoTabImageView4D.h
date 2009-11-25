@@ -2,7 +2,6 @@
 #define __QGoTabImageView4D_h
 
 #include "QGoTabElementBase.h"
-#include "QGoPlugin.h"
 
 class QGoImageView3D;
 class QGoVisualizationDockWidget;
@@ -12,7 +11,6 @@ class QGoManualSegmentationDockWidget;
 
 #include "itkMegaCaptureReader.h"
 #include "GoFigureFileInfoMultiIndexContainerHelper.h"
-#include "SnapshotHelper.h"
 
 #include <QResizeEvent>
 #include <QSplitter>

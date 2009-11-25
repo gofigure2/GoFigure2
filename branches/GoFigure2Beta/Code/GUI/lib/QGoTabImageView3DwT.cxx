@@ -6,6 +6,7 @@
 #include "QGoManualSegmentationDockWidget.h"
 #include "QGoPrintDatabase.h"
 
+#include "SnapshotHelper.h"
 
 #include "GoDBContourRow.h"
 #include "GoDBCoordinateRow.h"

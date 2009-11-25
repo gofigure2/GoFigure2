@@ -3,16 +3,11 @@
 
 #include "QGoTabElementBase.h"
 
-#include "QGoPlugin.h"
-
 #include "GoFigureFileInfoMultiIndexContainerHelper.h"
 #include "itkMegaCaptureReader.h"
-#include "SnapshotHelper.h"
 #include "ContourStructureHelper.h"
-#include "vtkMySQLDatabase.h"
 
 #include <QHBoxLayout>
-#include <QSpinBox>
 
 #include "vtkSmartPointer.h"
 
@@ -20,9 +15,13 @@ class QGoImageView3D;
 class QGoVisualizationDockWidget;
 class QGoManualSegmentationDockWidget;
 class QGoPrintDatabase;
+
 class vtkLSMReader;
+class vtkImageData;
 class vtkContourWidget;
 class vtkOrientedGlyphContourRepresentation;
+class vtkMySQLDatabase;
+class vtkProperty;
 
 /**
 \class QGoTabImageView3DwT
