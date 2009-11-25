@@ -29,7 +29,8 @@
 QGoImageView3D::
 QGoImageView3D( QWidget* iParent ) :
   QGoImageView( iParent ),
-  IsFullScreen( 0 )
+  IsFullScreen( 0 ),
+  m_FirstRender( true )
 {
   VtkEventQtConnector = vtkEventQtSlotConnect::New();
 
@@ -242,9 +243,13 @@ void QGoImageView3D::Update()
   this->m_Pool->SyncRender();
   this->m_Pool->SyncReset();
 
-  this->SliderXY->setValue( (this->SliderXY->minimum()+this->SliderXY->maximum())/2 );
-  this->SliderXZ->setValue( (this->SliderXZ->minimum()+this->SliderXZ->maximum())/2 );
-  this->SliderYZ->setValue( (this->SliderYZ->minimum()+this->SliderYZ->maximum())/2 );
+  if( m_FirstRender )
+    {
+    this->SliderXY->setValue( (this->SliderXY->minimum()+this->SliderXY->maximum())/2 );
+    this->SliderXZ->setValue( (this->SliderXZ->minimum()+this->SliderXZ->maximum())/2 );
+    this->SliderYZ->setValue( (this->SliderYZ->minimum()+this->SliderYZ->maximum())/2 );
+    m_FirstRender = false;
+    }
 
   SetupVTKtoQtConnections();
 }

@@ -192,13 +192,13 @@ void QGoTabImageView4D::CreateVisuDockWidget()
   m_VisuDockWidget = new QGoVisualizationDockWidget( this, 4 );
 
   QObject::connect( m_VisuDockWidget, SIGNAL( XSliceChanged( int ) ),
-    this, SLOT( SetSliceViewYZ( int ) ) );
+    this, SLOT( SetXSlice( int ) ) );
 
   QObject::connect( this, SIGNAL( XSliceChanged( int ) ),
     m_VisuDockWidget, SLOT( SetXSlice( int ) ) );
 
   QObject::connect( m_VisuDockWidget, SIGNAL( YSliceChanged( int ) ),
-    this, SLOT( SetSliceViewXZ( int ) ) );
+    this, SLOT( SetYSlice( int ) ) );
 
   QObject::connect( this, SIGNAL( YSliceChanged( int ) ),
     m_VisuDockWidget, SLOT( SetYSlice( int ) ) );

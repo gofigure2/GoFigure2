@@ -135,6 +135,7 @@ protected:
 
   vtkEventQtSlotConnect*    VtkEventQtConnector;
   int                       IsFullScreen;
+  bool                      m_FirstRender;
 
   virtual void resizeEvent( QResizeEvent* event );
 
