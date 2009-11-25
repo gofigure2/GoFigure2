@@ -2,6 +2,8 @@
 
 #include "QGoImageView3D.h"
 #include "QGoLUTDialog.h"
+#include "QGoVisualizationDockWidget.h"
+#include "QGoManualSegmentationDockWidget.h"
 
 #include "vtkLookupTable.h"
 #include "vtkImageAppendComponents.h"
@@ -18,53 +20,24 @@ QGoTabImageView4D::QGoTabImageView4D( QWidget* iParent ) :
   QGoTabElementBase( iParent ),
   m_XYZImage( 0 ),
   m_XYTImage( 0 ),
-  m_BackgroundColor( Qt::black )
+  m_BackgroundColor( Qt::black ),
+  m_TimePoint( -1 ),
+  m_ZSlice( -1 ),
+  m_FirstUpdate( true )
 {
-//   m_Reader1 = itk::MultiFileReader::New();
-//   m_Reader2 = itk::MultiFileReader::New();
+  m_Reader1 = itk::MegaCaptureReader::New();
+  m_Reader2 = itk::MegaCaptureReader::New();
+
+  m_XYZImage = vtkSmartPointer< vtkImageData >::New();
+  m_XYTImage = vtkSmartPointer< vtkImageData >::New();
 
   setupUi( this );
 
-//   QObject::connect( m_ThreadedReader1, SIGNAL( finished() ),
-//     this, SLOT( ReceiveXYZImage() ) );
+  CreateVisuDockWidget();
 
-//   QObject::connect( m_ThreadedReader1, SIGNAL( finished() ),
-//     m_ThreadedReader2, SLOT( start() ) );
-//   QObject::connect( m_ThreadedReader2, SIGNAL( finished() ),
-//     this, SLOT( ReceiveXYTImage() ) );
+  CreateManualSegmentationdockWidget();
 
   CreateAllViewActions();
-
-  m_DockWidget = new QDockWidget( tr( "Slice" ) );
-  m_DockWidget->resize( 120, 300 );
-
-  QWidget* temp = new QWidget();
-  temp->resize( 100, 150 );
-
-  QGridLayout* gridlayout = new QGridLayout( temp );
-  gridlayout->setContentsMargins(3, -1, 3, -1);
-
-  QLabel* SliceX = new QLabel( "X Slice" );
-  gridlayout->addWidget( SliceX, 0, 0 );
-  QSpinBox* XSliceSpinBox = new QSpinBox();
-  gridlayout->addWidget( XSliceSpinBox, 0, 1 );
-
-  QLabel* SliceY = new QLabel( "Y Slice" );
-  gridlayout->addWidget( SliceY, 1, 0 );
-  QSpinBox* YSliceSpinBox = new QSpinBox( );
-  gridlayout->addWidget( YSliceSpinBox, 1, 1 );
-
-  QLabel* SliceZ = new QLabel( "Z Slice" );
-  gridlayout->addWidget( SliceZ, 2, 0 );
-  QSpinBox* ZSliceSpinBox = new QSpinBox( );
-  gridlayout->addWidget( ZSliceSpinBox, 2, 1 );
-
-  QLabel* SliceT = new QLabel( "T Time" );
-  gridlayout->addWidget( SliceT, 3, 0 );
-  QSpinBox* TSliceSpinBox = new QSpinBox( );
-  gridlayout->addWidget( TSliceSpinBox, 3, 1 );
-
-  m_DockWidget->layout()->addWidget( temp );
 
   ReadSettings();
 }
@@ -75,16 +48,38 @@ void QGoTabImageView4D::CreateAllViewActions()
 {
   QActionGroup* group = new QActionGroup( this );
 
-  QAction* QuadViewAction = new QAction( tr("Quad-View"), this );
-  QuadViewAction->setCheckable( true );
-  QuadViewAction->setChecked( true );
+  QAction* OctViewAction = new QAction( tr("Oct-View"), this );
+  OctViewAction->setCheckable( true );
+  OctViewAction->setChecked( true );
 
-  group->addAction( QuadViewAction );
+  group->addAction( OctViewAction );
 
-  m_ViewActions.push_back( QuadViewAction );
+  QObject::connect( OctViewAction, SIGNAL( triggered() ),
+    this, SLOT( Octview() ) );
 
-  QObject::connect( QuadViewAction, SIGNAL( triggered() ),
-    this, SLOT( Quadview() ) );
+  m_ViewActions.push_back( OctViewAction );
+
+  QAction* XYZQuadViewAction = new QAction( tr("Quad-View XYZ"), this );
+  XYZQuadViewAction->setCheckable( true );
+  XYZQuadViewAction->setChecked( true );
+
+  group->addAction( XYZQuadViewAction );
+
+  m_ViewActions.push_back( XYZQuadViewAction );
+
+  QObject::connect( XYZQuadViewAction, SIGNAL( triggered() ),
+    this, SLOT( QuadviewXYZ() ) );
+
+  QAction* XYTQuadViewAction = new QAction( tr("Quad-View XYT"), this );
+  XYTQuadViewAction->setCheckable( true );
+  XYTQuadViewAction->setChecked( true );
+
+  group->addAction( XYTQuadViewAction );
+
+  m_ViewActions.push_back( XYTQuadViewAction );
+
+  QObject::connect( XYTQuadViewAction, SIGNAL( triggered() ),
+    this, SLOT( QuadviewXYT() ) );
 
   QAction* FullScreenXYAction = new QAction( tr( "Full-Screen XY" ), this );
   FullScreenXYAction->setCheckable( true );
@@ -126,6 +121,37 @@ void QGoTabImageView4D::CreateAllViewActions()
   QObject::connect( FullScreenXYZAction, SIGNAL( triggered() ),
     this, SLOT( FullScreenViewXYZ() ) );
 
+  // now FullScreen actions related to the XYT view
+  QAction* FullScreenXTAction = new QAction( tr( "Full-Screen XT" ), this );
+  FullScreenXTAction->setCheckable( true );
+
+  group->addAction( FullScreenXTAction );
+
+  m_ViewActions.push_back( FullScreenXTAction );
+
+  QObject::connect( FullScreenXTAction, SIGNAL( triggered() ),
+    this, SLOT( FullScreenViewXT() ) );
+
+  QAction* FullScreenYTAction = new QAction( tr( "Full-Screen YT" ), this );
+  FullScreenYTAction->setCheckable( true );
+
+  group->addAction( FullScreenYTAction );
+
+  m_ViewActions.push_back( FullScreenYTAction );
+
+  QObject::connect( FullScreenYTAction, SIGNAL( triggered() ),
+    this, SLOT( FullScreenViewYT() ) );
+
+  QAction* FullScreenXYTAction = new QAction( tr( "Full-Screen XYT" ), this );
+  FullScreenXYTAction->setCheckable( true );
+
+  group->addAction( FullScreenXYTAction );
+
+  m_ViewActions.push_back( FullScreenXYTAction );
+
+  QObject::connect( FullScreenXYTAction, SIGNAL( triggered() ),
+    this, SLOT( FullScreenViewXYT() ) );
+
   QAction* separator = new QAction( this );
   separator->setSeparator( true );
 
@@ -155,6 +181,70 @@ void QGoTabImageView4D::CreateAllViewActions()
 }
 //--------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
+/**
+ *
+ */
+void QGoTabImageView4D::CreateVisuDockWidget()
+{
+  m_VisuDockWidget = new QGoVisualizationDockWidget( this, 4 );
+
+  QObject::connect( m_VisuDockWidget, SIGNAL( XSliceChanged( int ) ),
+    this, SLOT( SetSliceViewYZ( int ) ) );
+
+  QObject::connect( this, SIGNAL( SliceViewYZChanged( int ) ),
+    m_VisuDockWidget, SLOT( SetXSlice( int ) ) );
+
+  QObject::connect( m_VisuDockWidget, SIGNAL( YSliceChanged( int ) ),
+    this, SLOT( SetSliceViewXZ( int ) ) );
+
+  QObject::connect( this, SIGNAL( SliceViewXZChanged( int ) ),
+    m_VisuDockWidget, SLOT( SetYSlice( int ) ) );
+
+  QObject::connect( m_VisuDockWidget, SIGNAL( ZSliceChanged( int ) ),
+    this, SLOT( SetSliceViewXY( int ) ) );
+
+  QObject::connect( this, SIGNAL( SliceViewXYChanged( int ) ),
+    m_VisuDockWidget, SLOT( SetZSlice( int ) ) );
+
+  QObject::connect( m_VisuDockWidget, SIGNAL( TSliceChanged( int ) ),
+    this, SLOT( SetTimePoint( int ) ) );
+
+  QObject::connect( this, SIGNAL( TimePointChanged( int ) ),
+    m_VisuDockWidget, SLOT( SetTSlice( int ) ) );
+
+  QObject::connect( m_VisuDockWidget, SIGNAL( ShowAllChannelsChanged( bool ) ),
+    this, SLOT( ShowAllChannels( bool ) ) );
+
+  QObject::connect( m_VisuDockWidget, SIGNAL( ShowOneChannelChanged( int ) ),
+    this, SLOT( ShowOneChannel( int ) ) );
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+/**
+ * \brief
+ */
+void QGoTabImageView4D::CreateManualSegmentationdockWidget()
+{
+  m_ManualSegmentationDockWidget = new QGoManualSegmentationDockWidget( this );
+
+  QObject::connect( m_ManualSegmentationDockWidget, SIGNAL( ValidatePressed() ),
+    this, SLOT( ValidateContour() ) );
+
+  QObject::connect( m_ManualSegmentationDockWidget,
+      SIGNAL( ActivateManualSegmentationToggled( bool ) ),
+    this, SLOT( ActivateManualSegmentationEditor( bool ) ) );
+
+  QObject::connect( m_ManualSegmentationDockWidget,
+    SIGNAL( ContourRepresentationPropertiesChanged() ),
+    this, SLOT( ChangeContourRepresentationProperty() ) );
+
+  this->m_SegmentationActions.push_back(
+    m_ManualSegmentationDockWidget->toggleViewAction() );
+}
+//-------------------------------------------------------------------------
+
 //--------------------------------------------------------------------------
 QGoTabImageView4D::~QGoTabImageView4D( )
 {
@@ -167,16 +257,6 @@ QGoTabImageView4D::~QGoTabImageView4D( )
     {
     delete m_XYTImageView;
     m_XYTImageView = 0;
-    }
-  if( m_XYZImage )
-    {
-    m_XYZImage->Delete();
-    m_XYZImage = 0;
-    }
-  if( m_XYTImage )
-    {
-    m_XYTImage->Delete();
-    m_XYTImage = 0;
     }
 }
 //--------------------------------------------------------------------------
@@ -220,95 +300,248 @@ void QGoTabImageView4D::retranslateUi(QWidget *iParent)
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-GoFigure::TabDimensionType QGoTabImageView4D::GetTabDimensionType( ) const
+GoFigure::TabDimensionType
+QGoTabImageView4D::
+GetTabDimensionType( ) const
 {
   return GoFigure::FOUR_D;
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-// void QGoTabImageView4D::SetMultiFiles( FileListType* iFileList,
-//   const int& iTimePoint )
-// {
-//   m_TimePoint = iTimePoint;
-//
-//   m_Reader1->SetFileType( itk::MultiFileReader::JPEG );
-//   m_Reader1->SetTimeBased( true );
-//   m_Reader1->SetDimensionality( 2 );
-//   m_Reader1->MultiChannelImagesOn();
-//
-//   m_Reader2->SetFileType( itk::MultiFileReader::JPEG );
-//   m_Reader2->SetTimeBased( false );
-//   m_Reader2->SetDimensionality( 2 );
-//   m_Reader2->MultiChannelImagesOn();
-//
-//   m_XYZFileList->resize( iFileList->size() );
-//   m_XYTFileList->resize( iFileList->size() );
-//
-//   std::copy( iFileList->begin(), iFileList->end(), m_XYZFileList->begin() );
-//   std::copy( iFileList->begin(), iFileList->end(), m_XYTFileList->begin() );
-//
-//   std::sort( m_XYZFileList->begin(), m_XYZFileList->end(),
-//       GoFigureFileInfoHelperTimeBasedCompare() );
-//
-//   std::sort( m_XYTFileList->begin(), m_XYTFileList->end(),
-//       GoFigureFileInfoHelperZCoordBasedCompare() );
-//
-//   m_Reader1->SetInput( m_XYZFileList );
-//   m_Reader1->SetTimePoint( m_TimePoint );
-//   m_Reader1->Update();
-// }
-//--------------------------------------------------------------------------
+void
+QGoTabImageView4D::
+SetMegaCaptureFile(
+  const GoFigureFileInfoHelperMultiIndexContainer& iContainer,
+  const GoFigure::FileType& iFileType,
+  const std::string& iHeader )
+{
+  m_FileType = iFileType;
+  m_FileList = iContainer;
 
-//--------------------------------------------------------------------------
-// void QGoTabImageView4D::ReceiveXYZImage()
-// {
-//   m_XYZImage = m_ThreadedReader1->GetOutput();
-//   m_XYZImageView->SetImage( m_XYZImage );
-//   m_XYZImageView->Update();
-// }
-//--------------------------------------------------------------------------
+  m_FirstUpdate = true;
 
-//--------------------------------------------------------------------------
-// void QGoTabImageView4D::ReceiveXYTImage()
-// {
-//   m_XYTImage = m_ThreadedReader2->GetOutput();
-//   m_XYTImageView->SetImage( m_XYTImage );
-//   m_XYTImageView->Update();
-//
-//   this->show();
-// }
+  m_Reader1->SetInput( m_FileList );
+  m_Reader1->SetMegaCaptureHeader( iHeader );
+  m_Reader1->SetFileType( m_FileType );
+  m_Reader1->SetTimeBased( true );
+  m_Reader1->SetTimePoint( 0 );
+  m_Reader1->SetChannel( 0 );
+  m_Reader1->Update();
+
+  unsigned int min_z = m_Reader1->GetMinZSlice();
+  unsigned int max_z = m_Reader1->GetMaxZSlice();
+
+  unsigned int zslice = ( min_z + max_z ) / 2;
+
+  m_Reader2->SetInput( m_FileList );
+  m_Reader2->SetMegaCaptureHeader( iHeader );
+  m_Reader2->SetFileType( m_FileType );
+  m_Reader2->SetTimeBased( false );
+  m_Reader2->SetZSlice( zslice );
+  m_Reader2->SetChannel( 0 );
+
+  unsigned int min_ch = m_Reader1->GetMinChannel();
+  unsigned int max_ch = m_Reader1->GetMaxChannel();
+
+  unsigned int NumberOfChannels = max_ch - min_ch + 1;
+
+  vtkImageData* temp = m_Reader1->GetOutput();
+
+  int extent[6];
+  temp->GetExtent( extent );
+
+  m_VisuDockWidget->SetXMinimumAndMaximum( extent[0], extent[1] );
+  m_VisuDockWidget->SetXSlice( ( extent[0] + extent[1] ) / 2 );
+
+  m_VisuDockWidget->SetYMinimumAndMaximum( extent[2], extent[3] );
+  m_VisuDockWidget->SetYSlice( ( extent[2] + extent[3] ) / 2 );
+
+  m_VisuDockWidget->SetZMinimumAndMaximum( extent[4], extent[5] );
+  m_VisuDockWidget->SetZSlice( zslice );
+
+  unsigned int min_t = m_Reader1->GetMinTimePoint();
+  unsigned int max_t = m_Reader1->GetMaxTimePoint();
+
+  m_VisuDockWidget->SetTMinimumAndMaximum( min_t, max_t );
+  m_VisuDockWidget->SetTSlice( 0 );
+
+  m_VisuDockWidget->SetNumberOfChannels( NumberOfChannels );
+
+  if( NumberOfChannels > 1 )
+    {
+    m_VisuDockWidget->SetChannel( 0 );
+    m_XYZInternalImages.resize( NumberOfChannels, NULL );
+    m_XYTInternalImages.resize( NumberOfChannels, NULL );
+
+    for( unsigned int i = 1; i < NumberOfChannels; i++ )
+      {
+      m_VisuDockWidget->SetChannel( i );
+      }
+    }
+
+  SetTimePoint( 0 );
+  SetZSlice( zslice );
+  Update();
+}
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void QGoTabImageView4D::SetTimePoint( const int& iTimePoint )
 {
-  m_TimePoint = iTimePoint;
-//   m_Reader1->SetTimePoint( m_TimePoint );
+  if( iTimePoint == m_TimePoint )
+    {
+    return;
+    }
+
+  if( !m_FileList.empty() )
+    {
+    unsigned int t = static_cast< unsigned int >( iTimePoint );
+    if( ( t < m_Reader1->GetMinTimePoint() ) ||
+        ( t > m_Reader1->GetMaxTimePoint() ) )
+      {
+      return;
+      }
+    else
+      {
+      m_TimePoint = iTimePoint;
+      m_Reader1->SetChannel( 0 );
+      m_Reader1->SetTimePoint( m_TimePoint );
+
+      unsigned int min_ch = m_Reader1->GetMinChannel();
+      unsigned int max_ch = m_Reader1->GetMaxChannel();
+
+      int NumberOfChannels = max_ch - min_ch + 1;
+
+      if( NumberOfChannels > 1 )
+        {
+        vtkSmartPointer< vtkImageAppendComponents > append_filter =
+          vtkSmartPointer< vtkImageAppendComponents >::New();
+
+        for( int i = 0; i < NumberOfChannels; i++ )
+          {
+          m_Reader1->SetChannel( i );
+          m_Reader1->Update();
+
+          if( !m_XYZInternalImages[i] )
+            {
+            m_XYZInternalImages[i] = vtkSmartPointer< vtkImageData >::New();
+            }
+          m_XYZInternalImages[i]->ShallowCopy( m_Reader1->GetOutput() );
+          append_filter->AddInput( m_XYZInternalImages[i] );
+          }
+        // This is really stupid!!!
+        if( NumberOfChannels < 3 )
+          {
+          for( int i = NumberOfChannels; i < 3; i++ )
+            {
+            append_filter->AddInput( m_XYZInternalImages[0] );
+            }
+          }
+        append_filter->Update();
+
+        m_XYZImage->ShallowCopy( append_filter->GetOutput() );
+        }
+      else
+        {
+        m_Reader1->Update();
+
+        m_XYZImage->ShallowCopy( m_Reader1->GetOutput() );
+        }
+
+      if( !m_FirstUpdate )
+        {
+        Update();
+        }
+      emit TimePointChanged( m_TimePoint );
+      }
+    }
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoTabImageView4D::SetZSlice( const int& iZSlice )
+{
+  if( iZSlice == m_ZSlice )
+    {
+    return;
+    }
+
+  if( !m_FileList.empty() )
+    {
+    unsigned int z = static_cast< unsigned int >( iZSlice );
+    if( ( z < m_Reader2->GetMinZSlice() ) ||
+        ( z > m_Reader2->GetMaxZSlice() ) )
+      {
+      return;
+      }
+    else
+      {
+      m_ZSlice = iZSlice;
+      m_Reader2->SetChannel( 0 );
+      m_Reader2->SetZSlice( m_ZSlice );
+
+      unsigned int min_ch = m_Reader2->GetMinChannel();
+      unsigned int max_ch = m_Reader2->GetMaxChannel();
+
+      int NumberOfChannels = max_ch - min_ch + 1;
+
+      if( NumberOfChannels > 1 )
+        {
+        vtkSmartPointer< vtkImageAppendComponents > append_filter =
+          vtkSmartPointer< vtkImageAppendComponents >::New();
+
+        for( int i = 0; i < NumberOfChannels; i++ )
+          {
+          m_Reader2->SetChannel( i );
+          m_Reader2->Update();
+
+          if( !m_XYTInternalImages[i] )
+            {
+            m_XYTInternalImages[i] = vtkSmartPointer< vtkImageData >::New();
+            }
+          m_XYTInternalImages[i]->ShallowCopy( m_Reader2->GetOutput() );
+          append_filter->AddInput( m_XYTInternalImages[i] );
+          }
+        // This is really stupid!!!
+        if( NumberOfChannels < 3 )
+          {
+          for( int i = NumberOfChannels; i < 3; i++ )
+            {
+            append_filter->AddInput( m_XYTInternalImages[0] );
+            }
+          }
+        append_filter->Update();
+
+        m_XYTImage->ShallowCopy( append_filter->GetOutput() );
+        }
+      else
+        {
+        m_Reader2->Update();
+
+        m_XYTImage->ShallowCopy( m_Reader2->GetOutput() );
+        }
+
+      if( !m_FirstUpdate )
+        {
+        Update();
+        }
+      emit ZSliceChanged( m_ZSlice );
+      }
+    }
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void QGoTabImageView4D::Update()
 {
-//   m_XYZImage = m_Reader1->GetOutput();
-//   m_XYZImageView->SetImage( m_XYZImage );
+  m_XYZImageView->SetImage( m_XYZImage );
   m_XYZImageView->Update();
 
-  m_ZDepth = m_XYZImageView->GetSliceViewXY();
-
-//   m_Reader2->SetInput( m_XYTFileList );
-//   m_Reader2->SetZDepth( m_ZDepth );
-//   m_Reader2->Update();
-
-//   m_XYTImage = m_Reader2->GetOutput();
   m_XYTImageView->SetImage( m_XYTImage );
   m_XYTImageView->Update();
 
-//  int tslice = m_XYTImageView->GetSliceViewXY();
-
-//   std::cout <<"Z Slice : " <<zslice <<std::endl;
-//   std::cout <<"T Slice : " <<tslice <<std::endl;
+  m_FirstUpdate = false;
 }
 //--------------------------------------------------------------------------
 
@@ -400,7 +633,10 @@ void QGoTabImageView4D::SetFullScreenView( const int& iS )
 //--------------------------------------------------------------------------
 void QGoTabImageView4D::Octview()
 {
+  m_XYZImageView->show();
   m_XYZImageView->Quadview();
+
+  m_XYTImageView->show();
   m_XYTImageView->Quadview();
 }
 //--------------------------------------------------------------------------
@@ -408,7 +644,9 @@ void QGoTabImageView4D::Octview()
 //--------------------------------------------------------------------------
 void QGoTabImageView4D::QuadviewXYZ()
 {
+  m_XYZImageView->show();
   m_XYZImageView->Quadview();
+
   m_XYTImageView->hide();
 }
 //--------------------------------------------------------------------------
@@ -416,15 +654,19 @@ void QGoTabImageView4D::QuadviewXYZ()
 //--------------------------------------------------------------------------
 void QGoTabImageView4D::QuadviewXYT()
 {
-  m_XYTImageView->Quadview();
   m_XYZImageView->hide();
+
+  m_XYTImageView->show();
+  m_XYTImageView->Quadview();
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void QGoTabImageView4D::FullScreenViewXY()
 {
+  m_XYZImageView->show();
   m_XYZImageView->FullScreenViewXY();
+
   m_XYTImageView->hide();
 }
 //--------------------------------------------------------------------------
@@ -432,7 +674,9 @@ void QGoTabImageView4D::FullScreenViewXY()
 //--------------------------------------------------------------------------
 void QGoTabImageView4D::FullScreenViewXZ()
 {
+  m_XYZImageView->show();
   m_XYZImageView->FullScreenViewXZ();
+
   m_XYTImageView->hide();
 }
 //--------------------------------------------------------------------------
@@ -440,7 +684,9 @@ void QGoTabImageView4D::FullScreenViewXZ()
 //--------------------------------------------------------------------------
 void QGoTabImageView4D::FullScreenViewYZ()
 {
+  m_XYZImageView->show();
   m_XYZImageView->FullScreenViewYZ();
+
   m_XYTImageView->hide();
 }
 //--------------------------------------------------------------------------
@@ -448,7 +694,9 @@ void QGoTabImageView4D::FullScreenViewYZ()
 //--------------------------------------------------------------------------
 void QGoTabImageView4D::FullScreenViewXYZ()
 {
+  m_XYZImageView->show();
   m_XYZImageView->FullScreenViewXYZ();
+
   m_XYTImageView->hide();
 }
 //--------------------------------------------------------------------------
@@ -456,24 +704,30 @@ void QGoTabImageView4D::FullScreenViewXYZ()
 //--------------------------------------------------------------------------
 void QGoTabImageView4D::FullScreenViewXT()
 {
-  m_XYTImageView->FullScreenViewXZ();
   m_XYZImageView->hide();
+
+  m_XYTImageView->show();
+  m_XYTImageView->FullScreenViewXZ();
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void QGoTabImageView4D::FullScreenViewYT()
 {
-  m_XYTImageView->FullScreenViewYZ();
   m_XYZImageView->hide();
+
+  m_XYTImageView->show();
+  m_XYTImageView->FullScreenViewYZ();
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void QGoTabImageView4D::FullScreenViewXYT()
 {
-  m_XYTImageView->FullScreenViewXYZ();
   m_XYZImageView->hide();
+
+  m_XYTImageView->show();
+  m_XYTImageView->FullScreenViewXYZ();
 }
 //--------------------------------------------------------------------------
 //--------------------------------------------------------------------------
@@ -504,7 +758,8 @@ std::vector< QAction* > QGoTabImageView4D::ViewActions()
 std::list< QDockWidget* > QGoTabImageView4D::DockWidget()
 {
   std::list< QDockWidget* > oList;
-  oList.push_back( m_DockWidget );
+  oList.push_back( m_VisuDockWidget );
+  oList.push_back( m_ManualSegmentationDockWidget );
   return oList;
 }
 //--------------------------------------------------------------------------

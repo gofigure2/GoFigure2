@@ -264,9 +264,21 @@ Update()
 
     vtkImageData* temp_output = volumeBuilder->GetOutput();
 
+    double zspacing = 1.;
+
+//     if( m_TimeBased )
+//       {
+      zspacing = m_HeaderReader.m_VoxelSizeZ;
+//       }
+//     else
+//       {
+///       \todo note that m_TimeInterval is quite large with respect to x,y spacing
+//       zspacing = m_HeaderReader.m_TimeInterval;
+//       }
+
     temp_output->SetSpacing( m_HeaderReader.m_VoxelSizeX,
-      m_HeaderReader.m_VoxelSizeY,
-      m_HeaderReader.m_VoxelSizeZ );
+        m_HeaderReader.m_VoxelSizeY,
+        zspacing );
 
     m_OutputImage->ShallowCopy( temp_output );
     volumeBuilder->Delete();

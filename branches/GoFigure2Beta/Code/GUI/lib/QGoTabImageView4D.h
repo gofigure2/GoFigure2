@@ -2,15 +2,20 @@
 #define __QGoTabImageView4D_h
 
 #include "QGoTabElementBase.h"
-
 #include "QGoPlugin.h"
-#include "QGoImageView3D.h"
 
-// #include "itkMultiFileReader.h"
+class QGoImageView3D;
+class QGoVisualizationDockWidget;
+class QGoManualSegmentationDockWidget;
+
+#include "vtkSmartPointer.h"
+
+#include "itkMegaCaptureReader.h"
 #include "GoFigureFileInfoMultiIndexContainerHelper.h"
 #include "SnapshotHelper.h"
 
 #include <QResizeEvent>
+#include <QSplitter>
 
 /**
 \class QGoTabImageView4D
@@ -26,8 +31,10 @@ class QGoTabImageView4D : public QGoTabElementBase
 
     GoFigure::TabDimensionType GetTabDimensionType( ) const;
 
-//     void SetMultiFiles( FileListType* iFileList,
-//       const int& iTimePoint );
+    void SetMegaCaptureFile(
+      const GoFigureFileInfoHelperMultiIndexContainer& iContainer,
+      const GoFigure::FileType& iFileType,
+      const std::string& iHeader );
 
     virtual void Update();
 
@@ -44,8 +51,17 @@ class QGoTabImageView4D : public QGoTabElementBase
     virtual void WriteSettings() {}
     virtual void ReadSettings() {}
 
+signals:
+  void TimePointChanged( int TimePoint );
+  void ZSliceChanged( int ZSlice );
+  void SliceViewXYChanged( int Slice );
+  void SliceViewXZChanged( int Slice );
+  void SliceViewYZChanged( int Slice );
+  void FullScreenViewChanged( int FullScreen );
+
   public slots:
     void SetTimePoint( const int& );
+    void SetZSlice( const int& );
 
     QString SnapshotViewXY( const GoFigure::FileType& iType,
       const QString& iBaseName = QString( "snapshot" ) );
@@ -96,25 +112,30 @@ class QGoTabImageView4D : public QGoTabElementBase
     QSplitter*            m_Splitter;
     QGoImageView3D*       m_XYZImageView;
     QGoImageView3D*       m_XYTImageView;
-    vtkImageData*         m_XYZImage;
-    vtkImageData*         m_XYTImage;
+    vtkSmartPointer< vtkImageData > m_XYZImage;
+    vtkSmartPointer< vtkImageData > m_XYTImage;
+    std::vector< vtkSmartPointer< vtkImageData > > m_XYZInternalImages;
+    std::vector< vtkSmartPointer< vtkImageData > > m_XYTInternalImages;
+
     QColor                m_BackgroundColor;
     int                   m_TimePoint;
-    int                   m_ZDepth;
+    int                   m_ZSlice;
 
-//     itk::MultiFileReader::Pointer m_Reader1;
-//     itk::MultiFileReader::Pointer m_Reader2;
+    itk::MegaCaptureReader::Pointer m_Reader1;
+    itk::MegaCaptureReader::Pointer m_Reader2;
 
     GoFigureFileInfoHelperMultiIndexContainer m_FileList;
-//     FileListType* m_XYZFileList;
-//     FileListType* m_XYTFileList;
-//     QGoThreadedMultiFileReader* m_ThreadedReader1;
-//     QGoThreadedMultiFileReader* m_ThreadedReader2;
+    GoFigure::FileType                        m_FileType;
+    bool                                      m_FirstUpdate;
 
     std::vector< QAction* > m_ViewActions;
-    QDockWidget* m_DockWidget;
+    QGoVisualizationDockWidget*       m_VisuDockWidget;
+    QGoManualSegmentationDockWidget*  m_ManualSegmentationDockWidget;
 
     void CreateAllViewActions();
+    void CreateVisuDockWidget();
+    void CreateManualSegmentationdockWidget();
+
     void GetBackgroundColorFromImageViewer( );
     void SetBackgroundColorToImageViewer( );
 

@@ -26,7 +26,8 @@ int main( int argc, char** argv )
   importFileInfoList->Update();
 
   QGoTabImageView4D* tab = new QGoTabImageView4D;
-//   tab->SetMultiFiles( importFileInfoList->GetOutput(), 0 );
+  tab->SetMegaCaptureFile( importFileInfoList->GetOutput(),
+    GoFigure::PNG, importFileInfoList->GetHeaderFilename() );
   tab->Update();
   tab->show();
 
@@ -41,10 +42,10 @@ int main( int argc, char** argv )
     }
   menubar->show();
 
-  QTimer* timer = new QTimer;
-  timer->setSingleShot( true );
-  QObject::connect( timer, SIGNAL( timeout() ), tab, SLOT( close() ) );
-  QObject::connect( timer, SIGNAL( timeout() ), menubar, SLOT( close() ) );
+//   QTimer* timer = new QTimer;
+//   timer->setSingleShot( true );
+//   QObject::connect( timer, SIGNAL( timeout() ), tab, SLOT( close() ) );
+//   QObject::connect( timer, SIGNAL( timeout() ), menubar, SLOT( close() ) );
 
   std::list< QDockWidget* > dockwidget_list = tab->DockWidget();
 
@@ -53,13 +54,13 @@ int main( int argc, char** argv )
     it++ )
     {
     (*it)->show();
-    QObject::connect( timer, SIGNAL( timeout() ), (*it), SLOT( close() ) );
+//     QObject::connect( timer, SIGNAL( timeout() ), (*it), SLOT( close() ) );
     }
 
-  if( atoi( argv[2] ) == 1 )
-    {
-    timer->start( 1000 );
-    }
+//   if( atoi( argv[2] ) == 1 )
+//     {
+//     timer->start( 1000 );
+//     }
 
 //   tab->show();
   app.processEvents();
