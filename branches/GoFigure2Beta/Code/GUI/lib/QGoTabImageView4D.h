@@ -71,16 +71,12 @@ signals:
       const QString& iBaseName = QString( "snapshot" ) );
     QString SnapshotViewXYZ( const GoFigure::FileType& iType,
       const QString& iBaseName = QString( "snapshot" ) );
-
-    /** \todo to be implemented */
     QString SnapshotViewXT( const GoFigure::FileType& iType,
-      const QString& iBaseName = QString( "snapshot" ) ) {return QString();}
-    /** \todo to be implemented */
+      const QString& iBaseName = QString( "snapshot" ) );
     QString SnapshotViewYT( const GoFigure::FileType& iType,
-      const QString& iBaseName = QString( "snapshot" ) ) {return QString();}
-    /** \todo to be implemented */
+      const QString& iBaseName = QString( "snapshot" ) );
     QString SnapshotViewXYT( const GoFigure::FileType& iType,
-      const QString& iBaseName = QString( "snapshot" ) ) {return QString();}
+      const QString& iBaseName = QString( "snapshot" ) );
 
     void SetSliceViewXY( const int& );
     void SetSliceViewXZ( const int& );

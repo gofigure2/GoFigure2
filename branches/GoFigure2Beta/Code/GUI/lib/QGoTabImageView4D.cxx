@@ -566,8 +566,9 @@ void QGoTabImageView4D::ShowScalarBar( const bool& iShow )
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-QString QGoTabImageView4D::SnapshotViewXY(
-  const GoFigure::FileType& iType,
+QString
+QGoTabImageView4D::
+SnapshotViewXY( const GoFigure::FileType& iType,
   const QString& iBaseName )
 {
   return m_XYZImageView->SnapshotViewXY( iType, iBaseName );
@@ -575,8 +576,9 @@ QString QGoTabImageView4D::SnapshotViewXY(
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-QString QGoTabImageView4D::SnapshotView2(
-  const GoFigure::FileType& iType,
+QString
+QGoTabImageView4D::
+SnapshotView2( const GoFigure::FileType& iType,
   const QString& iBaseName )
 {
   return m_XYZImageView->SnapshotView2( iType, iBaseName );
@@ -584,8 +586,9 @@ QString QGoTabImageView4D::SnapshotView2(
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-QString QGoTabImageView4D::SnapshotView3(
-  const GoFigure::FileType& iType,
+QString
+QGoTabImageView4D::
+SnapshotView3( const GoFigure::FileType& iType,
   const QString& iBaseName )
 {
   return m_XYZImageView->SnapshotView3( iType, iBaseName );
@@ -593,11 +596,41 @@ QString QGoTabImageView4D::SnapshotView3(
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-QString QGoTabImageView4D::SnapshotViewXYZ(
-  const GoFigure::FileType& iType,
+QString
+QGoTabImageView4D::
+SnapshotViewXYZ( const GoFigure::FileType& iType,
   const QString& iBaseName )
 {
   return m_XYZImageView->SnapshotViewXYZ( iType, iBaseName );
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+QString
+QGoTabImageView4D::
+SnapshotViewXT( const GoFigure::FileType& iType,
+  const QString& iBaseName = QString( "snapshot" ) )
+{
+  return m_XYTImageView->SnapshotView2( iType, iBaseName );
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+QString
+QGoTabImageView4D::
+SnapshotViewYT( const GoFigure::FileType& iType,
+  const QString& iBaseName = QString( "snapshot" ) )
+{
+  return m_XYTImageView->SnapshotView3( iType, iBaseName );
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+QString
+QGoTabImageView4D::SnapshotViewXYT( const GoFigure::FileType& iType,
+  const QString& iBaseName = QString( "snapshot" ) )
+{
+  return m_XYTImageView->SnapshotViewXYZ( iType, iBaseName );
 }
 //--------------------------------------------------------------------------
 
