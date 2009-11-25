@@ -605,7 +605,6 @@ QString QGoTabImageView4D::SnapshotViewXYZ(
 void QGoTabImageView4D::SetSliceViewXY( const int& iS )
 {
   m_XYZImageView->SetSliceViewXY( iS );
-  m_XYTImageView->SetSliceViewXY( iS );
 }
 //--------------------------------------------------------------------------
 
@@ -624,9 +623,47 @@ void QGoTabImageView4D::SetSliceViewYZ( const int& iS )
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+void QGoTabImageView4D::SetSliceViewXT( const int& iS )
+{
+  m_XYTImageView->SetSliceViewXZ( iS );
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoTabImageView4D::SetSliceViewYT( const int& iS )
+{
+  m_XYTImageView->SetSliceViewYZ( iS );
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
 void QGoTabImageView4D::SetFullScreenView( const int& iS )
 {
-  m_XYZImageView->SetFullScreenView( iS );
+  if( iS == 0 )
+    {
+    m_XYZImageView->show();
+    m_XYZImageView->SetFullScreenView( iS );
+
+    m_XYTImageView->show();
+    m_XYTImageView->SetFullScreenView( iS );
+    }
+  else
+    {
+    if( iS < 4 )
+      {
+      m_XYZImageView->show();
+      m_XYZImageView->SetFullScreenView( iS - 1 );
+
+      m_XYTImageView->hide( );
+      }
+    else
+      {
+      m_XYZImageView->show();
+      m_XYZImageView->SetFullScreenView( iS - 4 );
+
+      m_XYTImageView->hide( );
+      }
+    }
 }
 //--------------------------------------------------------------------------
 
@@ -769,6 +806,72 @@ void QGoTabImageView4D::resizeEvent( QResizeEvent* iEvent )
 {
   QWidget::resizeEvent( iEvent );
   m_Splitter->resize( iEvent->size() );
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+/**
+ *
+ * \param iChecked
+ */
+void QGoTabImageView4D::ShowAllChannels( bool iChecked )
+{
+  if( iChecked )
+    {
+    vtkSmartPointer< vtkImageAppendComponents > append_filter1 =
+      vtkSmartPointer< vtkImageAppendComponents >::New();
+    vtkSmartPointer< vtkImageAppendComponents > append_filter2 =
+      vtkSmartPointer< vtkImageAppendComponents >::New();
+
+    for( unsigned int i = 0; i < m_XYZInternalImages.size(); i++ )
+      {
+      append_filter1->AddInput( m_XYZInternalImages[i] );
+      append_filter2->AddInput( m_XYTInternalImages[i] );
+      }
+
+    // This is really stupid!!!
+    if( m_XYZInternalImages.size() < 3 )
+      {
+      for( int i = m_XYZInternalImages.size(); i < 3; i++ )
+        {
+        append_filter1->AddInput( m_XYZInternalImages[0] );
+        append_filter2->AddInput( m_XYTInternalImages[0] );
+        }
+      }
+    append_filter1->Update();
+    append_filter2->Update();
+
+    m_XYZImage->ShallowCopy( append_filter1->GetOutput() );
+    m_XYTImage->ShallowCopy( append_filter2->GetOutput() );
+    Update();
+    }
+  else
+    {
+    int ch = this->m_VisuDockWidget->GetCurrentChannel();
+    if( ch != -1 )
+      {
+      m_XYZImage->ShallowCopy( m_XYZInternalImages[ch] );
+      m_XYTImage->ShallowCopy( m_XYTInternalImages[ch] );
+      Update();
+      }
+    }
+}
+//------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+/**
+ * \brief
+ * \param[in] iChannel
+ */
+void QGoTabImageView4D::
+ShowOneChannel( int iChannel )
+{
+  if( ( iChannel != -1 ) && ( !m_XYZInternalImages.empty() ) )
+    {
+    m_XYZImage->ShallowCopy( m_XYZInternalImages[iChannel] );
+    m_XYTImage->ShallowCopy( m_XYTInternalImages[iChannel] );
+    Update();
+    }
 }
 //-------------------------------------------------------------------------
 

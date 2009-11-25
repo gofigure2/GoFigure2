@@ -85,8 +85,8 @@ signals:
     void SetSliceViewXY( const int& );
     void SetSliceViewXZ( const int& );
     void SetSliceViewYZ( const int& );
-    void SetSliceViewXT( const int& ) {}
-    void SetSliceViewYT( const int& ) {}
+    void SetSliceViewXT( const int& );
+    void SetSliceViewYT( const int& );
 
     void SetFullScreenView( const int& iS );
 
@@ -104,9 +104,8 @@ signals:
     void ChangeLookupTable();
     void ShowScalarBar( const bool& );
 
-//   protected slots:
-//     void ReceiveXYZImage();
-//     void ReceiveXYTImage();
+    void ShowAllChannels( bool iChecked );
+    void ShowOneChannel( int iChannel );
 
   protected:
     QSplitter*            m_Splitter;
