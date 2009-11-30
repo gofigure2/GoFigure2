@@ -10,6 +10,12 @@
 #include "vtkLookupTable.h"
 #include "vtkImageAppendComponents.h"
 
+#include "vtkContourWidget.h"
+#include "vtkOrientedGlyphContourRepresentation.h"
+#include "vtkPolyData.h"
+#include "vtkProperty.h"
+#include "vtkImageActorPointPlacer.h"
+
 #include <QLabel>
 #include <QDockWidget>
 #include <QSpinBox>
@@ -34,6 +40,21 @@ QGoTabImageView4D::QGoTabImageView4D( QWidget* iParent ) :
   m_XYTImage = vtkSmartPointer< vtkImageData >::New();
 
   setupUi( this );
+
+  for( int i = 0; i < 3; i++ )
+    {
+    this->m_ContourRepresentation.push_back(
+      vtkSmartPointer< vtkOrientedGlyphContourRepresentation >::New() );
+    this->m_ContourRepresentation.back()->GetProperty()->SetColor( 0., 1., 1. );
+    this->m_ContourRepresentation.back()->GetLinesProperty()->SetColor( 1., 0., 1. );
+    this->m_ContourRepresentation.back()->GetActiveProperty()->SetColor( 1., 1., 0. );
+
+    this->m_ContourWidget.push_back(
+      vtkSmartPointer< vtkContourWidget >::New() );
+    this->m_ContourWidget.back()->SetPriority( 10.0 );
+    this->m_ContourWidget.back()->SetInteractor( m_XYZImageView->GetInteractor( i ) );
+    this->m_ContourWidget.back()->Off();
+    }
 
   CreateVisuDockWidget();
 
@@ -567,6 +588,17 @@ void QGoTabImageView4D::Update()
   m_XYZImageView->SetSliceViewXY( m_ZSlice );
   m_XYTImageView->SetSliceViewXY( m_TimePoint );
 
+  for( int i = 0; i < 3; i++ )
+    {
+    vtkSmartPointer< vtkImageActorPointPlacer > point_placer =
+      vtkSmartPointer< vtkImageActorPointPlacer >::New();
+    point_placer->SetImageActor( m_XYZImageView->GetImageActor( i ) );
+
+    this->m_ContourRepresentation[i]->SetPointPlacer( point_placer );
+
+    this->m_ContourWidget[i]->SetRepresentation( this->m_ContourRepresentation[i] );
+    }
+
   m_FirstUpdate = false;
 }
 //--------------------------------------------------------------------------
@@ -939,7 +971,8 @@ void QGoTabImageView4D::ShowAllChannels( bool iChecked )
  * \brief
  * \param[in] iChannel
  */
-void QGoTabImageView4D::
+void
+QGoTabImageView4D::
 ShowOneChannel( int iChannel )
 {
   if( ( iChannel != -1 ) && ( !m_XYZInternalImages.empty() ) )
@@ -951,3 +984,200 @@ ShowOneChannel( int iChannel )
 }
 //-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
+/**
+ *
+ * \param iActivate
+ */
+void
+QGoTabImageView4D::
+ActivateManualSegmentationEditor( const bool& iActivate )
+{
+  std::vector< vtkSmartPointer< vtkContourWidget > >::iterator
+    it = m_ContourWidget.begin();
+  while( it != m_ContourWidget.end() )
+    {
+    if( iActivate )
+      {
+      (*it)->On();
+      }
+    else
+      {
+      (*it)->Off();
+      }
+    ++it;
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+/**
+ *
+ */
+void
+QGoTabImageView4D::
+ChangeContourRepresentationProperty()
+{
+  double linewidth = m_ManualSegmentationDockWidget->GetLinesWidth();
+  QColor linecolor = m_ManualSegmentationDockWidget->GetLinesColor();
+  QColor nodecolor = m_ManualSegmentationDockWidget->GetNodesColor();
+  QColor activenodecolor = m_ManualSegmentationDockWidget->GetActiveNodesColor();
+
+  double rl, gl, bl;
+  linecolor.getRgbF( &rl, &gl, &bl );
+
+  double rn, gn, bn;
+  nodecolor.getRgbF( &rn, &gn, &bn );
+
+  double ra, ga, ba;
+  activenodecolor.getRgbF( &ra, &ga, &ba );
+
+  for( unsigned int i = 0; i < m_ContourRepresentation.size(); i++ )
+    {
+    m_ContourRepresentation[i]->GetLinesProperty()->SetLineWidth( linewidth );
+    m_ContourRepresentation[i]->GetLinesProperty()->SetColor( rl, gl, bl );
+
+    m_ContourRepresentation[i]->GetProperty()->SetColor( rn, gn, bn );
+    m_ContourRepresentation[i]->GetActiveProperty()->SetColor( ra, ga, ba );
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+/**
+ *
+ */
+void
+QGoTabImageView4D::
+ValidateContour( )
+{
+  for( unsigned int i = 0; i < m_ContourWidget.size(); i++ )
+    {
+    ValidateContour( i );
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+/**
+ *
+ * \param iId
+ */
+void
+QGoTabImageView4D::
+ValidateContour( const int& iId )
+{
+  vtkPolyData* contour =
+    m_ContourRepresentation[iId]->GetContourRepresentationAsPolyData();
+
+  if( ( contour->GetNumberOfPoints() > 2 ) && ( m_TimePoint >= 0 ) )
+    {
+    // get color from the dock widget
+    double r, g ,b;
+    QColor color = m_ManualSegmentationDockWidget->GetValidatedColor();
+    color.getRgbF( &r, &g, &b );
+
+    vtkProperty* contour_property = vtkProperty::New();
+    contour_property->SetRepresentationToWireframe();
+    contour_property->SetColor( r, g, b );
+
+    // Compute Bounding Box
+    double bounds[6];
+    contour->GetBounds( bounds );
+
+    // Extract Min and Max from bounds
+    double Min[3], Max[3];
+    int k = 0;
+    unsigned int i;
+    for( i = 0; i < 3; i++ )
+      {
+      Min[i] = bounds[k++];
+      Max[i] = bounds[k++];
+      }
+
+    int* min_idx = this->GetImageCoordinatesFromWorldCoordinates( Min );
+    int* max_idx = this->GetImageCoordinatesFromWorldCoordinates( Max );
+
+    vtkPolyData* contour_nodes = vtkPolyData::New();
+    m_ContourRepresentation[iId]->GetNodePolyData( contour_nodes );
+
+    // get corresponding actor from visualization
+    vtkPolyData* contour_copy = vtkPolyData::New();
+    contour_copy->ShallowCopy( contour );
+
+    std::vector< vtkActor* > contour_actor =
+      this->AddContour( iId, contour_copy,
+        contour_property );
+
+    // Save contour in database!
+//       {
+//       m_DataBaseTables->SaveContoursFromVisuInDB(min_idx[0],
+//         min_idx[1],min_idx[2],m_TimePoint,max_idx[0],
+//         max_idx[1],max_idx[2], contour_nodes);
+//       }
+
+    contour_copy->Delete();
+    contour_property->Delete();
+
+    // get meshid from the dock widget (SpinBox)
+    unsigned int meshid = m_ManualSegmentationDockWidget->GetMeshId();
+
+    unsigned int timepoint = static_cast< unsigned int >( m_TimePoint );
+    bool highlighted = false;
+
+    // fill the container
+//     for( i = 0; i < contour_actor.size(); i++ )
+//       {
+//       ContourStructure temp( m_ContourId, contour_actor[i], contour_nodes,
+//          meshid, timepoint, highlighted, r, g, b, i );
+//       m_ContourContainer.insert( temp );
+//       }
+
+    m_ContourId++;
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+/**
+ *
+ * \param[in] pos[]
+ * \return
+ */
+int*
+QGoTabImageView4D::
+GetImageCoordinatesFromWorldCoordinates( double iPos[3] )
+{
+  return m_XYZImageView->GetImageCoordinatesFromWorldCoordinates( iPos );
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+/**
+ *
+ * \param iId
+ * \param dataset
+ * \param property
+ * \return
+ */
+std::vector< vtkActor* >
+QGoTabImageView4D::
+AddContour( const int& iId,
+  vtkPolyData* dataset,
+  vtkProperty* iProperty )
+{
+// Adding contour in xyt is not straightforward (it is not the same coordinates)
+//  vtkViewImage2D* viewer = this->m_XYTImageView->GetImageViewer( 0 );
+//  vtkViewImage3D* viewer3D = this->m_XYTImageView->GetImageViewer3D();
+
+  std::vector< vtkActor* > oActorVector = this->m_XYZImageView->AddContour( iId, dataset, iProperty );
+
+//  viewer->GetRenderer()->AddViewProp( oActorVector[0] );
+//  viewer->Render();
+
+//  viewer3D->GetRenderer()->AddViewProp( oActorVector[3] );
+//  viewer3D->Render();
+
+  return oActorVector;
+}
+//-------------------------------------------------------------------------

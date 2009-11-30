@@ -45,6 +45,8 @@ public:
 
   virtual void Update();
 
+  vtkViewImage3D* GetImageViewer3D();
+
   vtkImageActor* GetImageActor( const int& );
   QVTKInteractor* GetInteractor( const int& );
 

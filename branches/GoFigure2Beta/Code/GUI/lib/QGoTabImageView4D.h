@@ -6,6 +6,11 @@
 class QGoImageView3D;
 class QGoVisualizationDockWidget;
 class QGoManualSegmentationDockWidget;
+class vtkContourWidget;
+class vtkOrientedGlyphContourRepresentation;
+class vtkActor;
+class vtkProperty;
+class vtkPolyData;
 
 #include "vtkSmartPointer.h"
 
@@ -48,6 +53,8 @@ class QGoTabImageView4D : public QGoTabElementBase
 
     virtual void WriteSettings() {}
     virtual void ReadSettings() {}
+
+    virtual void ValidateContour( const int& iId );
 
 signals:
   void TimePointChanged( int TimePoint );
@@ -96,6 +103,10 @@ signals:
     void ShowAllChannels( bool iChecked );
     void ShowOneChannel( int iChannel );
 
+    void ActivateManualSegmentationEditor( const bool& iActivate );
+    void ValidateContour();
+    void ChangeContourRepresentationProperty();
+
   protected:
     QSplitter*            m_Splitter;
     QGoImageView3D*       m_XYZImageView;
@@ -108,6 +119,7 @@ signals:
     QColor                m_BackgroundColor;
     int                   m_TimePoint;
     int                   m_ZSlice;
+    unsigned int          m_ContourId;
 
     itk::MegaCaptureReader::Pointer m_Reader1;
     itk::MegaCaptureReader::Pointer m_Reader2;
@@ -120,12 +132,21 @@ signals:
     QGoVisualizationDockWidget*       m_VisuDockWidget;
     QGoManualSegmentationDockWidget*  m_ManualSegmentationDockWidget;
 
+    std::vector< vtkSmartPointer< vtkContourWidget > >                      m_ContourWidget;
+    std::vector< vtkSmartPointer< vtkOrientedGlyphContourRepresentation > > m_ContourRepresentation;
+
     void CreateAllViewActions();
     void CreateVisuDockWidget();
     void CreateManualSegmentationdockWidget();
 
     void GetBackgroundColorFromImageViewer( );
     void SetBackgroundColorToImageViewer( );
+
+    std::vector< vtkActor* > AddContour( const int& iId,
+      vtkPolyData* dataset,
+      vtkProperty* property = NULL );
+
+    int* GetImageCoordinatesFromWorldCoordinates( double pos[3] );
 
     virtual void resizeEvent( QResizeEvent* event );
 };
