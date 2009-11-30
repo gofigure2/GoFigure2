@@ -162,7 +162,7 @@ protected:
 
     //Get the infos for all the columns needed:
     std::vector<GoDBTraceInfoForTableWidget> ColumnsInfoContainer;
-    ColumnsInfoContainer = iCollectionOfTraces->GetColumnsInfoForTraceTable();
+    //ColumnsInfoContainer = iCollectionOfTraces->GetColumnsInfoForTraceTable();
 
     //Get the column names to be displayed in the table widget:
     MapString ColumnsNames;
