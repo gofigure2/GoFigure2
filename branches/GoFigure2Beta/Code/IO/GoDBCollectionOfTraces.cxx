@@ -450,7 +450,7 @@ std::vector<GoDBTraceInfoForTableWidget> GoDBCollectionOfTraces
   temp.InfoName = ColorCollection;
   temp.TableForeignKeyDatabase = "ColorID";
   temp.TableKeyDatabase = "ColorID";
-  temp.DisplayedDirectlyInTraceTable = false;
+  temp.SameFieldForDifferentValues = true;
   m_ColumnsInfos.push_back(temp);
   PairTemp.first = temp;
   m_RowContainer.push_back(PairTemp);
@@ -464,7 +464,7 @@ std::vector<GoDBTraceInfoForTableWidget> GoDBCollectionOfTraces
   temp.InfoName = OtherInfo;
   temp.TableForeignKeyDatabase = "ColorID";
   temp.TableKeyDatabase = "ColorID";
-  temp.DisplayedDirectlyInTraceTable = false;
+  temp.SameFieldForDifferentValues = true;
   m_ColumnsInfos.push_back(temp);
   PairTemp.first = temp;
   m_RowContainer.push_back(PairTemp);
@@ -478,7 +478,7 @@ std::vector<GoDBTraceInfoForTableWidget> GoDBCollectionOfTraces
   temp.InfoName = OtherInfo;
   temp.TableForeignKeyDatabase = "ColorID";
   temp.TableKeyDatabase = "ColorID";
-  temp.DisplayedDirectlyInTraceTable = false;
+  temp.SameFieldForDifferentValues = true;
   m_ColumnsInfos.push_back(temp);
   PairTemp.first = temp;
   m_RowContainer.push_back(PairTemp);
@@ -492,7 +492,7 @@ std::vector<GoDBTraceInfoForTableWidget> GoDBCollectionOfTraces
   temp.InfoName = OtherInfo;
   temp.TableForeignKeyDatabase = "ColorID";
   temp.TableKeyDatabase = "ColorID";
-  temp.DisplayedDirectlyInTraceTable = false;
+  temp.SameFieldForDifferentValues = true;
   m_ColumnsInfos.push_back(temp);
   PairTemp.first = temp;
   m_RowContainer.push_back(PairTemp);
@@ -570,6 +570,17 @@ std::vector<GoDBTraceInfoForTableWidget> GoDBCollectionOfTraces
   m_RowContainer.push_back(PairTemp);
   temp.Clear();
 
+  //Get the info for the CoordIDMin of the bounding box:
+  temp.InfoName = "BDCoordIDMin";
+  temp.ColumnNameDatabase = "CoordIDMin";
+  temp.TableNameDatabase = this->m_TracesName;
+  temp.TableForeignKeyDatabase = "CoordIDMin";
+  temp.TableKeyDatabase = "CoordID";
+  m_ColumnsInfos.push_back(temp);
+  PairTemp.first = temp;
+  m_RowContainer.push_back(PairTemp);
+  temp.Clear();
+
   //Get the info for the XMin:
   temp.InfoName = "BDXMin";
   temp.ColumnNameDatabase = "XCoord";
@@ -606,6 +617,17 @@ std::vector<GoDBTraceInfoForTableWidget> GoDBCollectionOfTraces
   m_RowContainer.push_back(PairTemp);
   temp.Clear();
 
+  //Get the info for the CoordIDMax of the bounding box:
+  temp.InfoName = "BDCoordIDMax";
+  temp.ColumnNameDatabase = "CoordIDMax";
+  temp.TableNameDatabase = this->m_TracesName;
+  temp.TableForeignKeyDatabase = "CoordIDMax";
+  temp.TableKeyDatabase = "CoordID";
+  m_ColumnsInfos.push_back(temp);
+  PairTemp.first = temp;
+  m_RowContainer.push_back(PairTemp);
+  temp.Clear();
+
   //Get the info for the XMax:
   temp.InfoName = "BDXMax";
   temp.ColumnNameDatabase = "XCoord";
@@ -613,6 +635,7 @@ std::vector<GoDBTraceInfoForTableWidget> GoDBCollectionOfTraces
   temp.TableNameDatabase = "coordinate";
   temp.TableForeignKeyDatabase = "CoordIDMax";
   temp.TableKeyDatabase = "CoordID";
+  temp.SameFieldForDifferentValues = true;
   m_ColumnsInfos.push_back(temp);
   PairTemp.first = temp;
   m_RowContainer.push_back(PairTemp);
@@ -625,6 +648,7 @@ std::vector<GoDBTraceInfoForTableWidget> GoDBCollectionOfTraces
   temp.TableNameDatabase = "coordinate";
   temp.TableForeignKeyDatabase = "CoordIDMax";
   temp.TableKeyDatabase = "CoordID";
+  temp.SameFieldForDifferentValues = true;
   m_ColumnsInfos.push_back(temp);
   PairTemp.first = temp;
   m_RowContainer.push_back(PairTemp);
@@ -637,6 +661,7 @@ std::vector<GoDBTraceInfoForTableWidget> GoDBCollectionOfTraces
   temp.TableNameDatabase = "coordinate";
   temp.TableForeignKeyDatabase = "CoordIDMax";
   temp.TableKeyDatabase = "CoordID";
+  temp.SameFieldForDifferentValues = true;
   m_ColumnsInfos.push_back(temp);
   PairTemp.first = temp;
   m_RowContainer.push_back(PairTemp);
@@ -692,6 +717,7 @@ void GoDBCollectionOfTraces::GetSpecificInfoForTraceTable()
     temp.TableNameDatabase = "coordinate";
     temp.TableForeignKeyDatabase = "CoordIDMax";
     temp.TableKeyDatabase = "CoordID";
+    temp.SameFieldForDifferentValues = true;
     m_ColumnsInfos.push_back(temp);
     PairTemp.first = temp;
     m_RowContainer.push_back(PairTemp);
@@ -709,7 +735,7 @@ GetColumnsNamesMapForTableWidget()
     if (m_ColumnsInfos[i].ColumnNameTableWidget != "None" &&
       m_ColumnsInfos[i].ColumnNameTableWidget != "NoneID")
       {
-      //m_ColumnNamesMap[m_ColumnsInfos[i].ColumnNameTableWidget] = "";
+      m_ColumnNamesMap[m_ColumnsInfos[i].ColumnNameTableWidget] = "";
       }
     }
   return m_ColumnNamesMap;
@@ -721,14 +747,19 @@ GetColumnsNamesMapForTableWidget()
 std::vector<std::pair<GoDBTraceInfoForTableWidget, std::vector <std::string> > >
   GoDBCollectionOfTraces::GetRowContainer(vtkMySQLDatabase* DatabaseConnector)
 {
- //Select directly from the Trace Table:
+ //Get the names of the tables with the corresponding keys for the JOIN part of
+ //the first query:
   std::vector<std::string> JoinTablesOnTraceTable = 
     GetQueryStringForTraceJoinedTables();
+  //Get the fields to be selected in the SELECT part of the first query:
   std::vector<std::string> SelectFields = GetQueryStringForSelectFieldsTables();
+
   std::vector<std::vector<std::string> >ResultsQuery = GetValuesFromSeveralTables(
     DatabaseConnector,this->m_TracesName,SelectFields, "ImagingSessionID",
     ConvertToString<unsigned int>(this->m_ImgSessionID),JoinTablesOnTraceTable);
+
   FillRowContainer(ResultsQuery,SelectFields);
+
  return m_RowContainer;
 }
 //--------------------------------------------------------------------------
@@ -740,10 +771,13 @@ GetQueryStringForTraceJoinedTables()
   std::list<std::string> SelectNamesColumns;
   std::vector <std::string> SelectJoinTables;
   int i=0;
+  //for all the TableNameDatabase in the m_ColumnsInfos:
   while (i < m_ColumnsInfos.size())
     {
+    //check first that the ColumnsInfos has direct infosfrom the database:
     if( m_ColumnsInfos[i].TableNameDatabase != "None")
       {
+      //check that the table is not already in the list:
       std::vector<std::string>::iterator iter = SelectJoinTables.begin();
       bool IsTableInTheList = false;
       while (iter !=  SelectJoinTables.end()&& IsTableInTheList == false)
@@ -754,9 +788,13 @@ GetQueryStringForTraceJoinedTables()
           }
         iter++;
         }
+      //if the table is not in the list,is not the table of the trace and 
+      //is accessed during the first query, record the name of the table,
+      //and the traceName.tableforeignkey = tableName.primarykey for the
+      // "on" condition in the "Join" part of the query
       if (IsTableInTheList == false && 
         m_ColumnsInfos[i].TableNameDatabase != this->m_TracesName &&
-        m_ColumnsInfos[i].DisplayedDirectlyInTraceTable == true)
+        m_ColumnsInfos[i].SameFieldForDifferentValues == false)
         {
         SelectJoinTables.push_back(m_ColumnsInfos[i].TableNameDatabase);
         std::string OnQuery = this->m_TracesName;
@@ -783,10 +821,15 @@ GetQueryStringForSelectFieldsTables()
   int i=0;
   while (i < m_ColumnsInfos.size())
     {
+    //if there is info to get from the database and to put directly in the
+    //table widget, and that the column Name in the table widget is not "NoneID"
+    // (that can be found in the lineage table):
     if( m_ColumnsInfos[i].ColumnNameDatabase != "None" &&
-      m_ColumnsInfos[i].ColumnNameTableWidget != "None" &&
+      //m_ColumnsInfos[i].ColumnNameTableWidget != "None" &&
+      m_ColumnsInfos[i].SameFieldForDifferentValues == false &&
       m_ColumnsInfos[i].ColumnNameTableWidget != "NoneID")
       {
+      //record TableNameDatabase.ColumnNameDatabase if it is not already in the vector:
       std::string temp = m_ColumnsInfos[i].TableNameDatabase;
       temp += ".";
       temp += m_ColumnsInfos[i].ColumnNameDatabase;

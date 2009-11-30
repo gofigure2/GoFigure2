@@ -185,6 +185,16 @@ protected:
     //delete mySet;*/
       std::vector<std::pair<GoDBTraceInfoForTableWidget, std::vector <std::string> > >
         RowContainer = iCollectionOfTraces->GetRowContainer(this->m_DatabaseConnector);
+      if (RowContainer.empty())
+        {
+        std::cout<<"Row Container empty";
+        std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
+        std::cout << std::endl;
+        }
+      else
+        {
+
+        }
     }
 
   /**

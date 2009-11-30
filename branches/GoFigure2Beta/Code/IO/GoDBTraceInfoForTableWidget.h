@@ -46,12 +46,14 @@ and the Database*/
 struct GoDBTraceInfoForTableWidget
 {
   std::string     InfoName;
-  std::string     ColumnNameTableWidget;
-  std::string     ColumnNameDatabase;
-  std::string     TableNameDatabase;
-  bool            DisplayedDirectlyInTraceTable;
-  std::string     TableKeyDatabase;
-  std::string     TableForeignKeyDatabase;
+  std::string     ColumnNameTableWidget;//Name of the column in the Table Widget
+  std::string     ColumnNameDatabase;//Name of the field in the database
+  std::string     TableNameDatabase; //name of the table in the database
+  bool            SameFieldForDifferentValues;/*set to true if the same table.field is 
+                    called several times and corresponds to different values: expl
+                    coordinate.TCoord for both CoordIDMin and CoordIDMax*/
+  std::string     TableKeyDatabase; //Name of the primary key of the table "TableNameDatabase"
+  std::string     TableForeignKeyDatabase;//Name of the foreign key corresponding in the trace table
    
   GoDBTraceInfoForTableWidget()
     {
@@ -61,7 +63,7 @@ struct GoDBTraceInfoForTableWidget
     TableNameDatabase = "None";
     TableKeyDatabase = "None";
     TableForeignKeyDatabase = "None";
-    DisplayedDirectlyInTraceTable = true;
+    SameFieldForDifferentValues = false;
     }
   void Clear()
     {
@@ -71,7 +73,7 @@ struct GoDBTraceInfoForTableWidget
     TableNameDatabase = "None";
     TableKeyDatabase = "None";
     TableForeignKeyDatabase = "None";
-    DisplayedDirectlyInTraceTable = true;
+    SameFieldForDifferentValues = false;
     }
 };
 #endif

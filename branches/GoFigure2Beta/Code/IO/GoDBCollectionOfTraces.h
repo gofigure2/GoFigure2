@@ -128,8 +128,8 @@ protected:
   std::string  m_TracesIDName;
   unsigned int m_ImgSessionID;
 
-  std::vector<GoDBTraceInfoForTableWidget>         m_ColumnsInfos;
-  MapString                         m_ColumnNamesMap;
+  std::vector<GoDBTraceInfoForTableWidget>  m_ColumnsInfos;
+  MapString                                 m_ColumnNamesMap;
   std::vector<std::pair<GoDBTraceInfoForTableWidget, std::vector <std::string> > > m_RowContainer;
 
   /** \brief Create a new collection Row in the collection table and
@@ -184,6 +184,9 @@ protected:
   /** \brief return a vector of the table.fields to be selected from the database*/
   std::vector<std::string> GetQueryStringForSelectFieldsTables();
 
+  /** \brief fill the columns of the row container following the vector of string 
+  containing the columns to be filled with the results contained in the vector
+  results from query*/
   void FillRowContainer(
     std::vector<std::vector<std::string> >iResultsFromQuery,
     std::vector<std::string> iSelectFields);
