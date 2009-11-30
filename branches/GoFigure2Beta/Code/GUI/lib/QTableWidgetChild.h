@@ -64,6 +64,7 @@ public:
   virtual QMEGAVTKADDON2_EXPORT ~QTableWidgetChild();
   QStringList QMEGAVTKADDON2_EXPORT recordHeaderNamesOrder();
 
+  void DisplayColumnNames( QString TableName,std::list<std::string> ColumnNames);
 
 protected:
   int PrevCol;

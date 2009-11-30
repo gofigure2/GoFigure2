@@ -66,7 +66,6 @@ GoDBCollectionOfTraces::GoDBCollectionOfTraces(
   m_TracesIDName     += "ID";
 
   m_ColumnsInfos     = GetColumnsInfoForTraceTable();
-  m_ColumnNamesMap   = GetColumnsNamesMapForTableWidget();
 }
 //--------------------------------------------------------------------------
 
@@ -448,8 +447,8 @@ std::vector<GoDBTraceInfoForTableWidget> GoDBCollectionOfTraces
   temp.ColumnNameDatabase = "ColorID";
   temp.TableNameDatabase = this->m_CollectionName;
   temp.InfoName = ColorCollection;
-  temp.TableForeignKeyDatabase = "MeshID";
-  temp.TableKeyDatabase = "MeshID";
+  temp.TableForeignKeyDatabase = this->m_CollectionIDName;
+  temp.TableKeyDatabase = this->m_CollectionIDName;
   temp.SameFieldForDifferentValues = false;
   m_ColumnsInfos.push_back(temp);
   PairTemp.first = temp;
@@ -730,18 +729,19 @@ void GoDBCollectionOfTraces::GetSpecificInfoForTraceTable()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-GoDBCollectionOfTraces::MapString GoDBCollectionOfTraces::
-GetColumnsNamesMapForTableWidget()
+std::list<std::string> GoDBCollectionOfTraces::
+GetListColumnsNamesForTableWidget()
 {
+ std::list<std::string> ListColumnNames;
   for (int i=0;i<m_ColumnsInfos.size();i++)
     {
     if (m_ColumnsInfos[i].ColumnNameTableWidget != "None" &&
       m_ColumnsInfos[i].ColumnNameTableWidget != "NoneID")
       {
-      m_ColumnNamesMap[m_ColumnsInfos[i].ColumnNameTableWidget] = "";
+      ListColumnNames.push_back(m_ColumnsInfos[i].ColumnNameTableWidget);
       }
     }
-  return m_ColumnNamesMap;
+  return ListColumnNames;
  
 }
 //--------------------------------------------------------------------------
@@ -882,7 +882,8 @@ GetQueryStringForSelectFieldsTables(bool SameFieldsInQuery)
     if( m_ColumnsInfos[i].ColumnNameDatabase != "None" &&
       //m_ColumnsInfos[i].ColumnNameTableWidget != "None" &&
       m_ColumnsInfos[i].SameFieldForDifferentValues == SameFieldsInQuery &&
-      m_ColumnsInfos[i].ColumnNameTableWidget != "NoneID")
+      m_ColumnsInfos[i].ColumnNameTableWidget != "NoneID" && 
+      m_ColumnsInfos[i].TableNameDatabase != "None")
       {
       //record TableNameDatabase.ColumnNameDatabase if it is not already in the vector:
       std::string temp = m_ColumnsInfos[i].TableNameDatabase;

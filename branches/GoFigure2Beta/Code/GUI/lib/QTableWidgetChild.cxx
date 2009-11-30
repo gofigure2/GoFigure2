@@ -42,6 +42,8 @@
 #include <iostream>
 #include <sstream>
 #include <QTableWidgetSelectionRange>
+#include <QHeaderView>
+#include <QSettings>
 
 
 QTableWidgetChild::QTableWidgetChild( QWidget* iParent ): QTableWidget( iParent )
@@ -203,4 +205,39 @@ QStringList QTableWidgetChild::ValuesForSelectedRows(QString ColumnName)
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+void QTableWidgetChild::DisplayColumnNames( QString TableName,
+ std::list<std::string> ColumnNames)
+{
+  int numberCol=ColumnNames.size();
+  this->setColumnCount(numberCol);
+  
+  int i = 0;
+  for ( std::list<std::string>::iterator iter = ColumnNames.begin(); 
+    iter!= ColumnNames.end();iter++)
+    {
+    QTableWidgetItem* HeaderCol=new QTableWidgetItem;
+    std::string NameHeader;
+    NameHeader =*iter;
 
+    HeaderCol->setText(NameHeader.c_str());
+    QFont serifFont("Arial", 10, QFont::Bold);
+    HeaderCol->setFont(serifFont);
+    this->setHorizontalHeaderItem(i,HeaderCol);
+    this->resizeColumnToContents(i);
+    i++;
+    }
+  
+  this->horizontalHeader()->setSortIndicatorShown(true);
+  /*Need to disabled the Sorting while printing the values from the database in
+  the table widget as the sorting is making trouble*/
+  this->setSortingEnabled(false);
+  this->horizontalHeader()->setMovable(true);
+
+  QObject::connect( this->horizontalHeader(),
+    SIGNAL( sortIndicatorChanged(int,Qt::SortOrder) ),
+    this,SLOT( sortItems(int,Qt::SortOrder)) );
+
+  QSettings settings( "MegasonLab", "Gofigure2" );
+  QByteArray stateTableWidget = settings.value("StateTableWidget").toByteArray();
+  //QTabTableName->horizontalHeader()->restoreState(stateTableWidget);
+}

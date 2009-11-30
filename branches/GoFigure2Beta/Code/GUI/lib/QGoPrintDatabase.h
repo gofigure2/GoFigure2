@@ -165,10 +165,12 @@ protected:
     //ColumnsInfoContainer = iCollectionOfTraces->GetColumnsInfoForTraceTable();
 
     //Get the column names to be displayed in the table widget:
-    MapString ColumnsNames;
-    ColumnsNames = iCollectionOfTraces->GetColumnsNamesMapForTableWidget();
-
-    QPrintColumnNames( TableName, ColumnsNames, Table );
+    std::list<std::string> ColumnsNames;
+    ColumnsNames = iCollectionOfTraces->GetListColumnsNamesForTableWidget();
+    std::vector<std::pair<GoDBTraceInfoForTableWidget,std::vector<std::string> > >
+      Row_Container = iCollectionOfTraces->GetRowContainer(this->m_DatabaseConnector);
+    Table->DisplayColumnNames( TableName, ColumnsNames);
+    this->DBTabWidget->addTab(Table,TableName);
    /* RowContainer = mySet->GetRowContainer();
     if( RowContainer->size() < 2 ) //because the first row is for the column names
       {

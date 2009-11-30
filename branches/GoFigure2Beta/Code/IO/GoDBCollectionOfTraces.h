@@ -83,7 +83,7 @@ public:
 
   /** \brief Return a map with all the ColumnNames for the table widget to be 
   completed by the value for each column:*/
-   MapString GetColumnsNamesMapForTableWidget();
+  std::list<std::string> GetListColumnsNamesForTableWidget();
   
 
   std::vector<std::pair<GoDBTraceInfoForTableWidget, std::vector <std::string> > >
@@ -129,7 +129,6 @@ protected:
   unsigned int m_ImgSessionID;
 
   std::vector<GoDBTraceInfoForTableWidget>  m_ColumnsInfos;
-  MapString                                 m_ColumnNamesMap;
   std::vector<std::pair<GoDBTraceInfoForTableWidget, std::vector <std::string> > > m_RowContainer;
 
   /** \brief Create a new collection Row in the collection table and

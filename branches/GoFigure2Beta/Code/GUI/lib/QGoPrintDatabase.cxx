@@ -42,9 +42,7 @@
 #include <QDialog>
 #include <QInputDialog>
 #include <QTableWidgetItem>
-#include <QHeaderView>
 #include <QMessageBox>
-#include <QSettings>
 #include <QMenu>
 
 #include "QGoPrintDatabase.h"
@@ -124,7 +122,7 @@ toggleViewAction()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoPrintDatabase::QPrintColumnNames( QString TableName,
+/*void QGoPrintDatabase::QPrintColumnNames( QString TableName,
  std::map<std::string,std::string> ColumnNames, QTableWidgetChild* QTabTableName )
 {
   int numberCol=ColumnNames.size();
@@ -149,7 +147,7 @@ void QGoPrintDatabase::QPrintColumnNames( QString TableName,
   
   QTabTableName->horizontalHeader()->setSortIndicatorShown(true);
   /*Need to disabled the Sorting while printing the values from the database in
-  the table widget as the sorting is making trouble*/
+  the table widget as the sorting is making trouble
   QTabTableName->setSortingEnabled(false);
   QTabTableName->horizontalHeader()->setMovable(true);
 
@@ -160,7 +158,7 @@ void QGoPrintDatabase::QPrintColumnNames( QString TableName,
   QSettings settings( "MegasonLab", "Gofigure2" );
   QByteArray stateTableWidget = settings.value("StateTableWidget").toByteArray();
   //QTabTableName->horizontalHeader()->restoreState(stateTableWidget);
-}
+}*/
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
