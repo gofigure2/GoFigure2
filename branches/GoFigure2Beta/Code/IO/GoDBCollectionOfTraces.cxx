@@ -448,9 +448,9 @@ std::vector<GoDBTraceInfoForTableWidget> GoDBCollectionOfTraces
   temp.ColumnNameDatabase = "ColorID";
   temp.TableNameDatabase = this->m_CollectionName;
   temp.InfoName = ColorCollection;
-  temp.TableForeignKeyDatabase = "ColorID";
-  temp.TableKeyDatabase = "ColorID";
-  temp.SameFieldForDifferentValues = true;
+  temp.TableForeignKeyDatabase = "MeshID";
+  temp.TableKeyDatabase = "MeshID";
+  temp.SameFieldForDifferentValues = false;
   m_ColumnsInfos.push_back(temp);
   PairTemp.first = temp;
   m_RowContainer.push_back(PairTemp);
@@ -461,6 +461,7 @@ std::vector<GoDBTraceInfoForTableWidget> GoDBCollectionOfTraces
   temp.TableNameDatabase = "color";
   OtherInfo = "RedFor";
   OtherInfo += this->m_CollectionName;
+  temp.AccessFromTraceTableThroughWhichTable = this->m_CollectionName;
   temp.InfoName = OtherInfo;
   temp.TableForeignKeyDatabase = "ColorID";
   temp.TableKeyDatabase = "ColorID";
@@ -475,6 +476,7 @@ std::vector<GoDBTraceInfoForTableWidget> GoDBCollectionOfTraces
   temp.TableNameDatabase = "color";
   OtherInfo = "GreenFor";
   OtherInfo += this->m_CollectionName;
+   temp.AccessFromTraceTableThroughWhichTable = this->m_CollectionName;
   temp.InfoName = OtherInfo;
   temp.TableForeignKeyDatabase = "ColorID";
   temp.TableKeyDatabase = "ColorID";
@@ -489,10 +491,11 @@ std::vector<GoDBTraceInfoForTableWidget> GoDBCollectionOfTraces
   temp.TableNameDatabase = "color";
   OtherInfo = "BlueFor";
   OtherInfo += this->m_CollectionName;
+  temp.AccessFromTraceTableThroughWhichTable = this->m_CollectionName;
   temp.InfoName = OtherInfo;
   temp.TableForeignKeyDatabase = "ColorID";
   temp.TableKeyDatabase = "ColorID";
-  temp.SameFieldForDifferentValues = true;
+  temp.SameFieldForDifferentValues = true;  
   m_ColumnsInfos.push_back(temp);
   PairTemp.first = temp;
   m_RowContainer.push_back(PairTemp);
@@ -747,18 +750,32 @@ GetColumnsNamesMapForTableWidget()
 std::vector<std::pair<GoDBTraceInfoForTableWidget, std::vector <std::string> > >
   GoDBCollectionOfTraces::GetRowContainer(vtkMySQLDatabase* DatabaseConnector)
 {
- //Get the names of the tables with the corresponding keys for the JOIN part of
- //the first query:
-  std::vector<std::string> JoinTablesOnTraceTable = 
-    GetQueryStringForTraceJoinedTables();
-  //Get the fields to be selected in the SELECT part of the first query:
-  std::vector<std::string> SelectFields = GetQueryStringForSelectFieldsTables();
+ /*first, get the right parts of the first query:
+ all the fields except the ones where table.field are already in the query:*/
+  std::vector<std::string> JoinFirstTablesOnTraceTable = 
+    GetQueryStringForTraceJoinedTables(false);
+  std::vector<std::string> SelectFirstFields = GetQueryStringForSelectFieldsTables(false);
 
-  std::vector<std::vector<std::string> >ResultsQuery = GetValuesFromSeveralTables(
-    DatabaseConnector,this->m_TracesName,SelectFields, "ImagingSessionID",
-    ConvertToString<unsigned int>(this->m_ImgSessionID),JoinTablesOnTraceTable);
+  //then, get the results of the first query:
+  std::vector<std::vector<std::string> >ResultsFirstQuery = GetValuesFromSeveralTables(
+    DatabaseConnector,this->m_TracesName,SelectFirstFields, "ImagingSessionID",
+    ConvertToString<unsigned int>(this->m_ImgSessionID),JoinFirstTablesOnTraceTable);
 
-  FillRowContainer(ResultsQuery,SelectFields);
+  //fill the row container with the results of the first query:
+  FillRowContainer(ResultsFirstQuery,SelectFirstFields);
+
+  //Get the right parts of the second query (with only the remaining fields):
+   std::vector<std::string> JoinSecondTablesOnTraceTable = 
+    GetQueryStringForTraceJoinedTables(true);
+  std::vector<std::string> SelectSecondFields = GetQueryStringForSelectFieldsTables(true);
+
+  //then, get the results of the second query:
+  std::vector<std::vector<std::string> >ResultsSecondQuery = GetValuesFromSeveralTables(
+    DatabaseConnector,this->m_TracesName,SelectSecondFields, "ImagingSessionID",
+    ConvertToString<unsigned int>(this->m_ImgSessionID),JoinSecondTablesOnTraceTable);
+  
+  //fill the row container with the results of the second query:
+  FillRowContainer(ResultsSecondQuery,SelectSecondFields);
 
  return m_RowContainer;
 }
@@ -766,7 +783,7 @@ std::vector<std::pair<GoDBTraceInfoForTableWidget, std::vector <std::string> > >
 
 //--------------------------------------------------------------------------
 std::vector<std::string> GoDBCollectionOfTraces::
-GetQueryStringForTraceJoinedTables()
+GetQueryStringForTraceJoinedTables(bool SameFieldsInQuery)
 {
   std::list<std::string> SelectNamesColumns;
   std::vector <std::string> SelectJoinTables;
@@ -774,6 +791,8 @@ GetQueryStringForTraceJoinedTables()
   //for all the TableNameDatabase in the m_ColumnsInfos:
   while (i < m_ColumnsInfos.size())
     {
+    std::string name = m_ColumnsInfos[i].TableNameDatabase; //for test purpose
+    std::string name2 = m_ColumnsInfos[i].ColumnNameDatabase; //for test purpose
     //check first that the ColumnsInfos has direct infosfrom the database:
     if( m_ColumnsInfos[i].TableNameDatabase != "None")
       {
@@ -794,28 +813,64 @@ GetQueryStringForTraceJoinedTables()
       // "on" condition in the "Join" part of the query
       if (IsTableInTheList == false && 
         m_ColumnsInfos[i].TableNameDatabase != this->m_TracesName &&
-        m_ColumnsInfos[i].SameFieldForDifferentValues == false)
+        m_ColumnsInfos[i].SameFieldForDifferentValues == SameFieldsInQuery)
         {
-        SelectJoinTables.push_back(m_ColumnsInfos[i].TableNameDatabase);
-        std::string OnQuery = this->m_TracesName;
-        OnQuery += ".";
-        OnQuery += m_ColumnsInfos[i].TableForeignKeyDatabase;
-        OnQuery += "=";
-        OnQuery += m_ColumnsInfos[i].TableNameDatabase;
-        OnQuery += ".";
-        OnQuery += m_ColumnsInfos[i].TableKeyDatabase;
-        SelectJoinTables.push_back(OnQuery);
-        }
-      }
+        if (m_ColumnsInfos[i].AccessFromTraceTableThroughWhichTable == "None")
+          {
+          SelectJoinTables.push_back(m_ColumnsInfos[i].TableNameDatabase);
+          std::string OnQuery = this->m_TracesName;
+          OnQuery += ".";
+          OnQuery += m_ColumnsInfos[i].TableForeignKeyDatabase;
+          OnQuery += "=";
+          OnQuery += m_ColumnsInfos[i].TableNameDatabase;
+          OnQuery += ".";
+          OnQuery += m_ColumnsInfos[i].TableKeyDatabase;
+          SelectJoinTables.push_back(OnQuery);
+          }
+        else
+          {
+          if (m_ColumnsInfos[i].AccessFromTraceTableThroughWhichTable != this->m_CollectionName)
+            {
+            std::cout<< "Pb: access table is different than the Collection Table"<<std::endl;
+            std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
+            std::cout << std::endl;
+            }
+          else
+            {
+            //join the trace table and the collection table (=intermediary table)
+            SelectJoinTables.push_back(m_ColumnsInfos[i].AccessFromTraceTableThroughWhichTable);
+            std::string OnQuery =this->m_TracesName;
+            OnQuery += ".";
+            OnQuery += this->m_CollectionIDName;
+            OnQuery += "=";
+            OnQuery += this->m_CollectionName;
+            OnQuery += ".";
+            OnQuery += this->m_CollectionIDName;
+            SelectJoinTables.push_back(OnQuery);
+            //join the collection table and the TableNameDatabase of the ColumnsInfo:
+            SelectJoinTables.push_back(m_ColumnsInfos[i].TableNameDatabase);
+            std::string OnQuerybis =this->m_CollectionName;
+            OnQuerybis += ".";
+            OnQuerybis += m_ColumnsInfos[i].TableForeignKeyDatabase;
+            OnQuerybis += "=";
+            OnQuerybis += m_ColumnsInfos[i].TableNameDatabase;
+            OnQuerybis += ".";
+            OnQuerybis += m_ColumnsInfos[i].TableKeyDatabase;
+            SelectJoinTables.push_back(OnQuerybis);
+            }
+          }//ENDELSE
+        }//ENDIF
+      }//ENDIF
     i++;
-    }
+    }//ENDWHILE
+
   return SelectJoinTables;
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 std::vector<std::string> GoDBCollectionOfTraces::
-GetQueryStringForSelectFieldsTables()
+GetQueryStringForSelectFieldsTables(bool SameFieldsInQuery)
 {
   std::vector<std::string> SelectFields;
   int i=0;
@@ -826,7 +881,7 @@ GetQueryStringForSelectFieldsTables()
     // (that can be found in the lineage table):
     if( m_ColumnsInfos[i].ColumnNameDatabase != "None" &&
       //m_ColumnsInfos[i].ColumnNameTableWidget != "None" &&
-      m_ColumnsInfos[i].SameFieldForDifferentValues == false &&
+      m_ColumnsInfos[i].SameFieldForDifferentValues == SameFieldsInQuery &&
       m_ColumnsInfos[i].ColumnNameTableWidget != "NoneID")
       {
       //record TableNameDatabase.ColumnNameDatabase if it is not already in the vector:
@@ -868,7 +923,7 @@ void GoDBCollectionOfTraces::FillRowContainer(
        std::string test2= m_RowContainer[j].first.ColumnNameDatabase; //for test purpose
        int PosColumnNameFound = iSelectFields[i].find(m_RowContainer[j].first.ColumnNameDatabase);
          
-       if (PosColumnNameFound > 0)
+       if (PosColumnNameFound > 0 && m_RowContainer[j].second.empty())
          {
          HasBeenFound = true;
          for (int RowNumberForQueryResults = 0; RowNumberForQueryResults < iResultsFromQuery.size();

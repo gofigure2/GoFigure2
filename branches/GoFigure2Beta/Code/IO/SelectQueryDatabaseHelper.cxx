@@ -1006,6 +1006,8 @@ std::vector<std::vector<std::string> >GetValuesFromSeveralTables(
     j=j+2;
     } 
   Querystream << "WHERE ";
+  Querystream << MainTable;
+  Querystream << ".";
   Querystream << field;
   Querystream << " = ";
   Querystream << value;

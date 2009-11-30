@@ -54,6 +54,7 @@ struct GoDBTraceInfoForTableWidget
                     coordinate.TCoord for both CoordIDMin and CoordIDMax*/
   std::string     TableKeyDatabase; //Name of the primary key of the table "TableNameDatabase"
   std::string     TableForeignKeyDatabase;//Name of the foreign key corresponding in the trace table
+  std::string     AccessFromTraceTableThroughWhichTable;
    
   GoDBTraceInfoForTableWidget()
     {
@@ -64,6 +65,7 @@ struct GoDBTraceInfoForTableWidget
     TableKeyDatabase = "None";
     TableForeignKeyDatabase = "None";
     SameFieldForDifferentValues = false;
+    AccessFromTraceTableThroughWhichTable = "None";
     }
   void Clear()
     {
@@ -74,6 +76,7 @@ struct GoDBTraceInfoForTableWidget
     TableKeyDatabase = "None";
     TableForeignKeyDatabase = "None";
     SameFieldForDifferentValues = false;
+    AccessFromTraceTableThroughWhichTable = "None";
     }
 };
 #endif

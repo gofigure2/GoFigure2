@@ -178,11 +178,15 @@ protected:
   void GetSpecificInfoForTraceTable();
 
   /** \brief return a vector of string with the tables to be joined with the 
-  trace table in the database query*/
-  std::vector<std::string> GetQueryStringForTraceJoinedTables();
+  trace table in the database query for all the fields except the ones with the
+  same name if SameFieldsQuery is set to false and only for them if 
+  SameFieldsQuery is set to true*/
+  std::vector<std::string> GetQueryStringForTraceJoinedTables(bool SameFieldsInQuery);
 
-  /** \brief return a vector of the table.fields to be selected from the database*/
-  std::vector<std::string> GetQueryStringForSelectFieldsTables();
+  /** \brief return a vector of the table.fields to be selected from the database
+  for all the fields except the ones with the same name if SameFieldsQuery is set 
+  to false and only for them if SameFieldsQuery is set to true*/
+  std::vector<std::string> GetQueryStringForSelectFieldsTables(bool SameFieldsInQuery);
 
   /** \brief fill the columns of the row container following the vector of string 
   containing the columns to be filled with the results contained in the vector
