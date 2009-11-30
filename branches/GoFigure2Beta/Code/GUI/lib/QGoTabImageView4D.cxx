@@ -50,16 +50,16 @@ void QGoTabImageView4D::CreateAllViewActions()
 {
   QActionGroup* group = new QActionGroup( this );
 
-  QAction* OctViewAction = new QAction( tr("Oct-View"), this );
-  OctViewAction->setCheckable( true );
-  OctViewAction->setChecked( true );
+  QAction* OctoViewAction = new QAction( tr("Octo-View"), this );
+  OctoViewAction->setCheckable( true );
+  OctoViewAction->setChecked( true );
 
-  group->addAction( OctViewAction );
+  group->addAction( OctoViewAction );
 
-  QObject::connect( OctViewAction, SIGNAL( triggered() ),
+  QObject::connect( OctoViewAction, SIGNAL( triggered() ),
     this, SLOT( Octview() ) );
 
-  m_ViewActions.push_back( OctViewAction );
+  m_ViewActions.push_back( OctoViewAction );
 
   QAction* XYZQuadViewAction = new QAction( tr("Quad-View XYZ"), this );
   XYZQuadViewAction->setCheckable( true );

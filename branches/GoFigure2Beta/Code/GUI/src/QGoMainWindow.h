@@ -143,7 +143,7 @@ private:
 
   /** \brief Open Image with given iFileName
   \param[in] iFileName  */
-  void OpenImageWithITK( const QString& iFileName );
+//   void OpenImageWithITK( const QString& iFileName );
   void OpenLSMImage( const QString& iFile, const int& iTimePoint );
 
   void LoadPlugins();

@@ -715,81 +715,81 @@ CreateNewTabFor2DImage( vtkImageData* iInput, const QString& iFile )
 }
 //--------------------------------------------------------------------------
 
-//--------------------------------------------------------------------------
-void QGoMainWindow::OpenImageWithITK( const QString& iFile )
-{
-  typedef itk::ImageFileReader< ImageType > ImageReaderType;
-  typedef ImageReaderType::Pointer          ImageReaderPointer;
-
-  ImageReaderPointer reader = ImageReaderType::New();
-  reader->SetFileName( iFile.toAscii( ).data( ) );
-
-  //BUG 03/23: This next line is commented for the time being since
-  // it makes gofigure crashing.
-  // this->ShowProgressLoading( reader );
-  reader->Update();
-
-  ImageType::Pointer itkImage = reader->GetOutput();
-  itkImage->DisconnectPipeline();
-
-  VTKConvertImagePointer convert = VTKConvertImageType::New();
-  convert->SetInput( itkImage );
-//   this->ShowProgressLoading( convert );
-  convert->Update();
-//   this->HideProgressLoading();
-
-  vtkImageData* VTKImage = convert->GetOutput();
-
-  int dim[3];
-  VTKImage->GetDimensions( dim );
-
-  if( ( dim[0] == 1 ) || ( dim[1] == 1 ) || ( dim[2] == 1 ) )
-    {
-    QGoTabImageView2D* w2 = new QGoTabImageView2D;
-    w2->SetImage( VTKImage );
-    w2->setWindowTitle( iFile );
-    w2->Update();
-
-    for( std::list< QAction* >::iterator
-            list_it = m_TabDimPluginActionMap[w2->GetTabDimensionType()].begin();
-          list_it != m_TabDimPluginActionMap[w2->GetTabDimensionType()].end();
-          list_it++
-         )
-      {
-      (*list_it)->setEnabled( true );
-      }
-
-    w2->SetPluginActions( m_TabDimPluginActionMap[w2->GetTabDimensionType()] );
-
-    int idx = this->CentralTabWidget->addTab( w2, iFile );
-    this->menuView->setEnabled( true );
-    this->menuFiltering->setEnabled( true );
-    this->CentralTabWidget->setCurrentIndex( idx );
-    }
-  else
-    {
-    QGoTabImageView3D* w3 = new QGoTabImageView3D;
-    w3->SetImage( VTKImage );
-    w3->Update();
-
-    for( std::list< QAction* >::iterator
-            list_it = m_TabDimPluginActionMap[w3->GetTabDimensionType()].begin();
-          list_it != m_TabDimPluginActionMap[w3->GetTabDimensionType()].end();
-          list_it++
-         )
-        {
-        (*list_it)->setEnabled( true );
-        }
-
-      w3->SetPluginActions( m_TabDimPluginActionMap[w3->GetTabDimensionType()] );
-
-      int idx = this->CentralTabWidget->addTab( w3, iFile );
-      this->menuView->setEnabled( true );
-      this->menuFiltering->setEnabled( true );
-      this->CentralTabWidget->setCurrentIndex( idx );
-    }
-}
-//--------------------------------------------------------------------------------
+// //--------------------------------------------------------------------------
+// void QGoMainWindow::OpenImageWithITK( const QString& iFile )
+// {
+//   typedef itk::ImageFileReader< ImageType > ImageReaderType;
+//   typedef ImageReaderType::Pointer          ImageReaderPointer;
+//
+//   ImageReaderPointer reader = ImageReaderType::New();
+//   reader->SetFileName( iFile.toAscii( ).data( ) );
+//
+//   //BUG 03/23: This next line is commented for the time being since
+//   // it makes gofigure crashing.
+//   // this->ShowProgressLoading( reader );
+//   reader->Update();
+//
+//   ImageType::Pointer itkImage = reader->GetOutput();
+//   itkImage->DisconnectPipeline();
+//
+//   VTKConvertImagePointer convert = VTKConvertImageType::New();
+//   convert->SetInput( itkImage );
+// //   this->ShowProgressLoading( convert );
+//   convert->Update();
+// //   this->HideProgressLoading();
+//
+//   vtkImageData* VTKImage = convert->GetOutput();
+//
+//   int dim[3];
+//   VTKImage->GetDimensions( dim );
+//
+//   if( ( dim[0] == 1 ) || ( dim[1] == 1 ) || ( dim[2] == 1 ) )
+//     {
+//     QGoTabImageView2D* w2 = new QGoTabImageView2D;
+//     w2->SetImage( VTKImage );
+//     w2->setWindowTitle( iFile );
+//     w2->Update();
+//
+//     for( std::list< QAction* >::iterator
+//             list_it = m_TabDimPluginActionMap[w2->GetTabDimensionType()].begin();
+//           list_it != m_TabDimPluginActionMap[w2->GetTabDimensionType()].end();
+//           list_it++
+//          )
+//       {
+//       (*list_it)->setEnabled( true );
+//       }
+//
+//     w2->SetPluginActions( m_TabDimPluginActionMap[w2->GetTabDimensionType()] );
+//
+//     int idx = this->CentralTabWidget->addTab( w2, iFile );
+//     this->menuView->setEnabled( true );
+//     this->menuFiltering->setEnabled( true );
+//     this->CentralTabWidget->setCurrentIndex( idx );
+//     }
+//   else
+//     {
+//     QGoTabImageView3D* w3 = new QGoTabImageView3D;
+//     w3->SetImage( VTKImage );
+//     w3->Update();
+//
+//     for( std::list< QAction* >::iterator
+//             list_it = m_TabDimPluginActionMap[w3->GetTabDimensionType()].begin();
+//           list_it != m_TabDimPluginActionMap[w3->GetTabDimensionType()].end();
+//           list_it++
+//          )
+//         {
+//         (*list_it)->setEnabled( true );
+//         }
+//
+//       w3->SetPluginActions( m_TabDimPluginActionMap[w3->GetTabDimensionType()] );
+//
+//       int idx = this->CentralTabWidget->addTab( w3, iFile );
+//       this->menuView->setEnabled( true );
+//       this->menuFiltering->setEnabled( true );
+//       this->CentralTabWidget->setCurrentIndex( idx );
+//     }
+// }
+// //--------------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------------
 void QGoMainWindow::on_actionAbout_triggered( )

@@ -295,7 +295,7 @@ void QGoImageView3D::SetupVTKtoQtConnections()
   // when SliceMoveEvent occurs in the XY View, SliderXY moves.
   VtkEventQtConnector->Connect(
     reinterpret_cast< vtkObject* >( View3->GetInteractorStyle() ),
-    vtkViewImage2DCommand::SliceMoveEvent,
+    vtkViewImage2DCommand::EndSliceMoveEvent,
     this, SLOT( MoveSliderYZ() ) );
 
   // Event connection between vtk and qt
@@ -315,14 +315,14 @@ void QGoImageView3D::SetupVTKtoQtConnections()
   // when SliceMoveEvent occurs in the XY View, SliderXY moves.
   VtkEventQtConnector->Connect(
     reinterpret_cast< vtkObject* >( View2->GetInteractorStyle() ),
-    vtkViewImage2DCommand::SliceMoveEvent,
+    vtkViewImage2DCommand::EndSliceMoveEvent,
     this, SLOT( MoveSliderXZ() ) );
 
   // Event connection between vtk and qt
   // when SliceMoveEvent occurs in the XY View, SliderXY moves.
   VtkEventQtConnector->Connect(
     reinterpret_cast< vtkObject* >( View1->GetInteractorStyle() ),
-    vtkViewImage2DCommand::SliceMoveEvent,
+    vtkViewImage2DCommand::EndSliceMoveEvent,
     this, SLOT( MoveSliderXY() ) );
 }
 //-------------------------------------------------------------------------
