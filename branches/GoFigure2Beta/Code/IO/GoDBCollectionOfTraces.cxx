@@ -747,7 +747,7 @@ GetListColumnsNamesForTableWidget()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-std::vector<std::pair<GoDBTraceInfoForTableWidget, std::vector <std::string> > >
+GoDBCollectionOfTraces::DBTableWidgetContainerType
   GoDBCollectionOfTraces::GetRowContainer(vtkMySQLDatabase* DatabaseConnector)
 {
  /*first, get the right parts of the first query:

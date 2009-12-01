@@ -46,6 +46,7 @@
 #include <QList>
 #include "MegaVTK2Configure.h"
 #include "GoDBTraceInfoForVisu.h"
+#include "GoDBTraceInfoForTableWidget.h"
 
 /**
 \class QTableWidgetchild
@@ -64,7 +65,13 @@ public:
   virtual QMEGAVTKADDON2_EXPORT ~QTableWidgetChild();
   QStringList QMEGAVTKADDON2_EXPORT recordHeaderNamesOrder();
 
+  typedef std::vector<std::pair<GoDBTraceInfoForTableWidget,std::vector<std::string> > >
+    DBTableWidgetContainerType;
+  
   void DisplayColumnNames( QString TableName,std::list<std::string> ColumnNames);
+  void DisplayContent(DBTableWidgetContainerType iRowContainer);
+
+  
 
 protected:
   int PrevCol;

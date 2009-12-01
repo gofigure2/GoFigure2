@@ -65,7 +65,7 @@ public:
   QGoPrintDatabase( QWidget* iParent = 0 );
   virtual ~QGoPrintDatabase();
   
-  typedef GoDBCollectionOfTraces::MapString MapString;
+  typedef GoDBCollectionOfTraces::DBTableWidgetContainerType DBTableWidgetContainerType;
   /** \brief set all the values needed for the database*/
   void SetDatabaseVariables(
     const std::string& iNameDB, const std::string& iServer,
@@ -165,12 +165,15 @@ protected:
     //ColumnsInfoContainer = iCollectionOfTraces->GetColumnsInfoForTraceTable();
 
     //Get the column names to be displayed in the table widget:
-    std::list<std::string> ColumnsNames;
-    ColumnsNames = iCollectionOfTraces->GetListColumnsNamesForTableWidget();
-    std::vector<std::pair<GoDBTraceInfoForTableWidget,std::vector<std::string> > >
-      Row_Container = iCollectionOfTraces->GetRowContainer(this->m_DatabaseConnector);
+    std::list<std::string> ColumnsNames = 
+      iCollectionOfTraces->GetListColumnsNamesForTableWidget();
+    //std::vector<std::pair<GoDBTraceInfoForTableWidget,std::vector<std::string> > >
+   ///   Row_Container = iCollectionOfTraces->GetRowContainer(this->m_DatabaseConnector);
     Table->DisplayColumnNames( TableName, ColumnsNames);
     this->DBTabWidget->addTab(Table,TableName);
+    DBTableWidgetContainerType Row_Container = 
+      iCollectionOfTraces->GetRowContainer(m_DatabaseConnector);
+    Table->DisplayContent(Row_Container);
    /* RowContainer = mySet->GetRowContainer();
     if( RowContainer->size() < 2 ) //because the first row is for the column names
       {
@@ -185,8 +188,8 @@ protected:
       Table->setSortingEnabled(true);
       //}
     //delete mySet;*/
-      std::vector<std::pair<GoDBTraceInfoForTableWidget, std::vector <std::string> > >
-        RowContainer = iCollectionOfTraces->GetRowContainer(this->m_DatabaseConnector);
+      DBTableWidgetContainerType RowContainer = 
+        iCollectionOfTraces->GetRowContainer(this->m_DatabaseConnector);
       if (RowContainer.empty())
         {
         std::cout<<"Row Container empty";

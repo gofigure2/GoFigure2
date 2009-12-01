@@ -61,7 +61,8 @@ public:
     std::string CollectionName,std::string Traces);
   virtual  QMEGAVTKADDON2_EXPORT ~GoDBCollectionOfTraces();
 
-  typedef std::map<std::string,std::string> MapString;
+  typedef std::vector<std::pair<GoDBTraceInfoForTableWidget,std::vector<std::string> > >
+    DBTableWidgetContainerType;
 
   //void QMEGAVTKADDON2_EXPORT SetDatabaseVariables(
     //QString Server,QString User,QString Password, QString NameDB);
@@ -86,8 +87,7 @@ public:
   std::list<std::string> GetListColumnsNamesForTableWidget();
   
 
-  std::vector<std::pair<GoDBTraceInfoForTableWidget, std::vector <std::string> > >
-    GetRowContainer(vtkMySQLDatabase* DatabaseConnector);
+  DBTableWidgetContainerType GetRowContainer(vtkMySQLDatabase* DatabaseConnector);
 
   template< class myT >
   void QMEGAVTKADDON2_EXPORT CreateNewCollectionFromSelection(
@@ -129,7 +129,7 @@ protected:
   unsigned int m_ImgSessionID;
 
   std::vector<GoDBTraceInfoForTableWidget>  m_ColumnsInfos;
-  std::vector<std::pair<GoDBTraceInfoForTableWidget, std::vector <std::string> > > m_RowContainer;
+  DBTableWidgetContainerType m_RowContainer;
 
   /** \brief Create a new collection Row in the collection table and
   return the collectionID from the created row: */

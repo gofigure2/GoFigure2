@@ -44,6 +44,7 @@
 #include <QTableWidgetSelectionRange>
 #include <QHeaderView>
 #include <QSettings>
+#include "QTableWidgetNumericalItem.h"
 
 
 QTableWidgetChild::QTableWidgetChild( QWidget* iParent ): QTableWidget( iParent )
@@ -240,4 +241,40 @@ void QTableWidgetChild::DisplayColumnNames( QString TableName,
   QSettings settings( "MegasonLab", "Gofigure2" );
   QByteArray stateTableWidget = settings.value("StateTableWidget").toByteArray();
   //QTabTableName->horizontalHeader()->restoreState(stateTableWidget);
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QTableWidgetChild::DisplayContent(DBTableWidgetContainerType iRowContainer)
+{ 
+  for (int i = 0; i < iRowContainer.size(); i++)
+    {
+    if (iRowContainer[i].first.ColumnNameTableWidget != "None")
+      {
+      unsigned int NbofRows = iRowContainer[i].second.size();
+      bool RowsCountSet = false;
+      if (NbofRows != 0 && !RowsCountSet)
+        {
+        this->setRowCount(NbofRows);
+        }
+      for (int j = 0; j <this->columnCount();j++)
+        {
+        std::string HeaderCol = this->horizontalHeaderItem(j)->text().toStdString();
+        if (HeaderCol == iRowContainer[i].first.ColumnNameTableWidget)
+          {
+          std::vector<std::string>::iterator iter = iRowContainer[i].second.begin();
+          int k=0;
+          while(iter != iRowContainer[i].second.end())
+            {
+            QTableWidgetNumericalItem* CellTable = new QTableWidgetNumericalItem;
+            std::string Value = *iter;
+            CellTable->setText(Value.c_str());
+            this->setItem(k,j,CellTable);
+            iter++;
+            k++;
+            }
+          }
+        }
+      }
+    }
 }
