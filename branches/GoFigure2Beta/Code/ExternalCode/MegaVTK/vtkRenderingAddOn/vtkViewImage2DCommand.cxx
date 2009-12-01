@@ -179,7 +179,7 @@ vtkViewImage2DCommand::Execute( vtkObject*    caller,
   {
     int step = isi->GetSliceStep();
     this->Viewer->SetSlice (this->Viewer->GetSlice()+step);
-    this->Viewer->Render();
+    PrintInformation();
   }
 
   if( event == vtkViewImage2DCommand::ZoomEvent )

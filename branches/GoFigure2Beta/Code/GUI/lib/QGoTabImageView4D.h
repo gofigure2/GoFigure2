@@ -3,9 +3,12 @@
 
 #include "QGoTabElementBase.h"
 
+class QGoPrintDatabase;
+
 class QGoImageView3D;
 class QGoVisualizationDockWidget;
 class QGoManualSegmentationDockWidget;
+
 class vtkContourWidget;
 class vtkOrientedGlyphContourRepresentation;
 class vtkActor;
@@ -55,6 +58,8 @@ class QGoTabImageView4D : public QGoTabElementBase
     virtual void ReadSettings() {}
 
     virtual void ValidateContour( const int& iId );
+
+  QGoPrintDatabase* m_DataBaseTables;
 
 signals:
   void TimePointChanged( int TimePoint );

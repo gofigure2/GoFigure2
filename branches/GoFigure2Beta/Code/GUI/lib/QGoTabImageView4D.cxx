@@ -1085,6 +1085,10 @@ ValidateContour( const int& iId )
     double bounds[6];
     contour->GetBounds( bounds );
 
+    std::cout <<bounds[0] <<" " <<bounds[1] <<std::endl;
+    std::cout <<bounds[2] <<" " <<bounds[3] <<std::endl;
+    std::cout <<bounds[4] <<" " <<bounds[5] <<std::endl;
+
     // Extract Min and Max from bounds
     double Min[3], Max[3];
     int k = 0;

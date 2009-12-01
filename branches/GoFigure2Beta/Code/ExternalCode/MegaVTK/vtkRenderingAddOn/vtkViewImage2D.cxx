@@ -431,7 +431,7 @@ int vtkViewImage2D::SetCameraToConvention(void)
     translation[i] = 0.01 * view_plane_normal[i];
     }
   this->AdjustmentTransform->Identity();
-  this->AdjustmentTransform->Translate( translation);
+  this->AdjustmentTransform->Translate( translation );
 
   return id;
 }
@@ -624,7 +624,7 @@ void vtkViewImage2D::ResetPosition( void )
   int *range = this->GetSliceRange();
   if( range )
     {
-    this->SetSlice( vtkMath::Round( static_cast<double>(0.5*(range[1]-range[0]))) );
+    this->SetSlice( vtkMath::Round( static_cast<double>(0.5*(range[1]+range[0]))) );
     }
 }
 

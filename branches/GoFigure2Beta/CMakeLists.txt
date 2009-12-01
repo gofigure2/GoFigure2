@@ -110,6 +110,8 @@ ENDIF( BUILD_DOCUMENTATION )
 # Main GoFigure Settings
 #---------------------------------------------------------------------------
 
+SET( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${GOFIGURE2_SOURCE_DIR}/CMake/" )
+
 # Everything depends on VTK first
 # that way we can get Qt info from VTK
 FIND_PACKAGE( VTK )
@@ -122,6 +124,8 @@ IF( VTK_FOUND )
     # Here add a definition to be able to compile and use GoFigure
     # without any database support
     # ADD_DEFINITION( -DNODBSUPPORT )
+  ELSE( ${VTK_USE_MYSQL} MATCHES "OFF" )
+    FIND_PACKAGE( MySQL REQUIRED )
   ENDIF( ${VTK_USE_MYSQL} MATCHES "OFF" )
 
   IF( VTK_BUILD_SHARED_LIBS )
