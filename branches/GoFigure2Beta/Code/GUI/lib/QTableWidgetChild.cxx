@@ -308,3 +308,24 @@ void QTableWidgetChild::SetSelectedColumn(unsigned int iNbOfRows)
     this->setItem(i,indexCol,Checkbox);
     }
 }
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QTableWidgetChild::SetColorForAllTable (DBTableWidgetContainerType iRowContainer)
+{
+  for (int i=0; i<iRowContainer.size();i++)
+    {
+
+    }
+  //QColor Color (Red,Green,Blue,Alpha); 
+  //int Row = 0;
+  //int Column = 0;
+  //this->item(Row,Column)->setBackgroundColor(Color);
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+int IndexForRowContainer(QTableWidgetChild::DBTableWidgetContainerType iRowContainer)
+{
+  return 0;
+}

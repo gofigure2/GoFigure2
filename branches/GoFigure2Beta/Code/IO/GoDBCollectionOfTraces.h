@@ -48,6 +48,7 @@
 #include "vtkMySQLDatabase.h"
 #include "GoDBCoordinateRow.h"
 #include "GoDBTraceInfoForTableWidget.h"
+#include "GoDBTableWidgetContainer.h"
 #include <QStringList>
 #include <map>
 
@@ -61,7 +62,7 @@ public:
     std::string CollectionName,std::string Traces);
   virtual  QMEGAVTKADDON2_EXPORT ~GoDBCollectionOfTraces();
 
-  typedef std::vector<std::pair<GoDBTraceInfoForTableWidget,std::vector<std::string> > >
+  typedef GoDBTableWidgetContainer::DBTableWidgetContainerType
     DBTableWidgetContainerType;
 
   //void QMEGAVTKADDON2_EXPORT SetDatabaseVariables(
@@ -77,10 +78,6 @@ public:
   void QMEGAVTKADDON2_EXPORT AddSelectedTracesToCollection(
     QStringList ListSelectedTraces,int newCollectionID,
     vtkMySQLDatabase* DatabaseConnector);
-  
-  /** \brief Fill a vector of GoDBTraceInfoForTableWidget with the info
-  needed to fill the table widget for all the traces*/ 
-  std::vector<GoDBTraceInfoForTableWidget> GetColumnsInfoForTraceTable();
 
   /** \brief Return a map with all the ColumnNames for the table widget to be 
   completed by the value for each column:*/
@@ -109,7 +106,6 @@ public:
       NewCollectionID, DatabaseConnector);
     }
 
-
   QStringList QMEGAVTKADDON2_EXPORT ListCollectionID(
     vtkMySQLDatabase* DatabaseConnector);
 
@@ -129,7 +125,9 @@ protected:
   unsigned int m_ImgSessionID;
 
   std::vector<GoDBTraceInfoForTableWidget>  m_ColumnsInfos;
-  DBTableWidgetContainerType m_RowContainer;
+  GoDBTableWidgetContainer*                 m_LinkToRowContainer;
+  DBTableWidgetContainerType                m_RowContainer;
+
 
   /** \brief Create a new collection Row in the collection table and
   return the collectionID from the created row: */
@@ -171,28 +169,5 @@ protected:
   GoDBCoordinateRow GetExistingCoordMax(
   vtkMySQLDatabase* DatabaseConnector, int CollectionCoordIDMax,
   int CollectionID );
-
-  /** \brief Fill the vector of GoDBTraceInfoForTableWidget with the info
-  common to 2 traces only*/  
-  void GetSpecificInfoForTraceTable();
-
-  /** \brief return a vector of string with the tables to be joined with the 
-  trace table in the database query for all the fields except the ones with the
-  same name if SameFieldsQuery is set to false and only for them if 
-  SameFieldsQuery is set to true*/
-  std::vector<std::string> GetQueryStringForTraceJoinedTables(bool SameFieldsInQuery);
-
-  /** \brief return a vector of the table.fields to be selected from the database
-  for all the fields except the ones with the same name if SameFieldsQuery is set 
-  to false and only for them if SameFieldsQuery is set to true*/
-  std::vector<std::string> GetQueryStringForSelectFieldsTables(bool SameFieldsInQuery);
-
-  /** \brief fill the columns of the row container following the vector of string 
-  containing the columns to be filled with the results contained in the vector
-  results from query*/
-  void FillRowContainer(
-    std::vector<std::vector<std::string> >iResultsFromQuery,
-    std::vector<std::string> iSelectFields);
-  
 };
 #endif

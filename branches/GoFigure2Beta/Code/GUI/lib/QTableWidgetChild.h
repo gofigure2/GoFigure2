@@ -47,6 +47,7 @@
 #include "MegaVTK2Configure.h"
 #include "GoDBTraceInfoForVisu.h"
 #include "GoDBTraceInfoForTableWidget.h"
+#include "GoDBTableWidgetContainer.h"
 
 /**
 \class QTableWidgetchild
@@ -65,7 +66,7 @@ public:
   virtual QMEGAVTKADDON2_EXPORT ~QTableWidgetChild();
   QStringList QMEGAVTKADDON2_EXPORT recordHeaderNamesOrder();
 
-  typedef std::vector<std::pair<GoDBTraceInfoForTableWidget,std::vector<std::string> > >
+  typedef GoDBTableWidgetContainer::DBTableWidgetContainerType
     DBTableWidgetContainerType;
   
   void DisplayColumnNames( QString TableName,std::list<std::string> ColumnNames);
@@ -107,6 +108,9 @@ public slots:
   
   /** \brief Put checkboxes in the column "Selected" */
   void SetSelectedColumn(unsigned int iNbOfRows);
+
+  void SetColorForAllTable (DBTableWidgetContainerType iRowContainer);
+
 };
 
 #endif

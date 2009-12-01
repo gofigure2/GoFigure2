@@ -40,6 +40,7 @@
 #ifndef __GoDBTraceInfoForTableWidget_h
 #define __GoDBTraceInfoForTableWidget_h
 
+#include <string>
 
 /**\brief structure to pass the column information between the Table Widget 
 and the Database*/
