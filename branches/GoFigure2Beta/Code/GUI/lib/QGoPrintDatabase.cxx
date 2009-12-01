@@ -210,14 +210,10 @@ void QGoPrintDatabase::FillTableFromDatabase()
   this->setWindowTitle( title );
   m_VisibilityAction->setText( title );
 
-  GetContentAndDisplayFromDB< GoDBContourRow >( "contour", ContourTable, 
-    m_CollectionOfContours);
-  GetContentAndDisplayFromDB< GoDBMeshRow    >( "mesh", MeshTable,
-    m_CollectionOfMeshes);
-  GetContentAndDisplayFromDB< GoDBTrackRow   >( "track", TrackTable,
-    m_CollectionOfTracks);
-  GetContentAndDisplayFromDB< GoDBLineageRow >( "lineage", LineageTable,
-    m_CollectionOfLineages);
+  GetContentAndDisplayFromDB( "contour", ContourTable, m_CollectionOfContours);
+  GetContentAndDisplayFromDB( "mesh",    MeshTable,    m_CollectionOfMeshes);
+  GetContentAndDisplayFromDB( "track",   TrackTable,   m_CollectionOfTracks);
+  GetContentAndDisplayFromDB( "lineage", LineageTable, m_CollectionOfLineages);
 
   LoadContoursAndMeshesFromDB(m_DatabaseConnector);
 
@@ -586,3 +582,19 @@ void QGoPrintDatabase::SaveContoursFromVisuInDB(unsigned int iXCoordMin,
 
   CloseDBConnection();
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoPrintDatabase::GetContentAndDisplayFromDB( QString TableName, 
+  QTableWidgetChild* Table,GoDBCollectionOfTraces* iCollectionOfTraces)
+    {
+    //Get the column names to be displayed in the table widget:
+    std::list<std::string> ColumnsNames = 
+      iCollectionOfTraces->GetListColumnsNamesForTableWidget();
+    Table->DisplayColumnNames( TableName, ColumnsNames);
+    this->DBTabWidget->addTab(Table,TableName);
+    DBTableWidgetContainerType Row_Container = 
+      iCollectionOfTraces->GetRowContainer(m_DatabaseConnector);
+    Table->DisplayContent(Row_Container);
+    Table->setSortingEnabled(true);
+    }

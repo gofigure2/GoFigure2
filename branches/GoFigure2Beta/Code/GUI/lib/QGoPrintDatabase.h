@@ -131,76 +131,8 @@ protected:
     \brief get the columns names and the values of the table (type T) from the
     database, then display them in the QTableWidgetchild.
   */
-  template< class myT >
   void GetContentAndDisplayFromDB( QString TableName, QTableWidgetChild* Table,
-    GoDBCollectionOfTraces* iCollectionOfTraces)
-    {
-    /*std::vector< std::string > ColumnNamesContainer;
-
-    typedef GoDBRecordSet< myT >                  SetType;
-    typedef typename SetType::InternalObjectType  InternalObjectType;
-    typedef typename SetType::RowContainerType    RowContainerType;
-
-    RowContainerType* RowContainer;
-
-    SetType* mySet = new SetType;
-    mySet->SetConnector(m_DatabaseConnector);
-    mySet->SetTableName(TableName.toStdString());
-
-    std::stringstream WhereClause;
-    WhereClause << "ImagingSessionID = ";
-    WhereClause << m_ImgSessionID;
-    WhereClause << ";";
-    mySet->SetWhereString(WhereClause.str());
-    mySet->PopulateFromDB();
-
-    myT myNewObject;
-    mySet->AddObject( myNewObject );
-
-    //Get the column names from the database:
-    ColumnNamesContainer = mySet->GetColumnNamesContainer();*/
-
-    //Get the infos for all the columns needed:
-    std::vector<GoDBTraceInfoForTableWidget> ColumnsInfoContainer;
-    //ColumnsInfoContainer = iCollectionOfTraces->GetColumnsInfoForTraceTable();
-
-    //Get the column names to be displayed in the table widget:
-    std::list<std::string> ColumnsNames = 
-      iCollectionOfTraces->GetListColumnsNamesForTableWidget();
-    //std::vector<std::pair<GoDBTraceInfoForTableWidget,std::vector<std::string> > >
-   ///   Row_Container = iCollectionOfTraces->GetRowContainer(this->m_DatabaseConnector);
-    Table->DisplayColumnNames( TableName, ColumnsNames);
-    this->DBTabWidget->addTab(Table,TableName);
-    DBTableWidgetContainerType Row_Container = 
-      iCollectionOfTraces->GetRowContainer(m_DatabaseConnector);
-    Table->DisplayContent(Row_Container);
-   /* RowContainer = mySet->GetRowContainer();
-    if( RowContainer->size() < 2 ) //because the first row is for the column names
-      {
-      std::cout<<"Table empty";
-      std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
-      std::cout << std::endl;
-      }
-    else
-      {*/
-//      PrintOutContentFromDB< myT >( RowContainer, Table );
-      //sorting has to be enabled after populating the tables:
-      Table->setSortingEnabled(true);
-      //}
-    //delete mySet;*/
-      DBTableWidgetContainerType RowContainer = 
-        iCollectionOfTraces->GetRowContainer(this->m_DatabaseConnector);
-      if (RowContainer.empty())
-        {
-        std::cout<<"Row Container empty";
-        std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
-        std::cout << std::endl;
-        }
-      else
-        {
-
-        }
-    }
+    GoDBCollectionOfTraces* iCollectionOfTraces);
 
   /**
     \brief get the values of the table (type T) from the
