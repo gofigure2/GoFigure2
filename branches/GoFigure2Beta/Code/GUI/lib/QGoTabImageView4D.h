@@ -104,6 +104,7 @@ signals:
 
     void ChangeLookupTable();
     void ShowScalarBar( const bool& );
+    void ChangeBackgroundColor();
 
     void ShowAllChannels( bool iChecked );
     void ShowOneChannel( int iChannel );

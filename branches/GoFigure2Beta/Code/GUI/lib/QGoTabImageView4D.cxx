@@ -20,6 +20,7 @@
 #include <QDockWidget>
 #include <QSpinBox>
 #include <QVBoxLayout>
+#include <QColorDialog>
 
 #include <algorithm>
 
@@ -1184,4 +1185,30 @@ AddContour( const int& iId,
 
   return oActorVector;
 }
+//-------------------------------------------------------------------------
+
+
+//-------------------------------------------------------------------------
+/**
+ *
+ */
+void
+QGoTabImageView4D::
+ChangeBackgroundColor()
+{
+  double r, g, b;
+  m_XYZImageView->GetBackgroundColor( r, g, b );
+  m_BackgroundColor.setRgbF( r, g, b );
+
+  QColor temp = QColorDialog::getColor( m_BackgroundColor,
+    this, tr( "Choose Background Color" ) );
+
+  if( temp != m_BackgroundColor )
+    {
+    m_BackgroundColor = temp;
+    m_XYZImageView->SetBackgroundColor( m_BackgroundColor );
+    m_XYTImageView->SetBackgroundColor( m_BackgroundColor );
+    }
+}
+
 //-------------------------------------------------------------------------
