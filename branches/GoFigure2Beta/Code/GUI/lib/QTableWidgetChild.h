@@ -104,6 +104,9 @@ public slots:
   /** \brief return a list of the values of a specific column for the rows where the user
        has selected at least one cell.*/
   QStringList ValuesForSelectedRows(QString ColumnName );
+  
+  /** \brief Put checkboxes in the column "Selected" */
+  void SetSelectedColumn(unsigned int iNbOfRows);
 };
 
 #endif

@@ -247,34 +247,63 @@ void QTableWidgetChild::DisplayColumnNames( QString TableName,
 //--------------------------------------------------------------------------
 void QTableWidgetChild::DisplayContent(DBTableWidgetContainerType iRowContainer)
 { 
-  for (int i = 0; i < iRowContainer.size(); i++)
+  if (iRowContainer.empty())
     {
-    if (iRowContainer[i].first.ColumnNameTableWidget != "None")
-      {
-      unsigned int NbofRows = iRowContainer[i].second.size();
+    std::cout<<"The Row Container is totally empty ";
+    std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
+    std::cout << std::endl;
+    }
+  else
+    {
+    unsigned int NbofRows = 0;
+    for (unsigned int i = 0; i < iRowContainer.size(); i++)
+      {    
       bool RowsCountSet = false;
-      if (NbofRows != 0 && !RowsCountSet)
+      //check that the column has to be displayed in the table widget and that there are
+      //some values to be displayed:
+      if (iRowContainer[i].first.ColumnNameTableWidget != "None" && !iRowContainer[i].second.empty())
         {
-        this->setRowCount(NbofRows);
-        }
-      for (int j = 0; j <this->columnCount();j++)
-        {
-        std::string HeaderCol = this->horizontalHeaderItem(j)->text().toStdString();
-        if (HeaderCol == iRowContainer[i].first.ColumnNameTableWidget)
+        if (NbofRows == 0)
           {
-          std::vector<std::string>::iterator iter = iRowContainer[i].second.begin();
-          int k=0;
-          while(iter != iRowContainer[i].second.end())
-            {
-            QTableWidgetNumericalItem* CellTable = new QTableWidgetNumericalItem;
-            std::string Value = *iter;
-            CellTable->setText(Value.c_str());
-            this->setItem(k,j,CellTable);
-            iter++;
-            k++;
-            }
+          NbofRows = iRowContainer[i].second.size();
+          this->setRowCount(NbofRows);
+          RowsCountSet = true;
           }
-        }
-      }
+        for (unsigned int j = 0; j <this->columnCount();j++)
+          {
+          std::string HeaderCol = this->horizontalHeaderItem(j)->text().toStdString();
+          if (HeaderCol == iRowContainer[i].first.ColumnNameTableWidget)
+            {
+            std::vector<std::string>::iterator iter = iRowContainer[i].second.begin();
+            int k=0;
+            while(iter != iRowContainer[i].second.end())
+              {
+              QTableWidgetNumericalItem* CellTable = new QTableWidgetNumericalItem;
+              std::string Value = *iter;
+              CellTable->setText(Value.c_str());
+              this->setItem(k,j,CellTable);
+              iter++;
+              k++;
+              }//ENDWHILE
+            }//ENDIF
+          }//ENDFOR
+        }//ENDIF
+      }//ENDFOR
+      SetSelectedColumn(NbofRows);
+    }//ENDELSE
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QTableWidgetChild::SetSelectedColumn(unsigned int iNbOfRows)
+{
+  int indexCol = findColumnName( "Selected", recordHeaderNamesOrder());
+  for (unsigned int i =0 ; i < iNbOfRows ; i++)
+    {
+    QTableWidgetNumericalItem* Checkbox = new QTableWidgetNumericalItem;
+    Checkbox->setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsEnabled |
+      Qt::ItemIsSelectable);
+    Checkbox->setCheckState(Qt::Unchecked);
+    this->setItem(i,indexCol,Checkbox);
     }
 }

@@ -501,13 +501,13 @@ void QGoPrintDatabase::ChangeTracesToHighLightInfoFromTableWidget()
     {
     case 0: //contour
         {
-        this->ContourTable->TracesToHighlight("Contour",m_ContoursInfo);
+        this->ContourTable->TracesToHighlight("contour",m_ContoursInfo);
         emit SelectionContoursToHighLightChanged();
         break;
         }
     case 1: //mesh
         {
-        this->MeshTable->TracesToHighlight("Mesh",m_MeshesInfo);
+        this->MeshTable->TracesToHighlight("mesh",m_MeshesInfo);
         emit SelectionMeshesToHighLightChanged();
         break;
         }
