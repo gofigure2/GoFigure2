@@ -297,7 +297,8 @@ void QTableWidgetChild::DisplayContent(DBTableWidgetContainerType iRowContainer)
 //--------------------------------------------------------------------------
 void QTableWidgetChild::SetSelectedColumn(unsigned int iNbOfRows)
 {
-  int indexCol = findColumnName( "Selected", recordHeaderNamesOrder());
+  //int indexCol = findColumnName( "Selected", recordHeaderNamesOrder());
+  int indexCol = findColumnName( "", recordHeaderNamesOrder());
   for (unsigned int i =0 ; i < iNbOfRows ; i++)
     {
     QTableWidgetNumericalItem* Checkbox = new QTableWidgetNumericalItem;

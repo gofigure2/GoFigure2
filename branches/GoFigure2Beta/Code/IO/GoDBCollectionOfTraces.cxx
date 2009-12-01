@@ -359,7 +359,8 @@ std::vector<GoDBTraceInfoForTableWidget> GoDBCollectionOfTraces
   GoDBTraceInfoForTableWidget temp;
   //IsSelected column will correspond to the "IsHighLighted":
   temp.InfoName = "Selected";
-  temp.ColumnNameTableWidget = "Selected";
+  temp.ColumnNameTableWidget = "";
+  //temp.ColumnNameTableWidget = "Selected";
   m_ColumnsInfos.push_back(temp);
   std::pair<GoDBTraceInfoForTableWidget,std::vector<std::string> > PairTemp;
   PairTemp.first = temp;
