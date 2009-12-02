@@ -315,6 +315,7 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage : public vtkImageViewer2
 
   virtual vtkRenderWindowInteractor* GetRenderWindowInteractor();
 
+  // Set the input dataset
   virtual void SetInput( vtkImageData* );
 
   virtual void HighlightContour( vtkProp3D* iProp, const bool& iToDo );

@@ -864,13 +864,11 @@ vtkActor* vtkViewImage2D::AddDataSet( vtkPolyData* dataset,
 
   if( intersection )
     {
-    cutter->SetInput( dataset );
+    cutter->SetInputConnection( 0, dataset->GetProducerPort());
 //     cutter->SetCutFunction( this->SliceImplicitPlane );
     cutter->SetClipFunction( this->SliceImplicitPlane );
-
 /// \bug apparently it is necessary on yz and not on xz (or the opposite).
 //     cutter->InsideOutOn();
-
     mapper->SetInput( cutter->GetOutput() );
     }
   else
