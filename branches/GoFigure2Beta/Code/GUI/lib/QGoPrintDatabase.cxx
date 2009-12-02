@@ -595,6 +595,7 @@ void QGoPrintDatabase::GetContentAndDisplayFromDB( QString TableName,
     this->DBTabWidget->addTab(Table,TableName);
     DBTableWidgetContainerType Row_Container = 
       iCollectionOfTraces->GetRowContainer(m_DatabaseConnector);
-    Table->DisplayContent(Row_Container);
+    Table->DisplayContent(iCollectionOfTraces->GetLinkToRowContainer(), 
+      iCollectionOfTraces->GetTraceName(), iCollectionOfTraces->GetCollectionName());
     Table->setSortingEnabled(true);
     }

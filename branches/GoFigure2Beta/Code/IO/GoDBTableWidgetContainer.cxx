@@ -617,3 +617,17 @@ GoDBTableWidgetContainer::DBTableWidgetContainerType
 {
   return m_RowContainer;
 }
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+int GoDBTableWidgetContainer::GetIndexInsideRowContainer(std::string iInfoName)
+{
+  for (int i = 0; i < m_RowContainer.size();i++)
+    {
+    if (m_RowContainer[i].first.InfoName == iInfoName)
+      {
+      return i;
+      }
+    }
+  return -1;
+}

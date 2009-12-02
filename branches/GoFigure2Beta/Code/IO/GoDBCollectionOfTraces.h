@@ -83,6 +83,20 @@ public:
   completed by the value for each column:*/
   std::list<std::string> GetListColumnsNamesForTableWidget();
   
+  GoDBTableWidgetContainer* GetLinkToRowContainer()
+    {
+    return m_LinkToRowContainer;
+    }
+
+  std::string GetTraceName()
+    {
+    return m_TracesName;
+    }
+  
+  std::string GetCollectionName()
+    {
+    return m_CollectionName;
+    }
 
   DBTableWidgetContainerType GetRowContainer(vtkMySQLDatabase* DatabaseConnector);
 
@@ -125,8 +139,9 @@ protected:
   unsigned int m_ImgSessionID;
 
   std::vector<GoDBTraceInfoForTableWidget>  m_ColumnsInfos;
-  GoDBTableWidgetContainer*                 m_LinkToRowContainer;
   DBTableWidgetContainerType                m_RowContainer;
+  GoDBTableWidgetContainer*                 m_LinkToRowContainer;
+
 
 
   /** \brief Create a new collection Row in the collection table and

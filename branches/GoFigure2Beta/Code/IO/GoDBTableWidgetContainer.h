@@ -78,6 +78,10 @@ class GoDBTableWidgetContainer
      
    DBTableWidgetContainerType GetRowContainer();
 
+   /** *\brief return the index in the row container for the column with the given 
+   InfoName*/
+   int GetIndexInsideRowContainer(std::string iInfoName);
+
 protected:
   std::string m_CollectionName;
   std::string m_CollectionIDName;

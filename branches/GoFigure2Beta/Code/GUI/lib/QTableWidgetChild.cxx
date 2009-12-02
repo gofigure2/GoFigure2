@@ -245,9 +245,11 @@ void QTableWidgetChild::DisplayColumnNames( QString TableName,
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QTableWidgetChild::DisplayContent(DBTableWidgetContainerType iRowContainer)
+void QTableWidgetChild::DisplayContent(GoDBTableWidgetContainer* iLinkToRowContainer,
+  std::string TraceName, std::string CollectionName)
 { 
-  if (iRowContainer.empty())
+  DBTableWidgetContainerType RowContainer = iLinkToRowContainer->GetRowContainer();
+  if (RowContainer.empty())
     {
     std::cout<<"The Row Container is totally empty ";
     std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
@@ -256,27 +258,27 @@ void QTableWidgetChild::DisplayContent(DBTableWidgetContainerType iRowContainer)
   else
     {
     unsigned int NbofRows = 0;
-    for (unsigned int i = 0; i < iRowContainer.size(); i++)
+    for (unsigned int i = 0; i < RowContainer.size(); i++)
       {    
       bool RowsCountSet = false;
       //check that the column has to be displayed in the table widget and that there are
       //some values to be displayed:
-      if (iRowContainer[i].first.ColumnNameTableWidget != "None" && !iRowContainer[i].second.empty())
+      if (RowContainer[i].first.ColumnNameTableWidget != "None" && !RowContainer[i].second.empty())
         {
         if (NbofRows == 0)
           {
-          NbofRows = iRowContainer[i].second.size();
+          NbofRows = RowContainer[i].second.size();
           this->setRowCount(NbofRows);
           RowsCountSet = true;
           }
-        for (unsigned int j = 0; j <this->columnCount();j++)
+        for (int j = 0; j < this->columnCount();j++)
           {
           std::string HeaderCol = this->horizontalHeaderItem(j)->text().toStdString();
-          if (HeaderCol == iRowContainer[i].first.ColumnNameTableWidget)
+          if (HeaderCol == RowContainer[i].first.ColumnNameTableWidget)
             {
-            std::vector<std::string>::iterator iter = iRowContainer[i].second.begin();
+            std::vector<std::string>::iterator iter = RowContainer[i].second.begin();
             int k=0;
-            while(iter != iRowContainer[i].second.end())
+            while(iter != RowContainer[i].second.end())
               {
               QTableWidgetNumericalItem* CellTable = new QTableWidgetNumericalItem;
               std::string Value = *iter;
@@ -290,6 +292,8 @@ void QTableWidgetChild::DisplayContent(DBTableWidgetContainerType iRowContainer)
         }//ENDIF
       }//ENDFOR
       SetSelectedColumn(NbofRows);
+      this->SetColorForAllTable(iLinkToRowContainer,TraceName);
+      this->SetColorForAllTable(iLinkToRowContainer,CollectionName);
     }//ENDELSE
 }
 //--------------------------------------------------------------------------
@@ -311,11 +315,36 @@ void QTableWidgetChild::SetSelectedColumn(unsigned int iNbOfRows)
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QTableWidgetChild::SetColorForAllTable (DBTableWidgetContainerType iRowContainer)
+void QTableWidgetChild::SetColorForAllTable (GoDBTableWidgetContainer* iLinkToRowContainer,
+  std::string NameGroupColor )
 {
-  for (int i=0; i<iRowContainer.size();i++)
-    {
+  DBTableWidgetContainerType RowContainer = iLinkToRowContainer->GetRowContainer();
 
+  std::string RedInfoName = "RedFor";
+  RedInfoName += NameGroupColor;
+  int indexRedColumn = iLinkToRowContainer->GetIndexInsideRowContainer(RedInfoName);
+
+  std::string GreenInfoName = "GreenFor";
+  GreenInfoName += NameGroupColor;
+  int indexGreenColumn = iLinkToRowContainer->GetIndexInsideRowContainer(GreenInfoName);
+
+  std::string BlueInfoName = "BlueFor";
+  BlueInfoName += NameGroupColor;
+  int indexBlueColumn = iLinkToRowContainer->GetIndexInsideRowContainer(BlueInfoName);
+
+  //for the collection color:
+  std::string ColumnNameID = NameGroupColor;
+  ColumnNameID += "ID";
+  int indexGroupIDInTableWidget = findColumnName(ColumnNameID.c_str(),
+    this->recordHeaderNamesOrder());
+
+  for (int i=0; i < RowContainer[i+1].second.size();i++)
+    {
+    QColor Color(atoi(RowContainer[indexRedColumn].second[i].c_str()),
+      atoi(RowContainer[indexGreenColumn].second[i].c_str()),
+      atoi(RowContainer[indexBlueColumn].second[i].c_str()),
+      255);
+    this->item(i,indexGroupIDInTableWidget)->setBackgroundColor(Color);
     }
   //QColor Color (Red,Green,Blue,Alpha); 
   //int Row = 0;

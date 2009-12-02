@@ -70,7 +70,8 @@ public:
     DBTableWidgetContainerType;
   
   void DisplayColumnNames( QString TableName,std::list<std::string> ColumnNames);
-  void DisplayContent(DBTableWidgetContainerType iRowContainer);
+  void DisplayContent(GoDBTableWidgetContainer* iLinkToRowContainer,
+    std::string TraceName, std::string CollectionName);
 
   
 
@@ -109,7 +110,8 @@ public slots:
   /** \brief Put checkboxes in the column "Selected" */
   void SetSelectedColumn(unsigned int iNbOfRows);
 
-  void SetColorForAllTable (DBTableWidgetContainerType iRowContainer);
+  void SetColorForAllTable (GoDBTableWidgetContainer* iLinkToRowContainer,
+    std::string NameGroupColor);
 
 };
 
