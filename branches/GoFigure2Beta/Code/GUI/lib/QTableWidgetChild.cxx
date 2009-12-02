@@ -283,6 +283,7 @@ void QTableWidgetChild::DisplayContent(GoDBTableWidgetContainer* iLinkToRowConta
               QTableWidgetNumericalItem* CellTable = new QTableWidgetNumericalItem;
               std::string Value = *iter;
               CellTable->setText(Value.c_str());
+              CellTable->setTextAlignment(Qt::AlignCenter);
               this->setItem(k,j,CellTable);
               iter++;
               k++;
@@ -340,10 +341,18 @@ void QTableWidgetChild::SetColorForAllTable (GoDBTableWidgetContainer* iLinkToRo
 
   for (int i=0; i < RowContainer[i+1].second.size();i++)
     {
-    QColor Color(atoi(RowContainer[indexRedColumn].second[i].c_str()),
+    QColor Color;
+    if (RowContainer[indexGroupIDInTableWidget].second[i] == "0")
+      {
+      Color.setRgb(255,255,255,255);
+      }
+    else
+      {
+      Color.setRgb(atoi(RowContainer[indexRedColumn].second[i].c_str()),
       atoi(RowContainer[indexGreenColumn].second[i].c_str()),
       atoi(RowContainer[indexBlueColumn].second[i].c_str()),
       255);
+      }
     this->item(i,indexGroupIDInTableWidget)->setBackgroundColor(Color);
     }
   //QColor Color (Red,Green,Blue,Alpha); 

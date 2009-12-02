@@ -122,46 +122,6 @@ toggleViewAction()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-/*void QGoPrintDatabase::QPrintColumnNames( QString TableName,
- std::map<std::string,std::string> ColumnNames, QTableWidgetChild* QTabTableName )
-{
-  int numberCol=ColumnNames.size();
-  this->DBTabWidget->addTab(QTabTableName,TableName);
-  QTabTableName->setColumnCount(numberCol);
-  
-  int i = 0;
-  for ( std::map<std::string,std::string>::iterator iter = ColumnNames.begin(); 
-    iter!= ColumnNames.end();iter++)
-    {
-    QTableWidgetItem* HeaderCol=new QTableWidgetItem;
-    std::string NameHeader;
-    NameHeader =iter->first;
-
-    HeaderCol->setText(NameHeader.c_str());
-    QFont serifFont("Arial", 10, QFont::Bold);
-    HeaderCol->setFont(serifFont);
-    QTabTableName->setHorizontalHeaderItem(i,HeaderCol);
-    QTabTableName->resizeColumnToContents(i);
-    i++;
-    }
-  
-  QTabTableName->horizontalHeader()->setSortIndicatorShown(true);
-  /*Need to disabled the Sorting while printing the values from the database in
-  the table widget as the sorting is making trouble
-  QTabTableName->setSortingEnabled(false);
-  QTabTableName->horizontalHeader()->setMovable(true);
-
-  QObject::connect( QTabTableName->horizontalHeader(),
-    SIGNAL( sortIndicatorChanged(int,Qt::SortOrder) ),
-    QTabTableName,SLOT( sortItems(int,Qt::SortOrder)) );
-
-  QSettings settings( "MegasonLab", "Gofigure2" );
-  QByteArray stateTableWidget = settings.value("StateTableWidget").toByteArray();
-  //QTabTableName->horizontalHeader()->restoreState(stateTableWidget);
-}*/
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
 void QGoPrintDatabase::SetDatabaseVariables(
   const std::string& iNameDB, const std::string& iServer,
   const std::string& iUser, const std::string& iPassword,
@@ -593,8 +553,10 @@ void QGoPrintDatabase::GetContentAndDisplayFromDB( QString TableName,
       iCollectionOfTraces->GetListColumnsNamesForTableWidget();
     Table->DisplayColumnNames( TableName, ColumnsNames);
     this->DBTabWidget->addTab(Table,TableName);
+    //Get all the necessary data from the database:
     DBTableWidgetContainerType Row_Container = 
       iCollectionOfTraces->GetRowContainer(m_DatabaseConnector);
+
     Table->DisplayContent(iCollectionOfTraces->GetLinkToRowContainer(), 
       iCollectionOfTraces->GetTraceName(), iCollectionOfTraces->GetCollectionName());
     Table->setSortingEnabled(true);
