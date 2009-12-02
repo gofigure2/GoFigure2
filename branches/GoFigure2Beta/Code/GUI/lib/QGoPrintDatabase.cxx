@@ -446,9 +446,9 @@ void QGoPrintDatabase::AddToExistingCollection()
 void QGoPrintDatabase::LoadContoursAndMeshesFromDB(
   vtkMySQLDatabase* DatabaseConnector)
 {
-  m_ContoursInfo = GetTracesInfoFromDB(DatabaseConnector,"contour",
+  m_ContoursInfo = GetTracesInfoFromDB(DatabaseConnector,"contour","mesh",
     m_ImgSessionID);
-  m_MeshesInfo   = GetTracesInfoFromDB(DatabaseConnector,"mesh",
+  m_MeshesInfo   = GetTracesInfoFromDB(DatabaseConnector,"mesh","track",
     m_ImgSessionID);
 }
 //-------------------------------------------------------------------------
@@ -496,14 +496,14 @@ ChangeContoursToHighLightInfoFromVisu( std::list<int> iListContoursHighLightedIn
         {
         if (*it == static_cast< int >( j+1 ) )
           {
-          m_ContoursInfo[j].IsHighLighted = true;
+          m_ContoursInfo[j].Highlighted = true;
           this->ContourTable->SetSelectRowTraceID("Contour",
             m_ContoursInfo[j].TraceID,true);
           it++;
           }
         else
           {
-          m_ContoursInfo[j].IsHighLighted = false;
+          m_ContoursInfo[j].Highlighted = false;
           this->ContourTable->SetSelectRowTraceID("Contour",
             m_ContoursInfo[j].TraceID,false);
           }
@@ -561,3 +561,89 @@ void QGoPrintDatabase::GetContentAndDisplayFromDB( QString TableName,
       iCollectionOfTraces->GetTraceName(), iCollectionOfTraces->GetCollectionName());
     Table->setSortingEnabled(true);
     }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::vector<ContourMeshStructure> QGoPrintDatabase::
+  GetContoursForAGivenTimepoint(unsigned int iTimePoint)
+{
+  return GetTracesForAGivenTimepoint(this->m_ContoursInfo, iTimePoint);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::vector<ContourMeshStructure> QGoPrintDatabase::
+  GetMeshesForAGivenTimepoint (unsigned int iTimePoint)
+{
+  return GetTracesForAGivenTimepoint(this->m_MeshesInfo, iTimePoint);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::vector<ContourMeshStructure> QGoPrintDatabase::
+  GetTracesForAGivenTimepoint(std::vector<ContourMeshStructure> iAllTraces,
+  unsigned int iTimePoint)
+{
+  std::vector<ContourMeshStructure> SelectedTraces;
+  std::vector<ContourMeshStructure>::iterator iter = iAllTraces.begin();
+  while (iter != iAllTraces.end())
+    if (iter->TCoord == iTimePoint)
+      {
+      SelectedTraces.push_back(*iter);
+      iter++;
+      }
+  return SelectedTraces;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::vector<ContourMeshStructure> QGoPrintDatabase::
+  GetContoursForAGivenZCoord (unsigned int iZCoord)
+{
+  return this->GetTracesForAGivenZCoord(this->m_ContoursInfo,iZCoord, 
+    this->m_CollectionOfContours);
+}
+  
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------  
+std::vector<ContourMeshStructure> QGoPrintDatabase::
+  GetMeshesForAGivenZCoord (unsigned int iZCoord)
+{
+  return this->GetTracesForAGivenZCoord(this->m_MeshesInfo,iZCoord, 
+    this->m_CollectionOfTracks);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::vector<ContourMeshStructure> QGoPrintDatabase::
+  GetTracesForAGivenZCoord(std::vector<ContourMeshStructure> iAllTraces,
+  unsigned int iZCoord, GoDBCollectionOfTraces* iCollectionOfTraces)
+{
+  std::vector<ContourMeshStructure> oSelectedTraces;
+  GoDBTableWidgetContainer* LinkToRowContainer =
+    iCollectionOfTraces->GetLinkToRowContainer();
+  std::list<std::string> ListOfSelectedTracesID = 
+    LinkToRowContainer->GetTracesIDForAGivenZCoord(iZCoord);
+  
+  std::vector<ContourMeshStructure>::iterator iterAllTraces = iAllTraces.begin();
+  std::list<std::string>::iterator iterTracesID = ListOfSelectedTracesID.begin();
+
+  while (iterTracesID != ListOfSelectedTracesID.end())
+    {
+    std::string TraceIDToFindStrg = *iterTracesID;
+    int TraceIDToFind = atoi(TraceIDToFindStrg.c_str());
+    bool found = false;
+    while (iterAllTraces != iAllTraces.end()&& found == false)
+      {      
+      if (TraceIDToFind == iterAllTraces->TraceID)
+        {
+        oSelectedTraces.push_back(*iterAllTraces);
+        found = true;
+        }
+      iterAllTraces ++;
+      }
+    iterTracesID ++;
+    }
+  return oSelectedTraces;
+}

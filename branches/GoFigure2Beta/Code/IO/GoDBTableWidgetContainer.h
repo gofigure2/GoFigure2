@@ -81,6 +81,10 @@ class GoDBTableWidgetContainer
    /** *\brief return the index in the row container for the column with the given 
    InfoName*/
    int GetIndexInsideRowContainer(std::string iInfoName);
+   
+   /** *\brief return a list of all the traces with a bounding box 
+   containing the given ZCoord*/
+   std::list<std::string> GetTracesIDForAGivenZCoord(int iZCoord);
 
 protected:
   std::string m_CollectionName;

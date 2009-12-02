@@ -158,12 +158,12 @@ void QTableWidgetChild::SetSelectRowTraceID (std::string TraceName,
 
 //--------------------------------------------------------------------------
  void QTableWidgetChild::TracesToHighlight(
-  std::string TraceName,std::vector<GoDBTraceInfoForVisu> & ioTracesInfo)
+  std::string TraceName,std::vector<ContourMeshStructure> & ioTracesInfo)
 {
   //first set all the hightlighted traces to false:
   for( unsigned int i=0; i < ioTracesInfo.size(); i++ )
     {
-    ioTracesInfo[i].IsHighLighted = false;
+    ioTracesInfo[i].Highlighted = false;
     }
   
   //get the selected TraceID:
@@ -176,7 +176,7 @@ void QTableWidgetChild::SetSelectRowTraceID (std::string TraceName,
   for (int i = 0; i<ListTraceIDToHighLight.size();i++)
     {
     int j = ListTraceIDToHighLight.at(i).toInt()-1;
-    ioTracesInfo[j].IsHighLighted = true;
+    ioTracesInfo[j].Highlighted = true;
     }
 }
 //--------------------------------------------------------------------------
@@ -339,7 +339,7 @@ void QTableWidgetChild::SetColorForAllTable (GoDBTableWidgetContainer* iLinkToRo
   int indexGroupIDInTableWidget = findColumnName(ColumnNameID.c_str(),
     this->recordHeaderNamesOrder());
 
-  for (int i=0; i < RowContainer[i+1].second.size();i++)
+  for (unsigned int i=0; i < RowContainer[i+1].second.size();i++)
     {
     QColor Color;
     QColor TextColor;

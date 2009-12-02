@@ -438,7 +438,7 @@ std::list<std::string> GoDBTableWidgetContainer::
 GetListColumnsNamesForTableWidget()
 {
   std::list<std::string> ListColumnNames;
-  for (int i=0;i<m_ColumnsInfos.size();i++)
+  for (unsigned int i=0;i<m_ColumnsInfos.size();i++)
     {
     if (m_ColumnsInfos[i].ColumnNameTableWidget != "None" &&
       m_ColumnsInfos[i].ColumnNameTableWidget != "NoneID")
@@ -455,7 +455,7 @@ std::vector<std::string> GoDBTableWidgetContainer::
 GetQueryStringForSelectFieldsTables(bool SameFieldsInQuery)
 {
   std::vector<std::string> SelectFields;
-  int i=0;
+  unsigned int i=0;
   while (i < m_ColumnsInfos.size())
     {
     //if there is info to get from the database and to put directly in the
@@ -472,7 +472,7 @@ GetQueryStringForSelectFieldsTables(bool SameFieldsInQuery)
       temp += ".";
       temp += m_ColumnsInfos[i].ColumnNameDatabase;
       bool IsSelectFieldsInTheVector = false;
-      int j = 0;
+      unsigned int j = 0;
       while (IsSelectFieldsInTheVector == false && j<SelectFields.size())
         {
         if (SelectFields[j] == temp)
@@ -497,10 +497,10 @@ void GoDBTableWidgetContainer::FillRowContainer(
   std::vector<std::vector<std::string> >iResultsFromQuery,
   std::vector<std::string> iSelectFields)
 {       
-  for ( int i=0; i < iSelectFields.size(); i++)
+  for ( unsigned int i=0; i < iSelectFields.size(); i++)
      {
      bool HasBeenFound = false;
-     for (int j=0; j<m_RowContainer.size()&& HasBeenFound == false ; j++)
+     for (unsigned int j=0; j<m_RowContainer.size()&& HasBeenFound == false ; j++)
        {
        std::string test = iSelectFields[i]; //for test purpose
        std::string test2= m_RowContainer[j].first.ColumnNameDatabase; //for test purpose
@@ -509,8 +509,8 @@ void GoDBTableWidgetContainer::FillRowContainer(
        if (PosColumnNameFound > 0 && m_RowContainer[j].second.empty())
          {
          HasBeenFound = true;
-         for (int RowNumberForQueryResults = 0; RowNumberForQueryResults < iResultsFromQuery.size();
-           RowNumberForQueryResults++ )
+         for (unsigned int RowNumberForQueryResults = 0; 
+           RowNumberForQueryResults < iResultsFromQuery.size();RowNumberForQueryResults++ )
            {  
            std::vector<std::string> ResultsFromQueryForOneTrace = 
            iResultsFromQuery[RowNumberForQueryResults];
@@ -530,7 +530,7 @@ GetQueryStringForTraceJoinedTables(bool SameFieldsInQuery)
 {
   std::list<std::string> SelectNamesColumns;
   std::vector <std::string> SelectJoinTables;
-  int i=0;
+  unsigned int i=0;
   //for all the TableNameDatabase in the m_ColumnsInfos:
   while (i < m_ColumnsInfos.size())
     {
@@ -622,7 +622,7 @@ GoDBTableWidgetContainer::DBTableWidgetContainerType
 //--------------------------------------------------------------------------
 int GoDBTableWidgetContainer::GetIndexInsideRowContainer(std::string iInfoName)
 {
-  for (int i = 0; i < m_RowContainer.size();i++)
+  for (unsigned int i = 0; i < m_RowContainer.size();i++)
     {
     if (m_RowContainer[i].first.InfoName == iInfoName)
       {
@@ -630,4 +630,39 @@ int GoDBTableWidgetContainer::GetIndexInsideRowContainer(std::string iInfoName)
       }
     }
   return -1;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+ std::list<std::string> GoDBTableWidgetContainer::
+   GetTracesIDForAGivenZCoord(int iZCoord)
+{
+  std::list<std::string> SelectedTracesIDFromRowContainer;
+  int IndexZMin = this->GetIndexInsideRowContainer("BDZMin");
+  int IndexZMax = this->GetIndexInsideRowContainer("BDZMax");
+  int IndexTraceID = this->GetIndexInsideRowContainer(this->m_TracesIDName);
+
+  std::vector<std::string>::iterator iterZMin = 
+    this->m_RowContainer[IndexZMin].second.begin();
+  std::vector<std::string>::iterator iterZMax = 
+    this->m_RowContainer[IndexZMax].second.begin();
+  std::vector<std::string>::iterator iterTraceID = 
+    this->m_RowContainer[IndexTraceID].second.begin();
+
+  while (iterTraceID != this->m_RowContainer[IndexTraceID].second.end())
+    {
+    std::string ZMinStrg = *iterZMin;
+    int ZMin = atoi(ZMinStrg.c_str());
+    std::string ZMaxStrg = *iterZMax;
+    int ZMax = atoi(ZMaxStrg.c_str());
+    if ( iZCoord >= ZMin && iZCoord <= ZMax)
+      {
+      SelectedTracesIDFromRowContainer.push_back(*iterTraceID);
+      }
+    iterZMin    ++;
+    iterZMax    ++;
+    iterTraceID ++;
+    }
+
+  return SelectedTracesIDFromRowContainer;
 }

@@ -901,11 +901,11 @@ std::vector<std::pair<int,std::string> > ListSpecificValuesForTwoColumnsAndTwoTa
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-std::vector<GoDBTraceInfoForVisu> GetTracesInfoFromDB(
+std::vector<ContourMeshStructure> GetTracesInfoFromDB(
   vtkMySQLDatabase* DatabaseConnector, std::string TraceName,
-  unsigned int ImgSessionID)
+  std::string CollectionName,unsigned int ImgSessionID)
 {
-  std::vector<GoDBTraceInfoForVisu> Results;
+  std::vector<ContourMeshStructure> Results;
   vtkSQLQuery* query = DatabaseConnector->GetQueryInstance();
 
   std::stringstream Querystream;
@@ -913,6 +913,10 @@ std::vector<GoDBTraceInfoForVisu> GetTracesInfoFromDB(
   Querystream << TraceName;
   Querystream << ".";
   Querystream << TraceName;
+  Querystream << "ID, ";
+  Querystream << TraceName;
+  Querystream << ".";
+  Querystream << CollectionName;
   Querystream << "ID, ";
   Querystream << TraceName;
   Querystream << ".Points, coordinate.TCoord, color.Red,\
@@ -941,7 +945,7 @@ std::vector<GoDBTraceInfoForVisu> GetTracesInfoFromDB(
   while (query->NextRow())
     {
       {
-      GoDBTraceInfoForVisu temp;
+      ContourMeshStructure temp;
       temp.TraceID = query->DataValue(0).ToInt();
       vtkPolyDataMySQLTextReader* convert_reader =
       vtkPolyDataMySQLTextReader::New();
@@ -960,13 +964,14 @@ std::vector<GoDBTraceInfoForVisu> GetTracesInfoFromDB(
             }
           }
         vtkPolyData* output = convert_reader->GetPolyData( polydata_string );
-        temp.Points = output;
+        temp.Nodes = output;
         }
-      temp.TimePoint = query->DataValue(2).ToUnsignedInt();
-      temp.Red = query->DataValue(3).ToUnsignedInt();
-      temp.Green = query->DataValue(4).ToUnsignedInt();
-      temp.Blue = query->DataValue(5).ToUnsignedInt();
-      temp.Alpha = query->DataValue(6).ToUnsignedInt();
+      temp.CollectionID = query->DataValue(2).ToUnsignedInt();
+      temp.TCoord       = query->DataValue(3).ToUnsignedInt();
+      temp.rgba[0]      = query->DataValue(4).ToDouble();
+      temp.rgba[1]      = query->DataValue(5).ToDouble();
+      temp.rgba[2]      = query->DataValue(6).ToDouble();
+      temp.rgba[3]      = query->DataValue(7).ToDouble();
       Results.push_back(temp);
       }
     }
@@ -986,7 +991,7 @@ std::vector<std::vector<std::string> >GetValuesFromSeveralTables(
 
   std::stringstream Querystream;
   Querystream << "SELECT ";
-  int i;
+  unsigned int i;
   for (i=0; i <SelectFields.size()-1;i++)
     {
     Querystream <<SelectFields[i];
@@ -995,7 +1000,7 @@ std::vector<std::vector<std::string> >GetValuesFromSeveralTables(
   Querystream << SelectFields[i];
   Querystream << " FROM ";
   Querystream << MainTable;
-  int j =0;
+  unsigned int j =0;
   while (j<JoinTablesOnTraceTable.size())
     {
     Querystream << " LEFT JOIN ";

@@ -269,14 +269,14 @@ void QGoMainWindow::openFilesfromDB()
 //         }
 //       ++c_it;
 //       }
-    std::vector< GoDBTraceInfoForVisu >::iterator
+    std::vector< ContourMeshStructure >::iterator
       c_it = w3t->m_DataBaseTables->m_MeshesInfo.begin();
 
     while( c_it != w3t->m_DataBaseTables->m_MeshesInfo.end() )
       {
-      if( (*c_it).TimePoint == 0 )
+      if( (*c_it).TCoord == 0 )
         {
-        w3t->AddPolyData( (*c_it).Points );
+        w3t->AddPolyData( (*c_it).Nodes );
         }
       ++c_it;
 //       ++k;

@@ -53,6 +53,7 @@
 #include "vtkPolyData.h"
 #include "GoDBCollectionOfTraces.h"
 #include "GoDBTraceInfoForVisu.h"
+#include "ContourMeshStructure.h"
 
 /** \brief Ensure the connection with the Database*/
 class QGoPrintDatabase : public QWidget,
@@ -76,14 +77,32 @@ public:
   in the database, display them in the QTableWidgetChild and fill the info for the
   contours and meshes*/
   void FillTableFromDatabase();
-
+  
+  /** \brief Return a vector of all the contours for the given timepoint*/
+  std::vector<ContourMeshStructure> GetContoursForAGivenTimepoint (
+    unsigned int iTimePoint);
+  
+  /** \brief Return a vector of all the meshes for the given timepoint*/
+  std::vector<ContourMeshStructure> GetMeshesForAGivenTimepoint (
+    unsigned int iTimePoint);
+  
+  /** \brief Return a vector of all the contours with a bounding box 
+  containing the given ZCoord*/
+  std::vector<ContourMeshStructure> GetContoursForAGivenZCoord (
+    unsigned int iZCoord);
+  
+  /** \brief Return a vector of all the meshes with a bounding box 
+  containing the given ZCoord*/
+  std::vector<ContourMeshStructure> GetMeshesForAGivenZCoord (
+    unsigned int iZCoordPoint);
+  
   QTableWidgetChild* ContourTable;
   QTableWidgetChild* MeshTable;
   QTableWidgetChild* TrackTable;
   QTableWidgetChild* LineageTable;
 
-  std::vector<GoDBTraceInfoForVisu> m_ContoursInfo;
-  std::vector<GoDBTraceInfoForVisu> m_MeshesInfo;
+  std::vector<ContourMeshStructure> m_ContoursInfo;
+  std::vector<ContourMeshStructure> m_MeshesInfo;
 
   void UpdateTableFromDB();
   void SaveContoursFromVisuInDB(unsigned int iXCoordMin,
@@ -126,11 +145,19 @@ protected:
   /** \brief initialize the m_ContoursInfo and m_MeshesInfo with the info from the
   database*/
   void LoadContoursAndMeshesFromDB(vtkMySQLDatabase* DatabaseConnector);
-
+  
+  std::vector<ContourMeshStructure> GetTracesForAGivenTimepoint(
+    std::vector<ContourMeshStructure> iAllTraces, unsigned int iTimePoint);
   /**
     \brief get the columns names and the values of the table (type T) from the
     database, then display them in the QTableWidgetchild.
   */
+  /** \brief return a vector of all the traces with a bounding box containing
+  the given ZCoord*/
+  std::vector<ContourMeshStructure> GetTracesForAGivenZCoord(
+    std::vector<ContourMeshStructure> iAllTraces,unsigned int iZCoord, 
+    GoDBCollectionOfTraces* iCollectionOfTraces);
+
   void GetContentAndDisplayFromDB( QString TableName, QTableWidgetChild* Table,
     GoDBCollectionOfTraces* iCollectionOfTraces);
 

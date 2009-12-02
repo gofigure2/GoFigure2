@@ -46,6 +46,7 @@
 #include "itkMacro.h"
 #include "vtkMySQLDatabase.h"
 #include "GoDBTraceInfoForVisu.h"
+#include "ContourMeshStructure.h"
 
 std::vector<std::string> ListAllValuesForOneColumn(
   vtkMySQLDatabase* DatabaseConnector,
@@ -169,9 +170,9 @@ std::vector<std::pair<int,std::string> >ListSpecificValuesForTwoColumnsAndTwoTab
   std::string TableTwo, std::string ColumnTwo,std::string ForeignKey, 
   std::string PrimaryKey, std::string field, std::string value);
 
-std::vector<GoDBTraceInfoForVisu> GetTracesInfoFromDB(
+std::vector<ContourMeshStructure> GetTracesInfoFromDB(
   vtkMySQLDatabase* DatabaseConnector,std::string TraceName,
-  unsigned int ImgSessionID);
+  std::string CollectionName,unsigned int ImgSessionID);
 
 //return a pair with the number of fields in the query and a vector of the results:
 std::vector<std::vector<std::string> >GetValuesFromSeveralTables(
