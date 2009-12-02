@@ -342,18 +342,24 @@ void QTableWidgetChild::SetColorForAllTable (GoDBTableWidgetContainer* iLinkToRo
   for (int i=0; i < RowContainer[i+1].second.size();i++)
     {
     QColor Color;
+    QColor TextColor;
     if (RowContainer[indexGroupIDInTableWidget].second[i] == "0")
       {
       Color.setRgb(255,255,255,255);
+      int rgb = 255 - (255*3)/3;
+      TextColor.setRgb(rgb,rgb,rgb,255);
       }
     else
       {
-      Color.setRgb(atoi(RowContainer[indexRedColumn].second[i].c_str()),
-      atoi(RowContainer[indexGreenColumn].second[i].c_str()),
-      atoi(RowContainer[indexBlueColumn].second[i].c_str()),
-      255);
+      int Red   = atoi(RowContainer[indexRedColumn].second[i].c_str());
+      int Green = atoi(RowContainer[indexGreenColumn].second[i].c_str());
+      int Blue  = atoi(RowContainer[indexBlueColumn].second[i].c_str());
+      Color.setRgb(Red,Green,Blue,255);
+      int rgb = 255 - (Red+Green+Blue)/3;
+      TextColor.setRgb(rgb,rgb,rgb,255);
       }
     this->item(i,indexGroupIDInTableWidget)->setBackgroundColor(Color);
+    this->item(i,indexGroupIDInTableWidget)->setTextColor(TextColor);
     }
   //QColor Color (Red,Green,Blue,Alpha); 
   //int Row = 0;
