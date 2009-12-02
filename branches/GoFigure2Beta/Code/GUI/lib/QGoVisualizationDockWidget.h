@@ -23,6 +23,8 @@ class QGoVisualizationDockWidget :
     void SetZMinimumAndMaximum( const int& iMin, const int& iMax );
     void SetTMinimumAndMaximum( const int& iMin, const int& iMax );
     int GetCurrentChannel() const;
+    int GetCurrentCollectionID ();
+    std::string GetCurrentColor();
 
   public slots:
     void SetXSlice( int iSlice );

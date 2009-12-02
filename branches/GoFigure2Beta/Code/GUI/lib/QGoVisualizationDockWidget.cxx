@@ -47,36 +47,48 @@ QGoVisualizationDockWidget( QWidget* iParent, const unsigned int& iDim ) :
     QObject::connect( this->ChannelComboBox, SIGNAL( currentIndexChanged( int ) ),
                       this, SIGNAL( ShowOneChannelChanged( int ) ) );
 }
+//-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
 QGoVisualizationDockWidget::
 ~QGoVisualizationDockWidget()
 {
 }
+//-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
 void QGoVisualizationDockWidget::
 SetXSlice( int iSlice )
 {
   this->XSliceSpinBox->setValue( iSlice );
 }
+//-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
 void QGoVisualizationDockWidget::
 SetYSlice( int iSlice )
 {
   this->YSliceSpinBox->setValue( iSlice );
 }
+//-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
 void QGoVisualizationDockWidget::
 SetZSlice( int iSlice )
 {
   this->ZSliceSpinBox->setValue( iSlice );
 }
+//-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
 void QGoVisualizationDockWidget::
 SetTSlice( int iSlice )
 {
   this->TSliceSpinBox->setValue( iSlice );
 }
+//-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
 void
 QGoVisualizationDockWidget::
 SetNumberOfChannels( const unsigned int& iN )
@@ -96,7 +108,9 @@ SetNumberOfChannels( const unsigned int& iN )
     this->ChannelComboBox->setMaxCount( iN );
     }
 }
+//-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
 void
 QGoVisualizationDockWidget::
 SetChannel( const unsigned int& i, const QString& iText )
@@ -109,39 +123,61 @@ SetChannel( const unsigned int& i, const QString& iText )
     }
   this->ChannelComboBox->insertItem( i, input );
 }
+//-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
 void QGoVisualizationDockWidget::
 SetXMinimumAndMaximum( const int& iMin, const int& iMax )
 {
   this->XSliceSpinBox->setMinimum( iMin );
   this->XSliceSpinBox->setMaximum( iMax );
 }
+//-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
 void QGoVisualizationDockWidget::
 SetYMinimumAndMaximum( const int& iMin, const int& iMax )
 {
   this->YSliceSpinBox->setMinimum( iMin );
   this->YSliceSpinBox->setMaximum( iMax );
 }
+//-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
 void QGoVisualizationDockWidget::
 SetZMinimumAndMaximum( const int& iMin, const int& iMax )
 {
   this->ZSliceSpinBox->setMinimum( iMin );
   this->ZSliceSpinBox->setMaximum( iMax );
 }
+//-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
 void QGoVisualizationDockWidget::
 SetTMinimumAndMaximum( const int& iMin, const int& iMax )
 {
   this->TSliceSpinBox->setMinimum( iMin );
   this->TSliceSpinBox->setMaximum( iMax );
 }
+//-------------------------------------------------------------------------
 
-
+//-------------------------------------------------------------------------
 int QGoVisualizationDockWidget::
 GetCurrentChannel() const
 {
   return this->ChannelComboBox->currentIndex();
 }
+//-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
+int QGoVisualizationDockWidget::GetCurrentCollectionID()
+{
+  return this->CollectionIDBox->currentText().toInt();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::string QGoVisualizationDockWidget::GetCurrentColor()
+{
+  return this->ColorCollectionBox->currentText().toStdString();
+}
