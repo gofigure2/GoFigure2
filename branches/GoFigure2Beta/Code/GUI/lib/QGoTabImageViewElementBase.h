@@ -44,7 +44,7 @@
 #include "QGoTabElementBase.h"
 #include "QGoVisualizationDockWidget.h"
 #include "QGoManualSegmentationDockWidget.h"
-#include "ContourStructureHelper.h"
+#include "ContourMeshStructureHelper.h"
 
 class vtkImageData;
 class vtkContourWidget;
@@ -95,7 +95,7 @@ protected:
 
   std::vector< vtkContourWidget* >                      m_ContourWidget;
   std::vector< vtkOrientedGlyphContourRepresentation* > m_ContourRepresentation;
-  ContourStructureMultiIndexContainer                   m_ContourContainer;
+  ContourMeshStructureMultiIndexContainer               m_ContourMeshContainer;
 
   QGoVisualizationDockWidget*       m_VisuDockWidget;
   QGoManualSegmentationDockWidget*  m_ManualSegmentationDockWidget;

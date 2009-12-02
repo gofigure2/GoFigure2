@@ -1,5 +1,5 @@
 SET( QGoGUILIB_SRC
-  ContourStructureHelper.cxx
+  ContourMeshStructureHelper.cxx
   QGoConnectServerPage.cxx
   QGoCreateDataBasePage.cxx
   QGoCreateImgSessionPage.cxx

@@ -5,7 +5,7 @@
 
 #include "GoFigureFileInfoMultiIndexContainerHelper.h"
 #include "itkMegaCaptureReader.h"
-#include "ContourStructureHelper.h"
+#include "ContourMeshStructureHelper.h"
 
 #include <QHBoxLayout>
 
@@ -180,7 +180,7 @@ protected:
 
   std::vector< vtkSmartPointer< vtkContourWidget > >                      m_ContourWidget;
   std::vector< vtkSmartPointer< vtkOrientedGlyphContourRepresentation > > m_ContourRepresentation;
-  ContourStructureMultiIndexContainer                   m_ContourContainer;
+  ContourMeshStructureMultiIndexContainer                   m_ContourMeshContainer;
 
   void GetBackgroundColorFromImageViewer( );
   void SetBackgroundColorToImageViewer( );

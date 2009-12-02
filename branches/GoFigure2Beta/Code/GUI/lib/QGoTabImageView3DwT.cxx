@@ -85,8 +85,8 @@ QGoTabImageView3DwT( QWidget* iParent ) :
 QGoTabImageView3DwT::
 ~QGoTabImageView3DwT( )
 {
-  ContourStructureMultiIndexContainer::iterator it = m_ContourContainer.begin();
-  ContourStructureMultiIndexContainer::iterator end = m_ContourContainer.end();
+  ContourMeshStructureMultiIndexContainer::iterator it = m_ContourMeshContainer.begin();
+  ContourMeshStructureMultiIndexContainer::iterator end = m_ContourMeshContainer.end();
 
   std::set< vtkPolyData* > NodeSet;
 
@@ -1006,6 +1006,8 @@ ValidateContour( const int& iId )
     QColor color = m_ManualSegmentationDockWidget->GetValidatedColor();
     color.getRgbF( &r, &g, &b );
 
+    double alpha = 1.;
+
     vtkProperty* contour_property = vtkProperty::New();
     contour_property->SetRepresentationToWireframe();
     contour_property->SetColor( r, g, b );
@@ -1057,9 +1059,9 @@ ValidateContour( const int& iId )
     // fill the container
     for( i = 0; i < contour_actor.size(); i++ )
       {
-      ContourStructure temp( m_ContourId, contour_actor[i], contour_nodes,
-         meshid, timepoint, highlighted, r, g, b, i );
-      m_ContourContainer.insert( temp );
+      ContourMeshStructure temp( m_ContourId, contour_actor[i], contour_nodes,
+         meshid, timepoint, highlighted, r, g, b, alpha, i );
+      m_ContourMeshContainer.insert( temp );
       }
 
     m_ContourId++;
@@ -1206,16 +1208,16 @@ void
 QGoTabImageView3DwT::
 RemoveAllContoursForPresentTimePoint( )
 {
-  if( ( m_TimePoint >= 0 ) && ( m_ContourContainer.size() > 0 ) )
+  if( ( m_TimePoint >= 0 ) && ( m_ContourMeshContainer.size() > 0 ) )
     {
-    std::list< ContourStructure >
-      c_list = FindContourGivenTimePoint( m_ContourContainer,
+    std::list< ContourMeshStructure >
+      c_list = FindContourGivenTimePoint( m_ContourMeshContainer,
         static_cast< unsigned int >( m_TimePoint ) );
 
     int c_dir;
     vtkActor* c_actor;
 
-    std::list< ContourStructure >::iterator it = c_list.begin();
+    std::list< ContourMeshStructure >::iterator it = c_list.begin();
 
     while( it != c_list.end() )
       {
@@ -1238,16 +1240,16 @@ void
 QGoTabImageView3DwT::
 LoadAllContoursForGivenTimePoint( const unsigned int& iT )
 {
-  if( m_ContourContainer.size() > 0 )
+  if( m_ContourMeshContainer.size() > 0 )
     {
-    std::list< ContourStructure >
-      c_list = FindContourGivenTimePoint( m_ContourContainer,
+    std::list< ContourMeshStructure >
+      c_list = FindContourGivenTimePoint( m_ContourMeshContainer,
         static_cast< unsigned int >( iT ) );
 
     int c_dir;
     vtkActor* c_actor;
 
-    std::list< ContourStructure >::iterator it = c_list.begin();
+    std::list< ContourMeshStructure >::iterator it = c_list.begin();
 
     while( it != c_list.end() )
       {

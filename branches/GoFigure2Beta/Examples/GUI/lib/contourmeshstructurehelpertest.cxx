@@ -3,12 +3,12 @@
 #include "vtkActor.h"
 #include "vtkPolyData.h"
 
-#include "ContourStructure.h"
-#include "ContourStructureHelper.h"
+#include "ContourMeshStructure.h"
+#include "ContourMeshStructureHelper.h"
 
 int main( int , char** )
 {
-  ContourStructureMultiIndexContainer container;
+  ContourMeshStructureMultiIndexContainer container;
 
   std::vector< vtkActor* > ActorVector( 20 );
   std::vector< vtkPolyData* > NodesVector( 20 );
@@ -23,12 +23,12 @@ int main( int , char** )
 
     id = i / 4;
     t = id;
-    container.insert( ContourStructure( i, ActorVector[i], NodesVector[i],
-      id, t, ( i == 10 ), 0.5, 0.5, 0.5, 0 ) );
+    container.insert( ContourMeshStructure( i, ActorVector[i], NodesVector[i],
+      id, t, ( i == 10 ), 0.5, 0.5, 0.5, 1., 0 ) );
     }
 
-  std::list< ContourStructure > list = FindContourGivenContourId( container, 10 );
-  ContourStructure c = list.front();
+  std::list< ContourMeshStructure > list = FindContourGivenTraceID( container, 10 );
+  ContourMeshStructure c = list.front();
   std::cout <<c <<std::endl;
 
   if( c.Actor != ActorVector[10]  )
@@ -66,9 +66,9 @@ int main( int , char** )
 
   c = FindContourGivenActor( container, ActorVector[5] );
 
-  if( c.ContourId != 5 )
+  if( c.TraceID != 5 )
     {
-    std::cerr <<"c.ContourId != 5" <<std::endl;
+    std::cerr <<"c.TraceID != 5" <<std::endl;
     for( i = 0; i < 20; i++ )
       {
       ActorVector[i]->Delete();
@@ -80,9 +80,9 @@ int main( int , char** )
   list = FindContourGivenNodes( container, NodesVector[15] );
   c = list.front();
 
-  if( c.ContourId != 15 )
+  if( c.TraceID != 15 )
     {
-    std::cerr <<"c.ContourId != 15" <<std::endl;
+    std::cerr <<"c.TraceID != 15" <<std::endl;
 
     for( i = 0; i < 20; i++ )
       {
@@ -101,15 +101,15 @@ int main( int , char** )
     {
     list = FindContourGivenTimePoint( container, i );
 
-    std::list< ContourStructure >::iterator c_it = list.begin();
+    std::list< ContourMeshStructure >::iterator c_it = list.begin();
 
     while( c_it != list.end() )
       {
-      if( (*c_it).ContourId != k )
+      if( (*c_it).TraceID != k )
         {
-        std::cerr <<"(*c_it).ContourId != k" <<std::endl;
-        std::cerr <<(*c_it).ContourId <<" != " <<k <<std::endl;
-      
+        std::cerr <<"(*c_it).TraceID != k" <<std::endl;
+        std::cerr <<(*c_it).TraceID <<" != " <<k <<std::endl;
+
         for( i = 0; i < 20; i++ )
           {
           ActorVector[i]->Delete();

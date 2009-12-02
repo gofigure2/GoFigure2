@@ -57,8 +57,8 @@ QGoTabImageViewElementBase::~QGoTabImageViewElementBase()
     m_ContourWidget[i]->Delete();
     }
 
-  ContourStructureMultiIndexContainer::iterator it = m_ContourContainer.begin();
-  ContourStructureMultiIndexContainer::iterator end = m_ContourContainer.end();
+  ContourMeshStructureMultiIndexContainer::iterator it = m_ContourMeshContainer.begin();
+  ContourMeshStructureMultiIndexContainer::iterator end = m_ContourMeshContainer.end();
 
   while( it != end )
     {
@@ -286,6 +286,9 @@ ValidateContour( const int& iId )
   QColor color = m_ManualSegmentationDockWidget->GetValidatedColor();
   color.getRgbF( &r, &g, &b );
 
+  /// \todo get alpha from QColor (it is not supposed to 255 all the time!)
+  double alpha = 1.;
+
   vtkProperty* contour_property = vtkProperty::New();
   contour_property->SetRepresentationToWireframe();
   contour_property->SetColor( r, g, b );
@@ -335,9 +338,9 @@ ValidateContour( const int& iId )
   // fill the container
   for( unsigned int i = 0; i < contour_actor.size(); i++ )
     {
-    ContourStructure temp( m_ContourId, contour_actor[i], contour_nodes, meshid,
-      timepoint, highlighted, r, g, b, i );
-    m_ContourContainer.insert( temp );
+    ContourMeshStructure temp( m_ContourId, contour_actor[i], contour_nodes, meshid,
+      timepoint, highlighted, r, g, b, alpha, i );
+    m_ContourMeshContainer.insert( temp );
     }
 
   m_ContourId++;
@@ -416,11 +419,11 @@ void
 QGoTabImageViewElementBase::
 ReEditContour( const unsigned int& iId )
 {
-  std::list< ContourStructure > c_list =
-    FindContourGivenContourId( this->m_ContourContainer, iId );
+  std::list< ContourMeshStructure > c_list =
+    FindContourGivenTraceID( this->m_ContourMeshContainer, iId );
 
-  std::list< ContourStructure >::iterator c_it = c_list.begin();
-  std::list< ContourStructure >::iterator c_end = c_list.end();
+  std::list< ContourMeshStructure >::iterator c_it = c_list.begin();
+  std::list< ContourMeshStructure >::iterator c_end = c_list.end();
 
   int c_dir;
   vtkActor* c_actor;

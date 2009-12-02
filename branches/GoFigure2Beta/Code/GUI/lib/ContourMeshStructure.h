@@ -16,7 +16,7 @@ struct ContourMeshStructure
   unsigned int  CollectionID;
   unsigned int  TCoord;
   bool          Highlighted;
-  double        rgb[3];
+  double        rgba[4];
   int           Direction;
 
   ContourMeshStructure( ) : TraceID( 0 ), Actor( 0 ), Nodes( 0 ), CollectionID( 0 ),
@@ -27,27 +27,29 @@ struct ContourMeshStructure
   ContourMeshStructure( const unsigned int& iTraceID, vtkActorPointer iActor,
     vtkPolyDataPointer iNodes, const unsigned int& iCollectionID, const unsigned int& iT,
     const bool& iHighlighted, const double& r, const double& g, const double& b,
-    const int& iDir )
+    const double& alpha, const int& iDir )
     : TraceID( iTraceID ), Actor( iActor ), Nodes( iNodes ), CollectionID( iCollectionID ),
       TCoord( iT ), Highlighted( iHighlighted ), Direction( iDir )
     {
-    rgb[0] = r;
-    rgb[1] = g;
-    rgb[2] = b;
+    rgba[0] = r;
+    rgba[1] = g;
+    rgba[2] = b;
+    rgba[3] = alpha;
     }
 
-  ~ContourStructure()
+  ~ContourMeshStructure()
     {}
 
-  friend std::ostream& operator << ( std::ostream& os, const ContourStructure& c )
+  friend std::ostream& operator << ( std::ostream& os, const ContourMeshStructure& c )
     {
-    os <<"TraceID " <<c.ContourId <<std::endl;
+    os <<"TraceID " <<c.TraceID <<std::endl;
     os <<"Actor " <<c.Actor <<std::endl;
     os <<"Nodes "<<c.Nodes <<std::endl;
-    os <<"CollectionID " <<c.MeshId <<std::endl;
+    os <<"CollectionID " <<c.CollectionID <<std::endl;
     os <<"TCoord " <<c.TCoord <<std::endl;
     os <<"Highlighted " <<c.Highlighted <<std::endl;
-    os <<"RGB [" <<c.rgb[0] <<", " <<c.rgb[1] <<", " <<c.rgb[2] <<"]" <<std::endl;
+    os <<"RGBA [" <<c.rgba[0] <<", " <<c.rgba[1] <<", " <<c.rgba[2]
+       <<", " <<c.rgba[3] <<"]" <<std::endl;
     os <<"Direction " <<c.Direction <<std::endl;
 
     return os;

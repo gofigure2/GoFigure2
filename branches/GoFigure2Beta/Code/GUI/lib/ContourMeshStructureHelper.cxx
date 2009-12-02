@@ -1,23 +1,23 @@
-#include "ContourStructureHelper.h"
+#include "ContourMeshStructureHelper.h"
 
 using boost::multi_index_container;
 using namespace boost::multi_index;
 
-std::list< ContourStructure >
-FindContourGivenContourId(
-  const ContourStructureMultiIndexContainer& iContainer,
+std::list< ContourMeshStructure >
+FindContourGivenTraceID(
+  const ContourMeshStructureMultiIndexContainer& iContainer,
   const unsigned int& iId )
 {
-  std::list< ContourStructure > oList;
+  std::list< ContourMeshStructure > oList;
 
   if( iContainer.size() != 0 )
     {
-    ContourStructureMultiIndexContainer::index< ContourId >::type::iterator
-      it = iContainer.get< ContourId >().find( iId );
+    ContourMeshStructureMultiIndexContainer::index< TraceID >::type::iterator
+      it = iContainer.get< TraceID >().find( iId );
 
-    if( it != iContainer.get< ContourId >().end() )
+    if( it != iContainer.get< TraceID >().end() )
       {
-      while( it->ContourId == iId )
+      while( it->TraceID == iId )
         {
         oList.push_back( *it );
         ++it;
@@ -29,14 +29,14 @@ FindContourGivenContourId(
 }
 
 
-ContourStructure
+ContourMeshStructure
 FindContourGivenActor(
-  const ContourStructureMultiIndexContainer& iContainer,
+  const ContourMeshStructureMultiIndexContainer& iContainer,
   vtkActor* iActor )
 {
   if( iContainer.size() != 0 )
     {
-    ContourStructureMultiIndexContainer::nth_index< 1 >::type::iterator
+    ContourMeshStructureMultiIndexContainer::nth_index< 1 >::type::iterator
       it = iContainer.get< 1 >().find( iActor );
 
     if( it != iContainer.get< 1 >().end() )
@@ -45,22 +45,22 @@ FindContourGivenActor(
       }
     else
       {
-      return ContourStructure();
+      return ContourMeshStructure();
       }
     }
-  return ContourStructure();
+  return ContourMeshStructure();
 }
 
-std::list< ContourStructure >
+std::list< ContourMeshStructure >
 FindContourGivenNodes(
-  const ContourStructureMultiIndexContainer& iContainer,
+  const ContourMeshStructureMultiIndexContainer& iContainer,
   vtkPolyData* iNodes )
 {
-  std::list< ContourStructure > oList;
+  std::list< ContourMeshStructure > oList;
 
   if( !iContainer.empty() )
     {
-    ContourStructureMultiIndexContainer::nth_index< 2 >::type::iterator
+    ContourMeshStructureMultiIndexContainer::nth_index< 2 >::type::iterator
       it = iContainer.get< 2 >().find( iNodes );
 
     if( it != iContainer.get< 2 >().end() )
@@ -78,15 +78,15 @@ FindContourGivenNodes(
   return oList;
 }
 
-std::list< ContourStructure >
+std::list< ContourMeshStructure >
 FindContourGivenTimePoint(
-  const ContourStructureMultiIndexContainer& iContainer,
+  const ContourMeshStructureMultiIndexContainer& iContainer,
   const unsigned int& iTimePoint )
 {
-   ContourStructureMultiIndexContainer::index< TCoord >::type::iterator it0, it1;
+   ContourMeshStructureMultiIndexContainer::index< TCoord >::type::iterator it0, it1;
    boost::tuples::tie(it0,it1) = iContainer.get< TCoord >().equal_range( iTimePoint );
 
-   std::list< ContourStructure > oList;
+   std::list< ContourMeshStructure > oList;
 
     while( it0 != it1 )
       {
