@@ -10,25 +10,25 @@ struct ContourMeshStructure
 {
   typedef vtkActor*     vtkActorPointer;
   typedef vtkPolyData*  vtkPolyDataPointer;
-  unsigned int  TraceId;
+  unsigned int  TraceID;
   vtkActorPointer     Actor;
   vtkPolyDataPointer  Nodes;
-  unsigned int  CollectionId;
+  unsigned int  CollectionID;
   unsigned int  TCoord;
   bool          Highlighted;
   double        rgb[3];
   int           Direction;
 
-  ContourMeshStructure( ) : TraceId( 0 ), Actor( 0 ), Nodes( 0 ), CollectionId( 0 ),
+  ContourMeshStructure( ) : TraceID( 0 ), Actor( 0 ), Nodes( 0 ), CollectionID( 0 ),
     TCoord( 0 ), Highlighted( false ), Direction( 0 )
     {
     }
 
-  ContourMeshStructure( const unsigned int& iTraceId, vtkActorPointer iActor,
-    vtkPolyDataPointer iNodes, const unsigned int& iCollectionId, const unsigned int& iT,
+  ContourMeshStructure( const unsigned int& iTraceID, vtkActorPointer iActor,
+    vtkPolyDataPointer iNodes, const unsigned int& iCollectionID, const unsigned int& iT,
     const bool& iHighlighted, const double& r, const double& g, const double& b,
     const int& iDir )
-    : TraceId( iTraceId ), Actor( iActor ), Nodes( iNodes ), CollectionId( iCollectionId ),
+    : TraceID( iTraceID ), Actor( iActor ), Nodes( iNodes ), CollectionID( iCollectionID ),
       TCoord( iT ), Highlighted( iHighlighted ), Direction( iDir )
     {
     rgb[0] = r;
@@ -41,10 +41,10 @@ struct ContourMeshStructure
 
   friend std::ostream& operator << ( std::ostream& os, const ContourStructure& c )
     {
-    os <<"TraceId " <<c.ContourId <<std::endl;
+    os <<"TraceID " <<c.ContourId <<std::endl;
     os <<"Actor " <<c.Actor <<std::endl;
     os <<"Nodes "<<c.Nodes <<std::endl;
-    os <<"CollectionId " <<c.MeshId <<std::endl;
+    os <<"CollectionID " <<c.MeshId <<std::endl;
     os <<"TCoord " <<c.TCoord <<std::endl;
     os <<"Highlighted " <<c.Highlighted <<std::endl;
     os <<"RGB [" <<c.rgb[0] <<", " <<c.rgb[1] <<", " <<c.rgb[2] <<"]" <<std::endl;
@@ -54,10 +54,10 @@ struct ContourMeshStructure
     }
 };
 
-struct TraceId {};
+struct TraceID {};
 struct Actor {};
 struct Nodes {};
-struct CollectionId {};
+struct CollectionID {};
 struct TCoord {};
 
 #endif
