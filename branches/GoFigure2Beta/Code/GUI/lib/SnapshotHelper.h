@@ -1,13 +1,12 @@
 #ifndef __SnapshotHelper_h
 #define __SnapshotHelper_h
 
-#include "vtkRenderWindow.h"
-#include "vtkImageData.h"
+class QString;
 
-#include "vtkImageWriterHelper.h"
-
-#include "QVTKWidget.h"
-#include "vtkViewImage2D.h"
+class vtkRenderWindow;
+class vtkImageData;
+class QVTKWidget;
+class vtkViewImage2D;
 
 #include "GoFigureGlobalDefinition.h"
 

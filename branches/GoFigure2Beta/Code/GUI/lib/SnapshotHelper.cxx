@@ -4,18 +4,21 @@
 #include "vtkRendererCollection.h"
 #include "vtkImageData.h"
 
-#include <vtkImageClip.h>
-#include <vtkImagePermute.h>
-#include <vtkImageResample.h>
-#include <vtkWindowToImageFilter.h>
+#include "vtkImageClip.h"
+#include "vtkImagePermute.h"
+#include "vtkImageResample.h"
+#include "vtkWindowToImageFilter.h"
 
-#include <vtkBMPWriter.h>
-#include <vtkPostScriptWriter.h>
-#include <vtkJPEGWriter.h>
-#include <vtkPNGWriter.h>
-#include <vtkTIFFWriter.h>
+#include "vtkBMPWriter.h"
+#include "vtkPostScriptWriter.h"
+#include "vtkJPEGWriter.h"
+#include "vtkPNGWriter.h"
+#include "vtkTIFFWriter.h"
 
 #include "QVTKWidget.h"
+
+#include "vtkImageWriterHelper.h"
+#include "vtkViewImage2D.h"
 
 //-------------------------------------------------------------------------
 bool BuildScreenshotFromImage( vtkImageData* image,

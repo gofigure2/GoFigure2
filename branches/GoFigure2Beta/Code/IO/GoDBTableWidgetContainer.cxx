@@ -38,7 +38,9 @@
 
 =========================================================================*/
 #include "GoDBTableWidgetContainer.h"
+
 #include <iostream>
+#include <cstdlib>
 
 GoDBTableWidgetContainer::GoDBTableWidgetContainer(std::string iCollectionName,
   std::string iTracesName)
