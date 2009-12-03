@@ -25,6 +25,8 @@ class TrackTextFileImport
     unsigned int m_ImagingSessionId;
     unsigned int m_NumberOfChannels;
     unsigned int m_NumberOfMeshes;
+    unsigned int m_NumberOfTracks;
+    unsigned int m_LineageID;
     std::string m_MegaCaptureHeaderFile;
     std::string m_Directory;
     std::string m_FileName;
