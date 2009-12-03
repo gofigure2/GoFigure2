@@ -3,6 +3,9 @@
 
 #include <QDockWidget>
 #include "ui_VisualizationDockWidget.h"
+#include "qtcolorcombobox.h"
+#include <QHBoxLayout>
+#include <QVBoxLayout>
 
 class QGoVisualizationDockWidget :
   public QDockWidget,
@@ -27,8 +30,8 @@ class QGoVisualizationDockWidget :
     std::string GetCurrentColor();
     
     void SetCollectionID(std::list<std::string> iListExistingID);
-    void SetDataForColors(
-      std::list<std::pair<std::string,std::vector<int> > > iDataColors);
+
+    QtColorComboBox* ColorComboBox;
 
   public slots:
     void SetXSlice( int iSlice );
@@ -48,6 +51,8 @@ class QGoVisualizationDockWidget :
   protected:
     unsigned int m_Dimension;
     std::list<std::pair<std::string,std::vector<int> > > m_DataColors;
-    void SetColorsCollection();
+    void SetColorComboBox();
+    QHBoxLayout* HLayoutForColor;
+    QVBoxLayout* VLayoutForCollection;
 };
 #endif

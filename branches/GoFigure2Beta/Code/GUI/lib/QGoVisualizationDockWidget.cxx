@@ -1,7 +1,5 @@
 #include "QGoVisualizationDockWidget.h"
-
-#include <QPainter>
-#include <QPixmap>
+#include <QLabel>
 
 QGoVisualizationDockWidget::
 QGoVisualizationDockWidget( QWidget* iParent, const unsigned int& iDim ) :
@@ -9,6 +7,8 @@ QGoVisualizationDockWidget( QWidget* iParent, const unsigned int& iDim ) :
   m_Dimension( iDim )
 {
   this->setupUi( this );
+  SetColorComboBox();
+  //this->verticalLayout_2->addLayout(this->VLayoutForCollection);
 
   if( m_Dimension < 3 )
     {
@@ -180,13 +180,6 @@ int QGoVisualizationDockWidget::GetCurrentCollectionID()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-std::string QGoVisualizationDockWidget::GetCurrentColor()
-{
-  return this->ColorCollectionBox->currentText().toStdString();
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
 void QGoVisualizationDockWidget::SetCollectionID(
   std::list<std::string> iListExistingID)
 {
@@ -202,36 +195,12 @@ void QGoVisualizationDockWidget::SetCollectionID(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoVisualizationDockWidget::SetColorsCollection()
+void QGoVisualizationDockWidget::SetColorComboBox()
 {
-  std::list<std::pair<std::string,std::vector<int> > >::iterator
-    iter = m_DataColors.begin();
-  while(iter != m_DataColors.end())
-    {
-    QPixmap pix(12, 12);
-    QPainter painter(&pix);
-    QColor Color(iter->second[0],iter->second[1],iter->second[2],iter->second[3]);
-    if (Color.isValid())
-      {
-      painter.setPen(Qt::gray);
-      painter.setBrush(QBrush(Color));
-      painter.drawRect(0, 0, 12, 12);
-      }
-    QIcon Icon;
-    Icon.addPixmap(pix);
-    this->ColorCollectionBox->addItem(Icon,iter->first.c_str(),Qt::DisplayRole);
-    //to check: display role??
-    iter++;
-    }
+    ColorComboBox = new QtColorComboBox;
+    QLabel* ColorLbl = new QLabel(tr("Color"));
+    HLayoutForColor = new QHBoxLayout;
+    HLayoutForColor->addWidget(ColorLbl);
+    HLayoutForColor->addWidget(ColorComboBox);
+    this->verticalLayout_2->addLayout(HLayoutForColor);
 }
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void QGoVisualizationDockWidget::SetDataForColors(
-  std::list<std::pair<std::string,std::vector<int> > > iDataColors)
-{
-  m_DataColors = iDataColors;
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------

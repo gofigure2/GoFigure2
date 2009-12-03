@@ -25,6 +25,7 @@ SET( QGoGUILIB_SRC
   SnapshotHelper.cxx
   QTableWidgetNumericalItem.cxx
   QGoCreateMeshDialog.cxx
+  qtcolorcombobox.cxx
 )
 
 SET( QGoGUILIB_HDRS
@@ -51,6 +52,7 @@ SET( QGoGUILIB_HDRS
   QSplitterChild.h
   QTableWidgetChild.h
   QGoCreateMeshDialog.h
+  qtcolorcombobox.h
 )
 
 SET( QGoGUILIB_UI

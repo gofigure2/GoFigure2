@@ -178,6 +178,7 @@ void QGoPrintDatabase::FillTableFromDatabase()
   LoadContoursAndMeshesFromDB(m_DatabaseConnector);
 
   CloseDBConnection();
+  FillDatabaseFinished();
 }
 //--------------------------------------------------------------------------
 
@@ -646,4 +647,33 @@ std::vector<ContourMeshStructure> QGoPrintDatabase::
     iterTracesID ++;
     }
   return oSelectedTraces;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::list<std::pair<std::string,std::vector<int> > > QGoPrintDatabase::
+  GetColorComboBoxInfofromDB()
+{
+  OpenDBConnection();
+
+  std::list<std::pair<std::string,std::vector<int> > > oInfoColors;
+  std::vector<std::string> ResultsQuery  = ListAllValuesForOneColumn(
+    m_DatabaseConnector,"*", "color");
+  unsigned int i = 0;
+  while ( i<ResultsQuery.size())
+    {
+    std::pair<std::string,std::vector<int> > temp;
+    temp.first = ResultsQuery[i+1];
+    std::string Red = ResultsQuery[i+2];
+    temp.second.push_back(atoi(Red.c_str()));
+    temp.second.push_back(atoi(ResultsQuery[i+3].c_str()));
+    temp.second.push_back(atoi(ResultsQuery[i+4].c_str()));
+    temp.second.push_back(atoi(ResultsQuery[i+5].c_str()));
+    oInfoColors.push_back(temp);
+    i = i+7;
+    }
+
+  CloseDBConnection();
+
+  return oInfoColors;
 }

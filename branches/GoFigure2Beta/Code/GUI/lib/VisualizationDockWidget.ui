@@ -6,164 +6,163 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>409</width>
-    <height>521</height>
+    <width>135</width>
+    <height>331</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
   <property name="windowTitle">
    <string>Visualization</string>
   </property>
   <widget class="QWidget" name="dockWidgetContents">
-   <widget class="QWidget" name="layoutWidget">
-    <property name="geometry">
-     <rect>
-      <x>11</x>
-      <y>12</y>
-      <width>130</width>
-      <height>252</height>
-     </rect>
-    </property>
-    <layout class="QVBoxLayout" name="verticalLayout_2">
-     <item>
-      <layout class="QGridLayout" name="gridLayout">
-       <property name="spacing">
-        <number>6</number>
-       </property>
-       <item row="0" column="0">
-        <widget class="QLabel" name="XSliceLbl">
-         <property name="text">
-          <string>XSlice</string>
-         </property>
-         <property name="buddy">
-          <cstring>XSliceSpinBox</cstring>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <widget class="QSpinBox" name="XSliceSpinBox"/>
-       </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="YSliceLbl">
-         <property name="text">
-          <string>YSlice</string>
-         </property>
-         <property name="buddy">
-          <cstring>YSliceSpinBox</cstring>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1">
-        <widget class="QSpinBox" name="YSliceSpinBox"/>
-       </item>
-       <item row="2" column="1">
-        <widget class="QSpinBox" name="ZSliceSpinBox"/>
-       </item>
-       <item row="2" column="0">
-        <widget class="QLabel" name="ZSliceLbl">
-         <property name="text">
-          <string>ZSlice</string>
-         </property>
-         <property name="buddy">
-          <cstring>ZSliceSpinBox</cstring>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="0">
-        <widget class="QLabel" name="TSliceLbl">
-         <property name="text">
-          <string>TSlice</string>
-         </property>
-         <property name="buddy">
-          <cstring>TSliceSpinBox</cstring>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="1">
-        <widget class="QSpinBox" name="TSliceSpinBox"/>
-       </item>
-      </layout>
-     </item>
-     <item>
-      <widget class="Line" name="line">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <layout class="QVBoxLayout" name="verticalLayout">
-       <item>
-        <widget class="QRadioButton" name="AllChannelsBtn">
-         <property name="text">
-          <string>All Channels</string>
-         </property>
-         <property name="checked">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QRadioButton" name="OneChannelBtn">
-         <property name="text">
-          <string>One Channel</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QComboBox" name="ChannelComboBox">
-         <property name="enabled">
-          <bool>false</bool>
-         </property>
-         <property name="currentIndex">
-          <number>-1</number>
-         </property>
-         <property name="frame">
-          <bool>true</bool>
-         </property>
-         <property name="modelColumn">
-          <number>0</number>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item>
-      <widget class="Line" name="line_2">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <layout class="QHBoxLayout" name="horizontalLayout">
-       <item>
-        <widget class="QLabel" name="CollectionIDLbl">
-         <property name="text">
-          <string>MeshID</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QComboBox" name="CollectionIDBox"/>
-       </item>
-      </layout>
-     </item>
-     <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_2">
-       <item>
-        <widget class="QLabel" name="ColorCollectionLbl">
-         <property name="text">
-          <string>Color</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QComboBox" name="ColorCollectionBox"/>
-       </item>
-      </layout>
-     </item>
-    </layout>
-   </widget>
+   <layout class="QGridLayout" name="gridLayout_2">
+    <item row="0" column="0">
+     <layout class="QVBoxLayout" name="verticalLayout_3">
+      <item>
+       <layout class="QGridLayout" name="gridLayout" rowminimumheight="10,10,10,10">
+        <property name="sizeConstraint">
+         <enum>QLayout::SetMinimumSize</enum>
+        </property>
+        <property name="spacing">
+         <number>6</number>
+        </property>
+        <item row="0" column="0">
+         <widget class="QLabel" name="XSliceLbl">
+          <property name="minimumSize">
+           <size>
+            <width>54</width>
+            <height>20</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>XSlice</string>
+          </property>
+          <property name="buddy">
+           <cstring>XSliceSpinBox</cstring>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QSpinBox" name="XSliceSpinBox"/>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="YSliceLbl">
+          <property name="text">
+           <string>YSlice</string>
+          </property>
+          <property name="buddy">
+           <cstring>YSliceSpinBox</cstring>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QSpinBox" name="YSliceSpinBox"/>
+        </item>
+        <item row="2" column="1">
+         <widget class="QSpinBox" name="ZSliceSpinBox"/>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="ZSliceLbl">
+          <property name="text">
+           <string>ZSlice</string>
+          </property>
+          <property name="buddy">
+           <cstring>ZSliceSpinBox</cstring>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="0">
+         <widget class="QLabel" name="TSliceLbl">
+          <property name="text">
+           <string>TSlice</string>
+          </property>
+          <property name="buddy">
+           <cstring>TSliceSpinBox</cstring>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <widget class="QSpinBox" name="TSliceSpinBox"/>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QVBoxLayout" name="verticalLayout">
+        <item>
+         <widget class="Line" name="line">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QRadioButton" name="AllChannelsBtn">
+          <property name="text">
+           <string>All Channels</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QRadioButton" name="OneChannelBtn">
+          <property name="text">
+           <string>One Channel</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QComboBox" name="ChannelComboBox">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="currentIndex">
+           <number>-1</number>
+          </property>
+          <property name="frame">
+           <bool>true</bool>
+          </property>
+          <property name="modelColumn">
+           <number>0</number>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QVBoxLayout" name="verticalLayout_2">
+        <item>
+         <widget class="Line" name="line_2">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <item>
+           <widget class="QLabel" name="CollectionIDLbl">
+            <property name="text">
+             <string>MeshID</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="CollectionIDBox"/>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </item>
+   </layout>
   </widget>
  </widget>
  <tabstops>

@@ -95,6 +95,10 @@ public:
   containing the given ZCoord*/
   std::vector<ContourMeshStructure> GetMeshesForAGivenZCoord (
     unsigned int iZCoordPoint);
+
+  /** \brief return a list containing the exisiting colornames with their corresponding rgba
+  from the database*/
+  std::list<std::pair<std::string,std::vector<int> > > GetColorComboBoxInfofromDB();
   
   QTableWidgetChild* ContourTable;
   QTableWidgetChild* MeshTable;
@@ -116,6 +120,7 @@ signals:
   void TableContentChanged();
   void SelectionContoursToHighLightChanged();
   void SelectionMeshesToHighLightChanged();
+  void FillDatabaseFinished();
 
 protected:
   GoDBCollectionOfTraces* m_CollectionOfContours;
