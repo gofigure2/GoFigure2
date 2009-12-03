@@ -20,12 +20,12 @@ ADD_TEST( imageview2dTest
 
 ADD_TEST( imageview3dTest
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/imageview3d
-  ${TESTING_DATA_PATH}/Circle3d.mhd
+  ${TESTING_DATA_PATH}/Circle3D.mhd
   1
 )
 
 ADD_TEST( imageviewcollectionTest
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/imageviewcollection
-  ${TESTING_DATA_PATH}/Circle3d.mhd
+  ${TESTING_DATA_PATH}/Circle3D.mhd
   1
 )

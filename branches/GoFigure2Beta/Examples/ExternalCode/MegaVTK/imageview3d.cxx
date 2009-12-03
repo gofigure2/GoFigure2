@@ -67,11 +67,11 @@ int main( int argc, char** argv )
   iren->Delete();
   iren3d->Delete();
 
-  view3d->Delete();
   view3->Delete();
   view2->Delete();
   view->Delete();
 
+  view3d->Delete();
   reader->Delete();
 
   return EXIT_SUCCESS;
