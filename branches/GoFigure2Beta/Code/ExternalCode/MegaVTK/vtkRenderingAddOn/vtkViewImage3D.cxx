@@ -67,6 +67,8 @@
 
 #include "vtkViewImage3D.h"
 
+#include "vtkSmartPointer.h"
+
 #include "vtkImageAppendComponents.h"
 #include "vtkImageExtractComponents.h"
 #include "vtkCamera.h"
@@ -440,12 +442,14 @@ void vtkViewImage3D::SetVolumeRenderingOn()
     int NbOfComp = image->GetNumberOfScalarComponents();
     if( NbOfComp > 1 && NbOfComp != 4 && NbOfComp < 5 )
       {
-      vtkImageExtractComponents* extComp = vtkImageExtractComponents::New();
+      vtkSmartPointer< vtkImageExtractComponents > extComp =
+        vtkSmartPointer< vtkImageExtractComponents >::New();
       extComp->SetInput( image );
       extComp->SetComponents( 0 );
       extComp->Update();
 
-      vtkImageAppendComponents*  addComp = vtkImageAppendComponents::New();
+      vtkSmartPointer< vtkImageAppendComponents > addComp =
+        vtkSmartPointer< vtkImageAppendComponents >::New();
       addComp->AddInput( image );
       addComp->AddInput( extComp->GetOutput() );
       addComp->Update();
@@ -456,7 +460,8 @@ void vtkViewImage3D::SetVolumeRenderingOn()
         }
       else
         {
-        vtkImageData* temp = vtkImageData::New();
+        vtkSmartPointer< vtkImageData > temp =
+          vtkSmartPointer< vtkImageData >::New();
         temp->ShallowCopy( addComp->GetOutput() );
         addComp->SetInput( 0, temp );
         addComp->Update();
@@ -555,10 +560,11 @@ void vtkViewImage3D::Add2DPhantom(const unsigned int& i,
     //     this->GetRenderer()->AddActor (input);
 
     if( in_bounds )
-    {
+      {
       ren->RemoveActor( this->BoundsActor[i] );
 
-      vtkPolyDataMapper* bounds_mapper = vtkPolyDataMapper::New();
+      vtkSmartPointer< vtkPolyDataMapper > bounds_mapper =
+        vtkSmartPointer< vtkPolyDataMapper >::New();
       bounds_mapper->SetInput( in_bounds );
 
       this->BoundsActor[i]->SetMapper( bounds_mapper );
@@ -566,10 +572,9 @@ void vtkViewImage3D::Add2DPhantom(const unsigned int& i,
       this->BoundsActor[i]->GetProperty()->SetLineWidth( 2. );
 
       ren->AddActor( this->BoundsActor[i] );
-      bounds_mapper->Delete();
-    }
+      }
 
-  }
+    }
 
 }
 
@@ -580,27 +585,25 @@ void vtkViewImage3D::Add2DPhantom(const unsigned int& i,
 void vtkViewImage3D::InstallPipeline()
 {
   if (this->RenderWindow && this->Renderer)
-  {
+    {
     this->RenderWindow->AddRenderer(this->Renderer);
-  }
+    }
 
   if (this->Interactor)
-  {
-
+    {
     // init the interactor style:
-    vtkInteractorStyleSwitch* interactorStyle = vtkInteractorStyleSwitch::New();
+    vtkSmartPointer< vtkInteractorStyleSwitch > interactorStyle =
+      vtkSmartPointer< vtkInteractorStyleSwitch >::New();
     interactorStyle->SetCurrentStyleToTrackballCamera();
     this->Interactor->SetInteractorStyle (interactorStyle);
     this->BoxWidget->SetInteractor ( this->Interactor );
     //this->PlaneWidget->SetInteractor ( this->Interactor );
     this->Marker->SetInteractor ( this->Interactor );
-    interactorStyle->Delete();
     this->Interactor->SetRenderWindow(this->RenderWindow);
 
     this->Marker->On();
     this->Marker->InteractiveOff ();
-
-  }
+    }
 
 }
 
@@ -629,12 +632,14 @@ vtkActor* vtkViewImage3D::AddDataSet( vtkDataSet* dataset,
     return 0;
     }
 
-  vtkPolyDataMapper* mapper = vtkPolyDataMapper::New();
+  vtkSmartPointer< vtkPolyDataMapper > mapper =
+    vtkSmartPointer< vtkPolyDataMapper >::New();
   mapper->SetScalarVisibility( iDataVisibility );
 
   vtkActor* actor = vtkActor::New();
 
-  vtkClipPolyData* cutter = vtkClipPolyData::New();
+  vtkSmartPointer< vtkClipPolyData > cutter =
+    vtkSmartPointer< vtkClipPolyData >::New();
 
   if( intersection )
     {
@@ -661,8 +666,6 @@ vtkActor* vtkViewImage3D::AddDataSet( vtkDataSet* dataset,
   this->DataSetCollection->AddItem( dataset );
   this->Prop3DCollection->AddItem( actor );
 
-  cutter->Delete();
-  mapper->Delete();
 //   actor->Delete();
   return actor;
 }
@@ -691,7 +694,9 @@ void vtkViewImage3D::SetupTextureMapper()
 {
 
   if (!this->GetInput())
+    {
     return;
+    }
 
   vtkVolumeTextureMapper3D* mapper3D =
     vtkVolumeTextureMapper3D::SafeDownCast( this->VolumeActor->GetMapper() );
@@ -717,7 +722,8 @@ void vtkViewImage3D::SetupTextureMapper()
         double shift = 0 - range[0];
         double scale = 65535.0/(range[1] - range[0]);
 
-        vtkImageShiftScale* scaler = vtkImageShiftScale::New();
+        vtkSmartPointer< vtkImageShiftScale > scaler =
+          vtkSmartPointer< vtkImageShiftScale >::New();
         scaler->SetInput (this->GetInput());
         scaler->SetShift (shift);
         scaler->SetScale (scale);

@@ -67,6 +67,8 @@
 
 #include "vtkViewImage2D.h"
 
+#include "vtkSmartPointer.h"
+
 #include "vtkCamera.h"
 #include "vtkCommand.h"
 #include "vtkImageActor.h"
@@ -246,7 +248,7 @@ void vtkViewImage2D::SetOrientationMatrix( vtkMatrix4x4* matrix)
 //----------------------------------------------------------------------------
 void vtkViewImage2D::InitializeSlicePlane(void)
 {
-  vtkPoints* points = vtkPoints::New();
+  vtkSmartPointer< vtkPoints > points = vtkSmartPointer< vtkPoints >::New();
   this->SlicePlane->SetPoints( points);
   points->InsertNextPoint( 0, 0, 0 );
   points->InsertNextPoint( 1, 0, 0 );
@@ -259,9 +261,9 @@ void vtkViewImage2D::InitializeSlicePlane(void)
   this->SlicePlane->InsertNextCell( VTK_QUAD, 4, pts);
   pts[0] = 0; pts[1] = 2; pts[2] = 3; pts[3] = 1;
   this->SlicePlane->InsertNextCell( VTK_QUAD, 4, pts);
-  points->Delete();
 
-  vtkUnsignedCharArray* array = vtkUnsignedCharArray::New();
+  vtkSmartPointer< vtkUnsignedCharArray > array =
+    vtkSmartPointer< vtkUnsignedCharArray >::New();
   array->SetName( "Colors" );
   array->SetNumberOfComponents( 3 );
   unsigned char vals[3];
@@ -272,7 +274,6 @@ void vtkViewImage2D::InitializeSlicePlane(void)
   array->InsertNextTupleValue( vals );
 
   this->SlicePlane->GetPointData()->SetScalars( array );
-  array->Delete();
 }
 
 //----------------------------------------------------------------------------
@@ -568,8 +569,8 @@ void vtkViewImage2D::SetSlice( int slice )
 //----------------------------------------------------------------------------
 void vtkViewImage2D::UpdateSlicePlane( void )
 {
-  vtkPoints* oldpoints = vtkPoints::New();
-  vtkPoints* points = vtkPoints::New();
+  vtkSmartPointer< vtkPoints > oldpoints = vtkSmartPointer< vtkPoints >::New();
+  vtkSmartPointer< vtkPoints > points = vtkSmartPointer< vtkPoints >::New();
   double x[3];
   double* bounds = this->ImageActor->GetDisplayBounds( );
   unsigned int added1;
@@ -588,8 +589,6 @@ void vtkViewImage2D::UpdateSlicePlane( void )
     }
   this->OrientationTransform->TransformPoints( oldpoints, points);
   this->SlicePlane->SetPoints( points);
-  oldpoints->Delete();
-  points->Delete();
 }
 
 //----------------------------------------------------------------------------
@@ -854,13 +853,14 @@ vtkActor* vtkViewImage2D::AddDataSet( vtkPolyData* dataset,
     return 0;
     }
 
-  vtkPolyDataMapper* mapper = vtkPolyDataMapper::New();
+  vtkSmartPointer< vtkPolyDataMapper > mapper =
+    vtkSmartPointer< vtkPolyDataMapper >::New();
   mapper->SetScalarVisibility( iDataVisibility );
 
   vtkActor* actor = vtkActor::New();
 
   //vtkCutter* cutter = vtkCutter::New();
-  vtkClipPolyData* cutter = vtkClipPolyData::New();
+  vtkSmartPointer< vtkClipPolyData > cutter = vtkSmartPointer< vtkClipPolyData >::New();
 
   if( intersection )
     {
@@ -891,9 +891,6 @@ vtkActor* vtkViewImage2D::AddDataSet( vtkPolyData* dataset,
   this->Prop3DCollection->AddItem( actor );
 
 //   actor->Delete();
-  mapper->Delete();
-  cutter->Delete();
-
   return actor;
 }
 //----------------------------------------------------------------------------
@@ -911,12 +908,13 @@ vtkActor* vtkViewImage2D::AddDataSet( vtkDataSet* dataset,
     return 0;
     }
 
-  vtkPolyDataMapper* mapper = vtkPolyDataMapper::New();
+  vtkSmartPointer< vtkPolyDataMapper > mapper =
+    vtkSmartPointer< vtkPolyDataMapper >::New();
   mapper->SetScalarVisibility( iDataVisibility );
 
   vtkActor* actor = vtkActor::New();
 
-  vtkCutter* cutter = vtkCutter::New();
+  vtkSmartPointer< vtkCutter > cutter = vtkSmartPointer< vtkCutter >::New();
 
   if( intersection )
     {
@@ -943,8 +941,6 @@ vtkActor* vtkViewImage2D::AddDataSet( vtkDataSet* dataset,
   this->DataSetCollection->AddItem( dataset );
   this->Prop3DCollection->AddItem( actor );
 
-  cutter->Delete();
-  mapper->Delete();
 //   actor->Delete();
   return actor;
 }

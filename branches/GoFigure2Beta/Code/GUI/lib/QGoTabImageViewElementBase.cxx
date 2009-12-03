@@ -57,14 +57,17 @@ QGoTabImageViewElementBase::~QGoTabImageViewElementBase()
     m_ContourWidget[i]->Delete();
     }
 
-  ContourMeshStructureMultiIndexContainer::iterator it = m_ContourMeshContainer.begin();
-  ContourMeshStructureMultiIndexContainer::iterator end = m_ContourMeshContainer.end();
-
-  while( it != end )
+  if( m_ContourMeshContainer.size() > 0 )
     {
-    it->Nodes->Delete();
-    it->Actor->Delete();
-    ++it;
+    ContourMeshStructureMultiIndexContainer::iterator it = m_ContourMeshContainer.begin();
+    ContourMeshStructureMultiIndexContainer::iterator end = m_ContourMeshContainer.end();
+
+    while( it != end )
+      {
+      it->Nodes->Delete();
+      it->Actor->Delete();
+      ++it;
+      }
     }
 }
 //--------------------------------------------------------------------------

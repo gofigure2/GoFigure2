@@ -67,6 +67,7 @@
 
 #include "vtkViewImage2DCollection.h"
 
+#include "vtkSmartPointer.h"
 #include "vtkCamera.h"
 #include "vtkCommand.h"
 #include "vtkImageActor.h"
@@ -225,7 +226,8 @@ void vtkViewImage2DCollection::RemoveItem(int i)
 //----------------------------------------------------------------------------
 void vtkViewImage2DCollection::Initialize()
 {
-  vtkProperty* plane_property = vtkProperty::New();
+  vtkSmartPointer< vtkProperty > plane_property =
+    vtkSmartPointer< vtkProperty >::New();
   plane_property->SetRepresentationToWireframe();
 
   for (int i=0; i<this->GetNumberOfItems(); i++)
@@ -238,7 +240,6 @@ void vtkViewImage2DCollection::Initialize()
       temp->Delete();
     }
   }
-  plane_property->Delete();
 }
 
 //----------------------------------------------------------------------------

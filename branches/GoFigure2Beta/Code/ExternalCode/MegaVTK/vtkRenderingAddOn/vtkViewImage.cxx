@@ -68,6 +68,7 @@
 #include "vtkViewImage.h"
 #include "vtkInformation.h"
 
+#include "vtkSmartPointer.h"
 
 #include "vtkCamera.h"
 #include "vtkCommand.h"
@@ -404,7 +405,7 @@ int* vtkViewImage::GetImageCoordinatesFromWorldCoordinates(double position[3])
     1};
 
   // apply inverted orientation matrix to the world-coordinate position
-  vtkMatrix4x4* inverse = vtkMatrix4x4::New();
+  vtkSmartPointer< vtkMatrix4x4 > inverse = vtkSmartPointer< vtkMatrix4x4 >::New();
   vtkMatrix4x4::Invert (this->GetOrientationMatrix(), inverse);
   inverse->MultiplyPoint (unorientedposition, unorientedposition);
 
@@ -420,8 +421,6 @@ int* vtkViewImage::GetImageCoordinatesFromWorldCoordinates(double position[3])
       indices[i] = 0;
       }
     }
-  inverse->Delete();
-
   return indices;
 }
 
