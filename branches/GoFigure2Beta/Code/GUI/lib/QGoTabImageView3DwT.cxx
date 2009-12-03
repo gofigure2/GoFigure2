@@ -1212,7 +1212,7 @@ void
 QGoTabImageView3DwT::
 RemoveAllContoursForPresentTimePoint( )
 {
-  if( ( m_TimePoint >= 0 ) && ( m_ContourMeshContainer.size() > 0 ) )
+  /*if( ( m_TimePoint >= 0 ) && ( m_ContourMeshContainer.size() > 0 ) )
     {
     std::list< ContourMeshStructure >
       c_list = FindContourGivenTimePoint( m_ContourMeshContainer,
@@ -1231,7 +1231,7 @@ RemoveAllContoursForPresentTimePoint( )
       RemoveActorFromViewer( c_dir, c_actor );
       ++it;
       }
-    }
+    }*/
 }
 //-------------------------------------------------------------------------
 
@@ -1244,7 +1244,7 @@ void
 QGoTabImageView3DwT::
 LoadAllContoursForGivenTimePoint( const unsigned int& iT )
 {
-  if( m_ContourMeshContainer.size() > 0 )
+  /*if( m_ContourMeshContainer.size() > 0 )
     {
     std::list< ContourMeshStructure >
       c_list = FindContourGivenTimePoint( m_ContourMeshContainer,
@@ -1263,7 +1263,7 @@ LoadAllContoursForGivenTimePoint( const unsigned int& iT )
       DisplayActorInViewer( c_dir, c_actor );
       ++it;
       }
-    }
+    }*/
 }
 //-------------------------------------------------------------------------
 

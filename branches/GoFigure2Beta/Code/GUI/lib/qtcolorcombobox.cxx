@@ -48,6 +48,7 @@
 #include <QtGui/QPainter>
 #include <QtGui/QToolTip>
 #include <QtGui/QFontMetrics>
+#include <QInputDialog>
 #include "qtcolorcombobox.h"
 
 /*! \class QtColorComboBox
@@ -230,8 +231,14 @@ void QtColorComboBox::emitActivatedColor(int index)
 	if (col.isValid()) {
 	    // Unless the user pressed cancel, insert the new color at
 	    // the end of the list.
-	    addColor(col, tr("User color %1").arg(++numUserColors));
+    bool ok = false;
+    QString ColorName = QInputDialog::getText(this, tr("New Color Name:"),
+      tr("Please enter the name for your new color:"),QLineEdit::Normal,"",&ok);
+    if (ok && !ColorName.isEmpty())
+      {
+	    addColor(col, ColorName);
 	    setCurrentIndex(index);
+      }
 	} else {
 	    // The user pressed cancel - reset the current color to
 	    // what it was before the color dialog was shown.
