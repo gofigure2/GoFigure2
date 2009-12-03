@@ -99,6 +99,8 @@ public:
   /** \brief return a list containing the exisiting colornames with their corresponding rgba
   from the database*/
   std::list<std::pair<std::string,std::vector<int> > > GetColorComboBoxInfofromDB();
+
+  void SaveNewColorInDB(std::vector<std::string> iDataNewColor);
   
   QTableWidgetChild* ContourTable;
   QTableWidgetChild* MeshTable;

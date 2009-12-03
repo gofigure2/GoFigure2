@@ -131,10 +131,6 @@ void QGoTabImageView3DwT::CreateManualSegmentationdockWidget()
 
   this->m_SegmentationActions.push_back(
     m_ManualSegmentationDockWidget->toggleViewAction() );
-
-  QObject::connect( this->m_DataBaseTables,
-    SIGNAL( FillDatabaseFinished() ),
-    this, SLOT( PassInfoForColorComboBox() ) );
 }
 //-------------------------------------------------------------------------
 
@@ -175,6 +171,14 @@ void QGoTabImageView3DwT::CreateVisuDockWidget()
 
   QObject::connect( m_VisuDockWidget, SIGNAL( ShowOneChannelChanged( int ) ),
     this, SLOT( ShowOneChannel( int ) ) );
+
+  QObject::connect( this->m_DataBaseTables,
+    SIGNAL( FillDatabaseFinished() ),
+    this, SLOT( PassInfoForColorComboBoxFromDB() ) );
+
+  QObject::connect( this->m_VisuDockWidget->ColorComboBox,
+    SIGNAL( NewColorToBeSaved()),
+    this, SLOT( PassInfoForDBFromColorComboBox()() ) );
 }
 //-------------------------------------------------------------------------
 
@@ -1277,8 +1281,15 @@ AddPolyData( vtkPolyData* iMesh )
 }
 //-------------------------------------------------------------------------
 //-------------------------------------------------------------------------
-void QGoTabImageView3DwT::PassInfoForColorComboBox()
+void QGoTabImageView3DwT::PassInfoForColorComboBoxFromDB()
 {
   this->m_VisuDockWidget->ColorComboBox->SetDataForColors(
     this->m_DataBaseTables->GetColorComboBoxInfofromDB());
+}
+//-------------------------------------------------------------------------
+//-------------------------------------------------------------------------
+void QGoTabImageView3DwT::PassInfoForDBFromColorComboBox()
+{
+  this->m_DataBaseTables->SaveNewColorInDB(
+    this->m_VisuDockWidget->ColorComboBox->GetDataForNewColorToBeSaved());
 }

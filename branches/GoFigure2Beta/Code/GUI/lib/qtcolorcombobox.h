@@ -90,9 +90,12 @@ public:
     void SetDataForColors(
       std::list<std::pair<std::string,std::vector<int> > > iDataColors);
 
+    std::vector<std::string> GetDataForNewColorToBeSaved();
+
 Q_SIGNALS:
     void activated(const QColor &color);
     void highlighted(const QColor &color);
+    void NewColorToBeSaved();
 
 private Q_SLOTS:
     void emitActivatedColor(int index);
@@ -105,6 +108,9 @@ private:
     bool colorDialogEnabled;
     void SetColorNamesAndRgb ();
     void setExistingColors();
+    void StoreDataForNewColorToBeSaved(
+      QColor Color,std::string NameColor);
+    std::vector<std::string> m_NewColorData;
 };
 
 #endif

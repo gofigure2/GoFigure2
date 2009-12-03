@@ -159,7 +159,8 @@ public slots:
   void ActivateManualSegmentationEditor( const bool& iActivate );
   void ValidateContour();
   void ChangeContourRepresentationProperty();
-  void PassInfoForColorComboBox();
+  void PassInfoForColorComboBoxFromDB();
+  void PassInfoForDBFromColorComboBox();
 
 protected:
   QHBoxLayout*          m_LayOut;

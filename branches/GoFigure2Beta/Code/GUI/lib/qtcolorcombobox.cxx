@@ -50,6 +50,7 @@
 #include <QtGui/QFontMetrics>
 #include <QInputDialog>
 #include "qtcolorcombobox.h"
+#include "ConvertToStringHelper.h"
 
 /*! \class QtColorComboBox
 
@@ -238,6 +239,7 @@ void QtColorComboBox::emitActivatedColor(int index)
       {
 	    addColor(col, ColorName);
 	    setCurrentIndex(index);
+      this->StoreDataForNewColorToBeSaved(col,ColorName.toStdString());
       }
 	} else {
 	    // The user pressed cancel - reset the current color to
@@ -353,4 +355,25 @@ void QtColorComboBox::setExistingColors()
     this->show();
     }
   this->setColorDialogEnabled(true);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QtColorComboBox::StoreDataForNewColorToBeSaved(
+  QColor Color, std::string NameColor)
+{
+  m_NewColorData.push_back(NameColor);
+  m_NewColorData.push_back(ConvertToString<int>(Color.red()));
+  m_NewColorData.push_back(ConvertToString<int>(Color.green()));
+  m_NewColorData.push_back(ConvertToString<int>(Color.blue()));
+  m_NewColorData.push_back(ConvertToString<int>(Color.alpha()));
+  
+  NewColorToBeSaved();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::vector<std::string> QtColorComboBox::GetDataForNewColorToBeSaved()
+{
+  return m_NewColorData;
 }

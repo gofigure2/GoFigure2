@@ -69,10 +69,24 @@ std::vector<std::string> ListAllValuesForOneColumn(vtkMySQLDatabase* DatabaseCon
     query->Delete();
     return result;
     }
-  while( query->NextRow() )
+  if (ColumnName != "*")
     {
-    result.push_back( query->DataValue( 0 ).ToString() );
+    while( query->NextRow() )
+      {
+      result.push_back( query->DataValue( 0 ).ToString() );
+      }
     }
+  else
+    {
+    while(query->NextRow())
+      {
+      for( int i = 0; i < query->GetNumberOfFields(); i++)
+        {
+        result.push_back( query->DataValue( i ).ToString() );
+        }
+      }
+    }
+
   query->Delete();
 
   return result;

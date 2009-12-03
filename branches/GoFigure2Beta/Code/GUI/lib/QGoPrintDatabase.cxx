@@ -58,6 +58,7 @@
 #include "GoDBTrackRow.h"
 #include "GoDBLineageRow.h"
 #include "GoDBCoordinateRow.h"
+#include "GoDBColorRow.h"
 #include "QueryDataBaseHelper.h"
 #include "ConvertToStringHelper.h"
 #include "GoDBTraceInfoForTableWidget.h"
@@ -676,4 +677,27 @@ std::list<std::pair<std::string,std::vector<int> > > QGoPrintDatabase::
   CloseDBConnection();
 
   return oInfoColors;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoPrintDatabase::SaveNewColorInDB(std::vector<std::string> iDataNewColor)
+{
+  this->OpenDBConnection();
+  GoDBColorRow NewColor;
+  if (iDataNewColor.size() != 5)
+    {
+    std::cout<<"Pb: the number of data for the new color is not 5";
+    std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
+    std::cout << std::endl;
+    }
+  else
+    {
+    NewColor.SetField("Name",iDataNewColor[0]);
+    NewColor.SetField("Red",iDataNewColor[1]);
+    NewColor.SetField("Green",iDataNewColor[2]);
+    NewColor.SetField("Blue",iDataNewColor[3]);
+    NewColor.SetField("Alpha",iDataNewColor[4]);
+    AddOnlyOneNewObjectInTable<GoDBColorRow>(m_DatabaseConnector,"color",NewColor);
+    }
 }
