@@ -178,7 +178,7 @@ void QGoTabImageView3DwT::CreateVisuDockWidget()
 
   QObject::connect( this->m_VisuDockWidget->ColorComboBox,
     SIGNAL( NewColorToBeSaved()),
-    this, SLOT( PassInfoForDBFromColorComboBox()() ) );
+    this, SLOT( PassInfoForDBFromColorComboBox() ) );
 }
 //-------------------------------------------------------------------------
 

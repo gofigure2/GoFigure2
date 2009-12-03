@@ -362,6 +362,7 @@ void QtColorComboBox::setExistingColors()
 void QtColorComboBox::StoreDataForNewColorToBeSaved(
   QColor Color, std::string NameColor)
 {
+  m_NewColorData.clear();
   m_NewColorData.push_back(NameColor);
   m_NewColorData.push_back(ConvertToString<int>(Color.red()));
   m_NewColorData.push_back(ConvertToString<int>(Color.green()));
