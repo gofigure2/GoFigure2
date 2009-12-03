@@ -315,6 +315,13 @@ void QGoTabImageView3DwT::CreateAllViewActions()
   this->m_ViewActions.push_back( separator3 );
 
   this->m_ViewActions.push_back( m_DataBaseTables->toggleViewAction() );
+
+  QAction* LoadContoursPerTimePointAction =
+    new QAction( tr( "Load All Contours For Current Time Point" ), this );
+  this->m_ViewActions.push_back( LoadContoursPerTimePointAction );
+
+  QObject::connect( LoadContoursPerTimePointAction, SIGNAL( triggered() ),
+    this, SLOT( LoadAllContoursForCurrentTimePoint() ) );
 }
 //-------------------------------------------------------------------------
 
@@ -376,6 +383,10 @@ GoFigure::TabDimensionType QGoTabImageView3DwT::GetTabDimensionType( ) const
   return GoFigure::THREE_D_WITH_T;
 }
 //-------------------------------------------------------------------------
+
+//#########################################################################
+//#########################################################################
+// Set Inputs
 
 //-------------------------------------------------------------------------
 /**
@@ -507,6 +518,10 @@ SetMegaCaptureFile(
     }
 }
 //-------------------------------------------------------------------------
+
+
+//#########################################################################
+//#########################################################################
 
 //-------------------------------------------------------------------------
 void
@@ -680,7 +695,7 @@ void QGoTabImageView3DwT::Update()
   m_ImageView->SetImage( m_Image );
   m_ImageView->Update();
 
-  for( int i = 0; i < 3; i++ )
+  for( unsigned int i = 0; i < this->m_ContourWidget.size(); i++ )
     {
     vtkSmartPointer< vtkImageActorPointPlacer > point_placer =
       vtkSmartPointer< vtkImageActorPointPlacer >::New();
@@ -958,7 +973,7 @@ void QGoTabImageView3DwT::ShowAllChannels( bool iChecked )
     // This is really stupid!!!
     if( m_InternalImages.size() < 3 )
       {
-      for( int i = m_InternalImages.size(); i < 3; i++ )
+      for( unsigned int i = m_InternalImages.size(); i < 3; i++ )
         {
         append_filter->AddInput( m_InternalImages[0] );
         }
@@ -1002,24 +1017,15 @@ ShowOneChannel( int iChannel )
  * \param iId
  */
 void QGoTabImageView3DwT::
-ValidateContour( const int& iId )
+ValidateContour( const int& iId,
+  const double& iR, const double& iG, const double& iB, const double& iA,
+  const bool& iHighlighted )
 {
   vtkPolyData* contour =
     m_ContourRepresentation[iId]->GetContourRepresentationAsPolyData();
 
   if( ( contour->GetNumberOfPoints() > 2 ) && ( m_TimePoint >= 0 ) )
     {
-    // get color from the dock widget
-    double r, g ,b;
-    QColor color = m_ManualSegmentationDockWidget->GetValidatedColor();
-    color.getRgbF( &r, &g, &b );
-
-    double alpha = 1.;
-
-    vtkProperty* contour_property = vtkProperty::New();
-    contour_property->SetRepresentationToWireframe();
-    contour_property->SetColor( r, g, b );
-
     // Compute Bounding Box
     double bounds[6];
     contour->GetBounds( bounds );
@@ -1039,6 +1045,9 @@ ValidateContour( const int& iId )
 
     vtkPolyData* contour_nodes = vtkPolyData::New();
     m_ContourRepresentation[iId]->GetNodePolyData( contour_nodes );
+
+    vtkProperty* contour_property = vtkProperty::New();
+    contour_property->SetColor( iR, iG, iB );
 
     // get corresponding actor from visualization
     vtkPolyData* contour_copy = vtkPolyData::New();
@@ -1062,13 +1071,12 @@ ValidateContour( const int& iId )
     unsigned int meshid = m_ManualSegmentationDockWidget->GetMeshId();
 
     unsigned int timepoint = static_cast< unsigned int >( m_TimePoint );
-    bool highlighted = false;
 
     // fill the container
     for( i = 0; i < contour_actor.size(); i++ )
       {
       ContourMeshStructure temp( m_ContourId, contour_actor[i], contour_nodes,
-         meshid, timepoint, highlighted, r, g, b, alpha, i );
+         meshid, timepoint, iHighlighted, iR, iG, iB, iA, i );
       m_ContourMeshContainer.insert( temp );
       }
 
@@ -1084,9 +1092,16 @@ ValidateContour( const int& iId )
 void QGoTabImageView3DwT::
 ValidateContour( )
 {
+  // get color from the dock widget
+  double r, g, b, a( 1. );
+  QColor color = m_ManualSegmentationDockWidget->GetValidatedColor();
+  color.getRgbF( &r, &g, &b );
+
+  bool highlighted( false );
+
   for( unsigned int i = 0; i < m_ContourWidget.size(); i++ )
     {
-    ValidateContour( i );
+    ValidateContour( i, highlighted, r, g, b, a );
     }
 }
 //-------------------------------------------------------------------------
@@ -1246,23 +1261,40 @@ RemoveAllContoursForPresentTimePoint( )
  */
 void
 QGoTabImageView3DwT::
+// LoadAllContoursForCurrentTimePoint()
+// {
+//   if( m_TimePoint >= 0 )
+//     {
+//     std::vector<ContourMeshStructure> c_list =
+//       GetContoursForAGivenTimepoint( static_cast< unsigned int >( m_TimePoint ) );
+//
+//     std::vector<ContourMeshStructure>::iterator c_it = c_list.begin();
+//
+//     while( c_it != c_list.end() )
+//       {
+//       AddContourFromNodes( c_it->Nodes, c_it->rgba );
+//       }
+//     }
+// }
+//-------------------------------------------------------------------------
+
 LoadAllContoursForGivenTimePoint( const unsigned int& iT )
 {
   /*if( m_ContourMeshContainer.size() > 0 )
     {
-    std::list< ContourMeshStructure >
+    std::list< ContourMeshStructure* >
       c_list = FindContourGivenTimePoint( m_ContourMeshContainer,
         static_cast< unsigned int >( iT ) );
 
     int c_dir;
     vtkActor* c_actor;
 
-    std::list< ContourMeshStructure >::iterator it = c_list.begin();
+    std::list< ContourMeshStructure* >::iterator it = c_list.begin();
 
     while( it != c_list.end() )
       {
-      c_dir = (*it).Direction;
-      c_actor = (*it).Actor;
+      c_dir = (*it)->Direction;
+      c_actor = (*it)->Actor;
 
       DisplayActorInViewer( c_dir, c_actor );
       ++it;
@@ -1280,13 +1312,60 @@ AddPolyData( vtkPolyData* iMesh )
 //   this->AddContour( 0, iMesh, 0 );
 }
 //-------------------------------------------------------------------------
+
 //-------------------------------------------------------------------------
-void QGoTabImageView3DwT::PassInfoForColorComboBoxFromDB()
+void
+QGoTabImageView3DwT::
+AddContourFromNodes( vtkPolyData* iNodes,
+  double iRgba[4],
+  const bool& iHighlighted )
+{
+  AddContourFromNodes( iNodes, iRgba[0], iRgba[1], iRgba[2], iRgba[3],
+    iHighlighted );
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+AddContourFromNodes( vtkPolyData* iNodes,
+  const double& iR, const double& iG, const double& iB, const double& iA,
+  const bool& iHighlighted )
+{
+  if( iNodes->GetNumberOfPoints() > 2 )
+    {
+    double bounds[6];
+    iNodes->GetBounds( bounds );
+
+    int dir = -1;
+
+    for( int i = 0; i < 3; i++ )
+      {
+      if( bounds[2*i] == bounds[2*i+1] )
+        {
+        dir = i;
+        }
+      }
+
+    if( dir != -1 )
+      {
+      m_ContourWidget[dir]->On();
+      m_ContourWidget[dir]->Initialize( iNodes );
+      this->ValidateContour( dir, iR, iG, iB, iA, iHighlighted );
+      m_ContourWidget[dir]->Off();
+      }
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoTabImageView3DwT::PassInfoForColorComboBox()
 {
   this->m_VisuDockWidget->ColorComboBox->SetDataForColors(
     this->m_DataBaseTables->GetColorComboBoxInfofromDB());
 }
 //-------------------------------------------------------------------------
+
 //-------------------------------------------------------------------------
 void QGoTabImageView3DwT::PassInfoForDBFromColorComboBox()
 {

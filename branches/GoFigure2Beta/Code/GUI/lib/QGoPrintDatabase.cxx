@@ -588,12 +588,15 @@ std::vector<ContourMeshStructure> QGoPrintDatabase::
 {
   std::vector<ContourMeshStructure> SelectedTraces;
   std::vector<ContourMeshStructure>::iterator iter = iAllTraces.begin();
+
   while (iter != iAllTraces.end())
+    {
     if (iter->TCoord == iTimePoint)
       {
       SelectedTraces.push_back(*iter);
-      iter++;
       }
+      ++iter;
+    }
   return SelectedTraces;
 }
 //-------------------------------------------------------------------------

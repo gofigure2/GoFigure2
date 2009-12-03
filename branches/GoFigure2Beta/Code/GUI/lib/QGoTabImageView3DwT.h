@@ -113,9 +113,29 @@ public:
 
   /**
    *
-   * @param iId
+   * @param[in] iId
+   * @param[in] iHighlighted
+   * @param[in] iR red component in [0,1]
+   * @param[in] iG green component in [0,1]
+   * @param[in] iB blue component in [0,1]
+   * @param[in] iA alpha component in [0,1]
+   * \todo Alpha component is not used at all, it is assumed to be opaque
    */
-  virtual void ValidateContour( const int& iId );
+  virtual void ValidateContour( const int& iId,
+    const double& iR, const double& iG, const double& iB, const double& iA,
+    const bool& iHighlighted );
+
+  /**
+   *
+   * @param[in] iNodes Nodes to be used by
+   * @param[in] iRgba[]
+   * @param[in] iHighlighted
+   */
+  void AddContourFromNodes( vtkPolyData* iNodes, double iRgba[4],
+    const bool& iHighlighted );
+  void AddContourFromNodes( vtkPolyData* iNodes,
+    const double& iR, const double& iG, const double& iB, const double& iA,
+    const bool& iHighlighted );
 
   QGoPrintDatabase* m_DataBaseTables;
 
@@ -159,7 +179,7 @@ public slots:
   void ActivateManualSegmentationEditor( const bool& iActivate );
   void ValidateContour();
   void ChangeContourRepresentationProperty();
-  void PassInfoForColorComboBoxFromDB();
+  void PassInfoForColorComboBox();
   void PassInfoForDBFromColorComboBox();
 
 protected:

@@ -257,30 +257,44 @@ void QGoMainWindow::openFilesfromDB()
 
     QGoTabImageView3DwT* w3t = CreateNewTabFor3DwtImage( importer->GetOutput(),
       GoFigure::PNG, importer->GetHeaderFilename(), 0 );
+    w3t->Update();
 
-//     std::vector< GoDBTraceInfoHelper >::iterator
-//       c_it = w3t->m_DataBaseTables->m_ContoursInfo.begin();
+    std::vector< ContourMeshStructure > contour_list =
+      w3t->m_DataBaseTables->GetContoursForAGivenTimepoint( 0 );
+
+    std::vector< ContourMeshStructure >::iterator
+      contour_list_it = contour_list.begin();
+
+    while( contour_list_it != contour_list.end() )
+      {
+      w3t->AddContourFromNodes( contour_list_it->Nodes, contour_list_it->rgba,
+        contour_list_it->Highlighted );
+      ++contour_list_it;
+      }
+
+//     std::vector< ContourMeshStructure >::iterator
+//       c_it = w3t->m_DataBaseTables->m_MeshesInfo.begin();
 //
-//     while( c_it != w3t->m_DataBaseTables->m_ContoursInfo.end() )
+//     while( c_it != w3t->m_DataBaseTables->m_MeshesInfo.end() )
 //       {
-//       if( (*c_it).TimePoint == 0 )
+//       if( (*c_it).TCoord == 0 )
 //         {
-//         w3t->AddPolyData( (*c_it).Points );
+//         w3t->AddPolyData( (*c_it).Nodes );
 //         }
 //       ++c_it;
 //       }
-    std::vector< ContourMeshStructure >::iterator
-      c_it = w3t->m_DataBaseTables->m_MeshesInfo.begin();
-
-    while( c_it != w3t->m_DataBaseTables->m_MeshesInfo.end() )
-      {
-      if( (*c_it).TCoord == 0 )
-        {
-        w3t->AddPolyData( (*c_it).Nodes );
-        }
-      ++c_it;
+//    std::vector< ContourMeshStructure >::iterator
+//      c_it = w3t->m_DataBaseTables->m_MeshesInfo.begin();
+//
+//    while( c_it != w3t->m_DataBaseTables->m_MeshesInfo.end() )
+//      {
+//      if( (*c_it).TCoord == 0 )
+//        {
+//        w3t->AddPolyData( (*c_it).Nodes );
+//        }
+//      ++c_it;
 //       ++k;
-      }
+//       }
     }
 }
 //--------------------------------------------------------------------------
