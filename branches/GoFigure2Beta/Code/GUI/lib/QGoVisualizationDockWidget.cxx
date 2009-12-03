@@ -1,5 +1,8 @@
 #include "QGoVisualizationDockWidget.h"
 
+#include <QPainter>
+#include <QPixmap>
+
 QGoVisualizationDockWidget::
 QGoVisualizationDockWidget( QWidget* iParent, const unsigned int& iDim ) :
   QDockWidget( iParent ),
@@ -201,18 +204,18 @@ void QGoVisualizationDockWidget::SetCollectionID(
 //-------------------------------------------------------------------------
 void QGoVisualizationDockWidget::SetColorsCollection()
 {
-  std::list<std::pair<std::string,std::vector<int> > >::iterator 
+  std::list<std::pair<std::string,std::vector<int> > >::iterator
     iter = m_DataColors.begin();
   while(iter != m_DataColors.end())
     {
     QPixmap pix(12, 12);
     QPainter painter(&pix);
     QColor Color(iter->second[0],iter->second[1],iter->second[2],iter->second[3]);
-    if (Color.isValid()) 
+    if (Color.isValid())
       {
-	    painter.setPen(Qt::gray);
-	    painter.setBrush(QBrush(Color));
-	    painter.drawRect(0, 0, 12, 12);
+      painter.setPen(Qt::gray);
+      painter.setBrush(QBrush(Color));
+      painter.drawRect(0, 0, 12, 12);
       }
     QIcon Icon;
     Icon.addPixmap(pix);
