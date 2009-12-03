@@ -701,6 +701,8 @@ void QGoPrintDatabase::SaveNewColorInDB(std::vector<std::string> iDataNewColor)
     NewColor.SetField("Green",iDataNewColor[2]);
     NewColor.SetField("Blue",iDataNewColor[3]);
     NewColor.SetField("Alpha",iDataNewColor[4]);
-    AddOnlyOneNewObjectInTable<GoDBColorRow>(m_DatabaseConnector,"color",NewColor);
+    NewColor.SetField("Description", " ");
+    NewColor.SaveInDB(m_DatabaseConnector);
+    //AddOnlyOneNewObjectInTable<GoDBColorRow>(m_DatabaseConnector,"color",NewColor);
     }
 }
