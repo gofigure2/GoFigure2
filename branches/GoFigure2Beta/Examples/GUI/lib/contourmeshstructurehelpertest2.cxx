@@ -36,7 +36,7 @@ int main( int , char** )
       meshid, timepoint, highlighted, r, g, b, a, i % 4 ) );
     }
 
-  std::list< ContourMeshStructure > list =
+  std::list< ContourMeshStructure* > list =
     FindContourGivenTraceID( container, 0 );
 
   if( list.empty() )
@@ -45,24 +45,23 @@ int main( int , char** )
     return EXIT_FAILURE;
     }
 
-  std::list< ContourMeshStructure >::iterator list_it = list.begin();
-  ContourMeshStructure c;
+  std::list< ContourMeshStructure* >::iterator list_it = list.begin();
 
   while( list_it != list.end() )
     {
-    if( (*list_it).TraceID != 0 )
+    if( (*list_it)->TraceID != 0 )
       {
-      std::cerr <<"(*list_it).TraceID != 0" <<std::endl;
+      std::cerr <<"(*list_it)->TraceID != 0" <<std::endl;
       return EXIT_FAILURE;
       }
     ++list_it;
     }
 
-  c = FindContourGivenActor( container, ActorVector[2] );
+  ContourMeshStructure* c = FindContourGivenActor( container, ActorVector[2] );
 
-  if( c.TraceID != 2 )
+  if( c->TraceID != 2 )
     {
-    std::cerr <<"c.TraceID != 2" <<std::endl;
+    std::cerr <<"c->TraceID != 2" <<std::endl;
     for( i = 0; i < ActorVector.size(); i++ )
       {
       if( i < NodesVector.size() )
@@ -85,10 +84,10 @@ int main( int , char** )
   while( list_it != list.end() )
     {
     c = *list_it;
-    if( c.Nodes != NodesVector.front() )
+    if( c->Nodes != NodesVector.front() )
       {
-      std::cerr <<c.Nodes <<" != " <<NodesVector.front() <<std::endl;
-      std::cerr <<c.TraceID <<std::endl;
+      std::cerr <<c->Nodes <<" != " <<NodesVector.front() <<std::endl;
+      std::cerr <<c->TraceID <<std::endl;
 
       for( i = 0; i < ActorVector.size(); i++ )
         {
@@ -118,10 +117,10 @@ int main( int , char** )
 
   while( list_it != list.end() )
     {
-    if( (*list_it).TCoord != 0 )
+    if( (*list_it)->TCoord != 0 )
       {
-      std::cerr <<"(*list_it).TraceID != k" <<std::endl;
-      std::cerr <<(*list_it).TraceID <<" != " <<k <<std::endl;
+      std::cerr <<"(*list_it)->TraceID != k" <<std::endl;
+      std::cerr <<(*list_it)->TraceID <<" != " <<k <<std::endl;
 
       for( i = 0; i < ActorVector.size(); i++ )
         {

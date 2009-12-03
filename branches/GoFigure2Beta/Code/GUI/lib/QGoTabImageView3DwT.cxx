@@ -307,6 +307,13 @@ void QGoTabImageView3DwT::CreateAllViewActions()
   this->m_ViewActions.push_back( separator3 );
 
   this->m_ViewActions.push_back( m_DataBaseTables->toggleViewAction() );
+
+  QAction* LoadContoursPerTimePointAction =
+    new QAction( tr( "Load All Contours For Current Time Point" ), this );
+  this->m_ViewActions.push_back( LoadContoursPerTimePointAction );
+
+  QObject::connect( LoadContoursPerTimePointAction, SIGNAL( triggered() ),
+    this, SLOT( LoadAllContoursForCurrentTimePoint() ) );
 }
 //-------------------------------------------------------------------------
 
@@ -1041,11 +1048,11 @@ ValidateContour( const int& iId )
         contour_property );
 
     // Save contour in database!
-      {
-      m_DataBaseTables->SaveContoursFromVisuInDB(min_idx[0],
-        min_idx[1],min_idx[2],m_TimePoint,max_idx[0],
-        max_idx[1],max_idx[2], contour_nodes);
-      }
+//       {
+//       m_DataBaseTables->SaveContoursFromVisuInDB(min_idx[0],
+//         min_idx[1],min_idx[2],m_TimePoint,max_idx[0],
+//         max_idx[1],max_idx[2], contour_nodes);
+//       }
 
     contour_copy->Delete();
     contour_property->Delete();
@@ -1210,19 +1217,19 @@ RemoveAllContoursForPresentTimePoint( )
 {
   if( ( m_TimePoint >= 0 ) && ( m_ContourMeshContainer.size() > 0 ) )
     {
-    std::list< ContourMeshStructure >
+    std::list< ContourMeshStructure* >
       c_list = FindContourGivenTimePoint( m_ContourMeshContainer,
         static_cast< unsigned int >( m_TimePoint ) );
 
     int c_dir;
     vtkActor* c_actor;
 
-    std::list< ContourMeshStructure >::iterator it = c_list.begin();
+    std::list< ContourMeshStructure* >::iterator it = c_list.begin();
 
     while( it != c_list.end() )
       {
-      c_dir = (*it).Direction;
-      c_actor = (*it).Actor;
+      c_dir = (*it)->Direction;
+      c_actor = (*it)->Actor;
 
       RemoveActorFromViewer( c_dir, c_actor );
       ++it;
@@ -1238,23 +1245,40 @@ RemoveAllContoursForPresentTimePoint( )
  */
 void
 QGoTabImageView3DwT::
+// LoadAllContoursForCurrentTimePoint()
+// {
+//   if( m_TimePoint >= 0 )
+//     {
+//     std::vector<ContourMeshStructure> c_list =
+//       GetContoursForAGivenTimepoint( static_cast< unsigned int >( m_TimePoint ) );
+//
+//     std::vector<ContourMeshStructure>::iterator c_it = c_list.begin();
+//
+//     while( c_it != c_list.end() )
+//       {
+//       AddContourFromNodes( c_it->Nodes, c_it->rgba );
+//       }
+//     }
+// }
+//-------------------------------------------------------------------------
+
 LoadAllContoursForGivenTimePoint( const unsigned int& iT )
 {
   if( m_ContourMeshContainer.size() > 0 )
     {
-    std::list< ContourMeshStructure >
+    std::list< ContourMeshStructure* >
       c_list = FindContourGivenTimePoint( m_ContourMeshContainer,
         static_cast< unsigned int >( iT ) );
 
     int c_dir;
     vtkActor* c_actor;
 
-    std::list< ContourMeshStructure >::iterator it = c_list.begin();
+    std::list< ContourMeshStructure* >::iterator it = c_list.begin();
 
     while( it != c_list.end() )
       {
-      c_dir = (*it).Direction;
-      c_actor = (*it).Actor;
+      c_dir = (*it)->Direction;
+      c_actor = (*it)->Actor;
 
       DisplayActorInViewer( c_dir, c_actor );
       ++it;

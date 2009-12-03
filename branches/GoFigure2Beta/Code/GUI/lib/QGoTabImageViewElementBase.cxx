@@ -419,11 +419,11 @@ void
 QGoTabImageViewElementBase::
 ReEditContour( const unsigned int& iId )
 {
-  std::list< ContourMeshStructure > c_list =
+  std::list< ContourMeshStructure* > c_list =
     FindContourGivenTraceID( this->m_ContourMeshContainer, iId );
 
-  std::list< ContourMeshStructure >::iterator c_it = c_list.begin();
-  std::list< ContourMeshStructure >::iterator c_end = c_list.end();
+  std::list< ContourMeshStructure* >::iterator c_it = c_list.begin();
+  std::list< ContourMeshStructure* >::iterator c_end = c_list.end();
 
   int c_dir;
   vtkActor* c_actor;
@@ -431,9 +431,9 @@ ReEditContour( const unsigned int& iId )
 
   while( c_it != c_end )
     {
-    c_dir = (*c_it).Direction;
-    c_actor = (*c_it).Actor;
-    c_nodes = (*c_it).Nodes;
+    c_dir = (*c_it)->Direction;
+    c_actor = (*c_it)->Actor;
+    c_nodes = (*c_it)->Nodes;
 
     this->RemoveActorFromViewer( c_dir, c_actor );
 

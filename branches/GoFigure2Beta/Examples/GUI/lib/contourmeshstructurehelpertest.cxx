@@ -27,13 +27,13 @@ int main( int , char** )
       id, t, ( i == 10 ), 0.5, 0.5, 0.5, 1., 0 ) );
     }
 
-  std::list< ContourMeshStructure > list = FindContourGivenTraceID( container, 10 );
-  ContourMeshStructure c = list.front();
-  std::cout <<c <<std::endl;
+  std::list< ContourMeshStructure* > list = FindContourGivenTraceID( container, 10 );
+  ContourMeshStructure* c0 = list.front();
+  std::cout <<*c0 <<std::endl;
 
-  if( c.Actor != ActorVector[10]  )
+  if( c0->Actor != ActorVector[10]  )
     {
-    std::cerr <<"c.Actor != ActorVector[10]" <<std::endl;
+    std::cerr <<"c0.Actor != ActorVector[10]" <<std::endl;
     for( i = 0; i < 20; i++ )
       {
       ActorVector[i]->Delete();
@@ -41,9 +41,9 @@ int main( int , char** )
       }
     return EXIT_FAILURE;
     }
-  if( c.Nodes != NodesVector[10] )
+  if( c0->Nodes != NodesVector[10] )
     {
-    std::cerr <<"c.Nodes != NodesVector[10]" <<std::endl;
+    std::cerr <<"c0->Nodes != NodesVector[10]" <<std::endl;
     for( i = 0; i < 20; i++ )
       {
       ActorVector[i]->Delete();
@@ -51,9 +51,9 @@ int main( int , char** )
       }
     return EXIT_FAILURE;
     }
-  if( c.Highlighted != true )
+  if( c0->Highlighted != true )
     {
-    std::cerr <<"c.Highlighted != true" <<std::endl;
+    std::cerr <<"c0.Highlighted != true" <<std::endl;
     for( i = 0; i < 20; i++ )
       {
       ActorVector[i]->Delete();
@@ -62,13 +62,13 @@ int main( int , char** )
     return EXIT_FAILURE;
     }
 
-  c.Highlighted = false;
+  c0->Highlighted = false;
 
-  c = FindContourGivenActor( container, ActorVector[5] );
+  ContourMeshStructure* c1 = FindContourGivenActor( container, ActorVector[5] );
 
-  if( c.TraceID != 5 )
+  if( c1->TraceID != 5 )
     {
-    std::cerr <<"c.TraceID != 5" <<std::endl;
+    std::cerr <<"c1->TraceID != 5" <<std::endl;
     for( i = 0; i < 20; i++ )
       {
       ActorVector[i]->Delete();
@@ -78,11 +78,11 @@ int main( int , char** )
     }
 
   list = FindContourGivenNodes( container, NodesVector[15] );
-  c = list.front();
+  ContourMeshStructure* c2 = list.front();
 
-  if( c.TraceID != 15 )
+  if( c2->TraceID != 15 )
     {
-    std::cerr <<"c.TraceID != 15" <<std::endl;
+    std::cerr <<"c2->TraceID != 15" <<std::endl;
 
     for( i = 0; i < 20; i++ )
       {
@@ -93,7 +93,7 @@ int main( int , char** )
     return EXIT_FAILURE;
     }
 
-  std::cout <<c <<std::endl;
+  std::cout <<*c2 <<std::endl;
 
   unsigned int k = 0;
 
@@ -101,14 +101,14 @@ int main( int , char** )
     {
     list = FindContourGivenTimePoint( container, i );
 
-    std::list< ContourMeshStructure >::iterator c_it = list.begin();
+    std::list< ContourMeshStructure* >::iterator c_it = list.begin();
 
     while( c_it != list.end() )
       {
-      if( (*c_it).TraceID != k )
+      if( (*c_it)->TraceID != k )
         {
-        std::cerr <<"(*c_it).TraceID != k" <<std::endl;
-        std::cerr <<(*c_it).TraceID <<" != " <<k <<std::endl;
+        std::cerr <<"(*c_it)->TraceID != k" <<std::endl;
+        std::cerr <<(*c_it)->TraceID <<" != " <<k <<std::endl;
 
         for( i = 0; i < 20; i++ )
           {

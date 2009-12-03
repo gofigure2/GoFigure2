@@ -35,63 +35,63 @@ typedef multi_index_container<
 > ContourMeshStructureMultiIndexContainer;
 
 typedef multi_index_container<
-  const ContourMeshStructure*,
+  ContourMeshStructure*,
   indexed_by<
-    ordered_non_unique<
-      BOOST_MULTI_INDEX_MEMBER(ContourMeshStructure,const unsigned int,TraceID)>
+    hashed_non_unique<
+      BOOST_MULTI_INDEX_MEMBER(ContourMeshStructure,unsigned int,TraceID)>
 >
 > ContourMeshStructureTraceIDViewContainer;
 
 typedef multi_index_container<
-    const ContourMeshStructure*,
+    ContourMeshStructure*,
     indexed_by<
-      ordered_non_unique<
-        BOOST_MULTI_INDEX_MEMBER(ContourMeshStructure,const unsigned int,CollectionID)>
+      hashed_non_unique<
+        BOOST_MULTI_INDEX_MEMBER(ContourMeshStructure,unsigned int,CollectionID)>
     >
   > ContourMeshStructureCollectionIDViewContainer;
 
 typedef multi_index_container<
-    const ContourMeshStructure*,
+    ContourMeshStructure*,
     indexed_by<
       ordered_non_unique<
-        BOOST_MULTI_INDEX_MEMBER(ContourMeshStructure,const unsigned int,TCoord)>
+        BOOST_MULTI_INDEX_MEMBER(ContourMeshStructure,unsigned int,TCoord)>
     >
   > ContourMeshStructureTCoordViewContainer;
 
 typedef multi_index_container<
-    const ContourMeshStructure*,
+    ContourMeshStructure*,
     indexed_by<
       ordered_unique<
-        BOOST_MULTI_INDEX_MEMBER(ContourMeshStructure,const ContourMeshStructure::vtkActorPointer,Actor)>
+        BOOST_MULTI_INDEX_MEMBER(ContourMeshStructure,ContourMeshStructure::vtkActorPointer,Actor)>
     >
   > ContourMeshStructureActorViewContainer;
 
 typedef multi_index_container<
-    const ContourMeshStructure*,
+    ContourMeshStructure*,
     indexed_by<
-      ordered_non_unique<
-        BOOST_MULTI_INDEX_MEMBER(ContourMeshStructure,const ContourMeshStructure::vtkPolyDataPointer,Nodes)>
+      hashed_non_unique<
+        BOOST_MULTI_INDEX_MEMBER(ContourMeshStructure,ContourMeshStructure::vtkPolyDataPointer,Nodes)>
     >
   > ContourMeshStructureNodesViewContainer;
 
 
 
-std::list< ContourMeshStructure >
+std::list< ContourMeshStructure* >
 FindContourGivenTraceID(
   const ContourMeshStructureMultiIndexContainer& iContainer,
   const unsigned int& iId );
 
-ContourMeshStructure
+ContourMeshStructure*
 FindContourGivenActor(
   const ContourMeshStructureMultiIndexContainer& iContainer,
   vtkActor* iActor );
 
-std::list< ContourMeshStructure >
+std::list< ContourMeshStructure* >
 FindContourGivenNodes(
   const ContourMeshStructureMultiIndexContainer& iContainer,
   vtkPolyData* iNodes );
 
-std::list< ContourMeshStructure >
+std::list< ContourMeshStructure* >
 FindContourGivenTimePoint(
   const ContourMeshStructureMultiIndexContainer& iContainer,
   const unsigned int& iTimePoint
