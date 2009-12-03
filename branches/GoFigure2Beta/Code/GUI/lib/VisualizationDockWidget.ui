@@ -6,24 +6,24 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>128</width>
-    <height>335</height>
+    <width>409</width>
+    <height>521</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Visualization</string>
   </property>
   <widget class="QWidget" name="dockWidgetContents">
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>11</y>
-      <width>117</width>
-      <height>254</height>
+      <x>11</x>
+      <y>12</y>
+      <width>130</width>
+      <height>252</height>
      </rect>
     </property>
-    <layout class="QVBoxLayout" name="verticalLayout_3">
+    <layout class="QVBoxLayout" name="verticalLayout_2">
      <item>
       <layout class="QGridLayout" name="gridLayout">
        <property name="spacing">
@@ -135,34 +135,30 @@
       </widget>
      </item>
      <item>
-      <layout class="QVBoxLayout" name="verticalLayout_2">
+      <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout">
-         <item>
-          <widget class="QLabel" name="CollectionIDLbl">
-           <property name="text">
-            <string>MeshID</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QComboBox" name="CollectionIDBox"/>
-         </item>
-        </layout>
+        <widget class="QLabel" name="CollectionIDLbl">
+         <property name="text">
+          <string>MeshID</string>
+         </property>
+        </widget>
        </item>
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_2">
-         <item>
-          <widget class="QLabel" name="ColorCollectionLbl">
-           <property name="text">
-            <string>Color</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QComboBox" name="ColorCollectionBox"/>
-         </item>
-        </layout>
+        <widget class="QComboBox" name="CollectionIDBox"/>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <item>
+        <widget class="QLabel" name="ColorCollectionLbl">
+         <property name="text">
+          <string>Color</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="ColorCollectionBox"/>
        </item>
       </layout>
      </item>

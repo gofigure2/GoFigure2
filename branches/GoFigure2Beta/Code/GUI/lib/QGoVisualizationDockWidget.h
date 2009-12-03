@@ -25,6 +25,10 @@ class QGoVisualizationDockWidget :
     int GetCurrentChannel() const;
     int GetCurrentCollectionID ();
     std::string GetCurrentColor();
+    
+    void SetCollectionID(std::list<std::string> iListExistingID);
+    void SetDataForColors(
+      std::list<std::pair<std::string,std::vector<int> > > iDataColors);
 
   public slots:
     void SetXSlice( int iSlice );
@@ -43,6 +47,7 @@ class QGoVisualizationDockWidget :
 
   protected:
     unsigned int m_Dimension;
-
+    std::list<std::pair<std::string,std::vector<int> > > m_DataColors;
+    void SetColorsCollection();
 };
 #endif
