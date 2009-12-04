@@ -259,44 +259,35 @@ void QGoMainWindow::openFilesfromDB()
       GoFigure::PNG, importer->GetHeaderFilename(), 0 );
     w3t->Update();
 
+    // Lad all contours from the first time point
     std::vector< ContourMeshStructure > contour_list =
       w3t->m_DataBaseTables->GetContoursForAGivenTimepoint( 0 );
 
     std::vector< ContourMeshStructure >::iterator
-      contour_list_it = contour_list.begin();
+      contourmesh_list_it = contour_list.begin();
 
     // we don't need here to save this contour in the database,
     // since they have just been extracted from it!
-    while( contour_list_it != contour_list.end() )
+    while( contourmesh_list_it != contour_list.end() )
       {
-      w3t->AddContourFromNodes( contour_list_it->Nodes, contour_list_it->rgba,
-        contour_list_it->Highlighted, false );
-      ++contour_list_it;
+      w3t->AddContourFromNodes( contourmesh_list_it->Nodes,
+        contourmesh_list_it->rgba,
+        contourmesh_list_it->Highlighted,
+        false );
+      ++contourmesh_list_it;
       }
 
-//     std::vector< ContourMeshStructure >::iterator
-//       c_it = w3t->m_DataBaseTables->m_MeshesInfo.begin();
-//
-//     while( c_it != w3t->m_DataBaseTables->m_MeshesInfo.end() )
-//       {
-//       if( (*c_it).TCoord == 0 )
-//         {
-//         w3t->AddPolyData( (*c_it).Nodes );
-//         }
-//       ++c_it;
-//       }
-//    std::vector< ContourMeshStructure >::iterator
-//      c_it = w3t->m_DataBaseTables->m_MeshesInfo.begin();
-//
-//    while( c_it != w3t->m_DataBaseTables->m_MeshesInfo.end() )
-//      {
-//      if( (*c_it).TCoord == 0 )
-//        {
-//        w3t->AddPolyData( (*c_it).Nodes );
-//        }
-//      ++c_it;
-//       ++k;
-//       }
+    // Let's load all the mesh from the first time point
+    std::vector< ContourMeshStructure > mesh_list =
+      w3t->m_DataBaseTables->GetMeshesForAGivenTimepoint( 0 );
+
+    contourmesh_list_it = mesh_list.begin();
+
+    while( contourmesh_list_it != contour_list.end() )
+      {
+      w3t->AddPolyData( contourmesh_list_it->Nodes );
+      ++contourmesh_list_it;
+      }
     }
 }
 //--------------------------------------------------------------------------
