@@ -70,7 +70,10 @@ class QT_QTCOLORCOMBOBOX_EXPORT QtColorComboBox : public QComboBox
     Q_OBJECT
 public:
     QtColorComboBox(QWidget *parent = 0, const char *name = 0);
+    /** \brief insert a color at a given index*/
     void insertColor(int index, const QColor &color, const QString &name);
+    /** \brief insert a color at the end, before the "more" if the ColorDialog
+    is enabled*/
     inline void addColor(const QColor &color, const QString &name)
                 { insertColor(colorCount(), color, name); }
 
@@ -87,14 +90,18 @@ public:
     void setStandardColors();
 
     QSize sizeHint() const;
+    
+    /** \brief fill the list m_DataFromDB with the iDataColors*/
     void SetDataForColors(
       std::list<std::pair<std::string,std::vector<int> > > iDataColors);
-
+    /** \brief return a vector with all the data describing the new color*/
     std::vector<std::string> GetDataForNewColorToBeSaved();
 
 Q_SIGNALS:
     void activated(const QColor &color);
     void highlighted(const QColor &color);
+    /* *\brief  signal emitted when a new color has been created by the user, in order
+    to be saved in the database*/
     void NewColorToBeSaved();
 
 private Q_SLOTS:
@@ -104,12 +111,16 @@ private Q_SLOTS:
 private:
     QColor lastActivated;
     int numUserColors;
+    /** \brief list of pair containing all the datas for the existing colors from the database
+    with, for each color: a color name and a vector if rgba*/ 
     std::list<std::pair<std::string,std::vector<int> > > m_DataFromDB;
     bool colorDialogEnabled;
-    void SetColorNamesAndRgb ();
+    /** \brief insert the colors with the data taken from the list m_DataFromDB */
     void setExistingColors();
-    void StoreDataForNewColorToBeSaved(
-      QColor Color,std::string NameColor);
+    /** \brief fill the vector m_NewColorData with a QColor and a NameColor*/
+    void StoreDataForNewColorToBeSaved(QColor Color,std::string NameColor);
+    /** \brief vector containing the 5 datas describing a new color: its name and
+    its rgba*/
     std::vector<std::string> m_NewColorData;
 };
 
