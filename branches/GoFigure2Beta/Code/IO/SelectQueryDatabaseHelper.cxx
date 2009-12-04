@@ -963,7 +963,8 @@ std::vector<ContourMeshStructure> GetTracesInfoFromDB(
       temp.TraceID = query->DataValue(0).ToInt();
       vtkPolyDataMySQLTextReader* convert_reader =
       vtkPolyDataMySQLTextReader::New();
-      std::string polydata_string = query->DataValue(1).ToString();
+      temp.CollectionID = query->DataValue(1).ToUnsignedInt();
+      std::string polydata_string = query->DataValue(2).ToString();
       if (!polydata_string.empty())
         {
         if( TraceName.compare( "contour" ) == 0 )
@@ -980,7 +981,6 @@ std::vector<ContourMeshStructure> GetTracesInfoFromDB(
         vtkPolyData* output = convert_reader->GetPolyData( polydata_string );
         temp.Nodes = output;
         }
-      temp.CollectionID = query->DataValue(2).ToUnsignedInt();
       temp.TCoord       = query->DataValue(3).ToUnsignedInt();
       temp.rgba[0]      = query->DataValue(4).ToDouble();
       temp.rgba[1]      = query->DataValue(5).ToDouble();
