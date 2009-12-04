@@ -37,20 +37,26 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#include <qstringlist.h>
-#include <qwidget.h>
+#include "QGoPrintDatabase.h"
+
+#include <QStringList>
+#include <QWidget>
 #include <QDialog>
 #include <QInputDialog>
 #include <QTableWidgetItem>
 #include <QMessageBox>
 #include <QMenu>
+#include <QCloseEvent>
 
-#include "QGoPrintDatabase.h"
-#include "QTableWidgetChild.h"
+#include <iostream>
+
+#include "vtkActor.h"
 #include "vtkMySQLDatabase.h"
 #include "vtkSQLQuery.h"
 #include "vtkStringArray.h"
 #include "vtkStdString.h"
+
+#include "QTableWidgetChild.h"
 #include "GoDBRecordSet.h"
 #include "GoDBRecordSetHelper.h"
 #include "GoDBContourRow.h"
@@ -62,9 +68,10 @@
 #include "QueryDataBaseHelper.h"
 #include "ConvertToStringHelper.h"
 #include "GoDBTraceInfoForTableWidget.h"
-#include <iostream>
-#include <QCloseEvent>
 
+
+
+//--------------------------------------------------------------------------
 QGoPrintDatabase::
 QGoPrintDatabase( QWidget* iParent ) :
   QWidget( iParent ),
@@ -110,6 +117,46 @@ QGoPrintDatabase( QWidget* iParent ) :
 //--------------------------------------------------------------------------
 QGoPrintDatabase::~QGoPrintDatabase()
 {
+  // Need to release memory allocated for contours, meshes and tracks
+  // contours
+  std::vector<ContourMeshStructure>::iterator c_it = m_ContoursInfo.begin();
+
+  while( c_it != m_ContoursInfo.end() )
+    {
+    // nodes
+    if( c_it->Nodes )
+      {
+      c_it->Nodes->Delete();
+      c_it->Nodes = 0;
+      }
+    // used actor for the visualization
+    if( c_it->Actor )
+      {
+      c_it->Actor->Delete();
+      c_it->Actor = 0;
+      }
+    ++c_it;
+    }
+
+  // meshes
+  std::vector<ContourMeshStructure>::iterator m_it = m_MeshesInfo.begin();
+
+  while( m_it != m_MeshesInfo.end() )
+    {
+    // polydata
+    if( m_it->Nodes )
+      {
+      m_it->Nodes->Delete();
+      m_it->Nodes = 0;
+      }
+    // used actor for the visualization
+    if( m_it->Actor )
+      {
+      m_it->Actor->Delete();
+      m_it->Actor = 0;
+      }
+    ++m_it;
+    }
 }
 //--------------------------------------------------------------------------
 
