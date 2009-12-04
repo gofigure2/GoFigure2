@@ -1359,7 +1359,7 @@ AddContourFromNodes( vtkPolyData* iNodes,
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoTabImageView3DwT::PassInfoForColorComboBox()
+void QGoTabImageView3DwT::PassInfoForColorComboBoxFromDB()
 {
   this->m_VisuDockWidget->ColorComboBox->SetDataForColors(
     this->m_DataBaseTables->GetColorComboBoxInfofromDB());

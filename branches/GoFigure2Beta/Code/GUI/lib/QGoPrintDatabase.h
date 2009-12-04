@@ -115,6 +115,9 @@ public:
     unsigned int iYCoordMin,unsigned int iZCoordMin,unsigned int iTCoord,
     unsigned int iXCoordMax,unsigned int iYCoordMax,unsigned int iZCoordMax,
     vtkPolyData* iContourNodes);
+  
+  /** \brief return a bool to know if the user is using the database or not*/ 
+  bool IsDatabaseUsed();
 
   QAction* toggleViewAction();
 
@@ -137,6 +140,7 @@ protected:
   std::string       m_DBName;
   unsigned int      m_ImgSessionID;
   std::string       m_ImgSessionName;
+  bool              m_IsDatabaseUsed;
 
   QAction* m_VisibilityAction;
 

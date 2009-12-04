@@ -71,7 +71,7 @@ QGoPrintDatabase( QWidget* iParent ) :
   m_DatabaseConnector( 0 )
 {
   this->setupUi( this );
-
+  m_IsDatabaseUsed = false;
   DBTabWidget->setTabPosition( QTabWidget::West );
   DBTabWidget->setTabShape( QTabWidget::Triangular );
   DBTabWidget->removeTab( 0 );
@@ -179,6 +179,7 @@ void QGoPrintDatabase::FillTableFromDatabase()
   LoadContoursAndMeshesFromDB(m_DatabaseConnector);
 
   CloseDBConnection();
+  m_IsDatabaseUsed = true;
   FillDatabaseFinished();
 }
 //--------------------------------------------------------------------------
@@ -705,4 +706,11 @@ void QGoPrintDatabase::SaveNewColorInDB(std::vector<std::string> iDataNewColor)
     NewColor.SaveInDB(m_DatabaseConnector);
     //AddOnlyOneNewObjectInTable<GoDBColorRow>(m_DatabaseConnector,"color",NewColor);
     }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+bool QGoPrintDatabase::IsDatabaseUsed()
+{
+  return m_IsDatabaseUsed;
 }
