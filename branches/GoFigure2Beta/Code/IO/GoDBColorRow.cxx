@@ -68,9 +68,10 @@ int GoDBColorRow::DoesThisColorAlreadyExists(vtkMySQLDatabase* DatabaseConnector
   std::string Blue = this->GetMapValue("Blue");
   std::string Green = this->GetMapValue("Green");
   std::string Alpha = this->GetMapValue("Alpha");
+  std::string Name  = this->GetMapValue("Name");
 
   return FindOneID(DatabaseConnector,"color", "ColorID","Red",Red,"Green",Green,
-  "Blue",Blue,"Alpha",Alpha);
+  "Blue",Blue,"Alpha",Alpha,"Name",Name);
 }
 //-------------------------------------------------------------------------
 

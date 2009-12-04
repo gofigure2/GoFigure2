@@ -1057,19 +1057,25 @@ ValidateContour( const int& iId,
       this->AddContour( iId, contour_copy,
         contour_property );
 
+    std::pair<std::string,QColor> ColorData =
+      this->m_VisuDockWidget->ColorComboBox->GetCurrentColorData();
+
+    // get meshid from the visu dock widget (SpinBox)
+    //unsigned int meshid = m_ManualSegmentationDockWidget->GetMeshId();
+    unsigned int meshid = this->m_VisuDockWidget->GetCurrentCollectionID();
+
     if( iSaveInDataBase )
       {
       // Save contour in database!
       m_DataBaseTables->SaveContoursFromVisuInDB( min_idx[0],
         min_idx[1], min_idx[2], m_TimePoint, max_idx[0],
-        max_idx[1], max_idx[2], contour_nodes );
+        max_idx[1], max_idx[2], contour_nodes,ColorData,meshid );
       }
 
     contour_copy->Delete();
     contour_property->Delete();
 
-    // get meshid from the dock widget (SpinBox)
-    unsigned int meshid = m_ManualSegmentationDockWidget->GetMeshId();
+    
 
     unsigned int timepoint = static_cast< unsigned int >( m_TimePoint );
 
@@ -1095,7 +1101,9 @@ ValidateContour( )
 {
   // get color from the dock widget
   double r, g, b, a( 1. );
-  QColor color = m_ManualSegmentationDockWidget->GetValidatedColor();
+  //QColor color = m_ManualSegmentationDockWidget->GetValidatedColor();
+  QColor color = this->m_VisuDockWidget->ColorComboBox->
+    GetCurrentColorData().second;
   color.getRgbF( &r, &g, &b );
 
   bool highlighted( false );

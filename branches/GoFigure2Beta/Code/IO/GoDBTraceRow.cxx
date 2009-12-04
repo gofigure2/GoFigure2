@@ -61,7 +61,6 @@ GoDBTraceRow::GoDBTraceRow(vtkMySQLDatabase* DatabaseConnector,
   vtkPolyDataMySQLTextWriter* convert = vtkPolyDataMySQLTextWriter::New();
   std::string PointsString = convert->GetMySQLText(TraceVisu);
   this->SetField("Points",PointsString);
-  //this->m_MapRow["Points"] = convert->GetMySQLText(TraceVisu);
 }
 //-------------------------------------------------------------------------
 
@@ -98,12 +97,14 @@ void GoDBTraceRow::CreateBoundingBox(vtkMySQLDatabase* DatabaseConnector,
 
 //-------------------------------------------------------------------------
 void GoDBTraceRow::SetColor(unsigned int Red, unsigned int Green,
-  unsigned int Blue,unsigned int Alpha, vtkMySQLDatabase* DatabaseConnector)
+  unsigned int Blue,unsigned int Alpha, std::string ColorName,
+  vtkMySQLDatabase* DatabaseConnector)
 {
   GoDBColorRow ColorRow;
   ColorRow.SetField<int>("Red",Red);
   ColorRow.SetField<int>("Green",Green);
   ColorRow.SetField<int>("Blue",Blue);
   ColorRow.SetField<int>("Alpha",Alpha);
+  ColorRow.SetField("Name", ColorName);
   this->m_MapRow["ColorID"] = ConvertToString<int>(ColorRow.SaveInDB(DatabaseConnector));
 }

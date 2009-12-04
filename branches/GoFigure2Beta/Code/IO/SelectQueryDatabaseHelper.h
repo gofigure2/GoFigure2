@@ -100,7 +100,8 @@ int FindOneID(vtkMySQLDatabase* DatabaseConnector,
   std::string ColumnNameOne,std::string valueOne,
   std::string ColumnNameTwo,std::string valueTwo,
   std::string ColumnNameThree,std::string valueThree,
-  std::string ColumnNameFour,std::string valueFour);
+  std::string ColumnNameFour,std::string valueFour,
+  std::string ColumnNameFive,std::string valueFive);
 
 //query: "SELECT ColumnName FROM TableName WHERE (field1 = value1
 //AND field2 = value2 AND field3 = value3 AND field4 = value4);

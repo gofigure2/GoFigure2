@@ -348,7 +348,8 @@ int FindOneID(vtkMySQLDatabase* DatabaseConnector,
   std::string ColumnNameOne,std::string valueOne,
   std::string ColumnNameTwo,std::string valueTwo,
   std::string ColumnNameThree,std::string valueThree,
-  std::string ColumnNameFour,std::string valueFour)
+  std::string ColumnNameFour,std::string valueFour,
+  std::string ColumnNameFive,std::string valueFive)
 {
   int ID = -1;
 
@@ -374,6 +375,10 @@ int FindOneID(vtkMySQLDatabase* DatabaseConnector,
   querystream << ColumnNameFour;
   querystream << " = '";
   querystream << valueFour;
+  querystream << "' AND ";
+  querystream << ColumnNameFive;
+  querystream << " = '";
+  querystream << valueFive;
   querystream << "');";
 
   query->SetQuery( querystream.str().c_str() );

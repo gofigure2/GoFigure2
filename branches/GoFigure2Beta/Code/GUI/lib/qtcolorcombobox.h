@@ -96,6 +96,9 @@ public:
       std::list<std::pair<std::string,std::vector<int> > > iDataColors);
     /** \brief return a vector with all the data describing the new color*/
     std::vector<std::string> GetDataForNewColorToBeSaved();
+    
+    /** \brief return the name and the QColor of the current selected color*/
+    std::pair<std::string,QColor> GetCurrentColorData();
 
 Q_SIGNALS:
     void activated(const QColor &color);
@@ -103,7 +106,7 @@ Q_SIGNALS:
     /* *\brief  signal emitted when a new color has been created by the user, in order
     to be saved in the database*/
     void NewColorToBeSaved();
-
+    
 private Q_SLOTS:
     void emitActivatedColor(int index);
     void emitHighlightedColor(int index);

@@ -199,7 +199,7 @@ SaveMeshInDataBase( const InternalMeshStructure& iMesh )
 
   GoDBMeshRow mesh_row( m_DBConnector, coord_min, coord_max,
     m_ImagingSessionId, iMesh.m_Points );
-  mesh_row.SetColor( 255, 255, 0, 255, m_DBConnector );
+  mesh_row.SetColor( 255, 255, 0, 255,"KishoreColor", m_DBConnector );
   int mesh_id = mesh_row.SaveInDB( m_DBConnector );
   std::cout <<mesh_id <<std::endl;
 }

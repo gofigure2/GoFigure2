@@ -519,7 +519,8 @@ ChangeContoursToHighLightInfoFromVisu( std::list<int> iListContoursHighLightedIn
 void QGoPrintDatabase::SaveContoursFromVisuInDB(unsigned int iXCoordMin,
   unsigned int iYCoordMin,unsigned int iZCoordMin,unsigned int iTCoord,
   unsigned int iXCoordMax,unsigned int iYCoordMax,unsigned int iZCoordMax,
-  vtkPolyData* iContourNodes)
+  vtkPolyData* iContourNodes, std::pair<std::string,QColor> iColorData,
+  unsigned int iMeshID)
 {
   OpenDBConnection();
 
@@ -537,6 +538,10 @@ void QGoPrintDatabase::SaveContoursFromVisuInDB(unsigned int iXCoordMin,
 
   GoDBContourRow contour_row( this->m_DatabaseConnector,coord_min, coord_max,
     this->m_ImgSessionID, iContourNodes );
+  contour_row.SetColor(iColorData.second.red(),iColorData.second.green(),
+    iColorData.second.blue(),iColorData.second.alpha(),iColorData.first,
+    this->m_DatabaseConnector);
+  contour_row.SetCollectionID(iMeshID);
 
   contour_row.SaveInDB( this->m_DatabaseConnector);
 

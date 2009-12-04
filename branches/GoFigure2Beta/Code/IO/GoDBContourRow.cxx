@@ -52,7 +52,8 @@ GoDBContourRow::GoDBContourRow():GoDBTraceRow()
 //-------------------------------------------------------------------------
 GoDBContourRow::GoDBContourRow(vtkMySQLDatabase* DatabaseConnector,
   GoDBCoordinateRow Min, GoDBCoordinateRow Max,unsigned int ImgSessionID,
-  vtkPolyData* TraceVisu):GoDBTraceRow(DatabaseConnector,TraceVisu,Min,Max,
+  vtkPolyData* TraceVisu):
+  GoDBTraceRow(DatabaseConnector,TraceVisu,Min,Max,
     ImgSessionID)
 {
   this->InitializeMap();
@@ -90,3 +91,7 @@ int GoDBContourRow::SaveInDB(vtkMySQLDatabase* DatabaseConnector)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+void GoDBContourRow::SetCollectionID (int iCollectionID)
+{
+  this->SetField("MeshID",iCollectionID);
+}
