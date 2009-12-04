@@ -100,6 +100,8 @@ public:
   from the database*/
   std::list<std::pair<std::string,std::vector<int> > > GetColorComboBoxInfofromDB();
 
+  std::list<std::string> GetListExistingCollectionIDFromDB(std::string CollectionName);
+
   void SaveNewColorInDB(std::vector<std::string> iDataNewColor);
   
   QTableWidgetChild* ContourTable;

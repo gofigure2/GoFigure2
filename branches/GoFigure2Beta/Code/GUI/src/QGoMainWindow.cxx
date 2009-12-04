@@ -285,8 +285,11 @@ void QGoMainWindow::openFilesfromDB()
 
     while( contourmesh_list_it != mesh_list.end() )
       {
-      w3t->AddPolyData( contourmesh_list_it->Nodes );
-      ++contourmesh_list_it;
+      if( contourmesh_list_it->Nodes )
+        {
+        w3t->AddPolyData( contourmesh_list_it->Nodes );
+        }
+        ++contourmesh_list_it;
       }
     }
 }

@@ -175,6 +175,10 @@ void QGoTabImageView3DwT::CreateVisuDockWidget()
   QObject::connect( this->m_DataBaseTables,
     SIGNAL( FillDatabaseFinished() ),
     this, SLOT( PassInfoForColorComboBoxFromDB() ) );
+  
+  QObject::connect( this->m_DataBaseTables,
+    SIGNAL( FillDatabaseFinished() ),
+    this, SLOT( PassInfoForCollectionIDFromDB() ) );
 
   QObject::connect( this->m_VisuDockWidget->ColorComboBox,
     SIGNAL( NewColorToBeSaved()),
@@ -1385,4 +1389,13 @@ void QGoTabImageView3DwT::PassInfoForDBFromColorComboBox()
 {
   this->m_DataBaseTables->SaveNewColorInDB(
     this->m_VisuDockWidget->ColorComboBox->GetDataForNewColorToBeSaved());
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoTabImageView3DwT::PassInfoForCollectionIDFromDB()
+{
+  this->m_VisuDockWidget->SetCollectionID(this->m_DataBaseTables->
+    GetListExistingCollectionIDFromDB("mesh"));
+  //todo: always begin with contour ??
 }

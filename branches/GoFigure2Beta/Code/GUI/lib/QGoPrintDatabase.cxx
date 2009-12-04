@@ -767,3 +767,29 @@ bool QGoPrintDatabase::IsDatabaseUsed()
 {
   return m_IsDatabaseUsed;
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::list<std::string> QGoPrintDatabase::GetListExistingCollectionIDFromDB(
+  std::string CollectionName)
+{
+  OpenDBConnection();
+  std::string CollectionID = CollectionName;
+  CollectionID += "ID";
+  std::list<std::string> oListCollectionIDs;
+
+  std::vector<std::string> ResultsQuery  = ListSpecificValuesForOneColumn(
+  this->m_DatabaseConnector,CollectionName, CollectionID,
+  "imagingsessionid",ConvertToString<unsigned int>(this->m_ImgSessionID));
+
+  unsigned int i = 0;
+  while ( i<ResultsQuery.size())
+    {
+    oListCollectionIDs.push_back(ResultsQuery[i]);
+    i++;
+    }
+
+  CloseDBConnection();
+
+  return oListCollectionIDs;
+}

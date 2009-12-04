@@ -338,7 +338,6 @@ void QtColorComboBox::SetDataForColors(
 //-------------------------------------------------------------------------
 void QtColorComboBox::setExistingColors()
 {
-
   if (!m_DataFromDB.empty())
     {
     std::list<std::pair<std::string,std::vector<int> > >::iterator iter =
