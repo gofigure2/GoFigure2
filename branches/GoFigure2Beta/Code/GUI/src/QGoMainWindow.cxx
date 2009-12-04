@@ -265,10 +265,12 @@ void QGoMainWindow::openFilesfromDB()
     std::vector< ContourMeshStructure >::iterator
       contour_list_it = contour_list.begin();
 
+    // we don't need here to save this contour in the database,
+    // since they have just been extracted from it!
     while( contour_list_it != contour_list.end() )
       {
       w3t->AddContourFromNodes( contour_list_it->Nodes, contour_list_it->rgba,
-        contour_list_it->Highlighted );
+        contour_list_it->Highlighted, false );
       ++contour_list_it;
       }
 

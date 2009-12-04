@@ -1019,7 +1019,7 @@ ShowOneChannel( int iChannel )
 void QGoTabImageView3DwT::
 ValidateContour( const int& iId,
   const double& iR, const double& iG, const double& iB, const double& iA,
-  const bool& iHighlighted )
+  const bool& iHighlighted, const bool& iSaveInDataBase )
 {
   vtkPolyData* contour =
     m_ContourRepresentation[iId]->GetContourRepresentationAsPolyData();
@@ -1057,11 +1057,12 @@ ValidateContour( const int& iId,
       this->AddContour( iId, contour_copy,
         contour_property );
 
-    // Save contour in database!
+    if( iSaveInDataBase )
       {
-      m_DataBaseTables->SaveContoursFromVisuInDB(min_idx[0],
-        min_idx[1],min_idx[2],m_TimePoint,max_idx[0],
-        max_idx[1],max_idx[2], contour_nodes);
+      // Save contour in database!
+      m_DataBaseTables->SaveContoursFromVisuInDB( min_idx[0],
+        min_idx[1], min_idx[2], m_TimePoint, max_idx[0],
+        max_idx[1], max_idx[2], contour_nodes );
       }
 
     contour_copy->Delete();
@@ -1099,9 +1100,13 @@ ValidateContour( )
 
   bool highlighted( false );
 
+  // get from m_DataBaseTables if user is using one gofiguredatabase or not.
+  // In such a case contours are saved in the database, else they are not!
+  bool saveindatabase = m_DataBaseTables->IsDatabaseUsed();
+
   for( unsigned int i = 0; i < m_ContourWidget.size(); i++ )
     {
-    ValidateContour( i, highlighted, r, g, b, a );
+    ValidateContour( i, highlighted, r, g, b, a, saveindatabase );
     }
 }
 //-------------------------------------------------------------------------
@@ -1318,10 +1323,11 @@ void
 QGoTabImageView3DwT::
 AddContourFromNodes( vtkPolyData* iNodes,
   double iRgba[4],
-  const bool& iHighlighted )
+  const bool& iHighlighted,
+  const bool& iSaveInDataBase )
 {
   AddContourFromNodes( iNodes, iRgba[0], iRgba[1], iRgba[2], iRgba[3],
-    iHighlighted );
+    iHighlighted, iSaveInDataBase );
 }
 //-------------------------------------------------------------------------
 
@@ -1330,7 +1336,7 @@ void
 QGoTabImageView3DwT::
 AddContourFromNodes( vtkPolyData* iNodes,
   const double& iR, const double& iG, const double& iB, const double& iA,
-  const bool& iHighlighted )
+  const bool& iHighlighted, const bool& iSaveInDataBase )
 {
   if( iNodes->GetNumberOfPoints() > 2 )
     {
@@ -1351,7 +1357,7 @@ AddContourFromNodes( vtkPolyData* iNodes,
       {
       m_ContourWidget[dir]->On();
       m_ContourWidget[dir]->Initialize( iNodes );
-      this->ValidateContour( dir, iR, iG, iB, iA, iHighlighted );
+      this->ValidateContour( dir, iR, iG, iB, iA, iHighlighted, iSaveInDataBase );
       m_ContourWidget[dir]->Off();
       }
     }

@@ -68,10 +68,11 @@
 QGoPrintDatabase::
 QGoPrintDatabase( QWidget* iParent ) :
   QWidget( iParent ),
-  m_DatabaseConnector( 0 )
+  m_DatabaseConnector( 0 ),
+  m_IsDatabaseUsed( false )
 {
   this->setupUi( this );
-  m_IsDatabaseUsed = false;
+
   DBTabWidget->setTabPosition( QTabWidget::West );
   DBTabWidget->setTabShape( QTabWidget::Triangular );
   DBTabWidget->removeTab( 0 );
@@ -118,7 +119,6 @@ QGoPrintDatabase::
 toggleViewAction()
 {
   return m_VisibilityAction;
-
 }
 //--------------------------------------------------------------------------
 
@@ -548,22 +548,23 @@ void QGoPrintDatabase::SaveContoursFromVisuInDB(unsigned int iXCoordMin,
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoPrintDatabase::GetContentAndDisplayFromDB( QString TableName, 
-  QTableWidgetChild* Table,GoDBCollectionOfTraces* iCollectionOfTraces)
-    {
-    //Get the column names to be displayed in the table widget:
-    std::list<std::string> ColumnsNames = 
+void QGoPrintDatabase::GetContentAndDisplayFromDB( QString TableName,
+  QTableWidgetChild* Table, GoDBCollectionOfTraces* iCollectionOfTraces)
+{
+  //Get the column names to be displayed in the table widget:
+  std::list<std::string> ColumnsNames =
       iCollectionOfTraces->GetListColumnsNamesForTableWidget();
-    Table->DisplayColumnNames( TableName, ColumnsNames);
-    this->DBTabWidget->addTab(Table,TableName);
-    //Get all the necessary data from the database:
-    DBTableWidgetContainerType Row_Container = 
-      iCollectionOfTraces->GetRowContainer(m_DatabaseConnector);
+  Table->DisplayColumnNames( TableName, ColumnsNames);
+  this->DBTabWidget->addTab(Table,TableName);
+  //Get all the necessary data from the database:
+  DBTableWidgetContainerType Row_Container =
+    iCollectionOfTraces->GetRowContainer(m_DatabaseConnector);
 
-    Table->DisplayContent(iCollectionOfTraces->GetLinkToRowContainer(), 
-      iCollectionOfTraces->GetTraceName(), iCollectionOfTraces->GetCollectionName());
-    Table->setSortingEnabled(true);
-    }
+  Table->DisplayContent( iCollectionOfTraces->GetLinkToRowContainer(),
+    iCollectionOfTraces->GetTraceName(),
+    iCollectionOfTraces->GetCollectionName() );
+  Table->setSortingEnabled(true);
+}
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -606,17 +607,17 @@ std::vector<ContourMeshStructure> QGoPrintDatabase::
 std::vector<ContourMeshStructure> QGoPrintDatabase::
   GetContoursForAGivenZCoord (unsigned int iZCoord)
 {
-  return this->GetTracesForAGivenZCoord(this->m_ContoursInfo,iZCoord, 
+  return this->GetTracesForAGivenZCoord(this->m_ContoursInfo,iZCoord,
     this->m_CollectionOfContours);
 }
-  
+
 //-------------------------------------------------------------------------
 
-//-------------------------------------------------------------------------  
+//-------------------------------------------------------------------------
 std::vector<ContourMeshStructure> QGoPrintDatabase::
   GetMeshesForAGivenZCoord (unsigned int iZCoord)
 {
-  return this->GetTracesForAGivenZCoord(this->m_MeshesInfo,iZCoord, 
+  return this->GetTracesForAGivenZCoord(this->m_MeshesInfo,iZCoord,
     this->m_CollectionOfTracks);
 }
 //-------------------------------------------------------------------------
@@ -629,27 +630,27 @@ std::vector<ContourMeshStructure> QGoPrintDatabase::
   std::vector<ContourMeshStructure> oSelectedTraces;
   GoDBTableWidgetContainer* LinkToRowContainer =
     iCollectionOfTraces->GetLinkToRowContainer();
-  std::list<std::string> ListOfSelectedTracesID = 
+  std::list<std::string> ListOfSelectedTracesID =
     LinkToRowContainer->GetTracesIDForAGivenZCoord(iZCoord);
-  
+
   std::vector<ContourMeshStructure>::iterator iterAllTraces = iAllTraces.begin();
   std::list<std::string>::iterator iterTracesID = ListOfSelectedTracesID.begin();
 
   while (iterTracesID != ListOfSelectedTracesID.end())
     {
     std::string TraceIDToFindStrg = *iterTracesID;
-    int TraceIDToFind = atoi(TraceIDToFindStrg.c_str());
+    int TraceIDToFind = atoi( TraceIDToFindStrg.c_str() );
     bool found = false;
     while (iterAllTraces != iAllTraces.end()&& found == false)
-      {      
+      {
       if (TraceIDToFind == iterAllTraces->TraceID)
         {
         oSelectedTraces.push_back(*iterAllTraces);
         found = true;
         }
-      iterAllTraces ++;
+      ++iterAllTraces;
       }
-    iterTracesID ++;
+    ++iterTracesID;
     }
   return oSelectedTraces;
 }
