@@ -11,6 +11,7 @@
 
 #include "GoDBCoordinateRow.h"
 #include "GoDBMeshRow.h"
+#include "GoDBTrackRow.h"
 
 /**
  * \brief Constructor
@@ -197,7 +198,7 @@ Read()
           {
           track.m_YMin = mesh.m_YMin;
           }
-        if( mesh.m_YMax > track.m_YMax )SetColor( 255, 255, 0, 255,"KishoreTrackColor", m_DBConnector );
+        if( mesh.m_YMax > track.m_YMax )
           {
           track.m_YMax = mesh.m_YMax;
           }
@@ -212,7 +213,7 @@ Read()
 
         mesh.m_Points = vtk_mesh;
 
-        for( ch = 0; ch < m_NumberOfChannels; ch++ )SetColor( 255, 255, 0, 255,"KishoreTrackColor", m_DBConnector );
+        for( ch = 0; ch < m_NumberOfChannels; ch++ )
           {
           // <intensity>
           getline( ifs, line );
@@ -224,7 +225,7 @@ Read()
           ifs >> word >> mesh.m_AverageIntensity[ch];
 
           listofmeshes.push_back( mesh );
-          SetColor( 255, 255, 0, 255,"KishoreTrackColor", m_DBConnector );
+
           getline( ifs, line );
           // </intensity>
           getline( ifs, line );
@@ -268,7 +269,7 @@ SaveMeshInDataBase( const InternalMeshStructure& iMesh )
 
   GoDBMeshRow mesh_row( m_DBConnector, coord_min, coord_max,
     m_ImagingSessionId, iMesh.m_Points );
-  mesh_row.SetColor( 255, 255, 0, 255, "KishoreMeshColor", m_DBConnector );
+  mesh_row.SetColor( 165, 44, 23, 255, "KishoreMeshColor", m_DBConnector );
   int mesh_id = mesh_row.SaveInDB( m_DBConnector );
   std::cout <<mesh_id <<std::endl;
 }
@@ -292,9 +293,9 @@ SaveTrackInDataBase( const InternalTrackStructure& iTrack )
   coord_min.SetField< unsigned int >( "ZCoord", iTrack.m_ZMax );
   coord_max.SetField< unsigned int >( "TCoord", iTrack.m_TMax );
 
-  /*GoDBMeshRow track_row( m_DBConnector, coord_min, coord_max,
+  GoDBTrackRow track_row( m_DBConnector, coord_min, coord_max,
     m_ImagingSessionId, NULL);
 
-  track_row.SetColor( 255, 255, 0, 255,"KishoreTrackColor", m_DBConnector );
-  int track_id = track_row.SaveInDB( m_DBConnector );*/
+  track_row.SetColor( 55, 25, 0, 255,"KishoreTrackColor", m_DBConnector );
+  int track_id = track_row.SaveInDB( m_DBConnector );
 }
