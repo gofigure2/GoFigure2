@@ -339,8 +339,7 @@ void QTableWidgetChild::SetColorForAllTable (GoDBTableWidgetContainer* iLinkToRo
   ColumnNameID += "ID";
   int indexGroupIDInTableWidget = findColumnName(ColumnNameID.c_str(),
     this->recordHeaderNamesOrder());
-
-  for (unsigned int i=0; i < RowContainer[i+1].second.size();i++)
+  for (unsigned int i=0; i < this->rowCount();i++)
     {
     QColor Color;
     QColor TextColor;
