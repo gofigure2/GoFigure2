@@ -197,7 +197,7 @@ Read()
           {
           track.m_YMin = mesh.m_YMin;
           }
-        if( mesh.m_YMax > track.m_YMax )
+        if( mesh.m_YMax > track.m_YMax )SetColor( 255, 255, 0, 255,"KishoreTrackColor", m_DBConnector );
           {
           track.m_YMax = mesh.m_YMax;
           }
@@ -212,7 +212,7 @@ Read()
 
         mesh.m_Points = vtk_mesh;
 
-        for( ch = 0; ch < m_NumberOfChannels; ch++ )
+        for( ch = 0; ch < m_NumberOfChannels; ch++ )SetColor( 255, 255, 0, 255,"KishoreTrackColor", m_DBConnector );
           {
           // <intensity>
           getline( ifs, line );
@@ -224,7 +224,7 @@ Read()
           ifs >> word >> mesh.m_AverageIntensity[ch];
 
           listofmeshes.push_back( mesh );
-
+          SetColor( 255, 255, 0, 255,"KishoreTrackColor", m_DBConnector );
           getline( ifs, line );
           // </intensity>
           getline( ifs, line );
@@ -292,11 +292,9 @@ SaveTrackInDataBase( const InternalTrackStructure& iTrack )
   coord_min.SetField< unsigned int >( "ZCoord", iTrack.m_ZMax );
   coord_max.SetField< unsigned int >( "TCoord", iTrack.m_TMax );
 
-  // Nothing in points
-  GoDBMeshRow track_row( m_DBConnector, coord_min, coord_max,
+  /*GoDBMeshRow track_row( m_DBConnector, coord_min, coord_max,
     m_ImagingSessionId, NULL);
 
   track_row.SetColor( 255, 255, 0, 255,"KishoreTrackColor", m_DBConnector );
-  int track_id = track_row.SaveInDB( m_DBConnector );
-  std::cout <<track_id <<std::endl;
+  int track_id = track_row.SaveInDB( m_DBConnector );*/
 }
