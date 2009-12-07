@@ -105,6 +105,9 @@ Read()
       InternalTrackStructure track;
 
       track.m_TrackId = j;
+      std::stringstream oTrackCoordinates;
+
+      oTrackCoordinates << "3" << " " << "9.1" << " "<< "6.3" << " "<< "7.32" << " " << "0.003" << " "<< "39.1" << " "<< "36.3" << " "<< "37.32" << " " << "30.003" << " "<< "29.1" << " "<< "26.3" << " "<< "27.32" << " " << "20.003" << " ";
 
       //<Track>
       getline( ifs, line );
@@ -213,6 +216,18 @@ Read()
 
         mesh.m_Points = vtk_mesh;
 
+        unsigned int numberOfCoordinates;
+
+        numberOfCoordinates = GetNumberOfCoordinates(oTrackCoordinates.str());
+        /*
+        std::stringstream str( m_Text );
+        std::string buffer = numberOfCoordinates;
+        std::string test1;
+        std::string test2;
+        oTrackCoordinates >> test1 >> test2;*/
+        cout <<"string size: " << numberOfCoordinates << endl;
+        Add(oTrackCoordinates.str(), "2", "3", "5", "33");
+
         for( ch = 0; ch < m_NumberOfChannels; ch++ )
           {
           // <intensity>
@@ -298,4 +313,65 @@ SaveTrackInDataBase( const InternalTrackStructure& iTrack )
 
   track_row.SetColor( 55, 25, 0, 255,"KishoreTrackColor", m_DBConnector );
   int track_id = track_row.SaveInDB( m_DBConnector );
+}
+
+void
+TrackTextFileImport::
+Add(const std::string& ioTrackList, const std::string& x, const std::string& y, const std::string& z, const std::string& t)
+{
+  std::stringstream str( ioTrackList );
+  std::string NumberOfCoordinates;
+  str >> NumberOfCoordinates ;
+
+  unsigned int numberOfCoordinates;
+  numberOfCoordinates = atoi( NumberOfCoordinates.c_str() );
+
+  // Decompose the string into a map
+  std::map< double, std::string > mapOfCoordinates;
+
+  for(unsigned int i=0; i<numberOfCoordinates; i++)
+    {
+	//atof
+	std::string xOld = "";
+	std::string yOld = "";
+	std::string zOld = "";
+	std::string tOld = "";
+	std::string xyzOld = "";
+	str >> xOld >> yOld >> zOld;
+	xyzOld += xOld;
+	xyzOld += " ";
+	xyzOld += yOld;
+	xyzOld += " ";
+	xyzOld += zOld;
+	//cout<< "Test: "<< xyzOld << endl;
+	//std::stringstream str1( xyzOld );
+	//str1 >> xOld >> yOld >> zOld;
+	//cout<<"xOld: "<<xOld<<" yOld: "<< yOld << endl;
+
+	str >> tOld;
+	double time = 0.0;
+	time = atof(tOld.c_str());
+	cout<< "time: "<< time << endl;
+	mapOfCoordinates[time] = xyzOld;
+    }
+
+  std::map< double, std::string >::iterator it;
+  cout << "mapOfCoordinates now contains " << (int) mapOfCoordinates.size() << " elements." << endl;
+
+  for ( it=mapOfCoordinates.begin() ; it != mapOfCoordinates.end(); it++ )
+      cout << (*it).first << " => " << (*it).second << endl;
+
+
+
+}
+
+unsigned int
+TrackTextFileImport::
+GetNumberOfCoordinates( const std::string& ioTrackList )
+{
+  std::stringstream str( ioTrackList );
+  std::string NumberOfCoordinates;
+  str >> NumberOfCoordinates ;
+
+  return atoi( NumberOfCoordinates.c_str() );
 }

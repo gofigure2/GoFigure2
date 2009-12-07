@@ -4,6 +4,7 @@
 #include <string>
 #include <list>
 #include <vector>
+#include <map>
 
 #include "vtkType.h"
 
@@ -82,6 +83,7 @@ class TrackTextFileImport
     void SaveMeshInDataBase( const InternalMeshStructure& iMesh );
     void SaveTrackInDataBase( const InternalTrackStructure& iTrack );
 
-
+    void Add(const std::string& ioTrackList, const std::string& x, const std::string& y, const std::string& z, const std::string& t);
+    unsigned int GetNumberOfCoordinates( const std::string& ioTrackList );
 };
 #endif
