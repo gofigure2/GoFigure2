@@ -182,6 +182,8 @@ public slots:
   void ActivateManualSegmentationEditor( const bool& iActivate );
   void ValidateContour();
   void ReinitializeContour();
+  void ReEditContour( const unsigned int& iId );
+
 
   void ChangeContourRepresentationProperty();
   /** \brief Get the info for the colors from the database and pass

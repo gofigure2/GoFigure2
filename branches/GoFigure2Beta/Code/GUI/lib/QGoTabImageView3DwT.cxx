@@ -1407,28 +1407,50 @@ void QGoTabImageView3DwT::PassInfoForCollectionIDFromDB()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-// void
-// QGoTabImageView3DwT::
-// ReEditContour( const unsigned int& iId )
-// {
-//   if( iContainer.size() != 0 )
-//     {
-//     ContourMeshStructureMultiIndexContainer::index< TraceID >::type::iterator
-//       it = m_ContourMeshContainer.get< TraceID >().find( iId );
-//
-//     if( it != iContainer.get< TraceID >().end() )
-//       {
-//       while( it->TraceID == iId )
-//         {
-//         c_dir = (*it).Direction;
-//         c_actor = (*it).Actor;
-//
-//         RemoveActorFromViewer( c_dir, c_actor );
-//         ++it;
-//         }
-//
-//
-//       }
-//     }
-// }
+void
+QGoTabImageView3DwT::
+ReEditContour( const unsigned int& iId )
+{
+  if( !m_ContourMeshContainer.empty() )
+    {
+    ContourMeshStructureMultiIndexContainer::index< TraceID >::type::iterator
+      it = m_ContourMeshContainer.get< TraceID >().find( iId );
+
+    if( it != m_ContourMeshContainer.get< TraceID >().end() )
+      {
+      int c_dir;
+      vtkActor* c_actor;
+      vtkPolyData* c_nodes;
+
+      while( it->TraceID == iId )
+        {
+        c_dir = (*it).Direction;
+        c_actor = (*it).Actor;
+        c_nodes = (*it).Nodes;
+
+        RemoveActorFromViewer( c_dir, c_actor );
+        ++it;
+        }
+
+      double bounds[6];
+      c_nodes->GetBounds( bounds );
+
+      int dir = -1;
+
+      for( int i = 0; i < 3; i++ )
+        {
+        if( bounds[2*i] == bounds[2*i+1] )
+          {
+          dir = i;
+          }
+        }
+
+      if( dir != -1 )
+        {
+        m_ContourWidget[dir]->On();
+        m_ContourWidget[dir]->Initialize( c_nodes );
+        }
+      }
+    }
+}
 //-------------------------------------------------------------------------
