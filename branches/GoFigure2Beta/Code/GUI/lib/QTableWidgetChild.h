@@ -116,6 +116,8 @@ public slots:
   void SetColorForAllTable (GoDBTableWidgetContainer* iLinkToRowContainer,
     std::string NameGroupColor);
 
+  std::vector<unsigned int> GetListCheckedRows();
+
 };
 
 #endif

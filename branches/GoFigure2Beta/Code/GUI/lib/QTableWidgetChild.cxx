@@ -415,3 +415,11 @@ void QTableWidgetChild::InsertNewRow(GoDBTableWidgetContainer* iLinkToRowContain
       this->SetColorForAllTable(iLinkToRowContainer,CollectionName);
     }//ENDELSE
 }
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+std::vector<unsigned int> QTableWidgetChild::GetListCheckedRows()
+{
+  std::vector<unsigned int> oListCheckedRows;
+  return oListCheckedRows;
+}
