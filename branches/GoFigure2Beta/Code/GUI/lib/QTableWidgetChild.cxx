@@ -185,7 +185,8 @@ void QTableWidgetChild::SetSelectRowTraceID (std::string TraceName,
 QStringList QTableWidgetChild::ValuesForSelectedRows(QString ColumnName)
 {
   QList<QTableWidgetSelectionRange> Selection;
-  Selection = this->selectedRanges();
+  //Selection = this->selectedRanges();
+  
 
   QStringList ColumnsHeader = this->recordHeaderNamesOrder();
   int ColumnIndex = findColumnName(ColumnName,ColumnsHeader);

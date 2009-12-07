@@ -370,7 +370,7 @@ std::string ColorTableScript()
     `Blue` TINYINT UNSIGNED NOT NULL ,\
     `Alpha` TINYINT UNSIGNED NOT NULL ,\
     `Description` VARCHAR(1000) NULL ,\
-     UNIQUE INDEX UniqueColor (`Red`,`Green`,`Blue`,`Alpha`),\
+     UNIQUE INDEX UniqueColor (`Red`,`Green`,`Blue`,`Alpha`,`Name`),\
      PRIMARY KEY (`ColorID`)\
      );";
  }

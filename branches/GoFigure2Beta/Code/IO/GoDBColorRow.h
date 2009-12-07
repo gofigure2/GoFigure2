@@ -60,11 +60,13 @@ public:
   ID for new created color*/
   int SaveInDB(vtkMySQLDatabase* DatabaseConnector);
 
-protected:
-  virtual void InitializeMap();
-  /**\brief check if the color already exits in the database, if yes, 
+/**\brief check if the color already exits in the database, if yes, 
   return the corresponding ID, if not, return -1*/
   int DoesThisColorAlreadyExists(vtkMySQLDatabase* DatabaseConnector);
+
+protected:
+  virtual void InitializeMap();
+  
     
 };
 

@@ -106,5 +106,13 @@ void GoDBTraceRow::SetColor(unsigned int Red, unsigned int Green,
   ColorRow.SetField<int>("Blue",Blue);
   ColorRow.SetField<int>("Alpha",Alpha);
   ColorRow.SetField("Name", ColorName);
-  this->m_MapRow["ColorID"] = ConvertToString<int>(ColorRow.SaveInDB(DatabaseConnector));
+  int ColorID = ColorRow.DoesThisColorAlreadyExists(DatabaseConnector);
+  if (ColorID == -1)
+    {
+    this->m_MapRow["ColorID"] = ConvertToString<int>(ColorRow.SaveInDB(DatabaseConnector));
+    }
+  else
+    {
+    this->SetField<int>("ColorID",ColorID);
+    }
 }
