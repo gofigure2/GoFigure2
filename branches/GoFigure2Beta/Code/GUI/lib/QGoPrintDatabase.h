@@ -180,7 +180,7 @@ protected:
     database, then display them in the QTableWidgetchild.
     \todo check that the values hasn't been modified first, then update
     only in the database the modified ones*/
-  template< class myT >
+  /*template< class myT >
   void UpdateContentAndDisplayFromDB( QString TableName, QTableWidgetChild* Table,
     vtkMySQLDatabase* DatabaseConnector)
     {
@@ -214,7 +214,7 @@ protected:
     delete mySet;
     emit TableContentChanged();
     Table->setSortingEnabled(true);
-    }
+    }*/
 
   /** \brief Display the values stored in the RowContainer (list of type T)
   in the QTableWidgetChild TableToFill: */
@@ -270,6 +270,9 @@ protected:
 
 
   void closeEvent(QCloseEvent* event);
+  void UpdateTableWidgetWithNewCreatedTrace( QString TableName, 
+    QTableWidgetChild* Table,vtkMySQLDatabase* DatabaseConnector, 
+    GoDBCollectionOfTraces* iCollectionOfTraces);
 
 protected slots:
   void CreateContextMenu(const QPoint &pos);

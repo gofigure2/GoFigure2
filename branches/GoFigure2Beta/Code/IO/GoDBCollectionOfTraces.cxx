@@ -401,3 +401,48 @@ GoDBCollectionOfTraces::DBTableWidgetContainerType
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+GoDBTableWidgetContainer* GoDBCollectionOfTraces::GetLinkToNewCreatedTraceContainer(
+  vtkMySQLDatabase* iDatabaseConnector)
+{
+  GoDBTableWidgetContainer* LinkToNewCreatedTraceContainer = new
+    GoDBTableWidgetContainer(this->m_CollectionName,
+    this->m_TracesName); 
+ 
+  /*first, get the right parts of the first query:
+ all the fields except the ones where table.field are already in the query:*/
+  std::vector<std::string> JoinFirstTablesOnTraceTable = 
+    m_LinkToRowContainer->GetQueryStringForTraceJoinedTables(false);
+  std::vector<std::string> SelectFirstFields = 
+    m_LinkToRowContainer->GetQueryStringForSelectFieldsTables(false);
+  
+  //then, get the last ID in the database, corresponding to the new created trace:
+  int NewTraceID = MaxValueForOneColumnInTable(iDatabaseConnector,
+    this->m_TracesIDName,this->m_TracesName,"ImagingSessionID",
+    ConvertToString<unsigned int>(this->m_ImgSessionID));
+
+  //then, get the results of the first query:
+  std::vector<std::vector<std::string> >ResultsFirstQuery = GetValuesFromSeveralTables(
+    iDatabaseConnector,this->m_TracesName,SelectFirstFields, this->m_TracesIDName,
+    ConvertToString<int>(NewTraceID),JoinFirstTablesOnTraceTable);
+
+  //insert into the row container, the results of the first query:
+ // m_LinkToRowContainer->FillRowContainer(ResultsFirstQuery,SelectFirstFields);
+  LinkToNewCreatedTraceContainer->FillRowContainer(ResultsFirstQuery,SelectFirstFields);
+
+  //Get the right parts of the second query (with only the remaining fields):
+   std::vector<std::string> JoinSecondTablesOnTraceTable = 
+    m_LinkToRowContainer->GetQueryStringForTraceJoinedTables(true);
+  std::vector<std::string> SelectSecondFields = 
+    m_LinkToRowContainer->GetQueryStringForSelectFieldsTables(true);
+
+  //then, get the results of the second query:
+  std::vector<std::vector<std::string> >ResultsSecondQuery = GetValuesFromSeveralTables(
+    iDatabaseConnector,this->m_TracesName,SelectSecondFields, this->m_TracesIDName,
+    ConvertToString<int>(NewTraceID),JoinSecondTablesOnTraceTable);
+  
+  //insert into the row container, the results of the second query:
+  //m_LinkToRowContainer->FillRowContainer(ResultsSecondQuery,SelectSecondFields);
+   LinkToNewCreatedTraceContainer->FillRowContainer(ResultsSecondQuery,SelectSecondFields);
+   GoDBCollectionOfTraces::DBTableWidgetContainerType test = LinkToNewCreatedTraceContainer->GetRowContainer();//for test
+   return LinkToNewCreatedTraceContainer;
+}

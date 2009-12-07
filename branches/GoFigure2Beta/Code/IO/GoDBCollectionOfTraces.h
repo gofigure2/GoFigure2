@@ -99,6 +99,8 @@ public:
     }
 
   DBTableWidgetContainerType GetRowContainer(vtkMySQLDatabase* DatabaseConnector);
+  GoDBTableWidgetContainer*  GetLinkToNewCreatedTraceContainer(
+    vtkMySQLDatabase* iDatabaseConnector);
 
   template< class myT >
   void QMEGAVTKADDON2_EXPORT CreateNewCollectionFromSelection(

@@ -668,3 +668,14 @@ int GoDBTableWidgetContainer::GetIndexInsideRowContainer(std::string iInfoName)
 
   return SelectedTracesIDFromRowContainer;
 }
+ //--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void GoDBTableWidgetContainer::InsertNewCreatedTrace()
+{
+  /*std::vector<std::string> GetQueryStringForSelectFieldsTables(bool SameFieldsInQuery);
+  std::vector<std::string> GetQueryStringForTraceJoinedTables(bool SameFieldsInQuery);
+  int TraceID = int MaxValueForOneColumnInTable(DatabaseConnector,
+  std::string ColumnName,std::string TableName,std::string field,
+  std::string value);*/
+}

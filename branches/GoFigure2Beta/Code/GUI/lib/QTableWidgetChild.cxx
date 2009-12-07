@@ -292,7 +292,7 @@ void QTableWidgetChild::DisplayContent(GoDBTableWidgetContainer* iLinkToRowConta
           }//ENDFOR
         }//ENDIF
       }//ENDFOR
-      SetSelectedColumn(NbofRows);
+      SetSelectedColumn(NbofRows,0);
       this->SetColorForAllTable(iLinkToRowContainer,TraceName);
       this->SetColorForAllTable(iLinkToRowContainer,CollectionName);
     }//ENDELSE
@@ -300,11 +300,12 @@ void QTableWidgetChild::DisplayContent(GoDBTableWidgetContainer* iLinkToRowConta
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QTableWidgetChild::SetSelectedColumn(unsigned int iNbOfRows)
+void QTableWidgetChild::SetSelectedColumn(unsigned int iNbOfRows, 
+  unsigned int StartedRow)
 {
   //int indexCol = findColumnName( "Selected", recordHeaderNamesOrder());
   int indexCol = findColumnName( "", recordHeaderNamesOrder());
-  for (unsigned int i =0 ; i < iNbOfRows ; i++)
+  for (unsigned int i = StartedRow ; i < iNbOfRows ; i++)
     {
     QTableWidgetNumericalItem* Checkbox = new QTableWidgetNumericalItem;
     Checkbox->setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsEnabled |
@@ -372,4 +373,45 @@ void QTableWidgetChild::SetColorForAllTable (GoDBTableWidgetContainer* iLinkToRo
 int IndexForRowContainer(QTableWidgetChild::DBTableWidgetContainerType iRowContainer)
 {
   return 0;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QTableWidgetChild::InsertNewRow(GoDBTableWidgetContainer* iLinkToRowContainer,
+    std::string TraceName, std::string CollectionName)
+{
+   DBTableWidgetContainerType NewTraceRowContainer = iLinkToRowContainer->GetRowContainer();
+   if (NewTraceRowContainer.size() == 0 || NewTraceRowContainer[1].second.size() != 1)
+    {
+    std::cout<<"The New Trace Row Container is totally empty or there is more than 1 trace in it";
+    std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
+    std::cout << std::endl;
+    }
+  else
+    {
+    int NewRow = this->rowCount()+ 1;
+    int NbRow = NewRow;
+    this->setRowCount(NbRow);
+    for (unsigned int i = 0; i < NewTraceRowContainer.size(); i++)
+      {    
+      if (NewTraceRowContainer[i].first.ColumnNameTableWidget != "None" && !NewTraceRowContainer[i].second.empty())
+        {
+        for (int j = 0; j < this->columnCount();j++)
+          {
+          std::string HeaderCol = this->horizontalHeaderItem(j)->text().toStdString();
+          if (HeaderCol == NewTraceRowContainer[i].first.ColumnNameTableWidget)
+            {
+            QTableWidgetNumericalItem* CellTable = new QTableWidgetNumericalItem;
+            std::string Value = NewTraceRowContainer[i].second[0];
+            CellTable->setText(Value.c_str());
+            CellTable->setTextAlignment(Qt::AlignCenter);
+            this->setItem(NewRow-1,j,CellTable);
+            }//ENDIF
+          }//ENDFOR
+        }//ENDIF
+      }//ENDFOR
+      SetSelectedColumn(1,NewRow-1);
+      this->SetColorForAllTable(iLinkToRowContainer,TraceName);
+      this->SetColorForAllTable(iLinkToRowContainer,CollectionName);
+    }//ENDELSE
 }

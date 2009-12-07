@@ -74,6 +74,8 @@ public:
   void DisplayContent(GoDBTableWidgetContainer* iLinkToRowContainer,
     std::string TraceName, std::string CollectionName);
 
+  void InsertNewRow(GoDBTableWidgetContainer* iLinkToRowContainer,
+    std::string TraceName, std::string CollectionName);
   
 
 protected:
@@ -109,7 +111,7 @@ public slots:
   QStringList ValuesForSelectedRows(QString ColumnName );
   
   /** \brief Put checkboxes in the column "Selected" */
-  void SetSelectedColumn(unsigned int iNbOfRows);
+  void SetSelectedColumn(unsigned int iNbOfRows,unsigned int StartedRow);
 
   void SetColorForAllTable (GoDBTableWidgetContainer* iLinkToRowContainer,
     std::string NameGroupColor);

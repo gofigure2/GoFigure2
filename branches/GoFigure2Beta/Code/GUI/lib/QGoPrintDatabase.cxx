@@ -242,8 +242,8 @@ void QGoPrintDatabase::closeEvent(QCloseEvent* iEvent)
 void QGoPrintDatabase::UpdateTableFromDB()
 {
   //todo: make it ok for all tables
-  UpdateContentAndDisplayFromDB< GoDBContourRow >("contour",
-    ContourTable,m_DatabaseConnector);
+  //UpdateContentAndDisplayFromDB< GoDBContourRow >("contour",
+   // ContourTable,m_DatabaseConnector);
 }
 //--------------------------------------------------------------------------
 
@@ -272,32 +272,32 @@ void QGoPrintDatabase::DeleteTraces()
       //add the tableWidgetChild in the CollectionOfTraces?
       QStringList ContoursToDelete = this->ContourTable->ValuesForSelectedRows("ContourID");
       m_CollectionOfContours->DeleteTraces(ContoursToDelete,m_DatabaseConnector);
-      this->UpdateContentAndDisplayFromDB<GoDBContourRow>("contour",
-        ContourTable,m_DatabaseConnector);
+      //this->UpdateContentAndDisplayFromDB<GoDBContourRow>("contour",
+      //  ContourTable,m_DatabaseConnector);
       break;
       }
     case 1: //mesh
       {
       QStringList MeshesToDelete = this->MeshTable->ValuesForSelectedRows("MeshID");
       m_CollectionOfMeshes->DeleteTraces(MeshesToDelete,m_DatabaseConnector);
-      this->UpdateContentAndDisplayFromDB<GoDBMeshRow>("mesh",
-        MeshTable,m_DatabaseConnector);
+     // this->UpdateContentAndDisplayFromDB<GoDBMeshRow>("mesh",
+      //  MeshTable,m_DatabaseConnector);
       break;
       }
     case 2: //track
       {
       QStringList TracksToDelete = this->TrackTable->ValuesForSelectedRows("TrackID");
         m_CollectionOfTracks->DeleteTraces(TracksToDelete,m_DatabaseConnector);
-      this->UpdateContentAndDisplayFromDB<GoDBTrackRow>("track",
-        TrackTable,m_DatabaseConnector);
+      //this->UpdateContentAndDisplayFromDB<GoDBTrackRow>("track",
+     //   TrackTable,m_DatabaseConnector);
       break;
       }
     case 3: //lineage
       {
       QStringList LineagesToDelete = this->LineageTable->ValuesForSelectedRows("LineageID");
       m_CollectionOfLineages->DeleteTraces(LineagesToDelete,m_DatabaseConnector);
-      this->UpdateContentAndDisplayFromDB<GoDBLineageRow>("lineage",
-        LineageTable,m_DatabaseConnector);
+     // this->UpdateContentAndDisplayFromDB<GoDBLineageRow>("lineage",
+     //   LineageTable,m_DatabaseConnector);
       break;
       }
     default:
@@ -332,10 +332,10 @@ void QGoPrintDatabase::CreateCorrespondingCollection()
 
         m_CollectionOfContours->CreateNewCollectionFromSelection<GoDBMeshRow>(ListSelectedContours,
           m_DatabaseConnector,myNewMesh);
-        this->UpdateContentAndDisplayFromDB<GoDBContourRow>("contour",
-          ContourTable,m_DatabaseConnector);
-        this->UpdateContentAndDisplayFromDB<GoDBMeshRow>("mesh",
-          MeshTable,m_DatabaseConnector);
+       // this->UpdateContentAndDisplayFromDB<GoDBContourRow>("contour",
+       //   ContourTable,m_DatabaseConnector);
+       // this->UpdateContentAndDisplayFromDB<GoDBMeshRow>("mesh",
+       //   MeshTable,m_DatabaseConnector);
         break;
         }
     case 1: //mesh
@@ -345,8 +345,8 @@ void QGoPrintDatabase::CreateCorrespondingCollection()
         //myNewTrack.SetField("ColorID",  to be defined for some color chosen by the user
         m_CollectionOfMeshes->CreateNewCollectionFromSelection<GoDBTrackRow>(ListSelectedMeshes,
           m_DatabaseConnector,myNewTrack);
-        this->UpdateContentAndDisplayFromDB<GoDBMeshRow>("mesh",MeshTable,m_DatabaseConnector);
-        this->UpdateContentAndDisplayFromDB<GoDBTrackRow>("track",TrackTable,m_DatabaseConnector);
+      //  this->UpdateContentAndDisplayFromDB<GoDBMeshRow>("mesh",MeshTable,m_DatabaseConnector);
+      //  this->UpdateContentAndDisplayFromDB<GoDBTrackRow>("track",TrackTable,m_DatabaseConnector);
         break;
         }
     case 2: //track
@@ -356,8 +356,8 @@ void QGoPrintDatabase::CreateCorrespondingCollection()
       //myNewLineage.SetField("ColorID",  to be defined for some color chosen by the user
       m_CollectionOfTracks->CreateNewCollectionFromSelection<GoDBLineageRow>(ListSelectedTracks,
         m_DatabaseConnector,myNewLineage);
-      this->UpdateContentAndDisplayFromDB<GoDBTrackRow>("track",TrackTable,m_DatabaseConnector);
-      this->UpdateContentAndDisplayFromDB<GoDBLineageRow>("lineage",LineageTable,m_DatabaseConnector);
+     // this->UpdateContentAndDisplayFromDB<GoDBTrackRow>("track",TrackTable,m_DatabaseConnector);
+     // this->UpdateContentAndDisplayFromDB<GoDBLineageRow>("lineage",LineageTable,m_DatabaseConnector);
       break;
       }
     default:
@@ -457,8 +457,8 @@ void QGoPrintDatabase::AddToExistingCollection()
           QStringList ListContours = this->ContourTable->ValuesForSelectedRows("ContourID");
           m_CollectionOfContours->AddSelectedTracesToCollection(ListContours,
             CollectionID.toInt(),m_DatabaseConnector);
-          this->UpdateContentAndDisplayFromDB<GoDBContourRow>("contour",
-            ContourTable,m_DatabaseConnector);
+         // this->UpdateContentAndDisplayFromDB<GoDBContourRow>("contour",
+         //   ContourTable,m_DatabaseConnector);
           break;
           }
       case 1: //mesh
@@ -466,8 +466,8 @@ void QGoPrintDatabase::AddToExistingCollection()
           QStringList ListMeshes = this->MeshTable->ValuesForSelectedRows("MeshID");
           m_CollectionOfMeshes->AddSelectedTracesToCollection(ListMeshes,
             CollectionID.toInt(),m_DatabaseConnector);
-          this->UpdateContentAndDisplayFromDB<GoDBMeshRow>("mesh",
-            MeshTable, m_DatabaseConnector);
+         // this->UpdateContentAndDisplayFromDB<GoDBMeshRow>("mesh",
+         //   MeshTable, m_DatabaseConnector);
           break;
           }
       case 2: //track
@@ -475,8 +475,8 @@ void QGoPrintDatabase::AddToExistingCollection()
         QStringList ListTracks = this->TrackTable->ValuesForSelectedRows("TrackID");
         m_CollectionOfTracks->AddSelectedTracesToCollection(ListTracks,
           CollectionID.toInt(),m_DatabaseConnector);
-        this->UpdateContentAndDisplayFromDB<GoDBTrackRow>("track",
-          TrackTable, m_DatabaseConnector);
+       // this->UpdateContentAndDisplayFromDB<GoDBTrackRow>("track",
+      //    TrackTable, m_DatabaseConnector);
         break;
         }
       default:
@@ -592,8 +592,10 @@ void QGoPrintDatabase::SaveContoursFromVisuInDB(unsigned int iXCoordMin,
 
   contour_row.SaveInDB( this->m_DatabaseConnector);
 
-  UpdateContentAndDisplayFromDB< GoDBContourRow >("contour",
-    ContourTable,m_DatabaseConnector);
+ // UpdateContentAndDisplayFromDB< GoDBContourRow >("contour",
+  //  ContourTable,m_DatabaseConnector);
+  this->UpdateTableWidgetWithNewCreatedTrace("contour",this->ContourTable,this->m_DatabaseConnector,
+    this->m_CollectionOfContours);
 
   CloseDBConnection();
 }
@@ -793,3 +795,57 @@ std::list<std::string> QGoPrintDatabase::GetListExistingCollectionIDFromDB(
 
   return oListCollectionIDs;
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoPrintDatabase::UpdateTableWidgetWithNewCreatedTrace( QString TableName, 
+  QTableWidgetChild* Table,vtkMySQLDatabase* DatabaseConnector, 
+  GoDBCollectionOfTraces* iCollectionOfTraces)
+{
+    /*Table->setSortingEnabled(false);
+    typedef GoDBRecordSet< myT >                  SetType;
+    typedef typename SetType::InternalObjectType  InternalObjectType;
+    typedef typename SetType::RowContainerType    RowContainerType;
+
+    RowContainerType* RowContainer;
+
+    SetType* mySet = new SetType;
+    mySet->SetConnector(DatabaseConnector);
+    mySet->SetTableName( TableName.toStdString() );
+    std::stringstream WhereClause;
+    WhereClause << "ImagingSessionID = ";
+    WhereClause << m_ImgSessionID;
+    WhereClause << ";";
+    mySet->SetWhereString(WhereClause.str());
+    mySet->PopulateFromDB();
+
+    myT myNewObject;
+    mySet->AddObject( myNewObject );
+    RowContainer = mySet->GetRowContainer();
+    if( RowContainer->size() < 2 )
+      {
+      std::cout<<"Table empty";
+      std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
+      std::cout << std::endl;
+      }
+    PrintOutContentFromDB< myT >( RowContainer, Table );
+    delete mySet;
+    emit TableContentChanged();
+    Table->setSortingEnabled(true);*/
+ 
+  //Get all the necessary data from the database:
+
+  //DBTableWidgetContainerType RowContainerForNewTrace =
+  //  iCollectionOfTraces->GetNewCreatedTraceContainer(m_DatabaseConnector);
+  GoDBTableWidgetContainer* LinkToNewTrace = iCollectionOfTraces->GetLinkToNewCreatedTraceContainer(
+    this->m_DatabaseConnector);
+
+  Table->setSortingEnabled(false);
+  
+  //iCollectionOfTraces->GetLinkToNewCreatedTraceContainer(this->m_DatabaseConnector);
+  Table->InsertNewRow( LinkToNewTrace,iCollectionOfTraces->GetTraceName(),
+    iCollectionOfTraces->GetCollectionName());
+
+  Table->setSortingEnabled(true);
+
+ }

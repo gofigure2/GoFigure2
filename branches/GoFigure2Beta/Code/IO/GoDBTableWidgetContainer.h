@@ -41,6 +41,7 @@
 #define __GoDBTableWidgetContainer_h
 
 #include "GoDBTraceInfoForTableWidget.h"
+#include "GoDBTraceRow.h"
 #include <string>
 #include <vector>
 #include <list>
@@ -86,6 +87,8 @@ class GoDBTableWidgetContainer
    containing the given ZCoord*/
    std::list<std::string> GetTracesIDForAGivenZCoord(int iZCoord);
 
+   void InsertNewCreatedTrace();
+
 protected:
   std::string m_CollectionName;
   std::string m_CollectionIDName;
@@ -93,7 +96,7 @@ protected:
   std::string m_TracesIDName;    
 
   std::vector<GoDBTraceInfoForTableWidget> m_ColumnsInfos;
-  DBTableWidgetContainerType m_RowContainer;
+  DBTableWidgetContainerType               m_RowContainer;
 
    /** \brief Fill a vector of GoDBTraceInfoForTableWidget with the info
   needed to fill the table widget for all the traces*/ 
