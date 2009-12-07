@@ -1129,7 +1129,7 @@ ReinitializeContour()
 {
   for( unsigned int i = 0; i < m_ContourWidget.size(); i++ )
     {
-    m_ContourWidget[i]->Initialize();
+    m_ContourWidget[i]->Initialize( NULL );
     }
 }
 //-------------------------------------------------------------------------
@@ -1402,3 +1402,31 @@ void QGoTabImageView3DwT::PassInfoForCollectionIDFromDB()
     GetListExistingCollectionIDFromDB("mesh"));
   //todo: always begin with contour ??
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+// void
+// QGoTabImageView3DwT::
+// ReEditContour( const unsigned int& iId )
+// {
+//   if( iContainer.size() != 0 )
+//     {
+//     ContourMeshStructureMultiIndexContainer::index< TraceID >::type::iterator
+//       it = m_ContourMeshContainer.get< TraceID >().find( iId );
+//
+//     if( it != iContainer.get< TraceID >().end() )
+//       {
+//       while( it->TraceID == iId )
+//         {
+//         c_dir = (*it).Direction;
+//         c_actor = (*it).Actor;
+//
+//         RemoveActorFromViewer( c_dir, c_actor );
+//         ++it;
+//         }
+//
+//
+//       }
+//     }
+// }
+//-------------------------------------------------------------------------
