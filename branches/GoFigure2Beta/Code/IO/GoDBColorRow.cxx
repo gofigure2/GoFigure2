@@ -57,7 +57,8 @@ void GoDBColorRow::InitializeMap()
   this->m_MapRow["Blue"] = ConvertToString<int>(0);
   this->m_MapRow["Alpha"] = ConvertToString<int>(0);
   this->m_MapRow["Description"] = "";
-
+  std::string NoDescription = "None";
+  this->SetField("Description",NoDescription);
 }
 //-------------------------------------------------------------------------
 
