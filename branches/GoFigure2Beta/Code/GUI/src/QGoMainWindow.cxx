@@ -273,6 +273,7 @@ void QGoMainWindow::openFilesfromDB()
       w3t->AddContourFromNodes( contourmesh_list_it->Nodes,
         contourmesh_list_it->rgba,
         contourmesh_list_it->Highlighted,
+        0,
         false );
       ++contourmesh_list_it;
       }

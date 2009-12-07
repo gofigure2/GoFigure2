@@ -10,11 +10,10 @@ int main( int , char** )
 {
   ContourMeshStructureMultiIndexContainer container;
 
-  std::vector< vtkActor* > ActorVector( 12 );
-  std::vector< vtkPolyData* > NodesVector( 4 );
+  std::vector< vtkActor* > ActorVector( 80 );
+  std::vector< vtkPolyData* > NodesVector( 20 );
 
   unsigned int meshid = 0;
-  unsigned int timepoint = 0;
   bool highlighted = false;
   double r = 1.;
   double g = 0;
@@ -31,6 +30,7 @@ int main( int , char** )
       }
     ActorVector[i] = vtkActor::New();
 
+    unsigned int timepoint = i % 12;
     container.insert( ContourMeshStructure( i, ActorVector[i],
       NodesVector[i%NodesVector.size()],
       meshid, timepoint, highlighted, r, g, b, a, i % 4 ) );
@@ -72,7 +72,7 @@ int main( int , char** )
       }
     }
 
-  list = FindContourGivenNodes( container, NodesVector.front());
+  list = FindContourGivenNodes( container, NodesVector.front() );
 
   if( list.empty() )
     {
@@ -105,39 +105,45 @@ int main( int , char** )
 
   unsigned int k = 0;
 
-  list = FindContourGivenTimePoint( container, 0 );
-
-  if( list.empty() )
+  for( unsigned int t = 0; t < 3; t++ )
     {
-    std::cerr <<"empty list after FindContourGivenTimePoint" <<std::endl;
-    return EXIT_FAILURE;
-    }
+    list = FindContourGivenTimePoint( container, t );
 
-  list_it = list.begin();
-
-  while( list_it != list.end() )
-    {
-    if( (*list_it)->TCoord != 0 )
+    if( list.empty() )
       {
-      std::cerr <<"(*list_it)->TraceID != k" <<std::endl;
-      std::cerr <<(*list_it)->TraceID <<" != " <<k <<std::endl;
-
-      for( i = 0; i < ActorVector.size(); i++ )
-        {
-        if( i < NodesVector.size() )
-          {
-          NodesVector[i]->Delete();
-          }
-        ActorVector[i]->Delete();
-        }
-
+      std::cerr <<"empty list after FindContourGivenTimePoint" <<std::endl;
       return EXIT_FAILURE;
       }
-    ++list_it;
-    ++k;
-    }
 
-  std::cout <<c <<std::endl;
+    list_it = list.begin();
+
+    std::cout <<"*** FindContourGivenTimePoint( container, " <<t <<" ) *** "
+      <<std::endl;
+
+    while( list_it != list.end() )
+      {
+      std::cout << *(*list_it) << std::endl;
+
+      if( (*list_it)->TCoord != t )
+        {
+        std::cerr <<"(*list_it)->TCoord != t" <<std::endl;
+        std::cerr <<(*list_it)->TCoord <<" != " <<t <<std::endl;
+
+        for( i = 0; i < ActorVector.size(); i++ )
+          {
+          if( i < NodesVector.size() )
+            {
+            NodesVector[i]->Delete();
+            }
+          ActorVector[i]->Delete();
+          }
+
+        return EXIT_FAILURE;
+        }
+      ++list_it;
+      ++k;
+      }
+    }
 
   for( i = 0; i < ActorVector.size(); i++ )
     {

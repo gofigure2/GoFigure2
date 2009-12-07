@@ -16,9 +16,9 @@ using namespace boost::multi_index;
 typedef multi_index_container<
   ContourMeshStructure,
     indexed_by<
-      hashed_non_unique<
-        tag<TraceID>,
-        BOOST_MULTI_INDEX_MEMBER(ContourMeshStructure,unsigned int,TraceID)>,
+      ordered_non_unique<
+        tag<TCoord>,
+        BOOST_MULTI_INDEX_MEMBER(ContourMeshStructure,unsigned int,TCoord)>,
       hashed_unique<
         tag<Actor>,
         BOOST_MULTI_INDEX_MEMBER(ContourMeshStructure,ContourMeshStructure::vtkActorPointer,Actor)>,
@@ -26,11 +26,11 @@ typedef multi_index_container<
         tag<Nodes>,
         BOOST_MULTI_INDEX_MEMBER(ContourMeshStructure,ContourMeshStructure::vtkPolyDataPointer,Nodes)>,
       hashed_non_unique<
-        tag<CollectionID>,
-        BOOST_MULTI_INDEX_MEMBER(ContourMeshStructure,unsigned int,CollectionID)>,
-      ordered_non_unique<
-        tag<TCoord>,
-        BOOST_MULTI_INDEX_MEMBER(ContourMeshStructure,unsigned int,TCoord)>
+        tag<TraceID>,
+        BOOST_MULTI_INDEX_MEMBER(ContourMeshStructure,unsigned int,TraceID)> //,
+//       hashed_non_unique<
+//         tag<CollectionID>,
+//         BOOST_MULTI_INDEX_MEMBER(ContourMeshStructure,unsigned int,CollectionID)>
     >
 > ContourMeshStructureMultiIndexContainer;
 

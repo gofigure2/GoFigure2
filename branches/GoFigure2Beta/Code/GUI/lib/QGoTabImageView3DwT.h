@@ -124,7 +124,7 @@ public:
    */
   virtual void ValidateContour( const int& iId,
     const double& iR, const double& iG, const double& iB, const double& iA,
-    const bool& iHighlighted, const bool& iSaveInDataBase );
+    const bool& iHighlighted, const unsigned int& iTCoord, const bool& iSaveInDataBase );
 
   /**
    *
@@ -133,10 +133,10 @@ public:
    * @param[in] iHighlighted
    */
   void AddContourFromNodes( vtkPolyData* iNodes, double iRgba[4],
-    const bool& iHighlighted, const bool& iSaveInDataBase );
+    const bool& iHighlighted, const unsigned int& iTCoord, const bool& iSaveInDataBase );
   void AddContourFromNodes( vtkPolyData* iNodes,
     const double& iR, const double& iG, const double& iB, const double& iA,
-    const bool& iHighlighted, const bool& iSaveInDataBase );
+    const bool& iHighlighted, const unsigned int& iTCoord, const bool& iSaveInDataBase );
 
   QGoPrintDatabase* m_DataBaseTables;
 
