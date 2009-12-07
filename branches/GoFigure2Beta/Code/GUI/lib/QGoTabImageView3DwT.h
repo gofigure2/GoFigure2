@@ -177,8 +177,12 @@ public slots:
   void ShowAllChannels( bool iChecked );
   void ShowOneChannel( int iChannel );
 
+  void LoadAllContoursForCurrentTimePoint();
+
   void ActivateManualSegmentationEditor( const bool& iActivate );
   void ValidateContour();
+  void ReinitializeContour();
+
   void ChangeContourRepresentationProperty();
   /** \brief Get the info for the colors from the database and pass
   them to the ColorComboBox in the Visu Dock Widget*/

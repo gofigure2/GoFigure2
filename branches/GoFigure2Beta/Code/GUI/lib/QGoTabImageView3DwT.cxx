@@ -121,6 +121,9 @@ void QGoTabImageView3DwT::CreateManualSegmentationdockWidget()
   QObject::connect( m_ManualSegmentationDockWidget, SIGNAL( ValidatePressed() ),
     this, SLOT( ValidateContour() ) );
 
+  QObject::connect( m_ManualSegmentationDockWidget, SIGNAL( ReinitializePressed() ),
+    this, SLOT( ReinitializeContour() ) );
+
   QObject::connect( m_ManualSegmentationDockWidget,
       SIGNAL( ActivateManualSegmentationToggled( bool ) ),
     this, SLOT( ActivateManualSegmentationEditor( bool ) ) );
@@ -1120,6 +1123,18 @@ ValidateContour( )
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+ReinitializeContour()
+{
+  for( unsigned int i = 0; i < m_ContourWidget.size(); i++ )
+    {
+    m_ContourWidget[i]->Initialize();
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 /**
  *
  */
@@ -1269,30 +1284,22 @@ RemoveAllContoursForPresentTimePoint( )
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+LoadAllContoursForCurrentTimePoint()
+{
+  if( m_TimePoint >= 0 )
+    {
+    LoadAllContoursForGivenTimePoint( static_cast< unsigned int >( m_TimePoint ) );
+    }
+}
+//-------------------------------------------------------------------------
 /**
  *
  * \param iT
  */
 void
-QGoTabImageView3DwT::
-// LoadAllContoursForCurrentTimePoint()
-// {
-//   if( m_TimePoint >= 0 )
-//     {
-//     std::vector<ContourMeshStructure> c_list =
-//       GetContoursForAGivenTimepoint( static_cast< unsigned int >( m_TimePoint ) );
-//
-//     std::vector<ContourMeshStructure>::iterator c_it = c_list.begin();
-//
-//     while( c_it != c_list.end() )
-//       {
-//       AddContourFromNodes( c_it->Nodes, c_it->rgba );
-//       }
-//     }
-// }
-//-------------------------------------------------------------------------
-
-LoadAllContoursForGivenTimePoint( const unsigned int& iT )
+QGoTabImageView3DwT::LoadAllContoursForGivenTimePoint( const unsigned int& iT )
 {
   if( !m_ContourMeshContainer.empty() > 0 )
     {
