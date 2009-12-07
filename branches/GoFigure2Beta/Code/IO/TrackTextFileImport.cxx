@@ -101,7 +101,7 @@ Read()
 
     for( unsigned int j = 0; j < m_NumberOfTracks; j++ )
       {
-      InternalTrackStructure track(m_NumberOfChannels);
+      InternalTrackStructure track;
       //<Track>
       getline( ifs, line );
 
@@ -113,25 +113,29 @@ Read()
       getline( ifs, line );
 
       // NumberOfMeshes 1622
-      ifs >> word >> m_NumberOfMeshes;
+      unsigned int numberOfMeshes;
+      ifs >> word >> numberOfMeshes;
       getline( ifs, line );
 
       unsigned int ch;
+      std::vector< InternalMeshStructure > listofmeshes;
 
-      for( unsigned int i = 0; i < m_NumberOfMeshes; i++ )
+      for( unsigned int i = 0; i < numberOfMeshes; i++ )
         {
-        //InternalMeshStructure mesh( m_NumberOfChannels );
+        InternalMeshStructure mesh( m_NumberOfChannels );
 
         // <mesh>Write
         getline( ifs, line );
 
-        // TrackId 1685
-        //ifs >> word >> mesh.m_TrackId;
-        ifs >> word >> track.m_TrackId;
+/// \todo to be removed in the file (too many duplications)
+//         // TrackId 1685
+//         ifs >> word >> mesh.m_TrackId;
+
+        // assign j to the mesh TrackID
+        mesh.m_TrackId = j;
 
         // TCoord 2
-        //ifs >> word >> mesh.m_TCoord;
-        ifs >> word >> track.m_TCoord;
+        ifs >> word >> mesh.m_TCoord;
 
         getline( ifs, line );
         // Centroid 89.6544 2.1618 29.8110
@@ -139,8 +143,7 @@ Read()
         getline( ifs, line );
 
         // Volume 531.28
-        //ifs >> word >> mesh.m_Volume;
-        ifs >> word >> track.m_Volume;
+        ifs >> word >> mesh.m_Volume;
 
         std::string filename;
         std::string filename2 = m_Directory;
@@ -156,33 +159,19 @@ Read()
         reader->SetFileName( filename2.c_str() );
         reader->Update();
 
-        //vtkPolyData* vtk_mesh = reader->GetOutput();
-        //
-        //double bounds[6];
-        //vtk_mesh->GetBounds( bounds );
-        //
-        //mesh.m_XMin = static_cast< unsigned int >( bounds[0] / spacing[0] );
-        //mesh.m_XMax = static_cast< unsigned int >( bounds[1] / spacing[0] );
-        //mesh.m_YMin = static_cast< unsigned int >( bounds[2] / spacing[1] );
-        //mesh.m_YMax = static_cast< unsigned int >( bounds[3] / spacing[1] );
-        //mesh.m_ZMin = static_cast< unsigned int >( bounds[4] / spacing[2] );
-        //mesh.m_ZMax = static_cast< unsigned int >( bounds[5] / spacing[2] );
-        //
-        //mesh.m_Points = vtk_mesh;
-
-        vtkPolyData* vtk_track = reader->GetOutput();
+        vtkPolyData* vtk_mesh = reader->GetOutput();
 
         double bounds[6];
-        vtk_track->GetBounds( bounds );
+        vtk_mesh->GetBounds( bounds );
 
-        track.m_XMin = static_cast< unsigned int >( bounds[0] / spacing[0] );
-        track.m_XMax = static_cast< unsigned int >( bounds[1] / spacing[0] );
-        track.m_YMin = static_cast< unsigned int >( bounds[2] / spacing[1] );
-        track.m_YMax = static_cast< unsigned int >( bounds[3] / spacing[1] );
-        track.m_ZMin = static_cast< unsigned int >( bounds[4] / spacing[2] );
-        track.m_ZMax = static_cast< unsigned int >( bounds[5] / spacing[2] );
+        mesh.m_XMin = static_cast< unsigned int >( bounds[0] / spacing[0] );
+        mesh.m_XMax = static_cast< unsigned int >( bounds[1] / spacing[0] );
+        mesh.m_YMin = static_cast< unsigned int >( bounds[2] / spacing[1] );
+        mesh.m_YMax = static_cast< unsigned int >( bounds[3] / spacing[1] );
+        mesh.m_ZMin = static_cast< unsigned int >( bounds[4] / spacing[2] );
+        mesh.m_ZMax = static_cast< unsigned int >( bounds[5] / spacing[2] );
 
-        track.m_Points = vtk_track;
+        mesh.m_Points = vtk_mesh;
 
         for( ch = 0; ch < m_NumberOfChannels; ch++ )
           {
@@ -193,11 +182,9 @@ Read()
           getline( ifs, line );
 
           // AverageValue 119.68
-          //ifs >> word >> mesh.m_AverageIntensity[ch];
-          ifs >> word >> track.m_AverageIntensity[ch];
+          ifs >> word >> mesh.m_AverageIntensity[ch];
 
-          //m_ListOfMeshes.push_back( mesh );
-          m_ListOfTracks.push_back( track );
+          listofmeshes.push_back( mesh );
 
           getline( ifs, line );
           // </intensity>
@@ -206,12 +193,15 @@ Read()
         // </mesh>
         getline( ifs, line );
 
-        //SaveMeshInDataBase( mesh );
-        SaveTrackInDataBase( track );
+        SaveMeshInDataBase( mesh );
+
         reader->Delete();
         }
       //</ListOfMeshes>
       getline( ifs, line );
+
+      SaveTrackInDataBase( track );
+
       //</Track>
       getline( ifs, line );
       }
@@ -239,7 +229,7 @@ SaveMeshInDataBase( const InternalMeshStructure& iMesh )
 
   GoDBMeshRow mesh_row( m_DBConnector, coord_min, coord_max,
     m_ImagingSessionId, iMesh.m_Points );
-  mesh_row.SetColor( 255, 255, 0, 255,"KishoreColor", m_DBConnector );
+  mesh_row.SetColor( 255, 255, 0, 255, "KishoreMeshColor", m_DBConnector );
   int mesh_id = mesh_row.SaveInDB( m_DBConnector );
   std::cout <<mesh_id <<std::endl;
 }
@@ -265,7 +255,7 @@ SaveTrackInDataBase( const InternalTrackStructure& iTrack )
 
   GoDBMeshRow track_row( m_DBConnector, coord_min, coord_max,
     m_ImagingSessionId, iTrack.m_Points );
-  track_row.SetColor( 255, 255, 0, 255,"KishoreColor", m_DBConnector );
+  track_row.SetColor( 255, 255, 0, 255,"KishoreTrackColor", m_DBConnector );
   int track_id = track_row.SaveInDB( m_DBConnector );
   std::cout <<track_id <<std::endl;
 }

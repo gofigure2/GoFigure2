@@ -11,7 +11,7 @@ class vtkMySQLDatabase;
 class TrackTextFileImport
 {
   public:
-		TrackTextFileImport( const std::string& iServerName, const std::string& iLogin,
+    TrackTextFileImport( const std::string& iServerName, const std::string& iLogin,
       const std::string& iPassword, const std::string& iDBName,
       const unsigned int& iImagingSessionId );
 
@@ -28,7 +28,6 @@ class TrackTextFileImport
   private:
     unsigned int m_ImagingSessionId;
     unsigned int m_NumberOfChannels;
-    unsigned int m_NumberOfMeshes;
     unsigned int m_NumberOfTracks;
     unsigned int m_LineageID;
     std::string m_MegaCaptureHeaderFile;
@@ -57,21 +56,17 @@ class TrackTextFileImport
 
     struct InternalTrackStructure
       {
-    	InternalTrackStructure( const unsigned int& iNumberOfChannels ) :
-        m_AverageIntensity( iNumberOfChannels, 0 ) {}
-
-    	unsigned int m_LineageID;
+      unsigned int m_LineageID;
       unsigned int m_TrackId;
-      unsigned int m_TCoord;
-      double m_Volume;
       unsigned int m_XMin;
       unsigned int m_XMax;
       unsigned int m_YMin;
       unsigned int m_YMax;
       unsigned int m_ZMin;
       unsigned int m_ZMax;
+      unsigned int m_TMin;
+      unsigned int m_TMax;
       vtkPolyData* m_Points;
-      std::vector< double > m_AverageIntensity;
       };
 
     std::list< InternalMeshStructure > m_ListOfMeshes;
