@@ -102,6 +102,9 @@ Read()
     for( unsigned int j = 0; j < m_NumberOfTracks; j++ )
       {
       InternalTrackStructure track;
+
+      track.m_TrackId = j;
+
       //<Track>
       getline( ifs, line );
 
@@ -137,6 +140,16 @@ Read()
         // TCoord 2
         ifs >> word >> mesh.m_TCoord;
 
+        // Fill the Track structure
+        if( mesh.m_TCoord < track.m_TMin )
+          {
+          track.m_TMin = mesh.m_TCoord;
+          }
+        if( mesh.m_TCoord > track.m_TMax )
+          {
+          track.m_TMax = mesh.m_TCoord;
+          }
+
         getline( ifs, line );
         // Centroid 89.6544 2.1618 29.8110
         // useless information
@@ -170,6 +183,32 @@ Read()
         mesh.m_YMax = static_cast< unsigned int >( bounds[3] / spacing[1] );
         mesh.m_ZMin = static_cast< unsigned int >( bounds[4] / spacing[2] );
         mesh.m_ZMax = static_cast< unsigned int >( bounds[5] / spacing[2] );
+
+        // Fill the Track Structure
+        if( mesh.m_XMin < track.m_XMin )
+        	{
+          track.m_XMin = mesh.m_XMin;
+        	}
+        if( mesh.m_XMax > track.m_XMax )
+          {
+          track.m_XMax = mesh.m_XMax;
+          }
+        if( mesh.m_YMin < track.m_YMin )
+          {
+          track.m_YMin = mesh.m_YMin;
+          }
+        if( mesh.m_YMax > track.m_YMax )
+          {
+          track.m_YMax = mesh.m_YMax;
+          }
+        if( mesh.m_ZMin < track.m_ZMin )
+          {
+          track.m_ZMin = mesh.m_ZMin;
+          }
+        if( mesh.m_ZMax > track.m_ZMax )
+          {
+          track.m_ZMax = mesh.m_ZMax;
+          }
 
         mesh.m_Points = vtk_mesh;
 
@@ -245,16 +284,18 @@ SaveTrackInDataBase( const InternalTrackStructure& iTrack )
   coord_min.SetField< unsigned int >( "XCoord", iTrack.m_XMin );
   coord_min.SetField< unsigned int >( "YCoord", iTrack.m_YMin );
   coord_min.SetField< unsigned int >( "ZCoord", iTrack.m_ZMin );
-  coord_min.SetField< unsigned int >( "TCoord", iTrack.m_TCoord );
+  coord_min.SetField< unsigned int >( "TCoord", iTrack.m_TMin );
 
   GoDBCoordinateRow coord_max;
   coord_max.SetField< unsigned int >( "XCoord", iTrack.m_YMax );
   coord_min.SetField< unsigned int >( "YCoord", iTrack.m_YMax );
-  coord_max.SetField< unsigned int >( "ZCoord", iTrack.m_ZMax );
-  coord_max.SetField< unsigned int >( "TCoord", iTrack.m_TCoord );
+  coord_min.SetField< unsigned int >( "ZCoord", iTrack.m_ZMax );
+  coord_max.SetField< unsigned int >( "TCoord", iTrack.m_TMax );
 
+  // Nothing in points
   GoDBMeshRow track_row( m_DBConnector, coord_min, coord_max,
-    m_ImagingSessionId, iTrack.m_Points );
+    m_ImagingSessionId, NULL);
+
   track_row.SetColor( 255, 255, 0, 255,"KishoreTrackColor", m_DBConnector );
   int track_id = track_row.SaveInDB( m_DBConnector );
   std::cout <<track_id <<std::endl;

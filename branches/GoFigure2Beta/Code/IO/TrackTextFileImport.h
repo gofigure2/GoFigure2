@@ -5,6 +5,8 @@
 #include <list>
 #include <vector>
 
+#include "vtkType.h"
+
 class vtkPolyData;
 class vtkMySQLDatabase;
 
@@ -29,7 +31,6 @@ class TrackTextFileImport
     unsigned int m_ImagingSessionId;
     unsigned int m_NumberOfChannels;
     unsigned int m_NumberOfTracks;
-    unsigned int m_LineageID;
     std::string m_MegaCaptureHeaderFile;
     std::string m_Directory;
     std::string m_FileName;
@@ -56,6 +57,12 @@ class TrackTextFileImport
 
     struct InternalTrackStructure
       {
+      InternalTrackStructure() :
+          m_XMin(VTK_UNSIGNED_INT_MAX),m_XMax(VTK_UNSIGNED_INT_MIN),
+      		m_YMin(VTK_UNSIGNED_INT_MAX), m_YMax(VTK_UNSIGNED_INT_MIN),
+      		m_ZMin(VTK_UNSIGNED_INT_MAX), m_ZMax(VTK_UNSIGNED_INT_MIN),
+      		m_TMin(VTK_UNSIGNED_INT_MAX), m_TMax(VTK_UNSIGNED_INT_MIN){}
+
       unsigned int m_LineageID;
       unsigned int m_TrackId;
       unsigned int m_XMin;
