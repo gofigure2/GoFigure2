@@ -278,6 +278,8 @@ void QGoMainWindow::openFilesfromDB()
       ++contourmesh_list_it;
       }
 
+    w3t->ReinitializeContour();
+
     // Let's load all the mesh from the first time point
     std::vector< ContourMeshStructure > mesh_list =
       w3t->m_DataBaseTables->GetMeshesForAGivenTimepoint( 0 );
