@@ -12,6 +12,9 @@
 #include "GoDBCoordinateRow.h"
 #include "GoDBMeshRow.h"
 
+/**
+ * \brief Constructor
+ */
 TrackTextFileImport::
 TrackTextFileImport( const std::string& iServerName, const std::string& iLogin,
   const std::string& iPassword, const std::string& iDBName,
@@ -21,12 +24,19 @@ TrackTextFileImport( const std::string& iServerName, const std::string& iLogin,
     OpenDatabaseConnection( iServerName, iLogin, iPassword, iDBName );
 }
 
+/**
+ * \brief Destructor
+ */
 TrackTextFileImport::
 ~TrackTextFileImport()
 {
   m_DBConnector->Delete();
 }
 
+/**
+ * \brief Set the directory which contains the TrackText files
+ * \param[in]  iDir Name of the directory which contains the TrackText files
+ */
 void
 TrackTextFileImport::
 SetDirectory( const std::string& iDir )
@@ -34,6 +44,10 @@ SetDirectory( const std::string& iDir )
   m_Directory = iDir;
 }
 
+/**
+ * \brief Set the name of the TrackText files
+ * \param[in]  iDir Name of the TrackText files
+ */
 void
 TrackTextFileImport::
 SetFileName( const std::string& iFileName )
@@ -41,6 +55,9 @@ SetFileName( const std::string& iFileName )
   m_FileName = iFileName;
 }
 
+/**
+ * \brief Read the TrackTex file
+ */
 void
 TrackTextFileImport::
 Read()
@@ -84,11 +101,12 @@ Read()
 
     for( unsigned int j = 0; j < m_NumberOfTracks; j++ )
       {
+      InternalTrackStructure track(m_NumberOfChannels);
       //<Track>
       getline( ifs, line );
 
       // LineageID
-      ifs >> word >> m_LineageID;
+      ifs >> word >> track.m_LineageID;
       getline( ifs, line );
 
       //<ListOfMeshes>
@@ -102,16 +120,18 @@ Read()
 
       for( unsigned int i = 0; i < m_NumberOfMeshes; i++ )
         {
-        InternalMeshStructure mesh( m_NumberOfChannels );
+        //InternalMeshStructure mesh( m_NumberOfChannels );
 
-        // <mesh>
+        // <mesh>Write
         getline( ifs, line );
 
         // TrackId 1685
-        ifs >> word >> mesh.m_TrackId;
+        //ifs >> word >> mesh.m_TrackId;
+        ifs >> word >> track.m_TrackId;
 
         // TCoord 2
-        ifs >> word >> mesh.m_TCoord;
+        //ifs >> word >> mesh.m_TCoord;
+        ifs >> word >> track.m_TCoord;
 
         getline( ifs, line );
         // Centroid 89.6544 2.1618 29.8110
@@ -119,7 +139,8 @@ Read()
         getline( ifs, line );
 
         // Volume 531.28
-        ifs >> word >> mesh.m_Volume;
+        //ifs >> word >> mesh.m_Volume;
+        ifs >> word >> track.m_Volume;
 
         std::string filename;
         std::string filename2 = m_Directory;
@@ -135,19 +156,33 @@ Read()
         reader->SetFileName( filename2.c_str() );
         reader->Update();
 
-        vtkPolyData* vtk_mesh = reader->GetOutput();
+        //vtkPolyData* vtk_mesh = reader->GetOutput();
+        //
+        //double bounds[6];
+        //vtk_mesh->GetBounds( bounds );
+        //
+        //mesh.m_XMin = static_cast< unsigned int >( bounds[0] / spacing[0] );
+        //mesh.m_XMax = static_cast< unsigned int >( bounds[1] / spacing[0] );
+        //mesh.m_YMin = static_cast< unsigned int >( bounds[2] / spacing[1] );
+        //mesh.m_YMax = static_cast< unsigned int >( bounds[3] / spacing[1] );
+        //mesh.m_ZMin = static_cast< unsigned int >( bounds[4] / spacing[2] );
+        //mesh.m_ZMax = static_cast< unsigned int >( bounds[5] / spacing[2] );
+        //
+        //mesh.m_Points = vtk_mesh;
+
+        vtkPolyData* vtk_track = reader->GetOutput();
 
         double bounds[6];
-        vtk_mesh->GetBounds( bounds );
+        vtk_track->GetBounds( bounds );
 
-        mesh.m_XMin = static_cast< unsigned int >( bounds[0] / spacing[0] );
-        mesh.m_XMax = static_cast< unsigned int >( bounds[1] / spacing[0] );
-        mesh.m_YMin = static_cast< unsigned int >( bounds[2] / spacing[1] );
-        mesh.m_YMax = static_cast< unsigned int >( bounds[3] / spacing[1] );
-        mesh.m_ZMin = static_cast< unsigned int >( bounds[4] / spacing[2] );
-        mesh.m_ZMax = static_cast< unsigned int >( bounds[5] / spacing[2] );
+        track.m_XMin = static_cast< unsigned int >( bounds[0] / spacing[0] );
+        track.m_XMax = static_cast< unsigned int >( bounds[1] / spacing[0] );
+        track.m_YMin = static_cast< unsigned int >( bounds[2] / spacing[1] );
+        track.m_YMax = static_cast< unsigned int >( bounds[3] / spacing[1] );
+        track.m_ZMin = static_cast< unsigned int >( bounds[4] / spacing[2] );
+        track.m_ZMax = static_cast< unsigned int >( bounds[5] / spacing[2] );
 
-        mesh.m_Points = vtk_mesh;
+        track.m_Points = vtk_track;
 
         for( ch = 0; ch < m_NumberOfChannels; ch++ )
           {
@@ -158,9 +193,11 @@ Read()
           getline( ifs, line );
 
           // AverageValue 119.68
-          ifs >> word >> mesh.m_AverageIntensity[ch];
+          //ifs >> word >> mesh.m_AverageIntensity[ch];
+          ifs >> word >> track.m_AverageIntensity[ch];
 
-          m_ListOfMeshes.push_back( mesh );
+          //m_ListOfMeshes.push_back( mesh );
+          m_ListOfTracks.push_back( track );
 
           getline( ifs, line );
           // </intensity>
@@ -169,8 +206,8 @@ Read()
         // </mesh>
         getline( ifs, line );
 
-        SaveMeshInDataBase( mesh );
-
+        //SaveMeshInDataBase( mesh );
+        SaveTrackInDataBase( track );
         reader->Delete();
         }
       //</ListOfMeshes>
@@ -181,6 +218,9 @@ Read()
     }
 }
 
+/**
+ * \brief Save the meshes informations into the database
+ */
 void
 TrackTextFileImport::
 SaveMeshInDataBase( const InternalMeshStructure& iMesh )
@@ -202,4 +242,30 @@ SaveMeshInDataBase( const InternalMeshStructure& iMesh )
   mesh_row.SetColor( 255, 255, 0, 255,"KishoreColor", m_DBConnector );
   int mesh_id = mesh_row.SaveInDB( m_DBConnector );
   std::cout <<mesh_id <<std::endl;
+}
+
+/**
+ * \brief Save the tracks informations into the database
+ */
+void
+TrackTextFileImport::
+SaveTrackInDataBase( const InternalTrackStructure& iTrack )
+{
+  GoDBCoordinateRow coord_min;
+  coord_min.SetField< unsigned int >( "XCoord", iTrack.m_XMin );
+  coord_min.SetField< unsigned int >( "YCoord", iTrack.m_YMin );
+  coord_min.SetField< unsigned int >( "ZCoord", iTrack.m_ZMin );
+  coord_min.SetField< unsigned int >( "TCoord", iTrack.m_TCoord );
+
+  GoDBCoordinateRow coord_max;
+  coord_max.SetField< unsigned int >( "XCoord", iTrack.m_YMax );
+  coord_min.SetField< unsigned int >( "YCoord", iTrack.m_YMax );
+  coord_max.SetField< unsigned int >( "ZCoord", iTrack.m_ZMax );
+  coord_max.SetField< unsigned int >( "TCoord", iTrack.m_TCoord );
+
+  GoDBMeshRow track_row( m_DBConnector, coord_min, coord_max,
+    m_ImagingSessionId, iTrack.m_Points );
+  track_row.SetColor( 255, 255, 0, 255,"KishoreColor", m_DBConnector );
+  int track_id = track_row.SaveInDB( m_DBConnector );
+  std::cout <<track_id <<std::endl;
 }

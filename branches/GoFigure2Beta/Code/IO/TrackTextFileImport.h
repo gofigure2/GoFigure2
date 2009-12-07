@@ -19,6 +19,10 @@ class TrackTextFileImport
 
     void SetDirectory( const std::string& );
     void SetFileName( const std::string& );
+
+    /**
+     * \brief Read the TrackTex file
+     */
     void Read();
 
   private:
@@ -51,9 +55,30 @@ class TrackTextFileImport
       std::vector< double > m_AverageIntensity;
       };
 
+    struct InternalTrackStructure
+      {
+    	InternalTrackStructure( const unsigned int& iNumberOfChannels ) :
+        m_AverageIntensity( iNumberOfChannels, 0 ) {}
+
+    	unsigned int m_LineageID;
+      unsigned int m_TrackId;
+      unsigned int m_TCoord;
+      double m_Volume;
+      unsigned int m_XMin;
+      unsigned int m_XMax;
+      unsigned int m_YMin;
+      unsigned int m_YMax;
+      unsigned int m_ZMin;
+      unsigned int m_ZMax;
+      vtkPolyData* m_Points;
+      std::vector< double > m_AverageIntensity;
+      };
+
     std::list< InternalMeshStructure > m_ListOfMeshes;
+    std::list< InternalTrackStructure > m_ListOfTracks;
 
     void SaveMeshInDataBase( const InternalMeshStructure& iMesh );
+    void SaveTrackInDataBase( const InternalTrackStructure& iTrack );
 
 
 };
