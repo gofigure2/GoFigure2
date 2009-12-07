@@ -304,8 +304,8 @@ void QTableWidgetChild::SetSelectedColumn(unsigned int iNbOfRows,
   unsigned int StartedRow)
 {
   //int indexCol = findColumnName( "Selected", recordHeaderNamesOrder());
-  int indexCol = findColumnName( "", recordHeaderNamesOrder());
-  for (unsigned int i = StartedRow ; i < iNbOfRows ; i++)
+   int indexCol = findColumnName( "", recordHeaderNamesOrder());
+  for (unsigned int i = StartedRow ; i < iNbOfRows+StartedRow ; i++)
     {
     QTableWidgetNumericalItem* Checkbox = new QTableWidgetNumericalItem;
     Checkbox->setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsEnabled |
