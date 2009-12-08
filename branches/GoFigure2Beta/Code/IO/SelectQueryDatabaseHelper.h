@@ -179,6 +179,6 @@ std::vector<ContourMeshStructure> GetTracesInfoFromDB(
 std::vector<std::vector<std::string> >GetValuesFromSeveralTables(
   vtkMySQLDatabase* DatabaseConnector,std::string MainTable,
   std::vector<std::string> SelectFields, std::string field,
-  std::string value,std::vector<std::string> JoinTablesOnTraceTable);
+  std::string value,std::vector<std::string> JoinTablesOnTraceTable, bool Distinct);
 
 #endif

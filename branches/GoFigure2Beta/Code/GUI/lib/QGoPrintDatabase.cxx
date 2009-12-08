@@ -595,8 +595,8 @@ void QGoPrintDatabase::SaveContoursFromVisuInDB(unsigned int iXCoordMin,
 
  // UpdateContentAndDisplayFromDB< GoDBContourRow >("contour",
   //  ContourTable,m_DatabaseConnector);
-  this->UpdateTableWidgetAndRowContainerWithNewCreatedTrace("contour",
-    this->ContourTable,this->m_DatabaseConnector,this->m_CollectionOfContours);
+  this->UpdateTableWidgetAndRowContainerWithNewCreatedTrace(this->ContourTable,
+    this->m_DatabaseConnector,this->m_CollectionOfContours);
 
   CloseDBConnection();
 }
@@ -771,48 +771,121 @@ bool QGoPrintDatabase::IsDatabaseUsed()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-std::list<std::string> QGoPrintDatabase::GetListExistingCollectionIDFromDB(
+std::list<std::pair<std::string,QColor> > QGoPrintDatabase::
+  GetListExistingCollectionIDFromDB(std::string TraceName,
   std::string CollectionName)
 {
   OpenDBConnection();
-  std::string CollectionID = CollectionName;
+  /*std::string CollectionID = CollectionName;
+  CollectionID += "ID";*/
+  std::list<std::pair<std::string, QColor> > oListCollectionIDs;
+  //First, build the query with selected fields and table to join with on conditions:
+  std::vector<std::string> SelectFields;
+  std::string CollectionID = TraceName;
+  CollectionID += ".";
+  CollectionID += CollectionName;
   CollectionID += "ID";
-  std::list<std::string> oListCollectionIDs;
+  SelectFields.push_back(CollectionID);
+  std::string Red = "color.Red";
+  SelectFields.push_back(Red);
+  std::string Green = "color.Green";
+  SelectFields.push_back(Green);
+  std::string Blue = "color.Blue";
+  SelectFields.push_back(Blue);
+  std::string Alpha = "color.Alpha";
+  SelectFields.push_back(Alpha);
 
-  std::vector<std::string> ResultsQuery  = ListSpecificValuesForOneColumn(
-  this->m_DatabaseConnector,CollectionName, CollectionID,
-  "imagingsessionid",ConvertToString<unsigned int>(this->m_ImgSessionID));
+  std::vector<std::string> JoinTablesOnTraceTable;
+
+  std::string JoinTable = "mesh";
+  JoinTablesOnTraceTable.push_back(JoinTable);
+  std::string OnCondition = TraceName;
+  OnCondition += ".";
+  OnCondition += CollectionName;
+  OnCondition += "ID = ";
+  OnCondition += CollectionName;
+  OnCondition += ".";
+  OnCondition += CollectionName;
+  OnCondition += "ID";
+   JoinTablesOnTraceTable.push_back(OnCondition);
+
+  std::string JoinTable2 = "color";
+  JoinTablesOnTraceTable.push_back(JoinTable2);
+  std::string OnCondition2 = CollectionName;
+  OnCondition2 += ".ColorID = color.ColorID";
+   JoinTablesOnTraceTable.push_back(OnCondition2);
+
+ //Get the results for the query:
+  std::vector<std::vector<std::string> >ResultsQuery  = GetValuesFromSeveralTables(
+    this->m_DatabaseConnector,TraceName,SelectFields, "ImagingSessionID",
+    ConvertToString<unsigned int>(this->m_ImgSessionID),JoinTablesOnTraceTable,true);    
 
   unsigned int i = 0;
-  while ( i<ResultsQuery.size())
+  std::vector<std::vector<std::string> >::iterator iter = ResultsQuery.begin();
+  while ( iter != ResultsQuery.end())
     {
-    oListCollectionIDs.push_back(ResultsQuery[i].c_str());
-    i++;
+    std::vector<std::string> ResultsOneRow = *iter;
+    int Red   = atoi(ResultsOneRow[i+1].c_str());
+    int Green = atoi(ResultsOneRow[i+2].c_str());
+    int Blue  = atoi(ResultsOneRow[i+3].c_str());
+    int Alpha = atoi(ResultsOneRow[i+4].c_str());
+    QColor Color(Red,Green,Blue,Alpha);
+    std::pair<std::string,QColor> temp;
+    temp.first = ResultsOneRow[i];
+    temp.second = Color;
+    oListCollectionIDs.push_back(temp);
+    i=i+4;
+    iter++;
     }
   //for creating traces at the beginning, with no existing collection, we
   //create a new collection:
   if (oListCollectionIDs.empty())
     {
     int NewID = 0;
+    QColor FirstColor;
+    int Red = 0;
+    int Green = 0;
+    int Blue = 0;
+    int Alpha = 0;
     if (CollectionName == "mesh")
       {
       GoDBMeshRow FirstMesh;
       NewID = this->m_CollectionOfContours->CreateFirstCollection<GoDBMeshRow>(
         this->m_DatabaseConnector, FirstMesh);
+      Red = 255;
+      Green = 255;
+      Blue = 0;
+      Alpha = 255;
       }
     if (CollectionName == "track")
       {
       GoDBTrackRow FirstTrack;
       NewID = this->m_CollectionOfMeshes->CreateFirstCollection<GoDBTrackRow>(
         this->m_DatabaseConnector, FirstTrack);
+      Red = 0;
+      Green = 255;
+      Blue = 255;
+      Alpha = 255;
       }
     if (CollectionName == "lineage")
       {
       GoDBLineageRow FirstLineage;
       NewID = this->m_CollectionOfTracks->CreateFirstCollection<GoDBLineageRow>(
         this->m_DatabaseConnector, FirstLineage);
+      Red = 255;
+      Green = 0;
+      Blue = 255;
+      Alpha = 255;
       }
-    oListCollectionIDs.push_back(ConvertToString<int>(NewID));
+    FirstColor.setRed(Red);
+    FirstColor.setGreen(Green);
+    FirstColor.setBlue(Blue);
+    FirstColor.setAlpha(Alpha);
+
+    std::pair<std::string,QColor> temp;
+    temp.second = FirstColor;
+    temp.first = ConvertToString<int>(NewID);
+    oListCollectionIDs.push_back(temp);
     }
 
   CloseDBConnection();
@@ -823,21 +896,21 @@ std::list<std::string> QGoPrintDatabase::GetListExistingCollectionIDFromDB(
 
 //-------------------------------------------------------------------------
 void QGoPrintDatabase::UpdateTableWidgetAndRowContainerWithNewCreatedTrace( 
-  QString TableName, QTableWidgetChild* Table,vtkMySQLDatabase* DatabaseConnector, 
+  QTableWidgetChild* Table,  vtkMySQLDatabase* DatabaseConnector, 
   GoDBCollectionOfTraces* iCollectionOfTraces)
 {
   GoDBTableWidgetContainer* LinkToNewTrace = iCollectionOfTraces->GetLinkToNewCreatedTraceContainer(
     this->m_DatabaseConnector);
-
+  //update the RowContainer for the trace:
   iCollectionOfTraces->GetLinkToRowContainer()->InsertNewCreatedTrace(*LinkToNewTrace);
-
+  
+  //Update the table widget with the new trace:
   Table->setSortingEnabled(false);
   
   Table->InsertNewRow( LinkToNewTrace,iCollectionOfTraces->GetTraceName(),
     iCollectionOfTraces->GetCollectionName());
 
   Table->setSortingEnabled(true);
-
  }
 //-------------------------------------------------------------------------
 

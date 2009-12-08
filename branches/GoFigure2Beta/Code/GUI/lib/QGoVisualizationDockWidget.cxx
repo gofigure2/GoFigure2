@@ -7,7 +7,8 @@ QGoVisualizationDockWidget( QWidget* iParent, const unsigned int& iDim ) :
   m_Dimension( iDim )
 {
   this->setupUi( this );
-  SetColorComboBox();
+  SetColorTraceComboBox();
+  SetColorIDCollectionComboBox();
   //this->verticalLayout_2->addLayout(this->VLayoutForCollection);
 
   if( m_Dimension < 3 )
@@ -181,26 +182,49 @@ int QGoVisualizationDockWidget::GetCurrentCollectionID()
 
 //-------------------------------------------------------------------------
 void QGoVisualizationDockWidget::SetCollectionID(
-  std::list<std::string> iListExistingID)
+  std::list<std::pair<std::string,QColor> > iListExistingID)
 {
-  QStringList Items;
+  std::list<std::pair<std::string,QColor> >::iterator iter = 
+    iListExistingID.begin();
+  while (iter != iListExistingID.end())
+    {
+    QColor color = iter->second;
+    QString name = iter->first.c_str();
+    this->ColorIDCollectionComboBox->addColor(color,name);
+    iter++;
+    }
+  this->ColorIDCollectionComboBox->show();
+  /*QStringList Items;
   std::list<std::string>::iterator iter = iListExistingID.begin();
   while(iter != iListExistingID.end())
     {
     Items.append(iter->c_str());
     iter++;
     }
-  this->CollectionIDBox->addItems(Items);
+  this->CollectionIDBox->addItems(Items);*/
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoVisualizationDockWidget::SetColorComboBox()
+void QGoVisualizationDockWidget::SetColorTraceComboBox()
 {
-    ColorComboBox = new QtColorComboBox;
+    ColorTraceComboBox = new QtColorComboBox;
     QLabel* ColorLbl = new QLabel(tr("Color"));
     HLayoutForColor = new QHBoxLayout;
     HLayoutForColor->addWidget(ColorLbl);
-    HLayoutForColor->addWidget(ColorComboBox);
+    HLayoutForColor->addWidget(ColorTraceComboBox);
     this->verticalLayout_2->addLayout(HLayoutForColor);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoVisualizationDockWidget::SetColorIDCollectionComboBox()
+{
+  ColorIDCollectionComboBox = new QtColorComboBox;
+  QLabel* CollectionLbl = new QLabel (tr("Mesh"));
+  /** \todo make the names change with the interaction*/
+  QHBoxLayout* HLayoutForCollection = new QHBoxLayout;
+  HLayoutForCollection->addWidget(CollectionLbl);
+  HLayoutForCollection->addWidget(ColorIDCollectionComboBox);
+  this->verticalLayout_2->addLayout(HLayoutForCollection);
 }

@@ -1003,13 +1003,17 @@ std::vector<ContourMeshStructure> GetTracesInfoFromDB(
 std::vector<std::vector<std::string> >GetValuesFromSeveralTables(
   vtkMySQLDatabase* DatabaseConnector,std::string MainTable,
   std::vector<std::string> SelectFields, std::string field,
-  std::string value,std::vector<std::string> JoinTablesOnTraceTable)
+  std::string value,std::vector<std::string> JoinTablesOnTraceTable, bool Distinct)
 {
   std::vector<std::vector<std::string> > Results;
   vtkSQLQuery* query = DatabaseConnector->GetQueryInstance();
 
   std::stringstream Querystream;
   Querystream << "SELECT ";
+  if (Distinct)
+    {
+    Querystream << "DISTINCT ";
+    }
   unsigned int i;
   for (i=0; i <SelectFields.size()-1;i++)
     {

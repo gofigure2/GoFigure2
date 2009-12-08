@@ -183,9 +183,9 @@ void QGoTabImageView3DwT::CreateVisuDockWidget()
     SIGNAL( FillDatabaseFinished() ),
     this, SLOT( PassInfoForCollectionIDFromDB() ) );
 
-  QObject::connect( this->m_VisuDockWidget->ColorComboBox,
+  QObject::connect( this->m_VisuDockWidget->ColorTraceComboBox,
     SIGNAL( NewColorToBeSaved()),
-    this, SLOT( PassInfoForDBFromColorComboBox() ) );
+    this, SLOT( PassInfoForDBFromColorTraceComboBox() ) );
 }
 //-------------------------------------------------------------------------
 
@@ -1065,7 +1065,7 @@ ValidateContour( const int& iId,
         contour_property );
 
     std::pair<std::string,QColor> ColorData =
-      this->m_VisuDockWidget->ColorComboBox->GetCurrentColorData();
+      this->m_VisuDockWidget->ColorTraceComboBox->GetCurrentColorData();
 
     // get meshid from the visu dock widget (SpinBox)
     //unsigned int meshid = m_ManualSegmentationDockWidget->GetMeshId();
@@ -1105,7 +1105,7 @@ ValidateContour( )
   // get color from the dock widget
   double r, g, b, a( 1. );
   //QColor color = m_ManualSegmentationDockWidget->GetValidatedColor();
-  QColor color = this->m_VisuDockWidget->ColorComboBox->
+  QColor color = this->m_VisuDockWidget->ColorTraceComboBox->
     GetCurrentColorData().second;
   color.getRgbF( &r, &g, &b );
 
@@ -1384,16 +1384,16 @@ AddContourFromNodes( vtkPolyData* iNodes,
 //-------------------------------------------------------------------------
 void QGoTabImageView3DwT::PassInfoForColorComboBoxFromDB()
 {
-  this->m_VisuDockWidget->ColorComboBox->SetDataForColors(
+  this->m_VisuDockWidget->ColorTraceComboBox->SetDataForColors(
     this->m_DataBaseTables->GetColorComboBoxInfofromDB());
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoTabImageView3DwT::PassInfoForDBFromColorComboBox()
+void QGoTabImageView3DwT::PassInfoForDBFromColorTraceComboBox()
 {
   this->m_DataBaseTables->SaveNewColorInDB(
-    this->m_VisuDockWidget->ColorComboBox->GetDataForNewColorToBeSaved());
+    this->m_VisuDockWidget->ColorTraceComboBox->GetDataForNewColorToBeSaved());
 }
 //-------------------------------------------------------------------------
 
@@ -1401,7 +1401,7 @@ void QGoTabImageView3DwT::PassInfoForDBFromColorComboBox()
 void QGoTabImageView3DwT::PassInfoForCollectionIDFromDB()
 {
   this->m_VisuDockWidget->SetCollectionID(this->m_DataBaseTables->
-    GetListExistingCollectionIDFromDB("mesh"));
+    GetListExistingCollectionIDFromDB("contour","mesh"));
   //todo: always begin with contour ??
 }
 //-------------------------------------------------------------------------

@@ -377,7 +377,7 @@ GoDBCollectionOfTraces::DBTableWidgetContainerType
   //then, get the results of the first query:
   std::vector<std::vector<std::string> >ResultsFirstQuery = GetValuesFromSeveralTables(
     DatabaseConnector,this->m_TracesName,SelectFirstFields, "ImagingSessionID",
-    ConvertToString<unsigned int>(this->m_ImgSessionID),JoinFirstTablesOnTraceTable);
+    ConvertToString<unsigned int>(this->m_ImgSessionID),JoinFirstTablesOnTraceTable,false);
 
   //fill the row container with the results of the first query:
   m_LinkToRowContainer->FillRowContainer(ResultsFirstQuery,SelectFirstFields);
@@ -391,7 +391,7 @@ GoDBCollectionOfTraces::DBTableWidgetContainerType
   //then, get the results of the second query:
   std::vector<std::vector<std::string> >ResultsSecondQuery = GetValuesFromSeveralTables(
     DatabaseConnector,this->m_TracesName,SelectSecondFields, "ImagingSessionID",
-    ConvertToString<unsigned int>(this->m_ImgSessionID),JoinSecondTablesOnTraceTable);
+    ConvertToString<unsigned int>(this->m_ImgSessionID),JoinSecondTablesOnTraceTable,false);
   
   //fill the row container with the results of the second query:
   m_LinkToRowContainer->FillRowContainer(ResultsSecondQuery,SelectSecondFields);
@@ -423,7 +423,7 @@ GoDBTableWidgetContainer* GoDBCollectionOfTraces::GetLinkToNewCreatedTraceContai
   //then, get the results of the first query:
   std::vector<std::vector<std::string> >ResultsFirstQuery = GetValuesFromSeveralTables(
     iDatabaseConnector,this->m_TracesName,SelectFirstFields, this->m_TracesIDName,
-    ConvertToString<int>(NewTraceID),JoinFirstTablesOnTraceTable);
+    ConvertToString<int>(NewTraceID),JoinFirstTablesOnTraceTable,false);
 
   //insert into the row container, the results of the first query:
  // m_LinkToRowContainer->FillRowContainer(ResultsFirstQuery,SelectFirstFields);
@@ -438,7 +438,7 @@ GoDBTableWidgetContainer* GoDBCollectionOfTraces::GetLinkToNewCreatedTraceContai
   //then, get the results of the second query:
   std::vector<std::vector<std::string> >ResultsSecondQuery = GetValuesFromSeveralTables(
     iDatabaseConnector,this->m_TracesName,SelectSecondFields, this->m_TracesIDName,
-    ConvertToString<int>(NewTraceID),JoinSecondTablesOnTraceTable);
+    ConvertToString<int>(NewTraceID),JoinSecondTablesOnTraceTable,false);
   
   //insert into the row container, the results of the second query:
   //m_LinkToRowContainer->FillRowContainer(ResultsSecondQuery,SelectSecondFields);

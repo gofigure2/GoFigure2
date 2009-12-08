@@ -29,9 +29,10 @@ class QGoVisualizationDockWidget :
     int GetCurrentCollectionID ();
     std::string GetCurrentColor();
     
-    void SetCollectionID(std::list<std::string> iListExistingID);
+    void SetCollectionID(std::list<std::pair<std::string,QColor> > iListExistingID);
 
-    QtColorComboBox* ColorComboBox;
+    QtColorComboBox* ColorTraceComboBox;
+    QtColorComboBox* ColorIDCollectionComboBox;
 
   public slots:
     void SetXSlice( int iSlice );
@@ -51,7 +52,8 @@ class QGoVisualizationDockWidget :
   protected:
     unsigned int m_Dimension;
     std::list<std::pair<std::string,std::vector<int> > > m_DataColors;
-    void SetColorComboBox();
+    void SetColorTraceComboBox();
+    void SetColorIDCollectionComboBox();
     QHBoxLayout* HLayoutForColor;
     QVBoxLayout* VLayoutForCollection;
 };

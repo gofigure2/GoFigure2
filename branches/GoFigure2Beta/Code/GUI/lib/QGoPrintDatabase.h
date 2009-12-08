@@ -42,6 +42,7 @@
 
 #include <QWidget>
 #include <QTableWidget>
+#include <QColor>
 #include <string>
 #include "ui_QGoPrintDatabase.h"
 #include "MegaVTK2Configure.h"
@@ -100,7 +101,8 @@ public:
   from the database*/
   std::list<std::pair<std::string,std::vector<int> > > GetColorComboBoxInfofromDB();
 
-  std::list<std::string> GetListExistingCollectionIDFromDB(std::string CollectionName);
+  std::list<std::pair<std::string,QColor> > GetListExistingCollectionIDFromDB(
+    std::string TraceName,std::string CollectionName);
 
   void SaveNewColorInDB(std::vector<std::string> iDataNewColor);
   
@@ -270,7 +272,7 @@ protected:
 
 
   void closeEvent(QCloseEvent* event);
-  void UpdateTableWidgetAndRowContainerWithNewCreatedTrace( QString TableName, 
+  void UpdateTableWidgetAndRowContainerWithNewCreatedTrace(
     QTableWidgetChild* Table,vtkMySQLDatabase* DatabaseConnector, 
     GoDBCollectionOfTraces* iCollectionOfTraces);
 
