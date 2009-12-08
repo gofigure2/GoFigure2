@@ -222,7 +222,7 @@ int FindOneID(vtkMySQLDatabase* DatabaseConnector,
   querystream << field;
   querystream << " = '";
   querystream << value;
-  querystream << "');";
+  querystream << "';";
 
   query->SetQuery( querystream.str().c_str() );
   if ( !query->Execute() )

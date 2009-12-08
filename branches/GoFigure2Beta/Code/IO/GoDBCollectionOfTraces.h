@@ -102,6 +102,14 @@ public:
   GoDBTableWidgetContainer*  GetLinkToNewCreatedTraceContainer(
     vtkMySQLDatabase* iDatabaseConnector);
 
+  /*template<class myT>
+  int CreateFirstCollection(vtkMySQLDatabase* DatabaseConnector)
+    {
+    myT NewObject;
+    NewObject.SetField("ImagingSessionID",this->m_ImgSessionID);
+
+    }*/
+
   template< class myT >
   void QMEGAVTKADDON2_EXPORT CreateNewCollectionFromSelection(
     QStringList ListSelectedTraces, vtkMySQLDatabase* DatabaseConnector,
@@ -124,6 +132,23 @@ public:
 
   QStringList QMEGAVTKADDON2_EXPORT ListCollectionID(
     vtkMySQLDatabase* DatabaseConnector);
+
+  /** \brief create the first collection in the database and return the corresponding
+  ID*/
+  template< class myT >
+  int CreateFirstCollection(vtkMySQLDatabase* DatabaseConnector, myT& NewObject)
+    {
+    NewObject.SetField("ImagingSessionID",this->m_ImgSessionID);
+    //As there is no traces in the collection, the bounding box is the minimum one:
+   // CoordIDMax correspond to the imagingsession Min and CoordIDMin to the Max:
+    int CoordIDMax = FindOneID(DatabaseConnector,"imagingsession", "CoordIDMin",
+      "ImagingSessionID", ConvertToString<int>(this->m_ImgSessionID));
+    int CoordIDMin = FindOneID(DatabaseConnector,"imagingsession", "CoordIDMax",
+      "ImagingSessionID", ConvertToString<int>(this->m_ImgSessionID));
+    NewObject.SetField<int>("CoordIDMax",CoordIDMax);
+    NewObject.SetField<int>("CoordIDMin",CoordIDMin);
+    return this->CreateNewCollection<myT>(DatabaseConnector,NewObject);
+    }
 
   std::string CollectionName()
     { return m_CollectionName;}
@@ -149,7 +174,9 @@ protected:
   /** \brief Create a new collection Row in the collection table and
   return the collectionID from the created row: */
   int  CreateNewCollection();
-
+  
+   /** \brief create a new collection in the database and return the corresponding
+  ID*/
   template< class myT >
   int CreateNewCollection(vtkMySQLDatabase* DatabaseConnector, myT& myNewObject)
     {

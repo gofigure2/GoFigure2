@@ -421,5 +421,7 @@ void QTableWidgetChild::InsertNewRow(GoDBTableWidgetContainer* iLinkToRowContain
 std::vector<unsigned int> QTableWidgetChild::GetListCheckedRows()
 {
   std::vector<unsigned int> oListCheckedRows;
+  QStringList ListRowsChecked = this->ValuesForSelectedRows("");
+
   return oListCheckedRows;
 }

@@ -588,6 +588,7 @@ void QGoPrintDatabase::SaveContoursFromVisuInDB(unsigned int iXCoordMin,
   contour_row.SetColor(iColorData.second.red(),iColorData.second.green(),
     iColorData.second.blue(),iColorData.second.alpha(),iColorData.first,
     this->m_DatabaseConnector);
+
   contour_row.SetCollectionID(iMeshID);
 
   contour_row.SaveInDB( this->m_DatabaseConnector);
@@ -785,8 +786,33 @@ std::list<std::string> QGoPrintDatabase::GetListExistingCollectionIDFromDB(
   unsigned int i = 0;
   while ( i<ResultsQuery.size())
     {
-    oListCollectionIDs.push_back(ResultsQuery[i]);
+    oListCollectionIDs.push_back(ResultsQuery[i].c_str());
     i++;
+    }
+  //for creating traces at the beginning, with no existing collection, we
+  //create a new collection:
+  if (oListCollectionIDs.empty())
+    {
+    int NewID = 0;
+    if (CollectionName == "mesh")
+      {
+      GoDBMeshRow FirstMesh;
+      NewID = this->m_CollectionOfContours->CreateFirstCollection<GoDBMeshRow>(
+        this->m_DatabaseConnector, FirstMesh);
+      }
+    if (CollectionName == "track")
+      {
+      GoDBTrackRow FirstTrack;
+      NewID = this->m_CollectionOfMeshes->CreateFirstCollection<GoDBTrackRow>(
+        this->m_DatabaseConnector, FirstTrack);
+      }
+    if (CollectionName == "lineage")
+      {
+      GoDBLineageRow FirstLineage;
+      NewID = this->m_CollectionOfTracks->CreateFirstCollection<GoDBLineageRow>(
+        this->m_DatabaseConnector, FirstLineage);
+      }
+    oListCollectionIDs.push_back(ConvertToString<int>(NewID));
     }
 
   CloseDBConnection();
