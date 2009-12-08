@@ -55,6 +55,9 @@ public:
   GoDBTraceRow(vtkMySQLDatabase* DatabaseConnector,vtkPolyData* TraceVisu,
   GoDBCoordinateRow Min, GoDBCoordinateRow Max,unsigned int ImgSessionID);
 
+  GoDBTraceRow(vtkMySQLDatabase* DatabaseConnector,std::string TraceVisu,
+    GoDBCoordinateRow Min, GoDBCoordinateRow Max,unsigned int ImgSessionID);
+
   ~GoDBTraceRow()
     {}
   

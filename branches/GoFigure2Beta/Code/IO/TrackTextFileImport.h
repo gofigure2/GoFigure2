@@ -10,6 +10,7 @@
 
 class vtkPolyData;
 class vtkMySQLDatabase;
+class vtkPolyData;
 
 class TrackTextFileImport
 {
@@ -74,7 +75,7 @@ class TrackTextFileImport
       unsigned int m_ZMax;
       unsigned int m_TMin;
       unsigned int m_TMax;
-      vtkPolyData* m_Points;
+      std::string  m_Points;
       };
 
     std::list< InternalMeshStructure > m_ListOfMeshes;
@@ -83,7 +84,8 @@ class TrackTextFileImport
     void SaveMeshInDataBase( const InternalMeshStructure& iMesh );
     void SaveTrackInDataBase( const InternalTrackStructure& iTrack );
 
-    void Add(const std::string& ioTrackList, const std::string& x, const std::string& y, const std::string& z, const std::string& t);
-    unsigned int GetNumberOfCoordinates( const std::string& ioTrackList );
+    std::string AddTimePoint(const std::string& ioTrackList, const std::string& iX, const std::string& iY, const std::string& iZ, const std::string& iT);
+    std::string RemoveTimePoints(const std::string& ioTrackList);
+    unsigned int GetNumberOfCoordinates( const std::string& iTrackList );
 };
 #endif

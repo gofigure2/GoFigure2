@@ -51,7 +51,7 @@ GoDBTrackRow::GoDBTrackRow()
 //-------------------------------------------------------------------------
 GoDBTrackRow::GoDBTrackRow(vtkMySQLDatabase* DatabaseConnector,
   GoDBCoordinateRow Min, GoDBCoordinateRow Max,unsigned int ImgSessionID,
-  vtkPolyData* TraceVisu)
+  std::string TraceVisu)
 {
   GoDBTraceRow::GoDBTraceRow(DatabaseConnector,TraceVisu,Min,Max,
     ImgSessionID);

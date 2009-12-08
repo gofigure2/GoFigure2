@@ -55,7 +55,7 @@ public:
     {}
   /**\brief fill the track map with the values gotten from the visualization*/
   GoDBTrackRow(vtkMySQLDatabase* DatabaseConnector,GoDBCoordinateRow Min, 
-    GoDBCoordinateRow Max,unsigned int ImgSessionID,vtkPolyData* TraceVisu);
+    GoDBCoordinateRow Max,unsigned int ImgSessionID,std::string TraceVisu);
 
   /**\brief return the TrackID of the Track with the same bounding box
   already registered in the DB or -1 if not yet created*/
