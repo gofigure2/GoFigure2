@@ -1125,7 +1125,8 @@ ValidateContour( const int& iId )
     contour_property->Delete();
 
     // get meshid from the dock widget (SpinBox)
-    unsigned int meshid = m_ManualSegmentationDockWidget->GetMeshId();
+    //unsigned int meshid = m_ManualSegmentationDockWidget->GetMeshId();
+    unsigned int meshid = this->m_VisuDockWidget->GetCurrentCollectionID();
 
     unsigned int timepoint = static_cast< unsigned int >( m_TimePoint );
     bool highlighted = false;

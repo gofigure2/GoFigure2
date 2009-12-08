@@ -26,11 +26,11 @@ QGoManualSegmentationDockWidget( QWidget* iParent ) :
   QObject::connect( m_SettingsDialog, SIGNAL( accepted() ),
     this, SLOT( SetContourColor() ) );
 
-  QObject::connect( this->IdSpinBox, SIGNAL( valueChanged( int ) ),
-    this, SLOT( GenerateRandomColorForGivenId( int ) ) );
+//  QObject::connect( this->IdSpinBox, SIGNAL( valueChanged( int ) ),
+  //  this, SLOT( GenerateRandomColorForGivenId( int ) ) );
 
-  QObject::connect( this->ValidatedContourColorBtn, SIGNAL( pressed() ),
-    this, SLOT( OnSetColorPressed() ) );
+//  QObject::connect( this->ValidatedContourColorBtn, SIGNAL( pressed() ),
+//    this, SLOT( OnSetColorPressed() ) );
 
   QObject::connect( this->ReinitializeBtn, SIGNAL( pressed() ),
     this, SIGNAL( ReinitializePressed() ) );
@@ -54,12 +54,12 @@ GetValidatedColor() const
   return m_ValidatedColor;
 }
 
-unsigned int
+/*unsigned int
 QGoManualSegmentationDockWidget::
 GetMeshId() const
 {
   return static_cast< unsigned int >( this->IdSpinBox->value() );
-}
+}*/
 
 void
 QGoManualSegmentationDockWidget::

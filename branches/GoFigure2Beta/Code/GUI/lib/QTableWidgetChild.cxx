@@ -294,8 +294,8 @@ void QTableWidgetChild::DisplayContent(GoDBTableWidgetContainer* iLinkToRowConta
         }//ENDIF
       }//ENDFOR
       SetSelectedColumn(NbofRows,0);
-      this->SetColorForAllTable(iLinkToRowContainer,TraceName);
-      this->SetColorForAllTable(iLinkToRowContainer,CollectionName);
+      this->SetColorForTable(iLinkToRowContainer,TraceName,0);
+      this->SetColorForTable(iLinkToRowContainer,CollectionName,0);
     }//ENDELSE
 }
 //--------------------------------------------------------------------------
@@ -318,8 +318,8 @@ void QTableWidgetChild::SetSelectedColumn(unsigned int iNbOfRows,
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QTableWidgetChild::SetColorForAllTable (GoDBTableWidgetContainer* iLinkToRowContainer,
-  std::string NameGroupColor )
+void QTableWidgetChild::SetColorForTable (GoDBTableWidgetContainer* iLinkToRowContainer,
+  std::string NameGroupColor,unsigned int StartRow )
 {
   DBTableWidgetContainerType RowContainer = iLinkToRowContainer->GetRowContainer();
 
@@ -340,11 +340,11 @@ void QTableWidgetChild::SetColorForAllTable (GoDBTableWidgetContainer* iLinkToRo
   ColumnNameID += "ID";
   int indexGroupIDInTableWidget = findColumnName(ColumnNameID.c_str(),
     this->recordHeaderNamesOrder());
-  for (unsigned int i=0; i < this->rowCount();i++)
+  for (unsigned int i=StartRow; i < RowContainer[1].second.size()+StartRow;i++)
     {
     QColor Color;
     QColor TextColor;
-    if (RowContainer[indexGroupIDInTableWidget].second[i] == "0")
+    if (RowContainer[indexGroupIDInTableWidget].second[i-StartRow] == "0")
       {
       Color.setRgb(255,255,255,255);
       int rgb = 255 - (255*3)/3;
@@ -352,9 +352,9 @@ void QTableWidgetChild::SetColorForAllTable (GoDBTableWidgetContainer* iLinkToRo
       }
     else
       {
-      int Red   = atoi(RowContainer[indexRedColumn].second[i].c_str());
-      int Green = atoi(RowContainer[indexGreenColumn].second[i].c_str());
-      int Blue  = atoi(RowContainer[indexBlueColumn].second[i].c_str());
+      int Red   = atoi(RowContainer[indexRedColumn].second[i-StartRow].c_str());
+      int Green = atoi(RowContainer[indexGreenColumn].second[i-StartRow].c_str());
+      int Blue  = atoi(RowContainer[indexBlueColumn].second[i-StartRow].c_str());
       Color.setRgb(Red,Green,Blue,255);
       int rgb = 255 - (Red+Green+Blue)/3;
       TextColor.setRgb(rgb,rgb,rgb,255);
@@ -389,7 +389,7 @@ void QTableWidgetChild::InsertNewRow(GoDBTableWidgetContainer* iLinkToRowContain
     }
   else
     {
-    int NewRow = this->rowCount()+ 1;
+    int NewRow = this->rowCount()+1;
     int NbRow = NewRow;
     this->setRowCount(NbRow);
     for (unsigned int i = 0; i < NewTraceRowContainer.size(); i++)
@@ -411,8 +411,8 @@ void QTableWidgetChild::InsertNewRow(GoDBTableWidgetContainer* iLinkToRowContain
         }//ENDIF
       }//ENDFOR
       SetSelectedColumn(1,NewRow-1);
-      this->SetColorForAllTable(iLinkToRowContainer,TraceName);
-      this->SetColorForAllTable(iLinkToRowContainer,CollectionName);
+      this->SetColorForTable(iLinkToRowContainer,TraceName,NewRow-1);
+      this->SetColorForTable(iLinkToRowContainer,CollectionName,NewRow-1);
     }//ENDELSE
 }
 //--------------------------------------------------------------------------

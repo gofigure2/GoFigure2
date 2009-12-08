@@ -113,8 +113,8 @@ public slots:
   /** \brief Put checkboxes in the column "Selected" */
   void SetSelectedColumn(unsigned int iNbOfRows,unsigned int StartedRow);
 
-  void SetColorForAllTable (GoDBTableWidgetContainer* iLinkToRowContainer,
-    std::string NameGroupColor);
+  void SetColorForTable (GoDBTableWidgetContainer* iLinkToRowContainer,
+  std::string NameGroupColor,unsigned int StartRow);
 
   std::vector<unsigned int> GetListCheckedRows();
 

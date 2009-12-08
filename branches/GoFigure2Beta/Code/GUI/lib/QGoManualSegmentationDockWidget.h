@@ -18,7 +18,7 @@ class QGoManualSegmentationDockWidget :
     ~QGoManualSegmentationDockWidget();
 
     QColor GetValidatedColor() const;
-    unsigned int GetMeshId() const;
+    //unsigned int GetMeshId() const;
 
     double GetLinesWidth() const;
     QColor GetLinesColor() const;
