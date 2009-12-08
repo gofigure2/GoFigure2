@@ -671,11 +671,33 @@ int GoDBTableWidgetContainer::GetIndexInsideRowContainer(std::string iInfoName)
  //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void GoDBTableWidgetContainer::InsertNewCreatedTrace()
+void GoDBTableWidgetContainer::InsertNewCreatedTrace(GoDBTableWidgetContainer
+  iLinkToNewTraceContainer)
 {
-  /*std::vector<std::string> GetQueryStringForSelectFieldsTables(bool SameFieldsInQuery);
-  std::vector<std::string> GetQueryStringForTraceJoinedTables(bool SameFieldsInQuery);
-  int TraceID = int MaxValueForOneColumnInTable(DatabaseConnector,
-  std::string ColumnName,std::string TableName,std::string field,
-  std::string value);*/
+  GoDBTableWidgetContainer::DBTableWidgetContainerType NewTraceContainer =
+    iLinkToNewTraceContainer.GetRowContainer();
+  unsigned int CurrentNbRows = this->m_RowContainer[1].second.size();
+  //iterator for the m_RowContainer:
+  GoDBTableWidgetContainer::DBTableWidgetContainerType::iterator iterCurrentColumn =
+    this->m_RowContainer.begin();
+  //iterator for the new container to be added to m_RowContainer:
+  GoDBTableWidgetContainer::DBTableWidgetContainerType::iterator iterNewColumn =
+    NewTraceContainer.begin();
+      
+  while(iterCurrentColumn != this->m_RowContainer.end())
+    {
+    if (iterCurrentColumn->second.size() != 0)
+      {
+      std::vector<std::string>::iterator iterNewRow = 
+        iterNewColumn->second.begin();
+      while (iterNewRow != iterNewColumn->second.end())
+        {
+        std::string NewValue = *iterNewRow;
+        iterCurrentColumn->second.push_back(NewValue);
+        iterNewRow++;
+        }
+      }
+  iterCurrentColumn++;
+  iterNewColumn++;
+    }
 }

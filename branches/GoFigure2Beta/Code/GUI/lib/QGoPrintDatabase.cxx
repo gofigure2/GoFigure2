@@ -595,8 +595,8 @@ void QGoPrintDatabase::SaveContoursFromVisuInDB(unsigned int iXCoordMin,
 
  // UpdateContentAndDisplayFromDB< GoDBContourRow >("contour",
   //  ContourTable,m_DatabaseConnector);
-  this->UpdateTableWidgetWithNewCreatedTrace("contour",this->ContourTable,this->m_DatabaseConnector,
-    this->m_CollectionOfContours);
+  this->UpdateTableWidgetAndRowContainerWithNewCreatedTrace("contour",
+    this->ContourTable,this->m_DatabaseConnector,this->m_CollectionOfContours);
 
   CloseDBConnection();
 }
@@ -822,54 +822,39 @@ std::list<std::string> QGoPrintDatabase::GetListExistingCollectionIDFromDB(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoPrintDatabase::UpdateTableWidgetWithNewCreatedTrace( QString TableName, 
-  QTableWidgetChild* Table,vtkMySQLDatabase* DatabaseConnector, 
+void QGoPrintDatabase::UpdateTableWidgetAndRowContainerWithNewCreatedTrace( 
+  QString TableName, QTableWidgetChild* Table,vtkMySQLDatabase* DatabaseConnector, 
   GoDBCollectionOfTraces* iCollectionOfTraces)
 {
-    /*Table->setSortingEnabled(false);
-    typedef GoDBRecordSet< myT >                  SetType;
-    typedef typename SetType::InternalObjectType  InternalObjectType;
-    typedef typename SetType::RowContainerType    RowContainerType;
-
-    RowContainerType* RowContainer;
-
-    SetType* mySet = new SetType;
-    mySet->SetConnector(DatabaseConnector);
-    mySet->SetTableName( TableName.toStdString() );
-    std::stringstream WhereClause;
-    WhereClause << "ImagingSessionID = ";
-    WhereClause << m_ImgSessionID;
-    WhereClause << ";";
-    mySet->SetWhereString(WhereClause.str());
-    mySet->PopulateFromDB();
-
-    myT myNewObject;
-    mySet->AddObject( myNewObject );
-    RowContainer = mySet->GetRowContainer();
-    if( RowContainer->size() < 2 )
-      {
-      std::cout<<"Table empty";
-      std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
-      std::cout << std::endl;
-      }
-    PrintOutContentFromDB< myT >( RowContainer, Table );
-    delete mySet;
-    emit TableContentChanged();
-    Table->setSortingEnabled(true);*/
- 
-  //Get all the necessary data from the database:
-
-  //DBTableWidgetContainerType RowContainerForNewTrace =
-  //  iCollectionOfTraces->GetNewCreatedTraceContainer(m_DatabaseConnector);
   GoDBTableWidgetContainer* LinkToNewTrace = iCollectionOfTraces->GetLinkToNewCreatedTraceContainer(
     this->m_DatabaseConnector);
 
+  iCollectionOfTraces->GetLinkToRowContainer()->InsertNewCreatedTrace(*LinkToNewTrace);
+
   Table->setSortingEnabled(false);
   
-  //iCollectionOfTraces->GetLinkToNewCreatedTraceContainer(this->m_DatabaseConnector);
   Table->InsertNewRow( LinkToNewTrace,iCollectionOfTraces->GetTraceName(),
     iCollectionOfTraces->GetCollectionName());
 
   Table->setSortingEnabled(true);
 
  }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+GoDBCollectionOfTraces* QGoPrintDatabase::GetCurrentCollection(
+  std::string CollectionName)
+{
+  if (CollectionName == "mesh")
+    {
+     return this->m_CollectionOfContours;
+    }
+  if (CollectionName == "track")
+    {
+     return this->m_CollectionOfMeshes;
+    }
+  if (CollectionName == "lineage")
+    {
+     return this->m_CollectionOfTracks;
+    }
+}

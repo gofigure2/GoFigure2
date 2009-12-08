@@ -87,7 +87,7 @@ class GoDBTableWidgetContainer
    containing the given ZCoord*/
    std::list<std::string> GetTracesIDForAGivenZCoord(int iZCoord);
 
-   void InsertNewCreatedTrace();
+   void InsertNewCreatedTrace(GoDBTableWidgetContainer iLinkToNewTraceContainer);
 
 protected:
   std::string m_CollectionName;

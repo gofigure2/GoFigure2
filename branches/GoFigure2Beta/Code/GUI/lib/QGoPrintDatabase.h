@@ -270,9 +270,11 @@ protected:
 
 
   void closeEvent(QCloseEvent* event);
-  void UpdateTableWidgetWithNewCreatedTrace( QString TableName, 
+  void UpdateTableWidgetAndRowContainerWithNewCreatedTrace( QString TableName, 
     QTableWidgetChild* Table,vtkMySQLDatabase* DatabaseConnector, 
     GoDBCollectionOfTraces* iCollectionOfTraces);
+
+  GoDBCollectionOfTraces* GetCurrentCollection(std::string CollectionName);
 
 protected slots:
   void CreateContextMenu(const QPoint &pos);

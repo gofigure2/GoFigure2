@@ -362,10 +362,6 @@ void QTableWidgetChild::SetColorForTable (GoDBTableWidgetContainer* iLinkToRowCo
     this->item(i,indexGroupIDInTableWidget)->setBackgroundColor(Color);
     this->item(i,indexGroupIDInTableWidget)->setTextColor(TextColor);
     }
-  //QColor Color (Red,Green,Blue,Alpha); 
-  //int Row = 0;
-  //int Column = 0;
-  //this->item(Row,Column)->setBackgroundColor(Color);
 }
 //--------------------------------------------------------------------------
 
