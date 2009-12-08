@@ -13,14 +13,18 @@
 #include <QSlider>
 #include <QSpacerItem>
 
-#include "vtkImageData.h"
-#include "vtkViewImage2D.h"
-#include "vtkViewImage3D.h"
+#include <map>
+
 #include "QVTKWidget.h"
 #include "vtkEventQtSlotConnect.h"
-#include "vtkViewImage2DCollection.h"
-
 #include "QSplitterChild.h"
+
+class vtkProp3D;
+class vtkProperty;
+class vtkImageData;
+class vtkViewImage2D;
+class vtkViewImage3D;
+class vtkViewImage2DCollection;
 
 /**
 \class QGoImageView3D
@@ -70,7 +74,7 @@ public:
   int GetSliceViewXZ() const;
   int GetSliceViewYZ() const;
 
-  virtual void HighlightContour( vtkProp3D* iProp, const bool& iToDo );
+  virtual void ChangeActorProperty( vtkProp3D* iActor, vtkProperty* iProperty );
 
 signals:
   void SliceViewXYChanged( int Slice );
@@ -78,6 +82,7 @@ signals:
   void SliceViewYZChanged( int Slice );
 
   void FullScreenViewChanged( int View );
+  void ActorsSelectionChanged();
 
 public slots:
   QString SnapshotViewXY( const GoFigure::FileType& iType,
@@ -99,6 +104,8 @@ public slots:
   void FullScreenViewXZ();
   void FullScreenViewYZ();
   void FullScreenViewXYZ();
+
+  void HighLightContours();
 
   /**
    *
@@ -139,9 +146,12 @@ protected:
   int                       IsFullScreen;
   bool                      m_FirstRender;
 
+  vtkProperty* m_HighlightedContourProperty;
+
   virtual void resizeEvent( QResizeEvent* event );
 
   void SetupVTKtoQtConnections();
+  std::map< vtkProp3D*, vtkProperty* > m_ActorsPropertyMap;
 
 protected slots:
   void MoveSliderXY();

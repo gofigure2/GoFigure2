@@ -46,6 +46,7 @@
 #include "MegaVTK2Configure.h"
 #include "GoDBRecordSetHelper.h"
 #include "vtkMySQLDatabase.h"
+#include "GoDBRow.h"
 #include "GoDBCoordinateRow.h"
 #include "GoDBTraceInfoForTableWidget.h"
 #include "GoDBTableWidgetContainer.h"
@@ -57,32 +58,32 @@ class GoDBCollectionOfTraces
 
 public:
 
-  explicit QMEGAVTKADDON2_EXPORT GoDBCollectionOfTraces();
-  explicit QMEGAVTKADDON2_EXPORT GoDBCollectionOfTraces(
+  explicit GoDBCollectionOfTraces();
+  explicit GoDBCollectionOfTraces(
     std::string CollectionName,std::string Traces);
-  virtual  QMEGAVTKADDON2_EXPORT ~GoDBCollectionOfTraces();
+  virtual  ~GoDBCollectionOfTraces();
 
   typedef GoDBTableWidgetContainer::DBTableWidgetContainerType
     DBTableWidgetContainerType;
 
-  //void QMEGAVTKADDON2_EXPORT SetDatabaseVariables(
+  //void SetDatabaseVariables(
     //QString Server,QString User,QString Password, QString NameDB);
-  void QMEGAVTKADDON2_EXPORT SetImgSessionID (unsigned int iImgSessionID);
+  void SetImgSessionID (unsigned int iImgSessionID);
 
   /** \brief Delete in the Database all the traces listed in the QStringList */
-  void QMEGAVTKADDON2_EXPORT DeleteTraces(QStringList TracesToDelete,
+  void DeleteTraces(QStringList TracesToDelete,
   vtkMySQLDatabase* DatabaseConnector);
 
   /** \brief Update the collectionID of the selected traces in the DB traces table
   with the new collectionID: */
-  void QMEGAVTKADDON2_EXPORT AddSelectedTracesToCollection(
+  void AddSelectedTracesToCollection(
     QStringList ListSelectedTraces,int newCollectionID,
     vtkMySQLDatabase* DatabaseConnector);
 
-  /** \brief Return a map with all the ColumnNames for the table widget to be 
+  /** \brief Return a map with all the ColumnNames for the table widget to be
   completed by the value for each column:*/
   std::list<std::string> GetListColumnsNamesForTableWidget();
-  
+
   GoDBTableWidgetContainer* GetLinkToRowContainer()
     {
     return m_LinkToRowContainer;
@@ -92,7 +93,7 @@ public:
     {
     return m_TracesName;
     }
-  
+
   std::string GetCollectionName()
     {
     return m_CollectionName;
@@ -111,7 +112,7 @@ public:
     }*/
 
   template< class myT >
-  void QMEGAVTKADDON2_EXPORT CreateNewCollectionFromSelection(
+  void CreateNewCollectionFromSelection(
     QStringList ListSelectedTraces, vtkMySQLDatabase* DatabaseConnector,
     myT& NewObject)
     {
@@ -139,14 +140,20 @@ public:
   int CreateFirstCollection(vtkMySQLDatabase* DatabaseConnector, myT& NewObject)
     {
     NewObject.SetField("ImagingSessionID",this->m_ImgSessionID);
-    //As there is no traces in the collection, the bounding box is the minimum one:
-   // CoordIDMax correspond to the imagingsession Min and CoordIDMin to the Max:
-    int CoordIDMax = FindOneID(DatabaseConnector,"imagingsession", "CoordIDMin",
+    // As there is no traces in the collection, the bounding box is the minimum one:
+    // CoordIDMax correspond to the imagingsession Min and CoordIDMin to the Max:
+    int CoordIDMax = FindOneID(DatabaseConnector, "imagingsession", "CoordIDMin",
       "ImagingSessionID", ConvertToString<int>(this->m_ImgSessionID));
-    int CoordIDMin = FindOneID(DatabaseConnector,"imagingsession", "CoordIDMax",
+
+    int CoordIDMin = FindOneID(DatabaseConnector, "imagingsession", "CoordIDMax",
       "ImagingSessionID", ConvertToString<int>(this->m_ImgSessionID));
-    NewObject.SetField<int>("CoordIDMax",CoordIDMax);
-    NewObject.SetField<int>("CoordIDMin",CoordIDMin);
+
+    /// \note gcc does not recognized \code NewObject.SetField< int > \endcode,
+    /// it needs to specify that it is template method:
+    /// \code NewObject.template SetField< int > \endcode
+    NewObject.template SetField< int >( "CoordIDMax", CoordIDMax );
+    NewObject.template SetField< int >( "CoordIDMin", CoordIDMin );
+
     return this->CreateNewCollection<myT>(DatabaseConnector,NewObject);
     }
 
@@ -174,7 +181,7 @@ protected:
   /** \brief Create a new collection Row in the collection table and
   return the collectionID from the created row: */
   int  CreateNewCollection();
-  
+
    /** \brief create a new collection in the database and return the corresponding
   ID*/
   template< class myT >
@@ -194,16 +201,16 @@ protected:
   int GetCoordMinID(vtkMySQLDatabase* DatabaseConnector,
     int CollectionID,QStringList ListSelectedTraces);
 
-  /** \brief return the coordinate min of all the coordinates of the 
+  /** \brief return the coordinate min of all the coordinates of the
   selected traces*/
   GoDBCoordinateRow GetSelectingTracesCoordMin(
   vtkMySQLDatabase* DatabaseConnector, std::vector<std::string> ListSelectedTracesID);
 
-  /** \brief return the coordinate max of all the coordinates of the 
+  /** \brief return the coordinate max of all the coordinates of the
   selected traces*/
   GoDBCoordinateRow GetSelectingTracesCoordMax(
   vtkMySQLDatabase* DatabaseConnector, std::vector<std::string> ListSelectedTracesID);
-  
+
   /** \brief return the coordinate min for the existing Collection*/
   GoDBCoordinateRow GetExistingCoordMin(
   vtkMySQLDatabase* DatabaseConnector, int CollectionCoordIDMin,

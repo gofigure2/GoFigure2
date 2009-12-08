@@ -694,9 +694,10 @@ std::vector<ContourMeshStructure> QGoPrintDatabase::
   while (iterTracesID != ListOfSelectedTracesID.end())
     {
     std::string TraceIDToFindStrg = *iterTracesID;
-    int TraceIDToFind = atoi( TraceIDToFindStrg.c_str() );
+    unsigned int TraceIDToFind =
+      static_cast< unsigned int >( atoi( TraceIDToFindStrg.c_str() ) );
     bool found = false;
-    while (iterAllTraces != iAllTraces.end()&& found == false)
+    while( ( iterAllTraces != iAllTraces.end() ) && (found == false) )
       {
       if (TraceIDToFind == iterAllTraces->TraceID)
         {
@@ -818,7 +819,7 @@ std::list<std::pair<std::string,QColor> > QGoPrintDatabase::
  //Get the results for the query:
   std::vector<std::vector<std::string> >ResultsQuery  = GetValuesFromSeveralTables(
     this->m_DatabaseConnector,TraceName,SelectFields, "ImagingSessionID",
-    ConvertToString<unsigned int>(this->m_ImgSessionID),JoinTablesOnTraceTable,true);    
+    ConvertToString<unsigned int>(this->m_ImgSessionID),JoinTablesOnTraceTable,true);
 
   unsigned int i = 0;
   std::vector<std::vector<std::string> >::iterator iter = ResultsQuery.begin();
@@ -895,18 +896,18 @@ std::list<std::pair<std::string,QColor> > QGoPrintDatabase::
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoPrintDatabase::UpdateTableWidgetAndRowContainerWithNewCreatedTrace( 
-  QTableWidgetChild* Table,  vtkMySQLDatabase* DatabaseConnector, 
+void QGoPrintDatabase::UpdateTableWidgetAndRowContainerWithNewCreatedTrace(
+  QTableWidgetChild* Table,  vtkMySQLDatabase* DatabaseConnector,
   GoDBCollectionOfTraces* iCollectionOfTraces)
 {
   GoDBTableWidgetContainer* LinkToNewTrace = iCollectionOfTraces->GetLinkToNewCreatedTraceContainer(
     this->m_DatabaseConnector);
   //update the RowContainer for the trace:
   iCollectionOfTraces->GetLinkToRowContainer()->InsertNewCreatedTrace(*LinkToNewTrace);
-  
+
   //Update the table widget with the new trace:
   Table->setSortingEnabled(false);
-  
+
   Table->InsertNewRow( LinkToNewTrace,iCollectionOfTraces->GetTraceName(),
     iCollectionOfTraces->GetCollectionName());
 
@@ -920,14 +921,25 @@ GoDBCollectionOfTraces* QGoPrintDatabase::GetCurrentCollection(
 {
   if (CollectionName == "mesh")
     {
-     return this->m_CollectionOfContours;
+    return this->m_CollectionOfContours;
     }
-  if (CollectionName == "track")
+  else
     {
-     return this->m_CollectionOfMeshes;
-    }
-  if (CollectionName == "lineage")
-    {
-     return this->m_CollectionOfTracks;
+    if (CollectionName == "track")
+      {
+      return this->m_CollectionOfMeshes;
+      }
+    else
+      {
+      if (CollectionName == "lineage")
+        {
+        return this->m_CollectionOfTracks;
+        }
+      else
+        {
+        return 0;
+        }
+      }
     }
 }
+//-------------------------------------------------------------------------

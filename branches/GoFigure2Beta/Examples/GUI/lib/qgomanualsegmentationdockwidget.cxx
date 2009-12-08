@@ -32,7 +32,7 @@ int main( int argc, char** argv )
   int output = app.exec();
   app.closeAllWindows();
 
-  std::cout <<dock->GetMeshId() <<std::endl;
+//   std::cout <<dock->GetMeshId() <<std::endl;
   QColor color = dock->GetValidatedColor();
 
   std::cout <<color.red() <<" " <<color.green() <<" " <<color.blue() <<std::endl;

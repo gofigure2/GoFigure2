@@ -7,6 +7,7 @@
 
 #include "SnapshotHelper.h"
 
+#include "vtkImageData.h"
 #include "vtkLookupTable.h"
 #include "vtkImageAppendComponents.h"
 

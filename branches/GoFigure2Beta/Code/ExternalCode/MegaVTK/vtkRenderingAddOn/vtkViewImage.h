@@ -318,7 +318,9 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage : public vtkImageViewer2
   // Set the input dataset
   virtual void SetInput( vtkImageData* );
 
-  virtual void HighlightContour( vtkProp3D* iProp, const bool& iToDo );
+  virtual void ChangeActorProperty( vtkProp3D* iActor,
+    vtkProperty* iProperty );
+//   virtual void HighlightContour( vtkProp3D* iProp, const bool& iToDo );
 
 
  protected:

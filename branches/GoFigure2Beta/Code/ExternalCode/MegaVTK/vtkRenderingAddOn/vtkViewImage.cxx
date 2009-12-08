@@ -519,7 +519,9 @@ void vtkViewImage::SetShowScalarBar( const bool& val )
     this->ScalarBarActor->SetVisibility( this->ShowScalarBar );
     }
 }
+//----------------------------------------------------------------------------
 
+//----------------------------------------------------------------------------
 vtkRenderWindowInteractor* vtkViewImage::GetRenderWindowInteractor()
 {
   if( !this->GetRenderWindow() )
@@ -531,30 +533,56 @@ vtkRenderWindowInteractor* vtkViewImage::GetRenderWindowInteractor()
     return this->GetRenderWindow()->GetInteractor();
     }
 }
-
-
-void vtkViewImage::HighlightContour( vtkProp3D* iProp, const bool& iToDo )
+//----------------------------------------------------------------------------
+void vtkViewImage::ChangeActorProperty( vtkProp3D* iActor,
+    vtkProperty* iProperty )
 {
-  if( !iProp )
+  if( !iActor || !iProperty )
     {
     return;
     }
   else
     {
-    vtkActor* temp = dynamic_cast< vtkActor* >( iProp );
-
-    if( temp )
+    if( Prop3DCollection->IsItemPresent( iActor ) )
       {
-      if( iToDo )
+      vtkActor* temp = dynamic_cast< vtkActor* >( iActor );
+
+      if( temp )
         {
-        temp->GetProperty()->SetColor( 1., 1., 0. );
-        temp->GetProperty()->SetLineWidth( 3. );
+        temp->SetProperty( iProperty );
+        temp->Modified();
         }
-      else
-        {
-        temp->GetProperty()->SetLineWidth( 1. );
-        temp->GetProperty()->SetColor( 1., 1., 1. );
-        }
+      }
+    else
+      {
+      std::cout <<"is not present" <<std::endl;
       }
     }
 }
+//----------------------------------------------------------------------------
+// void vtkViewImage::HighlightContour( vtkProp3D* iProp, const bool& iToDo )
+// {
+//   if( !iProp )
+//     {
+//     return;
+//     }
+//   else
+//     {
+//     vtkActor* temp = dynamic_cast< vtkActor* >( iProp );
+//
+//     if( temp )
+//       {
+//       if( iToDo )
+//         {
+//         temp->GetProperty()->SetColor( 1., 1., 0. );
+//         temp->GetProperty()->SetLineWidth( 3. );
+//         }
+//       else
+//         {
+//         temp->GetProperty()->SetLineWidth( 1. );
+//         temp->GetProperty()->SetColor( 1., 1., 1. );
+//         }
+//       }
+//     }
+// }
+//----------------------------------------------------------------------------

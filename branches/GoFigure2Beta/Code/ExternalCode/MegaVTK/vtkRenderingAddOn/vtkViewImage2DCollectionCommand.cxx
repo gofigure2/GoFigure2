@@ -8,17 +8,65 @@
 #include "vtkRenderWindowInteractor.h"
 #include "vtkCellPicker.h"
 #include "vtkProp3DCollection.h"
+#include "vtkViewImage2DCollection.h"
 
 //----------------------------------------------------------------------------
-vtkViewImage2DCollectionCommand::vtkViewImage2DCollectionCommand()
+vtkViewImage2DCollectionCommand::
+vtkViewImage2DCollectionCommand()
 {
 }
+//----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------
-void vtkViewImage2DCollectionCommand::SetCollection(vtkViewImage2DCollection* p)
+vtkViewImage2DCollectionCommand::
+~vtkViewImage2DCollectionCommand()
+{
+}
+//----------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------
+void
+vtkViewImage2DCollectionCommand::
+SetCollection(vtkViewImage2DCollection* p)
 {
   this->Collection = p;
 }
+//----------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------
+vtkViewImage2DCollectionCommand*
+vtkViewImage2DCollectionCommand::New()
+{
+  return new vtkViewImage2DCollectionCommand;
+}
+//----------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------
+vtkViewImage2DCollection*
+vtkViewImage2DCollectionCommand::
+GetCollection()
+{
+  return this->Collection;
+}
+//----------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------
+std::list< vtkProp3D* >
+vtkViewImage2DCollectionCommand::
+GetListOfPickedActors()
+{
+  return ListOfPickedActors;
+}
+//----------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------
+std::list< vtkProp3D* >
+vtkViewImage2DCollectionCommand::
+GetListOfUnPickedActors()
+{
+  return ListOfUnPickedActors;
+}
+//----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------
 void vtkViewImage2DCollectionCommand::Execute(vtkObject *caller,
@@ -26,7 +74,9 @@ void vtkViewImage2DCollectionCommand::Execute(vtkObject *caller,
   void *vtkNotUsed(callData))
 {
   if (!this->Collection)
+    {
     return;
+    }
 
   vtkInteractorStyleImage2D *isi =
     vtkInteractorStyleImage2D::SafeDownCast(caller);
@@ -44,7 +94,9 @@ void vtkViewImage2DCollectionCommand::Execute(vtkObject *caller,
   }
 
   if (!isi || !viewer || !viewer->GetInput())
+  {
     return;
+  }
 
   // Reset
   if (event == vtkCommand::ResetWindowLevelEvent)
@@ -139,6 +191,9 @@ void vtkViewImage2DCollectionCommand::Execute(vtkObject *caller,
     vtkProp3D* prop = picker->GetProp3D();
     if( prop )
     {
+      ListOfPickedActors.clear();
+      ListOfUnPickedActors.clear();
+
 //       vtkProp* prop = path->GetFirstNode()->GetViewProp();
       viewer->GetProp3DCollection()->InitTraversal();
       vtkProp3D* prop_temp = viewer->GetProp3DCollection()->GetNextProp3D(); // image
@@ -150,14 +205,17 @@ void vtkViewImage2DCollectionCommand::Execute(vtkObject *caller,
       {
         if( prop_temp == prop )
         {
-          viewer->HighlightContour( prop_temp, true );
-          // just in case, something else have to be done here
+          // to be highlighted
+          ListOfPickedActors.push_back( prop_temp );
+
+          // viewer->ChangeActorProperty( prop_temp, );
+          // viewer->HighlightContour( prop_temp, true );
         }
         else
         {
-          viewer->HighlightContour( prop_temp, false );
+          ListOfUnPickedActors.push_back( prop_temp );
+//           viewer->HighlightContour( prop_temp, false );
         }
-        prop_temp->Modified();
         prop_temp = viewer->GetProp3DCollection()->GetNextProp3D();
       }
     }

@@ -211,14 +211,15 @@ AddContour( const int& iId, vtkPolyData* iDataset, vtkProperty* iProperty )
  */
 void
 QGoImageView::
-HighlightContour( vtkProp3D* iProp, const bool& iToDo )
+ChangeActorProperty( vtkProp3D* iActor,
+    vtkProperty* iProperty )
 {
   int n = m_Pool->GetNumberOfItems();
 
   for( int i = 0; i < n; i++ )
     {
     vtkViewImage2D* viewer = m_Pool->GetItem( i );
-    viewer->HighlightContour( iProp, iToDo );
+    viewer->ChangeActorProperty( iActor, iProperty );
     }
 }
 //--------------------------------------------------------------------------

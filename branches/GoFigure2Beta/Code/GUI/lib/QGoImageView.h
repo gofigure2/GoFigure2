@@ -69,7 +69,7 @@ class QGoImageView : public QWidget
       vtkProperty* property = NULL );
 
     /** \brief Highlight a given contour (iProp) if iToDo is true. */
-    virtual void HighlightContour( vtkProp3D* iProp, const bool& iToDo );
+    virtual void ChangeActorProperty( vtkProp3D* iActor, vtkProperty* iProperty );
 
   public slots:
     /** \brief Set background color for all views.

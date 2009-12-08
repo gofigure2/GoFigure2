@@ -1,5 +1,10 @@
 #include "QGoImageView3D.h"
 
+#include "vtkImageData.h"
+#include "vtkViewImage2D.h"
+#include "vtkViewImage3D.h"
+#include "vtkViewImage2DCollection.h"
+
 #include "vtkRenderWindow.h"
 #include "vtkRendererCollection.h"
 #include "vtkRenderer.h"
@@ -19,6 +24,7 @@
 #include <QSettings>
 
 #include "vtkViewImage2DCommand.h"
+#include "vtkViewImage2DCollectionCommand.h"
 
 
 //-------------------------------------------------------------------------
@@ -33,6 +39,10 @@ QGoImageView3D( QWidget* iParent ) :
   m_FirstRender( true )
 {
   VtkEventQtConnector = vtkEventQtSlotConnect::New();
+
+  m_HighlightedContourProperty = vtkProperty::New();
+  m_HighlightedContourProperty->SetColor( 1., 0., 0. );
+  m_HighlightedContourProperty->SetLineWidth( 3. );
 
   setupUi( this );
 
@@ -228,8 +238,6 @@ void QGoImageView3D::Update()
   this->View3D->SetShowScalarBar( false );
   this->View3D->ResetCamera();
 
-  this->m_Pool->Initialize();
-  this->m_Pool->InitializeAllObservers();
   this->m_Pool->SyncSetBackground( this->m_Pool->GetItem(0)->GetBackground() );
   this->m_Pool->SyncSetShowAnnotations( true );
 
@@ -245,6 +253,9 @@ void QGoImageView3D::Update()
 
   if( m_FirstRender )
     {
+    this->m_Pool->Initialize();
+    this->m_Pool->InitializeAllObservers();
+
     this->SliderXY->setValue( (this->SliderXY->minimum()+this->SliderXY->maximum())/2 );
     this->SliderXZ->setValue( (this->SliderXZ->minimum()+this->SliderXZ->maximum())/2 );
     this->SliderYZ->setValue( (this->SliderYZ->minimum()+this->SliderYZ->maximum())/2 );
@@ -324,6 +335,24 @@ void QGoImageView3D::SetupVTKtoQtConnections()
     reinterpret_cast< vtkObject* >( View1->GetInteractorStyle() ),
     vtkViewImage2DCommand::EndSliceMoveEvent,
     this, SLOT( MoveSliderXY() ) );
+
+  VtkEventQtConnector->Connect(
+    reinterpret_cast< vtkObject* >( View1->GetInteractorStyle() ),
+    vtkViewImage2DCommand::ContourPickingEvent,
+    this, SIGNAL( ActorsSelectionChanged() ) );
+
+  VtkEventQtConnector->Connect(
+    reinterpret_cast< vtkObject* >( View2->GetInteractorStyle() ),
+    vtkViewImage2DCommand::ContourPickingEvent,
+    this, SIGNAL( ActorsSelectionChanged() ) );
+
+  VtkEventQtConnector->Connect(
+    reinterpret_cast< vtkObject* >( View3->GetInteractorStyle() ),
+    vtkViewImage2DCommand::ContourPickingEvent,
+    this, SIGNAL( ActorsSelectionChanged() ) );
+
+  QObject::connect( this, SIGNAL( ActorsSelectionChanged() ),
+    this, SLOT( HighLightContours() ) );
 }
 //-------------------------------------------------------------------------
 
@@ -800,6 +829,13 @@ AddContour( const int& iId, vtkPolyData* dataset, vtkProperty* iProperty )
   View3D->Render();
   oList.push_back( temp );
 
+  std::vector< vtkActor* >::iterator list_it = oList.begin();
+  while( list_it != oList.end() )
+    {
+    m_ActorsPropertyMap[*list_it] = iProperty;
+    ++list_it;
+    }
+
   return oList;
 }
 //--------------------------------------------------------------------------
@@ -812,10 +848,10 @@ AddContour( const int& iId, vtkPolyData* dataset, vtkProperty* iProperty )
  */
 void
 QGoImageView3D::
-HighlightContour( vtkProp3D* iProp, const bool& iToDo )
+ChangeActorProperty( vtkProp3D* iActor, vtkProperty* iProperty )
 {
-  View3D->HighlightContour( iProp, iToDo );
-  QGoImageView::HighlightContour( iProp, iToDo );
+  View3D->ChangeActorProperty( iActor, iProperty );
+  QGoImageView::ChangeActorProperty( iActor, iProperty );
 }
 //--------------------------------------------------------------------------
 
@@ -824,10 +860,13 @@ void
 QGoImageView3D::
 RemoveActor( const int& iId, vtkActor* iActor )
 {
-  QGoImageView::RemoveActor( iId, iActor );
   if( iId == 3 )
     {
     View3D->GetRenderer()->RemoveActor( iActor );
+    }
+  else
+    {
+    QGoImageView::RemoveActor( iId, iActor );
     }
 }
 //--------------------------------------------------------------------------
@@ -837,10 +876,13 @@ void
 QGoImageView3D::
 AddActor( const int& iId, vtkActor* iActor )
 {
-  QGoImageView::AddActor( iId, iActor );
   if( iId == 3 )
     {
     View3D->GetRenderer()->AddActor( iActor );
+    }
+  else
+    {
+    QGoImageView::AddActor( iId, iActor );
     }
 }
 //--------------------------------------------------------------------------
@@ -893,5 +935,32 @@ AddMesh( vtkPolyData* iMesh )
     viewer->AddDataSet( iMesh, prop, true, false );
     }
   View3D->AddDataSet( (vtkDataSet*) iMesh, prop, false, false );
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+QGoImageView3D::
+HighLightContours()
+{
+  vtkViewImage2DCollectionCommand* command = m_Pool->GetCommand();
+  std::list< vtkProp3D* > listofpicked = command->GetListOfPickedActors();
+
+  std::list< vtkProp3D* >::iterator it = listofpicked.begin();
+
+  while( it != listofpicked.end() )
+    {
+    ChangeActorProperty( *it, m_HighlightedContourProperty );
+    ++it;
+    }
+
+  std::list< vtkProp3D* > listofunpicked = command->GetListOfUnPickedActors();
+  it = listofunpicked.begin();
+
+  while( it != listofunpicked.end() )
+    {
+    ChangeActorProperty( *it, m_ActorsPropertyMap[*it] );
+    ++it;
+    }
 }
 //--------------------------------------------------------------------------

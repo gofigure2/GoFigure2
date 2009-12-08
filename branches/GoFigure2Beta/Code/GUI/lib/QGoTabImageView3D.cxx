@@ -3,6 +3,7 @@
 #include "QGoImageView3D.h"
 #include "QGoLUTDialog.h"
 
+#include "vtkImageData.h"
 #include "vtkLookupTable.h"
 #include "vtkContourWidget.h"
 #include "vtkOrientedGlyphContourRepresentation.h"

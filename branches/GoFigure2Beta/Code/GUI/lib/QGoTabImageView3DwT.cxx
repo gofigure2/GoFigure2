@@ -13,6 +13,8 @@
 
 #include "vtkLSMReader.h"
 
+#include "vtkImageData.h"
+#include "vtkActor.h"
 #include "vtkLookupTable.h"
 #include "vtkImageAppendComponents.h"
 #include "vtkOrientedGlyphContourRepresentation.h"

@@ -141,7 +141,9 @@ void vtkInteractorStyleImage2D::OnLeftButtonDown()
 
   this->FindPokedRenderer(x, y);
   if ( !this->CurrentRenderer )
+    {
     return;
+    }
 
   if (this->Interactor->GetRepeatCount())
   {
@@ -171,8 +173,11 @@ void vtkInteractorStyleImage2D::OnMiddleButtonDown()
   int y = this->Interactor->GetEventPosition()[1];
 
   this->FindPokedRenderer(x, y);
+
   if ( !this->CurrentRenderer )
+    {
     return;
+    }
 
   this->Superclass::OnMiddleButtonDown();
 }
