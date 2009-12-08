@@ -84,8 +84,6 @@ class TrackTextFileImport
     void SaveMeshInDataBase( const InternalMeshStructure& iMesh );
     void SaveTrackInDataBase( const InternalTrackStructure& iTrack );
 
-    std::string AddTimePoint(const std::string& ioTrackList, const std::string& iX, const std::string& iY, const std::string& iZ, const std::string& iT);
-    std::string RemoveTimePoints(const std::string& ioTrackList);
-    unsigned int GetNumberOfCoordinates( const std::string& iTrackList );
+    std::string AddTimePoint(const std::string& ioTrackList, const std::string& iX, const std::string& iY, const std::string& iZ, const std::string& iT, bool iTimePoint);
 };
 #endif
