@@ -104,8 +104,13 @@ public:
   std::list<std::pair<std::string,QColor> > GetListExistingCollectionIDFromDB(
     std::string TraceName,std::string CollectionName);
 
-  void SaveNewColorInDB( std::vector<std::string> iDataNewColor );
-
+  /** \brief Save a new color in the database with rgba and the name of the color*/
+  void SaveNewColorInDB(std::vector<std::string> iDataNewColor);
+  /** \brief Save the new collection in the database and return the corresponding ID with
+  the QColor*/
+  std::pair<std::string,QColor> SaveNewCollectionInDB(
+    std::pair<std::string,QColor> iColorNewCollection,std::string iTraceName);
+ 
   QTableWidgetChild* ContourTable;
   QTableWidgetChild* MeshTable;
   QTableWidgetChild* TrackTable;
@@ -157,6 +162,9 @@ protected:
 
   /** \brief Return the Index of the tab currently used: */
   int InWhichTableAreWe();
+
+  /** \brief Return the corresponding CollectionOfTraces*/
+  GoDBCollectionOfTraces* GetCollectionOfTraces(std::string CollectionName);
 
   /** \brief initialize the m_ContoursInfo and m_MeshesInfo with the info from the
   database*/
@@ -275,8 +283,6 @@ protected:
   void UpdateTableWidgetAndRowContainerWithNewCreatedTrace(
     QTableWidgetChild* Table,vtkMySQLDatabase* DatabaseConnector,
     GoDBCollectionOfTraces* iCollectionOfTraces);
-
-  GoDBCollectionOfTraces* GetCurrentCollection(std::string CollectionName);
 
 protected slots:
   void CreateContextMenu(const QPoint &pos);

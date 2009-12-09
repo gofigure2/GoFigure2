@@ -44,6 +44,7 @@
 #include "vtkMySQLDatabase.h"
 #include "GoDBCoordinateRow.h"
 #include "GoDBTableWidgetContainer.h"
+#include "GoDBMeshRow.h"
 #include <QStringList>
 #include <QString>
 #include <string>
@@ -445,4 +446,39 @@ GoDBTableWidgetContainer* GoDBCollectionOfTraces::GetLinkToNewCreatedTraceContai
    LinkToNewCreatedTraceContainer->FillRowContainer(ResultsSecondQuery,SelectSecondFields);
    GoDBCollectionOfTraces::DBTableWidgetContainerType test = LinkToNewCreatedTraceContainer->GetRowContainer();//for test
    return LinkToNewCreatedTraceContainer;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+int GoDBCollectionOfTraces::CreateCollectionWithNoTraces(
+  vtkMySQLDatabase* DatabaseConnector, GoDBTraceRow iNewCollection)
+{
+  iNewCollection.SetField<unsigned int>("ImagingSessionID",this->m_ImgSessionID);
+  // As there is no traces in the collection, the bounding box is the minimum one:
+  // CoordIDMax correspond to the imagingsession Min and CoordIDMin to the Max:
+  int CoordIDMax = FindOneID(DatabaseConnector, "imagingsession", "CoordIDMin",
+    "ImagingSessionID", ConvertToString<int>(this->m_ImgSessionID));
+
+  int CoordIDMin = FindOneID(DatabaseConnector, "imagingsession", "CoordIDMax",
+    "ImagingSessionID", ConvertToString<int>(this->m_ImgSessionID));
+
+  iNewCollection.SetField< int >( "CoordIDMax", CoordIDMax );
+  iNewCollection.SetField< int >( "CoordIDMin", CoordIDMin );
+    
+  if (this->m_CollectionName == "mesh")
+    {
+    //GoDBMeshRow* NewMesh = dynamic_cast<GoDBMeshRow*>(&iNewCollection);
+    GoDBMeshRow* NewMesh = static_cast<GoDBMeshRow*>(&iNewCollection);
+
+    if (NewMesh == 0)
+      {
+      std::cout<<"ca foire"<<std::endl;
+      }
+    else
+      {
+      std::cout<<"ca marche"<<std::endl;
+      }
+    return this->CreateNewCollection<GoDBMeshRow>(DatabaseConnector,*NewMesh);
+    }
+  return 0;
 }

@@ -136,10 +136,12 @@ public:
 
   /** \brief create the first collection in the database and return the corresponding
   ID*/
-  template< class myT >
+  int CreateCollectionWithNoTraces(vtkMySQLDatabase* DatabaseConnector, 
+    GoDBTraceRow iNewCollection);
+ /* template< class myT >
   int CreateFirstCollection(vtkMySQLDatabase* DatabaseConnector, myT& NewObject)
     {
-    NewObject.SetField("ImagingSessionID",this->m_ImgSessionID);
+    NewObject.template SetField<unsigned int>("ImagingSessionID",this->m_ImgSessionID);
     // As there is no traces in the collection, the bounding box is the minimum one:
     // CoordIDMax correspond to the imagingsession Min and CoordIDMin to the Max:
     int CoordIDMax = FindOneID(DatabaseConnector, "imagingsession", "CoordIDMin",
@@ -155,7 +157,7 @@ public:
     NewObject.template SetField< int >( "CoordIDMin", CoordIDMin );
 
     return this->CreateNewCollection<myT>(DatabaseConnector,NewObject);
-    }
+    }*/
 
   std::string CollectionName()
     { return m_CollectionName;}
@@ -220,5 +222,6 @@ protected:
   GoDBCoordinateRow GetExistingCoordMax(
   vtkMySQLDatabase* DatabaseConnector, int CollectionCoordIDMax,
   int CollectionID );
+
 };
 #endif

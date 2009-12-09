@@ -230,36 +230,51 @@ QColor QtColorComboBox::color(int index) const
 */
 void QtColorComboBox::emitActivatedColor(int index)
 {
-    if (colorDialogEnabled && index == colorCount()) {
-	// Get a new color from the color dialog.
-	QColor col = QColorDialog::getColor();
-	if (col.isValid()) {
-	    // Unless the user pressed cancel, insert the new color at
-	    // the end of the list.
-    bool ok = false;
-    QString ColorName = QInputDialog::getText(this, tr("New Color Name:"),
-      tr("Please enter the name for your new color:"),QLineEdit::Normal,"",&ok);
-    if (ok && !ColorName.isEmpty())
+  /*if (creationCollection == true)
+    {
+    NewCollectionToBeSaved();
+    } 
+  else
+    {*/
+    if (colorDialogEnabled && index == colorCount()) 
       {
-	    addColor(col, ColorName);
-	    setCurrentIndex(index);
-      this->StoreDataForNewColorToBeSaved(col,ColorName.toStdString());
+      /** \todo create a specific class for colorcollectionID 
+      combobox*/
       if (creationCollection == true)
         {
         NewCollectionToBeSaved();
-        }
-      }
-	} else {
-	    // The user pressed cancel - reset the current color to
-	    // what it was before the color dialog was shown.
-	    setCurrentColor(lastActivated);
-	    col = lastActivated;
-	}
-
+        setCurrentIndex(index);
+        } 
+      else
+        {
+	    // Get a new color from the color dialog.
+	    QColor col = QColorDialog::getColor();
+	    if (col.isValid()) 
+        {
+	      // Unless the user pressed cancel, insert the new color at
+	      // the end of the list.
+        bool ok = false;
+        QString ColorName = QInputDialog::getText(this, tr("New Color Name:"),
+          tr("Please enter the name for your new color:"),QLineEdit::Normal,"",&ok);
+        if (ok && !ColorName.isEmpty())
+          {
+	        addColor(col, ColorName);
+	        setCurrentIndex(index);
+          this->StoreDataForNewColorToBeSaved(col,ColorName.toStdString());
+          }
+	}     else 
+        {
+	      // The user pressed cancel - reset the current color to
+	      // what it was before the color dialog was shown.
+	      setCurrentColor(lastActivated);
+	      col = lastActivated;
+	      }
 	update();
 	lastActivated = col;
 	emit activated(col);
-    } else {
+    }
+  }
+     else {
 
         // If any other item than the color dialog item was activated,
         // pull out the color of that item.
@@ -269,6 +284,7 @@ void QtColorComboBox::emitActivatedColor(int index)
         emit activated(col);
 
     }
+  //}
 }
 
 /*! \internal

@@ -185,7 +185,6 @@ int QGoVisualizationDockWidget::GetCurrentCollectionID()
 void QGoVisualizationDockWidget::SetCollectionID(
   std::list<std::pair<std::string,QColor> > iListExistingID)
 {
-  
   std::list<std::pair<std::string,QColor> >::iterator iter = 
     iListExistingID.begin();
   while (iter != iListExistingID.end())
@@ -206,11 +205,17 @@ void QGoVisualizationDockWidget::SetColorTraceComboBox()
     ColorTraceComboBox = new QtColorComboBox;
     //ColorTraceComboBox->setColorDialogEnabled(true);
     ColorTraceComboBox->setCreationCollection(false);
-    QLabel* ColorLbl = new QLabel(tr("Color for Contour"));
+    QLabel* ColorLbl = new QLabel(tr("Selected Color:"));
+    QLabel* TraceLbl = new QLabel(tr("Current Trace: "));
+    TraceName = new QLabel(tr("contour"));
+    QHBoxLayout* HLayoutForTrace = new QHBoxLayout;
+    HLayoutForTrace->addWidget(TraceLbl);
+    HLayoutForTrace->addWidget(TraceName);
     HLayoutForColor = new QHBoxLayout;
     HLayoutForColor->addWidget(ColorLbl);
     HLayoutForColor->addWidget(ColorTraceComboBox);
     this->verticalLayout_2->addLayout(HLayoutForColor);
+    this->verticalLayout_2->addLayout(HLayoutForTrace);
 }
 //-------------------------------------------------------------------------
 
@@ -220,10 +225,12 @@ void QGoVisualizationDockWidget::SetColorIDCollectionComboBox()
   ColorIDCollectionComboBox = new QtColorComboBox;
   //ColorIDCollectionComboBox->setColorDialogEnabled(true);
   ColorIDCollectionComboBox->setCreationCollection(true);
-  QLabel* CollectionLbl = new QLabel (tr("Mesh"));
+  QLabel* CollectionLbl = new QLabel(tr("Current Collection: "));
+  CollectionName = new QLabel (tr("mesh"));
   /** \todo make the names change with the interaction*/
   QHBoxLayout* HLayoutForCollection = new QHBoxLayout;
   HLayoutForCollection->addWidget(CollectionLbl);
+  HLayoutForCollection->addWidget(CollectionName);
   HLayoutForCollection->addWidget(ColorIDCollectionComboBox);
   this->verticalLayout_2->addLayout(HLayoutForCollection);
 }

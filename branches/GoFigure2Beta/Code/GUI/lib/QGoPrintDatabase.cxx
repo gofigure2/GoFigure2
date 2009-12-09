@@ -568,11 +568,11 @@ ChangeContoursToHighLightInfoFromVisu(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoPrintDatabase::SaveContoursFromVisuInDB( unsigned int iXCoordMin,
-  unsigned int iYCoordMin, unsigned int iZCoordMin, unsigned int iTCoord,
-  unsigned int iXCoordMax, unsigned int iYCoordMax, unsigned int iZCoordMax,
+void QGoPrintDatabase::SaveContoursFromVisuInDB(unsigned int iXCoordMin,
+  unsigned int iYCoordMin,unsigned int iZCoordMin,unsigned int iTCoord,
+  unsigned int iXCoordMax,unsigned int iYCoordMax,unsigned int iZCoordMax,
   vtkPolyData* iContourNodes, std::pair<std::string,QColor> iColorData,
-  unsigned int iMeshID )
+  unsigned int iMeshID)
 {
   OpenDBConnection();
 
@@ -614,11 +614,8 @@ void QGoPrintDatabase::GetContentAndDisplayFromDB( QString TableName,
   //Get the column names to be displayed in the table widget:
   std::list<std::string> ColumnsNames =
       iCollectionOfTraces->GetListColumnsNamesForTableWidget();
-
   Table->DisplayColumnNames( TableName, ColumnsNames);
-
   this->DBTabWidget->addTab(Table,TableName);
-
   //Get all the necessary data from the database:
   DBTableWidgetContainerType Row_Container =
     iCollectionOfTraces->GetRowContainer(m_DatabaseConnector);
@@ -626,7 +623,6 @@ void QGoPrintDatabase::GetContentAndDisplayFromDB( QString TableName,
   Table->DisplayContent( iCollectionOfTraces->GetLinkToRowContainer(),
     iCollectionOfTraces->GetTraceName(),
     iCollectionOfTraces->GetCollectionName() );
-
   Table->setSortingEnabled(true);
 }
 //-------------------------------------------------------------------------
@@ -655,9 +651,9 @@ std::vector<ContourMeshStructure> QGoPrintDatabase::
   std::vector<ContourMeshStructure> SelectedTraces;
   std::vector<ContourMeshStructure>::iterator iter = iAllTraces.begin();
 
-  while( iter != iAllTraces.end() )
+  while (iter != iAllTraces.end())
     {
-    if( iter->TCoord == iTimePoint )
+    if (iter->TCoord == iTimePoint)
       {
       SelectedTraces.push_back(*iter);
       }
@@ -671,8 +667,8 @@ std::vector<ContourMeshStructure> QGoPrintDatabase::
 std::vector<ContourMeshStructure> QGoPrintDatabase::
   GetContoursForAGivenZCoord (unsigned int iZCoord)
 {
-  return this->GetTracesForAGivenZCoord( this->m_ContoursInfo, iZCoord,
-    this->m_CollectionOfContours );
+  return this->GetTracesForAGivenZCoord(this->m_ContoursInfo,iZCoord,
+    this->m_CollectionOfContours);
 }
 
 //-------------------------------------------------------------------------
@@ -681,8 +677,8 @@ std::vector<ContourMeshStructure> QGoPrintDatabase::
 std::vector<ContourMeshStructure> QGoPrintDatabase::
   GetMeshesForAGivenZCoord (unsigned int iZCoord)
 {
-  return this->GetTracesForAGivenZCoord( this->m_MeshesInfo, iZCoord,
-    this->m_CollectionOfTracks );
+  return this->GetTracesForAGivenZCoord(this->m_MeshesInfo,iZCoord,
+    this->m_CollectionOfTracks);
 }
 //-------------------------------------------------------------------------
 
@@ -843,40 +839,39 @@ std::list<std::pair<std::string,QColor> > QGoPrintDatabase::
     int Green = 0;
     int Blue = 0;
     int Alpha = 0;
+    GoDBTraceRow FirstCollection;
+    std::string ColorName = "Default";
+    ColorName += CollectionName;
+    ColorName += "Color";
     if (CollectionName == "mesh")
       {
-      GoDBMeshRow FirstMesh;
-      NewID = this->m_CollectionOfContours->CreateFirstCollection<GoDBMeshRow>(
-        this->m_DatabaseConnector, FirstMesh);
-      Red = 255;
+      Red   = 255;
       Green = 255;
-      Blue = 0;
+      Blue  = 0;
       Alpha = 255;
       }
     if (CollectionName == "track")
       {
-      GoDBTrackRow FirstTrack;
-      NewID = this->m_CollectionOfMeshes->CreateFirstCollection<GoDBTrackRow>(
-        this->m_DatabaseConnector, FirstTrack);
-      Red = 0;
+      Red   = 0;
       Green = 255;
-      Blue = 255;
+      Blue  = 255;
       Alpha = 255;
       }
     if (CollectionName == "lineage")
       {
-      GoDBLineageRow FirstLineage;
-      NewID = this->m_CollectionOfTracks->CreateFirstCollection<GoDBLineageRow>(
-        this->m_DatabaseConnector, FirstLineage);
-      Red = 255;
+      Red   = 255;
       Green = 0;
-      Blue = 255;
+      Blue  = 255;
       Alpha = 255;
       }
     FirstColor.setRed(Red);
     FirstColor.setGreen(Green);
     FirstColor.setBlue(Blue);
     FirstColor.setAlpha(Alpha);
+
+    FirstCollection.SetColor(Red,Green,Blue,Alpha,ColorName,this->m_DatabaseConnector);
+    NewID = this->m_CollectionOfContours->CreateCollectionWithNoTraces(this->m_DatabaseConnector,
+      FirstCollection);
 
     std::pair<std::string,QColor> temp;
     temp.second = FirstColor;
@@ -911,7 +906,7 @@ void QGoPrintDatabase::UpdateTableWidgetAndRowContainerWithNewCreatedTrace(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-GoDBCollectionOfTraces* QGoPrintDatabase::GetCurrentCollection(
+GoDBCollectionOfTraces* QGoPrintDatabase::GetCollectionOfTraces(
   std::string CollectionName)
 {
   if (CollectionName == "mesh")
@@ -937,4 +932,28 @@ GoDBCollectionOfTraces* QGoPrintDatabase::GetCurrentCollection(
       }
     }
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::pair<std::string,QColor> QGoPrintDatabase::SaveNewCollectionInDB(
+  std::pair<std::string,QColor> iColorNewCollection, std::string iTraceName)
+{
+  this->OpenDBConnection();
+  GoDBTraceRow NewCollection; 
+  NewCollection.SetColor(iColorNewCollection.second.red(),iColorNewCollection.second.green(),
+    iColorNewCollection.second.blue(),iColorNewCollection.second.alpha(),iColorNewCollection.first,
+    this->m_DatabaseConnector);
+  GoDBCollectionOfTraces* CollectionOfTraces = new GoDBCollectionOfTraces;
+  CollectionOfTraces = this->GetCollectionOfTraces(iTraceName);
+  int NewCollectionID = CollectionOfTraces->CreateCollectionWithNoTraces(
+    this->m_DatabaseConnector,NewCollection);
+
+  this->CloseDBConnection();
+  std::pair<std::string,QColor> NewCollectionData;
+  NewCollectionData.first = ConvertToString<int>(NewCollectionID);
+  NewCollectionData.second = iColorNewCollection.second;
+  return NewCollectionData;
+}
+//-------------------------------------------------------------------------
+
 //-------------------------------------------------------------------------

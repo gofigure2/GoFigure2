@@ -33,6 +33,8 @@ class QGoVisualizationDockWidget :
 
     QtColorComboBox* ColorTraceComboBox;
     QtColorComboBox* ColorIDCollectionComboBox;
+    QLabel* TraceName;
+    QLabel* CollectionName;
 
   public slots:
     void SetXSlice( int iSlice );

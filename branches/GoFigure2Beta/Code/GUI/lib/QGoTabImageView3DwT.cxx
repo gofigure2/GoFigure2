@@ -188,6 +188,10 @@ void QGoTabImageView3DwT::CreateVisuDockWidget()
   QObject::connect( this->m_VisuDockWidget->ColorTraceComboBox,
     SIGNAL( NewColorToBeSaved()),
     this, SLOT( PassInfoForDBFromColorTraceComboBox() ) );
+
+  QObject::connect( this->m_VisuDockWidget->ColorIDCollectionComboBox,
+    SIGNAL( NewCollectionToBeSaved()),
+    this, SLOT( PassInfoForDBFromCollectionIDComboBox() ) );
 }
 //-------------------------------------------------------------------------
 
@@ -1400,6 +1404,20 @@ void QGoTabImageView3DwT::PassInfoForCollectionIDFromDB()
   /// \todo: always begin with contour ??
   this->m_VisuDockWidget->SetCollectionID(this->m_DataBaseTables->
     GetListExistingCollectionIDFromDB("contour","mesh"));
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoTabImageView3DwT::PassInfoForDBFromCollectionIDComboBox()
+{
+  //first, save in the database:
+  std::pair<std::string,QColor> NewCollectionToAddInComboBox =
+    this->m_DataBaseTables->SaveNewCollectionInDB(
+    this->m_VisuDockWidget->ColorTraceComboBox->GetCurrentColorData(),
+    this->m_VisuDockWidget->CollectionName->text().toStdString());
+  //second, update the ColorIDCollectionComboBox:
+  this->m_VisuDockWidget->ColorIDCollectionComboBox->addColor(
+    NewCollectionToAddInComboBox.second,NewCollectionToAddInComboBox.first.c_str());
 }
 //-------------------------------------------------------------------------
 
