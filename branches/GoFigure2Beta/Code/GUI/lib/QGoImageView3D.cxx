@@ -576,6 +576,7 @@ void QGoImageView3D::SetFullScreenView( const int& iS )
  */
 void QGoImageView3D::Quadview()
 {
+  IsFullScreen = 0;
   LayOutWidget1->show();
   LayOutWidget2->show();
   LayOutWidget3->show();
@@ -589,6 +590,7 @@ void QGoImageView3D::Quadview()
  */
 void QGoImageView3D::FullScreenViewXY()
 {
+  IsFullScreen = 1;
   LayOutWidget1->show();
   LayOutWidget2->hide();
   LayOutWidget3->hide();
@@ -602,6 +604,7 @@ void QGoImageView3D::FullScreenViewXY()
  */
 void QGoImageView3D::FullScreenViewXZ()
 {
+  IsFullScreen = 2;
   LayOutWidget1->hide();
   LayOutWidget2->show();
   LayOutWidget3->hide();
@@ -615,6 +618,7 @@ void QGoImageView3D::FullScreenViewXZ()
  */
 void QGoImageView3D::FullScreenViewYZ()
 {
+  IsFullScreen = 3;
   LayOutWidget1->hide();
   LayOutWidget2->hide();
   LayOutWidget3->show();
@@ -628,6 +632,7 @@ void QGoImageView3D::FullScreenViewYZ()
  */
 void QGoImageView3D::FullScreenViewXYZ()
 {
+  IsFullScreen = 4;
   LayOutWidget1->hide();
   LayOutWidget2->hide();
   LayOutWidget3->hide();

@@ -44,6 +44,11 @@ int main( int argc, char** argv )
       {
       std::cerr <<"viewer->GetFullScreenView() = " <<viewer->GetFullScreenView();
       std::cerr <<" != 1" <<std::endl;
+      app.closeAllWindows();
+
+      reader->Delete();
+      delete timer;
+      delete viewer;
       return EXIT_FAILURE;
       }
 
@@ -52,6 +57,11 @@ int main( int argc, char** argv )
       {
       std::cerr <<"viewer->GetFullScreenView() = " <<viewer->GetFullScreenView();
       std::cerr <<" != 2" <<std::endl;
+      app.closeAllWindows();
+
+      reader->Delete();
+      delete timer;
+      delete viewer;
       return EXIT_FAILURE;
       }
 
@@ -60,6 +70,11 @@ int main( int argc, char** argv )
       {
       std::cerr <<"viewer->GetFullScreenView() = " <<viewer->GetFullScreenView();
       std::cerr <<" != 3" <<std::endl;
+      app.closeAllWindows();
+
+      reader->Delete();
+      delete timer;
+      delete viewer;
       return EXIT_FAILURE;
       }
 
@@ -68,6 +83,11 @@ int main( int argc, char** argv )
       {
       std::cerr <<"viewer->GetFullScreenView() = " <<viewer->GetFullScreenView();
       std::cerr <<" != 4" <<std::endl;
+      app.closeAllWindows();
+
+      reader->Delete();
+      delete timer;
+      delete viewer;
       return EXIT_FAILURE;
       }
 
@@ -76,6 +96,11 @@ int main( int argc, char** argv )
       {
       std::cerr <<"viewer->GetFullScreenView() = " <<viewer->GetFullScreenView();
       std::cerr <<" != 0" <<std::endl;
+      app.closeAllWindows();
+
+      reader->Delete();
+      delete timer;
+      delete viewer;
       return EXIT_FAILURE;
       }
 
@@ -86,6 +111,11 @@ int main( int argc, char** argv )
       {
       std::cerr <<"viewer->GetSliceViewXY() = " <<viewer->GetSliceViewXY();
       std::cerr <<" != slice + 1" <<std::endl;
+      app.closeAllWindows();
+
+      reader->Delete();
+      delete timer;
+      delete viewer;
       return EXIT_FAILURE;
       }
 
@@ -96,6 +126,11 @@ int main( int argc, char** argv )
       {
       std::cerr <<"viewer->GetSliceViewXZ() = " <<viewer->GetSliceViewXZ();
       std::cerr <<" != slice - 1" <<std::endl;
+      app.closeAllWindows();
+
+      reader->Delete();
+      delete timer;
+      delete viewer;
       return EXIT_FAILURE;
       }
 
@@ -106,6 +141,11 @@ int main( int argc, char** argv )
       {
       std::cerr <<"viewer->GetSliceViewYZ() = " <<viewer->GetSliceViewYZ();
       std::cerr <<" != slice + 1" <<std::endl;
+      app.closeAllWindows();
+
+      reader->Delete();
+      delete timer;
+      delete viewer;
       return EXIT_FAILURE;
       }
 
@@ -115,6 +155,11 @@ int main( int argc, char** argv )
     if( r != 0.5 || g != 0.5 || b != 0.5 )
       {
       std::cerr <<r <<" " <<g <<" " <<b <<" != {0.5, 0.5, 0.5}" <<std::endl;
+      app.closeAllWindows();
+
+      reader->Delete();
+      delete timer;
+      delete viewer;
       return EXIT_FAILURE;
       }
 
@@ -123,6 +168,11 @@ int main( int argc, char** argv )
     if( r != 0.1 || g != 0.6 || b != 0.7 )
       {
       std::cerr <<r <<" " <<g <<" " <<b <<" != {0.1, 0.6, 0.7}" <<std::endl;
+      app.closeAllWindows();
+
+      reader->Delete();
+      delete timer;
+      delete viewer;
       return EXIT_FAILURE;
       }
     viewer->SetBackgroundColor( 0., 0., 0. );
@@ -130,6 +180,11 @@ int main( int argc, char** argv )
     if( r != 0. || g != 0. || b != 0. )
       {
       std::cerr <<r <<" " <<g <<" " <<b <<" != {0., 0., 0.}" <<std::endl;
+      app.closeAllWindows();
+
+      reader->Delete();
+      delete timer;
+      delete viewer;
       return EXIT_FAILURE;
       }
   }
