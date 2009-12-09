@@ -598,8 +598,6 @@ void QGoPrintDatabase::SaveContoursFromVisuInDB(unsigned int iXCoordMin,
 
   contour_row.SaveInDB( this->m_DatabaseConnector);
 
- // UpdateContentAndDisplayFromDB< GoDBContourRow >("contour",
-  //  ContourTable,m_DatabaseConnector);
   this->UpdateTableWidgetAndRowContainerWithNewCreatedTrace(this->ContourTable,
     this->m_DatabaseConnector,this->m_CollectionOfContours);
 
@@ -907,27 +905,30 @@ void QGoPrintDatabase::UpdateTableWidgetAndRowContainerWithNewCreatedTrace(
 
 //-------------------------------------------------------------------------
 GoDBCollectionOfTraces* QGoPrintDatabase::GetCollectionOfTraces(
-  std::string CollectionName)
+  std::string TraceName)
 {
-  if (CollectionName == "mesh")
+  if (TraceName == "contour")
     {
     return this->m_CollectionOfContours;
     }
   else
     {
-    if (CollectionName == "track")
+    if (TraceName == "mesh")
       {
       return this->m_CollectionOfMeshes;
       }
     else
       {
-      if (CollectionName == "lineage")
+      if (TraceName == "track")
         {
         return this->m_CollectionOfTracks;
         }
       else
         {
-        return 0;
+        if (TraceName == "lineage")
+          {
+          return this->m_CollectionOfLineages;
+          }
         }
       }
     }
@@ -943,17 +944,45 @@ std::pair<std::string,QColor> QGoPrintDatabase::SaveNewCollectionInDB(
   NewCollection.SetColor(iColorNewCollection.second.red(),iColorNewCollection.second.green(),
     iColorNewCollection.second.blue(),iColorNewCollection.second.alpha(),iColorNewCollection.first,
     this->m_DatabaseConnector);
-  GoDBCollectionOfTraces* CollectionOfTraces = new GoDBCollectionOfTraces;
-  CollectionOfTraces = this->GetCollectionOfTraces(iTraceName);
-  int NewCollectionID = CollectionOfTraces->CreateCollectionWithNoTraces(
+  GoDBCollectionOfTraces* CollectionOfTracesForTraces = this->GetCollectionOfTraces(iTraceName);
+  int NewCollectionID = CollectionOfTracesForTraces->CreateCollectionWithNoTraces(
     this->m_DatabaseConnector,NewCollection);
-
-  this->CloseDBConnection();
+ 
   std::pair<std::string,QColor> NewCollectionData;
   NewCollectionData.first = ConvertToString<int>(NewCollectionID);
   NewCollectionData.second = iColorNewCollection.second;
+
+  //update the table of the collection (which become the trace then):
+  GoDBCollectionOfTraces* CollectionOfTracesForCollection = this->GetCollectionOfTraces(
+    CollectionOfTracesForTraces->CollectionName());
+
+  this->UpdateTableWidgetAndRowContainerWithNewCreatedTrace(
+    this->GetTableWidgetChild(CollectionOfTracesForCollection->TracesName()),this->m_DatabaseConnector,
+    CollectionOfTracesForCollection);
+
+  this->CloseDBConnection();
   return NewCollectionData;
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+QTableWidgetChild* QGoPrintDatabase::GetTableWidgetChild(std::string TraceName)
+{
+ if (TraceName == "contour")
+   {
+   return this->ContourTable;
+   }
+ if (TraceName == "mesh")
+   {
+   return this->MeshTable;
+   }
+ if (TraceName == "track")
+   {
+   return this->TrackTable;
+   }
+ if (TraceName == "lineage")
+   {
+   return this->LineageTable;
+   }
+
+}

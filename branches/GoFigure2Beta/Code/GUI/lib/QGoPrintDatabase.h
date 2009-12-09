@@ -164,7 +164,9 @@ protected:
   int InWhichTableAreWe();
 
   /** \brief Return the corresponding CollectionOfTraces*/
-  GoDBCollectionOfTraces* GetCollectionOfTraces(std::string CollectionName);
+  GoDBCollectionOfTraces* GetCollectionOfTraces(std::string TraceName);
+
+  QTableWidgetChild* GetTableWidgetChild(std::string TraceName);
 
   /** \brief initialize the m_ContoursInfo and m_MeshesInfo with the info from the
   database*/

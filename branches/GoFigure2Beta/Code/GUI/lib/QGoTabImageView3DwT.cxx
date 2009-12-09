@@ -1414,7 +1414,7 @@ void QGoTabImageView3DwT::PassInfoForDBFromCollectionIDComboBox()
   std::pair<std::string,QColor> NewCollectionToAddInComboBox =
     this->m_DataBaseTables->SaveNewCollectionInDB(
     this->m_VisuDockWidget->ColorTraceComboBox->GetCurrentColorData(),
-    this->m_VisuDockWidget->CollectionName->text().toStdString());
+    this->m_VisuDockWidget->TraceName->text().toStdString());
   //second, update the ColorIDCollectionComboBox:
   this->m_VisuDockWidget->ColorIDCollectionComboBox->addColor(
     NewCollectionToAddInComboBox.second,NewCollectionToAddInComboBox.first.c_str());
