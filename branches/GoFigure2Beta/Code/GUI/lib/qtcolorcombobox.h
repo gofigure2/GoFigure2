@@ -86,6 +86,9 @@ public:
 
     void setColorDialogEnabled(bool enabled = true);
     bool isColorDialogEnabled() const;
+    
+    void setCreationCollection(bool enabled = true);
+    bool isCreationCollectionEnabled() const;
 
     void setStandardColors();
 
@@ -106,6 +109,9 @@ Q_SIGNALS:
     /* *\brief  signal emitted when a new color has been created by the user, in order
     to be saved in the database*/
     void NewColorToBeSaved();
+    /* *\brief  signal emitted when a new collection has been created by the user, in order
+    to be saved in the database*/
+    void NewCollectionToBeSaved();
     
 private Q_SLOTS:
     void emitActivatedColor(int index);
@@ -119,6 +125,7 @@ private:
     std::list<std::pair<std::string,std::vector<int> > > m_DataFromDB;
     bool colorDialogEnabled;
     /** \brief insert the colors with the data taken from the list m_DataFromDB */
+    bool creationCollection;
     void setExistingColors();
     /** \brief fill the vector m_NewColorData with a QColor and a NameColor*/
     void StoreDataForNewColorToBeSaved(QColor Color,std::string NameColor);

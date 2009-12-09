@@ -144,20 +144,6 @@
           </property>
          </widget>
         </item>
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout">
-          <item>
-           <widget class="QLabel" name="CollectionIDLbl">
-            <property name="text">
-             <string>MeshID</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QComboBox" name="CollectionIDBox"/>
-          </item>
-         </layout>
-        </item>
        </layout>
       </item>
      </layout>

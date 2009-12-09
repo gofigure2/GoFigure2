@@ -138,6 +138,10 @@ void QtColorComboBox::setColorDialogEnabled(bool enabled)
         removeItem(colorCount());
     }
 }
+void QtColorComboBox::setCreationCollection(bool enabled)
+{
+    creationCollection = enabled;
+}
 
 /*!
   \fn void QtColorComboBox::addColor(const QColor &color, const QString &name)
@@ -240,6 +244,10 @@ void QtColorComboBox::emitActivatedColor(int index)
 	    addColor(col, ColorName);
 	    setCurrentIndex(index);
       this->StoreDataForNewColorToBeSaved(col,ColorName.toStdString());
+      if (creationCollection == true)
+        {
+        NewCollectionToBeSaved();
+        }
       }
 	} else {
 	    // The user pressed cancel - reset the current color to
