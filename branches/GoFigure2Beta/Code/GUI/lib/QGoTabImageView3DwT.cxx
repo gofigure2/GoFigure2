@@ -1070,7 +1070,7 @@ ValidateContour( const int& iId,
       this->AddContour( iId, contour_copy,
         contour_property );
 
-    std::pair<std::string,QColor> ColorData =
+    std::pair< std::string, QColor > ColorData =
       this->m_VisuDockWidget->ColorTraceComboBox->GetCurrentColorData();
 
     // get meshid from the visu dock widget (SpinBox)
@@ -1082,7 +1082,7 @@ ValidateContour( const int& iId,
       // Save contour in database!
       m_DataBaseTables->SaveContoursFromVisuInDB( min_idx[0],
         min_idx[1], min_idx[2], iTCoord, max_idx[0],
-        max_idx[1], max_idx[2], contour_nodes,ColorData,meshid );
+        max_idx[1], max_idx[2], contour_nodes, ColorData, meshid );
       }
 
     contour_copy->Delete();
