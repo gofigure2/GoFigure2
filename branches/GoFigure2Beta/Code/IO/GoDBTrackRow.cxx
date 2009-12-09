@@ -55,6 +55,9 @@ GoDBTrackRow::GoDBTrackRow(vtkMySQLDatabase* DatabaseConnector,
 {
   GoDBTraceRow::GoDBTraceRow(DatabaseConnector,TraceVisu,Min,Max,
     ImgSessionID);
+
+  cout << "Track ID found: "<< this->DoesThisBoundingBoxTrackExist(DatabaseConnector) <<endl;
+
   if (this->DoesThisBoundingBoxTrackExist(DatabaseConnector))
     {
     std::cout<<"The bounding box already exists for this track"<<std::endl;
@@ -76,6 +79,7 @@ void GoDBTrackRow::InitializeMap()
 int GoDBTrackRow::DoesThisBoundingBoxTrackExist(
   vtkMySQLDatabase* DatabaseConnector)
 {
+
   return FindOneID(DatabaseConnector,"track","TrackID",
     "CoordIDMax",this->GetMapValue("CoordIDMax"),
     "CoordIDMin",this->GetMapValue("CoordIDMin"));

@@ -268,7 +268,8 @@ Read()
 }
 
 /**
- * \brief Save the meshes informations into the database
+ * \brief Save the mesh informations into the database
+ * \param[in]  iMesh Name of the mesh structure to be saved
  */
 void
 TrackTextFileImport::
@@ -290,11 +291,12 @@ SaveMeshInDataBase( const InternalMeshStructure& iMesh )
     m_ImagingSessionId, iMesh.m_Points );
   mesh_row.SetColor( 165, 44, 23, 255, "KishoreMeshColor", m_DBConnector );
   int mesh_id = mesh_row.SaveInDB( m_DBConnector );
-  std::cout <<mesh_id <<std::endl;
+  std::cout << "Mesh ID: " << mesh_id <<std::endl;
 }
 
 /**
- * \brief Save the tracks informations into the database
+ * \brief Save the track informations into the database
+ * \param[in]  iTrack Name of the track structure to be saved
  */
 void
 TrackTextFileImport::
@@ -317,13 +319,23 @@ SaveTrackInDataBase( const InternalTrackStructure& iTrack )
 
   track_row.SetColor( 55, 25, 0, 255,"KishoreTrackColor1", m_DBConnector );
   int track_id = track_row.SaveInDB( m_DBConnector );
+  std::cout << "Track ID: " << track_id <<std::endl;
 }
 
+/**
+ * \brief Add point to the track string the saved in the database
+ * \param[in] iTrackList String in which one point will be added
+ * \param[in] iX String containing the X position of the new point
+ * \param[in] iY String containing the Y position of the new point
+ * \param[in] iZ String containing the Z position of the new point
+ * \param[in] iT String containing the Time position of the new point
+ * \param[in] iTimePoint Bool == "true" if we want the output string to contain time information (iT, which is requiered to add a new point)
+ */
 std::string
 TrackTextFileImport::
-AddTimePoint(const std::string& ioTrackList, const std::string& iX, const std::string& iY, const std::string& iZ, const std::string& iT, bool iTimePoint)
+AddTimePoint(const std::string& iTrackList, const std::string& iX,const std::string& iY, const std::string& iZ, const std::string& iT, bool iTimePoint)
 {
-  std::stringstream str( ioTrackList );
+  std::stringstream str( iTrackList );
   std::string numberOfCoordinatesString;
   str >> numberOfCoordinatesString ;
 
