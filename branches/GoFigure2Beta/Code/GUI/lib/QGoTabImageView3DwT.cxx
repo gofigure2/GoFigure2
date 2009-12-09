@@ -1127,7 +1127,7 @@ ValidateContour( )
 
   for( unsigned int i = 0; i < m_ContourWidget.size(); i++ )
     {
-    ValidateContour( i, highlighted, r, g, b, a, m_TimePoint, saveindatabase );
+    ValidateContour( i, r, g, b, a, highlighted, m_TimePoint, saveindatabase );
     }
 }
 //-------------------------------------------------------------------------
@@ -1481,7 +1481,6 @@ HighLightContours()
     if( actor_it != m_ContourMeshContainer.get< 1 >().end() )
       {
       unsigned int trace_id = actor_it->TraceID;
-      int dir;
 
       ContourMeshStructureMultiIndexContainer::index< TraceID >::type::iterator
         traceid_it = m_ContourMeshContainer.get< TraceID >().find( trace_id );

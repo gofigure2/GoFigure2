@@ -62,21 +62,21 @@ class QTableWidgetChild : public QTableWidget
 
 public:
   explicit QTableWidgetChild( QWidget* parent = 0 );
-  explicit QMEGAVTKADDON2_EXPORT QTableWidgetChild ( int rows, int columns,
-    QWidget * parent = 0);
-  virtual QMEGAVTKADDON2_EXPORT ~QTableWidgetChild();
-  QStringList QMEGAVTKADDON2_EXPORT recordHeaderNamesOrder();
+  explicit QTableWidgetChild( int rows, int columns, QWidget * parent = 0 );
+
+  virtual ~QTableWidgetChild();
+  QStringList recordHeaderNamesOrder();
 
   typedef GoDBTableWidgetContainer::DBTableWidgetContainerType
     DBTableWidgetContainerType;
-  
+
   void DisplayColumnNames( QString TableName,std::list<std::string> ColumnNames);
   void DisplayContent(GoDBTableWidgetContainer* iLinkToRowContainer,
     std::string TraceName, std::string CollectionName);
 
   void InsertNewRow(GoDBTableWidgetContainer* iLinkToRowContainer,
     std::string TraceName, std::string CollectionName);
-  
+
 
 protected:
   int PrevCol;
@@ -101,7 +101,7 @@ public slots:
 
   /** \brief modify the ioTracesInfo in order to set the IsHighLighted parameter to false
   for the traces not selected by the user and set it to true for the selected ones,
-  selected ones means at least one cell in the row has been selected by the user in 
+  selected ones means at least one cell in the row has been selected by the user in
   the tableWidget. The TraceName has to be chosen between Contour and Mesh*/
   void TracesToHighlight(std::string TraceName,
     std::vector<ContourMeshStructure> & ioTracesInfo);
@@ -109,7 +109,7 @@ public slots:
   /** \brief return a list of the values of a specific column for the rows where the user
        has selected at least one cell.*/
   QStringList ValuesForSelectedRows(QString ColumnName );
-  
+
   /** \brief Put checkboxes in the column "Selected" */
   void SetSelectedColumn(unsigned int iNbOfRows,unsigned int StartedRow);
 

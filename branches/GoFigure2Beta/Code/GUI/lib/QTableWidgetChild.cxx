@@ -47,16 +47,17 @@
 #include "QTableWidgetNumericalItem.h"
 
 
-QTableWidgetChild::QTableWidgetChild( QWidget* iParent ): QTableWidget( iParent )
+QTableWidgetChild::
+QTableWidgetChild( QWidget* iParent ) :
+  QTableWidget( iParent ), PrevCol( -1 ), PrevOrder( -1 )
 {
-  PrevCol = -1;
-  PrevOrder = -1;
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-QTableWidgetChild::QTableWidgetChild ( int rows, int columns,
-                  QWidget * iParent ):QTableWidget(rows,columns,iParent)
+QTableWidgetChild::
+QTableWidgetChild( int rows, int columns, QWidget * iParent ) :
+  QTableWidget( rows, columns, iParent ), PrevCol( -1 ), PrevOrder( -1 )
 {
 }
 //--------------------------------------------------------------------------
@@ -134,7 +135,7 @@ QStringList QTableWidgetChild::recordHeaderNamesOrder()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QTableWidgetChild::SetSelectRowTraceID (std::string TraceName, 
+void QTableWidgetChild::SetSelectRowTraceID (std::string TraceName,
   int TraceID, bool IsSelected)
 {
   std::stringstream TraceIDName;
@@ -158,19 +159,20 @@ void QTableWidgetChild::SetSelectRowTraceID (std::string TraceName,
 
 //--------------------------------------------------------------------------
  void QTableWidgetChild::TracesToHighlight(
-  std::string TraceName,std::vector<ContourMeshStructure> & ioTracesInfo)
+  std::string TraceName,
+  std::vector<ContourMeshStructure> & ioTracesInfo )
 {
   //first set all the hightlighted traces to false:
   for( unsigned int i=0; i < ioTracesInfo.size(); i++ )
     {
     ioTracesInfo[i].Highlighted = false;
     }
-  
+
   //get the selected TraceID:
   std::stringstream TraceID;
   TraceID <<TraceName;
   TraceID << "ID" ;
-  TraceID.str();
+  TraceID.str(); /// \todo is this line useful?
   QStringList ListTraceIDToHighLight = ValuesForSelectedRows(TraceID.str().c_str());
   //then, set to IsHighlight the selected ones:
   for (int i = 0; i<ListTraceIDToHighLight.size();i++)
@@ -186,7 +188,7 @@ QStringList QTableWidgetChild::ValuesForSelectedRows(QString ColumnName)
 {
   QList<QTableWidgetSelectionRange> Selection;
   //Selection = this->selectedRanges();
-  
+
 
   QStringList ColumnsHeader = this->recordHeaderNamesOrder();
   int ColumnIndex = findColumnName(ColumnName,ColumnsHeader);
@@ -212,10 +214,11 @@ void QTableWidgetChild::DisplayColumnNames( QString TableName,
 {
   int numberCol=ColumnNames.size();
   this->setColumnCount(numberCol);
-  
+
   int i = 0;
-  for ( std::list<std::string>::iterator iter = ColumnNames.begin(); 
-    iter!= ColumnNames.end();iter++)
+  for( std::list<std::string>::iterator iter = ColumnNames.begin();
+    iter!= ColumnNames.end();
+    ++iter, ++i )
     {
     QTableWidgetItem* HeaderCol=new QTableWidgetItem;
     std::string NameHeader;
@@ -226,12 +229,12 @@ void QTableWidgetChild::DisplayColumnNames( QString TableName,
     HeaderCol->setFont(serifFont);
     this->setHorizontalHeaderItem(i,HeaderCol);
     this->resizeColumnToContents(i);
-    i++;
     }
-  
+
   this->horizontalHeader()->setSortIndicatorShown(true);
-  /*Need to disabled the Sorting while printing the values from the database in
-  the table widget as the sorting is making trouble*/
+
+  // Need to disabled the Sorting while printing the values from the database in
+  // the table widget as the sorting is making trouble
   this->setSortingEnabled(false);
   this->horizontalHeader()->setMovable(true);
 
@@ -239,7 +242,8 @@ void QTableWidgetChild::DisplayColumnNames( QString TableName,
     SIGNAL( sortIndicatorChanged(int,Qt::SortOrder) ),
     this,SLOT( sortItems(int,Qt::SortOrder)) );
 
-  QSettings settings( "MegasonLab", "Gofigure2" );
+  // QSettings settings( "MegasonLab", "Gofigure2" );
+  QSettings settings;
   QByteArray stateTableWidget = settings.value("StateTableWidget").toByteArray();
   //QTabTableName->horizontalHeader()->restoreState(stateTableWidget);
 }
@@ -248,7 +252,7 @@ void QTableWidgetChild::DisplayColumnNames( QString TableName,
 //--------------------------------------------------------------------------
 void QTableWidgetChild::DisplayContent(GoDBTableWidgetContainer* iLinkToRowContainer,
   std::string TraceName, std::string CollectionName)
-{ 
+{
   DBTableWidgetContainerType RowContainer = iLinkToRowContainer->GetRowContainer();
   if (RowContainer.empty())
     {
@@ -260,7 +264,7 @@ void QTableWidgetChild::DisplayContent(GoDBTableWidgetContainer* iLinkToRowConta
     {
     unsigned int NbofRows = 0;
     for (unsigned int i = 0; i < RowContainer.size(); i++)
-      {    
+      {
       bool RowsCountSet = false;
       //check that the column has to be displayed in the table widget and that there are
       //some values to be displayed:
@@ -301,7 +305,7 @@ void QTableWidgetChild::DisplayContent(GoDBTableWidgetContainer* iLinkToRowConta
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QTableWidgetChild::SetSelectedColumn(unsigned int iNbOfRows, 
+void QTableWidgetChild::SetSelectedColumn(unsigned int iNbOfRows,
   unsigned int StartedRow)
 {
   //int indexCol = findColumnName( "Selected", recordHeaderNamesOrder());
@@ -389,7 +393,7 @@ void QTableWidgetChild::InsertNewRow(GoDBTableWidgetContainer* iLinkToRowContain
     int NbRow = NewRow;
     this->setRowCount(NbRow);
     for (unsigned int i = 0; i < NewTraceRowContainer.size(); i++)
-      {    
+      {
       if (NewTraceRowContainer[i].first.ColumnNameTableWidget != "None" && !NewTraceRowContainer[i].second.empty())
         {
         for (int j = 0; j < this->columnCount();j++)
