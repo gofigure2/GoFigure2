@@ -70,7 +70,7 @@ public:
     const std::string& iHeader,
     const unsigned int& iTimePoint  );
 
-  /** \todo must modify container*/
+  /** \todo must modify container */
   void AddPolyData( vtkPolyData* iMesh );
 
   /**
@@ -184,14 +184,18 @@ public slots:
   void ReinitializeContour();
   void ReEditContour( const unsigned int& iId );
 
+  void HighLightContours();
 
   void ChangeContourRepresentationProperty();
+
   /** \brief Get the info for the colors from the database and pass
   them to the ColorComboBox in the Visu Dock Widget*/
   void PassInfoForColorComboBoxFromDB();
+
   /** \brief Get the info for the new created color from the colorcombobox and pass
   them to the database to be saved in*/
   void PassInfoForDBFromColorTraceComboBox();
+
   /** \brief Get the info for the existing collectionID from the database and pass
   them to the Visu Dock Widget*/
   void PassInfoForCollectionIDFromDB();

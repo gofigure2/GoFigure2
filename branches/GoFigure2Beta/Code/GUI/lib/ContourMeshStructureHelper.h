@@ -74,7 +74,8 @@ typedef multi_index_container<
     >
   > ContourMeshStructureNodesViewContainer;
 
-
+int
+ComputeDirectionFromContour( vtkPolyData* iContour );
 
 std::list< ContourMeshStructure* >
 FindContourGivenTraceID(

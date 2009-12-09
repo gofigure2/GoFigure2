@@ -553,10 +553,6 @@ void vtkViewImage::ChangeActorProperty( vtkProp3D* iActor,
         temp->Modified();
         }
       }
-    else
-      {
-      std::cout <<"is not present" <<std::endl;
-      }
     }
 }
 //----------------------------------------------------------------------------

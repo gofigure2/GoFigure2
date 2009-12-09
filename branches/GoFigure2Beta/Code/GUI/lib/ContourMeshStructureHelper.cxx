@@ -1,7 +1,29 @@
 #include "ContourMeshStructureHelper.h"
+#include "vtkPolyData.h"
 
 using boost::multi_index_container;
 using namespace boost::multi_index;
+
+// ---------------------------------------------------------------------------
+int
+ComputeDirectionFromContour( vtkPolyData* iContour )
+{
+  double bounds[6];
+  iContour->GetBounds( bounds );
+
+  int oDir = -1;
+
+  for( int i = 0; i < 3; i++ )
+    {
+    if( bounds[2*i] == bounds[2*i+1] )
+      {
+      oDir = i;
+      }
+    }
+
+  return oDir;
+}
+// ---------------------------------------------------------------------------
 
 // ---------------------------------------------------------------------------
 std::list< ContourMeshStructure* >

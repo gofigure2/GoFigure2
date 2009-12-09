@@ -361,6 +361,9 @@ void QGoTabImageView3DwT::setupUi( QWidget* iParent )
   QObject::connect( m_ImageView, SIGNAL( FullScreenViewChanged( int ) ),
     this, SIGNAL( FullScreenViewChanged( int ) ) );
 
+  QObject::connect( m_ImageView, SIGNAL( ActorsSelectionChanged( ) ),
+    this, SLOT( HighLightContours() ) );
+
   m_LayOut = new QHBoxLayout( iParent );
   m_LayOut->addWidget( m_ImageView  );
 
@@ -727,6 +730,7 @@ void QGoTabImageView3DwT::ChangeLookupTable()
 
   if( image->GetNumberOfScalarComponents() == 1 )
     {
+    /// \todo there may be one memory leak in here!
     vtkSmartPointer< vtkLookupTable > lut =
       vtkSmartPointer< vtkLookupTable >::New();
     lut->DeepCopy( QGoLUTDialog::GetLookupTable( this,
@@ -1362,18 +1366,12 @@ AddContourFromNodes( vtkPolyData* iNodes,
     double bounds[6];
     iNodes->GetBounds( bounds );
 
-    int dir = -1;
-
-    for( int i = 0; i < 3; i++ )
-      {
-      if( bounds[2*i] == bounds[2*i+1] )
-        {
-        dir = i;
-        }
-      }
+    int dir = ComputeDirectionFromContour( iNodes );
 
     if( dir != -1 )
       {
+      /// \todo m_ContourWidget needs to be correctly set up,
+      /// before turning it on
       m_ContourWidget[dir]->On();
       m_ContourWidget[dir]->Initialize( iNodes );
       this->ValidateContour( dir, iR, iG, iB, iA, iHighlighted, iTCoord, iSaveInDataBase );
@@ -1402,9 +1400,9 @@ void QGoTabImageView3DwT::PassInfoForDBFromColorTraceComboBox()
 //-------------------------------------------------------------------------
 void QGoTabImageView3DwT::PassInfoForCollectionIDFromDB()
 {
+  /// \todo: always begin with contour ??
   this->m_VisuDockWidget->SetCollectionID(this->m_DataBaseTables->
     GetListExistingCollectionIDFromDB("contour","mesh"));
-  //todo: always begin with contour ??
 }
 //-------------------------------------------------------------------------
 
@@ -1434,18 +1432,7 @@ ReEditContour( const unsigned int& iId )
         ++it;
         }
 
-      double bounds[6];
-      c_nodes->GetBounds( bounds );
-
-      int dir = -1;
-
-      for( int i = 0; i < 3; i++ )
-        {
-        if( bounds[2*i] == bounds[2*i+1] )
-          {
-          dir = i;
-          }
-        }
+      int dir = ComputeDirectionFromContour( c_nodes );
 
       if( dir != -1 )
         {
@@ -1453,6 +1440,87 @@ ReEditContour( const unsigned int& iId )
         m_ContourWidget[dir]->Initialize( c_nodes );
         }
       }
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+HighLightContours()
+{
+  std::list< vtkProp3D* > listofpicked = m_ImageView->GetListOfPickedActors();
+
+  std::list< vtkProp3D* >::iterator it = listofpicked.begin();
+
+  vtkProperty* property = vtkProperty::New();
+  property->SetColor( 1., 0., 0. );
+  property->SetLineWidth( 3. );
+
+  while( it != listofpicked.end() )
+    {
+    // Change the corresponding highlighted value in the container
+    ContourMeshStructureMultiIndexContainer::nth_index< 1 >::type::iterator
+      actor_it = m_ContourMeshContainer.get< 1 >().find( static_cast< vtkActor* >( *it ) );
+
+    if( actor_it != m_ContourMeshContainer.get< 1 >().end() )
+      {
+      unsigned int trace_id = actor_it->TraceID;
+
+      ContourMeshStructureMultiIndexContainer::index< TraceID >::type::iterator
+        traceid_it = m_ContourMeshContainer.get< TraceID >().find( trace_id );
+
+      if( traceid_it != m_ContourMeshContainer.get< TraceID >().end() )
+        {
+        while( ( traceid_it != m_ContourMeshContainer.get< TraceID >().end() )
+            && ( (*traceid_it).TraceID == trace_id ) )
+          {
+          m_ImageView->ChangeActorProperty( traceid_it->Actor, property );
+          ++traceid_it;
+          }
+        }
+      }
+
+    ++it;
+    }
+
+  std::list< vtkProp3D* > listofunpicked = m_ImageView->GetListOfUnPickedActors();
+  it = listofunpicked.begin();
+
+  while( it != listofunpicked.end() )
+    {
+    // find corresponding color from the container
+//     ChangeActorProperty( *it, m_ActorsPropertyMap[*it] );
+    // Change the corresponding highlighted value in the container
+        // Change the corresponding highlighted value in the container
+    ContourMeshStructureMultiIndexContainer::nth_index< 1 >::type::iterator
+      actor_it = m_ContourMeshContainer.get< 1 >().find( static_cast< vtkActor* >( *it ) );
+
+    if( actor_it != m_ContourMeshContainer.get< 1 >().end() )
+      {
+      unsigned int trace_id = actor_it->TraceID;
+
+      ContourMeshStructureMultiIndexContainer::index< TraceID >::type::iterator
+        traceid_it = m_ContourMeshContainer.get< TraceID >().find( trace_id );
+
+      if( traceid_it != m_ContourMeshContainer.get< TraceID >().end() )
+        {
+        while( ( traceid_it != m_ContourMeshContainer.get< TraceID >().end() )
+            && ( (*traceid_it).TraceID == trace_id ) )
+          {
+          vtkProperty* temp_property = vtkProperty::New();
+          temp_property->SetColor( traceid_it->rgba[0], traceid_it->rgba[1], traceid_it->rgba[2] );
+          temp_property->SetLineWidth( 1. );
+
+          m_ImageView->ChangeActorProperty( traceid_it->Actor, temp_property );
+
+          temp_property->Delete();
+          ++traceid_it;
+          }
+        }
+      }
+
+    ++it;
     }
 }
 //-------------------------------------------------------------------------

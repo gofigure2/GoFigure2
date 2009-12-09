@@ -126,9 +126,8 @@ void vtkInteractorStyleImage2D::OnMouseMove()
   this->InvokeEvent (vtkCommand::InteractionEvent);
 
 //
-/// NOTE:12 MAR 2009
-/// This is a really dirty solution: it breaks the "natural" behavior of the vtkViewImage2D
-/// alone (not in a Collection: synchronized view);
+/// \bug This is a really dirty solution: it breaks the "natural" behavior of the vtkViewImage2D
+/// alone (not in a Collection: synchronized view). (12 MAR 2009)
 // this->Superclass::OnMouseMove();
 }
 
@@ -153,6 +152,8 @@ void vtkInteractorStyleImage2D::OnLeftButtonDown()
   }
   else
   {
+    /// \todo check if we can define another way to ensure we are picking
+    /// or changing window/level
     this->InvokeEvent( vtkViewImage2DCommand::ContourPickingEvent );
   }
 

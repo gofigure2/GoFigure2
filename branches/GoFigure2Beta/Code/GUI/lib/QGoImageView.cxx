@@ -95,8 +95,9 @@ void QGoImageView::SetBackgroundColor( const double& r,
   double rgb[3] = {r, g, b };
 
   m_Pool->SyncSetBackground( rgb );
+  int n = m_Pool->GetNumberOfItems();
 
-  for( int i = 0; i < m_Pool->GetNumberOfItems(); i++ )
+  for( int i = 0; i < n; i++ )
     {
     vtkTextProperty* tproperty =
       m_Pool->GetItem( i )->GetTextProperty();

@@ -20,6 +20,10 @@
 #include "vtkPNGWriter.h"
 #include "vtkTIFFWriter.h"
 
+#include "vtkEventQtSlotConnect.h"
+#include "QSplitterChild.h"
+#include "QVTKWidget.h"
+
 #include <QResizeEvent>
 #include <QSettings>
 
@@ -351,8 +355,8 @@ void QGoImageView3D::SetupVTKtoQtConnections()
     vtkViewImage2DCommand::ContourPickingEvent,
     this, SIGNAL( ActorsSelectionChanged() ) );
 
-  QObject::connect( this, SIGNAL( ActorsSelectionChanged() ),
-    this, SLOT( HighLightContours() ) );
+//   QObject::connect( this, SIGNAL( ActorsSelectionChanged() ),
+//     this, SLOT( HighLightContours() ) );
 }
 //-------------------------------------------------------------------------
 
@@ -538,42 +542,27 @@ void QGoImageView3D::SetFullScreenView( const int& iS )
     default:
     case 0:
       {
-      LayOutWidget1->show();
-      LayOutWidget2->show();
-      LayOutWidget3->show();
-      LayOutWidget4->show();
+      Quadview();
       break;
       }
     case 1:
       {
-      LayOutWidget1->show();
-      LayOutWidget2->hide();
-      LayOutWidget3->hide();
-      LayOutWidget4->hide();
+      FullScreenViewXY();
       break;
       }
     case 2:
       {
-      LayOutWidget1->hide();
-      LayOutWidget2->show();
-      LayOutWidget3->hide();
-      LayOutWidget4->hide();
+      FullScreenViewXZ();
       break;
       }
     case 3:
       {
-      LayOutWidget1->hide();
-      LayOutWidget2->hide();
-      LayOutWidget3->show();
-      LayOutWidget4->hide();
+      FullScreenViewYZ();
       break;
       }
     case 4:
       {
-      LayOutWidget1->hide();
-      LayOutWidget2->hide();
-      LayOutWidget3->hide();
-      LayOutWidget4->show();
+      FullScreenViewXYZ();
       break;
       }
     }
@@ -587,7 +576,10 @@ void QGoImageView3D::SetFullScreenView( const int& iS )
  */
 void QGoImageView3D::Quadview()
 {
-  this->SetFullScreenView( 0 );
+  LayOutWidget1->show();
+  LayOutWidget2->show();
+  LayOutWidget3->show();
+  LayOutWidget4->show();
 }
 //-------------------------------------------------------------------------
 
@@ -597,7 +589,10 @@ void QGoImageView3D::Quadview()
  */
 void QGoImageView3D::FullScreenViewXY()
 {
-  this->SetFullScreenView( 1 );
+  LayOutWidget1->show();
+  LayOutWidget2->hide();
+  LayOutWidget3->hide();
+  LayOutWidget4->hide();
 }
 //-------------------------------------------------------------------------
 
@@ -607,7 +602,10 @@ void QGoImageView3D::FullScreenViewXY()
  */
 void QGoImageView3D::FullScreenViewXZ()
 {
-  this->SetFullScreenView( 2 );
+  LayOutWidget1->hide();
+  LayOutWidget2->show();
+  LayOutWidget3->hide();
+  LayOutWidget4->hide();
 }
 //-------------------------------------------------------------------------
 
@@ -617,7 +615,10 @@ void QGoImageView3D::FullScreenViewXZ()
  */
 void QGoImageView3D::FullScreenViewYZ()
 {
-  this->SetFullScreenView( 3 );
+  LayOutWidget1->hide();
+  LayOutWidget2->hide();
+  LayOutWidget3->show();
+  LayOutWidget4->hide();
 }
 //-------------------------------------------------------------------------
 
@@ -627,7 +628,10 @@ void QGoImageView3D::FullScreenViewYZ()
  */
 void QGoImageView3D::FullScreenViewXYZ()
 {
-  this->SetFullScreenView( 4 );
+  LayOutWidget1->hide();
+  LayOutWidget2->hide();
+  LayOutWidget3->hide();
+  LayOutWidget4->show();
 }
 //-------------------------------------------------------------------------
 
@@ -939,28 +943,47 @@ AddMesh( vtkPolyData* iMesh )
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void
-QGoImageView3D::
-HighLightContours()
+// void
+// QGoImageView3D::
+// HighLightContours()
+// {
+//   vtkViewImage2DCollectionCommand* command = m_Pool->GetCommand();
+//   std::list< vtkProp3D* > listofpicked = command->GetListOfPickedActors();
+//
+//   std::list< vtkProp3D* >::iterator it = listofpicked.begin();
+//
+//   while( it != listofpicked.end() )
+//     {
+//     ChangeActorProperty( *it, m_HighlightedContourProperty );
+//     ++it;
+//     }
+//
+//   std::list< vtkProp3D* > listofunpicked = command->GetListOfUnPickedActors();
+//   it = listofunpicked.begin();
+//
+//   while( it != listofunpicked.end() )
+//     {
+//     ChangeActorProperty( *it, m_ActorsPropertyMap[*it] );
+//     ++it;
+//     }
+// }
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+std::list< vtkProp3D* >
+QGoImageView3D::GetListOfPickedActors()
 {
   vtkViewImage2DCollectionCommand* command = m_Pool->GetCommand();
-  std::list< vtkProp3D* > listofpicked = command->GetListOfPickedActors();
+  return command->GetListOfPickedActors();
+}
+//--------------------------------------------------------------------------
 
-  std::list< vtkProp3D* >::iterator it = listofpicked.begin();
-
-  while( it != listofpicked.end() )
-    {
-    ChangeActorProperty( *it, m_HighlightedContourProperty );
-    ++it;
-    }
-
-  std::list< vtkProp3D* > listofunpicked = command->GetListOfUnPickedActors();
-  it = listofunpicked.begin();
-
-  while( it != listofunpicked.end() )
-    {
-    ChangeActorProperty( *it, m_ActorsPropertyMap[*it] );
-    ++it;
-    }
+//--------------------------------------------------------------------------
+std::list< vtkProp3D* >
+QGoImageView3D::
+GetListOfUnPickedActors()
+{
+  vtkViewImage2DCollectionCommand* command = m_Pool->GetCommand();
+  return command->GetListOfUnPickedActors();
 }
 //--------------------------------------------------------------------------

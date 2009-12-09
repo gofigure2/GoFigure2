@@ -15,9 +15,10 @@
 
 #include <map>
 
-#include "QVTKWidget.h"
-#include "vtkEventQtSlotConnect.h"
-#include "QSplitterChild.h"
+
+class QVTKWidget;
+class vtkEventQtSlotConnect;
+class QSplitterChild;
 
 class vtkProp3D;
 class vtkProperty;
@@ -76,6 +77,9 @@ public:
 
   virtual void ChangeActorProperty( vtkProp3D* iActor, vtkProperty* iProperty );
 
+  std::list< vtkProp3D* > GetListOfPickedActors();
+  std::list< vtkProp3D* > GetListOfUnPickedActors();
+
 signals:
   void SliceViewXYChanged( int Slice );
   void SliceViewXZChanged( int Slice );
@@ -105,7 +109,7 @@ public slots:
   void FullScreenViewYZ();
   void FullScreenViewXYZ();
 
-  void HighLightContours();
+//   void HighLightContours();
 
   /**
    *
@@ -158,6 +162,5 @@ protected slots:
   void MoveSliderXZ();
   void MoveSliderYZ();
 
-private:
 };
 #endif

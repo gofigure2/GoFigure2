@@ -117,11 +117,10 @@ vtkStandardNewMacro(vtkViewImage2DCollection);
 
 
 //----------------------------------------------------------------------------
-vtkViewImage2DCollection::vtkViewImage2DCollection()
+vtkViewImage2DCollection::vtkViewImage2DCollection() : ExtraRenderWindow( 0 )
 {
   this->Command = vtkViewImage2DCollectionCommand::New();
-  this->Command->SetCollection (this);
-  this->ExtraRenderWindow = NULL;
+  this->Command->SetCollection( this );
 }
 
 //----------------------------------------------------------------------------
@@ -202,14 +201,14 @@ void vtkViewImage2DCollection::RemoveItem(vtkViewImage2D *a)
 // Remove all objects from the list.
 void vtkViewImage2DCollection::RemoveAllItems()
 {
-  this->Superclass::RemoveAllItems ();
+  this->Superclass::RemoveAllItems();
 }
 
 //----------------------------------------------------------------------------
 // Replace the i'th item in the collection with a
 void vtkViewImage2DCollection::ReplaceItem(int i, vtkViewImage2D *a)
 {
-  this->Superclass::ReplaceItem (i, a);
+  this->Superclass::ReplaceItem(i, a);
 }
 
 //----------------------------------------------------------------------------
@@ -230,9 +229,11 @@ void vtkViewImage2DCollection::Initialize()
     vtkSmartPointer< vtkProperty >::New();
   plane_property->SetRepresentationToWireframe();
 
-  for (int i=0; i<this->GetNumberOfItems(); i++)
+  int n = this->GetNumberOfItems();
+
+  for( int i = 0; i < n; i++ )
   {
-    for (int j=0; j<this->GetNumberOfItems(); j++)
+    for( int j = 0; j < n; j++ )
     {
       vtkActor* temp = this->GetItem( j )->AddDataSet(
         static_cast<vtkDataSet*>( this->GetItem( i )->GetSlicePlane() ),
@@ -266,13 +267,16 @@ void vtkViewImage2DCollection::SyncRender(void)
 {
   this->InitTraversal();
   vtkViewImage2D* item = this->GetNextItem();
+
   while(item)
   {
-    item->Render ();
+    item->Render();
     item = this->GetNextItem();
   }
   if (this->ExtraRenderWindow)
+    {
     this->ExtraRenderWindow->Render();
+    }
 }
 
 //----------------------------------------------------------------------------
@@ -282,7 +286,7 @@ void vtkViewImage2DCollection::SyncReset(void)
   vtkViewImage2D* item = this->GetNextItem();
   while(item)
   {
-    item->Reset ();
+    item->Reset();
     item = this->GetNextItem();
   }
 }
@@ -293,7 +297,7 @@ void vtkViewImage2DCollection::SyncResetWindowLevel(void)
   vtkViewImage2D* item = this->GetNextItem();
   while(item)
   {
-    item->ResetWindowLevel ();
+    item->ResetWindowLevel();
     item = this->GetNextItem();
   }
 }

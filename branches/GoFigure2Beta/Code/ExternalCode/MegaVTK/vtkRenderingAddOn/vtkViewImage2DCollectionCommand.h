@@ -4,10 +4,10 @@
 #include "vtkCommand.h"
 #include "vtkObject.h"
 
+#include <list>
+
 class vtkViewImage2DCollection;
 class vtkProp3D;
-
-#include <list>
 
 class vtkViewImage2DCollectionCommand :
   public vtkCommand
@@ -24,8 +24,8 @@ class vtkViewImage2DCollectionCommand :
   // the instance invoking the event; eid is the event id (see
   // vtkCommand.h); and calldata is information sent when the callback
   // was invoked (e.g., progress value in the vtkCommand::ProgressEvent).
-  virtual void Execute(vtkObject *caller,unsigned long event,
-    void *vtkNotUsed(callData));
+  virtual void Execute( vtkObject *caller, unsigned long event,
+    void *vtkNotUsed(callData) );
 
   std::list< vtkProp3D* > GetListOfPickedActors();
   std::list< vtkProp3D* > GetListOfUnPickedActors();
