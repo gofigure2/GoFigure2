@@ -25,12 +25,12 @@ QGoManualSegmentationSettingsDialog( QWidget* iParent,
 {
   this->setupUi( this );
 
-  m_Renderer = vtkRenderer::New();
+  m_Renderer = vtkSmartPointer< vtkRenderer >::New();
 
   vtkRenderWindow* renwin = this->qvtkWidget->GetRenderWindow();
   renwin->AddRenderer( m_Renderer );
 
-  m_ContourRepresentation = vtkOrientedGlyphContourRepresentation::New();
+  m_ContourRepresentation = vtkSmartPointer< vtkOrientedGlyphContourRepresentation >::New();
   m_ContourRepresentation->GetLinesProperty()->SetLineWidth( m_LineWidth );
   m_ContourRepresentation->GetLinesProperty()->SetColor( m_LineColor.redF(),
     m_LineColor.greenF(), m_LineColor.blueF() );
@@ -39,15 +39,17 @@ QGoManualSegmentationSettingsDialog( QWidget* iParent,
   m_ContourRepresentation->GetActiveProperty()->SetColor( m_ActivatedNodeColor.redF(),
     m_ActivatedNodeColor.greenF(), m_ActivatedNodeColor.blueF() );
 
-  m_ContourWidget = vtkContourWidget::New();
+  m_ContourWidget = vtkSmartPointer< vtkContourWidget >::New();
   m_ContourWidget->SetInteractor( this->qvtkWidget->GetInteractor() );
   m_ContourWidget->SetRepresentation( m_ContourRepresentation );
   m_ContourWidget->On();
 
-  m_InitPD = vtkPolyData::New();
-  vtkPoints    *points      = vtkPoints::New();
-  vtkCellArray *lines       = vtkCellArray::New();
+  m_InitPD = vtkSmartPointer< vtkPolyData >::New();
+  vtkSmartPointer< vtkPoints >   points = vtkSmartPointer< vtkPoints >::New();
+  vtkSmartPointer< vtkCellArray > lines = vtkSmartPointer< vtkCellArray >::New();
+
   vtkIdType    *lineIndices = new vtkIdType[7];
+
   for( int i = 0; i< 6; i++ )
     {
     const double angle = 2.0*vtkMath::Pi()*i/6.0;
@@ -59,10 +61,9 @@ QGoManualSegmentationSettingsDialog( QWidget* iParent,
   lineIndices[6] = 0;
   lines->InsertNextCell(7,lineIndices);
   delete [] lineIndices;
+
   m_InitPD->SetPoints(points);
   m_InitPD->SetLines(lines);
-  points->Delete();
-  lines->Delete();
 
   m_ContourWidget->Initialize( m_InitPD );
   m_ContourWidget->Render();
@@ -84,11 +85,6 @@ QGoManualSegmentationSettingsDialog( QWidget* iParent,
 QGoManualSegmentationSettingsDialog::
 ~QGoManualSegmentationSettingsDialog()
 {
-  m_InitPD->Delete();
-  m_ContourWidget->Delete();
-  m_ContourRepresentation->Delete();
-  m_Renderer->Delete();
-
   delete this->qvtkWidget;
 }
 
@@ -113,15 +109,15 @@ QColor QGoManualSegmentationSettingsDialog::GetActivatedNodeColor( ) const
   return m_ActivatedNodeColor;
 }
 
-/** 
- * \todo check the implementation of this method. strange that iValue is not used at all 
-*/
 void QGoManualSegmentationSettingsDialog::SetLineWidth( const double& iValue )
 {
-  m_LineWidth = this->LineWidthSpinBox->value();
-  m_ContourRepresentation->GetLinesProperty()->SetLineWidth( m_LineWidth );
-  m_ContourWidget->Render();
-  m_Renderer->Render();
+  if( m_LineWidth != iValue )
+    {
+    m_LineWidth = iValue;
+    m_ContourRepresentation->GetLinesProperty()->SetLineWidth( m_LineWidth );
+    m_ContourWidget->Render();
+    m_Renderer->Render();
+    }
 }
 
 void QGoManualSegmentationSettingsDialog::SelectLineColor( )
@@ -142,6 +138,7 @@ void QGoManualSegmentationSettingsDialog::SelectNodeColor( )
 {
   m_NodeColor = QColorDialog::getColor( m_NodeColor, this,
     tr( "Select Node Color" ) );
+
   if( m_NodeColor.isValid() )
     {
     m_ContourRepresentation->GetProperty()->SetColor( m_NodeColor.redF(),
@@ -155,6 +152,7 @@ void QGoManualSegmentationSettingsDialog::SelectActivatedNodeColor( )
 {
   m_ActivatedNodeColor = QColorDialog::getColor( m_ActivatedNodeColor, this,
     tr( "Select Activated Node Color" ) );
+
   if( m_ActivatedNodeColor.isValid() )
     {
     m_ContourRepresentation->GetActiveProperty()->SetColor(

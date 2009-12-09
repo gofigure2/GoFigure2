@@ -76,6 +76,7 @@ public:
   int GetSliceViewYZ() const;
 
   virtual void ChangeActorProperty( vtkProp3D* iActor, vtkProperty* iProperty );
+  virtual void ChangeActorProperty( int iDir, vtkProp3D* iActor, vtkProperty* iProperty );
 
   std::list< vtkProp3D* > GetListOfPickedActors();
   std::list< vtkProp3D* > GetListOfUnPickedActors();

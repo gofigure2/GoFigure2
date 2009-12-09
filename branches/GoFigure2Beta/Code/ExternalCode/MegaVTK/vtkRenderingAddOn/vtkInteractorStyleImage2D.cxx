@@ -94,7 +94,7 @@ vtkInteractorStyleImage2D::vtkInteractorStyleImage2D()
 //----------------------------------------------------------------------------
 vtkInteractorStyleImage2D::~vtkInteractorStyleImage2D()
 {
-  delete this->RequestedPosition;
+  delete[] this->RequestedPosition;
 }
 
 //----------------------------------------------------------------------------

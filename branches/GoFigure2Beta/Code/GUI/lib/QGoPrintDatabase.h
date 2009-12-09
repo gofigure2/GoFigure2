@@ -66,7 +66,7 @@ public:
 
   QGoPrintDatabase( QWidget* iParent = 0 );
   virtual ~QGoPrintDatabase();
-  
+
   typedef GoDBCollectionOfTraces::DBTableWidgetContainerType DBTableWidgetContainerType;
   /** \brief set all the values needed for the database*/
   void SetDatabaseVariables(
@@ -78,21 +78,21 @@ public:
   in the database, display them in the QTableWidgetChild and fill the info for the
   contours and meshes*/
   void FillTableFromDatabase();
-  
+
   /** \brief Return a vector of all the contours for the given timepoint*/
   std::vector<ContourMeshStructure> GetContoursForAGivenTimepoint (
     unsigned int iTimePoint);
-  
+
   /** \brief Return a vector of all the meshes for the given timepoint*/
   std::vector<ContourMeshStructure> GetMeshesForAGivenTimepoint (
     unsigned int iTimePoint);
-  
-  /** \brief Return a vector of all the contours with a bounding box 
+
+  /** \brief Return a vector of all the contours with a bounding box
   containing the given ZCoord*/
   std::vector<ContourMeshStructure> GetContoursForAGivenZCoord (
     unsigned int iZCoord);
-  
-  /** \brief Return a vector of all the meshes with a bounding box 
+
+  /** \brief Return a vector of all the meshes with a bounding box
   containing the given ZCoord*/
   std::vector<ContourMeshStructure> GetMeshesForAGivenZCoord (
     unsigned int iZCoordPoint);
@@ -104,8 +104,8 @@ public:
   std::list<std::pair<std::string,QColor> > GetListExistingCollectionIDFromDB(
     std::string TraceName,std::string CollectionName);
 
-  void SaveNewColorInDB(std::vector<std::string> iDataNewColor);
-  
+  void SaveNewColorInDB( std::vector<std::string> iDataNewColor );
+
   QTableWidgetChild* ContourTable;
   QTableWidgetChild* MeshTable;
   QTableWidgetChild* TrackTable;
@@ -115,13 +115,13 @@ public:
   std::vector<ContourMeshStructure> m_MeshesInfo;
 
   void UpdateTableFromDB();
-  void SaveContoursFromVisuInDB(unsigned int iXCoordMin,
-    unsigned int iYCoordMin,unsigned int iZCoordMin,unsigned int iTCoord,
-    unsigned int iXCoordMax,unsigned int iYCoordMax,unsigned int iZCoordMax,
-    vtkPolyData* iContourNodes,std::pair<std::string,QColor> iColorData,
-    unsigned int iMeshID);
-  
-  /** \brief return a bool to know if the user is using the database or not*/ 
+  void SaveContoursFromVisuInDB( unsigned int iXCoordMin,
+    unsigned int iYCoordMin, unsigned int iZCoordMin, unsigned int iTCoord,
+    unsigned int iXCoordMax, unsigned int iYCoordMax, unsigned int iZCoordMax,
+    vtkPolyData* iContourNodes, std::pair<std::string, QColor> iColorData,
+    unsigned int iMeshID );
+
+  /** \brief return a bool to know if the user is using the database or not*/
   bool IsDatabaseUsed();
 
   QAction* toggleViewAction();
@@ -161,7 +161,7 @@ protected:
   /** \brief initialize the m_ContoursInfo and m_MeshesInfo with the info from the
   database*/
   void LoadContoursAndMeshesFromDB(vtkMySQLDatabase* DatabaseConnector);
-  
+
   std::vector<ContourMeshStructure> GetTracesForAGivenTimepoint(
     std::vector<ContourMeshStructure> iAllTraces, unsigned int iTimePoint);
   /**
@@ -171,7 +171,7 @@ protected:
   /** \brief return a vector of all the traces with a bounding box containing
   the given ZCoord*/
   std::vector<ContourMeshStructure> GetTracesForAGivenZCoord(
-    std::vector<ContourMeshStructure> iAllTraces,unsigned int iZCoord, 
+    std::vector<ContourMeshStructure> iAllTraces,unsigned int iZCoord,
     GoDBCollectionOfTraces* iCollectionOfTraces);
 
   void GetContentAndDisplayFromDB( QString TableName, QTableWidgetChild* Table,
@@ -273,7 +273,7 @@ protected:
 
   void closeEvent(QCloseEvent* event);
   void UpdateTableWidgetAndRowContainerWithNewCreatedTrace(
-    QTableWidgetChild* Table,vtkMySQLDatabase* DatabaseConnector, 
+    QTableWidgetChild* Table,vtkMySQLDatabase* DatabaseConnector,
     GoDBCollectionOfTraces* iCollectionOfTraces);
 
   GoDBCollectionOfTraces* GetCurrentCollection(std::string CollectionName);

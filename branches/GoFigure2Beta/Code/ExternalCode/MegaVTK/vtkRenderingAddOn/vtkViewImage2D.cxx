@@ -310,7 +310,6 @@ int vtkViewImage2D::SetCameraToConvention(void)
   double focaltoposition[3];
   std::vector<double*> viewupchoices;
   double first[3], second[3], third[3], fourth[3];
-  bool inverseposition;
 
   // First recover information from the camera.
   // Recover also information from the convention matrix
@@ -344,7 +343,8 @@ int vtkViewImage2D::SetCameraToConvention(void)
 
   // Deal with the position :
   // invert it if necessary( symetry among the focal point)
-  inverseposition =( vtkMath::Dot( focaltoposition, conventionposition ) < 0 );
+  bool inverseposition =
+    ( vtkMath::Dot( focaltoposition, conventionposition ) < 0 );
   if( inverseposition )
     {
     for( i=0; i<3; i++ )

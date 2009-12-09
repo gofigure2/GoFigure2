@@ -862,6 +862,26 @@ ChangeActorProperty( vtkProp3D* iActor, vtkProperty* iProperty )
 //--------------------------------------------------------------------------
 void
 QGoImageView3D::
+ChangeActorProperty( int iDir, vtkProp3D* iActor, vtkProperty* iProperty )
+{
+  if( ( iDir >= 0 ) && ( iDir < m_Pool->GetNumberOfItems() ) )
+    {
+    vtkViewImage2D* viewer = m_Pool->GetItem( iDir );
+    viewer->ChangeActorProperty( iActor, iProperty );
+    }
+  else
+    {
+    if( iDir == 3 )
+      {
+      View3D->ChangeActorProperty( iActor, iProperty );
+      }
+    }
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+QGoImageView3D::
 RemoveActor( const int& iId, vtkActor* iActor )
 {
   if( iId == 3 )

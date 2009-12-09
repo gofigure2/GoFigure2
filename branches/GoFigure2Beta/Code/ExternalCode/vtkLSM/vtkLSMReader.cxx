@@ -104,6 +104,13 @@ vtkLSMReader::vtkLSMReader()
   this->ImageOffsets = 0;
   this->ReadSizes = 0;
   this->Description = 0;
+
+#ifdef VTK_WORDS_BIGENDIAN
+  this->SwapBytes = true;
+#else
+  this->SwapBytes = false;
+#endif
+
   this->Clean();
 }
 

@@ -1363,9 +1363,6 @@ AddContourFromNodes( vtkPolyData* iNodes,
 {
   if( iNodes->GetNumberOfPoints() > 2 )
     {
-    double bounds[6];
-    iNodes->GetBounds( bounds );
-
     int dir = ComputeDirectionFromContour( iNodes );
 
     if( dir != -1 )
@@ -1466,6 +1463,7 @@ HighLightContours()
     if( actor_it != m_ContourMeshContainer.get< 1 >().end() )
       {
       unsigned int trace_id = actor_it->TraceID;
+      int dir;
 
       ContourMeshStructureMultiIndexContainer::index< TraceID >::type::iterator
         traceid_it = m_ContourMeshContainer.get< TraceID >().find( trace_id );
@@ -1475,7 +1473,11 @@ HighLightContours()
         while( ( traceid_it != m_ContourMeshContainer.get< TraceID >().end() )
             && ( (*traceid_it).TraceID == trace_id ) )
           {
-          m_ImageView->ChangeActorProperty( traceid_it->Actor, property );
+          m_ImageView->ChangeActorProperty( traceid_it->Direction,
+            traceid_it->Actor, property );
+
+//           traceid_it->Highlighted = true;
+
           ++traceid_it;
           }
         }
@@ -1512,7 +1514,10 @@ HighLightContours()
           temp_property->SetColor( traceid_it->rgba[0], traceid_it->rgba[1], traceid_it->rgba[2] );
           temp_property->SetLineWidth( 1. );
 
-          m_ImageView->ChangeActorProperty( traceid_it->Actor, temp_property );
+          m_ImageView->ChangeActorProperty( traceid_it->Direction,
+            traceid_it->Actor, temp_property );
+
+//           traceid_it->Highlighted = false;
 
           temp_property->Delete();
           ++traceid_it;

@@ -4,6 +4,7 @@
 #include "ui_ManualSegmentationSettingsDlg.h"
 
 #include <Qt>
+#include "vtkSmartPointer.h"
 
 class vtkOrientedGlyphContourRepresentation;
 class vtkContourWidget;
@@ -40,9 +41,9 @@ private:
   QColor m_NodeColor;
   QColor m_ActivatedNodeColor;
 
-  vtkOrientedGlyphContourRepresentation* m_ContourRepresentation;
-  vtkContourWidget* m_ContourWidget;
-  vtkRenderer*      m_Renderer;
-  vtkPolyData*      m_InitPD;
+  vtkSmartPointer< vtkOrientedGlyphContourRepresentation > m_ContourRepresentation;
+  vtkSmartPointer< vtkContourWidget > m_ContourWidget;
+  vtkSmartPointer< vtkRenderer >      m_Renderer;
+  vtkSmartPointer< vtkPolyData >      m_InitPD;
 };
 #endif

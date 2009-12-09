@@ -504,30 +504,32 @@ void QGoPrintDatabase::LoadContoursAndMeshesFromDB(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoPrintDatabase::ChangeTracesToHighLightInfoFromTableWidget()
+void
+QGoPrintDatabase::
+ChangeTracesToHighLightInfoFromTableWidget()
 {
   int TabIndex = InWhichTableAreWe();
   switch (TabIndex)
     {
     case 0: //contour
-        {
-        this->ContourTable->TracesToHighlight("contour",m_ContoursInfo);
-        emit SelectionContoursToHighLightChanged();
-        break;
-        }
+      {
+      this->ContourTable->TracesToHighlight( "contour", m_ContoursInfo );
+      emit SelectionContoursToHighLightChanged();
+      break;
+      }
     case 1: //mesh
-        {
-        this->MeshTable->TracesToHighlight("mesh",m_MeshesInfo);
-        emit SelectionMeshesToHighLightChanged();
-        break;
-        }
+      {
+      this->MeshTable->TracesToHighlight( "mesh", m_MeshesInfo );
+      emit SelectionMeshesToHighLightChanged();
+      break;
+      }
     default:
-        {
-        std::cout<<"error, tab doesn't exist";
-        std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
-        std::cout << std::endl;
-        break;
-        }
+      {
+      std::cout<<"error, tab doesn't exist";
+      std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
+      std::cout << std::endl;
+      break;
+      }
     }
 }
 //-------------------------------------------------------------------------
@@ -535,39 +537,42 @@ void QGoPrintDatabase::ChangeTracesToHighLightInfoFromTableWidget()
 //-------------------------------------------------------------------------
 void
 QGoPrintDatabase::
-ChangeContoursToHighLightInfoFromVisu( std::list<int> iListContoursHighLightedInVisu)
+ChangeContoursToHighLightInfoFromVisu(
+  std::list<int> iListContoursHighLightedInVisu )
 {
 //     int i = 0;
-    std::list<int>::iterator it = iListContoursHighLightedInVisu.begin();
-    while (it != iListContoursHighLightedInVisu.end())
-      {
+  std::list<int>::iterator it = iListContoursHighLightedInVisu.begin();
 
-      for (unsigned int j = 0 ; j < m_ContoursInfo.size(); j++)
+  while( it != iListContoursHighLightedInVisu.end() )
+    {
+    for( unsigned int j = 0 ; j < m_ContoursInfo.size(); j++ )
+      {
+      if (*it == static_cast< int >( j+1 ) )
         {
-        if (*it == static_cast< int >( j+1 ) )
-          {
-          m_ContoursInfo[j].Highlighted = true;
-          this->ContourTable->SetSelectRowTraceID("Contour",
-            m_ContoursInfo[j].TraceID,true);
-          it++;
-          }
-        else
-          {
-          m_ContoursInfo[j].Highlighted = false;
-          this->ContourTable->SetSelectRowTraceID("Contour",
-            m_ContoursInfo[j].TraceID,false);
-          }
+        m_ContoursInfo[j].Highlighted = true;
+
+        this->ContourTable->SetSelectRowTraceID( "Contour",
+          m_ContoursInfo[j].TraceID, true );
         }
+      else
+        {
+        m_ContoursInfo[j].Highlighted = false;
+
+        this->ContourTable->SetSelectRowTraceID( "Contour",
+          m_ContoursInfo[j].TraceID, false);
+        }
+      ++it;
       }
+    }
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoPrintDatabase::SaveContoursFromVisuInDB(unsigned int iXCoordMin,
-  unsigned int iYCoordMin,unsigned int iZCoordMin,unsigned int iTCoord,
-  unsigned int iXCoordMax,unsigned int iYCoordMax,unsigned int iZCoordMax,
+void QGoPrintDatabase::SaveContoursFromVisuInDB( unsigned int iXCoordMin,
+  unsigned int iYCoordMin, unsigned int iZCoordMin, unsigned int iTCoord,
+  unsigned int iXCoordMax, unsigned int iYCoordMax, unsigned int iZCoordMax,
   vtkPolyData* iContourNodes, std::pair<std::string,QColor> iColorData,
-  unsigned int iMeshID)
+  unsigned int iMeshID )
 {
   OpenDBConnection();
 
@@ -609,8 +614,11 @@ void QGoPrintDatabase::GetContentAndDisplayFromDB( QString TableName,
   //Get the column names to be displayed in the table widget:
   std::list<std::string> ColumnsNames =
       iCollectionOfTraces->GetListColumnsNamesForTableWidget();
+
   Table->DisplayColumnNames( TableName, ColumnsNames);
+
   this->DBTabWidget->addTab(Table,TableName);
+
   //Get all the necessary data from the database:
   DBTableWidgetContainerType Row_Container =
     iCollectionOfTraces->GetRowContainer(m_DatabaseConnector);
@@ -618,6 +626,7 @@ void QGoPrintDatabase::GetContentAndDisplayFromDB( QString TableName,
   Table->DisplayContent( iCollectionOfTraces->GetLinkToRowContainer(),
     iCollectionOfTraces->GetTraceName(),
     iCollectionOfTraces->GetCollectionName() );
+
   Table->setSortingEnabled(true);
 }
 //-------------------------------------------------------------------------
@@ -646,9 +655,9 @@ std::vector<ContourMeshStructure> QGoPrintDatabase::
   std::vector<ContourMeshStructure> SelectedTraces;
   std::vector<ContourMeshStructure>::iterator iter = iAllTraces.begin();
 
-  while (iter != iAllTraces.end())
+  while( iter != iAllTraces.end() )
     {
-    if (iter->TCoord == iTimePoint)
+    if( iter->TCoord == iTimePoint )
       {
       SelectedTraces.push_back(*iter);
       }
@@ -662,8 +671,8 @@ std::vector<ContourMeshStructure> QGoPrintDatabase::
 std::vector<ContourMeshStructure> QGoPrintDatabase::
   GetContoursForAGivenZCoord (unsigned int iZCoord)
 {
-  return this->GetTracesForAGivenZCoord(this->m_ContoursInfo,iZCoord,
-    this->m_CollectionOfContours);
+  return this->GetTracesForAGivenZCoord( this->m_ContoursInfo, iZCoord,
+    this->m_CollectionOfContours );
 }
 
 //-------------------------------------------------------------------------
@@ -672,8 +681,8 @@ std::vector<ContourMeshStructure> QGoPrintDatabase::
 std::vector<ContourMeshStructure> QGoPrintDatabase::
   GetMeshesForAGivenZCoord (unsigned int iZCoord)
 {
-  return this->GetTracesForAGivenZCoord(this->m_MeshesInfo,iZCoord,
-    this->m_CollectionOfTracks);
+  return this->GetTracesForAGivenZCoord( this->m_MeshesInfo, iZCoord,
+    this->m_CollectionOfTracks );
 }
 //-------------------------------------------------------------------------
 
@@ -742,7 +751,9 @@ std::list<std::pair<std::string,std::vector<int> > > QGoPrintDatabase::
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoPrintDatabase::SaveNewColorInDB(std::vector<std::string> iDataNewColor)
+void
+QGoPrintDatabase::
+SaveNewColorInDB(std::vector<std::string> iDataNewColor)
 {
   this->OpenDBConnection();
   GoDBColorRow NewColor;

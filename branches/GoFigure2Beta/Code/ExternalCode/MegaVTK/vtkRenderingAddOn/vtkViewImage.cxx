@@ -551,6 +551,7 @@ void vtkViewImage::ChangeActorProperty( vtkProp3D* iActor,
         {
         temp->SetProperty( iProperty );
         temp->Modified();
+        Render();
         }
       }
     }

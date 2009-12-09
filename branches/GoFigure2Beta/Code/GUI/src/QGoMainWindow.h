@@ -44,8 +44,8 @@
 #include <QMainWindow>
 #include <QDir>
 
-#include <vtkImageData.h>
-#include <itkImage.h>
+#include "vtkImageData.h"
+#include "itkImage.h"
 
 #include "itkImageToVTKImageFilter.h"
 #include "itkQtProgressBar.h"
