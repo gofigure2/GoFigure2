@@ -777,12 +777,10 @@ std::list<std::pair<std::string,QColor> > QGoPrintDatabase::
   std::string CollectionName)
 {
   OpenDBConnection();
-  /*std::string CollectionID = CollectionName;
-  CollectionID += "ID";*/
   std::list<std::pair<std::string, QColor> > oListCollectionIDs;
   //First, build the query with selected fields and table to join with on conditions:
   std::vector<std::string> SelectFields;
-  std::string CollectionID = TraceName;
+  std::string CollectionID = CollectionName;
   CollectionID += ".";
   CollectionID += CollectionName;
   CollectionID += "ID";
@@ -797,28 +795,15 @@ std::list<std::pair<std::string,QColor> > QGoPrintDatabase::
   SelectFields.push_back(Alpha);
 
   std::vector<std::string> JoinTablesOnTraceTable;
-
-  std::string JoinTable = "mesh";
+  std::string JoinTable = "color";
   JoinTablesOnTraceTable.push_back(JoinTable);
-  std::string OnCondition = TraceName;
-  OnCondition += ".";
-  OnCondition += CollectionName;
-  OnCondition += "ID = ";
-  OnCondition += CollectionName;
-  OnCondition += ".";
-  OnCondition += CollectionName;
-  OnCondition += "ID";
+  std::string OnCondition = CollectionName;
+  OnCondition += ".ColorID = color.ColorID";
    JoinTablesOnTraceTable.push_back(OnCondition);
-
-  std::string JoinTable2 = "color";
-  JoinTablesOnTraceTable.push_back(JoinTable2);
-  std::string OnCondition2 = CollectionName;
-  OnCondition2 += ".ColorID = color.ColorID";
-   JoinTablesOnTraceTable.push_back(OnCondition2);
 
  //Get the results for the query:
   std::vector<std::vector<std::string> >ResultsQuery  = GetValuesFromSeveralTables(
-    this->m_DatabaseConnector,TraceName,SelectFields, "ImagingSessionID",
+    this->m_DatabaseConnector,CollectionName,SelectFields, "ImagingSessionID",
     ConvertToString<unsigned int>(this->m_ImgSessionID),JoinTablesOnTraceTable,true);
 
   unsigned int i = 0;
@@ -835,7 +820,6 @@ std::list<std::pair<std::string,QColor> > QGoPrintDatabase::
     temp.first = ResultsOneRow[i];
     temp.second = Color;
     oListCollectionIDs.push_back(temp);
-    i=i+4;
     iter++;
     }
   //for creating traces at the beginning, with no existing collection, we

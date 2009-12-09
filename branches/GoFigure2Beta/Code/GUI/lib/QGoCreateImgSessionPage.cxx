@@ -388,7 +388,6 @@ void QGoCreateImgSessionPage::CreateChannels( vtkMySQLDatabase* DatabaseConnecto
     //for each channel, the color first has to be created from the headerfile
     //into the DB:
     GoDBColorRow myNewColor;    
-    //std::string Description = "";
     std::string StringChannelNumber = ConvertToString<int>(i);
     std::string ChannelName = "Channel " + StringChannelNumber;
     std::string ColorName = "ColorFor";
@@ -404,22 +403,7 @@ void QGoCreateImgSessionPage::CreateChannels( vtkMySQLDatabase* DatabaseConnecto
     myNewColor.SetField("Green",Green);
     myNewColor.SetField("Blue",Blue );
     myNewColor.SetField("Alpha",Alpha);
-    //myNewColor.SetField("Description",Description);
-
-    //check if the color already exists, if so, the colorID saved in the new
-    //channel will be the existing one, if no, the new color is saved in the DB:
-   /* int ExistingColorID = myNewColor.DoesThisColorAlreadyExists(DatabaseConnector);
-    int ColorID;
-    if (ExistingColorID == -1)
-      {
-      ColorID = AddOnlyOneNewObjectInTable< GoDBColorRow >(DatabaseConnector,
-        "color", myNewColor, "ColorID" );
-      }
-    else
-      {
-      ColorID = ExistingColorID;
-      }
-    */
+    
     int ColorID = myNewColor.SaveInDB(DatabaseConnector);
 
     //creation of the corresponding channel:
