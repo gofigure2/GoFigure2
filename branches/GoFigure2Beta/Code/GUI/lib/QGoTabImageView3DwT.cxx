@@ -192,6 +192,11 @@ void QGoTabImageView3DwT::CreateVisuDockWidget()
   QObject::connect( this->m_VisuDockWidget->ColorIDCollectionComboBox,
     SIGNAL( NewCollectionToBeSaved()),
     this, SLOT( PassInfoForDBFromCollectionIDComboBox() ) );
+  
+  QObject::connect( this->m_DataBaseTables,
+    SIGNAL( NeedToGetCurrentSelectedColor()() ),
+    this, SLOT(PassInfoForDBForCurrentSelectedColor()) );
+
 }
 //-------------------------------------------------------------------------
 
@@ -1421,6 +1426,16 @@ void QGoTabImageView3DwT::PassInfoForDBFromCollectionIDComboBox()
   //second, update the ColorIDCollectionComboBox:
   this->m_VisuDockWidget->ColorIDCollectionComboBox->addColor(
     NewCollectionToAddInComboBox.second,NewCollectionToAddInComboBox.first.c_str());
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoTabImageView3DwT::PassInfoForDBForCurrentSelectedColor()
+{
+  /** \todo merge it with PassInfoForCollectionIDFromDB*/
+  this->m_DataBaseTables->UpdateCurrentColorData(
+    this->m_VisuDockWidget->ColorTraceComboBox->GetCurrentColorData());
+
 }
 //-------------------------------------------------------------------------
 

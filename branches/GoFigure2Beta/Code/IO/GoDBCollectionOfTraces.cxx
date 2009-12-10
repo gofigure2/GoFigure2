@@ -45,6 +45,8 @@
 #include "GoDBCoordinateRow.h"
 #include "GoDBTableWidgetContainer.h"
 #include "GoDBMeshRow.h"
+#include "GoDBTrackRow.h"
+#include "GoDBLineageRow.h"
 #include <QStringList>
 #include <QString>
 #include <string>
@@ -99,14 +101,18 @@ void GoDBCollectionOfTraces::DeleteTraces(QStringList TracesToDelete,
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void GoDBCollectionOfTraces::AddSelectedTracesToCollection(QStringList ListSelectedTraces,
-  int newCollectionID,vtkMySQLDatabase* DatabaseConnector)
+void GoDBCollectionOfTraces::AddSelectedTracesToCollection(
+  std::list<int> iListSelectedTraces,int inewCollectionID,
+  vtkMySQLDatabase* DatabaseConnector)
 {
-  std::string newCollectionIDstring = ConvertToString<int>(newCollectionID);
-  for (int i=0; i<ListSelectedTraces.size();i++)
+  std::string newCollectionIDstring = ConvertToString<int>(inewCollectionID);
+  std::list<int>::iterator iter = iListSelectedTraces.begin();
+  while (iter != iListSelectedTraces.end())
     {
+    int TraceID = *iter;
     UpdateValueInDB(DatabaseConnector,m_TracesName,m_CollectionIDName, 
-      newCollectionIDstring,m_TracesIDName, ListSelectedTraces.at(i).toStdString());
+      newCollectionIDstring,m_TracesIDName, ConvertToString<int>(TraceID));
+    iter++;
     }
 }
 //--------------------------------------------------------------------------
@@ -130,15 +136,17 @@ QStringList GoDBCollectionOfTraces::ListCollectionID(
 
 //--------------------------------------------------------------------------
 int GoDBCollectionOfTraces::GetCoordMinID(vtkMySQLDatabase* DatabaseConnector,
-  int CollectionID,QStringList ListSelectedTraces)
+  int CollectionID,std::list<int> ListSelectedTraces)
 {
   GoDBCoordinateRow NewCollectionCoordMin;
-  //transform the QStringList to a vector<string>:
+  //transform the std::list<int> to a vector<string>:
   std::vector<std::string> VectorSelectedTraces;
-  for (int i = 0; i <ListSelectedTraces.size();i++)
+  std::list<int>::iterator iter = ListSelectedTraces.begin();
+  while (iter != ListSelectedTraces.end())
     {
-    std::string test = ListSelectedTraces.at(i).toStdString();//test
-    VectorSelectedTraces.push_back(ListSelectedTraces.at(i).toStdString());
+    int ID = *iter;
+    VectorSelectedTraces.push_back(ConvertToString<int>(ID));
+    iter++;
     }
   
   //Get the min of the selecting traces to add:
@@ -196,15 +204,17 @@ int GoDBCollectionOfTraces::GetCoordMinID(vtkMySQLDatabase* DatabaseConnector,
 
 //--------------------------------------------------------------------------
 int GoDBCollectionOfTraces::GetCoordMaxID(vtkMySQLDatabase* DatabaseConnector,
-  int CollectionID,QStringList ListSelectedTraces)
+  int CollectionID,std::list<int> ListSelectedTraces)
 {
   GoDBCoordinateRow NewCollectionCoordMax;
-  //transform the QStringList to a vector<string>:
+  //transform the std::list<int> to a vector<string>:
   std::vector<std::string> VectorSelectedTraces;
-  for (int i = 0; i <ListSelectedTraces.size();i++)
+  std::list<int>::iterator iter = ListSelectedTraces.begin();
+  while (iter != ListSelectedTraces.end())
     {
-    std::string test = ListSelectedTraces.at(i).toStdString();//test
-    VectorSelectedTraces.push_back(ListSelectedTraces.at(i).toStdString());
+    int ID = *iter;
+    VectorSelectedTraces.push_back(ConvertToString<int>(ID));
+    iter++;
     }
   
   //Get the max of the selecting traces to add:
@@ -464,13 +474,14 @@ int GoDBCollectionOfTraces::CreateCollectionWithNoTraces(
 
   iNewCollection.SetField< int >( "CoordIDMax", CoordIDMax );
   iNewCollection.SetField< int >( "CoordIDMin", CoordIDMin );
-    
-  if (this->m_CollectionName == "mesh")
-    {
-    //GoDBMeshRow* NewMesh = dynamic_cast<GoDBMeshRow*>(&iNewCollection);
-    GoDBMeshRow* NewMesh = static_cast<GoDBMeshRow*>(&iNewCollection);
 
-    if (NewMesh == 0)
+  return this->CreateNewCollection(DatabaseConnector,iNewCollection);
+    
+ /* if (this->m_CollectionName == "mesh")
+    {
+    GoDBMeshRow* NewMesh = static_cast<GoDBMeshRow*>(&iNewCollection);*/
+
+    /*if (NewMesh == 0)
       {
       std::cout<<"ca foire"<<std::endl;
       }
@@ -479,6 +490,57 @@ int GoDBCollectionOfTraces::CreateCollectionWithNoTraces(
       std::cout<<"ca marche"<<std::endl;
       }
     return this->CreateNewCollection<GoDBMeshRow>(DatabaseConnector,*NewMesh);
+    }
+  return 0;*/
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+int GoDBCollectionOfTraces::CreateNewCollectionFromSelection(
+  std::list<int> iListSelectedTraces, vtkMySQLDatabase* DatabaseConnector,
+    GoDBTraceRow iNewCollection)
+{
+/** \todo merge createNewCollectionFromSelection and CreateCollectionWithNotraces*/
+ //the following fields are common to all the collections, the one
+ //that are different are specified in QGoPrintDatabase:
+ iNewCollection.SetField("ImagingSessionID",this->m_ImgSessionID);
+ //the CollectionID is set to 0 as it is a new Collection that will be created, not
+ //contours to be added to an existing collection:
+ iNewCollection.SetField("CoordIDMax",this->GetCoordMaxID(
+   DatabaseConnector,0,iListSelectedTraces));
+ iNewCollection.SetField("CoordIDMin",this->GetCoordMinID(
+   DatabaseConnector,0,iListSelectedTraces));
+
+ int NewCollectionID = this->CreateNewCollection(DatabaseConnector,iNewCollection);
+
+  AddSelectedTracesToCollection(iListSelectedTraces,
+    NewCollectionID, DatabaseConnector);
+
+  return NewCollectionID;
+ }
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+int GoDBCollectionOfTraces::CreateNewCollection(
+  vtkMySQLDatabase* DatabaseConnector, GoDBTraceRow iNewCollection)
+{
+  if (this->m_CollectionName == "mesh")
+    {
+    GoDBMeshRow* NewMesh = static_cast<GoDBMeshRow*>(&iNewCollection);
+    return AddOnlyOneNewObjectInTable<GoDBMeshRow>(
+      DatabaseConnector,this->m_CollectionName, NewMesh , m_CollectionIDName);
+    }
+ if (this->m_CollectionName == "track")
+    {
+    GoDBTrackRow* NewTrack = static_cast<GoDBTrackRow*>(&iNewCollection);
+    return AddOnlyOneNewObjectInTable<GoDBTrackRow>(
+      DatabaseConnector,this->m_CollectionName, NewTrack , m_CollectionIDName);
+    }
+ if (this->m_CollectionName == "lineage")
+    {
+    GoDBLineageRow* NewLineage = static_cast<GoDBLineageRow*>(&iNewCollection);
+    return AddOnlyOneNewObjectInTable<GoDBLineageRow>(
+      DatabaseConnector,this->m_CollectionName, NewLineage , m_CollectionIDName);
     }
   return 0;
 }

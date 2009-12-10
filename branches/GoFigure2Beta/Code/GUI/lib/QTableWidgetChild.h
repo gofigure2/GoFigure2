@@ -77,6 +77,10 @@ public:
   void InsertNewRow(GoDBTableWidgetContainer* iLinkToRowContainer,
     std::string TraceName, std::string CollectionName);
 
+  std::list<int> GetListCheckedTraceID();
+
+  void UpdateIDs (unsigned int iNewCollectionID,std::string iCollectionIDName);
+
 
 protected:
   int PrevCol;
@@ -102,7 +106,7 @@ public slots:
     bool IsSelected);
 
   /** \brief Update the m_VectorSelectedRows */
-  void UpdateVectorSelectedRows(int Row,int Column);
+  void UpdateVectorCheckedRows(int Row,int Column);
 
   /** \brief modify the ioTracesInfo in order to set the IsHighLighted parameter to false
   for the traces not selected by the user and set it to true for the selected ones,
@@ -121,7 +125,7 @@ public slots:
   void SetColorForTable (GoDBTableWidgetContainer* iLinkToRowContainer,
   std::string NameGroupColor,unsigned int StartRow);
 
-  std::vector<unsigned int> GetListCheckedRows();
+  //std::vector<unsigned int> GetListCheckedRows();
 
 };
 

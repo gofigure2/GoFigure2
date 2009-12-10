@@ -97,7 +97,7 @@ public:
   std::vector<ContourMeshStructure> GetMeshesForAGivenZCoord (
     unsigned int iZCoordPoint);
 
-  /** \brief return a list containing the exisiting colornames with their corresponding rgba
+  /** \brief return a list containing the existing colornames with their corresponding rgba
   from the database*/
   std::list<std::pair<std::string,std::vector<int> > > GetColorComboBoxInfofromDB();
 
@@ -111,6 +111,8 @@ public:
   std::pair<std::string,QColor> SaveNewCollectionInDB(
     std::pair<std::string,QColor> iColorNewCollection,std::string iTraceName);
 
+  void UpdateCurrentColorData(std::pair<std::string,QColor> iCurrentColorData);
+ 
   QTableWidgetChild* ContourTable;
   QTableWidgetChild* MeshTable;
   QTableWidgetChild* TrackTable;
@@ -136,12 +138,14 @@ signals:
   void SelectionContoursToHighLightChanged();
   void SelectionMeshesToHighLightChanged();
   void FillDatabaseFinished();
+  void NeedToGetCurrentSelectedColor();
 
 protected:
   GoDBCollectionOfTraces* m_CollectionOfContours;
   GoDBCollectionOfTraces* m_CollectionOfMeshes;
   GoDBCollectionOfTraces* m_CollectionOfTracks;
   GoDBCollectionOfTraces* m_CollectionOfLineages;
+  std::pair<std::string,QColor> m_CurrentColorData;
 
   vtkMySQLDatabase* m_DatabaseConnector;
   std::string       m_Server;
@@ -160,8 +164,9 @@ protected:
   void OpenDBConnection();
   void CloseDBConnection();
 
-  /** \brief Return the Index of the tab currently used: */
-  int InWhichTableAreWe();
+  /** \brief Return the Name of the tab currently used in the table widget,
+  which correspond to the TraceName of the CollectionOfTraces: */
+  std::string InWhichTableAreWe();
 
   /** \brief Return the corresponding CollectionOfTraces*/
   GoDBCollectionOfTraces* GetCollectionOfTraces(std::string TraceName);
@@ -186,6 +191,20 @@ protected:
 
   void GetContentAndDisplayFromDB( QString TableName, QTableWidgetChild* Table,
     GoDBCollectionOfTraces* iCollectionOfTraces);
+  void closeEvent(QCloseEvent* event);
+
+  /** \brief Insert a row in the table widget and in the row container with the 
+  corresponding values of the new created Trace*/
+  void UpdateTableWidgetAndRowContainerWithNewCreatedTrace(
+    QTableWidgetChild* Table,vtkMySQLDatabase* DatabaseConnector,
+    GoDBCollectionOfTraces* iCollectionOfTraces);
+
+  /** \brief Update the IDs in the CollectionID column for the selected traces*/
+  void UpdateTableWidgetAndRowContainerWithNewCollectionID(
+    QTableWidgetChild* Table,vtkMySQLDatabase* DatabaseConnector,
+    GoDBCollectionOfTraces* iCollectionOfTraces, unsigned int iNewCollectionID,
+    std::list<int> iListSelectedTraces);
+
 
   /**
     \brief get the values of the table (type T) from the
@@ -229,7 +248,7 @@ protected:
     }*/
 
   /** \brief Display the values stored in the RowContainer (list of type T)
-  in the QTableWidgetChild TableToFill: */
+  in the QTableWidgetChild TableToFill: 
   template<class myT>
   void PrintOutContentFromDB(
     typename GoDBRecordSet< myT >::RowContainerType *RowContainer,
@@ -278,13 +297,8 @@ protected:
       i++;
       TableToFill->setRowHeight(i,18);
       }//ENDWHILE
-    }
+    }*/
 
-
-  void closeEvent(QCloseEvent* event);
-  void UpdateTableWidgetAndRowContainerWithNewCreatedTrace(
-    QTableWidgetChild* Table,vtkMySQLDatabase* DatabaseConnector,
-    GoDBCollectionOfTraces* iCollectionOfTraces);
 
 protected slots:
   void CreateContextMenu(const QPoint &pos);

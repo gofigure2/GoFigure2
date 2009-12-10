@@ -53,7 +53,7 @@ QTableWidgetChild::QTableWidgetChild( QWidget* iParent ): QTableWidget( iParent 
   PrevOrder = -1;
   QObject::connect( this,
     SIGNAL( cellClicked(int,int) ),
-    this,SLOT( UpdateVectorSelectedRows(int,int) ));
+    this,SLOT( UpdateVectorCheckedRows(int,int) ));
 
 }
 //--------------------------------------------------------------------------
@@ -421,17 +421,17 @@ void QTableWidgetChild::InsertNewRow(GoDBTableWidgetContainer* iLinkToRowContain
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-std::vector<unsigned int> QTableWidgetChild::GetListCheckedRows()
+/*std::vector<unsigned int> QTableWidgetChild::GetListCheckedRows()
 {
   std::vector<unsigned int> oListCheckedRows;
   QStringList ListRowsChecked = this->ValuesForSelectedRows("");
 
   return oListCheckedRows;
-}
+}*/
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QTableWidgetChild::UpdateVectorSelectedRows(int Row,int Column)
+void QTableWidgetChild::UpdateVectorCheckedRows(int Row,int Column)
 {
  if (this->horizontalHeaderItem(Column)->text() == "")
    {
@@ -469,4 +469,36 @@ void QTableWidgetChild::UpdateVectorSelectedRows(int Row,int Column)
      this->m_VectorSelectedRows.push_back(temp);
      }
    }
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+std::list<int> QTableWidgetChild::GetListCheckedTraceID()
+{
+  std::list<int> oListSelectedIDs;
+  std::vector<std::pair<int,int> >::iterator iter = this->m_VectorSelectedRows.begin();
+  while(iter != this->m_VectorSelectedRows.end())
+    {
+    oListSelectedIDs.push_back(iter->first);
+    iter++;
+    }
+  return oListSelectedIDs;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QTableWidgetChild::UpdateIDs (unsigned int iNewCollectionID, 
+  std::string iCollectionIDName)
+{
+  /** \todo put it directly in the findColumnName*/
+  QStringList ColumnsHeader = this->recordHeaderNamesOrder();
+  int IndexCollectionID = this->findColumnName(iCollectionIDName.c_str(),ColumnsHeader);
+  std::vector<std::pair<int,int> >::iterator iter = this->m_VectorSelectedRows.begin();
+  while(iter != this->m_VectorSelectedRows.end())
+    {
+    this->item(iter->second,IndexCollectionID)->
+      setText(ConvertToString<unsigned int>(iNewCollectionID).c_str());
+    iter++;
+    }
+
 }

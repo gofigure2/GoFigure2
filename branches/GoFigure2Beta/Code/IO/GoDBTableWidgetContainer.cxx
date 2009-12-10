@@ -668,7 +668,7 @@ int GoDBTableWidgetContainer::GetIndexInsideRowContainer(std::string iInfoName)
 
   return SelectedTracesIDFromRowContainer;
 }
- //--------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void GoDBTableWidgetContainer::InsertNewCreatedTrace(GoDBTableWidgetContainer
@@ -676,7 +676,6 @@ void GoDBTableWidgetContainer::InsertNewCreatedTrace(GoDBTableWidgetContainer
 {
   GoDBTableWidgetContainer::DBTableWidgetContainerType NewTraceContainer =
     iLinkToNewTraceContainer.GetRowContainer();
-  unsigned int CurrentNbRows = this->m_RowContainer[1].second.size();
   //iterator for the m_RowContainer:
   GoDBTableWidgetContainer::DBTableWidgetContainerType::iterator iterCurrentColumn =
     this->m_RowContainer.begin();
@@ -701,3 +700,43 @@ void GoDBTableWidgetContainer::InsertNewCreatedTrace(GoDBTableWidgetContainer
   iterNewColumn++;
     }
 }
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void GoDBTableWidgetContainer::UpdateIDs(std::list<int> iListTracesToUpdate,
+  unsigned int NewCollectionID)
+{
+  //GoDBTableWidgetContainer::DBTableWidgetContainerType::iterator iter =
+  //  this->m_RowContainer.begin();
+  
+  int CollectionIDIndex = this->GetIndexInsideRowContainer(this->m_CollectionIDName);
+  int TraceIDIndex = this->GetIndexInsideRowContainer(this->m_TracesIDName);
+  bool AllUpdated = false;
+  std::list<int>::iterator iterTracesToUpdate = iListTracesToUpdate.begin();
+  std::list<int>::reverse_iterator reverseIter = iListTracesToUpdate.rbegin();
+  int FinalID = *reverseIter;
+  std::vector<std::string>::iterator iter = this->m_RowContainer[TraceIDIndex].second.begin();
+  int i =0; //to count the index in the vector of string.
+  while (iter != this->m_RowContainer[TraceIDIndex].second.end() && !AllUpdated)
+    {
+    while (iterTracesToUpdate != iListTracesToUpdate.end())
+      {
+      int TraceID = *iterTracesToUpdate;
+      if (ConvertToString<int>(TraceID) == *iter )
+        {
+        this->m_RowContainer[CollectionIDIndex].second[i] = 
+          ConvertToString<unsigned int>(NewCollectionID);
+        if (*iterTracesToUpdate == FinalID)
+          {
+          AllUpdated = true;
+          }
+        iterTracesToUpdate++;
+        }
+      iter++;
+      i++;
+      }
+    }
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------

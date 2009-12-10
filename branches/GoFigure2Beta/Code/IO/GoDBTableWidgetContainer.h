@@ -87,7 +87,11 @@ class GoDBTableWidgetContainer
    containing the given ZCoord*/
    std::list<std::string> GetTracesIDForAGivenZCoord(int iZCoord);
 
+   /** \brief Insert a new created trace with the datas contained in the 
+   NewTraceContainer into the m_RowContainer*/
    void InsertNewCreatedTrace(GoDBTableWidgetContainer iLinkToNewTraceContainer);
+
+   void UpdateIDs(std::list<int> iListTracesToUpdate,unsigned int NewCollectionID);
 
 protected:
   std::string m_CollectionName;

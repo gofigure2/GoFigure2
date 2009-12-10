@@ -77,7 +77,7 @@ public:
   /** \brief Update the collectionID of the selected traces in the DB traces table
   with the new collectionID: */
   void AddSelectedTracesToCollection(
-    QStringList ListSelectedTraces,int newCollectionID,
+    std::list<int> ListSelectedTraces,int newCollectionID,
     vtkMySQLDatabase* DatabaseConnector);
 
   /** \brief Return a map with all the ColumnNames for the table widget to be
@@ -110,8 +110,10 @@ public:
     NewObject.SetField("ImagingSessionID",this->m_ImgSessionID);
 
     }*/
-
-  template< class myT >
+  int CreateNewCollectionFromSelection(
+  std::list<int> iListSelectedTraces, vtkMySQLDatabase* DatabaseConnector,
+    GoDBTraceRow iNewCollection);
+  /*template< class myT >
   void CreateNewCollectionFromSelection(
     QStringList ListSelectedTraces, vtkMySQLDatabase* DatabaseConnector,
     myT& NewObject)
@@ -129,7 +131,7 @@ public:
     int NewCollectionID = this->CreateNewCollection<myT>(DatabaseConnector,NewObject);
     AddSelectedTracesToCollection(ListSelectedTraces,
       NewCollectionID, DatabaseConnector);
-    }
+    }*/
 
   QStringList QMEGAVTKADDON2_EXPORT ListCollectionID(
     vtkMySQLDatabase* DatabaseConnector);
@@ -186,22 +188,21 @@ protected:
 
    /** \brief create a new collection in the database and return the corresponding
   ID*/
-  template< class myT >
-  int CreateNewCollection(vtkMySQLDatabase* DatabaseConnector, myT& myNewObject)
-    {
+  int CreateNewCollection(vtkMySQLDatabase* DatabaseConnector, GoDBTraceRow myNewObject);
+    /*{
     return AddOnlyOneNewObjectInTable<myT>(
       DatabaseConnector,m_CollectionName,myNewObject, m_CollectionIDName);
-    }
+    }*/
 
   /** \brief compare all the coordinate for all the traces inside the collection,
   create the coordinate in the database with all the max and return it*/
   int GetCoordMaxID(vtkMySQLDatabase* DatabaseConnector,
-    int CollectionID,QStringList ListSelectedTraces);
+    int CollectionID,std::list<int> ListSelectedTraces);
 
   /** \brief compare all the coordinate for all the traces inside the collection,
   create the coordinate in the database with all the min and return it*/
   int GetCoordMinID(vtkMySQLDatabase* DatabaseConnector,
-    int CollectionID,QStringList ListSelectedTraces);
+    int CollectionID,std::list<int> ListSelectedTraces);
 
   /** \brief return the coordinate min of all the coordinates of the
   selected traces*/

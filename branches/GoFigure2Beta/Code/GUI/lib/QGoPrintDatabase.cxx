@@ -263,9 +263,9 @@ void QGoPrintDatabase::CreateContextMenu(const QPoint &iPos)
 void QGoPrintDatabase::DeleteTraces()
 {
   OpenDBConnection();
-  int TabIndex = InWhichTableAreWe();
+  //int TabIndex = InWhichTableAreWe();
 
-  switch (TabIndex)
+ /* switch (TabIndex)
     {
     case 0: //contour
       {
@@ -307,7 +307,7 @@ void QGoPrintDatabase::DeleteTraces()
       std::cout << std::endl;
       break;
       }
-    }
+    }*/
   CloseDBConnection();
 }
 //--------------------------------------------------------------------------
@@ -316,9 +316,39 @@ void QGoPrintDatabase::DeleteTraces()
 void QGoPrintDatabase::CreateCorrespondingCollection()
 {
   OpenDBConnection();
-  int TabIndex = InWhichTableAreWe();
+  //Get all the needed data:
+  std::string TraceName = InWhichTableAreWe();
+  GoDBCollectionOfTraces* CollectionOfTraces = this->GetCollectionOfTraces(TraceName);
+  std::string TraceNameID = CollectionOfTraces->TracesName();
+  QTableWidgetChild* TraceTable = this->GetTableWidgetChild(TraceName);
+  
+  //Get the list of IDs in the row checked by the user:
+  std::list<int> ListSelectedTraces = TraceTable->GetListCheckedTraceID();
 
-  switch (TabIndex)
+  //set the color for the new collection:
+  GoDBTraceRow NewCollection;
+  NeedToGetCurrentSelectedColor();
+  NewCollection.SetColor(this->m_CurrentColorData.second.red(),this->m_CurrentColorData.second.green(),
+    this->m_CurrentColorData.second.blue(),this->m_CurrentColorData.second.alpha(),
+    this->m_CurrentColorData.first,this->m_DatabaseConnector);
+  //create the collection in the database and get the corresponding ID:
+  
+  int NewCollectionID = CollectionOfTraces->CreateNewCollectionFromSelection(
+    ListSelectedTraces,this->m_DatabaseConnector,NewCollection);
+
+  //update the Collection Table and the row container with the new created Collection:
+  QTableWidgetChild* CollectionTable = this->GetTableWidgetChild(CollectionOfTraces->CollectionName());
+  this->UpdateTableWidgetAndRowContainerWithNewCreatedTrace(CollectionTable,this->m_DatabaseConnector,
+    this->GetCollectionOfTraces(CollectionOfTraces->CollectionName()));
+
+  //update the Trace Table and the row containerwith the new Collection ID:
+  this->UpdateTableWidgetAndRowContainerWithNewCollectionID(TraceTable,this->m_DatabaseConnector,
+    CollectionOfTraces,NewCollectionID,ListSelectedTraces);
+  
+  CloseDBConnection();
+
+}
+/*  switch (TabIndex)
     {
     case 0: //contour
         {
@@ -369,7 +399,7 @@ void QGoPrintDatabase::CreateCorrespondingCollection()
       }
     }
   CloseDBConnection();
-}
+}*/
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
@@ -379,7 +409,7 @@ void QGoPrintDatabase::CreateCorrespondingCollection()
 //  Return 1 if we are in the Mesh    Table
 //  Return 2 if we are in the Track   Table
 //  Return 3 if we are in the Track   Table
-int QGoPrintDatabase::InWhichTableAreWe ()
+/*int QGoPrintDatabase::InWhichTableAreWe ()
 {
   int CurrentIndex = this->DBTabWidget->currentIndex();
   QString TabName = this->DBTabWidget->tabText(CurrentIndex);
@@ -404,6 +434,14 @@ int QGoPrintDatabase::InWhichTableAreWe ()
     }
 
   return TabIndex;
+}*/
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+std::string QGoPrintDatabase::InWhichTableAreWe ()
+{
+  int CurrentIndex = this->DBTabWidget->currentIndex();
+  return this->DBTabWidget->tabText(CurrentIndex).toStdString();
 }
 //--------------------------------------------------------------------------
 
@@ -413,7 +451,7 @@ void QGoPrintDatabase::AddToExistingCollection()
   OpenDBConnection();
   QStringList items;
   QString LabelDialog;
-  int TabIndex = InWhichTableAreWe();
+ /* int TabIndex = InWhichTableAreWe();
 
   switch (TabIndex)
     {
@@ -487,7 +525,7 @@ void QGoPrintDatabase::AddToExistingCollection()
         break;
         }
       }
-    }
+    }*/
   CloseDBConnection();
 }
 //-------------------------------------------------------------------------
@@ -508,7 +546,7 @@ void
 QGoPrintDatabase::
 ChangeTracesToHighLightInfoFromTableWidget()
 {
-  int TabIndex = InWhichTableAreWe();
+  /*int TabIndex = InWhichTableAreWe();
   switch (TabIndex)
     {
     case 0: //contour
@@ -530,7 +568,7 @@ ChangeTracesToHighLightInfoFromTableWidget()
       std::cout << std::endl;
       break;
       }
-    }
+    }*/
 }
 //-------------------------------------------------------------------------
 
@@ -568,10 +606,9 @@ ChangeContoursToHighLightInfoFromVisu(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-int QGoPrintDatabase::
-SaveContoursFromVisuInDB( unsigned int iXCoordMin,
-  unsigned int iYCoordMin, unsigned int iZCoordMin, unsigned int iTCoord,
-  unsigned int iXCoordMax, unsigned int iYCoordMax, unsigned int iZCoordMax,
+int QGoPrintDatabase::SaveContoursFromVisuInDB(unsigned int iXCoordMin,
+  unsigned int iYCoordMin,unsigned int iZCoordMin,unsigned int iTCoord,
+  unsigned int iXCoordMax,unsigned int iYCoordMax,unsigned int iZCoordMax,
   vtkPolyData* iContourNodes, std::pair<std::string,QColor> iColorData,
   unsigned int iMeshID)
 {
@@ -597,14 +634,14 @@ SaveContoursFromVisuInDB( unsigned int iXCoordMin,
 
   contour_row.SetCollectionID(iMeshID);
 
-  int oContourId = contour_row.SaveInDB( this->m_DatabaseConnector);
+  int NewContourID = contour_row.SaveInDB( this->m_DatabaseConnector);
 
   this->UpdateTableWidgetAndRowContainerWithNewCreatedTrace(this->ContourTable,
     this->m_DatabaseConnector,this->m_CollectionOfContours);
 
   CloseDBConnection();
 
-  return oContourId;
+  return NewContourID;
 }
 //-------------------------------------------------------------------------
 
@@ -907,6 +944,26 @@ void QGoPrintDatabase::UpdateTableWidgetAndRowContainerWithNewCreatedTrace(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+ void QGoPrintDatabase::UpdateTableWidgetAndRowContainerWithNewCollectionID(
+    QTableWidgetChild* Table,vtkMySQLDatabase* DatabaseConnector,
+    GoDBCollectionOfTraces* iCollectionOfTraces, unsigned int iNewCollectionID,
+    std::list<int> iListSelectedTraces)
+{
+ GoDBTableWidgetContainer* LinkToRowContainer = 
+   iCollectionOfTraces->GetLinkToRowContainer(); 
+
+ //update the RowContainer with the new ID for the selected traces:
+ LinkToRowContainer->UpdateIDs(iListSelectedTraces,iNewCollectionID);
+ std::string CollectionIDName = iCollectionOfTraces->GetCollectionName();
+ CollectionIDName += "ID";
+ //update the Table Widget Display:
+ Table->UpdateIDs(iNewCollectionID,CollectionIDName);
+  
+}
+
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 GoDBCollectionOfTraces* QGoPrintDatabase::GetCollectionOfTraces(
   std::string TraceName)
 {
@@ -943,14 +1000,14 @@ std::pair<std::string,QColor> QGoPrintDatabase::SaveNewCollectionInDB(
   std::pair<std::string,QColor> iColorNewCollection, std::string iTraceName)
 {
   this->OpenDBConnection();
-  GoDBTraceRow NewCollection;
+  GoDBTraceRow NewCollection; 
   NewCollection.SetColor(iColorNewCollection.second.red(),iColorNewCollection.second.green(),
     iColorNewCollection.second.blue(),iColorNewCollection.second.alpha(),iColorNewCollection.first,
     this->m_DatabaseConnector);
   GoDBCollectionOfTraces* CollectionOfTracesForTraces = this->GetCollectionOfTraces(iTraceName);
   int NewCollectionID = CollectionOfTracesForTraces->CreateCollectionWithNoTraces(
     this->m_DatabaseConnector,NewCollection);
-
+ 
   std::pair<std::string,QColor> NewCollectionData;
   NewCollectionData.first = ConvertToString<int>(NewCollectionID);
   NewCollectionData.second = iColorNewCollection.second;
@@ -988,4 +1045,12 @@ QTableWidgetChild* QGoPrintDatabase::GetTableWidgetChild(std::string TraceName)
    return this->LineageTable;
    }
 
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoPrintDatabase::UpdateCurrentColorData(
+  std::pair<std::string,QColor> iCurrentColorData)
+{
+ this->m_CurrentColorData = iCurrentColorData;
 }

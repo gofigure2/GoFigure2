@@ -202,6 +202,10 @@ public slots:
   /** \brief Get the info for the new created collection from the collectionIDcombobox 
   and pass them to the database to be saved in*/
   void PassInfoForDBFromCollectionIDComboBox();
+  
+  /** \brief Get the info for the current selected color from the visu widget and pass it
+  to the database*/
+  void PassInfoForDBForCurrentSelectedColor();
 
 protected:
   QHBoxLayout*          m_LayOut;
