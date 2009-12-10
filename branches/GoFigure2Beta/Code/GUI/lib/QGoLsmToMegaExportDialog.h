@@ -21,11 +21,14 @@ public:
 public slots:
   void on_selectLsmFile_clicked();
   void on_selectMegaPath_clicked();
+  void on_outputFormat_activated( int index );
+  void OK_pressed();
 
 private:
   std::string m_LsmPath;
   std::string m_LsmName;
   std::string m_MegaPath;
+  bool        m_FileFormatIsPNG;
 
 };
 #endif

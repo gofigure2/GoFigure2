@@ -63,6 +63,9 @@
 #include <QPluginLoader>
 #include <QSettings>
 
+// Qt Dialog Box
+#include "QGoLsmToMegaExportDialog.h"
+
 // itk includes
 #include "itkImageFileReader.h"
 
@@ -307,10 +310,9 @@ QGoMainWindow::
 on_actionExport_LSM_to_MegaFile_triggered( )
 {
   //Open the dialog window
-  //QString filename =
-  //QFileDialog::getSaveFileName( this,
-  //tr( "Folder to Export LSM file" ), "fileName", 0 );
-  //std::string m_FullFileName = filename.toStdString();
+  QGoLsmToMegaExportDialog* dlg =
+	    new QGoLsmToMegaExportDialog;
+  dlg->show();
 }
 //--------------------------------------------------------------------------
 
