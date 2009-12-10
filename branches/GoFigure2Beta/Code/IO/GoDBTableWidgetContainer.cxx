@@ -719,7 +719,7 @@ void GoDBTableWidgetContainer::UpdateIDs(std::list<int> iListTracesToUpdate,
   int i =0; //to count the index in the vector of string.
   while (iter != this->m_RowContainer[TraceIDIndex].second.end() && !AllUpdated)
     {
-    while (iterTracesToUpdate != iListTracesToUpdate.end())
+    while (iterTracesToUpdate != iListTracesToUpdate.end()&& !AllUpdated)
       {
       int TraceID = *iterTracesToUpdate;
       if (ConvertToString<int>(TraceID) == *iter )

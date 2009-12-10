@@ -315,7 +315,6 @@ void QGoPrintDatabase::DeleteTraces()
 //--------------------------------------------------------------------------
 void QGoPrintDatabase::CreateCorrespondingCollection()
 {
-  OpenDBConnection();
   //Get all the needed data:
   std::string TraceName = InWhichTableAreWe();
   GoDBCollectionOfTraces* CollectionOfTraces = this->GetCollectionOfTraces(TraceName);
@@ -324,28 +323,38 @@ void QGoPrintDatabase::CreateCorrespondingCollection()
   
   //Get the list of IDs in the row checked by the user:
   std::list<int> ListSelectedTraces = TraceTable->GetListCheckedTraceID();
-
-  //set the color for the new collection:
-  GoDBTraceRow NewCollection;
-  NeedToGetCurrentSelectedColor();
-  NewCollection.SetColor(this->m_CurrentColorData.second.red(),this->m_CurrentColorData.second.green(),
-    this->m_CurrentColorData.second.blue(),this->m_CurrentColorData.second.alpha(),
-    this->m_CurrentColorData.first,this->m_DatabaseConnector);
-  //create the collection in the database and get the corresponding ID:
+  if (ListSelectedTraces.empty())
+    {
+    QMessageBox msgBox;
+    msgBox.setText(
+      tr("Please select at least one %1").arg(CollectionOfTraces->GetTraceName().c_str() ));
+    msgBox.exec();
+    }
+  else
+    {
+    OpenDBConnection();
+    //set the color for the new collection:
+    GoDBTraceRow NewCollection;
+    NeedToGetCurrentSelectedColor();
+    NewCollection.SetColor(this->m_CurrentColorData.second.red(),this->m_CurrentColorData.second.green(),
+      this->m_CurrentColorData.second.blue(),this->m_CurrentColorData.second.alpha(),
+      this->m_CurrentColorData.first,this->m_DatabaseConnector);
+    //create the collection in the database and get the corresponding ID:
   
-  int NewCollectionID = CollectionOfTraces->CreateNewCollectionFromSelection(
-    ListSelectedTraces,this->m_DatabaseConnector,NewCollection);
+    int NewCollectionID = CollectionOfTraces->CreateNewCollectionFromSelection(
+      ListSelectedTraces,this->m_DatabaseConnector,NewCollection);
 
-  //update the Collection Table and the row container with the new created Collection:
-  QTableWidgetChild* CollectionTable = this->GetTableWidgetChild(CollectionOfTraces->CollectionName());
-  this->UpdateTableWidgetAndRowContainerWithNewCreatedTrace(CollectionTable,this->m_DatabaseConnector,
-    this->GetCollectionOfTraces(CollectionOfTraces->CollectionName()));
+    //update the Collection Table and the row container with the new created Collection:
+    QTableWidgetChild* CollectionTable = this->GetTableWidgetChild(CollectionOfTraces->CollectionName());
+    this->UpdateTableWidgetAndRowContainerWithNewCreatedTrace(CollectionTable,this->m_DatabaseConnector,
+      this->GetCollectionOfTraces(CollectionOfTraces->CollectionName()));
 
-  //update the Trace Table and the row containerwith the new Collection ID:
-  this->UpdateTableWidgetAndRowContainerWithNewCollectionID(TraceTable,this->m_DatabaseConnector,
-    CollectionOfTraces,NewCollectionID,this->m_CurrentColorData.second,ListSelectedTraces);
+    //update the Trace Table and the row containerwith the new Collection ID:
+    this->UpdateTableWidgetAndRowContainerWithNewCollectionID(TraceTable,this->m_DatabaseConnector,
+      CollectionOfTraces,NewCollectionID,this->m_CurrentColorData.second,ListSelectedTraces);
   
-  CloseDBConnection();
+    CloseDBConnection();
+    }
 
 }
 /*  switch (TabIndex)
