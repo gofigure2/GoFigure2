@@ -559,13 +559,24 @@ void
 QGoPrintDatabase::
 ChangeTracesToHighLightInfoFromTableWidget()
 {
-  /*int TabIndex = InWhichTableAreWe();
-  switch (TabIndex)
+  std::string TraceName = this->InWhichTableAreWe();
+  QTableWidgetChild* Table = this->GetTableWidgetChild(TraceName);
+  if ( TraceName == "contour")
+    {
+    Table->TracesToHighlight(TraceName,this->m_ContoursInfo);
+    emit SelectionContoursToHighLightChanged();
+    }
+  if (TraceName == "mesh")
+    {
+    Table->TracesToHighlight(TraceName,this->m_MeshesInfo);
+    emit SelectionMeshesToHighLightChanged();
+    }
+ /* switch (TabIndex)
     {
     case 0: //contour
       {
       this->ContourTable->TracesToHighlight( "contour", m_ContoursInfo );
-      emit SelectionContoursToHighLightChanged();
+      
       break;
       }
     case 1: //mesh
