@@ -573,28 +573,6 @@ ChangeTracesToHighLightInfoFromTableWidget()
     Table->TracesToHighlight(TraceName,this->m_MeshesInfo);
     emit SelectionMeshesToHighLightChanged();
     }
- /* switch (TabIndex)
-    {
-    case 0: //contour
-      {
-      this->ContourTable->TracesToHighlight( "contour", m_ContoursInfo );
-      
-      break;
-      }
-    case 1: //mesh
-      {
-      this->MeshTable->TracesToHighlight( "mesh", m_MeshesInfo );
-      emit SelectionMeshesToHighLightChanged();
-      break;
-      }
-    default:
-      {
-      std::cout<<"error, tab doesn't exist";
-      std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
-      std::cout << std::endl;
-      break;
-      }
-    }*/
 }
 //-------------------------------------------------------------------------
 

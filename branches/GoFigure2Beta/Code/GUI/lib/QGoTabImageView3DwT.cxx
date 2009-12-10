@@ -1590,6 +1590,7 @@ void
 QGoTabImageView3DwT::
 HighLightContoursFromTable( )
 {
+  std::vector< ContourMeshStructure > test =this->m_DataBaseTables->m_ContoursInfo;//for test purpose
   std::vector< ContourMeshStructure >::iterator
     it = this->m_DataBaseTables->m_ContoursInfo.begin();
   unsigned int trace_id = 0;

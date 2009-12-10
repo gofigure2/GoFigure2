@@ -183,13 +183,14 @@ void QTableWidgetChild::SetSelectRowTraceID (std::string TraceName,
   std::list<int> SelectedTraces = this->GetListCheckedTraceID();
   //then, set to IsHighlight the selected ones:
   std::list<int>::iterator iter = SelectedTraces.begin();
-  int i = 0;
   while(iter != SelectedTraces.end())
     {
-    if (*iter == ioTracesInfo[i].TraceID)
+    for(unsigned int i = 0; i<ioTracesInfo.size();i++)
       {
-      ioTracesInfo[i].Highlighted = true;
-      i++;
+      if (*iter == ioTracesInfo[i].TraceID)
+        {
+        ioTracesInfo[i].Highlighted = true;
+        }
       }
     iter++;
     }
