@@ -488,7 +488,7 @@ std::list<int> QTableWidgetChild::GetListCheckedTraceID()
 
 //--------------------------------------------------------------------------
 void QTableWidgetChild::UpdateIDs (unsigned int iNewCollectionID, 
-  std::string iCollectionIDName)
+  std::string iCollectionIDName,QColor ColorNewCollection )
 {
   /** \todo put it directly in the findColumnName*/
   QStringList ColumnsHeader = this->recordHeaderNamesOrder();
@@ -498,6 +498,7 @@ void QTableWidgetChild::UpdateIDs (unsigned int iNewCollectionID,
     {
     this->item(iter->second,IndexCollectionID)->
       setText(ConvertToString<unsigned int>(iNewCollectionID).c_str());
+    this->item(iter->second,IndexCollectionID)->setBackgroundColor(ColorNewCollection);
     iter++;
     }
 

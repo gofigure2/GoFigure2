@@ -194,7 +194,7 @@ void QGoTabImageView3DwT::CreateVisuDockWidget()
     this, SLOT( PassInfoForDBFromCollectionIDComboBox() ) );
   
   QObject::connect( this->m_DataBaseTables,
-    SIGNAL( NeedToGetCurrentSelectedColor()() ),
+    SIGNAL( NeedToGetCurrentSelectedColor() ),
     this, SLOT(PassInfoForDBForCurrentSelectedColor()) );
 
 }

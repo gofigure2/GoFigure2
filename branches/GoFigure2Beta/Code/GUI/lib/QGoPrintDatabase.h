@@ -203,7 +203,7 @@ protected:
   void UpdateTableWidgetAndRowContainerWithNewCollectionID(
     QTableWidgetChild* Table,vtkMySQLDatabase* DatabaseConnector,
     GoDBCollectionOfTraces* iCollectionOfTraces, unsigned int iNewCollectionID,
-    std::list<int> iListSelectedTraces);
+    QColor iColorNewCollection, std::list<int> iListSelectedTraces);
 
 
   /**

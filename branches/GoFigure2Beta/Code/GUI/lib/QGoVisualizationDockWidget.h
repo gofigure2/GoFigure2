@@ -30,7 +30,7 @@ class QGoVisualizationDockWidget :
     std::string GetCurrentColor();
     
     void SetCollectionID(std::list<std::pair<std::string,QColor> > iListExistingID);
-
+    
     QtColorComboBox* ColorTraceComboBox;
     QtColorComboBox* ColorIDCollectionComboBox;
     QLabel* TraceName;

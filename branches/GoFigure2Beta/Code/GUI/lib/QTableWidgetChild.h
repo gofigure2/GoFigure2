@@ -79,7 +79,8 @@ public:
 
   std::list<int> GetListCheckedTraceID();
 
-  void UpdateIDs (unsigned int iNewCollectionID,std::string iCollectionIDName);
+  void UpdateIDs (unsigned int iNewCollectionID,std::string iCollectionIDName, 
+    QColor ColorNewCollection);
 
 
 protected:

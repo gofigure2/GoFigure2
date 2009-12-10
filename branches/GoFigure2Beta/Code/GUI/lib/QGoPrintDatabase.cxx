@@ -343,7 +343,7 @@ void QGoPrintDatabase::CreateCorrespondingCollection()
 
   //update the Trace Table and the row containerwith the new Collection ID:
   this->UpdateTableWidgetAndRowContainerWithNewCollectionID(TraceTable,this->m_DatabaseConnector,
-    CollectionOfTraces,NewCollectionID,ListSelectedTraces);
+    CollectionOfTraces,NewCollectionID,this->m_CurrentColorData.second,ListSelectedTraces);
   
   CloseDBConnection();
 
@@ -947,7 +947,7 @@ void QGoPrintDatabase::UpdateTableWidgetAndRowContainerWithNewCreatedTrace(
  void QGoPrintDatabase::UpdateTableWidgetAndRowContainerWithNewCollectionID(
     QTableWidgetChild* Table,vtkMySQLDatabase* DatabaseConnector,
     GoDBCollectionOfTraces* iCollectionOfTraces, unsigned int iNewCollectionID,
-    std::list<int> iListSelectedTraces)
+    QColor iColorNewCollection,std::list<int> iListSelectedTraces)
 {
  GoDBTableWidgetContainer* LinkToRowContainer = 
    iCollectionOfTraces->GetLinkToRowContainer(); 
@@ -957,7 +957,7 @@ void QGoPrintDatabase::UpdateTableWidgetAndRowContainerWithNewCreatedTrace(
  std::string CollectionIDName = iCollectionOfTraces->GetCollectionName();
  CollectionIDName += "ID";
  //update the Table Widget Display:
- Table->UpdateIDs(iNewCollectionID,CollectionIDName);
+ Table->UpdateIDs(iNewCollectionID,CollectionIDName,iColorNewCollection);
   
 }
 
