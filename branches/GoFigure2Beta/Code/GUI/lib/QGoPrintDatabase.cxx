@@ -615,20 +615,53 @@ ChangeContoursToHighLightInfoFromVisu(
         {
         m_ContoursInfo[j].Highlighted = true;
 
-        this->ContourTable->SetSelectRowTraceID( "contour",
+        Table->SetSelectRowTraceID( "contour",
           m_ContoursInfo[j].TraceID, true );
         }
       else
         {
         m_ContoursInfo[j].Highlighted = false;
 
-        this->ContourTable->SetSelectRowTraceID( "contour",
+        Table->SetSelectRowTraceID( "contour",
           m_ContoursInfo[j].TraceID, false);
         }
       ++it;
       }
     }
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoPrintDatabase::
+ChangeMeshesToHighLightInfoFromVisu(
+  std::list<int> iListMeshesHighLightedInVisu)
+ {
+   std::list<int>::iterator it = iListMeshesHighLightedInVisu.begin();
+  /** \todo get the tracename from the visu dock widget*/
+  QTableWidgetChild* Table = this->GetTableWidgetChild("mesh");
+
+  while( it != iListMeshesHighLightedInVisu.end() )
+    {
+    for( unsigned int j = 0 ; j < m_MeshesInfo.size(); j++ )
+      {
+      if (*it == this->m_MeshesInfo[j].TraceID)
+        {
+        m_MeshesInfo[j].Highlighted = true;
+
+        Table->SetSelectRowTraceID( "mesh",
+          m_MeshesInfo[j].TraceID, true );
+        }
+      else
+        {
+        m_MeshesInfo[j].Highlighted = false;
+
+        Table->SetSelectRowTraceID( "mesh",
+          m_MeshesInfo[j].TraceID, false);
+        }
+      ++it;
+      }
+    }
+ }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------

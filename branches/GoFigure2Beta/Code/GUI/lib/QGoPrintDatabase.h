@@ -323,6 +323,9 @@ protected slots:
   void ChangeContoursToHighLightInfoFromVisu(
   std::list<int> iListContoursHighLightedInVisu);
 
+  void ChangeMeshesToHighLightInfoFromVisu(
+  std::list<int> iListMeshesHighLightedInVisu);
+
 };
 
 #endif

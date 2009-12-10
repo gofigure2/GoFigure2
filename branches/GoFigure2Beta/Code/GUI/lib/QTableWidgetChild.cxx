@@ -164,8 +164,6 @@ void QTableWidgetChild::SetSelectRowTraceID (std::string TraceName,
       this->item(RowIndex,0)->setCheckState(Qt::Unchecked);
       }
       this->UpdateVectorCheckedRows(RowIndex,0);
-    //QTableWidgetSelectionRange RangeToSelect(RowIndex,0,RowIndex,columnCount()-1);
-    //this->setRangeSelected(RangeToSelect,IsSelected);
     }
 }
 //--------------------------------------------------------------------------
