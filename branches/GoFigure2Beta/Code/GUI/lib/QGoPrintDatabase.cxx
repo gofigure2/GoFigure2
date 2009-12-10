@@ -354,6 +354,10 @@ void QGoPrintDatabase::CreateCorrespondingCollection()
       CollectionOfTraces,NewCollectionID,this->m_CurrentColorData.second,ListSelectedTraces);
   
     CloseDBConnection();
+    this->m_LastCreatedCollection.first = ConvertToString<int>(NewCollectionID);
+    this->m_LastCreatedCollection.second = this->m_CurrentColorData.second;
+
+    NewCreatedCollection();
     }
 
 }
@@ -1062,4 +1066,11 @@ void QGoPrintDatabase::UpdateCurrentColorData(
   std::pair<std::string,QColor> iCurrentColorData)
 {
  this->m_CurrentColorData = iCurrentColorData;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::pair<std::string,QColor> QGoPrintDatabase::GetDataNewCreatedCollection()
+{
+  return this->m_LastCreatedCollection;
 }
