@@ -568,9 +568,10 @@ ChangeContoursToHighLightInfoFromVisu(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoPrintDatabase::SaveContoursFromVisuInDB(unsigned int iXCoordMin,
-  unsigned int iYCoordMin,unsigned int iZCoordMin,unsigned int iTCoord,
-  unsigned int iXCoordMax,unsigned int iYCoordMax,unsigned int iZCoordMax,
+int QGoPrintDatabase::
+SaveContoursFromVisuInDB( unsigned int iXCoordMin,
+  unsigned int iYCoordMin, unsigned int iZCoordMin, unsigned int iTCoord,
+  unsigned int iXCoordMax, unsigned int iYCoordMax, unsigned int iZCoordMax,
   vtkPolyData* iContourNodes, std::pair<std::string,QColor> iColorData,
   unsigned int iMeshID)
 {
@@ -596,12 +597,14 @@ void QGoPrintDatabase::SaveContoursFromVisuInDB(unsigned int iXCoordMin,
 
   contour_row.SetCollectionID(iMeshID);
 
-  contour_row.SaveInDB( this->m_DatabaseConnector);
+  int oContourId = contour_row.SaveInDB( this->m_DatabaseConnector);
 
   this->UpdateTableWidgetAndRowContainerWithNewCreatedTrace(this->ContourTable,
     this->m_DatabaseConnector,this->m_CollectionOfContours);
 
   CloseDBConnection();
+
+  return oContourId;
 }
 //-------------------------------------------------------------------------
 
@@ -940,14 +943,14 @@ std::pair<std::string,QColor> QGoPrintDatabase::SaveNewCollectionInDB(
   std::pair<std::string,QColor> iColorNewCollection, std::string iTraceName)
 {
   this->OpenDBConnection();
-  GoDBTraceRow NewCollection; 
+  GoDBTraceRow NewCollection;
   NewCollection.SetColor(iColorNewCollection.second.red(),iColorNewCollection.second.green(),
     iColorNewCollection.second.blue(),iColorNewCollection.second.alpha(),iColorNewCollection.first,
     this->m_DatabaseConnector);
   GoDBCollectionOfTraces* CollectionOfTracesForTraces = this->GetCollectionOfTraces(iTraceName);
   int NewCollectionID = CollectionOfTracesForTraces->CreateCollectionWithNoTraces(
     this->m_DatabaseConnector,NewCollection);
- 
+
   std::pair<std::string,QColor> NewCollectionData;
   NewCollectionData.first = ConvertToString<int>(NewCollectionID);
   NewCollectionData.second = iColorNewCollection.second;

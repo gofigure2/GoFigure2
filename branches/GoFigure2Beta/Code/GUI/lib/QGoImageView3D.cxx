@@ -254,11 +254,11 @@ void QGoImageView3D::Update()
   this->m_Pool->SyncSetShowScalarBar( false );
   this->m_Pool->SyncRender();
   this->m_Pool->SyncReset();
+  this->m_Pool->InitializeAllObservers();
 
   if( m_FirstRender )
     {
     this->m_Pool->Initialize();
-    this->m_Pool->InitializeAllObservers();
 
     this->SliderXY->setValue( (this->SliderXY->minimum()+this->SliderXY->maximum())/2 );
     this->SliderXZ->setValue( (this->SliderXZ->minimum()+this->SliderXZ->maximum())/2 );

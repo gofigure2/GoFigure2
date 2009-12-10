@@ -1084,7 +1084,7 @@ ValidateContour( const int& iId,
     if( iSaveInDataBase )
       {
       // Save contour in database!
-      m_DataBaseTables->SaveContoursFromVisuInDB( min_idx[0],
+      m_ContourId = m_DataBaseTables->SaveContoursFromVisuInDB( min_idx[0],
         min_idx[1], min_idx[2], iTCoord, max_idx[0],
         max_idx[1], max_idx[2], contour_nodes, ColorData, meshid );
       }
@@ -1100,7 +1100,10 @@ ValidateContour( const int& iId,
       m_ContourMeshContainer.insert( temp );
       }
 
-    m_ContourId++;
+    if( !iSaveInDataBase )
+      {
+      ++m_ContourId;
+      }
     }
 }
 //-------------------------------------------------------------------------

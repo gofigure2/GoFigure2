@@ -141,6 +141,8 @@ InitializeAllObservers()
     if( a->GetIsColor() )
       {
       a->GetInteractorStyle()->RemoveObservers(
+        vtkCommand::StartWindowLevelEvent );
+      a->GetInteractorStyle()->RemoveObservers(
         vtkCommand::ResetWindowLevelEvent );
       a->GetInteractorStyle()->RemoveObservers(
         vtkCommand::WindowLevelEvent );
@@ -154,6 +156,9 @@ InitializeAllObservers()
 
     if( !a->GetIsColor() )
       {
+      a->GetInteractorStyle()->RemoveObservers(
+        vtkCommand::StartWindowLevelEvent,
+        this->Command );
       a->GetInteractorStyle()->AddObserver( vtkCommand::ResetWindowLevelEvent,
         this->Command );
       a->GetInteractorStyle()->AddObserver( vtkCommand::WindowLevelEvent,

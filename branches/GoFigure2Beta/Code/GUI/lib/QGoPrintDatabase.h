@@ -110,7 +110,7 @@ public:
   the QColor*/
   std::pair<std::string,QColor> SaveNewCollectionInDB(
     std::pair<std::string,QColor> iColorNewCollection,std::string iTraceName);
- 
+
   QTableWidgetChild* ContourTable;
   QTableWidgetChild* MeshTable;
   QTableWidgetChild* TrackTable;
@@ -120,7 +120,7 @@ public:
   std::vector<ContourMeshStructure> m_MeshesInfo;
 
   void UpdateTableFromDB();
-  void SaveContoursFromVisuInDB( unsigned int iXCoordMin,
+  int SaveContoursFromVisuInDB( unsigned int iXCoordMin,
     unsigned int iYCoordMin, unsigned int iZCoordMin, unsigned int iTCoord,
     unsigned int iXCoordMax, unsigned int iYCoordMax, unsigned int iZCoordMax,
     vtkPolyData* iContourNodes, std::pair<std::string, QColor> iColorData,

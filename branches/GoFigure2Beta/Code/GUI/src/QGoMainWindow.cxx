@@ -258,9 +258,10 @@ void QGoMainWindow::openFilesfromDB()
     importer->SetFileName( listoffiles[0][0] );
     importer->Update();
 
+    // note: do not need to call w3t->Update(); since it is internally called
+    // when using CreateNewTabFor3DwtImage
     QGoTabImageView3DwT* w3t = CreateNewTabFor3DwtImage( importer->GetOutput(),
       GoFigure::PNG, importer->GetHeaderFilename(), 0 );
-    w3t->Update();
 
     // Lad all contours from the first time point
     std::vector< ContourMeshStructure > contour_list =
@@ -539,9 +540,10 @@ CreateNewTabFor3DwtImage(
   const std::string& iHeader,
   const int& iTimePoint )
 {
+  // note: do not need to call w3t->Update() since it is internally called in
+  // w3t->SetMegaCaptureFile
   QGoTabImageView3DwT* w3t = new QGoTabImageView3DwT;
   w3t->SetMegaCaptureFile( iFileList, iFileType, iHeader, iTimePoint );
-  w3t->Update();
 
   // **********************
   // Database information
@@ -629,7 +631,7 @@ CreateNewTabFor3DwtImage( vtkLSMReader* iReader, const QString& iFile )
 {
   QGoTabImageView3DwT* w3t = new QGoTabImageView3DwT;
   w3t->SetLSMReader( iReader, 0 );
-  w3t->Update();
+//   w3t->Update();
 
   for( std::list< QAction* >::iterator
     list_it = m_TabDimPluginActionMap[w3t->GetTabDimensionType()].begin();
