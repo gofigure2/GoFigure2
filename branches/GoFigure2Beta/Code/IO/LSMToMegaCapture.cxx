@@ -232,7 +232,7 @@ Export( const std::string& iDirectoryPath )
       for( k = 0; k < static_cast< unsigned int >( dim[2] ); k++ )
         {
         std::stringstream filename;
-        filename <<"image-PL" << setfill('0') << setw(2) <<m_Plaque;
+        filename << m_BaseName << "-PL" << setfill('0') << setw(2) <<m_Plaque;
         filename <<"-CO" << setfill('0') << setw(2) <<m_Column;
         filename <<"-RO" << setfill('0') << setw(2) <<m_Row;
         filename <<"-ZT" << setfill('0') << setw(2) <<m_ZTile;
