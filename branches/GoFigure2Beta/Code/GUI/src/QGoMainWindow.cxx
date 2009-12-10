@@ -299,6 +299,22 @@ void QGoMainWindow::openFilesfromDB()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+/**
+ * \brief Open dialog window to set the file output path and format
+ */
+void
+QGoMainWindow::
+on_actionExport_LSM_to_MegaFile_triggered( )
+{
+  //Open the dialog window
+  //QString filename =
+  //QFileDialog::getSaveFileName( this,
+  //tr( "Folder to Export LSM file" ), "fileName", 0 );
+  //std::string m_FullFileName = filename.toStdString();
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
 void QGoMainWindow::on_actionClose_all_triggered()
 {
   m_TabManager->CloseAllTabs();

@@ -16,6 +16,7 @@ SET( QGOGUILIB_EXAMPLE_SRC
   QGoWizardDBTest
   QGoPrintDatabaseTest
   qgocreatemeshdialogtest
+  QGoLsmToMegaExportDialogTest
 )
 
 
@@ -86,5 +87,10 @@ ADD_TEST( contourmeshstructurehelperTest
 
 ADD_TEST( contourmeshstructurehelperTest2
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/contourmeshstructurehelpertest2
+)
+
+ADD_TEST( QGoLsmToMegaExportDialogTest
+  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/QGoLsmToMegaExportDialogTest
+  1
 )
 

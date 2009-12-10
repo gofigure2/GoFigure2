@@ -26,6 +26,7 @@ SET( QGoGUILIB_SRC
   QTableWidgetNumericalItem.cxx
   QGoCreateMeshDialog.cxx
   qtcolorcombobox.cxx
+  QGoLsmToMegaExportDialog.cxx
 )
 
 SET( QGoGUILIB_HDRS
@@ -53,6 +54,7 @@ SET( QGoGUILIB_HDRS
   QTableWidgetChild.h
   QGoCreateMeshDialog.h
   qtcolorcombobox.h
+  QGoLsmToMegaExportDialog.h
 )
 
 SET( QGoGUILIB_UI
@@ -60,6 +62,7 @@ SET( QGoGUILIB_UI
   ManualSegmentationDockWidget.ui
   VisualizationDockWidget.ui
   QGoPrintDatabase.ui
+  LsmToMegaExportDialog.ui
 )
 
 QT4_WRAP_UI( QGoGUILIB_UI_H

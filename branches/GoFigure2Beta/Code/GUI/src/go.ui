@@ -59,7 +59,7 @@
      <x>0</x>
      <y>0</y>
      <width>1434</width>
-     <height>25</height>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -104,6 +104,7 @@
     <addaction name="separator"/>
     <addaction name="actionSave_Single_File_As"/>
     <addaction name="actionSave_Multiple_Files_As"/>
+    <addaction name="actionExport_LSM_to_MegaFile"/>
     <addaction name="actionClose"/>
     <addaction name="actionClose_all"/>
     <addaction name="separator"/>
@@ -403,6 +404,11 @@
   <action name="actionLoad_Segmentation_Results">
    <property name="text">
     <string>Load Segmentation Results</string>
+   </property>
+  </action>
+  <action name="actionExport_LSM_to_MegaFile">
+   <property name="text">
+    <string>Export LSM to MegaFile</string>
    </property>
   </action>
  </widget>

@@ -101,6 +101,8 @@ private slots:
   void on_actionUse_DataBase_triggered();
   void openFilesfromDB();
 
+  void on_actionExport_LSM_to_MegaFile_triggered( );
+
   void on_actionClose_triggered( );
   void on_actionClose_all_triggered( );
   void on_actionQuit_triggered( );

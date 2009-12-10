@@ -10,6 +10,7 @@ SET( QGOIO_EXAMPLES_SRC
   vtkPolyDataMySQLTextReader
   vtkPolyDataMySQLTextWriter
   kishmeshtextfilereader
+  trackTextFilesReader
 )
 
 FOREACH( var ${QGOIO_EXAMPLES_SRC} )
