@@ -100,6 +100,9 @@ on_outputFormat_activated( int index )
     }
 }
 
+/**
+ * \brief Disable button and send thread to launch conversion
+ */
 void
 QGoLsmToMegaExportDialog::
 on_convert_clicked()
@@ -124,6 +127,9 @@ on_convert_clicked()
   ConversionLsmToMegaThreadSend.start();
 }
 
+/**
+ * \brief Catch thread, proceed conversion and enable all buttons
+ */
 void
 QGoLsmToMegaExportDialog::
 ConversionTerminatedReceived()

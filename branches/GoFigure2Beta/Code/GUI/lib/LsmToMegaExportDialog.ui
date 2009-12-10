@@ -7,11 +7,11 @@
     <x>0</x>
     <y>0</y>
     <width>438</width>
-    <height>338</height>
+    <height>342</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>LSM to MegaCapture exporter</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_11">
    <item row="0" column="0">
