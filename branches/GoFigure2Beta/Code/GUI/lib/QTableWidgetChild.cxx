@@ -477,6 +477,7 @@ void QTableWidgetChild::UpdateVectorCheckedRows(int Row,int Column)
      temp.second = Row;
      this->m_VectorSelectedRows.push_back(temp);
      }
+   CheckedRowsChanged();
    }
 }
 //--------------------------------------------------------------------------

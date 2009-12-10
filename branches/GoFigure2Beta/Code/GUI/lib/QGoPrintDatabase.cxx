@@ -105,11 +105,13 @@ QGoPrintDatabase( QWidget* iParent ) :
   QObject::connect( this, SIGNAL( customContextMenuRequested( const QPoint & ) ),
     this, SLOT( CreateContextMenu( const QPoint & ) ) );
 
-  QObject::connect( this->ContourTable, SIGNAL(itemSelectionChanged()),
-    this, SLOT(ChangeTracesToHighLightInfoFromTableWidget()));
+ // QObject::connect( this->ContourTable, SIGNAL(itemSelectionChanged()),
+ //   this, SLOT(ChangeTracesToHighLightInfoFromTableWidget()));
 
  // QObject::connect( this->MeshTable, SIGNAL(itemSelectionChanged()),
  //   this, SLOT(ChangeTracesToHighLightInfoFromTableWidget()));
+  QObject::connect(this->ContourTable, SIGNAL (CheckedRowsChanged()),
+      this, SLOT(ChangeTracesToHighLightInfoFromTableWidget()));
 
 }
 //--------------------------------------------------------------------------

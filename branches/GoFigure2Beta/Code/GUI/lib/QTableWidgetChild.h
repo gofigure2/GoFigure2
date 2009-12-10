@@ -82,6 +82,8 @@ public:
   void UpdateIDs (unsigned int iNewCollectionID,std::string iCollectionIDName, 
     QColor ColorNewCollection);
 
+signals:
+  void CheckedRowsChanged();
 
 protected:
   int PrevCol;
