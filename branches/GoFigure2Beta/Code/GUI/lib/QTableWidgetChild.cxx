@@ -47,10 +47,14 @@
 #include "QTableWidgetNumericalItem.h"
 
 
-QTableWidgetChild::
-QTableWidgetChild( QWidget* iParent ) :
-  QTableWidget( iParent ), PrevCol( -1 ), PrevOrder( -1 )
+QTableWidgetChild::QTableWidgetChild( QWidget* iParent ): QTableWidget( iParent )
 {
+  PrevCol = -1;
+  PrevOrder = -1;
+  QObject::connect( this,
+    SIGNAL( cellClicked(int,int) ),
+    this,SLOT( UpdateSelectedRows(int,int) ));
+
 }
 //--------------------------------------------------------------------------
 
@@ -172,7 +176,7 @@ void QTableWidgetChild::SetSelectRowTraceID (std::string TraceName,
   std::stringstream TraceID;
   TraceID <<TraceName;
   TraceID << "ID" ;
-  TraceID.str(); /// \todo is this line useful?
+  TraceID.str();
   QStringList ListTraceIDToHighLight = ValuesForSelectedRows(TraceID.str().c_str());
   //then, set to IsHighlight the selected ones:
   for (int i = 0; i<ListTraceIDToHighLight.size();i++)
@@ -187,11 +191,11 @@ void QTableWidgetChild::SetSelectRowTraceID (std::string TraceName,
 QStringList QTableWidgetChild::ValuesForSelectedRows(QString ColumnName)
 {
   QList<QTableWidgetSelectionRange> Selection;
-  //Selection = this->selectedRanges();
-
-
+  Selection = this->selectedRanges();
+  
   QStringList ColumnsHeader = this->recordHeaderNamesOrder();
   int ColumnIndex = findColumnName(ColumnName,ColumnsHeader);
+  int ColumnSelected = findColumnName(" ",ColumnsHeader);
 
   QList<QString> Values;
   for( int i=0; i< Selection.size(); i++)
@@ -232,9 +236,8 @@ void QTableWidgetChild::DisplayColumnNames( QString TableName,
     }
 
   this->horizontalHeader()->setSortIndicatorShown(true);
-
-  // Need to disabled the Sorting while printing the values from the database in
-  // the table widget as the sorting is making trouble
+  /*Need to disabled the Sorting while printing the values from the database in
+  the table widget as the sorting is making trouble*/
   this->setSortingEnabled(false);
   this->horizontalHeader()->setMovable(true);
 
@@ -424,4 +427,36 @@ std::vector<unsigned int> QTableWidgetChild::GetListCheckedRows()
   QStringList ListRowsChecked = this->ValuesForSelectedRows("");
 
   return oListCheckedRows;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QTableWidgetChild::UpdateSelectedRows(int Row,int Column)
+{
+ if (this->horizontalHeaderItem(Column)->text() == " ")
+   {
+   if (this->item(Row,Column)->checkState()== 0)
+     {
+     int ID = this->item(Row,1)->text().toInt();
+     std::vector<std::pair<int,int> >::iterator iter = this->m_VectorSelectedRows.begin();
+     bool found = false;
+     while (iter != this->m_VectorSelectedRows.end() && !found)
+       {
+       if (iter->first == ID)
+         {
+         this->m_VectorSelectedRows.erase(iter);
+         found = true;
+         }
+       iter++;
+       }
+     }
+   if (this->item(Row,Column)->checkState()== 2)
+     {
+     std::pair<int,int> temp;
+     /** \todo check that the index stays the same even if the user move the columns*/
+     temp.first = this->item(Row,1)->text().toInt();
+     temp.second = Row;
+     this->m_VectorSelectedRows.push_back(temp);
+     }
+   }
 }

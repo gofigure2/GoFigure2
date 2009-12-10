@@ -81,6 +81,8 @@ public:
 protected:
   int PrevCol;
   int PrevOrder;
+  /** \brief Vector containing the ID of the selected row and the index in the table widget*/
+  std::vector<std::pair<int,int> > m_VectorSelectedRows;
 
   /** \brief return the row index where the given value is located when specifying
   the column name: */
@@ -98,6 +100,9 @@ public slots:
   */
   void SetSelectRowTraceID (std::string TraceName, int TraceID,
     bool IsSelected);
+
+  /** \brief Update the m_VectorSelectedRows */
+  void UpdateSelectedRows(int Row,int Column);
 
   /** \brief modify the ioTracesInfo in order to set the IsHighLighted parameter to false
   for the traces not selected by the user and set it to true for the selected ones,
