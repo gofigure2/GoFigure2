@@ -185,6 +185,8 @@ public slots:
   void ReEditContour( const unsigned int& iId );
 
   void HighLightContours();
+  void HighLightContoursFromTable();
+  void SelectContoursInTable();
 
   void ChangeContourRepresentationProperty();
 
@@ -199,10 +201,10 @@ public slots:
   /** \brief Get the info for the existing collectionID from the database and pass
   them to the Visu Dock Widget*/
   void PassInfoForCollectionIDFromDB();
-  /** \brief Get the info for the new created collection from the collectionIDcombobox 
+  /** \brief Get the info for the new created collection from the collectionIDcombobox
   and pass them to the database to be saved in*/
   void PassInfoForDBFromCollectionIDComboBox();
-  
+
   /** \brief Get the info for the current selected color from the visu widget and pass it
   to the database*/
   void PassInfoForDBForCurrentSelectedColor();

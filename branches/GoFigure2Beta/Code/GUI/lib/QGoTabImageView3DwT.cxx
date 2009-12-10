@@ -192,15 +192,18 @@ void QGoTabImageView3DwT::CreateVisuDockWidget()
   QObject::connect( this->m_VisuDockWidget->ColorIDCollectionComboBox,
     SIGNAL( NewCollectionToBeSaved()),
     this, SLOT( PassInfoForDBFromCollectionIDComboBox() ) );
-  
+
   QObject::connect( this->m_DataBaseTables,
     SIGNAL( NeedToGetCurrentSelectedColor() ),
     this, SLOT(PassInfoForDBForCurrentSelectedColor()) );
-  
+
   QObject::connect( this->m_DataBaseTables,
     SIGNAL( NewCreatedCollection() ),
-    this, SLOT(PassInfoForCollectionIDComboBoxForNewCollection ()) );
+    this, SLOT( PassInfoForCollectionIDComboBoxForNewCollection() ) );
 
+  QObject::connect( this->m_DataBaseTables,
+    SIGNAL( SelectionContoursToHighLightChanged() ),
+    this, SLOT( HighLightContoursFromTable() ) );
 
 }
 //-------------------------------------------------------------------------
@@ -377,6 +380,8 @@ void QGoTabImageView3DwT::setupUi( QWidget* iParent )
 
   QObject::connect( m_ImageView, SIGNAL( ActorsSelectionChanged( ) ),
     this, SLOT( HighLightContours() ) );
+  QObject::connect( m_ImageView, SIGNAL( ActorsSelectionChanged( ) ),
+    this, SLOT( SelectContoursInTable() ) );
 
   m_LayOut = new QHBoxLayout( iParent );
   m_LayOut->addWidget( m_ImageView  );
@@ -1447,7 +1452,7 @@ void QGoTabImageView3DwT::PassInfoForDBForCurrentSelectedColor()
 //-------------------------------------------------------------------------
 void QGoTabImageView3DwT::PassInfoForCollectionIDComboBoxForNewCollection()
 {
-  std::pair<std::string,QColor> Data = 
+  std::pair<std::string,QColor> Data =
     this->m_DataBaseTables->GetDataNewCreatedCollection();
   this->m_VisuDockWidget->ColorIDCollectionComboBox->
     addColor(Data.second,Data.first.c_str());
@@ -1577,5 +1582,83 @@ HighLightContours()
 
     ++it;
     }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+HighLightContoursFromTable( )
+{
+  std::vector< ContourMeshStructure >::iterator
+    it = this->m_DataBaseTables->m_ContoursInfo.begin();
+  unsigned int trace_id = 0;
+
+  vtkProperty* property = vtkProperty::New();
+  property->SetColor( 1., 0., 0. );
+  property->SetLineWidth( 3. );
+
+  while( it != this->m_DataBaseTables->m_ContoursInfo.end() )
+    {
+    trace_id = it->TraceID;
+
+    ContourMeshStructureMultiIndexContainer::index< TraceID >::type::iterator
+        traceid_it = m_ContourMeshContainer.get< TraceID >().find( trace_id );
+
+    if( traceid_it != m_ContourMeshContainer.get< TraceID >().end() )
+      {
+      while( ( traceid_it != m_ContourMeshContainer.get< TraceID >().end() )
+        && ( (*traceid_it).TraceID == trace_id ) )
+        {
+        if( !it->Highlighted )
+          {
+          vtkProperty* temp_property = vtkProperty::New();
+          temp_property->SetColor( traceid_it->rgba[0], traceid_it->rgba[1], traceid_it->rgba[2] );
+          temp_property->SetLineWidth( 1. );
+
+          m_ImageView->ChangeActorProperty( traceid_it->Direction,
+            traceid_it->Actor, temp_property );
+
+          temp_property->Delete();
+          }
+        else
+          {
+          m_ImageView->ChangeActorProperty( traceid_it->Direction,
+            traceid_it->Actor, property );
+          }
+        ++traceid_it;
+        }
+      }
+
+    ++it;
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+SelectContoursInTable( )
+{
+  std::list< vtkProp3D* > listofpicked = m_ImageView->GetListOfPickedActors();
+  std::list< int > listofrowstobeselected;
+
+  std::list< vtkProp3D* >::iterator it = listofpicked.begin();
+
+  while( it != listofpicked.end() )
+    {
+    // Change the corresponding highlighted value in the container
+    ContourMeshStructureMultiIndexContainer::nth_index< 1 >::type::iterator
+      actor_it = m_ContourMeshContainer.get< 1 >().find( static_cast< vtkActor* >( *it ) );
+
+    if( actor_it != m_ContourMeshContainer.get< 1 >().end() )
+      {
+      int trace_id = actor_it->TraceID;
+      listofrowstobeselected.push_back( static_cast< int >( trace_id ) );
+      }
+    ++it;
+    }
+
+//   this->m_DataBaseTables->ChangeContoursToHighLightInfoFromVisu( listofrowstobeselected );
 }
 //-------------------------------------------------------------------------

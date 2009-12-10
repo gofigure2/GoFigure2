@@ -757,10 +757,13 @@ void vtkViewImage2D::InstallPipeline()
 {
   if( this->RenderWindow && this->Renderer)
     {
-    this->RenderWindow->AddRenderer(this->Renderer);
+    if( !this->RenderWindow->HasRenderer( this->Renderer ) )
+      {
+      this->RenderWindow->AddRenderer(this->Renderer);
+      }
     }
 
-  if( this->Interactor)
+  if( this->Interactor )
     {
     if( !this->InteractorStyle)
       {
@@ -797,12 +800,15 @@ void vtkViewImage2D::InstallPipeline()
 
   if( this->Renderer && this->ImageActor)
     {
-    this->Renderer->AddViewProp(this->ImageActor);
+    if( !this->Renderer->GetActors()->IsItemPresent( this->ImageActor ) )
+      {
+      this->Renderer->AddViewProp(this->ImageActor);
+      }
     }
 
   if( this->ImageActor && this->WindowLevel)
     {
-    this->ImageActor->SetInput(this->WindowLevel->GetOutput());
+    this->ImageActor->SetInput( this->WindowLevel->GetOutput() );
     }
 }
 
