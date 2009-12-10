@@ -102,7 +102,7 @@ public slots:
     bool IsSelected);
 
   /** \brief Update the m_VectorSelectedRows */
-  void UpdateSelectedRows(int Row,int Column);
+  void UpdateVectorSelectedRows(int Row,int Column);
 
   /** \brief modify the ioTracesInfo in order to set the IsHighLighted parameter to false
   for the traces not selected by the user and set it to true for the selected ones,

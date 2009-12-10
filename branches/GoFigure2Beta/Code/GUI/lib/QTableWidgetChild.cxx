@@ -53,7 +53,7 @@ QTableWidgetChild::QTableWidgetChild( QWidget* iParent ): QTableWidget( iParent 
   PrevOrder = -1;
   QObject::connect( this,
     SIGNAL( cellClicked(int,int) ),
-    this,SLOT( UpdateSelectedRows(int,int) ));
+    this,SLOT( UpdateVectorSelectedRows(int,int) ));
 
 }
 //--------------------------------------------------------------------------
@@ -431,23 +431,33 @@ std::vector<unsigned int> QTableWidgetChild::GetListCheckedRows()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QTableWidgetChild::UpdateSelectedRows(int Row,int Column)
+void QTableWidgetChild::UpdateVectorSelectedRows(int Row,int Column)
 {
- if (this->horizontalHeaderItem(Column)->text() == " ")
+ if (this->horizontalHeaderItem(Column)->text() == "")
    {
    if (this->item(Row,Column)->checkState()== 0)
      {
      int ID = this->item(Row,1)->text().toInt();
      std::vector<std::pair<int,int> >::iterator iter = this->m_VectorSelectedRows.begin();
      bool found = false;
-     while (iter != this->m_VectorSelectedRows.end() && !found)
+     //As the initial iterator becomes incompatible once an element of the vector has been
+     //erased, we need a bool to indicate the end of the vector:
+     bool EndOfVector = false;
+     while (!found && !EndOfVector)
        {
        if (iter->first == ID)
          {
          this->m_VectorSelectedRows.erase(iter);
          found = true;
          }
-       iter++;
+       else
+         {
+         iter++;
+         if(iter == this->m_VectorSelectedRows.end())
+           {
+           EndOfVector = true;
+           }
+         }
        }
      }
    if (this->item(Row,Column)->checkState()== 2)
