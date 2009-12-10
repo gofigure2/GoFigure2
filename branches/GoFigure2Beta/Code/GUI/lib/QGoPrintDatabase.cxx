@@ -472,31 +472,46 @@ std::string QGoPrintDatabase::InWhichTableAreWe ()
 //--------------------------------------------------------------------------
 void QGoPrintDatabase::AddToSelectedCollection()
 {
-  OpenDBConnection();
-
   std::string TraceName = this->InWhichTableAreWe();
-  QTableWidgetChild* Table = this->GetTableWidgetChild(TraceName);
+    QTableWidgetChild* Table = this->GetTableWidgetChild(TraceName);
   std::list<int> ListSelectedTraces = Table->GetListCheckedTraceID();
-  NeedCurrentSelectedCollectionID();
-  int CollectionID = atoi(this->m_CurrentCollectionData.first.c_str());
-  QColor ColorCollection = this->m_CurrentCollectionData.second;
-
   GoDBCollectionOfTraces* CollectionOfTraces = this->GetCollectionOfTraces(TraceName);
-  GoDBTableWidgetContainer* LinkToRowContainerForTraces = 
-    CollectionOfTraces->GetLinkToRowContainer();
+  NeedCurrentSelectedCollectionID();
 
-  //update the collectionID of the traces in the database:
-  CollectionOfTraces->AddSelectedTracesToCollection(ListSelectedTraces,
-    CollectionID,this->m_DatabaseConnector);
-  //update the RowContainer for traces with the new ID for the selected traces:
-  LinkToRowContainerForTraces->UpdateIDs(ListSelectedTraces,CollectionID);
+  if (ListSelectedTraces.empty())
+    {
+    QMessageBox msgBox;
+    msgBox.setText(
+      tr("Please select at least one %1 to be part of the %2 %3")
+      .arg(CollectionOfTraces->GetTraceName().c_str() )
+      .arg(CollectionOfTraces->GetCollectionName().c_str() )
+      .arg(this->m_CurrentCollectionData.first.c_str() ) );
+    msgBox.exec();
+    }
+  else
+    {
+    OpenDBConnection();
 
-  std::string CollectionIDName = CollectionOfTraces->GetCollectionName();
-  CollectionIDName += "ID";
-  //update the Table Widget Display:
-  Table->UpdateIDs(CollectionID,CollectionIDName,ColorCollection);
+    int CollectionID = atoi(this->m_CurrentCollectionData.first.c_str());
+    QColor ColorCollection = this->m_CurrentCollectionData.second;
+
+   
+    GoDBTableWidgetContainer* LinkToRowContainerForTraces = 
+      CollectionOfTraces->GetLinkToRowContainer();
+
+    //update the collectionID of the traces in the database:
+    CollectionOfTraces->AddSelectedTracesToCollection(ListSelectedTraces,
+      CollectionID,this->m_DatabaseConnector);
+    //update the RowContainer for traces with the new ID for the selected traces:
+    LinkToRowContainerForTraces->UpdateIDs(ListSelectedTraces,CollectionID);
+
+    std::string CollectionIDName = CollectionOfTraces->GetCollectionName();
+    CollectionIDName += "ID";
+    //update the Table Widget Display:
+    Table->UpdateIDs(CollectionID,CollectionIDName,ColorCollection);
   
-  CloseDBConnection();
+    CloseDBConnection();
+    }
 }
 //-------------------------------------------------------------------------
 
@@ -1048,7 +1063,6 @@ QTableWidgetChild* QGoPrintDatabase::GetTableWidgetChild(std::string TraceName)
    {
    return this->LineageTable;
    }
-
 }
 //-------------------------------------------------------------------------
 
