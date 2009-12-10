@@ -13,10 +13,6 @@ QGoLsmToMegaExportDialog( QWidget* iParent) : QDialog( iParent ), m_LsmPath(""),
 		m_LsmName(""), m_MegaPath(""), m_FileFormatIsPNG(true)
 {
   this->setupUi( this );
-
-  // Create connection signal/slot
-  QObject::connect( this, SIGNAL( accepted() ),
-      this, SLOT(OK_pressed() ) );
 }
 
 /**
@@ -101,39 +97,50 @@ on_outputFormat_activated( int index )
     }
 }
 
-/**
- * \brief Start conversion when OK pressed
- */
 void
 QGoLsmToMegaExportDialog::
-OK_pressed()
+on_convert_clicked()
 {
+  //Disable everything
+  lsmFileName->setDisabled(true);
+  megaFilePath->setDisabled(true);
+  selectLsmFile->setDisabled(true);
+  selectMegaPath->setDisabled(true);
+  outputFormat->setDisabled(true);
+  buttonBox->setDisabled(true);
 
-  GoFigure::FileType filetype = GoFigure::PNG;
-
-  if( !m_FileFormatIsPNG )
-    {
-    filetype = GoFigure::TIFF;
-    }
-
-  /*int numFiles = 100000;
+  /*int numFiles = 10000000;
   QProgressDialog progress("Copying files...", "Abort Copy", 0, numFiles, this);
   progress.setWindowModality(Qt::WindowModal);
 
-  for (int i = 0; i < numFiles; i++)
-    {
-    progress.setValue(i);
+       for (int i = 0; i < numFiles; i++) {
+           //progress.setValue(i);
 
-    //if (progress.wasCanceled())
-    //           break;
+          // if (progress.wasCanceled())
+          //    break;
            //... copy one file
-    }
+       }
+       progress.setValue(numFiles);
+*/
 
-  progress.setValue(numFiles);*/
+  // Start convertion
+  GoFigure::FileType filetype = GoFigure::PNG;
 
+  if( !m_FileFormatIsPNG )
+	{
+	filetype = GoFigure::TIFF;
+	}
   LSMToMegaCapture converter;
   converter.SetFileName( m_LsmPath );
   converter.SetOutputFileType( filetype );
   converter.Export( m_MegaPath );
 
+  //Enable everything
+  lsmFileName->setDisabled(false);
+  megaFilePath->setDisabled(false);
+  selectLsmFile->setDisabled(false);
+  selectMegaPath->setDisabled(false);
+  outputFormat->setDisabled(false);
+  buttonBox->setDisabled(false);
 }
+

@@ -22,7 +22,7 @@ public slots:
   void on_selectLsmFile_clicked();
   void on_selectMegaPath_clicked();
   void on_outputFormat_activated( int index );
-  void OK_pressed();
+  void on_convert_clicked();
 
 private:
   std::string m_LsmPath;
