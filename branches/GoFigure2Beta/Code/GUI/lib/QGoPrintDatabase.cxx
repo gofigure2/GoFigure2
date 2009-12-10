@@ -604,23 +604,25 @@ ChangeContoursToHighLightInfoFromVisu(
 {
 //     int i = 0;
   std::list<int>::iterator it = iListContoursHighLightedInVisu.begin();
+  /** \todo get the tracename from the visu dock widget*/
+  QTableWidgetChild* Table = this->GetTableWidgetChild("contour");
 
   while( it != iListContoursHighLightedInVisu.end() )
     {
     for( unsigned int j = 0 ; j < m_ContoursInfo.size(); j++ )
       {
-      if (*it == static_cast< int >( j+1 ) )
+      if (*it == this->m_ContoursInfo[j].TraceID)
         {
         m_ContoursInfo[j].Highlighted = true;
 
-        this->ContourTable->SetSelectRowTraceID( "Contour",
+        this->ContourTable->SetSelectRowTraceID( "contour",
           m_ContoursInfo[j].TraceID, true );
         }
       else
         {
         m_ContoursInfo[j].Highlighted = false;
 
-        this->ContourTable->SetSelectRowTraceID( "Contour",
+        this->ContourTable->SetSelectRowTraceID( "contour",
           m_ContoursInfo[j].TraceID, false);
         }
       ++it;

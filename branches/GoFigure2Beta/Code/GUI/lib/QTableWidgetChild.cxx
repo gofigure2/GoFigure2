@@ -140,7 +140,7 @@ QStringList QTableWidgetChild::recordHeaderNamesOrder()
 
 //--------------------------------------------------------------------------
 void QTableWidgetChild::SetSelectRowTraceID (std::string TraceName,
-  int TraceID, bool IsSelected)
+  int TraceID,bool IsSelected)
 {
   std::stringstream TraceIDName;
   TraceIDName << TraceName;
@@ -155,8 +155,17 @@ void QTableWidgetChild::SetSelectRowTraceID (std::string TraceName,
     }
   else
     {
-    QTableWidgetSelectionRange RangeToSelect(RowIndex,0,RowIndex,columnCount()-1);
-    this->setRangeSelected(RangeToSelect,IsSelected);
+    if (IsSelected)
+      {
+      this->item(RowIndex,0)->setCheckState(Qt::Checked);
+      }
+    else
+      {
+      this->item(RowIndex,0)->setCheckState(Qt::Unchecked);
+      }
+      this->UpdateVectorCheckedRows(RowIndex,0);
+    //QTableWidgetSelectionRange RangeToSelect(RowIndex,0,RowIndex,columnCount()-1);
+    //this->setRangeSelected(RangeToSelect,IsSelected);
     }
 }
 //--------------------------------------------------------------------------
