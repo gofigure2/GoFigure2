@@ -5,6 +5,8 @@
 
 #include <Qt>
 
+#include "ConversionLsmToMegaThread.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
@@ -18,11 +20,14 @@ public:
   QGoLsmToMegaExportDialog( QWidget* parent = 0);
   ~QGoLsmToMegaExportDialog();
 
-public slots:
+  ConversionLsmToMegaThread ConversionLsmToMegaThreadSend;
+
+protected slots:
   void on_selectLsmFile_clicked();
   void on_selectMegaPath_clicked();
   void on_outputFormat_activated( int index );
   void on_convert_clicked();
+  void ConversionTerminatedReceived();
 
 private:
   std::string m_LsmPath;

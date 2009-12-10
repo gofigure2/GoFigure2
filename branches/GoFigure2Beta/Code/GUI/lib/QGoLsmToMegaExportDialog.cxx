@@ -13,6 +13,9 @@ QGoLsmToMegaExportDialog( QWidget* iParent) : QDialog( iParent ), m_LsmPath(""),
 		m_LsmName(""), m_MegaPath(""), m_FileFormatIsPNG(true)
 {
   this->setupUi( this );
+
+  QObject::connect( &ConversionLsmToMegaThreadSend, SIGNAL( ConversionTerminatedSent() ),
+      this, SLOT( ConversionTerminatedReceived() ) );
 }
 
 /**
@@ -101,29 +104,31 @@ void
 QGoLsmToMegaExportDialog::
 on_convert_clicked()
 {
-  //Disable everything
-  lsmFileName->setDisabled(true);
-  megaFilePath->setDisabled(true);
-  selectLsmFile->setDisabled(true);
-  selectMegaPath->setDisabled(true);
-  outputFormat->setDisabled(true);
-  buttonBox->setDisabled(true);
+  // Disable everything
+  this->lsmFileName->setEnabled(false);
+  this->megaFilePath->setEnabled(false);
+  this->selectLsmFile->setEnabled(false);
+  this->selectMegaPath->setEnabled(false);
+  this->outputFormat->setEnabled(false);
+  this->buttonBox->setEnabled(false);
+  this->convert->setEnabled(false);
+  this->label->setEnabled(false);
+  this->selectLSMLabel->setEnabled(false);
+  this->megaFilePath_2->setEnabled(false);
+  this->outputFormatLabel->setEnabled(false);
+  this->label_2->setEnabled(false);
 
-  /*int numFiles = 10000000;
-  QProgressDialog progress("Copying files...", "Abort Copy", 0, numFiles, this);
-  progress.setWindowModality(Qt::WindowModal);
+  this->convertLabel->setText( QString(QString::fromLocal8Bit("CONVERSION in PROGRESS"))  );
 
-       for (int i = 0; i < numFiles; i++) {
-           //progress.setValue(i);
 
-          // if (progress.wasCanceled())
-          //    break;
-           //... copy one file
-       }
-       progress.setValue(numFiles);
-*/
+  ConversionLsmToMegaThreadSend.start();
+}
 
-  // Start convertion
+void
+QGoLsmToMegaExportDialog::
+ConversionTerminatedReceived()
+{
+  // Start conversion
   GoFigure::FileType filetype = GoFigure::PNG;
 
   if( !m_FileFormatIsPNG )
@@ -136,11 +141,19 @@ on_convert_clicked()
   converter.Export( m_MegaPath );
 
   //Enable everything
-  lsmFileName->setDisabled(false);
-  megaFilePath->setDisabled(false);
-  selectLsmFile->setDisabled(false);
-  selectMegaPath->setDisabled(false);
-  outputFormat->setDisabled(false);
-  buttonBox->setDisabled(false);
+  lsmFileName->setEnabled(true);
+  megaFilePath->setEnabled(true);
+  selectLsmFile->setEnabled(true);
+  selectMegaPath->setEnabled(true);
+  outputFormat->setEnabled(true);
+  this->buttonBox->setEnabled(true);
+  this->convert->setEnabled(true);
+  this->label->setEnabled(true);
+  this->selectLSMLabel->setEnabled(true);
+  this->megaFilePath_2->setEnabled(true);
+  this->outputFormatLabel->setEnabled(true);
+  this->label_2->setEnabled(true);
+
+  this->convertLabel->setText( QString(QString::fromLocal8Bit(""))  );
 }
 

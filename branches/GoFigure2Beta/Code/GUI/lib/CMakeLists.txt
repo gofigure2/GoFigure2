@@ -27,6 +27,7 @@ SET( QGoGUILIB_SRC
   QGoCreateMeshDialog.cxx
   qtcolorcombobox.cxx
   QGoLsmToMegaExportDialog.cxx
+  ConversionLsmToMegaThread.cxx
 )
 
 SET( QGoGUILIB_HDRS
@@ -55,6 +56,7 @@ SET( QGoGUILIB_HDRS
   QGoCreateMeshDialog.h
   qtcolorcombobox.h
   QGoLsmToMegaExportDialog.h
+  ConversionLsmToMegaThread.h
 )
 
 SET( QGoGUILIB_UI
