@@ -115,6 +115,7 @@ public:
     std::pair<std::string,QColor> iColorNewCollection,std::string iTraceName);
 
   void UpdateCurrentColorData(std::pair<std::string,QColor> iCurrentColorData);
+  void SetCurrentCollectionID(int iCollectionID);
  
   QTableWidgetChild* ContourTable;
   QTableWidgetChild* MeshTable;
@@ -143,6 +144,7 @@ signals:
   void FillDatabaseFinished();
   void NeedToGetCurrentSelectedColor();
   void NewCreatedCollection();
+  void NeedCurrentSelectedCollectionID();
 
 protected:
   GoDBCollectionOfTraces* m_CollectionOfContours;
@@ -160,6 +162,7 @@ protected:
   unsigned int      m_ImgSessionID;
   std::string       m_ImgSessionName;
   bool              m_IsDatabaseUsed;
+  int               m_CurrentCollectionID;
 
   QAction* m_VisibilityAction;
 

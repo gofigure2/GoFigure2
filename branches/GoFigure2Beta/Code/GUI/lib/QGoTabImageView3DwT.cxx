@@ -205,6 +205,9 @@ void QGoTabImageView3DwT::CreateVisuDockWidget()
     SIGNAL( SelectionContoursToHighLightChanged() ),
     this, SLOT( HighLightContoursFromTable() ) );
 
+ QObject::connect( this->m_DataBaseTables,
+    SIGNAL( NeedCurrentSelectedCollectionID() ),
+    this, SLOT( PassInfoForCurrentCollectionID() ) );
 }
 //-------------------------------------------------------------------------
 
@@ -1456,6 +1459,14 @@ void QGoTabImageView3DwT::PassInfoForCollectionIDComboBoxForNewCollection()
     this->m_DataBaseTables->GetDataNewCreatedCollection();
   this->m_VisuDockWidget->ColorIDCollectionComboBox->
     addColor(Data.second,Data.first.c_str());
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoTabImageView3DwT::PassInfoForCurrentCollectionID()
+{
+  this->m_DataBaseTables->SetCurrentCollectionID(
+    this->m_VisuDockWidget->GetCurrentCollectionID());
 }
 //-------------------------------------------------------------------------
 

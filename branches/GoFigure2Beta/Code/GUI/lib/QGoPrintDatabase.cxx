@@ -253,9 +253,16 @@ void QGoPrintDatabase::UpdateTableFromDB()
 void QGoPrintDatabase::CreateContextMenu(const QPoint &iPos)
 {
   QMenu* ContextMenu = new QMenu;
-  ContextMenu->addAction(tr("Delete Traces"),this,SLOT(DeleteTraces()));
-  ContextMenu->addAction(tr("Create New Collection"),this,SLOT(CreateCorrespondingCollection()));
-  ContextMenu->addAction(tr("Add to existing Collection"),this,SLOT(AddToExistingCollection()));
+  NeedCurrentSelectedCollectionID();
+  std::string TraceName = this->InWhichTableAreWe();
+  std::string CollectionName = this->GetCollectionOfTraces(TraceName)->CollectionName();
+  ContextMenu->addAction(tr("Delete selected %1s").arg(TraceName.c_str()),
+    this,SLOT(DeleteTraces()));
+  ContextMenu->addAction(tr("Create a new %1").arg(CollectionName.c_str()),
+    this,SLOT(CreateCorrespondingCollection()));
+  ContextMenu->addAction(
+    tr("Add to selected %1 : %2").arg(CollectionName.c_str())
+    .arg(this->m_CurrentCollectionID),this,SLOT(AddToExistingCollection()));
   ContextMenu->exec(this->mapToGlobal(iPos));
 
 }
@@ -329,7 +336,9 @@ void QGoPrintDatabase::CreateCorrespondingCollection()
     {
     QMessageBox msgBox;
     msgBox.setText(
-      tr("Please select at least one %1").arg(CollectionOfTraces->GetTraceName().c_str() ));
+      tr("Please select at least one %1 to be part of the new %2")
+      .arg(CollectionOfTraces->GetTraceName().c_str() )
+      .arg(CollectionOfTraces->GetCollectionName().c_str()));
     msgBox.exec();
     }
   else
@@ -1099,4 +1108,11 @@ void QGoPrintDatabase::UpdateCurrentColorData(
 std::pair<std::string,QColor> QGoPrintDatabase::GetDataNewCreatedCollection()
 {
   return this->m_LastCreatedCollection;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoPrintDatabase::SetCurrentCollectionID(int iCollectionID)
+{
+  this->m_CurrentCollectionID = iCollectionID;
 }
