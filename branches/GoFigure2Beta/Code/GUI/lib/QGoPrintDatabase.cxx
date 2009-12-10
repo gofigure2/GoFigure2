@@ -262,7 +262,7 @@ void QGoPrintDatabase::CreateContextMenu(const QPoint &iPos)
     this,SLOT(CreateCorrespondingCollection()));
   ContextMenu->addAction(
     tr("Add to selected %1 : %2").arg(CollectionName.c_str())
-    .arg(this->m_CurrentCollectionID),this,SLOT(AddToExistingCollection()));
+    .arg(this->m_CurrentCollectionData.first.c_str()),this,SLOT(AddToSelectedCollection()));
   ContextMenu->exec(this->mapToGlobal(iPos));
 
 }
@@ -470,86 +470,32 @@ std::string QGoPrintDatabase::InWhichTableAreWe ()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoPrintDatabase::AddToExistingCollection()
+void QGoPrintDatabase::AddToSelectedCollection()
 {
   OpenDBConnection();
-  QStringList items;
-  QString LabelDialog;
- /* int TabIndex = InWhichTableAreWe();
 
-  switch (TabIndex)
-    {
-    case 0: //contour
-        {
-        items = m_CollectionOfContours->ListCollectionID(m_DatabaseConnector);
-        LabelDialog = tr("Choose the Mesh ID you want\n the selected contours to be part of: ");
-        break;
-        }
-    case 1: //mesh
-        {
-        items = m_CollectionOfMeshes->ListCollectionID(m_DatabaseConnector);
-        LabelDialog = tr("Choose the Track ID you want\n the selected meshes to be part of: ");
-        break;
-        }
-    case 2://track
-      {
-      items = m_CollectionOfTracks->ListCollectionID(m_DatabaseConnector);
-      LabelDialog = tr("Choose the Lineage ID you want\n the selected tracks to be part of: ");
-      break;
-      }
-    default:
-      {
-      std::cout<<"error, tab doesn't exist";
-      std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
-      std::cout << std::endl;
-      break;
-      }
-    }
+  std::string TraceName = this->InWhichTableAreWe();
+  QTableWidgetChild* Table = this->GetTableWidgetChild(TraceName);
+  std::list<int> ListSelectedTraces = Table->GetListCheckedTraceID();
+  NeedCurrentSelectedCollectionID();
+  int CollectionID = atoi(this->m_CurrentCollectionData.first.c_str());
+  QColor ColorCollection = this->m_CurrentCollectionData.second;
 
-  bool ok;
-  QString CollectionID = QInputDialog::getItem(this, tr("Collection ID"),
-                         LabelDialog, items,0,false,&ok);
+  GoDBCollectionOfTraces* CollectionOfTraces = this->GetCollectionOfTraces(TraceName);
+  GoDBTableWidgetContainer* LinkToRowContainerForTraces = 
+    CollectionOfTraces->GetLinkToRowContainer();
 
-  if (ok && !CollectionID.isEmpty())
-    {
-    switch (TabIndex)
-      {
-      case 0: //contour
-          {
-          QStringList ListContours = this->ContourTable->ValuesForSelectedRows("ContourID");
-          m_CollectionOfContours->AddSelectedTracesToCollection(ListContours,
-            CollectionID.toInt(),m_DatabaseConnector);
-         // this->UpdateContentAndDisplayFromDB<GoDBContourRow>("contour",
-         //   ContourTable,m_DatabaseConnector);
-          break;
-          }
-      case 1: //mesh
-          {
-          QStringList ListMeshes = this->MeshTable->ValuesForSelectedRows("MeshID");
-          m_CollectionOfMeshes->AddSelectedTracesToCollection(ListMeshes,
-            CollectionID.toInt(),m_DatabaseConnector);
-         // this->UpdateContentAndDisplayFromDB<GoDBMeshRow>("mesh",
-         //   MeshTable, m_DatabaseConnector);
-          break;
-          }
-      case 2: //track
-        {
-        QStringList ListTracks = this->TrackTable->ValuesForSelectedRows("TrackID");
-        m_CollectionOfTracks->AddSelectedTracesToCollection(ListTracks,
-          CollectionID.toInt(),m_DatabaseConnector);
-       // this->UpdateContentAndDisplayFromDB<GoDBTrackRow>("track",
-      //    TrackTable, m_DatabaseConnector);
-        break;
-        }
-      default:
-        {
-        std::cout<<"error, tab doesn't exist";
-        std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
-        std::cout << std::endl;
-        break;
-        }
-      }
-    }*/
+  //update the collectionID of the traces in the database:
+  CollectionOfTraces->AddSelectedTracesToCollection(ListSelectedTraces,
+    CollectionID,this->m_DatabaseConnector);
+  //update the RowContainer for traces with the new ID for the selected traces:
+  LinkToRowContainerForTraces->UpdateIDs(ListSelectedTraces,CollectionID);
+
+  std::string CollectionIDName = CollectionOfTraces->GetCollectionName();
+  CollectionIDName += "ID";
+  //update the Table Widget Display:
+  Table->UpdateIDs(CollectionID,CollectionIDName,ColorCollection);
+  
   CloseDBConnection();
 }
 //-------------------------------------------------------------------------
@@ -997,11 +943,21 @@ void QGoPrintDatabase::UpdateTableWidgetAndRowContainerWithNewCreatedTrace(
     GoDBCollectionOfTraces* iCollectionOfTraces, unsigned int iNewCollectionID,
     QColor iColorNewCollection,std::list<int> iListSelectedTraces)
 {
- GoDBTableWidgetContainer* LinkToRowContainer = 
+ GoDBTableWidgetContainer* LinkToRowContainerForTraces = 
    iCollectionOfTraces->GetLinkToRowContainer(); 
 
- //update the RowContainer with the new ID for the selected traces:
- LinkToRowContainer->UpdateIDs(iListSelectedTraces,iNewCollectionID);
+ //update the RowContainer for traces with the new ID for the selected traces:
+ LinkToRowContainerForTraces->UpdateIDs(iListSelectedTraces,iNewCollectionID);
+
+ //update the RowContainer for collections with the created Collection:
+ GoDBCollectionOfTraces* CollectionOfTracesForCollection = this->GetCollectionOfTraces(
+   iCollectionOfTraces->GetCollectionName());
+ QTableWidgetChild* TableForCollection = 
+   this->GetTableWidgetChild(iCollectionOfTraces->GetCollectionName());
+ this->UpdateTableWidgetAndRowContainerWithNewCreatedTrace(TableForCollection,
+   this->m_DatabaseConnector,CollectionOfTracesForCollection);
+
+
  std::string CollectionIDName = iCollectionOfTraces->GetCollectionName();
  CollectionIDName += "ID";
  //update the Table Widget Display:
@@ -1112,7 +1068,8 @@ std::pair<std::string,QColor> QGoPrintDatabase::GetDataNewCreatedCollection()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoPrintDatabase::SetCurrentCollectionID(int iCollectionID)
+void QGoPrintDatabase::SetCurrentCollectionID(
+  std::pair<std::string,QColor> iCurrentCollectionData)
 {
-  this->m_CurrentCollectionID = iCollectionID;
+  this->m_CurrentCollectionData = iCurrentCollectionData;
 }

@@ -1466,7 +1466,7 @@ void QGoTabImageView3DwT::PassInfoForCollectionIDComboBoxForNewCollection()
 void QGoTabImageView3DwT::PassInfoForCurrentCollectionID()
 {
   this->m_DataBaseTables->SetCurrentCollectionID(
-    this->m_VisuDockWidget->GetCurrentCollectionID());
+    this->m_VisuDockWidget->ColorIDCollectionComboBox->GetCurrentColorData());
 }
 //-------------------------------------------------------------------------
 

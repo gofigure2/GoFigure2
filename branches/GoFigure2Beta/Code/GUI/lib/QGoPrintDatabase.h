@@ -115,7 +115,7 @@ public:
     std::pair<std::string,QColor> iColorNewCollection,std::string iTraceName);
 
   void UpdateCurrentColorData(std::pair<std::string,QColor> iCurrentColorData);
-  void SetCurrentCollectionID(int iCollectionID);
+  void SetCurrentCollectionID(std::pair<std::string,QColor> iCurrentCollectionData);
  
   QTableWidgetChild* ContourTable;
   QTableWidgetChild* MeshTable;
@@ -137,6 +137,13 @@ public:
 
   QAction* toggleViewAction();
 
+public slots:
+  void ChangeContoursToHighLightInfoFromVisu(
+  std::list<int> iListContoursHighLightedInVisu);
+
+  void ChangeMeshesToHighLightInfoFromVisu(
+  std::list<int> iListMeshesHighLightedInVisu);
+
 signals:
   void TableContentChanged();
   void SelectionContoursToHighLightChanged();
@@ -153,6 +160,7 @@ protected:
   GoDBCollectionOfTraces* m_CollectionOfLineages;
   std::pair<std::string,QColor> m_CurrentColorData;
   std::pair<std::string,QColor> m_LastCreatedCollection;
+  std::pair<std::string,QColor> m_CurrentCollectionData;
 
   vtkMySQLDatabase* m_DatabaseConnector;
   std::string       m_Server;
@@ -162,7 +170,7 @@ protected:
   unsigned int      m_ImgSessionID;
   std::string       m_ImgSessionName;
   bool              m_IsDatabaseUsed;
-  int               m_CurrentCollectionID;
+ 
 
   QAction* m_VisibilityAction;
 
@@ -316,18 +324,12 @@ protected slots:
   collection ID of the selected contours to the new CollectionID created:*/
   void CreateCorrespondingCollection();
 
-  void AddToExistingCollection();
+  void AddToSelectedCollection();
 
   /** \brief Update the m_ContoursInfo or m_MeshesInfo depending on which table
   the user had clicked with the selected traces and emit a signal to say which m_tracesInfo has
   changed*/
   void ChangeTracesToHighLightInfoFromTableWidget();
-
-  void ChangeContoursToHighLightInfoFromVisu(
-  std::list<int> iListContoursHighLightedInVisu);
-
-  void ChangeMeshesToHighLightInfoFromVisu(
-  std::list<int> iListMeshesHighLightedInVisu);
 
 };
 
