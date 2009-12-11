@@ -33,37 +33,19 @@ void
 QGoLsmToMegaExportDialog::
 on_selectLsmFile_clicked()
 {
-  QString filename = QFileDialog::getOpenFileName( this,
-      tr( "Select the LSM file to convert" ), "file name", 0 );
-  m_LsmPath = filename.toStdString();
+/**
+ * \todo add a filter to see only lsm files
+ */
 
-  // Extract the name of the file from the full path
-  // From LSMToMegaCapture.cxx
+  QString fullFilename = QFileDialog::getOpenFileName( this,
+      tr( "Select the LSM file to convert" ), "fileName.lsm", 0 );
 
-  /// \todo check in QGoMainWindow about to get the extension of a file
-  /// it will really simplify this code!!!
-  size_t point_idx = m_LsmPath.rfind( ".lsm" );
+  QFileInfo fileInfo( fullFilename );
 
-  if( point_idx != std::string::npos )
-    {
-    size_t slash_idx = m_LsmPath.rfind( '/' );
-    if( point_idx != std::string::npos )
-      {
-      m_LsmName = m_LsmPath.substr( slash_idx + 1, point_idx + 3 - slash_idx );
-      }
-    else
-      {
-      slash_idx = m_LsmPath.rfind( "\\" );
-      if( point_idx != std::string::npos )
-        {
-    	m_LsmName = m_LsmPath.substr( slash_idx + 1, point_idx + 3 - slash_idx );
-        }
-      else
-        {
-    	m_LsmName = m_LsmPath.substr( 0, point_idx + 3);
-        }
-      }
-    }
+  m_LsmPath = fullFilename.toStdString();
+
+  QString fileName = fileInfo.fileName();
+  m_LsmName = fileName.toStdString();
 
   // Write the lsm file name in the dialog window
   lsmFileName->setText( QString(QString::fromLocal8Bit(m_LsmName.c_str())) );
