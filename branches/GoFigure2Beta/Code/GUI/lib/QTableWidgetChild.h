@@ -83,6 +83,8 @@ public:
 
   void UpdateIDs (unsigned int iNewCollectionID,std::string iCollectionIDName, 
     QColor ColorNewCollection);
+  void UpdateIDs(unsigned int iNewCollectionID,std::string iCollectionIDName, 
+  QColor ColorNewCollection,std::string TraceIDName,std::list<int> TraceIDToUpdate);
 
 signals:
   void CheckedRowsChanged();

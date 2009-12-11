@@ -315,7 +315,7 @@ void QGoPrintDatabase::DeleteTraces()
       if (!ListBelongingTraces.empty())
         {
         /** \todo put the collectionid of the belonging traces to 0/null*/
-       /* put the collectionid of the belonging traces to 0/null ?:
+        //put the collectionid of the belonging traces to 0:
         std::list<int> TracesWithCollectionToBeNull;
         std::vector<std::string>::iterator it = ListBelongingTraces.begin();
         while (it != ListBelongingTraces.end())
@@ -326,18 +326,24 @@ void QGoPrintDatabase::DeleteTraces()
           }
         GoDBCollectionOfTraces* TracesCollectionOf = this->GetCollectionOfTraces(CollectionOf);
         TracesCollectionOf->AddSelectedTracesToCollection(TracesWithCollectionToBeNull,0,
-          this->m_DatabaseConnector);*/
+          this->m_DatabaseConnector);
+        QTableWidgetChild* TableCollectionOf= this->GetTableWidgetChild(TracesCollectionOf->GetTraceName());
+        QColor Color(255,255,255,255);
+        std::string CollectionIDName = TracesCollectionOf->GetCollectionName();
+        CollectionIDName += "ID";
+        std::string TraceIDName = TracesCollectionOf->GetTraceName();
+        TraceIDName += "ID";
+        TableCollectionOf->UpdateIDs(0,CollectionIDName,Color,TraceIDName,TracesWithCollectionToBeNull);
         }
-      else
-        {
+        
       //delete traces in the database:
-        CollectionOfTraces->DeleteTraces(SelectedTraces,this->m_DatabaseConnector);
+      CollectionOfTraces->DeleteTraces(SelectedTraces,this->m_DatabaseConnector);
       //delete traces in the row container:
-        GoDBTableWidgetContainer* LinkToTracesContainer = CollectionOfTraces->GetLinkToRowContainer();
-        LinkToTracesContainer->DeleteSelectedTraces(SelectedTraces);
+      GoDBTableWidgetContainer* LinkToTracesContainer = CollectionOfTraces->GetLinkToRowContainer();
+      LinkToTracesContainer->DeleteSelectedTraces(SelectedTraces);
       //delete traces in the table widget with the vector of selected traces:
-        Table->DeleteSelectedRows();
-        }
+      Table->DeleteSelectedRows();
+ 
       CloseDBConnection();
       }
     }

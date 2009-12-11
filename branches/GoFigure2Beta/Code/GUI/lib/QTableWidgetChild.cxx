@@ -506,7 +506,25 @@ void QTableWidgetChild::UpdateIDs (unsigned int iNewCollectionID,
     this->item(iter->second,IndexCollectionID)->setBackgroundColor(ColorNewCollection);
     iter++;
     }
+}
+//--------------------------------------------------------------------------
 
+//--------------------------------------------------------------------------
+void QTableWidgetChild::UpdateIDs (unsigned int iNewCollectionID,
+  std::string iCollectionIDName, QColor ColorNewCollection,
+  std::string TraceIDName,std::list<int> TraceIDToUpdate)
+{
+  QStringList ColumnsHeader = this->recordHeaderNamesOrder();
+  int IndexCollectionID = this->findColumnName(iCollectionIDName.c_str(),ColumnsHeader);
+  std::list<int>::iterator iter = TraceIDToUpdate.begin();
+  while(iter != TraceIDToUpdate.end())
+    {
+    int RowIndex = this->findValueGivenColumn(*iter, TraceIDName.c_str());
+    this->item(RowIndex,IndexCollectionID)->
+      setText(ConvertToString<unsigned int>(iNewCollectionID).c_str());
+    this->item(RowIndex,IndexCollectionID)->setBackgroundColor(ColorNewCollection);
+    iter++;
+    }
 }
 //--------------------------------------------------------------------------
 
