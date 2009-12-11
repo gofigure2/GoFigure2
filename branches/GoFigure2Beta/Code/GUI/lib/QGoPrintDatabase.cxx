@@ -336,6 +336,7 @@ void QGoPrintDatabase::DeleteTraces()
         GoDBTableWidgetContainer* LinkToTracesContainer = CollectionOfTraces->GetLinkToRowContainer();
         LinkToTracesContainer->DeleteSelectedTraces(SelectedTraces);
       //delete traces in the table widget with the vector of selected traces:
+        Table->DeleteSelectedRows();
         }
       CloseDBConnection();
       }

@@ -508,3 +508,16 @@ void QTableWidgetChild::UpdateIDs (unsigned int iNewCollectionID,
     }
 
 }
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QTableWidgetChild::DeleteSelectedRows()
+{
+  std::vector<std::pair<int,int> >::iterator iter = 
+    this->m_VectorSelectedRows.begin();
+  while(iter !=this->m_VectorSelectedRows.end())
+    {
+    this->removeRow(iter->second);
+    iter++;
+    }
+}

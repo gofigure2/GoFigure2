@@ -77,6 +77,8 @@ public:
   void InsertNewRow(GoDBTableWidgetContainer* iLinkToRowContainer,
     std::string TraceName, std::string CollectionName);
 
+  void DeleteSelectedRows();
+
   std::list<int> GetListCheckedTraceID();
 
   void UpdateIDs (unsigned int iNewCollectionID,std::string iCollectionIDName, 

@@ -756,8 +756,7 @@ void GoDBTableWidgetContainer::DeleteSelectedTraces(std::list<int> iSelectedTrac
         found = true;
         for(int k = 0; k<this->m_RowContainer.size();k++)
           {
-          if (this->m_RowContainer[k].second.size()>indexrowtodelete || 
-            this->m_RowContainer[k].second.size() == indexrowtodelete)
+          if (this->m_RowContainer[k].second.size()>indexrowtodelete)
             {
             std::vector<std::string>::iterator itertodel = this->m_RowContainer[k].second.begin();
             bool foundErase = false;
