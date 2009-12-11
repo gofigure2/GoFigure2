@@ -311,8 +311,18 @@ void QGoPrintDatabase::DeleteTraces()
         }
       if (!CollectionOf.empty())
         {
-        std::vector<std::string> ListBelongingTraces = ListSpecificValuesForOneColumn(
-          this->m_DatabaseConnector,CollectionOf,CollectionOfID,TraceID,VectorValues);
+        //delete collectionID in the colorcollectionid combobox:
+        std::list<int>::iterator iterSelec = SelectedTraces.begin();
+        while(iterSelec != SelectedTraces.end())
+         {
+         int TraceID = *iterSelec;
+         this->m_CurrentCollectionData.first = ConvertToString<int>(TraceID);
+         DeletedCollection();
+         iterSelec++;
+          }
+
+         std::vector<std::string> ListBelongingTraces = ListSpecificValuesForOneColumn(
+           this->m_DatabaseConnector,CollectionOf,CollectionOfID,TraceID,VectorValues);
 
         if (!ListBelongingTraces.empty())
           {
@@ -335,29 +345,22 @@ void QGoPrintDatabase::DeleteTraces()
           CollectionIDName += "ID";
           std::string TraceIDName = TracesCollectionOf->GetTraceName();
           TraceIDName += "ID";
+
           TableCollectionOf->UpdateIDs(0,CollectionIDName,Color,TraceIDName,TracesWithCollectionToBeNull);
-          }
-        }
         
+          }
+ 
+      CloseDBConnection();
+      }
+          }
+        }       
       //delete traces in the database:
       CollectionOfTraces->DeleteTraces(SelectedTraces,this->m_DatabaseConnector);
       //delete traces in the row container:
       GoDBTableWidgetContainer* LinkToTracesContainer = CollectionOfTraces->GetLinkToRowContainer();
       LinkToTracesContainer->DeleteSelectedTraces(SelectedTraces);
       //delete traces in the table widget with the vector of selected traces:
-      Table->DeleteSelectedRows();
-      //delete collectionID in the colorcollectionid combobox:
-      std::list<int>::iterator iterSelec = SelectedTraces.begin();
-      while(iterSelec != SelectedTraces.end())
-        {
-        int TraceID = *iterSelec;
-        this->m_CurrentCollectionData.first = ConvertToString<int>(TraceID);
-        DeletedCollection();
-        iterSelec++;
-        }
- 
-      CloseDBConnection();
-      }
+      Table->DeleteSelectedRows();     
     }
 
 
@@ -408,8 +411,8 @@ void QGoPrintDatabase::DeleteTraces()
       break;
       }
     }*/
-  CloseDBConnection();
-}
+  //CloseDBConnection();
+//}
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
