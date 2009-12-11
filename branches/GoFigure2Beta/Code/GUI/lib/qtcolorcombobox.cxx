@@ -413,3 +413,16 @@ std::pair<std::string,QColor> QtColorComboBox::GetCurrentColorData()
  CurrentColor.second = QtColorComboBox::currentColor();
  return CurrentColor;
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+int QtColorComboBox::FindItemText(std::string Text)
+{
+ for (int i =0; i < this->colorCount(); i++)
+   {
+   if (this->itemText(i) == Text.c_str())
+     {
+     return i;
+     }
+   }
+}

@@ -92,6 +92,8 @@ public:
 
     void setStandardColors();
 
+    int FindItemText(std::string Text);
+
     QSize sizeHint() const;
     
     /** \brief fill the list m_DataFromDB with the iDataColors*/

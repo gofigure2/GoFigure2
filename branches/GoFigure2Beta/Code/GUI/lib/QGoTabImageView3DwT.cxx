@@ -208,6 +208,11 @@ void QGoTabImageView3DwT::CreateVisuDockWidget()
  QObject::connect( this->m_DataBaseTables,
     SIGNAL( NeedCurrentSelectedCollectionID() ),
     this, SLOT( PassInfoForCurrentCollectionID() ) );
+ 
+   QObject::connect( this->m_DataBaseTables,
+    SIGNAL( DeletedCollection() ),
+    this, SLOT( PassInfoForCurrentCollectionIDToDelete() ) );
+
 }
 //-------------------------------------------------------------------------
 
@@ -1478,6 +1483,16 @@ void QGoTabImageView3DwT::PassInfoForCurrentCollectionID()
 {
   this->m_DataBaseTables->SetCurrentCollectionID(
     this->m_VisuDockWidget->ColorIDCollectionComboBox->GetCurrentColorData());
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoTabImageView3DwT::PassInfoForCurrentCollectionIDToDelete()
+{ 
+  std::string CollectionIDToRemove = this->m_DataBaseTables->GetCurrentCollectionData().first;
+  int index = this->m_VisuDockWidget->ColorIDCollectionComboBox->
+    FindItemText(CollectionIDToRemove);
+  this->m_VisuDockWidget->ColorIDCollectionComboBox->removeItem(index);
 }
 //-------------------------------------------------------------------------
 

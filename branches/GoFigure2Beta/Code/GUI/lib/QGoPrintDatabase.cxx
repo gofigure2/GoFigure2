@@ -343,6 +343,15 @@ void QGoPrintDatabase::DeleteTraces()
       LinkToTracesContainer->DeleteSelectedTraces(SelectedTraces);
       //delete traces in the table widget with the vector of selected traces:
       Table->DeleteSelectedRows();
+      //delete collectionID in the colorcollectionid combobox:
+      std::list<int>::iterator iterSelec = SelectedTraces.begin();
+      while(iterSelec != SelectedTraces.end())
+        {
+        int TraceID = *iterSelec;
+        this->m_CurrentCollectionData.first = ConvertToString<int>(TraceID);
+        DeletedCollection();
+        iterSelec++;
+        }
  
       CloseDBConnection();
       }
@@ -1091,6 +1100,13 @@ void QGoPrintDatabase::SetCurrentCollectionID(
   std::pair<std::string,QColor> iCurrentCollectionData)
 {
   this->m_CurrentCollectionData = iCurrentCollectionData;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::pair<std::string,QColor> QGoPrintDatabase::GetCurrentCollectionData()
+{
+  return this->m_CurrentCollectionData;
 }
 //-------------------------------------------------------------------------
 

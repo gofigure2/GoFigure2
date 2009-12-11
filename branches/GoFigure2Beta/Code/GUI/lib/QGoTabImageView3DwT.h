@@ -215,6 +215,8 @@ public slots:
   currentCollectionID in the table widget*/
   void PassInfoForCurrentCollectionID();
 
+  void PassInfoForCurrentCollectionIDToDelete();
+
 protected:
   QHBoxLayout*          m_LayOut;
   QGoImageView3D*       m_ImageView;
