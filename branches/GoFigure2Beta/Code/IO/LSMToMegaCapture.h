@@ -37,6 +37,7 @@ class LSMToMegaCapture
     void SetXTile( const unsigned int& iXt );
     void SetYTile( const unsigned int& iYt );
     void SetZTile( const unsigned int& iZt );
+    std::vector< vtkLSMReader* > GetLSMReaders();
 
   protected:
     std::string m_FileName;

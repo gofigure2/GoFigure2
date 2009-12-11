@@ -1,5 +1,5 @@
 /*=========================================================================
-  Author: $Author: krm15 $  // Author of last commit
+  Author: $Author: nr52 $  // Author of last commit
   Version: $Rev: 585 $  // Revision of last commit
   Date: $Date: 2009-08-20 21:25:19 -0400 (Thu, 20 Aug 2009) $  // Date of last commit
 =========================================================================*/
@@ -44,6 +44,7 @@
 #include <qthread.h>
 
 #include "fstream"
+#include "GoFigureGlobalDefinition.h"
 
 class ConversionLsmToMegaThread : public QThread
 {
@@ -52,6 +53,10 @@ class ConversionLsmToMegaThread : public QThread
 public:
   ConversionLsmToMegaThread(){}
   virtual ~ConversionLsmToMegaThread(){}
+  void SetLsmPath( std::string iLsmPath);
+  void SetMegaPath( std::string iMegaPath);
+  void SetOutputFileType( const GoFigure::FileType& iFileType );
+  void ExportWithReimplemented( std::string iMegaPath );
 
 public slots:
 
@@ -64,6 +69,10 @@ protected:
 private:
   ConversionLsmToMegaThread( const ConversionLsmToMegaThread& );
   ConversionLsmToMegaThread operator = ( const ConversionLsmToMegaThread& );
+  std::string m_LsmPath;
+  std::string m_MegaPath;
+  GoFigure::FileType m_FileType;
+  std::vector< vtkLSMReader* > m_LSMReaders;
 };
 
 #endif

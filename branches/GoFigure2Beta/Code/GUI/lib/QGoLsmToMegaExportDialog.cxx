@@ -3,8 +3,6 @@
 #include <QFileDialog>
 #include <QProgressDialog>
 
-#include "LSMToMegaCapture.h"
-
 /**
  * \brief Constructor
  */
@@ -108,6 +106,18 @@ on_convert_clicked()
   this->convertLabel->setText( QString(QString::fromLocal8Bit("CONVERSION in PROGRESS"))  );
 
 
+  // Set conversion parameters
+  GoFigure::FileType filetype = GoFigure::PNG;
+  if( !m_FileFormatIsPNG )
+	{
+	filetype = GoFigure::TIFF;
+	}
+
+  // conversion fonction called from there to enable progress bar
+  ConversionLsmToMegaThreadSend.SetLsmPath(m_LsmPath);
+  ConversionLsmToMegaThreadSend.SetOutputFileType(filetype);
+  ConversionLsmToMegaThreadSend.SetMegaPath(m_MegaPath);
+
   ConversionLsmToMegaThreadSend.start();
 }
 
@@ -118,17 +128,6 @@ void
 QGoLsmToMegaExportDialog::
 ConversionTerminatedReceived()
 {
-  // Start conversion
-  GoFigure::FileType filetype = GoFigure::PNG;
-
-  if( !m_FileFormatIsPNG )
-	{
-	filetype = GoFigure::TIFF;
-	}
-  LSMToMegaCapture converter;
-  converter.SetFileName( m_LsmPath );
-  converter.SetOutputFileType( filetype );
-  converter.Export( m_MegaPath );
 
   //Enable everything
   lsmFileName->setEnabled(true);

@@ -131,6 +131,15 @@ SetFileName( const std::string& iFileName )
     }
 }
 
+std::vector< vtkLSMReader* >
+LSMToMegaCapture::
+GetLSMReaders()
+{
+
+  return m_LSMReaders;
+
+}
+
 /**
  * \brief Export as MegaCapture
  * \param[in] iHeaderFileName
