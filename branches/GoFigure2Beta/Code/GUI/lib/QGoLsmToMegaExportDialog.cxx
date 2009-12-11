@@ -40,6 +40,8 @@ on_selectLsmFile_clicked()
   // Extract the name of the file from the full path
   // From LSMToMegaCapture.cxx
 
+  /// \todo check in QGoMainWindow about to get the extension of a file
+  /// it will really simplify this code!!!
   size_t point_idx = m_LsmPath.rfind( ".lsm" );
 
   if( point_idx != std::string::npos )

@@ -17,7 +17,7 @@ class QGoLsmToMegaExportDialog :
 {
   Q_OBJECT
 public:
-  QGoLsmToMegaExportDialog( QWidget* parent = 0);
+  explicit QGoLsmToMegaExportDialog( QWidget* parent = 0);
   ~QGoLsmToMegaExportDialog();
 
   ConversionLsmToMegaThread ConversionLsmToMegaThreadSend;
