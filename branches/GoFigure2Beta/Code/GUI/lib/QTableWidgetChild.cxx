@@ -202,7 +202,7 @@ QStringList QTableWidgetChild::ValuesForSelectedRows(QString ColumnName)
 {
   QList<QTableWidgetSelectionRange> Selection;
   Selection = this->selectedRanges();
-  
+
   QStringList ColumnsHeader = this->recordHeaderNamesOrder();
   int ColumnIndex = findColumnName(ColumnName,ColumnsHeader);
   int ColumnSelected = findColumnName(" ",ColumnsHeader);
@@ -448,26 +448,20 @@ void QTableWidgetChild::UpdateVectorCheckedRows(int Row,int Column)
    if (this->item(Row,Column)->checkState()== 0)
      {
      int ID = this->item(Row,1)->text().toInt();
+
      std::vector<std::pair<int,int> >::iterator iter = this->m_VectorSelectedRows.begin();
-     bool found = false;
+
      //As the initial iterator becomes incompatible once an element of the vector has been
      //erased, we need a bool to indicate the end of the vector:
-     bool EndOfVector = false;
-     while (!found && !EndOfVector)
+
+     while ( iter != this->m_VectorSelectedRows.end() )
        {
        if (iter->first == ID)
          {
          this->m_VectorSelectedRows.erase(iter);
-         found = true;
+         break;
          }
-       else
-         {
-         iter++;
-         if(iter == this->m_VectorSelectedRows.end())
-           {
-           EndOfVector = true;
-           }
-         }
+       ++iter;
        }
      }
    if (this->item(Row,Column)->checkState()== 2)
@@ -498,7 +492,7 @@ std::list<int> QTableWidgetChild::GetListCheckedTraceID()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QTableWidgetChild::UpdateIDs (unsigned int iNewCollectionID, 
+void QTableWidgetChild::UpdateIDs (unsigned int iNewCollectionID,
   std::string iCollectionIDName,QColor ColorNewCollection )
 {
   /** \todo put it directly in the findColumnName*/
