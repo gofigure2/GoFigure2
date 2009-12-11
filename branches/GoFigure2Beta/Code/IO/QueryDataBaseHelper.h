@@ -45,6 +45,7 @@
 #include <map>
 #include "itkMacro.h"
 #include "vtkMySQLDatabase.h"
+#include "GoDBContourRow.h"
 
 std::pair<bool,vtkMySQLDatabase*> ConnectToServer(
   std::string ServerName, std::string login,
@@ -73,6 +74,10 @@ std::vector<std::string> ListTables(
 void UpdateValueInDB(vtkMySQLDatabase* DatabaseConnector,
   std::string TableName, std::string field, std::string newValue,
   std::string ColumnName, std::string value);
+
+/** \todo to review*/
+void UpdateContourInDB(vtkMySQLDatabase* DatabaseConnector,
+                       GoDBContourRow UpdatedContour);
 
 void DropDatabase( 
   vtkMySQLDatabase* ServerConnector,

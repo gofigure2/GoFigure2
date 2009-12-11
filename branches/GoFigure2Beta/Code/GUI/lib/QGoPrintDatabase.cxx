@@ -669,6 +669,48 @@ int QGoPrintDatabase::SaveContoursFromVisuInDB(unsigned int iXCoordMin,
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+int QGoPrintDatabase::SaveContoursFromVisu(unsigned int iXCoordMin,
+    unsigned int iYCoordMin, unsigned int iZCoordMin, unsigned int iTCoord,
+    unsigned int iXCoordMax, unsigned int iYCoordMax, unsigned int iZCoordMax,
+    vtkPolyData* iContourNodes, std::pair<std::string, QColor> iColorData,
+    unsigned int iMeshID,int ContourID )
+{
+  OpenDBConnection();
+
+  GoDBCoordinateRow coord_min;
+  coord_min.SetField< unsigned int >( "XCoord", iXCoordMin );
+  coord_min.SetField< unsigned int >( "YCoord", iYCoordMin );
+  coord_min.SetField< unsigned int >( "ZCoord", iZCoordMin );
+  coord_min.SetField< unsigned int >( "TCoord", iTCoord );
+
+  GoDBCoordinateRow coord_max;
+  coord_max.SetField< unsigned int >( "XCoord", iXCoordMax );
+  coord_max.SetField< unsigned int >( "YCoord", iYCoordMax );
+  coord_max.SetField< unsigned int >( "ZCoord", iZCoordMax );
+  coord_max.SetField< unsigned int >( "TCoord", iTCoord );
+
+  GoDBContourRow contour_row( this->m_DatabaseConnector,coord_min, coord_max,
+    this->m_ImgSessionID, iContourNodes );
+  contour_row.SetColor(iColorData.second.red(),iColorData.second.green(),
+    iColorData.second.blue(),iColorData.second.alpha(),iColorData.first,
+    this->m_DatabaseConnector);
+
+  contour_row.SetCollectionID(iMeshID);
+  
+
+  UpdateContourInDB(this->m_DatabaseConnector,contour_row);
+  
+  /** \todo update the table widget and the row container*/
+  //this->UpdateTableWidgetAndRowContainerWithNewCreatedTrace(this->ContourTable,
+    //this->m_DatabaseConnector,this->m_CollectionOfContours);
+
+  CloseDBConnection();
+
+  return ContourID;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 void QGoPrintDatabase::GetContentAndDisplayFromDB( QString TableName,
   QTableWidgetChild* Table, GoDBCollectionOfTraces* iCollectionOfTraces)
 {
