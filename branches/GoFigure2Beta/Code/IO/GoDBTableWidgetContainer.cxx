@@ -53,7 +53,6 @@ GoDBTableWidgetContainer::GoDBTableWidgetContainer(std::string iCollectionName,
   m_TracesIDName     += "ID";
 
   m_ColumnsInfos     = GetColumnsInfoForTraceTable();
-  GetSpecificInfoForTraceTable();
 
 }
 //--------------------------------------------------------------------------
