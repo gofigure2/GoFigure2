@@ -294,8 +294,7 @@ void QGoPrintDatabase::DeleteTraces()
     if (r == QMessageBox::Yes)
       {
       OpenDBConnection();
-      //check that the traces are not collection of existing traces, if so,
-      //put the corresponding collectionID to 0:
+      //check that the traces are not collection of existing traces:
       std::string TraceID = TraceName;
       TraceID += "ID";
       std::string CollectionOf = CollectionOfTraces->GetCollectionOf();
@@ -313,22 +312,31 @@ void QGoPrintDatabase::DeleteTraces()
       std::vector<std::string> ListBelongingTraces = ListSpecificValuesForOneColumn(
         this->m_DatabaseConnector,CollectionOf,CollectionOfID,TraceID,VectorValues);
 
-      std::list<int> TracesWithCollectionToBeNull;
-      std::vector<std::string>::iterator it = ListBelongingTraces.begin();
-      while (it != ListBelongingTraces.end())
+      if (!ListBelongingTraces.empty())
         {
-        std::string ID = *it;
-        TracesWithCollectionToBeNull.push_back(atoi(ID.c_str()));
-        it++;
+        /** \todo put the collectionid of the belonging traces to 0/null*/
+       /* put the collectionid of the belonging traces to 0/null ?:
+        std::list<int> TracesWithCollectionToBeNull;
+        std::vector<std::string>::iterator it = ListBelongingTraces.begin();
+        while (it != ListBelongingTraces.end())
+          {
+          std::string ID = *it;
+          TracesWithCollectionToBeNull.push_back(atoi(ID.c_str()));
+          it++;
+          }
+        GoDBCollectionOfTraces* TracesCollectionOf = this->GetCollectionOfTraces(CollectionOf);
+        TracesCollectionOf->AddSelectedTracesToCollection(TracesWithCollectionToBeNull,0,
+          this->m_DatabaseConnector);*/
         }
-      GoDBCollectionOfTraces* TracesCollectionOf = this->GetCollectionOfTraces(CollectionOf);
-      TracesCollectionOf->AddSelectedTracesToCollection(TracesWithCollectionToBeNull,0,
-        this->m_DatabaseConnector);
-
+      else
+        {
       //delete traces in the database:
-      CollectionOfTraces->DeleteTraces(SelectedTraces,this->m_DatabaseConnector);
+        CollectionOfTraces->DeleteTraces(SelectedTraces,this->m_DatabaseConnector);
       //delete traces in the row container:
-      //delete traces in the table widget with the vector of selected traces
+        GoDBTableWidgetContainer* LinkToTracesContainer = CollectionOfTraces->GetLinkToRowContainer();
+        LinkToTracesContainer->DeleteSelectedTraces(SelectedTraces);
+      //delete traces in the table widget with the vector of selected traces:
+        }
       CloseDBConnection();
       }
     }

@@ -91,6 +91,8 @@ class GoDBTableWidgetContainer
    NewTraceContainer into the m_RowContainer*/
    void InsertNewCreatedTrace(GoDBTableWidgetContainer iLinkToNewTraceContainer);
 
+   void DeleteSelectedTraces(std::list<int> iSelectedTraces);
+
    void UpdateIDs(std::list<int> iListTracesToUpdate,unsigned int NewCollectionID);
 
 protected:

@@ -739,3 +739,50 @@ void GoDBTableWidgetContainer::UpdateIDs(std::list<int> iListTracesToUpdate,
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+void GoDBTableWidgetContainer::DeleteSelectedTraces(std::list<int> iSelectedTraces)
+{
+  std::list<int>::iterator iter = iSelectedTraces.begin();
+  unsigned int j = 0;
+  while(iter != iSelectedTraces.end())
+    {
+    int indexrowtodelete = 0;
+    bool found = false;
+    while(j<this->m_RowContainer[1].second.size() && !found)
+      {
+      int TraceID = *iter;
+      if (this->m_RowContainer[1].second[j] == ConvertToString<int>(TraceID) )
+        {  
+        indexrowtodelete = j;
+        found = true;
+        for(int k = 0; k<this->m_RowContainer.size();k++)
+          {
+          if (this->m_RowContainer[k].second.size()>indexrowtodelete || 
+            this->m_RowContainer[k].second.size() == indexrowtodelete)
+            {
+            std::vector<std::string>::iterator itertodel = this->m_RowContainer[k].second.begin();
+            bool foundErase = false;
+            bool EndofVector = false;
+            while(!foundErase && !EndofVector)
+              {
+              if (*itertodel == ConvertToString<int>(indexrowtodelete))
+                {
+                this->m_RowContainer[k].second.erase(itertodel);
+                foundErase = true;
+                }
+              else
+                {
+                itertodel++;
+                if(itertodel == this->m_RowContainer[k].second.end())
+                  {
+                  EndofVector = true;
+                  }
+                }
+              }//ENDWHILE         
+            }//ENDIF
+          }//ENDFOR        
+        }//ENDIF
+      j++;
+      }//ENDWHILE
+    iter++;
+    }//ENDWHILE
+}
