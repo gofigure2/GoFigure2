@@ -271,7 +271,38 @@ void QGoPrintDatabase::CreateContextMenu(const QPoint &iPos)
 //--------------------------------------------------------------------------
 void QGoPrintDatabase::DeleteTraces()
 {
-  OpenDBConnection();
+  std::string TraceName = this->InWhichTableAreWe();
+  QTableWidgetChild* Table = this->GetTableWidgetChild(TraceName);
+  GoDBCollectionOfTraces* CollectionOfTraces = this->GetCollectionOfTraces(TraceName);
+  std::list<int> SelectedTraces = Table->GetListCheckedTraceID();
+  if(SelectedTraces.empty())
+    {
+    QMessageBox msgBox;
+    msgBox.setText(
+      tr("Please select at least one %1 to be deleted")
+      .arg(TraceName.c_str()));     
+    msgBox.exec();
+    }
+  else
+    {
+    int r = QMessageBox::warning(this, tr(""),
+              tr("Are you sure you want to delete\n"
+                 "permanently the selected %1s?").arg(CollectionOfTraces->GetTraceName().c_str()),
+              QMessageBox::Yes,
+              QMessageBox::No|QMessageBox::Default);
+    if (r == QMessageBox::Yes)
+      {
+      OpenDBConnection();
+      //delete traces in the database:
+      //delete traces in the row container:
+      //delete traces in the table widget with the vector of selected traces
+      CloseDBConnection();
+      }
+    }
+  
+  
+ 
+
   //int TabIndex = InWhichTableAreWe();
 
  /* switch (TabIndex)
@@ -372,93 +403,6 @@ void QGoPrintDatabase::CreateCorrespondingCollection()
     }
 
 }
-/*  switch (TabIndex)
-    {
-    case 0: //contour
-        {
-        //add the tableWidgetChild in the CollectionOfTraces?
-        QStringList ListSelectedContours = this->ContourTable->ValuesForSelectedRows("ContourID");
-        GoDBMeshRow myNewMesh;
-        //The specified fields for mesh will be filled here:
-        //myNewMesh.SetField("ColorID") = to be defined for some color chosen by the user
-        //myNewMesh.SetField("CellTypeID") = to be defined for some color chosen by the user
-        //myNewMesh.SetField("SubCellularTypeID") = to be defined for some color chosen by the user
-
-        m_CollectionOfContours->CreateNewCollectionFromSelection<GoDBMeshRow>(ListSelectedContours,
-          m_DatabaseConnector,myNewMesh);
-       // this->UpdateContentAndDisplayFromDB<GoDBContourRow>("contour",
-       //   ContourTable,m_DatabaseConnector);
-       // this->UpdateContentAndDisplayFromDB<GoDBMeshRow>("mesh",
-       //   MeshTable,m_DatabaseConnector);
-        break;
-        }
-    case 1: //mesh
-        {
-        QStringList ListSelectedMeshes = this->MeshTable->ValuesForSelectedRows("MeshID");
-        GoDBTrackRow myNewTrack;
-        //myNewTrack.SetField("ColorID",  to be defined for some color chosen by the user
-        m_CollectionOfMeshes->CreateNewCollectionFromSelection<GoDBTrackRow>(ListSelectedMeshes,
-          m_DatabaseConnector,myNewTrack);
-      //  this->UpdateContentAndDisplayFromDB<GoDBMeshRow>("mesh",MeshTable,m_DatabaseConnector);
-      //  this->UpdateContentAndDisplayFromDB<GoDBTrackRow>("track",TrackTable,m_DatabaseConnector);
-        break;
-        }
-    case 2: //track
-      {
-      QStringList ListSelectedTracks = this->TrackTable->ValuesForSelectedRows("TrackID");
-      GoDBLineageRow myNewLineage;
-      //myNewLineage.SetField("ColorID",  to be defined for some color chosen by the user
-      m_CollectionOfTracks->CreateNewCollectionFromSelection<GoDBLineageRow>(ListSelectedTracks,
-        m_DatabaseConnector,myNewLineage);
-     // this->UpdateContentAndDisplayFromDB<GoDBTrackRow>("track",TrackTable,m_DatabaseConnector);
-     // this->UpdateContentAndDisplayFromDB<GoDBLineageRow>("lineage",LineageTable,m_DatabaseConnector);
-      break;
-      }
-    default:
-      {
-      std::cout<<"error, tab doesn't exist";
-      std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
-      std::cout << std::endl;
-      break;
-      }
-    }
-  CloseDBConnection();
-}*/
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-//
-//  Return negative value on error
-//  Return 0 if we are in the Contour Table
-//  Return 1 if we are in the Mesh    Table
-//  Return 2 if we are in the Track   Table
-//  Return 3 if we are in the Track   Table
-/*int QGoPrintDatabase::InWhichTableAreWe ()
-{
-  int CurrentIndex = this->DBTabWidget->currentIndex();
-  QString TabName = this->DBTabWidget->tabText(CurrentIndex);
-
-  int TabIndex = -1; // Default value.
-
-  if (TabName == "contour")
-    {
-    TabIndex = 0;
-    }
-  if (TabName == "mesh")
-    {
-    TabIndex = 1;
-    }
-  if (TabName == "track")
-    {
-    TabIndex = 2;
-    }
-  if (TabName == "lineage")
-    {
-    TabIndex = 3;
-    }
-
-  return TabIndex;
-}*/
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
