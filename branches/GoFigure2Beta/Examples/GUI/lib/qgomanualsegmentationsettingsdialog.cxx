@@ -38,6 +38,7 @@ int main( int argc, char** argv )
   app.closeAllWindows();
 
   delete dlg;
+  delete timer;
 
   return output;
 }
