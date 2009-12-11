@@ -309,31 +309,34 @@ void QGoPrintDatabase::DeleteTraces()
         VectorValues.push_back(ConvertToString<int>(ID));
         iter++;
         }
-      std::vector<std::string> ListBelongingTraces = ListSpecificValuesForOneColumn(
-        this->m_DatabaseConnector,CollectionOf,CollectionOfID,TraceID,VectorValues);
-
-      if (!ListBelongingTraces.empty())
+      if (!CollectionOf.empty())
         {
-        /** \todo put the collectionid of the belonging traces to 0/null*/
-        //put the collectionid of the belonging traces to 0:
-        std::list<int> TracesWithCollectionToBeNull;
-        std::vector<std::string>::iterator it = ListBelongingTraces.begin();
-        while (it != ListBelongingTraces.end())
+        std::vector<std::string> ListBelongingTraces = ListSpecificValuesForOneColumn(
+          this->m_DatabaseConnector,CollectionOf,CollectionOfID,TraceID,VectorValues);
+
+        if (!ListBelongingTraces.empty())
           {
-          std::string ID = *it;
-          TracesWithCollectionToBeNull.push_back(atoi(ID.c_str()));
-          it++;
+          /** \todo put the collectionid of the belonging traces to 0/null*/
+          //put the collectionid of the belonging traces to 0:
+          std::list<int> TracesWithCollectionToBeNull;
+          std::vector<std::string>::iterator it = ListBelongingTraces.begin();
+          while (it != ListBelongingTraces.end())
+            {
+            std::string ID = *it;
+            TracesWithCollectionToBeNull.push_back(atoi(ID.c_str()));
+            it++;
+            }
+          GoDBCollectionOfTraces* TracesCollectionOf = this->GetCollectionOfTraces(CollectionOf);
+          TracesCollectionOf->AddSelectedTracesToCollection(TracesWithCollectionToBeNull,0,
+            this->m_DatabaseConnector);
+          QTableWidgetChild* TableCollectionOf= this->GetTableWidgetChild(TracesCollectionOf->GetTraceName());
+          QColor Color(255,255,255,255);
+          std::string CollectionIDName = TracesCollectionOf->GetCollectionName();
+          CollectionIDName += "ID";
+          std::string TraceIDName = TracesCollectionOf->GetTraceName();
+          TraceIDName += "ID";
+          TableCollectionOf->UpdateIDs(0,CollectionIDName,Color,TraceIDName,TracesWithCollectionToBeNull);
           }
-        GoDBCollectionOfTraces* TracesCollectionOf = this->GetCollectionOfTraces(CollectionOf);
-        TracesCollectionOf->AddSelectedTracesToCollection(TracesWithCollectionToBeNull,0,
-          this->m_DatabaseConnector);
-        QTableWidgetChild* TableCollectionOf= this->GetTableWidgetChild(TracesCollectionOf->GetTraceName());
-        QColor Color(255,255,255,255);
-        std::string CollectionIDName = TracesCollectionOf->GetCollectionName();
-        CollectionIDName += "ID";
-        std::string TraceIDName = TracesCollectionOf->GetTraceName();
-        TraceIDName += "ID";
-        TableCollectionOf->UpdateIDs(0,CollectionIDName,Color,TraceIDName,TracesWithCollectionToBeNull);
         }
         
       //delete traces in the database:
