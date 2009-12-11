@@ -117,7 +117,7 @@ public:
 
   void UpdateCurrentColorData(std::pair<std::string,QColor> iCurrentColorData);
   void SetCurrentCollectionID(std::pair<std::string,QColor> iCurrentCollectionData);
- 
+
   QTableWidgetChild* ContourTable;
   QTableWidgetChild* MeshTable;
   QTableWidgetChild* TrackTable;
@@ -159,7 +159,7 @@ signals:
   void NeedToGetCurrentSelectedColor();
   void NewCreatedCollection();
   void NeedCurrentSelectedCollectionID();
-  void TraceToReEdit();
+  void TraceToReEdit( unsigned int );
   void DeletedCollection();
 
 protected:
@@ -180,7 +180,7 @@ protected:
   std::string       m_ImgSessionName;
   bool              m_IsDatabaseUsed;
   int               m_TraceIDToReedit;
- 
+
 
   QAction* m_VisibilityAction;
 
@@ -219,7 +219,7 @@ protected:
     GoDBCollectionOfTraces* iCollectionOfTraces);
   void closeEvent(QCloseEvent* event);
 
-  /** \brief Insert a row in the table widget and in the row container with the 
+  /** \brief Insert a row in the table widget and in the row container with the
   corresponding values of the new created Trace*/
   void UpdateTableWidgetAndRowContainerWithNewCreatedTrace(
     QTableWidgetChild* Table,vtkMySQLDatabase* DatabaseConnector,

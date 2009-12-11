@@ -26,6 +26,7 @@ class QGoManualSegmentationDockWidget :
     QColor GetActiveNodesColor() const;
 
   public slots:
+    void ActivateManualSegmentation( bool );
     void OnSetColorPressed();
     void SetContourColor();
     void GenerateRandomColorForGivenId( int iId );

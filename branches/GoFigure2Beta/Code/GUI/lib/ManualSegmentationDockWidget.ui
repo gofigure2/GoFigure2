@@ -6,9 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>143</width>
-    <height>262</height>
+    <width>134</width>
+    <height>258</height>
    </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>120</width>
+    <height>160</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>Manual Segmentation</string>
@@ -56,7 +62,7 @@
            <bool>false</bool>
           </property>
           <property name="text">
-           <string>Reinitialize</string>
+           <string>Reinit.</string>
           </property>
           <property name="shortcut">
            <string>Ctrl+R</string>
@@ -82,7 +88,7 @@
            <bool>false</bool>
           </property>
           <property name="text">
-           <string>Reinitialize + Increment</string>
+           <string>Reinit. + Incr.</string>
           </property>
           <property name="shortcut">
            <string>Ctrl+I</string>

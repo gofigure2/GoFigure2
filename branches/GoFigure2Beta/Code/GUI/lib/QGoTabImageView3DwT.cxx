@@ -45,7 +45,8 @@ QGoTabImageView3DwT( QWidget* iParent ) :
   m_Image( 0 ),
   m_BackgroundColor( Qt::black ),
   m_TimePoint( -1 ),
-  m_ContourId( 0 )
+  m_ContourId( 0 ),
+  m_ReEditContourMode( false )
 {
   m_Image = vtkSmartPointer< vtkImageData >::New();
 
@@ -208,11 +209,14 @@ void QGoTabImageView3DwT::CreateVisuDockWidget()
  QObject::connect( this->m_DataBaseTables,
     SIGNAL( NeedCurrentSelectedCollectionID() ),
     this, SLOT( PassInfoForCurrentCollectionID() ) );
- 
+
    QObject::connect( this->m_DataBaseTables,
     SIGNAL( DeletedCollection() ),
     this, SLOT( PassInfoForCurrentCollectionIDToDelete() ) );
 
+  QObject::connect( this->m_DataBaseTables,
+    SIGNAL( TraceToReEdit( unsigned int ) ),
+    this, SLOT( ReEditContour( unsigned int ) ) );
 }
 //-------------------------------------------------------------------------
 
@@ -1059,7 +1063,8 @@ ShowOneChannel( int iChannel )
 void QGoTabImageView3DwT::
 ValidateContour( const int& iContourID, const int& iDir,
   const double& iR, const double& iG, const double& iB, const double& iA,
-  const bool& iHighlighted, const unsigned int& iTCoord, const bool& iSaveInDataBase )
+  const bool& iHighlighted, const unsigned int& iTCoord,
+  const bool& iSaveInDataBase )
 {
   vtkPolyData* contour =
     m_ContourRepresentation[iDir]->GetContourRepresentationAsPolyData();
@@ -1106,10 +1111,21 @@ ValidateContour( const int& iContourID, const int& iDir,
 
     if( iSaveInDataBase )
       {
-      // Save contour in database!
-      m_ContourId = m_DataBaseTables->SaveContoursFromVisuInDB( min_idx[0],
-        min_idx[1], min_idx[2], iTCoord, max_idx[0],
-        max_idx[1], max_idx[2], contour_nodes, ColorData, meshid );
+      if( !m_ReEditContourMode )
+        {
+        // Save contour in database!
+        m_ContourId = m_DataBaseTables->SaveContoursFromVisuInDB( min_idx[0],
+          min_idx[1], min_idx[2], iTCoord, max_idx[0],
+          max_idx[1], max_idx[2], contour_nodes, ColorData, meshid );
+        }
+      else
+        {
+        m_ContourId = iContourID;
+
+        m_DataBaseTables->SaveContoursFromVisu( min_idx[0],
+          min_idx[1], min_idx[2], iTCoord, max_idx[0],
+          max_idx[1], max_idx[2], contour_nodes, ColorData, meshid, m_ContourId );
+        }
       }
     else
       {
@@ -1157,11 +1173,33 @@ ValidateContour( )
   // get from m_DataBaseTables if user is using one gofiguredatabase or not.
   // In such a case contours are saved in the database, else they are not!
   bool saveindatabase = m_DataBaseTables->IsDatabaseUsed();
+
   int ContourID = -1; // to make sure that m_ContourId is set to the right value
+
+  if( m_ReEditContourMode )
+    {
+    ContourID = m_ContourId;
+    }
 
   for( unsigned int i = 0; i < m_ContourWidget.size(); i++ )
     {
     ValidateContour( ContourID, i, r, g, b, a, highlighted, m_TimePoint, saveindatabase );
+    }
+
+  if( m_ReEditContourMode )
+    {
+    m_ManualSegmentationDockWidget->ActivateManualSegmentation( false );
+
+    for( unsigned int i = 0; i < m_ContourWidget.size(); i++ )
+      {
+      m_ContourWidget[i]->Initialize( NULL );
+      }
+
+    std::list< int > listofrowstobeselected;
+    listofrowstobeselected.push_back( m_ContourId );
+    m_DataBaseTables->ChangeContoursToHighLightInfoFromVisu( listofrowstobeselected );
+
+    m_ReEditContourMode = false;
     }
 }
 //-------------------------------------------------------------------------
@@ -1488,7 +1526,7 @@ void QGoTabImageView3DwT::PassInfoForCurrentCollectionID()
 
 //-------------------------------------------------------------------------
 void QGoTabImageView3DwT::PassInfoForCurrentCollectionIDToDelete()
-{ 
+{
   std::string CollectionIDToRemove = this->m_DataBaseTables->GetCurrentCollectionData().first;
   int index = this->m_VisuDockWidget->ColorIDCollectionComboBox->
     FindItemText(CollectionIDToRemove);
@@ -1512,22 +1550,34 @@ ReEditContour( const unsigned int& iId )
       vtkActor* c_actor;
       vtkPolyData* c_nodes;
 
-      while( it->TraceID == iId )
+      while( it != m_ContourMeshContainer.get< TraceID >().end() )
         {
-        c_dir = (*it).Direction;
-        c_actor = (*it).Actor;
-        c_nodes = (*it).Nodes;
+        if( it->TraceID == iId )
+          {
+          c_dir = (*it).Direction;
+          c_actor = (*it).Actor;
+          c_nodes = (*it).Nodes;
 
-        RemoveActorFromViewer( c_dir, c_actor );
+          RemoveActorFromViewer( c_dir, c_actor );
+          }
+        else
+          {
+          break;
+          }
+
         ++it;
         }
+
+      m_ContourMeshContainer.erase( iId );
 
       int dir = ComputeDirectionFromContour( c_nodes );
 
       if( dir != -1 )
         {
-        m_ContourWidget[dir]->On();
+        m_ReEditContourMode = true;
+        m_ContourId = iId;
         m_ContourWidget[dir]->Initialize( c_nodes );
+        m_ManualSegmentationDockWidget->ActivateManualSegmentation( true );
         }
       }
     }

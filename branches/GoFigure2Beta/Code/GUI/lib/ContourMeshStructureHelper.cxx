@@ -17,7 +17,7 @@ ComputeDirectionFromContour( vtkPolyData* iContour )
     {
     if( bounds[2*i] == bounds[2*i+1] )
       {
-      oDir = i;
+      oDir = 2 - i;
       }
     }
 

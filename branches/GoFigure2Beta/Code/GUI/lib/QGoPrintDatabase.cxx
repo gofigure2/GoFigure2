@@ -1184,9 +1184,9 @@ void QGoPrintDatabase::ReEditTrace()
       }
     else
       {
-      std::list<int>::iterator iter = SelectedTrace.begin();
-      this->m_TraceIDToReedit = *iter;
-      TraceToReEdit();
+//       std::list<int>::iterator iter = SelectedTrace.front();
+//       this->m_TraceIDToReedit = *iter;
+      TraceToReEdit( static_cast< unsigned int >( SelectedTrace.front() ) );
       }
     }
 }

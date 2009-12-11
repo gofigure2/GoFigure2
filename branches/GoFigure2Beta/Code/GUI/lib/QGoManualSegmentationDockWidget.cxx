@@ -63,6 +63,13 @@ GetMeshId() const
 
 void
 QGoManualSegmentationDockWidget::
+ActivateManualSegmentation( bool iActivate )
+{
+  this->OnRBtn->setChecked( iActivate );
+}
+
+void
+QGoManualSegmentationDockWidget::
 OnSetColorPressed()
 {
   QColor temp = QColorDialog::getColor( m_ValidatedColor, this,

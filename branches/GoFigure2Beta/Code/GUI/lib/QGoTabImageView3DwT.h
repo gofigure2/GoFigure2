@@ -230,6 +230,7 @@ protected:
   QColor                m_BackgroundColor;
   int                   m_TimePoint;
   unsigned int          m_ContourId;
+  bool                  m_ReEditContourMode;
 
   QGoVisualizationDockWidget*       m_VisuDockWidget;
   QGoManualSegmentationDockWidget*  m_ManualSegmentationDockWidget;
