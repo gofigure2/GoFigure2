@@ -274,11 +274,13 @@ void QGoMainWindow::openFilesfromDB()
     // since they have just been extracted from it!
     while( contourmesh_list_it != contour_list.end() )
       {
-      w3t->AddContourFromNodes( contourmesh_list_it->Nodes,
+      w3t->AddContourFromNodes(
+        contourmesh_list_it->TraceID,
+        contourmesh_list_it->Nodes,
         contourmesh_list_it->rgba,
         contourmesh_list_it->Highlighted,
-        0,
-        false );
+        0, // timepoint
+        false ); // not to be saved in the database
       ++contourmesh_list_it;
       }
 

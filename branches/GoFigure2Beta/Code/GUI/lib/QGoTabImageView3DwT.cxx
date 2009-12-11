@@ -1052,12 +1052,12 @@ ShowOneChannel( int iChannel )
  * \param iId
  */
 void QGoTabImageView3DwT::
-ValidateContour( const int& iId,
+ValidateContour( const int& iContourID, const int& iDir,
   const double& iR, const double& iG, const double& iB, const double& iA,
   const bool& iHighlighted, const unsigned int& iTCoord, const bool& iSaveInDataBase )
 {
   vtkPolyData* contour =
-    m_ContourRepresentation[iId]->GetContourRepresentationAsPolyData();
+    m_ContourRepresentation[iDir]->GetContourRepresentationAsPolyData();
 
   if( ( contour->GetNumberOfPoints() > 2 ) && ( m_TimePoint >= 0 ) )
     {
@@ -1079,7 +1079,7 @@ ValidateContour( const int& iId,
     int* max_idx = this->GetImageCoordinatesFromWorldCoordinates( Max );
 
     vtkPolyData* contour_nodes = vtkPolyData::New();
-    m_ContourRepresentation[iId]->GetNodePolyData( contour_nodes );
+    m_ContourRepresentation[iDir]->GetNodePolyData( contour_nodes );
 
     vtkProperty* contour_property = vtkProperty::New();
     contour_property->SetColor( iR, iG, iB );
@@ -1089,7 +1089,7 @@ ValidateContour( const int& iId,
     contour_copy->ShallowCopy( contour );
 
     std::vector< vtkActor* > contour_actor =
-      this->AddContour( iId, contour_copy,
+      this->AddContour( iDir, contour_copy,
         contour_property );
 
     std::pair< std::string, QColor > ColorData =
@@ -1106,6 +1106,13 @@ ValidateContour( const int& iId,
         min_idx[1], min_idx[2], iTCoord, max_idx[0],
         max_idx[1], max_idx[2], contour_nodes, ColorData, meshid );
       }
+    else
+      {
+      if( iContourID != -1 )
+        {
+        m_ContourId = iContourID;
+        }
+      }
 
     contour_copy->Delete();
     contour_property->Delete();
@@ -1118,7 +1125,7 @@ ValidateContour( const int& iId,
       m_ContourMeshContainer.insert( temp );
       }
 
-    if( !iSaveInDataBase )
+    if( ( !iSaveInDataBase ) && ( iContourID != -1 ) )
       {
       ++m_ContourId;
       }
@@ -1145,10 +1152,11 @@ ValidateContour( )
   // get from m_DataBaseTables if user is using one gofiguredatabase or not.
   // In such a case contours are saved in the database, else they are not!
   bool saveindatabase = m_DataBaseTables->IsDatabaseUsed();
+  int ContourID = -1; // to make sure that m_ContourId is set to the right value
 
   for( unsigned int i = 0; i < m_ContourWidget.size(); i++ )
     {
-    ValidateContour( i, r, g, b, a, highlighted, m_TimePoint, saveindatabase );
+    ValidateContour( ContourID, i, r, g, b, a, highlighted, m_TimePoint, saveindatabase );
     }
 }
 //-------------------------------------------------------------------------
@@ -1368,13 +1376,14 @@ AddPolyData( vtkPolyData* iMesh )
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
-AddContourFromNodes( vtkPolyData* iNodes,
+AddContourFromNodes( const unsigned int& iContourID,
+  vtkPolyData* iNodes,
   double iRgba[4],
   const bool& iHighlighted,
   const unsigned int& iTCoord,
   const bool& iSaveInDataBase )
 {
-  AddContourFromNodes( iNodes, iRgba[0], iRgba[1], iRgba[2], iRgba[3],
+  AddContourFromNodes( iContourID, iNodes, iRgba[0], iRgba[1], iRgba[2], iRgba[3],
     iHighlighted, iTCoord, iSaveInDataBase );
 }
 //-------------------------------------------------------------------------
@@ -1382,7 +1391,8 @@ AddContourFromNodes( vtkPolyData* iNodes,
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
-AddContourFromNodes( vtkPolyData* iNodes,
+AddContourFromNodes( const unsigned int& iContourID,
+  vtkPolyData* iNodes,
   const double& iR, const double& iG, const double& iB, const double& iA,
   const bool& iHighlighted, const unsigned int& iTCoord, const bool& iSaveInDataBase )
 {
@@ -1396,7 +1406,8 @@ AddContourFromNodes( vtkPolyData* iNodes,
       /// before turning it on
       m_ContourWidget[dir]->On();
       m_ContourWidget[dir]->Initialize( iNodes );
-      this->ValidateContour( dir, iR, iG, iB, iA, iHighlighted, iTCoord, iSaveInDataBase );
+      this->ValidateContour( iContourID, dir, iR, iG, iB, iA, iHighlighted,
+        iTCoord, iSaveInDataBase );
       m_ContourWidget[dir]->Off();
       }
     }
@@ -1671,6 +1682,6 @@ SelectContoursInTable( )
     ++it;
     }
 
-//   this->m_DataBaseTables->ChangeContoursToHighLightInfoFromVisu( listofrowstobeselected );
+  this->m_DataBaseTables->ChangeContoursToHighLightInfoFromVisu( listofrowstobeselected );
 }
 //-------------------------------------------------------------------------
