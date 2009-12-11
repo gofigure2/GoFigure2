@@ -353,5 +353,7 @@ void UpdateContourInDB(vtkMySQLDatabase* DatabaseConnector,
     "contourID",contourID);
   UpdateValueInDB(DatabaseConnector,"contour","MeshID",UpdatedContour.GetMapValue("MeshID"),
     "contourID",contourID);
+  UpdateValueInDB(DatabaseConnector,"contour","Points",UpdatedContour.GetMapValue("Points"),
+    "contourID",contourID);
 }
 
