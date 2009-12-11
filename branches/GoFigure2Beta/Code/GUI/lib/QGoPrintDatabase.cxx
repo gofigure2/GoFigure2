@@ -263,8 +263,9 @@ void QGoPrintDatabase::CreateContextMenu(const QPoint &iPos)
   ContextMenu->addAction(
     tr("Add to selected %1 : %2").arg(CollectionName.c_str())
     .arg(this->m_CurrentCollectionData.first.c_str()),this,SLOT(AddToSelectedCollection()));
+  ContextMenu->addAction(tr("ReEdit the selected %1").arg(TraceName.c_str()),
+    this,SLOT(ReEditTrace()));
   ContextMenu->exec(this->mapToGlobal(iPos));
-
 }
 //--------------------------------------------------------------------------
 
@@ -1062,4 +1063,45 @@ void QGoPrintDatabase::SetCurrentCollectionID(
   std::pair<std::string,QColor> iCurrentCollectionData)
 {
   this->m_CurrentCollectionData = iCurrentCollectionData;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoPrintDatabase::ReEditTrace()
+{
+  std::string TraceName = this->InWhichTableAreWe();
+  QTableWidgetChild* Table = this->GetTableWidgetChild(TraceName.c_str());
+  std::list<int> SelectedTrace = Table->GetListCheckedTraceID();
+  if (SelectedTrace.empty())
+    {
+    QMessageBox msgBox;
+    msgBox.setText(
+      tr("Please select the %1 you want to reedit")
+      .arg(TraceName.c_str() ) );
+    msgBox.exec();
+    }
+  else
+    {
+    if (SelectedTrace.size() != 1)
+      {
+      QMessageBox msgBox;
+      msgBox.setText(
+        tr("Please select only one %1 to reedit")
+        .arg(TraceName.c_str() ) );
+      msgBox.exec();
+      }
+    else
+      {
+      std::list<int>::iterator iter = SelectedTrace.begin();
+      this->m_TraceIDToReedit = *iter;
+      TraceToReEdit();
+      }
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+int QGoPrintDatabase::GetTraceIDToReedit()
+{ /** \todo look if possible the signal to return the int directly*/
+  return this->m_TraceIDToReedit;
 }

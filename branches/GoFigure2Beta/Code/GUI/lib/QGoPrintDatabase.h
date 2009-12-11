@@ -106,6 +106,7 @@ public:
 
 
   std::pair<std::string,QColor> GetDataNewCreatedCollection();
+  int GetTraceIDToReedit();
 
   /** \brief Save a new color in the database with rgba and the name of the color*/
   void SaveNewColorInDB(std::vector<std::string> iDataNewColor);
@@ -152,6 +153,7 @@ signals:
   void NeedToGetCurrentSelectedColor();
   void NewCreatedCollection();
   void NeedCurrentSelectedCollectionID();
+  void TraceToReEdit();
 
 protected:
   GoDBCollectionOfTraces* m_CollectionOfContours;
@@ -170,6 +172,7 @@ protected:
   unsigned int      m_ImgSessionID;
   std::string       m_ImgSessionName;
   bool              m_IsDatabaseUsed;
+  int               m_TraceIDToReedit;
  
 
   QAction* m_VisibilityAction;
@@ -231,6 +234,7 @@ protected slots:
   void CreateCorrespondingCollection();
 
   void AddToSelectedCollection();
+  void ReEditTrace();
 
   /** \brief Update the m_ContoursInfo or m_MeshesInfo depending on which table
   the user had clicked with the selected traces and emit a signal to say which m_tracesInfo has
