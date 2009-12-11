@@ -89,13 +89,16 @@ void GoDBCollectionOfTraces::SetImgSessionID (unsigned int iImgSessionID)
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void GoDBCollectionOfTraces::DeleteTraces(QStringList TracesToDelete,
+void GoDBCollectionOfTraces::DeleteTraces(std::list<int> TracesToDelete,
   vtkMySQLDatabase* DatabaseConnector)
 {
-  for (int i = 0; i<TracesToDelete.size();i++)
+  std::list<int>::iterator iter = TracesToDelete.begin();
+  while (iter != TracesToDelete.end())
     {
-    std::string ID = TracesToDelete.at(i).toStdString();
-    DeleteRow(DatabaseConnector,m_TracesName,m_TracesIDName,ID);
+    int ID = *iter;
+
+    DeleteRow(DatabaseConnector,m_TracesName,m_TracesIDName,ConvertToString<int>(ID));
+    iter++;
     }
 }
 //--------------------------------------------------------------------------
@@ -110,6 +113,10 @@ void GoDBCollectionOfTraces::AddSelectedTracesToCollection(
   while (iter != iListSelectedTraces.end())
     {
     int TraceID = *iter;
+    /*if (TraceID == 0)
+      {
+      std::string TraceID = "null";
+      }*/
     UpdateValueInDB(DatabaseConnector,m_TracesName,m_CollectionIDName, 
       newCollectionIDstring,m_TracesIDName, ConvertToString<int>(TraceID));
     iter++;
@@ -543,4 +550,26 @@ int GoDBCollectionOfTraces::CreateNewCollection(
       DatabaseConnector,this->m_CollectionName, NewLineage , m_CollectionIDName);
     }
   return 0;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+std::string GoDBCollectionOfTraces::GetCollectionOf()
+{
+  if (this->m_TracesName == "contour")
+    {
+    return "";
+    }
+  if (this->m_TracesName == "mesh")
+    {
+    return "contour";
+    }
+  if (this->m_TracesName == "track")
+    {
+    return "mesh";
+    }
+  if (this->m_TracesName == "lineage")
+    {
+    return "track";
+    }
 }

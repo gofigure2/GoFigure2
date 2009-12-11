@@ -293,7 +293,39 @@ void QGoPrintDatabase::DeleteTraces()
     if (r == QMessageBox::Yes)
       {
       OpenDBConnection();
+      //check that the traces are not collection of existing traces, if so, 
+      //put the corresponding collectionID to 0:
+      std::string TraceID = TraceName;
+      TraceID += "ID";
+      std::string CollectionOf = CollectionOfTraces->GetCollectionOf();
+      std::string CollectionOfID = CollectionOf;
+      CollectionOfID += "ID";
+
+      std::vector<std::string> VectorValues;
+      std::list<int>::iterator iter = SelectedTraces.begin();
+      while(iter != SelectedTraces.end())
+        {
+        int ID = *iter;
+        VectorValues.push_back(ConvertToString<int>(ID));
+        iter++;
+        }
+      std::vector<std::string> ListBelongingTraces = ListSpecificValuesForOneColumn(
+        this->m_DatabaseConnector,CollectionOf,CollectionOfID,TraceID,VectorValues);
+
+      std::list<int> TracesWithCollectionToBeNull;
+      std::vector<std::string>::iterator it = ListBelongingTraces.begin();
+      while (it != ListBelongingTraces.end())
+        {
+        std::string ID = *it;
+        TracesWithCollectionToBeNull.push_back(atoi(ID.c_str()));
+        it++;
+        }
+      GoDBCollectionOfTraces* TracesCollectionOf = this->GetCollectionOfTraces(CollectionOf);
+      TracesCollectionOf->AddSelectedTracesToCollection(TracesWithCollectionToBeNull,0,
+        this->m_DatabaseConnector);
+
       //delete traces in the database:
+      CollectionOfTraces->DeleteTraces(SelectedTraces,this->m_DatabaseConnector);
       //delete traces in the row container:
       //delete traces in the table widget with the vector of selected traces
       CloseDBConnection();

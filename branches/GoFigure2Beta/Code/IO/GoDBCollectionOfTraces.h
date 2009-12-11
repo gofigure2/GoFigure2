@@ -71,7 +71,7 @@ public:
   void SetImgSessionID (unsigned int iImgSessionID);
 
   /** \brief Delete in the Database all the traces listed in the QStringList */
-  void DeleteTraces(QStringList TracesToDelete,
+  void DeleteTraces(std::list<int> TracesToDelete,
   vtkMySQLDatabase* DatabaseConnector);
 
   /** \brief Update the collectionID of the selected traces in the DB traces table
@@ -83,6 +83,9 @@ public:
   /** \brief Return a map with all the ColumnNames for the table widget to be
   completed by the value for each column:*/
   std::list<std::string> GetListColumnsNamesForTableWidget();
+  /** \brief return the name of the tracce the trace of the current collection
+  is also a collection of*/
+  std::string GetCollectionOf();
 
   GoDBTableWidgetContainer* GetLinkToRowContainer()
     {
