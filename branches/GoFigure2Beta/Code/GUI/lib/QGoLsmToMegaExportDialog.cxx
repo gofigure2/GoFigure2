@@ -8,12 +8,11 @@
  */
 QGoLsmToMegaExportDialog::
 QGoLsmToMegaExportDialog( QWidget* iParent) : QDialog( iParent ), m_LsmPath(""),
-		m_LsmName(""), m_MegaPath(""), m_FileFormatIsPNG(true), m_ProgressDialog(NULL),
-		m_Counter(0)
+		m_LsmName(""), m_MegaPath(""), m_FileFormatIsPNG(true), m_Counter(0)
 {
   this->setupUi( this );
 
-  m_ProgressDialog = new QProgressDialog("Conversion in progress.", "Cancel", 0, 100);
+  m_ProgressDialog = new QProgressDialog("Conversion in progress.", "Cancel", 0, 100, this);
 
   QObject::connect( &ConversionLsmToMegaThreadSend, SIGNAL( ConversionTerminatedSent() ),
       this, SLOT( ConversionTerminatedReceived() ) );
@@ -31,7 +30,6 @@ QGoLsmToMegaExportDialog( QWidget* iParent) : QDialog( iParent ), m_LsmPath(""),
 QGoLsmToMegaExportDialog::
 ~QGoLsmToMegaExportDialog()
 {
-  delete m_ProgressDialog;
 }
 
 /**
@@ -45,18 +43,15 @@ on_selectLsmFile_clicked()
  * \todo add a filter to see only lsm files
  */
 
-  QString fullFilename = QFileDialog::getOpenFileName( this,
+  m_LsmPath = QFileDialog::getOpenFileName( this,
       tr( "Select the LSM file to convert" ), "fileName.lsm", 0 );
 
-  QFileInfo fileInfo( fullFilename );
+  QFileInfo fileInfo( m_LsmPath );
 
-  m_LsmPath = fullFilename.toStdString();
-
-  QString fileName = fileInfo.fileName();
-  m_LsmName = fileName.toStdString();
+  m_LsmName = fileInfo.fileName();
 
   // Write the lsm file name in the dialog window
-  lsmFileName->setText( QString(QString::fromLocal8Bit(m_LsmName.c_str())) );
+  lsmFileName->setText( m_LsmName );
 }
 
 /**
@@ -66,13 +61,12 @@ void
 QGoLsmToMegaExportDialog::
 on_selectMegaPath_clicked()
 {
-  QString filename = QFileDialog::getExistingDirectory(this, tr("Open Directory"),
-          "/home",QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+  m_MegaPath = QFileDialog::getExistingDirectory(this, tr("Open Directory"),
+    QDir::homePath(), QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
 
-  m_MegaPath = filename.toStdString();
-  m_MegaPath += "/";
+  m_MegaPath.insert(m_MegaPath.size(), QString("/"));
 
-  megaFilePath->setText( QString(QString::fromLocal8Bit(m_MegaPath.c_str())) );
+  megaFilePath->setText( m_MegaPath );
 }
 
 /**
@@ -113,7 +107,7 @@ on_convert_clicked()
   this->outputFormatLabel->setEnabled(false);
   this->label_2->setEnabled(false);
 
-  this->convertLabel->setText( QString(QString::fromLocal8Bit("READS LSM READERS"))  );
+  this->convertLabel->setText( tr("READS LSM READERS")  );
 
 
   // Set conversion parameters
@@ -124,10 +118,10 @@ on_convert_clicked()
 	}
 
   // conversion fonction called from there to enable progress bar
-  ConversionLsmToMegaThreadSend.SetBaseName(m_LsmName);
-  ConversionLsmToMegaThreadSend.SetLsmPath(m_LsmPath);
+  ConversionLsmToMegaThreadSend.SetBaseName(m_LsmName.toStdString());
+  ConversionLsmToMegaThreadSend.SetLsmPath(m_LsmPath.toStdString());
   ConversionLsmToMegaThreadSend.SetOutputFileType(filetype);
-  ConversionLsmToMegaThreadSend.SetMegaPath(m_MegaPath);
+  ConversionLsmToMegaThreadSend.SetMegaPath(m_MegaPath.toStdString());
 
   ConversionLsmToMegaThreadSend.start();
 }
@@ -155,7 +149,7 @@ ConversionTerminatedReceived()
   this->outputFormatLabel->setEnabled(true);
   this->label_2->setEnabled(true);
 
-  this->convertLabel->setText( QString(QString::fromLocal8Bit(""))  );
+  this->convertLabel->setText( tr("")  );
 }
 
 /**
@@ -165,7 +159,7 @@ void
 QGoLsmToMegaExportDialog::
 InitialisationProgressReceived()
 {
-  this->convertLabel->setText( QString(QString::fromLocal8Bit("CONVERSION in PROGRESS"))  );
+  this->convertLabel->setText( tr("CONVERSION in PROGRESS") );
 
   int sizeProgressBar = ConversionLsmToMegaThreadSend.GetNumberOfPoints();
 

@@ -33,9 +33,9 @@ protected slots:
   void CanceledReceived();
 
 private:
-  std::string      m_LsmPath;
-  std::string      m_LsmName;
-  std::string      m_MegaPath;
+  QString          m_LsmPath;
+  QString          m_LsmName;
+  QString          m_MegaPath;
   bool             m_FileFormatIsPNG;
   QProgressDialog* m_ProgressDialog;
   int              m_Counter;
