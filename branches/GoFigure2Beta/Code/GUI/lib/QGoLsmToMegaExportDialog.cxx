@@ -8,7 +8,8 @@
  */
 QGoLsmToMegaExportDialog::
 QGoLsmToMegaExportDialog( QWidget* iParent) : QDialog( iParent ), m_LsmPath(""),
-		m_LsmName(""), m_MegaPath(""), m_FileFormatIsPNG(true)
+		m_LsmName(""), m_MegaPath(""), m_FileFormatIsPNG(true), m_ProgressDialog(NULL),
+		m_Counter(0)
 {
   this->setupUi( this );
 
