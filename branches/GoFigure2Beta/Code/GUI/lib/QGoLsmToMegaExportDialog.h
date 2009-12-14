@@ -30,6 +30,7 @@ protected slots:
   void ConversionTerminatedReceived();
   void InitialisationProgressReceived();
   void ProgressReceived();
+  void CanceledReceived();
 
 private:
   std::string      m_LsmPath;

@@ -20,6 +20,8 @@ QGoLsmToMegaExportDialog( QWidget* iParent) : QDialog( iParent ), m_LsmPath(""),
   QObject::connect(&ConversionLsmToMegaThreadSend, SIGNAL(InitialisationProgressSent()), this, SLOT(InitialisationProgressReceived()));
 
   QObject::connect(&ConversionLsmToMegaThreadSend, SIGNAL(ProgressSent()), this, SLOT(ProgressReceived()));
+
+  QObject::connect(m_ProgressDialog, SIGNAL(canceled()), this, SLOT(CanceledReceived()));
 }
 
 /**
@@ -187,4 +189,16 @@ ProgressReceived()
 {
   m_Counter++;
   m_ProgressDialog->setValue(m_Counter);
+}
+
+/**
+ * \brief Catch thread, cancel the conversion
+ */
+void
+QGoLsmToMegaExportDialog::
+CanceledReceived()
+{
+  ConversionLsmToMegaThreadSend.terminate();
+  ConversionLsmToMegaThreadSend.exit();
+  this->ConversionTerminatedReceived();
 }
