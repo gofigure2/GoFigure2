@@ -12,8 +12,14 @@ QGoLsmToMegaExportDialog( QWidget* iParent) : QDialog( iParent ), m_LsmPath(""),
 {
   this->setupUi( this );
 
+  m_ProgressDialog = new QProgressDialog("Conversion in progress.", "Cancel", 0, 100);
+
   QObject::connect( &ConversionLsmToMegaThreadSend, SIGNAL( ConversionTerminatedSent() ),
       this, SLOT( ConversionTerminatedReceived() ) );
+
+  QObject::connect(&ConversionLsmToMegaThreadSend, SIGNAL(InitialisationProgressSent()), this, SLOT(InitialisationProgressReceived()));
+
+  QObject::connect(&ConversionLsmToMegaThreadSend, SIGNAL(ProgressSent()), this, SLOT(ProgressReceived()));
 }
 
 /**
@@ -22,6 +28,7 @@ QGoLsmToMegaExportDialog( QWidget* iParent) : QDialog( iParent ), m_LsmPath(""),
 QGoLsmToMegaExportDialog::
 ~QGoLsmToMegaExportDialog()
 {
+  delete m_ProgressDialog;
 }
 
 /**
@@ -103,7 +110,7 @@ on_convert_clicked()
   this->outputFormatLabel->setEnabled(false);
   this->label_2->setEnabled(false);
 
-  this->convertLabel->setText( QString(QString::fromLocal8Bit("CONVERSION in PROGRESS"))  );
+  this->convertLabel->setText( QString(QString::fromLocal8Bit("READS LSM READERS"))  );
 
 
   // Set conversion parameters
@@ -114,6 +121,7 @@ on_convert_clicked()
 	}
 
   // conversion fonction called from there to enable progress bar
+  ConversionLsmToMegaThreadSend.SetBaseName(m_LsmName);
   ConversionLsmToMegaThreadSend.SetLsmPath(m_LsmPath);
   ConversionLsmToMegaThreadSend.SetOutputFileType(filetype);
   ConversionLsmToMegaThreadSend.SetMegaPath(m_MegaPath);
@@ -128,6 +136,7 @@ void
 QGoLsmToMegaExportDialog::
 ConversionTerminatedReceived()
 {
+  m_ProgressDialog->cancel();
 
   //Enable everything
   lsmFileName->setEnabled(true);
@@ -146,3 +155,36 @@ ConversionTerminatedReceived()
   this->convertLabel->setText( QString(QString::fromLocal8Bit(""))  );
 }
 
+/**
+ * \brief Catch thread, initialize the progress bar
+ */
+void
+QGoLsmToMegaExportDialog::
+InitialisationProgressReceived()
+{
+  this->convertLabel->setText( QString(QString::fromLocal8Bit("CONVERSION in PROGRESS"))  );
+
+  int sizeProgressBar = ConversionLsmToMegaThreadSend.GetNumberOfPoints();
+
+  // if starts at 0 strange things happen...
+  m_Counter = 1;
+
+  // sizeProgressBar because
+  // +1 because m_Counter starts at 1
+  // +1 to prevent that the dialoProgressWindow automatically close
+  //    then re-open when 100% reached
+  m_ProgressDialog->setRange(0,sizeProgressBar+2);
+  m_ProgressDialog->setValue(m_Counter);
+
+}
+
+/**
+ * \brief Catch thread, update the progress bar
+ */
+void
+QGoLsmToMegaExportDialog::
+ProgressReceived()
+{
+  m_Counter++;
+  m_ProgressDialog->setValue(m_Counter);
+}

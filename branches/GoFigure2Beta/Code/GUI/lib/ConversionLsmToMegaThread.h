@@ -54,17 +54,21 @@ class ConversionLsmToMegaThread : public QThread
   Q_OBJECT
 
 public:
-  ConversionLsmToMegaThread(){}
+  ConversionLsmToMegaThread();
   virtual ~ConversionLsmToMegaThread(){}
+  void SetBaseName( std::string iBaseName);
   void SetLsmPath( std::string iLsmPath);
   void SetMegaPath( std::string iMegaPath);
   void SetOutputFileType( const GoFigure::FileType& iFileType );
   void ExportWithReimplemented( std::string iMegaPath );
+  int  GetNumberOfPoints();
 
 public slots:
 
 signals:
   void ConversionTerminatedSent();
+  void InitialisationProgressSent();
+  void ProgressSent();
 
 protected:
   void run();
@@ -72,6 +76,7 @@ protected:
 private:
   ConversionLsmToMegaThread( const ConversionLsmToMegaThread& );
   ConversionLsmToMegaThread operator = ( const ConversionLsmToMegaThread& );
+  std::string m_BaseName;
   std::string m_LsmPath;
   std::string m_MegaPath;
   GoFigure::FileType m_FileType;
@@ -85,6 +90,9 @@ private:
   double m_XOverlap;
   double m_YOverlap;
   double m_ZOverlap;
+  unsigned int m_NumberOfChannels;
+  unsigned int m_NumberOfTimePoints;
+  unsigned int m_Dim;
 };
 
 #endif

@@ -4,7 +4,7 @@
 #include "ui_LsmToMegaExportDialog.h"
 
 #include <Qt>
-
+#include <QProgressDialog>
 #include "ConversionLsmToMegaThread.h"
 
 #include <stdio.h>
@@ -28,12 +28,16 @@ protected slots:
   void on_outputFormat_activated( int index );
   void on_convert_clicked();
   void ConversionTerminatedReceived();
+  void InitialisationProgressReceived();
+  void ProgressReceived();
 
 private:
-  std::string m_LsmPath;
-  std::string m_LsmName;
-  std::string m_MegaPath;
-  bool        m_FileFormatIsPNG;
+  std::string      m_LsmPath;
+  std::string      m_LsmName;
+  std::string      m_MegaPath;
+  bool             m_FileFormatIsPNG;
+  QProgressDialog* m_ProgressDialog;
+  int              m_Counter;
 
 };
 #endif

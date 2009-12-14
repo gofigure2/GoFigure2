@@ -40,80 +40,91 @@
 #include "ConversionLsmToMegaThread.h"
 
 #include "LSMToMegaCapture.h"
+
 #include "vtkLSMReader.h"
+#include <fstream>
+#include <sstream>
+#include <time.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <stdio.h>
+
+#include "vtkImageWriterHelper.h"
+#include "vtkExtractVOI.h"
+#include "vtkImageData.h"
+#include "vtkLSMReader.h"
+
+#include "vtkPNGWriter.h"
+#include "vtkTIFFWriter.h"
 
 #include <iostream>
 
-using namespace std;
+/**
+ * \todo get rid of converter by integrating methods to get LSMReaders somewhere in this class
+ */
 
-//--------------------------------------------------------------------------------
 /**
  * \brief Constructor
  */
-/*m_Plaque;
-  unsigned int m_Row;
-  unsigned int m_Column;
-  unsigned int m_XTile;
-  unsigned int m_YTile;
-  unsigned int m_ZTile;*/
+ConversionLsmToMegaThread::
+ConversionLsmToMegaThread ( ) : m_Plaque (0),m_Row(0), m_Column (0),
+m_XTile(0), m_YTile(0), m_ZTile (0)
+{
+}
+
 
 void
 ConversionLsmToMegaThread::
 run()
 {
-  // Start conversion
   LSMToMegaCapture converter;
   converter.SetFileName( m_LsmPath );
   converter.SetOutputFileType( m_FileType );
-  converter.Export( m_MegaPath );
+
+  m_LSMReaders = converter.GetLSMReaders();
+  m_NumberOfChannels = m_LSMReaders[0]->GetNumberOfChannels();
+  m_NumberOfTimePoints = m_LSMReaders[0]->GetNumberOfTimePoints();
+  int dim[5];
+  m_LSMReaders[0]->GetDimensions( dim );
+  m_Dim = dim[2];
+
+  // Start conversion
+  emit InitialisationProgressSent();
+
+  //converter.Export( m_MegaPath );
   this->ExportWithReimplemented( m_MegaPath );
 
   // send message "conversion terminated"
   emit ConversionTerminatedSent();
 }
 
+/**
+ * \brief Set the base name of the LSM file to convert
+ * \param[in] iBaseName Name of the LSM file
+ */
+void
+ConversionLsmToMegaThread::
+SetBaseName( std::string iBaseName)
+{
+  size_t point_idx = iBaseName.rfind( ".lsm" );
+  m_BaseName = iBaseName.substr( 0, point_idx);
+}
+
+/**
+ * \brief Set the path to the LSM file to convert and initialise LSM reader
+ * \param[in] iLsmPath Path of the LSM file
+ */
 void
 ConversionLsmToMegaThread::
 SetLsmPath( std::string iLsmPath)
 {
   m_LsmPath = iLsmPath;
-  /*
-  m_FileName = iFileName;
-  size_t point_idx = iFileName.rfind( ".lsm" );
-
-  if( point_idx != std::string::npos )
-    {
-    size_t slash_idx = iFileName.rfind( '/' );
-    if( point_idx != std::string::npos )
-      {
-      m_BaseName = iFileName.substr( slash_idx, point_idx - slash_idx );
-      }
-    else
-      {
-      slash_idx = iFileName.rfind( "\\" );
-      if( point_idx != std::string::npos )
-        {
-        m_BaseName = iFileName.substr( slash_idx, point_idx - slash_idx );
-        }
-      else
-        {
-        m_BaseName = iFileName.substr( 0, point_idx );
-        }
-      }
-
-    if( !m_LSMReaders.empty() )
-      {
-      for( unsigned int i = 0; i < m_LSMReaders.size(); i++ )
-        {
-        m_LSMReaders[i]->Delete();
-        }
-      }
-    m_LSMReaders.push_back( vtkLSMReader::New() );
-    m_LSMReaders.front()->SetFileName( iFileName.c_str() );
-    m_LSMReaders.front()->Update();
-    }*/
 }
 
+/**
+ * \brief Set the path of the MegaCapture file to create
+ * \param[in] iMegaPath Path of the MegaCapture file
+ */
 void
 ConversionLsmToMegaThread::
 SetMegaPath( std::string iMegaPath)
@@ -121,6 +132,10 @@ SetMegaPath( std::string iMegaPath)
   m_MegaPath = iMegaPath;
 }
 
+/**
+ * \brief Set the output file type
+ * \param[in] iFileType File type: PNG or TIFF
+ */
 void
 ConversionLsmToMegaThread::
 SetOutputFileType( const GoFigure::FileType& iFileType )
@@ -128,167 +143,186 @@ SetOutputFileType( const GoFigure::FileType& iFileType )
 m_FileType = iFileType;
 }
 
+
+/**
+ * \brief Start the conversion to MegaCapture
+ * \param[in] iMegaPath path of the output MegaCapture file
+ */
 void
 ConversionLsmToMegaThread::
 ExportWithReimplemented( std::string iMegaPath )
 {
+  double spacing[3];
+  m_LSMReaders[0]->GetVoxelSizes( spacing );
 
-	//m_LSMReaders
-/*m_NumberOfChannels = m_LSMReaders[0]->GetNumberOfChannels();
-	  m_NumberOfTimePoints = m_LSMReaders[0]->GetNumberOfTimePoints();
+  int dim[5];
+  m_LSMReaders[0]->GetDimensions( dim );
 
-	  std::cout <<m_LSMReaders[0]->GetDescription() <<std::endl;
+  std::string headerfilename = iMegaPath;
+  headerfilename += m_BaseName;
+  headerfilename += ".meg";
 
-	  double spacing[3];
-	  m_LSMReaders[0]->GetVoxelSizes( spacing );
+  std::ofstream file( headerfilename.c_str() );
+  file <<"MegaCapture" <<std::endl;
+  file <<"<ImageSessionData>" <<std::endl;
+  file <<"Version 3.0" <<std::endl;
+  file <<"ExperimentTitle " <<std::endl;
+  file <<"ExperimentDescription ";
+  if( m_LSMReaders[0]->GetDescription() )
+    {
+    file <<m_LSMReaders[0]->GetDescription();
+    }
+  file <<std::endl;
+  file <<"TimeInterval " <<m_LSMReaders[0]->GetTimeInterval() <<std::endl;
+  file <<"Objective " <<m_LSMReaders[0]->GetObjective() <<std::endl;
+  file <<"VoxelSizeX " <<spacing[0] * 1000000 <<std::endl;
+  file <<"VoxelSizeY " <<spacing[1] * 1000000 <<std::endl;
+  file <<"VoxelSizeZ " <<spacing[2] * 1000000 <<std::endl;
+  file <<"DimensionX " <<dim[0] <<std::endl;
+  file <<"DimensionY " <<dim[1] <<std::endl;
+  file <<"DimensionPL " <<m_Plaque <<std::endl;
+  file <<"DimensionCO " <<m_Column <<std::endl;
+  file <<"DimensionRO " <<m_Row <<std::endl;
+  file <<"DimensionZT " <<m_ZTile <<std::endl;
+  file <<"DimensionYT " <<m_YTile <<std::endl;
+  file <<"DimensionXT " <<m_XTile <<std::endl;
+  file <<"DimensionTM " <<m_NumberOfTimePoints <<std::endl;
+  file <<"DimensionZS " <<dim[2] <<std::endl;
+  file <<"DimensionCH " <<m_NumberOfChannels <<std::endl;
 
-	  int dim[5];
-	  m_LSMReaders[0]->GetDimensions( dim );
+  unsigned int i, j, k;
+  for( i = 0; i < m_NumberOfChannels; i++ )
+    {
+    int r = m_LSMReaders[0]->GetChannelColorComponent( i, 0 );
+    int g = m_LSMReaders[0]->GetChannelColorComponent( i, 1 );
+    int b = m_LSMReaders[0]->GetChannelColorComponent( i, 2 );
 
-	  std::string headerfilename = iDirectoryPath;
-	  headerfilename += m_BaseName;
-	  headerfilename += ".meg";
+    file <<"ChannelColor" <<i <<" " << r * 256 * 256 + g * 256 + b <<std::endl;
 
-	  std::ofstream file( headerfilename.c_str() );
-	  file <<"MegaCapture" <<std::endl;
-	  file <<"<ImageSessionData>" <<std::endl;
-	  file <<"Version 3.0" <<std::endl;
-	  file <<"ExperimentTitle " <<std::endl;
-	  file <<"ExperimentDescription ";
-	  if( m_LSMReaders[0]->GetDescription() )
-	    {
-	    file <<m_LSMReaders[0]->GetDescription();
-	    }
-	  file <<std::endl;
-	  file <<"TimeInterval " <<m_LSMReaders[0]->GetTimeInterval() <<std::endl;
-	  file <<"Objective " <<m_LSMReaders[0]->GetObjective() <<std::endl;
-	  file <<"VoxelSizeX " <<spacing[0] * 1000000 <<std::endl;
-	  file <<"VoxelSizeY " <<spacing[1] * 1000000 <<std::endl;
-	  file <<"VoxelSizeZ " <<spacing[2] * 1000000 <<std::endl;
-	  file <<"DimensionX " <<dim[0] <<std::endl;
-	  file <<"DimensionY " <<dim[1] <<std::endl;
-	  file <<"DimensionPL " <<m_Plaque <<std::endl;
-	  file <<"DimensionCO " <<m_Column <<std::endl;
-	  file <<"DimensionRO " <<m_Row <<std::endl;
-	  file <<"DimensionZT " <<m_ZTile <<std::endl;
-	  file <<"DimensionYT " <<m_YTile <<std::endl;
-	  file <<"DimensionXT " <<m_XTile <<std::endl;
-	  file <<"DimensionTM " <<m_NumberOfTimePoints <<std::endl;
-	  file <<"DimensionZS " <<dim[2] <<std::endl;
-	  file <<"DimensionCH " <<m_NumberOfChannels <<std::endl;
+	//send signal for progress bar
+	emit ProgressSent();
+    }
 
-	  unsigned int i, j, k;
-	  for( i = 0; i < m_NumberOfChannels; i++ )
-	    {
-	    int r = m_LSMReaders[0]->GetChannelColorComponent( i, 0 );
-	    int g = m_LSMReaders[0]->GetChannelColorComponent( i, 1 );
-	    int b = m_LSMReaders[0]->GetChannelColorComponent( i, 2 );
+  file <<"ChannelDepth 8" <<std::endl;
+  file <<"FileType PNG" <<std::endl;
+  file <<"</ImageSessionData>" <<std::endl;
 
-	    file <<"ChannelColor" <<i <<" " << r * 256 * 256 + g * 256 + b <<std::endl;
-	    }
+  if( m_NumberOfChannels > 1 )
+    {
+    for( i = 1; i < m_NumberOfChannels; i++ )
+      {
+      m_LSMReaders.push_back( vtkLSMReader::New() );
+      m_LSMReaders[i]->SetFileName( m_LsmPath.c_str() );
+      m_LSMReaders[i]->SetUpdateChannel( i );
+      //send signal for progress bar
+      emit ProgressSent();
+      }
+    }
 
-	  file <<"ChannelDepth 8" <<std::endl;
-	  file <<"FileType PNG" <<std::endl;
-	  file <<"</ImageSessionData>" <<std::endl;
+  int extent[6];
 
-	  if( m_NumberOfChannels > 1 )
-	    {
-	    for( i = 1; i < m_NumberOfChannels; i++ )
-	      {
-	      m_LSMReaders.push_back( vtkLSMReader::New() );
-	      m_LSMReaders[i]->SetFileName( m_FileName.c_str() );
-	      m_LSMReaders[i]->SetUpdateChannel( i );
-	      }
-	    }
+  char timeStr[ 100 ] = "";
+  struct stat buf;
 
-	  int extent[6];
+  if (!stat(m_LsmPath.c_str(), &buf))
+    {
+    strftime(timeStr, 100, "%Y-%m-%d %H:%M:%S", localtime( &buf.st_mtime));
+    }
 
-	  char timeStr[ 100 ] = "";
-	  struct stat buf;
+  for( i = 0; i < m_NumberOfTimePoints; i++ )
+    {
+    for( k = 0; k < m_NumberOfChannels; k++ )
+      {
+      m_LSMReaders[k]->SetUpdateTimePoint( i );
+      //send signal for progress bar
+      emit ProgressSent();
+      }
+    for( j = 0; j < m_NumberOfChannels; j++ )
+      {
+      m_LSMReaders[j]->Update();
+      vtkImageData* image3d = m_LSMReaders[j]->GetOutput();
+      image3d->GetExtent( extent );
 
-	  if (!stat(m_FileName.c_str(), &buf))
-	    {
-	    strftime(timeStr, 100, "%Y-%m-%d %H:%M:%S", localtime( &buf.st_mtime));
-	    }
+      for( k = 0; k < static_cast< unsigned int >( dim[2] ); k++ )
+        {
+        std::stringstream filename;
+        filename << m_BaseName << "-PL" << setfill('0') << setw(2) <<m_Plaque;
+        filename <<"-CO" << setfill('0') << setw(2) <<m_Column;
+        filename <<"-RO" << setfill('0') << setw(2) <<m_Row;
+        filename <<"-ZT" << setfill('0') << setw(2) <<m_ZTile;
+        filename <<"-YT" << setfill('0') << setw(2) <<m_YTile;
+        filename <<"-XT" << setfill('0') << setw(2) <<m_XTile;
+        filename <<"-TM" << setfill('0') << setw(4) <<i;
+        filename <<"-ch" << setfill('0') << setw(2) <<j;
+        filename <<"-zs" << setfill('0') << setw(4) <<k;
 
-	  for( i = 0; i < m_NumberOfTimePoints; i++ )
-	    {
-	    for( k = 0; k < m_NumberOfChannels; k++ )
-	      {
-	      m_LSMReaders[k]->SetUpdateTimePoint( i );
-	      }
+        switch( m_FileType )
+          {
+          default:
+          case GoFigure::PNG:
+            {
+            filename <<".png";
+            break;
+            }
+          case GoFigure::TIFF:
+            {
+            filename <<".tiff";
+            break;
+            }
+          }
 
-	    for( j = 0; j < m_NumberOfChannels; j++ )
-	      {
-	      m_LSMReaders[j]->Update();
-	      vtkImageData* image3d = m_LSMReaders[j]->GetOutput();
-	      image3d->GetExtent( extent );
+        file <<"<Image>"<<std::endl;
+        file <<"Filename " <<filename.str() <<std::endl;
+        file <<"DateTime " <<timeStr <<std::endl;
+        file <<"StageX 1000" <<std::endl;
+        file <<"StageY -1000" <<std::endl;
+        file <<"Pinhole 44.216" <<std::endl;
+        file <<"</Image>"<<std::endl;
 
-	      for( k = 0; k < static_cast< unsigned int >( dim[2] ); k++ )
-	        {
-	        std::stringstream filename;
-	        filename << m_BaseName << "-PL" << setfill('0') << setw(2) <<m_Plaque;
-	        filename <<"-CO" << setfill('0') << setw(2) <<m_Column;
-	        filename <<"-RO" << setfill('0') << setw(2) <<m_Row;
-	        filename <<"-ZT" << setfill('0') << setw(2) <<m_ZTile;
-	        filename <<"-YT" << setfill('0') << setw(2) <<m_YTile;
-	        filename <<"-XT" << setfill('0') << setw(2) <<m_XTile;
-	        filename <<"-TM" << setfill('0') << setw(4) <<i;
-	        filename <<"-ch" << setfill('0') << setw(2) <<j;
-	        filename <<"-zs" << setfill('0') << setw(4) <<k;
+        vtkExtractVOI* extract = vtkExtractVOI::New();
+        extract->SetSampleRate( 1, 1, 1 );
+        extract->SetInput( image3d );
+        extract->SetVOI( extent[0], extent[1], extent[2], extent[3], k, k );
+        extract->Update();
 
-	        switch( m_FileType )
-	          {
-	          default:
-	          case GoFigure::PNG:
-	            {
-	            filename <<".png";
-	            break;
-	            }
-	          case GoFigure::TIFF:
-	            {
-	            filename <<".tiff";
-	            break;
-	            }
-	          }
+        vtkImageData* image2d = extract->GetOutput();
 
-	        file <<"<Image>"<<std::endl;
-	        file <<"Filename " <<filename.str() <<std::endl;
-	        file <<"DateTime " <<timeStr <<std::endl;
-	        file <<"StageX 1000" <<std::endl;
-	        file <<"StageY -1000" <<std::endl;
-	        file <<"Pinhole 44.216" <<std::endl;
-	        file <<"</Image>"<<std::endl;
+        std::string final_filename = iMegaPath;
+        final_filename += filename.str();
 
-	        vtkExtractVOI* extract = vtkExtractVOI::New();
-	        extract->SetSampleRate( 1, 1, 1 );
-	        extract->SetInput( image3d );
+        switch( m_FileType )
+          {
+          default:
+          case GoFigure::PNG:
+            {
+            vtkWriteImage< vtkPNGWriter >( image2d, final_filename );
+            break;
+            }
+          case GoFigure::TIFF:
+            {
+            vtkWriteImage< vtkTIFFWriter >( image2d, final_filename );
+            break;
+            }
+          }
+        //send signal for progress bar
+        emit ProgressSent();
+        extract->Delete();
+        }
+      }
+    }
+  file.close();
+}
 
-	        extract->SetVOI( extent[0], extent[1], extent[2], extent[3], k, k );
-	        extract->Update();
+/**
+ * \brief Returns the  size of the progress bar
+ */
+int
+ConversionLsmToMegaThread::
+GetNumberOfPoints()
+{
+  int total = m_NumberOfChannels * m_NumberOfTimePoints
+		  + m_NumberOfChannels
+		  + m_NumberOfTimePoints*m_NumberOfChannels*m_Dim;
 
-	        vtkImageData* image2d = extract->GetOutput();
-
-	        std::string final_filename = iDirectoryPath;
-	        final_filename += filename.str();
-
-	        switch( m_FileType )
-	          {
-	          default:
-	          case GoFigure::PNG:
-	            {
-	            vtkWriteImage< vtkPNGWriter >( image2d, final_filename );
-	            break;
-	            }
-	          case GoFigure::TIFF:
-	            {
-	            vtkWriteImage< vtkTIFFWriter >( image2d, final_filename );
-	            break;
-	            }
-	          }
-	        extract->Delete();
-	        }
-	      }
-	    }
-	  file.close();*/
+  return total;
 }
