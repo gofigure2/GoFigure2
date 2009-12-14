@@ -42,9 +42,12 @@
 
 #include <qstring.h>
 #include <qthread.h>
+#include <vector>
 
 #include "fstream"
 #include "GoFigureGlobalDefinition.h"
+
+class vtkLSMReader;
 
 class ConversionLsmToMegaThread : public QThread
 {
@@ -73,6 +76,15 @@ private:
   std::string m_MegaPath;
   GoFigure::FileType m_FileType;
   std::vector< vtkLSMReader* > m_LSMReaders;
+  unsigned int m_Plaque;
+  unsigned int m_Row;
+  unsigned int m_Column;
+  unsigned int m_XTile;
+  unsigned int m_YTile;
+  unsigned int m_ZTile;
+  double m_XOverlap;
+  double m_YOverlap;
+  double m_ZOverlap;
 };
 
 #endif

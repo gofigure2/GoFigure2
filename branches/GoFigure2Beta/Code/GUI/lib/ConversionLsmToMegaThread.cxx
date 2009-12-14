@@ -40,12 +40,23 @@
 #include "ConversionLsmToMegaThread.h"
 
 #include "LSMToMegaCapture.h"
+#include "vtkLSMReader.h"
 
 #include <iostream>
 
 using namespace std;
 
 //--------------------------------------------------------------------------------
+/**
+ * \brief Constructor
+ */
+/*m_Plaque;
+  unsigned int m_Row;
+  unsigned int m_Column;
+  unsigned int m_XTile;
+  unsigned int m_YTile;
+  unsigned int m_ZTile;*/
+
 void
 ConversionLsmToMegaThread::
 run()
@@ -122,7 +133,7 @@ ConversionLsmToMegaThread::
 ExportWithReimplemented( std::string iMegaPath )
 {
 
-	m_LSMReaders
+	//m_LSMReaders
 /*m_NumberOfChannels = m_LSMReaders[0]->GetNumberOfChannels();
 	  m_NumberOfTimePoints = m_LSMReaders[0]->GetNumberOfTimePoints();
 
