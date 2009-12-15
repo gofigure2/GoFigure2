@@ -98,3 +98,9 @@ TARGET_LINK_LIBRARIES( QGoGui
   vtkRenderingAddOn2
 )
 
+INSTALL( TARGETS QGoGui
+    ARCHIVE
+    DESTINATION lib
+    COMPONENT libraries
+	  )
+
