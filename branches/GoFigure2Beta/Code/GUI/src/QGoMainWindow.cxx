@@ -240,17 +240,52 @@ void QGoMainWindow::on_actionUse_DataBase_triggered()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-/// \todo quick and nasty!!! Needs to be fixed :-$...
 void QGoMainWindow::openFilesfromDB()
 {
-  /// \bug Works only for PNG (Pizza Talk)! (14th Nov 2009)
   if( m_DBWizard->GetMultiIndexFileContainer().size() != 0 )
     {
+    GoFigureFileInfoHelperMultiIndexContainer::iterator
+      temp_it = m_DBWizard->GetMultiIndexFileContainer().begin();
+
+    QString temp_filename = QString::fromStdString( temp_it->m_Filename );
+
+    QString extension = QFileInfo( temp_filename ).suffix();
+
+    GoFigure::FileType filetype;
+    if( extension.compare( "png", Qt::CaseInsensitive ) == 0 )
+      {
+      filetype = GoFigure::PNG;
+      }
+    else
+      {
+      if( ( extension.compare( "tif", Qt::CaseInsensitive ) == 0 ) ||
+          ( extension.compare( "tiff", Qt::CaseInsensitive ) == 0 ) )
+        {
+        filetype = GoFigure::TIFF;
+        }
+      else
+        {
+        if( ( extension.compare( "jpg", Qt::CaseInsensitive ) == 0 ) ||
+            ( extension.compare( "jpeg", Qt::CaseInsensitive ) == 0 ) )
+          {
+          filetype = GoFigure::JPEG;
+          }
+        else
+          {
+          std::cerr << "file not supported for megacapture!!!" <<std::endl;
+          return;
+          }
+        }
+      }
+
     CreateNewTabFor3DwtImage( m_DBWizard->GetMultiIndexFileContainer(),
-      GoFigure::PNG, m_DBWizard->GetMegaCaptureHeaderFilename(), 0 );
+      filetype, m_DBWizard->GetMegaCaptureHeaderFilename(), 0 );
     }
   else
     {
+    /// \todo Right now, we first get the complete list of files from the wizard
+    /// then use megacapture import, then visualize. This should be done in a
+    /// single step.
     std::vector< std::vector< std::string > >
       listoffiles = m_DBWizard->GetFilenamesFromDB();
 
@@ -258,10 +293,41 @@ void QGoMainWindow::openFilesfromDB()
     importer->SetFileName( listoffiles[0][0] );
     importer->Update();
 
+    QString temp_filename = QString::fromStdString( listoffiles[0][0] );
+
+    QString extension = QFileInfo( temp_filename ).suffix();
+
+    GoFigure::FileType filetype;
+    if( extension.compare( "png", Qt::CaseInsensitive ) == 0 )
+      {
+      filetype = GoFigure::PNG;
+      }
+    else
+      {
+      if( ( extension.compare( "tif", Qt::CaseInsensitive ) == 0 ) ||
+          ( extension.compare( "tiff", Qt::CaseInsensitive ) == 0 ) )
+        {
+        filetype = GoFigure::TIFF;
+        }
+      else
+        {
+        if( ( extension.compare( "jpg", Qt::CaseInsensitive ) == 0 ) ||
+            ( extension.compare( "jpeg", Qt::CaseInsensitive ) == 0 ) )
+          {
+          filetype = GoFigure::JPEG;
+          }
+        else
+          {
+          std::cerr << "file not supported for megacapture!!!" <<std::endl;
+          return;
+          }
+        }
+      }
+
     // note: do not need to call w3t->Update(); since it is internally called
     // when using CreateNewTabFor3DwtImage
     QGoTabImageView3DwT* w3t = CreateNewTabFor3DwtImage( importer->GetOutput(),
-      GoFigure::PNG, importer->GetHeaderFilename(), 0 );
+      filetype, importer->GetHeaderFilename(), 0 );
 
     // Lad all contours from the first time point
     std::vector< ContourMeshStructure > contour_list =
@@ -546,6 +612,7 @@ CreateNewTabFor3DwtImage(
   // w3t->SetMegaCaptureFile
   QGoTabImageView3DwT* w3t = new QGoTabImageView3DwT;
   w3t->SetMegaCaptureFile( iFileList, iFileType, iHeader, iTimePoint );
+  w3t->setWindowTitle( QString::fromStdString( iHeader ) );
 
   // **********************
   // Database information
@@ -588,42 +655,44 @@ CreateNewTabFor3DwtImage(
   return w3t;
 }
 //--------------------------------------------------------------------------
-/** \todo why not using iTimePoint instead of 0, in SetMultiFiles? */
-/*void QGoMainWindow::CreateNewTabFor3DwtImage( FileListType& iFileList,
-  const FILETYPE& iFileType, const int& iTimePoint )
-{
-  QGoTabImageView3DwT* w3t = new QGoTabImageView3DwT;
-  w3t->SetMultiFiles( iFileList, iFileType, 0 );
-  w3t->Update();
 
-  for( std::list< QAction* >::iterator
-    list_it = m_TabDimPluginActionMap[w3t->GetTabDimensionType()].begin();
-    list_it != m_TabDimPluginActionMap[w3t->GetTabDimensionType()].end();
-    list_it++
-    )
-    {
-    (*list_it)->setEnabled( true );
-    }
-
-  w3t->SetPluginActions( m_TabDimPluginActionMap[w3t->GetTabDimensionType()] );
-
-  std::list< QDockWidget* > dock_list = w3t->DockWidget();
-
-  for( std::list< QDockWidget* >::iterator
-    dck_it = dock_list.begin();
-    dck_it != dock_list.end();
-    ++dck_it )
-    {
-    this->addDockWidget( Qt::LeftDockWidgetArea, (*dck_it) );
-    (*dck_it)->show();
-    }
-
-  int idx = this->CentralTabWidget->addTab( w3t, QString() );//iFile );
-  this->menuView->setEnabled( true );
-  this->menuFiltering->setEnabled( true );
-  this->menuSegmentation->setEnabled( true );
-  this->CentralTabWidget->setCurrentIndex( idx );
-}*/
+//
+// /// \todo why not using iTimePoint instead of 0, in SetMultiFiles?
+// void QGoMainWindow::CreateNewTabFor3DwtImage( FileListType& iFileList,
+//   const FILETYPE& iFileType, const int& iTimePoint )
+// {
+//   QGoTabImageView3DwT* w3t = new QGoTabImageView3DwT;
+//   w3t->SetMultiFiles( iFileList, iFileType, 0 );
+//   w3t->Update();
+//
+//   for( std::list< QAction* >::iterator
+//     list_it = m_TabDimPluginActionMap[w3t->GetTabDimensionType()].begin();
+//     list_it != m_TabDimPluginActionMap[w3t->GetTabDimensionType()].end();
+//     list_it++
+//     )
+//     {
+//     (*list_it)->setEnabled( true );
+//     }
+//
+//   w3t->SetPluginActions( m_TabDimPluginActionMap[w3t->GetTabDimensionType()] );
+//
+//   std::list< QDockWidget* > dock_list = w3t->DockWidget();
+//
+//   for( std::list< QDockWidget* >::iterator
+//     dck_it = dock_list.begin();
+//     dck_it != dock_list.end();
+//     ++dck_it )
+//     {
+//     this->addDockWidget( Qt::LeftDockWidgetArea, (*dck_it) );
+//     (*dck_it)->show();
+//     }
+//
+//   int idx = this->CentralTabWidget->addTab( w3t, QString() );//iFile );
+//   this->menuView->setEnabled( true );
+//   this->menuFiltering->setEnabled( true );
+//   this->menuSegmentation->setEnabled( true );
+//   this->CentralTabWidget->setCurrentIndex( idx );
+// }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
@@ -633,6 +702,7 @@ CreateNewTabFor3DwtImage( vtkLSMReader* iReader, const QString& iFile )
 {
   QGoTabImageView3DwT* w3t = new QGoTabImageView3DwT;
   w3t->SetLSMReader( iReader, 0 );
+  w3t->setWindowTitle( iFile );
 //   w3t->Update();
 
   for( std::list< QAction* >::iterator
@@ -674,6 +744,7 @@ CreateNewTabFor3DImage( vtkImageData* iInput, const QString& iFile )
 {
   QGoTabImageView3D* w3 = new QGoTabImageView3D;
   w3->SetImage( iInput );
+  w3->setWindowTitle( iFile );
   w3->Update();
 
   for( std::list< QAction* >::iterator

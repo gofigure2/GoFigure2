@@ -17,7 +17,7 @@ class QGoManualSegmentationDockWidget :
     QGoManualSegmentationDockWidget( QWidget* parent = 0 );
     ~QGoManualSegmentationDockWidget();
 
-    QColor GetValidatedColor() const;
+//     QColor GetValidatedColor() const;
     //unsigned int GetMeshId() const;
 
     double GetLinesWidth() const;
@@ -27,9 +27,9 @@ class QGoManualSegmentationDockWidget :
 
   public slots:
     void ActivateManualSegmentation( bool );
-    void OnSetColorPressed();
+//     void OnSetColorPressed();
     void SetContourColor();
-    void GenerateRandomColorForGivenId( int iId );
+//     void GenerateRandomColorForGivenId( int iId );
     void GenerateContourRepresentationProperties();
 
   signals:
@@ -40,8 +40,8 @@ class QGoManualSegmentationDockWidget :
     void ContourRepresentationPropertiesChanged();
 
   protected:
-    std::vector< unsigned int >   m_OrderVector;
-    QColor                        m_ValidatedColor;
+//     std::vector< unsigned int >   m_OrderVector;
+//     QColor                        m_ValidatedColor;
 //     QHash< unsigned int, QColor > m_IdValidatedColor;
     QGoManualSegmentationSettingsDialog* m_SettingsDialog;
     double m_LinesWidth;
@@ -49,10 +49,10 @@ class QGoManualSegmentationDockWidget :
     QColor m_NodesColor;
     QColor m_ActiveNodesColor;
 
-    void GenerateOrderVector( const QColor& iSelectedColor );
+//     void GenerateOrderVector( const QColor& iSelectedColor );
 
 
-  private:
+//   private:
 };
 
 #endif

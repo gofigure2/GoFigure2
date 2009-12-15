@@ -286,8 +286,11 @@ ValidateContour( const int& iId )
 
   // get color from the dock widget
   double r, g ,b;
-  QColor color = m_ManualSegmentationDockWidget->GetValidatedColor();
-  color.getRgbF( &r, &g, &b );
+  r = 0.1;
+  g = 0.5;
+  b = 0.7;
+  //   QColor color = m_ManualSegmentationDockWidget->GetValidatedColor();
+  //   color.getRgbF( &r, &g, &b );
 
   /// \todo get alpha from QColor (it is not supposed to 255 all the time!)
   double alpha = 1.;
@@ -332,21 +335,31 @@ ValidateContour( const int& iId )
   contour_copy->Delete();
   contour_property->Delete();
 
-  // get meshid from the dock widget (SpinBox)
-//  unsigned int meshid = m_ManualSegmentationDockWidget->GetMeshId();
-  unsigned int meshid = this->m_VisuDockWidget->GetCurrentCollectionID();
-  unsigned int timepoint = 0;
-  bool highlighted = false;
+  /// \todo use m_ContourMeshContainer here!
 
-  // fill the container
-  for( unsigned int i = 0; i < contour_actor.size(); i++ )
-    {
-    ContourMeshStructure temp( m_ContourId, contour_actor[i], contour_nodes, meshid,
-      timepoint, highlighted, r, g, b, alpha, i );
-    m_ContourMeshContainer.insert( temp );
-    }
-
-  m_ContourId++;
+//   // get meshid from the dock widget (SpinBox)
+// //  unsigned int meshid = m_ManualSegmentationDockWidget->GetMeshId();
+//   unsigned int meshid = 0;
+//
+//   if( this->m_VisuDockWidget->GetCurrentCollectionID() != -1 )
+//     {
+//     meshid =
+//       static_cast< unsigned int >( this->m_VisuDockWidget->GetCurrentCollectionID() );
+//     }
+//
+//   unsigned int timepoint = 0;
+//   bool highlighted = false;
+//
+//   // fill the container
+//
+//   for( unsigned int i = 0; i < contour_actor.size(); i++ )
+//     {
+//     ContourMeshStructure temp( m_ContourId, contour_actor[i], contour_nodes, meshid,
+//       timepoint, highlighted, r, g, b, alpha, i );
+//     m_ContourMeshContainer.insert( temp );
+//     }
+//
+//   m_ContourId++;
 }
 //--------------------------------------------------------------------------
 

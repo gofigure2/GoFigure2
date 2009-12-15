@@ -72,7 +72,8 @@ struct GoFigureFileInfoHelper
   struct m_TCoord {};
   struct m_Channel {};
 
-/// \todo commented for pizza talk
+  /// \todo Since we are not yet using all information, the unused one are
+  /// commented for performance issue.
   typedef multi_index_container<
     GoFigureFileInfoHelper,
     indexed_by<

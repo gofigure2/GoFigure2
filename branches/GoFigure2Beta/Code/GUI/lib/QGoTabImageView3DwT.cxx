@@ -1164,9 +1164,18 @@ ValidateContour( )
   // get color from the dock widget
   double r, g, b, a( 1. );
   //QColor color = m_ManualSegmentationDockWidget->GetValidatedColor();
-  QColor color = this->m_VisuDockWidget->ColorTraceComboBox->
-    GetCurrentColorData().second;
-  color.getRgbF( &r, &g, &b );
+  if( this->m_VisuDockWidget->GetCurrentCollectionID() == -1 )
+    {
+    r = 0.1;
+    g = 0.5;
+    b = 0.7;
+    }
+  else
+    {
+    QColor color = this->m_VisuDockWidget->ColorTraceComboBox->
+      GetCurrentColorData().second;
+    color.getRgbF( &r, &g, &b );
+    }
 
   bool highlighted( false );
 

@@ -54,20 +54,20 @@ ENDIF( APPLE )
 
 ADD_EXECUTABLE( gofigure
   ${GUI_TYPE}
- ${GOFIGURE_APPLICATION_SOURCE_LIST}
- ${QGoGUI_SRC}
- ${QGoGUISRC_MOC}
- ${QGoMainWindow_QRC}
- )
+  ${GOFIGURE_APPLICATION_SOURCE_LIST}
+  ${QGoGUI_SRC}
+  ${QGoGUISRC_MOC}
+  ${QGoMainWindow_QRC}
+  )
 
 TARGET_LINK_LIBRARIES( gofigure
-    QGoGui
-    QGoIO
-    ITKBasicFilters
-    ITKNumerics
-    ITKCommon
-    ITKIO
-    itkQt
+  QGoGui
+  QGoIO
+  ITKBasicFilters
+  ITKNumerics
+  ITKCommon
+  ITKIO
+  itkQt
  )
 
 INSTALL( TARGETS gofigure

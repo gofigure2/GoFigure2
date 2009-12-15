@@ -1076,7 +1076,8 @@ ValidateContour( const int& iId )
     {
     // get color from the dock widget
     double r, g ,b;
-    QColor color = m_ManualSegmentationDockWidget->GetValidatedColor();
+    /// \todo to be fixed!
+    QColor color; //= m_ManualSegmentationDockWidget->GetValidatedColor();
     color.getRgbF( &r, &g, &b );
 
     vtkProperty* contour_property = vtkProperty::New();

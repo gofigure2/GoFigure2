@@ -266,13 +266,16 @@ Update()
 
     double zspacing = 1.;
 
+    /// \note We are using m_VoxelSizeZ no matter if m_TimeBased is true or false.
+    /// Since m_TimeInterval >> m_VoxelSizeX, it makes sense to do like this.
+    zspacing = m_HeaderReader.m_VoxelSizeZ;
+
 //     if( m_TimeBased )
 //       {
-      zspacing = m_HeaderReader.m_VoxelSizeZ;
+//       zspacing = m_HeaderReader.m_VoxelSizeZ;
 //       }
 //     else
 //       {
-///       \todo note that m_TimeInterval is quite large with respect to x,y spacing
 //       zspacing = m_HeaderReader.m_TimeInterval;
 //       }
 

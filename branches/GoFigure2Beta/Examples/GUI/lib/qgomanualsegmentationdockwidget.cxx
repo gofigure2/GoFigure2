@@ -33,10 +33,10 @@ int main( int argc, char** argv )
   app.closeAllWindows();
 
 //   std::cout <<dock->GetMeshId() <<std::endl;
-  QColor color = dock->GetValidatedColor();
+//   QColor color = dock->GetValidatedColor();
 
-  std::cout <<color.red() <<" " <<color.green() <<" " <<color.blue() <<std::endl;
-  std::cout <<color.hue() <<" " <<color.saturation() <<" " <<color.value() <<std::endl;
+//   std::cout <<color.red() <<" " <<color.green() <<" " <<color.blue() <<std::endl;
+//   std::cout <<color.hue() <<" " <<color.saturation() <<" " <<color.value() <<std::endl;
 
   delete dock;
 
