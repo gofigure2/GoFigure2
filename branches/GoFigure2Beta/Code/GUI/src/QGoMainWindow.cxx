@@ -900,22 +900,25 @@ CreateNewTabFor2DImage( vtkImageData* iInput, const QString& iFile )
 //--------------------------------------------------------------------------------
 void QGoMainWindow::on_actionAbout_triggered( )
 {
-  QString version( "v0.5" );
+  QString version( "0.4-rc1" );
+  QString date( "Date: 12/16/2009\n\n" );
 
-  QString about_gofigure( tr( "GoFigure V2 \n\n" ) );
+  QString about_gofigure(
+    tr( "GoFigure2: Software for the visualization and the analysis of biological microscope images. \n\n" ) );
 
-  QString authors( tr( "Authors in alphabetical order:\n" ) );
-  authors.append( " * 2008 ~ A. Gelas\n" );
-  authors.append( " * 2007-2009 ~ A. Gouaillard\n" );
-  authors.append( " * 2008 ~ K. Mosaliganti\n" );
-  authors.append( " * 2008 ~ L. Souhait\n\n" );
-  authors.append( " * 2009 ~ N. Rannou\n\n" );
-  authors.append( " * Principal Investigator\n" );
-  authors.append( " * S. Megason\n" );
+//   QString authors( tr( "Authors in alphabetical order:\n" ) );
+//   authors.append( " * 2008 ~ A. Gelas\n" );
+//   authors.append( " * 2007-2009 ~ A. Gouaillard\n" );
+//   authors.append( " * 2008 ~ K. Mosaliganti\n" );
+//   authors.append( " * 2008 ~ L. Souhait\n\n" );
+//   authors.append( " * 2009 ~ N. Rannou\n\n" );
+//   authors.append( " * Principal Investigator\n" );
+//   authors.append( " * S. Megason\n" );
 
-  QString message = QString( "GoFigure V2 %1\n\n" ).arg( version );
+  QString message = QString( "GoFigure2-%1\n\n" ).arg( version );
+  message.append( date );
   message.append( about_gofigure );
-  message.append( authors );
+//   message.append( authors );
 
   QMessageBox::about( this, tr( "<*)0|00|0>< About GoFigure" ), message );
 }
@@ -931,19 +934,19 @@ void QGoMainWindow::on_actionAbout_Qt_triggered( )
 //--------------------------------------------------------------------------
 void QGoMainWindow::on_actionGoFigure2_Website_triggered( )
 {
-  QDesktopServices::openUrl( QUrl("https://sourceforge.net/projects/gofigure2/") );
+  QDesktopServices::openUrl( QUrl("http://gofigure2.sourceforge.net") );
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void QGoMainWindow::on_actionUser_mailing_list_triggered( )
 {
-  QDesktopServices::openUrl( QUrl("mailto:users@gofigure2.com?subject=About GoFigure2") );
+//   QDesktopServices::openUrl( QUrl("mailto:users@gofigure2.com?subject=About GoFigure2") );
 }
 //--------------------------------------------------------------------------
 void QGoMainWindow::on_actionDeveloper_mailing_list_triggered( )
 {
-  QDesktopServices::openUrl( QUrl("mailto:developers@gofigure2.com?subject=About Gofigure2" ) );
+//   QDesktopServices::openUrl( QUrl("mailto:developers@gofigure2.com?subject=About Gofigure2" ) );
 }
 
 //--------------------------------------------------------------------------

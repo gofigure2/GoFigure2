@@ -59,7 +59,7 @@
      <x>0</x>
      <y>0</y>
      <width>1434</width>
-     <height>26</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -96,19 +96,17 @@
     </widget>
     <addaction name="actionOpen_Single_File"/>
     <addaction name="actionOpen_MegaCapture_Files"/>
+    <addaction name="menuOpen_Recent_Files"/>
+    <addaction name="separator"/>
+    <addaction name="actionUse_DataBase"/>
     <addaction name="separator"/>
     <addaction name="actionOpen_Mesh"/>
     <addaction name="actionLoad_Segmentation_Results"/>
     <addaction name="separator"/>
-    <addaction name="actionUse_DataBase"/>
-    <addaction name="separator"/>
-    <addaction name="actionSave_Single_File_As"/>
-    <addaction name="actionSave_Multiple_Files_As"/>
     <addaction name="actionExport_LSM_to_MegaFile"/>
+    <addaction name="separator"/>
     <addaction name="actionClose"/>
     <addaction name="actionClose_all"/>
-    <addaction name="separator"/>
-    <addaction name="menuOpen_Recent_Files"/>
     <addaction name="separator"/>
     <addaction name="actionQuit"/>
    </widget>
@@ -155,7 +153,7 @@
    </widget>
    <widget class="QMenu" name="menuBookmarks">
     <property name="enabled">
-     <bool>true</bool>
+     <bool>false</bool>
     </property>
     <property name="title">
      <string>Bookmarks</string>
@@ -222,6 +220,9 @@
    </property>
    <property name="text">
     <string>Save Multiple Files</string>
+   </property>
+   <property name="visible">
+    <bool>true</bool>
    </property>
   </action>
   <action name="actionSave_Single_File_As">
@@ -390,18 +391,27 @@
   </action>
   <action name="actionAdd_Bookmark">
    <property name="enabled">
-    <bool>true</bool>
+    <bool>false</bool>
    </property>
    <property name="text">
     <string>Add Bookmark</string>
+   </property>
+   <property name="visible">
+    <bool>false</bool>
    </property>
   </action>
   <action name="actionManage_Bookmarks">
    <property name="text">
     <string>Manage Bookmarks</string>
    </property>
+   <property name="visible">
+    <bool>false</bool>
+   </property>
   </action>
   <action name="actionLoad_Segmentation_Results">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Load Segmentation Results</string>
    </property>
