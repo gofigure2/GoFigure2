@@ -349,8 +349,6 @@ void QGoPrintDatabase::DeleteTraces()
           TableCollectionOf->UpdateIDs(0,CollectionIDName,Color,TraceIDName,TracesWithCollectionToBeNull);
         
           }
- 
-      CloseDBConnection();
       }
           }
         }       
@@ -361,6 +359,7 @@ void QGoPrintDatabase::DeleteTraces()
       LinkToTracesContainer->DeleteSelectedTraces(SelectedTraces);
       //delete traces in the table widget with the vector of selected traces:
       Table->DeleteSelectedRows();     
+      CloseDBConnection();
     }
 
 

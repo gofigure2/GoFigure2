@@ -708,7 +708,7 @@ void GoDBTableWidgetContainer::UpdateIDs(std::list<int> iListTracesToUpdate,
   //GoDBTableWidgetContainer::DBTableWidgetContainerType::iterator iter =
   //  this->m_RowContainer.begin();
   
-  int CollectionIDIndex = this->GetIndexInsideRowContainer(this->m_CollectionIDName);
+/*  int CollectionIDIndex = this->GetIndexInsideRowContainer(this->m_CollectionIDName);
   int TraceIDIndex = this->GetIndexInsideRowContainer(this->m_TracesIDName);
   bool AllUpdated = false;
   std::list<int>::iterator iterTracesToUpdate = iListTracesToUpdate.begin();
@@ -734,7 +734,7 @@ void GoDBTableWidgetContainer::UpdateIDs(std::list<int> iListTracesToUpdate,
       iter++;
       i++;
       }
-    }
+    }*/
 }
 //--------------------------------------------------------------------------
 

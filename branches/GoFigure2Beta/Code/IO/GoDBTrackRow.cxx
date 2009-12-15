@@ -42,7 +42,7 @@
 #include "GoDBRecordSetHelper.h"
 #include <iostream>
 
-GoDBTrackRow::GoDBTrackRow()
+GoDBTrackRow::GoDBTrackRow():GoDBTraceRow()
 {
   this->InitializeMap();
 }
@@ -51,10 +51,11 @@ GoDBTrackRow::GoDBTrackRow()
 //-------------------------------------------------------------------------
 GoDBTrackRow::GoDBTrackRow(vtkMySQLDatabase* DatabaseConnector,
   GoDBCoordinateRow Min, GoDBCoordinateRow Max,unsigned int ImgSessionID,
-  std::string TraceVisu)
+  std::string TraceVisu):GoDBTraceRow(DatabaseConnector,TraceVisu,Min,Max,
+    ImgSessionID)
 {
-  GoDBTraceRow::GoDBTraceRow(DatabaseConnector,TraceVisu,Min,Max,
-    ImgSessionID);
+  //GoDBTraceRow::GoDBTraceRow(DatabaseConnector,TraceVisu,Min,Max,
+    //ImgSessionID);
 
   cout << "Track ID found: "<< this->DoesThisBoundingBoxTrackExist(DatabaseConnector) <<endl;
 
@@ -68,7 +69,7 @@ GoDBTrackRow::GoDBTrackRow(vtkMySQLDatabase* DatabaseConnector,
 //-------------------------------------------------------------------------
 void GoDBTrackRow::InitializeMap()
 { 
-  GoDBTraceRow::InitializeMap();
+  //GoDBTraceRow::InitializeMap();
   this->m_MapRow["TrackID"] = ConvertToString<int>(0);
   this->m_MapRow["LineageID"] = "null"; 
   this->m_MapRow["TrackFamilyID"] = "null";
