@@ -86,7 +86,6 @@ TARGET_LINK_LIBRARIES( gofigure
  )
 
 IF( APPLE )
-
   FUNCTION( MakeOSXBundleApp target binary_dir )
     SET( OSX_MAKE_STANDALONE_BUNDLE_CMAKE_SCRIPT 
       "${binary_dir}/${target}_OSX_MakeStandAloneBundle.cmake" )
@@ -111,6 +110,11 @@ IF( APPLE )
 #  ELSE( CMAKE_BUILD_TYPE MATCHES "Debug" )
     MakeOSXBundleApp( "gofigure" ${GOFIGURE2_BINARY_DIR} )
 #  ENDIF( CMAKE_BUILD_TYPE MATCHES "Debug" )
+
+  
+  INSTALL( CODE "
+    file(WRITE \"\${CMAKE_INSTALL_PREFIX}/gofigure.app/Contents/Resources/qt.conf\"\"\")
+    " COMPONENT RUNTIME)
 
 ELSE( APPLE )
 
