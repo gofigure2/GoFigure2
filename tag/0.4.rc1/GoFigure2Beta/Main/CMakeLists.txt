@@ -22,7 +22,27 @@ QT4_ADD_RESOURCES( QGoMainWindow_QRC
 
 SET( GUI_TYPE )
 
+set(qt_menu_nib_sources)
+
 IF( APPLE )
+
+  IF(QT_MAC_USE_COCOA)
+    GET_FILENAME_COMPONENT(qt_menu_nib
+     "@QT_QTGUI_LIBRARY_RELEASE@/Resources/qt_menu.nib"
+      REALPATH)
+    set(qt_menu_nib_sources
+      "${qt_menu_nib}/classes.nib"
+      "${qt_menu_nib}/info.nib"
+      "${qt_menu_nib}/keyedobjects.nib"
+      )
+    SET_SOURCE_FILES_PROPERTIES(
+      ${qt_menu_nib_sources}
+      PROPERTIES
+      MACOSX_PACKAGE_LOCATION Resources/qt_menu.nib
+      )
+  ELSE(QT_MAC_USE_COCOA)
+  ENDIF(QT_MAC_USE_COCOA)
+
   SET( GUI_TYPE MACOSX_BUNDLE )
 
   SET( MACOSX_BUNDLE_ICON_FILE
@@ -73,7 +93,8 @@ ADD_EXECUTABLE( gofigure
   ${QGoGUI_SRC}
   ${QGoGUISRC_MOC}
   ${QGoMainWindow_QRC}
-  )
+  ${qt_menu_nib_sources} 
+)
 
 TARGET_LINK_LIBRARIES( gofigure
   QGoGui
