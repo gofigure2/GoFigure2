@@ -109,7 +109,7 @@ IF( APPLE )
 #  IF( CMAKE_BUILD_TYPE MATCHES "Debug" )
 #    MakeOSXBundleApp( "gofigure_debug" ${GOFIGURE2_BINARY_DIR} )
 #  ELSE( CMAKE_BUILD_TYPE MATCHES "Debug" )
-    MakeOSXBundleApp( "gofigure" ${GOFIGURE2_BINARY_DIR} )
+    MakeOSXBundleApp( "gofigure" ${GOFIGURE2_BINARY_DIR}/bin )
 #  ENDIF( CMAKE_BUILD_TYPE MATCHES "Debug" )
 
 ELSE( APPLE )

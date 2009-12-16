@@ -75,7 +75,7 @@ SET( CMAKE_ARCHIVE_OUTPUT_DIRECTORY
 # all shared libraries will be in ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
 # Note that modules (plugins) are considered as shared libraries
 SET( CMAKE_LIBRARY_OUTPUT_DIRECTORY
-  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/plugins
+  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/lib
 )
 
 #---------------------------------------------------------------------------
