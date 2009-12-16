@@ -63,20 +63,31 @@ ENDIF( WIN32 )
 #---------------------------------------------------------------------------
 # all target executables will be
 # in ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
-SET( CMAKE_RUNTIME_OUTPUT_DIRECTORY
-  ${GOFIGURE2_BINARY_DIR}/bin
-)
-
+#SET( CMAKE_RUNTIME_OUTPUT_DIRECTORY
+#  ${GOFIGURE2_BINARY_DIR}/bin
+#)
+#
 # all target static libraries will be in ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
-SET( CMAKE_ARCHIVE_OUTPUT_DIRECTORY
-  ${GOFIGURE2_BINARY_DIR}/lib
-)
-
+#SET( CMAKE_ARCHIVE_OUTPUT_DIRECTORY
+#  ${GOFIGURE2_BINARY_DIR}/lib
+#)
+#
 # all shared libraries will be in ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
 # Note that modules (plugins) are considered as shared libraries
-SET( CMAKE_LIBRARY_OUTPUT_DIRECTORY
-  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/lib
-)
+#SET( CMAKE_LIBRARY_OUTPUT_DIRECTORY
+#  ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
+#)
+
+SET(EXECUTABLE_OUTPUT_PATH
+   ${GOFIGURE2_BINARY_DIR}/bin
+   CACHE PATH "Single output directory for building all executables."
+  )
+
+SET(LIBRARY_OUTPUT_PATH
+   ${GOFIGURE2_BINARY_DIR}/lib
+   CACHE PATH "Single output directory for building all libraries."
+ )
+
 
 #---------------------------------------------------------------------------
 # Define TESTING_DATA_PATH
