@@ -1032,8 +1032,8 @@ void QGoPrintDatabase::UpdateTableWidgetAndRowContainerWithNewCreatedTrace(
    iCollectionOfTraces->GetCollectionName());
  QTableWidgetChild* TableForCollection =
    this->GetTableWidgetChild(iCollectionOfTraces->GetCollectionName());
- this->UpdateTableWidgetAndRowContainerWithNewCreatedTrace(TableForCollection,
-   this->m_DatabaseConnector,CollectionOfTracesForCollection);
+// this->UpdateTableWidgetAndRowContainerWithNewCreatedTrace(TableForCollection,
+  // this->m_DatabaseConnector,CollectionOfTracesForCollection);
 
 
  std::string CollectionIDName = iCollectionOfTraces->GetCollectionName();
