@@ -1,0 +1,13 @@
+TODO
+ +++ Manual Segmentation
+ +++ DataBase Integration
+ +++ Manual Editing
+ ++ Track Visualization
+ ++ Mesh Construction from Contours
+ ++ Demo/Video
+ + QGoTabImageView4D
+   * Internal Synchonization
+   * Synchronization DockWidget <-> Visualization
+   * Manual Segmentation
+   * Channel Extraction
+
