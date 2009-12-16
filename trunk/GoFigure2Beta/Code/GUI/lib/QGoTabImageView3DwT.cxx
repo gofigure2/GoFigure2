@@ -1206,7 +1206,14 @@ ValidateContour( )
 
     std::list< int > listofrowstobeselected;
     listofrowstobeselected.push_back( m_ContourId );
-    m_DataBaseTables->ChangeContoursToHighLightInfoFromVisu( listofrowstobeselected );
+    if (m_ReEditContourMode)
+      {
+      m_DataBaseTables->ChangeContoursToHighLightInfoFromVisu( listofrowstobeselected,true );
+      }
+    else
+      {
+      m_DataBaseTables->ChangeContoursToHighLightInfoFromVisu( listofrowstobeselected,false );
+      }
 
     m_ReEditContourMode = false;
     }
@@ -1756,6 +1763,6 @@ SelectContoursInTable( )
     ++it;
     }
 
-  this->m_DataBaseTables->ChangeContoursToHighLightInfoFromVisu( listofrowstobeselected );
+  this->m_DataBaseTables->ChangeContoursToHighLightInfoFromVisu( listofrowstobeselected,false );
 }
 //-------------------------------------------------------------------------

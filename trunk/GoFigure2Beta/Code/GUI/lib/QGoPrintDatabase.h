@@ -146,7 +146,7 @@ public:
 
 public slots:
   void ChangeContoursToHighLightInfoFromVisu(
-  std::list<int> iListContoursHighLightedInVisu);
+  std::list<int> iListContoursHighLightedInVisu, bool Reedit);
 
   void ChangeMeshesToHighLightInfoFromVisu(
   std::list<int> iListMeshesHighLightedInVisu);

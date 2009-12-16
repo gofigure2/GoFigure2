@@ -556,45 +556,47 @@ ChangeTracesToHighLightInfoFromTableWidget()
 void
 QGoPrintDatabase::
 ChangeContoursToHighLightInfoFromVisu(
-  std::list<int> iListContoursHighLightedInVisu )
+  std::list<int> iListContoursHighLightedInVisu, bool Reedit )
 {
   /** \todo get the tracename from the visu dock widget*/
   QTableWidgetChild* Table = this->GetTableWidgetChild("contour");
-
-  if( !iListContoursHighLightedInVisu.empty() )
+  if (!Reedit)
     {
-    std::list<int>::iterator it = iListContoursHighLightedInVisu.begin();
+    if( !iListContoursHighLightedInVisu.empty())
+      {
+      std::list<int>::iterator it = iListContoursHighLightedInVisu.begin();
 
-    while( it != iListContoursHighLightedInVisu.end() )
+      while( it != iListContoursHighLightedInVisu.end() )
+        {
+        for( unsigned int j = 0 ; j < m_ContoursInfo.size(); j++ )
+          {
+          if (*it == this->m_ContoursInfo[j].TraceID)
+            {
+            m_ContoursInfo[j].Highlighted = true;
+
+            Table->SetSelectRowTraceID( "contour",
+              m_ContoursInfo[j].TraceID, true );
+            }
+          else
+            {
+            m_ContoursInfo[j].Highlighted = false;
+
+            Table->SetSelectRowTraceID( "contour",
+              m_ContoursInfo[j].TraceID, false);
+            }
+          }
+        ++it;
+        }
+      }
+    else
       {
       for( unsigned int j = 0 ; j < m_ContoursInfo.size(); j++ )
         {
-        if (*it == this->m_ContoursInfo[j].TraceID)
-          {
-          m_ContoursInfo[j].Highlighted = true;
+        m_ContoursInfo[j].Highlighted = false;
 
-          Table->SetSelectRowTraceID( "contour",
-            m_ContoursInfo[j].TraceID, true );
-          }
-        else
-          {
-          m_ContoursInfo[j].Highlighted = false;
-
-          Table->SetSelectRowTraceID( "contour",
-            m_ContoursInfo[j].TraceID, false);
-          }
+        Table->SetSelectRowTraceID( "contour",
+          m_ContoursInfo[j].TraceID, false);
         }
-      ++it;
-      }
-    }
-  else
-    {
-    for( unsigned int j = 0 ; j < m_ContoursInfo.size(); j++ )
-      {
-      m_ContoursInfo[j].Highlighted = false;
-
-      Table->SetSelectRowTraceID( "contour",
-        m_ContoursInfo[j].TraceID, false);
       }
     }
 }
