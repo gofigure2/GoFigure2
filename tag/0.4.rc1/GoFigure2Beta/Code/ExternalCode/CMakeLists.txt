@@ -1,0 +1,4 @@
+SUBDIRS( itkQt
+  MegaVTK
+  vtkLSM
+)
