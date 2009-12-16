@@ -106,6 +106,11 @@ will not ce generated" )
   ENDIF( DOXYGEN_FOUND )
 ENDIF( BUILD_DOCUMENTATION )
 
+IF( NOT APPLE )
+  SET( GOFIGURE2_BIN_INSTALL_DIR "gofigure2-${GOFIGURE2_VERSION}/bin" )
+  SET( GOFIGURE2_LIB_INSTALL_DIR "gofigure2-${GOFIGURE2_VERSION}/lib" )
+ENDIF( NOT APPLE )
+
 #---------------------------------------------------------------------------
 # Main GoFigure Settings
 #---------------------------------------------------------------------------
@@ -172,8 +177,6 @@ IF( VTK_FOUND )
       ${GOFIGURE2_SOURCE_DIR}/Code/ExternalCode )
     SET( GOFIGURE2_EXTERNAL_BINARY_DIR
       ${GOFIGURE2_BINARY_DIR}/Code/ExternalCode )
-    SET( GOFIGURE2_BOOST_MULTI_INDEX_DIR
-      ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/Boost/multi_index )
 
     SET( MEGAVTK2_SOURCE_DIR ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/MegaVTK )
     SET( MEGAVTK2_BINARY_DIR ${GOFIGURE2_EXTERNAL_BINARY_DIR}/MegaVTK )

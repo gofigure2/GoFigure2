@@ -23,6 +23,9 @@ TARGET_LINK_LIBRARIES( vtkRenderingAddOn2
   ${vtkRenderingAddOn_LIBS2}
   )
 
-INSTALL_TARGETS(/lib vtkRenderingAddOn2)
-
-INSTALL_FILES(/include "(\\.h|\\.txx)$")
+IF( NOT APPLE )
+  INSTALL( TARGETS vtkRenderingAddOn2
+    ARCHIVE DESTINATION  ${GOFIGURE2_LIB_INSTALL_DIR}
+  COMPONENT libraries
+  )
+ENDIF( NOT APPLE )

@@ -6,12 +6,16 @@ ADD_LIBRARY( itkQt
   ${itkQtAdaptor_MOC}
 )
 
-INSTALL_TARGETS(/lib itkQt)
+TARGET_LINK_LIBRARIES( itkQt
+  itkQt
+  ${QT_LIBRARIES}
+  ITKCommon
+)
 
-INSTALL_FILES(/include "(\\.h|\\.txx)$")
+#INSTALL_FILES(/include "(\\.h|\\.txx)$")
 
-INSTALL( TARGETS itkQt
-  ARCHIVE
-  DESTINATION lib
+IF( NOT APPLE )
+  INSTALL( TARGETS itkQt
+    ARCHIVE DESTINATION ${GOFIGURE2_LIB_INSTALL_DIR}
   COMPONENT libraries
   )
