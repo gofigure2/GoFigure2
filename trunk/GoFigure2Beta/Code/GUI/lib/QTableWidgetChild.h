@@ -103,6 +103,9 @@ protected:
   ColumnName */
   int findColumnName( QString ColumnName, QStringList ColumnsHeader );
 
+  /** \brief Update the m_VectorSelectedRows */
+  void UpdateVectorCheckedRows(int Row,int Column);
+
 public slots:
   /** \brief sort items given one column and one sort order. */
   void sortItems(int column, Qt::SortOrder order);
@@ -112,8 +115,7 @@ public slots:
   void SetSelectRowTraceID (std::string TraceName, int TraceID,
     bool IsSelected);
 
-  /** \brief Update the m_VectorSelectedRows */
-  void UpdateVectorCheckedRows(int Row,int Column);
+  void UpdateTableWidgetDisplayAndVectorCheckedRows(int Row, int Column);
 
   /** \brief modify the ioTracesInfo in order to set the IsHighLighted parameter to false
   for the traces not selected by the user and set it to true for the selected ones,

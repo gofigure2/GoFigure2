@@ -53,7 +53,7 @@ QTableWidgetChild::QTableWidgetChild( QWidget* iParent ): QTableWidget( iParent 
   PrevOrder = -1;
   QObject::connect( this,
     SIGNAL( cellClicked(int,int) ),
-    this,SLOT( UpdateVectorCheckedRows(int,int) ));
+    this,SLOT( UpdateTableWidgetDisplayAndVectorCheckedRows(int,int) ));
 
 }
 //--------------------------------------------------------------------------
@@ -158,12 +158,14 @@ void QTableWidgetChild::SetSelectRowTraceID (std::string TraceName,
     if (IsSelected)
       {
       this->item(RowIndex,0)->setCheckState(Qt::Checked);
+      this->UpdateVectorCheckedRows(RowIndex,0);
       }
     else
       {
       this->item(RowIndex,0)->setCheckState(Qt::Unchecked);
-      }
       this->UpdateVectorCheckedRows(RowIndex,0);
+      }
+      //this->UpdateVectorCheckedRows(RowIndex,0);
     }
 }
 //--------------------------------------------------------------------------
@@ -326,8 +328,10 @@ void QTableWidgetChild::SetSelectedColumn(unsigned int iNbOfRows,
   for (unsigned int i = StartedRow ; i < iNbOfRows+StartedRow ; i++)
     {
     QTableWidgetNumericalItem* Checkbox = new QTableWidgetNumericalItem;
-    Checkbox->setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsEnabled |
-      Qt::ItemIsSelectable);
+    //Checkbox->setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsEnabled |
+    //  Qt::ItemIsSelectable);
+    Checkbox->setFlags(Qt::ItemIsEnabled |Qt::ItemIsSelectable);
+
     Checkbox->setCheckState(Qt::Unchecked);
     this->setItem(i,indexCol,Checkbox);
     }
@@ -443,8 +447,11 @@ void QTableWidgetChild::InsertNewRow(GoDBTableWidgetContainer* iLinkToRowContain
 //--------------------------------------------------------------------------
 void QTableWidgetChild::UpdateVectorCheckedRows(int Row,int Column)
 {
- if (this->horizontalHeaderItem(Column)->text() == "")
-   {
+ /** \todo if the user clicks on the cell where the checkbox is but not, on the checkbox,
+ the m_VectorSelectedRows will still be updated according to the current state of the 
+ checkbox, which can results in having double  */
+ //if (this->horizontalHeaderItem(Column)->text() == "")
+  // {
    if (this->item(Row,Column)->checkState()== 0)
      {
      int ID = this->item(Row,1)->text().toInt();
@@ -473,7 +480,7 @@ void QTableWidgetChild::UpdateVectorCheckedRows(int Row,int Column)
      this->m_VectorSelectedRows.push_back(temp);
      }
    CheckedRowsChanged();
-   }
+   //}
 }
 //--------------------------------------------------------------------------
 
@@ -537,5 +544,26 @@ void QTableWidgetChild::DeleteSelectedRows()
     {
     this->removeRow(iter->second);
     iter++;
+    }
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QTableWidgetChild::UpdateTableWidgetDisplayAndVectorCheckedRows(int Row, int Column)
+{
+  if (this->horizontalHeaderItem(Column)->text() == "")
+    { 
+    //force the checkbox to change state, even if the user didn't click 
+    //directly in the checkbox but in the cell containing it:
+    if (this->item(Row,Column)->checkState()== 0)
+      {
+      this->item(Row,Column)->setCheckState(Qt::Checked);
+      }
+    else
+      //(this->item(Row,Column)->checkState()== 2)
+      {
+      this->item(Row,Column)->setCheckState(Qt::Unchecked);
+      }
+    this->UpdateVectorCheckedRows(Row,Column);
     }
 }
