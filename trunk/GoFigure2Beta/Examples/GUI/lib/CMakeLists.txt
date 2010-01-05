@@ -17,6 +17,7 @@ SET( QGOGUILIB_EXAMPLE_SRC
   QGoPrintDatabaseTest
   qgocreatemeshdialogtest
   QGoLsmToMegaExportDialogTest
+  QGoVideoRecorderTest
 )
 
 
@@ -91,6 +92,11 @@ ADD_TEST( contourmeshstructurehelperTest2
 
 ADD_TEST( QGoLsmToMegaExportDialogTest
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/QGoLsmToMegaExportDialogTest
+  1
+)
+
+ADD_TEST( QGoVideoRecorderTest
+  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/QGoVideoRecorderTest
   1
 )
 
