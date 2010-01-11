@@ -28,8 +28,8 @@ SET( QGoGUILIB_SRC
   qtcolorcombobox.cxx
   QGoLsmToMegaExportDialog.cxx
   ConversionLsmToMegaThread.cxx
-  vtkFFMPEGRenderWindowRecorder.cxx
-  QGoVideoRecorder.cxx
+#  vtkFFMPEGRenderWindowRecorder.cxx
+#  QGoVideoRecorder.cxx
 )
 
 SET( QGoGUILIB_HDRS
@@ -59,8 +59,8 @@ SET( QGoGUILIB_HDRS
   qtcolorcombobox.h
   QGoLsmToMegaExportDialog.h
   ConversionLsmToMegaThread.h
-  vtkFFMPEGRenderWindowRecorder.h
-  QGoVideoRecorder.h
+ # vtkFFMPEGRenderWindowRecorder.h
+ # QGoVideoRecorder.h
 )
 
 SET( QGoGUILIB_UI
@@ -69,7 +69,7 @@ SET( QGoGUILIB_UI
   VisualizationDockWidget.ui
   QGoPrintDatabase.ui
   LsmToMegaExportDialog.ui
-  VideoRecorderDialog.ui
+  #VideoRecorderDialog.ui
 )
 
 QT4_WRAP_UI( QGoGUILIB_UI_H
