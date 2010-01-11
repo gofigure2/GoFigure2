@@ -298,3 +298,8 @@ IF( VTK_FOUND )
 
 ENDIF( VTK_FOUND )
 
+#---------------------------------------------------------------------------
+# USE FFMPEG ENCODER
+#---------------------------------------------------------------------------
+
+OPTION (USE_VIDEO_RECORD "FFMPEG MUST BE INSTALLED" ON)

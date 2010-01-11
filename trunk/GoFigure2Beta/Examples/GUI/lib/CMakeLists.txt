@@ -17,7 +17,8 @@ SET( QGOGUILIB_EXAMPLE_SRC
   QGoPrintDatabaseTest
   qgocreatemeshdialogtest
   QGoLsmToMegaExportDialogTest
-  QGoVideoRecorderTest
+# ADD TEST TO KNOW IF USE VIDEO_RECORD is ON
+#  QGoVideoRecorderTest
 )
 
 
@@ -95,8 +96,10 @@ ADD_TEST( QGoLsmToMegaExportDialogTest
   1
 )
 
-ADD_TEST( QGoVideoRecorderTest
-  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/QGoVideoRecorderTest
-  1
-)
+
+# ADD TEST TO KNO IF USE_VIDEO_RECORD is ON
+#ADD_TEST( QGoVideoRecorderTest
+#  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/QGoVideoRecorderTest
+#  1
+#)
 
