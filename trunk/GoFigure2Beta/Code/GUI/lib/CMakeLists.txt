@@ -28,9 +28,16 @@ SET( QGoGUILIB_SRC
   qtcolorcombobox.cxx
   QGoLsmToMegaExportDialog.cxx
   ConversionLsmToMegaThread.cxx
-#  vtkFFMPEGRenderWindowRecorder.cxx
-#  QGoVideoRecorder.cxx
 )
+
+#ADD THIS SRCS IF ENABLE_VIDEO_RECORD is ON
+IF( ENABLE_VIDEO_RECORD )
+  SET(QGoGUILIB_SRC
+    ${QGoGUILIB_SRC}
+    vtkFFMPEGRenderWindowRecorder.cxx
+    QGoVideoRecorder.cxx
+  )
+ENDIF( ENABLE_VIDEO_RECORD )
 
 SET( QGoGUILIB_HDRS
   QGoConnectServerPage.h
@@ -59,9 +66,16 @@ SET( QGoGUILIB_HDRS
   qtcolorcombobox.h
   QGoLsmToMegaExportDialog.h
   ConversionLsmToMegaThread.h
- # vtkFFMPEGRenderWindowRecorder.h
- # QGoVideoRecorder.h
 )
+
+# ADD THIS HEADERS IF ENABLE_VIDEO_RECORD IS ON
+IF( ENABLE_VIDEO_RECORD )
+  SET(QGoGUILIB_HDRS
+    ${QGoGUILIB_HDRS}
+    vtkFFMPEGRenderWindowRecorder.h
+    QGoVideoRecorder.h
+  )
+ENDIF( ENABLE_VIDEO_RECORD )
 
 SET( QGoGUILIB_UI
   ManualSegmentationSettingsDlg.ui
@@ -69,8 +83,15 @@ SET( QGoGUILIB_UI
   VisualizationDockWidget.ui
   QGoPrintDatabase.ui
   LsmToMegaExportDialog.ui
-  #VideoRecorderDialog.ui
 )
+
+# ADD THIS UI IF ENABLE_VIDEO_RECORD IS ON
+IF( ENABLE_VIDEO_RECORD )
+  SET(QGoGUILIB_UI
+    ${QGoGUILIB_UI}
+    VideoRecorderDialog.ui
+  )
+ENDIF( ENABLE_VIDEO_RECORD )
 
 QT4_WRAP_UI( QGoGUILIB_UI_H
   ${QGoGUILIB_UI}

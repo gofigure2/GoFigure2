@@ -78,6 +78,7 @@ SetRenderingWindow( vtkRenderWindow* iRenderWindow)
 	m_RenderWindow = iRenderWindow;
 
 	m_ImageFilter->SetInput(m_RenderWindow);
+
 	m_ImageWriter->SetInput(m_ImageFilter->GetOutput());
 }
 

@@ -134,4 +134,3 @@ class QGoVideoRecorder : public QDialog, private Ui::DialogVideoRecorder
 };
 
 #endif
-
