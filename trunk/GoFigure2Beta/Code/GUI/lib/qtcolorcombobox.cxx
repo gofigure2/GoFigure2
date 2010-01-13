@@ -351,22 +351,14 @@ bool QtColorComboBox::isColorDialogEnabled() const
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QtColorComboBox::SetDataForColors(
-      std::list<std::pair<std::string,std::vector<int> > > iDataColors)
+void QtColorComboBox::setExistingColors(
+  std::list<std::pair<std::string,std::vector<int> > > iDataColorsFromDB)
 {
-  m_DataFromDB = iDataColors;
-  this->setExistingColors();
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void QtColorComboBox::setExistingColors()
-{
-  if (!m_DataFromDB.empty())
+  if (!iDataColorsFromDB.empty())
     {
     std::list<std::pair<std::string,std::vector<int> > >::iterator iter =
-      m_DataFromDB.begin();
-    while (iter != m_DataFromDB.end())
+      iDataColorsFromDB.begin();
+    while (iter != iDataColorsFromDB.end())
       {
       int Red = iter->second[0];
       int Green = iter->second[1];

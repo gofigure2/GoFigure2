@@ -190,10 +190,6 @@ public slots:
 
   void ChangeContourRepresentationProperty();
 
-  /** \brief Get the info for the colors from the database and pass
-  them to the ColorComboBox in the Visu Dock Widget*/
-  void PassInfoForColorComboBoxFromDB();
-
   /** \brief Get the info for the new created color from the colorcombobox and pass
   them to the database to be saved in*/
   void PassInfoForDBFromColorTraceComboBox();

@@ -93,10 +93,6 @@ public:
 
     QSize sizeHint() const;
 
-    /** \brief fill the list m_DataFromDB with the iDataColors*/
-    void SetDataForColors(
-      std::list<std::pair<std::string,std::vector<int> > > iDataColors);
-
     /** \brief return a vector with all the data describing the new color*/
     std::vector<std::string> GetDataForNewColorToBeSaved();
 
@@ -118,6 +114,11 @@ public slots:
     is enabled*/
     void addColor(const QColor &color, const QString &name)
       { insertColor( colorCount(), color, name ); }
+    /** \brief insert the existing colors with the data taken from the database,
+    containing the color names with the associated vector of rgba*/
+     void setExistingColors(
+       std::list<std::pair<std::string,std::vector<int> > > iDataColorsFromDB);
+
 
 private slots:
     void emitActivatedColor(int index);
@@ -129,10 +130,8 @@ private:
     /** \brief list of pair containing all the datas for the existing colors from the database
     with, for each color: a color name and a vector if rgba*/
     std::list<std::pair<std::string,std::vector<int> > > m_DataFromDB;
-    bool colorDialogEnabled;
-    /** \brief insert the colors with the data taken from the list m_DataFromDB */
+    bool colorDialogEnabled;   
     bool creationCollection;
-    void setExistingColors();
     /** \brief fill the vector m_NewColorData with a QColor and a NameColor*/
     void StoreDataForNewColorToBeSaved(QColor Color,std::string NameColor);
     /** \brief vector containing the 5 datas describing a new color: its name and

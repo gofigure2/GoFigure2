@@ -179,12 +179,11 @@ void QGoTabImageView3DwT::CreateVisuDockWidget()
     this, SLOT( ShowOneChannel( int ) ) );
 
   QObject::connect( this->m_DataBaseTables,
-    SIGNAL( FillDatabaseFinished() ),
-    this, SLOT( PassInfoForColorComboBoxFromDB() ) );
-
-  QObject::connect( this->m_DataBaseTables,
-    SIGNAL( FillDatabaseFinished() ),
-    this, SLOT( PassInfoForCollectionIDFromDB() ) );
+    SIGNAL( PrintExistingColorsFromDB(
+      std::list<std::pair<std::string,std::vector<int> > >) ),
+      this->m_VisuDockWidget->ColorTraceComboBox, 
+    SLOT( setExistingColors(
+       std::list<std::pair<std::string,std::vector<int> > >) ) );
 
   QObject::connect( this->m_VisuDockWidget->ColorTraceComboBox,
     SIGNAL( NewColorToBeSaved()),
@@ -1470,14 +1469,6 @@ AddContourFromNodes( const unsigned int& iContourID,
       m_ContourWidget[dir]->Off();
       }
     }
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void QGoTabImageView3DwT::PassInfoForColorComboBoxFromDB()
-{
-  this->m_VisuDockWidget->ColorTraceComboBox->SetDataForColors(
-    this->m_DataBaseTables->GetColorComboBoxInfofromDB());
 }
 //-------------------------------------------------------------------------
 

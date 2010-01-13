@@ -152,7 +152,8 @@ signals:
   void TableContentChanged();
   void SelectionContoursToHighLightChanged();
   void SelectionMeshesToHighLightChanged();
-  void FillDatabaseFinished();
+  void PrintExistingColorsFromDB(
+    std::list<std::pair<std::string,std::vector<int> > >);
   void NeedToGetCurrentSelectedColor();
   void NewCreatedCollection(QColor,QString );
   void NeedCurrentSelectedCollectionID();

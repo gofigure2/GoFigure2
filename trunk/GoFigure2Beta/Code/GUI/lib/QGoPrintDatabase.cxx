@@ -227,9 +227,10 @@ void QGoPrintDatabase::FillTableFromDatabase()
 
   LoadContoursAndMeshesFromDB(m_DatabaseConnector);
 
-  CloseDBConnection();
   m_IsDatabaseUsed = true;
-  FillDatabaseFinished();
+  PrintExistingColorsFromDB(this->GetColorComboBoxInfofromDB());
+  CloseDBConnection();
+
 }
 //--------------------------------------------------------------------------
 
@@ -361,57 +362,6 @@ void QGoPrintDatabase::DeleteTraces()
       Table->DeleteSelectedRows();     
       CloseDBConnection();
     }
-
-
-
-
-  //int TabIndex = InWhichTableAreWe();
-
- /* switch (TabIndex)
-    {
-    case 0: //contour
-      {
-      //add the tableWidgetChild in the CollectionOfTraces?
-      QStringList ContoursToDelete = this->ContourTable->ValuesForSelectedRows("ContourID");
-      m_CollectionOfContours->DeleteTraces(ContoursToDelete,m_DatabaseConnector);
-      //this->UpdateContentAndDisplayFromDB<GoDBContourRow>("contour",
-      //  ContourTable,m_DatabaseConnector);
-      break;
-      }
-    case 1: //mesh
-      {
-      QStringList MeshesToDelete = this->MeshTable->ValuesForSelectedRows("MeshID");
-      m_CollectionOfMeshes->DeleteTraces(MeshesToDelete,m_DatabaseConnector);
-     // this->UpdateContentAndDisplayFromDB<GoDBMeshRow>("mesh",
-      //  MeshTable,m_DatabaseConnector);
-      break;
-      }
-    case 2: //track
-      {
-      QStringList TracksToDelete = this->TrackTable->ValuesForSelectedRows("TrackID");
-        m_CollectionOfTracks->DeleteTraces(TracksToDelete,m_DatabaseConnector);
-      //this->UpdateContentAndDisplayFromDB<GoDBTrackRow>("track",
-     //   TrackTable,m_DatabaseConnector);
-      break;
-      }
-    case 3: //lineage
-      {
-      QStringList LineagesToDelete = this->LineageTable->ValuesForSelectedRows("LineageID");
-      m_CollectionOfLineages->DeleteTraces(LineagesToDelete,m_DatabaseConnector);
-     // this->UpdateContentAndDisplayFromDB<GoDBLineageRow>("lineage",
-     //   LineageTable,m_DatabaseConnector);
-      break;
-      }
-    default:
-      {
-      std::cout<<"error, tab doesn't exist";
-      std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
-      std::cout << std::endl;
-      break;
-      }
-    }*/
-  //CloseDBConnection();
-//}
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
@@ -829,8 +779,6 @@ std::vector<ContourMeshStructure> QGoPrintDatabase::
 std::list<std::pair<std::string,std::vector<int> > > QGoPrintDatabase::
   GetColorComboBoxInfofromDB()
 {
-  OpenDBConnection();
-
   std::list<std::pair<std::string,std::vector<int> > > oInfoColors;
   std::vector<std::string> ResultsQuery  = ListAllValuesForOneColumn(
     m_DatabaseConnector,"*", "color");
@@ -847,9 +795,6 @@ std::list<std::pair<std::string,std::vector<int> > > QGoPrintDatabase::
     oInfoColors.push_back(temp);
     i = i+7;
     }
-
-  CloseDBConnection();
-
   return oInfoColors;
 }
 //-------------------------------------------------------------------------
@@ -1038,7 +983,6 @@ void QGoPrintDatabase::UpdateTableWidgetAndRowContainerWithNewCreatedTrace(
  CollectionIDName += "ID";
  //update the Table Widget Display:
  Table->UpdateIDs(iNewCollectionID,CollectionIDName,iColorNewCollection);
-
 }
 
 //-------------------------------------------------------------------------
