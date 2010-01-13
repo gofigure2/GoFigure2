@@ -208,9 +208,6 @@ public slots:
   /** \brief Get the info for the current selected color from the visu widget and pass it
   to the database*/
   void PassInfoForDBForCurrentSelectedColor();
-  /** \brief Get the info of the new created collection in the database to update the list
-  of collections in the visu dock widget*/
-  void PassInfoForCollectionIDComboBoxForNewCollection();
   /** \brief Get the current selected collectionid from the visu dock widget and update the
   currentCollectionID in the table widget*/
   void PassInfoForCurrentCollectionID();

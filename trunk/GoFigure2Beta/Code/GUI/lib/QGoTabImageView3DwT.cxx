@@ -199,8 +199,8 @@ void QGoTabImageView3DwT::CreateVisuDockWidget()
     this, SLOT(PassInfoForDBForCurrentSelectedColor()) );
 
   QObject::connect( this->m_DataBaseTables,
-    SIGNAL( NewCreatedCollection() ),
-    this, SLOT( PassInfoForCollectionIDComboBoxForNewCollection() ) );
+    SIGNAL( NewCreatedCollection(QColor, QString) ),
+    this->m_VisuDockWidget->ColorIDCollectionComboBox, SLOT( addColor(QColor, QString) ));
 
   QObject::connect( this->m_DataBaseTables,
     SIGNAL( SelectionContoursToHighLightChanged() ),
@@ -1519,16 +1519,6 @@ void QGoTabImageView3DwT::PassInfoForDBForCurrentSelectedColor()
   this->m_DataBaseTables->UpdateCurrentColorData(
     this->m_VisuDockWidget->ColorTraceComboBox->GetCurrentColorData());
 
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void QGoTabImageView3DwT::PassInfoForCollectionIDComboBoxForNewCollection()
-{
-  std::pair<std::string,QColor> Data =
-    this->m_DataBaseTables->GetDataNewCreatedCollection();
-  this->m_VisuDockWidget->ColorIDCollectionComboBox->
-    addColor(Data.second,Data.first.c_str());
 }
 //-------------------------------------------------------------------------
 

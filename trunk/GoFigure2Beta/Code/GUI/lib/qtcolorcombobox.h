@@ -74,11 +74,6 @@ public:
     /** \brief insert a color at a given index*/
     void insertColor(int index, const QColor &color, const QString &name);
 
-    /** \brief insert a color at the end, before the "more" if the ColorDialog
-    is enabled*/
-    inline void addColor(const QColor &color, const QString &name)
-      { insertColor( colorCount(), color, name ); }
-
     int colorCount() const;
 
     void setCurrentColor(const QColor &color);
@@ -117,6 +112,12 @@ signals:
     /** \brief  signal emitted when a new collection has been created by the user, in order
     to be saved in the database*/
     void NewCollectionToBeSaved();
+
+public slots:
+    /** \brief insert a color at the end, before the "more" if the ColorDialog
+    is enabled*/
+    void addColor(const QColor &color, const QString &name)
+      { insertColor( colorCount(), color, name ); }
 
 private slots:
     void emitActivatedColor(int index);

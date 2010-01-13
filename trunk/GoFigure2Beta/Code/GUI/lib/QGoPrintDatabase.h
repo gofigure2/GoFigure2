@@ -104,9 +104,6 @@ public:
   std::list<std::pair<std::string,QColor> > GetListExistingCollectionIDFromDB(
     std::string TraceName,std::string CollectionName);
 
-
-  std::pair<std::string,QColor> GetDataNewCreatedCollection();
-  int GetTraceIDToReedit();
   std::pair<std::string,QColor> GetCurrentCollectionData();
   /** \brief Save a new color in the database with rgba and the name of the color*/
   void SaveNewColorInDB(std::vector<std::string> iDataNewColor);
@@ -157,7 +154,7 @@ signals:
   void SelectionMeshesToHighLightChanged();
   void FillDatabaseFinished();
   void NeedToGetCurrentSelectedColor();
-  void NewCreatedCollection();
+  void NewCreatedCollection(QColor,QString );
   void NeedCurrentSelectedCollectionID();
   void TraceToReEdit( unsigned int );
   void DeletedCollection();
@@ -168,7 +165,6 @@ protected:
   GoDBCollectionOfTraces* m_CollectionOfTracks;
   GoDBCollectionOfTraces* m_CollectionOfLineages;
   std::pair<std::string,QColor> m_CurrentColorData;
-  std::pair<std::string,QColor> m_LastCreatedCollection;
   std::pair<std::string,QColor> m_CurrentCollectionData;
 
   vtkMySQLDatabase* m_DatabaseConnector;
@@ -179,8 +175,6 @@ protected:
   unsigned int      m_ImgSessionID;
   std::string       m_ImgSessionName;
   bool              m_IsDatabaseUsed;
-  int               m_TraceIDToReedit;
-
 
   QAction* m_VisibilityAction;
 

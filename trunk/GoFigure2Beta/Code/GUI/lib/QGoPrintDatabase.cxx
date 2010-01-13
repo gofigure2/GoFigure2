@@ -458,10 +458,8 @@ void QGoPrintDatabase::CreateCorrespondingCollection()
       CollectionOfTraces,NewCollectionID,this->m_CurrentColorData.second,ListSelectedTraces);
 
     CloseDBConnection();
-    this->m_LastCreatedCollection.first = ConvertToString<int>(NewCollectionID);
-    this->m_LastCreatedCollection.second = this->m_CurrentColorData.second;
-
-    NewCreatedCollection();
+    QString CollectionIDQString = ConvertToString<int>(NewCollectionID).c_str();
+    NewCreatedCollection(this->m_CurrentColorData.second,CollectionIDQString);
     }
 
 }
@@ -1138,13 +1136,6 @@ void QGoPrintDatabase::UpdateCurrentColorData(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-std::pair<std::string,QColor> QGoPrintDatabase::GetDataNewCreatedCollection()
-{
-  return this->m_LastCreatedCollection;
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
 void QGoPrintDatabase::SetCurrentCollectionID(
   std::pair<std::string,QColor> iCurrentCollectionData)
 {
@@ -1185,8 +1176,6 @@ void QGoPrintDatabase::ReEditTrace()
       }
     else
       {
-//       std::list<int>::iterator iter = SelectedTrace.front();
-//       this->m_TraceIDToReedit = *iter;
       TraceToReEdit( static_cast< unsigned int >( SelectedTrace.front() ) );
       }
     }
@@ -1194,7 +1183,3 @@ void QGoPrintDatabase::ReEditTrace()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-int QGoPrintDatabase::GetTraceIDToReedit()
-{ /** \todo look if possible the signal to return the int directly*/
-  return this->m_TraceIDToReedit;
-}
