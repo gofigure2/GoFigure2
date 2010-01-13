@@ -1582,6 +1582,30 @@ ReEditContour( const unsigned int& iId )
         {
         m_ReEditContourMode = true;
         m_ContourId = iId;
+
+        double p[3];
+        c_nodes->GetPoint( 0, p );
+        int* idx = GetImageCoordinatesFromWorldCoordinates( p );
+
+        switch( dir )
+          {
+          default:
+          case 0:
+            {
+            this->SetSliceViewXY( idx[2] );
+            break;
+            }
+          case 1:
+            {
+            this->SetSliceViewXZ( idx[1] );
+            break;
+            }
+          case 2:
+            {
+            this->SetSliceViewXY( idx[0] );
+            break;
+            }
+          }
         m_ContourWidget[dir]->Initialize( c_nodes );
         m_ManualSegmentationDockWidget->ActivateManualSegmentation( true );
         }
