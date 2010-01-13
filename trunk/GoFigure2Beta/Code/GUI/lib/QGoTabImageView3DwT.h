@@ -190,9 +190,11 @@ public slots:
 
   void ChangeContourRepresentationProperty();
 
-  /** \brief Get the info for the new created collection from the collectionIDcombobox
-  and pass them to the database to be saved in*/
-  void PassInfoForDBFromCollectionIDComboBox();
+  /** \brief Get the info for the new created collection from the collectionIDcombobox,
+  pass them to the database to be saved in and update the list of collection IDs
+  in the visu dock widget*/
+  void UpdateDBAndCollectionIDComboBoxForANewCreatedCollection();
+  //void PassInfoForDBFromCollectionIDComboBox();
 
   /** \brief Get the info for the current selected color from the visu widget and pass it
   to the database*/
