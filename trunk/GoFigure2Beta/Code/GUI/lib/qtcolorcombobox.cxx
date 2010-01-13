@@ -260,7 +260,8 @@ void QtColorComboBox::emitActivatedColor(int index)
           {
 	        addColor(col, ColorName);
 	        setCurrentIndex(index);
-          this->StoreDataForNewColorToBeSaved(col,ColorName.toStdString());
+          //pass the data for the new color to be saved in the database
+          this->PassDataForNewColorToBeSaved(col,ColorName.toStdString());
           }
 	}     else 
         {
@@ -375,24 +376,17 @@ void QtColorComboBox::setExistingColors(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QtColorComboBox::StoreDataForNewColorToBeSaved(
+void QtColorComboBox::PassDataForNewColorToBeSaved(
   QColor Color, std::string NameColor)
 {
-  m_NewColorData.clear();
-  m_NewColorData.push_back(NameColor);
-  m_NewColorData.push_back(ConvertToString<int>(Color.red()));
-  m_NewColorData.push_back(ConvertToString<int>(Color.green()));
-  m_NewColorData.push_back(ConvertToString<int>(Color.blue()));
-  m_NewColorData.push_back(ConvertToString<int>(Color.alpha()));
+  std::vector<std::string> NewColorData;
+  NewColorData.push_back(NameColor);
+  NewColorData.push_back(ConvertToString<int>(Color.red()));
+  NewColorData.push_back(ConvertToString<int>(Color.green()));
+  NewColorData.push_back(ConvertToString<int>(Color.blue()));
+  NewColorData.push_back(ConvertToString<int>(Color.alpha()));
   
-  NewColorToBeSaved();
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-std::vector<std::string> QtColorComboBox::GetDataForNewColorToBeSaved()
-{
-  return m_NewColorData;
+  NewColorToBeSaved(NewColorData);
 }
 //-------------------------------------------------------------------------
 

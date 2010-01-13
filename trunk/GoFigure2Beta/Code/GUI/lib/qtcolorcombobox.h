@@ -93,9 +93,6 @@ public:
 
     QSize sizeHint() const;
 
-    /** \brief return a vector with all the data describing the new color*/
-    std::vector<std::string> GetDataForNewColorToBeSaved();
-
     /** \brief return the name and the QColor of the current selected color*/
     std::pair<std::string,QColor> GetCurrentColorData();
 
@@ -104,7 +101,7 @@ signals:
     void highlighted(const QColor &color);
     /** \brief  signal emitted when a new color has been created by the user, in order
     to be saved in the database*/
-    void NewColorToBeSaved();
+    void NewColorToBeSaved(std::vector<std::string>);
     /** \brief  signal emitted when a new collection has been created by the user, in order
     to be saved in the database*/
     void NewCollectionToBeSaved();
@@ -132,11 +129,9 @@ private:
     std::list<std::pair<std::string,std::vector<int> > > m_DataFromDB;
     bool colorDialogEnabled;   
     bool creationCollection;
-    /** \brief fill the vector m_NewColorData with a QColor and a NameColor*/
-    void StoreDataForNewColorToBeSaved(QColor Color,std::string NameColor);
-    /** \brief vector containing the 5 datas describing a new color: its name and
-    its rgba*/
-    std::vector<std::string> m_NewColorData;
+    /** \brief convert the QColor and NameColor to string and emit the signal for the
+    new color to be saved in the database*/
+    void PassDataForNewColorToBeSaved(QColor Color,std::string NameColor);
 };
 
 #endif

@@ -105,8 +105,7 @@ public:
     std::string TraceName,std::string CollectionName);
 
   std::pair<std::string,QColor> GetCurrentCollectionData();
-  /** \brief Save a new color in the database with rgba and the name of the color*/
-  void SaveNewColorInDB(std::vector<std::string> iDataNewColor);
+  
   /** \brief Save the new collection in the database and return the corresponding ID with
   the QColor*/
   std::pair<std::string,QColor> SaveNewCollectionInDB(
@@ -147,6 +146,9 @@ public slots:
 
   void ChangeMeshesToHighLightInfoFromVisu(
   std::list<int> iListMeshesHighLightedInVisu);
+
+  /** \brief Save a new color in the database with rgba and the name of the color*/
+  void SaveNewColorInDB(std::vector<std::string> iDataNewColor);
 
 signals:
   void TableContentChanged();
