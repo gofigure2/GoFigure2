@@ -190,9 +190,6 @@ public slots:
 
   void ChangeContourRepresentationProperty();
 
-  /** \brief Get the info for the existing collectionID from the database and pass
-  them to the Visu Dock Widget*/
-  void PassInfoForCollectionIDFromDB();
   /** \brief Get the info for the new created collection from the collectionIDcombobox
   and pass them to the database to be saved in*/
   void PassInfoForDBFromCollectionIDComboBox();

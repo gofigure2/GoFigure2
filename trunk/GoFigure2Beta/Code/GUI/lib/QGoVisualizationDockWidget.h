@@ -29,8 +29,6 @@ class QGoVisualizationDockWidget :
     int GetCurrentCollectionID ();
     std::string GetCurrentColor();
     
-    void SetCollectionID(std::list<std::pair<std::string,QColor> > iListExistingID);
-    
     QtColorComboBox* ColorTraceComboBox;
     QtColorComboBox* ColorIDCollectionComboBox;
     QLabel* TraceName;
@@ -41,6 +39,8 @@ class QGoVisualizationDockWidget :
     void SetYSlice( int iSlice );
     void SetZSlice( int iSlice );
     void SetTSlice( int iSlice );
+    void SetCollectionID(
+      std::list<std::pair<std::string,QColor> > iListExistingID);
 
   signals:
     void ShowAllChannelsChanged( bool iChanged );

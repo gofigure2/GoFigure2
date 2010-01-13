@@ -156,6 +156,8 @@ signals:
   void SelectionMeshesToHighLightChanged();
   void PrintExistingColorsFromDB(
     std::list<std::pair<std::string,std::vector<int> > >);
+  void PrintExistingCollectionIDsFromDB(
+    std::list<std::pair<std::string,QColor> >);
   void NeedToGetCurrentSelectedColor();
   void NewCreatedCollection(QColor,QString );
   void NeedCurrentSelectedCollectionID();

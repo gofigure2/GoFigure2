@@ -229,6 +229,9 @@ void QGoPrintDatabase::FillTableFromDatabase()
 
   m_IsDatabaseUsed = true;
   PrintExistingColorsFromDB(this->GetColorComboBoxInfofromDB());
+  /** \todo get the collection name and the trace name from the visudockwidget*/
+  PrintExistingCollectionIDsFromDB(
+    this->GetListExistingCollectionIDFromDB("contour","mesh"));
   CloseDBConnection();
 
 }

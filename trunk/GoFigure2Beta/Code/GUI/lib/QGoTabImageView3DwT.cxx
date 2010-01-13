@@ -185,6 +185,10 @@ void QGoTabImageView3DwT::CreateVisuDockWidget()
     SLOT( setExistingColors(
        std::list<std::pair<std::string,std::vector<int> > >) ) );
 
+  QObject::connect( this->m_DataBaseTables,
+    SIGNAL( PrintExistingCollectionIDsFromDB(std::list<std::pair<std::string,QColor> >) ),
+    this->m_VisuDockWidget, SLOT( SetCollectionID(std::list<std::pair<std::string,QColor> >) ) );
+
   QObject::connect( this->m_VisuDockWidget->ColorTraceComboBox,
     SIGNAL( NewColorToBeSaved(std::vector<std::string>)),
     this->m_DataBaseTables, 
@@ -1474,15 +1478,6 @@ AddContourFromNodes( const unsigned int& iContourID,
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoTabImageView3DwT::PassInfoForCollectionIDFromDB()
-{
-  /// \todo: always begin with contour ??
-  this->m_VisuDockWidget->SetCollectionID(this->m_DataBaseTables->
-    GetListExistingCollectionIDFromDB("contour","mesh"));
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
 void QGoTabImageView3DwT::PassInfoForDBFromCollectionIDComboBox()
 {
   //first, save in the database:
@@ -1499,12 +1494,11 @@ void QGoTabImageView3DwT::PassInfoForDBFromCollectionIDComboBox()
 //-------------------------------------------------------------------------
 void QGoTabImageView3DwT::PassInfoForDBForCurrentSelectedColor()
 {
-  /** \todo merge it with PassInfoForCollectionIDFromDB*/
   this->m_DataBaseTables->UpdateCurrentColorData(
     this->m_VisuDockWidget->ColorTraceComboBox->GetCurrentColorData());
 
 }
-//-------------------------------------------------------------------------
+//-------------------------------------------------------------------------  
 
 //-------------------------------------------------------------------------
 void QGoTabImageView3DwT::PassInfoForCurrentCollectionID()
