@@ -1187,14 +1187,16 @@ ValidateContour( )
   // In such a case contours are saved in the database, else they are not!
   bool saveindatabase = m_DataBaseTables->IsDatabaseUsed();
 
-  int ContourID = -1; // to make sure that m_ContourId is set to the right value
+  // to make sure that m_ContourId is set to the right value
+  int ContourID = -1;
+  unsigned int i;
 
   if( m_ReEditContourMode )
     {
     ContourID = m_ContourId;
     }
 
-  for( unsigned int i = 0; i < m_ContourWidget.size(); i++ )
+  for( i = 0; i < m_ContourWidget.size(); i++ )
     {
     ValidateContour( ContourID, i, r, g, b, a, highlighted, m_TimePoint, saveindatabase );
     }
@@ -1203,21 +1205,16 @@ ValidateContour( )
     {
     m_ManualSegmentationDockWidget->ActivateManualSegmentation( false );
 
-    for( unsigned int i = 0; i < m_ContourWidget.size(); i++ )
+    for( i = 0; i < m_ContourWidget.size(); i++ )
       {
       m_ContourWidget[i]->Initialize( NULL );
       }
 
     std::list< int > listofrowstobeselected;
     listofrowstobeselected.push_back( m_ContourId );
-    if (m_ReEditContourMode)
-      {
-      m_DataBaseTables->ChangeContoursToHighLightInfoFromVisu( listofrowstobeselected,true );
-      }
-    else
-      {
-      m_DataBaseTables->ChangeContoursToHighLightInfoFromVisu( listofrowstobeselected,false );
-      }
+
+    m_DataBaseTables->ChangeContoursToHighLightInfoFromVisu( listofrowstobeselected,
+      m_ReEditContourMode );
 
     m_ReEditContourMode = false;
     }
