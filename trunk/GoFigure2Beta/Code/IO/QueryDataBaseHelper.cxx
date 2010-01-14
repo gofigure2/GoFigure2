@@ -340,18 +340,12 @@ void UpdateValueInDB(vtkMySQLDatabase* DatabaseConnector,
 void UpdateContourInDB(vtkMySQLDatabase* DatabaseConnector,
                        GoDBContourRow UpdatedContour)
 { 
-  std::string contourID = UpdatedContour.GetMapValue("contourID");
+  std::string contourID = UpdatedContour.GetMapValue("ContourID");
   UpdateValueInDB(DatabaseConnector,"contour","CoordIDMin",UpdatedContour.GetMapValue("CoordIDMin"),
     "contourID",contourID);
   UpdateValueInDB(DatabaseConnector,"contour","CoordIDMax",UpdatedContour.GetMapValue("CoordIDMax"),
     "contourID",contourID);
-  UpdateValueInDB(DatabaseConnector,"contour","CoordIDMax",UpdatedContour.GetMapValue("CoordIDMax"),
-    "contourID",contourID);
-  UpdateValueInDB(DatabaseConnector,"contour","ImagingSessionID",UpdatedContour.GetMapValue("ImagingSessionID"),
-    "contourID",contourID);
   UpdateValueInDB(DatabaseConnector,"contour","ColorID",UpdatedContour.GetMapValue("ColorID"),
-    "contourID",contourID);
-  UpdateValueInDB(DatabaseConnector,"contour","MeshID",UpdatedContour.GetMapValue("MeshID"),
     "contourID",contourID);
   UpdateValueInDB(DatabaseConnector,"contour","Points",UpdatedContour.GetMapValue("Points"),
     "contourID",contourID);

@@ -627,11 +627,11 @@ int QGoPrintDatabase::SaveContoursFromVisuInDB(unsigned int iXCoordMin,
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-int QGoPrintDatabase::SaveContoursFromVisu(unsigned int iXCoordMin,
+int QGoPrintDatabase::UpdateContourFromVisuInDB(unsigned int iXCoordMin,
     unsigned int iYCoordMin, unsigned int iZCoordMin, unsigned int iTCoord,
     unsigned int iXCoordMax, unsigned int iYCoordMax, unsigned int iZCoordMax,
     vtkPolyData* iContourNodes, std::pair<std::string, QColor> iColorData,
-    unsigned int iMeshID,int ContourID )
+    int ContourID )
 {
   OpenDBConnection();
 
@@ -653,8 +653,7 @@ int QGoPrintDatabase::SaveContoursFromVisu(unsigned int iXCoordMin,
     iColorData.second.blue(),iColorData.second.alpha(),iColorData.first,
     this->m_DatabaseConnector);
 
-  contour_row.SetCollectionID(iMeshID);
-  
+  contour_row.SetField< int >("ContourID",ContourID);
 
   UpdateContourInDB(this->m_DatabaseConnector,contour_row);
   
