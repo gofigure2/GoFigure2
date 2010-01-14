@@ -104,7 +104,7 @@ void GoDBCollectionOfTraces::DeleteTraces(std::list<int> TracesToDelete,
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void GoDBCollectionOfTraces::AddSelectedTracesToCollection(
+void GoDBCollectionOfTraces::UpdateCollectionIDOfSelectedTraces(
   std::list<int> iListSelectedTraces,int inewCollectionID,
   vtkMySQLDatabase* DatabaseConnector)
 {
@@ -113,10 +113,6 @@ void GoDBCollectionOfTraces::AddSelectedTracesToCollection(
   while (iter != iListSelectedTraces.end())
     {
     int TraceID = *iter;
-    /*if (TraceID == 0)
-      {
-      std::string TraceID = "null";
-      }*/
     UpdateValueInDB(DatabaseConnector,m_TracesName,m_CollectionIDName, 
       newCollectionIDstring,m_TracesIDName, ConvertToString<int>(TraceID));
     iter++;
@@ -242,7 +238,7 @@ int GoDBCollectionOfTraces::GetCoordMaxID(vtkMySQLDatabase* DatabaseConnector,
       CollectionCoordIDMax, CollectionID );
     
     //get the column names for the coordinate table:
-    std::vector<std::string> ColumnNames = NewCollectionCoordMax.GetVectorColumnNames();
+    std::vector<std::string> ColumnNames = GetFieldNames("coordinate",DatabaseConnector);
     bool SameCoord = true;
     //put the min between the existing coord value and the selecting ones in the 
     //NewCollectionCoorMin
@@ -342,8 +338,9 @@ GoDBCoordinateRow GoDBCollectionOfTraces::GetExistingCoordMin(
   std::vector<std::string> VectorValuesExistingCoordMin = ListSpecificValuesForRow(
     DatabaseConnector,"coordinate", "CoordID",ConvertToString<int>(CollectionCoordIDMin));
 
-  std::vector<std::string> ColumnNames = ExistingCoordMin.GetVectorColumnNames();
-
+  //std::vector<std::string> ColumnNames = ExistingCoordMin.GetVectorColumnNames();
+  std::vector<std::string> ColumnNames = GetFieldNames("coordinate",
+    DatabaseConnector);
   for( unsigned int i = 0; i <ColumnNames.size(); i++ )
     {
     ExistingCoordMin.SetField(ColumnNames[i],VectorValuesExistingCoordMin[i]);
@@ -362,7 +359,10 @@ GoDBCoordinateRow GoDBCollectionOfTraces::GetExistingCoordMax(
   std::vector<std::string> VectorValuesExistingCoordMax = ListSpecificValuesForRow(
     DatabaseConnector,"coordinate", "CoordID",ConvertToString<int>(CollectionCoordIDMax));
 
-  std::vector<std::string> ColumnNames = ExistingCoordMax.GetVectorColumnNames();
+  //std::vector<std::string> ColumnNames = ExistingCoordMax.GetVectorColumnNames();
+  //std::list<std::string> ColumnNames = ExistingCoordMax.GetListColumnNames();
+  std::vector<std::string> ColumnNames = GetFieldNames("coordinate",
+    DatabaseConnector);
 
   for( unsigned int i = 0; i <ColumnNames.size(); i++ )
     {
@@ -520,8 +520,8 @@ int GoDBCollectionOfTraces::CreateNewCollectionFromSelection(
 
  int NewCollectionID = this->CreateNewCollection(DatabaseConnector,iNewCollection);
 
-  AddSelectedTracesToCollection(iListSelectedTraces,
-    NewCollectionID, DatabaseConnector);
+  UpdateCollectionIDOfSelectedTraces(iListSelectedTraces,NewCollectionID, 
+    DatabaseConnector);
 
   return NewCollectionID;
  }
@@ -550,6 +550,28 @@ int GoDBCollectionOfTraces::CreateNewCollection(
       DatabaseConnector,this->m_CollectionName, NewLineage , m_CollectionIDName);
     }
   return 0;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void GoDBCollectionOfTraces::UpdateDBDataForAddedTracesToExistingCollection(
+    std::list<int> iListSelectedTraces,int iCollectionID,
+    vtkMySQLDatabase* iDatabaseConnector)
+{
+  //change the collectionID of the selected traces to the chosen one:
+  this->UpdateCollectionIDOfSelectedTraces(iListSelectedTraces,iCollectionID,
+    iDatabaseConnector);
+
+  //update the bounding box for the max coord:
+  UpdateValueInDB(iDatabaseConnector,this->m_CollectionName, "CoordIDMax", 
+    ConvertToString<int>(this->GetCoordMaxID(iDatabaseConnector,iCollectionID,iListSelectedTraces)),
+    this->m_CollectionIDName, ConvertToString<int>(iCollectionID));
+
+  //update the bounding box for the min coord:
+  UpdateValueInDB(iDatabaseConnector,this->m_CollectionName, "CoordIDMin", 
+    ConvertToString<int>(this->GetCoordMinID(iDatabaseConnector,iCollectionID,iListSelectedTraces)),
+    this->m_CollectionIDName, ConvertToString<int>(iCollectionID));
+  
 }
 //--------------------------------------------------------------------------
 

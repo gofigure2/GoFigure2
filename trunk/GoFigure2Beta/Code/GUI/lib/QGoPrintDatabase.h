@@ -136,8 +136,7 @@ public:
   int UpdateContourFromVisuInDB(unsigned int iXCoordMin,
     unsigned int iYCoordMin, unsigned int iZCoordMin, unsigned int iTCoord,
     unsigned int iXCoordMax, unsigned int iYCoordMax, unsigned int iZCoordMax,
-    vtkPolyData* iContourNodes, std::pair<std::string, QColor> iColorData,
-    int ContourID );
+    vtkPolyData* iContourNodes, int ContourID );
 
   /** \brief return a bool to know if the user is using the database or not*/
   bool IsDatabaseUsed();

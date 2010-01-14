@@ -73,6 +73,7 @@ public:
   std::string PrintValues();
   std::string PrintColumnNames();
   std::vector<std::string> GetVectorColumnNames();
+  //std::list<std::string> GetListColumnNames();
   std::map<std::string,std::string>::iterator MapBegin();
   std::map<std::string,std::string>::const_iterator ConstMapBegin();
   std::map<std::string,std::string>::iterator MapEnd();

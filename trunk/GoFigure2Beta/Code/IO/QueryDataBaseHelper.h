@@ -100,4 +100,8 @@ bool DoesTableExist(
   vtkMySQLDatabase* DatabaseConnector,
   std::string TableName );
 
+//query: "DESCRIBE TableName"
+std::vector<std::string> GetFieldNames(std::string TableName,
+  vtkMySQLDatabase* ServerConnector);
+
 #endif

@@ -345,9 +345,39 @@ void UpdateContourInDB(vtkMySQLDatabase* DatabaseConnector,
     "contourID",contourID);
   UpdateValueInDB(DatabaseConnector,"contour","CoordIDMax",UpdatedContour.GetMapValue("CoordIDMax"),
     "contourID",contourID);
-  UpdateValueInDB(DatabaseConnector,"contour","ColorID",UpdatedContour.GetMapValue("ColorID"),
-    "contourID",contourID);
   UpdateValueInDB(DatabaseConnector,"contour","Points",UpdatedContour.GetMapValue("Points"),
     "contourID",contourID);
 }
+//------------------------------------------------------------------------------
 
+//------------------------------------------------------------------------------
+std::vector<std::string> GetFieldNames(std::string TableName,
+  vtkMySQLDatabase* DatabaseConnector)
+{
+std::vector<std::string> result;
+
+  vtkSQLQuery* query = DatabaseConnector->GetQueryInstance();
+  std::stringstream querystream;
+  querystream << "DESCRIBE ";
+  querystream << TableName;
+  querystream << ";";
+
+  query->SetQuery( querystream.str().c_str() );
+  if ( !query->Execute() )
+    {
+    itkGenericExceptionMacro(
+      << "describe table query failed"
+      << query->GetLastErrorText() );
+    DatabaseConnector->Close();
+    DatabaseConnector->Delete();
+    query->Delete();
+    return result;
+    }
+  while (query->NextRow())
+    {
+    result.push_back( query->DataValue( 0 ).ToString() );
+    }
+  query->Delete();
+
+  return result;
+}

@@ -341,7 +341,7 @@ void QGoPrintDatabase::DeleteTraces()
             it++;
             }
           GoDBCollectionOfTraces* TracesCollectionOf = this->GetCollectionOfTraces(CollectionOf);
-          TracesCollectionOf->AddSelectedTracesToCollection(TracesWithCollectionToBeNull,0,
+          TracesCollectionOf->UpdateCollectionIDOfSelectedTraces(TracesWithCollectionToBeNull,0,
             this->m_DatabaseConnector);
           QTableWidgetChild* TableCollectionOf= this->GetTableWidgetChild(TracesCollectionOf->GetTraceName());
           QColor Color(255,255,255,255);
@@ -456,9 +456,10 @@ void QGoPrintDatabase::AddToSelectedCollection()
     GoDBTableWidgetContainer* LinkToRowContainerForTraces =
       CollectionOfTraces->GetLinkToRowContainer();
 
-    //update the collectionID of the traces in the database:
-    CollectionOfTraces->AddSelectedTracesToCollection(ListSelectedTraces,
-      CollectionID,this->m_DatabaseConnector);
+    //update the corresponding database data:
+    CollectionOfTraces->UpdateDBDataForAddedTracesToExistingCollection(
+      ListSelectedTraces,CollectionID,this->m_DatabaseConnector);
+    
     //update the RowContainer for traces with the new ID for the selected traces:
     LinkToRowContainerForTraces->UpdateIDs(ListSelectedTraces,CollectionID);
 
@@ -630,8 +631,7 @@ int QGoPrintDatabase::SaveContoursFromVisuInDB(unsigned int iXCoordMin,
 int QGoPrintDatabase::UpdateContourFromVisuInDB(unsigned int iXCoordMin,
     unsigned int iYCoordMin, unsigned int iZCoordMin, unsigned int iTCoord,
     unsigned int iXCoordMax, unsigned int iYCoordMax, unsigned int iZCoordMax,
-    vtkPolyData* iContourNodes, std::pair<std::string, QColor> iColorData,
-    int ContourID )
+    vtkPolyData* iContourNodes,int ContourID )
 {
   OpenDBConnection();
 
@@ -649,9 +649,6 @@ int QGoPrintDatabase::UpdateContourFromVisuInDB(unsigned int iXCoordMin,
 
   GoDBContourRow contour_row( this->m_DatabaseConnector,coord_min, coord_max,
     this->m_ImgSessionID, iContourNodes );
-  contour_row.SetColor(iColorData.second.red(),iColorData.second.green(),
-    iColorData.second.blue(),iColorData.second.alpha(),iColorData.first,
-    this->m_DatabaseConnector);
 
   contour_row.SetField< int >("ContourID",ContourID);
 
