@@ -23,7 +23,6 @@ SET( QGoGUILIB_SRC
   QSplitterChild.cxx
   QTableWidgetChild.cxx
   SnapshotHelper.cxx
-  QTableWidgetNumericalItem.cxx
   QGoCreateMeshDialog.cxx
   qtcolorcombobox.cxx
   QGoLsmToMegaExportDialog.cxx
