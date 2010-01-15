@@ -88,6 +88,13 @@ QGoTabImageView3DwT( QWidget* iParent ) :
 QGoTabImageView3DwT::
 ~QGoTabImageView3DwT( )
 {
+  vtkImageData* temp = m_MegaCaptureReader->GetOutput();
+  if( temp )
+    {
+    temp->Delete();
+    temp = 0;
+    }
+
   ContourMeshStructureMultiIndexContainer::iterator it = m_ContourMeshContainer.begin();
   ContourMeshStructureMultiIndexContainer::iterator end = m_ContourMeshContainer.end();
 

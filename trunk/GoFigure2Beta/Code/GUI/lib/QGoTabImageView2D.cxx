@@ -2,6 +2,7 @@
 
 #include "QGoLUTDialog.h"
 
+#include "vtkLookupTable.h"
 #include "vtkEventQtSlotConnect.h"
 #include "vtkRenderWindow.h"
 #include "vtkRendererCollection.h"

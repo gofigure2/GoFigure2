@@ -43,6 +43,7 @@
 #include "vtkObjectFactory.h"
 #include "vtkCellArray.h"
 #include "vtkPolyData.h"
+#include "vtkSmartPointer.h"
 
 #include <sstream>
 
@@ -79,7 +80,8 @@ vtkPolyData* vtkPolyDataMySQLTextReader::GetPolyData( const std::string& iString
 vtkPolyData* vtkPolyDataMySQLTextReader::GetContour( )
 {
   vtkPolyData* oContour = vtkPolyData::New();
-  vtkPoints* points = vtkPoints::New();
+  vtkSmartPointer< vtkPoints > points = 
+    vtkSmartPointer< vtkPoints >::New();
 
   std::stringstream str( m_Text );
 
@@ -102,9 +104,9 @@ vtkPolyData* vtkPolyDataMySQLTextReader::GetContour( )
     points->SetPoint( i, pt );
     }
   oContour->SetPoints( points );
-  points->Delete();
 
-  vtkCellArray* cells = vtkCellArray::New();
+  vtkSmartPointer< vtkCellArray > cells = 
+    vtkSmartPointer< vtkCellArray >::New();
   vtkIdType* ids = new vtkIdType[N+1];
 
   for( vtkIdType i = 0; i < N; i++ )
@@ -117,26 +119,6 @@ vtkPolyData* vtkPolyDataMySQLTextReader::GetContour( )
   oContour->SetLines( cells );
 
   delete[] ids;
-  cells->Delete();
-
-/*   vtkIdList* id_list = vtkIdList::New();
-
-  // NOTE ALEX:
-  // one big cell does not do it.
-  // during the vizualization the cell is triangulated
-  // use edges for figures.
-  for( vtkIdType i = 1; i <= N; i++ )
-    {
-    id_list->Reset();
-    id_list->InsertNextId( i-1 );
-    id_list->InsertNextId( i%N );
-    cells->InsertNextCell( id_list );
-    }
-
-  oContour->SetLines( cells );
-
-  cells->Delete();
-  id_list->Delete();*/
 
   return oContour;
 }
@@ -144,7 +126,8 @@ vtkPolyData* vtkPolyDataMySQLTextReader::GetContour( )
 vtkPolyData* vtkPolyDataMySQLTextReader::GetMesh( )
 {
   vtkPolyData* oMesh = vtkPolyData::New();
-  vtkPoints* points = vtkPoints::New();
+  vtkSmartPointer< vtkPoints > points = 
+    vtkSmartPointer< vtkPoints >::New();
 
   std::stringstream str( m_Text );
 
@@ -161,12 +144,12 @@ vtkPolyData* vtkPolyDataMySQLTextReader::GetMesh( )
     }
   oMesh->SetPoints( points );
 
-  points->Delete();
-
-  vtkCellArray* cells = vtkCellArray::New();
+  vtkSmartPointer< vtkCellArray > cells = 
+    vtkSmartPointer< vtkCellArray >::New();
   str >>N;
 
-  vtkIdList* cell_points = vtkIdList::New();
+  vtkSmartPointer< vtkIdList > cell_points = 
+    vtkSmartPointer< vtkIdList >::New();
   vtkIdType NbOfPointsInCell;
   vtkIdType id;
 
@@ -183,8 +166,6 @@ vtkPolyData* vtkPolyDataMySQLTextReader::GetMesh( )
     }
   oMesh->SetPolys( cells );
 
-  cells->Delete();
-  cell_points->Delete();
-
   return oMesh;
 }
+

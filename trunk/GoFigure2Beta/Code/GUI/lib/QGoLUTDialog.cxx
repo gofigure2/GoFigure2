@@ -41,11 +41,13 @@
 
 #include "QGoLUTDialog.h"
 
-#include <vtkLookupTableManager.h>
-#include <vtkTextProperty.h>
-#include <vtkRenderer.h>
-#include <vtkRendererCollection.h>
-#include <vtkRenderWindow.h>
+#include "vtkLookupTable.h"
+#include "vtkScalarBarActor.h"
+#include "vtkLookupTableManager.h"
+#include "vtkTextProperty.h"
+#include "vtkRenderer.h"
+#include "vtkRendererCollection.h"
+#include "vtkRenderWindow.h"
 
 QGoLUTDialog::QGoLUTDialog( QWidget* iParent ) :
   QDialog( iParent ),
@@ -54,12 +56,12 @@ QGoLUTDialog::QGoLUTDialog( QWidget* iParent ) :
   setupUi( this );
 
   this->LUT = vtkLookupTableManager::GetBWLookupTable();
-  this->Renderer = vtkRenderer::New();
+  this->Renderer = vtkSmartPointer< vtkRenderer >::New();
 
   vtkRenderWindow* renwin = this->QvtkWidget->GetRenderWindow();
   renwin->AddRenderer( this->Renderer );
 
-  this->LUTActor = vtkScalarBarActor::New();
+  this->LUTActor = vtkSmartPointer< vtkScalarBarActor >::New();
   this->LUTActor->SetLookupTable( this->LUT );
   this->LUTActor->SetOrientationToHorizontal();
   this->LUTActor->SetWidth( 0.8 );

@@ -49,8 +49,10 @@
 #include <QtGui/QWidget>
 #include <QtGui/QSpacerItem>
 
-#include <vtkLookupTable.h>
-#include <vtkScalarBarActor.h>
+class vtkLookupTable;
+class vtkScalarBarActor;
+
+#include "vtkSmartPointer.h"
 
 #include "QVTKWidget.h"
 
@@ -76,8 +78,8 @@ public slots:
 
 protected:
   vtkLookupTable*    LUT;
-  vtkScalarBarActor* LUTActor;
-  vtkRenderer*       Renderer;
+  vtkSmartPointer< vtkScalarBarActor > LUTActor;
+  vtkSmartPointer< vtkRenderer >       Renderer;
   QDialogButtonBox*  ButtonBox;
   QVTKWidget*        QvtkWidget;
   QHBoxLayout*       HorizontalLayout;

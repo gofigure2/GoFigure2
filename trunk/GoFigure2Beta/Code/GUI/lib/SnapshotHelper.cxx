@@ -8,6 +8,7 @@
 #include "vtkImagePermute.h"
 #include "vtkImageResample.h"
 #include "vtkWindowToImageFilter.h"
+#include "vtkSmartPointer.h"
 
 #include "vtkBMPWriter.h"
 #include "vtkPostScriptWriter.h"
@@ -48,7 +49,8 @@ bool BuildScreenshotFromImage( vtkImageData* image,
   // is by clipping its UpdateExtent. By doing so, we prevent our resample
   // and permute filter the process the image's *whole* extent.
 
-  vtkImageClip *clip = vtkImageClip::New();
+  vtkSmartPointer< vtkImageClip > clip 
+    = vtkSmartPointer< vtkImageClip >::New();
   clip->SetInput(image);
   clip->SetOutputWholeExtent(image->GetUpdateExtent());
   clip->Update();
@@ -58,10 +60,10 @@ bool BuildScreenshotFromImage( vtkImageData* image,
   int clip_dims[3];
   clip->GetOutput()->GetDimensions(clip_dims);
 
-  vtkImagePermute *permute = NULL;
+  vtkSmartPointer< vtkImagePermute > permute
+    = vtkSmartPointer< vtkImagePermute >::New();
   if (clip_dims[2] != 1)
     {
-    permute = vtkImagePermute::New();
     permute->SetInput(clip->GetOutput());
     if (clip_dims[0] == 1)
       {
@@ -93,7 +95,8 @@ bool BuildScreenshotFromImage( vtkImageData* image,
 
   if( tsize != 0 )
     {
-    vtkImageResample *resample = vtkImageResample::New();
+    vtkSmartPointer< vtkImageResample > resample = 
+      vtkSmartPointer< vtkImageResample >::New();
     resample->SetInput(resample_input);
     resample->SetInterpolationModeToCubic();
     resample->SetDimensionality(2);
@@ -119,20 +122,10 @@ bool BuildScreenshotFromImage( vtkImageData* image,
 //     3,
 //     0,
 //     vtkKWIcon::ImageOptionFlipVertical);
-    resample->Delete();
     }
   else
     {
     screenshot->ShallowCopy( resample_input );
-    }
-
-  // Deallocate
-
-  clip->Delete();
-
-  if( permute )
-    {
-    permute->Delete();
     }
 
   return true;
@@ -147,13 +140,13 @@ bool BuildScreenshotFromRenderWindow(
 {
   if( win && screenshot )
     {
-    vtkWindowToImageFilter* filter = vtkWindowToImageFilter::New();
+    vtkSmartPointer< vtkWindowToImageFilter > filter = 
+      vtkSmartPointer< vtkWindowToImageFilter >::New();
     filter->ShouldRerenderOff();
     filter->SetInput( win );
     filter->Update();
     bool res = BuildScreenshotFromImage( filter->GetOutput(),
       screenshot, tsize );
-    filter->Delete();
     return res;
     }
   return false;
@@ -166,7 +159,8 @@ QString SnapshotView( QVTKWidget* iWidget,
   const QString& iBaseName,
   const unsigned int& iSnapshotId )
 {
-  vtkImageData* image = vtkImageData::New();
+  vtkSmartPointer< vtkImageData > image = 
+    vtkSmartPointer< vtkImageData >::New();
   BuildScreenshotFromRenderWindow( iWidget->GetRenderWindow(),
         image );
   QString filename = iBaseName;
@@ -210,7 +204,6 @@ QString SnapshotView( QVTKWidget* iWidget,
       return QString();
       }
     }
-  image->Delete();
   return filename;
 }
 //-------------------------------------------------------------------------

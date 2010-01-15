@@ -45,6 +45,7 @@
 #include "vtkObjectFactory.h"
 #include "vtkMath.h"
 #include "vtkIdList.h"
+#include "vtkSmartPointer.h"
 
 vtkCxxRevisionMacro(vtkPolyDataMySQLTextWriter, "$Revision: 538 $");
 vtkStandardNewMacro(vtkPolyDataMySQLTextWriter);
@@ -113,7 +114,8 @@ std::string vtkPolyDataMySQLTextWriter::MeshProcessing()
     oMyString <<pt[0] <<" " <<pt[1] <<" " <<pt[2] <<" ";
     }
 
-  vtkIdList* cell_points = vtkIdList::New();
+  vtkSmartPointer< vtkIdList > 
+    cell_points = vtkSmartPointer< vtkIdList >::New();
 
   vtkIdType NbOfPointsInCell;
   N = m_PolyData->GetNumberOfCells();
@@ -131,6 +133,5 @@ std::string vtkPolyDataMySQLTextWriter::MeshProcessing()
       }
     }
 
-  cell_points->Delete();
   return oMyString.str();
 }
