@@ -44,7 +44,6 @@
 #include <QTableWidgetSelectionRange>
 #include <QHeaderView>
 #include <QSettings>
-//#include "QTableWidgetNumericalItem.h"
 
 
 QTableWidgetChild::QTableWidgetChild( QWidget* iParent ): QTableWidget( iParent )

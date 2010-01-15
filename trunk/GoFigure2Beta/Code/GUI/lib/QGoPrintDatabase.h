@@ -49,7 +49,6 @@
 #include "GoDBRecordSet.h"
 #include "GoDBContourRow.h"
 #include "QTableWidgetChild.h"
-#include "QTableWidgetNumericalItem.h"
 #include "vtkMySQLDatabase.h"
 #include "vtkPolyData.h"
 #include "GoDBCollectionOfTraces.h"
