@@ -183,6 +183,10 @@ int GoDBCollectionOfTraces::GetCoordMinID(vtkMySQLDatabase* DatabaseConnector,
         SameCoord = false;
         NewCollectionCoordMin.SetField(ColumnNames[i],ValueSelectingCoordMin);
         }
+      else
+        {
+        NewCollectionCoordMin.SetField(ColumnNames[i],ValueExistingCoordMin);
+        }
       }
     if (SameCoord == true)
       {
@@ -244,12 +248,19 @@ int GoDBCollectionOfTraces::GetCoordMaxID(vtkMySQLDatabase* DatabaseConnector,
     //NewCollectionCoorMin
     for( unsigned int i = 0; i <ColumnNames.size(); i++ )
       {
-      int ValueExistingCoordMax = atoi(ExistingCoordMax.GetMapValue(ColumnNames[i]).c_str());
-      int ValueSelectingCoordMax = atoi(SelectingCoordMax.GetMapValue(ColumnNames[i]).c_str());
-      if (ValueExistingCoordMax < ValueSelectingCoordMax)
+      if(ColumnNames[i]!= "CoordID")
         {
-        SameCoord = false;
-        NewCollectionCoordMax.SetField(ColumnNames[i],ValueSelectingCoordMax);
+        int ValueExistingCoordMax = atoi(ExistingCoordMax.GetMapValue(ColumnNames[i]).c_str());
+        int ValueSelectingCoordMax = atoi(SelectingCoordMax.GetMapValue(ColumnNames[i]).c_str());
+        if (ValueExistingCoordMax < ValueSelectingCoordMax)
+          {
+          SameCoord = false;
+          NewCollectionCoordMax.SetField(ColumnNames[i],ValueSelectingCoordMax);
+          }
+        else
+          {
+          NewCollectionCoordMax.SetField(ColumnNames[i],ValueExistingCoordMax);
+          }
         }
       }
     if (SameCoord == true)
