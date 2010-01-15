@@ -41,6 +41,7 @@
 #include "vtkMySQLDatabase.h"
 #include "vtkSQLQuery.h"
 #include "vtkStdString.h"
+#include "vtkSmartPointer.h"
 #include "vtkVariant.h"
 #include "vtkPolyDataMySQLTextReader.h"
 #include <sstream>
@@ -966,8 +967,8 @@ std::vector<ContourMeshStructure> GetTracesInfoFromDB(
       {
       ContourMeshStructure temp;
       temp.TraceID = query->DataValue(0).ToInt();
-      vtkPolyDataMySQLTextReader* convert_reader =
-      vtkPolyDataMySQLTextReader::New();
+      vtkSmartPointer< vtkPolyDataMySQLTextReader > convert_reader =
+        vtkSmartPointer< vtkPolyDataMySQLTextReader >::New();
       temp.CollectionID = query->DataValue(1).ToUnsignedInt();
       std::string polydata_string = query->DataValue(2).ToString();
       if (!polydata_string.empty())

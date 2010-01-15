@@ -41,9 +41,9 @@
 #ifndef __vtkPolyDataMySQLTextReader_h
 #define __vtkPolyDataMySQLTextReader_h
 
-#include "vtkObject.h"
-#include "vtkPolyData.h"
+class vtkPolyData;
 
+#include "vtkObject.h"
 #include <string>
 
 class vtkPolyDataMySQLTextReader : public vtkObject

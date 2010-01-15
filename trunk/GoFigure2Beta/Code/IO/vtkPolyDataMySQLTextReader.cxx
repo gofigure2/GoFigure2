@@ -42,6 +42,7 @@
 
 #include "vtkObjectFactory.h"
 #include "vtkCellArray.h"
+#include "vtkPolyData.h"
 
 #include <sstream>
 
