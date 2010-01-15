@@ -449,7 +449,8 @@ on_startVideo_clicked()
 
 	//Create a QTDialogProgress
 
-  unsigned int m_SizeProgressBar;
+  //unused variable
+  //unsigned int m_SizeProgressBar;
 	//...
 
 	// for X Slices

@@ -184,16 +184,18 @@ void QTableWidgetChild::SetSelectRowTraceID (std::string TraceName,
   std::list<int> SelectedTraces = this->GetListCheckedTraceID();
   //then, set to IsHighlight the selected ones:
   std::list<int>::iterator iter = SelectedTraces.begin();
+  unsigned int i;
+
   while(iter != SelectedTraces.end())
     {
-    for(unsigned int i = 0; i<ioTracesInfo.size();i++)
+    for(i = 0; i<ioTracesInfo.size();i++)
       {
-      if (*iter == ioTracesInfo[i].TraceID)
+      if( ioTracesInfo[i].TraceID == static_cast< unsigned int >( *iter ) )
         {
         ioTracesInfo[i].Highlighted = true;
         }
       }
-    iter++;
+    ++iter;
     }
 }
 //--------------------------------------------------------------------------
@@ -206,7 +208,7 @@ QStringList QTableWidgetChild::ValuesForSelectedRows(QString ColumnName)
 
   QStringList ColumnsHeader = this->recordHeaderNamesOrder();
   int ColumnIndex = findColumnName(ColumnName,ColumnsHeader);
-  int ColumnSelected = findColumnName(" ",ColumnsHeader);
+  //int ColumnSelected = findColumnName(" ",ColumnsHeader);
 
   QList<QString> Values;
   for( int i=0; i< Selection.size(); i++)

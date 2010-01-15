@@ -1517,9 +1517,14 @@ void QGoTabImageView3DwT::PassInfoForCurrentCollectionID()
 void QGoTabImageView3DwT::PassInfoForCurrentCollectionIDToDelete()
 {
   std::string CollectionIDToRemove = this->m_DataBaseTables->GetCurrentCollectionData().first;
+
   int index = this->m_VisuDockWidget->ColorIDCollectionComboBox->
     FindItemText(CollectionIDToRemove);
-  this->m_VisuDockWidget->ColorIDCollectionComboBox->removeItem(index);
+
+  if( index != -1 )
+    {
+    this->m_VisuDockWidget->ColorIDCollectionComboBox->removeItem(index);
+    }
 }
 //-------------------------------------------------------------------------
 
