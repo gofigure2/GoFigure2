@@ -2,7 +2,7 @@
 #define __QGOVIDEORECORDER_H
 
 #include <QtGui>
-#include "ui_VideoRecorderDialog.h"
+#include "ui_VideoRecorderDockWidget.h"
 
 #include <QProgressDialog>
 
@@ -12,7 +12,7 @@
 class vtkRenderWindow;
 class vtkFFMPEGRenderWindowRecorder;
 
-class QGoVideoRecorder : public QDialog, private Ui::DialogVideoRecorder
+class QGoVideoRecorder : public QDockWidget, private Ui::DockWidgetVideoRecorder
 {
     Q_OBJECT
 

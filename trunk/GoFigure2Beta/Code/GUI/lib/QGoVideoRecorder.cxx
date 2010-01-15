@@ -2,6 +2,8 @@
 
 #include <QFileDialog>
 
+#include "QGoImageView3D.h"
+
 #include "vtkRenderWindow.h"
 #include "vtkFFMPEGRenderWindowRecorder.h"
 
@@ -16,7 +18,7 @@
  */
 
 QGoVideoRecorder::
-QGoVideoRecorder(QWidget *iParent) : QDialog( iParent ), m_XMin( 0 ), m_XFixed( 0 ),
+QGoVideoRecorder(QWidget *iParent) : QDockWidget( iParent ), m_XMin( 0 ), m_XFixed( 0 ),
   m_XMax( 100 ), m_YMin(0), m_YFixed( 0 ), m_YMax( 100 ), m_ZMin( 0 ), m_ZFixed( 0 ), m_ZMax( 100 ),
   m_TMin( 0 ), m_TFixed( 0 ), m_TMax( 100 ), m_RecordX( 0 ), m_RecordY( 0 ),
   m_RecordZ( 0 ), m_RecordTX( 0 ), m_RecordTY( 0 ), m_RecordTZ( 0 ), m_VideoName( "" ),
@@ -51,6 +53,7 @@ QGoVideoRecorder(QWidget *iParent) : QDialog( iParent ), m_XMin( 0 ), m_XFixed( 
   //Initalize chrono with .00 (not 0)
   QString value = "0.00";
   this->videoLenght->display(value);
+  this->endRecord->setEnabled(false);
 }
 
 /**
@@ -421,6 +424,7 @@ QGoVideoRecorder::
 on_startVideo_clicked()
 {
   // Print parameters for testings
+
 	std::cout<<"m_XMin: "<< m_XMin <<std::endl;
 	std::cout<<"m_XFixed: "<< m_XFixed <<std::endl;
 	std::cout<<"m_XMax: "<< m_XMax <<std::endl;
@@ -444,12 +448,11 @@ on_startVideo_clicked()
 
 	//Set good rendering window from gofigure
 	//vtkRenderWindow* renderingWindow;
-  //...
+    //...
 	//m_VideoRecorder->SetRenderingWindow(renderingWindow);
 
 	//Create a QTDialogProgress
 
-  //unused variable
   //unsigned int m_SizeProgressBar;
 	//...
 
@@ -732,25 +735,53 @@ on_startRecord_clicked()
 {
 
   // Print parameters for testings
-	std::cout<<"m_VideoName2: "<< m_VideoName2.toStdString() <<std::endl;
+	/*std::cout<<"m_VideoName2: "<< m_VideoName2.toStdString() <<std::endl;
 	std::cout<<"m_FrameRate2: "<< m_FrameRate2 <<std::endl;
 	std::cout<<"m_VideoQuality2: "<< m_VideoQuality2 <<std::endl;
 	std::cout<<"m_WindowSelected: "<< m_WindowSelected <<std::endl;
-
+*/
 	// Get the good rendering window fron  gofigure, according to m_WindowSelected
 	//vtkRenderWindow* renderingWindow;
 	//...
 	//m_VideoRecorder2->SetRenderingWindow(renderingWindow);
 
-	QString fileName = m_VideoName2;
+  if( ( m_WindowSelected == 0 ) ||  ( m_VideoName2 == NULL ) )
+  {
+  // Message to ask the user to choose one window
+    if( m_WindowSelected == 0 )
+    {
+    std::cout<<"Please select a recording window: "<< m_WindowSelected <<std::endl;
+    }
+    if( m_VideoName2 == NULL )
+    {
+    std::cout<<"Please select a videoName: "<<std::endl;
+    }
+  }
+  else
+  {
+  //Disable everything
+  this->upperLeft->setEnabled(false);
+  this->upperRight->setEnabled(false);
+  this->lowerLeft->setEnabled(false);
+  this->lowerRight->setEnabled(false);
+  this->videoName_2->setEnabled(false);
+  this->createFile_2->setEnabled(false);
+  this->frameRate_2->setEnabled(false);
+  this->videoQuality_2->setEnabled(false);
+  this->startRecord->setEnabled(false);
+  this->tabVideoMethod1->setEnabled(false);
+  this->endRecord->setEnabled(true);
 
-	fileName.insert( fileName.size(), QString(".avi"));
 
-	//m_VideoRecorder2->SetFileName( fileName.toStdString() );
-	std::cout<<"FileName : "<< fileName.toStdString() << std::endl;
+  QString fileName = m_VideoName2;
 
-	//m_VideoRecorder2->StartCapture();
-	m_InternalTimer->start( 1000/m_FrameRate2 );
+  fileName.insert( fileName.size(), QString(".avi"));
+
+  //m_VideoRecorder2->SetFileName( fileName.toStdString() );
+  std::cout<<"FileName : "<< fileName.toStdString() << std::endl;
+  // VideoRecorder2->StartCapture();
+  m_InternalTimer->start( 1000/m_FrameRate2 );
+  }
 }
 
 /**
@@ -763,6 +794,19 @@ on_endRecord_clicked()
   //m_VideoRecorder2->EndCapture();
   m_InternalTimer->stop();
   m_FrameCounter = 0;
+
+  //Enable everything
+  	this->upperLeft->setEnabled(true);
+  	this->upperRight->setEnabled(true);
+  	this->lowerLeft->setEnabled(true);
+  	this->lowerRight->setEnabled(true);
+  	this->videoName_2->setEnabled(true);
+  	this->createFile_2->setEnabled(true);
+  	this->frameRate_2->setEnabled(true);
+  	this->videoQuality_2->setEnabled(true);
+  	this->startRecord->setEnabled(true);
+  	this->tabVideoMethod1->setEnabled(true);
+  	this->endRecord->setEnabled(false);
 }
 
 void
