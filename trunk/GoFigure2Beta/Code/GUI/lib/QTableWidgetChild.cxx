@@ -44,7 +44,7 @@
 #include <QTableWidgetSelectionRange>
 #include <QHeaderView>
 #include <QSettings>
-#include "QTableWidgetNumericalItem.h"
+//#include "QTableWidgetNumericalItem.h"
 
 
 QTableWidgetChild::QTableWidgetChild( QWidget* iParent ): QTableWidget( iParent )
@@ -300,9 +300,10 @@ void QTableWidgetChild::DisplayContent(GoDBTableWidgetContainer* iLinkToRowConta
             int k=0;
             while(iter != RowContainer[i].second.end())
               {
-              QTableWidgetNumericalItem* CellTable = new QTableWidgetNumericalItem;
+              QTableWidgetItem* CellTable = new QTableWidgetItem;
               std::string Value = *iter;
-              CellTable->setText(Value.c_str());
+              //CellTable->setText(Value.c_str());
+              CellTable->setData(0,QString::fromStdString( Value ).toInt());
               CellTable->setTextAlignment(Qt::AlignCenter);
               this->setItem(k,j,CellTable);
               iter++;
@@ -327,7 +328,7 @@ void QTableWidgetChild::SetSelectedColumn(unsigned int iNbOfRows,
    int indexCol = findColumnName( "", recordHeaderNamesOrder());
   for (unsigned int i = StartedRow ; i < iNbOfRows+StartedRow ; i++)
     {
-    QTableWidgetNumericalItem* Checkbox = new QTableWidgetNumericalItem;
+    QTableWidgetItem* Checkbox = new QTableWidgetItem;
     //Checkbox->setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsEnabled |
     //  Qt::ItemIsSelectable);
     Checkbox->setFlags(Qt::ItemIsEnabled |Qt::ItemIsSelectable);
@@ -418,9 +419,10 @@ void QTableWidgetChild::InsertNewRow(GoDBTableWidgetContainer* iLinkToRowContain
           std::string HeaderCol = this->horizontalHeaderItem(j)->text().toStdString();
           if (HeaderCol == NewTraceRowContainer[i].first.ColumnNameTableWidget)
             {
-            QTableWidgetNumericalItem* CellTable = new QTableWidgetNumericalItem;
+            QTableWidgetItem* CellTable = new QTableWidgetItem;
             std::string Value = NewTraceRowContainer[i].second[0];
-            CellTable->setText(Value.c_str());
+            //CellTable->setText(Value.c_str());
+            CellTable->setData(0,QString::fromStdString( Value ).toInt());
             CellTable->setTextAlignment(Qt::AlignCenter);
             this->setItem(NewRow-1,j,CellTable);
             }//ENDIF
