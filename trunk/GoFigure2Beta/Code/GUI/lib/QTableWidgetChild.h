@@ -74,15 +74,25 @@ public:
   void DisplayContent(GoDBTableWidgetContainer* iLinkToRowContainer,
     std::string TraceName, std::string CollectionName);
 
+   /** \brief Insert a new row and fill the cells with the data
+  contained in the RowContainer with the link: iLinkToRowContainer*/
   void InsertNewRow(GoDBTableWidgetContainer* iLinkToRowContainer,
     std::string TraceName, std::string CollectionName);
+
+  /** \brief Replace the data in the cells corresponding to the traceID with
+  the new data contained in the RowContainer with the link: iLinkToRowContainer*/
+  void UpdateRow(GoDBTableWidgetContainer* iLinkToRowContainer,
+    int TraceID,std::string TraceName, std::string CollectionName);
 
   void DeleteSelectedRows();
 
   std::list<int> GetListCheckedTraceID();
-
+  /** \brief Change the CollectionID in the trace table of the selected
+  rows with the newCollectionID and set the background with the colorNewCollection*/
   void UpdateIDs (unsigned int iNewCollectionID,std::string iCollectionIDName, 
     QColor ColorNewCollection);
+  /** \brief Change the CollectionID in the trace table of the TraceIDToUpdate
+  with the newCollectionID and set the background with the colorNewCollection*/
   void UpdateIDs(unsigned int iNewCollectionID,std::string iCollectionIDName, 
   QColor ColorNewCollection,std::string TraceIDName,std::list<int> TraceIDToUpdate);
 

@@ -406,7 +406,7 @@ void QGoPrintDatabase::CreateCorrespondingCollection()
     this->UpdateTableWidgetAndRowContainerWithNewCreatedTrace(CollectionTable,this->m_DatabaseConnector,
       this->GetCollectionOfTraces(CollectionOfTraces->CollectionName()));
 
-    //update the Trace Table and the row containerwith the new Collection ID:
+    //update the Trace Table and the row container with the new Collection ID:
     this->UpdateTableWidgetAndRowContainerWithNewCollectionID(TraceTable,this->m_DatabaseConnector,
       CollectionOfTraces,NewCollectionID,this->m_CurrentColorData.second,ListSelectedTraces);
 
@@ -414,7 +414,6 @@ void QGoPrintDatabase::CreateCorrespondingCollection()
     QString CollectionIDQString = ConvertToString<int>(NewCollectionID).c_str();
     NewCreatedCollection(this->m_CurrentColorData.second,CollectionIDQString);
     }
-
 }
 //--------------------------------------------------------------------------
 
@@ -463,11 +462,23 @@ void QGoPrintDatabase::AddToSelectedCollection()
     //update the RowContainer for traces with the new ID for the selected traces:
     LinkToRowContainerForTraces->UpdateIDs(ListSelectedTraces,CollectionID);
 
-    std::string CollectionIDName = CollectionOfTraces->GetCollectionName();
+    std::string CollectionName = CollectionOfTraces->GetCollectionName();
+    std::string CollectionIDName = CollectionName;
     CollectionIDName += "ID";
     //update the Table Widget Display:
     Table->UpdateIDs(CollectionID,CollectionIDName,ColorCollection);
-
+    //update the Collection Table with the new bounding box:
+      //Get the Table:
+    QTableWidgetChild* CollectionTable = this->GetTableWidgetChild(CollectionName);
+      //Get the GoDBCollectionOfTraces with as traces, the collection to be updated:
+    GoDBCollectionOfTraces* CollectionOfTracesForCollection = this->GetCollectionOfTraces(CollectionName);
+      //Get the updated data for the collection from the database:
+    GoDBTableWidgetContainer* LinkToUpdatedTraceContainer = CollectionOfTracesForCollection->
+      GetLinkToUpdatedTraceContainer(this->m_DatabaseConnector,CollectionID);
+      //Update the corresponding row in the table widget with the data from the row container:
+    CollectionTable->UpdateRow(LinkToUpdatedTraceContainer,CollectionID,CollectionName,
+      CollectionOfTracesForCollection->GetCollectionName());
+    
     CloseDBConnection();
     }
 }

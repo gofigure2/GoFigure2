@@ -70,8 +70,6 @@ GoDBCollectionOfTraces::GoDBCollectionOfTraces(
   m_TracesIDName     += "ID";
   
   m_LinkToRowContainer = new GoDBTableWidgetContainer(iCollectionName,iTracesName);
-
-  //m_ColumnsInfos     = GetColumnsInfoForTraceTable();
 }
 //--------------------------------------------------------------------------
 
@@ -244,8 +242,8 @@ int GoDBCollectionOfTraces::GetCoordMaxID(vtkMySQLDatabase* DatabaseConnector,
     //get the column names for the coordinate table:
     std::vector<std::string> ColumnNames = GetFieldNames("coordinate",DatabaseConnector);
     bool SameCoord = true;
-    //put the min between the existing coord value and the selecting ones in the 
-    //NewCollectionCoorMin
+    //put the max between the existing coord value and the selecting ones in the 
+    //NewCollectionCoorMax
     for( unsigned int i = 0; i <ColumnNames.size(); i++ )
       {
       if(ColumnNames[i]!= "CoordID")
@@ -349,7 +347,6 @@ GoDBCoordinateRow GoDBCollectionOfTraces::GetExistingCoordMin(
   std::vector<std::string> VectorValuesExistingCoordMin = ListSpecificValuesForRow(
     DatabaseConnector,"coordinate", "CoordID",ConvertToString<int>(CollectionCoordIDMin));
 
-  //std::vector<std::string> ColumnNames = ExistingCoordMin.GetVectorColumnNames();
   std::vector<std::string> ColumnNames = GetFieldNames("coordinate",
     DatabaseConnector);
   for( unsigned int i = 0; i <ColumnNames.size(); i++ )
@@ -370,8 +367,6 @@ GoDBCoordinateRow GoDBCollectionOfTraces::GetExistingCoordMax(
   std::vector<std::string> VectorValuesExistingCoordMax = ListSpecificValuesForRow(
     DatabaseConnector,"coordinate", "CoordID",ConvertToString<int>(CollectionCoordIDMax));
 
-  //std::vector<std::string> ColumnNames = ExistingCoordMax.GetVectorColumnNames();
-  //std::list<std::string> ColumnNames = ExistingCoordMax.GetListColumnNames();
   std::vector<std::string> ColumnNames = GetFieldNames("coordinate",
     DatabaseConnector);
 
@@ -478,6 +473,50 @@ GoDBTableWidgetContainer* GoDBCollectionOfTraces::GetLinkToNewCreatedTraceContai
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+GoDBTableWidgetContainer* GoDBCollectionOfTraces::GetLinkToUpdatedTraceContainer(
+    vtkMySQLDatabase* iDatabaseConnector, int iUpdatedTraceID)
+{
+  GoDBTableWidgetContainer* LinkToUpdatedTraceContainer = new
+    GoDBTableWidgetContainer(this->m_CollectionName,
+    this->m_TracesName); 
+ 
+  /*first, get the right parts of the first query:
+ all the fields except the ones where table.field are already in the query:*/
+  std::vector<std::string> JoinFirstTablesOnTraceTable = 
+    m_LinkToRowContainer->GetQueryStringForTraceJoinedTables(false);
+  std::vector<std::string> SelectFirstFields = 
+    m_LinkToRowContainer->GetQueryStringForSelectFieldsTables(false);
+
+  //then, get the results of the first query:
+  std::vector<std::vector<std::string> >ResultsFirstQuery = GetValuesFromSeveralTables(
+    iDatabaseConnector,this->m_TracesName,SelectFirstFields, this->m_TracesIDName,
+    ConvertToString<int>(iUpdatedTraceID),JoinFirstTablesOnTraceTable,false);
+
+  //insert into the row container, the results of the first query:
+ // m_LinkToRowContainer->FillRowContainer(ResultsFirstQuery,SelectFirstFields);
+  LinkToUpdatedTraceContainer->FillRowContainer(ResultsFirstQuery,SelectFirstFields);
+
+  //Get the right parts of the second query (with only the remaining fields):
+   std::vector<std::string> JoinSecondTablesOnTraceTable = 
+    m_LinkToRowContainer->GetQueryStringForTraceJoinedTables(true);
+  std::vector<std::string> SelectSecondFields = 
+    m_LinkToRowContainer->GetQueryStringForSelectFieldsTables(true);
+
+  //then, get the results of the second query:
+  std::vector<std::vector<std::string> >ResultsSecondQuery = GetValuesFromSeveralTables(
+    iDatabaseConnector,this->m_TracesName,SelectSecondFields, this->m_TracesIDName,
+    ConvertToString<int>(iUpdatedTraceID),JoinSecondTablesOnTraceTable,false);
+  
+  //insert into the row container, the results of the second query:
+  //m_LinkToRowContainer->FillRowContainer(ResultsSecondQuery,SelectSecondFields);
+   LinkToUpdatedTraceContainer->FillRowContainer(ResultsSecondQuery,SelectSecondFields);
+   //GoDBCollectionOfTraces::DBTableWidgetContainerType test = LinkToNewCreatedTraceContainer->GetRowContainer();//for test
+
+   return LinkToUpdatedTraceContainer;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
 int GoDBCollectionOfTraces::CreateCollectionWithNoTraces(
   vtkMySQLDatabase* DatabaseConnector, GoDBTraceRow iNewCollection)
 {
@@ -493,23 +532,7 @@ int GoDBCollectionOfTraces::CreateCollectionWithNoTraces(
   iNewCollection.SetField< int >( "CoordIDMax", CoordIDMax );
   iNewCollection.SetField< int >( "CoordIDMin", CoordIDMin );
 
-  return this->CreateNewCollection(DatabaseConnector,iNewCollection);
-    
- /* if (this->m_CollectionName == "mesh")
-    {
-    GoDBMeshRow* NewMesh = static_cast<GoDBMeshRow*>(&iNewCollection);*/
-
-    /*if (NewMesh == 0)
-      {
-      std::cout<<"ca foire"<<std::endl;
-      }
-    else
-      {
-      std::cout<<"ca marche"<<std::endl;
-      }
-    return this->CreateNewCollection<GoDBMeshRow>(DatabaseConnector,*NewMesh);
-    }
-  return 0;*/
+  return this->CreateNewCollection(DatabaseConnector,iNewCollection);    
 }
 //--------------------------------------------------------------------------
 
@@ -581,8 +604,7 @@ void GoDBCollectionOfTraces::UpdateDBDataForAddedTracesToExistingCollection(
   //update the bounding box for the min coord:
   UpdateValueInDB(iDatabaseConnector,this->m_CollectionName, "CoordIDMin", 
     ConvertToString<int>(this->GetCoordMinID(iDatabaseConnector,iCollectionID,iListSelectedTraces)),
-    this->m_CollectionIDName, ConvertToString<int>(iCollectionID));
-  
+    this->m_CollectionIDName, ConvertToString<int>(iCollectionID));  
 }
 //--------------------------------------------------------------------------
 

@@ -108,9 +108,22 @@ public:
     return m_CollectionName;
     }
 
+  /** \brief get the results of the queries and put them in the row container corresponding
+  to all the data needed to fill the table widget for the traces and return the corresponding
+  row container*/
   DBTableWidgetContainerType GetRowContainer(vtkMySQLDatabase* DatabaseConnector);
+  
+  /** \brief get the results of the queries and put them in the row container corresponding
+  to all the data needed to fill the table widget for the new created trace and return the 
+  link to the corresponding row container which has only 1 row*/
   GoDBTableWidgetContainer*  GetLinkToNewCreatedTraceContainer(
     vtkMySQLDatabase* iDatabaseConnector);
+
+  /** \brief get the results of the queries and put them in the row container corresponding
+  to all the data needed to fill the table widget for the updated trace and return the 
+  link to the corresponding row container which has only 1 row*/
+  GoDBTableWidgetContainer* GetLinkToUpdatedTraceContainer(
+    vtkMySQLDatabase* iDatabaseConnector, int iUpdatedTraceID);
 
   int CreateNewCollectionFromSelection(
   std::list<int> iListSelectedTraces, vtkMySQLDatabase* DatabaseConnector,

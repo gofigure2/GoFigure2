@@ -438,6 +438,43 @@ void QTableWidgetChild::InsertNewRow(GoDBTableWidgetContainer* iLinkToRowContain
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+void QTableWidgetChild::UpdateRow(GoDBTableWidgetContainer* iLinkToRowContainer,
+    int TraceID,std::string TraceName, std::string CollectionName)
+{
+   DBTableWidgetContainerType UpdateTraceRowContainer = iLinkToRowContainer->GetRowContainer();
+   if (UpdateTraceRowContainer.size() == 0 || UpdateTraceRowContainer[1].second.size() != 1)
+    {
+    std::cout<<"The Update Trace Row Container is totally empty or there is more than 1 trace in it";
+    std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
+    std::cout << std::endl;
+    }
+  else
+    {
+    QString TraceNameID = QString("%1ID").arg(TraceName.c_str());
+    int UpdateRow = this->findValueGivenColumn(TraceID,TraceNameID);
+    for (unsigned int i = 0; i < UpdateTraceRowContainer.size(); i++)
+      {
+      if (UpdateTraceRowContainer[i].first.ColumnNameTableWidget != "None" && !UpdateTraceRowContainer[i].second.empty())
+        {
+        for (int j = 0; j < this->columnCount();j++)
+          {
+          std::string HeaderCol = this->horizontalHeaderItem(j)->text().toStdString();
+          if (HeaderCol == UpdateTraceRowContainer[i].first.ColumnNameTableWidget)
+            {
+            std::string Value = UpdateTraceRowContainer[i].second[0];
+            this->item(UpdateRow,j)->setData(0,QString::fromStdString( Value ).toInt());
+            }//ENDIF
+          }//ENDFOR
+        }//ENDIF
+      }//ENDFOR
+      //SetSelectedColumn(1,UpdateRow-1);
+      this->SetColorForTable(iLinkToRowContainer,TraceName,UpdateRow-1);
+      this->SetColorForTable(iLinkToRowContainer,CollectionName,UpdateRow-1);
+    }//ENDELSE
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
 /*std::vector<unsigned int> QTableWidgetChild::GetListCheckedRows()
 {
   std::vector<unsigned int> oListCheckedRows;
@@ -450,40 +487,34 @@ void QTableWidgetChild::InsertNewRow(GoDBTableWidgetContainer* iLinkToRowContain
 //--------------------------------------------------------------------------
 void QTableWidgetChild::UpdateVectorCheckedRows(int Row,int Column)
 {
- /** \todo if the user clicks on the cell where the checkbox is but not, on the checkbox,
- the m_VectorSelectedRows will still be updated according to the current state of the 
- checkbox, which can results in having double  */
- //if (this->horizontalHeaderItem(Column)->text() == "")
-  // {
-   if (this->item(Row,Column)->checkState()== 0)
-     {
-     int ID = this->item(Row,1)->text().toInt();
+  if (this->item(Row,Column)->checkState()== 0)
+    {
+    int ID = this->item(Row,1)->text().toInt();
 
-     std::vector<std::pair<int,int> >::iterator iter = this->m_VectorSelectedRows.begin();
+    std::vector<std::pair<int,int> >::iterator iter = this->m_VectorSelectedRows.begin();
 
-     //As the initial iterator becomes incompatible once an element of the vector has been
-     //erased, we need a bool to indicate the end of the vector:
+    //As the initial iterator becomes incompatible once an element of the vector has been
+    //erased, we need a bool to indicate the end of the vector:
 
-     while ( iter != this->m_VectorSelectedRows.end() )
-       {
-       if (iter->first == ID)
-         {
-         this->m_VectorSelectedRows.erase(iter);
-         break;
-         }
-       ++iter;
-       }
-     }
-   if (this->item(Row,Column)->checkState()== 2)
-     {
-     std::pair<int,int> temp;
-     /** \todo check that the index stays the same even if the user move the columns*/
-     temp.first = this->item(Row,1)->text().toInt();
-     temp.second = Row;
-     this->m_VectorSelectedRows.push_back(temp);
-     }
-   CheckedRowsChanged();
-   //}
+    while ( iter != this->m_VectorSelectedRows.end() )
+      {
+      if (iter->first == ID)
+        {
+        this->m_VectorSelectedRows.erase(iter);
+        break;
+        }
+      ++iter;
+      }
+    }
+  if (this->item(Row,Column)->checkState()== 2)
+    {
+    std::pair<int,int> temp;
+    /** \todo check that the index stays the same even if the user move the columns*/
+    temp.first = this->item(Row,1)->text().toInt();
+    temp.second = Row;
+    this->m_VectorSelectedRows.push_back(temp);
+    }
+  CheckedRowsChanged();
 }
 //--------------------------------------------------------------------------
 
