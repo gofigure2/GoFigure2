@@ -219,9 +219,25 @@ IF( VTK_FOUND )
       ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/vtkLSM
       ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/itkQt )
 
+#---------------------------------------------------------------------------
+# USE FFMPEG ENCODER
+#---------------------------------------------------------------------------
+
+OPTION (ENABLE_VIDEO_RECORD "VTK must be built with use FFMPEG" OFF)
+
+IF( ENABLE_VIDEO_RECORD )
+  ADD_DEFINITIONS(-DENABLEVIDEORECORD)
+ELSE( ENABLE_VIDEO_RECORD )
+#  REMOVE_DEFINITIONS(-DENABLEVIDEORECORD)
+ENDIF( ENABLE_VIDEO_RECORD )
+
+#---------------------------------------------------------------------------
+
     IF( BUILD_EXAMPLES )
       INCLUDE( CTest )
     ENDIF( BUILD_EXAMPLES )
+    
+    
 
     SET( QGoResourceFile ${GOFIGURE2_SOURCE_DIR}/Resources/axes.qrc )
 
@@ -297,15 +313,3 @@ IF( VTK_FOUND )
   ENDIF( QT4_FOUND AND QT_VERSION_MINOR GREATER 4 )
 
 ENDIF( VTK_FOUND )
-
-#---------------------------------------------------------------------------
-# USE FFMPEG ENCODER
-#---------------------------------------------------------------------------
-
-OPTION (ENABLE_VIDEO_RECORD "VTK must be built with use FFMPEG" OFF)
-
-IF( ENABLE_VIDEO_RECORD )
-  ADD_DEFINITIONS(-DENABLEVIDEORECORD)
-ELSE( ENABLE_VIDEO_RECORD )
-  REMOVE_DEFINITIONS(-DENABLEVIDEORECORD)
-ENDIF( ENABLE_VIDEO_RECORD )
