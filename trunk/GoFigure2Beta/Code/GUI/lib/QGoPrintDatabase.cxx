@@ -259,13 +259,19 @@ void QGoPrintDatabase::CreateContextMenu(const QPoint &iPos)
   QMenu* ContextMenu = new QMenu;
   NeedCurrentSelectedCollectionID();
   std::string TraceName = this->InWhichTableAreWe();
-  std::string CollectionName = this->GetCollectionOfTraces(TraceName)->CollectionName();
+  this->SetCurrentlyUsedData(TraceName);
+  //std::string CollectionName = this->GetCollectionOfTraces(TraceName)->CollectionName();
   ContextMenu->addAction(tr("Delete selected %1s").arg(TraceName.c_str()),
     this,SLOT(DeleteTraces()));
-  ContextMenu->addAction(tr("Create a new %1").arg(CollectionName.c_str()),
+  //ContextMenu->addAction(tr("Create a new %1").arg(CollectionName.c_str()),
+  //  this,SLOT(CreateCorrespondingCollection()));
+  ContextMenu->addAction(tr("Create a new %1").arg(this->m_CurrentlyUsedCollectionName.c_str()),
     this,SLOT(CreateCorrespondingCollection()));
+  //ContextMenu->addAction(
+  //  tr("Add to selected %1 : %2").arg(CollectionName.c_str())
+  //  .arg(this->m_CurrentCollectionData.first.c_str()),this,SLOT(AddToSelectedCollection()));
   ContextMenu->addAction(
-    tr("Add to selected %1 : %2").arg(CollectionName.c_str())
+    tr("Add to selected %1 : %2").arg(this->m_CurrentlyUsedCollectionName.c_str())
     .arg(this->m_CurrentCollectionData.first.c_str()),this,SLOT(AddToSelectedCollection()));
   ContextMenu->addAction(tr("ReEdit the selected %1").arg(TraceName.c_str()),
     this,SLOT(ReEditTrace()));
@@ -277,16 +283,18 @@ void QGoPrintDatabase::CreateContextMenu(const QPoint &iPos)
 void QGoPrintDatabase::DeleteTraces()
 {
   std::string TraceName = this->InWhichTableAreWe();
-  std::string TraceIDName = TraceName;
-  TraceIDName += "ID";
-  GoDBCollectionOfTraces* CollectionOfTraces = this->GetCollectionOfTraces(TraceName);
-  std::string CollectionName = CollectionOfTraces->GetCollectionName();
-  std::string CollectionNameID = CollectionName;
-  CollectionNameID += "ID";
+  this->SetCurrentlyUsedData(TraceName);
+  //std::string TraceIDName = TraceName;
+  //TraceIDName += "ID";
+  //GoDBCollectionOfTraces* CollectionOfTraces = this->GetCollectionOfTraces(TraceName);
+  //std::string CollectionName = CollectionOfTraces->GetCollectionName();
+ // std::string CollectionNameID = CollectionName;
+ // CollectionNameID += "ID";
 
-  QTableWidgetChild* Table = this->GetTableWidgetChild(TraceName);
+  //QTableWidgetChild* Table = this->GetTableWidgetChild(TraceName);
   
-  std::list<int> SelectedTraces = Table->GetListCheckedTraceID();
+  //std::list<int> SelectedTraces = Table->GetListCheckedTraceID();
+  std::list<int> SelectedTraces = this->m_CurrentlyUsedTable->GetListCheckedTraceID();
   
   if(SelectedTraces.empty())
     {
@@ -298,9 +306,14 @@ void QGoPrintDatabase::DeleteTraces()
     }
   else
     {
-    int r = QMessageBox::warning(this, tr(""),
+    /*int r = QMessageBox::warning(this, tr(""),
               tr("Are you sure you want to delete\n"
                  "permanently the selected %1s?").arg(CollectionOfTraces->GetTraceName().c_str()),
+              QMessageBox::Yes,
+              QMessageBox::No|QMessageBox::Default);*/
+    int r = QMessageBox::warning(this, tr(""),
+              tr("Are you sure you want to delete\n"
+                 "permanently the selected %1s?").arg(TraceName.c_str()),
               QMessageBox::Yes,
               QMessageBox::No|QMessageBox::Default);
     if (r == QMessageBox::Yes)
@@ -308,30 +321,35 @@ void QGoPrintDatabase::DeleteTraces()
       OpenDBConnection();
       /** \todo check that the traces to delete are not part of an existing collection, if 
       so the bounding box of the corresponding collections need to be recalculated*/
-      /*std::list<int>::iterator iterator = SelectedTraces.begin();
-      while (iterator != SelectedTraces.end())
+      std::list<int>::iterator iterator = SelectedTraces.begin();
+      /*while (iterator != SelectedTraces.end())
         {
         int tempTraceID = *iterator;
-        int tempCollectionID = FindOneID(this->m_DatabaseConnector,TraceName,CollectionNameID ,
-          TraceIDName, ConvertToString<int>(tempTraceID));
-        QTableWidgetChild* CollectionTable = this->GetTableWidgetChild(CollectionName);
-        GoDBCollectionOfTraces* CollectionOfTracesBis = this->GetCollectionOfTraces(CollectionName);
+        int tempCollectionID = FindOneID(this->m_DatabaseConnector,TraceName,this->m_CurrentlyUsedCollectionIDName,
+          this->m_CurrentlyUsedTraceIDName, ConvertToString<int>(tempTraceID));
+        //save the current collection of traces corresponding to the trace before recentring to the collection:
+        GoDBCollectionOfTraces* CollectionOfTraces = this->m_CurrentlyUsedCollectionOfTraces;
+        //change the data who were related to the trace to the collection:
+        this->SetCurrentlyUsedData(this->m_CurrentlyUsedCollectionName);
+        //QTableWidgetChild* CollectionTable = this->GetTableWidgetChild(CollectionName);
+        //GoDBCollectionOfTraces* CollectionOfTracesBis = this->GetCollectionOfTraces(CollectionName);
+        
         if (tempCollectionID != 0)
           {
           CollectionOfTraces->RecalculateDBBoundingBox(this->m_DatabaseConnector,tempCollectionID);
-          GoDBTableWidgetContainer* LinkToUpdateCollection = CollectionOfTracesBis->GetLinkToUpdatedTraceContainer(
-            this->m_DatabaseConnector,tempCollectionID);
+          GoDBTableWidgetContainer* LinkToUpdateCollection = this->m_CurrentlyUsedCollectionOfTraces
+            ->GetLinkToUpdatedTraceContainer(this->m_DatabaseConnector,tempCollectionID);
          //Update the corresponding row in the table widget with the data from the row container:
-          CollectionTable->UpdateRow(LinkToUpdateCollection,tempCollectionID,CollectionName,
-            CollectionOfTracesBis->GetCollectionName());
+          this->m_CurrentlyUsedTable->UpdateRow(LinkToUpdateCollection,tempCollectionID,
+            this->m_CurrentlyUsedTraceName,this->m_CurrentlyUsedCollectionName);
           }
         iterator++;
         }*/
 
       //check that the traces are not collection of existing traces:
-      std::string CollectionOf = CollectionOfTraces->GetCollectionOf();
-      std::string CollectionOfID = CollectionOf;
-      CollectionOfID += "ID";
+      //std::string CollectionOf = CollectionOfTraces->GetCollectionOf();
+      //std::string CollectionOfID = CollectionOf;
+      //CollectionOfID += "ID";
 
       std::vector<std::string> VectorValues;
       std::list<int>::iterator iter = SelectedTraces.begin();
@@ -341,7 +359,7 @@ void QGoPrintDatabase::DeleteTraces()
         VectorValues.push_back(ConvertToString<int>(ID));
         iter++;
         }
-      if (!CollectionOf.empty())
+      if (!this->m_CurrentlyUsedCollectionOfName.empty())
         {
         //delete collectionID in the colorcollectionid combobox:
         std::list<int>::iterator iterSelec = SelectedTraces.begin();
@@ -351,10 +369,11 @@ void QGoPrintDatabase::DeleteTraces()
          this->m_CurrentCollectionData.first = ConvertToString<int>(TraceID);
          DeletedCollection();
          iterSelec++;
-          }
+         }
 
          std::vector<std::string> ListBelongingTraces = ListSpecificValuesForOneColumn(
-           this->m_DatabaseConnector,CollectionOf,CollectionOfID,TraceIDName,VectorValues);
+           this->m_DatabaseConnector,this->m_CurrentlyUsedCollectionOfName,
+           this->m_CurrentlyUsedCollectionOfNameID,this->m_CurrentlyUsedTraceIDName,VectorValues);
 
         if (!ListBelongingTraces.empty())
           {
@@ -367,28 +386,38 @@ void QGoPrintDatabase::DeleteTraces()
             TracesWithCollectionToBeNull.push_back(atoi(ID.c_str()));
             it++;
             }
-          GoDBCollectionOfTraces* TracesCollectionOf = this->GetCollectionOfTraces(CollectionOf);
-          TracesCollectionOf->UpdateCollectionIDOfSelectedTraces(TracesWithCollectionToBeNull,0,
-            this->m_DatabaseConnector);
-          QTableWidgetChild* TableCollectionOf= this->GetTableWidgetChild(TracesCollectionOf->GetTraceName());
+          //update everything for the collection of: exp: for contour if the trace deleted is a mesh:
+          this->SetCurrentlyUsedData(this->m_CurrentlyUsedCollectionOfName);
+          //GoDBCollectionOfTraces* TracesCollectionOf = this->GetCollectionOfTraces(CollectionOf);
+          //TracesCollectionOf->UpdateCollectionIDOfSelectedTraces(TracesWithCollectionToBeNull,0,
+           // this->m_DatabaseConnector);
+          this->m_CurrentlyUsedCollectionOfTraces->UpdateCollectionIDOfSelectedTraces(
+            TracesWithCollectionToBeNull,0,this->m_DatabaseConnector);
+          //QTableWidgetChild* TableCollectionOf= this->GetTableWidgetChild(TracesCollectionOf->GetTraceName());
           QColor Color(255,255,255,255);
-          std::string CollectionOfIDName = TracesCollectionOf->GetCollectionName();
-          CollectionOfIDName += "ID";
-          std::string TraceOfIDName = TracesCollectionOf->GetTraceName();
-          TraceOfIDName += "ID";
+          //std::string CollectionOfIDName = TracesCollectionOf->GetCollectionName();
+          //CollectionOfIDName += "ID";
+          //std::string TraceOfIDName = TracesCollectionOf->GetTraceName();
+          //TraceOfIDName += "ID";
 
-          TableCollectionOf->UpdateIDs(0,CollectionOfIDName,Color,TraceOfIDName,TracesWithCollectionToBeNull);       
+          //TableCollectionOf->UpdateIDs(0,CollectionOfIDName,Color,TraceOfIDName,TracesWithCollectionToBeNull); 
+          this->m_CurrentlyUsedTable->UpdateIDs(0,this->m_CurrentlyUsedCollectionIDName,Color,
+            this->m_CurrentlyUsedTraceIDName,TracesWithCollectionToBeNull); 
           }
       }
           }
         }       
       //delete traces in the database:
-      CollectionOfTraces->DeleteTraces(SelectedTraces,this->m_DatabaseConnector);
+      this->SetCurrentlyUsedData(TraceName);
+      //CollectionOfTraces->DeleteTraces(SelectedTraces,this->m_DatabaseConnector);
+      this->m_CurrentlyUsedCollectionOfTraces->DeleteTraces(SelectedTraces,this->m_DatabaseConnector);
       //delete traces in the row container:
-      GoDBTableWidgetContainer* LinkToTracesContainer = CollectionOfTraces->GetLinkToRowContainer();
+      //GoDBTableWidgetContainer* LinkToTracesContainer = CollectionOfTraces->GetLinkToRowContainer();
+      GoDBTableWidgetContainer* LinkToTracesContainer = this->m_CurrentlyUsedCollectionOfTraces->GetLinkToRowContainer();
       LinkToTracesContainer->DeleteSelectedTraces(SelectedTraces);
       //delete traces in the table widget with the vector of selected traces:
-      Table->DeleteSelectedRows();     
+      //Table->DeleteSelectedRows(); 
+      this->m_CurrentlyUsedTable->DeleteSelectedRows();
 
       CloseDBConnection();
     }
@@ -1168,3 +1197,17 @@ void QGoPrintDatabase::ReEditTrace()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+void QGoPrintDatabase::SetCurrentlyUsedData(std::string iTraceName)
+{
+  this->m_CurrentlyUsedTraceName = iTraceName;
+  this->m_CurrentlyUsedTable = this->GetTableWidgetChild(iTraceName);
+  this->m_CurrentlyUsedTraceIDName = iTraceName;
+  this->m_CurrentlyUsedTraceIDName += "ID";
+  this->m_CurrentlyUsedCollectionOfTraces = this->GetCollectionOfTraces(iTraceName);
+  this->m_CurrentlyUsedCollectionName = this->m_CurrentlyUsedCollectionOfTraces->CollectionName();
+  this->m_CurrentlyUsedCollectionIDName = this->m_CurrentlyUsedCollectionName;
+  this->m_CurrentlyUsedCollectionIDName += "ID";
+  this->m_CurrentlyUsedCollectionOfName = this->m_CurrentlyUsedCollectionOfTraces->GetCollectionOf();
+  this->m_CurrentlyUsedCollectionOfNameID = this->m_CurrentlyUsedCollectionOfName;
+  this->m_CurrentlyUsedCollectionOfNameID += "ID";
+}

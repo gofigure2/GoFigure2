@@ -174,6 +174,16 @@ protected:
   std::pair<std::string,QColor> m_CurrentColorData;
   std::pair<std::string,QColor> m_CurrentCollectionData;
 
+  /** \todo put it in the GoDBCollectionOfTraces directly*/
+  GoDBCollectionOfTraces* m_CurrentlyUsedCollectionOfTraces;
+  QTableWidgetChild*      m_CurrentlyUsedTable;
+  std::string             m_CurrentlyUsedTraceName;
+  std::string             m_CurrentlyUsedCollectionName;
+  std::string             m_CurrentlyUsedTraceIDName;
+  std::string             m_CurrentlyUsedCollectionIDName;
+  std::string             m_CurrentlyUsedCollectionOfName;
+  std::string             m_CurrentlyUsedCollectionOfNameID;
+
   vtkMySQLDatabase* m_DatabaseConnector;
   std::string       m_Server;
   std::string       m_User;
@@ -190,6 +200,9 @@ protected:
 
   void OpenDBConnection();
   void CloseDBConnection();
+  
+  /** \brief Set all the related data to the trace name*/
+  void SetCurrentlyUsedData(std::string iTraceName);
 
   /** \brief Return the Name of the tab currently used in the table widget,
   which correspond to the TraceName of the CollectionOfTraces: */
@@ -197,7 +210,8 @@ protected:
 
   /** \brief Return the corresponding CollectionOfTraces*/
   GoDBCollectionOfTraces* GetCollectionOfTraces(std::string TraceName);
-
+  
+  /** \brief Return the corresponding TableWidgetChild*/
   QTableWidgetChild* GetTableWidgetChild(std::string TraceName);
 
   /** \brief initialize the m_ContoursInfo and m_MeshesInfo with the info from the
