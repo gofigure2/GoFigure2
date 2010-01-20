@@ -4,6 +4,9 @@
 #include "QGoLUTDialog.h"
 #include "QGoVisualizationDockWidget.h"
 #include "QGoManualSegmentationDockWidget.h"
+#include "QGoVideoRecorder.h"
+
+#include "QGoVideoRecorder.h"
 
 #include "SnapshotHelper.h"
 
@@ -243,6 +246,8 @@ void QGoTabImageView4D::CreateVisuDockWidget()
 
   QObject::connect( m_VisuDockWidget, SIGNAL( ShowOneChannelChanged( int ) ),
     this, SLOT( ShowOneChannel( int ) ) );
+
+  m_VideoRecorderWidget = new QGoVideoRecorder( this );
 }
 //-------------------------------------------------------------------------
 
@@ -781,10 +786,10 @@ void QGoTabImageView4D::SetFullScreenView( const int& iS )
 void QGoTabImageView4D::Octview()
 {
   m_XYZImageView->show();
-  m_XYZImageView->Quadview();
+  m_XYZImageView->SetFullScreenView(0);
 
   m_XYTImageView->show();
-  m_XYTImageView->Quadview();
+  m_XYTImageView->SetFullScreenView(0);
 }
 //--------------------------------------------------------------------------
 
@@ -792,7 +797,7 @@ void QGoTabImageView4D::Octview()
 void QGoTabImageView4D::QuadviewXYZ()
 {
   m_XYZImageView->show();
-  m_XYZImageView->Quadview();
+  m_XYZImageView->SetFullScreenView(0);
 
   m_XYTImageView->hide();
 }
@@ -804,7 +809,7 @@ void QGoTabImageView4D::QuadviewXYT()
   m_XYZImageView->hide();
 
   m_XYTImageView->show();
-  m_XYTImageView->Quadview();
+  m_XYTImageView->SetFullScreenView(0);
 }
 //--------------------------------------------------------------------------
 
@@ -812,7 +817,7 @@ void QGoTabImageView4D::QuadviewXYT()
 void QGoTabImageView4D::FullScreenViewXY()
 {
   m_XYZImageView->show();
-  m_XYZImageView->FullScreenViewXY();
+  m_XYZImageView->SetFullScreenView(1);
 
   m_XYTImageView->hide();
 }
@@ -822,7 +827,7 @@ void QGoTabImageView4D::FullScreenViewXY()
 void QGoTabImageView4D::FullScreenViewXZ()
 {
   m_XYZImageView->show();
-  m_XYZImageView->FullScreenViewXZ();
+  m_XYZImageView->SetFullScreenView(2);
 
   m_XYTImageView->hide();
 }
@@ -832,7 +837,7 @@ void QGoTabImageView4D::FullScreenViewXZ()
 void QGoTabImageView4D::FullScreenViewYZ()
 {
   m_XYZImageView->show();
-  m_XYZImageView->FullScreenViewYZ();
+  m_XYZImageView->SetFullScreenView(3);
 
   m_XYTImageView->hide();
 }
@@ -842,7 +847,7 @@ void QGoTabImageView4D::FullScreenViewYZ()
 void QGoTabImageView4D::FullScreenViewXYZ()
 {
   m_XYZImageView->show();
-  m_XYZImageView->FullScreenViewXYZ();
+  m_XYZImageView->SetFullScreenView(4);
 
   m_XYTImageView->hide();
 }
@@ -854,7 +859,7 @@ void QGoTabImageView4D::FullScreenViewXT()
   m_XYZImageView->hide();
 
   m_XYTImageView->show();
-  m_XYTImageView->FullScreenViewXZ();
+  m_XYTImageView->SetFullScreenView(2);
 }
 //--------------------------------------------------------------------------
 
@@ -864,7 +869,7 @@ void QGoTabImageView4D::FullScreenViewYT()
   m_XYZImageView->hide();
 
   m_XYTImageView->show();
-  m_XYTImageView->FullScreenViewYZ();
+  m_XYTImageView->SetFullScreenView(3);
 }
 //--------------------------------------------------------------------------
 
@@ -874,7 +879,7 @@ void QGoTabImageView4D::FullScreenViewXYT()
   m_XYZImageView->hide();
 
   m_XYTImageView->show();
-  m_XYTImageView->FullScreenViewXYZ();
+  m_XYTImageView->SetFullScreenView(4);
 }
 //--------------------------------------------------------------------------
 //--------------------------------------------------------------------------
@@ -907,6 +912,7 @@ std::list< QDockWidget* > QGoTabImageView4D::DockWidget()
   std::list< QDockWidget* > oList;
   oList.push_back( m_VisuDockWidget );
   oList.push_back( m_ManualSegmentationDockWidget );
+  oList.push_back( m_VideoRecorderWidget );
   return oList;
 }
 //--------------------------------------------------------------------------

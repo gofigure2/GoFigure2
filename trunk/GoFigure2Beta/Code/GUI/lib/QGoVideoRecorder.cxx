@@ -23,12 +23,10 @@ QGoVideoRecorder(QWidget *iParent) : QDockWidget( iParent ), m_XMin( 0 ), m_XFix
   m_TMin( 0 ), m_TFixed( 0 ), m_TMax( 100 ), m_RecordX( 0 ), m_RecordY( 0 ),
   m_RecordZ( 0 ), m_RecordTX( 0 ), m_RecordTY( 0 ), m_RecordTZ( 0 ), m_VideoName( "" ),
   m_FrameRate( 30 ), m_VideoQuality ( 1 ), m_WindowSelected(0), m_VideoName2( "" ),
-  m_FrameRate2( 30 ), m_VideoQuality2 ( 1 ), m_FrameCounter( 0 )
+  m_FrameRate2( 30 ), m_VideoQuality2 ( 1 ), m_FrameCounter( 0 ), m_RendererWindow(0),iRenderingWindowTEST(NULL),
+  m_RenderWindowSelected( false )
 {
 	this->setupUi(this);
-
-	m_ProgressDialog = new QProgressDialog("Conversion in progress.", "Cancel", 0, 100, this);
-	//QObject::connect(m_ProgressDialog, SIGNAL(canceled()), this, SLOT(CanceledReceived()));
 
   m_VideoRecorder = vtkFFMPEGRenderWindowRecorder::New();
   m_VideoRecorder2 = vtkFFMPEGRenderWindowRecorder::New();
@@ -36,20 +34,6 @@ QGoVideoRecorder(QWidget *iParent) : QDockWidget( iParent ), m_XMin( 0 ), m_XFix
   m_InternalTimer = new QTimer( this );
   QObject::connect( m_InternalTimer, SIGNAL(timeout()),this, SLOT(timeout()) );
 
-  //Connect signals to the visualization dock widget
-  /*
-  QObject::connect( this->XSliceSpinBox, SIGNAL( valueChanged( int ) ),
-                        this, SIGNAL( XSliceChanged( int ) ) );
-
-      QObject::connect( this->YSliceSpinBox, SIGNAL( valueChanged( int ) ),
-                        this, SIGNAL( YSliceChanged( int ) ) );
-
-      QObject::connect( this->ZSliceSpinBox, SIGNAL( valueChanged( int ) ),
-                        this, SIGNAL( ZSliceChanged( int ) ) );
-
-      QObject::connect( this->TSliceSpinBox, SIGNAL( valueChanged( int ) ),
-                        this, SIGNAL( TSliceChanged( int ) ) );
-*/
   //Initalize chrono with .00 (not 0)
   QString value = "0.00";
   this->videoLenght->display(value);
@@ -64,7 +48,8 @@ QGoVideoRecorder::
 {
 
 	m_VideoRecorder->Delete();
-	m_VideoRecorder2->Delete();
+//	m_VideoRecorder2->Delete();
+	delete m_InternalTimer;
 
 }
 
@@ -186,12 +171,12 @@ setTSpinMax(unsigned int iValue)
 * \brief Set the rendering window to record video
 * \param[in] iRenderingWindow Observed rendering window
 */
-void
+/*void
 QGoVideoRecorder::
 SetRenderingWindow( vtkRenderWindow* iRenderingWindow )
 {
 	m_VideoRecorder->SetRenderingWindow(iRenderingWindow);
-}
+}*/
 
 //---------------------------------------------------//
 //                                                   //
@@ -548,153 +533,6 @@ on_startVideo_clicked()
 //               RECORD VIDEO TAB
 ///////////////////////////////////////////////////////
 
-/**
- * \brief Function called when a recording window selected
- */
-
-void
-QGoVideoRecorder::
-on_upperLeft_clicked()
-{
-	if(m_WindowSelected != 1)
-		{
-    m_WindowSelected = 1;
-
-    this->upperLeft->setStyleSheet("background-color: white;"
-    		"font: 36pt;"
-    		"color: black;");
-    this->upperRight->setStyleSheet("background-color: black;"
-        		"font: 36pt;"
-        		"color: white;");
-    this->lowerLeft->setStyleSheet("background-color: black;"
-            		"font: 36pt;"
-            		"color: white;");
-    this->lowerRight->setStyleSheet("background-color: black;"
-            		"font: 36pt;"
-            		"color: white;");
-		}
-	else
-		{
-	  m_WindowSelected = 0;
-
-	  this->upperLeft->setStyleSheet("background-color: black;"
-	  		    "font: 36pt;"
-	      		"color: white;");
-	  this->upperRight->setStyleSheet("background-color: white;"
-	       		"font: 36pt;"
-	        	"color: black;");
-	  this->lowerLeft->setStyleSheet("background-color: white;"
-	        	"font: 36pt;"
-	        	"color: black;");
-	  this->lowerRight->setStyleSheet("background-color: white;"
-	        	"font: 36pt;"
-	        	"color: black;");
-		}
-}
-
-/**
- * \brief Function called when a recording window selected
- */
-
-void
-QGoVideoRecorder::
-on_upperRight_clicked()
-{
-	if(m_WindowSelected != 2)
-		{
-    m_WindowSelected = 2;
-
-    this->upperRight->setStyleSheet("background-color: white;"
-         		"font: 36pt;"
-         		"color: black;");
-    this->upperLeft->setStyleSheet("background-color: black;"
-        		"font: 36pt;"
-        		"color: white;");
-    this->lowerLeft->setStyleSheet("background-color: black;"
-         		"font: 36pt;"
-         		"color: white;");
-    this->lowerRight->setStyleSheet("background-color: black;"
-         		"font: 36pt;"
-         		"color: white;");
-		}
-	else
-		{
-	  m_WindowSelected = 0;
-	  this->upperLeft->setStyleSheet("background-color: rgb(0, 0, 0);"
-	  	  		    "font: 36pt;"
-	  	      		"color: rgb(255, 255, 255);");
-		}
-}
-
-/**
- * \brief Function called when a recording window selected
- */
-
-void
-QGoVideoRecorder::
-on_lowerLeft_clicked()
-{
-	if(m_WindowSelected != 3)
-		{
-    m_WindowSelected = 3;
-
-
-    this->lowerLeft->setStyleSheet("background-color: white;"
-        		"font: 36pt;"
-        		"color: black;");
-    this->upperRight->setStyleSheet("background-color: black;"
-         		"font: 36pt;"
-         		"color: white;");
-    this->upperLeft->setStyleSheet("background-color: black;"
-         		"font: 36pt;"
-         		"color: white;");
-    this->lowerRight->setStyleSheet("background-color: black;"
-         		"font: 36pt;"
-         		"color: white;");
-		}
-	else
-		{
-	  m_WindowSelected = 0;
-	  this->upperLeft->setStyleSheet("background-color: rgb(0, 0, 0);"
-	  	  		    "font: 36pt;"
-	  	      		"color: rgb(255, 255, 255);");
-		}
-}
-
-/**
- * \brief Function called when a recording window selected
- */
-
-void
-QGoVideoRecorder::
-on_lowerRight_clicked()
-{
-	if(m_WindowSelected != 4)
-		{
-    m_WindowSelected = 4;
-
-
-    this->lowerRight->setStyleSheet("background-color: white;"
-        		"font: 36pt;"
-        		"color: black;");
-    this->upperRight->setStyleSheet("background-color: black;"
-        		"font: 36pt;"
-        		"color: white;");
-    this->lowerLeft->setStyleSheet("background-color: black;"
-        		"font: 36pt;"
-        		"color: white;");
-    this->upperLeft->setStyleSheet("background-color: black;"
-        		"font: 36pt;"
-        		"color: white;");
-		}
-	else
-		{
-	  m_WindowSelected = 0;
-	  this->upperLeft->setStyleSheet("background-color: rgb(0, 0, 0);"
-	  	  		    "font: 36pt;"
-	  	      		"color: rgb(255, 255, 255);");
-		}
-}
 
 /**
  * \brief Get and print the location to store MegaCapture file
@@ -735,35 +573,16 @@ on_startRecord_clicked()
 {
 
   // Print parameters for testings
-	/*std::cout<<"m_VideoName2: "<< m_VideoName2.toStdString() <<std::endl;
+	std::cout<<"m_VideoName2: "<< m_VideoName2.toStdString() <<std::endl;
 	std::cout<<"m_FrameRate2: "<< m_FrameRate2 <<std::endl;
 	std::cout<<"m_VideoQuality2: "<< m_VideoQuality2 <<std::endl;
-	std::cout<<"m_WindowSelected: "<< m_WindowSelected <<std::endl;
-*/
-	// Get the good rendering window fron  gofigure, according to m_WindowSelected
-	//vtkRenderWindow* renderingWindow;
-	//...
-	//m_VideoRecorder2->SetRenderingWindow(renderingWindow);
 
-  if( ( m_WindowSelected == 0 ) ||  ( m_VideoName2 == NULL ) )
+  if( ( m_VideoName2 == NULL ) || ( !m_RenderWindowSelected ) || ( m_RendererWindow == 0 ) )
   {
-  // Message to ask the user to choose one window
-    if( m_WindowSelected == 0 )
-    {
-    std::cout<<"Please select a recording window: "<< m_WindowSelected <<std::endl;
-    }
-    if( m_VideoName2 == NULL )
-    {
-    std::cout<<"Please select a videoName: "<<std::endl;
-    }
+    std::cout<<"Please select a videoName and a good rendering window"<<std::endl;
   }
   else
   {
-  //Disable everything
-  this->upperLeft->setEnabled(false);
-  this->upperRight->setEnabled(false);
-  this->lowerLeft->setEnabled(false);
-  this->lowerRight->setEnabled(false);
   this->videoName_2->setEnabled(false);
   this->createFile_2->setEnabled(false);
   this->frameRate_2->setEnabled(false);
@@ -772,14 +591,17 @@ on_startRecord_clicked()
   this->tabVideoMethod1->setEnabled(false);
   this->endRecord->setEnabled(true);
 
+  m_VideoRecorder2->SetRenderingWindow(iRenderingWindowTEST);
 
   QString fileName = m_VideoName2;
 
   fileName.insert( fileName.size(), QString(".avi"));
 
-  //m_VideoRecorder2->SetFileName( fileName.toStdString() );
+  m_VideoRecorder2->SetFileName( fileName.toStdString() );
+  m_VideoRecorder2->Setm_FrameRate( m_FrameRate2 );
+  m_VideoRecorder2->Setm_VideoQuality( m_VideoQuality2 );
   std::cout<<"FileName : "<< fileName.toStdString() << std::endl;
-  // VideoRecorder2->StartCapture();
+  m_VideoRecorder2->StartCapture();
   m_InternalTimer->start( 1000/m_FrameRate2 );
   }
 }
@@ -791,15 +613,10 @@ void
 QGoVideoRecorder::
 on_endRecord_clicked()
 {
-  //m_VideoRecorder2->EndCapture();
+  m_VideoRecorder2->EndCapture();
   m_InternalTimer->stop();
   m_FrameCounter = 0;
 
-  //Enable everything
-  	this->upperLeft->setEnabled(true);
-  	this->upperRight->setEnabled(true);
-  	this->lowerLeft->setEnabled(true);
-  	this->lowerRight->setEnabled(true);
   	this->videoName_2->setEnabled(true);
   	this->createFile_2->setEnabled(true);
   	this->frameRate_2->setEnabled(true);
@@ -813,17 +630,15 @@ void
 QGoVideoRecorder::
 timeout()
 {
-	//m_QGoVideoRecorder2->TakeSnapshot();
+  m_VideoRecorder2->TakeSnapshot();
 
   ++m_FrameCounter;
 
   // for a better visualisation, always show 2 decimal
   double doubleCounter;
   doubleCounter = (double)m_FrameCounter/(double)m_FrameRate2;
-  std::cout<< "doubleCounter: "<< doubleCounter << std::endl;
 
   int test = 100*doubleCounter;
-  std::cout<< "test: "<< test << std::endl;
   QString value = QString::number( test, 10 );
 
   if ( test >= 10 )
@@ -843,3 +658,80 @@ timeout()
   std::cout<< "value: "<< value.toStdString() << std::endl;
   this->videoLenght->display(value);
 }
+
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoVideoRecorder::
+SetRendererWindow( int iSlice )
+{
+  m_RendererWindow = iSlice;
+}
+//-------------------------------------------------------------------------
+void
+QGoVideoRecorder::
+SetRenderingWindow2( vtkRenderWindow* iRenderingWindow )
+{
+	iRenderingWindowTEST = iRenderingWindow;
+	if(iRenderingWindowTEST == NULL)
+	{
+	std::cout << " RENDERING WINDOW NULL " << std::endl;
+	}
+	else
+	{
+	m_RenderWindowSelected = true;
+	std::cout << " RENDERING WINDOW NON NULL " << std::endl;
+	}
+}
+
+//----------------------------------------------------------------------------//
+/* emit to be done
+void
+QGoVideoRecorder::
+XSliceChanged( int Slice )
+{
+
+}
+void
+QGoVideoRecorder::
+YSliceChanged( int Slice )
+{
+
+}
+void
+QGoVideoRecorder::
+ZSliceChanged( int Slice )
+{
+
+}
+void
+QGoVideoRecorder::
+TSliceChanged( int Slice )
+{
+
+}
+void
+QGoVideoRecorder::
+SetXSlice( int iSlice )
+{
+
+}
+void
+QGoVideoRecorder::
+SetYSlice( int iSlice )
+{
+
+}
+void
+QGoVideoRecorder::
+SetZSlice( int iSlice )
+{
+
+}
+void
+SetTSlice( int iSlice )
+{
+
+}
+*/

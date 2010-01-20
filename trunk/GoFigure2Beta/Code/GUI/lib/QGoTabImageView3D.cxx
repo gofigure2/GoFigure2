@@ -65,6 +65,8 @@ QGoTabImageView3D( QWidget* iParent )
   QObject::connect( m_VisuDockWidget, SIGNAL( ShowAllChannelsChanged( bool ) ),
     this, SLOT( ShowAllChannels( bool ) ) );
 
+  m_VideoRecorderWidget = new QGoVideoRecorder( this );
+
   CreateAllViewActions();
 
   ReadSettings();
@@ -162,6 +164,8 @@ void QGoTabImageView3D::CreateAllViewActions()
   this->m_ViewActions.push_back( separator2 );
 
   this->m_ViewActions.push_back( m_VisuDockWidget->toggleViewAction() );
+
+  this->m_ViewActions.push_back( m_VideoRecorderWidget->toggleViewAction() );
 
 }
 //--------------------------------------------------------------------------
@@ -385,7 +389,7 @@ void QGoTabImageView3D::SetFullScreenView( const int& iS )
  */
 void QGoTabImageView3D::Quadview()
 {
-  m_ImageView->Quadview();
+  m_ImageView->SetFullScreenView(0);
 }
 //--------------------------------------------------------------------------
 
@@ -395,7 +399,7 @@ void QGoTabImageView3D::Quadview()
  */
 void QGoTabImageView3D::FullScreenViewXY()
 {
-  m_ImageView->FullScreenViewXY();
+  m_ImageView->SetFullScreenView(1);
 }
 //--------------------------------------------------------------------------
 
@@ -405,7 +409,7 @@ void QGoTabImageView3D::FullScreenViewXY()
  */
 void QGoTabImageView3D::FullScreenViewXZ()
 {
-  m_ImageView->FullScreenViewXZ();
+  m_ImageView->SetFullScreenView(2);
 }
 //--------------------------------------------------------------------------
 
@@ -415,7 +419,7 @@ void QGoTabImageView3D::FullScreenViewXZ()
  */
 void QGoTabImageView3D::FullScreenViewYZ()
 {
-  m_ImageView->FullScreenViewYZ();
+  m_ImageView->SetFullScreenView(3);
 }
 //--------------------------------------------------------------------------
 
@@ -425,7 +429,7 @@ void QGoTabImageView3D::FullScreenViewYZ()
  */
 void QGoTabImageView3D::FullScreenViewXYZ()
 {
-  m_ImageView->FullScreenViewXYZ();
+  m_ImageView->SetFullScreenView(4);
 }
 //--------------------------------------------------------------------------
 

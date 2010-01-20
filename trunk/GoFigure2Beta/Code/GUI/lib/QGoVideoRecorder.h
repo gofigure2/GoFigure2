@@ -31,8 +31,6 @@ class QGoVideoRecorder : public QDockWidget, private Ui::DockWidgetVideoRecorder
         void setTSpinMin(unsigned int iValue);
         void setTSpinMax(unsigned int iValue);
 
-        void SetRenderingWindow( vtkRenderWindow* iRenderingWindow );
-
         unsigned int m_XMin;
         unsigned int m_XFixed;
         unsigned int m_XMax;
@@ -75,6 +73,21 @@ class QGoVideoRecorder : public QDockWidget, private Ui::DockWidgetVideoRecorder
         QTimer *m_InternalTimer;
         unsigned int m_FrameCounter;
 
+        int m_RendererWindow;
+        vtkRenderWindow* iRenderingWindowTEST;
+
+        bool m_RenderWindowSelected;
+
+    public slots:
+      void SetRendererWindow( int iSlice );
+      void SetRenderingWindow2( vtkRenderWindow* iRenderingWindow );
+
+           signals:
+      void XSliceChanged( int Slice );
+      void YSliceChanged( int Slice );
+      void ZSliceChanged( int Slice );
+      void TSliceChanged( int Slice );
+
 
     private slots:
 
@@ -112,13 +125,6 @@ class QGoVideoRecorder : public QDockWidget, private Ui::DockWidgetVideoRecorder
         void on_createFile_clicked();
         void on_frameRate_valueChanged(int value);
         void on_videoQuality_valueChanged(int value);
-
-    // in tab "record video"
-        // window selection
-        void on_upperLeft_clicked();
-        void on_upperRight_clicked();
-        void on_lowerLeft_clicked();
-        void on_lowerRight_clicked();
 
         //Video parameters
         void on_createFile_2_clicked();

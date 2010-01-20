@@ -104,11 +104,6 @@ public slots:
   void SetSliceViewYZ( const int& );
 
   void SetFullScreenView( const int& iS );
-  void Quadview();
-  void FullScreenViewXY();
-  void FullScreenViewXZ();
-  void FullScreenViewYZ();
-  void FullScreenViewXYZ();
 
 //   void HighLightContours();
 
@@ -157,6 +152,12 @@ protected:
 
   void SetupVTKtoQtConnections();
   std::map< vtkProp3D*, vtkProperty* > m_ActorsPropertyMap;
+
+  void Quadview();
+  void FullScreenViewXY();
+  void FullScreenViewXZ();
+  void FullScreenViewYZ();
+  void FullScreenViewXYZ();
 
 protected slots:
   void MoveSliderXY();

@@ -15,6 +15,7 @@ class QGoImageView3D;
 class QGoVisualizationDockWidget;
 class QGoManualSegmentationDockWidget;
 class QGoPrintDatabase;
+class QGoVideoRecorder;
 
 class vtkLSMReader;
 class vtkImageData;
@@ -149,6 +150,7 @@ signals:
 
 public slots:
   void SetTimePoint( const int& );
+  void SetRendererWindow( int );
 
   QString SnapshotViewXY( const GoFigure::FileType& iType,
     const QString& iBaseName = QString( "snapshot" ) );
@@ -222,6 +224,7 @@ protected:
 
   QGoVisualizationDockWidget*       m_VisuDockWidget;
   QGoManualSegmentationDockWidget*  m_ManualSegmentationDockWidget;
+  QGoVideoRecorder*                 m_VideoRecorderWidget;
 
 
   std::vector< vtkSmartPointer< vtkContourWidget > >                      m_ContourWidget;
@@ -233,6 +236,7 @@ protected:
   void CreateAllViewActions();
   void CreateVisuDockWidget();
   void CreateManualSegmentationdockWidget();
+  void CreateVideoRecorderWidget();
 
   void RemoveActorFromViewer( const int& iId, vtkActor* iActor );
   void DisplayActorInViewer( const int& iId, vtkActor* iActor );

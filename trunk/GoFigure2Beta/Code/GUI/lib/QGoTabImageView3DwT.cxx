@@ -5,6 +5,9 @@
 #include "QGoVisualizationDockWidget.h"
 #include "QGoManualSegmentationDockWidget.h"
 #include "QGoPrintDatabase.h"
+#include "QGoVideoRecorder.h"
+
+#include "QGoVideoRecorder.h"
 
 #include "SnapshotHelper.h"
 
@@ -75,6 +78,8 @@ QGoTabImageView3DwT( QWidget* iParent ) :
 
   CreateManualSegmentationdockWidget();
 
+  CreateVideoRecorderWidget();
+
   CreateAllViewActions();
 
   ReadSettings();
@@ -124,7 +129,9 @@ QGoTabImageView3DwT::
 /**
  * \brief
  */
-void QGoTabImageView3DwT::CreateManualSegmentationdockWidget()
+void
+QGoTabImageView3DwT::
+CreateManualSegmentationdockWidget()
 {
   m_ManualSegmentationDockWidget = new QGoManualSegmentationDockWidget( this );
 
@@ -151,7 +158,9 @@ void QGoTabImageView3DwT::CreateManualSegmentationdockWidget()
 /**
  *
  */
-void QGoTabImageView3DwT::CreateVisuDockWidget()
+void
+QGoTabImageView3DwT::
+CreateVisuDockWidget()
 {
   m_VisuDockWidget = new QGoVisualizationDockWidget( this, 4 );
 
@@ -228,14 +237,79 @@ void QGoTabImageView3DwT::CreateVisuDockWidget()
   QObject::connect( this->m_DataBaseTables,
     SIGNAL( TraceToReEdit( unsigned int ) ),
     this, SLOT( ReEditContour( unsigned int ) ) );
+
+
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+
+void
+QGoTabImageView3DwT::
+CreateVideoRecorderWidget()
+{
+  m_VideoRecorderWidget = new QGoVideoRecorder( this );
+  // add render window
+  //QObject::connect( this, SIGNAL( FullScreenViewChanged( int ) ),
+    //m_VideoRecorderWidget,
+    //SLOT( SetRenderingWindow2(
+    //this->m_ImageView->GetInteractor( int )->GetRenderWindow() ) ) );
+
+// to set up properly the rendering windows
+/*  QObject::connect( this, SIGNAL( FullScreenViewChanged( int ) ),
+      m_VideoRecorderWidget,SLOT( SetRendererWindow( int )));
+*/
+  QObject::connect( this, SIGNAL( FullScreenViewChanged( int ) ),
+        this,SLOT( SetRendererWindow( int )));
+
+/*
+  // to connect the second acquisition mode
+  QObject::connect( m_VideoRecorderWidget, SIGNAL( XSliceChanged( int ) ),
+    this, SLOT( SetSliceViewYZ( int ) ) );
+
+  QObject::connect( this, SIGNAL( SliceViewYZChanged( int ) ),
+		  m_VideoRecorderWidget, SLOT( SetXSlice( int ) ) );
+
+  QObject::connect( m_VideoRecorderWidget, SIGNAL( YSliceChanged( int ) ),
+    this, SLOT( SetSliceViewXZ( int ) ) );
+
+  QObject::connect( this, SIGNAL( SliceViewXZChanged( int ) ),
+    m_VideoRecorderWidget, SLOT( SetYSlice( int ) ) );
+
+  QObject::connect( m_VideoRecorderWidget, SIGNAL( ZSliceChanged( int ) ),
+    this, SLOT( SetSliceViewXY( int ) ) );
+
+  QObject::connect( this, SIGNAL( SliceViewXYChanged( int ) ),
+    m_VideoRecorderWidget, SLOT( SetZSlice( int ) ) );
+
+  QObject::connect( m_VideoRecorderWidget, SIGNAL( TSliceChanged( int ) ),
+    this, SLOT( SetTimePoint( int ) ) );
+
+  QObject::connect( this, SIGNAL( TimePointChanged( int ) ),
+    m_VideoRecorderWidget, SLOT( SetTSlice( int ) ) );*/
+}
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+SetRendererWindow(int iTest)
+{
+
+  if (iTest -1 >= 0)
+  {
+    m_VideoRecorderWidget->SetRenderingWindow2(
+    m_ImageView->GetInteractor( iTest -1 )->GetRenderWindow() );
+  }
+  m_VideoRecorderWidget->SetRendererWindow(iTest);
+
+}
+//-------------------------------------------------------------------------
 /**
  *
  */
-void QGoTabImageView3DwT::CreateAllViewActions()
+void
+QGoTabImageView3DwT::
+CreateAllViewActions()
 {
   QActionGroup* group = new QActionGroup( this );
 
@@ -371,6 +445,12 @@ void QGoTabImageView3DwT::CreateAllViewActions()
 
   QObject::connect( LoadContoursPerTimePointAction, SIGNAL( triggered() ),
     this, SLOT( LoadAllContoursForCurrentTimePoint() ) );
+
+  QAction* separator4 = new QAction( this );
+  separator4->setSeparator( true );
+  this->m_ViewActions.push_back( separator4 );
+
+  this->m_ViewActions.push_back( m_VideoRecorderWidget->toggleViewAction() );
 }
 //-------------------------------------------------------------------------
 
@@ -379,7 +459,9 @@ void QGoTabImageView3DwT::CreateAllViewActions()
  * \brief
  * \param iParent
  */
-void QGoTabImageView3DwT::setupUi( QWidget* iParent )
+void
+QGoTabImageView3DwT::
+setupUi( QWidget* iParent )
 {
   if(iParent->objectName().isEmpty())
     {
@@ -420,7 +502,9 @@ void QGoTabImageView3DwT::setupUi( QWidget* iParent )
  *
  * \param iParent
  */
-void QGoTabImageView3DwT::retranslateUi(QWidget *iParent)
+void
+QGoTabImageView3DwT::
+retranslateUi(QWidget *iParent)
 {
   iParent->setWindowTitle( tr( "QGoTabImageView3DwT" ) );
   Q_UNUSED(iParent);
@@ -432,7 +516,9 @@ void QGoTabImageView3DwT::retranslateUi(QWidget *iParent)
  *
  * \return
  */
-GoFigure::TabDimensionType QGoTabImageView3DwT::GetTabDimensionType( ) const
+GoFigure::TabDimensionType
+QGoTabImageView3DwT::
+GetTabDimensionType( ) const
 {
   return GoFigure::THREE_D_WITH_T;
 }
@@ -448,7 +534,9 @@ GoFigure::TabDimensionType QGoTabImageView3DwT::GetTabDimensionType( ) const
  * \param[in] iReader
  * \param[in] iTimePoint
  */
-void QGoTabImageView3DwT::SetLSMReader( vtkLSMReader* iReader,
+void
+QGoTabImageView3DwT::
+SetLSMReader( vtkLSMReader* iReader,
   const int& iTimePoint )
 {
   if( iReader )
@@ -766,7 +854,9 @@ void QGoTabImageView3DwT::Update()
 /**
  *
  */
-void QGoTabImageView3DwT::ChangeLookupTable()
+void
+QGoTabImageView3DwT::
+ChangeLookupTable()
 {
   vtkImageData* image = m_ImageView->GetImage();
 
@@ -787,7 +877,9 @@ void QGoTabImageView3DwT::ChangeLookupTable()
  *
  * \param[in] iShow
  */
-void QGoTabImageView3DwT::ShowScalarBar( const bool& iShow )
+void
+QGoTabImageView3DwT::
+ShowScalarBar( const bool& iShow )
 {
   vtkImageData* image = m_ImageView->GetImage();
 
@@ -805,7 +897,9 @@ void QGoTabImageView3DwT::ShowScalarBar( const bool& iShow )
  * \param[in] iBaseName
  * \return
  */
-QString QGoTabImageView3DwT::SnapshotViewXY(
+QString
+QGoTabImageView3DwT::
+SnapshotViewXY(
   const GoFigure::FileType& iType,
   const QString& iBaseName )
 {
@@ -820,7 +914,9 @@ QString QGoTabImageView3DwT::SnapshotViewXY(
  * \param[in] iBaseName
  * \return
  */
-QString QGoTabImageView3DwT::SnapshotView2(
+QString
+QGoTabImageView3DwT::
+SnapshotView2(
   const GoFigure::FileType& iType,
   const QString& iBaseName )
 {
@@ -835,7 +931,9 @@ QString QGoTabImageView3DwT::SnapshotView2(
  * \param[in] iBaseName
  * \return
  */
-QString QGoTabImageView3DwT::SnapshotView3(
+QString
+QGoTabImageView3DwT::
+SnapshotView3(
   const GoFigure::FileType& iType,
   const QString& iBaseName )
 {
@@ -850,7 +948,9 @@ QString QGoTabImageView3DwT::SnapshotView3(
  * \param[in] iBaseName
  * \return
  */
-QString QGoTabImageView3DwT::SnapshotViewXYZ(
+QString
+QGoTabImageView3DwT::
+SnapshotViewXYZ(
   const GoFigure::FileType& iType,
   const QString& iBaseName )
 {
@@ -863,7 +963,9 @@ QString QGoTabImageView3DwT::SnapshotViewXYZ(
  *
  * \param[in] iS
  */
-void QGoTabImageView3DwT::SetSliceViewXY( const int& iS )
+void
+QGoTabImageView3DwT::
+SetSliceViewXY( const int& iS )
 {
   m_ImageView->SetSliceViewXY( iS );
 }
@@ -874,7 +976,9 @@ void QGoTabImageView3DwT::SetSliceViewXY( const int& iS )
  *
  * \param[in] iS
  */
-void QGoTabImageView3DwT::SetSliceViewXZ( const int& iS )
+void
+QGoTabImageView3DwT::
+SetSliceViewXZ( const int& iS )
 {
   m_ImageView->SetSliceViewXZ( iS );
 }
@@ -885,7 +989,9 @@ void QGoTabImageView3DwT::SetSliceViewXZ( const int& iS )
  *
  * \param[in] iS
  */
-void QGoTabImageView3DwT::SetSliceViewYZ( const int& iS )
+void
+QGoTabImageView3DwT::
+SetSliceViewYZ( const int& iS )
 {
   m_ImageView->SetSliceViewYZ( iS );
 }
@@ -896,7 +1002,9 @@ void QGoTabImageView3DwT::SetSliceViewYZ( const int& iS )
  *
  * \param[in] iS
  */
-void QGoTabImageView3DwT::SetFullScreenView( const int& iS )
+void
+QGoTabImageView3DwT::
+SetFullScreenView( const int& iS )
 {
   m_ImageView->SetFullScreenView( iS );
 }
@@ -906,9 +1014,11 @@ void QGoTabImageView3DwT::SetFullScreenView( const int& iS )
 /**
  *
  */
-void QGoTabImageView3DwT::Quadview()
+void
+QGoTabImageView3DwT::
+Quadview()
 {
-  m_ImageView->Quadview();
+  m_ImageView->SetFullScreenView(0);
 }
 //-------------------------------------------------------------------------
 
@@ -916,9 +1026,11 @@ void QGoTabImageView3DwT::Quadview()
 /**
  *
  */
-void QGoTabImageView3DwT::FullScreenViewXY()
+void
+QGoTabImageView3DwT::
+FullScreenViewXY()
 {
-  m_ImageView->FullScreenViewXY();
+  m_ImageView->SetFullScreenView(1);
 }
 //-------------------------------------------------------------------------
 
@@ -926,9 +1038,11 @@ void QGoTabImageView3DwT::FullScreenViewXY()
 /**
  *
  */
-void QGoTabImageView3DwT::FullScreenViewXZ()
+void
+QGoTabImageView3DwT::
+FullScreenViewXZ()
 {
-  m_ImageView->FullScreenViewXZ();
+  m_ImageView->SetFullScreenView(2);
 }
 //-------------------------------------------------------------------------
 
@@ -936,9 +1050,11 @@ void QGoTabImageView3DwT::FullScreenViewXZ()
 /**
  *
  */
-void QGoTabImageView3DwT::FullScreenViewYZ()
+void
+QGoTabImageView3DwT::
+FullScreenViewYZ()
 {
-  m_ImageView->FullScreenViewYZ();
+  m_ImageView->SetFullScreenView(3);
 }
 //-------------------------------------------------------------------------
 
@@ -946,9 +1062,11 @@ void QGoTabImageView3DwT::FullScreenViewYZ()
 /**
  *
  */
-void QGoTabImageView3DwT::FullScreenViewXYZ()
+void
+QGoTabImageView3DwT::
+FullScreenViewXYZ()
 {
-  m_ImageView->FullScreenViewXYZ();
+  m_ImageView->SetFullScreenView(4);
 }
 //-------------------------------------------------------------------------
 
@@ -956,7 +1074,9 @@ void QGoTabImageView3DwT::FullScreenViewXYZ()
 /**
  *
  */
-void QGoTabImageView3DwT::GetBackgroundColorFromImageViewer( )
+void
+QGoTabImageView3DwT::
+GetBackgroundColorFromImageViewer( )
 {
   double r, g, b;
   m_ImageView->GetBackgroundColor( r, g, b );
@@ -968,7 +1088,9 @@ void QGoTabImageView3DwT::GetBackgroundColorFromImageViewer( )
 /**
  *
  */
-void QGoTabImageView3DwT::SetBackgroundColorToImageViewer( )
+void
+QGoTabImageView3DwT::
+SetBackgroundColorToImageViewer( )
 {
   m_ImageView->SetBackgroundColor( m_BackgroundColor );
 }
@@ -979,11 +1101,14 @@ void QGoTabImageView3DwT::SetBackgroundColorToImageViewer( )
  *
  * \return
  */
-std::list< QDockWidget* > QGoTabImageView3DwT::DockWidget()
+std::list< QDockWidget* >
+QGoTabImageView3DwT::
+DockWidget()
 {
   std::list< QDockWidget* > oList;
   oList.push_back( m_VisuDockWidget );
   oList.push_back( m_ManualSegmentationDockWidget );
+  oList.push_back( m_VideoRecorderWidget );
   return oList;
 }
 //-------------------------------------------------------------------------
@@ -992,7 +1117,9 @@ std::list< QDockWidget* > QGoTabImageView3DwT::DockWidget()
 /**
  *
  */
-void QGoTabImageView3DwT::ChangeBackgroundColor()
+void
+QGoTabImageView3DwT::
+ChangeBackgroundColor()
 {
   double r, g, b;
   m_ImageView->GetBackgroundColor( r, g, b );
@@ -1013,7 +1140,9 @@ void QGoTabImageView3DwT::ChangeBackgroundColor()
  *
  * \param iChecked
  */
-void QGoTabImageView3DwT::ShowAllChannels( bool iChecked )
+void
+QGoTabImageView3DwT::
+ShowAllChannels( bool iChecked )
 {
   if( iChecked )
     {
@@ -1055,7 +1184,8 @@ void QGoTabImageView3DwT::ShowAllChannels( bool iChecked )
  * \brief
  * \param[in] iChannel
  */
-void QGoTabImageView3DwT::
+void
+QGoTabImageView3DwT::
 ShowOneChannel( int iChannel )
 {
   if( ( iChannel != -1 ) && ( !m_InternalImages.empty() ) )
@@ -1071,7 +1201,8 @@ ShowOneChannel( int iChannel )
  *
  * \param iId
  */
-void QGoTabImageView3DwT::
+void
+QGoTabImageView3DwT::
 ValidateContour( const int& iContourID, const int& iDir,
   const double& iR, const double& iG, const double& iB, const double& iA,
   const bool& iHighlighted, const unsigned int& iTCoord,
@@ -1169,7 +1300,8 @@ ValidateContour( const int& iContourID, const int& iDir,
 /**
  *
  */
-void QGoTabImageView3DwT::
+void
+QGoTabImageView3DwT::
 ValidateContour( )
 {
   // get color from the dock widget
@@ -1246,7 +1378,8 @@ ReinitializeContour()
 /**
  *
  */
-void QGoTabImageView3DwT::
+void
+QGoTabImageView3DwT::
 ChangeContourRepresentationProperty()
 {
   double linewidth = m_ManualSegmentationDockWidget->GetLinesWidth();
@@ -1280,7 +1413,8 @@ ChangeContourRepresentationProperty()
  * \param[in] pos[]
  * \return
  */
-int* QGoTabImageView3DwT::
+int*
+QGoTabImageView3DwT::
 GetImageCoordinatesFromWorldCoordinates( double iPos[3] )
 {
   return m_ImageView->GetImageCoordinatesFromWorldCoordinates( iPos );
@@ -1482,8 +1616,9 @@ AddContourFromNodes( const unsigned int& iContourID,
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoTabImageView3DwT::
-  UpdateDBAndCollectionIDComboBoxForANewCreatedCollection()
+void
+QGoTabImageView3DwT::
+UpdateDBAndCollectionIDComboBoxForANewCreatedCollection()
 {
   //first, save in the database:
   std::pair<std::string,QColor> NewCollectionToAddInComboBox =
@@ -1497,7 +1632,9 @@ void QGoTabImageView3DwT::
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoTabImageView3DwT::PassInfoForDBForCurrentSelectedColor()
+void
+QGoTabImageView3DwT::
+PassInfoForDBForCurrentSelectedColor()
 {
   this->m_DataBaseTables->UpdateCurrentColorData(
     this->m_VisuDockWidget->ColorTraceComboBox->GetCurrentColorData());
@@ -1506,7 +1643,9 @@ void QGoTabImageView3DwT::PassInfoForDBForCurrentSelectedColor()
 //-------------------------------------------------------------------------  
 
 //-------------------------------------------------------------------------
-void QGoTabImageView3DwT::PassInfoForCurrentCollectionID()
+void
+QGoTabImageView3DwT::
+PassInfoForCurrentCollectionID()
 {
   this->m_DataBaseTables->SetCurrentCollectionID(
     this->m_VisuDockWidget->ColorIDCollectionComboBox->GetCurrentColorData());
@@ -1514,7 +1653,9 @@ void QGoTabImageView3DwT::PassInfoForCurrentCollectionID()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoTabImageView3DwT::PassInfoForCurrentCollectionIDToDelete()
+void
+QGoTabImageView3DwT::
+PassInfoForCurrentCollectionIDToDelete()
 {
   std::string CollectionIDToRemove = this->m_DataBaseTables->GetCurrentCollectionData().first;
 

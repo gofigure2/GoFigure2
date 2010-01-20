@@ -418,7 +418,8 @@ vtkImageActor* QGoImageView3D::GetImageActor( const int& iId )
  */
 QVTKInteractor* QGoImageView3D::GetInteractor( const int& iId )
 {
-  if( ( iId < 0 ) || ( iId > 2 ) )
+
+  if( ( iId < 0 ) || ( iId > 3 ) )
     {
     return 0;
     }

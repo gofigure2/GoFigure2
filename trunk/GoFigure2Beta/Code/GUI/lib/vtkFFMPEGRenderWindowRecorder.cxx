@@ -76,9 +76,7 @@ vtkFFMPEGRenderWindowRecorder::
 SetRenderingWindow( vtkRenderWindow* iRenderWindow)
 {
 	m_RenderWindow = iRenderWindow;
-
 	m_ImageFilter->SetInput(m_RenderWindow);
-
 	m_ImageWriter->SetInput(m_ImageFilter->GetOutput());
 }
 
@@ -94,10 +92,10 @@ StartCapture()
 	m_ImageWriter->SetRate(m_FrameRate);
 
 	if (m_ImageWriter->GetInput() != NULL)
-		{
-    m_ImageWriter->Start();
-    m_ControlIfVideoStarted = true;
-		}
+	{
+      m_ImageWriter->Start();
+      m_ControlIfVideoStarted = true;
+	}
 }
 
 /**
@@ -122,8 +120,8 @@ vtkFFMPEGRenderWindowRecorder::
 TakeSnapshot()
 {
 	if (m_ControlIfVideoStarted)
-		{
+	{
 	  m_ImageFilter->Modified();
 	  m_ImageWriter->Write();
-		}
+	}
 }
