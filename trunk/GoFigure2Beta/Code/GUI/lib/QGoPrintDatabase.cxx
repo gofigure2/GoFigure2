@@ -277,9 +277,17 @@ void QGoPrintDatabase::CreateContextMenu(const QPoint &iPos)
 void QGoPrintDatabase::DeleteTraces()
 {
   std::string TraceName = this->InWhichTableAreWe();
-  QTableWidgetChild* Table = this->GetTableWidgetChild(TraceName);
+  std::string TraceIDName = TraceName;
+  TraceIDName += "ID";
   GoDBCollectionOfTraces* CollectionOfTraces = this->GetCollectionOfTraces(TraceName);
+  std::string CollectionName = CollectionOfTraces->GetCollectionName();
+  std::string CollectionNameID = CollectionName;
+  CollectionNameID += "ID";
+
+  QTableWidgetChild* Table = this->GetTableWidgetChild(TraceName);
+  
   std::list<int> SelectedTraces = Table->GetListCheckedTraceID();
+  
   if(SelectedTraces.empty())
     {
     QMessageBox msgBox;
@@ -298,9 +306,29 @@ void QGoPrintDatabase::DeleteTraces()
     if (r == QMessageBox::Yes)
       {
       OpenDBConnection();
+      /** \todo check that the traces to delete are not part of an existing collection, if 
+      so the bounding box of the corresponding collections need to be recalculated*/
+      /*std::list<int>::iterator iterator = SelectedTraces.begin();
+      while (iterator != SelectedTraces.end())
+        {
+        int tempTraceID = *iterator;
+        int tempCollectionID = FindOneID(this->m_DatabaseConnector,TraceName,CollectionNameID ,
+          TraceIDName, ConvertToString<int>(tempTraceID));
+        QTableWidgetChild* CollectionTable = this->GetTableWidgetChild(CollectionName);
+        GoDBCollectionOfTraces* CollectionOfTracesBis = this->GetCollectionOfTraces(CollectionName);
+        if (tempCollectionID != 0)
+          {
+          CollectionOfTraces->RecalculateDBBoundingBox(this->m_DatabaseConnector,tempCollectionID);
+          GoDBTableWidgetContainer* LinkToUpdateCollection = CollectionOfTracesBis->GetLinkToUpdatedTraceContainer(
+            this->m_DatabaseConnector,tempCollectionID);
+         //Update the corresponding row in the table widget with the data from the row container:
+          CollectionTable->UpdateRow(LinkToUpdateCollection,tempCollectionID,CollectionName,
+            CollectionOfTracesBis->GetCollectionName());
+          }
+        iterator++;
+        }*/
+
       //check that the traces are not collection of existing traces:
-      std::string TraceID = TraceName;
-      TraceID += "ID";
       std::string CollectionOf = CollectionOfTraces->GetCollectionOf();
       std::string CollectionOfID = CollectionOf;
       CollectionOfID += "ID";
@@ -326,11 +354,10 @@ void QGoPrintDatabase::DeleteTraces()
           }
 
          std::vector<std::string> ListBelongingTraces = ListSpecificValuesForOneColumn(
-           this->m_DatabaseConnector,CollectionOf,CollectionOfID,TraceID,VectorValues);
+           this->m_DatabaseConnector,CollectionOf,CollectionOfID,TraceIDName,VectorValues);
 
         if (!ListBelongingTraces.empty())
           {
-          /** \todo put the collectionid of the belonging traces to 0/null*/
           //put the collectionid of the belonging traces to 0:
           std::list<int> TracesWithCollectionToBeNull;
           std::vector<std::string>::iterator it = ListBelongingTraces.begin();
@@ -345,13 +372,12 @@ void QGoPrintDatabase::DeleteTraces()
             this->m_DatabaseConnector);
           QTableWidgetChild* TableCollectionOf= this->GetTableWidgetChild(TracesCollectionOf->GetTraceName());
           QColor Color(255,255,255,255);
-          std::string CollectionIDName = TracesCollectionOf->GetCollectionName();
-          CollectionIDName += "ID";
-          std::string TraceIDName = TracesCollectionOf->GetTraceName();
-          TraceIDName += "ID";
+          std::string CollectionOfIDName = TracesCollectionOf->GetCollectionName();
+          CollectionOfIDName += "ID";
+          std::string TraceOfIDName = TracesCollectionOf->GetTraceName();
+          TraceOfIDName += "ID";
 
-          TableCollectionOf->UpdateIDs(0,CollectionIDName,Color,TraceIDName,TracesWithCollectionToBeNull);
-        
+          TableCollectionOf->UpdateIDs(0,CollectionOfIDName,Color,TraceOfIDName,TracesWithCollectionToBeNull);       
           }
       }
           }
@@ -363,6 +389,7 @@ void QGoPrintDatabase::DeleteTraces()
       LinkToTracesContainer->DeleteSelectedTraces(SelectedTraces);
       //delete traces in the table widget with the vector of selected traces:
       Table->DeleteSelectedRows();     
+
       CloseDBConnection();
     }
 //--------------------------------------------------------------------------
@@ -450,7 +477,6 @@ void QGoPrintDatabase::AddToSelectedCollection()
 
     int CollectionID = atoi(this->m_CurrentCollectionData.first.c_str());
     QColor ColorCollection = this->m_CurrentCollectionData.second;
-
 
     GoDBTableWidgetContainer* LinkToRowContainerForTraces =
       CollectionOfTraces->GetLinkToRowContainer();
@@ -935,6 +961,11 @@ std::list<std::pair<std::string,QColor> > QGoPrintDatabase::
     FirstCollection.SetColor(Red,Green,Blue,Alpha,ColorName,this->m_DatabaseConnector);
     NewID = this->m_CollectionOfContours->CreateCollectionWithNoTraces(this->m_DatabaseConnector,
       FirstCollection);
+    //add a new row in the table widget with the data corresponding to the new collection:
+    QTableWidgetChild* CollectionTable = this->GetTableWidgetChild(CollectionName);
+    GoDBCollectionOfTraces* CollectionOfTraces = this->GetCollectionOfTraces(CollectionName);    
+    this->UpdateTableWidgetAndRowContainerWithNewCreatedTrace(CollectionTable,this->m_DatabaseConnector,
+      CollectionOfTraces);
 
     std::pair<std::string,QColor> temp;
     temp.second = FirstColor;

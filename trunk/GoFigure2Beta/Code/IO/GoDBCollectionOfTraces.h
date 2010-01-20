@@ -74,6 +74,9 @@ public:
   void DeleteTraces(std::list<int> TracesToDelete,
   vtkMySQLDatabase* DatabaseConnector);
 
+  void RecalculateDBBoundingBox(
+    vtkMySQLDatabase* iDatabaseConnector,int iCollectionID);
+
   /** \brief Update the collectionID of the selected traces in the DB trace table
   and update the bounding box of the collection*/
   void UpdateDBDataForAddedTracesToExistingCollection(

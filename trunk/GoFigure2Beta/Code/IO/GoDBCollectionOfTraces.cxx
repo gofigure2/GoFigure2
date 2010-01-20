@@ -119,6 +119,51 @@ void GoDBCollectionOfTraces::UpdateCollectionIDOfSelectedTraces(
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+void GoDBCollectionOfTraces::RecalculateDBBoundingBox(
+  vtkMySQLDatabase* iDatabaseConnector,int iCollectionID)
+{
+  //First, get all the traceIDs belonging to the collection:
+  std::vector<std::string> VectorTraceIDs = ListSpecificValuesForOneColumn(
+    iDatabaseConnector,this->m_TracesName,this->m_TracesIDName,
+    this->m_CollectionIDName,ConvertToString<int>(iCollectionID));
+  //convert the vector<string> to a list of int:
+  std::list<int> ListTracesIDs;
+  std::vector<std::string>::iterator iter = VectorTraceIDs.begin();
+  while (iter != VectorTraceIDs.end())
+    {
+    int TraceID = atoi(iter->c_str());
+    ListTracesIDs.push_back(TraceID);
+    iter++;
+    }
+  //update the corresponding bounding box:
+  int CoordIDMax;
+  int CoordIDMin;
+  if (!VectorTraceIDs.empty())
+    {
+    CoordIDMax = this->GetCoordMaxID(iDatabaseConnector,iCollectionID,ListTracesIDs);
+    CoordIDMin = this->GetCoordMinID(iDatabaseConnector,iCollectionID,ListTracesIDs);
+    }
+   //if there is no more traces in the collection, the bounding box is set to the minimal one:
+  else
+    {
+    CoordIDMax = FindOneID(iDatabaseConnector, "imagingsession", "CoordIDMin",
+      "ImagingSessionID", ConvertToString<int>(this->m_ImgSessionID));
+    CoordIDMin = FindOneID(iDatabaseConnector, "imagingsession", "CoordIDMax",
+      "ImagingSessionID", ConvertToString<int>(this->m_ImgSessionID));
+    }
+
+  //update the bounding box for the max coord:
+  UpdateValueInDB(iDatabaseConnector,this->m_CollectionName, "CoordIDMax", ConvertToString<int>(CoordIDMax),
+    this->m_CollectionIDName, ConvertToString<int>(iCollectionID));
+
+  //update the bounding box for the min coord:
+  UpdateValueInDB(iDatabaseConnector,this->m_CollectionName, "CoordIDMin", ConvertToString<int>(CoordIDMin),
+    this->m_CollectionIDName, ConvertToString<int>(iCollectionID));  
+
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
 QStringList GoDBCollectionOfTraces::ListCollectionID(
   vtkMySQLDatabase* DatabaseConnector)
  {
@@ -149,7 +194,6 @@ int GoDBCollectionOfTraces::GetCoordMinID(vtkMySQLDatabase* DatabaseConnector,
     VectorSelectedTraces.push_back(ConvertToString<int>(ID));
     iter++;
     }
-  
   //Get the min of the selecting traces to add:
   GoDBCoordinateRow SelectingCoordMin = GetSelectingTracesCoordMin(
     DatabaseConnector, VectorSelectedTraces );
