@@ -446,9 +446,8 @@ std::string QGoPrintDatabase::InWhichTableAreWe ()
 void QGoPrintDatabase::AddToSelectedCollection()
 {
   std::string TraceName = this->InWhichTableAreWe();
-    QTableWidgetChild* Table = this->GetTableWidgetChild(TraceName);
-  std::list<int> ListSelectedTraces = Table->GetListCheckedTraceID();
-  GoDBCollectionOfTraces* CollectionOfTraces = this->GetCollectionOfTraces(TraceName);
+  this->SetCurrentlyUsedData(TraceName);
+  std::list<int> ListSelectedTraces = this->m_CurrentlyUsedTable->GetListCheckedTraceID();
   NeedCurrentSelectedCollectionID();
 
   if (ListSelectedTraces.empty())
@@ -456,8 +455,8 @@ void QGoPrintDatabase::AddToSelectedCollection()
     QMessageBox msgBox;
     msgBox.setText(
       tr("Please select at least one %1 to be part of the %2 %3")
-      .arg(CollectionOfTraces->GetTraceName().c_str() )
-      .arg(CollectionOfTraces->GetCollectionName().c_str() )
+      .arg(this->m_CurrentlyUsedTraceName.c_str() )
+      .arg(this->m_CurrentlyUsedCollectionName.c_str() )
       .arg(this->m_CurrentCollectionData.first.c_str() ) );
     msgBox.exec();
     }
@@ -469,31 +468,27 @@ void QGoPrintDatabase::AddToSelectedCollection()
     QColor ColorCollection = this->m_CurrentCollectionData.second;
 
     GoDBTableWidgetContainer* LinkToRowContainerForTraces =
-      CollectionOfTraces->GetLinkToRowContainer();
+      this->m_CurrentlyUsedCollectionOfTraces->GetLinkToRowContainer();
 
     //update the corresponding database data:
-    CollectionOfTraces->UpdateDBDataForAddedTracesToExistingCollection(
-      ListSelectedTraces,CollectionID,this->m_DatabaseConnector);
+    this->m_CurrentlyUsedCollectionOfTraces->
+      UpdateDBDataForAddedTracesToExistingCollection(ListSelectedTraces,
+      CollectionID,this->m_DatabaseConnector);
     
     //update the RowContainer for traces with the new ID for the selected traces:
     LinkToRowContainerForTraces->UpdateIDs(ListSelectedTraces,CollectionID);
 
-    std::string CollectionName = CollectionOfTraces->GetCollectionName();
-    std::string CollectionIDName = CollectionName;
-    CollectionIDName += "ID";
     //update the Table Widget Display:
-    Table->UpdateIDs(CollectionID,CollectionIDName,ColorCollection);
+    this->m_CurrentlyUsedTable->UpdateIDs(CollectionID,
+      this->m_CurrentlyUsedCollectionIDName,ColorCollection);
     //update the Collection Table with the new bounding box:
-      //Get the Table:
-    QTableWidgetChild* CollectionTable = this->GetTableWidgetChild(CollectionName);
-      //Get the GoDBCollectionOfTraces with as traces, the collection to be updated:
-    GoDBCollectionOfTraces* CollectionOfTracesForCollection = this->GetCollectionOfTraces(CollectionName);
-      //Get the updated data for the collection from the database:
-    GoDBTableWidgetContainer* LinkToUpdatedTraceContainer = CollectionOfTracesForCollection->
+    this->SetCurrentlyUsedData(this->m_CurrentlyUsedCollectionName);
+     
+    GoDBTableWidgetContainer* LinkToUpdatedTraceContainer = this->m_CurrentlyUsedCollectionOfTraces->
       GetLinkToUpdatedTraceContainer(this->m_DatabaseConnector,CollectionID);
-      //Update the corresponding row in the table widget with the data from the row container:
-    CollectionTable->UpdateRow(LinkToUpdatedTraceContainer,CollectionID,CollectionName,
-      CollectionOfTracesForCollection->GetCollectionName());
+    //Update the corresponding row in the table widget with the data from the row container:
+    this->m_CurrentlyUsedTable->UpdateRow(LinkToUpdatedTraceContainer,CollectionID,
+      this->m_CurrentlyUsedTraceName,this->m_CurrentlyUsedCollectionName);
     
     CloseDBConnection();
     }
