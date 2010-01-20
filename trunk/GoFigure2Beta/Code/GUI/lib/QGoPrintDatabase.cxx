@@ -260,16 +260,10 @@ void QGoPrintDatabase::CreateContextMenu(const QPoint &iPos)
   NeedCurrentSelectedCollectionID();
   std::string TraceName = this->InWhichTableAreWe();
   this->SetCurrentlyUsedData(TraceName);
-  //std::string CollectionName = this->GetCollectionOfTraces(TraceName)->CollectionName();
   ContextMenu->addAction(tr("Delete selected %1s").arg(TraceName.c_str()),
     this,SLOT(DeleteTraces()));
-  //ContextMenu->addAction(tr("Create a new %1").arg(CollectionName.c_str()),
-  //  this,SLOT(CreateCorrespondingCollection()));
   ContextMenu->addAction(tr("Create a new %1").arg(this->m_CurrentlyUsedCollectionName.c_str()),
     this,SLOT(CreateCorrespondingCollection()));
-  //ContextMenu->addAction(
-  //  tr("Add to selected %1 : %2").arg(CollectionName.c_str())
-  //  .arg(this->m_CurrentCollectionData.first.c_str()),this,SLOT(AddToSelectedCollection()));
   ContextMenu->addAction(
     tr("Add to selected %1 : %2").arg(this->m_CurrentlyUsedCollectionName.c_str())
     .arg(this->m_CurrentCollectionData.first.c_str()),this,SLOT(AddToSelectedCollection()));
@@ -284,16 +278,6 @@ void QGoPrintDatabase::DeleteTraces()
 {
   std::string TraceName = this->InWhichTableAreWe();
   this->SetCurrentlyUsedData(TraceName);
-  //std::string TraceIDName = TraceName;
-  //TraceIDName += "ID";
-  //GoDBCollectionOfTraces* CollectionOfTraces = this->GetCollectionOfTraces(TraceName);
-  //std::string CollectionName = CollectionOfTraces->GetCollectionName();
- // std::string CollectionNameID = CollectionName;
- // CollectionNameID += "ID";
-
-  //QTableWidgetChild* Table = this->GetTableWidgetChild(TraceName);
-  
-  //std::list<int> SelectedTraces = Table->GetListCheckedTraceID();
   std::list<int> SelectedTraces = this->m_CurrentlyUsedTable->GetListCheckedTraceID();
   
   if(SelectedTraces.empty())
@@ -306,16 +290,12 @@ void QGoPrintDatabase::DeleteTraces()
     }
   else
     {
-    /*int r = QMessageBox::warning(this, tr(""),
-              tr("Are you sure you want to delete\n"
-                 "permanently the selected %1s?").arg(CollectionOfTraces->GetTraceName().c_str()),
-              QMessageBox::Yes,
-              QMessageBox::No|QMessageBox::Default);*/
     int r = QMessageBox::warning(this, tr(""),
               tr("Are you sure you want to delete\n"
                  "permanently the selected %1s?").arg(TraceName.c_str()),
               QMessageBox::Yes,
               QMessageBox::No|QMessageBox::Default);
+
     if (r == QMessageBox::Yes)
       {
       OpenDBConnection();
@@ -347,9 +327,6 @@ void QGoPrintDatabase::DeleteTraces()
         }*/
 
       //check that the traces are not collection of existing traces:
-      //std::string CollectionOf = CollectionOfTraces->GetCollectionOf();
-      //std::string CollectionOfID = CollectionOf;
-      //CollectionOfID += "ID";
 
       std::vector<std::string> VectorValues;
       std::list<int>::iterator iter = SelectedTraces.begin();
@@ -388,39 +365,26 @@ void QGoPrintDatabase::DeleteTraces()
             }
           //update everything for the collection of: exp: for contour if the trace deleted is a mesh:
           this->SetCurrentlyUsedData(this->m_CurrentlyUsedCollectionOfName);
-          //GoDBCollectionOfTraces* TracesCollectionOf = this->GetCollectionOfTraces(CollectionOf);
-          //TracesCollectionOf->UpdateCollectionIDOfSelectedTraces(TracesWithCollectionToBeNull,0,
-           // this->m_DatabaseConnector);
           this->m_CurrentlyUsedCollectionOfTraces->UpdateCollectionIDOfSelectedTraces(
             TracesWithCollectionToBeNull,0,this->m_DatabaseConnector);
-          //QTableWidgetChild* TableCollectionOf= this->GetTableWidgetChild(TracesCollectionOf->GetTraceName());
           QColor Color(255,255,255,255);
-          //std::string CollectionOfIDName = TracesCollectionOf->GetCollectionName();
-          //CollectionOfIDName += "ID";
-          //std::string TraceOfIDName = TracesCollectionOf->GetTraceName();
-          //TraceOfIDName += "ID";
-
-          //TableCollectionOf->UpdateIDs(0,CollectionOfIDName,Color,TraceOfIDName,TracesWithCollectionToBeNull); 
           this->m_CurrentlyUsedTable->UpdateIDs(0,this->m_CurrentlyUsedCollectionIDName,Color,
             this->m_CurrentlyUsedTraceIDName,TracesWithCollectionToBeNull); 
           }
-      }
-          }
-        }       
+        }
+      
       //delete traces in the database:
       this->SetCurrentlyUsedData(TraceName);
-      //CollectionOfTraces->DeleteTraces(SelectedTraces,this->m_DatabaseConnector);
       this->m_CurrentlyUsedCollectionOfTraces->DeleteTraces(SelectedTraces,this->m_DatabaseConnector);
       //delete traces in the row container:
-      //GoDBTableWidgetContainer* LinkToTracesContainer = CollectionOfTraces->GetLinkToRowContainer();
       GoDBTableWidgetContainer* LinkToTracesContainer = this->m_CurrentlyUsedCollectionOfTraces->GetLinkToRowContainer();
       LinkToTracesContainer->DeleteSelectedTraces(SelectedTraces);
-      //delete traces in the table widget with the vector of selected traces:
-      //Table->DeleteSelectedRows(); 
       this->m_CurrentlyUsedTable->DeleteSelectedRows();
 
       CloseDBConnection();
+      }
     }
+  }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
