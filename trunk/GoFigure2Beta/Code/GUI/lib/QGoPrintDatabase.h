@@ -101,7 +101,7 @@ public:
   std::list<std::pair<std::string,std::vector<int> > > GetColorComboBoxInfofromDB();
 
   std::list<std::pair<std::string,QColor> > GetListExistingCollectionIDFromDB(
-    std::string TraceName,std::string CollectionName);
+    std::string TraceName);
 
   std::pair<std::string,QColor> GetCurrentCollectionData();
   

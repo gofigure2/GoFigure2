@@ -229,9 +229,9 @@ void QGoPrintDatabase::FillTableFromDatabase()
 
   m_IsDatabaseUsed = true;
   PrintExistingColorsFromDB(this->GetColorComboBoxInfofromDB());
-  /** \todo get the collection name and the trace name from the visudockwidget*/
+  /** \todo get the trace name from the visudockwidget*/
   PrintExistingCollectionIDsFromDB(
-    this->GetListExistingCollectionIDFromDB("contour","mesh"));
+    this->GetListExistingCollectionIDFromDB("contour"));
   CloseDBConnection();
 
 }
@@ -676,16 +676,11 @@ int QGoPrintDatabase::UpdateContourFromVisuInDB(unsigned int iXCoordMin,
 
   UpdateContourInDB(this->m_DatabaseConnector,contour_row);
   
-  /** \todo update the table widget and the row container*/
   GoDBTableWidgetContainer* LinkToUpdateTrace = this->m_CollectionOfContours
     ->GetLinkToUpdatedTraceContainer(this->m_DatabaseConnector,ContourID);
   this->ContourTable->UpdateRow(LinkToUpdateTrace,ContourID,"contour","mesh");
 
-  //this->UpdateTableWidgetAndRowContainerWithNewCreatedTrace(this->ContourTable,
-   // this->m_DatabaseConnector,this->m_CollectionOfContours);
-
   CloseDBConnection();
-
   return ContourID;
 }
 //-------------------------------------------------------------------------
@@ -858,17 +853,16 @@ bool QGoPrintDatabase::IsDatabaseUsed()
 
 //-------------------------------------------------------------------------
 std::list<std::pair<std::string,QColor> > QGoPrintDatabase::
-  GetListExistingCollectionIDFromDB(std::string TraceName,
-  std::string CollectionName)
+  GetListExistingCollectionIDFromDB(std::string TraceName)
 {
   OpenDBConnection();
+  this->SetCurrentlyUsedData(TraceName);
   std::list<std::pair<std::string, QColor> > oListCollectionIDs;
   //First, build the query with selected fields and table to join with on conditions:
   std::vector<std::string> SelectFields;
-  std::string CollectionID = CollectionName;
+  std::string CollectionID = this->m_CurrentlyUsedCollectionName;
   CollectionID += ".";
-  CollectionID += CollectionName;
-  CollectionID += "ID";
+  CollectionID += this->m_CurrentlyUsedCollectionIDName;
   SelectFields.push_back(CollectionID);
   std::string Red = "color.Red";
   SelectFields.push_back(Red);
@@ -882,13 +876,13 @@ std::list<std::pair<std::string,QColor> > QGoPrintDatabase::
   std::vector<std::string> JoinTablesOnTraceTable;
   std::string JoinTable = "color";
   JoinTablesOnTraceTable.push_back(JoinTable);
-  std::string OnCondition = CollectionName;
+  std::string OnCondition = this->m_CurrentlyUsedCollectionName;
   OnCondition += ".ColorID = color.ColorID";
    JoinTablesOnTraceTable.push_back(OnCondition);
 
  //Get the results for the query:
   std::vector<std::vector<std::string> >ResultsQuery  = GetValuesFromSeveralTables(
-    this->m_DatabaseConnector,CollectionName,SelectFields, "ImagingSessionID",
+    this->m_DatabaseConnector,this->m_CurrentlyUsedCollectionName,SelectFields, "ImagingSessionID",
     ConvertToString<unsigned int>(this->m_ImgSessionID),JoinTablesOnTraceTable,true);
 
   unsigned int i = 0;
@@ -919,23 +913,23 @@ std::list<std::pair<std::string,QColor> > QGoPrintDatabase::
     int Alpha = 0;
     GoDBTraceRow FirstCollection;
     std::string ColorName = "Default";
-    ColorName += CollectionName;
+    ColorName += this->m_CurrentlyUsedCollectionName;
     ColorName += "Color";
-    if (CollectionName == "mesh")
+    if (this->m_CurrentlyUsedCollectionName == "mesh")
       {
       Red   = 255;
       Green = 255;
       Blue  = 0;
       Alpha = 255;
       }
-    if (CollectionName == "track")
+    if (this->m_CurrentlyUsedCollectionName == "track")
       {
       Red   = 0;
       Green = 255;
       Blue  = 255;
       Alpha = 255;
       }
-    if (CollectionName == "lineage")
+    if (this->m_CurrentlyUsedCollectionName == "lineage")
       {
       Red   = 255;
       Green = 0;
@@ -948,13 +942,12 @@ std::list<std::pair<std::string,QColor> > QGoPrintDatabase::
     FirstColor.setAlpha(Alpha);
 
     FirstCollection.SetColor(Red,Green,Blue,Alpha,ColorName,this->m_DatabaseConnector);
-    NewID = this->m_CollectionOfContours->CreateCollectionWithNoTraces(this->m_DatabaseConnector,
+    NewID = this->m_CurrentlyUsedCollectionOfTraces->CreateCollectionWithNoTraces(this->m_DatabaseConnector,
       FirstCollection);
     //add a new row in the table widget with the data corresponding to the new collection:
-    QTableWidgetChild* CollectionTable = this->GetTableWidgetChild(CollectionName);
-    GoDBCollectionOfTraces* CollectionOfTraces = this->GetCollectionOfTraces(CollectionName);    
-    this->UpdateTableWidgetAndRowContainerWithNewCreatedTrace(CollectionTable,this->m_DatabaseConnector,
-      CollectionOfTraces);
+    this->SetCurrentlyUsedData(this->m_CurrentlyUsedCollectionName);
+    this->UpdateTableWidgetAndRowContainerWithNewCreatedTrace(this->m_CurrentlyUsedTable,
+      this->m_DatabaseConnector,this->m_CurrentlyUsedCollectionOfTraces);
 
     std::pair<std::string,QColor> temp;
     temp.second = FirstColor;
