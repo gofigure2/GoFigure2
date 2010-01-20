@@ -1051,8 +1051,8 @@ std::pair<std::string,QColor> QGoPrintDatabase::SaveNewCollectionInDB(
   NewCollection.SetColor(iColorNewCollection.second.red(),iColorNewCollection.second.green(),
     iColorNewCollection.second.blue(),iColorNewCollection.second.alpha(),iColorNewCollection.first,
     this->m_DatabaseConnector);
-  GoDBCollectionOfTraces* CollectionOfTracesForTraces = this->GetCollectionOfTraces(iTraceName);
-  int NewCollectionID = CollectionOfTracesForTraces->CreateCollectionWithNoTraces(
+  this->SetCurrentlyUsedData(iTraceName);
+  int NewCollectionID = this->m_CurrentlyUsedCollectionOfTraces->CreateCollectionWithNoTraces(
     this->m_DatabaseConnector,NewCollection);
 
   std::pair<std::string,QColor> NewCollectionData;
@@ -1060,12 +1060,9 @@ std::pair<std::string,QColor> QGoPrintDatabase::SaveNewCollectionInDB(
   NewCollectionData.second = iColorNewCollection.second;
 
   //update the table of the collection (which become the trace then):
-  GoDBCollectionOfTraces* CollectionOfTracesForCollection = this->GetCollectionOfTraces(
-    CollectionOfTracesForTraces->CollectionName());
-
+  this->SetCurrentlyUsedData(this->m_CurrentlyUsedCollectionName);
   this->UpdateTableWidgetAndRowContainerWithNewCreatedTrace(
-    this->GetTableWidgetChild(CollectionOfTracesForCollection->TracesName()),this->m_DatabaseConnector,
-    CollectionOfTracesForCollection);
+    this->m_CurrentlyUsedTable,this->m_DatabaseConnector,this->m_CurrentlyUsedCollectionOfTraces);
 
   this->CloseDBConnection();
   return NewCollectionData;
