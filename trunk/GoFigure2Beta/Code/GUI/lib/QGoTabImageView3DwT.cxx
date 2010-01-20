@@ -5,7 +5,10 @@
 #include "QGoVisualizationDockWidget.h"
 #include "QGoManualSegmentationDockWidget.h"
 #include "QGoPrintDatabase.h"
+
+#ifdef ENABLEVIDEORECORD
 #include "QGoVideoRecorder.h"
+#endif
 
 #include "QGoVideoRecorder.h"
 
@@ -78,7 +81,9 @@ QGoTabImageView3DwT( QWidget* iParent ) :
 
   CreateManualSegmentationdockWidget();
 
+#ifdef ENABLEVIDEORECORD
   CreateVideoRecorderWidget();
+#endif
 
   CreateAllViewActions();
 
@@ -241,7 +246,7 @@ CreateVisuDockWidget()
 
 }
 //-------------------------------------------------------------------------
-
+#ifdef   ENABLEVIDEORECORD
 //-------------------------------------------------------------------------
 
 void
@@ -303,6 +308,7 @@ SetRendererWindow(int iTest)
   m_VideoRecorderWidget->SetRendererWindow(iTest);
 
 }
+#endif
 //-------------------------------------------------------------------------
 /**
  *
@@ -446,11 +452,13 @@ CreateAllViewActions()
   QObject::connect( LoadContoursPerTimePointAction, SIGNAL( triggered() ),
     this, SLOT( LoadAllContoursForCurrentTimePoint() ) );
 
+#ifdef ENABLEVIDEORECORD
   QAction* separator4 = new QAction( this );
   separator4->setSeparator( true );
   this->m_ViewActions.push_back( separator4 );
 
   this->m_ViewActions.push_back( m_VideoRecorderWidget->toggleViewAction() );
+#endif
 }
 //-------------------------------------------------------------------------
 
@@ -1108,7 +1116,11 @@ DockWidget()
   std::list< QDockWidget* > oList;
   oList.push_back( m_VisuDockWidget );
   oList.push_back( m_ManualSegmentationDockWidget );
+
+#ifdef ENABLEVIDEORECORD
   oList.push_back( m_VideoRecorderWidget );
+#endif
+
   return oList;
 }
 //-------------------------------------------------------------------------

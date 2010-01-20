@@ -77,8 +77,10 @@ QGoTabImageView2D( QWidget* iParent )
 
   this->m_ViewActions.push_back( m_VisuDockWidget->toggleViewAction() );
 
+#ifdef   ENABLEVIDEORECORD
   m_VideoRecorderWidget = new QGoVideoRecorder( this );
   this->m_ViewActions.push_back( m_VideoRecorderWidget->toggleViewAction() );
+#endif
 
   ReadSettings();
 }

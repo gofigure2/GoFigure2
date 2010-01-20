@@ -39,7 +39,7 @@ int main( int argc, char** argv )
     {
     timer->start( 1000 );
 
-    viewer->FullScreenViewXY();
+    viewer->SetFullScreenView(1);
     if( viewer->GetFullScreenView() != 1 )
       {
       std::cerr <<"viewer->GetFullScreenView() = " <<viewer->GetFullScreenView();
@@ -52,7 +52,7 @@ int main( int argc, char** argv )
       return EXIT_FAILURE;
       }
 
-    viewer->FullScreenViewXZ();
+    viewer->SetFullScreenView(2);
     if( viewer->GetFullScreenView() != 2 )
       {
       std::cerr <<"viewer->GetFullScreenView() = " <<viewer->GetFullScreenView();
@@ -65,7 +65,7 @@ int main( int argc, char** argv )
       return EXIT_FAILURE;
       }
 
-    viewer->FullScreenViewYZ();
+    viewer->SetFullScreenView(3);
     if( viewer->GetFullScreenView() != 3 )
       {
       std::cerr <<"viewer->GetFullScreenView() = " <<viewer->GetFullScreenView();
@@ -78,7 +78,7 @@ int main( int argc, char** argv )
       return EXIT_FAILURE;
       }
 
-    viewer->FullScreenViewXYZ();
+    viewer->SetFullScreenView(4);
     if( viewer->GetFullScreenView() != 4 )
       {
       std::cerr <<"viewer->GetFullScreenView() = " <<viewer->GetFullScreenView();
@@ -91,7 +91,7 @@ int main( int argc, char** argv )
       return EXIT_FAILURE;
       }
 
-    viewer->Quadview();
+    viewer->SetFullScreenView(0);
     if( viewer->GetFullScreenView() != 0 )
       {
       std::cerr <<"viewer->GetFullScreenView() = " <<viewer->GetFullScreenView();

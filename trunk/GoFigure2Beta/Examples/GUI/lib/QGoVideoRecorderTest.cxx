@@ -15,6 +15,10 @@ int main( int argc, char *argv[] )
 	    return EXIT_FAILURE;
 	    }
 
+#ifdef ENABLEVIDEORECORD
+std::cout << "not defined" << std::endl;
+#endif
+
   QApplication app(argc, argv);
   QTimer* timer = new QTimer;
     timer->setSingleShot( true );

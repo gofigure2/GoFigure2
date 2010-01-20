@@ -4,9 +4,10 @@
 #include "QGoLUTDialog.h"
 #include "QGoVisualizationDockWidget.h"
 #include "QGoManualSegmentationDockWidget.h"
-#include "QGoVideoRecorder.h"
 
+#ifdef   ENABLEVIDEORECORD
 #include "QGoVideoRecorder.h"
+#endif
 
 #include "SnapshotHelper.h"
 
@@ -64,6 +65,10 @@ QGoTabImageView4D::QGoTabImageView4D( QWidget* iParent ) :
   CreateVisuDockWidget();
 
   CreateManualSegmentationdockWidget();
+
+#ifdef   ENABLEVIDEORECORD
+  m_VideoRecorderWidget = new QGoVideoRecorder( this );
+#endif
 
   CreateAllViewActions();
 
@@ -247,7 +252,6 @@ void QGoTabImageView4D::CreateVisuDockWidget()
   QObject::connect( m_VisuDockWidget, SIGNAL( ShowOneChannelChanged( int ) ),
     this, SLOT( ShowOneChannel( int ) ) );
 
-  m_VideoRecorderWidget = new QGoVideoRecorder( this );
 }
 //-------------------------------------------------------------------------
 
@@ -912,7 +916,11 @@ std::list< QDockWidget* > QGoTabImageView4D::DockWidget()
   std::list< QDockWidget* > oList;
   oList.push_back( m_VisuDockWidget );
   oList.push_back( m_ManualSegmentationDockWidget );
+
+#ifdef   ENABLEVIDEORECORD
   oList.push_back( m_VideoRecorderWidget );
+#endif
+
   return oList;
 }
 //--------------------------------------------------------------------------

@@ -8,7 +8,10 @@ class QGoPrintDatabase;
 class QGoImageView3D;
 class QGoVisualizationDockWidget;
 class QGoManualSegmentationDockWidget;
+
+#ifdef   ENABLEVIDEORECORD
 class QGoVideoRecorder;
+#endif
 
 class vtkContourWidget;
 class vtkOrientedGlyphContourRepresentation;
@@ -138,7 +141,10 @@ signals:
     std::vector< QAction* > m_ViewActions;
     QGoVisualizationDockWidget*       m_VisuDockWidget;
     QGoManualSegmentationDockWidget*  m_ManualSegmentationDockWidget;
+
+    #ifdef   ENABLEVIDEORECORD
     QGoVideoRecorder*                 m_VideoRecorderWidget;
+#endif
 
     std::vector< vtkSmartPointer< vtkContourWidget > >                      m_ContourWidget;
     std::vector< vtkSmartPointer< vtkOrientedGlyphContourRepresentation > > m_ContourRepresentation;
