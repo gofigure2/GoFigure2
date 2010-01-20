@@ -21,7 +21,7 @@ int main( int argc, char *argv[] )
 
   QGoVideoRecorder window(NULL);
 
-//  QObject::connect( timer, SIGNAL( timeout() ), &window, SLOT( accept() ) );
+  QObject::connect( timer, SIGNAL( timeout() ), &window, SLOT( close() ) );
 
     if( atoi( argv[1] ) == 1 )
       {
