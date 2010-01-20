@@ -220,10 +220,10 @@ void QGoPrintDatabase::FillTableFromDatabase()
   this->setWindowTitle( title );
   m_VisibilityAction->setText( title );
 
-  GetContentAndDisplayFromDB( "contour", ContourTable, m_CollectionOfContours);
-  GetContentAndDisplayFromDB( "mesh",    MeshTable,    m_CollectionOfMeshes);
-  GetContentAndDisplayFromDB( "track",   TrackTable,   m_CollectionOfTracks);
-  GetContentAndDisplayFromDB( "lineage", LineageTable, m_CollectionOfLineages);
+  GetContentAndDisplayFromDB( "contour" );
+  GetContentAndDisplayFromDB( "mesh" );
+  GetContentAndDisplayFromDB( "track" );
+  GetContentAndDisplayFromDB( "lineage" );
 
   LoadContoursAndMeshesFromDB(m_DatabaseConnector);
 
@@ -259,7 +259,7 @@ void QGoPrintDatabase::CreateContextMenu(const QPoint &iPos)
   QMenu* ContextMenu = new QMenu;
   NeedCurrentSelectedCollectionID();
   std::string TraceName = this->InWhichTableAreWe();
-  this->SetCurrentlyUsedData(TraceName);
+  this->SetCurrentlyUsedTraceData(TraceName);
   ContextMenu->addAction(tr("Delete selected %1s").arg(TraceName.c_str()),
     this,SLOT(DeleteTraces()));
   ContextMenu->addAction(tr("Create a new %1").arg(this->m_CurrentlyUsedCollectionName.c_str()),
@@ -277,7 +277,7 @@ void QGoPrintDatabase::CreateContextMenu(const QPoint &iPos)
 void QGoPrintDatabase::DeleteTraces()
 {
   std::string TraceName = this->InWhichTableAreWe();
-  this->SetCurrentlyUsedData(TraceName);
+  this->SetCurrentlyUsedTraceData(TraceName);
   std::list<int> SelectedTraces = this->m_CurrentlyUsedTable->GetListCheckedTraceID();
   
   if(SelectedTraces.empty())
@@ -310,7 +310,7 @@ void QGoPrintDatabase::DeleteTraces()
         //save the current collection of traces corresponding to the trace before recentring to the collection:
         GoDBCollectionOfTraces* CollectionOfTraces = this->m_CurrentlyUsedCollectionOfTraces;
         //change the data who were related to the trace to the collection:
-        this->SetCurrentlyUsedData(this->m_CurrentlyUsedCollectionName);
+        this->SetCurrentlyUsedTraceData(this->m_CurrentlyUsedCollectionName);
         //QTableWidgetChild* CollectionTable = this->GetTableWidgetChild(CollectionName);
         //GoDBCollectionOfTraces* CollectionOfTracesBis = this->GetCollectionOfTraces(CollectionName);
         
@@ -363,7 +363,7 @@ void QGoPrintDatabase::DeleteTraces()
             it++;
             }
           //update everything for the collection of: exp: for contour if the trace deleted is a mesh:
-          this->SetCurrentlyUsedData(this->m_CurrentlyUsedCollectionOfName);
+          this->SetCurrentlyUsedTraceData(this->m_CurrentlyUsedCollectionOfName);
           this->m_CurrentlyUsedCollectionOfTraces->UpdateCollectionIDOfSelectedTraces(
             TracesWithCollectionToBeNull,0,this->m_DatabaseConnector);
           QColor Color(255,255,255,255);
@@ -373,8 +373,8 @@ void QGoPrintDatabase::DeleteTraces()
         }
       
       //delete traces in the database:
-      this->SetCurrentlyUsedData(TraceName);
-      this->m_CurrentlyUsedCollectionOfTraces->DeleteTraces(SelectedTraces,this->m_DatabaseConnector);
+      this->SetCurrentlyUsedTraceData(TraceName);
+      this->m_CurrentlyUsedCollectionOfTraces->DeleteTracesInDB(SelectedTraces,this->m_DatabaseConnector);
       //delete traces in the row container:
       GoDBTableWidgetContainer* LinkToTracesContainer = this->m_CurrentlyUsedCollectionOfTraces->GetLinkToRowContainer();
       LinkToTracesContainer->DeleteSelectedTraces(SelectedTraces);
@@ -390,7 +390,7 @@ void QGoPrintDatabase::DeleteTraces()
 void QGoPrintDatabase::CreateCorrespondingCollection()
 {
   std::string TraceName = InWhichTableAreWe();
-  this->SetCurrentlyUsedData(TraceName);
+  this->SetCurrentlyUsedTraceData(TraceName);
 
   std::list<int> ListSelectedTraces = this->m_CurrentlyUsedTable->GetListCheckedTraceID();
   if (ListSelectedTraces.empty())
@@ -417,12 +417,12 @@ void QGoPrintDatabase::CreateCorrespondingCollection()
       ListSelectedTraces,this->m_DatabaseConnector,NewCollection);
 
     //update the Collection Table and the row container with the new created Collection:
-    this->SetCurrentlyUsedData(this->m_CurrentlyUsedCollectionName);
+    this->SetCurrentlyUsedTraceData(this->m_CurrentlyUsedCollectionName);
     this->UpdateTableWidgetAndRowContainerWithNewCreatedTrace(this->m_CurrentlyUsedTable,
       this->m_DatabaseConnector,this->m_CurrentlyUsedCollectionOfTraces);
 
     //update the Trace Table and the row container with the new Collection ID:
-    this->SetCurrentlyUsedData(TraceName);
+    this->SetCurrentlyUsedTraceData(TraceName);
     this->UpdateTableWidgetAndRowContainerWithNewCollectionID(this->m_CurrentlyUsedTable,
       this->m_DatabaseConnector,this->m_CurrentlyUsedCollectionOfTraces,NewCollectionID,
       this->m_CurrentColorData.second,ListSelectedTraces);
@@ -446,7 +446,7 @@ std::string QGoPrintDatabase::InWhichTableAreWe ()
 void QGoPrintDatabase::AddToSelectedCollection()
 {
   std::string TraceName = this->InWhichTableAreWe();
-  this->SetCurrentlyUsedData(TraceName);
+  this->SetCurrentlyUsedTraceData(TraceName);
   std::list<int> ListSelectedTraces = this->m_CurrentlyUsedTable->GetListCheckedTraceID();
   NeedCurrentSelectedCollectionID();
 
@@ -481,7 +481,7 @@ void QGoPrintDatabase::AddToSelectedCollection()
     this->m_CurrentlyUsedTable->UpdateIDs(CollectionID,
       this->m_CurrentlyUsedCollectionIDName,ColorCollection);
     //update the Collection Table with the new bounding box:
-    this->SetCurrentlyUsedData(this->m_CurrentlyUsedCollectionName);
+    this->SetCurrentlyUsedTraceData(this->m_CurrentlyUsedCollectionName);
      
     GoDBTableWidgetContainer* LinkToUpdatedTraceContainer = this->m_CurrentlyUsedCollectionOfTraces->
       GetLinkToUpdatedTraceContainer(this->m_DatabaseConnector,CollectionID);
@@ -511,7 +511,7 @@ QGoPrintDatabase::
 ChangeTracesToHighLightInfoFromTableWidget()
 {
   std::string TraceName = this->InWhichTableAreWe();
-  this->SetCurrentlyUsedData(TraceName);
+  this->SetCurrentlyUsedTraceData(TraceName);
 
   if ( TraceName == "contour")
     {
@@ -686,22 +686,20 @@ int QGoPrintDatabase::UpdateContourFromVisuInDB(unsigned int iXCoordMin,
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoPrintDatabase::GetContentAndDisplayFromDB( QString TableName,
-  QTableWidgetChild* Table, GoDBCollectionOfTraces* iCollectionOfTraces)
+void QGoPrintDatabase::GetContentAndDisplayFromDB( std::string iTraceName)
 {
+  this->SetCurrentlyUsedTraceData(iTraceName);
   //Get the column names to be displayed in the table widget:
   std::list<std::string> ColumnsNames =
-      iCollectionOfTraces->GetListColumnsNamesForTableWidget();
-  Table->DisplayColumnNames( TableName, ColumnsNames);
-  this->DBTabWidget->addTab(Table,TableName);
-  //Get all the necessary data from the database:
+    this->m_CurrentlyUsedCollectionOfTraces->GetListColumnsNamesForTableWidget();
+  this->m_CurrentlyUsedTable->DisplayColumnNames(
+    iTraceName.c_str(),ColumnsNames);
+  this->DBTabWidget->addTab(this->m_CurrentlyUsedTable,iTraceName.c_str());
   DBTableWidgetContainerType Row_Container =
-    iCollectionOfTraces->GetRowContainer(m_DatabaseConnector);
-
-  Table->DisplayContent( iCollectionOfTraces->GetLinkToRowContainer(),
-    iCollectionOfTraces->GetTraceName(),
-    iCollectionOfTraces->GetCollectionName() );
-  Table->setSortingEnabled(true);
+    this->m_CurrentlyUsedCollectionOfTraces->GetRowContainer(m_DatabaseConnector);
+  this->m_CurrentlyUsedTable->DisplayContent( this->m_CurrentlyUsedCollectionOfTraces->GetLinkToRowContainer(),
+    iTraceName,this->m_CurrentlyUsedCollectionName);
+  this->m_CurrentlyUsedTable->setSortingEnabled(true);
 }
 //-------------------------------------------------------------------------
 
@@ -856,7 +854,7 @@ std::list<std::pair<std::string,QColor> > QGoPrintDatabase::
   GetListExistingCollectionIDFromDB(std::string TraceName)
 {
   OpenDBConnection();
-  this->SetCurrentlyUsedData(TraceName);
+  this->SetCurrentlyUsedTraceData(TraceName);
   std::list<std::pair<std::string, QColor> > oListCollectionIDs;
   //First, build the query with selected fields and table to join with on conditions:
   std::vector<std::string> SelectFields;
@@ -945,7 +943,7 @@ std::list<std::pair<std::string,QColor> > QGoPrintDatabase::
     NewID = this->m_CurrentlyUsedCollectionOfTraces->CreateCollectionWithNoTraces(this->m_DatabaseConnector,
       FirstCollection);
     //add a new row in the table widget with the data corresponding to the new collection:
-    this->SetCurrentlyUsedData(this->m_CurrentlyUsedCollectionName);
+    this->SetCurrentlyUsedTraceData(this->m_CurrentlyUsedCollectionName);
     this->UpdateTableWidgetAndRowContainerWithNewCreatedTrace(this->m_CurrentlyUsedTable,
       this->m_DatabaseConnector,this->m_CurrentlyUsedCollectionOfTraces);
 
@@ -1051,7 +1049,7 @@ std::pair<std::string,QColor> QGoPrintDatabase::SaveNewCollectionInDB(
   NewCollection.SetColor(iColorNewCollection.second.red(),iColorNewCollection.second.green(),
     iColorNewCollection.second.blue(),iColorNewCollection.second.alpha(),iColorNewCollection.first,
     this->m_DatabaseConnector);
-  this->SetCurrentlyUsedData(iTraceName);
+  this->SetCurrentlyUsedTraceData(iTraceName);
   int NewCollectionID = this->m_CurrentlyUsedCollectionOfTraces->CreateCollectionWithNoTraces(
     this->m_DatabaseConnector,NewCollection);
 
@@ -1060,7 +1058,7 @@ std::pair<std::string,QColor> QGoPrintDatabase::SaveNewCollectionInDB(
   NewCollectionData.second = iColorNewCollection.second;
 
   //update the table of the collection (which become the trace then):
-  this->SetCurrentlyUsedData(this->m_CurrentlyUsedCollectionName);
+  this->SetCurrentlyUsedTraceData(this->m_CurrentlyUsedCollectionName);
   this->UpdateTableWidgetAndRowContainerWithNewCreatedTrace(
     this->m_CurrentlyUsedTable,this->m_DatabaseConnector,this->m_CurrentlyUsedCollectionOfTraces);
 
@@ -1118,8 +1116,8 @@ std::pair<std::string,QColor> QGoPrintDatabase::GetCurrentCollectionData()
 void QGoPrintDatabase::ReEditTrace()
 {
   std::string TraceName = this->InWhichTableAreWe();
-  QTableWidgetChild* Table = this->GetTableWidgetChild(TraceName.c_str());
-  std::list<int> SelectedTrace = Table->GetListCheckedTraceID();
+  this->SetCurrentlyUsedTraceData(TraceName);
+  std::list<int> SelectedTrace = this->m_CurrentlyUsedTable->GetListCheckedTraceID();
   if (SelectedTrace.empty())
     {
     QMessageBox msgBox;
@@ -1147,7 +1145,7 @@ void QGoPrintDatabase::ReEditTrace()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoPrintDatabase::SetCurrentlyUsedData(std::string iTraceName)
+void QGoPrintDatabase::SetCurrentlyUsedTraceData(std::string iTraceName)
 {
   this->m_CurrentlyUsedTraceName = iTraceName;
   this->m_CurrentlyUsedTable = this->GetTableWidgetChild(iTraceName);

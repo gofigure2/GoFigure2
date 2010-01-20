@@ -174,7 +174,7 @@ protected:
   std::pair<std::string,QColor> m_CurrentColorData;
   std::pair<std::string,QColor> m_CurrentCollectionData;
 
-  /** \todo put it in the GoDBCollectionOfTraces directly*/
+  /** \todo put it in the GoDBCollectionOfTraces directly?*/
   GoDBCollectionOfTraces* m_CurrentlyUsedCollectionOfTraces;
   QTableWidgetChild*      m_CurrentlyUsedTable;
   std::string             m_CurrentlyUsedTraceName;
@@ -202,7 +202,7 @@ protected:
   void CloseDBConnection();
   
   /** \brief Set all the related data to the trace name*/
-  void SetCurrentlyUsedData(std::string iTraceName);
+  void SetCurrentlyUsedTraceData(std::string iTraceName);
 
   /** \brief Return the Name of the tab currently used in the table widget,
   which correspond to the TraceName of the CollectionOfTraces: */
@@ -230,8 +230,7 @@ protected:
     std::vector<ContourMeshStructure> iAllTraces,unsigned int iZCoord,
     GoDBCollectionOfTraces* iCollectionOfTraces);
 
-  void GetContentAndDisplayFromDB( QString TableName, QTableWidgetChild* Table,
-    GoDBCollectionOfTraces* iCollectionOfTraces);
+  void GetContentAndDisplayFromDB( std::string iTableName);
   void closeEvent(QCloseEvent* event);
 
   /** \brief Insert a row in the table widget and in the row container with the

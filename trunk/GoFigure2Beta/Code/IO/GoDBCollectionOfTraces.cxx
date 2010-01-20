@@ -87,7 +87,7 @@ void GoDBCollectionOfTraces::SetImgSessionID (unsigned int iImgSessionID)
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void GoDBCollectionOfTraces::DeleteTraces(std::list<int> TracesToDelete,
+void GoDBCollectionOfTraces::DeleteTracesInDB(std::list<int> TracesToDelete,
   vtkMySQLDatabase* DatabaseConnector)
 {
   std::list<int>::iterator iter = TracesToDelete.begin();

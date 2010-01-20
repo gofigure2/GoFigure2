@@ -70,9 +70,9 @@ public:
     //QString Server,QString User,QString Password, QString NameDB);
   void SetImgSessionID (unsigned int iImgSessionID);
 
-  /** \brief Delete in the Database all the traces listed in the QStringList */
-  void DeleteTraces(std::list<int> TracesToDelete,
-  vtkMySQLDatabase* DatabaseConnector);
+  /** \brief Delete in the Database all the traces listed in the list of int */
+  void DeleteTracesInDB(std::list<int> TracesToDelete,
+    vtkMySQLDatabase* DatabaseConnector);
 
   void RecalculateDBBoundingBox(
     vtkMySQLDatabase* iDatabaseConnector,int iCollectionID);
