@@ -463,7 +463,6 @@ void QGoPrintDatabase::AddToSelectedCollection()
   else
     {
     OpenDBConnection();
-
     int CollectionID = atoi(this->m_CurrentCollectionData.first.c_str());
     QColor ColorCollection = this->m_CurrentCollectionData.second;
 
@@ -512,15 +511,16 @@ QGoPrintDatabase::
 ChangeTracesToHighLightInfoFromTableWidget()
 {
   std::string TraceName = this->InWhichTableAreWe();
-  QTableWidgetChild* Table = this->GetTableWidgetChild(TraceName);
+  this->SetCurrentlyUsedData(TraceName);
+
   if ( TraceName == "contour")
     {
-    Table->TracesToHighlight(TraceName,this->m_ContoursInfo);
+    this->m_CurrentlyUsedTable->TracesToHighlight(TraceName,this->m_ContoursInfo);
     emit SelectionContoursToHighLightChanged();
     }
   if (TraceName == "mesh")
     {
-    Table->TracesToHighlight(TraceName,this->m_MeshesInfo);
+    this->m_CurrentlyUsedTable->TracesToHighlight(TraceName,this->m_MeshesInfo);
     emit SelectionMeshesToHighLightChanged();
     }
 }
@@ -677,8 +677,12 @@ int QGoPrintDatabase::UpdateContourFromVisuInDB(unsigned int iXCoordMin,
   UpdateContourInDB(this->m_DatabaseConnector,contour_row);
   
   /** \todo update the table widget and the row container*/
+  GoDBTableWidgetContainer* LinkToUpdateTrace = this->m_CollectionOfContours
+    ->GetLinkToUpdatedTraceContainer(this->m_DatabaseConnector,ContourID);
+  this->ContourTable->UpdateRow(LinkToUpdateTrace,ContourID,"contour","mesh");
+
   //this->UpdateTableWidgetAndRowContainerWithNewCreatedTrace(this->ContourTable,
-    //this->m_DatabaseConnector,this->m_CollectionOfContours);
+   // this->m_DatabaseConnector,this->m_CollectionOfContours);
 
   CloseDBConnection();
 
