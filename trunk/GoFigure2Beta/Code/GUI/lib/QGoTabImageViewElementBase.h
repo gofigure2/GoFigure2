@@ -45,7 +45,10 @@
 #include "QGoVisualizationDockWidget.h"
 #include "QGoManualSegmentationDockWidget.h"
 #include "ContourMeshStructureHelper.h"
+
+#ifdef   ENABLEVIDEORECORD
 #include "QGoVideoRecorder.h"
+#endif
 
 class vtkImageData;
 class vtkContourWidget;
@@ -100,7 +103,9 @@ protected:
 
   QGoVisualizationDockWidget*       m_VisuDockWidget;
   QGoManualSegmentationDockWidget*  m_ManualSegmentationDockWidget;
+#ifdef   ENABLEVIDEORECORD
   QGoVideoRecorder*                 m_VideoRecorderWidget;
+#endif
 
   virtual void GetBackgroundColorFromImageViewer( ) = 0;
   virtual void SetBackgroundColorToImageViewer( ) = 0;

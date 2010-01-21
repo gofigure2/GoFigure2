@@ -25,8 +25,11 @@ QGoTabImageViewElementBase( QWidget* iParent ) :
   m_BackgroundColor( Qt::black ),
   m_ContourId( 0 ),
   m_Image( 0 ),
-  m_VisuDockWidget( 0 ),
+  m_VisuDockWidget( 0 )
+#ifdef   ENABLEVIDEORECORD
+  ,
   m_VideoRecorderWidget( 0 )
+#endif
 {
   m_ManualSegmentationDockWidget = new QGoManualSegmentationDockWidget( this );
 
@@ -421,7 +424,9 @@ DockWidget()
 {
   std::list< QDockWidget* > oList;
   oList.push_back( m_VisuDockWidget );
+#ifdef   ENABLEVIDEORECORD
   oList.push_back( m_VideoRecorderWidget );
+#endif
   oList.push_back( m_ManualSegmentationDockWidget );
 
   return oList;

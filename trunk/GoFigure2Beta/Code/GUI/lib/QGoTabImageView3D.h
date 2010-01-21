@@ -73,7 +73,10 @@ class QGoTabImageView3D : public QGoTabImageViewElementBase
 
   protected:
     QGoImageView3D*   m_ImageView;
+
+#ifdef   ENABLEVIDEORECORD
     QGoVideoRecorder*                 m_VideoRecorderWidget;
+#endif
 
     void GetBackgroundColorFromImageViewer( );
     void SetBackgroundColorToImageViewer( );
