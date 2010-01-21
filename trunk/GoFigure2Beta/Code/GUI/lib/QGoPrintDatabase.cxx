@@ -483,12 +483,6 @@ void QGoPrintDatabase::AddToSelectedCollection()
     this->SetCurrentlyUsedTraceData(this->m_CurrentlyUsedCollectionName);
     this->UpdateTableWidgetForAnExistingTrace(this->m_CurrentlyUsedTraceName,CollectionID); 
     
-    //GoDBTableWidgetContainer* LinkToUpdatedTraceContainer = this->m_CurrentlyUsedCollectionOfTraces->
-     // GetLinkToUpdatedTraceContainer(this->m_DatabaseConnector,CollectionID);
-    //Update the corresponding row in the table widget with the data from the row container:
-    //this->m_CurrentlyUsedTable->UpdateRow(LinkToUpdatedTraceContainer,CollectionID,
-    //  this->m_CurrentlyUsedTraceName,this->m_CurrentlyUsedCollectionName);
-    
     CloseDBConnection();
     }
 }
@@ -675,9 +669,6 @@ int QGoPrintDatabase::UpdateContourFromVisuInDB(unsigned int iXCoordMin,
 
   UpdateContourInDB(this->m_DatabaseConnector,contour_row);
   
-  //GoDBTableWidgetContainer* LinkToUpdateTrace = this->m_CollectionOfContours
-  //  ->GetLinkToUpdatedTraceContainer(this->m_DatabaseConnector,ContourID);
-  //this->ContourTable->UpdateRow(LinkToUpdateTrace,ContourID,"contour","mesh");
   this->UpdateTableWidgetForAnExistingTrace("contour",ContourID);
 
   CloseDBConnection();
@@ -961,12 +952,8 @@ std::list<std::pair<std::string,QColor> > QGoPrintDatabase::
 //-------------------------------------------------------------------------
 void QGoPrintDatabase::UpdateTableWidgetAndRowContainerWithNewCreatedTrace(
   std::string iTraceName)
-  //QTableWidgetChild* Table,  vtkMySQLDatabase* DatabaseConnector,
-  //GoDBCollectionOfTraces* iCollectionOfTraces)
 {
   this->SetCurrentlyUsedTraceData(iTraceName);
-  //GoDBTableWidgetContainer* LinkToNewTrace = iCollectionOfTraces->GetLinkToNewCreatedTraceContainer(
-    //this->m_DatabaseConnector);
   GoDBTableWidgetContainer* LinkToNewTrace = this->m_CurrentlyUsedCollectionOfTraces
     ->GetLinkToNewCreatedTraceContainer(this->m_DatabaseConnector);
   //update the RowContainer for the trace:
@@ -1016,9 +1003,6 @@ void QGoPrintDatabase::UpdateTableWidgetAndRowContainerWithNewCreatedTrace(
    iCollectionOfTraces->GetCollectionName());
  QTableWidgetChild* TableForCollection =
    this->GetTableWidgetChild(iCollectionOfTraces->GetCollectionName());
-// this->UpdateTableWidgetAndRowContainerWithNewCreatedTrace(TableForCollection,
-  // this->m_DatabaseConnector,CollectionOfTracesForCollection);
-
 
  std::string CollectionIDName = iCollectionOfTraces->GetCollectionName();
  CollectionIDName += "ID";
