@@ -21,14 +21,13 @@ QGoVideoRecorder::
 QGoVideoRecorder(QWidget *iParent) : QDockWidget( iParent ), m_XMin( 0 ), m_XFixed( 0 ),
   m_XMax( 100 ), m_YMin(0), m_YFixed( 0 ), m_YMax( 100 ), m_ZMin( 0 ), m_ZFixed( 0 ), m_ZMax( 100 ),
   m_TMin( 0 ), m_TFixed( 0 ), m_TMax( 100 ), m_RecordX( 0 ), m_RecordY( 0 ),
-  m_RecordZ( 0 ), m_RecordTX( 0 ), m_RecordTY( 0 ), m_RecordTZ( 0 ), m_VideoName( "" ),
-  m_FrameRate( 30 ), m_VideoQuality ( 1 ), m_WindowSelected(0), m_VideoName2( "" ),
-  m_FrameRate2( 30 ), m_VideoQuality2 ( 1 ), m_FrameCounter( 0 ), m_RendererWindow(0),iRenderingWindowTEST(NULL),
+  m_RecordZ( 0 ), m_RecordTX( 0 ), m_RecordTY( 0 ), m_RecordTZ( 0 ),
+  m_WindowSelected(0), m_VideoName2( "" ),m_FrameRate2( 30 ),
+  m_VideoQuality2 ( 1 ), m_FrameCounter( 0 ), m_RendererWindow(0),iRenderingWindowTEST(NULL),
   m_RenderWindowSelected( false )
 {
 	this->setupUi(this);
 
-  m_VideoRecorder = vtkFFMPEGRenderWindowRecorder::New();
   m_VideoRecorder2 = vtkFFMPEGRenderWindowRecorder::New();
 
   m_InternalTimer = new QTimer( this );
@@ -38,6 +37,14 @@ QGoVideoRecorder(QWidget *iParent) : QDockWidget( iParent ), m_XMin( 0 ), m_XFix
   QString value = "0.00";
   this->videoLenght->display(value);
   this->endRecord->setEnabled(false);
+
+  this->videoName->setReadOnly( true );
+  this->videoName_2->setReadOnly( true );
+
+  this->tabVideoWidget->setEnabled(false);
+
+
+
 }
 
 /**
@@ -46,11 +53,7 @@ QGoVideoRecorder(QWidget *iParent) : QDockWidget( iParent ), m_XMin( 0 ), m_XFix
 QGoVideoRecorder::
 ~QGoVideoRecorder( )
 {
-
-	m_VideoRecorder->Delete();
-//	m_VideoRecorder2->Delete();
 	delete m_InternalTimer;
-
 }
 
 //---------------------------------------------------//
@@ -63,120 +66,98 @@ QGoVideoRecorder::
 //               CREATE VIDEO TAB
 ///////////////////////////////////////////////////////
 
-/**
- * \brief Set the minimum value for the X spin box
- * \param[in] iValue Value of the X spin box
- */
 void
 QGoVideoRecorder::
-setXSpinMin(unsigned int iValue)
+SetXMinAndMax( int XMin, int XMax )
 {
-	this->xSpinMin->setMinimum(iValue);
-	this->xSpinFixed->setMinimum(iValue);
-	this->xSpinMax->setMinimum(iValue+1);
-}
+	this->xSpinMin->setMinimum( XMin );
+	this->xSpinMax->setMinimum( XMin );
+	this->xSpinFixed->setMinimum( XMin );
 
-/**
- * \brief Set the maximum value for the X spin box
- * \param[in] iValue Value of the X spin box
- */
+	this->xSpinMin->setMaximum( XMax );
+	this->xSpinMax->setMaximum( XMax );
+	this->xSpinFixed->setMaximum( XMax );
+
+
+	this->xSpinMin->setValue(XMin);
+	this->xSpinMax->setValue(XMax);
+}
 void
 QGoVideoRecorder::
-setXSpinMax(unsigned int iValue)
+SetXSlice( int X )
 {
-	this->xSpinMin->setMaximum(iValue-1);
-	this->xSpinFixed->setMaximum(iValue);
-	this->xSpinMax->setMaximum(iValue);
+	this->xSpinFixed->setValue( X );
 }
 
-/**
- * \brief Set the minimum value for the Y spin box
- * \param[in] iValue Value of the Y spin box
- */
 void
 QGoVideoRecorder::
-setYSpinMin(unsigned int iValue)
+SetYMinAndMax( int YMin, int YMax )
 {
-	this->ySpinMin->setMinimum(iValue);
-	this->ySpinFixed->setMinimum(iValue);
-	this->ySpinMax->setMinimum(iValue+1);
-}
+	this->ySpinMin->setMinimum( YMin );
+	this->ySpinMax->setMinimum( YMin );
+	this->ySpinFixed->setMinimum( YMin );
 
-/**
- * \brief Set the maximum value for the Y spin box
- * \param[in] iValue Value of the Y spin box
- */
+	this->ySpinMin->setMaximum( YMax );
+	this->ySpinMax->setMaximum( YMax );
+	this->ySpinFixed->setMaximum( YMax );
+
+
+	this->ySpinMin->setValue(YMin);
+	this->ySpinMax->setValue(YMax);
+}
 void
 QGoVideoRecorder::
-setYSpinMax(unsigned int iValue)
+SetYSlice( int Y )
 {
-	this->ySpinMin->setMaximum(iValue-1);
-	this->ySpinFixed->setMaximum(iValue);
-	this->ySpinMax->setMaximum(iValue);
+	this->ySpinFixed->setValue( Y );
 }
 
-/**
- * \brief Set the minimum value for the Y spin box
- * \param[in] iValue Value of the Y spin box
- */
 void
 QGoVideoRecorder::
-setZSpinMin(unsigned int iValue)
+SetZMinAndMax( int ZMin, int ZMax )
 {
-	this->zSpinMin->setMinimum(iValue);
-	this->zSpinFixed->setMinimum(iValue);
-	this->zSpinMax->setMinimum(iValue+1);
-}
+	this->zSpinMin->setMinimum( ZMin );
+	this->zSpinMax->setMinimum( ZMin );
+	this->zSpinFixed->setMinimum( ZMin );
 
-/**
- * \brief Set the maximum value for the Z spin box
- * \param[in] iValue Value of the Z spin box
- */
+	this->zSpinMin->setMaximum( ZMax );
+	this->zSpinMax->setMaximum( ZMax );
+	this->zSpinFixed->setMaximum( ZMax );
+
+
+	this->zSpinMin->setValue(ZMin);
+	this->zSpinMax->setValue(ZMax);
+}
 void
 QGoVideoRecorder::
-setZSpinMax(unsigned int iValue)
+SetZSlice( int Z )
 {
-	this->zSpinMin->setMaximum(iValue-1);
-	this->zSpinFixed->setMaximum(iValue);
-	this->zSpinMax->setMaximum(iValue);
+	this->zSpinFixed->setValue( Z );
 }
 
-/**
-* \brief Set the minimum value for the Y spin box
-* \param[in] iValue Value of the Y spin box
-*/
 void
 QGoVideoRecorder::
-setTSpinMin(unsigned int iValue)
+SetTMinAndMax( int TMin, int TMax )
 {
-	this->tSpinMin->setMinimum(iValue);
-	this->tSpinFixed->setMinimum(iValue);
-	this->tSpinMax->setMinimum(iValue+1);
-}
+	this->tSpinMin->setMinimum( TMin );
+	this->tSpinMax->setMinimum( TMin );
+	this->tSpinFixed->setMinimum( TMin );
 
-/**
-* \brief Set the maximum value for the Z spin box
-* \param[in] iValue Value of the Z spin box
-*/
+	this->tSpinMin->setMaximum( TMax );
+	this->tSpinMax->setMaximum( TMax );
+	this->tSpinFixed->setMaximum( TMax );
+
+
+	this->tSpinMin->setValue(TMin);
+	this->tSpinMax->setValue(TMax);
+}
 void
 QGoVideoRecorder::
-setTSpinMax(unsigned int iValue)
+SetTSlice( int T )
 {
-	this->tSpinMin->setMaximum(iValue-1);
-	this->tSpinFixed->setMaximum(iValue);
-	this->tSpinMax->setMaximum(iValue);
+	this->tSpinFixed->setValue( T );
 }
 
-/**
-* \brief Set the rendering window to record video
-* \param[in] iRenderingWindow Observed rendering window
-*/
-/*void
-QGoVideoRecorder::
-SetRenderingWindow( vtkRenderWindow* iRenderingWindow )
-{
-	m_VideoRecorder->SetRenderingWindow(iRenderingWindow);
-}*/
 
 //---------------------------------------------------//
 //                                                   //
@@ -373,10 +354,10 @@ void
 QGoVideoRecorder::
 on_createFile_clicked()
 {
-	m_VideoName = QFileDialog::getSaveFileName( this,
-      tr( "Folder to Save Video" ), "fileName", 0 );
+	m_VideoName2 = QFileDialog::getSaveFileName( this,
+	      tr( "Folder to Save Video" ), "fileName", 0 );
 
-  this->videoName->setText( m_VideoName );
+	this->videoName->setText( m_VideoName2 );
 }
 
 /**
@@ -386,7 +367,10 @@ void
 QGoVideoRecorder::
 on_frameRate_valueChanged( int value )
 {
-	m_FrameRate = value;
+	m_FrameRate2= value;
+	this->frameRate_2->setValue(value);
+    // update video length
+
 }
 
 /**
@@ -396,7 +380,8 @@ void
 QGoVideoRecorder::
 on_videoQuality_valueChanged( int value )
 {
-	m_VideoQuality = value;
+	m_VideoQuality2= value;
+	this->videoQuality_2->setValue(value);
 }
 
 
@@ -408,125 +393,98 @@ void
 QGoVideoRecorder::
 on_startVideo_clicked()
 {
-  // Print parameters for testings
+//something to record first view
+  if( ( m_VideoName2 == NULL ) || ( !m_RenderWindowSelected ) || ( m_RendererWindow == 0 ) )
+  {
+    std::cout<<"Please select a videoName and a good rendering window"<<std::endl;
+  }
+  else
+  {
+  // update values in thread
+    m_VideoRecorder2->SetRenderingWindow(iRenderingWindowTEST);
+    m_VideoRecorder2->Setm_FrameRate( m_FrameRate2 );
+    m_VideoRecorder2->Setm_VideoQuality( m_VideoQuality2 );
 
-	std::cout<<"m_XMin: "<< m_XMin <<std::endl;
-	std::cout<<"m_XFixed: "<< m_XFixed <<std::endl;
-	std::cout<<"m_XMax: "<< m_XMax <<std::endl;
-	std::cout<<"m_YMin: "<< m_YMin <<std::endl;
-	std::cout<<"m_YFixed: "<< m_YFixed <<std::endl;
-	std::cout<<"m_YMax: "<< m_YMax <<std::endl;
-	std::cout<<"m_ZMin: "<< m_ZMin <<std::endl;
-	std::cout<<"m_ZFixed: "<< m_ZFixed <<std::endl;
-	std::cout<<"m_ZMax: "<< m_ZMax <<std::endl;
-	std::cout<<"m_TMin: "<< m_TMin <<std::endl;
-	std::cout<<"m_TFixed: "<< m_TFixed <<std::endl;
-	std::cout<<"m_TMax: "<< m_TMax <<std::endl;
-	std::cout<<"m_RecordX: "<< m_RecordX <<std::endl;
-	std::cout<<"m_RecordY: "<< m_RecordY <<std::endl;
-	std::cout<<"m_RecordZ: "<< m_RecordZ <<std::endl;
-	std::cout<<"m_RecordTX: "<< m_RecordTX <<std::endl;
-	std::cout<<"m_RecordTY: "<< m_RecordTY <<std::endl;
-	std::cout<<"m_RecordTZ: "<< m_RecordTZ <<std::endl;
-	std::cout<<"m_FrameRate: "<< m_FrameRate <<std::endl;
-	std::cout<<"m_VideoQuality: "<< m_VideoQuality <<std::endl;
+    if(m_RecordX>0)
+  	  {
+      QString fileName = m_VideoName2;
 
-	//Set good rendering window from gofigure
-	//vtkRenderWindow* renderingWindow;
-    //...
-	//m_VideoRecorder->SetRenderingWindow(renderingWindow);
+      fileName.insert( fileName.size(), QString("-X-"));
+      fileName.insert( fileName.size(), QString::number( m_XMin, 10 ) );
+      fileName.insert( fileName.size(), QString("-"));
+      fileName.insert( fileName.size(), QString::number( m_XMax, 10 ) );
+      fileName.insert( fileName.size(), QString(".avi"));
 
-	//Create a QTDialogProgress
+      m_VideoRecorder2->SetFileName( fileName.toStdString() );
 
-  //unsigned int m_SizeProgressBar;
-	//...
+      m_VideoRecorder2->StartCapture();
 
-	// for X Slices
-  if(m_RecordX>0)
-  	{
-    QString fileName = m_VideoName;
+      for(unsigned int i = m_XMin; i < m_XMax+1; i++)
+        {
+        //send signal to gofigure to change slice
+        emit XSliceChanged(i);
+        //capture screen
+        m_VideoRecorder2->TakeSnapshot();
+        i++;
+        }
 
-    fileName.insert( fileName.size(), QString("-X-"));
-    fileName.insert( fileName.size(), QString::number( m_XMin, 10 ) );
-    fileName.insert( fileName.size(), QString("-"));
-    fileName.insert( fileName.size(), QString::number( m_XMax, 10 ) );
-    fileName.insert( fileName.size(), QString(".avi"));
+        m_VideoRecorder2->EndCapture();
+      }
 
-    m_VideoRecorder->SetFileName( fileName.toStdString() );
-    std::cout<<"FileName X: "<< fileName.toStdString() << std::endl;
+    if(m_RecordY>0)
+      {
+      QString fileName = m_VideoName2;
 
-	  m_VideoRecorder->StartCapture();
-    //...
-	  for(unsigned int i = m_XMin; i < m_XMax+1; i++)
-	  	{
-	    //send signal to gofigure
+      fileName.insert( fileName.size(), QString("-Y-"));
+      fileName.insert( fileName.size(), QString::number( m_YMin, 10 ) );
+      fileName.insert( fileName.size(), QString("-"));
+      fileName.insert( fileName.size(), QString::number( m_YMax, 10 ) );
+      fileName.insert( fileName.size(), QString(".avi"));
 
-	    //...
+       m_VideoRecorder2->SetFileName( fileName.toStdString() );
 
-	    //capture screen
-	    m_VideoRecorder->TakeSnapshot();
-	  	}
-    //...
-	  m_VideoRecorder->EndCapture();
-  	}
+       m_VideoRecorder2->StartCapture();
 
-	// for Y Slices
-  if(m_RecordY>0)
-  	{
-    QString fileName = m_VideoName;
+       for(unsigned int i = m_YMin; i < m_YMax+1; i++)
+         {
+         //send signal to gofigure to change slice
+         emit YSliceChanged(i);
+         //capture screen
+         m_VideoRecorder2->TakeSnapshot();
+         i++;
+         }
+       m_VideoRecorder2->EndCapture();
+       }
 
-    fileName.insert( fileName.size(), QString("-Y-"));
-    fileName.insert( fileName.size(), QString::number( m_YMin, 10 ) );
-    fileName.insert( fileName.size(), QString("-"));
-    fileName.insert( fileName.size(), QString::number( m_YMax, 10 ) );
-    fileName.insert( fileName.size(), QString(".avi"));
+    if(m_RecordZ>0)
+      {
+      QString fileName = m_VideoName2;
 
-    m_VideoRecorder->SetFileName( fileName.toStdString() );
-    std::cout<<"FileName Y: "<< fileName.toStdString() << std::endl;
+      fileName.insert( fileName.size(), QString("-Z-"));
+      fileName.insert( fileName.size(), QString::number( m_ZMin, 10 ) );
+      fileName.insert( fileName.size(), QString("-"));
+      fileName.insert( fileName.size(), QString::number( m_ZMax, 10 ) );
+      fileName.insert( fileName.size(), QString(".avi"));
 
-	  m_VideoRecorder->StartCapture();
-    //...
-	  for(unsigned int i = m_YMin; i < m_YMax+1; i++)
-	  	{
-	    //send signal to gofigure
+       m_VideoRecorder2->SetFileName( fileName.toStdString() );
 
-	    //...
+       m_VideoRecorder2->StartCapture();
 
-	    //capture screen
-	    m_VideoRecorder->TakeSnapshot();
-	  	}
-    //...
-	  m_VideoRecorder->EndCapture();
-  	}
+       for(unsigned int i = m_ZMin; i < m_ZMax+1; i++)
+         {
+         //send signal to gofigure to change slice
+         emit ZSliceChanged(i);
+         //capture screen
+         m_VideoRecorder2->TakeSnapshot();
+         i++;
+         }
+       m_VideoRecorder2->EndCapture();
+       }
 
-	// for Z Slices
-  if(m_RecordZ>0)
-  	{
-    QString fileName = m_VideoName;
+    //ADD T
+  }
 
-    fileName.insert( fileName.size(), QString("-z-"));
-    fileName.insert( fileName.size(), QString::number( m_ZMin, 10 ) );
-    fileName.insert( fileName.size(), QString("-"));
-    fileName.insert( fileName.size(), QString::number( m_ZMax, 10 ) );
-    fileName.insert( fileName.size(), QString(".avi"));
 
-    m_VideoRecorder->SetFileName( fileName.toStdString() );
-    std::cout<<"FileName Z: "<< fileName.toStdString() << std::endl;
-
-	  m_VideoRecorder->StartCapture();
-    //...
-	  for(unsigned int i = m_ZMin; i < m_ZMax+1; i++)
-	  	{
-	    //send signal to gofigure
-
-	    //...
-
-	    //capture screen
-	    m_VideoRecorder->TakeSnapshot();
-	  	}
-    //...
-	  m_VideoRecorder->EndCapture();
-  	}
 }
 
 ///////////////////////////////////////////////////////
@@ -552,6 +510,7 @@ QGoVideoRecorder::
 on_frameRate_2_valueChanged( int value )
 {
 	m_FrameRate2 = value;
+	this->frameRate->setValue(value);
 }
 
 /**
@@ -562,6 +521,7 @@ QGoVideoRecorder::
 on_videoQuality_2_valueChanged( int value )
 {
 	m_VideoQuality2 = value;
+	this->videoQuality->setValue(value);
 }
 
 /**
@@ -579,6 +539,7 @@ on_startRecord_clicked()
 
   if( ( m_VideoName2 == NULL ) || ( !m_RenderWindowSelected ) || ( m_RendererWindow == 0 ) )
   {
+  // TODO: display pop up window
     std::cout<<"Please select a videoName and a good rendering window"<<std::endl;
   }
   else
@@ -654,8 +615,6 @@ timeout()
   	{
     value.insert( value.size()-3, QString("0"));
   	}
-
-  std::cout<< "value: "<< value.toStdString() << std::endl;
   this->videoLenght->display(value);
 }
 
@@ -667,6 +626,14 @@ QGoVideoRecorder::
 SetRendererWindow( int iSlice )
 {
   m_RendererWindow = iSlice;
+  if ( m_RendererWindow == 0 )
+	  {
+      this->tabVideoWidget->setEnabled(false);
+	  }
+  else
+	  {
+      this->tabVideoWidget->setEnabled(true);
+	  }
 }
 //-------------------------------------------------------------------------
 void
@@ -674,64 +641,11 @@ QGoVideoRecorder::
 SetRenderingWindow2( vtkRenderWindow* iRenderingWindow )
 {
 	iRenderingWindowTEST = iRenderingWindow;
-	if(iRenderingWindowTEST == NULL)
-	{
-	std::cout << " RENDERING WINDOW NULL " << std::endl;
-	}
-	else
+	if(iRenderingWindowTEST != NULL)
 	{
 	m_RenderWindowSelected = true;
-	std::cout << " RENDERING WINDOW NON NULL " << std::endl;
+	m_VideoRecorder2->SetRenderingWindow(iRenderingWindowTEST);
 	}
 }
 
 //----------------------------------------------------------------------------//
-/* emit to be done
-void
-QGoVideoRecorder::
-XSliceChanged( int Slice )
-{
-
-}
-void
-QGoVideoRecorder::
-YSliceChanged( int Slice )
-{
-
-}
-void
-QGoVideoRecorder::
-ZSliceChanged( int Slice )
-{
-
-}
-void
-QGoVideoRecorder::
-TSliceChanged( int Slice )
-{
-
-}
-void
-QGoVideoRecorder::
-SetXSlice( int iSlice )
-{
-
-}
-void
-QGoVideoRecorder::
-SetYSlice( int iSlice )
-{
-
-}
-void
-QGoVideoRecorder::
-SetZSlice( int iSlice )
-{
-
-}
-void
-SetTSlice( int iSlice )
-{
-
-}
-*/

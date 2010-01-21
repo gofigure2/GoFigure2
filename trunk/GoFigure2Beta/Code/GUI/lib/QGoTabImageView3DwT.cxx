@@ -264,32 +264,20 @@ CreateVideoRecorderWidget()
 */
   QObject::connect( this, SIGNAL( FullScreenViewChanged( int ) ),
         this,SLOT( SetRendererWindow( int )));
-
 /*
-  // to connect the second acquisition mode
+  QObject::connect( m_VideoRecorderWidget, SIGNAL( FullScreenViewXY() ),
+    this, SLOT( FullScreenViewXY() ) );
+*/
+
   QObject::connect( m_VideoRecorderWidget, SIGNAL( XSliceChanged( int ) ),
-    this, SLOT( SetSliceViewYZ( int ) ) );
-
-  QObject::connect( this, SIGNAL( SliceViewYZChanged( int ) ),
-		  m_VideoRecorderWidget, SLOT( SetXSlice( int ) ) );
-
+      this, SLOT( SetSliceViewYZ( int ) ) );
   QObject::connect( m_VideoRecorderWidget, SIGNAL( YSliceChanged( int ) ),
-    this, SLOT( SetSliceViewXZ( int ) ) );
-
-  QObject::connect( this, SIGNAL( SliceViewXZChanged( int ) ),
-    m_VideoRecorderWidget, SLOT( SetYSlice( int ) ) );
-
+      this, SLOT( SetSliceViewXZ( int ) ) );
   QObject::connect( m_VideoRecorderWidget, SIGNAL( ZSliceChanged( int ) ),
-    this, SLOT( SetSliceViewXY( int ) ) );
-
-  QObject::connect( this, SIGNAL( SliceViewXYChanged( int ) ),
-    m_VideoRecorderWidget, SLOT( SetZSlice( int ) ) );
-
-  QObject::connect( m_VideoRecorderWidget, SIGNAL( TSliceChanged( int ) ),
-    this, SLOT( SetTimePoint( int ) ) );
-
-  QObject::connect( this, SIGNAL( TimePointChanged( int ) ),
-    m_VideoRecorderWidget, SLOT( SetTSlice( int ) ) );*/
+      this, SLOT( SetSliceViewXY( int ) ) );
+/*
+    QObject::connect( m_VisuDockWidget, SIGNAL( TSliceChanged( int ) ),
+      this, SLOT( SetTimePoint( int ) ) );*/
 }
 
 //-------------------------------------------------------------------------
@@ -456,6 +444,14 @@ CreateAllViewActions()
   this->m_ViewActions.push_back( separator4 );
 
   this->m_ViewActions.push_back( m_VideoRecorderWidget->toggleViewAction() );
+
+  //NEW
+  QObject::connect( m_VideoRecorderWidget, SIGNAL( FullScreenViewXY() ),
+		  FullScreenXYAction, SLOT( trigger() ));
+  QObject::connect( m_VideoRecorderWidget, SIGNAL( FullScreenViewYZ() ),
+  		  FullScreenYZAction, SLOT( trigger() ));
+  QObject::connect( m_VideoRecorderWidget, SIGNAL( FullScreenViewXZ() ),
+  		  FullScreenXZAction, SLOT( trigger() ));
 #endif
 }
 //-------------------------------------------------------------------------
@@ -575,6 +571,20 @@ SetLSMReader( vtkLSMReader* iReader,
     m_VisuDockWidget->SetTMinimumAndMaximum( 0, dim[3] - 1 );
     m_VisuDockWidget->SetTSlice( iTimePoint );
 
+#ifdef ENABLEVIDEORECORD
+  m_VideoRecorderWidget->SetXMinAndMax( 0, dim[0] - 1 );
+  m_VideoRecorderWidget->SetXSlice( ( dim[0] - 1 ) / 2 );
+
+  m_VideoRecorderWidget->SetYMinAndMax( 0, dim[1] - 1 );
+  m_VideoRecorderWidget->SetYSlice( ( dim[1] - 1 ) / 2 );
+
+  m_VideoRecorderWidget->SetZMinAndMax( 0, dim[2] - 1 );
+  m_VideoRecorderWidget->SetZSlice( ( dim[2] - 1 ) / 2 );
+
+  m_VideoRecorderWidget->SetTMinAndMax( 0, dim[3] - 1 );
+  m_VideoRecorderWidget->SetTSlice( iTimePoint );
+#endif
+
     int NumberOfChannels = m_LSMReader[0]->GetNumberOfChannels();
 
     m_VisuDockWidget->SetNumberOfChannels( NumberOfChannels );
@@ -648,6 +658,21 @@ SetMegaCaptureFile(
   m_VisuDockWidget->SetTSlice( iTimePoint );
 
   m_VisuDockWidget->SetNumberOfChannels( NumberOfChannels );
+
+  // Set up QSpinBox in m_VideoRecorderWidget
+#ifdef ENABLEVIDEORECORD
+  m_VideoRecorderWidget->SetXMinAndMax( extent[0], extent[1] );
+  m_VideoRecorderWidget->SetXSlice( ( extent[0] + extent[1] ) / 2 );
+
+  m_VideoRecorderWidget->SetYMinAndMax( extent[2], extent[3] );
+  m_VideoRecorderWidget->SetYSlice( ( extent[2] + extent[3] ) / 2 );
+
+  m_VideoRecorderWidget->SetZMinAndMax( extent[4], extent[5] );
+  m_VideoRecorderWidget->SetZSlice( ( extent[4] + extent[5] ) / 2 );
+
+  m_VideoRecorderWidget->SetTMinAndMax( min_t, max_t );
+  m_VideoRecorderWidget->SetTSlice( iTimePoint );
+#endif
 
   if( NumberOfChannels > 1 )
     {

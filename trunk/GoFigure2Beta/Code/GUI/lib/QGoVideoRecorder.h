@@ -20,16 +20,19 @@ class QGoVideoRecorder : public QDockWidget, private Ui::DockWidgetVideoRecorder
         explicit QGoVideoRecorder( QWidget* parent = 0);
         ~QGoVideoRecorder();
 
+        void SetXMinAndMax( int XMin, int XMax );
+        void SetXSlice( int X );
+
+        void SetYMinAndMax( int YMin, int YMax );
+        void SetYSlice( int Y );
+
+        void SetZMinAndMax( int ZMin, int ZMax );
+        void SetZSlice( int Z );
+
+        void SetTMinAndMax( int TMin, int TMax );
+        void SetTSlice( int T );
+
     private:
-    // in tab "create video"
-        void setXSpinMin(unsigned int iValue);
-        void setXSpinMax(unsigned int iValue);
-        void setYSpinMin(unsigned int iValue);
-        void setYSpinMax(unsigned int iValue);
-        void setZSpinMin(unsigned int iValue);
-        void setZSpinMax(unsigned int iValue);
-        void setTSpinMin(unsigned int iValue);
-        void setTSpinMax(unsigned int iValue);
 
         unsigned int m_XMin;
         unsigned int m_XFixed;
@@ -50,13 +53,6 @@ class QGoVideoRecorder : public QDockWidget, private Ui::DockWidgetVideoRecorder
         unsigned int m_RecordTX;
         unsigned int m_RecordTY;
         unsigned int m_RecordTZ;
-
-        QString m_VideoName;
-
-        unsigned int m_FrameRate;
-        unsigned int m_VideoQuality;
-
-        vtkFFMPEGRenderWindowRecorder *m_VideoRecorder;
 
         QProgressDialog* m_ProgressDialog;
 
@@ -87,6 +83,10 @@ class QGoVideoRecorder : public QDockWidget, private Ui::DockWidgetVideoRecorder
       void YSliceChanged( int Slice );
       void ZSliceChanged( int Slice );
       void TSliceChanged( int Slice );
+
+      void FullScreenViewXY();
+      void FullScreenViewYZ();
+      void FullScreenViewXZ();
 
 
     private slots:
@@ -135,7 +135,6 @@ class QGoVideoRecorder : public QDockWidget, private Ui::DockWidgetVideoRecorder
         void on_endRecord_clicked();
 
         void timeout();
-
 
 };
 
