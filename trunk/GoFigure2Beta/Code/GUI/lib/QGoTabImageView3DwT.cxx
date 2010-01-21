@@ -7,10 +7,8 @@
 #include "QGoPrintDatabase.h"
 
 #ifdef ENABLEVIDEORECORD
-#include "QGoVideoRecorder.h"
+  #include "QGoVideoRecorder.h"
 #endif
-
-#include "QGoVideoRecorder.h"
 
 #include "SnapshotHelper.h"
 
