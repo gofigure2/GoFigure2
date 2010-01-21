@@ -418,8 +418,7 @@ void QGoPrintDatabase::CreateCorrespondingCollection()
 
     //update the Collection Table and the row container with the new created Collection:
     this->SetCurrentlyUsedTraceData(this->m_CurrentlyUsedCollectionName);
-    this->UpdateTableWidgetAndRowContainerWithNewCreatedTrace(this->m_CurrentlyUsedTable,
-      this->m_DatabaseConnector,this->m_CurrentlyUsedCollectionOfTraces);
+    this->UpdateTableWidgetAndRowContainerWithNewCreatedTrace(this->m_CurrentlyUsedTraceName);
 
     //update the Trace Table and the row container with the new Collection ID:
     this->SetCurrentlyUsedTraceData(TraceName);
@@ -482,12 +481,13 @@ void QGoPrintDatabase::AddToSelectedCollection()
       this->m_CurrentlyUsedCollectionIDName,ColorCollection);
     //update the Collection Table with the new bounding box:
     this->SetCurrentlyUsedTraceData(this->m_CurrentlyUsedCollectionName);
-     
-    GoDBTableWidgetContainer* LinkToUpdatedTraceContainer = this->m_CurrentlyUsedCollectionOfTraces->
-      GetLinkToUpdatedTraceContainer(this->m_DatabaseConnector,CollectionID);
+    this->UpdateTableWidgetForAnExistingTrace(this->m_CurrentlyUsedTraceName,CollectionID); 
+    
+    //GoDBTableWidgetContainer* LinkToUpdatedTraceContainer = this->m_CurrentlyUsedCollectionOfTraces->
+     // GetLinkToUpdatedTraceContainer(this->m_DatabaseConnector,CollectionID);
     //Update the corresponding row in the table widget with the data from the row container:
-    this->m_CurrentlyUsedTable->UpdateRow(LinkToUpdatedTraceContainer,CollectionID,
-      this->m_CurrentlyUsedTraceName,this->m_CurrentlyUsedCollectionName);
+    //this->m_CurrentlyUsedTable->UpdateRow(LinkToUpdatedTraceContainer,CollectionID,
+    //  this->m_CurrentlyUsedTraceName,this->m_CurrentlyUsedCollectionName);
     
     CloseDBConnection();
     }
@@ -640,8 +640,7 @@ int QGoPrintDatabase::SaveContoursFromVisuInDB(unsigned int iXCoordMin,
 
   int NewContourID = contour_row.SaveInDB( this->m_DatabaseConnector);
 
-  this->UpdateTableWidgetAndRowContainerWithNewCreatedTrace(this->ContourTable,
-    this->m_DatabaseConnector,this->m_CollectionOfContours);
+  this->UpdateTableWidgetAndRowContainerWithNewCreatedTrace("contour");
 
   CloseDBConnection();
 
@@ -676,9 +675,10 @@ int QGoPrintDatabase::UpdateContourFromVisuInDB(unsigned int iXCoordMin,
 
   UpdateContourInDB(this->m_DatabaseConnector,contour_row);
   
-  GoDBTableWidgetContainer* LinkToUpdateTrace = this->m_CollectionOfContours
-    ->GetLinkToUpdatedTraceContainer(this->m_DatabaseConnector,ContourID);
-  this->ContourTable->UpdateRow(LinkToUpdateTrace,ContourID,"contour","mesh");
+  //GoDBTableWidgetContainer* LinkToUpdateTrace = this->m_CollectionOfContours
+  //  ->GetLinkToUpdatedTraceContainer(this->m_DatabaseConnector,ContourID);
+  //this->ContourTable->UpdateRow(LinkToUpdateTrace,ContourID,"contour","mesh");
+  this->UpdateTableWidgetForAnExistingTrace("contour",ContourID);
 
   CloseDBConnection();
   return ContourID;
@@ -944,8 +944,7 @@ std::list<std::pair<std::string,QColor> > QGoPrintDatabase::
       FirstCollection);
     //add a new row in the table widget with the data corresponding to the new collection:
     this->SetCurrentlyUsedTraceData(this->m_CurrentlyUsedCollectionName);
-    this->UpdateTableWidgetAndRowContainerWithNewCreatedTrace(this->m_CurrentlyUsedTable,
-      this->m_DatabaseConnector,this->m_CurrentlyUsedCollectionOfTraces);
+    this->UpdateTableWidgetAndRowContainerWithNewCreatedTrace(this->m_CurrentlyUsedTraceName);
 
     std::pair<std::string,QColor> temp;
     temp.second = FirstColor;
@@ -961,21 +960,42 @@ std::list<std::pair<std::string,QColor> > QGoPrintDatabase::
 
 //-------------------------------------------------------------------------
 void QGoPrintDatabase::UpdateTableWidgetAndRowContainerWithNewCreatedTrace(
-  QTableWidgetChild* Table,  vtkMySQLDatabase* DatabaseConnector,
-  GoDBCollectionOfTraces* iCollectionOfTraces)
+  std::string iTraceName)
+  //QTableWidgetChild* Table,  vtkMySQLDatabase* DatabaseConnector,
+  //GoDBCollectionOfTraces* iCollectionOfTraces)
 {
-  GoDBTableWidgetContainer* LinkToNewTrace = iCollectionOfTraces->GetLinkToNewCreatedTraceContainer(
-    this->m_DatabaseConnector);
+  this->SetCurrentlyUsedTraceData(iTraceName);
+  //GoDBTableWidgetContainer* LinkToNewTrace = iCollectionOfTraces->GetLinkToNewCreatedTraceContainer(
+    //this->m_DatabaseConnector);
+  GoDBTableWidgetContainer* LinkToNewTrace = this->m_CurrentlyUsedCollectionOfTraces
+    ->GetLinkToNewCreatedTraceContainer(this->m_DatabaseConnector);
   //update the RowContainer for the trace:
-  iCollectionOfTraces->GetLinkToRowContainer()->InsertNewCreatedTrace(*LinkToNewTrace);
+  this->m_CurrentlyUsedCollectionOfTraces->GetLinkToRowContainer()
+    ->InsertNewCreatedTrace(*LinkToNewTrace);
 
-  //Update the table widget with the new trace:
-  Table->setSortingEnabled(false);
+  //Update the trace table widget with the new trace:
+  this->m_CurrentlyUsedTable->setSortingEnabled(false);
+  this->m_CurrentlyUsedTable->InsertNewRow( LinkToNewTrace,iTraceName,
+    this->m_CurrentlyUsedCollectionName);
+  this->m_CurrentlyUsedTable->setSortingEnabled(true);
 
-  Table->InsertNewRow( LinkToNewTrace,iCollectionOfTraces->GetTraceName(),
-    iCollectionOfTraces->GetCollectionName());
-
-  Table->setSortingEnabled(true);
+  //update the bounding box of the collection:
+    //Get the ID of the last created trace in the database:
+  std::list<int> ListNewTraces;
+  int NewTraceID = MaxValueForOneColumnInTable(this->m_DatabaseConnector,
+    this->m_CurrentlyUsedTraceIDName,iTraceName);
+  ListNewTraces.push_back(NewTraceID);
+  int CollectionID = FindOneID(this->m_DatabaseConnector,iTraceName,
+    this->m_CurrentlyUsedCollectionIDName,this->m_CurrentlyUsedTraceIDName, 
+    ConvertToString<int>(NewTraceID));
+    //update the database:
+  this->m_CurrentlyUsedCollectionOfTraces->
+    UpdateDBDataForAddedTracesToExistingCollection(ListNewTraces,CollectionID,
+    this->m_DatabaseConnector);
+    //update the table widget for the collection:
+  this->UpdateTableWidgetForAnExistingTrace(
+    this->m_CurrentlyUsedCollectionName,CollectionID);
+  
  }
 //-------------------------------------------------------------------------
 
@@ -1060,7 +1080,7 @@ std::pair<std::string,QColor> QGoPrintDatabase::SaveNewCollectionInDB(
   //update the table of the collection (which become the trace then):
   this->SetCurrentlyUsedTraceData(this->m_CurrentlyUsedCollectionName);
   this->UpdateTableWidgetAndRowContainerWithNewCreatedTrace(
-    this->m_CurrentlyUsedTable,this->m_DatabaseConnector,this->m_CurrentlyUsedCollectionOfTraces);
+    this->m_CurrentlyUsedTraceName);
 
   this->CloseDBConnection();
   return NewCollectionData;
@@ -1158,4 +1178,16 @@ void QGoPrintDatabase::SetCurrentlyUsedTraceData(std::string iTraceName)
   this->m_CurrentlyUsedCollectionOfName = this->m_CurrentlyUsedCollectionOfTraces->GetCollectionOf();
   this->m_CurrentlyUsedCollectionOfNameID = this->m_CurrentlyUsedCollectionOfName;
   this->m_CurrentlyUsedCollectionOfNameID += "ID";
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoPrintDatabase::UpdateTableWidgetForAnExistingTrace(
+  std::string iTraceName, int iTraceID)
+{
+  this->SetCurrentlyUsedTraceData(iTraceName);
+  GoDBTableWidgetContainer* LinkToUpdatedRow = this->m_CurrentlyUsedCollectionOfTraces
+    ->GetLinkToUpdatedTraceContainer(this->m_DatabaseConnector,iTraceID);
+  this->m_CurrentlyUsedTable->UpdateRow(LinkToUpdatedRow,iTraceID,iTraceName,
+    this->m_CurrentlyUsedCollectionName);
 }

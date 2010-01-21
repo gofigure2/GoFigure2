@@ -74,6 +74,8 @@ public:
   void DeleteTracesInDB(std::list<int> TracesToDelete,
     vtkMySQLDatabase* DatabaseConnector);
 
+  /** \brief Calcul the bounding box of the corresponding collection and update
+  it in the database*/
   void RecalculateDBBoundingBox(
     vtkMySQLDatabase* iDatabaseConnector,int iCollectionID);
 
@@ -158,11 +160,9 @@ protected:
   DBTableWidgetContainerType                m_RowContainer;
   GoDBTableWidgetContainer*                 m_LinkToRowContainer;
 
-
-
   /** \brief Create a new collection Row in the collection table and
   return the collectionID from the created row: */
-  int  CreateNewCollection();
+  int CreateNewCollection();
 
    /** \brief create a new collection in the database and return the corresponding
   ID*/
@@ -187,22 +187,22 @@ protected:
   /** \brief return the coordinate min of all the coordinates of the
   selected traces*/
   GoDBCoordinateRow GetSelectingTracesCoordMin(
-  vtkMySQLDatabase* DatabaseConnector, std::vector<std::string> ListSelectedTracesID);
+    vtkMySQLDatabase* DatabaseConnector, std::vector<std::string> ListSelectedTracesID);
 
   /** \brief return the coordinate max of all the coordinates of the
   selected traces*/
   GoDBCoordinateRow GetSelectingTracesCoordMax(
-  vtkMySQLDatabase* DatabaseConnector, std::vector<std::string> ListSelectedTracesID);
+    vtkMySQLDatabase* DatabaseConnector, std::vector<std::string> ListSelectedTracesID);
 
   /** \brief return the coordinate min for the existing Collection*/
   GoDBCoordinateRow GetExistingCoordMin(
-  vtkMySQLDatabase* DatabaseConnector, int CollectionCoordIDMin,
-  int CollectionID );
+    vtkMySQLDatabase* DatabaseConnector, int CollectionCoordIDMin,
+    int CollectionID );
 
    /** \brief return the coordinate max for the existing Collection*/
   GoDBCoordinateRow GetExistingCoordMax(
-  vtkMySQLDatabase* DatabaseConnector, int CollectionCoordIDMax,
-  int CollectionID );
+    vtkMySQLDatabase* DatabaseConnector, int CollectionCoordIDMax,
+    int CollectionID );
 
 };
 #endif

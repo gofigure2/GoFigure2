@@ -67,6 +67,7 @@ public:
   virtual ~QGoPrintDatabase();
 
   typedef GoDBCollectionOfTraces::DBTableWidgetContainerType DBTableWidgetContainerType;
+
   /** \brief set all the values needed for the database*/
   void SetDatabaseVariables(
     const std::string& iNameDB, const std::string& iServer,
@@ -236,14 +237,15 @@ protected:
   /** \brief Insert a row in the table widget and in the row container with the
   corresponding values of the new created Trace*/
   void UpdateTableWidgetAndRowContainerWithNewCreatedTrace(
-    QTableWidgetChild* Table,vtkMySQLDatabase* DatabaseConnector,
-    GoDBCollectionOfTraces* iCollectionOfTraces);
+    std::string iTraceName);
 
   /** \brief Update the IDs in the CollectionID column for the selected traces*/
   void UpdateTableWidgetAndRowContainerWithNewCollectionID(
     QTableWidgetChild* Table,vtkMySQLDatabase* DatabaseConnector,
     GoDBCollectionOfTraces* iCollectionOfTraces, unsigned int iNewCollectionID,
     QColor iColorNewCollection, std::list<int> iListSelectedTraces);
+
+  void UpdateTableWidgetForAnExistingTrace(std::string iTraceName, int iTraceID);
 
 
 protected slots:
