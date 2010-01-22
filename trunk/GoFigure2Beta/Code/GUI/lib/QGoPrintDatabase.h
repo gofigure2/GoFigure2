@@ -186,7 +186,6 @@ protected:
   std::string                       m_CurrentlyUsedCollectionIDName;
   std::string                       m_CurrentlyUsedCollectionOfName;
   std::string                       m_CurrentlyUsedCollectionOfNameID;
-  std::vector<ContourMeshStructure> m_CurrentlyUsedStructureInfo; 
 
   vtkMySQLDatabase* m_DatabaseConnector;
   std::string       m_Server;
@@ -270,8 +269,6 @@ protected slots:
   /** \todo once we know more for the visualization of meshes, need to do the
   same for add a collection*/
   void AddATraceToContourMeshInfo(std::string iTraceName,int iTraceID);
-
-  std::vector<ContourMeshStructure> GetStructureInfo(std::string TraceName);
 
 };
 
