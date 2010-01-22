@@ -69,6 +69,9 @@ public:
   //void SetDatabaseVariables(
     //QString Server,QString User,QString Password, QString NameDB);
   void SetImgSessionID (unsigned int iImgSessionID);
+  
+  /** \brief Delete the corresponding trace in the database*/
+  void DeleteTraceInDB(int TraceToDelete,vtkMySQLDatabase* DatabaseConnector);
 
   /** \brief Delete in the Database all the traces listed in the list of int */
   void DeleteTracesInDB(std::list<int> TracesToDelete,
@@ -178,12 +181,24 @@ protected:
   int GetCoordMaxID(vtkMySQLDatabase* DatabaseConnector,
     int CollectionID,std::list<int> ListSelectedTraces);
 
+  /** \brief get the max of all the coordinates of the traces belonging to the 
+  collection and record them in the database*/
+  int GetCoordMaxID(vtkMySQLDatabase* DatabaseConnector,int iCollectionID);
+
   /** \brief get the min of all the coordinates in the ListSelectedTraces, compare it
   to the min of the existing collection and update the min coordinate of the bounding
   box of the collection if necessary*/
   int GetCoordMinID(vtkMySQLDatabase* DatabaseConnector,
     int CollectionID,std::list<int> ListSelectedTraces);
+
+  /** \brief get the min of all the coordinates of the traces belonging to the 
+  collection and record them in the database*/
+  int GetCoordMinID(vtkMySQLDatabase* DatabaseConnector,int iCollectionID);
   
+  int GoDBCollectionOfTraces::GetCoordIDMaxForBoundingBoxWithNoTraces(
+    vtkMySQLDatabase* iDatabaseConnector);
+  int GoDBCollectionOfTraces::GetCoordIDMinForBoundingBoxWithNoTraces(
+    vtkMySQLDatabase* iDatabaseConnector);
   /** \brief return the coordinate min of all the coordinates of the
   selected traces*/
   GoDBCoordinateRow GetSelectingTracesCoordMin(

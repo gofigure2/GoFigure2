@@ -86,16 +86,7 @@ void QTableWidgetChild::sortItems( int iColumn, Qt::SortOrder iOrder )
 //--------------------------------------------------------------------------
 int QTableWidgetChild::findValueGivenColumn(int Value, QString Column)
 {
-  QStringList ColumnsHeader = recordHeaderNamesOrder();
-  if (ColumnsHeader.isEmpty())
-    {
-    std::cout<<"The QStringlist ColumnsHeader is empty";
-    std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
-    std::cout << std::endl;
-    return -1;
-    }
-
-  int ColumnIndex = findColumnName(Column,ColumnsHeader);
+  int ColumnIndex = findColumnName(Column);
   if (ColumnIndex == -1)
     {
     std::cout<<"The column figureID has not been found";
@@ -118,8 +109,16 @@ int QTableWidgetChild::findValueGivenColumn(int Value, QString Column)
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-int QTableWidgetChild::findColumnName(QString ColumnName, QStringList ColumnsHeader)
+int QTableWidgetChild::findColumnName(QString ColumnName)
 {
+  QStringList ColumnsHeader = recordHeaderNamesOrder();
+  if (ColumnsHeader.isEmpty())
+    {
+    std::cout<<"The QStringlist ColumnsHeader is empty";
+    std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
+    std::cout << std::endl;
+    return -1;
+    }
   return ColumnsHeader.indexOf(ColumnName,0);
 }
 //--------------------------------------------------------------------------
@@ -205,10 +204,7 @@ QStringList QTableWidgetChild::ValuesForSelectedRows(QString ColumnName)
 {
   QList<QTableWidgetSelectionRange> Selection;
   Selection = this->selectedRanges();
-
-  QStringList ColumnsHeader = this->recordHeaderNamesOrder();
-  int ColumnIndex = findColumnName(ColumnName,ColumnsHeader);
-  //int ColumnSelected = findColumnName(" ",ColumnsHeader);
+  int ColumnIndex = findColumnName(ColumnName);
 
   QList<QString> Values;
   for( int i=0; i< Selection.size(); i++)
@@ -325,8 +321,7 @@ void QTableWidgetChild::DisplayContent(GoDBTableWidgetContainer* iLinkToRowConta
 void QTableWidgetChild::SetSelectedColumn(unsigned int iNbOfRows,
   unsigned int StartedRow)
 {
-  //int indexCol = findColumnName( "Selected", recordHeaderNamesOrder());
-   int indexCol = findColumnName( "", recordHeaderNamesOrder());
+  int indexCol = findColumnName("");
   for (unsigned int i = StartedRow ; i < iNbOfRows+StartedRow ; i++)
     {
     QTableWidgetItem* Checkbox = new QTableWidgetItem;
@@ -361,8 +356,7 @@ void QTableWidgetChild::SetColorForTable (GoDBTableWidgetContainer* iLinkToRowCo
   //for the collection color:
   std::string ColumnNameID = NameGroupColor;
   ColumnNameID += "ID";
-  int indexGroupIDInTableWidget = findColumnName(ColumnNameID.c_str(),
-    this->recordHeaderNamesOrder());
+  int indexGroupIDInTableWidget = findColumnName(ColumnNameID.c_str());
   for (unsigned int i=StartRow; i < RowContainer[1].second.size()+StartRow;i++)
     {
     QColor Color;
@@ -536,9 +530,7 @@ std::list<int> QTableWidgetChild::GetListCheckedTraceID()
 void QTableWidgetChild::UpdateIDs (unsigned int iNewCollectionID,
   std::string iCollectionIDName,QColor ColorNewCollection )
 {
-  /** \todo put it directly in the findColumnName*/
-  QStringList ColumnsHeader = this->recordHeaderNamesOrder();
-  int IndexCollectionID = this->findColumnName(iCollectionIDName.c_str(),ColumnsHeader);
+  int IndexCollectionID = this->findColumnName(iCollectionIDName.c_str());
   std::vector<std::pair<int,int> >::iterator iter = this->m_VectorSelectedRows.begin();
   while(iter != this->m_VectorSelectedRows.end())
     {
@@ -555,8 +547,7 @@ void QTableWidgetChild::UpdateIDs (unsigned int iNewCollectionID,
   std::string iCollectionIDName, QColor ColorNewCollection,
   std::string TraceIDName,std::list<int> TraceIDToUpdate)
 {
-  QStringList ColumnsHeader = this->recordHeaderNamesOrder();
-  int IndexCollectionID = this->findColumnName(iCollectionIDName.c_str(),ColumnsHeader);
+  int IndexCollectionID = this->findColumnName(iCollectionIDName.c_str());
   std::list<int>::iterator iter = TraceIDToUpdate.begin();
   while(iter != TraceIDToUpdate.end())
     {
@@ -570,14 +561,24 @@ void QTableWidgetChild::UpdateIDs (unsigned int iNewCollectionID,
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QTableWidgetChild::DeleteSelectedRows()
+void QTableWidgetChild::DeleteSelectedRows(std::string iTraceNameID)
 {
-  std::vector<std::pair<int,int> >::iterator iter = 
-    this->m_VectorSelectedRows.begin();
-  while(iter !=this->m_VectorSelectedRows.end())
+  //std::vector<std::pair<int,int> >::iterator iter = 
+  ///  this->m_VectorSelectedRows.begin();
+  int i = 0;
+  //while(iter !=this->m_VectorSelectedRows.end())
+  while (i<this->m_VectorSelectedRows.size())
     {
-    this->removeRow(iter->second);
-    iter++;
+    //deselect the row in the m_VectorCheckedRows:
+    int ColumnSelectedRow = this->findColumnName("");
+    //int RowToDelete = iter->second;
+    //int RowToDelete = this->m_VectorSelectedRows[i].second;
+    int RowToDelete = this->findValueGivenColumn(
+      this->m_VectorSelectedRows[i].first,iTraceNameID.c_str());
+    this->item(RowToDelete,ColumnSelectedRow)->setCheckState(Qt::Unchecked);
+    this->UpdateVectorCheckedRows(RowToDelete,ColumnSelectedRow);
+    this->removeRow(RowToDelete);
+    //iter++;
     }
 }
 //--------------------------------------------------------------------------

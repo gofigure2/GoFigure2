@@ -102,6 +102,15 @@ void GoDBCollectionOfTraces::DeleteTracesInDB(std::list<int> TracesToDelete,
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+void GoDBCollectionOfTraces::DeleteTraceInDB(int TraceToDelete,
+  vtkMySQLDatabase* DatabaseConnector)
+{
+  DeleteRow(DatabaseConnector,m_TracesName,m_TracesIDName,
+    ConvertToString<int>(TraceToDelete));
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
 void GoDBCollectionOfTraces::UpdateCollectionIDOfSelectedTraces(
   std::list<int> iListSelectedTraces,int inewCollectionID,
   vtkMySQLDatabase* DatabaseConnector)
@@ -122,36 +131,10 @@ void GoDBCollectionOfTraces::UpdateCollectionIDOfSelectedTraces(
 void GoDBCollectionOfTraces::RecalculateDBBoundingBox(
   vtkMySQLDatabase* iDatabaseConnector,int iCollectionID)
 {
-  //First, get all the traceIDs belonging to the collection:
-  std::vector<std::string> VectorTraceIDs = ListSpecificValuesForOneColumn(
-    iDatabaseConnector,this->m_TracesName,this->m_TracesIDName,
-    this->m_CollectionIDName,ConvertToString<int>(iCollectionID));
-  //convert the vector<string> to a list of int:
-  std::list<int> ListTracesIDs;
-  std::vector<std::string>::iterator iter = VectorTraceIDs.begin();
-  while (iter != VectorTraceIDs.end())
-    {
-    int TraceID = atoi(iter->c_str());
-    ListTracesIDs.push_back(TraceID);
-    iter++;
-    }
   //update the corresponding bounding box:
-  int CoordIDMax;
-  int CoordIDMin;
-  if (!VectorTraceIDs.empty())
-    {
-    CoordIDMax = this->GetCoordMaxID(iDatabaseConnector,iCollectionID,ListTracesIDs);
-    CoordIDMin = this->GetCoordMinID(iDatabaseConnector,iCollectionID,ListTracesIDs);
-    }
-   //if there is no more traces in the collection, the bounding box is set to the minimal one:
-  else
-    {
-    CoordIDMax = FindOneID(iDatabaseConnector, "imagingsession", "CoordIDMin",
-      "ImagingSessionID", ConvertToString<int>(this->m_ImgSessionID));
-    CoordIDMin = FindOneID(iDatabaseConnector, "imagingsession", "CoordIDMax",
-      "ImagingSessionID", ConvertToString<int>(this->m_ImgSessionID));
-    }
-
+  int CoordIDMax = this->GetCoordMaxID(iDatabaseConnector,iCollectionID);
+  int CoordIDMin = this->GetCoordMinID(iDatabaseConnector,iCollectionID);
+ 
   //update the bounding box for the max coord:
   UpdateValueInDB(iDatabaseConnector,this->m_CollectionName, "CoordIDMax", ConvertToString<int>(CoordIDMax),
     this->m_CollectionIDName, ConvertToString<int>(iCollectionID));
@@ -252,6 +235,38 @@ int GoDBCollectionOfTraces::GetCoordMinID(vtkMySQLDatabase* DatabaseConnector,
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+int GoDBCollectionOfTraces::GetCoordMinID(vtkMySQLDatabase* iDatabaseConnector,
+  int iCollectionID)
+{
+  //Get the list of the tracesID belonging to the collection:
+  std::vector<std::string> VectorTracesIDs = ListSpecificValuesForOneColumn(
+    iDatabaseConnector,this->m_TracesName,this->m_TracesIDName,
+    this->m_CollectionIDName,ConvertToString<int>(iCollectionID));
+
+  if (VectorTracesIDs.empty())
+    {
+    return this->GetCoordIDMinForBoundingBoxWithNoTraces(iDatabaseConnector);
+    }
+  else
+    {
+  //Get the max of the traces:
+  GoDBCoordinateRow TracesCoordMin = GetSelectingTracesCoordMin(
+    iDatabaseConnector, VectorTracesIDs);
+    
+  //check if the coordinate already exists in the DB, if not, will be = -1:
+   int ID = TracesCoordMin.DoesThisCoordinateExist(iDatabaseConnector);
+   if (ID != -1)
+     {
+     return ID;
+     }
+   //if ID == -1, there is no coordinate already in the DB, so have to create it:
+    return AddOnlyOneNewObjectInTable<GoDBCoordinateRow>( iDatabaseConnector,
+      "coordinate",TracesCoordMin, "CoordID");
+    }  
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
 int GoDBCollectionOfTraces::GetCoordMaxID(vtkMySQLDatabase* DatabaseConnector,
   int CollectionID,std::list<int> ListSelectedTraces)
 {
@@ -323,6 +338,38 @@ int GoDBCollectionOfTraces::GetCoordMaxID(vtkMySQLDatabase* DatabaseConnector,
    //if ID == -1, there is no coordinate already in the DB, so have to create it:
    return AddOnlyOneNewObjectInTable<GoDBCoordinateRow>( DatabaseConnector,
     "coordinate",NewCollectionCoordMax, "CoordID");
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+int GoDBCollectionOfTraces::GetCoordMaxID(vtkMySQLDatabase* iDatabaseConnector,
+  int iCollectionID)
+{
+  //Get the list of the tracesID belonging to the collection:
+  std::vector<std::string> VectorTracesIDs = ListSpecificValuesForOneColumn(
+    iDatabaseConnector,this->m_TracesName,this->m_TracesIDName,
+    this->m_CollectionIDName,ConvertToString<int>(iCollectionID));
+
+  if (VectorTracesIDs.empty())
+    {
+    return this->GetCoordIDMaxForBoundingBoxWithNoTraces(iDatabaseConnector);
+    }
+  else
+    {
+  //Get the max of the traces:
+  GoDBCoordinateRow TracesCoordMax = GetSelectingTracesCoordMax(
+    iDatabaseConnector, VectorTracesIDs);
+    
+  //check if the coordinate already exists in the DB, if not, will be = -1:
+   int ID = TracesCoordMax.DoesThisCoordinateExist(iDatabaseConnector);
+   if (ID != -1)
+     {
+     return ID;
+     }
+   //if ID == -1, there is no coordinate already in the DB, so have to create it:
+   return AddOnlyOneNewObjectInTable<GoDBCoordinateRow>( iDatabaseConnector,
+    "coordinate",TracesCoordMax, "CoordID");
+    }
 }
 //--------------------------------------------------------------------------
 
@@ -565,18 +612,36 @@ int GoDBCollectionOfTraces::CreateCollectionWithNoTraces(
   vtkMySQLDatabase* DatabaseConnector, GoDBTraceRow iNewCollection)
 {
   iNewCollection.SetField<unsigned int>("ImagingSessionID",this->m_ImgSessionID);
-  // As there is no traces in the collection, the bounding box is the minimum one:
-  // CoordIDMax correspond to the imagingsession Min and CoordIDMin to the Max:
-  int CoordIDMax = FindOneID(DatabaseConnector, "imagingsession", "CoordIDMin",
-    "ImagingSessionID", ConvertToString<int>(this->m_ImgSessionID));
-
-  int CoordIDMin = FindOneID(DatabaseConnector, "imagingsession", "CoordIDMax",
-    "ImagingSessionID", ConvertToString<int>(this->m_ImgSessionID));
+ 
+  int CoordIDMax = GetCoordIDMaxForBoundingBoxWithNoTraces(DatabaseConnector);
+  int CoordIDMin = GetCoordIDMinForBoundingBoxWithNoTraces(DatabaseConnector);
 
   iNewCollection.SetField< int >( "CoordIDMax", CoordIDMax );
   iNewCollection.SetField< int >( "CoordIDMin", CoordIDMin );
 
   return this->CreateNewCollection(DatabaseConnector,iNewCollection);    
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+int GoDBCollectionOfTraces::GetCoordIDMinForBoundingBoxWithNoTraces(
+  vtkMySQLDatabase* iDatabaseConnector)
+{
+  // As there is no traces in the collection, the bounding box is the minimum one:
+  // CoordIDMin correspond to the imagingsession Max:
+  return FindOneID(iDatabaseConnector, "imagingsession", "CoordIDMax",
+    "ImagingSessionID", ConvertToString<int>(this->m_ImgSessionID));
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+int GoDBCollectionOfTraces::GetCoordIDMaxForBoundingBoxWithNoTraces(
+  vtkMySQLDatabase* iDatabaseConnector)
+{ 
+ // As there is no traces in the collection, the bounding box is the minimum one:
+ // CoordIDMax correspond to the imagingsession Min:
+  return FindOneID(iDatabaseConnector, "imagingsession", "CoordIDMin",
+    "ImagingSessionID", ConvertToString<int>(this->m_ImgSessionID));
 }
 //--------------------------------------------------------------------------
 

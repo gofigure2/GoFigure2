@@ -84,7 +84,7 @@ public:
   void UpdateRow(GoDBTableWidgetContainer* iLinkToRowContainer,
     int TraceID,std::string TraceName, std::string CollectionName);
 
-  void DeleteSelectedRows();
+  void DeleteSelectedRows(std::string iTraceNameID);
 
   std::list<int> GetListCheckedTraceID();
   /** \brief Change the CollectionID in the trace table of the selected
@@ -111,7 +111,7 @@ protected:
 
   /** \brief return the column index who has a column header matching
   ColumnName */
-  int findColumnName( QString ColumnName, QStringList ColumnsHeader );
+  int findColumnName(QString ColumnName);
 
   /** \brief Update the m_VectorSelectedRows */
   void UpdateVectorCheckedRows(int Row,int Column);

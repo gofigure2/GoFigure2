@@ -122,7 +122,6 @@ public:
   std::vector<ContourMeshStructure> m_ContoursInfo;
   std::vector<ContourMeshStructure> m_MeshesInfo;
 
-  void UpdateTableFromDB();
   /** \brief save a new contour from the visu into the database
   and update the table widget with the row container*/
   int SaveContoursFromVisuInDB( unsigned int iXCoordMin,
