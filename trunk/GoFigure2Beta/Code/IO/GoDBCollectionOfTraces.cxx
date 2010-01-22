@@ -146,14 +146,8 @@ void GoDBCollectionOfTraces::RecalculateDBBoundingBox(
   int CoordIDMax = this->GetCoordMaxID(iDatabaseConnector,iCollectionID);
   int CoordIDMin = this->GetCoordMinID(iDatabaseConnector,iCollectionID);
  
-  //update the bounding box for the max coord:
-  UpdateValueInDB(iDatabaseConnector,this->m_CollectionName, "CoordIDMax", ConvertToString<int>(CoordIDMax),
-    this->m_CollectionIDName, ConvertToString<int>(iCollectionID));
-
-  //update the bounding box for the min coord:
-  UpdateValueInDB(iDatabaseConnector,this->m_CollectionName, "CoordIDMin", ConvertToString<int>(CoordIDMin),
-    this->m_CollectionIDName, ConvertToString<int>(iCollectionID));  
-
+  this->UpdateCollectionBoundingBoxInDB(CoordIDMin,CoordIDMax,
+    iCollectionID,iDatabaseConnector);
 }
 //--------------------------------------------------------------------------
 
@@ -234,14 +228,15 @@ int GoDBCollectionOfTraces::GetCoordMinID(vtkMySQLDatabase* DatabaseConnector,
     NewCollectionCoordMin = SelectingCoordMin;
     }
   //check if the coordinate already exists in the DB, if not, will be = -1:
-   int ID = NewCollectionCoordMin.DoesThisCoordinateExist(DatabaseConnector);
+   /*int ID = NewCollectionCoordMin.DoesThisCoordinateExist(DatabaseConnector);
    if (ID != -1)
      {
      return ID;
      }
    //if ID == -1, there is no coordinate already in the DB, so have to create it:
    return AddOnlyOneNewObjectInTable<GoDBCoordinateRow>( DatabaseConnector,
-    "coordinate",NewCollectionCoordMin, "CoordID");
+    "coordinate",NewCollectionCoordMin, "CoordID");*/
+  return NewCollectionCoordMin.SaveInDB(DatabaseConnector);
 }
 //--------------------------------------------------------------------------
 
@@ -260,19 +255,20 @@ int GoDBCollectionOfTraces::GetCoordMinID(vtkMySQLDatabase* iDatabaseConnector,
     }
   else
     {
-  //Get the max of the traces:
-  GoDBCoordinateRow TracesCoordMin = GetSelectingTracesCoordMin(
-    iDatabaseConnector, VectorTracesIDs);
+    //Get the max of the traces:
+    GoDBCoordinateRow TracesCoordMin = GetSelectingTracesCoordMin(
+      iDatabaseConnector, VectorTracesIDs);
     
   //check if the coordinate already exists in the DB, if not, will be = -1:
-   int ID = TracesCoordMin.DoesThisCoordinateExist(iDatabaseConnector);
+  /* int ID = TracesCoordMin.DoesThisCoordinateExist(iDatabaseConnector);
    if (ID != -1)
      {
      return ID;
      }
    //if ID == -1, there is no coordinate already in the DB, so have to create it:
     return AddOnlyOneNewObjectInTable<GoDBCoordinateRow>( iDatabaseConnector,
-      "coordinate",TracesCoordMin, "CoordID");
+      "coordinate",TracesCoordMin, "CoordID");*/
+    return TracesCoordMin.SaveInDB(iDatabaseConnector);
     }  
 }
 //--------------------------------------------------------------------------
@@ -341,14 +337,15 @@ int GoDBCollectionOfTraces::GetCoordMaxID(vtkMySQLDatabase* DatabaseConnector,
     NewCollectionCoordMax = SelectingCoordMax;
     }
   //check if the coordinate already exists in the DB, if not, will be = -1:
-   int ID = NewCollectionCoordMax.DoesThisCoordinateExist(DatabaseConnector);
+  /* int ID = NewCollectionCoordMax.DoesThisCoordinateExist(DatabaseConnector);
    if (ID != -1)
      {
      return ID;
      }
    //if ID == -1, there is no coordinate already in the DB, so have to create it:
    return AddOnlyOneNewObjectInTable<GoDBCoordinateRow>( DatabaseConnector,
-    "coordinate",NewCollectionCoordMax, "CoordID");
+    "coordinate",NewCollectionCoordMax, "CoordID");*/
+  return NewCollectionCoordMax.SaveInDB(DatabaseConnector);
 }
 //--------------------------------------------------------------------------
 
@@ -367,20 +364,21 @@ int GoDBCollectionOfTraces::GetCoordMaxID(vtkMySQLDatabase* iDatabaseConnector,
     }
   else
     {
-  //Get the max of the traces:
-  GoDBCoordinateRow TracesCoordMax = GetSelectingTracesCoordMax(
-    iDatabaseConnector, VectorTracesIDs);
+    //Get the max of the traces:
+    GoDBCoordinateRow TracesCoordMax = GetSelectingTracesCoordMax(
+      iDatabaseConnector, VectorTracesIDs);
     
   //check if the coordinate already exists in the DB, if not, will be = -1:
-   int ID = TracesCoordMax.DoesThisCoordinateExist(iDatabaseConnector);
+  /* int ID = TracesCoordMax.DoesThisCoordinateExist(iDatabaseConnector);
    if (ID != -1)
      {
      return ID;
      }
    //if ID == -1, there is no coordinate already in the DB, so have to create it:
    return AddOnlyOneNewObjectInTable<GoDBCoordinateRow>( iDatabaseConnector,
-    "coordinate",TracesCoordMax, "CoordID");
-    }
+    "coordinate",TracesCoordMax, "CoordID");*/
+    return TracesCoordMax.SaveInDB(iDatabaseConnector);
+    }  
 }
 //--------------------------------------------------------------------------
 
@@ -743,16 +741,11 @@ std::list<int> GoDBCollectionOfTraces::UpdateDBDataForAddedTracesToExistingColle
     CoordMaxID = this->GetCoordIDMaxForBoundingBoxWithNoTraces(iDatabaseConnector);
     CoordMinID = this->GetCoordIDMinForBoundingBoxWithNoTraces(iDatabaseConnector);
     }
-  //update the bounding box for the max coord:
-  UpdateValueInDB(iDatabaseConnector,this->m_CollectionName, "CoordIDMax", 
-    ConvertToString<int>(CoordMaxID), this->m_CollectionIDName, 
-    ConvertToString<int>(iNewCollectionID));
 
-  //update the bounding box for the min coord:
-  UpdateValueInDB(iDatabaseConnector,this->m_CollectionName, "CoordIDMin", 
-    ConvertToString<int>(CoordMinID),this->m_CollectionIDName, 
-    ConvertToString<int>(iNewCollectionID));   
-
+  //Update the bounding box for the collection where traces are added:
+  this->UpdateCollectionBoundingBoxInDB(CoordMinID,CoordMaxID,iNewCollectionID,
+    iDatabaseConnector);
+  
   return ListTraceIDWithBoundingBoxUpdated;
 }
 //--------------------------------------------------------------------------
@@ -776,4 +769,20 @@ std::string GoDBCollectionOfTraces::GetCollectionOf()
     {
     return "track";
     }
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void GoDBCollectionOfTraces::UpdateCollectionBoundingBoxInDB(int iCoordIDMin,
+  int iCoordIDMax,int iCollectionID, vtkMySQLDatabase* iDatabaseConnector)
+{
+  //update the bounding box for the max coord:
+  UpdateValueInDB(iDatabaseConnector,this->m_CollectionName, "CoordIDMax", 
+    ConvertToString<int>(iCoordIDMax), this->m_CollectionIDName, 
+    ConvertToString<int>(iCollectionID));
+
+  //update the bounding box for the min coord:
+  UpdateValueInDB(iDatabaseConnector,this->m_CollectionName, "CoordIDMin", 
+    ConvertToString<int>(iCoordIDMin),this->m_CollectionIDName, 
+    ConvertToString<int>(iCollectionID)); 
 }

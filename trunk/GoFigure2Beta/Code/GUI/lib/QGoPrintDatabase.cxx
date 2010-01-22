@@ -628,6 +628,7 @@ int QGoPrintDatabase::SaveContoursFromVisuInDB(unsigned int iXCoordMin,
   int NewContourID = contour_row.SaveInDB( this->m_DatabaseConnector);
 
   this->UpdateTableWidgetAndRowContainerWithNewCreatedTrace("contour");
+  this->AddATraceToContourMeshInfo("contour",NewContourID);
 
   CloseDBConnection();
 
@@ -1155,6 +1156,7 @@ void QGoPrintDatabase::SetCurrentlyUsedTraceData(std::string iTraceName)
   this->m_CurrentlyUsedCollectionOfName = this->m_CurrentlyUsedCollectionOfTraces->GetCollectionOf();
   this->m_CurrentlyUsedCollectionOfNameID = this->m_CurrentlyUsedCollectionOfName;
   this->m_CurrentlyUsedCollectionOfNameID += "ID";
+  this->m_CurrentlyUsedStructureInfo = this->GetStructureInfo(iTraceName);
 }
 //-------------------------------------------------------------------------
 
@@ -1167,4 +1169,38 @@ void QGoPrintDatabase::UpdateTableWidgetForAnExistingTrace(
     ->GetLinkToUpdatedTraceContainer(this->m_DatabaseConnector,iTraceID);
   this->m_CurrentlyUsedTable->UpdateRow(LinkToUpdatedRow,iTraceID,iTraceName,
     this->m_CurrentlyUsedCollectionName);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoPrintDatabase::AddATraceToContourMeshInfo(std::string iTraceName,
+  int iTraceID)
+{
+  this->SetCurrentlyUsedTraceData(iTraceName);
+  this->m_CurrentlyUsedStructureInfo.push_back(GetTraceInfoFromDB(
+    this->m_DatabaseConnector, iTraceName,
+    this->m_CurrentlyUsedCollectionName,iTraceID));
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::vector<ContourMeshStructure> QGoPrintDatabase::
+  GetStructureInfo(std::string TraceName)
+{
+ if (TraceName == "contour")
+   {
+   return this->m_ContoursInfo;
+   }
+ if (TraceName == "mesh")
+   {
+   return this->m_MeshesInfo;
+   }
+ if (TraceName == "track")
+   {
+   return this->m_TracksInfo;
+   }
+ if (TraceName == "lineage")
+   {
+   return this->m_LineagesInfo;
+   }
 }

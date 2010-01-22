@@ -58,7 +58,7 @@ public:
   int DoesThisCoordinateExist(vtkMySQLDatabase* DatabaseConnector);
 
   /** \brief save the coordinate in the database and return the ID of the new
- created coordinate*/
+ created coordinate or the ID of the existing one*/
   int SaveInDB(vtkMySQLDatabase* DatabaseConnector);
 
 protected:

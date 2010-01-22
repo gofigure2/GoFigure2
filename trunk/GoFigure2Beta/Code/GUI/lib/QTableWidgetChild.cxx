@@ -462,8 +462,11 @@ void QTableWidgetChild::UpdateRow(GoDBTableWidgetContainer* iLinkToRowContainer,
         }//ENDIF
       }//ENDFOR
       //SetSelectedColumn(1,UpdateRow-1);
+    if (UpdateRow > 0)
+      {
       this->SetColorForTable(iLinkToRowContainer,TraceName,UpdateRow-1);
       this->SetColorForTable(iLinkToRowContainer,CollectionName,UpdateRow-1);
+      }
     }//ENDELSE
 }
 //--------------------------------------------------------------------------

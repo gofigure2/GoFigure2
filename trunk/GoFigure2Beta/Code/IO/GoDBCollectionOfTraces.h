@@ -202,6 +202,10 @@ protected:
   GoDBCoordinateRow GetSelectingTracesCoordMin(
     vtkMySQLDatabase* DatabaseConnector, std::vector<std::string> ListSelectedTracesID);
 
+  /** \brief Update in the database the coordid max and min of the collection*/
+  void UpdateCollectionBoundingBoxInDB(int iCoordIDMin, int iCoordIDMax, 
+    int iCollectionID, vtkMySQLDatabase* iDatabaseConnector);
+
   /** \brief return the coordinate max of all the coordinates of the
   selected traces*/
   GoDBCoordinateRow GetSelectingTracesCoordMax(

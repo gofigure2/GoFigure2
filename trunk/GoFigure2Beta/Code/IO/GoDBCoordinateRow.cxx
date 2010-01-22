@@ -84,6 +84,14 @@ int GoDBCoordinateRow::DoesThisCoordinateExist(vtkMySQLDatabase* DatabaseConnect
 //-------------------------------------------------------------------------
 int GoDBCoordinateRow::SaveInDB(vtkMySQLDatabase* DatabaseConnector)
 {
-  return AddOnlyOneNewObjectInTable<GoDBCoordinateRow>( DatabaseConnector,
-    "coordinate",*this, "CoordID");
+  int ID = this->DoesThisCoordinateExist(DatabaseConnector);
+  if ( ID == -1)
+    {
+    return AddOnlyOneNewObjectInTable<GoDBCoordinateRow>( DatabaseConnector,
+      "coordinate",*this, "CoordID");
+    }
+  else
+    {
+    return ID;
+    }
 }

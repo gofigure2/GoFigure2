@@ -121,9 +121,12 @@ public:
 
   std::vector<ContourMeshStructure> m_ContoursInfo;
   std::vector<ContourMeshStructure> m_MeshesInfo;
+  std::vector<ContourMeshStructure> m_TracksInfo;
+  std::vector<ContourMeshStructure> m_LineagesInfo;
 
-  /** \brief save a new contour from the visu into the database
-  and update the table widget with the row container*/
+
+  /** \brief save a new contour from the visu into the database,
+  update the table widget with the row container and the m_ContoursInfo*/
   int SaveContoursFromVisuInDB( unsigned int iXCoordMin,
     unsigned int iYCoordMin, unsigned int iZCoordMin, unsigned int iTCoord,
     unsigned int iXCoordMax, unsigned int iYCoordMax, unsigned int iZCoordMax,
@@ -175,14 +178,15 @@ protected:
   std::pair<std::string,QColor> m_CurrentCollectionData;
 
   /** \todo put it in the GoDBCollectionOfTraces directly?*/
-  GoDBCollectionOfTraces* m_CurrentlyUsedCollectionOfTraces;
-  QTableWidgetChild*      m_CurrentlyUsedTable;
-  std::string             m_CurrentlyUsedTraceName;
-  std::string             m_CurrentlyUsedCollectionName;
-  std::string             m_CurrentlyUsedTraceIDName;
-  std::string             m_CurrentlyUsedCollectionIDName;
-  std::string             m_CurrentlyUsedCollectionOfName;
-  std::string             m_CurrentlyUsedCollectionOfNameID;
+  GoDBCollectionOfTraces*           m_CurrentlyUsedCollectionOfTraces;
+  QTableWidgetChild*                m_CurrentlyUsedTable;
+  std::string                       m_CurrentlyUsedTraceName;
+  std::string                       m_CurrentlyUsedCollectionName;
+  std::string                       m_CurrentlyUsedTraceIDName;
+  std::string                       m_CurrentlyUsedCollectionIDName;
+  std::string                       m_CurrentlyUsedCollectionOfName;
+  std::string                       m_CurrentlyUsedCollectionOfNameID;
+  std::vector<ContourMeshStructure> m_CurrentlyUsedStructureInfo; 
 
   vtkMySQLDatabase* m_DatabaseConnector;
   std::string       m_Server;
@@ -262,6 +266,12 @@ protected slots:
   the user had clicked with the selected traces and emit a signal to say which m_tracesInfo has
   changed*/
   void ChangeTracesToHighLightInfoFromTableWidget();
+  /** \brief Add the new created trace in the vector of ContourMeshInfo*/
+  /** \todo once we know more for the visualization of meshes, need to do the
+  same for add a collection*/
+  void AddATraceToContourMeshInfo(std::string iTraceName,int iTraceID);
+
+  std::vector<ContourMeshStructure> GetStructureInfo(std::string TraceName);
 
 };
 

@@ -175,6 +175,10 @@ std::vector<ContourMeshStructure> GetTracesInfoFromDB(
   vtkMySQLDatabase* DatabaseConnector,std::string TraceName,
   std::string CollectionName,unsigned int ImgSessionID);
 
+ContourMeshStructure GetTraceInfoFromDB(
+  vtkMySQLDatabase* DatabaseConnector, std::string TraceName,
+  std::string CollectionName,unsigned int TraceID);
+
 //return a pair with the number of fields in the query and a vector of the results:
 std::vector<std::vector<std::string> >GetValuesFromSeveralTables(
   vtkMySQLDatabase* DatabaseConnector,std::string MainTable,

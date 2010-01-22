@@ -1001,6 +1001,83 @@ std::vector<ContourMeshStructure> GetTracesInfoFromDB(
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
+ContourMeshStructure GetTraceInfoFromDB(
+  vtkMySQLDatabase* DatabaseConnector, std::string TraceName,
+  std::string CollectionName,unsigned int TraceID)
+{
+  ContourMeshStructure Results;
+  vtkSQLQuery* query = DatabaseConnector->GetQueryInstance();
+
+  std::stringstream Querystream;
+  Querystream << "SELECT ";
+  Querystream << TraceName;
+  Querystream << ".";
+  Querystream << CollectionName;
+  Querystream << "ID, ";
+  Querystream << TraceName;
+  Querystream << ".Points, coordinate.TCoord, color.Red,\
+                 color.Green, color.Blue, color.Alpha from (";
+  Querystream << TraceName;
+  Querystream << " left join coordinate on coordinate.CoordID = ";
+  Querystream << TraceName;
+  Querystream << ".coordIDMax) left join color on ";
+  Querystream << TraceName;
+  Querystream << ".colorID = color.colorID  where ";
+  Querystream << TraceName;
+  Querystream << "ID = ";
+  Querystream << TraceID;
+  Querystream << ";";
+
+  query->SetQuery(Querystream.str().c_str());
+  if ( !query->Execute() )
+    {
+    itkGenericExceptionMacro(
+      << "return info Contours query failed"
+      << query->GetLastErrorText() );
+    DatabaseConnector->Close();
+    DatabaseConnector->Delete();
+    query->Delete();
+    return Results;
+    }
+
+  while (query->NextRow())
+    {
+      {
+      //temp.TraceID = query->DataValue(0).ToInt();
+      Results.TraceID = TraceID;
+      vtkSmartPointer< vtkPolyDataMySQLTextReader > convert_reader =
+        vtkSmartPointer< vtkPolyDataMySQLTextReader >::New();
+      Results.CollectionID = query->DataValue(0).ToUnsignedInt();
+      std::string polydata_string = query->DataValue(1).ToString();
+      if (!polydata_string.empty())
+        {
+        if( TraceName.compare( "contour" ) == 0 )
+          {
+          convert_reader->SetIsContour( true );
+          }
+        else
+          {
+          if( TraceName.compare( "mesh" ) == 0 )
+            {
+            convert_reader->SetIsContour( false );
+            }
+          }
+        vtkPolyData* output = convert_reader->GetPolyData( polydata_string );
+        Results.Nodes = output;
+        }
+      Results.TCoord       = query->DataValue(2).ToUnsignedInt();
+      Results.rgba[0]      = query->DataValue(3).ToDouble();
+      Results.rgba[1]      = query->DataValue(4).ToDouble();
+      Results.rgba[2]      = query->DataValue(5).ToDouble();
+      Results.rgba[3]      = query->DataValue(6).ToDouble();
+      }
+    }
+  query->Delete();
+  return Results;
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
 std::vector<std::vector<std::string> >GetValuesFromSeveralTables(
   vtkMySQLDatabase* DatabaseConnector,std::string MainTable,
   std::vector<std::string> SelectFields, std::string field,
