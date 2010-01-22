@@ -82,10 +82,12 @@ public:
   void RecalculateDBBoundingBox(
     vtkMySQLDatabase* iDatabaseConnector,int iCollectionID);
 
-  /** \brief Update the collectionID of the selected traces in the DB trace table
-  and update the bounding box of the collection*/
-  void UpdateDBDataForAddedTracesToExistingCollection(
-    std::list<int> ListSelectedTraces,int newCollectionID,
+  /** \brief Update the collectionID of the selected traces in the DB trace table,
+  update the bounding box of the collection, update the bounding boxes of the 
+  previous collections the traces belonged to and return the list of the 
+  previous collection with an updated bounding box*/
+  std::list<int> UpdateDBDataForAddedTracesToExistingCollection(
+    std::list<int> ListSelectedTraces,int iNewCollectionID,
     vtkMySQLDatabase* DatabaseConnector);
 
   /** \brief Update the collectionID of the selected traces in the DB traces table
@@ -214,6 +216,10 @@ protected:
   GoDBCoordinateRow GetExistingCoordMax(
     vtkMySQLDatabase* DatabaseConnector, int CollectionCoordIDMax,
     int CollectionID );
+
+  /** \brief change the collection ID of the trace*/
+  void UpdateCollectionIDOfSelectedTrace(int iSelectedTraceID,int inewCollectionID,
+    vtkMySQLDatabase* DatabaseConnector);
 
 };
 #endif

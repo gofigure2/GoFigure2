@@ -451,7 +451,8 @@ void QGoPrintDatabase::AddToSelectedCollection()
       this->m_CurrentlyUsedCollectionOfTraces->GetLinkToRowContainer();
 
     //update the corresponding database data:
-    this->m_CurrentlyUsedCollectionOfTraces->
+    std::list<int> ListCollectionsToUpdateInTableWidget = 
+      this->m_CurrentlyUsedCollectionOfTraces->
       UpdateDBDataForAddedTracesToExistingCollection(ListSelectedTraces,
       CollectionID,this->m_DatabaseConnector);
     
@@ -464,7 +465,17 @@ void QGoPrintDatabase::AddToSelectedCollection()
     //update the Collection Table with the new bounding box:
     this->SetCurrentlyUsedTraceData(this->m_CurrentlyUsedCollectionName);
     this->UpdateTableWidgetForAnExistingTrace(this->m_CurrentlyUsedTraceName,CollectionID); 
-    
+    //update the Collection Table with the old updated bounding box:
+    if (!ListCollectionsToUpdateInTableWidget.empty())
+      {
+      std::list<int>::iterator iter = ListCollectionsToUpdateInTableWidget.begin();
+      while (iter != ListCollectionsToUpdateInTableWidget.end())
+        {
+        int TraceID = *iter;
+        this->UpdateTableWidgetForAnExistingTrace(this->m_CurrentlyUsedTraceName,TraceID);
+        iter++;
+        }
+      }    
     CloseDBConnection();
     }
 }

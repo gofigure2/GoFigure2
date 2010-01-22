@@ -128,6 +128,17 @@ void GoDBCollectionOfTraces::UpdateCollectionIDOfSelectedTraces(
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+void GoDBCollectionOfTraces::UpdateCollectionIDOfSelectedTrace(
+  int iSelectedTraceID,int inewCollectionID,
+  vtkMySQLDatabase* DatabaseConnector)
+{
+  UpdateValueInDB(DatabaseConnector,m_TracesName,m_CollectionIDName, 
+    ConvertToString<int>(inewCollectionID),m_TracesIDName, 
+    ConvertToString<int>(iSelectedTraceID));
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
 void GoDBCollectionOfTraces::RecalculateDBBoundingBox(
   vtkMySQLDatabase* iDatabaseConnector,int iCollectionID)
 {
@@ -695,23 +706,54 @@ int GoDBCollectionOfTraces::CreateNewCollection(
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void GoDBCollectionOfTraces::UpdateDBDataForAddedTracesToExistingCollection(
-    std::list<int> iListSelectedTraces,int iCollectionID,
+std::list<int> GoDBCollectionOfTraces::UpdateDBDataForAddedTracesToExistingCollection(
+    std::list<int> iListSelectedTraces,int iNewCollectionID,
     vtkMySQLDatabase* iDatabaseConnector)
 {
-  //change the collectionID of the selected traces to the chosen one:
-  this->UpdateCollectionIDOfSelectedTraces(iListSelectedTraces,iCollectionID,
-    iDatabaseConnector);
-
+  std::list<int> ListTraceIDWithBoundingBoxUpdated;
+  //update the bounding boxes for the previous collection if the traces had one:
+  std::list<int>::iterator iter = iListSelectedTraces.begin();
+  while (iter != iListSelectedTraces.end())
+    {
+    int tempTraceID = *iter;
+    int tempCollectionID = FindOneID(iDatabaseConnector,this->m_TracesName,
+      this->m_CollectionIDName,this->m_TracesIDName, 
+      ConvertToString<int>(tempTraceID));
+    //change the collectionID of the selected trace to the new one:
+    this->UpdateCollectionIDOfSelectedTrace(tempTraceID,iNewCollectionID,
+      iDatabaseConnector);
+    if (tempCollectionID != 0)
+      {     
+      this->RecalculateDBBoundingBox(iDatabaseConnector,tempCollectionID);
+      ListTraceIDWithBoundingBoxUpdated.push_back(tempCollectionID);
+      }
+    iter++;
+    }
+ 
+  //Get the max and min coordid for the bounding box:
+  int CoordMaxID;
+  int CoordMinID;
+  if (!iListSelectedTraces.empty())
+    {
+    CoordMaxID = this->GetCoordMaxID(iDatabaseConnector,iNewCollectionID,iListSelectedTraces);
+    CoordMinID = this->GetCoordMinID(iDatabaseConnector,iNewCollectionID,iListSelectedTraces);
+    }
+  else
+    {
+    CoordMaxID = this->GetCoordIDMaxForBoundingBoxWithNoTraces(iDatabaseConnector);
+    CoordMinID = this->GetCoordIDMinForBoundingBoxWithNoTraces(iDatabaseConnector);
+    }
   //update the bounding box for the max coord:
   UpdateValueInDB(iDatabaseConnector,this->m_CollectionName, "CoordIDMax", 
-    ConvertToString<int>(this->GetCoordMaxID(iDatabaseConnector,iCollectionID,iListSelectedTraces)),
-    this->m_CollectionIDName, ConvertToString<int>(iCollectionID));
+    ConvertToString<int>(CoordMaxID), this->m_CollectionIDName, 
+    ConvertToString<int>(iNewCollectionID));
 
   //update the bounding box for the min coord:
   UpdateValueInDB(iDatabaseConnector,this->m_CollectionName, "CoordIDMin", 
-    ConvertToString<int>(this->GetCoordMinID(iDatabaseConnector,iCollectionID,iListSelectedTraces)),
-    this->m_CollectionIDName, ConvertToString<int>(iCollectionID));  
+    ConvertToString<int>(CoordMinID),this->m_CollectionIDName, 
+    ConvertToString<int>(iNewCollectionID));   
+
+  return ListTraceIDWithBoundingBoxUpdated;
 }
 //--------------------------------------------------------------------------
 
