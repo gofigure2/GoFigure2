@@ -20,6 +20,9 @@
 #include "vtkPNGWriter.h"
 #include "vtkTIFFWriter.h"
 
+//NEW
+#include "vtkPolyData.h"
+
 #include "vtkEventQtSlotConnect.h"
 #include "QSplitterChild.h"
 #include "QVTKWidget.h"
@@ -597,6 +600,7 @@ void QGoImageView3D::FullScreenViewXY()
   LayOutWidget2->hide();
   LayOutWidget3->hide();
   LayOutWidget4->hide();
+  //TestPool();
 }
 //-------------------------------------------------------------------------
 
@@ -1014,3 +1018,17 @@ GetListOfUnPickedActors()
   return command->GetListOfUnPickedActors();
 }
 //--------------------------------------------------------------------------
+
+// TO BE USED TO Show/Hide annotations
+void
+QGoImageView3D::
+TestPool()
+{
+// remove annotations in 2d views
+this->m_Pool->SyncSetShowAnnotations(false);
+this->m_Pool->SetSplinePlaneActorsVisibility( false );
+
+// remove cube in 3d view
+this->View3D->SetCubeVisibility( false );
+}
+

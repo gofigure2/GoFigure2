@@ -243,6 +243,8 @@ void vtkViewImage2DCollection::Initialize()
       vtkActor* temp = this->GetItem( j )->AddDataSet(
         static_cast<vtkDataSet*>( this->GetItem( i )->GetSlicePlane() ),
         plane_property, ( i != j ) );
+      //store all slice actors
+      this->SlicePlaneActors.push_back(temp);
       temp->Delete();
     }
   }
@@ -339,3 +341,33 @@ SyncSetZoomAndParallelScale( double Zoom, double ParallelScale )
   }
 }
 
+//----------------------------------------------------------------------------
+/**
+ * \brief Set the visibility of the slice plane actors
+ * \param[in] iVisibility true to see the actors, false to hide the actors
+ */
+void
+vtkViewImage2DCollection::
+SetSplinePlaneActorsVisibility( bool iVisibility )
+{
+	int numberOfActors = this->SlicePlaneActors.size();
+	vtkstd::vector<vtkActor*>::iterator  SlicePlaneActorsIterator
+	  = SlicePlaneActors.begin();
+
+	if( iVisibility )
+		{
+		for(int i=0; i<numberOfActors; i++)
+				{
+			    (*SlicePlaneActorsIterator)->VisibilityOn();
+			    SlicePlaneActorsIterator++;
+				}
+		}
+	else
+		{
+		for(int i=0; i<numberOfActors; i++)
+			{
+		    (*SlicePlaneActorsIterator)->VisibilityOff();
+		    SlicePlaneActorsIterator++;
+			}
+		}
+}

@@ -81,6 +81,8 @@ public:
   std::list< vtkProp3D* > GetListOfPickedActors();
   std::list< vtkProp3D* > GetListOfUnPickedActors();
 
+  void TestPool();
+
 signals:
   void SliceViewXYChanged( int Slice );
   void SliceViewXZChanged( int Slice );

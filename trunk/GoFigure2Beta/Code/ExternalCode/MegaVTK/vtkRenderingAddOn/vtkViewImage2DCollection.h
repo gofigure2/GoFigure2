@@ -74,6 +74,8 @@
 #include "vtkViewImage2D.h"
 #include "MegaVTK2Configure.h"
 
+#include <vtkstd/vector>
+
 /**
    This macro can be useful as we frequently set
    an instance this way, meaning unregistering previously set instance,
@@ -207,6 +209,9 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage2DCollection : public vtkCollection
   void SyncReset();
   void SyncPan();
   void SyncSetZoomAndParallelScale( double Zoom, double ParallelScale );
+
+  void SetSplinePlaneActorsVisibility( bool );
+  vtkstd::vector<vtkActor*>        SlicePlaneActors;
 
  protected:
 
