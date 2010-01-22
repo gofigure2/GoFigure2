@@ -153,6 +153,7 @@ signals:
 
 public slots:
   void SetTimePoint( const int& );
+  void DisplayAnnotations();
 
 #ifdef   ENABLEVIDEORECORD
   void SetRendererWindow( int );

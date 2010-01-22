@@ -381,6 +381,30 @@ CreateAllViewActions()
   QObject::connect( FullScreenXYZAction, SIGNAL( triggered() ),
     this, SLOT( FullScreenViewXYZ() ) );
 
+
+///// NEW ACTIONS
+/*
+  QAction* separator5 = new QAction( this );
+    separator5->setSeparator( true );
+    this->m_ViewActions.push_back( separator5 );
+
+    QAction* DisplayAnnotations = new QAction( tr( "Display annotations" ), this );
+    DisplayAnnotations->setStatusTip( tr(" Display or not annotations in each 2d view" ) );
+
+    QIcon luticon;
+    luticon.addPixmap( QPixmap(QString::fromUtf8(":/fig/LookupTable.png")),
+      QIcon::Normal, QIcon::Off );
+    LookupTableAction->setIcon( luticon );
+
+    // Here write the connection
+    QObject::connect( DisplayAnnotations, SIGNAL( triggered() ),
+      this, SLOT( DisplayAnnotations() ) );
+
+    this->m_ViewActions.push_back( DisplayAnnotations );*/
+
+
+/////////////////////////////////////////////////
+
   QAction* separator = new QAction( this );
   separator->setSeparator( true );
 
@@ -1944,3 +1968,9 @@ SelectContoursInTable( )
   this->m_DataBaseTables->ChangeContoursToHighLightInfoFromVisu( listofrowstobeselected,false );
 }
 //-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+DisplayAnnotations( )
+{
+this->m_ImageView->TestPool();
+}

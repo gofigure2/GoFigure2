@@ -1027,5 +1027,6 @@ this->m_Pool->SetSplinePlaneActorsVisibility( false );
 
 // remove cube in 3d view
 this->View3D->SetCubeVisibility( false );
+this->View3D->SetBoundsActorsVisibility( false );
 }
 

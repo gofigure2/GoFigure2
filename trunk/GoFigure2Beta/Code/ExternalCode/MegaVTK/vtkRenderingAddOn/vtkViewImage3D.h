@@ -259,6 +259,8 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage3D : public vtkViewImage
 
   virtual void SetWorldCoordinates (double pos[3]) { (void) pos;}
 
+  void SetBoundsActorsVisibility( bool );
+
  protected:
 
   vtkViewImage3D();
