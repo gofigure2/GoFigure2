@@ -170,10 +170,6 @@ protected:
    /** \brief create a new collection in the database and return the corresponding
   ID*/
   int CreateNewCollection(vtkMySQLDatabase* DatabaseConnector, GoDBTraceRow myNewObject);
-    /*{
-    return AddOnlyOneNewObjectInTable<myT>(
-      DatabaseConnector,m_CollectionName,myNewObject, m_CollectionIDName);
-    }*/
 
   /** \brief get the max of all the coordinates in the ListSelectedTraces, compare it
   to the max of the existing collection and update the max coordinate of the bounding

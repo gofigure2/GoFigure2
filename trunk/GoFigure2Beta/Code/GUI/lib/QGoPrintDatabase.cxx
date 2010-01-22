@@ -336,19 +336,16 @@ void QGoPrintDatabase::DeleteTraces()
           }
         }
       
-      //delete traces in the database:
       this->SetCurrentlyUsedTraceData(TraceName);
-      //this->m_CurrentlyUsedCollectionOfTraces->DeleteTracesInDB(SelectedTraces,this->m_DatabaseConnector);
       //delete traces in the row container:
       GoDBTableWidgetContainer* LinkToTracesContainer = this->m_CurrentlyUsedCollectionOfTraces->GetLinkToRowContainer();
       LinkToTracesContainer->DeleteSelectedTraces(SelectedTraces);
       this->m_CurrentlyUsedTable->DeleteSelectedRows(this->m_CurrentlyUsedTraceIDName);
-
-      /** \todo check that the traces to delete are not part of an existing collection, if 
-      so the bounding box of the corresponding collections needs to be recalculated*/
+      //delete traces in database + update bounding box for collection and update table widget:
       std::list<int>::iterator iterator = SelectedTraces.begin();
       while (iterator != SelectedTraces.end())
         {
+        this->SetCurrentlyUsedTraceData(TraceName);
         int tempTraceID = *iterator;
         int tempCollectionID = FindOneID(this->m_DatabaseConnector,TraceName,this->m_CurrentlyUsedCollectionIDName,
           this->m_CurrentlyUsedTraceIDName, ConvertToString<int>(tempTraceID));
@@ -357,8 +354,6 @@ void QGoPrintDatabase::DeleteTraces()
         CollectionOfTraces->DeleteTraceInDB(tempTraceID,this->m_DatabaseConnector);
         //change the data who were related to the trace to the collection:
         this->SetCurrentlyUsedTraceData(this->m_CurrentlyUsedCollectionName);
-        //QTableWidgetChild* CollectionTable = this->GetTableWidgetChild(CollectionName);
-        //GoDBCollectionOfTraces* CollectionOfTracesBis = this->GetCollectionOfTraces(CollectionName);
         
         if (tempCollectionID != 0)
           {
@@ -367,7 +362,6 @@ void QGoPrintDatabase::DeleteTraces()
           }
         iterator++;
         }
-
       CloseDBConnection();
       }
     }

@@ -599,9 +599,7 @@ GoDBTableWidgetContainer* GoDBCollectionOfTraces::GetLinkToUpdatedTraceContainer
     ConvertToString<int>(iUpdatedTraceID),JoinSecondTablesOnTraceTable,false);
   
   //insert into the row container, the results of the second query:
-  //m_LinkToRowContainer->FillRowContainer(ResultsSecondQuery,SelectSecondFields);
    LinkToUpdatedTraceContainer->FillRowContainer(ResultsSecondQuery,SelectSecondFields);
-   //GoDBCollectionOfTraces::DBTableWidgetContainerType test = LinkToNewCreatedTraceContainer->GetRowContainer();//for test
 
    return LinkToUpdatedTraceContainer;
 }
