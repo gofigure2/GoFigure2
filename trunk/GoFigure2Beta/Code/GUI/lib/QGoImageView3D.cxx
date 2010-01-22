@@ -20,9 +20,6 @@
 #include "vtkPNGWriter.h"
 #include "vtkTIFFWriter.h"
 
-//NEW
-#include "vtkPolyData.h"
-
 #include "vtkEventQtSlotConnect.h"
 #include "QSplitterChild.h"
 #include "QVTKWidget.h"
