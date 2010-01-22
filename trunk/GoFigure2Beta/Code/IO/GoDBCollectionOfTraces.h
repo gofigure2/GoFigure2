@@ -195,9 +195,9 @@ protected:
   collection and record them in the database*/
   int GetCoordMinID(vtkMySQLDatabase* DatabaseConnector,int iCollectionID);
   
-  int GoDBCollectionOfTraces::GetCoordIDMaxForBoundingBoxWithNoTraces(
+  int GetCoordIDMaxForBoundingBoxWithNoTraces(
     vtkMySQLDatabase* iDatabaseConnector);
-  int GoDBCollectionOfTraces::GetCoordIDMinForBoundingBoxWithNoTraces(
+  int GetCoordIDMinForBoundingBoxWithNoTraces(
     vtkMySQLDatabase* iDatabaseConnector);
   /** \brief return the coordinate min of all the coordinates of the
   selected traces*/
