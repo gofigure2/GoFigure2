@@ -1326,6 +1326,7 @@ ValidateContour( const int& iContourID, const int& iDir,
         m_DataBaseTables->UpdateContourFromVisuInDB( min_idx[0],
           min_idx[1], min_idx[2], iTCoord, max_idx[0],
           max_idx[1], max_idx[2], contour_nodes, m_ContourId );
+        m_VisuDockWidget->SetEnableTraceCollectionColorBoxes(true);
         }
       }
     else
@@ -1796,6 +1797,7 @@ ReEditContour( const unsigned int& iId )
           }
         m_ContourWidget[dir]->Initialize( c_nodes );
         m_ManualSegmentationDockWidget->ActivateManualSegmentation( true );
+        m_VisuDockWidget->SetEnableTraceCollectionColorBoxes(false);
         }
       }
     }

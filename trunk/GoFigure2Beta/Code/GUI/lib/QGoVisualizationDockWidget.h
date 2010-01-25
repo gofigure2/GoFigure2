@@ -27,6 +27,7 @@ class QGoVisualizationDockWidget :
     void SetTMinimumAndMaximum( const int& iMin, const int& iMax );
     int GetCurrentChannel() const;
     int GetCurrentCollectionID ();
+    void SetEnableTraceCollectionColorBoxes(bool Enable);
     std::string GetCurrentColor();
     
     QtColorComboBox* ColorTraceComboBox;

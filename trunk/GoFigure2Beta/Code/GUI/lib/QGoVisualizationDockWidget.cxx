@@ -246,3 +246,11 @@ void QGoVisualizationDockWidget::SetColorIDCollectionComboBox()
   HLayoutForCollection->addWidget(ColorIDCollectionComboBox);
   this->verticalLayout_2->addLayout(HLayoutForCollection);
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoVisualizationDockWidget::SetEnableTraceCollectionColorBoxes(bool Enable)
+{
+  this->ColorIDCollectionComboBox->setEnabled(Enable);
+  this->ColorTraceComboBox->setEnabled(Enable);
+}
