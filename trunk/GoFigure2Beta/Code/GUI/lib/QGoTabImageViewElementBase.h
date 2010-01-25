@@ -50,7 +50,6 @@
 #include "QGoVideoRecorder.h"
 #endif
 
-class vtkImageData;
 class vtkContourWidget;
 class vtkOrientedGlyphContourRepresentation;
 class vtkDataSet;
@@ -68,7 +67,6 @@ public:
   explicit QGoTabImageViewElementBase( QWidget* parent = 0 );
   virtual ~QGoTabImageViewElementBase();
 
-  virtual void SetImage( vtkImageData* iImage );
   virtual void Update() = 0;
 
   virtual void SetColor( const bool& iColor );
@@ -82,10 +80,10 @@ public:
 
 public slots:
   void ChangeBackgroundColor();
-  void ShowAllChannels( bool iChecked );
-  void ShowOneChannel( int iChannel );
+  virtual void ShowAllChannels( bool iChecked ) = 0;
+  virtual void ShowOneChannel( int iChannel ) = 0;
   void ActivateManualSegmentationEditor( const bool& iActivate );
-  void ValidateContour();
+  virtual void ValidateContour();
   void ChangeContourRepresentationProperty();
   void ReEditContour( const unsigned int& iId );
 
@@ -93,13 +91,13 @@ protected:
   bool          m_Color;
   QColor        m_BackgroundColor;
   unsigned int  m_ContourId;
+  bool          m_ReEditContourMode;
 
   QHBoxLayout*  m_LayOut;
-  vtkImageData* m_Image;
-
-  std::vector< vtkContourWidget* >                      m_ContourWidget;
-  std::vector< vtkOrientedGlyphContourRepresentation* > m_ContourRepresentation;
-  ContourMeshStructureMultiIndexContainer               m_ContourMeshContainer;
+  
+  std::vector< vtkSmartPointer< vtkContourWidget > >                      m_ContourWidget;
+  std::vector< vtkSmartPointer< vtkOrientedGlyphContourRepresentation > > m_ContourRepresentation;
+  ContourMeshStructureMultiIndexContainer                                 m_ContourMeshContainer;
 
   QGoVisualizationDockWidget*       m_VisuDockWidget;
   QGoManualSegmentationDockWidget*  m_ManualSegmentationDockWidget;
@@ -107,16 +105,21 @@ protected:
   QGoVideoRecorder*                 m_VideoRecorderWidget;
 #endif
 
+  void CreateManualSegmentationdockWidget();
+
   virtual void GetBackgroundColorFromImageViewer( ) = 0;
   virtual void SetBackgroundColorToImageViewer( ) = 0;
-  virtual void SetImageToImageViewer( vtkImageData* image ) = 0;
+
   virtual int* GetImageCoordinatesFromWorldCoordinates( double pos[3] ) = 0;
+
   virtual void RemoveActorFromViewer( const int& iId, vtkActor* iActor ) = 0;
   virtual void DisplayActorInViewer( const int& iId, vtkActor* iActor ) = 0;
 
   virtual std::vector< vtkActor* > AddContour( const int& iId,
       vtkPolyData* dataset,
       vtkProperty* property = NULL ) = 0;
+
+  virtual void SetSlice( int iDir, int* iIdx ) = 0;
 
 private:
   QGoTabImageViewElementBase( const QGoTabImageViewElementBase& );

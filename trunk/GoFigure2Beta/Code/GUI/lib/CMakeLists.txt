@@ -18,6 +18,7 @@ SET( QGoGUILIB_SRC
   QGoTabImageView3DwT.cxx
   QGoTabImageView4D.cxx
   QGoTabImageViewElementBase.cxx
+  QGoTabImageViewNDBase.cxx
   QGoVisualizationDockWidget.cxx
   QGoWizardDB.cxx
   QSplitterChild.cxx
@@ -57,6 +58,7 @@ SET( QGoGUILIB_HDRS
   QGoTabImageView3DwT.h
   QGoTabImageView4D.h
   QGoTabImageViewElementBase.h
+  QGoTabImageViewNDBase.h
   QGoVisualizationDockWidget.h
   QGoWizardDB.h
   QSplitterChild.h

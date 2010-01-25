@@ -7,7 +7,7 @@ class QAction;
 class QToolBar;
 class QDockWidget;
 
-#include "QGoTabImageViewElementBase.h"
+#include "QGoTabImageViewNDBase.h"
 
 #include "QGoImageView2D.h"
 
@@ -16,7 +16,7 @@ class QDockWidget;
 \brief Element of the QTabWidget to be used to visualized 2D images.
 \example GUI/lib/qgotabimageview2d.cxx
 */
-class QGoTabImageView2D : public QGoTabImageViewElementBase
+class QGoTabImageView2D : public QGoTabImageViewNDBase
 {
   Q_OBJECT
 public:
@@ -52,6 +52,8 @@ protected:
 
   virtual void RemoveActorFromViewer( const int& iId, vtkActor* iActor );
   virtual void DisplayActorInViewer( const int& iId, vtkActor* iActor );
+
+  virtual void SetSlice( int iDir, int* iIdx );
 
 private:
   QGoTabImageView2D( const QGoTabImageView2D& );

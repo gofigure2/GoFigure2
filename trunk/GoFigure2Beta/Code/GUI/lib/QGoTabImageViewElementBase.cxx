@@ -4,14 +4,14 @@
 #include <QSettings>
 #include <iostream>
 
-#include "vtkImageData.h"
-#include "vtkImageExtractComponents.h"
 #include "vtkContourWidget.h"
 #include "vtkOrientedGlyphContourRepresentation.h"
 #include "vtkImageActorPointPlacer.h"
 #include "vtkPolyData.h"
 #include "vtkActor.h"
 #include "vtkProperty.h"
+
+#include <set>
 
 //--------------------------------------------------------------------------
 /**
@@ -24,17 +24,63 @@ QGoTabImageViewElementBase( QWidget* iParent ) :
   m_Color( false ),
   m_BackgroundColor( Qt::black ),
   m_ContourId( 0 ),
-  m_Image( 0 ),
+  m_ReEditContourMode( false ),
   m_VisuDockWidget( 0 )
 #ifdef   ENABLEVIDEORECORD
   ,
   m_VideoRecorderWidget( 0 )
 #endif
 {
+  CreateManualSegmentationdockWidget();
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+/**
+ * \brief Destructor
+ */
+QGoTabImageViewElementBase::~QGoTabImageViewElementBase()
+{
+  ContourMeshStructureMultiIndexContainer::iterator
+    it = m_ContourMeshContainer.begin();
+  ContourMeshStructureMultiIndexContainer::iterator
+    end = m_ContourMeshContainer.end();
+
+  std::set< vtkPolyData* > NodeSet;
+
+  while( it != end )
+    {
+    NodeSet.insert( it->Nodes );
+    it->Actor->Delete();
+    ++it;
+    }
+
+  std::set< vtkPolyData* >::iterator NodeSetIt = NodeSet.begin();
+  std::set< vtkPolyData* >::iterator NodeSetEnd = NodeSet.end();
+
+  while( NodeSetIt != NodeSetEnd )
+    {
+    (*NodeSetIt)->Delete();
+    ++NodeSetIt;
+    }
+}
+//--------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+/**
+ * \brief
+ */
+void
+QGoTabImageViewElementBase::
+CreateManualSegmentationdockWidget()
+{
   m_ManualSegmentationDockWidget = new QGoManualSegmentationDockWidget( this );
 
   QObject::connect( m_ManualSegmentationDockWidget, SIGNAL( ValidatePressed() ),
     this, SLOT( ValidateContour() ) );
+
+  QObject::connect( m_ManualSegmentationDockWidget, SIGNAL( ReinitializePressed() ),
+    this, SLOT( ReinitializeContour() ) );
 
   QObject::connect( m_ManualSegmentationDockWidget,
       SIGNAL( ActivateManualSegmentationToggled( bool ) ),
@@ -47,34 +93,7 @@ QGoTabImageViewElementBase( QWidget* iParent ) :
   this->m_SegmentationActions.push_back(
     m_ManualSegmentationDockWidget->toggleViewAction() );
 }
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-/**
- * \brief Destructor
- */
-QGoTabImageViewElementBase::~QGoTabImageViewElementBase()
-{
-  for( unsigned int i = 0; i < m_ContourRepresentation.size(); i++ )
-    {
-    m_ContourRepresentation[i]->Delete();
-    m_ContourWidget[i]->Delete();
-    }
-
-  if( m_ContourMeshContainer.size() > 0 )
-    {
-    ContourMeshStructureMultiIndexContainer::iterator it = m_ContourMeshContainer.begin();
-    ContourMeshStructureMultiIndexContainer::iterator end = m_ContourMeshContainer.end();
-
-    while( it != end )
-      {
-      it->Nodes->Delete();
-      it->Actor->Delete();
-      ++it;
-      }
-    }
-}
-//--------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 /**
@@ -141,117 +160,7 @@ void QGoTabImageViewElementBase::ChangeBackgroundColor()
 }
 //--------------------------------------------------------------------------
 
-//--------------------------------------------------------------------------
-/**
- * \brief Set the image to be displaid
- * \param[in] iImage
- */
-void QGoTabImageViewElementBase::
-SetImage( vtkImageData* iImage )
-{
-  if( !iImage )
-    {
-    std::cerr <<"QGoTabImageViewElementBase::SetImage( 0x0 )" <<std::endl;
-    return;
-    }
 
-  m_Image = iImage;
-
-  int n = m_Image->GetNumberOfScalarComponents();
-  m_VisuDockWidget->SetNumberOfChannels( n );
-
-  if( n != 1 )
-    {
-    if( ( n == 3 ) || ( n == 4 ) )
-      {
-      m_VisuDockWidget->SetChannel( 0, tr( "Red" ) );
-      m_VisuDockWidget->SetChannel( 1, tr( "Green" ) );
-      m_VisuDockWidget->SetChannel( 2, tr( "Blue" ) );
-
-      if( n == 4 )
-        {
-        m_VisuDockWidget->SetChannel( 3, tr( "Alpha" ) );
-        }
-      }
-    else
-      {
-      for( int i = 0; i < n; i++ )
-        {
-        m_VisuDockWidget->SetChannel( i );
-        }
-      }
-    }
-
-  int extent[6];
-  m_Image->GetExtent( extent );
-
-  this->SetImageToImageViewer( m_Image );
-
-  m_VisuDockWidget->SetXMinimumAndMaximum( extent[0], extent[1] );
-  m_VisuDockWidget->SetXSlice( (extent[0]+extent[1])/2 );
-
-  m_VisuDockWidget->SetYMinimumAndMaximum( extent[2], extent[3] );
-  m_VisuDockWidget->SetYSlice( (extent[2]+extent[3])/2 );
-
-  m_VisuDockWidget->SetZMinimumAndMaximum( extent[4], extent[5] );
-  m_VisuDockWidget->SetZSlice( (extent[4]+extent[5])/2 );
-}
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-/**
- * \brief
- * \param[in] iChecked
- */
-void QGoTabImageViewElementBase::
-ShowAllChannels( bool iChecked )
-{
-  if( iChecked )
-    {
-    this->SetImageToImageViewer( m_Image );
-    }
-  else
-    {
-    int ch = this->m_VisuDockWidget->GetCurrentChannel();
-    if( ch != -1 )
-      {
-      vtkImageExtractComponents* extract = vtkImageExtractComponents::New();
-      extract->SetInput( m_Image );
-      extract->SetComponents( ch );
-      extract->Update();
-
-      this->SetImageToImageViewer( extract->GetOutput() );
-
-      extract->Delete();
-      }
-    }
-}
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-/**
- * \brief
- * \param[in] iChannel
- */
-void QGoTabImageViewElementBase::
-ShowOneChannel( int iChannel )
-{
-  if( m_Image )
-    {
-    if( iChannel != -1 )
-      {
-      vtkImageExtractComponents* extract = vtkImageExtractComponents::New();
-      extract->SetInput( m_Image );
-      extract->SetComponents( iChannel );
-      extract->Update();
-
-      this->SetImageToImageViewer( extract->GetOutput() );
-
-      extract->Delete();
-      }
-    }
-}
-//--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 /**
@@ -261,7 +170,8 @@ ShowOneChannel( int iChannel )
 void QGoTabImageViewElementBase::
 ActivateManualSegmentationEditor( const bool& iActivate )
 {
-  std::vector< vtkContourWidget* >::iterator it = m_ContourWidget.begin();
+  std::vector< vtkSmartPointer< vtkContourWidget > >::iterator it =
+    m_ContourWidget.begin();
   while( it != m_ContourWidget.end() )
     {
     if( iActivate )
@@ -442,31 +352,79 @@ void
 QGoTabImageViewElementBase::
 ReEditContour( const unsigned int& iId )
 {
-  std::list< ContourMeshStructure* > c_list =
-    FindContourGivenTraceID( this->m_ContourMeshContainer, iId );
-
-  std::list< ContourMeshStructure* >::iterator c_it = c_list.begin();
-  std::list< ContourMeshStructure* >::iterator c_end = c_list.end();
-
-  int c_dir;
-  vtkActor* c_actor;
-  vtkPolyData* c_nodes;
-
-  while( c_it != c_end )
+  if( !m_ContourMeshContainer.empty() )
     {
-    c_dir = (*c_it)->Direction;
-    c_actor = (*c_it)->Actor;
-    c_nodes = (*c_it)->Nodes;
+    ContourMeshStructureMultiIndexContainer::index< TraceID >::type::iterator
+      it = m_ContourMeshContainer.get< TraceID >().find( iId );
 
-    this->RemoveActorFromViewer( c_dir, c_actor );
+    if( it != m_ContourMeshContainer.get< TraceID >().end() )
+      {
+      int c_dir;
+      vtkActor* c_actor;
+      vtkPolyData* c_nodes;
 
-    // The contour actor is supposed to be deleted!!!
-    c_actor->Delete();
+      while( it != m_ContourMeshContainer.get< TraceID >().end() )
+        {
+        if( it->TraceID == iId )
+          {
+          c_dir = (*it).Direction;
+          c_actor = (*it).Actor;
+          c_nodes = (*it).Nodes;
 
-    this->m_ContourWidget[c_dir]->On();
-    this->m_ContourWidget[c_dir]->Initialize( c_nodes );
+          RemoveActorFromViewer( c_dir, c_actor );
+          }
+        else
+          {
+          break;
+          }
 
-    ++c_it;
+        ++it;
+        }
+
+      m_ContourMeshContainer.erase( iId );
+
+      if( m_ContourWidget.size() > 1 )
+        {
+        int dir = ComputeDirectionFromContour( c_nodes );
+
+        if( dir != -1 )
+          {
+          m_ReEditContourMode = true;
+          m_ContourId = iId;
+
+          double p[3];
+          c_nodes->GetPoint( 0, p );
+          int* idx = this->GetImageCoordinatesFromWorldCoordinates( p );
+          this->SetSlice( dir, idx );
+//           switch( dir )
+//             {
+//             default:
+//             case 0:
+//               {
+//               this->SetSliceViewXY( idx[2] );
+//               break;
+//               }
+//             case 1:
+//               {
+//               this->SetSliceViewXZ( idx[1] );
+//               break;
+//               }
+//             case 2:
+//               {
+//               this->SetSliceViewXY( idx[0] );
+//               break;
+//               }
+//             }
+          m_ContourWidget[dir]->Initialize( c_nodes );
+          m_ManualSegmentationDockWidget->ActivateManualSegmentation( true );
+          }
+        }
+      else
+        {
+        m_ContourWidget[0]->Initialize( c_nodes );
+        m_ManualSegmentationDockWidget->ActivateManualSegmentation( true );
+        }
+      }
     }
 }
 //--------------------------------------------------------------------------

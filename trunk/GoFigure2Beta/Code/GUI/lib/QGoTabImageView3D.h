@@ -1,7 +1,7 @@
 #ifndef __QGoTabImageView3D_h
 #define __QGoTabImageView3D_h
 
-#include "QGoTabImageViewElementBase.h"
+#include "QGoTabImageViewNDBase.h"
 #include "SnapshotHelper.h"
 
 #include <QHBoxLayout>
@@ -20,7 +20,7 @@ class QGoImageView3D;
 \brief
 \example GUI/lib/qgotabimageview3d.cxx
 */
-class QGoTabImageView3D : public QGoTabImageViewElementBase
+class QGoTabImageView3D : public QGoTabImageViewNDBase
 {
   Q_OBJECT
   public:
@@ -91,6 +91,8 @@ class QGoTabImageView3D : public QGoTabImageViewElementBase
     virtual std::vector< vtkActor* > AddContour( const int& iId,
       vtkPolyData* dataset,
       vtkProperty* property = NULL );
+
+    virtual void SetSlice( int iDir, int* iIdx );
 
 //   private:
 };

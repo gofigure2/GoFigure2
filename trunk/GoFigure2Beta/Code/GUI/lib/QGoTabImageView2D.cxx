@@ -25,17 +25,19 @@
 //--------------------------------------------------------------------------
 QGoTabImageView2D::
 QGoTabImageView2D( QWidget* iParent )
- : QGoTabImageViewElementBase( iParent )
+ : QGoTabImageViewNDBase( iParent )
 {
   m_Image = 0;
   setupUi( this );
 
-  this->m_ContourRepresentation.push_back( vtkOrientedGlyphContourRepresentation::New() );
+  this->m_ContourRepresentation.push_back(
+    vtkSmartPointer< vtkOrientedGlyphContourRepresentation >::New() );
   this->m_ContourRepresentation.back()->GetProperty()->SetColor( 0., 1., 1. );
   this->m_ContourRepresentation.back()->GetLinesProperty()->SetColor( 1., 0., 1. );
   this->m_ContourRepresentation.back()->GetActiveProperty()->SetColor( 1., 1., 0. );
 
-  this->m_ContourWidget.push_back( vtkContourWidget::New() );
+  this->m_ContourWidget.push_back(
+    vtkSmartPointer< vtkContourWidget >::New() );
   this->m_ContourWidget.back()->SetPriority( 10.0 );
   this->m_ContourWidget.back()->SetInteractor( m_ImageView->GetInteractor() );
   this->m_ContourWidget.back()->Off();
@@ -266,5 +268,15 @@ QGoTabImageView2D::
 DisplayActorInViewer( const int& iId, vtkActor* iActor )
 {
   m_ImageView->AddActor( iId, iActor );
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+QGoTabImageView2D::
+SetSlice( int iDir, int* iIdx  )
+{
+  (void) iDir;
+  (void) iIdx;
 }
 //--------------------------------------------------------------------------
