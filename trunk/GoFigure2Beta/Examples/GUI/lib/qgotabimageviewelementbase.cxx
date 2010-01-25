@@ -17,6 +17,16 @@ public:
 
   virtual void WriteSettings() {}
   virtual void ReadSettings() {}
+
+public slots:
+  virtual void ShowAllChannels( bool iChecked )
+    {
+    (void) iChecked;
+    }
+  virtual void ShowOneChannel( int iChannel )
+    {
+    (void) iChannel;
+    }
 protected:
   virtual void PopulateMenus( QObject* iPlugin )
     {
@@ -43,6 +53,8 @@ protected:
     (void) iProperty;
     return std::vector< vtkActor* >();
     }
+
+  virtual void SetSlice( int, int* ) {}
 };
 
 int main( int argc, char** argv )
