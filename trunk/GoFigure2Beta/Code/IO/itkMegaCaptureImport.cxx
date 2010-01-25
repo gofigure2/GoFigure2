@@ -176,18 +176,18 @@ CreateOutput()
 //     this->m_ProgressBar->setValue( 99 );
 //     }
 
-#if !defined(ITK_LEAN_AND_MEAN) && !defined(__BORLANDC__) && !defined(NDEBUG)
-  GoFigureFileInfoHelperMultiIndexContainer::iterator myIt = m_OutputFileList.begin();
-  while( myIt != m_OutputFileList.end() )
-    {
-    itkDebugMacro(
-        << (*myIt).m_Filename
-        << " " << (*myIt).m_Channel
-        << " " << (*myIt).m_TCoord
-        << " " << (*myIt).m_ZCoord );
-      myIt++;
-    }
-#endif
+// #if !defined(ITK_LEAN_AND_MEAN) && !defined(__BORLANDC__) && !defined(NDEBUG)
+//   GoFigureFileInfoHelperMultiIndexContainer::iterator myIt = m_OutputFileList.begin();
+//   while( myIt != m_OutputFileList.end() )
+//     {
+//     itkDebugMacro(
+//         << (*myIt).m_Filename
+//         << " " << (*myIt).m_Channel
+//         << " " << (*myIt).m_TCoord
+//         << " " << (*myIt).m_ZCoord );
+//       myIt++;
+//     }
+// #endif
 }
 //-----------------------------------------------------------------------------
 GoFigureFileInfoHelperMultiIndexContainer
