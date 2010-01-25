@@ -243,10 +243,13 @@ void QGoMainWindow::on_actionUse_DataBase_triggered()
 void QGoMainWindow::openFilesfromDB()
 { 
   int taille = m_DBWizard->GetMultiIndexFileContainer().size();//for test 
-  if( m_DBWizard->GetMultiIndexFileContainer().size() != 0 )
+  GoFigureFileInfoHelperMultiIndexContainer file_container =
+    m_DBWizard->GetMultiIndexFileContainer();
+
+  if( file_container.size() != 0 )
     {
     GoFigureFileInfoHelperMultiIndexContainer::iterator
-      temp_it = m_DBWizard->GetMultiIndexFileContainer().begin();
+      temp_it = file_container.begin();
 
     QString temp_filename = QString::fromStdString( temp_it->m_Filename );
 
@@ -279,8 +282,8 @@ void QGoMainWindow::openFilesfromDB()
         }
       }
 
-    CreateNewTabFor3DwtImage( m_DBWizard->GetMultiIndexFileContainer(),
-      filetype, m_DBWizard->GetMegaCaptureHeaderFilename(), 0 );
+    CreateNewTabFor3DwtImage( file_container, filetype,
+      m_DBWizard->GetMegaCaptureHeaderFilename(), 0 );
     }
   else
     {
@@ -604,7 +607,7 @@ OpenLSMImage( const QString& iFile, const int& iTimePoint )
 QGoTabImageView3DwT*
 QGoMainWindow::
 CreateNewTabFor3DwtImage(
-  GoFigureFileInfoHelperMultiIndexContainer iFileList,
+  const GoFigureFileInfoHelperMultiIndexContainer& iFileList,
   const GoFigure::FileType& iFileType,
   const std::string& iHeader,
   const int& iTimePoint )

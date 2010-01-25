@@ -133,7 +133,7 @@ private:
     QAction *recentFileActions[MaxRecentFiles] );
 
   QGoTabImageView3DwT* CreateNewTabFor3DwtImage(
-    GoFigureFileInfoHelperMultiIndexContainer iFileList,
+    const GoFigureFileInfoHelperMultiIndexContainer& iFileList,
     const GoFigure::FileType& iFileType,
     const std::string& iHeader,
     const int& iTimePoint );
