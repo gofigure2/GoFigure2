@@ -177,7 +177,7 @@ protected:
   std::pair<std::string,QColor> m_CurrentColorData;
   std::pair<std::string,QColor> m_CurrentCollectionData;
 
-  /** \todo put it in the GoDBCollectionOfTraces directly?*/
+  /** \todo put them in a structure with the trace name*/
   GoDBCollectionOfTraces*           m_CurrentlyUsedCollectionOfTraces;
   QTableWidgetChild*                m_CurrentlyUsedTable;
   std::string                       m_CurrentlyUsedTraceName;

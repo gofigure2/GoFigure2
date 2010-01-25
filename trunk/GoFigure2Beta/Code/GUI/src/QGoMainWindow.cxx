@@ -241,7 +241,8 @@ void QGoMainWindow::on_actionUse_DataBase_triggered()
 
 //--------------------------------------------------------------------------
 void QGoMainWindow::openFilesfromDB()
-{
+{ 
+  int taille = m_DBWizard->GetMultiIndexFileContainer().size();//for test 
   if( m_DBWizard->GetMultiIndexFileContainer().size() != 0 )
     {
     GoFigureFileInfoHelperMultiIndexContainer::iterator

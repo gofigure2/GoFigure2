@@ -201,7 +201,8 @@ void QGoVisualizationDockWidget::SetCollectionID(
     this->ColorIDCollectionComboBox->addColor(color,name);
     iter++;
     }
-  this->ColorIDCollectionComboBox->setColorDialogEnabled(true);
+  QString Text(tr("Add a new %1...").arg(CollectionName->text()));
+  this->ColorIDCollectionComboBox->setColorDialogEnabled(true,Text.toStdString());
   this->ColorIDCollectionComboBox->show();
 }
 //-------------------------------------------------------------------------

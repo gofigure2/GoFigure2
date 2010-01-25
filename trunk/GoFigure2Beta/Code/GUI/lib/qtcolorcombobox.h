@@ -81,7 +81,7 @@ public:
 
     QColor color(int index) const;
 
-    void setColorDialogEnabled(bool enabled = true);
+    void setColorDialogEnabled(bool enabled = true,std::string TextToAdd = "More...");
     bool isColorDialogEnabled() const;
 
     void setCreationCollection(bool enabled = true);

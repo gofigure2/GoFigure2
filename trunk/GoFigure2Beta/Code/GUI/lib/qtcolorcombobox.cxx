@@ -124,14 +124,14 @@ QtColorComboBox::QtColorComboBox(QWidget *parent, const char * /*name*/)
 
     \sa insertColor()
 */
-void QtColorComboBox::setColorDialogEnabled(bool enabled)
+void QtColorComboBox::setColorDialogEnabled(bool enabled,std::string TextToAdd)
 {
     if (colorDialogEnabled == enabled)
 	return;
 
     if ((colorDialogEnabled = enabled) == true) {
 	// Add the color dialog item if it's disabled from before.
-	addItem(tr("More..."));
+      addItem(tr(TextToAdd.c_str()));
     } else {
 	// Remove the color dialog item if it's enabled from before.
 	// It's always the last item in the list.
