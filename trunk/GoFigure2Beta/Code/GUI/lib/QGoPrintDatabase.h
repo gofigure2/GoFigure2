@@ -250,6 +250,9 @@ protected:
 
   void UpdateTableWidgetForAnExistingTrace(std::string iTraceName, int iTraceID);
 
+  void DeleteTraceInContourMeshStructure(int iTraceID,
+    std::vector<ContourMeshStructure> &iTraceInfo);
+
 
 protected slots:
   void CreateContextMenu(const QPoint &pos);

@@ -296,6 +296,15 @@ void QGoPrintDatabase::DeleteTraces()
       while(iter != SelectedTraces.end())
         {
         int ID = *iter;
+        //delete the trace in the vector<ContourMeshStructure>:
+        if (this->m_CurrentlyUsedTraceName == "contour")
+          {
+          this->DeleteTraceInContourMeshStructure(ID,this->m_ContoursInfo);
+          }
+        else
+          {
+          this->DeleteTraceInContourMeshStructure(ID,this->m_MeshesInfo);
+          }
         VectorValues.push_back(ConvertToString<int>(ID));
         iter++;
         }
@@ -334,8 +343,7 @@ void QGoPrintDatabase::DeleteTraces()
           this->m_CurrentlyUsedTable->UpdateIDs(0,this->m_CurrentlyUsedCollectionIDName,Color,
             this->m_CurrentlyUsedTraceIDName,TracesWithCollectionToBeNull); 
           }
-        }
-      
+        }     
       this->SetCurrentlyUsedTraceData(TraceName);
       //delete traces in the row container:
       GoDBTableWidgetContainer* LinkToTracesContainer = this->m_CurrentlyUsedCollectionOfTraces->GetLinkToRowContainer();
@@ -1193,3 +1201,22 @@ void QGoPrintDatabase::AddATraceToContourMeshInfo(std::string iTraceName,
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+void QGoPrintDatabase::DeleteTraceInContourMeshStructure(int iTraceID,
+  std::vector<ContourMeshStructure> &iTraceInfo )
+{
+  std::vector<ContourMeshStructure>::iterator iter = iTraceInfo.begin();
+  bool FoundErase = false;
+  while(!FoundErase )
+    {
+    if (iter->TraceID == iTraceID)
+      {
+      iTraceInfo.erase(iter);
+      FoundErase = true;
+      }
+    if (!FoundErase)
+      {
+      iter++;
+      }
+    }
+
+}
