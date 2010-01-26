@@ -103,6 +103,7 @@ QGoPrintDatabase( QWidget* iParent ) :
     QIcon::Normal, QIcon::Off );
   m_VisibilityAction->setIcon(TableWidgetIcon);
   m_VisibilityAction->setCheckable( true );
+  m_VisibilityAction->setToolTip(QString(tr("Show/hide the table widget")));
 
   QObject::connect( m_VisibilityAction, SIGNAL( toggled( bool ) ),
     this, SLOT( setVisible( bool ) ) );
