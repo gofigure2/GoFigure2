@@ -71,4 +71,7 @@
   <qresource prefix="/" >
     <file>fig/scalarbar.png</file>
   </qresource>
+  <qresource prefix="/" >
+    <file>fig/TableWidget.png</file>
+  </qresource>
 </RCC>

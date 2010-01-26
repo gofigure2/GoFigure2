@@ -47,6 +47,7 @@
 #include <QMessageBox>
 #include <QMenu>
 #include <QCloseEvent>
+#include <QPixmap>
 
 #include <iostream>
 
@@ -97,6 +98,10 @@ QGoPrintDatabase( QWidget* iParent ) :
   this->setContextMenuPolicy( Qt::CustomContextMenu );
 
   m_VisibilityAction = new QAction( this );
+  QIcon TableWidgetIcon;
+  TableWidgetIcon.addPixmap( QPixmap(QString::fromUtf8(":/fig/TableWidget.png")),
+    QIcon::Normal, QIcon::Off );
+  m_VisibilityAction->setIcon(TableWidgetIcon);
   m_VisibilityAction->setCheckable( true );
 
   QObject::connect( m_VisibilityAction, SIGNAL( toggled( bool ) ),
@@ -1218,5 +1223,4 @@ void QGoPrintDatabase::DeleteTraceInContourMeshStructure(int iTraceID,
       iter++;
       }
     }
-
 }
