@@ -168,6 +168,7 @@ signals:
   void NeedCurrentSelectedCollectionID();
   void TraceToReEdit( unsigned int );
   void DeletedCollection();
+  void TracesToDeleteInVisu();
 
 protected:
   GoDBCollectionOfTraces* m_CollectionOfContours;

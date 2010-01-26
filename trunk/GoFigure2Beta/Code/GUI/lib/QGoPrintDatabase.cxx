@@ -363,6 +363,7 @@ void QGoPrintDatabase::DeleteTraces()
         iterator++;
         }
       CloseDBConnection();
+      TracesToDeleteInVisu();
       }
     }
   }
