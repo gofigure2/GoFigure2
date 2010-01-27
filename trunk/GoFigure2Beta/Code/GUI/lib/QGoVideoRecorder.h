@@ -2,7 +2,7 @@
 #define __QGOVIDEORECORDER_H
 
 #include <QtGui>
-#include "ui_VideoRecorderDockWidget.h"
+#include "ui_NewVideoRecorderDockWidget.h"
 
 #include <QProgressDialog>
 
@@ -12,7 +12,7 @@
 class vtkRenderWindow;
 class vtkFFMPEGRenderWindowRecorder;
 
-class QGoVideoRecorder : public QDockWidget, private Ui::DockWidgetVideoRecorder
+class QGoVideoRecorder : public QDockWidget, private Ui::NewDockWidgetVideoRecorder
 {
     Q_OBJECT
 
@@ -54,6 +54,16 @@ class QGoVideoRecorder : public QDockWidget, private Ui::DockWidgetVideoRecorder
         unsigned int m_RecordTY;
         unsigned int m_RecordTZ;
 
+        unsigned int m_XMinForVideo;
+        unsigned int m_XMaxForVideo;
+        unsigned int m_YMinForVideo;
+        unsigned int m_YMaxForVideo;
+        unsigned int m_ZMinForVideo;
+        unsigned int m_ZMaxForVideo;
+        unsigned int m_TMinForVideo;
+        unsigned int m_TForVideo;
+        unsigned int m_TMaxForVideo;
+
         QProgressDialog* m_ProgressDialog;
 
     // in tab "record video"
@@ -74,11 +84,15 @@ class QGoVideoRecorder : public QDockWidget, private Ui::DockWidgetVideoRecorder
 
         bool m_RenderWindowSelected;
 
+        void UpdateQSpinBoxFT( int );
+
+        int m_SliceFT;
+
     public slots:
       void SetRendererWindow( int iSlice );
       void SetRenderingWindow2( vtkRenderWindow* iRenderingWindow );
 
-           signals:
+    signals:
       void XSliceChanged( int Slice );
       void YSliceChanged( int Slice );
       void ZSliceChanged( int Slice );
@@ -94,32 +108,12 @@ class QGoVideoRecorder : public QDockWidget, private Ui::DockWidgetVideoRecorder
     // in tab "create video"
         //Create video pushbutton
         void on_startVideo_clicked();
+        
+        //Choose a slice T Fixed
+        void on_tSpinFixed_valueChanged(int value);
+        void on_tSpinMin_2_valueChanged(int value);
+        void on_tSpinMax_2_valueChanged(int value);
 
-        //Video selection checkBoxes
-        void on_xSliceCheckBox_stateChanged( int state );
-        void on_ySliceCheckBox_stateChanged( int state );
-        void on_zSliceCheckBox_stateChanged( int state );
-        void on_xtSliceCheckBox_stateChanged( int state );
-        void on_ytSliceCheckBox_stateChanged( int state );
-        void on_ztSliceCheckBox_stateChanged( int state );
-
-        //First slice for recording
-        void on_xSpinMin_valueChanged(int value);
-        void on_ySpinMin_valueChanged(int value);
-        void on_zSpinMin_valueChanged(int value);
-        void on_tSpinMin_valueChanged(int value);
-
-        //Last slice for recording
-        void on_xSpinMax_valueChanged(int value);
-        void on_ySpinMax_valueChanged(int value);
-        void on_zSpinMax_valueChanged(int value);
-        void on_tSpinMax_valueChanged(int value);
-
-        //Time range
-        void on_xSpinFixed_valueChanged( int value );
-        void on_ySpinFixed_valueChanged( int value );
-        void on_zSpinFixed_valueChanged( int value );
-        void on_tSpinFixed_valueChanged( int value );
 
         //Video parameters
         void on_createFile_clicked();
@@ -135,6 +129,9 @@ class QGoVideoRecorder : public QDockWidget, private Ui::DockWidgetVideoRecorder
         void on_endRecord_clicked();
 
         void timeout();
+
+
+        void on_SliceFT_activated(int value);
 
 };
 

@@ -154,6 +154,9 @@ signals:
 public slots:
   void SetTimePoint( const int& );
   void DisplayAnnotations();
+  void DisplaySplinePlanes();
+  void DisplayCube();
+  void TakeSnapshot();
 
 #ifdef   ENABLEVIDEORECORD
   void SetRendererWindow( int );

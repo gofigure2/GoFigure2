@@ -42,9 +42,6 @@ QGoVideoRecorder(QWidget *iParent) : QDockWidget( iParent ), m_XMin( 0 ), m_XFix
   this->videoName_2->setReadOnly( true );
 
   this->tabVideoWidget->setEnabled(false);
-
-
-
 }
 
 /**
@@ -53,6 +50,7 @@ QGoVideoRecorder(QWidget *iParent) : QDockWidget( iParent ), m_XMin( 0 ), m_XFix
 QGoVideoRecorder::
 ~QGoVideoRecorder( )
 {
+	m_VideoRecorder2->Delete();
 	delete m_InternalTimer;
 }
 
@@ -70,92 +68,81 @@ void
 QGoVideoRecorder::
 SetXMinAndMax( int XMin, int XMax )
 {
-	this->xSpinMin->setMinimum( XMin );
-	this->xSpinMax->setMinimum( XMin );
-	this->xSpinFixed->setMinimum( XMin );
+  m_XMin = XMin;
+  m_XFixed = XMin;
+  m_XMax = XMax;
 
-	this->xSpinMin->setMaximum( XMax );
-	this->xSpinMax->setMaximum( XMax );
-	this->xSpinFixed->setMaximum( XMax );
+  m_XMinForVideo = XMin;
+  m_XMaxForVideo = XMax;
 
+  //Initialization of the spinbox
+  this->tSpinMin_2->setMinimum(m_XMin);
+  this->tSpinMin_2->setMaximum(m_XMax);
+  this->tSpinMin_2->setValue(m_XMin);
 
-	this->xSpinMin->setValue(XMin);
-	this->xSpinMax->setValue(XMax);
+  this->tSpinMax_2->setMinimum(m_XMin);
+  this->tSpinMax_2->setMaximum(m_XMax);
+  this->tSpinMax_2->setValue(m_XMax);
 }
 void
 QGoVideoRecorder::
 SetXSlice( int X )
 {
-	this->xSpinFixed->setValue( X );
+  m_XFixed = X;
 }
 
 void
 QGoVideoRecorder::
 SetYMinAndMax( int YMin, int YMax )
 {
-	this->ySpinMin->setMinimum( YMin );
-	this->ySpinMax->setMinimum( YMin );
-	this->ySpinFixed->setMinimum( YMin );
+  m_YMin = YMin;
+  m_YFixed = YMin;
+  m_YMax = YMax;
 
-	this->ySpinMin->setMaximum( YMax );
-	this->ySpinMax->setMaximum( YMax );
-	this->ySpinFixed->setMaximum( YMax );
-
-
-	this->ySpinMin->setValue(YMin);
-	this->ySpinMax->setValue(YMax);
+  m_YMinForVideo = YMin;
+  m_YMaxForVideo = YMax;
 }
 void
 QGoVideoRecorder::
 SetYSlice( int Y )
 {
-	this->ySpinFixed->setValue( Y );
+  m_YFixed = Y;
 }
 
 void
 QGoVideoRecorder::
 SetZMinAndMax( int ZMin, int ZMax )
 {
-	this->zSpinMin->setMinimum( ZMin );
-	this->zSpinMax->setMinimum( ZMin );
-	this->zSpinFixed->setMinimum( ZMin );
+  m_ZMin = ZMin;
+  m_ZFixed = ZMin;
+  m_ZMax = ZMax;
 
-	this->zSpinMin->setMaximum( ZMax );
-	this->zSpinMax->setMaximum( ZMax );
-	this->zSpinFixed->setMaximum( ZMax );
-
-
-	this->zSpinMin->setValue(ZMin);
-	this->zSpinMax->setValue(ZMax);
+  m_ZMinForVideo = ZMin;
+  m_ZMaxForVideo = ZMax;
 }
 void
 QGoVideoRecorder::
 SetZSlice( int Z )
 {
-	this->zSpinFixed->setValue( Z );
+  m_ZFixed = Z;
 }
 
 void
 QGoVideoRecorder::
 SetTMinAndMax( int TMin, int TMax )
 {
-	this->tSpinMin->setMinimum( TMin );
-	this->tSpinMax->setMinimum( TMin );
-	this->tSpinFixed->setMinimum( TMin );
+  m_TMin = TMin;
+  m_TFixed = TMin;
+  m_TMax = TMax;
 
-	this->tSpinMin->setMaximum( TMax );
-	this->tSpinMax->setMaximum( TMax );
-	this->tSpinFixed->setMaximum( TMax );
-
-
-	this->tSpinMin->setValue(TMin);
-	this->tSpinMax->setValue(TMax);
+  m_TMinForVideo = TMin;
+  m_TMaxForVideo = TMax;
 }
 void
 QGoVideoRecorder::
 SetTSlice( int T )
 {
-	this->tSpinFixed->setValue( T );
+  m_TFixed = T;
 }
 
 
@@ -170,182 +157,115 @@ SetTSlice( int T )
 ///////////////////////////////////////////////////////
 
 /**
- * \brief Function called when checkbox state changes
+ * \brief Get and print the location to store MegaCapture file
  */
 void
 QGoVideoRecorder::
-on_xSliceCheckBox_stateChanged( int state )
+on_SliceFT_activated( int value)
 {
-	m_RecordX = state;
+  UpdateQSpinBoxFT( value );
+}
+
+void
+QGoVideoRecorder::
+UpdateQSpinBoxFT( int value )
+{
+  switch ( value ) {
+    case 0 :
+    // X Slice
+    this->tSpinMin_2->setMinimum(m_XMin);
+    this->tSpinMin_2->setMaximum(m_XMax);
+    this->tSpinMin_2->setValue(m_XMin);
+
+    this->tSpinMax_2->setMinimum(m_XMin);
+    this->tSpinMax_2->setMaximum(m_XMax);
+    this->tSpinMax_2->setValue(m_XMax);
+
+    m_SliceFT = 0;
+    break;
+
+    case 1 :
+    // Y Slice
+    this->tSpinMin_2->setMinimum(m_YMin);
+    this->tSpinMin_2->setMaximum(m_YMax);
+    this->tSpinMin_2->setValue(m_YMin);
+
+    this->tSpinMax_2->setMinimum(m_YMin);
+    this->tSpinMax_2->setMaximum(m_YMax);
+    this->tSpinMax_2->setValue(m_YMax);
+
+    m_SliceFT = 1;
+    break;
+
+    default :
+    // Z Slice
+    this->tSpinMin_2->setMinimum(m_ZMin);
+    this->tSpinMin_2->setMaximum(m_ZMax);
+    this->tSpinMin_2->setValue(m_ZMin);
+
+    this->tSpinMax_2->setMinimum(m_ZMin);
+    this->tSpinMax_2->setMaximum(m_ZMax);
+    this->tSpinMax_2->setValue(m_ZMax);
+
+    m_SliceFT = 2;
+	}
+}
+
+
+void
+QGoVideoRecorder::
+on_tSpinMin_2_valueChanged( int value )
+{
+  switch ( m_SliceFT )
+    {
+    case 0 :
+    // X Slice
+    m_XMinForVideo = value;
+    break;
+
+    case 1 :
+    // Y Slice
+    m_YMinForVideo = value;
+    break;
+
+    default :
+    // Z Slice
+    m_ZMinForVideo = value;
+    }
+}
+
+void
+QGoVideoRecorder::
+on_tSpinMax_2_valueChanged( int value )
+{
+  switch ( m_SliceFT )
+    {
+    case 0 :
+    // X Slice
+    m_XMaxForVideo = value;
+    break;
+
+	    case 1 :
+    // Y Slice
+    m_YMaxForVideo = value;
+    break;
+
+    default :
+    // Z Slice
+    m_ZMaxForVideo = value;
+    }
 }
 
 /**
- * \brief Function called when checkbox state changes
+ * \brief Get and print the location to store MegaCapture file
  */
 void
 QGoVideoRecorder::
-on_ySliceCheckBox_stateChanged( int state )
+on_tSpinFixed_valueChanged( int value)
 {
-	m_RecordY = state;
+  m_TForVideo = value;
 }
 
-/**
- * \brief Function called when checkbox state changes
- */
-void
-QGoVideoRecorder::
-on_zSliceCheckBox_stateChanged( int state )
-{
-	m_RecordZ = state;
-}
-
-/**
- * \brief Function called when checkbox state changes
- */
-void
-QGoVideoRecorder::
-on_xtSliceCheckBox_stateChanged( int state )
-{
-	m_RecordTX = state;
-}
-
-/**
- * \brief Function called when checkbox state changes
- */
-void
-QGoVideoRecorder::
-on_ytSliceCheckBox_stateChanged( int state )
-{
-	m_RecordTY = state;
-}
-
-/**
- * \brief Function called when checkbox state changes
- */
-void
-QGoVideoRecorder::
-on_ztSliceCheckBox_stateChanged( int state )
-{
-	m_RecordTZ = state;
-}
-
-/**
- * \brief Function called when first slice changes
- */
-void
-QGoVideoRecorder::
-on_xSpinMin_valueChanged( int value )
-{
-	m_XMin = value;
-}
-
-/**
- * \brief Function called when first slice changes
- */
-void
-QGoVideoRecorder::
-on_ySpinMin_valueChanged( int value )
-{
-	m_YMin = value;
-}
-/**
- * \brief Function called when first slice changes
- */
-void
-QGoVideoRecorder::
-on_zSpinMin_valueChanged( int value )
-{
-	m_ZMin = value;
-}
-
-/**
- * \brief Function called when first slice changes
- */
-void
-QGoVideoRecorder::
-on_tSpinMin_valueChanged( int value )
-{
-	m_TMin = value;
-}
-
-/**
- * \brief Function called when last slice changes
- */
-void
-QGoVideoRecorder::
-on_xSpinMax_valueChanged( int value )
-{
-	m_XMax = value;
-}
-
-/**
- * \brief Function called when last slice changes
- */
-void
-QGoVideoRecorder::
-on_ySpinMax_valueChanged( int value )
-{
-	m_YMax = value;
-}
-/**
- * \brief Function called when last slice changes
- */
-void
-QGoVideoRecorder::
-on_zSpinMax_valueChanged( int value )
-{
-	m_ZMax = value;
-}
-
-/**
- * \brief Function called when last slice changes
- */
-void
-QGoVideoRecorder::
-on_tSpinMax_valueChanged( int value )
-{
-	m_TMax = value;
-}
-
-/**
- * \brief Function called when slice changes
- */
-void
-QGoVideoRecorder::
-on_xSpinFixed_valueChanged( int value )
-{
-	m_XFixed = value;
-}
-
-/**
- * \brief Function called when slice changes
- */
-void
-QGoVideoRecorder::
-on_ySpinFixed_valueChanged( int value )
-{
-	m_YFixed = value;
-}
-
-/**
- * \brief Function called when slice changes
- */
-void
-QGoVideoRecorder::
-on_zSpinFixed_valueChanged( int value )
-{
-	m_ZFixed = value;
-}
-
-/**
- * \brief Function called when slice changes
- */
-void
-QGoVideoRecorder::
-on_tSpinFixed_valueChanged( int value )
-{
-	m_TFixed = value;
-}
 
 /**
  * \brief Get and print the location to store MegaCapture file
@@ -393,6 +313,9 @@ void
 QGoVideoRecorder::
 on_startVideo_clicked()
 {
+    //check selected tab
+    std::cout << "index: " << this->tabWidget->currentIndex () << std::endl;
+
 //something to record first view
   if( ( m_VideoName2 == NULL ) || ( !m_RenderWindowSelected ) || ( m_RendererWindow == 0 ) )
   {
@@ -405,7 +328,7 @@ on_startVideo_clicked()
     m_VideoRecorder2->Setm_FrameRate( m_FrameRate2 );
     m_VideoRecorder2->Setm_VideoQuality( m_VideoQuality2 );
 
-    if(m_RecordX>0)
+    if( m_SliceFT == 0 )
   	  {
       QString fileName = m_VideoName2;
 
@@ -414,24 +337,22 @@ on_startVideo_clicked()
       fileName.insert( fileName.size(), QString("-"));
       fileName.insert( fileName.size(), QString::number( m_XMax, 10 ) );
       fileName.insert( fileName.size(), QString(".avi"));
-
       m_VideoRecorder2->SetFileName( fileName.toStdString() );
 
       m_VideoRecorder2->StartCapture();
 
-      for(unsigned int i = m_XMin; i < m_XMax+1; i++)
+      for(unsigned int i = m_XMinForVideo; i < m_XMaxForVideo+1; i++)
         {
         //send signal to gofigure to change slice
         emit XSliceChanged(i);
         //capture screen
         m_VideoRecorder2->TakeSnapshot();
-        i++;
         }
 
         m_VideoRecorder2->EndCapture();
       }
 
-    if(m_RecordY>0)
+    if( m_SliceFT == 1 )
       {
       QString fileName = m_VideoName2;
 
@@ -445,18 +366,17 @@ on_startVideo_clicked()
 
        m_VideoRecorder2->StartCapture();
 
-       for(unsigned int i = m_YMin; i < m_YMax+1; i++)
+       for(unsigned int i = m_YMinForVideo; i < m_YMaxForVideo+1; i++)
          {
          //send signal to gofigure to change slice
          emit YSliceChanged(i);
          //capture screen
          m_VideoRecorder2->TakeSnapshot();
-         i++;
          }
        m_VideoRecorder2->EndCapture();
        }
 
-    if(m_RecordZ>0)
+    if( m_SliceFT == 2 )
       {
       QString fileName = m_VideoName2;
 
@@ -470,18 +390,15 @@ on_startVideo_clicked()
 
        m_VideoRecorder2->StartCapture();
 
-       for(unsigned int i = m_ZMin; i < m_ZMax+1; i++)
+       for(unsigned int i = m_ZMinForVideo; i < m_ZMaxForVideo+1; i++)
          {
          //send signal to gofigure to change slice
          emit ZSliceChanged(i);
          //capture screen
          m_VideoRecorder2->TakeSnapshot();
-         i++;
          }
        m_VideoRecorder2->EndCapture();
        }
-
-    //ADD T
   }
 
 

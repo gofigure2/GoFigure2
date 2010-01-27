@@ -36,6 +36,13 @@ std::vector< QAction* > QGoTabElementBase::SegmentationActions()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+std::vector< QAction* > QGoTabElementBase::ToolsActions()
+{
+  return m_ToolsActions;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
 std::list< QDockWidget* > QGoTabElementBase::DockWidget()
 {
   return std::list< QDockWidget* >();

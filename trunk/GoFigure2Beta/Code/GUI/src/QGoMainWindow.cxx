@@ -654,6 +654,8 @@ CreateNewTabFor3DwtImage(
   this->menuView->setEnabled( true );
   this->menuFiltering->setEnabled( true );
   this->menuSegmentation->setEnabled( true );
+  this->menuTools->setEnabled( true );
+
   this->CentralTabWidget->setCurrentIndex( idx );
 
   return w3t;
@@ -735,6 +737,8 @@ CreateNewTabFor3DwtImage( vtkLSMReader* iReader, const QString& iFile )
   this->menuView->setEnabled( true );
   this->menuFiltering->setEnabled( true );
   this->menuSegmentation->setEnabled( true );
+  this->menuTools->setEnabled( true );
+
   this->CentralTabWidget->setCurrentIndex( idx );
 
   return w3t;
@@ -777,6 +781,8 @@ CreateNewTabFor3DImage( vtkImageData* iInput, const QString& iFile )
   this->menuView->setEnabled( true );
   this->menuFiltering->setEnabled( true );
   this->menuSegmentation->setEnabled( true );
+  this->menuTools->setEnabled( true );
+
   this->CentralTabWidget->setCurrentIndex( idx );
 
   return w3;
@@ -819,6 +825,8 @@ CreateNewTabFor2DImage( vtkImageData* iInput, const QString& iFile )
   this->menuView->setEnabled( true );
   this->menuFiltering->setEnabled( true );
   this->menuSegmentation->setEnabled( true );
+  this->menuTools->setEnabled( true );
+
   this->CentralTabWidget->setCurrentIndex( idx );
 
   return w2;

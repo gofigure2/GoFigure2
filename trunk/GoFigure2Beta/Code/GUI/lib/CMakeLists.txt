@@ -76,7 +76,6 @@ IF( ENABLE_VIDEO_RECORD )
     vtkFFMPEGRenderWindowRecorder.h
     QGoVideoRecorder.h
   )
-  MESSAGE(SEND_ERROR "enabled video record")
 ENDIF( ENABLE_VIDEO_RECORD )
 
 SET( QGoGUILIB_UI

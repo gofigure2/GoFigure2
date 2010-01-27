@@ -47,6 +47,9 @@ void QGoTabManager::ClearTabElement( QGoTabElementBase* iE )
     // Then remove all actions from the segmentation menu
     m_MainWindow->menuSegmentation->clear();
 
+    // Then remove all actions from the tools menu
+    m_MainWindow->menuTools->clear();
+
     std::list< QDockWidget* > dock_list = iE->DockWidget();
 
     for( std::list< QDockWidget* >::iterator
@@ -99,6 +102,16 @@ void QGoTabManager::SetUpTabElement( QGoTabElementBase* iE )
       {
       m_MainWindow->menuSegmentation->addAction( *it );
       }
+
+    action_vector2 = iE->ToolsActions();
+
+        for( std::vector< QAction* >::iterator it = action_vector2.begin();
+            it != action_vector2.end();
+            ++it )
+          {
+          m_MainWindow->menuTools->addAction( *it );
+          }
+
 
     std::list< QDockWidget* > dock_list = iE->DockWidget();
 

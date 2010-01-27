@@ -7,6 +7,8 @@
 #include "vtkObjectFactory.h"
 #include "vtkDebugLeaks.h"
 
+#include "vtkPNGWriter.h"
+#include "vtkJPEGWriter.h"
 
 /**
  * \brief Constructor
@@ -26,14 +28,8 @@ vtkFFMPEGRenderWindowRecorder() :
 vtkFFMPEGRenderWindowRecorder::
 ~vtkFFMPEGRenderWindowRecorder()
 {
-  if(m_ImageFilter != NULL)
-  	{
-	  m_ImageFilter ->Delete();
-  	}
-	if(m_ImageWriter != NULL)
-		{
-    m_ImageWriter ->Delete();
-		}
+  m_ImageFilter ->Delete();
+  m_ImageWriter ->Delete();
 }
 
 /**
@@ -78,6 +74,7 @@ SetRenderingWindow( vtkRenderWindow* iRenderWindow)
 	m_RenderWindow = iRenderWindow;
 	m_ImageFilter->SetInput(m_RenderWindow);
 	m_ImageWriter->SetInput(m_ImageFilter->GetOutput());
+
 }
 
 /**
@@ -123,5 +120,16 @@ TakeSnapshot()
 	{
 	  m_ImageFilter->Modified();
 	  m_ImageWriter->Write();
+/*
+	  vtkPNGWriter* pngw2 = vtkPNGWriter::New();
+
+	  	   pngw2->SetInput( m_ImageFilter->GetOutput() );
+	  	   pngw2->SetFileName("/home/nicolas/test.png");
+	  	 pngw2->Write();
+
+	  	   vtkJPEGWriter* jpgw1 = vtkJPEGWriter::New();
+	  	   jpgw1->SetInput( m_ImageFilter->GetOutput() );
+	  	   jpgw1->SetFileName("/home/nicolas/test.jpg");
+	  	 jpgw1->Write();*/
 	}
 }

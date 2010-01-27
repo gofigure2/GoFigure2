@@ -59,7 +59,7 @@
      <x>0</x>
      <y>0</y>
      <width>1434</width>
-     <height>25</height>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -146,10 +146,12 @@
     </property>
    </widget>
    <widget class="QMenu" name="menuTools">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="title">
      <string>Tools</string>
     </property>
-    <addaction name="actionSnapshot"/>
    </widget>
    <widget class="QMenu" name="menuBookmarks">
     <property name="enabled">
@@ -373,15 +375,6 @@
   <action name="action">
    <property name="text">
     <string>Full screen XY</string>
-   </property>
-  </action>
-  <action name="actionSnapshot">
-   <property name="icon">
-    <iconset resource="../../../Resources/axes.qrc">
-     <normaloff>:/fig/camera-photo.png</normaloff>:/fig/camera-photo.png</iconset>
-   </property>
-   <property name="text">
-    <string>Snapshot</string>
    </property>
   </action>
   <action name="actionSide_bar">

@@ -81,7 +81,10 @@ public:
   std::list< vtkProp3D* > GetListOfPickedActors();
   std::list< vtkProp3D* > GetListOfUnPickedActors();
 
-  void TestPool();
+  void ShowAnnotations();
+  void ShowSplinePlane();
+  void ShowCube3D();
+  void UpdateRenderWindows();
 
 signals:
   void SliceViewXYChanged( int Slice );
@@ -160,6 +163,10 @@ protected:
   void FullScreenViewXZ();
   void FullScreenViewYZ();
   void FullScreenViewXYZ();
+
+  bool m_ShowAnnotations;
+  bool m_ShowSplinePlane;
+  bool m_ShowCube;
 
 protected slots:
   void MoveSliderXY();
