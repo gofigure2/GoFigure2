@@ -248,6 +248,7 @@ protected:
   void GetBackgroundColorFromImageViewer( );
   void SetBackgroundColorToImageViewer( );
   void CreateAllViewActions();
+  void CreateToolsActions();
   void CreateVisuDockWidget();
   void CreateManualSegmentationdockWidget();
 

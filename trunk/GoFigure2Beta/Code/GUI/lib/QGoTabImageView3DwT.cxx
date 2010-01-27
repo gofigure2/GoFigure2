@@ -8,7 +8,7 @@
 
 #ifdef ENABLEVIDEORECORD
   #include "QGoVideoRecorder.h"
-#endif
+#endif /* ENABLEVIDEORECORD */
 
 #include "SnapshotHelper.h"
 
@@ -83,7 +83,9 @@ QGoTabImageView3DwT( QWidget* iParent ) :
 
 #ifdef ENABLEVIDEORECORD
   CreateVideoRecorderWidget();
-#endif
+#endif /* ENABLEVIDEORECORD */
+
+  CreateToolsActions();
 
   CreateAllViewActions();
 
@@ -254,16 +256,7 @@ QGoTabImageView3DwT::
 CreateVideoRecorderWidget()
 {
   m_VideoRecorderWidget = new QGoVideoRecorder( this );
-  // add render window
-  //QObject::connect( this, SIGNAL( FullScreenViewChanged( int ) ),
-    //m_VideoRecorderWidget,
-    //SLOT( SetRenderingWindow2(
-    //this->m_ImageView->GetInteractor( int )->GetRenderWindow() ) ) );
 
-// to set up properly the rendering windows
-/*  QObject::connect( this, SIGNAL( FullScreenViewChanged( int ) ),
-      m_VideoRecorderWidget,SLOT( SetRendererWindow( int )));
-*/
   QObject::connect( this, SIGNAL( FullScreenViewChanged( int ) ),
         this,SLOT( SetRendererWindow( int )));
 
@@ -279,23 +272,63 @@ CreateVideoRecorderWidget()
 }
 
 //-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
-SetRendererWindow(int iTest)
+SetRendererWindow(int iValue)
 {
 
-  if (iTest -1 >= 0)
-  {
-    std::cout << "iTest: "<< iTest << std::endl;
-    //set renderer window for video
-    m_VideoRecorderWidget->SetRenderingWindow2(
-    m_ImageView->GetInteractor( iTest -1 )->GetRenderWindow() );
-  }
+  if (iValue -1 >= 0)
+    {
+    m_VideoRecorderWidget->SetRenderingWindow(
+    m_ImageView->GetInteractor( iValue -1 )->GetRenderWindow() );
+    }
+  else
+    {
+    m_VideoRecorderWidget->SetRenderingWindow( NULL );
+    }
+}
+#endif /* ENABLEVIDEORECORD */
 
-  m_VideoRecorderWidget->SetRendererWindow(iTest);
+//-------------------------------------------------------------------------
+//-------------------------------------------------------------------------
+/**
+ *
+ */
+void
+QGoTabImageView3DwT::
+CreateToolsActions()
+{
+
+#ifdef ENABLEVIDEORECORD
+  this->m_ToolsActions.push_back( m_VideoRecorderWidget->toggleViewAction() );
+#endif /* ENABLEVIDEORECORD */
+
+  QAction* TakeSnapshotAction = new QAction( tr( "Take Snapshot" ), this );
+  QObject::connect( TakeSnapshotAction, SIGNAL( triggered() ),
+    this,SLOT( TakeSnapshot()));
+
+  this->m_ToolsActions.push_back( TakeSnapshotAction );
 
 }
-#endif
+
+//-------------------------------------------------------------------------
+
+void
+QGoTabImageView3DwT::
+TakeSnapshot()
+{
+  std::cout << "Take snapshot " << std::endl;
+  //TODO check full screen
+  //TODO name?
+
+  //take snapshot
+  m_ImageView->SnapshotViewXY( GoFigure::PNG , "1111");
+  m_ImageView->SnapshotView2( GoFigure::PNG , "2222");
+  m_ImageView->SnapshotView3( GoFigure::PNG , "3333");
+}
+
 //-------------------------------------------------------------------------
 /**
  *
@@ -383,60 +416,39 @@ CreateAllViewActions()
     this, SLOT( FullScreenViewXYZ() ) );
 
 
-///// NEW ACTIONS
-
   QAction* separator5 = new QAction( this );
     separator5->setSeparator( true );
-    this->m_ViewActions.push_back( separator5 );
+  this->m_ViewActions.push_back( separator5 );
 
-    QAction* DisplayAnnotations = new QAction( tr( "Display annotations" ), this );
-    DisplayAnnotations->setCheckable( true );
-    DisplayAnnotations->setChecked( true );
-    DisplayAnnotations->setStatusTip( tr(" Display or not annotations in each 2d view" ) );
-/*
-    QIcon luticon;
-    luticon.addPixmap( QPixmap(QString::fromUtf8(":/fig/LookupTable.png")),
-      QIcon::Normal, QIcon::Off );
-    LookupTableAction->setIcon( luticon );
-*/
-    // Here write the connection
-    QObject::connect( DisplayAnnotations, SIGNAL( triggered() ),
-      this, SLOT( DisplayAnnotations() ) );
+  QAction* DisplayAnnotations = new QAction( tr( "Display annotations" ), this );
+  DisplayAnnotations->setCheckable( true );
+  DisplayAnnotations->setChecked( true );
+  DisplayAnnotations->setStatusTip( tr(" Display or not annotations in each 2d view" ) );
 
-    this->m_ViewActions.push_back( DisplayAnnotations );
+  QObject::connect( DisplayAnnotations, SIGNAL( triggered() ),
+    this, SLOT( DisplayAnnotations() ) );
 
-    QAction* DisplaySplinePlanes = new QAction( tr( "Display spline planes" ), this );
-    DisplaySplinePlanes->setCheckable( true );
-    DisplaySplinePlanes->setChecked( true );
-    DisplaySplinePlanes->setStatusTip( tr(" Display or not spline planes on each view" ) );
-    /*
-        QIcon luticon;
-        luticon.addPixmap( QPixmap(QString::fromUtf8(":/fig/LookupTable.png")),
-          QIcon::Normal, QIcon::Off );
-        LookupTableAction->setIcon( luticon );
-    */
-        // Here write the connection
-        QObject::connect( DisplaySplinePlanes, SIGNAL( triggered() ),
-          this, SLOT( DisplaySplinePlanes() ) );
+  this->m_ViewActions.push_back( DisplayAnnotations );
 
-        this->m_ViewActions.push_back( DisplaySplinePlanes );
+  QAction* DisplaySplinePlanes = new QAction( tr( "Display spline planes" ), this );
+  DisplaySplinePlanes->setCheckable( true );
+  DisplaySplinePlanes->setChecked( true );
+  DisplaySplinePlanes->setStatusTip( tr(" Display or not spline planes on each view" ) );
 
-        QAction* DisplayCube3D = new QAction( tr( "Display 3D cube" ), this );
-        DisplayCube3D->setCheckable( true );
-        DisplayCube3D->setChecked( true );
-        DisplayCube3D->setStatusTip( tr(" Display or not cube in 3d" ) );
+  QObject::connect( DisplaySplinePlanes, SIGNAL( triggered() ),
+    this, SLOT( DisplaySplinePlanes() ) );
 
-        /*
-            QIcon luticon;
-            luticon.addPixmap( QPixmap(QString::fromUtf8(":/fig/LookupTable.png")),
-              QIcon::Normal, QIcon::Off );
-            LookupTableAction->setIcon( luticon );
-        */
-            // Here write the connection
-            QObject::connect( DisplayCube3D, SIGNAL( triggered() ),
-              this, SLOT( DisplayCube() ) );
+  this->m_ViewActions.push_back( DisplaySplinePlanes );
 
-            this->m_ViewActions.push_back( DisplayCube3D );
+  QAction* DisplayCube3D = new QAction( tr( "Display 3D cube" ), this );
+  DisplayCube3D->setCheckable( true );
+  DisplayCube3D->setChecked( true );
+  DisplayCube3D->setStatusTip( tr(" Display or not cube in 3d" ) );
+
+  QObject::connect( DisplayCube3D, SIGNAL( triggered() ),
+    this, SLOT( DisplayCube() ) );
+
+  this->m_ViewActions.push_back( DisplayCube3D );
 
   QAction* separator = new QAction( this );
   separator->setSeparator( true );
@@ -496,46 +508,6 @@ CreateAllViewActions()
 
   QObject::connect( LoadContoursPerTimePointAction, SIGNAL( triggered() ),
     this, SLOT( LoadAllContoursForCurrentTimePoint() ) );
-
-#ifdef ENABLEVIDEORECORD
-  /*QAction* separator4 = new QAction( this );
-  separator4->setSeparator( true );
-  this->m_ToolsActions.push_back( separator4 );*/
-
-  this->m_ToolsActions.push_back( m_VideoRecorderWidget->toggleViewAction() );
-
-  //NEW
-  QObject::connect( m_VideoRecorderWidget, SIGNAL( FullScreenViewXY() ),
-		  FullScreenXYAction, SLOT( trigger() ));
-  QObject::connect( m_VideoRecorderWidget, SIGNAL( FullScreenViewYZ() ),
-  		  FullScreenYZAction, SLOT( trigger() ));
-  QObject::connect( m_VideoRecorderWidget, SIGNAL( FullScreenViewXZ() ),
-  		  FullScreenXZAction, SLOT( trigger() ));
-
-  ////////////////////////////
-
-  QAction* TakeSnapshotAction = new QAction( tr( "Take Snapshot" ), this );
-  QObject::connect( TakeSnapshotAction, SIGNAL( triggered() ),
-                    this,SLOT( TakeSnapshot()));
-
-  this->m_ToolsActions.push_back( TakeSnapshotAction );
-
-/////////////////////////////////////////////////
-#endif
-}
-//-------------------------------------------------------------------------
-
-void
-QGoTabImageView3DwT::
-TakeSnapshot()
-{
-	std::cout << "Take snapshot " << std::endl;
-	// check full screen
-
-	//take snapshot
-	m_ImageView->SnapshotViewXY( GoFigure::PNG , "1111");
-	m_ImageView->SnapshotView2( GoFigure::PNG , "2222");
-	m_ImageView->SnapshotView3( GoFigure::PNG , "3333");
 }
 
 //-------------------------------------------------------------------------
@@ -653,20 +625,6 @@ SetLSMReader( vtkLSMReader* iReader,
     m_VisuDockWidget->SetTMinimumAndMaximum( 0, dim[3] - 1 );
     m_VisuDockWidget->SetTSlice( iTimePoint );
 
-#ifdef ENABLEVIDEORECORD
-  m_VideoRecorderWidget->SetXMinAndMax( 0, dim[0] - 1 );
-  m_VideoRecorderWidget->SetXSlice( ( dim[0] - 1 ) / 2 );
-
-  m_VideoRecorderWidget->SetYMinAndMax( 0, dim[1] - 1 );
-  m_VideoRecorderWidget->SetYSlice( ( dim[1] - 1 ) / 2 );
-
-  m_VideoRecorderWidget->SetZMinAndMax( 0, dim[2] - 1 );
-  m_VideoRecorderWidget->SetZSlice( ( dim[2] - 1 ) / 2 );
-
-  m_VideoRecorderWidget->SetTMinAndMax( 0, dim[3] - 1 );
-  m_VideoRecorderWidget->SetTSlice( iTimePoint );
-#endif
-
     int NumberOfChannels = m_LSMReader[0]->GetNumberOfChannels();
 
     m_VisuDockWidget->SetNumberOfChannels( NumberOfChannels );
@@ -690,6 +648,21 @@ SetLSMReader( vtkLSMReader* iReader,
       {
       SetTimePoint( iTimePoint );
       }
+
+#ifdef ENABLEVIDEORECORD
+      m_VideoRecorderWidget->SetXMinAndMax( 0, dim[0] - 1 );
+      m_VideoRecorderWidget->SetXSlice( ( dim[0] - 1 ) / 2 );
+
+      m_VideoRecorderWidget->SetYMinAndMax( 0, dim[1] - 1 );
+      m_VideoRecorderWidget->SetYSlice( ( dim[1] - 1 ) / 2 );
+
+      m_VideoRecorderWidget->SetZMinAndMax( 0, dim[2] - 1 );
+      m_VideoRecorderWidget->SetZSlice( ( dim[2] - 1 ) / 2 );
+
+      m_VideoRecorderWidget->SetTMinAndMax( 0, dim[3] - 1 );
+      m_VideoRecorderWidget->SetTSlice( iTimePoint );
+#endif /* ENABLEVIDEORECORD */
+
     }
 }
 //-------------------------------------------------------------------------
@@ -741,21 +714,6 @@ SetMegaCaptureFile(
 
   m_VisuDockWidget->SetNumberOfChannels( NumberOfChannels );
 
-  // Set up QSpinBox in m_VideoRecorderWidget
-#ifdef ENABLEVIDEORECORD
-  m_VideoRecorderWidget->SetXMinAndMax( extent[0], extent[1] );
-  m_VideoRecorderWidget->SetXSlice( ( extent[0] + extent[1] ) / 2 );
-
-  m_VideoRecorderWidget->SetYMinAndMax( extent[2], extent[3] );
-  m_VideoRecorderWidget->SetYSlice( ( extent[2] + extent[3] ) / 2 );
-
-  m_VideoRecorderWidget->SetZMinAndMax( extent[4], extent[5] );
-  m_VideoRecorderWidget->SetZSlice( ( extent[4] + extent[5] ) / 2 );
-
-  m_VideoRecorderWidget->SetTMinAndMax( min_t, max_t );
-  m_VideoRecorderWidget->SetTSlice( iTimePoint );
-#endif
-
   if( NumberOfChannels > 1 )
     {
     m_VisuDockWidget->SetChannel( 0 );
@@ -771,6 +729,21 @@ SetMegaCaptureFile(
     {
     SetTimePoint( iTimePoint );
     }
+
+  // Set up QSpinBox in m_VideoRecorderWidget
+#ifdef ENABLEVIDEORECORD
+  m_VideoRecorderWidget->SetXMinAndMax( extent[0], extent[1] );
+  m_VideoRecorderWidget->SetXSlice( ( extent[0] + extent[1] ) / 2 );
+
+  m_VideoRecorderWidget->SetYMinAndMax( extent[2], extent[3] );
+  m_VideoRecorderWidget->SetYSlice( ( extent[2] + extent[3] ) / 2 );
+
+  m_VideoRecorderWidget->SetZMinAndMax( extent[4], extent[5] );
+  m_VideoRecorderWidget->SetZSlice( ( extent[4] + extent[5] ) / 2 );
+
+  m_VideoRecorderWidget->SetTMinAndMax( min_t, max_t );
+  m_VideoRecorderWidget->SetTSlice( iTimePoint );
+#endif /* ENABLEVIDEORECORD */
 }
 //-------------------------------------------------------------------------
 
@@ -1222,7 +1195,7 @@ DockWidget()
 
 #ifdef ENABLEVIDEORECORD
   oList.push_back( m_VideoRecorderWidget );
-#endif
+#endif /* ENABLEVIDEORECORD */
 
   return oList;
 }

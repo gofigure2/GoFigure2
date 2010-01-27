@@ -90,7 +90,7 @@ SET( QGoGUILIB_UI
 IF( ENABLE_VIDEO_RECORD )
   SET(QGoGUILIB_UI
     ${QGoGUILIB_UI}
-    VideoRecorderDockWidget.ui
+    NewVideoRecorderDockWidget.ui
   )
 ENDIF( ENABLE_VIDEO_RECORD )
 

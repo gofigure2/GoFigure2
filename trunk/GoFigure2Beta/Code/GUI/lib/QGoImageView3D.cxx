@@ -1018,22 +1018,21 @@ GetListOfUnPickedActors()
 }
 //--------------------------------------------------------------------------
 
-// TO BE USED TO Show/Hide annotations
 void
 QGoImageView3D::
 ShowAnnotations()
 {
-if( m_ShowAnnotations )
-	{
-// remove annotations in 2d views
-	m_ShowAnnotations = false;
-	this->m_Pool->SyncSetShowAnnotations( m_ShowAnnotations );
-	}
-else
-	{
-	m_ShowAnnotations = true;
-	this->m_Pool->SyncSetShowAnnotations( m_ShowAnnotations );
-	}
+  if( m_ShowAnnotations )
+    {
+    // remove annotations in 2d views
+    m_ShowAnnotations = false;
+    this->m_Pool->SyncSetShowAnnotations( m_ShowAnnotations );
+    }
+  else
+    {
+    m_ShowAnnotations = true;
+    this->m_Pool->SyncSetShowAnnotations( m_ShowAnnotations );
+    }
 
   this->UpdateRenderWindows();
 }
@@ -1048,20 +1047,20 @@ void
 QGoImageView3D::
 ShowSplinePlane()
 {
-	if( m_ShowSplinePlane )
-		{
-	m_ShowSplinePlane = false;
-	this->m_Pool->SetSplinePlaneActorsVisibility( m_ShowSplinePlane );
-	this->View3D->SetBoundsActorsVisibility( m_ShowSplinePlane );
-		}
-	else
-		{
-	m_ShowSplinePlane = true;
-	this->m_Pool->SetSplinePlaneActorsVisibility( m_ShowSplinePlane );
-	this->View3D->SetBoundsActorsVisibility( m_ShowSplinePlane );
-		}
+  if( m_ShowSplinePlane )
+    {
+    m_ShowSplinePlane = false;
+    this->m_Pool->SetSplinePlaneActorsVisibility( m_ShowSplinePlane );
+    this->View3D->SetBoundsActorsVisibility( m_ShowSplinePlane );
+    }
+  else
+    {
+    m_ShowSplinePlane = true;
+    this->m_Pool->SetSplinePlaneActorsVisibility( m_ShowSplinePlane );
+    this->View3D->SetBoundsActorsVisibility( m_ShowSplinePlane );
+    }
 
-	this->UpdateRenderWindows();
+    this->UpdateRenderWindows();
 }
 
 //--------------------------------------------------------------------------
@@ -1073,18 +1072,18 @@ void
 QGoImageView3D::
 ShowCube3D()
 {
-	if( m_ShowCube )
-		{
-	m_ShowCube = false;
-	this->View3D->SetCubeVisibility( m_ShowCube );
-		}
-	else
-		{
-	m_ShowCube = true;
-	this->View3D->SetCubeVisibility( m_ShowCube );
-		}
+  if( m_ShowCube )
+    {
+    m_ShowCube = false;
+    this->View3D->SetCubeVisibility( m_ShowCube );
+    }
+  else
+    {
+    m_ShowCube = true;
+    this->View3D->SetCubeVisibility( m_ShowCube );
+    }
 
-	this->UpdateRenderWindows();
+  this->UpdateRenderWindows();
 }
 
 //--------------------------------------------------------------------------
@@ -1095,18 +1094,18 @@ void
 QGoImageView3D::
 UpdateRenderWindows()
 {
-	// Update Visualization
-	// Update() not used because just want to update the renderWindow)
+  // Update Visualization
+  // Update() not used because just want to update the renderWindow)
 
-	vtkRenderWindow* ren = this->m_Pool->GetItem( 2 )->GetRenderWindow();
-	ren->Render();
-	ren = this->m_Pool->GetItem( 1 )->GetRenderWindow();
-	ren->Render();
-	ren = this->m_Pool->GetItem( 0 )->GetRenderWindow();
-	ren->Render();
+  vtkRenderWindow* ren = this->m_Pool->GetItem( 2 )->GetRenderWindow();
+  ren->Render();
+  ren = this->m_Pool->GetItem( 1 )->GetRenderWindow();
+  ren->Render();
+  ren = this->m_Pool->GetItem( 0 )->GetRenderWindow();
+  ren->Render();
 
-	ren = this->View3D->GetRenderWindow();
-	ren->Render();
+  ren = this->View3D->GetRenderWindow();
+  ren->Render();
 }
 
 //--------------------------------------------------------------------------

@@ -4,8 +4,6 @@
 #include <QtGui>
 #include "ui_NewVideoRecorderDockWidget.h"
 
-#include <QProgressDialog>
-
 #include <iostream>
 #include <string>
 
@@ -47,13 +45,6 @@ class QGoVideoRecorder : public QDockWidget, private Ui::NewDockWidgetVideoRecor
         unsigned int m_TFixed;
         unsigned int m_TMax;
 
-        unsigned int m_RecordX;
-        unsigned int m_RecordY;
-        unsigned int m_RecordZ;
-        unsigned int m_RecordTX;
-        unsigned int m_RecordTY;
-        unsigned int m_RecordTZ;
-
         unsigned int m_XMinForVideo;
         unsigned int m_XMaxForVideo;
         unsigned int m_YMinForVideo;
@@ -64,9 +55,7 @@ class QGoVideoRecorder : public QDockWidget, private Ui::NewDockWidgetVideoRecor
         unsigned int m_TForVideo;
         unsigned int m_TMaxForVideo;
 
-        QProgressDialog* m_ProgressDialog;
-
-    // in tab "record video"
+        // in tab "record video"
         unsigned int m_WindowSelected;
 
         QString m_VideoName2;
@@ -79,9 +68,6 @@ class QGoVideoRecorder : public QDockWidget, private Ui::NewDockWidgetVideoRecor
         QTimer *m_InternalTimer;
         unsigned int m_FrameCounter;
 
-        int m_RendererWindow;
-        vtkRenderWindow* iRenderingWindowTEST;
-
         bool m_RenderWindowSelected;
 
         void UpdateQSpinBoxFT( int );
@@ -89,8 +75,7 @@ class QGoVideoRecorder : public QDockWidget, private Ui::NewDockWidgetVideoRecor
         int m_SliceFT;
 
     public slots:
-      void SetRendererWindow( int iSlice );
-      void SetRenderingWindow2( vtkRenderWindow* iRenderingWindow );
+      void SetRenderingWindow( vtkRenderWindow* iRenderingWindow );
 
     signals:
       void XSliceChanged( int Slice );
