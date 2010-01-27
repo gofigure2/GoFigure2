@@ -467,11 +467,13 @@ CreateAllViewActions()
 
   QObject::connect( ScalarBarAction, SIGNAL( toggled( bool ) ),
     this, SLOT( ShowScalarBar( bool ) ) );
+  
+  QPixmap Pix(16, 16);
+  Pix.fill(Qt::black);
+  m_BackgroundColorAction = new QAction(Pix, tr("Set Background Color"), this );
+  this->m_ViewActions.push_back( m_BackgroundColorAction );
 
-  QAction* BackgroundColorAction = new QAction( tr("Background Color"), this );
-  this->m_ViewActions.push_back( BackgroundColorAction );
-
-  QObject::connect( BackgroundColorAction, SIGNAL( triggered() ),
+  QObject::connect( m_BackgroundColorAction, SIGNAL( triggered() ),
     this, SLOT( ChangeBackgroundColor() ) );
 
   QAction* separator2 = new QAction( this );
@@ -1245,6 +1247,9 @@ ChangeBackgroundColor()
     {
     m_BackgroundColor = temp;
     m_ImageView->SetBackgroundColor( m_BackgroundColor );
+    QPixmap Pix(16, 16);
+    Pix.fill(temp);
+    m_BackgroundColorAction->setIcon(Pix);
     }
 }
 

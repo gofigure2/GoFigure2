@@ -199,9 +199,6 @@ protected:
 
   QAction* m_VisibilityAction;
 
-  void QPrintColumnNames( QString TableName,
-    std::map< std::string,std::string > ColumnNames, QTableWidgetChild* QTabTableName );
-
   void OpenDBConnection();
   void CloseDBConnection();
   
