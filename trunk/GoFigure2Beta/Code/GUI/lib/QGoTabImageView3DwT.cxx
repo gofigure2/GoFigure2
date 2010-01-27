@@ -71,6 +71,8 @@ QGoTabImageView3DwT( QWidget* iParent ) :
     this->m_ContourWidget.back()->SetPriority( 10.0 );
     this->m_ContourWidget.back()->SetInteractor( m_ImageView->GetInteractor( i ) );
     this->m_ContourWidget.back()->Off();
+
+    this->m_ContourWidget.back()->SetRepresentation( this->m_ContourRepresentation.back() );
     }
 
   m_MegaCaptureReader = itk::MegaCaptureReader::New();
@@ -955,8 +957,6 @@ void QGoTabImageView3DwT::Update()
     point_placer->SetImageActor( m_ImageView->GetImageActor( i ) );
 
     this->m_ContourRepresentation[i]->SetPointPlacer( point_placer );
-
-    this->m_ContourWidget[i]->SetRepresentation( this->m_ContourRepresentation[i] );
     }
 }
 //-------------------------------------------------------------------------
@@ -1872,9 +1872,9 @@ HighLightContours()
 
   std::list< vtkProp3D* >::iterator it = listofpicked.begin();
 
-  vtkProperty* property = vtkProperty::New();
-  property->SetColor( 1., 0., 0. );
-  property->SetLineWidth( 3. );
+  vtkProperty* select_property = vtkProperty::New();
+  select_property->SetColor( 1., 0., 0. );
+  select_property->SetLineWidth( 3. );
 
   while( it != listofpicked.end() )
     {
@@ -1895,7 +1895,7 @@ HighLightContours()
             && ( (*traceid_it).TraceID == trace_id ) )
           {
           m_ImageView->ChangeActorProperty( traceid_it->Direction,
-            traceid_it->Actor, property );
+            traceid_it->Actor, select_property );
 
 //           traceid_it->Highlighted = true;
 
@@ -1961,9 +1961,9 @@ HighLightContoursFromTable( )
     it = this->m_DataBaseTables->m_ContoursInfo.begin();
   unsigned int trace_id = 0;
 
-  vtkProperty* property = vtkProperty::New();
-  property->SetColor( 1., 0., 0. );
-  property->SetLineWidth( 3. );
+  vtkProperty* select_property = vtkProperty::New();
+  select_property->SetColor( 1., 0., 0. );
+  select_property->SetLineWidth( 3. );
 
   while( it != this->m_DataBaseTables->m_ContoursInfo.end() )
     {
@@ -1991,7 +1991,7 @@ HighLightContoursFromTable( )
         else
           {
           m_ImageView->ChangeActorProperty( traceid_it->Direction,
-            traceid_it->Actor, property );
+            traceid_it->Actor, select_property );
           }
         ++traceid_it;
         }
@@ -2020,8 +2020,8 @@ SelectContoursInTable( )
 
     if( actor_it != m_ContourMeshContainer.get< 1 >().end() )
       {
-      int trace_id = actor_it->TraceID;
-      listofrowstobeselected.push_back( static_cast< int >( trace_id ) );
+      int trace_id = static_cast< int >( actor_it->TraceID );
+      listofrowstobeselected.push_back( trace_id );
       }
     ++it;
     }

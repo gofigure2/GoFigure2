@@ -470,7 +470,7 @@ void QGoTabImageView3D::SetImageToImageViewer( vtkImageData* image )
   m_ImageView->SetImage( image );
   m_ImageView->Update();
 
-  for( int i = 0; i < 3; i++ )
+  for( int i = 0; i < this->m_ContourWidget.size(); i++ )
     {
     vtkImageActorPointPlacer* point_placer = vtkImageActorPointPlacer::New();
     point_placer->SetImageActor( m_ImageView->GetImageActor( i ) );

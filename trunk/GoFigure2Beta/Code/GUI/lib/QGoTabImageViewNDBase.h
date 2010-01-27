@@ -19,7 +19,7 @@ class QGoTabImageViewNDBase : public QGoTabImageViewElementBase
     void ShowAllChannels( bool iChecked );
     void ShowOneChannel( int iChannel );
   protected:
-    vtkImageData* m_Image;
+    vtkSmartPointer< vtkImageData > m_Image;
 
     virtual void SetImageToImageViewer( vtkImageData* image ) = 0;
     

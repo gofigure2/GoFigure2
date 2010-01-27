@@ -18,13 +18,13 @@ namespace itk
  *
  */
 MegaCaptureReader::
-MegaCaptureReader() : m_FileType( GoFigure::PNG ),
+MegaCaptureReader() : m_OutputImage( 0 ), m_FileType( GoFigure::PNG ),
   m_MinTimePoint( 0 ), m_MaxTimePoint( 0 ), m_UpdateTimePoint( 0 ),
   m_MinZSlice( 0 ), m_MaxZSlice( 0 ), m_UpdateZSlice( 0 ),
   m_MinChannel( 0 ), m_MaxChannel( 0 ), m_UpdateChannel( 0 ),
   m_TimeBased( true )
 {
-  m_OutputImage = vtkImageData::New();
+  m_HeaderReader = new MegaCaptureHeaderReader( "" );
 }
 
 /**
@@ -32,7 +32,9 @@ MegaCaptureReader() : m_FileType( GoFigure::PNG ),
  */
 MegaCaptureReader::
 ~MegaCaptureReader()
-{}
+{
+  delete m_HeaderReader;
+}
 
 /**
  *
@@ -117,8 +119,8 @@ void
 MegaCaptureReader::
 SetMegaCaptureHeader( const std::string& iHeader )
 {
-  m_HeaderReader.SetFileName( iHeader );
-  m_HeaderReader.Read();
+  m_HeaderReader->SetFileName( iHeader );
+  m_HeaderReader->Read();
 }
 
 /**
@@ -129,7 +131,7 @@ void
 MegaCaptureReader::
 SetInput( const GoFigureFileInfoHelperMultiIndexContainer& iUserFileList )
 {
-  if( iUserFileList.empty() )
+  if( iUserFileList.size() == 0 )
     {
     std::cerr <<"iUserFileList.empty()" <<std::endl;
     return;
@@ -268,7 +270,7 @@ Update()
 
     /// \note We are using m_VoxelSizeZ no matter if m_TimeBased is true or false.
     /// Since m_TimeInterval >> m_VoxelSizeX, it makes sense to do like this.
-    zspacing = m_HeaderReader.m_VoxelSizeZ;
+    zspacing = m_HeaderReader->m_VoxelSizeZ;
 
 //     if( m_TimeBased )
 //       {
@@ -279,9 +281,14 @@ Update()
 //       zspacing = m_HeaderReader.m_TimeInterval;
 //       }
 
-    temp_output->SetSpacing( m_HeaderReader.m_VoxelSizeX,
-        m_HeaderReader.m_VoxelSizeY,
+    temp_output->SetSpacing( m_HeaderReader->m_VoxelSizeX,
+        m_HeaderReader->m_VoxelSizeY,
         zspacing );
+
+    if( !m_OutputImage )
+      {
+      m_OutputImage = vtkImageData::New();
+      }
 
     m_OutputImage->ShallowCopy( temp_output );
     volumeBuilder->Delete();

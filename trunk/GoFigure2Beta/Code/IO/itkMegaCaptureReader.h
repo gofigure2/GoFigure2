@@ -60,10 +60,10 @@ namespace itk
 
     void ComputeBounds();
 
-    vtkImageData*  m_OutputImage;
-    GoFigureFileInfoHelperMultiIndexContainer  m_FileList;
-    GoFigure::FileType m_FileType;
-    MegaCaptureHeaderReader m_HeaderReader;
+    vtkImageData*                               m_OutputImage;
+    GoFigureFileInfoHelperMultiIndexContainer   m_FileList;
+    GoFigure::FileType                          m_FileType;
+    MegaCaptureHeaderReader*                    m_HeaderReader;
 
     unsigned int m_MinTimePoint;
     unsigned int m_MaxTimePoint;

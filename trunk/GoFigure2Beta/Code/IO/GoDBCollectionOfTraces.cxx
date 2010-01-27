@@ -76,6 +76,7 @@ GoDBCollectionOfTraces::GoDBCollectionOfTraces(
 //--------------------------------------------------------------------------
 GoDBCollectionOfTraces::~GoDBCollectionOfTraces()
 {
+  delete m_LinkToRowContainer;
 }
 //--------------------------------------------------------------------------
 

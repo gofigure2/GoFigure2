@@ -60,8 +60,7 @@ Read()
     filename1 += m_MegaCaptureHeaderFile;
 
     // Read megacapture header
-    MegaCaptureHeaderReader header_reader;
-    header_reader.SetFileName( filename1 );
+    MegaCaptureHeaderReader header_reader( filename1 );
     header_reader.Read();
 
     m_NumberOfChannels = header_reader.m_NumberOfChannels;

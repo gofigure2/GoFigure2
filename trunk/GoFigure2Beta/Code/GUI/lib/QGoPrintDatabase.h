@@ -63,7 +63,7 @@ class QGoPrintDatabase : public QWidget,
 
 public:
 
-  QGoPrintDatabase( QWidget* iParent = 0 );
+  explicit QGoPrintDatabase( QWidget* iParent = 0 );
   virtual ~QGoPrintDatabase();
 
   typedef GoDBCollectionOfTraces::DBTableWidgetContainerType DBTableWidgetContainerType;

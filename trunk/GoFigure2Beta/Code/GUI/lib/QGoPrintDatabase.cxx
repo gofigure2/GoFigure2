@@ -125,6 +125,11 @@ QGoPrintDatabase( QWidget* iParent ) :
 //--------------------------------------------------------------------------
 QGoPrintDatabase::~QGoPrintDatabase()
 {
+  delete m_CollectionOfLineages;
+  delete m_CollectionOfTracks;
+  delete m_CollectionOfMeshes;
+  delete m_CollectionOfContours;
+
   // Need to release memory allocated for contours, meshes and tracks
   // contours
   std::vector<ContourMeshStructure>::iterator c_it = m_ContoursInfo.begin();

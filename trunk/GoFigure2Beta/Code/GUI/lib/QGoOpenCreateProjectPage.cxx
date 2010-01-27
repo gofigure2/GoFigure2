@@ -55,7 +55,8 @@
 QGoOpenCreateProjectPage::
 QGoOpenCreateProjectPage( QWidget *iParent ) :
   QWizardPage( iParent ),
-  m_DatabaseConnector( 0 )
+  m_DatabaseConnector( 0 ),
+  ExistingImgSession( false )
 {
   QFont tfont;
   tfont.setBold(false);

@@ -4,7 +4,7 @@
 #include <fstream>
 
 MegaCaptureHeaderReader::
-MegaCaptureHeaderReader( std::string iFileName ) :
+MegaCaptureHeaderReader( const std::string& iFileName ) :
   m_FileName( iFileName )
 {}
 

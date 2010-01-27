@@ -7,7 +7,7 @@
 class MegaCaptureHeaderReader
 {
   public:
-    MegaCaptureHeaderReader( std::string iFileName = std::string() );
+    explicit MegaCaptureHeaderReader( const std::string& iFileName = "" );
     ~MegaCaptureHeaderReader();
 
     void SetFileName( const std::string& iFileName );
