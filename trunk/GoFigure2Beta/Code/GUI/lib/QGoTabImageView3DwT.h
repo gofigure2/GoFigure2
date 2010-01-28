@@ -233,6 +233,7 @@ protected:
   GoFigure::FileType    m_FileType;
   QColor                m_BackgroundColor;
   QAction*              m_BackgroundColorAction;
+  QAction*              m_TakeSnapshotAction;
   int                   m_TimePoint;
   unsigned int          m_ContourId;
   bool                  m_ReEditContourMode;

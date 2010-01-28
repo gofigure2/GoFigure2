@@ -496,9 +496,11 @@ CreateAllViewActions()
     this, SLOT( LoadAllContoursForCurrentTimePoint() ) );
 
 #ifdef ENABLEVIDEORECORD
-  /*QAction* separator4 = new QAction( this );
+  /*
+  QAction* separator4 = new QAction( this );
   separator4->setSeparator( true );
-  this->m_ToolsActions.push_back( separator4 );*/
+  this->m_ToolsActions.push_back( separator4 );
+  */
 
   this->m_ToolsActions.push_back( m_VideoRecorderWidget->toggleViewAction() );
 
@@ -513,15 +515,16 @@ CreateAllViewActions()
 
   ////////////////////////////
 
-  QAction* TakeSnapshotAction = new QAction( tr( "Take Snapshot" ), this );
+  m_TakeSnapshotAction = new QAction( tr( "Take Snapshot" ), this );
   QIcon snapshoticon;
   snapshoticon.addPixmap( QPixmap(QString::fromUtf8(":/fig/camera-photo.png")),
     QIcon::Normal, QIcon::Off );
-  TakeSnapshotAction->setIcon( snapshoticon );
-  QObject::connect( TakeSnapshotAction, SIGNAL( triggered() ),
+  m_TakeSnapshotAction->setIcon( snapshoticon );
+  m_TakeSnapshotAction->setEnabled(false);
+  QObject::connect( m_TakeSnapshotAction, SIGNAL( triggered() ),
                     this, SLOT( TakeSnapshot() ) );
 
-  this->m_ToolsActions.push_back( TakeSnapshotAction );
+  this->m_ToolsActions.push_back( m_TakeSnapshotAction );
 
 /////////////////////////////////////////////////
 }
@@ -1132,6 +1135,7 @@ QGoTabImageView3DwT::
 Quadview()
 {
   m_ImageView->SetFullScreenView(0);
+  m_TakeSnapshotAction->setEnabled(false);
 }
 //-------------------------------------------------------------------------
 
@@ -1144,6 +1148,7 @@ QGoTabImageView3DwT::
 FullScreenViewXY()
 {
   m_ImageView->SetFullScreenView(1);
+  m_TakeSnapshotAction->setEnabled(true);
 }
 //-------------------------------------------------------------------------
 
@@ -1156,6 +1161,7 @@ QGoTabImageView3DwT::
 FullScreenViewXZ()
 {
   m_ImageView->SetFullScreenView(2);
+  m_TakeSnapshotAction->setEnabled(true);
 }
 //-------------------------------------------------------------------------
 
@@ -1168,6 +1174,7 @@ QGoTabImageView3DwT::
 FullScreenViewYZ()
 {
   m_ImageView->SetFullScreenView(3);
+  m_TakeSnapshotAction->setEnabled(true);
 }
 //-------------------------------------------------------------------------
 
@@ -1180,6 +1187,7 @@ QGoTabImageView3DwT::
 FullScreenViewXYZ()
 {
   m_ImageView->SetFullScreenView(4);
+  m_TakeSnapshotAction->setEnabled(true);
 }
 //-------------------------------------------------------------------------
 
