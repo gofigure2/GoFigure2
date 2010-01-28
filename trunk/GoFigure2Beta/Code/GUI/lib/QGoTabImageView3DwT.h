@@ -142,6 +142,9 @@ public:
     const double& iR, const double& iG, const double& iB, const double& iA,
     const bool& iHighlighted, const unsigned int& iTCoord, const bool& iSaveInDataBase );
 
+  void LoadAllContoursForGivenTimePoint( const unsigned int& iT );
+  void RemoveAllContoursForGivenTimePoint( const unsigned int& iT );
+
   QGoPrintDatabase* m_DataBaseTables;
 
 signals:
@@ -190,6 +193,7 @@ public slots:
   void ShowOneChannel( int iChannel );
 
   void LoadAllContoursForCurrentTimePoint();
+  void RemoveAllContoursForPresentTimePoint();
 
   void ActivateManualSegmentationEditor( const bool& iActivate );
   void ValidateContour();
@@ -264,9 +268,6 @@ protected:
   std::vector< vtkActor* > AddContour( const int& iId,
       vtkPolyData* dataset,
       vtkProperty* property = NULL );
-
-  void RemoveAllContoursForPresentTimePoint();
-  void LoadAllContoursForGivenTimePoint( const unsigned int& iT );
 
   void SetTimePointWithLSMReaders( const int& iTimePoint );
   void SetTimePointWithMegaCapture( const int& iTimePoint );

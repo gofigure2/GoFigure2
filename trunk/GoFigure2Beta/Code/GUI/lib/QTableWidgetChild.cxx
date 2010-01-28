@@ -149,23 +149,22 @@ void QTableWidgetChild::SetSelectRowTraceID (std::string TraceName,
   int RowIndex = this->findValueGivenColumn(TraceID, TraceIDName.str().c_str());
   if (RowIndex == -1)
     {
-    std::cout<<"The contour "<<TraceID<<"has not been found ";
-    std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
-    std::cout << std::endl;
+    std::cerr <<"The contour "<<TraceID<<"has not been found ";
+    std::cerr << "Debug: In " << __FILE__ << ", line " << __LINE__;
+    std::cerr << std::endl;
+    return;
     }
   else
     {
     if (IsSelected)
       {
       this->item(RowIndex,0)->setCheckState(Qt::Checked);
-      this->UpdateVectorCheckedRows(RowIndex,0);
       }
     else
       {
       this->item(RowIndex,0)->setCheckState(Qt::Unchecked);
-      this->UpdateVectorCheckedRows(RowIndex,0);
       }
-      //this->UpdateVectorCheckedRows(RowIndex,0);
+    this->UpdateVectorCheckedRows(RowIndex,0);
     }
 }
 //--------------------------------------------------------------------------
@@ -176,16 +175,17 @@ void QTableWidgetChild::SetSelectRowTraceID (std::string TraceName,
   std::vector<ContourMeshStructure> & ioTracesInfo )
 {
   //first set all the highlighted traces to false:
-  for( unsigned int i=0; i < ioTracesInfo.size(); i++ )
+  unsigned int i = 0;
+  for( i=0; i < ioTracesInfo.size(); i++ )
     {
     ioTracesInfo[i].Highlighted = false;
     }
 
   //get the selected TraceID:
   std::list<int> SelectedTraces = this->GetListCheckedTraceID();
+
   //then, set to IsHighlight the selected ones:
   std::list<int>::iterator iter = SelectedTraces.begin();
-  unsigned int i;
 
   while(iter != SelectedTraces.end())
     {
@@ -324,7 +324,7 @@ void QTableWidgetChild::SetSelectedColumn(unsigned int iNbOfRows,
   unsigned int StartedRow)
 {
   int indexCol = findColumnName("");
-  for (unsigned int i = StartedRow ; i < iNbOfRows+StartedRow ; i++)
+  for( unsigned int i = StartedRow ; i < iNbOfRows+StartedRow; i++ )
     {
     QTableWidgetItem* Checkbox = new QTableWidgetItem;
     //Checkbox->setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsEnabled |
@@ -426,9 +426,9 @@ void QTableWidgetChild::InsertNewRow(GoDBTableWidgetContainer* iLinkToRowContain
           }//ENDFOR
         }//ENDIF
       }//ENDFOR
-      SetSelectedColumn(1,NewRow-1);
-      this->SetColorForTable(iLinkToRowContainer,TraceName,NewRow-1);
-      this->SetColorForTable(iLinkToRowContainer,CollectionName,NewRow-1);
+    SetSelectedColumn(1,NewRow-1);
+    this->SetColorForTable(iLinkToRowContainer,TraceName,NewRow-1);
+    this->SetColorForTable(iLinkToRowContainer,CollectionName,NewRow-1);
     }//ENDELSE
 }
 //--------------------------------------------------------------------------
@@ -437,8 +437,8 @@ void QTableWidgetChild::InsertNewRow(GoDBTableWidgetContainer* iLinkToRowContain
 void QTableWidgetChild::UpdateRow(GoDBTableWidgetContainer* iLinkToRowContainer,
     int TraceID,std::string TraceName, std::string CollectionName)
 {
-   DBTableWidgetContainerType UpdateTraceRowContainer = iLinkToRowContainer->GetRowContainer();
-   if (UpdateTraceRowContainer.size() == 0 || UpdateTraceRowContainer[1].second.size() != 1)
+  DBTableWidgetContainerType UpdateTraceRowContainer = iLinkToRowContainer->GetRowContainer();
+  if (UpdateTraceRowContainer.size() == 0 || UpdateTraceRowContainer[1].second.size() != 1)
     {
     std::cout<<"The Update Trace Row Container is totally empty or there is more than 1 trace in it";
     std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
@@ -653,11 +653,15 @@ void QTableWidgetChild::PrepareRangeToCopy(QTableWidgetSelectionRange Range, QSt
   for (int i = 0; i < Range.rowCount(); ++i) 
     {
     if (i > 0)
-    str += "\n";
+      {
+      str += "\n";
+      }
     for (int j = 0; j < Range.columnCount(); ++j) 
       {
       if (j > 0)
-      str += "\t";
+        {
+        str += "\t";
+        }
       str += this->item(Range.topRow() + i, Range.leftColumn() + j)->text();
       }
     } 

@@ -53,6 +53,7 @@
 #include "itkQtProgressBar.h"
 
 #include <iostream>
+#include <set>
 
 // Qt includes
 #include <QDesktopServices>
@@ -335,36 +336,45 @@ void QGoMainWindow::openFilesfromDB()
     QGoTabImageView3DwT* w3t = CreateNewTabFor3DwtImage( importer->GetOutput(),
       filetype, importer->GetHeaderFilename(), 0 );
 
-    // Lad all contours from the first time point
-    std::vector< ContourMeshStructure > contour_list =
-      w3t->m_DataBaseTables->GetContoursForAGivenTimepoint( 0 );
-
+    // Load all contours from the first time point
     std::vector< ContourMeshStructure >::iterator
-      contourmesh_list_it = contour_list.begin();
+      contourmesh_list_it = w3t->m_DataBaseTables->m_ContoursInfo.begin();
+
+    std::set< unsigned int > temp_time_set;
 
     // we don't need here to save this contour in the database,
     // since they have just been extracted from it!
-    while( contourmesh_list_it != contour_list.end() )
+    while( contourmesh_list_it != w3t->m_DataBaseTables->m_ContoursInfo.end() )
       {
       w3t->AddContourFromNodes(
         contourmesh_list_it->TraceID,
         contourmesh_list_it->Nodes,
         contourmesh_list_it->rgba,
         contourmesh_list_it->Highlighted,
-        0, // timepoint
+        contourmesh_list_it->TCoord, // timepoint
         false ); // not to be saved in the database
+
+      if( contourmesh_list_it->TCoord != 0 )
+        {
+        temp_time_set.insert( contourmesh_list_it->TCoord );
+        }
+
       ++contourmesh_list_it;
+      }
+
+    for( std::set< unsigned int >::iterator time_it = temp_time_set.begin();
+        time_it != temp_time_set.end();
+        ++time_it )
+      {
+      w3t->RemoveAllContoursForGivenTimePoint( *time_it );
       }
 
     w3t->ReinitializeContour();
 
     // Let's load all the mesh from the first time point
-    std::vector< ContourMeshStructure > mesh_list =
-      w3t->m_DataBaseTables->GetMeshesForAGivenTimepoint( 0 );
+    contourmesh_list_it = w3t->m_DataBaseTables->m_MeshesInfo.begin();
 
-    contourmesh_list_it = mesh_list.begin();
-
-    while( contourmesh_list_it != mesh_list.end() )
+    while( contourmesh_list_it != w3t->m_DataBaseTables->m_MeshesInfo.end() )
       {
       if( contourmesh_list_it->Nodes )
         {
