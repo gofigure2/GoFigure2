@@ -283,29 +283,40 @@ CreateVideoRecorderWidget()
       this, SLOT( SetSliceViewXZ( int ) ) );
   QObject::connect( m_VideoRecorderWidget, SIGNAL( ZSliceChanged( int ) ),
       this, SLOT( SetSliceViewXY( int ) ) );
-/*
-    QObject::connect( m_VisuDockWidget, SIGNAL( TSliceChanged( int ) ),
-      this, SLOT( SetTimePoint( int ) ) );*/
+  QObject::connect( m_VideoRecorderWidget, SIGNAL( TSliceChanged( int ) ),
+      this, SLOT( SetTimePoint( int ) ) );
+
+  QObject::connect( m_VideoRecorderWidget, SIGNAL( GetSlicePosition( int ) ),
+        this, SLOT( GetSlicePosition( int ) ) );
 }
 
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
-SetRendererWindow(int iTest)
+SetRendererWindow(int iValue)
 {
 
-  if (iTest -1 >= 0)
-  {
-    std::cout << "iTest: "<< iTest << std::endl;
-    //set renderer window for video
-    m_VideoRecorderWidget->SetRenderingWindow2(
-    m_ImageView->GetInteractor( iTest -1 )->GetRenderWindow() );
-  }
-
-  m_VideoRecorderWidget->SetRendererWindow(iTest);
-
+  if (iValue -1 >= 0)
+    {
+    m_VideoRecorderWidget->SetRenderingWindow(
+    m_ImageView->GetInteractor( iValue -1 )->GetRenderWindow() );
+    }
+  else
+    {
+    m_VideoRecorderWidget->SetRenderingWindow( NULL );
+    }
 }
-#endif
+
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+GetSlicePosition(int iValue)
+{
+//0 1 or 2
+}
+#endif /* ENABLEVIDEORECORD */
 //-------------------------------------------------------------------------
 /**
  *
@@ -670,20 +681,6 @@ SetLSMReader( vtkLSMReader* iReader,
     m_VisuDockWidget->SetTMinimumAndMaximum( 0, dim[3] - 1 );
     m_VisuDockWidget->SetTSlice( iTimePoint );
 
-#ifdef ENABLEVIDEORECORD
-  m_VideoRecorderWidget->SetXMinAndMax( 0, dim[0] - 1 );
-  m_VideoRecorderWidget->SetXSlice( ( dim[0] - 1 ) / 2 );
-
-  m_VideoRecorderWidget->SetYMinAndMax( 0, dim[1] - 1 );
-  m_VideoRecorderWidget->SetYSlice( ( dim[1] - 1 ) / 2 );
-
-  m_VideoRecorderWidget->SetZMinAndMax( 0, dim[2] - 1 );
-  m_VideoRecorderWidget->SetZSlice( ( dim[2] - 1 ) / 2 );
-
-  m_VideoRecorderWidget->SetTMinAndMax( 0, dim[3] - 1 );
-  m_VideoRecorderWidget->SetTSlice( iTimePoint );
-#endif
-
     int NumberOfChannels = m_LSMReader[0]->GetNumberOfChannels();
 
     m_VisuDockWidget->SetNumberOfChannels( NumberOfChannels );
@@ -707,6 +704,14 @@ SetLSMReader( vtkLSMReader* iReader,
       {
       SetTimePoint( iTimePoint );
       }
+
+#ifdef ENABLEVIDEORECORD
+      m_VideoRecorderWidget->SetXMinAndMax( 0, dim[0] - 1 );
+      m_VideoRecorderWidget->SetYMinAndMax( 0, dim[1] - 1 );
+      m_VideoRecorderWidget->SetZMinAndMax( 0, dim[2] - 1 );
+      m_VideoRecorderWidget->SetTMinAndMax( 0, dim[3] - 1 );
+#endif /* ENABLEVIDEORECORD */
+
     }
 }
 //-------------------------------------------------------------------------
@@ -759,19 +764,6 @@ SetMegaCaptureFile(
   m_VisuDockWidget->SetNumberOfChannels( NumberOfChannels );
 
   // Set up QSpinBox in m_VideoRecorderWidget
-#ifdef ENABLEVIDEORECORD
-  m_VideoRecorderWidget->SetXMinAndMax( extent[0], extent[1] );
-  m_VideoRecorderWidget->SetXSlice( ( extent[0] + extent[1] ) / 2 );
-
-  m_VideoRecorderWidget->SetYMinAndMax( extent[2], extent[3] );
-  m_VideoRecorderWidget->SetYSlice( ( extent[2] + extent[3] ) / 2 );
-
-  m_VideoRecorderWidget->SetZMinAndMax( extent[4], extent[5] );
-  m_VideoRecorderWidget->SetZSlice( ( extent[4] + extent[5] ) / 2 );
-
-  m_VideoRecorderWidget->SetTMinAndMax( min_t, max_t );
-  m_VideoRecorderWidget->SetTSlice( iTimePoint );
-#endif
 
   if( NumberOfChannels > 1 )
     {
@@ -788,6 +780,14 @@ SetMegaCaptureFile(
     {
     SetTimePoint( iTimePoint );
     }
+
+  // Set up QSpinBox in m_VideoRecorderWidget
+#ifdef ENABLEVIDEORECORD
+  m_VideoRecorderWidget->SetXMinAndMax( extent[0], extent[1] );
+  m_VideoRecorderWidget->SetYMinAndMax( extent[2], extent[3] );
+  m_VideoRecorderWidget->SetZMinAndMax( extent[4], extent[5] );
+  m_VideoRecorderWidget->SetTMinAndMax( min_t, max_t );
+#endif /* ENABLEVIDEORECORD */
 }
 //-------------------------------------------------------------------------
 
@@ -915,6 +915,7 @@ void
 QGoTabImageView3DwT::
 SetTimePoint( const int& iTimePoint )
 {
+	std::cout << "Set TP"<< iTimePoint << std::endl;
   if( iTimePoint == m_TimePoint )
     {
     return;

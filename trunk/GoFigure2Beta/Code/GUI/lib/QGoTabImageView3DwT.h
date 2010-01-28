@@ -18,7 +18,7 @@ class QGoPrintDatabase;
 
 #ifdef   ENABLEVIDEORECORD
 class QGoVideoRecorder;
-#endif
+#endif /* ENABLEVIDEORECORD */
 
 class vtkLSMReader;
 class vtkImageData;
@@ -154,10 +154,11 @@ public slots:
   void DisplaySplinePlanes();
   void DisplayCube();
   void TakeSnapshot();
+  void GetSlicePosition( int );
 
 #ifdef   ENABLEVIDEORECORD
   void SetRendererWindow( int );
-#endif
+#endif /* ENABLEVIDEORECORD */
 
   QString SnapshotViewXY( const GoFigure::FileType& iType,
     const QString& iBaseName = QString( "snapshot" ) );
@@ -237,7 +238,7 @@ protected:
 
 #ifdef   ENABLEVIDEORECORD
   QGoVideoRecorder*                 m_VideoRecorderWidget;
-#endif
+#endif /* ENABLEVIDEORECORD */
 
 
   std::vector< vtkSmartPointer< vtkContourWidget > >                      m_ContourWidget;
@@ -253,7 +254,7 @@ protected:
 
 #ifdef   ENABLEVIDEORECORD
   void CreateVideoRecorderWidget();
-#endif
+#endif /* ENABLEVIDEORECORD */
 
   void RemoveActorFromViewer( const int& iId, vtkActor* iActor );
   void DisplayActorInViewer( const int& iId, vtkActor* iActor );
