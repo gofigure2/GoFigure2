@@ -18,31 +18,22 @@ class QGoVideoRecorder : public QDockWidget, private Ui::NewDockWidgetVideoRecor
         explicit QGoVideoRecorder( QWidget* parent = 0);
         ~QGoVideoRecorder();
 
-        void SetXMinAndMax( int XMin, int XMax );
-        void SetXSlice( int X );
+        void SetXMinAndMax( int , int );
+        void SetYMinAndMax( int , int );
+        void SetZMinAndMax( int , int );
+        void SetTMinAndMax( int , int );
 
-        void SetYMinAndMax( int YMin, int YMax );
-        void SetYSlice( int Y );
-
-        void SetZMinAndMax( int ZMin, int ZMax );
-        void SetZSlice( int Z );
-
-        void SetTMinAndMax( int TMin, int TMax );
-        void SetTSlice( int T );
+        void SetInitialPosition( int );
 
     private:
 
         unsigned int m_XMin;
-        unsigned int m_XFixed;
         unsigned int m_XMax;
         unsigned int m_YMin;
-        unsigned int m_YFixed;
         unsigned int m_YMax;
         unsigned int m_ZMin;
-        unsigned int m_ZFixed;
         unsigned int m_ZMax;
         unsigned int m_TMin;
-        unsigned int m_TFixed;
         unsigned int m_TMax;
 
         unsigned int m_XMinForVideo;
@@ -52,8 +43,9 @@ class QGoVideoRecorder : public QDockWidget, private Ui::NewDockWidgetVideoRecor
         unsigned int m_ZMinForVideo;
         unsigned int m_ZMaxForVideo;
         unsigned int m_TMinForVideo;
-        unsigned int m_TForVideo;
         unsigned int m_TMaxForVideo;
+
+        unsigned int m_InitialPosition;
 
         // in tab "record video"
         unsigned int m_WindowSelected;
@@ -63,7 +55,7 @@ class QGoVideoRecorder : public QDockWidget, private Ui::NewDockWidgetVideoRecor
         unsigned int m_FrameRate2;
         unsigned int m_VideoQuality2;
 
-        vtkFFMPEGRenderWindowRecorder *m_VideoRecorder2;
+        vtkFFMPEGRenderWindowRecorder *m_VideoRecorder;
 
         QTimer *m_InternalTimer;
         unsigned int m_FrameCounter;
@@ -71,22 +63,19 @@ class QGoVideoRecorder : public QDockWidget, private Ui::NewDockWidgetVideoRecor
         bool m_RenderWindowSelected;
 
         void UpdateQSpinBoxFT( int );
+        void UpdateQSpinBoxF( int );
 
         int m_SliceFT;
 
     public slots:
-      void SetRenderingWindow( vtkRenderWindow* iRenderingWindow );
+      void SetRenderingWindow( vtkRenderWindow* );
 
     signals:
-      void XSliceChanged( int Slice );
-      void YSliceChanged( int Slice );
-      void ZSliceChanged( int Slice );
-      void TSliceChanged( int Slice );
-
-      void FullScreenViewXY();
-      void FullScreenViewYZ();
-      void FullScreenViewXZ();
-
+      void XSliceChanged( int );
+      void YSliceChanged( int );
+      void ZSliceChanged( int );
+      void TSliceChanged( int );
+      void GetSlicePosition( int );
 
     private slots:
 
@@ -95,20 +84,19 @@ class QGoVideoRecorder : public QDockWidget, private Ui::NewDockWidgetVideoRecor
         void on_startVideo_clicked();
         
         //Choose a slice T Fixed
-        void on_tSpinFixed_valueChanged(int value);
-        void on_tSpinMin_2_valueChanged(int value);
-        void on_tSpinMax_2_valueChanged(int value);
+        void on_tSpinMin_2_valueChanged( int );
+        void on_tSpinMax_2_valueChanged( int );
 
 
         //Video parameters
         void on_createFile_clicked();
-        void on_frameRate_valueChanged(int value);
-        void on_videoQuality_valueChanged(int value);
+        void on_frameRate_valueChanged( int );
+        void on_videoQuality_valueChanged( int );
 
         //Video parameters
         void on_createFile_2_clicked();
-        void on_frameRate_2_valueChanged(int value);
-        void on_videoQuality_2_valueChanged(int value);
+        void on_frameRate_2_valueChanged( int );
+        void on_videoQuality_2_valueChanged( int );
 
         void on_startRecord_clicked();
         void on_endRecord_clicked();
@@ -116,7 +104,11 @@ class QGoVideoRecorder : public QDockWidget, private Ui::NewDockWidgetVideoRecor
         void timeout();
 
 
-        void on_SliceFT_activated(int value);
+        void on_SliceFT_activated( int );
+
+        void on_tSpinMin_valueChanged( int );
+        void on_tSpinMax_valueChanged( int );
+
 
 };
 
