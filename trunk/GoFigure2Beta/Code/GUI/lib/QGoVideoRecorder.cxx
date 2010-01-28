@@ -357,9 +357,6 @@ on_startVideo_clicked()
     m_VideoRecorder->Setm_FrameRate( m_FrameRate2 );
     m_VideoRecorder->Setm_VideoQuality( m_VideoQuality2 );
 
-    // Get actual position of Slices
-    emit GetSlicePosition( m_SliceFT );
-
     if( m_SliceFT == 0 )
       {
       QString fileName = m_VideoName2;
@@ -376,13 +373,14 @@ on_startVideo_clicked()
       for(unsigned int i = m_XMinForVideo; i < m_XMaxForVideo+1; i++)
         {
         //send signal to gofigure to change slice
-      std::cout << "emit X"<<std::endl;
         emit XSliceChanged(i);
         //capture screen
         m_VideoRecorder->TakeSnapshot();
         }
 
         m_VideoRecorder->EndCapture();
+
+        emit XSliceChanged(m_XMinForVideo);
       }
 
     if( m_SliceFT == 1 )
@@ -402,12 +400,13 @@ on_startVideo_clicked()
        for(unsigned int i = m_YMinForVideo; i < m_YMaxForVideo+1; i++)
          {
          //send signal to gofigure to change slice
-       std::cout << "emit Y"<<std::endl;
          emit YSliceChanged(i);
          //capture screen
          m_VideoRecorder->TakeSnapshot();
          }
        m_VideoRecorder->EndCapture();
+
+       emit YSliceChanged(m_YMinForVideo);
        }
 
     if( m_SliceFT == 2 )
@@ -427,12 +426,13 @@ on_startVideo_clicked()
        for(unsigned int i = m_ZMinForVideo; i < m_ZMaxForVideo+1; i++)
          {
          //send signal to gofigure to change slice
-       std::cout << "emit Z"<<std::endl;
          emit ZSliceChanged(i);
          //capture screen
          m_VideoRecorder->TakeSnapshot();
          }
        m_VideoRecorder->EndCapture();
+
+       emit ZSliceChanged(m_ZMinForVideo);
        }
     }
   else
@@ -460,6 +460,8 @@ on_startVideo_clicked()
       m_VideoRecorder->TakeSnapshot();
       }
     m_VideoRecorder->EndCapture();
+
+    //emit TSliceChanged(m_InitialPosition);
 
     }
 
@@ -673,13 +675,4 @@ SetRenderingWindow( vtkRenderWindow* iRenderingWindow )
     }
 
   // TODO Resize image with the first one if we want to change views during record
-}
-
-//----------------------------------------------------------------------------//
-
-void
-QGoVideoRecorder::
-SetInitialPosition( int iInitialPosition )
-{
-  m_InitialPosition = iInitialPosition;
 }

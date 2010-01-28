@@ -23,8 +23,6 @@ class QGoVideoRecorder : public QDockWidget, private Ui::NewDockWidgetVideoRecor
         void SetZMinAndMax( int , int );
         void SetTMinAndMax( int , int );
 
-        void SetInitialPosition( int );
-
     private:
 
         unsigned int m_XMin;
@@ -44,8 +42,6 @@ class QGoVideoRecorder : public QDockWidget, private Ui::NewDockWidgetVideoRecor
         unsigned int m_ZMaxForVideo;
         unsigned int m_TMinForVideo;
         unsigned int m_TMaxForVideo;
-
-        unsigned int m_InitialPosition;
 
         // in tab "record video"
         unsigned int m_WindowSelected;
@@ -75,7 +71,6 @@ class QGoVideoRecorder : public QDockWidget, private Ui::NewDockWidgetVideoRecor
       void YSliceChanged( int );
       void ZSliceChanged( int );
       void TSliceChanged( int );
-      void GetSlicePosition( int );
 
     private slots:
 

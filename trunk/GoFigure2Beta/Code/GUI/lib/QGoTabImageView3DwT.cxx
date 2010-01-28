@@ -285,9 +285,6 @@ CreateVideoRecorderWidget()
       this, SLOT( SetSliceViewXY( int ) ) );
   QObject::connect( m_VideoRecorderWidget, SIGNAL( TSliceChanged( int ) ),
       this, SLOT( SetTimePoint( int ) ) );
-
-  QObject::connect( m_VideoRecorderWidget, SIGNAL( GetSlicePosition( int ) ),
-        this, SLOT( GetSlicePosition( int ) ) );
 }
 
 //-------------------------------------------------------------------------
@@ -305,16 +302,6 @@ SetRendererWindow(int iValue)
     {
     m_VideoRecorderWidget->SetRenderingWindow( NULL );
     }
-}
-
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
-QGoTabImageView3DwT::
-GetSlicePosition(int iValue)
-{
-//0 1 or 2
 }
 #endif /* ENABLEVIDEORECORD */
 //-------------------------------------------------------------------------
@@ -403,61 +390,39 @@ CreateAllViewActions()
   QObject::connect( FullScreenXYZAction, SIGNAL( triggered() ),
     this, SLOT( FullScreenViewXYZ() ) );
 
-
-///// NEW ACTIONS
-
   QAction* separator5 = new QAction( this );
-    separator5->setSeparator( true );
-    this->m_ViewActions.push_back( separator5 );
+  separator5->setSeparator( true );
+  this->m_ViewActions.push_back( separator5 );
 
-    QAction* DisplayAnnotations = new QAction( tr( "Display annotations" ), this );
-    DisplayAnnotations->setCheckable( true );
-    DisplayAnnotations->setChecked( true );
-    DisplayAnnotations->setStatusTip( tr(" Display or not annotations in each 2d view" ) );
-/*
-    QIcon luticon;
-    luticon.addPixmap( QPixmap(QString::fromUtf8(":/fig/LookupTable.png")),
-      QIcon::Normal, QIcon::Off );
-    LookupTableAction->setIcon( luticon );
-*/
-    // Here write the connection
-    QObject::connect( DisplayAnnotations, SIGNAL( triggered() ),
-      this, SLOT( DisplayAnnotations() ) );
+  QAction* DisplayAnnotations = new QAction( tr( "Display annotations" ), this );
+  DisplayAnnotations->setCheckable( true );
+  DisplayAnnotations->setChecked( true );
+  DisplayAnnotations->setStatusTip( tr(" Display or not annotations in each 2d view" ) );
 
-    this->m_ViewActions.push_back( DisplayAnnotations );
+  QObject::connect( DisplayAnnotations, SIGNAL( triggered() ),
+    this, SLOT( DisplayAnnotations() ) );
 
-    QAction* DisplaySplinePlanes = new QAction( tr( "Display spline planes" ), this );
-    DisplaySplinePlanes->setCheckable( true );
-    DisplaySplinePlanes->setChecked( true );
-    DisplaySplinePlanes->setStatusTip( tr(" Display or not spline planes on each view" ) );
-    /*
-        QIcon luticon;
-        luticon.addPixmap( QPixmap(QString::fromUtf8(":/fig/LookupTable.png")),
-          QIcon::Normal, QIcon::Off );
-        LookupTableAction->setIcon( luticon );
-    */
-        // Here write the connection
-        QObject::connect( DisplaySplinePlanes, SIGNAL( triggered() ),
-          this, SLOT( DisplaySplinePlanes() ) );
+  this->m_ViewActions.push_back( DisplayAnnotations );
 
-        this->m_ViewActions.push_back( DisplaySplinePlanes );
+  QAction* DisplaySplinePlanes = new QAction( tr( "Display spline planes" ), this );
+  DisplaySplinePlanes->setCheckable( true );
+  DisplaySplinePlanes->setChecked( true );
+  DisplaySplinePlanes->setStatusTip( tr(" Display or not spline planes on each view" ) );
 
-        QAction* DisplayCube3D = new QAction( tr( "Display 3D cube" ), this );
-        DisplayCube3D->setCheckable( true );
-        DisplayCube3D->setChecked( true );
-        DisplayCube3D->setStatusTip( tr(" Display or not cube in 3d" ) );
+  QObject::connect( DisplaySplinePlanes, SIGNAL( triggered() ),
+    this, SLOT( DisplaySplinePlanes() ) );
 
-        /*
-            QIcon luticon;
-            luticon.addPixmap( QPixmap(QString::fromUtf8(":/fig/LookupTable.png")),
-              QIcon::Normal, QIcon::Off );
-            LookupTableAction->setIcon( luticon );
-        */
-            // Here write the connection
-            QObject::connect( DisplayCube3D, SIGNAL( triggered() ),
-              this, SLOT( DisplayCube() ) );
+  this->m_ViewActions.push_back( DisplaySplinePlanes );
 
-            this->m_ViewActions.push_back( DisplayCube3D );
+  QAction* DisplayCube3D = new QAction( tr( "Display 3D cube" ), this );
+  DisplayCube3D->setCheckable( true );
+  DisplayCube3D->setChecked( true );
+  DisplayCube3D->setStatusTip( tr(" Display or not cube in 3d" ) );
+
+  QObject::connect( DisplayCube3D, SIGNAL( triggered() ),
+    this, SLOT( DisplayCube() ) );
+
+  this->m_ViewActions.push_back( DisplayCube3D );
 
   QAction* separator = new QAction( this );
   separator->setSeparator( true );
@@ -519,24 +484,8 @@ CreateAllViewActions()
     this, SLOT( LoadAllContoursForCurrentTimePoint() ) );
 
 #ifdef ENABLEVIDEORECORD
-  /*
-  QAction* separator4 = new QAction( this );
-  separator4->setSeparator( true );
-  this->m_ToolsActions.push_back( separator4 );
-  */
-
   this->m_ToolsActions.push_back( m_VideoRecorderWidget->toggleViewAction() );
-
-  //NEW
-  QObject::connect( m_VideoRecorderWidget, SIGNAL( FullScreenViewXY() ),
-		  FullScreenXYAction, SLOT( trigger() ));
-  QObject::connect( m_VideoRecorderWidget, SIGNAL( FullScreenViewYZ() ),
-  		  FullScreenYZAction, SLOT( trigger() ));
-  QObject::connect( m_VideoRecorderWidget, SIGNAL( FullScreenViewXZ() ),
-  		  FullScreenXZAction, SLOT( trigger() ));
 #endif
-
-  ////////////////////////////
 
   m_TakeSnapshotAction = new QAction( tr( "Take Snapshot" ), this );
   QIcon snapshoticon;
@@ -548,8 +497,6 @@ CreateAllViewActions()
                     this, SLOT( TakeSnapshot() ) );
 
   this->m_ToolsActions.push_back( m_TakeSnapshotAction );
-
-/////////////////////////////////////////////////
 }
 //-------------------------------------------------------------------------
 

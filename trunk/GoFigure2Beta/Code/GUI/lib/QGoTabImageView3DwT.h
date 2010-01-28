@@ -154,7 +154,6 @@ public slots:
   void DisplaySplinePlanes();
   void DisplayCube();
   void TakeSnapshot();
-  void GetSlicePosition( int );
 
 #ifdef   ENABLEVIDEORECORD
   void SetRendererWindow( int );
