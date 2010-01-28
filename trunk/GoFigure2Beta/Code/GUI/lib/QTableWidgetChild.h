@@ -115,6 +115,7 @@ protected:
 
   /** \brief Update the m_VectorSelectedRows */
   void UpdateVectorCheckedRows(int Row,int Column);
+  void PrepareRangeToCopy(QTableWidgetSelectionRange Range, QString &str);
 
 public slots:
   /** \brief sort items given one column and one sort order. */
@@ -145,7 +146,12 @@ public slots:
   std::string NameGroupColor,unsigned int StartRow);
 
   //std::vector<unsigned int> GetListCheckedRows();
+  /** \brief convert the text in the selection to a QString with \n and \t 
+  and put it in the Clipboard to be pasted in other applications*/
   void CopySelection();
+
+  void CopyTable();
+
 };
 
 #endif

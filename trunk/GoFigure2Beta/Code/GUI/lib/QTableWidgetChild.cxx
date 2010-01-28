@@ -614,20 +614,51 @@ void QTableWidgetChild::CopySelection()
 {
   //Get only the first selected Range:
   QList<QTableWidgetSelectionRange> SelectedRanges = this->selectedRanges();
-  QTableWidgetSelectionRange range = SelectedRanges.first();
-
+  //QTableWidgetSelectionRange range = SelectedRanges.first();
   QString str;
-
-  for (int i = 0; i < range.rowCount(); ++i) 
+  for (int k = 0; k <SelectedRanges.size();k++)
     {
-    if (i > 0)
-      str += "\n";
-      for (int j = 0; j < range.columnCount(); ++j) 
-        {
-        if (j > 0)
-        str += "\t";
-        str += this->item(range.topRow() + i, range.leftColumn() + j)->text();//formula(range.topRow() + i, range.leftColumn() + j);
-        }
+    QTableWidgetSelectionRange range = SelectedRanges.at(k);
+    this->PrepareRangeToCopy(range,str);
+    str += "\n";
     }
   QApplication::clipboard()->setText(str);
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QTableWidgetChild::CopyTable()
+{
+  //first, copy the column names:
+  QStringList ColumnsNames = this->recordHeaderNamesOrder();
+  QString str;
+  for (int i=0; i<ColumnsNames.size();i++)
+    {
+    str += ColumnsNames.at(i);
+    str += "\t";
+    }
+  str += "\n";
+  //second, get the range for the total selection:
+  QTableWidgetSelectionRange RangeForAllTableSelected(
+    0,0,this->rowCount()-1,this->columnCount()-1);
+  //third, copy the range:
+  this->PrepareRangeToCopy(RangeForAllTableSelected,str);
+  QApplication::clipboard()->setText(str);
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QTableWidgetChild::PrepareRangeToCopy(QTableWidgetSelectionRange Range, QString &str)
+{
+  for (int i = 0; i < Range.rowCount(); ++i) 
+    {
+    if (i > 0)
+    str += "\n";
+    for (int j = 0; j < Range.columnCount(); ++j) 
+      {
+      if (j > 0)
+      str += "\t";
+      str += this->item(Range.topRow() + i, Range.leftColumn() + j)->text();
+      }
+    } 
 }

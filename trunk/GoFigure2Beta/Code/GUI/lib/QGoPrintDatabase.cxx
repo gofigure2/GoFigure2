@@ -269,6 +269,7 @@ void QGoPrintDatabase::CreateContextMenu(const QPoint &iPos)
     this,SLOT(ReEditTrace()));
   ContextMenu->addAction(tr("Copy Selection"),
     this->m_CurrentlyUsedTable,SLOT(CopySelection()));
+  ContextMenu->addAction(tr("Copy table"),this->m_CurrentlyUsedTable,SLOT(CopyTable()));
   ContextMenu->exec(this->mapToGlobal(iPos));
 }
 //--------------------------------------------------------------------------
