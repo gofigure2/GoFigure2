@@ -910,21 +910,6 @@ std::vector< QAction* > QGoTabImageView4D::ViewActions()
 }
 //--------------------------------------------------------------------------
 
-//--------------------------------------------------------------------------
-std::list< std::pair< Qt::DockWidgetArea, QDockWidget* > > QGoTabImageView4D::DockWidget()
-{
-  std::list< std::pair< Qt::DockWidgetArea, QDockWidget* > > oList;
-  oList.push_back( std::pair< Qt::DockWidgetArea, QDockWidget* >( Qt::LeftDockWidgetArea, m_VisuDockWidget ) );
-  oList.push_back( std::pair< Qt::DockWidgetArea, QDockWidget* >( Qt::LeftDockWidgetArea, m_ManualSegmentationDockWidget ) );
-
-#ifdef ENABLEVIDEORECORD
-  oList.push_back( std::pair< Qt::DockWidgetArea, QDockWidget* >( Qt::LeftDockWidgetArea, m_VideoRecorderWidget ) );
-#endif
-
-  return oList;
-}
-//--------------------------------------------------------------------------
-
 //-------------------------------------------------------------------------
 void QGoTabImageView4D::resizeEvent( QResizeEvent* iEvent )
 {

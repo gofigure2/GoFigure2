@@ -71,7 +71,7 @@ public:
   virtual std::vector< QAction* > SegmentationActions();
   virtual std::vector< QAction* > ToolsActions();
 
-  virtual std::list< std::pair< Qt::DockWidgetArea, QDockWidget* > > DockWidget();
+  virtual std::list< std::pair< Qt::DockWidgetArea, QDockWidget* > >& DockWidget();
   virtual std::list< QWidget* > AdditionalWidget();
 //   virtual QStatusBar* StatusBar();
 
@@ -87,6 +87,8 @@ protected:
   std::vector< QAction* > m_ViewActions;
   std::vector< QAction* > m_SegmentationActions;
   std::vector< QAction* > m_ToolsActions;
+
+  std::list< std::pair< Qt::DockWidgetArea, QDockWidget* > > m_DockWidgetList;
 
 private:
   QGoTabElementBase( const QGoTabElementBase& );

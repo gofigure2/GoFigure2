@@ -53,8 +53,6 @@ class QGoTabImageView4D : public QGoTabElementBase
 
     virtual std::vector< QAction* > ViewActions();
 
-    virtual std::list< std::pair< Qt::DockWidgetArea, QDockWidget* > > DockWidget();
-
     virtual std::list< QWidget* > AdditionalWidget()
       {return std::list< QWidget* >(); }
 

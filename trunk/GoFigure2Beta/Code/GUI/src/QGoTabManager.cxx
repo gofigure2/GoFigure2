@@ -50,13 +50,14 @@ void QGoTabManager::ClearTabElement( QGoTabElementBase* iE )
     // Then remove all actions from the tools menu
     m_MainWindow->menuTools->clear();
 
-    std::list< std::pair< Qt::DockWidgetArea, QDockWidget* > > dock_list = iE->DockWidget();
+    std::list< std::pair< Qt::DockWidgetArea, QDockWidget* > >& dock_list = iE->DockWidget();
 
     for( std::list< std::pair< Qt::DockWidgetArea, QDockWidget* > >::iterator
         dck_it = dock_list.begin();
         dck_it != dock_list.end();
         ++dck_it )
       {
+      dck_it->first = m_MainWindow->dockWidgetArea( dck_it->second );
       m_MainWindow->removeDockWidget( dck_it->second );
       }
 
@@ -105,12 +106,12 @@ void QGoTabManager::SetUpTabElement( QGoTabElementBase* iE )
 
     action_vector2 = iE->ToolsActions();
 
-        for( std::vector< QAction* >::iterator it = action_vector2.begin();
-            it != action_vector2.end();
-            ++it )
-          {
-          m_MainWindow->menuTools->addAction( *it );
-          }
+    for( std::vector< QAction* >::iterator it = action_vector2.begin();
+        it != action_vector2.end();
+        ++it )
+      {
+      m_MainWindow->menuTools->addAction( *it );
+      }
 
 
     std::list< std::pair< Qt::DockWidgetArea, QDockWidget* > > dock_list = iE->DockWidget();

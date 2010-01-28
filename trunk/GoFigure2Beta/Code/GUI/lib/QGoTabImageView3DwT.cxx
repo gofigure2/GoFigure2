@@ -88,6 +88,18 @@ QGoTabImageView3DwT( QWidget* iParent ) :
   CreateAllViewActions();
 
   ReadSettings();
+
+  m_DockWidgetList.push_back(
+    std::pair< Qt::DockWidgetArea, QDockWidget* >( Qt::LeftDockWidgetArea, m_VisuDockWidget ) );
+  m_DockWidgetList.push_back(
+    std::pair< Qt::DockWidgetArea, QDockWidget* >( Qt::LeftDockWidgetArea, m_ManualSegmentationDockWidget ) );
+  m_DockWidgetList.push_back(
+    std::pair< Qt::DockWidgetArea, QDockWidget* >( Qt::TopDockWidgetArea, m_DataBaseTables ) );
+
+#ifdef ENABLEVIDEORECORD
+  m_DockWidgetList.push_back(
+    std::pair< Qt::DockWidgetArea, QDockWidget* >( Qt::LeftDockWidgetArea, m_VideoRecorderWidget ) );
+#endif
 }
 //-------------------------------------------------------------------------
 
@@ -1214,28 +1226,6 @@ QGoTabImageView3DwT::
 SetBackgroundColorToImageViewer( )
 {
   m_ImageView->SetBackgroundColor( m_BackgroundColor );
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-/**
- *
- * \return
- */
-std::list< std::pair< Qt::DockWidgetArea, QDockWidget* > >
-QGoTabImageView3DwT::
-DockWidget()
-{
-  std::list< std::pair< Qt::DockWidgetArea, QDockWidget* > > oList;
-  oList.push_back( std::pair< Qt::DockWidgetArea, QDockWidget* >( Qt::LeftDockWidgetArea, m_VisuDockWidget ) );
-  oList.push_back( std::pair< Qt::DockWidgetArea, QDockWidget* >( Qt::LeftDockWidgetArea, m_ManualSegmentationDockWidget ) );
-  oList.push_back( std::pair< Qt::DockWidgetArea, QDockWidget* >( Qt::TopDockWidgetArea, m_DataBaseTables ) );
-
-#ifdef ENABLEVIDEORECORD
-  oList.push_back( std::pair< Qt::DockWidgetArea, QDockWidget* >( Qt::LeftDockWidgetArea, m_VideoRecorderWidget ) );
-#endif
-
-  return oList;
 }
 //-------------------------------------------------------------------------
 

@@ -104,6 +104,7 @@ QGoMainWindow::QGoMainWindow( )
   m_TabManager = new QGoTabManager( this, this->CentralTabWidget );
 
   this->m_ViewToolBar = new QToolBar( tr("View"), this );
+  this->m_ViewToolBar->setObjectName( tr("View") );
   this->addToolBar( Qt::TopToolBarArea, this->m_ViewToolBar );
 
   m_LSMReader = vtkLSMReader::New();
@@ -1187,6 +1188,9 @@ void QGoMainWindow::ReadSettings()
     this->resize( 1450, 750 );
     }
 
+  QByteArray state = settings.value("state", QByteArray()).toByteArray();
+  this->restoreState(state);
+
   //  settings.setValue("vsplitterSizes", vSplitter->saveState());
   settings.endGroup();
 }
@@ -1201,6 +1205,7 @@ void QGoMainWindow::WriteSettings()
   settings.beginGroup("MainWindow");
   settings.setValue("size", size());
   settings.setValue("pos", pos());
+  settings.setValue("state", saveState());
   settings.endGroup();
 }
 //--------------------------------------------------------------------------------

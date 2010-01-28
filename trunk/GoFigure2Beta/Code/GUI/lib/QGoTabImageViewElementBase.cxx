@@ -32,6 +32,20 @@ QGoTabImageViewElementBase( QWidget* iParent ) :
 #endif
 {
   CreateManualSegmentationdockWidget();
+
+  m_DockWidgetList.push_back(
+    std::pair< Qt::DockWidgetArea, QDockWidget* >( Qt::LeftDockWidgetArea,
+      m_VisuDockWidget ) );
+
+  m_DockWidgetList.push_back(
+    std::pair< Qt::DockWidgetArea, QDockWidget* >( Qt::LeftDockWidgetArea,
+      m_ManualSegmentationDockWidget ) );
+
+#ifdef ENABLEVIDEORECORD
+  m_DockWidgetList.push_back(
+    std::pair< Qt::DockWidgetArea, QDockWidget* >( Qt::LeftDockWidgetArea,
+      m_VideoRecorderWidget ) );
+#endif
 }
 //--------------------------------------------------------------------------
 
@@ -320,27 +334,6 @@ ChangeContourRepresentationProperty()
     m_ContourRepresentation[i]->GetProperty()->SetColor( rn, gn, bn );
     m_ContourRepresentation[i]->GetActiveProperty()->SetColor( ra, ga, ba );
     }
-}
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-/**
- *
- * \return
- */
-std::list< std::pair< Qt::DockWidgetArea, QDockWidget* > >
-QGoTabImageViewElementBase::
-DockWidget()
-{
-  std::list< std::pair< Qt::DockWidgetArea, QDockWidget* > > oList;
-  oList.push_back( std::pair< Qt::DockWidgetArea, QDockWidget* >( Qt::LeftDockWidgetArea, m_VisuDockWidget ) );
-  oList.push_back( std::pair< Qt::DockWidgetArea, QDockWidget* >( Qt::LeftDockWidgetArea, m_ManualSegmentationDockWidget ) );
-
-#ifdef ENABLEVIDEORECORD
-  oList.push_back( std::pair< Qt::DockWidgetArea, QDockWidget* >( Qt::LeftDockWidgetArea, m_VideoRecorderWidget ) );
-#endif
-
-  return oList;
 }
 //--------------------------------------------------------------------------
 

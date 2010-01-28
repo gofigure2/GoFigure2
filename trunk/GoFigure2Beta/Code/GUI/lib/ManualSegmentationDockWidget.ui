@@ -12,9 +12,12 @@
   </property>
   <property name="minimumSize">
    <size>
-    <width>120</width>
-    <height>160</height>
+    <width>123</width>
+    <height>237</height>
    </size>
+  </property>
+  <property name="allowedAreas">
+   <set>Qt::LeftDockWidgetArea|Qt::RightDockWidgetArea</set>
   </property>
   <property name="windowTitle">
    <string>Manual Segmentation</string>
