@@ -97,13 +97,12 @@ QGoPrintDatabase( QWidget* iParent ) :
 
   this->setContextMenuPolicy( Qt::CustomContextMenu );
 
-  m_VisibilityAction = new QAction( this );
+  m_VisibilityAction = new QAction(tr("Show/hide the table widget"),this );
   QIcon TableWidgetIcon;
   TableWidgetIcon.addPixmap( QPixmap(QString::fromUtf8(":/fig/TableWidget.png")),
     QIcon::Normal, QIcon::Off );
   m_VisibilityAction->setIcon(TableWidgetIcon);
   m_VisibilityAction->setCheckable( true );
-  m_VisibilityAction->setToolTip(QString(tr("Show/hide the table widget")));
 
   QObject::connect( m_VisibilityAction, SIGNAL( toggled( bool ) ),
     this, SLOT( setVisible( bool ) ) );
@@ -229,7 +228,6 @@ void QGoPrintDatabase::FillTableFromDatabase()
 
   QString title = QString( "Imaging Session: %1 " ).arg( m_ImgSessionName.c_str() );
   this->setWindowTitle( title );
-  m_VisibilityAction->setText( title );
 
   GetContentAndDisplayFromDB( "contour" );
   GetContentAndDisplayFromDB( "mesh" );
