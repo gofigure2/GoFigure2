@@ -261,7 +261,6 @@ protected slots:
 
   void AddToSelectedCollection();
   void ReEditTrace();
-
   /** \brief Update the m_ContoursInfo or m_MeshesInfo depending on which table
   the user had clicked with the selected traces and emit a signal to say which m_tracesInfo has
   changed*/

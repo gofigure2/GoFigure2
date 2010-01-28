@@ -70,8 +70,6 @@
 #include "ConvertToStringHelper.h"
 #include "GoDBTraceInfoForTableWidget.h"
 
-
-
 //--------------------------------------------------------------------------
 QGoPrintDatabase::
 QGoPrintDatabase( QWidget* iParent ) :
@@ -269,6 +267,8 @@ void QGoPrintDatabase::CreateContextMenu(const QPoint &iPos)
     .arg(this->m_CurrentCollectionData.first.c_str()),this,SLOT(AddToSelectedCollection()));
   ContextMenu->addAction(tr("ReEdit the selected %1").arg(TraceName.c_str()),
     this,SLOT(ReEditTrace()));
+  ContextMenu->addAction(tr("Copy Selection"),
+    this->m_CurrentlyUsedTable,SLOT(CopySelection()));
   ContextMenu->exec(this->mapToGlobal(iPos));
 }
 //--------------------------------------------------------------------------
@@ -1228,3 +1228,6 @@ void QGoPrintDatabase::DeleteTraceInContourMeshStructure(int iTraceID,
       }
     }
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------

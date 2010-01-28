@@ -44,6 +44,8 @@
 #include <QTableWidgetSelectionRange>
 #include <QHeaderView>
 #include <QSettings>
+#include <QApplication>
+#include <QClipboard>
 
 
 QTableWidgetChild::QTableWidgetChild( QWidget* iParent ): QTableWidget( iParent )
@@ -604,4 +606,28 @@ void QTableWidgetChild::UpdateTableWidgetDisplayAndVectorCheckedRows(int Row, in
       }
     this->UpdateVectorCheckedRows(Row,Column);
     }
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QTableWidgetChild::CopySelection()
+{
+  //Get only the first selected Range:
+  QList<QTableWidgetSelectionRange> SelectedRanges = this->selectedRanges();
+  QTableWidgetSelectionRange range = SelectedRanges.first();
+
+  QString str;
+
+  for (int i = 0; i < range.rowCount(); ++i) 
+    {
+    if (i > 0)
+      str += "\n";
+      for (int j = 0; j < range.columnCount(); ++j) 
+        {
+        if (j > 0)
+        str += "\t";
+        str += this->item(range.topRow() + i, range.leftColumn() + j)->text();//formula(range.topRow() + i, range.leftColumn() + j);
+        }
+    }
+  QApplication::clipboard()->setText(str);
 }

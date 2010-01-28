@@ -145,7 +145,7 @@ public slots:
   std::string NameGroupColor,unsigned int StartRow);
 
   //std::vector<unsigned int> GetListCheckedRows();
-
+  void CopySelection();
 };
 
 #endif
