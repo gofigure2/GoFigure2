@@ -115,6 +115,8 @@ protected:
 
   /** \brief Update the m_VectorSelectedRows */
   void UpdateVectorCheckedRows(int Row,int Column);
+  /** \brief put the text in the cells which are part of the range in a 
+  QString and insert \n and \t to be read by other applications*/
   void PrepareRangeToCopy(QTableWidgetSelectionRange Range, QString &str);
 
 public slots:
@@ -149,7 +151,9 @@ public slots:
   /** \brief convert the text in the selection to a QString with \n and \t 
   and put it in the Clipboard to be pasted in other applications*/
   void CopySelection();
-
+  /** \brief convert the text in the all table and the columns namse 
+  to a QString with \n and \t and put it in the Clipboard to be 
+  pasted in other applications*/
   void CopyTable();
 
 };

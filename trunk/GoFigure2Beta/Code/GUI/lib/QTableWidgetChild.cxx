@@ -632,7 +632,7 @@ void QTableWidgetChild::CopyTable()
   //first, copy the column names:
   QStringList ColumnsNames = this->recordHeaderNamesOrder();
   QString str;
-  for (int i=0; i<ColumnsNames.size();i++)
+  for (int i=1; i<ColumnsNames.size();i++)
     {
     str += ColumnsNames.at(i);
     str += "\t";
@@ -640,7 +640,7 @@ void QTableWidgetChild::CopyTable()
   str += "\n";
   //second, get the range for the total selection:
   QTableWidgetSelectionRange RangeForAllTableSelected(
-    0,0,this->rowCount()-1,this->columnCount()-1);
+    0,1,this->rowCount()-1,this->columnCount()-1);
   //third, copy the range:
   this->PrepareRangeToCopy(RangeForAllTableSelected,str);
   QApplication::clipboard()->setText(str);
