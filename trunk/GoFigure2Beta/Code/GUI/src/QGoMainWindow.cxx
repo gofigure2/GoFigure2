@@ -193,37 +193,15 @@ void QGoMainWindow::on_actionOpen_MegaCapture_Files_triggered()
     {
     if( QFile::exists( filename ) )
       {
-      QString extension = QFileInfo( filename ).suffix();
-
       itk::MegaCaptureImport::Pointer importer = itk::MegaCaptureImport::New();
       importer->SetFileName( filename.toStdString() );
       importer->Update();
 
       GoFigure::FileType filetype;
-      if( extension.compare( "png", Qt::CaseInsensitive ) == 0 )
+
+      if( !ComputeFileType( filename, filetype ) )
         {
-        filetype = GoFigure::PNG;
-        }
-      else
-        {
-        if( ( extension.compare( "tif", Qt::CaseInsensitive ) == 0 ) ||
-            ( extension.compare( "tiff", Qt::CaseInsensitive ) == 0 ) )
-          {
-          filetype = GoFigure::TIFF;
-          }
-        else
-          {
-          if( ( extension.compare( "jpg", Qt::CaseInsensitive ) == 0 ) ||
-              ( extension.compare( "jpeg", Qt::CaseInsensitive ) == 0 ) )
-            {
-            filetype = GoFigure::JPEG;
-            }
-          else
-            {
-            std::cerr << "file not supported for megacapture!!!" <<std::endl;
-            return;
-            }
-          }
+        return;
         }
 
       CreateNewTabFor3DwtImage( importer->GetOutput(), filetype,
@@ -242,6 +220,42 @@ void QGoMainWindow::on_actionUse_DataBase_triggered()
 }
 //--------------------------------------------------------------------------
 
+bool
+QGoMainWindow::
+ComputeFileType( const QString& iFileName, GoFigure::FileType& oFileType )
+{
+  QString extension = QFileInfo( iFileName ).suffix();
+
+  if( extension.compare( "png", Qt::CaseInsensitive ) == 0 )
+    {
+    oFileType = GoFigure::PNG;
+    return true;
+    }
+  else
+    {
+    if( ( extension.compare( "tif", Qt::CaseInsensitive ) == 0 ) ||
+        ( extension.compare( "tiff", Qt::CaseInsensitive ) == 0 ) )
+      {
+      oFileType = GoFigure::TIFF;
+      return true;
+      }
+    else
+      {
+      if( ( extension.compare( "jpg", Qt::CaseInsensitive ) == 0 ) ||
+          ( extension.compare( "jpeg", Qt::CaseInsensitive ) == 0 ) )
+        {
+        oFileType = GoFigure::JPEG;
+        return true;
+        }
+      else
+        {
+        std::cerr << "file not supported for megacapture!!!" <<std::endl;
+        return false;
+        }
+      }
+    }
+}
+
 //--------------------------------------------------------------------------
 void QGoMainWindow::openFilesfromDB()
 { 
@@ -257,33 +271,11 @@ void QGoMainWindow::openFilesfromDB()
 
     QString temp_filename = QString::fromStdString( temp_it->m_Filename );
 
-    QString extension = QFileInfo( temp_filename ).suffix();
-
     GoFigure::FileType filetype;
-    if( extension.compare( "png", Qt::CaseInsensitive ) == 0 )
+
+    if( !ComputeFileType( temp_filename, filetype ) )
       {
-      filetype = GoFigure::PNG;
-      }
-    else
-      {
-      if( ( extension.compare( "tif", Qt::CaseInsensitive ) == 0 ) ||
-          ( extension.compare( "tiff", Qt::CaseInsensitive ) == 0 ) )
-        {
-        filetype = GoFigure::TIFF;
-        }
-      else
-        {
-        if( ( extension.compare( "jpg", Qt::CaseInsensitive ) == 0 ) ||
-            ( extension.compare( "jpeg", Qt::CaseInsensitive ) == 0 ) )
-          {
-          filetype = GoFigure::JPEG;
-          }
-        else
-          {
-          std::cerr << "file not supported for megacapture!!!" <<std::endl;
-          return;
-          }
-        }
+      return;
       }
 
     CreateNewTabFor3DwtImage( file_container, filetype,
@@ -641,18 +633,27 @@ CreateNewTabFor3DwtImage(
   w3t->m_DataBaseTables->FillTableFromDatabase();
   // **********************
 
+  SetupMenusFromTab( w3t );
+
+  return w3t;
+}
+
+void
+QGoMainWindow::
+SetupMenusFromTab( QGoTabElementBase* iT )
+{
   for( std::list< QAction* >::iterator
-    list_it = m_TabDimPluginActionMap[w3t->GetTabDimensionType()].begin();
-    list_it != m_TabDimPluginActionMap[w3t->GetTabDimensionType()].end();
+    list_it = m_TabDimPluginActionMap[iT->GetTabDimensionType()].begin();
+    list_it != m_TabDimPluginActionMap[iT->GetTabDimensionType()].end();
     list_it++
     )
     {
     (*list_it)->setEnabled( true );
     }
 
-  w3t->SetPluginActions( m_TabDimPluginActionMap[w3t->GetTabDimensionType()] );
+  iT->SetPluginActions( m_TabDimPluginActionMap[iT->GetTabDimensionType()] );
 
-  std::list< std::pair< Qt::DockWidgetArea, QDockWidget* > > dock_list = w3t->DockWidget();
+  std::list< std::pair< Qt::DockWidgetArea, QDockWidget* > > dock_list = iT->DockWidget();
 
   for( std::list< std::pair< Qt::DockWidgetArea, QDockWidget* > >::iterator
     dck_it = dock_list.begin();
@@ -663,16 +664,15 @@ CreateNewTabFor3DwtImage(
     dck_it->second->show();
     }
 
-  int idx = this->CentralTabWidget->addTab( w3t, QString() );//iFile );
+  int idx = this->CentralTabWidget->addTab( iT, QString() );//iFile );
   this->menuView->setEnabled( true );
   this->menuFiltering->setEnabled( true );
   this->menuSegmentation->setEnabled( true );
   this->menuTools->setEnabled( true );
 
   this->CentralTabWidget->setCurrentIndex( idx );
-
-  return w3t;
 }
+
 //--------------------------------------------------------------------------
 
 //
@@ -724,35 +724,7 @@ CreateNewTabFor3DwtImage( vtkLSMReader* iReader, const QString& iFile )
   w3t->setWindowTitle( iFile );
 //   w3t->Update();
 
-  for( std::list< QAction* >::iterator
-    list_it = m_TabDimPluginActionMap[w3t->GetTabDimensionType()].begin();
-    list_it != m_TabDimPluginActionMap[w3t->GetTabDimensionType()].end();
-    list_it++
-    )
-    {
-    (*list_it)->setEnabled( true );
-    }
-
-  w3t->SetPluginActions( m_TabDimPluginActionMap[w3t->GetTabDimensionType()] );
-
-  std::list< std::pair< Qt::DockWidgetArea, QDockWidget* > > dock_list = w3t->DockWidget();
-
-  for( std::list< std::pair< Qt::DockWidgetArea, QDockWidget* > >::iterator
-    dck_it = dock_list.begin();
-    dck_it != dock_list.end();
-    ++dck_it )
-    {
-    this->addDockWidget( dck_it->first, dck_it->second );
-    dck_it->second->show();
-    }
-
-  int idx = this->CentralTabWidget->addTab( w3t, iFile );
-  this->menuView->setEnabled( true );
-  this->menuFiltering->setEnabled( true );
-  this->menuSegmentation->setEnabled( true );
-  this->menuTools->setEnabled( true );
-
-  this->CentralTabWidget->setCurrentIndex( idx );
+  SetupMenusFromTab( w3t );
 
   return w3t;
 }

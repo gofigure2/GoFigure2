@@ -63,6 +63,7 @@ class QGoTabManager;
 class QGoTabImageView3DwT;
 class QGoTabImageView3D;
 class QGoTabImageView2D;
+class QGoTabElementBase;
 
 #include "ui_go.h"
 
@@ -147,6 +148,17 @@ private:
   \param[in] iFileName  */
 //   void OpenImageWithITK( const QString& iFileName );
   void OpenLSMImage( const QString& iFile, const int& iTimePoint );
+
+  void SetupMenusFromTab( QGoTabElementBase* iT );
+
+  /**
+   * \brief Compute GoFigure file type from a given filename
+   * @param iFileName 
+   * @param oFileType 
+   * @return true if (png, jpeg or tiff)
+   * @return false else
+   */
+  bool ComputeFileType( const QString& iFileName, GoFigure::FileType& oFileType );
 
   void LoadPlugins();
   void PopulateMenus( QObject *plugin );
