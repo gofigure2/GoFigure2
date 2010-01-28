@@ -43,9 +43,9 @@ std::vector< QAction* > QGoTabElementBase::ToolsActions()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-std::list< QDockWidget* > QGoTabElementBase::DockWidget()
+std::list< std::pair< Qt::DockWidgetArea, QDockWidget* > > QGoTabElementBase::DockWidget()
 {
-  return std::list< QDockWidget* >();
+  return std::list< std::pair< Qt::DockWidgetArea, QDockWidget* > >();
 }
 //--------------------------------------------------------------------------
 

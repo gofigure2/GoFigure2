@@ -53,7 +53,7 @@ class QGoTabImageView4D : public QGoTabElementBase
 
     virtual std::vector< QAction* > ViewActions();
 
-    virtual std::list< QDockWidget* > DockWidget();
+    virtual std::list< std::pair< Qt::DockWidgetArea, QDockWidget* > > DockWidget();
 
     virtual std::list< QWidget* > AdditionalWidget()
       {return std::list< QWidget* >(); }
@@ -63,7 +63,7 @@ class QGoTabImageView4D : public QGoTabElementBase
 
     virtual void ValidateContour( const int& iId );
 
-  QGoPrintDatabase* m_DataBaseTables;
+    QGoPrintDatabase* m_DataBaseTables;
 
 signals:
   void TimePointChanged( int TimePoint );

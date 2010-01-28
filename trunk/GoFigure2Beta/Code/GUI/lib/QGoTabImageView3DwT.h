@@ -97,7 +97,7 @@ public:
    *
    * @return
    */
-  virtual std::list< QDockWidget* > DockWidget();
+  virtual std::list< std::pair< Qt::DockWidgetArea, QDockWidget* > > DockWidget();
 
   /**
    *

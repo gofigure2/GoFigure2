@@ -76,7 +76,7 @@ public:
 
   virtual void ValidateContour( const int& iId );
 
-  virtual std::list< QDockWidget* > DockWidget();
+  virtual std::list< std::pair< Qt::DockWidgetArea, QDockWidget* > > DockWidget();
 
 public slots:
   void ChangeBackgroundColor();

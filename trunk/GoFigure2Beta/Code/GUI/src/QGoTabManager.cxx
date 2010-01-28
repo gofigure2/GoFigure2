@@ -50,14 +50,14 @@ void QGoTabManager::ClearTabElement( QGoTabElementBase* iE )
     // Then remove all actions from the tools menu
     m_MainWindow->menuTools->clear();
 
-    std::list< QDockWidget* > dock_list = iE->DockWidget();
+    std::list< std::pair< Qt::DockWidgetArea, QDockWidget* > > dock_list = iE->DockWidget();
 
-    for( std::list< QDockWidget* >::iterator
+    for( std::list< std::pair< Qt::DockWidgetArea, QDockWidget* > >::iterator
         dck_it = dock_list.begin();
         dck_it != dock_list.end();
         ++dck_it )
       {
-      m_MainWindow->removeDockWidget( *dck_it );
+      m_MainWindow->removeDockWidget( dck_it->second );
       }
 
     GoFigure::TabDimensionType dim = iE->GetTabDimensionType();
@@ -113,15 +113,15 @@ void QGoTabManager::SetUpTabElement( QGoTabElementBase* iE )
           }
 
 
-    std::list< QDockWidget* > dock_list = iE->DockWidget();
+    std::list< std::pair< Qt::DockWidgetArea, QDockWidget* > > dock_list = iE->DockWidget();
 
-    for( std::list< QDockWidget* >::iterator
+    for( std::list< std::pair< Qt::DockWidgetArea, QDockWidget* > >::iterator
           dck_it = dock_list.begin();
           dck_it != dock_list.end();
           ++dck_it )
       {
-      m_MainWindow->addDockWidget( Qt::LeftDockWidgetArea, *dck_it );
-      (*dck_it)->show();
+      m_MainWindow->addDockWidget( dck_it->first, dck_it->second );
+      dck_it->second->show();
       }
 
     GoFigure::TabDimensionType dim = iE->GetTabDimensionType();

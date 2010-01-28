@@ -651,15 +651,15 @@ CreateNewTabFor3DwtImage(
 
   w3t->SetPluginActions( m_TabDimPluginActionMap[w3t->GetTabDimensionType()] );
 
-  std::list< QDockWidget* > dock_list = w3t->DockWidget();
+  std::list< std::pair< Qt::DockWidgetArea, QDockWidget* > > dock_list = w3t->DockWidget();
 
-  for( std::list< QDockWidget* >::iterator
+  for( std::list< std::pair< Qt::DockWidgetArea, QDockWidget* > >::iterator
     dck_it = dock_list.begin();
     dck_it != dock_list.end();
     ++dck_it )
     {
-    this->addDockWidget( Qt::LeftDockWidgetArea, (*dck_it) );
-    (*dck_it)->show();
+    this->addDockWidget( dck_it->first, dck_it->second );
+    dck_it->second->show();
     }
 
   int idx = this->CentralTabWidget->addTab( w3t, QString() );//iFile );
@@ -734,15 +734,15 @@ CreateNewTabFor3DwtImage( vtkLSMReader* iReader, const QString& iFile )
 
   w3t->SetPluginActions( m_TabDimPluginActionMap[w3t->GetTabDimensionType()] );
 
-  std::list< QDockWidget* > dock_list = w3t->DockWidget();
+  std::list< std::pair< Qt::DockWidgetArea, QDockWidget* > > dock_list = w3t->DockWidget();
 
-  for( std::list< QDockWidget* >::iterator
+  for( std::list< std::pair< Qt::DockWidgetArea, QDockWidget* > >::iterator
     dck_it = dock_list.begin();
     dck_it != dock_list.end();
     ++dck_it )
     {
-    this->addDockWidget( Qt::LeftDockWidgetArea, (*dck_it) );
-    (*dck_it)->show();
+    this->addDockWidget( dck_it->first, dck_it->second );
+    dck_it->second->show();
     }
 
   int idx = this->CentralTabWidget->addTab( w3t, iFile );
@@ -778,15 +778,15 @@ CreateNewTabFor3DImage( vtkImageData* iInput, const QString& iFile )
 
   w3->SetPluginActions( m_TabDimPluginActionMap[w3->GetTabDimensionType()] );
 
-  std::list< QDockWidget* > dock_list = w3->DockWidget();
+  std::list< std::pair< Qt::DockWidgetArea, QDockWidget* > > dock_list = w3->DockWidget();
 
-  for( std::list< QDockWidget* >::iterator
+  for( std::list< std::pair< Qt::DockWidgetArea, QDockWidget* > >::iterator
     dck_it = dock_list.begin();
     dck_it != dock_list.end();
     ++dck_it )
     {
-    this->addDockWidget( Qt::LeftDockWidgetArea, (*dck_it) );
-    (*dck_it)->show();
+    this->addDockWidget( dck_it->first, dck_it->second );
+    dck_it->second->show();
     }
 
   int idx = this->CentralTabWidget->addTab( w3, iFile );
@@ -822,15 +822,15 @@ CreateNewTabFor2DImage( vtkImageData* iInput, const QString& iFile )
 
   w2->SetPluginActions( m_TabDimPluginActionMap[w2->GetTabDimensionType()] );
 
-  std::list< QDockWidget* > dock_list = w2->DockWidget();
+  std::list< std::pair< Qt::DockWidgetArea, QDockWidget* > > dock_list = w2->DockWidget();
 
-  for( std::list< QDockWidget* >::iterator
+  for( std::list< std::pair< Qt::DockWidgetArea, QDockWidget* > >::iterator
     dck_it = dock_list.begin();
     dck_it != dock_list.end();
     ++dck_it )
     {
-    this->addDockWidget( Qt::LeftDockWidgetArea, (*dck_it) );
-    (*dck_it)->show();
+    this->addDockWidget( dck_it->first, dck_it->second );
+    dck_it->second->show();
     }
 
   int idx = this->CentralTabWidget->addTab( w2, iFile );

@@ -49,14 +49,15 @@ int main( int argc, char** argv )
   QObject::connect( timer, SIGNAL( timeout() ), tab, SLOT( close() ) );
   QObject::connect( timer, SIGNAL( timeout() ), menubar, SLOT( close() ) );
 
-  std::list< QDockWidget* > dockwidget_list = tab->DockWidget();
+  std::list< std::pair< Qt::DockWidgetArea, QDockWidget* > > dockwidget_list = tab->DockWidget();
 
-  for( std::list< QDockWidget* >::iterator it = dockwidget_list.begin();
+  for( std::list< std::pair< Qt::DockWidgetArea, QDockWidget* > >::iterator
+      it = dockwidget_list.begin();
     it != dockwidget_list.end();
     it++ )
     {
-    (*it)->show();
-    QObject::connect( timer, SIGNAL( timeout() ), (*it), SLOT( close() ) );
+    it->second->show();
+    QObject::connect( timer, SIGNAL( timeout() ), it->second, SLOT( close() ) );
     }
 
   if( atoi( argv[2] ) == 1 )

@@ -56,7 +56,7 @@
 #include "ContourMeshStructure.h"
 
 /** \brief Ensure the connection with the Database*/
-class QGoPrintDatabase : public QWidget,
+class QGoPrintDatabase : public QDockWidget,
   private Ui::WidgetPrintDatabase
 {
   Q_OBJECT

@@ -73,7 +73,7 @@
 //--------------------------------------------------------------------------
 QGoPrintDatabase::
 QGoPrintDatabase( QWidget* iParent ) :
-  QWidget( iParent ),
+  QDockWidget( iParent ),
   m_DatabaseConnector( 0 ),
   m_IsDatabaseUsed( false )
 {

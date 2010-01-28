@@ -56,7 +56,7 @@ QGoTabImageView3DwT( QWidget* iParent ) :
 
   setupUi( this );
 
-  m_DataBaseTables = new QGoPrintDatabase;
+  m_DataBaseTables = new QGoPrintDatabase( this );
 
   for( int i = 0; i < 3; i++ )
     {
@@ -125,8 +125,6 @@ QGoTabImageView3DwT::
     (*NodeSetIt)->Delete();
     ++NodeSetIt;
     }
-
-  delete m_DataBaseTables;
 }
 //-------------------------------------------------------------------------
 
@@ -511,6 +509,7 @@ CreateAllViewActions()
   		  FullScreenYZAction, SLOT( trigger() ));
   QObject::connect( m_VideoRecorderWidget, SIGNAL( FullScreenViewXZ() ),
   		  FullScreenXZAction, SLOT( trigger() ));
+#endif
 
   ////////////////////////////
 
@@ -525,7 +524,6 @@ CreateAllViewActions()
   this->m_ToolsActions.push_back( TakeSnapshotAction );
 
 /////////////////////////////////////////////////
-#endif
 }
 //-------------------------------------------------------------------------
 
@@ -1216,16 +1214,17 @@ SetBackgroundColorToImageViewer( )
  *
  * \return
  */
-std::list< QDockWidget* >
+std::list< std::pair< Qt::DockWidgetArea, QDockWidget* > >
 QGoTabImageView3DwT::
 DockWidget()
 {
-  std::list< QDockWidget* > oList;
-  oList.push_back( m_VisuDockWidget );
-  oList.push_back( m_ManualSegmentationDockWidget );
+  std::list< std::pair< Qt::DockWidgetArea, QDockWidget* > > oList;
+  oList.push_back( std::pair< Qt::DockWidgetArea, QDockWidget* >( Qt::LeftDockWidgetArea, m_VisuDockWidget ) );
+  oList.push_back( std::pair< Qt::DockWidgetArea, QDockWidget* >( Qt::LeftDockWidgetArea, m_ManualSegmentationDockWidget ) );
+  oList.push_back( std::pair< Qt::DockWidgetArea, QDockWidget* >( Qt::TopDockWidgetArea, m_DataBaseTables ) );
 
 #ifdef ENABLEVIDEORECORD
-  oList.push_back( m_VideoRecorderWidget );
+  oList.push_back( std::pair< Qt::DockWidgetArea, QDockWidget* >( Qt::LeftDockWidgetArea, m_VideoRecorderWidget ) );
 #endif
 
   return oList;
