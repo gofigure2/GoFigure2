@@ -262,26 +262,11 @@ void QGoMainWindow::openFilesfromDB()
   GoFigureFileInfoHelperMultiIndexContainer file_container =
     m_DBWizard->GetMultiIndexFileContainer();
 
+  std::string header_filename;
+
   unsigned int temp_size = file_container.size();
 
-  if( temp_size != 0 )
-    {
-    GoFigureFileInfoHelperMultiIndexContainer::iterator
-      temp_it = file_container.begin();
-
-    QString temp_filename = QString::fromStdString( temp_it->m_Filename );
-
-    GoFigure::FileType filetype;
-
-    if( !ComputeFileType( temp_filename, filetype ) )
-      {
-      return;
-      }
-
-    CreateNewTabFor3DwtImage( file_container, filetype,
-      m_DBWizard->GetMegaCaptureHeaderFilename(), 0 );
-    }
-  else
+  if( temp_size == 0 )
     {
     /// \todo Right now, we first get the complete list of files from the wizard
     /// then use megacapture import, then visualize. This should be done in a
@@ -293,58 +278,46 @@ void QGoMainWindow::openFilesfromDB()
     importer->SetFileName( listoffiles[0][0] );
     importer->Update();
 
-    QString temp_filename = QString::fromStdString( listoffiles[0][0] );
+    file_container = importer->GetOutput();
 
-    QString extension = QFileInfo( temp_filename ).suffix();
+    header_filename = importer->GetHeaderFilename();
+    }
+  else
+    {
+    header_filename = m_DBWizard->GetMegaCaptureHeaderFilename();
+    }
 
-    GoFigure::FileType filetype;
-    if( extension.compare( "png", Qt::CaseInsensitive ) == 0 )
-      {
-      filetype = GoFigure::PNG;
-      }
-    else
-      {
-      if( ( extension.compare( "tif", Qt::CaseInsensitive ) == 0 ) ||
-          ( extension.compare( "tiff", Qt::CaseInsensitive ) == 0 ) )
-        {
-        filetype = GoFigure::TIFF;
-        }
-      else
-        {
-        if( ( extension.compare( "jpg", Qt::CaseInsensitive ) == 0 ) ||
-            ( extension.compare( "jpeg", Qt::CaseInsensitive ) == 0 ) )
-          {
-          filetype = GoFigure::JPEG;
-          }
-        else
-          {
-          std::cerr << "file not supported for megacapture!!!" <<std::endl;
-          return;
-          }
-        }
-      }
+  GoFigureFileInfoHelperMultiIndexContainer::iterator
+    temp_it = file_container.begin();
 
-    // note: do not need to call w3t->Update(); since it is internally called
-    // when using CreateNewTabFor3DwtImage
-    QGoTabImageView3DwT* w3t = CreateNewTabFor3DwtImage( importer->GetOutput(),
-      filetype, importer->GetHeaderFilename(), 0 );
+  QString temp_filename = QString::fromStdString( temp_it->m_Filename );
 
-    // Load all contours from the first time point
-    //std::vector< ContourMeshStructure >::iterator
-      //contourmesh_list_it = w3t->m_DataBaseTables->m_ContoursInfo.begin();
-    std::vector<ContourMeshStructure>::iterator 
-      contourmesh_list_it = w3t->m_DataBaseTables->
-      GetTracesInfoListForVisu("contour").begin();
+  GoFigure::FileType filetype;
 
-    std::set< unsigned int > temp_time_set;
+  if( !ComputeFileType( temp_filename, filetype ) )
+    {
+    return;
+    }
 
-    // we don't need here to save this contour in the database,
-    // since they have just been extracted from it!
-    //while( contourmesh_list_it != w3t->m_DataBaseTables->m_ContoursInfo.end() )
-    while( contourmesh_list_it != w3t->m_DataBaseTables->
-      GetTracesInfoListForVisu("contour").end() )      
-      {
-      w3t->AddContourFromNodes(
+  // note: do not need to call w3t->Update(); since it is internally called
+  // when using CreateNewTabFor3DwtImage
+  QGoTabImageView3DwT* w3t = CreateNewTabFor3DwtImage( file_container,
+    filetype, header_filename, 0 );
+
+  // Load all contours from the first time point
+  //std::vector< ContourMeshStructure >::iterator
+  //contourmesh_list_it = w3t->m_DataBaseTables->m_ContoursInfo.begin();
+  std::vector<ContourMeshStructure>::iterator
+    contourmesh_list_it = w3t->m_DataBaseTables->GetTracesInfoListForVisu("contour").begin();
+
+  std::set< unsigned int > temp_time_set;
+
+  // we don't need here to save this contour in the database,
+  // since they have just been extracted from it!
+  //while( contourmesh_list_it != w3t->m_DataBaseTables->m_ContoursInfo.end() )
+  while( contourmesh_list_it != w3t->m_DataBaseTables->GetTracesInfoListForVisu("contour").end() )
+    {
+    w3t->AddContourFromNodes(
         contourmesh_list_it->TraceID,
         contourmesh_list_it->Nodes,
         contourmesh_list_it->rgba,
@@ -352,36 +325,36 @@ void QGoMainWindow::openFilesfromDB()
         contourmesh_list_it->TCoord, // timepoint
         false ); // not to be saved in the database
 
-      if( contourmesh_list_it->TCoord != 0 )
-        {
-        temp_time_set.insert( contourmesh_list_it->TCoord );
-        }
-
-      ++contourmesh_list_it;
-      }
-
-    for( std::set< unsigned int >::iterator time_it = temp_time_set.begin();
-        time_it != temp_time_set.end();
-        ++time_it )
+    if( contourmesh_list_it->TCoord != 0 )
       {
-      w3t->RemoveAllContoursForGivenTimePoint( *time_it );
+      temp_time_set.insert( contourmesh_list_it->TCoord );
       }
 
-    w3t->ReinitializeContour();
+    ++contourmesh_list_it;
+    }
 
-    // Let's load all the mesh from the first time point
-    //contourmesh_list_it = w3t->m_DataBaseTables->m_MeshesInfo.begin();
-    contourmesh_list_it = w3t->m_DataBaseTables->GetTracesInfoListForVisu("mesh").begin();
+  for( std::set< unsigned int >::iterator time_it = temp_time_set.begin();
+    time_it != temp_time_set.end();
+    ++time_it )
+    {
+    w3t->RemoveAllContoursForGivenTimePoint( *time_it );
+    }
 
-    while( contourmesh_list_it != w3t->m_DataBaseTables->
-      GetTracesInfoListForVisu("mesh").end() )
+  contourmesh_list_it = w3t->m_DataBaseTables->GetTracesInfoListForVisu("mesh").begin();
+
+  w3t->ReinitializeContour();
+
+  // Let's load all the mesh from the first time point
+  //contourmesh_list_it = w3t->m_DataBaseTables->m_MeshesInfo.begin();
+  contourmesh_list_it = w3t->m_DataBaseTables->GetTracesInfoListForVisu("mesh").begin();
+
+  while( contourmesh_list_it != w3t->m_DataBaseTables->GetTracesInfoListForVisu("mesh").end() )
+    {
+    if( contourmesh_list_it->Nodes )
       {
-      if( contourmesh_list_it->Nodes )
-        {
-        w3t->AddPolyData( contourmesh_list_it->Nodes );
-        }
-        ++contourmesh_list_it;
+      w3t->AddPolyData( contourmesh_list_it->Nodes );
       }
+    ++contourmesh_list_it;      
     }
 }
 //--------------------------------------------------------------------------
@@ -396,7 +369,7 @@ on_actionExport_LSM_to_MegaFile_triggered( )
 {
   //Open the dialog window
   QGoLsmToMegaExportDialog* dlg =
-	    new QGoLsmToMegaExportDialog;
+	    new QGoLsmToMegaExportDialog( this );
   dlg->show();
 }
 //--------------------------------------------------------------------------
