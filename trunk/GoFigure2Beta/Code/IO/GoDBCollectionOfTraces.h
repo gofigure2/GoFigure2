@@ -66,8 +66,10 @@ public:
   typedef GoDBTableWidgetContainer::DBTableWidgetContainerType
     DBTableWidgetContainerType;
 
-  //void SetDatabaseVariables(
-    //QString Server,QString User,QString Password, QString NameDB);
+  /** \brief fill the global values for the collection of traces*/
+  void SetCollectionInfo(std::string iCollectionName,
+    std::string iTracesName);
+  
   void SetImgSessionID (unsigned int iImgSessionID);
   
   /** \brief Delete the corresponding trace in the database*/

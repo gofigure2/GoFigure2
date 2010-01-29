@@ -102,6 +102,7 @@ signals:
 protected:
   int PrevCol;
   int PrevOrder;
+  
   /** \brief Vector containing the ID of the selected row and the index in the table widget*/
   std::vector<std::pair<int,int> > m_VectorSelectedRows;
 

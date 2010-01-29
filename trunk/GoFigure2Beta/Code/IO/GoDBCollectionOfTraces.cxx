@@ -62,6 +62,21 @@ GoDBCollectionOfTraces::GoDBCollectionOfTraces()
 GoDBCollectionOfTraces::GoDBCollectionOfTraces( 
   std::string iCollectionName,std::string iTracesName)
 {
+  this->SetCollectionInfo(iCollectionName, iTracesName);
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+GoDBCollectionOfTraces::~GoDBCollectionOfTraces()
+{
+  delete m_LinkToRowContainer;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void GoDBCollectionOfTraces::SetCollectionInfo(std::string iCollectionName,
+  std::string iTracesName)
+{
   m_CollectionName   = iCollectionName;
   m_CollectionIDName = m_CollectionName;
   m_CollectionIDName += "ID";
@@ -70,13 +85,6 @@ GoDBCollectionOfTraces::GoDBCollectionOfTraces(
   m_TracesIDName     += "ID";
   
   m_LinkToRowContainer = new GoDBTableWidgetContainer(iCollectionName,iTracesName);
-}
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-GoDBCollectionOfTraces::~GoDBCollectionOfTraces()
-{
-  delete m_LinkToRowContainer;
 }
 //--------------------------------------------------------------------------
 

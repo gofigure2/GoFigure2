@@ -54,6 +54,7 @@
 #include "GoDBCollectionOfTraces.h"
 #include "GoDBTraceInfoForVisu.h"
 #include "ContourMeshStructure.h"
+#include "TraceInfoStructure.h"
 
 /** \brief Ensure the connection with the Database*/
 class QGoPrintDatabase : public QDockWidget,
@@ -114,15 +115,12 @@ public:
   void UpdateCurrentColorData(std::pair<std::string,QColor> iCurrentColorData);
   void SetCurrentCollectionID(std::pair<std::string,QColor> iCurrentCollectionData);
 
-  QTableWidgetChild* ContourTable;
-  QTableWidgetChild* MeshTable;
-  QTableWidgetChild* TrackTable;
-  QTableWidgetChild* LineageTable;
+  std::vector<ContourMeshStructure> GetTracesInfoListForVisu(std::string iTraceName);
 
-  std::vector<ContourMeshStructure> m_ContoursInfo;
-  std::vector<ContourMeshStructure> m_MeshesInfo;
-  std::vector<ContourMeshStructure> m_TracksInfo;
-  std::vector<ContourMeshStructure> m_LineagesInfo;
+  //std::vector<ContourMeshStructure> m_ContoursInfo;
+  //std::vector<ContourMeshStructure> m_MeshesInfo;
+  //std::vector<ContourMeshStructure> m_TracksInfo;
+  //std::vector<ContourMeshStructure> m_LineagesInfo;
 
 
   /** \brief save a new contour from the visu into the database,
@@ -171,12 +169,17 @@ signals:
   void TracesToDeleteInVisu();
 
 protected:
-  GoDBCollectionOfTraces* m_CollectionOfContours;
-  GoDBCollectionOfTraces* m_CollectionOfMeshes;
-  GoDBCollectionOfTraces* m_CollectionOfTracks;
-  GoDBCollectionOfTraces* m_CollectionOfLineages;
+  //GoDBCollectionOfTraces* m_CollectionOfContours;
+  //GoDBCollectionOfTraces* m_CollectionOfMeshes;
+  //GoDBCollectionOfTraces* m_CollectionOfTracks;
+  //GoDBCollectionOfTraces* m_CollectionOfLineages;
   std::pair<std::string,QColor> m_CurrentColorData;
   std::pair<std::string,QColor> m_CurrentCollectionData;
+
+  TraceInfoStructure m_ContoursData;
+  TraceInfoStructure m_MeshesData;
+  TraceInfoStructure m_TracksData;
+  TraceInfoStructure m_LineagesData;
 
   /** \todo put them in a structure with the trace name*/
   GoDBCollectionOfTraces*           m_CurrentlyUsedCollectionOfTraces;
@@ -208,7 +211,8 @@ protected:
   /** \brief Return the Name of the tab currently used in the table widget,
   which correspond to the TraceName of the CollectionOfTraces: */
   std::string InWhichTableAreWe();
-
+  /** \brief Return the TraceInfoStructure corresponding to the trace name*/
+  TraceInfoStructure& GetTraceInfoStructure(std::string iTraceName);
   /** \brief Return the corresponding CollectionOfTraces*/
   GoDBCollectionOfTraces* GetCollectionOfTraces(std::string TraceName);
   
