@@ -87,6 +87,8 @@ QGoTabImageView3DwT( QWidget* iParent ) :
 
   CreateAllViewActions();
 
+  CreateToolsActions();
+
   ReadSettings();
 
   m_DockWidgetList.push_back(
@@ -264,16 +266,7 @@ QGoTabImageView3DwT::
 CreateVideoRecorderWidget()
 {
   m_VideoRecorderWidget = new QGoVideoRecorder( this );
-  // add render window
-  //QObject::connect( this, SIGNAL( FullScreenViewChanged( int ) ),
-    //m_VideoRecorderWidget,
-    //SLOT( SetRenderingWindow2(
-    //this->m_ImageView->GetInteractor( int )->GetRenderWindow() ) ) );
 
-// to set up properly the rendering windows
-/*  QObject::connect( this, SIGNAL( FullScreenViewChanged( int ) ),
-      m_VideoRecorderWidget,SLOT( SetRendererWindow( int )));
-*/
   QObject::connect( this, SIGNAL( FullScreenViewChanged( int ) ),
         this,SLOT( SetRendererWindow( int )));
 
@@ -432,6 +425,7 @@ CreateAllViewActions()
   QAction* LookupTableAction = new QAction( tr( "Lookup Table" ), this );
   LookupTableAction->setStatusTip( tr(" Change the associated lookup table" ) );
 
+	//take
   QIcon luticon;
   luticon.addPixmap( QPixmap(QString::fromUtf8(":/fig/LookupTable.png")),
     QIcon::Normal, QIcon::Off );
@@ -482,7 +476,15 @@ CreateAllViewActions()
 
   QObject::connect( LoadContoursPerTimePointAction, SIGNAL( triggered() ),
     this, SLOT( LoadAllContoursForCurrentTimePoint() ) );
+}
 
+/**
+ *
+ */
+void
+QGoTabImageView3DwT::
+CreateToolsActions()
+{
 #ifdef ENABLEVIDEORECORD
   this->m_ToolsActions.push_back( m_VideoRecorderWidget->toggleViewAction() );
 #endif
@@ -499,18 +501,38 @@ CreateAllViewActions()
   this->m_ToolsActions.push_back( m_TakeSnapshotAction );
 }
 //-------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 
 void
 QGoTabImageView3DwT::
 TakeSnapshot()
 {
-	std::cout << "Take snapshot " << std::endl;
-	// check full screen
+  // Get the current view displayed in full screen
+  int FullScreenView = m_ImageView->GetFullScreenView();
 
-	//take snapshot
-	m_ImageView->SnapshotViewXY( GoFigure::PNG , "1111");
-	m_ImageView->SnapshotView2( GoFigure::PNG , "2222");
-	m_ImageView->SnapshotView3( GoFigure::PNG , "3333");
+  // TODO enhance the name of the files
+
+  switch ( FullScreenView )
+    {
+    case 1 :
+    // X Slice
+    m_ImageView->SnapshotViewXY( GoFigure::PNG , "snapshot_" );
+    break;
+
+    case 2 :
+    // Y Slice
+    m_ImageView->SnapshotView2( GoFigure::PNG , "snapshot_" );
+    break;
+
+    case 3 :
+    // Z Slice
+    m_ImageView->SnapshotView3( GoFigure::PNG , "snapshot_" );
+    break;
+
+    default :
+    // 3D view
+    m_ImageView->SnapshotViewXYZ( GoFigure::PNG , "snapshot_" );
+    }
 }
 
 //-------------------------------------------------------------------------
