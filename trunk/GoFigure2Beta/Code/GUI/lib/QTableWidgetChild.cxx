@@ -172,13 +172,13 @@ void QTableWidgetChild::SetSelectRowTraceID (std::string TraceName,
 //--------------------------------------------------------------------------
  void QTableWidgetChild::TracesToHighlight(
   std::string TraceName,
-  std::vector<ContourMeshStructure> & ioTracesInfo )
+  std::vector<ContourMeshStructure>* ioTracesInfo )
 {
   //first set all the highlighted traces to false:
   unsigned int i = 0;
-  for( i=0; i < ioTracesInfo.size(); i++ )
+  for( i=0; i < ioTracesInfo->size(); i++ )
     {
-    ioTracesInfo[i].Highlighted = false;
+    (*ioTracesInfo)[i].Highlighted = false;
     }
 
   //get the selected TraceID:
@@ -189,11 +189,11 @@ void QTableWidgetChild::SetSelectRowTraceID (std::string TraceName,
 
   while(iter != SelectedTraces.end())
     {
-    for(i = 0; i<ioTracesInfo.size();i++)
+    for(i = 0; i<ioTracesInfo->size();i++)
       {
-      if( ioTracesInfo[i].TraceID == static_cast< unsigned int >( *iter ) )
+      if( (*ioTracesInfo)[i].TraceID == static_cast< unsigned int >( *iter ) )
         {
-        ioTracesInfo[i].Highlighted = true;
+        (*ioTracesInfo)[i].Highlighted = true;
         }
       }
     ++iter;

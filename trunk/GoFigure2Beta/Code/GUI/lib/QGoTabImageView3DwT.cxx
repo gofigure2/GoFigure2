@@ -1943,14 +1943,14 @@ HighLightContoursFromTable( )
  // std::vector< ContourMeshStructure >::iterator
  //   it = this->m_DataBaseTables->m_ContoursInfo.begin();
   std::vector< ContourMeshStructure >::iterator
-    it = this->m_DataBaseTables->GetTracesInfoListForVisu("contour").begin();
+    it = this->m_DataBaseTables->GetTracesInfoListForVisu("contour")->begin();
   unsigned int trace_id = 0;
 
   vtkProperty* select_property = vtkProperty::New();
   select_property->SetColor( 1., 0., 0. );
   select_property->SetLineWidth( 3. );
 
-  while( it != this->m_DataBaseTables->GetTracesInfoListForVisu("contour").end() )
+  while( it != this->m_DataBaseTables->GetTracesInfoListForVisu("contour")->end() )
     {
     trace_id = it->TraceID;
 

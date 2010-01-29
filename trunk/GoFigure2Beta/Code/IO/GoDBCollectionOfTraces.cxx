@@ -55,6 +55,7 @@
 
 GoDBCollectionOfTraces::GoDBCollectionOfTraces()
 {
+  m_LinkToRowContainer = 0;
 }
 //--------------------------------------------------------------------------
 
@@ -69,7 +70,10 @@ GoDBCollectionOfTraces::GoDBCollectionOfTraces(
 //--------------------------------------------------------------------------
 GoDBCollectionOfTraces::~GoDBCollectionOfTraces()
 {
-  delete m_LinkToRowContainer;
+  if (m_LinkToRowContainer)
+    {
+    delete m_LinkToRowContainer;
+    }
 }
 //--------------------------------------------------------------------------
 

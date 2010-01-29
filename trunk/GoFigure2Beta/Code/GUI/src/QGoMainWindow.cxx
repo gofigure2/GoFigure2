@@ -307,54 +307,66 @@ void QGoMainWindow::openFilesfromDB()
   // Load all contours from the first time point
   //std::vector< ContourMeshStructure >::iterator
   //contourmesh_list_it = w3t->m_DataBaseTables->m_ContoursInfo.begin();
-  std::vector<ContourMeshStructure>::iterator
-    contourmesh_list_it = w3t->m_DataBaseTables->GetTracesInfoListForVisu("contour").begin();
+  std::vector< ContourMeshStructure >* temp;
+  std::vector<ContourMeshStructure>::iterator contourmesh_list_it;
 
-  std::set< unsigned int > temp_time_set;
+  temp = w3t->m_DataBaseTables->GetTracesInfoListForVisu("contour");
 
-  // we don't need here to save this contour in the database,
-  // since they have just been extracted from it!
-  //while( contourmesh_list_it != w3t->m_DataBaseTables->m_ContoursInfo.end() )
-  while( contourmesh_list_it != w3t->m_DataBaseTables->GetTracesInfoListForVisu("contour").end() )
+  if( temp )
     {
-    w3t->AddContourFromNodes(
-        contourmesh_list_it->TraceID,
-        contourmesh_list_it->Nodes,
-        contourmesh_list_it->rgba,
-        contourmesh_list_it->Highlighted,
-        contourmesh_list_it->TCoord, // timepoint
-        false ); // not to be saved in the database
+    contourmesh_list_it = temp->begin();
 
-    if( contourmesh_list_it->TCoord != 0 )
+    std::set< unsigned int > temp_time_set;
+
+    // we don't need here to save this contour in the database,
+    // since they have just been extracted from it!
+    //while( contourmesh_list_it != w3t->m_DataBaseTables->m_ContoursInfo.end() )
+    while( contourmesh_list_it != temp->end() )
       {
-      temp_time_set.insert( contourmesh_list_it->TCoord );
+      w3t->AddContourFromNodes(
+          contourmesh_list_it->TraceID,
+          contourmesh_list_it->Nodes,
+          contourmesh_list_it->rgba,
+          contourmesh_list_it->Highlighted,
+          contourmesh_list_it->TCoord, // timepoint
+          false ); // not to be saved in the database
+
+      if( contourmesh_list_it->TCoord != 0 )
+        {
+        temp_time_set.insert( contourmesh_list_it->TCoord );
+        }
+
+      ++contourmesh_list_it;
       }
 
-    ++contourmesh_list_it;
+    for( std::set< unsigned int >::iterator time_it = temp_time_set.begin();
+      time_it != temp_time_set.end();
+      ++time_it )
+      {
+      w3t->RemoveAllContoursForGivenTimePoint( *time_it );
+      }
     }
-
-  for( std::set< unsigned int >::iterator time_it = temp_time_set.begin();
-    time_it != temp_time_set.end();
-    ++time_it )
-    {
-    w3t->RemoveAllContoursForGivenTimePoint( *time_it );
-    }
-
-  contourmesh_list_it = w3t->m_DataBaseTables->GetTracesInfoListForVisu("mesh").begin();
 
   w3t->ReinitializeContour();
 
-  // Let's load all the mesh from the first time point
-  //contourmesh_list_it = w3t->m_DataBaseTables->m_MeshesInfo.begin();
-  contourmesh_list_it = w3t->m_DataBaseTables->GetTracesInfoListForVisu("mesh").begin();
+  temp = w3t->m_DataBaseTables->GetTracesInfoListForVisu("mesh");
 
-  while( contourmesh_list_it != w3t->m_DataBaseTables->GetTracesInfoListForVisu("mesh").end() )
+  if( temp )
     {
-    if( contourmesh_list_it->Nodes )
+    contourmesh_list_it = temp->begin();
+
+    // Let's load all the mesh from the first time point
+    //contourmesh_list_it = w3t->m_DataBaseTables->m_MeshesInfo.begin();
+    contourmesh_list_it = temp->begin();
+
+    while( contourmesh_list_it != temp->end() )
       {
-      w3t->AddPolyData( contourmesh_list_it->Nodes );
+      if( contourmesh_list_it->Nodes )
+        {
+        w3t->AddPolyData( contourmesh_list_it->Nodes );
+        }
+      ++contourmesh_list_it;      
       }
-    ++contourmesh_list_it;      
     }
 }
 //--------------------------------------------------------------------------

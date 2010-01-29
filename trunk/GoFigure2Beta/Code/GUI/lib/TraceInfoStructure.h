@@ -48,21 +48,22 @@
 
 struct TraceInfoStructure
 {
-  std::string                       TraceName;
-  std::string                       TraceNameID;
-  std::string                       CollectionName;
-  std::string                       CollectionNameID;
-  std::string                       CollectionOf;
-  std::string                       CollectionOfID;
-  QTableWidgetChild*                Table;
-  GoDBCollectionOfTraces            CollectionOfTraces;
-  std::vector<ContourMeshStructure> ListTracesInfoForVisu;
+  std::string                        TraceName;
+  std::string                        TraceNameID;
+  std::string                        CollectionName;
+  std::string                        CollectionNameID;
+  std::string                        CollectionOf;
+  std::string                        CollectionOfID;
+  QTableWidgetChild*                 Table;
+  GoDBCollectionOfTraces             CollectionOfTraces;
+  std::vector<ContourMeshStructure>* ListTracesInfoForVisu;
   
   TraceInfoStructure()
-    {}
+    {ListTracesInfoForVisu = 0;}
 
   TraceInfoStructure(std::string iTraceName, QWidget* parent)
     {
+    ListTracesInfoForVisu = 0;
     SetInfoStructure(iTraceName, parent);
     }
     
@@ -77,7 +78,7 @@ struct TraceInfoStructure
     if (TraceName == "contour")
       {
       CollectionName = "mesh";
-      CollectionOf = "";
+      CollectionOf = "None";
       }
     if (TraceName == "mesh")
       {
@@ -91,7 +92,7 @@ struct TraceInfoStructure
       }
     if (TraceName == "lineage")
       {
-      CollectionName = "";
+      CollectionName = "None";
       CollectionOf = "mesh";
       }
     CollectionNameID = CollectionName;

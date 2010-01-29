@@ -115,7 +115,7 @@ public:
   void UpdateCurrentColorData(std::pair<std::string,QColor> iCurrentColorData);
   void SetCurrentCollectionID(std::pair<std::string,QColor> iCurrentCollectionData);
 
-  std::vector<ContourMeshStructure> GetTracesInfoListForVisu(std::string iTraceName);
+  std::vector<ContourMeshStructure>* GetTracesInfoListForVisu(std::string iTraceName);
 
   //std::vector<ContourMeshStructure> m_ContoursInfo;
   //std::vector<ContourMeshStructure> m_MeshesInfo;
@@ -176,10 +176,10 @@ protected:
   std::pair<std::string,QColor> m_CurrentColorData;
   std::pair<std::string,QColor> m_CurrentCollectionData;
 
-  TraceInfoStructure m_ContoursData;
-  TraceInfoStructure m_MeshesData;
-  TraceInfoStructure m_TracksData;
-  TraceInfoStructure m_LineagesData;
+  TraceInfoStructure* m_ContoursData;
+  TraceInfoStructure* m_MeshesData;
+  TraceInfoStructure* m_TracksData;
+  TraceInfoStructure* m_LineagesData;
 
   /** \todo put them in a structure with the trace name*/
   GoDBCollectionOfTraces*           m_CurrentlyUsedCollectionOfTraces;
@@ -212,7 +212,7 @@ protected:
   which correspond to the TraceName of the CollectionOfTraces: */
   std::string InWhichTableAreWe();
   /** \brief Return the TraceInfoStructure corresponding to the trace name*/
-  TraceInfoStructure& GetTraceInfoStructure(std::string iTraceName);
+  TraceInfoStructure* GetTraceInfoStructure(std::string iTraceName);
   /** \brief Return the corresponding CollectionOfTraces*/
   GoDBCollectionOfTraces* GetCollectionOfTraces(std::string TraceName);
   
@@ -252,7 +252,7 @@ protected:
   void UpdateTableWidgetForAnExistingTrace(std::string iTraceName, int iTraceID);
 
   void DeleteTraceInContourMeshStructure(int iTraceID,
-    std::vector<ContourMeshStructure> &iTraceInfo);
+    std::vector<ContourMeshStructure>* iTraceInfo);
 
 
 protected slots:
