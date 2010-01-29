@@ -171,7 +171,7 @@ std::vector<std::pair<int,std::string> >ListSpecificValuesForTwoColumnsAndTwoTab
   std::string TableTwo, std::string ColumnTwo,std::string ForeignKey, 
   std::string PrimaryKey, std::string field, std::string value);
 
-std::vector<ContourMeshStructure> GetTracesInfoFromDB(
+std::vector<ContourMeshStructure>* GetTracesInfoFromDB(
   vtkMySQLDatabase* DatabaseConnector,std::string TraceName,
   std::string CollectionName,unsigned int ImgSessionID);
 

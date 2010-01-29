@@ -583,11 +583,11 @@ void QGoPrintDatabase::LoadContoursAndMeshesFromDB(
   vtkMySQLDatabase* DatabaseConnector)
 {
   this->m_ContoursData->ListTracesInfoForVisu = 
-    &GetTracesInfoFromDB(DatabaseConnector,"contour","mesh",m_ImgSessionID);
+    GetTracesInfoFromDB(DatabaseConnector,"contour","mesh",m_ImgSessionID);
   //m_MeshesInfo   = GetTracesInfoFromDB(DatabaseConnector,"mesh","track",
     //m_ImgSessionID);
   this->m_MeshesData->ListTracesInfoForVisu = 
-    &GetTracesInfoFromDB(DatabaseConnector,"mesh","track",m_ImgSessionID);
+    GetTracesInfoFromDB(DatabaseConnector,"mesh","track",m_ImgSessionID);
 }
 //-------------------------------------------------------------------------
 
