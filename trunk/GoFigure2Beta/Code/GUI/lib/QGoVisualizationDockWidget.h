@@ -3,9 +3,11 @@
 
 #include <QDockWidget>
 #include "ui_VisualizationDockWidget.h"
+
 #include "qtcolorcombobox.h"
-#include <QHBoxLayout>
-#include <QVBoxLayout>
+
+class QHBoxLayout;
+class QVBoxLayout;
 
 class QGoVisualizationDockWidget :
   public QDockWidget,
@@ -14,7 +16,7 @@ class QGoVisualizationDockWidget :
   Q_OBJECT
 
   public:
-    QGoVisualizationDockWidget( QWidget* parent = 0,
+    explicit QGoVisualizationDockWidget( QWidget* parent = 0,
                                 const unsigned int& iDim = 4 );
     ~QGoVisualizationDockWidget();
 

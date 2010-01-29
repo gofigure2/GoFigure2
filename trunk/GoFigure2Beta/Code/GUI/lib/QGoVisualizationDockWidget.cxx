@@ -1,5 +1,8 @@
 #include "QGoVisualizationDockWidget.h"
+
 #include <QLabel>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
 
 QGoVisualizationDockWidget::
 QGoVisualizationDockWidget( QWidget* iParent, const unsigned int& iDim ) :
