@@ -1319,7 +1319,7 @@ void QGoPrintDatabase::UpdateTableWidgetForAnExistingTrace(
     GetLinkToUpdatedTraceContainer(this->m_DatabaseConnector,iTraceID);
   //this->m_CurrentlyUsedTable->UpdateRow(LinkToUpdatedRow,iTraceID,iTraceName,
     //this->m_CurrentlyUsedCollectionName);
-  this->m_CurrentlyUsedTable->UpdateRow(LinkToUpdatedRow,iTraceID,iTraceName,
+  CurrentlyUsedTraceData->Table->UpdateRow(LinkToUpdatedRow,iTraceID,iTraceName,
     CurrentlyUsedTraceData->CollectionName);
 }
 //-------------------------------------------------------------------------
