@@ -7,9 +7,18 @@
 #include <iostream>
 #include <string>
 
+#include "vtkSmartPointer.h"
+
 class vtkRenderWindow;
 class vtkFFMPEGRenderWindowRecorder;
 
+/** \todo What about making it a template class
+* template< class TRenderWindowRecorder > class QGoVideoRecorder, like this you
+* can instantiate easily for FFMPEG or OGGTHEORA without changing anything.
+* However, you still need to create a similar class to vtkFFMPEGRenderWindowRecorder
+* which used OGGTHEORA. Note that since there is an additional parameter when using
+* oggtheora it amy be better to inherit instead (but up to you).
+*/
 class QGoVideoRecorder : public QDockWidget, private Ui::NewDockWidgetVideoRecorder
 {
     Q_OBJECT
@@ -18,13 +27,24 @@ class QGoVideoRecorder : public QDockWidget, private Ui::NewDockWidgetVideoRecor
         explicit QGoVideoRecorder( QWidget* parent = 0);
         ~QGoVideoRecorder();
 
+        /// \todo use const int& instead
         void SetXMinAndMax( int , int );
         void SetYMinAndMax( int , int );
         void SetZMinAndMax( int , int );
         void SetTMinAndMax( int , int );
 
+    public slots:
+      void SetRenderingWindow( vtkRenderWindow* );
+
+    signals:
+      void XSliceChanged( int );
+      void YSliceChanged( int );
+      void ZSliceChanged( int );
+      void TSliceChanged( int );
+
     private:
 
+        /// \todo comment these variables (briefly)
         unsigned int m_XMin;
         unsigned int m_XMax;
         unsigned int m_YMin;
@@ -51,7 +71,8 @@ class QGoVideoRecorder : public QDockWidget, private Ui::NewDockWidgetVideoRecor
         unsigned int m_FrameRate2;
         unsigned int m_VideoQuality2;
 
-        vtkFFMPEGRenderWindowRecorder *m_VideoRecorder;
+        /// \todo larger object first!
+        vtkSmartPointer< vtkFFMPEGRenderWindowRecorder > m_VideoRecorder;
 
         QTimer *m_InternalTimer;
         unsigned int m_FrameCounter;
@@ -62,15 +83,6 @@ class QGoVideoRecorder : public QDockWidget, private Ui::NewDockWidgetVideoRecor
         void UpdateQSpinBoxF( int );
 
         int m_SliceFT;
-
-    public slots:
-      void SetRenderingWindow( vtkRenderWindow* );
-
-    signals:
-      void XSliceChanged( int );
-      void YSliceChanged( int );
-      void ZSliceChanged( int );
-      void TSliceChanged( int );
 
     private slots:
 

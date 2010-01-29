@@ -9,6 +9,7 @@
 
 
 //-------------------------------------------------------------------------
+///\todo move all doxygen documentation in the header file!
 
 /**
  * \brief Constructor
@@ -19,15 +20,16 @@
 QGoVideoRecorder::
 QGoVideoRecorder( QWidget *iParent ) : QDockWidget( iParent ), m_XMin( 0 ),
   m_YMax( 100 ), m_ZMin( 0 ), m_ZMax( 100 ), m_TMin( 0 ), m_TMax( 100 ),
-  m_WindowSelected( 0 ), m_VideoName2( "" ),m_FrameRate2( 30 ),
+  m_WindowSelected( 0 ), m_FrameRate2( 30 ),
   m_VideoQuality2 ( 1 ), m_FrameCounter( 0 ), m_RenderWindowSelected( false )
 {
   this->setupUi( this );
 
-  m_VideoRecorder = vtkFFMPEGRenderWindowRecorder::New();
+  m_VideoRecorder = vtkSmartPointer< vtkFFMPEGRenderWindowRecorder >::New();
 
   m_InternalTimer = new QTimer( this );
-  QObject::connect( m_InternalTimer, SIGNAL(timeout()),this, SLOT(timeout()) );
+  QObject::connect( m_InternalTimer, SIGNAL(timeout()),
+    this, SLOT(timeout()) );
 
   //Initalize chrono with .00 (not 0)
   QString value = "0.00";
@@ -51,12 +53,6 @@ QGoVideoRecorder( QWidget *iParent ) : QDockWidget( iParent ), m_XMin( 0 ),
 QGoVideoRecorder::
 ~QGoVideoRecorder( )
 {
-  if( m_VideoRecorder )
-    {
-	m_VideoRecorder->Delete();
-    }
-
-  delete m_InternalTimer;
 }
 
 //-------------------------------------------------------------------------
@@ -167,44 +163,53 @@ void
 QGoVideoRecorder::
 UpdateQSpinBoxFT( int value )
 {
-  switch ( value ) {
+  switch ( value )
+    {
     case 0 :
-    // X Slice
-    this->tSpinMin_2->setMinimum(m_XMin);
-    this->tSpinMin_2->setMaximum(m_XMax);
-    this->tSpinMin_2->setValue(m_XMin);
+      {
+      // X Slice
+      this->tSpinMin_2->setMinimum(m_XMin);
+      this->tSpinMin_2->setMaximum(m_XMax);
+      this->tSpinMin_2->setValue(m_XMin);
 
-    this->tSpinMax_2->setMinimum(m_XMin);
-    this->tSpinMax_2->setMaximum(m_XMax);
-    this->tSpinMax_2->setValue(m_XMax);
+      this->tSpinMax_2->setMinimum(m_XMin);
+      this->tSpinMax_2->setMaximum(m_XMax);
+      this->tSpinMax_2->setValue(m_XMax);
 
-    m_SliceFT = 0;
-    break;
+      m_SliceFT = 0;
+      break;
+      }
 
     case 1 :
-    // Y Slice
-    this->tSpinMin_2->setMinimum(m_YMin);
-    this->tSpinMin_2->setMaximum(m_YMax);
-    this->tSpinMin_2->setValue(m_YMin);
+      {
+      // Y Slice
+      this->tSpinMin_2->setMinimum(m_YMin);
+      this->tSpinMin_2->setMaximum(m_YMax);
+      this->tSpinMin_2->setValue(m_YMin);
 
-    this->tSpinMax_2->setMinimum(m_YMin);
-    this->tSpinMax_2->setMaximum(m_YMax);
-    this->tSpinMax_2->setValue(m_YMax);
+      this->tSpinMax_2->setMinimum(m_YMin);
+      this->tSpinMax_2->setMaximum(m_YMax);
+      this->tSpinMax_2->setValue(m_YMax);
 
-    m_SliceFT = 1;
-    break;
+      m_SliceFT = 1;
+      break;
+      }
 
-    default :
-    // Z Slice
-    this->tSpinMin_2->setMinimum(m_ZMin);
-    this->tSpinMin_2->setMaximum(m_ZMax);
-    this->tSpinMin_2->setValue(m_ZMin);
+    default:
+    case 2:
+      {
+      // Z Slice
+      this->tSpinMin_2->setMinimum(m_ZMin);
+      this->tSpinMin_2->setMaximum(m_ZMax);
+      this->tSpinMin_2->setValue(m_ZMin);
 
-    this->tSpinMax_2->setMinimum(m_ZMin);
-    this->tSpinMax_2->setMaximum(m_ZMax);
-    this->tSpinMax_2->setValue(m_ZMax);
+      this->tSpinMax_2->setMinimum(m_ZMin);
+      this->tSpinMax_2->setMaximum(m_ZMax);
+      this->tSpinMax_2->setValue(m_ZMax);
 
-    m_SliceFT = 2;
+      m_SliceFT = 2;
+      break;
+      }
 	}
 }
 
@@ -237,19 +242,27 @@ on_tSpinMin_2_valueChanged( int value )
 {
   switch ( m_SliceFT )
     {
-    case 0 :
-    // X Slice
-    m_XMinForVideo = value;
-    break;
+    case 0:
+      {
+      // X Slice
+      m_XMinForVideo = value;
+      break;
+      }
 
-    case 1 :
-    // Y Slice
-    m_YMinForVideo = value;
-    break;
+    case 1:
+      {
+      // Y Slice
+      m_YMinForVideo = value;
+      break;
+      }
 
-    default :
-    // Z Slice
-    m_ZMinForVideo = value;
+    default:
+    case 2:
+      {
+      // Z Slice
+      m_ZMinForVideo = value;
+      break;
+      }
     }
 }
 
@@ -266,10 +279,12 @@ on_tSpinMax_2_valueChanged( int value )
 {
   switch ( m_SliceFT )
     {
-    case 0 :
-    // X Slice
-    m_XMaxForVideo = value;
-    break;
+    case 0:
+      {
+      // X Slice
+      m_XMaxForVideo = value;
+      break;
+      }
 
 	    case 1 :
     // Y Slice
@@ -348,24 +363,31 @@ on_startVideo_clicked()
 {
 
 //something to record first view
-  if( ( m_VideoName2 == NULL ) || ( !m_RenderWindowSelected ))
+  if( m_VideoName2.isNull() ||  m_VideoName2.isEmpty() || ( !m_RenderWindowSelected ) )
     {
-    std::cout<<"Please select a videoName and a good rendering window"<<std::endl;
+    /// \todo use QMessageBox
+    std::cerr <<"Please select a videoName and a good rendering window"<<std::endl;
     }
   else if( this->tabWidget->currentIndex () == 0 )
     {
+    /// \todo Create one method here (for this scope)
     m_VideoRecorder->Setm_FrameRate( m_FrameRate2 );
     m_VideoRecorder->Setm_VideoQuality( m_VideoQuality2 );
 
     if( m_SliceFT == 0 )
       {
+      /// \todo you can create one method to generate
+      ///   1-the filename from m_SliceFT, min and max
+      ///   2-take snapshot
+      ///   3-emit the signal
       QString fileName = m_VideoName2;
 
-      fileName.insert( fileName.size(), QString("-X-"));
-      fileName.insert( fileName.size(), QString::number( m_XMinForVideo, 10 ) );
-      fileName.insert( fileName.size(), QString("-"));
-      fileName.insert( fileName.size(), QString::number( m_XMaxForVideo, 10 ) );
-      fileName.insert( fileName.size(), QString(".avi"));
+      fileName.append( "-X-" );
+      fileName.append( QString::number( m_XMinForVideo, 10 ) );
+      fileName.append( "-" );
+      fileName.append( QString::number( m_XMaxForVideo, 10 ) );
+      fileName.append( ".avi" );
+
       m_VideoRecorder->SetFileName( fileName.toStdString() );
 
       m_VideoRecorder->StartCapture();
@@ -437,6 +459,7 @@ on_startVideo_clicked()
     }
   else
     {
+    /// \todo create another method for this scope!
     QString fileName = m_VideoName2;
 
     fileName.insert( fileName.size(), QString("-T-"));
@@ -562,7 +585,7 @@ on_startRecord_clicked()
 
   if( ( m_VideoName2 == NULL ) || ( !m_RenderWindowSelected ))
   {
-  // TODO: display pop up window
+  /// \todo QMessageBox
     std::cout<<"Please select a videoName and a good rendering window"<<std::endl;
   }
   else
@@ -662,16 +685,12 @@ void
 QGoVideoRecorder::
 SetRenderingWindow( vtkRenderWindow* iRenderingWindow )
 {
-  if(iRenderingWindow != NULL)
+  m_RenderWindowSelected = !iRenderingWindow;
+  this->tabVideoWidget->setEnabled( m_RenderWindowSelected );
+
+  if( m_RenderWindowSelected )
     {
-    m_RenderWindowSelected = true;
     m_VideoRecorder->SetRenderingWindow(iRenderingWindow);
-    this->tabVideoWidget->setEnabled(true);
-    }
-    else
-    {
-    m_RenderWindowSelected = false;
-    this->tabVideoWidget->setEnabled(false);
     }
 
   // TODO Resize image with the first one if we want to change views during record

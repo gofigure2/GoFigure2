@@ -5,10 +5,6 @@
 #include "vtkFFMPEGWriter.h"
 
 #include "vtkObjectFactory.h"
-#include "vtkDebugLeaks.h"
-
-#include "vtkPNGWriter.h"
-#include "vtkJPEGWriter.h"
 
 /**
  * \brief Constructor
@@ -18,8 +14,8 @@ vtkFFMPEGRenderWindowRecorder() :
   m_FrameRate (30), m_VideoQuality (1),
   m_FileName("goFigure2"), m_ControlIfVideoStarted (false)
 {
-  m_ImageFilter  = vtkWindowToImageFilter::New();
-  m_ImageWriter  = vtkFFMPEGWriter::New();
+  m_ImageFilter  = vtkSmartPointer< vtkWindowToImageFilter >::New();
+  m_ImageWriter  = vtkSmartPointer< vtkFFMPEGWriter >::New();
 }
 
 /**
@@ -27,10 +23,7 @@ vtkFFMPEGRenderWindowRecorder() :
  */
 vtkFFMPEGRenderWindowRecorder::
 ~vtkFFMPEGRenderWindowRecorder()
-{
-  m_ImageFilter ->Delete();
-  m_ImageWriter ->Delete();
-}
+{}
 
 /**
  * \brief Constructor to create a vtkObject from the vtkObjectFactory
@@ -88,10 +81,10 @@ StartCapture()
   m_ImageWriter->SetQuality(m_VideoQuality);
   m_ImageWriter->SetRate(m_FrameRate);
 
-  if (m_ImageWriter->GetInput() != NULL)
+  if( m_ImageWriter->GetInput() )
     {
-      m_ImageWriter->Start();
-      m_ControlIfVideoStarted = true;
+    m_ImageWriter->Start();
+    m_ControlIfVideoStarted = true;
     }
 }
 
@@ -102,7 +95,7 @@ void
 vtkFFMPEGRenderWindowRecorder::
 EndCapture()
 {
-  if (m_ControlIfVideoStarted)
+  if( m_ControlIfVideoStarted )
     {
     m_ImageWriter->End();
     m_ControlIfVideoStarted = false;
@@ -118,7 +111,7 @@ TakeSnapshot()
 {
   if (m_ControlIfVideoStarted)
     {
-      m_ImageFilter->Modified();
-      m_ImageWriter->Write();
+    m_ImageFilter->Modified();
+    m_ImageWriter->Write();
     }
 }
