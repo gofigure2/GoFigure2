@@ -201,10 +201,10 @@ void QGoPrintDatabase::SetDatabaseVariables(
   m_ImgSessionID   = iImgSessionID;
   m_ImgSessionName = iImgSessionName;
 
-  this->m_ContoursData->CollectionOfTraces.SetImgSessionID(m_ImgSessionID);
-  this->m_MeshesData->CollectionOfTraces.SetImgSessionID(m_ImgSessionID);
-  this->m_TracksData->CollectionOfTraces.SetImgSessionID(m_ImgSessionID);
-  this->m_LineagesData->CollectionOfTraces.SetImgSessionID(m_ImgSessionID);
+  this->m_ContoursData->CollectionOfTraces->SetImgSessionID(m_ImgSessionID);
+  this->m_MeshesData->CollectionOfTraces->SetImgSessionID(m_ImgSessionID);
+  this->m_TracksData->CollectionOfTraces->SetImgSessionID(m_ImgSessionID);
+  this->m_LineagesData->CollectionOfTraces->SetImgSessionID(m_ImgSessionID);
   //m_CollectionOfContours ->SetImgSessionID(m_ImgSessionID);
   //m_CollectionOfMeshes   ->SetImgSessionID(m_ImgSessionID);
   //m_CollectionOfTracks   ->SetImgSessionID(m_ImgSessionID);
@@ -382,7 +382,7 @@ void QGoPrintDatabase::DeleteTraces()
           //this->SetCurrentlyUsedTraceData(CurrentlyUsedTraceData->CollectionOf);
           //this->m_CurrentlyUsedCollectionOfTraces->UpdateCollectionIDOfSelectedTraces(
           //  TracesWithCollectionToBeNull,0,this->m_DatabaseConnector);
-          CurrentlyUsedTraceData->CollectionOfTraces.UpdateCollectionIDOfSelectedTraces(
+          CurrentlyUsedTraceData->CollectionOfTraces->UpdateCollectionIDOfSelectedTraces(
             TracesWithCollectionToBeNull,0,this->m_DatabaseConnector);
 
           QColor Color(255,255,255,255);
@@ -397,7 +397,7 @@ void QGoPrintDatabase::DeleteTraces()
       //delete traces in the row container:
       //GoDBTableWidgetContainer* LinkToTracesContainer = this->m_CurrentlyUsedCollectionOfTraces->GetLinkToRowContainer();
       //LinkToTracesContainer->DeleteSelectedTraces(SelectedTraces);
-      GoDBTableWidgetContainer* LinkToTracesContainer = CurrentlyUsedTraceData->CollectionOfTraces.GetLinkToRowContainer();
+      GoDBTableWidgetContainer* LinkToTracesContainer = CurrentlyUsedTraceData->CollectionOfTraces->GetLinkToRowContainer();
       LinkToTracesContainer->DeleteSelectedTraces(SelectedTraces);
       //this->m_CurrentlyUsedTable->DeleteSelectedRows(this->m_CurrentlyUsedTraceIDName);
       CurrentlyUsedTraceData->Table->DeleteSelectedRows(CurrentlyUsedTraceData->TraceNameID);
@@ -415,15 +415,15 @@ void QGoPrintDatabase::DeleteTraces()
         //save the current collection of traces corresponding to the trace before recentring to the collection:
         //GoDBCollectionOfTraces* CollectionOfTraces = this->m_CurrentlyUsedCollectionOfTraces;
         //CollectionOfTraces->DeleteTraceInDB(tempTraceID,this->m_DatabaseConnector);
-        GoDBCollectionOfTraces CollectionOfTraces = CurrentlyUsedTraceData->CollectionOfTraces;
-        CollectionOfTraces.DeleteTraceInDB(tempTraceID,this->m_DatabaseConnector);
+        GoDBCollectionOfTraces* CollectionOfTraces = CurrentlyUsedTraceData->CollectionOfTraces;
+        CollectionOfTraces->DeleteTraceInDB(tempTraceID,this->m_DatabaseConnector);
         //change the data who were related to the trace to the collection:
         //this->SetCurrentlyUsedTraceData(this->m_CurrentlyUsedCollectionName);
         CurrentlyUsedTraceData = this->GetTraceInfoStructure(CurrentlyUsedTraceData->CollectionName);
         
         if (tempCollectionID != 0)
           {
-          CollectionOfTraces.RecalculateDBBoundingBox(this->m_DatabaseConnector,tempCollectionID);
+          CollectionOfTraces->RecalculateDBBoundingBox(this->m_DatabaseConnector,tempCollectionID);
           //this->UpdateTableWidgetForAnExistingTrace(this->m_CurrentlyUsedTraceName,tempCollectionID);
           this->UpdateTableWidgetForAnExistingTrace(CurrentlyUsedTraceData->TraceName,tempCollectionID);
           }
@@ -469,7 +469,7 @@ void QGoPrintDatabase::CreateCorrespondingCollection()
 
     //int NewCollectionID = this->m_CurrentlyUsedCollectionOfTraces->CreateNewCollectionFromSelection(
       //ListSelectedTraces,this->m_DatabaseConnector,NewCollection);
-    int NewCollectionID = CurrentlyUsedTraceData->CollectionOfTraces.CreateNewCollectionFromSelection(
+    int NewCollectionID = CurrentlyUsedTraceData->CollectionOfTraces->CreateNewCollectionFromSelection(
       ListSelectedTraces,this->m_DatabaseConnector,NewCollection);
 
     //update the Collection Table and the row container with the new created Collection:
@@ -485,7 +485,7 @@ void QGoPrintDatabase::CreateCorrespondingCollection()
       //this->m_DatabaseConnector,this->m_CurrentlyUsedCollectionOfTraces,NewCollectionID,
       //this->m_CurrentColorData.second,ListSelectedTraces);
     this->UpdateTableWidgetAndRowContainerWithNewCollectionID(CurrentlyUsedTraceData->Table,
-      this->m_DatabaseConnector,&CurrentlyUsedTraceData->CollectionOfTraces,NewCollectionID,
+      this->m_DatabaseConnector,CurrentlyUsedTraceData->CollectionOfTraces,NewCollectionID,
       this->m_CurrentColorData.second,ListSelectedTraces);
 
     CloseDBConnection();
@@ -535,7 +535,7 @@ void QGoPrintDatabase::AddToSelectedCollection()
     //GoDBTableWidgetContainer* LinkToRowContainerForTraces =
       //this->m_CurrentlyUsedCollectionOfTraces->GetLinkToRowContainer();
     GoDBTableWidgetContainer* LinkToRowContainerForTraces =
-      CurrentlyUsedTraceData->CollectionOfTraces.GetLinkToRowContainer();
+      CurrentlyUsedTraceData->CollectionOfTraces->GetLinkToRowContainer();
 
     //update the corresponding database data:
     //std::list<int> ListCollectionsToUpdateInTableWidget = 
@@ -543,7 +543,7 @@ void QGoPrintDatabase::AddToSelectedCollection()
       //UpdateDBDataForAddedTracesToExistingCollection(ListSelectedTraces,
       //CollectionID,this->m_DatabaseConnector);
     std::list<int> ListCollectionsToUpdateInTableWidget = 
-      CurrentlyUsedTraceData->CollectionOfTraces.
+      CurrentlyUsedTraceData->CollectionOfTraces->
       UpdateDBDataForAddedTracesToExistingCollection(ListSelectedTraces,
       CollectionID,this->m_DatabaseConnector);
     
@@ -582,6 +582,8 @@ void QGoPrintDatabase::AddToSelectedCollection()
 void QGoPrintDatabase::LoadContoursAndMeshesFromDB(
   vtkMySQLDatabase* DatabaseConnector)
 {
+  /** \todo put it in the TraceInfoStructure and the GetTracesInforFromDB
+  in the collection of traces?*/
   this->m_ContoursData->ListTracesInfoForVisu = 
     GetTracesInfoFromDB(DatabaseConnector,"contour","mesh",m_ImgSessionID);
   //m_MeshesInfo   = GetTracesInfoFromDB(DatabaseConnector,"mesh","track",
@@ -772,7 +774,7 @@ void QGoPrintDatabase::GetContentAndDisplayFromDB( std::string iTraceName)
   //std::list<std::string> ColumnsNames =
   //  this->m_CurrentlyUsedCollectionOfTraces->GetListColumnsNamesForTableWidget();
   std::list<std::string> ColumnsNames =
-    CurrentlyUsedTraceData->CollectionOfTraces.GetListColumnsNamesForTableWidget();
+    CurrentlyUsedTraceData->CollectionOfTraces->GetListColumnsNamesForTableWidget();
   //this->m_CurrentlyUsedTable->DisplayColumnNames(
     //iTraceName.c_str(),ColumnsNames);
   CurrentlyUsedTraceData->Table->DisplayColumnNames(
@@ -782,10 +784,10 @@ void QGoPrintDatabase::GetContentAndDisplayFromDB( std::string iTraceName)
   //DBTableWidgetContainerType Row_Container =
     //this->m_CurrentlyUsedCollectionOfTraces->GetRowContainer(m_DatabaseConnector);
   DBTableWidgetContainerType Row_Container =
-    CurrentlyUsedTraceData->CollectionOfTraces.GetRowContainer(m_DatabaseConnector);
+    CurrentlyUsedTraceData->CollectionOfTraces->GetRowContainer(m_DatabaseConnector);
   //this->m_CurrentlyUsedTable->DisplayContent( this->m_CurrentlyUsedCollectionOfTraces->GetLinkToRowContainer(),
     //iTraceName,this->m_CurrentlyUsedCollectionName);
-  CurrentlyUsedTraceData->Table->DisplayContent( CurrentlyUsedTraceData->CollectionOfTraces.GetLinkToRowContainer(),
+  CurrentlyUsedTraceData->Table->DisplayContent( CurrentlyUsedTraceData->CollectionOfTraces->GetLinkToRowContainer(),
     iTraceName,CurrentlyUsedTraceData->CollectionName);
   //this->m_CurrentlyUsedTable->setSortingEnabled(true);
   CurrentlyUsedTraceData->Table->setSortingEnabled(true);
@@ -837,7 +839,7 @@ std::vector<ContourMeshStructure> QGoPrintDatabase::
   //return this->GetTracesForAGivenZCoord(this->m_ContoursInfo,iZCoord,
     //this->m_CollectionOfContours);
   return this->GetTracesForAGivenZCoord(*this->m_ContoursData->ListTracesInfoForVisu,iZCoord,
-    &this->m_ContoursData->CollectionOfTraces);
+    this->m_ContoursData->CollectionOfTraces);
 }
 
 //-------------------------------------------------------------------------
@@ -849,7 +851,7 @@ std::vector<ContourMeshStructure> QGoPrintDatabase::
   //return this->GetTracesForAGivenZCoord(this->m_MeshesInfo,iZCoord,
     //this->m_CollectionOfTracks);
   return this->GetTracesForAGivenZCoord(*this->m_MeshesData->ListTracesInfoForVisu,iZCoord,
-    &this->m_MeshesData->CollectionOfTraces);
+    this->m_MeshesData->CollectionOfTraces);
 }
 //-------------------------------------------------------------------------
 
@@ -1046,7 +1048,7 @@ std::list<std::pair<std::string,QColor> > QGoPrintDatabase::
     FirstCollection.SetColor(Red,Green,Blue,Alpha,ColorName,this->m_DatabaseConnector);
     //NewID = this->m_CurrentlyUsedCollectionOfTraces->CreateCollectionWithNoTraces(this->m_DatabaseConnector,
      // FirstCollection);
-    NewID = CurrentlyUsedTraceData->CollectionOfTraces.CreateCollectionWithNoTraces(this->m_DatabaseConnector,
+    NewID = CurrentlyUsedTraceData->CollectionOfTraces->CreateCollectionWithNoTraces(this->m_DatabaseConnector,
       FirstCollection);
     //add a new row in the table widget with the data corresponding to the new collection:
     //this->SetCurrentlyUsedTraceData(this->m_CurrentlyUsedCollectionName);
@@ -1074,12 +1076,12 @@ void QGoPrintDatabase::UpdateTableWidgetAndRowContainerWithNewCreatedTrace(
   TraceInfoStructure* CurrentlyUsedTraceData = this->GetTraceInfoStructure(iTraceName);
   //GoDBTableWidgetContainer* LinkToNewTrace = this->m_CurrentlyUsedCollectionOfTraces
     //->GetLinkToNewCreatedTraceContainer(this->m_DatabaseConnector);
-  GoDBTableWidgetContainer* LinkToNewTrace = CurrentlyUsedTraceData->CollectionOfTraces.
+  GoDBTableWidgetContainer* LinkToNewTrace = CurrentlyUsedTraceData->CollectionOfTraces->
     GetLinkToNewCreatedTraceContainer(this->m_DatabaseConnector);
   //update the RowContainer for the trace:
   //this->m_CurrentlyUsedCollectionOfTraces->GetLinkToRowContainer()
     //->InsertNewCreatedTrace(*LinkToNewTrace);
-  CurrentlyUsedTraceData->CollectionOfTraces.GetLinkToRowContainer()
+  CurrentlyUsedTraceData->CollectionOfTraces->GetLinkToRowContainer()
     ->InsertNewCreatedTrace(*LinkToNewTrace);
 
   //Update the trace table widget with the new trace:
@@ -1107,7 +1109,7 @@ void QGoPrintDatabase::UpdateTableWidgetAndRowContainerWithNewCreatedTrace(
   //this->m_CurrentlyUsedCollectionOfTraces->
     //UpdateDBDataForAddedTracesToExistingCollection(ListNewTraces,CollectionID,
     //this->m_DatabaseConnector);
-  CurrentlyUsedTraceData->CollectionOfTraces.UpdateDBDataForAddedTracesToExistingCollection(
+  CurrentlyUsedTraceData->CollectionOfTraces->UpdateDBDataForAddedTracesToExistingCollection(
     ListNewTraces,CollectionID,this->m_DatabaseConnector);
     //update the table widget for the collection:
   //this->UpdateTableWidgetForAnExistingTrace(
@@ -1190,7 +1192,7 @@ std::pair<std::string,QColor> QGoPrintDatabase::SaveNewCollectionInDB(
   TraceInfoStructure* CurrentlyUsedTraceData = this->GetTraceInfoStructure(iTraceName);
   //int NewCollectionID = this->m_CurrentlyUsedCollectionOfTraces->CreateCollectionWithNoTraces(
     //this->m_DatabaseConnector,NewCollection);
-  int NewCollectionID = CurrentlyUsedTraceData->CollectionOfTraces.CreateCollectionWithNoTraces(
+  int NewCollectionID = CurrentlyUsedTraceData->CollectionOfTraces->CreateCollectionWithNoTraces(
     this->m_DatabaseConnector,NewCollection);
 
   std::pair<std::string,QColor> NewCollectionData;
@@ -1315,7 +1317,7 @@ void QGoPrintDatabase::UpdateTableWidgetForAnExistingTrace(
   TraceInfoStructure* CurrentlyUsedTraceData = this->GetTraceInfoStructure(iTraceName);
   //GoDBTableWidgetContainer* LinkToUpdatedRow = this->m_CurrentlyUsedCollectionOfTraces
    // ->GetLinkToUpdatedTraceContainer(this->m_DatabaseConnector,iTraceID);
-  GoDBTableWidgetContainer* LinkToUpdatedRow = CurrentlyUsedTraceData->CollectionOfTraces.
+  GoDBTableWidgetContainer* LinkToUpdatedRow = CurrentlyUsedTraceData->CollectionOfTraces->
     GetLinkToUpdatedTraceContainer(this->m_DatabaseConnector,iTraceID);
   //this->m_CurrentlyUsedTable->UpdateRow(LinkToUpdatedRow,iTraceID,iTraceName,
     //this->m_CurrentlyUsedCollectionName);

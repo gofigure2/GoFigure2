@@ -55,12 +55,13 @@ struct TraceInfoStructure
   std::string                        CollectionOf;
   std::string                        CollectionOfID;
   QTableWidgetChild*                 Table;
-  GoDBCollectionOfTraces             CollectionOfTraces;
+  GoDBCollectionOfTraces*            CollectionOfTraces;
   std::vector<ContourMeshStructure>* ListTracesInfoForVisu;
   
   TraceInfoStructure()
     {ListTracesInfoForVisu = 0;
-    Table = 0;}
+    Table = 0;
+    CollectionOfTraces = 0;}
 
   TraceInfoStructure(std::string iTraceName, QWidget* parent)
     {
@@ -70,7 +71,9 @@ struct TraceInfoStructure
     
    ~TraceInfoStructure()
      {delete Table;
-     delete ListTracesInfoForVisu;}
+     delete ListTracesInfoForVisu;
+     delete CollectionOfTraces;}
+
   void SetInfoStructure(std::string iTraceName, QWidget* parent)
     {
     TraceName = iTraceName;
@@ -101,7 +104,7 @@ struct TraceInfoStructure
     CollectionNameID += "ID";
     CollectionOfID = CollectionOf;
     CollectionOfID += "ID";
-    CollectionOfTraces.SetCollectionInfo(CollectionName,TraceName);
+    CollectionOfTraces = new GoDBCollectionOfTraces(CollectionName,TraceName);
     Table = new QTableWidgetChild(parent);
     } 
 
