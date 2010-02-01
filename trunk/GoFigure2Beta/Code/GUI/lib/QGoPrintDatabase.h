@@ -115,13 +115,8 @@ public:
   void UpdateCurrentColorData(std::pair<std::string,QColor> iCurrentColorData);
   void SetCurrentCollectionID(std::pair<std::string,QColor> iCurrentCollectionData);
 
+  /** \brief return the info for the visu for the related traces*/
   std::vector<ContourMeshStructure>* GetTracesInfoListForVisu(std::string iTraceName);
-
-  //std::vector<ContourMeshStructure> m_ContoursInfo;
-  //std::vector<ContourMeshStructure> m_MeshesInfo;
-  //std::vector<ContourMeshStructure> m_TracksInfo;
-  //std::vector<ContourMeshStructure> m_LineagesInfo;
-
 
   /** \brief save a new contour from the visu into the database,
   update the table widget with the row container and the m_ContoursInfo*/
@@ -169,10 +164,6 @@ signals:
   void TracesToDeleteInVisu();
 
 protected:
-  //GoDBCollectionOfTraces* m_CollectionOfContours;
-  //GoDBCollectionOfTraces* m_CollectionOfMeshes;
-  //GoDBCollectionOfTraces* m_CollectionOfTracks;
-  //GoDBCollectionOfTraces* m_CollectionOfLineages;
   std::pair<std::string,QColor> m_CurrentColorData;
   std::pair<std::string,QColor> m_CurrentCollectionData;
 
@@ -180,16 +171,6 @@ protected:
   TraceInfoStructure* m_MeshesData;
   TraceInfoStructure* m_TracksData;
   TraceInfoStructure* m_LineagesData;
-
-  /** \todo put them in a structure with the trace name*/
-  GoDBCollectionOfTraces*           m_CurrentlyUsedCollectionOfTraces;
-  QTableWidgetChild*                m_CurrentlyUsedTable;
-  std::string                       m_CurrentlyUsedTraceName;
-  std::string                       m_CurrentlyUsedCollectionName;
-  std::string                       m_CurrentlyUsedTraceIDName;
-  std::string                       m_CurrentlyUsedCollectionIDName;
-  std::string                       m_CurrentlyUsedCollectionOfName;
-  std::string                       m_CurrentlyUsedCollectionOfNameID;
 
   vtkMySQLDatabase* m_DatabaseConnector;
   std::string       m_Server;
@@ -204,20 +185,12 @@ protected:
 
   void OpenDBConnection();
   void CloseDBConnection();
-  
-  /** \brief Set all the related data to the trace name*/
-  void SetCurrentlyUsedTraceData(std::string iTraceName);
 
   /** \brief Return the Name of the tab currently used in the table widget,
   which correspond to the TraceName of the CollectionOfTraces: */
   std::string InWhichTableAreWe();
   /** \brief Return the TraceInfoStructure corresponding to the trace name*/
   TraceInfoStructure* GetTraceInfoStructure(std::string iTraceName);
-  /** \brief Return the corresponding CollectionOfTraces*/
-  GoDBCollectionOfTraces* GetCollectionOfTraces(std::string TraceName);
-  
-  /** \brief Return the corresponding TableWidgetChild*/
-  QTableWidgetChild* GetTableWidgetChild(std::string TraceName);
 
   /** \brief initialize the m_ContoursInfo and m_MeshesInfo with the info from the
   database*/
@@ -225,16 +198,14 @@ protected:
 
   std::vector<ContourMeshStructure> GetTracesForAGivenTimepoint(
     std::vector<ContourMeshStructure> iAllTraces, unsigned int iTimePoint);
-  /**
-    \brief get the columns names and the values of the table (type T) from the
-    database, then display them in the QTableWidgetchild.
-  */
+  
   /** \brief return a vector of all the traces with a bounding box containing
   the given ZCoord*/
   std::vector<ContourMeshStructure> GetTracesForAGivenZCoord(
     std::vector<ContourMeshStructure> iAllTraces,unsigned int iZCoord,
     GoDBCollectionOfTraces* iCollectionOfTraces);
-
+  /**\brief get the columns names and the values of the table (type T) from the
+    database, then display them in the QTableWidgetchild.*/
   void GetContentAndDisplayFromDB( std::string iTableName);
   void closeEvent(QCloseEvent* event);
 
@@ -244,15 +215,29 @@ protected:
     std::string iTraceName);
 
   /** \brief Update the IDs in the CollectionID column for the selected traces*/
+  //void UpdateTableWidgetAndRowContainerWithNewCollectionID(
+   // QTableWidgetChild* Table,vtkMySQLDatabase* DatabaseConnector,
+   // GoDBCollectionOfTraces* iCollectionOfTraces, unsigned int iNewCollectionID,
+   // QColor iColorNewCollection, std::list<int> iListSelectedTraces);
   void UpdateTableWidgetAndRowContainerWithNewCollectionID(
-    QTableWidgetChild* Table,vtkMySQLDatabase* DatabaseConnector,
-    GoDBCollectionOfTraces* iCollectionOfTraces, unsigned int iNewCollectionID,
-    QColor iColorNewCollection, std::list<int> iListSelectedTraces);
+   std::string iTraceName,vtkMySQLDatabase* DatabaseConnector,
+   unsigned int iNewCollectionID,QColor iColorNewCollection,
+   std::list<int> iListSelectedTraces);
 
   void UpdateTableWidgetForAnExistingTrace(std::string iTraceName, int iTraceID);
 
   void DeleteTraceInContourMeshStructure(int iTraceID,
     std::vector<ContourMeshStructure>* iTraceInfo);
+
+  /** \brief take care of the traces belonging to the collection that are going
+  to be deleted and are collection of these belonging traces*/
+  void UpdateInfoForTracesToBeDeletedAsCollectionOf(std::string iTraceName, 
+    std::vector<std::string> iTracesAsCollectionToBeDeleted);
+
+  /** \brief delete the corresponding traces, update the related information
+  and recalculate the bounding box of the corresponding collections*/
+  void DeleteTracesAsPartOfACollection(std::string iTraceName,
+  std::list<int> iTracesToDelete);
 
 
 protected slots:
