@@ -36,9 +36,6 @@ QGoVideoRecorder( QWidget *iParent ) : QDockWidget( iParent ), m_XMin( 0 ),
   this->videoLenght->display( value );
   this->endRecord->setEnabled( false );
 
-  this->videoName->setReadOnly( true );
-  this->videoName_2->setReadOnly( true );
-
   this->tabVideoWidget->setEnabled( false );
 }
 
@@ -311,8 +308,6 @@ on_createFile_clicked()
 {
 	m_VideoName2 = QFileDialog::getSaveFileName( this,
 	      tr( "Folder to Save Video" ), "fileName", 0 );
-
-	this->videoName->setText( m_VideoName2 );
 }
 
 //-------------------------------------------------------------------------
@@ -534,8 +529,6 @@ on_createFile_2_clicked()
 {
   m_VideoName2 = QFileDialog::getSaveFileName( this,
     tr( "Folder to Save Video" ), "fileName", 0 );
-
-  this->videoName_2->setText( m_VideoName2 );
 }
 
 //-------------------------------------------------------------------------
@@ -590,7 +583,6 @@ on_startRecord_clicked()
   }
   else
   {
-  this->videoName_2->setEnabled(false);
   this->createFile_2->setEnabled(false);
   this->frameRate_2->setEnabled(false);
   this->videoQuality_2->setEnabled(false);
@@ -625,7 +617,6 @@ on_endRecord_clicked()
   m_InternalTimer->stop();
   m_FrameCounter = 0;
 
-  this->videoName_2->setEnabled(true);
   this->createFile_2->setEnabled(true);
   this->frameRate_2->setEnabled(true);
   this->videoQuality_2->setEnabled(true);
@@ -685,7 +676,7 @@ void
 QGoVideoRecorder::
 SetRenderingWindow( vtkRenderWindow* iRenderingWindow )
 {
-  m_RenderWindowSelected = !iRenderingWindow;
+  m_RenderWindowSelected = iRenderingWindow;
   this->tabVideoWidget->setEnabled( m_RenderWindowSelected );
 
   if( m_RenderWindowSelected )
