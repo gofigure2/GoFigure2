@@ -1399,5 +1399,6 @@ TraceInfoStructure* QGoPrintDatabase::
     return this->m_LineagesData;
     }
   std::cout<<"error, this tracename is not related to any TracesData"<<std::endl;
-  //return 0;
+
+  return 0;
 }

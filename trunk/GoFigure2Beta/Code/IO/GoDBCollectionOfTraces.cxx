@@ -782,6 +782,8 @@ std::string GoDBCollectionOfTraces::GetCollectionOf()
     {
     return "track";
     }
+
+  return ""; 
 }
 //--------------------------------------------------------------------------
 

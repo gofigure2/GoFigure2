@@ -745,7 +745,7 @@ void GoDBTableWidgetContainer::DeleteSelectedTraces(std::list<int> iSelectedTrac
   unsigned int j = 0;
   while(iter != iSelectedTraces.end())
     {
-    int indexrowtodelete = 0;
+    unsigned int indexrowtodelete = 0;
     bool found = false;
     while(j<this->m_RowContainer[1].second.size() && !found)
       {
@@ -754,7 +754,7 @@ void GoDBTableWidgetContainer::DeleteSelectedTraces(std::list<int> iSelectedTrac
         {  
         indexrowtodelete = j;
         found = true;
-        for(int k = 0; k<this->m_RowContainer.size();k++)
+        for(unsigned int k = 0; k<this->m_RowContainer.size();k++)
           {
           if (this->m_RowContainer[k].second.size()>indexrowtodelete)
             {

@@ -570,7 +570,7 @@ void QTableWidgetChild::DeleteSelectedRows(std::string iTraceNameID)
 {
   //std::vector<std::pair<int,int> >::iterator iter = 
   ///  this->m_VectorSelectedRows.begin();
-  int i = 0;
+  unsigned int i = 0;
   //while(iter !=this->m_VectorSelectedRows.end())
   while (i<this->m_VectorSelectedRows.size())
     {
