@@ -115,6 +115,9 @@ public slots:
     containing the color names with the associated vector of rgba*/
      void setExistingColors(
        std::list<std::pair<std::string,std::vector<int> > > iDataColorsFromDB);
+    /** \brief delete the corresponding collectionID in the list displayed
+    by the colorcombobox*/
+    void DeleteCollectionID(unsigned int);
 
 
 private slots:

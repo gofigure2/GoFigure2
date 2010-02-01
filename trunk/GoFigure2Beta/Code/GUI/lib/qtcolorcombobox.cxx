@@ -413,4 +413,14 @@ int QtColorComboBox::FindItemText(std::string Text)
     }
   return -1;
 }
+//-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
+void QtColorComboBox::DeleteCollectionID(unsigned int CollectionID)
+{
+  int index = this->FindItemText(ConvertToString<unsigned int>(CollectionID));
+  if( index != -1 )
+    {
+    this->removeItem(index);
+    }
+}

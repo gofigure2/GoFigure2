@@ -165,7 +165,7 @@ signals:
   void NewCreatedCollection(QColor,QString );
   void NeedCurrentSelectedCollectionID();
   void TraceToReEdit( unsigned int );
-  void DeletedCollection();
+  void DeletedCollection( unsigned int );
   void TracesToDeleteInVisu();
 
 protected:

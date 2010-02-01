@@ -87,16 +87,6 @@ QGoPrintDatabase( QWidget* iParent ) :
   m_MeshesData = new TraceInfoStructure("mesh",this);
   m_TracksData = new TraceInfoStructure("track",this);
   m_LineagesData = new TraceInfoStructure("lineage",this);
-  
-  //ContourTable = new QTableWidgetChild( this );
- // MeshTable = new QTableWidgetChild( this );
- // TrackTable = new QTableWidgetChild( this );
- // LineageTable = new QTableWidgetChild( this );
-
- // m_CollectionOfContours = new GoDBCollectionOfTraces( "mesh","contour");
-  //m_CollectionOfMeshes = new GoDBCollectionOfTraces( "track","mesh");
-  //m_CollectionOfTracks = new GoDBCollectionOfTraces( "lineage","track");
- // m_CollectionOfLineages = new GoDBCollectionOfTraces("None","lineage");
 
   this->setContextMenuPolicy( Qt::CustomContextMenu );
 
@@ -127,55 +117,58 @@ QGoPrintDatabase( QWidget* iParent ) :
 //--------------------------------------------------------------------------
 QGoPrintDatabase::~QGoPrintDatabase()
 {
-  //delete m_CollectionOfLineages;
-  //delete m_CollectionOfTracks;
-  //delete m_CollectionOfMeshes;
-  //delete m_CollectionOfContours;
-
   // Need to release memory allocated for contours, meshes and tracks
   // contours
  // std::vector<ContourMeshStructure>::iterator c_it = m_ContoursInfo.begin();
-  std::vector<ContourMeshStructure>::iterator c_it = 
-    this->m_ContoursData->ListTracesInfoForVisu->begin();
-
-  while( c_it != this->m_ContoursData->ListTracesInfoForVisu->end() )
+  if (this->m_ContoursData->ListTracesInfoForVisu != 0)
     {
-    // nodes
-    if( c_it->Nodes )
+    std::vector<ContourMeshStructure>::iterator c_it = 
+      this->m_ContoursData->ListTracesInfoForVisu->begin();
+    while( c_it != this->m_ContoursData->ListTracesInfoForVisu->end() )
       {
-      c_it->Nodes->Delete();
-      c_it->Nodes = 0;
+      // nodes
+      if( c_it->Nodes )
+        {
+        c_it->Nodes->Delete();
+        c_it->Nodes = 0;
+        }
+      // used actor for the visualization
+      if( c_it->Actor )
+        {
+        c_it->Actor->Delete();
+        c_it->Actor = 0;
+        }
+      ++c_it;
       }
-    // used actor for the visualization
-    if( c_it->Actor )
-      {
-      c_it->Actor->Delete();
-      c_it->Actor = 0;
-      }
-    ++c_it;
     }
-
   // meshes
   //std::vector<ContourMeshStructure>::iterator m_it = m_MeshesInfo.begin();
-  std::vector<ContourMeshStructure>::iterator m_it = 
-    this->m_MeshesData->ListTracesInfoForVisu->begin();
-
-  while( m_it != this->m_MeshesData->ListTracesInfoForVisu->end() )
+  if (this->m_MeshesData->ListTracesInfoForVisu != 0)
     {
-    // polydata
-    if( m_it->Nodes )
+    std::vector<ContourMeshStructure>::iterator m_it = 
+      this->m_MeshesData->ListTracesInfoForVisu->begin();
+
+    while( m_it != this->m_MeshesData->ListTracesInfoForVisu->end() )
       {
-      m_it->Nodes->Delete();
-      m_it->Nodes = 0;
+      // polydata
+      if( m_it->Nodes )
+        {
+        m_it->Nodes->Delete();
+        m_it->Nodes = 0;
+        }
+      // used actor for the visualization
+      if( m_it->Actor )
+        {
+        m_it->Actor->Delete();
+        m_it->Actor = 0;
+        }
+      ++m_it;
       }
-    // used actor for the visualization
-    if( m_it->Actor )
-      {
-      m_it->Actor->Delete();
-      m_it->Actor = 0;
-      }
-    ++m_it;
     }
+  delete m_ContoursData;
+  delete m_MeshesData;
+  delete m_TracksData;
+  delete m_LineagesData;
 }
 //--------------------------------------------------------------------------
 
@@ -205,10 +198,6 @@ void QGoPrintDatabase::SetDatabaseVariables(
   this->m_MeshesData->CollectionOfTraces->SetImgSessionID(m_ImgSessionID);
   this->m_TracksData->CollectionOfTraces->SetImgSessionID(m_ImgSessionID);
   this->m_LineagesData->CollectionOfTraces->SetImgSessionID(m_ImgSessionID);
-  //m_CollectionOfContours ->SetImgSessionID(m_ImgSessionID);
-  //m_CollectionOfMeshes   ->SetImgSessionID(m_ImgSessionID);
-  //m_CollectionOfTracks   ->SetImgSessionID(m_ImgSessionID);
-  //m_CollectionOfLineages ->SetImgSessionID(m_ImgSessionID);
 }
 //--------------------------------------------------------------------------
 
@@ -271,27 +260,20 @@ void QGoPrintDatabase::CreateContextMenu(const QPoint &iPos)
   QMenu* ContextMenu = new QMenu;
   NeedCurrentSelectedCollectionID();
   std::string TraceName = this->InWhichTableAreWe();
-  //this->SetCurrentlyUsedTraceData(TraceName);
+
   TraceInfoStructure* CurrentlyUsedTraceData = this->GetTraceInfoStructure(TraceName);
+
   ContextMenu->addAction(tr("Delete selected %1s").arg(TraceName.c_str()),
     this,SLOT(DeleteTraces()));
-  //ContextMenu->addAction(tr("Create a new %1").arg(this->m_CurrentlyUsedCollectionName.c_str()),
-    //this,SLOT(CreateCorrespondingCollection()));
   ContextMenu->addAction(tr("Create a new %1").arg(CurrentlyUsedTraceData->CollectionName.c_str()),
     this,SLOT(CreateCorrespondingCollection()));
-  //ContextMenu->addAction(
-    //tr("Add to selected %1 : %2").arg(this->m_CurrentlyUsedCollectionName.c_str())
-    //.arg(this->m_CurrentCollectionData.first.c_str()),this,SLOT(AddToSelectedCollection()));
   ContextMenu->addAction(
     tr("Add to selected %1 : %2").arg(CurrentlyUsedTraceData->CollectionName.c_str())
     .arg(this->m_CurrentCollectionData.first.c_str()),this,SLOT(AddToSelectedCollection()));
   ContextMenu->addAction(tr("ReEdit the selected %1").arg(TraceName.c_str()),
     this,SLOT(ReEditTrace()));
-  //ContextMenu->addAction(tr("Copy Selection"),
-    //this->m_CurrentlyUsedTable,SLOT(CopySelection()));
   ContextMenu->addAction(tr("Copy Selection"),
     CurrentlyUsedTraceData->Table,SLOT(CopySelection()));
-  //ContextMenu->addAction(tr("Copy table"),this->m_CurrentlyUsedTable,SLOT(CopyTable()));
   ContextMenu->addAction(tr("Copy table"),CurrentlyUsedTraceData->Table,SLOT(CopyTable()));
   ContextMenu->exec(this->mapToGlobal(iPos));
 }
@@ -301,9 +283,8 @@ void QGoPrintDatabase::CreateContextMenu(const QPoint &iPos)
 void QGoPrintDatabase::DeleteTraces()
 {
   std::string TraceName = this->InWhichTableAreWe();
-  //this->SetCurrentlyUsedTraceData(TraceName);
   TraceInfoStructure* CurrentlyUsedTraceData = this->GetTraceInfoStructure(TraceName);
-  //std::list<int> SelectedTraces = this->m_CurrentlyUsedTable->GetListCheckedTraceID();
+  
   std::list<int> SelectedTraces = CurrentlyUsedTraceData->Table->GetListCheckedTraceID();
   if(SelectedTraces.empty())
     {
@@ -325,7 +306,7 @@ void QGoPrintDatabase::DeleteTraces()
       {
       OpenDBConnection();
       //check that the traces are not collection of existing traces:
-      std::vector<std::string> VectorValues;
+      std::vector<std::string> VectorDeletedValues;
       std::list<int>::iterator iter = SelectedTraces.begin();
       while(iter != SelectedTraces.end())
         {
@@ -333,37 +314,24 @@ void QGoPrintDatabase::DeleteTraces()
         //delete the trace in the vector<ContourMeshStructure>:
         this->DeleteTraceInContourMeshStructure(ID, 
           CurrentlyUsedTraceData->ListTracesInfoForVisu);
-        /*if (this->m_CurrentlyUsedTraceName == "contour")
-          {
-          this->DeleteTraceInContourMeshStructure(ID,this->m_ContoursInfo);
-          }
-        else
-          {
-          this->DeleteTraceInContourMeshStructure(ID,this->m_MeshesInfo);
-          }*/
-        VectorValues.push_back(ConvertToString<int>(ID));
+        VectorDeletedValues.push_back(ConvertToString<int>(ID));
         iter++;
         }
-      //if (!this->m_CurrentlyUsedCollectionOfName.empty())
       if (CurrentlyUsedTraceData->CollectionOf!= "None")
         {
         //delete collectionID in the colorcollectionid combobox:
         std::list<int>::iterator iterSelec = SelectedTraces.begin();
         while(iterSelec != SelectedTraces.end())
-         {
-         int TraceID = *iterSelec;
-         this->m_CurrentCollectionData.first = ConvertToString<int>(TraceID);
-         DeletedCollection();
-         iterSelec++;
-         }
-
-         //std::vector<std::string> ListBelongingTraces = ListSpecificValuesForOneColumn(
-         //  this->m_DatabaseConnector,this->m_CurrentlyUsedCollectionOfName,
-         //  this->m_CurrentlyUsedCollectionOfNameID,this->m_CurrentlyUsedTraceIDName,VectorValues);
+          {
+          unsigned int TraceID = *iterSelec;
+          //this->m_CurrentCollectionData.first = ConvertToString<int>(TraceID);
+          emit DeletedCollection(TraceID);
+          iterSelec++;
+          }
          std::vector<std::string> ListBelongingTraces = ListSpecificValuesForOneColumn(
            this->m_DatabaseConnector,CurrentlyUsedTraceData->CollectionOf,
            CurrentlyUsedTraceData->CollectionOfID,CurrentlyUsedTraceData->TraceNameID,
-           VectorValues);
+           VectorDeletedValues);
 
         if (!ListBelongingTraces.empty())
           {
