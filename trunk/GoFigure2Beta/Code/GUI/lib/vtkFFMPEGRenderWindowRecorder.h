@@ -5,7 +5,6 @@
 #include <string>
 
 #include "vtkObject.h"
-#include "vtkSmartPointer.h"
 
 class vtkRenderWindow;
 class vtkWindowToImageFilter;
@@ -41,8 +40,8 @@ class vtkFFMPEGRenderWindowRecorder : public vtkObject
      ~vtkFFMPEGRenderWindowRecorder();
 
      vtkRenderWindow*                           m_RenderWindow;
-     vtkSmartPointer< vtkWindowToImageFilter >  m_ImageFilter;
-     vtkSmartPointer< vtkFFMPEGWriter >         m_ImageWriter;
+     vtkWindowToImageFilter*                    m_ImageFilter;
+     vtkFFMPEGWriter*                           m_ImageWriter;
      int                                        m_FrameRate;
      int                                        m_VideoQuality;
      std::string                                m_FileName;

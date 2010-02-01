@@ -7,7 +7,7 @@
 #include "QGoPrintDatabase.h"
 
 #ifdef ENABLEVIDEORECORD
-  #include "QGoVideoRecorder.h"
+  #include "QGoVideoRecorderFFMPEG.h"
 #endif
 
 #include "SnapshotHelper.h"
@@ -266,7 +266,7 @@ void
 QGoTabImageView3DwT::
 CreateVideoRecorderWidget()
 {
-  m_VideoRecorderWidget = new QGoVideoRecorder( this );
+  m_VideoRecorderWidget = new QGoVideoRecorderFFMPEG( this );
 
   QObject::connect( this, SIGNAL( FullScreenViewChanged( int ) ),
         this,SLOT( SetRendererWindow( int )));

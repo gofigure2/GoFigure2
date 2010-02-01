@@ -36,6 +36,7 @@ IF( ENABLE_VIDEO_RECORD )
     ${QGoGUILIB_SRC}
     vtkFFMPEGRenderWindowRecorder.cxx
     QGoVideoRecorder.cxx
+    QGoVideoRecorderFFMPEG.cxx
   )
 ENDIF( ENABLE_VIDEO_RECORD )
 
@@ -75,6 +76,7 @@ IF( ENABLE_VIDEO_RECORD )
     ${QGoGUILIB_HDRS}
     vtkFFMPEGRenderWindowRecorder.h
     QGoVideoRecorder.h
+    QGoVideoRecorderFFMPEG.h
   )
 ENDIF( ENABLE_VIDEO_RECORD )
 

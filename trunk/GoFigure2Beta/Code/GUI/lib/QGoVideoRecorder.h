@@ -7,7 +7,7 @@
 #include <iostream>
 #include <string>
 
-#include "vtkSmartPointer.h"
+//#include "vtkSmartPointer.h"
 
 class vtkRenderWindow;
 class vtkFFMPEGRenderWindowRecorder;
@@ -19,7 +19,7 @@ class vtkFFMPEGRenderWindowRecorder;
 * which used OGGTHEORA. Note that since there is an additional parameter when using
 * oggtheora it amy be better to inherit instead (but up to you).
 */
-class QGoVideoRecorder : public QDockWidget, private Ui::NewDockWidgetVideoRecorder
+class QGoVideoRecorder : public QDockWidget, public Ui::NewDockWidgetVideoRecorder
 {
     Q_OBJECT
 
@@ -33,8 +33,33 @@ class QGoVideoRecorder : public QDockWidget, private Ui::NewDockWidgetVideoRecor
         void SetZMinAndMax( int , int );
         void SetTMinAndMax( int , int );
 
+        QString m_VideoName2;
+
+        unsigned int m_FrameRate2;
+        unsigned int m_VideoQuality2;
+        int m_SliceFT;
+        // in tab "record video"
+        unsigned int m_WindowSelected;
+
+        unsigned int m_XMinForVideo;
+        unsigned int m_XMaxForVideo;
+        unsigned int m_YMinForVideo;
+        unsigned int m_YMaxForVideo;
+        unsigned int m_ZMinForVideo;
+        unsigned int m_ZMaxForVideo;
+        unsigned int m_TMinForVideo;
+        unsigned int m_TMaxForVideo;
+
+        /// \todo larger object first!
+        //vtkSmartPointer< vtkFFMPEGRenderWindowRecorder > m_VideoRecorder;
+
+        QTimer *m_InternalTimer;
+        unsigned int m_FrameCounter;
+
+        bool m_RenderWindowSelected;
+
     public slots:
-      void SetRenderingWindow( vtkRenderWindow* );
+      //void SetRenderingWindow( vtkRenderWindow* );
 
     signals:
       void XSliceChanged( int );
@@ -54,41 +79,15 @@ class QGoVideoRecorder : public QDockWidget, private Ui::NewDockWidgetVideoRecor
         unsigned int m_TMin;
         unsigned int m_TMax;
 
-        unsigned int m_XMinForVideo;
-        unsigned int m_XMaxForVideo;
-        unsigned int m_YMinForVideo;
-        unsigned int m_YMaxForVideo;
-        unsigned int m_ZMinForVideo;
-        unsigned int m_ZMaxForVideo;
-        unsigned int m_TMinForVideo;
-        unsigned int m_TMaxForVideo;
-
-        // in tab "record video"
-        unsigned int m_WindowSelected;
-
-        QString m_VideoName2;
-
-        unsigned int m_FrameRate2;
-        unsigned int m_VideoQuality2;
-
-        /// \todo larger object first!
-        vtkSmartPointer< vtkFFMPEGRenderWindowRecorder > m_VideoRecorder;
-
-        QTimer *m_InternalTimer;
-        unsigned int m_FrameCounter;
-
-        bool m_RenderWindowSelected;
-
         void UpdateQSpinBoxFT( int );
         void UpdateQSpinBoxF( int );
 
-        int m_SliceFT;
 
     private slots:
 
     // in tab "create video"
         //Create video pushbutton
-        void on_startVideo_clicked();
+        //void on_startVideo_clicked();
         
         //Choose a slice T Fixed
         void on_tSpinMin_2_valueChanged( int );
@@ -105,10 +104,10 @@ class QGoVideoRecorder : public QDockWidget, private Ui::NewDockWidgetVideoRecor
         void on_frameRate_2_valueChanged( int );
         void on_videoQuality_2_valueChanged( int );
 
-        void on_startRecord_clicked();
-        void on_endRecord_clicked();
+        //void on_startRecord_clicked();
+        //void on_endRecord_clicked();
 
-        void timeout();
+        //void timeout();
 
 
         void on_SliceFT_activated( int );

@@ -14,8 +14,8 @@ vtkFFMPEGRenderWindowRecorder() :
   m_FrameRate (30), m_VideoQuality (1),
   m_FileName("goFigure2"), m_ControlIfVideoStarted (false)
 {
-  m_ImageFilter  = vtkSmartPointer< vtkWindowToImageFilter >::New();
-  m_ImageWriter  = vtkSmartPointer< vtkFFMPEGWriter >::New();
+  m_ImageFilter  = vtkWindowToImageFilter::New();
+  m_ImageWriter  = vtkFFMPEGWriter::New();
 }
 
 /**
@@ -23,7 +23,13 @@ vtkFFMPEGRenderWindowRecorder() :
  */
 vtkFFMPEGRenderWindowRecorder::
 ~vtkFFMPEGRenderWindowRecorder()
-{}
+{
+
+  m_ImageFilter->Delete();
+
+  // automatically deleted somehow...
+  // m_ImageWriter->Delete();
+}
 
 /**
  * \brief Constructor to create a vtkObject from the vtkObjectFactory

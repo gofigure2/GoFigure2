@@ -1,6 +1,7 @@
 #include <QApplication>
 #include <QTimer>
-#include "QGoVideoRecorder.h"
+
+#include "QGoVideoRecorderFFMPEG.h"
 
 //**************************************************************************//
 //                               MAIN                                       //
@@ -19,7 +20,7 @@ int main( int argc, char *argv[] )
   QTimer* timer = new QTimer;
     timer->setSingleShot( true );
 
-  QGoVideoRecorder window(NULL);
+  QGoVideoRecorderFFMPEG window(NULL);
 
   QObject::connect( timer, SIGNAL( timeout() ), &window, SLOT( close() ) );
 
