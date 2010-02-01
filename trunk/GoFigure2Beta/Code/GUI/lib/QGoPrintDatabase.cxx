@@ -345,7 +345,7 @@ void QGoPrintDatabase::DeleteTraces()
         iter++;
         }
       //if (!this->m_CurrentlyUsedCollectionOfName.empty())
-      if (!CurrentlyUsedTraceData->CollectionOf.empty())
+      if (CurrentlyUsedTraceData->CollectionOf!= "None")
         {
         //delete collectionID in the colorcollectionid combobox:
         std::list<int>::iterator iterSelec = SelectedTraces.begin();

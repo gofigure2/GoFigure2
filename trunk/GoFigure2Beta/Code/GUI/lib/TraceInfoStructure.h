@@ -59,7 +59,8 @@ struct TraceInfoStructure
   std::vector<ContourMeshStructure>* ListTracesInfoForVisu;
   
   TraceInfoStructure()
-    {ListTracesInfoForVisu = 0;}
+    {ListTracesInfoForVisu = 0;
+    Table = 0;}
 
   TraceInfoStructure(std::string iTraceName, QWidget* parent)
     {
@@ -68,7 +69,8 @@ struct TraceInfoStructure
     }
     
    ~TraceInfoStructure()
-     {}
+     {delete Table;
+     delete ListTracesInfoForVisu;}
   void SetInfoStructure(std::string iTraceName, QWidget* parent)
     {
     TraceName = iTraceName;
