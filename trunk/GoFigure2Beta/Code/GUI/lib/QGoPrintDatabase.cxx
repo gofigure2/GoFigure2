@@ -362,7 +362,7 @@ void QGoPrintDatabase::CreateCorrespondingCollection()
     
     std::pair<std::string,QColor> NewCollectionInfo(
       ConvertToString(NewCollectionID),this->m_CurrentColorData.second);   
-    this->AddSelectedTracesToACollection(ListSelectedTraces,NewCollectionInfo,TraceName,true);
+    this->AddListTracesToACollection(ListSelectedTraces,NewCollectionInfo,TraceName,true);
 
     CloseDBConnection();
     QString CollectionIDQString = ConvertToString<int>(NewCollectionID).c_str();
@@ -400,7 +400,7 @@ void QGoPrintDatabase::AddToSelectedCollection()
   else
     {
     OpenDBConnection();
-    this->AddSelectedTracesToACollection(ListSelectedTraces,
+    this->AddListTracesToACollection(ListSelectedTraces,
       this->m_CurrentCollectionData,TraceName,false);
     CloseDBConnection();
     }
@@ -513,7 +513,7 @@ int QGoPrintDatabase::SaveContoursFromVisuInDB(unsigned int iXCoordMin,
 {
   OpenDBConnection();
 
-  GoDBCoordinateRow coord_min;
+  /*GoDBCoordinateRow coord_min;
   coord_min.SetField< unsigned int >( "XCoord", iXCoordMin );
   coord_min.SetField< unsigned int >( "YCoord", iYCoordMin );
   coord_min.SetField< unsigned int >( "ZCoord", iZCoordMin );
@@ -526,23 +526,23 @@ int QGoPrintDatabase::SaveContoursFromVisuInDB(unsigned int iXCoordMin,
   coord_max.SetField< unsigned int >( "TCoord", iTCoord );
 
   GoDBContourRow contour_row( this->m_DatabaseConnector,coord_min, coord_max,
-    this->m_ImgSessionID, iContourNodes );
+    this->m_ImgSessionID, iContourNodes );*/
+
+  GoDBContourRow contour_row = this->GetContourRowFromVisu(iXCoordMin,
+    iYCoordMin,iZCoordMin, iTCoord, iXCoordMax, iYCoordMax, iZCoordMax, 
+    iContourNodes,this->m_DatabaseConnector);
   contour_row.SetColor(iColorData.second.red(),iColorData.second.green(),
     iColorData.second.blue(),iColorData.second.alpha(),iColorData.first,
     this->m_DatabaseConnector);
 
-  contour_row.SetCollectionID(iMeshID);
-
   int NewContourID = contour_row.SaveInDB( this->m_DatabaseConnector);
-
   this->UpdateTableWidgetAndRowContainerWithNewCreatedTrace("contour");
   std::list<int> ListSelectedTraces;
+
   ListSelectedTraces.push_back(NewContourID);
   emit this->NeedCurrentSelectedCollectionID();
-  std::pair<std::string,QColor> CollectionData(ConvertToString<int>(iMeshID),
-    this->m_CurrentCollectionData.second);
-  this->AddSelectedTracesToACollection(
-    ListSelectedTraces,CollectionData,"contour",false);
+  this->AddListTracesToACollection(
+    ListSelectedTraces,this->m_CurrentCollectionData,"contour",false);
   this->AddATraceToContourMeshInfo("contour",NewContourID);
 
   CloseDBConnection();
@@ -559,7 +559,7 @@ int QGoPrintDatabase::UpdateContourFromVisuInDB(unsigned int iXCoordMin,
 {
   OpenDBConnection();
 
-  GoDBCoordinateRow coord_min;
+  /*GoDBCoordinateRow coord_min;
   coord_min.SetField< unsigned int >( "XCoord", iXCoordMin );
   coord_min.SetField< unsigned int >( "YCoord", iYCoordMin );
   coord_min.SetField< unsigned int >( "ZCoord", iZCoordMin );
@@ -572,12 +572,19 @@ int QGoPrintDatabase::UpdateContourFromVisuInDB(unsigned int iXCoordMin,
   coord_max.SetField< unsigned int >( "TCoord", iTCoord );
 
   GoDBContourRow contour_row( this->m_DatabaseConnector,coord_min, coord_max,
-    this->m_ImgSessionID, iContourNodes );
+    this->m_ImgSessionID, iContourNodes );*/
 
+  GoDBContourRow contour_row = this->GetContourRowFromVisu(iXCoordMin,
+    iYCoordMin,iZCoordMin, iTCoord, iXCoordMax, iYCoordMax, iZCoordMax, 
+    iContourNodes,this->m_DatabaseConnector);
   contour_row.SetField< int >("ContourID",ContourID);
 
   UpdateContourInDB(this->m_DatabaseConnector,contour_row);
-  
+  int CollectionID = FindOneID(this->m_DatabaseConnector,
+    "contour","meshID","contourID",ConvertToString<int>(ContourID));
+  this->m_ContoursData->CollectionOfTraces->RecalculateDBBoundingBox(
+    this->m_DatabaseConnector,CollectionID);
+  this->UpdateTableWidgetForAnExistingTrace("mesh",CollectionID);
   this->UpdateTableWidgetForAnExistingTrace("contour",ContourID);
 
   CloseDBConnection();
@@ -869,8 +876,8 @@ void QGoPrintDatabase::UpdateTableWidgetAndRowContainerWithNewCreatedTrace(
   GoDBTableWidgetContainer* LinkToNewTrace = CurrentlyUsedTraceData->CollectionOfTraces->
     GetLinkToNewCreatedTraceContainer(this->m_DatabaseConnector);
   //update the RowContainer for the trace:
-  CurrentlyUsedTraceData->CollectionOfTraces->GetLinkToRowContainer()
-    ->InsertNewCreatedTrace(*LinkToNewTrace);
+  //CurrentlyUsedTraceData->CollectionOfTraces->GetLinkToRowContainer()
+    //->InsertNewCreatedTrace(*LinkToNewTrace);
 
   //Update the trace table widget with the new trace:
   CurrentlyUsedTraceData->Table->setSortingEnabled(false);
@@ -892,8 +899,7 @@ void QGoPrintDatabase::UpdateTableWidgetAndRowContainerWithNewCreatedTrace(
     ListNewTraces,CollectionID,this->m_DatabaseConnector);
     //update the table widget for the collection:
   this->UpdateTableWidgetForAnExistingTrace(
-    CurrentlyUsedTraceData->CollectionName,CollectionID);
-  
+    CurrentlyUsedTraceData->CollectionName,CollectionID);  
  }
 //-------------------------------------------------------------------------
 
@@ -989,7 +995,6 @@ void QGoPrintDatabase::ReEditTrace()
       TraceToReEdit( static_cast< unsigned int >( SelectedTrace.front() ) );
       }
     }
-  // update the bounding box for the associated collection if any
 }
 //-------------------------------------------------------------------------
 
@@ -1151,7 +1156,7 @@ void QGoPrintDatabase::DeleteTracesAsPartOfACollection(std::string iTraceName,
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoPrintDatabase::AddSelectedTracesToACollection(
+void QGoPrintDatabase::AddListTracesToACollection(
   std::list<int> iListSelectedTraces,std::pair<std::string,QColor> iCollection, 
   std::string iTraceName, bool IsANewCollection)
 {
@@ -1171,7 +1176,8 @@ void QGoPrintDatabase::AddSelectedTracesToACollection(
 
   //update the Table Widget Display:
   CurrentlyUsedTraceData->Table->UpdateIDs(CollectionID,
-    CurrentlyUsedTraceData->CollectionNameID,iCollection.second);
+    CurrentlyUsedTraceData->CollectionNameID,iCollection.second,
+    CurrentlyUsedTraceData->TraceNameID,iListSelectedTraces);
   //update the Collection Table with the new bounding box:
   CurrentlyUsedTraceData = this->GetTraceInfoStructure(CurrentlyUsedTraceData->CollectionName);
   if (IsANewCollection)
@@ -1196,4 +1202,29 @@ void QGoPrintDatabase::AddSelectedTracesToACollection(
       }
     }    
 }
-       
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+GoDBContourRow QGoPrintDatabase::GetContourRowFromVisu(
+  unsigned int iXCoordMin,unsigned int iYCoordMin,unsigned int iZCoordMin,
+  unsigned int iTCoord,unsigned int iXCoordMax,unsigned int iYCoordMax,
+  unsigned int iZCoordMax,vtkPolyData* iContourNodes, 
+  vtkMySQLDatabase* iDatabaseConnector)
+{
+  GoDBCoordinateRow coord_min;
+  coord_min.SetField< unsigned int >( "XCoord", iXCoordMin );
+  coord_min.SetField< unsigned int >( "YCoord", iYCoordMin );
+  coord_min.SetField< unsigned int >( "ZCoord", iZCoordMin );
+  coord_min.SetField< unsigned int >( "TCoord", iTCoord );
+
+  GoDBCoordinateRow coord_max;
+  coord_max.SetField< unsigned int >( "XCoord", iXCoordMax );
+  coord_max.SetField< unsigned int >( "YCoord", iYCoordMax );
+  coord_max.SetField< unsigned int >( "ZCoord", iZCoordMax );
+  coord_max.SetField< unsigned int >( "TCoord", iTCoord );
+
+  GoDBContourRow contour_row( iDatabaseConnector,coord_min, coord_max,
+    this->m_ImgSessionID, iContourNodes );
+
+  return contour_row;
+}

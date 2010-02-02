@@ -238,9 +238,17 @@ protected:
 
   /** \brief update the database and the table widget for the selected traces,
   the new collection and the previous collection the traces were part of*/
-  void AddSelectedTracesToACollection(std::list<int> iListSelectedTraces,
+  void AddListTracesToACollection(std::list<int> iListSelectedTraces,
     std::pair<std::string,QColor> iCollection, std::string iTraceName,
     bool IsANewCollection);
+
+  /** \brief create the contour row with the related data provided by
+  the visu*/
+  GoDBContourRow GetContourRowFromVisu(
+    unsigned int iXCoordMin,unsigned int iYCoordMin,unsigned int iZCoordMin,
+    unsigned int iTCoord,unsigned int iXCoordMax,unsigned int iYCoordMax,
+    unsigned int iZCoordMax,vtkPolyData* iContourNodes, 
+    vtkMySQLDatabase* iDatabaseConnector);
 
 
 protected slots:
