@@ -536,6 +536,13 @@ int QGoPrintDatabase::SaveContoursFromVisuInDB(unsigned int iXCoordMin,
   int NewContourID = contour_row.SaveInDB( this->m_DatabaseConnector);
 
   this->UpdateTableWidgetAndRowContainerWithNewCreatedTrace("contour");
+  std::list<int> ListSelectedTraces;
+  ListSelectedTraces.push_back(NewContourID);
+  emit this->NeedCurrentSelectedCollectionID();
+  std::pair<std::string,QColor> CollectionData(ConvertToString<int>(iMeshID),
+    this->m_CurrentCollectionData.second);
+  this->AddSelectedTracesToACollection(
+    ListSelectedTraces,CollectionData,"contour",false);
   this->AddATraceToContourMeshInfo("contour",NewContourID);
 
   CloseDBConnection();
