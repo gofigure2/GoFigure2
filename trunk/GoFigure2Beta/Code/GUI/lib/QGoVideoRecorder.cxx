@@ -22,9 +22,6 @@ QGoVideoRecorder( QWidget *iParent ) : QDockWidget( iParent )
 {
   this->setupUi( this );
 
-  QObject::connect( m_InternalTimer, SIGNAL(timeout()),
-    this, SLOT(timeout()) );
-
   QObject::connect( this->startVideo, SIGNAL(clicked()),
       this, SLOT(onStartVideoClicked()) );
   QObject::connect( this->startRecord, SIGNAL(clicked()),
@@ -34,6 +31,9 @@ QGoVideoRecorder( QWidget *iParent ) : QDockWidget( iParent )
           this, SLOT(onEndRecordClicked()) );
 
   m_InternalTimer = new QTimer( this );
+
+  QObject::connect( m_InternalTimer, SIGNAL(timeout()),
+    this, SLOT(timeout()) );
 
   //Initalize chrono with .00 (not 0)
   QString value = "0.00";

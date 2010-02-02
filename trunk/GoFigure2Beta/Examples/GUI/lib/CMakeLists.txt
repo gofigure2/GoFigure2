@@ -17,6 +17,7 @@ SET( QGOGUILIB_EXAMPLE_SRC
   QGoPrintDatabaseTest
   qgocreatemeshdialogtest
   QGoLsmToMegaExportDialogTest
+  vtkFFMPEGRenderWindowRecorderTest
 )
 
 #ADD QGoVideoRecorderTest if ENABLE_VIDEO_RECORD IS ON
@@ -24,6 +25,7 @@ IF( ENABLE_VIDEO_RECORD )
   SET(QGOGUILIB_EXAMPLE_SRC
     ${QGOGUILIB_EXAMPLE_SRC}
     QGoVideoRecorderTest
+    vtkFFMPEGRenderWindowRecorderTest
     )
 ENDIF( ENABLE_VIDEO_RECORD )
 
@@ -106,5 +108,10 @@ IF( ENABLE_VIDEO_RECORD )
 ADD_TEST( QGoVideoRecorderTest
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/QGoVideoRecorderTest
   1
+)
+
+ADD_TEST( vtkFFMPEGRenderWindowRecorderTest
+  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/vtkFFMPEGRenderWindowRecorderTest
+  test.avi
 )
 ENDIF( ENABLE_VIDEO_RECORD )
