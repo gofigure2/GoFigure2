@@ -371,7 +371,7 @@ void QGoPrintDatabase::CreateCorrespondingCollection()
 
     CloseDBConnection();
     QString CollectionIDQString = ConvertToString<int>(NewCollectionID).c_str();
-    NewCreatedCollection(this->m_CurrentColorData.second,CollectionIDQString);
+    emit NewCreatedCollection(this->m_CurrentColorData.second,CollectionIDQString);
     }
 }
 //--------------------------------------------------------------------------
@@ -929,43 +929,12 @@ void QGoPrintDatabase::UpdateTableWidgetAndRowContainerWithNewCreatedTrace(
    std::string iTraceName,vtkMySQLDatabase* DatabaseConnector,
    unsigned int iNewCollectionID,QColor iColorNewCollection,
    std::list<int> iListSelectedTraces)
-{
-  
+{  
   TraceInfoStructure* TraceData = this->GetTraceInfoStructure(
     iTraceName);
-  TraceInfoStructure* CollectionData = this->GetTraceInfoStructure(
-    TraceData->CollectionName);
-
-  GoDBTableWidgetContainer* LinkToRowContainerForTraces =
-    TraceData->CollectionOfTraces->GetLinkToRowContainer();
-  
-  //update the RowContainer for traces with the new ID for the selected traces:
-  LinkToRowContainerForTraces->UpdateIDs(iListSelectedTraces,iNewCollectionID);
-  //update the RowContainer for collections with the created Collection:
-  CollectionData->Table->UpdateIDs(iNewCollectionID,CollectionData->TraceNameID,
+  //Update the TraceTable with the new collectionID + color:
+  TraceData->Table->UpdateIDs(iNewCollectionID,TraceData->CollectionNameID,
     iColorNewCollection);
-
-/*
-
-  GoDBTableWidgetContainer* LinkToRowContainerForTraces =
-    iCollectionOfTraces->GetLinkToRowContainer();
-
-  //update the RowContainer for traces with the new ID for the selected traces:
-  LinkToRowContainerForTraces->UpdateIDs(iListSelectedTraces,iNewCollectionID);
-
-  //update the RowContainer for collections with the created Collection:
-  
-  //GoDBCollectionOfTraces* CollectionOfTracesForCollection = 
-    //this->GetCollectionOfTraces(
-    //iCollectionOfTraces->GetCollectionName());
-
-  QTableWidgetChild* TableForCollection =
-    this->GetTableWidgetChild(iCollectionOfTraces->GetCollectionName());
-
-  std::string CollectionIDName = iCollectionOfTraces->GetCollectionName();
-  CollectionIDName += "ID";
-  //update the Table Widget Display:
-  Table->UpdateIDs(iNewCollectionID,CollectionIDName,iColorNewCollection);*/
 }
 //-------------------------------------------------------------------------
 
