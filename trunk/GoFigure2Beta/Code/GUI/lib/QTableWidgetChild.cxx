@@ -525,7 +525,7 @@ std::list<int> QTableWidgetChild::GetListCheckedTraceID()
   while(iter != this->m_VectorSelectedRows.end())
     {
     oListSelectedIDs.push_back(iter->first);
-    iter++;
+    ++iter;
     }
   return oListSelectedIDs;
 }

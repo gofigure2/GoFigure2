@@ -87,6 +87,7 @@ public:
   void DeleteSelectedRows(std::string iTraceNameID);
 
   std::list<int> GetListCheckedTraceID();
+
   /** \brief Change the CollectionID in the trace table of the selected
   rows with the newCollectionID and set the background with the colorNewCollection*/
   void UpdateIDs (unsigned int iNewCollectionID,std::string iCollectionIDName, 

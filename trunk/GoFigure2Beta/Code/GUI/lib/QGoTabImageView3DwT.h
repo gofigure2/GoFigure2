@@ -197,6 +197,7 @@ public slots:
   void HighLightContours();
   void HighLightContoursFromTable();
   void SelectContoursInTable();
+  void DeleteContoursFromTable( const std::list< int >& iList );
 
   void ChangeContourRepresentationProperty();
 
@@ -248,6 +249,7 @@ protected:
   void CreateToolsActions();
   void CreateVisuDockWidget();
   void CreateManualSegmentationdockWidget();
+  void CreateDataBaseTablesConnection();
 
 #ifdef   ENABLEVIDEORECORD
   void CreateVideoRecorderWidget();

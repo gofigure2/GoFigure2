@@ -161,7 +161,7 @@ signals:
   void NeedCurrentSelectedCollectionID();
   void TraceToReEdit( unsigned int );
   void DeletedCollection( unsigned int );
-  void TracesToDeleteInVisu();
+  void TracesToDeleteInVisu( std::list< int > );
 
 protected:
   std::pair<std::string,QColor> m_CurrentColorData;

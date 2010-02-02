@@ -79,6 +79,8 @@ QGoTabImageView3DwT( QWidget* iParent ) :
 
   CreateVisuDockWidget();
 
+  CreateDataBaseTablesConnection();
+
   CreateManualSegmentationdockWidget();
 
 #ifdef ENABLEVIDEORECORD
@@ -210,7 +212,12 @@ CreateVisuDockWidget()
 
   QObject::connect( m_VisuDockWidget, SIGNAL( ShowOneChannelChanged( int ) ),
     this, SLOT( ShowOneChannel( int ) ) );
+}
 
+void
+QGoTabImageView3DwT::
+CreateDataBaseTablesConnection()
+{
   QObject::connect( this->m_DataBaseTables,
     SIGNAL( PrintExistingColorsFromDB(
       std::list<std::pair<std::string,std::vector<int> > >) ),
@@ -255,6 +262,10 @@ CreateVisuDockWidget()
   QObject::connect( this->m_DataBaseTables,
     SIGNAL( TraceToReEdit( unsigned int ) ),
     this, SLOT( ReEditContour( unsigned int ) ) );
+
+  QObject::connect( this->m_DataBaseTables,
+    SIGNAL( TracesToDeleteInVisu( std::list< int > ) ),
+    this, SLOT( DeleteContoursFromTable( std::list< int > ) ) );
 
 
 }
@@ -2004,7 +2015,7 @@ void
 QGoTabImageView3DwT::
 DisplayAnnotations( )
 {
-this->m_ImageView->ShowAnnotations();
+  this->m_ImageView->ShowAnnotations();
 }
 //-------------------------------------------------------------------------
 
@@ -2013,7 +2024,7 @@ void
 QGoTabImageView3DwT::
 DisplaySplinePlanes( )
 {
-this->m_ImageView->ShowSplinePlane();
+  this->m_ImageView->ShowSplinePlane();
 }
 //-------------------------------------------------------------------------
 
@@ -2022,6 +2033,49 @@ void
 QGoTabImageView3DwT::
 DisplayCube( )
 {
-this->m_ImageView->ShowCube3D();
+  this->m_ImageView->ShowCube3D();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+DeleteContoursFromTable( const std::list< int >& iList )
+{
+  std::list< int >::const_iterator traceid_it = iList.begin();
+  ContourMeshStructureMultiIndexContainer::index< TraceID >::type::iterator it;
+
+  while( traceid_it != iList.end() )
+    {
+    it = m_ContourMeshContainer.get< TraceID >().find( *traceid_it );
+
+    if( it != m_ContourMeshContainer.get< TraceID >().end() )
+      {
+      int c_dir;
+      vtkActor* c_actor;
+      vtkPolyData* c_nodes;
+
+      while( it != m_ContourMeshContainer.get< TraceID >().end() )
+        {
+        if( it->TraceID == *traceid_it )
+          {
+          c_dir = (*it).Direction;
+          c_actor = (*it).Actor;
+          c_nodes = (*it).Nodes;
+
+          RemoveActorFromViewer( c_dir, c_actor );
+          }
+        else
+          {
+          break;
+          }
+
+        ++it;
+        }
+
+      m_ContourMeshContainer.erase( *traceid_it );
+      }
+    ++traceid_it;
+  }
 }
 //-------------------------------------------------------------------------

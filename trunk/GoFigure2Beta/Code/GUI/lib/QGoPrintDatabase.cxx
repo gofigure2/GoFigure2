@@ -286,7 +286,9 @@ void QGoPrintDatabase::DeleteTraces()
   TraceInfoStructure* CurrentlyUsedTraceData = this->GetTraceInfoStructure(
     TraceName);
   
-  std::list<int> SelectedTraces = CurrentlyUsedTraceData->Table->GetListCheckedTraceID();
+  std::list< int > SelectedTraces =
+    CurrentlyUsedTraceData->Table->GetListCheckedTraceID();
+
   if(SelectedTraces.empty())
     {
     QMessageBox msgBox;
@@ -306,30 +308,37 @@ void QGoPrintDatabase::DeleteTraces()
     if (r == QMessageBox::Yes)
       {
       OpenDBConnection();
+
       std::vector<std::string> VectorDeletedValues;
       std::list<int>::iterator iter = SelectedTraces.begin();
+
       while(iter != SelectedTraces.end())
         {
         int ID = *iter;
         //delete the trace in the vector<ContourMeshStructure>:
-        this->DeleteTraceInContourMeshStructure(ID, 
+        this->DeleteTraceInContourMeshStructure(ID,
           CurrentlyUsedTraceData->ListTracesInfoForVisu);
+
         VectorDeletedValues.push_back(ConvertToString<int>(ID));
-        iter++;
+
+        ++iter;
         }
-       this->UpdateInfoForTracesToBeDeletedAsCollectionOf(TraceName,
-         VectorDeletedValues);
-       //delete traces in the row container:
-       GoDBTableWidgetContainer* LinkToTracesContainer = CurrentlyUsedTraceData->CollectionOfTraces->GetLinkToRowContainer();
-       LinkToTracesContainer->DeleteSelectedTraces(SelectedTraces);
-       CurrentlyUsedTraceData->Table->DeleteSelectedRows(CurrentlyUsedTraceData->TraceNameID);
-       //delete traces in database + update bounding box for collections and update table widget:
-       this->DeleteTracesAsPartOfACollection(TraceName,SelectedTraces);
-       CloseDBConnection();
-       TracesToDeleteInVisu();
-       }
+      this->UpdateInfoForTracesToBeDeletedAsCollectionOf(TraceName,
+        VectorDeletedValues);
+
+      //delete traces in the row container:
+      GoDBTableWidgetContainer* LinkToTracesContainer = CurrentlyUsedTraceData->CollectionOfTraces->GetLinkToRowContainer();
+      LinkToTracesContainer->DeleteSelectedTraces(SelectedTraces);
+      CurrentlyUsedTraceData->Table->DeleteSelectedRows(CurrentlyUsedTraceData->TraceNameID);
+
+      //delete traces in database + update bounding box for collections and update table widget:
+      this->DeleteTracesAsPartOfACollection(TraceName,SelectedTraces);
+      CloseDBConnection();
+
+      emit TracesToDeleteInVisu( SelectedTraces );
+      }
     }
-  }
+}
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------

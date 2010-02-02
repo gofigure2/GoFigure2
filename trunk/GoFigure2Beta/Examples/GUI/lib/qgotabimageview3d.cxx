@@ -54,8 +54,11 @@ int main( int argc, char** argv )
     it != dockwidget_list.end();
     it++ )
     {
-    (it->second)->show();
-    QObject::connect( timer, SIGNAL( timeout() ), it->second, SLOT( close() ) );
+    if( it->second )
+      {
+      (it->second)->show();
+      QObject::connect( timer, SIGNAL( timeout() ), it->second, SLOT( close() ) );
+      }
     }
 
   if( atoi( argv[2] ) == 1 )
