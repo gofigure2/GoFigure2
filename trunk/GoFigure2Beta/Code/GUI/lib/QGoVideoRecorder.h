@@ -108,7 +108,7 @@ class QGoVideoRecorder : public QDockWidget, public Ui::NewDockWidgetVideoRecord
 
 
     private:
-        void Acquisition( int, QString, unsigned int, unsigned int);
+        void Acquire( int );
 
     public slots:
 

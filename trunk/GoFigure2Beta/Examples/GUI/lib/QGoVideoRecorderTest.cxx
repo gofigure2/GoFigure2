@@ -8,13 +8,13 @@
 //**************************************************************************//
 
 int main( int argc, char *argv[] )
-  {
-	if( argc != 2 )
-	    {
-	    std::cout <<"Usage : ./VideoRecorderTest " <<std::endl;
-	    std::cout << "1-test (boolean)" <<std::endl;
-	    return EXIT_FAILURE;
-	    }
+{
+  if( argc != 2 )
+    {
+    std::cout <<"Usage : ./VideoRecorderTest " <<std::endl;
+    std::cout << "1-test (boolean)" <<std::endl;
+    return EXIT_FAILURE;
+    }
 
   QApplication app(argc, argv);
   QTimer* timer = new QTimer;
@@ -25,10 +25,10 @@ int main( int argc, char *argv[] )
 
   QObject::connect( timer, SIGNAL( timeout() ), window, SLOT( close() ) );
 
-    if( atoi( argv[1] ) == 1 )
-      {
-      timer->start( 1000 );
-      }
+  if( atoi( argv[1] ) == 1 )
+    {
+    timer->start( 1000 );
+    }
 
   window->show();
 
@@ -41,4 +41,4 @@ int main( int argc, char *argv[] )
   delete window;
 
   return 0;
-  }
+}

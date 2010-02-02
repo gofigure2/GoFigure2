@@ -326,9 +326,9 @@ void
 QGoVideoRecorder::
 on_frameRate_valueChanged( int value )
 {
-	m_FrameRate2= value;
-	this->frameRate_2->setValue(value);
-    /// TODO update video length
+  m_FrameRate2= value;
+  this->frameRate_2->setValue(value);
+  /// TODO update video length
 
 }
 
@@ -344,8 +344,8 @@ void
 QGoVideoRecorder::
 on_videoQuality_valueChanged( int value )
 {
-	m_VideoQuality2= value;
-	this->videoQuality_2->setValue(value);
+  m_VideoQuality2= value;
+  this->videoQuality_2->setValue(value);
 }
 
 //-------------------------------------------------------------------------
@@ -369,6 +369,8 @@ on_tSpinMin_valueChanged( int value )
 {
   m_TMinForVideo = value;
 }
+
+//m_VideoRecorder->TakeSnapshot();
 
 //-------------------------------------------------------------------------
 
@@ -446,122 +448,12 @@ onStartVideoClicked()
     }
   else if( this->tabWidget->currentIndex () == 0 )
     {
-    /// \todo Create one method here (for this scope)
-
-    if( m_SliceFT == 0 )
-      {
-      /// \todo you can create one method to generate
-      ///   1-the filename from m_SliceFT, min and max
-      ///   2-take snapshot
-      ///   3-emit the signal
-      QString fileName = m_VideoName2;
-
-      fileName.append( "-X-" );
-      fileName.append( QString::number( m_XMinForVideo, 10 ) );
-      fileName.append( "-" );
-      fileName.append( QString::number( m_XMaxForVideo, 10 ) );
-      fileName.append( ".avi" );
-
-      m_VideoRecorder->SetFileName( fileName.toStdString() );
-
-      m_VideoRecorder->StartCapture();
-
-      for(unsigned int i = m_XMinForVideo; i < m_XMaxForVideo+1; i++)
-        {
-        //send signal to gofigure to change slice
-        emit XSliceChanged(i);
-        //capture screen
-        m_VideoRecorder->TakeSnapshot();
-        }
-
-        m_VideoRecorder->EndCapture();
-
-        emit XSliceChanged(m_XMinForVideo);
-      }
-
-    if( m_SliceFT == 1 )
-      {
-      QString fileName = m_VideoName2;
-
-      fileName.insert( fileName.size(), QString("-Y-"));
-      fileName.insert( fileName.size(), QString::number( m_YMinForVideo, 10 ) );
-      fileName.insert( fileName.size(), QString("-"));
-      fileName.insert( fileName.size(), QString::number( m_YMaxForVideo, 10 ) );
-      fileName.insert( fileName.size(), QString(".avi"));
-
-       m_VideoRecorder->SetFileName( fileName.toStdString() );
-
-       m_VideoRecorder->StartCapture();
-
-       for(unsigned int i = m_YMinForVideo; i < m_YMaxForVideo+1; i++)
-         {
-         //send signal to gofigure to change slice
-         emit YSliceChanged(i);
-         //capture screen
-         m_VideoRecorder->TakeSnapshot();
-         }
-       m_VideoRecorder->EndCapture();
-
-       emit YSliceChanged(m_YMinForVideo);
-       }
-
-    if( m_SliceFT == 2 )
-      {
-      QString fileName = m_VideoName2;
-
-      fileName.insert( fileName.size(), QString("-Z-"));
-      fileName.insert( fileName.size(), QString::number( m_ZMinForVideo, 10 ) );
-      fileName.insert( fileName.size(), QString("-"));
-      fileName.insert( fileName.size(), QString::number( m_ZMaxForVideo, 10 ) );
-      fileName.insert( fileName.size(), QString(".avi"));
-
-       m_VideoRecorder->SetFileName( fileName.toStdString() );
-
-       m_VideoRecorder->StartCapture();
-
-       for(unsigned int i = m_ZMinForVideo; i < m_ZMaxForVideo+1; i++)
-         {
-         //send signal to gofigure to change slice
-         emit ZSliceChanged(i);
-         //capture screen
-         m_VideoRecorder->TakeSnapshot();
-         }
-       m_VideoRecorder->EndCapture();
-
-       emit ZSliceChanged(m_ZMinForVideo);
-       }
+    Acquire(m_SliceFT);
     }
   else
     {
-    /// \todo create another method for this scope!
-    QString fileName = m_VideoName2;
-
-    fileName.insert( fileName.size(), QString("-T-"));
-    fileName.insert( fileName.size(), QString::number( m_TMinForVideo, 10 ) );
-    fileName.insert( fileName.size(), QString("-"));
-    fileName.insert( fileName.size(), QString::number( m_TMaxForVideo, 10 ) );
-    fileName.insert( fileName.size(), QString(".avi"));
-
-    m_VideoRecorder->SetFileName( fileName.toStdString() );
-
-    m_VideoRecorder->StartCapture();
-
-    //problem with 3d view?
-
-    for(unsigned int i = m_TMinForVideo; i < m_TMaxForVideo+1; i++)
-      {
-      //send signal to gofigure to change slice
-      std::cout << "emit T"<<std::endl;
-      emit TSliceChanged(i);
-      //capture screen
-      m_VideoRecorder->TakeSnapshot();
-      }
-    m_VideoRecorder->EndCapture();
-
-    //emit TSliceChanged(m_InitialPositio/QGoVideoRecorderFFMPEG.cxx:n);
-
+    Acquire(3);
     }
-
 }
 
 void
@@ -570,27 +462,27 @@ onStartRecordClicked()
 {
 
   if( ( m_VideoName2 == NULL ) || ( !m_RenderWindowSelected ))
-  {
+    {
   /// \todo QMessageBox
     std::cout<<"Please select a videoName and a good rendering window"<<std::endl;
-  }
+    }
   else
-  {
-  this->createFile_2->setEnabled(false);
-  this->frameRate_2->setEnabled(false);
-  this->videoQuality_2->setEnabled(false);
-  this->startRecord->setEnabled(false);
-  this->tabVideoMethod1->setEnabled(false);
-  this->endRecord->setEnabled(true);
+    {
+    this->createFile_2->setEnabled(false);
+    this->frameRate_2->setEnabled(false);
+    this->videoQuality_2->setEnabled(false);
+    this->startRecord->setEnabled(false);
+    this->tabVideoMethod1->setEnabled(false);
+    this->endRecord->setEnabled(true);
 
-  QString fileName = m_VideoName2;
-  fileName.insert( fileName.size(), QString(".avi"));
+    QString fileName = m_VideoName2;
+    fileName.insert( fileName.size(), QString(".avi"));
 
-  m_VideoRecorder->SetFileName( fileName.toStdString() );
+    m_VideoRecorder->SetFileName( fileName.toStdString() );
 
-  m_VideoRecorder->StartCapture();
-  m_InternalTimer->start( 1000/m_FrameRate2 );
-  }
+    m_VideoRecorder->StartCapture();
+    m_InternalTimer->start( 1000/m_FrameRate2 );
+    }
 }
 
 void
@@ -612,8 +504,6 @@ void
 QGoVideoRecorder::
 timeout()
 {
-  //m_VideoRecorder->TakeSnapshot();
-
   ++m_FrameCounter;
 
   // for a better visualisation, always show 2 decimal
@@ -661,41 +551,61 @@ SetRenderingWindow( vtkRenderWindow* iRenderingWindow )
   // TODO Resize image with the first one if we want to change views during record
 }
 
-//-----------------------------------------------------------------------------
 void
 QGoVideoRecorder::
-Acquisition( int iSlice, QString iFileName, unsigned int iMin,
-  unsigned int iMax )
+SetMovieRecorder( vtkRenderWindowMovieRecorder* Test )
 {
+  m_VideoRecorder = Test;
+}
 
-  QString fileName = iFileName;
+void
+QGoVideoRecorder::
+Acquire( int value )
+{
+  int iMin;
+  int iMax;
 
-  //switch 0 1 2
-  switch ( iSlice )
-    {
-    case 0 :
+  QString fileName = m_VideoName2;
+
+  switch ( value )
       {
-      // X Slice
-      fileName.append( "-X-" );
-      break;
+      case 0 :
+        {
+        // X Slice
+        fileName.append( "-X-" );
+        iMin = m_XMinForVideo;
+        iMax = m_XMaxForVideo;
+        break;
+        }
+
+      case 1 :
+        {
+        // Y Slice
+        fileName.append( "-Y-" );
+        iMin = m_YMinForVideo;
+        iMax = m_YMaxForVideo;
+        break;
+        }
+
+      case 2 :
+        {
+        // Z Slice
+        fileName.append( "-Z-" );
+        iMin = m_ZMinForVideo;
+        iMax = m_ZMaxForVideo;
+        break;
+        }
+
+      default:
+      case 4:
+        {
+        // T Slice
+        fileName.append( "-T-" );
+        iMin = m_TMinForVideo;
+        iMax = m_TMaxForVideo;
+        break;
+        }
       }
-
-    case 1 :
-      {
-      // Y Slice
-      fileName.append( "-Y-" );
-      break;
-      }
-
-    default:
-    case 2:
-      {
-      // Z Slice
-
-      break;
-      }
-	}
-
 
   fileName.append( QString::number( iMin, 10 ) );
   fileName.append( "-" );
@@ -709,21 +619,39 @@ Acquisition( int iSlice, QString iFileName, unsigned int iMin,
   for(unsigned int i = iMin; i < iMax+1; i++)
     {
     //send signal to gofigure to change slice
-  //switch
-    emit XSliceChanged(i);
-    //capture screen
-    m_VideoRecorder->TakeSnapshot();
-    }
+    switch ( value )
+        {
+        case 0 :
+          {
+          // X Slice
+          emit XSliceChanged(i);
+          break;
+          }
 
-  m_VideoRecorder->EndCapture();
-  //switch 0 1 2
-  emit XSliceChanged(iMin);
+        case 1 :
+          {
+          // Y Slice
+          emit YSliceChanged(i);
+          break;
+          }
 
-}
+        case 2:
+          {
+          // Z Slice
+          emit ZSliceChanged(i);
+          break;
+          }
 
-void
-QGoVideoRecorder::
-SetMovieRecorder( vtkRenderWindowMovieRecorder* Test )
-{
-  m_VideoRecorder = Test;
+        default:
+        case 4:
+          {
+          // Z Slice
+          emit TSliceChanged(i);
+          break;
+          }
+        }
+      //capture screen
+      m_VideoRecorder->TakeSnapshot();
+      }
+    m_VideoRecorder->EndCapture();
 }
