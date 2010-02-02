@@ -34,6 +34,7 @@ SET( QGoGUILIB_SRC
 IF( ENABLE_VIDEO_RECORD )
   SET(QGoGUILIB_SRC
     ${QGoGUILIB_SRC}
+    vtkRenderWindowMovieRecorder.cxx
     vtkFFMPEGRenderWindowRecorder.cxx
     QGoVideoRecorder.cxx
     QGoVideoRecorderFFMPEG.cxx
@@ -75,6 +76,7 @@ IF( ENABLE_VIDEO_RECORD )
   SET(QGoGUILIB_HDRS
     ${QGoGUILIB_HDRS}
     vtkFFMPEGRenderWindowRecorder.h
+    vtkRenderWindowMovieRecorder.h
     QGoVideoRecorder.h
     QGoVideoRecorderFFMPEG.h
   )

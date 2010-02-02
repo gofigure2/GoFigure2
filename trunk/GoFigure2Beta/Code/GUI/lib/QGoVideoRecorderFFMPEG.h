@@ -5,15 +5,15 @@
 
 #include "QGoVideoRecorder.h"
 
-class vtkFFMPEGRenderWindowRecorder;
+#include "vtkFFMPEGRenderWindowRecorder.h"
+#include "vtkRenderWindowMovieRecorder.h"
 
+#include "vtkRenderWindow.h"
+#include "vtkAlgorithm.h"
 #include "vtkSmartPointer.h"
 
 #include <iostream>
 #include <string>
-
-class vtkRenderWindow;
-
 
 
 class QGoVideoRecorderFFMPEG : public QGoVideoRecorder
@@ -29,7 +29,8 @@ class QGoVideoRecorderFFMPEG : public QGoVideoRecorder
 
 
     private:
-        vtkSmartPointer< vtkFFMPEGRenderWindowRecorder > m_VideoRecorder;
+        vtkFFMPEGRenderWindowRecorder* m_VideoRecorder;
+        void Acquisition( int, QString, unsigned int, unsigned int);
 
     public slots:
 

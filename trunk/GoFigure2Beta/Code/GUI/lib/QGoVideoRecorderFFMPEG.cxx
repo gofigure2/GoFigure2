@@ -1,9 +1,5 @@
 #include "QGoVideoRecorderFFMPEG.h"
 
-#include "vtkFFMPEGRenderWindowRecorder.h"
-
-#include "vtkRenderWindow.h"
-
 //-------------------------------------------------------------------------
 ///\todo move all doxygen documentation in the header file!
 
@@ -17,7 +13,7 @@ QGoVideoRecorderFFMPEG::
 QGoVideoRecorderFFMPEG( QWidget *iParent ) : QGoVideoRecorder( iParent )
 {
 
-  m_VideoRecorder = vtkSmartPointer< vtkFFMPEGRenderWindowRecorder >::New();
+  m_VideoRecorder = vtkFFMPEGRenderWindowRecorder::New();
 
   QObject::connect( m_InternalTimer, SIGNAL(timeout()),
     this, SLOT(timeout()) );
@@ -59,8 +55,9 @@ onStartVideoClicked()
   else if( this->tabWidget->currentIndex () == 0 )
     {
     /// \todo Create one method here (for this scope)
-    m_VideoRecorder->Setm_FrameRate( m_FrameRate2 );
-    m_VideoRecorder->Setm_VideoQuality( m_VideoQuality2 );
+    m_VideoRecorder->m_FrameRate = m_FrameRate2;
+    m_VideoRecorder->m_VideoQuality = m_VideoQuality2;
+    m_VideoRecorder->SetSpecificParameters();
 
     if( m_SliceFT == 0 )
       {
@@ -172,7 +169,7 @@ onStartVideoClicked()
       }
     m_VideoRecorder->EndCapture();
 
-    //emit TSliceChanged(m_InitialPosition);
+    //emit TSliceChanged(m_InitialPositio/QGoVideoRecorderFFMPEG.cxx:n);
 
     }
 
@@ -201,8 +198,10 @@ onStartRecordClicked()
   fileName.insert( fileName.size(), QString(".avi"));
 
   m_VideoRecorder->SetFileName( fileName.toStdString() );
-  m_VideoRecorder->Setm_FrameRate( m_FrameRate2 );
-  m_VideoRecorder->Setm_VideoQuality( m_VideoQuality2 );
+
+  m_VideoRecorder->m_FrameRate = m_FrameRate2;
+  m_VideoRecorder->m_VideoQuality = m_VideoQuality2;
+
   m_VideoRecorder->StartCapture();
   m_InternalTimer->start( 1000/m_FrameRate2 );
   }
@@ -227,7 +226,7 @@ void
 QGoVideoRecorderFFMPEG::
 timeout()
 {
-  m_VideoRecorder->TakeSnapshot();
+  //m_VideoRecorder->TakeSnapshot();
 
   ++m_FrameCounter;
 
@@ -274,5 +273,65 @@ SetRenderingWindow( vtkRenderWindow* iRenderingWindow )
     }
 
   // TODO Resize image with the first one if we want to change views during record
+}
+
+//-----------------------------------------------------------------------------
+void
+QGoVideoRecorderFFMPEG::
+Acquisition( int iSlice, QString iFileName, unsigned int iMin,
+  unsigned int iMax )
+{
+
+  QString fileName = iFileName;
+
+  //switch 0 1 2
+  switch ( iSlice )
+    {
+    case 0 :
+      {
+      // X Slice
+      fileName.append( "-X-" );
+      break;
+      }
+
+    case 1 :
+      {
+      // Y Slice
+      fileName.append( "-Y-" );
+      break;
+      }
+
+    default:
+    case 2:
+      {
+      // Z Slice
+
+      break;
+      }
+	}
+
+
+  fileName.append( QString::number( iMin, 10 ) );
+  fileName.append( "-" );
+  fileName.append( QString::number( iMax, 10 ) );
+  fileName.append( ".avi" );
+
+  m_VideoRecorder->SetFileName( fileName.toStdString() );
+
+  m_VideoRecorder->StartCapture();
+
+  for(unsigned int i = iMin; i < iMax+1; i++)
+    {
+    //send signal to gofigure to change slice
+  //switch
+    emit XSliceChanged(i);
+    //capture screen
+    m_VideoRecorder->TakeSnapshot();
+    }
+
+  m_VideoRecorder->EndCapture();
+  //switch 0 1 2
+  emit XSliceChanged(iMin);
+
 }
 

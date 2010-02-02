@@ -174,7 +174,7 @@ onStartVideoClicked()
       //send signal to gofigure to change slice
       std::cout << "emit T"<<std::endl;
       emit TSliceChanged(i);
-      //capture screen
+      //capture screenvtkAVIRenderWindowRecorder
       m_VideoRecorder->TakeSnapshot();
       }
     m_VideoRecorder->EndCapture();
