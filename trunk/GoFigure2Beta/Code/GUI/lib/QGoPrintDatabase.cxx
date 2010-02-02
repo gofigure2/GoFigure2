@@ -327,8 +327,8 @@ void QGoPrintDatabase::DeleteTraces()
         VectorDeletedValues);
 
       //delete traces in the row container:
-      GoDBTableWidgetContainer* LinkToTracesContainer = CurrentlyUsedTraceData->CollectionOfTraces->GetLinkToRowContainer();
-      LinkToTracesContainer->DeleteSelectedTraces(SelectedTraces);
+      //GoDBTableWidgetContainer* LinkToTracesContainer = CurrentlyUsedTraceData->CollectionOfTraces->GetLinkToRowContainer();
+      //LinkToTracesContainer->DeleteSelectedTraces(SelectedTraces);
       CurrentlyUsedTraceData->Table->DeleteSelectedRows(CurrentlyUsedTraceData->TraceNameID);
 
       //delete traces in database + update bounding box for collections and update table widget:

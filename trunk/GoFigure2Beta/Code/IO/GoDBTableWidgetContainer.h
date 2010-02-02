@@ -89,11 +89,11 @@ class GoDBTableWidgetContainer
 
    /** \brief Insert a new created trace with the datas contained in the 
    NewTraceContainer into the m_RowContainer*/
-   void InsertNewCreatedTrace(GoDBTableWidgetContainer iLinkToNewTraceContainer);
+   //void InsertNewCreatedTrace(GoDBTableWidgetContainer iLinkToNewTraceContainer);
 
-   void DeleteSelectedTraces(std::list<int> iSelectedTraces);
+   //void DeleteSelectedTraces(std::list<int> iSelectedTraces);
 
-   void UpdateIDs(std::list<int> iListTracesToUpdate,unsigned int NewCollectionID);
+   //void UpdateIDs(std::list<int> iListTracesToUpdate,unsigned int NewCollectionID);
 
 protected:
   std::string m_CollectionName;

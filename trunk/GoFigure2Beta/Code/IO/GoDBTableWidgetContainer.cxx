@@ -670,7 +670,7 @@ int GoDBTableWidgetContainer::GetIndexInsideRowContainer(std::string iInfoName)
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void GoDBTableWidgetContainer::InsertNewCreatedTrace(GoDBTableWidgetContainer
+/*void GoDBTableWidgetContainer::InsertNewCreatedTrace(GoDBTableWidgetContainer
   iLinkToNewTraceContainer)
 {
   GoDBTableWidgetContainer::DBTableWidgetContainerType NewTraceContainer =
@@ -698,13 +698,13 @@ void GoDBTableWidgetContainer::InsertNewCreatedTrace(GoDBTableWidgetContainer
   iterCurrentColumn++;
   iterNewColumn++;
     }
-}
+}*/
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void GoDBTableWidgetContainer::UpdateIDs(std::list<int> iListTracesToUpdate,
-  unsigned int NewCollectionID)
-{
+//void GoDBTableWidgetContainer::UpdateIDs(std::list<int> iListTracesToUpdate,
+  //unsigned int NewCollectionID)
+//{
   //GoDBTableWidgetContainer::DBTableWidgetContainerType::iterator iter =
   //  this->m_RowContainer.begin();
   
@@ -735,11 +735,11 @@ void GoDBTableWidgetContainer::UpdateIDs(std::list<int> iListTracesToUpdate,
       i++;
       }
     }*/
-}
+//}
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void GoDBTableWidgetContainer::DeleteSelectedTraces(std::list<int> iSelectedTraces)
+/*void GoDBTableWidgetContainer::DeleteSelectedTraces(std::list<int> iSelectedTraces)
 {
   std::list<int>::iterator iter = iSelectedTraces.begin();
   unsigned int j = 0;
@@ -787,3 +787,4 @@ void GoDBTableWidgetContainer::DeleteSelectedTraces(std::list<int> iSelectedTrac
     iter++;
     }//ENDWHILE
 }
+*/

@@ -110,16 +110,6 @@ public:
     return m_LinkToRowContainer;
     }
 
-  std::string GetTraceName()
-    {
-    return m_TracesName;
-    }
-
-  std::string GetCollectionName()
-    {
-    return m_CollectionName;
-    }
-
   /** \brief get the results of the queries and put them in the row container corresponding
   to all the data needed to fill the table widget for the traces and return the corresponding
   row container*/
@@ -148,12 +138,6 @@ public:
   ID*/
   int CreateCollectionWithNoTraces(vtkMySQLDatabase* DatabaseConnector, 
     GoDBTraceRow iNewCollection);
- 
-  std::string CollectionName()
-    { return m_CollectionName;}
-  std::string TracesName()
-    { return m_TracesName;}
-
 
 protected:
 
