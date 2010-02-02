@@ -215,15 +215,12 @@ protected:
     std::string iTraceName);
 
   /** \brief Update the IDs in the CollectionID column for the selected traces*/
-  //void UpdateTableWidgetAndRowContainerWithNewCollectionID(
-   // QTableWidgetChild* Table,vtkMySQLDatabase* DatabaseConnector,
-   // GoDBCollectionOfTraces* iCollectionOfTraces, unsigned int iNewCollectionID,
-   // QColor iColorNewCollection, std::list<int> iListSelectedTraces);
   void UpdateTableWidgetAndRowContainerWithNewCollectionID(
    std::string iTraceName,vtkMySQLDatabase* DatabaseConnector,
    unsigned int iNewCollectionID,QColor iColorNewCollection,
    std::list<int> iListSelectedTraces);
-
+  /** \brief Get the data for the corresponding trace from the database and 
+  replace the printed ones in the tablewidget with them*/
   void UpdateTableWidgetForAnExistingTrace(std::string iTraceName, int iTraceID);
 
   void DeleteTraceInContourMeshStructure(int iTraceID,
@@ -238,6 +235,12 @@ protected:
   and recalculate the bounding box of the corresponding collections*/
   void DeleteTracesAsPartOfACollection(std::string iTraceName,
   std::list<int> iTracesToDelete);
+
+  /** \brief update the database and the table widget for the selected traces,
+  the new collection and the previous collection the traces were part of*/
+  void AddSelectedTracesToACollection(std::list<int> iListSelectedTraces,
+    std::pair<std::string,QColor> iCollection, std::string iTraceName,
+    bool IsANewCollection);
 
 
 protected slots:

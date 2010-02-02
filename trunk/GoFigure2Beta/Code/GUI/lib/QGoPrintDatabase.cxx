@@ -352,22 +352,17 @@ void QGoPrintDatabase::CreateCorrespondingCollection()
     OpenDBConnection();
     //set the color for the new collection:
     GoDBTraceRow NewCollection;
-    NeedToGetCurrentSelectedColor();
+    emit NeedToGetCurrentSelectedColor();
     NewCollection.SetColor(this->m_CurrentColorData.second.red(),this->m_CurrentColorData.second.green(),
       this->m_CurrentColorData.second.blue(),this->m_CurrentColorData.second.alpha(),
       this->m_CurrentColorData.first,this->m_DatabaseConnector);
     //create the collection in the database and get the corresponding ID:
     int NewCollectionID = CurrentlyUsedTraceData->CollectionOfTraces->CreateNewCollectionFromSelection(
       ListSelectedTraces,this->m_DatabaseConnector,NewCollection);
-
-    //update the Collection Table and the row container with the new created Collection:
-    CurrentlyUsedTraceData = this->GetTraceInfoStructure(CurrentlyUsedTraceData->CollectionName);
-    this->UpdateTableWidgetAndRowContainerWithNewCreatedTrace(CurrentlyUsedTraceData->TraceName);
-
-    //update the Trace Table and the row container with the new Collection ID:
-    CurrentlyUsedTraceData = this->GetTraceInfoStructure(TraceName);
-    this->UpdateTableWidgetAndRowContainerWithNewCollectionID(CurrentlyUsedTraceData->TraceName,
-      this->m_DatabaseConnector,NewCollectionID,this->m_CurrentColorData.second,ListSelectedTraces);
+    
+    std::pair<std::string,QColor> NewCollectionInfo(
+      ConvertToString(NewCollectionID),this->m_CurrentColorData.second);   
+    this->AddSelectedTracesToACollection(ListSelectedTraces,NewCollectionInfo,TraceName,true);
 
     CloseDBConnection();
     QString CollectionIDQString = ConvertToString<int>(NewCollectionID).c_str();
@@ -390,7 +385,7 @@ void QGoPrintDatabase::AddToSelectedCollection()
   std::string TraceName = this->InWhichTableAreWe();
   TraceInfoStructure* CurrentlyUsedTraceData = this->GetTraceInfoStructure(TraceName);
   std::list<int> ListSelectedTraces = CurrentlyUsedTraceData->Table->GetListCheckedTraceID();
-  NeedCurrentSelectedCollectionID();
+  emit NeedCurrentSelectedCollectionID();
 
   if (ListSelectedTraces.empty())
     {
@@ -405,37 +400,8 @@ void QGoPrintDatabase::AddToSelectedCollection()
   else
     {
     OpenDBConnection();
-    int CollectionID = atoi(this->m_CurrentCollectionData.first.c_str());
-    QColor ColorCollection = this->m_CurrentCollectionData.second;
-    GoDBTableWidgetContainer* LinkToRowContainerForTraces =
-      CurrentlyUsedTraceData->CollectionOfTraces->GetLinkToRowContainer();
-
-    //update the corresponding database data:
-    std::list<int> ListCollectionsToUpdateInTableWidget = 
-      CurrentlyUsedTraceData->CollectionOfTraces->
-      UpdateDBDataForAddedTracesToExistingCollection(ListSelectedTraces,
-      CollectionID,this->m_DatabaseConnector);
-    
-    //update the RowContainer for traces with the new ID for the selected traces:
-    LinkToRowContainerForTraces->UpdateIDs(ListSelectedTraces,CollectionID);
-
-    //update the Table Widget Display:
-    CurrentlyUsedTraceData->Table->UpdateIDs(CollectionID,
-      CurrentlyUsedTraceData->CollectionNameID,ColorCollection);
-    //update the Collection Table with the new bounding box:
-    CurrentlyUsedTraceData = this->GetTraceInfoStructure(CurrentlyUsedTraceData->CollectionName);
-    this->UpdateTableWidgetForAnExistingTrace(CurrentlyUsedTraceData->TraceName,CollectionID); 
-    //update the Collection Table with the old updated bounding box:
-    if (!ListCollectionsToUpdateInTableWidget.empty())
-      {
-      std::list<int>::iterator iter = ListCollectionsToUpdateInTableWidget.begin();
-      while (iter != ListCollectionsToUpdateInTableWidget.end())
-        {
-        int TraceID = *iter;
-        this->UpdateTableWidgetForAnExistingTrace(CurrentlyUsedTraceData->TraceName,TraceID);
-        iter++;
-        }
-      }    
+    this->AddSelectedTracesToACollection(ListSelectedTraces,
+      this->m_CurrentCollectionData,TraceName,false);
     CloseDBConnection();
     }
 }
@@ -1016,6 +982,7 @@ void QGoPrintDatabase::ReEditTrace()
       TraceToReEdit( static_cast< unsigned int >( SelectedTrace.front() ) );
       }
     }
+  // update the bounding box for the associated collection if any
 }
 //-------------------------------------------------------------------------
 
@@ -1174,5 +1141,52 @@ void QGoPrintDatabase::DeleteTracesAsPartOfACollection(std::string iTraceName,
     iterator++;
     }
 }
+//-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
+void QGoPrintDatabase::AddSelectedTracesToACollection(
+  std::list<int> iListSelectedTraces,std::pair<std::string,QColor> iCollection, 
+  std::string iTraceName, bool IsANewCollection)
+{
+  int CollectionID = atoi(iCollection.first.c_str());
+  TraceInfoStructure* CurrentlyUsedTraceData = 
+    this->GetTraceInfoStructure(iTraceName);
+  //update the corresponding database data:
+  std::list<int> ListCollectionsToUpdateInTableWidget = 
+    CurrentlyUsedTraceData->CollectionOfTraces->
+    UpdateDBDataForAddedTracesToExistingCollection(iListSelectedTraces,
+    CollectionID,this->m_DatabaseConnector);
+    
+  //update the RowContainer for traces with the new ID for the selected traces:
+  //GoDBTableWidgetContainer* LinkToRowContainerForTraces =
+      //CurrentlyUsedTraceData->CollectionOfTraces->GetLinkToRowContainer();
+  //LinkToRowContainerForTraces->UpdateIDs(ListSelectedTraces,CollectionID);
+
+  //update the Table Widget Display:
+  CurrentlyUsedTraceData->Table->UpdateIDs(CollectionID,
+    CurrentlyUsedTraceData->CollectionNameID,iCollection.second);
+  //update the Collection Table with the new bounding box:
+  CurrentlyUsedTraceData = this->GetTraceInfoStructure(CurrentlyUsedTraceData->CollectionName);
+  if (IsANewCollection)
+    {
+    this->UpdateTableWidgetAndRowContainerWithNewCreatedTrace(
+      CurrentlyUsedTraceData->TraceName);
+    }
+  else
+    {
+    this->UpdateTableWidgetForAnExistingTrace(CurrentlyUsedTraceData->TraceName,CollectionID); 
+    }
+
+  //update the Collection Table with the old updated bounding box:
+  if (!ListCollectionsToUpdateInTableWidget.empty())
+    {
+    std::list<int>::iterator iter = ListCollectionsToUpdateInTableWidget.begin();
+    while (iter != ListCollectionsToUpdateInTableWidget.end())
+      {
+      int TraceID = *iter;
+      this->UpdateTableWidgetForAnExistingTrace(CurrentlyUsedTraceData->TraceName,TraceID);
+      iter++;
+      }
+    }    
+}
        
