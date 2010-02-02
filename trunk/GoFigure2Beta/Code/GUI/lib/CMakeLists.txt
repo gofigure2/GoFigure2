@@ -37,7 +37,6 @@ IF( ENABLE_VIDEO_RECORD )
     vtkRenderWindowMovieRecorder.cxx
     vtkFFMPEGRenderWindowRecorder.cxx
     QGoVideoRecorder.cxx
-    QGoVideoRecorderFFMPEG.cxx
   )
 ENDIF( ENABLE_VIDEO_RECORD )
 
@@ -78,7 +77,6 @@ IF( ENABLE_VIDEO_RECORD )
     vtkFFMPEGRenderWindowRecorder.h
     vtkRenderWindowMovieRecorder.h
     QGoVideoRecorder.h
-    QGoVideoRecorderFFMPEG.h
   )
 ENDIF( ENABLE_VIDEO_RECORD )
 

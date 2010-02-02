@@ -33,23 +33,6 @@ vtkRenderWindowMovieRecorder::
 }
 
 /**
- * \brief Constructor to create a vtkObject from the vtkObjectFactory
- */
-/*vtkRenderWindowMovieRecorder*
-vtkRenderWindowMovieRecorder::
-New()
-{
-  // First try to create the object from the vtkObjectFactory
-  vtkObject* ret =
-    vtkObjectFactory::CreateInstance("vtkRenderWindowMovieRecorder");
-  if ( ret )
-    {
-    return static_cast<vtkRenderWindowMovieRecorder *>(ret);
-    }
-
-  return new vtkRenderWindowMovieRecorder;
-}*/
-/**
  * \brief Set the name of the video
  * \param[in] iFileName Name of the video
  */

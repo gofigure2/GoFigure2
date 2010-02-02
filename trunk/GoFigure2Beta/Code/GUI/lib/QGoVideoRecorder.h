@@ -10,7 +10,7 @@
 //#include "vtkSmartPointer.h"
 
 class vtkRenderWindow;
-class vtkFFMPEGRenderWindowRecorder;
+class vtkRenderWindowMovieRecorder;
 
 /** \todo What about making it a template class
 * template< class TRenderWindowRecorder > class QGoVideoRecorder, like this you
@@ -19,6 +19,7 @@ class vtkFFMPEGRenderWindowRecorder;
 * which used OGGTHEORA. Note that since there is an additional parameter when using
 * oggtheora it amy be better to inherit instead (but up to you).
 */
+
 class QGoVideoRecorder : public QDockWidget, public Ui::NewDockWidgetVideoRecorder
 {
     Q_OBJECT
@@ -50,16 +51,14 @@ class QGoVideoRecorder : public QDockWidget, public Ui::NewDockWidgetVideoRecord
         unsigned int m_TMinForVideo;
         unsigned int m_TMaxForVideo;
 
-        /// \todo larger object first!
-        //vtkSmartPointer< vtkFFMPEGRenderWindowRecorder > m_VideoRecorder;
-
         QTimer *m_InternalTimer;
         unsigned int m_FrameCounter;
 
         bool m_RenderWindowSelected;
 
+        void SetMovieRecorder( vtkRenderWindowMovieRecorder* );
+
     public slots:
-      //void SetRenderingWindow( vtkRenderWindow* );
 
     signals:
       void XSliceChanged( int );
@@ -82,39 +81,43 @@ class QGoVideoRecorder : public QDockWidget, public Ui::NewDockWidgetVideoRecord
         void UpdateQSpinBoxFT( int );
         void UpdateQSpinBoxF( int );
 
+        vtkRenderWindowMovieRecorder* m_VideoRecorder;
+
 
     private slots:
 
     // in tab "create video"
-        //Create video pushbutton
-        //void on_startVideo_clicked();
-        
-        //Choose a slice T Fixed
-        void on_tSpinMin_2_valueChanged( int );
-        void on_tSpinMax_2_valueChanged( int );
+    //Choose a slice T Fixed
+    void on_tSpinMin_2_valueChanged( int );
+    void on_tSpinMax_2_valueChanged( int );
+    //Video parameters
+    void on_createFile_clicked();
+    void on_frameRate_valueChanged( int );
+    void on_videoQuality_valueChanged( int );
+    //Video parameters
+    void on_createFile_2_clicked();
+    void on_frameRate_2_valueChanged( int );
+    void on_videoQuality_2_valueChanged( int );
+    void on_SliceFT_activated( int );
+    void on_tSpinMin_valueChanged( int );
+    void on_tSpinMax_valueChanged( int );
 
 
-        //Video parameters
-        void on_createFile_clicked();
-        void on_frameRate_valueChanged( int );
-        void on_videoQuality_valueChanged( int );
-
-        //Video parameters
-        void on_createFile_2_clicked();
-        void on_frameRate_2_valueChanged( int );
-        void on_videoQuality_2_valueChanged( int );
-
-        //void on_startRecord_clicked();
-        //void on_endRecord_clicked();
-
-        //void timeout();
+    public slots:
+        void SetRenderingWindow( vtkRenderWindow* );
 
 
-        void on_SliceFT_activated( int );
+    private:
+        void Acquisition( int, QString, unsigned int, unsigned int);
 
-        void on_tSpinMin_valueChanged( int );
-        void on_tSpinMax_valueChanged( int );
+    public slots:
 
+    // in tab "create video"
+    //Create video pushbutton
+    void onStartVideoClicked();
+    void onStartRecordClicked();
+    void onEndRecordClicked();
+    void timeout();
 
 };
 

@@ -7,7 +7,8 @@
 #include "QGoPrintDatabase.h"
 
 #ifdef ENABLEVIDEORECORD
-  #include "QGoVideoRecorderFFMPEG.h"
+  #include "QGoVideoRecorder.h"
+  #include  "vtkFFMPEGRenderWindowRecorder.h"
 #endif
 
 #include "SnapshotHelper.h"
@@ -267,7 +268,6 @@ CreateDataBaseTablesConnection()
     SIGNAL( TracesToDeleteInVisu( std::list< int > ) ),
     this, SLOT( DeleteContoursFromTable( std::list< int > ) ) );
 
-
 }
 //-------------------------------------------------------------------------
 #ifdef   ENABLEVIDEORECORD
@@ -277,7 +277,12 @@ void
 QGoTabImageView3DwT::
 CreateVideoRecorderWidget()
 {
-  m_VideoRecorderWidget = new QGoVideoRecorderFFMPEG( this );
+  m_VideoRecorderWidget = new QGoVideoRecorder( this );
+  m_FFMPEGTEST = vtkFFMPEGRenderWindowRecorder::New();
+  m_VideoRecorderWidget->SetMovieRecorder( m_FFMPEGTEST );
+  m_FFMPEGTEST->m_FrameRate = 5;
+  m_FFMPEGTEST->m_VideoQuality = 2;
+  m_FFMPEGTEST->SetSpecificParameters();
 
   QObject::connect( this, SIGNAL( FullScreenViewChanged( int ) ),
         this,SLOT( SetRendererWindow( int )));
