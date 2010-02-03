@@ -220,17 +220,31 @@ IF( VTK_FOUND )
       ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/itkQt )
 
 #---------------------------------------------------------------------------
+#---------------------------------------------------------------------------
 # USE FFMPEG ENCODER
 #---------------------------------------------------------------------------
+#---------------------------------------------------------------------------
 
-OPTION (ENABLE_VIDEO_RECORD "VTK must be built with use FFMPEG" OFF)
+IF( VTK_USE_FFMPEG_ENCODER )
+  OPTION (ENABLE_VIDEO_RECORD_FFMPEG "VTK must be built with VTK_USE_FFMPEG_ENCODER" OFF)
+ENDIF( VTK_USE_FFMPEG_ENCODER )
 
-IF( ENABLE_VIDEO_RECORD )
+IF( VTK_USE_AVI_ENCODER )
+  OPTION (ENABLE_VIDEO_RECORD_AVI "VTK must be built with VTK_USE_AVI_ENCODER" OFF)
+ENDIF( VTK_USE_AVI_ENCODER )
+
+
+IF( ENABLE_VIDEO_RECORD_FFMPEG )
   ADD_DEFINITIONS(-DENABLEVIDEORECORD)
-ELSE( ENABLE_VIDEO_RECORD )
-#  REMOVE_DEFINITIONS(-DENABLEVIDEORECORD)
-ENDIF( ENABLE_VIDEO_RECORD )
+  ADD_DEFINITIONS(-DENABLEFFMPEG)
+ENDIF( ENABLE_VIDEO_RECORD_FFMPEG )
 
+IF( ENABLE_VIDEO_RECORD_AVI )
+  ADD_DEFINITIONS(-DENABLEVIDEORECORD)
+  ADD_DEFINITIONS(-DENABLEAVI)
+ENDIF( ENABLE_VIDEO_RECORD_AVI )
+
+#---------------------------------------------------------------------------
 #---------------------------------------------------------------------------
 
     IF( BUILD_EXAMPLES )

@@ -19,14 +19,29 @@ SET( QGOGUILIB_EXAMPLE_SRC
   QGoLsmToMegaExportDialogTest
 )
 
+#---------------------------------------------------------------------------
+#---------------------------------------------------------------------------
+
 #ADD QGoVideoRecorderTest if ENABLE_VIDEO_RECORD IS ON
-IF( ENABLE_VIDEO_RECORD )
+IF( ENABLE_VIDEO_RECORD_FFMPEG )
   SET(QGOGUILIB_EXAMPLE_SRC
     ${QGOGUILIB_EXAMPLE_SRC}
     QGoVideoRecorderTest
     vtkFFMPEGRenderWindowRecorderTest
     )
-ENDIF( ENABLE_VIDEO_RECORD )
+ENDIF( ENABLE_VIDEO_RECORD_FFMPEG )
+
+#ADD QGoVideoRecorderTest if ENABLE_VIDEO_RECORD IS ON
+IF( ENABLE_VIDEO_RECORD_AVI )
+  SET(QGOGUILIB_EXAMPLE_SRC
+    ${QGOGUILIB_EXAMPLE_SRC}
+    QGoVideoRecorderTest
+    vtkAVIRenderWindowRecorderTest
+    )
+ENDIF( ENABLE_VIDEO_RECORD_AVI )
+
+#---------------------------------------------------------------------------
+#---------------------------------------------------------------------------
 
 FOREACH( var ${QGOGUILIB_EXAMPLE_SRC} )
 
@@ -102,8 +117,11 @@ ADD_TEST( QGoLsmToMegaExportDialogTest
   1
 )
 
-# ADD THIS TEST IF ENABLE_VIDEO_RECORD IS ON
-IF( ENABLE_VIDEO_RECORD )
+#---------------------------------------------------------------------------
+#---------------------------------------------------------------------------
+
+# ADD THIS TEST IF ENABLE_VIDEO_RECORD_FFMPEG IS ON
+IF( ENABLE_VIDEO_RECORD_FFMPEG )
 ADD_TEST( QGoVideoRecorderTest
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/QGoVideoRecorderTest
   1
@@ -113,4 +131,20 @@ ADD_TEST( vtkFFMPEGRenderWindowRecorderTest
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/vtkFFMPEGRenderWindowRecorderTest
   test.avi
 )
-ENDIF( ENABLE_VIDEO_RECORD )
+ENDIF( ENABLE_VIDEO_RECORD_FFMPEG )
+
+# ADD THIS TEST IF ENABLE_VIDEO_RECORD_AVI IS ON
+IF( ENABLE_VIDEO_RECORD_AVI )
+ADD_TEST( QGoVideoRecorderTest
+  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/QGoVideoRecorderTest
+  1
+)
+
+ADD_TEST( vtkAVIRenderWindowRecorderTest
+  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/vtkAVIRenderWindowRecorderTest
+  test.avi
+)
+ENDIF( ENABLE_VIDEO_RECORD_AVI )
+
+#---------------------------------------------------------------------------
+#---------------------------------------------------------------------------

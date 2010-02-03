@@ -17,9 +17,17 @@ class QGoManualSegmentationDockWidget;
 class QGoPrintDatabase;
 
 #ifdef   ENABLEVIDEORECORD
-//class QGoVideoRecorderFFMPEG;
+
 class QGoVideoRecorder;
-class vtkFFMPEGRenderWindowRecorder;
+
+  #ifdef   ENABLEFFMPEG
+  class vtkFFMPEGRenderWindowRecorder;
+  #endif /* ENABLEFFMPEG */
+
+  #ifdef   ENABLEAVI
+  class vtkAVIRenderWindowRecorder;
+  #endif /* ENABLEAVI */
+
 #endif /* ENABLEVIDEORECORD */
 
 class vtkLSMReader;
@@ -240,7 +248,15 @@ protected:
 
 #ifdef   ENABLEVIDEORECORD
     QGoVideoRecorder*                         m_VideoRecorderWidget;
+
+  #ifdef   ENABLEFFMPEG
     vtkFFMPEGRenderWindowRecorder*            m_FFMPEGWriter;
+  #endif /* ENABLEFFMPEG */
+
+  #ifdef   ENABLEAVI
+    vtkAVIRenderWindowRecorder*            m_AVIGWriter;
+  #endif /* ENABLEAVI */
+
 #endif /* ENABLEVIDEORECORD */
 
 

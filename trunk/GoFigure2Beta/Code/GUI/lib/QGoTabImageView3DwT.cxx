@@ -6,10 +6,19 @@
 #include "QGoManualSegmentationDockWidget.h"
 #include "QGoPrintDatabase.h"
 
-#ifdef ENABLEVIDEORECORD
+#ifdef   ENABLEVIDEORECORD
+
   #include "QGoVideoRecorder.h"
+
+  #ifdef   ENABLEFFMPEG
   #include  "vtkFFMPEGRenderWindowRecorder.h"
-#endif
+  #endif /* ENABLEFFMPEG */
+
+  #ifdef   ENABLEAVI
+  #include  "vtkAVIRenderWindowRecorder.h"
+  #endif /* ENABLEAVI */
+
+#endif /* ENABLEVIDEORECORD */
 
 #include "SnapshotHelper.h"
 
@@ -278,8 +287,16 @@ QGoTabImageView3DwT::
 CreateVideoRecorderWidget()
 {
   m_VideoRecorderWidget = new QGoVideoRecorder( this );
+
+#ifdef   ENABLEFFMPEG
   m_FFMPEGWriter = vtkFFMPEGRenderWindowRecorder::New();
   m_VideoRecorderWidget->SetMovieRecorder( m_FFMPEGWriter );
+#endif /* ENABLEFFMPEG */
+
+#ifdef   ENABLEAVI
+  m_AVIWriter = vtkAVIRenderWindowRecorder::New();
+  m_VideoRecorderWidget->SetMovieRecorder( m_AVIWriter );
+#endif /* ENABLEAVI */
 
   QObject::connect( this, SIGNAL( FullScreenViewChanged( int ) ),
         this,SLOT( SetRendererWindow( int )));
@@ -320,16 +337,32 @@ void
 QGoTabImageView3DwT::
 SetSpecificParametersFrameRate(int iValue)
 {
+
+#ifdef   ENABLEFFMPEG
   m_FFMPEGWriter->SetFrameRate( iValue );
   m_FFMPEGWriter->SetSpecificParameters();
+#endif /* ENABLEFFMPEG */
+
+#ifdef   ENABLEAVI
+  m_AVIWriter->SetFrameRate( iValue );
+  m_AVIWriter->SetSpecificParameters();
+#endif /* ENABLEAVI */
+
 }
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
 SetSpecificParametersQuality(int iValue)
 {
+#ifdef   ENABLEFFMPEG
   m_FFMPEGWriter->SetVideoQuality( iValue );
   m_FFMPEGWriter->SetSpecificParameters();
+#endif /* ENABLEFFMPEG */
+
+#ifdef   ENABLEAVI
+  m_AVIWriter->SetVideoQuality( iValue );
+  m_AVIWriter->SetSpecificParameters();
+#endif /* ENABLEAVI */
 }
 #endif /* ENABLEVIDEORECORD */
 //-------------------------------------------------------------------------

@@ -28,17 +28,34 @@ SET( QGoGUILIB_SRC
   qtcolorcombobox.cxx
   QGoLsmToMegaExportDialog.cxx
   ConversionLsmToMegaThread.cxx
+  
 )
 
+#------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
+
 #ADD THIS SRCS IF ENABLE_VIDEO_RECORD is ON
-IF( ENABLE_VIDEO_RECORD )
+IF( ENABLE_VIDEO_RECORD_FFMPEG )
   SET(QGoGUILIB_SRC
     ${QGoGUILIB_SRC}
     vtkRenderWindowMovieRecorder.cxx
     vtkFFMPEGRenderWindowRecorder.cxx
     QGoVideoRecorder.cxx
   )
-ENDIF( ENABLE_VIDEO_RECORD )
+ENDIF( ENABLE_VIDEO_RECORD_FFMPEG )
+
+#ADD THIS SRCS IF ENABLE_VIDEO_RECORD is ON
+IF( ENABLE_VIDEO_RECORD_AVI )
+  SET(QGoGUILIB_SRC
+    ${QGoGUILIB_SRC}
+    vtkRenderWindowMovieRecorder.cxx
+    vtkAVIRenderWindowRecorder.cxx
+    QGoVideoRecorder.cxx
+  )
+ENDIF( ENABLE_VIDEO_RECORD_AVI )
+
+#------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 
 SET( QGoGUILIB_HDRS
   QGoConnectServerPage.h
@@ -70,15 +87,31 @@ SET( QGoGUILIB_HDRS
   ConversionLsmToMegaThread.h
 )
 
-# ADD THIS HEADERS IF ENABLE_VIDEO_RECORD IS ON
-IF( ENABLE_VIDEO_RECORD )
+#------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
+
+# ADD THIS HEADERS IF ENABLE_VIDEO_RECORD_FFMPEG IS ON
+IF( ENABLE_VIDEO_RECORD_FFMPEG )
   SET(QGoGUILIB_HDRS
     ${QGoGUILIB_HDRS}
     vtkFFMPEGRenderWindowRecorder.h
     vtkRenderWindowMovieRecorder.h
     QGoVideoRecorder.h
   )
-ENDIF( ENABLE_VIDEO_RECORD )
+ENDIF( ENABLE_VIDEO_RECORD_FFMPEG )
+
+# ADD THIS HEADERS IF ENABLE_VIDEO_RECORD_AVI IS ON
+IF( ENABLE_VIDEO_RECORD_AVI )
+  SET(QGoGUILIB_HDRS
+    ${QGoGUILIB_HDRS}
+    vtkAVIRenderWindowRecorder.h
+    vtkRenderWindowMovieRecorder.h
+    QGoVideoRecorder.h
+  )
+ENDIF( ENABLE_VIDEO_RECORD_AVI )
+
+#------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 
 SET( QGoGUILIB_UI
   ManualSegmentationSettingsDlg.ui
@@ -88,13 +121,27 @@ SET( QGoGUILIB_UI
   LsmToMegaExportDialog.ui
 )
 
-# ADD THIS UI IF ENABLE_VIDEO_RECORD IS ON
-IF( ENABLE_VIDEO_RECORD )
+#------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
+
+# ADD THIS UI IF ENABLE_VIDEO_RECORD_FFMPEG IS ON
+IF( ENABLE_VIDEO_RECORD_FFMPEG )
   SET(QGoGUILIB_UI
     ${QGoGUILIB_UI}
     NewVideoRecorderDockWidget.ui
   )
-ENDIF( ENABLE_VIDEO_RECORD )
+ENDIF( ENABLE_VIDEO_RECORD_FFMPEG )
+
+# ADD THIS UI IF ENABLE_VIDEO_RECORD_AVI IS ON
+IF( ENABLE_VIDEO_RECORD_AVI )
+  SET(QGoGUILIB_UI
+    ${QGoGUILIB_UI}
+    NewVideoRecorderDockWidget.ui
+  )
+ENDIF( ENABLE_VIDEO_RECORD_AVI )
+
+#------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 
 QT4_WRAP_UI( QGoGUILIB_UI_H
   ${QGoGUILIB_UI}
