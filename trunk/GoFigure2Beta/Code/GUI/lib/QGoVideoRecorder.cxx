@@ -18,7 +18,12 @@
 //-------------------------------------------------------------------------
 
 QGoVideoRecorder::
-QGoVideoRecorder( QWidget *iParent ) : QDockWidget( iParent )
+QGoVideoRecorder( QWidget *iParent ) : QDockWidget( iParent ),
+  m_VideoName2( "" ), m_FrameRate2( 10 ), m_VideoQuality2( 1 ), m_SliceFT( 0 ),
+  m_WindowSelected( 0 ), m_XMinForVideo( 0 ), m_XMaxForVideo( 0 ),
+  m_YMinForVideo( 0 ), m_YMaxForVideo( 0 ), m_ZMinForVideo( 0 ),
+  m_ZMaxForVideo( 0 ), m_TMinForVideo( 0 ), m_TMaxForVideo( 0 ),
+  m_FrameCounter( 0 ), m_RenderWindowSelected( false )
 {
   this->setupUi( this );
 
@@ -328,8 +333,7 @@ on_frameRate_valueChanged( int value )
 {
   m_FrameRate2= value;
   this->frameRate_2->setValue(value);
-  /// TODO update video length
-
+  emit FrameRateChanged( value );
 }
 
 //-------------------------------------------------------------------------
@@ -346,6 +350,7 @@ on_videoQuality_valueChanged( int value )
 {
   m_VideoQuality2= value;
   this->videoQuality_2->setValue(value);
+  emit QualityChanged( value );
 }
 
 //-------------------------------------------------------------------------
@@ -417,6 +422,7 @@ on_frameRate_2_valueChanged( int value )
 {
   m_FrameRate2 = value;
   this->frameRate->setValue(value);
+  emit FrameRateChanged( value );
 }
 
 //-------------------------------------------------------------------------
@@ -433,6 +439,7 @@ on_videoQuality_2_valueChanged( int value )
 {
   m_VideoQuality2 = value;
   this->videoQuality->setValue(value);
+  emit QualityChanged( value );
 }
 
 //-------------------------------------------------------------------------
@@ -460,7 +467,6 @@ void
 QGoVideoRecorder::
 onStartRecordClicked()
 {
-
   if( ( m_VideoName2 == NULL ) || ( !m_RenderWindowSelected ))
     {
   /// \todo QMessageBox
@@ -504,6 +510,7 @@ void
 QGoVideoRecorder::
 timeout()
 {
+  m_VideoRecorder->TakeSnapshot();
   ++m_FrameCounter;
 
   // for a better visualisation, always show 2 decimal
@@ -529,13 +536,9 @@ timeout()
   this->videoLenght->display(value);
 }
 
-//-------------------------------------------------------------------------
+//---------------------------------------------------------------------------
 
-/**
- * \brief Function called when "Create video" clicked in Create Video Tab
- */
-
-//--
+//---------------------------------------------------------------------------
 void
 QGoVideoRecorder::
 SetRenderingWindow( vtkRenderWindow* iRenderingWindow )

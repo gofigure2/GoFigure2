@@ -7,9 +7,14 @@
  * \brief Constructor
  */
 vtkFFMPEGRenderWindowRecorder::
-vtkFFMPEGRenderWindowRecorder()
+vtkFFMPEGRenderWindowRecorder(): m_VideoQuality( 1 ), m_FrameRate( 10 )
 {
   m_ImageWriter  = vtkFFMPEGWriter::New();
+
+  // initialise values in the writer
+  vtkFFMPEGWriter* tempFFFFMPEG = vtkFFMPEGWriter::SafeDownCast( m_ImageWriter);
+  tempFFFFMPEG->SetQuality(m_VideoQuality);
+  tempFFFFMPEG->SetRate(m_FrameRate);
 }
 
 /**
@@ -18,16 +23,15 @@ vtkFFMPEGRenderWindowRecorder()
 vtkFFMPEGRenderWindowRecorder::
 ~vtkFFMPEGRenderWindowRecorder()
 {
-
 }
 
 void
 vtkFFMPEGRenderWindowRecorder::
 SetSpecificParameters()
 {
-  vtkFFMPEGWriter* TEMP = vtkFFMPEGWriter::SafeDownCast( m_ImageWriter);
-  TEMP->SetQuality(m_VideoQuality);
-  TEMP->SetRate(m_FrameRate);
+  vtkFFMPEGWriter* tempFFFFMPEG = vtkFFMPEGWriter::SafeDownCast( m_ImageWriter);
+  tempFFFFMPEG->SetQuality(m_VideoQuality);
+  tempFFFFMPEG->SetRate(m_FrameRate);
 }
 
 vtkFFMPEGRenderWindowRecorder*
@@ -43,4 +47,18 @@ New()
     }
 
   return new vtkFFMPEGRenderWindowRecorder;
+}
+
+void
+vtkFFMPEGRenderWindowRecorder::
+SetVideoQuality( int value)
+{
+  m_VideoQuality = value;
+}
+
+void
+vtkFFMPEGRenderWindowRecorder::
+SetFrameRate( int value)
+{
+  m_FrameRate = value;
 }

@@ -12,13 +12,6 @@
 class vtkRenderWindow;
 class vtkRenderWindowMovieRecorder;
 
-/** \todo What about making it a template class
-* template< class TRenderWindowRecorder > class QGoVideoRecorder, like this you
-* can instantiate easily for FFMPEG or OGGTHEORA without changing anything.
-* However, you still need to create a similar class to vtkFFMPEGRenderWindowRecorder
-* which used OGGTHEORA. Note that since there is an additional parameter when using
-* oggtheora it amy be better to inherit instead (but up to you).
-*/
 
 class QGoVideoRecorder : public QDockWidget, public Ui::NewDockWidgetVideoRecorder
 {
@@ -65,10 +58,15 @@ class QGoVideoRecorder : public QDockWidget, public Ui::NewDockWidgetVideoRecord
       void YSliceChanged( int );
       void ZSliceChanged( int );
       void TSliceChanged( int );
+      void QualityChanged( int );
+      void FrameRateChanged( int );
 
     private:
 
-        /// \todo comment these variables (briefly)
+        // Video recorder
+        vtkRenderWindowMovieRecorder* m_VideoRecorder;
+
+        // Min/Max value of X/Y/ZSlice to set up spin box
         unsigned int m_XMin;
         unsigned int m_XMax;
         unsigned int m_YMin;
@@ -78,10 +76,12 @@ class QGoVideoRecorder : public QDockWidget, public Ui::NewDockWidgetVideoRecord
         unsigned int m_TMin;
         unsigned int m_TMax;
 
+        /**
+         * \brief Function to update spinbox extent according to selected slice
+        **/
         void UpdateQSpinBoxFT( int );
-        void UpdateQSpinBoxF( int );
 
-        vtkRenderWindowMovieRecorder* m_VideoRecorder;
+        void Acquire( int );
 
 
     private slots:
@@ -101,23 +101,27 @@ class QGoVideoRecorder : public QDockWidget, public Ui::NewDockWidgetVideoRecord
     void on_SliceFT_activated( int );
     void on_tSpinMin_valueChanged( int );
     void on_tSpinMax_valueChanged( int );
+    /**
+     * \brief Function called when "Create video" clicked in Create
+    **/
+    void onStartVideoClicked();
+    /**
+     * \brief Function called when "Create video" clicked in Record
+    **/
+    void onStartRecordClicked();
+    /**
+      * \brief Function called when "Create video" clicked in Record
+     **/
+    void onEndRecordClicked();
+    /**
+      * \brief Function called when "Create video" clicked in Record
+    **/
+    void timeout();
 
 
     public slots:
         void SetRenderingWindow( vtkRenderWindow* );
 
-
-    private:
-        void Acquire( int );
-
-    public slots:
-
-    // in tab "create video"
-    //Create video pushbutton
-    void onStartVideoClicked();
-    void onStartRecordClicked();
-    void onEndRecordClicked();
-    void timeout();
 
 };
 

@@ -278,11 +278,8 @@ QGoTabImageView3DwT::
 CreateVideoRecorderWidget()
 {
   m_VideoRecorderWidget = new QGoVideoRecorder( this );
-  m_FFMPEGTEST = vtkFFMPEGRenderWindowRecorder::New();
-  m_VideoRecorderWidget->SetMovieRecorder( m_FFMPEGTEST );
-  m_FFMPEGTEST->m_FrameRate = 5;
-  m_FFMPEGTEST->m_VideoQuality = 2;
-  m_FFMPEGTEST->SetSpecificParameters();
+  m_FFMPEGWriter = vtkFFMPEGRenderWindowRecorder::New();
+  m_VideoRecorderWidget->SetMovieRecorder( m_FFMPEGWriter );
 
   QObject::connect( this, SIGNAL( FullScreenViewChanged( int ) ),
         this,SLOT( SetRendererWindow( int )));
@@ -295,6 +292,11 @@ CreateVideoRecorderWidget()
       this, SLOT( SetSliceViewXY( int ) ) );
   QObject::connect( m_VideoRecorderWidget, SIGNAL( TSliceChanged( int ) ),
       this, SLOT( SetTimePoint( int ) ) );
+
+  QObject::connect( m_VideoRecorderWidget, SIGNAL( FrameRateChanged( int ) ),
+        this, SLOT( SetSpecificParametersFrameRate( int ) ) );
+  QObject::connect( m_VideoRecorderWidget, SIGNAL( QualityChanged( int ) ),
+        this, SLOT( SetSpecificParametersQuality( int ) ) );
 }
 
 //-------------------------------------------------------------------------
@@ -312,6 +314,22 @@ SetRendererWindow(int iValue)
     {
     m_VideoRecorderWidget->SetRenderingWindow( NULL );
     }
+}
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+SetSpecificParametersFrameRate(int iValue)
+{
+  m_FFMPEGWriter->SetFrameRate( iValue );
+  m_FFMPEGWriter->SetSpecificParameters();
+}
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+SetSpecificParametersQuality(int iValue)
+{
+  m_FFMPEGWriter->SetVideoQuality( iValue );
+  m_FFMPEGWriter->SetSpecificParameters();
 }
 #endif /* ENABLEVIDEORECORD */
 //-------------------------------------------------------------------------

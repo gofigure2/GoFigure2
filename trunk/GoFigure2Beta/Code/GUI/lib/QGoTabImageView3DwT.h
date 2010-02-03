@@ -159,6 +159,8 @@ public slots:
 
 #ifdef   ENABLEVIDEORECORD
   void SetRendererWindow( int );
+  void SetSpecificParametersFrameRate( int );
+  void SetSpecificParametersQuality( int );
 #endif /* ENABLEVIDEORECORD */
 
   QString SnapshotViewXY( const GoFigure::FileType& iType,
@@ -237,9 +239,8 @@ protected:
   QGoManualSegmentationDockWidget*  m_ManualSegmentationDockWidget;
 
 #ifdef   ENABLEVIDEORECORD
-//  QGoVideoRecorderFFMPEG*                 m_VideoRecorderWidget;
     QGoVideoRecorder*                         m_VideoRecorderWidget;
-    vtkFFMPEGRenderWindowRecorder*                     m_FFMPEGTEST;
+    vtkFFMPEGRenderWindowRecorder*            m_FFMPEGWriter;
 #endif /* ENABLEVIDEORECORD */
 
 
