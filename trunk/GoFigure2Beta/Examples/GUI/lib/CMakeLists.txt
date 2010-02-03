@@ -17,7 +17,6 @@ SET( QGOGUILIB_EXAMPLE_SRC
   QGoPrintDatabaseTest
   qgocreatemeshdialogtest
   QGoLsmToMegaExportDialogTest
-  vtkFFMPEGRenderWindowRecorderTest
 )
 
 #ADD QGoVideoRecorderTest if ENABLE_VIDEO_RECORD IS ON
