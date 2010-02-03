@@ -628,15 +628,18 @@ void QTableWidgetChild::CopyTable()
   //first, copy the column names:
   QStringList ColumnsNames = this->recordHeaderNamesOrder();
   QString str;
-  for (int i=1; i<ColumnsNames.size();i++)
+  str += "IsSelected";
+  str += "\t";
+  for (int i=1; i<ColumnsNames.size()-1;i++)
     {
     str += ColumnsNames.at(i);
     str += "\t";
     }
+  str += ColumnsNames.at(ColumnsNames.size()-1);
   str += "\n";
   //second, get the range for the total selection:
   QTableWidgetSelectionRange RangeForAllTableSelected(
-    0,1,this->rowCount()-1,this->columnCount()-1);
+    0,0,this->rowCount()-1,this->columnCount()-1);
   //third, copy the range:
   this->PrepareRangeToCopy(RangeForAllTableSelected,str);
   QApplication::clipboard()->setText(str);
@@ -644,7 +647,8 @@ void QTableWidgetChild::CopyTable()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QTableWidgetChild::PrepareRangeToCopy(QTableWidgetSelectionRange Range, QString &str)
+void QTableWidgetChild::PrepareRangeToCopy(QTableWidgetSelectionRange Range, 
+  QString &str)
 {
   for (int i = 0; i < Range.rowCount(); ++i) 
     {
@@ -652,13 +656,27 @@ void QTableWidgetChild::PrepareRangeToCopy(QTableWidgetSelectionRange Range, QSt
       {
       str += "\n";
       }
-    for (int j = 0; j < Range.columnCount(); ++j) 
+    for (int j = 0; j < Range.columnCount()-1; ++j) 
       {
-      if (j > 0)
+      int k = Range.leftColumn() + j;
+      if (Range.leftColumn()+j == 0)
         {
+        //for the selected column:
+        if (item(i,0)->checkState()== 0)
+          {
+          str += "No \t";
+          }
+        else
+          {
+          str += "Yes \t";
+          }
+        }
+      else
+        {
+        str += this->item(Range.topRow() + i, Range.leftColumn() + j)->text();
         str += "\t";
         }
-      str += this->item(Range.topRow() + i, Range.leftColumn() + j)->text();
       }
+    str += this->item(Range.topRow() + i, Range.leftColumn() + Range.columnCount()-1)->text();
     } 
 }
