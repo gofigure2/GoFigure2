@@ -122,6 +122,11 @@ ADD_TEST( QGoWizardDBTest
   1
 )
 
+ADD_TEST( QGoPrintDatabaseTest
+  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/QGoPrintDatabaseTest
+  1
+)
+
 #---------------------------------------------------------------------------
 #---------------------------------------------------------------------------
 
