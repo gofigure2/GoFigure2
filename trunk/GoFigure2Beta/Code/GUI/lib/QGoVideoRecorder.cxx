@@ -605,8 +605,8 @@ void
 QGoVideoRecorder::
 Acquire( int value )
 {
-  int iMin;
-  int iMax;
+  unsigned int iMin;
+  unsigned int iMax;
 
   QString fileName = m_VideoName2;
 

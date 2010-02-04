@@ -117,6 +117,11 @@ ADD_TEST( QGoLsmToMegaExportDialogTest
   1
 )
 
+ADD_TEST( QGoWizardDBTest
+  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/QGoWizardDBTest
+  1
+)
+
 #---------------------------------------------------------------------------
 #---------------------------------------------------------------------------
 

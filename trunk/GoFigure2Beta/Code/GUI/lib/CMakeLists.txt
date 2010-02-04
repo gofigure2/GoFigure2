@@ -94,8 +94,6 @@ SET( QGoGUILIB_HDRS
 IF( ENABLE_VIDEO_RECORD_FFMPEG )
   SET(QGoGUILIB_HDRS
     ${QGoGUILIB_HDRS}
-    vtkFFMPEGRenderWindowRecorder.h
-    vtkRenderWindowMovieRecorder.h
     QGoVideoRecorder.h
   )
 ENDIF( ENABLE_VIDEO_RECORD_FFMPEG )
@@ -104,8 +102,6 @@ ENDIF( ENABLE_VIDEO_RECORD_FFMPEG )
 IF( ENABLE_VIDEO_RECORD_AVI )
   SET(QGoGUILIB_HDRS
     ${QGoGUILIB_HDRS}
-    vtkAVIRenderWindowRecorder.h
-    vtkRenderWindowMovieRecorder.h
     QGoVideoRecorder.h
   )
 ENDIF( ENABLE_VIDEO_RECORD_AVI )
