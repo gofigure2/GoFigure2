@@ -1,7 +1,7 @@
 /*=========================================================================
-  Author: $Author: lsouhait $  // Author of last commit
-  Version: $Rev: 577 $  // Revision of last commit
-  Date: $Date: 2009-08-18 10:45:50 -0400 (Tue, 18 Aug 2009) $  // Date of last commit
+  Author: $Author:$  // Author of last commit
+  Version: $Rev:$  // Revision of last commit
+  Date: $Date:$  // Date of last commit
 =========================================================================*/
 
 /*=========================================================================
@@ -83,8 +83,8 @@ QGoConnectServerPage::QGoConnectServerPage( QWidget *iParent )
 //-------------------------------------------------------------------------
 bool QGoConnectServerPage::validatePage()
 {
-  if (field("ServerName").toString()== "" ||
-       field("User").toString()== "" ||
+  if( field("ServerName").toString() == "" ||
+       field("User").toString() == "" ||
        field("Password").toString() == "")
     {
     QMessageBox msgBox;
@@ -130,24 +130,24 @@ int QGoConnectServerPage::nextId() const
 
   std::list<std::string> ListGoDB = ListGofigureDatabases();
 
-    if (ListGoDB.empty())
-      {
-      return QGoWizardDB::CreateDataBasePageID;
-      }
-    if (ListGoDB.size() > 1)
-      {
-      std::cout<<"There is more than one Gofigure DataBase"<<std::endl;
-      std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
-      std::cout << std::endl;
-      }
-    else
-      {
-      std::list<std::string>::iterator i = ListGoDB.begin();
-      DBName = *i;
-      this->wizard()->setField( "DBName", DBName.c_str() );
-      std::cout<<"the db name to open is: "<<field("DBName").toString().toStdString().c_str()<<std::endl;
-      }
-    return QGoWizardDB::OpenOrCreateProjectPageID;
+  if (ListGoDB.empty())
+    {
+    return QGoWizardDB::CreateDataBasePageID;
+    }
+  if (ListGoDB.size() > 1)
+    {
+    std::cout<<"There is more than one Gofigure DataBase"<<std::endl;
+    std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
+    std::cout << std::endl;
+    }
+  else
+    {
+    std::list<std::string>::iterator i = ListGoDB.begin();
+    DBName = *i;
+    this->wizard()->setField( "DBName", DBName.c_str() );
+    std::cout<<"the db name to open is: "<<field("DBName").toString().toStdString().c_str()<<std::endl;
+    }
+  return QGoWizardDB::OpenOrCreateProjectPageID;
 }
 //-------------------------------------------------------------------------
 
@@ -169,20 +169,20 @@ std::list<std::string> QGoConnectServerPage::ListGofigureDatabases() const
        field("User").toString().toStdString(),
        field("Password").toString().toStdString() ,vectListDB[i]);
      if (!DatabaseConnection.first)
-       {
-       std::cout<<"Cannot check if "<< vectListDB[i].c_str()<<" is of\
+      {
+      std::cout<<"Cannot check if "<< vectListDB[i].c_str()<<" is of\
                   Gofigure Type"<<std::endl;
-       std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
-       std::cout << std::endl;
-       }
-     //test if it is of GofigureType:
-     if( IsDatabaseOfGoFigureType( DatabaseConnection.second ) )
-       {
-       ListGoDB.push_back(vectListDB[i]);
-       }
-     DatabaseConnection.second->Close();
-     DatabaseConnection.second->Delete();
-     } 
+      std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
+      std::cout << std::endl;
+      }
+    //test if it is of GofigureType:
+    if( IsDatabaseOfGoFigureType( DatabaseConnection.second ) )
+      {
+      ListGoDB.push_back(vectListDB[i]);
+      }
+    DatabaseConnection.second->Close();
+    DatabaseConnection.second->Delete();
+    } 
   return ListGoDB;
 }
 //-------------------------------------------------------------------------

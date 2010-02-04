@@ -142,7 +142,7 @@ void
 ConversionLsmToMegaThread::
 SetOutputFileType( const GoFigure::FileType& iFileType )
 {
-m_FileType = iFileType;
+  m_FileType = iFileType;
 }
 
 
@@ -201,8 +201,8 @@ ExportWithReimplemented( std::string iMegaPath )
 
     file <<"ChannelColor" <<i <<" " << r * 256 * 256 + g * 256 + b <<std::endl;
 
-	//send signal for progress bar
-	emit ProgressSent();
+    //send signal for progress bar
+    emit ProgressSent();
     }
 
   file <<"ChannelDepth 8" <<std::endl;
@@ -323,8 +323,8 @@ ConversionLsmToMegaThread::
 GetNumberOfPoints()
 {
   int total = m_NumberOfChannels * m_NumberOfTimePoints
-		  + m_NumberOfChannels
-		  + m_NumberOfTimePoints*m_NumberOfChannels*m_Dim;
+    + m_NumberOfChannels
+    + m_NumberOfTimePoints*m_NumberOfChannels*m_Dim;
 
   return total;
 }
