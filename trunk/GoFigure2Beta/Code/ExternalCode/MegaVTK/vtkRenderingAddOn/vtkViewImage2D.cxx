@@ -104,6 +104,7 @@
 #include "vtkImageAccumulate.h"
 #include "vtkInteractorStyleImage2D.h"
 #include "vtkViewImage2DCommand.h"
+#include "vtkProperty.h"
 
 #include <vector>
 #include <string>
@@ -887,6 +888,7 @@ vtkActor* vtkViewImage2D::AddDataSet( vtkPolyData* dataset,
     {
     actor->SetProperty( property );
     }
+  actor->GetProperty()->BackfaceCullingOn();
 
   actor->SetUserTransform( this->AdjustmentTransform );
   this->ContourPicker->AddPickList( actor );
@@ -938,6 +940,7 @@ vtkActor* vtkViewImage2D::AddDataSet( vtkDataSet* dataset,
     {
     actor->SetProperty( property );
     }
+  actor->GetProperty()->BackfaceCullingOn();
 
   actor->SetUserTransform( this->AdjustmentTransform );
   this->ContourPicker->AddPickList( actor );

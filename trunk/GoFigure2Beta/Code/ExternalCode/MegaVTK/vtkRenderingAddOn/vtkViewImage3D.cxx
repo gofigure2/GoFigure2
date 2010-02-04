@@ -686,6 +686,7 @@ vtkActor* vtkViewImage3D::AddDataSet( vtkDataSet* dataset,
     {
     actor->SetProperty( property );
     }
+  actor->GetProperty()->BackfaceCullingOn();
 
 //   actor->SetUserTransform( this->AdjustmentTransform );
 
