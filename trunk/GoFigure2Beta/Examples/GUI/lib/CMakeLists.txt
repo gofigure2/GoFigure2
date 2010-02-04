@@ -17,6 +17,7 @@ SET( QGOGUILIB_EXAMPLE_SRC
   QGoPrintDatabaseTest
   qgocreatemeshdialogtest
   QGoLsmToMegaExportDialogTest
+  QGoCreateBookmarkDialogTest
 )
 
 #---------------------------------------------------------------------------

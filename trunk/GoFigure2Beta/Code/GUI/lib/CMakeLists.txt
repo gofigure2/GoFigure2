@@ -28,6 +28,7 @@ SET( QGoGUILIB_SRC
   qtcolorcombobox.cxx
   QGoLsmToMegaExportDialog.cxx
   ConversionLsmToMegaThread.cxx
+  QGoCreateBookmarkDialog.cxx
   
 )
 
@@ -85,6 +86,7 @@ SET( QGoGUILIB_HDRS
   qtcolorcombobox.h
   QGoLsmToMegaExportDialog.h
   ConversionLsmToMegaThread.h
+  QGoCreateBookmarkDialog.h
 )
 
 #------------------------------------------------------------------------------
@@ -115,6 +117,7 @@ SET( QGoGUILIB_UI
   VisualizationDockWidget.ui
   QGoPrintDatabase.ui
   LsmToMegaExportDialog.ui
+  QGoCreateBookmarkDialog.ui
 )
 
 #------------------------------------------------------------------------------
