@@ -38,16 +38,33 @@
 
 =========================================================================*/
 
-#include "QGoCreateBookmarkDialog.h"
+#include "QGoDBCreateBookmarkDialog.h"
+#include <QMessageBox>
 
-QGoCreateBookmarkDialog::QGoCreateBookmarkDialog(QWidget* iParent):
+QGoDBCreateBookmarkDialog::QGoDBCreateBookmarkDialog(QWidget* iParent):
   QDialog( iParent)
 {
   this->setupUi( this);
+  QObject::connect(this,SIGNAL(accepted()),this,SLOT(validate()));
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-QGoCreateBookmarkDialog::~QGoCreateBookmarkDialog()
+QGoDBCreateBookmarkDialog::~QGoDBCreateBookmarkDialog()
 {
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoDBCreateBookmarkDialog::validate()
+{
+  if (this->NameLineEdit->text().toStdString().empty())
+    {
+    QMessageBox msgBox;
+    msgBox.setText(
+      tr("Please enter the name for the bookmark to add"));
+    msgBox.exec();
+    this->open();
+    }
+
 }

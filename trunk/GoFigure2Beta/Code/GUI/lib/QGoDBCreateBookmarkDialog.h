@@ -38,21 +38,24 @@
 
 =========================================================================*/
 
-#ifndef __QGoCreateBookmarkDialog_h
-#define __QGoCreateBookmarkDialog_h
+#ifndef __QGoDBCreateBookmarkDialog_h
+#define __QGoDBCreateBookmarkDialog_h
 
 #include <QDialog>
-#include "ui_QGoCreateBookmarkDialog.h"
+#include "ui_QGoDBCreateBookmarkDialog.h"
 
-class QGoCreateBookmarkDialog :
+class QGoDBCreateBookmarkDialog :
   public QDialog,
-  private Ui::QGoCreateBookmarkDialog
+  private Ui::QGoDBCreateBookmarkDialog
 {
   Q_OBJECT
 
   public:
-    explicit QGoCreateBookmarkDialog (QWidget* iParent = 0);
-    ~QGoCreateBookmarkDialog();
+    explicit QGoDBCreateBookmarkDialog (QWidget* iParent = 0);
+    ~QGoDBCreateBookmarkDialog();
+
+  protected slots:
+    void validate();
 
 
 };

@@ -28,7 +28,7 @@ SET( QGoGUILIB_SRC
   qtcolorcombobox.cxx
   QGoLsmToMegaExportDialog.cxx
   ConversionLsmToMegaThread.cxx
-  QGoCreateBookmarkDialog.cxx
+  QGoDBCreateBookmarkDialog.cxx
   
 )
 
@@ -86,7 +86,7 @@ SET( QGoGUILIB_HDRS
   qtcolorcombobox.h
   QGoLsmToMegaExportDialog.h
   ConversionLsmToMegaThread.h
-  QGoCreateBookmarkDialog.h
+  QGoDBCreateBookmarkDialog.h
 )
 
 #------------------------------------------------------------------------------
