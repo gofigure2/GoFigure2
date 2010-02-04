@@ -117,7 +117,7 @@ SET( QGoGUILIB_UI
   VisualizationDockWidget.ui
   QGoPrintDatabase.ui
   LsmToMegaExportDialog.ui
-  QGoCreateBookmarkDialog.ui
+  QGoDBCreateBookmarkDialog.ui
 )
 
 #------------------------------------------------------------------------------

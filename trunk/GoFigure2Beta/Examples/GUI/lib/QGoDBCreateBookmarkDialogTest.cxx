@@ -40,12 +40,12 @@
 
 #include <QApplication>
 
-#include "QGoCreateBookmarkDialog.h"
+#include "QGoDBCreateBookmarkDialog.h"
 
 int main(int argc, char * argv[])
 {  
   QApplication app( argc, argv );
-  QGoCreateBookmarkDialog win;
+  QGoDBCreateBookmarkDialog win;
   win.show();
   return app.exec();
 }
