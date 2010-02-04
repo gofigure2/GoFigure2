@@ -191,6 +191,14 @@ QGoTabImageView3DwT::
     (*NodeSetIt)->Delete();
     ++NodeSetIt;
     }
+
+#ifdef   ENABLEFFMPEG
+  m_FFMPEGWriter->Delete();
+#endif /* ENABLEFFMPEG */
+
+#ifdef   ENABLEAVI
+  m_AVIWriter->Delete();
+#endif /* ENABLEAVI */
 }
 //-------------------------------------------------------------------------
 

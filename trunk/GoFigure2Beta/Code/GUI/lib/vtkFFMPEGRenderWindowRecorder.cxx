@@ -63,6 +63,7 @@ vtkFFMPEGRenderWindowRecorder(): m_VideoQuality( 1 ), m_FrameRate( 10 )
 vtkFFMPEGRenderWindowRecorder::
 ~vtkFFMPEGRenderWindowRecorder()
 {
+  m_ImageWriter->Delete();
 }
 
 void
