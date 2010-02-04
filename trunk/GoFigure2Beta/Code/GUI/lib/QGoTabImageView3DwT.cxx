@@ -2083,26 +2083,30 @@ void
 QGoTabImageView3DwT::
 SelectContoursInTable( )
 {
-  std::list< vtkProp3D* > listofpicked = m_ImageView->GetListOfPickedActors();
-  std::list< int > listofrowstobeselected;
-
-  std::list< vtkProp3D* >::iterator it = listofpicked.begin();
-
-  while( it != listofpicked.end() )
+  if( this->m_DataBaseTables->IsDatabaseUsed() )
     {
-    // Change the corresponding highlighted value in the container
-    ContourMeshStructureMultiIndexContainer::nth_index< 1 >::type::iterator
-      actor_it = m_ContourMeshContainer.get< 1 >().find( static_cast< vtkActor* >( *it ) );
+    std::list< vtkProp3D* > listofpicked = m_ImageView->GetListOfPickedActors();
+    std::list< int > listofrowstobeselected;
 
-    if( actor_it != m_ContourMeshContainer.get< 1 >().end() )
+    std::list< vtkProp3D* >::iterator it = listofpicked.begin();
+
+    while( it != listofpicked.end() )
       {
-      int trace_id = static_cast< int >( actor_it->TraceID );
-      listofrowstobeselected.push_back( trace_id );
-      }
-    ++it;
-    }
+      // Change the corresponding highlighted value in the container
+      ContourMeshStructureMultiIndexContainer::nth_index< 1 >::type::iterator
+        actor_it = m_ContourMeshContainer.get< 1 >().find( static_cast< vtkActor* >( *it ) );
 
-  this->m_DataBaseTables->ChangeContoursToHighLightInfoFromVisu( listofrowstobeselected,false );
+      if( actor_it != m_ContourMeshContainer.get< 1 >().end() )
+        {
+        int trace_id = static_cast< int >( actor_it->TraceID );
+        listofrowstobeselected.push_back( trace_id );
+        }
+      ++it;
+      }
+
+    this->m_DataBaseTables->ChangeContoursToHighLightInfoFromVisu(
+      listofrowstobeselected, false );
+    }
 }
 //-------------------------------------------------------------------------
 
