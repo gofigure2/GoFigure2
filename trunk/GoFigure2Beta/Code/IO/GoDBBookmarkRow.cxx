@@ -1,7 +1,7 @@
 /*=========================================================================
-  Author: $Author$  // Author of last commit
-  Version: $Rev$  // Revision of last commit
-  Date: $Date$  // Date of last commit
+  Author: $Author: lsouhait $  // Author of last commit
+  Version: $Rev: 455 $  // Revision of last commit
+  Date: $Date: 2009-07-28 14:31:26 -0400 (Tue, 28 Jul 2009) $  // Date of last commit
 =========================================================================*/
 
 /*=========================================================================
@@ -37,55 +37,46 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-
-#include "QGoDBCreateBookmarkDialog.h"
 #include "GoDBBookmarkRow.h"
-#include <QMessageBox>
-#include <QDateTime>
+#include "SelectQueryDatabaseHelper.h"
+#include "GoDBRecordSetHelper.h"
 
-QGoDBCreateBookmarkDialog::QGoDBCreateBookmarkDialog(QWidget* iParent):
-  QDialog( iParent)
+GoDBBookmarkRow::GoDBBookmarkRow()
 {
-  this->setupUi( this);
-  QObject::connect(this,SIGNAL(accepted()),this,SLOT(validate()));
+  this->InitializeMap();
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-QGoDBCreateBookmarkDialog::~QGoDBCreateBookmarkDialog()
+void GoDBBookmarkRow::InitializeMap()
 {
+  this->m_MapRow["BookmarkID"] = ConvertToString<int>(0);
+  this->m_MapRow["Name"] = "";
+  this->m_MapRow["ImagingSessionID"] = ConvertToString<int>(0);
+  this->m_MapRow["CoordID"] = ConvertToString<int>(0);
+  this->m_MapRow["CreationDate"] = "";
+  this->m_MapRow["Description"] = "";
+  std::string NoDescription = "None";
+  this->SetField("Description",NoDescription);
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoDBCreateBookmarkDialog::validate()
+int GoDBBookmarkRow::DoesThisBookmarkAlreadyExists(vtkMySQLDatabase* DatabaseConnector)
 {
-  if (this->NameLineEdit->text().toStdString().empty())
+  return FindOneID(DatabaseConnector,"bookmark", "BookmarkID",
+    "Name",this->GetMapValue("Name"));
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+int GoDBBookmarkRow::SaveInDB(vtkMySQLDatabase* DatabaseConnector)
+{
+  int BookmarkID = this->DoesThisBookmarkAlreadyExists(DatabaseConnector);
+  if (BookmarkID == -1)
     {
-    QMessageBox msgBox;
-    msgBox.setText(
-      tr("Please enter the name for the bookmark to add"));
-    msgBox.exec();
-    this->open();
+    BookmarkID = AddOnlyOneNewObjectInTable<GoDBBookmarkRow>( DatabaseConnector,
+    "bookmark",*this, "BookmarkID");
     }
-  else
-    {
-    SaveNewBookmarkInDB();
-    }
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void QGoDBCreateBookmarkDialog::SaveNewBookmarkInDB()
-{
-  GoDBBookmarkRow NewBookmark;
-  NewBookmark.SetField("Name",this->NameLineEdit->text().toStdString());
-  /** \todo set a restriction for the number of characters: at that
-  time only 45 allowed in the database*/
-  NewBookmark.SetField("Description",
-    this->DescriptionLineEdit->toPlainText().toStdString());
-  QDateTime CreationDate = QDateTime::currentDateTime();
-  std::string CreationDateStr = 
-    CreationDate.toString(Qt::ISODate).toStdString();
-  NewBookmark.SetField("CreationDate",CreationDateStr);
+  return BookmarkID;
 }

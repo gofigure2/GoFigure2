@@ -56,6 +56,7 @@ class QGoDBCreateBookmarkDialog :
 
   protected slots:
     void validate();
+    void SaveNewBookmarkInDB();
 
 
 };

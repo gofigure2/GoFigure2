@@ -1,7 +1,7 @@
 /*=========================================================================
-  Author: $Author$  // Author of last commit
-  Version: $Rev$  // Revision of last commit
-  Date: $Date$  // Date of last commit
+  Author: $Author: lsouhait $  // Author of last commit
+  Version: $Rev: 455 $  // Revision of last commit
+  Date: $Date: 2009-07-28 14:31:26 -0400 (Tue, 28 Jul 2009) $  // Date of last commit
 =========================================================================*/
 
 /*=========================================================================
@@ -37,55 +37,37 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
+#ifndef __GoDBBookmarkRow_h
+#define __GoDBBookmarkRow_h
 
-#include "QGoDBCreateBookmarkDialog.h"
-#include "GoDBBookmarkRow.h"
-#include <QMessageBox>
-#include <QDateTime>
+#include <string>
+#include <map>
+#include <iostream>
+#include <sstream>
+#include "GoDBRow.h"
+#include "ConvertToStringHelper.h"
+#include "vtkMySQLDatabase.h"
 
-QGoDBCreateBookmarkDialog::QGoDBCreateBookmarkDialog(QWidget* iParent):
-  QDialog( iParent)
+class GoDBBookmarkRow : public GoDBRow
 {
-  this->setupUi( this);
-  QObject::connect(this,SIGNAL(accepted()),this,SLOT(validate()));
-}
-//-------------------------------------------------------------------------
+public:
+  GoDBBookmarkRow();
+  
+  ~GoDBBookmarkRow()
+    {}
+  /**\brief check if the bookmark already exits in the DB, if yes,
+  return the existing ID, if not, save it in the DB and return the 
+  ID for new created bookmark*/
+  int SaveInDB(vtkMySQLDatabase* DatabaseConnector);
 
-//-------------------------------------------------------------------------
-QGoDBCreateBookmarkDialog::~QGoDBCreateBookmarkDialog()
-{
-}
-//-------------------------------------------------------------------------
+/**\brief check if the bookmark already exits in the database, if yes, 
+  return the corresponding ID, if not, return -1*/
+  int DoesThisBookmarkAlreadyExists(vtkMySQLDatabase* DatabaseConnector);
 
-//-------------------------------------------------------------------------
-void QGoDBCreateBookmarkDialog::validate()
-{
-  if (this->NameLineEdit->text().toStdString().empty())
-    {
-    QMessageBox msgBox;
-    msgBox.setText(
-      tr("Please enter the name for the bookmark to add"));
-    msgBox.exec();
-    this->open();
-    }
-  else
-    {
-    SaveNewBookmarkInDB();
-    }
-}
-//-------------------------------------------------------------------------
+protected:
+  virtual void InitializeMap();
+  
+    
+};
 
-//-------------------------------------------------------------------------
-void QGoDBCreateBookmarkDialog::SaveNewBookmarkInDB()
-{
-  GoDBBookmarkRow NewBookmark;
-  NewBookmark.SetField("Name",this->NameLineEdit->text().toStdString());
-  /** \todo set a restriction for the number of characters: at that
-  time only 45 allowed in the database*/
-  NewBookmark.SetField("Description",
-    this->DescriptionLineEdit->toPlainText().toStdString());
-  QDateTime CreationDate = QDateTime::currentDateTime();
-  std::string CreationDateStr = 
-    CreationDate.toString(Qt::ISODate).toStdString();
-  NewBookmark.SetField("CreationDate",CreationDateStr);
-}
+#endif
