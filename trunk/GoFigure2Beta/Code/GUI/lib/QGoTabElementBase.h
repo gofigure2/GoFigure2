@@ -70,6 +70,7 @@ public:
   virtual std::vector< QAction* > ViewActions();
   virtual std::vector< QAction* > SegmentationActions();
   virtual std::vector< QAction* > ToolsActions();
+  virtual std::vector< QAction* > BookmarkActions();
 
   virtual std::list< std::pair< Qt::DockWidgetArea, QDockWidget* > >& DockWidget();
   virtual std::list< QWidget* > AdditionalWidget();
@@ -87,6 +88,7 @@ protected:
   std::vector< QAction* > m_ViewActions;
   std::vector< QAction* > m_SegmentationActions;
   std::vector< QAction* > m_ToolsActions;
+  std::vector< QAction* > m_BookmarkActions;
 
   std::list< std::pair< Qt::DockWidgetArea, QDockWidget* > > m_DockWidgetList;
 

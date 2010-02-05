@@ -314,6 +314,7 @@ protected:
   void SetBackgroundColorToImageViewer( );
   void CreateAllViewActions();
   void CreateToolsActions();
+  void CreateBookmarkActions();
   void CreateVisuDockWidget();
   void CreateManualSegmentationdockWidget();
   void CreateDataBaseTablesConnection();

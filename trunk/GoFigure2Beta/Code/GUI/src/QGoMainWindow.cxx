@@ -368,6 +368,7 @@ void QGoMainWindow::openFilesfromDB()
       ++contourmesh_list_it;      
       }
     }
+  this->menuBookmarks->setEnabled(true);
 }
 //--------------------------------------------------------------------------
 

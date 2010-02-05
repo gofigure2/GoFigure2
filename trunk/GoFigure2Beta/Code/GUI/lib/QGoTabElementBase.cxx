@@ -83,6 +83,13 @@ std::vector< QAction* > QGoTabElementBase::ToolsActions()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+std::vector< QAction* > QGoTabElementBase::BookmarkActions()
+{
+  return m_BookmarkActions;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
 std::list< std::pair< Qt::DockWidgetArea, QDockWidget* > >& QGoTabElementBase::DockWidget()
 {
   return m_DockWidgetList;

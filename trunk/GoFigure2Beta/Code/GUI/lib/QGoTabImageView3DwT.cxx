@@ -141,6 +141,8 @@ QGoTabImageView3DwT( QWidget* iParent ) :
 
   CreateToolsActions();
 
+  CreateBookmarkActions();
+
   ReadSettings();
 
   m_DockWidgetList.push_back(
@@ -618,7 +620,13 @@ CreateToolsActions()
 }
 //-------------------------------------------------------------------------
 //-------------------------------------------------------------------------
-
+void QGoTabImageView3DwT::CreateBookmarkActions()
+{
+  QAction* AddBookmarkAction = new QAction(tr("Add a bookmark"),this);
+  this->m_BookmarkActions.push_back(AddBookmarkAction);
+}
+//-------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
 TakeSnapshot()
