@@ -94,6 +94,11 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>NameLineEdit</tabstop>
+  <tabstop>DescriptionLineEdit</tabstop>
+  <tabstop>CreateBookmarkButtonBox</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>

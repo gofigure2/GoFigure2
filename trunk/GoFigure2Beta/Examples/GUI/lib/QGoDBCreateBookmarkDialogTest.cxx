@@ -49,7 +49,7 @@ int main(int argc, char * argv[])
   QApplication app( argc, argv );
   vtkMySQLDatabase* DatabaseConnector = OpenDatabaseConnection(
     "localhost","gofigure","gofigure","gofiguredatabase");
-  QGoDBCreateBookmarkDialog win(0,DatabaseConnector,1);
+  QGoDBCreateBookmarkDialog win(0,DatabaseConnector,1,1);
   win.show();
   return app.exec();
 }

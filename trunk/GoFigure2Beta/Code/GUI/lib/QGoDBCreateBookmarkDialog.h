@@ -53,12 +53,14 @@ class QGoDBCreateBookmarkDialog :
 
   public:
     explicit QGoDBCreateBookmarkDialog (QWidget* iParent = 0,
-      vtkMySQLDatabase* iDatabaseConnector = 0,int iImgSessionID = 0);
+      vtkMySQLDatabase* iDatabaseConnector = 0,
+      int iImgSessionID = 0, int iCoordID = 0);
     ~QGoDBCreateBookmarkDialog();
 
   protected:
     vtkMySQLDatabase* m_DatabaseConnector;
     int               m_ImgSessionID;
+    int               m_CoordID;
     void SaveNewBookmarkInDB();
 
   protected slots:

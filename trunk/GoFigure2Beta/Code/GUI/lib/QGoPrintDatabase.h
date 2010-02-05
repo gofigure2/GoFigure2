@@ -254,6 +254,8 @@ protected:
 protected slots:
   void CreateContextMenu(const QPoint &pos);
   void DeleteTraces();
+  void AddBookmark(int iXCoord, int iYCoord, 
+  int iZCoord, int iTCoord);
 
   /** \brief Create a new Collection row in the collection table and change the
   collection ID of the selected contours to the new CollectionID created:*/

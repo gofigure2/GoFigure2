@@ -69,6 +69,7 @@
 #include "QueryDataBaseHelper.h"
 #include "ConvertToStringHelper.h"
 #include "GoDBTraceInfoForTableWidget.h"
+#include "QGoDBCreateBookmarkDialog.h"
 
 //--------------------------------------------------------------------------
 QGoPrintDatabase::
@@ -1206,4 +1207,22 @@ GoDBContourRow QGoPrintDatabase::GetContourRowFromVisu(
     this->m_ImgSessionID, iContourNodes );
 
   return contour_row;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoPrintDatabase::AddBookmark(int iXCoord, int iYCoord, 
+  int iZCoord, int iTCoord)
+{ 
+  GoDBCoordinateRow BookmarkCoord;
+  BookmarkCoord.SetField<int>("XCoord",iXCoord);
+  BookmarkCoord.SetField<int>("YCoord",iYCoord);
+  BookmarkCoord.SetField<int>("ZCoord",iZCoord);
+  BookmarkCoord.SetField<int>("TCoord",iTCoord);
+
+  this->OpenDBConnection();
+  int BookmarkCoordID = BookmarkCoord.SaveInDB(this->m_DatabaseConnector);
+  QGoDBCreateBookmarkDialog CreateBookmarkDialog(this,
+    this->m_DatabaseConnector,this->m_ImgSessionID, BookmarkCoordID);
+  this->CloseDBConnection();
 }
