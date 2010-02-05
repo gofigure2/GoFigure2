@@ -99,6 +99,9 @@ int main( int argc, char* argv[] )
   vtkAVIRenderWindowRecorder *testRecorder = vtkAVIRenderWindowRecorder::New();
   testRecorder->SetRenderingWindow(renWin);
   testRecorder->SetFileName( argv[1] );
+  testRecorder->SetFrameRate(10);
+  testRecorder->SetVideoQuality(1);
+  testRecorder->SetSpecificParameters();
   testRecorder->StartCapture();
 
   for (int i = 0; i < 30; i ++)
@@ -122,6 +125,8 @@ int main( int argc, char* argv[] )
         }
 
   testRecorder->EndCapture();
+
+  std::cout<< "End capture" << std::endl;
 
   // Test
   exists = (int) vtksys::SystemTools::FileExists(argv[1]);

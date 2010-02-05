@@ -53,9 +53,13 @@ class vtkAVIRenderWindowRecorder : public vtkRenderWindowMovieRecorder
       static vtkAVIRenderWindowRecorder *New();
       vtkTypeMacro(vtkAVIRenderWindowRecorder,vtkObject);
      // set/get the quality of the video
+     void SetSpecificParameters();
+     void SetVideoQuality( int );
+     void SetFrameRate( int );
+
+  private:
      int m_VideoQuality;
      int m_FrameRate;
-     void SetSpecificParameters();
 
    protected:
      vtkAVIRenderWindowRecorder();

@@ -294,7 +294,7 @@ protected:
   #endif /* ENABLEFFMPEG */
 
   #ifdef   ENABLEAVI
-    vtkAVIRenderWindowRecorder*            m_AVIGWriter;
+    vtkAVIRenderWindowRecorder*            m_AVIWriter;
   #endif /* ENABLEAVI */
 
 #endif /* ENABLEVIDEORECORD */

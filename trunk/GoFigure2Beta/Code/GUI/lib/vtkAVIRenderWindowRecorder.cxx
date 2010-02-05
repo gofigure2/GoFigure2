@@ -47,9 +47,14 @@
  * \brief Constructor
  */
 vtkAVIRenderWindowRecorder::
-vtkAVIRenderWindowRecorder()
+vtkAVIRenderWindowRecorder(): m_VideoQuality( 1 ), m_FrameRate( 10 )
 {
   m_ImageWriter  = vtkAVIWriter::New();
+
+    // initialise values in the writer
+  vtkAVIWriter* tempAVI = vtkAVIWriter::SafeDownCast( m_ImageWriter);
+  tempAVI->SetQuality(m_VideoQuality);
+  tempAVI->SetRate(m_FrameRate);
 }
 
 /**
@@ -58,16 +63,16 @@ vtkAVIRenderWindowRecorder()
 vtkAVIRenderWindowRecorder::
 ~vtkAVIRenderWindowRecorder()
 {
-
+  m_ImageWriter->Delete();
 }
 
 void
 vtkAVIRenderWindowRecorder::
 SetSpecificParameters()
 {
-  vtkAVIWriter* TEMP = vtkAVIWriter::SafeDownCast( m_ImageWriter);
-  TEMP->SetQuality(m_VideoQuality);
-  TEMP->SetRate(m_FrameRate);
+  vtkAVIWriter* tempAVI = vtkAVIWriter::SafeDownCast( m_ImageWriter);
+  tempAVI->SetQuality(m_VideoQuality);
+  tempAVI->SetRate(m_FrameRate);
 }
 
 vtkAVIRenderWindowRecorder*
@@ -83,4 +88,18 @@ New()
     }
 
   return new vtkAVIRenderWindowRecorder;
+}
+
+void
+vtkAVIRenderWindowRecorder::
+SetVideoQuality( int value)
+{
+  m_VideoQuality = value;
+}
+
+void
+vtkAVIRenderWindowRecorder::
+SetFrameRate( int value)
+{
+  m_FrameRate = value;
 }
