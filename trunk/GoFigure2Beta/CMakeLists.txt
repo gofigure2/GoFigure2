@@ -223,27 +223,30 @@ IF( VTK_FOUND )
 
 #---------------------------------------------------------------------------
 #---------------------------------------------------------------------------
-# USE FFMPEG ENCODER
+# VIDEO SUPPORT
 #---------------------------------------------------------------------------
 #---------------------------------------------------------------------------
 
+# FFMPEG: for Linux and Mac (tested and validated)
 IF( VTK_USE_FFMPEG_ENCODER )
-  OPTION (ENABLE_VIDEO_RECORD_FFMPEG "VTK must be built with VTK_USE_FFMPEG_ENCODER" OFF)
+  OPTION (ENABLE_VIDEO_RECORD_FFMPEG "VTK must be built with VTK_USE_FFMPEG_ENCODER" ON)
 ENDIF( VTK_USE_FFMPEG_ENCODER )
 
-IF( VTK_USE_VIDEO_FOR_WINDOWS )
-  OPTION (ENABLE_VIDEO_RECORD_AVI "VTK must be built with VTK_USE_AVI_ENCODER" OFF)
-ENDIF( VTK_USE_VIDEO_FOR_WINDOWS )
-
-
 IF( ENABLE_VIDEO_RECORD_FFMPEG )
-  ADD_DEFINITIONS(-DENABLEVIDEORECORD)
   ADD_DEFINITIONS(-DENABLEFFMPEG)
+ELSE( ENABLE_VIDEO_RECORD_FFMPEG )
+  REMOVE_DEFINITIONS(-DENABLEFFMPEG)
 ENDIF( ENABLE_VIDEO_RECORD_FFMPEG )
 
+# AVI: for Windows only
+IF( VTK_USE_VIDEO_FOR_WINDOWS )
+  OPTION (ENABLE_VIDEO_RECORD_AVI "VTK must be built with VTK_USE_AVI_ENCODER" ON)
+ENDIF( VTK_USE_VIDEO_FOR_WINDOWS )
+
 IF( ENABLE_VIDEO_RECORD_AVI )
-  ADD_DEFINITIONS(-DENABLEVIDEORECORD)
   ADD_DEFINITIONS(-DENABLEAVI)
+ELSE( ENABLE_VIDEO_RECORD_AVI )
+  REMOVE_DEFINITIONS(-DENABLEAVI)
 ENDIF( ENABLE_VIDEO_RECORD_AVI )
 
 #---------------------------------------------------------------------------

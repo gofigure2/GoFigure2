@@ -66,7 +66,7 @@ QGoTabImageViewElementBase( QWidget* iParent ) :
   m_ContourId( 0 ),
   m_ReEditContourMode( false ),
   m_VisuDockWidget( 0 )
-#ifdef   ENABLEVIDEORECORD
+#ifdef   ENABLEFFMPEG || ENABLEAVI
   ,
   m_VideoRecorderWidget( 0 )
 #endif
@@ -75,13 +75,10 @@ QGoTabImageViewElementBase( QWidget* iParent ) :
 
   m_DockWidgetList.push_back(
     std::pair< Qt::DockWidgetArea, QDockWidget* >( Qt::LeftDockWidgetArea,
-      m_VisuDockWidget ) );
-
-  m_DockWidgetList.push_back(
-    std::pair< Qt::DockWidgetArea, QDockWidget* >( Qt::LeftDockWidgetArea,
       m_ManualSegmentationDockWidget ) );
 
-#ifdef ENABLEVIDEORECORD
+#ifdef ENABLEFFMPEG || ENABLEAVI
+  m_VideoRecorderWidget = new QGoVideoRecorder( this );
   m_DockWidgetList.push_back(
     std::pair< Qt::DockWidgetArea, QDockWidget* >( Qt::LeftDockWidgetArea,
       m_VideoRecorderWidget ) );

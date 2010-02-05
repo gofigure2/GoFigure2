@@ -55,7 +55,7 @@ class QGoVisualizationDockWidget;
 class QGoManualSegmentationDockWidget;
 class QGoPrintDatabase;
 
-#ifdef   ENABLEVIDEORECORD
+#ifdef   ENABLEFFMPEG || ENABLEAVI
 
 class QGoVideoRecorder;
 
@@ -211,7 +211,7 @@ public slots:
   void DisplayCube();
   void TakeSnapshot();
 
-#ifdef   ENABLEVIDEORECORD
+#ifdef   ENABLEFFMPEG || ENABLEAVI
   void SetRendererWindow( int );
   void SetSpecificParametersFrameRate( int );
   void SetSpecificParametersQuality( int );
@@ -292,7 +292,7 @@ protected:
   QGoVisualizationDockWidget*       m_VisuDockWidget;
   QGoManualSegmentationDockWidget*  m_ManualSegmentationDockWidget;
 
-#ifdef   ENABLEVIDEORECORD
+#ifdef   ENABLEFFMPEG || ENABLEAVI
     QGoVideoRecorder*                         m_VideoRecorderWidget;
 
   #ifdef   ENABLEFFMPEG
@@ -319,7 +319,7 @@ protected:
   void CreateManualSegmentationdockWidget();
   void CreateDataBaseTablesConnection();
 
-#ifdef   ENABLEVIDEORECORD
+#ifdef   ENABLEFFMPEG || ENABLEAVI
   void CreateVideoRecorderWidget();
 #endif /* ENABLEVIDEORECORD */
 

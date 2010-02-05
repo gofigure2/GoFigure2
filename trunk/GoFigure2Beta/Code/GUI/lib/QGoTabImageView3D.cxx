@@ -108,9 +108,9 @@ QGoTabImageView3D( QWidget* iParent )
   QObject::connect( m_VisuDockWidget, SIGNAL( ShowAllChannelsChanged( bool ) ),
     this, SLOT( ShowAllChannels( bool ) ) );
 
-#ifdef   ENABLEVIDEORECORD
-  m_VideoRecorderWidget = new QGoVideoRecorder( this );
-#endif
+  this->m_DockWidgetList.push_front(
+      std::pair< Qt::DockWidgetArea, QDockWidget* >( Qt::LeftDockWidgetArea,
+    m_VisuDockWidget ) );
 
   CreateAllViewActions();
 
@@ -210,7 +210,7 @@ void QGoTabImageView3D::CreateAllViewActions()
 
   this->m_ViewActions.push_back( m_VisuDockWidget->toggleViewAction() );
 
-#ifdef ENABLEVIDEORECORD
+#ifdef ENABLEFFMPEG || ENABLEAVI
   this->m_ViewActions.push_back( m_VideoRecorderWidget->toggleViewAction() );
 #endif
 }

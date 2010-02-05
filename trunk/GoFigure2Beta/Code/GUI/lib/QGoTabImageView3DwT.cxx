@@ -46,7 +46,7 @@
 #include "QGoManualSegmentationDockWidget.h"
 #include "QGoPrintDatabase.h"
 
-#ifdef   ENABLEVIDEORECORD
+#ifdef   ENABLEFFMPEG || ENABLEAVI
 
   #include "QGoVideoRecorder.h"
 
@@ -133,7 +133,7 @@ QGoTabImageView3DwT( QWidget* iParent ) :
 
   CreateManualSegmentationdockWidget();
 
-#ifdef ENABLEVIDEORECORD
+#ifdef ENABLEFFMPEG || ENABLEAVI
   CreateVideoRecorderWidget();
 #endif
 
@@ -152,7 +152,7 @@ QGoTabImageView3DwT( QWidget* iParent ) :
   m_DockWidgetList.push_back(
     std::pair< Qt::DockWidgetArea, QDockWidget* >( Qt::TopDockWidgetArea, m_DataBaseTables ) );
 
-#ifdef ENABLEVIDEORECORD
+#ifdef ENABLEFFMPEG || ENABLEAVI
   m_DockWidgetList.push_back(
     std::pair< Qt::DockWidgetArea, QDockWidget* >( Qt::LeftDockWidgetArea, m_VideoRecorderWidget ) );
 #endif
@@ -329,7 +329,7 @@ CreateDataBaseTablesConnection()
 
 }
 //-------------------------------------------------------------------------
-#ifdef   ENABLEVIDEORECORD
+#ifdef   ENABLEFFMPEG || ENABLEAVI
 //-------------------------------------------------------------------------
 
 void
@@ -372,7 +372,7 @@ QGoTabImageView3DwT::
 SetRendererWindow(int iValue)
 {
 
-  if (iValue -1 >= 0)
+  if (iValue >= 1)
     {
     m_VideoRecorderWidget->SetRenderingWindow(
     m_ImageView->GetInteractor( iValue -1 )->GetRenderWindow() );
@@ -603,7 +603,7 @@ void
 QGoTabImageView3DwT::
 CreateToolsActions()
 {
-#ifdef ENABLEVIDEORECORD
+#ifdef ENABLEFFMPEG || ENABLEAVI
   this->m_ToolsActions.push_back( m_VideoRecorderWidget->toggleViewAction() );
 #endif
 
@@ -798,7 +798,7 @@ SetLSMReader( vtkLSMReader* iReader,
       SetTimePoint( iTimePoint );
       }
 
-#ifdef ENABLEVIDEORECORD
+#ifdef ENABLEFFMPEG || ENABLEAVI
       m_VideoRecorderWidget->SetXMinAndMax( 0, dim[0] - 1 );
       m_VideoRecorderWidget->SetYMinAndMax( 0, dim[1] - 1 );
       m_VideoRecorderWidget->SetZMinAndMax( 0, dim[2] - 1 );
@@ -875,7 +875,7 @@ SetMegaCaptureFile(
     }
 
   // Set up QSpinBox in m_VideoRecorderWidget
-#ifdef ENABLEVIDEORECORD
+#ifdef ENABLEFFMPEG || ENABLEAVI
   m_VideoRecorderWidget->SetXMinAndMax( extent[0], extent[1] );
   m_VideoRecorderWidget->SetYMinAndMax( extent[2], extent[3] );
   m_VideoRecorderWidget->SetZMinAndMax( extent[4], extent[5] );
