@@ -55,7 +55,7 @@ class QGoVideoRecorder;
 
 class vtkContourWidget;
 class vtkOrientedGlyphContourRepresentation;
-class vtkActor;
+class vtkQuadricLODActor;
 class vtkProperty;
 class vtkPolyData;
 
@@ -194,7 +194,7 @@ signals:
     void GetBackgroundColorFromImageViewer( );
     void SetBackgroundColorToImageViewer( );
 
-    std::vector< vtkActor* > AddContour( const int& iId,
+    std::vector< vtkQuadricLODActor* > AddContour( const int& iId,
       vtkPolyData* dataset,
       vtkProperty* property = NULL );
 

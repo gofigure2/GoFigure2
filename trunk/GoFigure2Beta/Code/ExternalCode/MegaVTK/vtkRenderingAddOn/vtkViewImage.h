@@ -117,7 +117,7 @@ class vtkLookupTable;
 class vtkTextProperty;
 class vtkCornerAnnotation;
 class vtkOrientationAnnotation;
-class vtkActor;
+class vtkQuadricLODActor;
 class vtkDataSet;
 class vtkPolyData;
 class vtkProperty;
@@ -238,7 +238,7 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage : public vtkImageViewer2
     as triangles, triangles as lines, lines as points.
     A vtkProperty of the dataset can be specified.
   */
-  virtual vtkActor* AddDataSet (vtkDataSet* dataset,
+  virtual vtkQuadricLODActor* AddDataSet (vtkDataSet* dataset,
     vtkProperty* property = NULL,
     const bool& intersection = true,
     const bool& iDataVisibility = true ) = 0;

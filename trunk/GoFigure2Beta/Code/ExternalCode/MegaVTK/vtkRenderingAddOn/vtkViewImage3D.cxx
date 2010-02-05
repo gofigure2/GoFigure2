@@ -91,7 +91,7 @@
 #include "vtkMath.h"
 #include "vtkPlane.h"
 #include "vtkCutter.h"
-#include "vtkActor.h"
+#include "vtkQuadricLODActor.h"
 #include "vtkPolyDataMapper.h"
 #include "vtkProp3DCollection.h"
 #include "vtkDataSetCollection.h"
@@ -103,6 +103,7 @@
 #include "vtkUnsignedCharArray.h"
 #include "vtkIntArray.h"
 #include "vtkImageAccumulate.h"
+#include "vtkQuadricClustering.h"
 
 
 #include <vtkClipPolyData.h>
@@ -642,7 +643,7 @@ void vtkViewImage3D::InstallPipeline()
  * @param iDataVisibility
  * @return
  */
-vtkActor* vtkViewImage3D::AddDataSet( vtkDataSet* dataset,
+vtkQuadricLODActor* vtkViewImage3D::AddDataSet( vtkDataSet* dataset,
   vtkProperty* property,
   const bool& intersection,
   const bool& iDataVisibility )
@@ -663,7 +664,8 @@ vtkActor* vtkViewImage3D::AddDataSet( vtkDataSet* dataset,
     vtkSmartPointer< vtkPolyDataMapper >::New();
   mapper->SetScalarVisibility( iDataVisibility );
 
-  vtkActor* actor = vtkActor::New();
+  vtkQuadricLODActor* actor = vtkQuadricLODActor::New();
+  actor->GetLODFilter()->SetNumberOfDivisions( 3, 3, 3 );
 
   vtkSmartPointer< vtkClipPolyData > cutter =
     vtkSmartPointer< vtkClipPolyData >::New();

@@ -75,6 +75,7 @@ class vtkContourWidget;
 class vtkOrientedGlyphContourRepresentation;
 class vtkMySQLDatabase;
 class vtkProperty;
+class vtkQuadricLODActor;
 
 /**
 \class QGoTabImageView3DwT
@@ -188,6 +189,11 @@ public:
 
   void LoadAllContoursForGivenTimePoint( const unsigned int& iT );
   void RemoveAllContoursForGivenTimePoint( const unsigned int& iT );
+
+  int GetSliceViewXY() const;
+  int GetSliceViewXZ() const;
+  int GetSliceViewYZ() const;
+  int GetTimePoint() const;
 
   QGoPrintDatabase* m_DataBaseTables;
 
@@ -321,7 +327,7 @@ protected:
 
   int* GetImageCoordinatesFromWorldCoordinates( double pos[3] );
 
-  std::vector< vtkActor* > AddContour( const int& iId,
+  std::vector< vtkQuadricLODActor* > AddContour( const int& iId,
       vtkPolyData* dataset,
       vtkProperty* property = NULL );
 

@@ -47,6 +47,7 @@
 #include <QSpinBox>
 
 class vtkImageData;
+class vtkQuadricLODActor;
 
 class QAction;
 class QToolBar;
@@ -127,7 +128,7 @@ class QGoTabImageView3D : public QGoTabImageViewNDBase
     virtual void RemoveActorFromViewer( const int& iId, vtkActor* iActor );
     virtual void DisplayActorInViewer( const int& iId, vtkActor* iActor );
 
-    virtual std::vector< vtkActor* > AddContour( const int& iId,
+    virtual std::vector< vtkQuadricLODActor* > AddContour( const int& iId,
       vtkPolyData* dataset,
       vtkProperty* property = NULL );
 

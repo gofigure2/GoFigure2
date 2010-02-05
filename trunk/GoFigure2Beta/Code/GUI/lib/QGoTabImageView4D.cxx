@@ -1151,7 +1151,7 @@ ValidateContour( const int& iId )
     vtkPolyData* contour_copy = vtkPolyData::New();
     contour_copy->ShallowCopy( contour );
 
-    std::vector< vtkActor* > contour_actor =
+    std::vector< vtkQuadricLODActor* > contour_actor =
       this->AddContour( iId, contour_copy,
         contour_property );
 
@@ -1207,7 +1207,7 @@ GetImageCoordinatesFromWorldCoordinates( double iPos[3] )
  * \param property
  * \return
  */
-std::vector< vtkActor* >
+std::vector< vtkQuadricLODActor* >
 QGoTabImageView4D::
 AddContour( const int& iId,
   vtkPolyData* dataset,
@@ -1217,7 +1217,7 @@ AddContour( const int& iId,
 //  vtkViewImage2D* viewer = this->m_XYTImageView->GetImageViewer( 0 );
 //  vtkViewImage3D* viewer3D = this->m_XYTImageView->GetImageViewer3D();
 
-  std::vector< vtkActor* > oActorVector = this->m_XYZImageView->AddContour( iId, dataset, iProperty );
+  std::vector< vtkQuadricLODActor* > oActorVector = this->m_XYZImageView->AddContour( iId, dataset, iProperty );
 
 //  viewer->GetRenderer()->AddViewProp( oActorVector[0] );
 //  viewer->Render();

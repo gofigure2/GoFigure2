@@ -88,7 +88,7 @@
 #include "vtkMath.h"
 #include "vtkPlane.h"
 #include "vtkCutter.h"
-#include "vtkActor.h"
+#include "vtkQuadricLODActor.h"
 #include "vtkPolyDataMapper.h"
 #include "vtkProp3DCollection.h"
 #include "vtkDataSetCollection.h"
@@ -240,7 +240,7 @@ void vtkViewImage2DCollection::Initialize()
   {
     for( int j = 0; j < n; j++ )
     {
-      vtkActor* temp = this->GetItem( j )->AddDataSet(
+      vtkQuadricLODActor* temp = this->GetItem( j )->AddDataSet(
         static_cast<vtkDataSet*>( this->GetItem( i )->GetSlicePlane() ),
         plane_property, ( i != j ) );
       //store all slice actors
@@ -351,7 +351,7 @@ vtkViewImage2DCollection::
 SetSplinePlaneActorsVisibility( bool iVisibility )
 {
 	int numberOfActors = this->SlicePlaneActors.size();
-	vtkstd::vector<vtkActor*>::iterator  SlicePlaneActorsIterator
+	vtkstd::vector<vtkQuadricLODActor*>::iterator  SlicePlaneActorsIterator
 	  = SlicePlaneActors.begin();
 
 	if( iVisibility )

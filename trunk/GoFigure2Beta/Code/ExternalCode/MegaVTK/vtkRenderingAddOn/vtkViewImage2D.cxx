@@ -90,7 +90,7 @@
 #include "vtkCutter.h"
 #include "vtkCellPicker.h"
 #include "vtkClipPolyData.h"
-#include "vtkActor.h"
+#include "vtkQuadricLODActor.h"
 #include "vtkPolyDataMapper.h"
 #include "vtkProp3DCollection.h"
 #include "vtkDataSetCollection.h"
@@ -844,7 +844,7 @@ int vtkViewImage2D::GetInterpolate(void)
  * @param iDataVisibility
  * @return
  */
-vtkActor* vtkViewImage2D::AddDataSet( vtkPolyData* dataset,
+vtkQuadricLODActor* vtkViewImage2D::AddDataSet( vtkPolyData* dataset,
   vtkProperty* property,
   const bool& intersection,
   const bool& iDataVisibility )
@@ -864,7 +864,7 @@ vtkActor* vtkViewImage2D::AddDataSet( vtkPolyData* dataset,
     vtkSmartPointer< vtkPolyDataMapper >::New();
   mapper->SetScalarVisibility( iDataVisibility );
 
-  vtkActor* actor = vtkActor::New();
+  vtkQuadricLODActor* actor = vtkQuadricLODActor::New();
 
   //vtkCutter* cutter = vtkCutter::New();
   vtkSmartPointer< vtkClipPolyData > cutter = vtkSmartPointer< vtkClipPolyData >::New();
@@ -903,7 +903,7 @@ vtkActor* vtkViewImage2D::AddDataSet( vtkPolyData* dataset,
 }
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
-vtkActor* vtkViewImage2D::AddDataSet( vtkDataSet* dataset,
+vtkQuadricLODActor* vtkViewImage2D::AddDataSet( vtkDataSet* dataset,
   vtkProperty* property,
   const bool& intersection,
   const bool& iDataVisibility )
@@ -920,7 +920,7 @@ vtkActor* vtkViewImage2D::AddDataSet( vtkDataSet* dataset,
     vtkSmartPointer< vtkPolyDataMapper >::New();
   mapper->SetScalarVisibility( iDataVisibility );
 
-  vtkActor* actor = vtkActor::New();
+  vtkQuadricLODActor* actor = vtkQuadricLODActor::New();
 
   vtkSmartPointer< vtkCutter > cutter = vtkSmartPointer< vtkCutter >::New();
 

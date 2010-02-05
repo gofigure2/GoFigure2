@@ -1445,7 +1445,7 @@ ValidateContour( const int& iContourID, const int& iDir,
     vtkPolyData* contour_copy = vtkPolyData::New();
     contour_copy->ShallowCopy( contour );
 
-    std::vector< vtkActor* > contour_actor =
+    std::vector< vtkQuadricLODActor* > contour_actor =
       this->AddContour( iDir, contour_copy,
         contour_property );
 
@@ -1489,8 +1489,8 @@ ValidateContour( const int& iContourID, const int& iDir,
     // fill the container
     for( i = 0; i < contour_actor.size(); i++ )
       {
-      ContourMeshStructure temp( m_ContourId, contour_actor[i], contour_nodes,
-         meshid, iTCoord, iHighlighted, iR, iG, iB, iA, i );
+      ContourMeshStructure temp( m_ContourId, reinterpret_cast< vtkActor* >( contour_actor[i] ),
+        contour_nodes, meshid, iTCoord, iHighlighted, iR, iG, iB, iA, i );
       m_ContourMeshContainer.insert( temp );
       }
 
@@ -1635,7 +1635,7 @@ GetImageCoordinatesFromWorldCoordinates( double iPos[3] )
  * \param property
  * \return
  */
-std::vector< vtkActor* >
+std::vector< vtkQuadricLODActor* >
 QGoTabImageView3DwT::
 AddContour( const int& iId,
   vtkPolyData* dataset,
@@ -2185,5 +2185,38 @@ DeleteContoursFromTable( const std::list< int >& iList )
       }
     ++traceid_it;
   }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+int
+QGoTabImageView3DwT::
+GetSliceViewXY() const
+{
+  return m_ImageView->GetSliceViewXY();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+int QGoTabImageView3DwT::
+GetSliceViewXZ() const
+{
+  return m_ImageView->GetSliceViewXZ();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+int QGoTabImageView3DwT::
+GetSliceViewYZ() const
+{
+  return m_ImageView->GetSliceViewYZ();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+int QGoTabImageView3DwT::
+GetTimePoint() const
+{
+  return m_TimePoint;
 }
 //-------------------------------------------------------------------------

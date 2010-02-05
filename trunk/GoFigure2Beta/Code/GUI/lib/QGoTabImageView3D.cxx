@@ -49,6 +49,7 @@
 #include "vtkOrientedGlyphContourRepresentation.h"
 #include "vtkImageActorPointPlacer.h"
 #include "vtkProperty.h"
+#include "vtkQuadricLODActor.h"
 
 #include "vtkImageExtractComponents.h"
 
@@ -532,7 +533,7 @@ GetImageCoordinatesFromWorldCoordinates( double iPos[3] )
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-std::vector< vtkActor* >
+std::vector< vtkQuadricLODActor* >
 QGoTabImageView3D::
 AddContour( const int& iId,
   vtkPolyData* dataset,

@@ -100,7 +100,7 @@ public:
 
   void AddMesh( vtkPolyData* iMesh );
 
-  std::vector< vtkActor* > AddContour( const int& iId,
+  std::vector< vtkQuadricLODActor* > AddContour( const int& iId,
       vtkPolyData* dataset,
       vtkProperty* property = NULL );
 
@@ -196,7 +196,7 @@ protected:
   virtual void resizeEvent( QResizeEvent* event );
 
   void SetupVTKtoQtConnections();
-  std::map< vtkProp3D*, vtkProperty* > m_ActorsPropertyMap;
+//   std::map< vtkProp3D*, vtkProperty* > m_ActorsPropertyMap;
 
   void Quadview();
   void FullScreenViewXY();

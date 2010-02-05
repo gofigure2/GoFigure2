@@ -296,7 +296,7 @@ ValidateContour( const int& iId )
   vtkPolyData* contour_copy = vtkPolyData::New();
   contour_copy->ShallowCopy( contour );
 
-  std::vector< vtkActor* > contour_actor =
+  std::vector< vtkQuadricLODActor* > contour_actor =
     this->AddContour( iId, contour_copy,
       contour_property );
 

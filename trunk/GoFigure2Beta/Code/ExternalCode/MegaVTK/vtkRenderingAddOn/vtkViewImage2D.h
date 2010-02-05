@@ -45,7 +45,7 @@
  this list of conditions and the following disclaimer.
  Redistributions in binary form must reproduce the above copyright notice,
  this list of conditions and the following disclaimer in the documentation
- and/or other materials provided with the distribution.
+//  and/or other materials provided with the distribution.
  Neither the name of the  President and Fellows of Harvard College
  nor the names of its contributors may be used to endorse or promote
  products derived from this software without specific prior written
@@ -77,6 +77,7 @@ class vtkPlane;
 class vtkViewImage2DCommand;
 class vtkTransform;
 class vtkCellPicker;
+class vtkQuadricLODActor;
 
 /**
   \class vtkViewImage2D
@@ -253,12 +254,12 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage2D : public vtkViewImage
     as triangles, triangles as lines, lines as points.
     A vtkProperty of the dataset can be specified.
   */
-  virtual vtkActor* AddDataSet( vtkDataSet* dataset,
+  virtual vtkQuadricLODActor* AddDataSet( vtkDataSet* dataset,
     vtkProperty* property = NULL,
     const bool& intersection = true,
     const bool& iDataVisibility = true );
 
-  virtual vtkActor* AddDataSet( vtkPolyData* polydata,
+  virtual vtkQuadricLODActor* AddDataSet( vtkPolyData* polydata,
     vtkProperty* property = NULL,
     const bool& intersection = true,
     const bool& iDataVisibility = true );

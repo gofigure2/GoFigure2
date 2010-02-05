@@ -54,6 +54,7 @@ class vtkContourWidget;
 class vtkOrientedGlyphContourRepresentation;
 class vtkDataSet;
 class vtkProperty;
+class vtkQuadricLODActor;
 
 /**
 \class QGoTabImageViewElementBase
@@ -113,7 +114,7 @@ protected:
   virtual void RemoveActorFromViewer( const int& iId, vtkActor* iActor ) = 0;
   virtual void DisplayActorInViewer( const int& iId, vtkActor* iActor ) = 0;
 
-  virtual std::vector< vtkActor* > AddContour( const int& iId,
+  virtual std::vector< vtkQuadricLODActor* > AddContour( const int& iId,
       vtkPolyData* dataset,
       vtkProperty* property = NULL ) = 0;
 
