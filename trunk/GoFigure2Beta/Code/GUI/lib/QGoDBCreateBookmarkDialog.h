@@ -42,6 +42,7 @@
 #define __QGoDBCreateBookmarkDialog_h
 
 #include <QDialog>
+#include "vtkMySQLDatabase.h"
 #include "ui_QGoDBCreateBookmarkDialog.h"
 
 class QGoDBCreateBookmarkDialog :
@@ -51,13 +52,18 @@ class QGoDBCreateBookmarkDialog :
   Q_OBJECT
 
   public:
-    explicit QGoDBCreateBookmarkDialog (QWidget* iParent = 0);
+    explicit QGoDBCreateBookmarkDialog (QWidget* iParent = 0,
+      vtkMySQLDatabase* iDatabaseConnector = 0,int iImgSessionID = 0);
     ~QGoDBCreateBookmarkDialog();
+
+  protected:
+    vtkMySQLDatabase* m_DatabaseConnector;
+    int               m_ImgSessionID;
+    void SaveNewBookmarkInDB();
 
   protected slots:
     void validate();
-    void SaveNewBookmarkInDB();
-
+    
 
 };
 #endif

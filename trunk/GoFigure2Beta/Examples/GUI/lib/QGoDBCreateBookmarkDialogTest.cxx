@@ -41,11 +41,15 @@
 #include <QApplication>
 
 #include "QGoDBCreateBookmarkDialog.h"
+#include "vtkMySQLDatabase.h"
+#include "QueryDataBaseHelper.h"
 
 int main(int argc, char * argv[])
 {  
   QApplication app( argc, argv );
-  QGoDBCreateBookmarkDialog win;
+  vtkMySQLDatabase* DatabaseConnector = OpenDatabaseConnection(
+    "localhost","gofigure","gofigure","gofiguredatabase");
+  QGoDBCreateBookmarkDialog win(0,DatabaseConnector,1);
   win.show();
   return app.exec();
 }

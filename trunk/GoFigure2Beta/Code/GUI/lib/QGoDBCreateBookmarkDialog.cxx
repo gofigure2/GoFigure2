@@ -42,11 +42,15 @@
 #include "GoDBBookmarkRow.h"
 #include <QMessageBox>
 #include <QDateTime>
+#include "QueryDataBaseHelper.h"
 
-QGoDBCreateBookmarkDialog::QGoDBCreateBookmarkDialog(QWidget* iParent):
+QGoDBCreateBookmarkDialog::QGoDBCreateBookmarkDialog(QWidget* iParent,
+  vtkMySQLDatabase* iDatabaseConnector, int iImgSessionID):
   QDialog( iParent)
 {
   this->setupUi( this);
+  this->m_DatabaseConnector = iDatabaseConnector;
+  this->m_ImgSessionID = iImgSessionID;
   QObject::connect(this,SIGNAL(accepted()),this,SLOT(validate()));
 }
 //-------------------------------------------------------------------------
@@ -54,6 +58,7 @@ QGoDBCreateBookmarkDialog::QGoDBCreateBookmarkDialog(QWidget* iParent):
 //-------------------------------------------------------------------------
 QGoDBCreateBookmarkDialog::~QGoDBCreateBookmarkDialog()
 {
+  this->m_DatabaseConnector->Delete();
 }
 //-------------------------------------------------------------------------
 
@@ -88,4 +93,9 @@ void QGoDBCreateBookmarkDialog::SaveNewBookmarkInDB()
   std::string CreationDateStr = 
     CreationDate.toString(Qt::ISODate).toStdString();
   NewBookmark.SetField("CreationDate",CreationDateStr);
+  /** \todo Get the coordid from the visu*/
+  int CoordID = 1;
+  NewBookmark.SetField<int>("CoordID",CoordID);
+  NewBookmark.SetField<int>("ImagingSessionID",this->m_ImgSessionID);
+  NewBookmark.SaveInDB(this->m_DatabaseConnector);
 }
