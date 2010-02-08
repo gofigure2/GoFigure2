@@ -245,14 +245,10 @@ void QGoTabImageView3D::CreateAllViewActions()
   QObject::connect( ScalarBarAction, SIGNAL( toggled( bool ) ),
     this, SLOT( ShowScalarBar( bool ) ) );
 
-  QAction* BackgroundColorAction = new QAction( tr("Background Color"), this );
-  this->m_ViewActions.push_back( BackgroundColorAction );
-
-  /*
   QPixmap Pix(16, 16);
-  Pix.fill(Qt::black);
-  m_BackgroundColorAction = new QAction(Pix, tr("Set Background Color"), this );
-  this->m_ViewActions.push_back( m_BackgroundColorAction );*/
+    Pix.fill(Qt::black);
+  QAction* BackgroundColorAction = new QAction( Pix, tr("Background Color"), this );
+  this->m_ViewActions.push_back( BackgroundColorAction );
 
   QObject::connect( BackgroundColorAction, SIGNAL( triggered() ),
     this, SLOT( ChangeBackgroundColor() ) );

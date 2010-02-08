@@ -84,8 +84,17 @@ QGoTabImageView2D( QWidget* iParent )
   m_VisuDockWidget = new QGoVisualizationDockWidget( this, 2 );
   m_VisuDockWidget->resize( 120, 300 );
 
+  this->m_DockWidgetList.push_front(
+      std::pair< Qt::DockWidgetArea, QDockWidget* >( Qt::LeftDockWidgetArea,
+    m_VisuDockWidget ) );
+
   QAction* LookupTableAction = new QAction( tr( "Lookup Table" ), this );
   LookupTableAction->setStatusTip( tr(" Change the associated lookup table" ) );
+
+  QIcon luticon;
+  luticon.addPixmap( QPixmap(QString::fromUtf8(":/fig/LookupTable.png")),
+    QIcon::Normal, QIcon::Off );
+  LookupTableAction->setIcon( luticon );
 
   // Here write the connection
   QObject::connect( LookupTableAction, SIGNAL( triggered() ),
@@ -95,12 +104,21 @@ QGoTabImageView2D( QWidget* iParent )
 
   QAction* ScalarBarAction = new QAction( tr( "Display Scalar Bar" ), this );
   ScalarBarAction->setCheckable( true );
+
+  QIcon scalarbaricon;
+  scalarbaricon.addPixmap( QPixmap(QString::fromUtf8(":/fig/scalarbar.png")),
+    QIcon::Normal, QIcon::Off );
+  ScalarBarAction->setIcon( scalarbaricon );
+
   this->m_ViewActions.push_back( ScalarBarAction );
 
   QObject::connect( ScalarBarAction, SIGNAL( toggled( bool ) ),
     this, SLOT( ShowScalarBar( bool ) ) );
 
-  QAction* BackgroundColorAction = new QAction( tr("Background Color"), this );
+  QPixmap Pix(16, 16);
+    Pix.fill(Qt::black);
+  QAction* BackgroundColorAction = new QAction(Pix, tr("Background Color"), this );
+
   this->m_ViewActions.push_back( BackgroundColorAction );
 
   QObject::connect( BackgroundColorAction, SIGNAL( triggered() ),
