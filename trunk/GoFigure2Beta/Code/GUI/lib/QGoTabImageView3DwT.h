@@ -55,19 +55,19 @@ class QGoVisualizationDockWidget;
 class QGoManualSegmentationDockWidget;
 class QGoPrintDatabase;
 
-#ifdef   ENABLEFFMPEG || ENABLEAVI
+#ifdef   ENABLEFFMPEG 
+
 
 class QGoVideoRecorder;
 
-  #ifdef   ENABLEFFMPEG
+  
   class vtkFFMPEGRenderWindowRecorder;
-  #endif /* ENABLEFFMPEG */
-
+#endif
   #ifdef   ENABLEAVI
   class vtkAVIRenderWindowRecorder;
-  #endif /* ENABLEAVI */
+class QGoVideoRecorder;
 
-#endif /* ENABLEVIDEORECORD */
+  #endif /* ENABLEAVI */
 
 class vtkLSMReader;
 class vtkImageData;
@@ -211,7 +211,7 @@ public slots:
   void DisplayCube();
   void TakeSnapshot();
 
-#ifdef   ENABLEFFMPEG || ENABLEAVI
+#if defined ( ENABLEFFMPEG ) || defined ( ENABLEAVI )
   void SetRendererWindow( int );
   void SetSpecificParametersFrameRate( int );
   void SetSpecificParametersQuality( int );
@@ -292,18 +292,16 @@ protected:
   QGoVisualizationDockWidget*       m_VisuDockWidget;
   QGoManualSegmentationDockWidget*  m_ManualSegmentationDockWidget;
 
-#ifdef   ENABLEFFMPEG || ENABLEAVI
-    QGoVideoRecorder*                         m_VideoRecorderWidget;
+    
 
   #ifdef   ENABLEFFMPEG
     vtkFFMPEGRenderWindowRecorder*            m_FFMPEGWriter;
+    QGoVideoRecorder*                         m_VideoRecorderWidget;
   #endif /* ENABLEFFMPEG */
-
   #ifdef   ENABLEAVI
-    vtkAVIRenderWindowRecorder*            m_AVIWriter;
+    vtkAVIRenderWindowRecorder*               m_AVIWriter;
+    QGoVideoRecorder*                         m_VideoRecorderWidget;
   #endif /* ENABLEAVI */
-
-#endif /* ENABLEVIDEORECORD */
 
 
   std::vector< vtkSmartPointer< vtkContourWidget > >                      m_ContourWidget;
@@ -319,7 +317,7 @@ protected:
   void CreateManualSegmentationdockWidget();
   void CreateDataBaseTablesConnection();
 
-#ifdef   ENABLEFFMPEG || ENABLEAVI
+#if defined ( ENABLEFFMPEG ) || defined ( ENABLEAVI )
   void CreateVideoRecorderWidget();
 #endif /* ENABLEVIDEORECORD */
 

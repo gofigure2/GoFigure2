@@ -46,7 +46,7 @@
 #include "QGoManualSegmentationDockWidget.h"
 #include "QGoPrintDatabase.h"
 
-#ifdef   ENABLEFFMPEG || ENABLEAVI
+#if defined ( ENABLEFFMPEG ) || defined ( ENABLEAVI )
 
   #include "QGoVideoRecorder.h"
 
@@ -133,7 +133,7 @@ QGoTabImageView3DwT( QWidget* iParent ) :
 
   CreateManualSegmentationdockWidget();
 
-#ifdef ENABLEFFMPEG || ENABLEAVI
+#if defined ( ENABLEFFMPEG ) || defined ( ENABLEAVI )
   CreateVideoRecorderWidget();
 #endif
 
@@ -152,7 +152,7 @@ QGoTabImageView3DwT( QWidget* iParent ) :
   m_DockWidgetList.push_back(
     std::pair< Qt::DockWidgetArea, QDockWidget* >( Qt::TopDockWidgetArea, m_DataBaseTables ) );
 
-#ifdef ENABLEFFMPEG || ENABLEAVI
+#if defined ( ENABLEFFMPEG ) || defined (ENABLEAVI)
   m_DockWidgetList.push_back(
     std::pair< Qt::DockWidgetArea, QDockWidget* >( Qt::LeftDockWidgetArea, m_VideoRecorderWidget ) );
 #endif
@@ -329,7 +329,7 @@ CreateDataBaseTablesConnection()
 
 }
 //-------------------------------------------------------------------------
-#ifdef   ENABLEFFMPEG || ENABLEAVI
+#if defined ( ENABLEFFMPEG ) || defined ( ENABLEAVI )
 //-------------------------------------------------------------------------
 
 void
