@@ -110,9 +110,12 @@ class QGoTabImageView3D : public QGoTabImageViewNDBase
 
     void ChangeLookupTable();
     void ShowScalarBar( const bool& );
+    void ChangeBackgroundColor();
 
   protected:
     QGoImageView3D*   m_ImageView;
+
+    QAction*              m_BackgroundColorAction;
 
     void GetBackgroundColorFromImageViewer( );
     void SetBackgroundColorToImageViewer( );

@@ -77,9 +77,12 @@ public:
 public slots:
   void ChangeLookupTable();
   void ShowScalarBar( const bool& );
+  void ChangeBackgroundColor();
+  void TakeSnapshot();
 
 protected:
-  QGoImageView2D*   m_ImageView;
+  QGoImageView2D*       m_ImageView;
+  QAction*              m_TakeSnapshotAction;
 
   void GetBackgroundColorFromImageViewer( );
   void SetBackgroundColorToImageViewer( );
@@ -89,10 +92,14 @@ protected:
   std::vector< vtkQuadricLODActor* > AddContour( const int& iId, vtkPolyData* dataset,
       vtkProperty* property = NULL );
 
+  QAction*              m_BackgroundColorAction;
+
   virtual void RemoveActorFromViewer( const int& iId, vtkActor* iActor );
   virtual void DisplayActorInViewer( const int& iId, vtkActor* iActor );
 
   virtual void SetSlice( int iDir, int* iIdx );
+
+  void CreateToolsActions();
 
 private:
   QGoTabImageView2D( const QGoTabImageView2D& );

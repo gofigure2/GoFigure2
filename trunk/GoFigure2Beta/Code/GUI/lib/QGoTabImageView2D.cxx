@@ -116,12 +116,11 @@ QGoTabImageView2D( QWidget* iParent )
     this, SLOT( ShowScalarBar( bool ) ) );
 
   QPixmap Pix(16, 16);
-    Pix.fill(Qt::black);
-  QAction* BackgroundColorAction = new QAction(Pix, tr("Background Color"), this );
+  Pix.fill(Qt::black);
+  m_BackgroundColorAction = new QAction(Pix, tr("Set Background Color"), this );
+  this->m_ViewActions.push_back( m_BackgroundColorAction );
 
-  this->m_ViewActions.push_back( BackgroundColorAction );
-
-  QObject::connect( BackgroundColorAction, SIGNAL( triggered() ),
+  QObject::connect( m_BackgroundColorAction, SIGNAL( triggered() ),
     this, SLOT( ChangeBackgroundColor() ) );
 
   QObject::connect( m_VisuDockWidget, SIGNAL( ShowAllChannelsChanged( bool ) ),
@@ -135,6 +134,8 @@ QGoTabImageView2D( QWidget* iParent )
   this->m_ViewActions.push_back( separator2 );
 
   this->m_ViewActions.push_back( m_VisuDockWidget->toggleViewAction() );
+
+  CreateToolsActions();
 
   ReadSettings();
 }
@@ -332,3 +333,47 @@ SetSlice( int iDir, int* iIdx  )
   (void) iIdx;
 }
 //--------------------------------------------------------------------------
+
+void
+QGoTabImageView2D::
+ChangeBackgroundColor()
+{
+  double r, g, b;
+  m_ImageView->GetBackgroundColor( r, g, b );
+  m_BackgroundColor.setRgbF( r, g, b );
+
+  QColor temp = QColorDialog::getColor( m_BackgroundColor,
+    this, tr( "Choose Background Color" ) );
+
+  if( temp != m_BackgroundColor )
+    {
+    m_BackgroundColor = temp;
+    m_ImageView->SetBackgroundColor( m_BackgroundColor );
+    QPixmap Pix(16, 16);
+    Pix.fill(temp);
+    m_BackgroundColorAction->setIcon(Pix);
+    }
+}
+
+void
+QGoTabImageView2D::
+CreateToolsActions()
+{
+  m_TakeSnapshotAction = new QAction( tr( "Take Snapshot" ), this );
+  QIcon snapshoticon;
+  snapshoticon.addPixmap( QPixmap(QString::fromUtf8(":/fig/camera-photo.png")),
+    QIcon::Normal, QIcon::Off );
+  m_TakeSnapshotAction->setIcon( snapshoticon );
+  m_TakeSnapshotAction->setEnabled(true);
+  QObject::connect( m_TakeSnapshotAction, SIGNAL( triggered() ),
+    this, SLOT( TakeSnapshot() ) );
+
+  this->m_ToolsActions.push_back( m_TakeSnapshotAction );
+}
+
+void
+QGoTabImageView2D::
+TakeSnapshot()
+{
+  m_ImageView->SnapshotViewXY( GoFigure::PNG , "snapshot_" );
+}

@@ -54,6 +54,7 @@
 #include "vtkImageExtractComponents.h"
 
 #include <QLabel>
+#include <QColorDialog>
 #include <QDockWidget>
 #include <QSpinBox>
 #include <QVBoxLayout>
@@ -107,6 +108,9 @@ QGoTabImageView3D( QWidget* iParent )
 
   QObject::connect( m_VisuDockWidget, SIGNAL( ShowAllChannelsChanged( bool ) ),
     this, SLOT( ShowAllChannels( bool ) ) );
+
+  QObject::connect( m_VisuDockWidget, SIGNAL( ShowOneChannelChanged( int ) ),
+    this, SLOT( ShowOneChannel( int ) ) );
 
   this->m_DockWidgetList.push_front(
       std::pair< Qt::DockWidgetArea, QDockWidget* >( Qt::LeftDockWidgetArea,
@@ -235,11 +239,11 @@ void QGoTabImageView3D::CreateAllViewActions()
     this, SLOT( ShowScalarBar( bool ) ) );
 
   QPixmap Pix(16, 16);
-    Pix.fill(Qt::black);
-  QAction* BackgroundColorAction = new QAction( Pix, tr("Background Color"), this );
-  this->m_ViewActions.push_back( BackgroundColorAction );
+  Pix.fill(Qt::black);
+  m_BackgroundColorAction = new QAction(Pix, tr("Set Background Color"), this );
+  this->m_ViewActions.push_back( m_BackgroundColorAction );
 
-  QObject::connect( BackgroundColorAction, SIGNAL( triggered() ),
+  QObject::connect( m_BackgroundColorAction, SIGNAL( triggered() ),
     this, SLOT( ChangeBackgroundColor() ) );
 
   QAction* separator2 = new QAction( this );
@@ -620,3 +624,24 @@ SetSlice( int iDir, int* iIdx  )
     }
 }
 //--------------------------------------------------------------------------
+
+void
+QGoTabImageView3D::
+ChangeBackgroundColor()
+{
+  double r, g, b;
+  m_ImageView->GetBackgroundColor( r, g, b );
+  m_BackgroundColor.setRgbF( r, g, b );
+
+  QColor temp = QColorDialog::getColor( m_BackgroundColor,
+    this, tr( "Choose Background Color" ) );
+
+  if( temp != m_BackgroundColor )
+    {
+    m_BackgroundColor = temp;
+    m_ImageView->SetBackgroundColor( m_BackgroundColor );
+    QPixmap Pix(16, 16);
+    Pix.fill(temp);
+    m_BackgroundColorAction->setIcon(Pix);
+    }
+}
