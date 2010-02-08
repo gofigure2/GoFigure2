@@ -300,7 +300,7 @@ std::string CellTypeTable()
     "CREATE  TABLE IF NOT EXISTS `celltype`(\
     `CellTypeID` INT NOT NULL AUTO_INCREMENT ,\
     `CellTypeName` TEXT NOT NULL ,\
-    `Description` VARCHAR(45) NULL ,\
+    `Description` VARCHAR(1000) NULL ,\
     PRIMARY KEY (`CellTypeID`)\
     );";
 }
@@ -328,7 +328,7 @@ std::string SubCellularTypeTable()
     "CREATE  TABLE IF NOT EXISTS `subcellulartype` (\
     `SubCellularID` INT NOT NULL AUTO_INCREMENT ,\
     `SubCellularName` VARCHAR(45) NOT NULL ,\
-    `Description` VARCHAR(45) NULL ,\
+    `Description` VARCHAR(1000) NULL ,\
     PRIMARY KEY (`SubCellularID`)\
     );";
 }
@@ -591,7 +591,7 @@ std::string BookmarkTable()
     `ImagingSessionID` INT NOT NULL ,\
     `CoordID` INT NOT NULL ,\
     `Name` VARCHAR(45) NULL ,\
-    `Description` VARCHAR(45) NULL ,\
+    `Description` VARCHAR(1000) NULL ,\
     `CreationDate` DATETIME NOT NULL,\
     PRIMARY KEY (`BookmarkID`) ,\
     INDEX `FK_Bookmark_ImagingSessionID` (`ImagingSessionID` ASC) ,\
@@ -623,7 +623,7 @@ std::string ValueTypeTable()
     "CREATE  TABLE IF NOT EXISTS `valuetype` (\
     `ValueTypeID` INT NOT NULL AUTO_INCREMENT ,\
     `Name` VARCHAR(45) NOT NULL ,\
-    `Description` VARCHAR(45) NULL ,\
+    `Description` VARCHAR(1000) NULL ,\
     PRIMARY KEY (`ValueTypeID`) \
     );";
 }
