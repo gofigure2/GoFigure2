@@ -654,10 +654,10 @@ SetupMenusFromTab( QGoTabElementBase* iT )
     ++dck_it )
     {
     this->addDockWidget( dck_it->first, dck_it->second );
-    dck_it->second->show();
+    dck_it->second->hide();
     }
 
-  int idx = this->CentralTabWidget->addTab( iT, QString() );//iFile );
+  int idx = this->CentralTabWidget->addTab( iT, iT->windowTitle() );
   this->menuView->setEnabled( true );
   this->menuFiltering->setEnabled( true );
   this->menuSegmentation->setEnabled( true );
@@ -713,8 +713,10 @@ QGoMainWindow::
 CreateNewTabFor3DwtImage( vtkLSMReader* iReader, const QString& iFile )
 {
   QGoTabImageView3DwT* w3t = new QGoTabImageView3DwT;
-  w3t->SetLSMReader( iReader, 0 );
   w3t->setWindowTitle( iFile );
+  w3t->SetLSMReader( iReader, 0 );
+
+  std::cout <<iFile.toStdString() <<std::endl;
 //   w3t->Update();
 
   SetupMenusFromTab( w3t );

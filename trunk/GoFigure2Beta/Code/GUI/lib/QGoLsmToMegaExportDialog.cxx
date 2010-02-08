@@ -84,7 +84,8 @@ on_selectLsmFile_clicked()
  */
 
   m_LsmPath = QFileDialog::getOpenFileName( this,
-      tr( "Select the LSM file to convert" ), "fileName.lsm", 0 );
+      tr( "Select the LSM file to convert" ), QDir::currentPath()
+, tr("Image Files (*.lsm)"));
 
   QFileInfo fileInfo( m_LsmPath );
 

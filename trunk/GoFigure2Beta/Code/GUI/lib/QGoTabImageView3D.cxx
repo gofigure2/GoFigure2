@@ -66,10 +66,6 @@
 QGoTabImageView3D::
 QGoTabImageView3D( QWidget* iParent )
   : QGoTabImageViewNDBase( iParent )
-#if defined( ENABLEFFMPEG ) || defined( ENABLEAVI )
-    ,
-    m_VideoRecorderWidget( 0 )
-#endif
 {
   setupUi( this );
 
@@ -115,13 +111,6 @@ QGoTabImageView3D( QWidget* iParent )
   this->m_DockWidgetList.push_front(
       std::pair< Qt::DockWidgetArea, QDockWidget* >( Qt::LeftDockWidgetArea,
     m_VisuDockWidget ) );
-
-#if defined( ENABLEFFMPEG ) || defined( ENABLEAVI )
-  m_VideoRecorderWidget = new QGoVideoRecorder( this );
-  m_DockWidgetList.push_back(
-    std::pair< Qt::DockWidgetArea, QDockWidget* >( Qt::LeftDockWidgetArea,
-      m_VideoRecorderWidget ) );
-#endif
 
   CreateAllViewActions();
 
@@ -258,10 +247,6 @@ void QGoTabImageView3D::CreateAllViewActions()
   this->m_ViewActions.push_back( separator2 );
 
   this->m_ViewActions.push_back( m_VisuDockWidget->toggleViewAction() );
-
-#if defined( ENABLEFFMPEG ) || defined( ENABLEAVI )
-  this->m_ViewActions.push_back( m_VideoRecorderWidget->toggleViewAction() );
-#endif
 }
 //--------------------------------------------------------------------------
 
