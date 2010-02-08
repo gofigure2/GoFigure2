@@ -51,11 +51,11 @@
   #include "QGoVideoRecorder.h"
 
   #ifdef   ENABLEFFMPEG
-  #include  "vtkFFMPEGRenderWindowRecorder.h"
+    #include  "vtkFFMPEGRenderWindowRecorder.h"
   #endif /* ENABLEFFMPEG */
 
   #ifdef   ENABLEAVI
-  #include  "vtkAVIRenderWindowRecorder.h"
+    #include  "vtkAVIRenderWindowRecorder.h"
   #endif /* ENABLEAVI */
 
 #endif /* ENABLEVIDEORECORD */
@@ -338,12 +338,12 @@ CreateVideoRecorderWidget()
 {
   m_VideoRecorderWidget = new QGoVideoRecorder( this );
 
-#ifdef   ENABLEFFMPEG
+#ifdef ENABLEFFMPEG
   m_FFMPEGWriter = vtkFFMPEGRenderWindowRecorder::New();
   m_VideoRecorderWidget->SetMovieRecorder( m_FFMPEGWriter );
 #endif /* ENABLEFFMPEG */
 
-#ifdef   ENABLEAVI
+#ifdef ENABLEAVI
   m_AVIWriter = vtkAVIRenderWindowRecorder::New();
   m_VideoRecorderWidget->SetMovieRecorder( m_AVIWriter );
 #endif /* ENABLEAVI */
@@ -388,12 +388,12 @@ QGoTabImageView3DwT::
 SetSpecificParametersFrameRate(int iValue)
 {
 
-#ifdef   ENABLEFFMPEG
+#ifdef ENABLEFFMPEG
   m_FFMPEGWriter->SetFrameRate( iValue );
   m_FFMPEGWriter->SetSpecificParameters();
 #endif /* ENABLEFFMPEG */
 
-#ifdef   ENABLEAVI
+#ifdef ENABLEAVI
   m_AVIWriter->SetFrameRate( iValue );
   m_AVIWriter->SetSpecificParameters();
 #endif /* ENABLEAVI */
@@ -404,12 +404,12 @@ void
 QGoTabImageView3DwT::
 SetSpecificParametersQuality(int iValue)
 {
-#ifdef   ENABLEFFMPEG
+#ifdef ENABLEFFMPEG
   m_FFMPEGWriter->SetVideoQuality( iValue );
   m_FFMPEGWriter->SetSpecificParameters();
 #endif /* ENABLEFFMPEG */
 
-#ifdef   ENABLEAVI
+#ifdef ENABLEAVI
   m_AVIWriter->SetVideoQuality( iValue );
   m_AVIWriter->SetSpecificParameters();
 #endif /* ENABLEAVI */
@@ -603,7 +603,7 @@ void
 QGoTabImageView3DwT::
 CreateToolsActions()
 {
-#ifdef ENABLEFFMPEG || ENABLEAVI
+#if defined( ENABLEFFMPEG ) || defined( ENABLEAVI )
   this->m_ToolsActions.push_back( m_VideoRecorderWidget->toggleViewAction() );
 #endif
 
@@ -798,7 +798,7 @@ SetLSMReader( vtkLSMReader* iReader,
       SetTimePoint( iTimePoint );
       }
 
-#ifdef ENABLEFFMPEG || ENABLEAVI
+#if defined( ENABLEFFMPEG ) || defined( ENABLEAVI )
       m_VideoRecorderWidget->SetXMinAndMax( 0, dim[0] - 1 );
       m_VideoRecorderWidget->SetYMinAndMax( 0, dim[1] - 1 );
       m_VideoRecorderWidget->SetZMinAndMax( 0, dim[2] - 1 );
@@ -875,7 +875,7 @@ SetMegaCaptureFile(
     }
 
   // Set up QSpinBox in m_VideoRecorderWidget
-#ifdef ENABLEFFMPEG || ENABLEAVI
+#if defined( ENABLEFFMPEG ) || defined( ENABLEAVI )
   m_VideoRecorderWidget->SetXMinAndMax( extent[0], extent[1] );
   m_VideoRecorderWidget->SetYMinAndMax( extent[2], extent[3] );
   m_VideoRecorderWidget->SetZMinAndMax( extent[4], extent[5] );

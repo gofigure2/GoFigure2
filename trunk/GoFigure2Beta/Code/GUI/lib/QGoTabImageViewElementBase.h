@@ -46,7 +46,7 @@
 #include "QGoManualSegmentationDockWidget.h"
 #include "ContourMeshStructureHelper.h"
 
-#ifdef   ENABLEFFMPEG || ENABLEAVI
+#if defined( ENABLEFFMPEG ) || defined( ENABLEAVI )
 #include "QGoVideoRecorder.h"
 #endif
 
@@ -100,7 +100,7 @@ protected:
 
   QGoVisualizationDockWidget*       m_VisuDockWidget;
   QGoManualSegmentationDockWidget*  m_ManualSegmentationDockWidget;
-#ifdef   ENABLEFFMPEG || ENABLEAVI
+#if defined( ENABLEFFMPEG ) || defined( ENABLEAVI )
   QGoVideoRecorder*                 m_VideoRecorderWidget;
 #endif
 

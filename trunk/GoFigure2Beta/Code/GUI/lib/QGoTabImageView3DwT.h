@@ -55,19 +55,15 @@ class QGoVisualizationDockWidget;
 class QGoManualSegmentationDockWidget;
 class QGoPrintDatabase;
 
-#ifdef   ENABLEFFMPEG 
-
-
-class QGoVideoRecorder;
-
-  
+#ifdef ENABLEFFMPEG 
+  class QGoVideoRecorder;
   class vtkFFMPEGRenderWindowRecorder;
-#endif
-  #ifdef   ENABLEAVI
-  class vtkAVIRenderWindowRecorder;
-class QGoVideoRecorder;
+#endif /* ENABLEFFMPEG */
 
-  #endif /* ENABLEAVI */
+#ifdef ENABLEAVI
+  class vtkAVIRenderWindowRecorder;
+  class QGoVideoRecorder;
+#endif /* ENABLEAVI */
 
 class vtkLSMReader;
 class vtkImageData;
