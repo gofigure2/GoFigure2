@@ -1222,7 +1222,9 @@ void QGoPrintDatabase::AddBookmark(int iXCoord, int iYCoord,
 
   this->OpenDBConnection();
   int BookmarkCoordID = BookmarkCoord.SaveInDB(this->m_DatabaseConnector);
-  QGoDBCreateBookmarkDialog CreateBookmarkDialog(this,
+  QGoDBCreateBookmarkDialog CreateBookmarkDialog (this,
     this->m_DatabaseConnector,this->m_ImgSessionID, BookmarkCoordID);
+  CreateBookmarkDialog.exec();
+
   this->CloseDBConnection();
 }

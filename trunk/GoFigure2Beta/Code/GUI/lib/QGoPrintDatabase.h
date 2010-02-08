@@ -133,6 +133,8 @@ public:
     unsigned int iXCoordMax, unsigned int iYCoordMax, unsigned int iZCoordMax,
     vtkPolyData* iContourNodes, int ContourID );
 
+  void AddBookmark(int iXCoord, int iYCoord, 
+    int iZCoord, int iTCoord);
   /** \brief return a bool to know if the user is using the database or not*/
   bool IsDatabaseUsed();
 
@@ -254,8 +256,6 @@ protected:
 protected slots:
   void CreateContextMenu(const QPoint &pos);
   void DeleteTraces();
-  void AddBookmark(int iXCoord, int iYCoord, 
-  int iZCoord, int iTCoord);
 
   /** \brief Create a new Collection row in the collection table and change the
   collection ID of the selected contours to the new CollectionID created:*/

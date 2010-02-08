@@ -59,7 +59,6 @@ QGoDBCreateBookmarkDialog::QGoDBCreateBookmarkDialog(QWidget* iParent,
 //-------------------------------------------------------------------------
 QGoDBCreateBookmarkDialog::~QGoDBCreateBookmarkDialog()
 {
-  this->m_DatabaseConnector->Delete();
 }
 //-------------------------------------------------------------------------
 
@@ -87,14 +86,14 @@ void QGoDBCreateBookmarkDialog::SaveNewBookmarkInDB()
   GoDBBookmarkRow NewBookmark;
   NewBookmark.SetField("Name",this->NameLineEdit->text().toStdString());
   /** \todo set a restriction for the number of characters: at that
-  time only 45 allowed in the database*/
+  time only 1000 for the description and 45 for the name
+  allowed in the database*/
   NewBookmark.SetField("Description",
     this->DescriptionLineEdit->toPlainText().toStdString());
   QDateTime CreationDate = QDateTime::currentDateTime();
   std::string CreationDateStr = 
     CreationDate.toString(Qt::ISODate).toStdString();
   NewBookmark.SetField("CreationDate",CreationDateStr);
-  /** \todo Get the coordid from the visu*/
   NewBookmark.SetField<int>("CoordID",this->m_CoordID);
   NewBookmark.SetField<int>("ImagingSessionID",this->m_ImgSessionID);
   NewBookmark.SaveInDB(this->m_DatabaseConnector);

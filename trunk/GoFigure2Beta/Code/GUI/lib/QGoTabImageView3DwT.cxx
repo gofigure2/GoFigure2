@@ -326,7 +326,6 @@ CreateDataBaseTablesConnection()
   QObject::connect( this->m_DataBaseTables,
     SIGNAL( TracesToDeleteInVisu( std::list< int > ) ),
     this, SLOT( DeleteContoursFromTable( std::list< int > ) ) );
-
 }
 //-------------------------------------------------------------------------
 #if defined ( ENABLEFFMPEG ) || defined ( ENABLEAVI )
@@ -624,6 +623,8 @@ void QGoTabImageView3DwT::CreateBookmarkActions()
 {
   QAction* AddBookmarkAction = new QAction(tr("Add a bookmark"),this);
   this->m_BookmarkActions.push_back(AddBookmarkAction);
+  QObject::connect(AddBookmarkAction, SIGNAL ( triggered() ),
+    this, SLOT (AddBookmark()));
 }
 //-------------------------------------------------------------------------
 //-------------------------------------------------------------------------
@@ -2228,3 +2229,10 @@ GetTimePoint() const
   return m_TimePoint;
 }
 //-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoTabImageView3DwT::AddBookmark()
+{ 
+  this->m_DataBaseTables->AddBookmark(this->GetSliceViewYZ(),
+    this->GetSliceViewXZ(),this->GetSliceViewXY(),this->GetTimePoint());
+}

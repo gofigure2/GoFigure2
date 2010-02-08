@@ -329,6 +329,9 @@ protected:
   void SetTimePointWithLSMReaders( const int& iTimePoint );
   void SetTimePointWithMegaCapture( const int& iTimePoint );
 
+protected slots:
+  void AddBookmark();
+
 };
 
 #endif
