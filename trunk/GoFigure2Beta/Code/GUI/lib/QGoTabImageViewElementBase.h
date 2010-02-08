@@ -46,10 +46,6 @@
 #include "QGoManualSegmentationDockWidget.h"
 #include "ContourMeshStructureHelper.h"
 
-#if defined( ENABLEFFMPEG ) || defined( ENABLEAVI )
-#include "QGoVideoRecorder.h"
-#endif
-
 class vtkContourWidget;
 class vtkOrientedGlyphContourRepresentation;
 class vtkDataSet;
@@ -100,9 +96,6 @@ protected:
 
   QGoVisualizationDockWidget*       m_VisuDockWidget;
   QGoManualSegmentationDockWidget*  m_ManualSegmentationDockWidget;
-#if defined( ENABLEFFMPEG ) || defined( ENABLEAVI )
-  QGoVideoRecorder*                 m_VideoRecorderWidget;
-#endif
 
   void CreateManualSegmentationdockWidget();
 

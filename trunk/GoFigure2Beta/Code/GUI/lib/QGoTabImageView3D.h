@@ -46,6 +46,10 @@
 #include <QHBoxLayout>
 #include <QSpinBox>
 
+#if defined( ENABLEFFMPEG ) || defined( ENABLEAVI )
+#include "QGoVideoRecorder.h"
+#endif
+
 class vtkImageData;
 class vtkQuadricLODActor;
 
@@ -129,6 +133,10 @@ class QGoTabImageView3D : public QGoTabImageViewNDBase
       vtkProperty* property = NULL );
 
     virtual void SetSlice( int iDir, int* iIdx );
+
+#if defined( ENABLEFFMPEG ) || defined( ENABLEAVI )
+  QGoVideoRecorder*                 m_VideoRecorderWidget;
+#endif
 
 //   private:
 };

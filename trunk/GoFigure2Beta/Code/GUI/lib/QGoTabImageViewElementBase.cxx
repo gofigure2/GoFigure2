@@ -66,23 +66,12 @@ QGoTabImageViewElementBase( QWidget* iParent ) :
   m_ContourId( 0 ),
   m_ReEditContourMode( false ),
   m_VisuDockWidget( 0 )
-#if defined( ENABLEFFMPEG ) || defined( ENABLEAVI )
-,
-  m_VideoRecorderWidget( 0 )
-#endif
 {
   CreateManualSegmentationdockWidget();
 
   m_DockWidgetList.push_back(
     std::pair< Qt::DockWidgetArea, QDockWidget* >( Qt::LeftDockWidgetArea,
       m_ManualSegmentationDockWidget ) );
-
-#if defined( ENABLEFFMPEG ) || defined( ENABLEAVI )
-  m_VideoRecorderWidget = new QGoVideoRecorder( this );
-  m_DockWidgetList.push_back(
-    std::pair< Qt::DockWidgetArea, QDockWidget* >( Qt::LeftDockWidgetArea,
-      m_VideoRecorderWidget ) );
-#endif
 }
 //--------------------------------------------------------------------------
 
@@ -92,28 +81,32 @@ QGoTabImageViewElementBase( QWidget* iParent ) :
  */
 QGoTabImageViewElementBase::~QGoTabImageViewElementBase()
 {
-  ContourMeshStructureMultiIndexContainer::iterator
-    it = m_ContourMeshContainer.begin();
-  ContourMeshStructureMultiIndexContainer::iterator
-    end = m_ContourMeshContainer.end();
 
-  std::set< vtkPolyData* > NodeSet;
-
-  while( it != end )
+  if (m_ContourMeshContainer.size() != 0)
     {
-    NodeSet.insert( it->Nodes );
-    it->Actor->Delete();
-    ++it;
-    }
+    ContourMeshStructureMultiIndexContainer::iterator
+      it = m_ContourMeshContainer.begin();
+    ContourMeshStructureMultiIndexContainer::iterator
+      end = m_ContourMeshContainer.end();
 
-  std::set< vtkPolyData* >::iterator NodeSetIt = NodeSet.begin();
-  std::set< vtkPolyData* >::iterator NodeSetEnd = NodeSet.end();
+    std::set< vtkPolyData* > NodeSet;
 
-  while( NodeSetIt != NodeSetEnd )
-    {
-    (*NodeSetIt)->Delete();
-    ++NodeSetIt;
-    }
+    while( it != end )
+      {
+      NodeSet.insert( it->Nodes );
+      it->Actor->Delete();
+      ++it;
+      }
+
+    std::set< vtkPolyData* >::iterator NodeSetIt = NodeSet.begin();
+    std::set< vtkPolyData* >::iterator NodeSetEnd = NodeSet.end();
+
+    while( NodeSetIt != NodeSetEnd )
+      {
+      (*NodeSetIt)->Delete();
+      ++NodeSetIt;
+      }
+  }
 }
 //--------------------------------------------------------------------------
 

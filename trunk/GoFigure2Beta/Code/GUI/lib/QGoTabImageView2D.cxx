@@ -118,10 +118,6 @@ QGoTabImageView2D( QWidget* iParent )
 
   this->m_ViewActions.push_back( m_VisuDockWidget->toggleViewAction() );
 
-#if defined( ENABLEFFMPEG ) || defined( ENABLEAVI )
-  this->m_ViewActions.push_back( m_VideoRecorderWidget->toggleViewAction() );
-#endif
-
   ReadSettings();
 }
 //--------------------------------------------------------------------------

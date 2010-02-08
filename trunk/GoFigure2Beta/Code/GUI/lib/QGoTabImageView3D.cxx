@@ -66,6 +66,10 @@
 QGoTabImageView3D::
 QGoTabImageView3D( QWidget* iParent )
   : QGoTabImageViewNDBase( iParent )
+#if defined( ENABLEFFMPEG ) || defined( ENABLEAVI )
+    ,
+    m_VideoRecorderWidget( 0 )
+#endif
 {
   setupUi( this );
 
@@ -112,6 +116,13 @@ QGoTabImageView3D( QWidget* iParent )
       std::pair< Qt::DockWidgetArea, QDockWidget* >( Qt::LeftDockWidgetArea,
     m_VisuDockWidget ) );
 
+#if defined( ENABLEFFMPEG ) || defined( ENABLEAVI )
+  m_VideoRecorderWidget = new QGoVideoRecorder( this );
+  m_DockWidgetList.push_back(
+    std::pair< Qt::DockWidgetArea, QDockWidget* >( Qt::LeftDockWidgetArea,
+      m_VideoRecorderWidget ) );
+#endif
+
   CreateAllViewActions();
 
   ReadSettings();
@@ -130,6 +141,11 @@ void QGoTabImageView3D::CreateAllViewActions()
   QuadViewAction->setCheckable( true );
   QuadViewAction->setChecked( true );
 
+  QIcon quadviewicon;
+  quadviewicon.addPixmap( QPixmap(QString::fromUtf8(":/fig/4views.png")),
+    QIcon::Normal, QIcon::Off );
+  QuadViewAction->setIcon(quadviewicon);
+
   group->addAction( QuadViewAction );
 
   this->m_ViewActions.push_back( QuadViewAction );
@@ -139,6 +155,11 @@ void QGoTabImageView3D::CreateAllViewActions()
 
   QAction* FullScreenXYAction = new QAction( tr( "Full-Screen XY" ), this );
   FullScreenXYAction->setCheckable( true );
+
+  QIcon xyicon;
+    xyicon.addPixmap( QPixmap(QString::fromUtf8(":/fig/xy.png")),
+      QIcon::Normal, QIcon::Off );
+    FullScreenXYAction->setIcon( xyicon );
 
   group->addAction( FullScreenXYAction );
 
@@ -150,6 +171,11 @@ void QGoTabImageView3D::CreateAllViewActions()
   QAction* FullScreenXZAction = new QAction( tr( "Full-Screen XZ" ), this );
   FullScreenXZAction->setCheckable( true );
 
+  QIcon xzicon;
+    xzicon.addPixmap( QPixmap(QString::fromUtf8(":/fig/zx.png")),
+      QIcon::Normal, QIcon::Off );
+    FullScreenXZAction->setIcon( xzicon );
+
   group->addAction( FullScreenXZAction );
 
   this->m_ViewActions.push_back( FullScreenXZAction );
@@ -160,6 +186,11 @@ void QGoTabImageView3D::CreateAllViewActions()
   QAction* FullScreenYZAction = new QAction( tr( "Full-Screen YZ" ), this );
   FullScreenYZAction->setCheckable( true );
 
+  QIcon yzicon;
+    yzicon.addPixmap( QPixmap(QString::fromUtf8(":/fig/yz.png")),
+      QIcon::Normal, QIcon::Off );
+    FullScreenYZAction->setIcon( yzicon );
+
   group->addAction( FullScreenYZAction );
 
   this->m_ViewActions.push_back( FullScreenYZAction );
@@ -169,6 +200,11 @@ void QGoTabImageView3D::CreateAllViewActions()
 
   QAction* FullScreenXYZAction = new QAction( tr( "Full-Screen XYZ" ), this );
   FullScreenXYZAction->setCheckable( true );
+
+  QIcon xyzicon;
+  xyzicon.addPixmap( QPixmap(QString::fromUtf8(":/fig/xyz.png")),
+    QIcon::Normal, QIcon::Off );
+  FullScreenXYZAction->setIcon( xyzicon );
 
   group->addAction( FullScreenXYZAction );
 
@@ -185,6 +221,11 @@ void QGoTabImageView3D::CreateAllViewActions()
   QAction* LookupTableAction = new QAction( tr( "Lookup Table" ), this );
   LookupTableAction->setStatusTip( tr(" Change the associated lookup table" ) );
 
+  QIcon luticon;
+  luticon.addPixmap( QPixmap(QString::fromUtf8(":/fig/LookupTable.png")),
+    QIcon::Normal, QIcon::Off );
+  LookupTableAction->setIcon( luticon );
+
   // Here write the connection
   QObject::connect( LookupTableAction, SIGNAL( triggered() ),
     this, SLOT( ChangeLookupTable() ) );
@@ -193,6 +234,12 @@ void QGoTabImageView3D::CreateAllViewActions()
 
   QAction* ScalarBarAction = new QAction( tr( "Display Scalar Bar" ), this );
   ScalarBarAction->setCheckable( true );
+
+  QIcon scalarbaricon;
+  scalarbaricon.addPixmap( QPixmap(QString::fromUtf8(":/fig/scalarbar.png")),
+    QIcon::Normal, QIcon::Off );
+  ScalarBarAction->setIcon( scalarbaricon );
+
   this->m_ViewActions.push_back( ScalarBarAction );
 
   QObject::connect( ScalarBarAction, SIGNAL( toggled( bool ) ),
@@ -200,6 +247,12 @@ void QGoTabImageView3D::CreateAllViewActions()
 
   QAction* BackgroundColorAction = new QAction( tr("Background Color"), this );
   this->m_ViewActions.push_back( BackgroundColorAction );
+
+  /*
+  QPixmap Pix(16, 16);
+  Pix.fill(Qt::black);
+  m_BackgroundColorAction = new QAction(Pix, tr("Set Background Color"), this );
+  this->m_ViewActions.push_back( m_BackgroundColorAction );*/
 
   QObject::connect( BackgroundColorAction, SIGNAL( triggered() ),
     this, SLOT( ChangeBackgroundColor() ) );
