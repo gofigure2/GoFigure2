@@ -1,7 +1,7 @@
 /*=========================================================================
-  Author: $Author$  // Author of last commit
-  Version: $Rev$  // Revision of last commit
-  Date: $Date$  // Date of last commit
+  Author: $Author: lsouhait $  // Author of last commit
+  Version: $Rev: 577 $  // Revision of last commit
+  Date: $Date: 2009-08-18 10:45:50 -0400 (Tue, 18 Aug 2009) $  // Date of last commit
 =========================================================================*/
 
 /*=========================================================================
@@ -38,38 +38,51 @@
 
 =========================================================================*/
 
-#ifndef __QGoDBCreateBookmarkDialog_h
-#define __QGoDBCreateBookmarkDialog_h
-
-#include <QDialog>
-#include <QTextEdit>
-#include "vtkMySQLDatabase.h"
-#include "ui_QGoDBCreateBookmarkDialog.h"
 #include "QTextEditChild.h"
+#include <QTextEdit>
 
-class QGoDBCreateBookmarkDialog :
-  public QDialog,
-  private Ui::QGoDBCreateBookmarkDialog
+
+QTextEditChild::QTextEditChild( QWidget* iParent ): QTextEdit( iParent )
 {
-  Q_OBJECT
+}
+//--------------------------------------------------------------------------
 
-  public:
-    explicit QGoDBCreateBookmarkDialog (QWidget* iParent = 0,
-      vtkMySQLDatabase* iDatabaseConnector = 0,
-      int iImgSessionID = 0, int iCoordID = 0);
-    ~QGoDBCreateBookmarkDialog();
+//--------------------------------------------------------------------------
+QTextEditChild::
+QTextEditChild(const QString & iText, QWidget *iParent ):
+  QTextEdit( iText,iParent )
+{
+}
+//--------------------------------------------------------------------------
 
-  protected:
-    vtkMySQLDatabase* m_DatabaseConnector;
-    int               m_ImgSessionID;
-    int               m_CoordID;
-    QTextEditChild*   m_DescriptionTextEdit;
+//--------------------------------------------------------------------------
+QTextEditChild::
+QTextEditChild(QWidget* iParent, int iNumberMaxCharacters):
+QTextEdit( iParent )
+{
+  this->m_MaxCharacters = iNumberMaxCharacters;
+  QObject::connect(this,SIGNAL( textChanged()),
+    this, SLOT(RestrainInputCharacters()));
+}
+//--------------------------------------------------------------------------
 
-    void SaveNewBookmarkInDB();
+//--------------------------------------------------------------------------
+QTextEditChild::~QTextEditChild()
+{
+}
+//--------------------------------------------------------------------------
 
-  protected slots:
-    void validate();
-    
-
-};
-#endif
+//--------------------------------------------------------------------------
+void QTextEditChild::RestrainInputCharacters()
+{
+  QString text;
+  int leftChar = 0;
+  int sizeText = this->toPlainText().size();
+  leftChar = this->m_MaxCharacters - sizeText;
+  if (leftChar < 0)
+    {
+    text = this->toPlainText().left(this->m_MaxCharacters);
+    this->setText(text);
+    this->moveCursor(QTextCursor::End,QTextCursor::MoveAnchor);
+    }
+}

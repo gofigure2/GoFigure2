@@ -1,7 +1,7 @@
 /*=========================================================================
-  Author: $Author$  // Author of last commit
-  Version: $Rev$  // Revision of last commit
-  Date: $Date$  // Date of last commit
+  Author: $Author: lsouhait $  // Author of last commit
+  Version: $Rev: 542 $  // Revision of last commit
+  Date: $Date: 2009-08-06 16:08:10 -0400 (Thu, 06 Aug 2009) $  // Date of last commit
 =========================================================================*/
 
 /*=========================================================================
@@ -37,39 +37,34 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
+#ifndef __QTextEditChild_h
+#define __QTextEditChild_h
 
-#ifndef __QGoDBCreateBookmarkDialog_h
-#define __QGoDBCreateBookmarkDialog_h
-
-#include <QDialog>
 #include <QTextEdit>
-#include "vtkMySQLDatabase.h"
-#include "ui_QGoDBCreateBookmarkDialog.h"
-#include "QTextEditChild.h"
 
-class QGoDBCreateBookmarkDialog :
-  public QDialog,
-  private Ui::QGoDBCreateBookmarkDialog
+/**
+\class QTextEditChild
+\brief in the QTextEdit class, there is no method to have a restriction
+on the number of characters the user can enter, that's the reason for 
+the creation of this class
+*/
+class QTextEditChild : public QTextEdit
 {
   Q_OBJECT
 
-  public:
-    explicit QGoDBCreateBookmarkDialog (QWidget* iParent = 0,
-      vtkMySQLDatabase* iDatabaseConnector = 0,
-      int iImgSessionID = 0, int iCoordID = 0);
-    ~QGoDBCreateBookmarkDialog();
+public:
+  explicit QTextEditChild(QWidget* iParent = 0);
+  explicit QTextEditChild(const QString & iText, QWidget * iParent =0 );
+  explicit QTextEditChild(QWidget* iParent = 0, int iNumberMaxCharacters = 1000); 
 
-  protected:
-    vtkMySQLDatabase* m_DatabaseConnector;
-    int               m_ImgSessionID;
-    int               m_CoordID;
-    QTextEditChild*   m_DescriptionTextEdit;
+  virtual ~QTextEditChild();
 
-    void SaveNewBookmarkInDB();
+protected:
+  int      m_MaxCharacters;
 
-  protected slots:
-    void validate();
-    
+protected slots:
+  void     RestrainInputCharacters();
 
 };
+
 #endif

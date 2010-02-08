@@ -51,27 +51,13 @@
      </item>
      <item>
       <layout class="QFormLayout" name="formLayout">
+       <property name="fieldGrowthPolicy">
+        <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+       </property>
        <item row="0" column="0">
-        <widget class="QLabel" name="NameLabel">
+        <widget class="QLabel" name="label_3">
          <property name="text">
           <string>Name:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="Descriptionlabel">
-         <property name="text">
-          <string>Description:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1">
-        <widget class="QTextEdit" name="DescriptionLineEdit">
-         <property name="maximumSize">
-          <size>
-           <width>300</width>
-           <height>40</height>
-          </size>
          </property>
         </widget>
        </item>
@@ -96,7 +82,6 @@
  </widget>
  <tabstops>
   <tabstop>NameLineEdit</tabstop>
-  <tabstop>DescriptionLineEdit</tabstop>
   <tabstop>CreateBookmarkButtonBox</tabstop>
  </tabstops>
  <resources/>

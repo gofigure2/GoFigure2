@@ -29,7 +29,7 @@ SET( QGoGUILIB_SRC
   QGoLsmToMegaExportDialog.cxx
   ConversionLsmToMegaThread.cxx
   QGoDBCreateBookmarkDialog.cxx
-  
+  QTextEditChild.cxx
 )
 
 #------------------------------------------------------------------------------
@@ -87,6 +87,7 @@ SET( QGoGUILIB_HDRS
   QGoLsmToMegaExportDialog.h
   ConversionLsmToMegaThread.h
   QGoDBCreateBookmarkDialog.h
+  QTextEditChild.h
 )
 
 #------------------------------------------------------------------------------

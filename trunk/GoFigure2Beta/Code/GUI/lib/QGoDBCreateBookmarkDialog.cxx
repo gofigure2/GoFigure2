@@ -42,6 +42,8 @@
 #include "GoDBBookmarkRow.h"
 #include <QMessageBox>
 #include <QDateTime>
+#include <QFormLayout>
+#include <QTextEdit>
 #include "QueryDataBaseHelper.h"
 
 QGoDBCreateBookmarkDialog::QGoDBCreateBookmarkDialog(QWidget* iParent,
@@ -52,6 +54,9 @@ QGoDBCreateBookmarkDialog::QGoDBCreateBookmarkDialog(QWidget* iParent,
   this->m_DatabaseConnector = iDatabaseConnector;
   this->m_ImgSessionID = iImgSessionID;
   this->m_CoordID = iCoordID;
+  this->NameLineEdit->setMaxLength(45);
+  m_DescriptionTextEdit = new QTextEditChild(this,10);
+  this->formLayout->addRow("Description:",this->m_DescriptionTextEdit);
   QObject::connect(this,SIGNAL(accepted()),this,SLOT(validate()));
 }
 //-------------------------------------------------------------------------
@@ -89,7 +94,7 @@ void QGoDBCreateBookmarkDialog::SaveNewBookmarkInDB()
   time only 1000 for the description and 45 for the name
   allowed in the database*/
   NewBookmark.SetField("Description",
-    this->DescriptionLineEdit->toPlainText().toStdString());
+    this->m_DescriptionTextEdit->toPlainText().toStdString());
   QDateTime CreationDate = QDateTime::currentDateTime();
   std::string CreationDateStr = 
     CreationDate.toString(Qt::ISODate).toStdString();
