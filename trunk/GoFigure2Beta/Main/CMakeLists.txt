@@ -113,17 +113,19 @@ TARGET_LINK_LIBRARIES( gofigure
   itkQt
  )
 
-#--------------------------------------------------------------------------------
+#---------------------------------------------------------------------------
 # Now the installation stuff below
-#--------------------------------------------------------------------------------
+#---------------------------------------------------------------------------
 SET(plugin_dest_dir bin)
 SET(qtconf_dest_dir bin)
 SET(APPS "\${CMAKE_INSTALL_PREFIX}/bin/gofigure")
+
 IF(APPLE)
-  SET(plugin_dest_dir QtTest.app/Contents/MacOS)
-  SET(qtconf_dest_dir QtTest.app/Contents/Resources)
+  SET(plugin_dest_dir gofigure.app/Contents/MacOS)
+  SET(qtconf_dest_dir gofigure.app/Contents/Resources)
   SET(APPS "\${CMAKE_INSTALL_PREFIX}/gofigure.app")
 ENDIF(APPLE)
+
 IF(WIN32)
   SET(APPS "\${CMAKE_INSTALL_PREFIX}/bin/gofigure.exe")
 ENDIF(WIN32)
@@ -147,7 +149,7 @@ INSTALL(CODE "
     file(WRITE \"\${CMAKE_INSTALL_PREFIX}/${qtconf_dest_dir}/qt.conf\" \"\")
     " COMPONENT Runtime)
 
-#--------------------------------------------------------------------------------
+#---------------------------------------------------------------------------
 # Use BundleUtilities to get all other dependencies for the application to work.
 # It takes a bundle or executable along with possible plugins and inspects it
 # for dependencies.  If they are not system dependencies, they are copied.
