@@ -47,6 +47,7 @@ QNameDescriptionInputDialog::QNameDescriptionInputDialog( QWidget* iParent,
 {
   this->setupUi(this);
   this->m_EntityName = iEntityName;
+  this->setWindowTitle(tr("Create a %1").arg(this->m_EntityName));
   this->EntityLabel->setText(tr("new %1 you want to save:").arg(iEntityName));
   this->NameLineEdit->setMaxLength(45);
   this->m_DescriptionTextEdit = new QTextEditChild(this,1000);
