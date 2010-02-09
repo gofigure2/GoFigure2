@@ -133,28 +133,28 @@ ADD_TEST( QGoPrintDatabaseTest
 
 # ADD THIS TEST IF ENABLE_VIDEO_RECORD_FFMPEG IS ON
 IF( ENABLE_VIDEO_RECORD_FFMPEG )
-ADD_TEST( QGoVideoRecorderTest
-  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/QGoVideoRecorderTest
-  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/1
-)
+  ADD_TEST( QGoVideoRecorderTest
+    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/QGoVideoRecorderTest
+    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/1
+  )
 
-ADD_TEST( vtkFFMPEGRenderWindowRecorderTest
-  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/vtkFFMPEGRenderWindowRecorderTest
-  test.avi
-)
+  ADD_TEST( vtkFFMPEGRenderWindowRecorderTest
+    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/vtkFFMPEGRenderWindowRecorderTest
+    test.avi
+  )
 ENDIF( ENABLE_VIDEO_RECORD_FFMPEG )
 
 # ADD THIS TEST IF ENABLE_VIDEO_RECORD_AVI IS ON
 IF( ENABLE_VIDEO_RECORD_AVI )
-ADD_TEST( QGoVideoRecorderTest
-  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/QGoVideoRecorderTest
-  1
-)
+  ADD_TEST( QGoVideoRecorderTest
+    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/QGoVideoRecorderTest
+    1
+  )
 
-ADD_TEST( vtkAVIRenderWindowRecorderTest
-  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/vtkAVIRenderWindowRecorderTest
-  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/test.avi
-)
+  ADD_TEST( vtkAVIRenderWindowRecorderTest
+    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/vtkAVIRenderWindowRecorderTest
+    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/test.avi
+  )
 ENDIF( ENABLE_VIDEO_RECORD_AVI )
 
 #---------------------------------------------------------------------------
