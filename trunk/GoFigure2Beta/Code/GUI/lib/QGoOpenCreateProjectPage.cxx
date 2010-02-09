@@ -72,8 +72,9 @@ QGoOpenCreateProjectPage( QWidget *iParent ) :
   ChoiceProject  = new QComboBox;
   textNewProjectName = new QLabel(tr("Name of the Project: "));
   lineNewProjectName = new QLineEdit;
+  lineNewProjectName->setMaxLength(255);
   textDescription = new QLabel(tr("Description:"));
-  lineDescription  = new QTextEdit;
+  lineDescription  = new QTextEditChild(this,1000);
   textChoiceAuthor = new QLabel(tr("Choose the name of the author: "));
   ChoiceAuthor = new QComboBox;
   textAuthor = new QLabel (tr("Author of the project:     "));
@@ -109,9 +110,6 @@ QGoOpenCreateProjectPage( QWidget *iParent ) :
 
   QObject::connect( this->CreateProjectRadioButton,SIGNAL( clicked() ),
     this, SLOT( ChangeToCreateProjectDisplay() ));
-
-  QObject::connect(this->lineDescription,SIGNAL(textChanged()),
-    this, SLOT(GetDescription()));
 
   QObject::connect( this->ChoiceProject,SIGNAL( currentIndexChanged(QString) ),
     this, SLOT(DisplayInfoProject(QString)));
@@ -185,31 +183,13 @@ bool QGoOpenCreateProjectPage::GetListProject()const
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-std::string QGoOpenCreateProjectPage::GetDescription()
-{
-  QString text;
-  int maxChar = 1000;
-  int leftChar = 0;
-  int sizeText = lineDescription->toPlainText().size();
-  leftChar = maxChar-sizeText;
-  if (leftChar < 0)
-    {
-    text = lineDescription->toPlainText().left(maxChar);
-    lineDescription->setText(text);
-    lineDescription->moveCursor(QTextCursor::End,QTextCursor::MoveAnchor);
-    }
-  return lineDescription->toPlainText().toStdString();
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
 void QGoOpenCreateProjectPage::CreateProject()
 {
   QDate DateOfToday = QDate::currentDate();
 
   GoDBProjectRow myNewProject;
   myNewProject.SetField("ProjectName",field( "ProjectName").toString().toStdString());
-  myNewProject.SetField("Description",GetDescription());
+  myNewProject.SetField("Description",this->lineDescription->toPlainText().toStdString());
   myNewProject.SetField("AuthorID",AuthorIDForNewProject());
   myNewProject.SetField("CreationDate",DateOfToday.toString(Qt::ISODate).toStdString());
   myNewProject.SetField("DatabaseVersion",m_DatabaseVersion);

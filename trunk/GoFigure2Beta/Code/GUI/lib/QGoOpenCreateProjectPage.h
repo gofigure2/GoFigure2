@@ -51,6 +51,7 @@
 #include <QString>
 #include <string>
 #include "vtkMySQLDatabase.h"
+#include "QTextEditChild.h"
 
 class QGoOpenCreateProjectPage : public QWizardPage
 {
@@ -93,20 +94,20 @@ private:
 
   void BackFromNextPage()const;
   
-  std::string   m_DatabaseVersion;
-  QLabel*       textNewProjectName;
-  QLineEdit*    lineNewProjectName;
-  QLabel*       textDescription;
-  QTextEdit*    lineDescription;
-  QLabel*       textChoiceProject;
-  QComboBox*    ChoiceProject;
-  QLabel*       textChoiceAuthor;
-  QComboBox*    ChoiceAuthor;
-  QLabel*       textAuthor;
-  QLineEdit*    lineAuthor;
-  QString       OpenOrCreateProject;
-  QRadioButton* OpenProjectRadioButton;
-  QRadioButton* CreateProjectRadioButton;
+  std::string     m_DatabaseVersion;
+  QLabel*         textNewProjectName;
+  QLineEdit*      lineNewProjectName;
+  QLabel*         textDescription;
+  QTextEditChild* lineDescription;
+  QLabel*         textChoiceProject;
+  QComboBox*      ChoiceProject;
+  QLabel*         textChoiceAuthor;
+  QComboBox*      ChoiceAuthor;
+  QLabel*         textAuthor;
+  QLineEdit*      lineAuthor;
+  QString         OpenOrCreateProject;
+  QRadioButton*   OpenProjectRadioButton;
+  QRadioButton*   CreateProjectRadioButton;
  
   mutable QStringList m_ListProject; 
   std::map<std::string,int> m_MapAuthorIDName;
@@ -125,10 +126,6 @@ protected slots:
 
   /** \brief  display the information related to the given existing project*/
   void DisplayInfoProject(QString ProjectName);
-
-  /** \brief Prevent the user to enter more than 200 characters in the 
-  QTextEdit and return the text entered */
-  std::string GetDescription();
 
 };
 #endif

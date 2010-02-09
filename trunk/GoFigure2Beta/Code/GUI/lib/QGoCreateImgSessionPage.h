@@ -58,6 +58,7 @@
 #include "vtkMySQLDatabase.h"
 #include "MegaCaptureHeaderReader.h"
 #include "itkMegaCaptureImport.h"
+#include "QTextEditChild.h"
 
 class QGoCreateImgSessionPage : public QWizardPage
 {
@@ -117,7 +118,6 @@ private:
   void CreateImgSessionCoord(vtkMySQLDatabase* DatabaseConnector,int ImagingSessionID);
 
   void OpenDBConnection();
-  //void CloseDatabaseConnection();
 
   void SaveInfoInDatabase();
 
@@ -125,16 +125,16 @@ private:
   m_HeaderFileInfo from the header file*/
   void ImportInfoFromMegacapture(QString newfilename);
 
-  QLabel*      textNewImgSessionName;
-  QLineEdit*   lineNewImgSessionName;
-  QLabel*      textDescription;
-  QTextEdit*   lineDescription;
-  QLabel*      textChoiceMicroscope;
-  QComboBox*   ChoiceMicroscope;
-  QPushButton* BrowseButton;
-  QTextEdit*   lineFilename;
-  QString      newfilename;
-  QFileInfo*   FirstImage;
+  QLabel*         textNewImgSessionName;
+  QLineEdit*      lineNewImgSessionName;
+  QLabel*         textDescription;
+  QTextEditChild* lineDescription;
+  QLabel*         textChoiceMicroscope;
+  QComboBox*      ChoiceMicroscope;
+  QPushButton*    BrowseButton;
+  QTextEdit*      lineFilename;
+  QString         newfilename;
+  QFileInfo*      FirstImage;
 
   GoDBCoordinateRow                m_ImgSessionCoordMax;
   GoDBCoordinateRow                m_ImgSessionCoordMin;
@@ -144,10 +144,6 @@ private:
 protected slots:
 
   void SelectImages();
-
-   /** \brief Prevent the user to enter more than 1000 characters in the
-  QTextEdit and return the text entered */
-  std::string GetDescription();
 
 };
 #endif

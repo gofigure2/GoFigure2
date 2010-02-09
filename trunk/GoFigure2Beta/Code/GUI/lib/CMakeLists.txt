@@ -30,6 +30,7 @@ SET( QGoGUILIB_SRC
   ConversionLsmToMegaThread.cxx
   QGoDBCreateBookmarkDialog.cxx
   QTextEditChild.cxx
+  QNameDescriptionInputDialog.cxx
 )
 
 #------------------------------------------------------------------------------
@@ -88,6 +89,7 @@ SET( QGoGUILIB_HDRS
   ConversionLsmToMegaThread.h
   QGoDBCreateBookmarkDialog.h
   QTextEditChild.h
+  QNameDescriptionInputDialog.h
 )
 
 #------------------------------------------------------------------------------
@@ -119,6 +121,7 @@ SET( QGoGUILIB_UI
   QGoPrintDatabase.ui
   LsmToMegaExportDialog.ui
   QGoDBCreateBookmarkDialog.ui
+  QNameDescriptionInputDialog.ui
 )
 
 #------------------------------------------------------------------------------

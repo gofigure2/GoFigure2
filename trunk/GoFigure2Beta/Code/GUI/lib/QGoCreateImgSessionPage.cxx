@@ -66,13 +66,14 @@ QGoCreateImgSessionPage::QGoCreateImgSessionPage( QWidget *iParent )
 
   textNewImgSessionName = new QLabel(tr("Name of the New Imaging Session*: "));
   lineNewImgSessionName = new QLineEdit;
+  lineNewImgSessionName->setMaxLength(255);
   textDescription = new QLabel(tr("Description:"));
-  lineDescription  = new QTextEdit;
+  lineDescription  = new QTextEditChild(this,1000);
   textChoiceMicroscope = new QLabel(tr("Choose the Microscope used*:"));
   ChoiceMicroscope = new QComboBox;
   BrowseButton = new QPushButton("&Browse", this);
   QLabel* textBrowseButton = new QLabel(tr("Select only 1 file\nfrom the Image Set*:"));
-  lineFilename = new QTextEdit;;
+  lineFilename = new QTextEdit;
 
   QGridLayout* gridlayout = new QGridLayout;
   gridlayout->addWidget(textNewImgSessionName,0,0);
@@ -97,13 +98,9 @@ QGoCreateImgSessionPage::QGoCreateImgSessionPage( QWidget *iParent )
   vlayout->addLayout(BrowseButtonLayout);
   setLayout( vlayout );
 
-  // \todo is ImgSessionID needed?
-  //QLineEdit* ImgSessionID = new QLineEdit;
   FirstImage = new QFileInfo;
   QObject::connect( this->BrowseButton,SIGNAL( clicked() ),
   this,SLOT( SelectImages() ));
-  QObject::connect( this->lineDescription,SIGNAL( textChanged()),
-  this,SLOT( GetDescription() ));
  }
 //-------------------------------------------------------------------------
 
@@ -150,24 +147,6 @@ QStringList QGoCreateImgSessionPage::GetListMicroscopes()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-std::string QGoCreateImgSessionPage::GetDescription()
-{
-  QString text;
-  int maxChar = 1000;
-  int leftChar = 0;
-  int sizeText = lineDescription->toPlainText().size();
-  leftChar = maxChar-sizeText;
-  if (leftChar < 0)
-    {
-    text = lineDescription->toPlainText().left(maxChar);
-    lineDescription->setText(text);
-    lineDescription->moveCursor(QTextCursor::End,QTextCursor::MoveAnchor);
-    }
-  return lineDescription->toPlainText().toStdString();
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
 int QGoCreateImgSessionPage::CreateImgSession(vtkMySQLDatabase* DatabaseConnector)
 {
   std::string m_ProjectName = field("ProjectName").toString().toStdString();
@@ -180,13 +159,13 @@ int QGoCreateImgSessionPage::CreateImgSession(vtkMySQLDatabase* DatabaseConnecto
   float XTileOverlap = 0; //todo get it from the header file
   float YTileOverlap = 0; //todo get it from the header file
   float ZTileOverlap = 0; //todo get it from the header file
-  //std::string CreationDateTime = "2009-10-30 09:15:16"; //\todo: get the date+time creation date.
+
   std::string CreationDateTime = m_HeaderFileInfo.m_CreationDate;
 
   GoDBImgSessionRow myNewImgSession;
 
   myNewImgSession.SetField("Name",lineNewImgSessionName->displayText().toStdString());
-  myNewImgSession.SetField("Description",GetDescription());
+  myNewImgSession.SetField("Description",this->lineDescription->toPlainText().toStdString());
   myNewImgSession.SetField("ImagesTimeInterval",TimeInterval);
   myNewImgSession.SetField("RealPixelDepth",RealPixelDepth);
   myNewImgSession.SetField("RealPixelHeight",RealPixelHeight);
@@ -528,17 +507,6 @@ void QGoCreateImgSessionPage::OpenDBConnection()
   std::string DBName = field("DBName").toString().toStdString();
 
   m_DatabaseConnector = OpenDatabaseConnection(Server,User,Password,DBName);
-  /*std::pair<bool,vtkMySQLDatabase*> ConnectionDatabase = ConnectToDatabase(
-    Server,User,Password,DBName);
-
-  if (!ConnectionDatabase.first)
-    {
-    std::cout<<"No connection open for QGoOpenOrCreateImgSession"<<std::endl;
-    std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
-    std::cout << std::endl;
-    }
-
-  m_DatabaseConnector = ConnectionDatabase.second;*/
 }
 //-------------------------------------------------------------------------
 
@@ -570,17 +538,6 @@ void QGoCreateImgSessionPage::SaveInfoInDatabase()
     }
 }
 //-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-/*void QGoCreateImgSessionPage::CloseDatabaseConnection()
-{
-  if (m_DatabaseConnector != 0)
-    {
-    m_DatabaseConnector->Close();
-    m_DatabaseConnector->Delete();
-    m_DatabaseConnector = 0;
-    }
-}*/
 
 //-------------------------------------------------------------------------
 GoFigureFileInfoHelperMultiIndexContainer

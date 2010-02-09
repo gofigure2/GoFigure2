@@ -45,19 +45,22 @@
 #include <QFormLayout>
 #include <QTextEdit>
 #include "QueryDataBaseHelper.h"
+#include "QNameDescriptionInputDialog.h"
 
 QGoDBCreateBookmarkDialog::QGoDBCreateBookmarkDialog(QWidget* iParent,
   vtkMySQLDatabase* iDatabaseConnector, int iImgSessionID,int iCoordID):
-  QDialog( iParent)
+  QWidget( iParent)
 {
-  this->setupUi( this);
   this->m_DatabaseConnector = iDatabaseConnector;
   this->m_ImgSessionID = iImgSessionID;
   this->m_CoordID = iCoordID;
-  this->NameLineEdit->setMaxLength(45);
-  m_DescriptionTextEdit = new QTextEditChild(this,10);
-  this->formLayout->addRow("Description:",this->m_DescriptionTextEdit);
-  QObject::connect(this,SIGNAL(accepted()),this,SLOT(validate()));
+  
+  this->m_NameDescDialog = new QNameDescriptionInputDialog(
+    iParent,"Bookmark");
+
+  QObject::connect (this->m_NameDescDialog, SIGNAL(NameValidated()),
+    this, SLOT(SaveNewBookmarkInDB()));
+  this->m_NameDescDialog->exec();
 }
 //-------------------------------------------------------------------------
 
@@ -68,33 +71,12 @@ QGoDBCreateBookmarkDialog::~QGoDBCreateBookmarkDialog()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoDBCreateBookmarkDialog::validate()
-{
-  if (this->NameLineEdit->text().toStdString().empty())
-    {
-    QMessageBox msgBox;
-    msgBox.setText(
-      tr("Please enter the name for the bookmark to add"));
-    msgBox.exec();
-    this->open();
-    }
-  else
-    {
-    SaveNewBookmarkInDB();
-    }
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
 void QGoDBCreateBookmarkDialog::SaveNewBookmarkInDB()
 {
   GoDBBookmarkRow NewBookmark;
-  NewBookmark.SetField("Name",this->NameLineEdit->text().toStdString());
-  /** \todo set a restriction for the number of characters: at that
-  time only 1000 for the description and 45 for the name
-  allowed in the database*/
+  NewBookmark.SetField("Name",this->m_NameDescDialog->GetInputTextForName());
   NewBookmark.SetField("Description",
-    this->m_DescriptionTextEdit->toPlainText().toStdString());
+    this->m_NameDescDialog->GetInputTextForDescription());
   QDateTime CreationDate = QDateTime::currentDateTime();
   std::string CreationDateStr = 
     CreationDate.toString(Qt::ISODate).toStdString();

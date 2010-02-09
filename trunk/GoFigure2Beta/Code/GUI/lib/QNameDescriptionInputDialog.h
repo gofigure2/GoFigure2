@@ -1,7 +1,7 @@
 /*=========================================================================
-  Author: $Author$  // Author of last commit
-  Version: $Rev$  // Revision of last commit
-  Date: $Date$  // Date of last commit
+  Author: $Author: lsouhait $  // Author of last commit
+  Version: $Rev: 525 $  // Revision of last commit
+  Date: $Date: 2009-08-05 16:08:25 -0400 (Wed, 05 Aug 2009) $  // Date of last commit
 =========================================================================*/
 
 /*=========================================================================
@@ -38,37 +38,43 @@
 
 =========================================================================*/
 
-#ifndef __QGoDBCreateBookmarkDialog_h
-#define __QGoDBCreateBookmarkDialog_h
+#ifndef __QNameDescriptionInputDialog_h
+#define __QNameDescriptionInputDialog_h
 
 #include <QDialog>
-#include <QWidget>
-#include <QTextEdit>
-#include "vtkMySQLDatabase.h"
-#include "ui_QGoDBCreateBookmarkDialog.h"
-#include "QNameDescriptionInputDialog.h"
+#include "ui_QNameDescriptionInputDialog.h"
+#include "QTextEditChild.h"
 
-class QGoDBCreateBookmarkDialog:
-  public QWidget
+/**
+\class QNameDescriptionInputDialog
+\brief for the creation of several entities in the database, the name and the
+description are asked to the user.
+*/
+class QNameDescriptionInputDialog : public QDialog,
+  private Ui::QNameDescriptionInputDialog
 {
   Q_OBJECT
 
-  public:
-    explicit QGoDBCreateBookmarkDialog (QWidget* iParent = 0,
-      vtkMySQLDatabase* iDatabaseConnector = 0,
-      int iImgSessionID = 0, int iCoordID = 0);
-    
-    ~QGoDBCreateBookmarkDialog();
+public:
+  //explicit QNameDescriptionInputDialog( QWidget* iParent = 0 );
+  explicit QNameDescriptionInputDialog( QWidget* iParent = 0, 
+    QString iEntityName = "" );
 
-  protected:
-    vtkMySQLDatabase*            m_DatabaseConnector;
-    int                          m_ImgSessionID;
-    int                          m_CoordID;
-    QNameDescriptionInputDialog* m_NameDescDialog;
-    
+  virtual ~QNameDescriptionInputDialog();
 
-  protected slots:
-    void SaveNewBookmarkInDB();
+  std::string GetInputTextForName();
+  std::string GetInputTextForDescription();
+
+signals:
+  void NameValidated();
+
+protected:
+  QTextEditChild* m_DescriptionTextEdit;
+  QString         m_EntityName;
+
+protected slots:
+  void ValidationRequested();
 
 };
+
 #endif
