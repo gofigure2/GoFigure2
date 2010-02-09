@@ -248,8 +248,8 @@ void QGoImageView3D::Update()
 
   // Rotate the camera to show that the view is 3d
   vtkCamera *camera = this->View3D->GetRenderer()->GetActiveCamera();
-  camera->Roll( 15 );
-  camera->Azimuth( 345 );
+  camera->Roll( 22 );
+  camera->Azimuth( -22 );
 
   this->View3D->GetRenderer()->SetActiveCamera( camera );
 
@@ -1117,3 +1117,24 @@ UpdateRenderWindows()
 }
 
 //--------------------------------------------------------------------------
+
+void
+QGoImageView3D::
+SetCamera( int iView )
+{
+  vtkCamera *camera = vtkCamera::New();
+  this->View3D->GetRenderer()->SetActiveCamera( camera );
+
+  if ( iView == 1)
+    {
+    camera->Azimuth(90);
+    }
+  if ( iView == 3)
+    {
+    camera->Elevation(90);
+    }
+
+  this->View3D->ResetCamera();
+  this->View3D->Render();
+  camera->Delete();
+}

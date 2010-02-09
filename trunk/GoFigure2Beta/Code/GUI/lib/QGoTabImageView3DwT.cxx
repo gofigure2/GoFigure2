@@ -593,6 +593,33 @@ CreateAllViewActions()
 
   QObject::connect( LoadContoursPerTimePointAction, SIGNAL( triggered() ),
     this, SLOT( LoadAllContoursForCurrentTimePoint() ) );
+
+  QAction* separator4 = new QAction( this );
+    separator4->setSeparator( true );
+    this->m_ViewActions.push_back( separator4 );
+
+    QAction* Change3DPerspectiveToAxialAction =
+      new QAction( tr( "Change 3D view to axial view " ), this );
+    this->m_ViewActions.push_back( Change3DPerspectiveToAxialAction );
+
+    QObject::connect( Change3DPerspectiveToAxialAction, SIGNAL( triggered() ),
+      this, SLOT( Change3DPerspectiveToAxial( ) ) );
+
+
+    QAction* Change3DPerspectiveToCoronalAction =
+      new QAction( tr( "Change 3D view to coronal view " ), this );
+    this->m_ViewActions.push_back( Change3DPerspectiveToCoronalAction );
+
+    QObject::connect( Change3DPerspectiveToCoronalAction, SIGNAL( triggered() ),
+      this, SLOT( Change3DPerspectiveToCoronal( ) ) );
+
+
+    QAction* Change3DPerspectiveToSagittalAction =
+      new QAction( tr( "Change 3D view to sagittal view " ), this );
+    this->m_ViewActions.push_back( Change3DPerspectiveToSagittalAction );
+
+    QObject::connect( Change3DPerspectiveToSagittalAction, SIGNAL( triggered() ),
+      this, SLOT( Change3DPerspectiveToSagittal( ) ) );
 }
 
 /**
@@ -2235,4 +2262,25 @@ void QGoTabImageView3DwT::AddBookmark()
 { 
   this->m_DataBaseTables->AddBookmark(this->GetSliceViewYZ(),
     this->GetSliceViewXZ(),this->GetSliceViewXY(),this->GetTimePoint());
+}
+
+void
+QGoTabImageView3DwT::
+Change3DPerspectiveToAxial()
+{
+  m_ImageView->SetCamera( 1 );
+}
+
+void
+QGoTabImageView3DwT::
+Change3DPerspectiveToCoronal()
+{
+  m_ImageView->SetCamera( 2 );
+}
+
+void
+QGoTabImageView3DwT::
+Change3DPerspectiveToSagittal()
+{
+  m_ImageView->SetCamera( 3 );
 }

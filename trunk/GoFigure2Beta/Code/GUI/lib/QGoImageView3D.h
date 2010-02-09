@@ -150,6 +150,8 @@ public slots:
 
   void SetFullScreenView( const int& iS );
 
+  void SetCamera( int );
+
 //   void HighLightContours();
 
   /**

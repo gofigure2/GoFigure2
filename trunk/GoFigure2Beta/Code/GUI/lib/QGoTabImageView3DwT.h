@@ -268,6 +268,10 @@ public slots:
   currentCollectionID in the table widget*/
   void PassInfoForCurrentCollectionID();
 
+  void Change3DPerspectiveToAxial();
+  void Change3DPerspectiveToCoronal();
+  void Change3DPerspectiveToSagittal();
+
 protected:
   QHBoxLayout*          m_LayOut;
   QGoImageView3D*       m_ImageView;
