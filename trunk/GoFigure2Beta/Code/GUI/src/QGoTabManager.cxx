@@ -225,14 +225,13 @@ void QGoTabManager::CloseTab( int idx )
     {
     QGoTabElementBase* w =
       dynamic_cast< QGoTabElementBase* >( m_TabWidget->widget( idx ) );
-
-    m_TabWidget->removeTab( idx );
-
     if( w )
       {
       w->WriteSettings();
+      ClearTabElement( w );
       delete w;
       }
+    m_TabWidget->removeTab( idx );
     }
 }
 //--------------------------------------------------------------------------

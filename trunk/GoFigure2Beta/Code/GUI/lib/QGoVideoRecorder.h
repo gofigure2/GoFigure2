@@ -53,7 +53,7 @@ class vtkRenderWindow;
 class vtkRenderWindowMovieRecorder;
 
 
-class QGoVideoRecorder : public QDockWidget, public Ui::NewDockWidgetVideoRecorder
+class QGoVideoRecorder : public QDockWidget, private Ui::NewDockWidgetVideoRecorder
 {
     Q_OBJECT
 
