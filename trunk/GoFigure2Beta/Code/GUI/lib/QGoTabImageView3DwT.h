@@ -47,6 +47,7 @@
 #include "ContourMeshStructureHelper.h"
 
 #include <QHBoxLayout>
+#include <string>
 
 #include "vtkSmartPointer.h"
 
@@ -335,6 +336,7 @@ protected:
 
 protected slots:
   void AddBookmark();
+  void GetTheOpenBookmarksActions();
 
 };
 

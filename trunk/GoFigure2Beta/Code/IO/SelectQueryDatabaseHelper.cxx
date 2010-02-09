@@ -498,7 +498,7 @@ std::vector<std::string> ListSpecificValuesForOneColumn(
 
 { std::vector< std::string > result;
 
-  vtkSQLQuery* query = DatabaseConnector->GetQueryInstance();
+vtkSQLQuery* query = DatabaseConnector->GetQueryInstance();
   std::stringstream querystream;
   querystream << "SELECT ";
   querystream << ColumnName;

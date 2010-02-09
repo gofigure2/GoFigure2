@@ -69,7 +69,6 @@
 #include "QueryDataBaseHelper.h"
 #include "ConvertToStringHelper.h"
 #include "GoDBTraceInfoForTableWidget.h"
-#include "QGoDBCreateBookmarkDialog.h"
 
 //--------------------------------------------------------------------------
 QGoPrintDatabase::
@@ -103,7 +102,7 @@ QGoPrintDatabase( QWidget* iParent ) :
 
   QObject::connect( this, SIGNAL( customContextMenuRequested( const QPoint & ) ),
     this, SLOT( CreateContextMenu( const QPoint & ) ) );
-
+  
  // QObject::connect( this->ContourTable, SIGNAL(itemSelectionChanged()),
  //   this, SLOT(ChangeTracesToHighLightInfoFromTableWidget()));
 
@@ -199,6 +198,7 @@ void QGoPrintDatabase::SetDatabaseVariables(
   this->m_MeshesData->CollectionOfTraces->SetImgSessionID(m_ImgSessionID);
   this->m_TracksData->CollectionOfTraces->SetImgSessionID(m_ImgSessionID);
   this->m_LineagesData->CollectionOfTraces->SetImgSessionID(m_ImgSessionID);
+  this->m_BookmarkManager = new QGoDBBookmarkManager(this,this->m_ImgSessionID);
 }
 //--------------------------------------------------------------------------
 
@@ -244,7 +244,7 @@ void QGoPrintDatabase::FillTableFromDatabase()
   PrintExistingCollectionIDsFromDB(
     this->GetListExistingCollectionIDFromDB("contour"));
   CloseDBConnection();
-
+  emit PrintDBReady();
 }
 //--------------------------------------------------------------------------
 
@@ -1222,9 +1222,21 @@ void QGoPrintDatabase::AddBookmark(int iXCoord, int iYCoord,
 
   this->OpenDBConnection();
   int BookmarkCoordID = BookmarkCoord.SaveInDB(this->m_DatabaseConnector);
-  QGoDBCreateBookmarkDialog CreateBookmarkDialog (this,
-    this->m_DatabaseConnector,this->m_ImgSessionID, BookmarkCoordID);
+  //QGoDBBookmarkManager BookmarkManager = (this,
+    //this->m_DatabaseConnector,this->m_ImgSessionID, BookmarkCoordID);
   //CreateBookmarkDialog.exec();
+  this->m_BookmarkManager->AddABookmark(BookmarkCoordID,this->m_DatabaseConnector);
 
   this->CloseDBConnection();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::vector<std::string> QGoPrintDatabase::GetListBookmarks()
+{
+  this->OpenDBConnection();
+  std::vector<std::string> ListBookmarks = 
+    this->m_BookmarkManager->GetListExistingBookmarks(this->m_DatabaseConnector);
+  this->CloseDBConnection();
+  return ListBookmarks;
 }

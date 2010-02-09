@@ -55,6 +55,7 @@
 #include "GoDBTraceInfoForVisu.h"
 #include "ContourMeshStructure.h"
 #include "TraceInfoStructure.h"
+#include "QGoDBBookmarkManager.h"
 
 /** \brief Ensure the connection with the Database*/
 class QGoPrintDatabase : public QDockWidget,
@@ -136,6 +137,8 @@ public:
   void AddBookmark(int iXCoord, int iYCoord, 
     int iZCoord, int iTCoord);
   /** \brief return a bool to know if the user is using the database or not*/
+
+  std::vector<std::string> GetListBookmarks();
   bool IsDatabaseUsed();
 
   QAction* toggleViewAction();
@@ -151,6 +154,7 @@ public slots:
   void SaveNewColorInDB(std::vector<std::string> iDataNewColor);
 
 signals:
+  void PrintDBReady();
   void TableContentChanged();
   void SelectionContoursToHighLightChanged();
   void SelectionMeshesToHighLightChanged();
@@ -184,6 +188,8 @@ protected:
   bool              m_IsDatabaseUsed;
 
   QAction* m_VisibilityAction;
+
+  QGoDBBookmarkManager* m_BookmarkManager;
 
   void OpenDBConnection();
   void CloseDBConnection();

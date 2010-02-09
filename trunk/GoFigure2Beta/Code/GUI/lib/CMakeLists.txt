@@ -28,7 +28,7 @@ SET( QGoGUILIB_SRC
   qtcolorcombobox.cxx
   QGoLsmToMegaExportDialog.cxx
   ConversionLsmToMegaThread.cxx
-  QGoDBCreateBookmarkDialog.cxx
+  QGoDBBookmarkManager.cxx
   QTextEditChild.cxx
   QNameDescriptionInputDialog.cxx
 )
@@ -87,7 +87,7 @@ SET( QGoGUILIB_HDRS
   qtcolorcombobox.h
   QGoLsmToMegaExportDialog.h
   ConversionLsmToMegaThread.h
-  QGoDBCreateBookmarkDialog.h
+  QGoDBBookmarkManager.h
   QTextEditChild.h
   QNameDescriptionInputDialog.h
 )
@@ -120,7 +120,6 @@ SET( QGoGUILIB_UI
   VisualizationDockWidget.ui
   QGoPrintDatabase.ui
   LsmToMegaExportDialog.ui
-  QGoDBCreateBookmarkDialog.ui
   QNameDescriptionInputDialog.ui
 )
 
