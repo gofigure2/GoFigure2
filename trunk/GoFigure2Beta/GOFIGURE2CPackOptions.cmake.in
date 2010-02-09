@@ -1,6 +1,6 @@
 IF( CPACK_GENERATOR MATCHES "NSIS" )
 #   # set the install/unistall icon used for the installer itself
-#   # There is a bug in NSI that does not handle full unix paths properly. 
+#   # There is a bug in NSI that does not handle full unix paths properly.
 #   SET(CPACK_NSIS_MUI_ICON "@CMake_SOURCE_DIR@/Utilities/Release\\CMakeLogo.ico")
 #   SET(CPACK_NSIS_MUI_UNIICON "@CMake_SOURCE_DIR@/Utilities/Release\\CMakeLogo.ico")
   
@@ -20,6 +20,7 @@ IF( CPACK_GENERATOR MATCHES "NSIS" )
 #     "http://www.cmake.org" "CMake Web Site"
 #     )
 
+    SET( CPACK_NSIS_INSTALLED_ICON_NAME "bin\\\\gofigure.exe" )
     SET( CPACK_NSIS_DISPLAY_NAME "GoFigure2 @GOFIGURE2_VERSION@ a cross-platform application for microscope image visualization and analysis" )
     SET( CPACK_NSIS_PACKAGE_NAME "GoFigure2 @GOFIGURE2_VERSION@" )
     SET( CPACK_NSIS_HELP_LINK "http://gofigure2.sourceforge.net" )
