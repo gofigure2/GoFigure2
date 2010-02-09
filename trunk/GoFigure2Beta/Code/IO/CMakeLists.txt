@@ -45,9 +45,9 @@ TARGET_LINK_LIBRARIES( QGoIO
   ITKIO
 )
 
-INSTALL_TARGETS(/lib QGoIO)
-
-INSTALL_FILES(/include "(\\.h|\\.txx)$")
+## INSTALL_TARGETS(/lib QGoIO)
+## 
+## INSTALL_FILES(/include "(\\.h|\\.txx)$")
 
 INSTALL( TARGETS QGoIO
   ARCHIVE
@@ -60,3 +60,4 @@ INSTALL( TARGETS QGoIO
 #  COMPONENT libraries
 #  NAMELINK_ONLY
 #  )
+

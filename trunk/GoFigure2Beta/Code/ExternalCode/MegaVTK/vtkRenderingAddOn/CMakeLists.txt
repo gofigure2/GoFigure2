@@ -23,6 +23,14 @@ TARGET_LINK_LIBRARIES( vtkRenderingAddOn2
   ${vtkRenderingAddOn_LIBS2}
   )
 
-INSTALL_TARGETS(/lib vtkRenderingAddOn2)
+## INSTALL_TARGETS(/lib vtkRenderingAddOn2)
+## 
+## INSTALL_FILES(/include "(\\.h|\\.txx)$")
 
-INSTALL_FILES(/include "(\\.h|\\.txx)$")
+INSTALL( TARGETS vtkRenderingAddOn2
+  ARCHIVE DESTINATION lib
+  RUNTIME DESTINATION lib
+  LIBRARY DESTINATION lib
+  COMPONENT libraries
+  )
+

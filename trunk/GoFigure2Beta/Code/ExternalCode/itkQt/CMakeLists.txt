@@ -6,12 +6,12 @@ ADD_LIBRARY( itkQt
   ${itkQtAdaptor_MOC}
 )
 
-INSTALL_TARGETS(/lib itkQt)
-
-INSTALL_FILES(/include "(\\.h|\\.txx)$")
+#### Old way to install 
+## INSTALL_TARGETS(/lib itkQt)
+##
+## INSTALL_FILES(/include "(\\.h|\\.txx)$")
 
 INSTALL( TARGETS itkQt
-  ARCHIVE
-  DESTINATION lib
+  ARCHIVE DESTINATION lib
   COMPONENT libraries
   )
