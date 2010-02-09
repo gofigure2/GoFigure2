@@ -337,6 +337,7 @@ protected:
 protected slots:
   void AddBookmark();
   void GetTheOpenBookmarksActions();
+  void OpenExistingBookmark();
 
 };
 

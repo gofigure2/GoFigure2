@@ -669,11 +669,22 @@ void QGoTabImageView3DwT::GetTheOpenBookmarksActions()
     {
     QAction* OpenBookmarkAction = new QAction(ListBookmarks[i].c_str(),this);
     OpenBookmarkMenu->addAction(OpenBookmarkAction);
+    QObject::connect(OpenBookmarkAction, SIGNAL(triggered()),
+      this, SLOT(OpenExistingBookmark()));
     }
    this->m_BookmarkActions.push_back(OpenBookmarkMenu->menuAction());
 }
 //-------------------------------------------------------------------------
 //-------------------------------------------------------------------------
+void QGoTabImageView3DwT::OpenExistingBookmark()
+{
+  QAction* taction = qobject_cast< QAction* >( sender() );
+  std::string Data = taction->text().toStdString();
+  /** \todo go or open to the right coordinate ???*/
+}
+//--------------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
 TakeSnapshot()
