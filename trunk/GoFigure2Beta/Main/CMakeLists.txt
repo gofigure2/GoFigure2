@@ -110,7 +110,7 @@ TARGET_LINK_LIBRARIES( gofigure
 #  ITKNumerics
 #  ITKCommon
 #  ITKIO
-#  itkQt
+  itkQt
  )
 
 #--------------------------------------------------------------------------------
