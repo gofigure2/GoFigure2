@@ -19,6 +19,7 @@
 #include "vtkJPEGWriter.h"
 #include "vtkPNGWriter.h"
 #include "vtkTIFFWriter.h"
+#include "vtkCamera.h"
 
 #include "vtkEventQtSlotConnect.h"
 #include "QSplitterChild.h"
@@ -244,6 +245,13 @@ void QGoImageView3D::Update()
   this->View3D->SetTriPlanarRenderingOn();
   this->View3D->SetShowScalarBar( false );
   this->View3D->ResetCamera();
+
+  // Rotate the camera to show that the view is 3d
+  vtkCamera *camera = this->View3D->GetRenderer()->GetActiveCamera();
+  camera->Roll( 15 );
+  camera->Azimuth( 345 );
+
+  this->View3D->GetRenderer()->SetActiveCamera( camera );
 
   this->m_Pool->SyncSetBackground( this->m_Pool->GetItem(0)->GetBackground() );
   this->m_Pool->SyncSetShowAnnotations( true );
