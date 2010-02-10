@@ -61,7 +61,16 @@ public:
   template<typename T>
   void SetField( std::string key, T value )
     {
-    m_MapRow[key] = ConvertToString<T>(value);
+    std::map< std::string, std::string >::iterator it = m_MapRow.find( key );
+
+    if( it != m_MapRow.end() )
+      {
+      it->second = ConvertToString<T>(value);
+      }
+    else
+      {
+      std::cerr <<"This field does not exist!!!" <<std::endl;
+      }
     }
 
   /**
