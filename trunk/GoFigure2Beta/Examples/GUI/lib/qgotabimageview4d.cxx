@@ -82,28 +82,31 @@ int main( int argc, char** argv )
     }
   menubar->show();
 
-//   QTimer* timer = new QTimer;
-//   timer->setSingleShot( true );
-//   QObject::connect( timer, SIGNAL( timeout() ), tab, SLOT( close() ) );
-//   QObject::connect( timer, SIGNAL( timeout() ), menubar, SLOT( close() ) );
+  QTimer* timer = new QTimer;
+  timer->setSingleShot( true );
+  QObject::connect( timer, SIGNAL( timeout() ), tab, SLOT( close() ) );
+  QObject::connect( timer, SIGNAL( timeout() ), menubar, SLOT( close() ) );
 
-  std::list< std::pair< Qt::DockWidgetArea, QDockWidget* > > dockwidget_list = tab->DockWidget();
+  std::list< std::pair< QGoDockWidgetStatus*, QDockWidget* > > dockwidget_list = tab->DockWidget();
 
-  for( std::list< std::pair< Qt::DockWidgetArea, QDockWidget* > >::iterator
+  for( std::list< std::pair< QGoDockWidgetStatus*, QDockWidget* > >::iterator
       it = dockwidget_list.begin();
     it != dockwidget_list.end();
     it++ )
     {
-    it->second->show();
-//     QObject::connect( timer, SIGNAL( timeout() ), (*it), SLOT( close() ) );
+      if( it->second )
+        {
+        it->second->show();
+        QObject::connect( timer, SIGNAL( timeout() ), it->second, SLOT( close() ) );
+        }
     }
 
-//   if( atoi( argv[2] ) == 1 )
-//     {
-//     timer->start( 1000 );
-//     }
+  if( atoi( argv[2] ) == 1 )
+    {
+    timer->start( 1000 );
+    }
 
-//   tab->show();
+  tab->show();
   app.processEvents();
 
   int output = app.exec();
