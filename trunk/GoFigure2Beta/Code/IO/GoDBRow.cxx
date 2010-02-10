@@ -56,9 +56,18 @@ GoDBRow::~GoDBRow()
 //-------------------------------------------------------------------------
 void GoDBRow::SetField( std::string key, std::string value )
 {
-   std::stringstream valueToQuery;
-   valueToQuery <<"\"" << value <<"\"";
-   m_MapRow[key] = valueToQuery.str();
+  std::map< std::string, std::string >::iterator it = m_MapRow.find( key );
+
+  if( it != m_MapRow.end() )
+    {
+    std::stringstream valueToQuery;
+    valueToQuery <<"\"" << value <<"\"";
+    it->second = valueToQuery.str();
+    }
+  else
+    {
+    std::cerr <<"This field does not exist!!!" <<std::endl;
+    }
 }
 //-------------------------------------------------------------------------
 
