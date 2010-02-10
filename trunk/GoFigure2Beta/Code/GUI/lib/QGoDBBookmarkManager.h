@@ -38,33 +38,35 @@
 
 =========================================================================*/
 
-#ifndef __QGoDBCreateBookmarkDialog_h
-#define __QGoDBCreateBookmarkDialog_h
+#ifndef __QGoDBBookmarkManager_h
+#define __QGoDBBookmarkManager_h
 
 #include <QDialog>
 #include <QWidget>
 #include <QTextEdit>
+#include <QMenu>
 #include "vtkMySQLDatabase.h"
-#include "ui_QGoDBCreateBookmarkDialog.h"
 #include "QNameDescriptionInputDialog.h"
 
-class QGoDBCreateBookmarkDialog:
+class QGoDBBookmarkManager:
   public QWidget
 {
   Q_OBJECT
 
   public:
-    explicit QGoDBCreateBookmarkDialog (QWidget* iParent = 0,
-      vtkMySQLDatabase* iDatabaseConnector = 0,
-      int iImgSessionID = 0, int iCoordID = 0);
+    explicit QGoDBBookmarkManager (QWidget* iParent = 0,
+      int iImgSessionID = 0);
     
-    ~QGoDBCreateBookmarkDialog();
+    ~QGoDBBookmarkManager();
+    void AddABookmark(int iCoordID, vtkMySQLDatabase* iDatabaseConnector);
+    std::vector<std::string> GetListExistingBookmarks(
+      vtkMySQLDatabase* iDatabaseConnector);
 
   protected:
-    vtkMySQLDatabase*            m_DatabaseConnector;
     int                          m_ImgSessionID;
-    int                          m_CoordID;
+    int                          m_CoordIDForNewBookmark;
     QNameDescriptionInputDialog* m_NameDescDialog;
+    vtkMySQLDatabase*            m_DatabaseConnectorForNewBkmrk;
     
 
   protected slots:

@@ -38,7 +38,7 @@
 
 =========================================================================*/
 
-#include "QGoDBCreateBookmarkDialog.h"
+#include "QGoDBBookmarkManager.h"
 #include "GoDBBookmarkRow.h"
 #include <QMessageBox>
 #include <QDateTime>
@@ -46,18 +46,30 @@
 #include <QTextEdit>
 #include "QueryDataBaseHelper.h"
 #include "QNameDescriptionInputDialog.h"
+#include "SelectQueryDatabaseHelper.h"
 
-QGoDBCreateBookmarkDialog::QGoDBCreateBookmarkDialog(QWidget* iParent,
-  vtkMySQLDatabase* iDatabaseConnector, int iImgSessionID,int iCoordID):
+QGoDBBookmarkManager::QGoDBBookmarkManager(QWidget* iParent,
+  int iImgSessionID):
   QWidget( iParent)
 {
-  this->m_DatabaseConnector = iDatabaseConnector;
   this->m_ImgSessionID = iImgSessionID;
-  this->m_CoordID = iCoordID;
-  
-  this->m_NameDescDialog = new QNameDescriptionInputDialog(
-    iParent,"Bookmark");
+}
+//-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
+QGoDBBookmarkManager::~QGoDBBookmarkManager()
+{
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoDBBookmarkManager::AddABookmark(int iCoordID,
+  vtkMySQLDatabase* iDatabaseConnector)
+{
+  this->m_CoordIDForNewBookmark = iCoordID;
+  this->m_NameDescDialog = new QNameDescriptionInputDialog(
+    this,"Bookmark");
+  this->m_DatabaseConnectorForNewBkmrk = iDatabaseConnector;
   QObject::connect (this->m_NameDescDialog, SIGNAL(NameValidated()),
     this, SLOT(SaveNewBookmarkInDB()));
   this->m_NameDescDialog->exec();
@@ -65,13 +77,7 @@ QGoDBCreateBookmarkDialog::QGoDBCreateBookmarkDialog(QWidget* iParent,
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-QGoDBCreateBookmarkDialog::~QGoDBCreateBookmarkDialog()
-{
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void QGoDBCreateBookmarkDialog::SaveNewBookmarkInDB()
+void QGoDBBookmarkManager::SaveNewBookmarkInDB()
 {
   GoDBBookmarkRow NewBookmark;
   NewBookmark.SetField("Name",this->m_NameDescDialog->GetInputTextForName());
@@ -81,7 +87,16 @@ void QGoDBCreateBookmarkDialog::SaveNewBookmarkInDB()
   std::string CreationDateStr = 
     CreationDate.toString(Qt::ISODate).toStdString();
   NewBookmark.SetField("CreationDate",CreationDateStr);
-  NewBookmark.SetField<int>("CoordID",this->m_CoordID);
+  NewBookmark.SetField<int>("CoordID",this->m_CoordIDForNewBookmark);
   NewBookmark.SetField<int>("ImagingSessionID",this->m_ImgSessionID);
-  NewBookmark.SaveInDB(this->m_DatabaseConnector);
+  NewBookmark.SaveInDB(this->m_DatabaseConnectorForNewBkmrk);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::vector<std::string> QGoDBBookmarkManager::GetListExistingBookmarks(
+  vtkMySQLDatabase* iDatabaseConnector)
+{
+  return ListSpecificValuesForOneColumn(iDatabaseConnector,"bookmark", 
+    "Name","ImagingSessionID",ConvertToString<int>(this->m_ImgSessionID));
 }
