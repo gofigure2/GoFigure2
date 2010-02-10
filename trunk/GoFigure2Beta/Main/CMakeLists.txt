@@ -126,6 +126,9 @@ IF( WIN32 )
   SET( APPS "\${CMAKE_INSTALL_PREFIX}/bin/gofigure.exe" )
 ENDIF(WIN32)
 
+IF( UNIX AND NOT APPLE )
+  SET( APPS "\${CMAKE_INSTALL_PREFIX}/bin/gofigure" )
+ENDIF( UNIX AND NOT APPLE )
 
 #---------------------------------------------------------------------------
 # Install gofigure, on Apple, the bundle is at the root of the
@@ -160,10 +163,13 @@ SET( DIRS ${QT_LIBRARY_DIRS} )
 # install(SCRIPT  ...).
 # Note that the image plugins depend on QtSvg and QtXml, and it got those 
 # copied over.
-INSTALL( CODE "
+IF( WIN32 AND APPLE )
+
+  INSTALL( CODE "
     file( GLOB_RECURSE QTPLUGINS
       \"\${CMAKE_INSTALL_PREFIX}/${plugin_dest_dir}/plugins/*${CMAKE_SHARED_LIBRARY_SUFFIX}\" )
     include( BundleUtilities )
     fixup_bundle(\"${APPS}\" \"\${QTPLUGINS}\" \"${DIRS}\")
-    " COMPONENT Runtime )
+    " COMPONENT Runtime ) 
 
+ENDIF( WIN32 AND APPLE )
