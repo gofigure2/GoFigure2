@@ -659,15 +659,18 @@ SetupMenusFromTab( QGoTabElementBase* iT )
 
   iT->SetPluginActions( m_TabDimPluginActionMap[iT->GetTabDimensionType()] );
 
-  std::list< std::pair< Qt::DockWidgetArea, QDockWidget* > > dock_list = iT->DockWidget();
+  std::list< std::pair< QGoDockWidgetStatus*, QDockWidget* > > dock_list = iT->DockWidget();
 
-  for( std::list< std::pair< Qt::DockWidgetArea, QDockWidget* > >::iterator
+  for( std::list< std::pair< QGoDockWidgetStatus*, QDockWidget* > >::iterator
     dck_it = dock_list.begin();
     dck_it != dock_list.end();
     ++dck_it )
     {
-    this->addDockWidget( dck_it->first, dck_it->second );
-    dck_it->second->hide();
+    if( dck_it->first->m_Attached )
+      {
+      this->addDockWidget( dck_it->first->m_Area, dck_it->second );
+      }
+    dck_it->second->setVisible( dck_it->first->m_Visibility );
     }
 
   int idx = this->CentralTabWidget->addTab( iT, iT->windowTitle() );
@@ -1017,3 +1020,183 @@ void QGoMainWindow::WriteSettings()
 }
 //--------------------------------------------------------------------------------
 
+----------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoMainWindow::AddToMenu(
+  QObject *plugin, const QStringList &texts,
+  QMenu* menu, const char *member,
+  QActionGroup *actionGroup )
+{
+  std::list< GoFigure::TabDimensionType > dim_list;
+
+  QGoPlugin* temp = dynamic_cast< QGoPlugin* >( plugin );
+
+  if( temp )
+    {
+    dim_list = temp->TabElementCompatibility();
+    }
+
+  foreach( QString text, texts )
+    {
+    QAction *taction = new QAction(text, plugin);
+    taction->setDisabled( true );
+    connect( action, SIGNAL(triggered()), this, member);
+    menu->addAction(taction);
+
+    for( std::list< GoFigure::TabDimensionType >::iterator it = dim_list.begin();
+      it != dim_list.end();
+      ++it )
+      {
+      m_TabDimPluginActionMap[ *it ].push_back( taction );
+      }
+
+    if (actionGroup)
+      {
+      taction->setCheckable(true);
+      actionGroup->addAction(taction);
+      }
+    }
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoMainWindow::ApplyImageFilter()
+{
+  QAction *taction = qobject_cast< QAction* >( sender( ) );
+  QGoImageFilterPluginBase* filter =
+    qobject_cast< QGoImageFilterPluginBase* >( taction->parent() );
+//   filter->SetInput( this->m_Image );
+  filter->Update();
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoMainWindow::SetCurrentMultiFile( const QString &fileName )
+{
+  m_CurrentFile = fileName;
+  this->setWindowModified( false );
+  QString shownName = "Untitled";
+  if( !m_CurrentFile.isEmpty() )
+    {
+    shownName = strippedName( m_CurrentFile );
+    m_RecentMultipleFiles.removeAll( m_CurrentFile );
+    m_RecentMultipleFiles.prepend( m_CurrentFile );
+    UpdateRecentFileActions( m_RecentMultipleFiles,
+      menuMultiple_Files,
+      recentMultipleFileActions );
+    }
+}
+
+//--------------------------------------------------------------------------
+QString QGoMainWindow::strippedName(const QString &fullFileName)
+{
+  return QFileInfo(fullFileName).fileName();
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoMainWindow::UpdateRecentFileActions( QStringList list,
+  QMenu *menu,
+  QAction *recentFileActions[MaxRecentFiles] )
+{
+  QMutableStringListIterator i(list);
+  while (i.hasNext())
+    {
+    if (!QFile::exists(i.next()))
+      {
+      i.remove();
+      }
+    }
+  if (!list.isEmpty())
+    {
+    menu->setEnabled(true);
+    }
+
+  for (int j = 0; j < MaxRecentFiles; ++j)
+    {
+    if (j < list.count())
+      {
+      QString text = tr("&%1 %2 ")
+        .arg(j + 1)
+        .arg(strippedName(list[j]));
+
+      recentFileActions[j]->setText(text);
+      recentFileActions[j]->setData(list[j]);
+      recentFileActions[j]->setVisible(true);
+      menu->addAction(recentFileActions[j]);
+      }
+    }
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoMainWindow::openRecentSingleFile()
+{
+  QAction* taction = qobject_cast< QAction* >( sender() );
+  if( action )
+    {
+    this->SetSingleFileName( taction->data().toString() );
+    }
+}
+//--------------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------------
+void QGoMainWindow::openRecentMultipleFile()
+{
+  QAction* taction = qobject_cast< QAction* >( sender() );
+  if( taction )
+    {
+//     this->SetMultiFileName( taction->data().toString() );
+    }
+}
+//--------------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------------
+void QGoMainWindow::ReadSettings()
+{
+  QSettings settings;
+  m_RecentSingleFiles =
+    settings.value( "RecentSingleFiles" ).toStringList( );
+  m_RecentMultipleFiles =
+    settings.value( "RecentMultipleFiles" ).toStringList( );
+
+  this->UpdateRecentFileActions( m_RecentSingleFiles,
+    this->menuSingle_Files, this->recentSingleFileActions );
+  this->UpdateRecentFileActions( m_RecentMultipleFiles,
+    this->menuMultiple_Files, this->recentMultipleFileActions );
+
+  settings.beginGroup( "MainWindow" );
+  QSize tsize = settings.value( "size" ).toSize();
+
+  if( tsize.isValid() )
+    {
+    this->resize( tsize );
+    this->move( settings.value("pos").toPoint() );
+    }
+  else
+    {
+    this->resize( 1450, 750 );
+    }
+
+  QByteArray state = settings.value("state", QByteArray()).toByteArray();
+  this->restoreState(state);
+
+  //  settings.setValue("vsplitterSizes", vSplitter->saveState());
+  settings.endGroup();
+}
+//--------------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------------
+void QGoMainWindow::WriteSettings()
+{
+  QSettings settings;
+  settings.setValue("RecentSingleFiles", m_RecentSingleFiles);
+  settings.setValue("RecentMultipleFiles", m_RecentMultipleFiles);
+  settings.beginGroup("MainWindow");
+  settings.setValue("size", size());
+  settings.setValue("pos", pos());
+  settings.setValue("state", saveState());
+  settings.endGroup();
+}
+//--------------------------------------------------------------------------------

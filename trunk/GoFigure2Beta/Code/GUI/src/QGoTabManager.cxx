@@ -92,15 +92,19 @@ void QGoTabManager::ClearTabElement( QGoTabElementBase* iE )
 
     m_MainWindow->menuBookmarks->clear();
 
-    std::list< std::pair< Qt::DockWidgetArea, QDockWidget* > >& dock_list = iE->DockWidget();
+    std::list< std::pair< QGoDockWidgetStatus*, QDockWidget* > >& dock_list = iE->DockWidget();
 
-    for( std::list< std::pair< Qt::DockWidgetArea, QDockWidget* > >::iterator
+    for( std::list< std::pair< QGoDockWidgetStatus*, QDockWidget* > >::iterator
         dck_it = dock_list.begin();
         dck_it != dock_list.end();
         ++dck_it )
       {
-      dck_it->first = m_MainWindow->dockWidgetArea( dck_it->second );
+      dck_it->first->m_Area = m_MainWindow->dockWidgetArea( dck_it->second );
+      bool temp = dck_it->second->isVisible();
+
       m_MainWindow->removeDockWidget( dck_it->second );
+
+      dck_it->first->m_Visibility = temp;
       }
 
     GoFigure::TabDimensionType dim = iE->GetTabDimensionType();
@@ -164,15 +168,22 @@ void QGoTabManager::SetUpTabElement( QGoTabElementBase* iE )
       m_MainWindow->menuBookmarks->addAction( *it );
       }
 
-    std::list< std::pair< Qt::DockWidgetArea, QDockWidget* > > dock_list = iE->DockWidget();
+    std::list< std::pair< QGoDockWidgetStatus*, QDockWidget* > > dock_list = iE->DockWidget();
 
-    for( std::list< std::pair< Qt::DockWidgetArea, QDockWidget* > >::iterator
+    for( std::list< std::pair< QGoDockWidgetStatus*, QDockWidget* > >::iterator
           dck_it = dock_list.begin();
           dck_it != dock_list.end();
           ++dck_it )
       {
-      m_MainWindow->addDockWidget( dck_it->first, dck_it->second );
-      dck_it->second->show();
+      if( dck_it->first->m_Attached )
+        {
+        if( dck_it->first->m_Area == Qt::NoDockWidgetArea )
+          {
+          dck_it->first->m_Area = dck_it->first->m_DefaultArea;
+          }
+        m_MainWindow->addDockWidget( dck_it->first->m_Area, dck_it->second );
+        }
+      dck_it->second->setVisible( dck_it->first->m_Visibility );
       }
 
     GoFigure::TabDimensionType dim = iE->GetTabDimensionType();
@@ -232,7 +243,7 @@ void QGoTabManager::CloseTab( int idx )
       delete w;
       w = 0;
       }
-    m_TabWidget->removeTab( idx );
+//     m_TabWidget->removeTab( idx );
     }
 }
 //--------------------------------------------------------------------------
