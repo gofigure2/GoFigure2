@@ -617,15 +617,25 @@ CreateNewTabFor3DwtImage(
   w3t->SetMegaCaptureFile( iFileList, iFileType, iHeader, iTimePoint );
   w3t->setWindowTitle( QString::fromStdString( iHeader ) );
 
-  // **********************
-  // Database information
-  //get the content of the tables fron the database to fill the table widget:
-  w3t->m_DataBaseTables->SetDatabaseVariables( "gofiguredatabase",
-    m_DBWizard->GetServer().toStdString(), m_DBWizard->GetLogin().toStdString(),
-    m_DBWizard->GetPassword().toStdString(), m_DBWizard->GetImagingSessionID(),
-    m_DBWizard->GetImagingSessionName().toStdString() );
-  w3t->m_DataBaseTables->FillTableFromDatabase();
-  // **********************
+  if( w3t->m_DataBaseTables->IsDatabaseUsed() )
+    {
+    // **********************
+    // Database information
+    //get the content of the tables fron the database to fill the table widget:
+    w3t->m_DataBaseTables->SetDatabaseVariables( "gofiguredatabase",
+      m_DBWizard->GetServer().toStdString(), m_DBWizard->GetLogin().toStdString(),
+      m_DBWizard->GetPassword().toStdString(), m_DBWizard->GetImagingSessionID(),
+      m_DBWizard->GetImagingSessionName().toStdString() );
+
+    w3t->m_DataBaseTables->FillTableFromDatabase();
+
+    w3t->setWindowTitle( m_DBWizard->GetImagingSessionName() );
+    // **********************
+    }
+  else
+    {
+    w3t->m_DataBaseTables->hide();
+    }
 
   SetupMenusFromTab( w3t );
 

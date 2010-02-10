@@ -90,12 +90,12 @@ ENDIF( WIN32 )
 # will ensure we have it linked into our build. Not needed on 
 # Unix/OS X/Linux which is why we have the IF(WIN32) conditional.
 IF( WIN32 )
-    SET( QT_USE_QTMAIN TRUE )
+  SET( QT_USE_QTMAIN TRUE )
 ENDIF( WIN32 )
 
 
 ADD_EXECUTABLE( gofigure
-  MACOSX_BUNDLE WIN32
+  MACOSX_BUNDLE 
   ${GOFIGURE_APPLICATION_SOURCE_LIST}
   ${QGoGUI_SRC}
   ${QGoGUISRC_MOC}
