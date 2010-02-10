@@ -248,10 +248,11 @@ void QGoImageView3D::Update()
 
   // Rotate the camera to show that the view is 3d
   vtkCamera *camera = this->View3D->GetRenderer()->GetActiveCamera();
-  camera->Roll( 22 );
-  camera->Azimuth( -22 );
+  camera->Roll( -135 );
+  camera->Azimuth( -45 );
 
   this->View3D->GetRenderer()->SetActiveCamera( camera );
+  this->View3D->ResetCamera();
 
   this->m_Pool->SyncSetBackground( this->m_Pool->GetItem(0)->GetBackground() );
   this->m_Pool->SyncSetShowAnnotations( true );
@@ -1122,16 +1123,25 @@ void
 QGoImageView3D::
 SetCamera( int iView )
 {
+  //Strange behaviour....
+
   vtkCamera *camera = vtkCamera::New();
   this->View3D->GetRenderer()->SetActiveCamera( camera );
 
+  // Dorsal view
+  camera->Roll(180);
+
+  // Posterior view
   if ( iView == 1)
     {
-    camera->Azimuth(90);
+    camera->SetRoll(0);
+    camera->Elevation( 90 );
     }
+
+  // Left view
   if ( iView == 3)
     {
-    camera->Elevation(90);
+    camera->Azimuth( -90 );
     }
 
   this->View3D->ResetCamera();

@@ -599,7 +599,7 @@ CreateAllViewActions()
     this->m_ViewActions.push_back( separator4 );
 
     QAction* Change3DPerspectiveToAxialAction =
-      new QAction( tr( "Change 3D view to axial view " ), this );
+      new QAction( tr( "Change 3D view to Posterior " ), this );
     this->m_ViewActions.push_back( Change3DPerspectiveToAxialAction );
 
     QObject::connect( Change3DPerspectiveToAxialAction, SIGNAL( triggered() ),
@@ -607,7 +607,7 @@ CreateAllViewActions()
 
 
     QAction* Change3DPerspectiveToCoronalAction =
-      new QAction( tr( "Change 3D view to coronal view " ), this );
+      new QAction( tr( "Change 3D view to Dorsal " ), this );
     this->m_ViewActions.push_back( Change3DPerspectiveToCoronalAction );
 
     QObject::connect( Change3DPerspectiveToCoronalAction, SIGNAL( triggered() ),
@@ -615,7 +615,7 @@ CreateAllViewActions()
 
 
     QAction* Change3DPerspectiveToSagittalAction =
-      new QAction( tr( "Change 3D view to sagittal view " ), this );
+      new QAction( tr( "Change 3D view to Left " ), this );
     this->m_ViewActions.push_back( Change3DPerspectiveToSagittalAction );
 
     QObject::connect( Change3DPerspectiveToSagittalAction, SIGNAL( triggered() ),
