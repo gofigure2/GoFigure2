@@ -230,6 +230,7 @@ void QGoTabManager::CloseTab( int idx )
       w->WriteSettings();
       ClearTabElement( w );
       delete w;
+      w = 0;
       }
     m_TabWidget->removeTab( idx );
     }

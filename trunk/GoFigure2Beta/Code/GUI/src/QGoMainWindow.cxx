@@ -617,8 +617,8 @@ CreateNewTabFor3DwtImage(
   w3t->SetMegaCaptureFile( iFileList, iFileType, iHeader, iTimePoint );
   w3t->setWindowTitle( QString::fromStdString( iHeader ) );
 
-  if( w3t->m_DataBaseTables->IsDatabaseUsed() )
-    {
+  // if( w3t->m_DataBaseTables->IsDatabaseUsed() )
+  //  {
     // **********************
     // Database information
     //get the content of the tables fron the database to fill the table widget:
@@ -631,11 +631,11 @@ CreateNewTabFor3DwtImage(
 
     w3t->setWindowTitle( m_DBWizard->GetImagingSessionName() );
     // **********************
-    }
-  else
-    {
-    w3t->m_DataBaseTables->hide();
-    }
+  //  }
+  //else
+  //  {
+  //  w3t->m_DataBaseTables->hide();
+  //  }
 
   SetupMenusFromTab( w3t );
 
@@ -691,7 +691,7 @@ CreateNewTabFor3DwtImage( vtkLSMReader* iReader, const QString& iFile )
 
   SetupMenusFromTab( w3t );
 
-  w3t->m_DataBaseTables->hide();
+  // w3t->m_DataBaseTables->hide();
 
   return w3t;
 }
