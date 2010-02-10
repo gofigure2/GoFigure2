@@ -47,6 +47,7 @@
 #include <QMenu>
 #include "vtkMySQLDatabase.h"
 #include "QNameDescriptionInputDialog.h"
+#include "GoDBCoordinateRow.h"
 
 class QGoDBBookmarkManager:
   public QWidget
@@ -58,9 +59,17 @@ class QGoDBBookmarkManager:
       int iImgSessionID = 0);
     
     ~QGoDBBookmarkManager();
+    /** \brief execute the dialog asking the user to enter a name and a
+    description, validates the name, set the m_DatabaseConnectorForNewBkmrk
+    and save the bookmark in the DB*/
     void AddABookmark(int iCoordID, vtkMySQLDatabase* iDatabaseConnector);
+    /** \brief return the list of existing bookmarks for the imagingsession
+    stored in the database*/
     std::vector<std::string> GetListExistingBookmarks(
       vtkMySQLDatabase* iDatabaseConnector);
+    /** \brief return the coordinate for the bookmark with the name iName*/
+    GoDBCoordinateRow GetCoordinatesForBookmark(
+      vtkMySQLDatabase* iDatabaseConnector,std::string iName);
 
   protected:
     int                          m_ImgSessionID;
@@ -70,7 +79,13 @@ class QGoDBBookmarkManager:
     
 
   protected slots:
+    /** \brief save the new bookmark in the database, the 
+    m_DatabaseConnectorForNewBkmrk needs to be set before
+    calling this method*/
     void SaveNewBookmarkInDB();
+
+    int GetCoordIDForBookmark(vtkMySQLDatabase* iDatabaseConnector,
+      std::string iName);
 
 };
 #endif

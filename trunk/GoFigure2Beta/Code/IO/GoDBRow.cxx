@@ -39,6 +39,7 @@
 #include "GoDBRow.h"
 #include <map>
 #include <iostream>
+#include "SelectQueryDatabaseHelper.h"
 
 GoDBRow::GoDBRow()
 {
@@ -206,6 +207,33 @@ std::string GoDBRow::GetMapValue( std::string key )
       }
     }
   return oMapValue;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void GoDBRow::SetValuesForSpecificID(int ID, 
+  vtkMySQLDatabase* iDatabaseConnector)
+{ 
+  std::vector<std::string> ResultQuery = ListSpecificValuesForOneColumn(
+    iDatabaseConnector,this->m_TableName, this->PrintColumnNames(),
+    this->m_TableIDName, ConvertToString<int>(ID));
+  std::vector<std::string>::iterator iterResultQuery = ResultQuery.begin();
+  if (this->m_MapRow.size() != ResultQuery.size())
+    {
+    std::cout<<"pb the map and the query results are not the same size";
+    std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
+    std::cout << std::endl;
+    }
+  else
+    {
+    std::map<std::string,std::string>::iterator iterMap = this->MapBegin();
+    while ( iterMap != this->MapEnd())
+      {
+      iterMap->second = *iterResultQuery;
+      iterMap++;
+      iterResultQuery++;
+      }
+    }
 }
 
 

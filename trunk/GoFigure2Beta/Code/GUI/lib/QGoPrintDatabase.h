@@ -139,6 +139,7 @@ public:
   /** \brief return a bool to know if the user is using the database or not*/
 
   std::vector<std::string> GetListBookmarks();
+  GoDBCoordinateRow GetCoordinateForBookmark(std::string iName);
   bool IsDatabaseUsed();
 
   QAction* toggleViewAction();

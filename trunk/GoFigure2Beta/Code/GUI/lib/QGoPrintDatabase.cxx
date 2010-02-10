@@ -1237,3 +1237,15 @@ std::vector<std::string> QGoPrintDatabase::GetListBookmarks()
   this->CloseDBConnection();
   return ListBookmarks;
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+GoDBCoordinateRow QGoPrintDatabase::GetCoordinateForBookmark(
+  std::string iName)
+{
+  this->OpenDBConnection();
+  GoDBCoordinateRow Coord = this->m_BookmarkManager->
+    GetCoordinatesForBookmark(this->m_DatabaseConnector,iName);
+  this->CloseDBConnection();
+  return Coord;
+}

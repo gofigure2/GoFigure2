@@ -44,6 +44,8 @@
 GoDBBookmarkRow::GoDBBookmarkRow()
 {
   this->InitializeMap();
+  this->m_TableName = "bookmark";
+  this->m_TableIDName = "BookmarkID";
 }
 //-------------------------------------------------------------------------
 

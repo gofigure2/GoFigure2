@@ -97,10 +97,14 @@ public:
     return os;
     }
 
+  void SetValuesForSpecificID(int ID,vtkMySQLDatabase* iDatabaseConnector);
+
 protected:
   virtual void InitializeMap() = 0;
   //virtual void SaveInDB (vtkMySQLDatabase* DatabaseConnector) = 0;
   std::map<std::string,std::string> m_MapRow;
+  std::string m_TableName;
+  std::string m_TableIDName;
 
 };
 

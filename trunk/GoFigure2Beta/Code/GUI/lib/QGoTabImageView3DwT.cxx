@@ -45,6 +45,7 @@
 #include "QGoVisualizationDockWidget.h"
 #include "QGoManualSegmentationDockWidget.h"
 #include "QGoPrintDatabase.h"
+#include "GoDBCoordinateRow.h"
 
 #if defined ( ENABLEFFMPEG ) || defined ( ENABLEAVI )
 
@@ -679,8 +680,12 @@ void QGoTabImageView3DwT::GetTheOpenBookmarksActions()
 void QGoTabImageView3DwT::OpenExistingBookmark()
 {
   QAction* taction = qobject_cast< QAction* >( sender() );
-  std::string Data = taction->text().toStdString();
-  /** \todo go or open to the right coordinate ???*/
+  std::string BookmarkName = taction->text().toStdString();
+  GoDBCoordinateRow Coord = this->m_DataBaseTables->GetCoordinateForBookmark(BookmarkName);
+  this->SetTimePoint(atoi(Coord.GetMapValue("TCoord").c_str()));
+  this->SetSliceViewXY(atoi(Coord.GetMapValue("ZCoord").c_str()));
+  this->SetSliceViewXZ(atoi(Coord.GetMapValue("YCoord").c_str()));
+  this->SetSliceViewYZ(atoi(Coord.GetMapValue("XCoord").c_str()));
 }
 //--------------------------------------------------------------------------------
 

@@ -44,6 +44,8 @@
 GoDBCoordinateRow::GoDBCoordinateRow()
 {
   this->InitializeMap();
+  this->m_TableName = "coordinate";
+  this->m_TableIDName = "CoordID";
 }
 //-------------------------------------------------------------------------
 

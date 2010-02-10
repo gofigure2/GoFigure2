@@ -72,6 +72,7 @@ void QGoDBBookmarkManager::AddABookmark(int iCoordID,
   this->m_DatabaseConnectorForNewBkmrk = iDatabaseConnector;
   QObject::connect (this->m_NameDescDialog, SIGNAL(NameValidated()),
     this, SLOT(SaveNewBookmarkInDB()));
+  /** \todo check that the bookmark is unique*/
   this->m_NameDescDialog->exec();
 }
 //-------------------------------------------------------------------------
@@ -99,4 +100,28 @@ std::vector<std::string> QGoDBBookmarkManager::GetListExistingBookmarks(
 {
   return ListSpecificValuesForOneColumn(iDatabaseConnector,"bookmark", 
     "Name","ImagingSessionID",ConvertToString<int>(this->m_ImgSessionID));
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+GoDBCoordinateRow QGoDBBookmarkManager::GetCoordinatesForBookmark(
+  vtkMySQLDatabase* iDatabaseConnector, std::string iName)
+{
+  GoDBCoordinateRow BookmarkCoord;
+  BookmarkCoord.SetValuesForSpecificID(
+    this->GetCoordIDForBookmark(iDatabaseConnector,iName),iDatabaseConnector);
+  /*std::string BookmarkCoordID = ConvertToString<int>(
+    this->GetCoordIDForBookmark(iDatabaseConnector,iName));
+  std::vector<std::string> ResultQuery = ListSpecificValuesForRow(
+    iDatabaseConnector,"coordinate", "CoordID",BookmarkCoordID);*/
+  return BookmarkCoord;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+int QGoDBBookmarkManager::GetCoordIDForBookmark(
+  vtkMySQLDatabase* iDatabaseConnector,std::string iName)
+{
+  return FindOneID(iDatabaseConnector,"bookmark",
+    "CoordID","Name", iName);
 }
