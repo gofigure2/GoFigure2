@@ -435,6 +435,20 @@ ReEditContour( const unsigned int& iId )
 }
 //--------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
+void
+QGoTabImageViewElementBase::
+ReinitializeContour()
+{
+  for( unsigned int i = 0; i < m_ContourWidget.size(); i++ )
+    {
+    /// \todo to be fully compliant with more recent version of vtk,
+    /// we should rather use m_ContourWidget[i]->Initialize()
+    m_ContourWidget[i]->Initialize( NULL );
+    }
+}
+//-------------------------------------------------------------------------
+
 //--------------------------------------------------------------------------
 /**
  * \brief Remove the contour (vtkActor) from the viewer (iId).

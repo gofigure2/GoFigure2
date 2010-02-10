@@ -76,6 +76,7 @@
 // vtk includes
 // #include "vtkImageAppendComponents.h"
 // #include "vtkMarchingCubes.h"
+#include "vtkLSMReader.h"
 #include "vtkPolyDataReader.h"
 #include "vtkPLYReader.h"
 #include "vtkPolyData.h"
@@ -118,7 +119,7 @@ QGoMainWindow::QGoMainWindow( )
 
   CreateSignalSlotsConnection();
   ReadSettings();
-  LoadPlugins();
+//   LoadPlugins();
 }
 
 //--------------------------------------------------------------------------
@@ -630,7 +631,9 @@ CreateNewTabFor3DwtImage(
 
   return w3t;
 }
+//--------------------------------------------------------------------------
 
+//--------------------------------------------------------------------------
 void
 QGoMainWindow::
 SetupMenusFromTab( QGoTabElementBase* iT )
@@ -665,46 +668,6 @@ SetupMenusFromTab( QGoTabElementBase* iT )
 
   this->CentralTabWidget->setCurrentIndex( idx );
 }
-
-//--------------------------------------------------------------------------
-
-//
-// /// \todo why not using iTimePoint instead of 0, in SetMultiFiles?
-// void QGoMainWindow::CreateNewTabFor3DwtImage( FileListType& iFileList,
-//   const FILETYPE& iFileType, const int& iTimePoint )
-// {
-//   QGoTabImageView3DwT* w3t = new QGoTabImageView3DwT;
-//   w3t->SetMultiFiles( iFileList, iFileType, 0 );
-//   w3t->Update();
-//
-//   for( std::list< QAction* >::iterator
-//     list_it = m_TabDimPluginActionMap[w3t->GetTabDimensionType()].begin();
-//     list_it != m_TabDimPluginActionMap[w3t->GetTabDimensionType()].end();
-//     list_it++
-//     )
-//     {
-//     (*list_it)->setEnabled( true );
-//     }
-//
-//   w3t->SetPluginActions( m_TabDimPluginActionMap[w3t->GetTabDimensionType()] );
-//
-//   std::list< QDockWidget* > dock_list = w3t->DockWidget();
-//
-//   for( std::list< QDockWidget* >::iterator
-//     dck_it = dock_list.begin();
-//     dck_it != dock_list.end();
-//     ++dck_it )
-//     {
-//     this->addDockWidget( Qt::LeftDockWidgetArea, (*dck_it) );
-//     (*dck_it)->show();
-//     }
-//
-//   int idx = this->CentralTabWidget->addTab( w3t, QString() );//iFile );
-//   this->menuView->setEnabled( true );
-//   this->menuFiltering->setEnabled( true );
-//   this->menuSegmentation->setEnabled( true );
-//   this->CentralTabWidget->setCurrentIndex( idx );
-// }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
@@ -716,10 +679,9 @@ CreateNewTabFor3DwtImage( vtkLSMReader* iReader, const QString& iFile )
   w3t->setWindowTitle( iFile );
   w3t->SetLSMReader( iReader, 0 );
 
-  std::cout <<iFile.toStdString() <<std::endl;
-//   w3t->Update();
-
   SetupMenusFromTab( w3t );
+
+  w3t->m_DataBaseTables->hide();
 
   return w3t;
 }
@@ -735,35 +697,7 @@ CreateNewTabFor3DImage( vtkImageData* iInput, const QString& iFile )
   w3->setWindowTitle( iFile );
   w3->Update();
 
-  for( std::list< QAction* >::iterator
-    list_it = m_TabDimPluginActionMap[w3->GetTabDimensionType()].begin();
-    list_it != m_TabDimPluginActionMap[w3->GetTabDimensionType()].end();
-    list_it++
-    )
-    {
-    (*list_it)->setEnabled( true );
-    }
-
-  w3->SetPluginActions( m_TabDimPluginActionMap[w3->GetTabDimensionType()] );
-
-  std::list< std::pair< Qt::DockWidgetArea, QDockWidget* > > dock_list = w3->DockWidget();
-
-  for( std::list< std::pair< Qt::DockWidgetArea, QDockWidget* > >::iterator
-    dck_it = dock_list.begin();
-    dck_it != dock_list.end();
-    ++dck_it )
-    {
-    this->addDockWidget( dck_it->first, dck_it->second );
-    dck_it->second->show();
-    }
-
-  int idx = this->CentralTabWidget->addTab( w3, iFile );
-  this->menuView->setEnabled( true );
-  this->menuFiltering->setEnabled( true );
-  this->menuSegmentation->setEnabled( true );
-  this->menuTools->setEnabled( true );
-
-  this->CentralTabWidget->setCurrentIndex( idx );
+  SetupMenusFromTab( w3 );
 
   return w3;
 }
@@ -779,121 +713,17 @@ CreateNewTabFor2DImage( vtkImageData* iInput, const QString& iFile )
   w2->setWindowTitle( iFile );
   w2->Update();
 
-  for( std::list< QAction* >::iterator
-    list_it = m_TabDimPluginActionMap[w2->GetTabDimensionType()].begin();
-    list_it != m_TabDimPluginActionMap[w2->GetTabDimensionType()].end();
-    list_it++
-    )
-    {
-    (*list_it)->setEnabled( true );
-    }
-
-  w2->SetPluginActions( m_TabDimPluginActionMap[w2->GetTabDimensionType()] );
-
-  std::list< std::pair< Qt::DockWidgetArea, QDockWidget* > > dock_list = w2->DockWidget();
-
-  for( std::list< std::pair< Qt::DockWidgetArea, QDockWidget* > >::iterator
-    dck_it = dock_list.begin();
-    dck_it != dock_list.end();
-    ++dck_it )
-    {
-    this->addDockWidget( dck_it->first, dck_it->second );
-    dck_it->second->show();
-    }
-
-  int idx = this->CentralTabWidget->addTab( w2, iFile );
-  this->menuView->setEnabled( true );
-  this->menuFiltering->setEnabled( true );
-  this->menuSegmentation->setEnabled( true );
-  this->menuTools->setEnabled( true );
-
-  this->CentralTabWidget->setCurrentIndex( idx );
+  SetupMenusFromTab( w2 );
 
   return w2;
 }
 //--------------------------------------------------------------------------
 
-// //--------------------------------------------------------------------------
-// void QGoMainWindow::OpenImageWithITK( const QString& iFile )
-// {
-//   typedef itk::ImageFileReader< ImageType > ImageReaderType;
-//   typedef ImageReaderType::Pointer          ImageReaderPointer;
-//
-//   ImageReaderPointer reader = ImageReaderType::New();
-//   reader->SetFileName( iFile.toAscii( ).data( ) );
-//
-//   //BUG 03/23: This next line is commented for the time being since
-//   // it makes gofigure crashing.
-//   // this->ShowProgressLoading( reader );
-//   reader->Update();
-//
-//   ImageType::Pointer itkImage = reader->GetOutput();
-//   itkImage->DisconnectPipeline();
-//
-//   VTKConvertImagePointer convert = VTKConvertImageType::New();
-//   convert->SetInput( itkImage );
-// //   this->ShowProgressLoading( convert );
-//   convert->Update();
-// //   this->HideProgressLoading();
-//
-//   vtkImageData* VTKImage = convert->GetOutput();
-//
-//   int dim[3];
-//   VTKImage->GetDimensions( dim );
-//
-//   if( ( dim[0] == 1 ) || ( dim[1] == 1 ) || ( dim[2] == 1 ) )
-//     {
-//     QGoTabImageView2D* w2 = new QGoTabImageView2D;
-//     w2->SetImage( VTKImage );
-//     w2->setWindowTitle( iFile );
-//     w2->Update();
-//
-//     for( std::list< QAction* >::iterator
-//             list_it = m_TabDimPluginActionMap[w2->GetTabDimensionType()].begin();
-//           list_it != m_TabDimPluginActionMap[w2->GetTabDimensionType()].end();
-//           list_it++
-//          )
-//       {
-//       (*list_it)->setEnabled( true );
-//       }
-//
-//     w2->SetPluginActions( m_TabDimPluginActionMap[w2->GetTabDimensionType()] );
-//
-//     int idx = this->CentralTabWidget->addTab( w2, iFile );
-//     this->menuView->setEnabled( true );
-//     this->menuFiltering->setEnabled( true );
-//     this->CentralTabWidget->setCurrentIndex( idx );
-//     }
-//   else
-//     {
-//     QGoTabImageView3D* w3 = new QGoTabImageView3D;
-//     w3->SetImage( VTKImage );
-//     w3->Update();
-//
-//     for( std::list< QAction* >::iterator
-//             list_it = m_TabDimPluginActionMap[w3->GetTabDimensionType()].begin();
-//           list_it != m_TabDimPluginActionMap[w3->GetTabDimensionType()].end();
-//           list_it++
-//          )
-//         {
-//         (*list_it)->setEnabled( true );
-//         }
-//
-//       w3->SetPluginActions( m_TabDimPluginActionMap[w3->GetTabDimensionType()] );
-//
-//       int idx = this->CentralTabWidget->addTab( w3, iFile );
-//       this->menuView->setEnabled( true );
-//       this->menuFiltering->setEnabled( true );
-//       this->CentralTabWidget->setCurrentIndex( idx );
-//     }
-// }
-// //--------------------------------------------------------------------------------
-
 //--------------------------------------------------------------------------------
 void QGoMainWindow::on_actionAbout_triggered( )
 {
-  QString version( "0.4-rc1" );
-  QString date( "Date: 12/16/2009\n\n" );
+  QString version( "0.4" );
+  QString date( "Date: 02/17/2010\n\n" );
 
   QString about_gofigure(
     tr( "GoFigure2: Software for the visualization and the analysis of biological microscope images. \n\n" ) );

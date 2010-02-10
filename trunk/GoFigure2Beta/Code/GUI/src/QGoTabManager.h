@@ -47,15 +47,22 @@ class QTabWidget;
 class QGoMainWindow;
 class QGoTabElementBase;
 
+/**
+\class QGoTabManager
+\brief 
+*/
 class QGoTabManager : public QObject
 {
   Q_OBJECT
   public:
 
-    QGoTabManager( QGoMainWindow* iMW = 0, QTabWidget* iTW = 0 );
+    explicit QGoTabManager( QGoMainWindow* iMW = 0, QTabWidget* iTW = 0 );
     ~QGoTabManager();
 
+    /** \brief Set the MainWindow if it has not been set by calling the constructor.*/
     void SetMainWindow( QGoMainWindow* iMW );
+
+    /** \brief Set the TabWidget if it has not been set by calling the constructor.*/
     void SetTabWidget( QTabWidget* iTW );
 
   public slots:

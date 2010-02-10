@@ -79,6 +79,7 @@ public slots:
   virtual void ShowOneChannel( int iChannel ) = 0;
   void ActivateManualSegmentationEditor( const bool& iActivate );
   virtual void ValidateContour();
+  void ReinitializeContour();
   void ChangeContourRepresentationProperty();
   void ReEditContour( const unsigned int& iId );
 

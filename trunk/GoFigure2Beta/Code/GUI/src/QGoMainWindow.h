@@ -50,7 +50,6 @@
 #include "itkImageToVTKImageFilter.h"
 #include "itkQtProgressBar.h"
 #include "itkQtAdaptor.h"
-#include "vtkLSMReader.h"
 
 #include "GoFigureFileInfoMultiIndexContainerHelper.h"
 #include "QGoWizardDB.h"
@@ -58,6 +57,8 @@
 #include "CreateDataBaseHelper.h"
 
 #include "GoFigureGlobalDefinition.h"
+
+class vtkLSMReader;
 
 class QGoTabManager;
 class QGoTabImageView3DwT;
