@@ -147,15 +147,19 @@ QGoTabImageView3DwT( QWidget* iParent ) :
   ReadSettings();
 
   m_DockWidgetList.push_back(
-    std::pair< Qt::DockWidgetArea, QDockWidget* >( Qt::LeftDockWidgetArea, m_VisuDockWidget ) );
+    std::pair< QGoDockWidgetStatus*, QDockWidget* >(
+      new QGoDockWidgetStatus( m_VisuDockWidget, Qt::LeftDockWidgetArea, true, true ), m_VisuDockWidget ) );
   m_DockWidgetList.push_back(
-    std::pair< Qt::DockWidgetArea, QDockWidget* >( Qt::LeftDockWidgetArea, m_ManualSegmentationDockWidget ) );
+    std::pair< QGoDockWidgetStatus*, QDockWidget* >(
+      new QGoDockWidgetStatus( m_ManualSegmentationDockWidget, Qt::LeftDockWidgetArea, true, true ), m_ManualSegmentationDockWidget ) );
   m_DockWidgetList.push_back(
-    std::pair< Qt::DockWidgetArea, QDockWidget* >( Qt::TopDockWidgetArea, m_DataBaseTables ) );
+    std::pair< QGoDockWidgetStatus*, QDockWidget* >(
+      new QGoDockWidgetStatus( m_DataBaseTables, Qt::TopDockWidgetArea, true, true ), m_DataBaseTables ) );
 
 #if defined ( ENABLEFFMPEG ) || defined (ENABLEAVI)
   m_DockWidgetList.push_back(
-    std::pair< Qt::DockWidgetArea, QDockWidget* >( Qt::LeftDockWidgetArea, m_VideoRecorderWidget ) );
+    std::pair< QGoDockWidgetStatus*, QDockWidget* >(
+      new QGoDockWidgetStatus( m_VideoRecorderWidget, Qt::LeftDockWidgetArea, true, true ), m_VideoRecorderWidget ) );
 #endif
 }
 //-------------------------------------------------------------------------

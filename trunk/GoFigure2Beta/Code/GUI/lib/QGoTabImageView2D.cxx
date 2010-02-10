@@ -85,7 +85,8 @@ QGoTabImageView2D( QWidget* iParent )
   m_VisuDockWidget->resize( 120, 300 );
 
   this->m_DockWidgetList.push_front(
-      std::pair< Qt::DockWidgetArea, QDockWidget* >( Qt::LeftDockWidgetArea,
+      std::pair< QGoDockWidgetStatus*, QDockWidget* >(
+    new QGoDockWidgetStatus( m_VisuDockWidget, Qt::LeftDockWidgetArea, true, true ),
     m_VisuDockWidget ) );
 
   QAction* LookupTableAction = new QAction( tr( "Lookup Table" ), this );

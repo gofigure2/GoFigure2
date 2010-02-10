@@ -45,6 +45,7 @@
 #include <QDir>
 
 #include "QGoPlugin.h"
+#include "QGoDockWidgetStatus.h"
 
 class QAction;
 class QActionGroup;
@@ -72,7 +73,7 @@ public:
   virtual std::vector< QAction* > ToolsActions();
   virtual std::vector< QAction* > BookmarkActions();
 
-  virtual std::list< std::pair< Qt::DockWidgetArea, QDockWidget* > >& DockWidget();
+  virtual std::list< std::pair< QGoDockWidgetStatus*, QDockWidget* > >& DockWidget();
   virtual std::list< QWidget* > AdditionalWidget();
 //   virtual QStatusBar* StatusBar();
 
@@ -90,7 +91,7 @@ protected:
   std::vector< QAction* > m_ToolsActions;
   std::vector< QAction* > m_BookmarkActions;
 
-  std::list< std::pair< Qt::DockWidgetArea, QDockWidget* > > m_DockWidgetList;
+  std::list< std::pair< QGoDockWidgetStatus*, QDockWidget* > > m_DockWidgetList;
 
 private:
   QGoTabElementBase( const QGoTabElementBase& );

@@ -31,6 +31,7 @@ SET( QGoGUILIB_SRC
   QGoDBBookmarkManager.cxx
   QTextEditChild.cxx
   QNameDescriptionInputDialog.cxx
+  QGoDockWidgetStatus.cxx
 )
 
 #------------------------------------------------------------------------------
@@ -90,6 +91,7 @@ SET( QGoGUILIB_HDRS
   QGoDBBookmarkManager.h
   QTextEditChild.h
   QNameDescriptionInputDialog.h
+  QGoDockWidgetStatus.h
 )
 
 #------------------------------------------------------------------------------

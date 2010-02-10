@@ -70,7 +70,8 @@ QGoTabImageViewElementBase( QWidget* iParent ) :
   CreateManualSegmentationdockWidget();
 
   m_DockWidgetList.push_back(
-    std::pair< Qt::DockWidgetArea, QDockWidget* >( Qt::LeftDockWidgetArea,
+    std::pair< QGoDockWidgetStatus*, QDockWidget* >(
+      new QGoDockWidgetStatus( m_ManualSegmentationDockWidget, Qt::LeftDockWidgetArea, true, true ),
       m_ManualSegmentationDockWidget ) );
 }
 //--------------------------------------------------------------------------

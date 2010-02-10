@@ -113,8 +113,9 @@ QGoTabImageView3D( QWidget* iParent )
     this, SLOT( ShowOneChannel( int ) ) );
 
   this->m_DockWidgetList.push_front(
-      std::pair< Qt::DockWidgetArea, QDockWidget* >( Qt::LeftDockWidgetArea,
-    m_VisuDockWidget ) );
+      std::pair< QGoDockWidgetStatus*, QDockWidget* >(
+        new QGoDockWidgetStatus( m_VisuDockWidget, Qt::LeftDockWidgetArea, true, true ),
+        m_VisuDockWidget ) );
 
   CreateAllViewActions();
 
