@@ -57,7 +57,7 @@ int main( int argc, char** argv )
     "http://sourceforge.net/projects/gofigure2/" );
   QCoreApplication::setApplicationName( "GoFigure2" );
 
-  QPixmap pixmap( ":/fig/splash.jpg" );
+  QPixmap pixmap( QString::fromUtf8( ":/fig/splash.jpg" ) );
   QSplashScreen *splash = new QSplashScreen(
     pixmap.scaledToWidth( 800, Qt::SmoothTransformation ),
     Qt::WindowStaysOnTopHint );
@@ -68,8 +68,6 @@ int main( int argc, char** argv )
   splash->showMessage( "Application loading... please wait" );
 
   QGoMainWindow form;
-//   app.setMainWidget( &form );
-
   form.show( );
 
   splash->showMessage( "Application ready" );
