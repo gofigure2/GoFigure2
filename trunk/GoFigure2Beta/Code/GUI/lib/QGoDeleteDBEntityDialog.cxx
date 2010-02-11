@@ -45,6 +45,7 @@
 #include <QVBoxLayout>
 #include <QSortFilterProxyModel>
 #include <QDialogButtonBox>
+#include <QMessageBox>
 #include "SelectQueryDatabaseHelper.h"
 #include "ConvertToStringHelper.h"
 
@@ -63,13 +64,12 @@ QGoDeleteDBEntityDialog::QGoDeleteDBEntityDialog( QWidget* iParent,
   QDialogButtonBox* ButtonBox = new QDialogButtonBox(QDialogButtonBox::Ok
                                       | QDialogButtonBox::Cancel);
   QObject::connect(ButtonBox, SIGNAL(rejected()), this, SLOT(reject()));
-  QObject::connect(ButtonBox,SIGNAL(accepted()), this, SLOT(deleteSelection()));
+  QObject::connect(ButtonBox,SIGNAL(accepted()), this, SLOT(AskUserConfirmation()));
   QVBoxLayout* layout = new QVBoxLayout(this);
   layout->addWidget(this->m_ListView);
   layout->addWidget(ButtonBox);
   this->setWindowTitle(tr("Delete a %1").arg(this->m_EntityName.c_str()));
   this->setLayout(layout);
- 
 
  // QTreeWidget* TreeWidget = new QTreeWidget;
   //TreeWidget->setColumnCount(2);
@@ -101,6 +101,28 @@ QStringList QGoDeleteDBEntityDialog::GetListExistingEntities(
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoDeleteDBEntityDialog::deleteSelection()
+void QGoDeleteDBEntityDialog::AskUserConfirmation()
+{
+    QMessageBox msgBox;
+
+    msgBox.setText(
+      tr("Are you sure you want to delete these bookmarks ?"));
+    msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+    int r = msgBox.exec(); 
+    if(r == 16384)
+      {
+      DeleteSelection();
+      this->accept();
+      }
+    else
+      {
+      msgBox.close();
+      }
+
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoDeleteDBEntityDialog::DeleteSelection()
 {
 }

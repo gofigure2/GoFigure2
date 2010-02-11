@@ -42,17 +42,17 @@
 #include <QTextEdit>
 
 
-QTextEditChild::QTextEditChild( QWidget* iParent ): QTextEdit( iParent )
-{
-}
+//QTextEditChild::QTextEditChild( QWidget* iParent ): QTextEdit( iParent )
+//{
+//}
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-QTextEditChild::
-QTextEditChild(const QString & iText, QWidget *iParent ):
-  QTextEdit( iText,iParent )
-{
-}
+//QTextEditChild::
+//QTextEditChild(const QString & iText, QWidget *iParent ):
+ // QTextEdit( iText,iParent )
+//{
+//}
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------

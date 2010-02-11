@@ -66,9 +66,10 @@ protected:
   QListView*  m_ListView;
   QStringList GetListExistingEntities(
     vtkMySQLDatabase* iDatabaseConnector);
+  void DeleteSelection();
 
 protected slots:
-  void deleteSelection();
+  void AskUserConfirmation();
 
 };
 
