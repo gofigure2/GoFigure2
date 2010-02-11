@@ -534,6 +534,11 @@ CreateAllViewActions()
   DisplayCube3D->setChecked( true );
   DisplayCube3D->setStatusTip( tr(" Display or not cube in 3d" ) );
 
+  QIcon cube3dicon;
+  cube3dicon.addPixmap( QPixmap(QString::fromUtf8(":/fig/cube.png")),
+    QIcon::Normal, QIcon::Off );
+  DisplayCube3D->setIcon( cube3dicon );
+
   QObject::connect( DisplayCube3D, SIGNAL( triggered() ),
     this, SLOT( DisplayCube() ) );
 

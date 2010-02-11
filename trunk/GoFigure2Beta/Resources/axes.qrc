@@ -3,6 +3,7 @@
     <file>fig/splash.jpg</file>
   </qresource>
   <qresource prefix="/" >
+    <file>fig/cube.png</file>
     <file>fig/Myapp2.png</file>
   </qresource>
   <qresource prefix="/" >
