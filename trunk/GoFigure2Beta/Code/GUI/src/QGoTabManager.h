@@ -42,6 +42,8 @@
 #define __QGoTabManager_h
 
 #include <QObject>
+#include <QAction>
+#include <vector>
 
 class QTabWidget;
 class QGoMainWindow;
@@ -69,6 +71,7 @@ class QGoTabManager : public QObject
     void ChangeCurrentTab( int iIdx );
     void CloseTab( int idx );
     void CloseAllTabs( );
+    void UpdateBookmarkMenu(std::vector<QAction*> iBookmarkActions);
 
   private:
     QGoMainWindow*  m_MainWindow;

@@ -659,13 +659,19 @@ void QGoTabImageView3DwT::CreateBookmarkActions()
     this, SLOT (AddBookmark()));
  
   QObject::connect(this->m_DataBaseTables, SIGNAL (PrintDBReady()),
-    this, SLOT(GetTheOpenBookmarksActions()));
-   
+    this, SLOT(GetTheOpenBookmarksActions()));   
 }
 //-------------------------------------------------------------------------
 //-------------------------------------------------------------------------
 void QGoTabImageView3DwT::GetTheOpenBookmarksActions()
 {
+  bool UpdateOpenBookmarks = false;
+  if (this->m_BookmarkActions.size() > 1)
+    {
+    this->m_BookmarkActions.erase(
+      this->m_BookmarkActions.begin()+this->m_BookmarkActions.size()-1);
+    UpdateOpenBookmarks = true;
+    } 
   std::vector<std::string> ListBookmarks = 
     this->m_DataBaseTables->GetListBookmarks();
   int NumberBookmarks = ListBookmarks.size();
@@ -678,6 +684,10 @@ void QGoTabImageView3DwT::GetTheOpenBookmarksActions()
       this, SLOT(OpenExistingBookmark()));
     }
    this->m_BookmarkActions.push_back(OpenBookmarkMenu->menuAction());
+   if (UpdateOpenBookmarks)
+     {
+     emit UpdateBookmarkOpenActions(this->m_BookmarkActions);
+     }
 }
 //-------------------------------------------------------------------------
 //-------------------------------------------------------------------------
@@ -2301,8 +2311,11 @@ void QGoTabImageView3DwT::AddBookmark()
 { 
   this->m_DataBaseTables->AddBookmark(this->GetSliceViewYZ(),
     this->GetSliceViewXZ(),this->GetSliceViewXY(),this->GetTimePoint());
+  this->GetTheOpenBookmarksActions();
 }
+//-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
 Change3DPerspectiveToAxial()

@@ -304,6 +304,8 @@ void QGoMainWindow::openFilesfromDB()
   // when using CreateNewTabFor3DwtImage
   QGoTabImageView3DwT* w3t = CreateNewTabFor3DwtImage( file_container,
     filetype, header_filename, 0 );
+  QObject::connect(w3t,SIGNAL(UpdateBookmarkOpenActions(std::vector<QAction*>)), 
+    this->m_TabManager, SLOT(UpdateBookmarkMenu(std::vector<QAction*>)));
 
   // Load all contours from the first time point
   //std::vector< ContourMeshStructure >::iterator

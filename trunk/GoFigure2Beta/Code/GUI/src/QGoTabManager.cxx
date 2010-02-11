@@ -230,6 +230,20 @@ void QGoTabManager::ChangeCurrentTab( int iIdx )
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+void QGoTabManager::UpdateBookmarkMenu(std::vector<QAction*> iBookmarkActions )
+{
+  m_MainWindow->menuBookmarks->clear();
+
+    for( std::vector< QAction* >::iterator it = iBookmarkActions.begin();
+        it != iBookmarkActions.end();
+        ++it )
+      {
+      m_MainWindow->menuBookmarks->addAction( *it );
+      }
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
 void QGoTabManager::CloseTab( int idx )
 {
   if( idx >= 0 )

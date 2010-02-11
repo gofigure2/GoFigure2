@@ -110,10 +110,6 @@ GoDBCoordinateRow QGoDBBookmarkManager::GetCoordinatesForBookmark(
   GoDBCoordinateRow BookmarkCoord;
   BookmarkCoord.SetValuesForSpecificID(
     this->GetCoordIDForBookmark(iDatabaseConnector,iName),iDatabaseConnector);
-  /*std::string BookmarkCoordID = ConvertToString<int>(
-    this->GetCoordIDForBookmark(iDatabaseConnector,iName));
-  std::vector<std::string> ResultQuery = ListSpecificValuesForRow(
-    iDatabaseConnector,"coordinate", "CoordID",BookmarkCoordID);*/
   return BookmarkCoord;
 }
 //-------------------------------------------------------------------------

@@ -200,6 +200,7 @@ signals:
   void SliceViewXZChanged( int Slice );
   void SliceViewYZChanged( int Slice );
   void FullScreenViewChanged( int FullScreen );
+  void UpdateBookmarkOpenActions(std::vector<QAction*>);
 
 public slots:
   void SetTimePoint( const int& );
