@@ -77,6 +77,8 @@ class QGoDBBookmarkManager:
     QNameDescriptionInputDialog* m_NameDescDialog;
     vtkMySQLDatabase*            m_DatabaseConnectorForNewBkmrk;
     
+     bool DoesThisBookmarkNameAlreadyExistsInTheDB(
+      vtkMySQLDatabase* DatabaseConnector,std::string iName);
 
   protected slots:
     /** \brief save the new bookmark in the database, the 
@@ -86,6 +88,8 @@ class QGoDBBookmarkManager:
 
     int GetCoordIDForBookmark(vtkMySQLDatabase* iDatabaseConnector,
       std::string iName);
+
+    void ValidateName(std::string iName);
 
 };
 #endif

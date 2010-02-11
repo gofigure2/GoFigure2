@@ -60,9 +60,16 @@ public:
   ID for new created bookmark*/
   int SaveInDB(vtkMySQLDatabase* DatabaseConnector);
 
-/**\brief check if the bookmark already exits in the database, if yes, 
+  /**\brief check if the bookmark already exits in the database, if yes, 
   return the corresponding ID, if not, return -1*/
   int DoesThisBookmarkAlreadyExists(vtkMySQLDatabase* DatabaseConnector);
+
+  /**\brief check if the bookmark already exits in the database, if yes, 
+  return the corresponding ID, if not, return -1 and the name of the
+  existing bookmark*/
+  int DoesThisBookmarkAlreadyExists(vtkMySQLDatabase* DatabaseConnector,
+    std::string &ioName);
+
 
 protected:
   virtual void InitializeMap();

@@ -90,10 +90,17 @@ void QNameDescriptionInputDialog::ValidationRequested()
     }
   else
     {
-    emit NameValidated();
-    this->accept();
+    emit NameNonEmpty(this->GetInputTextForName());
+    //this->accept();
     }
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+void QNameDescriptionInputDialog::NameAlreadyExists()
+{
+  QMessageBox msgBox;
+    msgBox.setText(
+      tr("This name already exists, please choose another one"));
+    msgBox.exec();
+}

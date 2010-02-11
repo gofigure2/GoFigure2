@@ -64,10 +64,34 @@ void GoDBBookmarkRow::InitializeMap()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-int GoDBBookmarkRow::DoesThisBookmarkAlreadyExists(vtkMySQLDatabase* DatabaseConnector)
+int GoDBBookmarkRow::DoesThisBookmarkAlreadyExists(
+  vtkMySQLDatabase* DatabaseConnector)
 {
-  return FindOneID(DatabaseConnector,"bookmark", "BookmarkID",
-    "Name",this->GetMapValue("Name"));
+  int ID = FindOneID(DatabaseConnector,"bookmark", "BookmarkID",
+    "ImagingSessionID",this->GetMapValue("ImagingSessionID"),"CoordID",
+    this->GetMapValue("CoordID"));
+  if (ID == -1)
+    {
+    return false;
+    }
+  return true;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+int GoDBBookmarkRow::DoesThisBookmarkAlreadyExists(
+  vtkMySQLDatabase* DatabaseConnector,std::string &ioName)
+{
+  int ID = FindOneID(DatabaseConnector,"bookmark", "BookmarkID",
+    "ImagingSessionID",this->GetMapValue("ImagingSessionID"),"CoordID",
+    this->GetMapValue("CoordID"));
+  if (ID == -1)
+    {
+    return false;
+    }
+  ioName = ReturnOnlyOneValue(DatabaseConnector,"bookmark", "Name",
+    "BookmarkID",ConvertToString<int>(ID));
+    return true;
 }
 //-------------------------------------------------------------------------
 

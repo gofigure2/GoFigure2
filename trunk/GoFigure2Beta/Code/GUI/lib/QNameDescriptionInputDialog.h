@@ -65,8 +65,10 @@ public:
   std::string GetInputTextForName();
   std::string GetInputTextForDescription();
 
+  void NameAlreadyExists();
+
 signals:
-  void NameValidated();
+  void NameNonEmpty(std::string);
 
 protected:
   QTextEditChild* m_DescriptionTextEdit;
