@@ -1249,3 +1249,12 @@ GoDBCoordinateRow QGoPrintDatabase::GetCoordinateForBookmark(
   this->CloseDBConnection();
   return Coord;
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoPrintDatabase::DeleteBookmarks()
+{
+  this->OpenDBConnection();
+  this->m_BookmarkManager->DeleteBookmark(this->m_DatabaseConnector);
+  this->CloseDBConnection();
+}

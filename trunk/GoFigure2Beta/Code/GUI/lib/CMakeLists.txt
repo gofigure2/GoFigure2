@@ -32,6 +32,7 @@ SET( QGoGUILIB_SRC
   QTextEditChild.cxx
   QNameDescriptionInputDialog.cxx
   QGoDockWidgetStatus.cxx
+  QGoDeleteDBEntityDialog.cxx
 )
 
 #------------------------------------------------------------------------------
@@ -92,6 +93,7 @@ SET( QGoGUILIB_HDRS
   QTextEditChild.h
   QNameDescriptionInputDialog.h
   QGoDockWidgetStatus.h
+  QGoDeleteDBEntityDialog.h
 )
 
 #------------------------------------------------------------------------------

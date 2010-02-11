@@ -662,7 +662,10 @@ void QGoTabImageView3DwT::CreateBookmarkActions()
   this->m_BookmarkActions.push_back(AddBookmarkAction);
   QObject::connect(AddBookmarkAction, SIGNAL ( triggered() ),
     this, SLOT (AddBookmark()));
- 
+  QAction* DeleteBookmarkAction = new QAction(tr("Delete a bookmark"),this);
+  this->m_BookmarkActions.push_back(DeleteBookmarkAction);
+  QObject::connect(DeleteBookmarkAction,SIGNAL ( triggered() ),
+    this->m_DataBaseTables,SLOT( DeleteBookmarks()));
   QObject::connect(this->m_DataBaseTables, SIGNAL (PrintDBReady()),
     this, SLOT(GetTheOpenBookmarksActions()));   
 }
@@ -671,7 +674,7 @@ void QGoTabImageView3DwT::CreateBookmarkActions()
 void QGoTabImageView3DwT::GetTheOpenBookmarksActions()
 {
   bool UpdateOpenBookmarks = false;
-  if (this->m_BookmarkActions.size() > 1)
+  if (this->m_BookmarkActions.size() > 2)
     {
     this->m_BookmarkActions.erase(
       this->m_BookmarkActions.begin()+this->m_BookmarkActions.size()-1);

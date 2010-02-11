@@ -154,6 +154,8 @@ public slots:
   /** \brief Save a new color in the database with rgba and the name of the color*/
   void SaveNewColorInDB(std::vector<std::string> iDataNewColor);
 
+  void DeleteBookmarks();
+
 signals:
   void PrintDBReady();
   void TableContentChanged();

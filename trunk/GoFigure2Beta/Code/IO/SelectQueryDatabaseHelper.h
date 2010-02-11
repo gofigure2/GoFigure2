@@ -124,6 +124,13 @@ std::vector<std::string> ListSpecificValuesForOneColumn(
   std::string TableName, std::string ColumnName,
   std::string field,std::string value);
 
+//query: "SELECT ColumnName FROM TableName WHERE field = value
+//ORDER BY ColumnNameOrder ASC"
+std::vector<std::string> ListSpecificValuesForOneColumn(
+  vtkMySQLDatabase* DatabaseConnector,
+  std::string TableName, std::string ColumnName,
+  std::string field,std::string value,std::string ColumnNameOrder);
+
 //query: "SELECT ColumnName FROM TableName WHERE (field = value1
 //or field = value2....)"
 std::vector<std::string> ListSpecificValuesForOneColumn(

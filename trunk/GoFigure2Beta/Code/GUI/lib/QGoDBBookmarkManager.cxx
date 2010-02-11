@@ -47,6 +47,7 @@
 #include "QueryDataBaseHelper.h"
 #include "QNameDescriptionInputDialog.h"
 #include "SelectQueryDatabaseHelper.h"
+#include "QGoDeleteDBEntityDialog.h"
 
 QGoDBBookmarkManager::QGoDBBookmarkManager(QWidget* iParent,
   int iImgSessionID):
@@ -162,4 +163,15 @@ void QGoDBBookmarkManager::ValidateName(std::string iName)
     this->m_NameDescDialog->accept();
     this->SaveNewBookmarkInDB();
     }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoDBBookmarkManager::DeleteBookmark(
+  vtkMySQLDatabase* iDatabaseConnector)
+{
+  QGoDeleteDBEntityDialog* Dialog = new QGoDeleteDBEntityDialog(
+    this,"bookmark",this->m_ImgSessionID,iDatabaseConnector);
+  Dialog->show();
+  Dialog->exec();
 }

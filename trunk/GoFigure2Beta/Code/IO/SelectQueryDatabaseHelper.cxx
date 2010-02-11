@@ -537,8 +537,56 @@ vtkSQLQuery* query = DatabaseConnector->GetQueryInstance();
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-//query: "SELECT ColumnName FROM TableName WHERE (field = value1
-//or field = value2....)"
+//query: "SELECT ColumnName FROM TableName WHERE field = value
+//ORDER BY ColumnNameOrder ASC"
+std::vector<std::string> ListSpecificValuesForOneColumn(
+  vtkMySQLDatabase* DatabaseConnector,
+  std::string TableName, std::string ColumnName,
+  std::string field,std::string value,std::string ColumnNameOrder)
+{
+  std::vector< std::string > result;
+
+  vtkSQLQuery* query = DatabaseConnector->GetQueryInstance();
+    std::stringstream querystream;
+    querystream << "SELECT ";
+    querystream << ColumnName;
+    querystream << " FROM ";
+    querystream << TableName;
+    querystream << " WHERE ";
+    querystream << field;
+    querystream << " = '";
+    querystream << value;
+    querystream << "' ORDER BY ";
+    querystream << ColumnNameOrder;
+    querystream << " ASC;";
+
+    query->SetQuery( querystream.str().c_str() );
+    if ( !query->Execute() )
+      {
+      itkGenericExceptionMacro(
+        << "List of all values of ExpID query failed"
+        << query->GetLastErrorText() );
+      DatabaseConnector->Close();
+      DatabaseConnector->Delete();
+      query->Delete();
+      return result;
+      }
+
+    while (query->NextRow())
+      {
+      for( int i = 0; i < query->GetNumberOfFields(); i++)
+        {
+        result.push_back( query->DataValue( i ).ToString() );
+        }
+      }
+
+    query->Delete();
+
+    return result;
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
 std::vector<std::string> ListSpecificValuesForOneColumn(
   vtkMySQLDatabase* DatabaseConnector,
   std::string TableName, std::string ColumnName,
