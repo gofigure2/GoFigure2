@@ -91,7 +91,6 @@ void QNameDescriptionInputDialog::ValidationRequested()
   else
     {
     emit NameNonEmpty(this->GetInputTextForName());
-    //this->accept();
     }
 }
 //-------------------------------------------------------------------------

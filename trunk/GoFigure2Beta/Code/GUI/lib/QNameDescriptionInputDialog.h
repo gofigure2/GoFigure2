@@ -65,6 +65,8 @@ public:
   std::string GetInputTextForName();
   std::string GetInputTextForDescription();
 
+  /** \brief open a messagebox to tell the user that the name he 
+  choose already exits*/
   void NameAlreadyExists();
 
 signals:
@@ -75,6 +77,8 @@ protected:
   QString         m_EntityName;
 
 protected slots:
+  /** \brief check that the qlineEdit for the name is not
+  empty, if so, tell the user he needs to enter a name*/
   void ValidationRequested();
 
 };

@@ -72,7 +72,6 @@ void QGoDBBookmarkManager::AddABookmark(int iCoordID,
   this->m_DatabaseConnectorForNewBkmrk = iDatabaseConnector;
   QObject::connect (this->m_NameDescDialog, SIGNAL(NameNonEmpty(std::string)),
     this, SLOT(ValidateName(std::string)));
-  /** \todo check that the bookmark is unique*/
   this->m_NameDescDialog->exec();
 }
 //-------------------------------------------------------------------------

@@ -83,12 +83,18 @@ class QGoDBBookmarkManager:
   protected slots:
     /** \brief save the new bookmark in the database, the 
     m_DatabaseConnectorForNewBkmrk needs to be set before
-    calling this method*/
+    calling this method. Check that the bookmark doesn't 
+    already exits in the database, if so, give the user
+    the name of the existing bookmark*/
     void SaveNewBookmarkInDB();
 
     int GetCoordIDForBookmark(vtkMySQLDatabase* iDatabaseConnector,
       std::string iName);
 
+    /** \brief check that the name doesn't already exists in the 
+    database, if so, make the m_NameDescDialog asks the user to
+    choose another one, if no, close the m_NameDescDialog and 
+    call SaveNewBookmarkInDB()*/
     void ValidateName(std::string iName);
 
 };
