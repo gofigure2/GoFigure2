@@ -135,7 +135,7 @@ ADD_TEST( QGoPrintDatabaseTest
 IF( ENABLE_VIDEO_RECORD_FFMPEG )
   ADD_TEST( QGoVideoRecorderTest
     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/QGoVideoRecorderTest
-    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/1
+    1
   )
 
   ADD_TEST( vtkFFMPEGRenderWindowRecorderTest

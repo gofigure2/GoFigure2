@@ -41,7 +41,6 @@
 #ifndef __QGOVIDEORECORDER_H
 #define __QGOVIDEORECORDER_H
 
-#include <QtGui>
 #include "ui_NewVideoRecorderDockWidget.h"
 
 #include <iostream>

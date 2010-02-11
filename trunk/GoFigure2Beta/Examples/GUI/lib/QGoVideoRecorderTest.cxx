@@ -57,10 +57,9 @@ int main( int argc, char *argv[] )
 
   QApplication app(argc, argv);
   QTimer* timer = new QTimer;
-    timer->setSingleShot( true );
+  timer->setSingleShot( true );
 
-  QGoVideoRecorder*                         window;
-  window = new QGoVideoRecorder( NULL );
+  QGoVideoRecorder* window = new QGoVideoRecorder( NULL );
 
   QObject::connect( timer, SIGNAL( timeout() ), window, SLOT( close() ) );
 
@@ -72,12 +71,12 @@ int main( int argc, char *argv[] )
   window->show();
 
   app.processEvents();
-  app.exec();
+  int output = app.exec();
 
   app.closeAllWindows();
 
   delete timer;
   delete window;
 
-  return 0;
+  return output;
 }

@@ -41,6 +41,7 @@
 #include "QGoVideoRecorder.h"
 
 #include <QFileDialog>
+#include <QTimer>
 
 #include "QGoImageView3D.h"
 
