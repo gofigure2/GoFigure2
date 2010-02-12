@@ -69,9 +69,9 @@ class QGoDBBookmarkManager:
       vtkMySQLDatabase* iDatabaseConnector);
     /** \brief return the coordinate for the bookmark with the name iName*/
     GoDBCoordinateRow GetCoordinatesForBookmark(
-      vtkMySQLDatabase* iDatabaseConnector,std::string iName);
-    
+      vtkMySQLDatabase* iDatabaseConnector,std::string iName);   
     void DeleteBookmark(vtkMySQLDatabase* iDatabaseConnector);
+
   protected:
     int                          m_ImgSessionID;
     int                          m_CoordIDForNewBookmark;
@@ -97,6 +97,8 @@ class QGoDBBookmarkManager:
     choose another one, if no, close the m_NameDescDialog and 
     call SaveNewBookmarkInDB()*/
     void ValidateName(std::string iName);
+signals:
+    void ListBookmarksChanged();
 
 };
 #endif

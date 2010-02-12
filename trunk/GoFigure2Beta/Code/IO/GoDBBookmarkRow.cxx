@@ -70,11 +70,7 @@ int GoDBBookmarkRow::DoesThisBookmarkAlreadyExists(
   int ID = FindOneID(DatabaseConnector,"bookmark", "BookmarkID",
     "ImagingSessionID",this->GetMapValue("ImagingSessionID"),"CoordID",
     this->GetMapValue("CoordID"));
-  if (ID == -1)
-    {
-    return false;
-    }
-  return true;
+  return ID;
 }
 //-------------------------------------------------------------------------
 
@@ -87,11 +83,11 @@ int GoDBBookmarkRow::DoesThisBookmarkAlreadyExists(
     this->GetMapValue("CoordID"));
   if (ID == -1)
     {
-    return false;
+    return ID;
     }
   ioName = ReturnOnlyOneValue(DatabaseConnector,"bookmark", "Name",
     "BookmarkID",ConvertToString<int>(ID));
-    return true;
+  return ID;
 }
 //-------------------------------------------------------------------------
 

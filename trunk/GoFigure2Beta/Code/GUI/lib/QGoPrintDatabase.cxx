@@ -199,6 +199,8 @@ void QGoPrintDatabase::SetDatabaseVariables(
   this->m_TracksData->CollectionOfTraces->SetImgSessionID(m_ImgSessionID);
   this->m_LineagesData->CollectionOfTraces->SetImgSessionID(m_ImgSessionID);
   this->m_BookmarkManager = new QGoDBBookmarkManager(this,this->m_ImgSessionID);
+  QObject::connect(this->m_BookmarkManager, SIGNAL(ListBookmarksChanged()),
+    this,SIGNAL(OpenBookmarksToUpdate()));
 }
 //--------------------------------------------------------------------------
 
@@ -1223,7 +1225,6 @@ void QGoPrintDatabase::AddBookmark(int iXCoord, int iYCoord,
   this->OpenDBConnection();
   int BookmarkCoordID = BookmarkCoord.SaveInDB(this->m_DatabaseConnector);
   this->m_BookmarkManager->AddABookmark(BookmarkCoordID,this->m_DatabaseConnector);
-
   this->CloseDBConnection();
 }
 //-------------------------------------------------------------------------

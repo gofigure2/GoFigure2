@@ -171,6 +171,7 @@ signals:
   void TraceToReEdit( unsigned int );
   void DeletedCollection( unsigned int );
   void TracesToDeleteInVisu( std::list< int > );
+  void OpenBookmarksToUpdate();
 
 protected:
   std::pair<std::string,QColor> m_CurrentColorData;

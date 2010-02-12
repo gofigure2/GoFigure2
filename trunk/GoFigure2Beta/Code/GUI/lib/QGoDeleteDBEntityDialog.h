@@ -84,7 +84,8 @@ protected slots:
   nothying has been selected and ask the user confirmation 
   if selection is not null*/
   void SelectionValidation();
-
+signals:
+  void ListEntitiesChanged();
 };
 
 #endif

@@ -158,4 +158,5 @@ void QGoDeleteDBEntityDialog::DeleteSelection(
     }  
   DeleteRows(this->m_DatabaseConnector,this->m_EntityName, 
   "Name", VectorNamesToDelete);
+  emit ListEntitiesChanged();
 }

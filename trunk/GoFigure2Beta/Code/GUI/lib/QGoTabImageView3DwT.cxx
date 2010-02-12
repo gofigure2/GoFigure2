@@ -668,6 +668,8 @@ void QGoTabImageView3DwT::CreateBookmarkActions()
     this->m_DataBaseTables,SLOT( DeleteBookmarks()));
   QObject::connect(this->m_DataBaseTables, SIGNAL (PrintDBReady()),
     this, SLOT(GetTheOpenBookmarksActions()));   
+  QObject::connect(this->m_DataBaseTables, SIGNAL(OpenBookmarksToUpdate()),
+    this, SLOT(GetTheOpenBookmarksActions()));
 }
 //-------------------------------------------------------------------------
 //-------------------------------------------------------------------------
