@@ -78,10 +78,13 @@ ConversionLsmToMegaThread ( ) : m_BaseName(""), m_LsmPath(""), m_MegaPath(""),
 
 ConversionLsmToMegaThread::~ConversionLsmToMegaThread()
 {
-  while( !m_LSMReaders.empty() )
+  std::vector< vtkLSMReader* >::iterator itLSMReaders = m_LSMReaders.begin();
+
+  for(itLSMReaders = m_LSMReaders.begin();
+      itLSMReaders != m_LSMReaders.end();
+      itLSMReaders++)
     {
-    m_LSMReaders.back()->Delete();
-    m_LSMReaders.pop_back();
+    (*itLSMReaders)->Delete();
     }
 }
 
