@@ -219,43 +219,43 @@ IF( VTK_FOUND )
       ${MEGAVTK2_SOURCE_DIR}/vtkRenderingAddOn
       ${MEGAVTK2_BINARY_DIR}/vtkRenderingAddOn
       ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/vtkLSM
-      ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/itkQt )
+      ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/itkQt 
+    )
 
-#---------------------------------------------------------------------------
-#---------------------------------------------------------------------------
-# VIDEO SUPPORT
-#---------------------------------------------------------------------------
-#---------------------------------------------------------------------------
+    #---------------------------------------------------------------------
+    #---------------------------------------------------------------------
+    # VIDEO SUPPORT
+    #---------------------------------------------------------------------
+    #---------------------------------------------------------------------
 
-# FFMPEG: for Linux and Mac (tested and validated)
-IF( VTK_USE_FFMPEG_ENCODER )
-  OPTION (ENABLE_VIDEO_RECORD_FFMPEG "VTK must be built with VTK_USE_FFMPEG_ENCODER" ON)
-ENDIF( VTK_USE_FFMPEG_ENCODER )
+    # FFMPEG: for Linux and Mac (tested and validated)
+    IF( VTK_USE_FFMPEG_ENCODER )
+      OPTION( ENABLE_VIDEO_RECORD_FFMPEG "VTK must be built with VTK_USE_FFMPEG_ENCODER" ON )
+    ENDIF( VTK_USE_FFMPEG_ENCODER )
 
-IF( ENABLE_VIDEO_RECORD_FFMPEG )
-  ADD_DEFINITIONS(-DENABLEFFMPEG)
-ELSE( ENABLE_VIDEO_RECORD_FFMPEG )
-  REMOVE_DEFINITIONS(-DENABLEFFMPEG)
-ENDIF( ENABLE_VIDEO_RECORD_FFMPEG )
+    IF( ENABLE_VIDEO_RECORD_FFMPEG )
+      ADD_DEFINITIONS(-DENABLEFFMPEG)
+    ELSE( ENABLE_VIDEO_RECORD_FFMPEG )
+      REMOVE_DEFINITIONS(-DENABLEFFMPEG)
+    ENDIF( ENABLE_VIDEO_RECORD_FFMPEG )
 
-# AVI: for Windows only
-IF( VTK_USE_VIDEO_FOR_WINDOWS )
-  OPTION (ENABLE_VIDEO_RECORD_AVI "VTK must be built with VTK_USE_AVI_ENCODER" ON)
-ENDIF( VTK_USE_VIDEO_FOR_WINDOWS )
+    # AVI: for Windows only
+    IF( VTK_USE_VIDEO_FOR_WINDOWS )
+      OPTION (ENABLE_VIDEO_RECORD_AVI "VTK must be built with VTK_USE_AVI_ENCODER" ON)
+    ENDIF( VTK_USE_VIDEO_FOR_WINDOWS )
 
-IF( ENABLE_VIDEO_RECORD_AVI )
-  ADD_DEFINITIONS(-DENABLEAVI)
-ELSE( ENABLE_VIDEO_RECORD_AVI )
-  REMOVE_DEFINITIONS(-DENABLEAVI)
-ENDIF( ENABLE_VIDEO_RECORD_AVI )
+    IF( ENABLE_VIDEO_RECORD_AVI )
+      ADD_DEFINITIONS(-DENABLEAVI)
+    ELSE( ENABLE_VIDEO_RECORD_AVI )
+      REMOVE_DEFINITIONS(-DENABLEAVI)
+    ENDIF( ENABLE_VIDEO_RECORD_AVI )
 
-#---------------------------------------------------------------------------
-#---------------------------------------------------------------------------
+    #---------------------------------------------------------------------
+    #---------------------------------------------------------------------
 
     IF( BUILD_EXAMPLES )
       INCLUDE( CTest )
     ENDIF( BUILD_EXAMPLES )
-    
     
 
     SET( QGoResourceFile ${GOFIGURE2_SOURCE_DIR}/Resources/axes.qrc )
@@ -304,6 +304,7 @@ ENDIF( ENABLE_VIDEO_RECORD_AVI )
   ADD_SUBDIRECTORY( Code )
 
   OPTION( BUILD_EXAMPLES "Build Examples" OFF )
+  OPTION( BUILD_PLUGINS  "Build GoFigure Plugins" OFF )
 
   IF( BUILD_EXAMPLES )
     ADD_SUBDIRECTORY( Examples )
