@@ -14,7 +14,7 @@ QGoImageFilterPluginBase() : m_VTKInput( 0 ), m_VTKOutput( 0 )
 QGoImageFilterPluginBase::~QGoImageFilterPluginBase()
 {}
 
-void QGoImageFilterPluginBase::SetInput( vtkImageData* iInput )
+void QGoImageFilterPluginBase::SetInput( std::vector< vtkImageData* >& iInput )
 {
   QMessageBox::information( 0, "Title", "QGoImageFilterPluginBase::setInput" );
   m_VTKInput = iInput;
@@ -22,13 +22,16 @@ void QGoImageFilterPluginBase::SetInput( vtkImageData* iInput )
 
 void QGoImageFilterPluginBase::Update()
 {
-  if( m_VTKInput )
+  if( !m_VTKInput.empty() )
     {
-    this->Process();
+    if( m_VTKInput.front() )
+      {
+      this->Process();
+      }
     }
 }
 
-vtkImageData* QGoImageFilterPluginBase::GetOutput()
+std::vector< vtkImageData* > QGoImageFilterPluginBase::GetOutput()
 {
   return m_VTKOutput;
 }

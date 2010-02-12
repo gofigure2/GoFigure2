@@ -118,7 +118,7 @@ QGoMainWindow::QGoMainWindow( )
 
   CreateSignalSlotsConnection();
   ReadSettings();
-//   LoadPlugins();
+  LoadPlugins();
 }
 
 //--------------------------------------------------------------------------
@@ -258,7 +258,7 @@ ComputeFileType( const QString& iFileName, GoFigure::FileType& oFileType )
 
 //--------------------------------------------------------------------------
 void QGoMainWindow::openFilesfromDB()
-{ 
+{
   GoFigureFileInfoHelperMultiIndexContainer file_container =
     m_DBWizard->GetMultiIndexFileContainer();
 
@@ -304,7 +304,7 @@ void QGoMainWindow::openFilesfromDB()
   QGoTabImageView3DwT* w3t = CreateNewTabFor3DwtImage( file_container,
     filetype, header_filename, 0 );
 
-  QObject::connect( w3t, SIGNAL( UpdateBookmarkOpenActions( std::vector<QAction*> ) ), 
+  QObject::connect( w3t, SIGNAL( UpdateBookmarkOpenActions( std::vector<QAction*> ) ),
     this->m_TabManager, SLOT( UpdateBookmarkMenu( std::vector<QAction*> ) ) );
 
   // Load all contours from the first time point
@@ -368,7 +368,7 @@ void QGoMainWindow::openFilesfromDB()
         {
         w3t->AddPolyData( contourmesh_list_it->Nodes );
         }
-      ++contourmesh_list_it;      
+      ++contourmesh_list_it;
       }
     }
   this->menuBookmarks->setEnabled(true);

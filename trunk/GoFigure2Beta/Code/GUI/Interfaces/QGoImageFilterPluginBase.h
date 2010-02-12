@@ -23,13 +23,13 @@ class QGoImageFilterPluginBase : public QGoPlugin
     QGoImageFilterPluginBase();
     virtual ~QGoImageFilterPluginBase();
 
-    virtual void SetInput( vtkImageData* iInput );
+    virtual void SetInput( std::vector< vtkImageData* >& iInput );
     virtual void Update();
-    virtual vtkImageData* GetOutput();
+    virtual std::vector< vtkImageData* > GetOutput();
 
   protected:
-    vtkImageData* m_VTKInput;
-    vtkImageData* m_VTKOutput;
+    std::vector< vtkImageData* > m_VTKInput;
+    std::vector< vtkImageData* > m_VTKOutput;
 
     virtual void Process( ) = 0;
 
