@@ -49,9 +49,6 @@
 #include "QGoPluginHelper.h"
 #include "QGoImageFilterPluginBase.h"
 
-#include "itkQtAdaptor.h"
-#include "itkQtProgressBar.h"
-
 #include <iostream>
 #include <set>
 
@@ -82,10 +79,12 @@
 #include "vtkPolyData.h"
 #include "vtkProperty.h"
 
+#include "vtkImageData.h"
 #include "vtkImageReader2Factory.h"
 #include "vtkImageReader2.h"
 
 #include "QGoTabManager.h"
+#include "QGoWizardDB.h"
 
 //--------------------------------------------------------------------------
 QGoMainWindow::QGoMainWindow( )
@@ -304,8 +303,9 @@ void QGoMainWindow::openFilesfromDB()
   // when using CreateNewTabFor3DwtImage
   QGoTabImageView3DwT* w3t = CreateNewTabFor3DwtImage( file_container,
     filetype, header_filename, 0 );
-  QObject::connect(w3t,SIGNAL(UpdateBookmarkOpenActions(std::vector<QAction*>)), 
-    this->m_TabManager, SLOT(UpdateBookmarkMenu(std::vector<QAction*>)));
+
+  QObject::connect( w3t, SIGNAL( UpdateBookmarkOpenActions( std::vector<QAction*> ) ), 
+    this->m_TabManager, SLOT( UpdateBookmarkMenu( std::vector<QAction*> ) ) );
 
   // Load all contours from the first time point
   //std::vector< ContourMeshStructure >::iterator
@@ -434,25 +434,25 @@ void QGoMainWindow::on_actionOpen_Mesh_triggered( )
 
             if( extension.compare( "vtk", Qt::CaseInsensitive ) == 0 )
               {
-              vtkPolyDataReader* mesh_reader = vtkPolyDataReader::New();
+              vtkSmartPointer< vtkPolyDataReader > mesh_reader =
+                vtkSmartPointer< vtkPolyDataReader >::New();
               mesh_reader->SetFileName( (*it).toAscii( ).data( ) );
               mesh_reader->Update();
 
               mesh->ShallowCopy( mesh_reader->GetOutput() );
               mesh_list.push_back( mesh );
-              mesh_reader->Delete();
               }
             else
               {
               if( extension.compare( "ply", Qt::CaseInsensitive ) == 0 )
                 {
-                vtkPLYReader* mesh_reader = vtkPLYReader::New();
+                vtkSmartPointer< vtkPLYReader > mesh_reader =
+                  vtkSmartPointer< vtkPLYReader >::New();
                 mesh_reader->SetFileName( (*it).toAscii( ).data( ) );
                 mesh_reader->Update();
 
                 mesh->ShallowCopy( mesh_reader->GetOutput() );
                 mesh_list.push_back( mesh );
-                mesh_reader->Delete();
                 }
               }
             }
@@ -661,9 +661,9 @@ SetupMenusFromTab( QGoTabElementBase* iT )
 
   iT->SetPluginActions( m_TabDimPluginActionMap[iT->GetTabDimensionType()] );
 
-  std::list< std::pair< QGoDockWidgetStatus*, QDockWidget* > > dock_list = iT->DockWidget();
+  std::list< QGoTabElementBase::QGoDockWidgetStatusPair > dock_list = iT->DockWidget();
 
-  for( std::list< std::pair< QGoDockWidgetStatus*, QDockWidget* > >::iterator
+  for( std::list< QGoTabElementBase::QGoDockWidgetStatusPair >::iterator
     dck_it = dock_list.begin();
     dck_it != dock_list.end();
     ++dck_it )
@@ -691,7 +691,7 @@ QGoMainWindow::
 CreateNewTabFor3DwtImage( vtkLSMReader* iReader, const QString& iFile )
 {
   QGoTabImageView3DwT* w3t = new QGoTabImageView3DwT;
-  w3t->setWindowTitle( iFile );
+  w3t->setWindowTitle( QFileInfo( iFile ).fileName() );
   w3t->SetLSMReader( iReader, 0 );
 
   SetupMenusFromTab( w3t );
@@ -709,7 +709,7 @@ CreateNewTabFor3DImage( vtkImageData* iInput, const QString& iFile )
 {
   QGoTabImageView3D* w3 = new QGoTabImageView3D;
   w3->SetImage( iInput );
-  w3->setWindowTitle( iFile );
+  w3->setWindowTitle( QFileInfo( iFile ).fileName() );
   w3->Update();
 
   SetupMenusFromTab( w3 );
@@ -725,7 +725,7 @@ CreateNewTabFor2DImage( vtkImageData* iInput, const QString& iFile )
 {
   QGoTabImageView2D* w2 = new QGoTabImageView2D;
   w2->SetImage( iInput );
-  w2->setWindowTitle( iFile );
+  w2->setWindowTitle( QFileInfo( iFile ).fileName() );
   w2->Update();
 
   SetupMenusFromTab( w2 );
@@ -778,12 +778,12 @@ void QGoMainWindow::on_actionGoFigure2_Website_triggered( )
 //--------------------------------------------------------------------------
 void QGoMainWindow::on_actionUser_mailing_list_triggered( )
 {
-//   QDesktopServices::openUrl( QUrl("mailto:users@gofigure2.com?subject=About GoFigure2") );
+  QDesktopServices::openUrl( QUrl("mailto:users@gofigure2.com?subject=About GoFigure2") );
 }
 //--------------------------------------------------------------------------
 void QGoMainWindow::on_actionDeveloper_mailing_list_triggered( )
 {
-//   QDesktopServices::openUrl( QUrl("mailto:developers@gofigure2.com?subject=About Gofigure2" ) );
+  QDesktopServices::openUrl( QUrl("mailto:developers@gofigure2.com?subject=About Gofigure2" ) );
 }
 
 //--------------------------------------------------------------------------

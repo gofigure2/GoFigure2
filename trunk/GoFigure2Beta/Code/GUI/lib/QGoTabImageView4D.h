@@ -79,6 +79,8 @@ class QGoTabImageView4D : public QGoTabElementBase
     QGoTabImageView4D( QWidget* parent = 0 );
     virtual ~QGoTabImageView4D();
 
+    typedef QGoTabElementBase::QGoDockWidgetStatusPair QGoDockWidgetStatusPair;
+
     GoFigure::TabDimensionType GetTabDimensionType( ) const;
 
     void SetMegaCaptureFile(

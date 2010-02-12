@@ -66,6 +66,8 @@ public:
   QGoTabElementBase( QWidget* parent = 0 );
   virtual ~QGoTabElementBase();
 
+  typedef std::pair< QGoDockWidgetStatus*, QDockWidget* > QGoDockWidgetStatusPair;
+
   virtual GoFigure::TabDimensionType GetTabDimensionType( ) const = 0;
 
   virtual std::vector< QAction* > ViewActions();
@@ -73,7 +75,7 @@ public:
   virtual std::vector< QAction* > ToolsActions();
   virtual std::vector< QAction* > BookmarkActions();
 
-  virtual std::list< std::pair< QGoDockWidgetStatus*, QDockWidget* > >& DockWidget();
+  virtual std::list< QGoDockWidgetStatusPair >& DockWidget();
   virtual std::list< QWidget* > AdditionalWidget();
 //   virtual QStatusBar* StatusBar();
 
@@ -91,7 +93,7 @@ protected:
   std::vector< QAction* > m_ToolsActions;
   std::vector< QAction* > m_BookmarkActions;
 
-  std::list< std::pair< QGoDockWidgetStatus*, QDockWidget* > > m_DockWidgetList;
+  std::list< QGoDockWidgetStatusPair > m_DockWidgetList;
 
 private:
   QGoTabElementBase( const QGoTabElementBase& );

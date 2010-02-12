@@ -44,22 +44,20 @@
 #include <QMainWindow>
 #include <QDir>
 
-#include "vtkImageData.h"
-#include "itkImage.h"
+// #include "itkImage.h"
+// #include "itkImageToVTKImageFilter.h"
 
-#include "itkImageToVTKImageFilter.h"
 #include "itkQtProgressBar.h"
 #include "itkQtAdaptor.h"
 
 #include "GoFigureFileInfoMultiIndexContainerHelper.h"
-#include "QGoWizardDB.h"
-
-#include "CreateDataBaseHelper.h"
-
 #include "GoFigureGlobalDefinition.h"
+
+class vtkImageData;
 
 class vtkLSMReader;
 
+class QGoWizardDB;
 class QGoTabManager;
 class QGoTabImageView3DwT;
 class QGoTabImageView3D;
@@ -76,9 +74,9 @@ class QGoMainWindow : public QMainWindow,
 public:
   friend class QGoTabManager;
 
-  typedef itk::Image< unsigned char, 3 > ImageType;
-  typedef itk::ImageToVTKImageFilter< ImageType > VTKConvertImageType;
-  typedef VTKConvertImageType::Pointer            VTKConvertImagePointer;
+//   typedef itk::Image< unsigned char, 3 > ImageType;
+//   typedef itk::ImageToVTKImageFilter< ImageType > VTKConvertImageType;
+//   typedef VTKConvertImageType::Pointer            VTKConvertImagePointer;
 
 //   typedef itk::MultiFileReader::FILETYPE FILETYPE;
 

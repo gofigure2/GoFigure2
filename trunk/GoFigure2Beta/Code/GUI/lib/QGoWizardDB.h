@@ -40,7 +40,7 @@
 #ifndef __QGoWizardDB_h
 #define __QGoWizardDB_h
 
-#include <qwizard.h>
+#include <QWizard>
 #include <QLineEdit>
 #include <QLabel>
 #include <QRadioButton>
@@ -49,8 +49,10 @@
 #include <QComboBox>
 #include <QStringList>
 #include <QString>
-#include <iostream>
 #include <QCheckBox>
+
+
+#include <iostream>
 #include <list>
 
 //#include "MegaVTK2Configure.h"

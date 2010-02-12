@@ -45,10 +45,9 @@ class vtkImageData;
 class QAction;
 class QToolBar;
 class QDockWidget;
+class QGoImageView2D;
 
 #include "QGoTabImageViewNDBase.h"
-
-#include "QGoImageView2D.h"
 
 /**
 \class QGoTabImageView2D
@@ -61,6 +60,8 @@ class QGoTabImageView2D : public QGoTabImageViewNDBase
 public:
   QGoTabImageView2D( QWidget* parent = 0 );
   virtual ~QGoTabImageView2D();
+
+  typedef QGoTabImageViewNDBase::QGoDockWidgetStatusPair QGoDockWidgetStatusPair;
 
   GoFigure::TabDimensionType GetTabDimensionType( ) const;
 

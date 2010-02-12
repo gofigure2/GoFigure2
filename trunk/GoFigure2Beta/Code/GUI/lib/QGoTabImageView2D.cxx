@@ -39,7 +39,10 @@
 =========================================================================*/
 #include "QGoTabImageView2D.h"
 
+#include "QGoImageView2D.h"
 #include "QGoLUTDialog.h"
+#include "QGoVisualizationDockWidget.h"
+
 
 #include "vtkLookupTable.h"
 #include "vtkEventQtSlotConnect.h"

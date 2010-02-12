@@ -41,9 +41,10 @@
 #ifndef __QGoTabImageViewElementBase_h
 #define __QGoTabImageViewElementBase_h
 
+#include <QHBoxLayout>
+#include "vtkSmartPointer.h"
+
 #include "QGoTabElementBase.h"
-#include "QGoVisualizationDockWidget.h"
-#include "QGoManualSegmentationDockWidget.h"
 #include "ContourMeshStructureHelper.h"
 
 class vtkContourWidget;
@@ -51,6 +52,9 @@ class vtkOrientedGlyphContourRepresentation;
 class vtkDataSet;
 class vtkProperty;
 class vtkQuadricLODActor;
+
+class QGoVisualizationDockWidget;
+class QGoManualSegmentationDockWidget;
 
 /**
 \class QGoTabImageViewElementBase
@@ -63,6 +67,8 @@ class QGoTabImageViewElementBase : public QGoTabElementBase
 public:
   explicit QGoTabImageViewElementBase( QWidget* parent = 0 );
   virtual ~QGoTabImageViewElementBase();
+
+  typedef QGoTabElementBase::QGoDockWidgetStatusPair QGoDockWidgetStatusPair;
 
   virtual void Update() = 0;
 

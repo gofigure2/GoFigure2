@@ -90,11 +90,12 @@ void QGoTabManager::ClearTabElement( QGoTabElementBase* iE )
     // Then remove all actions from the tools menu
     m_MainWindow->menuTools->clear();
 
+    // Then remove all actions from the bookmark menu
     m_MainWindow->menuBookmarks->clear();
 
-    std::list< std::pair< QGoDockWidgetStatus*, QDockWidget* > >& dock_list = iE->DockWidget();
+    std::list< QGoTabElementBase::QGoDockWidgetStatusPair >& dock_list = iE->DockWidget();
 
-    for( std::list< std::pair< QGoDockWidgetStatus*, QDockWidget* > >::iterator
+    for( std::list< QGoTabElementBase::QGoDockWidgetStatusPair >::iterator
         dck_it = dock_list.begin();
         dck_it != dock_list.end();
         ++dck_it )
@@ -168,9 +169,9 @@ void QGoTabManager::SetUpTabElement( QGoTabElementBase* iE )
       m_MainWindow->menuBookmarks->addAction( *it );
       }
 
-    std::list< std::pair< QGoDockWidgetStatus*, QDockWidget* > > dock_list = iE->DockWidget();
+    std::list< QGoTabElementBase::QGoDockWidgetStatusPair > dock_list = iE->DockWidget();
 
-    for( std::list< std::pair< QGoDockWidgetStatus*, QDockWidget* > >::iterator
+    for( std::list< QGoTabElementBase::QGoDockWidgetStatusPair >::iterator
           dck_it = dock_list.begin();
           dck_it != dock_list.end();
           ++dck_it )
@@ -234,12 +235,12 @@ void QGoTabManager::UpdateBookmarkMenu(std::vector<QAction*> iBookmarkActions )
 {
   m_MainWindow->menuBookmarks->clear();
 
-    for( std::vector< QAction* >::iterator it = iBookmarkActions.begin();
+  for( std::vector< QAction* >::iterator it = iBookmarkActions.begin();
         it != iBookmarkActions.end();
         ++it )
-      {
-      m_MainWindow->menuBookmarks->addAction( *it );
-      }
+    {
+    m_MainWindow->menuBookmarks->addAction( *it );
+    }
 }
 //--------------------------------------------------------------------------
 

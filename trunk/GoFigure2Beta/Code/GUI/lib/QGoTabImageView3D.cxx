@@ -42,6 +42,7 @@
 
 #include "QGoImageView3D.h"
 #include "QGoLUTDialog.h"
+#include "QGoVisualizationDockWidget.h"
 
 #include "vtkImageData.h"
 #include "vtkLookupTable.h"

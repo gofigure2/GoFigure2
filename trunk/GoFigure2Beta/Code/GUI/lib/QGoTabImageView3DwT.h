@@ -95,6 +95,7 @@ public:
    */
   virtual ~QGoTabImageView3DwT();
 
+  typedef QGoTabElementBase::QGoDockWidgetStatusPair QGoDockWidgetStatusPair;
 
   /**
    * \brief

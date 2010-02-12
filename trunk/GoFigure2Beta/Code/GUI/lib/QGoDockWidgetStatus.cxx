@@ -2,47 +2,52 @@
 
 #include <iostream>
 
-QGoDockWidgetStatus::QGoDockWidgetStatus( QDockWidget* iW ) : QObject( iW ),
+QGoDockWidgetStatus::
+QGoDockWidgetStatus( QDockWidget* iW ) : QObject( iW ),
     m_DockWidget( iW ),
     m_Area( Qt::LeftDockWidgetArea ), m_DefaultArea( Qt::LeftDockWidgetArea ),
     m_Visibility( true ), m_Attached( true )
-    {
-    QObject::connect( m_DockWidget, SIGNAL( dockLocationChanged( Qt::DockWidgetArea ) ),
-      this, SLOT( SetArea( Qt::DockWidgetArea ) ) );
+{
+  QObject::connect( m_DockWidget, SIGNAL( dockLocationChanged( Qt::DockWidgetArea ) ),
+  this, SLOT( SetArea( Qt::DockWidgetArea ) ) );
 
-    QObject::connect( m_DockWidget, SIGNAL( visibilityChanged( bool ) ),
-      this, SLOT( SetVisibility( bool ) ) );
-    }
+  QObject::connect( m_DockWidget, SIGNAL( visibilityChanged( bool ) ),
+    this, SLOT( SetVisibility( bool ) ) );
+}
 
-QGoDockWidgetStatus::QGoDockWidgetStatus( const QGoDockWidgetStatus& iS ) :
-    QObject( iS.m_DockWidget ), m_Area( iS.m_Area ), m_DefaultArea( iS.m_Area ),
-    m_Visibility( iS.m_Visibility ), m_Attached( iS.m_Attached )
-    {
-    QObject::connect( m_DockWidget, SIGNAL( dockLocationChanged( Qt::DockWidgetArea ) ),
-      this, SLOT( SetArea( Qt::DockWidgetArea ) ) );
+QGoDockWidgetStatus::
+QGoDockWidgetStatus( const QGoDockWidgetStatus& iS ) :
+  QObject( iS.m_DockWidget ), m_Area( iS.m_Area ), m_DefaultArea( iS.m_Area ),
+  m_Visibility( iS.m_Visibility ), m_Attached( iS.m_Attached )
+{
+  QObject::connect( m_DockWidget, SIGNAL( dockLocationChanged( Qt::DockWidgetArea ) ),
+    this, SLOT( SetArea( Qt::DockWidgetArea ) ) );
 
-    QObject::connect( m_DockWidget, SIGNAL( visibilityChanged( bool ) ),
-      this, SLOT( SetVisibility( bool ) ) );
-    }
+QObject::connect( m_DockWidget, SIGNAL( visibilityChanged( bool ) ),
+  this, SLOT( SetVisibility( bool ) ) );
+}
 
-QGoDockWidgetStatus::QGoDockWidgetStatus( QDockWidget* iW,
-    Qt::DockWidgetArea iArea,
-    const bool& iVisibility,
-    const bool& iAttached ) : QObject( iW ), m_DockWidget( iW ), m_Area( iArea ),
-                              m_DefaultArea( iArea ),
-                              m_Visibility( iVisibility ),
-                              m_Attached( iAttached )
-    {
-    QObject::connect( m_DockWidget, SIGNAL( dockLocationChanged( Qt::DockWidgetArea ) ),
-      this, SLOT( SetArea( Qt::DockWidgetArea ) ) );
+QGoDockWidgetStatus::
+QGoDockWidgetStatus( QDockWidget* iW, Qt::DockWidgetArea iArea,
+  const bool& iVisibility, const bool& iAttached ) :
+  QObject( iW ), m_DockWidget( iW ), m_Area( iArea ),
+  m_DefaultArea( iArea ), m_Visibility( iVisibility ),
+  m_Attached( iAttached )
+{
+  QObject::connect( m_DockWidget, SIGNAL( dockLocationChanged( Qt::DockWidgetArea ) ),
+    this, SLOT( SetArea( Qt::DockWidgetArea ) ) );
 
-    QObject::connect( m_DockWidget, SIGNAL( visibilityChanged( bool ) ),
-      this, SLOT( SetVisibility( bool ) ) );
-    }
+  QObject::connect( m_DockWidget, SIGNAL( visibilityChanged( bool ) ),
+    this, SLOT( SetVisibility( bool ) ) );
+}
 
-QGoDockWidgetStatus::~QGoDockWidgetStatus() {}
+QGoDockWidgetStatus::
+~QGoDockWidgetStatus()
+{}
 
-void QGoDockWidgetStatus::SetArea( Qt::DockWidgetArea iArea )
+void
+QGoDockWidgetStatus::
+SetArea( Qt::DockWidgetArea iArea )
 {
 //   switch( iArea )
 //     {
@@ -69,7 +74,9 @@ void QGoDockWidgetStatus::SetArea( Qt::DockWidgetArea iArea )
   m_Area = iArea;
 }
 
-void QGoDockWidgetStatus::SetVisibility( bool iVisibility )
+void
+QGoDockWidgetStatus::
+SetVisibility( bool iVisibility )
 {
 //   if( iVisibility )
 //     {
@@ -82,7 +89,9 @@ void QGoDockWidgetStatus::SetVisibility( bool iVisibility )
   m_Visibility = iVisibility;
 }
 
-void QGoDockWidgetStatus::SetAttached( bool iAttached )
+void
+QGoDockWidgetStatus::
+SetAttached( bool iAttached )
 {
   m_Attached = iAttached;
 }

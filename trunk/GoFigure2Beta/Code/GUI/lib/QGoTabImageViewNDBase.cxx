@@ -39,6 +39,7 @@
 =========================================================================*/
 
 #include "QGoTabImageViewNDBase.h"
+#include "QGoVisualizationDockWidget.h"
 
 #include "vtkImageData.h"
 #include "vtkSmartPointer.h"

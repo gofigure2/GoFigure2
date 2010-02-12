@@ -53,6 +53,9 @@
 
 #include <set>
 
+#include "QGoVisualizationDockWidget.h"
+#include "QGoManualSegmentationDockWidget.h"
+
 //--------------------------------------------------------------------------
 /**
  * \brief Default Constructor

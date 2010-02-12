@@ -71,7 +71,7 @@ class QGoTabManager : public QObject
     void ChangeCurrentTab( int iIdx );
     void CloseTab( int idx );
     void CloseAllTabs( );
-    void UpdateBookmarkMenu(std::vector<QAction*> iBookmarkActions);
+    void UpdateBookmarkMenu( std::vector< QAction* > iBookmarkActions );
 
   private:
     QGoMainWindow*  m_MainWindow;

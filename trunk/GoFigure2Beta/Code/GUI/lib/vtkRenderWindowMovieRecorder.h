@@ -68,11 +68,11 @@ class vtkRenderWindowMovieRecorder : public vtkProcessObject
      // take a snapshot of the current render window
      void TakeSnapshot( );
 
+      virtual void SetSpecificParameters() = 0;
+
    protected:
      vtkRenderWindowMovieRecorder();
      ~vtkRenderWindowMovieRecorder();
-
-     virtual void SetSpecificParameters() = 0;
 
      vtkRenderWindow*                           m_RenderWindow;
      vtkWindowToImageFilter*                    m_ImageFilter;

@@ -53,6 +53,8 @@ class QGoTabImageViewNDBase : public QGoTabImageViewElementBase
     explicit QGoTabImageViewNDBase( QWidget* parent = 0 );
     virtual ~QGoTabImageViewNDBase();
 
+    typedef QGoTabImageViewElementBase::QGoDockWidgetStatusPair QGoDockWidgetStatusPair;
+
     virtual void SetImage( vtkImageData* iImage );
 
   public slots:

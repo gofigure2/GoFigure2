@@ -67,6 +67,8 @@ class QGoTabImageView3D : public QGoTabImageViewNDBase
     QGoTabImageView3D( QWidget* parent = 0 );
     virtual ~QGoTabImageView3D();
 
+    typedef QGoTabImageViewNDBase::QGoDockWidgetStatusPair QGoDockWidgetStatusPair;
+
     GoFigure::TabDimensionType GetTabDimensionType( ) const;
 
     virtual void Update();

@@ -41,6 +41,8 @@
 
 #include "QGoTabImageViewElementBase.h"
 
+#include "vtkImageData.h"
+
 class QGoTabImageViewElementBaseTestHelper :
   public QGoTabImageViewElementBase
 {
