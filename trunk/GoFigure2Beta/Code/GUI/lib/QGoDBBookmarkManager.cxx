@@ -90,7 +90,21 @@ void QGoDBBookmarkManager::SaveNewBookmarkInDB()
   NewBookmark.SetField("CreationDate",CreationDateStr);
   NewBookmark.SetField<int>("CoordID",this->m_CoordIDForNewBookmark);
   NewBookmark.SetField<int>("ImagingSessionID",this->m_ImgSessionID);
-  NewBookmark.SaveInDB(this->m_DatabaseConnectorForNewBkmrk);
+
+  std::string BookmarkName = NewBookmark.GetMapValue("Name");
+  if (NewBookmark.DoesThisBookmarkAlreadyExists(
+    this->m_DatabaseConnectorForNewBkmrk,BookmarkName) != -1)
+    {
+    QMessageBox msgBox;
+    msgBox.setText(
+      tr("This bookmark already exists, its name is: ' %1 ' ").arg(BookmarkName.c_str()));
+    msgBox.exec();
+    }
+  else
+    {
+    NewBookmark.SaveInDB(this->m_DatabaseConnectorForNewBkmrk);
+    emit ListBookmarksChanged();
+    }
 }
 //-------------------------------------------------------------------------
 

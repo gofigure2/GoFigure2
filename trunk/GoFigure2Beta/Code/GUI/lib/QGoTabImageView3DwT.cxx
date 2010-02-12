@@ -2321,7 +2321,7 @@ void QGoTabImageView3DwT::AddBookmark()
 { 
   this->m_DataBaseTables->AddBookmark(this->GetSliceViewYZ(),
     this->GetSliceViewXZ(),this->GetSliceViewXY(),this->GetTimePoint());
-  this->GetTheOpenBookmarksActions();
+  //this->GetTheOpenBookmarksActions();
 }
 //-------------------------------------------------------------------------
 
