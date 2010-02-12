@@ -132,23 +132,8 @@ void CreateGoFigureDataBase(
 
     vtkMySQLDatabase * DataBaseConnector = ConnectToDatabase(ServerName, login,
       Password,DBName).second;
-      /*vtkMySQLDatabase * DataBaseConnectorBis = vtkMySQLDatabase::New();
-      DataBaseConnectorBis->SetHostName( ServerName.c_str() );
-      DataBaseConnectorBis->SetUser( login.c_str() );
-      DataBaseConnectorBis->SetPassword( Password.c_str() );
-      DataBaseConnectorBis->SetDatabaseName(DBName.c_str());
-
-      if( !DataBaseConnectorBis->Open() )
-        {
-        std::cerr << "Could not open Database Connector." << std::endl;
-        std::cerr << "Gofigure Tables and FK will not be created."  << std::endl;
-        std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
-        std::cout << std::endl;
-        DataBaseConnectorBis->Delete();
-        return;
-        }*/
     CreateTables(DataBaseConnector);
-    CreateForeignKeys(DataBaseConnector);
+    //CreateForeignKeys(DataBaseConnector);
     DataBaseConnector->Close();
     DataBaseConnector->Delete();
     }
@@ -299,7 +284,7 @@ std::string CellTypeTable()
   return
     "CREATE  TABLE IF NOT EXISTS `celltype`(\
     `CellTypeID` INT NOT NULL AUTO_INCREMENT ,\
-    `CellTypeName` TEXT NOT NULL ,\
+    `Name` TEXT NOT NULL ,\
     `Description` VARCHAR(1000) NULL ,\
     PRIMARY KEY (`CellTypeID`)\
     );";
@@ -327,7 +312,7 @@ std::string SubCellularTypeTable()
   return
     "CREATE  TABLE IF NOT EXISTS `subcellulartype` (\
     `SubCellularID` INT NOT NULL AUTO_INCREMENT ,\
-    `SubCellularName` VARCHAR(45) NOT NULL ,\
+    `Name` VARCHAR(45) NOT NULL ,\
     `Description` VARCHAR(1000) NULL ,\
     PRIMARY KEY (`SubCellularID`)\
     );";
@@ -381,8 +366,8 @@ std::string MicroscopeTable()
 {
   return
     "CREATE  TABLE IF NOT EXISTS `microscope` (\
-    `MicroscopeName` VARCHAR(255) NOT NULL ,\
-    PRIMARY KEY (`MicroscopeName`)\
+    `Name` VARCHAR(255) NOT NULL ,\
+    PRIMARY KEY (`Name`)\
     );";
 }
 //------------------------------------------------------------------------------
@@ -392,12 +377,12 @@ std::string ProjectTable()
 {
   return
     "CREATE  TABLE IF NOT EXISTS `project` (\
-    `ProjectName` VARCHAR(255) NOT NULL ,\
+    `Name` VARCHAR(255) NOT NULL ,\
     `Description` VARCHAR(1000) NULL ,\
     `AuthorID` INT NOT NULL ,\
     `CreationDate` DATE NOT NULL ,\
     `DatabaseVersion` VARCHAR(45) NOT NULL ,\
-    PRIMARY KEY (`ProjectName`) ,\
+    PRIMARY KEY (`Name`) ,\
     INDEX `FK_Project_AuthorID` (`AuthorID` ASC)\
     );";
 }
@@ -791,7 +776,7 @@ std::string ImagingSessionFKProjectName()
      "ALTER TABLE `imagingsession` ADD\
       CONSTRAINT `FK_ImagingSession_ProjectName`\
       FOREIGN KEY (`ProjectName`)\
-      REFERENCES `project`(`Projectname`)\
+      REFERENCES `project`(`Name`)\
       ON DELETE NO ACTION\
       ON UPDATE NO ACTION\
       ;";
@@ -805,7 +790,7 @@ std::string ImagingSessionFKMicroscopeName()
      "ALTER TABLE `imagingsession` ADD\
       CONSTRAINT `FK_ImagingSession_MicroscopeName`\
       FOREIGN KEY (`MicroscopeName`)\
-      REFERENCES `microscope`(`MicroscopeName`)\
+      REFERENCES `microscope`(`Name`)\
       ON DELETE NO ACTION\
       ON UPDATE NO ACTION\
       ;";
