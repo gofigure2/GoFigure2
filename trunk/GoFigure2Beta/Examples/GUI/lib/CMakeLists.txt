@@ -128,6 +128,11 @@ ADD_TEST( QGoPrintDatabaseTest
   1
 )
 
+ADD_TEST( QGoDBCreateBookmarkDialogTest
+  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/QGoDBCreateBookmarkDialogTest
+  1
+)
+
 #---------------------------------------------------------------------------
 #---------------------------------------------------------------------------
 

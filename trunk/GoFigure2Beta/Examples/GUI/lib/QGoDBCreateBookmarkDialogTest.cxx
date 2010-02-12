@@ -39,17 +39,47 @@
 =========================================================================*/
 
 #include <QApplication>
+#include <QTimer>
 
 #include "QGoDBBookmarkManager.h"
 #include "vtkMySQLDatabase.h"
 #include "QueryDataBaseHelper.h"
 
 int main(int argc, char * argv[])
-{  
+{
+  if( argc != 2 )
+    {
+    std::cout <<"Usage : QGoDBCreateBookmarkDialogTest(.exe) " <<std::endl;
+    std::cout << "1-test (boolean)" <<std::endl;
+    return EXIT_FAILURE;
+    }
+
   QApplication app( argc, argv );
-  vtkMySQLDatabase* DatabaseConnector = OpenDatabaseConnection(
-    "localhost","gofigure","gofigure","gofiguredatabase");
-  QGoDBBookmarkManager win(0,1);
-  win.show();
-  return app.exec();
+  QCoreApplication::setOrganizationName("MegasonLab");
+  QCoreApplication::setOrganizationDomain( "http://gofigure2.sourceforge.net" );
+
+  OpenDatabaseConnection( "localhost", "gofigure", "gofigure", "gofiguredatabase" );
+
+  QGoDBBookmarkManager* win = new QGoDBBookmarkManager(0,1);
+
+  QTimer* timer = new QTimer;
+  timer->setSingleShot( true );
+  QObject::connect( timer, SIGNAL( timeout() ), win, SLOT( close() ) );
+
+  win->show();
+
+  if( atoi( argv[1] ) == 1 )
+    {
+    timer->start( 1000 );
+    }
+
+  app.processEvents();
+
+  int output = app.exec();
+
+  app.closeAllWindows();
+  delete timer;
+  delete win;
+
+  return output;
 }
