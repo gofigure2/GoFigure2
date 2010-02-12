@@ -138,7 +138,7 @@ public:
     int iZCoord, int iTCoord);
   /** \brief return a bool to know if the user is using the database or not*/
 
-  std::vector<std::string> GetListBookmarks();
+  std::vector<std::pair<std::string,std::string> > GetListBookmarks();
   GoDBCoordinateRow GetCoordinateForBookmark(std::string iName);
   bool IsDatabaseUsed();
 

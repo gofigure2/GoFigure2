@@ -109,11 +109,14 @@ void QGoDBBookmarkManager::SaveNewBookmarkInDB()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-std::vector<std::string> QGoDBBookmarkManager::GetListExistingBookmarks(
-  vtkMySQLDatabase* iDatabaseConnector)
+std::vector<std::pair<std::string,std::string> > QGoDBBookmarkManager::
+  GetListExistingBookmarks(vtkMySQLDatabase* iDatabaseConnector)
 {
-  return ListSpecificValuesForOneColumn(iDatabaseConnector,"bookmark", 
-    "Name","ImagingSessionID",ConvertToString<int>(this->m_ImgSessionID));
+ // return ListSpecificValuesForOneColumn(iDatabaseConnector,"bookmark", 
+ //   "Name","ImagingSessionID",ConvertToString<int>(this->m_ImgSessionID));
+  return ListSpecificValuesForTwoColumns(iDatabaseConnector,"bookmark", 
+    "Name","Description","ImagingSessionID",
+    ConvertToString<int>(this->m_ImgSessionID),"Name");
 }
 //-------------------------------------------------------------------------
 

@@ -682,13 +682,16 @@ void QGoTabImageView3DwT::GetTheOpenBookmarksActions()
       this->m_BookmarkActions.begin()+this->m_BookmarkActions.size()-1);
     UpdateOpenBookmarks = true;
     } 
-  std::vector<std::string> ListBookmarks = 
+  std::vector<std::pair<std::string,std::string> > ListBookmarks = 
     this->m_DataBaseTables->GetListBookmarks();
   int NumberBookmarks = ListBookmarks.size();
   QMenu* OpenBookmarkMenu = new QMenu(tr("Open a bookmark"), this);
   for(int i = 0;i<NumberBookmarks; i++)
     {
-    QAction* OpenBookmarkAction = new QAction(ListBookmarks[i].c_str(),this);
+    QAction* OpenBookmarkAction = new QAction(ListBookmarks[i].first.c_str(),this);
+    std::string TextStatusTip = "Description of the bookmark: ";
+    TextStatusTip += ListBookmarks[i].second;
+    OpenBookmarkAction->setStatusTip(TextStatusTip.c_str());
     OpenBookmarkMenu->addAction(OpenBookmarkAction);
     QObject::connect(OpenBookmarkAction, SIGNAL(triggered()),
       this, SLOT(OpenExistingBookmark()));
@@ -2321,7 +2324,6 @@ void QGoTabImageView3DwT::AddBookmark()
 { 
   this->m_DataBaseTables->AddBookmark(this->GetSliceViewYZ(),
     this->GetSliceViewXZ(),this->GetSliceViewXY(),this->GetTimePoint());
-  //this->GetTheOpenBookmarksActions();
 }
 //-------------------------------------------------------------------------
 

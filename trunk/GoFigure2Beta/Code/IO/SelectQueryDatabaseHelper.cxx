@@ -641,6 +641,58 @@ std::vector<std::string> ListSpecificValuesForOneColumn(
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
+//query: "SELECT ColumnNameOne,ColumnName2 FROM TableName 
+//WHERE field = value ORDER BY ColumnNameOrder ASC"
+std::vector<std::pair<std::string,std::string> >
+  ListSpecificValuesForTwoColumns(vtkMySQLDatabase* DatabaseConnector,
+  std::string TableName, std::string ColumnNameOne,std::string ColumnNameTwo,
+  std::string field,std::string value,std::string ColumnNameOrder)
+{
+  std::vector< std::pair<std::string,std::string > > result;
+
+  vtkSQLQuery* query = DatabaseConnector->GetQueryInstance();
+  std::stringstream querystream;
+  querystream << "SELECT ";
+  querystream << ColumnNameOne;
+  querystream << ",";
+  querystream << ColumnNameTwo;
+  querystream << " FROM ";
+  querystream << TableName;
+  querystream << " WHERE ";
+  querystream << field;
+  querystream << " = '";
+  querystream << value;
+  querystream << "' ORDER BY ";
+  querystream << ColumnNameOrder;
+  querystream << " ASC;";
+
+  query->SetQuery( querystream.str().c_str() );
+  if ( !query->Execute() )
+    {
+    itkGenericExceptionMacro(
+      << "select 2 columns query failed"
+      << query->GetLastErrorText() );
+    DatabaseConnector->Close();
+    DatabaseConnector->Delete();
+    query->Delete();
+    return result;
+    }
+
+  while (query->NextRow())
+    {
+    std::pair<std::string,std::string> Pair;
+    Pair.first = query->DataValue( 0 ).ToString();
+    Pair.second = query->DataValue( 1 ).ToString();
+    result.push_back( Pair );
+    }
+
+  query->Delete();
+
+  return result;
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
 std::string ReturnOnlyOneValue(vtkMySQLDatabase* DatabaseConnector,
   std::string TableName, std::string ColumnName,std::string field,
   std::string value)
