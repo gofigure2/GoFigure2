@@ -862,7 +862,8 @@ void QGoMainWindow::AddToMenu(
     {
     QAction *taction = new QAction(text, plugin);
     taction->setDisabled( true );
-    connect( action, SIGNAL(triggered()), this, member);
+    QObject::connect( taction, SIGNAL(triggered()), this, member);
+
     menu->addAction(taction);
 
     for( std::list< GoFigure::TabDimensionType >::iterator it = dim_list.begin();
@@ -887,8 +888,15 @@ void QGoMainWindow::ApplyImageFilter()
   QAction *taction = qobject_cast< QAction* >( sender( ) );
   QGoImageFilterPluginBase* filter =
     qobject_cast< QGoImageFilterPluginBase* >( taction->parent() );
-//   filter->SetInput( this->m_Image );
-  filter->Update();
+
+  QWidget* w = this->CentralTabWidget->currentWidget();
+
+  QGoTabImageViewNDBase* WnD = dynamic_cast< QGoTabImageViewNDBase* >( w );
+  if( WnD )
+    {  
+    filter->SetInput( WnD->GetImage() );
+    filter->Update();
+    }
 }
 //--------------------------------------------------------------------------
 

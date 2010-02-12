@@ -56,6 +56,7 @@ class QGoTabImageViewNDBase : public QGoTabImageViewElementBase
     typedef QGoTabImageViewElementBase::QGoDockWidgetStatusPair QGoDockWidgetStatusPair;
 
     virtual void SetImage( vtkImageData* iImage );
+    vtkImageData* GetImage();
 
   public slots:
     void ShowAllChannels( bool iChecked );
