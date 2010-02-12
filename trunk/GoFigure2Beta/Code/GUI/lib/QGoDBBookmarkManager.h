@@ -59,17 +59,21 @@ class QGoDBBookmarkManager:
       int iImgSessionID = 0);
     
     ~QGoDBBookmarkManager();
+
+    typedef std::vector<std::pair<std::string,std::string> > 
+      NamesDescrContainerType;
     /** \brief execute the dialog asking the user to enter a name and a
     description, validates the name, set the m_DatabaseConnectorForNewBkmrk
     and save the bookmark in the DB*/
     void AddABookmark(int iCoordID, vtkMySQLDatabase* iDatabaseConnector);
     /** \brief return the list of existing bookmarks for the imagingsession
     stored in the database*/
-    std::vector<std::pair<std::string,std::string> > GetListExistingBookmarks(
+    NamesDescrContainerType GetListExistingBookmarks(
       vtkMySQLDatabase* iDatabaseConnector);
     /** \brief return the coordinate for the bookmark with the name iName*/
     GoDBCoordinateRow GetCoordinatesForBookmark(
-      vtkMySQLDatabase* iDatabaseConnector,std::string iName);   
+      vtkMySQLDatabase* iDatabaseConnector,std::string iName); 
+
     void DeleteBookmark(vtkMySQLDatabase* iDatabaseConnector);
 
   protected:
@@ -97,6 +101,7 @@ class QGoDBBookmarkManager:
     choose another one, if no, close the m_NameDescDialog and 
     call SaveNewBookmarkInDB()*/
     void ValidateName(std::string iName);
+
 signals:
     void ListBookmarksChanged();
 

@@ -69,6 +69,7 @@ public:
   virtual ~QGoPrintDatabase();
 
   typedef GoDBCollectionOfTraces::DBTableWidgetContainerType DBTableWidgetContainerType;
+  typedef QGoDBBookmarkManager::NamesDescrContainerType       NamesDescrContainerType;
 
   /** \brief set all the values needed for the database*/
   void SetDatabaseVariables(
@@ -138,7 +139,7 @@ public:
     int iZCoord, int iTCoord);
   /** \brief return a bool to know if the user is using the database or not*/
 
-  std::vector<std::pair<std::string,std::string> > GetListBookmarks();
+  NamesDescrContainerType GetListBookmarks();
   GoDBCoordinateRow GetCoordinateForBookmark(std::string iName);
   bool IsDatabaseUsed();
 

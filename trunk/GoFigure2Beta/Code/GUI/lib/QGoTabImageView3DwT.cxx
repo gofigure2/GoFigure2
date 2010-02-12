@@ -44,7 +44,6 @@
 #include "QGoLUTDialog.h"
 #include "QGoVisualizationDockWidget.h"
 #include "QGoManualSegmentationDockWidget.h"
-#include "QGoPrintDatabase.h"
 #include "GoDBCoordinateRow.h"
 
 #if defined ( ENABLEFFMPEG ) || defined ( ENABLEAVI )
@@ -682,7 +681,7 @@ void QGoTabImageView3DwT::GetTheOpenBookmarksActions()
       this->m_BookmarkActions.begin()+this->m_BookmarkActions.size()-1);
     UpdateOpenBookmarks = true;
     } 
-  std::vector<std::pair<std::string,std::string> > ListBookmarks = 
+  NamesDescrContainerType ListBookmarks = 
     this->m_DataBaseTables->GetListBookmarks();
   int NumberBookmarks = ListBookmarks.size();
   QMenu* OpenBookmarkMenu = new QMenu(tr("Open a bookmark"), this);

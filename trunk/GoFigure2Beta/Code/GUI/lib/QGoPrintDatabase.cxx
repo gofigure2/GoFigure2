@@ -1230,11 +1230,11 @@ void QGoPrintDatabase::AddBookmark(int iXCoord, int iYCoord,
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-std::vector<std::pair<std::string, std::string> > QGoPrintDatabase::
+QGoPrintDatabase::NamesDescrContainerType QGoPrintDatabase::
   GetListBookmarks()
 {
   this->OpenDBConnection();
-  std::vector<std::pair<std::string,std::string> > ListBookmarks = 
+  NamesDescrContainerType ListBookmarks = 
     this->m_BookmarkManager->GetListExistingBookmarks(this->m_DatabaseConnector);
   this->CloseDBConnection();
   return ListBookmarks;

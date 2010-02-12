@@ -45,7 +45,7 @@
 #include "GoFigureFileInfoMultiIndexContainerHelper.h"
 #include "itkMegaCaptureReader.h"
 #include "ContourMeshStructureHelper.h"
-
+#include "QGoPrintDatabase.h"
 #include <QHBoxLayout>
 #include <string>
 
@@ -96,6 +96,7 @@ public:
   virtual ~QGoTabImageView3DwT();
 
   typedef QGoTabElementBase::QGoDockWidgetStatusPair QGoDockWidgetStatusPair;
+  typedef QGoPrintDatabase::NamesDescrContainerType   NamesDescrContainerType;
 
   /**
    * \brief
