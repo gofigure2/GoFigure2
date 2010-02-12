@@ -174,7 +174,7 @@ void
 QGoLsmToMegaExportDialog::
 ConversionTerminatedReceived()
 {
-  m_ProgressDialog->cancel();
+  m_ProgressDialog->accept();
 
   //Enable everything
   lsmFileName->setEnabled(true);

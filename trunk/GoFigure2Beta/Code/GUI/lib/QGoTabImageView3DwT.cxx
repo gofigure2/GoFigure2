@@ -513,6 +513,11 @@ CreateAllViewActions()
   DisplayAnnotations->setChecked( true );
   DisplayAnnotations->setStatusTip( tr(" Display or not annotations in each 2d view" ) );
 
+  QIcon displayannotationsicon;
+  displayannotationsicon.addPixmap( QPixmap(QString::fromUtf8(":/fig/2D_VIEWS_INFOS.png")),
+    QIcon::Normal, QIcon::Off );
+  DisplayAnnotations->setIcon(displayannotationsicon);
+
   QObject::connect( DisplayAnnotations, SIGNAL( triggered() ),
     this, SLOT( DisplayAnnotations() ) );
 
@@ -522,6 +527,11 @@ CreateAllViewActions()
   DisplaySplinePlanes->setCheckable( true );
   DisplaySplinePlanes->setChecked( true );
   DisplaySplinePlanes->setStatusTip( tr(" Display or not spline planes on each view" ) );
+
+  QIcon displaysplineplaneicon;
+  displaysplineplaneicon.addPixmap( QPixmap(QString::fromUtf8(":/fig/C_M_L.png")),
+      QIcon::Normal, QIcon::Off );
+  DisplaySplinePlanes->setIcon(displaysplineplaneicon);
 
   QObject::connect( DisplaySplinePlanes, SIGNAL( triggered() ),
     this, SLOT( DisplaySplinePlanes() ) );
@@ -611,6 +621,11 @@ CreateAllViewActions()
       new QAction( tr( "Change 3D view to Posterior " ), this );
     this->m_ViewActions.push_back( Change3DPerspectiveToAxialAction );
 
+    QIcon axialicon;
+    axialicon.addPixmap( QPixmap(QString::fromUtf8(":/fig/PosteriorView.png")),
+        QIcon::Normal, QIcon::Off );
+      Change3DPerspectiveToAxialAction->setIcon( axialicon );
+
     QObject::connect( Change3DPerspectiveToAxialAction, SIGNAL( triggered() ),
       this, SLOT( Change3DPerspectiveToAxial( ) ) );
 
@@ -619,6 +634,11 @@ CreateAllViewActions()
       new QAction( tr( "Change 3D view to Dorsal " ), this );
     this->m_ViewActions.push_back( Change3DPerspectiveToCoronalAction );
 
+    QIcon coronalicon;
+    coronalicon.addPixmap( QPixmap(QString::fromUtf8(":/fig/DorsalView.png")),
+            QIcon::Normal, QIcon::Off );
+    Change3DPerspectiveToCoronalAction->setIcon( coronalicon );
+
     QObject::connect( Change3DPerspectiveToCoronalAction, SIGNAL( triggered() ),
       this, SLOT( Change3DPerspectiveToCoronal( ) ) );
 
@@ -626,6 +646,11 @@ CreateAllViewActions()
     QAction* Change3DPerspectiveToSagittalAction =
       new QAction( tr( "Change 3D view to Left " ), this );
     this->m_ViewActions.push_back( Change3DPerspectiveToSagittalAction );
+
+    QIcon sagittalicon;
+    sagittalicon.addPixmap( QPixmap(QString::fromUtf8(":/fig/LeftView.png")),
+                QIcon::Normal, QIcon::Off );
+    Change3DPerspectiveToSagittalAction->setIcon( sagittalicon );
 
     QObject::connect( Change3DPerspectiveToSagittalAction, SIGNAL( triggered() ),
       this, SLOT( Change3DPerspectiveToSagittal( ) ) );
@@ -2333,14 +2358,18 @@ Change3DPerspectiveToAxial()
 {
   m_ImageView->SetCamera( 1 );
 }
+//-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
 Change3DPerspectiveToCoronal()
 {
   m_ImageView->SetCamera( 2 );
 }
+//-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
 Change3DPerspectiveToSagittal()

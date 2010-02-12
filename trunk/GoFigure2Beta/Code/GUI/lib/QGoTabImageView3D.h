@@ -114,6 +114,14 @@ class QGoTabImageView3D : public QGoTabImageViewNDBase
     void ShowScalarBar( const bool& );
     void ChangeBackgroundColor();
 
+    void DisplayAnnotations();
+    void DisplaySplinePlanes();
+    void DisplayCube();
+
+    void Change3DPerspectiveToAxial();
+    void Change3DPerspectiveToCoronal();
+    void Change3DPerspectiveToSagittal();
+
   protected:
     QGoImageView3D*   m_ImageView;
 

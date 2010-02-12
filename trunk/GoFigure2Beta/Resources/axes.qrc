@@ -4,6 +4,11 @@
   </qresource>
   <qresource prefix="/" >
     <file>fig/cube.png</file>
+    <file>fig/2D_VIEWS_INFOS.png</file>
+    <file>fig/LeftView.png</file>
+    <file>fig/C_M_L.png</file>
+    <file>fig/PosteriorView.png</file>
+    <file>fig/DorsalView.png</file>
     <file>fig/Myapp2.png</file>
   </qresource>
   <qresource prefix="/" >

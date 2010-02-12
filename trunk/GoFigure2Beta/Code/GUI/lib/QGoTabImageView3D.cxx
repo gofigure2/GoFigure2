@@ -253,6 +253,94 @@ void QGoTabImageView3D::CreateAllViewActions()
   this->m_ViewActions.push_back( separator2 );
 
   this->m_ViewActions.push_back( m_VisuDockWidget->toggleViewAction() );
+
+  QAction* separator3 = new QAction( this );
+  separator3->setSeparator( true );
+  this->m_ViewActions.push_back( separator3 );
+
+  QAction* DisplayAnnotations = new QAction( tr( "Display annotations" ), this );
+    DisplayAnnotations->setCheckable( true );
+    DisplayAnnotations->setChecked( true );
+    DisplayAnnotations->setStatusTip( tr(" Display or not annotations in each 2d view" ) );
+
+    QIcon displayannotationsicon;
+    displayannotationsicon.addPixmap( QPixmap(QString::fromUtf8(":/fig/2D_VIEWS_INFOS.png")),
+      QIcon::Normal, QIcon::Off );
+    DisplayAnnotations->setIcon(displayannotationsicon);
+
+    QObject::connect( DisplayAnnotations, SIGNAL( triggered() ),
+      this, SLOT( DisplayAnnotations() ) );
+
+    this->m_ViewActions.push_back( DisplayAnnotations );
+
+    QAction* DisplaySplinePlanes = new QAction( tr( "Display spline planes" ), this );
+    DisplaySplinePlanes->setCheckable( true );
+    DisplaySplinePlanes->setChecked( true );
+    DisplaySplinePlanes->setStatusTip( tr(" Display or not spline planes on each view" ) );
+
+    QIcon displaysplineplaneicon;
+    displaysplineplaneicon.addPixmap( QPixmap(QString::fromUtf8(":/fig/C_M_L.png")),
+        QIcon::Normal, QIcon::Off );
+    DisplaySplinePlanes->setIcon(displaysplineplaneicon);
+
+    QObject::connect( DisplaySplinePlanes, SIGNAL( triggered() ),
+      this, SLOT( DisplaySplinePlanes() ) );
+
+    this->m_ViewActions.push_back( DisplaySplinePlanes );
+
+    QAction* DisplayCube3D = new QAction( tr( "Display 3D cube" ), this );
+    DisplayCube3D->setCheckable( true );
+    DisplayCube3D->setChecked( true );
+    DisplayCube3D->setStatusTip( tr(" Display or not cube in 3d" ) );
+
+    QIcon cube3dicon;
+    cube3dicon.addPixmap( QPixmap(QString::fromUtf8(":/fig/cube.png")),
+      QIcon::Normal, QIcon::Off );
+    DisplayCube3D->setIcon( cube3dicon );
+
+    QObject::connect( DisplayCube3D, SIGNAL( triggered() ),
+      this, SLOT( DisplayCube() ) );
+
+    this->m_ViewActions.push_back( DisplayCube3D );
+
+
+    QAction* Change3DPerspectiveToAxialAction =
+      new QAction( tr( "Change 3D view to Posterior " ), this );
+    this->m_ViewActions.push_back( Change3DPerspectiveToAxialAction );
+
+    QIcon axialicon;
+    axialicon.addPixmap( QPixmap(QString::fromUtf8(":/fig/PosteriorView.png")),
+        QIcon::Normal, QIcon::Off );
+      Change3DPerspectiveToAxialAction->setIcon( axialicon );
+
+    QObject::connect( Change3DPerspectiveToAxialAction, SIGNAL( triggered() ),
+      this, SLOT( Change3DPerspectiveToAxial( ) ) );
+
+
+    QAction* Change3DPerspectiveToCoronalAction =
+      new QAction( tr( "Change 3D view to Dorsal " ), this );
+    this->m_ViewActions.push_back( Change3DPerspectiveToCoronalAction );
+
+    QIcon coronalicon;
+    coronalicon.addPixmap( QPixmap(QString::fromUtf8(":/fig/DorsalView.png")),
+            QIcon::Normal, QIcon::Off );
+    Change3DPerspectiveToCoronalAction->setIcon( coronalicon );
+
+    QObject::connect( Change3DPerspectiveToCoronalAction, SIGNAL( triggered() ),
+      this, SLOT( Change3DPerspectiveToCoronal( ) ) );
+
+
+    QAction* Change3DPerspectiveToSagittalAction =
+      new QAction( tr( "Change 3D view to Left " ), this );
+    this->m_ViewActions.push_back( Change3DPerspectiveToSagittalAction );
+
+    QIcon sagittalicon;
+    sagittalicon.addPixmap( QPixmap(QString::fromUtf8(":/fig/LeftView.png")),
+                QIcon::Normal, QIcon::Off );
+    Change3DPerspectiveToSagittalAction->setIcon( sagittalicon );
+
+    QObject::connect( Change3DPerspectiveToSagittalAction, SIGNAL( triggered() ),
+      this, SLOT( Change3DPerspectiveToSagittal( ) ) );
 }
 //--------------------------------------------------------------------------
 
@@ -646,4 +734,56 @@ ChangeBackgroundColor()
     Pix.fill(temp);
     m_BackgroundColorAction->setIcon(Pix);
     }
+}
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3D::
+DisplayAnnotations( )
+{
+  this->m_ImageView->ShowAnnotations();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3D::
+DisplaySplinePlanes( )
+{
+  this->m_ImageView->ShowSplinePlane();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3D::
+DisplayCube( )
+{
+  this->m_ImageView->ShowCube3D();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3D::
+Change3DPerspectiveToAxial()
+{
+  this->m_ImageView->SetCamera( 1 );
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3D::
+Change3DPerspectiveToCoronal()
+{
+  this->m_ImageView->SetCamera( 2 );
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3D::
+Change3DPerspectiveToSagittal()
+{
+  this->m_ImageView->SetCamera( 3 );
 }
