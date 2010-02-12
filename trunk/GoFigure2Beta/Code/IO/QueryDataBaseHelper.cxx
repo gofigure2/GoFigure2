@@ -259,6 +259,42 @@ void DeleteRow(vtkMySQLDatabase* DatabaseConnector,
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
+void DeleteRows(vtkMySQLDatabase* DatabaseConnector,std::string TableName, 
+  std::string field, std::vector<std::string> VectorValues)
+{
+  vtkSQLQuery* query = DatabaseConnector->GetQueryInstance();
+  std::stringstream querystream;
+  querystream << "DELETE FROM ";
+  querystream << TableName;
+  querystream << " WHERE (";
+  unsigned int i;
+  for( i=0;i < VectorValues.size()-1; i++ )
+    {
+    querystream << field;
+    querystream << " = '";
+    querystream << VectorValues[i];
+    querystream << "' OR ";
+    }
+  querystream << field;
+  querystream << " = '";
+  querystream << VectorValues[i];
+  querystream << "');";
+
+  query->SetQuery( querystream.str().c_str() );
+  if ( !query->Execute() )
+    {
+    itkGenericExceptionMacro(
+      << "Delete rows query failed"
+      << query->GetLastErrorText() );
+    DatabaseConnector->Close();
+    DatabaseConnector->Delete();
+    query->Delete();
+    }
+  query->Delete();
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
 bool DoesDatabaseExist(vtkMySQLDatabase* ServerConnector,std::string DBName )
 {
   std::vector< std::string > list;

@@ -590,7 +590,7 @@ std::vector<std::string> ListSpecificValuesForOneColumn(
 std::vector<std::string> ListSpecificValuesForOneColumn(
   vtkMySQLDatabase* DatabaseConnector,
   std::string TableName, std::string ColumnName,
-  std::string field,std::vector<std::string> VectorValuess)
+  std::string field,std::vector<std::string> VectorValues)
 {
   std::vector< std::string > result;
 
@@ -602,16 +602,16 @@ std::vector<std::string> ListSpecificValuesForOneColumn(
   querystream << TableName;
   querystream << " WHERE (";
   unsigned int i;
-  for( i=0;i < VectorValuess.size()-1; i++ )
+  for( i=0;i < VectorValues.size()-1; i++ )
     {
     querystream << field;
     querystream << " = '";
-    querystream << VectorValuess[i];
+    querystream << VectorValues[i];
     querystream << "' OR ";
     }
   querystream << field;
   querystream << " = '";
-  querystream << VectorValuess[i];
+  querystream << VectorValues[i];
   querystream << "');";
 
   query->SetQuery( querystream.str().c_str() );

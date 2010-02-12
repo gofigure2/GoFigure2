@@ -92,6 +92,13 @@ void DeleteRow(
   vtkMySQLDatabase* DatabaseConnector,
   std::string TableName, std::string field, std::string value);
 
+// query: "DELETE FROM TableName WHERE (field = 
+//value1 or field = value2...."
+void DeleteRows(
+  vtkMySQLDatabase* DatabaseConnector,
+  std::string TableName, std::string field, 
+  std::vector<std::string> VectorValues);
+
 bool DoesDatabaseExist(
   vtkMySQLDatabase* ServerConnector,
   std::string DBName );

@@ -41,12 +41,15 @@
 #include <QStringListModel>
 #include <QStringList>
 #include <QTreeWidget>
-#include <QListView>
+#include <QListWidget>
+#include <QListWidgetItem>
 #include <QVBoxLayout>
 #include <QSortFilterProxyModel>
 #include <QDialogButtonBox>
 #include <QMessageBox>
+#include <QModelIndex>
 #include "SelectQueryDatabaseHelper.h"
+#include "QueryDataBaseHelper.h"
 #include "ConvertToStringHelper.h"
 
 
@@ -56,17 +59,23 @@ QGoDeleteDBEntityDialog::QGoDeleteDBEntityDialog( QWidget* iParent,
 {
   this->m_EntityName = iEntityName;
   this->m_ImgSessionID = iImgSessionID;
-  QStringListModel* sourceModel = new QStringListModel();
-  sourceModel->setStringList(this->GetListExistingEntities(iDatabaseConnector));  
-  this->m_ListView = new QListView;
-  this->m_ListView->setModel(sourceModel);
-  this->m_ListView->setSelectionMode(QAbstractItemView::MultiSelection);
+  this->m_DatabaseConnector = iDatabaseConnector;
+  //QStringListModel* SourceModel = new QStringListModel();
+  //SourceModel->setStringList(this->GetListExistingEntities(iDatabaseConnector));  
+  //this->m_ListView = new QListView;
+  //this->m_ListView->setModel(SourceModel);
+  //this->m_ListView->setSelectionMode(QAbstractItemView::MultiSelection);
+  this->m_ListWidget = new QListWidget;
+  this->SetItemsInTheList(iDatabaseConnector);
+  this->m_ListWidget->setSelectionMode(QAbstractItemView::MultiSelection);
+
   QDialogButtonBox* ButtonBox = new QDialogButtonBox(QDialogButtonBox::Ok
                                       | QDialogButtonBox::Cancel);
   QObject::connect(ButtonBox, SIGNAL(rejected()), this, SLOT(reject()));
   QObject::connect(ButtonBox,SIGNAL(accepted()), this, SLOT(AskUserConfirmation()));
   QVBoxLayout* layout = new QVBoxLayout(this);
-  layout->addWidget(this->m_ListView);
+  //layout->addWidget(this->m_ListView);
+  layout->addWidget(this->m_ListWidget);
   layout->addWidget(ButtonBox);
   this->setWindowTitle(tr("Delete a %1").arg(this->m_EntityName.c_str()));
   this->setLayout(layout);
@@ -101,12 +110,27 @@ QStringList QGoDeleteDBEntityDialog::GetListExistingEntities(
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+void QGoDeleteDBEntityDialog::SetItemsInTheList(
+  vtkMySQLDatabase* iDatabaseConnector)
+{
+ QStringList ListNamesEntities = this->GetListExistingEntities(
+   iDatabaseConnector);
+ for (int i=0; i<ListNamesEntities.size();i++)
+   {
+   QListWidgetItem* item = new QListWidgetItem(
+     ListNamesEntities.at(i),this->m_ListWidget);
+   }
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
 void QGoDeleteDBEntityDialog::AskUserConfirmation()
 {
     QMessageBox msgBox;
 
     msgBox.setText(
-      tr("Are you sure you want to delete these bookmarks ?"));
+      tr("Are you sure you want to delete these %1s ?")
+      .arg(this->m_EntityName.c_str()));
     msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
     int r = msgBox.exec(); 
     if(r == 16384)
@@ -125,4 +149,28 @@ void QGoDeleteDBEntityDialog::AskUserConfirmation()
 //--------------------------------------------------------------------------
 void QGoDeleteDBEntityDialog::DeleteSelection()
 {
+  /*QModelIndexList indexes = this->m_ListView->selectedIndexes();
+ // int i = 0;
+ // QModelIndex Index = ListIndexes.at(i);
+//this->m_ListView->selectedItem().text();
+//QListViewItem* ItemSelected = this->m_ListView->selectedItem();
+  QModelIndex index;
+  std::list<std::string> ListNameEntityToDelete;
+
+     foreach(index, indexes) 
+       {
+       QString text = QString("(%1,%2)").arg(index.row()).arg(index.column());
+         //model->setData(index, text);
+         //this->m_SourceModel->setData(index,text);
+       ListNameEntityToDelete.push_back(index.data().toString().toStdString());
+       }*/
+  QList<QListWidgetItem*> ListEntitiesToDelete = 
+    this->m_ListWidget->selectedItems();
+  std::vector<std::string> VectorNamesToDelete;
+  for (int i=0; i<ListEntitiesToDelete.size();i++)
+    {
+    VectorNamesToDelete.push_back(ListEntitiesToDelete.at(i)->text().toStdString());
+    }  
+  DeleteRows(this->m_DatabaseConnector,this->m_EntityName, 
+  "Name", VectorNamesToDelete);
 }

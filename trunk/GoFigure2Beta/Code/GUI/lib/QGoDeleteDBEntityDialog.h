@@ -42,7 +42,7 @@
 
 #include <QDialog>
 #include <QStringList>
-#include <QListView>
+#include <QListWidget>
 #include "vtkMySQLDatabase.h"
 
 /**
@@ -61,12 +61,15 @@ public:
   virtual ~QGoDeleteDBEntityDialog();
 
 protected:
-  std::string m_EntityName;
-  int         m_ImgSessionID;
-  QListView*  m_ListView;
+  std::string       m_EntityName;
+  int               m_ImgSessionID;
+  //QListView*        m_ListView;
+  QListWidget*      m_ListWidget;
   QStringList GetListExistingEntities(
     vtkMySQLDatabase* iDatabaseConnector);
+  vtkMySQLDatabase* m_DatabaseConnector;
   void DeleteSelection();
+  void SetItemsInTheList(vtkMySQLDatabase* iDatabaseConnector);
 
 protected slots:
   void AskUserConfirmation();
