@@ -64,6 +64,7 @@ public:
 /**\brief return the ContourID of the Contour with the same bounding box
   already registered in the DB or -1 if not yet created*/
  int  DoesThisBoundingBoxExist(vtkMySQLDatabase* DatabaseConnector);
+
  void SetColor(unsigned int Red, unsigned int Green, unsigned int Blue,
    unsigned int Alpha, std::string ColorName,vtkMySQLDatabase* DatabaseConnector);
 

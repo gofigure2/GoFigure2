@@ -44,7 +44,9 @@
 
 
 GoDBContourRow::GoDBContourRow():GoDBTraceRow()
-{
+{ 
+  this->m_TableName = "contour";
+  this->m_TableIDName = "ContourID";
   this->InitializeMap();
 }
 //-------------------------------------------------------------------------
@@ -67,7 +69,8 @@ GoDBContourRow::GoDBContourRow(vtkMySQLDatabase* DatabaseConnector,
 //-------------------------------------------------------------------------
 void GoDBContourRow::InitializeMap()
 {
-  this->m_MapRow["ContourID"] = ConvertToString<int>(0);
+  //this->m_MapRow["ContourID"] = ConvertToString<int>(0);
+  this->m_MapRow[this->m_TableIDName] = ConvertToString<int>(0);
   this->m_MapRow["MeshID"] = "null";
 }    
 //-------------------------------------------------------------------------

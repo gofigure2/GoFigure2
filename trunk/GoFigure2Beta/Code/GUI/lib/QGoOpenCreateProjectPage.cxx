@@ -164,7 +164,7 @@ bool QGoOpenCreateProjectPage::GetListProject()const
   ChoiceProject->clear();
 
   std::vector<std::string> vectListProjName =
-      ListAllValuesForOneColumn(m_DatabaseConnector,"projectname","project");
+      ListAllValuesForOneColumn(m_DatabaseConnector,"Name","project");
 
    if (!vectListProjName.empty())
     {
@@ -188,7 +188,7 @@ void QGoOpenCreateProjectPage::CreateProject()
   QDate DateOfToday = QDate::currentDate();
 
   GoDBProjectRow myNewProject;
-  myNewProject.SetField("ProjectName",field( "ProjectName").toString().toStdString());
+  myNewProject.SetField("Name",field( "ProjectName").toString().toStdString());
   myNewProject.SetField("Description",this->lineDescription->toPlainText().toStdString());
   myNewProject.SetField("AuthorID",AuthorIDForNewProject());
   myNewProject.SetField("CreationDate",DateOfToday.toString(Qt::ISODate).toStdString());
@@ -341,7 +341,7 @@ void QGoOpenCreateProjectPage::DisplayInfoProject(QString ProjectName)
   std::vector<std::string> ResultQuery;
   ResultQuery = ListSpecificValuesForOneColumn(
     m_DatabaseConnector,"project", "Description",
-    "ProjectName",ProjectName.toStdString());
+    "Name",ProjectName.toStdString());
   /*only one field in the ResultQuery as the project name is the primary key
     of the Project Table: */
   Description = ResultQuery[0].c_str();
@@ -352,7 +352,7 @@ void QGoOpenCreateProjectPage::DisplayInfoProject(QString ProjectName)
   ResultQuery.clear();
   ResultQuery = ListSpecificValuesForOneColumn(
     m_DatabaseConnector,"project", "AuthorID",
-    "ProjectName",ProjectName.toStdString());
+    "Name",ProjectName.toStdString());
   int AuthorID = atoi(ResultQuery[0].c_str());
 
   /*second, have to find the corresponding AuthorName in the map*/

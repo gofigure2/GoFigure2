@@ -132,7 +132,7 @@ QStringList QGoCreateImgSessionPage::GetListMicroscopes()
 {
   QStringList ListMicroscopes;
   std::vector<std::string> vectListMicroscopes =
-      ListAllValuesForOneColumn( m_DatabaseConnector,"MicroscopeName","microscope");
+      ListAllValuesForOneColumn( m_DatabaseConnector,"Name","microscope");
 
   if (!vectListMicroscopes.empty())
     {

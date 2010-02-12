@@ -81,7 +81,7 @@ GoDBTraceRow::GoDBTraceRow(vtkMySQLDatabase* DatabaseConnector,
 
 //-------------------------------------------------------------------------
 void GoDBTraceRow::InitializeMap()
-{
+{ 
   this->m_MapRow["ImagingSessionID"] = ConvertToString<int>(0);
   this->m_MapRow["ColorID"] = ConvertToString<int>(1);
   this->m_MapRow["CoordIDMax"] = ConvertToString<int>(0);
