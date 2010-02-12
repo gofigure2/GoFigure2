@@ -140,7 +140,6 @@ on_convert_clicked()
   this->selectLsmFile->setEnabled(false);
   this->selectMegaPath->setEnabled(false);
   this->outputFormat->setEnabled(false);
-  this->buttonBox->setEnabled(false);
   this->convert->setEnabled(false);
   this->label->setEnabled(false);
   this->selectLSMLabel->setEnabled(false);
@@ -175,22 +174,7 @@ QGoLsmToMegaExportDialog::
 ConversionTerminatedReceived()
 {
   m_ProgressDialog->accept();
-
-  //Enable everything
-  lsmFileName->setEnabled(true);
-  megaFilePath->setEnabled(true);
-  selectLsmFile->setEnabled(true);
-  selectMegaPath->setEnabled(true);
-  outputFormat->setEnabled(true);
-  this->buttonBox->setEnabled(true);
-  this->convert->setEnabled(true);
-  this->label->setEnabled(true);
-  this->selectLSMLabel->setEnabled(true);
-  this->megaFilePath_2->setEnabled(true);
-  this->outputFormatLabel->setEnabled(true);
-  this->label_2->setEnabled(true);
-
-  this->convertLabel->setText( tr("")  );
+  this->accept();
 }
 
 /**
@@ -211,7 +195,7 @@ InitialisationProgressReceived()
   // +1 because m_Counter starts at 1
   // +1 to prevent that the dialoProgressWindow automatically close
   //    then re-open when 100% reached
-  m_ProgressDialog->setRange(0,sizeProgressBar+2);
+  m_ProgressDialog->setRange(0,sizeProgressBar+5);
   m_ProgressDialog->setValue(m_Counter);
 
 }
