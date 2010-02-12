@@ -56,7 +56,7 @@ class ConversionLsmToMegaThread : public QThread
 
 public:
   ConversionLsmToMegaThread();
-  virtual ~ConversionLsmToMegaThread(){}
+  virtual ~ConversionLsmToMegaThread();
   void SetBaseName( std::string iBaseName);
   void SetLsmPath( std::string iLsmPath);
   void SetMegaPath( std::string iMegaPath);

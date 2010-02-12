@@ -42,6 +42,7 @@
 #include "LSMToMegaCapture.h"
 
 #include "vtkLSMReader.h"
+
 #include <fstream>
 #include <sstream>
 #include <time.h>
@@ -53,6 +54,7 @@
 #include "vtkExtractVOI.h"
 #include "vtkImageData.h"
 #include "vtkLSMReader.h"
+#include "vtkSmartPointer.h"
 
 #include "vtkPNGWriter.h"
 #include "vtkTIFFWriter.h"
@@ -74,6 +76,14 @@ ConversionLsmToMegaThread ( ) : m_BaseName(""), m_LsmPath(""), m_MegaPath(""),
 {
 }
 
+ConversionLsmToMegaThread::~ConversionLsmToMegaThread()
+{
+  while( !m_LSMReaders.empty() )
+    {
+    m_LSMReaders.back()->Delete();
+    m_LSMReaders.pop_back();
+    }
+}
 
 void
 ConversionLsmToMegaThread::
@@ -281,7 +291,8 @@ ExportWithReimplemented( std::string iMegaPath )
         file <<"Pinhole 44.216" <<std::endl;
         file <<"</Image>"<<std::endl;
 
-        vtkExtractVOI* extract = vtkExtractVOI::New();
+        vtkSmartPointer< vtkExtractVOI > extract =
+          vtkSmartPointer< vtkExtractVOI >::New();
         extract->SetSampleRate( 1, 1, 1 );
         extract->SetInput( image3d );
         extract->SetVOI( extent[0], extent[1], extent[2], extent[3], k, k );
@@ -308,7 +319,6 @@ ExportWithReimplemented( std::string iMegaPath )
           }
         //send signal for progress bar
         emit ProgressSent();
-        extract->Delete();
         }
       }
     }
