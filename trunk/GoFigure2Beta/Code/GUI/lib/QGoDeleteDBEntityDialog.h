@@ -43,6 +43,7 @@
 #include <QDialog>
 #include <QStringList>
 #include <QListWidget>
+#include <QListWidgetItem>
 #include "vtkMySQLDatabase.h"
 
 /**
@@ -63,16 +64,26 @@ public:
 protected:
   std::string       m_EntityName;
   int               m_ImgSessionID;
-  //QListView*        m_ListView;
   QListWidget*      m_ListWidget;
+  /** \brief Get the list of the existing entities names from
+  the database*/
   QStringList GetListExistingEntities(
     vtkMySQLDatabase* iDatabaseConnector);
   vtkMySQLDatabase* m_DatabaseConnector;
-  void DeleteSelection();
+  /** \brief delete the corresponding items selected in the
+  database*/
+  void DeleteSelection(
+    QList<QListWidgetItem*> iListEntitiesToDelete );
+
+  /** \brief get the names of the entities from the database
+  and create the corresponding QListWidgetItems*/
   void SetItemsInTheList(vtkMySQLDatabase* iDatabaseConnector);
 
 protected slots:
-  void AskUserConfirmation();
+  /** \brief ask the user to select at least one item if 
+  nothying has been selected and ask the user confirmation 
+  if selection is not null*/
+  void SelectionValidation();
 
 };
 

@@ -60,11 +60,6 @@ QGoDeleteDBEntityDialog::QGoDeleteDBEntityDialog( QWidget* iParent,
   this->m_EntityName = iEntityName;
   this->m_ImgSessionID = iImgSessionID;
   this->m_DatabaseConnector = iDatabaseConnector;
-  //QStringListModel* SourceModel = new QStringListModel();
-  //SourceModel->setStringList(this->GetListExistingEntities(iDatabaseConnector));  
-  //this->m_ListView = new QListView;
-  //this->m_ListView->setModel(SourceModel);
-  //this->m_ListView->setSelectionMode(QAbstractItemView::MultiSelection);
   this->m_ListWidget = new QListWidget;
   this->SetItemsInTheList(iDatabaseConnector);
   this->m_ListWidget->setSelectionMode(QAbstractItemView::MultiSelection);
@@ -72,17 +67,12 @@ QGoDeleteDBEntityDialog::QGoDeleteDBEntityDialog( QWidget* iParent,
   QDialogButtonBox* ButtonBox = new QDialogButtonBox(QDialogButtonBox::Ok
                                       | QDialogButtonBox::Cancel);
   QObject::connect(ButtonBox, SIGNAL(rejected()), this, SLOT(reject()));
-  QObject::connect(ButtonBox,SIGNAL(accepted()), this, SLOT(AskUserConfirmation()));
+  QObject::connect(ButtonBox,SIGNAL(accepted()), this, SLOT(SelectionValidation()));
   QVBoxLayout* layout = new QVBoxLayout(this);
-  //layout->addWidget(this->m_ListView);
   layout->addWidget(this->m_ListWidget);
   layout->addWidget(ButtonBox);
   this->setWindowTitle(tr("Delete a %1").arg(this->m_EntityName.c_str()));
   this->setLayout(layout);
-
- // QTreeWidget* TreeWidget = new QTreeWidget;
-  //TreeWidget->setColumnCount(2);
-  //TreeWidget->setModel(model);
 }
 //--------------------------------------------------------------------------
 
@@ -124,52 +114,47 @@ void QGoDeleteDBEntityDialog::SetItemsInTheList(
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoDeleteDBEntityDialog::AskUserConfirmation()
+void QGoDeleteDBEntityDialog::SelectionValidation()
 {
-    QMessageBox msgBox;
-
-    msgBox.setText(
-      tr("Are you sure you want to delete these %1s ?")
-      .arg(this->m_EntityName.c_str()));
-    msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-    int r = msgBox.exec(); 
-    if(r == 16384)
-      {
-      DeleteSelection();
-      this->accept();
-      }
-    else
-      {
-      msgBox.close();
-      }
-
+ QList<QListWidgetItem*> ListEntitiesToDelete = 
+    this->m_ListWidget->selectedItems();
+ if (!ListEntitiesToDelete.empty())
+   {
+   QMessageBox msgBox;
+   msgBox.setText(
+     tr("Are you sure you want to delete these %1s ?")
+     .arg(this->m_EntityName.c_str()));
+   msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+   int r = msgBox.exec(); 
+   if(r == 16384)
+     {
+     DeleteSelection(ListEntitiesToDelete);
+     this->accept();
+     }
+   else
+     {
+     msgBox.close();
+     }
+   }
+ else
+   {
+   QMessageBox msgBox;
+   msgBox.setText(
+     tr("Please select at least one %1.")
+     .arg(this->m_EntityName.c_str()));
+   msgBox.exec();
+   }
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoDeleteDBEntityDialog::DeleteSelection()
-{
-  /*QModelIndexList indexes = this->m_ListView->selectedIndexes();
- // int i = 0;
- // QModelIndex Index = ListIndexes.at(i);
-//this->m_ListView->selectedItem().text();
-//QListViewItem* ItemSelected = this->m_ListView->selectedItem();
-  QModelIndex index;
-  std::list<std::string> ListNameEntityToDelete;
-
-     foreach(index, indexes) 
-       {
-       QString text = QString("(%1,%2)").arg(index.row()).arg(index.column());
-         //model->setData(index, text);
-         //this->m_SourceModel->setData(index,text);
-       ListNameEntityToDelete.push_back(index.data().toString().toStdString());
-       }*/
-  QList<QListWidgetItem*> ListEntitiesToDelete = 
-    this->m_ListWidget->selectedItems();
+void QGoDeleteDBEntityDialog::DeleteSelection( 
+  QList<QListWidgetItem*> iListEntitiesToDelete )
+{ 
   std::vector<std::string> VectorNamesToDelete;
-  for (int i=0; i<ListEntitiesToDelete.size();i++)
+  for (int i=0; i<iListEntitiesToDelete.size();i++)
     {
-    VectorNamesToDelete.push_back(ListEntitiesToDelete.at(i)->text().toStdString());
+    VectorNamesToDelete.push_back(iListEntitiesToDelete.at(i)->text().toStdString());
     }  
   DeleteRows(this->m_DatabaseConnector,this->m_EntityName, 
   "Name", VectorNamesToDelete);
