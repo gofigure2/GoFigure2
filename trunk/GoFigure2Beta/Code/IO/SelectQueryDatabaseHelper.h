@@ -52,6 +52,13 @@ std::vector<std::string> ListAllValuesForOneColumn(
   vtkMySQLDatabase* DatabaseConnector,
   std::string ColumnName, std::string TableName);
 
+//query: "SELECT ColumnNameOne,ColumnNameTwo FROM TableName ORDER BY 
+//ColumnName ASC"
+std::vector<std::pair<std::string,std::string> > 
+  VectorTwoColumnsFromTable(vtkMySQLDatabase* DatabaseConnector, 
+  std::string ColumnNameOne,std::string ColumnNameTwo, 
+  std::string TableName, std::string ColumnNameOrder);
+
 //query: "SELECT ColumnName1, ColumnName2 FROM TableName"
 //return map[Value from ColumnName1] = Value from ColumnName2
 std::map< std::string, std::string > MapTwoColumnsFromTable(

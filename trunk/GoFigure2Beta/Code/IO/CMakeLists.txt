@@ -13,7 +13,9 @@ SET( QGOIO_SRC
   GoDBRow.cxx
   GoDBTrackRow.cxx
   GoDBLineageRow.cxx
+  GoDBNameDescRow.cxx
   GoDBBookmarkRow.cxx
+  GoDBCellTypeRow.cxx
   GoDBTableWidgetContainer.cxx
   MegaCaptureHeaderReader.cxx
   QueryDataBaseHelper.cxx

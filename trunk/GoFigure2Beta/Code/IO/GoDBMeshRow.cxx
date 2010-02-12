@@ -45,8 +45,6 @@
 
 GoDBMeshRow::GoDBMeshRow():GoDBTraceRow()
 {
-  m_TableName = "mesh";
-  m_TableIDName = "MeshID";
   this->InitializeMap();
 }
 //-------------------------------------------------------------------------
@@ -68,6 +66,8 @@ GoDBMeshRow::GoDBMeshRow(vtkMySQLDatabase* DatabaseConnector,
 //-------------------------------------------------------------------------
 void GoDBMeshRow::InitializeMap()
 {
+  m_TableName = "mesh";
+  m_TableIDName = "MeshID";
   this->m_MapRow[this->m_TableIDName] = ConvertToString<int>(0);
   this->m_MapRow["CellTypeID"] = ConvertToString<int>(1);
   this->m_MapRow["SubCellularID"] = ConvertToString<int>(1);

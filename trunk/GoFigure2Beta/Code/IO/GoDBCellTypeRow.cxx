@@ -1,7 +1,7 @@
 /*=========================================================================
-  Author: $Author: lydiesouhait $  // Author of last commit
-  Version: $Rev: 374 $  // Revision of last commit
-  Date: $Date: 2009-07-08 10:24:11 -0400 (Wed, 08 Jul 2009) $  // Date of last commit
+  Author: $Author: lsouhait $  // Author of last commit
+  Version: $Rev: 455 $  // Revision of last commit
+  Date: $Date: 2009-07-28 14:31:26 -0400 (Tue, 28 Jul 2009) $  // Date of last commit
 =========================================================================*/
 
 /*=========================================================================
@@ -37,64 +37,56 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#include "GoDBContourRow.h"
-#include "SelectQueryDatabaseHelper.h"
+#include "GoDBCellTypeRow.h"
 #include "GoDBRecordSetHelper.h"
-#include <iostream>
 
 
-GoDBContourRow::GoDBContourRow():GoDBTraceRow()
-{ 
-  this->InitializeMap();
+GoDBCellTypeRow::GoDBCellTypeRow(): GoDBNameDescRow()
+{
+  this->m_TableName = "celltype";
+  this->m_TableIDName = "CellTypeID";
+  this->InitializeMap();  
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-GoDBContourRow::GoDBContourRow(vtkMySQLDatabase* DatabaseConnector,
-  GoDBCoordinateRow Min, GoDBCoordinateRow Max,unsigned int ImgSessionID,
-  vtkPolyData* TraceVisu):
-  GoDBTraceRow(DatabaseConnector,TraceVisu,Min,Max,
-    ImgSessionID)
+void GoDBCellTypeRow::InitializeMap()
 {
-  this->InitializeMap();
-  if (this->DoesThisBoundingBoxContourExist(DatabaseConnector))
-    {
-    std::cout<<"The bounding box already exists for this contour"<<std::endl;
-    }
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void GoDBContourRow::InitializeMap()
-{
-  this->m_TableName = "contour";
-  this->m_TableIDName = "ContourID";
-  //this->m_MapRow["ContourID"] = ConvertToString<int>(0);
   this->m_MapRow[this->m_TableIDName] = ConvertToString<int>(0);
-  this->m_MapRow["MeshID"] = "null";
-}    
+}
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-int GoDBContourRow::DoesThisBoundingBoxContourExist(
+ int GoDBCellTypeRow::DoesThisEntityAlreadyExists(
   vtkMySQLDatabase* DatabaseConnector)
 {
-  return FindOneID(DatabaseConnector,"contour","ContourID",
-    "CoordIDMax",this->GetMapValue("CoordIDMax"),
-    "CoordIDMin",this->GetMapValue("CoordIDMin"));
+  return DoesThisNameAlreadyExists(DatabaseConnector);
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-int GoDBContourRow::SaveInDB(vtkMySQLDatabase* DatabaseConnector)
+ int GoDBCellTypeRow::DoesThisEntityAlreadyExists(
+  vtkMySQLDatabase* DatabaseConnector,std::string &ioName)
 {
-  return AddOnlyOneNewObjectInTable<GoDBContourRow>( DatabaseConnector,
-    "contour",*this, "ContourID");
+  int ID = DoesThisNameAlreadyExists(DatabaseConnector);
+  if (ID == -1)
+    {
+    return ID;
+    }
+  ioName = ReturnOnlyOneValue(DatabaseConnector,this->m_TableName, "Name",
+    this->m_TableIDName,ConvertToString<int>(ID));
+  return ID;
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void GoDBContourRow::SetCollectionID (int iCollectionID)
+int GoDBCellTypeRow::SaveInDB(vtkMySQLDatabase* DatabaseConnector)
 {
-  this->SetField("MeshID",iCollectionID);
+  int CellTypeID = this->DoesThisEntityAlreadyExists(DatabaseConnector);
+  if (CellTypeID == -1)
+    {
+    CellTypeID = AddOnlyOneNewObjectInTable<GoDBCellTypeRow>( DatabaseConnector,
+    this->m_TableName,*this, this->m_TableIDName);
+    }
+  return CellTypeID;
 }

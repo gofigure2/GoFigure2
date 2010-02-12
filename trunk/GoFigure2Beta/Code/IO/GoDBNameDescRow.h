@@ -37,56 +37,43 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#include "GoDBLineageRow.h"
-#include "SelectQueryDatabaseHelper.h"
-#include "GoDBRecordSetHelper.h"
-#include <iostream>
+#ifndef __GoDBNameDescRow_h
+#define __GoDBNameDescRow_h
 
-GoDBLineageRow::GoDBLineageRow()
+#include "GoDBRow.h"
+#include "vtkMySQLDatabase.h"
+
+class GoDBNameDescRow : public GoDBRow
 {
-  this->InitializeMap();
-}
-//-------------------------------------------------------------------------
+public:
+  GoDBNameDescRow();
 
-//-------------------------------------------------------------------------
-GoDBLineageRow::GoDBLineageRow(vtkMySQLDatabase* DatabaseConnector,
-  GoDBCoordinateRow Min, GoDBCoordinateRow Max,unsigned int ImgSessionID,
-  vtkPolyData* TraceVisu)
-{
-  GoDBTraceRow::GoDBTraceRow(DatabaseConnector,TraceVisu,Min,Max,
-    ImgSessionID);
-  if (this->DoesThisBoundingBoxLineageExist(DatabaseConnector))
-    {
-    std::cout<<"The bounding box alreaady exists for this lineage"<<std::endl;
-    }
-}
-//-------------------------------------------------------------------------
+  ~GoDBNameDescRow()
+    {}
+  /**\brief check if the bookmark already exits in the DB, if yes,
+  return the existing ID, if not, save it in the DB and return the 
+  ID for new created bookmark*/
+  virtual int SaveInDB(vtkMySQLDatabase* DatabaseConnector)= 0;
 
-//-------------------------------------------------------------------------
-void GoDBLineageRow::InitializeMap()
-{ 
-  //GoDBTraceRow::InitializeMap();
-  //this->m_MapRow["LineageID"] = ConvertToString<int>(0);
-  this->m_TableName = "lineage";
-  this->m_TableIDName = "LineageID";
-  this->m_MapRow[this->m_TableIDName] = ConvertToString<int>(0);
-  this->m_MapRow["TrackIDRoot"] = ConvertToString<int>(0);
+protected:
+ virtual void InitializeMap();
+
+  /** \brief check if the entity already exists in the database
+ based on its own uniqueness definition, return the ID of the 
+ entity already exiting or -1 if not yet created:*/
+ virtual int DoesThisEntityAlreadyExists(
+  vtkMySQLDatabase* DatabaseConnector)=0;
+
+  /** \brief check if the entity already exists in the database
+ based on its own uniqueness definition, return the ID of the 
+ entity already exiting or -1 if not yet created and change the
+ ioName with the name of the existing entity:*/
+ virtual int DoesThisEntityAlreadyExists(
+  vtkMySQLDatabase* DatabaseConnector,std::string &ioName)=0;
+
+ /**\brief check if the name already exits in the database, if yes, 
+ return the corresponding ID, if not -1*/
+ int DoesThisNameAlreadyExists(vtkMySQLDatabase* DatabaseConnector);
  
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-int GoDBLineageRow::DoesThisBoundingBoxLineageExist(vtkMySQLDatabase* DatabaseConnector)
-{
-  return FindOneID(DatabaseConnector,"lineage","LineageID",
-    "CoordIDMax",this->GetMapValue("CoordIDMax"),
-    "CoordIDMin",this->GetMapValue("CoordIDMin"));
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-int GoDBLineageRow::SaveInDB(vtkMySQLDatabase* DatabaseConnector)
-{
-  return AddOnlyOneNewObjectInTable<GoDBLineageRow>( DatabaseConnector,
-    "lineage",*this, "LineageID");
-}
+ };
+#endif

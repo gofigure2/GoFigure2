@@ -37,56 +37,28 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#include "GoDBLineageRow.h"
-#include "SelectQueryDatabaseHelper.h"
-#include "GoDBRecordSetHelper.h"
-#include <iostream>
+#ifndef __GoDBCellTypeRow_h
+#define __GoDBCellTypeRow_h
 
-GoDBLineageRow::GoDBLineageRow()
+#include "GoDBNameDescRow.h"
+#include "vtkMySQLDatabase.h"
+
+class GoDBCellTypeRow : public GoDBNameDescRow
 {
-  this->InitializeMap();
-}
-//-------------------------------------------------------------------------
+public:
+  GoDBCellTypeRow();
 
-//-------------------------------------------------------------------------
-GoDBLineageRow::GoDBLineageRow(vtkMySQLDatabase* DatabaseConnector,
-  GoDBCoordinateRow Min, GoDBCoordinateRow Max,unsigned int ImgSessionID,
-  vtkPolyData* TraceVisu)
-{
-  GoDBTraceRow::GoDBTraceRow(DatabaseConnector,TraceVisu,Min,Max,
-    ImgSessionID);
-  if (this->DoesThisBoundingBoxLineageExist(DatabaseConnector))
-    {
-    std::cout<<"The bounding box alreaady exists for this lineage"<<std::endl;
-    }
-}
-//-------------------------------------------------------------------------
+  ~GoDBCellTypeRow()
+    {}
+  virtual int SaveInDB(vtkMySQLDatabase* DatabaseConnector);
 
-//-------------------------------------------------------------------------
-void GoDBLineageRow::InitializeMap()
-{ 
-  //GoDBTraceRow::InitializeMap();
-  //this->m_MapRow["LineageID"] = ConvertToString<int>(0);
-  this->m_TableName = "lineage";
-  this->m_TableIDName = "LineageID";
-  this->m_MapRow[this->m_TableIDName] = ConvertToString<int>(0);
-  this->m_MapRow["TrackIDRoot"] = ConvertToString<int>(0);
- 
-}
-//-------------------------------------------------------------------------
+protected:
 
-//-------------------------------------------------------------------------
-int GoDBLineageRow::DoesThisBoundingBoxLineageExist(vtkMySQLDatabase* DatabaseConnector)
-{
-  return FindOneID(DatabaseConnector,"lineage","LineageID",
-    "CoordIDMax",this->GetMapValue("CoordIDMax"),
-    "CoordIDMin",this->GetMapValue("CoordIDMin"));
-}
-//-------------------------------------------------------------------------
+ virtual void InitializeMap();
+ virtual int DoesThisEntityAlreadyExists(
+  vtkMySQLDatabase* DatabaseConnector);
+ virtual int DoesThisEntityAlreadyExists(
+  vtkMySQLDatabase* DatabaseConnector,std::string &ioName);
 
-//-------------------------------------------------------------------------
-int GoDBLineageRow::SaveInDB(vtkMySQLDatabase* DatabaseConnector)
-{
-  return AddOnlyOneNewObjectInTable<GoDBLineageRow>( DatabaseConnector,
-    "lineage",*this, "LineageID");
-}
+ };
+#endif

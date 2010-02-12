@@ -1,7 +1,7 @@
 /*=========================================================================
-  Author: $Author: lsouhait $  // Author of last commit
-  Version: $Rev: 525 $  // Revision of last commit
-  Date: $Date: 2009-08-05 16:08:25 -0400 (Wed, 05 Aug 2009) $  // Date of last commit
+  Author: $Author$  // Author of last commit
+  Version: $Rev$  // Revision of last commit
+  Date: $Date$  // Date of last commit
 =========================================================================*/
 
 /*=========================================================================
@@ -37,50 +37,55 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
+#include "QGoDBCellTypeManager.h"
+#include "GoDBCellTypeRow.h"
 
-#ifndef __QNameDescriptionInputDialog_h
-#define __QNameDescriptionInputDialog_h
-
-#include <QDialog>
-#include "ui_QNameDescriptionInputDialog.h"
-#include "QTextEditChild.h"
-
-/**
-\class QNameDescriptionInputDialog
-\brief for the creation of several entities in the database, the name and the
-description are asked to the user.
-*/
-class QNameDescriptionInputDialog : public QDialog,
-  private Ui::QNameDescriptionInputDialog
+QGoDBCellTypeManager::QGoDBCellTypeManager (QWidget* iParent = 0,
+  std::string iEntityName = "", int iImgSessionID = 0):QGoDBEntityManager(
+  iParent,iEntityName,iImgSessionID)
 {
-  Q_OBJECT
+}
+//------------------------------------------------------------------------------
 
-public:
-  //explicit QNameDescriptionInputDialog( QWidget* iParent = 0 );
-  explicit QNameDescriptionInputDialog( QWidget* iParent = 0, 
-    QString iEntityName = "" );
+//------------------------------------------------------------------------------
+void QGoDBCellTypeManager::SaveNewEntityInDB()
+{
+  GoDBCellTypeRow NewCellType;
+  //this->m_NewCellType.SetField("Name",this->m_NameDescDialog->GetInputTextForName());
+  this->m_NewCellType.SetField("Description",
+    this->m_NameDescDialog->GetInputTextForDescription());
 
-  virtual ~QNameDescriptionInputDialog();
+  std::string CellTypeName = this->m_NewCellType.GetMapValue("Name");
+  if (this->m_NewCellType.DoesThisEntityAlreadyExists(
+    this->m_DatabaseConnectorForNewBkmrk,CellTypeName) != -1)
+    {
+    QMessageBox msgBox;
+    msgBox.setText(
+      tr("This bookmark already exists, its name is: ' %1 ' ").arg(CellTypeName.c_str()));
+    msgBox.exec();
+    }
+  else
+    {
+    this->m_NewCellType.SaveInDB(this->m_DatabaseConnectorForNewBkmrk);
+    emit ListBookmarksChanged();
+    }
+}
+//------------------------------------------------------------------------------
 
-  std::string GetInputTextForName();
-  std::string GetInputTextForDescription();
-
-  /** \brief open a messagebox to tell the user that the name he 
-  choose already exits*/
-  void NameAlreadyExists();
-
-signals:
-  void NameNonEmpty();
-
-protected:
-  QTextEditChild* m_DescriptionTextEdit;
-  QString         m_EntityName;
-
-protected slots:
-  /** \brief check that the qlineEdit for the name is not
-  empty, if so, tell the user he needs to enter a name*/
-  void ValidationRequested();
-
-};
-
-#endif
+//------------------------------------------------------------------------------
+void QGoDBCellTypeManager::ValidateName()
+{
+  this->m_NewCellType.SetField("Name",this->m_NameDescDialog->GetInputTextForName());
+  //if (this->DoesThisBookmarkNameAlreadyExistsInTheDB(
+    //this->m_DatabaseConnectorForNewBkmrk,iName))
+  if (this->m_NewCellType.DoesThisNameAlreadyExists(
+    this->m_DatabaseConnectorForNewBkmrk)!= -1)
+    {
+    this->m_NameDescDialog->NameAlreadyExists();
+    }
+  else
+    {
+    this->m_NameDescDialog->accept();
+    this->SaveNewEntityInDB();
+    }
+}

@@ -1,7 +1,7 @@
 /*=========================================================================
-  Author: $Author: lsouhait $  // Author of last commit
-  Version: $Rev: 525 $  // Revision of last commit
-  Date: $Date: 2009-08-05 16:08:25 -0400 (Wed, 05 Aug 2009) $  // Date of last commit
+  Author: $Author$  // Author of last commit
+  Version: $Rev$  // Revision of last commit
+  Date: $Date$  // Date of last commit
 =========================================================================*/
 
 /*=========================================================================
@@ -38,49 +38,36 @@
 
 =========================================================================*/
 
-#ifndef __QNameDescriptionInputDialog_h
-#define __QNameDescriptionInputDialog_h
+#ifndef __QGoDBCellTypeManager_h
+#define __QGoDBCellTypeManager_h
 
 #include <QDialog>
-#include "ui_QNameDescriptionInputDialog.h"
-#include "QTextEditChild.h"
+#include <QWidget>
+#include <QTextEdit>
+#include <QMenu>
+#include "vtkMySQLDatabase.h"
+#include "QGoDBEntityManager.h"
 
-/**
-\class QNameDescriptionInputDialog
-\brief for the creation of several entities in the database, the name and the
-description are asked to the user.
-*/
-class QNameDescriptionInputDialog : public QDialog,
-  private Ui::QNameDescriptionInputDialog
+class QGoDBCellTypeManager:QGoDBEntityManager
 {
   Q_OBJECT
 
-public:
-  //explicit QNameDescriptionInputDialog( QWidget* iParent = 0 );
-  explicit QNameDescriptionInputDialog( QWidget* iParent = 0, 
-    QString iEntityName = "" );
+  public:
+    explicit QGoDBCellTypeManager (QWidget* iParent = 0,
+      std::string iEntityName = "", int iImgSessionID = 0);
+    
+    ~QGoDBCellTypeManager()
+      {};
 
-  virtual ~QNameDescriptionInputDialog();
+  protected:
+     
 
-  std::string GetInputTextForName();
-  std::string GetInputTextForDescription();
+  protected slots:
+   
+    virtual void SaveNewEntityInDB();
 
-  /** \brief open a messagebox to tell the user that the name he 
-  choose already exits*/
-  void NameAlreadyExists();
+    virtual void ValidateName();
 
-signals:
-  void NameNonEmpty();
-
-protected:
-  QTextEditChild* m_DescriptionTextEdit;
-  QString         m_EntityName;
-
-protected slots:
-  /** \brief check that the qlineEdit for the name is not
-  empty, if so, tell the user he needs to enter a name*/
-  void ValidationRequested();
 
 };
-
 #endif

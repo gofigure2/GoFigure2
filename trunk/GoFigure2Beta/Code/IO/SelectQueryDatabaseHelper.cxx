@@ -168,6 +168,52 @@ std::map<std::string,std::string> MapTwoColumnsFromTable(
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
+std::vector<std::pair<std::string,std::string> > 
+  VectorTwoColumnsFromTable(vtkMySQLDatabase* DatabaseConnector, 
+  std::string ColumnNameOne,std::string ColumnNameTwo, 
+  std::string TableName, std::string ColumnNameOrder)
+{
+  std::vector< std::pair<std::string,std::string > > result;
+
+  vtkSQLQuery* query = DatabaseConnector->GetQueryInstance();
+  std::stringstream querystream;
+  querystream << "SELECT ";
+  querystream << ColumnNameOne;
+  querystream << ",";
+  querystream << ColumnNameTwo;
+  querystream << " FROM ";
+  querystream << TableName;
+  querystream << " ORDER BY ";
+  querystream << ColumnNameOrder;
+  querystream << " ASC;";
+
+  query->SetQuery( querystream.str().c_str() );
+  if ( !query->Execute() )
+    {
+    itkGenericExceptionMacro(
+      << "select 2 columns query failed"
+      << query->GetLastErrorText() );
+    DatabaseConnector->Close();
+    DatabaseConnector->Delete();
+    query->Delete();
+    return result;
+    }
+
+  while (query->NextRow())
+    {
+    std::pair<std::string,std::string> Pair;
+    Pair.first = query->DataValue( 0 ).ToString();
+    Pair.second = query->DataValue( 1 ).ToString();
+    result.push_back( Pair );
+    }
+
+  query->Delete();
+
+  return result;
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
 std::vector<std::string> ListSpecificValuesForRow(
   vtkMySQLDatabase* DatabaseConnector,std::string TableName, std::string field,
   std::string value)

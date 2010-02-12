@@ -44,8 +44,6 @@
 
 GoDBTrackRow::GoDBTrackRow():GoDBTraceRow()
 {
-  this->m_TableName = "track";
-  this->m_TableIDName = "TrackID"; 
   this->InitializeMap();
 }
 //-------------------------------------------------------------------------
@@ -73,6 +71,8 @@ void GoDBTrackRow::InitializeMap()
 { 
   //GoDBTraceRow::InitializeMap();
   //this->m_MapRow["TrackID"] = ConvertToString<int>(0);
+  this->m_TableName = "track";
+  this->m_TableIDName = "TrackID"; 
   this->m_MapRow[this->m_TableIDName] = ConvertToString<int>(0);
   this->m_MapRow["LineageID"] = "null"; 
   this->m_MapRow["TrackFamilyID"] = "null";
