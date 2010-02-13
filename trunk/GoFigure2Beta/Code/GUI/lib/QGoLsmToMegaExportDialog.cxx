@@ -134,36 +134,45 @@ void
 QGoLsmToMegaExportDialog::
 on_convert_clicked()
 {
-  // Disable everything
-  this->lsmFileName->setEnabled(false);
-  this->megaFilePath->setEnabled(false);
-  this->selectLsmFile->setEnabled(false);
-  this->selectMegaPath->setEnabled(false);
-  this->outputFormat->setEnabled(false);
-  this->convert->setEnabled(false);
-  this->label->setEnabled(false);
-  this->selectLSMLabel->setEnabled(false);
-  this->megaFilePath_2->setEnabled(false);
-  this->outputFormatLabel->setEnabled(false);
-  this->label_2->setEnabled(false);
+  if (m_LsmName.isNull() ||  m_LsmName.isEmpty() || m_LsmPath.isNull() ||
+	  m_LsmPath.isEmpty() || m_MegaPath.isNull() ||  m_MegaPath.isEmpty() )
+    {
+	/// \todo use QMessageBox
+	std::cerr <<"Please select good path for lsm and megacapture"<<std::endl;
+    }
+  else
+    {
+    // Disable everything
+    this->lsmFileName->setEnabled(false);
+    this->megaFilePath->setEnabled(false);
+    this->selectLsmFile->setEnabled(false);
+    this->selectMegaPath->setEnabled(false);
+    this->outputFormat->setEnabled(false);
+    this->convert->setEnabled(false);
+    this->label->setEnabled(false);
+    this->selectLSMLabel->setEnabled(false);
+    this->megaFilePath_2->setEnabled(false);
+    this->outputFormatLabel->setEnabled(false);
+    this->label_2->setEnabled(false);
 
-  this->convertLabel->setText( tr("READS LSM READERS")  );
+    this->convertLabel->setText( tr("READS LSM READERS")  );
 
 
-  // Set conversion parameters
-  GoFigure::FileType filetype = GoFigure::PNG;
-  if( !m_FileFormatIsPNG )
-	{
-	filetype = GoFigure::TIFF;
-	}
+    // Set conversion parameters
+    GoFigure::FileType filetype = GoFigure::PNG;
+    if( !m_FileFormatIsPNG )
+      {
+	  filetype = GoFigure::TIFF;
+	  }
 
-  // conversion fonction called from there to enable progress bar
-  ConversionLsmToMegaThreadSend.SetBaseName(m_LsmName.toStdString());
-  ConversionLsmToMegaThreadSend.SetLsmPath(m_LsmPath.toStdString());
-  ConversionLsmToMegaThreadSend.SetOutputFileType(filetype);
-  ConversionLsmToMegaThreadSend.SetMegaPath(m_MegaPath.toStdString());
+    // conversion fonction called from there to enable progress bar
+    ConversionLsmToMegaThreadSend.SetBaseName(m_LsmName.toStdString());
+    ConversionLsmToMegaThreadSend.SetLsmPath(m_LsmPath.toStdString());
+    ConversionLsmToMegaThreadSend.SetOutputFileType(filetype);
+    ConversionLsmToMegaThreadSend.SetMegaPath(m_MegaPath.toStdString());
 
-  ConversionLsmToMegaThreadSend.start();
+    ConversionLsmToMegaThreadSend.start();
+    }
 }
 
 /**
