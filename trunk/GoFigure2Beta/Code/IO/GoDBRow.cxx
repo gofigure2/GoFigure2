@@ -182,11 +182,6 @@ std::string GoDBRow::GetMapValue( std::string key )
       //if yes, remove the " at the beginning of the string and at the end:
       oMapValue = oMapValue.substr(1,oMapValue.size()-2);
       }
-    // remove the std::cout
-    else
-      {
-      std::cout<<oMapValue.c_str()<<std::endl;
-      }
 
     return oMapValue;
     }

@@ -94,6 +94,7 @@ int QTableWidgetChild::findValueGivenColumn(int Value, QString Column)
     std::cout<<"The column figureID has not been found";
     std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
     std::cout << std::endl;
+    std::cout << std::endl;
     return -1;
     }
   else
@@ -440,8 +441,9 @@ void QTableWidgetChild::UpdateRow(GoDBTableWidgetContainer* iLinkToRowContainer,
   DBTableWidgetContainerType UpdateTraceRowContainer = iLinkToRowContainer->GetRowContainer();
   if (UpdateTraceRowContainer.size() == 0 || UpdateTraceRowContainer[1].second.size() != 1)
     {
-    std::cout<<"The Update Trace Row Container is totally empty or there is more than 1 trace in it";
     std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
+    std::cout << std::endl;
+    std::cout<<"The Update Trace Row Container is totally empty or there is more than 1 trace in it";
     std::cout << std::endl;
     }
   else
