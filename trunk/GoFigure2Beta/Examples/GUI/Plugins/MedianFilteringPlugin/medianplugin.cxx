@@ -8,6 +8,7 @@ Q_EXPORT_PLUGIN2( QGoIdentityImageFilterPlugin, medianplugin )
 medianplugin::medianplugin() : QGoImageFilterPluginBase()
 {
   this->SetAllRequiredInformation();
+  preprocess = new QCellPreprocess();
 }
 medianplugin::~medianplugin()
 {}
@@ -51,8 +52,10 @@ void medianplugin::ReadSettings()
 
 void medianplugin::Process( )
 {
-  m_VTKOutput = m_VTKInput;
-  std::cout <<"medianplugin::Process" <<std::endl;
+  preprocess->SetInput( m_VTKInput );
+  preprocess->setVisible( true );
+//   m_VTKOutput = preprocess->GetOutput();
+  std::cout << "medianplugin::Process" << std::endl;
 }
 
 void medianplugin::SetAllRequiredInformation()
@@ -71,7 +74,7 @@ medianplugin::TabElementCompatibility() const
 {
   std::list< GoFigure::TabDimensionType > oCompatibility;
   oCompatibility.push_back( GoFigure::TWO_D );
-//   oCompatibility.push_back( GoFigure::THREE_D );
+  oCompatibility.push_back( GoFigure::THREE_D );
 
   return oCompatibility;
 }

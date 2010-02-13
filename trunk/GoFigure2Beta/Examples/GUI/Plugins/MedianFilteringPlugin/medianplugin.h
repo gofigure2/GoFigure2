@@ -2,6 +2,7 @@
 #define __medianplugin_h
 
 #include "QGoImageFilterPluginBase.h"
+#include "QCellPreprocess.h"
 
 class medianplugin : public QObject, public QGoImageFilterPluginBase
 {
@@ -30,6 +31,9 @@ class medianplugin : public QObject, public QGoImageFilterPluginBase
   protected:
     virtual void Process( );
     void SetAllRequiredInformation();
+
+    QCellPreprocess* preprocess;
+
   private:
     medianplugin( const medianplugin& );
     void operator = ( const medianplugin& );
