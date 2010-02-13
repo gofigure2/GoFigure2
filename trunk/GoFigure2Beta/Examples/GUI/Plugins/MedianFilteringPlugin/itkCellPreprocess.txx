@@ -44,23 +44,23 @@
 #include "itkCellPreprocess.h"
 
 namespace itk
-  {
+{
   template < class TInputImage,class TOutputImage >
   CellPreprocess< TInputImage,TOutputImage >
   ::CellPreprocess() : m_LargestCellRadius ( 4.0 )
-    {
+  {
     m_MembraneData = false;
     this->Superclass::SetNumberOfRequiredInputs ( 1 );
     this->Superclass::SetNumberOfRequiredOutputs ( 1 );
 
     this->Superclass::SetNthOutput ( 0,TOutputImage::New() );
-    }
+  }
 
   template < class TInputImage,class TOutputImage >
   void
   CellPreprocess< TInputImage,TOutputImage >::
   GenerateData()
-    {
+  {
     InputCastPointer m_CastInput = InputCastType::New();
     m_CastInput->SetInput ( this->GetInput() );
     m_CastInput->Update();
@@ -126,3 +126,4 @@ namespace itk
   } /* end namespace itk */
 
 #endif
+

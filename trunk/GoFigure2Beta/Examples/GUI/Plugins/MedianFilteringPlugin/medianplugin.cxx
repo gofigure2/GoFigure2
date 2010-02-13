@@ -78,3 +78,4 @@ medianplugin::TabElementCompatibility() const
 
   return oCompatibility;
 }
+

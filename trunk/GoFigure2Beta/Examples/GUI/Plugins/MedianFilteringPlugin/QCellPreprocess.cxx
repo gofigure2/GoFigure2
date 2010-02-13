@@ -38,13 +38,12 @@
 
 =========================================================================*/
 #include "QCellPreprocess.h"
+
 #include "vtkitkAdaptor.h"
 
 #include <iostream>
 
-using namespace std;
-
-//-------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 QCellPreprocess::QCellPreprocess()
 {
   this->setupUi( this );
@@ -56,13 +55,13 @@ QCellPreprocess::QCellPreprocess()
   this->ChannelComboBox->setEnabled( false );
 }
 
-//--------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 void QCellPreprocess::GetParameters()
 { // Get the current snapshot of parameters
   m_CellRadius = static_cast<double>( this->RadiusSpinBox->value() );
 }
 
-//--------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 void QCellPreprocess::on_RadiusSpinBox_valueChanged()
 {
   double t = this->RadiusSpinBox->value();
@@ -78,7 +77,7 @@ void QCellPreprocess::on_RadiusSpinBox_valueChanged()
   this->RadiusSlider->setValue( out );
 }
 
-//--------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 void QCellPreprocess::on_RadiusSlider_sliderReleased()
 {
   int t = this->RadiusSlider->value();
@@ -95,27 +94,27 @@ void QCellPreprocess::on_RadiusSlider_sliderReleased()
   this->RadiusSpinBox->setValue( out );
 }
 
-//--------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 void QCellPreprocess::on_allChRadioButton_clicked()
 {
   this->ChannelComboBox->setEnabled( false );
 }
 
 
-//--------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 void QCellPreprocess::on_singleChRadioButton_clicked()
 {
   this->ChannelComboBox->setEnabled( true );
 }
 
-//--------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 void QCellPreprocess::on_GlobalResetButton_clicked()
 {
   this->m_CellRadius = 4.0;
   this->RadiusSpinBox->setValue( this->m_CellRadius );
 }
 
-//--------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 void QCellPreprocess::on_GlobalApplyButton_clicked()
 {
   unsigned int option = static_cast<unsigned int>( this->buttonGroup->checkedId() );
@@ -135,7 +134,7 @@ void QCellPreprocess::on_GlobalApplyButton_clicked()
 void QCellPreprocess::Preprocess( unsigned int i )
 {
   if ( m_VTKInput[i] )
-  {
+    {
     // convert VTK image to ITK image
     vtkImageExport* vtkExporter = vtkImageExport::New();
     vtkExporter->SetInput( m_VTKInput[i] );
@@ -156,10 +155,15 @@ void QCellPreprocess::Preprocess( unsigned int i )
 
     ImageExportType::Pointer itkExporter = ImageExportType::New();
     itkExporter->SetInput( m_ITKOutputImage );
+
     vtkImageImport* vtkImporter = vtkImageImport::New();
 
     ConnectPipelines( itkExporter, vtkImporter );
 
     m_VTKOutput[i] = vtkImporter->GetOutput();
-  }
+
+    vtkExporter->Delete();
+    vtkImporter->Delete();
+    }
 }
+

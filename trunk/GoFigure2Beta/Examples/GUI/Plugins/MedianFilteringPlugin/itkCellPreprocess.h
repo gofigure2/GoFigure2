@@ -59,8 +59,8 @@ namespace itk
   {
 
   template < class TInputImage, class TOutputImage = TInputImage >
-  class ITK_EXPORT CellPreprocess : public ImageToImageFilter<
-        TInputImage, TOutputImage >
+  class ITK_EXPORT CellPreprocess : 
+    public ImageToImageFilter< TInputImage, TOutputImage >
     {
     public:
 
@@ -98,11 +98,15 @@ namespace itk
 
       typedef MedianImageFilter< ImageType, ImageType> MedianFilterType;
       typedef typename MedianFilterType::Pointer MedianFilterPointer;
-      typedef itk::GradientAnisotropicDiffusionImageFilter< ImageType, ImageType >
-        SmoothingFilterType;
-      typedef typename SmoothingFilterType::Pointer     SmoothingFilterPointer;
+
+      typedef GradientAnisotropicDiffusionImageFilter< ImageType, 
+        ImageType > SmoothingFilterType;
+      typedef typename SmoothingFilterType::Pointer     
+                    SmoothingFilterPointer;
+
       typedef GrayscaleFillholeImageFilter< ImageType, ImageType > GrayscaleFillholeFilterType;
       typedef typename GrayscaleFillholeFilterType::Pointer GrayscaleFillholePointer;
+
       typedef CastImageFilter< ImageType, TOutputImage > OutputCastType;
       typedef typename OutputCastType::Pointer OutputCastPointer;
 
@@ -116,6 +120,7 @@ namespace itk
 
       CellPreprocess();
       ~CellPreprocess() {}
+
       void GenerateData();
 
       double m_LargestCellRadius;
@@ -131,3 +136,4 @@ namespace itk
 
 #include "itkCellPreprocess.txx"
 #endif
+
