@@ -56,6 +56,7 @@
 #include "ContourMeshStructure.h"
 #include "TraceInfoStructure.h"
 #include "QGoDBBookmarkManager.h"
+#include "QGoDBCellTypeManager.h"
 
 /** \brief Ensure the connection with the Database*/
 class QGoPrintDatabase : public QDockWidget,
@@ -140,6 +141,7 @@ public:
   /** \brief return a bool to know if the user is using the database or not*/
 
   NamesDescrContainerType GetListBookmarks();
+  NamesDescrContainerType GetListCellTypes();
   GoDBCoordinateRow GetCoordinateForBookmark(std::string iName);
   bool IsDatabaseUsed();
 
@@ -154,8 +156,8 @@ public slots:
 
   /** \brief Save a new color in the database with rgba and the name of the color*/
   void SaveNewColorInDB(std::vector<std::string> iDataNewColor);
-
   void DeleteBookmarks();
+  void AddNewCellType();
 
 signals:
   void PrintDBReady();
@@ -173,6 +175,7 @@ signals:
   void DeletedCollection( unsigned int );
   void TracesToDeleteInVisu( std::list< int > );
   void OpenBookmarksToUpdate();
+  void ListCellTypesToUpdate(QStringList);
 
 protected:
   std::pair<std::string,QColor> m_CurrentColorData;
@@ -195,6 +198,7 @@ protected:
   QAction* m_VisibilityAction;
 
   QGoDBBookmarkManager* m_BookmarkManager;
+  QGoDBCellTypeManager*  m_CellTypeManager;
 
   void OpenDBConnection();
   void CloseDBConnection();

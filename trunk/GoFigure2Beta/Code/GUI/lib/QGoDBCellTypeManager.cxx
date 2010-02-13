@@ -39,10 +39,10 @@
 =========================================================================*/
 #include "QGoDBCellTypeManager.h"
 #include "GoDBCellTypeRow.h"
+#include <QMessageBox>
 
-QGoDBCellTypeManager::QGoDBCellTypeManager (QWidget* iParent = 0,
-  std::string iEntityName = "", int iImgSessionID = 0):QGoDBEntityManager(
-  iParent,iEntityName,iImgSessionID)
+QGoDBCellTypeManager::QGoDBCellTypeManager (QWidget* iParent):
+  QGoDBEntityManager(iParent,"celltype",0)
 {
 }
 //------------------------------------------------------------------------------
@@ -50,7 +50,6 @@ QGoDBCellTypeManager::QGoDBCellTypeManager (QWidget* iParent = 0,
 //------------------------------------------------------------------------------
 void QGoDBCellTypeManager::SaveNewEntityInDB()
 {
-  GoDBCellTypeRow NewCellType;
   //this->m_NewCellType.SetField("Name",this->m_NameDescDialog->GetInputTextForName());
   this->m_NewCellType.SetField("Description",
     this->m_NameDescDialog->GetInputTextForDescription());
@@ -67,7 +66,7 @@ void QGoDBCellTypeManager::SaveNewEntityInDB()
   else
     {
     this->m_NewCellType.SaveInDB(this->m_DatabaseConnectorForNewBkmrk);
-    emit ListBookmarksChanged();
+    emit ListEntitiesChanged();
     }
 }
 //------------------------------------------------------------------------------

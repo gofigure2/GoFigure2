@@ -34,6 +34,7 @@ SET( QGoGUILIB_SRC
   QGoDockWidgetStatus.cxx
   QGoDeleteDBEntityDialog.cxx
   QGoDBEntityManager.cxx
+  QGoDBCellTypeManager.cxx
 )
 
 #------------------------------------------------------------------------------
@@ -96,6 +97,7 @@ SET( QGoGUILIB_HDRS
   QGoDockWidgetStatus.h
   QGoDeleteDBEntityDialog.h
   QGoDBEntityManager.h
+  QGoDBCellTypeManager.h
 )
 
 #------------------------------------------------------------------------------

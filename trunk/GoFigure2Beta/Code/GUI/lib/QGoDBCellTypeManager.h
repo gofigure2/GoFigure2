@@ -47,27 +47,25 @@
 #include <QMenu>
 #include "vtkMySQLDatabase.h"
 #include "QGoDBEntityManager.h"
+#include "GoDBCellTypeRow.h"
 
-class QGoDBCellTypeManager:QGoDBEntityManager
+class QGoDBCellTypeManager:public QGoDBEntityManager
 {
   Q_OBJECT
 
   public:
-    explicit QGoDBCellTypeManager (QWidget* iParent = 0,
-      std::string iEntityName = "", int iImgSessionID = 0);
+    explicit QGoDBCellTypeManager (QWidget* iParent = 0);
     
     ~QGoDBCellTypeManager()
       {};
 
   protected:
-     
+     GoDBCellTypeRow m_NewCellType;
 
   protected slots:
    
     virtual void SaveNewEntityInDB();
 
     virtual void ValidateName();
-
-
 };
 #endif

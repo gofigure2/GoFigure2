@@ -201,6 +201,8 @@ void QGoPrintDatabase::SetDatabaseVariables(
   this->m_BookmarkManager = new QGoDBBookmarkManager(this,this->m_ImgSessionID);
   QObject::connect(this->m_BookmarkManager, SIGNAL(ListBookmarksChanged()),
     this,SIGNAL(OpenBookmarksToUpdate()));
+  this->m_CellTypeManager = new QGoDBCellTypeManager(this);
+  this->GetListCellTypes();
 }
 //--------------------------------------------------------------------------
 
@@ -1258,5 +1260,34 @@ void QGoPrintDatabase::DeleteBookmarks()
 {
   this->OpenDBConnection();
   this->m_BookmarkManager->DeleteBookmark(this->m_DatabaseConnector);
+  this->CloseDBConnection();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+QGoPrintDatabase::NamesDescrContainerType QGoPrintDatabase::GetListCellTypes()
+{ 
+  this->OpenDBConnection();
+  NamesDescrContainerType ListCellTypes = 
+    this->m_CellTypeManager->GetListExistingEntities(this->m_DatabaseConnector);
+  QStringList QListCellTypes;
+  NamesDescrContainerType::iterator iter = ListCellTypes.begin();
+  while(iter != ListCellTypes.end())
+    {
+    QListCellTypes.append(iter->first.c_str());
+    iter++;
+    }
+  emit ListCellTypesToUpdate(QListCellTypes);
+  this->CloseDBConnection();
+  return ListCellTypes;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoPrintDatabase::AddNewCellType()
+{  
+  this->OpenDBConnection();
+  this->m_CellTypeManager->AddAnEntity(this->m_DatabaseConnector);
+  this->GetListCellTypes();
   this->CloseDBConnection();
 }

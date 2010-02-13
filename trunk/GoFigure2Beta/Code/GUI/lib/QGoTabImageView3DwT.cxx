@@ -330,6 +330,14 @@ CreateDataBaseTablesConnection()
   QObject::connect( this->m_DataBaseTables,
     SIGNAL( TracesToDeleteInVisu( std::list< int > ) ),
     this, SLOT( DeleteContoursFromTable( std::list< int > ) ) );
+
+  QObject::connect(this->m_DataBaseTables,
+    SIGNAL( ListCellTypesToUpdate(QStringList)),this->m_VisuDockWidget,
+    SLOT(SetListCellTypes(QStringList)));
+  
+  QObject::connect(this->m_VisuDockWidget,
+    SIGNAL( AddANewCellType()),this->m_DataBaseTables,
+    SLOT(AddNewCellType()));
 }
 //-------------------------------------------------------------------------
 #if defined ( ENABLEFFMPEG ) || defined ( ENABLEAVI )

@@ -55,10 +55,7 @@ public:
   ID for new created bookmark*/
   virtual int SaveInDB(vtkMySQLDatabase* DatabaseConnector)= 0;
 
-protected:
- virtual void InitializeMap();
-
-  /** \brief check if the entity already exists in the database
+   /** \brief check if the entity already exists in the database
  based on its own uniqueness definition, return the ID of the 
  entity already exiting or -1 if not yet created:*/
  virtual int DoesThisEntityAlreadyExists(
@@ -74,6 +71,9 @@ protected:
  /**\brief check if the name already exits in the database, if yes, 
  return the corresponding ID, if not -1*/
  int DoesThisNameAlreadyExists(vtkMySQLDatabase* DatabaseConnector);
+
+protected:
+ virtual void InitializeMap();
  
  };
 #endif

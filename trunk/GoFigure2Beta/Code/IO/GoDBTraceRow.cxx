@@ -41,6 +41,7 @@
 #include "GoDBColorRow.h"
 #include "SelectQueryDatabaseHelper.h"
 #include "GoDBRecordSetHelper.h"
+#include "vtkSmartPointer.h"
 
 GoDBTraceRow::GoDBTraceRow()
 {
@@ -57,8 +58,8 @@ GoDBTraceRow::GoDBTraceRow(vtkMySQLDatabase* DatabaseConnector,
   this->CreateBoundingBox(DatabaseConnector,Min,Max);
   this->m_MapRow["ImagingSessionID"] =
     ConvertToString<unsigned int>(ImgSessionID);
-
-  vtkPolyDataMySQLTextWriter* convert = vtkPolyDataMySQLTextWriter::New();
+  vtkSmartPointer<vtkPolyDataMySQLTextWriter> convert =
+    vtkSmartPointer<vtkPolyDataMySQLTextWriter>::New();
   std::string PointsString = convert->GetMySQLText(TraceVisu);
 
   this->SetField("Points",PointsString);

@@ -65,10 +65,10 @@ QGoDBEntityManager::~QGoDBEntityManager()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoDBEntityManager::AddAnEntity(int iCoordID,
+void QGoDBEntityManager::AddAnEntity(
   vtkMySQLDatabase* iDatabaseConnector)
 {
-  this->m_CoordIDForNewEntity = iCoordID;
+  //this->m_CoordIDForNewEntity = iCoordID;
   this->m_NameDescDialog = new QNameDescriptionInputDialog(
     this,this->m_EntityName.c_str());
   this->m_DatabaseConnectorForNewBkmrk = iDatabaseConnector;

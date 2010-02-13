@@ -52,6 +52,7 @@ QGoVisualizationDockWidget( QWidget* iParent, const unsigned int& iDim ) :
   this->setupUi( this );
   SetColorTraceComboBox();
   SetColorIDCollectionComboBox();
+  SetCellTypeComboBox();
   //this->verticalLayout_2->addLayout(this->VLayoutForCollection);
 
   if( m_Dimension < 3 )
@@ -296,4 +297,43 @@ void QGoVisualizationDockWidget::SetEnableTraceCollectionColorBoxes(bool Enable)
 {
   this->ColorIDCollectionComboBox->setEnabled(Enable);
   this->ColorTraceComboBox->setEnabled(Enable);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoVisualizationDockWidget::SetCellTypeComboBox()
+{
+  this->m_ChoseCellType = new QComboBox(this);
+  QLabel* LabelCellType = new QLabel(tr("Selected CellType: "),this);
+  QHBoxLayout* HLayoutForCellType = new QHBoxLayout;
+  HLayoutForCellType->addWidget(LabelCellType);
+  HLayoutForCellType->addWidget(m_ChoseCellType);
+  this->verticalLayout_2->addLayout(HLayoutForCellType);
+  QObject::connect(this->m_ChoseCellType,SIGNAL(currentIndexChanged(QString)),
+    SLOT(CheckUserAction(QString)));
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoVisualizationDockWidget::SetListCellTypes(
+  QStringList iListCellTypes)
+{
+  this->m_ChoseCellType->clear();
+  this->m_ChoseCellType->addItems(iListCellTypes);
+  this->m_ChoseCellType->addItem(tr("Add a celltype..."));
+  this->m_ChoseCellType->addItem(tr("Delete a celltype..."));
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoVisualizationDockWidget::CheckUserAction(QString iCellTypeText)
+{
+ if (iCellTypeText == "Add a celltype...")
+   {
+   emit AddANewCellType();
+   }
+ if (iCellTypeText == "Delete a celltype...")
+   {
+   emit DeleteCellType();
+   }
 }

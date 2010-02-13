@@ -51,14 +51,14 @@ public:
   ~GoDBCellTypeRow()
     {}
   virtual int SaveInDB(vtkMySQLDatabase* DatabaseConnector);
+  virtual int DoesThisEntityAlreadyExists(
+    vtkMySQLDatabase* DatabaseConnector);
+  virtual int DoesThisEntityAlreadyExists(
+    vtkMySQLDatabase* DatabaseConnector,std::string &ioName);
 
 protected:
 
  virtual void InitializeMap();
- virtual int DoesThisEntityAlreadyExists(
-  vtkMySQLDatabase* DatabaseConnector);
- virtual int DoesThisEntityAlreadyExists(
-  vtkMySQLDatabase* DatabaseConnector,std::string &ioName);
-
+ 
  };
 #endif

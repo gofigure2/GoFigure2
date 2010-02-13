@@ -65,7 +65,7 @@ class QGoDBEntityManager:
     /** \brief execute the dialog asking the user to enter a name and a
     description, validates the name, set the m_DatabaseConnectorForNewBkmrk
     and save the entity in the DB*/
-    void AddAnEntity(int iCoordID, vtkMySQLDatabase* iDatabaseConnector);
+    void AddAnEntity(vtkMySQLDatabase* iDatabaseConnector);
 
     /** \brief return the list of all the existing entities stored 
     in the database*/
@@ -95,7 +95,7 @@ class QGoDBEntityManager:
     database, if so, make the m_NameDescDialog asks the user to
     choose another one, if no, close the m_NameDescDialog and 
     call SaveNewBookmarkInDB()*/
-    virtual void ValidateName(std::string iName)= 0;
+    virtual void ValidateName()= 0;
 
 signals:
     void ListEntitiesChanged();
