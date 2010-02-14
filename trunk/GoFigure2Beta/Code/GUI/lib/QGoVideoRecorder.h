@@ -57,14 +57,24 @@ class QGoVideoRecorder : public QDockWidget, private Ui::NewDockWidgetVideoRecor
     Q_OBJECT
 
     public:
+        /**
+         * \brief Constructor
+         */
         explicit QGoVideoRecorder( QWidget* parent = 0);
+        /**
+         * \brief Destructor
+         */
         ~QGoVideoRecorder();
 
         /// \todo use const int& instead
-        void SetXMinAndMax( int , int );
-        void SetYMinAndMax( int , int );
-        void SetZMinAndMax( int , int );
-        void SetTMinAndMax( int , int );
+        /**
+         * \brief Set value X/Y/Z/T Min and Max for a given image (useful for spin boxes)
+         * when image is loaded, to know boundaries of the spin box to be used
+         */
+        void SetXMinAndMax( const int& , const int& );
+        void SetYMinAndMax( const int& , const int& );
+        void SetZMinAndMax( const int& , const int& );
+        void SetTMinAndMax( const int& , const int& );
 
         QString m_VideoName2;
 
@@ -92,7 +102,7 @@ class QGoVideoRecorder : public QDockWidget, private Ui::NewDockWidgetVideoRecor
 
     public slots:
 
-    signals:
+     signals:
       void XSliceChanged( int );
       void YSliceChanged( int );
       void ZSliceChanged( int );
@@ -127,33 +137,66 @@ class QGoVideoRecorder : public QDockWidget, private Ui::NewDockWidgetVideoRecor
 
     // in tab "create video"
     //Choose a slice T Fixed
+    /**
+     * \brief Update starting slice for video (fixed time point)
+     */
     void on_tSpinMin_2_valueChanged( int );
+    /**
+     * \brief Update ending slice for video (fixed time point)
+     */
     void on_tSpinMax_2_valueChanged( int );
     //Video parameters
+    /**
+     * \brief Create the video from
+     */
     void on_createFile_clicked();
+    /**
+     * \brief Function called when FrameRate changes
+     */
     void on_frameRate_valueChanged( int );
+    /**
+     * \brief Function called when VideoQuality changes
+     */
     void on_videoQuality_valueChanged( int );
     //Video parameters
+    /**
+     * \brief Function called to choose name/path of output file
+     */
     void on_createFile_2_clicked();
+    /**
+     * \brief Update value of frame rate
+     */
     void on_frameRate_2_valueChanged( int );
+    /**
+     * \brief Update value of video quality
+     */
     void on_videoQuality_2_valueChanged( int );
+    /**
+     * \brief Update content of spin box depending of selected slice (X,Y,Z)
+     */
     void on_SliceFT_activated( int );
+    /**
+     * \brief Update the starting slice to create the video (through time)
+     */
     void on_tSpinMin_valueChanged( int );
+    /**
+     * \brief Update the ending slice to create the video (through time)
+     */
     void on_tSpinMax_valueChanged( int );
     /**
-     * \brief Function called when "Create video" clicked in Create
+     * \brief Function called when "Create video" clicked in Create tab
     **/
     void onStartVideoClicked();
     /**
-     * \brief Function called when "Create video" clicked in Record
+     * \brief Function called when "Create video" clicked in Record tab
     **/
     void onStartRecordClicked();
     /**
-      * \brief Function called when "Create video" clicked in Record
+      * \brief Function called when "End video" clicked in Record tab
      **/
     void onEndRecordClicked();
     /**
-      * \brief Function called when "Create video" clicked in Record
+      * \brief Function called with the timer to take snapshots
     **/
     void timeout();
 

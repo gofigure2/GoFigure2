@@ -55,23 +55,62 @@ class ConversionLsmToMegaThread : public QThread
   Q_OBJECT
 
 public:
+  /**
+   * \brief Constructor
+   */
   ConversionLsmToMegaThread();
+
+  /**
+   * \brief Destructor
+   */
   virtual ~ConversionLsmToMegaThread();
+
+  /**
+   * \brief Set the base name of the LSM file to convert
+   * \param[in] iBaseName Name of the LSM file
+   */
   void SetBaseName( std::string iBaseName);
+
+  /**
+   * \brief Set the path to the LSM file to convert and initialise LSM reader
+   * \param[in] iLsmPath Path of the LSM file
+   */
   void SetLsmPath( std::string iLsmPath);
+
+  /**
+   * \brief Set the path of the MegaCapture file to create
+   * \param[in] iMegaPath Path of the MegaCapture file
+   */
   void SetMegaPath( std::string iMegaPath);
+
+  /**
+   * \brief Set the output file type
+   * \param[in] iFileType File type: PNG or TIFF
+   */
   void SetOutputFileType( const GoFigure::FileType& iFileType );
+
+  /**
+   * \brief Start the conversion to MegaCapture
+   * \param[in] iMegaPath path of the output MegaCapture file
+   */
   void ExportWithReimplemented( std::string iMegaPath );
+
+  /**
+   * \brief Returns the number of signals to be sent for the progress bar
+   */
   int  GetNumberOfPoints();
 
 public slots:
 
-signals:
+ signals:
   void ConversionTerminatedSent();
   void InitialisationProgressSent();
   void ProgressSent();
 
 protected:
+  /**
+   * \brief Start multithread process (call when parameters are set up properly)
+   */
   void run();
 
 private:

@@ -57,19 +57,50 @@ class QGoLsmToMegaExportDialog :
 {
   Q_OBJECT
 public:
+  /**
+   * \brief Constructor
+   */
   explicit QGoLsmToMegaExportDialog( QWidget* parent = 0);
+  /**
+   * \brief Desctructor
+   */
   ~QGoLsmToMegaExportDialog();
 
   ConversionLsmToMegaThread ConversionLsmToMegaThreadSend;
 
 protected slots:
+  /**
+   * \brief Get the name of the lsm file selected
+   */
   void on_selectLsmFile_clicked();
+  /**
+   * \brief Get the location to store MegaCapture file
+   */
   void on_selectMegaPath_clicked();
+  /**
+   * \brief Select the output format
+   * \param[in] index 0: PNG, 1:TIFF
+   */
   void on_outputFormat_activated( int index );
+  /**
+   * \brief Disable buttons and send thread to launch conversion
+   */
   void on_convert_clicked();
+  /**
+   * \brief Catch thread, close progress bar and dialog box
+   */
   void ConversionTerminatedReceived();
+  /**
+   * \brief Catch thread, initialize the progress bar
+   */
   void InitialisationProgressReceived();
+  /**
+   * \brief Catch thread, update the progress bar content
+   */
   void ProgressReceived();
+  /**
+   * \brief Catch thread, cancel the conversion
+   */
   void CanceledReceived();
 
 private:

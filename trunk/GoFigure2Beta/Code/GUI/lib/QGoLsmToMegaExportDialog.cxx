@@ -43,9 +43,8 @@
 #include <QFileDialog>
 #include <QProgressDialog>
 
-/**
- * \brief Constructor
- */
+
+//-------------------------------------------------------------------------
 QGoLsmToMegaExportDialog::
 QGoLsmToMegaExportDialog( QWidget* iParent) : QDialog( iParent ), m_LsmPath(""),
 		m_LsmName(""), m_MegaPath(""), m_FileFormatIsPNG(true), m_Counter(0)
@@ -63,26 +62,20 @@ QGoLsmToMegaExportDialog( QWidget* iParent) : QDialog( iParent ), m_LsmPath(""),
 
   QObject::connect(m_ProgressDialog, SIGNAL(canceled()), this, SLOT(CanceledReceived()));
 }
+//-------------------------------------------------------------------------
 
-/**
- * \brief Desctructor
- */
+//-------------------------------------------------------------------------
 QGoLsmToMegaExportDialog::
 ~QGoLsmToMegaExportDialog()
 {
 }
+//-------------------------------------------------------------------------
 
-/**
- * \brief Get and print the name of the lsm file selected
- */
+//-------------------------------------------------------------------------
 void
 QGoLsmToMegaExportDialog::
 on_selectLsmFile_clicked()
 {
-/**
- * \todo add a filter to see only lsm files
- */
-
   m_LsmPath = QFileDialog::getOpenFileName( this,
       tr( "Select the LSM file to convert" ), QDir::currentPath()
 , tr("Image Files (*.lsm)"));
@@ -94,10 +87,9 @@ on_selectLsmFile_clicked()
   // Write the lsm file name in the dialog window
   lsmFileName->setText( m_LsmName );
 }
+//-------------------------------------------------------------------------
 
-/**
- * \brief Get and print the location to store MegaCapture file
- */
+//-------------------------------------------------------------------------
 void
 QGoLsmToMegaExportDialog::
 on_selectMegaPath_clicked()
@@ -109,10 +101,9 @@ on_selectMegaPath_clicked()
 
   megaFilePath->setText( m_MegaPath );
 }
+//-------------------------------------------------------------------------
 
-/**
- * \brief Select the output format
- */
+//-------------------------------------------------------------------------
 void
 QGoLsmToMegaExportDialog::
 on_outputFormat_activated( int index )
@@ -126,10 +117,9 @@ on_outputFormat_activated( int index )
     m_FileFormatIsPNG = false;
     }
 }
+//-------------------------------------------------------------------------
 
-/**
- * \brief Disable button and send thread to launch conversion
- */
+//-------------------------------------------------------------------------
 void
 QGoLsmToMegaExportDialog::
 on_convert_clicked()
@@ -174,10 +164,9 @@ on_convert_clicked()
     ConversionLsmToMegaThreadSend.start();
     }
 }
+//-------------------------------------------------------------------------
 
-/**
- * \brief Catch thread, proceed conversion and enable all buttons
- */
+//-------------------------------------------------------------------------
 void
 QGoLsmToMegaExportDialog::
 ConversionTerminatedReceived()
@@ -185,10 +174,11 @@ ConversionTerminatedReceived()
   m_ProgressDialog->accept();
   this->accept();
 }
-
+//-------------------------------------------------------------------------
 /**
- * \brief Catch thread, initialize the progress bar
+ * \todo check values for progress bar...(ubuntu bug..?)
  */
+//-------------------------------------------------------------------------
 void
 QGoLsmToMegaExportDialog::
 InitialisationProgressReceived()
@@ -206,12 +196,10 @@ InitialisationProgressReceived()
   //    then re-open when 100% reached
   m_ProgressDialog->setRange(0,sizeProgressBar+5);
   m_ProgressDialog->setValue(m_Counter);
-
 }
+//-------------------------------------------------------------------------
 
-/**
- * \brief Catch thread, update the progress bar
- */
+//-------------------------------------------------------------------------
 void
 QGoLsmToMegaExportDialog::
 ProgressReceived()
@@ -219,10 +207,9 @@ ProgressReceived()
   m_Counter++;
   m_ProgressDialog->setValue(m_Counter);
 }
+//-------------------------------------------------------------------------
 
-/**
- * \brief Catch thread, cancel the conversion
- */
+//-------------------------------------------------------------------------
 void
 QGoLsmToMegaExportDialog::
 CanceledReceived()
@@ -231,3 +218,4 @@ CanceledReceived()
   ConversionLsmToMegaThreadSend.exit();
   this->ConversionTerminatedReceived();
 }
+//-------------------------------------------------------------------------

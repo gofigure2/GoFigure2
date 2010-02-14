@@ -61,13 +61,9 @@
 
 #include <iostream>
 
-/**
- * \todo get rid of converter by integrating methods to get LSMReaders somewhere in this class
- */
+//-------------------------------------------------------------------------
 
-/**
- * \brief Constructor
- */
+//-------------------------------------------------------------------------
 ConversionLsmToMegaThread::
 ConversionLsmToMegaThread ( ) : m_BaseName(""), m_LsmPath(""), m_MegaPath(""),
     m_FileType(GoFigure::PNG), m_LSMReaders(0), m_Plaque (0),m_Row(0), m_Column (0),
@@ -75,7 +71,9 @@ ConversionLsmToMegaThread ( ) : m_BaseName(""), m_LsmPath(""), m_MegaPath(""),
     m_NumberOfChannels(0), m_NumberOfTimePoints(0), m_Dim(0)
 {
 }
+//-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
 ConversionLsmToMegaThread::~ConversionLsmToMegaThread()
 {
   std::vector< vtkLSMReader* >::iterator itLSMReaders = m_LSMReaders.begin();
@@ -87,7 +85,9 @@ ConversionLsmToMegaThread::~ConversionLsmToMegaThread()
     (*itLSMReaders)->Delete();
     }
 }
+//-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
 void
 ConversionLsmToMegaThread::
 run()
@@ -113,10 +113,6 @@ run()
   emit ConversionTerminatedSent();
 }
 
-/**
- * \brief Set the base name of the LSM file to convert
- * \param[in] iBaseName Name of the LSM file
- */
 void
 ConversionLsmToMegaThread::
 SetBaseName( std::string iBaseName)
@@ -124,45 +120,36 @@ SetBaseName( std::string iBaseName)
   size_t point_idx = iBaseName.rfind( ".lsm" );
   m_BaseName = iBaseName.substr( 0, point_idx);
 }
+//-------------------------------------------------------------------------
 
-/**
- * \brief Set the path to the LSM file to convert and initialise LSM reader
- * \param[in] iLsmPath Path of the LSM file
- */
+//-------------------------------------------------------------------------
 void
 ConversionLsmToMegaThread::
 SetLsmPath( std::string iLsmPath)
 {
   m_LsmPath = iLsmPath;
 }
+//-------------------------------------------------------------------------
 
-/**
- * \brief Set the path of the MegaCapture file to create
- * \param[in] iMegaPath Path of the MegaCapture file
- */
+//-------------------------------------------------------------------------
 void
 ConversionLsmToMegaThread::
 SetMegaPath( std::string iMegaPath)
 {
   m_MegaPath = iMegaPath;
 }
+//-------------------------------------------------------------------------
 
-/**
- * \brief Set the output file type
- * \param[in] iFileType File type: PNG or TIFF
- */
+//-------------------------------------------------------------------------
 void
 ConversionLsmToMegaThread::
 SetOutputFileType( const GoFigure::FileType& iFileType )
 {
   m_FileType = iFileType;
 }
+//-------------------------------------------------------------------------
 
-
-/**
- * \brief Start the conversion to MegaCapture
- * \param[in] iMegaPath path of the output MegaCapture file
- */
+//-------------------------------------------------------------------------
 void
 ConversionLsmToMegaThread::
 ExportWithReimplemented( std::string iMegaPath )
@@ -327,10 +314,9 @@ ExportWithReimplemented( std::string iMegaPath )
     }
   file.close();
 }
+//-------------------------------------------------------------------------
 
-/**
- * \brief Returns the  size of the progress bar
- */
+//-------------------------------------------------------------------------
 int
 ConversionLsmToMegaThread::
 GetNumberOfPoints()
@@ -341,3 +327,4 @@ GetNumberOfPoints()
 
   return total;
 }
+//-------------------------------------------------------------------------
