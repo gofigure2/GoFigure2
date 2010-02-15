@@ -40,7 +40,6 @@
 #include "ConversionLsmToMegaThread.h"
 
 #include "LSMToMegaCapture.h"
-
 #include "vtkLSMReader.h"
 
 #include <fstream>
@@ -76,13 +75,12 @@ ConversionLsmToMegaThread ( ) : m_BaseName(""), m_LsmPath(""), m_MegaPath(""),
 //-------------------------------------------------------------------------
 ConversionLsmToMegaThread::~ConversionLsmToMegaThread()
 {
-  std::vector< vtkLSMReader* >::iterator itLSMReaders = m_LSMReaders.begin();
-
-  for(itLSMReaders = m_LSMReaders.begin();
-      itLSMReaders != m_LSMReaders.end();
-      itLSMReaders++)
+  if( !m_LSMReaders.empty() )
     {
-    (*itLSMReaders)->Delete();
+    for( unsigned int i = 0; i < m_LSMReaders.size(); i++ )
+      {
+    	m_LSMReaders[i]->Delete();
+      }
     }
 }
 //-------------------------------------------------------------------------
@@ -92,11 +90,15 @@ void
 ConversionLsmToMegaThread::
 run()
 {
-  LSMToMegaCapture converter;
-  converter.SetFileName( m_LsmPath );
-  converter.SetOutputFileType( m_FileType );
+  // Allocate memory to avoid automatic suppression at the end of this function
+  /**
+   * \todo Reimplement these methods in this function
+   */
+  LSMToMegaCapture* converter = new LSMToMegaCapture;
+  converter->SetFileName( m_LsmPath );
+  converter->SetOutputFileType( m_FileType );
 
-  m_LSMReaders = converter.GetLSMReaders();
+  m_LSMReaders = converter->GetLSMReaders();
   m_NumberOfChannels = m_LSMReaders[0]->GetNumberOfChannels();
   m_NumberOfTimePoints = m_LSMReaders[0]->GetNumberOfTimePoints();
   int dim[5];

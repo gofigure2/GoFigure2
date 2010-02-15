@@ -53,12 +53,14 @@ QGoLsmToMegaExportDialog( QWidget* iParent) : QDialog( iParent ), m_LsmPath(""),
 
   m_ProgressDialog = new QProgressDialog("Conversion in progress.", "Cancel", 0, 100, this);
 
-  QObject::connect( &ConversionLsmToMegaThreadSend, SIGNAL( ConversionTerminatedSent() ),
+  ConversionLsmToMegaThreadSend = new ConversionLsmToMegaThread;
+
+  QObject::connect( ConversionLsmToMegaThreadSend, SIGNAL( ConversionTerminatedSent() ),
       this, SLOT( ConversionTerminatedReceived() ) );
 
-  QObject::connect(&ConversionLsmToMegaThreadSend, SIGNAL(InitialisationProgressSent()), this, SLOT(InitialisationProgressReceived()));
+  QObject::connect(ConversionLsmToMegaThreadSend, SIGNAL(InitialisationProgressSent()), this, SLOT(InitialisationProgressReceived()));
 
-  QObject::connect(&ConversionLsmToMegaThreadSend, SIGNAL(ProgressSent()), this, SLOT(ProgressReceived()));
+  QObject::connect(ConversionLsmToMegaThreadSend, SIGNAL(ProgressSent()), this, SLOT(ProgressReceived()));
 
   QObject::connect(m_ProgressDialog, SIGNAL(canceled()), this, SLOT(CanceledReceived()));
 }
@@ -68,6 +70,7 @@ QGoLsmToMegaExportDialog( QWidget* iParent) : QDialog( iParent ), m_LsmPath(""),
 QGoLsmToMegaExportDialog::
 ~QGoLsmToMegaExportDialog()
 {
+  delete  ConversionLsmToMegaThreadSend;
 }
 //-------------------------------------------------------------------------
 
@@ -156,12 +159,12 @@ on_convert_clicked()
 	  }
 
     // conversion fonction called from there to enable progress bar
-    ConversionLsmToMegaThreadSend.SetBaseName(m_LsmName.toStdString());
-    ConversionLsmToMegaThreadSend.SetLsmPath(m_LsmPath.toStdString());
-    ConversionLsmToMegaThreadSend.SetOutputFileType(filetype);
-    ConversionLsmToMegaThreadSend.SetMegaPath(m_MegaPath.toStdString());
+    ConversionLsmToMegaThreadSend->SetBaseName(m_LsmName.toStdString());
+    ConversionLsmToMegaThreadSend->SetLsmPath(m_LsmPath.toStdString());
+    ConversionLsmToMegaThreadSend->SetOutputFileType(filetype);
+    ConversionLsmToMegaThreadSend->SetMegaPath(m_MegaPath.toStdString());
 
-    ConversionLsmToMegaThreadSend.start();
+    ConversionLsmToMegaThreadSend->start();
     }
 }
 //-------------------------------------------------------------------------
@@ -171,6 +174,8 @@ void
 QGoLsmToMegaExportDialog::
 ConversionTerminatedReceived()
 {
+  ConversionLsmToMegaThreadSend->terminate();
+  ConversionLsmToMegaThreadSend->exit();
   m_ProgressDialog->accept();
   this->accept();
 }
@@ -185,7 +190,7 @@ InitialisationProgressReceived()
 {
   this->convertLabel->setText( tr("CONVERSION in PROGRESS") );
 
-  int sizeProgressBar = ConversionLsmToMegaThreadSend.GetNumberOfPoints();
+  int sizeProgressBar = ConversionLsmToMegaThreadSend->GetNumberOfPoints();
 
   // if starts at 0 strange things happen...
   m_Counter = 1;
@@ -214,8 +219,8 @@ void
 QGoLsmToMegaExportDialog::
 CanceledReceived()
 {
-  ConversionLsmToMegaThreadSend.terminate();
-  ConversionLsmToMegaThreadSend.exit();
+  ConversionLsmToMegaThreadSend->terminate();
+  ConversionLsmToMegaThreadSend->exit();
   this->ConversionTerminatedReceived();
 }
 //-------------------------------------------------------------------------

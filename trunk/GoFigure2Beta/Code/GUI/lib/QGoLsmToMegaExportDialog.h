@@ -66,7 +66,7 @@ public:
    */
   ~QGoLsmToMegaExportDialog();
 
-  ConversionLsmToMegaThread ConversionLsmToMegaThreadSend;
+  ConversionLsmToMegaThread* ConversionLsmToMegaThreadSend;
 
 protected slots:
   /**
