@@ -6,7 +6,7 @@ INCLUDE_DIRECTORIES( BEFORE
 )
 
 ADD_LIBRARY( vtkRenderingAddOn2
-#  ${LIBS_STYLE}
+  ${LIBS_STYLE}
   ${vtkRenderingAddOn_SRCS2}
   )
 

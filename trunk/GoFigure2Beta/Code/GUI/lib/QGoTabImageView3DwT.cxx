@@ -1130,7 +1130,6 @@ void
 QGoTabImageView3DwT::
 SetTimePoint( const int& iTimePoint )
 {
-	std::cout << "Set TP"<< iTimePoint << std::endl;
   if( iTimePoint == m_TimePoint )
     {
     return;
