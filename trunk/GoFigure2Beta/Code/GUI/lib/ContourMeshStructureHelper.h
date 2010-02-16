@@ -10,30 +10,33 @@
 
 #include <list>
 
-typedef boost::multi_index::multi_index_container<
-  ContourMeshStructure,
-  boost::multi_index::indexed_by<
-    boost::multi_index::ordered_non_unique<
-      boost::multi_index::tag<TCoord>,
-      BOOST_MULTI_INDEX_MEMBER(ContourMeshStructure,unsigned int,TCoord)
-      >,
-    boost::multi_index::hashed_unique<
-      boost::multi_index::tag<Actor>,
-      BOOST_MULTI_INDEX_MEMBER( ContourMeshStructure, vtkActor*, Actor )
-      >,
-    boost::multi_index::hashed_non_unique<
-      boost::multi_index::tag<Nodes>,
-      BOOST_MULTI_INDEX_MEMBER(ContourMeshStructure, vtkPolyData*,Nodes)
-      >,
-    boost::multi_index::hashed_non_unique<
-      boost::multi_index::tag<TraceID>,
-      BOOST_MULTI_INDEX_MEMBER(ContourMeshStructure,unsigned int,TraceID)
-      > //,
-//       hashed_non_unique<
-//         tag<CollectionID>,
-//         BOOST_MULTI_INDEX_MEMBER(ContourMeshStructure,unsigned int,CollectionID)>
-    >
-> ContourMeshStructureMultiIndexContainer;
+class ContourMeshStructureMultiIndexContainer :
+  public boost::multi_index::multi_index_container<
+    ContourMeshStructure,
+    boost::multi_index::indexed_by<
+      boost::multi_index::ordered_non_unique<
+        boost::multi_index::tag<TCoord>,
+        BOOST_MULTI_INDEX_MEMBER( ContourMeshStructure, unsigned int, TCoord )
+        >,
+      boost::multi_index::hashed_unique<
+        boost::multi_index::tag<Actor>,
+        BOOST_MULTI_INDEX_MEMBER( ContourMeshStructure, vtkActor*, Actor )
+        >,
+      boost::multi_index::hashed_non_unique<
+        boost::multi_index::tag<Nodes>,
+        BOOST_MULTI_INDEX_MEMBER( ContourMeshStructure, vtkPolyData*, Nodes)
+        >,
+      boost::multi_index::hashed_non_unique<
+        boost::multi_index::tag<TraceID>,
+        BOOST_MULTI_INDEX_MEMBER( ContourMeshStructure, unsigned int, TraceID )
+        > //,
+  //       hashed_non_unique<
+  //         tag<CollectionID>,
+  //         BOOST_MULTI_INDEX_MEMBER(ContourMeshStructure,unsigned int,CollectionID)>
+      >
+  >
+{
+};
 
 typedef boost::multi_index::multi_index_container<
   ContourMeshStructure*,

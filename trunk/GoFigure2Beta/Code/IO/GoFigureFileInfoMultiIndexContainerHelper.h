@@ -86,15 +86,15 @@ struct GoFigureFileInfoHelper
 //         tag<m_YTileCoord>, BOOST_MULTI_INDEX_MEMBER(GoFigureFileInfoHelper,unsigned int,m_YTileCoord)>,
 //       ordered_non_unique<
 //         tag<m_ZTileCoord>, BOOST_MULTI_INDEX_MEMBER(GoFigureFileInfoHelper,unsigned int,m_ZTileCoord)>,
-      boost::multi_index::ordered_non_unique<
-        boost::multi_index::tag<m_ZCoord>,
-        BOOST_MULTI_INDEX_MEMBER(GoFigureFileInfoHelper,unsigned int,m_ZCoord)>,
-      boost::multi_index::ordered_non_unique<
-        boost::multi_index::tag<m_Channel>,
-        BOOST_MULTI_INDEX_MEMBER(GoFigureFileInfoHelper,unsigned int,m_Channel)>,
-      boost::multi_index::ordered_non_unique<
-        boost::multi_index::tag<m_TCoord>,
-        BOOST_MULTI_INDEX_MEMBER(GoFigureFileInfoHelper,unsigned int,m_TCoord)>
+    boost::multi_index::ordered_non_unique<
+      boost::multi_index::tag<m_ZCoord>,
+      BOOST_MULTI_INDEX_MEMBER(GoFigureFileInfoHelper,unsigned int,m_ZCoord)>,
+    boost::multi_index::ordered_non_unique<
+      boost::multi_index::tag<m_Channel>,
+      BOOST_MULTI_INDEX_MEMBER(GoFigureFileInfoHelper,unsigned int,m_Channel)>,
+    boost::multi_index::ordered_non_unique<
+      boost::multi_index::tag<m_TCoord>,
+      BOOST_MULTI_INDEX_MEMBER(GoFigureFileInfoHelper,unsigned int,m_TCoord)>
     >
   > GoFigureFileInfoHelperMultiIndexContainer;
 
