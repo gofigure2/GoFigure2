@@ -17,6 +17,7 @@ SET( QGOGUILIB_EXAMPLE_SRC
   QGoPrintDatabaseTest
   qgocreatemeshdialogtest
   QGoLsmToMegaExportDialogTest
+  QGoLsmToMegaExportThreadTest
   QGoDBCreateBookmarkDialogTest
 )
 
@@ -115,6 +116,14 @@ ADD_TEST( contourmeshstructurehelperTest2
 
 ADD_TEST( QGoLsmToMegaExportDialogTest
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/QGoLsmToMegaExportDialogTest
+  1
+)
+
+ADD_TEST( QGoLsmToMegaExportThreadTest
+  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/QGoLsmToMegaExportThreadTest
+  earpax2isl11
+  ${TESTING_DATA_PATH}/earpax2isl11.lsm
+  ${TESTING_DATA_PATH}/earpax2isl11/
   1
 )
 
