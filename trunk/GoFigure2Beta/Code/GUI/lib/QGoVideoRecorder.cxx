@@ -405,7 +405,11 @@ onStartRecordClicked()
     this->endRecord->setEnabled(true);
 
     QString fileName = m_VideoName2;
+
+    if(!fileName.endsWith(".avi"))
+    {
     fileName.insert( fileName.size(), QString(".avi"));
+    }
 
     m_VideoRecorder->SetFileName( fileName.toStdString() );
 
@@ -500,6 +504,11 @@ Acquire( int value )
   unsigned int iMax;
 
   QString fileName = m_VideoName2;
+
+  if(fileName.endsWith(".avi"))
+      {
+      fileName.chop( 4 );
+      }
 
   switch ( value )
       {
