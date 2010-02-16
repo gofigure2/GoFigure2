@@ -3,74 +3,75 @@
 
 #include "ContourMeshStructure.h"
 
-#include <boost/multi_index_container.hpp>
-#include <boost/multi_index/member.hpp>
-#include <boost/multi_index/hashed_index.hpp>
-#include <boost/multi_index/ordered_index.hpp>
+#include "boost/multi_index_container.hpp"
+#include "boost/multi_index/member.hpp"
+#include "boost/multi_index/hashed_index.hpp"
+#include "boost/multi_index/ordered_index.hpp"
 
 #include <list>
 
-using boost::multi_index_container;
-using namespace boost::multi_index;
-
-typedef multi_index_container<
+typedef boost::multi_index::multi_index_container<
   ContourMeshStructure,
-    indexed_by<
-      ordered_non_unique<
-        tag<TCoord>,
-        BOOST_MULTI_INDEX_MEMBER(ContourMeshStructure,unsigned int,TCoord)>,
-      hashed_unique<
-        tag<Actor>,
-        BOOST_MULTI_INDEX_MEMBER(ContourMeshStructure,ContourMeshStructure::vtkActorPointer,Actor)>,
-      hashed_non_unique<
-        tag<Nodes>,
-        BOOST_MULTI_INDEX_MEMBER(ContourMeshStructure,ContourMeshStructure::vtkPolyDataPointer,Nodes)>,
-      hashed_non_unique<
-        tag<TraceID>,
-        BOOST_MULTI_INDEX_MEMBER(ContourMeshStructure,unsigned int,TraceID)> //,
+  boost::multi_index::indexed_by<
+    boost::multi_index::ordered_non_unique<
+      boost::multi_index::tag<TCoord>,
+      BOOST_MULTI_INDEX_MEMBER(ContourMeshStructure,unsigned int,TCoord)
+      >,
+    boost::multi_index::hashed_unique<
+      boost::multi_index::tag<Actor>,
+      BOOST_MULTI_INDEX_MEMBER( ContourMeshStructure, vtkActor*, Actor )
+      >,
+    boost::multi_index::hashed_non_unique<
+      boost::multi_index::tag<Nodes>,
+      BOOST_MULTI_INDEX_MEMBER(ContourMeshStructure, vtkPolyData*,Nodes)
+      >,
+    boost::multi_index::hashed_non_unique<
+      boost::multi_index::tag<TraceID>,
+      BOOST_MULTI_INDEX_MEMBER(ContourMeshStructure,unsigned int,TraceID)
+      > //,
 //       hashed_non_unique<
 //         tag<CollectionID>,
 //         BOOST_MULTI_INDEX_MEMBER(ContourMeshStructure,unsigned int,CollectionID)>
     >
 > ContourMeshStructureMultiIndexContainer;
 
-typedef multi_index_container<
+typedef boost::multi_index::multi_index_container<
   ContourMeshStructure*,
-  indexed_by<
-    hashed_non_unique<
+  boost::multi_index::indexed_by<
+    boost::multi_index::hashed_non_unique<
       BOOST_MULTI_INDEX_MEMBER(ContourMeshStructure,unsigned int,TraceID)>
 >
 > ContourMeshStructureTraceIDViewContainer;
 
-typedef multi_index_container<
+typedef boost::multi_index::multi_index_container<
     ContourMeshStructure*,
-    indexed_by<
-      hashed_non_unique<
+    boost::multi_index::indexed_by<
+      boost::multi_index::hashed_non_unique<
         BOOST_MULTI_INDEX_MEMBER(ContourMeshStructure,unsigned int,CollectionID)>
     >
   > ContourMeshStructureCollectionIDViewContainer;
 
-typedef multi_index_container<
+typedef boost::multi_index::multi_index_container<
     ContourMeshStructure*,
-    indexed_by<
-      ordered_non_unique<
+    boost::multi_index::indexed_by<
+      boost::multi_index::ordered_non_unique<
         BOOST_MULTI_INDEX_MEMBER(ContourMeshStructure,unsigned int,TCoord)>
     >
   > ContourMeshStructureTCoordViewContainer;
 
-typedef multi_index_container<
+typedef boost::multi_index::multi_index_container<
     ContourMeshStructure*,
-    indexed_by<
-      ordered_unique<
-        BOOST_MULTI_INDEX_MEMBER(ContourMeshStructure,ContourMeshStructure::vtkActorPointer,Actor)>
+    boost::multi_index::indexed_by<
+      boost::multi_index::ordered_unique<
+        BOOST_MULTI_INDEX_MEMBER(ContourMeshStructure,vtkActor*,Actor)>
     >
   > ContourMeshStructureActorViewContainer;
 
-typedef multi_index_container<
+typedef boost::multi_index::multi_index_container<
     ContourMeshStructure*,
-    indexed_by<
-      hashed_non_unique<
-        BOOST_MULTI_INDEX_MEMBER(ContourMeshStructure,ContourMeshStructure::vtkPolyDataPointer,Nodes)>
+    boost::multi_index::indexed_by<
+      boost::multi_index::hashed_non_unique<
+        BOOST_MULTI_INDEX_MEMBER(ContourMeshStructure,vtkPolyData*,Nodes)>
     >
   > ContourMeshStructureNodesViewContainer;
 

@@ -41,9 +41,6 @@
 #include "ContourMeshStructureHelper.h"
 #include "vtkPolyData.h"
 
-using boost::multi_index_container;
-using namespace boost::multi_index;
-
 // ---------------------------------------------------------------------------
 int
 ComputeDirectionFromContour( vtkPolyData* iContour )

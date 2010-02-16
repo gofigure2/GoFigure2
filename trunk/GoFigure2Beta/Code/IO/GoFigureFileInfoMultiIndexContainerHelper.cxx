@@ -7,10 +7,12 @@ std::list< std::string > GetAllFileNamesForGivenTCoordAndChannel(
 {
   std::list< std::string > oList;
 
-  using namespace boost;
+  using boost::multi_index::index;
+  using boost::multi_index::get;
+  using boost::tuples::tie;
 
-  multi_index::index<GoFigureFileInfoHelperMultiIndexContainer,m_TCoord>::type::iterator it0,it1;
-  tuples::tie(it0,it1)=get<m_TCoord>(iContainer).equal_range( iT );
+  index<GoFigureFileInfoHelperMultiIndexContainer,m_TCoord>::type::iterator it0,it1;
+  tie(it0,it1)=get<m_TCoord>(iContainer).equal_range( iT );
 
   GoFigureFileInfoHelperChannelViewContainer subset;
 
@@ -51,9 +53,12 @@ std::list< std::string > GetAllFileNamesForGivenZCoordPointAndChannel(
 {
   std::list< std::string > oList;
 
-  using namespace boost;
-  multi_index::index<GoFigureFileInfoHelperMultiIndexContainer,m_ZCoord>::type::iterator it0,it1;
-  tuples::tie(it0,it1)=get<m_ZCoord>(iContainer).equal_range( iZ );
+  using boost::multi_index::index;
+  using boost::multi_index::get;
+  using boost::tuples::tie;
+
+  index<GoFigureFileInfoHelperMultiIndexContainer,m_ZCoord>::type::iterator it0,it1;
+  tie(it0,it1)=get<m_ZCoord>(iContainer).equal_range( iZ );
 
   GoFigureFileInfoHelperChannelViewContainer subset;
 

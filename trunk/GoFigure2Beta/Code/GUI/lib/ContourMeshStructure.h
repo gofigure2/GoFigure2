@@ -48,34 +48,40 @@ class vtkPolyData;
 
 struct ContourMeshStructure
 {
-  typedef vtkActor*     vtkActorPointer;
-  typedef vtkPolyData*  vtkPolyDataPointer;
+//   typedef vtkActor*     vtkActorPointer;
+//   typedef vtkPolyData*  vtkPolyDataPointer;
 
   unsigned int        TraceID;
-  vtkActorPointer     Actor;
-  vtkPolyDataPointer  Nodes;
+  vtkActor*           Actor;
+  vtkPolyData*        Nodes;
   unsigned int        CollectionID;
   unsigned int        TCoord;
   bool                Highlighted;
   double              rgba[4];
   int                 Direction;
 
-  ContourMeshStructure( ) : TraceID( 0 ), Actor( 0 ), Nodes( 0 ), CollectionID( 0 ),
+  ContourMeshStructure( ) : TraceID( 0 ), CollectionID( 0 ),
     TCoord( 0 ), Highlighted( false ), Direction( 0 )
     {
+    this->Actor = 0;
+    this->Nodes = 0;
+    this->rgba[0] = 0;
+    this->rgba[1] = 0;
+    this->rgba[2] = 0;
+    this->rgba[3] = 0;
     }
 
-  ContourMeshStructure( const unsigned int& iTraceID, vtkActorPointer iActor,
-    vtkPolyDataPointer iNodes, const unsigned int& iCollectionID, const unsigned int& iT,
+  ContourMeshStructure( const unsigned int& iTraceID, vtkActor* iActor,
+    vtkPolyData* iNodes, const unsigned int& iCollectionID, const unsigned int& iT,
     const bool& iHighlighted, const double& r, const double& g, const double& b,
     const double& alpha, const int& iDir )
     : TraceID( iTraceID ), Actor( iActor ), Nodes( iNodes ), CollectionID( iCollectionID ),
       TCoord( iT ), Highlighted( iHighlighted ), Direction( iDir )
     {
-    rgba[0] = r;
-    rgba[1] = g;
-    rgba[2] = b;
-    rgba[3] = alpha;
+    this->rgba[0] = r;
+    this->rgba[1] = g;
+    this->rgba[2] = b;
+    this->rgba[3] = alpha;
     }
 
   ~ContourMeshStructure()
