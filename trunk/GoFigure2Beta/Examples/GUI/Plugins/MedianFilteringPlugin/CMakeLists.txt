@@ -48,3 +48,6 @@ TARGET_LINK_LIBRARIES( ImageMedianPlugin
   ITKBasicFilters
 )
 
+
+ADD_EXECUTABLE( medianpluginExample medianpluginMain.cxx )
+TARGET_LINK_LIBRARIES( medianpluginExample ${QT_LIBRARIES} )

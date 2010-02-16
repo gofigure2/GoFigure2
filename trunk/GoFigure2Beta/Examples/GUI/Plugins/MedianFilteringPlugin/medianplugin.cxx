@@ -10,6 +10,7 @@ medianplugin::medianplugin() : QGoImageFilterPluginBase()
   this->SetAllRequiredInformation();
   preprocess = new QCellPreprocess();
 }
+
 medianplugin::~medianplugin()
 {}
 
@@ -43,12 +44,6 @@ QWidget* medianplugin::AdditionalWidget()
 {
   return 0;
 }
-
-void medianplugin::WriteSettings()
-{}
-
-void medianplugin::ReadSettings()
-{}
 
 void medianplugin::Process( )
 {

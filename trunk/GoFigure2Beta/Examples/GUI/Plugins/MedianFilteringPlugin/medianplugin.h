@@ -11,7 +11,7 @@ class medianplugin : public QObject, public QGoImageFilterPluginBase
 
   public:
     medianplugin();
-    ~medianplugin();
+    virtual ~medianplugin();
 
     virtual std::vector< QAction* > Actions();
     virtual QToolBar* ToolBar();
@@ -19,8 +19,8 @@ class medianplugin : public QObject, public QGoImageFilterPluginBase
     virtual QDockWidget* DockWidget();
     virtual QWidget* AdditionalWidget();
 
-    virtual void WriteSettings();
-    virtual void ReadSettings();
+    virtual void WriteSettings() {}
+    virtual void ReadSettings() {}
 
     virtual void OnTabActivated( const int& ) {}
     virtual void OnTabMoved( const int& , const int& ) {}
