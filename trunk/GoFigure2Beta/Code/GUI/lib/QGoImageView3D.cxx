@@ -246,16 +246,11 @@ void QGoImageView3D::Update()
   this->View3D->SetShowScalarBar( false );
   this->View3D->ResetCamera();
 
-  // Rotate the camera to show that the view is 3d
-  vtkCamera *camera = this->View3D->GetRenderer()->GetActiveCamera();
-  camera->Roll( -135 );
-  camera->Azimuth( -45 );
-
-  this->View3D->GetRenderer()->SetActiveCamera( camera );
-  this->View3D->ResetCamera();
-
   this->m_Pool->SyncSetBackground( this->m_Pool->GetItem(0)->GetBackground() );
-  this->m_Pool->SyncSetShowAnnotations( true );
+  this->m_Pool->SyncSetShowAnnotations( m_ShowAnnotations );
+  this->m_Pool->SetSplinePlaneActorsVisibility( m_ShowSplinePlane );
+  this->View3D->SetBoundsActorsVisibility( m_ShowSplinePlane );
+  this->View3D->SetCubeVisibility( m_ShowCube );
 
   for( int i = 0; i < 3; i++ )
     {
@@ -266,6 +261,7 @@ void QGoImageView3D::Update()
   this->m_Pool->SyncSetShowScalarBar( false );
   this->m_Pool->SyncRender();
   this->m_Pool->SyncReset();
+
   this->m_Pool->InitializeAllObservers();
 
 
@@ -276,6 +272,15 @@ void QGoImageView3D::Update()
     this->SliderXY->setValue( (this->SliderXY->minimum()+this->SliderXY->maximum())/2 );
     this->SliderXZ->setValue( (this->SliderXZ->minimum()+this->SliderXZ->maximum())/2 );
     this->SliderYZ->setValue( (this->SliderYZ->minimum()+this->SliderYZ->maximum())/2 );
+
+    // Rotate the camera to show that the view is 3d
+    vtkCamera *camera = this->View3D->GetRenderer()->GetActiveCamera();
+    camera->Roll( -135 );
+    camera->Azimuth( -45 );
+
+    this->View3D->GetRenderer()->SetActiveCamera( camera );
+    this->View3D->ResetCamera();
+
     m_FirstRender = false;
     }
 

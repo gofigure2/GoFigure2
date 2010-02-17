@@ -52,7 +52,7 @@
 //-------------------------------------------------------------------------
 QGoVideoRecorder::
 QGoVideoRecorder( QWidget *iParent ) : QDockWidget( iParent ),
-  m_VideoName2( "" ), m_FrameRate2( 10 ), m_VideoQuality2( 1 ), m_SliceFT( 0 ),
+  m_VideoName2( "" ), m_FrameRate2( 10 ), m_VideoQuality2( 0 ), m_SliceFT( 0 ),
   m_WindowSelected( 0 ), m_XMinForVideo( 0 ), m_XMaxForVideo( 0 ),
   m_YMinForVideo( 0 ), m_YMaxForVideo( 0 ), m_ZMinForVideo( 0 ),
   m_ZMaxForVideo( 0 ), m_TMinForVideo( 0 ), m_TMaxForVideo( 0 ),
