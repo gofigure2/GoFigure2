@@ -338,6 +338,10 @@ CreateDataBaseTablesConnection()
   QObject::connect(this->m_VisuDockWidget,
     SIGNAL( AddANewCellType()),this->m_DataBaseTables,
     SLOT(AddNewCellType()));
+
+  QObject::connect(this->m_VisuDockWidget,
+    SIGNAL( DeleteCellType()),this->m_DataBaseTables,
+    SLOT(DeleteCellType()));
 }
 //-------------------------------------------------------------------------
 #if defined ( ENABLEFFMPEG ) || defined ( ENABLEAVI )

@@ -311,8 +311,8 @@ void QGoVisualizationDockWidget::SetCellTypeComboBox()
   QLabel* LabelCellType = new QLabel(tr("Selected CellType: "),this);
   QHBoxLayout* HLayoutForCellType = new QHBoxLayout;
   HLayoutForCellType->addWidget(LabelCellType);
-  LabelCellType->hide();
-  this->m_ChoseCellType->hide();
+  //LabelCellType->hide();
+  //this->m_ChoseCellType->hide();
   HLayoutForCellType->addWidget(m_ChoseCellType);
   this->verticalLayout_2->addLayout(HLayoutForCellType);
   QObject::connect(this->m_ChoseCellType,SIGNAL(currentIndexChanged(QString)),

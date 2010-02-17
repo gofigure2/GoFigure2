@@ -86,9 +86,19 @@ QGoDeleteDBEntityDialog::~QGoDeleteDBEntityDialog()
 QStringList QGoDeleteDBEntityDialog::GetListExistingEntities(
   vtkMySQLDatabase* iDatabaseConnector)
 {
-  std::vector<std::string> ResultsQuery = ListSpecificValuesForOneColumn(
-    iDatabaseConnector,this->m_EntityName,"Name","ImagingSessionID",
-    ConvertToString<int>(this->m_ImgSessionID),"Name");
+  std::vector<std::string> ResultsQuery;
+  //if m_ImgSessionID = 0, the entity name is not related to an imagingsession
+  if (this->m_ImgSessionID != 0)
+    {
+    ResultsQuery = ListSpecificValuesForOneColumn(
+      iDatabaseConnector,this->m_EntityName,"Name","ImagingSessionID",
+      ConvertToString<int>(this->m_ImgSessionID),"Name");
+    }
+  else
+    {
+    ResultsQuery = ListAllValuesForOneColumn(iDatabaseConnector,
+      "Name",this->m_EntityName);
+    }
 
   QStringList ListEntities;
   for (int i=0; i< ResultsQuery.size();i++)

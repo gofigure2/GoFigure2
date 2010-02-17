@@ -67,5 +67,7 @@ class QGoDBCellTypeManager:public QGoDBEntityManager
     virtual void SaveNewEntityInDB();
 
     virtual void ValidateName();
+
+
 };
 #endif

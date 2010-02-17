@@ -158,6 +158,7 @@ public slots:
   void SaveNewColorInDB(std::vector<std::string> iDataNewColor);
   void DeleteBookmarks();
   void AddNewCellType();
+  void DeleteCellType();
 
 signals:
   void PrintDBReady();

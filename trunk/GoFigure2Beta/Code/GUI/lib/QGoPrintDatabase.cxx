@@ -1292,3 +1292,13 @@ void QGoPrintDatabase::AddNewCellType()
   this->GetListCellTypes();
   this->CloseDBConnection();
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoPrintDatabase::DeleteCellType()
+{
+  this->OpenDBConnection();
+  this->m_CellTypeManager->DeleteEntity(this->m_DatabaseConnector);
+  this->GetListCellTypes();
+  this->CloseDBConnection(); 
+}
