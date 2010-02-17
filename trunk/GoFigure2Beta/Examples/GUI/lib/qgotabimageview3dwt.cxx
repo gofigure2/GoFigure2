@@ -51,7 +51,7 @@ int main( int argc, char** argv )
 {
   if( argc != 3 )
     {
-    std::cerr <<"qgotabimageview3d requires 2 arguments:" <<std::endl;
+    std::cerr <<"qgotabimageview3dwt requires 2 arguments:" <<std::endl;
     std::cerr <<"1-filename" <<std::endl;
     std::cerr <<"2-test (boolean)" <<std::endl;
     return EXIT_FAILURE;
@@ -59,6 +59,8 @@ int main( int argc, char** argv )
   QApplication app( argc, argv );
   QCoreApplication::setOrganizationName("MegasonLab");
   QCoreApplication::setOrganizationDomain( "http://gofigure2.sourceforge.net" );
+
+  std::cout <<argv[1] <<std::endl;
 
   vtkLSMReader* reader = vtkLSMReader::New();
   reader->SetFileName( argv[1] );
@@ -70,8 +72,6 @@ int main( int argc, char** argv )
   tab->Update();
   tab->show();
 
-//   tab->SetTimePoint( 1 );
-//   tab->SetTimePoint( 2 );
 
   QMenuBar* menubar = new QMenuBar;
   std::vector< QAction* > action_vector = tab->ViewActions();
@@ -105,6 +105,7 @@ int main( int argc, char** argv )
 
   if( atoi( argv[2] ) == 1 )
     {
+    tab->SetTimePoint( 0 );
     timer->start( 1000 );
     }
 

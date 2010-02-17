@@ -91,6 +91,12 @@ ADD_TEST( qgotabimageview3dTest
   1
 )
 
+ADD_TEST( qgotabimageview3dwtTest
+  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qgotabimageview3dwt
+  ${TESTING_DATA_PATH}/earpax2isl11.lsm
+  1
+)
+
 ADD_TEST( qgomanualsegmentationsettingsdialogTest
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qgomanualsegmentationsettingsdialog
   1
