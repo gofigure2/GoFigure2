@@ -1,7 +1,7 @@
 /*=========================================================================
-  Author: $Author$  // Author of last commit
-  Version: $Rev$  // Revision of last commit
-  Date: $Date$  // Date of last commit
+  Author: $Author: lsouhait $  // Author of last commit
+  Version: $Rev: 455 $  // Revision of last commit
+  Date: $Date: 2009-07-28 14:31:26 -0400 (Tue, 28 Jul 2009) $  // Date of last commit
 =========================================================================*/
 
 /*=========================================================================
@@ -37,54 +37,56 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#include "QGoDBCellTypeManager.h"
-#include "GoDBCellTypeRow.h"
-#include <QMessageBox>
+#include "GoDBSubCellTypeRow.h"
+#include "GoDBRecordSetHelper.h"
 
-QGoDBCellTypeManager::QGoDBCellTypeManager (QWidget* iParent):
-  QGoDBEntityManager(iParent,"celltype",0)
+
+GoDBSubCellTypeRow::GoDBSubCellTypeRow(): GoDBNameDescRow()
 {
+  this->m_TableName = "subcellulartype";
+  this->m_TableIDName = "SubCellularID";
+  this->InitializeMap();  
 }
-//------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
-void QGoDBCellTypeManager::SaveNewEntityInDB()
+//-------------------------------------------------------------------------
+void GoDBSubCellTypeRow::InitializeMap()
 {
-  //this->m_NewCellType.SetField("Name",this->m_NameDescDialog->GetInputTextForName());
-  this->m_NewCellType.SetField("Description",
-    this->m_NameDescDialog->GetInputTextForDescription());
-
-  std::string CellTypeName = this->m_NewCellType.GetMapValue("Name");
-  if (this->m_NewCellType.DoesThisEntityAlreadyExists(
-    this->m_DatabaseConnectorForNewEntity,CellTypeName) != -1)
-    {
-    QMessageBox msgBox;
-    msgBox.setText(
-      tr("This bookmark already exists, its name is: ' %1 ' ").arg(CellTypeName.c_str()));
-    msgBox.exec();
-    }
-  else
-    {
-    this->m_NewCellType.SaveInDB(this->m_DatabaseConnectorForNewEntity);
-    emit ListEntitiesChanged();
-    }
+  this->m_MapRow[this->m_TableIDName] = ConvertToString<int>(0);
 }
-//------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
-void QGoDBCellTypeManager::ValidateName()
+//-------------------------------------------------------------------------
+ int GoDBSubCellTypeRow::DoesThisEntityAlreadyExists(
+  vtkMySQLDatabase* DatabaseConnector)
 {
-  this->m_NewCellType.SetField("Name",this->m_NameDescDialog->GetInputTextForName());
-  //if (this->DoesThisBookmarkNameAlreadyExistsInTheDB(
-    //this->m_DatabaseConnectorForNewBkmrk,iName))
-  if (this->m_NewCellType.DoesThisNameAlreadyExists(
-    this->m_DatabaseConnectorForNewEntity)!= -1)
+  return DoesThisNameAlreadyExists(DatabaseConnector);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+ int GoDBSubCellTypeRow::DoesThisEntityAlreadyExists(
+  vtkMySQLDatabase* DatabaseConnector,std::string &ioName)
+{
+  int ID = DoesThisNameAlreadyExists(DatabaseConnector);
+  if (ID == -1)
     {
-    this->m_NameDescDialog->NameAlreadyExists();
+    return ID;
     }
-  else
+  ioName = ReturnOnlyOneValue(DatabaseConnector,this->m_TableName, "Name",
+    this->m_TableIDName,ConvertToString<int>(ID));
+  return ID;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+int GoDBSubCellTypeRow::SaveInDB(vtkMySQLDatabase* DatabaseConnector)
+{
+  int SubCellTypeID = this->DoesThisEntityAlreadyExists(DatabaseConnector);
+  if (SubCellTypeID == -1)
     {
-    this->m_NameDescDialog->accept();
-    this->SaveNewEntityInDB();
+    SubCellTypeID = AddOnlyOneNewObjectInTable<GoDBSubCellTypeRow>( DatabaseConnector,
+    this->m_TableName,*this, this->m_TableIDName);
     }
+  return SubCellTypeID;
 }

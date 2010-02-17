@@ -37,47 +37,47 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#include "QGoDBCellTypeManager.h"
-#include "GoDBCellTypeRow.h"
+#include "QGoDBSubCellTypeManager.h"
+#include "GoDBSubCellTypeRow.h"
 #include <QMessageBox>
 
-QGoDBCellTypeManager::QGoDBCellTypeManager (QWidget* iParent):
-  QGoDBEntityManager(iParent,"celltype",0)
+QGoDBSubCellTypeManager::QGoDBSubCellTypeManager (QWidget* iParent):
+  QGoDBEntityManager(iParent,"subcellulartype",0)
 {
 }
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-void QGoDBCellTypeManager::SaveNewEntityInDB()
+void QGoDBSubCellTypeManager::SaveNewEntityInDB()
 {
   //this->m_NewCellType.SetField("Name",this->m_NameDescDialog->GetInputTextForName());
-  this->m_NewCellType.SetField("Description",
+  this->m_NewSubCellType.SetField("Description",
     this->m_NameDescDialog->GetInputTextForDescription());
 
-  std::string CellTypeName = this->m_NewCellType.GetMapValue("Name");
-  if (this->m_NewCellType.DoesThisEntityAlreadyExists(
-    this->m_DatabaseConnectorForNewEntity,CellTypeName) != -1)
+  std::string SubCellTypeName = this->m_NewSubCellType.GetMapValue("Name");
+  if (this->m_NewSubCellType.DoesThisEntityAlreadyExists(
+    this->m_DatabaseConnectorForNewEntity,SubCellTypeName) != -1)
     {
     QMessageBox msgBox;
     msgBox.setText(
-      tr("This bookmark already exists, its name is: ' %1 ' ").arg(CellTypeName.c_str()));
+      tr("This bookmark already exists, its name is: ' %1 ' ").arg(SubCellTypeName.c_str()));
     msgBox.exec();
     }
   else
     {
-    this->m_NewCellType.SaveInDB(this->m_DatabaseConnectorForNewEntity);
+    this->m_NewSubCellType.SaveInDB(this->m_DatabaseConnectorForNewEntity);
     emit ListEntitiesChanged();
     }
 }
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-void QGoDBCellTypeManager::ValidateName()
+void QGoDBSubCellTypeManager::ValidateName()
 {
-  this->m_NewCellType.SetField("Name",this->m_NameDescDialog->GetInputTextForName());
+  this->m_NewSubCellType.SetField("Name",this->m_NameDescDialog->GetInputTextForName());
   //if (this->DoesThisBookmarkNameAlreadyExistsInTheDB(
     //this->m_DatabaseConnectorForNewBkmrk,iName))
-  if (this->m_NewCellType.DoesThisNameAlreadyExists(
+  if (this->m_NewSubCellType.DoesThisNameAlreadyExists(
     this->m_DatabaseConnectorForNewEntity)!= -1)
     {
     this->m_NameDescDialog->NameAlreadyExists();

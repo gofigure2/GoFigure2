@@ -71,7 +71,7 @@ void QGoDBEntityManager::AddAnEntity(
   //this->m_CoordIDForNewEntity = iCoordID;
   this->m_NameDescDialog = new QNameDescriptionInputDialog(
     this,this->m_EntityName.c_str());
-  this->m_DatabaseConnectorForNewBkmrk = iDatabaseConnector;
+  this->m_DatabaseConnectorForNewEntity = iDatabaseConnector;
   QObject::connect (this->m_NameDescDialog, SIGNAL(NameNonEmpty()),
     this, SLOT(ValidateName()));
   this->m_NameDescDialog->exec();

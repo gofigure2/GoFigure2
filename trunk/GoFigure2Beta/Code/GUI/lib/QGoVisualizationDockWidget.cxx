@@ -53,6 +53,7 @@ QGoVisualizationDockWidget( QWidget* iParent, const unsigned int& iDim ) :
   SetColorTraceComboBox();
   SetColorIDCollectionComboBox();
   SetCellTypeComboBox();
+  SetSubCellTypeComboBox();
   //this->verticalLayout_2->addLayout(this->VLayoutForCollection);
 
   if( m_Dimension < 3 )
@@ -343,3 +344,48 @@ void QGoVisualizationDockWidget::CheckUserAction(QString iCellTypeText)
    emit DeleteCellType();
    }
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoVisualizationDockWidget::SetSubCellTypeComboBox()
+{
+  this->m_ChoseSubCellType = new QComboBox(this);
+  QLabel* LabelSubCellType = new QLabel(tr("Selected SubCellType: "),this);
+  QHBoxLayout* HLayoutForSubCellType = new QHBoxLayout;
+  HLayoutForSubCellType->addWidget(LabelSubCellType);
+  //LabelSubCellType->hide();
+  //this->m_ChoseSubCellType->hide();
+  HLayoutForSubCellType->addWidget(m_ChoseSubCellType);
+  this->verticalLayout_2->addLayout(HLayoutForSubCellType);
+  QObject::connect(this->m_ChoseSubCellType,SIGNAL(currentIndexChanged(QString)),
+    SLOT(CheckUserActionSubCell(QString)));
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoVisualizationDockWidget::SetListSubCellTypes(
+  QStringList iListSubCellTypes)
+{
+  this->m_ChoseSubCellType->clear();
+  this->m_ChoseSubCellType->addItems(iListSubCellTypes);
+  this->m_ChoseSubCellType->addItem(tr("Add a subcelltype..."));
+  this->m_ChoseSubCellType->addItem(tr("Delete a subcelltype..."));
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoVisualizationDockWidget::CheckUserActionSubCell(
+  QString iCellTypeText)
+{
+ if (iCellTypeText == "Add a subcelltype...")
+   {
+   emit AddANewSubCellType();
+   }
+ if (iCellTypeText == "Delete a subcelltype...")
+   {
+   emit DeleteSubCellType();
+   }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------

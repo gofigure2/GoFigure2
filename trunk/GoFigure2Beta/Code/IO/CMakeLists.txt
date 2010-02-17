@@ -16,6 +16,7 @@ SET( QGOIO_SRC
   GoDBNameDescRow.cxx
   GoDBBookmarkRow.cxx
   GoDBCellTypeRow.cxx
+  GoDBSubCellTypeRow.cxx
   GoDBTableWidgetContainer.cxx
   MegaCaptureHeaderReader.cxx
   QueryDataBaseHelper.cxx

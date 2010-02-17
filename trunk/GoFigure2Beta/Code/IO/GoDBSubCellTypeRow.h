@@ -1,7 +1,7 @@
 /*=========================================================================
-  Author: $Author$  // Author of last commit
-  Version: $Rev$  // Revision of last commit
-  Date: $Date$  // Date of last commit
+  Author: $Author: lsouhait $  // Author of last commit
+  Version: $Rev: 455 $  // Revision of last commit
+  Date: $Date: 2009-07-28 14:31:26 -0400 (Tue, 28 Jul 2009) $  // Date of last commit
 =========================================================================*/
 
 /*=========================================================================
@@ -37,54 +37,28 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#include "QGoDBCellTypeManager.h"
-#include "GoDBCellTypeRow.h"
-#include <QMessageBox>
+#ifndef __GoDBSubCellTypeRow_h
+#define __GoDBSubCellTypeRow_h
 
-QGoDBCellTypeManager::QGoDBCellTypeManager (QWidget* iParent):
-  QGoDBEntityManager(iParent,"celltype",0)
+#include "GoDBNameDescRow.h"
+#include "vtkMySQLDatabase.h"
+
+class GoDBSubCellTypeRow : public GoDBNameDescRow
 {
-}
-//------------------------------------------------------------------------------
+public:
+  GoDBSubCellTypeRow();
 
-//------------------------------------------------------------------------------
-void QGoDBCellTypeManager::SaveNewEntityInDB()
-{
-  //this->m_NewCellType.SetField("Name",this->m_NameDescDialog->GetInputTextForName());
-  this->m_NewCellType.SetField("Description",
-    this->m_NameDescDialog->GetInputTextForDescription());
+  ~GoDBSubCellTypeRow()
+    {}
+  virtual int SaveInDB(vtkMySQLDatabase* DatabaseConnector);
+  virtual int DoesThisEntityAlreadyExists(
+    vtkMySQLDatabase* DatabaseConnector);
+  virtual int DoesThisEntityAlreadyExists(
+    vtkMySQLDatabase* DatabaseConnector,std::string &ioName);
 
-  std::string CellTypeName = this->m_NewCellType.GetMapValue("Name");
-  if (this->m_NewCellType.DoesThisEntityAlreadyExists(
-    this->m_DatabaseConnectorForNewEntity,CellTypeName) != -1)
-    {
-    QMessageBox msgBox;
-    msgBox.setText(
-      tr("This bookmark already exists, its name is: ' %1 ' ").arg(CellTypeName.c_str()));
-    msgBox.exec();
-    }
-  else
-    {
-    this->m_NewCellType.SaveInDB(this->m_DatabaseConnectorForNewEntity);
-    emit ListEntitiesChanged();
-    }
-}
-//------------------------------------------------------------------------------
+protected:
 
-//------------------------------------------------------------------------------
-void QGoDBCellTypeManager::ValidateName()
-{
-  this->m_NewCellType.SetField("Name",this->m_NameDescDialog->GetInputTextForName());
-  //if (this->DoesThisBookmarkNameAlreadyExistsInTheDB(
-    //this->m_DatabaseConnectorForNewBkmrk,iName))
-  if (this->m_NewCellType.DoesThisNameAlreadyExists(
-    this->m_DatabaseConnectorForNewEntity)!= -1)
-    {
-    this->m_NameDescDialog->NameAlreadyExists();
-    }
-  else
-    {
-    this->m_NameDescDialog->accept();
-    this->SaveNewEntityInDB();
-    }
-}
+ virtual void InitializeMap();
+ 
+ };
+#endif

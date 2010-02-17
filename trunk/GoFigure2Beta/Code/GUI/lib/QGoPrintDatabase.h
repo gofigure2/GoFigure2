@@ -57,6 +57,7 @@
 #include "TraceInfoStructure.h"
 #include "QGoDBBookmarkManager.h"
 #include "QGoDBCellTypeManager.h"
+#include "QGoDBSubCellTypeManager.h"
 
 /** \brief Ensure the connection with the Database*/
 class QGoPrintDatabase : public QDockWidget,
@@ -142,6 +143,7 @@ public:
 
   NamesDescrContainerType GetListBookmarks();
   NamesDescrContainerType GetListCellTypes();
+  NamesDescrContainerType GetListSubCellTypes();
   GoDBCoordinateRow GetCoordinateForBookmark(std::string iName);
   bool IsDatabaseUsed();
 
@@ -158,7 +160,9 @@ public slots:
   void SaveNewColorInDB(std::vector<std::string> iDataNewColor);
   void DeleteBookmarks();
   void AddNewCellType();
+  void AddNewSubCellType();
   void DeleteCellType();
+  void DeleteSubCellType();
 
 signals:
   void PrintDBReady();
@@ -177,6 +181,7 @@ signals:
   void TracesToDeleteInVisu( std::list< int > );
   void OpenBookmarksToUpdate();
   void ListCellTypesToUpdate(QStringList);
+  void ListSubCellTypesToUpdate(QStringList);
 
 protected:
   std::pair<std::string,QColor> m_CurrentColorData;
@@ -198,8 +203,9 @@ protected:
 
   QAction* m_VisibilityAction;
 
-  QGoDBBookmarkManager* m_BookmarkManager;
+  QGoDBBookmarkManager*  m_BookmarkManager;
   QGoDBCellTypeManager*  m_CellTypeManager;
+  QGoDBSubCellTypeManager*  m_SubCellTypeManager;
 
   void OpenDBConnection();
   void CloseDBConnection();

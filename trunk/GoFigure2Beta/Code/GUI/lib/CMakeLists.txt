@@ -35,6 +35,7 @@ SET( QGoGUILIB_SRC
   QGoDeleteDBEntityDialog.cxx
   QGoDBEntityManager.cxx
   QGoDBCellTypeManager.cxx
+  QGoDBSubCellTypeManager.cxx
 )
 
 #------------------------------------------------------------------------------
@@ -98,6 +99,7 @@ SET( QGoGUILIB_HDRS
   QGoDeleteDBEntityDialog.h
   QGoDBEntityManager.h
   QGoDBCellTypeManager.h
+  QGoDBSubCellTypeManager.h
 )
 
 #------------------------------------------------------------------------------

@@ -37,54 +37,37 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#include "QGoDBCellTypeManager.h"
-#include "GoDBCellTypeRow.h"
-#include <QMessageBox>
 
-QGoDBCellTypeManager::QGoDBCellTypeManager (QWidget* iParent):
-  QGoDBEntityManager(iParent,"celltype",0)
+#ifndef __QGoDBSubCellTypeManager_h
+#define __QGoDBSubCellTypeManager_h
+
+#include <QDialog>
+#include <QWidget>
+#include <QTextEdit>
+#include <QMenu>
+#include "vtkMySQLDatabase.h"
+#include "QGoDBEntityManager.h"
+#include "GoDBSubCellTypeRow.h"
+
+class QGoDBSubCellTypeManager:public QGoDBEntityManager
 {
-}
-//------------------------------------------------------------------------------
+  Q_OBJECT
 
-//------------------------------------------------------------------------------
-void QGoDBCellTypeManager::SaveNewEntityInDB()
-{
-  //this->m_NewCellType.SetField("Name",this->m_NameDescDialog->GetInputTextForName());
-  this->m_NewCellType.SetField("Description",
-    this->m_NameDescDialog->GetInputTextForDescription());
+  public:
+    explicit QGoDBSubCellTypeManager (QWidget* iParent = 0);
+    
+    ~QGoDBSubCellTypeManager()
+      {};
 
-  std::string CellTypeName = this->m_NewCellType.GetMapValue("Name");
-  if (this->m_NewCellType.DoesThisEntityAlreadyExists(
-    this->m_DatabaseConnectorForNewEntity,CellTypeName) != -1)
-    {
-    QMessageBox msgBox;
-    msgBox.setText(
-      tr("This bookmark already exists, its name is: ' %1 ' ").arg(CellTypeName.c_str()));
-    msgBox.exec();
-    }
-  else
-    {
-    this->m_NewCellType.SaveInDB(this->m_DatabaseConnectorForNewEntity);
-    emit ListEntitiesChanged();
-    }
-}
-//------------------------------------------------------------------------------
+  protected:
+     GoDBSubCellTypeRow m_NewSubCellType;
 
-//------------------------------------------------------------------------------
-void QGoDBCellTypeManager::ValidateName()
-{
-  this->m_NewCellType.SetField("Name",this->m_NameDescDialog->GetInputTextForName());
-  //if (this->DoesThisBookmarkNameAlreadyExistsInTheDB(
-    //this->m_DatabaseConnectorForNewBkmrk,iName))
-  if (this->m_NewCellType.DoesThisNameAlreadyExists(
-    this->m_DatabaseConnectorForNewEntity)!= -1)
-    {
-    this->m_NameDescDialog->NameAlreadyExists();
-    }
-  else
-    {
-    this->m_NameDescDialog->accept();
-    this->SaveNewEntityInDB();
-    }
-}
+  protected slots:
+   
+    virtual void SaveNewEntityInDB();
+
+    virtual void ValidateName();
+
+
+};
+#endif

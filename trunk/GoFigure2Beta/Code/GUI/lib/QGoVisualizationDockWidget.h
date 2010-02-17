@@ -76,6 +76,7 @@ class QGoVisualizationDockWidget :
     QtColorComboBox* ColorTraceComboBox;
     QtColorComboBox* ColorIDCollectionComboBox;
     QComboBox*       m_ChoseCellType;
+    QComboBox*       m_ChoseSubCellType;
     QLabel* TraceName;
     QLabel* CollectionName;
 
@@ -87,7 +88,9 @@ class QGoVisualizationDockWidget :
     void SetCollectionID(
       std::list<std::pair<std::string,QColor> > iListExistingID);
     void SetListCellTypes(QStringList iListCellTypes);
+    void SetListSubCellTypes(QStringList iListSubCellTypes);
     void CheckUserAction(QString iCellTypeText);
+    void CheckUserActionSubCell(QString iSubCellTypeText);
 
   signals:
     void ShowAllChannelsChanged( bool iChanged );
@@ -99,6 +102,8 @@ class QGoVisualizationDockWidget :
     void TSliceChanged( int Slice );
     void AddANewCellType();
     void DeleteCellType();
+    void AddANewSubCellType();
+    void DeleteSubCellType();
 
   protected:
     unsigned int m_Dimension;
@@ -106,6 +111,7 @@ class QGoVisualizationDockWidget :
     void SetColorTraceComboBox();
     void SetColorIDCollectionComboBox();
     void SetCellTypeComboBox();
+    void SetSubCellTypeComboBox();
     QHBoxLayout* HLayoutForColor;
     QVBoxLayout* VLayoutForCollection;
 };

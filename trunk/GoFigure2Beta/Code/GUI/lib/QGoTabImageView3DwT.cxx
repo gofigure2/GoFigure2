@@ -334,7 +334,7 @@ CreateDataBaseTablesConnection()
   QObject::connect(this->m_DataBaseTables,
     SIGNAL( ListCellTypesToUpdate(QStringList)),this->m_VisuDockWidget,
     SLOT(SetListCellTypes(QStringList)));
-  
+
   QObject::connect(this->m_VisuDockWidget,
     SIGNAL( AddANewCellType()),this->m_DataBaseTables,
     SLOT(AddNewCellType()));
@@ -342,6 +342,18 @@ CreateDataBaseTablesConnection()
   QObject::connect(this->m_VisuDockWidget,
     SIGNAL( DeleteCellType()),this->m_DataBaseTables,
     SLOT(DeleteCellType()));
+
+  QObject::connect(this->m_DataBaseTables,
+    SIGNAL( ListSubCellTypesToUpdate(QStringList)),this->m_VisuDockWidget,
+    SLOT(SetListSubCellTypes(QStringList)));
+
+   QObject::connect(this->m_VisuDockWidget,
+    SIGNAL( AddANewSubCellType()),this->m_DataBaseTables,
+    SLOT(AddNewSubCellType()));
+
+  QObject::connect(this->m_VisuDockWidget,
+    SIGNAL( DeleteSubCellType()),this->m_DataBaseTables,
+    SLOT(DeleteSubCellType()));
 }
 //-------------------------------------------------------------------------
 #if defined ( ENABLEFFMPEG ) || defined ( ENABLEAVI )

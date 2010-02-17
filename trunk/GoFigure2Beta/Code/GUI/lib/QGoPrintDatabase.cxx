@@ -203,6 +203,8 @@ void QGoPrintDatabase::SetDatabaseVariables(
     this,SIGNAL(OpenBookmarksToUpdate()));
   this->m_CellTypeManager = new QGoDBCellTypeManager(this);
   this->GetListCellTypes();
+  this->m_SubCellTypeManager = new QGoDBSubCellTypeManager(this);
+  this->GetListSubCellTypes();
 }
 //--------------------------------------------------------------------------
 
@@ -1300,5 +1302,45 @@ void QGoPrintDatabase::DeleteCellType()
   this->OpenDBConnection();
   this->m_CellTypeManager->DeleteEntity(this->m_DatabaseConnector);
   this->GetListCellTypes();
+  this->CloseDBConnection(); 
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+QGoPrintDatabase::NamesDescrContainerType QGoPrintDatabase::
+  GetListSubCellTypes()
+{ 
+  this->OpenDBConnection();
+  NamesDescrContainerType ListSubCellTypes = 
+    this->m_SubCellTypeManager->GetListExistingEntities(this->m_DatabaseConnector);
+  QStringList QListSubCellTypes;
+  NamesDescrContainerType::iterator iter = ListSubCellTypes.begin();
+  while(iter != ListSubCellTypes.end())
+    {
+    QListSubCellTypes.append(iter->first.c_str());
+    iter++;
+    }
+  emit ListSubCellTypesToUpdate(QListSubCellTypes);
+  this->CloseDBConnection();
+  return ListSubCellTypes;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoPrintDatabase::AddNewSubCellType()
+{  
+  this->OpenDBConnection();
+  this->m_SubCellTypeManager->AddAnEntity(this->m_DatabaseConnector);
+  this->GetListSubCellTypes();
+  this->CloseDBConnection();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoPrintDatabase::DeleteSubCellType()
+{
+  this->OpenDBConnection();
+  this->m_SubCellTypeManager->DeleteEntity(this->m_DatabaseConnector);
+  this->GetListSubCellTypes();
   this->CloseDBConnection(); 
 }

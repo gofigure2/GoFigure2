@@ -81,7 +81,7 @@ class QGoDBEntityManager:
     std::string                  m_EntityName;
     int                          m_CoordIDForNewEntity;
     QNameDescriptionInputDialog* m_NameDescDialog;
-    vtkMySQLDatabase*            m_DatabaseConnectorForNewBkmrk;
+    vtkMySQLDatabase*            m_DatabaseConnectorForNewEntity;
 
   protected slots:
     /** \brief save the new bookmark in the database, the 
