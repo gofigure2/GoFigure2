@@ -18,7 +18,7 @@ class ContourMeshStructureMultiIndexContainer :
         boost::multi_index::tag<TCoord>,
         BOOST_MULTI_INDEX_MEMBER( ContourMeshStructure, unsigned int, TCoord )
         >,
-      boost::multi_index::hashed_unique<
+      boost::multi_index::hashed_non_unique<
         boost::multi_index::tag<Actor>,
         BOOST_MULTI_INDEX_MEMBER( ContourMeshStructure, vtkActor*, Actor )
         >,

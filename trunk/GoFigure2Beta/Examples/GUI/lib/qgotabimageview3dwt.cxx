@@ -42,6 +42,7 @@
 #include <QTimer>
 #include <QMenuBar>
 
+#include "vtkSmartPointer.h"
 #include "vtkLSMReader.h"
 #include "vtkImageData.h"
 
@@ -60,16 +61,14 @@ int main( int argc, char** argv )
   QCoreApplication::setOrganizationName("MegasonLab");
   QCoreApplication::setOrganizationDomain( "http://gofigure2.sourceforge.net" );
 
-  std::cout <<argv[1] <<std::endl;
-
-  vtkLSMReader* reader = vtkLSMReader::New();
+  vtkSmartPointer< vtkLSMReader > reader = 
+    vtkSmartPointer< vtkLSMReader >::New();
   reader->SetFileName( argv[1] );
   reader->SetUpdateTimePoint( 0 );
   reader->Update();
 
   QGoTabImageView3DwT* tab = new QGoTabImageView3DwT;
   tab->SetLSMReader( reader, 0 );
-  tab->Update();
   tab->show();
 
 
@@ -117,7 +116,6 @@ int main( int argc, char** argv )
 
   delete menubar;
   delete tab;
-  reader->Delete();
 
   return output;
 }

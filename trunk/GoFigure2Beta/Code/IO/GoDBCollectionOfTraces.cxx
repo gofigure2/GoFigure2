@@ -452,19 +452,27 @@ GoDBCoordinateRow GoDBCollectionOfTraces::GetSelectingTracesCoordMax(
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-GoDBCoordinateRow GoDBCollectionOfTraces::GetExistingCoordMin(
-  vtkMySQLDatabase* DatabaseConnector, int CollectionCoordIDMin,
+GoDBCoordinateRow 
+GoDBCollectionOfTraces::
+GetExistingCoordMin( vtkMySQLDatabase* DatabaseConnector, 
+  int CollectionCoordIDMin,
   int CollectionID )
 {
+  (void) CollectionID;
   GoDBCoordinateRow ExistingCoordMin;
-  std::vector<std::string> VectorValuesExistingCoordMin = ListSpecificValuesForRow(
-    DatabaseConnector,"coordinate", "CoordID",ConvertToString<int>(CollectionCoordIDMin));
 
-  std::vector<std::string> ColumnNames = GetFieldNames("coordinate",
-    DatabaseConnector);
+  std::vector<std::string> VectorValuesExistingCoordMin = 
+    ListSpecificValuesForRow( DatabaseConnector,
+      "coordinate", "CoordID",
+      ConvertToString<int>( CollectionCoordIDMin ) );
+
+  std::vector<std::string> ColumnNames = 
+    GetFieldNames( "coordinate", DatabaseConnector );
+
   for( unsigned int i = 0; i <ColumnNames.size(); i++ )
     {
-    ExistingCoordMin.SetField(ColumnNames[i],VectorValuesExistingCoordMin[i]);
+    ExistingCoordMin.SetField( ColumnNames[i],
+                               VectorValuesExistingCoordMin[i] );
     }
 
   return ExistingCoordMin;
@@ -472,20 +480,26 @@ GoDBCoordinateRow GoDBCollectionOfTraces::GetExistingCoordMin(
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-GoDBCoordinateRow GoDBCollectionOfTraces::GetExistingCoordMax(
-  vtkMySQLDatabase* DatabaseConnector, int CollectionCoordIDMax,
+GoDBCoordinateRow 
+GoDBCollectionOfTraces::
+GetExistingCoordMax( vtkMySQLDatabase* DatabaseConnector, 
+  int CollectionCoordIDMax,
   int CollectionID )
 {
-  GoDBCoordinateRow ExistingCoordMax;
-  std::vector<std::string> VectorValuesExistingCoordMax = ListSpecificValuesForRow(
-    DatabaseConnector,"coordinate", "CoordID",ConvertToString<int>(CollectionCoordIDMax));
+  (void) CollectionID;
 
-  std::vector<std::string> ColumnNames = GetFieldNames("coordinate",
-    DatabaseConnector);
+  GoDBCoordinateRow ExistingCoordMax;
+  std::vector<std::string> VectorValuesExistingCoordMax = 
+    ListSpecificValuesForRow( DatabaseConnector, "coordinate", "CoordID",
+      ConvertToString<int>( CollectionCoordIDMax ) );
+
+  std::vector<std::string> ColumnNames = GetFieldNames( "coordinate",
+    DatabaseConnector );
 
   for( unsigned int i = 0; i <ColumnNames.size(); i++ )
     {
-    ExistingCoordMax.SetField(ColumnNames[i],VectorValuesExistingCoordMax[i]);
+    ExistingCoordMax.SetField( ColumnNames[i],
+                               VectorValuesExistingCoordMax[i] );
     }
 
   return ExistingCoordMax;

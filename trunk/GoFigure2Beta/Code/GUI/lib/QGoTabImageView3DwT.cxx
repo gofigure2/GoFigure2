@@ -516,35 +516,37 @@ CreateAllViewActions()
   separator5->setSeparator( true );
   this->m_ViewActions.push_back( separator5 );
 
-  QAction* DisplayAnnotations = new QAction( tr( "Display annotations" ), this );
-  DisplayAnnotations->setCheckable( true );
-  DisplayAnnotations->setChecked( true );
-  DisplayAnnotations->setStatusTip( tr(" Display or not annotations in each 2d view" ) );
+  QAction* ActionDisplayAnnotations = 
+    new QAction( tr( "Display annotations" ), this );
+  ActionDisplayAnnotations->setCheckable( true );
+  ActionDisplayAnnotations->setChecked( true );
+  ActionDisplayAnnotations->setStatusTip( tr(" Display or not annotations in each 2d view" ) );
 
   QIcon displayannotationsicon;
   displayannotationsicon.addPixmap( QPixmap(QString::fromUtf8(":/fig/2D_VIEWS_INFOS.png")),
     QIcon::Normal, QIcon::Off );
-  DisplayAnnotations->setIcon(displayannotationsicon);
+  ActionDisplayAnnotations->setIcon(displayannotationsicon);
 
-  QObject::connect( DisplayAnnotations, SIGNAL( triggered() ),
+  QObject::connect( ActionDisplayAnnotations, SIGNAL( triggered() ),
     this, SLOT( DisplayAnnotations() ) );
 
-  this->m_ViewActions.push_back( DisplayAnnotations );
+  this->m_ViewActions.push_back( ActionDisplayAnnotations );
 
-  QAction* DisplaySplinePlanes = new QAction( tr( "Display spline planes" ), this );
-  DisplaySplinePlanes->setCheckable( true );
-  DisplaySplinePlanes->setChecked( true );
-  DisplaySplinePlanes->setStatusTip( tr(" Display or not spline planes on each view" ) );
+  QAction* ActionDisplaySplinePlanes = 
+    new QAction( tr( "Display spline planes" ), this );
+  ActionDisplaySplinePlanes->setCheckable( true );
+  ActionDisplaySplinePlanes->setChecked( true );
+  ActionDisplaySplinePlanes->setStatusTip( tr(" Display or not spline planes on each view" ) );
 
   QIcon displaysplineplaneicon;
   displaysplineplaneicon.addPixmap( QPixmap(QString::fromUtf8(":/fig/C_M_L.png")),
       QIcon::Normal, QIcon::Off );
-  DisplaySplinePlanes->setIcon(displaysplineplaneicon);
+  ActionDisplaySplinePlanes->setIcon(displaysplineplaneicon);
 
-  QObject::connect( DisplaySplinePlanes, SIGNAL( triggered() ),
+  QObject::connect( ActionDisplaySplinePlanes, SIGNAL( triggered() ),
     this, SLOT( DisplaySplinePlanes() ) );
 
-  this->m_ViewActions.push_back( DisplaySplinePlanes );
+  this->m_ViewActions.push_back( ActionDisplaySplinePlanes );
 
   QAction* DisplayCube3D = new QAction( tr( "Display 3D cube" ), this );
   DisplayCube3D->setCheckable( true );
@@ -1578,9 +1580,6 @@ ValidateContour( const int& iContourID, const int& iDir,
       this->AddContour( iDir, contour_copy,
         contour_property );
 
-    std::pair< std::string, QColor > ColorData =
-      this->m_VisuDockWidget->ColorTraceComboBox->GetCurrentColorData();
-
     // get meshid from the visu dock widget (SpinBox)
     //unsigned int meshid = m_ManualSegmentationDockWidget->GetMeshId();
     unsigned int meshid = this->m_VisuDockWidget->GetCurrentCollectionID();
@@ -1589,6 +1588,9 @@ ValidateContour( const int& iContourID, const int& iDir,
       {
       if( !m_ReEditContourMode )
         {
+        std::pair< std::string, QColor > ColorData =
+          this->m_VisuDockWidget->ColorTraceComboBox->GetCurrentColorData();
+
         // Save contour in database!
         m_ContourId = m_DataBaseTables->SaveContoursFromVisuInDB( min_idx[0],
           min_idx[1], min_idx[2], iTCoord, max_idx[0],
@@ -1668,6 +1670,17 @@ ValidateContour( )
   if( m_ReEditContourMode )
     {
     ContourID = m_ContourId;
+
+    ContourMeshStructureMultiIndexContainer::index< TraceID >::type::iterator
+      it = m_ContourMeshContainer.get< TraceID >().find( m_ContourId );
+
+    if( it->TraceID == m_ContourId )
+      {
+      r = it->rgba[0];
+      g = it->rgba[1];
+      b = it->rgba[2];
+//       a = it->rgba[3];
+      }
     }
 
   for( i = 0; i < m_ContourWidget.size(); i++ )
@@ -2294,7 +2307,7 @@ DeleteContoursFromTable( const std::list< int >& iList )
 
       while( it != m_ContourMeshContainer.get< TraceID >().end() )
         {
-        if( it->TraceID == *traceid_it )
+        if( static_cast< int >( it->TraceID ) == *traceid_it )
           {
           c_dir = (*it).Direction;
           c_actor = (*it).Actor;

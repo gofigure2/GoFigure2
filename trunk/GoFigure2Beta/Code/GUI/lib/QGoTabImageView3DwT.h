@@ -160,21 +160,6 @@ public:
   virtual void ReadSettings() {}
 
   /**
-   * @param[in] iContourID
-   * @param[in] iDir
-   * @param[in] iHighlighted
-   * @param[in] iR red component in [0,1]
-   * @param[in] iG green component in [0,1]
-   * @param[in] iB blue component in [0,1]
-   * @param[in] iA alpha component in [0,1]
-   * @param[in] iSaveInDataBase save in data base if true
-   * \todo Alpha component is not used at all, it is assumed to be opaque
-   */
-  virtual void ValidateContour( const int& iContourID, const int& iDir,
-    const double& iR, const double& iG, const double& iB, const double& iA,
-    const bool& iHighlighted, const unsigned int& iTCoord, const bool& iSaveInDataBase );
-
-  /**
    *
    * @param[in] iNodes Nodes to be used by
    * @param[in] iRgba[]
@@ -311,6 +296,21 @@ protected:
   std::vector< vtkSmartPointer< vtkContourWidget > >                      m_ContourWidget;
   std::vector< vtkSmartPointer< vtkOrientedGlyphContourRepresentation > > m_ContourRepresentation;
   ContourMeshStructureMultiIndexContainer                   m_ContourMeshContainer;
+
+  /**
+   * @param[in] iContourID
+   * @param[in] iDir
+   * @param[in] iHighlighted
+   * @param[in] iR red component in [0,1]
+   * @param[in] iG green component in [0,1]
+   * @param[in] iB blue component in [0,1]
+   * @param[in] iA alpha component in [0,1]
+   * @param[in] iSaveInDataBase save in data base if true
+   * \todo Alpha component is not used at all, it is assumed to be opaque
+   */
+  virtual void ValidateContour( const int& iContourID, const int& iDir,
+    const double& iR, const double& iG, const double& iB, const double& iA,
+    const bool& iHighlighted, const unsigned int& iTCoord, const bool& iSaveInDataBase );
 
   void GetBackgroundColorFromImageViewer( );
   void SetBackgroundColorToImageViewer( );

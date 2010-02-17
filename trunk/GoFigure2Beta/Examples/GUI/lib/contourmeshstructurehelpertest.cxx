@@ -48,6 +48,20 @@
 
 int main( int , char** )
 {
+
+    // Test Allocation/Deallocation on the stack  
+    {
+    ContourMeshStructureMultiIndexContainer temp_container;
+    std::cout <<"Allocation / Deallocation on the stack OK!!!" <<std::endl;
+    }
+
+    {
+    ContourMeshStructureMultiIndexContainer* temp_container2 =
+      new ContourMeshStructureMultiIndexContainer;
+    delete temp_container2;
+    std::cout <<"Allocation / Deallocation on the heap OK!!!" <<std::endl;
+    }
+
   ContourMeshStructureMultiIndexContainer container;
 
   std::vector< vtkActor* > ActorVector( 20 );

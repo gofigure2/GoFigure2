@@ -70,12 +70,15 @@ int main( int argc, char** argv )
     std::cerr <<"1-lsm filename (without.lsm)" <<std::endl;
     std::cerr <<"2-lsm full name (full path with .lsm)" <<std::endl;
     std::cerr <<"3-lsm output path (output  directory with folder/)" <<std::endl;
+    std::cerr <<"4-test (boolean)" <<std::endl;
     return EXIT_FAILURE;
     }
 
-  int err = 0;
+  // Note: EXIT_SUCCESS = 0
+  int err = EXIT_SUCCESS;
 
-  ConversionLsmToMegaThread* ConversionLsmToMegaThreadSend = new ConversionLsmToMegaThread;
+  ConversionLsmToMegaThread* ConversionLsmToMegaThreadSend = 
+    new ConversionLsmToMegaThread;
 
   QString BaseName( argv[1] );
   QString LsmPath( argv[2] );
@@ -96,18 +99,20 @@ int main( int argc, char** argv )
 	// waiting loop
     }
 
-  // check if the directory containing Meg files is empty
-  int length = 0;
-  length = vtksys::SystemTools::FileLength(argv[3]);
-
-  if( 0==length )
+  if( atoi( argv[4] ) == 1 )
     {
-	err = 1;
-	std::cerr << "ERROR: 1 - Test failing because directory is empty..." << std::endl;
+    // check if the directory containing Meg files is empty
+    int length = 0;
+    length = vtksys::SystemTools::FileLength(argv[3]);
+
+    if( length == 0 )
+      {
+  	  err = EXIT_FAILURE;
+    	std::cerr << "ERROR: Test failing because directory is empty..." << std::endl;
+      }
+
+    vtksys::SystemTools::RemoveADirectory( argv[3] );
     }
-
-  vtksys::SystemTools::RemoveADirectory( argv[3] );
-
 
   delete ConversionLsmToMegaThreadSend;
 
