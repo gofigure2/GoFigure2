@@ -301,7 +301,8 @@ GetImageCoordinatesFromWorldCoordinates( double iPos[3] )
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-std::vector< vtkQuadricLODActor* >
+// std::vector< vtkQuadricLODActor* >
+std::vector< vtkActor* >
 QGoTabImageView2D::
 AddContour( const int& iId, vtkPolyData* dataset,
   vtkProperty* iProperty )

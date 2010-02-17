@@ -90,7 +90,8 @@ protected:
 
   void SetImageToImageViewer( vtkImageData* image );
   int* GetImageCoordinatesFromWorldCoordinates( double pos[3] );
-  std::vector< vtkQuadricLODActor* > AddContour( const int& iId, vtkPolyData* dataset,
+//   std::vector< vtkQuadricLODActor* >
+  std::vector< vtkActor* > AddContour( const int& iId, vtkPolyData* dataset,
       vtkProperty* property = NULL );
 
   QAction*              m_BackgroundColorAction;

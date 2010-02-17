@@ -47,7 +47,7 @@ class vtkImageData;
 class vtkViewImage2D;
 class vtkViewImage2DCollection;
 class vtkImageActor;
-class vtkQuadricLODActor;
+// class vtkQuadricLODActor;
 class vtkActor;
 class vtkPolyData;
 class vtkProperty;
@@ -104,7 +104,8 @@ public:
   virtual void AddActor( const int& iId, vtkActor* iActor );
 
 
-  virtual std::vector< vtkQuadricLODActor* > AddContour( const int& iId,
+//   virtual std::vector< vtkQuadricLODActor* >
+  virtual std::vector< vtkActor* > AddContour( const int& iId,
     vtkPolyData* dataset,
     vtkProperty* property = NULL );
 

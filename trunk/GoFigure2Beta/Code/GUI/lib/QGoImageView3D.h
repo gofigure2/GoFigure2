@@ -100,7 +100,8 @@ public:
 
   void AddMesh( vtkPolyData* iMesh );
 
-  std::vector< vtkQuadricLODActor* > AddContour( const int& iId,
+//   std::vector< vtkQuadricLODActor* >
+  std::vector< vtkActor* > AddContour( const int& iId,
       vtkPolyData* dataset,
       vtkProperty* property = NULL );
 

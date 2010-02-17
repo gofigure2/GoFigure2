@@ -211,7 +211,8 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage2DCollection : public vtkCollection
   void SyncSetZoomAndParallelScale( double Zoom, double ParallelScale );
 
   void SetSplinePlaneActorsVisibility( bool );
-  vtkstd::vector<vtkQuadricLODActor*>        SlicePlaneActors;
+  vtkstd::vector<vtkActor*>        SlicePlaneActors;
+//   vtkstd::vector<vtkQuadricLODActor*>        SlicePlaneActors;
 
  protected:
 

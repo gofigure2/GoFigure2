@@ -77,7 +77,8 @@ class vtkPlane;
 class vtkViewImage2DCommand;
 class vtkTransform;
 class vtkCellPicker;
-class vtkQuadricLODActor;
+class vtkActor;
+// class vtkQuadricLODActor;
 
 /**
   \class vtkViewImage2D
@@ -254,12 +255,14 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage2D : public vtkViewImage
     as triangles, triangles as lines, lines as points.
     A vtkProperty of the dataset can be specified.
   */
-  virtual vtkQuadricLODActor* AddDataSet( vtkDataSet* dataset,
+//   virtual vtkQuadricLODActor*
+    virtual vtkActor* AddDataSet( vtkDataSet* dataset,
     vtkProperty* property = NULL,
     const bool& intersection = true,
     const bool& iDataVisibility = true );
 
-  virtual vtkQuadricLODActor* AddDataSet( vtkPolyData* polydata,
+  //virtual vtkQuadricLODActor*
+    virtual vtkActor* AddDataSet( vtkPolyData* polydata,
     vtkProperty* property = NULL,
     const bool& intersection = true,
     const bool& iDataVisibility = true );

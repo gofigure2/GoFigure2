@@ -221,19 +221,22 @@ GetNumberOfImageViewers()
  * \return vector of vtkActor rendered in each 2D viewer.
  * \todo check the utility of iId.
  */
-std::vector< vtkQuadricLODActor* >
+// std::vector< vtkQuadricLODActor* >
+std::vector< vtkActor* >
 QGoImageView::
 AddContour( const int& iId, vtkPolyData* iDataset, vtkProperty* iProperty )
 {
   (void) iId;
 
   int n = m_Pool->GetNumberOfItems();
-  std::vector< vtkQuadricLODActor* > oActorVector( n );
+  std::vector< vtkActor* > oActorVector( n );
+//   std::vector< vtkQuadricLODActor* > oActorVector( n );
 
   for( int i = 0; i < n; i++ )
     {
     vtkViewImage2D* viewer = m_Pool->GetItem( i );
-    vtkQuadricLODActor* temp = viewer->AddDataSet( iDataset, iProperty,
+//     vtkQuadricLODActor* temp =
+    vtkActor* temp = viewer->AddDataSet( iDataset, iProperty,
       true, false );
     viewer->Render();
     oActorVector[i] = temp;

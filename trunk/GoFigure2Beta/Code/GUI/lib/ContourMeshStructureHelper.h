@@ -10,8 +10,7 @@
 
 #include <list>
 
-class ContourMeshStructureMultiIndexContainer :
-  public boost::multi_index::multi_index_container<
+typedef boost::multi_index::multi_index_container<
     ContourMeshStructure,
     boost::multi_index::indexed_by<
       boost::multi_index::ordered_non_unique<
@@ -34,9 +33,7 @@ class ContourMeshStructureMultiIndexContainer :
   //         tag<CollectionID>,
   //         BOOST_MULTI_INDEX_MEMBER(ContourMeshStructure,unsigned int,CollectionID)>
       >
-  >
-{
-};
+  > ContourMeshStructureMultiIndexContainer;
 
 typedef boost::multi_index::multi_index_container<
   ContourMeshStructure*,

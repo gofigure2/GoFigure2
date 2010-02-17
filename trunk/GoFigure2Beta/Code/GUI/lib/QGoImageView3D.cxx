@@ -844,14 +844,17 @@ GetImageViewer3D()
  * @param iProperty
  * @return
  */
-std::vector< vtkQuadricLODActor* >
+// std::vector< vtkQuadricLODActor* >
+std::vector< vtkActor* >
 QGoImageView3D::
 AddContour( const int& iId, vtkPolyData* dataset, vtkProperty* iProperty )
 {
-  std::vector< vtkQuadricLODActor* > oList =
+//   std::vector< vtkQuadricLODActor* > oList =
+  std::vector< vtkActor* > oList =
     QGoImageView::AddContour( iId, dataset, iProperty );
 
-  vtkQuadricLODActor* temp = View3D->AddDataSet( (vtkDataSet*) dataset,
+//   vtkQuadricLODActor* temp =
+  vtkActor* temp = View3D->AddDataSet( (vtkDataSet*) dataset,
     iProperty, false, false );
 
   View3D->Render();

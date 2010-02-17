@@ -87,12 +87,12 @@ protected:
   virtual void DisplayActorInViewer( const int& , vtkActor* )
     {}
 
-  virtual std::vector< vtkQuadricLODActor* > AddContour( const int&,
+  virtual std::vector< vtkActor* > AddContour( const int&,
       vtkPolyData*,
       vtkProperty* iProperty = NULL )
     {
     (void) iProperty;
-    return std::vector< vtkQuadricLODActor* >();
+    return std::vector< vtkActor* >();
     }
 
   virtual void SetSlice( int, int* ) {}

@@ -72,7 +72,8 @@ class vtkContourWidget;
 class vtkOrientedGlyphContourRepresentation;
 class vtkMySQLDatabase;
 class vtkProperty;
-class vtkQuadricLODActor;
+// class vtkQuadricLODActor;
+class vtkActor;
 
 /**
 \class QGoTabImageView3DwT
@@ -330,7 +331,8 @@ protected:
 
   int* GetImageCoordinatesFromWorldCoordinates( double pos[3] );
 
-  std::vector< vtkQuadricLODActor* > AddContour( const int& iId,
+//   std::vector< vtkQuadricLODActor* >
+  std::vector< vtkActor* > AddContour( const int& iId,
       vtkPolyData* dataset,
       vtkProperty* property = NULL );
 

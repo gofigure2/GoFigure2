@@ -90,7 +90,8 @@
 #include "vtkCutter.h"
 #include "vtkCellPicker.h"
 #include "vtkClipPolyData.h"
-#include "vtkQuadricLODActor.h"
+// #include "vtkQuadricLODActor.h"
+#include "vtkActor.h"
 #include "vtkPolyDataMapper.h"
 #include "vtkProp3DCollection.h"
 #include "vtkDataSetCollection.h"
@@ -844,7 +845,9 @@ int vtkViewImage2D::GetInterpolate(void)
  * @param iDataVisibility
  * @return
  */
-vtkQuadricLODActor* vtkViewImage2D::AddDataSet( vtkPolyData* dataset,
+// vtkQuadricLODActor*
+vtkActor*
+vtkViewImage2D::AddDataSet( vtkPolyData* dataset,
   vtkProperty* property,
   const bool& intersection,
   const bool& iDataVisibility )
@@ -864,7 +867,8 @@ vtkQuadricLODActor* vtkViewImage2D::AddDataSet( vtkPolyData* dataset,
     vtkSmartPointer< vtkPolyDataMapper >::New();
   mapper->SetScalarVisibility( iDataVisibility );
 
-  vtkQuadricLODActor* actor = vtkQuadricLODActor::New();
+//   vtkQuadricLODActor* actor = vtkQuadricLODActor::New();
+  vtkActor* actor = vtkActor::New();
 
   //vtkCutter* cutter = vtkCutter::New();
   vtkSmartPointer< vtkClipPolyData > cutter = vtkSmartPointer< vtkClipPolyData >::New();
@@ -903,7 +907,9 @@ vtkQuadricLODActor* vtkViewImage2D::AddDataSet( vtkPolyData* dataset,
 }
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
-vtkQuadricLODActor* vtkViewImage2D::AddDataSet( vtkDataSet* dataset,
+//vtkQuadricLODActor*
+vtkActor*
+vtkViewImage2D::AddDataSet( vtkDataSet* dataset,
   vtkProperty* property,
   const bool& intersection,
   const bool& iDataVisibility )
@@ -920,7 +926,8 @@ vtkQuadricLODActor* vtkViewImage2D::AddDataSet( vtkDataSet* dataset,
     vtkSmartPointer< vtkPolyDataMapper >::New();
   mapper->SetScalarVisibility( iDataVisibility );
 
-  vtkQuadricLODActor* actor = vtkQuadricLODActor::New();
+  //vtkQuadricLODActor* actor = vtkQuadricLODActor::New();
+  vtkActor* actor = vtkActor::New();
 
   vtkSmartPointer< vtkCutter > cutter = vtkSmartPointer< vtkCutter >::New();
 
