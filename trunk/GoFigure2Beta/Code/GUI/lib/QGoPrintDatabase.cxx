@@ -237,8 +237,8 @@ void QGoPrintDatabase::FillTableFromDatabase()
 
   GetContentAndDisplayFromDB( "contour" );
   GetContentAndDisplayFromDB( "mesh" );
-  GetContentAndDisplayFromDB( "track" );
-  GetContentAndDisplayFromDB( "lineage" );
+  //GetContentAndDisplayFromDB( "track" );
+  //GetContentAndDisplayFromDB( "lineage" );
 
   LoadContoursAndMeshesFromDB(m_DatabaseConnector);
 
