@@ -265,11 +265,13 @@ void QGoVisualizationDockWidget::SetColorTraceComboBox()
   HLayoutForTrace->addWidget(TraceLbl);
   HLayoutForTrace->addWidget(TraceName);
 
-  HLayoutForColor = new QHBoxLayout;
-  HLayoutForColor->addWidget(ColorLbl);
-  HLayoutForColor->addWidget(ColorTraceComboBox);
+  //HLayoutForColor = new QHBoxLayout;
+ // HLayoutForColor->addWidget(ColorLbl);
+ // HLayoutForColor->addWidget(ColorTraceComboBox);
 
-  this->verticalLayout_2->addLayout(HLayoutForColor);
+  this->verticalLayout_2->addWidget(ColorLbl);
+  this->verticalLayout_2->addWidget(ColorTraceComboBox);
+  //this->verticalLayout_2->addLayout(HLayoutForColor);
   this->verticalLayout_2->addLayout(HLayoutForTrace);
 }
 //-------------------------------------------------------------------------
@@ -285,9 +287,11 @@ void QGoVisualizationDockWidget::SetColorIDCollectionComboBox()
 
   /// \todo make the names change with the interaction
   QHBoxLayout* HLayoutForCollection = new QHBoxLayout;
-  HLayoutForCollection->addWidget(CollectionLbl);
+ // HLayoutForCollection->addWidget(CollectionLbl);
   HLayoutForCollection->addWidget(CollectionName);
   HLayoutForCollection->addWidget(ColorIDCollectionComboBox);
+ // this->verticalLayout_2->addLayout(HLayoutForCollection);
+  this->verticalLayout_2->addWidget(CollectionLbl);
   this->verticalLayout_2->addLayout(HLayoutForCollection);
 }
 //-------------------------------------------------------------------------
