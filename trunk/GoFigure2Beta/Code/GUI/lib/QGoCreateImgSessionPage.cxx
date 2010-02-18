@@ -113,6 +113,7 @@ void QGoCreateImgSessionPage::initializePage()
     tr("Import a new dataset for the project '%1'\n (*fields are required) and click on 'Finish' to load them:")
     .arg(field("ProjectName").toString() ) );
 
+  ChoiceMicroscope->clear();
   ChoiceMicroscope->addItems(GetListMicroscopes());
 }
 //-------------------------------------------------------------------------
