@@ -371,15 +371,15 @@ onStartVideoClicked()
 //something to record first view
   if( m_VideoName2.isNull() ||  m_VideoName2.isEmpty() || ( !m_RenderWindowSelected ) )
     {
-    /// \todo use QMessageBox
+    /**
+     * \todo use QMessageBox
+     */
     std::cerr <<"Please select a videoName and a good rendering window"<<std::endl;
     }
   else if( this->tabWidget->currentIndex () == 0 )
     {
 	if(this->usePause->isChecked())
 	  {
-      std::cout<<"is checked"<<std::endl;
-
       QString fileName = m_VideoName2;
 
       if(!fileName.endsWith(".avi"))
@@ -404,8 +404,6 @@ onStartVideoClicked()
     {
 	if(this->usePause->isChecked())
 	  {
-	  std::cout<<"is checked"<<std::endl;
-
 	  QString fileName = m_VideoName2;
 
 	  if(!fileName.endsWith(".avi"))
@@ -436,7 +434,9 @@ onStartRecordClicked()
 {
   if( ( m_VideoName2 == NULL ) || ( !m_RenderWindowSelected ))
     {
-  /// \todo QMessageBox
+	/**
+	 * \todo use QMessageBox
+	 */
     std::cout<<"Please select a videoName and a good rendering window"<<std::endl;
     }
   else
@@ -525,8 +525,9 @@ SetRenderingWindow( vtkRenderWindow* iRenderingWindow )
     {
     m_VideoRecorder->SetRenderingWindow(iRenderingWindow);
     }
-
-  /// \todo Resize image with the first one if we want to change views during record
+/**
+ * \todo Resize image with the first one if we want to change views during record
+ */
 }
 //-------------------------------------------------------------------------
 
@@ -606,41 +607,11 @@ Acquire( int value )
   for(unsigned int i = iMin; i < iMax+1; i++)
     {
     //send signal to gofigure to change slice
-    switch ( value )
-        {
-        case 0 :
-          {
-          // X Slice
-          emit XSliceChanged(i);
-          break;
-          }
-
-        case 1 :
-          {
-          // Y Slice
-          emit YSliceChanged(i);
-          break;
-          }
-
-        case 2:
-          {
-          // Z Slice
-          emit ZSliceChanged(i);
-          break;
-          }
-
-        default:
-        case 4:
-          {
-          // Z Slice
-          emit TSliceChanged(i);
-          break;
-          }
-        }
-      //capture screen
-      m_VideoRecorder->TakeSnapshot();
-      }
-    m_VideoRecorder->EndCapture();
+	emitChangeSliceSignal(value, i);
+    //capture screen
+    m_VideoRecorder->TakeSnapshot();
+    }
+  m_VideoRecorder->EndCapture();
 }
 //-------------------------------------------------------------------------
 
@@ -690,40 +661,10 @@ AcquireWithPause( int value )
   for(unsigned int i = iMin; i < iMax+1; i++)
     {
     //send signal to gofigure to change slice
-    switch ( value )
-        {
-        case 0 :
-          {
-          // X Slice
-          emit XSliceChanged(i);
-          break;
-          }
-
-        case 1 :
-          {
-          // Y Slice
-          emit YSliceChanged(i);
-          break;
-          }
-
-        case 2:
-          {
-          // Z Slice
-          emit ZSliceChanged(i);
-          break;
-          }
-
-        default:
-        case 4:
-          {
-          // Z Slice
-          emit TSliceChanged(i);
-          break;
-          }
-        }
-      //capture screen
-      m_VideoRecorder->TakeSnapshot();
-      }
+	emitChangeSliceSignal(value, i);
+    //capture screen
+    m_VideoRecorder->TakeSnapshot();
+    }
   this->pauseVideo->setEnabled(true);
   this->endVideo->setEnabled(true);
 }
@@ -757,3 +698,39 @@ on_endVideo_clicked()
   this->startVideo->setEnabled( true );
 }
 //-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoVideoRecorder::
+emitChangeSliceSignal(const int& iSlice, const int & iSlide)
+{
+  switch ( iSlice )
+	{
+	case 0 :
+	   {
+	   // X Slice
+	   emit XSliceChanged(iSlide);
+	   break;
+	   }
+    case 1 :
+       {
+       // Y Slice
+       emit YSliceChanged(iSlide);
+       break;
+       }
+    case 2:
+       {
+       // Z Slice
+       emit ZSliceChanged(iSlide);
+       break;
+       }
+    default:
+     case 4:
+       {
+       // Z Slice
+       emit TSliceChanged(iSlide);
+       break;
+       }
+   }
+}
+

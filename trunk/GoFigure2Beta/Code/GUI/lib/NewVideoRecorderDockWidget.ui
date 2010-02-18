@@ -28,7 +28,7 @@
       </property>
       <widget class="QWidget" name="tabVideoMethod1">
        <attribute name="title">
-        <string>Create</string>
+        <string>Create Video</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout_9">
         <item row="0" column="0">
@@ -49,7 +49,7 @@
                </property>
                <widget class="QWidget" name="tab">
                 <attribute name="title">
-                 <string>Fixed T</string>
+                 <string>Fixed Time Point</string>
                 </attribute>
                 <layout class="QGridLayout" name="gridLayout_15">
                  <item row="0" column="0">
@@ -122,7 +122,7 @@
                </widget>
                <widget class="QWidget" name="tab_2">
                 <attribute name="title">
-                 <string>Through T</string>
+                 <string>Through Time</string>
                 </attribute>
                 <layout class="QGridLayout" name="gridLayout_12">
                  <item row="0" column="0">
@@ -305,7 +305,7 @@
           <item row="0" column="0">
            <widget class="QPushButton" name="startVideo">
             <property name="text">
-             <string>Create</string>
+             <string>Start</string>
             </property>
            </widget>
           </item>
@@ -315,7 +315,7 @@
              <bool>false</bool>
             </property>
             <property name="text">
-             <string>Pause</string>
+             <string>Restart</string>
             </property>
            </widget>
           </item>
@@ -348,7 +348,7 @@
       </widget>
       <widget class="QWidget" name="tabVideoMethod2">
        <attribute name="title">
-        <string>Record</string>
+        <string>Live Record</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout_20">
         <item row="0" column="0">
@@ -425,7 +425,7 @@
                 <number>2</number>
                </property>
                <property name="value">
-                <number>1</number>
+                <number>0</number>
                </property>
               </widget>
              </item>

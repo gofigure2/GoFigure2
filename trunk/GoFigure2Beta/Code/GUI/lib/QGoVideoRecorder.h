@@ -130,9 +130,17 @@ class QGoVideoRecorder : public QDockWidget, private Ui::NewDockWidgetVideoRecor
         **/
         void UpdateQSpinBoxFT( int );
 
+        /**
+         * \brief Function to create the video without "pauses"
+        **/
         void Acquire( int );
 
+        /**
+         * \brief Function to create the video with "pauses"
+        **/
         void AcquireWithPause( int );
+
+        void emitChangeSliceSignal(const int&, const int &);
 
 
     private slots:
@@ -202,7 +210,13 @@ class QGoVideoRecorder : public QDockWidget, private Ui::NewDockWidgetVideoRecor
     **/
     void timeout();
 
+    /**
+     * \brief Function called when we want to restart video while it is in pause
+    **/
     void on_pauseVideo_clicked();
+    /**
+     * \brief Function called when we want to stop video while it is in pause
+    **/
     void on_endVideo_clicked();
 
 

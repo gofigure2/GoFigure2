@@ -245,6 +245,11 @@ void
 QGoTabImageView3DwT::
 CreateVisuDockWidget()
 {
+   /**
+    * \todo update annotation on current slice (i.e. slice x/23) when moving through
+    * x via this dockwidget
+    */
+
   m_VisuDockWidget = new QGoVisualizationDockWidget( this, 4 );
 
   QObject::connect( m_VisuDockWidget, SIGNAL( XSliceChanged( int ) ),
