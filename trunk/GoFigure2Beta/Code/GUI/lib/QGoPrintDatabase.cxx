@@ -418,8 +418,8 @@ void QGoPrintDatabase::AddToSelectedCollection()
   else
     {
     OpenDBConnection();
-    this->AddListTracesToACollection(ListSelectedTraces,
-      this->m_CurrentCollectionData,TraceName,false);
+    this->AddListTracesToACollection( ListSelectedTraces,
+      this->m_CurrentCollectionData, TraceName, false );
     CloseDBConnection();
     }
 }

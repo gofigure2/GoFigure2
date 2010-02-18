@@ -1134,10 +1134,13 @@ std::vector<ContourMeshStructure>* GetTracesInfoFromDB(
         temp.Nodes = output;
         }
       temp.TCoord       = query->DataValue(3).ToUnsignedInt();
-      temp.rgba[0]      = (query->DataValue(4).ToDouble())/255;
-      temp.rgba[1]      = (query->DataValue(5).ToDouble())/255;
-      temp.rgba[2]      = (query->DataValue(6).ToDouble())/255;
-      temp.rgba[3]      = (query->DataValue(7).ToDouble())/255;
+      /// \note For the visualization rgba values are supposed to be double in
+      /// between 0 and 1; whereas in the database these values are in between
+      /// 0 and 255.
+      temp.rgba[0]      = (query->DataValue(4).ToDouble()) / 255.;
+      temp.rgba[1]      = (query->DataValue(5).ToDouble()) / 255.;
+      temp.rgba[2]      = (query->DataValue(6).ToDouble()) / 255.;
+      temp.rgba[3]      = (query->DataValue(7).ToDouble()) / 255.;
       Results->push_back(temp);
       }
     }
@@ -1212,10 +1215,13 @@ ContourMeshStructure GetTraceInfoFromDB(
         Results.Nodes = output;
         }
       Results.TCoord       = query->DataValue(2).ToUnsignedInt();
-      Results.rgba[0]      = query->DataValue(3).ToDouble();
-      Results.rgba[1]      = query->DataValue(4).ToDouble();
-      Results.rgba[2]      = query->DataValue(5).ToDouble();
-      Results.rgba[3]      = query->DataValue(6).ToDouble();
+      /// \note For the visualization rgba values are supposed to be double in
+      /// between 0 and 1; whereas in the database these values are in between
+      /// 0 and 255.
+      Results.rgba[0]      = query->DataValue(3).ToDouble() / 255.;
+      Results.rgba[1]      = query->DataValue(4).ToDouble() / 255.;
+      Results.rgba[2]      = query->DataValue(5).ToDouble() / 255.;
+      Results.rgba[3]      = query->DataValue(6).ToDouble() / 255.;
       }
     }
   query->Delete();

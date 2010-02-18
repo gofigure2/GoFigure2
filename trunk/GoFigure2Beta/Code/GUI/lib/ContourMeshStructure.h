@@ -65,10 +65,10 @@ struct ContourMeshStructure
     {
     this->Actor = 0;
     this->Nodes = 0;
-    this->rgba[0] = 0;
-    this->rgba[1] = 0;
-    this->rgba[2] = 0;
-    this->rgba[3] = 0;
+    this->rgba[0] = 1.;
+    this->rgba[1] = 1.;
+    this->rgba[2] = 1.;
+    this->rgba[3] = 1.;
     }
 
   ContourMeshStructure( const unsigned int& iTraceID, vtkActor* iActor,
