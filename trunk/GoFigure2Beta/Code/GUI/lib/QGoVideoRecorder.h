@@ -132,6 +132,8 @@ class QGoVideoRecorder : public QDockWidget, private Ui::NewDockWidgetVideoRecor
 
         void Acquire( int );
 
+        void AcquireWithPause( int );
+
 
     private slots:
 
@@ -199,6 +201,9 @@ class QGoVideoRecorder : public QDockWidget, private Ui::NewDockWidgetVideoRecor
       * \brief Function called with the timer to take snapshots
     **/
     void timeout();
+
+    void on_pauseVideo_clicked();
+    void on_endVideo_clicked();
 
 
     public slots:

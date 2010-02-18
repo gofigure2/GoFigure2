@@ -376,11 +376,55 @@ onStartVideoClicked()
     }
   else if( this->tabWidget->currentIndex () == 0 )
     {
-    Acquire(m_SliceFT);
+	if(this->usePause->isChecked())
+	  {
+      std::cout<<"is checked"<<std::endl;
+
+      QString fileName = m_VideoName2;
+
+      if(!fileName.endsWith(".avi"))
+      {
+      fileName.insert( fileName.size(), QString(".avi"));
+      }
+
+      m_VideoRecorder->SetFileName( fileName.toStdString() );
+      m_VideoRecorder->StartCapture();
+
+      this->startVideo->setEnabled(false);
+
+      AcquireWithPause( m_SliceFT );
+
+	  }
+	else
+	  {
+	  Acquire(m_SliceFT);
+	  }
     }
   else
     {
-    Acquire(3);
+	if(this->usePause->isChecked())
+	  {
+	  std::cout<<"is checked"<<std::endl;
+
+	  QString fileName = m_VideoName2;
+
+	  if(!fileName.endsWith(".avi"))
+	    {
+	    fileName.insert( fileName.size(), QString(".avi"));
+	    }
+
+      m_VideoRecorder->SetFileName( fileName.toStdString() );
+	  m_VideoRecorder->StartCapture();
+
+	  this->startVideo->setEnabled(false);
+
+	  AcquireWithPause( 3 );
+
+	  }
+	else
+	  {
+	  Acquire(3);
+	  }
     }
 }
 //-------------------------------------------------------------------------
@@ -597,5 +641,119 @@ Acquire( int value )
       m_VideoRecorder->TakeSnapshot();
       }
     m_VideoRecorder->EndCapture();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoVideoRecorder::
+AcquireWithPause( int value )
+{
+  unsigned int iMin;
+  unsigned int iMax;
+
+  switch ( value )
+      {
+      case 0 :
+        {
+        // X Slice
+        iMin = m_XMinForVideo;
+        iMax = m_XMaxForVideo;
+        break;
+        }
+      case 1 :
+        {
+        // Y Slice
+        iMin = m_YMinForVideo;
+        iMax = m_YMaxForVideo;
+        break;
+        }
+
+      case 2 :
+        {
+        // Z Slice
+        iMin = m_ZMinForVideo;
+        iMax = m_ZMaxForVideo;
+        break;
+        }
+
+   default:
+      case 4:
+        {
+        // T Slice
+        iMin = m_TMinForVideo;
+        iMax = m_TMaxForVideo;
+        break;
+        }
+    }
+
+  for(unsigned int i = iMin; i < iMax+1; i++)
+    {
+    //send signal to gofigure to change slice
+    switch ( value )
+        {
+        case 0 :
+          {
+          // X Slice
+          emit XSliceChanged(i);
+          break;
+          }
+
+        case 1 :
+          {
+          // Y Slice
+          emit YSliceChanged(i);
+          break;
+          }
+
+        case 2:
+          {
+          // Z Slice
+          emit ZSliceChanged(i);
+          break;
+          }
+
+        default:
+        case 4:
+          {
+          // Z Slice
+          emit TSliceChanged(i);
+          break;
+          }
+        }
+      //capture screen
+      m_VideoRecorder->TakeSnapshot();
+      }
+  this->pauseVideo->setEnabled(true);
+  this->endVideo->setEnabled(true);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoVideoRecorder::
+on_pauseVideo_clicked()
+{
+  if( this->tabWidget->currentIndex () == 0 )
+	{
+	AcquireWithPause( m_SliceFT );
+	}
+  else
+	{
+	AcquireWithPause( 3 );
+	}
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoVideoRecorder::
+on_endVideo_clicked()
+{
+  m_VideoRecorder->EndCapture();
+
+  this->endVideo->setEnabled( false );
+  this->pauseVideo->setEnabled( false );
+  this->startVideo->setEnabled( true );
 }
 //-------------------------------------------------------------------------

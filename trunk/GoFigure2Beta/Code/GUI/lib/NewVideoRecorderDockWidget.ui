@@ -280,7 +280,7 @@
                 </widget>
                </item>
                <item row="3" column="1">
-                <widget class="QCheckBox" name="checkBox_2">
+                <widget class="QCheckBox" name="usePause">
                  <property name="text">
                   <string/>
                  </property>
@@ -310,7 +310,7 @@
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QPushButton" name="pushButton">
+           <widget class="QPushButton" name="pauseVideo">
             <property name="enabled">
              <bool>false</bool>
             </property>
@@ -320,7 +320,7 @@
            </widget>
           </item>
           <item row="0" column="2">
-           <widget class="QPushButton" name="pushButton_2">
+           <widget class="QPushButton" name="endVideo">
             <property name="enabled">
              <bool>false</bool>
             </property>
