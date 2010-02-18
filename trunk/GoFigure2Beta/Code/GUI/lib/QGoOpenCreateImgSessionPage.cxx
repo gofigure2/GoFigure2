@@ -101,6 +101,7 @@ void QGoOpenCreateImgSessionPage::initializePage()
    {
    m_ListImgSession.clear();
    }
+  ChoiceImgSession->clear();
 
    OpenDBConnection();
 

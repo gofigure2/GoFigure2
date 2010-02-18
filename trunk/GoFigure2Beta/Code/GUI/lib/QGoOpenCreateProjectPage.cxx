@@ -291,8 +291,10 @@ void QGoOpenCreateProjectPage::ChangeToCreateProjectDisplay()
   textAuthor->setVisible(false);
   lineAuthor->setVisible(false);
 
-  if (ListAuthors.isEmpty())
-    {ListAuthors = GetListAuthors();
+  if(ListAuthors.isEmpty())
+    {
+    ListAuthors = GetListAuthors();
+    ChoiceAuthor->clear();
     ChoiceAuthor->addItems(ListAuthors);
     }
   ChoiceAuthor->setVisible(true);
