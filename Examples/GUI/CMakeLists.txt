@@ -1,0 +1,10 @@
+SUBDIRS(
+  QImagePageView
+  QImagePageViewTracer
+  QImagePageView4DTracer
+  QGoLUTDialog
+  QGoCreateDBDialog
+  QGoWizardDB
+  QGoImageInfo
+  QGoPrintDatabase
+   )

@@ -1,0 +1,140 @@
+SUBDIRS( qt )
+
+SET( QGOMAINWINDOW_HDRS QGoMainWindow.h
+  ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/itkQt/itkQtAdaptor.h)
+SET( QGOMAINWINDOW_SRC QGoMainWindow.cxx )
+
+QT4_WRAP_UI( QGOMAINWINDOW_UI_HDRS go.ui )
+QT4_WRAP_CPP( QGOMAINWINDOW_MOC_SRC ${QGOMAINWINDOW_HDRS} )
+#QT4_WRAP_CPP( MY_MOC_SRC ${GOFIGURE2_SOURCE_DIR}/Code/GUI/qt/QGoCreateDBDialog.h )
+
+SET_SOURCE_FILES_PROPERTIES( ${QGOMAINWINDOW_SRC} PROPERTIES
+  OBJECT_DEPENDS "${QGOMAINWINDOW_UI_HDRS}"
+  )
+
+SET_SOURCE_FILES_PROPERTIES( ${QGOMAINWINDOW_MOC_SRC} PROPERTIES
+  OBJECT_DEPENDS "${QGOMAINWINDOW_UI_HDRS}"
+  )
+
+QT4_ADD_RESOURCES( QGOMAINWINDOW_QRC
+  ${GOFIGURE2_SOURCE_DIR}/Code/GUI/resources/axes.qrc
+  )
+
+## DockWidgets ##
+# QT4_WRAP_UI( MANUALSEGMENTATION_UI ManualSegmentationDockWidget.ui )
+# QT4_WRAP_UI( ONECLICKSEGMENTATION_UI OneClickSegmentationDockWidget.ui )
+# QT4_WRAP_UI( GEODESICSEGMENTATION_UI GeodesicActiveContourDockWidget.ui )
+#################
+
+SET( GUI_TYPE )
+
+SET( GOFIGURE_APPLICATION_SOURCE_LIST
+    gofigure.cxx
+    ${QGOMAINWINDOW_SRC}
+    ${QGOMAINWINDOW_MOC_SRC}
+    ${QGOMAINWINDOW_QRC}
+    )
+
+IF( APPLE )
+  SET( GUI_TYPE MACOSX_BUNDLE )
+
+  SET( MACOSX_BUNDLE_ICON_FILE
+    ${GOFIGURE2_SOURCE_DIR}/Code/GUI/resources/myapp.icns
+    )
+
+  SET( GOFIGURE_APPLICATION_SOURCE_LIST
+    ${GOFIGURE_APPLICATION_SOURCE_LIST}
+    ${MACOSX_BUNDLE_ICON_FILE}
+    )
+
+  SET( MACOSX_BUNDLE_SHORT_VERSION_STRING
+    ${GOFIGURE2_VERSION}
+    )
+
+  SET( MACOSX_BUNDLE_VERSION
+    ${GOFIGURE2_VERSION}
+    )
+
+  SET( MACOSX_BUNDLE_LONG_VERSION_STRING
+    Version ${GOFIGURE2_VERSION}
+    )
+
+  SET_SOURCE_FILES_PROPERTIES( ${MACOSX_BUNDLE_ICON_FILE} PROPERTIES
+    MACOSX_PACKAGE_LOCATION Resources
+    )
+
+ENDIF( APPLE )
+
+IF( WIN32 )
+#  SET( GUI_TYPE WIN32 )
+
+  IF( MINGW )
+    ADD_CUSTOM_COMMAND( OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/myapp.o
+      COMMAND windres.exe -I${CMAKE_CURRENT_SOURCE_DIR}
+        -i ${GOFIGURE2_SOURCE_DIR}/Code/GUI/resources/myapp.rc
+        -o ${CMAKE_CURRENT_BINARY_DIR}/myapp.o
+        )
+    SET( ${GOFIGURE_APPLICATION_SOURCE_LIST}
+      ${GOFIGURE_APPLICATION_SOURCE_LIST}
+      ${CMAKE_CURRENT_BINARY_DIR}/myapp.o
+      )
+  ENDIF( MINGW )
+ENDIF( WIN32 )
+
+ADD_EXECUTABLE( gofigure ${GUI_TYPE}
+  ${GOFIGURE_APPLICATION_SOURCE_LIST}
+  )
+
+TARGET_LINK_LIBRARIES( gofigure
+  QMegaVTKAddOn2
+  QGoIO
+  ITKBasicFilters
+  ITKNumerics
+  itkQt
+  )
+
+# # ----------------------------------------------------------------------
+# # NOTE:
+# # The following lines are to be used to be distinguish the generated
+# # executable in between the release and the debug version
+# SET_TARGET_PROPERTIES( gofigure
+#  PROPERTIES
+#  DEBUG_OUTPUT_NAME gofigure_debug
+#  RELEASE_OUTPUT_NAME gofigure
+# )
+# # ----------------------------------------------------------------------
+
+IF( APPLE )
+  FUNCTION( MakeOSXBundleApp target binary_dir )
+    SET( OSX_MAKE_STANDALONE_BUNDLE_CMAKE_SCRIPT 
+      "${binary_dir}/${target}_OSX_MakeStandAloneBundle.cmake" )
+    SET( OSX_MAKE_STANDALONE_BUNDLE_BASH_SCRIPT 
+      "${binary_dir}/${target}_OSX_MakeStandAloneBundle.sh" )
+
+    CONFIGURE_FILE( "${GOFIGURE2_SOURCE_DIR}/CMake/OSX_Tools/CompleteBundle.cmake.in"
+      "${OSX_MAKE_STANDALONE_BUNDLE_CMAKE_SCRIPT}" @ONLY IMMEDIATE
+    )
+    CONFIGURE_FILE( "${GOFIGURE2_SOURCE_DIR}/CMake/OSX_Tools/CreateBundle.sh.in"
+      "${OSX_MAKE_STANDALONE_BUNDLE_BASH_SCRIPT}" @ONLY IMMEDIATE
+    )
+    INSTALL( SCRIPT "${OSX_MAKE_STANDALONE_BUNDLE_CMAKE_SCRIPT}" )
+  ENDFUNCTION( MakeOSXBundleApp )
+
+#  IF( CMAKE_BUILD_TYPE MATCHES "Debug" )
+#    MakeOSXBundleApp( "gofigure_debug" ${GOFIGURE2_BINARY_DIR} )
+#  ELSE( CMAKE_BUILD_TYPE MATCHES "Debug" )
+    MakeOSXBundleApp( "gofigure" ${GOFIGURE2_BINARY_DIR} )
+#  ENDIF( CMAKE_BUILD_TYPE MATCHES "Debug" )
+
+ELSE( APPLE )
+  INCLUDE( ${GOFIGURE2_SOURCE_DIR}/CMake/InstallSupportLibraries.cmake )
+
+  INSTALL( TARGETS gofigure
+    ARCHIVE DESTINATION ${GOFIGURE2_LIB_INSTALL_DIR}
+    LIBRARY DESTINATION ${GOFIGURE2_LIB_INSTALL_DIR}
+    RUNTIME DESTINATION ${GOFIGURE2_BIN_INSTALL_DIR}
+    COMPONENT applications
+    )
+
+ENDIF( APPLE )
+
