@@ -194,6 +194,11 @@ void QGoOpenCreateProjectPage::CreateProject()
   myNewProject.SetField("CreationDate",DateOfToday.toString(Qt::ISODate).toStdString());
   myNewProject.SetField("DatabaseVersion",m_DatabaseVersion);
 
+  if (m_DatabaseConnector == 0)
+    {
+    OpenDBConnection();
+    }
+
   AddOnlyOneNewObjectInTable< GoDBProjectRow >(m_DatabaseConnector,
     "project", myNewProject );
 }
