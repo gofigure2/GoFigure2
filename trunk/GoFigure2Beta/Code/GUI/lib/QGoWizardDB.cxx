@@ -211,24 +211,33 @@ void QGoWizardDB::closeEvent(QCloseEvent* iEvent)
     case 2:
       {
       QGoOpenCreateProjectPage* ProjectPage = dynamic_cast<QGoOpenCreateProjectPage*>(CurrentPage);
-      ProjectPage->m_DatabaseConnector->Close();
-      ProjectPage->m_DatabaseConnector->Delete();
+      if( ProjectPage->m_DatabaseConnector )
+        {
+        ProjectPage->m_DatabaseConnector->Close();
+        ProjectPage->m_DatabaseConnector->Delete();
+        }
       delete ProjectPage;
       break;
       }
     case 3:
       {
       QGoOpenCreateImgSessionPage* ImgSessionPage = dynamic_cast<QGoOpenCreateImgSessionPage*>(CurrentPage);
-      ImgSessionPage->m_DatabaseConnector->Close();
-      ImgSessionPage->m_DatabaseConnector->Delete();
+      if( ImgSessionPage->m_DatabaseConnector )
+        {
+        ImgSessionPage->m_DatabaseConnector->Close();
+        ImgSessionPage->m_DatabaseConnector->Delete();
+        }
       delete ImgSessionPage;
       break;
       }
     case 4:
       {
       QGoCreateImgSessionPage* CreateImgSessionPage = dynamic_cast<QGoCreateImgSessionPage*>(CurrentPage);
-      CreateImgSessionPage->m_DatabaseConnector->Close();
-      CreateImgSessionPage->m_DatabaseConnector->Delete();
+      if( CreateImgSessionPage->m_DatabaseConnector )
+        {
+        CreateImgSessionPage->m_DatabaseConnector->Close();
+        CreateImgSessionPage->m_DatabaseConnector->Delete();
+        }
       delete CreateImgSessionPage;
       break;
       }
