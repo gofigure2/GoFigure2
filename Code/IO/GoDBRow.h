@@ -37,6 +37,7 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
+
 #ifndef __GoDBRow_h
 #define __GoDBRow_h
 
