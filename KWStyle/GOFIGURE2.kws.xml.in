@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<Project>GoFigure2</Project>
+<ProjectLogo>@GOFIGURE2_SOURCE_DIR@/Resources/fig/splash.jpg</ProjectLogo>
+<KWStyleLogo>/home/ajg23/CVSROOT/KWStyle/Web/images/TitleBar.jpg</KWStyleLogo>
+<Description>
+<LineLength>200</LineLength>
+<DeclarationOrder>
+  <public>0</public>
+  <protected>1</protected>
+  <private>2</private>
+</DeclarationOrder>
+<Typedefs>
+  <regex>[A-Z]</regex>
+</Typedefs>
+<InternalVariables>
+  <regex>m_[A-Z]</regex>
+  <alignment>0</alignment>
+</InternalVariables>
+<Struct>
+  <regex>[a-z]</regex>
+</Struct>
+<SemicolonSpace>0</SemicolonSpace>
+<EndOfFileNewLine>1</EndOfFileNewLine>
+<Tabs>1</Tabs>
+<Spaces>3</Spaces>
+<Comments>
+  <begin>/**</begin>
+  <middle> *</middle>
+  <end>*/</end>
+  <emptyLineBeforeClass>false</emptyLineBeforeClass>
+</Comments>
+<Header>
+  <location>@GOFIGURE2_SOURCE_DIR@/KWStyle/Header.h</location>
+  <checkSpacesEndOfLine>false</checkSpacesEndOfLine>
+  <cvsFormat>true</cvsFormat>
+</Header>
+<Indent>
+ <type>SPACE</type>
+ <size>2</size>
+ <noHeader>true</noHeader>
+ <allowBlockLine>true</allowBlockLine>
+</Indent>
+<IfNDefDefine>__[NameOfClass]_[Extension]</IfNDefDefine>
+<EmptyLines>2</EmptyLines>
+<Template>T</Template>
+<Operator>
+  <spaceBefore>1</spaceBefore>
+  <spaceAfter>1</spaceAfter>
+</Operator>
+</Description>
