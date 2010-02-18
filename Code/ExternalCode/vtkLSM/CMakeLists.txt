@@ -1,0 +1,16 @@
+ADD_LIBRARY( vtkLSMReader
+  ${LIBS_STYLE}
+  vtkLSMReader.cxx )
+
+TARGET_LINK_LIBRARIES( vtkLSMReader
+  vtkIO
+  vtkFiltering
+)
+
+INSTALL( TARGETS vtkLSMReader
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin
+  COMPONENT libraries
+  )
+
