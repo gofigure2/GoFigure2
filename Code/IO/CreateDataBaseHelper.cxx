@@ -339,8 +339,8 @@ std::string CoordinateTable()
     );";
 }
   //if needed:
- // UNIQUE INDEX UniqueCoordinate (`PCoord`,`RCoord`,`CCoord`,`XTileCoord`,\
- //   `YTileCoord`,`ZTileCoord`,`XCoord`,`YCoord`,`ZCoord`,`TCoord`),\
+  // UNIQUE INDEX UniqueCoordinate (`PCoord`,`RCoord`,`CCoord`,`XTileCoord`,
+  // `YTileCoord`,`ZTileCoord`,`XCoord`,`YCoord`,`ZCoord`,`TCoord`),
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
