@@ -255,7 +255,8 @@ ValidateContour( const int& iId )
   //   color.getRgbF( &r, &g, &b );
 
   /// \todo get alpha from QColor (it is not supposed to 255 all the time!)
-  double alpha = 1.;
+  // unused
+  // double alpha = 1.;
 
   vtkProperty* contour_property = vtkProperty::New();
   contour_property->SetRepresentationToWireframe();
@@ -390,7 +391,7 @@ ReEditContour( const unsigned int& iId )
       {
       int c_dir;
       vtkActor* c_actor;
-      vtkPolyData* c_nodes;
+      vtkPolyData* c_nodes = (vtkPolyData*)(0);
 
       while( it != m_ContourMeshContainer.get< TraceID >().end() )
         {
