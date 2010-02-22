@@ -2050,7 +2050,7 @@ ReEditContour( const unsigned int& iId )
       {
       int c_dir;
       vtkActor* c_actor;
-      vtkPolyData* c_nodes;
+      vtkPolyData* c_nodes = (vtkPolyData*)(0);
 
       while( it != m_ContourMeshContainer.get< TraceID >().end() )
         {
