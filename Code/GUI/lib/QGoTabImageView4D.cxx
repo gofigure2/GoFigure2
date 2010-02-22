@@ -1141,8 +1141,9 @@ ValidateContour( const int& iId )
       Max[i] = bounds[k++];
       }
 
-    int* min_idx = this->GetImageCoordinatesFromWorldCoordinates( Min );
-    int* max_idx = this->GetImageCoordinatesFromWorldCoordinates( Max );
+    // Unused?
+    // int* min_idx = this->GetImageCoordinatesFromWorldCoordinates( Min );
+    // int* max_idx = this->GetImageCoordinatesFromWorldCoordinates( Max );
 
     vtkPolyData* contour_nodes = vtkPolyData::New();
     m_ContourRepresentation[iId]->GetNodePolyData( contour_nodes );
@@ -1167,11 +1168,11 @@ ValidateContour( const int& iId )
     contour_property->Delete();
 
     // get meshid from the dock widget (SpinBox)
-    //unsigned int meshid = m_ManualSegmentationDockWidget->GetMeshId();
-    unsigned int meshid = this->m_VisuDockWidget->GetCurrentCollectionID();
-
-    unsigned int timepoint = static_cast< unsigned int >( m_TimePoint );
-    bool highlighted = false;
+    // unsigned int meshid = m_ManualSegmentationDockWidget->GetMeshId();
+    // unused?
+    // unsigned int meshid = this->m_VisuDockWidget->GetCurrentCollectionID();
+    // unsigned int timepoint = static_cast< unsigned int >( m_TimePoint );
+    // bool highlighted = false;
 
     // fill the container
 //     for( i = 0; i < contour_actor.size(); i++ )
