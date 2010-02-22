@@ -1,6 +1,6 @@
 SET( GOFIGURE_APPLICATION_SOURCE_LIST
-    gofigure.cxx
-    )
+  gofigure.cxx
+  )
 
 INCLUDE_DIRECTORIES( ${GOFIGURE2_BINARY_DIR}/Main/  )
 
@@ -8,19 +8,23 @@ QT4_WRAP_UI( QGoMainWindow_UI_H ${QGoMainWindow_UI} )
 
 QT4_WRAP_CPP( QGoGUISRC_MOC ${QGoGUISRC_HDRS} )
 
-SET_SOURCE_FILES_PROPERTIES( ${QGoGUISRC_CXX} PROPERTIES
+SET_SOURCE_FILES_PROPERTIES( 
+  ${QGoGUISRC_CXX} 
+  PROPERTIES
   OBJECT_DEPENDS "${QGoMainWindow_UI_H}"
   )
 
-SET_SOURCE_FILES_PROPERTIES( ${QGoGUISRC_MOC} PROPERTIES
+SET_SOURCE_FILES_PROPERTIES( 
+  ${QGoGUISRC_MOC} 
+  PROPERTIES
   OBJECT_DEPENDS "${QGoMainWindow_UI_H}"
   )
 
 QT4_ADD_RESOURCES( QGoMainWindow_QRC
   ${QGoResourceFile}
-)
+  )
 
-set(qt_menu_nib_sources)
+set( qt_menu_nib_sources )
 
 IF( APPLE )
 
@@ -28,7 +32,7 @@ IF( APPLE )
     GET_FILENAME_COMPONENT(qt_menu_nib
      "@QT_QTGUI_LIBRARY_RELEASE@/Resources/qt_menu.nib"
       REALPATH)
-    set(qt_menu_nib_sources
+    set( qt_menu_nib_sources
       "${qt_menu_nib}/classes.nib"
       "${qt_menu_nib}/info.nib"
       "${qt_menu_nib}/keyedobjects.nib"
@@ -39,21 +43,22 @@ IF( APPLE )
       MACOSX_PACKAGE_LOCATION Resources/qt_menu.nib
       )
   # ELSE(QT_MAC_USE_COCOA)
-
   ENDIF(QT_MAC_USE_COCOA)
 
   SET( MACOSX_BUNDLE_ICON_FILE
     ${GOFIGURE2_SOURCE_DIR}/Resources/myapp.icns
-  )
+    )
 
-  SET_SOURCE_FILES_PROPERTIES( ${MACOSX_BUNDLE_ICON_FILE} PROPERTIES
+  SET_SOURCE_FILES_PROPERTIES( 
+    ${MACOSX_BUNDLE_ICON_FILE} 
+    PROPERTIES
     MACOSX_PACKAGE_LOCATION Resources
     )
   
   SET( GOFIGURE_APPLICATION_SOURCE_LIST
     ${GOFIGURE_APPLICATION_SOURCE_LIST}
     ${MACOSX_BUNDLE_ICON_FILE}
-  )
+    )
 
   SET( MACOSX_BUNDLE_SHORT_VERSION_STRING
     ${GOFIGURE2_VERSION}
@@ -98,7 +103,6 @@ IF( WIN32 )
   SET( QT_USE_QTMAIN TRUE )
 ENDIF( WIN32 )
 
-
 ADD_EXECUTABLE( gofigure
   MACOSX_BUNDLE 
   ${GOFIGURE_APPLICATION_SOURCE_LIST}
@@ -140,18 +144,19 @@ ENDIF( UNIX AND NOT APPLE )
 # install tree, and on other platforms it'll go into the bin directory.
 
 INSTALL( TARGETS gofigure
-    ARCHIVE DESTINATION lib COMPONENT libraries
-    LIBRARY DESTINATION lib COMPONENT libraries
-    RUNTIME DESTINATION bin COMPONENT Runtime
-    BUNDLE  DESTINATION .   COMPONENT Runtime
-    )
+  ARCHIVE DESTINATION lib COMPONENT libraries
+  LIBRARY DESTINATION lib COMPONENT libraries
+  RUNTIME DESTINATION bin COMPONENT Runtime
+  BUNDLE  DESTINATION .   COMPONENT Runtime
+  )
 
 #---------------------------------------------------------------------------
 # install a qt.conf file
 # this inserts some cmake code into the install script to write the file
 INSTALL( CODE "
-    file( WRITE \"\${CMAKE_INSTALL_PREFIX}/${qtconf_dest_dir}/qt.conf\" \"\")
-    " COMPONENT Runtime )
+  file( WRITE \"\${CMAKE_INSTALL_PREFIX}/${qtconf_dest_dir}/qt.conf\" \"\")
+  " COMPONENT Runtime 
+  )
 
 #---------------------------------------------------------------------------
 # Use BundleUtilities to get all other dependencies for the application to 
@@ -169,10 +174,11 @@ SET( DIRS ${QT_LIBRARY_DIRS} )
 # Note that the image plugins depend on QtSvg and QtXml, and it got those 
 # copied over.
 
-  INSTALL( CODE "
-    file( GLOB_RECURSE QTPLUGINS
-      \"\${CMAKE_INSTALL_PREFIX}/${plugin_dest_dir}/plugins/*${CMAKE_SHARED_LIBRARY_SUFFIX}\" )
+INSTALL( CODE "
+  file( GLOB_RECURSE QTPLUGINS
+    \"\${CMAKE_INSTALL_PREFIX}/${plugin_dest_dir}/plugins/*${CMAKE_SHARED_LIBRARY_SUFFIX}\" )
     include( BundleUtilities )
     fixup_bundle(\"${APPS}\" \"\${QTPLUGINS}\" \"${DIRS}\")
-    " COMPONENT Runtime ) 
+  " COMPONENT Runtime 
+  ) 
 

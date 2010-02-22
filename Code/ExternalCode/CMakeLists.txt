@@ -1,4 +1,5 @@
-SUBDIRS( itkQt
+SUBDIRS( 
+  itkQt
   MegaVTK
   vtkLSM
 )

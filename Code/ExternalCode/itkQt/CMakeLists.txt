@@ -7,6 +7,14 @@ ADD_LIBRARY( itkQt
   ${itkQtAdaptor_MOC}
 )
 
+TARGET_LINK_LIBRARIES( itkQt 
+  ${QT_LIBRARIES}
+  #ITKBasicFilters
+  #ITKNumerics
+  ITKCommon
+  #ITKIO
+  )
+
 INSTALL( TARGETS itkQt
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
