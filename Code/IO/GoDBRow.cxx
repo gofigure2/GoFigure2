@@ -82,7 +82,7 @@ std::string GoDBRow::PrintValues()
     {
     ListValues << iter->second<< ", ";
     }
-  int n = ListValues.str().length() -2;
+  size_t n = ListValues.str().length() -2;
   return ListValues.str().substr(0,n);
 }
 //-------------------------------------------------------------------------
@@ -96,7 +96,7 @@ std::string GoDBRow::PrintColumnNames()
       {
       ListColumnNames << iter->first<< ", ";
       }
-    int n = ListColumnNames.str().length() -2;
+    size_t n = ListColumnNames.str().length() -2;
     return ListColumnNames.str().substr(0,n);
     }
 //-------------------------------------------------------------------------

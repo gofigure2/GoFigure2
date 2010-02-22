@@ -3,13 +3,14 @@
 
 #include "vtkCommand.h"
 #include "vtkObject.h"
+#include "MegaVTK2Configure.h"
 
 #include <list>
 
 class vtkViewImage2DCollection;
 class vtkProp3D;
 
-class vtkViewImage2DCollectionCommand :
+class VTK_RENDERINGADDON2_EXPORT vtkViewImage2DCollectionCommand :
   public vtkCommand
 {
  public:

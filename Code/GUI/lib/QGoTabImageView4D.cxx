@@ -981,7 +981,7 @@ void QGoTabImageView4D::ShowAllChannels( bool iChecked )
     // This is really stupid!!!
     if( m_XYZInternalImages.size() < 3 )
       {
-      for( int i = m_XYZInternalImages.size(); i < 3; i++ )
+      for( size_t i = m_XYZInternalImages.size(); i < 3; i++ )
         {
         append_filter1->AddInput( m_XYZInternalImages[0] );
         append_filter2->AddInput( m_XYTInternalImages[0] );

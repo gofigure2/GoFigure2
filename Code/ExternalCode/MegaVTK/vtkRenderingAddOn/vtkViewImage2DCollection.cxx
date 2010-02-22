@@ -352,7 +352,7 @@ void
 vtkViewImage2DCollection::
 SetSplinePlaneActorsVisibility( bool iVisibility )
 {
-	int numberOfActors = this->SlicePlaneActors.size();
+	size_t numberOfActors = this->SlicePlaneActors.size();
 // 	vtkstd::vector<vtkQuadricLODActor*>::iterator
   vtkstd::vector<vtkActor*>::iterator SlicePlaneActorsIterator
 	  = SlicePlaneActors.begin();

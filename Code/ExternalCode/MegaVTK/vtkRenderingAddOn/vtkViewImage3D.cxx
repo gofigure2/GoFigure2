@@ -585,7 +585,7 @@ void
 vtkViewImage3D::
 SetBoundsActorsVisibility( bool iVisibility )
 {
-	int numberOfActors = this->BoundsActor.size();
+	size_t numberOfActors = this->BoundsActor.size();
 		vtkstd::vector<vtkActor*>::iterator  BoundsActorIterator
 		  = BoundsActor.begin();
 

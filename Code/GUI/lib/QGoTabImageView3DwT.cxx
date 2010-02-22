@@ -739,7 +739,7 @@ void QGoTabImageView3DwT::GetTheOpenBookmarksActions()
     } 
   NamesDescrContainerType ListBookmarks = 
     this->m_DataBaseTables->GetListBookmarks();
-  int NumberBookmarks = ListBookmarks.size();
+  size_t NumberBookmarks = ListBookmarks.size();
   QMenu* OpenBookmarkMenu = new QMenu(tr("Open a bookmark"), this);
   for(int i = 0;i<NumberBookmarks; i++)
     {
@@ -1514,7 +1514,7 @@ ShowAllChannels( bool iChecked )
     // This is really stupid!!!
     if( m_InternalImages.size() < 3 )
       {
-      for( unsigned int i = m_InternalImages.size(); i < 3; i++ )
+      for( size_t i = m_InternalImages.size(); i < 3; i++ )
         {
         append_filter->AddInput( m_InternalImages[0] );
         }

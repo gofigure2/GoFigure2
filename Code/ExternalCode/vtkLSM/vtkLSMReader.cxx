@@ -390,7 +390,7 @@ int vtkLSMReader::AllocateChannelNames(int chNum)
 int vtkLSMReader::SetChannelName(const char *chName, int chNum)
 {
   char *name;
-  int length;
+  
   if(!chName || chNum > this->GetNumberOfChannels())
     {
     return 0;
@@ -400,7 +400,7 @@ int vtkLSMReader::SetChannelName(const char *chName, int chNum)
     this->AllocateChannelNames(this->GetNumberOfChannels());
     }
 
-  length = strlen(chName);
+  size_t length = strlen(chName);
   vtkDebugMacro(<<"length="<<length);
   name = new char[length+1];
   if(!name)

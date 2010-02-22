@@ -1,7 +1,7 @@
 QT4_WRAP_CPP( itkQtAdaptor_MOC itkQtAdaptor.h )
 
 ADD_LIBRARY( itkQt
-  ${LIBS_STYLE}
+  STATIC
   itkQtProgressBar.cxx
   itkQtAdaptor.h
   ${itkQtAdaptor_MOC}

@@ -1,11 +1,16 @@
 ADD_LIBRARY( vtkLSMReader
-  ${LIBS_STYLE}
-  vtkLSMReader.cxx )
+  STATIC
+  vtkLSMReader.cxx 
+)
 
 TARGET_LINK_LIBRARIES( vtkLSMReader
   vtkIO
   vtkFiltering
 )
+
+#SET_PROPERTY( TARGET vtkLSMReader PROPERTY 
+#  LINK_INTERFACE_LIBRARIES ""
+#)
 
 INSTALL( TARGETS vtkLSMReader
   ARCHIVE DESTINATION lib

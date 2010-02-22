@@ -228,8 +228,8 @@ QStringList QTableWidgetChild::ValuesForSelectedRows(QString ColumnName)
 void QTableWidgetChild::DisplayColumnNames( QString TableName,
  std::list<std::string> ColumnNames)
 {
-  int numberCol=ColumnNames.size();
-  this->setColumnCount(numberCol);
+  size_t numberCol=ColumnNames.size();
+  this->setColumnCount( static_cast< int >( numberCol ) );
 
   int i = 0;
   for( std::list<std::string>::iterator iter = ColumnNames.begin();
@@ -287,7 +287,7 @@ void QTableWidgetChild::DisplayContent(GoDBTableWidgetContainer* iLinkToRowConta
         {
         if (NbofRows == 0)
           {
-          NbofRows = RowContainer[i].second.size();
+          NbofRows = static_cast< unsigned int >( RowContainer[i].second.size() );
           this->setRowCount(NbofRows);
           RowsCountSet = true;
           }
