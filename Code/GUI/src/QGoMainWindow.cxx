@@ -203,9 +203,10 @@ void QGoMainWindow::on_actionOpen_MegaCapture_Files_triggered()
         {
         return;
         }
+      int TimePoint = importer->GetOutput().get<m_TCoord>().begin()->m_TCoord;
 
       CreateNewTabFor3DwtImage( importer->GetOutput(), filetype,
-        importer->GetHeaderFilename(), 0 );
+        importer->GetHeaderFilename(), TimePoint );
       }
     }
 }
@@ -301,8 +302,9 @@ void QGoMainWindow::openFilesfromDB()
 
   // note: do not need to call w3t->Update(); since it is internally called
   // when using CreateNewTabFor3DwtImage
+  int TimePoint = file_container.get< m_TCoord >().begin()->m_TCoord;
   QGoTabImageView3DwT* w3t = CreateNewTabFor3DwtImage( file_container,
-    filetype, header_filename, 0 );
+    filetype, header_filename, TimePoint );
 
   QObject::connect( w3t, SIGNAL( UpdateBookmarkOpenActions( std::vector<QAction*> ) ),
     this->m_TabManager, SLOT( UpdateBookmarkMenu( std::vector<QAction*> ) ) );
