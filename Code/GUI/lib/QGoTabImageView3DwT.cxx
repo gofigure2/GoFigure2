@@ -290,7 +290,7 @@ CreateDataBaseTablesConnection()
   QObject::connect( this->m_DataBaseTables,
     SIGNAL( PrintExistingColorsFromDB(
       std::list<std::pair<std::string,std::vector<int> > >) ),
-      this->m_VisuDockWidget->ColorTraceComboBox, 
+      this->m_VisuDockWidget->ColorTraceComboBox,
     SLOT( setExistingColors(
        std::list<std::pair<std::string,std::vector<int> > >) ) );
 
@@ -300,7 +300,7 @@ CreateDataBaseTablesConnection()
 
   QObject::connect( this->m_VisuDockWidget->ColorTraceComboBox,
     SIGNAL( NewColorToBeSaved(std::vector<std::string>)),
-    this->m_DataBaseTables, 
+    this->m_DataBaseTables,
     SLOT( SaveNewColorInDB(std::vector<std::string> ) ) );
 
   QObject::connect( this->m_VisuDockWidget->ColorIDCollectionComboBox,
@@ -537,7 +537,7 @@ CreateAllViewActions()
   separator5->setSeparator( true );
   this->m_ViewActions.push_back( separator5 );
 
-  QAction* ActionDisplayAnnotations = 
+  QAction* ActionDisplayAnnotations =
     new QAction( tr( "Display annotations" ), this );
   ActionDisplayAnnotations->setCheckable( true );
   ActionDisplayAnnotations->setChecked( true );
@@ -553,7 +553,7 @@ CreateAllViewActions()
 
   this->m_ViewActions.push_back( ActionDisplayAnnotations );
 
-  QAction* ActionDisplaySplinePlanes = 
+  QAction* ActionDisplaySplinePlanes =
     new QAction( tr( "Display spline planes" ), this );
   ActionDisplaySplinePlanes->setCheckable( true );
   ActionDisplaySplinePlanes->setChecked( true );
@@ -616,7 +616,7 @@ CreateAllViewActions()
 
   QObject::connect( ScalarBarAction, SIGNAL( toggled( bool ) ),
     this, SLOT( ShowScalarBar( bool ) ) );
-  
+
   QPixmap Pix(16, 16);
   Pix.fill(Qt::black);
   m_BackgroundColorAction = new QAction(Pix, tr("Set Background Color"), this );
@@ -722,7 +722,7 @@ void QGoTabImageView3DwT::CreateBookmarkActions()
   QObject::connect(DeleteBookmarkAction,SIGNAL ( triggered() ),
     this->m_DataBaseTables,SLOT( DeleteBookmarks()));
   QObject::connect(this->m_DataBaseTables, SIGNAL (PrintDBReady()),
-    this, SLOT(GetTheOpenBookmarksActions()));   
+    this, SLOT(GetTheOpenBookmarksActions()));
   QObject::connect(this->m_DataBaseTables, SIGNAL(OpenBookmarksToUpdate()),
     this, SLOT(GetTheOpenBookmarksActions()));
 }
@@ -736,8 +736,8 @@ void QGoTabImageView3DwT::GetTheOpenBookmarksActions()
     this->m_BookmarkActions.erase(
       this->m_BookmarkActions.begin()+this->m_BookmarkActions.size()-1);
     UpdateOpenBookmarks = true;
-    } 
-  NamesDescrContainerType ListBookmarks = 
+    }
+  NamesDescrContainerType ListBookmarks =
     this->m_DataBaseTables->GetListBookmarks();
   size_t NumberBookmarks = ListBookmarks.size();
   QMenu* OpenBookmarkMenu = new QMenu(tr("Open a bookmark"), this);
@@ -907,17 +907,6 @@ SetLSMReader( vtkLSMReader* iReader,
 
     int dim[5];
     m_LSMReader[0]->GetDimensions( dim );
-    m_VisuDockWidget->SetXMinimumAndMaximum( 0, dim[0] - 1 );
-    m_VisuDockWidget->SetXSlice( ( dim[0] - 1 ) / 2 );
-
-    m_VisuDockWidget->SetYMinimumAndMaximum( 0, dim[1] - 1 );
-    m_VisuDockWidget->SetYSlice( ( dim[1] - 1 ) / 2 );
-
-    m_VisuDockWidget->SetZMinimumAndMaximum( 0, dim[2] - 1 );
-    m_VisuDockWidget->SetZSlice( ( dim[2] - 1 ) / 2 );
-
-    m_VisuDockWidget->SetTMinimumAndMaximum( 0, dim[3] - 1 );
-    m_VisuDockWidget->SetTSlice( iTimePoint );
 
     int NumberOfChannels = m_LSMReader[0]->GetNumberOfChannels();
 
@@ -938,10 +927,17 @@ SetLSMReader( vtkLSMReader* iReader,
         }
       }
 
-    if( m_TimePoint != iTimePoint )
-      {
-      SetTimePoint( iTimePoint );
-      }
+    m_VisuDockWidget->SetXMinimumAndMaximum( 0, dim[0] - 1 );
+    m_VisuDockWidget->SetXSlice( ( dim[0] - 1 ) / 2 );
+
+    m_VisuDockWidget->SetYMinimumAndMaximum( 0, dim[1] - 1 );
+    m_VisuDockWidget->SetYSlice( ( dim[1] - 1 ) / 2 );
+
+    m_VisuDockWidget->SetZMinimumAndMaximum( 0, dim[2] - 1 );
+    m_VisuDockWidget->SetZSlice( ( dim[2] - 1 ) / 2 );
+
+    m_VisuDockWidget->SetTMinimumAndMaximum( 0, dim[3] - 1 );
+    m_VisuDockWidget->SetTSlice( iTimePoint );
 
 #if defined( ENABLEFFMPEG ) || defined( ENABLEAVI )
       m_VideoRecorderWidget->SetXMinAndMax( 0, dim[0] - 1 );
@@ -987,22 +983,9 @@ SetMegaCaptureFile(
   int extent[6];
   temp->GetExtent( extent );
 
-  m_VisuDockWidget->SetXMinimumAndMaximum( extent[0], extent[1] );
-  m_VisuDockWidget->SetXSlice( ( extent[0] + extent[1] ) / 2 );
-
-  m_VisuDockWidget->SetYMinimumAndMaximum( extent[2], extent[3] );
-  m_VisuDockWidget->SetYSlice( ( extent[2] + extent[3] ) / 2 );
-
-  m_VisuDockWidget->SetZMinimumAndMaximum( extent[4], extent[5] );
-  m_VisuDockWidget->SetZSlice( ( extent[4] + extent[5] ) / 2 );
-
-  m_VisuDockWidget->SetTMinimumAndMaximum( min_t, max_t );
-  m_VisuDockWidget->SetTSlice( iTimePoint );
-
   m_VisuDockWidget->SetNumberOfChannels( NumberOfChannels );
 
   // Set up QSpinBox in m_VideoRecorderWidget
-
   if( NumberOfChannels > 1 )
     {
     m_VisuDockWidget->SetChannel( 0 );
@@ -1014,10 +997,17 @@ SetMegaCaptureFile(
       }
     }
 
-  if( static_cast< unsigned int >( m_TimePoint ) != iTimePoint )
-    {
-    SetTimePoint( iTimePoint );
-    }
+  m_VisuDockWidget->SetXMinimumAndMaximum( extent[0], extent[1] );
+  m_VisuDockWidget->SetXSlice( ( extent[0] + extent[1] ) / 2 );
+
+  m_VisuDockWidget->SetYMinimumAndMaximum( extent[2], extent[3] );
+  m_VisuDockWidget->SetYSlice( ( extent[2] + extent[3] ) / 2 );
+
+  m_VisuDockWidget->SetZMinimumAndMaximum( extent[4], extent[5] );
+  m_VisuDockWidget->SetZSlice( ( extent[4] + extent[5] ) / 2 );
+
+  m_VisuDockWidget->SetTMinimumAndMaximum( min_t, max_t );
+  m_VisuDockWidget->SetTSlice( iTimePoint );
 
   // Set up QSpinBox in m_VideoRecorderWidget
 #if defined( ENABLEFFMPEG ) || defined( ENABLEAVI )
@@ -2024,7 +2014,7 @@ PassInfoForDBForCurrentSelectedColor()
     this->m_VisuDockWidget->ColorTraceComboBox->GetCurrentColorData());
 
 }
-//-------------------------------------------------------------------------  
+//-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void
@@ -2388,7 +2378,7 @@ GetTimePoint() const
 
 //-------------------------------------------------------------------------
 void QGoTabImageView3DwT::AddBookmark()
-{ 
+{
   this->m_DataBaseTables->AddBookmark(this->GetSliceViewYZ(),
     this->GetSliceViewXZ(),this->GetSliceViewXY(),this->GetTimePoint());
 }
