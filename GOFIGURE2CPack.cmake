@@ -1,6 +1,5 @@
 # setup CPack
 
-#INCLUDE( InstallRequiredSystemLibraries )
 INCLUDE( ${GOFIGURE2_SOURCE_DIR}/CMake/InstallSupportLibraries.cmake )
 
 CONFIGURE_FILE( "${GOFIGURE2_SOURCE_DIR}/GOFIGURE2CPackOptions.cmake.in"
@@ -72,6 +71,12 @@ SET( CPACK_PACKAGE_EXECUTABLES "gofigure" "GoFigure2" )
 # # # # cygwin specific packaging stuff
 # # IF(CYGWIN)
 # # ENDIF( CYGWIN )
+
+IF( WIN32 )
+	INSTALL( PROGRAMS ${CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS} 
+		DESTINATION bin COMPONENT Runtime )
+ENDIF( WIN32 )
+
 
 SET( CPACK_COMPONENTS_ALL
   Runtime
