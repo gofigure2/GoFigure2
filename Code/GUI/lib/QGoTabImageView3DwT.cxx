@@ -938,6 +938,10 @@ SetLSMReader( vtkLSMReader* iReader,
 
     m_VisuDockWidget->SetTMinimumAndMaximum( 0, dim[3] - 1 );
     m_VisuDockWidget->SetTSlice( iTimePoint );
+    if( static_cast< unsigned int >( m_TimePoint ) != iTimePoint ) 
+    { 
+	 	    SetTimePoint( iTimePoint ); 
+    } 
 
 #if defined( ENABLEFFMPEG ) || defined( ENABLEAVI )
       m_VideoRecorderWidget->SetXMinAndMax( 0, dim[0] - 1 );
@@ -1008,6 +1012,11 @@ SetMegaCaptureFile(
 
   m_VisuDockWidget->SetTMinimumAndMaximum( min_t, max_t );
   m_VisuDockWidget->SetTSlice( iTimePoint );
+
+  if( static_cast< unsigned int >( m_TimePoint ) != iTimePoint ) 
+    { 
+	 	    SetTimePoint( iTimePoint ); 
+    } 
 
   // Set up QSpinBox in m_VideoRecorderWidget
 #if defined( ENABLEFFMPEG ) || defined( ENABLEAVI )
