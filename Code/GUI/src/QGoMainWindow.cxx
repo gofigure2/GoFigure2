@@ -336,7 +336,7 @@ void QGoMainWindow::openFilesfromDB()
           contourmesh_list_it->TCoord, // timepoint
           false ); // not to be saved in the database
 
-      if( contourmesh_list_it->TCoord != 0 )
+      if( contourmesh_list_it->TCoord != TimePoint )
         {
         temp_time_set.insert( contourmesh_list_it->TCoord );
         }

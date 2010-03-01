@@ -265,7 +265,11 @@ IF( VTK_FOUND )
     IF( BUILD_EXAMPLES )
       INCLUDE( CTest )
     ENDIF( BUILD_EXAMPLES )
-    
+   
+    IF( BUILD_TESTING )
+      SET( BUILDNAME "${BUILDNAME}" CACHE STRING "Name of build on the dashboard" )
+      MARK_AS_ADVANCED( BUILDNAME )
+    ENDIF( BUILD_TESTING ) 
 
     SET( QGoResourceFile ${GOFIGURE2_SOURCE_DIR}/Resources/axes.qrc )
 

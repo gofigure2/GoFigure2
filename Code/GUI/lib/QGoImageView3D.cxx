@@ -82,6 +82,7 @@ QGoImageView3D( QWidget* iParent ) :
   QGoImageView( iParent ),
   IsFullScreen( 0 ),
   m_FirstRender( true ),
+  m_Initialized( false ),
   m_ShowAnnotations( true ),
   m_ShowSplinePlane( true ),
   m_ShowCube( true )
@@ -429,7 +430,14 @@ void QGoImageView3D::SetImage( vtkImageData* input )
     }
   else
     {
-    this->m_Image = input;
+    int dim[3];
+    input->GetDimensions( dim );
+
+    if( dim[0] + dim[1] + dim[2] > 0 )
+      {
+      m_Initialized = true;
+      this->m_Image = input;
+      }
     }
 }
 //-------------------------------------------------------------------------
@@ -727,13 +735,16 @@ void QGoImageView3D::resizeEvent( QResizeEvent* iEvent )
  */
 void QGoImageView3D::SetSliceViewXY( const int& iSlice )
 {
-  int s = GetSliceViewXY();
-
-  if( iSlice != s )
+  if( m_Initialized )
     {
-    this->m_Pool->GetItem( 0 )->SetSlice( iSlice );
-    this->m_Pool->SyncRender();
-    emit SliceViewXYChanged( iSlice );
+    int s = GetSliceViewXY();
+
+    if( iSlice != s )
+      {
+      this->m_Pool->GetItem( 0 )->SetSlice( iSlice );
+      this->m_Pool->SyncRender();
+      emit SliceViewXYChanged( iSlice );
+      }
     }
 }
 //-------------------------------------------------------------------------
@@ -756,13 +767,16 @@ int QGoImageView3D::GetSliceViewXY() const
  */
 void QGoImageView3D::SetSliceViewXZ( const int& iSlice )
 {
-  int s = GetSliceViewXZ();
-
-  if( s != iSlice )
+  if( m_Initialized )
     {
-    this->m_Pool->GetItem( 1 )->SetSlice( iSlice );
-    this->m_Pool->SyncRender();
-    emit SliceViewXZChanged( iSlice );
+    int s = GetSliceViewXZ();
+
+    if( s != iSlice )
+      {
+      this->m_Pool->GetItem( 1 )->SetSlice( iSlice );
+      this->m_Pool->SyncRender();
+      emit SliceViewXZChanged( iSlice );
+      }
     }
 }
 //-------------------------------------------------------------------------
@@ -783,13 +797,16 @@ int QGoImageView3D::GetSliceViewXZ() const
  */
 void QGoImageView3D::SetSliceViewYZ( const int& iSlice )
 {
-  int s = GetSliceViewYZ();
-
-  if( s != iSlice )
+  if( m_Initialized )
     {
-    this->m_Pool->GetItem( 2 )->SetSlice( iSlice );
-    this->m_Pool->SyncRender();
-    emit SliceViewYZChanged( iSlice );
+    int s = GetSliceViewYZ();
+
+    if( s != iSlice )
+      {
+      this->m_Pool->GetItem( 2 )->SetSlice( iSlice );
+      this->m_Pool->SyncRender();
+      emit SliceViewYZChanged( iSlice );
+      }
     }
 }
 //-------------------------------------------------------------------------
@@ -809,12 +826,15 @@ int QGoImageView3D::GetSliceViewYZ() const
  */
 void QGoImageView3D::MoveSliderXY( )
 {
-  int s = GetSliceViewXY();
-
-  if( s != this->SliderXY->value() )
+  if( m_Initialized )
     {
-    this->SliderXY->setValue( s );
-    emit SliceViewXYChanged( s );
+    int s = GetSliceViewXY();
+
+    if( s != this->SliderXY->value() )
+      {
+      this->SliderXY->setValue( s );
+      emit SliceViewXYChanged( s );
+      }
     }
 }
 //-------------------------------------------------------------------------
@@ -825,14 +845,16 @@ void QGoImageView3D::MoveSliderXY( )
  */
 void QGoImageView3D::MoveSliderXZ( )
 {
-  int s = GetSliceViewXZ();
-
-  if( s != this->SliderXZ->value() )
+  if( m_Initialized )
     {
-    this->SliderXZ->setValue( s );
-    emit SliceViewXZChanged( s );
-    }
+    int s = GetSliceViewXZ();
 
+    if( s != this->SliderXZ->value() )
+      {
+      this->SliderXZ->setValue( s );
+      emit SliceViewXZChanged( s );
+      }
+    }
 }
 //-------------------------------------------------------------------------
 
@@ -842,12 +864,15 @@ void QGoImageView3D::MoveSliderXZ( )
  */
 void QGoImageView3D::MoveSliderYZ( )
 {
-  int s = GetSliceViewYZ();
-
-  if( s != this->SliderYZ->value() )
+  if( m_Initialized )
     {
-    this->SliderYZ->setValue( s );
-    emit SliceViewYZChanged( s );
+    int s = GetSliceViewYZ();
+
+    if( s != this->SliderYZ->value() )
+      {
+      this->SliderYZ->setValue( s );
+      emit SliceViewYZChanged( s );
+      }
     }
 }
 //-------------------------------------------------------------------------
@@ -1163,7 +1188,7 @@ UpdateRenderWindows()
   ren->Render();
 }
 
-//--------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 
 void
 QGoImageView3D::
@@ -1194,3 +1219,4 @@ SetCamera( int iView )
   this->View3D->Render();
   camera->Delete();
 }
+

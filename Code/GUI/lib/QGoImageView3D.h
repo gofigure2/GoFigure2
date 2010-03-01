@@ -193,6 +193,7 @@ protected:
   vtkEventQtSlotConnect*    VtkEventQtConnector;
   int                       IsFullScreen;
   bool                      m_FirstRender;
+  bool                      m_Initialized;
 
   vtkProperty* m_HighlightedContourProperty;
 

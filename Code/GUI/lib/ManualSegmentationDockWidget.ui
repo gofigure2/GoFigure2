@@ -6,14 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>134</width>
-    <height>258</height>
+    <width>164</width>
+    <height>241</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>123</width>
-    <height>237</height>
+    <width>164</width>
+    <height>241</height>
    </size>
   </property>
   <property name="allowedAreas">
@@ -48,34 +48,17 @@
        </layout>
       </item>
       <item>
-       <widget class="QPushButton" name="SettingsBtn">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="text">
-         <string>Settings...</string>
-        </property>
-       </widget>
-      </item>
-      <item>
        <layout class="QVBoxLayout" name="verticalLayout_2">
-        <item>
-         <widget class="QPushButton" name="ReinitializeBtn">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
-          <property name="text">
-           <string>Reinit.</string>
-          </property>
-          <property name="shortcut">
-           <string>Ctrl+R</string>
-          </property>
-         </widget>
-        </item>
         <item>
          <widget class="QPushButton" name="ValidateBtn">
           <property name="enabled">
            <bool>false</bool>
+          </property>
+          <property name="toolTip">
+           <string>Validate Contour</string>
+          </property>
+          <property name="statusTip">
+           <string/>
           </property>
           <property name="text">
            <string>Validate</string>
@@ -86,21 +69,37 @@
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="ReinitializeIncrementBtn">
+         <widget class="QPushButton" name="ReinitializeBtn">
           <property name="enabled">
            <bool>false</bool>
           </property>
+          <property name="toolTip">
+           <string>Reinitialize Contour</string>
+          </property>
           <property name="text">
-           <string>Reinit. + Incr.</string>
+           <string>Reinit</string>
           </property>
           <property name="shortcut">
-           <string>Ctrl+I</string>
+           <string>Ctrl+R</string>
           </property>
          </widget>
         </item>
        </layout>
       </item>
      </layout>
+    </item>
+    <item row="1" column="0">
+     <widget class="QPushButton" name="SettingsBtn">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="toolTip">
+       <string>Change Contour Settings</string>
+      </property>
+      <property name="text">
+       <string>Settings ...</string>
+      </property>
+     </widget>
     </item>
    </layout>
   </widget>
@@ -152,22 +151,6 @@
     <hint type="destinationlabel">
      <x>117</x>
      <y>233</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>OffRBtn</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>ReinitializeIncrementBtn</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>96</x>
-     <y>80</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>93</x>
-     <y>263</y>
     </hint>
    </hints>
   </connection>

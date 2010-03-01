@@ -70,7 +70,6 @@ public slots:
 signals:
   void ReinitializePressed();
   void ValidatePressed();
-  void ReinitializeAndIncrementPressed();
   void ActivateManualSegmentationToggled( bool );
   void ContourRepresentationPropertiesChanged();
 
