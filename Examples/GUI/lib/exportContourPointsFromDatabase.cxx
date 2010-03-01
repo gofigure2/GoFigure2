@@ -2,6 +2,10 @@
 #include "QGoPrintDatabase.h"
 #include "ContourMeshStructure.h"
 #include "ContourMeshStructureHelper.h"
+#include "vtkPolyDataWriter.h"
+#include "vtkSmartPointer.h"
+#include <sstream>
+#include <string>
 
 int main( int argc, char** argv )
 {
@@ -23,12 +27,26 @@ int main( int argc, char** argv )
   win->SetDatabaseVariables( argv[1], argv[2], argv[3],argv[4], atoi( argv[5] ), argv[6] );
   win->FillTableFromDatabase();
   ContourMeshVectorType* contours = win->GetTracesInfoListForVisu( "contour" );
+  std::cout << contours->size() << std::endl;
 
+  unsigned int contourId, meshId, timePt;
   ContourMeshIteratorType It = contours->begin();
-
   while( It != contours->end() )
   {
-    std::cout << (*It).Nodes << std::endl;
+    contourId = (*It).TraceID;
+    meshId = (*It).CollectionID;
+    timePt = (*It).TCoord;
+
+    std::stringstream out;
+    out << meshId << '_' << timePt;
+
+    std::string name = out.str() + ".vtk";
+    vtkSmartPointer<vtkPolyDataWriter> writer =
+      vtkSmartPointer<vtkPolyDataWriter>::New();
+    writer->SetInput( (*It).Nodes );
+    writer->SetFileName( name.c_str() );
+    writer->Write();
+
     ++It;
   }
 
