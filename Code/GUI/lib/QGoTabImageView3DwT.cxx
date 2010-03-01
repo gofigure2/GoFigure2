@@ -2216,7 +2216,7 @@ HighLightContoursFromTable( )
   while( it != this->m_DataBaseTables->GetTracesInfoListForVisu("contour")->end() )
     {
     trace_id = it->TraceID;
-    std::cout <<it->TCoord <<std::endl;
+//     std::cout <<it->TCoord <<std::endl;
 
     ContourMeshStructureMultiIndexContainer::index< TraceID >::type::iterator
         traceid_it = m_ContourMeshContainer.get< TraceID >().find( trace_id );
