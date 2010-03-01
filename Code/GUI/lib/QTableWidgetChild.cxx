@@ -177,10 +177,10 @@ void QTableWidgetChild::SetSelectRowTraceID (std::string TraceName,
 {
   //first set all the highlighted traces to false:
   unsigned int i = 0;
-  for( i=0; i < ioTracesInfo->size(); i++ )
-    {
-    (*ioTracesInfo)[i].Highlighted = false;
-    }
+  //for( i=0; i < ioTracesInfo->size(); i++ )
+   // {
+    //(*ioTracesInfo)[i].Highlighted = false;
+   // }
 
   //get the selected TraceID:
   std::list<int> SelectedTraces = this->GetListCheckedTraceID();
@@ -192,6 +192,10 @@ void QTableWidgetChild::SetSelectRowTraceID (std::string TraceName,
     {
     for(i = 0; i<ioTracesInfo->size();i++)
       {
+      if ((*ioTracesInfo)[i].Highlighted == true)
+        {
+        (*ioTracesInfo)[i].Highlighted = false;
+        }
       if( (*ioTracesInfo)[i].TraceID == static_cast< unsigned int >( *iter ) )
         {
         (*ioTracesInfo)[i].Highlighted = true;
