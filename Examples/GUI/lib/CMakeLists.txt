@@ -19,7 +19,6 @@ SET( QGOGUILIB_EXAMPLE_SRC
   QGoLsmToMegaExportDialogTest
   QGoLsmToMegaExportThreadTest
   QGoDBCreateBookmarkDialogTest
-  exportContourPointsFromDatabase
 )
 
 #---------------------------------------------------------------------------

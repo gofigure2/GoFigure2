@@ -59,7 +59,7 @@
      <x>0</x>
      <y>0</y>
      <width>1434</width>
-     <height>27</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -94,6 +94,24 @@
      <addaction name="menuSingle_Files"/>
      <addaction name="menuMultiple_Files"/>
     </widget>
+    <widget class="QMenu" name="menuImport">
+     <property name="title">
+      <string>Import</string>
+     </property>
+     <addaction name="actionImportContour"/>
+     <addaction name="actionImportMesh"/>
+     <addaction name="actionImportTrack"/>
+     <addaction name="actionImportLineage"/>
+    </widget>
+    <widget class="QMenu" name="menuExport_2">
+     <property name="title">
+      <string>Export</string>
+     </property>
+     <addaction name="actionExportContour"/>
+     <addaction name="actionExportMesh"/>
+     <addaction name="actionExportTrack"/>
+     <addaction name="actionExportLineage"/>
+    </widget>
     <addaction name="actionOpen_Single_File"/>
     <addaction name="actionOpen_MegaCapture_Files"/>
     <addaction name="menuOpen_Recent_Files"/>
@@ -106,8 +124,11 @@
     <addaction name="actionExport_LSM_to_MegaFile"/>
     <addaction name="separator"/>
     <addaction name="actionClose"/>
-    <addaction name="actionClose_all"/>
     <addaction name="separator"/>
+    <addaction name="menuExport_2"/>
+    <addaction name="menuImport"/>
+    <addaction name="separator"/>
+    <addaction name="actionClose_all"/>
     <addaction name="actionQuit"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
@@ -265,7 +286,7 @@
     <string>Close</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+W</string>
+    <string>Ctrl+C</string>
    </property>
   </action>
   <action name="actionAbout">
@@ -414,10 +435,52 @@
     <string>Export LSM to MegaCapture</string>
    </property>
   </action>
+  <action name="actionContour">
+   <property name="text">
+    <string>Contour</string>
+   </property>
+  </action>
+  <action name="actionExportContour">
+   <property name="text">
+    <string>Contour</string>
+   </property>
+  </action>
+  <action name="actionExportMesh">
+   <property name="text">
+    <string>Mesh</string>
+   </property>
+  </action>
+  <action name="actionExportTrack">
+   <property name="text">
+    <string>Track</string>
+   </property>
+  </action>
+  <action name="actionExportLineage">
+   <property name="text">
+    <string>Lineage</string>
+   </property>
+  </action>
+  <action name="actionImportContour">
+   <property name="text">
+    <string>Contour</string>
+   </property>
+  </action>
+  <action name="actionImportMesh">
+   <property name="text">
+    <string>Mesh</string>
+   </property>
+  </action>
+  <action name="actionImportTrack">
+   <property name="text">
+    <string>Track</string>
+   </property>
+  </action>
+  <action name="actionImportLineage">
+   <property name="text">
+    <string>Lineage</string>
+   </property>
+  </action>
  </widget>
- <tabstops>
-  <tabstop>CentralTabWidget</tabstop>
- </tabstops>
  <resources>
   <include location="../../../Resources/axes.qrc"/>
  </resources>

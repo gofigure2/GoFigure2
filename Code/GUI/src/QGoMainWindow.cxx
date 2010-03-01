@@ -45,6 +45,8 @@
 #include "QGoTabImageView3DwT.h"
 #include "QGoPrintDatabase.h"
 
+#include "ContourMeshStructure.h"
+
 // Plugin stuff
 #include "QGoPluginHelper.h"
 #include "QGoImageFilterPluginBase.h"
@@ -53,6 +55,7 @@
 #include <set>
 
 // Qt includes
+#include <QDir>
 #include <QDesktopServices>
 #include <QUrl>
 #include <QFileDialog>
@@ -82,6 +85,8 @@
 #include "vtkImageData.h"
 #include "vtkImageReader2Factory.h"
 #include "vtkImageReader2.h"
+#include "vtkPolyDataWriter.h"
+#include "vtkSmartPointer.h"
 
 #include "QGoTabManager.h"
 #include "QGoWizardDB.h"
@@ -119,6 +124,8 @@ QGoMainWindow::QGoMainWindow( )
   CreateSignalSlotsConnection();
   ReadSettings();
   //LoadPlugins();
+
+  // TODO: Disable Import/Export action items in the GUI
 }
 
 //--------------------------------------------------------------------------
@@ -160,7 +167,6 @@ void QGoMainWindow::CreateSignalSlotsConnection()
 
   QObject::connect( m_DBWizard, SIGNAL( accepted() ),
     this, SLOT( openFilesfromDB() ) );
-
 }
 
 //--------------------------------------------------------------------------
@@ -177,8 +183,87 @@ void QGoMainWindow::on_actionOpen_Single_File_triggered( )
     this->SetSingleFileName( filename );
     }
 }
-//--------------------------------------------------------------------------
 
+//--------------------------------------------------------------------------
+void QGoMainWindow::on_actionExportContour_triggered( )
+{
+  typedef std::vector<ContourMeshStructure> ContourMeshVectorType;
+  typedef ContourMeshVectorType::iterator ContourMeshIteratorType;
+
+  // TODO: check if the database is open
+  if ( this->m_DBWizard )
+  {
+    QGoPrintDatabase* win = new QGoPrintDatabase();
+    win->SetDatabaseVariables(
+      "gofiguredatabase", m_DBWizard->GetServer().toStdString(),
+      m_DBWizard->GetLogin().toStdString(), m_DBWizard->GetPassword().toStdString(),
+      m_DBWizard->GetImagingSessionID(), m_DBWizard->GetImagingSessionName().toStdString() );
+
+    win->FillTableFromDatabase();
+    ContourMeshVectorType* contours = win->GetTracesInfoListForVisu( "contour" );
+    std::cout << contours->size() << std::endl;
+
+    QString directory = QFileDialog::getExistingDirectory(
+      this,
+      tr( "Select Directory" ),"" );
+
+    std::string dir = directory.toStdString();
+
+    if( !dir.empty() )
+    {
+      unsigned int contourId, meshId, timePt;
+      ContourMeshIteratorType It = contours->begin();
+      while( It != contours->end() )
+      {
+        contourId = (*It).TraceID;
+        meshId = (*It).CollectionID;
+        timePt = (*It).TCoord;
+
+        std::stringstream out;
+        out << dir << '/' << meshId << '_' << timePt;
+
+        std::string name = out.str() + ".vtk";
+        std::cout << name << std::endl;
+        vtkSmartPointer<vtkPolyDataWriter> writer =
+          vtkSmartPointer<vtkPolyDataWriter>::New();
+        writer->SetInput( (*It).Nodes );
+        writer->SetFileName( name.c_str() );
+        writer->Write();
+
+        ++It;
+      }
+    }
+    delete win;
+  }
+}
+
+//--------------------------------------------------------------------------
+void QGoMainWindow::on_actionExportMesh_triggered( )
+{}
+
+//--------------------------------------------------------------------------
+void QGoMainWindow::on_actionExportTrack_triggered( )
+{}
+
+//--------------------------------------------------------------------------
+void QGoMainWindow::on_actionExportLineage_triggered( )
+{}
+
+//--------------------------------------------------------------------------
+void QGoMainWindow::on_actionImportContour_triggered( )
+{}
+
+//--------------------------------------------------------------------------
+void QGoMainWindow::on_actionImportMesh_triggered( )
+{}
+
+//--------------------------------------------------------------------------
+void QGoMainWindow::on_actionImportTrack_triggered( )
+{}
+
+//--------------------------------------------------------------------------
+void QGoMainWindow::on_actionImportLineage_triggered( )
+{}
 
 //--------------------------------------------------------------------------
 void QGoMainWindow::on_actionOpen_MegaCapture_Files_triggered()
@@ -210,7 +295,6 @@ void QGoMainWindow::on_actionOpen_MegaCapture_Files_triggered()
       }
     }
 }
-//--------------------------------------------------------------------------
 
 
 //--------------------------------------------------------------------------
@@ -336,7 +420,7 @@ void QGoMainWindow::openFilesfromDB()
           contourmesh_list_it->TCoord, // timepoint
           false ); // not to be saved in the database
 
-      if( contourmesh_list_it->TCoord != TimePoint )
+      if( contourmesh_list_it->TCoord != static_cast<unsigned int>( TimePoint ) )
         {
         temp_time_set.insert( contourmesh_list_it->TCoord );
         }
@@ -895,7 +979,7 @@ void QGoMainWindow::ApplyImageFilter()
 
   QGoTabImageViewNDBase* WnD = dynamic_cast< QGoTabImageViewNDBase* >( w );
   if( WnD )
-    {  
+    {
     filter->SetInput( WnD->GetImage() );
     filter->Update();
     }
