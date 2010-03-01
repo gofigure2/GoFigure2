@@ -58,7 +58,8 @@ int main(int argc, char * argv[])
   QCoreApplication::setOrganizationName("MegasonLab");
   QCoreApplication::setOrganizationDomain( "http://gofigure2.sourceforge.net" );
 
-  OpenDatabaseConnection( "localhost", "gofigure", "gofigure", "gofiguredatabase" );
+  vtkMySQLDatabase* connector = OpenDatabaseConnection( "localhost", 
+    "gofigure", "gofigure", "gofiguredatabase" );
 
   QGoDBBookmarkManager* win = new QGoDBBookmarkManager(0,1);
 
@@ -80,6 +81,7 @@ int main(int argc, char * argv[])
   app.closeAllWindows();
   delete timer;
   delete win;
+  connector->Delete();
 
   return output;
 }

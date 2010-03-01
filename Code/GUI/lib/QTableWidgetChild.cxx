@@ -175,33 +175,37 @@ void QTableWidgetChild::SetSelectRowTraceID (std::string TraceName,
   std::string TraceName,
   std::vector<ContourMeshStructure>* ioTracesInfo )
 {
-  //first set all the highlighted traces to false:
-  unsigned int i = 0;
-  //for( i=0; i < ioTracesInfo->size(); i++ )
-   // {
-    //(*ioTracesInfo)[i].Highlighted = false;
-   // }
-
   //get the selected TraceID:
   std::list<int> SelectedTraces = this->GetListCheckedTraceID();
 
-  //then, set to IsHighlight the selected ones:
-  std::list<int>::iterator iter = SelectedTraces.begin();
+  std::list<int>::iterator selected_begin = SelectedTraces.begin();
 
-  while(iter != SelectedTraces.end())
+  std::vector<ContourMeshStructure>::iterator traceinfo_it = ioTracesInfo->begin();
+
+  while( traceinfo_it != ioTracesInfo->end() )
     {
-    for(i = 0; i<ioTracesInfo->size();i++)
+    //then, set to IsHighlight the selected ones:
+    std::list<int>::iterator iter = selected_begin;
+
+    bool found = false;
+    unsigned int t_id = (*traceinfo_it).TraceID;
+
+    while( iter != SelectedTraces.end() )
       {
-      if ((*ioTracesInfo)[i].Highlighted == true)
+      if( t_id == static_cast< unsigned int >( *iter ) )
         {
-        (*ioTracesInfo)[i].Highlighted = false;
+        (*traceinfo_it).Highlighted = true;
+        found = true;
+        break;
         }
-      if( (*ioTracesInfo)[i].TraceID == static_cast< unsigned int >( *iter ) )
-        {
-        (*ioTracesInfo)[i].Highlighted = true;
-        }
+      ++iter;
       }
-    ++iter;
+
+    if( !found )
+      {
+      (*traceinfo_it).Highlighted = false;
+      }
+    ++traceinfo_it;
     }
 }
 //--------------------------------------------------------------------------
