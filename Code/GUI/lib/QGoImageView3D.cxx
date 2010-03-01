@@ -152,6 +152,7 @@ QGoImageView3D::~QGoImageView3D()
     }
   View3D->Delete();
   VtkEventQtConnector->Delete();
+  m_HighlightedContourProperty->Delete();
 }
 //-------------------------------------------------------------------------
 
