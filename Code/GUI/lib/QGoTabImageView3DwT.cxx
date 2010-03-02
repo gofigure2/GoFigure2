@@ -225,15 +225,15 @@ CreateManualSegmentationdockWidget()
     this, SLOT( ReinitializeContour() ) );
 
   QObject::connect( m_ManualSegmentationDockWidget,
-      SIGNAL( ActivateManualSegmentationToggled( bool ) ),
-    this, SLOT( ActivateManualSegmentationEditor( bool ) ) );
-
-  QObject::connect( m_ManualSegmentationDockWidget,
     SIGNAL( ContourRepresentationPropertiesChanged() ),
     this, SLOT( ChangeContourRepresentationProperty() ) );
 
-  this->m_SegmentationActions.push_back(
-    m_ManualSegmentationDockWidget->toggleViewAction() );
+  QAction* tempaction = m_ManualSegmentationDockWidget->toggleViewAction();
+
+  QObject::connect( tempaction, SIGNAL( triggered( bool ) ),
+    this->m_ManualSegmentationDockWidget, SLOT( ActivateManualSegmentation( bool ) ) );    
+
+  this->m_SegmentationActions.push_back( tempaction );
 }
 //-------------------------------------------------------------------------
 

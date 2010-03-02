@@ -7,13 +7,13 @@
     <x>0</x>
     <y>0</y>
     <width>130</width>
-    <height>200</height>
+    <height>130</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>100</width>
-    <height>160</height>
+    <width>111</width>
+    <height>130</height>
    </size>
   </property>
   <property name="allowedAreas">
@@ -25,27 +25,6 @@
   <widget class="QWidget" name="dockWidgetContents">
    <layout class="QGridLayout" name="gridLayout">
     <item row="0" column="0">
-     <layout class="QVBoxLayout" name="verticalLayout">
-      <item>
-       <widget class="QRadioButton" name="OnRBtn">
-        <property name="text">
-         <string>On</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QRadioButton" name="OffRBtn">
-        <property name="text">
-         <string>Off</string>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
-    <item row="1" column="0">
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>
        <widget class="QPushButton" name="ValidateBtn">
@@ -101,54 +80,5 @@
   </widget>
  </widget>
  <resources/>
- <connections>
-  <connection>
-   <sender>OffRBtn</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>SettingsBtn</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>33</x>
-     <y>82</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>71</x>
-     <y>111</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>OffRBtn</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>ReinitializeBtn</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>146</x>
-     <y>82</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>158</x>
-     <y>213</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>OffRBtn</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>ValidateBtn</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>115</x>
-     <y>86</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>117</x>
-     <y>233</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>
