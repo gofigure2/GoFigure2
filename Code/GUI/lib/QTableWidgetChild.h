@@ -130,6 +130,10 @@ public slots:
   void SetSelectRowTraceID (std::string TraceName, int TraceID,
     bool IsSelected);
 
+  /** \bried checked the boxes for the rows where at least one cell 
+  is selected*/
+  void CheckedSelectedRows(std::string iTraceName,
+    std::string iTraceNameID);
   void UpdateTableWidgetDisplayAndVectorCheckedRows(int Row, int Column);
 
   /** \brief modify the ioTracesInfo in order to set the IsHighLighted parameter to false

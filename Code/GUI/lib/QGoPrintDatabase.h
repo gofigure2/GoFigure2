@@ -278,6 +278,7 @@ protected:
 protected slots:
   void CreateContextMenu(const QPoint &pos);
   void DeleteTraces();
+  void CheckedSelectedRows();
 
   /** \brief Create a new Collection row in the collection table and change the
   collection ID of the selected contours to the new CollectionID created:*/

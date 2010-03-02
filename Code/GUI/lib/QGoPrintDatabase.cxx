@@ -283,6 +283,8 @@ void QGoPrintDatabase::CreateContextMenu(const QPoint &iPos)
     .arg(this->m_CurrentCollectionData.first.c_str()),this,SLOT(AddToSelectedCollection()));
   ContextMenu->addAction(tr("ReEdit the checked %1").arg(TraceName.c_str()),
     this,SLOT(ReEditTrace()));
+  ContextMenu->addAction(tr("Checked the selected %1s")
+    .arg(CurrentlyUsedTraceData->TraceName.c_str()),this,SLOT(CheckedSelectedRows()));
   ContextMenu->addAction(tr("Copy Selection"),
     CurrentlyUsedTraceData->Table,SLOT(CopySelection()));
   ContextMenu->addAction(tr("Copy table"),CurrentlyUsedTraceData->Table,SLOT(CopyTable()));
@@ -1346,4 +1348,14 @@ void QGoPrintDatabase::DeleteSubCellType()
   this->m_SubCellTypeManager->DeleteEntity(this->m_DatabaseConnector);
   this->GetListSubCellTypes();
   this->CloseDBConnection();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoPrintDatabase::CheckedSelectedRows()
+{
+  TraceInfoStructure* CurrentlyUsedTraceData = 
+    this->GetTraceInfoStructure(this->InWhichTableAreWe());
+  CurrentlyUsedTraceData->Table->CheckedSelectedRows(CurrentlyUsedTraceData->TraceName,
+    CurrentlyUsedTraceData->TraceNameID);
 }
