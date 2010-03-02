@@ -1757,7 +1757,7 @@ ReinitializeContour()
     {
 	// Enable then initialize the widget
 	m_ContourWidget[i]->SetEnabled(1);
-    m_ContourWidget[i]->Initialize();
+    //m_ContourWidget[i]->Initialize();
     }
 }
 //-------------------------------------------------------------------------
