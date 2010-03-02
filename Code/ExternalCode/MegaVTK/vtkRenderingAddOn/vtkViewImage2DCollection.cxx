@@ -329,18 +329,18 @@ SyncSetZoomAndParallelScale( double Zoom, double ParallelScale )
   this->InitTraversal();
   vtkViewImage2D* item = this->GetNextItem();
   double t = ParallelScale / Zoom;
-  while(item)
-  {
+  while( item )
+    {
     item->SetZoom( Zoom );
     item->GetRenderer()->GetActiveCamera()->SetParallelScale( t );
 
     if( item->GetInteractorStyle()->GetInteractor()->GetLightFollowCamera() )
-    {
+      {
       item->GetRenderer()->UpdateLightsGeometryToFollowCamera();
-    }
+      }
     item->Render();
     item = this->GetNextItem();
-  }
+    }
 }
 
 //----------------------------------------------------------------------------
@@ -352,25 +352,25 @@ void
 vtkViewImage2DCollection::
 SetSplinePlaneActorsVisibility( bool iVisibility )
 {
-	size_t numberOfActors = this->SlicePlaneActors.size();
-// 	vtkstd::vector<vtkQuadricLODActor*>::iterator
+  size_t numberOfActors = this->SlicePlaneActors.size();
+  // vtkstd::vector<vtkQuadricLODActor*>::iterator
   vtkstd::vector<vtkActor*>::iterator SlicePlaneActorsIterator
-	  = SlicePlaneActors.begin();
+    = SlicePlaneActors.begin();
 
-	if( iVisibility )
-		{
-		for(int i=0; i<numberOfActors; i++)
-				{
-			    (*SlicePlaneActorsIterator)->VisibilityOn();
-			    SlicePlaneActorsIterator++;
-				}
-		}
-	else
-		{
-		for(int i=0; i<numberOfActors; i++)
-			{
-		    (*SlicePlaneActorsIterator)->VisibilityOff();
-		    SlicePlaneActorsIterator++;
-			}
-		}
+  if( iVisibility )
+    {
+    for( size_t i = 0; i < numberOfActors; i++ )
+      {
+      (*SlicePlaneActorsIterator)->VisibilityOn();
+      SlicePlaneActorsIterator++;
+      }
+    }
+  else
+    {
+    for( size_t i = 0; i < numberOfActors; i++ )
+      {
+      (*SlicePlaneActorsIterator)->VisibilityOff();
+      SlicePlaneActorsIterator++;
+      }
+    }
 }

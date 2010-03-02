@@ -579,34 +579,40 @@ void vtkViewImage3D::Add2DPhantom(const unsigned int& i,
     }
 
 }
+//----------------------------------------------------------------------------
+
+
 
 //----------------------------------------------------------------------------
 void
 vtkViewImage3D::
 SetBoundsActorsVisibility( bool iVisibility )
 {
-	size_t numberOfActors = this->BoundsActor.size();
-		vtkstd::vector<vtkActor*>::iterator  BoundsActorIterator
-		  = BoundsActor.begin();
+  size_t numberOfActors = this->BoundsActor.size();
+  vtkstd::vector<vtkActor*>::iterator  BoundsActorIterator
+    = BoundsActor.begin();
 
-		if( iVisibility )
-			{
-			for(int i=0; i<numberOfActors; i++)
-					{
-				    (*BoundsActorIterator)->VisibilityOn();
-				    BoundsActorIterator++;
-					}
-			}
-		else
-			{
-			for(int i=0; i<numberOfActors; i++)
-				{
-			    (*BoundsActorIterator)->VisibilityOff();
-			    BoundsActorIterator++;
-				}
-			}
-
+  if( iVisibility )
+    {
+    for( size_t i = 0; i < numberOfActors; i++ )
+      {
+      (*BoundsActorIterator)->VisibilityOn();
+      BoundsActorIterator++;
+      }
+    }
+  else
+    {
+    for( size_t i = 0; i < numberOfActors; i++ )
+      {
+      (*BoundsActorIterator)->VisibilityOff();
+      BoundsActorIterator++;
+      }
+    }
 }
+//----------------------------------------------------------------------------
+
+
+
 //----------------------------------------------------------------------------
 /**
  *

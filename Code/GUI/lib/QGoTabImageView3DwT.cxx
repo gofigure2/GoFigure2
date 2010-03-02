@@ -727,6 +727,9 @@ void QGoTabImageView3DwT::CreateBookmarkActions()
     this, SLOT(GetTheOpenBookmarksActions()));
 }
 //-------------------------------------------------------------------------
+
+
+
 //-------------------------------------------------------------------------
 void QGoTabImageView3DwT::GetTheOpenBookmarksActions()
 {
@@ -734,22 +737,26 @@ void QGoTabImageView3DwT::GetTheOpenBookmarksActions()
   if (this->m_BookmarkActions.size() > 2)
     {
     this->m_BookmarkActions.erase(
-      this->m_BookmarkActions.begin()+this->m_BookmarkActions.size()-1);
+      this->m_BookmarkActions.begin() + this->m_BookmarkActions.size() - 1
+      );
     UpdateOpenBookmarks = true;
     }
   NamesDescrContainerType ListBookmarks =
     this->m_DataBaseTables->GetListBookmarks();
   size_t NumberBookmarks = ListBookmarks.size();
   QMenu* OpenBookmarkMenu = new QMenu(tr("Open a bookmark"), this);
-  for(int i = 0;i<NumberBookmarks; i++)
+  for( size_t i = 0; i < NumberBookmarks; i++ )
     {
-    QAction* OpenBookmarkAction = new QAction(ListBookmarks[i].first.c_str(),this);
+    QAction* OpenBookmarkAction 
+      = new QAction( ListBookmarks[i].first.c_str(), this );
     std::string TextStatusTip = "Description of the bookmark: ";
     TextStatusTip += ListBookmarks[i].second;
-    OpenBookmarkAction->setStatusTip(TextStatusTip.c_str());
-    OpenBookmarkMenu->addAction(OpenBookmarkAction);
-    QObject::connect(OpenBookmarkAction, SIGNAL(triggered()),
-      this, SLOT(OpenExistingBookmark()));
+    OpenBookmarkAction->setStatusTip( TextStatusTip.c_str() );
+    OpenBookmarkMenu->addAction( OpenBookmarkAction );
+    QObject::connect( 
+      OpenBookmarkAction, SIGNAL(triggered()),
+      this, SLOT(OpenExistingBookmark())
+      );
     }
    this->m_BookmarkActions.push_back(OpenBookmarkMenu->menuAction());
    if (UpdateOpenBookmarks)
@@ -758,6 +765,9 @@ void QGoTabImageView3DwT::GetTheOpenBookmarksActions()
      }
 }
 //-------------------------------------------------------------------------
+
+
+
 //-------------------------------------------------------------------------
 void QGoTabImageView3DwT::OpenExistingBookmark()
 {
@@ -886,8 +896,7 @@ GetTabDimensionType( ) const
  */
 void
 QGoTabImageView3DwT::
-SetLSMReader( vtkLSMReader* iReader,
-  const int& iTimePoint )
+SetLSMReader( vtkLSMReader* iReader, const int& iTimePoint )
 {
   if( iReader )
     {
@@ -938,10 +947,10 @@ SetLSMReader( vtkLSMReader* iReader,
 
     m_VisuDockWidget->SetTMinimumAndMaximum( 0, dim[3] - 1 );
     m_VisuDockWidget->SetTSlice( iTimePoint );
-    if( static_cast< unsigned int >( m_TimePoint ) != iTimePoint ) 
-    { 
-	 	    SetTimePoint( iTimePoint ); 
-    } 
+    if( m_TimePoint != iTimePoint ) 
+      { 
+      SetTimePoint( iTimePoint ); 
+      } 
 
 #if defined( ENABLEFFMPEG ) || defined( ENABLEAVI )
       m_VideoRecorderWidget->SetXMinAndMax( 0, dim[0] - 1 );

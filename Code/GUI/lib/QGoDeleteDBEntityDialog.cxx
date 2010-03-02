@@ -101,7 +101,7 @@ QStringList QGoDeleteDBEntityDialog::GetListExistingEntities(
     }
 
   QStringList ListEntities;
-  for (int i=0; i< ResultsQuery.size();i++)
+  for( size_t i = 0; i < ResultsQuery.size(); i++ )
     {
     ListEntities.append(ResultsQuery[i].c_str());
     }
@@ -113,12 +113,16 @@ QStringList QGoDeleteDBEntityDialog::GetListExistingEntities(
 void QGoDeleteDBEntityDialog::SetItemsInTheList(
   vtkMySQLDatabase* iDatabaseConnector)
 {
- QStringList ListNamesEntities = this->GetListExistingEntities(
-   iDatabaseConnector);
- for (int i=0; i<ListNamesEntities.size();i++)
+ QStringList ListNamesEntities 
+   = this->GetListExistingEntities( iDatabaseConnector );
+ for( int i = 0; i < ListNamesEntities.size(); i++ )
    {
-   QListWidgetItem* item = new QListWidgetItem(
-     ListNamesEntities.at(i),this->m_ListWidget);
+   // NOTE ALEX: this is never used
+   QListWidgetItem* item
+      = new QListWidgetItem( ListNamesEntities.at(i), this->m_ListWidget );
+   // I put this here to avoid the compiler complaining,
+   // but is this what you really wanna do?
+   delete item; 
    }
 }
 //--------------------------------------------------------------------------

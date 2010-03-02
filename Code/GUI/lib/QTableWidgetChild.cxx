@@ -669,7 +669,7 @@ void QTableWidgetChild::PrepareRangeToCopy(QTableWidgetSelectionRange Range,
     for (int j = 0; j < Range.columnCount()-1; ++j) 
       {
       int k = Range.leftColumn() + j;
-      if (Range.leftColumn()+j == 0)
+      if( k == 0)
         {
         //for the selected column:
         if (item(i,0)->checkState()== 0)
