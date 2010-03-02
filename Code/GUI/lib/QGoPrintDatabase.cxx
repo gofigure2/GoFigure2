@@ -272,14 +272,16 @@ void QGoPrintDatabase::CreateContextMenu(const QPoint &iPos)
 
   TraceInfoStructure* CurrentlyUsedTraceData = this->GetTraceInfoStructure(TraceName);
 
-  ContextMenu->addAction(tr("Delete selected %1s").arg(TraceName.c_str()),
+  ContextMenu->addAction(tr("Delete checked %1s").arg(TraceName.c_str()),
     this,SLOT(DeleteTraces()));
-  ContextMenu->addAction(tr("Create a new %1").arg(CurrentlyUsedTraceData->CollectionName.c_str()),
+  ContextMenu->addAction(tr("Create a new %1 from checked %2s")
+    .arg(CurrentlyUsedTraceData->CollectionName.c_str())
+    .arg(CurrentlyUsedTraceData->TraceName.c_str()),
     this,SLOT(CreateCorrespondingCollection()));
   ContextMenu->addAction(
     tr("Add to selected %1 : %2").arg(CurrentlyUsedTraceData->CollectionName.c_str())
     .arg(this->m_CurrentCollectionData.first.c_str()),this,SLOT(AddToSelectedCollection()));
-  ContextMenu->addAction(tr("ReEdit the selected %1").arg(TraceName.c_str()),
+  ContextMenu->addAction(tr("ReEdit the checked %1").arg(TraceName.c_str()),
     this,SLOT(ReEditTrace()));
   ContextMenu->addAction(tr("Copy Selection"),
     CurrentlyUsedTraceData->Table,SLOT(CopySelection()));
