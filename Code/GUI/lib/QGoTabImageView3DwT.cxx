@@ -1745,9 +1745,9 @@ ReinitializeContour()
 {
   for( unsigned int i = 0; i < m_ContourWidget.size(); i++ )
     {
-    /// \todo to be fully compliant with more recent version of vtk,
-    /// we should rather use m_ContourWidget[i]->Initialize()
-    m_ContourWidget[i]->Initialize( NULL );
+	// Enable then initialize the widget
+	m_ContourWidget[i]->SetEnabled(1);
+    m_ContourWidget[i]->Initialize();
     }
 }
 //-------------------------------------------------------------------------
