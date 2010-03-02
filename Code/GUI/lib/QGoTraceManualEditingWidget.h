@@ -38,51 +38,60 @@
 
 =========================================================================*/
 
-#ifndef __QGoManualSegmentationDockWidget_h
-#define __QGoManualSegmentationDockWidget_h
+#ifndef __QGoTraceManualEditingWidget_h
+#define __QGoTraceManualEditingWidget_h
 
-#include <QDockWidget>
-#include "ui_ManualSegmentationDockWidget.h"
+#include <QWidget>
+#include <QComboBox>
+#include <QLabel>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
+#include "qtcolorcombobox.h"
 
-class vtkProperty;
+#include "ui_QGoTraceManualEditingWidget.h"
 
-#include "QGoManualSegmentationSettingsDialog.h"
-#include "QGoTraceManualEditingWidget.h"
-
-class QGoManualSegmentationDockWidget :
-  public QDockWidget,
-  private Ui::ManualSegmentationDockWidget
+class QGoTraceManualEditingWidget :
+  public QWidget,
+  private Ui::QGoTraceManualEditingWidget
 {
   Q_OBJECT
-public:
-  QGoManualSegmentationDockWidget( QWidget* parent = 0 );
-  ~QGoManualSegmentationDockWidget();
-  QGoTraceManualEditingWidget* TraceManualEditingWidget;
 
-  double GetLinesWidth() const;
-  QColor GetLinesColor() const;
-  QColor GetNodesColor() const;
-  QColor GetActiveNodesColor() const;
+  public:
+    explicit QGoTraceManualEditingWidget( QWidget* parent = 0);
+    ~QGoTraceManualEditingWidget();
+    
+    int GetCurrentCollectionID ();
+    void SetEnableTraceCollectionColorBoxes(bool Enable);
+    std::string GetCurrentColor();
 
-public slots:
-  void ActivateManualSegmentation( bool );
-  void SetContourColor();
-  void GenerateContourRepresentationProperties();
+    QtColorComboBox* ColorTraceComboBox;
+    QtColorComboBox* ColorIDCollectionComboBox;
+    QComboBox*       m_ChoseCellType;
+    QComboBox*       m_ChoseSubCellType;
+    QLabel* TraceName;
+    QLabel* CollectionName;
 
-signals:
-  void ReinitializePressed();
-  void ValidatePressed();
-//  void ActivateManualSegmentationToggled( bool );
-  void ContourRepresentationPropertiesChanged();
+  public slots:
+    void SetCollectionID(
+      std::list<std::pair<std::string,QColor> > iListExistingID);
+    void SetListCellTypes(QStringList iListCellTypes);
+    void SetListSubCellTypes(QStringList iListSubCellTypes);
+    void CheckUserAction(QString iCellTypeText);
+    void CheckUserActionSubCell(QString iSubCellTypeText);
 
-protected:
-  QGoManualSegmentationSettingsDialog* m_SettingsDialog;
+  signals:
+    void AddANewCellType();
+    void DeleteCellType();
+    void AddANewSubCellType();
+    void DeleteSubCellType();
 
-  double m_LinesWidth;
-  QColor m_LinesColor;
-  QColor m_NodesColor;
-  QColor m_ActiveNodesColor;
-
+  protected:
+    std::list<std::pair<std::string,std::vector<int> > > m_DataColors;
+    void SetColorTraceComboBox();
+    void SetColorIDCollectionComboBox();
+    void SetCellTypeComboBox();
+    void SetSubCellTypeComboBox();
+    QHBoxLayout* HLayoutForColor;
+    QVBoxLayout* VLayoutForCollection;
 };
-
 #endif

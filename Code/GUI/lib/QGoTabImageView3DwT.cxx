@@ -129,9 +129,9 @@ QGoTabImageView3DwT( QWidget* iParent ) :
 
   CreateVisuDockWidget();
 
-  CreateDataBaseTablesConnection();
-
   CreateManualSegmentationdockWidget();
+
+  CreateDataBaseTablesConnection();
 
 #if defined ( ENABLEFFMPEG ) || defined ( ENABLEAVI )
   CreateVideoRecorderWidget();
@@ -288,22 +288,23 @@ QGoTabImageView3DwT::
 CreateDataBaseTablesConnection()
 {
   QObject::connect( this->m_DataBaseTables,
-    SIGNAL( PrintExistingColorsFromDB(
-      std::list<std::pair<std::string,std::vector<int> > >) ),
-      this->m_VisuDockWidget->ColorTraceComboBox,
-    SLOT( setExistingColors(
-       std::list<std::pair<std::string,std::vector<int> > >) ) );
+    SIGNAL( PrintExistingColorsFromDB(std::list<std::pair<std::string,std::vector<int> > >) ),
+    this->m_ManualSegmentationDockWidget->TraceManualEditingWidget->ColorTraceComboBox,
+    SLOT( setExistingColors(std::list<std::pair<std::string,std::vector<int> > >) ) );
 
   QObject::connect( this->m_DataBaseTables,
     SIGNAL( PrintExistingCollectionIDsFromDB(std::list<std::pair<std::string,QColor> >) ),
-    this->m_VisuDockWidget, SLOT( SetCollectionID(std::list<std::pair<std::string,QColor> >) ) );
+    this->m_ManualSegmentationDockWidget->TraceManualEditingWidget, 
+    SLOT( SetCollectionID(std::list<std::pair<std::string,QColor> >) ) );
 
-  QObject::connect( this->m_VisuDockWidget->ColorTraceComboBox,
+  QObject::connect( 
+    this->m_ManualSegmentationDockWidget->TraceManualEditingWidget->ColorTraceComboBox,
     SIGNAL( NewColorToBeSaved(std::vector<std::string>)),
     this->m_DataBaseTables,
     SLOT( SaveNewColorInDB(std::vector<std::string> ) ) );
 
-  QObject::connect( this->m_VisuDockWidget->ColorIDCollectionComboBox,
+  QObject::connect( 
+    this->m_ManualSegmentationDockWidget->TraceManualEditingWidget->ColorIDCollectionComboBox,
     SIGNAL( NewCollectionToBeSaved()),
     this, SLOT( UpdateDBAndCollectionIDComboBoxForANewCreatedCollection() ) );
 
@@ -313,7 +314,8 @@ CreateDataBaseTablesConnection()
 
   QObject::connect( this->m_DataBaseTables,
     SIGNAL( NewCreatedCollection(QColor, QString) ),
-    this->m_VisuDockWidget->ColorIDCollectionComboBox, SLOT( addColor(QColor, QString) ));
+    this->m_ManualSegmentationDockWidget->TraceManualEditingWidget->ColorIDCollectionComboBox
+    , SLOT( addColor(QColor, QString) ));
 
   QObject::connect( this->m_DataBaseTables,
     SIGNAL( SelectionContoursToHighLightChanged() ),
@@ -325,7 +327,7 @@ CreateDataBaseTablesConnection()
 
    QObject::connect( this->m_DataBaseTables,
     SIGNAL( DeletedCollection(unsigned int) ),
-    this->m_VisuDockWidget->ColorIDCollectionComboBox,
+    this->m_ManualSegmentationDockWidget->TraceManualEditingWidget->ColorIDCollectionComboBox,
     SLOT( DeleteCollectionID(unsigned int) ) );
 
   QObject::connect( this->m_DataBaseTables,
@@ -337,26 +339,32 @@ CreateDataBaseTablesConnection()
     this, SLOT( DeleteContoursFromTable( std::list< int > ) ) );
 
   QObject::connect(this->m_DataBaseTables,
-    SIGNAL( ListCellTypesToUpdate(QStringList)),this->m_VisuDockWidget,
+    SIGNAL( ListCellTypesToUpdate(QStringList)),
+    this->m_ManualSegmentationDockWidget->TraceManualEditingWidget,
     SLOT(SetListCellTypes(QStringList)));
 
-  QObject::connect(this->m_VisuDockWidget,
+  QObject::connect(
+    this->m_ManualSegmentationDockWidget->TraceManualEditingWidget,
     SIGNAL( AddANewCellType()),this->m_DataBaseTables,
     SLOT(AddNewCellType()));
 
-  QObject::connect(this->m_VisuDockWidget,
+  QObject::connect(
+    this->m_ManualSegmentationDockWidget->TraceManualEditingWidget,
     SIGNAL( DeleteCellType()),this->m_DataBaseTables,
     SLOT(DeleteCellType()));
 
   QObject::connect(this->m_DataBaseTables,
-    SIGNAL( ListSubCellTypesToUpdate(QStringList)),this->m_VisuDockWidget,
+    SIGNAL( ListSubCellTypesToUpdate(QStringList)),
+    this->m_ManualSegmentationDockWidget->TraceManualEditingWidget,
     SLOT(SetListSubCellTypes(QStringList)));
 
-   QObject::connect(this->m_VisuDockWidget,
+   QObject::connect(
+    this->m_ManualSegmentationDockWidget->TraceManualEditingWidget,
     SIGNAL( AddANewSubCellType()),this->m_DataBaseTables,
     SLOT(AddNewSubCellType()));
 
-  QObject::connect(this->m_VisuDockWidget,
+  QObject::connect(
+    this->m_ManualSegmentationDockWidget->TraceManualEditingWidget,
     SIGNAL( DeleteSubCellType()),this->m_DataBaseTables,
     SLOT(DeleteSubCellType()));
 }
@@ -1612,14 +1620,15 @@ ValidateContour( const int& iContourID, const int& iDir,
 
     // get meshid from the visu dock widget (SpinBox)
     //unsigned int meshid = m_ManualSegmentationDockWidget->GetMeshId();
-    unsigned int meshid = this->m_VisuDockWidget->GetCurrentCollectionID();
+    unsigned int meshid = 
+      this->m_ManualSegmentationDockWidget->TraceManualEditingWidget->GetCurrentCollectionID();
 
     if( iSaveInDataBase )
       {
       if( !m_ReEditContourMode )
         {
         std::pair< std::string, QColor > ColorData =
-          this->m_VisuDockWidget->ColorTraceComboBox->GetCurrentColorData();
+          this->m_ManualSegmentationDockWidget->TraceManualEditingWidget->ColorTraceComboBox->GetCurrentColorData();
 
         // Save contour in database!
         m_ContourId = m_DataBaseTables->SaveContoursFromVisuInDB( min_idx[0],
@@ -1633,7 +1642,7 @@ ValidateContour( const int& iContourID, const int& iDir,
         m_DataBaseTables->UpdateContourFromVisuInDB( min_idx[0],
           min_idx[1], min_idx[2], iTCoord, max_idx[0],
           max_idx[1], max_idx[2], contour_nodes, m_ContourId );
-        m_VisuDockWidget->SetEnableTraceCollectionColorBoxes(true);
+        this->m_ManualSegmentationDockWidget->TraceManualEditingWidget->SetEnableTraceCollectionColorBoxes(true);
         }
       }
     else
@@ -1674,7 +1683,8 @@ ValidateContour( )
   // get color from the dock widget
   double r, g, b, a( 1. );
   //QColor color = m_ManualSegmentationDockWidget->GetValidatedColor();
-  if( this->m_VisuDockWidget->GetCurrentCollectionID() == -1 )
+  if( this->m_ManualSegmentationDockWidget->TraceManualEditingWidget->GetCurrentCollectionID()
+    == -1 )
     {
     r = 0.1;
     g = 0.5;
@@ -1682,8 +1692,8 @@ ValidateContour( )
     }
   else
     {
-    QColor color = this->m_VisuDockWidget->ColorTraceComboBox->
-      GetCurrentColorData().second;
+    QColor color = 
+      this->m_ManualSegmentationDockWidget->TraceManualEditingWidget->ColorTraceComboBox->GetCurrentColorData().second;
     color.getRgbF( &r, &g, &b );
     }
 
@@ -2015,10 +2025,10 @@ UpdateDBAndCollectionIDComboBoxForANewCreatedCollection()
   //first, save in the database:
   std::pair<std::string,QColor> NewCollectionToAddInComboBox =
     this->m_DataBaseTables->SaveNewCollectionInDB(
-    this->m_VisuDockWidget->ColorTraceComboBox->GetCurrentColorData(),
-    this->m_VisuDockWidget->TraceName->text().toStdString());
+    this->m_ManualSegmentationDockWidget->TraceManualEditingWidget->ColorTraceComboBox->GetCurrentColorData(),
+    this->m_ManualSegmentationDockWidget->TraceManualEditingWidget->TraceName->text().toStdString());
   //second, update the ColorIDCollectionComboBox with the new created ID:
-  this->m_VisuDockWidget->ColorIDCollectionComboBox->addColor(
+  this->m_ManualSegmentationDockWidget->TraceManualEditingWidget->ColorIDCollectionComboBox->addColor(
     NewCollectionToAddInComboBox.second,NewCollectionToAddInComboBox.first.c_str());
 }
 //-------------------------------------------------------------------------
@@ -2029,7 +2039,7 @@ QGoTabImageView3DwT::
 PassInfoForDBForCurrentSelectedColor()
 {
   this->m_DataBaseTables->UpdateCurrentColorData(
-    this->m_VisuDockWidget->ColorTraceComboBox->GetCurrentColorData());
+    this->m_ManualSegmentationDockWidget->TraceManualEditingWidget->ColorTraceComboBox->GetCurrentColorData());
 
 }
 //-------------------------------------------------------------------------
@@ -2040,7 +2050,7 @@ QGoTabImageView3DwT::
 PassInfoForCurrentCollectionID()
 {
   this->m_DataBaseTables->SetCurrentCollectionID(
-    this->m_VisuDockWidget->ColorIDCollectionComboBox->GetCurrentColorData());
+    this->m_ManualSegmentationDockWidget->TraceManualEditingWidget->ColorIDCollectionComboBox->GetCurrentColorData());
 }
 //-------------------------------------------------------------------------
 
@@ -2112,7 +2122,8 @@ ReEditContour( const unsigned int& iId )
           }
         m_ContourWidget[dir]->Initialize( c_nodes );
         m_ManualSegmentationDockWidget->ActivateManualSegmentation( true );
-        m_VisuDockWidget->SetEnableTraceCollectionColorBoxes(false);
+        this->m_ManualSegmentationDockWidget->TraceManualEditingWidget->
+          SetEnableTraceCollectionColorBoxes(false);
         }
       }
     }

@@ -48,8 +48,10 @@ QGoManualSegmentationDockWidget( QWidget* iParent ) :
   QDockWidget( iParent )
 {
   m_SettingsDialog = new QGoManualSegmentationSettingsDialog( this );
+  TraceManualEditingWidget = new QGoTraceManualEditingWidget(this);
 
   this->setupUi( this );
+  this->verticalLayout_2->addWidget(TraceManualEditingWidget);
 
   QObject::connect( this->SettingsBtn, SIGNAL( pressed() ),
     m_SettingsDialog, SLOT( exec() ) );

@@ -50,10 +50,10 @@ QGoVisualizationDockWidget( QWidget* iParent, const unsigned int& iDim ) :
   m_Dimension( iDim )
 {
   this->setupUi( this );
-  SetColorTraceComboBox();
-  SetColorIDCollectionComboBox();
-  SetCellTypeComboBox();
-  SetSubCellTypeComboBox();
+  //SetColorTraceComboBox();
+  //SetColorIDCollectionComboBox();
+  //SetCellTypeComboBox();
+  //SetSubCellTypeComboBox();
   //this->verticalLayout_2->addLayout(this->VLayoutForCollection);
 
   if( m_Dimension < 3 )
@@ -219,7 +219,7 @@ GetCurrentChannel() const
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-int QGoVisualizationDockWidget::GetCurrentCollectionID()
+/*int QGoVisualizationDockWidget::GetCurrentCollectionID()
 {
   std::string temp = this->ColorIDCollectionComboBox->GetCurrentColorData().first;
   if( temp.empty() )
@@ -388,4 +388,4 @@ void QGoVisualizationDockWidget::CheckUserActionSubCell(
 }
 //-------------------------------------------------------------------------
 
-//-------------------------------------------------------------------------
+//-------------------------------------------------------------------------*/

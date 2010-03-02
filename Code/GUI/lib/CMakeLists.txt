@@ -36,6 +36,7 @@ SET( QGoGUILIB_SRC
   QGoDBEntityManager.cxx
   QGoDBCellTypeManager.cxx
   QGoDBSubCellTypeManager.cxx
+  QGoTraceManualEditingWidget.cxx
 )
 
 #------------------------------------------------------------------------------
@@ -100,6 +101,7 @@ SET( QGoGUILIB_HDRS
   QGoDBEntityManager.h
   QGoDBCellTypeManager.h
   QGoDBSubCellTypeManager.h
+  QGoTraceManualEditingWidget.h
 )
 
 #------------------------------------------------------------------------------
@@ -131,6 +133,7 @@ SET( QGoGUILIB_UI
   QGoPrintDatabase.ui
   LsmToMegaExportDialog.ui
   QNameDescriptionInputDialog.ui
+  QGoTraceManualEditingWidget.ui
 )
 
 #------------------------------------------------------------------------------
