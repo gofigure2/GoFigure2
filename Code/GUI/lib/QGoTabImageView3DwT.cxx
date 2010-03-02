@@ -2163,6 +2163,8 @@ HighLightContours()
     ++it;
     }
 
+  select_property->Delete();
+
   std::list< vtkProp3D* > listofunpicked = m_ImageView->GetListOfUnPickedActors();
   it = listofunpicked.begin();
 
