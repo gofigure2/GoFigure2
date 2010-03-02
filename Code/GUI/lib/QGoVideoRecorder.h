@@ -131,11 +131,6 @@ class QGoVideoRecorder : public QDockWidget, private Ui::NewDockWidgetVideoRecor
         void UpdateQSpinBoxFT( int );
 
         /**
-         * \brief Function to create the video without "pauses"
-        **/
-        void Acquire( int );
-
-        /**
          * \brief Function to create the video with "pauses"
         **/
         void AcquireWithPause( int );
@@ -185,14 +180,6 @@ class QGoVideoRecorder : public QDockWidget, private Ui::NewDockWidgetVideoRecor
      * \brief Update content of spin box depending of selected slice (X,Y,Z)
      */
     void on_SliceFT_activated( int );
-    /**
-     * \brief Update the starting slice to create the video (through time)
-     */
-    void on_tSpinMin_valueChanged( int );
-    /**
-     * \brief Update the ending slice to create the video (through time)
-     */
-    void on_tSpinMax_valueChanged( int );
     /**
      * \brief Function called when "Create video" clicked in Create tab
     **/
