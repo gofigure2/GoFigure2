@@ -283,8 +283,10 @@ void QGoPrintDatabase::CreateContextMenu(const QPoint &iPos)
     .arg(this->m_CurrentCollectionData.first.c_str()),this,SLOT(AddToSelectedCollection()));
   ContextMenu->addAction(tr("ReEdit the checked %1").arg(TraceName.c_str()),
     this,SLOT(ReEditTrace()));
-  ContextMenu->addAction(tr("Checked the selected %1s")
-    .arg(CurrentlyUsedTraceData->TraceName.c_str()),this,SLOT(CheckedSelectedRows()));
+  ContextMenu->addAction(tr("Check the selected %1s")
+    .arg(CurrentlyUsedTraceData->TraceName.c_str()),this,SLOT(CheckSelectedRows()));
+  ContextMenu->addAction(tr("Uncheck the selected %1s")
+    .arg(CurrentlyUsedTraceData->TraceName.c_str()),this,SLOT(UncheckSelectedRows()));
   ContextMenu->addAction(tr("Copy Selection"),
     CurrentlyUsedTraceData->Table,SLOT(CopySelection()));
   ContextMenu->addAction(tr("Copy table"),CurrentlyUsedTraceData->Table,SLOT(CopyTable()));
@@ -1352,10 +1354,20 @@ void QGoPrintDatabase::DeleteSubCellType()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoPrintDatabase::CheckedSelectedRows()
+void QGoPrintDatabase::CheckSelectedRows()
 {
   TraceInfoStructure* CurrentlyUsedTraceData = 
     this->GetTraceInfoStructure(this->InWhichTableAreWe());
-  CurrentlyUsedTraceData->Table->CheckedSelectedRows(CurrentlyUsedTraceData->TraceName,
+  CurrentlyUsedTraceData->Table->CheckSelectedRows(CurrentlyUsedTraceData->TraceName,
+    CurrentlyUsedTraceData->TraceNameID);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoPrintDatabase::UncheckSelectedRows()
+{
+  TraceInfoStructure* CurrentlyUsedTraceData = 
+    this->GetTraceInfoStructure(this->InWhichTableAreWe());
+  CurrentlyUsedTraceData->Table->UncheckSelectedRows(CurrentlyUsedTraceData->TraceName,
     CurrentlyUsedTraceData->TraceNameID);
 }
