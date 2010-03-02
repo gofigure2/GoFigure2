@@ -90,7 +90,7 @@ public:
 
   /**
    * \brief return a list for each channel of the filenames for the images in
-   * the database  as a vector of vector
+   * the database as a vector of vector
    */
   std::vector<std::vector<std::string> > GetFilenamesFromDB();
 

@@ -95,6 +95,9 @@
      <addaction name="menuMultiple_Files"/>
     </widget>
     <widget class="QMenu" name="menuImport">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
      <property name="title">
       <string>Import</string>
      </property>
@@ -103,7 +106,10 @@
      <addaction name="actionImportTrack"/>
      <addaction name="actionImportLineage"/>
     </widget>
-    <widget class="QMenu" name="menuExport_2">
+    <widget class="QMenu" name="menuExport">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
      <property name="title">
       <string>Export</string>
      </property>
@@ -125,7 +131,7 @@
     <addaction name="separator"/>
     <addaction name="actionClose"/>
     <addaction name="separator"/>
-    <addaction name="menuExport_2"/>
+    <addaction name="menuExport"/>
     <addaction name="menuImport"/>
     <addaction name="separator"/>
     <addaction name="actionClose_all"/>

@@ -93,6 +93,10 @@ void QGoTabManager::ClearTabElement( QGoTabElementBase* iE )
     // Then remove all actions from the bookmark menu
     m_MainWindow->menuBookmarks->clear();
 
+    // Disable the import/export when tab is closed
+    m_MainWindow->menuExport->setDisabled( true );
+    m_MainWindow->menuImport->setDisabled( true );
+
     std::list< QGoTabElementBase::QGoDockWidgetStatusPair >& dock_list = iE->DockWidget();
 
     for( std::list< QGoTabElementBase::QGoDockWidgetStatusPair >::iterator
@@ -188,6 +192,13 @@ void QGoTabManager::SetUpTabElement( QGoTabElementBase* iE )
       }
 
     GoFigure::TabDimensionType dim = iE->GetTabDimensionType();
+
+    if ( dim == GoFigure::THREE_D_WITH_T )
+    {
+      ///\todo: Check if there is a connection with database to update import/export in menu
+      std::cout << "Check if there is a connection with database to update import/export in menu" << std::endl;
+    }
+
 
     std::map< GoFigure::TabDimensionType, std::list< QAction* > >::iterator
       map_it = m_MainWindow->m_TabDimPluginActionMap.find( dim );

@@ -63,6 +63,8 @@
 #include <QDialog>
 #include <QPluginLoader>
 #include <QSettings>
+#include <QFileInfo>
+#include <QDir>
 
 // Qt Dialog Box
 #include "QGoLsmToMegaExportDialog.h"
@@ -125,8 +127,6 @@ QGoMainWindow::QGoMainWindow( )
   CreateSignalSlotsConnection();
   ReadSettings();
   //LoadPlugins();
-
-  // TODO: Disable Import/Export action items in the GUI
 }
 
 //--------------------------------------------------------------------------
@@ -191,7 +191,7 @@ void QGoMainWindow::on_actionExportContour_triggered( )
   typedef std::vector<ContourMeshStructure> ContourMeshVectorType;
   typedef ContourMeshVectorType::iterator ContourMeshIteratorType;
 
-  // TODO: check if the database is open
+  //todo: check if the database is open
   if ( this->m_DBWizard )
   {
     QGoPrintDatabase* win = new QGoPrintDatabase();
@@ -204,35 +204,58 @@ void QGoMainWindow::on_actionExportContour_triggered( )
     ContourMeshVectorType* contours = win->GetTracesInfoListForVisu( "contour" );
     std::cout << contours->size() << std::endl;
 
-    QString directory = QFileDialog::getExistingDirectory(
-      this,
-      tr( "Select Directory" ),"" );
+    // Set file name
+    QString p = QFileDialog::getSaveFileName(
+    this,
+    tr( "Save Contour Export File" ),"",
+    tr( "TextFile (*.txt)" )
+    );
 
-    std::string dir = directory.toStdString();
-
-    if( !dir.empty() )
+    if ( ! p.isNull() )
     {
-      unsigned int contourId, meshId, timePt;
-      ContourMeshIteratorType It = contours->begin();
-      while( It != contours->end() )
+      QFileInfo pathInfo( p );
+      std::string filename = p.toStdString();
+      QDir directory( pathInfo.absolutePath() );
+      QString dir = directory.absolutePath();
+      std::string dirName = dir.toStdString();
+
+      // Create an xml file
+      std::fstream outfile;
+      outfile.open ( filename.c_str(), std::ios::out );
+      outfile << "<ImagingSession>" << std::endl;
+      outfile << m_DBWizard->GetImagingSessionName().toStdString() << std::endl;
+      outfile << "</ImagingSession>" << std::endl;
+
+
+      if( directory.exists() )
       {
-        contourId = (*It).TraceID;
-        meshId = (*It).CollectionID;
-        timePt = (*It).TCoord;
+        unsigned int contourId, meshId, timePt;
+        ContourMeshIteratorType It = contours->begin();
+        while( It != contours->end() )
+        {
+          contourId = (*It).TraceID;
+          meshId = (*It).CollectionID;
+          timePt = (*It).TCoord;
 
-        std::stringstream out;
-        out << dir << '/' << meshId << '_' << timePt;
+          std::stringstream temp;
+          temp << dirName << '/' << meshId << '_' << timePt;
+          std::string name = temp.str() + ".vtk";
+          outfile << "<contour>" << std::endl;
+          outfile << "MeshId " << meshId << std::endl;
+          outfile << "TCoord " << timePt << std::endl;
+          outfile << "Filename " << name << std::endl;
+          outfile << "</contour>" << std::endl;
 
-        std::string name = out.str() + ".vtk";
-        std::cout << name << std::endl;
-        vtkSmartPointer<vtkPolyDataWriter> writer =
-          vtkSmartPointer<vtkPolyDataWriter>::New();
-        writer->SetInput( (*It).Nodes );
-        writer->SetFileName( name.c_str() );
-        writer->Write();
+          vtkSmartPointer<vtkPolyDataWriter> writer =
+            vtkSmartPointer<vtkPolyDataWriter>::New();
+          writer->SetInput( (*It).Nodes );
+          writer->SetFileName( name.c_str() );
+          writer->Write();
 
-        ++It;
+          ++It;
+        }
       }
+      outfile.close();
     }
     delete win;
   }
@@ -384,6 +407,10 @@ void QGoMainWindow::openFilesfromDB()
     {
     return;
     }
+
+  // Enable Export / Import
+  menuExport->setEnabled( true );
+  menuImport->setEnabled( true );
 
   // note: do not need to call w3t->Update(); since it is internally called
   // when using CreateNewTabFor3DwtImage
