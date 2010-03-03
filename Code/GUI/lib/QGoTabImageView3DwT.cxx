@@ -230,8 +230,11 @@ CreateManualSegmentationdockWidget()
 
   QAction* tempaction = m_ManualSegmentationDockWidget->toggleViewAction();
 
-  QObject::connect( tempaction, SIGNAL( triggered( bool ) ),
-    this->m_ManualSegmentationDockWidget, SLOT( ActivateManualSegmentation( bool ) ) );    
+  QObject::connect( this->m_ManualSegmentationDockWidget, SIGNAL( visibilityChanged( bool ) ),
+    this->m_ManualSegmentationDockWidget, SLOT( ActivateManualSegmentation( bool ) ) );
+
+  QObject::connect( this->m_ManualSegmentationDockWidget, SIGNAL( visibilityChanged( bool ) ),
+    this, SLOT( ActivateManualSegmentationEditor( bool ) ) );
 
   this->m_SegmentationActions.push_back( tempaction );
 }
