@@ -59,7 +59,7 @@
      <x>0</x>
      <y>0</y>
      <width>1434</width>
-     <height>22</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -125,15 +125,11 @@
     <addaction name="actionUse_DataBase"/>
     <addaction name="separator"/>
     <addaction name="actionOpen_Mesh"/>
-    <addaction name="actionLoad_Segmentation_Results"/>
-    <addaction name="separator"/>
+    <addaction name="menuExport"/>
+    <addaction name="menuImport"/>
     <addaction name="actionExport_LSM_to_MegaFile"/>
     <addaction name="separator"/>
     <addaction name="actionClose"/>
-    <addaction name="separator"/>
-    <addaction name="menuExport"/>
-    <addaction name="menuImport"/>
-    <addaction name="separator"/>
     <addaction name="actionClose_all"/>
     <addaction name="actionQuit"/>
    </widget>
@@ -289,10 +285,10 @@
   </action>
   <action name="actionClose">
    <property name="text">
-    <string>Close</string>
+    <string>Close Tab</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+C</string>
+    <string>Ctrl+W</string>
    </property>
   </action>
   <action name="actionAbout">

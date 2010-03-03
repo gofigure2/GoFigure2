@@ -41,6 +41,7 @@
 #include "QGoManualSegmentationSettingsDialog.h"
 
 #include <QColorDialog>
+#include <QSettings>
 
 #include "vtkOrientedGlyphContourRepresentation.h"
 #include "vtkContourWidget.h"
@@ -64,6 +65,8 @@ QGoManualSegmentationSettingsDialog( QWidget* iParent,
     m_ActivatedNodeColor( iActivatedNodeColor )
 {
   this->setupUi( this );
+
+  ReadSettings();
 
   m_Renderer = vtkSmartPointer< vtkRenderer >::New();
 
@@ -125,6 +128,7 @@ QGoManualSegmentationSettingsDialog( QWidget* iParent,
 QGoManualSegmentationSettingsDialog::
 ~QGoManualSegmentationSettingsDialog()
 {
+  WriteSettings();
   delete this->qvtkWidget;
 }
 
@@ -202,3 +206,50 @@ void QGoManualSegmentationSettingsDialog::SelectActivatedNodeColor( )
     m_Renderer->Render();
     }
 }
+
+void QGoManualSegmentationSettingsDialog::ReadSettings()
+{
+  QSettings settings;
+  settings.beginGroup( "ManualSegmentationSettings" );
+  m_NodeColor = settings.value( "NodeColor" ).value< QColor >();
+  m_ActivatedNodeColor = settings.value( "ActivatedNodeColor" ).value< QColor >();
+  m_LineColor = settings.value( "LineColor" ).value< QColor >();
+  m_LineWidth = settings.value( "LineWidth" ).toDouble();
+
+  if( ( !m_NodeColor.isValid() ) && ( !m_ActivatedNodeColor.isValid() ) &&
+      ( !m_LineColor.isValid() ) && !( m_LineWidth > 0. ) )
+    {
+    m_LineWidth = 1.;
+    m_NodeColor = Qt::cyan;
+    m_LineColor = Qt::magenta;
+    m_ActivatedNodeColor = Qt::yellow;
+    }
+
+  QSize tsize = settings.value( "Size" ).toSize();
+
+  if( tsize.isValid() )
+    {
+    this->resize( tsize );
+    this->move( settings.value("Position").toPoint() );
+    }
+  else
+    {
+    this->resize( 350, 390 );
+    }
+
+  settings.endGroup();
+}
+
+void QGoManualSegmentationSettingsDialog::WriteSettings()
+{
+  QSettings settings;
+  settings.beginGroup("ManualSegmentationSettings");
+  settings.setValue( "Size", this->size() );
+  settings.setValue( "Position", this->pos() );
+  settings.setValue( "NodeColor", m_NodeColor );
+  settings.setValue( "ActivatedNodeColor", m_ActivatedNodeColor );
+  settings.setValue( "LineColor", m_LineColor );
+  settings.setValue( "LineWidth", m_LineWidth );
+  settings.endGroup();
+}
+

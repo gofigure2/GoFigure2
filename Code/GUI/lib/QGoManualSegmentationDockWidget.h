@@ -57,6 +57,7 @@ class QGoManualSegmentationDockWidget :
 public:
   QGoManualSegmentationDockWidget( QWidget* parent = 0 );
   ~QGoManualSegmentationDockWidget();
+
   QGoTraceManualEditingWidget* TraceManualEditingWidget;
 
   double GetLinesWidth() const;

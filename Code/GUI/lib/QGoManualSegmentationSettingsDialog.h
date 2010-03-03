@@ -57,12 +57,12 @@ class QGoManualSegmentationSettingsDialog :
 {
   Q_OBJECT
 public:
-  QGoManualSegmentationSettingsDialog( QWidget* parent = 0,
+  explicit QGoManualSegmentationSettingsDialog( QWidget* parent = 0,
     const double& iWidth = 1.,
     const QColor& iLineColor = Qt::magenta,
     const QColor& iNodeColor = Qt::cyan,
     const QColor& iActivatedNodeColor = Qt::yellow );
-  ~QGoManualSegmentationSettingsDialog();
+  virtual ~QGoManualSegmentationSettingsDialog();
 
   double GetLineWidth( ) const;
   QColor GetLineColor( ) const;
@@ -75,15 +75,18 @@ public slots:
   void SelectNodeColor( );
   void SelectActivatedNodeColor( );
 
-private:
-  double m_LineWidth;
-  QColor m_LineColor;
-  QColor m_NodeColor;
-  QColor m_ActivatedNodeColor;
+protected:
+  virtual void ReadSettings();
+  virtual void WriteSettings();
 
   vtkSmartPointer< vtkOrientedGlyphContourRepresentation > m_ContourRepresentation;
   vtkSmartPointer< vtkContourWidget > m_ContourWidget;
   vtkSmartPointer< vtkRenderer >      m_Renderer;
   vtkSmartPointer< vtkPolyData >      m_InitPD;
+
+  double m_LineWidth;
+  QColor m_LineColor;
+  QColor m_NodeColor;
+  QColor m_ActivatedNodeColor;
 };
 #endif

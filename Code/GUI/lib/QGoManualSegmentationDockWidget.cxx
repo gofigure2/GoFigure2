@@ -149,10 +149,41 @@ void
 QGoManualSegmentationDockWidget::
 GenerateContourRepresentationProperties()
 {
-  m_LinesWidth = m_SettingsDialog->GetLineWidth();
-  m_LinesColor = m_SettingsDialog->GetLineColor();
-  m_NodesColor = m_SettingsDialog->GetNodeColor();
-  m_ActiveNodesColor = m_SettingsDialog->GetActivatedNodeColor();
+  bool haschanged = false;
 
-  emit ContourRepresentationPropertiesChanged();
+  double temp = m_SettingsDialog->GetLineWidth();
+  
+  if( m_LinesWidth != temp )
+    {
+    m_LinesWidth = temp;
+    haschanged = true;
+    }
+
+  QColor temp_color = m_SettingsDialog->GetLineColor();
+
+  if( m_LinesColor != temp_color )
+    {
+    m_LinesColor = temp_color;
+    haschanged = true;
+    }
+
+  temp_color = m_SettingsDialog->GetNodeColor();
+
+  if( m_NodesColor != temp_color )
+    {
+    m_NodesColor = temp_color;
+    haschanged = true;
+    }
+  temp_color = m_SettingsDialog->GetActivatedNodeColor();
+
+  if( m_ActiveNodesColor != temp_color )
+    {
+    m_ActiveNodesColor = temp_color;
+    haschanged = true;
+    }
+
+  if( haschanged )
+    {
+    emit ContourRepresentationPropertiesChanged();
+    }
 }
