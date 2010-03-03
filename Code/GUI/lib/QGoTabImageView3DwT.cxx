@@ -1755,9 +1755,9 @@ ReinitializeContour()
 {
   for( unsigned int i = 0; i < m_ContourWidget.size(); i++ )
     {
-	// Enable then initialize the widget
-	m_ContourWidget[i]->SetEnabled(1);
-    //m_ContourWidget[i]->Initialize();
+	  // Enable then initialize the widget
+	  m_ContourWidget[i]->SetEnabled(1);
+    m_ContourWidget[i]->Initialize(NULL);
     }
 }
 //-------------------------------------------------------------------------

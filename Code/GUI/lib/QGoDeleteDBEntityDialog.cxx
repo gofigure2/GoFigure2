@@ -60,7 +60,7 @@ QGoDeleteDBEntityDialog::QGoDeleteDBEntityDialog( QWidget* iParent,
   this->m_EntityName = iEntityName;
   this->m_ImgSessionID = iImgSessionID;
   this->m_DatabaseConnector = iDatabaseConnector;
-  this->m_ListWidget = new QListWidget;
+  this->m_ListWidget = new QListWidget(this);
   this->SetItemsInTheList(iDatabaseConnector);
   this->m_ListWidget->setSelectionMode(QAbstractItemView::MultiSelection);
 
@@ -117,12 +117,8 @@ void QGoDeleteDBEntityDialog::SetItemsInTheList(
    = this->GetListExistingEntities( iDatabaseConnector );
  for( int i = 0; i < ListNamesEntities.size(); i++ )
    {
-   // NOTE ALEX: this is never used
    QListWidgetItem* item
       = new QListWidgetItem( ListNamesEntities.at(i), this->m_ListWidget );
-   // I put this here to avoid the compiler complaining,
-   // but is this what you really wanna do?
-   delete item; 
    }
 }
 //--------------------------------------------------------------------------
