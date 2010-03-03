@@ -64,7 +64,7 @@ class QGoTraceManualEditingWidget :
     void SetEnableTraceCollectionColorBoxes(bool Enable);
     std::string GetCurrentColor();
 
-    QtColorComboBox* ColorTraceComboBox;
+    QtColorComboBox* ColorComboBox;
     QtColorComboBox* ColorIDCollectionComboBox;
     QComboBox*       m_ChoseCellType;
     QComboBox*       m_ChoseSubCellType;
@@ -87,8 +87,8 @@ class QGoTraceManualEditingWidget :
 
   protected:
     std::list<std::pair<std::string,std::vector<int> > > m_DataColors;
-    void SetColorTraceComboBox();
-    void SetColorIDCollectionComboBox();
+    void SetColorComboBox();
+    void SetTraceColorIDCollectionComboBox();
     void SetCellTypeComboBox();
     void SetSubCellTypeComboBox();
     QHBoxLayout* HLayoutForColor;

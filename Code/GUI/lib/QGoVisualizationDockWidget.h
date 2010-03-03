@@ -69,28 +69,12 @@ class QGoVisualizationDockWidget :
     void SetZMinimumAndMaximum( const int& iMin, const int& iMax );
     void SetTMinimumAndMaximum( const int& iMin, const int& iMax );
     int GetCurrentChannel() const;
-    //int GetCurrentCollectionID ();
-    //void SetEnableTraceCollectionColorBoxes(bool Enable);
-    //std::string GetCurrentColor();
-    
-    //QtColorComboBox* ColorTraceComboBox;
-    //QtColorComboBox* ColorIDCollectionComboBox;
-    //QComboBox*       m_ChoseCellType;
-   // QComboBox*       m_ChoseSubCellType;
-   // QLabel* TraceName;
-   // QLabel* CollectionName;
 
   public slots:
     void SetXSlice( int iSlice );
     void SetYSlice( int iSlice );
     void SetZSlice( int iSlice );
     void SetTSlice( int iSlice );
-   // void SetCollectionID(
-   //   std::list<std::pair<std::string,QColor> > iListExistingID);
-    //void SetListCellTypes(QStringList iListCellTypes);
-   // void SetListSubCellTypes(QStringList iListSubCellTypes);
-   // void CheckUserAction(QString iCellTypeText);
-   // void CheckUserActionSubCell(QString iSubCellTypeText);
 
   signals:
     void ShowAllChannelsChanged( bool iChanged );
@@ -100,19 +84,8 @@ class QGoVisualizationDockWidget :
     void YSliceChanged( int Slice );
     void ZSliceChanged( int Slice );
     void TSliceChanged( int Slice );
-   // void AddANewCellType();
-   // void DeleteCellType();
-   // void AddANewSubCellType();
-   // void DeleteSubCellType();
-
+  
   protected:
     unsigned int m_Dimension;
-    //std::list<std::pair<std::string,std::vector<int> > > m_DataColors;
-    //void SetColorTraceComboBox();
-   // void SetColorIDCollectionComboBox();
-   // void SetCellTypeComboBox();
-   // void SetSubCellTypeComboBox();
-   // QHBoxLayout* HLayoutForColor;
-   // QVBoxLayout* VLayoutForCollection;
 };
 #endif

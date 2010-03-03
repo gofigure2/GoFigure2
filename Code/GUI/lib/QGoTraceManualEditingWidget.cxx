@@ -43,6 +43,7 @@
 #include <QLabel>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
+#include <QFont>
 
 
 QGoTraceManualEditingWidget::
@@ -50,8 +51,8 @@ QGoTraceManualEditingWidget( QWidget* iParent) :
   QWidget( iParent )
 {
   this->setupUi( this );
-  SetColorTraceComboBox();
-  SetColorIDCollectionComboBox();
+  SetColorComboBox();
+  SetTraceColorIDCollectionComboBox();
   SetCellTypeComboBox();
   SetSubCellTypeComboBox();
 }
@@ -99,34 +100,49 @@ void QGoTraceManualEditingWidget::SetCollectionID(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoTraceManualEditingWidget::SetColorTraceComboBox()
+void QGoTraceManualEditingWidget::SetColorComboBox()
 {
-  ColorTraceComboBox = new QtColorComboBox;
-  ColorTraceComboBox->setCreationCollection(false);
-  TraceName = new QLabel(tr("contour"));
+  ColorComboBox = new QtColorComboBox;
+  ColorComboBox->setCreationCollection(false);
 
-  QHBoxLayout* HLayoutForTrace = new QHBoxLayout;
-  HLayoutForTrace->addWidget(this->TraceLbl);
-  HLayoutForTrace->addWidget(TraceName);
-
-  this->VLayoutTraceColor->addLayout(HLayoutForTrace);
-  this->VLayoutTraceColor->addWidget(ColorLbl);
-  this->VLayoutTraceColor->addWidget(ColorTraceComboBox);
+  //this->VLayoutColor->addLayout(HLayoutForTrace);
+  this->VLayoutColor->addWidget(ColorLbl);
+  this->VLayoutColor->addWidget(ColorComboBox);
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoTraceManualEditingWidget::SetColorIDCollectionComboBox()
+void QGoTraceManualEditingWidget::SetTraceColorIDCollectionComboBox()
 {
+  TraceName = new QLabel(tr("contour"));
+  QFont font;
+  font.setCapitalization(QFont::AllUppercase);
+  font.setBold(true);
+  TraceName->setFont(font);
+  QHBoxLayout* HLayoutForTrace = new QHBoxLayout;
+  HLayoutForTrace->addWidget(this->TraceLbl);
+  HLayoutForTrace->addWidget(TraceName);
+  QLabel* CollectionLbl = new QLabel(tr("Current Collection:"));
+  font.setCapitalization(QFont::Capitalize);
+  font.setPointSize(8);
+  font.setUnderline(true);
+  font.setWeight(50);
+  font.setBold(false);
+  CollectionLbl->setFont(font);
   ColorIDCollectionComboBox = new QtColorComboBox;
   ColorIDCollectionComboBox->setCreationCollection(true);
   CollectionName = new QLabel (tr("mesh"));
-
+  font.setUnderline(false);
+  font.setCapitalization(QFont::AllUppercase);
+  font.setBold(true);
+  CollectionName->setFont(font);
   /// \todo make the names change with the interaction
   QHBoxLayout* HLayoutForCollection = new QHBoxLayout;
   HLayoutForCollection->addWidget(CollectionName);
   HLayoutForCollection->addWidget(ColorIDCollectionComboBox);
-  this->VLayoutCollection->addLayout(HLayoutForCollection);
+  this->VLayoutTraceCollection->addLayout(HLayoutForTrace);
+  this->VLayoutTraceCollection->addWidget(CollectionLbl);
+  this->VLayoutTraceCollection->addLayout(HLayoutForCollection);
 }
 //-------------------------------------------------------------------------
 
@@ -134,7 +150,7 @@ void QGoTraceManualEditingWidget::SetColorIDCollectionComboBox()
 void QGoTraceManualEditingWidget::SetEnableTraceCollectionColorBoxes(bool Enable)
 {
   this->ColorIDCollectionComboBox->setEnabled(Enable);
-  this->ColorTraceComboBox->setEnabled(Enable);
+  this->ColorComboBox->setEnabled(Enable);
 }
 //-------------------------------------------------------------------------
 

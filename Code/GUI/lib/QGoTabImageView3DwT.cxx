@@ -289,7 +289,7 @@ CreateDataBaseTablesConnection()
 {
   QObject::connect( this->m_DataBaseTables,
     SIGNAL( PrintExistingColorsFromDB(std::list<std::pair<std::string,std::vector<int> > >) ),
-    this->m_ManualSegmentationDockWidget->TraceManualEditingWidget->ColorTraceComboBox,
+    this->m_ManualSegmentationDockWidget->TraceManualEditingWidget->ColorComboBox,
     SLOT( setExistingColors(std::list<std::pair<std::string,std::vector<int> > >) ) );
 
   QObject::connect( this->m_DataBaseTables,
@@ -298,7 +298,7 @@ CreateDataBaseTablesConnection()
     SLOT( SetCollectionID(std::list<std::pair<std::string,QColor> >) ) );
 
   QObject::connect( 
-    this->m_ManualSegmentationDockWidget->TraceManualEditingWidget->ColorTraceComboBox,
+    this->m_ManualSegmentationDockWidget->TraceManualEditingWidget->ColorComboBox,
     SIGNAL( NewColorToBeSaved(std::vector<std::string>)),
     this->m_DataBaseTables,
     SLOT( SaveNewColorInDB(std::vector<std::string> ) ) );
@@ -1628,7 +1628,7 @@ ValidateContour( const int& iContourID, const int& iDir,
       if( !m_ReEditContourMode )
         {
         std::pair< std::string, QColor > ColorData =
-          this->m_ManualSegmentationDockWidget->TraceManualEditingWidget->ColorTraceComboBox->GetCurrentColorData();
+          this->m_ManualSegmentationDockWidget->TraceManualEditingWidget->ColorComboBox->GetCurrentColorData();
 
         // Save contour in database!
         m_ContourId = m_DataBaseTables->SaveContoursFromVisuInDB( min_idx[0],
@@ -1693,7 +1693,7 @@ ValidateContour( )
   else
     {
     QColor color = 
-      this->m_ManualSegmentationDockWidget->TraceManualEditingWidget->ColorTraceComboBox->GetCurrentColorData().second;
+      this->m_ManualSegmentationDockWidget->TraceManualEditingWidget->ColorComboBox->GetCurrentColorData().second;
     color.getRgbF( &r, &g, &b );
     }
 
@@ -2025,7 +2025,7 @@ UpdateDBAndCollectionIDComboBoxForANewCreatedCollection()
   //first, save in the database:
   std::pair<std::string,QColor> NewCollectionToAddInComboBox =
     this->m_DataBaseTables->SaveNewCollectionInDB(
-    this->m_ManualSegmentationDockWidget->TraceManualEditingWidget->ColorTraceComboBox->GetCurrentColorData(),
+    this->m_ManualSegmentationDockWidget->TraceManualEditingWidget->ColorComboBox->GetCurrentColorData(),
     this->m_ManualSegmentationDockWidget->TraceManualEditingWidget->TraceName->text().toStdString());
   //second, update the ColorIDCollectionComboBox with the new created ID:
   this->m_ManualSegmentationDockWidget->TraceManualEditingWidget->ColorIDCollectionComboBox->addColor(
@@ -2039,7 +2039,7 @@ QGoTabImageView3DwT::
 PassInfoForDBForCurrentSelectedColor()
 {
   this->m_DataBaseTables->UpdateCurrentColorData(
-    this->m_ManualSegmentationDockWidget->TraceManualEditingWidget->ColorTraceComboBox->GetCurrentColorData());
+    this->m_ManualSegmentationDockWidget->TraceManualEditingWidget->ColorComboBox->GetCurrentColorData());
 
 }
 //-------------------------------------------------------------------------
