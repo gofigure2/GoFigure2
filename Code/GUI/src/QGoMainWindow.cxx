@@ -110,7 +110,6 @@ QGoMainWindow::QGoMainWindow( )
   this->statusbar->addPermanentWidget( &m_Bar );
 
   m_TabManager = new QGoTabManager( this, this->CentralTabWidget );
-
   this->m_ViewToolBar = new QToolBar( tr("View"), this );
   this->m_ViewToolBar->setObjectName( tr("View") );
   this->addToolBar( Qt::TopToolBarArea, this->m_ViewToolBar );

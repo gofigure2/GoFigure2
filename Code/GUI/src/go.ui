@@ -59,7 +59,7 @@
      <x>0</x>
      <y>0</y>
      <width>1434</width>
-     <height>25</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -120,11 +120,10 @@
     </widget>
     <addaction name="actionOpen_Single_File"/>
     <addaction name="actionOpen_MegaCapture_Files"/>
+    <addaction name="actionOpen_Mesh"/>
     <addaction name="menuOpen_Recent_Files"/>
-    <addaction name="separator"/>
     <addaction name="actionUse_DataBase"/>
     <addaction name="separator"/>
-    <addaction name="actionOpen_Mesh"/>
     <addaction name="menuExport"/>
     <addaction name="menuImport"/>
     <addaction name="actionExport_LSM_to_MegaFile"/>
@@ -211,7 +210,8 @@
     <bool>false</bool>
    </attribute>
    <addaction name="actionOpen_Single_File"/>
-   <addaction name="actionSave_Single_File_As"/>
+   <addaction name="actionUse_DataBase"/>
+   <addaction name="separator"/>
   </widget>
   <action name="actionOpen_Single_File">
    <property name="checkable">
@@ -245,24 +245,6 @@
    </property>
    <property name="text">
     <string>Save Multiple Files</string>
-   </property>
-   <property name="visible">
-    <bool>true</bool>
-   </property>
-  </action>
-  <action name="actionSave_Single_File_As">
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="../../../Resources/axes.qrc">
-     <normaloff>:/fig/filesaveas.png</normaloff>:/fig/filesaveas.png</iconset>
-   </property>
-   <property name="text">
-    <string>Save Single File As...</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+S</string>
    </property>
    <property name="visible">
     <bool>true</bool>
@@ -321,6 +303,10 @@
    </property>
   </action>
   <action name="actionUse_DataBase">
+   <property name="icon">
+    <iconset resource="../../../Resources/axes.qrc">
+     <normaloff>:/fig/UseDatabase.png</normaloff>:/fig/UseDatabase.png</iconset>
+   </property>
    <property name="text">
     <string>Use DataBase</string>
    </property>

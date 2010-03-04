@@ -30,6 +30,7 @@
     <file>fig/filesaveas.png</file>
   </qresource>
   <qresource prefix="/" >
+    <file>fig/UseDatabase.png</file>
     <file>fig/document-open.png</file>
   </qresource>
   <qresource prefix="/" >
