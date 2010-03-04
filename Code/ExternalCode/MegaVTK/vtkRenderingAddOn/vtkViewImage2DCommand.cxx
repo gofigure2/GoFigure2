@@ -317,13 +317,13 @@ void vtkViewImage2DCommand::Zooming( )
 
   vtkRenderer* ren = this->Viewer->GetRenderer();
 
-  double *center = ren->GetCenter();
+  //int *center = ren->GetCenter();
+  int* size = ren->GetSize();
   int dy = rwi->GetEventPosition()[1] - rwi->GetLastEventPosition()[1];
 
-  double factor = static_cast<double>(dy) / static_cast<double>( center[1] );
+  double factor = 10. * static_cast<double>(dy) / static_cast<double>( size[1] );
 
-  double z = 1.;
-  z *= pow((double)1.1, factor);
+  double z = pow( static_cast<double>( 1.1 ), factor );
 
   this->Viewer->SetZoom( z );
 }

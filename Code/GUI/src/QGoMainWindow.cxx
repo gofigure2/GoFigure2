@@ -464,6 +464,7 @@ void QGoMainWindow::openFilesfromDB()
     }
 
   w3t->ReinitializeContour();
+  w3t->ActivateManualSegmentationEditor( false );
 
   temp = w3t->m_DataBaseTables->GetTracesInfoListForVisu("mesh");
 
