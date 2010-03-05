@@ -214,3 +214,8 @@ GetCurrentChannel() const
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+bool QGoVisualizationDockWidget::
+ShowAllChannels() const
+{
+  return this->AllChannelsBtn->isChecked();
+}

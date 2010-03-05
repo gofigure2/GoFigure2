@@ -1094,10 +1094,21 @@ SetTimePointWithMegaCapture( const int& iTimePoint )
         {
         append_filter->AddInput( m_InternalImages[0] );
         }
-      }
+        }
     append_filter->Update();
 
-    m_Image->ShallowCopy( append_filter->GetOutput() );
+    if( this->m_VisuDockWidget->ShowAllChannels() )
+      {
+      m_Image->ShallowCopy( append_filter->GetOutput() );
+      }
+    else
+      {
+      int ch = this->m_VisuDockWidget->GetCurrentChannel();
+      if( ch != -1 )
+        {
+    	m_Image->ShallowCopy( m_InternalImages[ch] );
+    	}
+      }
     }
   else
     {
@@ -1105,6 +1116,7 @@ SetTimePointWithMegaCapture( const int& iTimePoint )
 
     m_Image->ShallowCopy( m_MegaCaptureReader->GetOutput() );
     }
+
 
   LoadAllContoursForGivenTimePoint( m_TimePoint );
   Update();

@@ -68,7 +68,8 @@ class QGoVisualizationDockWidget :
     void SetYMinimumAndMaximum( const int& iMin, const int& iMax );
     void SetZMinimumAndMaximum( const int& iMin, const int& iMax );
     void SetTMinimumAndMaximum( const int& iMin, const int& iMax );
-    int GetCurrentChannel() const;
+    int  GetCurrentChannel() const;
+    bool ShowAllChannels()   const;
 
   public slots:
     void SetXSlice( int iSlice );
