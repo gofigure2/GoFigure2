@@ -6,6 +6,7 @@ SET( QGoGUILIB_SRC
   QGoImageView.cxx
   QGoImageView2D.cxx
   QGoImageView3D.cxx
+  QGoImageInfo.cxx
   QGoLUTDialog.cxx
   QGoManualSegmentationDockWidget.cxx
   QGoManualSegmentationSettingsDialog.cxx
@@ -72,6 +73,7 @@ SET( QGoGUILIB_HDRS
   QGoImageView.h
   QGoImageView2D.h
   QGoImageView3D.h
+  QGoImageInfo.h
   QGoLUTDialog.h
   QGoManualSegmentationDockWidget.h
   QGoManualSegmentationSettingsDialog.h
