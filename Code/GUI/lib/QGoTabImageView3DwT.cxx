@@ -707,6 +707,7 @@ CreateToolsActions()
 {
 #if defined( ENABLEFFMPEG ) || defined( ENABLEAVI )
   this->m_ToolsActions.push_back( m_VideoRecorderWidget->toggleViewAction() );
+  this->m_VideoRecorderWidget->toggleViewAction()->setEnabled(false);
 #endif
 
   m_TakeSnapshotAction = new QAction( tr( "Take Snapshot" ), this );
@@ -714,6 +715,7 @@ CreateToolsActions()
   snapshoticon.addPixmap( QPixmap(QString::fromUtf8(":/fig/camera-photo.png")),
     QIcon::Normal, QIcon::Off );
   m_TakeSnapshotAction->setIcon( snapshoticon );
+  m_TakeSnapshotAction->setStatusTip(tr("You have to be in full screen view to use the snapshot"));
   m_TakeSnapshotAction->setEnabled(false);
   QObject::connect( m_TakeSnapshotAction, SIGNAL( triggered() ),
                     this, SLOT( TakeSnapshot() ) );
@@ -1417,6 +1419,7 @@ Quadview()
 {
   m_ImageView->SetFullScreenView(0);
   m_TakeSnapshotAction->setEnabled(false);
+  this->m_VideoRecorderWidget->toggleViewAction()->setEnabled(false);
 }
 //-------------------------------------------------------------------------
 
@@ -1430,6 +1433,7 @@ FullScreenViewXY()
 {
   m_ImageView->SetFullScreenView(1);
   m_TakeSnapshotAction->setEnabled(true);
+   this->m_VideoRecorderWidget->toggleViewAction()->setEnabled(true);
 }
 //-------------------------------------------------------------------------
 
@@ -1443,6 +1447,7 @@ FullScreenViewXZ()
 {
   m_ImageView->SetFullScreenView(2);
   m_TakeSnapshotAction->setEnabled(true);
+  this->m_VideoRecorderWidget->toggleViewAction()->setEnabled(true);
 }
 //-------------------------------------------------------------------------
 
@@ -1456,6 +1461,7 @@ FullScreenViewYZ()
 {
   m_ImageView->SetFullScreenView(3);
   m_TakeSnapshotAction->setEnabled(true);
+  this->m_VideoRecorderWidget->toggleViewAction()->setEnabled(true);
 }
 //-------------------------------------------------------------------------
 
@@ -1469,6 +1475,7 @@ FullScreenViewXYZ()
 {
   m_ImageView->SetFullScreenView(4);
   m_TakeSnapshotAction->setEnabled(true);
+  this->m_VideoRecorderWidget->toggleViewAction()->setEnabled(true);
 }
 //-------------------------------------------------------------------------
 

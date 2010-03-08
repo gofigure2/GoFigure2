@@ -69,6 +69,10 @@ QGoVideoRecorder( QWidget *iParent ) : QDockWidget( iParent ),
 
   QIcon videoIcon(QPixmap(QString::fromUtf8(":/fig/video.png")));
   this->toggleViewAction()->setIcon(videoIcon);
+  this->toggleViewAction()
+    ->setStatusTip(tr("You have to be in full screen view to use the video recording"));
+  this->warning_1->hide();
+  this->warning_2->hide();
 
   // Tooltips to help the user
   QString toolTip = "Start recording the video";
@@ -550,7 +554,7 @@ SetRenderingWindow( vtkRenderWindow* iRenderingWindow )
     }
 
   //Tell the user to go in full screen mode
-  if( iRenderingWindow )
+ /* if( iRenderingWindow )
   {
 	this->warning_1->hide();
 	this->warning_2->hide();
@@ -559,7 +563,7 @@ SetRenderingWindow( vtkRenderWindow* iRenderingWindow )
   {
 	this->warning_1->show();
 	this->warning_2->show();
-  }
+  }*/
 
 /**
  * \todo Resize image with the first one if we want to change views during record
