@@ -67,6 +67,9 @@ QGoVideoRecorder( QWidget *iParent ) : QDockWidget( iParent ),
   QObject::connect( this->endRecord, SIGNAL(clicked()),
           this, SLOT(onEndRecordClicked()) );
 
+  QIcon videoIcon(QPixmap(QString::fromUtf8(":/fig/video.png")));
+  this->toggleViewAction()->setIcon(videoIcon);
+
   // Tooltips to help the user
   QString toolTip = "Start recording the video";
   this->startVideo->setToolTip( toolTip );

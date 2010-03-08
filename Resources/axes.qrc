@@ -18,6 +18,9 @@
     <file>fig/xy.png</file>
   </qresource>
   <qresource prefix="/" >
+    <file>fig/video.png</file>
+  </qresource>
+  <qresource prefix="/" >
     <file>fig/scalarbar.png</file>
   </qresource>
   <qresource prefix="/" >
