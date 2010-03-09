@@ -137,7 +137,6 @@ bool CloseDatabaseConnection(
 std::vector<std::string> ListDatabases(vtkMySQLDatabase* ServerConnector)
 {
   std::vector< std::string > result;
-
   vtkSQLQuery* query = ServerConnector->GetQueryInstance();
   query->SetQuery( "Show Databases;" );
   if ( !query->Execute() )

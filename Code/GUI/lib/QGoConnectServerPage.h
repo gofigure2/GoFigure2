@@ -57,6 +57,7 @@ public:
   mutable std::pair<bool,vtkMySQLDatabase*> m_ConnectionServer;
 
 private:
+  void OpenConnectionToServer()const;
   void CloseServerConnection()const;
 
   QLineEdit* lineServerName;

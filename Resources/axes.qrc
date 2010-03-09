@@ -18,6 +18,9 @@
     <file>fig/camera-photo.png</file>
   </qresource>
   <qresource prefix="/" >
+    <file>fig/mouse-cursor.png</file>
+  </qresource>
+  <qresource prefix="/" >
     <file>fig/xy.png</file>
   </qresource>
   <qresource prefix="/" >

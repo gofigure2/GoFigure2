@@ -93,10 +93,11 @@ bool QGoConnectServerPage::validatePage()
     msgBox.exec();
     return false;
     }
-  m_ConnectionServer = ConnectToServer(
+ /* m_ConnectionServer = ConnectToServer(
     field("ServerName").toString().toStdString(),
     field("User").toString().toStdString(),
-    field("Password").toString().toStdString() );
+    field("Password").toString().toStdString() );*/
+  this->OpenConnectionToServer();
   if (!m_ConnectionServer.first)
     {
     QMessageBox msgBox;
@@ -155,6 +156,8 @@ int QGoConnectServerPage::nextId() const
 std::list<std::string> QGoConnectServerPage::ListGofigureDatabases() const
 {
   //Get the list of all the existing databases:
+  this->OpenConnectionToServer();
+ 
   std::vector<std::string> vectListDB = ListDatabases(m_ConnectionServer.second);
   CloseServerConnection();
 
@@ -193,4 +196,17 @@ void QGoConnectServerPage::CloseServerConnection()const
   m_ConnectionServer.second->Close();
   m_ConnectionServer.second->Delete();
   m_ConnectionServer.second = 0;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoConnectServerPage::OpenConnectionToServer()const
+{
+  if (this->m_ConnectionServer.second == 0)
+    {
+    m_ConnectionServer = ConnectToServer(
+    field("ServerName").toString().toStdString(),
+    field("User").toString().toStdString(),
+    field("Password").toString().toStdString() );
+    }
 }

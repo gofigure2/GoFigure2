@@ -748,11 +748,10 @@ void QGoTabImageView3DwT::CreateModeActions()
   DefaultAction->setCheckable( true );
   DefaultAction->setChecked(true);
   
-  /** \todo add an icon for default*/
- /* QIcon DefaultIcon;
-  DefaultIcon.addPixmap( QPixmap(QString::fromUtf8(":/fig/xy.png")),
+  QIcon DefaultIcon;
+  DefaultIcon.addPixmap( QPixmap(QString::fromUtf8(":/fig/mouse-cursor.png")),
     QIcon::Normal, QIcon::Off );
-  DefaultAction->setIcon( DefaultIcon );*/
+  DefaultAction->setIcon( DefaultIcon );
 
   group->addAction( DefaultAction );
 
