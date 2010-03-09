@@ -318,6 +318,7 @@ protected:
   void CreateAllViewActions();
   void CreateToolsActions();
   void CreateBookmarkActions();
+  void CreateModeActions();
   void CreateVisuDockWidget();
   void CreateManualSegmentationdockWidget();
   void CreateDataBaseTablesConnection();

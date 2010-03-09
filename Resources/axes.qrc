@@ -3,6 +3,9 @@
     <file>fig/splash.jpg</file>
   </qresource>
   <qresource prefix="/" >
+    <file>fig/manual-editing.png</file>
+  </qresource>
+  <qresource prefix="/" >
     <file>fig/cube.png</file>
     <file>fig/2D_VIEWS_INFOS.png</file>
     <file>fig/LeftView.png</file>

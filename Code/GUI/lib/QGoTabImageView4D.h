@@ -191,6 +191,7 @@ signals:
     std::vector< vtkSmartPointer< vtkOrientedGlyphContourRepresentation > > m_ContourRepresentation;
 
     void CreateAllViewActions();
+    void CreateModeActions();
     void CreateVisuDockWidget();
     void CreateManualSegmentationdockWidget();
 

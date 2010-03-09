@@ -90,6 +90,13 @@ std::vector< QAction* > QGoTabElementBase::BookmarkActions()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+std::vector< QAction* > QGoTabElementBase::ModeActions()
+{
+  return m_ModeActions;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
 std::list< QGoTabElementBase::QGoDockWidgetStatusPair >&
 QGoTabElementBase::DockWidget()
 {

@@ -111,6 +111,7 @@ QGoTabImageView4D::QGoTabImageView4D( QWidget* iParent ) :
 #endif
 
   CreateAllViewActions();
+  CreateModeActions();
 
   ReadSettings();
 }
@@ -253,7 +254,44 @@ void QGoTabImageView4D::CreateAllViewActions()
     this, SLOT( ChangeBackgroundColor() ) );
 }
 //--------------------------------------------------------------------------
+//--------------------------------------------------------------------------
+void QGoTabImageView4D::CreateModeActions()
+{
+  QActionGroup* group = new QActionGroup( this );
 
+  QAction* ManualEditingAction = new QAction( tr("Manual-Editing"), this );
+  ManualEditingAction->setCheckable( true );
+  QIcon ManualEditingIcon;
+  ManualEditingIcon.addPixmap( QPixmap(QString::fromUtf8(":/fig/manual-editing.png")),
+    QIcon::Normal, QIcon::Off );
+  ManualEditingAction->setIcon(ManualEditingIcon);
+
+  group->addAction( ManualEditingAction );
+
+  this->m_ModeActions.push_back( ManualEditingAction );
+  /** \todo implement the manual editing mode*/
+  //QObject::connect( ManualEditingAction, SIGNAL( triggered() ),
+  //  this, SLOT( ManualEditingMode() ) );
+
+  QAction* DefaultAction = new QAction( tr( "Default" ), this );
+  DefaultAction->setCheckable( true );
+  DefaultAction->setChecked(true);
+  
+  /** \todo add an icon for default*/
+ /* QIcon DefaultIcon;
+  DefaultIcon.addPixmap( QPixmap(QString::fromUtf8(":/fig/xy.png")),
+    QIcon::Normal, QIcon::Off );
+  DefaultAction->setIcon( DefaultIcon );*/
+
+  group->addAction( DefaultAction );
+
+  this->m_ModeActions.push_back( DefaultAction );
+  /** \todo implement default mode*/
+  //QObject::connect( DefaultAction, SIGNAL( triggered() ),
+   // this, SLOT( DefaultMode() ) );
+}
+
+//-------------------------------------------------------------------------
 //-------------------------------------------------------------------------
 /**
  *

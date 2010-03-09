@@ -186,11 +186,20 @@
     <addaction name="actionManage_Bookmarks"/>
     <addaction name="separator"/>
    </widget>
+   <widget class="QMenu" name="menuMode">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="title">
+     <string>Mode</string>
+    </property>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuBookmarks"/>
    <addaction name="menuView"/>
    <addaction name="menuFiltering"/>
    <addaction name="menuSegmentation"/>
+   <addaction name="menuMode"/>
    <addaction name="menuTools"/>
    <addaction name="menuHelp"/>
   </widget>

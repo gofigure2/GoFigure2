@@ -80,7 +80,7 @@ void QGoTabManager::ClearTabElement( QGoTabElementBase* iE )
     {
     // First remove all toolbar related to the previous tab
     m_MainWindow->m_ViewToolBar->clear();
-
+    m_MainWindow->m_ModeToolBar->clear();
     // Then remove all actions related to the previous tab from menuView
     m_MainWindow->menuView->clear();
 
@@ -92,6 +92,9 @@ void QGoTabManager::ClearTabElement( QGoTabElementBase* iE )
 
     // Then remove all actions from the bookmark menu
     m_MainWindow->menuBookmarks->clear();
+    
+    //then remove all actions from the mode menu:
+    m_MainWindow->menuMode->clear();
 
     // Disable the import/export when tab is closed
     m_MainWindow->menuExport->setDisabled( true );
@@ -146,6 +149,16 @@ void QGoTabManager::SetUpTabElement( QGoTabElementBase* iE )
       m_MainWindow->m_ViewToolBar->addAction( *it );
       }
 
+    action_vector2 = iE->ModeActions();
+
+    for( std::vector< QAction* >::iterator it = action_vector2.begin();
+        it != action_vector2.end();
+        ++it )
+      {
+      m_MainWindow->menuMode->addAction( *it );
+      m_MainWindow->m_ModeToolBar->addAction( *it );
+      }
+
     action_vector2 = iE->SegmentationActions();
 
     for( std::vector< QAction* >::iterator it = action_vector2.begin();
@@ -154,7 +167,7 @@ void QGoTabManager::SetUpTabElement( QGoTabElementBase* iE )
       {
       m_MainWindow->menuSegmentation->addAction( *it );
       }
-
+    
     action_vector2 = iE->ToolsActions();
 
     for( std::vector< QAction* >::iterator it = action_vector2.begin();
@@ -295,6 +308,7 @@ void QGoTabManager::CloseAllTabs( )
     }
 
     m_MainWindow->m_ViewToolBar->clear();
+    m_MainWindow->m_ModeToolBar->clear();
     m_TabWidget->clear( );
 }
 //--------------------------------------------------------------------------

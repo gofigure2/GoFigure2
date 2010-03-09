@@ -179,6 +179,7 @@ private:
   QStringList       m_PluginFileNames;
   QGoTabManager*    m_TabManager;
   QToolBar*         m_ViewToolBar;
+  QToolBar*         m_ModeToolBar;
   vtkLSMReader*     m_LSMReader;
   QGoWizardDB*      m_DBWizard;
 

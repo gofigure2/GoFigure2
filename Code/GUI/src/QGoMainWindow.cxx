@@ -114,6 +114,10 @@ QGoMainWindow::QGoMainWindow( )
   this->m_ViewToolBar->setObjectName( tr("View") );
   this->addToolBar( Qt::TopToolBarArea, this->m_ViewToolBar );
 
+  this->m_ModeToolBar = new QToolBar( tr("Mode"),this);
+  //this->m_ModeToolBar->setObjectName( tr("Mode) );
+  this->addToolBar(Qt::TopToolBarArea,this->m_ModeToolBar);
+
   m_LSMReader = vtkLSMReader::New();
   m_DBWizard  = new QGoWizardDB(this);
   m_DBWizard->hide();
@@ -794,6 +798,7 @@ SetupMenusFromTab( QGoTabElementBase* iT )
   this->menuFiltering->setEnabled( true );
   this->menuSegmentation->setEnabled( true );
   this->menuTools->setEnabled( true );
+  this->menuMode->setEnabled( true );
 
   this->CentralTabWidget->setCurrentIndex( idx );
 }
