@@ -93,10 +93,6 @@ bool QGoConnectServerPage::validatePage()
     msgBox.exec();
     return false;
     }
- /* m_ConnectionServer = ConnectToServer(
-    field("ServerName").toString().toStdString(),
-    field("User").toString().toStdString(),
-    field("Password").toString().toStdString() );*/
   this->OpenConnectionToServer();
   if (!m_ConnectionServer.first)
     {
@@ -113,19 +109,6 @@ bool QGoConnectServerPage::validatePage()
 //-------------------------------------------------------------------------
 int QGoConnectServerPage::nextId() const
 {
-  /* In order for the back button to work on the next page, have to reset the
-  NbNextIDCalled to 1 when the back button is pushed. (has to 1rst go to 
-  validation to create the ServerConnection before going to ListGofigureDB():*/
- /* NbNextIDCalled ++;
-  if ( NbNextIDCalled > 3)
-    {
-    NbNextIDCalled = 1;
-    }
- 
-  if (NbNextIDCalled < 3)
-    {
-    return QGoWizardDB::CreateDataBasePageID;
-    }*/
   std::string DBName;
   std::list<std::string> ListGoDB = ListGofigureDatabases();
 
