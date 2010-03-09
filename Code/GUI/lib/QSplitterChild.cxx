@@ -40,6 +40,8 @@
 
 #include "QSplitterChild.h"
 
+#include <iostream>
+
 QSplitterChild::QSplitterChild( QWidget* iParent ): QSplitter( iParent )
 {
   Prevpos=0;

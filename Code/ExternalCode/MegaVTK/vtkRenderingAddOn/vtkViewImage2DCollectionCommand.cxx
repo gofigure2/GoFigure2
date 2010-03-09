@@ -149,21 +149,24 @@ void vtkViewImage2DCollectionCommand::Execute(vtkObject *caller,
 
     while(v)
     {
-      v->GetCameraFocalAndPosition( focal, pos );
-      v->GetRenderer()->GetActiveCamera()->GetViewPlaneNormal( n );
-      dot = vtkMath::Dot( n, motion );
-
-      for( int dim = 0; dim < 3; dim++ )
+      if( v != viewer )
       {
-        u = motion[dim] - dot * n[dim];
-        focal[dim] += u;
-        pos[dim] += u;
-      }
-      v->SetCameraFocalAndPosition( focal, pos );
+        v->GetCameraFocalAndPosition( focal, pos );
+        v->GetRenderer()->GetActiveCamera()->GetViewPlaneNormal( n );
+        dot = vtkMath::Dot( n, motion );
 
-      if( v->GetInteractorStyle()->GetInteractor()->GetLightFollowCamera() )
-      {
-        v->GetRenderer()->UpdateLightsGeometryToFollowCamera();
+        for( int dim = 0; dim < 3; dim++ )
+        {
+          u = motion[dim] - dot * n[dim];
+          focal[dim] += u;
+          pos[dim] += u;
+        }
+        v->SetCameraFocalAndPosition( focal, pos );
+
+        if( v->GetInteractorStyle()->GetInteractor()->GetLightFollowCamera() )
+        {
+          v->GetRenderer()->UpdateLightsGeometryToFollowCamera();
+        }
       }
       v->Render();
       v = this->GetCollection()->GetNextItem();

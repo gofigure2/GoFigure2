@@ -51,7 +51,6 @@
 #include <QtGui/QGridLayout>
 #include <QSplitter>
 #include <QSlider>
-#include <QSpacerItem>
 
 #include <map>
 
@@ -186,7 +185,6 @@ protected:
   QWidget*      LayOutWidget4;
   QHBoxLayout*  LayOut4;
   QVTKWidget*   QvtkWidget_XYZ;
-  QSpacerItem*  Spacer;
 
   vtkViewImage3D* View3D;
 

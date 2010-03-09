@@ -169,8 +169,8 @@ void QGoImageView3D::setupUi( QWidget* iParent )
     }
 
   QList< int > list_size;
-  list_size.push_back( 10 );
-  list_size.push_back( 10 );
+  list_size.push_back( 400 );
+  list_size.push_back( 400 );
 
   this->VSplitter  = new QSplitter( Qt::Vertical, iParent );
 
@@ -199,7 +199,6 @@ void QGoImageView3D::setupUi( QWidget* iParent )
   this->LayOutWidget2 = new QWidget;
   this->LayOutWidget2->setLayout( this->LayOut2 );
   this->HbSplitter->addWidget( this->LayOutWidget2 );
-//   this->HtSplitter->setSizes( list_size );
 
   this->QvtkWidget_YZ = new QVTKWidget;
   this->SliderYZ = new QSlider( Qt::Vertical );
@@ -211,14 +210,18 @@ void QGoImageView3D::setupUi( QWidget* iParent )
   this->HtSplitter->addWidget( this->LayOutWidget3 );
 
   this->QvtkWidget_XYZ = new QVTKWidget;
-  this->Spacer = new QSpacerItem( 27, 10,
-    QSizePolicy::Minimum, QSizePolicy::Minimum);
   this->LayOut4 = new QHBoxLayout;
   this->LayOut4->addWidget( this->QvtkWidget_XYZ );
-  this->LayOut4->addItem( this->Spacer );
+  this->LayOut4->addSpacing( 27 );
   this->LayOutWidget4 = new QWidget;
   this->LayOutWidget4->setLayout( this->LayOut4 );
   this->HbSplitter->addWidget( this->LayOutWidget4 );
+
+  this->HtSplitter->setSizes( list_size );
+  this->HtSplitter->resize( 800, 400 );
+
+  this->HbSplitter->setSizes( list_size );
+  this->HbSplitter->resize( 800, 400 );
 
   retranslateUi(iParent);
 

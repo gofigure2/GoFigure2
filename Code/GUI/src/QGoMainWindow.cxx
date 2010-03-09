@@ -327,8 +327,11 @@ void QGoMainWindow::on_actionOpen_MegaCapture_Files_triggered()
 //--------------------------------------------------------------------------
 void QGoMainWindow::on_actionUse_DataBase_triggered()
 {
-  m_DBWizard->restart();
-  m_DBWizard->show();
+  if( !m_DBWizard->isVisible() )
+    {
+    m_DBWizard->restart();
+    m_DBWizard->show();
+    }
 }
 //--------------------------------------------------------------------------
 

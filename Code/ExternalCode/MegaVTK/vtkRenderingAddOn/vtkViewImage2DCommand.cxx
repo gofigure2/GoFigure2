@@ -334,18 +334,17 @@ void vtkViewImage2DCommand::Panning( )
   vtkRenderWindowInteractor *rwi =
     this->Viewer->GetRenderWindow()->GetInteractor();
 
-  double ViewFocus[4];
-  double NewPickPoint[4];
+  double ViewFocus[4], focalDepth, ViewPoint[3];
+  double NewPickPoint[4], OldPickPoint[4], MotionVector[3];
 
   // Calculate the focal depth since we'll be using it a lot
   vtkRenderer* ren = this->Viewer->GetRenderer();
   vtkCamera* camera = ren->GetActiveCamera();
   camera->GetFocalPoint(ViewFocus);
-
   vtkInteractorObserver::ComputeWorldToDisplay( ren,
     ViewFocus[0], ViewFocus[1], ViewFocus[2], ViewFocus);
 
-  double focalDepth = ViewFocus[2];
+  focalDepth = ViewFocus[2];
 
   vtkInteractorObserver::ComputeDisplayToWorld( ren,
     rwi->GetEventPosition()[0],
@@ -353,19 +352,36 @@ void vtkViewImage2DCommand::Panning( )
     focalDepth,
     NewPickPoint );
 
+  vtkInteractorObserver::ComputeDisplayToWorld( ren,
+    rwi->GetLastEventPosition()[0],
+    rwi->GetLastEventPosition()[1],
+    focalDepth, 
+    OldPickPoint );
+
+  // Camera motion is reversed
+  MotionVector[0] = OldPickPoint[0] - NewPickPoint[0];
+  MotionVector[1] = OldPickPoint[1] - NewPickPoint[1];
+  MotionVector[2] = OldPickPoint[2] - NewPickPoint[2];
+
   // Get the current focal point and position
 
   camera->GetFocalPoint(ViewFocus);
+  camera->GetPosition(ViewPoint);
+  camera->SetFocalPoint( MotionVector[0] + ViewFocus[0],
+                         MotionVector[1] + ViewFocus[1],
+                         MotionVector[2] + ViewFocus[2] );
+  camera->SetPosition( MotionVector[0] + ViewPoint[0],
+                       MotionVector[1] + ViewPoint[1],
+                       MotionVector[2] + ViewPoint[2] );
 
 //   double *center = ren->GetCenter();
 
   // Compute a translation vector, moving everything 1/10
   // the distance to the cursor. (Arbitrary scale factor)
 
-  double MotionVector[3];
-  MotionVector[0] = 0.01 * (ViewFocus[0] - NewPickPoint[0]);
-  MotionVector[1] = 0.01 * (ViewFocus[1] - NewPickPoint[1]);
-  MotionVector[2] = 0.01 * (ViewFocus[2] - NewPickPoint[2]);
+//   MotionVector[0] = /*0.1 * */(ViewFocus[0] - NewPickPoint[0]);
+//   MotionVector[1] = /*0.1 * */(ViewFocus[1] - NewPickPoint[1]);
+//   MotionVector[2] = /*0.1 * */(ViewFocus[2] - NewPickPoint[2]);
 //   MotionVector[0] = 0.01 * (ViewFocus[0] - NewPickPoint[0]);
 //   MotionVector[1] = 0.01 * (ViewFocus[1] - NewPickPoint[1]);
 //   MotionVector[2] = 0.01 * (ViewFocus[2] - NewPickPoint[2]);

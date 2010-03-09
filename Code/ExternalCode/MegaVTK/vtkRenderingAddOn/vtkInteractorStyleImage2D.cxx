@@ -181,6 +181,7 @@ void vtkInteractorStyleImage2D::OnMiddleButtonDown()
     }
 
   this->Superclass::OnMiddleButtonDown();
+  this->InvokeEvent(vtkViewImage2DCommand::PanEvent);
 }
 
 //----------------------------------------------------------------------------
