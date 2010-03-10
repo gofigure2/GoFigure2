@@ -118,7 +118,7 @@ QGoMainWindow::QGoMainWindow( )
   //this->m_ModeToolBar->setObjectName( tr("Mode) );
   this->addToolBar(Qt::TopToolBarArea,this->m_ModeToolBar);
 
-  m_LSMReader = vtkLSMReader::New();
+//   m_LSMReader = vtkLSMReader::New();
   m_DBWizard  = new QGoWizardDB(this);
   m_DBWizard->hide();
 
@@ -136,7 +136,7 @@ QGoMainWindow::QGoMainWindow( )
 //--------------------------------------------------------------------------
 QGoMainWindow::~QGoMainWindow()
 {
-  m_LSMReader->Delete();
+//   m_LSMReader->Delete();
   this->WriteSettings();
 }
 //--------------------------------------------------------------------------
@@ -732,6 +732,7 @@ SetSingleFileName( const QString& iFile )
 void QGoMainWindow::
 OpenLSMImage( const QString& iFile, const int& iTimePoint )
 {
+  m_LSMReader = vtkLSMReader::New();
   m_LSMReader->SetFileName( iFile.toAscii().data() );
   m_LSMReader->SetUpdateTimePoint( iTimePoint );
   m_LSMReader->Update();

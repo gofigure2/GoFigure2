@@ -174,6 +174,8 @@ QGoTabImageView3DwT( QWidget* iParent ) :
 QGoTabImageView3DwT::
 ~QGoTabImageView3DwT( )
 {
+  m_LSMReader[0]->Delete();
+
   vtkImageData* temp = m_MegaCaptureReader->GetOutput();
   if( temp )
     {
