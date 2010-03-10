@@ -136,7 +136,12 @@ int QGoConnectServerPage::nextId() const
     }
   else
     {
-    //this->m_ImgSessionName.clear();
+    this->NbNextIDCalled ++;
+    if (this->NbNextIDCalled == 2)
+      {
+      this->m_ImgSessionName.clear();
+      this->NbNextIDCalled = 0;
+      }
     return -1;
     }
 }

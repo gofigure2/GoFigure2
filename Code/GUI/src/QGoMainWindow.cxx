@@ -168,6 +168,11 @@ void QGoMainWindow::CreateSignalSlotsConnection()
     recentMultipleFileActions[i]->setVisible(false);
     QObject::connect(this->recentMultipleFileActions[i], SIGNAL(triggered()),
       this, SLOT(openRecentMultipleFile()));
+
+    recentDatabaseFileActions[i] = new QAction(this);
+    recentDatabaseFileActions[i]->setVisible(false);
+    QObject::connect(recentDatabaseFileActions[i], SIGNAL(triggered()),
+      this, SLOT(openRecentDatabaseFile()));
     }
 
   QObject::connect( m_DBWizard, SIGNAL( accepted() ),
@@ -377,42 +382,27 @@ ComputeFileType( const QString& iFileName, GoFigure::FileType& oFileType )
 //--------------------------------------------------------------------------
 void QGoMainWindow::openFilesfromDB()
 {
-  std::string temp = "";
-  this->DisplayFilesfromDB(temp);
+ //test if the wizard just closed has an imagingsessionid, if not,the
+ //imagingsession is called from the open recent files and will not
+ //be opened from here:
+ int test = this->m_DBWizard->GetImagingSessionID();
+ if (test == 0)
+   {
+   return;
+   }
+ else
+   {
+   std::string temp = "";
+   this->DisplayFilesfromDB(temp);
+   this->SetCurrentDatabaseFile(
+     this->m_DBWizard->GetImagingSessionName());
+   }
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void QGoMainWindow::DisplayFilesfromDB(std::string iFirst_Filename)
 {
- /* GoFigureFileInfoHelperMultiIndexContainer file_container =
-    m_DBWizard->GetMultiIndexFileContainer();
-
-  std::string header_filename;
-
-  unsigned int temp_size = file_container.size();
-
-  if( temp_size == 0 )
-    {
-    /// \todo Right now, we first get the complete list of files from the wizard
-    /// then use megacapture import, then visualize. This should be done in a
-    /// single step.
-    std::vector< std::vector< std::string > >
-      listoffiles = m_DBWizard->GetFilenamesFromDB();
-
-    itk::MegaCaptureImport::Pointer importer = itk::MegaCaptureImport::New();
-    importer->SetFileName( listoffiles[0][0] );
-    importer->Update();
-
-    file_container = importer->GetOutput();
-
-    header_filename = importer->GetHeaderFilename();
-    }
-  else
-    {
-    header_filename = m_DBWizard->GetMegaCaptureHeaderFilename();
-    }*/
-
   std::string Header_FileName;
   GoFigureFileInfoHelperMultiIndexContainer file_container =
     this->GetFileContainerForMultiFiles(
@@ -523,20 +513,21 @@ GoFigureFileInfoHelperMultiIndexContainer QGoMainWindow::
   GetFileContainerForMultiFiles(std::string &ioHeader_Filename,
   std::string iFirst_FileName)
 {
+
+GoFigureFileInfoHelperMultiIndexContainer ofile_container;
    if (iFirst_FileName.empty())
     {
     std::string ImgSessionName = 
       this->m_DBWizard->GetImagingSessionName().toStdString();
     this->m_DBWizard->setImgSessionName(ImgSessionName);
-    iFirst_FileName = this->m_DBWizard->GetFirstFileName();
+    //iFirst_FileName = this->m_DBWizard->GetFirstFileName();
+    ofile_container = this->m_DBWizard->GetMultiIndexFileContainer();
     }
-  
-  GoFigureFileInfoHelperMultiIndexContainer ofile_container = 
-    this->m_DBWizard->GetMultiIndexFileContainer();
+   iFirst_FileName = this->m_DBWizard->GetFirstFileName();
   //if the size is diiferent than 0, the imagingsession has
   //just been created and the wizard has already filled the
   //GoFigureFileInfoHelperMultiIndexContainer using MgcaptureImport
-  if (ofile_container.size() == 0)
+  if (ofile_container.size() == 0 ||!iFirst_FileName.empty())
     {
     itk::MegaCaptureImport::Pointer importer = itk::MegaCaptureImport::New();
     importer->SetFileName( iFirst_FileName );
@@ -548,10 +539,6 @@ GoFigureFileInfoHelperMultiIndexContainer QGoMainWindow::
     {
     ioHeader_Filename = m_DBWizard->GetMegaCaptureHeaderFilename();
     }
-
- // GoFigureFileInfoHelperMultiIndexContainer ofile_container =
- //   m_DBWizard->GetMultiIndexFileContainer();
-
   return ofile_container;
 }
 //--------------------------------------------------------------------------
@@ -799,21 +786,29 @@ CreateNewTabFor3DwtImage(
   // w3t->SetMegaCaptureFile
   QGoTabImageView3DwT* w3t = new QGoTabImageView3DwT;
   w3t->SetMegaCaptureFile( iFileList, iFileType, iHeader, iTimePoint );
-  w3t->setWindowTitle( QString::fromStdString( iHeader ) );
+  //w3t->setWindowTitle( QString::fromStdString( iHeader ) );
 
   // if( w3t->m_DataBaseTables->IsDatabaseUsed() )
   //  {
     // **********************
     // Database information
     //get the content of the tables fron the database to fill the table widget:
+  std::string ImgSessionName = m_DBWizard->GetImagingSessionName().toStdString();
+  //in case the files are opened from the open recent files, the imgsessionname
+  //can no more be gotten from the wizard:
+  if (ImgSessionName.empty())
+    {
+    ImgSessionName = this->m_CurrentFile.toStdString();
+    }
     w3t->m_DataBaseTables->SetDatabaseVariables( "gofiguredatabase",
       m_DBWizard->GetServer().toStdString(), m_DBWizard->GetLogin().toStdString(),
       m_DBWizard->GetPassword().toStdString(), m_DBWizard->GetImagingSessionID(),
-      m_DBWizard->GetImagingSessionName().toStdString() );
+      ImgSessionName );
 
     w3t->m_DataBaseTables->FillTableFromDatabase();
 
-    w3t->setWindowTitle( m_DBWizard->GetImagingSessionName() );
+    //w3t->setWindowTitle( m_DBWizard->GetImagingSessionName() );
+    w3t->setWindowTitle(ImgSessionName.c_str());
     // **********************
   //  }
   //else
@@ -1108,9 +1103,9 @@ void QGoMainWindow::SetCurrentDatabaseFile( const QString &fileName )
   this->setWindowModified( false );
   if( !m_CurrentFile.isEmpty() )
     {
-    m_RecentDatabaseFiles.removeAll( m_CurrentFile );
-    m_RecentDatabaseFiles.prepend( m_CurrentFile );
-    UpdateRecentFileActions( m_RecentDatabaseFiles,
+    this->m_RecentDatabaseFiles.removeAll( m_CurrentFile );
+    this->m_RecentDatabaseFiles.prepend( m_CurrentFile );
+    UpdateRecentFileActions( this->m_RecentDatabaseFiles,
       menuDatabase_Files,
       recentDatabaseFileActions );
     }
@@ -1129,14 +1124,22 @@ void QGoMainWindow::UpdateRecentFileActions( QStringList list,
   QMenu *menu,
   QAction *recentFileActions[MaxRecentFiles] )
 {
-  QMutableStringListIterator i(list);
-  while (i.hasNext())
+  //if the items in the list are imagingsession names,from
+  // the menuDatabase_Files, they don't corresponds to real 
+  //files, the test bellow will then remove
+  //them from the list
+  if (menu != this->menuDatabase_Files)
     {
-    if (!QFile::exists(i.next()))
+    QMutableStringListIterator i(list);
+    while (i.hasNext())
       {
-      i.remove();
+      if (!QFile::exists(i.next()))
+        {
+        i.remove();
+        }
       }
     }
+
   if (!list.isEmpty())
     {
     menu->setEnabled(true);
@@ -1187,7 +1190,14 @@ void QGoMainWindow::openRecentDatabaseFile()
   QAction* taction = qobject_cast< QAction* >( sender() );
   if( taction )
     {
-    this->SetDatabaseFileName( taction->data().toString().toStdString() );
+    std::string ImgSessionName = taction->data().toString().toStdString();
+    this->SetCurrentDatabaseFile( ImgSessionName.c_str() );
+    this->m_DBWizard->setImgSessionName(ImgSessionName);
+    this->m_DBWizard->restart();
+    this->m_DBWizard->show();
+    QObject::connect( m_DBWizard, SIGNAL( accepted() ),
+      this, SLOT( openRecentFilesfromDB() ) );
+    //this->SetDatabaseFileName( ImgSessionName );
     }
 }
 //--------------------------------------------------------------------------------
@@ -1198,9 +1208,18 @@ void QGoMainWindow::SetDatabaseFileName(std::string iImgSessionName)
   this->m_DBWizard->setImgSessionName(iImgSessionName);
   this->m_DBWizard->restart();
   this->m_DBWizard->show();
-  this->DisplayFilesfromDB(this->m_DBWizard->GetFirstFileName());
+  QObject::connect( m_DBWizard, SIGNAL( accepted() ),
+    this, SLOT( openRecentFilesfromDB() ) );
+  //this->DisplayFilesfromDB(this->m_DBWizard->GetFirstFileName());
 }
- //--------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------------
+void QGoMainWindow::openRecentFilesfromDB()
+{
+  this->DisplayFilesfromDB(this->m_CurrentFile.toStdString());
+}
+//--------------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------------
 void QGoMainWindow::ReadSettings()

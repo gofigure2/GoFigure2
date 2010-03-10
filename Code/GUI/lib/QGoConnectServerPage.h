@@ -61,11 +61,11 @@ private:
   void OpenConnectionToServer()const;
   void CloseServerConnection()const;
 
-  QLineEdit* lineServerName;
-  QLineEdit* lineUserName;
-  QLineEdit* linePassword;
-  QLineEdit* lineDBName;
-  std::string m_ImgSessionName;
+  QLineEdit*          lineServerName;
+  QLineEdit*          lineUserName;
+  QLineEdit*          linePassword;
+  QLineEdit*          lineDBName;
+  mutable std::string m_ImgSessionName;
  
   /**\brief return the list of the names of the databases of gofigure type:*/
   std::list<std::string> ListGofigureDatabases() const;

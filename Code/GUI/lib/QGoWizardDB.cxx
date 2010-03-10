@@ -74,6 +74,7 @@ QGoWizardDB::QGoWizardDB( QWidget *iParent )
 : QWizard( iParent )
 {
   this->m_ImgSessionName = "";
+  this->m_ImgSessionID = 0;
   QFont tfont;
   tfont.setBold(true);
   this->setFont(tfont);
@@ -159,7 +160,15 @@ QString QGoWizardDB::GetNameDB()
 //-------------------------------------------------------------------------
 int QGoWizardDB::GetImagingSessionID()
 {
-  return field("ImgSessionID").toInt();
+  if ( field("ImgSessionID").toInt() != 0)
+    {
+    return field("ImgSessionID").toInt();
+    }
+  if (this->m_ImgSessionID != 0)
+    {
+    return this->m_ImgSessionID;
+    }
+  return 0;
 }
 //-------------------------------------------------------------------------
 
@@ -215,6 +224,7 @@ void QGoWizardDB::closeEvent(QCloseEvent* iEvent)
     {
     this->m_ImgSessionName = 
       field("ImgSessionName").toString().toStdString();
+    this->m_ImgSessionID = 0;
     }
   this->SetFirstFileName();
   this->m_ImgSessionName.clear();
@@ -347,10 +357,10 @@ void QGoWizardDB::SetFirstFileName()
     }
 
   vtkMySQLDatabase* DatabaseConnector = ConnectionDatabase.second;
-  int ImgSessionID = FindOneID(DatabaseConnector,"imagingsession", 
+   this->m_ImgSessionID = FindOneID(DatabaseConnector,"imagingsession", 
     "ImagingSessionID","Name", this->m_ImgSessionName);
   this->m_FirstFileName = ReturnOnlyOneValue(DatabaseConnector,
-  "image", "Filename","ImagingSessionID",ConvertToString<int>(ImgSessionID));
+    "image", "Filename","ImagingSessionID",ConvertToString<int>(this->m_ImgSessionID));
 
   DatabaseConnector->Close();
   DatabaseConnector->Delete();

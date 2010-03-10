@@ -92,6 +92,7 @@ private slots:
   void on_actionOpen_MegaCapture_Files_triggered( );
   void openRecentMultipleFile();
   void openRecentDatabaseFile();
+  void openRecentFilesfromDB();
 
   void on_actionGoFigure2_Website_triggered( );
   void on_actionUser_mailing_list_triggered();

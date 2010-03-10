@@ -107,6 +107,7 @@ protected:
   QGoConnectServerPage*   m_ConnectServerPage;
   std::string             m_ImgSessionName;
   std::string             m_FirstFileName;
+  int                     m_ImgSessionID;
 
 };
 #endif
