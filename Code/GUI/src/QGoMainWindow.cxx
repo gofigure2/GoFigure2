@@ -412,10 +412,18 @@ void QGoMainWindow::DisplayFilesfromDB(std::string iFirst_Filename)
     {
     header_filename = m_DBWizard->GetMegaCaptureHeaderFilename();
     }*/
-  GoFigureFileInfoHelperMultiIndexContainer file_container =
-    this->GetFileContainerForMultiFiles(iFirst_Filename);
-  std::string Header_FileName = iFirst_Filename;
 
+  std::string Header_FileName;
+  GoFigureFileInfoHelperMultiIndexContainer file_container =
+    this->GetFileContainerForMultiFiles(
+    Header_FileName,iFirst_Filename);
+  if (file_container.size() == 0)
+    {
+    std::cout<<"GoFigureFileInfoHelperMultiIndexContainer empty ";
+    std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
+    std::cout << std::endl;
+    return;
+    }
   GoFigureFileInfoHelperMultiIndexContainer::iterator
     temp_it = file_container.begin();
 
@@ -512,41 +520,38 @@ void QGoMainWindow::DisplayFilesfromDB(std::string iFirst_Filename)
 
 //--------------------------------------------------------------------------
 GoFigureFileInfoHelperMultiIndexContainer QGoMainWindow::
-  GetFileContainerForMultiFiles(std::string &ioHeader_Filename)
+  GetFileContainerForMultiFiles(std::string &ioHeader_Filename,
+  std::string iFirst_FileName)
 {
-   GoFigureFileInfoHelperMultiIndexContainer ofile_container =
-    m_DBWizard->GetMultiIndexFileContainer();
-
-  //std::string header_filename;
-
-  unsigned int temp_size = ofile_container.size();
-
-  if( temp_size == 0 )
+   if (iFirst_FileName.empty())
     {
-    /// \todo Right now, we first get the complete list of files from the wizard
-    /// then use megacapture import, then visualize. This should be done in a
-    /// single step.
-    if (ioHeader_Filename.empty())
-      {
-      std::vector< std::vector< std::string > >
-      listoffiles = m_DBWizard->GetFilenamesFromDB();
-      ioHeader_Filename = listoffiles[0][0];
-      }
+    std::string ImgSessionName = 
+      this->m_DBWizard->GetImagingSessionName().toStdString();
+    this->m_DBWizard->setImgSessionName(ImgSessionName);
+    iFirst_FileName = this->m_DBWizard->GetFirstFileName();
+    }
+  
+  GoFigureFileInfoHelperMultiIndexContainer ofile_container = 
+    this->m_DBWizard->GetMultiIndexFileContainer();
+  //if the size is diiferent than 0, the imagingsession has
+  //just been created and the wizard has already filled the
+  //GoFigureFileInfoHelperMultiIndexContainer using MgcaptureImport
+  if (ofile_container.size() == 0)
+    {
     itk::MegaCaptureImport::Pointer importer = itk::MegaCaptureImport::New();
-    //importer->SetFileName( listoffiles[0][0] );
-    importer->SetFileName(ioHeader_Filename);
+    importer->SetFileName( iFirst_FileName );
     importer->Update();
-
     ofile_container = importer->GetOutput();
-
-    //header_filename = importer->GetHeaderFilename();
     ioHeader_Filename = importer->GetHeaderFilename();
     }
   else
     {
-    //header_filename = m_DBWizard->GetMegaCaptureHeaderFilename();
     ioHeader_Filename = m_DBWizard->GetMegaCaptureHeaderFilename();
-    } 
+    }
+
+ // GoFigureFileInfoHelperMultiIndexContainer ofile_container =
+ //   m_DBWizard->GetMultiIndexFileContainer();
+
   return ofile_container;
 }
 //--------------------------------------------------------------------------
@@ -1102,8 +1107,8 @@ void QGoMainWindow::SetCurrentDatabaseFile( const QString &fileName )
   this->setWindowModified( false );
   if( !m_CurrentFile.isEmpty() )
     {
-    m_RecentMultipleFiles.removeAll( m_CurrentFile );
-    m_RecentMultipleFiles.prepend( m_CurrentFile );
+    m_RecentDatabaseFiles.removeAll( m_CurrentFile );
+    m_RecentDatabaseFiles.prepend( m_CurrentFile );
     UpdateRecentFileActions( m_RecentDatabaseFiles,
       menuDatabase_Files,
       recentDatabaseFileActions );
@@ -1189,8 +1194,6 @@ void QGoMainWindow::openRecentDatabaseFile()
 //--------------------------------------------------------------------------------
 void QGoMainWindow::SetDatabaseFileName(std::string iImgSessionName)
 {
- /** \todo open the wizard for recent files from database, get the first filename
- for the iImgSessionName*/
   this->m_DBWizard->setImgSessionName(iImgSessionName);
   this->m_DBWizard->restart();
   this->m_DBWizard->show();
@@ -1206,11 +1209,15 @@ void QGoMainWindow::ReadSettings()
     settings.value( "RecentSingleFiles" ).toStringList( );
   m_RecentMultipleFiles =
     settings.value( "RecentMultipleFiles" ).toStringList( );
+  m_RecentDatabaseFiles =
+    settings.value( "RecentDatabaseFiles").toStringList( );
 
   this->UpdateRecentFileActions( m_RecentSingleFiles,
     this->menuSingle_Files, this->recentSingleFileActions );
   this->UpdateRecentFileActions( m_RecentMultipleFiles,
     this->menuMultiple_Files, this->recentMultipleFileActions );
+  this->UpdateRecentFileActions(this->m_RecentDatabaseFiles,
+    this->menuDatabase_Files,this->recentDatabaseFileActions);
 
   settings.beginGroup( "MainWindow" );
   QSize tsize = settings.value( "size" ).toSize();
@@ -1239,6 +1246,7 @@ void QGoMainWindow::WriteSettings()
   QSettings settings;
   settings.setValue("RecentSingleFiles", m_RecentSingleFiles);
   settings.setValue("RecentMultipleFiles", m_RecentMultipleFiles);
+  settings.setValue("RecentDatabaseFiles", m_RecentDatabaseFiles);
   settings.beginGroup("MainWindow");
   settings.setValue("size", size());
   settings.setValue("pos", pos());

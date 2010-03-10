@@ -167,7 +167,7 @@ private:
   /** \brief get the file container and the header filename for a
   multi file*/
   GoFigureFileInfoHelperMultiIndexContainer GetFileContainerForMultiFiles(
-    std::string &ioHeader_Filename);
+    std::string &ioHeader_Filename, std::string iFirstFileName);
 
   /**
    * \brief Compute GoFigure file type from a given filename

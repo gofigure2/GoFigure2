@@ -204,13 +204,23 @@ void QGoWizardDB::closeEvent(QCloseEvent* iEvent)
   int CurrentPageID = this->currentId();
   QWizardPage* CurrentPage = this->currentPage();
 
-  if (!this->m_ImgSessionName.empty())
+  /*if (!this->m_ImgSessionName.empty())
     {
     this->SetFirstFileName();
     this->m_ImgSessionName.clear();
     }
   else
+    {*/
+  if (!field("ImgSessionName").toString().toStdString().empty())
     {
+    this->m_ImgSessionName = 
+      field("ImgSessionName").toString().toStdString();
+    }
+  this->SetFirstFileName();
+  this->m_ImgSessionName.clear();
+    //}
+  //else
+  //  {
     switch (CurrentPageID)
       {
       case 0:
@@ -258,7 +268,7 @@ void QGoWizardDB::closeEvent(QCloseEvent* iEvent)
         {
         }
       }
-    }
+    //}
 
 /*  QGoOpenCreateImgSessionPage* F = dynamic_cast<QGoOpenCreateImgSessionPage*>(CurrentPage);
   if (F !=0)
@@ -350,5 +360,12 @@ void QGoWizardDB::SetFirstFileName()
 //-------------------------------------------------------------------------
 std::string QGoWizardDB::GetFirstFileName()
 { 
+ if (!field("ImgSessionName").toString().toStdString().empty())
+   {
+   this->m_ImgSessionName = 
+     field("ImgSessionName").toString().toStdString();
+   }
+  this->SetFirstFileName();
+  this->m_ImgSessionName.clear();
   return this->m_FirstFileName;
 }
