@@ -58,6 +58,7 @@
 //#include "MegaVTK2Configure.h"
 // #include "GoFigureFileInfoHelper.h"
 #include "GoFigureFileInfoMultiIndexContainerHelper.h"
+#include "QGoConnectServerPage.h"
 #include "vtkMySQLDatabase.h"
 
 /**
@@ -96,10 +97,16 @@ public:
 
   GoFigureFileInfoHelperMultiIndexContainer GetMultiIndexFileContainer();
   std::string GetMegaCaptureHeaderFilename();
+  void setImgSessionName(std::string iImgSessionName);
+  std::string GetFirstFileName();
 
 
 protected:
   void closeEvent(QCloseEvent* iEvent);
+  void SetFirstFileName();
+  QGoConnectServerPage*   m_ConnectServerPage;
+  std::string             m_ImgSessionName;
+  std::string             m_FirstFileName;
 
 };
 #endif

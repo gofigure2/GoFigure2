@@ -91,6 +91,7 @@ private slots:
 //   void on_actionOpen_Multiple_Files_triggered( );
   void on_actionOpen_MegaCapture_Files_triggered( );
   void openRecentMultipleFile();
+  void openRecentDatabaseFile();
 
   void on_actionGoFigure2_Website_triggered( );
   void on_actionUser_mailing_list_triggered();
@@ -129,15 +130,19 @@ private:
 
   /** \brief */
   void openRecentFile(const bool& IsSerie);
+  void SetDatabaseFileName(std::string iImgSessionName);
+  void DisplayFilesfromDB(std::string iFirst_Filename);
 
   /** \brief */
   void SetCurrentSingleFile( const QString &fileName );
   void SetCurrentMultiFile( const QString &fileName );
+  void SetCurrentDatabaseFile(const QString &fileName);
 
   /** \brief */
   enum { MaxRecentFiles = 5 };
   QAction *recentSingleFileActions[MaxRecentFiles];
   QAction *recentMultipleFileActions[MaxRecentFiles];
+  QAction *recentDatabaseFileActions[MaxRecentFiles];
 
   void UpdateRecentFileActions( QStringList list, QMenu *menu,
     QAction *recentFileActions[MaxRecentFiles] );
@@ -159,6 +164,10 @@ private:
   void OpenLSMImage( const QString& iFile, const int& iTimePoint );
 
   void SetupMenusFromTab( QGoTabElementBase* iT );
+  /** \brief get the file container and the header filename for a
+  multi file*/
+  GoFigureFileInfoHelperMultiIndexContainer GetFileContainerForMultiFiles(
+    std::string &ioHeader_Filename);
 
   /**
    * \brief Compute GoFigure file type from a given filename
@@ -198,6 +207,7 @@ private:
   /** \brief list of recent files */
   QStringList m_RecentSingleFiles;
   QStringList m_RecentMultipleFiles;
+  QStringList m_RecentDatabaseFiles;
 
   /** \brief current file name */
   QString m_CurrentFile;

@@ -55,6 +55,7 @@ public:
   bool validatePage();
   int nextId() const;
   mutable std::pair<bool,vtkMySQLDatabase*> m_ConnectionServer;
+  void SetImgSessionName(std::string iImgSessionName);
 
 private:
   void OpenConnectionToServer()const;
@@ -64,6 +65,7 @@ private:
   QLineEdit* lineUserName;
   QLineEdit* linePassword;
   QLineEdit* lineDBName;
+  std::string m_ImgSessionName;
  
   /**\brief return the list of the names of the databases of gofigure type:*/
   std::list<std::string> ListGofigureDatabases() const;

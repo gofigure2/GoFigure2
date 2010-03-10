@@ -126,6 +126,7 @@ QGoMainWindow::QGoMainWindow( )
   QString temp;
   SetCurrentSingleFile( temp );
   SetCurrentMultiFile( temp );
+  SetCurrentDatabaseFile(temp);
 
   CreateSignalSlotsConnection();
   ReadSettings();
@@ -372,9 +373,19 @@ ComputeFileType( const QString& iFileName, GoFigure::FileType& oFileType )
 }
 
 //--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
 void QGoMainWindow::openFilesfromDB()
 {
-  GoFigureFileInfoHelperMultiIndexContainer file_container =
+  std::string temp = "";
+  this->DisplayFilesfromDB(temp);
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoMainWindow::DisplayFilesfromDB(std::string iFirst_Filename)
+{
+ /* GoFigureFileInfoHelperMultiIndexContainer file_container =
     m_DBWizard->GetMultiIndexFileContainer();
 
   std::string header_filename;
@@ -400,7 +411,10 @@ void QGoMainWindow::openFilesfromDB()
   else
     {
     header_filename = m_DBWizard->GetMegaCaptureHeaderFilename();
-    }
+    }*/
+  GoFigureFileInfoHelperMultiIndexContainer file_container =
+    this->GetFileContainerForMultiFiles(iFirst_Filename);
+  std::string Header_FileName = iFirst_Filename;
 
   GoFigureFileInfoHelperMultiIndexContainer::iterator
     temp_it = file_container.begin();
@@ -422,7 +436,7 @@ void QGoMainWindow::openFilesfromDB()
   // when using CreateNewTabFor3DwtImage
   int TimePoint = file_container.get< m_TCoord >().begin()->m_TCoord;
   QGoTabImageView3DwT* w3t = CreateNewTabFor3DwtImage( file_container,
-    filetype, header_filename, TimePoint );
+    filetype, Header_FileName, TimePoint );
 
   QObject::connect( w3t, SIGNAL( UpdateBookmarkOpenActions( std::vector<QAction*> ) ),
     this->m_TabManager, SLOT( UpdateBookmarkMenu( std::vector<QAction*> ) ) );
@@ -493,6 +507,47 @@ void QGoMainWindow::openFilesfromDB()
       }
     }
   this->menuBookmarks->setEnabled(true);
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+GoFigureFileInfoHelperMultiIndexContainer QGoMainWindow::
+  GetFileContainerForMultiFiles(std::string &ioHeader_Filename)
+{
+   GoFigureFileInfoHelperMultiIndexContainer ofile_container =
+    m_DBWizard->GetMultiIndexFileContainer();
+
+  //std::string header_filename;
+
+  unsigned int temp_size = ofile_container.size();
+
+  if( temp_size == 0 )
+    {
+    /// \todo Right now, we first get the complete list of files from the wizard
+    /// then use megacapture import, then visualize. This should be done in a
+    /// single step.
+    if (ioHeader_Filename.empty())
+      {
+      std::vector< std::vector< std::string > >
+      listoffiles = m_DBWizard->GetFilenamesFromDB();
+      ioHeader_Filename = listoffiles[0][0];
+      }
+    itk::MegaCaptureImport::Pointer importer = itk::MegaCaptureImport::New();
+    //importer->SetFileName( listoffiles[0][0] );
+    importer->SetFileName(ioHeader_Filename);
+    importer->Update();
+
+    ofile_container = importer->GetOutput();
+
+    //header_filename = importer->GetHeaderFilename();
+    ioHeader_Filename = importer->GetHeaderFilename();
+    }
+  else
+    {
+    //header_filename = m_DBWizard->GetMegaCaptureHeaderFilename();
+    ioHeader_Filename = m_DBWizard->GetMegaCaptureHeaderFilename();
+    } 
+  return ofile_container;
 }
 //--------------------------------------------------------------------------
 
@@ -1038,6 +1093,23 @@ void QGoMainWindow::SetCurrentMultiFile( const QString &fileName )
       recentMultipleFileActions );
     }
 }
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoMainWindow::SetCurrentDatabaseFile( const QString &fileName )
+{
+  m_CurrentFile = fileName;
+  this->setWindowModified( false );
+  if( !m_CurrentFile.isEmpty() )
+    {
+    m_RecentMultipleFiles.removeAll( m_CurrentFile );
+    m_RecentMultipleFiles.prepend( m_CurrentFile );
+    UpdateRecentFileActions( m_RecentDatabaseFiles,
+      menuDatabase_Files,
+      recentDatabaseFileActions );
+    }
+}
+//--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 QString QGoMainWindow::strippedName(const QString &fullFileName)
@@ -1102,6 +1174,29 @@ void QGoMainWindow::openRecentMultipleFile()
     }
 }
 //--------------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------------
+void QGoMainWindow::openRecentDatabaseFile()
+{
+  QAction* taction = qobject_cast< QAction* >( sender() );
+  if( taction )
+    {
+    this->SetDatabaseFileName( taction->data().toString().toStdString() );
+    }
+}
+//--------------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------------
+void QGoMainWindow::SetDatabaseFileName(std::string iImgSessionName)
+{
+ /** \todo open the wizard for recent files from database, get the first filename
+ for the iImgSessionName*/
+  this->m_DBWizard->setImgSessionName(iImgSessionName);
+  this->m_DBWizard->restart();
+  this->m_DBWizard->show();
+  this->DisplayFilesfromDB(this->m_DBWizard->GetFirstFileName());
+}
+ //--------------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------------
 void QGoMainWindow::ReadSettings()

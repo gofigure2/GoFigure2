@@ -49,9 +49,10 @@
 #include <iostream>
 #include <list>
 
-QGoConnectServerPage::QGoConnectServerPage( QWidget *iParent )
-: QWizardPage( iParent )
+QGoConnectServerPage::QGoConnectServerPage( QWidget *iParent)
+  : QWizardPage( iParent )
 {
+  this->m_ImgSessionName.clear();
   NbNextIDCalled = 0;
   QFont tfont;
   tfont.setBold(false);
@@ -129,7 +130,15 @@ int QGoConnectServerPage::nextId() const
     this->wizard()->setField( "DBName", DBName.c_str() );
     std::cout<<"the db name to open is: "<<field("DBName").toString().toStdString().c_str()<<std::endl;
     }
-  return QGoWizardDB::OpenOrCreateProjectPageID;
+  if (this->m_ImgSessionName.empty())
+    {
+    return QGoWizardDB::OpenOrCreateProjectPageID;
+    }
+  else
+    {
+    //this->m_ImgSessionName.clear();
+    return -1;
+    }
 }
 //-------------------------------------------------------------------------
 
@@ -189,4 +198,11 @@ void QGoConnectServerPage::OpenConnectionToServer()const
     field("User").toString().toStdString(),
     field("Password").toString().toStdString() );
     }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoConnectServerPage::SetImgSessionName(std::string iImgSessionName)
+{
+  this->m_ImgSessionName = iImgSessionName;
 }

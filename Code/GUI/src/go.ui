@@ -91,8 +91,14 @@
       </property>
       <addaction name="separator"/>
      </widget>
+     <widget class="QMenu" name="menuDatabase_Files">
+      <property name="title">
+       <string>Database Files</string>
+      </property>
+     </widget>
      <addaction name="menuSingle_Files"/>
      <addaction name="menuMultiple_Files"/>
+     <addaction name="menuDatabase_Files"/>
     </widget>
     <widget class="QMenu" name="menuImport">
      <property name="enabled">
