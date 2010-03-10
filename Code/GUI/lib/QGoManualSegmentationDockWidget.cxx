@@ -53,6 +53,8 @@ QGoManualSegmentationDockWidget( QWidget* iParent ) :
   this->setupUi( this );
   this->verticalLayout_2->addWidget(TraceManualEditingWidget);
 
+  GenerateContourRepresentationProperties();
+
   QObject::connect( this->SettingsBtn, SIGNAL( pressed() ),
     m_SettingsDialog, SLOT( exec() ) );
 

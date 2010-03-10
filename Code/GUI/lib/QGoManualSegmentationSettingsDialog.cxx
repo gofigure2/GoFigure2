@@ -73,6 +73,8 @@ QGoManualSegmentationSettingsDialog( QWidget* iParent,
   vtkRenderWindow* renwin = this->qvtkWidget->GetRenderWindow();
   renwin->AddRenderer( m_Renderer );
 
+  this->LineWidthSpinBox->setValue( m_LineWidth );
+
   m_ContourRepresentation = vtkSmartPointer< vtkOrientedGlyphContourRepresentation >::New();
   m_ContourRepresentation->GetLinesProperty()->SetLineWidth( m_LineWidth );
   m_ContourRepresentation->GetLinesProperty()->SetColor( m_LineColor.redF(),

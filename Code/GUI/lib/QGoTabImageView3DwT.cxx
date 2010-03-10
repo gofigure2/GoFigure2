@@ -108,23 +108,6 @@ QGoTabImageView3DwT( QWidget* iParent ) :
 
   m_DataBaseTables = new QGoPrintDatabase( this );
 
-  for( int i = 0; i < 3; i++ )
-    {
-    this->m_ContourRepresentation.push_back(
-      vtkSmartPointer< vtkOrientedGlyphContourRepresentation >::New() );
-    this->m_ContourRepresentation.back()->GetProperty()->SetColor( 0., 1., 1. );
-    this->m_ContourRepresentation.back()->GetLinesProperty()->SetColor( 1., 0., 1. );
-    this->m_ContourRepresentation.back()->GetActiveProperty()->SetColor( 1., 1., 0. );
-
-    this->m_ContourWidget.push_back(
-      vtkSmartPointer< vtkContourWidget >::New() );
-    this->m_ContourWidget.back()->SetPriority( 10.0 );
-    this->m_ContourWidget.back()->SetInteractor( m_ImageView->GetInteractor( i ) );
-    this->m_ContourWidget.back()->Off();
-
-    this->m_ContourWidget.back()->SetRepresentation( this->m_ContourRepresentation.back() );
-    }
-
   m_MegaCaptureReader = itk::MegaCaptureReader::New();
 
   CreateVisuDockWidget();
@@ -146,6 +129,25 @@ QGoTabImageView3DwT( QWidget* iParent ) :
   CreateModeActions();
 
   ReadSettings();
+
+  for( int i = 0; i < 3; i++ )
+    {
+    this->m_ContourRepresentation.push_back(
+      vtkSmartPointer< vtkOrientedGlyphContourRepresentation >::New() );
+    this->m_ContourRepresentation.back()->GetProperty()->SetColor( 0., 1., 1. );
+    this->m_ContourRepresentation.back()->GetLinesProperty()->SetColor( 1., 0., 1. );
+    this->m_ContourRepresentation.back()->GetActiveProperty()->SetColor( 1., 1., 0. );
+
+    this->m_ContourWidget.push_back(
+      vtkSmartPointer< vtkContourWidget >::New() );
+    this->m_ContourWidget.back()->SetPriority( 10.0 );
+    this->m_ContourWidget.back()->SetInteractor( m_ImageView->GetInteractor( i ) );
+    this->m_ContourWidget.back()->Off();
+
+    this->m_ContourWidget.back()->SetRepresentation( this->m_ContourRepresentation.back() );
+    }
+
+  ChangeContourRepresentationProperty();
 
   m_DockWidgetList.push_back(
     std::pair< QGoDockWidgetStatus*, QDockWidget* >(

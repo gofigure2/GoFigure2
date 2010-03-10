@@ -179,7 +179,7 @@
 //
 // Dan White <dan@chalkie.org.uk>
 // Kalle Pahajoki <kalpaha@st.jyu.fi>
-// Pasi Kankaanpää <ppkank@bytl.jyu.fi>
+// Pasi Kankaanpï¿½ï¿½ <ppkank@bytl.jyu.fi>
 // 
 
 
@@ -237,9 +237,9 @@ public:
   void SetFileName(const char *);
   //void ExecuteInformation();
   int RequestInformation (
-  vtkInformation       * vtkNotUsed( request ),
-  vtkInformationVector** vtkNotUsed( inputVector ),
-  vtkInformationVector * outputVector);    
+    vtkInformation       * vtkNotUsed( request ),
+    vtkInformationVector** vtkNotUsed( inputVector ),
+    vtkInformationVector * outputVector);    
   void SetUpdateTimePoint(int);
   void SetUpdateChannel(int);
 
@@ -311,17 +311,11 @@ protected:
     vtkInformationVector** inputVector,
     vtkInformationVector* outputVector);
   
-int RequestData(
+  int RequestData(
+    vtkInformation *vtkNotUsed(request),
+    vtkInformationVector **vtkNotUsed(inputVector),
+    vtkInformationVector *outputVector);
 
-  vtkInformation *vtkNotUsed(request),
-
-  vtkInformationVector **vtkNotUsed(inputVector),
-
-  vtkInformationVector *outputVector);
-
-
-
-  
   //void ExecuteData(vtkDataObject *out);
   void CalculateExtentAndSpacing(int extent[6],double spacing[3]);
   void DecodeHorizontalDifferencing(unsigned char *,int);
@@ -330,50 +324,56 @@ int RequestData(
   void ConstructSliceOffsets();
   unsigned int GetStripByteCount(unsigned int timepoint, unsigned int slice);
   unsigned int GetSliceOffset(unsigned int timepoint, unsigned int slice);
-  
 
-  int SwapBytes;
+  vtkStringArray*         LaserNames;
 
-  int IntUpdateExtent[6];
-  unsigned long OffsetToLastAccessedImage;
-  int NumberOfLastAccessedImage;
-  int FileNameChanged;
-  ifstream *File;
-  char *FileName;
+  vtkDoubleArray*         TrackWavelengths;
+  vtkDoubleArray*         DetectorOffsetFirstImage;
+  vtkDoubleArray*         DetectorOffsetLastImage;
+
+  vtkUnsignedIntArray*    ImageOffsets;
+  vtkUnsignedIntArray*    ReadSizes;
+  vtkUnsignedIntArray*    StripOffset;
+  vtkUnsignedIntArray*    ChannelDataTypes;
+  vtkUnsignedIntArray*    StripByteCount;
+
+  vtkUnsignedShortArray*  BitsPerSample;
+
   double VoxelSizes[3];
+
+  unsigned long OffsetToLastAccessedImage;
+  unsigned long ColorMapOffset;
+  unsigned long ChannelInfoOffset;
+  unsigned long ChannelDataTypesOffset;
+  
+  unsigned int SamplesPerPixel;
+  unsigned int LSMSpecificInfoOffset;
+  unsigned int NewSubFileType;
+  unsigned int Compression;
+
   int Dimensions[5];// x,y,z,time,channels
   int NumberOfIntensityValues[4];
-  unsigned short Identifier;
-  unsigned int NewSubFileType;
-  vtkUnsignedShortArray *BitsPerSample;
-  unsigned int Compression;
-  vtkUnsignedIntArray *StripOffset;
-  vtkUnsignedIntArray *ChannelDataTypes;
-  vtkDoubleArray *TrackWavelengths;
-  unsigned int SamplesPerPixel;
-  vtkUnsignedIntArray *StripByteCount;
-  unsigned int LSMSpecificInfoOffset;
+  int DataScalarType;
+  int IntUpdateExtent[6];
+  int NumberOfLastAccessedImage;
+  int FileNameChanged;
+  int SwapBytes;
+
   unsigned short PhotometricInterpretation;
-  unsigned long ColorMapOffset;
+  unsigned short Identifier;
   unsigned short PlanarConfiguration;
   unsigned short Predictor;
   unsigned short ScanType;
-  int DataScalarType;
   
-  vtkUnsignedIntArray *ImageOffsets;
-  vtkUnsignedIntArray *ReadSizes;
-  vtkDoubleArray* DetectorOffsetFirstImage;
-  vtkDoubleArray* DetectorOffsetLastImage;
-  
-  vtkStringArray* LaserNames;
-  
-  
+  ifstream *File;
+  char *FileName;
+
+
   double DataSpacing[3];
   int DataExtent[6];
   int NumberOfScalarComponents;
   int DataType;
-  unsigned long ChannelInfoOffset;
-  unsigned long ChannelDataTypesOffset;
+
   vtkIntArray *ChannelColors;
   char **ChannelNames;
   vtkDoubleArray *TimeStampInformation;
