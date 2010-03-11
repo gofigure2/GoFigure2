@@ -131,7 +131,6 @@ private:
 
   /** \brief */
   void openRecentFile(const bool& IsSerie);
-  void SetDatabaseFileName(std::string iImgSessionName);
   void DisplayFilesfromDB(std::string iFirst_Filename);
 
   /** \brief */

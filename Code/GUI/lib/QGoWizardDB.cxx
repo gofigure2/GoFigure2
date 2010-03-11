@@ -75,6 +75,7 @@ QGoWizardDB::QGoWizardDB( QWidget *iParent )
 {
   this->m_ImgSessionName = "";
   this->m_ImgSessionID = 0;
+  this->m_IsAnOpenRecentFile = false;
   QFont tfont;
   tfont.setBold(true);
   this->setFont(tfont);
@@ -213,13 +214,6 @@ void QGoWizardDB::closeEvent(QCloseEvent* iEvent)
   int CurrentPageID = this->currentId();
   QWizardPage* CurrentPage = this->currentPage();
 
-  /*if (!this->m_ImgSessionName.empty())
-    {
-    this->SetFirstFileName();
-    this->m_ImgSessionName.clear();
-    }
-  else
-    {*/
   if (!field("ImgSessionName").toString().toStdString().empty())
     {
     this->m_ImgSessionName = 
@@ -228,57 +222,55 @@ void QGoWizardDB::closeEvent(QCloseEvent* iEvent)
     }
   this->SetFirstFileName();
   this->m_ImgSessionName.clear();
-    //}
-  //else
-  //  {
-    switch (CurrentPageID)
+  this->m_IsAnOpenRecentFile = false;
+    
+  switch (CurrentPageID)
+    {
+    case 0:
       {
-      case 0:
-        {
-        //QGoConnectServerPage* ServerPage = dynamic_cast<QGoConnectServerPage*>(CurrentPage);
-        //ServerPage->m_ConnectionServer.second->Close();
-        //ServerPage->m_ConnectionServer.second->Delete();
-        //delete ServerPage;
-        break;
-        }
-      case 2:
-        {
-        QGoOpenCreateProjectPage* ProjectPage = dynamic_cast<QGoOpenCreateProjectPage*>(CurrentPage);
-        if( ProjectPage->m_DatabaseConnector )
-          {
-          ProjectPage->m_DatabaseConnector->Close();
-          ProjectPage->m_DatabaseConnector->Delete();
-          }
-        delete ProjectPage;
-        break;
-        }
-      case 3:
-        {
-        QGoOpenCreateImgSessionPage* ImgSessionPage = dynamic_cast<QGoOpenCreateImgSessionPage*>(CurrentPage);
-        if( ImgSessionPage->m_DatabaseConnector )
-          {
-          ImgSessionPage->m_DatabaseConnector->Close();
-          ImgSessionPage->m_DatabaseConnector->Delete();
-          }
-        delete ImgSessionPage;
-        break;
-        }
-      case 4:
-        {
-        QGoCreateImgSessionPage* CreateImgSessionPage = dynamic_cast<QGoCreateImgSessionPage*>(CurrentPage);
-        if( CreateImgSessionPage->m_DatabaseConnector )
-          {
-          CreateImgSessionPage->m_DatabaseConnector->Close();
-          CreateImgSessionPage->m_DatabaseConnector->Delete();
-          }
-        delete CreateImgSessionPage;
-        break;
-        }
-      default:
-        {
-        }
+      //QGoConnectServerPage* ServerPage = dynamic_cast<QGoConnectServerPage*>(CurrentPage);
+      //ServerPage->m_ConnectionServer.second->Close();
+      //ServerPage->m_ConnectionServer.second->Delete();
+      //delete ServerPage;
+      break;
       }
-    //}
+    case 2:
+      {
+      QGoOpenCreateProjectPage* ProjectPage = dynamic_cast<QGoOpenCreateProjectPage*>(CurrentPage);
+      if( ProjectPage->m_DatabaseConnector )
+        {
+        ProjectPage->m_DatabaseConnector->Close();
+        ProjectPage->m_DatabaseConnector->Delete();
+        }
+      delete ProjectPage;
+      break;
+      }
+    case 3:
+      {
+      QGoOpenCreateImgSessionPage* ImgSessionPage = dynamic_cast<QGoOpenCreateImgSessionPage*>(CurrentPage);
+      if( ImgSessionPage->m_DatabaseConnector )
+        {
+        ImgSessionPage->m_DatabaseConnector->Close();
+        ImgSessionPage->m_DatabaseConnector->Delete();
+        }
+      delete ImgSessionPage;
+      break;
+      }
+    case 4:
+      {
+      QGoCreateImgSessionPage* CreateImgSessionPage = dynamic_cast<QGoCreateImgSessionPage*>(CurrentPage);
+      if( CreateImgSessionPage->m_DatabaseConnector )
+        {
+        CreateImgSessionPage->m_DatabaseConnector->Close();
+        CreateImgSessionPage->m_DatabaseConnector->Delete();
+        }
+      delete CreateImgSessionPage;
+      break;
+      }
+    default:
+      {
+      }
+    }
 
 /*  QGoOpenCreateImgSessionPage* F = dynamic_cast<QGoOpenCreateImgSessionPage*>(CurrentPage);
   if (F !=0)
@@ -333,6 +325,7 @@ GetMegaCaptureHeaderFilename()
 void QGoWizardDB::setImgSessionName(std::string iImgSessionName)
 {
   this->m_ImgSessionName = iImgSessionName; 
+  this->m_IsAnOpenRecentFile = true;
   this->m_ConnectServerPage->SetImgSessionName(iImgSessionName);
 }
 //-------------------------------------------------------------------------
@@ -370,12 +363,27 @@ void QGoWizardDB::SetFirstFileName()
 //-------------------------------------------------------------------------
 std::string QGoWizardDB::GetFirstFileName()
 { 
- if (!field("ImgSessionName").toString().toStdString().empty())
+  if (!this->m_IsAnOpenRecentFile)
    {
    this->m_ImgSessionName = 
      field("ImgSessionName").toString().toStdString();
    }
   this->SetFirstFileName();
   this->m_ImgSessionName.clear();
+  this->m_ConnectServerPage->SetIsAnOpenRecentFile(false);
   return this->m_FirstFileName;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+bool QGoWizardDB::GetIsAnOpenRecentFile()
+{
+  return this->m_IsAnOpenRecentFile;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoWizardDB::SetIsAnOpenRecentFile(bool iIsAnOpenRecentFile)
+{
+  this->m_IsAnOpenRecentFile = iIsAnOpenRecentFile;
 }

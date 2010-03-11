@@ -56,6 +56,7 @@ public:
   int nextId() const;
   mutable std::pair<bool,vtkMySQLDatabase*> m_ConnectionServer;
   void SetImgSessionName(std::string iImgSessionName);
+  void SetIsAnOpenRecentFile(bool iIsAnOpenRecentFile);
 
 private:
   void OpenConnectionToServer()const;
@@ -66,13 +67,10 @@ private:
   QLineEdit*          linePassword;
   QLineEdit*          lineDBName;
   mutable std::string m_ImgSessionName;
+  bool                m_IsAnOpenRecentFile;
  
   /**\brief return the list of the names of the databases of gofigure type:*/
   std::list<std::string> ListGofigureDatabases() const;
-  /* the number of times nextID() is called has to be counted in order to make 
-  it do some things only at the validation part, not during the initialization
-  part during which nextID() is called 2 times*/
-  mutable int NbNextIDCalled;
   
 
 };

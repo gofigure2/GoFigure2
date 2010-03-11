@@ -53,7 +53,7 @@ QGoConnectServerPage::QGoConnectServerPage( QWidget *iParent)
   : QWizardPage( iParent )
 {
   this->m_ImgSessionName.clear();
-  NbNextIDCalled = 0;
+  this->m_IsAnOpenRecentFile = false;
   QFont tfont;
   tfont.setBold(false);
   this->setFont(tfont);
@@ -130,18 +130,12 @@ int QGoConnectServerPage::nextId() const
     this->wizard()->setField( "DBName", DBName.c_str() );
     std::cout<<"the db name to open is: "<<field("DBName").toString().toStdString().c_str()<<std::endl;
     }
-  if (this->m_ImgSessionName.empty())
+  if(!this->m_IsAnOpenRecentFile)
     {
     return QGoWizardDB::OpenOrCreateProjectPageID;
     }
   else
     {
-    this->NbNextIDCalled ++;
-    if (this->NbNextIDCalled == 2)
-      {
-      this->m_ImgSessionName.clear();
-      this->NbNextIDCalled = 0;
-      }
     return -1;
     }
 }
@@ -210,4 +204,12 @@ void QGoConnectServerPage::OpenConnectionToServer()const
 void QGoConnectServerPage::SetImgSessionName(std::string iImgSessionName)
 {
   this->m_ImgSessionName = iImgSessionName;
+  this->m_IsAnOpenRecentFile = true;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoConnectServerPage::SetIsAnOpenRecentFile(bool iIsAnOpenRecentFile)
+{
+  this->m_IsAnOpenRecentFile = iIsAnOpenRecentFile;
 }

@@ -330,6 +330,7 @@ void QGoMainWindow::on_actionUse_DataBase_triggered()
 {
   if( !m_DBWizard->isVisible() )
     {
+    m_DBWizard->SetIsAnOpenRecentFile(false);
     m_DBWizard->restart();
     m_DBWizard->show();
     }
@@ -377,13 +378,9 @@ ComputeFileType( const QString& iFileName, GoFigure::FileType& oFileType )
 //--------------------------------------------------------------------------
 void QGoMainWindow::openFilesfromDB()
 {
- //test if the wizard just closed has an imagingsessionid, if not,the
- //imagingsession is called from the open recent files and will not
- //be opened from here:
- int test = this->m_DBWizard->GetImagingSessionID();
- if (test == 0)
+ if (this->m_DBWizard->GetIsAnOpenRecentFile())
    {
-   return;
+   this->openRecentFilesfromDB();
    }
  else
    {
@@ -514,8 +511,7 @@ GoFigureFileInfoHelperMultiIndexContainer ofile_container;
     {
     std::string ImgSessionName =
       this->m_DBWizard->GetImagingSessionName().toStdString();
-    this->m_DBWizard->setImgSessionName(ImgSessionName);
-    //iFirst_FileName = this->m_DBWizard->GetFirstFileName();
+    //this->m_DBWizard->setImgSessionName(ImgSessionName);
     ofile_container = this->m_DBWizard->GetMultiIndexFileContainer();
     }
    iFirst_FileName = this->m_DBWizard->GetFirstFileName();
@@ -791,18 +787,17 @@ CreateNewTabFor3DwtImage(
   std::string ImgSessionName = m_DBWizard->GetImagingSessionName().toStdString();
   //in case the files are opened from the open recent files, the imgsessionname
   //can no more be gotten from the wizard:
-  if (ImgSessionName.empty())
+  if (this->m_DBWizard->GetIsAnOpenRecentFile())
     {
     ImgSessionName = this->m_CurrentFile.toStdString();
+    this->m_DBWizard->SetIsAnOpenRecentFile(false);
     }
-    w3t->m_DataBaseTables->SetDatabaseVariables( "gofiguredatabase",
-      m_DBWizard->GetServer().toStdString(), m_DBWizard->GetLogin().toStdString(),
-      m_DBWizard->GetPassword().toStdString(), m_DBWizard->GetImagingSessionID(),
-      ImgSessionName );
+  w3t->m_DataBaseTables->SetDatabaseVariables( "gofiguredatabase",
+    m_DBWizard->GetServer().toStdString(), m_DBWizard->GetLogin().toStdString(),
+    m_DBWizard->GetPassword().toStdString(), m_DBWizard->GetImagingSessionID(),
+    ImgSessionName );
 
     w3t->m_DataBaseTables->FillTableFromDatabase();
-
-    //w3t->setWindowTitle( m_DBWizard->GetImagingSessionName() );
     w3t->setWindowTitle(ImgSessionName.c_str());
     // **********************
   //  }
@@ -1190,22 +1185,7 @@ void QGoMainWindow::openRecentDatabaseFile()
     this->m_DBWizard->setImgSessionName(ImgSessionName);
     this->m_DBWizard->restart();
     this->m_DBWizard->show();
-    QObject::connect( m_DBWizard, SIGNAL( accepted() ),
-      this, SLOT( openRecentFilesfromDB() ) );
-    //this->SetDatabaseFileName( ImgSessionName );
     }
-}
-//--------------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------------
-void QGoMainWindow::SetDatabaseFileName(std::string iImgSessionName)
-{
-  this->m_DBWizard->setImgSessionName(iImgSessionName);
-  this->m_DBWizard->restart();
-  this->m_DBWizard->show();
-  QObject::connect( m_DBWizard, SIGNAL( accepted() ),
-    this, SLOT( openRecentFilesfromDB() ) );
-  //this->DisplayFilesfromDB(this->m_DBWizard->GetFirstFileName());
 }
 //--------------------------------------------------------------------------------
 

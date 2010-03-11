@@ -86,6 +86,7 @@ public:
   QString GetPassword();
   QString GetImagingSessionName();
   int GetImagingSessionID();
+  bool  GetIsAnOpenRecentFile();
 
   QPushButton* nextButton;
 
@@ -99,6 +100,7 @@ public:
   std::string GetMegaCaptureHeaderFilename();
   void setImgSessionName(std::string iImgSessionName);
   std::string GetFirstFileName();
+  void SetIsAnOpenRecentFile(bool iIsAnOpenRecentFile);
 
 
 protected:
@@ -108,6 +110,7 @@ protected:
   std::string             m_ImgSessionName;
   std::string             m_FirstFileName;
   int                     m_ImgSessionID;
+  bool                    m_IsAnOpenRecentFile;
 
 };
 #endif
