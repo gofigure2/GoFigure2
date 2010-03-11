@@ -190,6 +190,7 @@
 #include "vtkImageAlgorithm.h"
 #include "vtkIntArray.h"
 #include "vtkUnsignedIntArray.h"
+#include "vtkUnsignedLongArray.h"
 #include "vtkDoubleArray.h"
 #include "vtkUnsignedShortArray.h"
 #include "vtkUnsignedCharArray.h"
@@ -302,7 +303,7 @@ protected:
   int NeedToReadHeaderInformation();
   void NeedToReadHeaderInformationOn();
   void NeedToReadHeaderInformationOff();
-  unsigned long SeekFile(int);
+  unsigned long SeekFile(unsigned long);
   unsigned long GetOffsetToImage(int, int);
   ifstream *GetFile();
 
@@ -331,8 +332,8 @@ protected:
   vtkDoubleArray*         DetectorOffsetFirstImage;
   vtkDoubleArray*         DetectorOffsetLastImage;
 
-  vtkUnsignedIntArray*    ImageOffsets;
-  vtkUnsignedIntArray*    ReadSizes;
+  vtkUnsignedLongArray*    ImageOffsets;
+  vtkUnsignedLongArray*    ReadSizes;
   vtkUnsignedIntArray*    StripOffset;
   vtkUnsignedIntArray*    ChannelDataTypes;
   vtkUnsignedIntArray*    StripByteCount;
@@ -345,6 +346,7 @@ protected:
   unsigned long ColorMapOffset;
   unsigned long ChannelInfoOffset;
   unsigned long ChannelDataTypesOffset;
+  unsigned long NumberOfLastAccessedImage;
   
   unsigned int SamplesPerPixel;
   unsigned int LSMSpecificInfoOffset;
@@ -355,7 +357,6 @@ protected:
   int NumberOfIntensityValues[4];
   int DataScalarType;
   int IntUpdateExtent[6];
-  int NumberOfLastAccessedImage;
   int FileNameChanged;
   int SwapBytes;
 
@@ -388,13 +389,13 @@ protected:
   unsigned short CharPointerToUnsignedShort(char *);
   double CharPointerToDouble(char *);
 
-  int ReadInt(ifstream *,unsigned long *);
-  unsigned int ReadUnsignedInt(ifstream *,unsigned long *);
-  short ReadShort(ifstream *,unsigned long *);
-  unsigned short ReadUnsignedShort(ifstream *,unsigned long *);
-  double ReadDouble(ifstream *,unsigned long *);
-  int ReadFile(ifstream *,unsigned long *,int,char *,bool swap=0);
-  int ReadData(ifstream *,unsigned long *,int,char *);
+  int ReadInt(ifstream *, unsigned long& );
+  unsigned int ReadUnsignedInt(ifstream *, unsigned long& );
+  short ReadShort(ifstream *, unsigned long& );
+  unsigned short ReadUnsignedShort(ifstream *, unsigned long& );
+  double ReadDouble(ifstream *, unsigned long& );
+  unsigned int ReadFile(ifstream *, unsigned long& , unsigned int, char *, bool swap=false);
+  unsigned int ReadData(ifstream *, unsigned long& , unsigned int, char *);
  
 
 private:
