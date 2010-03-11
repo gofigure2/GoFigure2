@@ -51,7 +51,7 @@ PURPOSE.  See the above copyright notices for more information.
 #ifndef _lut_LONI2_h_
 #define _lut_LONI2_h_
 
-static const float LONI2[120][3] = 
+static const double LONI2[120][3] =
   {{0.000000, 0.000000, 1.000000},
    {0.000000, 0.000000, 1.000000},
    {0.000000, 0.000000, 1.000000},

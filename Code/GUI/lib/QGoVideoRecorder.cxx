@@ -75,26 +75,26 @@ QGoVideoRecorder( QWidget *iParent ) : QDockWidget( iParent ),
   this->warning_2->hide();
 
   // Tooltips to help the user
-  QString toolTip = "Start recording the video";
-  this->startVideo->setToolTip( toolTip );
-  toolTip = "First slice of the video";
-  this->tSpinMin_2->setToolTip( toolTip );
-  toolTip = "Last slice of the video";
-  this->tSpinMax_2->setToolTip( toolTip );
-  toolTip = "Location and name of the video";
-  this->createFile->setToolTip( toolTip );
-  toolTip = "Create video along this axe";
-  this->SliceFT->setToolTip( toolTip );
-  toolTip = "Continue creating video from selected time points";
-  this->pauseVideo->setToolTip( toolTip );
-  toolTip = "End the video";
-  this->endVideo->setToolTip( toolTip );
-  toolTip = "Create video without manual interaction (usefull in 2D)";
-  this->tabVideoMethod1->setToolTip( toolTip );
-  toolTip = "Create video with manual interaction (usefull in 3D)";
-  this->tabVideoMethod2->setToolTip( toolTip );
-  toolTip = "Quality of the output video (high=2, medium=1, low=0)";
-  this->videoQuality->setToolTip( toolTip );
+  QString ttoolTip = "Start recording the video";
+  this->startVideo->setToolTip( ttoolTip );
+  ttoolTip = "First slice of the video";
+  this->tSpinMin_2->setToolTip( ttoolTip );
+  ttoolTip = "Last slice of the video";
+  this->tSpinMax_2->setToolTip( ttoolTip );
+  ttoolTip = "Location and name of the video";
+  this->createFile->setToolTip( ttoolTip );
+  ttoolTip = "Create video along this axe";
+  this->SliceFT->setToolTip( ttoolTip );
+  ttoolTip = "Continue creating video from selected time points";
+  this->pauseVideo->setToolTip( ttoolTip );
+  ttoolTip = "End the video";
+  this->endVideo->setToolTip( ttoolTip );
+  ttoolTip = "Create video without manual interaction (usefull in 2D)";
+  this->tabVideoMethod1->setToolTip( ttoolTip );
+  ttoolTip = "Create video with manual interaction (usefull in 3D)";
+  this->tabVideoMethod2->setToolTip( ttoolTip );
+  ttoolTip = "Quality of the output video (high=2, medium=1, low=0)";
+  this->videoQuality->setToolTip( ttoolTip );
 
   m_InternalTimer = new QTimer( this );
 

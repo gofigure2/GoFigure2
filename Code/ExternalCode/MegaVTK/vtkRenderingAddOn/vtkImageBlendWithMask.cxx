@@ -210,7 +210,7 @@ void vtkImageBlendWithMaskExecute(vtkImageBlendWithMask *self, int ext[6],
       if (!id)
       {
         if (!(count%target))
-          self->UpdateProgress(count/(50.0*target));
+          self->UpdateProgress(static_cast<double>(count)/(50.0*static_cast<double>(target)));
         count++;
       }
 

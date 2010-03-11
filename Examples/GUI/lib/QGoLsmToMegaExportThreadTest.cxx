@@ -102,7 +102,7 @@ int main( int argc, char** argv )
   if( atoi( argv[4] ) == 1 )
     {
     // check if the directory containing Meg files is empty
-    int length = 0;
+    unsigned long length = 0;
     length = vtksys::SystemTools::FileLength(argv[3]);
 
     if( length == 0 )

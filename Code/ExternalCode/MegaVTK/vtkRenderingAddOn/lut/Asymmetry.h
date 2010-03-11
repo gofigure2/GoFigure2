@@ -54,7 +54,7 @@ PURPOSE.  See the above copyright notices for more information.
 #define _lut_asymmetry_h_
 
 
-static const float AsymmetryLUT[256][3] =
+static const double AsymmetryLUT[256][3] =
   {{0.000000, 0.000000, 1.000000},
    {0.000000, 0.019608, 1.000000},
    {0.000000, 0.039216, 1.000000},

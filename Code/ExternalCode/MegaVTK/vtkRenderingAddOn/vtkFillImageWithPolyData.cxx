@@ -141,7 +141,7 @@ void vtkFillImageWithPolyDataExecuteZ(vtkFillImageWithPolyData *self,
                                       unsigned char *outPtr,
                                       int id, int slice, double bbox[6])
 {
-  int num0, num1, num2, numC, numP, pixSize;
+  int num0, num1, num2, numC, pixSize;
   int idx0, idx1, idx2;
   vtkIdType in1Inc0, in1Inc1, in1Inc2;
   vtkIdType outInc0, outInc1, outInc2;
@@ -149,7 +149,7 @@ void vtkFillImageWithPolyDataExecuteZ(vtkFillImageWithPolyData *self,
   unsigned long target;
 
   numC = outData->GetNumberOfScalarComponents();
-  pixSize = numC * sizeof(T);
+  pixSize = numC * static_cast< int >( sizeof(T) );
 
   // Get information to march through data
   inData->GetContinuousIncrements(ext, in1Inc0, in1Inc1, in1Inc2);
@@ -161,7 +161,7 @@ void vtkFillImageWithPolyDataExecuteZ(vtkFillImageWithPolyData *self,
   double outVal = self->GetInsidePixelValue();
 
   vtkPoints* points = self->GetPolyData()->GetPoints();
-  numP = self->GetPolyData()->GetNumberOfPoints();
+  vtkIdType numP = self->GetPolyData()->GetNumberOfPoints();
 
   double* spacing = inData->GetSpacing();
   double* origin  = inData->GetOrigin();
@@ -178,7 +178,7 @@ void vtkFillImageWithPolyDataExecuteZ(vtkFillImageWithPolyData *self,
       if (!id)
       {
         if (!(count%target))
-          self->UpdateProgress(count/(50.0*target));
+          self->UpdateProgress(static_cast<double>(count)/(50.0*static_cast<double>(target)));
         count++;
       }
 
@@ -240,7 +240,7 @@ void vtkFillImageWithPolyDataExecuteY(vtkFillImageWithPolyData *self, int ext[6]
                                       vtkImageData *outData, unsigned char *outPtr,
                                       int id, int slice, double bbox[6])
 {
-  int num0, num1, num2, numC, numP, pixSize;
+  int num0, num1, num2, numC;
   int idx0, idx1, idx2;
   vtkIdType in1Inc0, in1Inc1, in1Inc2;
   vtkIdType outInc0, outInc1, outInc2;
@@ -248,7 +248,7 @@ void vtkFillImageWithPolyDataExecuteY(vtkFillImageWithPolyData *self, int ext[6]
   unsigned long target;
 
   numC = outData->GetNumberOfScalarComponents();
-  pixSize = numC * sizeof(T);
+//   int pixSize = numC * static_cast<int>(sizeof(T));
 
   // Get information to march through data
   inData->GetContinuousIncrements(ext, in1Inc0, in1Inc1, in1Inc2);
@@ -258,7 +258,7 @@ void vtkFillImageWithPolyDataExecuteY(vtkFillImageWithPolyData *self, int ext[6]
   num2 = ext[5] - ext[4] + 1;
 
   vtkPoints* points = self->GetPolyData()->GetPoints();
-  numP = self->GetPolyData()->GetNumberOfPoints();
+  vtkIdType numP = self->GetPolyData()->GetNumberOfPoints();
 
   double* spacing = inData->GetSpacing();
   double* origin  = inData->GetOrigin();
@@ -274,7 +274,7 @@ void vtkFillImageWithPolyDataExecuteY(vtkFillImageWithPolyData *self, int ext[6]
       if (!id)
       {
         if (!(count%target))
-          self->UpdateProgress(count/(50.0*target));
+          self->UpdateProgress(static_cast<double>(count)/(50.0*static_cast<double>(target)));
         count++;
       }
 
@@ -339,7 +339,7 @@ void vtkFillImageWithPolyDataExecuteX(vtkFillImageWithPolyData *self, int ext[6]
                                       vtkImageData *outData, unsigned char *outPtr,
                                       int id, int slice, double bbox[6])
 {
-  int num0, num1, num2, numC, numP, pixSize;
+  int num0, num1, num2, numC, pixSize;
   int idx0, idx1, idx2;
   vtkIdType in1Inc0, in1Inc1, in1Inc2;
   vtkIdType outInc0, outInc1, outInc2;
@@ -347,7 +347,7 @@ void vtkFillImageWithPolyDataExecuteX(vtkFillImageWithPolyData *self, int ext[6]
   unsigned long target;
 
   numC = outData->GetNumberOfScalarComponents();
-  pixSize = numC * sizeof(T);
+  pixSize = numC * static_cast<int>(sizeof(T));
 
   // Get information to march through data
   inData->GetContinuousIncrements(ext, in1Inc0, in1Inc1, in1Inc2);
@@ -361,7 +361,7 @@ void vtkFillImageWithPolyDataExecuteX(vtkFillImageWithPolyData *self, int ext[6]
   //self->GetPolyData()->GetBounds (bbox);
 
   vtkPoints* points = self->GetPolyData()->GetPoints();
-  numP = self->GetPolyData()->GetNumberOfPoints();
+  vtkIdType numP = self->GetPolyData()->GetNumberOfPoints();
 
   double* spacing = inData->GetSpacing();
   double* origin  = inData->GetOrigin();
@@ -377,7 +377,7 @@ void vtkFillImageWithPolyDataExecuteX(vtkFillImageWithPolyData *self, int ext[6]
       if (!id)
       {
         if (!(count%target))
-          self->UpdateProgress(count/(50.0*target));
+          self->UpdateProgress(static_cast<double>(count)/(50.0*static_cast<double>(target)));
         count++;
       }
 
