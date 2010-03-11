@@ -249,6 +249,10 @@ void QTableWidgetChild::DisplayColumnNames( QString TableName,
     NameHeader =*iter;
 
     HeaderCol->setText(NameHeader.c_str());
+    if (NameHeader.empty())
+      {
+      HeaderCol->setToolTip(tr("Check/Uncheck %1").arg(TableName));
+      }
     QFont serifFont("Arial", 10, QFont::Bold);
     HeaderCol->setFont(serifFont);
     this->setHorizontalHeaderItem(i,HeaderCol);
