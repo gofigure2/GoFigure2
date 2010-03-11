@@ -174,7 +174,7 @@ void vtkImageBlendWithMaskExecute(vtkImageBlendWithMask *self, int ext[6],
                            vtkImageData *in2Data, T *in2Ptr,
                            vtkImageData *outData, T *outPtr, int id)
 {
-  int num0, num1, num2, numC, numM, pixSize;
+  int num0, num1, num2, numC, numM;
   int idx0, idx1, idx2, idxC;
   vtkIdType in1Inc0, in1Inc1, in1Inc2;
   vtkIdType in2Inc0, in2Inc1, in2Inc2;
@@ -184,7 +184,7 @@ void vtkImageBlendWithMaskExecute(vtkImageBlendWithMask *self, int ext[6],
   unsigned long target;
 
   numC = outData->GetNumberOfScalarComponents();
-  pixSize = numC * sizeof(T);
+  unsigned long pixSize = numC * sizeof(T);
   maskAlpha = 0.5;
   oneMinusMaskAlpha = 0.5;
 

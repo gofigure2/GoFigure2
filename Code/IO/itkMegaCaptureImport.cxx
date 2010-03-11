@@ -162,7 +162,7 @@ CreateOutput()
 //       this->m_ProgressBar->setValue( value );
 //       }
 
-    counter += 1.;
+    counter += 1;
     } // end for each filename
 
   m_FileNameS.clear();

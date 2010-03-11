@@ -61,8 +61,7 @@ int main( int argc, char** argv )
   QCoreApplication::setOrganizationName("MegasonLab");
   QCoreApplication::setOrganizationDomain( "http://gofigure2.sourceforge.net" );
 
-  vtkSmartPointer< vtkLSMReader > reader = 
-    vtkSmartPointer< vtkLSMReader >::New();
+  vtkLSMReader* reader = vtkLSMReader::New();
   reader->SetFileName( argv[1] );
   reader->SetUpdateTimePoint( 0 );
   reader->Update();
@@ -70,7 +69,6 @@ int main( int argc, char** argv )
   QGoTabImageView3DwT* tab = new QGoTabImageView3DwT;
   tab->SetLSMReader( reader, 0 );
   tab->show();
-
 
   QMenuBar* menubar = new QMenuBar;
   std::vector< QAction* > action_vector = tab->ViewActions();

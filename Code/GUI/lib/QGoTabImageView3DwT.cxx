@@ -1087,7 +1087,7 @@ SetMegaCaptureFile(
 
   if( static_cast< unsigned int >( m_TimePoint ) != iTimePoint ) 
     { 
-	 	    SetTimePoint( iTimePoint ); 
+	 	SetTimePoint( iTimePoint );
     } 
 
   // Set up QSpinBox in m_VideoRecorderWidget
@@ -1109,6 +1109,8 @@ void
 QGoTabImageView3DwT::
 SetTimePointWithMegaCapture( const int& iTimePoint )
 {
+  QApplication::setOverrideCursor( QCursor( Qt::WaitCursor ) );
+
   RemoveAllContoursForPresentTimePoint();
 
   m_TimePoint = iTimePoint;
@@ -1172,6 +1174,8 @@ SetTimePointWithMegaCapture( const int& iTimePoint )
 
   LoadAllContoursForGivenTimePoint( m_TimePoint );
   Update();
+
+  QApplication::restoreOverrideCursor();
 }
 //-------------------------------------------------------------------------
 
@@ -1180,6 +1184,8 @@ void
 QGoTabImageView3DwT::
 SetTimePointWithLSMReaders( const int& iTimePoint )
 {
+  QApplication::setOverrideCursor( QCursor( Qt::WaitCursor ) );
+
   RemoveAllContoursForPresentTimePoint();
 
   m_TimePoint = iTimePoint;
@@ -1224,6 +1230,8 @@ SetTimePointWithLSMReaders( const int& iTimePoint )
 
   LoadAllContoursForGivenTimePoint( m_TimePoint );
   Update();
+
+  QApplication::restoreOverrideCursor();
 }
 //-------------------------------------------------------------------------
 

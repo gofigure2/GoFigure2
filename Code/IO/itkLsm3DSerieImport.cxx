@@ -39,6 +39,7 @@
 =========================================================================*/
 
 #include "itkLsm3DSerieImport.h"
+#include "vnl/vnl_math.h"
 
 namespace itk
 {
@@ -264,7 +265,7 @@ CreateOutput()
           origFileName,
           (*numGroupStartItr),
           (*numGroupLengthItr) );
-        tempInfo.m_TCoord = atof( ValueAsString.c_str() );
+        tempInfo.m_TCoord = vcl_floor( atof( ValueAsString.c_str() ) );
         m_OutputFileList.insert( tempInfo );
         break;
         }
