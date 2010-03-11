@@ -1477,7 +1477,9 @@ Quadview()
 {
   m_ImageView->SetFullScreenView(0);
   m_TakeSnapshotAction->setEnabled(false);
+#if defined ( ENABLEFFMPEG ) || defined ( ENABLEAVI )
   this->m_VideoRecorderWidget->toggleViewAction()->setEnabled(false);
+#endif
 }
 //-------------------------------------------------------------------------
 
@@ -1491,7 +1493,9 @@ FullScreenViewXY()
 {
   m_ImageView->SetFullScreenView(1);
   m_TakeSnapshotAction->setEnabled(true);
+#if defined ( ENABLEFFMPEG ) || defined ( ENABLEAVI )
    this->m_VideoRecorderWidget->toggleViewAction()->setEnabled(true);
+#endif
 }
 //-------------------------------------------------------------------------
 
@@ -1505,7 +1509,9 @@ FullScreenViewXZ()
 {
   m_ImageView->SetFullScreenView(2);
   m_TakeSnapshotAction->setEnabled(true);
+#if defined ( ENABLEFFMPEG ) || defined ( ENABLEAVI )
   this->m_VideoRecorderWidget->toggleViewAction()->setEnabled(true);
+#endif
 }
 //-------------------------------------------------------------------------
 
@@ -1519,7 +1525,9 @@ FullScreenViewYZ()
 {
   m_ImageView->SetFullScreenView(3);
   m_TakeSnapshotAction->setEnabled(true);
+#if defined ( ENABLEFFMPEG ) || defined ( ENABLEAVI )
   this->m_VideoRecorderWidget->toggleViewAction()->setEnabled(true);
+#endif
 }
 //-------------------------------------------------------------------------
 
@@ -1533,7 +1541,9 @@ FullScreenViewXYZ()
 {
   m_ImageView->SetFullScreenView(4);
   m_TakeSnapshotAction->setEnabled(true);
+#if defined ( ENABLEFFMPEG ) || defined ( ENABLEAVI )
   this->m_VideoRecorderWidget->toggleViewAction()->setEnabled(true);
+#endif
 }
 //-------------------------------------------------------------------------
 

@@ -200,44 +200,37 @@ void QGoMainWindow::on_actionExportContour_triggered( )
   typedef std::vector<ContourMeshStructure> ContourMeshVectorType;
   typedef ContourMeshVectorType::iterator ContourMeshIteratorType;
 
-  //todo: check if the database is open
-  if ( this->m_DBWizard )
+  //get current tab widget
+  QWidget* w = this->CentralTabWidget->currentWidget();
+
+  QGoTabImageView3DwT* w3t = dynamic_cast< QGoTabImageView3DwT* >( w );
+
+  if( w3t )
   {
-    QGoPrintDatabase* win = new QGoPrintDatabase();
-    win->SetDatabaseVariables(
-      "gofiguredatabase", m_DBWizard->GetServer().toStdString(),
-      m_DBWizard->GetLogin().toStdString(), m_DBWizard->GetPassword().toStdString(),
-      m_DBWizard->GetImagingSessionID(), m_DBWizard->GetImagingSessionName().toStdString() );
-
-    win->FillTableFromDatabase();
-    ContourMeshVectorType* contours = win->GetTracesInfoListForVisu( "contour" );
-    std::cout << contours->size() << std::endl;
-
-    // Set file name
-    QString p = QFileDialog::getSaveFileName(
-    this,
-    tr( "Save Contour Export File" ),"",
-    tr( "TextFile (*.txt)" )
-    );
-
-    if ( ! p.isNull() )
+    if( w3t->m_DataBaseTables->IsDatabaseUsed() )
     {
-      QFileInfo pathInfo( p );
-      std::string filename = p.toStdString();
-      QDir directory( pathInfo.absolutePath() );
-      QString dir = directory.absolutePath();
-      std::string dirName = dir.toStdString();
+      ContourMeshVectorType* contours = w3t->m_DataBaseTables->GetTracesInfoListForVisu("contour");
 
-      // Create an xml file
-      std::fstream outfile;
-      outfile.open ( filename.c_str(), std::ios::out );
-      outfile << "<ImagingSession>" << std::endl;
-      outfile << m_DBWizard->GetImagingSessionName().toStdString() << std::endl;
-      outfile << "</ImagingSession>" << std::endl;
+      // Set file name
+      QString p = QFileDialog::getSaveFileName(
+      this,
+      tr( "Save Contour Export File" ),"",
+      tr( "TextFile (*.txt)" )
+      );
 
-
-      if( directory.exists() )
+      if ( ! p.isNull() )
       {
+        QFileInfo pathInfo( p );
+        std::string filename = p.toStdString();
+
+        // Create an xml file
+        std::fstream outfile;
+        outfile.open ( filename.c_str(), std::ios::out );
+        outfile << "<ImagingSession>" << std::endl;
+        // MegaCapture Header path
+        outfile << m_DBWizard->GetImagingSessionName().toStdString() << std::endl;
+        outfile << "</ImagingSession>" << std::endl;
+
         unsigned int contourId, meshId, timePt;
         ContourMeshIteratorType It = contours->begin();
         while( It != contours->end() )
@@ -246,28 +239,30 @@ void QGoMainWindow::on_actionExportContour_triggered( )
           meshId = (*It).CollectionID;
           timePt = (*It).TCoord;
 
-          std::stringstream temp;
-          temp << dirName << '/' << meshId << '_' << timePt;
-          std::string name = temp.str() + ".vtk";
           outfile << "<contour>" << std::endl;
-          outfile << "MeshId " << meshId << std::endl;
-          outfile << "TCoord " << timePt << std::endl;
-          outfile << "Filename " << name << std::endl;
+          outfile << "<MeshId " << meshId << " /MeshId>" << std::endl;
+          outfile << "<TCoord " << timePt << " /TCoord>" << std::endl;
+          for( unsigned int i = 0; i < 10; i++ )
+          {
+            outfile << "<Nodes " << (*It).Nodes->GetCell(i) << " /Nodes>" << std::endl;
+          }
           outfile << "</contour>" << std::endl;
 
-          vtkSmartPointer<vtkPolyDataWriter> writer =
-            vtkSmartPointer<vtkPolyDataWriter>::New();
-          writer->SetInput( (*It).Nodes );
-          writer->SetFileName( name.c_str() );
-          writer->Write();
+//           vtkSmartPointer<vtkPolyDataWriter> writer =
+//             vtkSmartPointer<vtkPolyDataWriter>::New();
+//           writer->SetInput( (*It).Nodes );
+//           writer->SetFileName( name.c_str() );
+//           writer->Write();
 
           ++It;
         }
+        outfile.close();
+
       }
-      outfile.close();
     }
-    delete win;
   }
+  delete w3t;
+  delete w;
 }
 
 //--------------------------------------------------------------------------
@@ -517,7 +512,7 @@ GoFigureFileInfoHelperMultiIndexContainer QGoMainWindow::
 GoFigureFileInfoHelperMultiIndexContainer ofile_container;
    if (iFirst_FileName.empty())
     {
-    std::string ImgSessionName = 
+    std::string ImgSessionName =
       this->m_DBWizard->GetImagingSessionName().toStdString();
     this->m_DBWizard->setImgSessionName(ImgSessionName);
     //iFirst_FileName = this->m_DBWizard->GetFirstFileName();
@@ -1125,7 +1120,7 @@ void QGoMainWindow::UpdateRecentFileActions( QStringList list,
   QAction *recentFileActions[MaxRecentFiles] )
 {
   //if the items in the list are imagingsession names,from
-  // the menuDatabase_Files, they don't corresponds to real 
+  // the menuDatabase_Files, they don't corresponds to real
   //files, the test bellow will then remove
   //them from the list
   if (menu != this->menuDatabase_Files)
