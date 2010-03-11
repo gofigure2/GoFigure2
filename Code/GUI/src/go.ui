@@ -232,7 +232,6 @@
    </attribute>
    <addaction name="actionOpen_Single_File"/>
    <addaction name="actionUse_DataBase"/>
-   <addaction name="separator"/>
   </widget>
   <action name="actionOpen_Single_File">
    <property name="checkable">

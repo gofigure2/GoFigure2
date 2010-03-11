@@ -242,11 +242,11 @@ CreateManualSegmentationdockWidget()
 
   QAction* tempaction = m_ManualSegmentationDockWidget->toggleViewAction();
 
-  QObject::connect( this->m_ManualSegmentationDockWidget, SIGNAL( visibilityChanged( bool ) ),
-    this->m_ManualSegmentationDockWidget, SLOT( ActivateManualSegmentation( bool ) ) );
+//   QObject::connect( this->m_ManualSegmentationDockWidget, SIGNAL( visibilityChanged( bool ) ),
+//     this->m_ManualSegmentationDockWidget, SLOT( ActivateManualSegmentation( bool ) ) );
 
-  QObject::connect( this->m_ManualSegmentationDockWidget, SIGNAL( visibilityChanged( bool ) ),
-    this, SLOT( ActivateManualSegmentationEditor( bool ) ) );
+//   QObject::connect( this->m_ManualSegmentationDockWidget, SIGNAL( visibilityChanged( bool ) ),
+//     this, SLOT( ActivateManualSegmentationEditor( bool ) ) );
 
   this->m_SegmentationActions.push_back( tempaction );
 }
@@ -426,7 +426,6 @@ void
 QGoTabImageView3DwT::
 SetRendererWindow(int iValue)
 {
-
   if (iValue >= 1)
     {
     m_VideoRecorderWidget->SetRenderingWindow(
@@ -671,43 +670,43 @@ CreateAllViewActions()
     separator4->setSeparator( true );
     this->m_ViewActions.push_back( separator4 );
 
-    QAction* Change3DPerspectiveToAxialAction =
-      new QAction( tr( "Change 3D view to Posterior " ), this );
-    this->m_ViewActions.push_back( Change3DPerspectiveToAxialAction );
+  QAction* Change3DPerspectiveToAxialAction =
+    new QAction( tr( "Change 3D view to Posterior " ), this );
+  this->m_ViewActions.push_back( Change3DPerspectiveToAxialAction );
 
-    QIcon axialicon;
-    axialicon.addPixmap( QPixmap(QString::fromUtf8(":/fig/PosteriorView.png")),
-        QIcon::Normal, QIcon::Off );
-      Change3DPerspectiveToAxialAction->setIcon( axialicon );
+  QIcon axialicon;
+  axialicon.addPixmap( QPixmap(QString::fromUtf8(":/fig/PosteriorView.png")),
+    QIcon::Normal, QIcon::Off );
+  Change3DPerspectiveToAxialAction->setIcon( axialicon );
 
-    QObject::connect( Change3DPerspectiveToAxialAction, SIGNAL( triggered() ),
-      this, SLOT( Change3DPerspectiveToAxial( ) ) );
-
-
-    QAction* Change3DPerspectiveToCoronalAction =
-      new QAction( tr( "Change 3D view to Dorsal " ), this );
-    this->m_ViewActions.push_back( Change3DPerspectiveToCoronalAction );
-
-    QIcon coronalicon;
-    coronalicon.addPixmap( QPixmap(QString::fromUtf8(":/fig/DorsalView.png")),
-            QIcon::Normal, QIcon::Off );
-    Change3DPerspectiveToCoronalAction->setIcon( coronalicon );
-
-    QObject::connect( Change3DPerspectiveToCoronalAction, SIGNAL( triggered() ),
-      this, SLOT( Change3DPerspectiveToCoronal( ) ) );
+  QObject::connect( Change3DPerspectiveToAxialAction, SIGNAL( triggered() ),
+    this, SLOT( Change3DPerspectiveToAxial( ) ) );
 
 
-    QAction* Change3DPerspectiveToSagittalAction =
-      new QAction( tr( "Change 3D view to Left " ), this );
-    this->m_ViewActions.push_back( Change3DPerspectiveToSagittalAction );
+  QAction* Change3DPerspectiveToCoronalAction =
+    new QAction( tr( "Change 3D view to Dorsal " ), this );
+  this->m_ViewActions.push_back( Change3DPerspectiveToCoronalAction );
 
-    QIcon sagittalicon;
-    sagittalicon.addPixmap( QPixmap(QString::fromUtf8(":/fig/LeftView.png")),
-                QIcon::Normal, QIcon::Off );
-    Change3DPerspectiveToSagittalAction->setIcon( sagittalicon );
+  QIcon coronalicon;
+  coronalicon.addPixmap( QPixmap(QString::fromUtf8(":/fig/DorsalView.png")),
+    QIcon::Normal, QIcon::Off );
+  Change3DPerspectiveToCoronalAction->setIcon( coronalicon );
 
-    QObject::connect( Change3DPerspectiveToSagittalAction, SIGNAL( triggered() ),
-      this, SLOT( Change3DPerspectiveToSagittal( ) ) );
+  QObject::connect( Change3DPerspectiveToCoronalAction, SIGNAL( triggered() ),
+    this, SLOT( Change3DPerspectiveToCoronal( ) ) );
+
+
+  QAction* Change3DPerspectiveToSagittalAction =
+    new QAction( tr( "Change 3D view to Left " ), this );
+  this->m_ViewActions.push_back( Change3DPerspectiveToSagittalAction );
+
+  QIcon sagittalicon;
+  sagittalicon.addPixmap( QPixmap(QString::fromUtf8(":/fig/LeftView.png")),
+    QIcon::Normal, QIcon::Off );
+  Change3DPerspectiveToSagittalAction->setIcon( sagittalicon );
+
+  QObject::connect( Change3DPerspectiveToSagittalAction, SIGNAL( triggered() ),
+    this, SLOT( Change3DPerspectiveToSagittal( ) ) );
 }
 
 /**
@@ -750,9 +749,12 @@ void QGoTabImageView3DwT::CreateModeActions()
   group->addAction( ManualEditingAction );
 
   this->m_ModeActions.push_back( ManualEditingAction );
-  /** \todo implement the manual editing mode*/
-  //QObject::connect( ManualEditingAction, SIGNAL( triggered() ),
-  //  this, SLOT( ManualEditingMode() ) );
+
+  QObject::connect( ManualEditingAction, SIGNAL( toggled( bool ) ),
+    this->m_ManualSegmentationDockWidget, SLOT( ActivateManualSegmentation( bool ) ) );
+
+  QObject::connect( ManualEditingAction, SIGNAL( toggled( bool ) ),
+   this, SLOT( ActivateManualSegmentationEditor( bool ) ) );
 
   QAction* DefaultAction = new QAction( tr( "Default" ), this );
   DefaultAction->setCheckable( true );
