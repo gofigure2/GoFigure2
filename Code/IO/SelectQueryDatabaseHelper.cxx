@@ -1285,7 +1285,7 @@ std::vector<std::vector<std::string> >GetValuesFromSeveralTables(
   while (query->NextRow())
     {
     std::vector<std::string> ResultsForOneRow;
-    for( int i = 0; i < query->GetNumberOfFields(); i++)
+    for( i = 0; i < query->GetNumberOfFields(); i++)
       {
       ResultsForOneRow.push_back( query->DataValue( i ).ToString() );
       }

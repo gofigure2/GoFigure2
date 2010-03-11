@@ -227,8 +227,8 @@ public:
     }
 
   int GetHeaderIdentifier();
-  int IsValidLSMFile();
-  int IsCompressed();
+  bool IsValidLSMFile();
+  bool IsCompressed();
   int GetNumberOfTimePoints();
   int GetNumberOfChannels();
   int OpenFile();
@@ -323,8 +323,8 @@ protected:
   void DecodeHorizontalDifferencingUnsignedShort(unsigned short*, int); 
   void DecodeLZWCompression(unsigned  char *,int);
   void ConstructSliceOffsets();
-  unsigned int GetStripByteCount(unsigned int timepoint, unsigned int slice);
-  unsigned int GetSliceOffset(unsigned int timepoint, unsigned int slice);
+  unsigned long GetStripByteCount(unsigned int timepoint, unsigned int slice);
+  unsigned long GetSliceOffset(unsigned int timepoint, unsigned int slice);
 
   vtkStringArray*         LaserNames;
 
@@ -394,8 +394,8 @@ protected:
   short ReadShort(ifstream *, unsigned long& );
   unsigned short ReadUnsignedShort(ifstream *, unsigned long& );
   double ReadDouble(ifstream *, unsigned long& );
-  unsigned int ReadFile(ifstream *, unsigned long& , unsigned int, char *, bool swap=false);
-  unsigned int ReadData(ifstream *, unsigned long& , unsigned int, char *);
+  std::streamsize ReadFile(ifstream *, unsigned long& , unsigned int, char *, bool swap=false);
+  std::streamsize ReadData(ifstream *, unsigned long& , unsigned int, char *);
  
 
 private:

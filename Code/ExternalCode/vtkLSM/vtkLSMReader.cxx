@@ -833,28 +833,32 @@ int vtkLSMReader::ReadScanInformation(ifstream* f, unsigned long pos)
 }
 int vtkLSMReader::AnalyzeTag(ifstream *f,unsigned long startPos)
 {
-  unsigned short type,length,tag;
-  unsigned long readSize;
-  int value, dataSize,i;
-  char tempValue[4],tempValue2[4];
+  char tempValue[4], tempValue2[4];
   char *actualValue = NULL;
+
     //vtkDebugMacro(<<"Analyze tag start pos="<<startPos<<"\n");
-  tag = this->ReadUnsignedShort(f,startPos);
-  type = this->ReadUnsignedShort(f,startPos);
-  length = this->ReadUnsignedInt(f,startPos);
+  unsigned short tag = this->ReadUnsignedShort(f,startPos);
+  unsigned short type = this->ReadUnsignedShort(f,startPos);
+  unsigned int length = this->ReadUnsignedInt(f,startPos);
 
   this->ReadFile(f,startPos,4,tempValue);
 
-  for(i=0;i<4;i++)tempValue2[i]=tempValue[i];
+  unsigned int i;
+
+  for(i=0;i<4;i++)
+    {
+    tempValue2[i]=tempValue[i];
+    }
+
 #ifdef VTK_WORDS_BIGENDIAN
   vtkByteSwap::Swap4LE((unsigned int*)tempValue2);
 #endif
-  value = this->CharPointerToUnsignedInt(tempValue2);
+  unsigned int value = this->CharPointerToUnsignedInt(tempValue2);
 
   // if there is more than 4 bytes in value,
   // value is an offset to the actual data
-  dataSize = this->TIFF_BYTES(type);
-  readSize = dataSize*length;
+  int dataSize = this->TIFF_BYTES(type);
+  unsigned int readSize = dataSize*length;
   if(readSize > 4 && tag != TIF_CZ_LSMINFO)
     {
     actualValue = new char[readSize];
@@ -1019,15 +1023,14 @@ int vtkLSMReader::GetHeaderIdentifier()
   return this->Identifier;
 }
 
-int vtkLSMReader::IsValidLSMFile()
+bool vtkLSMReader::IsValidLSMFile()
 {
-  if(this->GetHeaderIdentifier() == LSM_MAGIC_NUMBER) return 1;
-  return 0;
+  return (this->GetHeaderIdentifier() == LSM_MAGIC_NUMBER);
 }
 
-int vtkLSMReader::IsCompressed()
+bool vtkLSMReader::IsCompressed()
 {
-  return (this->Compression == LSM_COMPRESSED ? 1 : 0);
+  return (this->Compression == LSM_COMPRESSED);
 }
 
 int vtkLSMReader::GetNumberOfTimePoints()
@@ -1040,7 +1043,7 @@ int vtkLSMReader::GetNumberOfChannels()
   return this->Dimensions[4];
 }
 
-unsigned int vtkLSMReader::GetStripByteCount(unsigned int timepoint, unsigned int slice)
+unsigned long vtkLSMReader::GetStripByteCount(unsigned int timepoint, unsigned int slice)
 {
   if(!this->ReadSizes)
     {
@@ -1049,7 +1052,7 @@ unsigned int vtkLSMReader::GetStripByteCount(unsigned int timepoint, unsigned in
   return this->ReadSizes->GetValue(timepoint*this->Dimensions[2]+slice);
 }
 
-unsigned int vtkLSMReader::GetSliceOffset(unsigned int timepoint, unsigned int slice)
+unsigned long vtkLSMReader::GetSliceOffset(unsigned int timepoint, unsigned int slice)
 {
   if(!this->ImageOffsets)
     {
@@ -1066,9 +1069,10 @@ void vtkLSMReader::ConstructSliceOffsets()
     {
     this->ImageOffsets = vtkUnsignedLongArray::New();
     this->ReadSizes = vtkUnsignedLongArray::New();
-    this->ImageOffsets->SetNumberOfTuples(this->Dimensions[2]*this->Dimensions[3]);
-    this->ReadSizes->SetNumberOfTuples(this->Dimensions[2]*this->Dimensions[3]);
-    for(int j = 0; j < this->Dimensions[2]*this->Dimensions[3]; j++)
+    int length = this->Dimensions[2]*this->Dimensions[3];
+    this->ImageOffsets->SetNumberOfTuples( length );
+    this->ReadSizes->SetNumberOfTuples( length );
+    for( int j = 0; j < length; j++ )
       {
       this->ImageOffsets->SetValue(j, 0);
       this->ReadSizes->SetValue(j, 0);
@@ -1286,16 +1290,16 @@ int vtkLSMReader::RequestData(
   for( int i=outExtent[4]; i<=outExtent[5]; ++i )
     {
     offset = this->GetSliceOffset(timepoint, i);
-    readSize = this->GetStripByteCount(timepoint, i);
+    readSize = static_cast< unsigned int >( this->GetStripByteCount(timepoint, i) );
 
     vtkDebugMacro(<<"Offset to tp  "<<timepoint<<", slice " <<i<<" = "<<offset<<", strip byte count: " << readSize<<"\n");
 
-    for(unsigned int ii=0;ii<readSize;ii++)
+    for(unsigned long ii=0;ii<readSize;ii++)
       {
       tempBuf[ii] = 0;
       }
 
-    unsigned int bytes = this->ReadFile(this->GetFile(),offset,readSize,(char *)tempBuf,1);
+    std::streamsize bytes = this->ReadFile(this->GetFile(),offset,readSize,(char *)tempBuf,1);
 
     if(bytes != readSize)
       {
@@ -1641,16 +1645,16 @@ double vtkLSMReader::ReadDouble(ifstream *f,unsigned long& pos)
   return this->CharPointerToDouble(buff);
 }
 
-unsigned int
+std::streamsize
 vtkLSMReader::ReadData( ifstream *f, unsigned long& pos, unsigned int size, char *buf )
 {
   return this->ReadFile(f,pos,size,buf,1);
 }
 
-unsigned int
+std::streamsize
 vtkLSMReader::ReadFile( ifstream *f, unsigned long& pos, unsigned int size, char *buf, bool swap )
 {
-  unsigned int ret = 1;
+  std::streamsize ret = 1;
   f->seekg( pos,ios::beg);
   f->read(buf,size);
 #ifdef VTK_WORDS_BIGENDIAN
