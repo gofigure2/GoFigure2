@@ -97,9 +97,14 @@
 QGoMainWindow::QGoMainWindow( )
 {
   QString title( "<*)0|00|0>< ~~ <*)0|00|0><     GoFigure    ><0|00|0(*> ~~ ><0|00|0(*>");
-  this->setupUi( this );
-  this->setCorner( Qt::TopLeftCorner, Qt::LeftDockWidgetArea );
+  this->setupUi( this );  
+  setCorner(Qt::TopLeftCorner, Qt::LeftDockWidgetArea);
+  setCorner(Qt::BottomLeftCorner, Qt::LeftDockWidgetArea);
+  setCorner(Qt::TopRightCorner, Qt::RightDockWidgetArea);
+  setCorner(Qt::BottomRightCorner, Qt::RightDockWidgetArea);
+
   this->setCentralWidget( this->CentralTabWidget );
+  
   this->setWindowTitle( title );
   this->statusbar->showMessage( tr( "No data" ) );
 
