@@ -259,6 +259,7 @@ void QGoPrintDatabase::FillTableFromDatabase()
 //--------------------------------------------------------------------------
 void QGoPrintDatabase::closeEvent(QCloseEvent* iEvent)
 {
+  (void) iEvent;
   m_VisibilityAction->setChecked( false );
 }
 //--------------------------------------------------------------------------
@@ -452,9 +453,14 @@ ChangeTracesToHighLightInfoFromTableWidget()
   std::string TraceName = this->InWhichTableAreWe();
   TraceInfoStructure* CurrentlyUsedTraceData = this->GetTraceInfoStructure(
     TraceName);
-  CurrentlyUsedTraceData->Table->TracesToHighlight(
-    TraceName,CurrentlyUsedTraceData->ListTracesInfoForVisu);
-  emit SelectionContoursToHighLightChanged();
+  bool HasBeenModified =
+    CurrentlyUsedTraceData->Table->TracesToHighlight( TraceName,
+      CurrentlyUsedTraceData->ListTracesInfoForVisu );
+
+  if( HasBeenModified )
+    {
+    emit SelectionContoursToHighLightChanged();
+    }
 }
 //-------------------------------------------------------------------------
 

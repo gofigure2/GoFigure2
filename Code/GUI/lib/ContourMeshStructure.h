@@ -84,6 +84,16 @@ struct ContourMeshStructure
     this->rgba[3] = alpha;
     }
 
+  ContourMeshStructure( const ContourMeshStructure& iE ) :
+    TraceID( iE.TraceID ), Actor( iE.Actor ), Nodes( iE.Nodes ), CollectionID( iE.CollectionID ),
+    TCoord( iE.TCoord ), Highlighted( iE.Highlighted ), Direction( iE.Direction )
+    {
+    for( int i = 0; i < 4; i++ )
+      {
+      this->rgba[i] = iE.rgba[i];
+      }
+    }
+
   ~ContourMeshStructure()
     {}
 

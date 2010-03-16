@@ -171,10 +171,12 @@ void QTableWidgetChild::SetSelectRowTraceID (std::string TraceName,
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
- void QTableWidgetChild::TracesToHighlight(
+ bool QTableWidgetChild::TracesToHighlight(
   std::string TraceName,
   std::vector<ContourMeshStructure>* ioTracesInfo )
 {
+  bool oModified = false;
+
   //get the selected TraceID:
   std::list<int> SelectedTraces = this->GetListCheckedTraceID();
 
@@ -194,7 +196,11 @@ void QTableWidgetChild::SetSelectRowTraceID (std::string TraceName,
       {
       if( t_id == static_cast< unsigned int >( *iter ) )
         {
-        (*traceinfo_it).Highlighted = true;
+        if( !traceinfo_it->Highlighted )
+          {
+          oModified = true;
+          }
+        traceinfo_it->Highlighted = true;
         found = true;
         break;
         }
@@ -203,10 +209,16 @@ void QTableWidgetChild::SetSelectRowTraceID (std::string TraceName,
 
     if( !found )
       {
-      (*traceinfo_it).Highlighted = false;
+      if( traceinfo_it->Highlighted )
+        {
+        oModified = true;
+        }
+      traceinfo_it->Highlighted = false;
       }
     ++traceinfo_it;
     }
+
+  return oModified;
 }
 //--------------------------------------------------------------------------
 

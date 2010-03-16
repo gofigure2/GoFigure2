@@ -2328,7 +2328,6 @@ HighLightContoursFromTable( )
   while( it != this->m_DataBaseTables->GetTracesInfoListForVisu("contour")->end() )
     {
     trace_id = it->TraceID;
-//     std::cout <<it->TCoord <<std::endl;
 
     ContourMeshStructureMultiIndexContainer::index< TraceID >::type::iterator
         traceid_it = m_ContourMeshContainer.get< TraceID >().find( trace_id );
@@ -2338,21 +2337,28 @@ HighLightContoursFromTable( )
       while( ( traceid_it != m_ContourMeshContainer.get< TraceID >().end() )
         && ( (*traceid_it).TraceID == trace_id ) )
         {
-        if( !it->Highlighted )
+        if( it->Highlighted != traceid_it->Highlighted )
           {
-          vtkProperty* temp_property = vtkProperty::New();
-          temp_property->SetColor( traceid_it->rgba[0], traceid_it->rgba[1], traceid_it->rgba[2] );
-          temp_property->SetLineWidth( 1. );
+          if( !it->Highlighted )
+            {
+            vtkProperty* temp_property = vtkProperty::New();
+            temp_property->SetColor( traceid_it->rgba[0], traceid_it->rgba[1], traceid_it->rgba[2] );
+            temp_property->SetLineWidth( 1. );
 
-          m_ImageView->ChangeActorProperty( traceid_it->Direction,
-            traceid_it->Actor, temp_property );
+            m_ImageView->ChangeActorProperty( traceid_it->Direction,
+              traceid_it->Actor, temp_property );
 
-          temp_property->Delete();
-          }
-        else
-          {
-          m_ImageView->ChangeActorProperty( traceid_it->Direction,
-            traceid_it->Actor, select_property );
+            temp_property->Delete();
+            }
+          else
+            {
+            m_ImageView->ChangeActorProperty( traceid_it->Direction,
+              traceid_it->Actor, select_property );
+            }
+          ContourMeshStructure temp( *traceid_it );
+          temp.Highlighted = it->Highlighted;
+
+          m_ContourMeshContainer.get< TraceID >().replace( traceid_it, temp );
           }
         ++traceid_it;
         }
