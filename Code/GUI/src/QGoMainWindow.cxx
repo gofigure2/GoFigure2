@@ -218,6 +218,9 @@ void QGoMainWindow::on_actionExportContour_triggered( )
     {
       ContourMeshVectorType* contours = w3t->m_DataBaseTables->GetTracesInfoListForVisu("contour");
 
+      vtkPolyDataMySQLTextWriter* convert_writer =
+        vtkPolyDataMySQLTextWriter::New();
+
       // Set file name
       QString p = QFileDialog::getSaveFileName(
       this,
@@ -238,7 +241,6 @@ void QGoMainWindow::on_actionExportContour_triggered( )
         outfile << m_DBWizard->GetImagingSessionName().toStdString() << std::endl;
         outfile << "</ImagingSession>" << std::endl;
 
-        double x[3];
         unsigned int contourId, meshId, timePt;
         ContourMeshIteratorType It = contours->begin();
         while( It != contours->end() )
@@ -250,17 +252,11 @@ void QGoMainWindow::on_actionExportContour_triggered( )
           outfile << "<contour>" << std::endl;
           outfile << "<MeshId> " << meshId << " </MeshId>" << std::endl;
           outfile << "<TCoord> " << timePt << " </TCoord>" << std::endl;
-          for( unsigned int i = 0; i < (*It).Nodes->GetNumberOfCells(); i++ )
-          {
-            outfile << "<Nodes> " << std::endl;
-            vtkCell* cell = (*It).Nodes->GetCell(i);
-            for( unsigned int j = 0; j < (*It).Nodes->GetNumberOfPoints(); j++ )
-            {
-            cell->GetPoints()->GetPoint(j,x);
-            outfile << x[0] << ' ' << x[1] << ' ' << x[2] << std::endl;
-            }
-            outfile << "</Nodes>" << std::endl;
-          }
+          outfile << "<Nodes>" << std::endl;
+          //with the class here
+          std::string str = convert_writer->GetMySQLText( (*It).Nodes );
+          outfile << str << std::endl;
+          outfile << "</Nodes>" << std::endl;
           outfile << "</contour>" << std::endl;
           ++It;
         }
