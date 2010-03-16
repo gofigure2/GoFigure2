@@ -247,7 +247,8 @@ void QGoPrintDatabase::FillTableFromDatabase()
   LoadContoursAndMeshesFromDB(m_DatabaseConnector);
 
   m_IsDatabaseUsed = true;
-  PrintExistingColorsFromDB(this->GetColorComboBoxInfofromDB());
+  std::list<std::pair<std::string,std::vector<int> > > test = this->GetColorComboBoxInfofromDB();//for test
+  emit PrintExistingColorsFromDB(this->GetColorComboBoxInfofromDB());
   /** \todo get the trace name from the visudockwidget*/
   PrintExistingCollectionIDsFromDB(
     this->GetListExistingCollectionIDFromDB("contour"));
@@ -288,6 +289,8 @@ void QGoPrintDatabase::CreateContextMenu(const QPoint &iPos)
     .arg(CurrentlyUsedTraceData->TraceName.c_str()),this,SLOT(CheckSelectedRows()));
   ContextMenu->addAction(tr("Uncheck the selected %1s")
     .arg(CurrentlyUsedTraceData->TraceName.c_str()),this,SLOT(UncheckSelectedRows()));
+  ContextMenu->addAction(tr("Change the color for the checked %1 to the selected color").arg(TraceName.c_str()),
+    this,SLOT(ChangeTraceColor()));
   ContextMenu->addAction(tr("Copy Selection"),
     CurrentlyUsedTraceData->Table,SLOT(CopySelection()));
   ContextMenu->addAction(tr("Copy table"),CurrentlyUsedTraceData->Table,SLOT(CopyTable()));
@@ -427,6 +430,56 @@ void QGoPrintDatabase::AddToSelectedCollection()
     OpenDBConnection();
     this->AddListTracesToACollection( ListSelectedTraces,
       this->m_CurrentCollectionData, TraceName, false );
+    CloseDBConnection();
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoPrintDatabase::ChangeTraceColor()
+{
+  std::string TraceName = this->InWhichTableAreWe();
+  TraceInfoStructure* CurrentlyUsedTraceData = 
+    this->GetTraceInfoStructure(TraceName);
+  std::list<int> ListSelectedTraces = 
+    CurrentlyUsedTraceData->Table->GetListCheckedTraceID();
+  emit NeedToGetCurrentSelectedColor();
+  if (ListSelectedTraces.empty())
+    {
+    QMessageBox msgBox;
+    msgBox.setText(
+      tr("Please select at least one %1 for the color to be changed")
+      .arg(CurrentlyUsedTraceData->TraceName.c_str()));
+    msgBox.exec();
+    }
+  else
+    {
+    OpenDBConnection();
+    int ColorID = FindOneID(
+      this->m_DatabaseConnector,"color","ColorID","Name",
+      this->m_CurrentColorData.first);
+    std::list<int>::iterator iter = ListSelectedTraces.begin();
+    while(iter != ListSelectedTraces.end())
+      {
+      UpdateValueInDB(this->m_DatabaseConnector,
+        CurrentlyUsedTraceData->TraceName,"ColorID",
+        ConvertToString<int>(ColorID), CurrentlyUsedTraceData->TraceNameID,
+        ConvertToString<int>(*iter));
+      this->UpdateTableWidgetForAnExistingTrace(
+        CurrentlyUsedTraceData->TraceName,*iter);
+      std::vector<std::string> ListTracesFromThisCollectionOf = 
+        ListSpecificValuesForOneColumn(this->m_DatabaseConnector, 
+        CurrentlyUsedTraceData->CollectionOf,
+        CurrentlyUsedTraceData->CollectionOfID,
+        CurrentlyUsedTraceData->TraceNameID,ConvertToString<int>(*iter));
+      for(unsigned int i = 0; i < ListTracesFromThisCollectionOf.size();i++)
+        {
+        this->UpdateTableWidgetForAnExistingTrace(
+          CurrentlyUsedTraceData->CollectionOf,
+          atoi(ListTracesFromThisCollectionOf[i].c_str()));
+        }
+      iter++;
+      }
     CloseDBConnection();
     }
 }
@@ -716,6 +769,7 @@ std::list<std::pair<std::string,std::vector<int> > > QGoPrintDatabase::
     std::pair<std::string,std::vector<int> > temp;
     temp.first = ResultsQuery[i+1];
     std::string Red = ResultsQuery[i+2];
+    
     temp.second.push_back(atoi(Red.c_str()));
     temp.second.push_back(atoi(ResultsQuery[i+3].c_str()));
     temp.second.push_back(atoi(ResultsQuery[i+4].c_str()));

@@ -280,6 +280,7 @@ protected slots:
   void DeleteTraces();
   void CheckSelectedRows();
   void UncheckSelectedRows();
+  void ChangeTraceColor();
 
   /** \brief Create a new Collection row in the collection table and change the
   collection ID of the selected contours to the new CollectionID created:*/
