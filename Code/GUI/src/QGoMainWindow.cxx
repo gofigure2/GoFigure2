@@ -89,6 +89,8 @@
 #include "vtkImageReader2.h"
 #include "vtkPolyDataWriter.h"
 #include "vtkSmartPointer.h"
+#include "vtkCell.h"
+#include "vtkPoints.h"
 
 #include "QGoTabManager.h"
 #include "QGoWizardDB.h"
@@ -97,14 +99,14 @@
 QGoMainWindow::QGoMainWindow( )
 {
   QString title( "<*)0|00|0>< ~~ <*)0|00|0><     GoFigure    ><0|00|0(*> ~~ ><0|00|0(*>");
-  this->setupUi( this );  
+  this->setupUi( this );
   setCorner(Qt::TopLeftCorner, Qt::LeftDockWidgetArea);
   setCorner(Qt::BottomLeftCorner, Qt::LeftDockWidgetArea);
   setCorner(Qt::TopRightCorner, Qt::RightDockWidgetArea);
   setCorner(Qt::BottomRightCorner, Qt::RightDockWidgetArea);
 
   this->setCentralWidget( this->CentralTabWidget );
-  
+
   this->setWindowTitle( title );
   this->statusbar->showMessage( tr( "No data" ) );
 
@@ -236,6 +238,7 @@ void QGoMainWindow::on_actionExportContour_triggered( )
         outfile << m_DBWizard->GetImagingSessionName().toStdString() << std::endl;
         outfile << "</ImagingSession>" << std::endl;
 
+        double x[3];
         unsigned int contourId, meshId, timePt;
         ContourMeshIteratorType It = contours->begin();
         while( It != contours->end() )
@@ -245,29 +248,26 @@ void QGoMainWindow::on_actionExportContour_triggered( )
           timePt = (*It).TCoord;
 
           outfile << "<contour>" << std::endl;
-          outfile << "<MeshId " << meshId << " /MeshId>" << std::endl;
-          outfile << "<TCoord " << timePt << " /TCoord>" << std::endl;
-          for( unsigned int i = 0; i < 10; i++ )
+          outfile << "<MeshId> " << meshId << " </MeshId>" << std::endl;
+          outfile << "<TCoord> " << timePt << " </TCoord>" << std::endl;
+          for( unsigned int i = 0; i < (*It).Nodes->GetNumberOfCells(); i++ )
           {
-            outfile << "<Nodes " << (*It).Nodes->GetCell(i) << " /Nodes>" << std::endl;
+            outfile << "<Nodes> " << std::endl;
+            vtkCell* cell = (*It).Nodes->GetCell(i);
+            for( unsigned int j = 0; j < (*It).Nodes->GetNumberOfPoints(); j++ )
+            {
+            cell->GetPoints()->GetPoint(j,x);
+            outfile << x[0] << ' ' << x[1] << ' ' << x[2] << std::endl;
+            }
+            outfile << "</Nodes>" << std::endl;
           }
           outfile << "</contour>" << std::endl;
-
-//           vtkSmartPointer<vtkPolyDataWriter> writer =
-//             vtkSmartPointer<vtkPolyDataWriter>::New();
-//           writer->SetInput( (*It).Nodes );
-//           writer->SetFileName( name.c_str() );
-//           writer->Write();
-
           ++It;
         }
         outfile.close();
-
       }
     }
   }
-  delete w3t;
-  delete w;
 }
 
 //--------------------------------------------------------------------------
