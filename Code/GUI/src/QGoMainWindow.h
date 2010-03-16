@@ -169,6 +169,9 @@ private:
   GoFigureFileInfoHelperMultiIndexContainer GetFileContainerForMultiFiles(
     std::string &ioHeader_Filename, std::string iFirstFileName);
 
+  void LoadAllContoursFromDatabase( const int& iT );
+  void LoadAllMeshesFromDatabase( const int& iT );
+
   /**
    * \brief Compute GoFigure file type from a given filename
    * @param iFileName

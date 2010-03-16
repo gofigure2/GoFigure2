@@ -1213,7 +1213,9 @@ void vtkLSMReader::DecodeLZWCompression(unsigned char* buffer, int size)
           }
         else
           {
-          this->DecodeHorizontalDifferencingUnsignedShort((unsigned short*)outbufp, width);
+          this->DecodeHorizontalDifferencingUnsignedShort(
+            static_cast<unsigned short*>(static_cast<void*>(outbufp)),
+            width );
           }
         }
       outbufp += width*bytes;
@@ -1326,7 +1328,8 @@ int vtkLSMReader::RequestData(
     ussarray->SetNumberOfComponents(1);
     ussarray->SetNumberOfValues(numberOfPixels);
 
-    ussarray->SetArray((unsigned short *)buf, numberOfPixels, 0);
+    ussarray->SetArray( static_cast<unsigned short*>( static_cast<void*>(buf)),
+      numberOfPixels, 0);
     data->GetPointData()->SetScalars(ussarray);
 
     ussarray->Delete();
@@ -1418,7 +1421,7 @@ int vtkLSMReader::RequestInformation (
 
   if(this->LSMSpecificInfoOffset)
     {
-    ReadLSMSpecificInfo(this->GetFile(),(unsigned long)this->LSMSpecificInfoOffset);
+    ReadLSMSpecificInfo(this->GetFile(), static_cast<unsigned long>(this->LSMSpecificInfoOffset) );
     }
   else
     {
@@ -1567,32 +1570,32 @@ int vtkLSMReader::TIFF_BYTES(unsigned short type)
 
 unsigned char vtkLSMReader::CharPointerToUnsignedChar(char *buf)
 {
-  return *((unsigned char*)(buf));
+  return *static_cast<unsigned char*>(static_cast<void*>(buf));
 }
 
 int vtkLSMReader::CharPointerToInt(char *buf)
 {
-  return *((int*)(buf));
+  return *static_cast<int*>(static_cast<void*>(buf));
 }
 
 unsigned int vtkLSMReader::CharPointerToUnsignedInt(char *buf)
 {
-  return *((unsigned int*)(buf));
+  return *static_cast<unsigned int*>(static_cast<void*>(buf));
 }
 
 short vtkLSMReader::CharPointerToShort(char *buf)
 {
-  return *((short*)(buf));
+  return *static_cast<short*>(static_cast<void*>(buf));
 }
 
 unsigned short vtkLSMReader::CharPointerToUnsignedShort(char *buf)
 {
-  return *((unsigned short*)(buf));
+  return *static_cast<unsigned short*>(static_cast<void*>(buf));
 }
 
 double vtkLSMReader::CharPointerToDouble(char *buf)
 {
-  return *((double*)(buf));
+  return *static_cast<double*>(static_cast<void*>(buf));
 }
 
 int vtkLSMReader::ReadInt(ifstream *f,unsigned long& pos)

@@ -6,9 +6,9 @@
 
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-10
 
- Copyright (c) 2009, President and Fellows of Harvard College.
+ Copyright (c) 2009-10, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -122,7 +122,7 @@ QGoMainWindow::QGoMainWindow( )
   this->addToolBar( Qt::TopToolBarArea, this->m_ViewToolBar );
 
   this->m_ModeToolBar = new QToolBar( tr("Mode"),this);
-  //this->m_ModeToolBar->setObjectName( tr("Mode) );
+  this->m_ModeToolBar->setObjectName( tr("Mode") );
   this->addToolBar(Qt::TopToolBarArea,this->m_ModeToolBar);
 
 //   m_LSMReader = vtkLSMReader::New();
@@ -269,7 +269,7 @@ void QGoMainWindow::on_actionExportContour_triggered( )
 //--------------------------------------------------------------------------
 void QGoMainWindow::on_actionExportMesh_triggered( )
 {}
-
+//--------------------------------------------------------------------------
 //--------------------------------------------------------------------------
 void QGoMainWindow::on_actionExportTrack_triggered( )
 {}
@@ -277,22 +277,27 @@ void QGoMainWindow::on_actionExportTrack_triggered( )
 //--------------------------------------------------------------------------
 void QGoMainWindow::on_actionExportLineage_triggered( )
 {}
+//--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void QGoMainWindow::on_actionImportContour_triggered( )
 {}
+//--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void QGoMainWindow::on_actionImportMesh_triggered( )
 {}
+//--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void QGoMainWindow::on_actionImportTrack_triggered( )
 {}
+//--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void QGoMainWindow::on_actionImportLineage_triggered( )
 {}
+//--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void QGoMainWindow::on_actionOpen_MegaCapture_Files_triggered()
@@ -400,7 +405,7 @@ void QGoMainWindow::DisplayFilesfromDB(std::string iFirst_Filename)
   GoFigureFileInfoHelperMultiIndexContainer file_container =
     this->GetFileContainerForMultiFiles(
     Header_FileName,iFirst_Filename);
-  if (file_container.size() == 0)
+  if ( file_container.size() == 0 )
     {
     std::cout<<"GoFigureFileInfoHelperMultiIndexContainer empty ";
     std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
@@ -432,83 +437,115 @@ void QGoMainWindow::DisplayFilesfromDB(std::string iFirst_Filename)
   QObject::connect( w3t, SIGNAL( UpdateBookmarkOpenActions( std::vector<QAction*> ) ),
     this->m_TabManager, SLOT( UpdateBookmarkMenu( std::vector<QAction*> ) ) );
 
-  // Load all contours from the first time point
-  //std::vector< ContourMeshStructure >::iterator
-  //contourmesh_list_it = w3t->m_DataBaseTables->m_ContoursInfo.begin();
-  std::vector< ContourMeshStructure >* temp;
-  std::vector<ContourMeshStructure>::iterator contourmesh_list_it;
+  // Load all contours and only display the ones from the first time point
+  LoadAllContoursFromDatabase( TimePoint );
 
-  temp = w3t->m_DataBaseTables->GetTracesInfoListForVisu("contour");
+  // Load all meshes and only display the ones from the first time point
+  LoadAllMeshesFromDatabase( TimePoint );
 
-  if( temp )
-    {
-    contourmesh_list_it = temp->begin();
-
-    std::set< unsigned int > temp_time_set;
-
-    // we don't need here to save this contour in the database,
-    // since they have just been extracted from it!
-    //while( contourmesh_list_it != w3t->m_DataBaseTables->m_ContoursInfo.end() )
-    while( contourmesh_list_it != temp->end() )
-      {
-      w3t->AddContourFromNodes(
-          contourmesh_list_it->TraceID,
-          contourmesh_list_it->Nodes,
-          contourmesh_list_it->rgba,
-          contourmesh_list_it->Highlighted,
-          contourmesh_list_it->TCoord, // timepoint
-          false ); // not to be saved in the database
-
-      if( contourmesh_list_it->TCoord != static_cast<unsigned int>( TimePoint ) )
-        {
-        temp_time_set.insert( contourmesh_list_it->TCoord );
-        }
-
-      ++contourmesh_list_it;
-      }
-
-    for( std::set< unsigned int >::iterator time_it = temp_time_set.begin();
-      time_it != temp_time_set.end();
-      ++time_it )
-      {
-      w3t->RemoveAllContoursForGivenTimePoint( *time_it );
-      }
-    }
-
-  w3t->ReinitializeContour();
-  w3t->ActivateManualSegmentationEditor( false );
-
-  temp = w3t->m_DataBaseTables->GetTracesInfoListForVisu("mesh");
-
-  if( temp )
-    {
-    contourmesh_list_it = temp->begin();
-
-    // Let's load all the mesh from the first time point
-    //contourmesh_list_it = w3t->m_DataBaseTables->m_MeshesInfo.begin();
-    contourmesh_list_it = temp->begin();
-
-    while( contourmesh_list_it != temp->end() )
-      {
-      if( contourmesh_list_it->Nodes )
-        {
-        w3t->AddPolyData( contourmesh_list_it->Nodes );
-        }
-      ++contourmesh_list_it;
-      }
-    }
   this->menuBookmarks->setEnabled(true);
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-GoFigureFileInfoHelperMultiIndexContainer QGoMainWindow::
-  GetFileContainerForMultiFiles(std::string &ioHeader_Filename,
-  std::string iFirst_FileName)
+void
+QGoMainWindow::
+LoadAllContoursFromDatabase( const int& iT )
 {
+  std::vector<ContourMeshStructure>::iterator contourmesh_list_it;
 
-GoFigureFileInfoHelperMultiIndexContainer ofile_container;
-   if (iFirst_FileName.empty())
+  QGoTabImageView3DwT* w3t =
+    dynamic_cast< QGoTabImageView3DwT* >( this->CentralTabWidget->currentWidget() );
+
+  if( w3t )
+    {
+    std::vector< ContourMeshStructure >* temp =
+      w3t->m_DataBaseTables->GetTracesInfoListForVisu("contour");
+
+    if( temp )
+      {
+      contourmesh_list_it = temp->begin();
+
+      std::set< unsigned int > temp_time_set;
+
+      // we don't need here to save this contour in the database,
+      // since they have just been extracted from it!
+      //while( contourmesh_list_it != w3t->m_DataBaseTables->m_ContoursInfo.end() )
+      while( contourmesh_list_it != temp->end() )
+        {
+        w3t->AddContourFromNodes(
+            contourmesh_list_it->TraceID,
+            contourmesh_list_it->Nodes,
+            contourmesh_list_it->rgba,
+            contourmesh_list_it->Highlighted,
+            contourmesh_list_it->TCoord, // timepoint
+            false ); // not to be saved in the database
+
+        if( contourmesh_list_it->TCoord != static_cast<unsigned int>( iT ) )
+          {
+          temp_time_set.insert( contourmesh_list_it->TCoord );
+          }
+
+        ++contourmesh_list_it;
+        }
+
+      for( std::set< unsigned int >::iterator time_it = temp_time_set.begin();
+        time_it != temp_time_set.end();
+        ++time_it )
+        {
+        w3t->RemoveAllContoursForGivenTimePoint( *time_it );
+        }
+      }
+
+    w3t->ReinitializeContour();
+    w3t->ActivateManualSegmentationEditor( false );
+    }
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+QGoMainWindow::
+LoadAllMeshesFromDatabase( const int& iT )
+{
+  std::vector<ContourMeshStructure>::iterator contourmesh_list_it;
+
+  QGoTabImageView3DwT* w3t =
+    dynamic_cast< QGoTabImageView3DwT* >( this->CentralTabWidget->currentWidget() );
+
+  if( w3t )
+    {
+    std::vector< ContourMeshStructure >* temp =
+      w3t->m_DataBaseTables->GetTracesInfoListForVisu("mesh");
+
+    if( temp )
+      {
+      // Let's load all the mesh from the first time point
+      //contourmesh_list_it = w3t->m_DataBaseTables->m_MeshesInfo.begin();
+      contourmesh_list_it = temp->begin();
+
+      while( contourmesh_list_it != temp->end() )
+        {
+        if( contourmesh_list_it->Nodes )
+          {
+          w3t->AddPolyData( contourmesh_list_it->Nodes );
+          }
+        ++contourmesh_list_it;
+        }
+      }
+    }
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+GoFigureFileInfoHelperMultiIndexContainer
+QGoMainWindow::
+GetFileContainerForMultiFiles( std::string &ioHeader_Filename,
+  std::string iFirst_FileName )
+{
+  GoFigureFileInfoHelperMultiIndexContainer ofile_container;
+
+  if (iFirst_FileName.empty())
     {
     std::string ImgSessionName =
       this->m_DBWizard->GetImagingSessionName().toStdString();
@@ -516,9 +553,10 @@ GoFigureFileInfoHelperMultiIndexContainer ofile_container;
     ofile_container = this->m_DBWizard->GetMultiIndexFileContainer();
     }
    iFirst_FileName = this->m_DBWizard->GetFirstFileName();
-  //if the size is diiferent than 0, the imagingsession has
-  //just been created and the wizard has already filled the
-  //GoFigureFileInfoHelperMultiIndexContainer using MgcaptureImport
+
+  // if the size is diiferent than 0, the imagingsession has
+  // just been created and the wizard has already filled the
+  // GoFigureFileInfoHelperMultiIndexContainer using MegcaptureImport
   if (ofile_container.size() == 0 ||!iFirst_FileName.empty())
     {
     itk::MegaCaptureImport::Pointer importer = itk::MegaCaptureImport::New();
@@ -780,32 +818,28 @@ CreateNewTabFor3DwtImage(
   w3t->SetMegaCaptureFile( iFileList, iFileType, iHeader, iTimePoint );
   //w3t->setWindowTitle( QString::fromStdString( iHeader ) );
 
-  // if( w3t->m_DataBaseTables->IsDatabaseUsed() )
-  //  {
+  if( w3t->m_DataBaseTables->IsDatabaseUsed() )
+   {
     // **********************
     // Database information
     //get the content of the tables fron the database to fill the table widget:
-  std::string ImgSessionName = m_DBWizard->GetImagingSessionName().toStdString();
-  //in case the files are opened from the open recent files, the imgsessionname
-  //can no more be gotten from the wizard:
-  if (this->m_DBWizard->GetIsAnOpenRecentFile())
-    {
-    ImgSessionName = this->m_CurrentFile.toStdString();
-    this->m_DBWizard->SetIsAnOpenRecentFile(false);
-    }
-  w3t->m_DataBaseTables->SetDatabaseVariables( "gofiguredatabase",
-    m_DBWizard->GetServer().toStdString(), m_DBWizard->GetLogin().toStdString(),
-    m_DBWizard->GetPassword().toStdString(), m_DBWizard->GetImagingSessionID(),
-    ImgSessionName );
+    std::string ImgSessionName = m_DBWizard->GetImagingSessionName().toStdString();
+    //in case the files are opened from the open recent files, the imgsessionname
+    //can no more be gotten from the wizard:
+    if (this->m_DBWizard->GetIsAnOpenRecentFile())
+      {
+      ImgSessionName = this->m_CurrentFile.toStdString();
+      this->m_DBWizard->SetIsAnOpenRecentFile(false);
+      }
+    w3t->m_DataBaseTables->SetDatabaseVariables( "gofiguredatabase",
+      m_DBWizard->GetServer().toStdString(), m_DBWizard->GetLogin().toStdString(),
+      m_DBWizard->GetPassword().toStdString(), m_DBWizard->GetImagingSessionID(),
+      ImgSessionName );
 
     w3t->m_DataBaseTables->FillTableFromDatabase();
     w3t->setWindowTitle(ImgSessionName.c_str());
     // **********************
-  //  }
-  //else
-  //  {
-  //  w3t->m_DataBaseTables->hide();
-  //  }
+   }
 
   SetupMenusFromTab( w3t );
 
