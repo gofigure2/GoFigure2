@@ -230,7 +230,7 @@ void QGoPrintDatabase::CloseDBConnection()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoPrintDatabase::FillTableFromDatabase()
+void QGoPrintDatabase::FillTableFromDatabase(int iTimePoint)
 {
   OpenDBConnection();
 
@@ -251,7 +251,7 @@ void QGoPrintDatabase::FillTableFromDatabase()
   emit PrintExistingColorsFromDB(this->GetColorComboBoxInfofromDB());
   /** \todo get the trace name from the visudockwidget*/
   PrintExistingCollectionIDsFromDB(
-    this->GetListExistingCollectionIDFromDB("contour"));
+    this->GetListExistingCollectionIDFromDB("contour",iTimePoint));
   CloseDBConnection();
   emit PrintDBReady();
 }
@@ -815,7 +815,7 @@ bool QGoPrintDatabase::IsDatabaseUsed()
 
 //-------------------------------------------------------------------------
 std::list<std::pair<std::string,QColor> > QGoPrintDatabase::
-  GetListExistingCollectionIDFromDB(std::string TraceName)
+  GetListExistingCollectionIDFromDB(std::string TraceName,int iTimePoint)
 {
   OpenDBConnection();
   TraceInfoStructure* CurrentlyUsedTraceData = this->GetTraceInfoStructure(TraceName);
@@ -840,11 +840,32 @@ std::list<std::pair<std::string,QColor> > QGoPrintDatabase::
   JoinTablesOnTraceTable.push_back(JoinTable);
   std::string OnCondition = CurrentlyUsedTraceData->CollectionName;
   OnCondition += ".ColorID = color.ColorID";
-   JoinTablesOnTraceTable.push_back(OnCondition);
+  JoinTablesOnTraceTable.push_back(OnCondition);
 
- //Get the results for the query:
-  std::vector<std::vector<std::string> >ResultsQuery  = GetValuesFromSeveralTables(
-    this->m_DatabaseConnector,CurrentlyUsedTraceData->CollectionName,SelectFields, "ImagingSessionID",
+  std::vector<std::vector<std::string> >ResultsQuery;
+  if (TraceName == "contour") //for mesh as a collection, there is only one timepoint
+    {
+    JoinTable = "coordinate";
+    JoinTablesOnTraceTable.push_back(JoinTable);
+    OnCondition = CurrentlyUsedTraceData->CollectionName;
+    OnCondition += ".";
+    OnCondition += "CoordIDMin = coordinate.coordid";
+    JoinTablesOnTraceTable.push_back(OnCondition);
+    std::vector<std::string> WhereAndConditions;
+    WhereAndConditions.push_back("mesh.ImagingsessionID");
+    WhereAndConditions.push_back(ConvertToString<unsigned int>(this->m_ImgSessionID));
+    WhereAndConditions.push_back("coordinate.TCoord");
+    WhereAndConditions.push_back(ConvertToString<int>(iTimePoint));
+
+    ResultsQuery = GetValuesFromSeveralTables(this->m_DatabaseConnector,
+      CurrentlyUsedTraceData->CollectionName,SelectFields,WhereAndConditions,
+      JoinTablesOnTraceTable,true);
+    }
+
+
+ //Get the results for the query:(for trace as mesh, tracks):
+  ResultsQuery  = GetValuesFromSeveralTables(this->m_DatabaseConnector,
+    CurrentlyUsedTraceData->CollectionName,SelectFields, "ImagingSessionID",
     ConvertToString<unsigned int>(this->m_ImgSessionID),JoinTablesOnTraceTable,true);
 
   unsigned int i = 0;

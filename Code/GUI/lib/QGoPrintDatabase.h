@@ -82,7 +82,7 @@ public:
   /** \brief Create the QTableWidgetChild,get the columns names and the values stored
   in the database, display them in the QTableWidgetChild and fill the info for the
   contours and meshes*/
-  void FillTableFromDatabase();
+  void FillTableFromDatabase(int iTimePoint);
 
   /** \brief Return a vector of all the contours for the given timepoint*/
   std::vector<ContourMeshStructure> GetContoursForAGivenTimepoint (
@@ -105,9 +105,17 @@ public:
   /** \brief return a list containing the existing colornames with their corresponding rgba
   from the database*/
   std::list<std::pair<std::string,std::vector<int> > > GetColorComboBoxInfofromDB();
+  
+  /** \brief return a list of the IDs for the collection corresponding to the tracename
+  with their colors for all the timepoints*/
+ // std::list<std::pair<std::string,QColor> > GetListExistingCollectionIDFromDB(
+  //  std::string TraceName);
 
+  /** \brief return a list of the IDs for the collection corresponding to the tracename
+  with their colors for the given timepoint if the collection is a mesh or for 
+  all timepoint for tracks and lineages*/
   std::list<std::pair<std::string,QColor> > GetListExistingCollectionIDFromDB(
-    std::string TraceName);
+    std::string TraceName,int iTimePoint);
 
   std::pair<std::string,QColor> GetCurrentCollectionData();
   

@@ -1297,3 +1297,82 @@ std::vector<std::vector<std::string> >GetValuesFromSeveralTables(
   return Results;
 
 }
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::vector<std::vector<std::string> >GetValuesFromSeveralTables(
+  vtkMySQLDatabase* DatabaseConnector,std::string MainTable,
+  std::vector<std::string> SelectFields, std::vector<std::string> WhereAndConditions,
+  std::vector<std::string> JoinTablesOnTraceTable, bool Distinct)
+{
+  std::vector<std::vector<std::string> > Results;
+  vtkSQLQuery* query = DatabaseConnector->GetQueryInstance();
+
+  std::stringstream Querystream;
+  Querystream << "SELECT ";
+  if (Distinct)
+    {
+    Querystream << "DISTINCT ";
+    }
+  unsigned int i;
+  for (i=0; i <SelectFields.size()-1;i++)
+    {
+    Querystream <<SelectFields[i];
+    Querystream << ",";
+    }
+  Querystream << SelectFields[i];
+  Querystream << " FROM (";
+  Querystream << MainTable;
+  unsigned int j =0;
+  while (j<JoinTablesOnTraceTable.size()-1)
+    {
+    Querystream << " LEFT JOIN ";
+    Querystream << JoinTablesOnTraceTable[j];
+    Querystream << " ON ";
+    Querystream << JoinTablesOnTraceTable[j+1];
+    Querystream << " ";
+    j=j+2;
+    } 
+
+  unsigned int k = 0;
+    Querystream << ") WHERE (";
+  while ( k<WhereAndConditions.size()-2)
+    {   
+    Querystream << WhereAndConditions[k];
+    Querystream << " = ";
+    Querystream << WhereAndConditions[k+1];
+    Querystream << " AND ";
+    k = k+2;
+    }
+
+  Querystream << WhereAndConditions[k];
+  Querystream << " = ";
+  Querystream << WhereAndConditions[k+1];
+  Querystream << ");";
+
+  query->SetQuery(Querystream.str().c_str());
+  if ( !query->Execute() )
+    {
+    itkGenericExceptionMacro(
+      << "return info Contours query failed"
+      << query->GetLastErrorText() );
+    DatabaseConnector->Close();
+    DatabaseConnector->Delete();
+    query->Delete();
+    return Results;
+    }
+  while (query->NextRow())
+    {
+    std::vector<std::string> ResultsForOneRow;
+    for( int k = 0; k < query->GetNumberOfFields(); k++)
+      {
+      ResultsForOneRow.push_back( query->DataValue( k ).ToString() );
+      }
+    Results.push_back(ResultsForOneRow);
+    }
+  
+  query->Delete();
+
+  return Results;
+
+}

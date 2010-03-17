@@ -207,4 +207,11 @@ std::vector<std::vector<std::string> >GetValuesFromSeveralTables(
   std::vector<std::string> SelectFields, std::string field,
   std::string value,std::vector<std::string> JoinTablesOnTraceTable, bool Distinct);
 
+//return a pair with the number of fields in the query and a vector of the results,
+//the query includes the where conditions from the vector as AND conditions:
+std::vector<std::vector<std::string> >GetValuesFromSeveralTables(
+  vtkMySQLDatabase* DatabaseConnector,std::string MainTable,
+  std::vector<std::string> SelectFields, std::vector<std::string> WhereAndConditions,
+  std::vector<std::string> JoinTablesOnTraceTable, bool Distinct);
+
 #endif

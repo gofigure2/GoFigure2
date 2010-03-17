@@ -336,10 +336,10 @@ void QGoMainWindow::on_actionImportContour_triggered( )
   //             false,   // is this bool?
   //             timePt, // timepoint
   //             false ); // not to be saved in the database
-          }
-        }
-      }
-    }
+//          }
+  //      }
+   //   }
+   // }
 }
 
 //--------------------------------------------------------------------------
@@ -876,8 +876,8 @@ CreateNewTabFor3DwtImage(
   w3t->SetMegaCaptureFile( iFileList, iFileType, iHeader, iTimePoint );
   //w3t->setWindowTitle( QString::fromStdString( iHeader ) );
 
-  if( w3t->m_DataBaseTables->IsDatabaseUsed() )
-   {
+ // if( w3t->m_DataBaseTables->IsDatabaseUsed() )
+ //  {
     // **********************
     // Database information
     //get the content of the tables fron the database to fill the table widget:
@@ -894,10 +894,10 @@ CreateNewTabFor3DwtImage(
       m_DBWizard->GetPassword().toStdString(), m_DBWizard->GetImagingSessionID(),
       ImgSessionName );
 
-    w3t->m_DataBaseTables->FillTableFromDatabase();
+    w3t->m_DataBaseTables->FillTableFromDatabase(w3t->GetTimePoint());
     w3t->setWindowTitle(ImgSessionName.c_str());
     // **********************
-   }
+ //  }
 
   SetupMenusFromTab( w3t );
 
