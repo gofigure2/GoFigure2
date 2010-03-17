@@ -281,8 +281,66 @@ void QGoMainWindow::on_actionExportLineage_triggered( )
 
 //--------------------------------------------------------------------------
 void QGoMainWindow::on_actionImportContour_triggered( )
-{}
-//--------------------------------------------------------------------------
+{
+  typedef std::vector<ContourMeshStructure> ContourMeshVectorType;
+  typedef ContourMeshVectorType::iterator ContourMeshIteratorType;
+
+  // get current tab widget
+  QWidget* w = this->CentralTabWidget->currentWidget();
+
+  QGoTabImageView3DwT* w3t = dynamic_cast< QGoTabImageView3DwT* >( w );
+
+//   if( w3t )
+//     {
+//     if( w3t->m_DataBaseTables->IsDatabaseUsed() )
+//       {
+//     std::cout << "Import" << std::endl;
+//       // Get file name
+//       QString p = QFileDialog::getOpenFileName(
+//       this,
+//       tr( "Open Contour Export File" ),"",
+//       tr( "TextFile (*.txt)" )
+//       );
+//
+//       if ( ! p.isNull() )
+//         {
+//         std::string filename = p.toStdString();
+//
+//         //Open an xml file
+//         std::ifstream infile( filename.c_str(), std::ifstream::in );
+//         std::string line;
+//         if( infile.is_open() )
+//           {
+//           //<ImagingSession>
+//           getline( infile, line );
+//
+//           std::string ImagingSession;
+//
+//           getline( infile, ImagingSession );
+//           std::cout << ImagingSession << std::endl;
+//
+//           //</ImagingSession>
+//           getline( infile, line );
+
+  //         infile >> traceId;
+  //         infile >> meshId;
+  //         infile >> timePt;
+  //
+  //         //create a vtkPolyData*
+  //         vtkPolyData* ptr;
+  //
+  //         w3t->AddContourFromNodes(
+  //             traceID,
+  //             ptr,
+  //             contourmesh_list_it->rgba, // what default color to set
+  //             false,   // is this bool?
+  //             timePt, // timepoint
+  //             false ); // not to be saved in the database
+          }
+        }
+      }
+    }
+}
 
 //--------------------------------------------------------------------------
 void QGoMainWindow::on_actionImportMesh_triggered( )
