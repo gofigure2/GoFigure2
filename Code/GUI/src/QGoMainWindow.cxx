@@ -249,7 +249,7 @@ void QGoMainWindow::on_actionExportContour_triggered( )
           outfile << contourId << std::endl;
           outfile << "<TCoord> " << std::endl;
           outfile << timePt << std::endl;
-          outfile << " </TCoord>" << std::endl;
+          outfile << "</TCoord>" << std::endl;
           outfile << "<MeshId> " << std::endl;
           outfile << meshId << std::endl;
           outfile << "</MeshId>" << std::endl;
@@ -296,7 +296,6 @@ void QGoMainWindow::on_actionImportContour_triggered( )
     {
     if( w3t->m_DataBaseTables->IsDatabaseUsed() )
       {
-      std::cout << "Import" << std::endl;
       // Get file name
       QString p = QFileDialog::getOpenFileName(
       this,
@@ -315,43 +314,51 @@ void QGoMainWindow::on_actionImportContour_triggered( )
         if( infile.is_open() )
           {
           // Get number of contours
-          infile >> NumberOfContours;
-          std::cout << "# of contours: " << NumberOfContours << std::endl;
-          for( unsigned int i = 0; i < NumberOfContours; i++ )
+          getline( infile, line );
+          std::istringstream nC(line);
+          nC >> NumberOfContours;
+//           std::cout << "# of contours: " << NumberOfContours << std::endl;
+          for( int i = 0; i < NumberOfContours; i++ )
             {
             //<contour>
             getline( infile, line );
-            infile >> contourId;
-            std::cout << contourId << std::endl;
+            getline( infile, line );
+            std::istringstream c(line);
+            c >> contourId;
+//             std::cout << contourId << std::endl;
 
             // <TCoord>
             getline( infile, line );
-            infile >> timePt;
             getline( infile, line );
-            std::cout << timePt << std::endl;
+            std::istringstream t(line);
+            t >> timePt;
+            getline( infile, line );
+//             std::cout << timePt << std::endl;
 
             // <MeshId>
             getline( infile, line );
-            infile >> meshId;
             getline( infile, line );
-            std::cout << meshId << std::endl;
+            std::istringstream m(line);
+            m >> meshId;
+            getline( infile, line );
+//             std::cout << meshId << std::endl;
 
             // <Nodes>
             getline( infile, line );
             getline( infile, nodes );
             getline( infile, line );
-            std::cout << nodes << std::endl;
+//             std::cout << nodes << std::endl;
 
     //         //create a vtkPolyData*
     //         vtkPolyData* ptr;
     //
-    //         w3t->AddContourFromNodes(
-    //             contourId,
-    //             ptr,
-    //             contourmesh_list_it->rgba, // what default color to set
-    //             false,   // is this bool?
-    //             timePt, // timepoint
-    //             true ); // not to be saved in the database
+//             w3t->AddContourFromNodes(
+//                 contourId,
+//                 ptr,
+//                 contourmesh_list_it->rgba, // what default color to set
+//                 false,   // is this bool?
+//                 timePt, // timepoint
+//                 true ); // not to be saved in the database
   
             getline( infile, line );
             }
