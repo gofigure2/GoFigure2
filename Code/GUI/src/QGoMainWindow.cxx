@@ -236,22 +236,24 @@ void QGoMainWindow::on_actionExportContour_triggered( )
         // Create an xml file
         std::fstream outfile;
         outfile.open ( filename.c_str(), std::ios::out );
-        outfile << "<ImagingSession>" << std::endl;
-        // MegaCapture Header path
-        outfile << m_DBWizard->GetImagingSessionName().toStdString() << std::endl;
-        outfile << "</ImagingSession>" << std::endl;
 
         unsigned int contourId, meshId, timePt;
         ContourMeshIteratorType It = contours->begin();
+        outfile << contours->size() << std::endl;
         while( It != contours->end() )
         {
           contourId = (*It).TraceID;
           meshId = (*It).CollectionID;
           timePt = (*It).TCoord;
-
           outfile << "<contour>" << std::endl;
-          outfile << "<MeshId> " << meshId << " </MeshId>" << std::endl;
-          outfile << "<TCoord> " << timePt << " </TCoord>" << std::endl;
+          outfile << contourId << std::endl;
+          outfile << "<TCoord> " << std::endl;
+          outfile << timePt << std::endl;
+          outfile << " </TCoord>" << std::endl;
+          outfile << "<MeshId> " << std::endl;
+          outfile << meshId << std::endl;
+          outfile << "</MeshId>" << std::endl;
+
           outfile << "<Nodes>" << std::endl;
           //with the class here
           std::string str = convert_writer->GetMySQLText( (*It).Nodes );
@@ -290,56 +292,73 @@ void QGoMainWindow::on_actionImportContour_triggered( )
 
   QGoTabImageView3DwT* w3t = dynamic_cast< QGoTabImageView3DwT* >( w );
 
-//   if( w3t )
-//     {
-//     if( w3t->m_DataBaseTables->IsDatabaseUsed() )
-//       {
-//     std::cout << "Import" << std::endl;
-//       // Get file name
-//       QString p = QFileDialog::getOpenFileName(
-//       this,
-//       tr( "Open Contour Export File" ),"",
-//       tr( "TextFile (*.txt)" )
-//       );
-//
-//       if ( ! p.isNull() )
-//         {
-//         std::string filename = p.toStdString();
-//
-//         //Open an xml file
-//         std::ifstream infile( filename.c_str(), std::ifstream::in );
-//         std::string line;
-//         if( infile.is_open() )
-//           {
-//           //<ImagingSession>
-//           getline( infile, line );
-//
-//           std::string ImagingSession;
-//
-//           getline( infile, ImagingSession );
-//           std::cout << ImagingSession << std::endl;
-//
-//           //</ImagingSession>
-//           getline( infile, line );
+  if( w3t )
+    {
+    if( w3t->m_DataBaseTables->IsDatabaseUsed() )
+      {
+      std::cout << "Import" << std::endl;
+      // Get file name
+      QString p = QFileDialog::getOpenFileName(
+      this,
+      tr( "Open Contour Export File" ),"",
+      tr( "TextFile (*.txt)" )
+      );
 
-  //         infile >> traceId;
-  //         infile >> meshId;
-  //         infile >> timePt;
-  //
-  //         //create a vtkPolyData*
-  //         vtkPolyData* ptr;
-  //
-  //         w3t->AddContourFromNodes(
-  //             traceID,
-  //             ptr,
-  //             contourmesh_list_it->rgba, // what default color to set
-  //             false,   // is this bool?
-  //             timePt, // timepoint
-  //             false ); // not to be saved in the database
-//          }
-  //      }
-   //   }
-   // }
+      if ( ! p.isNull() )
+        {
+        std::string filename = p.toStdString();
+
+        int contourId, meshId, timePt, NumberOfContours;
+        //Open an xml file
+        std::ifstream infile( filename.c_str(), std::ifstream::in );
+        std::string line, nodes;
+        if( infile.is_open() )
+          {
+          // Get number of contours
+          infile >> NumberOfContours;
+          std::cout << "# of contours: " << NumberOfContours << std::endl;
+          for( unsigned int i = 0; i < NumberOfContours; i++ )
+            {
+            //<contour>
+            getline( infile, line );
+            infile >> contourId;
+            std::cout << contourId << std::endl;
+
+            // <TCoord>
+            getline( infile, line );
+            infile >> timePt;
+            getline( infile, line );
+            std::cout << timePt << std::endl;
+
+            // <MeshId>
+            getline( infile, line );
+            infile >> meshId;
+            getline( infile, line );
+            std::cout << meshId << std::endl;
+
+            // <Nodes>
+            getline( infile, line );
+            getline( infile, nodes );
+            getline( infile, line );
+            std::cout << nodes << std::endl;
+
+    //         //create a vtkPolyData*
+    //         vtkPolyData* ptr;
+    //
+    //         w3t->AddContourFromNodes(
+    //             contourId,
+    //             ptr,
+    //             contourmesh_list_it->rgba, // what default color to set
+    //             false,   // is this bool?
+    //             timePt, // timepoint
+    //             true ); // not to be saved in the database
+  
+            getline( infile, line );
+            }
+         }
+       }
+     }
+   }
 }
 
 //--------------------------------------------------------------------------
