@@ -861,13 +861,13 @@ std::list<std::pair<std::string,QColor> > QGoPrintDatabase::
       CurrentlyUsedTraceData->CollectionName,SelectFields,WhereAndConditions,
       JoinTablesOnTraceTable,true);
     }
-
-
- //Get the results for the query:(for trace as mesh, tracks):
-  ResultsQuery  = GetValuesFromSeveralTables(this->m_DatabaseConnector,
-    CurrentlyUsedTraceData->CollectionName,SelectFields, "ImagingSessionID",
-    ConvertToString<unsigned int>(this->m_ImgSessionID),JoinTablesOnTraceTable,true);
-
+  else
+    {
+   //Get the results for the query:(for trace as mesh, tracks):
+    ResultsQuery  = GetValuesFromSeveralTables(this->m_DatabaseConnector,
+      CurrentlyUsedTraceData->CollectionName,SelectFields, "ImagingSessionID",
+      ConvertToString<unsigned int>(this->m_ImgSessionID),JoinTablesOnTraceTable,true);
+    }
   unsigned int i = 0;
   std::vector<std::vector<std::string> >::iterator iter = ResultsQuery.begin();
   while ( iter != ResultsQuery.end())
