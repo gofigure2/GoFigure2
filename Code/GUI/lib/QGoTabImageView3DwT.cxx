@@ -419,6 +419,9 @@ CreateVideoRecorderWidget()
         this, SLOT( SetSpecificParametersFrameRate( int ) ) );
   QObject::connect( m_VideoRecorderWidget, SIGNAL( QualityChanged( int ) ),
         this, SLOT( SetSpecificParametersQuality( int ) ) );
+
+  QObject::connect( m_VideoRecorderWidget, SIGNAL( GetSliceView() ),
+          this, SLOT( SetSliceView() ) );
 }
 
 //-------------------------------------------------------------------------
@@ -756,6 +759,7 @@ void QGoTabImageView3DwT::CreateModeActions()
   QObject::connect( ManualEditingAction, SIGNAL( toggled( bool ) ),
    this, SLOT( ActivateManualSegmentationEditor( bool ) ) );
 
+
   QAction* DefaultAction = new QAction( tr( "Default" ), this );
   DefaultAction->setCheckable( true );
   DefaultAction->setChecked(true);
@@ -771,6 +775,23 @@ void QGoTabImageView3DwT::CreateModeActions()
   /** \todo implement default mode*/
   //QObject::connect( DefaultAction, SIGNAL( triggered() ),
    // this, SLOT( DefaultMode() ) );
+
+  QAction* ZoomAction = new QAction( tr( "Zoom" ), this );
+  ZoomAction->setCheckable( true );
+  ZoomAction->setChecked(false);
+
+  QIcon ZoomIcon;
+  //DefaultIcon.addPixmap( QPixmap(QString::fromUtf8(":/fig/mouse-cursor.png")),
+  //  QIcon::Normal, QIcon::Off );
+  ZoomAction->setIcon( ZoomIcon );
+
+  group->addAction( ZoomAction );
+
+  this->m_ModeActions.push_back( ZoomAction );
+    /** \todo implement default mode*/
+  QObject::connect( ZoomAction, SIGNAL( triggered() ),
+    this, SLOT( ZoomMode() ) );
+
 }
 //-------------------------------------------------------------------------
 //-------------------------------------------------------------------------
@@ -2540,4 +2561,26 @@ QGoTabImageView3DwT::
 Change3DPerspectiveToSagittal()
 {
   m_ImageView->SetCamera( 3 );
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+SetSliceView()
+{
+  m_VideoRecorderWidget->SetCurrentX( this->GetSliceViewYZ() );
+  m_VideoRecorderWidget->SetCurrentY( this->GetSliceViewXZ() );
+  m_VideoRecorderWidget->SetCurrentZ( this->GetSliceViewXY() );
+  m_VideoRecorderWidget->SetCurrentT( this->GetTimePoint() );
+}
+
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+ZoomMode()
+{
+std::cout<< "in zoom mode" << std::endl;
 }

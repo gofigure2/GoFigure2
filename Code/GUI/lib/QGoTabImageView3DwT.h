@@ -196,6 +196,8 @@ public slots:
   void DisplaySplinePlanes();
   void DisplayCube();
   void TakeSnapshot();
+  void SetSliceView();
+  void ZoomMode();
 
 #if defined ( ENABLEFFMPEG ) || defined ( ENABLEAVI )
   void SetRendererWindow( int );

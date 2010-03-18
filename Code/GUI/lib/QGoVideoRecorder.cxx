@@ -181,6 +181,42 @@ SetTMinAndMax( const int& TMin, const int& TMax )
 //-------------------------------------------------------------------------
 void
 QGoVideoRecorder::
+SetCurrentX( const int& X)
+{
+	m_CurrentX = X;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoVideoRecorder::
+SetCurrentY( const int& Y)
+{
+	m_CurrentY = Y;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoVideoRecorder::
+SetCurrentZ( const int& Z)
+{
+	m_CurrentZ = Z;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoVideoRecorder::
+SetCurrentT( const int& T)
+{
+	m_CurrentT = T;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoVideoRecorder::
 UpdateQSpinBoxFT( int value )
 {
   switch ( value )
@@ -436,16 +472,29 @@ onStartVideoClicked()
   else
     {
       QString fileName = m_VideoName2;
+      QString fileName2 = m_VideoName2;
 
       if(!fileName.endsWith(".avi"))
       {
-      fileName.insert( fileName.size(), QString(".avi"));
+        fileName.insert( fileName.size(), QString(".avi") );
+        fileName2.insert( fileName.size(), QString(".txt") );
+      }
+      else
+      {
+    	fileName2.replace( QString(".avi"), QString(".txt") );
       }
 
       m_VideoRecorder->SetFileName( fileName.toStdString() );
       m_VideoRecorder->StartCapture();
 
       this->startVideo->setEnabled(false);
+
+      m_OutputVideoFile.open( fileName2.toStdString().c_str() );
+      m_OutputVideoFile << "FrameRate: ";
+      m_OutputVideoFile << m_FrameRate2;
+      m_OutputVideoFile << "\nVideoQuality: ";
+      m_OutputVideoFile << m_VideoQuality2;
+      m_OutputVideoFile << "\nX Y Z T ";
 
       AcquireWithPause( m_SliceFT );
     }
@@ -495,6 +544,8 @@ void
 QGoVideoRecorder::
 onEndRecordClicked()
 {
+  m_OutputVideoFile.close();
+
   m_VideoRecorder->EndCapture();
   m_InternalTimer->stop();
   m_FrameCounter = 0;
@@ -625,8 +676,20 @@ AcquireWithPause( int value )
 
   for(unsigned int i = iMin; i < iMax+1; i++)
     {
-    //send signal to gofigure to change slice
+    //send signal to change slice
 	emitChangeSliceSignal(value, i);
+
+	//send signal to know our position in the 3D volume
+	emit GetSliceView();
+	m_OutputVideoFile << "\n";
+	m_OutputVideoFile << m_CurrentX;
+	m_OutputVideoFile << " ";
+	m_OutputVideoFile << m_CurrentY;
+	m_OutputVideoFile << " ";
+	m_OutputVideoFile << m_CurrentZ;
+	m_OutputVideoFile << " ";
+	m_OutputVideoFile << m_CurrentT;
+
     //capture screen
     m_VideoRecorder->TakeSnapshot();
     }

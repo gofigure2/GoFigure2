@@ -44,6 +44,7 @@
 #include "ui_NewVideoRecorderDockWidget.h"
 
 #include <iostream>
+#include <fstream>
 #include <string>
 
 //#include "vtkSmartPointer.h"
@@ -66,7 +67,6 @@ class QGoVideoRecorder : public QDockWidget, private Ui::NewDockWidgetVideoRecor
          */
         ~QGoVideoRecorder();
 
-        /// \todo use const int& instead
         /**
          * \brief Set value X/Y/Z/T Min and Max for a given image (useful for spin boxes)
          * when image is loaded, to know boundaries of the spin box to be used
@@ -75,6 +75,13 @@ class QGoVideoRecorder : public QDockWidget, private Ui::NewDockWidgetVideoRecor
         void SetYMinAndMax( const int& , const int& );
         void SetZMinAndMax( const int& , const int& );
         void SetTMinAndMax( const int& , const int& );
+
+        void SetCurrentX( const int&);
+        void SetCurrentY( const int&);
+        void SetCurrentZ( const int&);
+        void SetCurrentT( const int&);
+
+        std::ofstream m_OutputVideoFile;
 
         QString m_VideoName2;
 
@@ -109,6 +116,7 @@ class QGoVideoRecorder : public QDockWidget, private Ui::NewDockWidgetVideoRecor
       void TSliceChanged( int );
       void QualityChanged( int );
       void FrameRateChanged( int );
+      void GetSliceView();
 
     private:
 
@@ -124,6 +132,11 @@ class QGoVideoRecorder : public QDockWidget, private Ui::NewDockWidgetVideoRecor
         unsigned int m_ZMax;
         unsigned int m_TMin;
         unsigned int m_TMax;
+
+        unsigned int m_CurrentX;
+        unsigned int m_CurrentY;
+        unsigned int m_CurrentZ;
+        unsigned int m_CurrentT;
 
         /**
          * \brief Function to update spinbox extent according to selected slice
