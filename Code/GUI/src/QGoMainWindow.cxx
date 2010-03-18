@@ -80,6 +80,8 @@
 // #include "vtkMarchingCubes.h"
 #include "vtkLSMReader.h"
 #include "vtkPolyDataReader.h"
+#include "vtkPolyDataMySQLTextReader.h"
+#include "vtkPolyDataMySQLTextWriter.h"
 #include "vtkPLYReader.h"
 #include "vtkPolyData.h"
 #include "vtkProperty.h"
@@ -292,6 +294,10 @@ void QGoMainWindow::on_actionImportContour_triggered( )
 
   QGoTabImageView3DwT* w3t = dynamic_cast< QGoTabImageView3DwT* >( w );
 
+  //get default color
+  double rgba[4];
+  rgba[0] = rgba[1] = rgba[2] = rgba[3] = 1;
+
   if( w3t )
     {
     if( w3t->m_DataBaseTables->IsDatabaseUsed() )
@@ -313,6 +319,10 @@ void QGoMainWindow::on_actionImportContour_triggered( )
         std::string line, nodes;
         if( infile.is_open() )
           {
+          vtkPolyDataMySQLTextReader* convert_reader =
+            vtkPolyDataMySQLTextReader::New();
+          convert_reader->SetIsContour( true );
+
           // Get number of contours
           getline( infile, line );
           std::istringstream nC(line);
@@ -349,17 +359,17 @@ void QGoMainWindow::on_actionImportContour_triggered( )
             getline( infile, line );
 //             std::cout << nodes << std::endl;
 
-    //         //create a vtkPolyData*
-    //         vtkPolyData* ptr;
-    //
-//             w3t->AddContourFromNodes(
-//                 contourId,
-//                 ptr,
-//                 contourmesh_list_it->rgba, // what default color to set
-//                 false,   // is this bool?
-//                 timePt, // timepoint
-//                 true ); // not to be saved in the database
-  
+            //create a vtkPolyData*
+            vtkPolyData* ptr = convert_reader->GetPolyData( nodes );
+
+            w3t->AddContourFromNodes(
+                contourId,
+                ptr,
+                rgba, // what default color to set
+                false,   // no highlighting
+                timePt, // timepoint
+                true ); // to be saved in the database
+
             getline( infile, line );
             }
          }
