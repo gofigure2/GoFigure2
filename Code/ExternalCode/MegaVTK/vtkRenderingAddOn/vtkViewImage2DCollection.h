@@ -203,10 +203,111 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage2DCollection : public vtkCollection
   vtkSyncSetObjectMacro (Position, int, vtkViewImage2D);
   vtkSyncSetObjectMacro (WorldCoordinates, double, vtkViewImage2D);
 
+  /*/// Description: Synchronize background color between views
+  vtkSyncSetObjectMacro (Background, double, vtkViewImage2D);
+  /// Description: Synchronize camera position between views
+  vtkSyncSetObjectMacro (CameraPosition, double,vtkViewImage2D);
+  /// Description: Synchronize camera focal point between views
+  vtkSyncSetObjectMacro (CameraFocalPoint, double, vtkViewImage2D);
+  /// Description: Synchronize camera view up between views
+  vtkSyncSetObjectMacro (CameraViewUp, double, vtkViewImage2D);
+  /// Description: Synchronize camera parallel scale between views
+  vtkSyncSetMacro (CameraParallelScale, double, vtkViewImage2D);
+
+  /// Description: Synchronize view orientation between views (also see SyncSetSliceOrientation())
+  vtkSyncSet2DMacro (ViewOrientation, int);
+  /// Description: Synchronize view convention between views
+  vtkSyncSet2DMacro (ViewConvention, int);
+  /// Description: Synchronize interpolate between views
+  vtkSyncSet2DMacro (Interpolate, int);
+  /// Description: Synchronize interactor style type between views
+  vtkSyncSet2DMacro (InteractorStyleType, int);
+  /// Description: Synchronize mouse interaction between views
+  vtkSyncSet2DMacro (LeftButtonInteractionStyle, int);
+  /// Description: Synchronize mouse interaction between views
+  vtkSyncSet2DMacro (RightButtonInteractionStyle, int);
+  /// Description: Synchronize mouse interaction between views
+  vtkSyncSet2DMacro (MiddleButtonInteractionStyle, int);
+  /// Description: Synchronize mouse interaction between views
+  vtkSyncSet2DMacro (WheelInteractionStyle, int);
+  /// Description: Synchronize mouse interaction between views
+  vtkSyncSet2DMacro (InteractionStyle, int);*/
+
+  /// Description: Synchronize dataset addition between views
+  virtual void SyncAddDataSet (vtkDataSet* dataset, vtkProperty* property = NULL);
+  /// Description: Synchronize dataset removal between views
+  virtual void SyncRemoveDataSet (vtkDataSet* dataset);
+
+  /// Description: Synchronize reset window level between views
+  virtual void SyncResetWindowLevel (void);
+  /// Description: Synchronize reset camera between views
+  virtual void SyncResetCamera (void);
+  /// Description: Synchronize render between views
+  virtual void SyncRender ( );
+  /// Description: Synchronize reset between views
+  virtual void SyncReset (void);
+  /// Description: Synchronize interactor start between views
+  virtual void SyncStart (void);
+
+  // Decide weither or not the collection will link interactions
+
+  /// Description: link slice flag
+  vtkGetMacro (LinkSliceMove, unsigned int);
+  /// Description: link slice flag
+  virtual void SetLinkSliceMove (unsigned int v);
+  /// Description: link slice flag
+  vtkBooleanMacro (LinkSliceMove, unsigned int);
+
+  /// Description: link color window flag
+  vtkGetMacro (LinkColorWindowLevel, unsigned int);
+  /// Description: link color window flag
+  virtual void SetLinkColorWindowLevel (unsigned int v);
+  /// Description: link color window flag
+  vtkBooleanMacro (LinkColorWindowLevel, unsigned int);
+
+  /// Description: link reset color window flag
+  vtkGetMacro (LinkResetWindowLevel, unsigned int);
+  /// Description: link reset color window flag
+  virtual void SetLinkResetWindowLevel (unsigned int v);
+  /// Description: link reset color window flag
+  vtkBooleanMacro (LinkResetWindowLevel, unsigned int);
+
+  /// Description: link reset viewer flag
+  vtkGetMacro (LinkResetViewer, unsigned int);
+  /// Description: link reset viewer flag
+  virtual void SetLinkResetViewer (unsigned int v);
+  /// Description: link reset viewer flag
+  vtkBooleanMacro (LinkResetViewer, unsigned int);
+
+  /// Description: link requested position (double click) flag
+  vtkGetMacro (LinkRequestedPosition, unsigned int);
+  /// Description: link requested position (double click) flag
+  virtual void SetLinkRequestedPosition (unsigned int v);
+  /// Description: link requested position (double click) flag
+  vtkBooleanMacro (LinkRequestedPosition, unsigned int);
+
+  /// Description: link camera flag
+  vtkGetMacro (LinkCamera, unsigned int);
+  /// Description: link camera flag
+  virtual void SetLinkCamera (unsigned int v);
+  /// Description: link camera flag
+  vtkBooleanMacro (LinkCamera, unsigned int);
+
+  /// Description: link position flag
+  vtkGetMacro (LinkPosition, unsigned int);
+  /// Description: link position flag
+  virtual void SetLinkPosition (unsigned int v);
+  /// Description: link position flag
+  vtkBooleanMacro (LinkPosition, unsigned int);
+
+  /// Description: show axes (view intersections) flag
+  virtual void SetShowAxes (unsigned int v);
+  /// Description: show axes (view intersections) flag
+  vtkBooleanMacro (ShowAxes, unsigned int);
+  /// Description: show axes (view intersections) flag
+  vtkGetMacro (ShowAxes, unsigned int);
+
   void SyncSetBackground( double* rgb );
-  void SyncRender();
-  void SyncResetWindowLevel();
-  void SyncReset();
   void SyncPan();
   void SyncSetZoomAndParallelScale( double Zoom, double ParallelScale );
 
@@ -221,6 +322,15 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage2DCollection : public vtkCollection
 
   vtkViewImage2DCollectionCommand* Command;
   vtkRenderWindow* ExtraRenderWindow;
+
+  unsigned int LinkSliceMove;
+  unsigned int LinkColorWindowLevel;
+  unsigned int LinkResetWindowLevel;
+  unsigned int LinkResetViewer;
+  unsigned int LinkRequestedPosition;
+  unsigned int LinkCamera;
+  unsigned int LinkPosition;
+  unsigned int ShowAxes;
 };
 
 

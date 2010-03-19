@@ -80,6 +80,26 @@ class VTK_RENDERINGADDON2_EXPORT vtkInteractorStyleImage2D :
   static vtkInteractorStyleImage2D *New();
   vtkTypeRevisionMacro (vtkInteractorStyleImage2D, vtkInteractorStyleImage);
 
+  //BTX
+    enum InteractionTypeIds
+    {
+      InteractionTypeNull = 0,
+      InteractionTypeSlice,
+      InteractionTypeWindowLevel,
+      InteractionTypeZoom,
+      InteractionTypePan,
+    };
+    //ETX
+
+    vtkSetClampMacro (LeftButtonInteraction, unsigned int, InteractionTypeSlice, InteractionTypePan);
+    vtkGetMacro (LeftButtonInteraction, unsigned int);
+    vtkSetClampMacro (RightButtonInteraction, unsigned int, InteractionTypeSlice, InteractionTypePan);
+    vtkGetMacro (RightButtonInteraction, unsigned int);
+    vtkSetClampMacro (MiddleButtonInteraction, unsigned int, InteractionTypeSlice, InteractionTypePan);
+    vtkGetMacro (MiddleButtonInteraction, unsigned int);
+    vtkSetClampMacro (WheelButtonInteraction, unsigned int, InteractionTypeSlice, InteractionTypePan);
+    vtkGetMacro (WheelButtonInteraction, unsigned int);
+
   virtual void OnMouseMove();
   virtual void OnLeftButtonDown();
   virtual void OnLeftButtonUp();
@@ -89,7 +109,9 @@ class VTK_RENDERINGADDON2_EXPORT vtkInteractorStyleImage2D :
   virtual void OnRightButtonUp();
   virtual void OnMouseWheelForward();
   virtual void OnMouseWheelBackward();
+
   virtual void OnChar();
+  virtual void OnKeyDown();
   virtual void OnKeyUp();
   virtual void OnKeyPress();
   virtual void OnKeyRelease();
@@ -97,6 +119,8 @@ class VTK_RENDERINGADDON2_EXPORT vtkInteractorStyleImage2D :
   virtual void StartSliceMove();
   virtual void SliceMove();
   virtual void EndSliceMove();
+
+  virtual void DefaultMoveAction();
 
 
   vtkGetMacro( SliceStep, int );
@@ -114,6 +138,11 @@ class VTK_RENDERINGADDON2_EXPORT vtkInteractorStyleImage2D :
 
   vtkInteractorStyleImage2D(const vtkInteractorStyleImage2D&);  // Not implemented.
   void operator=(const vtkInteractorStyleImage2D&);  // Not implemented.
+
+  unsigned int LeftButtonInteraction;
+  unsigned int RightButtonInteraction;
+  unsigned int MiddleButtonInteraction;
+  unsigned int WheelButtonInteraction;
 
 };
 
