@@ -278,6 +278,14 @@ void QGoImageView3D::Update()
   View3->SetViewConvention( vtkViewImage2D::VIEW_CONVENTION_NEUROLOGICAL );
   View3->SetViewOrientation( vtkViewImage2D::VIEW_ORIENTATION_SAGITTAL );
 
+  //TEMP SOLUTION ///////////////////////////////////////////////////
+  vtkCamera *camera2 = View3->GetRenderer()->GetActiveCamera();
+      camera2->Roll( -90 );
+
+      View3->GetRenderer()->SetActiveCamera( camera2 );
+      View3->ResetCamera();
+   //////////////////////////////////////////////////////////////////
+
   this->View3D->Add2DPhantom(
     2, View3->GetImageActor(), View3->GetSlicePlane() );
 
