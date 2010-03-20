@@ -112,6 +112,7 @@ void vtkInteractorStyleImage2D::OnMouseMove()
 	      case VTKIS_SLICE_MOVE:
 		this->SliceMove();
 		this->InvokeEvent(vtkViewImage2DCommand::SliceMoveEvent, this);
+		this->InvokeEvent(vtkViewImage2DCommand::InteractionEvent, this);
 	        break;
 	      case VTKIS_PAN:
 	    	  this->InvokeEvent(vtkViewImage2DCommand::PanEvent);
@@ -131,6 +132,8 @@ void vtkInteractorStyleImage2D::OnMouseMove()
 		this->Superclass::OnMouseMove();
 		break;
 	  }
+
+	  this->InvokeEvent(vtkViewImage2DCommand::InteractionEvent, this);
 }
 
 
