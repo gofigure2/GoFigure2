@@ -794,33 +794,40 @@ void vtkViewImage2D::InstallPipeline()
 
   if( this->Interactor )
     {
-    if( !this->InteractorStyle)
+
+  switch(this->GetInteractorStyleType())
       {
-      this->InteractorStyle = vtkInteractorStyleImage2D::New();
-      this->Interactor->SetInteractorStyle(this->InteractorStyle);
-      if( !this->IsColor )
-        {
-        this->InteractorStyle->AddObserver(
-          vtkCommand::StartWindowLevelEvent, this->Command);
-        this->InteractorStyle->AddObserver(
-          vtkCommand::WindowLevelEvent, this->Command);
-        }
-      this->InteractorStyle->AddObserver(
-        vtkCommand::KeyPressEvent, this->Command);
-      this->InteractorStyle->AddObserver(
-        vtkViewImage2DCommand::StartSliceMoveEvent, this->Command);
-      this->InteractorStyle->AddObserver(
-        vtkViewImage2DCommand::SliceMoveEvent, this->Command);
-      this->InteractorStyle->AddObserver(
-        vtkViewImage2DCommand::EndSliceMoveEvent, this->Command);
-      this->InteractorStyle->AddObserver(
-        vtkViewImage2DCommand::ResetViewerEvent, this->Command);
-      this->InteractorStyle->AddObserver(
-        vtkViewImage2DCommand::ZoomEvent, this->Command);
-      this->InteractorStyle->AddObserver(
-        vtkViewImage2DCommand::PanEvent, this->Command);
-      this->InteractorStyle->AddObserver( vtkCommand::InteractionEvent,
-        this->Command);
+  	case vtkViewImage2D::INTERACTOR_STYLE_NAVIGATION:
+  	  if (!this->InteractorStyle)
+  	  {
+  	      this->InteractorStyle = vtkInteractorStyleImage2D::New();
+  	      this->Interactor->SetInteractorStyle(this->InteractorStyle);
+  	      if( !this->IsColor )
+  	        {
+  	        this->InteractorStyle->AddObserver(
+  	          vtkCommand::StartWindowLevelEvent, this->Command);
+  	        this->InteractorStyle->AddObserver(
+  	          vtkCommand::WindowLevelEvent, this->Command);
+  	        }
+  	      this->InteractorStyle->AddObserver(
+  	        vtkCommand::KeyPressEvent, this->Command);
+  	      this->InteractorStyle->AddObserver(
+  	        vtkViewImage2DCommand::StartSliceMoveEvent, this->Command);
+  	      this->InteractorStyle->AddObserver(
+  	        vtkViewImage2DCommand::SliceMoveEvent, this->Command);
+  	      this->InteractorStyle->AddObserver(
+  	        vtkViewImage2DCommand::EndSliceMoveEvent, this->Command);
+  	      this->InteractorStyle->AddObserver(
+  	        vtkViewImage2DCommand::ResetViewerEvent, this->Command);
+  	      this->InteractorStyle->AddObserver(
+  	        vtkViewImage2DCommand::ZoomEvent, this->Command);
+  	      this->InteractorStyle->AddObserver(
+  	        vtkViewImage2DCommand::PanEvent, this->Command);
+  	      this->InteractorStyle->AddObserver( vtkCommand::InteractionEvent,
+  	        this->Command);
+  	  }
+	  	  this->InteractorStyleSwitcher = this->InteractorStyle;
+  	  break;
       }
 
     this->Interactor->SetInteractorStyle(this->InteractorStyle);
