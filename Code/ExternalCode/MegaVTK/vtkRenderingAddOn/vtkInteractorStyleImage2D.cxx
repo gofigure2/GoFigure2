@@ -95,53 +95,54 @@ vtkInteractorStyleImage2D::vtkInteractorStyleImage2D()
   this->MiddleButtonInteraction = InteractionTypePan;
   this->WheelButtonInteraction = InteractionTypeSlice;
 }
+//----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------
 vtkInteractorStyleImage2D::~vtkInteractorStyleImage2D()
 {
   delete[] this->RequestedPosition;
 }
+//----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------
 void vtkInteractorStyleImage2D::OnMouseMove()
 {
-	  this->DefaultMoveAction();
+  this->DefaultMoveAction();
 
-	  switch (this->State)
-	  {
-	      case VTKIS_SLICE_MOVE:
-		this->SliceMove();
-		this->InvokeEvent(vtkViewImage2DCommand::SliceMoveEvent, this);
-		this->InvokeEvent(vtkViewImage2DCommand::InteractionEvent, this);
-	        break;
-	      case VTKIS_PAN:
-	    	  this->InvokeEvent(vtkViewImage2DCommand::PanEvent);
-	    	      break;
-	      case VTKIS_SPIN:
-	      case VTKIS_ROTATE:
-	      case VTKIS_DOLLY:
-	      case VTKIS_ZOOM:
-	    	  this->InvokeEvent(vtkViewImage2DCommand::ZoomEvent);
-	    	      break;
-	      case VTKIS_FORWARDFLY:
-	      case VTKIS_REVERSEFLY:
-		this->InvokeEvent(vtkViewImage2DCommand::CameraMoveEvent, this);
-		this->Superclass::OnMouseMove();
-		break;
-	      default:
-		this->Superclass::OnMouseMove();
-		break;
-	  }
+  switch (this->State)
+  {
+    case VTKIS_SLICE_MOVE:
+      this->SliceMove();
+      this->InvokeEvent(vtkViewImage2DCommand::SliceMoveEvent, this);
+      break;
+    case VTKIS_PAN:
+      this->InvokeEvent(vtkViewImage2DCommand::PanEvent);
+      break;
+    case VTKIS_SPIN:
+    case VTKIS_ROTATE:
+    case VTKIS_DOLLY:
+    case VTKIS_ZOOM:
+      this->InvokeEvent(vtkViewImage2DCommand::ZoomEvent);
+      break;
+    case VTKIS_FORWARDFLY:
+    case VTKIS_REVERSEFLY:
+      this->InvokeEvent(vtkViewImage2DCommand::CameraMoveEvent, this);
+      break;
+    default:
+      this->Superclass::OnMouseMove();
+    break;
+  }
 
-	  this->InvokeEvent(vtkViewImage2DCommand::InteractionEvent, this);
+  //Update image information (pixel position and value)
+  this->InvokeEvent(vtkViewImage2DCommand::InteractionEvent, this);
 }
-
+//----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------
 void vtkInteractorStyleImage2D::OnLeftButtonDown()
 {
   int x = this->Interactor->GetEventPosition()[0];
-  int y = this->Interactor->GetEventPosition()[1];  
+  int y = this->Interactor->GetEventPosition()[1];
   this->FindPokedRenderer(x, y);
 
   if (this->Interactor->GetRepeatCount())
@@ -155,65 +156,71 @@ void vtkInteractorStyleImage2D::OnLeftButtonDown()
   if (this->Interactor->GetShiftKey() || this->Interactor->GetControlKey()) 
   {
     if (this->GetLeftButtonInteraction() == InteractionTypeWindowLevel)
-      this->StartSliceMove();
+     {
+       this->StartSliceMove();
+     }
   }
   else
   {
     switch(this->GetLeftButtonInteraction())
     {
-	case InteractionTypeSlice:
-	  this->RequestedPosition[0] = x;
-	  this->RequestedPosition[1] = y;
-	  this->InvokeEvent (vtkViewImage2DCommand::RequestedPositionEvent);
-	  this->StartSliceMove();
-	  break;
-	case InteractionTypeWindowLevel:
-	  this->Superclass::OnLeftButtonDown();
-	  break;
-	case InteractionTypeZoom:
-		this->Superclass::OnRightButtonDown();
-			  this->InvokeEvent(vtkViewImage2DCommand::ZoomEvent);
-	  break;
-	case InteractionTypePan:
-		this->Superclass::OnMiddleButtonDown();
-			  this->InvokeEvent(vtkViewImage2DCommand::PanEvent);
-	  break;
-	default:
-	  break;
+      case InteractionTypeSlice:
+        this->RequestedPosition[0] = x;
+        this->RequestedPosition[1] = y;
+        this->InvokeEvent (vtkViewImage2DCommand::RequestedPositionEvent);
+        this->StartSliceMove();
+        break;
+      case InteractionTypeWindowLevel:
+        break;
+      case InteractionTypeZoom:
+        this->InvokeEvent(vtkViewImage2DCommand::ZoomEvent);
+        break;
+      case InteractionTypePan:
+        this->InvokeEvent(vtkViewImage2DCommand::PanEvent);
+        break;
+      default:
+        this->Superclass::OnLeftButtonDown();
+        break;
     }
   }
-}
 
+  // Call parent to handle all other states and perform additional work
+  this->Superclass::OnLeftButtonDown();
+
+}
+//----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------
 void vtkInteractorStyleImage2D::OnLeftButtonUp()
 {
-	  switch (this->State)
-	  {
-	      case VTKIS_SLICE_MOVE:
-	        this->EndSliceMove();
-	        break;
+  switch (this->State)
+  {
+    case VTKIS_SLICE_MOVE:
+      this->EndSliceMove();
+      break;
+    default:
+      break;
+  }
 
-	      default:
-		break;
-	  }
+  switch (this->LeftButtonInteraction)
+  {
+    case InteractionTypeSlice :
+      break;
+    case InteractionTypeZoom :
+      break;
+    case InteractionTypePan :
+      break;
+    case InteractionTypeWindowLevel :
+      break;
+    default:
+      this->Superclass::OnLeftButtonUp();
+      break;
+  }
 
-	  switch (this->LeftButtonInteraction)
-	  {
-	      case InteractionTypeSlice :
-		break;
-	      case InteractionTypeZoom :
-		this->Superclass::OnRightButtonUp();
-		break;
-	      case InteractionTypePan :
-		this->Superclass::OnMiddleButtonUp();
-		break;
-	      case InteractionTypeWindowLevel :
-	      default:
-		this->Superclass::OnLeftButtonUp();
-		break;
-	  }
+  // Call parent to handle all other states and perform additional work
+  this->Superclass::OnLeftButtonUp();
 }
+//----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------
 void vtkInteractorStyleImage2D::OnMiddleButtonDown()
@@ -226,184 +233,195 @@ void vtkInteractorStyleImage2D::OnMiddleButtonDown()
   if (this->Interactor->GetShiftKey() || this->Interactor->GetControlKey())
   {
     if (this->GetLeftButtonInteraction() == InteractionTypeWindowLevel)
+    {
       this->StartSliceMove();
+    }
   }
   else
   {
     switch(this->GetMiddleButtonInteraction())
     {
-	case InteractionTypeSlice:
-	  this->RequestedPosition[0] = x;
-	  this->RequestedPosition[1] = y;
-	  this->InvokeEvent (vtkViewImage2DCommand::RequestedPositionEvent);
-	  this->StartSliceMove();
-	  break;
-	case InteractionTypeWindowLevel:
-	  this->Superclass::OnLeftButtonDown();
-	  break;
-	case InteractionTypeZoom:
-	  this->Superclass::OnRightButtonDown();
-	  this->InvokeEvent(vtkViewImage2DCommand::ZoomEvent);
-	  break;
-	case InteractionTypePan:
-	  this->Superclass::OnMiddleButtonDown();
-	  this->InvokeEvent(vtkViewImage2DCommand::PanEvent);
-	  break;
-	default:
-	  break;
+      case InteractionTypeSlice:
+        this->RequestedPosition[0] = x;
+        this->RequestedPosition[1] = y;
+        this->InvokeEvent (vtkViewImage2DCommand::RequestedPositionEvent);
+        this->StartSliceMove();
+        break;
+      case InteractionTypeWindowLevel:
+        break;
+      case InteractionTypeZoom:
+        this->InvokeEvent(vtkViewImage2DCommand::ZoomEvent);
+        break;
+      case InteractionTypePan:
+        this->InvokeEvent(vtkViewImage2DCommand::PanEvent);
+        break;
+      default:
+        this->Superclass::OnMiddleButtonDown();
+        break;
     }
   }
 
+  // Call parent to handle all other states and perform additional work
+  this->Superclass::OnMiddleButtonDown();
 }
+//----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------
 void vtkInteractorStyleImage2D::OnMiddleButtonUp()
 {
-	  switch (this->State)
-	  {
-	      case VTKIS_SLICE_MOVE:
-	        this->EndSliceMove();
-	        break;
+  switch (this->State)
+  {
+    case VTKIS_SLICE_MOVE:
+      this->EndSliceMove();
+      break;
+    default:
+      break;
+  }
 
-	      default:
-		break;
-	  }
+  switch (this->MiddleButtonInteraction)
+  {
+    case InteractionTypeSlice :
+      break;
+    case InteractionTypeZoom :
+      break;
+    case InteractionTypePan :
+      break;
+    case InteractionTypeWindowLevel :
+    default:
+      this->Superclass::OnMiddleButtonUp();
+      break;
+  }
 
-	  switch (this->MiddleButtonInteraction)
-	  {
-	      case InteractionTypeSlice :
-		break;
-	      case InteractionTypeZoom :
-		this->Superclass::OnRightButtonUp();
-		break;
-	      case InteractionTypePan :
-		this->Superclass::OnMiddleButtonUp();
-		break;
-	      case InteractionTypeWindowLevel :
-	      default:
-		this->Superclass::OnLeftButtonUp();
-		break;
-	  }
+  // Call parent to handle all other states and perform additional work
+  this->Superclass::OnMiddleButtonUp();
 }
+//----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------
 void vtkInteractorStyleImage2D::OnRightButtonDown()
 {
-	  switch(this->GetRightButtonInteraction())
-	  {
-	      case InteractionTypeSlice:
-		this->StartSliceMove();
-		break;
-	      case InteractionTypeWindowLevel:
-		this->Superclass::OnLeftButtonDown();
-		break;
-	      case InteractionTypeZoom:
-	    	  this->Superclass::OnRightButtonDown();
-	    	  	  this->InvokeEvent(vtkViewImage2DCommand::ZoomEvent);
-		break;
+  switch(this->GetRightButtonInteraction())
+  {
+    case InteractionTypeSlice:
+      this->StartSliceMove();
+      break;
+    case InteractionTypeWindowLevel:
+      break;
+    case InteractionTypeZoom:
+      this->InvokeEvent(vtkViewImage2DCommand::ZoomEvent);
+      break;
+    case InteractionTypePan:
+      this->InvokeEvent(vtkViewImage2DCommand::PanEvent);
+      break;
+    default:
+    this->Superclass::OnRightButtonDown();
+      break;
+  }
 
-	      case InteractionTypePan:
-		this->Superclass::OnMiddleButtonDown();
-		this->InvokeEvent(vtkViewImage2DCommand::PanEvent);
-		break;
-	      default:
-		break;
-	  }
+  // Call parent to handle all other states and perform additional work
+  this->Superclass::OnRightButtonDown();
 }
+//----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------
 void vtkInteractorStyleImage2D::OnRightButtonUp()
 {
-	  switch (this->State)
-	  {
-	      case VTKIS_SLICE_MOVE:
-	        this->EndSliceMove();
-	        break;
-	      default:
-		break;
-	  }
+  switch (this->State)
+  {
+    case VTKIS_SLICE_MOVE:
+      this->EndSliceMove();
+      break;
+    default:
+      break;
+  }
 
-	  switch (this->RightButtonInteraction)
-	  {
-	      case InteractionTypeSlice :
-		break;
-	      case InteractionTypePan :
-		this->Superclass::OnMiddleButtonUp();
-		break;
-	      case InteractionTypeWindowLevel :
-		this->Superclass::OnLeftButtonUp();
-		break;
-	      case InteractionTypeZoom :
-	      default:
-		this->Superclass::OnRightButtonUp();
-		break;
-	  }
+  switch (this->RightButtonInteraction)
+  {
+    case InteractionTypeSlice :
+      break;
+    case InteractionTypePan :
+      break;
+    case InteractionTypeWindowLevel :
+      break;
+    case InteractionTypeZoom :
+    default:
+      this->Superclass::OnRightButtonUp();
+      break;
+  }
+
+  // Call parent to handle all other states and perform additional work
+  this->Superclass::OnRightButtonUp();
 }
+//----------------------------------------------------------------------------
 
+//----------------------------------------------------------------------------
 void
 vtkInteractorStyleImage2D::OnMouseWheelForward()
 {
 
-	  int x = this->Interactor->GetEventPosition()[0];
-	  int y = this->Interactor->GetEventPosition()[1];
+  int x = this->Interactor->GetEventPosition()[0];
+  int y = this->Interactor->GetEventPosition()[1];
 
-	  this->FindPokedRenderer(x, y);
-	  if ( !this->CurrentRenderer )
-	    return;
+  this->FindPokedRenderer(x, y);
+  if ( !this->CurrentRenderer )
+  {
+    return;
+  }
 
-	  switch(this->GetWheelButtonInteraction())
-	  {
-	      case InteractionTypeSlice:
-	    	  this->StartSliceMove();
-	    	    this->SliceStep = static_cast< int >( this->MouseWheelMotionFactor );
-	    	    this->SliceMove();
-	    	    this->EndSliceMove();
-		break;
-	      case InteractionTypeWindowLevel:
-		this->Superclass::OnMouseWheelForward();
-		break;
-	      case InteractionTypeZoom:
-		this->Superclass::OnMouseWheelForward();
-		break;
-	      case InteractionTypePan:
-		this->Superclass::OnMouseWheelForward();
-		break;
-	      default:
-		break;
-	  }
+  switch(this->GetWheelButtonInteraction())
+  {
+    case InteractionTypeSlice:
+      this->StartSliceMove();
+      this->SliceStep = static_cast< int >( this->MouseWheelMotionFactor );
+      this->SliceMove();
+      this->EndSliceMove();
+      break;
+    case InteractionTypeWindowLevel:
+      break;
+    case InteractionTypeZoom:
+      break;
+    case InteractionTypePan:
+      break;
+    default:
+      this->Superclass::OnMouseWheelForward();
+      break;
+  }
 }
+//----------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------
 void
 vtkInteractorStyleImage2D::OnMouseWheelBackward()
 {
-	  int x = this->Interactor->GetEventPosition()[0];
-	  int y = this->Interactor->GetEventPosition()[1];
+  int x = this->Interactor->GetEventPosition()[0];
+  int y = this->Interactor->GetEventPosition()[1];
 
-	  this->FindPokedRenderer(x, y);
-	  if ( !this->CurrentRenderer )
-	    return;
+  this->FindPokedRenderer(x, y);
+  if ( !this->CurrentRenderer )
+  {
+    return;
+  }
 
-	  switch(this->GetWheelButtonInteraction())
-	  {
-	      case InteractionTypeSlice:
-	    	  //Dont have to select window
-	    	  this->StartSliceMove();
-	    	    this->SliceStep = static_cast< int >( -this->MouseWheelMotionFactor );
-	    	    this->SliceMove();
-	    	    this->EndSliceMove();
-		break;
-	      case InteractionTypeWindowLevel:
-		this->Superclass::OnMouseWheelBackward();
-		break;
-	      case InteractionTypeZoom:
-		this->Superclass::OnMouseWheelBackward();
-		break;
-	      case InteractionTypePan:
-		this->Superclass::OnMouseWheelBackward();
-		break;
-	      default:
-		break;
-	  }
+  switch(this->GetWheelButtonInteraction())
+  {
+    case InteractionTypeSlice:
+      this->StartSliceMove();
+      this->SliceStep = static_cast< int >( -this->MouseWheelMotionFactor );
+      this->SliceMove();
+      this->EndSliceMove();
+      break;
+    case InteractionTypeWindowLevel:
+      break;
+    case InteractionTypeZoom:
+      break;
+    case InteractionTypePan:
+      break;
+    default:
+      this->Superclass::OnMouseWheelBackward();
+      break;
+  }
 }
+//----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------
 void vtkInteractorStyleImage2D::OnChar()
@@ -412,20 +430,18 @@ void vtkInteractorStyleImage2D::OnChar()
 
   if (!strcmp (rwi->GetKeySym(),"Up"))
   {
-	  std::cout<<"Key UP"<<std::endl;
-	  this->SliceStep = 1;
-	  this->StartSliceMove();
-	  	    	    this->SliceStep = static_cast< int >( -this->MouseWheelMotionFactor );
-	  	    	    this->SliceMove();
-	  	    	    this->EndSliceMove();
+    this->SliceStep = 1;
+    this->StartSliceMove();
+    this->SliceStep = static_cast< int >( -this->MouseWheelMotionFactor );
+    this->SliceMove();
+    this->EndSliceMove();
   }
   else if(!strcmp (rwi->GetKeySym(),"Down"))
   {
-	  std::cout<<"Key DOWN"<<std::endl;
-	  this->SliceStep = -1;
-	      this->StartSliceMove();
-	      this->SliceMove();
-	      this->EndSliceMove();
+    this->SliceStep = -1;
+    this->StartSliceMove();
+    this->SliceMove();
+    this->EndSliceMove();
   }
   else if ((rwi->GetKeyCode() == 'r') || (rwi->GetKeyCode() == 'R'))
   {
@@ -438,6 +454,7 @@ void vtkInteractorStyleImage2D::OnChar()
 
   this->Superclass::OnChar();
 }
+//----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------
 void vtkInteractorStyleImage2D::OnKeyUp()
@@ -470,18 +487,21 @@ void vtkInteractorStyleImage2D::OnKeyUp()
 
   this->Superclass::OnKeyUp();
 }
+//----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------
 void vtkInteractorStyleImage2D::OnKeyPress()
 {
   this->Superclass::OnKeyPress();
 }
+//----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------
 void vtkInteractorStyleImage2D::OnKeyRelease()
 {
   this->Superclass::OnKeyRelease();
 }
+//----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------
 void
@@ -494,6 +514,7 @@ vtkInteractorStyleImage2D::StartSliceMove()
   this->StartState(VTKIS_SLICE_MOVE);
   this->InvokeEvent(vtkViewImage2DCommand::StartSliceMoveEvent, this);
 }
+//----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------
 void
@@ -506,6 +527,7 @@ vtkInteractorStyleImage2D::EndSliceMove()
   this->StopState();
   this->InvokeEvent(vtkViewImage2DCommand::EndSliceMoveEvent, this);
 }
+//----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------
 void
@@ -518,6 +540,8 @@ vtkInteractorStyleImage2D::SliceMove()
   this->InvokeEvent(vtkViewImage2DCommand::SliceMoveEvent, this);
 }
 //----------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------
 void vtkInteractorStyleImage2D::OnKeyDown(void)
 {
   // Apparently there is a problem here.
@@ -528,6 +552,8 @@ void vtkInteractorStyleImage2D::OnKeyDown(void)
   this->OnChar();
   this->Superclass::OnKeyDown();
 }
+//----------------------------------------------------------------------------
+
 //----------------------------------------------------------------------------
 void vtkInteractorStyleImage2D::DefaultMoveAction()
 {
