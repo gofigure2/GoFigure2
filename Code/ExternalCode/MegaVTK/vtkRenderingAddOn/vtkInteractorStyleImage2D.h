@@ -91,13 +91,13 @@ class VTK_RENDERINGADDON2_EXPORT vtkInteractorStyleImage2D :
     };
     //ETX
 
-    vtkSetClampMacro (LeftButtonInteraction, unsigned int, InteractionTypeSlice, InteractionTypePan);
+    vtkSetMacro (LeftButtonInteraction, unsigned int);
     vtkGetMacro (LeftButtonInteraction, unsigned int);
-    vtkSetClampMacro (RightButtonInteraction, unsigned int, InteractionTypeSlice, InteractionTypePan);
+    vtkSetMacro (RightButtonInteraction, unsigned int);
     vtkGetMacro (RightButtonInteraction, unsigned int);
-    vtkSetClampMacro (MiddleButtonInteraction, unsigned int, InteractionTypeSlice, InteractionTypePan);
+    vtkSetMacro (MiddleButtonInteraction, unsigned int)
     vtkGetMacro (MiddleButtonInteraction, unsigned int);
-    vtkSetClampMacro (WheelButtonInteraction, unsigned int, InteractionTypeSlice, InteractionTypePan);
+    vtkSetMacro (WheelButtonInteraction, unsigned int);
     vtkGetMacro (WheelButtonInteraction, unsigned int);
 
   virtual void OnMouseMove();

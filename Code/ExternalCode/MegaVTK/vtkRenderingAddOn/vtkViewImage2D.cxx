@@ -241,9 +241,8 @@ void vtkViewImage2D::SetViewConvention(int convention)
 //----------------------------------------------------------------------------
 void vtkViewImage2D::SetShowAnnotations( const bool& val )
 {
-  this->ShowAnnotations = val;
-  this->CornerAnnotation->SetVisibility(val);
-  this->OrientationAnnotation->SetVisibility(val);
+  this->Superclass::SetShowAnnotations (val);
+  this->OrientationAnnotation->SetVisibility (val);
 }
 
 //----------------------------------------------------------------------------
