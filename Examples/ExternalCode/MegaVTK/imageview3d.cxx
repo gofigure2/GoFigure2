@@ -2,8 +2,6 @@
 #include "vtkImageActor.h"
 #include "vtkRenderWindowInteractor.h"
 
-#include "vtkSmartPointer.h"
-
 #include "vtkViewImage2D.h"
 #include "vtkViewImage3D.h"
 
@@ -17,35 +15,35 @@ int main( int argc, char** argv )
     return EXIT_FAILURE;
     }
 
-  vtkSmartPointer< vtkMetaImageReader > reader = vtkSmartPointer< vtkMetaImageReader >::New();
+  vtkMetaImageReader* reader = vtkMetaImageReader::New();
   reader->SetFileName( argv[1] );
   reader->Update();
 
   vtkImageData* image = reader->GetOutput();
 
-  vtkSmartPointer< vtkViewImage2D > view = vtkSmartPointer< vtkViewImage2D >::New();
-  vtkSmartPointer< vtkRenderWindowInteractor > iren = vtkSmartPointer< vtkRenderWindowInteractor >::New();
+  vtkViewImage2D* view = vtkViewImage2D::New();
+  vtkRenderWindowInteractor* iren = vtkRenderWindowInteractor::New();
   view->SetupInteractor(iren);
   view->SetInput (image);
   view->SetViewOrientation (vtkViewImage2D::VIEW_ORIENTATION_AXIAL);
   view->Render();
 
-  vtkSmartPointer< vtkViewImage2D > view2 = vtkSmartPointer< vtkViewImage2D >::New();
-  vtkSmartPointer< vtkRenderWindowInteractor > iren2 = vtkSmartPointer< vtkRenderWindowInteractor >::New();
+  vtkViewImage2D* view2 = vtkViewImage2D::New();
+  vtkRenderWindowInteractor* iren2 = vtkRenderWindowInteractor::New();
   view2->SetupInteractor(iren2);
   view2->SetInput (image);
   view2->SetViewOrientation (vtkViewImage2D::VIEW_ORIENTATION_CORONAL);
   view2->Render();
 
-  vtkSmartPointer< vtkViewImage2D > view3 = vtkSmartPointer< vtkViewImage2D >::New();
-  vtkSmartPointer< vtkRenderWindowInteractor > iren3 = vtkSmartPointer< vtkRenderWindowInteractor >::New();
+  vtkViewImage2D* view3 = vtkViewImage2D::New();
+  vtkRenderWindowInteractor* iren3 = vtkRenderWindowInteractor::New();
   view3->SetupInteractor(iren3);
   view3->SetInput (image);
   view3->SetViewOrientation (vtkViewImage2D::VIEW_ORIENTATION_SAGITTAL);
   view3->Render();
 
-  vtkSmartPointer< vtkViewImage3D > view3d = vtkSmartPointer< vtkViewImage3D >::New();
-  vtkSmartPointer< vtkRenderWindowInteractor > iren3d = vtkSmartPointer< vtkRenderWindowInteractor >::New();
+  vtkViewImage3D* view3d = vtkViewImage3D::New();
+  vtkRenderWindowInteractor* iren3d = vtkRenderWindowInteractor::New();
   view3d->SetupInteractor(iren3d);
   view3d->Add2DPhantom( 0, view->GetImageActor() );
   view3d->Add2DPhantom( 1, view2->GetImageActor() );
@@ -63,6 +61,18 @@ int main( int argc, char** argv )
     {
     iren3d->Start();
     }
+
+  iren3->Delete();
+  iren2->Delete();
+  iren->Delete();
+  iren3d->Delete();
+
+  view3->Delete();
+  view2->Delete();
+  view->Delete();
+
+  view3d->Delete();
+  reader->Delete();
 
   return EXIT_SUCCESS;
 }

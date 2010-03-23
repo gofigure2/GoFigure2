@@ -3,8 +3,6 @@
 #include "vtkViewImage2D.h"
 #include "vtkRenderWindowInteractor.h"
 
-#include "vtkSmartPointer.h"
-
 int main( int argc, char** argv )
 {
   if( argc != 3 )
@@ -15,14 +13,13 @@ int main( int argc, char** argv )
     return EXIT_FAILURE;
     }
 
-  vtkSmartPointer< vtkPNGReader > reader = vtkSmartPointer< vtkPNGReader >::New();
+  vtkPNGReader* reader = vtkPNGReader::New();
   reader->SetFileName( argv[1] );
   reader->Update();
 
-  vtkSmartPointer< vtkViewImage2D > view = vtkSmartPointer< vtkViewImage2D >::New();
+  vtkViewImage2D* view = vtkViewImage2D::New();
 
-  vtkSmartPointer< vtkRenderWindowInteractor > iren =
-    vtkSmartPointer< vtkRenderWindowInteractor >::New();
+  vtkRenderWindowInteractor* iren = vtkRenderWindowInteractor::New();
   view->SetupInteractor(iren);
 
   view->SetInput( reader->GetOutput() );
@@ -37,6 +34,10 @@ int main( int argc, char** argv )
     {
     iren->Start();
     }
+
+  view->Delete();
+  iren->Delete();
+  reader->Delete();
 
   return EXIT_SUCCESS;
 }
