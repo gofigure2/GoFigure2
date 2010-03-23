@@ -772,9 +772,8 @@ void QGoTabImageView3DwT::CreateModeActions()
   group->addAction( DefaultAction );
 
   this->m_ModeActions.push_back( DefaultAction );
-  /** \todo implement default mode*/
-  //QObject::connect( DefaultAction, SIGNAL( triggered() ),
-   // this, SLOT( DefaultMode() ) );
+  QObject::connect( DefaultAction, SIGNAL( triggered() ),
+    this, SLOT( DefaultMode() ) );
 
   QAction* ZoomAction = new QAction( tr( "Zoom" ), this );
   ZoomAction->setCheckable( true );
@@ -788,9 +787,23 @@ void QGoTabImageView3DwT::CreateModeActions()
   group->addAction( ZoomAction );
 
   this->m_ModeActions.push_back( ZoomAction );
-    /** \todo implement default mode*/
   QObject::connect( ZoomAction, SIGNAL( triggered() ),
     this, SLOT( ZoomMode() ) );
+
+  QAction* PanAction = new QAction( tr( "Pan" ), this );
+  PanAction->setCheckable( true );
+  PanAction->setChecked(false);
+
+  QIcon PanIcon;
+  //DefaultIcon.addPixmap( QPixmap(QString::fromUtf8(":/fig/mouse-cursor.png")),
+  //  QIcon::Normal, QIcon::Off );
+  PanAction->setIcon( PanIcon );
+
+  group->addAction( PanAction );
+
+  this->m_ModeActions.push_back( PanAction );
+  QObject::connect( PanAction, SIGNAL( triggered() ),
+    this, SLOT( PanMode() ) );
 
 }
 //-------------------------------------------------------------------------
@@ -2579,7 +2592,15 @@ SetSliceView()
   m_VideoRecorderWidget->SetCurrentZ( this->GetSliceViewXY() );
   m_VideoRecorderWidget->SetCurrentT( this->GetTimePoint() );
 }
+//-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+DefaultMode()
+{
+  m_ImageView->DefaultMode();
+}
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -2587,5 +2608,14 @@ void
 QGoTabImageView3DwT::
 ZoomMode()
 {
-std::cout<< "in zoom mode" << std::endl;
+  m_ImageView->ZoomMode();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+PanMode()
+{
+  m_ImageView->PanMode();
 }

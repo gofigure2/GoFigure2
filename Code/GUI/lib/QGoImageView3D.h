@@ -54,6 +54,8 @@
 
 #include <map>
 
+#include "vtkInteractorStyleImage2D.h"
+
 
 class QVTKWidget;
 class vtkEventQtSlotConnect;
@@ -125,6 +127,12 @@ public:
   void ShowSplinePlane();
   void ShowCube3D();
   void UpdateRenderWindows();
+
+  void SetDefaultInteractionStyle( vtkViewImage2D&);
+  void DefaultMode();
+  void ZoomMode();
+  void PanMode();
+
 
 signals:
   void SliceViewXYChanged( int Slice );

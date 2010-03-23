@@ -251,6 +251,7 @@ void QGoImageView3D::Update()
   View1->SetInput( this->m_Image );
   View1->SetViewOrientation( vtkViewImage2D::VIEW_ORIENTATION_AXIAL );
   View1->SetViewConvention( vtkViewImage2D::VIEW_CONVENTION_NEUROLOGICAL );
+  //View1->SetLeftButtonInteractionStyle( vtkInteractorStyleImage2D::InteractionTypePan );
 
   this->View3D->Add2DPhantom( 0,
       View1->GetImageActor(), View1->GetSlicePlane() );
@@ -264,6 +265,7 @@ void QGoImageView3D::Update()
   View2->SetInput( this->m_Image );
   View2->SetViewConvention( vtkViewImage2D::VIEW_CONVENTION_NEUROLOGICAL );
   View2->SetViewOrientation (vtkViewImage2D::VIEW_ORIENTATION_CORONAL);
+  //View2->SetLeftButtonInteractionStyle( vtkInteractorStyleImage2D::InteractionTypePan );
 
   this->View3D->Add2DPhantom( 1,
     View2->GetImageActor(), View2->GetSlicePlane() );
@@ -277,6 +279,7 @@ void QGoImageView3D::Update()
   View3->SetInput( this->m_Image );
   View3->SetViewConvention( vtkViewImage2D::VIEW_CONVENTION_NEUROLOGICAL );
   View3->SetViewOrientation( vtkViewImage2D::VIEW_ORIENTATION_SAGITTAL );
+  //View3->SetLeftButtonInteractionStyle( vtkInteractorStyleImage2D::InteractionTypePan );
 
   //TEMP SOLUTION ///////////////////////////////////////////////////
   vtkCamera *camera2 = View3->GetRenderer()->GetActiveCamera();
@@ -1199,9 +1202,9 @@ UpdateRenderWindows()
   ren = this->View3D->GetRenderWindow();
   ren->Render();
 }
-
 //-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
 void
 QGoImageView3D::
 SetCamera( int iView )
@@ -1231,4 +1234,62 @@ SetCamera( int iView )
   this->View3D->Render();
   camera->Delete();
 }
+//-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
+void
+QGoImageView3D::
+DefaultMode()
+{
+  vtkViewImage2D* View1 = this->m_Pool->GetItem( 0 );
+  this->SetDefaultInteractionStyle( *View1 );
+
+  vtkViewImage2D* View2 = this->m_Pool->GetItem( 1 );
+  this->SetDefaultInteractionStyle( *View2 );
+
+  vtkViewImage2D* View3 = this->m_Pool->GetItem( 2 );
+  this->SetDefaultInteractionStyle( *View3 );
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoImageView3D::
+SetDefaultInteractionStyle(vtkViewImage2D& image)
+{
+  image.SetLeftButtonInteractionStyle( vtkInteractorStyleImage2D::InteractionTypeSlice );
+  image.SetMiddleButtonInteractionStyle( vtkInteractorStyleImage2D::InteractionTypePan );
+  image.SetRightButtonInteractionStyle( vtkInteractorStyleImage2D::InteractionTypeZoom );
+  image.SetWheelInteractionStyle( vtkInteractorStyleImage2D::InteractionTypeSlice );
+}
+//-------------------------------------------------------------------------
+void
+QGoImageView3D::
+ZoomMode()
+{
+	  vtkViewImage2D* View1 = this->m_Pool->GetItem( 0 );
+	  View1->SetInteractionStyle(vtkInteractorStyleImage2D::InteractionTypeZoom );
+
+	  vtkViewImage2D* View2 = this->m_Pool->GetItem( 1 );
+	  View2->SetInteractionStyle(vtkInteractorStyleImage2D::InteractionTypeZoom );
+
+	  vtkViewImage2D* View3 = this->m_Pool->GetItem( 2 );
+	  View3->SetInteractionStyle(vtkInteractorStyleImage2D::InteractionTypeZoom );
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoImageView3D::
+PanMode()
+{
+  vtkViewImage2D* View1 = this->m_Pool->GetItem( 0 );
+  View1->SetInteractionStyle(vtkInteractorStyleImage2D::InteractionTypePan );
+
+  vtkViewImage2D* View2 = this->m_Pool->GetItem( 1 );
+  View2->SetInteractionStyle(vtkInteractorStyleImage2D::InteractionTypePan );
+
+  vtkViewImage2D* View3 = this->m_Pool->GetItem( 2 );
+  View3->SetInteractionStyle(vtkInteractorStyleImage2D::InteractionTypePan );
+}
+//-------------------------------------------------------------------------

@@ -197,7 +197,10 @@ public slots:
   void DisplayCube();
   void TakeSnapshot();
   void SetSliceView();
+
+  void DefaultMode();
   void ZoomMode();
+  void PanMode();
 
 #if defined ( ENABLEFFMPEG ) || defined ( ENABLEAVI )
   void SetRendererWindow( int );
