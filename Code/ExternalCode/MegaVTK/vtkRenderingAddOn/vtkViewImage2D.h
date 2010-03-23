@@ -332,7 +332,7 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage2D : public vtkViewImage
        InteractionTypeZoom : changes the zoom level.
        InteractionTypePan : translate the view in-plane.
     */
-    void SetLeftButtonInteractionStyle (int arg)
+    void SetLeftButtonInteractionStyle (vtkInteractorStyleImage2D::InteractionTypeIds arg)
     {
       vtkInteractorStyleImage2D* t = vtkInteractorStyleImage2D::SafeDownCast (this->InteractorStyle);
       if (t)
@@ -346,7 +346,7 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage2D : public vtkViewImage
        InteractionTypeZoom : changes the zoom level.
        InteractionTypePan : translate the view in-plane.
      */
-     void SetRightButtonInteractionStyle (int arg)
+     void SetRightButtonInteractionStyle (vtkInteractorStyleImage2D::InteractionTypeIds arg)
      {
        vtkInteractorStyleImage2D* t = vtkInteractorStyleImage2D::SafeDownCast (this->InteractorStyle);
        if (t)
@@ -360,7 +360,7 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage2D : public vtkViewImage
           InteractionTypeZoom : changes the zoom level.
           InteractionTypePan : translate the view in-plane.
        */
-       void SetMiddleButtonInteractionStyle (int arg)
+       void SetMiddleButtonInteractionStyle (vtkInteractorStyleImage2D::InteractionTypeIds arg)
        {
          vtkInteractorStyleImage2D* t = vtkInteractorStyleImage2D::SafeDownCast (this->InteractorStyle);
          if (t)
@@ -374,7 +374,7 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage2D : public vtkViewImage
           InteractionTypeZoom : changes the zoom level.
           InteractionTypePan : translate the view in-plane.
        */
-       void SetWheelInteractionStyle (int arg)
+       void SetWheelInteractionStyle (vtkInteractorStyleImage2D::InteractionTypeIds arg)
        {
          vtkInteractorStyleImage2D* t = vtkInteractorStyleImage2D::SafeDownCast (this->InteractorStyle);
          if (t)
@@ -388,7 +388,7 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage2D : public vtkViewImage
           InteractionTypeZoom : changes the zoom level.
           InteractionTypePan : translate the view in-plane.
        */
-       void SetInteractionStyle (int arg)
+       void SetInteractionStyle (vtkInteractorStyleImage2D::InteractionTypeIds arg)
        {
          this->SetLeftButtonInteractionStyle (arg);
          this->SetRightButtonInteractionStyle (arg);

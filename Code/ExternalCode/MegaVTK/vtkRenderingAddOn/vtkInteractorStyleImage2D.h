@@ -87,17 +87,20 @@ class VTK_RENDERINGADDON2_EXPORT vtkInteractorStyleImage2D :
       InteractionTypeSlice,
       InteractionTypeWindowLevel,
       InteractionTypeZoom,
-      InteractionTypePan,
+      InteractionTypePan
     };
     //ETX
 
-    vtkSetMacro (LeftButtonInteraction, unsigned int);
+    void SetLeftButtonInteraction( InteractionTypeIds );
     vtkGetMacro (LeftButtonInteraction, unsigned int);
-    vtkSetMacro (RightButtonInteraction, unsigned int);
+
+    void SetRightButtonInteraction( InteractionTypeIds );
     vtkGetMacro (RightButtonInteraction, unsigned int);
-    vtkSetMacro (MiddleButtonInteraction, unsigned int)
+
+    void SetMiddleButtonInteraction( InteractionTypeIds );
     vtkGetMacro (MiddleButtonInteraction, unsigned int);
-    vtkSetMacro (WheelButtonInteraction, unsigned int);
+
+    void SetWheelButtonInteraction( InteractionTypeIds );
     vtkGetMacro (WheelButtonInteraction, unsigned int);
 
   virtual void OnMouseMove();
