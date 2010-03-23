@@ -643,7 +643,8 @@ GoDBTableWidgetContainer* GoDBCollectionOfTraces::GetLinkToUpdatedTraceContainer
 
 //--------------------------------------------------------------------------
 int GoDBCollectionOfTraces::CreateCollectionWithNoTraces(
-  vtkMySQLDatabase* DatabaseConnector, GoDBTraceRow iNewCollection)
+  vtkMySQLDatabase* DatabaseConnector, GoDBTraceRow iNewCollection,
+  int iTimePoint)
 {
   iNewCollection.SetField<unsigned int>("ImagingSessionID",this->m_ImgSessionID);
  
@@ -653,6 +654,10 @@ int GoDBCollectionOfTraces::CreateCollectionWithNoTraces(
   iNewCollection.SetField< int >( "CoordIDMax", CoordIDMax );
   iNewCollection.SetField< int >( "CoordIDMin", CoordIDMin );
 
+  if (this->m_CollectionName == "mesh")
+    {
+     SetTheTimePointForMesh(iTimePoint,iNewCollection, DatabaseConnector);
+    }
   return this->CreateNewCollection(DatabaseConnector,iNewCollection);    
 }
 //--------------------------------------------------------------------------
@@ -676,6 +681,24 @@ int GoDBCollectionOfTraces::GetCoordIDMaxForBoundingBoxWithNoTraces(
  // CoordIDMax correspond to the imagingsession Min:
   return FindOneID(iDatabaseConnector, "imagingsession", "CoordIDMin",
     "ImagingSessionID", ConvertToString<int>(this->m_ImgSessionID));
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void GoDBCollectionOfTraces::SetTheTimePointForMesh(int iTimePoint,
+  GoDBTraceRow & ioNewMesh, vtkMySQLDatabase* iDatabaseConnector)
+{
+  GoDBCoordinateRow Coordinate;
+  Coordinate.SetValuesForSpecificID(
+    atoi(ioNewMesh.GetMapValue("CoordIDMax").c_str()),iDatabaseConnector);
+  Coordinate.SetField<int>("TCoord",iTimePoint);
+  ioNewMesh.SetField<int>("CoordIDMax",Coordinate.SaveInDB(iDatabaseConnector));
+  Coordinate.SetValuesForSpecificID(
+    atoi(ioNewMesh.GetMapValue("CoordIDMin").c_str()),iDatabaseConnector);
+  Coordinate.SetField<int>("TCoord",iTimePoint);
+  Coordinate.SetField("CoordID","0");
+  int coord = Coordinate.SaveInDB(iDatabaseConnector);
+  ioNewMesh.SetField<int>("CoordIDMin",Coordinate.SaveInDB(iDatabaseConnector));
 }
 //--------------------------------------------------------------------------
 

@@ -1033,7 +1033,7 @@ SetLSMReader( vtkLSMReader* iReader, const int& iTimePoint )
     m_VisuDockWidget->SetTSlice( iTimePoint );
     if( m_TimePoint != iTimePoint ) 
       { 
-      SetTimePoint( iTimePoint ); 
+      SetTimePoint( iTimePoint );  
       } 
 
 #if defined( ENABLEFFMPEG ) || defined( ENABLEAVI )
@@ -1296,6 +1296,10 @@ SetTimePoint( const int& iTimePoint )
         {
         SetTimePointWithMegaCapture( iTimePoint );
         emit TimePointChanged( m_TimePoint );
+        if (this->m_DataBaseTables->IsDatabaseUsed())
+          {
+          this->m_DataBaseTables->UpdateListMeshes(iTimePoint);
+          }
         }
       }
     else
@@ -2137,7 +2141,8 @@ UpdateDBAndCollectionIDComboBoxForANewCreatedCollection()
   std::pair<std::string,QColor> NewCollectionToAddInComboBox =
     this->m_DataBaseTables->SaveNewCollectionInDB(
     this->m_ManualSegmentationDockWidget->TraceManualEditingWidget->ColorComboBox->GetCurrentColorData(),
-    this->m_ManualSegmentationDockWidget->TraceManualEditingWidget->TraceName->text().toStdString());
+    this->m_ManualSegmentationDockWidget->TraceManualEditingWidget->TraceName->text().toStdString(),
+    this->GetTimePoint());
   //second, update the ColorIDCollectionComboBox with the new created ID:
   this->m_ManualSegmentationDockWidget->TraceManualEditingWidget->ColorIDCollectionComboBox->addColor(
     NewCollectionToAddInComboBox.second,NewCollectionToAddInComboBox.first.c_str());

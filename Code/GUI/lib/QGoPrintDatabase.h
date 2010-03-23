@@ -122,7 +122,8 @@ public:
   /** \brief Save the new collection in the database and return the corresponding ID with
   the QColor*/
   std::pair<std::string,QColor> SaveNewCollectionInDB(
-    std::pair<std::string,QColor> iColorNewCollection,std::string iTraceName);
+   std::pair<std::string,QColor> iColorNewCollection, std::string iTraceName,
+   int iTimePoint);
 
   void UpdateCurrentColorData(std::pair<std::string,QColor> iCurrentColorData);
   void SetCurrentCollectionID(std::pair<std::string,QColor> iCurrentCollectionData);
@@ -171,6 +172,9 @@ public slots:
   void AddNewSubCellType();
   void DeleteCellType();
   void DeleteSubCellType();
+  /** \brief get the list of meshes for the current timepoint from the database, emit
+  a signal for the list to be printed in the GUI*/
+  void UpdateListMeshes(int iTimePoint);
 
 signals:
   void PrintDBReady();

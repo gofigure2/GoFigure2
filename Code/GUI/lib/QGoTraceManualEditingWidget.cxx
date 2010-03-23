@@ -84,6 +84,7 @@ int QGoTraceManualEditingWidget::GetCurrentCollectionID()
 void QGoTraceManualEditingWidget::SetCollectionID(
   std::list<std::pair<std::string,QColor> > iListExistingID)
 {
+  this->ColorIDCollectionComboBox->clear();
   std::list<std::pair<std::string,QColor> >::iterator iter =
     iListExistingID.begin();
   while (iter != iListExistingID.end())

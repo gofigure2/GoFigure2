@@ -166,8 +166,8 @@ QtColorComboBox::QtColorComboBox(QWidget *parent, const char * /*name*/)
 */
 void QtColorComboBox::setColorDialogEnabled(bool enabled,std::string TextToAdd)
 {
-    if (colorDialogEnabled == enabled)
-	return;
+   // if (colorDialogEnabled == enabled)
+	//return;
 
     if ((colorDialogEnabled = enabled) == true) {
 	// Add the color dialog item if it's disabled from before.

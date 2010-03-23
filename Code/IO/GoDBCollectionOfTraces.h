@@ -137,7 +137,7 @@ public:
   /** \brief create the first collection in the database and return the corresponding
   ID*/
   int CreateCollectionWithNoTraces(vtkMySQLDatabase* DatabaseConnector, 
-    GoDBTraceRow iNewCollection);
+    GoDBTraceRow iNewCollection, int iTimePoint);
 
 protected:
 
@@ -158,6 +158,11 @@ protected:
    /** \brief create a new collection in the database and return the corresponding
   ID*/
   int CreateNewCollection(vtkMySQLDatabase* DatabaseConnector, GoDBTraceRow myNewObject);
+  
+  /** \brief set the timepoint for the coordmax and coordmin of a new created mesh 
+  without any contours*/
+  void SetTheTimePointForMesh(int iTimePoint,GoDBTraceRow & ioNewMesh,
+    vtkMySQLDatabase* iDatabaseConnector);
 
   /** \brief get the max of all the coordinates in the ListSelectedTraces, compare it
   to the max of the existing collection and update the max coordinate of the bounding

@@ -886,7 +886,7 @@ std::list<std::pair<std::string,QColor> > QGoPrintDatabase::
     }
   //for creating traces at the beginning, with no existing collection, we
   //create a new collection:
-  if (oListCollectionIDs.empty())
+ /* if (oListCollectionIDs.empty())
     {
     int NewID = 0;
     QColor FirstColor;
@@ -935,7 +935,7 @@ std::list<std::pair<std::string,QColor> > QGoPrintDatabase::
     temp.second = FirstColor;
     temp.first = ConvertToString<int>(NewID);
     oListCollectionIDs.push_back(temp);
-    }
+    }*/
 
   CloseDBConnection();
 
@@ -994,7 +994,8 @@ void QGoPrintDatabase::UpdateTableWidgetAndRowContainerWithNewCreatedTrace(
 
 //-------------------------------------------------------------------------
 std::pair<std::string,QColor> QGoPrintDatabase::SaveNewCollectionInDB(
-  std::pair<std::string,QColor> iColorNewCollection, std::string iTraceName)
+  std::pair<std::string,QColor> iColorNewCollection, std::string iTraceName,
+  int iTimePoint)
 {
   this->OpenDBConnection();
   GoDBTraceRow NewCollection;
@@ -1003,7 +1004,7 @@ std::pair<std::string,QColor> QGoPrintDatabase::SaveNewCollectionInDB(
     this->m_DatabaseConnector);
   TraceInfoStructure* CurrentlyUsedTraceData = this->GetTraceInfoStructure(iTraceName);
   int NewCollectionID = CurrentlyUsedTraceData->CollectionOfTraces->CreateCollectionWithNoTraces(
-    this->m_DatabaseConnector,NewCollection);
+    this->m_DatabaseConnector,NewCollection,iTimePoint);
 
   std::pair<std::string,QColor> NewCollectionData;
   NewCollectionData.first = ConvertToString<int>(NewCollectionID);
@@ -1451,4 +1452,12 @@ void QGoPrintDatabase::UncheckSelectedRows()
     this->GetTraceInfoStructure(this->InWhichTableAreWe());
   CurrentlyUsedTraceData->Table->UncheckSelectedRows(CurrentlyUsedTraceData->TraceName,
     CurrentlyUsedTraceData->TraceNameID);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoPrintDatabase::UpdateListMeshes(int iTimePoint)
+{
+  emit PrintExistingCollectionIDsFromDB(
+    this->GetListExistingCollectionIDFromDB("contour",iTimePoint));
 }
