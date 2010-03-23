@@ -43,6 +43,7 @@
 
 #include "vtkMetaImageReader.h"
 #include "vtkImageData.h"
+#include "vtkSmartPointer.h"
 
 #include "QGoImageView3D.h"
 
@@ -61,7 +62,8 @@ int main( int argc, char** argv )
 
   QGoImageView3D* viewer = new QGoImageView3D;
 
-  vtkMetaImageReader* reader = vtkMetaImageReader::New();
+  vtkSmartPointer< vtkMetaImageReader > reader =
+    vtkSmartPointer< vtkMetaImageReader >::New();
   reader->SetFileName( argv[1] );
   reader->Update();
 
@@ -99,7 +101,6 @@ int main( int argc, char** argv )
       std::cerr <<" != 2" <<std::endl;
       app.closeAllWindows();
 
-      reader->Delete();
       delete timer;
       delete viewer;
       return EXIT_FAILURE;
@@ -112,7 +113,6 @@ int main( int argc, char** argv )
       std::cerr <<" != 3" <<std::endl;
       app.closeAllWindows();
 
-      reader->Delete();
       delete timer;
       delete viewer;
       return EXIT_FAILURE;
@@ -125,7 +125,6 @@ int main( int argc, char** argv )
       std::cerr <<" != 4" <<std::endl;
       app.closeAllWindows();
 
-      reader->Delete();
       delete timer;
       delete viewer;
       return EXIT_FAILURE;
@@ -138,7 +137,6 @@ int main( int argc, char** argv )
       std::cerr <<" != 0" <<std::endl;
       app.closeAllWindows();
 
-      reader->Delete();
       delete timer;
       delete viewer;
       return EXIT_FAILURE;
@@ -153,7 +151,6 @@ int main( int argc, char** argv )
       std::cerr <<" != slice + 1" <<std::endl;
       app.closeAllWindows();
 
-      reader->Delete();
       delete timer;
       delete viewer;
       return EXIT_FAILURE;
@@ -168,7 +165,6 @@ int main( int argc, char** argv )
       std::cerr <<" != slice - 1" <<std::endl;
       app.closeAllWindows();
 
-      reader->Delete();
       delete timer;
       delete viewer;
       return EXIT_FAILURE;
@@ -183,7 +179,6 @@ int main( int argc, char** argv )
       std::cerr <<" != slice + 1" <<std::endl;
       app.closeAllWindows();
 
-      reader->Delete();
       delete timer;
       delete viewer;
       return EXIT_FAILURE;
@@ -197,7 +192,6 @@ int main( int argc, char** argv )
       std::cerr <<r <<" " <<g <<" " <<b <<" != {0.5, 0.5, 0.5}" <<std::endl;
       app.closeAllWindows();
 
-      reader->Delete();
       delete timer;
       delete viewer;
       return EXIT_FAILURE;
@@ -210,7 +204,6 @@ int main( int argc, char** argv )
       std::cerr <<r <<" " <<g <<" " <<b <<" != {0.1, 0.6, 0.7}" <<std::endl;
       app.closeAllWindows();
 
-      reader->Delete();
       delete timer;
       delete viewer;
       return EXIT_FAILURE;
@@ -222,7 +215,6 @@ int main( int argc, char** argv )
       std::cerr <<r <<" " <<g <<" " <<b <<" != {0., 0., 0.}" <<std::endl;
       app.closeAllWindows();
 
-      reader->Delete();
       delete timer;
       delete viewer;
       return EXIT_FAILURE;
@@ -235,7 +227,6 @@ int main( int argc, char** argv )
 
   app.closeAllWindows();
 
-  reader->Delete();
   delete timer;
   delete viewer;
 

@@ -44,6 +44,7 @@
 
 #include "vtkMetaImageReader.h"
 #include "vtkImageData.h"
+#include "vtkSmartPointer.h"
 
 #include "QGoTabImageView3D.h"
 
@@ -60,7 +61,8 @@ int main( int argc, char** argv )
   QCoreApplication::setOrganizationName("MegasonLab");
   QCoreApplication::setOrganizationDomain( "http://gofigure2.sourceforge.net" );
 
-  vtkMetaImageReader* reader = vtkMetaImageReader::New();
+  vtkSmartPointer< vtkMetaImageReader > reader =
+    vtkSmartPointer< vtkMetaImageReader >::New();
   reader->SetFileName( argv[1] );
   reader->Update();
 
@@ -114,7 +116,6 @@ int main( int argc, char** argv )
 
   delete menubar;
   delete tab;
-  reader->Delete();
 
   return output;
 }

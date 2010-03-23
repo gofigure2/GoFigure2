@@ -61,7 +61,7 @@ int main( int argc, char** argv )
   QCoreApplication::setOrganizationName("MegasonLab");
   QCoreApplication::setOrganizationDomain( "http://gofigure2.sourceforge.net" );
 
-  vtkLSMReader* reader = vtkLSMReader::New();
+  vtkSmartPointer< vtkLSMReader > reader = vtkSmartPointer< vtkLSMReader >::New();
   reader->SetFileName( argv[1] );
   reader->SetUpdateTimePoint( 0 );
   reader->Update();

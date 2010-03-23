@@ -43,6 +43,7 @@
 
 #include "vtkPNGReader.h"
 #include "vtkImageData.h"
+#include "vtkSmartPointer.h"
 
 #include "QGoTabImageView2D.h"
 
@@ -59,7 +60,7 @@ int main( int argc, char** argv )
   QCoreApplication::setOrganizationName("MegasonLab");
   QCoreApplication::setOrganizationDomain( "http://gofigure2.sourceforge.net" );
 
-  vtkPNGReader* reader = vtkPNGReader::New();
+  vtkSmartPointer< vtkPNGReader > reader = vtkSmartPointer< vtkPNGReader >::New();
   reader->SetFileName( argv[1] );
   reader->Update();
 
@@ -98,7 +99,6 @@ int main( int argc, char** argv )
 
   delete menubar;
   delete tab;
-  reader->Delete();
 
   return output;
 }

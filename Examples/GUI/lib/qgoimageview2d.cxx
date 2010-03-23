@@ -41,10 +41,12 @@
 #include <QApplication>
 #include <QTimer>
 
+#include "vtkSmartPointer.h"
 #include "vtkPNGReader.h"
 #include "vtkImageData.h"
-
 #include "vtkLookupTable.h"
+
+#include "vtkLookupTableManager.h"
 
 #include "QGoImageView2D.h"
 
@@ -63,7 +65,7 @@ int main( int argc, char** argv )
 
   QGoImageView2D* viewer = new QGoImageView2D;
 
-  vtkPNGReader* reader = vtkPNGReader::New();
+  vtkSmartPointer< vtkPNGReader > reader = vtkSmartPointer< vtkPNGReader >::New();
   reader->SetFileName( argv[1] );
   reader->Update();
 
@@ -72,16 +74,15 @@ int main( int argc, char** argv )
   QObject::connect( timer, SIGNAL( timeout() ), viewer, SLOT( close() ) );
 
   viewer->SetImage( reader->GetOutput() );
+  viewer->Update();
+  viewer->show();
 
   if( atoi( argv[2] ) == 1 )
     {
     timer->start( 1000 );
     }
-  viewer->Update();
-  viewer->show();
 
   viewer->ShowScalarBar( true );
-  viewer->SnapshotViewXY( GoFigure::JPEG );
 
   std::cout <<viewer->GetImageActor( 0 ) <<std::endl;
   std::cout <<viewer->GetImageActor( 1 ) <<std::endl;
@@ -91,9 +92,7 @@ int main( int argc, char** argv )
 
   std::cout <<viewer->GetImage() <<std::endl;
 
-  vtkLookupTable* lut = vtkLookupTable::New();
-  viewer->SetLookupTable( lut );
-  lut->Delete();
+  viewer->SetLookupTable( vtkLookupTableManager::GetHotMetalLookupTable() );
 
   app.processEvents();
 
@@ -101,7 +100,6 @@ int main( int argc, char** argv )
 
   app.closeAllWindows();
 
-  reader->Delete();
   delete timer;
   delete viewer;
 

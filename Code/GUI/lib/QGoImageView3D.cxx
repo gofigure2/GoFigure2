@@ -412,20 +412,20 @@ void QGoImageView3D::SetupVTKtoQtConnections()
     vtkViewImage2DCommand::EndSliceMoveEvent,
     this, SLOT( MoveSliderXY() ) );
 
-  VtkEventQtConnector->Connect(
-    reinterpret_cast< vtkObject* >( View1->GetInteractorStyle() ),
-    vtkViewImage2DCommand::ContourPickingEvent,
-    this, SIGNAL( ActorsSelectionChanged() ) );
+//   VtkEventQtConnector->Connect(
+//     reinterpret_cast< vtkObject* >( View1->GetInteractorStyle() ),
+//     vtkViewImage2DCommand::ContourPickingEvent,
+//     this, SIGNAL( ActorsSelectionChanged() ) );
 
-  VtkEventQtConnector->Connect(
-    reinterpret_cast< vtkObject* >( View2->GetInteractorStyle() ),
-    vtkViewImage2DCommand::ContourPickingEvent,
-    this, SIGNAL( ActorsSelectionChanged() ) );
+//   VtkEventQtConnector->Connect(
+//     reinterpret_cast< vtkObject* >( View2->GetInteractorStyle() ),
+//     vtkViewImage2DCommand::ContourPickingEvent,
+//     this, SIGNAL( ActorsSelectionChanged() ) );
 
-  VtkEventQtConnector->Connect(
-    reinterpret_cast< vtkObject* >( View3->GetInteractorStyle() ),
-    vtkViewImage2DCommand::ContourPickingEvent,
-    this, SIGNAL( ActorsSelectionChanged() ) );
+//   VtkEventQtConnector->Connect(
+//     reinterpret_cast< vtkObject* >( View3->GetInteractorStyle() ),
+//     vtkViewImage2DCommand::ContourPickingEvent,
+//     this, SIGNAL( ActorsSelectionChanged() ) );
 
 //   QObject::connect( this, SIGNAL( ActorsSelectionChanged() ),
 //     this, SLOT( HighLightContours() ) );
