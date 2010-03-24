@@ -38,6 +38,7 @@ SET( QGoGUILIB_SRC
   QGoDBCellTypeManager.cxx
   QGoDBSubCellTypeManager.cxx
   QGoTraceManualEditingWidget.cxx
+  QGoAboutWidget.cxx
 )
 
 #------------------------------------------------------------------------------
@@ -104,6 +105,7 @@ SET( QGoGUILIB_HDRS
   QGoDBCellTypeManager.h
   QGoDBSubCellTypeManager.h
   QGoTraceManualEditingWidget.h
+  QGoAboutWidget.h
 )
 
 #------------------------------------------------------------------------------

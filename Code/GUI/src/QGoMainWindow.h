@@ -52,6 +52,7 @@
 
 #include "GoFigureFileInfoMultiIndexContainerHelper.h"
 #include "GoFigureGlobalDefinition.h"
+#include "QGoAboutWidget.h"
 
 class vtkImageData;
 
@@ -194,6 +195,7 @@ private:
   QToolBar*         m_ModeToolBar;
   vtkLSMReader*     m_LSMReader;
   QGoWizardDB*      m_DBWizard;
+  QGoAboutWidget*   m_AboutWidget;
 
   /** \brief */
   void ReadSettings();

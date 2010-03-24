@@ -65,6 +65,7 @@
 #include <QSettings>
 #include <QFileInfo>
 #include <QDir>
+#include <QScrollArea>
 
 // Qt Dialog Box
 #include "QGoLsmToMegaExportDialog.h"
@@ -130,6 +131,9 @@ QGoMainWindow::QGoMainWindow( )
 //   m_LSMReader = vtkLSMReader::New();
   m_DBWizard  = new QGoWizardDB(this);
   m_DBWizard->hide();
+  
+  m_AboutWidget = new QGoAboutWidget;
+  this->m_AboutWidget->hide();
 
   m_Bar.hide();
   QString temp;
@@ -1034,7 +1038,8 @@ CreateNewTabFor2DImage( vtkImageData* iInput, const QString& iFile )
 //--------------------------------------------------------------------------------
 void QGoMainWindow::on_actionAbout_triggered( )
 {
-  QString version( "0.4" );
+  this->m_AboutWidget->show();
+  /*QString version( "0.4" );
   QString date( "Date: 02/17/2010\n\n" );
 
   QString about_gofigure(
@@ -1053,8 +1058,19 @@ void QGoMainWindow::on_actionAbout_triggered( )
   message.append( date );
   message.append( about_gofigure );
 //   message.append( authors );
-
-  QMessageBox::about( this, tr( "<*)0|00|0>< About GoFigure" ), message );
+  QWidget* About = new QWidget;
+  QVBoxLayout* vlayout = new QVBoxLayout;
+  QLabel* GofigureLabel = new QLabel(message,About);
+  QTabWidget* TabWidget = new QTabWidget(About);
+  QString AboutQtLicense(tr("it is about a toolkit....)"));
+  QString TabTitle(tr("About Qt"));
+  this->AddTabAbout(AboutQtLicense,TabTitle,TabWidget);
+  vlayout->addWidget(GofigureLabel);
+  vlayout->addWidget(TabWidget);
+  About->setLayout(vlayout);
+  About->show();
+  //QMessageBox::about( this, tr( "<*)0|00|0>< About GoFigure" ), message );*/
+  
 }
 //--------------------------------------------------------------------------
 
