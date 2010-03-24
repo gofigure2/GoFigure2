@@ -251,7 +251,6 @@ void QGoImageView3D::Update()
   View1->SetInput( this->m_Image );
   View1->SetViewOrientation( vtkViewImage2D::VIEW_ORIENTATION_AXIAL );
   View1->SetViewConvention( vtkViewImage2D::VIEW_CONVENTION_NEUROLOGICAL );
-  //View1->SetLeftButtonInteractionStyle( vtkInteractorStyleImage2D::InteractionTypePan );
 
   this->View3D->Add2DPhantom( 0,
       View1->GetImageActor(), View1->GetSlicePlane() );
@@ -265,7 +264,6 @@ void QGoImageView3D::Update()
   View2->SetInput( this->m_Image );
   View2->SetViewConvention( vtkViewImage2D::VIEW_CONVENTION_NEUROLOGICAL );
   View2->SetViewOrientation (vtkViewImage2D::VIEW_ORIENTATION_CORONAL);
-  //View2->SetLeftButtonInteractionStyle( vtkInteractorStyleImage2D::InteractionTypePan );
 
   this->View3D->Add2DPhantom( 1,
     View2->GetImageActor(), View2->GetSlicePlane() );
@@ -279,15 +277,7 @@ void QGoImageView3D::Update()
   View3->SetInput( this->m_Image );
   View3->SetViewConvention( vtkViewImage2D::VIEW_CONVENTION_NEUROLOGICAL );
   View3->SetViewOrientation( vtkViewImage2D::VIEW_ORIENTATION_SAGITTAL );
-  //View3->SetLeftButtonInteractionStyle( vtkInteractorStyleImage2D::InteractionTypePan );
 
-  //TEMP SOLUTION ///////////////////////////////////////////////////
-  vtkCamera *camera2 = View3->GetRenderer()->GetActiveCamera();
-      camera2->Roll( -90 );
-
-      View3->GetRenderer()->SetActiveCamera( camera2 );
-      View3->ResetCamera();
-   //////////////////////////////////////////////////////////////////
 
   this->View3D->Add2DPhantom(
     2, View3->GetImageActor(), View3->GetSlicePlane() );

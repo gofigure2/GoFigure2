@@ -1028,15 +1028,12 @@ void vtkViewImage2D::UpdateCenter (void)
 //----------------------------------------------------------------------------
 void vtkViewImage2D::PostUpdateOrientation()
 {
-
-  int axis = this->SetCameraFromOrientation();
+  int axis = this->SetCameraToConvention();
   this->ViewOrientation = axis;
 
-//   this->UpdateCenter();
-
-  this->SetAnnotationsFromOrientation();
-  this->SetImplicitPlaneFromOrientation();
-  this->SetSlicePlaneFromOrientation();
+  this->SetAnnotationToConvention();
+  this->SetSlicePlaneToConvention( axis);
+  this->UpdateSlicePlane();
 }
 //----------------------------------------------------------------------------
 
