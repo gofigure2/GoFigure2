@@ -92,7 +92,9 @@ int main( int argc, char** argv )
 
   std::cout <<viewer->GetImage() <<std::endl;
 
-  viewer->SetLookupTable( vtkLookupTableManager::GetHotMetalLookupTable() );
+  vtkLookupTable * LUT = vtkLookupTableManager::GetHotMetalLookupTable();
+
+  viewer->SetLookupTable( LUT );
 
   app.processEvents();
 
@@ -100,6 +102,7 @@ int main( int argc, char** argv )
 
   app.closeAllWindows();
 
+  LUT->Delete();
   delete timer;
   delete viewer;
 
