@@ -83,6 +83,7 @@
 #include "vtkInformationVector.h"
 #include "vtkStreamingDemandDrivenPipeline.h"
 #include <time.h>
+#include <assert.h>
 
 
 #define PRT_EXT(ext) ext[0],ext[1],ext[2],ext[3],ext[4],ext[5]
@@ -866,9 +867,9 @@ int vtkLSMReader::AnalyzeTag(ifstream *f,unsigned long startPos)
     if(tag == TIF_STRIPOFFSETS ||tag == TIF_STRIPBYTECOUNTS)
       {
       // vtkDebugMacro(<<"Reading actual value from "<<startPos<<"to " << startPos+readSize);
-      if( !this->ReadFile(f,startPos,readSize,actualValue) )
+      if( this->ReadFile(f,startPos,readSize,actualValue) == 0 )
         {
-        vtkErrorMacro(<<"Failde to get strip offsets\n");
+        vtkErrorMacro(<<"Failed to get strip offsets\n");
         return 0;
         }
       }
@@ -876,7 +877,10 @@ int vtkLSMReader::AnalyzeTag(ifstream *f,unsigned long startPos)
   else
     {
     actualValue = new char[4];
-    for(int o=0;o<4;o++)actualValue[o] = tempValue[o];
+    for(int o=0;o<4;o++)
+      {
+      actualValue[o] = tempValue[o];
+      }
     }
   switch(tag)
     {
@@ -938,9 +942,12 @@ int vtkLSMReader::AnalyzeTag(ifstream *f,unsigned long startPos)
 #endif
       if(length>1)
         {
+        unsigned int* offsets =
+          static_cast< unsigned int* >( static_cast< void* >( actualValue ) );
+
         for(i=0;i<length;i++)
           {
-          unsigned int* offsets = (unsigned int*)actualValue;
+          /// \bug here for large files stripOffset is screwed
           unsigned int stripOffset=offsets[i];
   //      vtkDebugMacro(<<"Strip offset to "<<i<<"="<<stripOffset);
           this->StripOffset->SetValue(i,stripOffset);
@@ -1170,6 +1177,8 @@ unsigned long vtkLSMReader::ReadImageDirectory(ifstream *f,unsigned long offset)
 
 void vtkLSMReader::DecodeHorizontalDifferencing(unsigned char *buffer, int size)
 {
+//   std::cout <<"DecodeHorizontalDifferencing " <<size <<std::endl;
+//   assert( size < 255 );
   for(int i=1;i<size;i++)
     {
     *(buffer+i) = *(buffer+i) + *(buffer+i-1);
@@ -1178,6 +1187,9 @@ void vtkLSMReader::DecodeHorizontalDifferencing(unsigned char *buffer, int size)
 
 void vtkLSMReader::DecodeHorizontalDifferencingUnsignedShort(unsigned short *buffer, int size)
 {
+//   assert( size < 32767 );
+//   std::cout <<"DecodeHorizontalDifferencingUnsignedShort " <<size <<std::endl;
+
   for(int i=1;i<size;i++)
     {
     *(buffer+i) = *(buffer+i) + *(buffer+i-1);
@@ -1301,7 +1313,8 @@ int vtkLSMReader::RequestData(
       tempBuf[ii] = 0;
       }
 
-    std::streamsize bytes = this->ReadFile(this->GetFile(),offset,readSize,(char *)tempBuf,1);
+    std::streamsize bytes = this->ReadFile(this->GetFile(),offset,readSize,
+      static_cast< char* >( static_cast< void* >( tempBuf ) ), 1);
 
     if(bytes != readSize)
       {
@@ -1553,9 +1566,9 @@ int vtkLSMReader::BYTES_BY_DATA_TYPE(int type)
 
 int vtkLSMReader::TIFF_BYTES(unsigned short type)
 {
-  int bytes = 1;
   switch(type)
     {
+    default:
     case(TIFF_BYTE):
       return 1;
     case(TIFF_ASCII):
@@ -1565,7 +1578,6 @@ int vtkLSMReader::TIFF_BYTES(unsigned short type)
     case(TIFF_RATIONAL):
       return 4;
     }
-  return bytes;
 }
 
 unsigned char vtkLSMReader::CharPointerToUnsignedChar(char *buf)
