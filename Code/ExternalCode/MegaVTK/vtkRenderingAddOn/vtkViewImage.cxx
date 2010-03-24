@@ -527,11 +527,7 @@ void vtkViewImage::SetShowScalarBar( const bool& val )
 void vtkViewImage::ChangeActorProperty( vtkProp3D* iActor,
     vtkProperty* iProperty )
 {
-  if( !iActor || !iProperty )
-    {
-    return;
-    }
-  else
+  if( iActor && iProperty )
     {
     if( Prop3DCollection->IsItemPresent( iActor ) )
       {
@@ -577,13 +573,17 @@ void vtkViewImage::ChangeActorProperty( vtkProp3D* iActor,
 //----------------------------------------------------------------------------
 void vtkViewImage::Render()
 {
-  if (this->GetInput() && this->RenderWindow && !this->RenderWindow->GetNeverRendered() )
+  if( this->RenderWindow && !this->RenderWindow->GetNeverRendered() )
   {
     if (this->FirstRender)
     {
       this->ResetCamera();
       this->FirstRender = 0;
     }
+  }
+
+  if( this->GetInput() )
+  {
     this->RenderWindow->Render();
   }
 }
@@ -599,13 +599,13 @@ vtkRenderWindowInteractor* vtkViewImage::GetInteractor()
 //----------------------------------------------------------------------------
 vtkRenderWindowInteractor* vtkViewImage::GetRenderWindowInteractor()
 {
-  if( !this->GetRenderWindow() )
+  if( this->GetRenderWindow() )
     {
-    return NULL;
+    return this->GetRenderWindow()->GetInteractor();
     }
   else
     {
-    return this->GetRenderWindow()->GetInteractor();
+    return static_cast< vtkRenderWindowInteractor* >( 0x0 );
     }
 }
 //----------------------------------------------------------------------------
@@ -613,83 +613,124 @@ vtkRenderWindowInteractor* vtkViewImage::GetRenderWindowInteractor()
 //----------------------------------------------------------------------------
 void vtkViewImage::SetCameraPosition (double* arg)
 {
-  vtkCamera *cam = this->Renderer ? this->Renderer->GetActiveCamera() : NULL;
-  if (!cam)
-    return;
-  cam->SetPosition (arg);
+  if( this->Renderer )
+    {
+    vtkCamera *cam = this->Renderer->GetActiveCamera();
+    if( cam )
+      {
+      cam->SetPosition (arg);
+      }
+    }
 }
 
 double* vtkViewImage::GetCameraPosition (void)
 {
-  vtkCamera *cam = this->Renderer ? this->Renderer->GetActiveCamera() : NULL;
-  if (!cam)
-    return NULL;
-  return cam->GetPosition ();
+  if( this->Renderer )
+    {
+    vtkCamera *cam = this->Renderer->GetActiveCamera();
+    if( cam )
+      {
+      return cam->GetPosition ();
+      }
+    }
+
+  return static_cast< double* >( 0x0 );
 }
 //----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------
 void vtkViewImage::SetCameraFocalPoint (double* arg)
 {
-  vtkCamera *cam = this->Renderer ? this->Renderer->GetActiveCamera() : NULL;
-  if (!cam)
-    return;
-  cam->SetFocalPoint (arg);
+  if( this->Renderer )
+    {
+    vtkCamera *cam = this->Renderer->GetActiveCamera();
+    if( cam )
+      {
+      cam->SetFocalPoint (arg);
+      }
+    }
 }
 //----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------
 double* vtkViewImage::GetCameraFocalPoint (void)
 {
-  vtkCamera *cam = this->Renderer ? this->Renderer->GetActiveCamera() : NULL;
-  if (!cam)
-    return NULL;
-  return cam->GetFocalPoint ();
+  if( this->Renderer )
+    {
+    vtkCamera *cam = this->Renderer->GetActiveCamera();
+    if( cam )
+      {
+      return cam->GetFocalPoint ();
+      }
+    }
+  return static_cast< double* >( 0x0 );
 }
 //----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------
 void vtkViewImage::SetCameraViewUp (double* arg)
 {
-  vtkCamera *cam = this->Renderer ? this->Renderer->GetActiveCamera() : NULL;
-  if (!cam)
-    return;
-  cam->SetViewUp (arg);
+  if( this->Renderer )
+    {
+    vtkCamera *cam = this->Renderer->GetActiveCamera();
+    if( cam )
+      {
+      cam->SetViewUp (arg);
+      }
+    }
 }
 //----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------
 double* vtkViewImage::GetCameraViewUp (void)
 {
-  vtkCamera *cam = this->Renderer ? this->Renderer->GetActiveCamera() : NULL;
-  if (!cam)
-    return NULL;
-  return cam->GetViewUp ();
+  if( this->Renderer )
+    {
+    vtkCamera *cam = this->Renderer->GetActiveCamera();
+
+    if( cam )
+      {
+      return cam->GetViewUp();
+      }
+    }
+  return static_cast< double* >( 0x0 );
 }
 //----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------
 void vtkViewImage::SetCameraParallelScale (double arg)
 {
-  vtkCamera *cam = this->Renderer ? this->Renderer->GetActiveCamera() : NULL;
-  if (!cam)
-    return;
-  cam->SetParallelScale (arg);
+  if( this->Renderer )
+    {
+    vtkCamera *cam = this->Renderer->GetActiveCamera();
+
+    if( cam )
+      {
+      cam->SetParallelScale (arg);
+      }
+    }
 }
 //----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------
 double vtkViewImage::GetCameraParallelScale (void)
 {
-  vtkCamera *cam = this->Renderer ? this->Renderer->GetActiveCamera() : NULL;
-  if (!cam)
-    return NULL;
-  return cam->GetParallelScale ();
+  if( this->Renderer )
+    {
+    vtkCamera *cam = this->Renderer->GetActiveCamera();
+
+    if( cam )
+      {
+      return cam->GetParallelScale();
+      }
+    }
+
+  return 0.;
 }
 //----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------
-void vtkViewImage::SetShowAnnotations (int val)
+void vtkViewImage::SetShowAnnotations( const int& val )
 {
   this->ShowAnnotations = val;
   this->CornerAnnotation->SetVisibility (val);

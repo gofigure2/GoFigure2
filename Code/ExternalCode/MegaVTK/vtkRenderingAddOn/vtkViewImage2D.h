@@ -309,7 +309,7 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage2D : public vtkViewImage
     /**
        \brief Show/Hide the annotations.
     */
-    virtual void SetShowAnnotations( const bool& );
+    virtual void SetShowAnnotations( const int& );
 
     void SetCameraFocalAndPosition( double focal[3], double pos[3] );
     void GetCameraFocalAndPosition( double focal[3], double pos[3] );

@@ -239,7 +239,7 @@ void vtkViewImage2D::SetViewConvention(int convention)
   this->UpdateOrientation();
 }
 //----------------------------------------------------------------------------
-void vtkViewImage2D::SetShowAnnotations( const bool& val )
+void vtkViewImage2D::SetShowAnnotations( const int& val )
 {
   this->Superclass::SetShowAnnotations (val);
   this->OrientationAnnotation->SetVisibility (val);

@@ -360,7 +360,7 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage : public vtkImageViewer2
   /**
      Show/Hide the annotations.
   */
-  virtual void SetShowAnnotations (int);
+  virtual void SetShowAnnotations( const int& );
   /**
      Show/Hide the annotations.
   */
