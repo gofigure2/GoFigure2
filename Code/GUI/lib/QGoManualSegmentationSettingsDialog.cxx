@@ -76,7 +76,7 @@ QGoManualSegmentationSettingsDialog( QWidget* iParent,
   this->LineWidthSpinBox->setValue( m_LineWidth );
 
   m_ContourRepresentation = vtkSmartPointer< vtkOrientedGlyphContourRepresentation >::New();
-  m_ContourRepresentation->GetLinesProperty()->SetLineWidth( m_LineWidth );
+  m_ContourRepresentation->GetLinesProperty()->SetLineWidth( static_cast< float >( m_LineWidth ) );
   m_ContourRepresentation->GetLinesProperty()->SetColor( m_LineColor.redF(),
     m_LineColor.greenF(), m_LineColor.blueF() );
   m_ContourRepresentation->GetProperty()->SetColor( m_NodeColor.redF(),
@@ -160,7 +160,8 @@ void QGoManualSegmentationSettingsDialog::SetLineWidth( const double& iValue )
   if( m_LineWidth != iValue )
     {
     m_LineWidth = iValue;
-    m_ContourRepresentation->GetLinesProperty()->SetLineWidth( m_LineWidth );
+    m_ContourRepresentation->GetLinesProperty()->SetLineWidth(
+      static_cast< float >( m_LineWidth ) );
     m_ContourWidget->Render();
     m_Renderer->Render();
     }

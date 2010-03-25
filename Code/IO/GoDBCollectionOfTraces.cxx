@@ -698,6 +698,10 @@ void GoDBCollectionOfTraces::SetTheTimePointForMesh(int iTimePoint,
   Coordinate.SetField<int>("TCoord",iTimePoint);
   Coordinate.SetField("CoordID","0");
   int coord = Coordinate.SaveInDB(iDatabaseConnector);
+
+  // unused variable coord
+  (void) coord;
+
   ioNewMesh.SetField<int>("CoordIDMin",Coordinate.SaveInDB(iDatabaseConnector));
 }
 //--------------------------------------------------------------------------

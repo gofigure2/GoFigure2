@@ -265,7 +265,8 @@ CreateOutput()
           origFileName,
           (*numGroupStartItr),
           (*numGroupLengthItr) );
-        tempInfo.m_TCoord = vcl_floor( atof( ValueAsString.c_str() ) );
+        tempInfo.m_TCoord =
+          static_cast< unsigned int >( vcl_floor( atof( ValueAsString.c_str() ) ) );
         m_OutputFileList.insert( tempInfo );
         break;
         }
