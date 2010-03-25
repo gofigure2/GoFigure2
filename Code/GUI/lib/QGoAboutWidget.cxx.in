@@ -1,0 +1,174 @@
+/*=========================================================================
+  Author: $Author: arnaudgelas $  // Author of last commit
+  Version: $Revision: 503 $  // Revision of last commit
+  Date: $Date: 2009-08-03 17:42:52 -0400 (Mon, 03 Aug 2009) $  // Date of last commit
+=========================================================================*/
+
+/*=========================================================================
+ Authors: The GoFigure Dev. Team.
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+
+ Copyright (c) 2009-10, President and Fellows of Harvard College.
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are met:
+
+ Redistributions of source code must retain the above copyright notice,
+ this list of conditions and the following disclaimer.
+ Redistributions in binary form must reproduce the above copyright notice,
+ this list of conditions and the following disclaimer in the documentation
+ and/or other materials provided with the distribution.
+ Neither the name of the  President and Fellows of Harvard College
+ nor the names of its contributors may be used to endorse or promote
+ products derived from this software without specific prior written
+ permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS
+ BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
+ OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+ OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+=========================================================================*/
+
+#include "QGoAboutWidget.h"
+#include <QVBoxLayout>
+#include <QLabel>
+#include <QScrollArea>
+#include <QPixmap>
+#include <QHBoxLayout>
+#include <QFile>
+#include <QTextStream>
+
+QGoAboutWidget::QGoAboutWidget()
+{
+  QString version( "0.4" );
+  QString date( "Date: 02/17/2010\n\n" );
+  QString about_gofigure(
+    tr( "Description: Software for the visualization and \nthe analysis of biological microscope images.\n" ) );
+  QString message = QString( "Version: GoFigure2-%1\n\n" ).arg( version );
+  message.append( date );
+  message.append( about_gofigure );
+  //this->SetTheBackGround();
+  QVBoxLayout* vlayout = new QVBoxLayout(this);
+  //vlayout->addWidget(BigImageLabel);
+  QLabel* GofigureLabel = new QLabel(message,this);
+  //QBrush brush (QColor(255,255,255,255));
+  //brush.setStyle(Qt::SolidPattern);
+  //QPalette palette;
+  //palette.setBrush(QPalette::Active, QPalette::WindowText, brush);
+  //GofigureLabel->setPalette(palette);
+  GofigureLabel->setAlignment(Qt::AlignCenter);
+ // GofigureLabel->setAlignment(Qt::AlignJustify);
+  QTabWidget* TabWidget = new QTabWidget(this);
+  this->SetTabWidget(TabWidget);
+  //QPixmap Icon (100,100);
+  //QPixmap IconImage(QString::fromUtf8(":/fig/Myapp2.png"));
+  //QPixmap IconImage(QString::fromUtf8(":/myappico.ico"));
+  //QLabel* IconLab = new QLabel(this);
+  //IconLab->setPixmap(IconImage);
+  //IconLab->setAlignment(Qt::AlignTop);
+  //QHBoxLayout* hlayout = new QHBoxLayout;
+  //hlayout->addWidget(IconLab);
+  //hlayout->addWidget(GofigureLabel);
+   this->SetTheBackGround(GofigureLabel,vlayout);
+  vlayout->addWidget(GofigureLabel);
+  //vlayout->addLayout(hlayout);
+  vlayout->addWidget(TabWidget);
+  this->setLayout(vlayout);
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+QGoAboutWidget::~QGoAboutWidget()
+{
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoAboutWidget::AddTabAbout(QString iTextLicense, QString iTabTitle,
+                                QTabWidget* iTabWidget)
+{
+  QLabel* TextLicense = new QLabel(iTextLicense);
+  QScrollArea* scrollArea = new QScrollArea;
+  scrollArea->setBackgroundRole(QPalette::Light);
+  scrollArea->setWidget(TextLicense);
+  iTabWidget->addTab(scrollArea,iTabTitle);
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+QString QGoAboutWidget::GetContributors()
+{
+  QString authors( tr( "Authors in alphabetical order:\n" ) );
+
+  authors.append( " * 2008 ~ A. Gelas\n" );
+  authors.append( " * 2007-2009 ~ A. Gouaillard\n" );
+  authors.append( " * 2008 ~ K. Mosaliganti\n" );
+  authors.append( " * 2008 ~ L. Souhait\n\n" );
+  authors.append( " * 2009 ~ N. Rannou\n\n" );
+  authors.append( " * Principal Investigator\n" );
+  authors.append( " * S. Megason\n" );
+
+  return authors;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoAboutWidget::SetTabWidget(QTabWidget* iTabWidget)
+{
+  QString TabTitle(tr("Contributors"));
+  this->AddTabAbout(this->GetContributors(),TabTitle,iTabWidget);
+  this->WriteLicenseText(iTabWidget);
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoAboutWidget::SetTheBackGround(QLabel* ilabel,QLayout* iLayout)
+{
+  //QPixmap BigImage(QString::fromUtf8(":/fig/splash2.png"));
+  //BigImage.scaled(iWidget->size());
+  //QPalette p;
+  //QBrush brush (QColor(255,255,255,255));
+  //brush.setStyle(Qt::SolidPattern);
+  //p.setBrush(QPalette::Background, BigImage);
+  //p.setBrush(QPalette::Active, QPalette::WindowText, brush);
+  //p.setBrush(QPalette::WindowText, brush);
+  //iWidget->setPalette(p);
+  QPixmap Image(QString::fromUtf8(":/fig/splash2.png"));
+  ilabel->setMaximumSize(Image.size());
+  ilabel->setMinimumSize(Image.size());
+  ilabel->setStyleSheet("QLabel{color:rgb(255,255,255);background-image: url(:/fig/splash2.png); font: bold 12px;}");
+  this->setMaximumWidth(Image.width());
+  this->setMinimumWidth (Image.width());
+  this->setMaximumHeight(400);
+  ilabel->setAlignment(Qt::AlignCenter);
+  
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+QString QGoAboutWidget::ReadLicenseText()
+{
+  QFile file;
+  file.setFileName("@GOFIGURE2_SOURCE_DIR@/Copyright.txt");
+  file.open(QIODevice::ReadOnly);
+  QTextStream textStream(&file);
+  QString LicenseText = textStream.readAll();
+  std::string test = LicenseText.toStdString();
+  return LicenseText;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoAboutWidget::WriteLicenseText(QTabWidget* iTabWidget)
+{
+  this->AddTabAbout(this->ReadLicenseText(),"Gofigure",iTabWidget);
+}

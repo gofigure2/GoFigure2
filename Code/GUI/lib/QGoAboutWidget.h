@@ -43,6 +43,8 @@
 
 #include <QWidget>
 #include <QTabWidget>
+#include <QLabel>
+#include <QLayout>
 
 class QGoAboutWidget : public QWidget
 {
@@ -56,6 +58,12 @@ private:
 
   void AddTabAbout(QString iTextLicense, QString iTabTitle,
     QTabWidget* iTabWidget);
+
+  QString GetContributors();
+  void SetTabWidget(QTabWidget* iTabWidget);
+  void SetTheBackGround(QLabel* iLabel,QLayout* iLayout);
+  QString ReadLicenseText();
+  void WriteLicenseText(QTabWidget* iTabWidget);
 
 };
 #endif

@@ -1,3 +1,6 @@
+CONFIGURE_FILE(${GOFIGURE2_SOURCE_DIR}/Code/GUI/lib/QGoAboutWidget.cxx.in
+${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/QGoAboutWidget.cxx @ONLY IMMEDIATE)
+
 SET( QGoGUILIB_SRC
   ContourMeshStructureHelper.cxx
   QGoConnectServerPage.cxx
@@ -38,7 +41,7 @@ SET( QGoGUILIB_SRC
   QGoDBCellTypeManager.cxx
   QGoDBSubCellTypeManager.cxx
   QGoTraceManualEditingWidget.cxx
-  QGoAboutWidget.cxx
+  ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/QGoAboutWidget.cxx
 )
 
 #------------------------------------------------------------------------------

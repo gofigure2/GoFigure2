@@ -1,6 +1,7 @@
 <RCC>
   <qresource prefix="/" >
     <file>fig/splash.jpg</file>
+    <file>fig/splash2.png</file>
   </qresource>
   <qresource prefix="/" >
     <file>fig/manual-editing.png</file>
