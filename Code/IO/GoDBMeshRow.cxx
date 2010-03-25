@@ -96,10 +96,14 @@ int GoDBMeshRow::SaveInDB(vtkMySQLDatabase* DatabaseConnector)
 //-------------------------------------------------------------------------
 void GoDBMeshRow::SetCellType(std::string CellTypeName)
 {
+  // unused argument CellTypeName
+  (void) CellTypeName;
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void GoDBMeshRow::SetSubCellType(std::string SubCellTypeName)
 {
+  // unused argument SubCellTypeName
+  (void) SubCellTypeName;
 }

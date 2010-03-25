@@ -606,6 +606,8 @@ void
 QGoMainWindow::
 LoadAllMeshesFromDatabase( const int& iT )
 {
+  // iT is currently unused.
+  (void) iT;
   std::vector<ContourMeshStructure>::iterator contourmesh_list_it;
 
   QGoTabImageView3DwT* w3t =
