@@ -506,7 +506,7 @@ QVTKInteractor* QGoImageView3D::GetInteractor( const int& iId )
         }
       case 2:
         {
-        return this->QvtkWidget_XZ->GetInteractor();
+        return this->QvtkWidget_YZ->GetInteractor();
         }
       case 3:
         {
