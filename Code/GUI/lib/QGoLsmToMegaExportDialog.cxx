@@ -86,6 +86,7 @@ on_selectLsmFile_clicked()
   QFileInfo fileInfo( m_LsmPath );
 
   m_LsmName = fileInfo.fileName();
+  m_LsmName.replace( QString( " " ), QString( "_" ) );
 
   // Write the lsm file name in the dialog window
   lsmFileName->setText( m_LsmName );
@@ -155,8 +156,8 @@ on_convert_clicked()
     GoFigure::FileType filetype = GoFigure::PNG;
     if( !m_FileFormatIsPNG )
       {
-	  filetype = GoFigure::TIFF;
-	  }
+	    filetype = GoFigure::TIFF;
+	    }
 
     // conversion fonction called from there to enable progress bar
     ConversionLsmToMegaThreadSend->SetBaseName(m_LsmName.toStdString());

@@ -119,8 +119,8 @@ void
 ConversionLsmToMegaThread::
 SetBaseName( std::string iBaseName)
 {
-  size_t point_idx = iBaseName.rfind( ".lsm" );
-  m_BaseName = iBaseName.substr( 0, point_idx);
+  size_t point_idx = iBaseName.rfind( "." );
+  m_BaseName = iBaseName.erase( point_idx, 1 );
 }
 //-------------------------------------------------------------------------
 
