@@ -1257,14 +1257,21 @@ void
 QGoImageView3D::
 ZoomMode()
 {
-	  vtkViewImage2D* View1 = this->m_Pool->GetItem( 0 );
-	  View1->SetInteractionStyle(vtkInteractorStyleImage2D::InteractionTypeZoom );
+  //Change cursors
+  QCursor* zoomCursor = new QCursor(QPixmap(QString::fromUtf8(":/fig/manual-editing.png")),-1,-1);
+  this->QvtkWidget_XY->setCursor(zoomCursor->handle());
+  this->QvtkWidget_XZ->setCursor(zoomCursor->handle());
+  this->QvtkWidget_YZ->setCursor(zoomCursor->handle());
+  delete zoomCursor;
 
-	  vtkViewImage2D* View2 = this->m_Pool->GetItem( 1 );
-	  View2->SetInteractionStyle(vtkInteractorStyleImage2D::InteractionTypeZoom );
+  vtkViewImage2D* View1 = this->m_Pool->GetItem( 0 );
+  View1->SetInteractionStyle(vtkInteractorStyleImage2D::InteractionTypeZoom );
 
-	  vtkViewImage2D* View3 = this->m_Pool->GetItem( 2 );
-	  View3->SetInteractionStyle(vtkInteractorStyleImage2D::InteractionTypeZoom );
+  vtkViewImage2D* View2 = this->m_Pool->GetItem( 1 );
+  View2->SetInteractionStyle(vtkInteractorStyleImage2D::InteractionTypeZoom );
+
+  vtkViewImage2D* View3 = this->m_Pool->GetItem( 2 );
+  View3->SetInteractionStyle(vtkInteractorStyleImage2D::InteractionTypeZoom );
 }
 //-------------------------------------------------------------------------
 
@@ -1273,6 +1280,12 @@ void
 QGoImageView3D::
 PanMode()
 {
+  //Change cursor
+  this->QvtkWidget_XY->setCursor( Qt::OpenHandCursor );
+  this->QvtkWidget_XZ->setCursor( Qt::OpenHandCursor );
+  this->QvtkWidget_YZ->setCursor( Qt::OpenHandCursor );
+
+
   vtkViewImage2D* View1 = this->m_Pool->GetItem( 0 );
   View1->SetInteractionStyle(vtkInteractorStyleImage2D::InteractionTypePan );
 

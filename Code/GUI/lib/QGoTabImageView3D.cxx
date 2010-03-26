@@ -846,6 +846,9 @@ void
 QGoTabImageView3D::
 DefaultMode()
 {
+  //Change cursor
+  this->setCursor( Qt::ArrowCursor );
+
   this->m_ImageView->DefaultMode();
 }
 //-------------------------------------------------------------------------
@@ -855,6 +858,9 @@ void
 QGoTabImageView3D::
 ZoomMode()
 {
+  //Change cursor
+  this->setCursor( Qt::CrossCursor );
+
   this->m_ImageView->ZoomMode();
 }
 //-------------------------------------------------------------------------
@@ -864,5 +870,8 @@ void
 QGoTabImageView3D::
 PanMode()
 {
+  //Change cursor
+  this->setCursor( Qt::OpenHandCursor );
+
   this->m_ImageView->PanMode();
 }

@@ -80,6 +80,8 @@
 #include "SelectQueryDatabaseHelper.h"
 #include "ConvertToStringHelper.h"
 
+#include <QCursor>
+
 #include <QLabel>
 #include <QSpinBox>
 #include <QVBoxLayout>
@@ -2601,7 +2603,10 @@ void
 QGoTabImageView3DwT::
 DefaultMode()
 {
-  m_ImageView->DefaultMode();
+  //Change cursors
+  this->setCursor( Qt::ArrowCursor );
+
+  this->m_ImageView->DefaultMode();
 }
 //-------------------------------------------------------------------------
 
@@ -2610,7 +2615,7 @@ void
 QGoTabImageView3DwT::
 ZoomMode()
 {
-  m_ImageView->ZoomMode();
+  this->m_ImageView->ZoomMode();
 }
 //-------------------------------------------------------------------------
 
@@ -2619,5 +2624,5 @@ void
 QGoTabImageView3DwT::
 PanMode()
 {
-  m_ImageView->PanMode();
+  this->m_ImageView->PanMode();
 }

@@ -58,6 +58,7 @@
 
 #include "QGoImageFilterPluginBase.h"
 
+#include <QCursor>
 #include <QMenu>
 #include <QColorDialog>
 #include <QMessageBox>
@@ -446,6 +447,9 @@ void
 QGoTabImageView2D::
 DefaultMode()
 {
+  //Change cursor
+  this->setCursor( Qt::ArrowCursor );
+
   m_ImageView->DefaultMode();
 }
 //-------------------------------------------------------------------------
@@ -455,6 +459,9 @@ void
 QGoTabImageView2D::
 ZoomMode()
 {
+  //Change cursor
+  this->setCursor( Qt::CrossCursor );
+
   m_ImageView->ZoomMode();
 }
 //-------------------------------------------------------------------------
@@ -464,5 +471,8 @@ void
 QGoTabImageView2D::
 PanMode()
 {
+  //Change cursor
+  this->setCursor( Qt::OpenHandCursor );
+
   m_ImageView->PanMode();
 }
