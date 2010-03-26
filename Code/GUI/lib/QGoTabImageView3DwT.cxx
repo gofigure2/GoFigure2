@@ -309,16 +309,16 @@ CreateDataBaseTablesConnection()
 
   QObject::connect( this->m_DataBaseTables,
     SIGNAL( PrintExistingCollectionIDsFromDB(std::list<std::pair<std::string,QColor> >) ),
-    this->m_ManualSegmentationDockWidget->TraceManualEditingWidget, 
+    this->m_ManualSegmentationDockWidget->TraceManualEditingWidget,
     SLOT( SetCollectionID(std::list<std::pair<std::string,QColor> >) ) );
 
-  QObject::connect( 
+  QObject::connect(
     this->m_ManualSegmentationDockWidget->TraceManualEditingWidget->ColorComboBox,
     SIGNAL( NewColorToBeSaved(std::vector<std::string>)),
     this->m_DataBaseTables,
     SLOT( SaveNewColorInDB(std::vector<std::string> ) ) );
 
-  QObject::connect( 
+  QObject::connect(
     this->m_ManualSegmentationDockWidget->TraceManualEditingWidget->ColorIDCollectionComboBox,
     SIGNAL( NewCollectionToBeSaved()),
     this, SLOT( UpdateDBAndCollectionIDComboBoxForANewCreatedCollection() ) );
@@ -763,7 +763,7 @@ void QGoTabImageView3DwT::CreateModeActions()
   QAction* DefaultAction = new QAction( tr( "Default" ), this );
   DefaultAction->setCheckable( true );
   DefaultAction->setChecked(true);
-  
+
   QIcon DefaultIcon;
   DefaultIcon.addPixmap( QPixmap(QString::fromUtf8(":/fig/mouse-cursor.png")),
     QIcon::Normal, QIcon::Off );
@@ -844,13 +844,13 @@ void QGoTabImageView3DwT::GetTheOpenBookmarksActions()
   QMenu* OpenBookmarkMenu = new QMenu(tr("Open a bookmark"), this);
   for( size_t i = 0; i < NumberBookmarks; i++ )
     {
-    QAction* OpenBookmarkAction 
+    QAction* OpenBookmarkAction
       = new QAction( ListBookmarks[i].first.c_str(), this );
     std::string TextStatusTip = "Description of the bookmark: ";
     TextStatusTip += ListBookmarks[i].second;
     OpenBookmarkAction->setStatusTip( TextStatusTip.c_str() );
     OpenBookmarkMenu->addAction( OpenBookmarkAction );
-    QObject::connect( 
+    QObject::connect(
       OpenBookmarkAction, SIGNAL(triggered()),
       this, SLOT(OpenExistingBookmark())
       );
@@ -1044,10 +1044,10 @@ SetLSMReader( vtkLSMReader* iReader, const int& iTimePoint )
 
     m_VisuDockWidget->SetTMinimumAndMaximum( 0, dim[3] - 1 );
     m_VisuDockWidget->SetTSlice( iTimePoint );
-    if( m_TimePoint != iTimePoint ) 
-      { 
-      SetTimePoint( iTimePoint );  
-      } 
+    if( m_TimePoint != iTimePoint )
+      {
+      SetTimePoint( iTimePoint );
+      }
 
 #if defined( ENABLEFFMPEG ) || defined( ENABLEAVI )
       m_VideoRecorderWidget->SetXMinAndMax( 0, dim[0] - 1 );
@@ -1119,10 +1119,10 @@ SetMegaCaptureFile(
   m_VisuDockWidget->SetTMinimumAndMaximum( min_t, max_t );
   m_VisuDockWidget->SetTSlice( iTimePoint );
 
-  if( static_cast< unsigned int >( m_TimePoint ) != iTimePoint ) 
-    { 
+  if( static_cast< unsigned int >( m_TimePoint ) != iTimePoint )
+    {
 	 	SetTimePoint( iTimePoint );
-    } 
+    }
 
   // Set up QSpinBox in m_VideoRecorderWidget
 #if defined( ENABLEFFMPEG ) || defined( ENABLEAVI )
@@ -1748,7 +1748,7 @@ ValidateContour( const int& iContourID, const int& iDir,
 
     // get meshid from the visu dock widget (SpinBox)
     //unsigned int meshid = m_ManualSegmentationDockWidget->GetMeshId();
-    unsigned int meshid = 
+    unsigned int meshid =
       this->m_ManualSegmentationDockWidget->TraceManualEditingWidget->GetCurrentCollectionID();
 
     if( iSaveInDataBase )
@@ -1820,7 +1820,7 @@ ValidateContour( )
     }
   else
     {
-    QColor color = 
+    QColor color =
       this->m_ManualSegmentationDockWidget->TraceManualEditingWidget->ColorComboBox->GetCurrentColorData().second;
     color.getRgbF( &r, &g, &b );
     }
@@ -2587,10 +2587,12 @@ void
 QGoTabImageView3DwT::
 SetSliceView()
 {
+#if defined ( ENABLEFFMPEG ) || defined ( ENABLEAVI )
   m_VideoRecorderWidget->SetCurrentX( this->GetSliceViewYZ() );
   m_VideoRecorderWidget->SetCurrentY( this->GetSliceViewXZ() );
   m_VideoRecorderWidget->SetCurrentZ( this->GetSliceViewXY() );
   m_VideoRecorderWidget->SetCurrentT( this->GetTimePoint() );
+#endif
 }
 //-------------------------------------------------------------------------
 
