@@ -97,6 +97,8 @@ void QGoAboutWidget::AddTabAbout(QString iTextLicense, QString iTabTitle,
                                 QTabWidget* iTabWidget)
 {
   QLabel* TextLicense = new QLabel(iTextLicense);
+  //TextLicense->setStyleSheet("QLabel{font-size:6x;}");
+  TextLicense->setStyleSheet("font-size:6x");
   QScrollArea* scrollArea = new QScrollArea;
   scrollArea->setBackgroundRole(QPalette::Light);
   scrollArea->setWidget(TextLicense);
@@ -152,12 +154,11 @@ void QGoAboutWidget::SetTheBackGround(QLabel* ilabel,QTabWidget* TabWidget)
   TabWidget->setMaximumWidth(Image.width());
   TabWidget->setMinimumWidth(Image.width());
   ilabel->setAlignment(Qt::AlignCenter);
-
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-QString QGoAboutWidget::ReadLicenseText()
+QString QGoAboutWidget::ReadLicenseText(QString iFilename)
 {
   QFile file;
   file.setFileName("@GOFIGURE2_SOURCE_DIR@/Copyright.txt");
@@ -172,5 +173,14 @@ QString QGoAboutWidget::ReadLicenseText()
 //--------------------------------------------------------------------------
 void QGoAboutWidget::WriteLicenseText(QTabWidget* iTabWidget)
 {
-  this->AddTabAbout(this->ReadLicenseText(),"Gofigure",iTabWidget);
+  this->AddTabAbout(this->
+    ReadLicenseText("@GOFIGURE2_SOURCE_DIR@/Copyright.txt"),
+    "Gofigure",iTabWidget);
+  this->AddTabAbout("","Icon Oxygen",iTabWidget);
+  this->AddTabAbout("","Icon Nuvola",iTabWidget);
+  this->AddTabAbout("","Icon Crystal",iTabWidget);
+  this->AddTabAbout("","Vtk",iTabWidget);
+  this->AddTabAbout("","Itk",iTabWidget);
+  this->AddTabAbout("","VtkInria3D",iTabWidget);
+  this->AddTabAbout("","BioImageXD",iTabWidget);
 }
