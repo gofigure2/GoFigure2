@@ -77,6 +77,11 @@ public:
   void setupUi( QWidget* parent );
   void retranslateUi(QWidget *parent);
 
+  void SetDefaultInteractionStyle( vtkViewImage2D&);
+  void DefaultMode();
+  void ZoomMode();
+  void PanMode();
+
 public slots:
   void SetLookupTable( vtkLookupTable* iLut );
   void ShowScalarBar( const bool& );

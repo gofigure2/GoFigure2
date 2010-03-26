@@ -81,6 +81,10 @@ public slots:
   void ChangeBackgroundColor();
   void TakeSnapshot();
 
+  void DefaultMode();
+  void ZoomMode();
+  void PanMode();
+
 protected:
   QGoImageView2D*       m_ImageView;
   QAction*              m_TakeSnapshotAction;
@@ -102,6 +106,7 @@ protected:
   virtual void SetSlice( int iDir, int* iIdx );
 
   void CreateToolsActions();
+  void CreateModeActions();
 
 private:
   QGoTabImageView2D( const QGoTabImageView2D& );

@@ -123,6 +123,10 @@ class QGoTabImageView3D : public QGoTabImageViewNDBase
     void Change3DPerspectiveToCoronal();
     void Change3DPerspectiveToSagittal();
 
+    void DefaultMode();
+    void ZoomMode();
+    void PanMode();
+
   protected:
     QGoImageView3D*   m_ImageView;
 
@@ -131,6 +135,7 @@ class QGoTabImageView3D : public QGoTabImageViewNDBase
     void GetBackgroundColorFromImageViewer( );
     void SetBackgroundColorToImageViewer( );
     void CreateAllViewActions();
+    void CreateModeActions();
 
     void SetImageToImageViewer( vtkImageData* image );
     int* GetImageCoordinatesFromWorldCoordinates( double pos[3] );

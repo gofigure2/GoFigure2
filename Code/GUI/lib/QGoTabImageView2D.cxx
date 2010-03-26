@@ -140,6 +140,7 @@ QGoTabImageView2D( QWidget* iParent )
   this->m_ViewActions.push_back( m_VisuDockWidget->toggleViewAction() );
 
   CreateToolsActions();
+  CreateModeActions();
 
   ReadSettings();
 }
@@ -337,8 +338,9 @@ SetSlice( int iDir, int* iIdx  )
   (void) iDir;
   (void) iIdx;
 }
-//--------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
 void
 QGoTabImageView2D::
 ChangeBackgroundColor()
@@ -359,7 +361,9 @@ ChangeBackgroundColor()
     m_BackgroundColorAction->setIcon(Pix);
     }
 }
+//-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
 void
 QGoTabImageView2D::
 CreateToolsActions()
@@ -375,10 +379,90 @@ CreateToolsActions()
 
   this->m_ToolsActions.push_back( m_TakeSnapshotAction );
 }
+//-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
+void QGoTabImageView2D::CreateModeActions()
+{
+  QActionGroup* group = new QActionGroup( this );
+
+  QAction* DefaultAction = new QAction( tr( "Default" ), this );
+  DefaultAction->setCheckable( true );
+  DefaultAction->setChecked(true);
+
+  QIcon DefaultIcon;
+  DefaultIcon.addPixmap( QPixmap(QString::fromUtf8(":/fig/mouse-cursor.png")),
+    QIcon::Normal, QIcon::Off );
+  DefaultAction->setIcon( DefaultIcon );
+
+  group->addAction( DefaultAction );
+
+  this->m_ModeActions.push_back( DefaultAction );
+  QObject::connect( DefaultAction, SIGNAL( triggered() ),
+    this, SLOT( DefaultMode() ) );
+
+  QAction* ZoomAction = new QAction( tr( "Zoom" ), this );
+  ZoomAction->setCheckable( true );
+  ZoomAction->setChecked(false);
+
+  QIcon ZoomIcon;
+  //DefaultIcon.addPixmap( QPixmap(QString::fromUtf8(":/fig/mouse-cursor.png")),
+  //  QIcon::Normal, QIcon::Off );
+  ZoomAction->setIcon( ZoomIcon );
+
+  group->addAction( ZoomAction );
+
+  this->m_ModeActions.push_back( ZoomAction );
+  QObject::connect( ZoomAction, SIGNAL( triggered() ),
+    this, SLOT( ZoomMode() ) );
+
+  QAction* PanAction = new QAction( tr( "Pan" ), this );
+  PanAction->setCheckable( true );
+  PanAction->setChecked(false);
+
+  QIcon PanIcon;
+  //DefaultIcon.addPixmap( QPixmap(QString::fromUtf8(":/fig/mouse-cursor.png")),
+  //  QIcon::Normal, QIcon::Off );
+  PanAction->setIcon( PanIcon );
+
+  group->addAction( PanAction );
+
+  this->m_ModeActions.push_back( PanAction );
+  QObject::connect( PanAction, SIGNAL( triggered() ),
+    this, SLOT( PanMode() ) );
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 void
 QGoTabImageView2D::
 TakeSnapshot()
 {
   m_ImageView->SnapshotViewXY( GoFigure::PNG , "snapshot_" );
+}
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView2D::
+DefaultMode()
+{
+  m_ImageView->DefaultMode();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView2D::
+ZoomMode()
+{
+  m_ImageView->ZoomMode();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView2D::
+PanMode()
+{
+  m_ImageView->PanMode();
 }
