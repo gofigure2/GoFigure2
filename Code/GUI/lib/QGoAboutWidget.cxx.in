@@ -78,7 +78,7 @@ QGoAboutWidget::QGoAboutWidget()
   //QHBoxLayout* hlayout = new QHBoxLayout;
   //hlayout->addWidget(IconLab);
   //hlayout->addWidget(GofigureLabel);
-   this->SetTheBackGround(GofigureLabel,vlayout);
+   this->SetTheBackGround(GofigureLabel,TabWidget);
   vlayout->addWidget(GofigureLabel);
   //vlayout->addLayout(hlayout);
   vlayout->addWidget(TabWidget);
@@ -131,7 +131,7 @@ void QGoAboutWidget::SetTabWidget(QTabWidget* iTabWidget)
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoAboutWidget::SetTheBackGround(QLabel* ilabel,QLayout* iLayout)
+void QGoAboutWidget::SetTheBackGround(QLabel* ilabel,QTabWidget* TabWidget)
 {
   //QPixmap BigImage(QString::fromUtf8(":/fig/splash2.png"));
   //BigImage.scaled(iWidget->size());
@@ -146,11 +146,13 @@ void QGoAboutWidget::SetTheBackGround(QLabel* ilabel,QLayout* iLayout)
   ilabel->setMaximumSize(Image.size());
   ilabel->setMinimumSize(Image.size());
   ilabel->setStyleSheet("QLabel{color:rgb(255,255,255);background-image: url(:/fig/splash2.png); font: bold 12px;}");
-  this->setMaximumWidth(Image.width());
-  this->setMinimumWidth (Image.width());
-  this->setMaximumHeight(400);
+  //this->setMaximumWidth(Image.width());
+  //this->setMinimumWidth (Image.width());
+  //this->setMaximumHeight(400);
+  TabWidget->setMaximumWidth(Image.width());
+  TabWidget->setMinimumWidth(Image.width());
   ilabel->setAlignment(Qt::AlignCenter);
-  
+
 }
 //--------------------------------------------------------------------------
 

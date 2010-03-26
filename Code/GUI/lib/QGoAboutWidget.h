@@ -61,7 +61,7 @@ private:
 
   QString GetContributors();
   void SetTabWidget(QTabWidget* iTabWidget);
-  void SetTheBackGround(QLabel* iLabel,QLayout* iLayout);
+  void SetTheBackGround(QLabel* iLabel,QTabWidget* TabWidget);
   QString ReadLicenseText();
   void WriteLicenseText(QTabWidget* iTabWidget);
 
