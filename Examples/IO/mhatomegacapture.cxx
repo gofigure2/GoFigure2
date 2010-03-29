@@ -61,7 +61,7 @@ int main( int argc, char** argv )
     strftime( timeStr, 100, "%Y-%m-%d %H:%M:%S", localtime( &buf.st_mtime ) );
     }
 
-  for( int i = extent[4]; i < extent[5]; i++ )
+  for( int i = extent[4]; i <= extent[5]; i++ )
     {
     std::stringstream filename;
     filename <<"image-PL" << setfill('0') << setw(2) << plaque;

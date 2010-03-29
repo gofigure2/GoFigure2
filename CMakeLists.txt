@@ -113,6 +113,8 @@ ENDIF( BUILD_DOCUMENTATION )
 
 SET( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${GOFIGURE2_SOURCE_DIR}/CMake/" )
 
+SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
+
 # Everything depends on VTK first
 # that way we can get Qt info from VTK
 FIND_PACKAGE( VTK )
@@ -202,8 +204,8 @@ IF( VTK_FOUND )
       ENDIF( NOT CYGWIN )
     ENDIF( WIN32 )
 
-    LINK_DIRECTORIES( ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY} 
-      ${CMAKE_LIBRARY_OUTPUT_DIRECTORY} 
+    LINK_DIRECTORIES( ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
+      ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
       )#${LIBRARY_OUTPUT_PATH} )
 
 
@@ -228,7 +230,7 @@ IF( VTK_FOUND )
       ${MEGAVTK2_SOURCE_DIR}/vtkRenderingAddOn
       ${MEGAVTK2_BINARY_DIR}/vtkRenderingAddOn
       ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/vtkLSM
-      ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/itkQt 
+      ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/itkQt
     )
 
     #---------------------------------------------------------------------
@@ -265,11 +267,11 @@ IF( VTK_FOUND )
     IF( BUILD_EXAMPLES )
       INCLUDE( CTest )
     ENDIF( BUILD_EXAMPLES )
-   
+
     IF( BUILD_TESTING )
       SET( BUILDNAME "${BUILDNAME}" CACHE STRING "Name of build on the dashboard" )
       MARK_AS_ADVANCED( BUILDNAME )
-    ENDIF( BUILD_TESTING ) 
+    ENDIF( BUILD_TESTING )
 
     SET( QGoResourceFile ${GOFIGURE2_SOURCE_DIR}/Resources/axes.qrc )
 
@@ -317,8 +319,9 @@ IF( VTK_FOUND )
   ADD_SUBDIRECTORY( Code )
 
   OPTION( BUILD_EXAMPLES "Build Examples" OFF )
-  #  OPTION( BUILD_PLUGINS  "Build GoFigure Plugins" OFF )
-  SET( BUILD_PLUGINS OFF )
+
+  OPTION( BUILD_PLUGINS  "Build GoFigure Plugins" OFF )
+#   SET( BUILD_PLUGINS OFF )
 
   IF( BUILD_EXAMPLES OR BUILD_PLUGINS )
 
