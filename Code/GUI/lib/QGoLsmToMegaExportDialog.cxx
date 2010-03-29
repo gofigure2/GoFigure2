@@ -159,6 +159,9 @@ on_convert_clicked()
 	    filetype = GoFigure::TIFF;
 	    }
 
+    // Remove extension
+    m_LsmName.replace( QString(".lsm"), QString("") );
+
     // conversion fonction called from there to enable progress bar
     ConversionLsmToMegaThreadSend->SetBaseName(m_LsmName.toStdString());
     ConversionLsmToMegaThreadSend->SetLsmPath(m_LsmPath.toStdString());

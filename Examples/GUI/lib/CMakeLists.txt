@@ -134,7 +134,7 @@ ADD_TEST( QGoLsmToMegaExportDialogTest
 
 ADD_TEST( QGoLsmToMegaExportThreadTest
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/QGoLsmToMegaExportThreadTest
-  earpax2isl11
+  earpax2isl11.lsm
   ${TESTING_DATA_PATH}/earpax2isl11.lsm
   ${TESTING_DATA_PATH}/earpax2isl11/
   1
