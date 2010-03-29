@@ -782,8 +782,8 @@ void QGoTabImageView3DwT::CreateModeActions()
   ZoomAction->setChecked(false);
 
   QIcon ZoomIcon;
-  //DefaultIcon.addPixmap( QPixmap(QString::fromUtf8(":/fig/mouse-cursor.png")),
-  //  QIcon::Normal, QIcon::Off );
+  ZoomIcon.addPixmap( QPixmap(QString::fromUtf8(":/fig/zoom.png")),
+    QIcon::Normal, QIcon::Off );
   ZoomAction->setIcon( ZoomIcon );
 
   group->addAction( ZoomAction );
@@ -797,8 +797,8 @@ void QGoTabImageView3DwT::CreateModeActions()
   PanAction->setChecked(false);
 
   QIcon PanIcon;
-  //DefaultIcon.addPixmap( QPixmap(QString::fromUtf8(":/fig/mouse-cursor.png")),
-  //  QIcon::Normal, QIcon::Off );
+  PanIcon.addPixmap( QPixmap(QString::fromUtf8(":/fig/Hand.png")),
+    QIcon::Normal, QIcon::Off );
   PanAction->setIcon( PanIcon );
 
   group->addAction( PanAction );
@@ -1967,6 +1967,9 @@ void
 QGoTabImageView3DwT::
 ActivateManualSegmentationEditor( const bool& iActivate )
 {
+  // Initializae cursor behaviour
+  this->DefaultMode();
+
   std::vector< vtkSmartPointer< vtkContourWidget > >::iterator
     it = m_ContourWidget.begin();
   while( it != m_ContourWidget.end() )
@@ -2603,9 +2606,6 @@ void
 QGoTabImageView3DwT::
 DefaultMode()
 {
-  //Change cursors
-  this->setCursor( Qt::ArrowCursor );
-
   this->m_ImageView->DefaultMode();
 }
 //-------------------------------------------------------------------------

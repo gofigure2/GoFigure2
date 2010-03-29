@@ -370,8 +370,8 @@ void QGoTabImageView3D::CreateModeActions()
   ZoomAction->setChecked(false);
 
   QIcon ZoomIcon;
-  //DefaultIcon.addPixmap( QPixmap(QString::fromUtf8(":/fig/mouse-cursor.png")),
-  //  QIcon::Normal, QIcon::Off );
+  ZoomIcon.addPixmap( QPixmap(QString::fromUtf8(":/fig/zoom.png")),
+    QIcon::Normal, QIcon::Off );
   ZoomAction->setIcon( ZoomIcon );
 
   group->addAction( ZoomAction );
@@ -385,8 +385,8 @@ void QGoTabImageView3D::CreateModeActions()
   PanAction->setChecked(false);
 
   QIcon PanIcon;
-  //DefaultIcon.addPixmap( QPixmap(QString::fromUtf8(":/fig/mouse-cursor.png")),
-  //  QIcon::Normal, QIcon::Off );
+  PanIcon.addPixmap( QPixmap(QString::fromUtf8(":/fig/Hand.png")),
+    QIcon::Normal, QIcon::Off );
   PanAction->setIcon( PanIcon );
 
   group->addAction( PanAction );
@@ -846,9 +846,6 @@ void
 QGoTabImageView3D::
 DefaultMode()
 {
-  //Change cursor
-  this->setCursor( Qt::ArrowCursor );
-
   this->m_ImageView->DefaultMode();
 }
 //-------------------------------------------------------------------------
@@ -858,9 +855,6 @@ void
 QGoTabImageView3D::
 ZoomMode()
 {
-  //Change cursor
-  this->setCursor( Qt::CrossCursor );
-
   this->m_ImageView->ZoomMode();
 }
 //-------------------------------------------------------------------------
@@ -870,8 +864,5 @@ void
 QGoTabImageView3D::
 PanMode()
 {
-  //Change cursor
-  this->setCursor( Qt::OpenHandCursor );
-
   this->m_ImageView->PanMode();
 }

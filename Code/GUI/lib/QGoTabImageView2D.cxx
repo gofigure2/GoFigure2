@@ -407,8 +407,8 @@ void QGoTabImageView2D::CreateModeActions()
   ZoomAction->setChecked(false);
 
   QIcon ZoomIcon;
-  //DefaultIcon.addPixmap( QPixmap(QString::fromUtf8(":/fig/mouse-cursor.png")),
-  //  QIcon::Normal, QIcon::Off );
+  ZoomIcon.addPixmap( QPixmap(QString::fromUtf8(":/fig/zoom.png")),
+    QIcon::Normal, QIcon::Off );
   ZoomAction->setIcon( ZoomIcon );
 
   group->addAction( ZoomAction );
@@ -422,8 +422,8 @@ void QGoTabImageView2D::CreateModeActions()
   PanAction->setChecked(false);
 
   QIcon PanIcon;
-  //DefaultIcon.addPixmap( QPixmap(QString::fromUtf8(":/fig/mouse-cursor.png")),
-  //  QIcon::Normal, QIcon::Off );
+  PanIcon.addPixmap( QPixmap(QString::fromUtf8(":/fig/Hand.png")),
+    QIcon::Normal, QIcon::Off );
   PanAction->setIcon( PanIcon );
 
   group->addAction( PanAction );
@@ -459,8 +459,9 @@ void
 QGoTabImageView2D::
 ZoomMode()
 {
-  //Change cursor
-  this->setCursor( Qt::CrossCursor );
+  //Change cursors
+  QCursor zoomCursor(QPixmap(QString::fromUtf8(":/fig/zoom.png")),-1,-1);
+  this->setCursor( zoomCursor );
 
   m_ImageView->ZoomMode();
 }

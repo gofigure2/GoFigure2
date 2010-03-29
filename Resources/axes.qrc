@@ -1,94 +1,41 @@
 <RCC>
-  <qresource prefix="/" >
-    <file>fig/splash.jpg</file>
-    <file>fig/splash2.png</file>
-  </qresource>
-  <qresource prefix="/" >
-    <file>fig/manual-editing.png</file>
-  </qresource>
-  <qresource prefix="/" >
-    <file>fig/cube.png</file>
-    <file>fig/2D_VIEWS_INFOS.png</file>
-    <file>fig/LeftView.png</file>
-    <file>fig/C_M_L.png</file>
-    <file>fig/PosteriorView.png</file>
-    <file>fig/DorsalView.png</file>
-    <file>fig/Myapp2.png</file>
-  </qresource>
-  <qresource prefix="/" >
-    <file>fig/camera-photo.png</file>
-  </qresource>
-  <qresource prefix="/" >
-    <file>fig/mouse-cursor.png</file>
-  </qresource>
-  <qresource prefix="/" >
-    <file>fig/xy.png</file>
-  </qresource>
-  <qresource prefix="/" >
-    <file>fig/video.png</file>
-  </qresource>
-  <qresource prefix="/" >
-    <file>fig/scalarbar.png</file>
-  </qresource>
-  <qresource prefix="/" >
-    <file>fig/4views.png</file>
-  </qresource>
-  <qresource prefix="/" >
-    <file>fig/selection.png</file>
-  </qresource>
-  <qresource prefix="/" >
-    <file>fig/filesaveas.png</file>
-  </qresource>
-  <qresource prefix="/" >
-    <file>fig/UseDatabase.png</file>
-    <file>fig/document-open.png</file>
-  </qresource>
-  <qresource prefix="/" >
-    <file>fig/Hand.png</file>
-  </qresource>
-  <qresource prefix="/" >
-    <file>fig/LookupTable.png</file>
-  </qresource>
-  <qresource prefix="/" >
-    <file>fig/folder.png</file>
-  </qresource>
-  <qresource prefix="/" >
-    <file>fig/page-zoom.png</file>
-  </qresource>
-  <qresource prefix="/" >
-    <file>fig/system-quit.png</file>
-  </qresource>
-  <qresource prefix="/" >
-    <file>fig/spline.png</file>
-  </qresource>
-  <qresource prefix="/" >
-    <file>fig/tracer.png</file>
-  </qresource>
-  <qresource prefix="/" >
-    <file>fig/scaling.png</file>
-  </qresource>
-  <qresource prefix="/" >
-    <file>fig/rotation.png</file>
-  </qresource>
-  <qresource prefix="/" >
-    <file>fig/translation.png</file>
-  </qresource>
-  <qresource prefix="/" >
-    <file>fig/VolumeRendering1.png</file>
-  </qresource>
-  <qresource prefix="/" >
-    <file>fig/xyz.png</file>
-  </qresource>
-  <qresource prefix="/" >
-    <file>fig/zx.png</file>
-  </qresource>
-  <qresource prefix="/" >
-    <file>fig/yz.png</file>
-  </qresource>
-  <qresource prefix="/" >
-    <file>fig/scalarbar.png</file>
-  </qresource>
-  <qresource prefix="/" >
-    <file>fig/TableWidget.png</file>
-  </qresource>
+    <qresource prefix="/">
+        <file>fig/splash.jpg</file>
+        <file>fig/splash2.png</file>
+        <file>fig/manual-editing.png</file>
+        <file>fig/cube.png</file>
+        <file>fig/2D_VIEWS_INFOS.png</file>
+        <file>fig/LeftView.png</file>
+        <file>fig/C_M_L.png</file>
+        <file>fig/PosteriorView.png</file>
+        <file>fig/DorsalView.png</file>
+        <file>fig/Myapp2.png</file>
+        <file>fig/camera-photo.png</file>
+        <file>fig/mouse-cursor.png</file>
+        <file>fig/xy.png</file>
+        <file>fig/video.png</file>
+        <file>fig/scalarbar.png</file>
+        <file>fig/4views.png</file>
+        <file>fig/selection.png</file>
+        <file>fig/filesaveas.png</file>
+        <file>fig/UseDatabase.png</file>
+        <file>fig/document-open.png</file>
+        <file>fig/Hand.png</file>
+        <file>fig/LookupTable.png</file>
+        <file>fig/folder.png</file>
+        <file>fig/page-zoom.png</file>
+        <file>fig/system-quit.png</file>
+        <file>fig/spline.png</file>
+        <file>fig/tracer.png</file>
+        <file>fig/scaling.png</file>
+        <file>fig/rotation.png</file>
+        <file>fig/translation.png</file>
+        <file>fig/VolumeRendering1.png</file>
+        <file>fig/xyz.png</file>
+        <file>fig/zx.png</file>
+        <file>fig/yz.png</file>
+        <file>fig/scalarbar.png</file>
+        <file>fig/TableWidget.png</file>
+        <file>fig/zoom.png</file>
+    </qresource>
 </RCC>

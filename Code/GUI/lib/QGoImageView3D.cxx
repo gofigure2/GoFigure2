@@ -1231,6 +1231,11 @@ void
 QGoImageView3D::
 DefaultMode()
 {
+  //Change cursor
+  this->QvtkWidget_XY->setCursor( Qt::ArrowCursor );
+  this->QvtkWidget_XZ->setCursor( Qt::ArrowCursor );
+  this->QvtkWidget_YZ->setCursor( Qt::ArrowCursor );
+
   vtkViewImage2D* View1 = this->m_Pool->GetItem( 0 );
   this->SetDefaultInteractionStyle( *View1 );
 
@@ -1258,11 +1263,10 @@ QGoImageView3D::
 ZoomMode()
 {
   //Change cursors
-  QCursor* zoomCursor = new QCursor(QPixmap(QString::fromUtf8(":/fig/manual-editing.png")),-1,-1);
-  this->QvtkWidget_XY->setCursor(zoomCursor->handle());
-  this->QvtkWidget_XZ->setCursor(zoomCursor->handle());
-  this->QvtkWidget_YZ->setCursor(zoomCursor->handle());
-  delete zoomCursor;
+  QCursor zoomCursor(QPixmap(QString::fromUtf8(":/fig/zoom.png")),-1,-1);
+  this->QvtkWidget_XY->setCursor( zoomCursor );
+  this->QvtkWidget_XZ->setCursor( zoomCursor );
+  this->QvtkWidget_YZ->setCursor( zoomCursor );
 
   vtkViewImage2D* View1 = this->m_Pool->GetItem( 0 );
   View1->SetInteractionStyle(vtkInteractorStyleImage2D::InteractionTypeZoom );
