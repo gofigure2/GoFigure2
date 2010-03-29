@@ -160,7 +160,7 @@ on_convert_clicked()
 	    }
 
     // Remove extension
-    m_LsmName.replace( QString(".lsm"), QString("") );
+    m_LsmName.replace( QString(".lsm"), QString("_lsm") );
 
     // conversion fonction called from there to enable progress bar
     ConversionLsmToMegaThreadSend->SetBaseName(m_LsmName.toStdString());
