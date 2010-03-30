@@ -177,8 +177,12 @@ void QGoAboutWidget::WriteLicenseText(QTabWidget* iTabWidget)
   this->AddTabAbout(this->
     ReadLicenseText("@GOFIGURE2_SOURCE_DIR@/Copyright.txt"),
     "Gofigure",iTabWidget);
-  this->AddTabAbout("","Icon Oxygen",iTabWidget);
-  this->AddTabAbout("","Icon Nuvola",iTabWidget);
+  this->AddTabAbout(this->
+	ReadLicenseText("@GOFIGURE2_SOURCE_DIR@/CopyrightOxygen.txt"),
+	"Icon Oxygen",iTabWidget);
+  this->AddTabAbout(this->
+	ReadLicenseText("@GOFIGURE2_SOURCE_DIR@/CopyrightNuvola.txt"),
+	"Icon Nuvola",iTabWidget);
   this->AddTabAbout(this->
 	ReadLicenseText("@GOFIGURE2_SOURCE_DIR@/CopyrightCrystal.txt"),
 	"Icon Crystal",iTabWidget);
