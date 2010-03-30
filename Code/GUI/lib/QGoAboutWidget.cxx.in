@@ -56,31 +56,13 @@ QGoAboutWidget::QGoAboutWidget()
   QString message = QString( "Version: GoFigure2-%1\n\n" ).arg( version );
   message.append( date );
   message.append( about_gofigure );
-  //this->SetTheBackGround();
   QVBoxLayout* vlayout = new QVBoxLayout(this);
-  //vlayout->addWidget(BigImageLabel);
   QLabel* GofigureLabel = new QLabel(message,this);
-  //QBrush brush (QColor(255,255,255,255));
-  //brush.setStyle(Qt::SolidPattern);
-  //QPalette palette;
-  //palette.setBrush(QPalette::Active, QPalette::WindowText, brush);
-  //GofigureLabel->setPalette(palette);
   GofigureLabel->setAlignment(Qt::AlignCenter);
- // GofigureLabel->setAlignment(Qt::AlignJustify);
   QTabWidget* TabWidget = new QTabWidget(this);
   this->SetTabWidget(TabWidget);
-  //QPixmap Icon (100,100);
-  //QPixmap IconImage(QString::fromUtf8(":/fig/Myapp2.png"));
-  //QPixmap IconImage(QString::fromUtf8(":/myappico.ico"));
-  //QLabel* IconLab = new QLabel(this);
-  //IconLab->setPixmap(IconImage);
-  //IconLab->setAlignment(Qt::AlignTop);
-  //QHBoxLayout* hlayout = new QHBoxLayout;
-  //hlayout->addWidget(IconLab);
-  //hlayout->addWidget(GofigureLabel);
-   this->SetTheBackGround(GofigureLabel,TabWidget);
+  this->SetTheBackGround(GofigureLabel,TabWidget);
   vlayout->addWidget(GofigureLabel);
-  //vlayout->addLayout(hlayout);
   vlayout->addWidget(TabWidget);
   this->setLayout(vlayout);
 }
@@ -97,7 +79,6 @@ void QGoAboutWidget::AddTabAbout(QString iTextLicense, QString iTabTitle,
                                 QTabWidget* iTabWidget)
 {
   QLabel* TextLicense = new QLabel(iTextLicense);
-  //TextLicense->setStyleSheet("QLabel{font-size:6x;}");
   TextLicense->setStyleSheet("font-size:6x");
   QScrollArea* scrollArea = new QScrollArea;
   scrollArea->setBackgroundRole(QPalette::Light);
@@ -135,22 +116,10 @@ void QGoAboutWidget::SetTabWidget(QTabWidget* iTabWidget)
 //--------------------------------------------------------------------------
 void QGoAboutWidget::SetTheBackGround(QLabel* ilabel,QTabWidget* TabWidget)
 {
-  //QPixmap BigImage(QString::fromUtf8(":/fig/splash2.png"));
-  //BigImage.scaled(iWidget->size());
-  //QPalette p;
-  //QBrush brush (QColor(255,255,255,255));
-  //brush.setStyle(Qt::SolidPattern);
-  //p.setBrush(QPalette::Background, BigImage);
-  //p.setBrush(QPalette::Active, QPalette::WindowText, brush);
-  //p.setBrush(QPalette::WindowText, brush);
-  //iWidget->setPalette(p);
   QPixmap Image(QString::fromUtf8(":/fig/splash2.png"));
   ilabel->setMaximumSize(Image.size());
   ilabel->setMinimumSize(Image.size());
   ilabel->setStyleSheet("QLabel{color:rgb(255,255,255);background-image: url(:/fig/splash2.png); font: bold 12px;}");
-  //this->setMaximumWidth(Image.width());
-  //this->setMinimumWidth (Image.width());
-  //this->setMaximumHeight(400);
   TabWidget->setMaximumWidth(Image.width());
   TabWidget->setMinimumWidth(Image.width());
   ilabel->setAlignment(Qt::AlignCenter);
@@ -161,8 +130,9 @@ void QGoAboutWidget::SetTheBackGround(QLabel* ilabel,QTabWidget* TabWidget)
 QString QGoAboutWidget::ReadLicenseText(QString iFilename)
 {
   QFile file;
-  //file.setFileName("@GOFIGURE2_SOURCE_DIR@/Copyright.txt");
-  file.setFileName(iFilename);
+  QString Filename = "@GOFIGURE2_SOURCE_DIR@/Licenses/";
+  Filename.append(iFilename);
+  file.setFileName(Filename);
   file.open(QIODevice::ReadOnly);
   QTextStream textStream(&file);
   QString LicenseText = textStream.readAll();
@@ -175,19 +145,27 @@ QString QGoAboutWidget::ReadLicenseText(QString iFilename)
 void QGoAboutWidget::WriteLicenseText(QTabWidget* iTabWidget)
 {
   this->AddTabAbout(this->
-    ReadLicenseText("@GOFIGURE2_SOURCE_DIR@/Copyright.txt"),
+    ReadLicenseText("Copyright.txt"),
     "Gofigure",iTabWidget);
   this->AddTabAbout(this->
-	ReadLicenseText("@GOFIGURE2_SOURCE_DIR@/CopyrightOxygen.txt"),
+	ReadLicenseText("CopyrightOxygen.txt"),
 	"Icon Oxygen",iTabWidget);
   this->AddTabAbout(this->
-	ReadLicenseText("@GOFIGURE2_SOURCE_DIR@/CopyrightNuvola.txt"),
+	ReadLicenseText("CopyrightNuvola.txt"),
 	"Icon Nuvola",iTabWidget);
   this->AddTabAbout(this->
-	ReadLicenseText("@GOFIGURE2_SOURCE_DIR@/CopyrightCrystal.txt"),
+	ReadLicenseText("CopyrightCrystal.txt"),
 	"Icon Crystal",iTabWidget);
-  this->AddTabAbout("","Vtk",iTabWidget);
-  this->AddTabAbout("","Itk",iTabWidget);
-  this->AddTabAbout("","VtkInria3D",iTabWidget);
-  this->AddTabAbout("","BioImageXD",iTabWidget);
+  this->AddTabAbout(this->
+	ReadLicenseText("VTKCopyright.txt"),
+	"Vtk",iTabWidget);
+  this->AddTabAbout(this->
+	ReadLicenseText("ITKCopyright.txt"),
+	"Itk",iTabWidget);
+  this->AddTabAbout(this->
+	ReadLicenseText("vtkINRIA3DCopyright.txt"),
+	"VtkInria3D",iTabWidget);
+  this->AddTabAbout(this->
+	ReadLicenseText("BioimageXDCopyright.txt"),
+	"BioImageXD",iTabWidget);
 }
