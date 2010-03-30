@@ -1,6 +1,6 @@
 /*=========================================================================
-  Author: $Author: lsouhait $  // Author of last commit
-  Version: $Revision: 535 $  // Revision of last commit
+  Author: $Author$  // Author of last commit
+  Version: $Revision$  // Revision of last commit
   Date: $Date: 2009-08-06 11:56:52 -0400 (Thu, 06 Aug 2009) $  // Date of last commit
 =========================================================================*/
 
@@ -59,15 +59,20 @@
 #include "QGoDBCellTypeManager.h"
 #include "QGoDBSubCellTypeManager.h"
 
-/** \brief Ensure the connection with the Database*/
+/** \class QGoPrintDatabase 
+ * \brief Ensure the connection with the Database
+ * */
 class QGoPrintDatabase : public QDockWidget,
   private Ui::WidgetPrintDatabase
 {
   Q_OBJECT
 
 public:
-
+  
+  /** \brief Constructor */
   explicit QGoPrintDatabase( QWidget* iParent = 0 );
+
+  /** \brief Destructor */
   virtual ~QGoPrintDatabase();
 
   typedef GoDBCollectionOfTraces::DBTableWidgetContainerType DBTableWidgetContainerType;
@@ -79,9 +84,9 @@ public:
     const std::string& iUser, const std::string& iPassword,
     const unsigned int& iImgSessionID, const std::string& iImgSessionName );
 
-  /** \brief Create the QTableWidgetChild,get the columns names and the values stored
-  in the database, display them in the QTableWidgetChild and fill the info for the
-  contours and meshes*/
+  /** \brief Create the QTableWidgetChild,get the columns names and the 
+ * values stored in the database, display them in the QTableWidgetChild 
+ * and fill the info for the contours and meshes*/
   void FillTableFromDatabase(int iTimePoint);
 
   /** \brief Return a vector of all the contours for the given timepoint*/
@@ -102,28 +107,30 @@ public:
   std::vector<ContourMeshStructure> GetMeshesForAGivenZCoord (
     unsigned int iZCoordPoint);
 
-  /** \brief return a list containing the existing colornames with their corresponding rgba
-  from the database*/
+  /** \brief return a list containing the existing colornames with their 
+ * corresponding rgba from the database*/
   std::list<std::pair<std::string,std::vector<int> > > GetColorComboBoxInfofromDB();
   
-  /** \brief return a list of the IDs for the collection corresponding to the tracename
-  with their colors for all the timepoints*/
+  /** \brief return a list of the IDs for the collection corresponding to 
+ * the tracename with their colors for all the timepoints*/
  // std::list<std::pair<std::string,QColor> > GetListExistingCollectionIDFromDB(
   //  std::string TraceName);
 
-  /** \brief return a list of the IDs for the collection corresponding to the tracename
-  with their colors for the given timepoint if the collection is a mesh or for 
-  all timepoint for tracks and lineages*/
-  std::list<std::pair<std::string,QColor> > GetListExistingCollectionIDFromDB(
-    std::string TraceName,int iTimePoint);
+  /** \brief return a list of the IDs for the collection corresponding to 
+ * the tracename with their colors for the given timepoint if the 
+ * collection is a mesh or for all timepoint for tracks and lineages*/
+  std::list<std::pair<std::string,QColor> > 
+    GetListExistingCollectionIDFromDB( std::string TraceName,
+      int iTimePoint);
 
   std::pair<std::string,QColor> GetCurrentCollectionData();
   
-  /** \brief Save the new collection in the database and return the corresponding ID with
-  the QColor*/
+  /** \brief Save the new collection in the database and return the 
+ * corresponding ID with the QColor*/
   std::pair<std::string,QColor> SaveNewCollectionInDB(
-   std::pair<std::string,QColor> iColorNewCollection, std::string iTraceName,
-   int iTimePoint);
+    std::pair<std::string,QColor> iColorNewCollection, 
+    std::string iTraceName,
+    int iTimePoint);
 
   void UpdateCurrentColorData(std::pair<std::string,QColor> iCurrentColorData);
   void SetCurrentCollectionID(std::pair<std::string,QColor> iCurrentCollectionData);
@@ -131,16 +138,16 @@ public:
   /** \brief return the info for the visu for the related traces*/
   std::vector<ContourMeshStructure>* GetTracesInfoListForVisu(std::string iTraceName);
 
-  /** \brief save a new contour from the visu into the database,
-  update the table widget with the row container and the m_ContoursInfo*/
-  int SaveContoursFromVisuInDB( unsigned int iXCoordMin,
+  /** \brief save a new contour from the visu into the database, update 
+ * the table widget with the row container and the m_ContoursInfo*/
+  int SaveContoursFromVisuInDB( unsigned int iXCoordMin, 
     unsigned int iYCoordMin, unsigned int iZCoordMin, unsigned int iTCoord,
     unsigned int iXCoordMax, unsigned int iYCoordMax, unsigned int iZCoordMax,
     vtkPolyData* iContourNodes, std::pair<std::string, QColor> iColorData,
     unsigned int iMeshID );
 
   /** \brief Update the data for the reedited contour into the database and
-  update the table widget*/
+ * update the table widget*/
   int UpdateContourFromVisuInDB(unsigned int iXCoordMin,
     unsigned int iYCoordMin, unsigned int iZCoordMin, unsigned int iTCoord,
     unsigned int iXCoordMax, unsigned int iYCoordMax, unsigned int iZCoordMax,
@@ -148,8 +155,8 @@ public:
 
   void AddBookmark(int iXCoord, int iYCoord, 
     int iZCoord, int iTCoord);
-  /** \brief return a bool to know if the user is using the database or not*/
-
+  /** \brief return a bool to know if the user is using the database or 
+ * not*/
   NamesDescrContainerType GetListBookmarks();
   NamesDescrContainerType GetListCellTypes();
   NamesDescrContainerType GetListSubCellTypes();
@@ -165,15 +172,16 @@ public slots:
   void ChangeMeshesToHighLightInfoFromVisu(
   std::list<int> iListMeshesHighLightedInVisu);
 
-  /** \brief Save a new color in the database with rgba and the name of the color*/
+  /** \brief Save a new color in the database with rgba and the name of 
+ * the color*/
   void SaveNewColorInDB(std::vector<std::string> iDataNewColor);
   void DeleteBookmarks();
   void AddNewCellType();
   void AddNewSubCellType();
   void DeleteCellType();
   void DeleteSubCellType();
-  /** \brief get the list of meshes for the current timepoint from the database, emit
-  a signal for the list to be printed in the GUI*/
+  /** \brief get the list of meshes for the current timepoint from the 
+ * database, emit a signal for the list to be printed in the GUI*/
   void UpdateListMeshes(int iTimePoint);
 
 signals:
@@ -223,30 +231,30 @@ protected:
   void CloseDBConnection();
 
   /** \brief Return the Name of the tab currently used in the table widget,
-  which correspond to the TraceName of the CollectionOfTraces: */
+ * which correspond to the TraceName of the CollectionOfTraces: */
   std::string InWhichTableAreWe();
   /** \brief Return the TraceInfoStructure corresponding to the trace name*/
   TraceInfoStructure* GetTraceInfoStructure(std::string iTraceName);
 
-  /** \brief initialize the m_ContoursInfo and m_MeshesInfo with the info from the
-  database*/
+  /** \brief initialize the m_ContoursInfo and m_MeshesInfo with the info 
+ * from the database*/
   void LoadContoursAndMeshesFromDB(vtkMySQLDatabase* DatabaseConnector);
 
   std::vector<ContourMeshStructure> GetTracesForAGivenTimepoint(
     std::vector<ContourMeshStructure> iAllTraces, unsigned int iTimePoint);
   
-  /** \brief return a vector of all the traces with a bounding box containing
-  the given ZCoord*/
+  /** \brief return a vector of all the traces with a bounding box 
+ * containing the given ZCoord*/
   std::vector<ContourMeshStructure> GetTracesForAGivenZCoord(
     std::vector<ContourMeshStructure> iAllTraces,unsigned int iZCoord,
     GoDBCollectionOfTraces* iCollectionOfTraces);
-  /**\brief get the columns names and the values of the table (type T) from the
-    database, then display them in the QTableWidgetchild.*/
+  /**\brief get the columns names and the values of the table (type T) 
+ * from the database, then display them in the QTableWidgetchild.*/
   void GetContentAndDisplayFromDB( std::string iTableName);
   void closeEvent(QCloseEvent* event);
 
-  /** \brief Insert a row in the table widget and in the row container with the
-  corresponding values of the new created Trace*/
+  /** \brief Insert a row in the table widget and in the row container 
+ * with the corresponding values of the new created Trace*/
   void UpdateTableWidgetAndRowContainerWithNewCreatedTrace(
     std::string iTraceName);
 
@@ -300,15 +308,17 @@ protected slots:
 
   void AddToSelectedCollection();
   void ReEditTrace();
-  /** \brief Update the m_ContoursInfo or m_MeshesInfo depending on which table
-  the user had clicked with the selected traces and emit a signal to say which m_tracesInfo has
-  changed*/
+  /** \brief Update the m_ContoursInfo or m_MeshesInfo depending on which 
+ * table the user had clicked with the selected traces and emit a signal 
+ * to say which m_tracesInfo has changed*/
   void ChangeTracesToHighLightInfoFromTableWidget();
-  /** \brief Add the new created trace in the vector of ContourMeshInfo*/
-  /** \todo once we know more for the visualization of meshes, need to do the
-  same for add a collection*/
+  /** \brief Add the new created trace in the vector of ContourMeshInfo
+ * \todo once we know more for the visualization of meshes, need to do the
+ * same for add a collection*/
   void AddATraceToContourMeshInfo(std::string iTraceName,int iTraceID);
 
+private:
+  Q_DISABLE_COPY( QGoPrintDatabase );
 };
 
 #endif

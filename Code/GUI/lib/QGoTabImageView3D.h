@@ -65,7 +65,7 @@ class QGoTabImageView3D : public QGoTabImageViewNDBase
 {
   Q_OBJECT
   public:
-    QGoTabImageView3D( QWidget* parent = 0 );
+    explicit QGoTabImageView3D( QWidget* parent = 0 );
     virtual ~QGoTabImageView3D();
 
     typedef QGoTabImageViewNDBase::QGoDockWidgetStatusPair QGoDockWidgetStatusPair;
@@ -150,6 +150,7 @@ class QGoTabImageView3D : public QGoTabImageViewNDBase
 
     virtual void SetSlice( int iDir, int* iIdx );
 
-//   private:
+  private:
+    Q_DISABLE_COPY( QGoTabImageView3D );
 };
 #endif

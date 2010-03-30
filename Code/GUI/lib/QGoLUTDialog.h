@@ -1,6 +1,6 @@
 /*=========================================================================
-  Author: $Author: arnaudgelas $  // Author of last commit
-  Version: $Revision: 193 $  // Revision of last commit
+  Author: $Author$  // Author of last commit
+  Version: $Revision$  // Revision of last commit
   Date: $Date: 2009-05-19 11:46:16 -0400 (Tue, 19 May 2009) $  // Date of last commit
 =========================================================================*/
 
@@ -65,15 +65,21 @@ class QGoLUTDialog : public QDialog
 {
   Q_OBJECT
 public:
+  /** \brief Constructor */
   explicit QGoLUTDialog( QWidget* parent = 0 );
+
+  /** \brief Destructor */
   virtual ~QGoLUTDialog();
 
+  /** \brief get the selected look up table*/
   vtkLookupTable* GetLookupTable( );
 
+  /** \brief get the selected look up table*/
   static vtkLookupTable* GetLookupTable( QWidget* iParent,
     const QString& iTitle );
 
 public slots:
+  /** \brief Change look up table*/
   void ChangeLookupTable( const int& );
 
 protected:
@@ -90,5 +96,8 @@ protected:
   QComboBox*         LUTComboBox;
 
   void setupUi( QDialog *LUTDialog );
+
+private:
+  Q_DISABLE_COPY( QGoLUTDialog );
 };
 #endif

@@ -58,7 +58,7 @@ class QGoTabImageView2D : public QGoTabImageViewNDBase
 {
   Q_OBJECT
 public:
-  QGoTabImageView2D( QWidget* parent = 0 );
+  explicit QGoTabImageView2D( QWidget* parent = 0 );
   virtual ~QGoTabImageView2D();
 
   typedef QGoTabImageViewNDBase::QGoDockWidgetStatusPair QGoDockWidgetStatusPair;
@@ -109,7 +109,6 @@ protected:
   void CreateModeActions();
 
 private:
-  QGoTabImageView2D( const QGoTabImageView2D& );
-  void operator = ( const QGoTabImageView2D& );
+  Q_DISABLE_COPY( QGoTabImageView2D );
 };
 #endif

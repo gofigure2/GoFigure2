@@ -1,6 +1,6 @@
 /*=========================================================================
-  Author: $Author:$  // Author of last commit
-  Version: $Rev:$  // Revision of last commit
+  Author: $Author$  // Author of last commit
+  Version: $Rev$  // Revision of last commit
   Date: $Date:$  // Date of last commit
 =========================================================================*/
 
@@ -66,28 +66,52 @@ class QGoTabImageViewElementBase : public QGoTabElementBase
 {
   Q_OBJECT
 public:
+  /** \brief Constructor */
   explicit QGoTabImageViewElementBase( QWidget* parent = 0 );
+  /** \brief Destructor */
   virtual ~QGoTabImageViewElementBase();
 
   typedef QGoTabElementBase::QGoDockWidgetStatusPair QGoDockWidgetStatusPair;
 
+  /** \brief Update the rendering of the tab */
   virtual void Update() = 0;
 
+  /** \brief */
   virtual void SetColor( const bool& iColor );
 
+  /** \brief Write Settings */
   virtual void WriteSettings();
+  /** \brief Read Settings */
   virtual void ReadSettings();
 
+  /** \brief Validate one contour traced by using the ContourWidget.*/
   virtual void ValidateContour( const int& iId );
 
 public slots:
+  /** \brief Change the background color. */
   void ChangeBackgroundColor();
+
+  /** \brief Show all channels if iChecked is true.*/
   virtual void ShowAllChannels( bool iChecked ) = 0;
+  
+  /** \brief Show only one channel (iChannel).*/
   virtual void ShowOneChannel( int iChannel ) = 0;
+  
+  /** \brief Activate the manual segmentation editor (ContourWidget).*/
   void ActivateManualSegmentationEditor( const bool& iActivate );
+
+  /** \brief Validate contour traced in the ContourWidget.*/
   virtual void ValidateContour();
+
+  /** \brief Reinitialize contour in the ContourWidget (delete contour, 
+   *  and restart with no contours.
+   *  */
   void ReinitializeContour();
+
+  /** \brief Change contour representation property (color, line width, etc.) */
   void ChangeContourRepresentationProperty();
+
+  /** \brief Re-edit the iId^th contour. */
   void ReEditContour( const unsigned int& iId );
 
 protected:
@@ -123,7 +147,6 @@ protected:
   virtual void SetSlice( int iDir, int* iIdx ) = 0;
 
 private:
-  QGoTabImageViewElementBase( const QGoTabImageViewElementBase& );
-  void operator = ( const QGoTabImageViewElementBase& );
+  Q_DISABLE_COPY( QGoTabImageViewElementBase );
 };
 #endif

@@ -1,14 +1,8 @@
 /*=========================================================================
-  Author: $Author$  // Author of last commit
-  Version: $Rev$  // Revision of last commit
-  Date: $Date: 2009-08-06 16:08:10 -0400 (Thu, 06 Aug 2009) $  // Date of last commit
-=========================================================================*/
-
-/*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-10
 
- Copyright (c) 2009, President and Fellows of Harvard College.
+ Copyright (c) 2009-10, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -37,41 +31,3 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#ifndef __QGoConnectServerPage_h
-#define __QGoConnectServerPage_h
-
-#include <QWizard>
-#include <QWizardPage>
-#include <QLineEdit>
-#include "vtkMySQLDatabase.h"
-
-
-class QGoConnectServerPage : public QWizardPage
-{
-  Q_OBJECT
-
-public:
-  QGoConnectServerPage(QWidget *parent = 0);
-  bool validatePage();
-  int nextId() const;
-  mutable std::pair<bool,vtkMySQLDatabase*> m_ConnectionServer;
-  void SetImgSessionName(std::string iImgSessionName);
-  void SetIsAnOpenRecentFile(bool iIsAnOpenRecentFile);
-
-private:
-  void OpenConnectionToServer()const;
-  void CloseServerConnection()const;
-
-  QLineEdit*          lineServerName;
-  QLineEdit*          lineUserName;
-  QLineEdit*          linePassword;
-  QLineEdit*          lineDBName;
-  mutable std::string m_ImgSessionName;
-  bool                m_IsAnOpenRecentFile;
- 
-  /**\brief return the list of the names of the databases of gofigure type:*/
-  std::list<std::string> ListGofigureDatabases() const;
-  
-
-};
-#endif

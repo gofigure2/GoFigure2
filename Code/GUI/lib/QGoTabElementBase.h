@@ -1,6 +1,6 @@
 /*=========================================================================
-  Author: $Author:$  // Author of last commit
-  Version: $Rev:$  // Revision of last commit
+  Author: $Author$  // Author of last commit
+  Version: $Rev$  // Revision of last commit
   Date: $Date:$  // Date of last commit
 =========================================================================*/
 
@@ -56,26 +56,36 @@ class QGoPluginManager;
 
 /**
 \class QGoTabElementBase
-\brief
+\brief Abstract class for one tab element in GoFigure2.
 \example GUI/lib/qgotabelementbase.cxx
 */
 class QGoTabElementBase : public QWidget
 {
   Q_OBJECT
 public:
-  QGoTabElementBase( QWidget* parent = 0 );
+  /** \brief Constructor */
+  explicit QGoTabElementBase( QWidget* parent = 0 );
+
+  /** \brief Destructor */
   virtual ~QGoTabElementBase();
 
   typedef std::pair< QGoDockWidgetStatus*, QDockWidget* > QGoDockWidgetStatusPair;
 
+  /** \brief Get the dimension type of the underlying data set.*/
   virtual GoFigure::TabDimensionType GetTabDimensionType( ) const = 0;
 
+  /** \brief Get all actions belonging to View Menu and Toolbar.*/
   virtual std::vector< QAction* > ViewActions();
+  /** \brief Get all actions belonging to Segmentation Menu and Toolbar. */
   virtual std::vector< QAction* > SegmentationActions();
+  /** \brief Get all actions belonging to Tools Menu and Toolbar. */
   virtual std::vector< QAction* > ToolsActions();
+  /** \brief Get all actions belonging to Bookmark Menu and Toolbar. */
   virtual std::vector< QAction* > BookmarkActions();
+  /** \brief Get all actions belonging to Mode Menu and Toolbar.*/
   virtual std::vector< QAction* > ModeActions();
 
+  /** \brief Get all the DockWidgets with its status (visibility, location). */
   virtual std::list< QGoDockWidgetStatusPair >& DockWidget();
   virtual std::list< QWidget* > AdditionalWidget();
 //   virtual QStatusBar* StatusBar();
@@ -83,7 +93,9 @@ public:
   virtual std::list< QAction* > GetPluginActions();
   virtual void SetPluginActions( std::list< QAction* > iList );
 
+  /** \brief Write Settings for the tab element. */
   virtual void WriteSettings() = 0;
+  /** \brief Read Settings for the related tab element.*/
   virtual void ReadSettings() = 0;
 
 protected:
@@ -98,7 +110,6 @@ protected:
   std::list< QGoDockWidgetStatusPair > m_DockWidgetList;
 
 private:
-  QGoTabElementBase( const QGoTabElementBase& );
-  void operator = ( const QGoTabElementBase& );
+  Q_DISABLE_COPY( QGoTabElementBase );
 };
 #endif
