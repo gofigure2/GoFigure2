@@ -1,7 +1,7 @@
 /*=========================================================================
   Author: $Author$  // Author of last commit
   Version: $Revision$  // Revision of last commit
-  Date: $Date:$  // Date of last commit
+  Date: $Date$  // Date of last commit
 =========================================================================*/
 
 /*=========================================================================
