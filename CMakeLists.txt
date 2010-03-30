@@ -97,7 +97,11 @@ IF( BUILD_DOCUMENTATION )
   FIND_PACKAGE( Doxygen )
   IF( DOXYGEN_FOUND )
     IF( DOXYGEN_DOT_FOUND )
+
+      OPTION( LINK_EXTERNAL_DOC "Should the documentation be linked with external sources such as VTK?" NO )
+
       ADD_SUBDIRECTORY( Documentation )
+
     ELSE( DOXYGEN_DOT_FOUND )
       MESSAGE( STATUS "Warning: Dot (from GraphViz) not found - Documentation
 will not ce generated" )
