@@ -161,7 +161,8 @@ void QGoAboutWidget::SetTheBackGround(QLabel* ilabel,QTabWidget* TabWidget)
 QString QGoAboutWidget::ReadLicenseText(QString iFilename)
 {
   QFile file;
-  file.setFileName("@GOFIGURE2_SOURCE_DIR@/Copyright.txt");
+  //file.setFileName("@GOFIGURE2_SOURCE_DIR@/Copyright.txt");
+  file.setFileName(iFilename);
   file.open(QIODevice::ReadOnly);
   QTextStream textStream(&file);
   QString LicenseText = textStream.readAll();
@@ -178,7 +179,9 @@ void QGoAboutWidget::WriteLicenseText(QTabWidget* iTabWidget)
     "Gofigure",iTabWidget);
   this->AddTabAbout("","Icon Oxygen",iTabWidget);
   this->AddTabAbout("","Icon Nuvola",iTabWidget);
-  this->AddTabAbout("","Icon Crystal",iTabWidget);
+  this->AddTabAbout(this->
+	ReadLicenseText("@GOFIGURE2_SOURCE_DIR@/CopyrightCrystal.txt"),
+	"Icon Crystal",iTabWidget);
   this->AddTabAbout("","Vtk",iTabWidget);
   this->AddTabAbout("","Itk",iTabWidget);
   this->AddTabAbout("","VtkInria3D",iTabWidget);
