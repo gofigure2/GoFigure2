@@ -84,10 +84,12 @@ void QGoAboutWidget::AddTabAbout(QString iTextLicense, QString iTabTitle,
                                 QTabWidget* iTabWidget)
 {
   QLabel* TextLicense = new QLabel(iTextLicense);
-  TextLicense->setStyleSheet("font-size:6x");
   QScrollArea* scrollArea = new QScrollArea;
   scrollArea->setBackgroundRole(QPalette::Light);
   scrollArea->setWidget(TextLicense);
+  TextLicense->setStyleSheet("font-size:6x");
+  //TextLicense->setAlignment(Qt::AlignCenter);
+  TextLicense->setAlignment(Qt::AlignJustify);
   iTabWidget->addTab(scrollArea,iTabTitle);
 }
 //--------------------------------------------------------------------------
@@ -122,17 +124,13 @@ void QGoAboutWidget::SetTabWidget(QTabWidget* iTabWidget)
 void QGoAboutWidget::SetTheBackGround(QLabel* ilabel,QTabWidget* TabWidget,
 	QLabel* ilabeltwo)
 {
-  QPixmap Image(QString::fromUtf8(":/fig/splash2.png"));
+  QPixmap Image(QString::fromUtf8(":/fig/splash2.jpg"));
   
-  //ilabel->setMaximumSize(Image.size());
-  //ilabel->setMinimumSize(Image.size());
+  ilabel->setMaximumSize(Image.size());
+  ilabel->setMinimumSize(Image.size());
   int width = 500;
-  //int height = 176;
-  ilabel->setMaximumWidth(width);
-  ilabel->setMinimumWidth(width); 
-  ilabel->setMinimumHeight(Image.height());
-  ilabel->setMaximumHeight(Image.height());
-  ilabel->setStyleSheet("QLabel{color:rgb(255,255,255);background-image: url(:/fig/splash2.png); font: bold 12px}");
+  //ilabel->setStyleSheet("QLabel{color:rgb(255,255,255);background-image: url(:/fig/splash2.jpg); font: bold 12px}");
+  ilabel->setStyleSheet("color:rgb(255,255,255);background-image: url(:/fig/splash2.jpg); font: bold 12px");
   //int width = Image.width();
   TabWidget->setMaximumWidth(width);
   TabWidget->setMinimumWidth(width);

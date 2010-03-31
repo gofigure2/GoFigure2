@@ -1,7 +1,7 @@
 <RCC>
     <qresource prefix="/">
         <file>fig/splash.jpg</file>
-        <file>fig/splash2.png</file>
+        <file>fig/splash2.jpg</file>
         <file>fig/manual-editing.png</file>
         <file>fig/cube.png</file>
         <file>fig/2D_VIEWS_INFOS.png</file>
