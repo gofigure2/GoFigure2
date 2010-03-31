@@ -59,10 +59,15 @@ QGoAboutWidget::QGoAboutWidget()
   QVBoxLayout* vlayout = new QVBoxLayout(this);
   QLabel* GofigureLabel = new QLabel(message,this);
   GofigureLabel->setAlignment(Qt::AlignCenter);
+  QLabel* TabExplanation = new QLabel(
+	tr("\nGofigure uses different librairies,click on the tabs bellow to have a look at their copyright:\n"),this);
+  TabExplanation->setAlignment(Qt::AlignJustify);
+  
   QTabWidget* TabWidget = new QTabWidget(this);
   this->SetTabWidget(TabWidget);
-  this->SetTheBackGround(GofigureLabel,TabWidget);
+  this->SetTheBackGround(GofigureLabel,TabWidget,TabExplanation);
   vlayout->addWidget(GofigureLabel);
+  vlayout->addWidget(TabExplanation);
   vlayout->addWidget(TabWidget);
   this->setLayout(vlayout);
 }
@@ -114,14 +119,25 @@ void QGoAboutWidget::SetTabWidget(QTabWidget* iTabWidget)
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoAboutWidget::SetTheBackGround(QLabel* ilabel,QTabWidget* TabWidget)
+void QGoAboutWidget::SetTheBackGround(QLabel* ilabel,QTabWidget* TabWidget,
+	QLabel* ilabeltwo)
 {
   QPixmap Image(QString::fromUtf8(":/fig/splash2.png"));
-  ilabel->setMaximumSize(Image.size());
-  ilabel->setMinimumSize(Image.size());
-  ilabel->setStyleSheet("QLabel{color:rgb(255,255,255);background-image: url(:/fig/splash2.png); font: bold 12px;}");
-  TabWidget->setMaximumWidth(Image.width());
-  TabWidget->setMinimumWidth(Image.width());
+  
+  //ilabel->setMaximumSize(Image.size());
+  //ilabel->setMinimumSize(Image.size());
+  int width = 500;
+  //int height = 176;
+  ilabel->setMaximumWidth(width);
+  ilabel->setMinimumWidth(width); 
+  ilabel->setMinimumHeight(Image.height());
+  ilabel->setMaximumHeight(Image.height());
+  ilabel->setStyleSheet("QLabel{color:rgb(255,255,255);background-image: url(:/fig/splash2.png); font: bold 12px}");
+  //int width = Image.width();
+  TabWidget->setMaximumWidth(width);
+  TabWidget->setMinimumWidth(width);
+  ilabeltwo->setMaximumWidth(width);
+  ilabeltwo->setMinimumWidth(width);
   ilabel->setAlignment(Qt::AlignCenter);
 }
 //--------------------------------------------------------------------------
@@ -144,28 +160,20 @@ QString QGoAboutWidget::ReadLicenseText(QString iFilename)
 //--------------------------------------------------------------------------
 void QGoAboutWidget::WriteLicenseText(QTabWidget* iTabWidget)
 {
-  this->AddTabAbout(this->
-    ReadLicenseText("Copyright.txt"),
-    "Gofigure",iTabWidget);
-  this->AddTabAbout(this->
-	ReadLicenseText("CopyrightOxygen.txt"),
+  this->AddTabAbout(this->ReadLicenseText("Copyright.txt"),
+	"Gofigure",iTabWidget);
+  this->AddTabAbout(this->ReadLicenseText("CopyrightOxygen.txt"),
 	"Icon Oxygen",iTabWidget);
-  this->AddTabAbout(this->
-	ReadLicenseText("CopyrightNuvola.txt"),
+  this->AddTabAbout(this->ReadLicenseText("CopyrightNuvola.txt"),
 	"Icon Nuvola",iTabWidget);
-  this->AddTabAbout(this->
-	ReadLicenseText("CopyrightCrystal.txt"),
+  this->AddTabAbout(this->ReadLicenseText("CopyrightCrystal.txt"),
 	"Icon Crystal",iTabWidget);
-  this->AddTabAbout(this->
-	ReadLicenseText("VTKCopyright.txt"),
+  this->AddTabAbout(this->ReadLicenseText("VTKCopyright.txt"),
 	"Vtk",iTabWidget);
-  this->AddTabAbout(this->
-	ReadLicenseText("ITKCopyright.txt"),
+  this->AddTabAbout(this->ReadLicenseText("ITKCopyright.txt"),
 	"Itk",iTabWidget);
-  this->AddTabAbout(this->
-	ReadLicenseText("vtkINRIA3DCopyright.txt"),
+  this->AddTabAbout(this->ReadLicenseText("vtkINRIA3DCopyright.txt"),
 	"VtkInria3D",iTabWidget);
-  this->AddTabAbout(this->
-	ReadLicenseText("BioimageXDCopyright.txt"),
+  this->AddTabAbout(this->ReadLicenseText("BioimageXDCopyright.txt"),
 	"BioImageXD",iTabWidget);
 }
