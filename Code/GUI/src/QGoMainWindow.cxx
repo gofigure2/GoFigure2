@@ -131,7 +131,7 @@ QGoMainWindow::QGoMainWindow( )
 //   m_LSMReader = vtkLSMReader::New();
   m_DBWizard  = new QGoWizardDB(this);
   m_DBWizard->hide();
-  
+
   m_AboutWidget = new QGoAboutWidget;
   this->m_AboutWidget->hide();
 
@@ -224,6 +224,11 @@ void QGoMainWindow::on_actionExportContour_triggered( )
     {
       ContourMeshVectorType* contours = w3t->m_DataBaseTables->GetTracesInfoListForVisu("contour");
 
+  // Missing information in the export
+  // 1. GetColorComboBoxInfofromDB ()
+  // 2. GetCurrentCollectionData ()
+  // 3. GetListExistingCollectionIDFromDB (std::string TraceName, int iTimePoint)
+
       vtkPolyDataMySQLTextWriter* convert_writer =
         vtkPolyDataMySQLTextWriter::New();
 
@@ -302,6 +307,15 @@ void QGoMainWindow::on_actionImportContour_triggered( )
   double rgba[4];
   rgba[0] = rgba[1] = rgba[2] = rgba[3] = 1;
 
+// Arnauds Suggestions
+  typedef std::list< ContourMeshStructure > ContourMeshListType;
+  typedef std::map< ContourMeshListType > MapOfContourMeshListType;
+// 1. Fill Container
+// 2. Iterate]
+//    Create a new mesh
+//    Get corresponding id
+//    Add the list with the id
+
   if( w3t )
     {
     if( w3t->m_DataBaseTables->IsDatabaseUsed() )
@@ -365,6 +379,8 @@ void QGoMainWindow::on_actionImportContour_triggered( )
 
             //create a vtkPolyData*
             vtkPolyData* ptr = convert_reader->GetPolyData( nodes );
+
+// Fill container
 
             w3t->AddContourFromNodes(
                 contourId,
@@ -1072,7 +1088,7 @@ void QGoMainWindow::on_actionAbout_triggered( )
   About->setLayout(vlayout);
   About->show();
   //QMessageBox::about( this, tr( "<*)0|00|0>< About GoFigure" ), message );*/
-  
+
 }
 //--------------------------------------------------------------------------
 
