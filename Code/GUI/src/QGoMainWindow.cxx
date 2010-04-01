@@ -98,6 +98,8 @@
 #include "QGoTabManager.h"
 #include "QGoWizardDB.h"
 
+#include <list>
+
 //--------------------------------------------------------------------------
 QGoMainWindow::QGoMainWindow( )
 {
@@ -213,6 +215,11 @@ void QGoMainWindow::on_actionExportContour_triggered( )
   typedef std::vector<ContourMeshStructure> ContourMeshVectorType;
   typedef ContourMeshVectorType::iterator ContourMeshIteratorType;
 
+  typedef std::vector < int > RGBAType;
+  typedef std::pair < std::string, RGBAType > ColorType;
+  typedef std::list< ColorType > ColorComboBoxType;
+  ColorComboBoxType::iterator iter;
+
   //get current tab widget
   QWidget* w = this->CentralTabWidget->currentWidget();
 
@@ -223,11 +230,6 @@ void QGoMainWindow::on_actionExportContour_triggered( )
     if( w3t->m_DataBaseTables->IsDatabaseUsed() )
     {
       ContourMeshVectorType* contours = w3t->m_DataBaseTables->GetTracesInfoListForVisu("contour");
-
-  // Missing information in the export
-  // 1. GetColorComboBoxInfofromDB ()
-  // 2. GetCurrentCollectionData ()
-  // 3. GetListExistingCollectionIDFromDB (std::string TraceName, int iTimePoint)
 
       vtkPolyDataMySQLTextWriter* convert_writer =
         vtkPolyDataMySQLTextWriter::New();
@@ -247,6 +249,19 @@ void QGoMainWindow::on_actionExportContour_triggered( )
         // Create an xml file
         std::fstream outfile;
         outfile.open ( filename.c_str(), std::ios::out );
+
+        // Missing information in the export
+        ColorComboBoxType colorComboBoxInfo = w3t->m_DataBaseTables->GetColorComboBoxInfofromDB ();
+        for( std::list< ColorType >::iterator it = colorComboBoxInfo.begin();
+          it != colorComboBoxInfo.end();
+          ++it )
+        {
+          ColorType c = (*it);
+//           std::cout << c.first << ' ' << c.second << std::endl;
+        }
+
+        // 2. GetCurrentCollectionData ()
+        // 3. GetListExistingCollectionIDFromDB (std::string TraceName, int iTimePoint)
 
         unsigned int contourId, meshId, timePt;
         ContourMeshIteratorType It = contours->begin();
@@ -309,7 +324,7 @@ void QGoMainWindow::on_actionImportContour_triggered( )
 
 // Arnauds Suggestions
   typedef std::list< ContourMeshStructure > ContourMeshListType;
-  typedef std::map< ContourMeshListType > MapOfContourMeshListType;
+  typedef std::map< int, ContourMeshListType > MapOfContourMeshListType;
 // 1. Fill Container
 // 2. Iterate]
 //    Create a new mesh
