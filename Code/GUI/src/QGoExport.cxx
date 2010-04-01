@@ -38,7 +38,7 @@
 
 =========================================================================*/
 
-#include "QGoMainWindow.h"
+#include "QGoExport.h"
 #include "QGoTabElementBase.h"
 #include "QGoTabImageView2D.h"
 #include "QGoTabImageView3D.h"
@@ -101,19 +101,19 @@
 #include <list>
 
 //--------------------------------------------------------------------------
-QGoMainWindow::QGoMainWindow( )
+QGoExport::QGoExport( )
 {
 }
 
 //--------------------------------------------------------------------------
-QGoMainWindow::~QGoMainWindow()
+QGoExport::~QGoExport()
 {
 }
 //--------------------------------------------------------------------------
 
 
 //--------------------------------------------------------------------------
-void QGoMainWindow::on_actionExportContour_triggered( )
+void QGoExport::on_actionExportContour_triggered( )
 {
   typedef std::vector<ContourMeshStructure> ContourMeshVectorType;
   typedef ContourMeshVectorType::iterator ContourMeshIteratorType;
@@ -197,20 +197,7 @@ void QGoMainWindow::on_actionExportContour_triggered( )
 }
 
 //--------------------------------------------------------------------------
-void QGoMainWindow::on_actionExportMesh_triggered( )
-{}
-//--------------------------------------------------------------------------
-//--------------------------------------------------------------------------
-void QGoMainWindow::on_actionExportTrack_triggered( )
-{}
-
-//--------------------------------------------------------------------------
-void QGoMainWindow::on_actionExportLineage_triggered( )
-{}
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-void QGoMainWindow::on_actionImportContour_triggered( )
+void QGoExport::on_actionImportContour_triggered( )
 {
   typedef std::vector<ContourMeshStructure> ContourMeshVectorType;
   typedef ContourMeshVectorType::iterator ContourMeshIteratorType;
@@ -316,19 +303,4 @@ void QGoMainWindow::on_actionImportContour_triggered( )
      }
    }
 }
-
-//--------------------------------------------------------------------------
-void QGoMainWindow::on_actionImportMesh_triggered( )
-{}
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-void QGoMainWindow::on_actionImportTrack_triggered( )
-{}
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-void QGoMainWindow::on_actionImportLineage_triggered( )
-{}
-//--------------------------------------------------------------------------
 
