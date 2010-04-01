@@ -218,7 +218,7 @@ void QGoMainWindow::on_actionExportContour_triggered( )
   typedef std::vector < int > RGBAType;
   typedef std::pair < std::string, RGBAType > ColorType;
   typedef std::list< ColorType > ColorComboBoxType;
-  ColorComboBoxType::iterator iter;
+  typedef std::list< std::pair < std::string, std::vector < int > > >::iterator iter;
 
   //get current tab widget
   QWidget* w = this->CentralTabWidget->currentWidget();
@@ -251,14 +251,13 @@ void QGoMainWindow::on_actionExportContour_triggered( )
         outfile.open ( filename.c_str(), std::ios::out );
 
         // Missing information in the export
-        ColorComboBoxType colorComboBoxInfo = w3t->m_DataBaseTables->GetColorComboBoxInfofromDB ();
-        for( std::list< ColorType >::iterator it = colorComboBoxInfo.begin();
-          it != colorComboBoxInfo.end();
-          ++it )
-        {
-          ColorType c = (*it);
-//           std::cout << c.first << ' ' << c.second << std::endl;
-        }
+//         ColorComboBoxType colorComboBoxInfo = w3t->m_DataBaseTables->GetColorComboBoxInfofromDB ();
+//         for( std::list< ColorType >::iterator it = colorComboBoxInfo.begin();
+//           it != colorComboBoxInfo.end();
+//           ++it )
+//         {
+//           std::cout << (*it) << std::endl;
+//         }
 
         // 2. GetCurrentCollectionData ()
         // 3. GetListExistingCollectionIDFromDB (std::string TraceName, int iTimePoint)
@@ -323,13 +322,15 @@ void QGoMainWindow::on_actionImportContour_triggered( )
   rgba[0] = rgba[1] = rgba[2] = rgba[3] = 1;
 
 // Arnauds Suggestions
-  typedef std::list< ContourMeshStructure > ContourMeshListType;
-  typedef std::map< int, ContourMeshListType > MapOfContourMeshListType;
+//   typedef std::list< ContourMeshStructure > ContourMeshListType;
+//   typedef std::map< int, ContourMeshListType > MapOfContourMeshListType;
 // 1. Fill Container
 // 2. Iterate]
 //    Create a new mesh
 //    Get corresponding id
 //    Add the list with the id
+// Add subcellular type
+// Add
 
   if( w3t )
     {
