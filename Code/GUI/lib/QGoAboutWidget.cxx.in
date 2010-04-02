@@ -128,10 +128,9 @@ void QGoAboutWidget::SetTheBackGround(QLabel* ilabel,QTabWidget* TabWidget,
   
   ilabel->setMaximumSize(Image.size());
   ilabel->setMinimumSize(Image.size());
-  int width = 500;
-  //ilabel->setStyleSheet("QLabel{color:rgb(255,255,255);background-image: url(:/fig/splash2.jpg); font: bold 12px}");
+  ilabel->setStyleSheet("QLabel{color:rgb(255,255,255);background-image: url(:/fig/splash2.jpg); font: bold 12px}");
   ilabel->setStyleSheet("color:rgb(255,255,255);background-image: url(:/fig/splash2.jpg); font: bold 12px");
-  //int width = Image.width();
+  int width = Image.width();
   TabWidget->setMaximumWidth(width);
   TabWidget->setMinimumWidth(width);
   ilabeltwo->setMaximumWidth(width);

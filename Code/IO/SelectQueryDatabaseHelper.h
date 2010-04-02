@@ -126,6 +126,7 @@ int FindOneID(vtkMySQLDatabase* DatabaseConnector,
   std::string ColumnNameTen,std::string valueTen);
 
 //query: "SELECT ColumnName FROM TableName WHERE field = value"
+//query: "SELECT ColumnName FROM TableName" if field == ""
 std::vector<std::string> ListSpecificValuesForOneColumn(
   vtkMySQLDatabase* DatabaseConnector,
   std::string TableName, std::string ColumnName,

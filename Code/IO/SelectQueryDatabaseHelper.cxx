@@ -550,11 +550,18 @@ vtkSQLQuery* query = DatabaseConnector->GetQueryInstance();
   querystream << ColumnName;
   querystream << " FROM ";
   querystream << TableName;
-  querystream << " WHERE ";
-  querystream << field;
-  querystream << " = '";
-  querystream << value;
-  querystream << "';";
+  if (field.empty())
+    {
+    querystream << ";";
+    }
+  else
+    {
+    querystream << " WHERE ";
+    querystream << field;
+    querystream << " = '";
+    querystream << value;
+    querystream << "';";
+    }
 
   query->SetQuery( querystream.str().c_str() );
   if ( !query->Execute() )
