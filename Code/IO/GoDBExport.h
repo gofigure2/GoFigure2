@@ -120,7 +120,7 @@ private:
   /** \brief return <iName> */
   std::string GetNameWithBrackets(std::string iName);
   /** \brief return </iName> */
-  std::string GoDBExport::GetNameWithSlashBrackets(std::string iName);
+  std::string GetNameWithSlashBrackets(std::string iName);
   /**\ brief write on the output file the info contained in the vector with
   the name of the entity they describe*/
   void WriteOnTheOutputFile(std::string iNameOfEntity,
