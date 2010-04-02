@@ -540,13 +540,17 @@ int FindOneID(vtkMySQLDatabase* DatabaseConnector,
 std::vector<std::string> ListSpecificValuesForOneColumn(
   vtkMySQLDatabase* DatabaseConnector,
   std::string TableName, std::string ColumnName,
-  std::string field,std::string value)
+  std::string field,std::string value,bool Distinct)
 
 { std::vector< std::string > result;
 
 vtkSQLQuery* query = DatabaseConnector->GetQueryInstance();
   std::stringstream querystream;
   querystream << "SELECT ";
+  if (Distinct)
+    {
+    querystream << "DISTINCT ";
+    }
   querystream << ColumnName;
   querystream << " FROM ";
   querystream << TableName;
@@ -643,13 +647,17 @@ std::vector<std::string> ListSpecificValuesForOneColumn(
 std::vector<std::string> ListSpecificValuesForOneColumn(
   vtkMySQLDatabase* DatabaseConnector,
   std::string TableName, std::string ColumnName,
-  std::string field,std::vector<std::string> VectorValues)
+  std::string field,std::vector<std::string> VectorValues,bool Distinct)
 {
   std::vector< std::string > result;
 
   vtkSQLQuery* query = DatabaseConnector->GetQueryInstance();
   std::stringstream querystream;
   querystream << "SELECT ";
+  if (Distinct)
+    {
+    querystream << "DISTINCT ";
+    }
   querystream << ColumnName;
   querystream << " FROM ";
   querystream << TableName;
@@ -1382,4 +1390,60 @@ std::vector<std::vector<std::string> >GetValuesFromSeveralTables(
 
   return Results;
 
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::string SelectQueryStream(std::string iTable, std::string iColumn, std::string iField,
+  std::string iValue)
+{
+  std::stringstream querystream;
+  querystream << "SELECT ";
+  querystream << iColumn;
+  querystream << " FROM ";
+  querystream << iTable;
+  querystream << " WHERE ";
+  querystream << iField;
+  querystream << " = '";
+  querystream << iValue;
+  querystream << "'";
+  return querystream.str();
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::vector<std::string> GetSamefieldFromTwoTables(
+  vtkMySQLDatabase* DatabaseConnector,std::string iTableOne, 
+  std::string iTableTwo,std::string iColumn,std::string iField, std::string iValue)
+{
+  std::vector< std::string > result;
+  vtkSQLQuery* query = DatabaseConnector->GetQueryInstance();
+  std::stringstream querystream;
+  querystream << SelectQueryStream(iTableOne,iColumn,iField,iValue);
+  querystream << " UNION ";
+  querystream << SelectQueryStream(iTableTwo,iColumn,iField,iValue);
+ 
+  query->SetQuery( querystream.str().c_str() );
+  if ( !query->Execute() )
+    {
+    itkGenericExceptionMacro(
+      << "List of all values for 2 tables query failed"
+      << query->GetLastErrorText() );
+    DatabaseConnector->Close();
+    DatabaseConnector->Delete();
+    query->Delete();
+    return result;
+    }
+
+  while (query->NextRow())
+    {
+    for( int i = 0; i < query->GetNumberOfFields(); i++)
+      {
+      result.push_back( query->DataValue( i ).ToString() );
+      }
+    }
+
+  query->Delete();
+
+  return result;
 }

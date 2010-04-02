@@ -130,7 +130,7 @@ int FindOneID(vtkMySQLDatabase* DatabaseConnector,
 std::vector<std::string> ListSpecificValuesForOneColumn(
   vtkMySQLDatabase* DatabaseConnector,
   std::string TableName, std::string ColumnName,
-  std::string field,std::string value);
+  std::string field,std::string value,bool Distinct=false);
 
 
 //query: "SELECT ColumnName FROM TableName WHERE field = value
@@ -152,7 +152,8 @@ std::vector<std::pair<std::string,std::string> >
 std::vector<std::string> ListSpecificValuesForOneColumn(
   vtkMySQLDatabase* DatabaseConnector,
   std::string TableName, std::string ColumnName,
-  std::string field,std::vector<std::string> VectorValues);
+  std::string field,std::vector<std::string> VectorValues,
+  bool Distinct=false);
 
 //query: "SELECT MAX(ColumnName) FROM TableName WHERE (field = 
 //value1 or field = value2...."
@@ -214,5 +215,12 @@ std::vector<std::vector<std::string> >GetValuesFromSeveralTables(
   vtkMySQLDatabase* DatabaseConnector,std::string MainTable,
   std::vector<std::string> SelectFields, std::vector<std::string> WhereAndConditions,
   std::vector<std::string> JoinTablesOnTraceTable, bool Distinct);
+
+std::string SelectQueryStream(std::string iTable, std::string iColumn, std::string iField,
+  std::string iValue);
+//query: SELECT UNION SELECT
+std::vector<std::string> GetSamefieldFromTwoTables(vtkMySQLDatabase* DatabaseConnector,
+  std::string iTableOne, std::string iTableTwo,std::string iColumn,
+  std::string iField, std::string iValue);
 
 #endif

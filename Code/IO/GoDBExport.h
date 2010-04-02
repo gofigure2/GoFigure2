@@ -76,6 +76,7 @@ private:
   corresponding info found in the Database for the table imagingsession*/
   std::pair<std::string,std::string> GetOneInfoFromDBForImgSession(
     std::string iNameInfo);
+
   /** \brief get the info from the database for all the entities from a table or
   with a limitation defined with field and value and write them in the output file*/
   template< typename T >
@@ -94,7 +95,21 @@ private:
       iter++;
       }
    }
-  
+  /** \brief get the info from the database for all the entities from a table 
+  which IDs are in iListIDs and write them in the output file*/
+  template< typename T >
+  void WriteTableInfoFromDB(std::vector<std::string> iListIDs)
+   {
+    T TableRow;
+    std::vector<std::string>::iterator iter = iListIDs.begin();
+    while(iter != iListIDs.end())
+      {
+      std::vector<std::pair<std::string,std::string> > EntityInfo = 
+        this->GetOneEntityInfoFromDB(*iter,TableRow);
+      this->WriteOnTheOutputFile(TableRow.GetTableName(),EntityInfo);
+      iter++;
+      }
+   }
   /** \brief get the info with their names for an entity from the database 
   and put them in a vector of pair of string (name of the info + value of the info)*/
   template< typename T >
@@ -115,8 +130,8 @@ private:
       }
     return oEntityInfo;
   }
-
-  std::vector<std::pair<std::string,std::string> > GetOneColorInfoFromDB(std::string iColorID);
+  
+  void WriteTheColorsInfoFromDatabase();
   /** \brief return <iName> */
   std::string GetNameWithBrackets(std::string iName);
   /** \brief return </iName> */

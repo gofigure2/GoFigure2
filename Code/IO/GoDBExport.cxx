@@ -77,7 +77,8 @@ void GoDBExport::ExportContours( )
   this->m_outfile << VersionNumber;
   this->m_outfile << "\">"<<std::endl;
   this->WriteOnTheOutputFile("imagingsession",this->GetImagingSessionInfoFromDB());
-  this->WriteTableInfoFromDB<GoDBColorRow>("","");
+  this->WriteTheColorsInfoFromDatabase();
+  //this->WriteTableInfoFromDB<GoDBColorRow>("","");
   this->WriteTableInfoFromDB<GoDBCellTypeRow>("","");
   this->WriteTableInfoFromDB<GoDBSubCellTypeRow>("","");
   this->CloseDBConnection();
@@ -286,6 +287,19 @@ std::pair<std::string,std::string> GoDBExport::GetOneInfoFromDBForImgSession(
     this->m_DatabaseConnector,"imagingsession", iNameInfo,"ImagingSessionID",
     ConvertToString<int>(this->m_ImagingSessionID)).at(0);
   return OneInfo;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void GoDBExport::WriteTheColorsInfoFromDatabase()
+{
+  //std::vector<std::string> ListColorIDs = ListSpecificValuesForOneColumn(
+  //   this->m_DatabaseConnector,"contour","ColorID","ImagingsessionID",
+  //   ConvertToString<int>(this->m_ImagingSessionID),true);
+  std::vector<std::string> ListColorIDs = GetSamefieldFromTwoTables(
+    this->m_DatabaseConnector,"contour","mesh","ColorID","ImagingSessionID",
+    ConvertToString<int>(this->m_ImagingSessionID));
+  this->WriteTableInfoFromDB<GoDBColorRow>(ListColorIDs);
 }
 //--------------------------------------------------------------------------
 
