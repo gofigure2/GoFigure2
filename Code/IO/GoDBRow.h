@@ -80,6 +80,8 @@ public:
   the database queries */
   void SetField( std::string key, std::string value );
 
+  std::string GetTableName();
+  std::string GetTableIDName();
   std::string PrintValues();
   std::string PrintColumnNames();
   std::vector<std::string> GetVectorColumnNames();

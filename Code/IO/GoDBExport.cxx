@@ -43,6 +43,8 @@
 #include "QueryDatabaseHelper.h"
 #include "ConvertToStringHelper.h"
 #include "GoDBColorRow.h"
+#include "GoDBCellTypeRow.h"
+#include "GoDBSubCellTypeRow.h"
 
 
 //--------------------------------------------------------------------------
@@ -75,7 +77,9 @@ void GoDBExport::ExportContours( )
   this->m_outfile << VersionNumber;
   this->m_outfile << "\">"<<std::endl;
   this->WriteOnTheOutputFile("imagingsession",this->GetImagingSessionInfoFromDB());
-  this->WriteColorsInfoFromDB();
+  this->WriteTableInfoFromDB<GoDBColorRow>("","");
+  this->WriteTableInfoFromDB<GoDBCellTypeRow>("","");
+  this->WriteTableInfoFromDB<GoDBSubCellTypeRow>("","");
   this->CloseDBConnection();
   this->m_outfile << this->GetNameWithSlashBrackets(NameDocXml);
   /*typedef std::vector<ContourMeshStructure> ContourMeshVectorType;
@@ -260,13 +264,6 @@ void GoDBExport::ExportContours( )
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void GoDBExport::GetAllColorsFromDatabase()
-{
-  
-}
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
 std::vector<std::pair<std::string,std::string> > 
   GoDBExport::GetImagingSessionInfoFromDB()
 {
@@ -289,43 +286,6 @@ std::pair<std::string,std::string> GoDBExport::GetOneInfoFromDBForImgSession(
     this->m_DatabaseConnector,"imagingsession", iNameInfo,"ImagingSessionID",
     ConvertToString<int>(this->m_ImagingSessionID)).at(0);
   return OneInfo;
-}
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-void GoDBExport::WriteColorsInfoFromDB()
-{
-  std::vector<std::string> ListColorIDs = ListSpecificValuesForOneColumn(
-     this->m_DatabaseConnector,"color","ColorID","","");
-  std::vector<std::string>::iterator iter = ListColorIDs.begin();
-  while(iter != ListColorIDs.end())
-    {
-    std::vector<std::pair<std::string,std::string> > ColorInfo = 
-      this->GetOneColorInfoFromDB(*iter);
-    this->WriteOnTheOutputFile("color",ColorInfo);
-    iter++;
-    }
-}
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-std::vector<std::pair<std::string,std::string> > 
-  GoDBExport::GetOneColorInfoFromDB(std::string iColorID)
-{
-  std::vector<std::pair<std::string,std::string> > oColorInfo;
-  GoDBColorRow Color;
-  Color.SetValuesForSpecificID(atoi(iColorID.c_str()),this->m_DatabaseConnector);
-  std::vector<std::string> FieldNames = Color.GetVectorColumnNames();
-  std::vector<std::string>::iterator iter = FieldNames.begin();
-  while (iter != FieldNames.end())
-    {
-    std::pair<std::string,std::string> FieldInfo;
-    FieldInfo.first = *iter;
-    FieldInfo.second = Color.GetMapValue(*iter);
-    oColorInfo.push_back(FieldInfo);
-    iter++;
-    }
-  return oColorInfo;
 }
 //--------------------------------------------------------------------------
 
