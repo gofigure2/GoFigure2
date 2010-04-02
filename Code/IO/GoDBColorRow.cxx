@@ -50,7 +50,9 @@ GoDBColorRow::GoDBColorRow()
 //-------------------------------------------------------------------------
 void GoDBColorRow::InitializeMap()
 {
-  this->m_MapRow["ColorID"] = ConvertToString<int>(0);
+  this->m_TableName = "color";
+  this->m_TableIDName = "ColorID";
+  this->m_MapRow[this->m_TableIDName] = ConvertToString<int>(0);
   this->m_MapRow["Name"] = "";
   this->m_MapRow["Red"] = ConvertToString<int>(0);
   this->m_MapRow["Green"] = ConvertToString<int>(0);

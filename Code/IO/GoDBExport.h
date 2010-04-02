@@ -79,8 +79,8 @@ private:
   std::pair<std::string,std::string> GetOneInfoFromDBForImgSession(
     std::string iNameInfo);
   
-  std::vector<std::pair<std::string,std::string> > GetColorInfoFromDB();
-  std::vector<std::pair<std::string,std::string> > GetOneColorInfoFromDB();
+  void WriteColorsInfoFromDB();
+  std::vector<std::pair<std::string,std::string> > GetOneColorInfoFromDB(std::string iColorID);
   /** \brief return <iName> */
   std::string GetNameWithBrackets(std::string iName);
   /** \brief return </iName> */

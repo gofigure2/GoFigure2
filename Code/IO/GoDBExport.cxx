@@ -42,6 +42,7 @@
 #include "SelectQueryDatabaseHelper.h"
 #include "QueryDatabaseHelper.h"
 #include "ConvertToStringHelper.h"
+#include "GoDBColorRow.h"
 
 
 //--------------------------------------------------------------------------
@@ -73,8 +74,8 @@ void GoDBExport::ExportContours( )
   this->m_outfile << " version=\"";
   this->m_outfile << VersionNumber;
   this->m_outfile << "\">"<<std::endl;
-  this->GetColorInfoFromDB();
   this->WriteOnTheOutputFile("imagingsession",this->GetImagingSessionInfoFromDB());
+  this->WriteColorsInfoFromDB();
   this->CloseDBConnection();
   this->m_outfile << this->GetNameWithSlashBrackets(NameDocXml);
   /*typedef std::vector<ContourMeshStructure> ContourMeshVectorType;
@@ -292,21 +293,38 @@ std::pair<std::string,std::string> GoDBExport::GetOneInfoFromDBForImgSession(
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-std::vector<std::pair<std::string,std::string> > 
-  GoDBExport::GetColorInfoFromDB()
+void GoDBExport::WriteColorsInfoFromDB()
 {
-  std::vector<std::pair<std::string,std::string> > oColorsInfo;
   std::vector<std::string> ListColorIDs = ListSpecificValuesForOneColumn(
      this->m_DatabaseConnector,"color","ColorID","","");
-  return oColorsInfo;
+  std::vector<std::string>::iterator iter = ListColorIDs.begin();
+  while(iter != ListColorIDs.end())
+    {
+    std::vector<std::pair<std::string,std::string> > ColorInfo = 
+      this->GetOneColorInfoFromDB(*iter);
+    this->WriteOnTheOutputFile("color",ColorInfo);
+    iter++;
+    }
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 std::vector<std::pair<std::string,std::string> > 
-  GoDBExport::GetOneColorInfoFromDB()
+  GoDBExport::GetOneColorInfoFromDB(std::string iColorID)
 {
   std::vector<std::pair<std::string,std::string> > oColorInfo;
+  GoDBColorRow Color;
+  Color.SetValuesForSpecificID(atoi(iColorID.c_str()),this->m_DatabaseConnector);
+  std::vector<std::string> FieldNames = Color.GetVectorColumnNames();
+  std::vector<std::string>::iterator iter = FieldNames.begin();
+  while (iter != FieldNames.end())
+    {
+    std::pair<std::string,std::string> FieldInfo;
+    FieldInfo.first = *iter;
+    FieldInfo.second = Color.GetMapValue(*iter);
+    oColorInfo.push_back(FieldInfo);
+    iter++;
+    }
   return oColorInfo;
 }
 //--------------------------------------------------------------------------
