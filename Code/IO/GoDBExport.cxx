@@ -40,7 +40,7 @@
 
 #include "GoDBExport.h"
 #include "SelectQueryDatabaseHelper.h"
-#include "QueryDatabaseHelper.h"
+#include "QueryDataBaseHelper.h"
 #include "ConvertToStringHelper.h"
 #include "GoDBColorRow.h"
 #include "GoDBCellTypeRow.h"
