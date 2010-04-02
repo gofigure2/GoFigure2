@@ -26,17 +26,16 @@ class medianplugin : public QObject, public QGoImageFilterPluginBase
     virtual void OnTabMoved( const int& , const int& ) {}
     virtual void OnTabClosed( const int& ) {}
 
-    std::list< GoFigure::TabDimensionType > TabElementCompatibility() const;
+    virtual std::list< GoFigure::TabDimensionType > TabElementCompatibility() const;
 
   protected:
     virtual void Process( );
-    void SetAllRequiredInformation();
+    virtual void SetAllRequiredInformation();
 
     QCellPreprocess* preprocess;
 
   private:
-    medianplugin( const medianplugin& );
-    void operator = ( const medianplugin& );
+    Q_DISABLE_COPY( medianplugin );
 };
 
 #endif

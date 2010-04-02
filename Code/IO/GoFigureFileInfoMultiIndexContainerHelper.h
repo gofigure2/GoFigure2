@@ -41,10 +41,10 @@
 #ifndef __GoFigureFileInfoHelperMultiIndexContainer_h
 #define __GoFigureFileInfoHelperMultiIndexContainer_h
 
-#if !defined(NDEBUG)
-#define BOOST_MULTI_INDEX_ENABLE_INVARIANT_CHECKING
-#define BOOST_MULTI_INDEX_ENABLE_SAFE_MODE
-#endif
+//#if !defined(NDEBUG)
+//#define BOOST_MULTI_INDEX_ENABLE_INVARIANT_CHECKING
+//#define BOOST_MULTI_INDEX_ENABLE_SAFE_MODE
+//#endif
 
 
 #include <string>

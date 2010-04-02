@@ -1,2 +1,2 @@
 ADD_SUBDIRECTORY( QGoImageFilterPlugin )
-# ADD_SUBDIRECTORY( MedianFilteringPlugin )
+ADD_SUBDIRECTORY( MedianFilteringPlugin )

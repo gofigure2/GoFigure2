@@ -149,8 +149,8 @@ signals:
 public slots:
     /** \brief insert a color at the end, before the "more" if the ColorDialog
     is enabled*/
-    void addColor(const QColor &color, const QString &name)
-      { insertColor( colorCount(), color, name ); }
+    void addColor(const QColor &iColor, const QString &iName)
+      { insertColor( colorCount(), iColor, iName ); }
     /** \brief insert the existing colors with the data taken from the database,
     containing the color names with the associated vector of rgba*/
      void setExistingColors(

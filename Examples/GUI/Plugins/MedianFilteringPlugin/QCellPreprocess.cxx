@@ -121,8 +121,8 @@ void QCellPreprocess::on_GlobalApplyButton_clicked()
   if ( !option )
   {
     Preprocess( 0 );
-    Preprocess( 1 );
-    Preprocess( 2 );
+//    Preprocess( 1 );
+//    Preprocess( 2 );
   }
   else
   {

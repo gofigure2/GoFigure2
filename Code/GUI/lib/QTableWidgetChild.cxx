@@ -175,6 +175,9 @@ void QTableWidgetChild::SetSelectRowTraceID (std::string TraceName,
   std::string TraceName,
   std::vector<ContourMeshStructure>* ioTracesInfo )
 {
+  // unused argument
+  (void) TraceName;
+
   bool oModified = false;
 
   //get the selected TraceID:
@@ -412,6 +415,9 @@ void QTableWidgetChild::SetColorForTable (GoDBTableWidgetContainer* iLinkToRowCo
 //--------------------------------------------------------------------------
 int IndexForRowContainer(QTableWidgetChild::DBTableWidgetContainerType iRowContainer)
 {
+  // unused argument
+  (void) iRowContainer;
+
   return 0;
 }
 //--------------------------------------------------------------------------
@@ -473,7 +479,7 @@ void QTableWidgetChild::UpdateRow(GoDBTableWidgetContainer* iLinkToRowContainer,
   else
     {
     QString TraceNameID = QString("%1ID").arg(TraceName.c_str());
-    int UpdateRow = this->findValueGivenColumn(TraceID,TraceNameID);
+    int iUpdateRow = this->findValueGivenColumn(TraceID,TraceNameID);
     for (unsigned int i = 0; i < UpdateTraceRowContainer.size(); i++)
       {
       if (UpdateTraceRowContainer[i].first.ColumnNameTableWidget != "None" && !UpdateTraceRowContainer[i].second.empty())
@@ -484,13 +490,13 @@ void QTableWidgetChild::UpdateRow(GoDBTableWidgetContainer* iLinkToRowContainer,
           if (HeaderCol == UpdateTraceRowContainer[i].first.ColumnNameTableWidget)
             {
             std::string Value = UpdateTraceRowContainer[i].second[0];
-            this->item(UpdateRow,j)->setData(0,QString::fromStdString( Value ).toInt());
+            this->item(iUpdateRow,j)->setData(0,QString::fromStdString( Value ).toInt());
             }//ENDIF
           }//ENDFOR
         }//ENDIF
       }//ENDFOR
-    this->SetColorForTable(iLinkToRowContainer,TraceName,UpdateRow);
-    this->SetColorForTable(iLinkToRowContainer,CollectionName,UpdateRow);
+    this->SetColorForTable(iLinkToRowContainer,TraceName,iUpdateRow);
+    this->SetColorForTable(iLinkToRowContainer,CollectionName,iUpdateRow);
     }//ENDELSE
 }
 //--------------------------------------------------------------------------

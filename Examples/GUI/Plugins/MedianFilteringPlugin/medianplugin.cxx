@@ -27,22 +27,34 @@ std::vector< QAction* > medianplugin::Actions()
   return oActionList;
 }
 
+QToolBar* medianplugin::ToolBar()
+{
+  return 0;
+}
+
 QMenu* medianplugin::Menu()
 {
   return 0;
 }
 
-QToolBar* medianplugin::ToolBar()
-{
-  return 0;
-}
 QDockWidget* medianplugin::DockWidget()
 {
   return 0;
 }
+
 QWidget* medianplugin::AdditionalWidget()
 {
   return 0;
+}
+
+std::list< GoFigure::TabDimensionType >
+medianplugin::TabElementCompatibility() const
+{
+  std::list< GoFigure::TabDimensionType > oCompatibility;
+  oCompatibility.push_back( GoFigure::TWO_D );
+  oCompatibility.push_back( GoFigure::THREE_D );
+
+  return oCompatibility;
 }
 
 void medianplugin::Process( )
@@ -64,13 +76,4 @@ void medianplugin::SetAllRequiredInformation()
   this->m_Information.Description = "Test: plugin which median filters the input";
 }
 
-std::list< GoFigure::TabDimensionType >
-medianplugin::TabElementCompatibility() const
-{
-  std::list< GoFigure::TabDimensionType > oCompatibility;
-  oCompatibility.push_back( GoFigure::TWO_D );
-  oCompatibility.push_back( GoFigure::THREE_D );
-
-  return oCompatibility;
-}
 

@@ -116,27 +116,27 @@ void QGoTraceManualEditingWidget::SetColorComboBox()
 void QGoTraceManualEditingWidget::SetTraceColorIDCollectionComboBox()
 {
   TraceName = new QLabel(tr("contour"));
-  QFont font;
-  font.setCapitalization(QFont::AllUppercase);
-  font.setBold(true);
-  TraceName->setFont(font);
+  QFont ifont;
+  ifont.setCapitalization(QFont::AllUppercase);
+  ifont.setBold(true);
+  TraceName->setFont(ifont);
   QHBoxLayout* HLayoutForTrace = new QHBoxLayout;
   HLayoutForTrace->addWidget(this->TraceLbl);
   HLayoutForTrace->addWidget(TraceName);
   QLabel* CollectionLbl = new QLabel(tr("Current Collection:"));
-  font.setCapitalization(QFont::Capitalize);
-  font.setPointSize(8);
-  font.setUnderline(true);
-  font.setWeight(50);
-  font.setBold(false);
-  CollectionLbl->setFont(font);
+  ifont.setCapitalization(QFont::Capitalize);
+  ifont.setPointSize(8);
+  ifont.setUnderline(true);
+  ifont.setWeight(50);
+  ifont.setBold(false);
+  CollectionLbl->setFont(ifont);
   ColorIDCollectionComboBox = new QtColorComboBox;
   ColorIDCollectionComboBox->setCreationCollection(true);
   CollectionName = new QLabel (tr("mesh"));
-  font.setUnderline(false);
-  font.setCapitalization(QFont::AllUppercase);
-  font.setBold(true);
-  CollectionName->setFont(font);
+  ifont.setUnderline(false);
+  ifont.setCapitalization(QFont::AllUppercase);
+  ifont.setBold(true);
+  CollectionName->setFont(ifont);
   /// \todo make the names change with the interaction
   QHBoxLayout* HLayoutForCollection = new QHBoxLayout;
   HLayoutForCollection->addWidget(CollectionName);

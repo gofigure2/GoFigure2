@@ -68,11 +68,11 @@ QGoDeleteDBEntityDialog::QGoDeleteDBEntityDialog( QWidget* iParent,
                                       | QDialogButtonBox::Cancel);
   QObject::connect(ButtonBox, SIGNAL(rejected()), this, SLOT(reject()));
   QObject::connect(ButtonBox,SIGNAL(accepted()), this, SLOT(SelectionValidation()));
-  QVBoxLayout* layout = new QVBoxLayout(this);
-  layout->addWidget(this->m_ListWidget);
-  layout->addWidget(ButtonBox);
+  QVBoxLayout* vlayout = new QVBoxLayout(this);
+  vlayout->addWidget(this->m_ListWidget);
+  vlayout->addWidget(ButtonBox);
   this->setWindowTitle(tr("Delete a %1").arg(this->m_EntityName.c_str()));
-  this->setLayout(layout);
+  this->setLayout(vlayout);
 }
 //--------------------------------------------------------------------------
 
@@ -119,6 +119,9 @@ void QGoDeleteDBEntityDialog::SetItemsInTheList(
    {
    QListWidgetItem* item
       = new QListWidgetItem( ListNamesEntities.at(i), this->m_ListWidget );
+
+   // unused variable
+   (void) item;
    }
 }
 //--------------------------------------------------------------------------

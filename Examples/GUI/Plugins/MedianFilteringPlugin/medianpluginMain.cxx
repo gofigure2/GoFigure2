@@ -1,6 +1,6 @@
 #include "medianplugin.h"
 
-#include <typeinfo>
+//#include <typeinfo>
 #include <QDir>
 #include <QPluginLoader>
 

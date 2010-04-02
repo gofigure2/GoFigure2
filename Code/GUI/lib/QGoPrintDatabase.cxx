@@ -588,12 +588,15 @@ ChangeMeshesToHighLightInfoFromVisu(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-int QGoPrintDatabase::SaveContoursFromVisuInDB(unsigned int iXCoordMin,
-  unsigned int iYCoordMin,unsigned int iZCoordMin,unsigned int iTCoord,
-  unsigned int iXCoordMax,unsigned int iYCoordMax,unsigned int iZCoordMax,
+int QGoPrintDatabase::SaveContoursFromVisuInDB( unsigned int iXCoordMin,
+  unsigned int iYCoordMin, unsigned int iZCoordMin, unsigned int iTCoord,
+  unsigned int iXCoordMax, unsigned int iYCoordMax, unsigned int iZCoordMax,
   vtkPolyData* iContourNodes, std::pair<std::string,QColor> iColorData,
   unsigned int iMeshID)
 {
+  // unused argument
+  (void) iMeshID;
+
   OpenDBConnection();
 
   GoDBContourRow contour_row = this->GetContourRowFromVisu(iXCoordMin,
@@ -873,11 +876,11 @@ std::list<std::pair<std::string,QColor> > QGoPrintDatabase::
   while ( iter != ResultsQuery.end())
     {
     std::vector<std::string> ResultsOneRow = *iter;
-    int Red   = atoi(ResultsOneRow[i+1].c_str());
-    int Green = atoi(ResultsOneRow[i+2].c_str());
-    int Blue  = atoi(ResultsOneRow[i+3].c_str());
-    int Alpha = atoi(ResultsOneRow[i+4].c_str());
-    QColor Color(Red,Green,Blue,Alpha);
+    int intRed   = atoi(ResultsOneRow[i+1].c_str());
+    int intGreen = atoi(ResultsOneRow[i+2].c_str());
+    int intBlue  = atoi(ResultsOneRow[i+3].c_str());
+    int intAlpha = atoi(ResultsOneRow[i+4].c_str());
+    QColor Color(intRed, intGreen, intBlue, intAlpha );
     std::pair<std::string,QColor> temp;
     temp.first = ResultsOneRow[i];
     temp.second = Color;
@@ -980,10 +983,14 @@ void QGoPrintDatabase::UpdateTableWidgetAndRowContainerWithNewCreatedTrace(
 
 //-------------------------------------------------------------------------
  void QGoPrintDatabase::UpdateTableWidgetAndRowContainerWithNewCollectionID(
-   std::string iTraceName,vtkMySQLDatabase* DatabaseConnector,
-   unsigned int iNewCollectionID,QColor iColorNewCollection,
+   std::string iTraceName, vtkMySQLDatabase* DatabaseConnector,
+   unsigned int iNewCollectionID, QColor iColorNewCollection,
    std::list<int> iListSelectedTraces)
 {
+  // unused arguments
+  (void) DatabaseConnector;
+  (void) iListSelectedTraces;
+
   TraceInfoStructure* TraceData = this->GetTraceInfoStructure(
     iTraceName);
   //Update the TraceTable with the new collectionID + color:

@@ -138,8 +138,8 @@
     \a parent and \a name arguments are passed to the QComboBox's
     constructor.
 */
-QtColorComboBox::QtColorComboBox(QWidget *parent, const char * /*name*/)
-    : QComboBox(parent), numUserColors(0)
+QtColorComboBox::QtColorComboBox(QWidget *iParent, const char * /*name*/)
+    : QComboBox(iParent), numUserColors(0)
 {
     colorDialogEnabled = false;
  
@@ -195,13 +195,13 @@ void QtColorComboBox::setCreationCollection(bool enabled)
 
     If \a index is -1, then color is prepended to the beginning end of the list.
 */
-void QtColorComboBox::insertColor(int index, const QColor &color, const QString &name)
+void QtColorComboBox::insertColor(int index, const QColor &iColor, const QString &iName)
 {
     QPixmap pix(12, 12);
     QPainter painter(&pix);
-    if (color.isValid()) {
+    if (iColor.isValid()) {
 	painter.setPen(Qt::gray);
-	painter.setBrush(QBrush(color));
+	painter.setBrush(QBrush(iColor));
 	painter.drawRect(0, 0, 12, 12);
     }
     QIcon icon;
@@ -209,7 +209,7 @@ void QtColorComboBox::insertColor(int index, const QColor &color, const QString 
 
     // Prevent adding of colors after the color dialog item.
     if (colorDialogEnabled && index > colorCount()) index = colorCount() - 1;
-    insertItem(index, icon, name, color);
+    insertItem(index, icon, iName, iColor);
 }
 
 /*!
@@ -234,10 +234,10 @@ QColor QtColorComboBox::currentColor() const
 
     \sa insertColor()
 */
-void QtColorComboBox::setCurrentColor(const QColor &color)
+void QtColorComboBox::setCurrentColor(const QColor &iColor)
 {
     for (int i = 0; i < colorCount(); i++) {
-	if (QtColorComboBox::color(i) == color) {
+	if (QtColorComboBox::color(i) == iColor) {
 	    setCurrentIndex(i);
 	    break;
 	}
