@@ -110,10 +110,12 @@ struct ContourMeshStructure
     }
 };
 
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 struct TraceID {};
 struct Actor {};
 struct Nodes {};
 struct CollectionID {};
 struct TCoord {};
+#endif
 
 #endif

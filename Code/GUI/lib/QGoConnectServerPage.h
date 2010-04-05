@@ -65,7 +65,7 @@ public:
   void SetIsAnOpenRecentFile(bool iIsAnOpenRecentFile);
 
 private:
-  Q_DISBALE_COPY( QGoConnectServerPage );
+  Q_DISABLE_COPY( QGoConnectServerPage );
 
   void OpenConnectionToServer()const;
   void CloseServerConnection()const;

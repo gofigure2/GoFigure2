@@ -97,6 +97,7 @@ struct GoFigureFileInfoHelper
   ~GoFigureFileInfoHelper() {}
 };
 
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
   struct m_PCoord {};
   struct m_RCoord {};
   struct m_CCoord {};
@@ -108,6 +109,7 @@ struct GoFigureFileInfoHelper
   struct m_ZCoord {};
   struct m_TCoord {};
   struct m_Channel {};
+#endif
 
   /// \todo Since we are not yet using all information, the unused one are
   /// commented for performance issue.
