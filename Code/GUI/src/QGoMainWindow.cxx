@@ -1068,12 +1068,12 @@ void QGoMainWindow::on_actionGoFigure2_Website_triggered( )
 //--------------------------------------------------------------------------
 void QGoMainWindow::on_actionUser_mailing_list_triggered( )
 {
-  QDesktopServices::openUrl( QUrl("mailto:users@gofigure2.com?subject=About GoFigure2") );
+  QDesktopServices::openUrl( QUrl("mailto:gofigure2-users@lists.sourceforge.net?subject=About GoFigure2") );
 }
 //--------------------------------------------------------------------------
 void QGoMainWindow::on_actionDeveloper_mailing_list_triggered( )
 {
-  QDesktopServices::openUrl( QUrl("mailto:developers@gofigure2.com?subject=About Gofigure2" ) );
+  QDesktopServices::openUrl( QUrl("mailto:gofigure2-developers@lists.sourceforge.net?subject=About GoFigure2" ) );
 }
 
 //--------------------------------------------------------------------------
