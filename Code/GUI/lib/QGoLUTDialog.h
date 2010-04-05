@@ -57,9 +57,10 @@ class vtkScalarBarActor;
 #include "QVTKWidget.h"
 
 /**
-\class QGoLUTDialog
-\brief Look-up Table Dialog
-\example GUI/lib/qgolutdialog.cxx
+ * \class QGoLUTDialog
+ * \brief Look-up Table Dialog
+ * \image html QGoLUTDialog.png
+ * \example GUI/lib/qgolutdialog.cxx
 */
 class QGoLUTDialog : public QDialog
 {

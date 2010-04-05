@@ -67,6 +67,11 @@ class QGoTabElementBase;
 
 #include "ui_go.h"
 
+/**
+ * \class QGoMainWindow
+ * \brief GoFigure2's main window
+ * \image html QGoMainWindow.png 
+ * */
 class QGoMainWindow : public QMainWindow,
   private Ui::go_mainwindow
 {

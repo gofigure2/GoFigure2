@@ -62,10 +62,11 @@
 #include "vtkMySQLDatabase.h"
 
 /**
-\class QGoWizardDB
-\brief This class leads the user to chose its imagingsession and enables to get the
-corresponding filenames from the database.
-*/
+ * \class QGoWizardDB
+ * \brief This class leads the user to chose its imagingsession and enables
+ * to get the corresponding filenames from the database.
+ * \image html QGoWizardDB.png
+ * */
 class QGoWizardDB : public QWizard
 {
   Q_OBJECT
@@ -79,20 +80,22 @@ public:
     CreateImgSessionPageID
   };
 
-  QGoWizardDB(QWidget *parent = 0);
+  explicit QGoWizardDB(QWidget *parent = 0);
+  ~QGoWizardDB() {}
+
   QString GetNameDB();
   QString GetServer();
   QString GetLogin();
   QString GetPassword();
   QString GetImagingSessionName();
   int GetImagingSessionID();
-  bool  GetIsAnOpenRecentFile();
+  bool GetIsAnOpenRecentFile();
 
   QPushButton* nextButton;
 
   /**
-   * \brief return a list for each channel of the filenames for the images in
-   * the database as a vector of vector
+   * \brief return a list for each channel of the filenames for the images 
+   * in the database as a vector of vector
    */
   std::vector<std::vector<std::string> > GetFilenamesFromDB();
 
@@ -111,6 +114,9 @@ protected:
   std::string             m_FirstFileName;
   int                     m_ImgSessionID;
   bool                    m_IsAnOpenRecentFile;
+
+private:
+  Q_DISABLE_COPY( QGoWizardDB );
 
 };
 #endif

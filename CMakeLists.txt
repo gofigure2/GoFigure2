@@ -155,7 +155,7 @@ IF( VTK_FOUND )
     INCLUDE( ${ITK_USE_FILE} )
   ENDIF( ITK_FOUND )
 
-  # Then find boost
+  # Then find oost
   FIND_PACKAGE( Boost )
   IF( Boost_FOUND )
     INCLUDE_DIRECTORIES( BEFORE ${Boost_INCLUDE_DIRS} )
