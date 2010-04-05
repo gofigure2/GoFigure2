@@ -65,7 +65,10 @@
  * \class QGoWizardDB
  * \brief This class leads the user to chose its imagingsession and enables
  * to get the corresponding filenames from the database.
- * \image html QGoWizardDB.png
+ * \sa QGoConnectServerPage 
+ * \sa QGoCreateDataBasePage 
+ * \sa QGoOpenCreateProjectPage
+ * \sa QGoOpenCreateImgSessionPage
  * */
 class QGoWizardDB : public QWizard
 {

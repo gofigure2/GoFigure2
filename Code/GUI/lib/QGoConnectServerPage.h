@@ -45,13 +45,19 @@
 #include <QLineEdit>
 #include "vtkMySQLDatabase.h"
 
-
+/**
+ * \class QGoConnectServerPage
+ * \brief
+ * \image html QGoConnectServerPage.png
+ * */
 class QGoConnectServerPage : public QWizardPage
 {
   Q_OBJECT
 
 public:
-  QGoConnectServerPage(QWidget *parent = 0);
+  explicit QGoConnectServerPage(QWidget *parent = 0);
+  ~QGoConnectServerPage() {}
+
   bool validatePage();
   int nextId() const;
   mutable std::pair<bool,vtkMySQLDatabase*> m_ConnectionServer;
@@ -59,6 +65,8 @@ public:
   void SetIsAnOpenRecentFile(bool iIsAnOpenRecentFile);
 
 private:
+  Q_DISBALE_COPY( QGoConnectServerPage );
+
   void OpenConnectionToServer()const;
   void CloseServerConnection()const;
 
@@ -69,7 +77,10 @@ private:
   mutable std::string m_ImgSessionName;
   bool                m_IsAnOpenRecentFile;
  
-  /**\brief return the list of the names of the databases of gofigure type:*/
+  /** 
+ * \brief return the list of the names of the databases of 
+ * gofigure type
+ * */
   std::list<std::string> ListGofigureDatabases() const;
   
 
