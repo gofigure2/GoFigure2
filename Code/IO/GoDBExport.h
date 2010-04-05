@@ -130,8 +130,13 @@ private:
       }
     return oEntityInfo;
   }
-  
+  /** \brief get the colors info from the database for the corresponding contours
+  and meshes and write them in the output file*/
   void WriteTheColorsInfoFromDatabase();
+  /** \brief get the coordinates without doublon corresponding to the coordidmax
+  and min of the contours and meshes from the database and write them in the
+  output file*/
+  void WriteCoordinatesInfoFromDatabase();
   /** \brief return <iName> */
   std::string GetNameWithBrackets(std::string iName);
   /** \brief return </iName> */

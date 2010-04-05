@@ -222,5 +222,10 @@ std::string SelectQueryStream(std::string iTable, std::string iColumn, std::stri
 std::vector<std::string> GetSamefieldFromTwoTables(vtkMySQLDatabase* DatabaseConnector,
   std::string iTableOne, std::string iTableTwo,std::string iColumn,
   std::string iField, std::string iValue);
+//query: SELECT iColumnOne FROM TableOne WHERE...UNION SELECT iColumnTwo FROM TableOne...
+//UNION SELECT iColumnOne FROM TableTwo WHERE....UNION SELECT iColumnTwo FROM TableTwo WHERE.
+std::vector<std::string> GetSamefieldsFromTwoTables(vtkMySQLDatabase* DatabaseConnector,
+  std::string iTableOne, std::string iTableTwo,std::string iColumnOne,std::string iColumnTwo,
+  std::string iField, std::string iValue);
 
 #endif

@@ -1447,3 +1447,45 @@ std::vector<std::string> GetSamefieldFromTwoTables(
 
   return result;
 }
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::vector<std::string> GetSamefieldsFromTwoTables(vtkMySQLDatabase* DatabaseConnector,
+  std::string iTableOne, std::string iTableTwo,std::string iColumnOne,
+  std::string iColumnTwo,std::string iField, std::string iValue)
+{
+  std::vector< std::string > result;
+  vtkSQLQuery* query = DatabaseConnector->GetQueryInstance();
+  std::stringstream querystream;
+  querystream << SelectQueryStream(iTableOne,iColumnOne,iField,iValue);
+  querystream << " UNION ";
+  querystream << SelectQueryStream(iTableOne,iColumnTwo,iField,iValue);
+  querystream << " UNION ";
+  querystream << SelectQueryStream(iTableTwo,iColumnOne,iField,iValue);
+  querystream << " UNION ";
+  querystream << SelectQueryStream(iTableTwo,iColumnTwo,iField,iValue);
+ 
+  query->SetQuery( querystream.str().c_str() );
+  if ( !query->Execute() )
+    {
+    itkGenericExceptionMacro(
+      << "List of all values for 2 tables query failed"
+      << query->GetLastErrorText() );
+    DatabaseConnector->Close();
+    DatabaseConnector->Delete();
+    query->Delete();
+    return result;
+    }
+
+  while (query->NextRow())
+    {
+    for( int i = 0; i < query->GetNumberOfFields(); i++)
+      {
+      result.push_back( query->DataValue( i ).ToString() );
+      }
+    }
+
+  query->Delete();
+
+  return result;
+}
