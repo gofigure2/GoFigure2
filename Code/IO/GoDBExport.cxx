@@ -86,7 +86,7 @@ void GoDBExport::ExportContours( )
   //this->WriteTableInfoFromDB<GoDBCellTypeRow>("","");
   //this->WriteTableInfoFromDB<GoDBSubCellTypeRow>("","");
   this->WriteCellTypeAndSubCellTypeInfoFromDatabase(ListMeshIDsWithContours);
-  this->WriteCoordinatesInfoFromDatabase();
+  this->WriteCoordinatesInfoFromDatabase(ListMeshIDsWithContours);
   this->CloseDBConnection();
   this->m_outfile << this->GetNameWithSlashBrackets(NameDocXml);
   /*typedef std::vector<ContourMeshStructure> ContourMeshVectorType;
@@ -333,11 +333,13 @@ void GoDBExport::WriteCellTypeAndSubCellTypeInfoFromDatabase(
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void GoDBExport::WriteCoordinatesInfoFromDatabase()
+void GoDBExport::WriteCoordinatesInfoFromDatabase(
+  std::vector<std::string> iListMeshIDsWithContours)
 {
   std::vector<std::string> ListCoordIDs = GetSamefieldsFromTwoTables(
     this->m_DatabaseConnector,"contour","mesh","CoordIDMax","CoordIDMin",
-    "ImagingSessionID",ConvertToString<int>(this->m_ImagingSessionID));
+    "ImagingSessionID",ConvertToString<int>(this->m_ImagingSessionID),
+    "MeshID",iListMeshIDsWithContours);
   this->WriteTableInfoFromDB<GoDBCoordinateRow>(ListCoordIDs);
 }
 //--------------------------------------------------------------------------

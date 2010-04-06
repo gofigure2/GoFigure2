@@ -144,7 +144,8 @@ private:
   /** \brief get the coordinates without doublon corresponding to the coordidmax
   and min of the contours and meshes from the database and write them in the
   output file*/
-  void WriteCoordinatesInfoFromDatabase();
+  void WriteCoordinatesInfoFromDatabase(
+    std::vector<std::string> iListMeshIDsWithContours);
   /** \brief return <iName> */
   std::string GetNameWithBrackets(std::string iName);
   /** \brief return </iName> */
