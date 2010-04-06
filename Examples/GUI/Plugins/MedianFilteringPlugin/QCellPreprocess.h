@@ -57,11 +57,12 @@
 #include <map>
 #include <string>
 
-class QCellPreprocess : public QMainWindow,
+class QCellPreprocess : public QWidget,
   private Ui::CellPreprocessWidget
 {
   Q_OBJECT
 
+public:
   typedef itk::Image< unsigned char, 3 > InputImageType;
   typedef InputImageType::Pointer InputImagePointer;
   typedef itk::CellPreprocess< InputImageType, InputImageType > PreprocessFilterType;
@@ -71,26 +72,14 @@ class QCellPreprocess : public QMainWindow,
   typedef itk::VTKImageImport< InputImageType > ImageImportType;
   typedef ImageImportType::Pointer ImageImportPointer;
 
-public:
-  QCellPreprocess();
+  explicit QCellPreprocess( QWidget* iParent = 0 );
   virtual ~QCellPreprocess(){}
 
-  void SetMembraneDataType( bool x )
-  {
-    m_MembraneData = x;
-  }
+  void SetMembraneDataType( bool x );
 
-  void SetInput( std::vector< vtkImageData* >& iImg )
-  {
-    m_VTKInput = iImg;
-  }
+  void SetInput( std::vector< vtkImageData* >& iImg );
 
-  std::vector< vtkImageData* > GetOutput()
-  {
-    return m_VTKOutput;
-  }
-
-public slots:
+  std::vector< vtkImageData* > GetOutput();
 
 protected slots:
   void on_RadiusSpinBox_valueChanged();

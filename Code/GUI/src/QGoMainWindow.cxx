@@ -1186,6 +1186,7 @@ void QGoMainWindow::ApplyImageFilter()
     {
     filter->SetInput( WnD->GetImage() );
     filter->Update();
+//     WnD->SetImage( filter->GetOutput()[0] );
     }
 }
 //--------------------------------------------------------------------------

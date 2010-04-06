@@ -44,7 +44,7 @@
 #include <iostream>
 
 //--------------------------------------------------------------------------
-QCellPreprocess::QCellPreprocess()
+QCellPreprocess::QCellPreprocess( QWidget* iParent ) : QWidget( iParent )
 {
   this->setupUi( this );
   m_CellRadius = 4.0;
@@ -53,6 +53,22 @@ QCellPreprocess::QCellPreprocess()
   this->buttonGroup->setId( allChRadioButton, 0 );
   this->buttonGroup->setId( singleChRadioButton, 1 );
   this->ChannelComboBox->setEnabled( false );
+}
+
+void QCellPreprocess::SetMembraneDataType( bool x )
+{
+  m_MembraneData = x;
+}
+
+void QCellPreprocess::SetInput( std::vector< vtkImageData* >& iImg )
+{
+  m_VTKInput = iImg;
+  m_VTKOutput.resize( m_VTKInput.size(), 0 );
+}
+
+std::vector< vtkImageData* > QCellPreprocess::GetOutput()
+{
+  return m_VTKOutput;
 }
 
 //--------------------------------------------------------------------------
