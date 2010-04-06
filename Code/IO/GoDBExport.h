@@ -78,7 +78,8 @@ private:
     std::string iNameInfo);
 
   /** \brief get the info from the database for all the entities from a table or
-  with a limitation defined with field and value and write them in the output file*/
+  with a limitation defined with field and value and write them in the output file
+  after having written first the number of entities to be described*/
   template< typename T >
   void WriteTableInfoFromDB(std::string field, std::string value)
    {
@@ -101,6 +102,7 @@ private:
   void WriteTableInfoFromDB(std::vector<std::string> iListIDs)
    {
     T TableRow;
+    this->WriteNumberOfEntities(TableRow.GetTableName(),iListIDs.size());
     std::vector<std::string>::iterator iter = iListIDs.begin();
     while(iter != iListIDs.end())
       {
@@ -130,9 +132,18 @@ private:
       }
     return oEntityInfo;
   }
-  void WriteCellTypeAndSubCellTypeInfoFromDatabase(
-  std::vector<std::string> iListMeshIdsWithContours);
 
+  /** \brief Get the celltype and subcelltype for the needed meshes from
+  the database and write them on the output file*/
+  void WriteCellTypeAndSubCellTypeInfoFromDatabase(
+    std::vector<std::string> iListMeshIdsWithContours);
+  /** \brief get the contours info for the corresponding imagingsession from
+  the database and write them on the output file*/
+  void WriteContoursInfoFromDatabase();
+  /** \brief get the meshes info for the corresponding IDs from the database
+  and write them on the output file*/
+  void WriteMeshesInfoFromDatabase(
+    std::vector<std::string> iListMeshIDsWithContours );
   /** \brief when exporting contours, if the contours belong to
   meshes, the info regarding these meshes are needed also, so return 
   the list of IDs of these meshes*/
@@ -154,6 +165,8 @@ private:
   the name of the entity they describe*/
   void WriteOnTheOutputFile(std::string iNameOfEntity,
     std::vector<std::pair<std::string,std::string> > iInfoToWrite);
+  /** \brief write on the output file the number of entities that are exported*/
+  void WriteNumberOfEntities(std::string iNameOfEntity,int iNumber);
   /** \ brief add 2 spaces to the output file for xml tabulation*/
   void AddTabulation();
   void OpenDBConnection();

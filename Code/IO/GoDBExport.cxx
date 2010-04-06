@@ -46,6 +46,8 @@
 #include "GoDBCellTypeRow.h"
 #include "GoDBSubCellTypeRow.h"
 #include "GoDBCoordinateRow.h"
+#include "GoDBContourRow.h"
+#include "GoDBMeshRow.h"
 
 
 //--------------------------------------------------------------------------
@@ -82,83 +84,184 @@ void GoDBExport::ExportContours( )
   std::vector<std::string> ListMeshIDsWithContours 
     = this->GetListMeshIDsWithContours();  
   this->WriteTheColorsInfoFromDatabase(ListMeshIDsWithContours);
-  //this->WriteTableInfoFromDB<GoDBColorRow>("","");
-  //this->WriteTableInfoFromDB<GoDBCellTypeRow>("","");
-  //this->WriteTableInfoFromDB<GoDBSubCellTypeRow>("","");
   this->WriteCellTypeAndSubCellTypeInfoFromDatabase(ListMeshIDsWithContours);
   this->WriteCoordinatesInfoFromDatabase(ListMeshIDsWithContours);
+  this->WriteMeshesInfoFromDatabase(ListMeshIDsWithContours);
+  this->WriteContoursInfoFromDatabase();
   this->CloseDBConnection();
   this->m_outfile << this->GetNameWithSlashBrackets(NameDocXml);
-  /*typedef std::vector<ContourMeshStructure> ContourMeshVectorType;
-  typedef ContourMeshVectorType::iterator ContourMeshIteratorType;
-
-  typedef std::vector < int > RGBAType;
-  typedef std::pair < std::string, RGBAType > ColorType;
-  //typedef std::list< ColorType > ColorComboBoxType;
-  //typedef std::list< std::pair < std::string, std::vector < int > > >::iterator iter;
-
-      ContourMeshVectorType* contours = w3t->m_DataBaseTables->GetTracesInfoListForVisu("contour");
-
-      vtkPolyDataMySQLTextWriter* convert_writer =
-        vtkPolyDataMySQLTextWriter::New();
-
-      // Set file name
-      QString p = QFileDialog::getSaveFileName(
-      this,
-      tr( "Save Contour Export File" ),"",
-      tr( "TextFile (*.txt)" )
-      );
-
-      if ( ! p.isNull() )
-      {
-        QFileInfo pathInfo( p );
-        std::string filename = p.toStdString();
-
-        // Create an xml file
-        std::fstream outfile;
-        outfile.open ( filename.c_str(), std::ios::out );
-
-        // Missing information in the export
-//         ColorComboBoxType colorComboBoxInfo = w3t->m_DataBaseTables->GetColorComboBoxInfofromDB ();
-//         for( std::list< ColorType >::iterator it = colorComboBoxInfo.begin();
-//           it != colorComboBoxInfo.end();
-//           ++it )
-//         {
-//           std::cout << (*it) << std::endl;
-//         }
-
-        // 2. GetCurrentCollectionData ()
-        // 3. GetListExistingCollectionIDFromDB (std::string TraceName, int iTimePoint)
-
-        unsigned int contourId, meshId, timePt;
-        ContourMeshIteratorType It = contours->begin();
-        outfile << contours->size() << std::endl;
-        while( It != contours->end() )
-        {
-          contourId = (*It).TraceID;
-          meshId = (*It).CollectionID;
-          timePt = (*It).TCoord;
-          outfile << "<contour>" << std::endl;
-          outfile << contourId << std::endl;
-          outfile << "<TCoord> " << std::endl;
-          outfile << timePt << std::endl;
-          outfile << "</TCoord>" << std::endl;
-          outfile << "<MeshId> " << std::endl;
-          outfile << meshId << std::endl;
-          outfile << "</MeshId>" << std::endl;
-
-          outfile << "<Nodes>" << std::endl;
-          //with the class here
-          std::string str = convert_writer->GetMySQLText( (*It).Nodes );
-          outfile << str << std::endl;
-          outfile << "</Nodes>" << std::endl;
-          outfile << "</contour>" << std::endl;
-          ++It;
-        }
-        outfile.close();
-      }*/
 }
+//--------------------------------------------------------------------------
 
+//--------------------------------------------------------------------------
+std::vector<std::pair<std::string,std::string> > 
+  GoDBExport::GetImagingSessionInfoFromDB()
+{
+  std::vector<std::pair<std::string,std::string> > infoImgSession;
+  infoImgSession.push_back(this->GetOneInfoFromDBForImgSession("Name"));
+  infoImgSession.push_back(this->GetOneInfoFromDBForImgSession("CreationDate"));
+  infoImgSession.push_back(this->GetOneInfoFromDBForImgSession("MicroscopeName"));
+
+  return infoImgSession;  
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+std::pair<std::string,std::string> GoDBExport::GetOneInfoFromDBForImgSession(
+  std::string iNameInfo)
+{
+  std::pair<std::string,std::string> OneInfo;
+  OneInfo.first = iNameInfo;
+  OneInfo.second = ListSpecificValuesForOneColumn(
+    this->m_DatabaseConnector,"imagingsession", iNameInfo,"ImagingSessionID",
+    ConvertToString<int>(this->m_ImagingSessionID)).at(0);
+  return OneInfo;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+std::vector<std::string> GoDBExport::GetListMeshIDsWithContours()
+{
+  return ListSpecificValuesForOneColumn(this->m_DatabaseConnector,
+    "contour", "meshID","imagingsessionID",
+    ConvertToString<int>(this->m_ImagingSessionID),true);
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void GoDBExport::WriteTheColorsInfoFromDatabase(
+  std::vector<std::string> iListMeshIDsWithContours)
+{
+  std::vector<std::string> ListColorIDs = GetSamefieldFromTwoTables(
+    this->m_DatabaseConnector,"contour","mesh","ColorID",
+    "ImagingSessionID",ConvertToString<int>(this->m_ImagingSessionID),
+    "MeshID",iListMeshIDsWithContours);
+  this->WriteTableInfoFromDB<GoDBColorRow>(ListColorIDs);
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void GoDBExport::WriteCellTypeAndSubCellTypeInfoFromDatabase(
+  std::vector<std::string> iListMeshIDsWithContours)
+{
+  std::vector<std::string> ListCellTypeIDs = ListSpecificValuesForOneColumn(
+    this->m_DatabaseConnector,"mesh", "CellTypeID","MeshID",
+    iListMeshIDsWithContours,true);
+  this->WriteTableInfoFromDB<GoDBCellTypeRow>(ListCellTypeIDs);
+  std::vector<std::string> ListSubCellTypeIDs = 
+    ListSpecificValuesForOneColumn(this->m_DatabaseConnector,
+    "mesh", "SubCellularID","MeshID",iListMeshIDsWithContours,true);
+  this->WriteTableInfoFromDB<GoDBSubCellTypeRow>(ListSubCellTypeIDs);
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void GoDBExport::WriteCoordinatesInfoFromDatabase(
+  std::vector<std::string> iListMeshIDsWithContours)
+{
+  std::vector<std::string> ListCoordIDs = GetSamefieldsFromTwoTables(
+    this->m_DatabaseConnector,"contour","mesh","CoordIDMax","CoordIDMin",
+    "ImagingSessionID",ConvertToString<int>(this->m_ImagingSessionID),
+    "MeshID",iListMeshIDsWithContours);
+  this->WriteTableInfoFromDB<GoDBCoordinateRow>(ListCoordIDs);
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void GoDBExport::WriteMeshesInfoFromDatabase(
+    std::vector<std::string> iListMeshIDsWithContours )
+{
+  this->WriteTableInfoFromDB<GoDBMeshRow>(iListMeshIDsWithContours);
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+
+void GoDBExport::WriteContoursInfoFromDatabase()
+{
+  std::vector<std::string> ListContoursIDs = ListSpecificValuesForOneColumn(
+    this->m_DatabaseConnector,"contour", "ContourID","ImagingSessionID",
+    ConvertToString<int>(this->m_ImagingSessionID),true);
+  this->WriteTableInfoFromDB<GoDBContourRow>(ListContoursIDs);
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void GoDBExport::WriteOnTheOutputFile(std::string iNameOfEntity,
+  std::vector<std::pair<std::string,std::string> > iInfoToWrite)
+{  
+  this->AddTabulation();
+  this->m_outfile << GetNameWithBrackets(iNameOfEntity)<<std::endl;
+  std::vector<std::pair<std::string,std::string> >::iterator iter =
+    iInfoToWrite.begin();
+  while(iter!=iInfoToWrite.end())
+    {
+    this->AddTabulation();
+    this->AddTabulation();
+    this->m_outfile << this->GetNameWithBrackets(iter->first);
+    this->m_outfile << iter->second;
+    this->m_outfile << this->GetNameWithSlashBrackets(iter->first)<<std::endl;
+    iter++;
+    }
+  this->AddTabulation();
+  this->m_outfile << GetNameWithSlashBrackets(iNameOfEntity)<<std::endl;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void GoDBExport::WriteNumberOfEntities(std::string iNameOfEntity,int iNumber)
+{
+  this->AddTabulation();
+  std::string NameToWrite = "Number Of ";
+  NameToWrite += iNameOfEntity;
+  this->m_outfile << this->GetNameWithBrackets(NameToWrite);
+  this->m_outfile << iNumber;
+  this->m_outfile << this->GetNameWithSlashBrackets(NameToWrite)<<std::endl;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+std::string GoDBExport::GetNameWithBrackets(std::string iName)
+{
+  std::stringstream NameWithBrackets;
+  NameWithBrackets << "<";
+  NameWithBrackets << iName;
+  NameWithBrackets << ">";
+  return NameWithBrackets.str();
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+std::string GoDBExport::GetNameWithSlashBrackets(std::string iName)
+{
+  std::stringstream NameWithBrackets;
+  NameWithBrackets << "</";
+  NameWithBrackets << iName;
+  NameWithBrackets << ">";
+  return NameWithBrackets.str();
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void GoDBExport::AddTabulation()
+{
+  this->m_outfile << "  ";
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void GoDBExport::OpenDBConnection()
+{
+  this->m_DatabaseConnector = OpenDatabaseConnection(m_ServerName,
+    m_Login,m_Password,"gofiguredatabase");
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void GoDBExport::CloseDBConnection()
+{
+  CloseDatabaseConnection(m_DatabaseConnector);
+}
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
@@ -268,143 +371,3 @@ void GoDBExport::ExportContours( )
      }
    }
 }*/
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-std::vector<std::pair<std::string,std::string> > 
-  GoDBExport::GetImagingSessionInfoFromDB()
-{
-  std::vector<std::pair<std::string,std::string> > infoImgSession;
-  infoImgSession.push_back(this->GetOneInfoFromDBForImgSession("Name"));
-  infoImgSession.push_back(this->GetOneInfoFromDBForImgSession("CreationDate"));
-  infoImgSession.push_back(this->GetOneInfoFromDBForImgSession("MicroscopeName"));
-
-  return infoImgSession;  
-}
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-std::pair<std::string,std::string> GoDBExport::GetOneInfoFromDBForImgSession(
-  std::string iNameInfo)
-{
-  std::pair<std::string,std::string> OneInfo;
-  OneInfo.first = iNameInfo;
-  OneInfo.second = ListSpecificValuesForOneColumn(
-    this->m_DatabaseConnector,"imagingsession", iNameInfo,"ImagingSessionID",
-    ConvertToString<int>(this->m_ImagingSessionID)).at(0);
-  return OneInfo;
-}
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-std::vector<std::string> GoDBExport::GetListMeshIDsWithContours()
-{
-  return ListSpecificValuesForOneColumn(this->m_DatabaseConnector,
-    "contour", "meshID","imagingsessionID",
-    ConvertToString<int>(this->m_ImagingSessionID),true);
-}
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-void GoDBExport::WriteTheColorsInfoFromDatabase(
-  std::vector<std::string> iListMeshIDsWithContours)
-{
-  std::vector<std::string> ListColorIDs = GetSamefieldFromTwoTables(
-    this->m_DatabaseConnector,"contour","mesh","ColorID",
-    "ImagingSessionID",ConvertToString<int>(this->m_ImagingSessionID),
-    "MeshID",iListMeshIDsWithContours);
-  this->WriteTableInfoFromDB<GoDBColorRow>(ListColorIDs);
-}
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-void GoDBExport::WriteCellTypeAndSubCellTypeInfoFromDatabase(
-  std::vector<std::string> iListMeshIDsWithContours)
-{
-  std::vector<std::string> ListCellTypeIDs = ListSpecificValuesForOneColumn(
-    this->m_DatabaseConnector,"mesh", "CellTypeID","MeshID",
-    iListMeshIDsWithContours,true);
-  this->WriteTableInfoFromDB<GoDBCellTypeRow>(ListCellTypeIDs);
-  std::vector<std::string> ListSubCellTypeIDs = 
-    ListSpecificValuesForOneColumn(this->m_DatabaseConnector,
-    "mesh", "SubCellularID","MeshID",iListMeshIDsWithContours,true);
-  this->WriteTableInfoFromDB<GoDBSubCellTypeRow>(ListSubCellTypeIDs);
-}
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-void GoDBExport::WriteCoordinatesInfoFromDatabase(
-  std::vector<std::string> iListMeshIDsWithContours)
-{
-  std::vector<std::string> ListCoordIDs = GetSamefieldsFromTwoTables(
-    this->m_DatabaseConnector,"contour","mesh","CoordIDMax","CoordIDMin",
-    "ImagingSessionID",ConvertToString<int>(this->m_ImagingSessionID),
-    "MeshID",iListMeshIDsWithContours);
-  this->WriteTableInfoFromDB<GoDBCoordinateRow>(ListCoordIDs);
-}
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-void GoDBExport::WriteOnTheOutputFile(std::string iNameOfEntity,
-  std::vector<std::pair<std::string,std::string> > iInfoToWrite)
-{  
-  this->AddTabulation();
-  this->m_outfile << GetNameWithBrackets(iNameOfEntity)<<std::endl;
-  std::vector<std::pair<std::string,std::string> >::iterator iter =
-    iInfoToWrite.begin();
-  while(iter!=iInfoToWrite.end())
-    {
-    this->AddTabulation();
-    this->AddTabulation();
-    this->m_outfile << this->GetNameWithBrackets(iter->first);
-    this->m_outfile << iter->second;
-    this->m_outfile << this->GetNameWithSlashBrackets(iter->first)<<std::endl;
-    iter++;
-    }
-  this->AddTabulation();
-  this->m_outfile << GetNameWithSlashBrackets(iNameOfEntity)<<std::endl;
-}
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-std::string GoDBExport::GetNameWithBrackets(std::string iName)
-{
-  std::stringstream NameWithBrackets;
-  NameWithBrackets << "<";
-  NameWithBrackets << iName;
-  NameWithBrackets << ">";
-  return NameWithBrackets.str();
-}
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-std::string GoDBExport::GetNameWithSlashBrackets(std::string iName)
-{
-  std::stringstream NameWithBrackets;
-  NameWithBrackets << "</";
-  NameWithBrackets << iName;
-  NameWithBrackets << ">";
-  return NameWithBrackets.str();
-}
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-void GoDBExport::AddTabulation()
-{
-  this->m_outfile << "  ";
-}
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-void GoDBExport::OpenDBConnection()
-{
-  this->m_DatabaseConnector = OpenDatabaseConnection(m_ServerName,
-    m_Login,m_Password,"gofiguredatabase");
-}
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-void GoDBExport::CloseDBConnection()
-{
-  CloseDatabaseConnection(m_DatabaseConnector);
-}
