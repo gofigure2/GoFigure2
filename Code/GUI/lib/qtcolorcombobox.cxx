@@ -142,6 +142,7 @@ QtColorComboBox::QtColorComboBox(QWidget *iParent, const char * /*name*/)
     : QComboBox(iParent), numUserColors(0)
 {
     colorDialogEnabled = false;
+    NewColorToBeAdded = true;
  
     this->hide();
     // QtColorComboBox uses QColor based signals with the same name.
@@ -297,11 +298,20 @@ void QtColorComboBox::emitActivatedColor(int index)
         QString ColorName = QInputDialog::getText(this, tr("New Color Name:"),
           tr("Please enter the name for your new color:"),QLineEdit::Normal,"",&ok);
         if (ok && !ColorName.isEmpty())
-          {
-	        addColor(col, ColorName);
-	        setCurrentIndex(index);
+          {	        
           //pass the data for the new color to be saved in the database
           this->PassDataForNewColorToBeSaved(col,ColorName.toStdString());
+          if(this->NewColorToBeAdded)
+            {
+            addColor(col, ColorName);
+	          setCurrentIndex(index);
+            }
+          else
+            {
+            this->NewColorToBeAdded = true;
+            setCurrentColor(lastActivated);
+	          col = lastActivated;
+            }
           }
 	}     else 
         {
@@ -463,4 +473,11 @@ void QtColorComboBox::DeleteCollectionID(unsigned int CollectionID)
     {
     this->removeItem(index);
     }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QtColorComboBox::DontAddTheColor()
+{
+  this->NewColorToBeAdded = false;
 }

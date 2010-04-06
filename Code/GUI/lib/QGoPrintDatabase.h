@@ -202,6 +202,7 @@ signals:
   void OpenBookmarksToUpdate();
   void ListCellTypesToUpdate(QStringList);
   void ListSubCellTypesToUpdate(QStringList);
+  void TheColorNameAlreadyExits();
 
 protected:
   std::pair<std::string,QColor> m_CurrentColorData;

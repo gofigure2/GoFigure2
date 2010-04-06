@@ -158,6 +158,7 @@ public slots:
     /** \brief delete the corresponding collectionID in the list displayed
     by the colorcombobox*/
     void DeleteCollectionID(unsigned int);
+    void DontAddTheColor();
 
 
 private slots:
@@ -167,6 +168,7 @@ private slots:
 private:
     QColor lastActivated;
     int numUserColors;
+    bool NewColorToBeAdded;
     /** \brief list of pair containing all the datas for the existing colors from the database
     with, for each color: a color name and a vector if rgba*/
     std::list<std::pair<std::string,std::vector<int> > > m_DataFromDB;

@@ -800,11 +800,23 @@ SaveNewColorInDB(std::vector<std::string> iDataNewColor)
   else
     {
     NewColor.SetField("Name",iDataNewColor[0]);
-    NewColor.SetField("Red",iDataNewColor[1]);
-    NewColor.SetField("Green",iDataNewColor[2]);
-    NewColor.SetField("Blue",iDataNewColor[3]);
-    NewColor.SetField("Alpha",iDataNewColor[4]);
-    NewColor.SaveInDB(m_DatabaseConnector);
+    if (NewColor.DoesThisColorAlreadyExists(this->m_DatabaseConnector)
+      != -1)
+      {
+      QMessageBox msgBox;
+      msgBox.setText(
+      tr("This name already exits, please chose another one"));
+      msgBox.exec();
+      emit TheColorNameAlreadyExits();
+      }
+    else
+      {
+      NewColor.SetField("Red",iDataNewColor[1]);
+      NewColor.SetField("Green",iDataNewColor[2]);
+      NewColor.SetField("Blue",iDataNewColor[3]);
+      NewColor.SetField("Alpha",iDataNewColor[4]);
+      NewColor.SaveInDB(m_DatabaseConnector);
+      }
     }
 }
 //-------------------------------------------------------------------------

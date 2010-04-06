@@ -384,6 +384,11 @@ CreateDataBaseTablesConnection()
     this->m_ManualSegmentationDockWidget->TraceManualEditingWidget,
     SIGNAL( DeleteSubCellType()),this->m_DataBaseTables,
     SLOT(DeleteSubCellType()));
+
+  QObject::connect(
+    this->m_DataBaseTables,SIGNAL(TheColorNameAlreadyExits()),
+    this->m_ManualSegmentationDockWidget->TraceManualEditingWidget->ColorComboBox,
+    SLOT(DontAddTheColor()));
 }
 //-------------------------------------------------------------------------
 #if defined ( ENABLEFFMPEG ) || defined ( ENABLEAVI )
