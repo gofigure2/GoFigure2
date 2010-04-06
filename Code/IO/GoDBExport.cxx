@@ -77,11 +77,15 @@ void GoDBExport::ExportContours( )
   this->m_outfile << " version=\"";
   this->m_outfile << VersionNumber;
   this->m_outfile << "\">"<<std::endl;
+
   this->WriteOnTheOutputFile("imagingsession",this->GetImagingSessionInfoFromDB());
-  this->WriteTheColorsInfoFromDatabase();
+  std::vector<std::string> ListMeshIDsWithContours 
+    = this->GetListMeshIDsWithContours();  
+  this->WriteTheColorsInfoFromDatabase(ListMeshIDsWithContours);
   //this->WriteTableInfoFromDB<GoDBColorRow>("","");
-  this->WriteTableInfoFromDB<GoDBCellTypeRow>("","");
-  this->WriteTableInfoFromDB<GoDBSubCellTypeRow>("","");
+  //this->WriteTableInfoFromDB<GoDBCellTypeRow>("","");
+  //this->WriteTableInfoFromDB<GoDBSubCellTypeRow>("","");
+  this->WriteCellTypeAndSubCellTypeInfoFromDatabase(ListMeshIDsWithContours);
   this->WriteCoordinatesInfoFromDatabase();
   this->CloseDBConnection();
   this->m_outfile << this->GetNameWithSlashBrackets(NameDocXml);
@@ -293,12 +297,38 @@ std::pair<std::string,std::string> GoDBExport::GetOneInfoFromDBForImgSession(
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void GoDBExport::WriteTheColorsInfoFromDatabase()
+std::vector<std::string> GoDBExport::GetListMeshIDsWithContours()
+{
+  return ListSpecificValuesForOneColumn(this->m_DatabaseConnector,
+    "contour", "meshID","imagingsessionID",
+    ConvertToString<int>(this->m_ImagingSessionID),true);
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void GoDBExport::WriteTheColorsInfoFromDatabase(
+  std::vector<std::string> iListMeshIDsWithContours)
 {
   std::vector<std::string> ListColorIDs = GetSamefieldFromTwoTables(
-    this->m_DatabaseConnector,"contour","mesh","ColorID","ImagingSessionID",
-    ConvertToString<int>(this->m_ImagingSessionID));
+    this->m_DatabaseConnector,"contour","mesh","ColorID",
+    "ImagingSessionID",ConvertToString<int>(this->m_ImagingSessionID),
+    "MeshID",iListMeshIDsWithContours);
   this->WriteTableInfoFromDB<GoDBColorRow>(ListColorIDs);
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void GoDBExport::WriteCellTypeAndSubCellTypeInfoFromDatabase(
+  std::vector<std::string> iListMeshIDsWithContours)
+{
+  std::vector<std::string> ListCellTypeIDs = ListSpecificValuesForOneColumn(
+    this->m_DatabaseConnector,"mesh", "CellTypeID","MeshID",
+    iListMeshIDsWithContours,true);
+  this->WriteTableInfoFromDB<GoDBCellTypeRow>(ListCellTypeIDs);
+  std::vector<std::string> ListSubCellTypeIDs = 
+    ListSpecificValuesForOneColumn(this->m_DatabaseConnector,
+    "mesh", "SubCellularID","MeshID",iListMeshIDsWithContours,true);
+  this->WriteTableInfoFromDB<GoDBSubCellTypeRow>(ListSubCellTypeIDs);
 }
 //--------------------------------------------------------------------------
 

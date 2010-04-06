@@ -1414,14 +1414,33 @@ std::string SelectQueryStream(std::string iTable, std::string iColumn, std::stri
 //------------------------------------------------------------------------------
 std::vector<std::string> GetSamefieldFromTwoTables(
   vtkMySQLDatabase* DatabaseConnector,std::string iTableOne, 
-  std::string iTableTwo,std::string iColumn,std::string iField, std::string iValue)
+  std::string iTableTwo,std::string iColumn,std::string iField, 
+  std::string iValue,std::string iFieldTwo,
+  std::vector<std::string> iListConditionsTwo)
 {
   std::vector< std::string > result;
   vtkSQLQuery* query = DatabaseConnector->GetQueryInstance();
   std::stringstream querystream;
   querystream << SelectQueryStream(iTableOne,iColumn,iField,iValue);
-  querystream << " UNION ";
-  querystream << SelectQueryStream(iTableTwo,iColumn,iField,iValue);
+  querystream << " UNION SELECT ";
+  querystream << iColumn;
+  querystream << " FROM ";
+  querystream << iTableTwo;
+  //querystream << SelectQueryStream(iTableTwo,iColumn,iField,iValue);
+
+  querystream << " WHERE (";
+  unsigned int i;
+  for( i=0;i < iListConditionsTwo.size()-1; i++ )
+    {
+    querystream << iFieldTwo;
+    querystream << " = '";
+    querystream << iListConditionsTwo[i];
+    querystream << "' OR ";
+    }
+  querystream << iFieldTwo;
+  querystream << " = '";
+  querystream << iListConditionsTwo[i];
+  querystream << "');";
  
   query->SetQuery( querystream.str().c_str() );
   if ( !query->Execute() )

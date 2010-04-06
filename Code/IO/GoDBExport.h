@@ -61,12 +61,12 @@ public:
 private:
   //QGoExport( const QGoExport& );
   //QGoExport operator = ( const QGoExport& );
-  vtkMySQLDatabase*   m_DatabaseConnector;
-  std::string         m_ServerName;
-  std::string         m_Password;
-  std::string         m_Login;
-  int                 m_ImagingSessionID;
-  std::fstream        m_outfile;
+  vtkMySQLDatabase*        m_DatabaseConnector;
+  std::string              m_ServerName;
+  std::string              m_Password;
+  std::string              m_Login;
+  int                      m_ImagingSessionID;
+  std::fstream             m_outfile;
 
   /** \brief return a vector of pair containing the name of the info as .first
   and the info as .second. for Imagingsession such as Name, creation date and
@@ -130,9 +130,17 @@ private:
       }
     return oEntityInfo;
   }
+  void WriteCellTypeAndSubCellTypeInfoFromDatabase(
+  std::vector<std::string> iListMeshIdsWithContours);
+
+  /** \brief when exporting contours, if the contours belong to
+  meshes, the info regarding these meshes are needed also, so return 
+  the list of IDs of these meshes*/
+  std::vector<std::string> GetListMeshIDsWithContours();
   /** \brief get the colors info from the database for the corresponding contours
   and meshes and write them in the output file*/
-  void WriteTheColorsInfoFromDatabase();
+  void WriteTheColorsInfoFromDatabase(
+    std::vector<std::string> iListMeshIDsWithContours);
   /** \brief get the coordinates without doublon corresponding to the coordidmax
   and min of the contours and meshes from the database and write them in the
   output file*/

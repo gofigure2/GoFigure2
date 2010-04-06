@@ -43,8 +43,6 @@
 
 GoDBCellTypeRow::GoDBCellTypeRow(): GoDBNameDescRow()
 {
-  this->m_TableName = "celltype";
-  this->m_TableIDName = "CellTypeID";
   this->InitializeMap();  
 }
 //-------------------------------------------------------------------------
@@ -52,6 +50,8 @@ GoDBCellTypeRow::GoDBCellTypeRow(): GoDBNameDescRow()
 //-------------------------------------------------------------------------
 void GoDBCellTypeRow::InitializeMap()
 {
+  this->m_TableName = "celltype";
+  this->m_TableIDName = "CellTypeID";
   this->m_MapRow[this->m_TableIDName] = ConvertToString<int>(0);
 }
 //-------------------------------------------------------------------------

@@ -54,7 +54,9 @@ void GoDBNameDescRow::InitializeMap()
   this->m_MapRow["Name"] = "";
   this->m_MapRow["Description"] = "";
   std::string NoDescription = "None";
+  std::string NoName = "None";
   this->SetField("Description",NoDescription);
+  this->SetField ("Name",NoName);
 }
 //-------------------------------------------------------------------------
 
