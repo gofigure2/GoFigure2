@@ -19,6 +19,7 @@ SET( QGOIO_SRC
   GoDBSubCellTypeRow.cxx
   GoDBTableWidgetContainer.cxx
   GoDBExport.cxx
+  GoDBImport.cxx
   MegaCaptureHeaderReader.cxx
   QueryDataBaseHelper.cxx
   SelectQueryDatabaseHelper.cxx

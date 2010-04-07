@@ -98,6 +98,7 @@
 #include "QGoTabManager.h"
 #include "QGoWizardDB.h"
 #include "GoDBExport.h"
+#include "GoDBImport.h"
 
 #include <list>
 
@@ -216,7 +217,7 @@ void QGoMainWindow::on_actionExportContour_triggered( )
   QWidget* w = this->CentralTabWidget->currentWidget();
   QGoTabImageView3DwT* w3t = dynamic_cast< QGoTabImageView3DwT* >( w );
   if( w3t )
-  {
+    {
     if( w3t->m_DataBaseTables->IsDatabaseUsed() )
       {
       QString p = QFileDialog::getSaveFileName(this,
@@ -232,8 +233,7 @@ void QGoMainWindow::on_actionExportContour_triggered( )
         ExportHelper.ExportContours();
         }
       }
-  }
-
+    }
 }
 
 //--------------------------------------------------------------------------
@@ -252,7 +252,28 @@ void QGoMainWindow::on_actionExportLineage_triggered( )
 //--------------------------------------------------------------------------
 void QGoMainWindow::on_actionImportContour_triggered( )
 {
-  typedef std::vector<ContourMeshStructure> ContourMeshVectorType;
+  QWidget* w = this->CentralTabWidget->currentWidget();
+  QGoTabImageView3DwT* w3t = dynamic_cast< QGoTabImageView3DwT* >( w );
+  if( w3t )
+    {
+    if( w3t->m_DataBaseTables->IsDatabaseUsed() )
+      {
+      QString p = QFileDialog::getOpenFileName(this,
+        tr( "Open Contour Export File" ),"",tr( "TextFile (*.txt)" ));
+      if ( ! p.isNull() )
+        {
+        QFileInfo pathInfo( p );
+        std::string filename = p.toStdString();
+        GoDBImport ImportHelper(this->m_DBWizard->GetServer().toStdString(),
+          this->m_DBWizard->GetLogin().toStdString(),
+          this->m_DBWizard->GetPassword().toStdString(),
+          this->m_DBWizard->GetImagingSessionID(),filename);
+        ImportHelper.ImportContours();
+        }
+      }
+    }
+
+/*  typedef std::vector<ContourMeshStructure> ContourMeshVectorType;
   typedef ContourMeshVectorType::iterator ContourMeshIteratorType;
 
   // get current tab widget
@@ -354,7 +375,7 @@ void QGoMainWindow::on_actionImportContour_triggered( )
          }
        }
      }
-   }
+   }*/
 }
 
 //--------------------------------------------------------------------------
