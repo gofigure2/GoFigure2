@@ -64,7 +64,7 @@ private:
 
   /** \brief Return the name of the field contained in the line*/
   std::string FindFieldName(std::string iLine);
-  std::string GoDBImport::GetValueForTheLine(std::string iLine);
+  std::string GetValueForTheLine(std::string iLine);
   bool IsLineForNumberOfEntities(std::string iLine);
   void OpenDBConnection();
   void CloseDBConnection();
