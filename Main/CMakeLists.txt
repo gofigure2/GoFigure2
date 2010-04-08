@@ -1,5 +1,19 @@
+SET( QGoMainWindow_UI
+  go.ui
+)
+
+SET( QGoGUISRC_HDRS
+  QGoTabManager.h
+  QGoMainWindow.h
+  QGoPluginManager.h
+)
+
+
 SET( GOFIGURE_APPLICATION_SOURCE_LIST
   gofigure.cxx
+  QGoTabManager.cxx
+  QGoMainWindow.cxx
+  QGoPluginManager.cxx
   )
 
 INCLUDE_DIRECTORIES( ${GOFIGURE2_BINARY_DIR}/Main/  )
@@ -9,7 +23,7 @@ QT4_WRAP_UI( QGoMainWindow_UI_H ${QGoMainWindow_UI} )
 QT4_WRAP_CPP( QGoGUISRC_MOC ${QGoGUISRC_HDRS} )
 
 SET_SOURCE_FILES_PROPERTIES( 
-  ${QGoGUISRC_CXX} 
+  ${GOFIGURE_APPLICATION_SOURCE_LIST} 
   PROPERTIES
   OBJECT_DEPENDS "${QGoMainWindow_UI_H}"
   )
@@ -23,6 +37,11 @@ SET_SOURCE_FILES_PROPERTIES(
 QT4_ADD_RESOURCES( QGoMainWindow_QRC
   ${QGoResourceFile}
   )
+
+SET( QGoGUISRC_SRC
+  ${QGoGUISRC_CXX}
+  ${QGoGUISRC_MOC}
+)
 
 set( qt_menu_nib_sources )
 
