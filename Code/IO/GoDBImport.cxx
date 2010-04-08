@@ -58,7 +58,6 @@ GoDBImport::GoDBImport(std::string iServerName,std::string iLogin,
   this->m_Password = iPassword;
   this->m_ImagingSessionID = iImagingSessionID;
   this->m_InFile.open( iFilename.c_str(), std::ifstream::in );
-  //this->m_outfile.open ( iFilename.c_str(), std::ios::out );
 }
 
 //--------------------------------------------------------------------------
@@ -72,34 +71,67 @@ void GoDBImport::ImportContours()
 {
   this->OpenDBConnection();
   std::map<int,int> MapColorIDs;
+  std::map<int,int> MapCellTypeIDs;
+  std::map<int,int> MapSubCellTypeIDs;
+  std::map<int,int> MapCoordIDs;
+  
+  this->SaveNoTracesEntities(MapColorIDs,MapCellTypeIDs,MapSubCellTypeIDs,
+  MapCoordIDs); 
+  this->CloseDBConnection();
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void GoDBImport::SaveNoTracesEntities(std::map<int,int> & ioMapColorIDs,
+  std::map<int,int> & ioMapCellTypeIDs,std::map<int,int> & ioMapSubCellTypeIDs,
+  std::map<int,int> & ioMapCoordIDs)
+{
   std::string LineContent;
   getline(this->m_InFile, LineContent);
   while (!this->IsLineForNumberOfEntities(LineContent))
     {
     getline (this->m_InFile, LineContent);
     }
-  std::string FieldName = this->FindFieldName(LineContent);
-  int ColorNumber = atoi(this->GetValueForTheLine(LineContent).c_str());
-  for(int i = 0; i < ColorNumber; i++)
+  while (this->FindFieldName(LineContent)!= "Number Of mesh")
     {
+    int EntitiesNumber = atoi(this->GetValueForTheLine(LineContent).c_str());
     getline(this->m_InFile, LineContent);
-    std::string NameOfEntity = this->FindFieldName(LineContent);
-    GoDBColorRow ColorToSave;
-    getline(this->m_InFile,LineContent);
-    std::string FieldName = this->FindFieldName(LineContent);
-    std::string ValueForField = this->GetValueForTheLine(LineContent);
-    while (ValueForField != "NoValueOnTheLine")
+      if(this->GetValueForTheLine(LineContent) != "NoValueOnTheLine")
+        {
+        std::cout<<"There was supposed to be only the name of the entity to save,the entity will not be saved";
+        std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
+        std::cout << std::endl;
+        return;
+        }
+    std::string NameEntity = this->FindFieldName(LineContent);
+    if (NameEntity == "color")
       {
-      ColorToSave.SetField(FieldName,ValueForField);
-      getline(this->m_InFile,LineContent);
-      ValueForField = this->GetValueForTheLine(LineContent);
-      FieldName = this->FindFieldName(LineContent);
-      }   
-    int OldColorID = atoi(ColorToSave.GetMapValue("ColorID").c_str());
-    int NewColorID = ColorToSave.SaveInDB(this->m_DatabaseConnector);
-    MapColorIDs[OldColorID]= NewColorID;     
+      LineContent = this->SaveImportedEntitiesInDatabase<GoDBColorRow>(
+        EntitiesNumber,ioMapColorIDs);
+      }
+    if (NameEntity == "celltype")
+      {
+      LineContent = this->SaveImportedEntitiesInDatabase<GoDBCellTypeRow>(
+      EntitiesNumber,ioMapCellTypeIDs);
+      }
+    if (NameEntity == "subcellulartype")
+      {
+      LineContent = this->SaveImportedEntitiesInDatabase<GoDBSubCellTypeRow>(
+      EntitiesNumber,ioMapSubCellTypeIDs);
+      }
+    if (NameEntity == "coordinate")
+      {
+      LineContent = this->SaveImportedEntitiesInDatabase<GoDBCoordinateRow>(
+      EntitiesNumber,ioMapCoordIDs);
+      }
+    if (NameEntity != "color" && NameEntity != "celltype" && 
+      NameEntity != "subcellulartype" && NameEntity != "coordinate")
+      {
+      std::cout<<"The name of the entity doesn't correspond to any of the no traces entity";
+      std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
+      std::cout << std::endl;
+      }
     }
-    
 }
 //--------------------------------------------------------------------------
 

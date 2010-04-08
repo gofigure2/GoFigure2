@@ -43,6 +43,7 @@
 
 #include "vtkMySQLDatabase.h"
 #include <vector>
+#include <map>
 
 
 class GoDBImport
@@ -64,10 +65,51 @@ private:
 
   /** \brief Return the name of the field contained in the line*/
   std::string FindFieldName(std::string iLine);
+
+  /** \brief Return the value contained in the line and "NoValueOnTheLine"
+  if the line doesn't contain any*/
   std::string GetValueForTheLine(std::string iLine);
+
+  /** \brief Return true if the line containes "Number Of"*/
   bool IsLineForNumberOfEntities(std::string iLine);
+
+  /** \brief Get the values from the Infile, save the non traces entities 
+  and fill the matching map for old and new IDs*/
+  void SaveNoTracesEntities(std::map<int,int> & ioMapColorIDs,
+    std::map<int,int> & ioMapCellTypeIDs,std::map<int,int> & ioMapSubCellTypeIDs,
+    std::map<int,int> & ioMapCoordIDs);
   void OpenDBConnection();
   void CloseDBConnection();
+  
+  /** \brief get the values from the Infile,save the 
+  corresponding number of entities in the database and return
+  the last line content from the infile*/
+  template< typename T >
+  std::string SaveImportedEntitiesInDatabase(int iNumberOfEntities,
+    std::map<int,int> & ioMapMatchingIDs)
+    {
+    std::string LineContent;
+    for(int i = 0; i < iNumberOfEntities; i++)
+      {
+      T EntityToSave;
+      getline(this->m_InFile,LineContent);
+      std::string FieldName = this->FindFieldName(LineContent);
+      std::string ValueForField = this->GetValueForTheLine(LineContent);
+      while (ValueForField != "NoValueOnTheLine")
+        {
+        EntityToSave.SetField(FieldName,ValueForField);
+        getline(this->m_InFile,LineContent);
+        ValueForField = this->GetValueForTheLine(LineContent);
+        FieldName = this->FindFieldName(LineContent);
+        }   
+      int OldID = atoi(EntityToSave.GetMapValue(EntityToSave.GetTableIDName()).c_str());
+      int NewID = EntityToSave.SaveInDB(this->m_DatabaseConnector);
+      ioMapMatchingIDs[OldID]= NewID;  
+      //skip the line </NameOfEntity>:
+      getline(this->m_InFile,LineContent);
+      }
+    return LineContent;
+    }
 
 };
 #endif
