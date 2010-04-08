@@ -98,7 +98,7 @@ IF( BUILD_DOCUMENTATION )
   IF( DOXYGEN_FOUND )
     IF( DOXYGEN_DOT_FOUND )
 
-      OPTION( LINK_EXTERNAL_DOC "Should the documentation be linked with external sources such as VTK?" NO )
+      OPTION( LINK_EXTERNAL_DOC "Should the documentation be linked with external sources such as VTK?" OFF )
 
       ADD_SUBDIRECTORY( Documentation )
 
@@ -325,8 +325,8 @@ IF( VTK_FOUND )
 
   OPTION( BUILD_EXAMPLES "Build Examples" OFF )
 
-  OPTION( BUILD_PLUGINS  "Build GoFigure Plugins" OFF )
-#   SET( BUILD_PLUGINS OFF )
+#  OPTION( BUILD_PLUGINS  "Build GoFigure Plugins" OFF )
+  SET( BUILD_PLUGINS OFF )
 
   IF( BUILD_EXAMPLES OR BUILD_PLUGINS )
 

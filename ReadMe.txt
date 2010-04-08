@@ -23,7 +23,7 @@ create lineages.
 softwares:
       * CMake (>=2.6) visit http://www.cmake.org
       * Qt  (>=4.5)   visit http://www.qtsoftware.com
-      * MySQL (>=5.0) visit http://www.mysql.com
+      * MySQL (>=5.1) visit http://www.mysql.com
       * FFMPEG (Linux or Mac) visit visit http://www.ffmpeg.org
       * VTK with Qt and MYSQL (>=5.4)   visit http://www.vtk.org 
       * ITK (>=3.16)  visit http://www.itk.org
@@ -40,10 +40,10 @@ $ mkdir BUILD
 
 Launch cmake 
 $ cd BUILD
-$ ccmake ..
+$ ccmake path/to/source/directory
 
 Build
-$ make
+$ make -j2
 
 Install
 # make install
