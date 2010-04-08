@@ -73,14 +73,28 @@ private:
   /** \brief Return true if the line containes "Number Of"*/
   bool IsLineForNumberOfEntities(std::string iLine);
 
-  /** \brief Get the values from the Infile, save the non traces entities 
-  and fill the matching map for old and new IDs*/
-  void SaveNoTracesEntities(std::map<int,int> & ioMapColorIDs,
+  /** \brief Get the values from the Infile, save the non traces entities, 
+  fill the matching map for old and new IDs and return the current line content*/
+  std::string SaveNoTracesEntities(std::map<int,int> & ioMapColorIDs,
     std::map<int,int> & ioMapCellTypeIDs,std::map<int,int> & ioMapSubCellTypeIDs,
     std::map<int,int> & ioMapCoordIDs);
   void OpenDBConnection();
   void CloseDBConnection();
   
+  /** \brief Get the info for the meshes to import for the contours, from
+  the infile and from the matching IDs maps previously filled*/
+  void SaveMeshes(std::map<int,int> iMapColorIDs,
+    std::map<int,int> iMapCellTypeIDs,
+    std::map<int,int> iMapSubCellTypeIDs,
+    std::map<int,int> iMapCoordIDs,
+    std::string & ioLineContent,
+    std::map<int,int> & ioMapMeshIDs);
+  
+  void SaveContours(std::map<int,int> iMapColorIDs,
+    std::map<int,int> iMapCoordIDs,
+    std::string & ioLineContent,
+    std::map<int,int> iMapMeshIDs);
+
   /** \brief get the values from the Infile,save the 
   corresponding number of entities in the database and return
   the last line content from the infile*/
@@ -92,24 +106,59 @@ private:
     for(int i = 0; i < iNumberOfEntities; i++)
       {
       T EntityToSave;
-      getline(this->m_InFile,LineContent);
-      std::string FieldName = this->FindFieldName(LineContent);
-      std::string ValueForField = this->GetValueForTheLine(LineContent);
-      while (ValueForField != "NoValueOnTheLine")
-        {
-        EntityToSave.SetField(FieldName,ValueForField);
-        getline(this->m_InFile,LineContent);
-        ValueForField = this->GetValueForTheLine(LineContent);
-        FieldName = this->FindFieldName(LineContent);
-        }   
+      LineContent = this->GetValuesFromInfile<T>(EntityToSave);
       int OldID = atoi(EntityToSave.GetMapValue(EntityToSave.GetTableIDName()).c_str());
       int NewID = EntityToSave.SaveInDB(this->m_DatabaseConnector);
       ioMapMatchingIDs[OldID]= NewID;  
-      //skip the line </NameOfEntity>:
-      getline(this->m_InFile,LineContent);
       }
     return LineContent;
     }
+  /** \brief Get the values from the inFile to fill the corresponding GoDBRow*/
+  template< typename T >
+  std::string GetValuesFromInfile(T & ioEntityToFill)
+    {
+    std::string LineContent;
+    getline(this->m_InFile,LineContent);
+    std::string FieldName = this->FindFieldName(LineContent);
+    std::string ValueForField = this->GetValueForTheLine(LineContent);
+    while (ValueForField != "NoValueOnTheLine")
+      {
+      ioEntityToFill.SetField(FieldName,ValueForField);
+      getline(this->m_InFile,LineContent);
+      ValueForField = this->GetValueForTheLine(LineContent);
+      FieldName = this->FindFieldName(LineContent);
+      }   
+    //skip the line </NameOfEntity>:
+    getline(this->m_InFile,LineContent);
+    return LineContent;
+    }
+  /** \brief replace in the entity to be saved the fieldname
+  with the new IDs created that matches the old one in the 
+  iMapIDs*/
+  template< typename T >
+  void ReplaceTheFieldWithNewIDs(std::map<int,int> iMapIDs, 
+    std::string iFieldName, T & ioEntity)
+  {
+    std::map<int,int>::iterator iter = 
+      iMapIDs.find(atoi(ioEntity.GetMapValue(iFieldName).c_str()));
+    int NewID = iter->second;
+    ioEntity.SetField<int>(iFieldName,NewID);
+  }
+
+  template< typename T >
+  void ReplaceCommonFieldsForContourAndMesh( T & ioEntityToSave,
+    std::map<int,int> iMapColorIDs,std::map<int,int> iMapCoordIDs)
+  {
+   ioEntityToSave.SetField<int>(
+     "ImagingSessionID",this->m_ImagingSessionID);
+   this->ReplaceTheFieldWithNewIDs<T>(
+     iMapColorIDs,"ColorID",ioEntityToSave);
+   this->ReplaceTheFieldWithNewIDs<T>(
+     iMapCoordIDs,"CoordIDMax",ioEntityToSave);
+   this->ReplaceTheFieldWithNewIDs<T>(
+     iMapCoordIDs,"CoordIDMin",ioEntityToSave);
+  }
+
 
 };
 #endif

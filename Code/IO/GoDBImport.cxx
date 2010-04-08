@@ -74,15 +74,19 @@ void GoDBImport::ImportContours()
   std::map<int,int> MapCellTypeIDs;
   std::map<int,int> MapSubCellTypeIDs;
   std::map<int,int> MapCoordIDs;
-  
-  this->SaveNoTracesEntities(MapColorIDs,MapCellTypeIDs,MapSubCellTypeIDs,
-  MapCoordIDs); 
+  std::map<int,int> MapMeshIDs;
+  std::string       LineContent;
+  LineContent = this->SaveNoTracesEntities(MapColorIDs,MapCellTypeIDs,
+    MapSubCellTypeIDs,MapCoordIDs); 
+  this->SaveMeshes(MapColorIDs,MapCellTypeIDs,MapSubCellTypeIDs,
+    MapCoordIDs,LineContent,MapMeshIDs); 
+  this->SaveContours(MapColorIDs,MapCoordIDs,LineContent,MapMeshIDs);
   this->CloseDBConnection();
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void GoDBImport::SaveNoTracesEntities(std::map<int,int> & ioMapColorIDs,
+std::string GoDBImport::SaveNoTracesEntities(std::map<int,int> & ioMapColorIDs,
   std::map<int,int> & ioMapCellTypeIDs,std::map<int,int> & ioMapSubCellTypeIDs,
   std::map<int,int> & ioMapCoordIDs)
 {
@@ -101,7 +105,7 @@ void GoDBImport::SaveNoTracesEntities(std::map<int,int> & ioMapColorIDs,
         std::cout<<"There was supposed to be only the name of the entity to save,the entity will not be saved";
         std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
         std::cout << std::endl;
-        return;
+        return LineContent;
         }
     std::string NameEntity = this->FindFieldName(LineContent);
     if (NameEntity == "color")
@@ -131,6 +135,61 @@ void GoDBImport::SaveNoTracesEntities(std::map<int,int> & ioMapColorIDs,
       std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
       std::cout << std::endl;
       }
+    }
+  return LineContent;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void GoDBImport::SaveMeshes(std::map<int,int> iMapColorIDs,
+  std::map<int,int> iMapCellTypeIDs,std::map<int,int> iMapSubCellTypeIDs,
+  std::map<int,int> iMapCoordIDs,std::string & ioLineContent,
+  std::map<int,int> & ioMapMeshIDs)
+{
+  GoDBMeshRow MeshToSave;
+  int NumberOfMeshes = atoi(this->GetValueForTheLine(ioLineContent).c_str());
+  getline(this->m_InFile, ioLineContent);
+  for(int i = 0; i < NumberOfMeshes; i++)
+    {
+    ioLineContent = this->GetValuesFromInfile<GoDBMeshRow>(
+      MeshToSave);
+    /*MeshToSave.SetField<int>("ImagingSessionID",this->m_ImagingSessionID);
+    this->ReplaceTheFieldWithNewIDs<GoDBMeshRow>(
+      iMapColorIDs,"ColorID",MeshToSave);*/
+    this->ReplaceTheFieldWithNewIDs<GoDBMeshRow>(
+      iMapCellTypeIDs,"CellTypeID",MeshToSave);
+    this->ReplaceTheFieldWithNewIDs<GoDBMeshRow>(
+      iMapSubCellTypeIDs,"SubCellularID",MeshToSave);
+    this->ReplaceCommonFieldsForContourAndMesh(
+      MeshToSave,iMapColorIDs,iMapCoordIDs);
+    /*this->ReplaceTheFieldWithNewIDs<GoDBMeshRow>(
+      iMapCoordIDs,"CoordIDMax",MeshToSave);
+    this->ReplaceTheFieldWithNewIDs<GoDBMeshRow>(
+      iMapCoordIDs,"CoordIDMin",MeshToSave);*/
+    getline(this->m_InFile, ioLineContent);
+    int OldMeshID = atoi(MeshToSave.GetMapValue(MeshToSave.GetTableIDName()).c_str());
+    int NewMeshID = MeshToSave.SaveInDB(this->m_DatabaseConnector);
+    ioMapMeshIDs[OldMeshID]= NewMeshID; 
+    }
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void GoDBImport::SaveContours(std::map<int,int> iMapColorIDs,
+    std::map<int,int> iMapCoordIDs,std::string & ioLineContent,
+    std::map<int,int> iMapMeshIDs)
+{
+  GoDBContourRow ContourToSave; 
+  int NumberOfContours = atoi(this->GetValueForTheLine(ioLineContent).c_str());
+  getline(this->m_InFile, ioLineContent);
+  for(int i = 0; i < NumberOfContours; i++)
+    {
+    ioLineContent = this->GetValuesFromInfile<GoDBContourRow>(ContourToSave);
+    this->ReplaceCommonFieldsForContourAndMesh(
+      ContourToSave,iMapColorIDs,iMapCoordIDs);
+    this->ReplaceTheFieldWithNewIDs(iMapMeshIDs,"MeshID",ContourToSave);
+    //ContourToSave.SaveInDB(this->m_DatabaseConnector);
+    getline(this->m_InFile,ioLineContent);
     }
 }
 //--------------------------------------------------------------------------
