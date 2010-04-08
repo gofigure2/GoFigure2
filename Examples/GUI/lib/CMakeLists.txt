@@ -21,6 +21,7 @@ SET( QGOGUILIB_EXAMPLE_SRC
   QGoLsmToMegaExportThreadTest
   QGoDBCreateBookmarkDialogTest
   QGoTraceManualEditingWidgetTest
+  QGoDeleteDBEntityDialog
 )
 
 #---------------------------------------------------------------------------
@@ -152,6 +153,11 @@ ADD_TEST( QGoPrintDatabaseTest
 
 ADD_TEST( QGoDBCreateBookmarkDialogTest
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/QGoDBCreateBookmarkDialogTest
+  1
+)
+
+ADD_TEST( QGoDeleteDBEntityDialogTest
+  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/QGoDeleteDBEntityDialog
   1
 )
 

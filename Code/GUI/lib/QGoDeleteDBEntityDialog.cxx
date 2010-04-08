@@ -86,25 +86,30 @@ QGoDeleteDBEntityDialog::~QGoDeleteDBEntityDialog()
 QStringList QGoDeleteDBEntityDialog::GetListExistingEntities(
   vtkMySQLDatabase* iDatabaseConnector)
 {
-  std::vector<std::string> ResultsQuery;
-  //if m_ImgSessionID = 0, the entity name is not related to an imagingsession
-  if (this->m_ImgSessionID != 0)
+  QStringList ListEntities;
+
+  if( iDatabaseConnector )
     {
-    ResultsQuery = ListSpecificValuesForOneColumn(
-      iDatabaseConnector,this->m_EntityName,"Name","ImagingSessionID",
-      ConvertToString<int>(this->m_ImgSessionID),"Name");
-    }
-  else
-    {
-    ResultsQuery = ListAllValuesForOneColumn(iDatabaseConnector,
-      "Name",this->m_EntityName);
+    std::vector<std::string> ResultsQuery;
+    // if m_ImgSessionID = 0, the entity name is not related to an imagingsession
+    if (this->m_ImgSessionID != 0)
+      {
+      ResultsQuery = ListSpecificValuesForOneColumn(
+        iDatabaseConnector,this->m_EntityName,"Name","ImagingSessionID",
+        ConvertToString<int>(this->m_ImgSessionID),"Name");
+      }
+    else
+      {
+      ResultsQuery = ListAllValuesForOneColumn(iDatabaseConnector,
+        "Name",this->m_EntityName);
+      }
+
+    for( size_t i = 0; i < ResultsQuery.size(); i++ )
+      {
+      ListEntities.append(ResultsQuery[i].c_str());
+      }
     }
 
-  QStringList ListEntities;
-  for( size_t i = 0; i < ResultsQuery.size(); i++ )
-    {
-    ListEntities.append(ResultsQuery[i].c_str());
-    }
   return ListEntities;
 }
 //--------------------------------------------------------------------------

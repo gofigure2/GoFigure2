@@ -718,22 +718,22 @@ void QTableWidgetChild::PrepareRangeToCopy(QTableWidgetSelectionRange Range,
 void QTableWidgetChild::CheckSelectedRows(std::string iTraceName,
   std::string iTraceNameID)
 {
- QStringList ListSelectedTracesID = this->ValuesForSelectedRows(
-   iTraceNameID.c_str());
- if (!ListSelectedTracesID.empty())
-   {
-   for(int i=0; i<ListSelectedTracesID.size();i++)
-     {
-     this->SetSelectRowTraceID (iTraceName, 
-       atoi(ListSelectedTracesID.at(i).toStdString().c_str()),true);
-     }
-   }
- else
-   {
-   std::cout<<"The list of selected Traces ID is empty";
-   std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
-   std::cout << std::endl;
-   }
+  QStringList ListSelectedTracesID = this->ValuesForSelectedRows(
+    iTraceNameID.c_str());
+  if (!ListSelectedTracesID.empty())
+    {
+    for(int i=0; i<ListSelectedTracesID.size();i++)
+      {
+      this->SetSelectRowTraceID (iTraceName, 
+        atoi(ListSelectedTracesID.at(i).toStdString().c_str()),true);
+      }
+    }
+  else
+    {
+    std::cout<<"The list of selected Traces ID is empty";
+    std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
+    std::cout << std::endl;
+    }
 }
 //--------------------------------------------------------------------------
 
@@ -742,16 +742,16 @@ void QTableWidgetChild::UncheckSelectedRows(std::string iTraceName,
  std::string iTraceNameID)
 {
   QStringList ListSelectedTracesID = this->ValuesForSelectedRows(
-   iTraceNameID.c_str());
- if (!ListSelectedTracesID.empty())
-   {
-   for(int i=0; i<ListSelectedTracesID.size();i++)
-     {
-     this->SetSelectRowTraceID (iTraceName, 
-       atoi(ListSelectedTracesID.at(i).toStdString().c_str()),false);
-     }
-   }
- else
+    iTraceNameID.c_str());
+  if (!ListSelectedTracesID.empty())
+    {
+    for(int i=0; i<ListSelectedTracesID.size();i++)
+      {
+      this->SetSelectRowTraceID (iTraceName, 
+        atoi(ListSelectedTracesID.at(i).toStdString().c_str()),false);
+      }
+    }
+  else
    {
    std::cout<<"The list of selected Traces ID is empty";
    std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
