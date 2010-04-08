@@ -1,5 +1,5 @@
-CONFIGURE_FILE(${GOFIGURE2_SOURCE_DIR}/Code/GUI/lib/QGoAboutWidget.cxx.in
-${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/QGoAboutWidget.cxx @ONLY IMMEDIATE)
+CONFIGURE_FILE( ${GOFIGURE2_SOURCE_DIR}/Code/GUI/lib/QGoAboutWidget.cxx.in
+  ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/QGoAboutWidget.cxx @ONLY IMMEDIATE )
 
 SET( QGoGUILIB_SRC
   ContourMeshStructureHelper.cxx
@@ -130,27 +130,27 @@ IF( ENABLE_VIDEO_RECORD_AVI )
   )
 ENDIF( ENABLE_VIDEO_RECORD_AVI )
 
-#------------------------------------------------------------------------------
-#------------------------------------------------------------------------------
+#---------------------------------------------------------------------------
+#---------------------------------------------------------------------------
 
 SET( QGoGUILIB_UI
-  ManualSegmentationSettingsDlg.ui
-  ManualSegmentationDockWidget.ui
-  VisualizationDockWidget.ui
-  QGoPrintDatabase.ui
-  LsmToMegaExportDialog.ui
-  QNameDescriptionInputDialog.ui
-  QGoTraceManualEditingWidget.ui
+  Resources/ManualSegmentationSettingsDlg.ui
+  Resources/ManualSegmentationDockWidget.ui
+  Resources/VisualizationDockWidget.ui
+  Resources/QGoPrintDatabase.ui
+  Resources/LsmToMegaExportDialog.ui
+  Resources/QNameDescriptionInputDialog.ui
+  Resources/QGoTraceManualEditingWidget.ui
 )
 
-#------------------------------------------------------------------------------
-#------------------------------------------------------------------------------
+#---------------------------------------------------------------------------
+#---------------------------------------------------------------------------
 
 # ADD THIS UI IF ENABLE_VIDEO_RECORD_FFMPEG IS ON
 IF( ENABLE_VIDEO_RECORD_FFMPEG )
   SET(QGoGUILIB_UI
     ${QGoGUILIB_UI}
-    NewVideoRecorderDockWidget.ui
+    Resources/NewVideoRecorderDockWidget.ui
   )
 ENDIF( ENABLE_VIDEO_RECORD_FFMPEG )
 
@@ -158,12 +158,12 @@ ENDIF( ENABLE_VIDEO_RECORD_FFMPEG )
 IF( ENABLE_VIDEO_RECORD_AVI )
   SET(QGoGUILIB_UI
     ${QGoGUILIB_UI}
-    NewVideoRecorderDockWidget.ui
+    Resources/NewVideoRecorderDockWidget.ui
   )
 ENDIF( ENABLE_VIDEO_RECORD_AVI )
 
-#------------------------------------------------------------------------------
-#------------------------------------------------------------------------------
+#---------------------------------------------------------------------------
+#---------------------------------------------------------------------------
 
 QT4_WRAP_UI( QGoGUILIB_UI_H
   ${QGoGUILIB_UI}
