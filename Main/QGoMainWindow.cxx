@@ -264,15 +264,25 @@ void QGoMainWindow::on_actionImportContour_triggered( )
         {
         QFileInfo pathInfo( p );
         std::string filename = p.toStdString();
+        //import into the database:
         GoDBImport ImportHelper(this->m_DBWizard->GetServer().toStdString(),
           this->m_DBWizard->GetLogin().toStdString(),
           this->m_DBWizard->GetPassword().toStdString(),
           this->m_DBWizard->GetImagingSessionID(),filename);
         ImportHelper.ImportContours();
+        //put the new contours in the visu:
+        std::vector<ContourMeshStructure> ContourToAdd = ImportHelper.GetNewContourInfo();
+        for (unsigned int i = 0; i < ContourToAdd.size(); i++)
+          {
+          ContourMeshStructure Contour = ContourToAdd.at(i);
+          w3t->AddContourFromNodes(Contour.TraceID,Contour.Nodes,Contour.rgba,
+            Contour.Highlighted,Contour.TCoord,false);
+          }
+
         }
       }
     }
-
+}
 /*  typedef std::vector<ContourMeshStructure> ContourMeshVectorType;
   typedef ContourMeshVectorType::iterator ContourMeshIteratorType;
 
@@ -376,7 +386,6 @@ void QGoMainWindow::on_actionImportContour_triggered( )
        }
      }
    }*/
-}
 
 //--------------------------------------------------------------------------
 void QGoMainWindow::on_actionImportMesh_triggered( )

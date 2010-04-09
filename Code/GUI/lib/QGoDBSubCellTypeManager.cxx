@@ -60,7 +60,7 @@ void QGoDBSubCellTypeManager::SaveNewEntityInDB()
     {
     QMessageBox msgBox;
     msgBox.setText(
-      tr("This bookmark already exists, its name is: ' %1 ' ").arg(SubCellTypeName.c_str()));
+      tr("This subcelltype already exists, its name is: ' %1 ' ").arg(SubCellTypeName.c_str()));
     msgBox.exec();
     }
   else

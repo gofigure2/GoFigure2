@@ -42,6 +42,7 @@
 #define __GoDBImport_h
 
 #include "vtkMySQLDatabase.h"
+#include "ContourMeshStructure.h"
 #include <vector>
 #include <map>
 
@@ -55,13 +56,32 @@ public:
   virtual ~GoDBImport();
   void ImportContours();
 
+  std::vector<int> GetVectorNewMeshIDs()
+    {
+    return this->m_NewMeshIDs;
+    }
+
+  std::vector<int> GetVectorNewContourIDs()
+    {
+    return this->m_NewContourIDs;
+    }
+
+  std::vector<ContourMeshStructure> GetNewContourInfo()
+    {
+    return this->m_NewContourInfoForVisu;
+    }
+
+
 private:
-  vtkMySQLDatabase*        m_DatabaseConnector;
-  std::string              m_ServerName;
-  std::string              m_Password;
-  std::string              m_Login;
-  int                      m_ImagingSessionID;
-  std::ifstream            m_InFile;
+  vtkMySQLDatabase*                 m_DatabaseConnector;
+  std::string                       m_ServerName;
+  std::string                       m_Password;
+  std::string                       m_Login;
+  int                               m_ImagingSessionID;
+  std::ifstream                     m_InFile;
+  std::vector<int>                  m_NewMeshIDs;
+  std::vector<int>                  m_NewContourIDs;
+  std::vector<ContourMeshStructure> m_NewContourInfoForVisu;
 
   /** \brief Return the name of the field contained in the line*/
   std::string FindFieldName(std::string iLine);
@@ -99,6 +119,8 @@ private:
     std::string & ioLineContent,
     std::map<int,int> iMapMeshIDs);
 
+  void FillContourInfoForVisu(
+    std::vector<int> iListContourIDs);
   /** \brief get the values from the Infile,save the 
   corresponding number of entities in the database and return
   the last line content from the infile*/
@@ -113,7 +135,7 @@ private:
       LineContent = this->GetValuesFromInfile<T>(EntityToSave);
       int OldID = atoi(EntityToSave.GetMapValue(EntityToSave.GetTableIDName()).c_str());
       int NewID = EntityToSave.SaveInDB(this->m_DatabaseConnector);
-      ioMapMatchingIDs[OldID]= NewID;  
+      ioMapMatchingIDs[OldID]= NewID;
       }
     return LineContent;
     }
@@ -162,7 +184,5 @@ private:
    this->ReplaceTheFieldWithNewIDs<T>(
      iMapCoordIDs,"CoordIDMin",ioEntityToSave);
   }
-
-
 };
 #endif

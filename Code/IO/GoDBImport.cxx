@@ -80,7 +80,9 @@ void GoDBImport::ImportContours()
     MapSubCellTypeIDs,MapCoordIDs); 
   this->SaveMeshes(MapColorIDs,MapCellTypeIDs,MapSubCellTypeIDs,
     MapCoordIDs,LineContent,MapMeshIDs); 
-  this->SaveContours(MapColorIDs,MapCoordIDs,LineContent,MapMeshIDs);
+  std::vector<int> VectorNewContourIDs = this->SaveContours(MapColorIDs,
+    MapCoordIDs,LineContent,MapMeshIDs);
+  this->FillContourInfoForVisu(VectorNewContourIDs);
   this->CloseDBConnection();
 }
 //--------------------------------------------------------------------------
@@ -179,10 +181,10 @@ void GoDBImport::SaveMeshes(std::map<int,int> iMapColorIDs,
     ioMapMeshIDs[OldMeshID]= NewMeshID;
     // to get the line "Number Of Contours", we don't want the last line to be skipped
     //for the last mesh:
-    if (i != NumberOfMeshes - 1)
+    /*if (i != NumberOfMeshes - 1)
       {
       getline(this->m_InFile, ioLineContent);
-      }
+      }*/
     }
   std::string test = ioLineContent;
 }
@@ -219,9 +221,22 @@ std::vector<int> GoDBImport::SaveContours(std::map<int,int> iMapColorIDs,
       {
       oVectorImportedContourIDs.push_back(ContourToSave.SaveInDB(this->m_DatabaseConnector));
       }
-    getline(this->m_InFile,ioLineContent);
+    //getline(this->m_InFile,ioLineContent);
     }
   return oVectorImportedContourIDs;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void GoDBImport::FillContourInfoForVisu(
+  std::vector<int> iListContourIDs)
+{
+  for (unsigned int i = 0; i<iListContourIDs.size(); i++)
+    {
+    m_NewContourInfoForVisu.push_back(GetTraceInfoFromDB(
+      this->m_DatabaseConnector,"contour",
+      "mesh",iListContourIDs.at(i)));
+    }
 }
 //--------------------------------------------------------------------------
 
