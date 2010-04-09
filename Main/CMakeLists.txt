@@ -6,6 +6,7 @@ SET( QGoGUISRC_HDRS
   QGoTabManager.h
   QGoMainWindow.h
   QGoPluginManager.h
+  ${QGoGUIINTERFACES_HDRS}
 )
 
 
@@ -125,7 +126,7 @@ ENDIF( WIN32 )
 ADD_EXECUTABLE( gofigure
   MACOSX_BUNDLE 
   ${GOFIGURE_APPLICATION_SOURCE_LIST}
-  ${QGoGUI_SRC}
+  ${QGoGUIINTERFACES_SRC}
   ${QGoGUISRC_MOC}
   ${QGoMainWindow_QRC}
   ${qt_menu_nib_sources} 

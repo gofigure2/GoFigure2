@@ -3,7 +3,7 @@
 
 #include "QGoImageFilterPluginBase.h"
 
-class identityplugin : public QObject, public QGoImageFilterPluginBase
+class identityplugin : public QGoImageFilterPluginBase
 {
   Q_OBJECT
   Q_INTERFACES( QGoImageFilterPluginBase )

@@ -5,7 +5,7 @@
 
 Q_EXPORT_PLUGIN2( QGoIdentityImageFilterPlugin, medianplugin )
 
-medianplugin::medianplugin() : QGoImageFilterPluginBase()
+medianplugin::medianplugin( QObject* iParent ) : QGoImageFilterPluginBase( iParent )
 {
   this->SetAllRequiredInformation();
   preprocess = new QCellPreprocess();

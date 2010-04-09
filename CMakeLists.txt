@@ -229,8 +229,8 @@ IF( VTK_FOUND )
       ${GOFIGURE2_SOURCE_DIR}/Code/GUI/lib/
       ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/
       ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/Resources/
-      ${GOFIGURE2_SOURCE_DIR}/Code/GUI/Interfaces/
-      ${GOFIGURE2_BINARY_DIR}/Code/GUI/Interfaces/
+      ${GOFIGURE2_SOURCE_DIR}/Interfaces/
+      ${GOFIGURE2_BINARY_DIR}/Interfaces/
       ${GOFIGURE2_SOURCE_DIR}/Code/GUI/src/
       ${GOFIGURE2_BINARY_DIR}/Code/GUI/src/
       ${MEGAVTK2_SOURCE_DIR}
@@ -285,53 +285,30 @@ IF( VTK_FOUND )
 
     SET( QGoResourceFile ${GOFIGURE2_SOURCE_DIR}/Resources/axes.qrc )
 
-#     SET( QGoGUISRC_CXX
-#       ${GOFIGURE2_SOURCE_DIR}/Code/GUI/src/QGoTabManager.cxx
-#       ${GOFIGURE2_SOURCE_DIR}/Code/GUI/src/QGoMainWindow.cxx
-# #      ${GOFIGURE2_SOURCE_DIR}/Code/GUI/src/QGoTabElementBase.cxx
-#       ${GOFIGURE2_SOURCE_DIR}/Code/GUI/src/QGoPluginManager.cxx
-# #      ${GOFIGURE2_SOURCE_DIR}/Code/GUI/src/QGoTabImageView2D.cxx
-# #      ${GOFIGURE2_SOURCE_DIR}/Code/GUI/src/QGoTabImageView3D.cxx
-# #      ${GOFIGURE2_SOURCE_DIR}/Code/GUI/src/QGoTabImageViewElementBase.cxx
-#     )
-#     SET( QGoGUISRC_HDRS
-#       ${GOFIGURE2_SOURCE_DIR}/Code/GUI/src/QGoTabManager.h
-#       ${GOFIGURE2_SOURCE_DIR}/Code/GUI/src/QGoMainWindow.h
-# #      ${GOFIGURE2_SOURCE_DIR}/Code/GUI/src/QGoTabElementBase.h
-# #      ${GOFIGURE2_SOURCE_DIR}/Code/GUI/src/QGoTabImageView3D.h
-#       ${GOFIGURE2_SOURCE_DIR}/Code/GUI/src/QGoPluginManager.h
-# #      ${GOFIGURE2_SOURCE_DIR}/Code/GUI/src/QGoTabImageView2D.h
-# #      ${GOFIGURE2_SOURCE_DIR}/Code/GUI/src/QGoTabImageViewElementBase.h
-#     )
-# 
-#     SET( QGoMainWindow_UI
-#       ${GOFIGURE2_SOURCE_DIR}/Code/GUI/src/go.ui
-#     )
-# 
-#     SET( QGoGUISRC_SRC
-#       ${QGoGUISRC_CXX}
-#     #   ${QGoMainWindow_QRC}
-#       ${QGoGUISRC_MOC}
-#     )
-
-  SET( QGoGUIINTERFACES_SRC
-    ${GOFIGURE2_SOURCE_DIR}/Code/GUI/Interfaces/QGoPluginHelper.cxx
-    ${GOFIGURE2_SOURCE_DIR}/Code/GUI/Interfaces/QGoPlugin.cxx
-    ${GOFIGURE2_SOURCE_DIR}/Code/GUI/Interfaces/QGoImageFilterPluginBase.cxx
-  )
+    SET( QGoGUIINTERFACES_HDRS
+      ${GOFIGURE2_SOURCE_DIR}/Interfaces/QGoPlugin.h
+      ${GOFIGURE2_SOURCE_DIR}/Interfaces/QGoImageFilterPluginBase.h
+    )
+    SET( QGoGUIINTERFACES_SRC
+      ${GOFIGURE2_SOURCE_DIR}/Interfaces/QGoPluginHelper.cxx
+      ${GOFIGURE2_SOURCE_DIR}/Interfaces/QGoPlugin.cxx
+      ${GOFIGURE2_SOURCE_DIR}/Interfaces/QGoImageFilterPluginBase.cxx
+    )
 
 #   MESSAGE( SEND_ERROR ${QGoGUIINTERFACES_SRC} )
   SET( QGoGUI_SRC
-    ${QGoGUIINTERFACES_SRC}
-    ${QGoGUISRC_SRC}
+    
   )
 
   ADD_SUBDIRECTORY( Code )
 
   OPTION( BUILD_EXAMPLES "Build Examples" OFF )
 
-#  OPTION( BUILD_PLUGINS  "Build GoFigure Plugins" OFF )
-  SET( BUILD_PLUGINS OFF )
+  IF( VTK_BUILD_SHARED_LIBS )
+    OPTION( BUILD_PLUGINS  "Build GoFigure Plugins" OFF )
+  ELSE( VTK_BUILD_SHARED_LIBS )
+    SET( BUILD_PLUGINS OFF )
+  ENDIF( VTK_BUILD_SHARED_LIBS )
 
   IF( BUILD_EXAMPLES OR BUILD_PLUGINS )
 

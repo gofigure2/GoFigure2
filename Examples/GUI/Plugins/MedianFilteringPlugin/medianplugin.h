@@ -4,13 +4,13 @@
 #include "QGoImageFilterPluginBase.h"
 #include "QCellPreprocess.h"
 
-class medianplugin : public QObject, public QGoImageFilterPluginBase
+class medianplugin : public QGoImageFilterPluginBase
 {
   Q_OBJECT
   Q_INTERFACES( QGoImageFilterPluginBase )
 
   public:
-    medianplugin();
+    explicit medianplugin( QObject* iParent = 0x0 );
     virtual ~medianplugin();
 
     virtual std::vector< QAction* > Actions();
