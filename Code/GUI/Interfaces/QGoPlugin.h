@@ -18,11 +18,13 @@
 \class QGoPlugin
 \brief Abstract class for any kind of plugins used by GoFigure2.
 */
-class QGoPlugin
+class QGoPlugin : public QObject
 {
+  Q_OBJECT
+
   public:
     /** \brief Default Constructor.*/
-    QGoPlugin();
+    explicit QGoPlugin( QObject* iParent = 0x0 );
 
     /** \brief Destructor.*/
     virtual ~QGoPlugin();
@@ -93,11 +95,7 @@ class QGoPlugin
     virtual void SetAllRequiredInformation( ) = 0;
 
   private:
-    /** \brief purposely not implemented.*/
-    QGoPlugin( const QGoPlugin& );
-
-    /** \brief purposely not implemented.*/
-    void operator = ( const QGoPlugin& );
+    Q_DISABLE_COPY( QGoPlugin );
 };
 
 

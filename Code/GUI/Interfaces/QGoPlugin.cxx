@@ -1,6 +1,6 @@
 #include "QGoPlugin.h"
 
-QGoPlugin::QGoPlugin()
+QGoPlugin::QGoPlugin( QObject* iParent ) : QObject( iParent )
 {
 }
 

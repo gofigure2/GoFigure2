@@ -19,8 +19,9 @@ class QWidget;
 */
 class QGoImageFilterPluginBase : public QGoPlugin
 {
+  Q_OBJECT
   public:
-    QGoImageFilterPluginBase();
+    explicit QGoImageFilterPluginBase( QObject* iParent = 0x0 );
     virtual ~QGoImageFilterPluginBase();
 
     virtual void SetInput( vtkImageData* iInput );
@@ -35,8 +36,7 @@ class QGoImageFilterPluginBase : public QGoPlugin
     virtual void Process( ) = 0;
 
   private:
-    QGoImageFilterPluginBase( const QGoImageFilterPluginBase& );
-    void operator = ( const QGoImageFilterPluginBase& );
+    Q_DISABLE_COPY( QGoImageFilterPluginBase );
 };
 
 Q_DECLARE_INTERFACE( QGoImageFilterPluginBase,
