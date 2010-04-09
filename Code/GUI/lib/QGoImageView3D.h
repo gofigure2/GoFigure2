@@ -68,10 +68,6 @@ class vtkViewImage2D;
 class vtkViewImage3D;
 class vtkViewImage2DCollection;
 
-class vtkSeedWidget;
-class vtkSeedRepresentation;
-class vtkConstrainedPointHandleRepresentation;
-
 /**
 \class QGoImageView3D
 \brief class for the visualization of 3D Image represented by one vtkImageData*.
@@ -127,39 +123,16 @@ public:
   std::list< vtkProp3D* > GetListOfPickedActors();
   std::list< vtkProp3D* > GetListOfUnPickedActors();
 
-  /** \brief Show annotations in each visible window */
   void ShowAnnotations();
-
-  /** \brief Show spline plane in each visible window (red, green and
-   * blue borders)
-   **/
   void ShowSplinePlane();
-
-  /** \brief Show cube in 3D view */
   void ShowCube3D();
-
-  /** \brief Update the render window */
   void UpdateRenderWindows();
 
-  /** \brief Define default interaction style for the interactor in the given
-   * window
-   **/
   void SetDefaultInteractionStyle( vtkViewImage2D&);
-
-  /** \brief Define interactor style to: default everywhere expect in 3D */
   void DefaultMode();
-
-  /** \brief Define interactor style to: zoom everywhere expect in 3D */
   void ZoomMode();
-
-  /** \brief Define interactor style to: pan everywhere expect in 3D */
   void PanMode();
 
-  /** \brief Define interactor style to: one click everywhere expect in 3D */
-  void OneClickMode();
-
-  void EnableOneClickMode();
-  void DisableOneClickMode();
 
 signals:
   void SliceViewXYChanged( int Slice );
@@ -229,10 +202,6 @@ protected:
   bool                      m_Initialized;
 
   vtkProperty* m_HighlightedContourProperty;
-
-  std::vector< vtkSeedWidget* >                   SeedWidget;
-  std::vector< vtkSeedRepresentation* >           SeedRep;
-  std::vector< vtkConstrainedPointHandleRepresentation* >  Handle;
 
   virtual void resizeEvent( QResizeEvent* event );
 
