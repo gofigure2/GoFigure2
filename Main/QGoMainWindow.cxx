@@ -278,7 +278,8 @@ void QGoMainWindow::on_actionImportContour_triggered( )
           w3t->AddContourFromNodes(Contour.TraceID,Contour.Nodes,Contour.rgba,
             Contour.Highlighted,Contour.TCoord,false);
           }
-
+        std::vector<int> ContourToAddTW = ImportHelper.GetVectorNewContourIDs();
+        w3t->m_DataBaseTables->AddTracesInTableWidgetFromDB(ContourToAddTW,"contour");
         }
       }
     }

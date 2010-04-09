@@ -153,6 +153,9 @@ public:
     unsigned int iXCoordMax, unsigned int iYCoordMax, unsigned int iZCoordMax,
     vtkPolyData* iContourNodes, int ContourID );
 
+  void AddTracesInTableWidgetFromDB(std::vector<int> ListTracesIDs,
+    std::string iTraceName);
+
   void AddBookmark(int iXCoord, int iYCoord, 
     int iZCoord, int iTCoord);
   /** \brief return a bool to know if the user is using the database or 

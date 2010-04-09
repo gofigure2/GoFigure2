@@ -119,7 +119,7 @@ public:
   to all the data needed to fill the table widget for the new created trace and return the 
   link to the corresponding row container which has only 1 row*/
   GoDBTableWidgetContainer*  GetLinkToNewCreatedTraceContainer(
-    vtkMySQLDatabase* iDatabaseConnector);
+    vtkMySQLDatabase* iDatabaseConnector,int iTraceID = 0);
 
   /** \brief get the results of the queries and put them in the row container corresponding
   to all the data needed to fill the table widget for the updated trace and return the 

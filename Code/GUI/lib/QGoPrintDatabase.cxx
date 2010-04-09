@@ -1480,3 +1480,19 @@ void QGoPrintDatabase::UpdateListMeshes(int iTimePoint)
   emit PrintExistingCollectionIDsFromDB(
     this->GetListExistingCollectionIDFromDB("contour",iTimePoint));
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoPrintDatabase::AddTracesInTableWidgetFromDB(std::vector<int> ListTracesIDs,
+    std::string iTraceName)
+{
+  TraceInfoStructure* CurrentlyUsedTraceData = 
+    this->GetTraceInfoStructure(iTraceName);
+  for (unsigned int i = 0; i < ListTracesIDs.size(); i ++)
+    {
+    GoDBTableWidgetContainer* LinkToNewTrace = CurrentlyUsedTraceData->CollectionOfTraces->
+      GetLinkToNewCreatedTraceContainer(this->m_DatabaseConnector,ListTracesIDs.at(i));
+    CurrentlyUsedTraceData->Table->InsertNewRow(LinkToNewTrace,iTraceName,
+      CurrentlyUsedTraceData->CollectionName);
+    }
+}

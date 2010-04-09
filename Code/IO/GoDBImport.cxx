@@ -179,12 +179,6 @@ void GoDBImport::SaveMeshes(std::map<int,int> iMapColorIDs,
       std::cout<<" will belong to the existing mesh "<<NewMeshID<<std::endl;
       }
     ioMapMeshIDs[OldMeshID]= NewMeshID;
-    // to get the line "Number Of Contours", we don't want the last line to be skipped
-    //for the last mesh:
-    /*if (i != NumberOfMeshes - 1)
-      {
-      getline(this->m_InFile, ioLineContent);
-      }*/
     }
   std::string test = ioLineContent;
 }
@@ -219,9 +213,8 @@ std::vector<int> GoDBImport::SaveContours(std::map<int,int> iMapColorIDs,
       }
     else
       {
-      oVectorImportedContourIDs.push_back(ContourToSave.SaveInDB(this->m_DatabaseConnector));
+      this->m_NewContourIDs.push_back(ContourToSave.SaveInDB(this->m_DatabaseConnector));
       }
-    //getline(this->m_InFile,ioLineContent);
     }
   return oVectorImportedContourIDs;
 }

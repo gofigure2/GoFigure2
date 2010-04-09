@@ -553,7 +553,7 @@ GoDBCollectionOfTraces::DBTableWidgetContainerType
 
 //--------------------------------------------------------------------------
 GoDBTableWidgetContainer* GoDBCollectionOfTraces::GetLinkToNewCreatedTraceContainer(
-  vtkMySQLDatabase* iDatabaseConnector)
+  vtkMySQLDatabase* iDatabaseConnector,int iTraceID)
 {
   GoDBTableWidgetContainer* LinkToNewCreatedTraceContainer = new
     GoDBTableWidgetContainer(this->m_CollectionName,
@@ -566,10 +566,14 @@ GoDBTableWidgetContainer* GoDBCollectionOfTraces::GetLinkToNewCreatedTraceContai
   std::vector<std::string> SelectFirstFields = 
     m_LinkToRowContainer->GetQueryStringForSelectFieldsTables(false);
   
-  //then, get the last ID in the database, corresponding to the new created trace:
-  int NewTraceID = MaxValueForOneColumnInTable(iDatabaseConnector,
+  int NewTraceID = iTraceID;
+  if (NewTraceID == 0)
+    {
+    //then, get the last ID in the database, corresponding to the new created trace:
+    NewTraceID = MaxValueForOneColumnInTable(iDatabaseConnector,
     this->m_TracesIDName,this->m_TracesName,"ImagingSessionID",
     ConvertToString<unsigned int>(this->m_ImgSessionID));
+    }
 
   //then, get the results of the first query:
   std::vector<std::vector<std::string> >ResultsFirstQuery = GetValuesFromSeveralTables(
