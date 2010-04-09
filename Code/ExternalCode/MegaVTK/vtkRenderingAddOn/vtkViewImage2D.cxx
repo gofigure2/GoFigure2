@@ -824,6 +824,8 @@ void vtkViewImage2D::InstallPipeline()
   	        vtkViewImage2DCommand::PanEvent, this->Command);
   	      this->InteractorStyle->AddObserver( vtkCommand::InteractionEvent,
   	        this->Command);
+  	      this->InteractorStyle->AddObserver( vtkViewImage2DCommand::OneClickEvent,
+  	              this->Command);
   	  }
 	  	  this->InteractorStyleSwitcher = this->InteractorStyle;
   	  break;

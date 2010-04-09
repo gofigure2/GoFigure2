@@ -87,7 +87,8 @@ class VTK_RENDERINGADDON2_EXPORT vtkInteractorStyleImage2D :
       InteractionTypeSlice,
       InteractionTypeWindowLevel,
       InteractionTypeZoom,
-      InteractionTypePan
+      InteractionTypePan,
+      InteractionOneClick
     };
     //ETX
 

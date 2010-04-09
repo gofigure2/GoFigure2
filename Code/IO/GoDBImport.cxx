@@ -187,7 +187,7 @@ void GoDBImport::SaveContours(std::map<int,int> iMapColorIDs,
     ioLineContent = this->GetValuesFromInfile<GoDBContourRow>(ContourToSave);
     this->ReplaceCommonFieldsForContourAndMesh(
       ContourToSave,iMapColorIDs,iMapCoordIDs);
-    this->ReplaceTheFieldWithNewIDs(iMapMeshIDs,"MeshID",ContourToSave);
+    this->ReplaceTheFieldWithNewIDs<GoDBContourRow>(iMapMeshIDs,"MeshID",ContourToSave);
     //ContourToSave.SaveInDB(this->m_DatabaseConnector);
     getline(this->m_InFile,ioLineContent);
     }

@@ -201,6 +201,7 @@ public slots:
   void DefaultMode();
   void ZoomMode();
   void PanMode();
+  void OneClickMode();
 
 #if defined ( ENABLEFFMPEG ) || defined ( ENABLEAVI )
   void SetRendererWindow( int );

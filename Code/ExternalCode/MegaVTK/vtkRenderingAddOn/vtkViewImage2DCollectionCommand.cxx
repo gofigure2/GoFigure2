@@ -223,4 +223,21 @@ void vtkViewImage2DCollectionCommand::Execute(vtkObject *caller,
 //       }
 //     }
   }
+
+  if( event == vtkViewImage2DCommand::OneClickEvent )
+  {
+    /*this->GetCollection()->InitTraversal();
+    v = this->GetCollection()->GetNextItem();
+
+        while(v)
+        {
+          if( v != viewer )
+          {
+          std::cout<<" != viewer"<<std::endl;
+          }
+          std::cout<<" out "<<std::endl;
+          v->Render();
+          v = this->GetCollection()->GetNextItem();
+        }*/
+  }
 }

@@ -732,12 +732,14 @@ CreateToolsActions()
 #endif
 
   m_TakeSnapshotAction = new QAction( tr( "Take Snapshot" ), this );
+
   QIcon snapshoticon;
   snapshoticon.addPixmap( QPixmap(QString::fromUtf8(":/fig/camera-photo.png")),
     QIcon::Normal, QIcon::Off );
   m_TakeSnapshotAction->setIcon( snapshoticon );
   m_TakeSnapshotAction->setStatusTip(tr("You have to be in full screen view to use the snapshot"));
   m_TakeSnapshotAction->setEnabled(false);
+
   QObject::connect( m_TakeSnapshotAction, SIGNAL( triggered() ),
                     this, SLOT( TakeSnapshot() ) );
 
@@ -747,71 +749,130 @@ CreateToolsActions()
 //-------------------------------------------------------------------------
 void QGoTabImageView3DwT::CreateModeActions()
 {
+  // Required if when we check one mode we want the other one to be deselected
   QActionGroup* group = new QActionGroup( this );
 
+  //---------------------------------//
+  //       manual editing mode       //
+  //---------------------------------//
+
+  // Create/initialize the manual editing action
   QAction* ManualEditingAction = new QAction( tr("Manual-Editing"), this );
   ManualEditingAction->setCheckable( true );
+
+  // Definition of the associated icon
   QIcon ManualEditingIcon;
   ManualEditingIcon.addPixmap( QPixmap(QString::fromUtf8(":/fig/manual-editing.png")),
     QIcon::Normal, QIcon::Off );
   ManualEditingAction->setIcon(ManualEditingIcon);
 
-  group->addAction( ManualEditingAction );
-
-  this->m_ModeActions.push_back( ManualEditingAction );
-
+  // Definition of its behaviour
   QObject::connect( ManualEditingAction, SIGNAL( toggled( bool ) ),
     this->m_ManualSegmentationDockWidget, SLOT( ActivateManualSegmentation( bool ) ) );
 
   QObject::connect( ManualEditingAction, SIGNAL( toggled( bool ) ),
    this, SLOT( ActivateManualSegmentationEditor( bool ) ) );
 
+  // Add the action to m_ModeActions and to group
+  this->m_ModeActions.push_back( ManualEditingAction );
+  group->addAction( ManualEditingAction );
 
+
+  //---------------------------------//
+  //          one click mode         //
+  //---------------------------------//
+
+  // Create/initialize the manual editing action
+  QAction* OneClickAction = new QAction( tr("One Click"), this );
+  OneClickAction->setCheckable( true );
+  OneClickAction->setChecked(false);
+
+  // Definition of the associated icon
+  QIcon OneClickIcon;
+  OneClickIcon.addPixmap( QPixmap(QString::fromUtf8(":/fig/seedIcon.png")),
+    QIcon::Normal, QIcon::Off );
+  OneClickAction->setIcon(OneClickIcon);
+
+  // Definition of its behaviour
+  // we have to open widget too
+  QObject::connect( OneClickAction, SIGNAL( triggered() ),
+    this, SLOT( OneClickMode() ) );
+
+  // Add the action to m_ModeActions and to group
+  this->m_ModeActions.push_back( OneClickAction );
+  group->addAction( OneClickAction );
+
+
+  //---------------------------------//
+  //           default mode          //
+  //---------------------------------//
+
+  // Create/initialize the default action
   QAction* DefaultAction = new QAction( tr( "Default" ), this );
   DefaultAction->setCheckable( true );
   DefaultAction->setChecked(true);
 
+  // Definition of the associated icon
   QIcon DefaultIcon;
   DefaultIcon.addPixmap( QPixmap(QString::fromUtf8(":/fig/mouse-cursor.png")),
     QIcon::Normal, QIcon::Off );
   DefaultAction->setIcon( DefaultIcon );
 
-  group->addAction( DefaultAction );
-
-  this->m_ModeActions.push_back( DefaultAction );
+  // Definition of its behaviour
   QObject::connect( DefaultAction, SIGNAL( triggered() ),
     this, SLOT( DefaultMode() ) );
 
+  // Add the action to m_ModeActions and to group
+  this->m_ModeActions.push_back( DefaultAction );
+  group->addAction( DefaultAction );
+
+
+  //---------------------------------//
+  //            zoom mode            //
+  //---------------------------------//
+
+  // Create/initialize the zoom action
   QAction* ZoomAction = new QAction( tr( "Zoom" ), this );
   ZoomAction->setCheckable( true );
   ZoomAction->setChecked(false);
 
+  // Definition of the associated icon
   QIcon ZoomIcon;
   ZoomIcon.addPixmap( QPixmap(QString::fromUtf8(":/fig/zoom.png")),
     QIcon::Normal, QIcon::Off );
   ZoomAction->setIcon( ZoomIcon );
 
-  group->addAction( ZoomAction );
-
-  this->m_ModeActions.push_back( ZoomAction );
+  // Definition of its behaviour
   QObject::connect( ZoomAction, SIGNAL( triggered() ),
     this, SLOT( ZoomMode() ) );
 
+  // Add the action to m_ModeActions and to group
+  this->m_ModeActions.push_back( ZoomAction );
+  group->addAction( ZoomAction );
+
+
+  //---------------------------------//
+  //             pan mode            //
+  //---------------------------------//
+
+  // Create/initialize the pan action
   QAction* PanAction = new QAction( tr( "Pan" ), this );
   PanAction->setCheckable( true );
   PanAction->setChecked(false);
 
+  // Definition of the associated icon
   QIcon PanIcon;
   PanIcon.addPixmap( QPixmap(QString::fromUtf8(":/fig/Hand.png")),
     QIcon::Normal, QIcon::Off );
   PanAction->setIcon( PanIcon );
 
-  group->addAction( PanAction );
-
-  this->m_ModeActions.push_back( PanAction );
+  // Definition of its behaviour
   QObject::connect( PanAction, SIGNAL( triggered() ),
     this, SLOT( PanMode() ) );
 
+  // Add the action to m_ModeActions and to group
+  this->m_ModeActions.push_back( PanAction );
+  group->addAction( PanAction );
 }
 //-------------------------------------------------------------------------
 //-------------------------------------------------------------------------
@@ -2630,4 +2691,13 @@ QGoTabImageView3DwT::
 PanMode()
 {
   this->m_ImageView->PanMode();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+OneClickMode()
+{
+  this->m_ImageView->OneClickMode();
 }

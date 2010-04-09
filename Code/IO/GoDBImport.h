@@ -139,17 +139,17 @@ private:
   void ReplaceTheFieldWithNewIDs(std::map<int,int> iMapIDs, 
     std::string iFieldName, T & ioEntity)
   {
-    std::map<int,int>::iterator iter = 
+    std::map<int,int>::iterator iter =
       iMapIDs.find(atoi(ioEntity.GetMapValue(iFieldName).c_str()));
     int NewID = iter->second;
-    ioEntity.SetField<int>(iFieldName,NewID);
+    ioEntity.SetField(iFieldName,NewID);
   }
 
   template< typename T >
   void ReplaceCommonFieldsForContourAndMesh( T & ioEntityToSave,
     std::map<int,int> iMapColorIDs,std::map<int,int> iMapCoordIDs)
   {
-   ioEntityToSave.SetField<int>(
+   ioEntityToSave.SetField(
      "ImagingSessionID",this->m_ImagingSessionID);
    this->ReplaceTheFieldWithNewIDs<T>(
      iMapColorIDs,"ColorID",ioEntityToSave);

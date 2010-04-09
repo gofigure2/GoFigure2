@@ -94,7 +94,8 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage2DCommand : public vtkCommand
     ResetViewerEvent,
     ContourPickingEvent,
     CameraMoveEvent,
-    DefaultMoveEvent
+    DefaultMoveEvent,
+    OneClickEvent
   };
   //ETX
 

@@ -40,6 +40,9 @@
 
 #include "QGoImageView3D.h"
 
+// class type-casting
+#include <iostream>
+
 #include "vtkImageData.h"
 #include "vtkViewImage2D.h"
 #include "vtkViewImage3D.h"
@@ -48,6 +51,7 @@
 #include "vtkRenderWindow.h"
 #include "vtkRendererCollection.h"
 #include "vtkRenderer.h"
+#include "vtkSmartPointer.h"
 #include "vtkTextProperty.h"
 #include "vtkProperty.h"
 #include "vtkImageClip.h"
@@ -61,6 +65,12 @@
 #include "vtkTIFFWriter.h"
 #include "vtkCamera.h"
 
+#include "vtkSeedWidget.h"
+#include "vtkSeedRepresentation.h"
+
+#include "vtkCallbackCommand.h"
+#include "vtkCommand.h"
+
 #include "vtkEventQtSlotConnect.h"
 #include "QSplitterChild.h"
 #include "QVTKWidget.h"
@@ -70,6 +80,7 @@
 
 #include "vtkViewImage2DCommand.h"
 #include "vtkViewImage2DCollectionCommand.h"
+#include "vtkConstrainedPointHandleRepresentation.h"
 
 
 //-------------------------------------------------------------------------
@@ -131,6 +142,33 @@ QGoImageView3D( QWidget* iParent ) :
   this->View3D->SetRenderWindow( renwin4 );
   this->View3D->SetupInteractor( this->QvtkWidget_XYZ->GetInteractor() );
   this->m_Pool->SetExtraRenderWindow( renwin4 );
+
+  // Enable seed interaction
+  this->Handle.resize( this->m_Pool->GetNumberOfItems() );
+  this->SeedRep.resize( this->m_Pool->GetNumberOfItems() );
+  this->SeedWidget.resize( this->m_Pool->GetNumberOfItems() );
+
+  for( int i = 0; i < this->m_Pool->GetNumberOfItems(); i++)
+    {
+    this->Handle[i] = vtkConstrainedPointHandleRepresentation::New();
+    this->Handle[i]->GetProperty()->SetColor(1,0,0);
+
+    this->SeedRep[i] = vtkSeedRepresentation::New();
+    this->SeedRep[i]->SetHandleRepresentation(this->Handle[i]);
+
+    this->SeedWidget[i] = vtkSeedWidget::New();
+    this->SeedWidget[i]->SetPriority( 10.0 );
+    this->SeedWidget[i]->SetRepresentation( this->SeedRep[i] );
+    }
+
+  this->Handle[0]->SetProjectionNormal( vtkViewImage2D::VIEW_ORIENTATION_AXIAL );
+  this->Handle[1]->SetProjectionNormal( vtkViewImage2D::VIEW_ORIENTATION_CORONAL );
+  this->Handle[2]->SetProjectionNormal( vtkViewImage2D::VIEW_ORIENTATION_SAGITTAL );
+
+  this->SeedWidget[0]->SetInteractor( this->QvtkWidget_XY->GetInteractor() );
+  this->SeedWidget[1]->SetInteractor( this->QvtkWidget_XZ->GetInteractor() );
+  this->SeedWidget[2]->SetInteractor( this->QvtkWidget_YZ->GetInteractor() );
+
 }
 //-------------------------------------------------------------------------
 
@@ -143,6 +181,12 @@ QGoImageView3D::~QGoImageView3D()
   delete HtSplitter;
   delete HbSplitter;
 
+  for( unsigned int i = 0; i < this->SeedWidget.size(); i++ )
+    {
+    this->Handle[i]->Delete();
+    this->SeedRep[i]->Delete();
+    this->SeedWidget[i]->Delete();
+    }
   // note m_Pool is supposed to be deleted in QGoImageView, but due to a bug
   // it has to be deleted in this order...
   if( m_Pool )
@@ -1231,6 +1275,8 @@ void
 QGoImageView3D::
 DefaultMode()
 {
+  this->DisableOneClickMode();
+
   //Change cursor
   this->QvtkWidget_XY->setCursor( Qt::ArrowCursor );
   this->QvtkWidget_XZ->setCursor( Qt::ArrowCursor );
@@ -1262,6 +1308,8 @@ void
 QGoImageView3D::
 ZoomMode()
 {
+  this->DisableOneClickMode();
+
   //Change cursors
   QCursor zoomCursor(QPixmap(QString::fromUtf8(":/fig/zoom.png")),-1,-1);
   this->QvtkWidget_XY->setCursor( zoomCursor );
@@ -1284,6 +1332,8 @@ void
 QGoImageView3D::
 PanMode()
 {
+  this->DisableOneClickMode();
+
   //Change cursor
   this->QvtkWidget_XY->setCursor( Qt::OpenHandCursor );
   this->QvtkWidget_XZ->setCursor( Qt::OpenHandCursor );
@@ -1298,5 +1348,52 @@ PanMode()
 
   vtkViewImage2D* View3 = this->m_Pool->GetItem( 2 );
   View3->SetInteractionStyle(vtkInteractorStyleImage2D::InteractionTypePan );
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoImageView3D::
+OneClickMode()
+{
+  //Change cursor
+  this->QvtkWidget_XY->setCursor( Qt::ArrowCursor );
+  this->QvtkWidget_XZ->setCursor( Qt::ArrowCursor );
+  this->QvtkWidget_YZ->setCursor( Qt::ArrowCursor );
+
+  vtkViewImage2D* View1 = this->m_Pool->GetItem( 0 );
+  View1->SetInteractionStyle(vtkInteractorStyleImage2D::InteractionTypePan );
+
+  vtkViewImage2D* View2 = this->m_Pool->GetItem( 1 );
+  View2->SetInteractionStyle(vtkInteractorStyleImage2D::InteractionTypePan );
+
+  vtkViewImage2D* View3 = this->m_Pool->GetItem( 2 );
+  View3->SetInteractionStyle(vtkInteractorStyleImage2D::InteractionTypePan );
+
+  this->EnableOneClickMode();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoImageView3D::
+EnableOneClickMode()
+{
+  for( int i = 0; i < this->m_Pool->GetNumberOfItems(); i++ )
+  {
+    this->SeedWidget[i]->SetEnabled(1);
+  }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoImageView3D::
+DisableOneClickMode()
+{
+  for( int i = 0; i < this->m_Pool->GetNumberOfItems(); i++ )
+  {
+    this->SeedWidget[i]->SetEnabled(0);
+  }
 }
 //-------------------------------------------------------------------------

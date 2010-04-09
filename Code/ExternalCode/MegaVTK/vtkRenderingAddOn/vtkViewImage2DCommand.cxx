@@ -155,6 +155,11 @@ vtkViewImage2DCommand::Execute( vtkObject*    caller,
 //     }
   }
 
+  if( event == vtkViewImage2DCommand::OneClickEvent )
+  {
+    //std::cout << "One click event" << std::endl;
+  }
+
   if (event == vtkCommand::KeyPressEvent)
   {
     vtkRenderWindowInteractor *rwi =

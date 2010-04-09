@@ -37,5 +37,6 @@
         <file>fig/scalarbar.png</file>
         <file>fig/TableWidget.png</file>
         <file>fig/zoom.png</file>
+        <file>fig/seedIcon.png</file>
     </qresource>
 </RCC>
