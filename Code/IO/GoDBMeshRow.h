@@ -62,7 +62,7 @@ public:
 
   ~GoDBMeshRow()
     {}
-  int DoesThisBoundingBoxMeshExist(vtkMySQLDatabase* DatabaseConnector);
+  //int DoesThisBoundingBoxMeshExist(vtkMySQLDatabase* DatabaseConnector);
   void SetCellType(std::string CellTypeName);/**\todo */
   void SetSubCellType(std::string SubCellTypeName); /**\todo */
 

@@ -112,6 +112,16 @@ void GoDBTraceRow::CreateBoundingBox(vtkMySQLDatabase* DatabaseConnector,
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+int GoDBTraceRow::DoesThisBoundingBoxExist(
+  vtkMySQLDatabase* DatabaseConnector)
+{
+  return FindOneID(DatabaseConnector,this->m_TableName,
+    this->m_TableIDName,"CoordIDMax",this->GetMapValue("CoordIDMax"),
+    "CoordIDMin",this->GetMapValue("CoordIDMin"));
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 void GoDBTraceRow::SetColor(unsigned int Red, unsigned int Green,
   unsigned int Blue,unsigned int Alpha, std::string ColorName,
   vtkMySQLDatabase* DatabaseConnector)

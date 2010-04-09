@@ -57,7 +57,7 @@ GoDBContourRow::GoDBContourRow(vtkMySQLDatabase* DatabaseConnector,
     ImgSessionID)
 {
   this->InitializeMap();
-  if (this->DoesThisBoundingBoxContourExist(DatabaseConnector))
+  if (this->DoesThisBoundingBoxExist(DatabaseConnector))
     {
     std::cout<<"The bounding box already exists for this contour"<<std::endl;
     }
@@ -76,13 +76,13 @@ void GoDBContourRow::InitializeMap()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-int GoDBContourRow::DoesThisBoundingBoxContourExist(
+/*int GoDBContourRow::DoesThisBoundingBoxContourExist(
   vtkMySQLDatabase* DatabaseConnector)
 {
   return FindOneID(DatabaseConnector,"contour","ContourID",
     "CoordIDMax",this->GetMapValue("CoordIDMax"),
     "CoordIDMin",this->GetMapValue("CoordIDMin"));
-}
+}*/
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------

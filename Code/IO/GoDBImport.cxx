@@ -153,32 +153,47 @@ void GoDBImport::SaveMeshes(std::map<int,int> iMapColorIDs,
     {
     ioLineContent = this->GetValuesFromInfile<GoDBMeshRow>(
       MeshToSave);
-    /*MeshToSave.SetField<int>("ImagingSessionID",this->m_ImagingSessionID);
-    this->ReplaceTheFieldWithNewIDs<GoDBMeshRow>(
-      iMapColorIDs,"ColorID",MeshToSave);*/
     this->ReplaceTheFieldWithNewIDs<GoDBMeshRow>(
       iMapCellTypeIDs,"CellTypeID",MeshToSave);
     this->ReplaceTheFieldWithNewIDs<GoDBMeshRow>(
       iMapSubCellTypeIDs,"SubCellularID",MeshToSave);
     this->ReplaceCommonFieldsForContourAndMesh(
       MeshToSave,iMapColorIDs,iMapCoordIDs);
-    /*this->ReplaceTheFieldWithNewIDs<GoDBMeshRow>(
-      iMapCoordIDs,"CoordIDMax",MeshToSave);
-    this->ReplaceTheFieldWithNewIDs<GoDBMeshRow>(
-      iMapCoordIDs,"CoordIDMin",MeshToSave);*/
-    getline(this->m_InFile, ioLineContent);
     int OldMeshID = atoi(MeshToSave.GetMapValue(MeshToSave.GetTableIDName()).c_str());
-    int NewMeshID = MeshToSave.SaveInDB(this->m_DatabaseConnector);
-    ioMapMeshIDs[OldMeshID]= NewMeshID; 
+    /*in order the query works, the MeshID to be saved has to be set to 0 otherwise 
+    if the MeshID already exits,the query will return the error 
+    "Duplicate entry MeshID for key primary":*/
+    MeshToSave.SetField(MeshToSave.GetTableIDName(),"0");
+    int NewMeshID = MeshToSave.DoesThisBoundingBoxExist(this->m_DatabaseConnector);
+    if(NewMeshID == -1)
+      {
+      NewMeshID = MeshToSave.SaveInDB(this->m_DatabaseConnector);
+      }
+    else
+      {
+      std::cout<<"The mesh "<<OldMeshID<<" has the same bounding box as ";
+      std::cout<<"the existing mesh "<<NewMeshID;
+      std::cout<<"so the imported contours belonging to the mesh "<<OldMeshID;
+      std::cout<<" will belong to the existing mesh "<<NewMeshID<<std::endl;
+      }
+    ioMapMeshIDs[OldMeshID]= NewMeshID;
+    // to get the line "Number Of Contours", we don't want the last line to be skipped
+    //for the last mesh:
+    if (i != NumberOfMeshes - 1)
+      {
+      getline(this->m_InFile, ioLineContent);
+      }
     }
+  std::string test = ioLineContent;
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void GoDBImport::SaveContours(std::map<int,int> iMapColorIDs,
+std::vector<int> GoDBImport::SaveContours(std::map<int,int> iMapColorIDs,
     std::map<int,int> iMapCoordIDs,std::string & ioLineContent,
     std::map<int,int> iMapMeshIDs)
 {
+  std::vector<int> oVectorImportedContourIDs;
   GoDBContourRow ContourToSave; 
   int NumberOfContours = atoi(this->GetValueForTheLine(ioLineContent).c_str());
   getline(this->m_InFile, ioLineContent);
@@ -188,9 +203,25 @@ void GoDBImport::SaveContours(std::map<int,int> iMapColorIDs,
     this->ReplaceCommonFieldsForContourAndMesh(
       ContourToSave,iMapColorIDs,iMapCoordIDs);
     this->ReplaceTheFieldWithNewIDs<GoDBContourRow>(iMapMeshIDs,"MeshID",ContourToSave);
-    //ContourToSave.SaveInDB(this->m_DatabaseConnector);
+    /*in order the query works, the ContourID to be saved has to be set to 0 otherwise 
+    if the ContourID already exits,the query will return the error 
+    "Duplicate entry ContourID for key primary":*/
+    int OldContourID = atoi(ContourToSave.GetMapValue(ContourToSave.GetTableIDName()).c_str());
+    ContourToSave.SetField(ContourToSave.GetTableIDName(),"0");
+    int ContourID = ContourToSave.DoesThisBoundingBoxExist(this->m_DatabaseConnector);
+    if(ContourID != -1)
+      {
+      std::cout<<"The contour" << OldContourID;
+      std::cout<<"won't be saved because there is already an existing contour with the same bounding box ";
+      std::cout<<"The existing contourID is "<<ContourID <<std::endl;
+      }
+    else
+      {
+      oVectorImportedContourIDs.push_back(ContourToSave.SaveInDB(this->m_DatabaseConnector));
+      }
     getline(this->m_InFile,ioLineContent);
     }
+  return oVectorImportedContourIDs;
 }
 //--------------------------------------------------------------------------
 
@@ -212,7 +243,6 @@ std::string GoDBImport::FindFieldName(std::string iLine)
 //--------------------------------------------------------------------------
 std::string GoDBImport::GetValueForTheLine(std::string iLine)
 {
-  //size_t BegValue = iFieldName.size() + 2;
   size_t BegValue = iLine.find(">",0)+1;
   size_t EndValue = iLine.find("<",BegValue);
   if( EndValue != iLine.npos)

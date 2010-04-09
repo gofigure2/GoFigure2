@@ -61,7 +61,7 @@ public:
   ~GoDBTraceRow()
     {}
   
-/**\brief return the ContourID of the Contour with the same bounding box
+/**\brief return the TraceID of the Trace with the same bounding box
   already registered in the DB or -1 if not yet created*/
  int  DoesThisBoundingBoxExist(vtkMySQLDatabase* DatabaseConnector);
 

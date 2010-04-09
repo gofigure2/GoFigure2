@@ -56,9 +56,9 @@ GoDBMeshRow::GoDBMeshRow(vtkMySQLDatabase* DatabaseConnector,
     ImgSessionID)
 {
   this->InitializeMap();
-  if (this->DoesThisBoundingBoxMeshExist(DatabaseConnector))
+  if (this->DoesThisBoundingBoxExist(DatabaseConnector))
     {
-    std::cout<<"The bounding box alreaady exists for this Mesh"<<std::endl;
+    std::cout<<"The bounding box already exists for this Mesh"<<std::endl;
     }   
 }
 //-------------------------------------------------------------------------
@@ -76,12 +76,12 @@ void GoDBMeshRow::InitializeMap()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-int GoDBMeshRow::DoesThisBoundingBoxMeshExist(vtkMySQLDatabase* DatabaseConnector)
+/*int GoDBMeshRow::DoesThisBoundingBoxMeshExist(vtkMySQLDatabase* DatabaseConnector)
 {
   return FindOneID(DatabaseConnector,"mesh","MeshID",
     "CoordIDMax",this->GetMapValue("CoordIDMax"),
     "CoordIDMin",this->GetMapValue("CoordIDMin"));
-}
+}*/
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------

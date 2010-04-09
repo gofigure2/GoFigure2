@@ -64,7 +64,7 @@ public:
 
   /**\brief return the ContourID of the Contour with the same bounding box
   already registered in the DB or -1 if not yet created*/
- int DoesThisBoundingBoxContourExist(vtkMySQLDatabase* DatabaseConnector);
+ //int DoesThisBoundingBoxContourExist(vtkMySQLDatabase* DatabaseConnector);
 
  /**\brief save the contour in the database and return the ID of the new 
  created contour*/
