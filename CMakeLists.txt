@@ -120,9 +120,13 @@ ENDIF( BUILD_DOCUMENTATION )
 # Main GoFigure Settings
 #---------------------------------------------------------------------------
 
-SET( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${GOFIGURE2_SOURCE_DIR}/CMake/" )
+SET( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} 
+  "${GOFIGURE2_SOURCE_DIR}/CMake/" 
+)
 
-SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
+IF( UNIX )
+  SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
+ENDIF( UNIX )
 
 # Everything depends on VTK first
 # that way we can get Qt info from VTK
