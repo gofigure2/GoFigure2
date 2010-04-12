@@ -88,6 +88,16 @@ public:
  * values stored in the database, display them in the QTableWidgetChild 
  * and fill the info for the contours and meshes*/
   void FillTableFromDatabase(int iTimePoint);
+  
+  /** \brief return the contours info for the visu with the data from
+  the database corresponding to iTimePoint and to the list of given IDs*/
+  std::vector<ContourMeshStructure>* GetContoursFromDBForAGivenTimePoint(
+    int iTimePoint, std::vector<int> iListIDs);
+
+  /** \brief return the meshes info for the visu with the data from
+  the database corresponding to iTimePoint*/
+  std::vector<ContourMeshStructure>* GetMeshesFromDBForAGivenTimePoint(
+    int iTimePoint);
 
   /** \brief Return a vector of all the contours for the given timepoint*/
   std::vector<ContourMeshStructure> GetContoursForAGivenTimepoint (

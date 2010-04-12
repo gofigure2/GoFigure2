@@ -272,10 +272,14 @@ void QGoMainWindow::on_actionImportContour_triggered( )
           this->m_DBWizard->GetImagingSessionID(),filename);
         ImportHelper.ImportContours();
         //put the new contours in the visu:
-        std::vector<ContourMeshStructure> ContourToAdd = ImportHelper.GetNewContourInfo();
-        for (unsigned int i = 0; i < ContourToAdd.size(); i++)
+        std::vector<int> NewContourIDs = ImportHelper.GetVectorNewContourIDs();
+        std::vector<ContourMeshStructure>* ContourToAdd = 
+          w3t->m_DataBaseTables->GetContoursFromDBForAGivenTimePoint(w3t->GetTimePoint(),
+            NewContourIDs);
+          //w3t->m_DataBaseTables->GetContoursForAGivenTimepoint(w3t->GetTimePoint());
+        for (unsigned int i = 0; i < ContourToAdd->size(); i++)
           {
-          ContourMeshStructure Contour = ContourToAdd.at(i);
+          ContourMeshStructure Contour = ContourToAdd->at(i);
           w3t->AddContourFromNodes(Contour.TraceID,Contour.Nodes,Contour.rgba,
             Contour.Highlighted,Contour.TCoord,false);
           }

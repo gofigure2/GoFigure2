@@ -1084,7 +1084,8 @@ std::vector<std::pair<int,std::string> > ListSpecificValuesForTwoColumnsAndTwoTa
 //------------------------------------------------------------------------------
 std::vector<ContourMeshStructure>* GetTracesInfoFromDB(
   vtkMySQLDatabase* DatabaseConnector, std::string TraceName,
-  std::string CollectionName,unsigned int ImgSessionID)
+  std::string CollectionName,unsigned int ImgSessionID,int iTimePoint,
+  std::vector<int> iListIDs)
 {
   std::vector<ContourMeshStructure>* Results = new std::vector<ContourMeshStructure>;
   vtkSQLQuery* query = DatabaseConnector->GetQueryInstance();
@@ -1107,9 +1108,37 @@ std::vector<ContourMeshStructure>* GetTracesInfoFromDB(
   Querystream << TraceName;
   Querystream << ".coordIDMax) left join color on ";
   Querystream << TraceName;
-  Querystream << ".colorID = color.colorID  where ImagingSessionID = ";
-  Querystream << ImgSessionID;
-  Querystream << ";";
+  if(iTimePoint != -1)
+    {
+    Querystream << ".colorID = color.colorID  where (ImagingSessionID = ";
+    Querystream << ImgSessionID;
+    Querystream << " and ";
+    Querystream << "coordinate.TCoord = ";
+    Querystream << iTimePoint;
+    if (!iListIDs.empty())
+      {
+        Querystream << " and (";
+      unsigned int i;
+      for (i=0;i < iListIDs.size()-1; i++)
+        {
+        Querystream << TraceName;
+        Querystream << "ID = '";
+        Querystream << iListIDs[i];
+        Querystream << "' OR ";
+        }
+      Querystream << TraceName;
+      Querystream << "ID = '";
+      Querystream << iListIDs[i];
+      Querystream << "')";
+      }
+    Querystream << ");";
+    }
+  else
+    {
+    Querystream << ".colorID = color.colorID  where ImagingSessionID = ";
+    Querystream << ImgSessionID;
+    Querystream << ";";
+    }
 
   query->SetQuery(Querystream.str().c_str());
   if ( !query->Execute() )

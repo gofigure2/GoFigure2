@@ -499,6 +499,35 @@ void QGoPrintDatabase::LoadContoursAndMeshesFromDB(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+std::vector<ContourMeshStructure>* QGoPrintDatabase::
+  GetContoursFromDBForAGivenTimePoint(int iTimePoint,std::vector<int> iListIDs)
+{
+  this->OpenDBConnection();
+  std::vector<ContourMeshStructure>* ContoursInfoToAdd = GetTracesInfoFromDB(
+    this->m_DatabaseConnector,"contour","mesh",this->m_ImgSessionID,
+    iTimePoint,iListIDs);
+  for (unsigned int i = 0; i < iListIDs.size() ; i++)
+    {
+    this->AddATraceToContourMeshInfo("contour",iListIDs.at(i));
+    }
+  this->CloseDBConnection();
+  return ContoursInfoToAdd;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::vector<ContourMeshStructure>* QGoPrintDatabase::
+  GetMeshesFromDBForAGivenTimePoint(int iTimePoint)
+{
+  this->OpenDBConnection();
+  std::vector<ContourMeshStructure>* MeshesInfo = GetTracesInfoFromDB(
+    this->m_DatabaseConnector,"mesh","track",m_ImgSessionID,iTimePoint);
+  this->CloseDBConnection();
+  return MeshesInfo;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 void
 QGoPrintDatabase::
 ChangeTracesToHighLightInfoFromTableWidget()
