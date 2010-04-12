@@ -1488,6 +1488,7 @@ void QGoPrintDatabase::AddTracesInTableWidgetFromDB(std::vector<int> ListTracesI
 {
   TraceInfoStructure* CurrentlyUsedTraceData = 
     this->GetTraceInfoStructure(iTraceName);
+  this->OpenDBConnection();
   for (unsigned int i = 0; i < ListTracesIDs.size(); i ++)
     {
     GoDBTableWidgetContainer* LinkToNewTrace = CurrentlyUsedTraceData->CollectionOfTraces->
@@ -1495,4 +1496,5 @@ void QGoPrintDatabase::AddTracesInTableWidgetFromDB(std::vector<int> ListTracesI
     CurrentlyUsedTraceData->Table->InsertNewRow(LinkToNewTrace,iTraceName,
       CurrentlyUsedTraceData->CollectionName);
     }
+  this->CloseDBConnection();
 }

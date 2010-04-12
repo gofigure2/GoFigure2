@@ -114,7 +114,7 @@ private:
   /** \brief Get the info for the contours from the infile and from the matching
   IDs maps previously filled, then save them in the database if their bounding box
   doesn't match any existing ones*/
-  std::vector<int> SaveContours(std::map<int,int> iMapColorIDs,
+  void SaveContours(std::map<int,int> iMapColorIDs,
     std::map<int,int> iMapCoordIDs,
     std::string & ioLineContent,
     std::map<int,int> iMapMeshIDs);

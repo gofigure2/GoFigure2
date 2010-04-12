@@ -80,9 +80,8 @@ void GoDBImport::ImportContours()
     MapSubCellTypeIDs,MapCoordIDs); 
   this->SaveMeshes(MapColorIDs,MapCellTypeIDs,MapSubCellTypeIDs,
     MapCoordIDs,LineContent,MapMeshIDs); 
-  std::vector<int> VectorNewContourIDs = this->SaveContours(MapColorIDs,
-    MapCoordIDs,LineContent,MapMeshIDs);
-  this->FillContourInfoForVisu(VectorNewContourIDs);
+  this->SaveContours(MapColorIDs,MapCoordIDs,LineContent,MapMeshIDs);
+  this->FillContourInfoForVisu(this->m_NewContourIDs);
   this->CloseDBConnection();
 }
 //--------------------------------------------------------------------------
@@ -170,6 +169,7 @@ void GoDBImport::SaveMeshes(std::map<int,int> iMapColorIDs,
     if(NewMeshID == -1)
       {
       NewMeshID = MeshToSave.SaveInDB(this->m_DatabaseConnector);
+      this->m_NewMeshIDs.push_back(NewMeshID);
       }
     else
       {
@@ -185,11 +185,10 @@ void GoDBImport::SaveMeshes(std::map<int,int> iMapColorIDs,
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-std::vector<int> GoDBImport::SaveContours(std::map<int,int> iMapColorIDs,
+void GoDBImport::SaveContours(std::map<int,int> iMapColorIDs,
     std::map<int,int> iMapCoordIDs,std::string & ioLineContent,
     std::map<int,int> iMapMeshIDs)
 {
-  std::vector<int> oVectorImportedContourIDs;
   GoDBContourRow ContourToSave; 
   int NumberOfContours = atoi(this->GetValueForTheLine(ioLineContent).c_str());
   getline(this->m_InFile, ioLineContent);
@@ -216,7 +215,6 @@ std::vector<int> GoDBImport::SaveContours(std::map<int,int> iMapColorIDs,
       this->m_NewContourIDs.push_back(ContourToSave.SaveInDB(this->m_DatabaseConnector));
       }
     }
-  return oVectorImportedContourIDs;
 }
 //--------------------------------------------------------------------------
 
@@ -226,7 +224,7 @@ void GoDBImport::FillContourInfoForVisu(
 {
   for (unsigned int i = 0; i<iListContourIDs.size(); i++)
     {
-    m_NewContourInfoForVisu.push_back(GetTraceInfoFromDB(
+    this->m_NewContourInfoForVisu.push_back(GetTraceInfoFromDB(
       this->m_DatabaseConnector,"contour",
       "mesh",iListContourIDs.at(i)));
     }

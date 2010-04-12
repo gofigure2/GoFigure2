@@ -480,23 +480,33 @@ void QTableWidgetChild::UpdateRow(GoDBTableWidgetContainer* iLinkToRowContainer,
     {
     QString TraceNameID = QString("%1ID").arg(TraceName.c_str());
     int iUpdateRow = this->findValueGivenColumn(TraceID,TraceNameID);
-    for (unsigned int i = 0; i < UpdateTraceRowContainer.size(); i++)
+    if (iUpdateRow != -1)
       {
-      if (UpdateTraceRowContainer[i].first.ColumnNameTableWidget != "None" && !UpdateTraceRowContainer[i].second.empty())
+      for (unsigned int i = 0; i < UpdateTraceRowContainer.size(); i++)
         {
-        for (int j = 0; j < this->columnCount();j++)
+        if (UpdateTraceRowContainer[i].first.ColumnNameTableWidget != "None" && !UpdateTraceRowContainer[i].second.empty())
           {
-          std::string HeaderCol = this->horizontalHeaderItem(j)->text().toStdString();
-          if (HeaderCol == UpdateTraceRowContainer[i].first.ColumnNameTableWidget)
+          for (int j = 0; j < this->columnCount();j++)
             {
-            std::string Value = UpdateTraceRowContainer[i].second[0];
-            this->item(iUpdateRow,j)->setData(0,QString::fromStdString( Value ).toInt());
-            }//ENDIF
-          }//ENDFOR
-        }//ENDIF
-      }//ENDFOR
-    this->SetColorForTable(iLinkToRowContainer,TraceName,iUpdateRow);
-    this->SetColorForTable(iLinkToRowContainer,CollectionName,iUpdateRow);
+            std::string HeaderCol = this->horizontalHeaderItem(j)->text().toStdString();
+            if (HeaderCol == UpdateTraceRowContainer[i].first.ColumnNameTableWidget)
+              {
+              std::string Value = UpdateTraceRowContainer[i].second[0];
+              this->item(iUpdateRow,j)->setData(0,QString::fromStdString( Value ).toInt());
+              }//ENDIF
+            }//ENDFOR
+          }//ENDIF
+        }//ENDFOR
+      this->SetColorForTable(iLinkToRowContainer,TraceName,iUpdateRow);
+      this->SetColorForTable(iLinkToRowContainer,CollectionName,iUpdateRow);
+      }
+    else
+      {
+      std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
+      std::cout << std::endl;
+      std::cout<<"the row does't exist";
+      std::cout << std::endl;
+      }
     }//ENDELSE
 }
 //--------------------------------------------------------------------------
@@ -596,22 +606,19 @@ void QTableWidgetChild::UpdateIDs (unsigned int iNewCollectionID,
 //--------------------------------------------------------------------------
 void QTableWidgetChild::DeleteSelectedRows(std::string iTraceNameID)
 {
-  //std::vector<std::pair<int,int> >::iterator iter = 
-  ///  this->m_VectorSelectedRows.begin();
   unsigned int i = 0;
-  //while(iter !=this->m_VectorSelectedRows.end())
   while (i<this->m_VectorSelectedRows.size())
     {
     //deselect the row in the m_VectorCheckedRows:
     int ColumnSelectedRow = this->findColumnName("");
-    //int RowToDelete = iter->second;
-    //int RowToDelete = this->m_VectorSelectedRows[i].second;
     int RowToDelete = this->findValueGivenColumn(
       this->m_VectorSelectedRows[i].first,iTraceNameID.c_str());
-    this->item(RowToDelete,ColumnSelectedRow)->setCheckState(Qt::Unchecked);
-    this->UpdateVectorCheckedRows(RowToDelete,ColumnSelectedRow);
-    this->removeRow(RowToDelete);
-    //iter++;
+    if (RowToDelete != -1)
+      {
+      this->item(RowToDelete,ColumnSelectedRow)->setCheckState(Qt::Unchecked);
+      this->UpdateVectorCheckedRows(RowToDelete,ColumnSelectedRow);
+      this->removeRow(RowToDelete);
+      }
     }
 }
 //--------------------------------------------------------------------------
@@ -628,7 +635,6 @@ void QTableWidgetChild::UpdateTableWidgetDisplayAndVectorCheckedRows(int Row, in
       this->item(Row,Column)->setCheckState(Qt::Checked);
       }
     else
-      //(this->item(Row,Column)->checkState()== 2)
       {
       this->item(Row,Column)->setCheckState(Qt::Unchecked);
       }
