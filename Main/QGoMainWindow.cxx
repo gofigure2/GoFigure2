@@ -287,6 +287,10 @@ void QGoMainWindow::on_actionImportContour_triggered( )
           w3t->m_DataBaseTables->GetListExistingCollectionIDFromDB("contour",w3t->GetTimePoint()));
         w3t->GetManualSegmentationWidget()->TraceManualEditingWidget->ColorComboBox->setExistingColors(
           w3t->m_DataBaseTables->GetColorComboBoxInfofromDB());
+        w3t->GetManualSegmentationWidget()->TraceManualEditingWidget->SetListCellTypes(
+          w3t->m_DataBaseTables->GetQStringListCellTypes());
+        w3t->GetManualSegmentationWidget()->TraceManualEditingWidget->SetListSubCellTypes(
+          w3t->m_DataBaseTables->GetQStringListSubCellTypes());
         }
       }
     }

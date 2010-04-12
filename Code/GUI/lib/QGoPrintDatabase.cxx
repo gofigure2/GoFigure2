@@ -1390,6 +1390,7 @@ QGoPrintDatabase::NamesDescrContainerType QGoPrintDatabase::GetListCellTypes()
     QListCellTypes.append(iter->first.c_str());
     iter++;
     }
+  this->m_ListCellType = QListCellTypes;
   emit ListCellTypesToUpdate(QListCellTypes);
   this->CloseDBConnection();
   return ListCellTypes;
@@ -1430,6 +1431,7 @@ QGoPrintDatabase::NamesDescrContainerType QGoPrintDatabase::
     QListSubCellTypes.append(iter->first.c_str());
     iter++;
     }
+  this->m_ListSubCellType = QListSubCellTypes;
   emit ListSubCellTypesToUpdate(QListSubCellTypes);
   this->CloseDBConnection();
   return ListSubCellTypes;
@@ -1499,4 +1501,18 @@ void QGoPrintDatabase::AddTracesInTableWidgetFromDB(std::vector<int> ListTracesI
       CurrentlyUsedTraceData->CollectionName);
     }
   this->CloseDBConnection();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+QStringList QGoPrintDatabase::GetQStringListCellTypes()
+{
+  return this->m_ListCellType;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+QStringList QGoPrintDatabase::GetQStringListSubCellTypes()
+{
+  return this->m_ListSubCellType;
 }

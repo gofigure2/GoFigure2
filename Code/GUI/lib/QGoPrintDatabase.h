@@ -131,7 +131,8 @@ public:
     std::pair<std::string,QColor> iColorNewCollection, 
     std::string iTraceName,
     int iTimePoint);
-
+  QStringList GetQStringListCellTypes();
+  QStringList GetQStringListSubCellTypes();
   void UpdateCurrentColorData(std::pair<std::string,QColor> iCurrentColorData);
   void SetCurrentCollectionID(std::pair<std::string,QColor> iCurrentCollectionData);
 
@@ -227,9 +228,11 @@ protected:
 
   QAction* m_VisibilityAction;
 
-  QGoDBBookmarkManager*  m_BookmarkManager;
-  QGoDBCellTypeManager*  m_CellTypeManager;
+  QGoDBBookmarkManager*     m_BookmarkManager;
+  QGoDBCellTypeManager*     m_CellTypeManager;
   QGoDBSubCellTypeManager*  m_SubCellTypeManager;
+  QStringList               m_ListCellType;
+  QStringList               m_ListSubCellType;
 
   void OpenDBConnection();
   void CloseDBConnection();
