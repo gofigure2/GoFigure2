@@ -44,6 +44,7 @@
 #include "QGoTabImageView3D.h"
 #include "QGoTabImageView3DwT.h"
 #include "QGoPrintDatabase.h"
+#include "QGoManualSegmentationDockWidget.h"
 
 #include "ContourMeshStructure.h"
 
@@ -282,6 +283,8 @@ void QGoMainWindow::on_actionImportContour_triggered( )
         std::vector<int> MeshesToAddTW = ImportHelper.GetVectorNewMeshIDs();
         w3t->m_DataBaseTables->AddTracesInTableWidgetFromDB(ContourToAddTW,"contour");
         w3t->m_DataBaseTables->AddTracesInTableWidgetFromDB(MeshesToAddTW, "mesh");
+        w3t->GetManualSegmentationWidget()->TraceManualEditingWidget->SetCollectionID(
+          w3t->m_DataBaseTables->GetListExistingCollectionIDFromDB("contour",w3t->GetTimePoint()));
         }
       }
     }

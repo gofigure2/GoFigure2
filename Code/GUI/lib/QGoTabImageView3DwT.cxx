@@ -2631,3 +2631,11 @@ PanMode()
 {
   this->m_ImageView->PanMode();
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+QGoManualSegmentationDockWidget* QGoTabImageView3DwT::
+  GetManualSegmentationWidget()
+{
+  return this->m_ManualSegmentationDockWidget;
+}

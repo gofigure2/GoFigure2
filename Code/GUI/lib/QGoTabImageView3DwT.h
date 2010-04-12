@@ -179,7 +179,7 @@ public:
   int GetSliceViewXZ() const;
   int GetSliceViewYZ() const;
   int GetTimePoint() const;
-
+  QGoManualSegmentationDockWidget* GetManualSegmentationWidget();
   QGoPrintDatabase* m_DataBaseTables;
 
 signals:
