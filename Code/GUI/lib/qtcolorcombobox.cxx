@@ -404,7 +404,8 @@ bool QtColorComboBox::isColorDialogEnabled() const
 //-------------------------------------------------------------------------
 void QtColorComboBox::setExistingColors(
   std::list<std::pair<std::string,std::vector<int> > > iDataColorsFromDB)
-{
+{ 
+  this->clear();
   if (!iDataColorsFromDB.empty())
     {
     std::list<std::pair<std::string,std::vector<int> > >::iterator iter =

@@ -763,6 +763,7 @@ std::vector<ContourMeshStructure> QGoPrintDatabase::
 std::list<std::pair<std::string,std::vector<int> > > QGoPrintDatabase::
   GetColorComboBoxInfofromDB()
 {
+  this->OpenDBConnection();
   std::list<std::pair<std::string,std::vector<int> > > oInfoColors;
   std::vector<std::string> ResultsQuery  = ListAllValuesForOneColumn(
     m_DatabaseConnector,"*", "color");
@@ -780,6 +781,7 @@ std::list<std::pair<std::string,std::vector<int> > > QGoPrintDatabase::
     oInfoColors.push_back(temp);
     i = i+7;
     }
+  this->CloseDBConnection();
   return oInfoColors;
 }
 //-------------------------------------------------------------------------

@@ -285,6 +285,8 @@ void QGoMainWindow::on_actionImportContour_triggered( )
         w3t->m_DataBaseTables->AddTracesInTableWidgetFromDB(MeshesToAddTW, "mesh");
         w3t->GetManualSegmentationWidget()->TraceManualEditingWidget->SetCollectionID(
           w3t->m_DataBaseTables->GetListExistingCollectionIDFromDB("contour",w3t->GetTimePoint()));
+        w3t->GetManualSegmentationWidget()->TraceManualEditingWidget->ColorComboBox->setExistingColors(
+          w3t->m_DataBaseTables->GetColorComboBoxInfofromDB());
         }
       }
     }
