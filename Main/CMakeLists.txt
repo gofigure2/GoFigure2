@@ -185,7 +185,13 @@ INSTALL( CODE "
 # they are copied.
 
 # directories to look for dependencies
-SET( DIRS ${QT_LIBRARY_DIRS} )
+SET( DIRS 
+  ${QT_LIBRARY_DIRS}
+  ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
+  ${CMAKE_INSTALL_PREFIX}/lib/
+  ${ITK_LIBRARY_DIRS}
+  ${VTK_LIBRARY_DIRS}
+)
 
 # Now the work of copying dependencies into the bundle/package
 # The quotes are escaped and variables to use at install time have their $ i# escaped
