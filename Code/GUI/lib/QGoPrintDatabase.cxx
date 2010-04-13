@@ -482,7 +482,10 @@ void QGoPrintDatabase::ChangeTraceColor()
           }
         }
       iter++;
-      emit ColorChangedForSelectedTraces(this->m_CurrentColorData.second);
+      std::pair<std::list<int>,QColor> ListIDsWithColor;
+      ListIDsWithColor.first = ListSelectedTraces;
+      ListIDsWithColor.second = this->m_CurrentColorData.second;
+      emit ColorChangedForSelectedTraces(ListIDsWithColor);
       }
     CloseDBConnection();
     }
