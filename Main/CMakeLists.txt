@@ -176,6 +176,22 @@ INSTALL( TARGETS gofigure
   BUNDLE  DESTINATION .   COMPONENT Runtime
   )
 
+#-----------------------------------------------------
+# Here Let's take care of License files
+# copying them into the build's folder
+# and during the installation process
+FILE( GLOB GOFIGURE2_LICENSE_FILES "Licenses/*.txt" )
+# MESSAGE( SEND_ERROR "${GOFIGURE2_LICENSE_FILES}" )
+ADD_CUSTOM_COMMAND( TARGET gofigure PRE_BUILD
+  COMMENT "Copying License files..."
+  COMMAND cp ARGS -R
+    ${GOFIGURE2_SOURCE_DIR}/Licenses/
+    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
+)
+INSTALL( FILES ${GOFIGURE2_LICENSE_FILES} 
+  DESTINATION bin/Licenses )
+#-----------------------------------------------------
+
 #---------------------------------------------------------------------------
 # install a qt.conf file
 # this inserts some cmake code into the install script to write the file

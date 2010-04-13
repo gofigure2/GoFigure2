@@ -39,6 +39,7 @@
 =========================================================================*/
 
 #include "QGoAboutWidget.h"
+#include <QCoreApplication>
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QScrollArea>
@@ -49,8 +50,8 @@
 
 QGoAboutWidget::QGoAboutWidget()
 {
-  QString version( "0.4" );
-  QString date( "Date: 02/17/2010\n\n" );
+  QString version( "@GOFIGURE2_VERSION@" );
+  QString date( "Date: @DATE@\n\n" );
   QString about_gofigure(
     tr( "Description: Software for the visualization and \nthe analysis of biological microscope images.\n" ) );
   QString message = QString( "Version: GoFigure2-%1\n\n" ).arg( version );
@@ -143,7 +144,9 @@ void QGoAboutWidget::SetTheBackGround(QLabel* ilabel,QTabWidget* TabWidget,
 QString QGoAboutWidget::ReadLicenseText(QString iFilename)
 {
   QFile file;
-  QString Filename = "@GOFIGURE2_SOURCE_DIR@/Licenses/";
+  QString appDir = QCoreApplication::applicationDirPath();
+  QString Filename = appDir + QString( "/Licenses/" );
+//  QString Filename = "@GOFIGURE2_SOURCE_DIR@/Licenses/";
   Filename.append(iFilename);
   file.setFileName(Filename);
   file.open(QIODevice::ReadOnly);

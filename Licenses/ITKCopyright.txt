@@ -1,24 +1,3 @@
-
-Historical Note:
-
-The Insight Segmentation and Registration Toolkit (ITK) was initially developed
-under contract to the National Library of Medicine at the National Institutes
-of Health. ITK is partially derived from VTK and VXL, hence some code is
-copyrighted accordingly (see VTKCopyright.txt and VXLCopyright.txt).
-
-The copyright of most of the files in the "Utilities" subdirectory is held by
-third parties who allow to distribute this material under a license compatible
-with the one used by ITK. Please read the content of the subdirectories for
-specific details on those third-party licenses. You will also find details in
-the README.txt file under the "Copyright" subdirectory.
-
-Starting with its version ITK 3.6, The Insight Toolkit is distributed under the
-new and simplified BSD license approved by the Open Source Initiative (OSI)
-[http://www.opensource.org/licenses/bsd-license.php].
-
-
-
-
 ITK Copyright Notice:
 
       Copyright (c) 1999-2003 Insight Software Consortium
