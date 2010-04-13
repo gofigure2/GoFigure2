@@ -182,12 +182,23 @@ INSTALL( TARGETS gofigure
 # and during the installation process
 FILE( GLOB GOFIGURE2_LICENSE_FILES "Licenses/*.txt" )
 # MESSAGE( SEND_ERROR "${GOFIGURE2_LICENSE_FILES}" )
-ADD_CUSTOM_COMMAND( TARGET gofigure PRE_BUILD
-  COMMENT "Copying License files..."
-  COMMAND cp ARGS -R
-    ${GOFIGURE2_SOURCE_DIR}/Licenses/
-    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
-)
+IF( UNIX )
+  ADD_CUSTOM_COMMAND( TARGET gofigure PRE_BUILD
+    COMMENT "Copying License files..."
+    COMMAND cp ARGS -R
+      ${GOFIGURE2_SOURCE_DIR}/Licenses/
+      ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
+  )
+ELSE( UNIX )
+  IF( WIN32 )
+    ADD_CUSTOM_COMMAND( TARGET gofigure PRE_BUILD
+      COMMENT "Copying License files..."
+      COMMAND copy /Y 
+        \"${GOFIGURE2_SOURCE_DIR}/Licenses/\"
+        \"${CMAKE_RUNTIME_OUTPUT_DIRECTORY}\"
+     )
+  ENDIF( WIN32 )
+ENDIF( UNIX )
 INSTALL( FILES ${GOFIGURE2_LICENSE_FILES} 
   DESTINATION bin/Licenses )
 #-----------------------------------------------------

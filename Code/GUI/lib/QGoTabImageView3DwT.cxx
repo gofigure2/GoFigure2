@@ -2440,6 +2440,23 @@ HighLightContoursFromTable( )
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
+ChangeContourColorFromTable( const QColor& iColor )
+{
+  // 1-get a container of modified contours
+  this->m_DataBaseTables->
+
+  // 2-iterate on the container
+  //    for each element
+  //      - get the new color
+  //      - update m_ContourMeshContainer
+  //      - update contour color in the visualization
+  
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
 SelectContoursInTable( )
 {
   if( this->m_DataBaseTables->IsDatabaseUsed() )
