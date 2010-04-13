@@ -66,6 +66,7 @@ void QGoDBCellTypeManager::SaveNewEntityInDB()
   else
     {
     this->m_NewCellType.SaveInDB(this->m_DatabaseConnectorForNewEntity);
+    this->m_NameNewEntity = CellTypeName;
     emit ListEntitiesChanged();
     }
 }

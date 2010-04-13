@@ -55,6 +55,7 @@ QGoDBEntityManager::QGoDBEntityManager(QWidget* iParent,
 {
   this->m_EntityName = iEntityName;
   this->m_ImgSessionID = iImgSessionID;
+  this->m_NameNewEntity = "";
 }
 //-------------------------------------------------------------------------
 
@@ -176,4 +177,11 @@ void QGoDBEntityManager::DeleteEntity(
     this,SIGNAL(ListEntitiesChanged()));
   Dialog->show();
   Dialog->exec();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+ std::string QGoDBEntityManager::GetNameNewEntity()
+{
+  return this->m_NameNewEntity;
 }

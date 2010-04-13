@@ -198,6 +198,8 @@ public slots:
   /** \brief get the list of meshes for the current timepoint from the 
  * database, emit a signal for the list to be printed in the GUI*/
   void UpdateListMeshes(int iTimePoint);
+  std::string GetNameNewCellType();
+  std::string GetNameNewSubCellType();
 
 signals:
   void PrintDBReady();

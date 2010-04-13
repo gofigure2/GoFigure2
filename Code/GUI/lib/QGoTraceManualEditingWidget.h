@@ -80,12 +80,16 @@ class QGoTraceManualEditingWidget :
     void SetListSubCellTypes(QStringList iListSubCellTypes);
     void CheckUserAction(QString iCellTypeText);
     void CheckUserActionSubCell(QString iSubCellTypeText);
+    void SetCurrentCellType(std::string iSubCellTypeText);
+    void SetCurrentSubCellType(std::string iSubCellTypeText);
 
   signals:
     void AddANewCellType();
     void DeleteCellType();
     void AddANewSubCellType();
     void DeleteSubCellType();
+    void ListSubCellTypesReady();
+    void ListCellTypesReady();
 
   protected:
     std::list<std::pair<std::string,std::vector<int> > > m_DataColors;

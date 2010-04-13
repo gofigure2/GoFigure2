@@ -1572,3 +1572,17 @@ void QGoPrintDatabase::UpdateCurrentSubCellType(
 {
   this->m_CurrentSubCellType = iCurrentSubCellType;
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::string QGoPrintDatabase::GetNameNewCellType()
+{
+  return this->m_CellTypeManager->GetNameNewEntity();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::string QGoPrintDatabase::GetNameNewSubCellType()
+{
+  return this->m_SubCellTypeManager->GetNameNewEntity();
+}

@@ -349,6 +349,8 @@ protected slots:
   void AddBookmark();
   void GetTheOpenBookmarksActions();
   void OpenExistingBookmark();
+  void SetTheCurrentCellType();
+  void SetTheCurrentSubCellType();
 
 };
 

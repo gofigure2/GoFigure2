@@ -389,6 +389,14 @@ CreateDataBaseTablesConnection()
     this->m_DataBaseTables,SIGNAL(TheColorNameAlreadyExits()),
     this->m_ManualSegmentationDockWidget->TraceManualEditingWidget->ColorComboBox,
     SLOT(DontAddTheColor()));
+  
+  QObject::connect(
+    this->m_ManualSegmentationDockWidget->TraceManualEditingWidget,SIGNAL(ListCellTypesReady()),
+    this, SLOT(SetTheCurrentCellType()));
+
+  QObject::connect(
+    this->m_ManualSegmentationDockWidget->TraceManualEditingWidget,SIGNAL(ListSubCellTypesReady()),
+    this, SLOT(SetTheCurrentSubCellType()));
 }
 //-------------------------------------------------------------------------
 #if defined ( ENABLEFFMPEG ) || defined ( ENABLEAVI )
@@ -2649,4 +2657,20 @@ QGoManualSegmentationDockWidget* QGoTabImageView3DwT::
   GetManualSegmentationWidget()
 {
   return this->m_ManualSegmentationDockWidget;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoTabImageView3DwT::SetTheCurrentCellType()
+{
+  this->m_ManualSegmentationDockWidget->TraceManualEditingWidget
+    ->SetCurrentCellType(this->m_DataBaseTables->GetNameNewCellType());
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoTabImageView3DwT::SetTheCurrentSubCellType()
+{
+  this->m_ManualSegmentationDockWidget->TraceManualEditingWidget
+    ->SetCurrentSubCellType(this->m_DataBaseTables->GetNameNewSubCellType());
 }

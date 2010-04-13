@@ -175,6 +175,7 @@ void QGoTraceManualEditingWidget::SetListCellTypes(
   this->m_ChoseCellType->addItems(iListCellTypes);
   this->m_ChoseCellType->addItem(tr("Add a celltype..."));
   this->m_ChoseCellType->addItem(tr("Delete a celltype..."));
+  emit ListCellTypesReady();
 }
 //-------------------------------------------------------------------------
 
@@ -211,6 +212,7 @@ void QGoTraceManualEditingWidget::SetListSubCellTypes(
   this->m_ChoseSubCellType->addItems(iListSubCellTypes);
   this->m_ChoseSubCellType->addItem(tr("Add a subcelltype..."));
   this->m_ChoseSubCellType->addItem(tr("Delete a subcelltype..."));
+  emit ListSubCellTypesReady();
 }
 //-------------------------------------------------------------------------
 
@@ -241,4 +243,35 @@ std::string QGoTraceManualEditingWidget::GetCurrentSubCellType()
 {
   return this->m_ChoseSubCellType->currentText().toStdString();
 }
+//-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
+void QGoTraceManualEditingWidget::SetCurrentCellType(
+  std::string iCellTypeText)
+{
+  int index = this->m_ChoseCellType->findText(iCellTypeText.c_str());
+  if (index == -1)
+    {
+    this->m_ChoseCellType->setCurrentIndex(0);
+    }
+  else
+    {
+    this->m_ChoseCellType->setCurrentIndex(index);
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoTraceManualEditingWidget::SetCurrentSubCellType(
+  std::string iSubCellTypeText)
+{
+  int index = this->m_ChoseSubCellType->findText(iSubCellTypeText.c_str());
+  if (index == -1)
+    {
+    this->m_ChoseSubCellType->setCurrentIndex(0);
+    }
+  else
+    {
+    this->m_ChoseSubCellType->setCurrentIndex(index);
+    }
+}

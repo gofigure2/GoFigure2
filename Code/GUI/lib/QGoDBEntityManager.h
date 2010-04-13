@@ -75,6 +75,7 @@ class QGoDBEntityManager:
    choose the ones he wants to delete, then delete them from the 
    database*/
     void DeleteEntity(vtkMySQLDatabase* iDatabaseConnector);
+    std::string GetNameNewEntity();
 
   protected:
     int                          m_ImgSessionID;
@@ -82,6 +83,7 @@ class QGoDBEntityManager:
     int                          m_CoordIDForNewEntity;
     QNameDescriptionInputDialog* m_NameDescDialog;
     vtkMySQLDatabase*            m_DatabaseConnectorForNewEntity;
+    std::string                  m_NameNewEntity;
 
   protected slots:
     /** \brief save the new bookmark in the database, the 
