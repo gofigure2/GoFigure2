@@ -467,16 +467,19 @@ void QGoPrintDatabase::ChangeTraceColor()
         ConvertToString<int>(*iter));
       this->UpdateTableWidgetForAnExistingTrace(
         CurrentlyUsedTraceData->TraceName,*iter);
-      std::vector<std::string> ListTracesFromThisCollectionOf = 
-        ListSpecificValuesForOneColumn(this->m_DatabaseConnector, 
-        CurrentlyUsedTraceData->CollectionOf,
-        CurrentlyUsedTraceData->CollectionOfID,
-        CurrentlyUsedTraceData->TraceNameID,ConvertToString<int>(*iter));
-      for(unsigned int i = 0; i < ListTracesFromThisCollectionOf.size();i++)
+      if (CurrentlyUsedTraceData->CollectionOf != "None")
         {
-        this->UpdateTableWidgetForAnExistingTrace(
+        std::vector<std::string> ListTracesFromThisCollectionOf = 
+          ListSpecificValuesForOneColumn(this->m_DatabaseConnector, 
           CurrentlyUsedTraceData->CollectionOf,
-          atoi(ListTracesFromThisCollectionOf[i].c_str()));
+          CurrentlyUsedTraceData->CollectionOfID,
+          CurrentlyUsedTraceData->TraceNameID,ConvertToString<int>(*iter));
+        for(unsigned int i = 0; i < ListTracesFromThisCollectionOf.size();i++)
+          {
+          this->UpdateTableWidgetForAnExistingTrace(
+            CurrentlyUsedTraceData->CollectionOf,
+            atoi(ListTracesFromThisCollectionOf[i].c_str()));
+          }
         }
       iter++;
       }
