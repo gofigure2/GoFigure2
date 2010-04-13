@@ -191,12 +191,12 @@ IF( UNIX )
   )
 ELSE( UNIX )
   IF( WIN32 )
-    ADD_CUSTOM_COMMAND( TARGET gofigure PRE_BUILD
-      COMMENT "Copying License files..."
-      COMMAND copy /Y 
-        \"${GOFIGURE2_SOURCE_DIR}/Licenses/\"
-        \"${CMAKE_RUNTIME_OUTPUT_DIRECTORY}\"
-     )
+#    ADD_CUSTOM_COMMAND( TARGET gofigure PRE_BUILD
+#      COMMENT "Copying License files..."
+#      COMMAND copy /Y 
+#        \"${GOFIGURE2_SOURCE_DIR}/Licenses/\"
+#        \"${CMAKE_RUNTIME_OUTPUT_DIRECTORY}\"
+#     )
   ENDIF( WIN32 )
 ENDIF( UNIX )
 INSTALL( FILES ${GOFIGURE2_LICENSE_FILES} 
