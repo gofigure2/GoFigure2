@@ -2161,11 +2161,22 @@ QGoTabImageView3DwT::
 UpdateDBAndCollectionIDComboBoxForANewCreatedCollection()
 {
   //first, save in the database:
+  std::string TraceName =  this->m_ManualSegmentationDockWidget->
+    TraceManualEditingWidget->TraceName->text().toStdString();
+  std::string CellType = "";
+  std::string SubCellType = "";
+  if ( TraceName == "contour") //for a mesh, collection of contour;
+    { 
+    CellType = this->m_ManualSegmentationDockWidget->
+      TraceManualEditingWidget->GetCurrentCellType();
+    SubCellType = this->m_ManualSegmentationDockWidget->
+      TraceManualEditingWidget->GetCurrentSubCellType();
+    }
   std::pair<std::string,QColor> NewCollectionToAddInComboBox =
     this->m_DataBaseTables->SaveNewCollectionInDB(
     this->m_ManualSegmentationDockWidget->TraceManualEditingWidget->ColorComboBox->GetCurrentColorData(),
     this->m_ManualSegmentationDockWidget->TraceManualEditingWidget->TraceName->text().toStdString(),
-    this->GetTimePoint());
+    this->GetTimePoint(),CellType,SubCellType);
   //second, update the ColorIDCollectionComboBox with the new created ID:
   this->m_ManualSegmentationDockWidget->TraceManualEditingWidget->ColorIDCollectionComboBox->addColor(
     NewCollectionToAddInComboBox.second,NewCollectionToAddInComboBox.first.c_str());

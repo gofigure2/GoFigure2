@@ -230,3 +230,15 @@ void QGoTraceManualEditingWidget::CheckUserActionSubCell(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+std::string QGoTraceManualEditingWidget::GetCurrentCellType()
+{
+  return this->m_ChoseCellType->currentText().toStdString();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------  
+std::string QGoTraceManualEditingWidget::GetCurrentSubCellType()
+{
+  return this->m_ChoseSubCellType->currentText().toStdString();
+}
+

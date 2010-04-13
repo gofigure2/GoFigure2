@@ -660,7 +660,7 @@ int GoDBCollectionOfTraces::CreateCollectionWithNoTraces(
 
   if (this->m_CollectionName == "mesh")
     {
-     SetTheTimePointForMesh(iTimePoint,iNewCollection, DatabaseConnector);
+     SetTheTimePointForMesh(iTimePoint,iNewCollection,DatabaseConnector);
     }
   return this->CreateNewCollection(DatabaseConnector,iNewCollection);    
 }
@@ -690,7 +690,7 @@ int GoDBCollectionOfTraces::GetCoordIDMaxForBoundingBoxWithNoTraces(
 
 //--------------------------------------------------------------------------
 void GoDBCollectionOfTraces::SetTheTimePointForMesh(int iTimePoint,
-  GoDBTraceRow & ioNewMesh, vtkMySQLDatabase* iDatabaseConnector)
+  GoDBTraceRow & ioNewMesh,vtkMySQLDatabase* iDatabaseConnector)
 {
   GoDBCoordinateRow Coordinate;
   Coordinate.SetValuesForSpecificID(

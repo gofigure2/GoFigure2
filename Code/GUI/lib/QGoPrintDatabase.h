@@ -138,13 +138,14 @@ public:
   /** \brief Save the new collection in the database and return the 
  * corresponding ID with the QColor*/
   std::pair<std::string,QColor> SaveNewCollectionInDB(
-    std::pair<std::string,QColor> iColorNewCollection, 
-    std::string iTraceName,
-    int iTimePoint);
+    std::pair<std::string,QColor> iColorNewCollection, std::string iTraceName,
+    int iTimePoint,std::string iCellType = "",std::string iSubCellType = "");
   QStringList GetQStringListCellTypes();
   QStringList GetQStringListSubCellTypes();
   void UpdateCurrentColorData(std::pair<std::string,QColor> iCurrentColorData);
   void SetCurrentCollectionID(std::pair<std::string,QColor> iCurrentCollectionData);
+  void UpdateCurrentCellType(std::string iCurrentCellType);
+  void UpdateCurrentSubCellType(std::string iCurrentSubCellType);
 
   /** \brief return the info for the visu for the related traces*/
   std::vector<ContourMeshStructure>* GetTracesInfoListForVisu(std::string iTraceName);
@@ -221,6 +222,8 @@ signals:
 protected:
   std::pair<std::string,QColor> m_CurrentColorData;
   std::pair<std::string,QColor> m_CurrentCollectionData;
+  std::string                   m_CurrentCellType;
+  std::string                   m_CurrentSubCellType;
 
   TraceInfoStructure* m_ContoursData;
   TraceInfoStructure* m_MeshesData;

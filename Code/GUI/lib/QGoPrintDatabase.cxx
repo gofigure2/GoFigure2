@@ -1045,21 +1045,33 @@ void QGoPrintDatabase::UpdateTableWidgetAndRowContainerWithNewCreatedTrace(
 //-------------------------------------------------------------------------
 std::pair<std::string,QColor> QGoPrintDatabase::SaveNewCollectionInDB(
   std::pair<std::string,QColor> iColorNewCollection, std::string iTraceName,
-  int iTimePoint)
+  int iTimePoint,std::string iCellType, std::string iSubCellType)
 {
   this->OpenDBConnection();
   GoDBTraceRow NewCollection;
+
   NewCollection.SetColor(iColorNewCollection.second.red(),iColorNewCollection.second.green(),
     iColorNewCollection.second.blue(),iColorNewCollection.second.alpha(),iColorNewCollection.first,
     this->m_DatabaseConnector);
   TraceInfoStructure* CurrentlyUsedTraceData = this->GetTraceInfoStructure(iTraceName);
   int NewCollectionID = CurrentlyUsedTraceData->CollectionOfTraces->CreateCollectionWithNoTraces(
     this->m_DatabaseConnector,NewCollection,iTimePoint);
-
+  
   std::pair<std::string,QColor> NewCollectionData;
   NewCollectionData.first = ConvertToString<int>(NewCollectionID);
   NewCollectionData.second = iColorNewCollection.second;
-
+  //update the celltype and subcelltype if the collection is a mesh:
+  if(iTraceName == "contour" && iCellType != "" && iSubCellType != "")
+    {
+    int CellTypeID = FindOneID(this->m_DatabaseConnector,"celltype", "CellTypeID",
+      "Name", iCellType);
+    UpdateValueInDB(this->m_DatabaseConnector,"mesh","CellTypeID", 
+      ConvertToString<int>(CellTypeID),"MeshID", ConvertToString<int>(NewCollectionID));
+    int SubCellTypeID = FindOneID(this->m_DatabaseConnector,"subcellulartype", 
+      "SubCellularID","Name", iSubCellType);
+    UpdateValueInDB(this->m_DatabaseConnector,"mesh","SubCellularID", 
+      ConvertToString<int>(SubCellTypeID),"MeshID", ConvertToString<int>(NewCollectionID));
+    }
   //update the table of the collection (which become the trace then):
   CurrentlyUsedTraceData = this->GetTraceInfoStructure(CurrentlyUsedTraceData->CollectionName);
   this->UpdateTableWidgetAndRowContainerWithNewCreatedTrace(CurrentlyUsedTraceData->TraceName);
@@ -1544,4 +1556,19 @@ QStringList QGoPrintDatabase::GetQStringListCellTypes()
 QStringList QGoPrintDatabase::GetQStringListSubCellTypes()
 {
   return this->m_ListSubCellType;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoPrintDatabase::UpdateCurrentCellType(std::string iCurrentCellType)
+{
+  this->m_CurrentCellType = iCurrentCellType;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoPrintDatabase::UpdateCurrentSubCellType(
+  std::string iCurrentSubCellType)
+{
+  this->m_CurrentSubCellType = iCurrentSubCellType;
 }
