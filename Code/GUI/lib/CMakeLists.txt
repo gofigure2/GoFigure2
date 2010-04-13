@@ -44,8 +44,8 @@ SET( QGoGUILIB_SRC
   ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/QGoAboutWidget.cxx
 )
 
-#------------------------------------------------------------------------------
-#------------------------------------------------------------------------------
+#---------------------------------------------------------------------------
+#---------------------------------------------------------------------------
 
 #ADD THIS SRCS IF ENABLE_VIDEO_RECORD is ON
 IF( ENABLE_VIDEO_RECORD_FFMPEG )
@@ -67,8 +67,8 @@ IF( ENABLE_VIDEO_RECORD_AVI )
   )
 ENDIF( ENABLE_VIDEO_RECORD_AVI )
 
-#------------------------------------------------------------------------------
-#------------------------------------------------------------------------------
+#---------------------------------------------------------------------------
+#---------------------------------------------------------------------------
 
 SET( QGoGUILIB_HDRS
   QGoConnectServerPage.h
@@ -111,8 +111,8 @@ SET( QGoGUILIB_HDRS
   QGoAboutWidget.h
 )
 
-#------------------------------------------------------------------------------
-#------------------------------------------------------------------------------
+#---------------------------------------------------------------------------
+#---------------------------------------------------------------------------
 
 # ADD THIS HEADERS IF ENABLE_VIDEO_RECORD_FFMPEG IS ON
 IF( ENABLE_VIDEO_RECORD_FFMPEG )
@@ -183,7 +183,6 @@ SET_SOURCE_FILES_PROPERTIES( ${QGoGUILIB_MOC} PROPERTIES
   )
 
 ADD_LIBRARY( QGoGui
-  # STATIC
   ${QGoGUILIB_SRC}
   ${QGoGUILIB_MOC}
   ${QGoGUI_QRC}
@@ -202,6 +201,8 @@ IF( ENABLE_VIDEO_RECORD_FFMPEG OR ENABLE_VIDEO_RECORD_AVI )
     vtkIO
   )  
 ENDIF( ENABLE_VIDEO_RECORD_FFMPEG OR ENABLE_VIDEO_RECORD_AVI )
+
+ADD_DEPENDENCIES( QGoGui ${QGoGUI_LIBS} )
 
 TARGET_LINK_LIBRARIES( QGoGui
   ${QGoGUI_LIBS}

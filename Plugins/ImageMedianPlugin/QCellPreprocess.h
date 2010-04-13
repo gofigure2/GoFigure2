@@ -40,7 +40,6 @@
 #ifndef __QCellPreprocess_h
 #define __QCellPreprocess_h
 
-#include <qmainwindow.h>
 #include "vtkSmartPointer.h"
 #include "vtkImageData.h"
 #include "vtkImageImport.h"

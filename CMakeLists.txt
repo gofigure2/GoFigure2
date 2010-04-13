@@ -187,6 +187,9 @@ IF( VTK_FOUND )
     ENDIF( QT_USE_FILE )
 
     SET( QT_PLUGIN_LIBS ${QT_LIBRARIES} )
+   
+    ADD_DEFINITIONS( ${QT_DEFINITIONS} )
+    ADD_DEFINITIONS( -DQT_SHARED )
 
     SET( GOFIGURE2_EXTERNAL_SOURCE_DIR
       ${GOFIGURE2_SOURCE_DIR}/Code/ExternalCode )
@@ -299,12 +302,8 @@ IF( VTK_FOUND )
       ${GOFIGURE2_SOURCE_DIR}/Interfaces/QGoImageFilterPluginBase.cxx
     )
 
-#   MESSAGE( SEND_ERROR ${QGoGUIINTERFACES_SRC} )
-  SET( QGoGUI_SRC
-    
-  )
-
   ADD_SUBDIRECTORY( Code )
+  ADD_SUBDIRECTORY( Main )
 
   OPTION( BUILD_EXAMPLES "Build Examples" OFF )
 
@@ -314,18 +313,20 @@ IF( VTK_FOUND )
     SET( BUILD_PLUGINS OFF )
   ENDIF( VTK_BUILD_SHARED_LIBS )
 
-  IF( BUILD_EXAMPLES OR BUILD_PLUGINS )
+#---------------------------------------------------------------------------
+# Examples and tests
+#---------------------------------------------------------------------------
+
+  IF( BUILD_EXAMPLES )
 
     ADD_SUBDIRECTORY( Examples )
+    ADD_SUBDIRECTORY( KWStyle )
 
-    IF( BUILD_EXAMPLES )
-      ADD_SUBDIRECTORY( KWStyle )
-    ENDIF( BUILD_EXAMPLES )
+  ENDIF( BUILD_EXAMPLES )
 
-  ENDIF( BUILD_EXAMPLES OR BUILD_PLUGINS )
-
-  ADD_SUBDIRECTORY( Main )
-
+  IF( BUILD_PLUGINS )
+    ADD_SUBDIRECTORY( Plugins )
+  ENDIF( BUILD_PLUGINS )
 
 #---------------------------------------------------------------------------
 # PACKAGE With CPack

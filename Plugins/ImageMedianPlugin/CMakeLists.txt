@@ -1,6 +1,4 @@
-ADD_DEFINITIONS( ${QT_DEFINITIONS} )
 ADD_DEFINITIONS( -DQT_PLUGIN )
-ADD_DEFINITIONS( -DQT_SHARED )
 
 IF( ${CMAKE_BUILD_TYPE} MATCHES "Debug" )
   ADD_DEFINITIONS( -DQT_DEBUG )
@@ -45,10 +43,14 @@ ADD_LIBRARY( ImageMedianPlugin MODULE
   ${QGoGUIINTERFACES_SRC}
 )
 
+ADD_DEPENDENCIES( ImageMedianPlugin QGoGui )
+
 TARGET_LINK_LIBRARIES( ImageMedianPlugin
   QGoGui
   ITKBasicFilters
 )
 
-ADD_EXECUTABLE( medianpluginExample medianpluginMain.cxx )
-TARGET_LINK_LIBRARIES( medianpluginExample ${QT_LIBRARIES} )
+
+#ADD_EXECUTABLE( medianpluginExample medianpluginMain.cxx )
+#TARGET_LINK_LIBRARIES( medianpluginExample ${QT_LIBRARIES} )
+

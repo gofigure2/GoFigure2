@@ -132,6 +132,12 @@ ADD_EXECUTABLE( gofigure
   ${qt_menu_nib_sources} 
 )
 
+ADD_DEPENDENCIES( gofigure 
+  QGoGUI
+  QGoIO
+  itkQt
+)
+
 TARGET_LINK_LIBRARIES( gofigure
   QGoGui
   QGoIO
