@@ -482,6 +482,7 @@ void QGoPrintDatabase::ChangeTraceColor()
           }
         }
       iter++;
+      emit ColorChangedForSelectedTraces(this->m_CurrentColorData.second);
       }
     CloseDBConnection();
     }
