@@ -1062,38 +1062,6 @@ CreateNewTabFor2DImage( vtkImageData* iInput, const QString& iFile )
 void QGoMainWindow::on_actionAbout_triggered( )
 {
   this->m_AboutWidget->show();
-  /*QString version( "0.4" );
-  QString date( "Date: 02/17/2010\n\n" );
-
-  QString about_gofigure(
-    tr( "GoFigure2: Software for the visualization and the analysis of biological microscope images. \n\n" ) );
-
-//   QString authors( tr( "Authors in alphabetical order:\n" ) );
-//   authors.append( " * 2008 ~ A. Gelas\n" );
-//   authors.append( " * 2007-2009 ~ A. Gouaillard\n" );
-//   authors.append( " * 2008 ~ K. Mosaliganti\n" );
-//   authors.append( " * 2008 ~ L. Souhait\n\n" );
-//   authors.append( " * 2009 ~ N. Rannou\n\n" );
-//   authors.append( " * Principal Investigator\n" );
-//   authors.append( " * S. Megason\n" );
-
-  QString message = QString( "GoFigure2-%1\n\n" ).arg( version );
-  message.append( date );
-  message.append( about_gofigure );
-//   message.append( authors );
-  QWidget* About = new QWidget;
-  QVBoxLayout* vlayout = new QVBoxLayout;
-  QLabel* GofigureLabel = new QLabel(message,About);
-  QTabWidget* TabWidget = new QTabWidget(About);
-  QString AboutQtLicense(tr("it is about a toolkit....)"));
-  QString TabTitle(tr("About Qt"));
-  this->AddTabAbout(AboutQtLicense,TabTitle,TabWidget);
-  vlayout->addWidget(GofigureLabel);
-  vlayout->addWidget(TabWidget);
-  About->setLayout(vlayout);
-  About->show();
-  //QMessageBox::about( this, tr( "<*)0|00|0>< About GoFigure" ), message );*/
-
 }
 //--------------------------------------------------------------------------
 
@@ -1223,6 +1191,15 @@ void QGoMainWindow::tobedone()
 {
   QMessageBox::warning( this, tr( "to be done" ),
       tr( "YOOOHOOOO" ) );
+
+  QWidget* w = this->CentralTabWidget->currentWidget();
+
+  QGoTabImageViewNDBase* WnD = dynamic_cast< QGoTabImageViewNDBase* >( w );
+
+  if( WnD )
+    {
+    WnD->SetImage( );
+    }
 }
 //--------------------------------------------------------------------------
 void QGoMainWindow::ApplyImageFilter()
