@@ -1199,6 +1199,7 @@ void QGoMainWindow::AddToMenu(
     QAction *taction = new QAction(text, plugin);
     taction->setDisabled( true );
     QObject::connect( taction, SIGNAL(triggered()), this, member);
+    QObject::connect( plugin, SIGNAL( Done() ), this, SLOT( tobedone() ) );
 
     menu->addAction(taction);
 
@@ -1218,6 +1219,11 @@ void QGoMainWindow::AddToMenu(
 }
 //--------------------------------------------------------------------------
 
+void QGoMainWindow::tobedone()
+{
+  QMessageBox::warning( this, tr( "to be done" ),
+      tr( "YOOOHOOOO" ) );
+}
 //--------------------------------------------------------------------------
 void QGoMainWindow::ApplyImageFilter()
 {

@@ -81,6 +81,9 @@ public:
 
   std::vector< vtkImageData* > GetOutput();
 
+signals:
+  void Done();
+
 protected slots:
   void on_RadiusSpinBox_valueChanged();
   void on_RadiusSlider_sliderReleased();

@@ -145,6 +145,8 @@ void QCellPreprocess::on_GlobalApplyButton_clicked()
     unsigned int channel = static_cast<unsigned int>( this->ChannelComboBox->currentIndex() );
     Preprocess( channel );
   }
+
+  emit Done();
 }
 
 void QCellPreprocess::Preprocess( unsigned int i )

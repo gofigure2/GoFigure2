@@ -129,6 +129,7 @@ private slots:
   void on_actionAbout_Qt_triggered( );
 
   void ApplyImageFilter();
+  void tobedone();
 
 private:
 

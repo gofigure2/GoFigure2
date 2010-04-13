@@ -82,6 +82,9 @@ class QGoPlugin : public QObject
     /** \brief */
     virtual void OnTabClosed( const int& ) = 0;
 
+  signals:
+    void Done();
+
   protected:
     /** \brief contains all information related to the plugin.
         \todo it would not be a bad idea to use a xml file instead.

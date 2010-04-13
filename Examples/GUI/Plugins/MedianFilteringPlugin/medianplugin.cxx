@@ -9,6 +9,7 @@ medianplugin::medianplugin( QObject* iParent ) : QGoImageFilterPluginBase( iPare
 {
   this->SetAllRequiredInformation();
   preprocess = new QCellPreprocess();
+  QObject::connect( preprocess, SIGNAL( Done() ), this, SIGNAL( Done() ) );
 }
 
 medianplugin::~medianplugin()
