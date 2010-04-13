@@ -1167,7 +1167,8 @@ void QGoMainWindow::AddToMenu(
     QAction *taction = new QAction(text, plugin);
     taction->setDisabled( true );
     QObject::connect( taction, SIGNAL(triggered()), this, member);
-    QObject::connect( plugin, SIGNAL( Done() ), this, SLOT( tobedone() ) );
+//    QObject::connect( plugin, SIGNAL( Done( std::vector< vtkImageData* > ) ),
+//      this, SLOT( tobedone( std::vector< vtkImageData* > ) ) );
 
     menu->addAction(taction);
 
@@ -1187,18 +1188,15 @@ void QGoMainWindow::AddToMenu(
 }
 //--------------------------------------------------------------------------
 
-void QGoMainWindow::tobedone()
+void QGoMainWindow::tobedone( std::vector< vtkImageData* > iImages )
 {
-  QMessageBox::warning( this, tr( "to be done" ),
-      tr( "YOOOHOOOO" ) );
-
   QWidget* w = this->CentralTabWidget->currentWidget();
 
   QGoTabImageViewNDBase* WnD = dynamic_cast< QGoTabImageViewNDBase* >( w );
 
   if( WnD )
     {
-    WnD->SetImage( );
+    WnD->SetImage( iImages[0] );
     }
 }
 //--------------------------------------------------------------------------

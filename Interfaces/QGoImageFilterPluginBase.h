@@ -29,6 +29,9 @@ class QGoImageFilterPluginBase : public QGoPlugin
     virtual void Update();
     virtual std::vector< vtkImageData* > GetOutput();
 
+  signals:
+    void Done( std::vector< vtkImageData* > );
+
   protected:
     std::vector< vtkImageData* > m_VTKInput;
     std::vector< vtkImageData* > m_VTKOutput;

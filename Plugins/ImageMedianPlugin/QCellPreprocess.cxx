@@ -146,7 +146,7 @@ void QCellPreprocess::on_GlobalApplyButton_clicked()
     Preprocess( channel );
   }
 
-  emit Done();
+  emit Done( m_VTKOutput );
 }
 
 void QCellPreprocess::Preprocess( unsigned int i )
