@@ -179,8 +179,8 @@ FILE( GLOB
   "${GOFIGURE2_SOURCE_DIR}/Licenses/*.txt" 
   )
 
-IF( UNIX )
-  ADD_CUSTOM_COMMAND( TARGET gofigure PRE_BUILD
+IF( UNIX AND NOT APPLE )
+  ADD_CUSTOM_COMMAND( TARGET gofigure POST_BUILD
     COMMENT "Copying License files..."
     COMMAND mkdir ARGS -p
       ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Licenses
@@ -188,7 +188,7 @@ IF( UNIX )
       ${GOFIGURE2_SOURCE_DIR}/Licenses/*.txt
       ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Licenses
   )
-ELSE( UNIX )
+ELSE( UNIX AND NOT APPLE )
   IF( WIN32 )
     FILE( TO_NATIVE_PATH ${GOFIGURE2_SOURCE_DIR} GOFIGURE2_SRC_DIR_WIN )
     FILE( TO_NATIVE_PATH ${CMAKE_RUNTIME_OUTPUT_DIRECTORY} OUTPUT_DIR_WIN )
@@ -201,8 +201,19 @@ ELSE( UNIX )
         \"${GOFIGURE2_SRC_DIR_WIN}\\Licenses\\*.txt\"
         \"${OUTPUT_DIR_WIN}\\Licenses\\\"
      )
+  ELSE( WIN32 )
+    IF( APPLE )
+      ADD_CUSTOM_COMMAND( TARGET gofigure POST_BUILD
+        COMMENT "Copying License files..."
+        COMMAND mkdir ARGS -p
+          ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${plugin_dest_dir}/Licenses
+        COMMAND cp ARGS -rf
+          ${GOFIGURE2_SOURCE_DIR}/Licenses/*.txt
+          ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${plugin_dest_dir}/Licenses
+        )
+    ENDIF( APPLE )
   ENDIF( WIN32 )
-ENDIF( UNIX )
+ENDIF( UNIX AND NOT APPLE )
 
 INSTALL( FILES ${GOFIGURE2_LICENSE_FILES} 
   DESTINATION Licenses COMPONENT Runtime 
@@ -247,3 +258,13 @@ INSTALL( CODE "
   " COMPONENT Runtime 
   ) 
 
+IF( APPLE )
+  INSTALL( FILES ${GOFIGURE2_LICENSE_FILES}
+    DESTINATION ${plugin_dest_dir}/Licenses
+    COMPONENT Runtime
+    )
+ELSE( APPLE )
+  INSTALL( FILES ${GOFIGURE2_LICENSE_FILES} 
+    DESTINATION Licenses COMPONENT Runtime 
+    )
+ENDIF( APPLE )

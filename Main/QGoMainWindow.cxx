@@ -155,7 +155,7 @@ QGoMainWindow::QGoMainWindow( )
 
   CreateSignalSlotsConnection();
   ReadSettings();
-  LoadPlugins();
+  // LoadPlugins();
 }
 
 //--------------------------------------------------------------------------

@@ -49,8 +49,12 @@
 #include <QDir>
 #include <QTextStream>
 
+#include <iostream>
+
 QGoAboutWidget::QGoAboutWidget()
 {
+  Q_INIT_RESOURCE( axes );
+
   QString version( "@GOFIGURE2_VERSION@" );
   QString date( "Date: @DATE@\n\n" );
   QString about_gofigure(
