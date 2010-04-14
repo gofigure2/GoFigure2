@@ -50,6 +50,8 @@
 
 int main( int argc, char** argv )
 {
+  Q_INIT_RESOURCE( axes );
+
   QApplication app(argc, argv);
 
   QCoreApplication::setOrganizationName( "MegasonLab" );
