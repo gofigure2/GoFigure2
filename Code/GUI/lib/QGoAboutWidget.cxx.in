@@ -126,8 +126,7 @@ void QGoAboutWidget::SetTabWidget(QTabWidget* iTabWidget)
 void QGoAboutWidget::SetTheBackGround(QLabel* ilabel,QTabWidget* TabWidget,
 	QLabel* ilabeltwo)
 {
-  QPixmap Image(QString::fromUtf8(":/fig/splash2.jpg"));
-  
+  QPixmap Image(QString::fromUtf8(":/fig/splash2.jpg"));  
   ilabel->setMaximumSize(Image.size());
   ilabel->setMinimumSize(Image.size());
   ilabel->setStyleSheet("QLabel{color:rgb(255,255,255);background-image: url(:/fig/splash2.jpg); font: bold 12px}");
