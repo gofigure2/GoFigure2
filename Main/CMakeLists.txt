@@ -179,9 +179,11 @@ FILE( GLOB GOFIGURE2_LICENSE_FILES "Licenses/*.txt" )
 IF( UNIX )
   ADD_CUSTOM_COMMAND( TARGET gofigure PRE_BUILD
     COMMENT "Copying License files..."
-    COMMAND cp ARGS -R
-      ${GOFIGURE2_SOURCE_DIR}/Licenses/
-      ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
+    COMMAND mkdir ARGS -p
+      ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Licenses
+    COMMAND cp ARGS -rf
+      ${GOFIGURE2_SOURCE_DIR}/Licenses/*.txt
+      ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Licenses
   )
 ELSE( UNIX )
   IF( WIN32 )

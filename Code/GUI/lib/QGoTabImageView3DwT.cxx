@@ -1751,7 +1751,16 @@ ValidateContour( const int& iContourID, const int& iDir,
     m_ContourRepresentation[iDir]->GetNodePolyData( contour_nodes );
 
     vtkProperty* contour_property = vtkProperty::New();
-    contour_property->SetColor( iR, iG, iB );
+
+    if( iHighlighted )
+      {
+      contour_property->SetColor( 1., 0., 0. );
+      contour_property->SetLineWidth( 3. );
+      }
+    else
+      {
+      contour_property->SetColor( iR, iG, iB );
+      }
 
     // get corresponding actor from visualization
     vtkPolyData* contour_copy = vtkPolyData::New();
