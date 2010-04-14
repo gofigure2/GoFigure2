@@ -1,6 +1,7 @@
 The copyright for the following icons belongs to the Crystal Project:
 *system-quit icon
 *use database icon
+*navigation icon
 
 They can be found following this link:
 http://everaldo.com/crystal/
