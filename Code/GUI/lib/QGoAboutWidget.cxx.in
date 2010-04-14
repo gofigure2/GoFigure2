@@ -46,6 +46,7 @@
 #include <QPixmap>
 #include <QHBoxLayout>
 #include <QFile>
+#include <QDir>
 #include <QTextStream>
 
 QGoAboutWidget::QGoAboutWidget()
@@ -144,9 +145,30 @@ void QGoAboutWidget::SetTheBackGround(QLabel* ilabel,QTabWidget* TabWidget,
 QString QGoAboutWidget::ReadLicenseText(QString iFilename)
 {
   QFile file;
-  QString appDir = QCoreApplication::applicationDirPath();
-  QString Filename = appDir + QString( "/Licenses/" );
-//  QString Filename = "@GOFIGURE2_SOURCE_DIR@/Licenses/";
+  QString directory = QCoreApplication::applicationDirPath();
+  QString temp = directory + QString( "/Licenses/" );
+  QString Filename;
+
+  if( QDir( temp ).exists() )
+    {
+    Filename = temp;
+    }
+  else
+    {
+    QDir updir = QDir( directory );
+    updir.cdUp();
+    temp = updir.path() + QString( "/Licenses/" );
+    if( QDir( temp ).exists() )
+      {
+      Filename = temp;
+      }
+    else
+      {
+      updir.cdUp();
+      temp = updir.path() + QString( "/Licenses/" );
+      Filename = temp;
+      }
+    }
   Filename.append(iFilename);
   file.setFileName(Filename);
   file.open(QIODevice::ReadOnly);
