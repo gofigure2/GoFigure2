@@ -190,16 +190,17 @@ ELSE( UNIX )
     FILE( TO_NATIVE_PATH ${GOFIGURE2_SOURCE_DIR} GOFIGURE2_SRC_DIR_WIN )
     FILE( TO_NATIVE_PATH ${CMAKE_RUNTIME_OUTPUT_DIRECTORY} OUTPUT_DIR_WIN )
 
-    ADD_CUSTOM_COMMAND( TARGET gofigure PRE_BUILD
+    ADD_CUSTOM_COMMAND( TARGET gofigure POST_BUILD
       COMMENT "Copying License files..."
-      COMMAND dir ARGS
-        "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Licenses"
+      COMMAND if not exist \"${OUTPUT_DIR_WIN}\\Licenses\" 
+        mkdir \"${OUTPUT_DIR_WIN}\\Licenses\"
       COMMAND xcopy ARGS /Y
-        "${GOFIGURE2_SRC_DIR_WIN}/Licenses/*.txt"
-        "${OUTPUT_DIR_WIN}/Licenses/"
+        \"${GOFIGURE2_SRC_DIR_WIN}\\Licenses\\*.txt\"
+        \"${OUTPUT_DIR_WIN}\\Licenses\\\"
      )
   ENDIF( WIN32 )
 ENDIF( UNIX )
+
 INSTALL( FILES ${GOFIGURE2_LICENSE_FILES} 
   DESTINATION bin/Licenses )
 #-----------------------------------------------------
