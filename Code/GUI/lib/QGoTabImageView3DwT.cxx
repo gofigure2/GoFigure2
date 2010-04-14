@@ -680,6 +680,7 @@ CreateAllViewActions()
   QAction* LoadContoursPerTimePointAction =
     new QAction( tr( "Load All Contours For Current Time Point" ), this );
   this->m_ViewActions.push_back( LoadContoursPerTimePointAction );
+  LoadContoursPerTimePointAction->setVisible(false);
 
   QObject::connect( LoadContoursPerTimePointAction, SIGNAL( triggered() ),
     this, SLOT( LoadAllContoursForCurrentTimePoint() ) );
@@ -1839,11 +1840,19 @@ ValidateContour( )
       this->m_ManualSegmentationDockWidget->TraceManualEditingWidget->ColorComboBox->GetCurrentColorData().second;
     color.getRgbF( &r, &g, &b );
     }
-
-  bool highlighted( false );
+  
+  bool highlighted;
+  if (m_ReEditContourMode)
+    {
+    highlighted = true;
+    }
+  else
+    {
+    highlighted = false;
+    }
 
   // get from m_DataBaseTables if user is using one gofiguredatabase or not.
-  // In such a case contours are saved in the database, else they are not!
+  // In such case contours are saved in the database, else they are not!
   bool saveindatabase = m_DataBaseTables->IsDatabaseUsed();
 
   // to make sure that m_ContourId is set to the right value
@@ -2278,8 +2287,9 @@ ReEditContour( const unsigned int& iId )
             break;
             }
           }
+        this->m_ManualSegmentationDockWidget->show();
+        this->m_ModeActions[0]->setChecked(true);
         m_ContourWidget[dir]->Initialize( c_nodes );
-        m_ManualSegmentationDockWidget->ActivateManualSegmentation( true );
         this->m_ManualSegmentationDockWidget->TraceManualEditingWidget->
           SetEnableTraceCollectionColorBoxes(false);
         }

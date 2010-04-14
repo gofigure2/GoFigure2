@@ -17,7 +17,7 @@
    <string>GoFigure</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../../../Resources/axes.qrc">
+   <iconset resource="../Resources/axes.qrc">
     <normaloff>:/fig/Myapp2.png</normaloff>:/fig/Myapp2.png</iconset>
   </property>
   <property name="autoFillBackground">
@@ -241,7 +241,7 @@
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset resource="../../../Resources/axes.qrc">
+    <iconset resource="../Resources/axes.qrc">
      <normaloff>:/fig/document-open.png</normaloff>:/fig/document-open.png</iconset>
    </property>
    <property name="text">
@@ -272,7 +272,7 @@
   </action>
   <action name="actionQuit">
    <property name="icon">
-    <iconset resource="../../../Resources/axes.qrc">
+    <iconset resource="../Resources/axes.qrc">
      <normaloff>:/fig/system-quit.png</normaloff>:/fig/system-quit.png</iconset>
    </property>
    <property name="text">
@@ -324,7 +324,7 @@
   </action>
   <action name="actionUse_DataBase">
    <property name="icon">
-    <iconset resource="../../../Resources/axes.qrc">
+    <iconset resource="../Resources/axes.qrc">
      <normaloff>:/fig/UseDatabase.png</normaloff>:/fig/UseDatabase.png</iconset>
    </property>
    <property name="text">
@@ -450,7 +450,7 @@
   </action>
   <action name="actionExportContour">
    <property name="text">
-    <string>Contour</string>
+    <string>Contours</string>
    </property>
   </action>
   <action name="actionExportMesh">
@@ -470,7 +470,7 @@
   </action>
   <action name="actionImportContour">
    <property name="text">
-    <string>Contour</string>
+    <string>Contours</string>
    </property>
   </action>
   <action name="actionImportMesh">
@@ -490,7 +490,7 @@
   </action>
  </widget>
  <resources>
-  <include location="../../../Resources/axes.qrc"/>
+  <include location="../Resources/axes.qrc"/>
  </resources>
  <connections/>
 </ui>

@@ -145,6 +145,13 @@ QGoMainWindow::QGoMainWindow( )
   SetCurrentSingleFile( temp );
   SetCurrentMultiFile( temp );
   SetCurrentDatabaseFile(temp);
+  //temp:
+  this->actionExportMesh->setVisible(false);
+  this->actionExportLineage->setVisible(false);
+  this->actionExportTrack->setVisible(false);
+  this->actionImportMesh->setVisible(false);
+  this->actionImportTrack->setVisible(false);
+  this->actionImportLineage->setVisible(false);
 
   CreateSignalSlotsConnection();
   ReadSettings();
