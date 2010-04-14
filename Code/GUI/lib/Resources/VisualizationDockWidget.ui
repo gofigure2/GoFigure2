@@ -16,6 +16,10 @@
     <verstretch>0</verstretch>
    </sizepolicy>
   </property>
+  <property name="windowIcon">
+   <iconset resource="../../../../Resources/axes.qrc">
+    <normaloff>:/fig/navigation.png</normaloff>:/fig/navigation.png</iconset>
+  </property>
   <property name="allowedAreas">
    <set>Qt::LeftDockWidgetArea|Qt::RightDockWidgetArea</set>
   </property>
@@ -201,7 +205,9 @@
   <tabstop>AllChannelsBtn</tabstop>
   <tabstop>OneChannelBtn</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="../../../../Resources/axes.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>OneChannelBtn</sender>

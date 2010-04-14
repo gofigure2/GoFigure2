@@ -50,6 +50,11 @@ QGoVisualizationDockWidget( QWidget* iParent, const unsigned int& iDim ) :
   m_Dimension( iDim )
 {
   this->setupUi( this );
+  QIcon Navigation;
+  Navigation.addPixmap( QPixmap(QString::fromUtf8(":/fig/navigation.png")),
+    QIcon::Normal, QIcon::Off );
+  //temp->setIcon(Navigation);
+  this->toggleViewAction()->setIcon(Navigation);
  
   if( m_Dimension < 3 )
     {

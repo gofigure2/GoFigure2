@@ -38,5 +38,6 @@
         <file>fig/TableWidget.png</file>
         <file>fig/zoom.png</file>
         <file>fig/seedIcon.png</file>
+        <file>fig/navigation.png</file>
     </qresource>
 </RCC>
