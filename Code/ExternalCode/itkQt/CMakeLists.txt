@@ -9,10 +9,7 @@ ADD_LIBRARY( itkQt
 
 TARGET_LINK_LIBRARIES( itkQt 
   ${QT_LIBRARIES}
-  #ITKBasicFilters
-  #ITKNumerics
   ITKCommon
-  #ITKIO
   )
 
 INSTALL( TARGETS itkQt
@@ -20,3 +17,4 @@ INSTALL( TARGETS itkQt
   LIBRARY DESTINATION lib COMPONENT libraries
   RUNTIME DESTINATION bin COMPONENT Runtime
   )
+

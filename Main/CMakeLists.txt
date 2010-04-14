@@ -174,8 +174,11 @@ INSTALL( TARGETS gofigure
 # Here Let's take care of License files
 # copying them into the build's folder
 # and during the installation process
-FILE( GLOB GOFIGURE2_LICENSE_FILES "Licenses/*.txt" )
-# MESSAGE( SEND_ERROR "${GOFIGURE2_LICENSE_FILES}" )
+FILE( GLOB 
+  GOFIGURE2_LICENSE_FILES 
+  "${GOFIGURE2_SOURCE_DIR}/Licenses/*.txt" 
+  )
+
 IF( UNIX )
   ADD_CUSTOM_COMMAND( TARGET gofigure PRE_BUILD
     COMMENT "Copying License files..."
@@ -202,7 +205,8 @@ ELSE( UNIX )
 ENDIF( UNIX )
 
 INSTALL( FILES ${GOFIGURE2_LICENSE_FILES} 
-  DESTINATION bin/Licenses )
+  DESTINATION Licenses COMPONENT Runtime 
+  )
 #-----------------------------------------------------
 
 #---------------------------------------------------------------------------
