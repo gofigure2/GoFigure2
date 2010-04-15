@@ -54,10 +54,10 @@ bool DoesDatabaseExit(std::string ServerName, std::string login,
 void Query(vtkMySQLDatabase* DataBaseConnector,
            std::string queryScript);
 
-void CreateGoFigureDataBase(
+bool CreateGoFigureDataBase(
   std::string ServerName, std::string login,
   std::string Password, std::string DBName );
-void CreateDataBase(vtkMySQLDatabase* DataBaseConnector,
+bool CreateDataBase(vtkMySQLDatabase* DataBaseConnector,
   std::string DBName);
 void CreateTables(
   vtkMySQLDatabase* DataBaseConnector );

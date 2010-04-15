@@ -62,11 +62,14 @@ private:
 
   QLineEdit*          lineUserName;
   QLineEdit*          linePassword;
+  std::string         m_ServerName;
+  std::string         m_DBName;
 
   bool CreateUser();
   bool CreateGofigureUserWithDatabaseConnector (
     vtkMySQLDatabase* DatabaseConnector,std::string iLogin, 
     std::string iServerName, std::string iPassword);
+
 
 };
 #endif

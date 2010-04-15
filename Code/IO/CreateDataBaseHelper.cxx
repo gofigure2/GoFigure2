@@ -91,7 +91,7 @@ bool DoesDatabaseExit(vtkMySQLDatabase * DataBaseConnector,std::string DBName)
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-void CreateGoFigureDataBase(
+bool CreateGoFigureDataBase(
   std::string ServerName, std::string login,
   std::string Password, std::string DBName )
 {
@@ -119,19 +119,27 @@ void CreateGoFigureDataBase(
     std::cout<<"Can not connect to the server"<<std::endl;
     std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
     std::cout << std::endl;
-    return;
+    return false;
     }
 
     vtkMySQLDatabase* ServerConnector = ConnectionServer.second;
 
   if (!DoesDatabaseExit(ServerConnector,DBName))
     {
-    CreateDataBase(ServerConnector,DBName);
+    bool DatabaseCreated = CreateDataBase(ServerConnector,DBName);
     ServerConnector->Close();
     ServerConnector->Delete();
-
-    vtkMySQLDatabase * DataBaseConnector = ConnectToDatabase(ServerName, login,
-      Password,DBName).second;
+    if(!DatabaseCreated)
+      {
+      return false;
+      }
+    std::pair< bool,vtkMySQLDatabase* > Connection = ConnectToDatabase(ServerName,
+      login,Password,DBName);
+    if (!Connection.first)
+      {
+      return false;
+      }
+    vtkMySQLDatabase * DataBaseConnector = Connection.second;
     CreateTables(DataBaseConnector);
     //CreateForeignKeys(DataBaseConnector);
     DataBaseConnector->Close();
@@ -141,13 +149,14 @@ void CreateGoFigureDataBase(
      {
      ServerConnector->Close();
      ServerConnector->Delete();
-    }
-
+     return true;
+     }
+  return true;
 }
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-void CreateDataBase( vtkMySQLDatabase* DataBaseConnector, std::string DBName )
+bool CreateDataBase( vtkMySQLDatabase* DataBaseConnector, std::string DBName )
 {
   vtkSQLQuery* query = DataBaseConnector->GetQueryInstance();
   std::stringstream insertQuery;
@@ -161,9 +170,10 @@ void CreateDataBase( vtkMySQLDatabase* DataBaseConnector, std::string DBName )
     std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
     std::cout << std::endl;
     query->Delete();
-    return;
+    return false;
     }
   query->Delete();
+  return true;
  }
 //------------------------------------------------------------------------------
 

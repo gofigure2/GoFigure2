@@ -54,6 +54,10 @@ QGoDBInitCreateUserPage::QGoDBInitCreateUserPage( QWidget *iParent)
   QFont tfont;
   tfont.setBold(false);
   this->setFont(tfont);
+
+  m_ServerName = "localhost";
+  m_DBName     = "gofiguredatabase";
+
   setSubTitle( tr("Create a user for MySQL Database local Server:"));
 
   QFormLayout* formLayout = new QFormLayout;
@@ -85,19 +89,36 @@ bool QGoDBInitCreateUserPage::validatePage()
     msgBox.exec();
     return false;
     }
-  return this->CreateUser();
+   if(!this->CreateUser())
+    {
+    QMessageBox msgBox;
+    msgBox.setText(
+      tr("There is a problem with the creation of your user.") );
+    msgBox.exec();
+    return false;
+    }
+   if(
+    !CreateGoFigureDataBase(this->m_ServerName,field("User").toString().toStdString(),
+    field("Password").toString().toStdString(),this->m_DBName))
+     {
+     QMessageBox msgBox;
+     msgBox.setText(
+        tr("There is a problem with the creation of your database.") );
+     msgBox.exec();
+     return false;
+     }
+    return true;
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 bool QGoDBInitCreateUserPage::CreateUser()
 {
-  std::string ServerName = "localhost";
   std::string Login = field("User").toString().toStdString();
   std::string Password = field("Password").toString().toStdString();
 
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
-  DataBaseConnector->SetHostName( ServerName.c_str() );
+  DataBaseConnector->SetHostName( this->m_ServerName.c_str() );
   DataBaseConnector->SetUser( "root" );
   DataBaseConnector->SetPassword("");
   if( !DataBaseConnector->Open() )
@@ -111,7 +132,7 @@ bool QGoDBInitCreateUserPage::CreateUser()
     if (ok && !text.isEmpty())
       {
       vtkMySQLDatabase * DataBaseConnectorBis = vtkMySQLDatabase::New();
-      DataBaseConnectorBis->SetHostName( ServerName.c_str() );
+      DataBaseConnectorBis->SetHostName( this->m_ServerName.c_str() );
       DataBaseConnectorBis->SetUser( "root" );
       DataBaseConnectorBis->SetPassword(text.toStdString().c_str());
       if (!DataBaseConnectorBis->Open())
@@ -123,13 +144,13 @@ bool QGoDBInitCreateUserPage::CreateUser()
         return false;
         }
       return this->CreateGofigureUserWithDatabaseConnector(DataBaseConnectorBis,Login,
-        ServerName,Password);
+        this->m_ServerName,Password);
       }
     }
   else
     {
     return this->CreateGofigureUserWithDatabaseConnector(DataBaseConnector,Login,
-      ServerName,Password);
+      this->m_ServerName,Password);
     }
   return false;
 }
@@ -207,6 +228,9 @@ bool QGoDBInitCreateUserPage::CreateGofigureUserWithDatabaseConnector (
   DatabaseConnector->Delete();
   return true;
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 /*int QGoDBInitCreateUserPage::nextId() const
 {
 
