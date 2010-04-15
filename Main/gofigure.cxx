@@ -57,7 +57,7 @@ int main( int argc, char** argv )
     "http://sourceforge.net/projects/gofigure2/" );
   QCoreApplication::setApplicationName( "GoFigure2" );
 
-  QPixmap pixmap( QString::fromUtf8( ":/fig/splash.jpg" ) );
+  QPixmap pixmap( QString::fromUtf8( ":/fig/splash.png" ) );
   QSplashScreen *splash = new QSplashScreen(
     pixmap.scaledToWidth( 800, Qt::SmoothTransformation ),
     Qt::WindowStaysOnTopHint );
