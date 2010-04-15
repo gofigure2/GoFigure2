@@ -51,7 +51,9 @@
 #include <stdlib.h>
 #include <iostream>
 
-class QGoLsmToMegaExportDialog :
+#include "GoFigureLibsConfigure.h"
+
+class QGOLIBS_EXPORT QGoLsmToMegaExportDialog :
   public QDialog,
   private Ui::LsmToMegaExportDialog
 {

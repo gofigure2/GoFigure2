@@ -54,12 +54,12 @@ class QGoCreateMeshDialog : public QDialog
   Q_OBJECT
 
 public:
-  explicit QMEGAVTKADDON2_EXPORT QGoCreateMeshDialog( QWidget* parent = 0 );
-  virtual QMEGAVTKADDON2_EXPORT ~QGoCreateMeshDialog();
+  explicit QGoCreateMeshDialog( QWidget* parent = 0 );
+  virtual ~QGoCreateMeshDialog();
 
 
 public slots:
-  //QMEGAVTKADDON2_EXPORT void ChangeLookupTable( const int& );
+  // void ChangeLookupTable( const int& );
 
 protected:
   

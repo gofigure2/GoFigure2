@@ -40,11 +40,12 @@
 #ifndef __QGoCreateDataBasePage_h
 #define __QGoCreateDataBasePage_h
 
-
 #include <QWizardPage>
 #include <QLineEdit>
 
-class QGoCreateDataBasePage : public QWizardPage
+#include "GoFigureLibsConfigure.h"
+
+class QGOLIBS_EXPORT QGoCreateDataBasePage : public QWizardPage
 {
   Q_OBJECT
 

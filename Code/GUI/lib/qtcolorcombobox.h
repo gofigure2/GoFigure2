@@ -86,26 +86,29 @@
 
 #ifndef COLORCOMBOBOX_H
 #define COLORCOMBOBOX_H
+
 #include <QtGui/QComboBox>
 #include <QtGui/QColor>
 
-#if defined(Q_WS_WIN)
-#  if !defined(QT_QTCOLORCOMBOBOX_EXPORT) && !defined(QT_QTCOLORCOMBOBOX_IMPORT)
-#    define QT_QTCOLORCOMBOBOX_EXPORT
-#  elif defined(QT_QTCOLORCOMBOBOX_IMPORT)
-#    if defined(QT_QTCOLORCOMBOBOX_EXPORT)
-#      undef QT_QTCOLORCOMBOBOX_EXPORT
-#    endif
-#    define QT_QTCOLORCOMBOBOX_EXPORT __declspec(dllimport)
-#  elif defined(QT_QTCOLORCOMBOBOX_EXPORT)
-#    undef QT_QTCOLORCOMBOBOX_EXPORT
-#    define QT_QTCOLORCOMBOBOX_EXPORT __declspec(dllexport)
-#  endif
-#else
-#  define QT_QTCOLORCOMBOBOX_EXPORT
-#endif
+#include "GoFigureLibsConfigure.h"
 
-class QT_QTCOLORCOMBOBOX_EXPORT QtColorComboBox : public QComboBox
+//#if defined(Q_WS_WIN)
+//#  if !defined(QT_QTCOLORCOMBOBOX_EXPORT) && !defined(QT_QTCOLORCOMBOBOX_IMPORT)
+//#    define QT_QTCOLORCOMBOBOX_EXPORT
+//#  elif defined(QT_QTCOLORCOMBOBOX_IMPORT)
+//#    if defined(QT_QTCOLORCOMBOBOX_EXPORT)
+//#      undef QT_QTCOLORCOMBOBOX_EXPORT
+//#    endif
+//#    define QT_QTCOLORCOMBOBOX_EXPORT __declspec(dllimport)
+//#  elif defined(QT_QTCOLORCOMBOBOX_EXPORT)
+//#    undef QT_QTCOLORCOMBOBOX_EXPORT
+//#    define QT_QTCOLORCOMBOBOX_EXPORT __declspec(dllexport)
+//#  endif
+//#else
+//#  define QT_QTCOLORCOMBOBOX_EXPORT
+//#endif
+
+class QGOLIBS_EXPORT QtColorComboBox : public QComboBox
 {
     Q_OBJECT
 public:

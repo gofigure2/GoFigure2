@@ -46,7 +46,9 @@
 #include <vector>
 #include <list>
 
-class GoDBTableWidgetContainer
+#include "GoFigureLibsConfigure.h"
+
+class GOFIGURELIBS_EXPORT GoDBTableWidgetContainer
 {
 
  public:

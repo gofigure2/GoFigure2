@@ -43,7 +43,9 @@
 #include "GoDBNameDescRow.h"
 #include "vtkMySQLDatabase.h"
 
-class GoDBSubCellTypeRow : public GoDBNameDescRow
+#include "GoFigureLibsConfigure.h"
+
+class GOFIGURELIBS_EXPORT GoDBSubCellTypeRow : public GoDBNameDescRow
 {
 public:
   GoDBSubCellTypeRow();

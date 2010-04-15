@@ -209,7 +209,10 @@
 #define VTK_FILE_BYTE_ORDER_BIG_ENDIAN 0
 #define VTK_FILE_BYTE_ORDER_LITTLE_ENDIAN 1
 
-class vtkLSMReader : public vtkImageAlgorithm
+#include "GoFigureLibsConfigure.h"
+
+
+class GOFIGURELIBS_EXPORT vtkLSMReader : public vtkImageAlgorithm
 {
 public:
  

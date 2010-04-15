@@ -44,7 +44,9 @@
 #include <string>
 #include <vector>
 
-class MegaCaptureHeaderReader
+#include "GoFigureLibsConfigure.h"
+
+class GOFIGURELIBS_EXPORT MegaCaptureHeaderReader
 {
   public:
     explicit MegaCaptureHeaderReader( const std::string& iFileName = "" );

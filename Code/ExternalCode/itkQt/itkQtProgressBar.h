@@ -52,13 +52,15 @@
 #ifndef __itkQtProgressBar_h  
 #define __itkQtProgressBar_h
 
-#include <qprogressbar.h>
+#include <QProgressBar>
 #include "itkCommand.h"
+
+#include "GoFigureLibsConfigure.h"
 
 namespace itk {
 
 
-class QtProgressBar : public ::QProgressBar
+class GOFIGURELIBS_EXPORT QtProgressBar : public ::QProgressBar
 {
 
 public:

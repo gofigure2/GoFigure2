@@ -46,11 +46,13 @@
 #include "GoFigureFileInfoMultiIndexContainerHelper.h"
 #include "MegaCaptureHeaderReader.h"
 
+#include "GoFigureLibsConfigure.h"
+
 class vtkImageData;
 
 namespace itk
 {
-  class MegaCaptureReader : public LightProcessObject
+  class GOFIGURELIBS_EXPORT MegaCaptureReader : public LightProcessObject
   {
   public:
     /** Standard class typedefs.      */

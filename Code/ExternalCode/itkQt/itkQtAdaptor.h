@@ -57,11 +57,12 @@
 #include "itkObjectFactory.h"
 #include "itkCommand.h"
 
+#include "GoFigureLibsConfigure.h"
 
 namespace itk {
 
 /** Helper class that interface with Qt Signals and Slots */
-class QtTranslator : public QObject
+class QGOLIBS_EXPORT QtTranslator : public QObject
 {
 
   Q_OBJECT
@@ -84,7 +85,7 @@ public slots:
 
 /** Helper class that interface Methods with Qt Slots */
 template <typename T>
-class QtSlotAdaptor : public QtTranslator
+class QGOLIBS_EXPORT QtSlotAdaptor : public QtTranslator
 {
   typedef  void (T::*TMemberFunctionVoidPointer)(); 
   typedef  void (T::*TMemberFunctionIntPointer)(int); 
@@ -164,7 +165,7 @@ protected:
 
 
 /** Helper class that interface Observers with Qt Signals */
-class QtSignalAdaptor : public QtTranslator
+class QGOLIBS_EXPORT QtSignalAdaptor : public QtTranslator
 {
   typedef SimpleMemberCommand<QtSignalAdaptor> CommandType;
 

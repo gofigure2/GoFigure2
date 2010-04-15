@@ -48,7 +48,7 @@
 #include "ConvertToStringHelper.h"
 #include "vtkMySQLDatabase.h"
 
-class GoDBColorRow : public GoDBRow
+class GOFIGURELIBS_EXPORT GoDBColorRow : public GoDBRow
 {
 public:
   GoDBColorRow();

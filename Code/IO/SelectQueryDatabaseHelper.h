@@ -48,12 +48,16 @@
 #include "GoDBTraceInfoForVisu.h"
 #include "ContourMeshStructure.h"
 
+#include "GoFigureLibsConfigure.h"
+
+GOFIGURELIBS_EXPORT
 std::vector<std::string> ListAllValuesForOneColumn(
   vtkMySQLDatabase* DatabaseConnector,
   std::string ColumnName, std::string TableName);
 
 //query: "SELECT ColumnNameOne,ColumnNameTwo FROM TableName ORDER BY 
 //ColumnName ASC"
+GOFIGURELIBS_EXPORT
 std::vector<std::pair<std::string,std::string> > 
   VectorTwoColumnsFromTable(vtkMySQLDatabase* DatabaseConnector, 
   std::string ColumnNameOne,std::string ColumnNameTwo, 
@@ -61,6 +65,7 @@ std::vector<std::pair<std::string,std::string> >
 
 //query: "SELECT ColumnName1, ColumnName2 FROM TableName"
 //return map[Value from ColumnName1] = Value from ColumnName2
+GOFIGURELIBS_EXPORT
 std::map< std::string, std::string > MapTwoColumnsFromTable(
   vtkMySQLDatabase* DatabaseConnector, std::string ColumnNameOne,
   std::string ColumnNameTwo, std::string TableName);
@@ -68,6 +73,7 @@ std::map< std::string, std::string > MapTwoColumnsFromTable(
 //query: "SELECT ColumnName1, ColumnName2 FROM TableName
 //WHERE field = value"
 //return map[Value from ColumnName1] = Value from ColumnName2
+GOFIGURELIBS_EXPORT
 std::map<std::string,std::string> MapTwoColumnsFromTable(
   vtkMySQLDatabase* DatabaseConnector,std::string ColumnNameOne,
   std::string ColumnNameTwo,std::string TableName,
@@ -76,17 +82,20 @@ std::map<std::string,std::string> MapTwoColumnsFromTable(
 //query: "SELECT * FROM TableName WHERE field = value"
 //if field is a primary key, will return only the values for
 //one row
+GOFIGURELIBS_EXPORT
 std::vector<std::string> ListSpecificValuesForRow(
   vtkMySQLDatabase* DatabaseConnector,
   std::string TableName, std::string field,std::string value);
 
 //query: "SELECT ColumnName FROM TableName WHERE field = value"
+GOFIGURELIBS_EXPORT
 int FindOneID(vtkMySQLDatabase* DatabaseConnector,
   std::string TableName, std::string ColumnName,
   std::string field, std::string value);
 
 //query: "SELECT ColumnName FROM TableName WHERE (field1 = value1
 //AND field2 = value2 AND field3 = value3);
+GOFIGURELIBS_EXPORT
 int FindOneID(vtkMySQLDatabase* DatabaseConnector,
   std::string TableName, std::string ColumnName,
   std::string ColumnNameOne,std::string valueOne,
@@ -95,6 +104,7 @@ int FindOneID(vtkMySQLDatabase* DatabaseConnector,
 
 //query: "SELECT ColumnName FROM TableName WHERE (field1 = value1
 //AND field2 = value2);
+GOFIGURELIBS_EXPORT
 int FindOneID(vtkMySQLDatabase* DatabaseConnector,
   std::string TableName, std::string ColumnName,
   std::string ColumnNameOne,std::string valueOne,
@@ -102,6 +112,7 @@ int FindOneID(vtkMySQLDatabase* DatabaseConnector,
 
 //query: "SELECT ColumnName FROM TableName WHERE (field1 = value1
 //AND field2 = value2 AND field3 = value3 AND field4 = value4);
+GOFIGURELIBS_EXPORT
 int FindOneID(vtkMySQLDatabase* DatabaseConnector,
   std::string TableName, std::string ColumnName,
   std::string ColumnNameOne,std::string valueOne,
@@ -112,6 +123,7 @@ int FindOneID(vtkMySQLDatabase* DatabaseConnector,
 
 //query: "SELECT ColumnName FROM TableName WHERE (field1 = value1
 //AND field2 = value2 AND field3 = value3 AND field4 = value4);
+GOFIGURELIBS_EXPORT
 int FindOneID(vtkMySQLDatabase* DatabaseConnector,
   std::string TableName, std::string ColumnName,
   std::string ColumnNameOne,std::string valueOne,
@@ -127,6 +139,7 @@ int FindOneID(vtkMySQLDatabase* DatabaseConnector,
 
 //query: "SELECT ColumnName FROM TableName WHERE field = value"
 //query: "SELECT ColumnName FROM TableName" if field == ""
+GOFIGURELIBS_EXPORT
 std::vector<std::string> ListSpecificValuesForOneColumn(
   vtkMySQLDatabase* DatabaseConnector,
   std::string TableName, std::string ColumnName,
@@ -135,6 +148,7 @@ std::vector<std::string> ListSpecificValuesForOneColumn(
 
 //query: "SELECT ColumnName FROM TableName WHERE field = value
 //ORDER BY ColumnNameOrder ASC"
+GOFIGURELIBS_EXPORT
 std::vector<std::string> ListSpecificValuesForOneColumn(
   vtkMySQLDatabase* DatabaseConnector,
   std::string TableName, std::string ColumnName,
@@ -142,6 +156,7 @@ std::vector<std::string> ListSpecificValuesForOneColumn(
 
 //query: "SELECT ColumnNameOne,ColumnName2 FROM TableName 
 //WHERE field = value ORDER BY ColumnNameOrder ASC"
+GOFIGURELIBS_EXPORT
 std::vector<std::pair<std::string,std::string> >
   ListSpecificValuesForTwoColumns(vtkMySQLDatabase* DatabaseConnector,
   std::string TableName, std::string ColumnNameOne,std::string ColumnNameTwo,
@@ -149,6 +164,7 @@ std::vector<std::pair<std::string,std::string> >
 
 //query: "SELECT ColumnName FROM TableName WHERE (field = value1
 //or field = value2....)"
+GOFIGURELIBS_EXPORT
 std::vector<std::string> ListSpecificValuesForOneColumn(
   vtkMySQLDatabase* DatabaseConnector,
   std::string TableName, std::string ColumnName,
@@ -157,32 +173,38 @@ std::vector<std::string> ListSpecificValuesForOneColumn(
 
 //query: "SELECT MAX(ColumnName) FROM TableName WHERE (field = 
 //value1 or field = value2...."
+GOFIGURELIBS_EXPORT
 int MaxValueForOneColumnInTable(vtkMySQLDatabase* DatabaseConnector,
   std::string ColumnName,std::string TableName,std::string field,
   std::vector<std::string> VectorValues);
 
 //query: "SELECT MIN(ColumnName) FROM TableName WHERE (field = 
 //value1 or field = value2...."
+GOFIGURELIBS_EXPORT
 int MinValueForOneColumnInTable(vtkMySQLDatabase* DatabaseConnector,
   std::string ColumnName,std::string TableName,std::string field,
   std::vector<std::string> VectorValues);
 
 //query: "SELECT ColunmName FROM TableName WHERE field=value top 1"
 //return only the first value if several are selected
+GOFIGURELIBS_EXPORT
 std::string ReturnOnlyOneValue(vtkMySQLDatabase* DatabaseConnector,
   std::string TableName, std::string ColumnName,std::string field,
   std::string value);
 
 //query: "SELECT LAST_INSERT_ID()"
+GOFIGURELIBS_EXPORT
 int LastInsertID(std::string ServerName, std::string login,
   std::string Password, std::string DBName);
 
 //query: "SELECT MAX(ColumnName) FROM TableName"
+GOFIGURELIBS_EXPORT
 int MaxValueForOneColumnInTable(
   vtkMySQLDatabase* DatabaseConnector,
   std::string ColumnName,std::string TableName );
 
 //query: "SELECT MAX(ColumnName) FROM TableName WHERE field = value;"
+GOFIGURELIBS_EXPORT
 int MaxValueForOneColumnInTable(vtkMySQLDatabase* DatabaseConnector,
   std::string ColumnName,std::string TableName,std::string field,
   std::string value);
@@ -190,21 +212,25 @@ int MaxValueForOneColumnInTable(vtkMySQLDatabase* DatabaseConnector,
 //query: "SELECT TableOne.ColumnOne, TableTwo.ColumnTwo FROM TableOne
 //JOIN TableTwo ON (TableOne.Foreignkey = TableTwo.PrimaryKey) 
 //WHERE field = value;
+GOFIGURELIBS_EXPORT
 std::vector<std::pair<int,std::string> >ListSpecificValuesForTwoColumnsAndTwoTables(
   vtkMySQLDatabase* DatabaseConnector,std::string TableOne, std::string ColumnOne,
   std::string TableTwo, std::string ColumnTwo,std::string ForeignKey, 
   std::string PrimaryKey, std::string field, std::string value);
 
+GOFIGURELIBS_EXPORT
 std::vector<ContourMeshStructure>* GetTracesInfoFromDB(
   vtkMySQLDatabase* DatabaseConnector,std::string TraceName,
   std::string CollectionName,unsigned int ImgSessionID,int iTimePoint=-1,
   std::vector<int> iListIDs = std::vector<int>());
 
+GOFIGURELIBS_EXPORT
 ContourMeshStructure GetTraceInfoFromDB(
   vtkMySQLDatabase* DatabaseConnector, std::string TraceName,
   std::string CollectionName,unsigned int TraceID);
 
 //return a pair with the number of fields in the query and a vector of the results:
+GOFIGURELIBS_EXPORT
 std::vector<std::vector<std::string> >GetValuesFromSeveralTables(
   vtkMySQLDatabase* DatabaseConnector,std::string MainTable,
   std::vector<std::string> SelectFields, std::string field,
@@ -212,14 +238,18 @@ std::vector<std::vector<std::string> >GetValuesFromSeveralTables(
 
 //return a pair with the number of fields in the query and a vector of the results,
 //the query includes the where conditions from the vector as AND conditions:
+GOFIGURELIBS_EXPORT
 std::vector<std::vector<std::string> >GetValuesFromSeveralTables(
   vtkMySQLDatabase* DatabaseConnector,std::string MainTable,
   std::vector<std::string> SelectFields, std::vector<std::string> WhereAndConditions,
   std::vector<std::string> JoinTablesOnTraceTable, bool Distinct);
 
+GOFIGURELIBS_EXPORT
 std::string SelectQueryStream(std::string iTable, std::string iColumn, std::string iField,
   std::string iValue);
+
 //query: SELECT where condition1 UNION SELECT where condition1 and condition2
+GOFIGURELIBS_EXPORT
 std::vector<std::string> GetSamefieldFromTwoTables(vtkMySQLDatabase* DatabaseConnector,
   std::string iTableOne, std::string iTableTwo,std::string iColumn,
   std::string iField, std::string iValue,std::string iFieldTwo,
@@ -227,6 +257,7 @@ std::vector<std::string> GetSamefieldFromTwoTables(vtkMySQLDatabase* DatabaseCon
 
 //query: SELECT iColumnOne FROM TableOne WHERE...UNION SELECT iColumnTwo FROM TableOne...
 //UNION SELECT iColumnOne FROM TableTwo WHERE....UNION SELECT iColumnTwo FROM TableTwo WHERE.
+GOFIGURELIBS_EXPORT
 std::vector<std::string> GetSamefieldsFromTwoTables(vtkMySQLDatabase* DatabaseConnector,
   std::string iTableOne, std::string iTableTwo,std::string iColumnOne,std::string iColumnTwo,
   std::string iField,std::string iValue);
@@ -234,6 +265,7 @@ std::vector<std::string> GetSamefieldsFromTwoTables(vtkMySQLDatabase* DatabaseCo
 //query: SELECT iColumnOne FROM TableOne WHERE...UNION SELECT iColumnTwo FROM TableOne...
 //UNION SELECT iColumnOne FROM TableTwo WHERE listconditions2....
 //UNION SELECT iColumnTwo FROM TableTwo WHERE listconditions2.
+GOFIGURELIBS_EXPORT
 std::vector<std::string> GetSamefieldsFromTwoTables(vtkMySQLDatabase* DatabaseConnector,
   std::string iTableOne, std::string iTableTwo,std::string iColumnOne,std::string iColumnTwo,
   std::string iField,std::string iValue,std::string iFieldTwo,

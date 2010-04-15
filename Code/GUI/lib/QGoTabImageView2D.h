@@ -49,12 +49,14 @@ class QGoImageView2D;
 
 #include "QGoTabImageViewNDBase.h"
 
+#include "GoFigureLibsConfigure.h"
+
 /**
 \class QGoTabImageView2D
 \brief Element of the QTabWidget to be used to visualized 2D images.
 \example GUI/lib/qgotabimageview2d.cxx
 */
-class QGoTabImageView2D : public QGoTabImageViewNDBase
+class QGOLIBS_EXPORT QGoTabImageView2D : public QGoTabImageViewNDBase
 {
   Q_OBJECT
 public:

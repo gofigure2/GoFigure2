@@ -1,0 +1,29 @@
+#ifndef __GoFigureLibsConfigure_h
+#define __GoFigureLibsConfigure_h
+
+#include "vtkConfigure.h"
+#include <QtGlobal>
+
+/* Whether we are building shared libraries.  */
+#if defined (WIN32)
+
+ #if defined (GoFigureLibs_EXPORTS)
+  #define GOFIGURELIBS_EXPORT __declspec( dllexport )
+ #else
+  #define GOFIGURELIBS_EXPORT __declspec( dllimport )
+ #endif
+ 
+ #if defined (QGOLIBS_EXPORTS)
+  #  define QGOLIBS_EXPORT Q_DECL_EXPORT
+ #else
+  #  define QGOLIBS_EXPORT Q_DECL_IMPORT
+ #endif
+
+#else
+
+  #define GOFIGURELIBS_EXPORT
+  #define QGOLIBS_EXPORT
+
+#endif
+
+#endif

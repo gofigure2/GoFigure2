@@ -1,3 +1,7 @@
+CONFIGURE_FILE(${GOFIGURE2_SOURCE_DIR}/Code/GoFigureLibsConfigure.h.in
+               ${GOFIGURE2_BINARY_DIR}/Code/GoFigureLibsConfigure.h @ONLY IMMEDIATE)
+
+
 ADD_SUBDIRECTORY( ExternalCode )
 ADD_SUBDIRECTORY( Database )
 ADD_SUBDIRECTORY( IO )

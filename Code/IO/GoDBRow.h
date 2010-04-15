@@ -48,11 +48,13 @@
 #include <map>
 #include <vector>
 
+#include "GoFigureLibsConfigure.h"
+
 /**
 \class GoDBRow
 \todo define \code std::map< std::string, std::string > \endcode
 */
-class GoDBRow
+class GOFIGURELIBS_EXPORT GoDBRow
 {
 public:
 

@@ -61,6 +61,8 @@
 #include "QGoConnectServerPage.h"
 #include "vtkMySQLDatabase.h"
 
+#include "GoFigureLibsConfigure.h"
+
 /**
  * \class QGoWizardDB
  * \brief This class leads the user to chose its imagingsession and enables
@@ -70,7 +72,7 @@
  * \sa QGoOpenCreateProjectPage
  * \sa QGoOpenCreateImgSessionPage
  * */
-class QGoWizardDB : public QWizard
+class QGOLIBS_EXPORT QGoWizardDB : public QWizard
 {
   Q_OBJECT
 

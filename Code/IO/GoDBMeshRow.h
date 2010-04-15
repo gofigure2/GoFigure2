@@ -51,7 +51,7 @@
 #include "vtkPolyData.h"
 #include "vtkPolyDataMySQLTextWriter.h"
 
-class GoDBMeshRow : public GoDBTraceRow
+class GOFIGURELIBS_EXPORT GoDBMeshRow : public GoDBTraceRow
 {
 public:
   GoDBMeshRow();

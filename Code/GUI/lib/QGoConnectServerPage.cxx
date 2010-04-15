@@ -193,9 +193,9 @@ void QGoConnectServerPage::OpenConnectionToServer()const
   if (this->m_ConnectionServer.second == 0)
     {
     m_ConnectionServer = ConnectToServer(
-    field("ServerName").toString().toStdString(),
-    field("User").toString().toStdString(),
-    field("Password").toString().toStdString() );
+      field("ServerName").toString().toStdString(),
+      field("User").toString().toStdString(),
+      field("Password").toString().toStdString() );
     }
 }
 //-------------------------------------------------------------------------

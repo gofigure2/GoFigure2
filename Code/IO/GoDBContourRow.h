@@ -50,7 +50,7 @@
 #include <string>
 #include <map>
 
-class GoDBContourRow : public GoDBTraceRow
+class GOFIGURELIBS_EXPORT GoDBContourRow : public GoDBTraceRow
 {
 public:
   GoDBContourRow();

@@ -46,8 +46,9 @@
 #include <vector>
 #include <map>
 
+#include "GoFigureLibsConfigure.h"
 
-class GoDBImport
+class GOFIGURELIBS_EXPORT GoDBImport
 {
 public:
   GoDBImport(std::string iServerName,std::string iLogin,

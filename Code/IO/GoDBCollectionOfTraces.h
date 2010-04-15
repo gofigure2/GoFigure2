@@ -53,7 +53,7 @@
 #include <QStringList>
 #include <map>
 
-class GoDBCollectionOfTraces
+class GOFIGURELIBS_EXPORT GoDBCollectionOfTraces
 {
 
 public:
@@ -131,8 +131,7 @@ public:
   std::list<int> iListSelectedTraces, vtkMySQLDatabase* DatabaseConnector,
     GoDBTraceRow iNewCollection);
 
-  QStringList QMEGAVTKADDON2_EXPORT ListCollectionID(
-    vtkMySQLDatabase* DatabaseConnector);
+  QStringList ListCollectionID( vtkMySQLDatabase* DatabaseConnector);
 
   /** \brief create the first collection in the database and return the corresponding
   ID*/

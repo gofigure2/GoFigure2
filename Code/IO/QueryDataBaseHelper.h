@@ -47,67 +47,84 @@
 #include "vtkMySQLDatabase.h"
 #include "GoDBContourRow.h"
 
+#include "GoFigureLibsConfigure.h"
+
+GOFIGURELIBS_EXPORT
 std::pair<bool,vtkMySQLDatabase*> ConnectToServer(
   std::string ServerName, std::string login,
   std::string Password);
 
+GOFIGURELIBS_EXPORT
 std::pair<bool,vtkMySQLDatabase*> ConnectToDatabase(
   std::string ServerName,std::string login,
   std::string Password,std::string DBName);
 
+GOFIGURELIBS_EXPORT
 vtkMySQLDatabase* OpenDatabaseConnection(
   std::string ServerName,std::string login,
   std::string Password,std::string DBName);
 
 /**\brief return true if the connection has been closed, false if
 the connection was already closed*/
+GOFIGURELIBS_EXPORT
 bool CloseDatabaseConnection(
   vtkMySQLDatabase* DatabaseConnector);
 
+GOFIGURELIBS_EXPORT
 std::vector<std::string> ListDatabases(
   vtkMySQLDatabase* ServerConnector);
 
+GOFIGURELIBS_EXPORT
 std::vector<std::string> ListTables(
   vtkMySQLDatabase* DatabaseConnector );
 
 //query: "UPDATE TableName SET field = newValue WHERE ColumnName = value"
+GOFIGURELIBS_EXPORT
 void UpdateValueInDB(vtkMySQLDatabase* DatabaseConnector,
   std::string TableName, std::string field, std::string newValue,
   std::string ColumnName, std::string value);
 
 /** \todo to review*/
+GOFIGURELIBS_EXPORT
 void UpdateContourInDB(vtkMySQLDatabase* DatabaseConnector,
                        GoDBContourRow UpdatedContour);
 
+GOFIGURELIBS_EXPORT
 void DropDatabase( 
   vtkMySQLDatabase* ServerConnector,
   std::string DBName );
 
+GOFIGURELIBS_EXPORT
 void DropTable(
   vtkMySQLDatabase* DatabaseConnector,
   std::string TableName );
 
 // query: "DELETE FROM TableName WHERE field = value"
+GOFIGURELIBS_EXPORT
 void DeleteRow(
   vtkMySQLDatabase* DatabaseConnector,
   std::string TableName, std::string field, std::string value);
 
 // query: "DELETE FROM TableName WHERE (field = 
 //value1 or field = value2...."
+GOFIGURELIBS_EXPORT
 void DeleteRows(
   vtkMySQLDatabase* DatabaseConnector,
   std::string TableName, std::string field, 
   std::vector<std::string> VectorValues);
 
+GOFIGURELIBS_EXPORT
 bool DoesDatabaseExist(
   vtkMySQLDatabase* ServerConnector,
   std::string DBName );
 
+GOFIGURELIBS_EXPORT
 bool DoesTableExist(
   vtkMySQLDatabase* DatabaseConnector,
   std::string TableName );
 
 //query: "DESCRIBE TableName"
+GOFIGURELIBS_EXPORT
 std::vector<std::string> GetFieldNames(std::string TableName,
   vtkMySQLDatabase* ServerConnector);
 

@@ -48,7 +48,7 @@
 #include "ConvertToStringHelper.h"
 #include "vtkMySQLDatabase.h"
 
-class GoDBBookmarkRow : public GoDBRow
+class GOFIGURELIBS_EXPORT GoDBBookmarkRow : public GoDBRow
 {
 public:
   GoDBBookmarkRow();
