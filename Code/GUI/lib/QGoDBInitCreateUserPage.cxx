@@ -80,7 +80,7 @@ QGoDBInitCreateUserPage::QGoDBInitCreateUserPage( QWidget *iParent)
 //-------------------------------------------------------------------------
 bool QGoDBInitCreateUserPage::validatePage()
 {
-  if(field("User").toString() == "" ||
+  /*if(field("User").toString() == "" ||
        field("Password").toString() == "")
     {
     QMessageBox msgBox;
@@ -106,7 +106,7 @@ bool QGoDBInitCreateUserPage::validatePage()
         tr("There is a problem with the creation of your database.") );
      msgBox.exec();
      return false;
-     }
+     }*/
     return true;
 }
 //-------------------------------------------------------------------------
@@ -231,71 +231,3 @@ bool QGoDBInitCreateUserPage::CreateGofigureUserWithDatabaseConnector (
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/*int QGoDBInitCreateUserPage::nextId() const
-{
-
-  std::list<std::string> ListGoDB = ListGofigureDatabases();
-
-  if (ListGoDB.empty())
-    {
-    return QGoWizardDB::CreateDataBasePageID;
-    }
-  if (ListGoDB.size() > 1)
-    {
-    std::cout<<"There is more than one Gofigure DataBase"<<std::endl;
-    std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
-    std::cout << std::endl;
-    }
-  else
-    {
-    std::list<std::string>::iterator i = ListGoDB.begin();
-    DBName = *i;
-    this->wizard()->setField( "DBName", DBName.c_str() );
-    std::cout<<"the db name to open is: "<<field("DBName").toString().toStdString().c_str()<<std::endl;
-    }
-  if(!this->m_IsAnOpenRecentFile)
-    {
-    return QGoWizardDB::OpenOrCreateProjectPageID;
-    }
-  else
-    {
-    return -1;
-    }
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void QGoConnectServerPage::CloseServerConnection()const
-{
-  m_ConnectionServer.second->Close();
-  m_ConnectionServer.second->Delete();
-  m_ConnectionServer.second = 0;
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void QGoConnectServerPage::OpenConnectionToServer()const
-{
-  if (this->m_ConnectionServer.second == 0)
-    {
-    m_ConnectionServer = ConnectToServer(
-    field("ServerName").toString().toStdString(),
-    field("User").toString().toStdString(),
-    field("Password").toString().toStdString() );
-    }
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void QGoConnectServerPage::SetImgSessionName(std::string iImgSessionName)
-{
-  this->m_ImgSessionName = iImgSessionName;
-  this->m_IsAnOpenRecentFile = true;
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void QGoConnectServerPage::SetIsAnOpenRecentFile(bool iIsAnOpenRecentFile)
-{
-  this->m_IsAnOpenRecentFile = iIsAnOpenRecentFile;
-}*/

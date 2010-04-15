@@ -49,7 +49,8 @@ class QGoDBInitializationWizard : public QWizard
 
 public:
   enum {
-    CreateUserPageID = 0
+    CreateUserPageID = 0,
+    CreateAuthorsPageID
     /*ConnectServerPageID = 0,
     CreateDataBasePageID,
     OpenOrCreateProjectPageID,

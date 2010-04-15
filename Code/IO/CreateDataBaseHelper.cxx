@@ -95,22 +95,6 @@ bool CreateGoFigureDataBase(
   std::string ServerName, std::string login,
   std::string Password, std::string DBName )
 {
-  /*if( ConnectToServer(ServerName, login, Password ) )
-    {
-    vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
-    DataBaseConnector->SetHostName( ServerName.c_str() );
-    DataBaseConnector->SetUser( login.c_str() );
-    DataBaseConnector->SetPassword( Password.c_str() );
-
-    if( !DataBaseConnector->Open() )
-      {
-      std::cerr << "Could not open Database Connector." << std::endl;
-      std::cerr << "DB will not be created."  << std::endl;
-      std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
-      std::cout << std::endl;
-      DataBaseConnector->Delete();
-      return;
-      }*/
   std::pair<bool,vtkMySQLDatabase*> ConnectionServer = ConnectToServer(
     ServerName, login, Password );
 

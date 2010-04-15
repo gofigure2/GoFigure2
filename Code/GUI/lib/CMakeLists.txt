@@ -43,6 +43,7 @@ SET( QGoGUILIB_SRC
   QGoTraceManualEditingWidget.cxx
   QGoDBInitializationWizard.cxx
   QGoDBInitCreateUserPage.cxx
+  QGoDBInitCreateAuthorsPage.cxx
   ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/QGoAboutWidget.cxx
 )
 
@@ -113,6 +114,7 @@ SET( QGoGUILIB_HDRS
   QGoAboutWidget.h
   QGoDBInitializationWizard.h
   QGoDBInitCreateUserPage.h
+  QGoDBInitCreateAuthorsPage.h
 )
 
 #---------------------------------------------------------------------------

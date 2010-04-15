@@ -40,10 +40,12 @@
 #include "QGoDBInitializationWizard.h"
 #include "CreateDataBaseHelper.h"
 #include "QGoDBInitCreateUserPage.h"
+#include "QGoDBInitCreateAuthorsPage.h"
 
 QGoDBInitializationWizard::QGoDBInitializationWizard(QWidget *iParent)
 : QWizard( iParent )
 {
    setPage(CreateUserPageID, new QGoDBInitCreateUserPage);
+   setPage(CreateAuthorsPageID, new QGoDBInitCreateAuthorsPage);
 }
 
