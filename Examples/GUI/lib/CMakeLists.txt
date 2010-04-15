@@ -22,6 +22,7 @@ SET( QGOGUILIB_EXAMPLE_SRC
   QGoDBCreateBookmarkDialogTest
   QGoTraceManualEditingWidgetTest
   QGoDeleteDBEntityDialog
+  QGoDBInitializationWizardTest
 )
 
 #---------------------------------------------------------------------------

@@ -41,6 +41,8 @@ SET( QGoGUILIB_SRC
   QGoDBCellTypeManager.cxx
   QGoDBSubCellTypeManager.cxx
   QGoTraceManualEditingWidget.cxx
+  QGoDBInitializationWizard.cxx
+  QGoDBInitCreateUserPage.cxx
   ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/QGoAboutWidget.cxx
 )
 
@@ -109,6 +111,8 @@ SET( QGoGUILIB_HDRS
   QGoDBSubCellTypeManager.h
   QGoTraceManualEditingWidget.h
   QGoAboutWidget.h
+  QGoDBInitializationWizard.h
+  QGoDBInitCreateUserPage.h
 )
 
 #---------------------------------------------------------------------------
