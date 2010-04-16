@@ -43,7 +43,7 @@
 
 #include "QGoTabImageViewElementBase.h"
 
-#include "GoFigureLibsConfigure.h"
+#include "QGoGUILibConfigure.h"
 
 class vtkImageData;
 
@@ -51,7 +51,7 @@ class vtkImageData;
  *  \brief Abstract class for representing one tab element which
  *  contains 2D or 3D image (without any temporal component).
  */
-class QGOLIBS_EXPORT QGoTabImageViewNDBase : public QGoTabImageViewElementBase
+class QGOGUILIB_EXPORT QGoTabImageViewNDBase : public QGoTabImageViewElementBase
 {
   Q_OBJECT
 

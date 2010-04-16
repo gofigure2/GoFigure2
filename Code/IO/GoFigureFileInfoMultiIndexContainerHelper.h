@@ -58,10 +58,12 @@
 #include <sstream>
 #include <list>
 
+#include "QGoIOConfigure.h"
+
 // namespace GoFigure
 // {
 
-struct GoFigureFileInfoHelper
+struct QGOIO_EXPORT GoFigureFileInfoHelper
 {
   unsigned int    m_PCoord;
   unsigned int    m_RCoord;
@@ -166,12 +168,13 @@ struct GoFigureFileInfoHelper
   > GoFigureFileInfoHelperChannelViewContainer;
 
 // }
-
+QGOIO_EXPORT
 std::list< std::string > GetAllFileNamesForGivenTCoordAndChannel(
   const GoFigureFileInfoHelperMultiIndexContainer& iContainer,
   const unsigned int& iT,
   const unsigned int& iCh );
 
+QGOIO_EXPORT
 std::list< std::string > GetAllFileNamesForGivenZCoordPointAndChannel(
   const GoFigureFileInfoHelperMultiIndexContainer& iContainer,
   const unsigned int& iZ,

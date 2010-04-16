@@ -47,10 +47,11 @@
 
 #include "fstream"
 #include "GoFigureGlobalDefinition.h"
+#include "QGoGUILibConfigure.h"
 
 class vtkLSMReader;
 
-class ConversionLsmToMegaThread : public QThread
+class QGOGUILIB_EXPORT ConversionLsmToMegaThread : public QThread
 {
   Q_OBJECT
 

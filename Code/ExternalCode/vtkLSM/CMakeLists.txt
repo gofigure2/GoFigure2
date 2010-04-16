@@ -1,5 +1,17 @@
+IF( WIN32 )
+  IF( NOT CYGWIN )
+    IF( NOT MINGW )
+      IF( BUILD_SHARED_LIBS )
+        ADD_DEFINITIONS( -DvtkLSM_EXPORT )
+      ENDIF( BUILD_SHARED_LIBS )
+    ENDIF( NOT MINGW )
+  ENDIF( NOT CYGWIN )
+ENDIF( WIN32 )
+
+CONFIGURE_FILE( ${GOFIGURE2_SOURCE_DIR}/Code/ExternalCode/vtkLSM/vtkLSMConfigure.h.in
+  ${GOFIGURE2_BINARY_DIR}/Code/ExternalCode/vtkLSM/vtkLSMConfigure.h @ONLY IMMEDIATE )
+  
 ADD_LIBRARY( vtkLSMReader
-  # STATIC
   vtkLSMReader.cxx 
 )
 

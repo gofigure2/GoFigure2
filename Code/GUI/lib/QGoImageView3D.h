@@ -55,7 +55,7 @@
 #include <map>
 
 #include "vtkInteractorStyleImage2D.h"
-
+#include "QGoGUILibConfigure.h"
 
 class QVTKWidget;
 class vtkEventQtSlotConnect;
@@ -73,7 +73,7 @@ class vtkViewImage2DCollection;
 \brief class for the visualization of 3D Image represented by one vtkImageData*.
 \example GUI/lib/qgoimageview3d.cxx
 */
-class QGoImageView3D : public QGoImageView
+class QGOGUILIB_EXPORT QGoImageView3D : public QGoImageView
 {
   Q_OBJECT
 public:

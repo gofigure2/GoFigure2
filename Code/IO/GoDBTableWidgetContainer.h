@@ -46,9 +46,9 @@
 #include <vector>
 #include <list>
 
-#include "GoFigureLibsConfigure.h"
+#include "QGoIOConfigure.h"
 
-class GOFIGURELIBS_EXPORT GoDBTableWidgetContainer
+class QGOIO_EXPORT GoDBTableWidgetContainer
 {
 
  public:

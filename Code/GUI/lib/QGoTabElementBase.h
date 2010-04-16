@@ -47,6 +47,8 @@
 #include "QGoPlugin.h"
 #include "QGoDockWidgetStatus.h"
 
+#include "QGoGUILibConfigure.h"
+
 class QAction;
 class QActionGroup;
 class QMenu;
@@ -59,7 +61,7 @@ class QGoPluginManager;
 \brief Abstract class for one tab element in GoFigure2.
 \example GUI/lib/qgotabelementbase.cxx
 */
-class QGoTabElementBase : public QWidget
+class QGOGUILIB_EXPORT QGoTabElementBase : public QWidget
 {
   Q_OBJECT
 public:

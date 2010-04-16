@@ -48,6 +48,8 @@
 #include "boost/multi_index/hashed_index.hpp"
 #include "boost/multi_index/ordered_index.hpp"
 
+#include "QGoIOConfigure.h"
+
 // #ifndef NDEBUG
 //   #define BOOST_MULTI_INDEX_ENABLE_INVARIANT_CHECKING
 //   #define BOOST_MULTI_INDEX_ENABLE_SAFE_MODE
@@ -129,24 +131,29 @@ typedef boost::multi_index::multi_index_container<
 \return 2 \if x coordinates are constant
 \return -1 \else
 */
+QGOIO_EXPORT
 int
 ComputeDirectionFromContour( vtkPolyData* iContour );
 
+QGOIO_EXPORT
 std::list< ContourMeshStructure* >
 FindContourGivenTraceID(
   const ContourMeshStructureMultiIndexContainer& iContainer,
   const unsigned int& iId );
 
+QGOIO_EXPORT
 ContourMeshStructure*
 FindContourGivenActor(
   const ContourMeshStructureMultiIndexContainer& iContainer,
   vtkActor* iActor );
 
+QGOIO_EXPORT
 std::list< ContourMeshStructure* >
 FindContourGivenNodes(
   const ContourMeshStructureMultiIndexContainer& iContainer,
   vtkPolyData* iNodes );
 
+QGOIO_EXPORT
 std::list< ContourMeshStructure* >
 FindContourGivenTimePoint(
   const ContourMeshStructureMultiIndexContainer& iContainer,

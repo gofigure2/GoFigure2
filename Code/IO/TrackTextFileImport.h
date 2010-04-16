@@ -48,11 +48,13 @@
 
 #include "vtkType.h"
 
+#include "QGoIOConfigure.h"
+
 class vtkPolyData;
 class vtkMySQLDatabase;
 class vtkPolyData;
 
-class TrackTextFileImport
+class QGOIO_EXPORT TrackTextFileImport
 {
   public:
     TrackTextFileImport( const std::string& iServerName, const std::string& iLogin,
@@ -100,7 +102,7 @@ class TrackTextFileImport
     struct InternalTrackStructure
       {
       InternalTrackStructure() :
-          m_XMin(VTK_UNSIGNED_INT_MAX),m_XMax(VTK_UNSIGNED_INT_MIN),
+          m_XMin(VTK_UNSIGNED_INT_MAX), m_XMax(VTK_UNSIGNED_INT_MIN),
       		m_YMin(VTK_UNSIGNED_INT_MAX), m_YMax(VTK_UNSIGNED_INT_MIN),
       		m_ZMin(VTK_UNSIGNED_INT_MAX), m_ZMax(VTK_UNSIGNED_INT_MIN),
       		m_TMin(VTK_UNSIGNED_INT_MAX), m_TMax(VTK_UNSIGNED_INT_MIN){}

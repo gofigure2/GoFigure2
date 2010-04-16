@@ -47,9 +47,9 @@
 #include <QGridLayout>
 #include <QPushButton>
 #include <QScrollArea>
-#include "MegaVTK2Configure.h"
+#include "QGoGUILibConfigure.h"
 
-class QGoCreateMeshDialog : public QDialog
+class QGOGUILIB_EXPORT QGoCreateMeshDialog : public QDialog
 {
   Q_OBJECT
 

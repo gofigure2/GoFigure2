@@ -60,7 +60,9 @@
 #include "itkMegaCaptureImport.h"
 #include "QTextEditChild.h"
 
-class QGoCreateImgSessionPage : public QWizardPage
+#include "QGoGUILibConfigure.h"
+
+class QGOGUILIB_EXPORT QGoCreateImgSessionPage : public QWizardPage
 {
   Q_OBJECT
 

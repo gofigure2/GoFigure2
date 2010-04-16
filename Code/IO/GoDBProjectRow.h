@@ -47,7 +47,7 @@
 #include "GoDBRow.h"
 #include "ConvertToStringHelper.h"
 
-class GOFIGURELIBS_EXPORT GoDBProjectRow : public GoDBRow
+class QGOIO_EXPORT GoDBProjectRow : public GoDBRow
 {
 public:
   GoDBProjectRow();

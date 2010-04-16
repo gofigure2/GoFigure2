@@ -45,14 +45,14 @@
 #include <string>
 #include "GoFigureGlobalDefinition.h"
 
-#include "GoFigureLibsConfigure.h"
+#include "QGoIOConfigure.h"
 
 class vtkLSMReader;
 
 /**
 \brief Convert 1 LSM (5D file) into megacapture files
 */
-class GOFIGURELIBS_EXPORT LSMToMegaCapture
+class QGOIO_EXPORT LSMToMegaCapture
 {
   public:
     LSMToMegaCapture( );

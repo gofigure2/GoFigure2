@@ -1,0 +1,21 @@
+#ifndef __vtkLSMConfigure_h
+#define __vtkLSMConfigure_h
+
+#include "vtkConfigure.h"
+
+/* Whether we are building shared libraries.  */
+#if defined (WIN32)
+
+ #if defined (vtkLSM_EXPORT)
+  #define VTKLSM_EXPORT __declspec( dllexport )
+ #else
+  #define VTKLSM_EXPORT __declspec( dllimport )
+ #endif
+
+#else
+
+  #define VTKLSM_EXPORT
+
+#endif
+
+#endif

@@ -47,6 +47,8 @@
 #include "QGoTabElementBase.h"
 #include "ContourMeshStructureHelper.h"
 
+#include "QGoGUILibConfigure.h"
+
 class vtkContourWidget;
 class vtkOrientedGlyphContourRepresentation;
 class vtkDataSet;
@@ -62,7 +64,7 @@ class QGoManualSegmentationDockWidget;
 \brief
 \example GUI/lib/qgotabimageviewelementbase.cxx
 */
-class QGoTabImageViewElementBase : public QGoTabElementBase
+class QGOGUILIB_EXPORT QGoTabImageViewElementBase : public QGoTabElementBase
 {
   Q_OBJECT
 public:

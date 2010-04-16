@@ -90,7 +90,7 @@
 #include <QtGui/QComboBox>
 #include <QtGui/QColor>
 
-#include "GoFigureLibsConfigure.h"
+#include "QGoGUILibConfigure.h"
 
 //#if defined(Q_WS_WIN)
 //#  if !defined(QT_QTCOLORCOMBOBOX_EXPORT) && !defined(QT_QTCOLORCOMBOBOX_IMPORT)
@@ -108,7 +108,7 @@
 //#  define QT_QTCOLORCOMBOBOX_EXPORT
 //#endif
 
-class QGOLIBS_EXPORT QtColorComboBox : public QComboBox
+class QGOGUILIB_EXPORT QtColorComboBox : public QComboBox
 {
     Q_OBJECT
 public:

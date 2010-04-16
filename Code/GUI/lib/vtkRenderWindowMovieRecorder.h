@@ -47,10 +47,12 @@
 #include "vtkProcessObject.h"
 #include "vtkGenericMovieWriter.h"
 
+#include "QGoGUILibConfigure.h"
+
 class vtkRenderWindow;
 class vtkWindowToImageFilter;
 
-class vtkRenderWindowMovieRecorder : public vtkProcessObject
+class QGOGUILIB_EXPORT vtkRenderWindowMovieRecorder : public vtkProcessObject
 {
    public:
       //static vtkRenderWindowMovieRecorder *New();

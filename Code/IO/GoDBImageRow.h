@@ -45,7 +45,7 @@
 #include <string>
 #include <map>
 
-class GOFIGURELIBS_EXPORT GoDBImageRow : public GoDBRow
+class QGOIO_EXPORT GoDBImageRow : public GoDBRow
 {
 public:
   GoDBImageRow();

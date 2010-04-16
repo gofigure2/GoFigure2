@@ -46,7 +46,7 @@
 #include <string>
 #include <map>
 
-class GoDBTrackRow : public GoDBTraceRow
+class QGOIO_EXPORT GoDBTrackRow : public GoDBTraceRow
 {
 public:
   GoDBTrackRow();

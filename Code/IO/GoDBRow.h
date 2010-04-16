@@ -48,13 +48,13 @@
 #include <map>
 #include <vector>
 
-#include "GoFigureLibsConfigure.h"
+#include "QGoIOConfigure.h"
 
 /**
 \class GoDBRow
 \todo define \code std::map< std::string, std::string > \endcode
 */
-class GOFIGURELIBS_EXPORT GoDBRow
+class QGOIO_EXPORT GoDBRow
 {
 public:
 

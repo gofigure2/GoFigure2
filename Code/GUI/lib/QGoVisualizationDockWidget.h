@@ -47,10 +47,12 @@
 
 #include "qtcolorcombobox.h"
 
+#include "QGoGUILibConfigure.h"
+
 class QHBoxLayout;
 class QVBoxLayout;
 
-class QGoVisualizationDockWidget :
+class QGOGUILIB_EXPORT QGoVisualizationDockWidget :
   public QDockWidget,
   private Ui::VisualizationDockWidget
 {

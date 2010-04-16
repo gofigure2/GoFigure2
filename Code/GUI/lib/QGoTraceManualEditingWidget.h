@@ -50,9 +50,9 @@
 
 #include "ui_QGoTraceManualEditingWidget.h"
 
-#include "GoFigureLibsConfigure.h"
+#include "QGoGUILibConfigure.h"
 
-class QGOLIBS_EXPORT QGoTraceManualEditingWidget :
+class QGOGUILIB_EXPORT QGoTraceManualEditingWidget :
   public QWidget,
   private Ui::QGoTraceManualEditingWidget
 {

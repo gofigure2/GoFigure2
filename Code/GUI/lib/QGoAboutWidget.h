@@ -46,9 +46,9 @@
 #include <QLabel>
 #include <QLayout>
 
-#include "GoFigureLibsConfigure.h"
+#include "QGoGUILibConfigure.h"
 
-class QGOLIBS_EXPORT QGoAboutWidget : public QWidget
+class QGOGUILIB_EXPORT QGoAboutWidget : public QWidget
 {
   Q_OBJECT
 

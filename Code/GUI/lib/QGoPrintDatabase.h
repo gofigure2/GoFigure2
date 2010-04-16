@@ -59,12 +59,12 @@
 #include "QGoDBCellTypeManager.h"
 #include "QGoDBSubCellTypeManager.h"
 
-#include "GoFigureLibsConfigure.h"
+#include "QGoGUILibConfigure.h"
 
 /** \class QGoPrintDatabase 
  * \brief Ensure the connection with the Database
  * */
-class QGOLIBS_EXPORT QGoPrintDatabase : public QDockWidget,
+class QGOGUILIB_EXPORT QGoPrintDatabase : public QDockWidget,
   private Ui::WidgetPrintDatabase
 {
   Q_OBJECT

@@ -43,7 +43,7 @@
 #include "GoDBNameDescRow.h"
 #include "vtkMySQLDatabase.h"
 
-class GOFIGURELIBS_EXPORT GoDBCellTypeRow : public GoDBNameDescRow
+class QGOIO_EXPORT GoDBCellTypeRow : public GoDBNameDescRow
 {
 public:
   GoDBCellTypeRow();

@@ -47,7 +47,7 @@
 #include "vtkImageData.h"
 #include "vtkImageAppend.h"
 
-#include "MegaVTK2Configure.h"
+#include "QGoIOConfigure.h"
 #include "GoFigureFileInfoMultiIndexContainerHelper.h"
 
 namespace itk
@@ -66,7 +66,7 @@ namespace itk
 *
 *
 */
-class ITK_EXPORT MultiFileReader : public LightProcessObject
+class QGOIO_EXPORT MultiFileReader : public LightProcessObject
 {
 public:
 

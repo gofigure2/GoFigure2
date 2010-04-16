@@ -54,13 +54,13 @@ class vtkProperty;
 class vtkProp3D;
 class QVTKInteractor;
 
-#include "GoFigureLibsConfigure.h"
+#include "QGoGUILibConfigure.h"
 
 /**
 \class QGoImageView
 \brief Abstract class for the visualization of 3D Image represented by one vtkImageData*.
 */
-class QGOLIBS_EXPORT QGoImageView : public QWidget
+class QGOGUILIB_EXPORT QGoImageView : public QWidget
 {
   Q_OBJECT
 

@@ -49,7 +49,9 @@
 #include "QNameDescriptionInputDialog.h"
 #include "GoDBCoordinateRow.h"
 
-class QGoDBBookmarkManager:
+#include "QGoGUILibConfigure.h"
+
+class QGOGUILIB_EXPORT QGoDBBookmarkManager:
   public QWidget
 {
   Q_OBJECT

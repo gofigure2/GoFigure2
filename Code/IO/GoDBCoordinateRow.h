@@ -46,7 +46,7 @@
 #include <string>
 #include <map>
 
-class GOFIGURELIBS_EXPORT GoDBCoordinateRow : public GoDBRow
+class QGOIO_EXPORT GoDBCoordinateRow : public GoDBRow
 {
 public:
   GoDBCoordinateRow();

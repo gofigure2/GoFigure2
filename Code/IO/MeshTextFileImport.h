@@ -45,10 +45,12 @@
 #include <list>
 #include <vector>
 
+#include "QGoGUILibConfigure.h"
+
 class vtkPolyData;
 class vtkMySQLDatabase;
 
-class MeshTextFileImport
+class QGOGUILIB_EXPORT MeshTextFileImport
 {
   public:
     MeshTextFileImport( const std::string& iServerName, const std::string& iLogin,

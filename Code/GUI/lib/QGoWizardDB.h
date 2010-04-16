@@ -61,7 +61,7 @@
 #include "QGoConnectServerPage.h"
 #include "vtkMySQLDatabase.h"
 
-#include "GoFigureLibsConfigure.h"
+#include "QGoGUILibConfigure.h"
 
 /**
  * \class QGoWizardDB
@@ -72,7 +72,7 @@
  * \sa QGoOpenCreateProjectPage
  * \sa QGoOpenCreateImgSessionPage
  * */
-class QGOLIBS_EXPORT QGoWizardDB : public QWizard
+class QGOGUILIB_EXPORT QGoWizardDB : public QWizard
 {
   Q_OBJECT
 

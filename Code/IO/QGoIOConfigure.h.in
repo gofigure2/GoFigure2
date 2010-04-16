@@ -1,0 +1,21 @@
+#ifndef __QGoIOConfigure_h
+#define __QGoIOConfigure_h
+
+#include "vtkConfigure.h"
+
+/* Whether we are building shared libraries.  */
+#if defined (WIN32)
+
+ #if defined (QGoIO_EXPORT)
+  #define QGOIO_EXPORT __declspec( dllexport )
+ #else
+  #define QGOIO_EXPORT __declspec( dllimport )
+ #endif
+ 
+#else
+
+  #define QGOIO_EXPORT
+
+#endif
+
+#endif

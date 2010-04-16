@@ -1,8 +1,20 @@
-CONFIGURE_FILE( ${GOFIGURE2_SOURCE_DIR}/Code/GUI/lib/QGoAboutWidget.cxx.in
-  ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/QGoAboutWidget.cxx @ONLY IMMEDIATE )
+IF( WIN32 )
+  IF( NOT CYGWIN )
+    IF( NOT MINGW )
+      IF( BUILD_SHARED_LIBS )
+        ADD_DEFINITIONS( -DQGoGUI_EXPORT )
+      ENDIF( BUILD_SHARED_LIBS )
+    ENDIF( NOT MINGW )
+  ENDIF( NOT CYGWIN )
+ENDIF( WIN32 )
 
+CONFIGURE_FILE( ${GOFIGURE2_SOURCE_DIR}/Code/GUI/lib/QGoGUILibConfigure.h.in
+  ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/QGoGUILibConfigure.h @ONLY IMMEDIATE )
+
+CONFIGURE_FILE( ${GOFIGURE2_SOURCE_DIR}/Code/GUI/lib/QGoAboutWidget.cxx.in
+  ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/QGoAboutWidget.cxx @ONLY IMMEDIATE ) 
+  
 SET( QGoGUILIB_SRC
-  ContourMeshStructureHelper.cxx
   QGoConnectServerPage.cxx
   QGoCreateDataBasePage.cxx
   QGoCreateImgSessionPage.cxx

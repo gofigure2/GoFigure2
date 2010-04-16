@@ -48,8 +48,9 @@ class vtkProperty;
 
 #include "QGoManualSegmentationSettingsDialog.h"
 #include "QGoTraceManualEditingWidget.h"
+#include "QGoIOConfigure.h"
 
-class QGoManualSegmentationDockWidget :
+class QGOGUILIB_EXPORT QGoManualSegmentationDockWidget :
   public QDockWidget,
   private Ui::ManualSegmentationDockWidget
 {

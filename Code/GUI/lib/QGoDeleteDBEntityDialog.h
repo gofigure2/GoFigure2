@@ -46,12 +46,14 @@
 #include <QListWidgetItem>
 #include "vtkMySQLDatabase.h"
 
+#include "QGoGUILibConfigure.h"
+
 /**
 \class QGoDeleteDBEntityDialog
 \brief this class displays the corresponding entities
 stored in the database.
 */
-class QGoDeleteDBEntityDialog : public QDialog
+class QGOGUILIB_EXPORT QGoDeleteDBEntityDialog : public QDialog
 {
   Q_OBJECT
 

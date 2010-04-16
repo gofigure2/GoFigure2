@@ -47,7 +47,9 @@
 #include "vtkRenderWindowMovieRecorder.h"
 #include "vtkObject.h"
 
-class vtkAVIRenderWindowRecorder : public vtkRenderWindowMovieRecorder
+#include "QGoGUILibConfigure.h"
+
+class QGOGUILIB_EXPORT vtkAVIRenderWindowRecorder : public vtkRenderWindowMovieRecorder
 {
    public:
       static vtkAVIRenderWindowRecorder *New();

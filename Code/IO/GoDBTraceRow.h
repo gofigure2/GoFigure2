@@ -46,7 +46,7 @@
 #include "vtkPolyDataMySQLTextWriter.h"
 
 
-class GOFIGURELIBS_EXPORT GoDBTraceRow : public GoDBRow
+class QGOIO_EXPORT GoDBTraceRow : public GoDBRow
 {
 public:
   GoDBTraceRow();

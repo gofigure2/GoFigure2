@@ -44,9 +44,9 @@
 #include "vtkMySQLDatabase.h"
 #include <vector>
 
-#include "GoFigureLibsConfigure.h"
+#include "QGoIOConfigure.h"
 
-class GOFIGURELIBS_EXPORT GoDBExport
+class QGOIO_EXPORT GoDBExport
 {
 public:
 

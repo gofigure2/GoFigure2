@@ -1,7 +1,7 @@
 /*=========================================================================
-  Author: $Author$  // Author of last commit
-  Version: $Rev$  // Revision of last commit
-  Date: $Date$  // Date of last commit
+  Author: $Author: arnaudgelas $  // Author of last commit
+  Version: $Rev: 1255 $  // Revision of last commit
+  Date: $Date: 2010-04-15 13:58:59 -0400 (Thu, 15 Apr 2010) $  // Date of last commit
 =========================================================================*/
 
 /*=========================================================================
@@ -38,37 +38,20 @@
 
 =========================================================================*/
 
-#ifndef __ContourMeshStructure_h
-#define __ContourMeshStructure_h
+#include "ContourMeshStructure.h"
 
-class vtkActor;
-class vtkPolyData;
-
-#include <ostream>
-
-struct ContourMeshStructure
-{
-  unsigned int        TraceID;
-  vtkActor*           Actor;
-  vtkPolyData*        Nodes;
-  unsigned int        CollectionID;
-  unsigned int        TCoord;
-  bool                Highlighted;
-  double              rgba[4];
-  int                 Direction;
-
-  ContourMeshStructure( ) : TraceID( 0 ), CollectionID( 0 ),
+ContourMeshStructure::ContourMeshStructure( ) : TraceID( 0 ), CollectionID( 0 ),
     TCoord( 0 ), Highlighted( false ), Direction( 0 )
-    {
+{
     this->Actor = 0;
     this->Nodes = 0;
     this->rgba[0] = 1.;
     this->rgba[1] = 1.;
     this->rgba[2] = 1.;
     this->rgba[3] = 1.;
-    }
+}
 
-  ContourMeshStructure( const unsigned int& iTraceID, vtkActor* iActor,
+ContourMeshStructure::ContourMeshStructure( const unsigned int& iTraceID, vtkActor* iActor,
     vtkPolyData* iNodes, const unsigned int& iCollectionID, const unsigned int& iT,
     const bool& iHighlighted, const double& r, const double& g, const double& b,
     const double& alpha, const int& iDir )
@@ -81,7 +64,7 @@ struct ContourMeshStructure
     this->rgba[3] = alpha;
     }
 
-  ContourMeshStructure( const ContourMeshStructure& iE ) :
+ContourMeshStructure::ContourMeshStructure( const ContourMeshStructure& iE ) :
     TraceID( iE.TraceID ), Actor( iE.Actor ), Nodes( iE.Nodes ), CollectionID( iE.CollectionID ),
     TCoord( iE.TCoord ), Highlighted( iE.Highlighted ), Direction( iE.Direction )
     {
@@ -91,31 +74,5 @@ struct ContourMeshStructure
       }
     }
 
-  ~ContourMeshStructure()
+    ContourMeshStructure::~ContourMeshStructure()
     {}
-
-  friend std::ostream& operator << ( std::ostream& os, const ContourMeshStructure& c )
-    {
-    os <<"TraceID " <<c.TraceID <<std::endl;
-    os <<"Actor " <<c.Actor <<std::endl;
-    os <<"Nodes "<<c.Nodes <<std::endl;
-    os <<"CollectionID " <<c.CollectionID <<std::endl;
-    os <<"TCoord " <<c.TCoord <<std::endl;
-    os <<"Highlighted " <<c.Highlighted <<std::endl;
-    os <<"RGBA [" <<c.rgba[0] <<", " <<c.rgba[1] <<", " <<c.rgba[2]
-       <<", " <<c.rgba[3] <<"]" <<std::endl;
-    os <<"Direction " <<c.Direction <<std::endl;
-
-    return os;
-    }
-};
-
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-struct TraceID {};
-struct Actor {};
-struct Nodes {};
-struct CollectionID {};
-struct TCoord {};
-#endif
-
-#endif

@@ -44,9 +44,9 @@
 #include <string>
 #include <vector>
 
-#include "GoFigureLibsConfigure.h"
+#include "QGoIOConfigure.h"
 
-class GOFIGURELIBS_EXPORT MegaCaptureHeaderReader
+class QGOIO_EXPORT MegaCaptureHeaderReader
 {
   public:
     explicit MegaCaptureHeaderReader( const std::string& iFileName = "" );

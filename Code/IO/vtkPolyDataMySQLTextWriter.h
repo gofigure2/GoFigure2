@@ -48,7 +48,9 @@
 #include "vtkMath.h"
 #include "vtkIdList.h"
 
-class vtkPolyDataMySQLTextWriter : public vtkObject
+#include "QGoIOConfigure.h"
+
+class QGOIO_EXPORT vtkPolyDataMySQLTextWriter : public vtkObject
 {
 public:
   static vtkPolyDataMySQLTextWriter* New();

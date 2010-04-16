@@ -53,7 +53,7 @@
 #include <QStringList>
 #include <map>
 
-class GOFIGURELIBS_EXPORT GoDBCollectionOfTraces
+class QGOIO_EXPORT GoDBCollectionOfTraces
 {
 
 public:

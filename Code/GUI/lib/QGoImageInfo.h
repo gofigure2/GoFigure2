@@ -51,9 +51,9 @@
 #include <QtGui/QScrollArea>
 #include <QtGui/QWidget>
 
-#include "MegaVTK2Configure.h"
+#include "QGoGUILibConfigure.h"
 
-class QGoImageInfo : public QWidget
+class QGOGUILIB_EXPORT QGoImageInfo : public QWidget
 {
   Q_OBJECT
 public:

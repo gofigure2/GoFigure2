@@ -42,8 +42,9 @@
 
 #include <QWizard>
 #include "CreateDataBaseHelper.h"
+#include "QGoGUILibConfigure.h"
 
-class QGoDBInitializationWizard : public QWizard
+class QGOGUILIB_EXPORT QGoDBInitializationWizard : public QWizard
 {
   Q_OBJECT
 

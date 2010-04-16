@@ -75,14 +75,14 @@ class vtkProperty;
 // class vtkQuadricLODActor;
 class vtkActor;
 
-#include "GoFigureLibsConfigure.h"
+#include "QGoGUILibConfigure.h"
 
 /**
 \class QGoTabImageView3DwT
 \brief
 \example GUI/lib/qgotabimageview3dwt.cxx
 */
-class QGOLIBS_EXPORT QGoTabImageView3DwT : public QGoTabElementBase
+class QGOGUILIB_EXPORT QGoTabImageView3DwT : public QGoTabElementBase
 {
   Q_OBJECT
 public:

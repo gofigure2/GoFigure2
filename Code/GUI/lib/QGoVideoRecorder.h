@@ -47,13 +47,15 @@
 #include <fstream>
 #include <string>
 
+#include "QGoGUILibConfigure.h"
+
 //#include "vtkSmartPointer.h"
 
 class vtkRenderWindow;
 class vtkRenderWindowMovieRecorder;
 
 
-class QGoVideoRecorder : public QDockWidget, private Ui::NewDockWidgetVideoRecorder
+class QGOGUILIB_EXPORT QGoVideoRecorder : public QDockWidget, private Ui::NewDockWidgetVideoRecorder
 {
     Q_OBJECT
 

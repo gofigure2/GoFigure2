@@ -51,7 +51,7 @@
 #include "itkRegularExpressionSeriesFileNames.h"
 
 #include "GoFigureFileInfoMultiIndexContainerHelper.h"
-#include "GoFigureLibsConfigure.h"
+#include "QGoIOConfigure.h"
 
 // #include <QProgressBar>
 
@@ -63,7 +63,7 @@ namespace itk
 and that the text of the beginning of the filename (before the values
 to be stored in the database) contains more than 3 numerical groups,
 the files are considered as new megacapture...*/
-class GOFIGURELIBS_EXPORT MegaCaptureImport: public LightProcessObject
+class QGOIO_EXPORT MegaCaptureImport: public LightProcessObject
 {
 public:
   //typedef std::list<int>                     IntListType;

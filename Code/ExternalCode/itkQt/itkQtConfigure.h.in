@@ -1,0 +1,22 @@
+#ifndef __itkQtConfigure_h
+#define __itkQtConfigure_h
+
+#include "vtkConfigure.h"
+#include <QtGlobal>
+
+/* Whether we are building shared libraries.  */
+#if defined (WIN32)
+
+ #if defined (itkQt_EXPORT)
+  #define IKTQT_EXPORT __declspec( dllexport )
+ #else
+  #define IKTQT_EXPORT __declspec( dllimport )
+ #endif
+ 
+#else
+
+  #define IKTQT_EXPORT
+  
+#endif
+
+#endif

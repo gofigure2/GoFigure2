@@ -46,12 +46,14 @@
 #include <Qt>
 #include "vtkSmartPointer.h"
 
+#include "QGoGUILibConfigure.h"
+
 class vtkOrientedGlyphContourRepresentation;
 class vtkContourWidget;
 class vtkRenderer;
 class vtkPolyData;
 
-class QGoManualSegmentationSettingsDialog :
+class QGOGUILIB_EXPORT QGoManualSegmentationSettingsDialog :
   public QDialog,
   private Ui::ManualSegmentationSettingsDlg
 {

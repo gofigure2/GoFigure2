@@ -50,7 +50,7 @@
 #include <string>
 #include <map>
 
-class GOFIGURELIBS_EXPORT GoDBContourRow : public GoDBTraceRow
+class QGOIO_EXPORT GoDBContourRow : public GoDBTraceRow
 {
 public:
   GoDBContourRow();

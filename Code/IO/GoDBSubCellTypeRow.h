@@ -43,9 +43,9 @@
 #include "GoDBNameDescRow.h"
 #include "vtkMySQLDatabase.h"
 
-#include "GoFigureLibsConfigure.h"
+#include "QGoIOConfigure.h"
 
-class GOFIGURELIBS_EXPORT GoDBSubCellTypeRow : public GoDBNameDescRow
+class QGOIO_EXPORT GoDBSubCellTypeRow : public GoDBNameDescRow
 {
 public:
   GoDBSubCellTypeRow();

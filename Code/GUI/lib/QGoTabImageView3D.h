@@ -56,14 +56,14 @@ class QDockWidget;
 
 class QGoImageView3D;
 
-#include "GoFigureLibsConfigure.h"
+#include "QGoGUILibConfigure.h"
 
 /**
 \class QGoTabImageView3D
 \brief
 \example GUI/lib/qgotabimageview3d.cxx
 */
-class QGOLIBS_EXPORT QGoTabImageView3D : public QGoTabImageViewNDBase
+class QGOGUILIB_EXPORT QGoTabImageView3D : public QGoTabImageViewNDBase
 {
   Q_OBJECT
   public:

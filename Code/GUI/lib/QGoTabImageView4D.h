@@ -65,6 +65,8 @@ class vtkPolyData;
 #include "itkMegaCaptureReader.h"
 #include "GoFigureFileInfoMultiIndexContainerHelper.h"
 
+#include "QGoGUILibConfigure.h"
+
 #include <QResizeEvent>
 #include <QSplitter>
 
@@ -73,7 +75,7 @@ class vtkPolyData;
 \brief
 \example GUI/lib/qgotabimageview4d.cxx
 */
-class QGoTabImageView4D : public QGoTabElementBase
+class QGOGUILIB_EXPORT QGoTabImageView4D : public QGoTabElementBase
 {
   Q_OBJECT
   public:

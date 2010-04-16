@@ -45,52 +45,52 @@
 #include "itkMacro.h"
 #include "vtkMySQLDatabase.h"
 
-#include "GoFigureLibsConfigure.h"
+#include "QGoIOConfigure.h"
 
-GOFIGURELIBS_EXPORT bool IsDatabaseOfGoFigureType(
+QGOIO_EXPORT bool IsDatabaseOfGoFigureType(
   vtkMySQLDatabase* DataBaseConnector);
-GOFIGURELIBS_EXPORT bool DoesDatabaseExit(std::string ServerName, std::string login, 
+QGOIO_EXPORT bool DoesDatabaseExit(std::string ServerName, std::string login, 
   std::string Password, std::string DBName);
 
-GOFIGURELIBS_EXPORT void Query(vtkMySQLDatabase* DataBaseConnector,
+QGOIO_EXPORT void Query(vtkMySQLDatabase* DataBaseConnector,
            std::string queryScript);
 
-GOFIGURELIBS_EXPORT bool CreateGoFigureDataBase(
+QGOIO_EXPORT bool CreateGoFigureDataBase(
   std::string ServerName, std::string login,
   std::string Password, std::string DBName );
-GOFIGURELIBS_EXPORT bool CreateDataBase(vtkMySQLDatabase* DataBaseConnector,
+QGOIO_EXPORT bool CreateDataBase(vtkMySQLDatabase* DataBaseConnector,
   std::string DBName);
-GOFIGURELIBS_EXPORT void CreateTables(
+QGOIO_EXPORT void CreateTables(
   vtkMySQLDatabase* DataBaseConnector );
-GOFIGURELIBS_EXPORT void CreateForeignKeys(
+QGOIO_EXPORT void CreateForeignKeys(
   vtkMySQLDatabase* DataBaseConnector );
 
-GOFIGURELIBS_EXPORT std::string CellTypeTable();
-GOFIGURELIBS_EXPORT std::string AuthorTable();
-GOFIGURELIBS_EXPORT std::string SubCellularTypeTable();
-GOFIGURELIBS_EXPORT std::string CoordinateTable();
-GOFIGURELIBS_EXPORT std::string ColorTableScript();
-GOFIGURELIBS_EXPORT std::string MicroscopeTable();
-GOFIGURELIBS_EXPORT std::string ProjectTable();
-GOFIGURELIBS_EXPORT std::string ImagingSessionTable();
-GOFIGURELIBS_EXPORT std::string TrackFamilyTable();
-GOFIGURELIBS_EXPORT std::string TrackTable();
-GOFIGURELIBS_EXPORT std::string MeshTable();
-GOFIGURELIBS_EXPORT std::string ContourTable();
-GOFIGURELIBS_EXPORT std::string ChannelTable();
-GOFIGURELIBS_EXPORT std::string ImageTable();
-GOFIGURELIBS_EXPORT std::string LineageTable();
-GOFIGURELIBS_EXPORT std::string BookmarkTable();
-GOFIGURELIBS_EXPORT std::string IntensityTable();
-GOFIGURELIBS_EXPORT std::string ValueTypeTable();
-GOFIGURELIBS_EXPORT std::string CalculatedValueTable();
-GOFIGURELIBS_EXPORT std::string ValuePerVectorCoordTable();
-GOFIGURELIBS_EXPORT std::string MeshValueTable();
-GOFIGURELIBS_EXPORT std::string TrackValueTable();
-GOFIGURELIBS_EXPORT std::string ImageValueTable();
-GOFIGURELIBS_EXPORT std::string ImagingSessionValueTable();
-GOFIGURELIBS_EXPORT std::string ContourValueTable();
-GOFIGURELIBS_EXPORT std::string LineageValueTable();
+QGOIO_EXPORT std::string CellTypeTable();
+QGOIO_EXPORT std::string AuthorTable();
+QGOIO_EXPORT std::string SubCellularTypeTable();
+QGOIO_EXPORT std::string CoordinateTable();
+QGOIO_EXPORT std::string ColorTableScript();
+QGOIO_EXPORT std::string MicroscopeTable();
+QGOIO_EXPORT std::string ProjectTable();
+QGOIO_EXPORT std::string ImagingSessionTable();
+QGOIO_EXPORT std::string TrackFamilyTable();
+QGOIO_EXPORT std::string TrackTable();
+QGOIO_EXPORT std::string MeshTable();
+QGOIO_EXPORT std::string ContourTable();
+QGOIO_EXPORT std::string ChannelTable();
+QGOIO_EXPORT std::string ImageTable();
+QGOIO_EXPORT std::string LineageTable();
+QGOIO_EXPORT std::string BookmarkTable();
+QGOIO_EXPORT std::string IntensityTable();
+QGOIO_EXPORT std::string ValueTypeTable();
+QGOIO_EXPORT std::string CalculatedValueTable();
+QGOIO_EXPORT std::string ValuePerVectorCoordTable();
+QGOIO_EXPORT std::string MeshValueTable();
+QGOIO_EXPORT std::string TrackValueTable();
+QGOIO_EXPORT std::string ImageValueTable();
+QGOIO_EXPORT std::string ImagingSessionValueTable();
+QGOIO_EXPORT std::string ContourValueTable();
+QGOIO_EXPORT std::string LineageValueTable();
 
 std::string ProjectFK();
 std::string ImagingSessionFKMicroscopeName();

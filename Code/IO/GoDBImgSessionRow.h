@@ -46,7 +46,7 @@
 #include <string>
 #include <map>
 
-class GOFIGURELIBS_EXPORT GoDBImgSessionRow : public GoDBRow
+class QGOIO_EXPORT GoDBImgSessionRow : public GoDBRow
 {
 public:
   GoDBImgSessionRow();// : GoDBRow()

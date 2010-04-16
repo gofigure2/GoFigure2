@@ -1,4 +1,19 @@
+IF( WIN32 )
+  IF( NOT CYGWIN )
+    IF( NOT MINGW )
+      IF( BUILD_SHARED_LIBS )
+        ADD_DEFINITIONS( -DQGoIO_EXPORT )
+      ENDIF( BUILD_SHARED_LIBS )
+    ENDIF( NOT MINGW )
+  ENDIF( NOT CYGWIN )
+ENDIF( WIN32 )
+
+CONFIGURE_FILE(${GOFIGURE2_SOURCE_DIR}/Code/IO/QGoIOConfigure.h.in
+               ${GOFIGURE2_BINARY_DIR}/Code/IO/QGoIOConfigure.h @ONLY IMMEDIATE)
+
 SET( QGOIO_SRC
+  ContourMeshStructure.cxx
+  ContourMeshStructureHelper.cxx
   CreateDataBaseHelper.cxx
   GoDBChannelRow.cxx
   GoDBCollectionOfTraces.cxx

@@ -52,19 +52,18 @@
 #ifndef __itkQtAdaptor_h
 #define __itkQtAdaptor_h
 
-#include <qobject.h>
+#include <QObject>
 #include "itkObject.h"
 #include "itkObjectFactory.h"
 #include "itkCommand.h"
 
-#include "GoFigureLibsConfigure.h"
+#include "itkQtConfigure.h"
 
 namespace itk {
 
 /** Helper class that interface with Qt Signals and Slots */
-class QGOLIBS_EXPORT QtTranslator : public QObject
+class IKTQT_EXPORT QtTranslator : public QObject
 {
-
   Q_OBJECT
 
 public:
@@ -75,9 +74,9 @@ signals:
   void Signal();
 
 public slots:
-  virtual void Slot() {}; 
-  virtual void Slot(int) {}; 
-  virtual void Slot(double) {}; 
+  virtual void Slot() {} 
+  virtual void Slot(int) {} 
+  virtual void Slot(double) {} 
 
 };
 
@@ -85,16 +84,16 @@ public slots:
 
 /** Helper class that interface Methods with Qt Slots */
 template <typename T>
-class QGOLIBS_EXPORT QtSlotAdaptor : public QtTranslator
+class IKTQT_EXPORT QtSlotAdaptor : public QtTranslator
 {
   typedef  void (T::*TMemberFunctionVoidPointer)(); 
   typedef  void (T::*TMemberFunctionIntPointer)(int); 
   typedef  void (T::*TMemberFunctionDoublePointer)(double); 
 
 public:
-  QtSlotAdaptor():m_MemberFunctionVoid(0),
-                  m_MemberFunctionInt(0),
-                  m_MemberFunctionDouble(0) {}
+  QtSlotAdaptor() : m_MemberFunctionVoid(0),
+                    m_MemberFunctionInt(0),
+                    m_MemberFunctionDouble(0) {}
 
   virtual ~QtSlotAdaptor() {}
 
@@ -165,7 +164,7 @@ protected:
 
 
 /** Helper class that interface Observers with Qt Signals */
-class QGOLIBS_EXPORT QtSignalAdaptor : public QtTranslator
+class IKTQT_EXPORT QtSignalAdaptor : public QtTranslator
 {
   typedef SimpleMemberCommand<QtSignalAdaptor> CommandType;
 

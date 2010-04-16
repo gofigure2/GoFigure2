@@ -55,6 +55,7 @@ class vtkScalarBarActor;
 #include "vtkSmartPointer.h"
 
 #include "QVTKWidget.h"
+#include "QGoGUILibConfigure.h"
 
 /**
  * \class QGoLUTDialog
@@ -62,7 +63,7 @@ class vtkScalarBarActor;
  * \image html QGoLUTDialog.png
  * \example GUI/lib/qgolutdialog.cxx
 */
-class QGoLUTDialog : public QDialog
+class QGOGUILIB_EXPORT QGoLUTDialog : public QDialog
 {
   Q_OBJECT
 public:
