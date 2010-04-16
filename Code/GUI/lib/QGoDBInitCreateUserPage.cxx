@@ -80,7 +80,7 @@ QGoDBInitCreateUserPage::QGoDBInitCreateUserPage( QWidget *iParent)
 //-------------------------------------------------------------------------
 bool QGoDBInitCreateUserPage::validatePage()
 {
-  /*if(field("User").toString() == "" ||
+  if(field("User").toString() == "" ||
        field("Password").toString() == "")
     {
     QMessageBox msgBox;
@@ -106,7 +106,7 @@ bool QGoDBInitCreateUserPage::validatePage()
         tr("There is a problem with the creation of your database.") );
      msgBox.exec();
      return false;
-     }*/
+     }
     return true;
 }
 //-------------------------------------------------------------------------
@@ -158,7 +158,7 @@ bool QGoDBInitCreateUserPage::CreateUser()
 
 //-------------------------------------------------------------------------
 bool QGoDBInitCreateUserPage::CreateGofigureUserWithDatabaseConnector (
-  vtkMySQLDatabase* DatabaseConnector,std::string iLogin, 
+  vtkMySQLDatabase* DatabaseConnector,std::string iLogin,
   std::string iServerName, std::string iPassword)
 {
   vtkSQLQuery* queryUserExist = DatabaseConnector->GetQueryInstance();
