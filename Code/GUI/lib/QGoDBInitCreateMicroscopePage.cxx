@@ -37,7 +37,7 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#include "QGoDBInitCreateAuthorsPage.h"
+#include "QGoDBInitCreateMicroscopePage.h"
 #include "CreateDataBaseHelper.h"
 #include "QGoDBInitializationWizard.h"
 #include "vtkSQLQuery.h"
@@ -51,48 +51,42 @@
 #include <QPushButton>
 
 
-QGoDBInitCreateAuthorsPage::QGoDBInitCreateAuthorsPage( QWidget *iParent)
+QGoDBInitCreateMicroscopePage::QGoDBInitCreateMicroscopePage( QWidget *iParent)
   : QWizardPage( iParent )
 {
   QFont tfont;
   tfont.setBold(false);
   this->setFont(tfont);
   m_DatabaseConnector = 0;
-  setSubTitle( tr("Create the authors for the gofigure projects:"));
+  setSubTitle( tr("Create the microscopes for the gofigure projects:"));
 
   QFormLayout* formLayout = new QFormLayout;
 
-  lineLastName = new QLineEdit;
-  lineMiddleName = new QLineEdit;
-  lineFirstName  = new QLineEdit;
-  CreateButton   = new QPushButton(tr("Create Author"));
+  lineMicroscopeName = new QLineEdit;
+  CreateButton   = new QPushButton(tr("Create Microscope"));
 
-  formLayout->addRow( tr("Enter the Author FirstName:"),   lineFirstName );
-  formLayout->addRow( tr("Enter the Author MiddleName:"),   lineMiddleName );
-  formLayout->addRow( tr("Enter the Author LastName:"),  lineLastName );
+  formLayout->addRow( tr("Enter the Microscope Name:"),   lineMicroscopeName );
   formLayout->addWidget(CreateButton);
 
   QObject::connect(this->CreateButton,SIGNAL(clicked()),
-    this,SLOT(CreateAuthor()));
+    this,SLOT(CreateMicroscope()));
 
   setLayout( formLayout );
-  registerField( "FirstName",  lineFirstName );
-  registerField( "MiddleName", lineMiddleName );
-  registerField( "LastName",   lineLastName );
+  registerField( "MicroscopeName",  lineMicroscopeName );
+
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-bool QGoDBInitCreateAuthorsPage::validatePage()
+bool QGoDBInitCreateMicroscopePage::validatePage()
 {
-this->OpenDBConnection();
-
+  this->OpenDBConnection();
+  QMessageBox msgBox;
   if( ListAllValuesForOneColumn(this->m_DatabaseConnector,
-      "AuthorID", "author").empty())
+      "Name", "microscope").empty())
     {
-    QMessageBox msgBox;
     msgBox.setText(
-      tr("Please create at least one author for your project.") );
+      tr("Please create at least one microscope.") );
     msgBox.exec();
     if (CloseDatabaseConnection(m_DatabaseConnector))
         {
@@ -104,66 +98,53 @@ this->OpenDBConnection();
     {
     m_DatabaseConnector = 0;
     }
+  msgBox.setText( QObject::tr( "The MySql user and the GoFigure Database \n\
+    have been successfully created !!\n\
+    Now you can save the work you do with GoFigure into the Database !!" ) );
+      msgBox.exec();
   return true;
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoDBInitCreateAuthorsPage::CreateAuthor()
+void QGoDBInitCreateMicroscopePage::CreateMicroscope()
 {
   this->OpenDBConnection();
   QMessageBox msgBox;
-  std::string LastName = field("LastName").toString().toStdString();
-  std::string FirstName = field("FirstName").toString().toStdString();
-  std::string MiddleName = field("MiddleName").toString().toStdString();
-
-  if(FindOneID(this->m_DatabaseConnector,"author", "AuthorID",
-    "LastName",LastName,"FirstName",FirstName)!= -1 && MiddleName.empty())
+  std::string MicroscopeName = field("MicroscopeName").toString().toStdString();
+  if(MicroscopeName.empty())
     {
     msgBox.setText(
-      tr("There is already an Author with the same lastname and firstname, please enter a middlename") );
+      tr("Please enter a name for your microscope.") );
     msgBox.exec();
-    return;
     }
 
-  if(FindOneID(this->m_DatabaseConnector,"author", "AuthorID",
-    "LastName",LastName,"FirstName",FirstName,"MiddleName",MiddleName) != -1 && !MiddleName.empty())
-    {
-    msgBox.setText(
-      tr("This author already exits") );
-    msgBox.exec();
-    return;
-    }
+  if(ListSpecificValuesForOneColumn(this->m_DatabaseConnector,"microscope",
+      "Name","Name",MicroscopeName).size()>0)
+      {
+      msgBox.setText(
+        tr("There is already a Microscope with the same name, please choose another one") );
+      msgBox.exec();
+      return;
+      }
 
   vtkSQLQuery* query = this->m_DatabaseConnector->GetQueryInstance();
-
-  std::stringstream queryScript;
-  queryScript << "INSERT INTO author (LastName,FirstName,MiddleName) VALUES ('";
-  queryScript << LastName;
-  queryScript << "','";
-  queryScript << FirstName;
-  if (MiddleName == "")
-    {
-    queryScript << "',default) ;";
-    }
-  else
-    {
-    queryScript << "', '";
-    queryScript << MiddleName;
+    std::stringstream queryScript;
+    queryScript << "INSERT INTO microscope VALUES ('";
+    queryScript << MicroscopeName;
     queryScript << "') ;";
-    }
-  query->SetQuery(queryScript.str().c_str());
-  if (!query->Execute())
-    {
-    std::cout<< "Insert Author query failed."<<std::endl;
-    query->Delete();
-    return;
-    }
 
-  query->Delete();
-  msgBox.setText(
-    tr("Your author has been successfully created") );
-  msgBox.exec();
+    query->SetQuery(queryScript.str().c_str());
+    if (!query->Execute())
+      {
+      std::cout<< "Insert Microscope query failed."<<std::endl;
+      query->Delete();
+      return;
+      }
+    query->Delete();
+    msgBox.setText(
+      tr("Your microscope has been successfully created") );
+      msgBox.exec();
 
   if (CloseDatabaseConnection(m_DatabaseConnector))
     {
@@ -173,7 +154,7 @@ void QGoDBInitCreateAuthorsPage::CreateAuthor()
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-void QGoDBInitCreateAuthorsPage::OpenDBConnection()
+void QGoDBInitCreateMicroscopePage::OpenDBConnection()
 {
   std::string Server = "localhost";
   std::string User = field("User").toString().toStdString();

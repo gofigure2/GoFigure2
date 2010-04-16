@@ -44,6 +44,7 @@ SET( QGoGUILIB_SRC
   QGoDBInitializationWizard.cxx
   QGoDBInitCreateUserPage.cxx
   QGoDBInitCreateAuthorsPage.cxx
+  QGoDBInitCreateMicroscopePage.cxx
   ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/QGoAboutWidget.cxx
 )
 
@@ -115,6 +116,7 @@ SET( QGoGUILIB_HDRS
   QGoDBInitializationWizard.h
   QGoDBInitCreateUserPage.h
   QGoDBInitCreateAuthorsPage.h
+  QGoDBInitCreateMicroscopePage.h
 )
 
 #---------------------------------------------------------------------------

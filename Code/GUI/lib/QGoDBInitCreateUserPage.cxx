@@ -80,10 +80,10 @@ QGoDBInitCreateUserPage::QGoDBInitCreateUserPage( QWidget *iParent)
 //-------------------------------------------------------------------------
 bool QGoDBInitCreateUserPage::validatePage()
 {
+  QMessageBox msgBox;
   if(field("User").toString() == "" ||
        field("Password").toString() == "")
     {
-    QMessageBox msgBox;
     msgBox.setText(
       tr("Please fill all the fields.") );
     msgBox.exec();
@@ -91,7 +91,6 @@ bool QGoDBInitCreateUserPage::validatePage()
     }
    if(!this->CreateUser())
     {
-    QMessageBox msgBox;
     msgBox.setText(
       tr("There is a problem with the creation of your user.") );
     msgBox.exec();
@@ -101,7 +100,6 @@ bool QGoDBInitCreateUserPage::validatePage()
     !CreateGoFigureDataBase(this->m_ServerName,field("User").toString().toStdString(),
     field("Password").toString().toStdString(),this->m_DBName))
      {
-     QMessageBox msgBox;
      msgBox.setText(
         tr("There is a problem with the creation of your database.") );
      msgBox.exec();
@@ -162,6 +160,7 @@ bool QGoDBInitCreateUserPage::CreateGofigureUserWithDatabaseConnector (
   std::string iServerName, std::string iPassword)
 {
   vtkSQLQuery* queryUserExist = DatabaseConnector->GetQueryInstance();
+  QMessageBox msgBox;
   std::stringstream UserExistScript;
   UserExistScript << "SELECT USER FROM mysql.user WHERE user = '";
   UserExistScript <<  iLogin;
@@ -169,7 +168,6 @@ bool QGoDBInitCreateUserPage::CreateGofigureUserWithDatabaseConnector (
   queryUserExist->SetQuery(UserExistScript.str().c_str());
   if (!queryUserExist->Execute())
     {
-   QMessageBox msgBox;
     msgBox.setText(
       tr("There is a problem to check your existing users.") );
     msgBox.exec();
@@ -183,7 +181,6 @@ bool QGoDBInitCreateUserPage::CreateGofigureUserWithDatabaseConnector (
     queryUserExist->Delete();
     DatabaseConnector->Close();
     DatabaseConnector->Delete();
-    QMessageBox msgBox;
     msgBox.setText(
       tr("The user you are trying to create already exits.") );
     msgBox.exec();
@@ -217,7 +214,6 @@ bool QGoDBInitCreateUserPage::CreateGofigureUserWithDatabaseConnector (
     queryUserExist->Delete();
     DatabaseConnector->Close();
     DatabaseConnector->Delete();
-    QMessageBox msgBox;
     msgBox.setText(
       tr("Sorry, there is a problem with the creation of your user.") );
     msgBox.exec();

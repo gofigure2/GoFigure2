@@ -37,51 +37,36 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#ifndef __QGoDBInitializationWizard_h
-#define __QGoDBInitializationWizard_h
+#ifndef __QGoDBInitCreateMicroscopePage_h
+#define __QGoDBInitCreateMicroscopePage_h
 
 #include <QWizard>
-#include "CreateDataBaseHelper.h"
+#include <QWizardPage>
+#include <QLineEdit>
+#include "vtkMySQLDatabase.h"
 
-class QGoDBInitializationWizard : public QWizard
+
+class QGoDBInitCreateMicroscopePage : public QWizardPage
 {
   Q_OBJECT
 
 public:
-  enum {
-    CreateUserPageID = 0,
-    CreateAuthorsPageID,
-    CreateMicroscopePageID
-    /*ConnectServerPageID = 0,
-    CreateDataBasePageID,
-    OpenOrCreateProjectPageID,
-    OpenOrCreateImgSessionPageID,
-    CreateImgSessionPageID*/
-  };
+  explicit QGoDBInitCreateMicroscopePage(QWidget *iparent = 0);
+  ~QGoDBInitCreateMicroscopePage() {}
 
-  explicit QGoDBInitializationWizard(QWidget *parent = 0);
-  ~QGoDBInitializationWizard() {}
+  bool validatePage();
+  //int nextId() const;
 
-  /*QString GetServer();
-  QString GetLogin();
-  QString GetPassword();*/
-
-
-  QPushButton* nextButton;
-
-
-
-protected:
-  /*void closeEvent(QCloseEvent* iEvent);
-  void SetFirstFileName();
-  QGoConnectServerPage*   m_ConnectServerPage;
-  std::string             m_ImgSessionName;
-  std::string             m_FirstFileName;
-  int                     m_ImgSessionID;
-  bool                    m_IsAnOpenRecentFile;*/
+protected slots:
+  void CreateMicroscope();
 
 private:
-  Q_DISABLE_COPY( QGoDBInitializationWizard);
+  Q_DISABLE_COPY( QGoDBInitCreateMicroscopePage );
 
+  QLineEdit*          lineMicroscopeName;
+  QPushButton*        CreateButton;
+  vtkMySQLDatabase*   m_DatabaseConnector;
+
+  void OpenDBConnection();
 };
 #endif

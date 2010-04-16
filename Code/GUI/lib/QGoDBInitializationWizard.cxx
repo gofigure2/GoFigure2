@@ -41,11 +41,13 @@
 #include "CreateDataBaseHelper.h"
 #include "QGoDBInitCreateUserPage.h"
 #include "QGoDBInitCreateAuthorsPage.h"
+#include "QGoDBInitCreateMicroscopePage.h"
 
 QGoDBInitializationWizard::QGoDBInitializationWizard(QWidget *iParent)
 : QWizard( iParent )
 {
    setPage(CreateUserPageID, new QGoDBInitCreateUserPage);
    setPage(CreateAuthorsPageID, new QGoDBInitCreateAuthorsPage);
+   setPage(CreateMicroscopePageID, new QGoDBInitCreateMicroscopePage);
 }
 
