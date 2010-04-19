@@ -11,26 +11,26 @@ ENDIF(COMMAND CMAKE_POLICY)
 
 #-------------------------------------------------------------------------
 # Subversion
-IF( EXISTS ${CMAKE_SOURCE_DIR}/.svn/ )
-  FIND_PACKAGE( Subversion )
-
-  IF( Subversion_FOUND )
-    Subversion_WC_INFO( ${GOFIGURE2_SOURCE_DIR} GOFIGURE2 )
-  ELSE( Subversion_FOUND )
-    SET( GOFIGURE2_WC_REVISION 0 )
-  ENDIF( Subversion_FOUND )
-ELSE( EXISTS ${CMAKE_SOURCE_DIR}/.svn/ )
-  SET( GOFIGURE2_WC_REVISION 0 )
-ENDIF( EXISTS ${CMAKE_SOURCE_DIR}/.svn/ )
+#IF( EXISTS ${CMAKE_SOURCE_DIR}/.svn/ )
+#  FIND_PACKAGE( Subversion )
+#
+#  IF( Subversion_FOUND )
+#    Subversion_WC_INFO( ${GOFIGURE2_SOURCE_DIR} GOFIGURE2 )
+#  ELSE( Subversion_FOUND )
+#    SET( GOFIGURE2_WC_REVISION 0 )
+#  ENDIF( Subversion_FOUND )
+#ELSE( EXISTS ${CMAKE_SOURCE_DIR}/.svn/ )
+#  SET( GOFIGURE2_WC_REVISION 0 )
+#ENDIF( EXISTS ${CMAKE_SOURCE_DIR}/.svn/ )
 #-------------------------------------------------------------------------
 
 # When making one release: update GOFIGURE2_*_VERSION, 
 # GOFIGURE2_WC_REVISION and the date of the release
 SET( GOFIGURE2_MAJOR_VERSION "0" )
 SET( GOFIGURE2_MINOR_VERSION "4" )
-# SET( GOFIGURE2_WC_REVISION 1 )
+SET( GOFIGURE2_WC_REVISION "1" )
 
-SET( DATE "04/13/2010" )
+SET( DATE "04/19/2010" )
 
 SET( GOFIGURE2_VERSION
   "${GOFIGURE2_MAJOR_VERSION}.${GOFIGURE2_MINOR_VERSION}.${GOFIGURE2_WC_REVISION}" )
