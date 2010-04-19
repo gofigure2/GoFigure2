@@ -78,6 +78,7 @@ QGoConnectServerPage::QGoConnectServerPage( QWidget *iParent)
   registerField( "User",       lineUserName );
   registerField( "Password",   linePassword );
   registerField( "DBName",     lineDBName);
+
 }
 //-------------------------------------------------------------------------
 
@@ -103,6 +104,16 @@ bool QGoConnectServerPage::validatePage()
     msgBox.exec();
     return false;
     }
+  std::list<std::string> ListGoDB = ListGofigureDatabases();
+  if (ListGoDB.empty())
+    {
+    QMessageBox msgBox;
+    msgBox.setText(
+      tr("You have not yet set up your Gofigure Database\nPlease go to the menu 'Settings' and select 'Set Up Database'.") );
+    msgBox.exec();
+    emit NoGofigureDatabase();
+    return false;
+    }
   return true;
 }
 //-------------------------------------------------------------------------
@@ -112,11 +123,6 @@ int QGoConnectServerPage::nextId() const
 {
   std::string DBName;
   std::list<std::string> ListGoDB = ListGofigureDatabases();
-
-  if (ListGoDB.empty())
-    {
-    return QGoWizardDB::CreateDataBasePageID;
-    }
   if (ListGoDB.size() > 1)
     {
     std::cout<<"There is more than one Gofigure DataBase"<<std::endl;
@@ -125,10 +131,13 @@ int QGoConnectServerPage::nextId() const
     }
   else
     {
-    std::list<std::string>::iterator i = ListGoDB.begin();
-    DBName = *i;
-    this->wizard()->setField( "DBName", DBName.c_str() );
-    std::cout<<"the db name to open is: "<<field("DBName").toString().toStdString().c_str()<<std::endl;
+    if(!ListGoDB.empty())
+      {
+      std::list<std::string>::iterator i = ListGoDB.begin();
+      DBName = *i;
+      this->wizard()->setField( "DBName", DBName.c_str() );
+      std::cout<<"the db name to open is: "<<field("DBName").toString().toStdString().c_str()<<std::endl;
+      }
     }
   if(!this->m_IsAnOpenRecentFile)
     {

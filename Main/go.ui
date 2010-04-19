@@ -200,6 +200,18 @@
      <string>Mode</string>
     </property>
    </widget>
+   <widget class="QMenu" name="menuSettings">
+    <property name="title">
+     <string>Settings</string>
+    </property>
+    <widget class="QMenu" name="menuDatabase">
+     <property name="title">
+      <string>Database</string>
+     </property>
+     <addaction name="actionSet_Up_Database"/>
+    </widget>
+    <addaction name="menuDatabase"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuBookmarks"/>
    <addaction name="menuView"/>
@@ -208,6 +220,7 @@
    <addaction name="menuMode"/>
    <addaction name="menuTools"/>
    <addaction name="menuHelp"/>
+   <addaction name="menuSettings"/>
   </widget>
   <widget class="QStatusBar" name="statusbar">
    <property name="autoFillBackground">
@@ -486,6 +499,11 @@
   <action name="actionImportLineage">
    <property name="text">
     <string>Lineage</string>
+   </property>
+  </action>
+  <action name="actionSet_Up_Database">
+   <property name="text">
+    <string>Set Up Database</string>
    </property>
   </action>
  </widget>

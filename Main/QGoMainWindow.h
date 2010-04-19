@@ -53,6 +53,7 @@
 #include "GoFigureFileInfoMultiIndexContainerHelper.h"
 #include "GoFigureGlobalDefinition.h"
 #include "QGoAboutWidget.h"
+#include "QGoDBInitializationWizard.h"
 
 class vtkImageData;
 
@@ -127,6 +128,7 @@ private slots:
 
   void on_actionAbout_triggered( );
   void on_actionAbout_Qt_triggered( );
+  void on_actionSet_Up_Database_triggered();
 
   void ApplyImageFilter();
   void tobedone( std::vector< vtkImageData* > );
@@ -193,15 +195,16 @@ private:
   void AddToMenu( QObject*, const QStringList&, QMenu*,
     const char*, QActionGroup* );
 
-  QMenu*            m_FilteringMenu;
-  QDir              m_PluginsDir;
-  QStringList       m_PluginFileNames;
-  QGoTabManager*    m_TabManager;
-  QToolBar*         m_ViewToolBar;
-  QToolBar*         m_ModeToolBar;
-  vtkLSMReader*     m_LSMReader;
-  QGoWizardDB*      m_DBWizard;
-  QGoAboutWidget*   m_AboutWidget;
+  QMenu*                      m_FilteringMenu;
+  QDir                        m_PluginsDir;
+  QStringList                 m_PluginFileNames;
+  QGoTabManager*              m_TabManager;
+  QToolBar*                   m_ViewToolBar;
+  QToolBar*                   m_ModeToolBar;
+  vtkLSMReader*               m_LSMReader;
+  QGoWizardDB*                m_DBWizard;
+  QGoAboutWidget*             m_AboutWidget;
+  QGoDBInitializationWizard*  m_DBInitializationWizard;
 
   /** \brief */
   void ReadSettings();

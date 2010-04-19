@@ -100,6 +100,8 @@ QGoWizardDB::QGoWizardDB( QWidget *iParent )
   setPage(OpenOrCreateImgSessionPageID, new QGoOpenCreateImgSessionPage);
   setPage(CreateImgSessionPageID, new QGoCreateImgSessionPage);
   setWindowTitle( tr("Use DataBase") );
+  QObject::connect(this->m_ConnectServerPage,SIGNAL(NoGofigureDatabase()),
+    this,SLOT(hide()));
 }
 //-------------------------------------------------------------------------
 

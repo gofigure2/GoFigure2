@@ -82,7 +82,9 @@ private:
  * gofigure type
  * */
   std::list<std::string> ListGofigureDatabases() const;
-  
+
+signals:
+  void NoGofigureDatabase()const;
 
 };
 #endif
