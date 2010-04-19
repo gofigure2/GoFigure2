@@ -4,7 +4,7 @@
 #include "vtkConfigure.h"
 
 /* Whether we are building shared libraries.  */
-#if defined (WIN32) && defined (GOFIGURE2_BUILD_SHARED_LIB)
+#if defined (WIN32) && defined (GOFIGURE2_BUILD_SHARED_LIBS)
 
  #if defined (QGoIO_EXPORT)
   #define QGOIO_EXPORT __declspec( dllexport )
