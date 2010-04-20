@@ -1316,7 +1316,7 @@ int vtkLSMReader::RequestData(
     std::streamsize bytes = this->ReadFile(this->GetFile(),offset,readSize,
       static_cast< char* >( static_cast< void* >( tempBuf ) ), 1);
 
-    if(bytes != readSize)
+    if( static_cast< unsigned int >( bytes ) != readSize )
       {
       vtkDebugMacro(<<"Asked for " << readSize<<" bytes, got "<<bytes <<"\n");
       vtkDebugMacro(<<"File status: fail: "<<this->GetFile()->fail()<<", eof: "<<this->GetFile()->eof()<<"\n");
