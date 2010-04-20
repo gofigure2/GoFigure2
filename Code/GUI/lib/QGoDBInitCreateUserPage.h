@@ -55,7 +55,6 @@ public:
   ~QGoDBInitCreateUserPage() {}
 
   bool validatePage();
-  //int nextId() const;
 
 private:
   Q_DISABLE_COPY( QGoDBInitCreateUserPage );
@@ -69,6 +68,12 @@ private:
   bool CreateGofigureUserWithDatabaseConnector (
     vtkMySQLDatabase* DatabaseConnector,std::string iLogin, 
     std::string iServerName, std::string iPassword);
+  bool UserNameAlreadyExits(
+    vtkMySQLDatabase* DatabaseConnector,std::string iLogin, 
+    std::string iServerName, std::string iPassword);
+  /** \brief create a dialog with OK and Cancel button asking iquestion to the
+  user, return true if the user press OK, false if press Cancel*/
+  bool QuestionToUser(QString iQuestion);
 
 signals:
   void UserAndDatabaseCreated();

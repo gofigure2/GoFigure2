@@ -46,7 +46,9 @@
 #include <QVariant>
 #include <QInputDialog>
 #include <QDir>
-
+#include <QDialogButtonBox>
+#include <QLabel>
+#include <QTextLayout>
 
 QGoDBInitCreateUserPage::QGoDBInitCreateUserPage( QWidget *iParent)
   : QWizardPage( iParent )
@@ -91,9 +93,9 @@ bool QGoDBInitCreateUserPage::validatePage()
     }
    if(!this->CreateUser())
     {
-    msgBox.setText(
+    /*msgBox.setText(
       tr("There is a problem with the creation of your user.") );
-    msgBox.exec();
+    msgBox.exec();*/
     return false;
     }
    if(
@@ -142,53 +144,38 @@ bool QGoDBInitCreateUserPage::CreateUser()
         msgBox.exec();
         return false;
         }
-      return this->CreateGofigureUserWithDatabaseConnector(DataBaseConnectorBis,Login,
-        this->m_ServerName,Password);
+
+      if( !this->UserNameAlreadyExits(DataBaseConnectorBis,Login,
+          this->m_ServerName,Password))
+        {
+        if(this->QuestionToUser(
+          tr("Do you want to create this new user with a new database?")))
+          {
+          return this->CreateGofigureUserWithDatabaseConnector(DataBaseConnectorBis,Login,
+            this->m_ServerName,Password);
+          }
+        else
+          {
+          return false;
+          }
+        }
+      else
+        {
+        return this->QuestionToUser(
+          tr("The user you entered already exits, \ndo you want to create a database for this user ?"));
+        }
       }
-    }
-  else
-    {
-    return this->CreateGofigureUserWithDatabaseConnector(DataBaseConnector,Login,
-      this->m_ServerName,Password);
+    return false;
     }
   return false;
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-bool QGoDBInitCreateUserPage::CreateGofigureUserWithDatabaseConnector (
+bool QGoDBInitCreateUserPage::CreateGofigureUserWithDatabaseConnector(
   vtkMySQLDatabase* DatabaseConnector,std::string iLogin,
   std::string iServerName, std::string iPassword)
 {
-  vtkSQLQuery* queryUserExist = DatabaseConnector->GetQueryInstance();
-  QMessageBox msgBox;
-  std::stringstream UserExistScript;
-  UserExistScript << "SELECT USER FROM mysql.user WHERE user = '";
-  UserExistScript <<  iLogin;
-  UserExistScript << "';";
-  queryUserExist->SetQuery(UserExistScript.str().c_str());
-  if (!queryUserExist->Execute())
-    {
-    msgBox.setText(
-      tr("There is a problem to check your existing users.") );
-    msgBox.exec();
-    queryUserExist->Delete();
-    DatabaseConnector->Close();
-    DatabaseConnector->Delete();
-    return false;
-    }
-  if( queryUserExist->NextRow() )
-    {
-    queryUserExist->Delete();
-    DatabaseConnector->Close();
-    DatabaseConnector->Delete();
-    msgBox.setText(
-      tr("The user you are trying to create already exits.") );
-    msgBox.exec();
-    return false;
-    }
-  queryUserExist->Delete();
-
   vtkSQLQuery* query = DatabaseConnector->GetQueryInstance();
   std::stringstream queryScript;
   queryScript << "CREATE USER '";
@@ -212,9 +199,10 @@ bool QGoDBInitCreateUserPage::CreateGofigureUserWithDatabaseConnector (
   queryPrivileges->SetQuery(PrivilegesScript.str().c_str());
   if(!queryPrivileges->Execute())
     {
-    queryUserExist->Delete();
     DatabaseConnector->Close();
     DatabaseConnector->Delete();
+    queryPrivileges->Delete();
+    QMessageBox msgBox;
     msgBox.setText(
       tr("Sorry, there is a problem with the creation of your user.") );
     msgBox.exec();
@@ -223,9 +211,63 @@ bool QGoDBInitCreateUserPage::CreateGofigureUserWithDatabaseConnector (
   queryPrivileges->Delete();
   DatabaseConnector->Close();
   DatabaseConnector->Delete();
-
   return true;
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+bool QGoDBInitCreateUserPage::UserNameAlreadyExits(vtkMySQLDatabase* DatabaseConnector,
+  std::string iLogin, std::string iServerName, std::string iPassword)
+{
+  vtkSQLQuery* queryUserExist = DatabaseConnector->GetQueryInstance();
+  std::stringstream UserExistScript;
+  UserExistScript << "SELECT USER FROM mysql.user WHERE user = '";
+  UserExistScript <<  iLogin;
+  UserExistScript << "';";
+  queryUserExist->SetQuery(UserExistScript.str().c_str());
+  if (!queryUserExist->Execute())
+    {
+    QMessageBox msgBox;
+    msgBox.setText(
+      tr("There is a problem to check your existing users.") );
+    msgBox.exec();
+    queryUserExist->Delete();
+    DatabaseConnector->Close();
+    DatabaseConnector->Delete();
+    queryUserExist->Delete();
+    return false;
+    }
+  if( queryUserExist->NextRow() )
+    {
+    queryUserExist->Delete();
+    DatabaseConnector->Close();
+    DatabaseConnector->Delete();
+    return true;
+    }
+
+  queryUserExist->Delete();
+  return false;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+bool QGoDBInitCreateUserPage::QuestionToUser(QString iQuestion)
+{
+  QDialogButtonBox* button= new QDialogButtonBox(QDialogButtonBox::Ok
+                                      | QDialogButtonBox::Cancel);
+  QDialog* Dialog = new QDialog;
+  QLabel* Label = new QLabel(iQuestion);
+  QFormLayout* Layout = new QFormLayout(this);
+  Layout->addWidget(Label);
+  Layout->addWidget(button);
+  Dialog->setLayout(Layout);
+  QObject::connect(button, SIGNAL(accepted()), Dialog, SLOT(accept()));
+  QObject::connect(button, SIGNAL(rejected()), Dialog, SLOT(reject()));
+ 
+  int Result = Dialog->exec();
+  if (Result == 0)
+    {
+    return false;
+    }
+  return true;
+}
