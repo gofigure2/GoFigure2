@@ -58,8 +58,6 @@ ADD_DEPENDENCIES( QGoIO vtkLSMReader )
 
 TARGET_LINK_LIBRARIES( QGoIO
   QGoIO
-#  ${MYSQL_LIBRARY}  
-#  ${MYSQL_EXTRA_LIBRARIES}
   vtkIO
   vtkImaging
   vtkLSMReader

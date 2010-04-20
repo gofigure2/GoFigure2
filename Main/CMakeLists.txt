@@ -112,15 +112,14 @@ IF( WIN32 )
       ${GOFIGURE2_SOURCE_DIR}/Resources/myapp.rc 
       )
   ENDIF( MINGW )
-ENDIF( WIN32 )
 
-#---------------------------------------------------------------------------
-# This sets the windows build that will need the special winmain@16 call. 
-# Qt provides this for us in the qtmain.lib file. Using this cmake code 
-# will ensure we have it linked into our build. Not needed on 
-# Unix/OS X/Linux which is why we have the IF(WIN32) conditional.
-IF( WIN32 )
+  #---------------------------------------------------------------------------
+  # This sets the windows build that will need the special winmain@16 call. 
+  # Qt provides this for us in the qtmain.lib file. Using this cmake code 
+  # will ensure we have it linked into our build. Not needed on 
+  # Unix/OS X/Linux which is why we have the IF(WIN32) conditional.
   SET( QT_USE_QTMAIN TRUE )
+
 ENDIF( WIN32 )
 
 ADD_EXECUTABLE( gofigure
