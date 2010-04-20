@@ -139,9 +139,7 @@ QGoMainWindow::QGoMainWindow( )
 
   m_AboutWidget = new QGoAboutWidget;
   this->m_AboutWidget->hide();
-
-  m_DBInitializationWizard = new QGoDBInitializationWizard(this);
-  this->m_DBInitializationWizard->hide();
+  
   m_Bar.hide();
   QString temp;
   SetCurrentSingleFile( temp );
@@ -157,6 +155,20 @@ QGoMainWindow::QGoMainWindow( )
 
   CreateSignalSlotsConnection();
   ReadSettings();
+  if(!this->m_DatabaseSetUp)
+    {
+    actionSet_Up_Database = new QAction(
+      tr("Set Up Database"),this->menuDatabase);
+    this->menuDatabase->addAction(actionSet_Up_Database);
+    actionSet_Up_Database->setVisible(true);
+    //this->menuDatabase->addAction(actionSet_Up_Database);
+    m_DBInitializationWizard = new QGoDBInitializationWizard(this);
+    this->m_DBInitializationWizard->hide();
+    QObject::connect(this->actionSet_Up_Database, SIGNAL(triggered()),
+      SLOT(SetUpDatabase()));
+    QObject::connect(this->m_DBInitializationWizard,SIGNAL(DatabaseAndUserCreated()),
+    this, SLOT(RemoveSetUpDatabaseMenu()));
+    }
   // LoadPlugins();
 }
 
@@ -1000,7 +1012,7 @@ void QGoMainWindow::on_actionDeveloper_mailing_list_triggered( )
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoMainWindow::on_actionSet_Up_Database_triggered()
+void QGoMainWindow::SetUpDatabase()
 {
   this->m_DBInitializationWizard->show();
   this->m_DBInitializationWizard->exec();
@@ -1264,6 +1276,14 @@ void QGoMainWindow::openRecentFilesfromDB()
 //--------------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------------
+void QGoMainWindow::RemoveSetUpDatabaseMenu()
+{
+  this->actionSet_Up_Database->setEnabled(false);
+  this->m_DatabaseSetUp = true;
+}
+//--------------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------------
 void QGoMainWindow::ReadSettings()
 {
   QSettings settings;
@@ -1273,6 +1293,8 @@ void QGoMainWindow::ReadSettings()
     settings.value( "RecentMultipleFiles" ).toStringList( );
   m_RecentDatabaseFiles =
     settings.value( "RecentDatabaseFiles").toStringList( );
+  m_DatabaseSetUp =
+    settings.value( "DatabaseSetUp").toBool();
 
   this->UpdateRecentFileActions( m_RecentSingleFiles,
     this->menuSingle_Files, this->recentSingleFileActions );
@@ -1314,6 +1336,7 @@ void QGoMainWindow::WriteSettings()
   settings.setValue("pos", pos());
   settings.setValue("state", saveState());
   settings.endGroup();
+  settings.setValue("DatabaseSetUp",this->m_DatabaseSetUp);
 }
 //--------------------------------------------------------------------------------
 

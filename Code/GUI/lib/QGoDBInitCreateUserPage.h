@@ -70,6 +70,8 @@ private:
     vtkMySQLDatabase* DatabaseConnector,std::string iLogin, 
     std::string iServerName, std::string iPassword);
 
+signals:
+  void UserAndDatabaseCreated();
 
 };
 #endif

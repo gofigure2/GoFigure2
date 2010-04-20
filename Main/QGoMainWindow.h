@@ -128,10 +128,11 @@ private slots:
 
   void on_actionAbout_triggered( );
   void on_actionAbout_Qt_triggered( );
-  void on_actionSet_Up_Database_triggered();
+  void SetUpDatabase();
 
   void ApplyImageFilter();
   void tobedone( std::vector< vtkImageData* > );
+  void RemoveSetUpDatabaseMenu();
 
 private:
 
@@ -222,6 +223,8 @@ private:
   QStringList m_RecentSingleFiles;
   QStringList m_RecentMultipleFiles;
   QStringList m_RecentDatabaseFiles;
+  bool        m_DatabaseSetUp;
+  QAction*    actionSet_Up_Database;
 
   /** \brief current file name */
   QString m_CurrentFile;

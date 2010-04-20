@@ -208,7 +208,6 @@
      <property name="title">
       <string>Database</string>
      </property>
-     <addaction name="actionSet_Up_Database"/>
     </widget>
     <addaction name="menuDatabase"/>
    </widget>
@@ -501,7 +500,7 @@
     <string>Lineage</string>
    </property>
   </action>
-  <action name="actionSet_Up_Database">
+  <action name="action_2">
    <property name="text">
     <string>Set Up Database</string>
    </property>

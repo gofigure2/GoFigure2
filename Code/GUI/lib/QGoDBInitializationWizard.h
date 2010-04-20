@@ -43,6 +43,7 @@
 #include <QWizard>
 #include "CreateDataBaseHelper.h"
 #include "QGoGUILibConfigure.h"
+#include "QGoDBInitCreateUserPage.h"
 
 class QGOGUILIB_EXPORT QGoDBInitializationWizard : public QWizard
 {
@@ -80,9 +81,12 @@ protected:
   std::string             m_FirstFileName;
   int                     m_ImgSessionID;
   bool                    m_IsAnOpenRecentFile;*/
+  QGoDBInitCreateUserPage* m_CreateUserPage;
 
 private:
   Q_DISABLE_COPY( QGoDBInitializationWizard);
 
+signals:
+  void DatabaseAndUserCreated();
 };
 #endif

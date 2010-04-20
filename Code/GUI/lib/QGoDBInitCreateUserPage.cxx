@@ -105,6 +105,7 @@ bool QGoDBInitCreateUserPage::validatePage()
      msgBox.exec();
      return false;
      }
+   emit UserAndDatabaseCreated();
     return true;
 }
 //-------------------------------------------------------------------------
@@ -222,6 +223,7 @@ bool QGoDBInitCreateUserPage::CreateGofigureUserWithDatabaseConnector (
   queryPrivileges->Delete();
   DatabaseConnector->Close();
   DatabaseConnector->Delete();
+
   return true;
 }
 //-------------------------------------------------------------------------
