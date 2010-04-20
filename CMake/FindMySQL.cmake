@@ -25,8 +25,13 @@ FIND_PATH(MYSQL_INCLUDE_DIRECTORIES mysql.h
   /usr/local/mysql/include
   /usr/local/mysql/include/mysql
   "C:/Program Files/MySQL/include"
+  "C:\Program Files\MySQL\include"
   "C:/Program Files/MySQL/MySQL Server 5.1/include"
+  "C:\Program Files\MySQL\MySQL Server 5.1\include"
+  "C:\Program Files (x86)\MySQL\MySQL Server 5.1\include"
+  "C:/Program Files (x86)/MySQL/MySQL Server 5.1/include"
   "C:/MySQL/include"
+  "C:\MySQL\include"
   "[HKEY_LOCAL_MACHINE\\SOFTWARE\\MySQL AB\\MySQL Server 5.1;Location]/include"
   "[HKEY_LOCAL_MACHINE\\SOFTWARE\\Wow6432Node\\MySQL AB\\MySQL Server 5.1;Location]/include"
   DOC "Specify the directory containing mysql.h."
@@ -44,8 +49,11 @@ FIND_LIBRARY( MYSQL_LIBRARY
   /usr/local/mysql/lib
   /usr/local/mysql/lib/mysql
   "C:/Program Files/MySQL/lib"
+  "C:\Program Files\MySQL\lib"
   "C:/Program Files/MySQL/MySQL Server 5.1/lib/opt"
-  "C:/MySQL/lib/debug"
+  "C:\Program Files\MySQL\MySQL Server 5.1\lib\opt"
+  "C:/MySQL/lib/opt"
+  "C:\MySQL\lib\opt"
   "[HKEY_LOCAL_MACHINE\\SOFTWARE\\MySQL AB\\MySQL Server 5.1;Location]/lib/opt"
   "[HKEY_LOCAL_MACHINE\\SOFTWARE\\Wow6432Node\\MySQL AB\\MySQL Server 5.1;Location]/lib/opt"
   DOC "Specify the mysql library here."
