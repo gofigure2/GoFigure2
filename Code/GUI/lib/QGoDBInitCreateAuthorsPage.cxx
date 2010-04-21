@@ -76,9 +76,6 @@ QGoDBInitCreateAuthorsPage::QGoDBInitCreateAuthorsPage( QWidget *iParent)
     this,SLOT(CreateAuthor()));
 
   setLayout( formLayout );
-  registerField( "FirstName",  lineFirstName );
-  registerField( "MiddleName", lineMiddleName );
-  registerField( "LastName",   lineLastName );
 }
 //-------------------------------------------------------------------------
 
@@ -113,9 +110,9 @@ void QGoDBInitCreateAuthorsPage::CreateAuthor()
 {
   this->OpenDBConnection();
   QMessageBox msgBox;
-  std::string LastName = field("LastName").toString().toStdString();
-  std::string FirstName = field("FirstName").toString().toStdString();
-  std::string MiddleName = field("MiddleName").toString().toStdString();
+  std::string LastName = lineLastName->text().toStdString();
+  std::string FirstName = lineFirstName->text().toStdString();
+  std::string MiddleName =  lineMiddleName->text().toStdString();
 
   if(FindOneID(this->m_DatabaseConnector,"author", "AuthorID",
     "LastName",LastName,"FirstName",FirstName)!= -1 && MiddleName.empty())
@@ -175,16 +172,25 @@ void QGoDBInitCreateAuthorsPage::CreateAuthor()
 //------------------------------------------------------------------------------
 void QGoDBInitCreateAuthorsPage::OpenDBConnection()
 {
-  std::string Server = "localhost";
-  std::string User = field("User").toString().toStdString();
-  std::string Password = field("Password").toString().toStdString();
-  std::string DBName = "gofiguredatabase";
+  if(this->m_User.empty() || this->m_Password.empty())
+    {
+    this->SetDatabaseVariables(field("User").toString().toStdString(),
+      field("Password").toString().toStdString());
+    }
   if (this->m_DatabaseConnector == 0)
     {
     m_DatabaseConnector = OpenDatabaseConnection(
-      Server,User,Password,DBName);
+      this->m_Server,this->m_User,this->m_Password,this->m_DBName);
     }
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+void QGoDBInitCreateAuthorsPage::SetDatabaseVariables(
+  std::string iUser,std::string iPassword)
+{
+  this->m_User = iUser;
+  this->m_Password = iPassword;
+  this->m_Server = "localhost";
+  this->m_DBName = "gofiguredatabase";
+}

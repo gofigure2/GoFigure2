@@ -127,5 +127,7 @@ protected slots:
   /** \brief  display the information related to the given existing project*/
   void DisplayInfoProject(QString ProjectName);
 
+  void AddAuthors();
+
 };
 #endif

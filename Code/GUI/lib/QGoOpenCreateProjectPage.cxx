@@ -44,13 +44,14 @@
 #include "GoDBProjectRow.h"
 #include "QGoWizardDB.h"
 #include "ConvertToStringHelper.h"
+#include "QGoDBInitCreateAuthorsPage.h"
 #include <QMessageBox>
 #include <QRegExp>
 #include <QDate>
 #include <QTextEdit>
 #include <QGridLayout>
 #include <QComboBox>
-
+#include <QPushButton>
 
 QGoOpenCreateProjectPage::
 QGoOpenCreateProjectPage( QWidget *iParent ) :
@@ -67,6 +68,8 @@ QGoOpenCreateProjectPage( QWidget *iParent ) :
     new QRadioButton(tr("Create a new Project    "));
   OpenProjectRadioButton   =
     new QRadioButton(tr("Open an existing Project"));
+
+  QPushButton* NewAuthorButton = new QPushButton(tr("Add author"),this);
 
   textChoiceProject = new QLabel(tr("Project to open:"));
   ChoiceProject  = new QComboBox;
@@ -97,6 +100,7 @@ QGoOpenCreateProjectPage( QWidget *iParent ) :
   gridlayout->addWidget(ChoiceAuthor,4,1);
   gridlayout->addWidget(textAuthor,5,0);
   gridlayout->addWidget(lineAuthor,5,1);
+  gridlayout->addWidget(NewAuthorButton,5,3);
   gridlayout->addWidget(textDescription,6,0);
   gridlayout->addWidget(lineDescription,6,1);
   vlayout->addLayout(gridlayout);
@@ -113,6 +117,7 @@ QGoOpenCreateProjectPage( QWidget *iParent ) :
 
   QObject::connect( this->ChoiceProject,SIGNAL( currentIndexChanged(QString) ),
     this, SLOT(DisplayInfoProject(QString)));
+  QObject::connect(NewAuthorButton,SIGNAL(clicked()),this,SLOT(AddAuthors()));
 }
 //-------------------------------------------------------------------------
 
@@ -496,4 +501,15 @@ void QGoOpenCreateProjectPage::BackFromNextPage()const
 {
   this->OpenDBConnection();
   this->GetListProject();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoOpenCreateProjectPage::AddAuthors()
+{
+  QGoDBInitCreateAuthorsPage* CreateAuthorPage = new QGoDBInitCreateAuthorsPage;
+  CreateAuthorPage->SetDatabaseVariables(
+    field("User").toString().toStdString(),
+    field("Password").toString().toStdString());
+  CreateAuthorPage->show();
 }

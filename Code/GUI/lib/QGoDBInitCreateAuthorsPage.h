@@ -56,7 +56,8 @@ public:
 
   bool validatePage();
   //int nextId() const;
-
+  void SetDatabaseVariables(
+    std::string iUser,std::string iPassword);
 protected slots:
   void CreateAuthor();
 
@@ -68,7 +69,11 @@ private:
   QLineEdit*          lineFirstName;
   QPushButton*        CreateButton;
   vtkMySQLDatabase*   m_DatabaseConnector;
-
+  std::string         m_Server;
+  std::string         m_User;
+  std::string         m_Password;
+  std::string         m_DBName;
+  
   void OpenDBConnection();
 };
 #endif
