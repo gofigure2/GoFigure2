@@ -161,6 +161,7 @@ void QGoDBInitCreateAuthorsPage::CreateAuthor()
   msgBox.setText(
     tr("Your author has been successfully created") );
   msgBox.exec();
+  emit NewAuthorCreated();
 
   if (CloseDatabaseConnection(m_DatabaseConnector))
     {

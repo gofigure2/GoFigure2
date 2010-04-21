@@ -69,7 +69,7 @@ QGoOpenCreateProjectPage( QWidget *iParent ) :
   OpenProjectRadioButton   =
     new QRadioButton(tr("Open an existing Project"));
 
-  QPushButton* NewAuthorButton = new QPushButton(tr("Add author"),this);
+  NewAuthorButton = new QPushButton(tr("Add author"),this);
 
   textChoiceProject = new QLabel(tr("Project to open:"));
   ChoiceProject  = new QComboBox;
@@ -100,7 +100,7 @@ QGoOpenCreateProjectPage( QWidget *iParent ) :
   gridlayout->addWidget(ChoiceAuthor,4,1);
   gridlayout->addWidget(textAuthor,5,0);
   gridlayout->addWidget(lineAuthor,5,1);
-  gridlayout->addWidget(NewAuthorButton,5,3);
+  gridlayout->addWidget(NewAuthorButton,4,3);
   gridlayout->addWidget(textDescription,6,0);
   gridlayout->addWidget(lineDescription,6,1);
   vlayout->addLayout(gridlayout);
@@ -117,6 +117,7 @@ QGoOpenCreateProjectPage( QWidget *iParent ) :
 
   QObject::connect( this->ChoiceProject,SIGNAL( currentIndexChanged(QString) ),
     this, SLOT(DisplayInfoProject(QString)));
+
   QObject::connect(NewAuthorButton,SIGNAL(clicked()),this,SLOT(AddAuthors()));
 }
 //-------------------------------------------------------------------------
@@ -273,7 +274,7 @@ QStringList QGoOpenCreateProjectPage::GetListAuthors()
     {
     QMessageBox msgBox;
     msgBox.setText(
-      tr( "Please enter first the name of your authors in the Database :" ) );
+      tr( "Please create the author of your project:" ) );
     msgBox.exec();
     }
 
@@ -298,15 +299,14 @@ void QGoOpenCreateProjectPage::ChangeToCreateProjectDisplay()
   lineDescription->clear();
   textChoiceAuthor->setVisible(true);
   ChoiceAuthor->setVisible(true);
+  NewAuthorButton->setVisible(true);
   textAuthor->setVisible(false);
   lineAuthor->setVisible(false);
 
-  if(ListAuthors.isEmpty())
-    {
-    ListAuthors = GetListAuthors();
-    ChoiceAuthor->clear();
-    ChoiceAuthor->addItems(ListAuthors);
-    }
+  //if(ListAuthors.isEmpty())
+    //{
+    this->UpdateListAuthors();
+   // }
   ChoiceAuthor->setVisible(true);
   OpenOrCreateProject = "Create";
 }
@@ -325,6 +325,7 @@ void QGoOpenCreateProjectPage::ChangeToOpenProjectDisplay()
   lineDescription->setReadOnly(true);
   textChoiceAuthor->setVisible(false);
   ChoiceAuthor->setVisible(false);
+  NewAuthorButton->setVisible(false);
   textAuthor->setVisible(true);
   lineAuthor->setVisible(true);
   OpenOrCreateProject = "Open";
@@ -512,4 +513,15 @@ void QGoOpenCreateProjectPage::AddAuthors()
     field("User").toString().toStdString(),
     field("Password").toString().toStdString());
   CreateAuthorPage->show();
+  QObject::connect(CreateAuthorPage,SIGNAL(NewAuthorCreated()),
+    this, SLOT(UpdateListAuthors()));
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoOpenCreateProjectPage::UpdateListAuthors()
+{
+  QStringList ListAuthors = GetListAuthors();
+  ChoiceAuthor->clear();
+  ChoiceAuthor->addItems(ListAuthors);  
 }

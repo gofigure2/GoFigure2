@@ -102,6 +102,7 @@ private:
   QLabel*         textChoiceProject;
   QComboBox*      ChoiceProject;
   QLabel*         textChoiceAuthor;
+  QPushButton*    NewAuthorButton;
   QComboBox*      ChoiceAuthor;
   QLabel*         textAuthor;
   QLineEdit*      lineAuthor;
@@ -128,6 +129,8 @@ protected slots:
   void DisplayInfoProject(QString ProjectName);
 
   void AddAuthors();
+  void UpdateListAuthors();
+
 
 };
 #endif

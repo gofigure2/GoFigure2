@@ -60,7 +60,8 @@ public:
     std::string iUser,std::string iPassword);
 protected slots:
   void CreateAuthor();
-
+signals:
+  void NewAuthorCreated();
 private:
   Q_DISABLE_COPY( QGoDBInitCreateAuthorsPage );
 
