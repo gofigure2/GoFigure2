@@ -93,9 +93,6 @@ bool QGoDBInitCreateUserPage::validatePage()
     }
    if(!this->CreateUser())
     {
-    /*msgBox.setText(
-      tr("There is a problem with the creation of your user.") );
-    msgBox.exec();*/
     return false;
     }
    if(
@@ -103,7 +100,7 @@ bool QGoDBInitCreateUserPage::validatePage()
     field("Password").toString().toStdString(),this->m_DBName))
      {
      msgBox.setText(
-        tr("There is a problem with the creation of your database.") );
+        tr("There is a problem with the creation of your database,check the password for your user.") );
      msgBox.exec();
      return false;
      }
@@ -162,7 +159,7 @@ bool QGoDBInitCreateUserPage::CreateUser()
       else
         {
         return this->QuestionToUser(
-          tr("The user you entered already exits, \ndo you want to create a database for this user ?"));
+          tr("The user you entered already exits, \ndo you want to create a database for this user?"));
         }
       }
     return false;

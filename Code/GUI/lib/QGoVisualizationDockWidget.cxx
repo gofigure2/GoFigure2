@@ -39,7 +39,6 @@
 =========================================================================*/
 
 #include "QGoVisualizationDockWidget.h"
-
 #include <QLabel>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
@@ -180,6 +179,11 @@ SetXMinimumAndMaximum( const int& iMin, const int& iMax )
 {
   this->XSliceSpinBox->setMinimum( iMin );
   this->XSliceSpinBox->setMaximum( iMax );
+  this->XSliceSlider->setMinimum( iMin );
+  this->XSliceSlider->setMaximum( iMax );
+  //this->MinXSlicelbl->setText(ConvertToString<int>(iMin).c_str());
+  this->MinXSlicelbl->setText(tr("%1").arg(iMin));
+  this->MaxXSlicelbl->setText(tr("%1").arg(iMax));
 }
 //-------------------------------------------------------------------------
 
@@ -189,6 +193,10 @@ SetYMinimumAndMaximum( const int& iMin, const int& iMax )
 {
   this->YSliceSpinBox->setMinimum( iMin );
   this->YSliceSpinBox->setMaximum( iMax );
+  this->YSliceSlider->setMinimum ( iMin );
+  this->YSliceSlider->setMaximum( iMax );
+  this->MinYSlicelbl->setText(tr("%1").arg(iMin));
+  this->MaxYSlicelbl->setText(tr("%1").arg(iMax));
 }
 //-------------------------------------------------------------------------
 
@@ -198,6 +206,10 @@ SetZMinimumAndMaximum( const int& iMin, const int& iMax )
 {
   this->ZSliceSpinBox->setMinimum( iMin );
   this->ZSliceSpinBox->setMaximum( iMax );
+  this->ZSliceSlider->setMinimum ( iMin );
+  this->ZSliceSlider->setMaximum( iMax );
+  this->MinZSlicelbl->setText(tr("%1").arg(iMin));
+  this->MaxZSlicelbl->setText( tr("%1").arg(iMax));
 }
 //-------------------------------------------------------------------------
 
@@ -207,6 +219,10 @@ SetTMinimumAndMaximum( const int& iMin, const int& iMax )
 {
   this->TSliceSpinBox->setMinimum( iMin );
   this->TSliceSpinBox->setMaximum( iMax );
+  this->TSliceSlider->setMinimum ( iMin );
+  this->TSliceSlider->setMaximum( iMax );
+  this->MinTSlicelbl->setText(tr("%1").arg(iMin));
+  this->MaxTSlicelbl->setText(tr("%1").arg(iMax));
 }
 //-------------------------------------------------------------------------
 
