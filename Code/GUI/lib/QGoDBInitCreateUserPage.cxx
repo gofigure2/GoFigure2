@@ -216,9 +216,15 @@ bool QGoDBInitCreateUserPage::CreateGofigureUserWithDatabaseConnector(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-bool QGoDBInitCreateUserPage::UserNameAlreadyExits(vtkMySQLDatabase* DatabaseConnector,
-  std::string iLogin, std::string iServerName, std::string iPassword)
+bool 
+QGoDBInitCreateUserPage::
+UserNameAlreadyExits( vtkMySQLDatabase* DatabaseConnector,
+  std::string iLogin, std::string iServerName, std::string iPassword )
 {
+  // unused parameters
+  (void) iServerName;
+  (void) iPassword;
+
   vtkSQLQuery* queryUserExist = DatabaseConnector->GetQueryInstance();
   std::stringstream UserExistScript;
   UserExistScript << "SELECT USER FROM mysql.user WHERE user = '";
