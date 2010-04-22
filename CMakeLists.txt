@@ -172,14 +172,9 @@ IF( VTK_FOUND )
     INCLUDE_DIRECTORIES( BEFORE ${Boost_INCLUDE_DIRS} )
   ENDIF( Boost_FOUND )
 
-  # Try to extract Qt variable from VTK
-  SET(QT_QMAKE_EXECUTABLE ${VTK_QT_QMAKE_EXECUTABLE} CACHE FILEPATH "")
-  SET(QT_MOC_EXECUTABLE ${VTK_QT_MOC_EXECUTABLE} CACHE FILEPATH "")
-  SET(QT_UIC_EXECUTABLE ${VTK_QT_UIC_EXECUTABLE} CACHE FILEPATH "")
-
   # Try to find Qt.
   # Note that some command line tools will get compiled even without Qt
-  FIND_PACKAGE( Qt4 REQUIRED )
+  FIND_PACKAGE( Qt4 )
   IF( QT4_FOUND AND QT_VERSION_MINOR GREATER 4 )
     IF( QT_USE_FILE )
       SET( QT_USE_QT3SUPPORT FALSE )
@@ -239,6 +234,11 @@ IF( VTK_FOUND )
       ${GOFIGURE2_EXTERNAL_BINARY_DIR}/itkQt
       ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/itkQt
     )
+
+    # Try to extract Qt variable from VTK
+    SET( QT_QMAKE_EXECUTABLE ${VTK_QT_QMAKE_EXECUTABLE} CACHE FILEPATH "" )
+    SET( QT_MOC_EXECUTABLE ${VTK_QT_MOC_EXECUTABLE} CACHE FILEPATH "" )
+    SET( QT_UIC_EXECUTABLE ${VTK_QT_UIC_EXECUTABLE} CACHE FILEPATH "" )
 
     #---------------------------------------------------------------------
     #---------------------------------------------------------------------
