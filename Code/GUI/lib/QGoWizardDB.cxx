@@ -225,7 +225,7 @@ void QGoWizardDB::closeEvent(QCloseEvent* iEvent)
   this->SetFirstFileName();
   this->m_ImgSessionName.clear();
   this->m_IsAnOpenRecentFile = false;
-    
+  //this->restart();
   switch (CurrentPageID)
     {
     case 0:
@@ -242,9 +242,8 @@ void QGoWizardDB::closeEvent(QCloseEvent* iEvent)
       if( ProjectPage->m_DatabaseConnector )
         {
         ProjectPage->m_DatabaseConnector->Close();
-        ProjectPage->m_DatabaseConnector->Delete();
+        ProjectPage->m_DatabaseConnector = 0;
         }
-      delete ProjectPage;
       break;
       }
     case 3:
@@ -253,9 +252,8 @@ void QGoWizardDB::closeEvent(QCloseEvent* iEvent)
       if( ImgSessionPage->m_DatabaseConnector )
         {
         ImgSessionPage->m_DatabaseConnector->Close();
-        ImgSessionPage->m_DatabaseConnector->Delete();
+        ImgSessionPage->m_DatabaseConnector = 0;
         }
-      delete ImgSessionPage;
       break;
       }
     case 4:
@@ -264,9 +262,8 @@ void QGoWizardDB::closeEvent(QCloseEvent* iEvent)
       if( CreateImgSessionPage->m_DatabaseConnector )
         {
         CreateImgSessionPage->m_DatabaseConnector->Close();
-        CreateImgSessionPage->m_DatabaseConnector->Delete();
+        CreateImgSessionPage->m_DatabaseConnector = 0;
         }
-      delete CreateImgSessionPage;
       break;
       }
     default:

@@ -156,7 +156,7 @@ QGoMainWindow::QGoMainWindow( )
   CreateSignalSlotsConnection();
   ReadSettings();
   //to remove when done:
-  this->m_DatabaseSetUp = false;
+  this->m_DatabaseSetUp=false;
   if(!this->m_DatabaseSetUp)
     {
     actionSet_Up_Database = new QAction(
@@ -167,8 +167,8 @@ QGoMainWindow::QGoMainWindow( )
     this->m_DBInitializationWizard->hide();
     QObject::connect(this->actionSet_Up_Database, SIGNAL(triggered()),
       SLOT(SetUpDatabase()));
-    QObject::connect(this->m_DBInitializationWizard,SIGNAL(DatabaseAndUserCreated()),
-    this, SLOT(RemoveSetUpDatabaseMenu()));
+    //QObject::connect(this->m_DBInitializationWizard,SIGNAL(DatabaseAndUserCreated()),
+    //this, SLOT(RemoveSetUpDatabaseMenu()));
     }
   // LoadPlugins();
 }
@@ -374,8 +374,8 @@ void QGoMainWindow::on_actionUse_DataBase_triggered()
   if( !m_DBWizard->isVisible() )
     {
     m_DBWizard->SetIsAnOpenRecentFile(false);
-    m_DBWizard->restart();
     m_DBWizard->show();
+    m_DBWizard->restart();
     }
 }
 //--------------------------------------------------------------------------
