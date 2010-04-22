@@ -1,7 +1,7 @@
 /*=========================================================================
-  Author: $Author$  // Author of last commit
-  Version: $Rev$  // Revision of last commit
-  Date: $Date$  // Date of last commit
+  Author: $Author: nicolasrannou $  // Author of last commit
+  Version: $Rev: 1203 $  // Revision of last commit
+  Date: $Date: 2010-04-09 10:03:07 -0400 (Fri, 09 Apr 2010) $  // Date of last commit
 =========================================================================*/
 
 /*=========================================================================
@@ -38,30 +38,46 @@
 
 =========================================================================*/
 
-#include "QGoManualSegmentationDockWidget.h"
+#include "QGoOneClickSegmentationDockWidget.h"
 
 #include <QColorDialog>
 #include <cstdlib>
 
-
 //---------------------------------------------------------------------------//
-QGoManualSegmentationDockWidget::
-QGoManualSegmentationDockWidget( QWidget* iParent ) :
-  QDockWidget( iParent )
+QGoOneClickSegmentationDockWidget::
+QGoOneClickSegmentationDockWidget( QWidget* iParent) : QDockWidget( iParent ),
+m_Filter(0)
 {
   this->setupUi( this );
 
-  QObject::connect( this->ReinitializeBtn, SIGNAL( pressed() ),
-    this, SIGNAL( ReinitializePressed() ) );
-
-  QObject::connect( this->ValidateBtn, SIGNAL( pressed() ),
-    this, SIGNAL( ValidatePressed() ) );
+  QObject::connect( this->applyFilterBtn, SIGNAL( pressed() ),
+      this, SLOT( ApplyFilterEmit() ) );
 }
 //---------------------------------------------------------------------------//
 
 //---------------------------------------------------------------------------//
-QGoManualSegmentationDockWidget::
-~QGoManualSegmentationDockWidget()
+QGoOneClickSegmentationDockWidget::
+~QGoOneClickSegmentationDockWidget()
 {
+}
+//---------------------------------------------------------------------------//
+
+//---------------------------------------------------------------------------//
+void
+QGoOneClickSegmentationDockWidget::
+ApplyFilterEmit()
+{
+  emit ApplyFilterPressed();
+}
+//---------------------------------------------------------------------------//
+
+//---------------------------------------------------------------------------//
+int
+QGoOneClickSegmentationDockWidget::
+GetFilter()
+{
+  // 0 = circle contours (sphere aspect)
+  // 1 = sphere ( 3D volume - no contours)
+  return this->filterType->currentIndex();
 }
 //---------------------------------------------------------------------------//

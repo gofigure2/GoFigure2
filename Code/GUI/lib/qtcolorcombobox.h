@@ -134,6 +134,8 @@ public:
 
     int FindItemText(std::string Text);
 
+    void IncrementMeshID();
+
     QSize sizeHint() const;
 
     /** \brief return the name and the QColor of the current selected color*/
@@ -163,10 +165,9 @@ public slots:
     void DeleteCollectionID(unsigned int);
     void DontAddTheColor();
 
-
 private slots:
-    void emitActivatedColor(int index);
     void emitHighlightedColor(int index);
+    void emitActivatedColor(int index);
 
 private:
     QColor lastActivated;

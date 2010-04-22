@@ -59,31 +59,9 @@ public:
   QGoManualSegmentationDockWidget( QWidget* parent = 0 );
   ~QGoManualSegmentationDockWidget();
 
-  QGoTraceManualEditingWidget* TraceManualEditingWidget;
-
-  double GetLinesWidth() const;
-  QColor GetLinesColor() const;
-  QColor GetNodesColor() const;
-  QColor GetActiveNodesColor() const;
-
-public slots:
-  void ActivateManualSegmentation( bool );
-  void SetContourColor();
-  void GenerateContourRepresentationProperties();
-
 signals:
   void ReinitializePressed();
   void ValidatePressed();
-//  void ActivateManualSegmentationToggled( bool );
-  void ContourRepresentationPropertiesChanged();
-
-protected:
-  QGoManualSegmentationSettingsDialog* m_SettingsDialog;
-
-  double m_LinesWidth;
-  QColor m_LinesColor;
-  QColor m_NodesColor;
-  QColor m_ActiveNodesColor;
 
 };
 

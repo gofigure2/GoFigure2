@@ -92,6 +92,8 @@
 #include "qtcolorcombobox.h"
 #include "ConvertToStringHelper.h"
 
+#include <iostream>
+
 /*! \class QtColorComboBox
 
     \brief The QtColorComboBox class provides a combobox with colors
@@ -132,26 +134,31 @@
     A class representing a color item in the combo box. The most
     interesting function here is paint().
 */
+//-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
 /*!
     Constructs a QtColorComboBox with the color dialog disabled. The
     \a parent and \a name arguments are passed to the QComboBox's
     constructor.
 */
-QtColorComboBox::QtColorComboBox(QWidget *iParent, const char * /*name*/)
+QtColorComboBox::
+QtColorComboBox(QWidget *iParent, const char * /*name*/)
     : QComboBox(iParent), numUserColors(0)
 {
-    colorDialogEnabled = false;
-    NewColorToBeAdded = true;
+  colorDialogEnabled = false;
+  NewColorToBeAdded = true;
  
-    this->hide();
-    // QtColorComboBox uses QColor based signals with the same name.
-    // We intercept the int signals emitted by QtComboBox in able to
-    // do our logics.
-    connect(this, SIGNAL(activated(int)), SLOT(emitActivatedColor(int)));
-    connect(this, SIGNAL(highlighted(int)), SLOT(emitHighlightedColor(int)));
+  this->hide();
+  // QtColorComboBox uses QColor based signals with the same name.
+  // We intercept the int signals emitted by QtComboBox in able to
+  // do our logics.
+  connect(this, SIGNAL(activated(int)), SLOT(emitActivatedColor(int)));
+  connect(this, SIGNAL(highlighted(int)), SLOT(emitHighlightedColor(int)));
 }
+//-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
 /*!
     Enables the color dialog if \a enabled is true; otherwise disables
     it.
@@ -165,25 +172,31 @@ QtColorComboBox::QtColorComboBox(QWidget *iParent, const char * /*name*/)
 
     \sa insertColor()
 */
-void QtColorComboBox::setColorDialogEnabled(bool enabled,std::string TextToAdd)
+void
+QtColorComboBox::
+setColorDialogEnabled(bool enabled,std::string TextToAdd)
 {
-   // if (colorDialogEnabled == enabled)
-	//return;
-
-    if ((colorDialogEnabled = enabled) == true) {
-	// Add the color dialog item if it's disabled from before.
-      addItem(tr(TextToAdd.c_str()));
-    } else {
-	// Remove the color dialog item if it's enabled from before.
-	// It's always the last item in the list.
-        removeItem(colorCount());
+  // if (colorDialogEnabled == enabled)
+  //return;
+  if ((colorDialogEnabled = enabled) == true)
+    {
+  // Add the color dialog item if it's disabled from before.
+    addItem(tr(TextToAdd.c_str()));
+    }
+  else
+    {
+    // Remove the color dialog item if it's enabled from before.
+    // It's always the last item in the list.
+    removeItem(colorCount());
     }
 }
 void QtColorComboBox::setCreationCollection(bool enabled)
 {
     creationCollection = enabled;
 }
+//-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
 /*!
   \fn void QtColorComboBox::addColor(const QColor &color, const QString &name)
 
@@ -196,72 +209,105 @@ void QtColorComboBox::setCreationCollection(bool enabled)
 
     If \a index is -1, then color is prepended to the beginning end of the list.
 */
-void QtColorComboBox::insertColor(int index, const QColor &iColor, const QString &iName)
+void
+QtColorComboBox::
+insertColor(int index, const QColor &iColor, const QString &iName)
 {
-    QPixmap pix(12, 12);
-    QPainter painter(&pix);
-    if (iColor.isValid()) {
-	painter.setPen(Qt::gray);
-	painter.setBrush(QBrush(iColor));
-	painter.drawRect(0, 0, 12, 12);
+  QPixmap pix(12, 12);
+  QPainter painter(&pix);
+  if (iColor.isValid())
+    {
+    painter.setPen(Qt::gray);
+    painter.setBrush(QBrush(iColor));
+    painter.drawRect(0, 0, 12, 12);
     }
-    QIcon icon;
-    icon.addPixmap(pix);
+  QIcon icon;
+  icon.addPixmap(pix);
 
-    // Prevent adding of colors after the color dialog item.
-    if (colorDialogEnabled && index > colorCount()) index = colorCount() - 1;
-    insertItem(index, icon, iName, iColor);
+  // Prevent adding of colors after the color dialog item.
+  if (colorDialogEnabled && index > colorCount())
+    {
+    index = colorCount() - 1;
+    }
+
+  insertItem(index, icon, iName, iColor);
 }
+//-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
 /*!
     This function returns the number of colours in the combobox. (excluding the "More...")
 */
-int QtColorComboBox::colorCount() const
+int
+QtColorComboBox::
+colorCount() const
 {
-    return QComboBox::count() - (colorDialogEnabled ? 1 : 0);
+  return QComboBox::count() - (colorDialogEnabled ? 1 : 0);
 }
+//-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
 /*!
     Returns the current color.
 */
-QColor QtColorComboBox::currentColor() const
+QColor
+QtColorComboBox::
+currentColor() const
 {
-    return qVariantValue<QColor>(itemData(currentIndex()) );
+  return qVariantValue<QColor>(itemData(currentIndex()) );
 }
 
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 /*!
     Sets \a color to be the current color if \a color is one of the
     combobox's colors; otherwise does nothing.
 
     \sa insertColor()
 */
-void QtColorComboBox::setCurrentColor(const QColor &iColor)
+void
+QtColorComboBox::
+setCurrentColor(const QColor &iColor)
 {
-    for (int i = 0; i < colorCount(); i++) {
-	if (QtColorComboBox::color(i) == iColor) {
-	    setCurrentIndex(i);
-	    break;
-	}
+  for (int i = 0; i < colorCount(); i++)
+    {
+    if( QtColorComboBox::color(i) == iColor )
+      {
+        setCurrentIndex(i);
+        break;
+      }
     }
 }
+//-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
 /*!
     Returns the color at position \a index.
 */
-QColor QtColorComboBox::color(int index) const
+QColor
+QtColorComboBox::
+color(int index) const
 {
-    QVariant var = itemData(index);
-    // discard out of bounds requests
-    if (!var.isValid())
-	return QColor();
+  QVariant var = itemData(index);
 
-    // discard requests for the "more" item
-    if (colorDialogEnabled && index == colorCount())
-	return QColor();
+  // discard out of bounds requests
+  if (!var.isValid())
+  {
+    return QColor();
+  }
 
-    return qVariantValue<QColor>(var);
+  // discard requests for the "more" item
+  if (colorDialogEnabled && index == colorCount())
+  {
+  return QColor();
+  }
+
+  return qVariantValue<QColor>(var);
 }
+//-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
 /*! \internal
 
     This slot is triggered by the combobox' activated() signal. If the
@@ -269,31 +315,27 @@ QColor QtColorComboBox::color(int index) const
     inserts the new color; otherwise, emits activated() with the color
     that was selected.
 */
-void QtColorComboBox::emitActivatedColor(int index)
+void
+QtColorComboBox::
+emitActivatedColor( int index )
 {
-  /*if (creationCollection == true)
+  if (colorDialogEnabled && index == colorCount())
     {
-    NewCollectionToBeSaved();
-    } 
-  else
-    {*/
-    if (colorDialogEnabled && index == colorCount()) 
+    /** \todo create a specific class for colorcollectionID
+    combobox*/
+    if (creationCollection == true)
       {
-      /** \todo create a specific class for colorcollectionID 
-      combobox*/
-      if (creationCollection == true)
+      NewCollectionToBeSaved();
+      setCurrentIndex(index);
+      }
+    else
+      {
+      // Get a new color from the color dialog.
+      QColor col = QColorDialog::getColor();
+      if (col.isValid())
         {
-        NewCollectionToBeSaved();
-        setCurrentIndex(index);
-        } 
-      else
-        {
-	    // Get a new color from the color dialog.
-	    QColor col = QColorDialog::getColor();
-	    if (col.isValid()) 
-        {
-	      // Unless the user pressed cancel, insert the new color at
-	      // the end of the list.
+        // Unless the user pressed cancel, insert the new color at
+        // the end of the list.
         bool ok = false;
         QString ColorName = QInputDialog::getText(this, tr("New Color Name:"),
           tr("Please enter the name for your new color:"),QLineEdit::Normal,"",&ok);
@@ -310,34 +352,35 @@ void QtColorComboBox::emitActivatedColor(int index)
             {
             this->NewColorToBeAdded = true;
             setCurrentColor(lastActivated);
-	          col = lastActivated;
+            col = lastActivated;
             }
           }
-	}     else 
+        }
+      else
         {
-	      // The user pressed cancel - reset the current color to
-	      // what it was before the color dialog was shown.
-	      setCurrentColor(lastActivated);
-	      col = lastActivated;
-	      }
-	update();
-	lastActivated = col;
-	emit activated(col);
+        // The user pressed cancel - reset the current color to
+        // what it was before the color dialog was shown.
+        setCurrentColor(lastActivated);
+        col = lastActivated;
+        }
+      update();
+      lastActivated = col;
+      emit activated(col);
+      }
     }
+  else
+    {
+    // If any other item than the color dialog item was activated,
+    // pull out the color of that item.
+    QColor col = qVariantValue<QColor>(itemData(index) );
+    update();
+    lastActivated = col;
+    emit activated(col);
   }
-     else {
-
-        // If any other item than the color dialog item was activated,
-        // pull out the color of that item.
-        QColor col = qVariantValue<QColor>(itemData(index) );
-        update();
-        lastActivated = col;
-        emit activated(col);
-
-    }
-  //}
 }
+//-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
 /*! \internal
 
     This slot is triggered by QComboBox' highlighted() signal. If the
@@ -346,22 +389,29 @@ void QtColorComboBox::emitActivatedColor(int index)
 */
 void QtColorComboBox::emitHighlightedColor(int index)
 {
-    if (!colorDialogEnabled || index != colorCount())
-	emit highlighted(color(index));
+  if (!colorDialogEnabled || index != colorCount())
+  {
+    emit highlighted(color(index));
+  }
 }
+//-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
 /*! \reimp
  */
-QSize QtColorComboBox::sizeHint() const
+QSize
+QtColorComboBox::
+sizeHint() const
 {
-    QFontMetrics fm = fontMetrics();
-    QStyleOptionComboBox box;
-    box.init(this);
-    return style()->sizeFromContents(QStyle::CT_ComboBox, &box,
-                                     QSize(fm.width(tr("User Color 99")) + 16 + 4, fm.height() + 4),
-                                     this);
+  QFontMetrics fm = fontMetrics();
+  QStyleOptionComboBox box;
+  box.init(this);
+  return style()->sizeFromContents( QStyle::CT_ComboBox, &box,
+  QSize(fm.width(tr("User Color 99")) + 16 + 4, fm.height() + 4), this);
 }
+//-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
 /*!
     Adds the 17 predefined colors from the Qt namespace.
 
@@ -370,7 +420,9 @@ QSize QtColorComboBox::sizeHint() const
 
     \sa insertColor()
 */
-void QtColorComboBox::setStandardColors()
+void
+QtColorComboBox::
+setStandardColors()
 {
     addColor(Qt::black, tr("Black"));
     addColor(Qt::white, tr("White"));
@@ -390,20 +442,26 @@ void QtColorComboBox::setStandardColors()
     addColor(Qt::darkGray, tr("Dark gray"));
     addColor(Qt::lightGray, tr("Light gray"));
 }
+//-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
 /*!
     Returns true if the color dialog button is enabled;
     otherwise returns false.
 */
-bool QtColorComboBox::isColorDialogEnabled() const
+bool
+QtColorComboBox::
+isColorDialogEnabled() const
 {
     return colorDialogEnabled;
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QtColorComboBox::setExistingColors(
-  std::list<std::pair<std::string,std::vector<int> > > iDataColorsFromDB)
+void
+QtColorComboBox::
+setExistingColors(
+    std::list<std::pair<std::string,std::vector<int> > > iDataColorsFromDB )
 { 
   this->clear();
   if (!iDataColorsFromDB.empty())
@@ -427,8 +485,9 @@ void QtColorComboBox::setExistingColors(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QtColorComboBox::PassDataForNewColorToBeSaved(
-  QColor Color, std::string NameColor)
+void
+QtColorComboBox::
+PassDataForNewColorToBeSaved( QColor Color, std::string NameColor )
 {
   std::vector<std::string> NewColorData;
   NewColorData.push_back(NameColor);
@@ -442,7 +501,9 @@ void QtColorComboBox::PassDataForNewColorToBeSaved(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-std::pair<std::string,QColor> QtColorComboBox::GetCurrentColorData()
+std::pair<std::string,QColor>
+QtColorComboBox::
+GetCurrentColorData()
 {
  std::pair<std::string,QColor> CurrentColor;
  std::string test = QtColorComboBox::currentText().toStdString();//test 
@@ -453,7 +514,9 @@ std::pair<std::string,QColor> QtColorComboBox::GetCurrentColorData()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-int QtColorComboBox::FindItemText(std::string Text)
+int
+QtColorComboBox::
+FindItemText( std::string Text )
 {
   for (int i =0; i < this->colorCount(); i++)
     {
@@ -467,7 +530,9 @@ int QtColorComboBox::FindItemText(std::string Text)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QtColorComboBox::DeleteCollectionID(unsigned int CollectionID)
+void
+QtColorComboBox::
+DeleteCollectionID( unsigned int CollectionID )
 {
   int index = this->FindItemText(ConvertToString<unsigned int>(CollectionID));
   if( index != -1 )
@@ -478,7 +543,22 @@ void QtColorComboBox::DeleteCollectionID(unsigned int CollectionID)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QtColorComboBox::DontAddTheColor()
+void
+QtColorComboBox::
+DontAddTheColor()
 {
   this->NewColorToBeAdded = false;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QtColorComboBox::
+IncrementMeshID()
+{
+  // Get number of objects in the combo box
+  unsigned int numberOfColors = this->colorCount();
+
+  // Simulates click one the last object (i.e. add new mesh)
+  this->emitActivatedColor( numberOfColors );
 }

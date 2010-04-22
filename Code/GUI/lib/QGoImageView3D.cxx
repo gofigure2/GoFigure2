@@ -40,6 +40,10 @@
 
 #include "QGoImageView3D.h"
 
+#include "vtkConstrainedPointHandleRepresentation.h"
+#include "vtkSeedWidget.h"
+#include "vtkImageActorPointPlacer.h"
+
 #include "vtkImageData.h"
 #include "vtkViewImage2D.h"
 #include "vtkViewImage3D.h"
@@ -70,7 +74,13 @@
 
 #include "vtkViewImage2DCommand.h"
 #include "vtkViewImage2DCollectionCommand.h"
+#include "vtkImageActorPointPlacer.h"
 
+#include "vtkCellArray.h"
+#include "vtkMath.h"
+#include "vtkPolyData.h"
+
+#include <cstdlib>
 
 //-------------------------------------------------------------------------
 /**
@@ -109,28 +119,54 @@ QGoImageView3D( QWidget* iParent ) :
 
   View3D = vtkViewImage3D::New();
 
-  vtkViewImage2D* View1 = vtkViewImage2D::New();
+  vtkSmartPointer<vtkViewImage2D> View1 = vtkSmartPointer<vtkViewImage2D>::New();
   SetupViewGivenQVTKWidget( View1, this->QvtkWidget_XY );
 
   this->m_Pool->AddItem( View1 );
-  View1->Delete();
+  //View1->Delete();
 
-  vtkViewImage2D* View2 = vtkViewImage2D::New();
+  vtkSmartPointer<vtkViewImage2D> View2 = vtkSmartPointer<vtkViewImage2D>::New();
   SetupViewGivenQVTKWidget( View2, this->QvtkWidget_XZ );
 
   this->m_Pool->AddItem( View2 );
-  View2->Delete();
+  //View2->Delete();
 
-  vtkViewImage2D* View3 = vtkViewImage2D::New();
+  vtkSmartPointer<vtkViewImage2D> View3 = vtkSmartPointer<vtkViewImage2D>::New();
   SetupViewGivenQVTKWidget( View3, this->QvtkWidget_YZ );
 
   this->m_Pool->AddItem( View3 );
-  View3->Delete();
+  //View3->Delete();
 
   vtkRenderWindow* renwin4 = this->QvtkWidget_XYZ->GetRenderWindow( );
   this->View3D->SetRenderWindow( renwin4 );
   this->View3D->SetupInteractor( this->QvtkWidget_XYZ->GetInteractor() );
   this->m_Pool->SetExtraRenderWindow( renwin4 );
+
+  // Enable seed interaction
+  this->Handle.resize( this->m_Pool->GetNumberOfItems() );
+  this->SeedRep.resize( this->m_Pool->GetNumberOfItems() );
+  this->SeedWidget.resize( this->m_Pool->GetNumberOfItems() );
+
+  for( int i = 0; i < this->m_Pool->GetNumberOfItems(); i++)
+    {
+    this->Handle[i] = vtkSmartPointer<vtkConstrainedPointHandleRepresentation>::New();
+    this->Handle[i]->GetProperty()->SetColor(1,0,0);
+
+    this->SeedRep[i] = vtkSmartPointer<vtkSeedRepresentation>::New();
+    this->SeedRep[i]->SetHandleRepresentation(this->Handle[i]);
+
+    this->SeedWidget[i] = vtkSmartPointer<vtkSeedWidget>::New();
+    this->SeedWidget[i]->SetPriority( 10.0 );
+    this->SeedWidget[i]->SetRepresentation( this->SeedRep[i] );
+    }
+
+  this->Handle[0]->SetProjectionNormal( vtkViewImage2D::VIEW_ORIENTATION_AXIAL );
+  this->Handle[1]->SetProjectionNormal( vtkViewImage2D::VIEW_ORIENTATION_CORONAL );
+  this->Handle[2]->SetProjectionNormal( vtkViewImage2D::VIEW_ORIENTATION_SAGITTAL );
+
+  this->SeedWidget[0]->SetInteractor( this->QvtkWidget_XY->GetInteractor() );
+  this->SeedWidget[1]->SetInteractor( this->QvtkWidget_XZ->GetInteractor() );
+  this->SeedWidget[2]->SetInteractor( this->QvtkWidget_YZ->GetInteractor() );
 }
 //-------------------------------------------------------------------------
 
@@ -1231,6 +1267,7 @@ void
 QGoImageView3D::
 DefaultMode()
 {
+  DisableOneClickMode();
   //Change cursor
   this->QvtkWidget_XY->setCursor( Qt::ArrowCursor );
   this->QvtkWidget_XZ->setCursor( Qt::ArrowCursor );
@@ -1262,6 +1299,7 @@ void
 QGoImageView3D::
 ZoomMode()
 {
+  DisableOneClickMode();
   //Change cursors
   QCursor zoomCursor(QPixmap(QString::fromUtf8(":/fig/zoom.png")),-1,-1);
   this->QvtkWidget_XY->setCursor( zoomCursor );
@@ -1284,6 +1322,7 @@ void
 QGoImageView3D::
 PanMode()
 {
+  DisableOneClickMode();
   //Change cursor
   this->QvtkWidget_XY->setCursor( Qt::OpenHandCursor );
   this->QvtkWidget_XZ->setCursor( Qt::OpenHandCursor );
@@ -1298,5 +1337,96 @@ PanMode()
 
   vtkViewImage2D* View3 = this->m_Pool->GetItem( 2 );
   View3->SetInteractionStyle(vtkInteractorStyleImage2D::InteractionTypePan );
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoImageView3D::
+OneClickMode()
+{
+  //Change cursor
+  this->QvtkWidget_XY->setCursor( Qt::ArrowCursor );
+  this->QvtkWidget_XZ->setCursor( Qt::ArrowCursor );
+  this->QvtkWidget_YZ->setCursor( Qt::ArrowCursor );
+
+  vtkViewImage2D* View1 = this->m_Pool->GetItem( 0 );
+  View1->SetInteractionStyle(vtkInteractorStyleImage2D::InteractionOneClick );
+
+  vtkViewImage2D* View2 = this->m_Pool->GetItem( 1 );
+  View2->SetInteractionStyle(vtkInteractorStyleImage2D::InteractionOneClick );
+
+  vtkViewImage2D* View3 = this->m_Pool->GetItem( 2 );
+  View3->SetInteractionStyle(vtkInteractorStyleImage2D::InteractionOneClick );
+
+  this->EnableOneClickMode();
+
+  this->SeedWidget[1]->SetInteractor( this->QvtkWidget_XZ->GetInteractor() );
+  this->SeedWidget[2]->SetInteractor( this->QvtkWidget_YZ->GetInteractor() );
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoImageView3D::
+EnableOneClickMode()
+{
+  for( int i = 0; i < this->m_Pool->GetNumberOfItems(); i++ )
+  {
+    this->SeedWidget[i]->On();
+  }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoImageView3D::
+DisableOneClickMode()
+{
+  for( int i = 0; i < this->m_Pool->GetNumberOfItems(); i++ )
+  {
+    this->SeedWidget[i]->Off();
+  }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+vtkPoints*
+QGoImageView3D::
+GetAllSeeds()
+{
+  double tpos[3];
+  vtkPoints* oPoints = vtkPoints::New();
+
+  for( unsigned int i = 0; i < this->SeedWidget.size(); i++ )
+  {
+    int N = this->SeedRep[i]->GetNumberOfSeeds();
+
+    for( int j = 0; j < N; j++ )
+    {
+      this->SeedRep[i]->GetSeedWorldPosition( j, tpos );
+      oPoints->InsertNextPoint( tpos );
+    }
+  }
+
+  return oPoints;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoImageView3D::
+ClearAllSeeds()
+{
+  for( unsigned int i = 0; i < this->SeedWidget.size(); i++ )
+    {
+    int N = this->SeedRep[i]->GetNumberOfSeeds();
+    int k = N - 1;
+    for( int j = 0; j < N; j++ )
+      {
+      this->SeedWidget[i]->DeleteSeed( k-- );
+      this->SeedRep[i]->RemoveLastHandle();
+      }
+    }
 }
 //-------------------------------------------------------------------------

@@ -1097,10 +1097,10 @@ void
 QGoTabImageView4D::
 ChangeContourRepresentationProperty()
 {
-  double linewidth = m_ManualSegmentationDockWidget->GetLinesWidth();
-  QColor linecolor = m_ManualSegmentationDockWidget->GetLinesColor();
-  QColor nodecolor = m_ManualSegmentationDockWidget->GetNodesColor();
-  QColor activenodecolor = m_ManualSegmentationDockWidget->GetActiveNodesColor();
+  double linewidth;// = m_ManualSegmentationDockWidget->GetLinesWidth();
+  QColor linecolor;// = m_ManualSegmentationDockWidget->GetLinesColor();
+  QColor nodecolor;// = m_ManualSegmentationDockWidget->GetNodesColor();
+  QColor activenodecolor;// = m_ManualSegmentationDockWidget->GetActiveNodesColor();
 
   double rl, gl, bl;
   linecolor.getRgbF( &rl, &gl, &bl );

@@ -348,10 +348,10 @@ ValidateContour( )
 void QGoTabImageViewElementBase::
 ChangeContourRepresentationProperty()
 {
-  double linewidth = m_ManualSegmentationDockWidget->GetLinesWidth();
-  QColor linecolor = m_ManualSegmentationDockWidget->GetLinesColor();
-  QColor nodecolor = m_ManualSegmentationDockWidget->GetNodesColor();
-  QColor activenodecolor = m_ManualSegmentationDockWidget->GetActiveNodesColor();
+  double linewidth;// = m_ManualSegmentationDockWidget->GetLinesWidth();
+  QColor linecolor;// = m_ManualSegmentationDockWidget->GetLinesColor();
+  QColor nodecolor;// = m_ManualSegmentationDockWidget->GetNodesColor();
+  QColor activenodecolor;// = m_ManualSegmentationDockWidget->GetActiveNodesColor();
 
   double rl, gl, bl;
   linecolor.getRgbF( &rl, &gl, &bl );
@@ -428,13 +428,13 @@ ReEditContour( const unsigned int& iId )
           this->SetSlice( dir, idx );
 
           m_ContourWidget[dir]->Initialize( c_nodes );
-          m_ManualSegmentationDockWidget->ActivateManualSegmentation( true );
+          m_ManualSegmentationDockWidget->setEnabled( true );
           }
         }
       else
         {
         m_ContourWidget[0]->Initialize( c_nodes );
-        m_ManualSegmentationDockWidget->ActivateManualSegmentation( true );
+        m_ManualSegmentationDockWidget->setEnabled( true );
         }
       }
     }

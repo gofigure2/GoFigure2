@@ -66,7 +66,9 @@ QGoTraceManualEditingWidget::
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-int QGoTraceManualEditingWidget::GetCurrentCollectionID()
+int
+QGoTraceManualEditingWidget::
+GetCurrentCollectionID()
 {
   std::string temp = this->ColorIDCollectionComboBox->GetCurrentColorData().first;
   if( temp.empty() )
@@ -81,7 +83,9 @@ int QGoTraceManualEditingWidget::GetCurrentCollectionID()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoTraceManualEditingWidget::SetCollectionID(
+void
+QGoTraceManualEditingWidget::
+SetCollectionID(
   std::list<std::pair<std::string,QColor> > iListExistingID)
 {
   this->ColorIDCollectionComboBox->clear();
@@ -101,7 +105,9 @@ void QGoTraceManualEditingWidget::SetCollectionID(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoTraceManualEditingWidget::SetColorComboBox()
+void
+QGoTraceManualEditingWidget::
+SetColorComboBox()
 {
   ColorComboBox = new QtColorComboBox;
   ColorComboBox->setCreationCollection(false);
@@ -113,7 +119,9 @@ void QGoTraceManualEditingWidget::SetColorComboBox()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoTraceManualEditingWidget::SetTraceColorIDCollectionComboBox()
+void
+QGoTraceManualEditingWidget::
+SetTraceColorIDCollectionComboBox()
 {
   TraceName = new QLabel(tr("contour"));
   QFont ifont;
@@ -148,7 +156,9 @@ void QGoTraceManualEditingWidget::SetTraceColorIDCollectionComboBox()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoTraceManualEditingWidget::SetEnableTraceCollectionColorBoxes(bool Enable)
+void
+QGoTraceManualEditingWidget::
+SetEnableTraceCollectionColorBoxes(bool Enable)
 {
   this->ColorIDCollectionComboBox->setEnabled(Enable);
   this->ColorComboBox->setEnabled(Enable);
@@ -156,7 +166,9 @@ void QGoTraceManualEditingWidget::SetEnableTraceCollectionColorBoxes(bool Enable
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoTraceManualEditingWidget::SetCellTypeComboBox()
+void
+QGoTraceManualEditingWidget::
+SetCellTypeComboBox()
 {
   this->m_ChoseCellType = new QComboBox(this);
   QHBoxLayout* HLayoutForCellType = new QHBoxLayout;
@@ -168,8 +180,9 @@ void QGoTraceManualEditingWidget::SetCellTypeComboBox()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoTraceManualEditingWidget::SetListCellTypes(
-  QStringList iListCellTypes)
+void
+QGoTraceManualEditingWidget::
+SetListCellTypes( QStringList iListCellTypes )
 {
   this->m_ChoseCellType->clear();
   this->m_ChoseCellType->addItems(iListCellTypes);
@@ -180,7 +193,9 @@ void QGoTraceManualEditingWidget::SetListCellTypes(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoTraceManualEditingWidget::CheckUserAction(QString iCellTypeText)
+void
+QGoTraceManualEditingWidget::
+CheckUserAction( QString iCellTypeText )
 {
  if (iCellTypeText == "Add a celltype...")
    {
@@ -194,7 +209,9 @@ void QGoTraceManualEditingWidget::CheckUserAction(QString iCellTypeText)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoTraceManualEditingWidget::SetSubCellTypeComboBox()
+void
+QGoTraceManualEditingWidget::
+SetSubCellTypeComboBox()
 {
   this->m_ChoseSubCellType = new QComboBox(this);
   this->VLayoutSubCellType->addWidget(LabelSubCellType);
@@ -205,8 +222,9 @@ void QGoTraceManualEditingWidget::SetSubCellTypeComboBox()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoTraceManualEditingWidget::SetListSubCellTypes(
-  QStringList iListSubCellTypes)
+void
+QGoTraceManualEditingWidget::
+SetListSubCellTypes( QStringList iListSubCellTypes )
 {
   this->m_ChoseSubCellType->clear();
   this->m_ChoseSubCellType->addItems(iListSubCellTypes);
@@ -217,8 +235,9 @@ void QGoTraceManualEditingWidget::SetListSubCellTypes(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoTraceManualEditingWidget::CheckUserActionSubCell(
-  QString iCellTypeText)
+void
+QGoTraceManualEditingWidget::
+CheckUserActionSubCell( QString iCellTypeText )
 {
  if (iCellTypeText == "Add a subcelltype...")
    {

@@ -80,6 +80,22 @@
 #include "SelectQueryDatabaseHelper.h"
 #include "ConvertToStringHelper.h"
 
+#include "vtkSphereSource.h"
+
+#include "QGoOneClickSegmentationDockWidget.h"
+#include "vtkViewImage2D.h"
+#include "vtkCellArray.h"
+#include "vtkMath.h"
+#include "vtkPolyData.h"
+
+#include "vtkPolyDataMapper.h"
+#include "vtkActor.h"
+#include "vtkOutlineFilter.h"
+#include "vtkRenderWindow.h"
+
+#include "QGoManualSegmentationSettingsDialog.h"
+#include "QGoTraceManualEditingWidget.h"
+
 #include <QCursor>
 
 #include <QLabel>
@@ -114,7 +130,11 @@ QGoTabImageView3DwT( QWidget* iParent ) :
 
   CreateVisuDockWidget();
 
+  CreateSettingAndDialogSegmentationWidgets();
+
   CreateManualSegmentationdockWidget();
+
+  CreateOneClickSegmentationDockWidget();
 
   CreateDataBaseTablesConnection();
 
@@ -149,7 +169,8 @@ QGoTabImageView3DwT( QWidget* iParent ) :
     this->m_ContourWidget.back()->SetRepresentation( this->m_ContourRepresentation.back() );
     }
 
-  ChangeContourRepresentationProperty();
+  // Generate default color, width and nodes for the contours visualization
+  GenerateContourRepresentationProperties();
 
   m_DockWidgetList.push_back(
     std::pair< QGoDockWidgetStatus*, QDockWidget* >(
@@ -160,6 +181,12 @@ QGoTabImageView3DwT( QWidget* iParent ) :
   m_DockWidgetList.push_back(
     std::pair< QGoDockWidgetStatus*, QDockWidget* >(
       new QGoDockWidgetStatus( m_DataBaseTables, Qt::TopDockWidgetArea, true, true ), m_DataBaseTables ) );
+  m_DockWidgetList.push_back(
+    std::pair< QGoDockWidgetStatus*, QDockWidget* >(
+      new QGoDockWidgetStatus( m_OneClickSegmentationDockWidget, Qt::LeftDockWidgetArea, true, true ), m_OneClickSegmentationDockWidget ) );
+  m_DockWidgetList.push_back(
+    std::pair< QGoDockWidgetStatus*, QDockWidget* >(
+      new QGoDockWidgetStatus( m_test, Qt::LeftDockWidgetArea, true, true ), m_test ) );
 
 #if defined ( ENABLEFFMPEG ) || defined (ENABLEAVI)
   m_DockWidgetList.push_back(
@@ -222,6 +249,86 @@ QGoTabImageView3DwT::
 }
 //-------------------------------------------------------------------------
 
+
+//-------------------------------------------------------------------------
+/**
+ * \brief
+ */
+void
+QGoTabImageView3DwT::
+CreateSettingAndDialogSegmentationWidgets()
+{
+  m_test = new QDockWidget( tr("Meshes settings"), this );
+  m_SettingsDialog = new QGoManualSegmentationSettingsDialog( this );
+  TraceManualEditingWidget = new QGoTraceManualEditingWidget( m_test );
+
+  QAction* tempaction_SettingDialog = new QAction( tr("Contours settings"), this );
+
+  QObject::connect( tempaction_SettingDialog, SIGNAL( triggered() ),
+      m_SettingsDialog, SLOT ( exec() ) );
+
+  QAction* tempaction = m_test->toggleViewAction();
+
+  QObject::connect( m_SettingsDialog, SIGNAL( accepted() ),
+    this, SLOT( GenerateContourRepresentationProperties( ) ) );
+
+  QObject::connect( this, SIGNAL( ContourRepresentationPropertiesChanged() ),
+    this, SLOT( ChangeContourRepresentationProperty() ) );
+
+  this->m_SegmentationActions.push_back( tempaction_SettingDialog );
+  this->m_SegmentationActions.push_back( tempaction );
+}
+void
+QGoTabImageView3DwT::
+DialogTest()
+{
+  this->m_SettingsDialog->exec();
+}
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+GenerateContourRepresentationProperties()
+{
+  bool haschanged = false;
+
+  double temp = m_SettingsDialog->GetLineWidth();
+
+  if( m_LinesWidth != temp )
+    {
+    m_LinesWidth = temp;
+    haschanged = true;
+    }
+
+  QColor temp_color = m_SettingsDialog->GetLineColor();
+
+  if( m_LinesColor != temp_color )
+    {
+    m_LinesColor = temp_color;
+    haschanged = true;
+    }
+
+  temp_color = m_SettingsDialog->GetNodeColor();
+
+  if( m_NodesColor != temp_color )
+    {
+    m_NodesColor = temp_color;
+    haschanged = true;
+    }
+  temp_color = m_SettingsDialog->GetActivatedNodeColor();
+
+  if( m_ActiveNodesColor != temp_color )
+    {
+    m_ActiveNodesColor = temp_color;
+    haschanged = true;
+    }
+
+  if( haschanged )
+    {
+    emit ContourRepresentationPropertiesChanged();
+    }
+}
+
+//-------------------------------------------------------------------------
 //-------------------------------------------------------------------------
 /**
  * \brief
@@ -231,6 +338,7 @@ QGoTabImageView3DwT::
 CreateManualSegmentationdockWidget()
 {
   m_ManualSegmentationDockWidget = new QGoManualSegmentationDockWidget( this );
+  m_ManualSegmentationDockWidget->setEnabled( false );
 
   QObject::connect( m_ManualSegmentationDockWidget, SIGNAL( ValidatePressed() ),
     this, SLOT( ValidateContour() ) );
@@ -238,19 +346,32 @@ CreateManualSegmentationdockWidget()
   QObject::connect( m_ManualSegmentationDockWidget, SIGNAL( ReinitializePressed() ),
     this, SLOT( ReinitializeContour() ) );
 
-  QObject::connect( m_ManualSegmentationDockWidget,
-    SIGNAL( ContourRepresentationPropertiesChanged() ),
-    this, SLOT( ChangeContourRepresentationProperty() ) );
-
   QAction* tempaction = m_ManualSegmentationDockWidget->toggleViewAction();
 
-//   QObject::connect( this->m_ManualSegmentationDockWidget, SIGNAL( visibilityChanged( bool ) ),
-//     this->m_ManualSegmentationDockWidget, SLOT( ActivateManualSegmentation( bool ) ) );
+  this->m_SegmentationActions.push_back( tempaction );
+}
+//-------------------------------------------------------------------------
 
-//   QObject::connect( this->m_ManualSegmentationDockWidget, SIGNAL( visibilityChanged( bool ) ),
-//     this, SLOT( ActivateManualSegmentationEditor( bool ) ) );
+//-------------------------------------------------------------------------
+/**
+ * \brief
+ */
+void
+QGoTabImageView3DwT::
+CreateOneClickSegmentationDockWidget()
+{
+  m_OneClickSegmentationDockWidget = new QGoOneClickSegmentationDockWidget( this );
+  m_OneClickSegmentationDockWidget->setEnabled( false );
+
+  QAction* tempaction = m_OneClickSegmentationDockWidget->toggleViewAction();
 
   this->m_SegmentationActions.push_back( tempaction );
+
+  QObject::connect( m_OneClickSegmentationDockWidget, SIGNAL( ApplyFilterPressed( ) ),
+      this, SLOT( ApplyOneClickSegmentationFilter( ) ) );
+
+  m_SeedsWorldPosition = vtkSmartPointer<vtkPoints>::New();
+
 }
 //-------------------------------------------------------------------------
 
@@ -299,29 +420,34 @@ CreateVisuDockWidget()
   QObject::connect( m_VisuDockWidget, SIGNAL( ShowOneChannelChanged( int ) ),
     this, SLOT( ShowOneChannel( int ) ) );
 }
+//-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
+/**
+ *
+ */
 void
 QGoTabImageView3DwT::
 CreateDataBaseTablesConnection()
 {
   QObject::connect( this->m_DataBaseTables,
     SIGNAL( PrintExistingColorsFromDB(std::list<std::pair<std::string,std::vector<int> > >) ),
-    this->m_ManualSegmentationDockWidget->TraceManualEditingWidget->ColorComboBox,
+    this->TraceManualEditingWidget->ColorComboBox,
     SLOT( setExistingColors(std::list<std::pair<std::string,std::vector<int> > >) ) );
 
   QObject::connect( this->m_DataBaseTables,
     SIGNAL( PrintExistingCollectionIDsFromDB(std::list<std::pair<std::string,QColor> >) ),
-    this->m_ManualSegmentationDockWidget->TraceManualEditingWidget,
+    this->TraceManualEditingWidget,
     SLOT( SetCollectionID(std::list<std::pair<std::string,QColor> >) ) );
 
   QObject::connect(
-    this->m_ManualSegmentationDockWidget->TraceManualEditingWidget->ColorComboBox,
+    this->TraceManualEditingWidget->ColorComboBox,
     SIGNAL( NewColorToBeSaved(std::vector<std::string>)),
     this->m_DataBaseTables,
     SLOT( SaveNewColorInDB(std::vector<std::string> ) ) );
 
   QObject::connect(
-    this->m_ManualSegmentationDockWidget->TraceManualEditingWidget->ColorIDCollectionComboBox,
+    this->TraceManualEditingWidget->ColorIDCollectionComboBox,
     SIGNAL( NewCollectionToBeSaved()),
     this, SLOT( UpdateDBAndCollectionIDComboBoxForANewCreatedCollection() ) );
 
@@ -331,20 +457,20 @@ CreateDataBaseTablesConnection()
 
   QObject::connect( this->m_DataBaseTables,
     SIGNAL( NewCreatedCollection(QColor, QString) ),
-    this->m_ManualSegmentationDockWidget->TraceManualEditingWidget->ColorIDCollectionComboBox
+    this->TraceManualEditingWidget->ColorIDCollectionComboBox
     , SLOT( addColor(QColor, QString) ));
 
   QObject::connect( this->m_DataBaseTables,
     SIGNAL( SelectionContoursToHighLightChanged() ),
     this, SLOT( HighLightContoursFromTable() ) );
 
- QObject::connect( this->m_DataBaseTables,
+  QObject::connect( this->m_DataBaseTables,
     SIGNAL( NeedCurrentSelectedCollectionID() ),
     this, SLOT( PassInfoForCurrentCollectionID() ) );
 
-   QObject::connect( this->m_DataBaseTables,
+  QObject::connect( this->m_DataBaseTables,
     SIGNAL( DeletedCollection(unsigned int) ),
-    this->m_ManualSegmentationDockWidget->TraceManualEditingWidget->ColorIDCollectionComboBox,
+    this->TraceManualEditingWidget->ColorIDCollectionComboBox,
     SLOT( DeleteCollectionID(unsigned int) ) );
 
   QObject::connect( this->m_DataBaseTables,
@@ -357,45 +483,45 @@ CreateDataBaseTablesConnection()
 
   QObject::connect(this->m_DataBaseTables,
     SIGNAL( ListCellTypesToUpdate(QStringList)),
-    this->m_ManualSegmentationDockWidget->TraceManualEditingWidget,
+    this->TraceManualEditingWidget,
     SLOT(SetListCellTypes(QStringList)));
 
   QObject::connect(
-    this->m_ManualSegmentationDockWidget->TraceManualEditingWidget,
+    this->TraceManualEditingWidget,
     SIGNAL( AddANewCellType()),this->m_DataBaseTables,
     SLOT(AddNewCellType()));
 
   QObject::connect(
-    this->m_ManualSegmentationDockWidget->TraceManualEditingWidget,
+    this->TraceManualEditingWidget,
     SIGNAL( DeleteCellType()),this->m_DataBaseTables,
     SLOT(DeleteCellType()));
 
   QObject::connect(this->m_DataBaseTables,
     SIGNAL( ListSubCellTypesToUpdate(QStringList)),
-    this->m_ManualSegmentationDockWidget->TraceManualEditingWidget,
+    this->TraceManualEditingWidget,
     SLOT(SetListSubCellTypes(QStringList)));
 
    QObject::connect(
-    this->m_ManualSegmentationDockWidget->TraceManualEditingWidget,
+    this->TraceManualEditingWidget,
     SIGNAL( AddANewSubCellType()),this->m_DataBaseTables,
     SLOT(AddNewSubCellType()));
 
   QObject::connect(
-    this->m_ManualSegmentationDockWidget->TraceManualEditingWidget,
+    this->TraceManualEditingWidget,
     SIGNAL( DeleteSubCellType()),this->m_DataBaseTables,
     SLOT(DeleteSubCellType()));
 
   QObject::connect(
     this->m_DataBaseTables,SIGNAL(TheColorNameAlreadyExits()),
-    this->m_ManualSegmentationDockWidget->TraceManualEditingWidget->ColorComboBox,
+    this->TraceManualEditingWidget->ColorComboBox,
     SLOT(DontAddTheColor()));
   
   QObject::connect(
-    this->m_ManualSegmentationDockWidget->TraceManualEditingWidget,SIGNAL(ListCellTypesReady()),
+    this->TraceManualEditingWidget,SIGNAL(ListCellTypesReady()),
     this, SLOT(SetTheCurrentCellType()));
 
   QObject::connect(
-    this->m_ManualSegmentationDockWidget->TraceManualEditingWidget,SIGNAL(ListSubCellTypesReady()),
+    this->TraceManualEditingWidget,SIGNAL(ListSubCellTypesReady()),
     this, SLOT(SetTheCurrentSubCellType()));
 }
 //-------------------------------------------------------------------------
@@ -770,12 +896,49 @@ void QGoTabImageView3DwT::CreateModeActions()
   this->m_ModeActions.push_back( ManualEditingAction );
 
   QObject::connect( ManualEditingAction, SIGNAL( toggled( bool ) ),
-    this->m_ManualSegmentationDockWidget, SLOT( ActivateManualSegmentation( bool ) ) );
+      this->m_ManualSegmentationDockWidget, SLOT( setEnabled( bool ) ) );
+  QObject::connect( ManualEditingAction, SIGNAL( toggled( bool ) ),
+      this->m_ManualSegmentationDockWidget, SLOT( setVisible( bool ) ) );
 
   QObject::connect( ManualEditingAction, SIGNAL( toggled( bool ) ),
    this, SLOT( ActivateManualSegmentationEditor( bool ) ) );
 
 
+  //---------------------------------//
+  //          one click mode         //
+  //---------------------------------//
+
+  // Create/initialize the manual editing action
+  QAction* OneClickAction = new QAction( tr("One Click"), this );
+  OneClickAction->setCheckable( true );
+  OneClickAction->setChecked(false);
+
+  // Definition of the associated icon
+  QIcon OneClickIcon;
+  OneClickIcon.addPixmap( QPixmap(QString::fromUtf8(":/fig/seedIcon.png")),
+    QIcon::Normal, QIcon::Off );
+  OneClickAction->setIcon(OneClickIcon);
+
+  // Definition of its behaviour
+  // we have to open widget too
+  QObject::connect( OneClickAction, SIGNAL( triggered() ),
+    this, SLOT( OneClickMode() ) );
+
+  QObject::connect( OneClickAction, SIGNAL( toggled( bool ) ),
+      m_OneClickSegmentationDockWidget, SLOT( setEnabled( bool ) ) );
+  QObject::connect( OneClickAction, SIGNAL( toggled( bool ) ),
+      m_OneClickSegmentationDockWidget, SLOT( setVisible( bool ) ) );
+
+  // Add the action to m_ModeActions and to group
+  this->m_ModeActions.push_back( OneClickAction );
+  group->addAction( OneClickAction );
+
+
+  //---------------------------------//
+  //           default mode          //
+  //---------------------------------//
+
+  // Create/initialize the default action
   QAction* DefaultAction = new QAction( tr( "Default" ), this );
   DefaultAction->setCheckable( true );
   DefaultAction->setChecked(true);
@@ -1774,14 +1937,14 @@ ValidateContour( const int& iContourID, const int& iDir,
     // get meshid from the visu dock widget (SpinBox)
     //unsigned int meshid = m_ManualSegmentationDockWidget->GetMeshId();
     unsigned int meshid =
-      this->m_ManualSegmentationDockWidget->TraceManualEditingWidget->GetCurrentCollectionID();
+      this->TraceManualEditingWidget->GetCurrentCollectionID();
 
     if( iSaveInDataBase )
       {
       if( !m_ReEditContourMode )
         {
         std::pair< std::string, QColor > ColorData =
-          this->m_ManualSegmentationDockWidget->TraceManualEditingWidget->ColorComboBox->GetCurrentColorData();
+          this->TraceManualEditingWidget->ColorComboBox->GetCurrentColorData();
 
         // Save contour in database!
         m_ContourId = m_DataBaseTables->SaveContoursFromVisuInDB( min_idx[0],
@@ -1795,7 +1958,7 @@ ValidateContour( const int& iContourID, const int& iDir,
         m_DataBaseTables->UpdateContourFromVisuInDB( min_idx[0],
           min_idx[1], min_idx[2], iTCoord, max_idx[0],
           max_idx[1], max_idx[2], contour_nodes, m_ContourId );
-        this->m_ManualSegmentationDockWidget->TraceManualEditingWidget->SetEnableTraceCollectionColorBoxes(true);
+        this->m_test->setEnabled( true );
         }
       }
     else
@@ -1836,8 +1999,7 @@ ValidateContour( )
   // get color from the dock widget
   double r, g, b, a( 1. );
   //QColor color = m_ManualSegmentationDockWidget->GetValidatedColor();
-  if( this->m_ManualSegmentationDockWidget->TraceManualEditingWidget->GetCurrentCollectionID()
-    == -1 )
+  if( this->TraceManualEditingWidget->GetCurrentCollectionID()  == -1 )
     {
     r = 0.1;
     g = 0.5;
@@ -1846,7 +2008,7 @@ ValidateContour( )
   else
     {
     QColor color =
-      this->m_ManualSegmentationDockWidget->TraceManualEditingWidget->ColorComboBox->GetCurrentColorData().second;
+      this->TraceManualEditingWidget->ColorComboBox->GetCurrentColorData().second;
     color.getRgbF( &r, &g, &b );
     }
   
@@ -1891,7 +2053,7 @@ ValidateContour( )
 
   if( m_ReEditContourMode )
     {
-    m_ManualSegmentationDockWidget->ActivateManualSegmentation( false );
+    m_ManualSegmentationDockWidget->setEnabled( false );
 
     for( i = 0; i < m_ContourWidget.size(); i++ )
       {
@@ -1904,6 +2066,8 @@ ValidateContour( )
     m_DataBaseTables->ChangeContoursToHighLightInfoFromVisu( listofrowstobeselected,
       m_ReEditContourMode );
 
+    m_ManualSegmentationDockWidget->setEnabled( true );
+    m_test->setEnabled( true );
     m_ReEditContourMode = false;
     }
 }
@@ -1931,10 +2095,10 @@ void
 QGoTabImageView3DwT::
 ChangeContourRepresentationProperty()
 {
-  float linewidth = static_cast< float >( m_ManualSegmentationDockWidget->GetLinesWidth() );
-  QColor linecolor = m_ManualSegmentationDockWidget->GetLinesColor();
-  QColor nodecolor = m_ManualSegmentationDockWidget->GetNodesColor();
-  QColor activenodecolor = m_ManualSegmentationDockWidget->GetActiveNodesColor();
+  float linewidth = static_cast< float >( m_LinesWidth );
+  QColor linecolor = m_LinesColor;
+  QColor nodecolor = m_NodesColor;
+  QColor activenodecolor = m_ActiveNodesColor;
 
   double rl, gl, bl;
   linecolor.getRgbF( &rl, &gl, &bl );
@@ -2187,24 +2351,23 @@ QGoTabImageView3DwT::
 UpdateDBAndCollectionIDComboBoxForANewCreatedCollection()
 {
   //first, save in the database:
-  std::string TraceName =  this->m_ManualSegmentationDockWidget->
-    TraceManualEditingWidget->TraceName->text().toStdString();
+  std::string TraceName =  this->TraceManualEditingWidget->TraceName->text().toStdString();
   std::string CellType = "";
   std::string SubCellType = "";
   if ( TraceName == "contour") //for a mesh, collection of contour;
     { 
-    CellType = this->m_ManualSegmentationDockWidget->
-      TraceManualEditingWidget->GetCurrentCellType();
-    SubCellType = this->m_ManualSegmentationDockWidget->
-      TraceManualEditingWidget->GetCurrentSubCellType();
+    CellType = this->TraceManualEditingWidget->GetCurrentCellType();
+    SubCellType = this->TraceManualEditingWidget->GetCurrentSubCellType();
     }
   std::pair<std::string,QColor> NewCollectionToAddInComboBox =
-    this->m_DataBaseTables->SaveNewCollectionInDB(
-    this->m_ManualSegmentationDockWidget->TraceManualEditingWidget->ColorComboBox->GetCurrentColorData(),
-    this->m_ManualSegmentationDockWidget->TraceManualEditingWidget->TraceName->text().toStdString(),
-    this->GetTimePoint(),CellType,SubCellType);
+  
+  this->m_DataBaseTables->SaveNewCollectionInDB(
+  this->TraceManualEditingWidget->ColorComboBox->GetCurrentColorData(),
+  this->TraceManualEditingWidget->TraceName->text().toStdString(),
+  this->GetTimePoint(),CellType,SubCellType);
+
   //second, update the ColorIDCollectionComboBox with the new created ID:
-  this->m_ManualSegmentationDockWidget->TraceManualEditingWidget->ColorIDCollectionComboBox->addColor(
+  this->TraceManualEditingWidget->ColorIDCollectionComboBox->addColor(
     NewCollectionToAddInComboBox.second,NewCollectionToAddInComboBox.first.c_str());
 }
 //-------------------------------------------------------------------------
@@ -2215,7 +2378,7 @@ QGoTabImageView3DwT::
 PassInfoForDBForCurrentSelectedColor()
 {
   this->m_DataBaseTables->UpdateCurrentColorData(
-    this->m_ManualSegmentationDockWidget->TraceManualEditingWidget->ColorComboBox->GetCurrentColorData());
+    this->TraceManualEditingWidget->ColorComboBox->GetCurrentColorData());
 
 }
 //-------------------------------------------------------------------------
@@ -2226,7 +2389,7 @@ QGoTabImageView3DwT::
 PassInfoForCurrentCollectionID()
 {
   this->m_DataBaseTables->SetCurrentCollectionID(
-    this->m_ManualSegmentationDockWidget->TraceManualEditingWidget->ColorIDCollectionComboBox->GetCurrentColorData());
+    this->TraceManualEditingWidget->ColorIDCollectionComboBox->GetCurrentColorData());
 }
 //-------------------------------------------------------------------------
 
@@ -2299,8 +2462,8 @@ ReEditContour( const unsigned int& iId )
         this->m_ManualSegmentationDockWidget->show();
         this->m_ModeActions[0]->setChecked(true);
         m_ContourWidget[dir]->Initialize( c_nodes );
-        this->m_ManualSegmentationDockWidget->TraceManualEditingWidget->
-          SetEnableTraceCollectionColorBoxes(false);
+        m_ManualSegmentationDockWidget->setEnabled( true );
+        m_test->setEnabled( false );
         }
       }
     }
@@ -2689,6 +2852,15 @@ PanMode()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+OneClickMode()
+{
+  this->m_ImageView->OneClickMode();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 QGoManualSegmentationDockWidget* QGoTabImageView3DwT::
   GetManualSegmentationWidget()
 {
@@ -2697,9 +2869,18 @@ QGoManualSegmentationDockWidget* QGoTabImageView3DwT::
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+QGoTraceManualEditingWidget* QGoTabImageView3DwT::
+  GetTraceManualEditingWidget()
+{
+  return this->TraceManualEditingWidget;
+}
+
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 void QGoTabImageView3DwT::SetTheCurrentCellType()
 {
-  this->m_ManualSegmentationDockWidget->TraceManualEditingWidget
+  this->TraceManualEditingWidget
     ->SetCurrentCellType(this->m_DataBaseTables->GetNameNewCellType());
 }
 //-------------------------------------------------------------------------
@@ -2707,6 +2888,505 @@ void QGoTabImageView3DwT::SetTheCurrentCellType()
 //-------------------------------------------------------------------------
 void QGoTabImageView3DwT::SetTheCurrentSubCellType()
 {
-  this->m_ManualSegmentationDockWidget->TraceManualEditingWidget
+  this->TraceManualEditingWidget
     ->SetCurrentSubCellType(this->m_DataBaseTables->GetNameNewSubCellType());
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+ApplyOneClickSegmentationFilter()
+{
+  // Check the filter to be applied
+  // 0 = circle contours (sphere aspect)
+  // 1 = sphere ( 3D volume - no contours)
+  int filterToBeApplied = this->m_OneClickSegmentationDockWidget->GetFilter();
+
+  switch ( filterToBeApplied )
+    {
+    case 0 :
+    // circle contours creation (sphere aspect)
+    this->OneClickSphereContours();
+    break;
+
+    case 1 :
+    // sphere (3D volume creation)
+    this->OneClickSphereVolumes();
+    break;
+
+    default :
+    break;
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+OneClickSphereContours()
+{
+  // Get seeds
+  m_SeedsWorldPosition = this->m_ImageView->GetAllSeeds();
+
+  // Get informations about contour to be saved
+
+  // pos[] will contain position of a seed
+  double pos[3];
+
+  // Create "spheres" for all the points
+  for( int i = 0; i < m_SeedsWorldPosition->GetNumberOfPoints(); i++ )
+  {
+    // Put position of each seed "i" in "pos[3]"
+    m_SeedsWorldPosition->GetPoint( i, pos );
+
+    // Get pointer to XY view
+    vtkViewImage2D* View = this->m_ImageView->GetImageViewer(0);
+
+    // Creates contours for a given view, a given point and radius
+    // Returns vector containing polydatas
+    std::vector< vtkSmartPointer<vtkPolyData> > ContoursForOnePoint =
+        this->CreateSphereContours(*View, pos, 4);
+
+    // Save polydatas (=contours) in DB
+    for( unsigned int j = 1; j < ContoursForOnePoint.size(); j++)
+    {
+      this->SavePolyDataAsContourInDB( ContoursForOnePoint[j] );
+    }
+
+    // Increment Mesh ID and keep the good colors for meshes and contours
+    // 1- store mesh and contours colors
+    QColor meshColor = this->TraceManualEditingWidget->ColorIDCollectionComboBox->GetCurrentColorData().second;
+    QColor contourColor = this->TraceManualEditingWidget->ColorComboBox->GetCurrentColorData().second;
+    // 2- put the color of the mesh in the contour color
+    this->TraceManualEditingWidget->ColorComboBox->setCurrentColor( meshColor );
+    this->TraceManualEditingWidget->ColorComboBox->update();
+    // 3- increase mesh ID // now the new mesh has the same color as the contours
+    this->TraceManualEditingWidget->ColorIDCollectionComboBox->IncrementMeshID();
+    // 4- update contour color
+    this->TraceManualEditingWidget->ColorComboBox->setCurrentColor( contourColor );
+    this->TraceManualEditingWidget->ColorComboBox->update();
+  }
+
+  // Erase seeds once everything is stored in DB
+  this->m_ImageView->ClearAllSeeds();
+
+  // Update visualization
+  this->m_ImageView->Update();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+OneClickSphereVolumes()
+{
+  // Get seeds
+  m_SeedsWorldPosition = this->m_ImageView->GetAllSeeds();
+
+  // pos[] will contain position of a seed
+  double pos[3];
+
+  // Create "spheres" for all the points
+  for( int i = 0; i < m_SeedsWorldPosition->GetNumberOfPoints(); i++ )
+    {
+    // Put position of each seed "i" in "pos[3]"
+    m_SeedsWorldPosition->GetPoint( i, pos );
+
+    // Get pointer to XY view
+    vtkViewImage2D* View = this->m_ImageView->GetImageViewer(0);
+
+    // Creates contours for a given view, a given point and radius
+    // Returns vector containing polydatas
+    vtkSmartPointer<vtkPolyData> VolumeForOnePoint =
+        this->CreateSphereVolume(*View, pos, 4);
+
+    // Save polydatas/mesh (=volume) in DB
+    this->SavePolyDataAsVolumeInDB( VolumeForOnePoint );
+
+    // Increment Mesh ID and keep the good colors for meshes and contours
+    // 1- store mesh and contours colors
+    QColor meshColor = this->TraceManualEditingWidget->ColorIDCollectionComboBox->GetCurrentColorData().second;
+    QColor contourColor = this->TraceManualEditingWidget->ColorComboBox->GetCurrentColorData().second;
+    // 2- put the color of the mesh in the contour color
+    this->TraceManualEditingWidget->ColorComboBox->setCurrentColor( meshColor );
+    this->TraceManualEditingWidget->ColorComboBox->update();
+    // 3- increase mesh ID // now the new mesh has the same color as the contours
+    this->TraceManualEditingWidget->ColorIDCollectionComboBox->IncrementMeshID();
+    // 4- update contour color
+    this->TraceManualEditingWidget->ColorComboBox->setCurrentColor( contourColor );
+    this->TraceManualEditingWidget->ColorComboBox->update();
+    }
+
+  // Erase seeds once everything is stored in DB
+  this->m_ImageView->ClearAllSeeds();
+
+  // Update visualization
+  this->m_ImageView->Update();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+vtkSmartPointer<vtkPolyData>
+QGoTabImageView3DwT::
+CreateSphereVolume( vtkViewImage2D& iView, double iCenter[3],
+    double iRadius )
+{
+  //int* center_id = iView.GetImageCoordinatesFromWorldCoordinates( iCenter );
+  vtkSmartPointer<vtkPolyData>              spherePolydata;
+
+    // create sphere geometry
+  vtkSmartPointer<vtkSphereSource> sphere =
+      vtkSmartPointer<vtkSphereSource>::New();
+  sphere->SetRadius( iRadius );
+  sphere->SetThetaResolution( 18 );
+  sphere->SetPhiResolution( 18 );
+  sphere->SetCenter( iCenter );
+
+  spherePolydata = sphere->GetOutput();
+
+  return spherePolydata;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::vector< vtkSmartPointer<vtkPolyData> >
+QGoTabImageView3DwT::
+CreateSphereContours( vtkViewImage2D& iView, double iCenter[3],
+    double iRadius )
+{
+  int* center_id = iView.GetImageCoordinatesFromWorldCoordinates( iCenter );
+
+  double corner[3];
+  corner[0] = iCenter[0];
+  corner[1] = iCenter[1];
+  corner[2] = iCenter[2] - iRadius;
+
+  int* corner_id = iView.GetImageCoordinatesFromWorldCoordinates( corner );
+  int zlength = 2 * std::abs( center_id[2] - corner_id[2] );
+
+  int idx[3];
+  idx[0] = corner_id[0];
+  idx[1] = corner_id[1];
+  idx[2] = corner_id[2];
+
+  double* pos;
+
+  std::vector< vtkSmartPointer<vtkPolyData> >              circleContoursVector;
+  circleContoursVector.resize( zlength );
+
+  // numberOfPointsToRepresentCircle: 4 is enough since there is an interpolation
+  // to create the circle after
+
+  int numberOfPointsToRepresentCircle = 4;
+
+  for( int i = 0; i < zlength; i++, idx[2]++ )
+    {
+    pos = iView.GetWorldCoordinatesFromImageCoordinates( idx );
+    vtkSmartPointer<vtkPolyData> circle =
+        GenerateCircleFromGivenSphereAndGivenZ( iCenter, iRadius, pos[2],
+        numberOfPointsToRepresentCircle );
+
+    // Store polyDatas in a vector then return it
+    circleContoursVector[i] = circle;
+    }
+
+  return circleContoursVector;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+vtkSmartPointer<vtkPolyData>
+QGoTabImageView3DwT::
+GenerateCircleFromGivenSphereAndGivenZ( double iC[3],
+  const double& iRadius, double iZ, const int& iN )
+{
+  double res = ( iC[2] - iZ );
+  res *= res;
+  res = iRadius * iRadius - res;
+
+  if( res < 0 )
+    {
+    return 0;
+    }
+  else
+    {
+    vtkSmartPointer<vtkPolyData> oCircle = vtkSmartPointer<vtkPolyData>::New();
+    vtkPoints    *points      = vtkPoints::New();
+    vtkCellArray *lines       = vtkCellArray::New();
+    vtkIdType    *lineIndices = new vtkIdType[iN+1];
+
+    double theta = 0.;
+    double r = sqrt( res );
+
+    for( int i = 0; i < iN; i++ )
+      {
+      theta = 2. * i * vtkMath::Pi() / static_cast< double >( iN );
+      points->InsertPoint( static_cast< vtkIdType>( i ),
+          iC[0] + r * cos( theta ), iC[1] + r * sin( theta ), iZ );
+      lineIndices[i] = static_cast<vtkIdType>(i);
+      }
+
+    lineIndices[iN] = 0;
+    lines->InsertNextCell(iN+1,lineIndices);
+    delete [] lineIndices;
+    oCircle->SetPoints( points );
+    oCircle->SetLines(lines);
+
+    return oCircle;
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+SavePolyDataAsContourInDB( vtkPolyData* iView, const int& iContourID,
+    const int& iDir, const double& iR, const double& iG, const double& iB,
+    const double& iA, const bool& iHighlighted, const unsigned int& iTCoord,
+    const bool& iSaveInDataBase )
+{
+  //generate contour
+  vtkSmartPointer<vtkOrientedGlyphContourRepresentation> contourRep =
+      vtkSmartPointer<vtkOrientedGlyphContourRepresentation>::New();
+  contourRep->GetLinesProperty()->SetColor(1, 0, 0); //set color to red
+
+  vtkSmartPointer<vtkContourWidget> contourWidget =
+      vtkSmartPointer<vtkContourWidget>::New();
+  contourWidget->SetInteractor(this->m_ImageView->GetImageViewer(0)
+      ->GetInteractor());
+  contourWidget->SetRepresentation(contourRep);
+  contourWidget->On();
+
+  contourWidget->Initialize(iView);
+
+  vtkPolyData* contour =
+  contourRep->GetContourRepresentationAsPolyData();
+
+  if( ( contour->GetNumberOfPoints() > 2 ) && ( m_TimePoint >= 0 ) )
+    {
+    // Compute Bounding Box
+    double bounds[6];
+    contour->GetBounds( bounds );
+
+    // Extract Min and Max from bounds
+    double Min[3], Max[3];
+    int k = 0;
+    unsigned int i;
+    for( i = 0; i < 3; i++ )
+      {
+      Min[i] = bounds[k++];
+      Max[i] = bounds[k++];
+      }
+
+    int* min_idx = this->GetImageCoordinatesFromWorldCoordinates( Min );
+    int* max_idx = this->GetImageCoordinatesFromWorldCoordinates( Max );
+
+    vtkPolyData* contour_nodes = vtkPolyData::New();
+    contourRep->GetNodePolyData( contour_nodes );
+
+
+    vtkProperty* contour_property = vtkProperty::New();
+    contour_property->SetColor( iR, iG, iB );
+
+    // get corresponding actor from visualization
+    vtkPolyData* contour_copy = vtkPolyData::New();
+    contour_copy->ShallowCopy( contour );
+
+    std::vector< vtkActor* > contour_actor =
+    this->AddContour( iDir, contour_copy, contour_property );
+
+    // get meshid from the visu dock widget (SpinBox)
+    //unsigned int meshid = m_ManualSegmentationDockWidget->GetMeshId();
+    unsigned int meshid = this->TraceManualEditingWidget->GetCurrentCollectionID();
+
+  if( iSaveInDataBase )
+    {
+    std::pair< std::string, QColor > ColorData =
+        this->TraceManualEditingWidget->ColorComboBox->GetCurrentColorData();
+
+    // Save contour in database!
+    m_ContourId = m_DataBaseTables->SaveContoursFromVisuInDB( min_idx[0],
+        min_idx[1], min_idx[2], iTCoord, max_idx[0],
+        max_idx[1], max_idx[2], contour_nodes, ColorData, meshid );
+    }
+  else
+    {
+    if( iContourID != -1 )
+      {
+      m_ContourId = iContourID;
+      }
+    }
+
+  contour_copy->Delete();
+  contour_property->Delete();
+
+  // fill the container
+  for( i = 0; i < contour_actor.size(); i++ )
+    {
+    ContourMeshStructure temp( m_ContourId,
+        reinterpret_cast< vtkActor* >( contour_actor[i] ), contour_nodes,
+        meshid, iTCoord, iHighlighted, iR, iG, iB, iA, i );
+    m_ContourMeshContainer.insert( temp );
+    }
+
+  if( ( !iSaveInDataBase ) && ( iContourID != -1 ) )
+    {
+    ++m_ContourId;
+    }
+  }
+
+  contourWidget->Off();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+/**
+ *
+ */
+void
+QGoTabImageView3DwT::
+SavePolyDataAsContourInDB( vtkPolyData* iView )
+{
+  // get color from the dock widget
+  double r, g, b, a( 1. );
+  //QColor color = m_ManualSegmentationDockWidget->GetValidatedColor();
+  if( this->TraceManualEditingWidget->GetCurrentCollectionID() == -1 )
+    {
+    r = 0.1;
+    g = 0.5;
+    b = 0.7;
+    }
+  else
+    {
+    QColor color =
+      this->TraceManualEditingWidget->ColorComboBox->GetCurrentColorData().second;
+    color.getRgbF( &r, &g, &b );
+    }
+
+  bool highlighted( false );
+
+  // get from m_DataBaseTables if user is using one gofiguredatabase or not.
+  // In such a case contours are saved in the database, else they are not!
+  bool saveindatabase = m_DataBaseTables->IsDatabaseUsed();
+
+  // to make sure that m_ContourId is set to the right value
+  int ContourID = -1;
+
+  SavePolyDataAsContourInDB( iView, ContourID, 0, r, g, b, a, highlighted,
+      m_TimePoint, saveindatabase );
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+SavePolyDataAsVolumeInDB( vtkPolyData* iView, const int& iContourID,
+    const int& iDir, const double& iR, const double& iG, const double& iB,
+    const double& iA, const bool& iHighlighted, const unsigned int& iTCoord,
+    const bool& iSaveInDataBase )
+{
+  // map to graphics library
+  vtkPolyDataMapper *map = vtkPolyDataMapper::New();
+  map->SetInput( iView );
+
+  // Compute Bounding Box
+  double bounds[6];
+  map->GetBounds( bounds );
+
+  // Extract Min and Max from bounds
+  double Min[3], Max[3];
+  int k = 0;
+  unsigned int i;
+  for( i = 0; i < 3; i++ )
+    {
+    Min[i] = bounds[k++];
+    Max[i] = bounds[k++];
+    }
+
+  int* min_idx = this->GetImageCoordinatesFromWorldCoordinates( Min );
+  int* max_idx = this->GetImageCoordinatesFromWorldCoordinates( Max );
+
+  vtkActor*  contour_actor = vtkActor::New();
+  contour_actor->SetMapper(map);
+  contour_actor->GetProperty()->SetColor( iR, iG, iB );
+  contour_actor->GetProperty()->SetOpacity(0.5);
+
+  // Test to check position and size of volumes
+  //this->m_ImageView->GetImageViewer(0)->GetRenderer()->AddActor( contour_actor );
+  //this->m_ImageView->GetImageViewer(1)->GetRenderer()->AddActor( contour_actor );
+  //this->m_ImageView->GetImageViewer(2)->GetRenderer()->AddActor( contour_actor );
+  //this->m_ImageView->AddActor( 3, contour_actor );
+
+
+  // get meshid from the visu dock widget (SpinBox)
+  unsigned int meshid = this->TraceManualEditingWidget->GetCurrentCollectionID();
+/*
+  if( iSaveInDataBase )
+    {
+    std::pair< std::string, QColor > ColorData =
+        this->TraceManualEditingWidget->ColorComboBox->GetCurrentColorData();
+
+    // Save contour in database!
+    // Create new method for meshes
+    // IDEM with GoDBMeshRow instead of GoDBContourRow
+    m_ContourId = m_DataBaseTables->SaveContoursFromVisuInDB( min_idx[0],
+        min_idx[1], min_idx[2], iTCoord, max_idx[0],
+        max_idx[1], max_idx[2], iView , ColorData, meshid );
+    }
+  else
+    {
+    if( iContourID != -1 )
+      {
+      m_ContourId = iContourID;
+      }
+    }
+
+  ContourMeshStructure temp( m_ContourId, contour_actor, iView, meshid,
+      iTCoord, iHighlighted, iR, iG, iB, iA, 0 );
+  m_ContourMeshContainer.insert( temp );
+
+  if( ( !iSaveInDataBase ) && ( iContourID != -1 ) )
+    {
+    ++m_ContourId;
+    }*/
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+/**
+ *
+ */
+void
+QGoTabImageView3DwT::
+SavePolyDataAsVolumeInDB( vtkPolyData* iView )
+{
+  // get color from the dock widget
+  double r, g, b, a( 1. );
+  //QColor color = m_ManualSegmentationDockWidget->GetValidatedColor();
+  if( this->TraceManualEditingWidget->GetCurrentCollectionID() == -1 )
+    {
+    r = 0.1;
+    g = 0.5;
+    b = 0.7;
+    }
+  else
+    {
+    QColor color =
+      this->TraceManualEditingWidget->ColorComboBox->GetCurrentColorData().second;
+    color.getRgbF( &r, &g, &b );
+    }
+
+  bool highlighted( false );
+
+  // get from m_DataBaseTables if user is using one gofiguredatabase or not.
+  // In such a case contours are saved in the database, else they are not!
+  bool saveindatabase = m_DataBaseTables->IsDatabaseUsed();
+
+  // to make sure that m_ContourId is set to the right value
+  int ContourID = -1;
+
+  SavePolyDataAsVolumeInDB( iView, ContourID, 0, r, g, b, a, highlighted,
+      m_TimePoint, saveindatabase );
+}
+//-------------------------------------------------------------------------

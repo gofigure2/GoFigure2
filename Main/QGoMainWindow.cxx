@@ -306,13 +306,13 @@ void QGoMainWindow::on_actionImportContour_triggered( )
         std::vector<int> MeshesToAddTW = ImportHelper.GetVectorNewMeshIDs();
         w3t->m_DataBaseTables->AddTracesInTableWidgetFromDB(ContourToAddTW,"contour");
         w3t->m_DataBaseTables->AddTracesInTableWidgetFromDB(MeshesToAddTW, "mesh");
-        w3t->GetManualSegmentationWidget()->TraceManualEditingWidget->SetCollectionID(
+        w3t->GetTraceManualEditingWidget()->SetCollectionID(
           w3t->m_DataBaseTables->GetListExistingCollectionIDFromDB("contour",w3t->GetTimePoint()));
-        w3t->GetManualSegmentationWidget()->TraceManualEditingWidget->ColorComboBox->setExistingColors(
+        w3t->GetTraceManualEditingWidget()->ColorComboBox->setExistingColors(
           w3t->m_DataBaseTables->GetColorComboBoxInfofromDB());
-        w3t->GetManualSegmentationWidget()->TraceManualEditingWidget->SetListCellTypes(
+        w3t->GetTraceManualEditingWidget()->SetListCellTypes(
           w3t->m_DataBaseTables->GetQStringListCellTypes());
-        w3t->GetManualSegmentationWidget()->TraceManualEditingWidget->SetListSubCellTypes(
+        w3t->GetTraceManualEditingWidget()->SetListSubCellTypes(
           w3t->m_DataBaseTables->GetQStringListSubCellTypes());
         }
       }

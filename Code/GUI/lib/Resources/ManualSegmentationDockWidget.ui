@@ -13,7 +13,7 @@
   <property name="minimumSize">
    <size>
     <width>111</width>
-    <height>130</height>
+    <height>141</height>
    </size>
   </property>
   <property name="allowedAreas">
@@ -29,7 +29,7 @@
       <item>
        <widget class="QPushButton" name="ValidateBtn">
         <property name="enabled">
-         <bool>false</bool>
+         <bool>true</bool>
         </property>
         <property name="toolTip">
          <string>Validate Contour</string>
@@ -48,7 +48,7 @@
       <item>
        <widget class="QPushButton" name="ReinitializeBtn">
         <property name="enabled">
-         <bool>false</bool>
+         <bool>true</bool>
         </property>
         <property name="toolTip">
          <string>Reinitialize Contour</string>
@@ -59,12 +59,15 @@
         <property name="shortcut">
          <string>Ctrl+R</string>
         </property>
+        <property name="checkable">
+         <bool>false</bool>
+        </property>
        </widget>
       </item>
       <item>
        <widget class="QPushButton" name="SettingsBtn">
         <property name="enabled">
-         <bool>false</bool>
+         <bool>true</bool>
         </property>
         <property name="toolTip">
          <string>Change Contour Settings</string>

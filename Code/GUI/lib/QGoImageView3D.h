@@ -57,6 +57,12 @@
 #include "vtkInteractorStyleImage2D.h"
 #include "QGoGUILibConfigure.h"
 
+#include "vtkCommand.h"
+#include "vtkSmartPointer.h"
+#include "vtkSeedRepresentation.h"
+
+#include "vtkPoints.h"
+
 class QVTKWidget;
 class vtkEventQtSlotConnect;
 class QSplitterChild;
@@ -67,6 +73,10 @@ class vtkImageData;
 class vtkViewImage2D;
 class vtkViewImage3D;
 class vtkViewImage2DCollection;
+
+class vtkSeedWidget;
+class vtkConstrainedPointHandleRepresentation;
+class vtkImageActorPointPlacer;
 
 /**
 \class QGoImageView3D
@@ -82,6 +92,11 @@ public:
 
   /** \brief Destructor. */
   virtual ~QGoImageView3D();
+
+  // Creates leaks
+  std::vector< vtkSmartPointer<vtkSeedWidget> >                            SeedWidget;
+  std::vector< vtkSmartPointer<vtkConstrainedPointHandleRepresentation> >  Handle;
+  std::vector< vtkSmartPointer<vtkSeedRepresentation> >                    SeedRep;
 
   /** \brief Set the image to be displaid. */
   virtual void SetImage( vtkImageData* iImage );
@@ -132,7 +147,13 @@ public:
   void DefaultMode();
   void ZoomMode();
   void PanMode();
+  void OneClickMode();
+  void EnableOneClickMode();
+  void DisableOneClickMode();
 
+
+  vtkPoints* GetAllSeeds();
+  void       ClearAllSeeds();
 
 signals:
   void SliceViewXYChanged( int Slice );
@@ -169,6 +190,8 @@ public slots:
   virtual void SetLookupTable( vtkLookupTable* );
 
   virtual void ShowScalarBar( const bool& );
+
+
 
 protected:
   QSplitter*          VSplitter;
@@ -224,4 +247,5 @@ protected slots:
   void MoveSliderYZ();
 
 };
+
 #endif

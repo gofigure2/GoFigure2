@@ -55,6 +55,9 @@ class QGoImageView3D;
 class QGoVisualizationDockWidget;
 class QGoManualSegmentationDockWidget;
 class QGoPrintDatabase;
+class QGoOneClickSegmentationDockWidget;
+class QGoManualSegmentationSettingsDialog;
+class QGoTraceManualEditingWidget;
 
 #ifdef ENABLEFFMPEG 
   class QGoVideoRecorder;
@@ -74,6 +77,7 @@ class vtkMySQLDatabase;
 class vtkProperty;
 // class vtkQuadricLODActor;
 class vtkActor;
+class vtkViewImage2D;
 
 #include "QGoGUILibConfigure.h"
 
@@ -182,6 +186,7 @@ public:
   int GetSliceViewYZ() const;
   int GetTimePoint() const;
   QGoManualSegmentationDockWidget* GetManualSegmentationWidget();
+  QGoTraceManualEditingWidget* GetTraceManualEditingWidget();
   QGoPrintDatabase* m_DataBaseTables;
 
 signals:
@@ -191,6 +196,7 @@ signals:
   void SliceViewYZChanged( int Slice );
   void FullScreenViewChanged( int FullScreen );
   void UpdateBookmarkOpenActions(std::vector<QAction*>);
+  void ContourRepresentationPropertiesChanged();
 
 public slots:
   void SetTimePoint( const int& );
@@ -203,6 +209,10 @@ public slots:
   void DefaultMode();
   void ZoomMode();
   void PanMode();
+  void DialogTest();
+  void OneClickMode();
+
+  void GenerateContourRepresentationProperties();
 
 #if defined ( ENABLEFFMPEG ) || defined ( ENABLEAVI )
   void SetRendererWindow( int );
@@ -242,6 +252,8 @@ public slots:
 
   void ActivateManualSegmentationEditor( const bool& iActivate );
   void ValidateContour();
+  void SavePolyDataAsContourInDB( vtkPolyData* iView );
+  void SavePolyDataAsVolumeInDB( vtkPolyData* iView );
   void ReinitializeContour();
   void ReEditContour( const unsigned int& iId );
 
@@ -269,12 +281,19 @@ public slots:
   void Change3DPerspectiveToCoronal();
   void Change3DPerspectiveToSagittal();
 
+  void ApplyOneClickSegmentationFilter();
+
 protected:
   QHBoxLayout*          m_LayOut;
   QGoImageView3D*       m_ImageView;
   std::vector< vtkSmartPointer< vtkLSMReader > > m_LSMReader;
   std::vector< vtkSmartPointer< vtkImageData > > m_InternalImages;
   vtkSmartPointer< vtkImageData > m_Image;
+
+  double m_LinesWidth;
+  QColor m_LinesColor;
+  QColor m_NodesColor;
+  QColor m_ActiveNodesColor;
 
   itk::MegaCaptureReader::Pointer           m_MegaCaptureReader;
   GoFigureFileInfoHelperMultiIndexContainer m_FileList;
@@ -286,8 +305,16 @@ protected:
   unsigned int          m_ContourId;
   bool                  m_ReEditContourMode;
 
-  QGoVisualizationDockWidget*       m_VisuDockWidget;
-  QGoManualSegmentationDockWidget*  m_ManualSegmentationDockWidget;
+  QGoVisualizationDockWidget*         m_VisuDockWidget;
+  QGoManualSegmentationDockWidget*    m_ManualSegmentationDockWidget;
+  QGoOneClickSegmentationDockWidget*  m_OneClickSegmentationDockWidget;
+
+  // Creates one leak
+  vtkSmartPointer<vtkPoints>        m_SeedsWorldPosition;
+
+  QGoManualSegmentationSettingsDialog* m_SettingsDialog;
+  QGoTraceManualEditingWidget* TraceManualEditingWidget;
+  QDockWidget*                 m_test;
 
     
 
@@ -320,6 +347,36 @@ protected:
     const double& iR, const double& iG, const double& iB, const double& iA,
     const bool& iHighlighted, const unsigned int& iTCoord, const bool& iSaveInDataBase );
 
+  /**
+   * @param[in] iContourID
+   * @param[in] iDir
+   * @param[in] iHighlighted
+   * @param[in] iR red component in [0,1]
+   * @param[in] iG green component in [0,1]
+   * @param[in] iB blue component in [0,1]
+   * @param[in] iA alpha component in [0,1]
+   * @param[in] iSaveInDataBase save in data base if true
+   * \todo Alpha component is not used at all, it is assumed to be opaque
+   */
+  virtual void SavePolyDataAsContourInDB( vtkPolyData* iView, const int& iContourID, const int& iDir,
+    const double& iR, const double& iG, const double& iB, const double& iA,
+    const bool& iHighlighted, const unsigned int& iTCoord, const bool& iSaveInDataBase );
+
+  /**
+   * @param[in] iContourID
+   * @param[in] iDir
+   * @param[in] iHighlighted
+   * @param[in] iR red component in [0,1]
+   * @param[in] iG green component in [0,1]
+   * @param[in] iB blue component in [0,1]
+   * @param[in] iA alpha component in [0,1]
+   * @param[in] iSaveInDataBase save in data base if true
+   * \todo Alpha component is not used at all, it is assumed to be opaque
+   */
+  virtual void SavePolyDataAsVolumeInDB( vtkPolyData* iView, const int& iContourID, const int& iDir,
+    const double& iR, const double& iG, const double& iB, const double& iA,
+    const bool& iHighlighted, const unsigned int& iTCoord, const bool& iSaveInDataBase );
+
   void GetBackgroundColorFromImageViewer( );
   void SetBackgroundColorToImageViewer( );
   void CreateAllViewActions();
@@ -327,8 +384,13 @@ protected:
   void CreateBookmarkActions();
   void CreateModeActions();
   void CreateVisuDockWidget();
+  void CreateSettingAndDialogSegmentationWidgets();
   void CreateManualSegmentationdockWidget();
+  void CreateOneClickSegmentationDockWidget();
   void CreateDataBaseTablesConnection();
+
+  void OneClickSphereContours();
+  void OneClickSphereVolumes();
 
 #if defined ( ENABLEFFMPEG ) || defined ( ENABLEAVI )
   void CreateVideoRecorderWidget();
@@ -346,6 +408,14 @@ protected:
 
   void SetTimePointWithLSMReaders( const int& iTimePoint );
   void SetTimePointWithMegaCapture( const int& iTimePoint );
+
+  std::vector< vtkSmartPointer<vtkPolyData> > CreateSphereContours(
+      vtkViewImage2D& iView, double iCenter[3], double iRadius );
+  vtkSmartPointer<vtkPolyData> GenerateCircleFromGivenSphereAndGivenZ( double iC[3],
+      const double& iRadius, double iZ, const int& iN );
+
+  vtkSmartPointer<vtkPolyData> CreateSphereVolume( vtkViewImage2D& iView,
+      double iCenter[3], double iRadius );
 
 protected slots:
   void AddBookmark();

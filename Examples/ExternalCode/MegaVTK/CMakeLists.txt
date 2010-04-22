@@ -2,6 +2,7 @@ SET( MEGAVTK_EXAMPLE_SRC
   imageview2d
   imageview3d
   imageviewcollection
+  SeedWidget
 )
 
 FOREACH( var ${MEGAVTK_EXAMPLE_SRC} )
@@ -26,6 +27,12 @@ ADD_TEST( imageview3dTest
 
 ADD_TEST( imageviewcollectionTest
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/imageviewcollection
+  ${TESTING_DATA_PATH}/Circle3D.mhd
+  1
+)
+
+ADD_TEST( seedWidgetTest
+  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/seedwidget
   ${TESTING_DATA_PATH}/Circle3D.mhd
   1
 )

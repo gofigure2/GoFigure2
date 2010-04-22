@@ -57,6 +57,7 @@ SET( QGoGUILIB_SRC
   QGoDBInitCreateUserPage.cxx
   QGoDBInitCreateAuthorsPage.cxx
   QGoDBInitCreateMicroscopePage.cxx
+  QGoOneClickSegmentationDockWidget.cxx
   ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/QGoAboutWidget.cxx
 )
 
@@ -124,6 +125,7 @@ SET( QGoGUILIB_HDRS
   QGoDBCellTypeManager.h
   QGoDBSubCellTypeManager.h
   QGoTraceManualEditingWidget.h
+  QGoOneClickSegmentationDockWidget.h
   QGoAboutWidget.h
   QGoDBInitializationWizard.h
   QGoDBInitCreateUserPage.h
@@ -161,6 +163,7 @@ SET( QGoGUILIB_UI
   Resources/LsmToMegaExportDialog.ui
   Resources/QNameDescriptionInputDialog.ui
   Resources/QGoTraceManualEditingWidget.ui
+  Resources/OneClickSegmentationDockWidget.ui
 )
 
 #---------------------------------------------------------------------------

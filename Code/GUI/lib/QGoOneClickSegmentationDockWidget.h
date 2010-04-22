@@ -1,7 +1,7 @@
 /*=========================================================================
-  Author: $Author$  // Author of last commit
-  Version: $Rev$  // Revision of last commit
-  Date: $Date$  // Date of last commit
+  Author: $Author: nicolasrannou $  // Author of last commit
+  Version: $Rev: 1203 $  // Revision of last commit
+  Date: $Date: 2010-04-09 10:03:07 -0400 (Fri, 09 Apr 2010) $  // Date of last commit
 =========================================================================*/
 
 /*=========================================================================
@@ -38,30 +38,38 @@
 
 =========================================================================*/
 
-#include "QGoManualSegmentationDockWidget.h"
+#ifndef __QGoOneClickSegmentationDockWidget_h
+#define __QGoOneClickSegmentationDockWidget_h
 
-#include <QColorDialog>
-#include <cstdlib>
+#include <QDockWidget>
+#include <QLayout>
+#include "ui_OneClickSegmentationDockWidget.h"
 
+#include "QGoTraceManualEditingWidget.h"
+#include "QGoManualSegmentationSettingsDialog.h"
 
-//---------------------------------------------------------------------------//
-QGoManualSegmentationDockWidget::
-QGoManualSegmentationDockWidget( QWidget* iParent ) :
-  QDockWidget( iParent )
+class vtkProperty;
+
+class QGoOneClickSegmentationDockWidget :
+  public QDockWidget,
+  private Ui::OneClickSegmentationDockWidget
 {
-  this->setupUi( this );
+  Q_OBJECT
+public:
+  QGoOneClickSegmentationDockWidget( QWidget* iParent = 0 );
+  ~QGoOneClickSegmentationDockWidget();
 
-  QObject::connect( this->ReinitializeBtn, SIGNAL( pressed() ),
-    this, SIGNAL( ReinitializePressed() ) );
+  int GetFilter();
 
-  QObject::connect( this->ValidateBtn, SIGNAL( pressed() ),
-    this, SIGNAL( ValidatePressed() ) );
-}
-//---------------------------------------------------------------------------//
+private:
 
-//---------------------------------------------------------------------------//
-QGoManualSegmentationDockWidget::
-~QGoManualSegmentationDockWidget()
-{
-}
-//---------------------------------------------------------------------------//
+  int m_Filter;
+
+public slots:
+  void ApplyFilterEmit();
+
+signals:
+  void ApplyFilterPressed();
+};
+
+#endif
