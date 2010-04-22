@@ -218,8 +218,8 @@
    <addaction name="menuSegmentation"/>
    <addaction name="menuMode"/>
    <addaction name="menuTools"/>
-   <addaction name="menuHelp"/>
    <addaction name="menuSettings"/>
+   <addaction name="menuHelp"/>
   </widget>
   <widget class="QStatusBar" name="statusbar">
    <property name="autoFillBackground">

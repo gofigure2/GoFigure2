@@ -86,7 +86,7 @@ public:
   };
 
   explicit QGoWizardDB(QWidget *parent = 0);
-  ~QGoWizardDB() {}
+  ~QGoWizardDB(){}
 
   QString GetNameDB();
   QString GetServer();
