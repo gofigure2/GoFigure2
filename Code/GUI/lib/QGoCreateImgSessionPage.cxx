@@ -49,6 +49,7 @@
 #include "itkMegaCaptureImport.h"
 #include "itkLsm3DSerieImport.h"
 #include "ConvertToStringHelper.h"
+#include "QGoDBInitCreateMicroscopePage.h"
 
 #include <QGridLayout>
 #include <QFileDialog>
@@ -74,6 +75,7 @@ QGoCreateImgSessionPage::QGoCreateImgSessionPage( QWidget *iParent )
   BrowseButton = new QPushButton("&Browse", this);
   QLabel* textBrowseButton = new QLabel(tr("Select only 1 file\nfrom the Image Set*:"));
   lineFilename = new QTextEdit;
+  AddMicroscopeButton = new QPushButton(tr("Add Microscope"),this);
 
   QGridLayout* gridlayout = new QGridLayout;
   gridlayout->addWidget(textNewImgSessionName,0,0);
@@ -82,6 +84,7 @@ QGoCreateImgSessionPage::QGoCreateImgSessionPage( QWidget *iParent )
   gridlayout->addWidget(lineDescription,1,1);
   gridlayout->addWidget(textChoiceMicroscope,2,0);
   gridlayout->addWidget(ChoiceMicroscope,2,1);
+  gridlayout->addWidget(AddMicroscopeButton,2,2);
 
   QGridLayout* BrowseButtonLayout = new QGridLayout;
   BrowseButtonLayout->addWidget( BrowseButton,0,2 );
@@ -100,7 +103,9 @@ QGoCreateImgSessionPage::QGoCreateImgSessionPage( QWidget *iParent )
 
   FirstImage = new QFileInfo;
   QObject::connect( this->BrowseButton,SIGNAL( clicked() ),
-  this,SLOT( SelectImages() ));
+    this,SLOT( SelectImages() ));
+  QObject::connect(AddMicroscopeButton,SIGNAL(clicked()),
+    this,SLOT(AddMicroscopes()));
  }
 //-------------------------------------------------------------------------
 
@@ -113,8 +118,7 @@ void QGoCreateImgSessionPage::initializePage()
     tr("Import a new dataset for the project '%1'\n (*fields are required) and click on 'Finish' to load them:")
     .arg(field("ProjectName").toString() ) );
 
-  ChoiceMicroscope->clear();
-  ChoiceMicroscope->addItems(GetListMicroscopes());
+  this->UpdateListMicroscopes();
 }
 //-------------------------------------------------------------------------
 
@@ -564,3 +568,24 @@ GetMegaCaptureHeaderFilename()
   return m_importFileInfoList->GetHeaderFilename();
 }
 //-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoCreateImgSessionPage::AddMicroscopes()
+{
+  QGoDBInitCreateMicroscopePage* CreateMicroscopePage = 
+    new QGoDBInitCreateMicroscopePage;
+  CreateMicroscopePage->SetDatabaseVariables(
+    field("User").toString().toStdString(),
+    field("Password").toString().toStdString());
+  CreateMicroscopePage->show();
+  QObject::connect(CreateMicroscopePage,SIGNAL(NewAuthorCreated()),
+    this, SLOT(UpdateListMicroscopes()));
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoCreateImgSessionPage::UpdateListMicroscopes()
+{
+  ChoiceMicroscope->clear();
+  ChoiceMicroscope->addItems(GetListMicroscopes());
+}

@@ -72,7 +72,7 @@ QGoDBInitCreateMicroscopePage::QGoDBInitCreateMicroscopePage( QWidget *iParent)
     this,SLOT(CreateMicroscope()));
 
   setLayout( formLayout );
-  registerField( "MicroscopeName",  lineMicroscopeName );
+  //registerField( "MicroscopeName",  lineMicroscopeName );
 
 }
 //-------------------------------------------------------------------------
@@ -111,12 +111,14 @@ void QGoDBInitCreateMicroscopePage::CreateMicroscope()
 {
   this->OpenDBConnection();
   QMessageBox msgBox;
-  std::string MicroscopeName = field("MicroscopeName").toString().toStdString();
+  //std::string MicroscopeName = field("MicroscopeName").toString().toStdString();
+  std::string MicroscopeName = this->lineMicroscopeName->text().toStdString();
   if(MicroscopeName.empty())
     {
     msgBox.setText(
       tr("Please enter a name for your microscope.") );
     msgBox.exec();
+    return;
     }
 
   if(ListSpecificValuesForOneColumn(this->m_DatabaseConnector,"microscope",
@@ -133,7 +135,7 @@ void QGoDBInitCreateMicroscopePage::CreateMicroscope()
     queryScript << "INSERT INTO microscope VALUES ('";
     queryScript << MicroscopeName;
     queryScript << "') ;";
-
+  
     query->SetQuery(queryScript.str().c_str());
     if (!query->Execute())
       {
@@ -145,6 +147,7 @@ void QGoDBInitCreateMicroscopePage::CreateMicroscope()
     msgBox.setText(
       tr("Your microscope has been successfully created") );
       msgBox.exec();
+    emit NewMicroscopeCreated();
 
   if (CloseDatabaseConnection(m_DatabaseConnector))
     {
@@ -156,16 +159,25 @@ void QGoDBInitCreateMicroscopePage::CreateMicroscope()
 //------------------------------------------------------------------------------
 void QGoDBInitCreateMicroscopePage::OpenDBConnection()
 {
-  std::string Server = "localhost";
-  std::string User = field("User").toString().toStdString();
-  std::string Password = field("Password").toString().toStdString();
-  std::string DBName = "gofiguredatabase";
+  if(this->m_User.empty() || this->m_Password.empty())
+    {
+    this->SetDatabaseVariables(field("User").toString().toStdString(),
+      field("Password").toString().toStdString());
+    }
   if (this->m_DatabaseConnector == 0)
     {
     m_DatabaseConnector = OpenDatabaseConnection(
-      Server,User,Password,DBName);
+      this->m_Server,this->m_User,this->m_Password,this->m_DBName);
     }
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+void QGoDBInitCreateMicroscopePage::SetDatabaseVariables(
+  std::string iUser,std::string iPassword)
+{
+  this->m_User = iUser;
+  this->m_Password = iPassword;
+  this->m_Server = "localhost";
+  this->m_DBName = "gofiguredatabase";
+}

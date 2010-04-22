@@ -133,6 +133,7 @@ private:
   QTextEditChild* lineDescription;
   QLabel*         textChoiceMicroscope;
   QComboBox*      ChoiceMicroscope;
+  QPushButton*    AddMicroscopeButton;
   QPushButton*    BrowseButton;
   QTextEdit*      lineFilename;
   QString         newfilename;
@@ -146,6 +147,9 @@ private:
 protected slots:
 
   void SelectImages();
+  void AddMicroscopes();
+  void UpdateListMicroscopes();
+
 
 };
 #endif
