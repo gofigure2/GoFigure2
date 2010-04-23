@@ -118,20 +118,12 @@ bool QGoDBInitCreateUserPage::CreateUser()
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
   DataBaseConnector->SetHostName( this->m_ServerName.c_str() );
   DataBaseConnector->SetUser( "root" );
-  //DataBaseConnector->SetPassword("");
-  //if( !DataBaseConnector->Open() )
-  //  {
-  //  DataBaseConnector->Close();
-  //  DataBaseConnector->Delete();
    bool ok;
    QString text = QInputDialog::getText(0,"Enter your root password for MySQL:",
                                           "Root Password:", QLineEdit::Password,
                                           QDir::home().dirName(), &ok);
    if (ok)
      {
-      //vtkMySQLDatabase * DataBaseConnectorBis = vtkMySQLDatabase::New();
-      //DataBaseConnectorBis->SetHostName( this->m_ServerName.c_str() );
-      //DataBaseConnectorBis->SetUser( "root" );
      if (text.isEmpty())
        {
        DataBaseConnector->SetPassword("");
