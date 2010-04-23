@@ -52,6 +52,12 @@ m_Filter(0)
 
   QObject::connect( this->applyFilterBtn, SIGNAL( pressed() ),
       this, SLOT( ApplyFilterEmit() ) );
+
+  QObject::connect( this->filterType, SIGNAL( activated( int ) ),
+        this, SLOT( FilterChanged( int ) ) );
+
+  this->UseRadius( true );
+  this->UseLevelSet( false );
 }
 //---------------------------------------------------------------------------//
 
@@ -79,5 +85,101 @@ GetFilter()
   // 0 = circle contours (sphere aspect)
   // 1 = sphere ( 3D volume - no contours)
   return this->filterType->currentIndex();
+}
+//---------------------------------------------------------------------------//
+
+//---------------------------------------------------------------------------//
+double
+QGoOneClickSegmentationDockWidget::
+GetRadius()
+{
+  // 0 = circle contours (sphere aspect)
+  // 1 = sphere ( 3D volume - no contours)
+  return this->radiusSpinBox->value();
+}
+//---------------------------------------------------------------------------//
+
+//---------------------------------------------------------------------------//
+void
+QGoOneClickSegmentationDockWidget::
+FilterChanged( int filterSelected )
+{
+  // 0 = circle contours (sphere aspect)
+  // 1 = sphere ( 3D volume - no contours)
+
+  switch ( filterSelected )
+    {
+    case 0 :
+    // circle contours creation (sphere aspect)
+    this->UseRadius( true );
+    this->UseLevelSet( false );
+    break;
+
+    case 1 :
+    // sphere (3D volume creation)
+    this->UseRadius( true );
+    this->UseLevelSet( false );
+    break;
+
+    case 2 :
+    // sphere (2d level set)
+    this->UseRadius( false );
+    this->UseLevelSet( true );
+    break;
+
+    case 3 :
+    // sphere (3d level set)
+    this->UseRadius( false );
+    this->UseLevelSet( true );
+    break;
+
+    default :
+    break;
+    }
+}
+//---------------------------------------------------------------------------//
+
+//---------------------------------------------------------------------------//
+void
+QGoOneClickSegmentationDockWidget::
+UseRadius( bool iUse )
+{
+  if( iUse )
+    {
+    this->radiusSpinBox->show();
+    this->radiusLabel->show();
+
+    }
+  else
+    {
+    this->radiusSpinBox->hide();
+    this->radiusLabel->hide();
+    }
+}
+//---------------------------------------------------------------------------//
+
+//---------------------------------------------------------------------------//
+void
+QGoOneClickSegmentationDockWidget::
+UseLevelSet( bool iUse )
+{
+  if( iUse )
+    {
+    this->label_3->show();
+    this->label_4->show();
+    this->label_5->show();
+    this->doubleSpinBox->show();
+    this->doubleSpinBox_2->show();
+    this->doubleSpinBox_3->show();
+    }
+  else
+    {
+    this->label_3->hide();
+    this->label_4->hide();
+    this->label_5->hide();
+    this->doubleSpinBox->hide();
+    this->doubleSpinBox_2->hide();
+    this->doubleSpinBox_3->hide();
+    }
 }
 //---------------------------------------------------------------------------//

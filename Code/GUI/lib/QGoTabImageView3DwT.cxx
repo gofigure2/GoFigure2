@@ -258,14 +258,11 @@ void
 QGoTabImageView3DwT::
 CreateSettingAndDialogSegmentationWidgets()
 {
-  m_test = new QDockWidget( tr("Meshes settings"), this );
+  m_test = new QDockWidget( tr("Trace settings"), this );
   m_SettingsDialog = new QGoManualSegmentationSettingsDialog( this );
   TraceManualEditingWidget = new QGoTraceManualEditingWidget( m_test );
 
-  QAction* tempaction_SettingDialog = new QAction( tr("Contours settings"), this );
-
-  QObject::connect( tempaction_SettingDialog, SIGNAL( triggered() ),
-      m_SettingsDialog, SLOT ( exec() ) );
+  //QAction* tempaction_SettingDialog = new QAction( tr("Contours settings"), this );
 
   QAction* tempaction = m_test->toggleViewAction();
 
@@ -275,7 +272,7 @@ CreateSettingAndDialogSegmentationWidgets()
   QObject::connect( this, SIGNAL( ContourRepresentationPropertiesChanged() ),
     this, SLOT( ChangeContourRepresentationProperty() ) );
 
-  this->m_SegmentationActions.push_back( tempaction_SettingDialog );
+  //this->m_SegmentationActions.push_back( tempaction_SettingDialog );
   this->m_SegmentationActions.push_back( tempaction );
 }
 void
@@ -345,6 +342,9 @@ CreateManualSegmentationdockWidget()
 
   QObject::connect( m_ManualSegmentationDockWidget, SIGNAL( ReinitializePressed() ),
     this, SLOT( ReinitializeContour() ) );
+
+  QObject::connect( m_ManualSegmentationDockWidget, SIGNAL( SettingsPressed() ),
+      m_SettingsDialog, SLOT ( exec() ) );
 
   QAction* tempaction = m_ManualSegmentationDockWidget->toggleViewAction();
 
@@ -2946,7 +2946,8 @@ OneClickSphereContours()
     // Creates contours for a given view, a given point and radius
     // Returns vector containing polydatas
     std::vector< vtkSmartPointer<vtkPolyData> > ContoursForOnePoint =
-        this->CreateSphereContours(*View, pos, 4);
+        this->CreateSphereContours(*View, pos,
+            this->m_OneClickSegmentationDockWidget->GetRadius());
 
     // Save polydatas (=contours) in DB
     for( unsigned int j = 1; j < ContoursForOnePoint.size(); j++)

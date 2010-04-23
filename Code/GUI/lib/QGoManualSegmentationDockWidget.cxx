@@ -56,6 +56,10 @@ QGoManualSegmentationDockWidget( QWidget* iParent ) :
 
   QObject::connect( this->ValidateBtn, SIGNAL( pressed() ),
     this, SIGNAL( ValidatePressed() ) );
+
+  QObject::connect( this->SettingsBtn, SIGNAL( pressed() ),
+      this, SIGNAL( SettingsPressed() ) );
+
 }
 //---------------------------------------------------------------------------//
 

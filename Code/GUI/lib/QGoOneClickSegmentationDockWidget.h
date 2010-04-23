@@ -59,14 +59,19 @@ public:
   QGoOneClickSegmentationDockWidget( QWidget* iParent = 0 );
   ~QGoOneClickSegmentationDockWidget();
 
-  int GetFilter();
+  int    GetFilter();
+  double GetRadius();
 
 private:
+
+  void UseLevelSet( bool iUse );
+  void UseRadius( bool iUse );
 
   int m_Filter;
 
 public slots:
   void ApplyFilterEmit();
+  void FilterChanged( int );
 
 signals:
   void ApplyFilterPressed();

@@ -62,6 +62,7 @@ public:
 signals:
   void ReinitializePressed();
   void ValidatePressed();
+  void SettingsPressed();
 
 };
 
