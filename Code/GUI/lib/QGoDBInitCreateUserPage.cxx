@@ -118,22 +118,22 @@ bool QGoDBInitCreateUserPage::CreateUser()
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
   DataBaseConnector->SetHostName( this->m_ServerName.c_str() );
   DataBaseConnector->SetUser( "root" );
-  DataBaseConnector->SetPassword("");
-  if( !DataBaseConnector->Open() )
-    {
-    DataBaseConnector->Close();
-    DataBaseConnector->Delete();
-    bool ok;
-    QString text = QInputDialog::getText(0,"Enter your root password for MySQL:",
+  //DataBaseConnector->SetPassword("");
+  //if( !DataBaseConnector->Open() )
+  //  {
+  //  DataBaseConnector->Close();
+  //  DataBaseConnector->Delete();
+   bool ok;
+   QString text = QInputDialog::getText(0,"Enter your root password for MySQL:",
                                           "Root Password:", QLineEdit::Password,
                                           QDir::home().dirName(), &ok);
-    if (ok && !text.isEmpty())
-      {
-      vtkMySQLDatabase * DataBaseConnectorBis = vtkMySQLDatabase::New();
-      DataBaseConnectorBis->SetHostName( this->m_ServerName.c_str() );
-      DataBaseConnectorBis->SetUser( "root" );
-      DataBaseConnectorBis->SetPassword(text.toStdString().c_str());
-      if (!DataBaseConnectorBis->Open())
+   if (ok && !text.isEmpty())
+     {
+      //vtkMySQLDatabase * DataBaseConnectorBis = vtkMySQLDatabase::New();
+      //DataBaseConnectorBis->SetHostName( this->m_ServerName.c_str() );
+      //DataBaseConnectorBis->SetUser( "root" );
+     DataBaseConnector->SetPassword(text.toStdString().c_str());
+      if (!DataBaseConnector->Open())
         {
         QMessageBox msgBox;
         msgBox.setText(
@@ -141,29 +141,26 @@ bool QGoDBInitCreateUserPage::CreateUser()
         msgBox.exec();
         return false;
         }
-
-      if( !this->UserNameAlreadyExits(DataBaseConnectorBis,Login,
+      }
+    if( !this->UserNameAlreadyExits(DataBaseConnector,Login,
           this->m_ServerName,Password))
+      {
+      if(this->QuestionToUser(
+        tr("Do you want to create this new user with a new database?")))
         {
-        if(this->QuestionToUser(
-          tr("Do you want to create this new user with a new database?")))
-          {
-          return this->CreateGofigureUserWithDatabaseConnector(DataBaseConnectorBis,Login,
-            this->m_ServerName,Password);
-          }
-        else
-          {
-          return false;
-          }
+        return this->CreateGofigureUserWithDatabaseConnector(DataBaseConnector,Login,
+          this->m_ServerName,Password);
         }
       else
         {
-        return this->QuestionToUser(
-          tr("The user you entered already exits, \ndo you want to create a database for this user?"));
+        return false;
         }
       }
-    return false;
-    }
+    else
+      {
+      return this->QuestionToUser(
+        tr("The user you entered already exits, \ndo you want to create a database for this user?"));
+      }
   return false;
 }
 //-------------------------------------------------------------------------
