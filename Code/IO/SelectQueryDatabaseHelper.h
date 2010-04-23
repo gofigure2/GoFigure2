@@ -47,6 +47,7 @@
 #include "vtkMySQLDatabase.h"
 #include "GoDBTraceInfoForVisu.h"
 #include "ContourMeshStructure.h"
+#include "ContourMeshStructureHelper.h"
 
 #include "QGoIOConfigure.h"
 
@@ -228,6 +229,13 @@ QGOIO_EXPORT
 ContourMeshStructure GetTraceInfoFromDB(
   vtkMySQLDatabase* DatabaseConnector, std::string TraceName,
   std::string CollectionName,unsigned int TraceID);
+
+QGOIO_EXPORT
+ContourMeshStructureMultiIndexContainer* GetTracesInfoFromDBMultiIndex(
+  vtkMySQLDatabase* DatabaseConnector,std::string TraceName,
+  std::string CollectionName,std::string WhereField,
+  unsigned int ImgSessionID,int iTimePoint=-1,
+  std::vector<int> iListIDs = std::vector<int>());
 
 //return a pair with the number of fields in the query and a vector of the results:
 QGOIO_EXPORT

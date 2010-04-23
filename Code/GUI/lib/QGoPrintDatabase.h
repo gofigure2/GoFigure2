@@ -58,7 +58,7 @@
 #include "QGoDBBookmarkManager.h"
 #include "QGoDBCellTypeManager.h"
 #include "QGoDBSubCellTypeManager.h"
-
+#include "ContourMeshStructureHelper.h"
 #include "QGoGUILibConfigure.h"
 
 /** \class QGoPrintDatabase 
@@ -92,14 +92,31 @@ public:
   void FillTableFromDatabase(int iTimePoint);
   
   /** \brief return the contours info for the visu with the data from
-  the database corresponding to iTimePoint and to the list of given IDs*/
+  the database corresponding to iTimePoint and to the list of given IDs,
+  if no list of IDs is given, will return the info for all the contours*/
   std::vector<ContourMeshStructure>* GetContoursFromDBForAGivenTimePoint(
-    int iTimePoint, std::vector<int> iListIDs);
+    int iTimePoint, std::vector<int> iListIDs = std::vector<int>());
 
+   /** \brief return the multi index container for the contours with the 
+   data from the database corresponding to iTimePoint and to the list 
+   of given IDs,if no list of IDs is given, will return the info for all 
+   the contours*/
+  ContourMeshStructureMultiIndexContainer* 
+    GetContoursMultiIndexFromDBForAGivenTimePoint(
+      int iTimePoint, std::vector<int> iListIDs = std::vector<int>());
+  
   /** \brief return the meshes info for the visu with the data from
   the database corresponding to iTimePoint*/
   std::vector<ContourMeshStructure>* GetMeshesFromDBForAGivenTimePoint(
     int iTimePoint);
+
+  /** \brief return the multi index container for the meshes with the 
+   data from the database corresponding to iTimePoint and to the list 
+   of given IDs,if no list of IDs is given, will return the info for all 
+   the meshes*/
+  ContourMeshStructureMultiIndexContainer* 
+    GetMeshesMultiIndexFromDBForAGivenTimePoint(int iTimePoint, 
+  std::vector<int> iListIDs= std::vector<int>());
 
   /** \brief Return a vector of all the contours for the given timepoint*/
   std::vector<ContourMeshStructure> GetContoursForAGivenTimepoint (
@@ -113,6 +130,12 @@ public:
   containing the given ZCoord*/
   std::vector<ContourMeshStructure> GetContoursForAGivenZCoord (
     unsigned int iZCoord);
+
+  /** \brief Return a multiIndex of all the contours with a bounding box
+  containing the given ZCoord*/
+  /*ContourMeshStructureMultiIndexContainer* 
+    GetContoursMultiIndexFromDBForAGivenZCoord(unsigned int iZCoord, 
+    std::vector<int> iListIDs= std::vector<int>());*/
 
   /** \brief Return a vector of all the meshes with a bounding box
   containing the given ZCoord*/

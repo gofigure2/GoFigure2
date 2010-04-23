@@ -527,6 +527,40 @@ std::vector<ContourMeshStructure>* QGoPrintDatabase::
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+ContourMeshStructureMultiIndexContainer* QGoPrintDatabase::
+  GetContoursMultiIndexFromDBForAGivenTimePoint(int iTimePoint, 
+  std::vector<int> iListIDs)
+{
+  this->OpenDBConnection();
+  TraceInfoStructure* CurrentlyUsedTraceData = this->GetTraceInfoStructure(
+    "contour");
+  ContourMeshStructureMultiIndexContainer* ContoursInfo = 
+    GetTracesInfoFromDBMultiIndex(this->m_DatabaseConnector, 
+    CurrentlyUsedTraceData->TraceName,CurrentlyUsedTraceData->CollectionName,
+    "ImagingSessionID",this->m_ImgSessionID,iTimePoint,iListIDs);
+  this->CloseDBConnection();
+  return ContoursInfo;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+ContourMeshStructureMultiIndexContainer* QGoPrintDatabase::
+  GetMeshesMultiIndexFromDBForAGivenTimePoint(int iTimePoint, 
+  std::vector<int> iListIDs)
+{
+  this->OpenDBConnection();
+  TraceInfoStructure* CurrentlyUsedTraceData = this->GetTraceInfoStructure(
+    "mesh");
+  ContourMeshStructureMultiIndexContainer* MeshesInfo = 
+    GetTracesInfoFromDBMultiIndex(this->m_DatabaseConnector, 
+    CurrentlyUsedTraceData->TraceName,CurrentlyUsedTraceData->CollectionName,
+    "ImagingSessionID",this->m_ImgSessionID,iTimePoint,iListIDs);
+  this->CloseDBConnection();
+  return MeshesInfo;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 std::vector<ContourMeshStructure>* QGoPrintDatabase::
   GetMeshesFromDBForAGivenTimePoint(int iTimePoint)
 {
@@ -756,10 +790,31 @@ std::vector<ContourMeshStructure> QGoPrintDatabase::
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+/*ContourMeshStructureMultiIndexContainer* QGoPrintDatabase::
+  GetContoursMultiIndexFromDBForAGivenZCoord(unsigned int iZCoord, 
+  std::vector<int> iListIDs)
+{
+  this->OpenDBConnection();
+  ContourMeshStructureMultiIndexContainer* ContoursInfo;
+  //get the IDs for the contours with the zcoord inside the bounding box
+  //then use the GetTraceInfoStructure
+  TraceInfoStructure* CurrentlyUsedTraceData = this->GetTraceInfoStructure(
+    "contour");
+  ContourMeshStructureMultiIndexContainer* ContoursInfo = 
+    GetTracesInfoFromDBMultiIndex(this->m_DatabaseConnector, 
+    CurrentlyUsedTraceData->TraceName,CurrentlyUsedTraceData->CollectionName,
+    this->m_ImgSessionID,iTimePoint,iListIDs);
+  this->CloseDBConnection();
+  return ContoursInfo;
+}*/
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 std::vector<ContourMeshStructure> QGoPrintDatabase::
   GetMeshesForAGivenZCoord (unsigned int iZCoord)
 {
-  return this->GetTracesForAGivenZCoord(*this->m_MeshesData->ListTracesInfoForVisu,iZCoord,
+  return this->GetTracesForAGivenZCoord(
+    *this->m_MeshesData->ListTracesInfoForVisu,iZCoord,
     this->m_MeshesData->CollectionOfTraces);
 }
 //-------------------------------------------------------------------------
