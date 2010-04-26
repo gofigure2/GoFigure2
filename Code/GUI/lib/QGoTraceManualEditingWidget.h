@@ -68,6 +68,9 @@ class QGOGUILIB_EXPORT QGoTraceManualEditingWidget :
     std::string GetCurrentCellType();
     std::string GetCurrentSubCellType();
 
+    void UpdateTraceAndCollection(
+      std::string iTrace, std::string iCollection);
+
     QtColorComboBox* ColorComboBox;
     QtColorComboBox* ColorIDCollectionComboBox;
     QComboBox*       m_ChoseCellType;

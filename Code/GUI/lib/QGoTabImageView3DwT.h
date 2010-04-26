@@ -46,6 +46,7 @@
 #include "itkMegaCaptureReader.h"
 #include "ContourMeshStructureHelper.h"
 #include "QGoPrintDatabase.h"
+#include "QGoTraceManualEditingDockWidget.h"
 #include <QHBoxLayout>
 #include <string>
 
@@ -186,7 +187,7 @@ public:
   int GetSliceViewYZ() const;
   int GetTimePoint() const;
   QGoManualSegmentationDockWidget* GetManualSegmentationWidget();
-  QGoTraceManualEditingWidget* GetTraceManualEditingWidget();
+  QGoTraceManualEditingWidget*     GetTraceManualEditingWidget();
   QGoPrintDatabase* m_DataBaseTables;
 
 signals:
@@ -313,8 +314,8 @@ protected:
   vtkSmartPointer<vtkPoints>        m_SeedsWorldPosition;
 
   QGoManualSegmentationSettingsDialog* m_SettingsDialog;
-  QGoTraceManualEditingWidget* TraceManualEditingWidget;
-  QDockWidget*                 m_test;
+  QGoTraceManualEditingDockWidget*     m_TraceManualEditingDockWidget;
+  //QDockWidget*                 m_test;
 
     
 
@@ -423,6 +424,8 @@ protected slots:
   void OpenExistingBookmark();
   void SetTheCurrentCellType();
   void SetTheCurrentSubCellType();
+  void ShowTraceDockWidgetForContour(bool ManualSegVisible);
+  void ShowTraceDockWidgetForMesh(bool OneClickVisible);
 
 };
 

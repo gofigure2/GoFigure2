@@ -50,11 +50,12 @@ QGoTraceManualEditingWidget::
 QGoTraceManualEditingWidget( QWidget* iParent) :
   QWidget( iParent )
 {
-  this->setupUi( this );
-  SetColorComboBox();
-  SetTraceColorIDCollectionComboBox();
-  SetCellTypeComboBox();
-  SetSubCellTypeComboBox();
+   this->setupUi( this );
+   SetColorComboBox();
+   SetTraceColorIDCollectionComboBox();
+   SetCellTypeComboBox();
+   SetSubCellTypeComboBox();
+   UpdateTraceAndCollection("contour", "mesh");
 }
 //-------------------------------------------------------------------------
 
@@ -293,4 +294,28 @@ void QGoTraceManualEditingWidget::SetCurrentSubCellType(
     {
     this->m_ChoseSubCellType->setCurrentIndex(index);
     }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoTraceManualEditingWidget::UpdateTraceAndCollection(
+  std::string iTrace, std::string iCollection)
+{ 
+  this->TraceName->setText(iTrace.c_str());
+  this->CollectionName->setText(iCollection.c_str());
+  if (iTrace == "contour" || iTrace == "mesh")
+    {
+    this->m_ChoseCellType->show();
+    this->LabelCellType->show();
+    this->m_ChoseSubCellType->show();
+    this->LabelSubCellType->show();
+    }
+  else
+    {
+    this->m_ChoseCellType->hide();
+    this->LabelCellType->hide();
+    this->m_ChoseSubCellType->hide();
+    this->LabelSubCellType->hide();
+    }
+  this->show();
 }

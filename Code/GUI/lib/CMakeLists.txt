@@ -53,6 +53,7 @@ SET( QGoGUILIB_SRC
   QGoDBCellTypeManager.cxx
   QGoDBSubCellTypeManager.cxx
   QGoTraceManualEditingWidget.cxx
+  QGoTraceManualEditingDockWidget.cxx
   QGoDBInitializationWizard.cxx
   QGoDBInitCreateUserPage.cxx
   QGoDBInitCreateAuthorsPage.cxx
@@ -125,6 +126,7 @@ SET( QGoGUILIB_HDRS
   QGoDBCellTypeManager.h
   QGoDBSubCellTypeManager.h
   QGoTraceManualEditingWidget.h
+  QGoTraceManualEditingDockWidget.h
   QGoOneClickSegmentationDockWidget.h
   QGoAboutWidget.h
   QGoDBInitializationWizard.h
