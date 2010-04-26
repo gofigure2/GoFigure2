@@ -97,7 +97,7 @@
 #include "QGoTraceManualEditingWidget.h"
 
 #include <QCursor>
-
+#include <QDockWidget>
 #include <QLabel>
 #include <QSpinBox>
 #include <QVBoxLayout>
@@ -186,7 +186,7 @@ QGoTabImageView3DwT( QWidget* iParent ) :
       new QGoDockWidgetStatus( m_OneClickSegmentationDockWidget, Qt::LeftDockWidgetArea, true, true ), m_OneClickSegmentationDockWidget ) );
   m_DockWidgetList.push_back(
     std::pair< QGoDockWidgetStatus*, QDockWidget* >(
-      new QGoDockWidgetStatus( m_test, Qt::LeftDockWidgetArea, true, true ), m_test ) );
+      new QGoDockWidgetStatus( this->m_ContourSettingsDockWidget, Qt::LeftDockWidgetArea, true, true ), this->m_ContourSettingsDockWidget ) );
 
 #if defined ( ENABLEFFMPEG ) || defined (ENABLEAVI)
   m_DockWidgetList.push_back(
@@ -258,13 +258,12 @@ void
 QGoTabImageView3DwT::
 CreateSettingAndDialogSegmentationWidgets()
 {
-  m_test = new QDockWidget( tr("Trace settings"), this );
+  this->m_ContourSettingsDockWidget = new QGoContourManualEditingDockWidget(this);
   m_SettingsDialog = new QGoManualSegmentationSettingsDialog( this );
-  TraceManualEditingWidget = new QGoTraceManualEditingWidget( m_test );
 
   //QAction* tempaction_SettingDialog = new QAction( tr("Contours settings"), this );
 
-  QAction* tempaction = m_test->toggleViewAction();
+  //QAction* tempaction = this->m_ContourSettingsDockWidget->toggleViewAction();
 
   QObject::connect( m_SettingsDialog, SIGNAL( accepted() ),
     this, SLOT( GenerateContourRepresentationProperties( ) ) );
@@ -273,7 +272,7 @@ CreateSettingAndDialogSegmentationWidgets()
     this, SLOT( ChangeContourRepresentationProperty() ) );
 
   //this->m_SegmentationActions.push_back( tempaction_SettingDialog );
-  this->m_SegmentationActions.push_back( tempaction );
+  //this->m_SegmentationActions.push_back( tempaction );
 }
 void
 QGoTabImageView3DwT::
@@ -432,22 +431,22 @@ CreateDataBaseTablesConnection()
 {
   QObject::connect( this->m_DataBaseTables,
     SIGNAL( PrintExistingColorsFromDB(std::list<std::pair<std::string,std::vector<int> > >) ),
-    this->TraceManualEditingWidget->ColorComboBox,
+    this->m_ContourSettingsDockWidget->m_ContourWidget->ColorComboBox,
     SLOT( setExistingColors(std::list<std::pair<std::string,std::vector<int> > >) ) );
 
   QObject::connect( this->m_DataBaseTables,
     SIGNAL( PrintExistingCollectionIDsFromDB(std::list<std::pair<std::string,QColor> >) ),
-    this->TraceManualEditingWidget,
+    this->m_ContourSettingsDockWidget->m_ContourWidget,
     SLOT( SetCollectionID(std::list<std::pair<std::string,QColor> >) ) );
 
   QObject::connect(
-    this->TraceManualEditingWidget->ColorComboBox,
+    this->m_ContourSettingsDockWidget->m_ContourWidget->ColorComboBox,
     SIGNAL( NewColorToBeSaved(std::vector<std::string>)),
     this->m_DataBaseTables,
     SLOT( SaveNewColorInDB(std::vector<std::string> ) ) );
 
   QObject::connect(
-    this->TraceManualEditingWidget->ColorIDCollectionComboBox,
+    this->m_ContourSettingsDockWidget->m_ContourWidget->ColorIDCollectionComboBox,
     SIGNAL( NewCollectionToBeSaved()),
     this, SLOT( UpdateDBAndCollectionIDComboBoxForANewCreatedCollection() ) );
 
@@ -457,7 +456,7 @@ CreateDataBaseTablesConnection()
 
   QObject::connect( this->m_DataBaseTables,
     SIGNAL( NewCreatedCollection(QColor, QString) ),
-    this->TraceManualEditingWidget->ColorIDCollectionComboBox
+    this->m_ContourSettingsDockWidget->m_ContourWidget->ColorIDCollectionComboBox
     , SLOT( addColor(QColor, QString) ));
 
   QObject::connect( this->m_DataBaseTables,
@@ -470,7 +469,7 @@ CreateDataBaseTablesConnection()
 
   QObject::connect( this->m_DataBaseTables,
     SIGNAL( DeletedCollection(unsigned int) ),
-    this->TraceManualEditingWidget->ColorIDCollectionComboBox,
+    this->m_ContourSettingsDockWidget->m_ContourWidget->ColorIDCollectionComboBox,
     SLOT( DeleteCollectionID(unsigned int) ) );
 
   QObject::connect( this->m_DataBaseTables,
@@ -483,46 +482,50 @@ CreateDataBaseTablesConnection()
 
   QObject::connect(this->m_DataBaseTables,
     SIGNAL( ListCellTypesToUpdate(QStringList)),
-    this->TraceManualEditingWidget,
+    this->m_ContourSettingsDockWidget->m_ContourWidget,
     SLOT(SetListCellTypes(QStringList)));
 
   QObject::connect(
-    this->TraceManualEditingWidget,
+    this->m_ContourSettingsDockWidget->m_ContourWidget,
     SIGNAL( AddANewCellType()),this->m_DataBaseTables,
     SLOT(AddNewCellType()));
 
   QObject::connect(
-    this->TraceManualEditingWidget,
+    this->m_ContourSettingsDockWidget->m_ContourWidget,
     SIGNAL( DeleteCellType()),this->m_DataBaseTables,
     SLOT(DeleteCellType()));
 
   QObject::connect(this->m_DataBaseTables,
     SIGNAL( ListSubCellTypesToUpdate(QStringList)),
-    this->TraceManualEditingWidget,
+    this->m_ContourSettingsDockWidget->m_ContourWidget,
     SLOT(SetListSubCellTypes(QStringList)));
 
    QObject::connect(
-    this->TraceManualEditingWidget,
+    this->m_ContourSettingsDockWidget->m_ContourWidget,
     SIGNAL( AddANewSubCellType()),this->m_DataBaseTables,
     SLOT(AddNewSubCellType()));
 
   QObject::connect(
-    this->TraceManualEditingWidget,
+    this->m_ContourSettingsDockWidget->m_ContourWidget,
     SIGNAL( DeleteSubCellType()),this->m_DataBaseTables,
     SLOT(DeleteSubCellType()));
 
   QObject::connect(
     this->m_DataBaseTables,SIGNAL(TheColorNameAlreadyExits()),
-    this->TraceManualEditingWidget->ColorComboBox,
+    this->m_ContourSettingsDockWidget->m_ContourWidget->ColorComboBox,
     SLOT(DontAddTheColor()));
   
   QObject::connect(
-    this->TraceManualEditingWidget,SIGNAL(ListCellTypesReady()),
+    this->m_ContourSettingsDockWidget->m_ContourWidget,SIGNAL(ListCellTypesReady()),
     this, SLOT(SetTheCurrentCellType()));
 
   QObject::connect(
-    this->TraceManualEditingWidget,SIGNAL(ListSubCellTypesReady()),
+    this->m_ContourSettingsDockWidget->m_ContourWidget,SIGNAL(ListSubCellTypesReady()),
     this, SLOT(SetTheCurrentSubCellType()));
+
+  QObject::connect(
+    this->m_ManualSegmentationDockWidget,SIGNAL(visibilityChanged(bool)),
+    this->m_ContourSettingsDockWidget,SLOT(setVisible(bool)));
 }
 //-------------------------------------------------------------------------
 #if defined ( ENABLEFFMPEG ) || defined ( ENABLEAVI )
@@ -1937,14 +1940,14 @@ ValidateContour( const int& iContourID, const int& iDir,
     // get meshid from the visu dock widget (SpinBox)
     //unsigned int meshid = m_ManualSegmentationDockWidget->GetMeshId();
     unsigned int meshid =
-      this->TraceManualEditingWidget->GetCurrentCollectionID();
+      this->m_ContourSettingsDockWidget->m_ContourWidget->GetCurrentCollectionID();
 
     if( iSaveInDataBase )
       {
       if( !m_ReEditContourMode )
         {
         std::pair< std::string, QColor > ColorData =
-          this->TraceManualEditingWidget->ColorComboBox->GetCurrentColorData();
+          this->m_ContourSettingsDockWidget->m_ContourWidget->ColorComboBox->GetCurrentColorData();
 
         // Save contour in database!
         m_ContourId = m_DataBaseTables->SaveContoursFromVisuInDB( min_idx[0],
@@ -1958,7 +1961,8 @@ ValidateContour( const int& iContourID, const int& iDir,
         m_DataBaseTables->UpdateContourFromVisuInDB( min_idx[0],
           min_idx[1], min_idx[2], iTCoord, max_idx[0],
           max_idx[1], max_idx[2], contour_nodes, m_ContourId );
-        this->m_test->setEnabled( true );
+        //this->m_test->setEnabled( true );
+        this->m_ContourSettingsDockWidget->setEnabled(true);
         }
       }
     else
@@ -1999,7 +2003,7 @@ ValidateContour( )
   // get color from the dock widget
   double r, g, b, a( 1. );
   //QColor color = m_ManualSegmentationDockWidget->GetValidatedColor();
-  if( this->TraceManualEditingWidget->GetCurrentCollectionID()  == -1 )
+  if( this->m_ContourSettingsDockWidget->m_ContourWidget->GetCurrentCollectionID()  == -1 )
     {
     r = 0.1;
     g = 0.5;
@@ -2008,7 +2012,7 @@ ValidateContour( )
   else
     {
     QColor color =
-      this->TraceManualEditingWidget->ColorComboBox->GetCurrentColorData().second;
+      this->m_ContourSettingsDockWidget->m_ContourWidget->ColorComboBox->GetCurrentColorData().second;
     color.getRgbF( &r, &g, &b );
     }
   
@@ -2067,7 +2071,8 @@ ValidateContour( )
       m_ReEditContourMode );
 
     m_ManualSegmentationDockWidget->setEnabled( true );
-    m_test->setEnabled( true );
+    //m_test->setEnabled( true );
+    this->m_ContourSettingsDockWidget->setEnabled(true);
     m_ReEditContourMode = false;
     }
 }
@@ -2351,23 +2356,23 @@ QGoTabImageView3DwT::
 UpdateDBAndCollectionIDComboBoxForANewCreatedCollection()
 {
   //first, save in the database:
-  std::string TraceName =  this->TraceManualEditingWidget->TraceName->text().toStdString();
+  std::string TraceName =  this->m_ContourSettingsDockWidget->m_ContourWidget->TraceName->text().toStdString();
   std::string CellType = "";
   std::string SubCellType = "";
   if ( TraceName == "contour") //for a mesh, collection of contour;
     { 
-    CellType = this->TraceManualEditingWidget->GetCurrentCellType();
-    SubCellType = this->TraceManualEditingWidget->GetCurrentSubCellType();
+    CellType = this->m_ContourSettingsDockWidget->m_ContourWidget->GetCurrentCellType();
+    SubCellType = this->m_ContourSettingsDockWidget->m_ContourWidget->GetCurrentSubCellType();
     }
   std::pair<std::string,QColor> NewCollectionToAddInComboBox =
   
   this->m_DataBaseTables->SaveNewCollectionInDB(
-  this->TraceManualEditingWidget->ColorComboBox->GetCurrentColorData(),
-  this->TraceManualEditingWidget->TraceName->text().toStdString(),
+  this->m_ContourSettingsDockWidget->m_ContourWidget->ColorComboBox->GetCurrentColorData(),
+  this->m_ContourSettingsDockWidget->m_ContourWidget->TraceName->text().toStdString(),
   this->GetTimePoint(),CellType,SubCellType);
 
   //second, update the ColorIDCollectionComboBox with the new created ID:
-  this->TraceManualEditingWidget->ColorIDCollectionComboBox->addColor(
+  this->m_ContourSettingsDockWidget->m_ContourWidget->ColorIDCollectionComboBox->addColor(
     NewCollectionToAddInComboBox.second,NewCollectionToAddInComboBox.first.c_str());
 }
 //-------------------------------------------------------------------------
@@ -2378,7 +2383,7 @@ QGoTabImageView3DwT::
 PassInfoForDBForCurrentSelectedColor()
 {
   this->m_DataBaseTables->UpdateCurrentColorData(
-    this->TraceManualEditingWidget->ColorComboBox->GetCurrentColorData());
+    this->m_ContourSettingsDockWidget->m_ContourWidget->ColorComboBox->GetCurrentColorData());
 
 }
 //-------------------------------------------------------------------------
@@ -2389,7 +2394,7 @@ QGoTabImageView3DwT::
 PassInfoForCurrentCollectionID()
 {
   this->m_DataBaseTables->SetCurrentCollectionID(
-    this->TraceManualEditingWidget->ColorIDCollectionComboBox->GetCurrentColorData());
+    this->m_ContourSettingsDockWidget->m_ContourWidget->ColorIDCollectionComboBox->GetCurrentColorData());
 }
 //-------------------------------------------------------------------------
 
@@ -2463,7 +2468,8 @@ ReEditContour( const unsigned int& iId )
         this->m_ModeActions[0]->setChecked(true);
         m_ContourWidget[dir]->Initialize( c_nodes );
         m_ManualSegmentationDockWidget->setEnabled( true );
-        m_test->setEnabled( false );
+        //m_test->setEnabled( false );
+        this->m_ContourSettingsDockWidget->setEnabled(false);
         }
       }
     }
@@ -2872,7 +2878,7 @@ QGoManualSegmentationDockWidget* QGoTabImageView3DwT::
 QGoTraceManualEditingWidget* QGoTabImageView3DwT::
   GetTraceManualEditingWidget()
 {
-  return this->TraceManualEditingWidget;
+  return this->m_ContourSettingsDockWidget->m_ContourWidget;
 }
 
 //-------------------------------------------------------------------------
@@ -2880,7 +2886,7 @@ QGoTraceManualEditingWidget* QGoTabImageView3DwT::
 //-------------------------------------------------------------------------
 void QGoTabImageView3DwT::SetTheCurrentCellType()
 {
-  this->TraceManualEditingWidget
+  this->m_ContourSettingsDockWidget->m_ContourWidget
     ->SetCurrentCellType(this->m_DataBaseTables->GetNameNewCellType());
 }
 //-------------------------------------------------------------------------
@@ -2888,7 +2894,7 @@ void QGoTabImageView3DwT::SetTheCurrentCellType()
 //-------------------------------------------------------------------------
 void QGoTabImageView3DwT::SetTheCurrentSubCellType()
 {
-  this->TraceManualEditingWidget
+  this->m_ContourSettingsDockWidget->m_ContourWidget
     ->SetCurrentSubCellType(this->m_DataBaseTables->GetNameNewSubCellType());
 }
 //-------------------------------------------------------------------------
@@ -2957,16 +2963,16 @@ OneClickSphereContours()
 
     // Increment Mesh ID and keep the good colors for meshes and contours
     // 1- store mesh and contours colors
-    QColor meshColor = this->TraceManualEditingWidget->ColorIDCollectionComboBox->GetCurrentColorData().second;
-    QColor contourColor = this->TraceManualEditingWidget->ColorComboBox->GetCurrentColorData().second;
+    QColor meshColor = this->m_ContourSettingsDockWidget->m_ContourWidget->ColorIDCollectionComboBox->GetCurrentColorData().second;
+    QColor contourColor = this->m_ContourSettingsDockWidget->m_ContourWidget->ColorComboBox->GetCurrentColorData().second;
     // 2- put the color of the mesh in the contour color
-    this->TraceManualEditingWidget->ColorComboBox->setCurrentColor( meshColor );
-    this->TraceManualEditingWidget->ColorComboBox->update();
+    this->m_ContourSettingsDockWidget->m_ContourWidget->ColorComboBox->setCurrentColor( meshColor );
+    this->m_ContourSettingsDockWidget->m_ContourWidget->ColorComboBox->update();
     // 3- increase mesh ID // now the new mesh has the same color as the contours
-    this->TraceManualEditingWidget->ColorIDCollectionComboBox->IncrementMeshID();
+    this->m_ContourSettingsDockWidget->m_ContourWidget->ColorIDCollectionComboBox->IncrementMeshID();
     // 4- update contour color
-    this->TraceManualEditingWidget->ColorComboBox->setCurrentColor( contourColor );
-    this->TraceManualEditingWidget->ColorComboBox->update();
+    this->m_ContourSettingsDockWidget->m_ContourWidget->ColorComboBox->setCurrentColor( contourColor );
+    this->m_ContourSettingsDockWidget->m_ContourWidget->ColorComboBox->update();
   }
 
   // Erase seeds once everything is stored in DB
@@ -3007,16 +3013,16 @@ OneClickSphereVolumes()
 
     // Increment Mesh ID and keep the good colors for meshes and contours
     // 1- store mesh and contours colors
-    QColor meshColor = this->TraceManualEditingWidget->ColorIDCollectionComboBox->GetCurrentColorData().second;
-    QColor contourColor = this->TraceManualEditingWidget->ColorComboBox->GetCurrentColorData().second;
+    QColor meshColor = this->m_ContourSettingsDockWidget->m_ContourWidget->ColorIDCollectionComboBox->GetCurrentColorData().second;
+    QColor contourColor = this->m_ContourSettingsDockWidget->m_ContourWidget->ColorComboBox->GetCurrentColorData().second;
     // 2- put the color of the mesh in the contour color
-    this->TraceManualEditingWidget->ColorComboBox->setCurrentColor( meshColor );
-    this->TraceManualEditingWidget->ColorComboBox->update();
+    this->m_ContourSettingsDockWidget->m_ContourWidget->ColorComboBox->setCurrentColor( meshColor );
+    this->m_ContourSettingsDockWidget->m_ContourWidget->ColorComboBox->update();
     // 3- increase mesh ID // now the new mesh has the same color as the contours
-    this->TraceManualEditingWidget->ColorIDCollectionComboBox->IncrementMeshID();
+    this->m_ContourSettingsDockWidget->m_ContourWidget->ColorIDCollectionComboBox->IncrementMeshID();
     // 4- update contour color
-    this->TraceManualEditingWidget->ColorComboBox->setCurrentColor( contourColor );
-    this->TraceManualEditingWidget->ColorComboBox->update();
+    this->m_ContourSettingsDockWidget->m_ContourWidget->ColorComboBox->setCurrentColor( contourColor );
+    this->m_ContourSettingsDockWidget->m_ContourWidget->ColorComboBox->update();
     }
 
   // Erase seeds once everything is stored in DB
@@ -3199,12 +3205,12 @@ SavePolyDataAsContourInDB( vtkPolyData* iView, const int& iContourID,
 
     // get meshid from the visu dock widget (SpinBox)
     //unsigned int meshid = m_ManualSegmentationDockWidget->GetMeshId();
-    unsigned int meshid = this->TraceManualEditingWidget->GetCurrentCollectionID();
+    unsigned int meshid = this->m_ContourSettingsDockWidget->m_ContourWidget->GetCurrentCollectionID();
 
   if( iSaveInDataBase )
     {
     std::pair< std::string, QColor > ColorData =
-        this->TraceManualEditingWidget->ColorComboBox->GetCurrentColorData();
+        this->m_ContourSettingsDockWidget->m_ContourWidget->ColorComboBox->GetCurrentColorData();
 
     // Save contour in database!
     m_ContourId = m_DataBaseTables->SaveContoursFromVisuInDB( min_idx[0],
@@ -3252,7 +3258,7 @@ SavePolyDataAsContourInDB( vtkPolyData* iView )
   // get color from the dock widget
   double r, g, b, a( 1. );
   //QColor color = m_ManualSegmentationDockWidget->GetValidatedColor();
-  if( this->TraceManualEditingWidget->GetCurrentCollectionID() == -1 )
+  if( this->m_ContourSettingsDockWidget->m_ContourWidget->GetCurrentCollectionID() == -1 )
     {
     r = 0.1;
     g = 0.5;
@@ -3261,7 +3267,7 @@ SavePolyDataAsContourInDB( vtkPolyData* iView )
   else
     {
     QColor color =
-      this->TraceManualEditingWidget->ColorComboBox->GetCurrentColorData().second;
+      this->m_ContourSettingsDockWidget->m_ContourWidget->ColorComboBox->GetCurrentColorData().second;
     color.getRgbF( &r, &g, &b );
     }
 
@@ -3321,12 +3327,12 @@ SavePolyDataAsVolumeInDB( vtkPolyData* iView, const int& iContourID,
 
 
   // get meshid from the visu dock widget (SpinBox)
-  unsigned int meshid = this->TraceManualEditingWidget->GetCurrentCollectionID();
+  unsigned int meshid = this->m_ContourSettingsDockWidget->m_ContourWidget->GetCurrentCollectionID();
 /*
   if( iSaveInDataBase )
     {
     std::pair< std::string, QColor > ColorData =
-        this->TraceManualEditingWidget->ColorComboBox->GetCurrentColorData();
+        this->m_ContourSettingsDockWidget->m_ContourWidget->ColorComboBox->GetCurrentColorData();
 
     // Save contour in database!
     // Create new method for meshes
@@ -3365,7 +3371,7 @@ SavePolyDataAsVolumeInDB( vtkPolyData* iView )
   // get color from the dock widget
   double r, g, b, a( 1. );
   //QColor color = m_ManualSegmentationDockWidget->GetValidatedColor();
-  if( this->TraceManualEditingWidget->GetCurrentCollectionID() == -1 )
+  if( this->m_ContourSettingsDockWidget->m_ContourWidget->GetCurrentCollectionID() == -1 )
     {
     r = 0.1;
     g = 0.5;
@@ -3374,7 +3380,7 @@ SavePolyDataAsVolumeInDB( vtkPolyData* iView )
   else
     {
     QColor color =
-      this->TraceManualEditingWidget->ColorComboBox->GetCurrentColorData().second;
+      this->m_ContourSettingsDockWidget->m_ContourWidget->ColorComboBox->GetCurrentColorData().second;
     color.getRgbF( &r, &g, &b );
     }
 

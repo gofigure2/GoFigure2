@@ -59,7 +59,9 @@ class QGOGUILIB_EXPORT QGoTraceManualEditingWidget :
   Q_OBJECT
 
   public:
-    explicit QGoTraceManualEditingWidget( QWidget* parent = 0);
+    explicit QGoTraceManualEditingWidget( QWidget* parent = 0,
+      std::string iTraceName = "contour",
+      std::string iCollectionName = "mesh");
     ~QGoTraceManualEditingWidget();
     
     int GetCurrentCollectionID ();
@@ -101,5 +103,7 @@ class QGOGUILIB_EXPORT QGoTraceManualEditingWidget :
     void SetSubCellTypeComboBox();
     QHBoxLayout* HLayoutForColor;
     QVBoxLayout* VLayoutForCollection;
+    std::string  m_TraceName;
+    std::string  m_CollectionName;
 };
 #endif

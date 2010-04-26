@@ -47,9 +47,12 @@
 
 
 QGoTraceManualEditingWidget::
-QGoTraceManualEditingWidget( QWidget* iParent) :
+QGoTraceManualEditingWidget( QWidget* iParent,std::string iTraceName,
+      std::string iCollectionName) :
   QWidget( iParent )
 {
+  this->m_TraceName = iTraceName;
+  this->m_CollectionName = iCollectionName;
   this->setupUi( this );
   SetColorComboBox();
   SetTraceColorIDCollectionComboBox();
@@ -123,7 +126,7 @@ void
 QGoTraceManualEditingWidget::
 SetTraceColorIDCollectionComboBox()
 {
-  TraceName = new QLabel(tr("contour"));
+  TraceName = new QLabel(this->m_TraceName.c_str());
   QFont ifont;
   ifont.setCapitalization(QFont::AllUppercase);
   ifont.setBold(true);
@@ -140,7 +143,7 @@ SetTraceColorIDCollectionComboBox()
   CollectionLbl->setFont(ifont);
   ColorIDCollectionComboBox = new QtColorComboBox;
   ColorIDCollectionComboBox->setCreationCollection(true);
-  CollectionName = new QLabel (tr("mesh"));
+  CollectionName = new QLabel (this->m_CollectionName.c_str());
   ifont.setUnderline(false);
   ifont.setCapitalization(QFont::AllUppercase);
   ifont.setBold(true);
