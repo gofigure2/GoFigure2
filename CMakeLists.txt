@@ -304,14 +304,6 @@ IF( VTK_FOUND )
     #-----------------------------------------------------------------------
     OPTION( BUILD_EXAMPLES "Build Examples" OFF )
 
-    IF( BUILD_EXAMPLES )
-      ADD_SUBDIRECTORY( Examples )
-      ADD_SUBDIRECTORY( KWStyle )
-      OPTION( BUILD_TESTING "Test the project" ON )
-    ELSE( BUILD_EXAMPLES )
-      SET( BUILD_TESTING OFF )
-    ENDIF( BUILD_EXAMPLES )
-
     IF( BUILD_TESTING )
       SET( BUILDNAME "${BUILDNAME}" 
              CACHE STRING "Name of build on the dashboard" 
@@ -323,12 +315,18 @@ IF( VTK_FOUND )
         ${CMAKE_CURRENT_BINARY_DIR}/CTestCustom.cmake
         @ONLY
         )
-        
       ENABLE_TESTING()
-      INCLUDE( CTest )
-
+      INCLUDE ( CTest )
     ENDIF( BUILD_TESTING )
 
+    IF( BUILD_EXAMPLES )
+      ADD_SUBDIRECTORY( Examples )
+      ADD_SUBDIRECTORY( KWStyle )
+      OPTION( BUILD_TESTING "Test the project" ON )
+    ELSE( BUILD_EXAMPLES )
+      SET( BUILD_TESTING OFF )
+    ENDIF( BUILD_EXAMPLES )
+    
     #-----------------------------------------------------------------------
     # PACKAGE With CPack
     #-----------------------------------------------------------------------
