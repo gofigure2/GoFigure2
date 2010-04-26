@@ -286,25 +286,9 @@ IF( VTK_FOUND )
     ADD_SUBDIRECTORY( Code )
     ADD_SUBDIRECTORY( Main )
 
-    #---------------------------------------------------------------------------
-    # Examples and tests
-    #---------------------------------------------------------------------------
-    OPTION( BUILD_EXAMPLES "Build Examples" OFF )
-
-    IF( BUILD_EXAMPLES )
-      ADD_SUBDIRECTORY( Examples )
-      ADD_SUBDIRECTORY( KWStyle )
-      INCLUDE( CTest )
-    ENDIF( BUILD_EXAMPLES )
-
-    IF( BUILD_TESTING )
-      SET( BUILDNAME "${BUILDNAME}" CACHE STRING "Name of build on the dashboard" )
-      MARK_AS_ADVANCED( BUILDNAME )
-    ENDIF( BUILD_TESTING )
-
-    #---------------------------------------------------------------------------
+    #-----------------------------------------------------------------------
     # Plugins
-    #---------------------------------------------------------------------------
+    #-----------------------------------------------------------------------
     IF( VTK_BUILD_SHARED_LIBS )
       OPTION( BUILD_PLUGINS  "Build GoFigure Plugins" OFF )
     ELSE( VTK_BUILD_SHARED_LIBS )
@@ -315,9 +299,39 @@ IF( VTK_FOUND )
       ADD_SUBDIRECTORY( Plugins )
     ENDIF( BUILD_PLUGINS )
 
-    #---------------------------------------------------------------------------
+    #-----------------------------------------------------------------------
+    # Examples and tests
+    #-----------------------------------------------------------------------
+    OPTION( BUILD_EXAMPLES "Build Examples" OFF )
+
+    IF( BUILD_EXAMPLES )
+      ADD_SUBDIRECTORY( Examples )
+      ADD_SUBDIRECTORY( KWStyle )
+      OPTION( BUILD_TESTING "Test the project" ON )
+    ELSE( BUILD_EXAMPLES )
+      SET( BUILD_TESTING OFF )
+    ENDIF( BUILD_EXAMPLES )
+
+    IF( BUILD_TESTING )
+      SET( BUILDNAME "${BUILDNAME}" 
+             CACHE STRING "Name of build on the dashboard" 
+            )
+
+      MARK_AS_ADVANCED( BUILDNAME )
+        
+      CONFIGURE_FILE( CMake/CTestCustom.cmake.in
+        ${CMAKE_CURRENT_BINARY_DIR}/CTestCustom.cmake
+        @ONLY
+        )
+        
+      ENABLE_TESTING()
+      INCLUDE( CTest )
+
+    ENDIF( BUILD_TESTING )
+
+    #-----------------------------------------------------------------------
     # PACKAGE With CPack
-    #---------------------------------------------------------------------------
+    #-----------------------------------------------------------------------
     # add the uninstall support
     CONFIGURE_FILE(
       "${CMAKE_CURRENT_SOURCE_DIR}/GOFIGURE2Uninstall.cmake.in"
