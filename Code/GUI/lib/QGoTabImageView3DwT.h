@@ -46,8 +46,6 @@
 #include "itkMegaCaptureReader.h"
 #include "ContourMeshStructureHelper.h"
 #include "QGoPrintDatabase.h"
-#include "QGoContourManualEditingDockWidget.h"
-#include "QGoMeshManualEditingDockWidget.h"
 #include <QHBoxLayout>
 #include <string>
 
@@ -315,8 +313,10 @@ protected:
   vtkSmartPointer<vtkPoints>        m_SeedsWorldPosition;
 
   QGoManualSegmentationSettingsDialog* m_SettingsDialog;
-  QGoContourManualEditingDockWidget*   m_ContourSettingsDockWidget; 
-  QGoMeshManualEditingDockWidget*      m_MeshSettingsDockWidget;
+  QGoTraceManualEditingWidget* TraceManualEditingWidget;
+  QDockWidget*                 m_test;
+
+    
 
   #ifdef   ENABLEFFMPEG
     vtkFFMPEGRenderWindowRecorder*            m_FFMPEGWriter;
