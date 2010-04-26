@@ -47,6 +47,7 @@
 #include "ContourMeshStructureHelper.h"
 #include "QGoPrintDatabase.h"
 #include "QGoContourManualEditingDockWidget.h"
+#include "QGoMeshManualEditingDockWidget.h"
 #include <QHBoxLayout>
 #include <string>
 
@@ -315,6 +316,7 @@ protected:
 
   QGoManualSegmentationSettingsDialog* m_SettingsDialog;
   QGoContourManualEditingDockWidget*   m_ContourSettingsDockWidget; 
+  QGoMeshManualEditingDockWidget*      m_MeshSettingsDockWidget;
 
   #ifdef   ENABLEFFMPEG
     vtkFFMPEGRenderWindowRecorder*            m_FFMPEGWriter;

@@ -183,10 +183,13 @@ QGoTabImageView3DwT( QWidget* iParent ) :
       new QGoDockWidgetStatus( m_DataBaseTables, Qt::TopDockWidgetArea, true, true ), m_DataBaseTables ) );
   m_DockWidgetList.push_back(
     std::pair< QGoDockWidgetStatus*, QDockWidget* >(
-      new QGoDockWidgetStatus( m_OneClickSegmentationDockWidget, Qt::LeftDockWidgetArea, true, true ), m_OneClickSegmentationDockWidget ) );
+      new QGoDockWidgetStatus( this->m_ContourSettingsDockWidget, Qt::LeftDockWidgetArea, true, true ), this->m_ContourSettingsDockWidget ) );
   m_DockWidgetList.push_back(
     std::pair< QGoDockWidgetStatus*, QDockWidget* >(
-      new QGoDockWidgetStatus( this->m_ContourSettingsDockWidget, Qt::LeftDockWidgetArea, true, true ), this->m_ContourSettingsDockWidget ) );
+      new QGoDockWidgetStatus( m_OneClickSegmentationDockWidget, Qt::LeftDockWidgetArea, true, true ), m_OneClickSegmentationDockWidget ) ); 
+  m_DockWidgetList.push_back( 
+    std::pair< QGoDockWidgetStatus*, QDockWidget* >(
+    new QGoDockWidgetStatus(  this->m_MeshSettingsDockWidget, Qt::LeftDockWidgetArea, true, true), this->m_MeshSettingsDockWidget) );
 
 #if defined ( ENABLEFFMPEG ) || defined (ENABLEAVI)
   m_DockWidgetList.push_back(
@@ -260,7 +263,7 @@ CreateSettingAndDialogSegmentationWidgets()
 {
   this->m_ContourSettingsDockWidget = new QGoContourManualEditingDockWidget(this);
   m_SettingsDialog = new QGoManualSegmentationSettingsDialog( this );
-
+  this->m_MeshSettingsDockWidget = new QGoMeshManualEditingDockWidget(this);
   //QAction* tempaction_SettingDialog = new QAction( tr("Contours settings"), this );
 
   //QAction* tempaction = this->m_ContourSettingsDockWidget->toggleViewAction();
@@ -270,7 +273,7 @@ CreateSettingAndDialogSegmentationWidgets()
 
   QObject::connect( this, SIGNAL( ContourRepresentationPropertiesChanged() ),
     this, SLOT( ChangeContourRepresentationProperty() ) );
-
+  
   //this->m_SegmentationActions.push_back( tempaction_SettingDialog );
   //this->m_SegmentationActions.push_back( tempaction );
 }
@@ -344,6 +347,10 @@ CreateManualSegmentationdockWidget()
 
   QObject::connect( m_ManualSegmentationDockWidget, SIGNAL( SettingsPressed() ),
       m_SettingsDialog, SLOT ( exec() ) );
+  
+  QObject::connect(
+    this->m_ManualSegmentationDockWidget,SIGNAL(visibilityChanged(bool)),
+    this->m_ContourSettingsDockWidget,SLOT(setVisible(bool)));
 
   QAction* tempaction = m_ManualSegmentationDockWidget->toggleViewAction();
 
@@ -368,6 +375,10 @@ CreateOneClickSegmentationDockWidget()
 
   QObject::connect( m_OneClickSegmentationDockWidget, SIGNAL( ApplyFilterPressed( ) ),
       this, SLOT( ApplyOneClickSegmentationFilter( ) ) );
+  
+  QObject::connect(
+    this->m_OneClickSegmentationDockWidget,SIGNAL(visibilityChanged(bool)),
+    this->m_MeshSettingsDockWidget,SLOT(setVisible(bool)));
 
   m_SeedsWorldPosition = vtkSmartPointer<vtkPoints>::New();
 
@@ -522,10 +533,6 @@ CreateDataBaseTablesConnection()
   QObject::connect(
     this->m_ContourSettingsDockWidget->m_ContourWidget,SIGNAL(ListSubCellTypesReady()),
     this, SLOT(SetTheCurrentSubCellType()));
-
-  QObject::connect(
-    this->m_ManualSegmentationDockWidget,SIGNAL(visibilityChanged(bool)),
-    this->m_ContourSettingsDockWidget,SLOT(setVisible(bool)));
 }
 //-------------------------------------------------------------------------
 #if defined ( ENABLEFFMPEG ) || defined ( ENABLEAVI )
