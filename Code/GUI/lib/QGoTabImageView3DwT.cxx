@@ -3406,10 +3406,13 @@ void QGoTabImageView3DwT::ShowTraceDockWidgetForContour(
 {
   if (ManualSegVisible)
     {
-    this->m_TraceManualEditingDockWidget->ShowAndUpdate("contour","mesh");
-    this->m_TraceManualEditingDockWidget->m_TraceWidget->SetCollectionID(
-      this->m_DataBaseTables->GetListExistingCollectionIDFromDB(
-      "contour",this->GetTimePoint()));
+    if(this->m_DataBaseTables->IsDatabaseUsed())
+      {
+      this->m_TraceManualEditingDockWidget->ShowAndUpdate("contour","mesh");
+      this->m_TraceManualEditingDockWidget->m_TraceWidget->SetCollectionID(
+        this->m_DataBaseTables->GetListExistingCollectionIDFromDB(
+        "contour",this->GetTimePoint()));
+      }
     this->m_OneClickSegmentationDockWidget->hide();
     }
 }
@@ -3421,10 +3424,13 @@ void QGoTabImageView3DwT::ShowTraceDockWidgetForMesh(
 {
   if(OneClickVisible)
     {
-    this->m_TraceManualEditingDockWidget->ShowAndUpdate("mesh","track");
-    this->m_TraceManualEditingDockWidget->m_TraceWidget->SetCollectionID(
-      this->m_DataBaseTables->GetListExistingCollectionIDFromDB(
-      "mesh",this->GetTimePoint()));
+    if(this->m_DataBaseTables->IsDatabaseUsed())
+      {
+      this->m_TraceManualEditingDockWidget->ShowAndUpdate("mesh","track");
+      this->m_TraceManualEditingDockWidget->m_TraceWidget->SetCollectionID(
+        this->m_DataBaseTables->GetListExistingCollectionIDFromDB(
+        "mesh",this->GetTimePoint()));
+      }
     this->m_ManualSegmentationDockWidget->hide();
     }
 }
