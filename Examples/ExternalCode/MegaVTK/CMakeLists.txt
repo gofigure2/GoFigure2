@@ -31,8 +31,8 @@ ADD_TEST( imageviewcollectionTest
   1
 )
 
-ADD_TEST( seedWidgetTest
-  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/seedwidget
+ADD_TEST( SeedWidgetTest
+  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/SeedWidget
   ${TESTING_DATA_PATH}/Circle3D.mhd
   1
 )
