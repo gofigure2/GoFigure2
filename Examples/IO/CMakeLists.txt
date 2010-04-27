@@ -11,6 +11,7 @@ SET( QGOIO_EXAMPLES_SRC
   vtkPolyDataMySQLTextWriter
   kishmeshtextfilereader
   trackTextFilesReader
+  GoDBContourRowTest
 )
 
 FOREACH( var ${QGOIO_EXAMPLES_SRC} )
@@ -41,4 +42,8 @@ ADD_TEST( vtkPolyDataMySQLTextWriterTest1
 ADD_TEST( vtkPolyDataMySQLTextWriterTest2
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/vtkPolyDataMySQLTextWriter
   ${TESTING_DATA_PATH}/sphere.vtk
+)
+
+ADD_TEST( GoDBContourRowTest
+  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/GoDBContourRowTest
 )
