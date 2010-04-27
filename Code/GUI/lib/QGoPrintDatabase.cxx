@@ -674,12 +674,12 @@ int QGoPrintDatabase::SaveContoursFromVisuInDB( unsigned int iXCoordMin,
     GetTraceRowFromVisu(iXCoordMin,
     iYCoordMin,iZCoordMin, iTCoord, iXCoordMax, iYCoordMax, iZCoordMax,
     iContourNodes,this->m_DatabaseConnector));*/
-  GoDBContourRow* contour_row;
+  GoDBContourRow* contour_row = new GoDBContourRow;
   GoDBTraceRow temp = GetTraceRowFromVisu(iXCoordMin,
     iYCoordMin,iZCoordMin, iTCoord, iXCoordMax, iYCoordMax, iZCoordMax,
     iContourNodes,this->m_DatabaseConnector);
-  contour_row = static_cast<GoDBContourRow*>(&temp);
-
+  contour_row = reinterpret_cast<GoDBContourRow*>(&temp);
+  contour_row->ReInitializeMapAfterCast();
   contour_row->SetColor(iColorData.second.red(),iColorData.second.green(),
     iColorData.second.blue(),iColorData.second.alpha(),iColorData.first,
     this->m_DatabaseConnector);
@@ -689,11 +689,8 @@ int QGoPrintDatabase::SaveContoursFromVisuInDB( unsigned int iXCoordMin,
   std::list<int> ListSelectedTraces;
 
   ListSelectedTraces.push_back(NewContourID);
-  //if the meshID needs to be gotten from the manual editing widget:
-  if (iMeshID == 0)
-    {
-    emit this->NeedCurrentSelectedCollectionID();
-    }
+
+  emit this->NeedCurrentSelectedCollectionID();
 
   this->AddListTracesToACollection(
     ListSelectedTraces,this->m_CurrentCollectionData,"contour",false);
@@ -717,6 +714,7 @@ int QGoPrintDatabase::UpdateContourFromVisuInDB(unsigned int iXCoordMin,
     &GetTraceRowFromVisu(iXCoordMin,
     iYCoordMin,iZCoordMin, iTCoord, iXCoordMax, iYCoordMax, iZCoordMax,
     iContourNodes,this->m_DatabaseConnector));
+  contour_row->ReInitializeMapAfterCast();
   contour_row->SetField< int >("ContourID",ContourID);
 
   UpdateContourInDB(this->m_DatabaseConnector,*contour_row);
@@ -745,7 +743,7 @@ int QGoPrintDatabase::SaveMeshFromVisuInDB( unsigned int iXCoordMin,
     &GetTraceRowFromVisu(iXCoordMin,
     iYCoordMin,iZCoordMin, iTCoord, iXCoordMax, iYCoordMax, iZCoordMax,
     iMeshNodes,this->m_DatabaseConnector) );
-
+  mesh_row->ReInitializeMapAfterCast();
   mesh_row->SetColor(iColorData.second.red(),iColorData.second.green(),
     iColorData.second.blue(),iColorData.second.alpha(),iColorData.first,
     this->m_DatabaseConnector);

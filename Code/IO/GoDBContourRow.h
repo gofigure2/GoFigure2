@@ -70,9 +70,11 @@ public:
  created contour*/
  int SaveInDB(vtkMySQLDatabase* DatabaseConnector);
 
+  void SetCollectionID (int iCollectionID);
+  void ReInitializeMapAfterCast();
+
 protected:
   virtual void InitializeMap();
 
- 
  };
 #endif

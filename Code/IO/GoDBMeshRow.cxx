@@ -68,21 +68,11 @@ void GoDBMeshRow::InitializeMap()
 {
   m_TableName = "mesh";
   m_TableIDName = "MeshID";
-  this->m_TableCollectionIDName = "TrackID";
   this->m_MapRow[this->m_TableIDName] = ConvertToString<int>(0);
   this->m_MapRow["CellTypeID"] = ConvertToString<int>(1);
   this->m_MapRow["SubCellularID"] = ConvertToString<int>(1);
   this->m_MapRow["TrackID"] = "null";
 }
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-/*int GoDBMeshRow::DoesThisBoundingBoxMeshExist(vtkMySQLDatabase* DatabaseConnector)
-{
-  return FindOneID(DatabaseConnector,"mesh","MeshID",
-    "CoordIDMax",this->GetMapValue("CoordIDMax"),
-    "CoordIDMin",this->GetMapValue("CoordIDMin"));
-}*/
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -109,4 +99,18 @@ void GoDBMeshRow::SetSubCellType(vtkMySQLDatabase* DatabaseConnector,
 {
   this->SetField<int>("SubCellularID",FindOneID(DatabaseConnector,
   "subcellulartype", "SubCellularID","Name",SubCellTypeName));
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void GoDBMeshRow::SetCollectionID (int iCollectionID)
+{
+  this->SetField<int>("TrackID",iCollectionID);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void GoDBMeshRow::ReInitializeMapAfterCast()
+{
+  GoDBMeshRow::InitializeMap();
 }

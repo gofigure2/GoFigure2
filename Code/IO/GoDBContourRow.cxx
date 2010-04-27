@@ -69,21 +69,10 @@ void GoDBContourRow::InitializeMap()
 {
   this->m_TableName = "contour";
   this->m_TableIDName = "ContourID";
-  this->m_TableCollectionIDName = "MeshID";
   //this->m_MapRow["ContourID"] = ConvertToString<int>(0);
   this->m_MapRow[this->m_TableIDName] = ConvertToString<int>(0);
   this->m_MapRow["MeshID"] = "null";
 }    
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-/*int GoDBContourRow::DoesThisBoundingBoxContourExist(
-  vtkMySQLDatabase* DatabaseConnector)
-{
-  return FindOneID(DatabaseConnector,"contour","ContourID",
-    "CoordIDMax",this->GetMapValue("CoordIDMax"),
-    "CoordIDMin",this->GetMapValue("CoordIDMin"));
-}*/
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -95,3 +84,14 @@ int GoDBContourRow::SaveInDB(vtkMySQLDatabase* DatabaseConnector)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+void GoDBContourRow::SetCollectionID (int iCollectionID)
+{
+  this->SetField<int>("MeshID",iCollectionID);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void GoDBContourRow::ReInitializeMapAfterCast()
+{
+  GoDBContourRow::InitializeMap();
+}
