@@ -154,7 +154,7 @@ QGoMainWindow::QGoMainWindow( )
   this->actionImportLineage->setVisible(false);
 
   CreateSignalSlotsConnection();
-  //ReadSettings();
+  ReadSettings();
   this->m_DatabaseSetUp = false;
   if(!this->m_DatabaseSetUp)
     {

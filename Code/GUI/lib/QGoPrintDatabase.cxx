@@ -678,7 +678,7 @@ int QGoPrintDatabase::SaveContoursFromVisuInDB( unsigned int iXCoordMin,
   GoDBTraceRow temp = GetTraceRowFromVisu(iXCoordMin,
     iYCoordMin,iZCoordMin, iTCoord, iXCoordMax, iYCoordMax, iZCoordMax,
     iContourNodes,this->m_DatabaseConnector);
-  contour_row = dynamic_cast<GoDBContourRow*>(&temp);
+  contour_row = static_cast<GoDBContourRow*>(&temp);
 
   contour_row->SetColor(iColorData.second.red(),iColorData.second.green(),
     iColorData.second.blue(),iColorData.second.alpha(),iColorData.first,
