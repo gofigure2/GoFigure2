@@ -181,7 +181,7 @@ public:
     unsigned int iYCoordMin, unsigned int iZCoordMin, unsigned int iTCoord,
     unsigned int iXCoordMax, unsigned int iYCoordMax, unsigned int iZCoordMax,
     vtkPolyData* iContourNodes, std::pair<std::string, QColor> iColorData,
-    unsigned int iMeshID );
+    unsigned int iMeshID = 0);
 
   /** \brief Update the data for the reedited contour into the database and
  * update the table widget*/

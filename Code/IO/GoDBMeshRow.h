@@ -63,11 +63,13 @@ public:
   ~GoDBMeshRow()
     {}
   //int DoesThisBoundingBoxMeshExist(vtkMySQLDatabase* DatabaseConnector);
-  void SetCellType(std::string CellTypeName);/**\todo */
-  void SetSubCellType(std::string SubCellTypeName); /**\todo */
+  void SetCellType(vtkMySQLDatabase* DatabaseConnector,
+    std::string CellTypeName);
+  void SetSubCellType(vtkMySQLDatabase* DatabaseConnector,
+    std::string SubCellTypeName);
 
-  /**\brief save the contour in the database and return the ID of the new
-  created contour*/
+  /**\brief save the mesh in the database and return the ID of the new
+  created mesh*/
   int SaveInDB(vtkMySQLDatabase* DatabaseConnector);
 
 protected:

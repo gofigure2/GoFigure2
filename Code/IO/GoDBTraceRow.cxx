@@ -142,3 +142,10 @@ void GoDBTraceRow::SetColor(unsigned int Red, unsigned int Green,
     this->SetField<int>("ColorID",ColorID);
     }
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void GoDBTraceRow::SetCollectionID (int iCollectionID)
+{
+  this->SetField<int>(this->m_TableCollectionIDName,iCollectionID);
+}

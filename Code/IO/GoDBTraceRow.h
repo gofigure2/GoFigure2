@@ -68,6 +68,8 @@ public:
  void SetColor(unsigned int Red, unsigned int Green, unsigned int Blue,
    unsigned int Alpha, std::string ColorName,vtkMySQLDatabase* DatabaseConnector);
 
+ void SetCollectionID (int iCollectionID);
+
 protected:
  virtual void InitializeMap();
  /**\brief check in the database if the Coordinate Min adn Max already exits,
@@ -76,5 +78,7 @@ protected:
  if the bounding box already exits, a cout is generated*/
  void CreateBoundingBox(vtkMySQLDatabase* DatabaseConnector,GoDBCoordinateRow Min,
   GoDBCoordinateRow Max);
+
+ std::string m_TableCollectionIDName;
  };
 #endif

@@ -668,9 +668,6 @@ int QGoPrintDatabase::SaveContoursFromVisuInDB( unsigned int iXCoordMin,
   vtkPolyData* iContourNodes, std::pair<std::string,QColor> iColorData,
   unsigned int iMeshID)
 {
-  // unused argument
-  (void) iMeshID;
-
   OpenDBConnection();
 
   GoDBContourRow contour_row = this->GetContourRowFromVisu(iXCoordMin,
@@ -679,13 +676,18 @@ int QGoPrintDatabase::SaveContoursFromVisuInDB( unsigned int iXCoordMin,
   contour_row.SetColor(iColorData.second.red(),iColorData.second.green(),
     iColorData.second.blue(),iColorData.second.alpha(),iColorData.first,
     this->m_DatabaseConnector);
-
+  contour_row.SetCollectionID(iMeshID);
   int NewContourID = contour_row.SaveInDB( this->m_DatabaseConnector);
   this->UpdateTableWidgetAndRowContainerWithNewCreatedTrace("contour");
   std::list<int> ListSelectedTraces;
 
   ListSelectedTraces.push_back(NewContourID);
-  emit this->NeedCurrentSelectedCollectionID();
+  //if the meshID needs to be gotten from the manual editing widget:
+  if (iMeshID == 0)
+    {
+    emit this->NeedCurrentSelectedCollectionID();
+    }
+
   this->AddListTracesToACollection(
     ListSelectedTraces,this->m_CurrentCollectionData,"contour",false);
   this->AddATraceToContourMeshInfo("contour",NewContourID);
@@ -1120,12 +1122,14 @@ std::pair<std::string,QColor> QGoPrintDatabase::SaveNewCollectionInDB(
     iColorNewCollection.second.blue(),iColorNewCollection.second.alpha(),iColorNewCollection.first,
     this->m_DatabaseConnector);
   TraceInfoStructure* CurrentlyUsedTraceData = this->GetTraceInfoStructure(iTraceName);
+
   int NewCollectionID = CurrentlyUsedTraceData->CollectionOfTraces->CreateCollectionWithNoTraces(
     this->m_DatabaseConnector,NewCollection,iTimePoint);
   
   std::pair<std::string,QColor> NewCollectionData;
   NewCollectionData.first = ConvertToString<int>(NewCollectionID);
   NewCollectionData.second = iColorNewCollection.second;
+
   //update the celltype and subcelltype if the collection is a mesh:
   if(iTraceName == "contour" && iCellType != "" && iSubCellType != "")
     {
@@ -1138,6 +1142,7 @@ std::pair<std::string,QColor> QGoPrintDatabase::SaveNewCollectionInDB(
     UpdateValueInDB(this->m_DatabaseConnector,"mesh","SubCellularID", 
       ConvertToString<int>(SubCellTypeID),"MeshID", ConvertToString<int>(NewCollectionID));
     }
+
   //update the table of the collection (which become the trace then):
   CurrentlyUsedTraceData = this->GetTraceInfoStructure(CurrentlyUsedTraceData->CollectionName);
   this->UpdateTableWidgetAndRowContainerWithNewCreatedTrace(CurrentlyUsedTraceData->TraceName);

@@ -68,6 +68,7 @@ void GoDBMeshRow::InitializeMap()
 {
   m_TableName = "mesh";
   m_TableIDName = "MeshID";
+  this->m_TableCollectionIDName = "TrackID";
   this->m_MapRow[this->m_TableIDName] = ConvertToString<int>(0);
   this->m_MapRow["CellTypeID"] = ConvertToString<int>(1);
   this->m_MapRow["SubCellularID"] = ConvertToString<int>(1);
@@ -94,16 +95,18 @@ int GoDBMeshRow::SaveInDB(vtkMySQLDatabase* DatabaseConnector)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void GoDBMeshRow::SetCellType(std::string CellTypeName)
+void GoDBMeshRow::SetCellType(vtkMySQLDatabase* DatabaseConnector,
+  std::string CellTypeName)
 {
-  // unused argument CellTypeName
-  (void) CellTypeName;
+  this->SetField<int>("CellTypeID",FindOneID(DatabaseConnector,
+  "celltype", "CellTypeID","Name",CellTypeName));
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void GoDBMeshRow::SetSubCellType(std::string SubCellTypeName)
+void GoDBMeshRow::SetSubCellType(vtkMySQLDatabase* DatabaseConnector,
+  std::string SubCellTypeName)
 {
-  // unused argument SubCellTypeName
-  (void) SubCellTypeName;
+  this->SetField<int>("SubCellularID",FindOneID(DatabaseConnector,
+  "subcellulartype", "SubCellularID","Name",SubCellTypeName));
 }
