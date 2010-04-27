@@ -190,6 +190,12 @@ public:
     unsigned int iXCoordMax, unsigned int iYCoordMax, unsigned int iZCoordMax,
     vtkPolyData* iContourNodes, int ContourID );
 
+  int SaveMeshFromVisuInDB( unsigned int iXCoordMin,
+    unsigned int iYCoordMin, unsigned int iZCoordMin, unsigned int iTCoord,
+    unsigned int iXCoordMax, unsigned int iYCoordMax, unsigned int iZCoordMax,
+    vtkPolyData* iContourNodes, std::pair<std::string,QColor> iColorData,
+    unsigned int iTrackID,std::string iCellType, std::string iSubCellType);
+
   void AddTracesInTableWidgetFromDB(std::vector<int> ListTracesIDs,
     std::string iTraceName);
 
@@ -334,13 +340,14 @@ protected:
     std::pair<std::string,QColor> iCollection, std::string iTraceName,
     bool IsANewCollection);
 
-  /** \brief create the contour row with the related data provided by
-  the visu*/
-  GoDBContourRow GetContourRowFromVisu(
+  /** \brief create the trace row with the related data provided by
+  the visu, iTCoordMax is equal to 0 as for contour and mesh, it is the
+  same as TCoord*/
+  GoDBTraceRow GetTraceRowFromVisu(
     unsigned int iXCoordMin,unsigned int iYCoordMin,unsigned int iZCoordMin,
-    unsigned int iTCoord,unsigned int iXCoordMax,unsigned int iYCoordMax,
-    unsigned int iZCoordMax,vtkPolyData* iContourNodes, 
-    vtkMySQLDatabase* iDatabaseConnector);
+    unsigned int iTCoord,unsigned int iXCoordMax,
+    unsigned int iYCoordMax,unsigned int iZCoordMax,vtkPolyData* iTraceNodes, 
+    vtkMySQLDatabase* iDatabaseConnector,unsigned int iTCoordMax = 0);
 
 
 protected slots:
