@@ -3313,8 +3313,8 @@ SavePolyDataAsVolumeInDB( vtkPolyData* iView, const int& iContourID,
     Max[i] = bounds[k++];
     }
 
-  int* min_idx = this->GetImageCoordinatesFromWorldCoordinates( Min );
-  int* max_idx = this->GetImageCoordinatesFromWorldCoordinates( Max );
+  //int* min_idx = this->GetImageCoordinatesFromWorldCoordinates( Min );
+  //int* max_idx = this->GetImageCoordinatesFromWorldCoordinates( Max );
 
   vtkActor*  contour_actor = vtkActor::New();
   contour_actor->SetMapper(map);
