@@ -14,6 +14,7 @@ SET( QGOIO_EXAMPLES_SRC
   GoDBTraceRowTest
   GoDBContourRowTest
   GoDBMeshRowTest
+  GoDBTrackRowTest
 )
 
 FOREACH( var ${QGOIO_EXAMPLES_SRC} )
@@ -55,5 +56,9 @@ ADD_TEST( GoDBMeshRowTest
 )
 
 ADD_TEST( GoDBTraceRowTest
+  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/GoDBTraceRowTest
+)
+
+ADD_TEST( GoDBTrackRowTest
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/GoDBTraceRowTest
 )
