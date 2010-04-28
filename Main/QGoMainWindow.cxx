@@ -104,7 +104,9 @@
 #include <list>
 
 //--------------------------------------------------------------------------
-QGoMainWindow::QGoMainWindow( )
+QGoMainWindow::
+QGoMainWindow( QWidget* iParent, Qt::WindowFlags iFlags ) :
+  QMainWindow( iParent, iFlags )
 {
   QString title( "<*)0|00|0>< ~~ <*)0|00|0><     GoFigure    ><0|00|0(*> ~~ ><0|00|0(*>");
   this->setupUi( this );

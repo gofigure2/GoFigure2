@@ -87,8 +87,8 @@ public:
 
 //   typedef itk::MultiFileReader::FILETYPE FILETYPE;
 
-  QGoMainWindow( );
-  virtual ~QGoMainWindow();
+  explicit QGoMainWindow( QWidget* iParent = 0, Qt::WindowFlags iFlags = 0 );
+  ~QGoMainWindow();
 
   void SetSingleFileName( const QString& iFileName );
 
@@ -233,7 +233,6 @@ private:
   QString strippedName(const QString &fullFileName);
 
 private:
-  QGoMainWindow( const QGoMainWindow& );
-  QGoMainWindow operator = ( const QGoMainWindow& );
+  Q_DISABLE_COPY( QGoMainWindow );
 };
 #endif
