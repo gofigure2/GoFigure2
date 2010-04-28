@@ -3079,7 +3079,7 @@ CreateSphereContours( vtkViewImage2D& iView, double iCenter[3],
   idx[1] = corner_id[1];
   idx[2] = corner_id[2];
 
-  double* pos;
+  double* seed_pos;
 
   std::vector< vtkSmartPointer<vtkPolyData> >              circleContoursVector;
   circleContoursVector.resize( zlength );
@@ -3091,9 +3091,9 @@ CreateSphereContours( vtkViewImage2D& iView, double iCenter[3],
 
   for( int i = 0; i < zlength; i++, idx[2]++ )
     {
-    pos = iView.GetWorldCoordinatesFromImageCoordinates( idx );
+    seed_pos = iView.GetWorldCoordinatesFromImageCoordinates( idx );
     vtkSmartPointer<vtkPolyData> circle =
-        GenerateCircleFromGivenSphereAndGivenZ( iCenter, iRadius, pos[2],
+        GenerateCircleFromGivenSphereAndGivenZ( iCenter, iRadius, seed_pos[2],
         numberOfPointsToRepresentCircle );
 
     // Store polyDatas in a vector then return it
