@@ -3329,7 +3329,7 @@ SavePolyDataAsVolumeInDB( vtkPolyData* iView, const int& iContourID,
 
 
   // get meshid from the visu dock widget (SpinBox)
-  unsigned int meshid = this->m_TraceManualEditingDockWidget->m_TraceWidget->GetCurrentCollectionID();
+  //unsigned int meshid = this->m_TraceManualEditingDockWidget->m_TraceWidget->GetCurrentCollectionID();
 /*
   if( iSaveInDataBase )
     {
