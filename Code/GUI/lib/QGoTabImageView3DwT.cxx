@@ -2994,13 +2994,13 @@ OneClickSphereVolumes()
   m_SeedsWorldPosition = this->m_ImageView->GetAllSeeds();
 
   // pos[] will contain position of a seed
-  double pos[3];
+  double seed_pos[3];
 
   // Create "spheres" for all the points
   for( int i = 0; i < m_SeedsWorldPosition->GetNumberOfPoints(); i++ )
     {
     // Put position of each seed "i" in "pos[3]"
-    m_SeedsWorldPosition->GetPoint( i, pos );
+    m_SeedsWorldPosition->GetPoint( i, seed_pos );
 
     // Get pointer to XY view
     vtkViewImage2D* View = this->m_ImageView->GetImageViewer(0);
@@ -3008,7 +3008,7 @@ OneClickSphereVolumes()
     // Creates contours for a given view, a given point and radius
     // Returns vector containing polydatas
     vtkSmartPointer<vtkPolyData> VolumeForOnePoint =
-        this->CreateSphereVolume(*View, pos, 4);
+        this->CreateSphereVolume(*View, seed_pos, 4);
 
     // Save polydatas/mesh (=volume) in DB
     this->SavePolyDataAsVolumeInDB( VolumeForOnePoint );
