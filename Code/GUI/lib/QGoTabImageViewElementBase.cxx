@@ -348,7 +348,7 @@ ValidateContour( )
 void QGoTabImageViewElementBase::
 ChangeContourRepresentationProperty()
 {
-  double linewidth;// = m_ManualSegmentationDockWidget->GetLinesWidth();
+  double linewidth = 0.0;// = m_ManualSegmentationDockWidget->GetLinesWidth();
   QColor linecolor;// = m_ManualSegmentationDockWidget->GetLinesColor();
   QColor nodecolor;// = m_ManualSegmentationDockWidget->GetNodesColor();
   QColor activenodecolor;// = m_ManualSegmentationDockWidget->GetActiveNodesColor();
