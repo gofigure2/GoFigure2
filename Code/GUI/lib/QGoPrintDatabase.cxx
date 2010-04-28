@@ -389,7 +389,8 @@ void QGoPrintDatabase::CreateCorrespondingCollection()
       this->m_CurrentColorData.second.blue(),this->m_CurrentColorData.second.alpha(),
       this->m_CurrentColorData.first,this->m_DatabaseConnector);
     //create the collection in the database and get the corresponding ID:
-    int NewCollectionID = CurrentlyUsedTraceData->CollectionOfTraces->CreateNewCollectionFromSelection(
+    int NewCollectionID = CurrentlyUsedTraceData->CollectionOfTraces->
+      CreateNewCollectionFromSelection<GoDBTraceRow>(
       ListSelectedTraces,this->m_DatabaseConnector,NewCollection);
 
     std::pair<std::string,QColor> NewCollectionInfo(
@@ -734,25 +735,27 @@ int QGoPrintDatabase::UpdateContourFromVisuInDB(unsigned int iXCoordMin,
 int QGoPrintDatabase::SaveMeshFromVisuInDB( unsigned int iXCoordMin,
   unsigned int iYCoordMin, unsigned int iZCoordMin, unsigned int iTCoord,
   unsigned int iXCoordMax, unsigned int iYCoordMax, unsigned int iZCoordMax,
-  vtkPolyData* iMeshNodes, std::pair<std::string,QColor> iColorData,
-  unsigned int iTrackID,std::string iCellType, std::string iSubCellType)
+  vtkPolyData* iMeshNodes)
 {
   OpenDBConnection();
+
+  emit NeedCurrentSelectedCellType();
+  emit NeedCurrentSelectedSubCellType();
+  emit NeedToGetCurrentSelectedColor();
+  emit NeedCurrentSelectedCollectionID();
 
   GoDBMeshRow* mesh_row = dynamic_cast<GoDBMeshRow*>(
     &GetTraceRowFromVisu(iXCoordMin,
     iYCoordMin,iZCoordMin, iTCoord, iXCoordMax, iYCoordMax, iZCoordMax,
     iMeshNodes,this->m_DatabaseConnector) );
   mesh_row->ReInitializeMapAfterCast();
-  mesh_row->SetColor(iColorData.second.red(),iColorData.second.green(),
-    iColorData.second.blue(),iColorData.second.alpha(),iColorData.first,
+  mesh_row->SetColor(m_CurrentColorData.second.red(),
+    m_CurrentColorData.second.green(),m_CurrentColorData.second.blue(),
+    m_CurrentColorData.second.alpha(),m_CurrentColorData.first,
     this->m_DatabaseConnector);
-  mesh_row->SetCollectionID(iTrackID);
-
-  if(iTrackID == 0)
-    {
-    emit this->NeedCurrentSelectedCollectionID();
-    }
+  mesh_row->SetCollectionID(atoi(m_CurrentCollectionData.first.c_str()));
+  mesh_row->SetField("CellType",this->m_CurrentCellType);
+  mesh_row->SetField("SubCellType",this->m_CurrentSubCellType);
   
   int NewMeshID = mesh_row->SaveInDB( this->m_DatabaseConnector);
   this->UpdateTableWidgetAndRowContainerWithNewCreatedTrace("mesh");
@@ -760,17 +763,53 @@ int QGoPrintDatabase::SaveMeshFromVisuInDB( unsigned int iXCoordMin,
 
   ListSelectedTraces.push_back(NewMeshID);
   //if the meshID needs to be gotten from the manual editing widget:
-  if (iTrackID == 0)
-    {
-    emit this->NeedCurrentSelectedCollectionID();
-    }
-
+  
   this->AddListTracesToACollection(
     ListSelectedTraces,this->m_CurrentCollectionData,"mesh",false);
   this->AddATraceToContourMeshInfo("mesh",NewMeshID);
 
   CloseDBConnection();
 
+  return NewMeshID;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+int QGoPrintDatabase::CreateMeshFromOneClickSegmentation(
+  std::list<int> iListContoursIDs)
+{
+  int NewMeshID = -1;
+  TraceInfoStructure* CurrentlyUsedTraceData = this->GetTraceInfoStructure("contour");
+  if (!iListContoursIDs.empty())
+    {
+    OpenDBConnection();
+    //set the color for the new collection:
+    GoDBMeshRow NewMesh;
+    emit NeedCurrentSelectedCellType();
+    emit NeedCurrentSelectedSubCellType();
+    emit NeedToGetCurrentSelectedColor();
+    emit NeedCurrentSelectedCollectionID();
+
+    NewMesh.SetColor(this->m_CurrentColorData.second.red(),this->m_CurrentColorData.second.green(),
+      this->m_CurrentColorData.second.blue(),this->m_CurrentColorData.second.alpha(),
+      this->m_CurrentColorData.first,this->m_DatabaseConnector);
+    NewMesh.SetCollectionID(atoi(this->m_CurrentCollectionData.first.c_str()));
+    NewMesh.SetField("CellType",this->m_CurrentCellType);
+    NewMesh.SetField("SubCellType",this->m_CurrentSubCellType);
+
+    //create the collection in the database and get the corresponding ID:
+    int NewMeshID = CurrentlyUsedTraceData->CollectionOfTraces->
+      CreateNewCollectionFromSelection<GoDBMeshRow>(
+      iListContoursIDs,this->m_DatabaseConnector,NewMesh);
+
+    std::pair<std::string,QColor> NewCollectionInfo(
+      ConvertToString(NewMeshID),this->m_CurrentColorData.second);
+    this->AddListTracesToACollection(iListContoursIDs,NewCollectionInfo,"contour",true);
+
+    CloseDBConnection();
+    QString CollectionIDQString = ConvertToString<int>(NewMeshID).c_str();
+    //emit NewCreatedCollection(this->m_CurrentColorData.second,CollectionIDQString);
+    }
   return NewMeshID;
 }
 //-------------------------------------------------------------------------

@@ -157,7 +157,6 @@ QGoMainWindow( QWidget* iParent, Qt::WindowFlags iFlags ) :
 
   CreateSignalSlotsConnection();
   ReadSettings();
-  this->m_DatabaseSetUp = false;
   if(!this->m_DatabaseSetUp)
     {
     actionSet_Up_Database = new QAction(

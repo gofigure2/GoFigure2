@@ -127,9 +127,9 @@ public:
   GoDBTableWidgetContainer* GetLinkToUpdatedTraceContainer(
     vtkMySQLDatabase* iDatabaseConnector, int iUpdatedTraceID);
 
-  int CreateNewCollectionFromSelection(
+ /* int CreateNewCollectionFromSelection(
   std::list<int> iListSelectedTraces, vtkMySQLDatabase* DatabaseConnector,
-    GoDBTraceRow iNewCollection);
+    GoDBTraceRow iNewCollection);*/
 
   QStringList ListCollectionID( vtkMySQLDatabase* DatabaseConnector);
 
@@ -137,6 +137,30 @@ public:
   ID*/
   int CreateCollectionWithNoTraces(vtkMySQLDatabase* DatabaseConnector, 
     GoDBTraceRow iNewCollection, int iTimePoint);
+
+  template<typename T>
+  int CreateNewCollectionFromSelection(
+  std::list<int> iListSelectedTraces, vtkMySQLDatabase* DatabaseConnector,
+    T iNewCollection)
+  {
+  /** \todo merge createNewCollectionFromSelection and CreateCollectionWithNotraces*/
+   //the following fields are common to all the collections, the one
+   //that are different are specified in QGoPrintDatabase:
+   iNewCollection.SetField("ImagingSessionID",this->m_ImgSessionID);
+   //the CollectionID is set to 0 as it is a new Collection that will be created, not
+   //contours to be added to an existing collection:
+   iNewCollection.SetField("CoordIDMax",this->GetCoordMaxID(
+     DatabaseConnector,0,iListSelectedTraces));
+   iNewCollection.SetField("CoordIDMin",this->GetCoordMinID(
+     DatabaseConnector,0,iListSelectedTraces));
+
+   int NewCollectionID = this->CreateNewCollection(DatabaseConnector,iNewCollection);
+
+    UpdateCollectionIDOfSelectedTraces(iListSelectedTraces,NewCollectionID, 
+      DatabaseConnector);
+
+   return NewCollectionID;
+   }
 
 protected:
 

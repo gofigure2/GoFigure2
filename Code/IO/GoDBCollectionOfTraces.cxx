@@ -711,28 +711,7 @@ void GoDBCollectionOfTraces::SetTheTimePointForMesh(int iTimePoint,
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-int GoDBCollectionOfTraces::CreateNewCollectionFromSelection(
-  std::list<int> iListSelectedTraces, vtkMySQLDatabase* DatabaseConnector,
-    GoDBTraceRow iNewCollection)
-{
-/** \todo merge createNewCollectionFromSelection and CreateCollectionWithNotraces*/
- //the following fields are common to all the collections, the one
- //that are different are specified in QGoPrintDatabase:
- iNewCollection.SetField("ImagingSessionID",this->m_ImgSessionID);
- //the CollectionID is set to 0 as it is a new Collection that will be created, not
- //contours to be added to an existing collection:
- iNewCollection.SetField("CoordIDMax",this->GetCoordMaxID(
-   DatabaseConnector,0,iListSelectedTraces));
- iNewCollection.SetField("CoordIDMin",this->GetCoordMinID(
-   DatabaseConnector,0,iListSelectedTraces));
 
- int NewCollectionID = this->CreateNewCollection(DatabaseConnector,iNewCollection);
-
-  UpdateCollectionIDOfSelectedTraces(iListSelectedTraces,NewCollectionID, 
-    DatabaseConnector);
-
-  return NewCollectionID;
- }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------

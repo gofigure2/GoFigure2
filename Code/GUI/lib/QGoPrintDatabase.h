@@ -193,20 +193,22 @@ public:
   int SaveMeshFromVisuInDB( unsigned int iXCoordMin,
     unsigned int iYCoordMin, unsigned int iZCoordMin, unsigned int iTCoord,
     unsigned int iXCoordMax, unsigned int iYCoordMax, unsigned int iZCoordMax,
-    vtkPolyData* iContourNodes, std::pair<std::string,QColor> iColorData,
-    unsigned int iTrackID,std::string iCellType, std::string iSubCellType);
+    vtkPolyData* iMeshNodes);
+
+  int CreateMeshFromOneClickSegmentation(std::list<int> iListContoursIDs);
 
   void AddTracesInTableWidgetFromDB(std::vector<int> ListTracesIDs,
     std::string iTraceName);
 
   void AddBookmark(int iXCoord, int iYCoord, 
     int iZCoord, int iTCoord);
-  /** \brief return a bool to know if the user is using the database or 
- * not*/
+  
   NamesDescrContainerType GetListBookmarks();
   NamesDescrContainerType GetListCellTypes();
   NamesDescrContainerType GetListSubCellTypes();
   GoDBCoordinateRow GetCoordinateForBookmark(std::string iName);
+  /** \brief return a bool to know if the user is using the database or 
+ * not*/
   bool IsDatabaseUsed();
 
   QAction* toggleViewAction();
@@ -244,6 +246,8 @@ signals:
   void NeedToGetCurrentSelectedColor();
   void NewCreatedCollection(QColor,QString );
   void NeedCurrentSelectedCollectionID();
+  void NeedCurrentSelectedCellType();
+  void NeedCurrentSelectedSubCellType();
   void TraceToReEdit( unsigned int );
   void DeletedCollection( unsigned int );
   void TracesToDeleteInVisu( std::list< int > );
