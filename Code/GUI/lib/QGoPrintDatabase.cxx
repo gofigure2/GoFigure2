@@ -798,7 +798,7 @@ int QGoPrintDatabase::CreateMeshFromOneClickSegmentation(
     NewMesh.SetField("SubCellType",this->m_CurrentSubCellType);
 
     //create the collection in the database and get the corresponding ID:
-    int NewMeshID = CurrentlyUsedTraceData->CollectionOfTraces->
+    NewMeshID = CurrentlyUsedTraceData->CollectionOfTraces->
       CreateNewCollectionFromSelection<GoDBMeshRow>(
       iListContoursIDs,this->m_DatabaseConnector,NewMesh);
 
