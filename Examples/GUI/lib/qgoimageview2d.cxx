@@ -48,7 +48,30 @@
 
 #include "vtkLookupTableManager.h"
 
+#include "vtksys/SystemTools.hxx"
+
 #include "QGoImageView2D.h"
+
+bool CheckSnapshot( QGoImageView2D* iViewer, GoFigure::FileType iType )
+{
+  QString filename = iViewer->SnapshotViewXY( iType );
+  std::string path =
+        vtksys::SystemTools::GetCurrentWorkingDirectory();
+  path += "/";
+  path += filename.toStdString();
+
+  if( vtksys::SystemTools::FileExists( path.c_str() ) )
+    {
+    vtksys::SystemTools::RemoveFile( path.c_str() );
+    return true;
+    }
+  else
+    {
+    std::cerr << "FAILURE * viewer->SnapshotViewXY( " << iType 
+      <<" )" <<std::endl;
+    return false;
+    }
+}
 
 int main( int argc, char** argv )
 {
@@ -77,14 +100,30 @@ int main( int argc, char** argv )
   viewer->Update();
   viewer->show();
 
-  viewer->SnapshotViewXY( GoFigure::BMP );
-  viewer->SnapshotViewXY( GoFigure::JPEG );
-  viewer->SnapshotViewXY( GoFigure::PNG );
-  viewer->SnapshotViewXY( GoFigure::TIFF );
-  viewer->SnapshotViewXY( GoFigure::EPS );
 
   if( atoi( argv[2] ) == 1 )
     {
+    if( !CheckSnapshot( viewer, GoFigure::BMP ) )
+      {
+      return EXIT_FAILURE;
+      }
+    if( !CheckSnapshot( viewer, GoFigure::PNG ) )
+      {
+      return EXIT_FAILURE;
+      }
+    if( !CheckSnapshot( viewer, GoFigure::JPEG ) )
+      {
+      return EXIT_FAILURE;
+      }
+    if( !CheckSnapshot( viewer, GoFigure::EPS ) )
+      {
+      return EXIT_FAILURE;
+      }
+    if( !CheckSnapshot( viewer, GoFigure::TIFF) )
+      {
+      return EXIT_FAILURE;
+      }
+
     timer->start( 1000 );
     }
 
