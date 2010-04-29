@@ -15,6 +15,7 @@ SET( QGOIO_EXAMPLES_SRC
   GoDBContourRowTest
   GoDBMeshRowTest
   GoDBTrackRowTest
+  GoDBLineageRowTest
 )
 
 FOREACH( var ${QGOIO_EXAMPLES_SRC} )
@@ -60,5 +61,9 @@ ADD_TEST( GoDBTraceRowTest
 )
 
 ADD_TEST( GoDBTrackRowTest
-  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/GoDBTraceRowTest
+  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/GoDBTrackRowTest
+)
+
+ADD_TEST( GoDBLineageRowTest 
+  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/GoDBLineageRowTest
 )
