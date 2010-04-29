@@ -122,10 +122,19 @@ int main( int argc, char** argv )
     iren3d->Start();
     }
 
+  for( int i = 0; i < pool->GetNumberOfItems(); i++ )
+    {
+    Handle[i]->Delete();
+    SeedRep[i]->Delete();
+    SeedWidget[i]->Delete();
+    }
+
   iren->Delete();
-    view->Delete();
+  view->Delete();
+
   iren2->Delete();
   view2->Delete();
+
   iren3->Delete();
   view3->Delete();
 
