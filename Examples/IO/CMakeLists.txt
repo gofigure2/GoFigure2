@@ -11,11 +11,13 @@ SET( QGOIO_EXAMPLES_SRC
   vtkPolyDataMySQLTextWriter
   kishmeshtextfilereader
   trackTextFilesReader
+  ## Here follows all the GoDB*Row
   GoDBTraceRowTest
   GoDBContourRowTest
   GoDBMeshRowTest
   GoDBTrackRowTest
   GoDBLineageRowTest
+  GoDBColorRowTest
 )
 
 FOREACH( var ${QGOIO_EXAMPLES_SRC} )
@@ -67,3 +69,8 @@ ADD_TEST( GoDBTrackRowTest
 ADD_TEST( GoDBLineageRowTest 
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/GoDBLineageRowTest
 )
+
+ADD_TEST( GoDBColorRowTest 
+  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/GoDBColorRowTest
+)
+
