@@ -426,9 +426,9 @@ void
 QGoVideoRecorder::
 on_frameRate_valueChanged( int value )
 {
-  if( m_FrameRate2 != value )
+  if( m_FrameRate2 != static_cast< unsigned int >( value ) )
     {
-    m_FrameRate2= value;
+    m_FrameRate2= static_cast< unsigned int >( value );
     this->frameRate_2->setValue(value);
     emit FrameRateChanged( value );
     }
@@ -440,9 +440,9 @@ void
 QGoVideoRecorder::
 on_videoQuality_valueChanged( int value )
 {
-  if( m_VideoQuality2 != value )
+  if( m_VideoQuality2 != static_cast< unsigned int >( value ) )
     {
-    m_VideoQuality2= value;
+    m_VideoQuality2= static_cast< unsigned int >( value );
     this->videoQuality_2->setValue(value);
     emit QualityChanged( value );
     }
@@ -473,9 +473,9 @@ void
 QGoVideoRecorder::
 on_frameRate_2_valueChanged( int value )
 {
-  if( m_FrameRate2 != value )
+  if( m_FrameRate2 != static_cast< unsigned int >( value ) )
     {
-    m_FrameRate2 = value;
+    m_FrameRate2 = static_cast< unsigned int >( value );
     this->frameRate->setValue(value);
     emit FrameRateChanged( value );
     }
@@ -487,9 +487,9 @@ void
 QGoVideoRecorder::
 on_videoQuality_2_valueChanged( int value )
 {
-  if( m_VideoQuality2 != value )
+  if( m_VideoQuality2 != static_cast< unsigned int >( value ) )
   {
-    m_VideoQuality2 = value;
+    m_VideoQuality2 = static_cast< unsigned int >( value );
     this->videoQuality->setValue(value);
     emit QualityChanged( value );
     }
