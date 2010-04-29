@@ -77,6 +77,12 @@ int main( int argc, char** argv )
   viewer->Update();
   viewer->show();
 
+  viewer->SnapshotViewXY( GoFigure::BMP );
+  viewer->SnapshotViewXY( GoFigure::JPEG );
+  viewer->SnapshotViewXY( GoFigure::PNG );
+  viewer->SnapshotViewXY( GoFigure::TIFF );
+  viewer->SnapshotViewXY( GoFigure::EPS );
+
   if( atoi( argv[2] ) == 1 )
     {
     timer->start( 1000 );
