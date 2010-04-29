@@ -53,16 +53,9 @@ class QGOGUILIB_EXPORT vtkAVIRenderWindowRecorder : public vtkRenderWindowMovieR
 {
    public:
       static vtkAVIRenderWindowRecorder *New();
-      vtkTypeMacro(vtkAVIRenderWindowRecorder,vtkObject);
+      vtkTypeMacro(vtkAVIRenderWindowRecorder,vtkRenderWindowMovieRecorder);
      // set/get the quality of the video
      void SetSpecificParameters();
-     void SetVideoQuality( int );
-     void SetFrameRate( int );
-
-  private:
-     int m_VideoQuality;
-     int m_FrameRate;
-
    protected:
      vtkAVIRenderWindowRecorder();
      ~vtkAVIRenderWindowRecorder();

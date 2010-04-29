@@ -47,7 +47,7 @@
  * \brief Constructor
  */
 vtkAVIRenderWindowRecorder::
-vtkAVIRenderWindowRecorder(): m_VideoQuality( 1 ), m_FrameRate( 10 )
+vtkAVIRenderWindowRecorder()
 {
   m_ImageWriter  = vtkAVIWriter::New();
 
@@ -88,18 +88,4 @@ New()
     }
 
   return new vtkAVIRenderWindowRecorder;
-}
-
-void
-vtkAVIRenderWindowRecorder::
-SetVideoQuality( int value)
-{
-  m_VideoQuality = value;
-}
-
-void
-vtkAVIRenderWindowRecorder::
-SetFrameRate( int value)
-{
-  m_FrameRate = value;
 }

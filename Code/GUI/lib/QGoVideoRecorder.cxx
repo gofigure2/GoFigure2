@@ -48,6 +48,14 @@
 #include "vtkRenderWindow.h"
 #include "vtkRenderWindowMovieRecorder.h"
 
+#ifdef ENABLEFFMPEG
+  #include "vtkFFMPEGRenderWindowRecorder.h"
+#endif
+
+#ifdef ENABLEAVI
+  #include "vtkAVIRenderWindowRecorder.h"
+#endif
+
 
 //-------------------------------------------------------------------------
 QGoVideoRecorder::
@@ -107,6 +115,22 @@ QGoVideoRecorder( QWidget *iParent ) : QDockWidget( iParent ),
   this->endRecord->setEnabled( false );
 
   this->tabVideoWidget->setEnabled( false );
+
+#ifdef ENABLEFFMPEG
+  m_FFMPEGWriter = vtkFFMPEGRenderWindowRecorder::New();
+  this->SetMovieRecorder( m_FFMPEGWriter );
+#endif /* ENABLEFFMPEG */
+
+#ifdef ENABLEAVI
+  m_AVIWriter = vtkAVIRenderWindowRecorder::New();
+  this->SetMovieRecorder( m_AVIWriter );
+#endif /* ENABLEAVI */
+
+  QObject::connect( this, SIGNAL( FrameRateChanged( int ) ),
+        this, SLOT( SetSpecificParametersFrameRate( int ) ) );
+  QObject::connect( this, SIGNAL( QualityChanged( int ) ),
+        this, SLOT( SetSpecificParametersQuality( int ) ) );
+
 }
 //-------------------------------------------------------------------------
 
@@ -114,6 +138,13 @@ QGoVideoRecorder( QWidget *iParent ) : QDockWidget( iParent ),
 QGoVideoRecorder::
 ~QGoVideoRecorder( )
 {
+#ifdef ENABLEFFMPEG
+    m_FFMPEGWriter->Delete();
+#endif
+
+#ifdef ENABLEAVI
+    m_AVIWriter->Delete();
+#endif
 }
 //-------------------------------------------------------------------------
 
@@ -395,9 +426,12 @@ void
 QGoVideoRecorder::
 on_frameRate_valueChanged( int value )
 {
-  m_FrameRate2= value;
-  this->frameRate_2->setValue(value);
-  emit FrameRateChanged( value );
+  if( m_FrameRate2 != value )
+    {
+    m_FrameRate2= value;
+    this->frameRate_2->setValue(value);
+    emit FrameRateChanged( value );
+    }
 }
 //-------------------------------------------------------------------------
 
@@ -406,9 +440,12 @@ void
 QGoVideoRecorder::
 on_videoQuality_valueChanged( int value )
 {
-  m_VideoQuality2= value;
-  this->videoQuality_2->setValue(value);
-  emit QualityChanged( value );
+  if( m_VideoQuality2 != value )
+    {
+    m_VideoQuality2= value;
+    this->videoQuality_2->setValue(value);
+    emit QualityChanged( value );
+    }
 }
 //-------------------------------------------------------------------------
 
@@ -436,9 +473,12 @@ void
 QGoVideoRecorder::
 on_frameRate_2_valueChanged( int value )
 {
-  m_FrameRate2 = value;
-  this->frameRate->setValue(value);
-  emit FrameRateChanged( value );
+  if( m_FrameRate2 != value )
+    {
+    m_FrameRate2 = value;
+    this->frameRate->setValue(value);
+    emit FrameRateChanged( value );
+    }
 }
 //-------------------------------------------------------------------------
 
@@ -447,9 +487,12 @@ void
 QGoVideoRecorder::
 on_videoQuality_2_valueChanged( int value )
 {
-  m_VideoQuality2 = value;
-  this->videoQuality->setValue(value);
-  emit QualityChanged( value );
+  if( m_VideoQuality2 != value )
+  {
+    m_VideoQuality2 = value;
+    this->videoQuality->setValue(value);
+    emit QualityChanged( value );
+    }
 }
 //-------------------------------------------------------------------------
 
@@ -756,3 +799,18 @@ emitChangeSliceSignal(const int& iSlice, const int & iSlide)
    }
 }
 
+void
+QGoVideoRecorder::
+SetSpecificParametersFrameRate(int iValue)
+{
+  m_VideoRecorder->SetFrameRate( iValue );
+  m_VideoRecorder->SetSpecificParameters();
+}
+
+void
+QGoVideoRecorder::
+SetSpecificParametersQuality(int iValue)
+{
+  m_VideoRecorder->SetVideoQuality( iValue );
+  m_VideoRecorder->SetSpecificParameters();
+}

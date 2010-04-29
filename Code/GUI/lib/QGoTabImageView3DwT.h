@@ -60,15 +60,9 @@ class QGoOneClickSegmentationDockWidget;
 class QGoManualSegmentationSettingsDialog;
 class QGoTraceManualEditingWidget;
 
-#ifdef ENABLEFFMPEG 
+#if defined ENABLEFFMPEG || defined ENABLEAVI
   class QGoVideoRecorder;
-  class vtkFFMPEGRenderWindowRecorder;
 #endif /* ENABLEFFMPEG */
-
-#ifdef ENABLEAVI
-  class vtkAVIRenderWindowRecorder;
-  class QGoVideoRecorder;
-#endif /* ENABLEAVI */
 
 class vtkLSMReader;
 class vtkImageData;
@@ -217,8 +211,6 @@ public slots:
 
 #if defined ( ENABLEFFMPEG ) || defined ( ENABLEAVI )
   void SetRendererWindow( int );
-  void SetSpecificParametersFrameRate( int );
-  void SetSpecificParametersQuality( int );
 #endif /* ENABLEVIDEORECORD */
 
   QString SnapshotViewXY( const GoFigure::FileType& iType,
@@ -306,29 +298,28 @@ protected:
   unsigned int          m_ContourId;
   bool                  m_ReEditContourMode;
 
-  QGoVisualizationDockWidget*         m_VisuDockWidget;
+  /// \todo rename as QGoVisualizationDockWidget
+  QGoVisualizationDockWidget*         m_NavigationDockWidget;
   QGoManualSegmentationDockWidget*    m_ManualSegmentationDockWidget;
   QGoOneClickSegmentationDockWidget*  m_OneClickSegmentationDockWidget;
 
-  // Creates one leak
+  /// \bug Creates one leak
+  /// \todo why here?
   vtkSmartPointer<vtkPoints>        m_SeedsWorldPosition;
 
+  /// \todo m_SettingsDialog does not belong to this class!!!
   QGoManualSegmentationSettingsDialog* m_SettingsDialog;
   QGoTraceManualEditingDockWidget*     m_TraceManualEditingDockWidget;
   //QDockWidget*                 m_test;
 
     
 
-  #ifdef   ENABLEFFMPEG
-    vtkFFMPEGRenderWindowRecorder*            m_FFMPEGWriter;
+   /// \todo remove m_FFMPEGWriter and m_AVIWriter from this class
+  #if defined ENABLEFFMPEG || defined ENABLEAVI
     QGoVideoRecorder*                         m_VideoRecorderWidget;
-  #endif /* ENABLEFFMPEG */
-  #ifdef   ENABLEAVI
-    vtkAVIRenderWindowRecorder*               m_AVIWriter;
-    QGoVideoRecorder*                         m_VideoRecorderWidget;
-  #endif /* ENABLEAVI */
+  #endif /* ENABLEFFMPEG || ENABLEAVI */
 
-
+  /// \todo move the three following instance into the visualization element.
   std::vector< vtkSmartPointer< vtkContourWidget > >                      m_ContourWidget;
   std::vector< vtkSmartPointer< vtkOrientedGlyphContourRepresentation > > m_ContourRepresentation;
   ContourMeshStructureMultiIndexContainer                   m_ContourMeshContainer;
@@ -373,6 +364,7 @@ protected:
    * @param[in] iA alpha component in [0,1]
    * @param[in] iSaveInDataBase save in data base if true
    * \todo Alpha component is not used at all, it is assumed to be opaque
+   * \todo Change method name. Volume is not coherent with DB design.
    */
   virtual void SavePolyDataAsVolumeInDB( vtkPolyData* iView, const int& iContourID, const int& iDir,
     const double& iR, const double& iG, const double& iB, const double& iA,

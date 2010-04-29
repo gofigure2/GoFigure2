@@ -72,6 +72,9 @@ class QGOGUILIB_EXPORT vtkRenderWindowMovieRecorder : public vtkProcessObject
 
       virtual void SetSpecificParameters() = 0;
 
+      virtual void SetVideoQuality( int );
+      virtual void SetFrameRate( int );
+
    protected:
      vtkRenderWindowMovieRecorder();
      ~vtkRenderWindowMovieRecorder();
@@ -81,6 +84,8 @@ class QGOGUILIB_EXPORT vtkRenderWindowMovieRecorder : public vtkProcessObject
      vtkGenericMovieWriter*                     m_ImageWriter;
      std::string                                m_FileName;
      bool                                       m_ControlIfVideoStarted;
+     int m_VideoQuality;
+     int m_FrameRate;
 };
 
 #endif /* VTKRENDERWINDOWMOVIERECORDER_H_ */

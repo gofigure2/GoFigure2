@@ -47,7 +47,7 @@
  * \brief Constructor
  */
 vtkFFMPEGRenderWindowRecorder::
-vtkFFMPEGRenderWindowRecorder(): m_VideoQuality( 1 ), m_FrameRate( 10 )
+vtkFFMPEGRenderWindowRecorder()
 {
   m_ImageWriter  = vtkFFMPEGWriter::New();
 
@@ -90,16 +90,4 @@ New()
   return new vtkFFMPEGRenderWindowRecorder;
 }
 
-void
-vtkFFMPEGRenderWindowRecorder::
-SetVideoQuality( int value)
-{
-  m_VideoQuality = value;
-}
 
-void
-vtkFFMPEGRenderWindowRecorder::
-SetFrameRate( int value)
-{
-  m_FrameRate = value;
-}

@@ -50,14 +50,6 @@
 
   #include "QGoVideoRecorder.h"
 
-  #ifdef   ENABLEFFMPEG
-    #include  "vtkFFMPEGRenderWindowRecorder.h"
-  #endif /* ENABLEFFMPEG */
-
-  #ifdef   ENABLEAVI
-    #include  "vtkAVIRenderWindowRecorder.h"
-  #endif /* ENABLEAVI */
-
 #endif /* ENABLEVIDEORECORD */
 
 #include "SnapshotHelper.h"
@@ -174,25 +166,35 @@ QGoTabImageView3DwT( QWidget* iParent ) :
 
   m_DockWidgetList.push_back(
     std::pair< QGoDockWidgetStatus*, QDockWidget* >(
-      new QGoDockWidgetStatus( m_VisuDockWidget, Qt::LeftDockWidgetArea, true, true ), m_VisuDockWidget ) );
+      new QGoDockWidgetStatus( m_NavigationDockWidget, Qt::LeftDockWidgetArea, true, true ),
+      m_NavigationDockWidget ) );
+
   m_DockWidgetList.push_back(
     std::pair< QGoDockWidgetStatus*, QDockWidget* >(
-      new QGoDockWidgetStatus( m_ManualSegmentationDockWidget, Qt::LeftDockWidgetArea, true, true ), m_ManualSegmentationDockWidget ) );
+      new QGoDockWidgetStatus( m_ManualSegmentationDockWidget, Qt::LeftDockWidgetArea, true, true ),
+      m_ManualSegmentationDockWidget ) );
+
   m_DockWidgetList.push_back(
     std::pair< QGoDockWidgetStatus*, QDockWidget* >(
-      new QGoDockWidgetStatus( m_DataBaseTables, Qt::TopDockWidgetArea, true, true ), m_DataBaseTables ) );
+      new QGoDockWidgetStatus( m_DataBaseTables, Qt::TopDockWidgetArea, true, true ),
+      m_DataBaseTables ) );
+
   m_DockWidgetList.push_back(
     std::pair< QGoDockWidgetStatus*, QDockWidget* >(
-      new QGoDockWidgetStatus( m_OneClickSegmentationDockWidget, Qt::LeftDockWidgetArea, true, true ), m_OneClickSegmentationDockWidget ) );
+      new QGoDockWidgetStatus( m_OneClickSegmentationDockWidget, Qt::LeftDockWidgetArea, true, true ),
+      m_OneClickSegmentationDockWidget ) );
+
   m_DockWidgetList.push_back(
     std::pair< QGoDockWidgetStatus*, QDockWidget* >(
-      new QGoDockWidgetStatus( this->m_TraceManualEditingDockWidget, Qt::LeftDockWidgetArea, true, true ), this->m_TraceManualEditingDockWidget ) );
+      new QGoDockWidgetStatus( m_TraceManualEditingDockWidget, Qt::LeftDockWidgetArea, true, true ),
+      m_TraceManualEditingDockWidget ) );
 
 
 #if defined ( ENABLEFFMPEG ) || defined (ENABLEAVI)
   m_DockWidgetList.push_back(
     std::pair< QGoDockWidgetStatus*, QDockWidget* >(
-      new QGoDockWidgetStatus( m_VideoRecorderWidget, Qt::LeftDockWidgetArea, true, true ), m_VideoRecorderWidget ) );
+      new QGoDockWidgetStatus( m_VideoRecorderWidget, Qt::LeftDockWidgetArea, true, true ),
+      m_VideoRecorderWidget ) );
 #endif
 }
 //-------------------------------------------------------------------------
@@ -239,14 +241,6 @@ QGoTabImageView3DwT::
     (*NodeSetIt)->Delete();
     ++NodeSetIt;
     }
-
-#ifdef   ENABLEFFMPEG
-  m_FFMPEGWriter->Delete();
-#endif /* ENABLEFFMPEG */
-
-#ifdef   ENABLEAVI
-  m_AVIWriter->Delete();
-#endif /* ENABLEAVI */
 }
 //-------------------------------------------------------------------------
 
@@ -396,36 +390,36 @@ CreateVisuDockWidget()
     * x via this dockwidget
     */
 
-  m_VisuDockWidget = new QGoVisualizationDockWidget( this, 4 );
+  m_NavigationDockWidget = new QGoVisualizationDockWidget( this, 4 );
 
-  QObject::connect( m_VisuDockWidget, SIGNAL( XSliceChanged( int ) ),
+  QObject::connect( m_NavigationDockWidget, SIGNAL( XSliceChanged( int ) ),
     this, SLOT( SetSliceViewYZ( int ) ) );
 
   QObject::connect( this, SIGNAL( SliceViewYZChanged( int ) ),
-    m_VisuDockWidget, SLOT( SetXSlice( int ) ) );
+    m_NavigationDockWidget, SLOT( SetXSlice( int ) ) );
 
-  QObject::connect( m_VisuDockWidget, SIGNAL( YSliceChanged( int ) ),
+  QObject::connect( m_NavigationDockWidget, SIGNAL( YSliceChanged( int ) ),
     this, SLOT( SetSliceViewXZ( int ) ) );
 
   QObject::connect( this, SIGNAL( SliceViewXZChanged( int ) ),
-    m_VisuDockWidget, SLOT( SetYSlice( int ) ) );
+    m_NavigationDockWidget, SLOT( SetYSlice( int ) ) );
 
-  QObject::connect( m_VisuDockWidget, SIGNAL( ZSliceChanged( int ) ),
+  QObject::connect( m_NavigationDockWidget, SIGNAL( ZSliceChanged( int ) ),
     this, SLOT( SetSliceViewXY( int ) ) );
 
   QObject::connect( this, SIGNAL( SliceViewXYChanged( int ) ),
-    m_VisuDockWidget, SLOT( SetZSlice( int ) ) );
+    m_NavigationDockWidget, SLOT( SetZSlice( int ) ) );
 
-  QObject::connect( m_VisuDockWidget, SIGNAL( TSliceChanged( int ) ),
+  QObject::connect( m_NavigationDockWidget, SIGNAL( TSliceChanged( int ) ),
     this, SLOT( SetTimePoint( int ) ) );
 
   QObject::connect( this, SIGNAL( TimePointChanged( int ) ),
-    m_VisuDockWidget, SLOT( SetTSlice( int ) ) );
+    m_NavigationDockWidget, SLOT( SetTSlice( int ) ) );
 
-  QObject::connect( m_VisuDockWidget, SIGNAL( ShowAllChannelsChanged( bool ) ),
+  QObject::connect( m_NavigationDockWidget, SIGNAL( ShowAllChannelsChanged( bool ) ),
     this, SLOT( ShowAllChannels( bool ) ) );
 
-  QObject::connect( m_VisuDockWidget, SIGNAL( ShowOneChannelChanged( int ) ),
+  QObject::connect( m_NavigationDockWidget, SIGNAL( ShowOneChannelChanged( int ) ),
     this, SLOT( ShowOneChannel( int ) ) );
 }
 //-------------------------------------------------------------------------
@@ -542,16 +536,6 @@ CreateVideoRecorderWidget()
 {
   m_VideoRecorderWidget = new QGoVideoRecorder( this );
 
-#ifdef ENABLEFFMPEG
-  m_FFMPEGWriter = vtkFFMPEGRenderWindowRecorder::New();
-  m_VideoRecorderWidget->SetMovieRecorder( m_FFMPEGWriter );
-#endif /* ENABLEFFMPEG */
-
-#ifdef ENABLEAVI
-  m_AVIWriter = vtkAVIRenderWindowRecorder::New();
-  m_VideoRecorderWidget->SetMovieRecorder( m_AVIWriter );
-#endif /* ENABLEAVI */
-
   QObject::connect( this, SIGNAL( FullScreenViewChanged( int ) ),
         this,SLOT( SetRendererWindow( int )));
 
@@ -563,11 +547,6 @@ CreateVideoRecorderWidget()
       this, SLOT( SetSliceViewXY( int ) ) );
   QObject::connect( m_VideoRecorderWidget, SIGNAL( TSliceChanged( int ) ),
       this, SLOT( SetTimePoint( int ) ) );
-
-  QObject::connect( m_VideoRecorderWidget, SIGNAL( FrameRateChanged( int ) ),
-        this, SLOT( SetSpecificParametersFrameRate( int ) ) );
-  QObject::connect( m_VideoRecorderWidget, SIGNAL( QualityChanged( int ) ),
-        this, SLOT( SetSpecificParametersQuality( int ) ) );
 
   QObject::connect( m_VideoRecorderWidget, SIGNAL( GetSliceView() ),
           this, SLOT( SetSliceView() ) );
@@ -587,38 +566,6 @@ SetRendererWindow(int iValue)
     {
     m_VideoRecorderWidget->SetRenderingWindow( NULL );
     }
-}
-//-------------------------------------------------------------------------
-void
-QGoTabImageView3DwT::
-SetSpecificParametersFrameRate(int iValue)
-{
-
-#ifdef ENABLEFFMPEG
-  m_FFMPEGWriter->SetFrameRate( iValue );
-  m_FFMPEGWriter->SetSpecificParameters();
-#endif /* ENABLEFFMPEG */
-
-#ifdef ENABLEAVI
-  m_AVIWriter->SetFrameRate( iValue );
-  m_AVIWriter->SetSpecificParameters();
-#endif /* ENABLEAVI */
-
-}
-//-------------------------------------------------------------------------
-void
-QGoTabImageView3DwT::
-SetSpecificParametersQuality(int iValue)
-{
-#ifdef ENABLEFFMPEG
-  m_FFMPEGWriter->SetVideoQuality( iValue );
-  m_FFMPEGWriter->SetSpecificParameters();
-#endif /* ENABLEFFMPEG */
-
-#ifdef ENABLEAVI
-  m_AVIWriter->SetVideoQuality( iValue );
-  m_AVIWriter->SetSpecificParameters();
-#endif /* ENABLEAVI */
 }
 #endif /* ENABLEVIDEORECORD */
 //-------------------------------------------------------------------------
@@ -803,7 +750,7 @@ CreateAllViewActions()
   separator2->setSeparator( true );
   this->m_ViewActions.push_back( separator2 );
 
-  this->m_ViewActions.push_back( m_VisuDockWidget->toggleViewAction() );
+  this->m_ViewActions.push_back( m_NavigationDockWidget->toggleViewAction() );
 
   QAction* separator3 = new QAction( this );
   separator3->setSeparator( true );
@@ -1203,16 +1150,16 @@ SetLSMReader( vtkLSMReader* iReader, const int& iTimePoint )
 
     int NumberOfChannels = m_LSMReader[0]->GetNumberOfChannels();
 
-    m_VisuDockWidget->SetNumberOfChannels( NumberOfChannels );
+    m_NavigationDockWidget->SetNumberOfChannels( NumberOfChannels );
 
     if( NumberOfChannels > 1 )
       {
-      m_VisuDockWidget->SetChannel( 0 );
+      m_NavigationDockWidget->SetChannel( 0 );
       m_InternalImages.resize( NumberOfChannels );
 
       for( int i = 1; i < NumberOfChannels; i++ )
         {
-        m_VisuDockWidget->SetChannel( i );
+        m_NavigationDockWidget->SetChannel( i );
 
         m_LSMReader.push_back( vtkSmartPointer< vtkLSMReader >::New() );
         m_LSMReader.back()->SetFileName( m_LSMReader[0]->GetFileName() );
@@ -1220,17 +1167,17 @@ SetLSMReader( vtkLSMReader* iReader, const int& iTimePoint )
         }
       }
 
-    m_VisuDockWidget->SetXMinimumAndMaximum( 0, dim[0] - 1 );
-    m_VisuDockWidget->SetXSlice( ( dim[0] - 1 ) / 2 );
+    m_NavigationDockWidget->SetXMinimumAndMaximum( 0, dim[0] - 1 );
+    m_NavigationDockWidget->SetXSlice( ( dim[0] - 1 ) / 2 );
 
-    m_VisuDockWidget->SetYMinimumAndMaximum( 0, dim[1] - 1 );
-    m_VisuDockWidget->SetYSlice( ( dim[1] - 1 ) / 2 );
+    m_NavigationDockWidget->SetYMinimumAndMaximum( 0, dim[1] - 1 );
+    m_NavigationDockWidget->SetYSlice( ( dim[1] - 1 ) / 2 );
 
-    m_VisuDockWidget->SetZMinimumAndMaximum( 0, dim[2] - 1 );
-    m_VisuDockWidget->SetZSlice( ( dim[2] - 1 ) / 2 );
+    m_NavigationDockWidget->SetZMinimumAndMaximum( 0, dim[2] - 1 );
+    m_NavigationDockWidget->SetZSlice( ( dim[2] - 1 ) / 2 );
 
-    m_VisuDockWidget->SetTMinimumAndMaximum( 0, dim[3] - 1 );
-    m_VisuDockWidget->SetTSlice( iTimePoint );
+    m_NavigationDockWidget->SetTMinimumAndMaximum( 0, dim[3] - 1 );
+    m_NavigationDockWidget->SetTSlice( iTimePoint );
     if( m_TimePoint != iTimePoint )
       {
       SetTimePoint( iTimePoint );
@@ -1280,31 +1227,31 @@ SetMegaCaptureFile(
   int extent[6];
   temp->GetExtent( extent );
 
-  m_VisuDockWidget->SetNumberOfChannels( NumberOfChannels );
+  m_NavigationDockWidget->SetNumberOfChannels( NumberOfChannels );
 
   // Set up QSpinBox in m_VideoRecorderWidget
   if( NumberOfChannels > 1 )
     {
-    m_VisuDockWidget->SetChannel( 0 );
+    m_NavigationDockWidget->SetChannel( 0 );
     m_InternalImages.resize( NumberOfChannels, NULL );
 
     for( unsigned int i = 1; i < NumberOfChannels; i++ )
       {
-      m_VisuDockWidget->SetChannel( i );
+      m_NavigationDockWidget->SetChannel( i );
       }
     }
 
-  m_VisuDockWidget->SetXMinimumAndMaximum( extent[0], extent[1] );
-  m_VisuDockWidget->SetXSlice( ( extent[0] + extent[1] ) / 2 );
+  m_NavigationDockWidget->SetXMinimumAndMaximum( extent[0], extent[1] );
+  m_NavigationDockWidget->SetXSlice( ( extent[0] + extent[1] ) / 2 );
 
-  m_VisuDockWidget->SetYMinimumAndMaximum( extent[2], extent[3] );
-  m_VisuDockWidget->SetYSlice( ( extent[2] + extent[3] ) / 2 );
+  m_NavigationDockWidget->SetYMinimumAndMaximum( extent[2], extent[3] );
+  m_NavigationDockWidget->SetYSlice( ( extent[2] + extent[3] ) / 2 );
 
-  m_VisuDockWidget->SetZMinimumAndMaximum( extent[4], extent[5] );
-  m_VisuDockWidget->SetZSlice( ( extent[4] + extent[5] ) / 2 );
+  m_NavigationDockWidget->SetZMinimumAndMaximum( extent[4], extent[5] );
+  m_NavigationDockWidget->SetZSlice( ( extent[4] + extent[5] ) / 2 );
 
-  m_VisuDockWidget->SetTMinimumAndMaximum( min_t, max_t );
-  m_VisuDockWidget->SetTSlice( iTimePoint );
+  m_NavigationDockWidget->SetTMinimumAndMaximum( min_t, max_t );
+  m_NavigationDockWidget->SetTSlice( iTimePoint );
 
   if( static_cast< unsigned int >( m_TimePoint ) != iTimePoint )
     {
@@ -1372,13 +1319,13 @@ SetTimePointWithMegaCapture( const int& iTimePoint )
         }
     append_filter->Update();
 
-    if( this->m_VisuDockWidget->ShowAllChannels() )
+    if( this->m_NavigationDockWidget->ShowAllChannels() )
       {
       m_Image->ShallowCopy( append_filter->GetOutput() );
       }
     else
       {
-      int ch = this->m_VisuDockWidget->GetCurrentChannel();
+      int ch = this->m_NavigationDockWidget->GetCurrentChannel();
       if( ch != -1 )
         {
     	m_Image->ShallowCopy( m_InternalImages[ch] );
@@ -1857,7 +1804,7 @@ ShowAllChannels( bool iChecked )
     }
   else
     {
-    int ch = this->m_VisuDockWidget->GetCurrentChannel();
+    int ch = this->m_NavigationDockWidget->GetCurrentChannel();
     if( ch != -1 )
       {
       m_Image->ShallowCopy( m_InternalImages[ch] );

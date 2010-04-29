@@ -49,13 +49,21 @@
 
 #include "QGoGUILibConfigure.h"
 
-//#include "vtkSmartPointer.h"
+#include "vtkSmartPointer.h"
 
 class vtkRenderWindow;
 class vtkRenderWindowMovieRecorder;
 
+#ifdef ENABLEFFMPEG
+  class vtkFFMPEGRenderWindowRecorder;
+#endif
 
-class QGOGUILIB_EXPORT QGoVideoRecorder : public QDockWidget, private Ui::NewDockWidgetVideoRecorder
+#ifdef ENABLEAVI
+  class vtkAVIRenderWindowRecorder;
+#endif
+
+class QGOGUILIB_EXPORT QGoVideoRecorder :
+    public QDockWidget, private Ui::NewDockWidgetVideoRecorder
 {
     Q_OBJECT
 
@@ -110,6 +118,8 @@ class QGOGUILIB_EXPORT QGoVideoRecorder : public QDockWidget, private Ui::NewDoc
         void SetMovieRecorder( vtkRenderWindowMovieRecorder* );
 
     public slots:
+      void SetSpecificParametersFrameRate(int iValue);
+      void SetSpecificParametersQuality(int iValue);
 
      signals:
       void XSliceChanged( int );
@@ -120,7 +130,17 @@ class QGOGUILIB_EXPORT QGoVideoRecorder : public QDockWidget, private Ui::NewDoc
       void FrameRateChanged( int );
       void GetSliceView();
 
-    private:
+protected:
+#ifdef ENABLEFFMPEG
+      vtkFFMPEGRenderWindowRecorder*  m_FFMPEGWriter;
+#else
+  #ifdef ENABLEAVI
+      vtkAVIRenderWindowRecorder*     m_AVIWriter;
+  #endif
+#endif
+
+
+private:
 
         // Video recorder
         vtkRenderWindowMovieRecorder* m_VideoRecorder;

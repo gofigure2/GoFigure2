@@ -50,7 +50,8 @@
  * \brief Constructor
  */
 vtkRenderWindowMovieRecorder::
-vtkRenderWindowMovieRecorder() /*:
+vtkRenderWindowMovieRecorder() : m_VideoQuality( 1 ), m_FrameRate( 10 )
+    /*:
   m_FileName("goFigure2"), m_ControlIfVideoStarted (false)*/
 {
   m_ImageFilter = vtkWindowToImageFilter::New();
@@ -134,3 +135,16 @@ TakeSnapshot()
     }
 }
 
+void
+vtkRenderWindowMovieRecorder::
+SetVideoQuality( int value)
+{
+  m_VideoQuality = value;
+}
+
+void
+vtkRenderWindowMovieRecorder::
+SetFrameRate( int value)
+{
+  m_FrameRate = value;
+}
