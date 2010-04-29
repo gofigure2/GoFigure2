@@ -23,10 +23,10 @@ create lineages.
 softwares:
       * CMake (>=2.6) visit http://www.cmake.org
       * Qt  (>=4.5)   visit http://www.qtsoftware.com
-      * MySQL (>=5.1) visit http://www.mysql.com
+      * MySQL (=5.1) visit http://www.mysql.com
       * FFMPEG (Linux or Mac) visit visit http://www.ffmpeg.org
-      * VTK with Qt and MYSQL (>=5.4)   visit http://www.vtk.org 
-      * ITK (>=3.16)  visit http://www.itk.org
+      * VTK with Qt and MYSQL (>=5.6)   visit http://www.vtk.org 
+      * ITK (>=3.18)  visit http://www.itk.org
 
 
     2.2.2 Configuration
