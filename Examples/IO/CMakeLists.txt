@@ -20,6 +20,9 @@ SET( GODB_SRC
   GoDBTrackRowTest
   GoDBLineageRowTest
   GoDBColorRowTest
+  GoDBChannelRowTest
+  GoDBBookmarkRowTest
+  GoDBImageRowTest
 )
 
 SET( QGOIO_EXAMPLES_SRC
