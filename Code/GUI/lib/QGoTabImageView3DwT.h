@@ -127,7 +127,7 @@ public:
     const unsigned int& iTimePoint  );
 
   /** \todo must modify container */
-  void AddPolyData( vtkPolyData* iMesh );
+  //void AddPolyData( vtkPolyData* iMesh );
 
   /**
    *
@@ -173,8 +173,17 @@ public:
     const double& iR, const double& iG, const double& iB, const double& iA,
     const bool& iHighlighted, const unsigned int& iTCoord, const bool& iSaveInDataBase );
 
+  void AddMeshFromNodes( const unsigned int& iContourID, vtkPolyData* iNodes, double iRgba[4],
+    const bool& iHighlighted, const unsigned int& iTCoord, const bool& iSaveInDataBase );
+  void AddMeshFromNodes( const unsigned int& iContourID, vtkPolyData* iNodes,
+    const double& iR, const double& iG, const double& iB, const double& iA,
+    const bool& iHighlighted, const unsigned int& iTCoord, const bool& iSaveInDataBase );
+
   void LoadAllContoursForGivenTimePoint( const unsigned int& iT );
   void RemoveAllContoursForGivenTimePoint( const unsigned int& iT );
+
+  void LoadAllMeshesForGivenTimePoint( const unsigned int& iT );
+  void RemoveAllMeshesForGivenTimePoint( const unsigned int& iT );
 
   int GetSliceViewXY() const;
   int GetSliceViewXZ() const;
@@ -242,9 +251,12 @@ public slots:
   void LoadAllContoursForCurrentTimePoint();
   void RemoveAllContoursForPresentTimePoint();
 
+  void LoadAllMeshesForCurrentTimePoint();
+  void RemoveAllMeshesForPresentTimePoint();
+
   void ActivateManualSegmentationEditor( const bool& iActivate );
   void ValidateContour();
-  void SavePolyDataAsContourInDB( vtkPolyData* iView );
+  int  SavePolyDataAsContourInDB( vtkPolyData* iView );
   void SavePolyDataAsVolumeInDB( vtkPolyData* iView );
   void ReinitializeContour();
   void ReEditContour( const unsigned int& iId );
@@ -253,6 +265,8 @@ public slots:
   void HighLightContoursFromTable();
   void SelectContoursInTable();
   void DeleteContoursFromTable( const std::list< int >& iList );
+
+  void HighLightMeshesFromTable();
 
   void ChangeContourRepresentationProperty();
 
@@ -319,7 +333,8 @@ protected:
   /// \todo move the three following instance into the visualization element.
   std::vector< vtkSmartPointer< vtkContourWidget > >                      m_ContourWidget;
   std::vector< vtkSmartPointer< vtkOrientedGlyphContourRepresentation > > m_ContourRepresentation;
-  ContourMeshStructureMultiIndexContainer                   m_ContourMeshContainer;
+  ContourMeshStructureMultiIndexContainer                   m_ContourContainer;
+  ContourMeshStructureMultiIndexContainer                   m_MeshContainer;
 
   /**
    * @param[in] iContourID
@@ -347,7 +362,7 @@ protected:
    * @param[in] iSaveInDataBase save in data base if true
    * \todo Alpha component is not used at all, it is assumed to be opaque
    */
-  virtual void SavePolyDataAsContourInDB( vtkPolyData* iView, const int& iContourID, const int& iDir,
+  virtual int SavePolyDataAsContourInDB( vtkPolyData* iView, const int& iContourID, const int& iDir,
     const double& iR, const double& iG, const double& iB, const double& iA,
     const bool& iHighlighted, const unsigned int& iTCoord, const bool& iSaveInDataBase );
 

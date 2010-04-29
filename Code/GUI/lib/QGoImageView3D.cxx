@@ -1077,19 +1077,20 @@ ShowScalarBar( const bool& iShow )
 /**
  * \todo use dynamic_cast or more appropriate cast operator
  */
-void
+std::vector< vtkActor* >
 QGoImageView3D::
-AddMesh( vtkPolyData* iMesh )
+AddMesh( const int& iId, vtkPolyData* dataset, vtkProperty* iProperty )
 {
-  vtkProperty* prop = vtkProperty::New();
-  prop->SetColor( 0., 1., 1. );
+  std::vector< vtkActor* > oList =
+    QGoImageView::AddContour( iId, dataset, iProperty );
 
-  for( int i = 0; i < m_Pool->GetNumberOfItems(); i++ )
-    {
-    vtkViewImage2D* viewer = m_Pool->GetItem( i );
-    viewer->AddDataSet( iMesh, prop, true, false );
-    }
-  View3D->AddDataSet( (vtkDataSet*) iMesh, prop, false, false );
+  vtkActor* temp = View3D->AddDataSet( (vtkDataSet*) dataset,
+    iProperty, false, false );
+
+  View3D->Render();
+  oList.push_back( temp );
+
+  return oList;
 }
 //--------------------------------------------------------------------------
 

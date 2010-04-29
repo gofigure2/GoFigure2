@@ -134,7 +134,7 @@ public:
 
     int FindItemText(std::string Text);
 
-    void IncrementMeshID();
+    void IncrementTrackID();
 
     QSize sizeHint() const;
 

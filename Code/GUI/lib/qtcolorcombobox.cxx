@@ -554,7 +554,7 @@ DontAddTheColor()
 //-------------------------------------------------------------------------
 void
 QtColorComboBox::
-IncrementMeshID()
+IncrementTrackID()
 {
   // Get number of objects in the combo box
   unsigned int numberOfColors = this->colorCount();

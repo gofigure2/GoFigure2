@@ -544,6 +544,7 @@ void
 QGoMainWindow::
 LoadAllMeshesFromDatabase( const int& iT )
 {
+  /*
   // iT is currently unused.
   (void) iT;
   std::vector<ContourMeshStructure>::iterator contourmesh_list_it;
@@ -569,6 +570,52 @@ LoadAllMeshesFromDatabase( const int& iT )
           w3t->AddPolyData( contourmesh_list_it->Nodes );
           }
         ++contourmesh_list_it;
+        }
+      }
+    }*/
+
+  std::vector<ContourMeshStructure>::iterator contourmesh_list_it;
+
+  QGoTabImageView3DwT* w3t =
+    dynamic_cast< QGoTabImageView3DwT* >( this->CentralTabWidget->currentWidget() );
+
+  if( w3t )
+    {
+    std::vector< ContourMeshStructure >* temp =
+      w3t->m_DataBaseTables->GetTracesInfoListForVisu("mesh");
+
+    if( temp )
+      {
+      contourmesh_list_it = temp->begin();
+
+      std::set< unsigned int > temp_time_set;
+
+      // we don't need here to save this contour in the database,
+      // since they have just been extracted from it!
+      //while( contourmesh_list_it != w3t->m_DataBaseTables->m_ContoursInfo.end() )
+      while( contourmesh_list_it != temp->end() )
+        {
+        w3t->AddMeshFromNodes(
+            contourmesh_list_it->TraceID,
+            contourmesh_list_it->Nodes,
+            contourmesh_list_it->rgba,
+            contourmesh_list_it->Highlighted,
+            contourmesh_list_it->TCoord, // timepoint
+            false ); // not to be saved in the database
+
+        if( contourmesh_list_it->TCoord != static_cast<unsigned int>( iT ) )
+          {
+          temp_time_set.insert( contourmesh_list_it->TCoord );
+          }
+
+        ++contourmesh_list_it;
+        }
+
+      for( std::set< unsigned int >::iterator time_it = temp_time_set.begin();
+        time_it != temp_time_set.end();
+        ++time_it )
+        {
+        w3t->RemoveAllMeshesForGivenTimePoint( *time_it );
         }
       }
     }

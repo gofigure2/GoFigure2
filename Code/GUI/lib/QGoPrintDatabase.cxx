@@ -578,6 +578,7 @@ void
 QGoPrintDatabase::
 ChangeTracesToHighLightInfoFromTableWidget()
 {
+  std::cout<<"checked"<<std::endl;
   std::string TraceName = this->InWhichTableAreWe();
   TraceInfoStructure* CurrentlyUsedTraceData = this->GetTraceInfoStructure(
     TraceName);
@@ -744,10 +745,13 @@ int QGoPrintDatabase::SaveMeshFromVisuInDB( unsigned int iXCoordMin,
   emit NeedToGetCurrentSelectedColor();
   emit NeedCurrentSelectedCollectionID();
 
-  GoDBMeshRow* mesh_row = dynamic_cast<GoDBMeshRow*>(
-    &GetTraceRowFromVisu(iXCoordMin,
+  // MEMORY LEAKS
+  GoDBMeshRow* mesh_row = new GoDBMeshRow;
+  GoDBTraceRow temp = GetTraceRowFromVisu(iXCoordMin,
     iYCoordMin,iZCoordMin, iTCoord, iXCoordMax, iYCoordMax, iZCoordMax,
-    iMeshNodes,this->m_DatabaseConnector) );
+    iMeshNodes,this->m_DatabaseConnector);
+  mesh_row = reinterpret_cast<GoDBMeshRow*>(&temp);
+
   mesh_row->ReInitializeMapAfterCast();
   mesh_row->SetColor(m_CurrentColorData.second.red(),
     m_CurrentColorData.second.green(),m_CurrentColorData.second.blue(),

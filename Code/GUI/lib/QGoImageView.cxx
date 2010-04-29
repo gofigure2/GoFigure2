@@ -229,15 +229,16 @@ AddContour( const int& iId, vtkPolyData* iDataset, vtkProperty* iProperty )
   (void) iId;
 
   int n = m_Pool->GetNumberOfItems();
+
   std::vector< vtkActor* > oActorVector( n );
 //   std::vector< vtkQuadricLODActor* > oActorVector( n );
 
   for( int i = 0; i < n; i++ )
     {
     vtkViewImage2D* viewer = m_Pool->GetItem( i );
+    //viewer-
 //     vtkQuadricLODActor* temp =
-    vtkActor* temp = viewer->AddDataSet( iDataset, iProperty,
-      true, false );
+    vtkActor* temp = viewer->AddDataSet( iDataset, iProperty);
     viewer->Render();
     oActorVector[i] = temp;
     }
