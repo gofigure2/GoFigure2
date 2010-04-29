@@ -45,6 +45,7 @@
 #include "ui_ManualSegmentationDockWidget.h"
 
 class vtkProperty;
+class QGoManualSegmentationSettingsDialog;
 
 #include "QGoManualSegmentationSettingsDialog.h"
 #include "QGoTraceManualEditingWidget.h"
@@ -59,10 +60,13 @@ public:
   QGoManualSegmentationDockWidget( QWidget* parent = 0 );
   ~QGoManualSegmentationDockWidget();
 
+  QGoManualSegmentationSettingsDialog* m_SettingsDialog;
+
 signals:
   void ReinitializePressed();
   void ValidatePressed();
   void SettingsPressed();
+  void UpdateContourRepresentationProperties();
 
 };
 

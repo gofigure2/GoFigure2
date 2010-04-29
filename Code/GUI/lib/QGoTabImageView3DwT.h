@@ -204,7 +204,6 @@ public slots:
   void DefaultMode();
   void ZoomMode();
   void PanMode();
-  void DialogTest();
   void OneClickMode();
 
   void GenerateContourRepresentationProperties();
@@ -307,8 +306,6 @@ protected:
   /// \todo why here?
   vtkSmartPointer<vtkPoints>        m_SeedsWorldPosition;
 
-  /// \todo m_SettingsDialog does not belong to this class!!!
-  QGoManualSegmentationSettingsDialog* m_SettingsDialog;
   QGoTraceManualEditingDockWidget*     m_TraceManualEditingDockWidget;
   //QDockWidget*                 m_test;
 

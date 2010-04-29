@@ -43,6 +43,8 @@
 #include <QColorDialog>
 #include <cstdlib>
 
+#include "QGoManualSegmentationSettingsDialog.h"
+
 
 //---------------------------------------------------------------------------//
 QGoManualSegmentationDockWidget::
@@ -51,6 +53,8 @@ QGoManualSegmentationDockWidget( QWidget* iParent ) :
 {
   this->setupUi( this );
 
+  m_SettingsDialog = new QGoManualSegmentationSettingsDialog( this );
+
   QObject::connect( this->ReinitializeBtn, SIGNAL( pressed() ),
     this, SIGNAL( ReinitializePressed() ) );
 
@@ -58,7 +62,10 @@ QGoManualSegmentationDockWidget( QWidget* iParent ) :
     this, SIGNAL( ValidatePressed() ) );
 
   QObject::connect( this->SettingsBtn, SIGNAL( pressed() ),
-      this, SIGNAL( SettingsPressed() ) );
+    m_SettingsDialog, SLOT ( exec() ) );
+
+  QObject::connect( m_SettingsDialog, SIGNAL( accepted() ),
+      this, SIGNAL( UpdateContourRepresentationProperties( ) ) );
 
 }
 //---------------------------------------------------------------------------//

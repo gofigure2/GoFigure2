@@ -256,27 +256,14 @@ CreateSettingAndDialogSegmentationWidgets()
   this->m_TraceManualEditingDockWidget = 
     new QGoTraceManualEditingDockWidget(this );
 
-  m_SettingsDialog = new QGoManualSegmentationSettingsDialog( this );
   //TraceManualEditingWidget = new QGoTraceManualEditingWidget( this->m_TraceManualEditingDockWidget );
 
   //QAction* tempaction_SettingDialog = new QAction( tr("Contours settings"), this );
 
   //QAction* tempaction = this->m_TraceManualEditingDockWidget->toggleViewAction();
 
-  QObject::connect( m_SettingsDialog, SIGNAL( accepted() ),
-    this, SLOT( GenerateContourRepresentationProperties( ) ) );
-
-  QObject::connect( this, SIGNAL( ContourRepresentationPropertiesChanged() ),
-    this, SLOT( ChangeContourRepresentationProperty() ) );
-
   //this->m_SegmentationActions.push_back( tempaction_SettingDialog );
 //  this->m_SegmentationActions.push_back( tempaction );
-}
-void
-QGoTabImageView3DwT::
-DialogTest()
-{
-  this->m_SettingsDialog->exec();
 }
 //-------------------------------------------------------------------------
 void
@@ -285,7 +272,7 @@ GenerateContourRepresentationProperties()
 {
   bool haschanged = false;
 
-  double temp = m_SettingsDialog->GetLineWidth();
+  double temp = m_ManualSegmentationDockWidget->m_SettingsDialog->GetLineWidth();
 
   if( m_LinesWidth != temp )
     {
@@ -293,7 +280,7 @@ GenerateContourRepresentationProperties()
     haschanged = true;
     }
 
-  QColor temp_color = m_SettingsDialog->GetLineColor();
+  QColor temp_color = m_ManualSegmentationDockWidget->m_SettingsDialog->GetLineColor();
 
   if( m_LinesColor != temp_color )
     {
@@ -301,14 +288,14 @@ GenerateContourRepresentationProperties()
     haschanged = true;
     }
 
-  temp_color = m_SettingsDialog->GetNodeColor();
+  temp_color = m_ManualSegmentationDockWidget->m_SettingsDialog->GetNodeColor();
 
   if( m_NodesColor != temp_color )
     {
     m_NodesColor = temp_color;
     haschanged = true;
     }
-  temp_color = m_SettingsDialog->GetActivatedNodeColor();
+  temp_color = m_ManualSegmentationDockWidget->m_SettingsDialog->GetActivatedNodeColor();
 
   if( m_ActiveNodesColor != temp_color )
     {
@@ -340,10 +327,14 @@ CreateManualSegmentationdockWidget()
   QObject::connect( m_ManualSegmentationDockWidget, SIGNAL( ReinitializePressed() ),
     this, SLOT( ReinitializeContour() ) );
 
-  QObject::connect( m_ManualSegmentationDockWidget, SIGNAL( SettingsPressed() ),
-      m_SettingsDialog, SLOT ( exec() ) );
   QObject::connect( m_ManualSegmentationDockWidget, SIGNAL(visibilityChanged(bool) ),
     this, SLOT (ShowTraceDockWidgetForContour(bool)));
+
+  QObject::connect( m_ManualSegmentationDockWidget, SIGNAL( UpdateContourRepresentationProperties() ),
+    this, SLOT( GenerateContourRepresentationProperties( ) ) );
+
+  QObject::connect( this, SIGNAL( ContourRepresentationPropertiesChanged() ),
+    this, SLOT( ChangeContourRepresentationProperty() ) );
 
   QAction* tempaction = m_ManualSegmentationDockWidget->toggleViewAction();
 
