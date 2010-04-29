@@ -57,6 +57,27 @@ int main( int argc, char** argv )
     "http://sourceforge.net/projects/gofigure2/" );
   QCoreApplication::setApplicationName( "GoFigure2" );
 
+  QString inputfilename;
+
+  if( argc > 1 )
+    {
+    for( int i = 1; i < argc; i++ )
+      {
+      std::string temp = argv[i];
+      if( temp == "--i" )
+        {
+        inputfilename = argv[++i];
+        std::cout <<inputfilename.toStdString().c_str() <<std::endl;
+        }
+      if( temp == "--help" )
+        {
+        std::cout <<"gofigure [options]" <<std::endl;
+        std::cout <<"--i input file (single file)" <<std::endl;
+        return EXIT_SUCCESS;
+        }
+      }
+    }
+
   QPixmap pixmap( QString::fromUtf8( ":/fig/splash.png" ) );
   QSplashScreen *splash = new QSplashScreen(
     pixmap.scaledToWidth( 800, Qt::SmoothTransformation ),
@@ -68,6 +89,7 @@ int main( int argc, char** argv )
   splash->showMessage( "Application loading... please wait" );
 
   QGoMainWindow form;
+  form.SetSingleFileName( inputfilename );
   form.show( );
 
   splash->showMessage( "Application ready" );
