@@ -3177,7 +3177,7 @@ OneClickSphereVolumes()
     // Creates contours for a given view, a given point and radius
     // Returns vector containing polydatas
     vtkSmartPointer<vtkPolyData> VolumeForOnePoint =
-        this->CreateSphereVolume(*View, seed_pos, this->m_OneClickSegmentationDockWidget->GetRadius());
+        this->CreateSphereVolume( View, seed_pos, this->m_OneClickSegmentationDockWidget->GetRadius());
 
     // Save polydatas/mesh (=volume) in DB
     this->SavePolyDataAsVolumeInDB( VolumeForOnePoint );
