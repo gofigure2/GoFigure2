@@ -89,7 +89,10 @@ int main( int argc, char** argv )
   splash->showMessage( "Application loading... please wait" );
 
   QGoMainWindow form;
-  form.SetSingleFileName( inputfilename );
+  if( ( !inputfilename.isEmpty() ) && ( !inputfilename.isNull() ) )
+    {
+    form.SetSingleFileName( inputfilename );
+    }
   form.show( );
 
   splash->showMessage( "Application ready" );
@@ -99,3 +102,4 @@ int main( int argc, char** argv )
 
   return app.exec();
 }
+
