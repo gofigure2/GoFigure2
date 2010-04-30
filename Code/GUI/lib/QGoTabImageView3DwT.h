@@ -419,7 +419,7 @@ protected:
   vtkSmartPointer<vtkPolyData> GenerateCircleFromGivenSphereAndGivenZ( double iC[3],
       const double& iRadius, double iZ, const int& iN );
 
-  vtkSmartPointer<vtkPolyData> CreateSphereVolume( vtkViewImage2D& iView,
+  vtkSmartPointer<vtkPolyData> CreateSphereVolume( vtkViewImage2D* iView,
       double iCenter[3], double iRadius );
 
 protected slots:

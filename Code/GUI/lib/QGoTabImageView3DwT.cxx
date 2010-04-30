@@ -2333,7 +2333,7 @@ LoadAllMeshesForGivenTimePoint( const unsigned int& iT )
 QGoTabImageView3DwT::LoadAllMeshessForGivenTimePoint( const unsigned int& iT )
 {
   std::vector<ContourMeshStructure> Meshes = GetMeshesForAGivenTimepoint( iT );
-  /*if( m_ContourContainer.size() > 0 )
+  if( m_ContourContainer.size() > 0 )
     {
     ContourMeshStructureMultiIndexContainer::index< TCoord >::type::iterator it0, it1;
     boost::tuples::tie(it0,it1) =
@@ -2352,13 +2352,15 @@ QGoTabImageView3DwT::LoadAllMeshessForGivenTimePoint( const unsigned int& iT )
     }
 }*/
 //-------------------------------------------------------------------------
-/*void
+/*
+void
 QGoTabImageView3DwT::
 AddPolyData( vtkPolyData* iMesh )
 {
   m_ImageView->AddMesh( iMesh );
 //   this->AddContour( 0, iMesh, 0 );
-}*/
+}
+*/
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -3209,9 +3211,11 @@ OneClickSphereVolumes()
 //-------------------------------------------------------------------------
 vtkSmartPointer<vtkPolyData>
 QGoTabImageView3DwT::
-CreateSphereVolume( vtkViewImage2D& iView, double iCenter[3],
+CreateSphereVolume( vtkViewImage2D* iView, double iCenter[3],
     double iRadius )
 {
+  (void) iView;
+
   //int* center_id = iView.GetImageCoordinatesFromWorldCoordinates( iCenter );
   vtkSmartPointer<vtkPolyData>              spherePolydata;
 
@@ -3470,6 +3474,8 @@ SavePolyDataAsVolumeInDB( vtkPolyData* iView, const int& iContourID,
     const double& iA, const bool& iHighlighted, const unsigned int& iTCoord,
     const bool& iSaveInDataBase )
 {
+  (void) iContourID;
+
   // map to graphics library
   vtkPolyDataMapper *map = vtkPolyDataMapper::New();
   map->SetInput( iView );
