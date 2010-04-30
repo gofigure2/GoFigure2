@@ -70,9 +70,20 @@ struct TraceInfoStructure
     }
     
    ~TraceInfoStructure()
-     {delete Table;
-     delete ListTracesInfoForVisu;
-     delete CollectionOfTraces;}
+     {
+     if( Table )
+        {
+        delete Table;
+        }
+      if( ListTracesInfoForVisu )
+        {
+        delete ListTracesInfoForVisu;
+        }
+      if( CollectionOfTraces )
+        {
+        delete CollectionOfTraces;
+        }
+      }
 
   void SetInfoStructure(std::string iTraceName, QWidget* parent)
     {
