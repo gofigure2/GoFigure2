@@ -221,6 +221,13 @@ SET( QGoGUI_LIBS
 
 TARGET_LINK_LIBRARIES( QGoGui
   ${QGoGUI_LIBS}
+  ITKIO
+  ITKQuadEdgeMesh
+  ITKCommon
+  ITKBasicFilters
+  ITKAlgorithms
+  ITKStatistics
+  ITKNumerics
   )
 
 INSTALL( TARGETS QGoGui

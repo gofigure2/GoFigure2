@@ -157,6 +157,7 @@ QGoMainWindow( QWidget* iParent, Qt::WindowFlags iFlags ) :
 
   CreateSignalSlotsConnection();
   ReadSettings();
+  this->m_DatabaseSetUp = false;
   if(!this->m_DatabaseSetUp)
     {
     actionSet_Up_Database = new QAction(
@@ -544,9 +545,6 @@ void
 QGoMainWindow::
 LoadAllMeshesFromDatabase( const int& iT )
 {
-  /*
-  // iT is currently unused.
-  (void) iT;
   std::vector<ContourMeshStructure>::iterator contourmesh_list_it;
 
   QGoTabImageView3DwT* w3t =
@@ -557,32 +555,7 @@ LoadAllMeshesFromDatabase( const int& iT )
     std::vector< ContourMeshStructure >* temp =
       w3t->m_DataBaseTables->GetTracesInfoListForVisu("mesh");
 
-    if( temp )
-      {
-      // Let's load all the mesh from the first time point
-      //contourmesh_list_it = w3t->m_DataBaseTables->m_MeshesInfo.begin();
-      contourmesh_list_it = temp->begin();
-
-      while( contourmesh_list_it != temp->end() )
-        {
-        if( contourmesh_list_it->Nodes )
-          {
-          w3t->AddPolyData( contourmesh_list_it->Nodes );
-          }
-        ++contourmesh_list_it;
-        }
-      }
-    }*/
-
-  std::vector<ContourMeshStructure>::iterator contourmesh_list_it;
-
-  QGoTabImageView3DwT* w3t =
-    dynamic_cast< QGoTabImageView3DwT* >( this->CentralTabWidget->currentWidget() );
-
-  if( w3t )
-    {
-    std::vector< ContourMeshStructure >* temp =
-      w3t->m_DataBaseTables->GetTracesInfoListForVisu("mesh");
+    std::vector< ContourMeshStructure >::iterator test = temp->begin();
 
     if( temp )
       {
@@ -595,16 +568,13 @@ LoadAllMeshesFromDatabase( const int& iT )
       //while( contourmesh_list_it != w3t->m_DataBaseTables->m_ContoursInfo.end() )
       while( contourmesh_list_it != temp->end() )
         {
-        if( contourmesh_list_it->Nodes )
-          {
-          w3t->AddMeshFromNodes(
-              contourmesh_list_it->TraceID,
-              contourmesh_list_it->Nodes,
-              contourmesh_list_it->rgba,
-              contourmesh_list_it->Highlighted,
-              contourmesh_list_it->TCoord, // timepoint
-              false ); // not to be saved in the database
-          }
+        w3t->AddMeshFromNodes(
+            contourmesh_list_it->TraceID,
+            contourmesh_list_it->Nodes,
+            contourmesh_list_it->rgba,
+            contourmesh_list_it->Highlighted,
+            contourmesh_list_it->TCoord, // timepoint
+            false ); // not to be saved in the database
         if( contourmesh_list_it->TCoord != static_cast<unsigned int>( iT ) )
           {
           temp_time_set.insert( contourmesh_list_it->TCoord );

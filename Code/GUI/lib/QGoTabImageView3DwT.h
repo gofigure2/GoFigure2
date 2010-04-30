@@ -309,6 +309,7 @@ protected:
   QAction*              m_TakeSnapshotAction;
   int                   m_TimePoint;
   unsigned int          m_ContourId;
+  unsigned int          m_MeshId;
   bool                  m_ReEditContourMode;
 
   /// \todo rename as QGoVisualizationDockWidget
@@ -396,6 +397,8 @@ protected:
 
   void OneClickSphereContours();
   void OneClickSphereVolumes();
+  void LevelSetSegmentation2D();
+  void LevelSetSegmentation3D();
 
 #if defined ( ENABLEFFMPEG ) || defined ( ENABLEAVI )
   void CreateVideoRecorderWidget();

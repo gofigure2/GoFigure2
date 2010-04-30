@@ -85,6 +85,13 @@
 #include "vtkOutlineFilter.h"
 #include "vtkRenderWindow.h"
 
+//VTK FILTERS
+#include "vtkMarchingSquares.h"
+
+//ITK FILTERS
+#include "itkChanAndVeseSegmentationFilter.h"
+#include "itkImage.h"
+
 #include "QGoManualSegmentationSettingsDialog.h"
 #include "QGoTraceManualEditingWidget.h"
 
@@ -110,6 +117,7 @@ QGoTabImageView3DwT( QWidget* iParent ) :
   m_BackgroundColor( Qt::black ),
   m_TimePoint( -1 ),
   m_ContourId( 0 ),
+  m_MeshId( 1 ),
   m_ReEditContourMode( false )
 {
   m_Image = vtkSmartPointer< vtkImageData >::New();
@@ -2731,6 +2739,14 @@ HighLightMeshesFromTable( )
   select_property->SetColor( 1., 0.1, 0.1 );
   select_property->SetOpacity( 0.8 );
 
+  ContourMeshStructureMultiIndexContainer::iterator test = m_MeshContainer.begin();
+
+  while( test != m_MeshContainer.end() )
+  {
+  std::cout<< *test << std::endl;
+  ++test;
+  }
+
   // While we didn't test all meshes of database
   while( it != this->m_DataBaseTables->GetTracesInfoListForVisu("mesh")->end() )
     {
@@ -3079,6 +3095,14 @@ ApplyOneClickSegmentationFilter()
     this->OneClickSphereVolumes();
     break;
 
+    case 2 :
+    // 2d level set
+    this->LevelSetSegmentation2D();
+
+    case 3 :
+    // 2d level set
+    this->LevelSetSegmentation3D();
+
     default :
     break;
     }
@@ -3176,7 +3200,7 @@ OneClickSphereVolumes()
     m_SeedsWorldPosition->GetPoint( i, seed_pos );
 
     // Get pointer to XY view
-    vtkViewImage2D* View = this->m_ImageView->GetImageViewer(0);
+    vtkViewImage2D* View = this->m_ImageView->GetImageViewer(1);
 
     // Creates contours for a given view, a given point and radius
     // Returns vector containing polydatas
@@ -3209,6 +3233,75 @@ OneClickSphereVolumes()
 
   // Update visualization
   this->m_ImageView->Update();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+LevelSetSegmentation2D()
+{
+
+  // which channel?
+  // which direction?
+  //m_ImageView->GetImageViewer(0)->GetImageActor()->GetInput();
+
+  const unsigned int Dimension = 2;
+  typedef itk::Image< unsigned char, Dimension > FeatureImageType;
+
+  typedef itk::ChanAndVeseSegmentationFilter< FeatureImageType >
+      SegmentationFilterType;
+
+  FeatureImageType::PointType pt;
+
+  SegmentationFilterType::Pointer filter = SegmentationFilterType::New();
+  //filter->SetFeatureImage( reader->GetOutput() );
+  //filter->SetRadius( cellRadius );
+  //filter->SetCenter( pt );
+  //filter->SetPreprocess( 1 );
+  //filter->Update();
+
+  vtkImageData* image = filter->GetOutput();
+
+  // create iso-contours
+   vtkMarchingSquares *contours = vtkMarchingSquares::New();
+   //contours->SetInput( image );
+   //contours->GenerateValues ( 1, 0, 0 );
+
+   /*
+    * // map to graphics library
+ 80     vtkPolyDataMapper *map = vtkPolyDataMapper::New();
+ 81     map->SetInput( contours->GetOutput() );
+ 82     map->SetScalarRange ( -10, 10 );
+ 83
+ 84     // actor coordinates geometry, properties, transformation
+ 85     vtkActor *contActor = vtkActor::New();
+ 86     contActor->SetMapper( map );
+ 87     contActor->GetProperty()->SetLineWidth ( 1.5 );
+ 88     contActor->GetProperty()->SetColor ( 0,0,1 ); // sphere color blue
+ 89     contActor->GetProperty()->SetOpacity ( 1.0 );
+ 90
+ 91     vtkRenderer *ren = vtkRenderer::New();
+ 92     ren->AddActor ( contActor );
+ 93     ren->SetBackground ( 1., 1., 1. );
+ 94
+ 95     vtkRenderWindow *renWin1 = vtkRenderWindow::New();
+ 96     renWin1->AddRenderer ( ren );
+ 97
+ 98     vtkRenderWindowInteractor *iren = vtkRenderWindowInteractor::New();
+ 99     iren->SetRenderWindow ( renWin1 );
+100
+101     renWin1->Render();
+102     iren->Start();
+    */
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+LevelSetSegmentation3D()
+{
 }
 //-------------------------------------------------------------------------
 
@@ -3506,15 +3599,14 @@ SavePolyDataAsVolumeInDB( vtkPolyData* iView, const int& iContourID,
   contour_actor_temp->GetProperty()->SetColor( iR, iG, iB );
   contour_actor_temp->GetProperty()->SetOpacity(0.5);
 
-  std::vector< vtkActor* > contour_actor =
-      this->AddContour( iDir, iView, contour_actor_temp->GetProperty() );
+  std::vector< vtkActor* > contour_actor;
 
-  // Test to check position and size of volumes
-  //this->m_ImageView->GetImageViewer(0)->GetRenderer()->AddActor( contour_actor );
-  //this->m_ImageView->GetImageViewer(1)->GetRenderer()->AddActor( contour_actor );
-  //this->m_ImageView->GetImageViewer(2)->GetRenderer()->AddActor( contour_actor );
-  //this->m_ImageView->AddActor( 3, contour_actor );
-
+  // dont't create actors if there is no polydata to be displayed
+  if ( iView )
+    {
+    contour_actor =
+        this->AddContour( iDir, iView, contour_actor_temp->GetProperty() );
+    }
 
   // get meshid from the visu dock widget (SpinBox)
   unsigned int trackid = this->m_TraceManualEditingDockWidget->m_TraceWidget->GetCurrentCollectionID();
@@ -3532,6 +3624,10 @@ SavePolyDataAsVolumeInDB( vtkPolyData* iView, const int& iContourID,
         min_idx[1], min_idx[2], iTCoord, max_idx[0],
         max_idx[1], max_idx[2], iView );
     }
+  else
+    {
+    mesh_id = m_MeshId;
+    }
 
   // fill the container
   for( i = 0; i < contour_actor.size(); i++ )
@@ -3542,9 +3638,7 @@ SavePolyDataAsVolumeInDB( vtkPolyData* iView, const int& iContourID,
     m_MeshContainer.insert( temp );
     }
 
-  //DisplayActorInViewer( i, contour_actor );
-  //might be usefull
-  //m_DataBaseTables->GetMeshesFromDBForAGivenTimePoint( m_Tim...)
+  ++m_MeshId;
 }
 //-------------------------------------------------------------------------
 
