@@ -100,7 +100,6 @@ int main( int argc, char** argv )
   viewer->Update();
   viewer->show();
 
-
   if( atoi( argv[2] ) == 1 )
     {
     if( !CheckSnapshot( viewer, GoFigure::BMP ) )
