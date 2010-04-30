@@ -111,7 +111,9 @@ int main( int argc, char** argv )
     	std::cerr << "ERROR: Test failing because directory is empty..." << std::endl;
       }
 
-    vtksys::SystemTools::RemoveADirectory( argv[3] );
+    // other test will use resulting megacapture as inputs
+    // these files will be removed via cmake
+    // vtksys::SystemTools::RemoveADirectory( argv[3] );
     }
 
   delete ConversionLsmToMegaThreadSend;
