@@ -51,6 +51,20 @@ GoDBContourRow::GoDBContourRow():GoDBTraceRow()
 
 //-------------------------------------------------------------------------
 GoDBContourRow::GoDBContourRow(vtkMySQLDatabase* DatabaseConnector,
+  vtkPolyData* TraceVisu,GoDBCoordinateRow Min, GoDBCoordinateRow Max,
+  unsigned int ImgSessionID):GoDBTraceRow(DatabaseConnector,TraceVisu,
+  Min,Max,ImgSessionID)
+{
+  this->InitializeMap();
+  if (this->DoesThisBoundingBoxExist(DatabaseConnector))
+    {
+    std::cout<<"The bounding box already exists for this contour"<<std::endl;
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+GoDBContourRow::GoDBContourRow(vtkMySQLDatabase* DatabaseConnector,
   GoDBCoordinateRow Min, GoDBCoordinateRow Max,unsigned int ImgSessionID,
   vtkPolyData* TraceVisu):
   GoDBTraceRow(DatabaseConnector,TraceVisu,Min,Max,

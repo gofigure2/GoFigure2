@@ -59,6 +59,10 @@ public:
   GoDBMeshRow(vtkMySQLDatabase* DatabaseConnector,
   GoDBCoordinateRow Min, GoDBCoordinateRow Max,unsigned int ImgSessionID,
   vtkPolyData* TraceVisu);
+  
+  GoDBMeshRow(vtkMySQLDatabase* DatabaseConnector,
+    vtkPolyData* TraceVisu,GoDBCoordinateRow Min, GoDBCoordinateRow Max,
+    unsigned int ImgSessionID);
 
   ~GoDBMeshRow()
     {}

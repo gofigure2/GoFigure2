@@ -57,7 +57,9 @@ public:
 
   ~GoDBContourRow()
     {}
-
+  
+  GoDBContourRow(vtkMySQLDatabase* DatabaseConnector,vtkPolyData* TraceVisu,
+    GoDBCoordinateRow Min, GoDBCoordinateRow Max,unsigned int ImgSessionID);
   /**\brief fill the contour map with the values gotten from the visualization*/
   GoDBContourRow(vtkMySQLDatabase* DatabaseConnector,GoDBCoordinateRow Min, 
     GoDBCoordinateRow Max,unsigned int ImgSessionID,vtkPolyData* TraceVisu);

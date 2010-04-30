@@ -51,6 +51,20 @@ GoDBMeshRow::GoDBMeshRow():GoDBTraceRow()
 
 //-------------------------------------------------------------------------
 GoDBMeshRow::GoDBMeshRow(vtkMySQLDatabase* DatabaseConnector,
+  vtkPolyData* TraceVisu,GoDBCoordinateRow Min, GoDBCoordinateRow Max,
+  unsigned int ImgSessionID):GoDBTraceRow(DatabaseConnector,TraceVisu,
+  Min,Max,ImgSessionID)
+{
+  this->InitializeMap();
+  if (this->DoesThisBoundingBoxExist(DatabaseConnector))
+    {
+    std::cout<<"The bounding box already exists for this mesh"<<std::endl;
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+GoDBMeshRow::GoDBMeshRow(vtkMySQLDatabase* DatabaseConnector,
   GoDBCoordinateRow Min, GoDBCoordinateRow Max,unsigned int ImgSessionID,
   vtkPolyData* TraceVisu):GoDBTraceRow(DatabaseConnector,TraceVisu,Min,Max,
     ImgSessionID)

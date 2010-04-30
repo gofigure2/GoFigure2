@@ -681,22 +681,14 @@ int QGoPrintDatabase::SaveContoursFromVisuInDB( unsigned int iXCoordMin,
   unsigned int iMeshID)
 {
   OpenDBConnection();
-
-  /*GoDBContourRow* contour_row = dynamic_cast <GoDBContourRow*>(
-    GetTraceRowFromVisu(iXCoordMin,
-    iYCoordMin,iZCoordMin, iTCoord, iXCoordMax, iYCoordMax, iZCoordMax,
-    iContourNodes,this->m_DatabaseConnector));*/
-  GoDBContourRow* contour_row = new GoDBContourRow;
-  GoDBTraceRow temp = GetTraceRowFromVisu(iXCoordMin,
+  GoDBContourRow contour_row = GetTraceRowFromVisu<GoDBContourRow>(iXCoordMin,
     iYCoordMin,iZCoordMin, iTCoord, iXCoordMax, iYCoordMax, iZCoordMax,
     iContourNodes,this->m_DatabaseConnector);
-  contour_row = reinterpret_cast<GoDBContourRow*>(&temp);
-  contour_row->ReInitializeMapAfterCast();
-  contour_row->SetColor(iColorData.second.red(),iColorData.second.green(),
+  contour_row.SetColor(iColorData.second.red(),iColorData.second.green(),
     iColorData.second.blue(),iColorData.second.alpha(),iColorData.first,
     this->m_DatabaseConnector);
-  contour_row->SetCollectionID(iMeshID);
-  int NewContourID = contour_row->SaveInDB( this->m_DatabaseConnector);
+  contour_row.SetCollectionID(iMeshID);
+  int NewContourID = contour_row.SaveInDB( this->m_DatabaseConnector);
   this->UpdateTableWidgetAndRowContainerWithNewCreatedTrace("contour");
   std::list<int> ListSelectedTraces;
 
@@ -721,22 +713,17 @@ int QGoPrintDatabase::UpdateContourFromVisuInDB(unsigned int iXCoordMin,
     vtkPolyData* iContourNodes,int ContourID )
 {
   OpenDBConnection();
-
-  GoDBContourRow* contour_row = dynamic_cast<GoDBContourRow*>(
-    &GetTraceRowFromVisu(iXCoordMin,
+  GoDBContourRow contour_row = GetTraceRowFromVisu<GoDBContourRow>(iXCoordMin,
     iYCoordMin,iZCoordMin, iTCoord, iXCoordMax, iYCoordMax, iZCoordMax,
-    iContourNodes,this->m_DatabaseConnector));
-  contour_row->ReInitializeMapAfterCast();
-  contour_row->SetField< int >("ContourID",ContourID);
-
-  UpdateContourInDB(this->m_DatabaseConnector,*contour_row);
+    iContourNodes,this->m_DatabaseConnector);
+  contour_row.SetField< int >("ContourID",ContourID);
+  UpdateContourInDB(this->m_DatabaseConnector,contour_row);
   int CollectionID = FindOneID(this->m_DatabaseConnector,
     "contour","meshID","contourID",ConvertToString<int>(ContourID));
   this->m_ContoursData->CollectionOfTraces->RecalculateDBBoundingBox(
     this->m_DatabaseConnector,CollectionID);
   this->UpdateTableWidgetForAnExistingTrace("mesh",CollectionID);
   this->UpdateTableWidgetForAnExistingTrace("contour",ContourID);
-
   CloseDBConnection();
   return ContourID;
 }
@@ -755,23 +742,19 @@ int QGoPrintDatabase::SaveMeshFromVisuInDB( unsigned int iXCoordMin,
   emit NeedToGetCurrentSelectedColor();
   emit NeedCurrentSelectedCollectionID();
 
-  // MEMORY LEAKS
-  GoDBMeshRow* mesh_row = new GoDBMeshRow;
-  GoDBTraceRow temp = GetTraceRowFromVisu(iXCoordMin,
+  GoDBMeshRow mesh_row = GetTraceRowFromVisu<GoDBMeshRow>(iXCoordMin,
     iYCoordMin,iZCoordMin, iTCoord, iXCoordMax, iYCoordMax, iZCoordMax,
     iMeshNodes,this->m_DatabaseConnector);
-  mesh_row = reinterpret_cast<GoDBMeshRow*>(&temp);
 
-  mesh_row->ReInitializeMapAfterCast();
-  mesh_row->SetColor(m_CurrentColorData.second.red(),
+  mesh_row.SetColor(m_CurrentColorData.second.red(),
     m_CurrentColorData.second.green(),m_CurrentColorData.second.blue(),
     m_CurrentColorData.second.alpha(),m_CurrentColorData.first,
     this->m_DatabaseConnector);
-  mesh_row->SetCollectionID(atoi(m_CurrentCollectionData.first.c_str()));
-  mesh_row->SetField("CellType",this->m_CurrentCellType);
-  mesh_row->SetField("SubCellType",this->m_CurrentSubCellType);
+  mesh_row.SetCollectionID(atoi(m_CurrentCollectionData.first.c_str()));
+  mesh_row.SetField("CellType",this->m_CurrentCellType);
+  mesh_row.SetField("SubCellType",this->m_CurrentSubCellType);
   
-  int NewMeshID = mesh_row->SaveInDB( this->m_DatabaseConnector);
+  int NewMeshID = mesh_row.SaveInDB( this->m_DatabaseConnector);
   this->UpdateTableWidgetAndRowContainerWithNewCreatedTrace("mesh");
   std::list<int> ListSelectedTraces;
 
@@ -1514,40 +1497,6 @@ void QGoPrintDatabase::AddListTracesToACollection(
       iter++;
       }
     }
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-GoDBTraceRow QGoPrintDatabase::GetTraceRowFromVisu(
-  unsigned int iXCoordMin,unsigned int iYCoordMin,unsigned int iZCoordMin,
-  unsigned int iTCoord,unsigned int iXCoordMax,
-  unsigned int iYCoordMax,unsigned int iZCoordMax,vtkPolyData* iTraceNodes,
-  vtkMySQLDatabase* iDatabaseConnector,unsigned int iTCoordMax)
-{
-  GoDBCoordinateRow coord_min;
-  coord_min.SetField< unsigned int >( "XCoord", iXCoordMin );
-  coord_min.SetField< unsigned int >( "YCoord", iYCoordMin );
-  coord_min.SetField< unsigned int >( "ZCoord", iZCoordMin );
-  coord_min.SetField< unsigned int >( "TCoord", iTCoord );
-
-  GoDBCoordinateRow coord_max;
-  coord_max.SetField< unsigned int >( "XCoord", iXCoordMax );
-  coord_max.SetField< unsigned int >( "YCoord", iYCoordMax );
-  coord_max.SetField< unsigned int >( "ZCoord", iZCoordMax );
-
-  if(iTCoordMax == 0)
-    {
-    coord_max.SetField< unsigned int >( "TCoord", iTCoord );
-    }
-  else
-    {
-    coord_max.SetField< unsigned int >( "TCoordMax", iTCoord );
-    }
-
-  GoDBTraceRow trace_row( iDatabaseConnector,iTraceNodes,coord_min, coord_max,
-    this->m_ImgSessionID);
-
-  return trace_row;
 }
 //-------------------------------------------------------------------------
 

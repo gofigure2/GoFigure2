@@ -104,7 +104,5 @@ class QGOGUILIB_EXPORT QGoTraceManualEditingWidget :
     void SetSubCellTypeComboBox();
     QHBoxLayout* HLayoutForColor;
     QVBoxLayout* VLayoutForCollection;
-    bool  m_AvoidSignalAddNewCellType;
-    bool  m_AvoidSignalAddNewSubCellType;
 };
 #endif

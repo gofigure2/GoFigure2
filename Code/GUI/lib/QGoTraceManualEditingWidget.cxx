@@ -53,8 +53,6 @@ QGoTraceManualEditingWidget( QWidget* iParent) :
    this->setupUi( this );
    SetColorComboBox();
    SetTraceColorIDCollectionComboBox();
-   m_AvoidSignalAddNewCellType = true;
-   m_AvoidSignalAddNewSubCellType = true;
    SetCellTypeComboBox();
    SetSubCellTypeComboBox();
    UpdateTraceAndCollection("contour", "mesh");

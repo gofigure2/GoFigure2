@@ -347,11 +347,41 @@ protected:
   /** \brief create the trace row with the related data provided by
   the visu, iTCoordMax is equal to 0 as for contour and mesh, it is the
   same as TCoord*/
-  GoDBTraceRow GetTraceRowFromVisu(
-    unsigned int iXCoordMin,unsigned int iYCoordMin,unsigned int iZCoordMin,
-    unsigned int iTCoord,unsigned int iXCoordMax,
-    unsigned int iYCoordMax,unsigned int iZCoordMax,vtkPolyData* iTraceNodes, 
-    vtkMySQLDatabase* iDatabaseConnector,unsigned int iTCoordMax = 0);
+  template<typename T>
+  T GetTraceRowFromVisu(
+  unsigned int iXCoordMin,unsigned int iYCoordMin,unsigned int iZCoordMin,
+  unsigned int iTCoord,unsigned int iXCoordMax,
+  unsigned int iYCoordMax,unsigned int iZCoordMax,vtkPolyData* iTraceNodes,
+  vtkMySQLDatabase* iDatabaseConnector,unsigned int iTCoordMax = 0)
+  {
+    GoDBCoordinateRow coord_min;
+    coord_min.SetField< unsigned int >( "XCoord", iXCoordMin );
+    coord_min.SetField< unsigned int >( "YCoord", iYCoordMin );
+    coord_min.SetField< unsigned int >( "ZCoord", iZCoordMin );
+    coord_min.SetField< unsigned int >( "TCoord", iTCoord );
+
+    GoDBCoordinateRow coord_max;
+    coord_max.SetField< unsigned int >( "XCoord", iXCoordMax );
+    coord_max.SetField< unsigned int >( "YCoord", iYCoordMax );
+    coord_max.SetField< unsigned int >( "ZCoord", iZCoordMax );
+
+    if(iTCoordMax == 0)
+      {
+      coord_max.SetField< unsigned int >( "TCoord", iTCoord );
+      }
+    else
+      {
+      coord_max.SetField< unsigned int >( "TCoordMax", iTCoord );
+      }
+
+    T trace_row( iDatabaseConnector,iTraceNodes,coord_min, coord_max,
+      this->m_ImgSessionID);
+
+    return trace_row;
+  }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 
 
 protected slots:
