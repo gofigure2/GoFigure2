@@ -23,6 +23,7 @@ SET( GODB_SRC
   GoDBChannelRowTest
   GoDBBookmarkRowTest
   GoDBImageRowTest
+  GoDBProjectRowTest
 )
 
 SET( QGOIO_EXAMPLES_SRC
