@@ -595,14 +595,16 @@ LoadAllMeshesFromDatabase( const int& iT )
       //while( contourmesh_list_it != w3t->m_DataBaseTables->m_ContoursInfo.end() )
       while( contourmesh_list_it != temp->end() )
         {
-        w3t->AddMeshFromNodes(
-            contourmesh_list_it->TraceID,
-            contourmesh_list_it->Nodes,
-            contourmesh_list_it->rgba,
-            contourmesh_list_it->Highlighted,
-            contourmesh_list_it->TCoord, // timepoint
-            false ); // not to be saved in the database
-
+        if( contourmesh_list_it->Nodes )
+          {
+          w3t->AddMeshFromNodes(
+              contourmesh_list_it->TraceID,
+              contourmesh_list_it->Nodes,
+              contourmesh_list_it->rgba,
+              contourmesh_list_it->Highlighted,
+              contourmesh_list_it->TCoord, // timepoint
+              false ); // not to be saved in the database
+          }
         if( contourmesh_list_it->TCoord != static_cast<unsigned int>( iT ) )
           {
           temp_time_set.insert( contourmesh_list_it->TCoord );
