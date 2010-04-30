@@ -108,8 +108,12 @@ QGoPrintDatabase( QWidget* iParent ) :
 
  // QObject::connect( this->MeshTable, SIGNAL(itemSelectionChanged()),
  //   this, SLOT(ChangeTracesToHighLightInfoFromTableWidget()));
+
   QObject::connect(this->m_ContoursData->Table, SIGNAL (CheckedRowsChanged()),
       this, SLOT(ChangeTracesToHighLightInfoFromTableWidget()));
+
+  QObject::connect(this->m_MeshesData->Table, SIGNAL (CheckedRowsChanged()),
+        this, SLOT(ChangeTracesToHighLightInfoFromTableWidget()));
 
 }
 //--------------------------------------------------------------------------
@@ -578,7 +582,6 @@ void
 QGoPrintDatabase::
 ChangeTracesToHighLightInfoFromTableWidget()
 {
-  std::cout<<"checked"<<std::endl;
   std::string TraceName = this->InWhichTableAreWe();
   TraceInfoStructure* CurrentlyUsedTraceData = this->GetTraceInfoStructure(
     TraceName);
@@ -588,7 +591,14 @@ ChangeTracesToHighLightInfoFromTableWidget()
 
   if( HasBeenModified )
     {
-    emit SelectionContoursToHighLightChanged();
+      if ( TraceName.compare( "contour" ) == 0 )
+        {
+        emit SelectionContoursToHighLightChanged();
+        }
+      else if ( TraceName.compare( "mesh" ) == 0 )
+        {
+        emit SelectionMeshesToHighLightChanged();
+        }
     }
 }
 //-------------------------------------------------------------------------

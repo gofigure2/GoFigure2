@@ -458,7 +458,7 @@ CreateDataBaseTablesConnection()
     this, SLOT( HighLightContoursFromTable() ) );
 
   QObject::connect( this->m_DataBaseTables,
-      SIGNAL( SelectionContoursToHighLightChanged() ),
+      SIGNAL( SelectionMeshesToHighLightChanged() ),
       this, SLOT( HighLightMeshesFromTable() ) );
 
   QObject::connect( this->m_DataBaseTables,
@@ -2386,7 +2386,7 @@ AddMeshFromNodes( const unsigned int& iContourID,
   const unsigned int& iTCoord,
   const bool& iSaveInDataBase )
 {
-	AddMeshFromNodes( iContourID, iNodes, iRgba[0], iRgba[1], iRgba[2], iRgba[3],
+  AddMeshFromNodes( iContourID, iNodes, iRgba[0], iRgba[1], iRgba[2], iRgba[3],
     iHighlighted, iTCoord, iSaveInDataBase );
 }
 //-------------------------------------------------------------------------
@@ -2710,42 +2710,55 @@ void
 QGoTabImageView3DwT::
 HighLightMeshesFromTable( )
 {
-  std::cout<< "in highlight mesh"<<std::endl;
- // std::vector< ContourMeshStructure >::iterator
- //   it = this->m_DataBaseTables->m_ContoursInfo.begin();
+  // Get iterator to container of meshes from DATABASE
+  // to iterate on a m_MeshContainer.get< TraceID >
+  // GetTracesInfoListForVisu("mesh") returns a vector containing all IDs
+  // 4 contour mesh structures for 1 element (4 rendering windows)
   std::vector< ContourMeshStructure >::iterator
     it = this->m_DataBaseTables->GetTracesInfoListForVisu("mesh")->begin();
+
+  // firsh mesh id is 0
   unsigned int trace_id = 0;
 
+  // Define property of highlighted element
   vtkProperty* select_property = vtkProperty::New();
-  select_property->SetColor( 1., 0., 0. );
-  select_property->SetLineWidth( 3. );
+  select_property->SetColor( 1., 0.1, 0.1 );
+  select_property->SetOpacity( 0.8 );
 
+  // While we didn't test all meshes of database
   while( it != this->m_DataBaseTables->GetTracesInfoListForVisu("mesh")->end() )
     {
+    // get ID of current mesh
     trace_id = it->TraceID;
 
+    // get iterator to container of meshes from CONTAINER, pointing to current mesh ID
+    // should point to the first matching position
     ContourMeshStructureMultiIndexContainer::index< TraceID >::type::iterator
         traceid_it = m_MeshContainer.get< TraceID >().find( trace_id );
 
+    // if we are not at the end of the vector containing views
     if( traceid_it != m_MeshContainer.get< TraceID >().end() )
       {
+      // go through all views
       while( ( traceid_it != m_MeshContainer.get< TraceID >().end() )
         && ( (*traceid_it).TraceID == trace_id ) )
         {
+        // if highlighted state differs from database and container
         if( it->Highlighted != traceid_it->Highlighted )
           {
+          // if not highlighted in database -> unhighlight in container
           if( !it->Highlighted )
             {
             vtkProperty* temp_property = vtkProperty::New();
             temp_property->SetColor( traceid_it->rgba[0], traceid_it->rgba[1], traceid_it->rgba[2] );
-            temp_property->SetLineWidth( 1. );
+            temp_property->SetOpacity( 0.5 );
 
             m_ImageView->ChangeActorProperty( traceid_it->Direction,
               traceid_it->Actor, temp_property );
 
             temp_property->Delete();
             }
+          // if highlighted in database -> highlight in container
           else
             {
             m_ImageView->ChangeActorProperty( traceid_it->Direction,
@@ -2759,7 +2772,6 @@ HighLightMeshesFromTable( )
         ++traceid_it;
         }
       }
-
     ++it;
     }
 }
