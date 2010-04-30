@@ -233,6 +233,7 @@ public slots:
   void UpdateListMeshes(int iTimePoint);
   std::string GetNameNewCellType();
   std::string GetNameNewSubCellType();
+  void SetTable(std::string iTablename);
 
 signals:
   void PrintDBReady();
@@ -256,6 +257,7 @@ signals:
   void ListSubCellTypesToUpdate(QStringList);
   void TheColorNameAlreadyExits();
   void ColorChangedForSelectedTraces(std::pair<std::list<int>,QColor>);
+  void TableWidgetTableChanged(std::string, std::string);
 
 protected:
   std::pair<std::string,QColor> m_CurrentColorData;
@@ -390,6 +392,7 @@ protected slots:
   void CheckSelectedRows();
   void UncheckSelectedRows();
   void ChangeTraceColor();
+  void TheTabIsChanged(int iIndex);
 
   /** \brief Create a new Collection row in the collection table and change the
   collection ID of the selected contours to the new CollectionID created:*/

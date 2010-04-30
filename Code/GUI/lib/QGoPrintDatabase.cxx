@@ -102,6 +102,8 @@ QGoPrintDatabase( QWidget* iParent ) :
 
   QObject::connect( this, SIGNAL( customContextMenuRequested( const QPoint & ) ),
     this, SLOT( CreateContextMenu( const QPoint & ) ) );
+  QObject::connect(this->DBTabWidget, SIGNAL(currentChanged(int)),
+    this, SLOT(TheTabIsChanged(int)));
 
  // QObject::connect( this->ContourTable, SIGNAL(itemSelectionChanged()),
  //   this, SLOT(ChangeTracesToHighLightInfoFromTableWidget()));
@@ -1717,4 +1719,50 @@ std::string QGoPrintDatabase::GetNameNewCellType()
 std::string QGoPrintDatabase::GetNameNewSubCellType()
 {
   return this->m_SubCellTypeManager->GetNameNewEntity();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoPrintDatabase::TheTabIsChanged(int iIndex)
+{
+  TraceInfoStructure* CurrentlyUsedTraceData = new TraceInfoStructure;
+  switch(iIndex)
+    {
+    case 1:
+       CurrentlyUsedTraceData = this->GetTraceInfoStructure("mesh");
+      break;
+    case 2:
+       CurrentlyUsedTraceData = this->GetTraceInfoStructure("track");
+      break;
+    case 3:
+       CurrentlyUsedTraceData = this->GetTraceInfoStructure("lineage");
+      break;
+    default:
+       CurrentlyUsedTraceData = this->GetTraceInfoStructure("contour");
+      break;
+    }
+
+  emit TableWidgetTableChanged(CurrentlyUsedTraceData->TraceName,
+    CurrentlyUsedTraceData->CollectionName);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoPrintDatabase::SetTable(std::string iTablename)
+{
+  int Index = 0;
+  if (iTablename == "mesh")
+    {
+    Index = 1;
+    }
+  if (iTablename == "track")
+    {
+    Index = 2;
+    }
+  if (iTablename == "lineage")
+    {
+    Index = 3;
+    }
+
+  this->DBTabWidget->setCurrentIndex(Index);
 }

@@ -430,6 +430,7 @@ protected slots:
   void SetTheCurrentSubCellType();
   void ShowTraceDockWidgetForContour(bool ManualSegVisible);
   void ShowTraceDockWidgetForMesh(bool OneClickVisible);
+  void GoToDefaultMenu(std::string iTracename,std::string iCollectionName);
 
 };
 

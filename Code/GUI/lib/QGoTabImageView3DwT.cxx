@@ -520,6 +520,10 @@ CreateDataBaseTablesConnection()
   QObject::connect(
     this->m_TraceManualEditingDockWidget->m_TraceWidget,SIGNAL(ListSubCellTypesReady()),
     this, SLOT(SetTheCurrentSubCellType()));
+
+  QObject::connect(
+    this->m_DataBaseTables, SIGNAL(TableWidgetTableChanged(std::string,std::string)),
+    this, SLOT(GoToDefaultMenu(std::string, std::string)));
 }
 //-------------------------------------------------------------------------
 #if defined ( ENABLEFFMPEG ) || defined ( ENABLEAVI )
@@ -849,7 +853,6 @@ void QGoTabImageView3DwT::CreateModeActions()
       this->m_ManualSegmentationDockWidget, SLOT( setEnabled( bool ) ) );
   QObject::connect( ManualEditingAction, SIGNAL( toggled( bool ) ),
       this->m_ManualSegmentationDockWidget, SLOT( setVisible( bool ) ) );
-
   QObject::connect( ManualEditingAction, SIGNAL( toggled( bool ) ),
    this, SLOT( ActivateManualSegmentationEditor( bool ) ) );
 
@@ -936,6 +939,7 @@ void QGoTabImageView3DwT::CreateModeActions()
 
 }
 //-------------------------------------------------------------------------
+
 //-------------------------------------------------------------------------
 void QGoTabImageView3DwT::CreateBookmarkActions()
 {
@@ -3589,12 +3593,16 @@ void QGoTabImageView3DwT::ShowTraceDockWidgetForContour(
   if (ManualSegVisible)
     {
     if(this->m_DataBaseTables->IsDatabaseUsed())
-      {
+      {     
       this->m_TraceManualEditingDockWidget->ShowAndUpdate("contour","mesh");
       this->m_TraceManualEditingDockWidget->m_TraceWidget->SetCollectionID(
         this->m_DataBaseTables->GetListExistingCollectionIDFromDB(
         "contour",this->GetTimePoint()));
+      this->m_DataBaseTables->blockSignals(true);
+      this->m_DataBaseTables->SetTable("contour");
+      this->m_DataBaseTables->blockSignals(false);
       }
+    this->m_OneClickSegmentationDockWidget->setDisabled(true);
     this->m_OneClickSegmentationDockWidget->hide();
     }
 }
@@ -3612,8 +3620,26 @@ void QGoTabImageView3DwT::ShowTraceDockWidgetForMesh(
       this->m_TraceManualEditingDockWidget->m_TraceWidget->SetCollectionID(
         this->m_DataBaseTables->GetListExistingCollectionIDFromDB(
         "mesh",this->GetTimePoint()));
+      this->m_DataBaseTables->blockSignals(true);
+      this->m_DataBaseTables->SetTable("mesh");
+      this->m_DataBaseTables->blockSignals(false);
       }
+    this->m_ManualSegmentationDockWidget->setDisabled(true);
     this->m_ManualSegmentationDockWidget->hide();
     }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoTabImageView3DwT::GoToDefaultMenu(std::string iTracename,
+  std::string iCollectionName)
+{
+    this->m_ManualSegmentationDockWidget->setDisabled(true);
+    this->m_ManualSegmentationDockWidget->hide();
+    this->m_OneClickSegmentationDockWidget->setDisabled(true);
+    this->m_OneClickSegmentationDockWidget->hide();
+    this->m_ModeActions.at(2)->setChecked(true);
+    this->m_TraceManualEditingDockWidget->ShowAndUpdate(iTracename,
+      iCollectionName);
 }
 //-------------------------------------------------------------------------
