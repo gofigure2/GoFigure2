@@ -53,6 +53,8 @@ QGoTraceManualEditingWidget( QWidget* iParent) :
    this->setupUi( this );
    SetColorComboBox();
    SetTraceColorIDCollectionComboBox();
+   m_AvoidSignalAddNewCellType = true;
+   m_AvoidSignalAddNewSubCellType = true;
    SetCellTypeComboBox();
    SetSubCellTypeComboBox();
    UpdateTraceAndCollection("contour", "mesh");
@@ -175,7 +177,7 @@ SetCellTypeComboBox()
   QHBoxLayout* HLayoutForCellType = new QHBoxLayout;
   HLayoutForCellType->addWidget(m_ChoseCellType);
   this->VLayoutCellType->addLayout(HLayoutForCellType);
-  QObject::connect(this->m_ChoseCellType,SIGNAL(currentIndexChanged(QString)),
+  QObject::connect(this->m_ChoseCellType,SIGNAL(activated(QString)),
     SLOT(CheckUserAction(QString)));
 }
 //-------------------------------------------------------------------------
@@ -199,7 +201,7 @@ QGoTraceManualEditingWidget::
 CheckUserAction( QString iCellTypeText )
 {
  if (iCellTypeText == "Add a celltype...")
-   {
+   {  
    emit AddANewCellType();
    }
  if (iCellTypeText == "Delete a celltype...")
@@ -217,7 +219,7 @@ SetSubCellTypeComboBox()
   this->m_ChoseSubCellType = new QComboBox(this);
   this->VLayoutSubCellType->addWidget(LabelSubCellType);
   this->VLayoutSubCellType->addWidget(m_ChoseSubCellType);
-  QObject::connect(this->m_ChoseSubCellType,SIGNAL(currentIndexChanged(QString)),
+  QObject::connect(this->m_ChoseSubCellType,SIGNAL(activated(QString)),
     SLOT(CheckUserActionSubCell(QString)));
 }
 //-------------------------------------------------------------------------
