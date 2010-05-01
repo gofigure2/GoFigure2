@@ -139,7 +139,7 @@ ADD_TEST( QGoLsmToMegaExportThreadTest
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/QGoLsmToMegaExportThreadTest
   earpax2isl11.lsm
   ${TESTING_DATA_PATH}/earpax2isl11.lsm
-  ${TESTING_DATA_PATH}/earpax2isl11/
+  ${GOFIGURE2_BINARY_DIR}/Testing/earpax2isl11/
   1
 )
 
@@ -165,11 +165,11 @@ ADD_TEST( QGoDeleteDBEntityDialogTest
 
 ADD_TEST( qgotabimageview3dwtTest2
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qgotabimageview3dwt2
-  ${TESTING_DATA_PATH}/earpax2isl11/earpax2isl11.lsm-PL00-CO00-RO00-ZT00-YT00-XT00-TM0000-ch00-zs0000.png
+  ${GOFIGURE2_BINARY_DIR}/Testing/earpax2isl11/earpax2isl11.lsm-PL00-CO00-RO00-ZT00-YT00-XT00-TM0000-ch00-zs0000.png
 )
 
 EXECUTE_PROCESS( COMMAND ${CMAKE_COMMAND} -E remove_directory
-  ${TESTING_DATA_PATH}/earpax2isl11
+  ${GOFIGURE2_BINARY_DIR}/Testing/earpax2isl11
 )
 
 #---------------------------------------------------------------------------
