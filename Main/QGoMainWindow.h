@@ -65,6 +65,7 @@ class QGoTabImageView3DwT;
 class QGoTabImageView3D;
 class QGoTabImageView2D;
 class QGoTabElementBase;
+class QGoNetworkUtilities;
 
 #include "ui_go.h"
 
@@ -129,6 +130,9 @@ private slots:
   void on_actionAbout_triggered( );
   void on_actionAbout_Qt_triggered( );
   void SetUpDatabase();
+
+  void on_actionCheck_For_Updates_triggered();
+  void DisplayUpdateResults( QString result, bool noerror );
 
   void ApplyImageFilter();
   void tobedone( std::vector< vtkImageData* > );
@@ -206,6 +210,8 @@ private:
   QGoWizardDB*                m_DBWizard;
   QGoAboutWidget*             m_AboutWidget;
   QGoDBInitializationWizard*  m_DBInitializationWizard;
+
+  QGoNetworkUtilities*        m_NetworkUtilities;
 
   /** \brief */
   void ReadSettings();

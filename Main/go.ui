@@ -59,7 +59,7 @@
      <x>0</x>
      <y>0</y>
      <width>1434</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -148,6 +148,7 @@
     <addaction name="actionGoFigure2_Website"/>
     <addaction name="actionUser_mailing_list"/>
     <addaction name="actionDeveloper_mailing_list"/>
+    <addaction name="actionCheck_For_Updates"/>
    </widget>
    <widget class="QMenu" name="menuView">
     <property name="enabled">
@@ -503,6 +504,11 @@
   <action name="action_2">
    <property name="text">
     <string>Set Up Database</string>
+   </property>
+  </action>
+  <action name="actionCheck_For_Updates">
+   <property name="text">
+    <string>Check For Updates</string>
    </property>
   </action>
  </widget>

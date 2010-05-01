@@ -45,6 +45,7 @@
 #include "QGoTabImageView3DwT.h"
 #include "QGoPrintDatabase.h"
 #include "QGoManualSegmentationDockWidget.h"
+#include "QGoNetworkUtilities.h"
 
 #include "ContourMeshStructure.h"
 
@@ -154,6 +155,8 @@ QGoMainWindow( QWidget* iParent, Qt::WindowFlags iFlags ) :
   this->actionImportMesh->setVisible(false);
   this->actionImportTrack->setVisible(false);
   this->actionImportLineage->setVisible(false);
+
+  m_NetworkUtilities = new QGoNetworkUtilities( this );
 
   CreateSignalSlotsConnection();
   ReadSettings();
@@ -1357,5 +1360,66 @@ void QGoMainWindow::WriteSettings()
   settings.endGroup();
   settings.setValue("DatabaseSetUp",this->m_DatabaseSetUp);
 }
-//--------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+
+void
+QGoMainWindow::on_actionCheck_For_Updates_triggered()
+{
+  connect( m_NetworkUtilities, SIGNAL( CheckForUpdatesDone( QString, bool ) ),
+           this, SLOT( DisplayUpdateResults( QString, bool ) ) );
+  m_NetworkUtilities->CheckForUpdates();
+}
+
+//------------------------------------------------------------------------------
+void
+QGoMainWindow::
+DisplayUpdateResults( QString result, bool noerror )
+{
+  if( !noerror ) // error during the connection to the server
+    {
+    QMessageBox::warning(this, tr("GoFigure2 Updates"),
+      tr("There was an error while trying to GoFigure2's update website!\n " \
+         "Check your internet connection and try again later!" ) );
+    }
+  else
+    {
+    if( result == "???" ) // no new version!
+      {
+      QMessageBox::information( this, tr("GoFigure2 Updates"),
+                                tr("You have the lastest version!"));
+      }
+    else
+      {
+      if( result == "???" ) // there is one new version!
+        {
+        QMessageBox msgBox( QMessageBox::Information, tr("GoFigure2 Updates"),
+          tr("There is a new version of GoFigure2 available for download!") );
+
+        QPushButton *goButton =
+          msgBox.addButton( tr("Go to GoFigure2's website!"),
+                            QMessageBox::ActionRole );
+
+        QPushButton *notnowButton =
+            msgBox.addButton( tr("Not Now!"),
+                              QMessageBox::ActionRole );
+
+        msgBox.exec();
+
+        if (msgBox.clickedButton() == goButton)
+          {
+          QUrl address("http://sourceforge.net/projects/gofigure2/files/");
+          QDesktopServices::openUrl( address );
+          }
+        else
+          {
+          if(msgBox.clickedButton() == notnowButton)
+            {
+            msgBox.close();
+            }
+          }
+        }
+      }
+    }
+}
+
 
