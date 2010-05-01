@@ -3097,11 +3097,15 @@ ApplyOneClickSegmentationFilter()
 
     case 2 :
     // 2d level set
-    this->LevelSetSegmentation2D();
+    // this->LevelSetSegmentation2D();
+    std::cout <<"LevelSetSegmentation2D" <<std::endl;
+    break;
 
     case 3 :
     // 2d level set
-    this->LevelSetSegmentation3D();
+    // this->LevelSetSegmentation3D();
+    std::cout <<"LevelSetSegmentation3D" <<std::endl;
+    break;
 
     default :
     break;
@@ -3264,35 +3268,35 @@ LevelSetSegmentation2D()
   vtkImageData* image = filter->GetOutput();
 
   // create iso-contours
-   vtkMarchingSquares *contours = vtkMarchingSquares::New();
-   //contours->SetInput( image );
-   //contours->GenerateValues ( 1, 0, 0 );
+  vtkMarchingSquares *contours = vtkMarchingSquares::New();
+  contours->SetInput( image );
+  contours->GenerateValues ( 1, 0, 0 );
 
-   /*
-    * // map to graphics library
- 80     vtkPolyDataMapper *map = vtkPolyDataMapper::New();
- 81     map->SetInput( contours->GetOutput() );
- 82     map->SetScalarRange ( -10, 10 );
- 83
- 84     // actor coordinates geometry, properties, transformation
- 85     vtkActor *contActor = vtkActor::New();
- 86     contActor->SetMapper( map );
- 87     contActor->GetProperty()->SetLineWidth ( 1.5 );
- 88     contActor->GetProperty()->SetColor ( 0,0,1 ); // sphere color blue
- 89     contActor->GetProperty()->SetOpacity ( 1.0 );
- 90
- 91     vtkRenderer *ren = vtkRenderer::New();
- 92     ren->AddActor ( contActor );
- 93     ren->SetBackground ( 1., 1., 1. );
- 94
- 95     vtkRenderWindow *renWin1 = vtkRenderWindow::New();
- 96     renWin1->AddRenderer ( ren );
- 97
- 98     vtkRenderWindowInteractor *iren = vtkRenderWindowInteractor::New();
- 99     iren->SetRenderWindow ( renWin1 );
-100
-101     renWin1->Render();
-102     iren->Start();
+/*
+// map to graphics library
+vtkPolyDataMapper *map = vtkPolyDataMapper::New();
+map->SetInput( contours->GetOutput() );
+map->SetScalarRange ( -10, 10 );
+
+// actor coordinates geometry, properties, transformation
+vtkActor *contActor = vtkActor::New();
+contActor->SetMapper( map );
+contActor->GetProperty()->SetLineWidth ( 1.5 );
+contActor->GetProperty()->SetColor ( 0,0,1 ); // sphere color blue
+contActor->GetProperty()->SetOpacity ( 1.0 );
+
+vtkRenderer *ren = vtkRenderer::New();
+ren->AddActor ( contActor );
+ren->SetBackground ( 1., 1., 1. );
+
+vtkRenderWindow *renWin1 = vtkRenderWindow::New();
+renWin1->AddRenderer ( ren );
+
+vtkRenderWindowInteractor *iren = vtkRenderWindowInteractor::New();
+iren->SetRenderWindow ( renWin1 );
+
+renWin1->Render();
+iren->Start();
     */
 }
 //-------------------------------------------------------------------------
