@@ -85,12 +85,21 @@
 #include "vtkOutlineFilter.h"
 #include "vtkRenderWindow.h"
 
+#include <vtkMetaImageWriter.h>
+
 //VTK FILTERS
 #include "vtkMarchingSquares.h"
+#include "vtkMarchingCubes.h"
+#include "vtkExtractVOI.h"
+#include "vtkImageExport.h"
+#include <vtkImageClip.h>
+#include "vtkitkAdaptor.h"
 
 //ITK FILTERS
 #include "itkChanAndVeseSegmentationFilter.h"
 #include "itkImage.h"
+#include "itkVTKImageImport.h"
+#include "itkVTKImageToImageFilter.h"
 
 #include "QGoManualSegmentationSettingsDialog.h"
 #include "QGoTraceManualEditingWidget.h"
@@ -360,6 +369,8 @@ CreateOneClickSegmentationDockWidget()
 {
   m_OneClickSegmentationDockWidget = new QGoOneClickSegmentationDockWidget( this );
   m_OneClickSegmentationDockWidget->setEnabled( false );
+
+  //m_NavigationDockWidget
 
   QAction* tempaction = m_OneClickSegmentationDockWidget->toggleViewAction();
 
@@ -3097,7 +3108,7 @@ ApplyOneClickSegmentationFilter()
 
     case 2 :
     // 2d level set
-    // this->LevelSetSegmentation2D();
+    this->LevelSetSegmentation2D();
     std::cout <<"LevelSetSegmentation2D" <<std::endl;
     break;
 
@@ -3245,59 +3256,134 @@ void
 QGoTabImageView3DwT::
 LevelSetSegmentation2D()
 {
+  // Get seeds (centers for level sets)
+  m_SeedsWorldPosition = this->m_ImageView->GetAllSeeds();
+  // pos[] will contain position of a seed
+  double seed_pos[3];
 
-  // which channel?
-  // which direction?
-  //m_ImageView->GetImageViewer(0)->GetImageActor()->GetInput();
+  // Get vtkViewImage2D
+  // Usefull to get informations about images for coordinates converion
+  vtkViewImage2D* View = this->m_ImageView->GetImageViewer(0);
+  // Get input volume, according to selected channel
+  vtkSmartPointer<vtkImageData> inputVolume = vtkSmartPointer<vtkImageData>::New();
+  if( ( !m_InternalImages.empty() ) )
+    {
+    inputVolume->ShallowCopy( m_InternalImages[1] );
+    }
 
-  const unsigned int Dimension = 2;
-  typedef itk::Image< unsigned char, Dimension > FeatureImageType;
+  // Apply filter for each seed
+  for( int i = 0; i < m_SeedsWorldPosition->GetNumberOfPoints(); i++ )
+    {
+    // Put position of each seed "i" in "seed_pos[3]"
+    m_SeedsWorldPosition->GetPoint( i, seed_pos );
 
-  typedef itk::ChanAndVeseSegmentationFilter< FeatureImageType >
-      SegmentationFilterType;
+    // position has to be converted into image coordinates
+    // compute boundaries
+    double boundaries[3];
+    boundaries[0] = 6*this->m_OneClickSegmentationDockWidget->GetRadius();
+    boundaries[1] = 6*this->m_OneClickSegmentationDockWidget->GetRadius();
+    boundaries[2] = 6*this->m_OneClickSegmentationDockWidget->GetRadius();
 
-  FeatureImageType::PointType pt;
+    double corners[2][3];
+    for( int j = 0; j < 3; j++ )
+      {
+      corners[0][j] = seed_pos[j] - boundaries[j];
+      corners[1][j] = seed_pos[j] + boundaries[j];
+      }
 
-  SegmentationFilterType::Pointer filter = SegmentationFilterType::New();
-  //filter->SetFeatureImage( reader->GetOutput() );
-  //filter->SetRadius( cellRadius );
-  //filter->SetCenter( pt );
-  //filter->SetPreprocess( 1 );
-  //filter->Update();
+    std::vector< int* > idx_corners( 2 );
+    for( int k = 0; k < 2; k++ )
+      {
+      idx_corners[k] =View->GetImageCoordinatesFromWorldCoordinates( corners[k] );
+      }
 
-  vtkImageData* image = filter->GetOutput();
+    // Extract ROI around a seed
+    // Create VOI extractor
+    vtkSmartPointer<vtkExtractVOI> extractVOI =
+        vtkSmartPointer<vtkExtractVOI>::New();
+    // Set input volume
+    extractVOI->SetInput( inputVolume );
+    extractVOI->SetVOI( idx_corners[0][0], idx_corners[1][0], idx_corners[0][1], idx_corners[1][1], idx_corners[0][2], idx_corners[1][2] );
 
-  // create iso-contours
-  vtkMarchingSquares *contours = vtkMarchingSquares::New();
-  contours->SetInput( image );
-  contours->GenerateValues ( 1, 0, 0 );
+    //Export VTK image to ITK
+    vtkImageExport* movingExporter = vtkImageExport::New();
+    movingExporter->SetInput( inputVolume );//extractVOI->GetOutput() );
 
+    const unsigned int Dimension = 3;
+
+    // ImageType
+    typedef itk::Image< unsigned char, Dimension > ImageType;
+    // Import VTK Image to ITK
+    typedef itk::VTKImageImport<ImageType> ImageImportType;
+    ImageImportType::Pointer movingImporter =
+      ImageImportType::New();
+
+    ConnectPipelines< vtkImageExport, ImageImportType::Pointer >( movingExporter, movingImporter );
+
+    // Apply LevelSet segmentation filter
+    typedef itk::Image< unsigned char, Dimension > FeatureImageType;
+
+    typedef itk::ChanAndVeseSegmentationFilter< FeatureImageType >
+        SegmentationFilterType;
+
+    FeatureImageType::PointType pt;
+
+    SegmentationFilterType::Pointer filter = SegmentationFilterType::New();
+    filter->SetFeatureImage( movingImporter->GetOutput() );
+    filter->SetRadius( boundaries[0]/4 );
+    seed_pos[0] = seed_pos[0];
+    seed_pos[1] = seed_pos[1];
+    seed_pos[2] = seed_pos[2];
+    filter->SetCenter( seed_pos );
+    filter->SetPreprocess( 1 );
+    filter->Update();
 /*
-// map to graphics library
-vtkPolyDataMapper *map = vtkPolyDataMapper::New();
-map->SetInput( contours->GetOutput() );
-map->SetScalarRange ( -10, 10 );
+    vtkImageData* image = filter->GetOutput();
 
-// actor coordinates geometry, properties, transformation
-vtkActor *contActor = vtkActor::New();
-contActor->SetMapper( map );
-contActor->GetProperty()->SetLineWidth ( 1.5 );
-contActor->GetProperty()->SetColor ( 0,0,1 ); // sphere color blue
-contActor->GetProperty()->SetOpacity ( 1.0 );
+    // Store it for testings purpose
+    vtkSmartPointer<vtkMetaImageWriter> mhdImageWriter2 =
+        vtkSmartPointer<vtkMetaImageWriter>::New();
 
-vtkRenderer *ren = vtkRenderer::New();
-ren->AddActor ( contActor );
-ren->SetBackground ( 1., 1., 1. );
+    mhdImageWriter2->SetInput( image );
+    mhdImageWriter2->SetFileName( "/home/nr52/Desktop/afterSegmentationVOI.mhd" );
+    mhdImageWriter2->Write();
 
-vtkRenderWindow *renWin1 = vtkRenderWindow::New();
-renWin1->AddRenderer ( ren );
+    if( !image )
+      {
+      std::cerr << "No output" << std::endl;
+      }
 
-vtkRenderWindowInteractor *iren = vtkRenderWindowInteractor::New();
-iren->SetRenderWindow ( renWin1 );
+    // create iso-contours
+    vtkSmartPointer<vtkMarchingCubes> contours = vtkSmartPointer<vtkMarchingCubes>::New();
+    contours->SetInput( image );
+    contours->GenerateValues ( 1, 0, 0 );
 
-renWin1->Render();
-iren->Start();
-    */
+      // map to graphics library
+    vtkSmartPointer<vtkPolyDataMapper> map = vtkSmartPointer<vtkPolyDataMapper>::New();
+      map->SetInput( contours->GetOutput() );
+      map->SetScalarRange ( -10, 10 );
+
+      // actor coordinates geometry, properties, transformation
+      vtkSmartPointer<vtkActor> contActor = vtkSmartPointer<vtkActor>::New();
+      contActor->SetMapper( map );
+      contActor->GetProperty()->SetLineWidth ( 1.5 );
+      contActor->GetProperty()->SetColor ( 0,0,1 ); // sphere color blue
+      contActor->GetProperty()->SetOpacity ( 1.0 );
+
+      vtkSmartPointer<vtkRenderer> ren = vtkSmartPointer<vtkRenderer>::New();
+      ren->AddActor ( contActor );
+      ren->SetBackground ( 1., 1., 1. );
+
+      vtkSmartPointer<vtkRenderWindow> renWin1 = vtkSmartPointer<vtkRenderWindow>::New();
+      renWin1->AddRenderer ( ren );
+
+      vtkSmartPointer<vtkRenderWindowInteractor> iren = vtkSmartPointer<vtkRenderWindowInteractor>::New();
+      iren->SetRenderWindow ( renWin1 );
+
+      renWin1->Render();
+      iren->Start();
+*/
+  }
 }
 //-------------------------------------------------------------------------
 
