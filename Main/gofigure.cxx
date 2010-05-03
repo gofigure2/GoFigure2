@@ -86,6 +86,7 @@ int main( int argc, char** argv )
   splash->show();
 
   app.processEvents();
+
   splash->showMessage( "Application loading... please wait" );
 
   QGoMainWindow form;
@@ -96,8 +97,11 @@ int main( int argc, char** argv )
   form.show( );
 
   splash->showMessage( "Application ready" );
+
   app.processEvents();
+
   splash->finish( &form );
+  
   delete splash;
 
   return app.exec();

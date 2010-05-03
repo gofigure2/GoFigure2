@@ -103,16 +103,16 @@ void QGoAboutWidget::AddTabAbout(QString iTextLicense, QString iTabTitle,
 //--------------------------------------------------------------------------
 QString QGoAboutWidget::GetContributors()
 {
-  QString authors( tr( "Authors in alphabetical order:\n" ) );
+  QString authors( tr( "Authors:\n\n" ) );
 
   authors.append( " * 2008 ~ A. Gelas\n" );
-  authors.append( " * 2007-2009 ~ A. Gouaillard\n" );
+  authors.append( " * 2008 ~ L. Souhait\n" );
   authors.append( " * 2008 ~ K. Mosaliganti\n" );
-  authors.append( " * 2008 ~ L. Souhait\n\n" );
-  authors.append( " * 2009 ~ N. Rannou\n\n" );
-  authors.append( " * Principal Investigator\n" );
-  authors.append( " * S. Megason\n" );
-
+  authors.append( " * 2009 ~ N. Rannou\n" );
+  authors.appand( " * 2010 ~ A. Perrot Audet\n" );
+  authors.append( " * 2007-2009 ~ A. Gouaillard\n" );
+  authors.append( " * 2006 ~ S. G. Megason\n" );
+  
   return authors;
 }
 //--------------------------------------------------------------------------

@@ -168,10 +168,6 @@ ADD_TEST( qgotabimageview3dwtTest2
   ${GOFIGURE2_BINARY_DIR}/Testing/earpax2isl11/earpax2isl11.lsm-PL00-CO00-RO00-ZT00-YT00-XT00-TM0000-ch00-zs0000.png
 )
 
-EXECUTE_PROCESS( COMMAND ${CMAKE_COMMAND} -E remove_directory
-  ${GOFIGURE2_BINARY_DIR}/Testing/earpax2isl11
-)
-
 #---------------------------------------------------------------------------
 #---------------------------------------------------------------------------
 
