@@ -25,7 +25,7 @@ SET( GODB_SRC
   GoDBImageRowTest
   GoDBProjectRowTest
   GoDBCoordinateRowTest
-  GoDBImgSessionTest
+  GoDBImgSessionRowTest
 )
 
 SET( QGOIO_EXAMPLES_SRC
@@ -61,6 +61,11 @@ ADD_TEST( vtkPolyDataMySQLTextWriterTest1
 ADD_TEST( vtkPolyDataMySQLTextWriterTest2
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/vtkPolyDataMySQLTextWriter
   ${TESTING_DATA_PATH}/sphere.vtk
+)
+
+ADD_TEST( MegaCaptureHeaderReaderTest
+  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/MegaCaptureHeaderReaderTest
+  ${GOFIGURE2_BINARY_DIR}/Testing/earpax2isl11/earpax2isl11.lsm.meg  
 )
 
 FOREACH( var ${GODB_SRC} )
