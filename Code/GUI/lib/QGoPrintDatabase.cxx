@@ -126,55 +126,74 @@ QGoPrintDatabase::~QGoPrintDatabase()
   // Need to release memory allocated for contours, meshes and tracks
   // contours
  // std::vector<ContourMeshStructure>::iterator c_it = m_ContoursInfo.begin();
-  if (this->m_ContoursData->ListTracesInfoForVisu != 0)
+  if( m_ContoursData )
     {
-    std::vector<ContourMeshStructure>::iterator c_it =
-      this->m_ContoursData->ListTracesInfoForVisu->begin();
-    while( c_it != this->m_ContoursData->ListTracesInfoForVisu->end() )
+    if (this->m_ContoursData->ListTracesInfoForVisu != 0)
       {
-      // nodes
-      if( c_it->Nodes )
+      std::vector<ContourMeshStructure>::iterator c_it =
+        this->m_ContoursData->ListTracesInfoForVisu->begin();
+      while( c_it != this->m_ContoursData->ListTracesInfoForVisu->end() )
         {
-        c_it->Nodes->Delete();
-        c_it->Nodes = 0;
+        // nodes
+        if( c_it->Nodes )
+          {
+          c_it->Nodes->Delete();
+          c_it->Nodes = 0;
+          }
+        // used actor for the visualization
+        if( c_it->Actor )
+          {
+          c_it->Actor->Delete();
+          c_it->Actor = 0;
+          }
+        ++c_it;
         }
-      // used actor for the visualization
-      if( c_it->Actor )
-        {
-        c_it->Actor->Delete();
-        c_it->Actor = 0;
-        }
-      ++c_it;
       }
     }
   // meshes
   //std::vector<ContourMeshStructure>::iterator m_it = m_MeshesInfo.begin();
-  if (this->m_MeshesData->ListTracesInfoForVisu != 0)
+  if( m_MeshesData )
     {
-    std::vector<ContourMeshStructure>::iterator m_it =
-      this->m_MeshesData->ListTracesInfoForVisu->begin();
-
-    while( m_it != this->m_MeshesData->ListTracesInfoForVisu->end() )
+    if (this->m_MeshesData->ListTracesInfoForVisu != 0)
       {
-      // polydata
-      if( m_it->Nodes )
+      std::vector<ContourMeshStructure>::iterator m_it =
+        this->m_MeshesData->ListTracesInfoForVisu->begin();
+
+      while( m_it != this->m_MeshesData->ListTracesInfoForVisu->end() )
         {
-        m_it->Nodes->Delete();
-        m_it->Nodes = 0;
+        // polydata
+        if( m_it->Nodes )
+          {
+          m_it->Nodes->Delete();
+          m_it->Nodes = 0;
+          }
+        // used actor for the visualization
+        if( m_it->Actor )
+          {
+          m_it->Actor->Delete();
+          m_it->Actor = 0;
+          }
+        ++m_it;
         }
-      // used actor for the visualization
-      if( m_it->Actor )
-        {
-        m_it->Actor->Delete();
-        m_it->Actor = 0;
-        }
-      ++m_it;
       }
     }
-  delete m_ContoursData;
-  delete m_MeshesData;
-  delete m_TracksData;
-  delete m_LineagesData;
+
+  if( m_ContoursData )
+    {
+    delete m_ContoursData;
+    }
+  if( m_MeshesData )
+    {
+    delete m_MeshesData;
+    }
+  if( m_TracksData )
+    {
+    delete m_TracksData;
+    }
+  if( m_LineagesData )
+    {
+    delete m_LineagesData;
+    }
 }
 //--------------------------------------------------------------------------
 

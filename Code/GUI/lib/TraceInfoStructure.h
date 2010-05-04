@@ -71,10 +71,11 @@ struct TraceInfoStructure
     
    ~TraceInfoStructure()
      {
-     if( Table )
-        {
-        delete Table;
-        }
+     // Table has a prarent that is supposed to delete it
+     //if( Table )
+     //   {
+     //   delete Table;
+     //   }
       if( ListTracesInfoForVisu )
         {
         delete ListTracesInfoForVisu;
