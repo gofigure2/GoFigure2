@@ -25,6 +25,7 @@ SET( GODB_SRC
   GoDBImageRowTest
   GoDBProjectRowTest
   GoDBCoordinateRowTest
+  GoDBImgSessionTest
 )
 
 SET( QGOIO_EXAMPLES_SRC
