@@ -48,9 +48,9 @@ MegaCaptureHeaderReader( const std::string& iFileName ) :
   m_FileName( iFileName )
 {
   m_TimeInterval = 0.;
-  m_VoxleSizeX = 0.;
+  m_VoxelSizeX = 0.;
   m_VoxelSizeY = 0.;
-  m_VoselSizeZ = 0.;
+  m_VoxelSizeZ = 0.;
   m_DimensionX = 0;
   m_DimensionY = 0;
   m_NumberOfChannels = 0;
