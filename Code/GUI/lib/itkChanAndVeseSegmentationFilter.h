@@ -51,6 +51,8 @@
 
 #include "itkImageToVTKImageFilter.h"
 
+#include "itkImageFileWriter.h"
+
 #include "vtkImageData.h"
 
 #include "itkCellPreprocess.h"
@@ -202,7 +204,7 @@ protected:
     FeatureSpacingType spacing = m_FeatureImage->GetSpacing();
     FeatureSizeType inputSize = m_FeatureImage->GetLargestPossibleRegion().GetSize();
 
-    InternalIndexType start;
+    InternalIndexType start, start2;
     InternalPointType origin;
     InternalIndexType cen;
 
@@ -210,10 +212,11 @@ protected:
       {
       m_Size[j] =
         1 + 4. * static_cast< InternalSizeValueType >( m_Radius / spacing[j] );
-      start[j] = 0;
       cen[j] = static_cast< InternalSizeValueType >( 2 * m_Radius / spacing[j] );
       origin[j] = m_Center[j] - 2 * m_Radius;
+      start2[j] = 0;
       }
+    m_FeatureImage->TransformPhysicalPointToIndex( origin, start );
 
     std::cout << "Spacing: " << spacing << std::endl;
     std::cout << "Input Size: " << inputSize << std::endl;
@@ -234,11 +237,15 @@ protected:
     seeds->Initialize();
     seeds->InsertElement( 0, node );
 
+    InternalRegionType region2;
+    region2.SetSize( m_Size );
+    region2.SetIndex( start2 );
+
     typename FastMarchingFilterType::Pointer  fastMarching = FastMarchingFilterType::New();
     fastMarching->SetSpeedConstant( 1.0 );
     fastMarching->SetOutputOrigin( origin );
     fastMarching->SetOutputSpacing( spacing );
-    fastMarching->SetOutputRegion( region );
+    fastMarching->SetOutputRegion( region2 );
     fastMarching->SetTrialPoints(  seeds  );
     fastMarching->Update();
 
@@ -249,6 +256,15 @@ protected:
       roi->SetInput( m_FeatureImage );
       roi->SetRegionOfInterest( region );
       roi->Update();
+/*
+      std::cout << "Write output WithPreprocessing" << std::endl;
+            // Add the MetaImage format to the writer
+      typedef itk::ImageFileWriter< FeatureImageType > WriterType;
+      typedef itk::ImageFileWriter< FeatureImageType > WriterType;
+            typename WriterType::Pointer metaWriter1 =  WriterType::New();
+            metaWriter1->SetInput( roi->GetOutput() );
+            metaWriter1->SetFileName( "WithPreprocessingROI.mhd" );
+            metaWriter1->Write();*/
 
       PreprocessFilterPointer preprocess = PreprocessFilterType::New();
       preprocess->SetInput ( roi->GetOutput() );
@@ -257,6 +273,7 @@ protected:
 
       feature = preprocess->GetOutput();
       feature->SetOrigin( origin );
+      feature->DisconnectPipeline();
       }
     else
       {
@@ -280,7 +297,7 @@ protected:
     LevelSetFilter->SetInPlace( false );
 
     LevelSetFilter->GetDifferenceFunction(0)->SetDomainFunction( domainFunction );
-    LevelSetFilter->GetDifferenceFunction(0)->SetCurvatureWeight( 0. );
+    LevelSetFilter->GetDifferenceFunction(0)->SetCurvatureWeight( 1. );
     LevelSetFilter->GetDifferenceFunction(0)->SetAreaWeight( 0. );
     LevelSetFilter->GetDifferenceFunction(0)->SetLambda1( 1. );
     LevelSetFilter->GetDifferenceFunction(0)->SetLambda2( 1. );

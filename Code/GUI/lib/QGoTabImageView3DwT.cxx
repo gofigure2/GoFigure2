@@ -92,8 +92,13 @@
 #include "vtkMarchingCubes.h"
 #include "vtkExtractVOI.h"
 #include "vtkImageExport.h"
-#include <vtkImageClip.h>
+#include "vtkImageClip.h"
 #include "vtkitkAdaptor.h"
+#include "vtkImageReslice.h"
+#include "vtkMatrix4x4.h"
+#include "vtkStripper.h"
+#include "vtkTransform.h"
+#include "vtkTransformPolyDataFilter.h"
 
 //ITK FILTERS
 #include "itkChanAndVeseSegmentationFilter.h"
@@ -3092,6 +3097,8 @@ ApplyOneClickSegmentationFilter()
   // Check the filter to be applied
   // 0 = circle contours (sphere aspect)
   // 1 = sphere ( 3D volume - no contours)
+  // 2 = levelset in 2D
+  // 3 = levelset in 3D
   int filterToBeApplied = this->m_OneClickSegmentationDockWidget->GetFilter();
 
   switch ( filterToBeApplied )
@@ -3109,13 +3116,11 @@ ApplyOneClickSegmentationFilter()
     case 2 :
     // 2d level set
     this->LevelSetSegmentation2D();
-    std::cout <<"LevelSetSegmentation2D" <<std::endl;
     break;
 
     case 3 :
-    // 2d level set
-    // this->LevelSetSegmentation3D();
-    std::cout <<"LevelSetSegmentation3D" <<std::endl;
+    // 3d level set
+    this->LevelSetSegmentation3D();
     break;
 
     default :
@@ -3261,9 +3266,6 @@ LevelSetSegmentation2D()
   // pos[] will contain position of a seed
   double seed_pos[3];
 
-  // Get vtkViewImage2D
-  // Usefull to get informations about images for coordinates converion
-  vtkViewImage2D* View = this->m_ImageView->GetImageViewer(0);
   // Get input volume, according to selected channel
   vtkSmartPointer<vtkImageData> inputVolume = vtkSmartPointer<vtkImageData>::New();
   if( ( !m_InternalImages.empty() ) )
@@ -3277,49 +3279,48 @@ LevelSetSegmentation2D()
     // Put position of each seed "i" in "seed_pos[3]"
     m_SeedsWorldPosition->GetPoint( i, seed_pos );
 
-    // position has to be converted into image coordinates
-    // compute boundaries
-    double boundaries[3];
-    boundaries[0] = 6*this->m_OneClickSegmentationDockWidget->GetRadius();
-    boundaries[1] = 6*this->m_OneClickSegmentationDockWidget->GetRadius();
-    boundaries[2] = 6*this->m_OneClickSegmentationDockWidget->GetRadius();
+    // Matrices for axial, coronal, sagittal view orientations
+    static double elements[3][16] = {{
+           1, 0, 0, 0,
+           0, 1, 0, 0,
+           0, 0, 1, 0,
+           0, 0, 0, 1 },{
+           1, 0, 0, 0,
+           0, 0, 1, 0,
+           0,-1, 0, 0,
+           0, 0, 0, 1 },{
+           0, 0,-1, 0,
+           1, 0, 0, 0,
+           0,-1, 0, 0,
+           0, 0, 0, 1 }};
 
-    double corners[2][3];
-    for( int j = 0; j < 3; j++ )
-      {
-      corners[0][j] = seed_pos[j] - boundaries[j];
-      corners[1][j] = seed_pos[j] + boundaries[j];
-      }
+    // Set the slice orientation
+    vtkMatrix4x4 *resliceAxes = vtkMatrix4x4::New();
+    resliceAxes->DeepCopy(elements[0]);
+    // Set the point through which to slice
+    resliceAxes->SetElement(0, 3, seed_pos[0]);
+    resliceAxes->SetElement(1, 3, seed_pos[1]);
+    resliceAxes->SetElement(2, 3, seed_pos[2]);
 
-    std::vector< int* > idx_corners( 2 );
-    for( int k = 0; k < 2; k++ )
-      {
-      idx_corners[k] =View->GetImageCoordinatesFromWorldCoordinates( corners[k] );
-      }
-
-    // Extract ROI around a seed
-    // Create VOI extractor
-    vtkSmartPointer<vtkExtractVOI> extractVOI =
-        vtkSmartPointer<vtkExtractVOI>::New();
-    // Set input volume
-    extractVOI->SetInput( inputVolume );
-    extractVOI->SetVOI( idx_corners[0][0], idx_corners[1][0], idx_corners[0][1], idx_corners[1][1], idx_corners[0][2], idx_corners[1][2] );
+    vtkImageReslice* reslicer = vtkImageReslice::New();
+    reslicer->SetOutputDimensionality(2);
+    reslicer->SetInterpolationModeToLinear();
+    reslicer->SetInput( inputVolume );
+    reslicer->SetResliceAxes(resliceAxes);
 
     //Export VTK image to ITK
     vtkImageExport* movingExporter = vtkImageExport::New();
-    movingExporter->SetInput( inputVolume );//extractVOI->GetOutput() );
+    movingExporter->SetInput( reslicer->GetOutput() );
 
-    const unsigned int Dimension = 3;
+    const unsigned int Dimension = 2;
 
     // ImageType
     typedef itk::Image< unsigned char, Dimension > ImageType;
     // Import VTK Image to ITK
     typedef itk::VTKImageImport<ImageType> ImageImportType;
-    ImageImportType::Pointer movingImporter =
-      ImageImportType::New();
+    ImageImportType::Pointer movingImporter = ImageImportType::New();
 
     ConnectPipelines< vtkImageExport, ImageImportType::Pointer >( movingExporter, movingImporter );
-
     // Apply LevelSet segmentation filter
     typedef itk::Image< unsigned char, Dimension > FeatureImageType;
 
@@ -3330,60 +3331,65 @@ LevelSetSegmentation2D()
 
     SegmentationFilterType::Pointer filter = SegmentationFilterType::New();
     filter->SetFeatureImage( movingImporter->GetOutput() );
-    filter->SetRadius( boundaries[0]/4 );
-    seed_pos[0] = seed_pos[0];
-    seed_pos[1] = seed_pos[1];
-    seed_pos[2] = seed_pos[2];
-    filter->SetCenter( seed_pos );
+    // everything is in world coordinates
+    // need to add newOrigin since origin moves when we extract slice
+    double* newOrigin = reslicer->GetOutput()->GetOrigin();
+    filter->SetRadius( this->m_OneClickSegmentationDockWidget->GetRadius() );
+    pt[0] = seed_pos[0]+newOrigin[0];
+    pt[1] = seed_pos[1]+newOrigin[1];
+    filter->SetCenter( pt );
     filter->SetPreprocess( 1 );
     filter->Update();
-/*
-    vtkImageData* image = filter->GetOutput();
 
+    vtkImageData* image = filter->GetOutput();
+/*
     // Store it for testings purpose
     vtkSmartPointer<vtkMetaImageWriter> mhdImageWriter2 =
         vtkSmartPointer<vtkMetaImageWriter>::New();
 
     mhdImageWriter2->SetInput( image );
     mhdImageWriter2->SetFileName( "/home/nr52/Desktop/afterSegmentationVOI.mhd" );
-    mhdImageWriter2->Write();
-
-    if( !image )
-      {
-      std::cerr << "No output" << std::endl;
-      }
+    mhdImageWriter2->Write();*/
 
     // create iso-contours
-    vtkSmartPointer<vtkMarchingCubes> contours = vtkSmartPointer<vtkMarchingCubes>::New();
+    vtkSmartPointer<vtkMarchingSquares> contours = vtkSmartPointer<vtkMarchingSquares>::New();
     contours->SetInput( image );
     contours->GenerateValues ( 1, 0, 0 );
 
-      // map to graphics library
-    vtkSmartPointer<vtkPolyDataMapper> map = vtkSmartPointer<vtkPolyDataMapper>::New();
-      map->SetInput( contours->GetOutput() );
-      map->SetScalarRange ( -10, 10 );
+    // Create points
+    vtkStripper * stripper = vtkStripper::New();
+    stripper->SetInput( contours->GetOutput() );
+    stripper->Update();
 
-      // actor coordinates geometry, properties, transformation
-      vtkSmartPointer<vtkActor> contActor = vtkSmartPointer<vtkActor>::New();
-      contActor->SetMapper( map );
-      contActor->GetProperty()->SetLineWidth ( 1.5 );
-      contActor->GetProperty()->SetColor ( 0,0,1 ); // sphere color blue
-      contActor->GetProperty()->SetOpacity ( 1.0 );
+    vtkPolyData* testPolyD = vtkPolyData::New();
+    testPolyD->SetPoints( stripper->GetOutput()->GetPoints() );
 
-      vtkSmartPointer<vtkRenderer> ren = vtkSmartPointer<vtkRenderer>::New();
-      ren->AddActor ( contActor );
-      ren->SetBackground ( 1., 1., 1. );
+    // Translate to real location (i.e. see_pos[])
+    vtkTransform *t = vtkTransform::New();
+    t->Translate( seed_pos[0], seed_pos[1], seed_pos[2] );
 
-      vtkSmartPointer<vtkRenderWindow> renWin1 = vtkSmartPointer<vtkRenderWindow>::New();
-      renWin1->AddRenderer ( ren );
+    vtkTransformPolyDataFilter *tf = vtkTransformPolyDataFilter::New();
+    tf->SetTransform( t );
+    tf->SetInput( testPolyD );
+    tf->Update();
 
-      vtkSmartPointer<vtkRenderWindowInteractor> iren = vtkSmartPointer<vtkRenderWindowInteractor>::New();
-      iren->SetRenderWindow ( renWin1 );
+    SavePolyDataAsContourInDB( tf->GetOutput() );
 
-      renWin1->Render();
-      iren->Start();
-*/
+    // Delete everything
+    movingExporter->Delete();
+    resliceAxes->Delete();
+    reslicer->Delete();
+    stripper->Delete();
+    testPolyD->Delete();
+    t->Delete();
+    tf->Delete();
   }
+
+  // Erase seeds once everything is stored in DB
+  this->m_ImageView->ClearAllSeeds();
+
+  // Update visualization
+  this->m_ImageView->Update();
 }
 //-------------------------------------------------------------------------
 
@@ -3392,6 +3398,74 @@ void
 QGoTabImageView3DwT::
 LevelSetSegmentation3D()
 {
+  // Get seeds (centers for level sets)
+  m_SeedsWorldPosition = this->m_ImageView->GetAllSeeds();
+  // pos[] will contain position of a seed
+  double seed_pos[3];
+
+  // Get input volume, according to selected channel
+  vtkSmartPointer<vtkImageData> inputVolume = vtkSmartPointer<vtkImageData>::New();
+  if( ( !m_InternalImages.empty() ) )
+    {
+    inputVolume->ShallowCopy( m_InternalImages[1] );
+    }
+
+  // Apply filter for each seed
+  for( int i = 0; i < m_SeedsWorldPosition->GetNumberOfPoints(); i++ )
+    {
+    // Put position of each seed "i" in "seed_pos[3]"
+    m_SeedsWorldPosition->GetPoint( i, seed_pos );
+
+
+    //Export VTK image to ITK
+    vtkImageExport* movingExporter = vtkImageExport::New();
+    movingExporter->SetInput( inputVolume );
+
+    const unsigned int Dimension = 3;
+
+    // ImageType
+    typedef itk::Image< unsigned char, Dimension > ImageType;
+    // Import VTK Image to ITK
+    typedef itk::VTKImageImport<ImageType> ImageImportType;
+    ImageImportType::Pointer movingImporter = ImageImportType::New();
+
+    ConnectPipelines< vtkImageExport, ImageImportType::Pointer >( movingExporter, movingImporter );
+    // Apply LevelSet segmentation filter
+    typedef itk::Image< unsigned char, Dimension > FeatureImageType;
+
+    typedef itk::ChanAndVeseSegmentationFilter< FeatureImageType >
+        SegmentationFilterType;
+
+    FeatureImageType::PointType pt;
+
+    SegmentationFilterType::Pointer filter = SegmentationFilterType::New();
+    filter->SetFeatureImage( movingImporter->GetOutput() );
+    // everything is in world coordinates
+    filter->SetRadius( this->m_OneClickSegmentationDockWidget->GetRadius() );
+    pt[0] = seed_pos[0];
+    pt[1] = seed_pos[1];
+    pt[2] = seed_pos[2];
+    filter->SetCenter( pt );
+    filter->SetPreprocess( 1 );
+    filter->Update();
+
+    vtkImageData* image = filter->GetOutput();
+
+    // create iso-contours
+    vtkSmartPointer<vtkMarchingCubes> contours = vtkSmartPointer<vtkMarchingCubes>::New();
+    contours->SetInput( image );
+    contours->GenerateValues ( 1, 0, 0 );
+
+    SavePolyDataAsVolumeInDB( contours->GetOutput() );
+
+    movingExporter->Delete();
+  }
+
+  // Erase seeds once everything is stored in DB
+  this->m_ImageView->ClearAllSeeds();
+
+  // Update visualization
+  this->m_ImageView->Update();
 }
 //-------------------------------------------------------------------------
 
@@ -3520,7 +3594,7 @@ SavePolyDataAsContourInDB( vtkPolyData* iView, const int& iContourID,
   //generate contour
   vtkSmartPointer<vtkOrientedGlyphContourRepresentation> contourRep =
       vtkSmartPointer<vtkOrientedGlyphContourRepresentation>::New();
-  contourRep->GetLinesProperty()->SetColor(1, 0, 0); //set color to red
+  //contourRep->GetLinesProperty()->SetColor(1, 0, 0); //set color to red
 
   vtkSmartPointer<vtkContourWidget> contourWidget =
       vtkSmartPointer<vtkContourWidget>::New();
@@ -3533,6 +3607,28 @@ SavePolyDataAsContourInDB( vtkPolyData* iView, const int& iContourID,
 
   vtkPolyData* contour =
   contourRep->GetContourRepresentationAsPolyData();
+
+  ////////////////////////////////////
+  // Create the RenderWindow, Renderer
+  /*  vtkSmartPointer<vtkRenderer> renderer =
+        vtkSmartPointer<vtkRenderer>::New();
+    vtkSmartPointer<vtkRenderWindow> renderWindow =
+        vtkSmartPointer<vtkRenderWindow>::New();
+    renderWindow->AddRenderer(renderer);
+    vtkSmartPointer<vtkRenderWindowInteractor> interactor =
+        vtkSmartPointer<vtkRenderWindowInteractor>::New();
+    interactor->SetRenderWindow(renderWindow);
+
+    contourWidget->SetInteractor(interactor);
+
+    renderer->ResetCamera();
+      renderWindow->Render();
+      interactor->Initialize();
+
+      interactor->Start();
+
+*/
+  ////////////////////////////////////
 
   if( ( contour->GetNumberOfPoints() > 2 ) && ( m_TimePoint >= 0 ) )
     {

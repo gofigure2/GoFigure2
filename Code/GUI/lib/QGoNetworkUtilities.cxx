@@ -18,7 +18,12 @@ QGoNetworkUtilities( QObject* iParent ) : QObject( iParent )
 
 QGoNetworkUtilities::~QGoNetworkUtilities()
 {
-  delete m_Reply;
+  // segfault here ...
+  if( m_Reply )
+    {
+    delete m_Reply;
+    m_Reply = 0;
+    }
 }
 
 void QGoNetworkUtilities::CheckForUpdates()
