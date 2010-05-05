@@ -1,7 +1,7 @@
 /*=========================================================================
-  Author: $Author$  // Author of last commit
-  Version: $Rev$  // Revision of last commit
-  Date: $Date$  // Date of last commit
+  Author: $Author: arnaudgelas $  // Author of last commit
+  Version: $Rev: 1265 $  // Revision of last commit
+  Date: $Date: 2010-04-16 19:55:16 -0400 (Fri, 16 Apr 2010) $  // Date of last commit
 =========================================================================*/
 
 /*=========================================================================
@@ -37,55 +37,26 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#ifndef __GoDBMeshRow_h
-#define __GoDBMeshRow_h
+#ifndef __GoDBIntensityRow_h
+#define __GoDBIntensityRow_h
 
 #include <string>
 #include <map>
 #include <iostream>
 #include <sstream>
-#include "GoDBTraceRow.h"
-#include "GoDBCoordinateRow.h"
+#include "GoDBRow.h"
 #include "ConvertToStringHelper.h"
-#include "vtkMySQLDatabase.h"
-#include "vtkPolyData.h"
-#include "vtkPolyDataMySQLTextWriter.h"
 
-class QGOIO_EXPORT GoDBMeshRow : public GoDBTraceRow
+class QGOIO_EXPORT GoDBIntensityRow : public GoDBRow
 {
 public:
-  GoDBMeshRow();
-  /**\brief fill the mesh map with the values gotten from the visualization*/
-  GoDBMeshRow(vtkMySQLDatabase* DatabaseConnector,
-  GoDBCoordinateRow Min, GoDBCoordinateRow Max,unsigned int ImgSessionID,
-  vtkPolyData* TraceVisu);
-  
-  GoDBMeshRow(vtkMySQLDatabase* DatabaseConnector,
-    vtkPolyData* TraceVisu,GoDBCoordinateRow Min, GoDBCoordinateRow Max,
-    unsigned int ImgSessionID);
-
-  ~GoDBMeshRow()
-    {}
-  //int DoesThisBoundingBoxMeshExist(vtkMySQLDatabase* DatabaseConnector);
-  void SetCellType(vtkMySQLDatabase* DatabaseConnector,
-    std::string CellTypeName);
-  void SetSubCellType(vtkMySQLDatabase* DatabaseConnector,
-    std::string SubCellTypeName);
-
-  /**\brief save the mesh in the database and return the ID of the new
-  created mesh*/
-  int SaveInDB(vtkMySQLDatabase* DatabaseConnector);
-
-   void SetCollectionID (int iCollectionID);
+  GoDBIntensityRow();
    
-   void ReInitializeMapAfterCast();
-
-   void SaveInDBTotalIntensityPerChannel(vtkMySQLDatabase* DatabaseConnector,
-      std::map<std::string,int> iNameChannelWithValues);
-
+  ~GoDBIntensityRow()
+    {}
+  int SaveInDB(vtkMySQLDatabase* DatabaseConnector);
 protected:
   virtual void InitializeMap();
-
 };
 
 #endif

@@ -32,6 +32,7 @@ SET( QGOIO_SRC
   GoDBBookmarkRow.cxx
   GoDBCellTypeRow.cxx
   GoDBSubCellTypeRow.cxx
+  GoDBIntensityRow.cxx
   GoDBTableWidgetContainer.cxx
   GoDBExport.cxx
   GoDBImport.cxx

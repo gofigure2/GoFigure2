@@ -41,6 +41,7 @@
 #include "GoDBColorRow.h"
 #include "SelectQueryDatabaseHelper.h"
 #include "GoDBRecordSetHelper.h"
+#include "GoDBIntensityRow.h"
 #include <iostream>
 
 GoDBMeshRow::GoDBMeshRow():GoDBTraceRow()
@@ -93,8 +94,10 @@ void GoDBMeshRow::InitializeMap()
 int GoDBMeshRow::SaveInDB(vtkMySQLDatabase* DatabaseConnector)
 {
   //std::cout <<*this <<std::endl;
-  return AddOnlyOneNewObjectInTable<GoDBMeshRow>( DatabaseConnector,
+  int NewMeshID = AddOnlyOneNewObjectInTable<GoDBMeshRow>( DatabaseConnector,
     "mesh", this, "MeshID");
+  this->SetField("MeshID",NewMeshID);
+  return NewMeshID;
 }
 //-------------------------------------------------------------------------
 
@@ -127,4 +130,34 @@ void GoDBMeshRow::SetCollectionID (int iCollectionID)
 void GoDBMeshRow::ReInitializeMapAfterCast()
 {
   GoDBMeshRow::InitializeMap();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void GoDBMeshRow::SaveInDBTotalIntensityPerChannel(
+  vtkMySQLDatabase* DatabaseConnector,
+  std::map<std::string,int> iNameChannelWithValues)
+{
+  if (this->GetMapValue("MeshID") == "0")
+    {
+    std::cout<<"The mesh needs to be saved before"<<std::endl;
+    return;
+    }
+  if (this->GetMapValue("ImagingSessionID")== "0")
+    {
+    std::cout<<"The imagingSession hasn't been entered for the mesh"<<std::endl;
+    }
+  std::map<std::string,int>::iterator iter = iNameChannelWithValues.begin();
+  while (iter != iNameChannelWithValues.end())
+    {
+    int ChannelID = FindOneID(DatabaseConnector,"channel", "ChannelID","Name",
+      iter->first,"ImagingSessionID",this->GetMapValue("ImagingSessionID"));
+    GoDBIntensityRow NewIntensity;
+    NewIntensity.SetField("ChannelID",ChannelID);
+    NewIntensity.SetField("Value",iter->second);
+    NewIntensity.SetField("MeshID",this->GetMapValue("MeshID"));
+    NewIntensity.SaveInDB(DatabaseConnector);
+    iter++;
+    }
+  
 }
