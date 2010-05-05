@@ -8,7 +8,7 @@
 #include <QDebug>
 
 QGoNetworkUtilities::
-QGoNetworkUtilities( QObject* iParent ) : QObject( iParent )
+QGoNetworkUtilities( QObject* iParent ) : QObject( iParent ), m_Reply( 0 )
 {
   m_Manager = new QNetworkAccessManager( this );
 
@@ -29,7 +29,7 @@ QGoNetworkUtilities::~QGoNetworkUtilities()
 void QGoNetworkUtilities::CheckForUpdates()
 {
   // address
-  QUrl url( "http://gofigure2.sourceforge.net" );
+  QUrl url( "http://gofigure2.sourceforge.net/check_update?version=0.2" );
   m_Reply = m_Manager->get( QNetworkRequest( url ) );
 }
 
