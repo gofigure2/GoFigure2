@@ -375,8 +375,6 @@ CreateOneClickSegmentationDockWidget()
   m_OneClickSegmentationDockWidget = new QGoOneClickSegmentationDockWidget( this );
   m_OneClickSegmentationDockWidget->setEnabled( false );
 
-  //m_NavigationDockWidget
-
   QAction* tempaction = m_OneClickSegmentationDockWidget->toggleViewAction();
 
   this->m_SegmentationActions.push_back( tempaction );
@@ -1174,6 +1172,7 @@ SetLSMReader( vtkLSMReader* iReader, const int& iTimePoint )
     int NumberOfChannels = m_LSMReader[0]->GetNumberOfChannels();
 
     m_NavigationDockWidget->SetNumberOfChannels( NumberOfChannels );
+    m_OneClickSegmentationDockWidget->SetNumberOfChannels( NumberOfChannels );
 
     if( NumberOfChannels > 1 )
       {
@@ -1251,6 +1250,7 @@ SetMegaCaptureFile(
   temp->GetExtent( extent );
 
   m_NavigationDockWidget->SetNumberOfChannels( NumberOfChannels );
+  m_OneClickSegmentationDockWidget->SetNumberOfChannels( NumberOfChannels );
 
   // Set up QSpinBox in m_VideoRecorderWidget
   if( NumberOfChannels > 1 )
@@ -2789,7 +2789,6 @@ HighLightMeshesFromTable( )
             {
             vtkProperty* temp_property = vtkProperty::New();
             temp_property->SetColor( traceid_it->rgba[0], traceid_it->rgba[1], traceid_it->rgba[2] );
-            temp_property->SetOpacity( 0.5 );
 
             m_ImageView->ChangeActorProperty( traceid_it->Direction,
               traceid_it->Actor, temp_property );
@@ -3270,7 +3269,8 @@ LevelSetSegmentation2D()
   vtkSmartPointer<vtkImageData> inputVolume = vtkSmartPointer<vtkImageData>::New();
   if( ( !m_InternalImages.empty() ) )
     {
-    inputVolume->ShallowCopy( m_InternalImages[1] );
+    inputVolume->ShallowCopy(
+        m_InternalImages[ m_OneClickSegmentationDockWidget->GetChannel() ] );
     }
 
   // Apply filter for each seed
@@ -3331,14 +3331,23 @@ LevelSetSegmentation2D()
 
     SegmentationFilterType::Pointer filter = SegmentationFilterType::New();
     filter->SetFeatureImage( movingImporter->GetOutput() );
+    filter->SetPreprocess( 1 );
+
     // everything is in world coordinates
     // need to add newOrigin since origin moves when we extract slice
+    // everything is in world coordinates
+
     double* newOrigin = reslicer->GetOutput()->GetOrigin();
-    filter->SetRadius( this->m_OneClickSegmentationDockWidget->GetRadius() );
     pt[0] = seed_pos[0]+newOrigin[0];
     pt[1] = seed_pos[1]+newOrigin[1];
     filter->SetCenter( pt );
-    filter->SetPreprocess( 1 );
+
+    filter->SetRadius(
+        this->m_OneClickSegmentationDockWidget->GetRadius() );
+    filter->SetNumberOfIterations(
+        this->m_OneClickSegmentationDockWidget->GetNumberOfIterations() );
+    filter->SetCurvatureWeight(
+        this->m_OneClickSegmentationDockWidget->GetCurvatureWeight() );
     filter->Update();
 
     vtkImageData* image = filter->GetOutput();
@@ -3407,7 +3416,8 @@ LevelSetSegmentation3D()
   vtkSmartPointer<vtkImageData> inputVolume = vtkSmartPointer<vtkImageData>::New();
   if( ( !m_InternalImages.empty() ) )
     {
-    inputVolume->ShallowCopy( m_InternalImages[1] );
+    inputVolume->ShallowCopy(
+        m_InternalImages[ m_OneClickSegmentationDockWidget->GetChannel() ] );
     }
 
   // Apply filter for each seed
@@ -3440,13 +3450,20 @@ LevelSetSegmentation3D()
 
     SegmentationFilterType::Pointer filter = SegmentationFilterType::New();
     filter->SetFeatureImage( movingImporter->GetOutput() );
+    filter->SetPreprocess( 1 );
+
     // everything is in world coordinates
-    filter->SetRadius( this->m_OneClickSegmentationDockWidget->GetRadius() );
     pt[0] = seed_pos[0];
     pt[1] = seed_pos[1];
     pt[2] = seed_pos[2];
     filter->SetCenter( pt );
-    filter->SetPreprocess( 1 );
+
+    filter->SetRadius(
+        this->m_OneClickSegmentationDockWidget->GetRadius() );
+    filter->SetNumberOfIterations(
+        this->m_OneClickSegmentationDockWidget->GetNumberOfIterations() );
+    filter->SetCurvatureWeight(
+        this->m_OneClickSegmentationDockWidget->GetCurvatureWeight() );
     filter->Update();
 
     vtkImageData* image = filter->GetOutput();
@@ -3783,7 +3800,6 @@ SavePolyDataAsVolumeInDB( vtkPolyData* iView, const int& iContourID,
   vtkActor*  contour_actor_temp = vtkActor::New();
   contour_actor_temp->SetMapper(map);
   contour_actor_temp->GetProperty()->SetColor( iR, iG, iB );
-  contour_actor_temp->GetProperty()->SetOpacity(0.5);
 
   std::vector< vtkActor* > contour_actor;
 

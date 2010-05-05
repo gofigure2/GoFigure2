@@ -159,6 +159,16 @@ public:
     m_FeatureImage = iImage;
     }
 
+  void SetNumberOfIterations( int iNumberOfIterations )
+    {
+    m_NumberOfIterations = iNumberOfIterations;
+    }
+
+  void SetCurvatureWeight( int iCurvatureWeight )
+    {
+    m_CurvatureWeight = iCurvatureWeight;
+    }
+
   void Update()
     {
     GenerateData();
@@ -192,6 +202,8 @@ protected:
   InternalCoordRepType  m_Radius; // Radius of the cell
   InternalImagePointer  m_Output;
   bool                  m_Preprocess;
+  int                   m_NumberOfIterations;
+  int                   m_CurvatureWeight;
 
 
   void GenerateData()
@@ -291,13 +303,14 @@ protected:
     LevelSetFilter->SetLookup( lookUp );
     LevelSetFilter->SetFeatureImage( feature );
     LevelSetFilter->SetLevelSet( 0, fastMarching->GetOutput() );
-    LevelSetFilter->SetNumberOfIterations( 50 );
+    LevelSetFilter->SetNumberOfIterations( m_NumberOfIterations );
     LevelSetFilter->SetMaximumRMSError( 0 );
     LevelSetFilter->SetUseImageSpacing( 1 );
     LevelSetFilter->SetInPlace( false );
 
     LevelSetFilter->GetDifferenceFunction(0)->SetDomainFunction( domainFunction );
-    LevelSetFilter->GetDifferenceFunction(0)->SetCurvatureWeight( 1. );
+    LevelSetFilter->GetDifferenceFunction(0)->
+        SetCurvatureWeight( m_CurvatureWeight );
     LevelSetFilter->GetDifferenceFunction(0)->SetAreaWeight( 0. );
     LevelSetFilter->GetDifferenceFunction(0)->SetLambda1( 1. );
     LevelSetFilter->GetDifferenceFunction(0)->SetLambda2( 1. );

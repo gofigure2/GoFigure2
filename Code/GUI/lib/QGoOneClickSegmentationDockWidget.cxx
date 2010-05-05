@@ -56,8 +56,14 @@ m_Filter(0)
   QObject::connect( this->filterType, SIGNAL( activated( int ) ),
         this, SLOT( FilterChanged( int ) ) );
 
-  this->UseRadius( true );
-  this->UseLevelSet( false );
+  QObject::connect( this->advanceMode, SIGNAL( stateChanged( int ) ),
+          this, SLOT( AdvancedMode( int ) ) );
+
+  // Initialize visualization
+  UpdateWidget( true );
+
+  // Initialize parameters for levelset
+  InitializeLevelsetParameters();
 }
 //---------------------------------------------------------------------------//
 
@@ -71,11 +77,29 @@ QGoOneClickSegmentationDockWidget::
 //---------------------------------------------------------------------------//
 void
 QGoOneClickSegmentationDockWidget::
+InitializeLevelsetParameters()
+{
+  this->numberOfIterations->setValue( 50 );
+  this->curvatureWeight->setValue( 1 );
+}
+//---------------------------------------------------------------------------//
+
+//---------------------------------------------------------------------------//
+void
+QGoOneClickSegmentationDockWidget::
 ApplyFilterEmit()
 {
   emit ApplyFilterPressed();
 }
 //---------------------------------------------------------------------------//
+
+//---------------------------------------------------------------------------//
+void
+QGoOneClickSegmentationDockWidget::
+SetNumberOfChannels( int iNumberOfChannels )
+{
+  this->channel->setMaximum( iNumberOfChannels );
+}
 
 //---------------------------------------------------------------------------//
 int
@@ -84,6 +108,8 @@ GetFilter()
 {
   // 0 = circle contours (sphere aspect)
   // 1 = sphere ( 3D volume - no contours)
+  // 2 = 2D levelset
+  // 3 = 3D levelset
   return this->filterType->currentIndex();
 }
 //---------------------------------------------------------------------------//
@@ -93,9 +119,34 @@ double
 QGoOneClickSegmentationDockWidget::
 GetRadius()
 {
-  // 0 = circle contours (sphere aspect)
-  // 1 = sphere ( 3D volume - no contours)
   return this->radiusSpinBox->value();
+}
+//---------------------------------------------------------------------------//
+
+//---------------------------------------------------------------------------//
+int
+QGoOneClickSegmentationDockWidget::
+GetChannel()
+{
+  return this->channel->value();
+}
+//---------------------------------------------------------------------------//
+
+//---------------------------------------------------------------------------//
+int
+QGoOneClickSegmentationDockWidget::
+GetNumberOfIterations()
+{
+  return this->numberOfIterations->value();
+}
+//---------------------------------------------------------------------------//
+
+//---------------------------------------------------------------------------//
+int
+QGoOneClickSegmentationDockWidget::
+GetCurvatureWeight()
+{
+  return this->curvatureWeight->value();
 }
 //---------------------------------------------------------------------------//
 
@@ -106,31 +157,29 @@ FilterChanged( int filterSelected )
 {
   // 0 = circle contours (sphere aspect)
   // 1 = sphere ( 3D volume - no contours)
+  // 2 = 2D levelset
+  // 3 = 3D levelset
 
   switch ( filterSelected )
     {
     case 0 :
     // circle contours creation (sphere aspect)
-    this->UseRadius( true );
-    this->UseLevelSet( false );
+    this->UpdateWidget( true );
     break;
 
     case 1 :
     // sphere (3D volume creation)
-    this->UseRadius( true );
-    this->UseLevelSet( false );
+    this->UpdateWidget( true );
     break;
 
     case 2 :
     // sphere (2d level set)
-    this->UseRadius( false );
-    this->UseLevelSet( true );
+    this->UpdateWidget( false );
     break;
 
     case 3 :
     // sphere (3d level set)
-    this->UseRadius( false );
-    this->UseLevelSet( true );
+    this->UpdateWidget( false );
     break;
 
     default :
@@ -142,18 +191,31 @@ FilterChanged( int filterSelected )
 //---------------------------------------------------------------------------//
 void
 QGoOneClickSegmentationDockWidget::
-UseRadius( bool iUse )
+UpdateWidget( bool iUse )
 {
   if( iUse )
     {
-    this->radiusSpinBox->show();
-    this->radiusLabel->show();
+    this->LevelsetParametersLabel->hide();
 
+    this->channelLabel->hide();
+    this->channel->hide();
+
+    this->advanceModeLabel->hide();
+    this->advanceMode->hide();
+
+    AdvancedMode( static_cast<int>( this->advanceMode->isChecked() ) );
     }
   else
     {
-    this->radiusSpinBox->hide();
-    this->radiusLabel->hide();
+    this->LevelsetParametersLabel->show();
+
+    this->channelLabel->show();
+    this->channel->show();
+
+    this->advanceModeLabel->show();
+    this->advanceMode->show();
+
+    AdvancedMode( static_cast<int>( this->advanceMode->isChecked() ) );
     }
 }
 //---------------------------------------------------------------------------//
@@ -161,25 +223,22 @@ UseRadius( bool iUse )
 //---------------------------------------------------------------------------//
 void
 QGoOneClickSegmentationDockWidget::
-UseLevelSet( bool iUse )
+AdvancedMode( int iAdvanced )
 {
-  if( iUse )
+  if( iAdvanced )
     {
-    this->label_3->show();
-    this->label_4->show();
-    this->label_5->show();
-    this->doubleSpinBox->show();
-    this->doubleSpinBox_2->show();
-    this->doubleSpinBox_3->show();
+    this->numberOfIterationsLabel->show();
+    this->numberOfIterations->show();
+
+    this->curvatureWeightLabel->show();
+    this->curvatureWeight->show();
     }
   else
     {
-    this->label_3->hide();
-    this->label_4->hide();
-    this->label_5->hide();
-    this->doubleSpinBox->hide();
-    this->doubleSpinBox_2->hide();
-    this->doubleSpinBox_3->hide();
+    this->numberOfIterationsLabel->hide();
+    this->numberOfIterations->hide();
+
+    this->curvatureWeightLabel->hide();
+    this->curvatureWeight->hide();
     }
 }
-//---------------------------------------------------------------------------//
