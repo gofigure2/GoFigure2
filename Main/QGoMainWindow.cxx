@@ -1383,14 +1383,16 @@ DisplayUpdateResults( QString result, bool noerror )
     }
   else
     {
-    if( result == "???" ) // no new version!
+    // no new version!
+    if( result.compare( tr( "no-update\n" ), Qt::CaseInsensitive ) == 0 )
       {
       QMessageBox::information( this, tr("GoFigure2 Updates"),
                                 tr("You have the lastest version!"));
       }
     else
       {
-      if( result == "???" ) // there is one new version!
+      // there is one new version!
+      if( result.compare( tr( "update\n" ), Qt::CaseInsensitive ) == 0 ) 
         {
         QMessageBox msgBox( QMessageBox::Information, tr("GoFigure2 Updates"),
           tr("There is a new version of GoFigure2 available for download!") );

@@ -29,7 +29,7 @@ QGoNetworkUtilities::~QGoNetworkUtilities()
 void QGoNetworkUtilities::CheckForUpdates()
 {
   // address
-  QUrl url( "http://gofigure2.sourceforge.net/check_update?version=0.2" );
+  QUrl url( "http://gofigure2.sourceforge.net/check_update.php?version=0.2" );
   m_Reply = m_Manager->get( QNetworkRequest( url ) );
 }
 
@@ -50,7 +50,7 @@ DisplayResults( QNetworkReply* reply )
   // Some http error received
   //else
   //  {
-  //  error = true;
+  //  ok = false;
   //  }
 
 
