@@ -100,6 +100,19 @@
 #include "vtkTransform.h"
 #include "vtkTransformPolyDataFilter.h"
 
+#include "vtkCleanPolyData.h"
+#include "vtkContourFilter.h"
+
+#include "vtkPolylineDecimation.h"
+
+#include "vtkPolyDataWriter.h"
+
+#include "vtkSurfaceReconstructionFilter.h"
+#include "vtkSmoothPolyDataFilter.h"
+
+#include "vtkPolyDataNormals.h"
+#include "vtkFillHolesFilter.h"
+#include "vtkTriangleFilter.h"
 //ITK FILTERS
 #include "itkChanAndVeseSegmentationFilter.h"
 #include "itkImage.h"
@@ -3309,7 +3322,8 @@ LevelSetSegmentation2D()
     reslicer->SetResliceAxes(resliceAxes);
 
     //Export VTK image to ITK
-    vtkImageExport* movingExporter = vtkImageExport::New();
+    vtkSmartPointer<vtkImageExport> movingExporter =
+        vtkSmartPointer<vtkImageExport>::New();
     movingExporter->SetInput( reslicer->GetOutput() );
 
     const unsigned int Dimension = 2;
@@ -3351,47 +3365,57 @@ LevelSetSegmentation2D()
     filter->Update();
 
     vtkImageData* image = filter->GetOutput();
-/*
-    // Store it for testings purpose
-    vtkSmartPointer<vtkMetaImageWriter> mhdImageWriter2 =
-        vtkSmartPointer<vtkMetaImageWriter>::New();
-
-    mhdImageWriter2->SetInput( image );
-    mhdImageWriter2->SetFileName( "/home/nr52/Desktop/afterSegmentationVOI.mhd" );
-    mhdImageWriter2->Write();*/
 
     // create iso-contours
-    vtkSmartPointer<vtkMarchingSquares> contours = vtkSmartPointer<vtkMarchingSquares>::New();
+    vtkSmartPointer<vtkMarchingSquares> contours =
+        vtkSmartPointer<vtkMarchingSquares>::New();
     contours->SetInput( image );
     contours->GenerateValues ( 1, 0, 0 );
 
     // Create points
-    vtkStripper * stripper = vtkStripper::New();
+    vtkSmartPointer<vtkStripper> stripper =
+        vtkSmartPointer<vtkStripper>::New();
     stripper->SetInput( contours->GetOutput() );
+    stripper->SetMaximumLength( 999 );
     stripper->Update();
 
-    vtkPolyData* testPolyD = vtkPolyData::New();
-    testPolyD->SetPoints( stripper->GetOutput()->GetPoints() );
+    // Reorder points
+    stripper->GetOutput()->GetLines()->InitTraversal();
+
+    // npts = nb of points in the line
+    // *pts = pointer to each point
+
+    vtkIdType *pts, npts;
+    stripper->GetOutput()->GetLines()->GetNextCell(npts,pts);
+    vtkSmartPointer<vtkPoints> points =
+        vtkSmartPointer<vtkPoints>::New();
+
+    for ( int i = 0; i < static_cast<int>( npts-1 ); i++)
+      {
+      points->InsertPoint(i, stripper->GetOutput()->GetPoints()->GetPoint(pts[i]));
+      }
+
+    vtkSmartPointer<vtkPolyData> testPolyD =
+        vtkSmartPointer<vtkPolyData>::New();
+    testPolyD->SetPoints( points );
 
     // Translate to real location (i.e. see_pos[])
-    vtkTransform *t = vtkTransform::New();
+    vtkSmartPointer<vtkTransform> t =
+        vtkSmartPointer<vtkTransform>::New();
     t->Translate( seed_pos[0], seed_pos[1], seed_pos[2] );
 
-    vtkTransformPolyDataFilter *tf = vtkTransformPolyDataFilter::New();
+    vtkSmartPointer<vtkTransformPolyDataFilter> tf =
+        vtkSmartPointer<vtkTransformPolyDataFilter>::New();
     tf->SetTransform( t );
     tf->SetInput( testPolyD );
     tf->Update();
 
+    // Save contour in database
     SavePolyDataAsContourInDB( tf->GetOutput() );
 
     // Delete everything
-    movingExporter->Delete();
     resliceAxes->Delete();
     reslicer->Delete();
-    stripper->Delete();
-    testPolyD->Delete();
-    t->Delete();
-    tf->Delete();
   }
 
   // Erase seeds once everything is stored in DB
@@ -3425,7 +3449,6 @@ LevelSetSegmentation3D()
     {
     // Put position of each seed "i" in "seed_pos[3]"
     m_SeedsWorldPosition->GetPoint( i, seed_pos );
-
 
     //Export VTK image to ITK
     vtkImageExport* movingExporter = vtkImageExport::New();
@@ -3469,11 +3492,46 @@ LevelSetSegmentation3D()
     vtkImageData* image = filter->GetOutput();
 
     // create iso-contours
-    vtkSmartPointer<vtkMarchingCubes> contours = vtkSmartPointer<vtkMarchingCubes>::New();
+    vtkSmartPointer<vtkMarchingCubes> contours =
+        vtkSmartPointer<vtkMarchingCubes>::New();
     contours->SetInput( image );
     contours->GenerateValues ( 1, 0, 0 );
+    contours->SetComputeGradients( 0 );
+    contours->SetComputeNormals( 0 );
+    contours->SetComputeScalars( 0 );
+    contours->SetNumberOfContours( 1 );
+    //contours->SetValue(1,0);
 
-    SavePolyDataAsVolumeInDB( contours->GetOutput() );
+    /*
+    vtkSmoothPolyDataFilter* smoother = vtkSmoothPolyDataFilter::New();
+     smoother->SetInput(contours->GetOutput());
+         smoother->SetNumberOfIterations(5);
+     smoother->SetFeatureAngle(60);
+    smoother->SetRelaxationFactor(0.05);
+   smoother->FeatureEdgeSmoothingOff();
+   std::cout << "VTK Smoothing mesh finished...." << std::endl;
+
+   vtkFillHolesFilter* holes = vtkFillHolesFilter::New();
+   holes->SetInput( smoother->GetOutput() );
+
+   vtkSmartPointer<vtkTriangleFilter> triangleFilter = vtkSmartPointer<vtkTriangleFilter>::New();
+     triangleFilter->SetInput(holes->GetOutput());
+     triangleFilter->Update();
+*/
+
+    // flip normals
+    vtkSmartPointer<vtkPolyDataNormals> normals =
+        vtkSmartPointer<vtkPolyDataNormals>::New();
+    normals->SetInput( contours->GetOutput() );
+    normals->FlipNormalsOn();
+
+    vtkSmartPointer<vtkPolyDataWriter> stripperWriter =
+        vtkSmartPointer<vtkPolyDataWriter>::New();
+    stripperWriter->SetInput( contours->GetOutput() );
+    stripperWriter->SetFileName( "/home/nr52/Desktop/3doutput.vtk" );
+    stripperWriter->Write();
+
+    SavePolyDataAsVolumeInDB( normals->GetOutput() );
 
     movingExporter->Delete();
   }
@@ -3621,31 +3679,10 @@ SavePolyDataAsContourInDB( vtkPolyData* iView, const int& iContourID,
   contourWidget->On();
 
   contourWidget->Initialize(iView);
+  contourWidget->CloseLoop();
 
   vtkPolyData* contour =
   contourRep->GetContourRepresentationAsPolyData();
-
-  ////////////////////////////////////
-  // Create the RenderWindow, Renderer
-  /*  vtkSmartPointer<vtkRenderer> renderer =
-        vtkSmartPointer<vtkRenderer>::New();
-    vtkSmartPointer<vtkRenderWindow> renderWindow =
-        vtkSmartPointer<vtkRenderWindow>::New();
-    renderWindow->AddRenderer(renderer);
-    vtkSmartPointer<vtkRenderWindowInteractor> interactor =
-        vtkSmartPointer<vtkRenderWindowInteractor>::New();
-    interactor->SetRenderWindow(renderWindow);
-
-    contourWidget->SetInteractor(interactor);
-
-    renderer->ResetCamera();
-      renderWindow->Render();
-      interactor->Initialize();
-
-      interactor->Start();
-
-*/
-  ////////////////////////////////////
 
   if( ( contour->GetNumberOfPoints() > 2 ) && ( m_TimePoint >= 0 ) )
     {
@@ -3877,7 +3914,8 @@ SavePolyDataAsVolumeInDB( vtkPolyData* iView )
   // to make sure that m_ContourId is set to the right value
   int ContourID = -1;
 
-  SavePolyDataAsVolumeInDB( iView, ContourID, 0, r, g, b, a, highlighted,
+  /// TODO check iDir
+  SavePolyDataAsVolumeInDB( iView, ContourID, -1, r, g, b, a, highlighted,
       m_TimePoint, saveindatabase );
 }
 //-------------------------------------------------------------------------
