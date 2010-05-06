@@ -547,6 +547,13 @@ GoDBCollectionOfTraces::DBTableWidgetContainerType
   //fill the row container with the results of the second query:
   m_LinkToRowContainer->FillRowContainer(ResultsSecondQuery,SelectSecondFields);
 
+  if (this->m_TracesName == "mesh")
+    {
+    this->FillRowContainerForIntensityValues(DatabaseConnector,
+      ListSpecificValuesForOneColumn(DatabaseConnector,"mesh", "MeshID",
+      "ImagingSessionID",ConvertToString<unsigned int>(this->m_ImgSessionID)));
+    }
+
  return m_LinkToRowContainer->GetRowContainer();
 }
 //--------------------------------------------------------------------------
@@ -598,7 +605,6 @@ GoDBTableWidgetContainer* GoDBCollectionOfTraces::GetLinkToNewCreatedTraceContai
   //insert into the row container, the results of the second query:
   //m_LinkToRowContainer->FillRowContainer(ResultsSecondQuery,SelectSecondFields);
    LinkToNewCreatedTraceContainer->FillRowContainer(ResultsSecondQuery,SelectSecondFields);
-   GoDBCollectionOfTraces::DBTableWidgetContainerType test = LinkToNewCreatedTraceContainer->GetRowContainer();//for test
    return LinkToNewCreatedTraceContainer;
 }
 //--------------------------------------------------------------------------
@@ -824,4 +830,59 @@ void GoDBCollectionOfTraces::UpdateCollectionBoundingBoxInDB(int iCoordIDMin,
   UpdateValueInDB(iDatabaseConnector,this->m_CollectionName, "CoordIDMin", 
     ConvertToString<int>(iCoordIDMin),this->m_CollectionIDName, 
     ConvertToString<int>(iCollectionID)); 
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void GoDBCollectionOfTraces::SetChannelsInfo(vtkMySQLDatabase* DatabaseConnector)
+{
+  std::vector<std::string> SelectFields;
+  SelectFields.push_back("Name");
+  SelectFields.push_back("channel.ChannelID");
+  std::vector<std::string> JoinTablesOnTraceTable;
+  JoinTablesOnTraceTable.push_back("channel");
+  JoinTablesOnTraceTable.push_back("image.ChannelID = channel.ChannelID");
+  
+  std::vector<std::vector<std::string> > Results = GetValuesFromSeveralTables(
+    DatabaseConnector,"image",SelectFields, "ImagingSessionID",
+    ConvertToString<unsigned int>(this->m_ImgSessionID),JoinTablesOnTraceTable,true);
+  this->m_LinkToRowContainer->SetChannelsInfo(Results);
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void GoDBCollectionOfTraces::FillRowContainerForIntensityValues(
+  vtkMySQLDatabase* DatabaseConnector,std::vector<std::string> iVectMeshIDs)
+{
+  std::vector<std::vector<std::string> > ResultsFromQuery;
+  std::vector<std::string> SelectFields;
+  std::vector<std::vector<std::string> > ChannelsInfo = 
+    this->m_LinkToRowContainer->GetChannelsInfo();
+
+  for (unsigned int i = 0; i<ChannelsInfo.size();i++)
+    {
+    std::string NameTableWidgetColumn = "T.I.";
+    NameTableWidgetColumn += ChannelsInfo.at(i).at(0);
+    SelectFields.push_back(NameTableWidgetColumn);
+    }
+    std::vector<std::string>::iterator iter = iVectMeshIDs.begin();
+    std::vector<std::string> temp;
+  while(iter!=iVectMeshIDs.end())
+    {     
+    for(unsigned int i = 0; i<ChannelsInfo.size();i++)
+      {
+      std::string ChannelID = ChannelsInfo.at(i).at(1);
+      std::string MeshID = *iter;
+      int ValueIntensity = FindOneID(DatabaseConnector,
+        "intensity", "Value","MeshID",MeshID,
+        "ChannelID",ChannelID);
+       temp.push_back(ConvertToString<int>(ValueIntensity));
+      }
+    ResultsFromQuery.push_back(temp);
+    temp.clear();
+    iter++;
+    }
+    
+  this->m_LinkToRowContainer->FillRowContainer(
+    ResultsFromQuery,SelectFields,"ColumnNameTableWidget");
 }

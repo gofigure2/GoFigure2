@@ -38,7 +38,6 @@
 
 =========================================================================*/
 #include "GoDBTableWidgetContainer.h"
-
 #include <iostream>
 #include <cstdlib>
 
@@ -437,8 +436,35 @@ void GoDBTableWidgetContainer:: GetCommonInfoForTwoTracesTable()
 //--------------------------------------------------------------------------
 void GoDBTableWidgetContainer::GetSpecificInfoForTraceTable()
 {
+  GoDBTraceInfoForTableWidget temp;
   if (this->m_TracesName == "mesh")
     {
+    if (this->m_ChannelsInfo.empty())
+      {
+      std::cout<<"No info for the channels"<<std::endl;
+      std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
+      std::cout << std::endl;
+      return;
+      }
+    int NumberOfChannels = this->m_ChannelsInfo.size();
+    for (int i = 0; i < NumberOfChannels; i++)
+      {
+      std::string InfoName = "TotalIntensityForChannelID";
+      InfoName += this->m_ChannelsInfo.at(i).at(1);
+      temp.InfoName = InfoName;
+      temp.ColumnNameDatabase = "Value";
+      std::string ColumnNameTableWidget = "T.I.";
+      ColumnNameTableWidget += this->m_ChannelsInfo.at(i).at(0);
+      temp.ColumnNameTableWidget = ColumnNameTableWidget;
+      temp.TableNameDatabase = "intensity";
+      temp.TableForeignKeyDatabase = "MeshID";
+      temp.TableKeyDatabase = "MeshID";
+      m_ColumnsInfos.push_back(temp);
+      std::pair<GoDBTraceInfoForTableWidget,std::vector<std::string> > PairTemp;
+      PairTemp.first = temp;
+      m_RowContainer.push_back(PairTemp);
+      temp.Clear();
+      }
     }
 }
 //--------------------------------------------------------------------------
@@ -475,7 +501,8 @@ GetQueryStringForSelectFieldsTables(bool SameFieldsInQuery)
       //m_ColumnsInfos[i].ColumnNameTableWidget != "None" &&
       m_ColumnsInfos[i].SameFieldForDifferentValues == SameFieldsInQuery &&
       m_ColumnsInfos[i].ColumnNameTableWidget != "NoneID" && 
-      m_ColumnsInfos[i].TableNameDatabase != "None")
+      m_ColumnsInfos[i].TableNameDatabase != "None" && 
+      m_ColumnsInfos[i].TableNameDatabase != "intensity")
       {
       //record TableNameDatabase.ColumnNameDatabase if it is not already in the vector:
       std::string temp = m_ColumnsInfos[i].TableNameDatabase;
@@ -505,7 +532,7 @@ GetQueryStringForSelectFieldsTables(bool SameFieldsInQuery)
 //--------------------------------------------------------------------------
 void GoDBTableWidgetContainer::FillRowContainer(
   std::vector<std::vector<std::string> >iResultsFromQuery,
-  std::vector<std::string> iSelectFields)
+  std::vector<std::string> iSelectFields,std::string BaseOn)
 {       
   for ( unsigned int i=0; i < iSelectFields.size(); i++)
      {
@@ -514,8 +541,36 @@ void GoDBTableWidgetContainer::FillRowContainer(
        {
        std::string test = iSelectFields[i]; //for test purpose
        std::string test2= m_RowContainer[j].first.ColumnNameDatabase; //for test purpose
-       int PosColumnNameFound = iSelectFields[i].find(m_RowContainer[j].first.ColumnNameDatabase);        
-       if (PosColumnNameFound > 0 && m_RowContainer[j].second.empty())
+       int PosColumnNameFound;
+       if (BaseOn.empty())
+         {
+         PosColumnNameFound = 
+           iSelectFields[i].find(m_RowContainer[j].first.ColumnNameDatabase); 
+         }
+       else
+         {
+         if (BaseOn == "ColumnNameTableWidget")
+           {
+           std::string NameColonne = m_RowContainer[j].first.ColumnNameTableWidget; 
+           if (!NameColonne.empty())
+             {
+             PosColumnNameFound = 
+             iSelectFields[i].find(NameColonne); 
+             }
+           else
+             {
+             PosColumnNameFound = std::string::npos;
+             }
+           }
+         else
+           {
+           std::cout<< "The BaseOn you choose doesn't exist"<<std::endl;
+           std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
+           std::cout << std::endl;
+           return;
+           }
+         }
+       if (PosColumnNameFound != std::string::npos && m_RowContainer[j].second.empty())
          {
          HasBeenFound = true;
          for (unsigned int RowNumberForQueryResults = 0; 
@@ -629,6 +684,13 @@ GoDBTableWidgetContainer::DBTableWidgetContainerType
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+void GoDBTableWidgetContainer::ClearRowContainer()
+{
+  this->m_RowContainer.clear();
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
 int GoDBTableWidgetContainer::GetIndexInsideRowContainer(std::string iInfoName)
 {
   for (unsigned int i = 0; i < m_RowContainer.size();i++)
@@ -676,6 +738,24 @@ int GoDBTableWidgetContainer::GetIndexInsideRowContainer(std::string iInfoName)
   return SelectedTracesIDFromRowContainer;
 }
 //--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void GoDBTableWidgetContainer::SetChannelsInfo(
+  std::vector<std::vector<std::string> > iChannelsInfo)
+{
+  this->m_ChannelsInfo = iChannelsInfo;
+  m_ColumnsInfos.clear();
+  m_ColumnsInfos = GetColumnsInfoForTraceTable();
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+ std::vector<std::vector<std::string> > GoDBTableWidgetContainer::
+   GetChannelsInfo()
+ {
+  return this->m_ChannelsInfo;
+ }
+ //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 /*void GoDBTableWidgetContainer::InsertNewCreatedTrace(GoDBTableWidgetContainer

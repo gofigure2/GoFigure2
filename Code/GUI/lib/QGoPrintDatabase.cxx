@@ -838,6 +838,11 @@ void QGoPrintDatabase::GetContentAndDisplayFromDB( std::string iTraceName)
   TraceInfoStructure* CurrentlyUsedTraceData =
     this->GetTraceInfoStructure(iTraceName);
   //Get the column names to be displayed in the table widget:
+  if(iTraceName == "mesh")
+    {
+    CurrentlyUsedTraceData->CollectionOfTraces->SetChannelsInfo(
+      m_DatabaseConnector);
+    }
   std::list<std::string> ColumnsNames =
     CurrentlyUsedTraceData->CollectionOfTraces->GetListColumnsNamesForTableWidget();
   CurrentlyUsedTraceData->Table->DisplayColumnNames(

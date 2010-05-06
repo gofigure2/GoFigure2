@@ -47,7 +47,10 @@
 #include <list>
 
 #include "QGoIOConfigure.h"
-
+/** \brief this class describes the columns of the table widget with the corresponding info 
+to find their values in the database if the columns refer to data stored in the database and
+provides methods to fill the rows of the table widget and to get the right queries to
+find the data in the database*/
 class QGOIO_EXPORT GoDBTableWidgetContainer
 {
 
@@ -72,14 +75,16 @@ class QGOIO_EXPORT GoDBTableWidgetContainer
    same name if SameFieldsQuery is set to false and only for them if 
    SameFieldsQuery is set to true*/
    std::vector<std::string> GetQueryStringForTraceJoinedTables(bool SameFieldsInQuery);
-     
+    
    /** \brief fill the columns of the row container following the vector of string 
    containing the columns to be filled with the results contained in the vector
-   results from query*/
+   results from query and look on the columnNameDatabase in the column Info by
+   default or else*/
    void FillRowContainer(std::vector<std::vector<std::string> >iResultsFromQuery,
-     std::vector<std::string> iSelectFields);
-     
+      std::vector<std::string> iSelectFields,std::string BaseOn = "");
+  
    DBTableWidgetContainerType GetRowContainer();
+   void ClearRowContainer();
 
    /** *\brief return the index in the row container for the column with the given 
    InfoName*/
@@ -88,6 +93,10 @@ class QGOIO_EXPORT GoDBTableWidgetContainer
    /** *\brief return a list of all the traces with a bounding box 
    containing the given ZCoord*/
    std::list<std::string> GetTracesIDForAGivenZCoord(int iZCoord);
+
+   std::vector<std::vector<std::string> > GetChannelsInfo();
+   /** \brief Set the info needed for mesh*/
+   void SetChannelsInfo(std::vector<std::vector<std::string> > iChannelsInfo);
 
    /** \brief Insert a new created trace with the datas contained in the 
    NewTraceContainer into the m_RowContainer*/
@@ -102,7 +111,7 @@ protected:
   std::string m_CollectionIDName;
   std::string m_TracesName;     
   std::string m_TracesIDName;    
-
+  std::vector<std::vector<std::string> >   m_ChannelsInfo;
   std::vector<GoDBTraceInfoForTableWidget> m_ColumnsInfos;
   DBTableWidgetContainerType               m_RowContainer;
 
@@ -117,6 +126,8 @@ protected:
   /** \brief Fill the vector of GoDBTraceInfoForTableWidget with the info
   specific to a trace*/
   void GetSpecificInfoForTraceTable();
+
+
 
 };
 #endif

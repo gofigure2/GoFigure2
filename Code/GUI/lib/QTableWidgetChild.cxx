@@ -268,6 +268,10 @@ void QTableWidgetChild::DisplayColumnNames( QString TableName,
       {
       HeaderCol->setToolTip(tr("Check/Uncheck %1").arg(TableName));
       }
+    if(NameHeader.find("T.I.")!= std::string::npos)
+      {
+      HeaderCol->setToolTip(tr("T.I = Total Intensity For the Channel"));
+      }
     QFont serifFont("Arial", 10, QFont::Bold);
     HeaderCol->setFont(serifFont);
     this->setHorizontalHeaderItem(i,HeaderCol);

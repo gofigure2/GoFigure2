@@ -66,7 +66,9 @@ public:
   typedef GoDBTableWidgetContainer::DBTableWidgetContainerType
     DBTableWidgetContainerType;
 
-  /** \brief fill the global values for the collection of traces*/
+  /** \brief fill the global values for the collection of traces,
+  the databaseconnector is only useful if
+  the trace is a mesh*/
   void SetCollectionInfo(std::string iCollectionName,
     std::string iTracesName);
   
@@ -127,6 +129,9 @@ public:
   GoDBTableWidgetContainer* GetLinkToUpdatedTraceContainer(
     vtkMySQLDatabase* iDatabaseConnector, int iUpdatedTraceID);
 
+  /** \brief get the channels info from the database and set the channels info of the
+  GoDBTableWidgetContainer for mesh*/
+  void SetChannelsInfo(vtkMySQLDatabase* DatabaseConnector);
  /* int CreateNewCollectionFromSelection(
   std::list<int> iListSelectedTraces, vtkMySQLDatabase* DatabaseConnector,
     GoDBTraceRow iNewCollection);*/
@@ -238,6 +243,12 @@ protected:
   /** \brief change the collection ID of the trace*/
   void UpdateCollectionIDOfSelectedTrace(int iSelectedTraceID,int inewCollectionID,
     vtkMySQLDatabase* DatabaseConnector);
-
+  
+  /** \brief return a vector containing a vector of the Channels Name and a vector of
+  the ChannelIDs corresponding to the ImagingSession*/
+  std::vector<std::vector<std::string> >  GetChannelsInfo(vtkMySQLDatabase* DatabaseConnector);
+  
+  void FillRowContainerForIntensityValues(vtkMySQLDatabase* DatabaseConnector,
+    std::vector<std::string> iVectMeshIDs);
 };
 #endif
