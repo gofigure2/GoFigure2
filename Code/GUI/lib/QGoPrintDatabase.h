@@ -203,6 +203,10 @@ public:
   void AddBookmark(int iXCoord, int iYCoord, 
     int iZCoord, int iTCoord);
   
+  /** \brief Return the Name of the tab currently used in the table widget,
+ * which correspond to the TraceName of the CollectionOfTraces: */
+  std::string InWhichTableAreWe();
+
   NamesDescrContainerType GetListBookmarks();
   NamesDescrContainerType GetListCellTypes();
   NamesDescrContainerType GetListSubCellTypes();
@@ -290,9 +294,6 @@ protected:
   void OpenDBConnection();
   void CloseDBConnection();
 
-  /** \brief Return the Name of the tab currently used in the table widget,
- * which correspond to the TraceName of the CollectionOfTraces: */
-  std::string InWhichTableAreWe();
   /** \brief Return the TraceInfoStructure corresponding to the trace name*/
   TraceInfoStructure* GetTraceInfoStructure(std::string iTraceName);
 

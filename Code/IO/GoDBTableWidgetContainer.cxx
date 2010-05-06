@@ -382,7 +382,7 @@ std::vector<GoDBTraceInfoForTableWidget> GoDBTableWidgetContainer::
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void GoDBTableWidgetContainer::GetSpecificInfoForTraceTable()
+void GoDBTableWidgetContainer:: GetCommonInfoForTwoTracesTable()
 {
   if (this->m_TracesName == "contour" || this->m_TracesName == "mesh")
     {
@@ -430,6 +430,15 @@ void GoDBTableWidgetContainer::GetSpecificInfoForTraceTable()
     PairTemp.first = temp;
     m_RowContainer.push_back(PairTemp);
     temp.Clear();
+    }
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void GoDBTableWidgetContainer::GetSpecificInfoForTraceTable()
+{
+  if (this->m_TracesName == "mesh")
+    {
     }
 }
 //--------------------------------------------------------------------------

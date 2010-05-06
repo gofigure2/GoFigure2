@@ -112,6 +112,10 @@ protected:
 
   /** \brief Fill the vector of GoDBTraceInfoForTableWidget with the info
   common to 2 traces only*/  
+  void GetCommonInfoForTwoTracesTable();
+  
+  /** \brief Fill the vector of GoDBTraceInfoForTableWidget with the info
+  specific to a trace*/
   void GetSpecificInfoForTraceTable();
 
 };

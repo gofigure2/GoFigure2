@@ -159,5 +159,4 @@ void GoDBMeshRow::SaveInDBTotalIntensityPerChannel(
     NewIntensity.SaveInDB(DatabaseConnector);
     iter++;
     }
-  
 }
