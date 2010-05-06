@@ -212,6 +212,7 @@ private:
   QGoDBInitializationWizard*  m_DBInitializationWizard;
 
   QGoNetworkUtilities*        m_NetworkUtilities;
+  bool                        m_ManualUpdate;
 
   /** \brief */
   void ReadSettings();

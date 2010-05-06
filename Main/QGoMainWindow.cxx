@@ -160,6 +160,19 @@ QGoMainWindow( QWidget* iParent, Qt::WindowFlags iFlags ) :
 
   CreateSignalSlotsConnection();
   ReadSettings();
+
+  // Updates -------------------------------
+  QObject::connect( m_NetworkUtilities, 
+           SIGNAL( CheckForUpdatesDone( QString, bool ) ),
+           this, 
+           SLOT( DisplayUpdateResults( QString, bool ) ) );
+
+  m_ManualUpdate = false;
+
+  m_NetworkUtilities->CheckForUpdates();
+  // ---------------------------------------
+
+  // Database set up
   this->m_DatabaseSetUp = false;
   if(!this->m_DatabaseSetUp)
     {
@@ -1360,34 +1373,39 @@ void QGoMainWindow::WriteSettings()
   settings.endGroup();
   settings.setValue("DatabaseSetUp",this->m_DatabaseSetUp);
 }
-//------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 
 void
 QGoMainWindow::on_actionCheck_For_Updates_triggered()
 {
-  connect( m_NetworkUtilities, SIGNAL( CheckForUpdatesDone( QString, bool ) ),
-           this, SLOT( DisplayUpdateResults( QString, bool ) ) );
+  m_ManualUpdate = true;
   m_NetworkUtilities->CheckForUpdates();
 }
 
-//------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 void
 QGoMainWindow::
 DisplayUpdateResults( QString result, bool noerror )
 {
   if( !noerror ) // error during the connection to the server
     {
-    QMessageBox::warning(this, tr("GoFigure2 Updates"),
-      tr("There was an error while trying to GoFigure2's update website!\n " \
+    if( m_ManualUpdate )
+      {
+      QMessageBox::warning(this, tr("GoFigure2 Updates"),
+        tr("There was an error while trying to GoFigure2's update website!\n " \
          "Check your internet connection and try again later!" ) );
+      }
     }
   else
     {
     // no new version!
     if( result.compare( tr( "no-update\n" ), Qt::CaseInsensitive ) == 0 )
       {
-      QMessageBox::information( this, tr("GoFigure2 Updates"),
+      if( m_ManualUpdate )
+        {
+        QMessageBox::information( this, tr("GoFigure2 Updates"),
                                 tr("You have the lastest version!"));
+        }
       }
     else
       {
