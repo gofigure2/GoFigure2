@@ -98,7 +98,7 @@ int vtkPolylineDecimation::RequestData(
   outCD->CopyAllocate( inCD );
 
   // Loop over all polylines, decimating each independently
-  vtkIdType i, cellId, newId;
+  vtkIdType i, cellId = 0, newId;
   double error;
 
   for ( i = 0; i < numPts; i++ )

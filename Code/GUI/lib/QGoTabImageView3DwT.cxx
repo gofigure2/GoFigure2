@@ -3208,9 +3208,9 @@ LevelSetSegmentation2D()
     vtkSmartPointer<vtkPoints> points =
         vtkSmartPointer<vtkPoints>::New();
 
-    for ( int i = 0; i < static_cast<int>( npts-1 ); i++)
+    for ( int k = 0; k < static_cast<int>( npts-1 ); k++)
       {
-      points->InsertPoint(i, stripper->GetOutput()->GetPoints()->GetPoint(pts[i]));
+      points->InsertPoint(k, stripper->GetOutput()->GetPoints()->GetPoint(pts[k]));
       }
 
     vtkSmartPointer<vtkPolyData> testPolyD =
