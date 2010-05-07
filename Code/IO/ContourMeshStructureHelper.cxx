@@ -185,7 +185,7 @@ void DeleteContourMeshStructureElement(
 
    while( NodeSetIt != NodeSetEnd )
      {
-     (*NodeSetIt)->Delete();
+     //(*NodeSetIt)->Delete();
      ++NodeSetIt;
      }
      
