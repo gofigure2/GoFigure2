@@ -123,84 +123,36 @@ QGoPrintDatabase( QWidget* iParent ) :
 //--------------------------------------------------------------------------
 QGoPrintDatabase::~QGoPrintDatabase()
 {
-  // Need to release memory allocated for contours, meshes and tracks
+  // Need to release memory allocated for contours, meshes, tracks and lineages
+
   // contours
- // std::vector<ContourMeshStructure>::iterator c_it = m_ContoursInfo.begin();
   if( m_ContoursData )
     {
     if (this->m_ContoursData->ListTracesInfoForVisu != 0)
-     /* {
-      ContourMeshStructureMultiIndexContainer::iterator it = this->m_ContoursData->ListTracesInfoForVisu->begin();
-      ContourMeshStructureMultiIndexContainer::iterator end = this->m_ContoursData->ListTracesInfoForVisu->end();
-
-      std::set< vtkPolyData* > NodeSet;
-
-      while( it != end )
-        {
-        NodeSet.insert( it->Nodes );
-        it->Actor->Delete();
-        ++it;
-        }
-
-      std::set< vtkPolyData* >::iterator NodeSetIt = NodeSet.begin();
-      std::set< vtkPolyData* >::iterator NodeSetEnd = NodeSet.end();
-
-      while( NodeSetIt != NodeSetEnd )
-        {
-        (*NodeSetIt)->Delete();
-        ++NodeSetIt;
-        }
-      }
-    }*/
       {
       DeleteContourMeshStructureElement(
-        *this->m_ContoursData->ListTracesInfoForVisu);
+        *this->m_ContoursData->ListTracesInfoForVisu );
       }
+    delete m_ContoursData;
     }
   // meshes
-  //std::vector<ContourMeshStructure>::iterator m_it = m_MeshesInfo.begin();
   if( m_MeshesData )
     {
     if (this->m_MeshesData->ListTracesInfoForVisu != 0)
-     /* {
-      std::vector<ContourMeshStructure>::iterator m_it =
-        this->m_MeshesData->ListTracesInfoForVisu->begin();
-
-      while( m_it != this->m_MeshesData->ListTracesInfoForVisu->end() )
-        {
-        // polydata
-        if( m_it->Nodes )
-          {
-          m_it->Nodes->Delete();
-          m_it->Nodes = 0;
-          }
-        // used actor for the visualization
-        if( m_it->Actor )
-          {
-          m_it->Actor->Delete();
-          m_it->Actor = 0;
-          }
-        ++m_it;
-        }
-      }*/
       {
       DeleteContourMeshStructureElement(
         *this->m_MeshesData->ListTracesInfoForVisu);
       }
-    }
-
-  if( m_ContoursData )
-    {
-    delete m_ContoursData;
-    }
-  if( m_MeshesData )
-    {
     delete m_MeshesData;
     }
+
+  // tracks
   if( m_TracksData )
     {
     delete m_TracksData;
     }
+
+  // lineages
   if( m_LineagesData )
     {
     delete m_LineagesData;
@@ -234,11 +186,14 @@ void QGoPrintDatabase::SetDatabaseVariables(
   this->m_MeshesData->CollectionOfTraces->SetImgSessionID(m_ImgSessionID);
   this->m_TracksData->CollectionOfTraces->SetImgSessionID(m_ImgSessionID);
   this->m_LineagesData->CollectionOfTraces->SetImgSessionID(m_ImgSessionID);
+
   this->m_BookmarkManager = new QGoDBBookmarkManager(this,this->m_ImgSessionID);
-  QObject::connect(this->m_BookmarkManager, SIGNAL(ListBookmarksChanged()),
-    this,SIGNAL(OpenBookmarksToUpdate()));
+  QObject::connect( this->m_BookmarkManager, SIGNAL(ListBookmarksChanged()),
+    this, SIGNAL(OpenBookmarksToUpdate()) );
+
   this->m_CellTypeManager = new QGoDBCellTypeManager(this);
   this->GetListCellTypes();
+
   this->m_SubCellTypeManager = new QGoDBSubCellTypeManager(this);
   this->GetListSubCellTypes();
 }
@@ -275,19 +230,23 @@ void QGoPrintDatabase::FillTableFromDatabase(int iTimePoint)
 
   GetContentAndDisplayFromDB( "contour");
   GetContentAndDisplayFromDB( "mesh" );
+
   this->m_LineagesData->Table->hide();
   this->m_TracksData->Table->hide();
+
   GetContentAndDisplayFromDB( "track" );
   //GetContentAndDisplayFromDB( "lineage" );
 
   LoadContoursAndMeshesFromDB(m_DatabaseConnector);
 
   m_IsDatabaseUsed = true;
-  std::list<std::pair<std::string,std::vector<int> > > test = this->GetColorComboBoxInfofromDB();//for test
+  std::list<std::pair<std::string,std::vector<int> > > test =
+    this->GetColorComboBoxInfofromDB();//for test
   emit PrintExistingColorsFromDB(this->GetColorComboBoxInfofromDB());
+
   /** \todo get the trace name from the visudockwidget*/
   PrintExistingCollectionIDsFromDB(
-    this->GetListExistingCollectionIDFromDB("contour",iTimePoint));
+    this->GetListExistingCollectionIDFromDB("contour",iTimePoint) );
   CloseDBConnection();
   emit PrintDBReady();
 }
@@ -551,14 +510,18 @@ ContourMeshStructureMultiIndexContainer* QGoPrintDatabase::
   GetContoursFromDBForAGivenTimePoint(int iTimePoint,std::vector<int> iListIDs)
 {
   this->OpenDBConnection();
-  ContourMeshStructureMultiIndexContainer* ContoursInfoToAdd = GetTracesInfoFromDB(
-    this->m_DatabaseConnector,"contour","mesh",this->m_ImgSessionID,
-    iTimePoint,iListIDs);
+
+  ContourMeshStructureMultiIndexContainer* ContoursInfoToAdd =
+    GetTracesInfoFromDB( this->m_DatabaseConnector, "contour", "mesh",
+      this->m_ImgSessionID, iTimePoint,iListIDs );
+
   for (unsigned int i = 0; i < iListIDs.size() ; i++)
     {
-    this->AddATraceToContourMeshInfo("contour",iListIDs.at(i));
+    this->AddATraceToContourMeshInfo( "contour", iListIDs.at(i) );
     }
+
   this->CloseDBConnection();
+
   return ContoursInfoToAdd;
 }
 //-------------------------------------------------------------------------
@@ -569,12 +532,14 @@ ContourMeshStructureMultiIndexContainer* QGoPrintDatabase::
   std::vector<int> iListIDs)
 {
   this->OpenDBConnection();
-  TraceInfoStructure* CurrentlyUsedTraceData = this->GetTraceInfoStructure(
-    "contour");
+  TraceInfoStructure* CurrentlyUsedTraceData =
+    this->GetTraceInfoStructure( "contour" );
+
   ContourMeshStructureMultiIndexContainer* ContoursInfo = 
-    GetTracesInfoFromDBMultiIndex(this->m_DatabaseConnector, 
-    CurrentlyUsedTraceData->TraceName,CurrentlyUsedTraceData->CollectionName,
-    "ImagingSessionID",this->m_ImgSessionID,iTimePoint,iListIDs);
+    GetTracesInfoFromDBMultiIndex( this->m_DatabaseConnector, 
+    CurrentlyUsedTraceData->TraceName, CurrentlyUsedTraceData->CollectionName,
+    "ImagingSessionID", this->m_ImgSessionID, iTimePoint, iListIDs );
+
   this->CloseDBConnection();
   return ContoursInfo;
 }
@@ -589,9 +554,9 @@ ContourMeshStructureMultiIndexContainer* QGoPrintDatabase::
   TraceInfoStructure* CurrentlyUsedTraceData = this->GetTraceInfoStructure(
     "mesh");
   ContourMeshStructureMultiIndexContainer* MeshesInfo = 
-    GetTracesInfoFromDBMultiIndex(this->m_DatabaseConnector, 
-    CurrentlyUsedTraceData->TraceName,CurrentlyUsedTraceData->CollectionName,
-    "ImagingSessionID",this->m_ImgSessionID,iTimePoint,iListIDs);
+    GetTracesInfoFromDBMultiIndex( this->m_DatabaseConnector, 
+    CurrentlyUsedTraceData->TraceName, CurrentlyUsedTraceData->CollectionName,
+    "ImagingSessionID", this->m_ImgSessionID, iTimePoint, iListIDs );
   this->CloseDBConnection();
   return MeshesInfo;
 }
@@ -683,6 +648,21 @@ ChangeContoursToHighLightInfoFromVisu(
     else
       {
       /// \todo fix this using multi index container
+      ContourMeshStructureMultiIndexContainer::iterator trace_it =
+        CurrentlyUsedTraceData->ListTracesInfoForVisu->begin();
+
+      while( trace_it != CurrentlyUsedTraceData->ListTracesInfoForVisu->end() )
+        {
+        if( trace_it->Highlighted )
+          {
+          ContourMeshStructure temp( *trace_it );
+          temp.Highlighted = false;
+          CurrentlyUsedTraceData->ListTracesInfoForVisu->replace( trace_it, temp );
+          CurrentlyUsedTraceData->Table->SetSelectRowTraceID(
+            CurrentlyUsedTraceData->TraceName, trace_it->TraceID, false );
+          }
+        ++trace_it;
+        }
       /*for( unsigned int j = 0 ; j < CurrentlyUsedTraceData->ListTracesInfoForVisu->size(); j++ )
         {
         (*CurrentlyUsedTraceData->ListTracesInfoForVisu)[j].Highlighted = false;

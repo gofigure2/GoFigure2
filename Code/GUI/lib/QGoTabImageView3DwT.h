@@ -334,6 +334,7 @@ protected:
   /// \todo move the three following instance into the visualization element.
   std::vector< vtkSmartPointer< vtkContourWidget > >                      m_ContourWidget;
   std::vector< vtkSmartPointer< vtkOrientedGlyphContourRepresentation > > m_ContourRepresentation;
+
   ContourMeshStructureMultiIndexContainer                   m_ContourContainer;
   ContourMeshStructureMultiIndexContainer                   m_MeshContainer;
 
