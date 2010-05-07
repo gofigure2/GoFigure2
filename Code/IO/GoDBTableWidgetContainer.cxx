@@ -542,7 +542,7 @@ void GoDBTableWidgetContainer::FillRowContainer(
        {
        std::string test = iSelectFields[i]; //for test purpose
        std::string test2= m_RowContainer[j].first.ColumnNameDatabase; //for test purpose
-       int PosColumnNameFound;
+       size_t PosColumnNameFound;
        if (BaseOn.empty())
          {
          PosColumnNameFound = 
