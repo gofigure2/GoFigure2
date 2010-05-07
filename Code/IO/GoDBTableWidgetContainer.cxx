@@ -373,8 +373,9 @@ std::vector<GoDBTraceInfoForTableWidget> GoDBTableWidgetContainer::
   PairTemp.first = temp;
   m_RowContainer.push_back(PairTemp);
   temp.Clear();
-
-  GetSpecificInfoForTraceTable();
+ 
+  this->GetCommonInfoForTwoTracesTable();
+  this->GetSpecificInfoForTraceTable();
 
   return m_ColumnsInfos;
 }
@@ -745,6 +746,7 @@ void GoDBTableWidgetContainer::SetChannelsInfo(
 {
   this->m_ChannelsInfo = iChannelsInfo;
   m_ColumnsInfos.clear();
+  this->m_RowContainer.clear();
   m_ColumnsInfos = GetColumnsInfoForTraceTable();
 }
 //--------------------------------------------------------------------------
