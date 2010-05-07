@@ -176,7 +176,7 @@ void DeleteContourMeshStructureElement(
   while( it != end )
     {
     NodeSet.insert( it->Nodes );
-    it->Actor->Delete();
+    //it->Actor->Delete();
     ++it;
     }
 

@@ -156,7 +156,7 @@ public:
  * collection is a mesh or for all timepoint for tracks and lineages*/
   std::list<std::pair<std::string,QColor> > 
     GetListExistingCollectionIDFromDB( std::string TraceName,
-      int iTimePoint);
+      int iTimePoint = -1);
 
   std::pair<std::string,QColor> GetCurrentCollectionData();
   
@@ -311,7 +311,7 @@ protected:
     GoDBCollectionOfTraces* iCollectionOfTraces);
   /**\brief get the columns names and the values of the table (type T) 
  * from the database, then display them in the QTableWidgetchild.*/
-  void GetContentAndDisplayFromDB( std::string iTableName);
+  void GetContentAndDisplayFromDB( std::string iTableName );
   void closeEvent(QCloseEvent* event);
 
   /** \brief Insert a row in the table widget and in the row container 

@@ -273,7 +273,7 @@ void QGoPrintDatabase::FillTableFromDatabase(int iTimePoint)
   QString title = QString( "Imaging Session: %1 " ).arg( m_ImgSessionName.c_str() );
   this->setWindowTitle( title );
 
-  GetContentAndDisplayFromDB( "contour" );
+  GetContentAndDisplayFromDB( "contour");
   GetContentAndDisplayFromDB( "mesh" );
   this->m_LineagesData->Table->hide();
   this->m_TracksData->Table->hide();
@@ -898,6 +898,7 @@ void QGoPrintDatabase::GetContentAndDisplayFromDB( std::string iTraceName)
   CurrentlyUsedTraceData->Table->DisplayContent( CurrentlyUsedTraceData->CollectionOfTraces->GetLinkToRowContainer(),
     iTraceName,CurrentlyUsedTraceData->CollectionName);
   CurrentlyUsedTraceData->Table->setSortingEnabled(true);
+
 }
 //-------------------------------------------------------------------------
 

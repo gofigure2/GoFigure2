@@ -3952,8 +3952,7 @@ void QGoTabImageView3DwT::ShowTraceDockWidgetForMesh(
       {
       this->m_TraceManualEditingDockWidget->ShowAndUpdate("mesh","track");
       this->m_TraceManualEditingDockWidget->m_TraceWidget->SetCollectionID(
-        this->m_DataBaseTables->GetListExistingCollectionIDFromDB(
-        "mesh",this->GetTimePoint()));
+        this->m_DataBaseTables->GetListExistingCollectionIDFromDB("mesh"));
       this->m_DataBaseTables->blockSignals(true);
       this->m_DataBaseTables->SetTable("mesh");
       this->m_DataBaseTables->blockSignals(false);
@@ -3975,5 +3974,19 @@ void QGoTabImageView3DwT::GoToDefaultMenu(std::string iTracename,
     this->m_ModeActions.at(2)->setChecked(true);
     this->m_TraceManualEditingDockWidget->ShowAndUpdate(iTracename,
       iCollectionName);
+    if(this->m_DataBaseTables->IsDatabaseUsed())
+      {
+      if (iTracename == "contour")
+        {
+        this->m_TraceManualEditingDockWidget->m_TraceWidget->SetCollectionID(
+          this->m_DataBaseTables->GetListExistingCollectionIDFromDB(
+          "contour",this->GetTimePoint()));
+        }
+      else
+        {
+        this->m_TraceManualEditingDockWidget->m_TraceWidget->SetCollectionID(
+          this->m_DataBaseTables->GetListExistingCollectionIDFromDB(iTracename));
+        }
+      }
 }
 //-------------------------------------------------------------------------
