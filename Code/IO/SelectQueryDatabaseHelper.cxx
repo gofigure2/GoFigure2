@@ -1082,12 +1082,13 @@ std::vector<std::pair<int,std::string> > ListSpecificValuesForTwoColumnsAndTwoTa
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-std::vector<ContourMeshStructure>* GetTracesInfoFromDB(
+ContourMeshStructureMultiIndexContainer* GetTracesInfoFromDB(
   vtkMySQLDatabase* DatabaseConnector, std::string TraceName,
   std::string CollectionName,unsigned int ImgSessionID,int iTimePoint,
   std::vector<int> iListIDs)
 {
-  std::vector<ContourMeshStructure>* Results = new std::vector<ContourMeshStructure>;
+  ContourMeshStructureMultiIndexContainer* Results = 
+    new ContourMeshStructureMultiIndexContainer;
   vtkSQLQuery* query = DatabaseConnector->GetQueryInstance();
 
   std::stringstream Querystream;
@@ -1185,7 +1186,7 @@ std::vector<ContourMeshStructure>* GetTracesInfoFromDB(
       temp.rgba[1]      = (query->DataValue(5).ToDouble()) / 255.;
       temp.rgba[2]      = (query->DataValue(6).ToDouble()) / 255.;
       temp.rgba[3]      = (query->DataValue(7).ToDouble()) / 255.;
-      Results->push_back(temp);
+      Results->insert(temp);
       }
     }
   query->Delete();

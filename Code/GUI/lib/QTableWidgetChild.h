@@ -48,7 +48,7 @@
 #include "GoDBTraceInfoForVisu.h"
 #include "GoDBTraceInfoForTableWidget.h"
 #include "GoDBTableWidgetContainer.h"
-#include "ContourMeshStructure.h"
+#include "ContourMeshStructureHelper.h"
 
 /**
 \class QTableWidgetchild
@@ -145,7 +145,7 @@ public slots:
   selected ones means at least one cell in the row has been selected by the user in
   the tableWidget. The TraceName has to be chosen between Contour and Mesh*/
   bool TracesToHighlight(std::string TraceName,
-    std::vector<ContourMeshStructure>* ioTracesInfo);
+    ContourMeshStructureMultiIndexContainer* ioTracesInfo);
 
   /** \brief return a list of the values of a specific column for the rows where the user
        has selected at least one cell.*/

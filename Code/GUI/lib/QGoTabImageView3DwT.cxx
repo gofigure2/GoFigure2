@@ -2409,7 +2409,7 @@ void
 QGoTabImageView3DwT::
 AddContourFromNodes( const unsigned int& iContourID,
   vtkPolyData* iNodes,
-  double iRgba[4],
+  const double iRgba[4],
   const bool& iHighlighted,
   const unsigned int& iTCoord,
   const bool& iSaveInDataBase )
@@ -2424,7 +2424,7 @@ void
 QGoTabImageView3DwT::
 AddMeshFromNodes( const unsigned int& iContourID,
   vtkPolyData* iNodes,
-  double iRgba[4],
+  const double iRgba[4],
   const bool& iHighlighted,
   const unsigned int& iTCoord,
   const bool& iSaveInDataBase )
@@ -2696,7 +2696,7 @@ HighLightContoursFromTable( )
 {
  // std::vector< ContourMeshStructure >::iterator
  //   it = this->m_DataBaseTables->m_ContoursInfo.begin();
-  std::vector< ContourMeshStructure >::iterator
+  ContourMeshStructureMultiIndexContainer::iterator
     it = this->m_DataBaseTables->GetTracesInfoListForVisu("contour")->begin();
   unsigned int trace_id = 0;
 
@@ -2757,7 +2757,7 @@ HighLightMeshesFromTable( )
   // to iterate on a m_MeshContainer.get< TraceID >
   // GetTracesInfoListForVisu("mesh") returns a vector containing all IDs
   // 4 contour mesh structures for 1 element (4 rendering windows)
-  std::vector< ContourMeshStructure >::iterator
+  ContourMeshStructureMultiIndexContainer::iterator
     it = this->m_DataBaseTables->GetTracesInfoListForVisu("mesh")->begin();
 
   // firsh mesh id is 0
@@ -3525,11 +3525,11 @@ LevelSetSegmentation3D()
     normals->SetInput( contours->GetOutput() );
     normals->FlipNormalsOn();
 
-    vtkSmartPointer<vtkPolyDataWriter> stripperWriter =
+    /*vtkSmartPointer<vtkPolyDataWriter> stripperWriter =
         vtkSmartPointer<vtkPolyDataWriter>::New();
     stripperWriter->SetInput( contours->GetOutput() );
     stripperWriter->SetFileName( "/home/nr52/Desktop/3doutput.vtk" );
-    stripperWriter->Write();
+    stripperWriter->Write();*/
 
     SavePolyDataAsVolumeInDB( normals->GetOutput() );
 

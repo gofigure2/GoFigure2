@@ -58,6 +58,7 @@
 
 #include <list>
 
+QGOIO_EXPORT
 typedef boost::multi_index::multi_index_container<
     ContourMeshStructure,
     boost::multi_index::indexed_by<
@@ -140,6 +141,10 @@ std::list< ContourMeshStructure* >
 FindContourGivenTraceID(
   const ContourMeshStructureMultiIndexContainer& iContainer,
   const unsigned int& iId );
+
+QGOIO_EXPORT
+void DeleteContourMeshStructureElement(
+  ContourMeshStructureMultiIndexContainer iContainer);
 
 QGOIO_EXPORT
 ContourMeshStructure*

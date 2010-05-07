@@ -43,20 +43,20 @@
 
 #include "QTableWidgetChild.h"
 #include "GoDBCollectionOfTraces.h"
-#include "ContourMeshStructure.h"
+#include "ContourMeshStructureHelper.h"
 #include <QWidget>
 
 struct TraceInfoStructure
 {
-  std::string                        TraceName;
-  std::string                        TraceNameID;
-  std::string                        CollectionName;
-  std::string                        CollectionNameID;
-  std::string                        CollectionOf;
-  std::string                        CollectionOfID;
-  QTableWidgetChild*                 Table;
-  GoDBCollectionOfTraces*            CollectionOfTraces;
-  std::vector<ContourMeshStructure>* ListTracesInfoForVisu;
+  std::string                               TraceName;
+  std::string                               TraceNameID;
+  std::string                               CollectionName;
+  std::string                               CollectionNameID;
+  std::string                               CollectionOf;
+  std::string                               CollectionOfID;
+  QTableWidgetChild*                        Table;
+  GoDBCollectionOfTraces*                   CollectionOfTraces;
+  ContourMeshStructureMultiIndexContainer*  ListTracesInfoForVisu;
   
   TraceInfoStructure()
     {ListTracesInfoForVisu = 0;
@@ -71,7 +71,7 @@ struct TraceInfoStructure
     
    ~TraceInfoStructure()
      {
-     // Table has a prarent that is supposed to delete it
+     // Table has a parent that is supposed to delete it
      //if( Table )
      //   {
      //   delete Table;

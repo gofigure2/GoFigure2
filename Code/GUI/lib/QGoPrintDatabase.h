@@ -94,7 +94,7 @@ public:
   /** \brief return the contours info for the visu with the data from
   the database corresponding to iTimePoint and to the list of given IDs,
   if no list of IDs is given, will return the info for all the contours*/
-  std::vector<ContourMeshStructure>* GetContoursFromDBForAGivenTimePoint(
+  ContourMeshStructureMultiIndexContainer* GetContoursFromDBForAGivenTimePoint(
     int iTimePoint, std::vector<int> iListIDs = std::vector<int>());
 
    /** \brief return the multi index container for the contours with the 
@@ -107,7 +107,7 @@ public:
   
   /** \brief return the meshes info for the visu with the data from
   the database corresponding to iTimePoint*/
-  std::vector<ContourMeshStructure>* GetMeshesFromDBForAGivenTimePoint(
+  ContourMeshStructureMultiIndexContainer* GetMeshesFromDBForAGivenTimePoint(
     int iTimePoint);
 
   /** \brief return the multi index container for the meshes with the 
@@ -119,16 +119,16 @@ public:
   std::vector<int> iListIDs= std::vector<int>());
 
   /** \brief Return a vector of all the contours for the given timepoint*/
-  std::vector<ContourMeshStructure> GetContoursForAGivenTimepoint (
+  std::vector< ContourMeshStructure > GetContoursForAGivenTimepoint (
     unsigned int iTimePoint);
 
   /** \brief Return a vector of all the meshes for the given timepoint*/
-  std::vector<ContourMeshStructure> GetMeshesForAGivenTimepoint (
+  std::vector< ContourMeshStructure > GetMeshesForAGivenTimepoint (
     unsigned int iTimePoint);
 
   /** \brief Return a vector of all the contours with a bounding box
   containing the given ZCoord*/
-  std::vector<ContourMeshStructure> GetContoursForAGivenZCoord (
+  std::vector< ContourMeshStructure > GetContoursForAGivenZCoord (
     unsigned int iZCoord);
 
   /** \brief Return a multiIndex of all the contours with a bounding box
@@ -173,7 +173,7 @@ public:
   void UpdateCurrentSubCellType(std::string iCurrentSubCellType);
 
   /** \brief return the info for the visu for the related traces*/
-  std::vector<ContourMeshStructure>* GetTracesInfoListForVisu(std::string iTraceName);
+  ContourMeshStructureMultiIndexContainer* GetTracesInfoListForVisu(std::string iTraceName);
 
   /** \brief save a new contour from the visu into the database, update 
  * the table widget with the row container and the m_ContoursInfo*/
@@ -302,12 +302,12 @@ protected:
   void LoadContoursAndMeshesFromDB(vtkMySQLDatabase* DatabaseConnector);
 
   std::vector<ContourMeshStructure> GetTracesForAGivenTimepoint(
-    std::vector<ContourMeshStructure> iAllTraces, unsigned int iTimePoint);
+    ContourMeshStructureMultiIndexContainer iAllTraces, unsigned int iTimePoint);
   
   /** \brief return a vector of all the traces with a bounding box 
  * containing the given ZCoord*/
   std::vector<ContourMeshStructure> GetTracesForAGivenZCoord(
-    std::vector<ContourMeshStructure> iAllTraces,unsigned int iZCoord,
+    ContourMeshStructureMultiIndexContainer iAllTraces,unsigned int iZCoord,
     GoDBCollectionOfTraces* iCollectionOfTraces);
   /**\brief get the columns names and the values of the table (type T) 
  * from the database, then display them in the QTableWidgetchild.*/
@@ -329,7 +329,7 @@ protected:
   void UpdateTableWidgetForAnExistingTrace(std::string iTraceName, int iTraceID);
 
   void DeleteTraceInContourMeshStructure(int iTraceID,
-    std::vector<ContourMeshStructure>* iTraceInfo);
+    ContourMeshStructureMultiIndexContainer* iTraceInfo);
 
   /** \brief take care of the traces belonging to the collection that are going
   to be deleted and are collection of these belonging traces*/

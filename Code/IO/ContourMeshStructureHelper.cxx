@@ -40,6 +40,8 @@
 
 #include "ContourMeshStructureHelper.h"
 #include "vtkPolyData.h"
+#include "vtkActor.h"
+#include <set>
 
 // ---------------------------------------------------------------------------
 int
@@ -161,3 +163,30 @@ FindContourGivenTimePoint(
   return oList;
 }
 // ---------------------------------------------------------------------------
+
+// ---------------------------------------------------------------------------
+void DeleteContourMeshStructureElement(
+  ContourMeshStructureMultiIndexContainer iContainer)
+{
+  ContourMeshStructureMultiIndexContainer::iterator it = iContainer.begin();
+  ContourMeshStructureMultiIndexContainer::iterator end = iContainer.end();
+
+  std::set< vtkPolyData* > NodeSet;
+
+  while( it != end )
+    {
+    NodeSet.insert( it->Nodes );
+    it->Actor->Delete();
+    ++it;
+    }
+
+   std::set< vtkPolyData* >::iterator NodeSetIt = NodeSet.begin();
+   std::set< vtkPolyData* >::iterator NodeSetEnd = NodeSet.end();
+
+   while( NodeSetIt != NodeSetEnd )
+     {
+     (*NodeSetIt)->Delete();
+     ++NodeSetIt;
+     }
+     
+}

@@ -167,13 +167,13 @@ public:
    * @param[in] iRgba[]
    * @param[in] iHighlighted
    */
-  void AddContourFromNodes( const unsigned int& iContourID, vtkPolyData* iNodes, double iRgba[4],
+  void AddContourFromNodes( const unsigned int& iContourID, vtkPolyData* iNodes, const double iRgba[4],
     const bool& iHighlighted, const unsigned int& iTCoord, const bool& iSaveInDataBase );
   void AddContourFromNodes( const unsigned int& iContourID, vtkPolyData* iNodes,
     const double& iR, const double& iG, const double& iB, const double& iA,
     const bool& iHighlighted, const unsigned int& iTCoord, const bool& iSaveInDataBase );
 
-  void AddMeshFromNodes( const unsigned int& iContourID, vtkPolyData* iNodes, double iRgba[4],
+  void AddMeshFromNodes( const unsigned int& iContourID, vtkPolyData* iNodes, const double iRgba[4],
     const bool& iHighlighted, const unsigned int& iTCoord, const bool& iSaveInDataBase );
   void AddMeshFromNodes( const unsigned int& iContourID, vtkPolyData* iNodes,
     const double& iR, const double& iG, const double& iB, const double& iA,

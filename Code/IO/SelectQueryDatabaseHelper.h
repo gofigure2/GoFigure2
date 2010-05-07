@@ -220,7 +220,7 @@ std::vector<std::pair<int,std::string> >ListSpecificValuesForTwoColumnsAndTwoTab
   std::string PrimaryKey, std::string field, std::string value);
 
 QGOIO_EXPORT
-std::vector<ContourMeshStructure>* GetTracesInfoFromDB(
+ContourMeshStructureMultiIndexContainer* GetTracesInfoFromDB(
   vtkMySQLDatabase* DatabaseConnector,std::string TraceName,
   std::string CollectionName,unsigned int ImgSessionID,int iTimePoint=-1,
   std::vector<int> iListIDs = std::vector<int>());

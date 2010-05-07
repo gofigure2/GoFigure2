@@ -311,15 +311,21 @@ void QGoMainWindow::on_actionImportContour_triggered( )
         ImportHelper.ImportContours();
         //put the new contours in the visu:
         std::vector<int> NewContourIDs = ImportHelper.GetVectorNewContourIDs();
-        std::vector<ContourMeshStructure>* ContourToAdd = 
+        ContourMeshStructureMultiIndexContainer* ContourToAdd = 
           w3t->m_DataBaseTables->GetContoursFromDBForAGivenTimePoint(w3t->GetTimePoint(),
             NewContourIDs);
           //w3t->m_DataBaseTables->GetContoursForAGivenTimepoint(w3t->GetTimePoint());
-        for (unsigned int i = 0; i < ContourToAdd->size(); i++)
+        ContourMeshStructureMultiIndexContainer::iterator c_it = ContourToAdd->begin();
+
+        //for (unsigned int i = 0; i < ContourToAdd->size(); i++)
+        while( c_it != ContourToAdd->end() )
           {
-          ContourMeshStructure Contour = ContourToAdd->at(i);
+          ContourMeshStructure Contour = *c_it;//ContourToAdd->at(i);
+
           w3t->AddContourFromNodes(Contour.TraceID,Contour.Nodes,Contour.rgba,
             Contour.Highlighted,Contour.TCoord,false);
+
+          ++c_it;
           }
         std::vector<int> ContourToAddTW = ImportHelper.GetVectorNewContourIDs();
         std::vector<int> MeshesToAddTW = ImportHelper.GetVectorNewMeshIDs();
@@ -505,14 +511,14 @@ void
 QGoMainWindow::
 LoadAllContoursFromDatabase( const int& iT )
 {
-  std::vector<ContourMeshStructure>::iterator contourmesh_list_it;
+  ContourMeshStructureMultiIndexContainer::iterator contourmesh_list_it;
 
   QGoTabImageView3DwT* w3t =
     dynamic_cast< QGoTabImageView3DwT* >( this->CentralTabWidget->currentWidget() );
 
   if( w3t )
     {
-    std::vector< ContourMeshStructure >* temp =
+    ContourMeshStructureMultiIndexContainer* temp =
       w3t->m_DataBaseTables->GetTracesInfoListForVisu("contour");
 
     if( temp )
@@ -561,17 +567,17 @@ void
 QGoMainWindow::
 LoadAllMeshesFromDatabase( const int& iT )
 {
-  std::vector<ContourMeshStructure>::iterator contourmesh_list_it;
+  ContourMeshStructureMultiIndexContainer::iterator contourmesh_list_it;
 
   QGoTabImageView3DwT* w3t =
     dynamic_cast< QGoTabImageView3DwT* >( this->CentralTabWidget->currentWidget() );
 
   if( w3t )
     {
-    std::vector< ContourMeshStructure >* temp =
+    ContourMeshStructureMultiIndexContainer* temp =
       w3t->m_DataBaseTables->GetTracesInfoListForVisu("mesh");
 
-    std::vector< ContourMeshStructure >::iterator test = temp->begin();
+    ContourMeshStructureMultiIndexContainer::iterator test = temp->begin();
 
     if( temp )
       {
