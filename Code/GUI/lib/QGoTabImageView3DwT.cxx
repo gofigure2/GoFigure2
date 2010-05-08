@@ -257,28 +257,11 @@ QGoTabImageView3DwT::
     temp = 0;
     }
 
-  ContourMeshStructureMultiIndexContainer::iterator it = m_ContourContainer.begin();
-  ContourMeshStructureMultiIndexContainer::iterator end = m_ContourContainer.end();
+  DeleteContourMeshStructureElement( m_ContourContainer );
+  DeleteContourMeshStructureElement( m_MeshContainer );
 
-  std::set< vtkPolyData* > NodeSet;
-
-  while( it != end )
-    {
-    NodeSet.insert( it->Nodes );
-    it->Actor->Delete();
-    ++it;
-    }
-
-  std::set< vtkPolyData* >::iterator NodeSetIt = NodeSet.begin();
-  std::set< vtkPolyData* >::iterator NodeSetEnd = NodeSet.end();
-
-  while( NodeSetIt != NodeSetEnd )
-    {
-    (*NodeSetIt)->Delete();
-    ++NodeSetIt;
-    }
 }
-//-------------------------------------------------------------------------
+//----------------------------------------------------------------------
 
 
 //-------------------------------------------------------------------------
