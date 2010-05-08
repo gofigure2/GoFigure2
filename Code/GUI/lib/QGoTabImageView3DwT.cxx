@@ -113,6 +113,7 @@
 #include "vtkPolyDataNormals.h"
 #include "vtkFillHolesFilter.h"
 #include "vtkTriangleFilter.h"
+
 //ITK FILTERS
 #include "itkChanAndVeseSegmentationFilter.h"
 #include "itkImage.h"
@@ -132,6 +133,10 @@
 #include <set>
 
 //-------------------------------------------------------------------------
+/**
+ * \brief Default Constructor
+ * \param iParent
+ */
 QGoTabImageView3DwT::
 QGoTabImageView3DwT( QWidget* iParent ) :
   QGoTabElementBase( iParent ),
@@ -231,6 +236,9 @@ QGoTabImageView3DwT( QWidget* iParent ) :
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+/**
+ * \brief Destructor
+ */
 QGoTabImageView3DwT::
 ~QGoTabImageView3DwT( )
 {
@@ -249,13 +257,34 @@ QGoTabImageView3DwT::
     temp = 0;
     }
 
-  DeleteContourMeshStructureElement( m_ContourContainer );
-  DeleteContourMeshStructureElement( m_MeshContainer );
+  ContourMeshStructureMultiIndexContainer::iterator it = m_ContourContainer.begin();
+  ContourMeshStructureMultiIndexContainer::iterator end = m_ContourContainer.end();
+
+  std::set< vtkPolyData* > NodeSet;
+
+  while( it != end )
+    {
+    NodeSet.insert( it->Nodes );
+    it->Actor->Delete();
+    ++it;
+    }
+
+  std::set< vtkPolyData* >::iterator NodeSetIt = NodeSet.begin();
+  std::set< vtkPolyData* >::iterator NodeSetEnd = NodeSet.end();
+
+  while( NodeSetIt != NodeSetEnd )
+    {
+    (*NodeSetIt)->Delete();
+    ++NodeSetIt;
+    }
 }
 //-------------------------------------------------------------------------
 
 
 //-------------------------------------------------------------------------
+/**
+ * \brief
+ */
 void
 QGoTabImageView3DwT::
 CreateSettingAndDialogSegmentationWidgets()
@@ -318,6 +347,9 @@ GenerateContourRepresentationProperties()
 
 //-------------------------------------------------------------------------
 //-------------------------------------------------------------------------
+/**
+ * \brief
+ */
 void
 QGoTabImageView3DwT::
 CreateManualSegmentationdockWidget()
@@ -347,6 +379,9 @@ CreateManualSegmentationdockWidget()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+/**
+ * \brief
+ */
 void
 QGoTabImageView3DwT::
 CreateOneClickSegmentationDockWidget()
@@ -370,6 +405,9 @@ CreateOneClickSegmentationDockWidget()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+/**
+ *
+ */
 void
 QGoTabImageView3DwT::
 CreateVisuDockWidget()
@@ -414,6 +452,9 @@ CreateVisuDockWidget()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+/**
+ *
+ */
 void
 QGoTabImageView3DwT::
 CreateDataBaseTablesConnection()
@@ -563,8 +604,9 @@ SetRendererWindow(int iValue)
 }
 #endif /* ENABLEVIDEORECORD */
 //-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
+/**
+ *
+ */
 void
 QGoTabImageView3DwT::
 CreateAllViewActions()
@@ -801,9 +843,10 @@ CreateAllViewActions()
   QObject::connect( Change3DPerspectiveToSagittalAction, SIGNAL( triggered() ),
     this, SLOT( Change3DPerspectiveToSagittal( ) ) );
 }
-//-------------------------------------------------------------------------
 
-//-------------------------------------------------------------------------
+/**
+ *
+ */
 void
 QGoTabImageView3DwT::
 CreateToolsActions()
@@ -826,7 +869,6 @@ CreateToolsActions()
   this->m_ToolsActions.push_back( m_TakeSnapshotAction );
 }
 //-------------------------------------------------------------------------
-
 //-------------------------------------------------------------------------
 void QGoTabImageView3DwT::CreateModeActions()
 {
@@ -1037,9 +1079,12 @@ TakeSnapshot()
     m_ImageView->SnapshotViewXYZ( GoFigure::PNG , "snapshot_" );
     }
 }
-//-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+/**
+ * \brief
+ * \param iParent
+ */
 void
 QGoTabImageView3DwT::
 setupUi( QWidget* iParent )
@@ -1079,6 +1124,10 @@ setupUi( QWidget* iParent )
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+/**
+ *
+ * \param iParent
+ */
 void
 QGoTabImageView3DwT::
 retranslateUi(QWidget *iParent)
@@ -1089,6 +1138,10 @@ retranslateUi(QWidget *iParent)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+/**
+ *
+ * \return
+ */
 GoFigure::TabDimensionType
 QGoTabImageView3DwT::
 GetTabDimensionType( ) const
@@ -1102,6 +1155,11 @@ GetTabDimensionType( ) const
 // Set Inputs
 
 //-------------------------------------------------------------------------
+/**
+ * \brief
+ * \param[in] iReader
+ * \param[in] iTimePoint
+ */
 void
 QGoTabImageView3DwT::
 SetLSMReader( vtkLSMReader* iReader, const int& iTimePoint )
@@ -1145,9 +1203,6 @@ SetLSMReader( vtkLSMReader* iReader, const int& iTimePoint )
         }
       }
 
-
-/// \todo create one method from this remaining code (since it is duplicated)
-/// in the next method.
     m_NavigationDockWidget->SetXMinimumAndMaximum( 0, dim[0] - 1 );
     m_NavigationDockWidget->SetXSlice( ( dim[0] - 1 ) / 2 );
 
@@ -1310,8 +1365,8 @@ SetTimePointWithMegaCapture( const int& iTimePoint )
       int ch = this->m_NavigationDockWidget->GetCurrentChannel();
       if( ch != -1 )
         {
-        m_Image->ShallowCopy( m_InternalImages[ch] );
-        }
+    	m_Image->ShallowCopy( m_InternalImages[ch] );
+    	}
       }
     }
   else
@@ -1388,6 +1443,10 @@ SetTimePointWithLSMReaders( const int& iTimePoint )
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+/**
+ *
+ * \param iTimePoint
+ */
 void
 QGoTabImageView3DwT::
 SetTimePoint( const int& iTimePoint )
@@ -1440,6 +1499,9 @@ SetTimePoint( const int& iTimePoint )
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+/**
+ *
+ */
 void QGoTabImageView3DwT::Update()
 {
   m_ImageView->SetImage( m_Image );
@@ -1457,6 +1519,9 @@ void QGoTabImageView3DwT::Update()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+/**
+ *
+ */
 void
 QGoTabImageView3DwT::
 ChangeLookupTable()
@@ -1476,6 +1541,10 @@ ChangeLookupTable()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+/**
+ *
+ * \param[in] iShow
+ */
 void
 QGoTabImageView3DwT::
 ShowScalarBar( const bool& iShow )
@@ -1490,6 +1559,12 @@ ShowScalarBar( const bool& iShow )
 //------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+/**
+ *
+ * \param[in] iType
+ * \param[in] iBaseName
+ * \return
+ */
 QString
 QGoTabImageView3DwT::
 SnapshotViewXY(
@@ -1501,6 +1576,12 @@ SnapshotViewXY(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+/**
+ *
+ * \param[in] iType
+ * \param[in] iBaseName
+ * \return
+ */
 QString
 QGoTabImageView3DwT::
 SnapshotView2(
@@ -1512,6 +1593,12 @@ SnapshotView2(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+/**
+ *
+ * \param[in] iType
+ * \param[in] iBaseName
+ * \return
+ */
 QString
 QGoTabImageView3DwT::
 SnapshotView3(
@@ -1523,6 +1610,12 @@ SnapshotView3(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+/**
+ *
+ * \param[in] iType
+ * \param[in] iBaseName
+ * \return
+ */
 QString
 QGoTabImageView3DwT::
 SnapshotViewXYZ(
@@ -1534,6 +1627,10 @@ SnapshotViewXYZ(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+/**
+ *
+ * \param[in] iS
+ */
 void
 QGoTabImageView3DwT::
 SetSliceViewXY( const int& iS )
@@ -1543,6 +1640,10 @@ SetSliceViewXY( const int& iS )
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+/**
+ *
+ * \param[in] iS
+ */
 void
 QGoTabImageView3DwT::
 SetSliceViewXZ( const int& iS )
@@ -1552,6 +1653,10 @@ SetSliceViewXZ( const int& iS )
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+/**
+ *
+ * \param[in] iS
+ */
 void
 QGoTabImageView3DwT::
 SetSliceViewYZ( const int& iS )
@@ -1561,6 +1666,10 @@ SetSliceViewYZ( const int& iS )
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+/**
+ *
+ * \param[in] iS
+ */
 void
 QGoTabImageView3DwT::
 SetFullScreenView( const int& iS )
@@ -1570,6 +1679,9 @@ SetFullScreenView( const int& iS )
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+/**
+ *
+ */
 void
 QGoTabImageView3DwT::
 Quadview()
@@ -1583,6 +1695,9 @@ Quadview()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+/**
+ *
+ */
 void
 QGoTabImageView3DwT::
 FullScreenViewXY()
@@ -1596,6 +1711,9 @@ FullScreenViewXY()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+/**
+ *
+ */
 void
 QGoTabImageView3DwT::
 FullScreenViewXZ()
@@ -1609,6 +1727,9 @@ FullScreenViewXZ()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+/**
+ *
+ */
 void
 QGoTabImageView3DwT::
 FullScreenViewYZ()
@@ -1622,6 +1743,9 @@ FullScreenViewYZ()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+/**
+ *
+ */
 void
 QGoTabImageView3DwT::
 FullScreenViewXYZ()
@@ -1635,6 +1759,9 @@ FullScreenViewXYZ()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+/**
+ *
+ */
 void
 QGoTabImageView3DwT::
 GetBackgroundColorFromImageViewer( )
@@ -1646,6 +1773,9 @@ GetBackgroundColorFromImageViewer( )
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+/**
+ *
+ */
 void
 QGoTabImageView3DwT::
 SetBackgroundColorToImageViewer( )
@@ -1655,6 +1785,9 @@ SetBackgroundColorToImageViewer( )
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+/**
+ *
+ */
 void
 QGoTabImageView3DwT::
 ChangeBackgroundColor()
@@ -1675,9 +1808,12 @@ ChangeBackgroundColor()
     m_BackgroundColorAction->setIcon(Pix);
     }
 }
-//-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+/**
+ *
+ * \param iChecked
+ */
 void
 QGoTabImageView3DwT::
 ShowAllChannels( bool iChecked )
@@ -1718,6 +1854,10 @@ ShowAllChannels( bool iChecked )
 //------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+/**
+ * \brief
+ * \param[in] iChannel
+ */
 void
 QGoTabImageView3DwT::
 ShowOneChannel( int iChannel )
@@ -1731,6 +1871,10 @@ ShowOneChannel( int iChannel )
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+/**
+ *
+ * \param iId
+ */
 void
 QGoTabImageView3DwT::
 ValidateContour( const int& iContourID, const int& iDir,
@@ -1839,6 +1983,9 @@ ValidateContour( const int& iContourID, const int& iDir,
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+/**
+ *
+ */
 void
 QGoTabImageView3DwT::
 ValidateContour( )
@@ -1935,6 +2082,9 @@ ReinitializeContour()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+/**
+ *
+ */
 void
 QGoTabImageView3DwT::
 ChangeContourRepresentationProperty()
@@ -1965,6 +2115,11 @@ ChangeContourRepresentationProperty()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+/**
+ *
+ * \param[in] pos[]
+ * \return
+ */
 int*
 QGoTabImageView3DwT::
 GetImageCoordinatesFromWorldCoordinates( double iPos[3] )
@@ -1974,6 +2129,13 @@ GetImageCoordinatesFromWorldCoordinates( double iPos[3] )
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+/**
+ *
+ * \param iId
+ * \param dataset
+ * \param property
+ * \return
+ */
 // std::vector< vtkQuadricLODActor* >
 std::vector< vtkActor* >
 QGoTabImageView3DwT::
@@ -1986,6 +2148,10 @@ AddContour( const int& iId,
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+/**
+ *
+ * \param iActivate
+ */
 void
 QGoTabImageView3DwT::
 ActivateManualSegmentationEditor( const bool& iActivate )
@@ -2011,6 +2177,11 @@ ActivateManualSegmentationEditor( const bool& iActivate )
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+/**
+ *
+ * \param iId
+ * \param iActor
+ */
 void
 QGoTabImageView3DwT::
 RemoveActorFromViewer( const int& iId, vtkActor* iActor )
@@ -2020,6 +2191,11 @@ RemoveActorFromViewer( const int& iId, vtkActor* iActor )
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+/**
+ *
+ * \param iId
+ * \param iActor
+ */
 void
 QGoTabImageView3DwT::
 DisplayActorInViewer( const int& iId, vtkActor* iActor )
@@ -2029,6 +2205,9 @@ DisplayActorInViewer( const int& iId, vtkActor* iActor )
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+/**
+ *
+ */
 void
 QGoTabImageView3DwT::
 RemoveAllContoursForPresentTimePoint( )
@@ -2041,6 +2220,9 @@ RemoveAllContoursForPresentTimePoint( )
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+/**
+ *
+ */
 void
 QGoTabImageView3DwT::
 RemoveAllContoursForGivenTimePoint( const unsigned int& iT )
@@ -2068,6 +2250,9 @@ RemoveAllContoursForGivenTimePoint( const unsigned int& iT )
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+/**
+ *
+ */
 void
 QGoTabImageView3DwT::
 RemoveAllMeshesForPresentTimePoint( )
@@ -2080,6 +2265,9 @@ RemoveAllMeshesForPresentTimePoint( )
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+/**
+ *
+ */
 void
 QGoTabImageView3DwT::
 RemoveAllMeshesForGivenTimePoint( const unsigned int& iT )
@@ -2117,8 +2305,10 @@ LoadAllContoursForCurrentTimePoint()
     }
 }
 //-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
+/**
+ *
+ * \param iT
+ */
 void
 QGoTabImageView3DwT::
 LoadAllContoursForGivenTimePoint( const unsigned int& iT )
@@ -2153,8 +2343,10 @@ LoadAllMeshesForCurrentTimePoint()
     }
 }
 //-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
+/**
+ *
+ * \param iT
+ */
 void
 QGoTabImageView3DwT::
 LoadAllMeshesForGivenTimePoint( const unsigned int& iT )
@@ -2288,23 +2480,21 @@ void
 QGoTabImageView3DwT::
 UpdateDBAndCollectionIDComboBoxForANewCreatedCollection()
 {
-  QGoTraceManualEditingWidget* tw =
-    this->m_TraceManualEditingDockWidget->m_TraceWidget;
-
   //first, save in the database:
-  std::string TraceName =  tw->TraceName->text().toStdString();
+  std::string TraceName =  this->m_TraceManualEditingDockWidget->m_TraceWidget->TraceName->text().toStdString();
   std::string CellType = "";
   std::string SubCellType = "";
   if ( TraceName == "contour") //for a mesh, collection of contour;
     { 
-    CellType = tw->GetCurrentCellType();
-    SubCellType = tw->GetCurrentSubCellType();
+    CellType = this->m_TraceManualEditingDockWidget->m_TraceWidget->GetCurrentCellType();
+    SubCellType = this->m_TraceManualEditingDockWidget->m_TraceWidget->GetCurrentSubCellType();
     }
   std::pair<std::string,QColor> NewCollectionToAddInComboBox =
-    this->m_DataBaseTables->SaveNewCollectionInDB(
-      tw->ColorComboBox->GetCurrentColorData(),
-      tw->TraceName->text().toStdString(),
-      this->GetTimePoint(), CellType, SubCellType );
+
+  this->m_DataBaseTables->SaveNewCollectionInDB(
+  this->m_TraceManualEditingDockWidget->m_TraceWidget->ColorComboBox->GetCurrentColorData(),
+  this->m_TraceManualEditingDockWidget->m_TraceWidget->TraceName->text().toStdString(),
+  this->GetTimePoint(),CellType,SubCellType);
 
   //second, update the ColorIDCollectionComboBox with the new created ID:
   this->m_TraceManualEditingDockWidget->m_TraceWidget->ColorIDCollectionComboBox->addColor(
@@ -2439,7 +2629,7 @@ HighLightContours()
       if( traceid_it != m_ContourContainer.get< TraceID >().end() )
         {
         while( ( traceid_it != m_ContourContainer.get< TraceID >().end() )
-            && ( traceid_it->TraceID == trace_id ) )
+            && ( (*traceid_it).TraceID == trace_id ) )
           {
           m_ImageView->ChangeActorProperty( traceid_it->Direction,
             traceid_it->Actor, select_property );
@@ -2505,19 +2695,17 @@ void
 QGoTabImageView3DwT::
 HighLightContoursFromTable( )
 {
-  ContourMeshStructureMultiIndexContainer* contour_container =
-    this->m_DataBaseTables->GetTracesInfoListForVisu("contour");
-
+ // std::vector< ContourMeshStructure >::iterator
+ //   it = this->m_DataBaseTables->m_ContoursInfo.begin();
   ContourMeshStructureMultiIndexContainer::iterator
-    it = contour_container->begin();
-
+    it = this->m_DataBaseTables->GetTracesInfoListForVisu("contour")->begin();
   unsigned int trace_id = 0;
 
   vtkProperty* select_property = vtkProperty::New();
   select_property->SetColor( 1., 0., 0. );
   select_property->SetLineWidth( 3. );
 
-  while( it != contour_container->end() )
+  while( it != this->m_DataBaseTables->GetTracesInfoListForVisu("contour")->end() )
     {
     trace_id = it->TraceID;
 
@@ -2527,7 +2715,7 @@ HighLightContoursFromTable( )
     if( traceid_it != m_ContourContainer.get< TraceID >().end() )
       {
       while( ( traceid_it != m_ContourContainer.get< TraceID >().end() )
-        && ( traceid_it->TraceID == trace_id ) )
+        && ( (*traceid_it).TraceID == trace_id ) )
         {
         if( it->Highlighted != traceid_it->Highlighted )
           {
@@ -2562,7 +2750,6 @@ HighLightContoursFromTable( )
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/// \todo almost a duplicate from the previous method
 void
 QGoTabImageView3DwT::
 HighLightMeshesFromTable( )
@@ -2571,11 +2758,8 @@ HighLightMeshesFromTable( )
   // to iterate on a m_MeshContainer.get< TraceID >
   // GetTracesInfoListForVisu("mesh") returns a vector containing all IDs
   // 4 contour mesh structures for 1 element (4 rendering windows)
-  ContourMeshStructureMultiIndexContainer* mesh_container =
-    this->m_DataBaseTables->GetTracesInfoListForVisu("mesh");
-
   ContourMeshStructureMultiIndexContainer::iterator
-    it = mesh_container->begin();
+    it = this->m_DataBaseTables->GetTracesInfoListForVisu("mesh")->begin();
 
   // firsh mesh id is 0
   unsigned int trace_id = 0;
@@ -2594,7 +2778,7 @@ HighLightMeshesFromTable( )
   }
 
   // While we didn't test all meshes of database
-  while( it != mesh_container->end() )
+  while( it != this->m_DataBaseTables->GetTracesInfoListForVisu("mesh")->end() )
     {
     // get ID of current mesh
     trace_id = it->TraceID;
@@ -2923,7 +3107,6 @@ void
 QGoTabImageView3DwT::
 ApplyOneClickSegmentationFilter()
 {
-/// \todo this code should move from here!
   // Check the filter to be applied
   // 0 = circle contours (sphere aspect)
   // 1 = sphere ( 3D volume - no contours)
@@ -3208,9 +3391,13 @@ LevelSetSegmentation2D()
     vtkSmartPointer<vtkPoints> points =
         vtkSmartPointer<vtkPoints>::New();
 
-    for ( int k = 0; k < static_cast<int>( npts-1 ); k++)
+    int decimation = 5;
+    int counter = 0;
+
+    for ( int k = 0; k+decimation < static_cast<int>( npts-1 ); k = k +decimation)
       {
-      points->InsertPoint(k, stripper->GetOutput()->GetPoints()->GetPoint(pts[k]));
+      points->InsertPoint(counter, stripper->GetOutput()->GetPoints()->GetPoint(pts[k]));
+      ++counter;
       }
 
     vtkSmartPointer<vtkPolyData> testPolyD =
@@ -3318,38 +3505,8 @@ LevelSetSegmentation3D()
     contours->SetComputeNormals( 0 );
     contours->SetComputeScalars( 0 );
     contours->SetNumberOfContours( 1 );
-    //contours->SetValue(1,0);
 
-    /*
-    vtkSmoothPolyDataFilter* smoother = vtkSmoothPolyDataFilter::New();
-     smoother->SetInput(contours->GetOutput());
-         smoother->SetNumberOfIterations(5);
-     smoother->SetFeatureAngle(60);
-    smoother->SetRelaxationFactor(0.05);
-   smoother->FeatureEdgeSmoothingOff();
-   std::cout << "VTK Smoothing mesh finished...." << std::endl;
-
-   vtkFillHolesFilter* holes = vtkFillHolesFilter::New();
-   holes->SetInput( smoother->GetOutput() );
-
-   vtkSmartPointer<vtkTriangleFilter> triangleFilter = vtkSmartPointer<vtkTriangleFilter>::New();
-     triangleFilter->SetInput(holes->GetOutput());
-     triangleFilter->Update();
-*/
-
-    // flip normals
-    vtkSmartPointer<vtkPolyDataNormals> normals =
-        vtkSmartPointer<vtkPolyDataNormals>::New();
-    normals->SetInput( contours->GetOutput() );
-    normals->FlipNormalsOn();
-
-    /*vtkSmartPointer<vtkPolyDataWriter> stripperWriter =
-        vtkSmartPointer<vtkPolyDataWriter>::New();
-    stripperWriter->SetInput( contours->GetOutput() );
-    stripperWriter->SetFileName( "/home/nr52/Desktop/3doutput.vtk" );
-    stripperWriter->Write();*/
-
-    SavePolyDataAsVolumeInDB( normals->GetOutput() );
+    SavePolyDataAsVolumeInDB( contours->GetOutput() );
 
     movingExporter->Delete();
   }
@@ -3469,7 +3626,7 @@ GenerateCircleFromGivenSphereAndGivenZ( double iC[3],
     lines->InsertNextCell(iN+1,lineIndices);
     delete [] lineIndices;
     oCircle->SetPoints( points );
-    oCircle->SetLines(lines);
+    //oCircle->SetLines(lines);
 
     return oCircle;
     }
@@ -3584,6 +3741,9 @@ SavePolyDataAsContourInDB( vtkPolyData* iView, const int& iContourID,
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+/**
+ *
+ */
 int
 QGoTabImageView3DwT::
 SavePolyDataAsContourInDB( vtkPolyData* iView )
@@ -3649,9 +3809,8 @@ SavePolyDataAsVolumeInDB( vtkPolyData* iView, const int& iContourID,
   int* min_idx = this->GetImageCoordinatesFromWorldCoordinates( Min );
   int* max_idx = this->GetImageCoordinatesFromWorldCoordinates( Max );
 
-  vtkActor*  contour_actor_temp = vtkActor::New();
-  contour_actor_temp->SetMapper(map);
-  contour_actor_temp->GetProperty()->SetColor( iR, iG, iB );
+  vtkProperty*  mesh_property = vtkProperty::New();
+  mesh_property->SetColor( iR, iG, iB );
 
   std::vector< vtkActor* > contour_actor;
 
@@ -3659,7 +3818,7 @@ SavePolyDataAsVolumeInDB( vtkPolyData* iView, const int& iContourID,
   if ( iView )
     {
     contour_actor =
-        this->AddContour( iDir, iView, contour_actor_temp->GetProperty() );
+        this->AddContour( iDir, iView, mesh_property );
     }
 
   // get meshid from the visu dock widget (SpinBox)
@@ -3686,8 +3845,8 @@ SavePolyDataAsVolumeInDB( vtkPolyData* iView, const int& iContourID,
   // fill the container
   for( i = 0; i < contour_actor.size(); i++ )
     {
-    ContourMeshStructure temp( mesh_id,
-        reinterpret_cast< vtkActor* >( contour_actor[i] ), iView,
+    // why reinterpret_cast< vtkActor* >( contour_actor[i] ) ??
+    ContourMeshStructure temp( mesh_id, contour_actor[i], iView,
         trackid, iTCoord, iHighlighted, iR, iG, iB, iA, i );
     m_MeshContainer.insert( temp );
     }
@@ -3697,6 +3856,9 @@ SavePolyDataAsVolumeInDB( vtkPolyData* iView, const int& iContourID,
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+/**
+ *
+ */
 void
 QGoTabImageView3DwT::
 SavePolyDataAsVolumeInDB( vtkPolyData* iView )
@@ -3727,7 +3889,7 @@ SavePolyDataAsVolumeInDB( vtkPolyData* iView )
   int ContourID = -1;
 
   /// TODO check iDir
-  SavePolyDataAsVolumeInDB( iView, ContourID, -1, r, g, b, a, highlighted,
+  SavePolyDataAsVolumeInDB( iView, ContourID, 0, r, g, b, a, highlighted,
       m_TimePoint, saveindatabase );
 }
 //-------------------------------------------------------------------------
@@ -3742,8 +3904,8 @@ void QGoTabImageView3DwT::ShowTraceDockWidgetForContour(
       {
       this->m_TraceManualEditingDockWidget->ShowAndUpdate("contour","mesh");
       this->m_TraceManualEditingDockWidget->m_TraceWidget->SetCollectionID(
-        this->m_DataBaseTables->GetListExistingCollectionIDFromDB(
-        "contour", this->GetTimePoint() ) );
+          this->m_DataBaseTables->GetListExistingCollectionIDFromDB(
+              "contour", this->GetTimePoint() ) );
       this->m_DataBaseTables->blockSignals(true);
       this->m_DataBaseTables->SetTable("contour");
       this->m_DataBaseTables->blockSignals(false);
@@ -3764,7 +3926,7 @@ void QGoTabImageView3DwT::ShowTraceDockWidgetForMesh(
       {
       this->m_TraceManualEditingDockWidget->ShowAndUpdate("mesh","track");
       this->m_TraceManualEditingDockWidget->m_TraceWidget->SetCollectionID(
-      this->m_DataBaseTables->GetListExistingCollectionIDFromDB("mesh"));
+          this->m_DataBaseTables->GetListExistingCollectionIDFromDB("mesh"));
       this->m_DataBaseTables->blockSignals(true);
       this->m_DataBaseTables->SetTable("mesh");
       this->m_DataBaseTables->blockSignals(false);
@@ -3779,26 +3941,26 @@ void QGoTabImageView3DwT::ShowTraceDockWidgetForMesh(
 void QGoTabImageView3DwT::GoToDefaultMenu(std::string iTracename,
   std::string iCollectionName)
 {
-    this->m_ManualSegmentationDockWidget->setDisabled(true);
-    this->m_ManualSegmentationDockWidget->hide();
-    this->m_OneClickSegmentationDockWidget->setDisabled(true);
-    this->m_OneClickSegmentationDockWidget->hide();
-    this->m_ModeActions.at(2)->setChecked(true);
-    this->m_TraceManualEditingDockWidget->ShowAndUpdate(iTracename,
-      iCollectionName);
-    if(this->m_DataBaseTables->IsDatabaseUsed())
+  this->m_ManualSegmentationDockWidget->setDisabled(true);
+  this->m_ManualSegmentationDockWidget->hide();
+  this->m_OneClickSegmentationDockWidget->setDisabled(true);
+  this->m_OneClickSegmentationDockWidget->hide();
+  this->m_ModeActions.at(2)->setChecked(true);
+  this->m_TraceManualEditingDockWidget->ShowAndUpdate(iTracename,
+    iCollectionName);
+  if(this->m_DataBaseTables->IsDatabaseUsed())
+    {
+    if (iTracename == "contour")
       {
-      if (iTracename == "contour")
-        {
-        this->m_TraceManualEditingDockWidget->m_TraceWidget->SetCollectionID(
-          this->m_DataBaseTables->GetListExistingCollectionIDFromDB(
+      this->m_TraceManualEditingDockWidget->m_TraceWidget->SetCollectionID(
+      this->m_DataBaseTables->GetListExistingCollectionIDFromDB(
           "contour",this->GetTimePoint()));
-        }
-      else
-        {
-        this->m_TraceManualEditingDockWidget->m_TraceWidget->SetCollectionID(
-          this->m_DataBaseTables->GetListExistingCollectionIDFromDB(iTracename));
-        }
       }
+    else
+      {
+      this->m_TraceManualEditingDockWidget->m_TraceWidget->SetCollectionID(
+        this->m_DataBaseTables->GetListExistingCollectionIDFromDB(iTracename));
+      }
+    }
 }
 //-------------------------------------------------------------------------

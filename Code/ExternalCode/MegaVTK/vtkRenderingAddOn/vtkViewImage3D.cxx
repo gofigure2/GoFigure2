@@ -669,14 +669,30 @@ vtkViewImage3D::AddDataSet( vtkDataSet* dataset,
     return 0;
     }
 
-  vtkSmartPointer< vtkPolyDataMapper > mapper =
-    vtkSmartPointer< vtkPolyDataMapper >::New();
+  vtkSmartPointer<vtkPolyDataMapper> mapper =
+        vtkSmartPointer<vtkPolyDataMapper>::New();
+  mapper->SetInput( dynamic_cast<vtkPolyData*>(dataset) );
   mapper->SetScalarVisibility( iDataVisibility );
 
-//   vtkQuadricLODActor* actor = vtkQuadricLODActor::New();
-  vtkActor* actor = vtkActor::New();
-//   actor->GetLODFilter()->SetNumberOfDivisions( 3, 3, 3 );
+  // actor coordinates geometry, properties, transformation
 
+  //   vtkQuadricLODActor* actor = vtkQuadricLODActor::New();
+  //   actor->GetLODFilter()->SetNumberOfDivisions( 3, 3, 3 );
+
+  vtkSmartPointer<vtkActor> actor3d =
+      vtkSmartPointer<vtkActor>::New();
+  actor3d->SetMapper( mapper );
+
+  if( property )
+    {
+    // Generates bug in visu
+    //actor3d->SetProperty( property );
+    actor3d->GetProperty()->SetColor( property->GetColor() );
+    }
+  // Generates problems in visu 3d
+  //contActor->GetProperty()->BackfaceCullingOn();
+
+/*
   vtkSmartPointer< vtkClipPolyData > cutter =
     vtkSmartPointer< vtkClipPolyData >::New();
 
@@ -692,22 +708,14 @@ vtkViewImage3D::AddDataSet( vtkDataSet* dataset,
     {
     mapper->SetInput( vtkPolyData::SafeDownCast( dataset ) );
     }
-
-  actor->SetMapper( mapper );
-  if( property )
-    {
-    actor->SetProperty( property );
-    }
-  actor->GetProperty()->BackfaceCullingOn();
-
+*/
 //   actor->SetUserTransform( this->AdjustmentTransform );
 
-  this->Renderer->AddViewProp( actor );
+  this->Renderer->AddViewProp( actor3d );
   this->DataSetCollection->AddItem( dataset );
-  this->Prop3DCollection->AddItem( actor );
+  this->Prop3DCollection->AddItem( actor3d );
 
-//   actor->Delete();
-  return actor;
+  return actor3d;
 }
 
 //----------------------------------------------------------------------------
