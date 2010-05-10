@@ -45,9 +45,6 @@
 #include <QLayout>
 #include "ui_OneClickSegmentationDockWidget.h"
 
-#include "QGoTraceManualEditingWidget.h"
-#include "QGoManualSegmentationSettingsDialog.h"
-
 class vtkProperty;
 
 class QGoOneClickSegmentationDockWidget :
@@ -56,7 +53,7 @@ class QGoOneClickSegmentationDockWidget :
 {
   Q_OBJECT
 public:
-  QGoOneClickSegmentationDockWidget( QWidget* iParent = 0 );
+  explicit QGoOneClickSegmentationDockWidget( QWidget* iParent = 0 );
   ~QGoOneClickSegmentationDockWidget();
 
   void SetNumberOfChannels( int );
@@ -79,7 +76,7 @@ private:
 public slots:
   void ApplyFilterEmit();
   void FilterChanged( int );
-  void AdvancedMode( int );
+  void AdvancedMode( bool );
 
 signals:
   void ApplyFilterPressed();

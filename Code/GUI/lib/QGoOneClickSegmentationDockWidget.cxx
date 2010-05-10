@@ -56,11 +56,12 @@ m_Filter(0)
   QObject::connect( this->filterType, SIGNAL( activated( int ) ),
         this, SLOT( FilterChanged( int ) ) );
 
-  QObject::connect( this->advanceMode, SIGNAL( stateChanged( int ) ),
-          this, SLOT( AdvancedMode( int ) ) );
+  QObject::connect( this->advanceMode, SIGNAL( toggled( bool ) ),
+          this, SLOT( AdvancedMode( bool ) ) );
 
   // Initialize visualization
   UpdateWidget( true );
+  AdvancedMode( false );
 
   // Initialize parameters for levelset
   InitializeLevelsetParameters();
@@ -193,52 +194,24 @@ void
 QGoOneClickSegmentationDockWidget::
 UpdateWidget( bool iUse )
 {
-  if( iUse )
-    {
-    this->LevelsetParametersLabel->hide();
+  this->LevelsetParametersLabel->setVisible( !iUse );
 
-    this->channelLabel->hide();
-    this->channel->hide();
+  this->channelLabel->setVisible( !iUse );
+  this->channel->setVisible( !iUse );
 
-    this->advanceModeLabel->hide();
-    this->advanceMode->hide();
-
-    AdvancedMode( static_cast<int>( this->advanceMode->isChecked() ) );
-    }
-  else
-    {
-    this->LevelsetParametersLabel->show();
-
-    this->channelLabel->show();
-    this->channel->show();
-
-    this->advanceModeLabel->show();
-    this->advanceMode->show();
-
-    AdvancedMode( static_cast<int>( this->advanceMode->isChecked() ) );
-    }
+  this->advanceModeLabel->setVisible( !iUse );
+  this->advanceMode->setVisible( !iUse );
 }
 //---------------------------------------------------------------------------//
 
 //---------------------------------------------------------------------------//
 void
 QGoOneClickSegmentationDockWidget::
-AdvancedMode( int iAdvanced )
+AdvancedMode( bool iAdvanced )
 {
-  if( iAdvanced )
-    {
-    this->numberOfIterationsLabel->show();
-    this->numberOfIterations->show();
+  this->numberOfIterationsLabel->setVisible( iAdvanced );
+  this->numberOfIterations->setVisible( iAdvanced );
 
-    this->curvatureWeightLabel->show();
-    this->curvatureWeight->show();
-    }
-  else
-    {
-    this->numberOfIterationsLabel->hide();
-    this->numberOfIterations->hide();
-
-    this->curvatureWeightLabel->hide();
-    this->curvatureWeight->hide();
-    }
+  this->curvatureWeightLabel->setVisible( iAdvanced );
+  this->curvatureWeight->setVisible( iAdvanced );
 }
