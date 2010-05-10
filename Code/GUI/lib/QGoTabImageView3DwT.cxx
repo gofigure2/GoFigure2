@@ -1300,6 +1300,7 @@ SetTimePointWithMegaCapture( const int& iTimePoint )
   QApplication::setOverrideCursor( QCursor( Qt::WaitCursor ) );
 
   RemoveAllContoursForPresentTimePoint();
+  RemoveAllMeshesForPresentTimePoint();
 
   m_TimePoint = iTimePoint;
   m_MegaCaptureReader->SetChannel( 0 );
@@ -1376,6 +1377,7 @@ SetTimePointWithLSMReaders( const int& iTimePoint )
   QApplication::setOverrideCursor( QCursor( Qt::WaitCursor ) );
 
   RemoveAllContoursForPresentTimePoint();
+  RemoveAllMeshesForPresentTimePoint();
 
   m_TimePoint = iTimePoint;
   m_LSMReader[0]->SetUpdateTimePoint( m_TimePoint );
