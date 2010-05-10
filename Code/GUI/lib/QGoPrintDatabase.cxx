@@ -1376,17 +1376,22 @@ void QGoPrintDatabase::AddATraceToContourMeshInfo(std::string iTraceName,
 void QGoPrintDatabase::DeleteTraceInContourMeshStructure(int iTraceID,
   ContourMeshStructureMultiIndexContainer* iTraceInfo )
 {
-  ContourMeshStructureMultiIndexContainer::iterator iter = 
-    iTraceInfo->begin();
-
-  while( iter != iTraceInfo->end() )
+  /** \todo once the info for the vizu regarding the tracks are defined,
+  change it here:*/
+  if(this->InWhichTableAreWe()!= "track")
     {
-    if( static_cast< int >( iter->TraceID ) == iTraceID)
+    ContourMeshStructureMultiIndexContainer::iterator iter = 
+      iTraceInfo->begin();
+
+    while( iter != iTraceInfo->end() )
       {
-      iTraceInfo->erase(iter);
-      break;
+      if( static_cast< int >( iter->TraceID ) == iTraceID)
+        {
+        iTraceInfo->erase(iter);
+        break;
+        }
+      ++iter;
       }
-    ++iter;
     }
 }
 //-------------------------------------------------------------------------
