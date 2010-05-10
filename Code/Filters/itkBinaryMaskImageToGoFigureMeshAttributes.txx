@@ -44,7 +44,7 @@ GenerateData()
   shapeConverter->Update();
 
   ShapeLabelMapPointer shapeLabelMap = shapeConverter->GetOutput();
-  const ShapeLabelObjectType *shapeObject = shapeLabelMap->GetLabelObject();
+  const ShapeLabelObjectType *shapeObject = shapeLabelMap->GetLabelObject( 0 );
 
   // stat stuff
   StatConverterPointer statConverter = StatConverterType::New();
@@ -54,7 +54,7 @@ GenerateData()
   statConverter->Update();
 
   StatLabelMapPointer statLabelMap = statConverter->GetOutput();
-  const StatLabelObjectType *statObject = statLabelMap->GetLabelObject();
+  const StatLabelObjectType *statObject = statLabelMap->GetLabelObject( 0 );
 
   // Number of voxels;
   m_Size = shapeObject->Size();

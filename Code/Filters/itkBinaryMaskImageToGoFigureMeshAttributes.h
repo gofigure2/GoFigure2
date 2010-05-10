@@ -1,6 +1,12 @@
 #ifndef __itkBinaryMaskImageToGoFigureMeshAttributes_h
 #define __itkBinaryMaskImageToGoFigureMeshAttributes_h
 
+#include "itkLightObject.h"
+#include "itkShapeLabelObject.h"
+#include "itkStatisticsLabelObject.h"
+#include "itkLabelImageToShapeLabelMapFilter.h"
+#include "itkLabelImageToStatisticsLabelMapFilter.h"
+
 namespace itk
 {
   template< class TInput, class TMask >
@@ -30,7 +36,7 @@ namespace itk
     itkTypeMacro( BinaryMaskImageToGoFigureMeshAttributes, LightObject );
 
     /** Display */
-    void PrintSelf( std::ostream& os, Indent indent ) const;
+//     void PrintSelf( std::ostream& os, Indent indent ) const;
 
     typedef bool                                          LabelType;
 
@@ -42,26 +48,30 @@ namespace itk
     typedef typename StatLabelObjectType::Pointer         StatLabelObjectPointer;
 
     typedef LabelMap< ShapeLabelObjectType >              ShapeLabelMapType;
+    typedef typename ShapeLabelMapType::Pointer            ShapeLabelMapPointer;
+
     typedef LabelMap< StatLabelObjectType >               StatLabelMapType;
+    typedef typename StatLabelMapType::Pointer            StatLabelMapPointer;
 
-    typedef LabelImageToShapeLabelMapFilter< SegmentImageType, ShapeLabelMapType >
+    typedef LabelImageToShapeLabelMapFilter< MaskImageType, ShapeLabelMapType >
                                                           ShapeConverterType;
-    typedef ShapeConverterType::Pointer                   ShapeConverterPointer;
+    typedef typename ShapeConverterType::Pointer          ShapeConverterPointer;
 
-    typedef LabelImageToStatisticsLabelMapFilter< BinaryMaskImageType,
+    typedef LabelImageToStatisticsLabelMapFilter< MaskImageType,
               ImageType, StatLabelMapType >               StatConverterType;
     typedef typename StatConverterType::Pointer           StatConverterPointer;
-
-    itkStaticConstMacro( ImageDimension, unsigned int, TImage::ImageDimension );
 
     void SetImage( ImageType* iInput );
     void SetMaskImage( MaskImageType* iMask );
 
-    void Update();
+    void Update() {GenerateData();}
   
   protected:
+    BinaryMaskImageToGoFigureMeshAttributes();
+    ~BinaryMaskImageToGoFigureMeshAttributes();
+
     ImagePointer m_InputImage;
-    BinaryMaskImagePointer m_MaskImage;
+    MaskImagePointer m_MaskImage;
 
     unsigned int m_Size;
     double m_PhysicalSize;
