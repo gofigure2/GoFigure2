@@ -239,6 +239,8 @@ protected:
   void FullScreenViewYZ();
   void FullScreenViewXYZ();
 
+  void InitializeSeedWidgetInteraction();
+
   bool m_ShowAnnotations;
   bool m_ShowSplinePlane;
   bool m_ShowCube;

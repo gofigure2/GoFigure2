@@ -80,6 +80,9 @@
 #include "vtkMath.h"
 #include "vtkPolyData.h"
 
+#include "vtkWidgetEvent.h"
+#include "vtkWidgetEventTranslator.h"
+
 #include <cstdlib>
 
 //-------------------------------------------------------------------------
@@ -142,31 +145,7 @@ QGoImageView3D( QWidget* iParent ) :
   this->View3D->SetupInteractor( this->QvtkWidget_XYZ->GetInteractor() );
   this->m_Pool->SetExtraRenderWindow( renwin4 );
 
-  // Enable seed interaction
-  this->Handle.resize( this->m_Pool->GetNumberOfItems() );
-  this->SeedRep.resize( this->m_Pool->GetNumberOfItems() );
-  this->SeedWidget.resize( this->m_Pool->GetNumberOfItems() );
-
-  for( int i = 0; i < this->m_Pool->GetNumberOfItems(); i++)
-    {
-    this->Handle[i] = vtkSmartPointer<vtkConstrainedPointHandleRepresentation>::New();
-    this->Handle[i]->GetProperty()->SetColor(1,0,0);
-
-    this->SeedRep[i] = vtkSmartPointer<vtkSeedRepresentation>::New();
-    this->SeedRep[i]->SetHandleRepresentation(this->Handle[i]);
-
-    this->SeedWidget[i] = vtkSmartPointer<vtkSeedWidget>::New();
-    this->SeedWidget[i]->SetPriority( 10.0 );
-    this->SeedWidget[i]->SetRepresentation( this->SeedRep[i] );
-    }
-
-  this->Handle[0]->SetProjectionNormal( vtkViewImage2D::VIEW_ORIENTATION_AXIAL );
-  this->Handle[1]->SetProjectionNormal( vtkViewImage2D::VIEW_ORIENTATION_CORONAL );
-  this->Handle[2]->SetProjectionNormal( vtkViewImage2D::VIEW_ORIENTATION_SAGITTAL );
-
-  this->SeedWidget[0]->SetInteractor( this->QvtkWidget_XY->GetInteractor() );
-  this->SeedWidget[1]->SetInteractor( this->QvtkWidget_XZ->GetInteractor() );
-  this->SeedWidget[2]->SetInteractor( this->QvtkWidget_YZ->GetInteractor() );
+  InitializeSeedWidgetInteraction();
 }
 //-------------------------------------------------------------------------
 
@@ -455,6 +434,44 @@ void QGoImageView3D::SetupVTKtoQtConnections()
 
 //   QObject::connect( this, SIGNAL( ActorsSelectionChanged() ),
 //     this, SLOT( HighLightContours() ) );
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoImageView3D::
+InitializeSeedWidgetInteraction()
+{
+  // Enable seed interaction
+  this->Handle.resize( this->m_Pool->GetNumberOfItems() );
+  this->SeedRep.resize( this->m_Pool->GetNumberOfItems() );
+  this->SeedWidget.resize( this->m_Pool->GetNumberOfItems() );
+
+  for( int i = 0; i < this->m_Pool->GetNumberOfItems(); i++)
+    {
+    this->Handle[i] = vtkSmartPointer<vtkConstrainedPointHandleRepresentation>::New();
+    this->Handle[i]->GetProperty()->SetColor(1,0,0);
+
+    this->SeedRep[i] = vtkSmartPointer<vtkSeedRepresentation>::New();
+    this->SeedRep[i]->SetHandleRepresentation(this->Handle[i]);
+
+    this->SeedWidget[i] = vtkSmartPointer<vtkSeedWidget>::New();
+    this->SeedWidget[i]->SetPriority( 10.0 );
+    this->SeedWidget[i]->SetRepresentation( this->SeedRep[i] );
+    }
+
+  this->Handle[0]->SetProjectionNormal( vtkViewImage2D::VIEW_ORIENTATION_AXIAL );
+  this->Handle[1]->SetProjectionNormal( vtkViewImage2D::VIEW_ORIENTATION_CORONAL );
+  this->Handle[2]->SetProjectionNormal( vtkViewImage2D::VIEW_ORIENTATION_SAGITTAL );
+
+  this->SeedWidget[0]->SetInteractor( this->QvtkWidget_XY->GetInteractor() );
+  this->SeedWidget[1]->SetInteractor( this->QvtkWidget_XZ->GetInteractor() );
+  this->SeedWidget[2]->SetInteractor( this->QvtkWidget_YZ->GetInteractor() );
+
+  // to remove right click interaction in the one click widget
+  this->SeedWidget[0]->GetEventTranslator()->RemoveTranslation(vtkCommand::RightButtonPressEvent );
+  this->SeedWidget[1]->GetEventTranslator()->RemoveTranslation(vtkCommand::RightButtonPressEvent );
+  this->SeedWidget[2]->GetEventTranslator()->RemoveTranslation(vtkCommand::RightButtonPressEvent );
 }
 //-------------------------------------------------------------------------
 
@@ -1346,24 +1363,11 @@ void
 QGoImageView3D::
 OneClickMode()
 {
-  //Change cursor
-  this->QvtkWidget_XY->setCursor( Qt::ArrowCursor );
-  this->QvtkWidget_XZ->setCursor( Qt::ArrowCursor );
-  this->QvtkWidget_YZ->setCursor( Qt::ArrowCursor );
+  //Reinitialize cursor interaction
+  DefaultMode();
 
-  vtkViewImage2D* View1 = this->m_Pool->GetItem( 0 );
-  View1->SetInteractionStyle(vtkInteractorStyleImage2D::InteractionOneClick );
-
-  vtkViewImage2D* View2 = this->m_Pool->GetItem( 1 );
-  View2->SetInteractionStyle(vtkInteractorStyleImage2D::InteractionOneClick );
-
-  vtkViewImage2D* View3 = this->m_Pool->GetItem( 2 );
-  View3->SetInteractionStyle(vtkInteractorStyleImage2D::InteractionOneClick );
-
+  // Enable widget in each slice
   this->EnableOneClickMode();
-
-  this->SeedWidget[1]->SetInteractor( this->QvtkWidget_XZ->GetInteractor() );
-  this->SeedWidget[2]->SetInteractor( this->QvtkWidget_YZ->GetInteractor() );
 }
 //-------------------------------------------------------------------------
 
