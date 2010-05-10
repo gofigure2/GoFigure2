@@ -27,3 +27,18 @@ ADD_TEST( itkBinaryMaskImageToGoFigureMeshAttributesTest
   ${TESTING_DATA_PATH}/Circle3D.mhd
   temp.mhd
 )
+
+ADD_EXECUTABLE( itkvtkPolyDataToGoFigureMeshAttributesTest
+ itkvtkPolyDataToGoFigureMeshAttributesTest.cxx )
+TARGET_LINK_LIBRARIES( itkvtkPolyDataToGoFigureMeshAttributesTest
+  ITKIO
+  ITKCommon
+  ITKStatistics
+  vtkGraphics
+  vtkHybrid
+)
+
+ADD_TEST( itkvtkPolyDataToGoFigureMeshAttributesTest
+  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/itkvtkPolyDataToGoFigureMeshAttributesTest
+  ${TESTING_DATA_PATH}/Circle3D.mhd
+)
