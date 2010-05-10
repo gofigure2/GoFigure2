@@ -53,12 +53,12 @@ vtkPolyDataToBinaryMaskImageFilter< TInput, TOutput >::GenerateData()
   for( unsigned int dim = 0; dim < ImageDimension; dim++ )
     {
     vtk_spacing[dim] = static_cast< double >( itk_spacing[dim] );
-    vtk_size[dim] = static_cast< int >( ( bounds[2*dim+1] - bounds[2*dim] ) / vtk_spacing[dim] );
+    vtk_size[dim] = static_cast< int >( vcl_ceil( bounds[2*dim+1] - bounds[2*dim] ) / vtk_spacing[dim] );
     }
 
   m_WhiteImage->SetSpacing( vtk_spacing );
   m_WhiteImage->SetDimensions( vtk_size );
-  m_WhiteImage->SetExtent(0, vtk_size[0] - 1, 0, vtk_size[1] - 1, 0, vtk_size[2] - 1);
+  m_WhiteImage->SetExtent(0, vtk_size[0], 0, vtk_size[1], 0, vtk_size[2] );
   m_WhiteImage->SetOrigin( origin );
   m_WhiteImage->SetScalarTypeToUnsignedChar();
   m_WhiteImage->AllocateScalars();

@@ -64,7 +64,12 @@ namespace itk
     void SetImage( ImageType* iInput );
     void SetMaskImage( MaskImageType* iMask );
 
-    void Update() {GenerateData();}
+    void Update();
+
+    unsigned int GetSize();
+    double GetPhysicalSize();
+    double GetMeanIntensity();
+    double GetSumIntensity();
   
   protected:
     BinaryMaskImageToGoFigureMeshAttributes();
@@ -78,7 +83,7 @@ namespace itk
     double m_Mean;
     double m_Sum;
 
-    void GenerateData();
+    virtual void GenerateData();
 
   private:
     BinaryMaskImageToGoFigureMeshAttributes( const Self& );

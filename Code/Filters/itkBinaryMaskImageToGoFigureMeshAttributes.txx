@@ -35,16 +35,50 @@ SetMaskImage( MaskImageType* iMask )
 template< class TInput, class TMask >
 void
 BinaryMaskImageToGoFigureMeshAttributes< TInput, TMask >::
+Update()
+{
+  GenerateData();
+}
+
+template< class TInput, class TMask >
+unsigned int
+BinaryMaskImageToGoFigureMeshAttributes< TInput, TMask >::GetSize()
+{
+  return m_Size;
+}
+
+template< class TInput, class TMask >
+double
+BinaryMaskImageToGoFigureMeshAttributes< TInput, TMask >::GetPhysicalSize()
+{
+  return m_PhysicalSize;
+}
+
+template< class TInput, class TMask >
+double BinaryMaskImageToGoFigureMeshAttributes< TInput, TMask >::GetMeanIntensity()
+{
+  return m_Mean;
+}
+
+template< class TInput, class TMask >
+double BinaryMaskImageToGoFigureMeshAttributes< TInput, TMask >::GetSumIntensity()
+{
+  return m_Sum;
+}
+
+template< class TInput, class TMask >
+void
+BinaryMaskImageToGoFigureMeshAttributes< TInput, TMask >::
 GenerateData()
 {
   // shape stuff
   ShapeConverterPointer shapeConverter = ShapeConverterType::New();
   shapeConverter->SetInput( m_MaskImage );
-  shapeConverter->SetBackgroundValue ( 0 );
+  shapeConverter->SetBackgroundValue( 0 );
   shapeConverter->Update();
 
   ShapeLabelMapPointer shapeLabelMap = shapeConverter->GetOutput();
-  const ShapeLabelObjectType *shapeObject = shapeLabelMap->GetLabelObject( 0 );
+  const ShapeLabelObjectType *shapeObject = shapeLabelMap->GetLabelObject( 1 );
 
   // stat stuff
   StatConverterPointer statConverter = StatConverterType::New();
@@ -54,7 +88,7 @@ GenerateData()
   statConverter->Update();
 
   StatLabelMapPointer statLabelMap = statConverter->GetOutput();
-  const StatLabelObjectType *statObject = statLabelMap->GetLabelObject( 0 );
+  const StatLabelObjectType *statObject = statLabelMap->GetLabelObject( 1 );
 
   // Number of voxels;
   m_Size = shapeObject->Size();
@@ -63,6 +97,7 @@ GenerateData()
   m_PhysicalSize = shapeObject->GetPhysicalSize();
 
   m_Mean = statObject->GetMean();
+
   m_Sum = statObject->GetSum();
 }
 
