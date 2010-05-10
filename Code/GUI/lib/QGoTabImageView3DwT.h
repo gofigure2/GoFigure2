@@ -426,6 +426,8 @@ protected:
   vtkSmartPointer<vtkPolyData> CreateSphereVolume( vtkViewImage2D* iView,
       double iCenter[3], double iRadius );
 
+  void ComputeMeshAttributes( vtkPolyData* iMesh );
+
 protected slots:
   void AddBookmark();
   void GetTheOpenBookmarksActions();

@@ -73,6 +73,8 @@ class QGOGUILIB_EXPORT QGoVisualizationDockWidget :
     int  GetCurrentChannel() const;
     bool ShowAllChannels()   const;
 
+    QString GetChannelName( const int& );
+
   public slots:
     void SetXSlice( int iSlice );
     void SetYSlice( int iSlice );

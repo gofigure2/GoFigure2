@@ -120,6 +120,8 @@
 #include "itkVTKImageImport.h"
 #include "itkVTKImageToImageFilter.h"
 
+#include "itkvtkPolyDataToGoFigureMeshAttributes.h"
+
 #include "QGoManualSegmentationSettingsDialog.h"
 #include "QGoTraceManualEditingWidget.h"
 
@@ -257,17 +259,14 @@ QGoTabImageView3DwT::
     temp = 0;
     }
 
-  DeleteContourMeshStructureElement( m_ContourContainer );
-  DeleteContourMeshStructureElement( m_MeshContainer );
+//   DeleteContourMeshStructureElement( m_ContourContainer );
+//   DeleteContourMeshStructureElement( m_MeshContainer );
 
 }
 //----------------------------------------------------------------------
 
 
 //-------------------------------------------------------------------------
-/**
- * \brief
- */
 void
 QGoTabImageView3DwT::
 CreateSettingAndDialogSegmentationWidgets()
@@ -3821,6 +3820,8 @@ SavePolyDataAsVolumeInDB( vtkPolyData* iView, const int& iContourID,
     mesh_id = m_DataBaseTables->SaveMeshFromVisuInDB( min_idx[0],
         min_idx[1], min_idx[2], iTCoord, max_idx[0],
         max_idx[1], max_idx[2], iView );
+
+    ComputeMeshAttributes( iView );
     }
   else
     {
@@ -3949,3 +3950,36 @@ void QGoTabImageView3DwT::GoToDefaultMenu(std::string iTracename,
     }
 }
 //-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+ComputeMeshAttributes( vtkPolyData* iMesh )
+{
+  typedef unsigned char PixelType;
+  const unsigned int Dimension = 3;
+  typedef itk::Image< PixelType, Dimension > ImageType;
+
+  itk::vtkPolyDataToGoFigureMeshAttributes< ImageType >::Pointer
+    calculator = itk::vtkPolyDataToGoFigureMeshAttributes< ImageType >::New();
+  calculator->SetPolyData( iMesh );
+
+  std::map< std::string, int > TotalIntensity;
+
+  for( size_t i = 0; i < m_InternalImages.size(); i++ )
+    {
+    vtkSmartPointer<vtkImageExport> vtk_exporter =
+      vtkSmartPointer<vtkImageExport>::New();
+    itk::VTKImageImport< ImageType >::Pointer itk_importer =
+      itk::VTKImageImport< ImageType >::New();
+    vtk_exporter->SetInput( m_InternalImages[i] );
+    ConnectPipelines< vtkImageExport, itk::VTKImageImport< ImageType >::Pointer >( vtk_exporter, itk_importer );
+    calculator->SetImage( itk_importer->GetOutput() );
+    calculator->Update();
+
+    QString q_channelname = this->m_NavigationDockWidget->GetChannelName( i );
+    std::string channelname = q_channelname.toStdString();
+    TotalIntensity[channelname] = static_cast< int >( calculator->GetSumIntensity() );
+    std::cout << channelname <<" " <<calculator->GetSumIntensity() <<std::endl;
+    }
+}

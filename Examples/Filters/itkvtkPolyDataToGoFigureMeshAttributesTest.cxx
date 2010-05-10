@@ -43,6 +43,7 @@ int main( int argc, char** argv )
   cal->SetPolyData( sphere_source->GetOutput() );
   cal->Update();
 
-  
+  sphere_source->Delete();
+
   return EXIT_SUCCESS;
 }

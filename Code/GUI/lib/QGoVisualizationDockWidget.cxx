@@ -240,3 +240,11 @@ ShowAllChannels() const
 {
   return this->AllChannelsBtn->isChecked();
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+QString QGoVisualizationDockWidget::GetChannelName( const int& iIdx )
+{
+  return this->ChannelComboBox->itemText( iIdx );
+}
+//-------------------------------------------------------------------------

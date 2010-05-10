@@ -144,7 +144,7 @@ FindContourGivenTraceID(
 
 QGOIO_EXPORT
 void DeleteContourMeshStructureElement(
-  ContourMeshStructureMultiIndexContainer iContainer);
+  ContourMeshStructureMultiIndexContainer iContainer );
 
 QGOIO_EXPORT
 ContourMeshStructure*
