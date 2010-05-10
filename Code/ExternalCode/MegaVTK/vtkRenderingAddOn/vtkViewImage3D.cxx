@@ -588,25 +588,13 @@ void
 vtkViewImage3D::
 SetBoundsActorsVisibility( bool iVisibility )
 {
-  size_t numberOfActors = this->BoundsActor.size();
-  vtkstd::vector<vtkActor*>::iterator  BoundsActorIterator
-    = BoundsActor.begin();
+  vtkstd::vector<vtkActor*>::iterator
+    BoundsActorIterator = BoundsActor.begin();
 
-  if( iVisibility )
+  while( BoundsActorIterator != BoundsActor.end() )
     {
-    for( size_t i = 0; i < numberOfActors; i++ )
-      {
-      (*BoundsActorIterator)->VisibilityOn();
-      BoundsActorIterator++;
-      }
-    }
-  else
-    {
-    for( size_t i = 0; i < numberOfActors; i++ )
-      {
-      (*BoundsActorIterator)->VisibilityOff();
-      BoundsActorIterator++;
-      }
+    (*BoundsActorIterator)->SetVisibility( iVisibility );
+    ++BoundsActorIterator;
     }
 }
 //----------------------------------------------------------------------------
