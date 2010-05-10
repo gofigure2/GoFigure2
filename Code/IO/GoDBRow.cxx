@@ -58,7 +58,7 @@ GoDBRow::~GoDBRow()
 //-------------------------------------------------------------------------
 void GoDBRow::SetField( std::string key, std::string value )
 {
-  std::map< std::string, std::string >::iterator it = m_MapRow.find( key );
+  StringMapIterator it = m_MapRow.find( key );
 
   if( it != m_MapRow.end() )
     {
@@ -77,7 +77,7 @@ void GoDBRow::SetField( std::string key, std::string value )
 std::string GoDBRow::PrintValues()
 {
   std::stringstream ListValues;
-  for( std::map<std::string, std::string>::iterator iter = m_MapRow.begin();
+  for( StringMapIterator iter = m_MapRow.begin();
     iter != m_MapRow.end(); ++iter )
     {
     ListValues << iter->second<< ", ";
@@ -91,8 +91,9 @@ std::string GoDBRow::PrintValues()
 std::string GoDBRow::PrintColumnNames()
     {
     std::stringstream ListColumnNames;
-    for( std::map<std::string, std::string>::iterator iter = m_MapRow.begin();
-      iter != m_MapRow.end(); ++iter )
+    for( StringMapIterator iter = m_MapRow.begin();
+      iter != m_MapRow.end(); 
+      ++iter )
       {
       ListColumnNames << iter->first<< ", ";
       }
@@ -105,8 +106,9 @@ std::string GoDBRow::PrintColumnNames()
 std::vector<std::string> GoDBRow::GetVectorColumnNames()
 {
   std::vector<std::string> VectorColumnNames; 
-  for( std::map<std::string, std::string>::iterator iter = m_MapRow.begin();
-      iter != m_MapRow.end(); ++iter )
+  for( StringMapIterator iter = m_MapRow.begin();
+      iter != m_MapRow.end(); 
+      ++iter )
     {
     VectorColumnNames.push_back(iter->first);
     }
@@ -129,28 +131,32 @@ std::vector<std::string> GoDBRow::GetVectorColumnNames()
  //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-std::map<std::string,std::string>::iterator GoDBRow::MapBegin()
+GoDBRow::StringMapIterator 
+GoDBRow::MapBegin()
 {
   return m_MapRow.begin();
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-std::map<std::string,std::string>::iterator GoDBRow::MapEnd()
+GoDBRow::StringMapIterator
+GoDBRow::MapEnd()
 {
   return m_MapRow.end();
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-std::map<std::string,std::string>::const_iterator GoDBRow::ConstMapBegin()
+GoDBRow::StringMapConstIterator 
+GoDBRow::ConstMapBegin()
 {
   return m_MapRow.begin();
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-std::map<std::string,std::string>::const_iterator GoDBRow::ConstMapEnd()
+GoDBRow::StringMapConstIterator
+GoDBRow::ConstMapEnd()
 {
   return m_MapRow.end();
 }
@@ -163,7 +169,7 @@ std::string GoDBRow::GetMapValue( std::string key )
   std::string oMapValue = "noValue";
 
 /// \todo check this alternative. It may be more efficient to use std::map::find
-  std::map< std::string, std::string >::iterator iter = m_MapRow.find( key );
+  StringMapIterator iter = m_MapRow.find( key );
 
   if( iter == m_MapRow.end() )
     {
@@ -220,10 +226,11 @@ std::string GoDBRow::GetMapValue( std::string key )
 void GoDBRow::SetValuesForSpecificID(int ID, 
   vtkMySQLDatabase* iDatabaseConnector)
 { 
-  std::vector<std::string> ResultQuery = ListSpecificValuesForOneColumn(
-    iDatabaseConnector,this->m_TableName, this->PrintColumnNames(),
-    this->m_TableIDName, ConvertToString<int>(ID));
-  std::vector<std::string>::iterator iterResultQuery = ResultQuery.begin();
+  std::vector<std::string> ResultQuery = 
+    ListSpecificValuesForOneColumn(
+      iDatabaseConnector, this->m_TableName, this->PrintColumnNames(),
+      this->m_TableIDName, ConvertToString<int>(ID) );
+
   if (this->m_MapRow.size() != ResultQuery.size())
     {
     std::cout<<"pb the map and the query results are not the same size";
@@ -232,12 +239,16 @@ void GoDBRow::SetValuesForSpecificID(int ID,
     }
   else
     {
-    std::map<std::string,std::string>::iterator iterMap = this->MapBegin();
-    while ( iterMap != this->MapEnd())
+    std::vector<std::string>::iterator iterResultQuery = 
+      ResultQuery.begin();
+
+    StringMapIterator iterMap = this->MapBegin();
+
+    while ( iterMap != this->MapEnd() )
       {
       iterMap->second = *iterResultQuery;
-      iterMap++;
-      iterResultQuery++;
+      ++iterMap;
+      ++iterResultQuery;
       }
     }
 }

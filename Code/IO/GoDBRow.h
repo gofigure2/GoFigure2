@@ -58,13 +58,17 @@ class QGOIO_EXPORT GoDBRow
 {
 public:
 
+  typedef std::map< std::string, std::string >  StringMapType;
+  typedef StringMapType::iterator               StringMapIterator;
+  typedef StringMapType::const_iterator         StringMapConstIterator;
+
   GoDBRow();
   virtual ~GoDBRow();
 
   template<typename T>
   void SetField( std::string key, T value )
     {
-    std::map< std::string, std::string >::iterator it = m_MapRow.find( key );
+    StringMapIterator it = m_MapRow.find( key );
 
     if( it != m_MapRow.end() )
       {
@@ -88,10 +92,10 @@ public:
   std::string PrintColumnNames();
   std::vector<std::string> GetVectorColumnNames();
   //std::list<std::string> GetListColumnNames();
-  std::map<std::string,std::string>::iterator MapBegin();
-  std::map<std::string,std::string>::const_iterator ConstMapBegin();
-  std::map<std::string,std::string>::iterator MapEnd();
-  std::map<std::string,std::string>::const_iterator ConstMapEnd();
+  StringMapIterator MapBegin();
+  StringMapConstIterator ConstMapBegin();
+  StringMapIterator MapEnd();
+  StringMapConstIterator ConstMapEnd();
 
   /**
   \brief return the value for the field map[key] after having removed the "
@@ -101,7 +105,7 @@ public:
 
   friend std::ostream& operator << ( std::ostream& os, const GoDBRow& c )
     {
-    for( std::map<std::string,std::string>::const_iterator it = c.m_MapRow.begin();
+    for( StringMapConstIterator it = c.m_MapRow.begin();
         it != c.m_MapRow.end();
         ++it )
       {
@@ -116,7 +120,7 @@ public:
 protected:
   virtual void InitializeMap() = 0;
   //virtual void SaveInDB (vtkMySQLDatabase* DatabaseConnector) = 0;
-  std::map<std::string,std::string> m_MapRow;
+  StringMapType m_MapRow;
   std::string m_TableName;
   std::string m_TableIDName;
 

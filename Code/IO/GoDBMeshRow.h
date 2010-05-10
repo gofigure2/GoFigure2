@@ -55,11 +55,11 @@ class QGOIO_EXPORT GoDBMeshRow : public GoDBTraceRow
 {
 public:
   GoDBMeshRow();
-  /**\brief fill the mesh map with the values gotten from the visualization*/
+  /** \brief fill the mesh map with the values gotten from the visualization*/
   GoDBMeshRow(vtkMySQLDatabase* DatabaseConnector,
-  GoDBCoordinateRow Min, GoDBCoordinateRow Max,unsigned int ImgSessionID,
-  vtkPolyData* TraceVisu);
-  
+    GoDBCoordinateRow Min, GoDBCoordinateRow Max, unsigned int ImgSessionID,
+    vtkPolyData* TraceVisu );
+
   GoDBMeshRow(vtkMySQLDatabase* DatabaseConnector,
     vtkPolyData* TraceVisu,GoDBCoordinateRow Min, GoDBCoordinateRow Max,
     unsigned int ImgSessionID);
@@ -72,15 +72,15 @@ public:
   void SetSubCellType(vtkMySQLDatabase* DatabaseConnector,
     std::string SubCellTypeName);
 
-  /**\brief save the mesh in the database and return the ID of the new
+  /** \brief save the mesh in the database and return the ID of the new
   created mesh*/
   int SaveInDB(vtkMySQLDatabase* DatabaseConnector);
 
-   void SetCollectionID (int iCollectionID);
-   
-   void ReInitializeMapAfterCast();
+  void SetCollectionID (int iCollectionID);
 
-   void SaveInDBTotalIntensityPerChannel(vtkMySQLDatabase* DatabaseConnector,
+  void ReInitializeMapAfterCast();
+
+  void SaveInDBTotalIntensityPerChannel(vtkMySQLDatabase* DatabaseConnector,
       std::map<std::string,int> iNameChannelWithValues);
 
 protected:
