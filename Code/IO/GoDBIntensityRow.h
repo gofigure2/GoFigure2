@@ -52,8 +52,8 @@ class QGOIO_EXPORT GoDBIntensityRow : public GoDBRow
 public:
   GoDBIntensityRow();
    
-  ~GoDBIntensityRow()
-    {}
+  ~GoDBIntensityRow();
+  
   int SaveInDB(vtkMySQLDatabase* DatabaseConnector);
 protected:
   virtual void InitializeMap();

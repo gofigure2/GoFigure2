@@ -23,6 +23,7 @@ SET( GODB_SRC
   GoDBChannelRowTest
   GoDBBookmarkRowTest
   GoDBImageRowTest
+  GoDBIntensityRowTest
   GoDBProjectRowTest
   GoDBCoordinateRowTest
   GoDBImgSessionRowTest
