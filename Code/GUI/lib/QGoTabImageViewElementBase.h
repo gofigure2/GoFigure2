@@ -124,6 +124,11 @@ protected:
   unsigned int  m_ContourId;
   bool          m_ReEditContourMode;
 
+  double m_LinesWidth;
+  QColor m_LinesColor;
+  QColor m_NodesColor;
+  QColor m_ActiveNodesColor;
+
   QHBoxLayout*  m_LayOut;
   QAction*      m_TakeSnapshotAction;
   
