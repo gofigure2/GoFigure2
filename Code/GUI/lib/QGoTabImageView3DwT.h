@@ -255,6 +255,8 @@ public slots:
   void RemoveAllMeshesForPresentTimePoint();
 
   void ActivateManualSegmentationEditor( const bool& iActivate );
+  void ActivateSemiAutoSegmentationEditor( const bool& iActivate );
+
   void ValidateContour();
   int  SavePolyDataAsContourInDB( vtkPolyData* iView );
   void SavePolyDataAsVolumeInDB( vtkPolyData* iView );
@@ -265,6 +267,8 @@ public slots:
   void HighLightContoursFromTable();
   void SelectContoursInTable();
   void DeleteContoursFromTable( const std::list< int >& iList );
+  void DeleteMeshesFromTable( const std::list< int >& iList );
+  void DeleteTracesFromTable( const std::list< int >& iList );
 
   void HighLightMeshesFromTable();
 
@@ -288,6 +292,7 @@ public slots:
   void Change3DPerspectiveToSagittal();
 
   void ApplyOneClickSegmentationFilter();
+  void ApplyContourSemiAutoSegmentation();
 
 protected:
   QHBoxLayout*          m_LayOut;
@@ -437,6 +442,8 @@ protected slots:
   void ShowTraceDockWidgetForContour(bool ManualSegVisible);
   void ShowTraceDockWidgetForMesh(bool OneClickVisible);
   void GoToDefaultMenu(std::string iTracename,std::string iCollectionName);
+  void ContourInteractorBehaviour( bool );
+  void MeshInteractorBehaviour( bool );
 
 };
 

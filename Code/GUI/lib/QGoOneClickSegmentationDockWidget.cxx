@@ -109,8 +109,8 @@ GetFilter()
 {
   // 0 = circle contours (sphere aspect)
   // 1 = sphere ( 3D volume - no contours)
-  // 2 = 2D levelset
-  // 3 = 3D levelset
+  // 2 = 3D levelset
+
   return this->filterType->currentIndex();
 }
 //---------------------------------------------------------------------------//
@@ -158,8 +158,7 @@ FilterChanged( int filterSelected )
 {
   // 0 = circle contours (sphere aspect)
   // 1 = sphere ( 3D volume - no contours)
-  // 2 = 2D levelset
-  // 3 = 3D levelset
+  // 2 = 3D levelset
 
   switch ( filterSelected )
     {
@@ -174,14 +173,14 @@ FilterChanged( int filterSelected )
     break;
 
     case 2 :
-    // sphere (2d level set)
-    this->UpdateWidget( false );
-    break;
-
-    case 3 :
     // sphere (3d level set)
     this->UpdateWidget( false );
     break;
+/*
+    case 3 :
+    // sphere (3d level set)
+    this->UpdateWidget( false );
+    break;*/
 
     default :
     break;

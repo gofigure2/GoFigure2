@@ -62,11 +62,35 @@ public:
 
   QGoManualSegmentationSettingsDialog* m_SettingsDialog;
 
+  void SetNumberOfChannels( int );
+
+  // Methods to get useful informations
+  int    GetMode();
+  double GetRadius();
+  int    GetChannel();
+  int    GetNumberOfIterations();
+  int    GetCurvatureWeight();
+
+private:
+  void ShowManual( bool iUse );
+  void ShowSemiAuto( bool iUse );
+
+  void InitializeLevelsetParameters();
+
 signals:
   void ReinitializePressed();
   void ValidatePressed();
   void SettingsPressed();
   void UpdateContourRepresentationProperties();
+  void ApplyFilterPressed();
+
+  // Change Mode
+  void UpdateInteractorBehaviour( bool );
+
+public slots:
+  void UpdateWidget( int );
+  void AdvancedMode( bool );
+  void ApplyFilterEmit();
 
 };
 

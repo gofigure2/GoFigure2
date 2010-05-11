@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>211</width>
+    <width>220</width>
     <height>307</height>
    </rect>
   </property>
@@ -55,11 +55,6 @@
         <item>
          <property name="text">
           <string>3D Sphere</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>2D Level Set</string>
          </property>
         </item>
         <item>

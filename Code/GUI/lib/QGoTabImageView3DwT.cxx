@@ -265,8 +265,7 @@ QGoTabImageView3DwT::
 //   DeleteContourMeshStructureElement( m_MeshContainer );
 
 }
-//----------------------------------------------------------------------
-
+//-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void
@@ -275,16 +274,9 @@ CreateSettingAndDialogSegmentationWidgets()
 {
   this->m_TraceManualEditingDockWidget = 
     new QGoTraceManualEditingDockWidget(this );
-
-  //TraceManualEditingWidget = new QGoTraceManualEditingWidget( this->m_TraceManualEditingDockWidget );
-
-  //QAction* tempaction_SettingDialog = new QAction( tr("Contours settings"), this );
-
-  //QAction* tempaction = this->m_TraceManualEditingDockWidget->toggleViewAction();
-
-  //this->m_SegmentationActions.push_back( tempaction_SettingDialog );
-//  this->m_SegmentationActions.push_back( tempaction );
 }
+//-------------------------------------------------------------------------
+
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
@@ -341,6 +333,8 @@ CreateManualSegmentationdockWidget()
   m_ManualSegmentationDockWidget = new QGoManualSegmentationDockWidget( this );
   m_ManualSegmentationDockWidget->setEnabled( false );
 
+  // Manual segmentation
+
   QObject::connect( m_ManualSegmentationDockWidget, SIGNAL( ValidatePressed() ),
     this, SLOT( ValidateContour() ) );
 
@@ -356,9 +350,118 @@ CreateManualSegmentationdockWidget()
   QObject::connect( this, SIGNAL( ContourRepresentationPropertiesChanged() ),
     this, SLOT( ChangeContourRepresentationProperty() ) );
 
+  // Connect semi auto segmentation
+
+  QObject::connect( m_ManualSegmentationDockWidget, SIGNAL( ApplyFilterPressed( ) ),
+      this, SLOT( ApplyContourSemiAutoSegmentation( ) ) );
+
+  // Cursor interaction
+
+  QObject::connect( m_ManualSegmentationDockWidget, SIGNAL( UpdateInteractorBehaviour( bool ) ),
+   this, SLOT( ContourInteractorBehaviour( bool ) ) );
+
+  // Create action
+
   QAction* tempaction = m_ManualSegmentationDockWidget->toggleViewAction();
 
   this->m_SegmentationActions.push_back( tempaction );
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+ContourInteractorBehaviour( bool iVisible)
+{
+  // Mode 0 = manual
+  // Mode 1 = semi auto
+  // Mode 2 = auto
+  int mode = m_ManualSegmentationDockWidget->GetMode();
+  std::cout << mode << std::endl;
+  switch ( mode )
+    {
+    case 0 :
+      // Manual
+      ActivateManualSegmentationEditor( iVisible );
+      break;
+
+    case 1 :
+      // Semi auto
+      ActivateSemiAutoSegmentationEditor( iVisible );
+      break;
+
+    case 2 :
+      // Auto
+      break;
+
+    default :
+      break;
+      }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+/**
+ *
+ * \param iActivate
+ */
+void
+QGoTabImageView3DwT::
+ActivateManualSegmentationEditor( const bool& iActivate )
+{
+  // Initializae cursor behaviour
+  this->DefaultMode();
+
+  std::vector< vtkSmartPointer< vtkContourWidget > >::iterator
+    it = m_ContourWidget.begin();
+  while( it != m_ContourWidget.end() )
+    {
+    if( iActivate )
+      {
+      (*it)->On();
+      std::cout << "Activate " << std::endl;
+      }
+    else
+      {
+      (*it)->Off();
+      std::cout << "Disabled " << std::endl;
+      }
+    ++it;
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+/**
+ *
+ * \param iActivate
+ */
+void
+QGoTabImageView3DwT::
+ActivateSemiAutoSegmentationEditor( const bool& iActivate )
+{
+  ActivateManualSegmentationEditor( !iActivate );
+  // Initializae cursor behaviour
+  this->DefaultMode();
+
+  if( iActivate )
+      {
+      this->OneClickMode();
+      }
+}
+//-------------------------------------------------------------------------
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+MeshInteractorBehaviour( bool iVisible)
+{
+  ActivateManualSegmentationEditor( !iVisible );
+  // if the widget is visible
+  // check in which mode we are
+  if( iVisible )
+    {
+    this->OneClickMode();
+    }
 }
 //-------------------------------------------------------------------------
 
@@ -496,7 +599,7 @@ CreateDataBaseTablesConnection()
 
   QObject::connect( this->m_DataBaseTables,
     SIGNAL( TracesToDeleteInVisu( std::list< int > ) ),
-    this, SLOT( DeleteContoursFromTable( std::list< int > ) ) );
+    this, SLOT( DeleteTracesFromTable( std::list< int > ) ) );
 
   QObject::connect(this->m_DataBaseTables,
     SIGNAL( ListCellTypesToUpdate(QStringList)),
@@ -858,6 +961,12 @@ void QGoTabImageView3DwT::CreateModeActions()
 {
   QActionGroup* group = new QActionGroup( this );
 
+  //---------------------------------//
+  //            Manual mode          //
+  //---------------------------------//
+
+  //////// Manual is becoming contour segmentation
+
   QAction* ManualEditingAction = new QAction( tr("Manual-Editing"), this );
   ManualEditingAction->setCheckable( true );
   QIcon ManualEditingIcon;
@@ -869,17 +978,21 @@ void QGoTabImageView3DwT::CreateModeActions()
 
   this->m_ModeActions.push_back( ManualEditingAction );
 
+  // When click on button, it updates widget in visu
   QObject::connect( ManualEditingAction, SIGNAL( toggled( bool ) ),
       this->m_ManualSegmentationDockWidget, SLOT( setEnabled( bool ) ) );
   QObject::connect( ManualEditingAction, SIGNAL( toggled( bool ) ),
       this->m_ManualSegmentationDockWidget, SLOT( setVisible( bool ) ) );
-  QObject::connect( ManualEditingAction, SIGNAL( toggled( bool ) ),
-   this, SLOT( ActivateManualSegmentationEditor( bool ) ) );
 
+  // it also updates the interactor behaviour
+  QObject::connect( ManualEditingAction, SIGNAL( toggled( bool ) ),
+       this, SLOT( ContourInteractorBehaviour( bool ) ) );
 
   //---------------------------------//
   //          one click mode         //
   //---------------------------------//
+
+  ////////  is becoming mesh segmentation
 
   // Create/initialize the manual editing action
   QAction* OneClickAction = new QAction( tr("One Click"), this );
@@ -892,15 +1005,15 @@ void QGoTabImageView3DwT::CreateModeActions()
     QIcon::Normal, QIcon::Off );
   OneClickAction->setIcon(OneClickIcon);
 
-  // Definition of its behaviour
-  // we have to open widget too
-  QObject::connect( OneClickAction, SIGNAL( triggered() ),
-    this, SLOT( OneClickMode() ) );
-
+  // When click on button, it updates widget in visu
   QObject::connect( OneClickAction, SIGNAL( toggled( bool ) ),
       m_OneClickSegmentationDockWidget, SLOT( setEnabled( bool ) ) );
   QObject::connect( OneClickAction, SIGNAL( toggled( bool ) ),
       m_OneClickSegmentationDockWidget, SLOT( setVisible( bool ) ) );
+
+  // it also updates the interactor behaviour
+  QObject::connect( OneClickAction, SIGNAL( toggled( bool ) ),
+    this, SLOT( MeshInteractorBehaviour( bool ) ) );
 
   // Add the action to m_ModeActions and to group
   this->m_ModeActions.push_back( OneClickAction );
@@ -927,6 +1040,10 @@ void QGoTabImageView3DwT::CreateModeActions()
   QObject::connect( DefaultAction, SIGNAL( triggered() ),
     this, SLOT( DefaultMode() ) );
 
+  //---------------------------------//
+  //            Zoon mode            //
+  //---------------------------------//
+
   QAction* ZoomAction = new QAction( tr( "Zoom" ), this );
   ZoomAction->setCheckable( true );
   ZoomAction->setChecked(false);
@@ -941,6 +1058,10 @@ void QGoTabImageView3DwT::CreateModeActions()
   this->m_ModeActions.push_back( ZoomAction );
   QObject::connect( ZoomAction, SIGNAL( triggered() ),
     this, SLOT( ZoomMode() ) );
+
+  //---------------------------------//
+  //            Pan  mode            //
+  //---------------------------------//
 
   QAction* PanAction = new QAction( tr( "Pan" ), this );
   PanAction->setCheckable( true );
@@ -1170,8 +1291,11 @@ SetLSMReader( vtkLSMReader* iReader, const int& iTimePoint )
 
     int NumberOfChannels = m_LSMReader[0]->GetNumberOfChannels();
 
+    // Initialize the widgets with the good number of channels
+    // it will update the size of the related combobox
     m_NavigationDockWidget->SetNumberOfChannels( NumberOfChannels );
     m_OneClickSegmentationDockWidget->SetNumberOfChannels( NumberOfChannels );
+    m_ManualSegmentationDockWidget->SetNumberOfChannels( NumberOfChannels );
 
     if( NumberOfChannels > 1 )
       {
@@ -1248,8 +1372,11 @@ SetMegaCaptureFile(
   int extent[6];
   temp->GetExtent( extent );
 
+  // Initialize the widgets with the good number of channels
+  // it will update the size of the related combobox
   m_NavigationDockWidget->SetNumberOfChannels( NumberOfChannels );
   m_OneClickSegmentationDockWidget->SetNumberOfChannels( NumberOfChannels );
+  m_ManualSegmentationDockWidget->SetNumberOfChannels( NumberOfChannels );
 
   // Set up QSpinBox in m_VideoRecorderWidget
   if( NumberOfChannels > 1 )
@@ -2061,8 +2188,8 @@ ReinitializeContour()
 {
   for( unsigned int i = 0; i < m_ContourWidget.size(); i++ )
     {
-	  // Enable then initialize the widget
-	  m_ContourWidget[i]->SetEnabled(1);
+    // Enable then initialize the widget
+    m_ContourWidget[i]->SetEnabled(1);
     m_ContourWidget[i]->Initialize(NULL);
     }
 }
@@ -2131,35 +2258,6 @@ AddContour( const int& iId,
   vtkProperty* iProperty )
 {
   return this->m_ImageView->AddContour( iId, dataset, iProperty );
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-/**
- *
- * \param iActivate
- */
-void
-QGoTabImageView3DwT::
-ActivateManualSegmentationEditor( const bool& iActivate )
-{
-  // Initializae cursor behaviour
-  this->DefaultMode();
-
-  std::vector< vtkSmartPointer< vtkContourWidget > >::iterator
-    it = m_ContourWidget.begin();
-  while( it != m_ContourWidget.end() )
-    {
-    if( iActivate )
-      {
-      (*it)->On();
-      }
-    else
-      {
-      (*it)->Off();
-      }
-    ++it;
-    }
 }
 //-------------------------------------------------------------------------
 
@@ -2898,6 +2996,25 @@ DisplayCube( )
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
+DeleteTracesFromTable( const std::list< int >& iList )
+{
+  std::string currentTrace = m_DataBaseTables->InWhichTableAreWe();
+
+  if( !strcmp(currentTrace.c_str(), "contour") )
+    {
+    this->DeleteContoursFromTable( iList );
+    }
+
+  if( !strcmp(currentTrace.c_str(), "mesh") )
+    {
+    this->DeleteMeshesFromTable( iList );
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
 DeleteContoursFromTable( const std::list< int >& iList )
 {
   std::list< int >::const_iterator traceid_it = iList.begin();
@@ -2932,6 +3049,49 @@ DeleteContoursFromTable( const std::list< int >& iList )
         }
 
       m_ContourContainer.erase( *traceid_it );
+      }
+    ++traceid_it;
+  }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+DeleteMeshesFromTable( const std::list< int >& iList )
+{
+  std::list< int >::const_iterator traceid_it = iList.begin();
+  ContourMeshStructureMultiIndexContainer::index< TraceID >::type::iterator it;
+
+  while( traceid_it != iList.end() )
+    {
+    it = m_MeshContainer.get< TraceID >().find( *traceid_it );
+
+    if( it != m_MeshContainer.get< TraceID >().end() )
+      {
+      int c_dir;
+      vtkActor* c_actor;
+      vtkPolyData* c_nodes;
+
+      while( it != m_MeshContainer.get< TraceID >().end() )
+        {
+        if( static_cast< int >( it->TraceID ) == *traceid_it )
+          {
+          c_dir = (*it).Direction;
+          c_actor = (*it).Actor;
+          c_nodes = (*it).Nodes;
+
+          RemoveActorFromViewer( c_dir, c_actor );
+          }
+        else
+          {
+          break;
+          }
+
+        ++it;
+        }
+
+      m_MeshContainer.erase( *traceid_it );
       }
     ++traceid_it;
   }
@@ -3092,6 +3252,15 @@ void QGoTabImageView3DwT::SetTheCurrentSubCellType()
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
+ApplyContourSemiAutoSegmentation()
+{
+  this->LevelSetSegmentation2D();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
 ApplyOneClickSegmentationFilter()
 {
   // Check the filter to be applied
@@ -3115,14 +3284,14 @@ ApplyOneClickSegmentationFilter()
 
     case 2 :
     // 2d level set
-    this->LevelSetSegmentation2D();
-    break;
-
-    case 3 :
-    // 3d level set
     this->LevelSetSegmentation3D();
     break;
-
+/*
+    case 3 :
+    // 3d level set
+    this->LevelSetSegmentation2D();
+    break;
+*/
     default :
     break;
     }
