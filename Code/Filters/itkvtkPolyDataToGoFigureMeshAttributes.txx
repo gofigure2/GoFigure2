@@ -3,6 +3,8 @@
 
 #include "itkvtkPolyDataToGoFigureMeshAttributes.h"
 
+#include "vtkTriangle.h"
+
 namespace itk
 {
 template< class TImage >
@@ -85,6 +87,23 @@ GenerateData()
   m_PhysicalSize = m_AttributeCalculator->GetPhysicalSize();
   m_Mean = m_AttributeCalculator->GetMeanIntensity();
   m_Sum = m_AttributeCalculator->GetSumIntensity();
+
+  ComputeArea();
+}
+
+template< class TImage >
+void
+vtkPolyDataToGoFigureMeshAttributes< TImage >::
+ComputeArea()
+{
+  vtkIdType NbOfCells = m_Mesh->GetNumberOfCells();
+  m_Area = 0.;
+
+  for( vtkIdType i = 0; i < NbOfCells; ++i )
+    {
+    vtkTriangle* t = dynamic_cast< vtkTriangle* >( m_Mesh->GetCell( i ) );
+    m_Area += t->ComputeArea();
+    }
 }
 }
 

@@ -95,4 +95,5 @@ vtkPolyDataToBinaryMaskImageFilter< TInput, TOutput >::GenerateData()
 
   this->GraftOutput( m_ITKImporter->GetOutput() );
 }
+
 }

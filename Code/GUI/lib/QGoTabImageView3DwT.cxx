@@ -125,6 +125,8 @@
 #include "QGoManualSegmentationSettingsDialog.h"
 #include "QGoTraceManualEditingWidget.h"
 
+#include "GoFigureMeshAttributes.h"
+
 #include <QCursor>
 
 #include <QLabel>
@@ -3964,7 +3966,7 @@ ComputeMeshAttributes( vtkPolyData* iMesh )
     calculator = itk::vtkPolyDataToGoFigureMeshAttributes< ImageType >::New();
   calculator->SetPolyData( iMesh );
 
-  std::map< std::string, int > TotalIntensity;
+  GoFigureMeshAttributes attributes;
 
   for( size_t i = 0; i < m_InternalImages.size(); i++ )
     {
@@ -3979,7 +3981,43 @@ ComputeMeshAttributes( vtkPolyData* iMesh )
 
     QString q_channelname = this->m_NavigationDockWidget->GetChannelName( i );
     std::string channelname = q_channelname.toStdString();
-    TotalIntensity[channelname] = static_cast< int >( calculator->GetSumIntensity() );
-    std::cout << channelname <<" " <<calculator->GetSumIntensity() <<std::endl;
+
+    attributes.m_TotalIntensityMap[channelname] = static_cast< int >( calculator->GetSumIntensity() );
+    attributes.m_MeanIntensityMap[channelname] = calculator->GetMeanIntensity();
+    attributes.m_Volume = calculator->GetPhysicalSize();
+    
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

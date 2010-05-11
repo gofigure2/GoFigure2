@@ -43,6 +43,7 @@ class vtkPolyDataToGoFigureMeshAttributes : public LightObject
     double GetPhysicalSize();
     double GetMeanIntensity();
     double GetSumIntensity();
+    double GetArea();
 
   protected:
     vtkPolyDataToGoFigureMeshAttributes();
@@ -56,10 +57,12 @@ class vtkPolyDataToGoFigureMeshAttributes : public LightObject
 
     unsigned int m_Size;
     double m_PhysicalSize;
+    double m_Area;
     double m_Mean;
     double m_Sum;
 
     virtual void GenerateData();
+    void ComputeArea();
 
   private:
     vtkPolyDataToGoFigureMeshAttributes( const Self& );
