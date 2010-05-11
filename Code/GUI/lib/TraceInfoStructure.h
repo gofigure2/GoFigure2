@@ -63,7 +63,8 @@ struct TraceInfoStructure
     Table = 0;
     CollectionOfTraces = 0;}
 
-  TraceInfoStructure(std::string iTraceName, QWidget* parent)
+  TraceInfoStructure(std::string iTraceName, QWidget* parent, 
+    vtkMySQLDatabase* iDatabaseConnector = 0)
     {
     ListTracesInfoForVisu = 0;
     SetInfoStructure(iTraceName, parent);
@@ -91,6 +92,7 @@ struct TraceInfoStructure
     TraceName = iTraceName;
     TraceNameID = iTraceName;
     TraceNameID += "ID";
+    vtkMySQLDatabase* DatabaseConnector = 0;
 
     if (TraceName == "contour")
       {
@@ -116,7 +118,8 @@ struct TraceInfoStructure
     CollectionNameID += "ID";
     CollectionOfID = CollectionOf;
     CollectionOfID += "ID";
-    CollectionOfTraces = new GoDBCollectionOfTraces(CollectionName,TraceName);
+    CollectionOfTraces = new GoDBCollectionOfTraces(
+      CollectionName,TraceName);
     Table = new QTableWidgetChild(parent);
     } 
 

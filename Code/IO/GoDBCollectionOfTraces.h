@@ -131,7 +131,8 @@ public:
 
   /** \brief get the channels info from the database and set the channels info of the
   GoDBTableWidgetContainer for mesh*/
-  void SetChannelsInfo(vtkMySQLDatabase* DatabaseConnector);
+  void SetChannelsInfo(vtkMySQLDatabase* DatabaseConnector,
+    GoDBTableWidgetContainer* iLinkToRowContainer = 0);
  /* int CreateNewCollectionFromSelection(
   std::list<int> iListSelectedTraces, vtkMySQLDatabase* DatabaseConnector,
     GoDBTraceRow iNewCollection);*/
@@ -249,6 +250,6 @@ protected:
   std::vector<std::vector<std::string> >  GetChannelsInfo(vtkMySQLDatabase* DatabaseConnector);
   
   void FillRowContainerForIntensityValues(vtkMySQLDatabase* DatabaseConnector,
-    std::vector<std::string> iVectMeshIDs);
+    std::vector<std::string> iVectMeshIDs,GoDBTableWidgetContainer* iLinkToRowContainer);
 };
 #endif

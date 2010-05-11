@@ -83,11 +83,6 @@ QGoPrintDatabase( QWidget* iParent ) :
   DBTabWidget->setTabShape( QTabWidget::Triangular );
   DBTabWidget->removeTab( 0 );
 
-  m_ContoursData = new TraceInfoStructure("contour",this);
-  m_MeshesData = new TraceInfoStructure("mesh",this);
-  m_TracksData = new TraceInfoStructure("track",this);
-  m_LineagesData = new TraceInfoStructure("lineage",this);
-
   this->setContextMenuPolicy( Qt::CustomContextMenu );
 
   m_VisibilityAction = new QAction(tr("Show/hide the table widget"),this );
@@ -110,12 +105,6 @@ QGoPrintDatabase( QWidget* iParent ) :
 
  // QObject::connect( this->MeshTable, SIGNAL(itemSelectionChanged()),
  //   this, SLOT(ChangeTracesToHighLightInfoFromTableWidget()));
-
-  QObject::connect(this->m_ContoursData->Table, SIGNAL (CheckedRowsChanged()),
-      this, SLOT(ChangeTracesToHighLightInfoFromTableWidget()));
-
-  QObject::connect(this->m_MeshesData->Table, SIGNAL (CheckedRowsChanged()),
-        this, SLOT(ChangeTracesToHighLightInfoFromTableWidget()));
 
 }
 //--------------------------------------------------------------------------
@@ -181,11 +170,8 @@ void QGoPrintDatabase::SetDatabaseVariables(
   m_DBName         = iNameDB;
   m_ImgSessionID   = iImgSessionID;
   m_ImgSessionName = iImgSessionName;
-
-  this->m_ContoursData->CollectionOfTraces->SetImgSessionID(m_ImgSessionID);
-  this->m_MeshesData->CollectionOfTraces->SetImgSessionID(m_ImgSessionID);
-  this->m_TracksData->CollectionOfTraces->SetImgSessionID(m_ImgSessionID);
-  this->m_LineagesData->CollectionOfTraces->SetImgSessionID(m_ImgSessionID);
+  
+  this->SetTraceInfoStructures();
 
   this->m_BookmarkManager = new QGoDBBookmarkManager(this,this->m_ImgSessionID);
   QObject::connect( this->m_BookmarkManager, SIGNAL(ListBookmarksChanged()),
@@ -196,6 +182,31 @@ void QGoPrintDatabase::SetDatabaseVariables(
 
   this->m_SubCellTypeManager = new QGoDBSubCellTypeManager(this);
   this->GetListSubCellTypes();
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoPrintDatabase::SetTraceInfoStructures()
+{
+  m_ContoursData = new TraceInfoStructure("contour",this);
+  m_TracksData = new TraceInfoStructure("track",this);
+  m_LineagesData = new TraceInfoStructure("lineage",this); 
+  m_MeshesData = new TraceInfoStructure("mesh",this);
+
+
+  QObject::connect(this->m_ContoursData->Table, SIGNAL (CheckedRowsChanged()),
+      this, SLOT(ChangeTracesToHighLightInfoFromTableWidget()));
+
+  QObject::connect(this->m_MeshesData->Table, SIGNAL (CheckedRowsChanged()),
+        this, SLOT(ChangeTracesToHighLightInfoFromTableWidget()));
+
+  this->m_ContoursData->CollectionOfTraces->SetImgSessionID(m_ImgSessionID);
+  this->m_MeshesData->CollectionOfTraces->SetImgSessionID(m_ImgSessionID);
+  this->OpenDBConnection();
+  this->m_MeshesData->CollectionOfTraces->SetChannelsInfo(this->m_DatabaseConnector);
+  this->CloseDBConnection();
+  this->m_TracksData->CollectionOfTraces->SetImgSessionID(m_ImgSessionID);
+  this->m_LineagesData->CollectionOfTraces->SetImgSessionID(m_ImgSessionID);
 }
 //--------------------------------------------------------------------------
 
@@ -864,11 +875,6 @@ void QGoPrintDatabase::GetContentAndDisplayFromDB( std::string iTraceName)
   TraceInfoStructure* CurrentlyUsedTraceData =
     this->GetTraceInfoStructure(iTraceName);
   //Get the column names to be displayed in the table widget:
-  if(iTraceName == "mesh")
-    {
-    CurrentlyUsedTraceData->CollectionOfTraces->SetChannelsInfo(
-      m_DatabaseConnector);
-    }
   std::list<std::string> ColumnsNames =
     CurrentlyUsedTraceData->CollectionOfTraces->GetListColumnsNamesForTableWidget();
   CurrentlyUsedTraceData->Table->DisplayColumnNames(
@@ -1204,6 +1210,7 @@ void QGoPrintDatabase::UpdateTableWidgetAndRowContainerWithNewCreatedTrace(
   TraceInfoStructure* CurrentlyUsedTraceData = this->GetTraceInfoStructure(iTraceName);
   GoDBTableWidgetContainer* LinkToNewTrace = CurrentlyUsedTraceData->CollectionOfTraces->
     GetLinkToNewCreatedTraceContainer(this->m_DatabaseConnector);
+  
   //update the RowContainer for the trace:
   //CurrentlyUsedTraceData->CollectionOfTraces->GetLinkToRowContainer()
     //->InsertNewCreatedTrace(*LinkToNewTrace);

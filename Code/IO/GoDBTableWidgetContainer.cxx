@@ -438,6 +438,7 @@ void GoDBTableWidgetContainer:: GetCommonInfoForTwoTracesTable()
 void GoDBTableWidgetContainer::GetSpecificInfoForTraceTable()
 {
   GoDBTraceInfoForTableWidget temp;
+  std::pair<GoDBTraceInfoForTableWidget,std::vector<std::string> > PairTemp;
   if (this->m_TracesName == "mesh")
     {
     if (this->m_ChannelsInfo.empty())
@@ -447,6 +448,7 @@ void GoDBTableWidgetContainer::GetSpecificInfoForTraceTable()
       std::cout << std::endl;
       return;
       }
+    //Get the info for the total intensities per channel:
     int NumberOfChannels = this->m_ChannelsInfo.size();
     for (int i = 0; i < NumberOfChannels; i++)
       {
@@ -461,11 +463,25 @@ void GoDBTableWidgetContainer::GetSpecificInfoForTraceTable()
       temp.TableForeignKeyDatabase = "MeshID";
       temp.TableKeyDatabase = "MeshID";
       m_ColumnsInfos.push_back(temp);
-      std::pair<GoDBTraceInfoForTableWidget,std::vector<std::string> > PairTemp;
       PairTemp.first = temp;
       m_RowContainer.push_back(PairTemp);
       temp.Clear();
       }
+    //Get the info for the Volume:
+    temp.InfoName = "Volume";
+    temp.ColumnNameTableWidget = "Volume";
+    m_ColumnsInfos.push_back(temp);
+    PairTemp.first = temp;
+    m_RowContainer.push_back(PairTemp);
+    temp.Clear();
+
+    //Get the info for the Surface Area:
+    temp.InfoName = "Surface";
+    temp.ColumnNameTableWidget = "Surface";
+    m_ColumnsInfos.push_back(temp);
+    PairTemp.first = temp;
+    m_RowContainer.push_back(PairTemp);
+    temp.Clear();
     }
 }
 //--------------------------------------------------------------------------

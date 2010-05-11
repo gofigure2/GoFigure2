@@ -346,6 +346,9 @@ protected:
   void AddListTracesToACollection(std::list<int> iListSelectedTraces,
     std::pair<std::string,QColor> iCollection, std::string iTraceName,
     bool IsANewCollection);
+  
+  /** \brief set all the tracesinfostructures */
+  void SetTraceInfoStructures();
 
   /** \brief create the trace row with the related data provided by
   the visu, iTCoordMax is equal to 0 as for contour and mesh, it is the
