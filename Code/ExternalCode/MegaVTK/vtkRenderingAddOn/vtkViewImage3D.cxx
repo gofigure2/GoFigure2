@@ -645,6 +645,8 @@ vtkViewImage3D::AddDataSet( vtkDataSet* dataset,
   const bool& intersection,
   const bool& iDataVisibility )
 {
+  (void) intersection;
+
   if( !this->Renderer )
     {
     return 0;
