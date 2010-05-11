@@ -527,8 +527,9 @@ ContourMeshStructureMultiIndexContainer* QGoPrintDatabase::
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-ContourMeshStructureMultiIndexContainer* QGoPrintDatabase::
-  GetContoursMultiIndexFromDBForAGivenTimePoint(int iTimePoint, 
+ContourMeshStructureMultiIndexContainer*
+QGoPrintDatabase::
+GetContoursMultiIndexFromDBForAGivenTimePoint(int iTimePoint,
   std::vector<int> iListIDs)
 {
   this->OpenDBConnection();

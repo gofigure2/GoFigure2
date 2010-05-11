@@ -129,6 +129,8 @@ class QGOGUILIB_EXPORT QGoTabImageView3D : public QGoTabImageViewNDBase
     void ZoomMode();
     void PanMode();
 
+    void TakeSnapshot();
+
   protected:
     QGoImageView3D*   m_ImageView;
 

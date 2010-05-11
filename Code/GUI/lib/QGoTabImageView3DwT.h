@@ -47,6 +47,9 @@
 #include "ContourMeshStructureHelper.h"
 #include "QGoPrintDatabase.h"
 #include "QGoTraceManualEditingDockWidget.h"
+
+#include "GoFigureMeshAttributes.h"
+
 #include <QHBoxLayout>
 #include <string>
 
@@ -73,7 +76,6 @@ class vtkProperty;
 // class vtkQuadricLODActor;
 class vtkActor;
 class vtkViewImage2D;
-class GoFigureMeshAttributes;
 
 #include "QGoGUILibConfigure.h"
 
@@ -98,7 +100,7 @@ public:
    */
   virtual ~QGoTabImageView3DwT();
 
-  typedef QGoTabElementBase::QGoDockWidgetStatusPair QGoDockWidgetStatusPair;
+  typedef QGoTabElementBase::QGoDockWidgetStatusPair  QGoDockWidgetStatusPair;
   typedef QGoPrintDatabase::NamesDescrContainerType   NamesDescrContainerType;
 
   /**
@@ -126,9 +128,6 @@ public:
     const GoFigure::FileType& iFileType,
     const std::string& iHeader,
     const unsigned int& iTimePoint  );
-
-  /** \todo must modify container */
-  //void AddPolyData( vtkPolyData* iMesh );
 
   /**
    *

@@ -397,9 +397,8 @@ void QGoTabImageView3D::CreateModeActions()
 
 }
 //--------------------------------------------------------------------------
-/**
- * \brief Destructor
- */
+
+//--------------------------------------------------------------------------
 QGoTabImageView3D::~QGoTabImageView3D( )
 {
 }
@@ -616,6 +615,7 @@ void QGoTabImageView3D::SetFullScreenView( const int& iS )
 void QGoTabImageView3D::Quadview()
 {
   m_ImageView->SetFullScreenView(0);
+  m_TakeSnapshotAction->setEnabled(false);
 }
 //--------------------------------------------------------------------------
 
@@ -626,6 +626,7 @@ void QGoTabImageView3D::Quadview()
 void QGoTabImageView3D::FullScreenViewXY()
 {
   m_ImageView->SetFullScreenView(1);
+  m_TakeSnapshotAction->setEnabled(true);
 }
 //--------------------------------------------------------------------------
 
@@ -636,6 +637,7 @@ void QGoTabImageView3D::FullScreenViewXY()
 void QGoTabImageView3D::FullScreenViewXZ()
 {
   m_ImageView->SetFullScreenView(2);
+  m_TakeSnapshotAction->setEnabled(true);
 }
 //--------------------------------------------------------------------------
 
@@ -646,6 +648,7 @@ void QGoTabImageView3D::FullScreenViewXZ()
 void QGoTabImageView3D::FullScreenViewYZ()
 {
   m_ImageView->SetFullScreenView(3);
+  m_TakeSnapshotAction->setEnabled(true);
 }
 //--------------------------------------------------------------------------
 
@@ -656,6 +659,7 @@ void QGoTabImageView3D::FullScreenViewYZ()
 void QGoTabImageView3D::FullScreenViewXYZ()
 {
   m_ImageView->SetFullScreenView(4);
+  m_TakeSnapshotAction->setEnabled(true);
 }
 //--------------------------------------------------------------------------
 
@@ -866,3 +870,40 @@ PanMode()
 {
   this->m_ImageView->PanMode();
 }
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+void
+QGoTabImageView3D::
+TakeSnapshot()
+{
+  // Get the current view displayed in full screen
+  int FullScreenView = m_ImageView->GetFullScreenView();
+
+  // TODO enhance the name of the files
+
+  switch ( FullScreenView )
+    {
+    case 1 :
+    // X Slice
+    SnapshotViewXY( GoFigure::PNG , "snapshot_" );
+    break;
+
+    case 2 :
+    // Y Slice
+    SnapshotView2( GoFigure::PNG , "snapshot_" );
+    break;
+
+    case 3 :
+    // Z Slice
+    SnapshotView3( GoFigure::PNG , "snapshot_" );
+    break;
+
+    default :
+    // 3D view
+    SnapshotViewXYZ( GoFigure::PNG , "snapshot_" );
+    break;
+    }
+}
+
+//-------------------------------------------------------------------------

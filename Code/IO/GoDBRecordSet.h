@@ -59,12 +59,13 @@ public:
   // row type
   typedef TObject OriginalObjectType;
 
-  GoDBRecordSet() : IsWhereStringSet( false ) {}
-
   // decorate the row type to know if it was modified
   // allows for optimization when synchronising the data
   typedef std::pair< bool, OriginalObjectType > InternalObjectType;
   typedef std::vector< InternalObjectType >     RowContainerType;
+
+  GoDBRecordSet() : IsWhereStringSet( false ) {}
+  ~GoDBRecordSet() {}
 
   std::vector< std::string >  GetColumnNamesContainer()
     {
@@ -122,11 +123,13 @@ public:
   void SetConnector(vtkMySQLDatabase * iDatabaseConnector)
     { this->m_DatabaseConnector = iDatabaseConnector;}
 
-  /** \brief help read content from DB: select all the fields for a given table (TableName)in the database
-  and fills the m_RowContainer with the results: each row from the database will fill an
-  InternalObjectType with true and an OriginalObjectType (exp; GoProjectRow).
-  if there is a need to add a condition on the selection ( add a WHERE), have to use the function
-  SetWhereString( std::string whereString ) from the same class. */
+  /** \brief help read content from DB: select all the fields for a given table
+  (TableName)in the database and fills the m_RowContainer with the results:
+  each row from the database will fill an InternalObjectType with true and an
+  OriginalObjectType (exp; GoProjectRow).
+  if there is a need to add a condition on the selection ( add a WHERE), have
+  to use the function SetWhereString( std::string whereString ) from the same
+  class. */
   void PopulateFromDB()
     {
     this->PopulateColumnNamesContainer();
@@ -231,14 +234,14 @@ private:
 
   // DB variables
   vtkMySQLDatabase* m_DatabaseConnector;
-  std::string ServerName;
-  std::string DataBaseName;
-  std::string TableName;
-  std::string User;
-  std::string PassWord;
-  std::string m_WhereString;
-  bool        IsWhereStringSet;
-  bool        IsOpen;
+  std::string       ServerName;
+  std::string       DataBaseName;
+  std::string       TableName;
+  std::string       User;
+  std::string       PassWord;
+  std::string       m_WhereString;
+  bool              IsWhereStringSet;
+  bool              IsOpen;
 
 };
 
@@ -328,7 +331,7 @@ SaveRows( vtkSQLQuery * query, std::string what, myIteratorType start, myIterato
   return true;
 }
 
-/**\brief fills the vector m_ColumnNamesContainer with the column names gotten from
+/** \brief fills the vector m_ColumnNamesContainer with the column names gotten from
 the database and in the same order as the query results will be given:(only way
 to retrieve which query->datavalue corresponds to which field). */
 template< class TObject >
@@ -336,7 +339,6 @@ void
 GoDBRecordSet<TObject>::
 PopulateColumnNamesContainer()
 {
-
   if( m_ColumnNamesContainer.size() > 0 )
     {
     m_ColumnNamesContainer.clear();

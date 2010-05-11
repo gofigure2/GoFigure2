@@ -140,7 +140,6 @@ QGoTabImageView2D( QWidget* iParent )
 
   this->m_ViewActions.push_back( m_VisuDockWidget->toggleViewAction() );
 
-  CreateToolsActions();
   CreateModeActions();
 
   ReadSettings();
@@ -361,24 +360,6 @@ ChangeBackgroundColor()
     Pix.fill(temp);
     m_BackgroundColorAction->setIcon(Pix);
     }
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
-QGoTabImageView2D::
-CreateToolsActions()
-{
-  m_TakeSnapshotAction = new QAction( tr( "Take Snapshot" ), this );
-  QIcon snapshoticon;
-  snapshoticon.addPixmap( QPixmap(QString::fromUtf8(":/fig/camera-photo.png")),
-    QIcon::Normal, QIcon::Off );
-  m_TakeSnapshotAction->setIcon( snapshoticon );
-  m_TakeSnapshotAction->setEnabled(true);
-  QObject::connect( m_TakeSnapshotAction, SIGNAL( triggered() ),
-    this, SLOT( TakeSnapshot() ) );
-
-  this->m_ToolsActions.push_back( m_TakeSnapshotAction );
 }
 //-------------------------------------------------------------------------
 

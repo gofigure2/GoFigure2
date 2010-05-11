@@ -127,8 +127,6 @@
 #include "QGoManualSegmentationSettingsDialog.h"
 #include "QGoTraceManualEditingWidget.h"
 
-#include "GoFigureMeshAttributes.h"
-
 #include <QCursor>
 
 #include <QLabel>
@@ -1063,6 +1061,7 @@ TakeSnapshot()
     default :
     // 3D view
     m_ImageView->SnapshotViewXYZ( GoFigure::PNG , "snapshot_" );
+    break;
     }
 }
 
@@ -3993,36 +3992,5 @@ ComputeMeshAttributes( vtkPolyData* iMesh )
 
   return oAttributes;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+//-------------------------------------------------------------------------
 

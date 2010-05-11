@@ -116,6 +116,8 @@ public slots:
   /** \brief Re-edit the iId^th contour. */
   void ReEditContour( const unsigned int& iId );
 
+  virtual void TakeSnapshot() = 0;
+
 protected:
   bool          m_Color;
   QColor        m_BackgroundColor;
@@ -123,6 +125,7 @@ protected:
   bool          m_ReEditContourMode;
 
   QHBoxLayout*  m_LayOut;
+  QAction*      m_TakeSnapshotAction;
   
   std::vector< vtkSmartPointer< vtkContourWidget > >                      m_ContourWidget;
   std::vector< vtkSmartPointer< vtkOrientedGlyphContourRepresentation > > m_ContourRepresentation;
@@ -131,7 +134,8 @@ protected:
   QGoVisualizationDockWidget*       m_VisuDockWidget;
   QGoManualSegmentationDockWidget*  m_ManualSegmentationDockWidget;
 
-  void CreateManualSegmentationdockWidget();
+  virtual void CreateManualSegmentationdockWidget();
+  virtual void CreateToolsActions();
 
   virtual void GetBackgroundColorFromImageViewer( ) = 0;
   virtual void SetBackgroundColorToImageViewer( ) = 0;

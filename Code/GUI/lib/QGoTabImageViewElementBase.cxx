@@ -72,6 +72,8 @@ QGoTabImageViewElementBase( QWidget* iParent ) :
 {
   CreateManualSegmentationdockWidget();
 
+  CreateToolsActions();
+
   m_DockWidgetList.push_back(
     std::pair< QGoDockWidgetStatus*, QDockWidget* >(
       new QGoDockWidgetStatus( m_ManualSegmentationDockWidget, Qt::LeftDockWidgetArea, true, true ),
@@ -452,6 +454,26 @@ ReinitializeContour()
     /// we should rather use m_ContourWidget[i]->Initialize()
     m_ContourWidget[i]->Initialize( NULL );
     }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageViewElementBase::
+CreateToolsActions()
+{
+  m_TakeSnapshotAction = new QAction( tr( "Take Snapshot" ), this );
+  QIcon snapshoticon;
+  snapshoticon.addPixmap( QPixmap(QString::fromUtf8(":/fig/camera-photo.png")),
+    QIcon::Normal, QIcon::Off );
+  m_TakeSnapshotAction->setIcon( snapshoticon );
+  m_TakeSnapshotAction->setStatusTip(tr("You have to be in full screen view to use the snapshot"));
+  m_TakeSnapshotAction->setEnabled(false);
+
+  QObject::connect( m_TakeSnapshotAction, SIGNAL( triggered() ),
+    this, SLOT( TakeSnapshot() ) );
+
+  this->m_ToolsActions.push_back( m_TakeSnapshotAction );
 }
 //-------------------------------------------------------------------------
 

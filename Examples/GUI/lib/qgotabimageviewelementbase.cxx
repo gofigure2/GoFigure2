@@ -68,6 +68,8 @@ public slots:
     {
     (void) iChannel;
     }
+  virtual void TakeSnapshot()
+    {}
 protected:
   virtual void PopulateMenus( QObject* iPlugin )
     {

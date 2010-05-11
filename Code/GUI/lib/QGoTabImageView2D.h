@@ -107,7 +107,6 @@ protected:
 
   virtual void SetSlice( int iDir, int* iIdx );
 
-  void CreateToolsActions();
   void CreateModeActions();
 
 private:
