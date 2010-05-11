@@ -114,6 +114,8 @@
 #include "vtkFillHolesFilter.h"
 #include "vtkTriangleFilter.h"
 
+#include "GoFigureMeshAttributes.h"
+
 //ITK FILTERS
 #include "itkChanAndVeseSegmentationFilter.h"
 #include "itkImage.h"
@@ -3954,7 +3956,7 @@ void QGoTabImageView3DwT::GoToDefaultMenu(std::string iTracename,
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void
+GoFigureMeshAttributes
 QGoTabImageView3DwT::
 ComputeMeshAttributes( vtkPolyData* iMesh )
 {
@@ -3966,7 +3968,7 @@ ComputeMeshAttributes( vtkPolyData* iMesh )
     calculator = itk::vtkPolyDataToGoFigureMeshAttributes< ImageType >::New();
   calculator->SetPolyData( iMesh );
 
-  GoFigureMeshAttributes attributes;
+  GoFigureMeshAttributes oAttributes;
 
   for( size_t i = 0; i < m_InternalImages.size(); i++ )
     {
@@ -3982,11 +3984,14 @@ ComputeMeshAttributes( vtkPolyData* iMesh )
     QString q_channelname = this->m_NavigationDockWidget->GetChannelName( i );
     std::string channelname = q_channelname.toStdString();
 
-    attributes.m_TotalIntensityMap[channelname] = static_cast< int >( calculator->GetSumIntensity() );
-    attributes.m_MeanIntensityMap[channelname] = calculator->GetMeanIntensity();
-    attributes.m_Volume = calculator->GetPhysicalSize();
-    
+    oAttributes.m_TotalIntensityMap[channelname] = static_cast< int >( calculator->GetSumIntensity() );
+    oAttributes.m_MeanIntensityMap[channelname] = calculator->GetMeanIntensity();
+    oAttributes.m_Volume = calculator->GetPhysicalSize();
+    oAttributes.m_Area = calculator->GetArea();
+    oAttributes.m_Size = calculator->GetSize();
     }
+
+  return oAttributes;
 }
 
 

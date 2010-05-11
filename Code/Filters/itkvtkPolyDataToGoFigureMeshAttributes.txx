@@ -71,6 +71,12 @@ double vtkPolyDataToGoFigureMeshAttributes< TImage >::GetSumIntensity()
 }
 
 template< class TImage >
+double vtkPolyDataToGoFigureMeshAttributes< TImage >::GetArea()
+{
+  return m_Area;
+}
+
+template< class TImage >
 void
 vtkPolyDataToGoFigureMeshAttributes< TImage >::
 GenerateData()
@@ -105,6 +111,7 @@ ComputeArea()
     m_Area += t->ComputeArea();
     }
 }
+
 }
 
 #endif

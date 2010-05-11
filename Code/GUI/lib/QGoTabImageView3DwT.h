@@ -73,6 +73,7 @@ class vtkProperty;
 // class vtkQuadricLODActor;
 class vtkActor;
 class vtkViewImage2D;
+class GoFigureMeshAttributes;
 
 #include "QGoGUILibConfigure.h"
 
@@ -426,7 +427,7 @@ protected:
   vtkSmartPointer<vtkPolyData> CreateSphereVolume( vtkViewImage2D* iView,
       double iCenter[3], double iRadius );
 
-  void ComputeMeshAttributes( vtkPolyData* iMesh );
+  GoFigureMeshAttributes ComputeMeshAttributes( vtkPolyData* iMesh );
 
 protected slots:
   void AddBookmark();
