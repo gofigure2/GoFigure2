@@ -440,7 +440,7 @@ void
 QGoTabImageView3DwT::
 ActivateSemiAutoSegmentationEditor( const bool& iActivate )
 {
-  ActivateManualSegmentationEditor( !iActivate );
+  ActivateManualSegmentationEditor( false );
   // Initializae cursor behaviour
   this->DefaultMode();
 
@@ -455,12 +455,50 @@ void
 QGoTabImageView3DwT::
 MeshInteractorBehaviour( bool iVisible)
 {
-  ActivateManualSegmentationEditor( !iVisible );
   // if the widget is visible
   // check in which mode we are
   if( iVisible )
     {
     this->OneClickMode();
+    }
+}
+//-------------------------------------------------------------------------
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+DefaultInteractorBehaviour( bool iVisible)
+{
+  // if the widget is visible
+  // check in which mode we are
+  if( iVisible )
+    {
+    this->DefaultMode();
+    }
+}
+//-------------------------------------------------------------------------
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+ZoomInteractorBehaviour( bool iVisible)
+{
+  // if the widget is visible
+  // check in which mode we are
+  if( iVisible )
+    {
+    this->ZoomMode();
+    }
+}
+//-------------------------------------------------------------------------
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+PanInteractorBehaviour( bool iVisible)
+{
+  // if the widget is visible
+  // check in which mode we are
+  if( iVisible )
+    {
+    this->PanMode();
     }
 }
 //-------------------------------------------------------------------------
@@ -1036,9 +1074,11 @@ void QGoTabImageView3DwT::CreateModeActions()
 
   group->addAction( DefaultAction );
 
+  // it also updates the interactor behaviour
+  QObject::connect( DefaultAction, SIGNAL( toggled( bool ) ),
+    this, SLOT( DefaultInteractorBehaviour( bool ) ) );
+
   this->m_ModeActions.push_back( DefaultAction );
-  QObject::connect( DefaultAction, SIGNAL( triggered() ),
-    this, SLOT( DefaultMode() ) );
 
   //---------------------------------//
   //            Zoon mode            //
@@ -1056,8 +1096,9 @@ void QGoTabImageView3DwT::CreateModeActions()
   group->addAction( ZoomAction );
 
   this->m_ModeActions.push_back( ZoomAction );
-  QObject::connect( ZoomAction, SIGNAL( triggered() ),
-    this, SLOT( ZoomMode() ) );
+  // it also updates the interactor behaviour
+  QObject::connect( ZoomAction, SIGNAL( toggled( bool ) ),
+    this, SLOT( ZoomInteractorBehaviour( bool ) ) );
 
   //---------------------------------//
   //            Pan  mode            //
@@ -1075,8 +1116,9 @@ void QGoTabImageView3DwT::CreateModeActions()
   group->addAction( PanAction );
 
   this->m_ModeActions.push_back( PanAction );
-  QObject::connect( PanAction, SIGNAL( triggered() ),
-    this, SLOT( PanMode() ) );
+  // it also updates the interactor behaviour
+  QObject::connect( PanAction, SIGNAL( toggled( bool ) ),
+    this, SLOT( PanInteractorBehaviour( bool ) ) );
 
 }
 //-------------------------------------------------------------------------
@@ -3550,16 +3592,17 @@ LevelSetSegmentation2D()
 
     vtkCellArray *lines       = vtkCellArray::New();
     vtkIdType    *lineIndices = new vtkIdType[static_cast<int>(npts+1)];
-    
+
     for ( int k = 0; k< static_cast<int>( npts ); k++ )
       {
       points->InsertPoint(k, stripper->GetOutput()->GetPoints()->GetPoint(pts[k]));
       lineIndices[ k ] = k;
       }
-   
+
     lineIndices[ static_cast<int>(npts) ] = 0;
     lines->InsertNextCell( npts + 1, lineIndices);
     delete [] lineIndices;
+
 
     vtkSmartPointer<vtkPolyData> testPolyD =
         vtkSmartPointer<vtkPolyData>::New();

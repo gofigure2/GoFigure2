@@ -442,8 +442,12 @@ protected slots:
   void ShowTraceDockWidgetForContour(bool ManualSegVisible);
   void ShowTraceDockWidgetForMesh(bool OneClickVisible);
   void GoToDefaultMenu(std::string iTracename,std::string iCollectionName);
+
   void ContourInteractorBehaviour( bool );
   void MeshInteractorBehaviour( bool );
+  void DefaultInteractorBehaviour( bool );
+  void ZoomInteractorBehaviour( bool );
+  void PanInteractorBehaviour( bool );
 
 };
 
