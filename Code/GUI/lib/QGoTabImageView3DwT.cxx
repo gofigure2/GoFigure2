@@ -3440,7 +3440,7 @@ LevelSetSegmentation2D()
   if( ( !m_InternalImages.empty() ) )
     {
     inputVolume->ShallowCopy(
-        m_InternalImages[ m_OneClickSegmentationDockWidget->GetChannel() ] );
+        m_InternalImages[ m_ManualSegmentationDockWidget->GetChannel() ] );
     }
 
   // Apply filter for each seed
@@ -3549,16 +3549,16 @@ LevelSetSegmentation2D()
         vtkSmartPointer<vtkPoints>::New();
 
     vtkCellArray *lines       = vtkCellArray::New();
-    vtkIdType    *lineIndices = new vtkIdType[static_cast<int>(npts)];
+    vtkIdType    *lineIndices = new vtkIdType[static_cast<int>(npts+1)];
     
-    for ( int k = 0; k< static_cast<int>( npts-1 ); k++ )
+    for ( int k = 0; k< static_cast<int>( npts ); k++ )
       {
       points->InsertPoint(k, stripper->GetOutput()->GetPoints()->GetPoint(pts[k]));
-      lineIndices[ k ];
+      lineIndices[ k ] = k;
       }
    
-    lineIndices[ static_cast<int>(npts-1) ] = 0;
-    lines->InsertNextCell( counter + 1, lineIndices);
+    lineIndices[ static_cast<int>(npts) ] = 0;
+    lines->InsertNextCell( npts + 1, lineIndices);
     delete [] lineIndices;
 
     vtkSmartPointer<vtkPolyData> testPolyD =
