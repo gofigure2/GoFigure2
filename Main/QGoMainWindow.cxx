@@ -497,10 +497,7 @@ void QGoMainWindow::DisplayFilesfromDB(std::string iFirst_Filename)
     this->m_TabManager, SLOT( UpdateBookmarkMenu( std::vector<QAction*> ) ) );
 
   // Load all contours and only display the ones from the first time point
-  LoadAllContoursFromDatabase( TimePoint );
-
-  // Load all meshes and only display the ones from the first time point
-  LoadAllMeshesFromDatabase( TimePoint );
+  LoadAllTracesFromDatabaseManager( TimePoint );
 
   this->menuBookmarks->setEnabled(true);
 }
@@ -509,63 +506,19 @@ void QGoMainWindow::DisplayFilesfromDB(std::string iFirst_Filename)
 //--------------------------------------------------------------------------
 void
 QGoMainWindow::
-LoadAllContoursFromDatabase( const int& iT )
+LoadAllTracesFromDatabaseManager( const int& iT )
 {
-  ContourMeshStructureMultiIndexContainer::iterator contourmesh_list_it;
-
-  QGoTabImageView3DwT* w3t =
-    dynamic_cast< QGoTabImageView3DwT* >( this->CentralTabWidget->currentWidget() );
-
-  if( w3t )
-    {
-    ContourMeshStructureMultiIndexContainer* temp =
-      w3t->m_DataBaseTables->GetTracesInfoListForVisu("contour");
-
-    if( temp )
-      {
-      contourmesh_list_it = temp->begin();
-
-      std::set< unsigned int > temp_time_set;
-
-      // we don't need here to save this contour in the database,
-      // since they have just been extracted from it!
-      //while( contourmesh_list_it != w3t->m_DataBaseTables->m_ContoursInfo.end() )
-      while( contourmesh_list_it != temp->end() )
-        {
-        w3t->AddContourFromNodes(
-            contourmesh_list_it->TraceID,
-            contourmesh_list_it->Nodes,
-            contourmesh_list_it->rgba,
-            contourmesh_list_it->Highlighted,
-            contourmesh_list_it->TCoord, // timepoint
-            false ); // not to be saved in the database
-
-        if( contourmesh_list_it->TCoord != static_cast<unsigned int>( iT ) )
-          {
-          temp_time_set.insert( contourmesh_list_it->TCoord );
-          }
-
-        ++contourmesh_list_it;
-        }
-
-      for( std::set< unsigned int >::iterator time_it = temp_time_set.begin();
-        time_it != temp_time_set.end();
-        ++time_it )
-        {
-        w3t->RemoveAllContoursForGivenTimePoint( *time_it );
-        }
-      }
-
-    w3t->ReinitializeContour();
-    w3t->ActivateManualSegmentationEditor( false );
-    }
+  // Loads contours
+  LoadAllTracesFromDatabase( iT, "contour" );
+  // Loads meshes
+  LoadAllTracesFromDatabase( iT, "mesh" );
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void
 QGoMainWindow::
-LoadAllMeshesFromDatabase( const int& iT )
+LoadAllTracesFromDatabase( const int& iT, std::string iTrace )
 {
   ContourMeshStructureMultiIndexContainer::iterator contourmesh_list_it;
 
@@ -575,9 +528,7 @@ LoadAllMeshesFromDatabase( const int& iT )
   if( w3t )
     {
     ContourMeshStructureMultiIndexContainer* temp =
-      w3t->m_DataBaseTables->GetTracesInfoListForVisu("mesh");
-
-    ContourMeshStructureMultiIndexContainer::iterator test = temp->begin();
+      w3t->m_DataBaseTables->GetTracesInfoListForVisu( iTrace.c_str() );
 
     if( temp )
       {
@@ -590,13 +541,15 @@ LoadAllMeshesFromDatabase( const int& iT )
       //while( contourmesh_list_it != w3t->m_DataBaseTables->m_ContoursInfo.end() )
       while( contourmesh_list_it != temp->end() )
         {
-        w3t->AddMeshFromNodes(
+        w3t->AddTraceFromNodesManager(
             contourmesh_list_it->TraceID,
             contourmesh_list_it->Nodes,
             contourmesh_list_it->rgba,
             contourmesh_list_it->Highlighted,
-            contourmesh_list_it->TCoord, // timepoint
-            false ); // not to be saved in the database
+            contourmesh_list_it->TCoord,
+            false,  // Not to be saved in database
+            iTrace );  // Name of the trace to add
+
         if( contourmesh_list_it->TCoord != static_cast<unsigned int>( iT ) )
           {
           temp_time_set.insert( contourmesh_list_it->TCoord );
@@ -609,9 +562,13 @@ LoadAllMeshesFromDatabase( const int& iT )
         time_it != temp_time_set.end();
         ++time_it )
         {
-        w3t->RemoveAllMeshesForGivenTimePoint( *time_it );
+        // *tem is the trace to be deleted
+        w3t->RemoveAllTracesForGivenTimePoint( *time_it, *temp );
         }
       }
+
+    w3t->ReinitializeContour(); // contour widget is reinitialized...
+    w3t->ActivateManualSegmentationEditor( false );
     }
 }
 //--------------------------------------------------------------------------

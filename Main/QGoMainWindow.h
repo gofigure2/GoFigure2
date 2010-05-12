@@ -183,8 +183,14 @@ private:
   GoFigureFileInfoHelperMultiIndexContainer GetFileContainerForMultiFiles(
     std::string &ioHeader_Filename, std::string iFirstFileName);
 
-  void LoadAllContoursFromDatabase( const int& iT );
-  void LoadAllMeshesFromDatabase( const int& iT );
+  /*
+   *
+   */
+  void LoadAllTracesFromDatabaseManager( const int& iT );
+  /*
+   *
+   */
+  void LoadAllTracesFromDatabase( const int& iT, std::string iTrace );
 
   /**
    * \brief Compute GoFigure file type from a given filename

@@ -161,6 +161,24 @@ public:
    */
   virtual void ReadSettings() {}
 
+  /*
+   * \brief Add the current trace in the database and updates the visualization
+   * useful when we load a dataset from the databse
+   * \param[in] iContourID Trace ID
+   * \param[in] iNodes Data to be stored
+   * \param[in] iHighlighted should the trace be highlighted true=yes false=no
+   * \param[in] iTCoord Current time point
+   * \param[in] iSaveInDataBase Save in database? true=yes false=no
+   * \param[in] iTrace Name of the traces to be loaded (contour or mesh)
+   */
+  void AddTraceFromNodesManager( const unsigned int& iContourID,
+      vtkPolyData* iNodes,
+      const double iRgba[4],
+      const bool& iHighlighted,
+      const unsigned int& iTCoord,
+      const bool& iSaveInDataBase,
+      std::string iTrace);
+
   /**
    *
    * @param[in] iNodes Nodes to be used by
@@ -178,12 +196,6 @@ public:
   void AddMeshFromNodes( const unsigned int& iContourID, vtkPolyData* iNodes,
     const double& iR, const double& iG, const double& iB, const double& iA,
     const bool& iHighlighted, const unsigned int& iTCoord, const bool& iSaveInDataBase );
-
-  void LoadAllContoursForGivenTimePoint( const unsigned int& iT );
-  void RemoveAllContoursForGivenTimePoint( const unsigned int& iT );
-
-  void LoadAllMeshesForGivenTimePoint( const unsigned int& iT );
-  void RemoveAllMeshesForGivenTimePoint( const unsigned int& iT );
 
   int GetSliceViewXY() const;
   int GetSliceViewXZ() const;
@@ -248,11 +260,24 @@ public slots:
   void ShowAllChannels( bool iChecked );
   void ShowOneChannel( int iChannel );
 
-  void LoadAllContoursForCurrentTimePoint();
-  void RemoveAllContoursForPresentTimePoint();
-
-  void LoadAllMeshesForCurrentTimePoint();
-  void RemoveAllMeshesForPresentTimePoint();
+  /*
+   *
+   */
+  void LoadAllTracesForCurrentTimePointManager();
+  /*
+   *
+   */
+  void LoadAllTracesForGivenTimePoint( const unsigned int& iT,
+      ContourMeshStructureMultiIndexContainer& iContainer );
+  /*
+   *
+   */
+  void RemoveAllTracesForPresentTimePointManager( );
+  /*
+   *
+   */
+  void RemoveAllTracesForGivenTimePoint( const unsigned int& iT,
+      ContourMeshStructureMultiIndexContainer& iContainer );
 
   void ActivateManualSegmentationEditor( const bool& iActivate );
   void ActivateSemiAutoSegmentationEditor( const bool& iActivate );
@@ -264,14 +289,43 @@ public slots:
   void ReEditContour( const unsigned int& iId );
 
   void HighLightContours();
-  void HighLightContoursFromTable();
+
+  /*
+   * \brief Calls HighLightTracesFromTable( ... ) with the good
+   *  container and trace name
+   */
+  void HighLightTracesFromTableManager( );
+
+  /*
+   * \brief Highlights a trace in the visualization
+   * \param[in] iContainer Container which contains traces to be highlighted
+   * \param[in] iCurrentTrace Name of the current trace useful to initialize
+   * the container iterator
+   */
+  void HighLightTracesFromTable(
+      ContourMeshStructureMultiIndexContainer& iContainer,
+      std::string iCurrentTrace);
+
   void SelectContoursInTable();
-  void DeleteContoursFromTable( const std::list< int >& iList );
-  void DeleteMeshesFromTable( const std::list< int >& iList );
-  void DeleteTracesFromTable( const std::list< int >& iList );
 
-  void HighLightMeshesFromTable();
+  /*
+   * \brief Calls DeleteTracesFromTable( ... ) with the good
+   *  container and list
+   * \param[in] iList Contains the selected traces in tablewidget
+   */
+  void DeleteTracesFromTableManager( const std::list< int >& iList );
 
+  /*
+   * \brief Deletes the selected traces from the table and visu
+   * \param[in] iList Contains the selected traces in tablewidget
+   * \param[in] iContainer Useful to delete in the visu
+   */
+  void DeleteTracesFromTable( ContourMeshStructureMultiIndexContainer& iContainer,
+      const std::list< int >& iList );
+
+  /*
+   * \brief Changes the apparence of a contour in the contourWidget
+   */
   void ChangeContourRepresentationProperty();
 
   /** \brief Get the info for the new created collection from the collectionIDcombobox,
