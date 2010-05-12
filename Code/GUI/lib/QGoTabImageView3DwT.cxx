@@ -3514,11 +3514,11 @@ LevelSetSegmentation2D()
     filter->SetCenter( pt );
 
     filter->SetRadius(
-        this->m_OneClickSegmentationDockWidget->GetRadius() );
+        this->m_ManualSegmentationDockWidget->GetRadius() );
     filter->SetNumberOfIterations(
-        this->m_OneClickSegmentationDockWidget->GetNumberOfIterations() );
+        this->m_ManualSegmentationDockWidget->GetNumberOfIterations() );
     filter->SetCurvatureWeight(
-        this->m_OneClickSegmentationDockWidget->GetCurvatureWeight() );
+        this->m_ManualSegmentationDockWidget->GetCurvatureWeight() );
     filter->Update();
 
     vtkImageData* image = filter->GetOutput();
@@ -3541,24 +3541,30 @@ LevelSetSegmentation2D()
 
     // npts = nb of points in the line
     // *pts = pointer to each point
+    // required to create lines
 
     vtkIdType *pts, npts;
     stripper->GetOutput()->GetLines()->GetNextCell(npts,pts);
     vtkSmartPointer<vtkPoints> points =
         vtkSmartPointer<vtkPoints>::New();
 
-    int decimation = 5;
-    int counter = 0;
-
-    for ( int k = 0; k+decimation < static_cast<int>( npts-1 ); k = k +decimation)
+    vtkCellArray *lines       = vtkCellArray::New();
+    vtkIdType    *lineIndices = new vtkIdType[static_cast<int>(npts)];
+    
+    for ( int k = 0; k< static_cast<int>( npts-1 ); k++ )
       {
-      points->InsertPoint(counter, stripper->GetOutput()->GetPoints()->GetPoint(pts[k]));
-      ++counter;
+      points->InsertPoint(k, stripper->GetOutput()->GetPoints()->GetPoint(pts[k]));
+      lineIndices[ k ];
       }
+   
+    lineIndices[ static_cast<int>(npts-1) ] = 0;
+    lines->InsertNextCell( counter + 1, lineIndices);
+    delete [] lineIndices;
 
     vtkSmartPointer<vtkPolyData> testPolyD =
         vtkSmartPointer<vtkPolyData>::New();
     testPolyD->SetPoints( points );
+    testPolyD->SetLines( lines );
 
     // Translate to real location (i.e. see_pos[])
     vtkSmartPointer<vtkTransform> t =
@@ -3782,7 +3788,7 @@ GenerateCircleFromGivenSphereAndGivenZ( double iC[3],
     lines->InsertNextCell(iN+1,lineIndices);
     delete [] lineIndices;
     oCircle->SetPoints( points );
-    //oCircle->SetLines(lines);
+    oCircle->SetLines(lines);
 
     return oCircle;
     }
