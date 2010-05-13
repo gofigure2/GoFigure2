@@ -2422,13 +2422,13 @@ AddTraceFromNodesManager( const unsigned int& iContourID,
     std::string iTrace)
 {
   // If we want to add a contour
-  if( !strcmp(iTrace.c_str(), "contour") )
+  if( iTrace.compare( "contour" ) == 0 )
     {
     AddContourFromNodes(iContourID, iNodes, iRgba, iHighlighted, iTCoord,
         iSaveInDataBase);
     }
   // If we want to add a mesh
-  if( !strcmp(iTrace.c_str(), "mesh") )
+  if( iTrace.compare( "mesh" ) == 0 )
     {
     AddMeshFromNodes(iContourID, iNodes, iRgba, iHighlighted, iTCoord,
         iSaveInDataBase);
@@ -2727,12 +2727,12 @@ HighLightTracesFromTableManager( )
   std::string currentTrace = this->m_DataBaseTables->InWhichTableAreWe();
 
   // If we are in contour
-  if( !strcmp(currentTrace.c_str(), "contour") )
+  if( currentTrace.compare( "contour" ) == 0 )
     {
     HighLightTracesFromTable( m_ContourContainer, currentTrace );
     }
   // If we are in mesh
-  if( !strcmp(currentTrace.c_str(), "mesh") )
+  if( currentTrace.compare( "mesh" ) == 0 )
     {
     HighLightTracesFromTable( m_MeshContainer, currentTrace );
     }
@@ -2890,12 +2890,12 @@ DeleteTracesFromTableManager( const std::list< int >& iList )
   std::string currentTrace = this->m_DataBaseTables->InWhichTableAreWe();
 
   // If we are in contour
-  if( !strcmp(currentTrace.c_str(), "contour") )
+  if( currentTrace.compare( "contour" ) == 0 )
     {
     DeleteTracesFromTable( m_ContourContainer, iList );
     }
   // If we are in mesh
-  if( !strcmp(currentTrace.c_str(), "mesh") )
+  if( currentTrace.compare( "mesh" ) == 0 )
     {
     DeleteTracesFromTable( m_MeshContainer, iList );
     }
