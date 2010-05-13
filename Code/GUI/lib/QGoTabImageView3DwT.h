@@ -161,7 +161,7 @@ public:
    */
   virtual void ReadSettings() {}
 
-  /*
+  /**
    * \brief Add the current trace in the database and updates the visualization
    * useful when we load a dataset from the databse
    * \param[in] iContourID Trace ID
@@ -204,6 +204,8 @@ public:
   QGoManualSegmentationDockWidget* GetManualSegmentationWidget();
   QGoTraceManualEditingWidget*     GetTraceManualEditingWidget();
   QGoPrintDatabase* m_DataBaseTables;
+
+  GoFigureMeshAttributes ComputeMeshAttributes( vtkPolyData* iMesh );
 
 signals:
   void TimePointChanged( int TimePoint );
@@ -260,20 +262,20 @@ public slots:
   void ShowAllChannels( bool iChecked );
   void ShowOneChannel( int iChannel );
 
-  /*
+  /**
    *
    */
   void LoadAllTracesForCurrentTimePointManager();
-  /*
+  /**
    *
    */
   void LoadAllTracesForGivenTimePoint( const unsigned int& iT,
       ContourMeshStructureMultiIndexContainer& iContainer );
-  /*
+  /**
    *
    */
   void RemoveAllTracesForPresentTimePointManager( );
-  /*
+  /**
    *
    */
   void RemoveAllTracesForGivenTimePoint( const unsigned int& iT,
@@ -290,13 +292,13 @@ public slots:
 
   void HighLightContours();
 
-  /*
+  /**
    * \brief Calls HighLightTracesFromTable( ... ) with the good
    *  container and trace name
    */
   void HighLightTracesFromTableManager( );
 
-  /*
+  /**
    * \brief Highlights a trace in the visualization
    * \param[in] iContainer Container which contains traces to be highlighted
    * \param[in] iCurrentTrace Name of the current trace useful to initialize
@@ -308,14 +310,14 @@ public slots:
 
   void SelectContoursInTable();
 
-  /*
+  /**
    * \brief Calls DeleteTracesFromTable( ... ) with the good
    *  container and list
    * \param[in] iList Contains the selected traces in tablewidget
    */
   void DeleteTracesFromTableManager( const std::list< int >& iList );
 
-  /*
+  /**
    * \brief Deletes the selected traces from the table and visu
    * \param[in] iList Contains the selected traces in tablewidget
    * \param[in] iContainer Useful to delete in the visu
@@ -323,7 +325,7 @@ public slots:
   void DeleteTracesFromTable( ContourMeshStructureMultiIndexContainer& iContainer,
       const std::list< int >& iList );
 
-  /*
+  /**
    * \brief Changes the apparence of a contour in the contourWidget
    */
   void ChangeContourRepresentationProperty();
@@ -484,8 +486,6 @@ protected:
 
   vtkSmartPointer<vtkPolyData> CreateSphereVolume( vtkViewImage2D* iView,
       double iCenter[3], double iRadius );
-
-  GoFigureMeshAttributes ComputeMeshAttributes( vtkPolyData* iMesh );
 
 protected slots:
   void AddBookmark();

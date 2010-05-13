@@ -520,27 +520,43 @@ void
 QGoMainWindow::
 LoadAllTracesFromDatabase( const int& iT, std::string iTrace )
 {
-  ContourMeshStructureMultiIndexContainer::iterator contourmesh_list_it;
-
   QGoTabImageView3DwT* w3t =
     dynamic_cast< QGoTabImageView3DwT* >( this->CentralTabWidget->currentWidget() );
 
   if( w3t )
     {
     ContourMeshStructureMultiIndexContainer* temp =
-      w3t->m_DataBaseTables->GetTracesInfoListForVisu( iTrace.c_str() );
+      w3t->m_DataBaseTables->GetTracesInfoListForVisu( iTrace );
 
     if( temp )
       {
-      contourmesh_list_it = temp->begin();
+//       ContourMeshStructureMultiIndexContainer::iterator
+//         contourmesh_list_it = temp->begin();
+
+      // let's iterate on the container with increasing TraceID
+      ContourMeshStructureMultiIndexContainer::index< TraceID >::type::iterator
+        contourmesh_list_it = temp->get< TraceID >().begin();
 
       std::set< unsigned int > temp_time_set;
 
+      std::vector< std::vector< std::string > > attributes_values;
+
+      unsigned int i = 0;
+
       // we don't need here to save this contour in the database,
       // since they have just been extracted from it!
-      //while( contourmesh_list_it != w3t->m_DataBaseTables->m_ContoursInfo.end() )
-      while( contourmesh_list_it != temp->end() )
+      while( contourmesh_list_it != temp->get< TraceID >().end() )
         {
+        // note here it only makes sense when the trace is a mesh (for now)
+        GoFigureMeshAttributes attributes =
+          w3t->ComputeMeshAttributes( contourmesh_list_it->Nodes );
+
+        // i has to be incremented here
+        attributes_values[0][i] = attributes.m_Volume;
+        attributes_values[1][i] = attributes.m_Area;
+        attributes_values[2][i] = attributes.m_Size;
+//         attributes_values[3][i] = attributes.m_TotalIntensityMap[ ];//first channel ];
+
         w3t->AddTraceFromNodesManager(
             contourmesh_list_it->TraceID,
             contourmesh_list_it->Nodes,
@@ -556,13 +572,14 @@ LoadAllTracesFromDatabase( const int& iT, std::string iTrace )
           }
 
         ++contourmesh_list_it;
+        ++i;
         }
 
       for( std::set< unsigned int >::iterator time_it = temp_time_set.begin();
         time_it != temp_time_set.end();
         ++time_it )
         {
-        // *tem is the trace to be deleted
+        // *temp is the trace to be removed from the visualization
         w3t->RemoveAllTracesForGivenTimePoint( *time_it, *temp );
         }
       }

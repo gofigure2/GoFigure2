@@ -445,15 +445,15 @@ ActivateSemiAutoSegmentationEditor( const bool& iActivate )
   this->DefaultMode();
 
   if( iActivate )
-      {
-      this->OneClickMode();
-      }
+    {
+    this->OneClickMode();
+    }
 }
 //-------------------------------------------------------------------------
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
-MeshInteractorBehaviour( bool iVisible)
+MeshInteractorBehaviour( bool iVisible )
 {
   // if the widget is visible
   // check in which mode we are
@@ -466,7 +466,7 @@ MeshInteractorBehaviour( bool iVisible)
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
-DefaultInteractorBehaviour( bool iVisible)
+DefaultInteractorBehaviour( bool iVisible )
 {
   // if the widget is visible
   // check in which mode we are
@@ -479,7 +479,7 @@ DefaultInteractorBehaviour( bool iVisible)
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
-ZoomInteractorBehaviour( bool iVisible)
+ZoomInteractorBehaviour( bool iVisible )
 {
   // if the widget is visible
   // check in which mode we are
@@ -492,7 +492,7 @@ ZoomInteractorBehaviour( bool iVisible)
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
-PanInteractorBehaviour( bool iVisible)
+PanInteractorBehaviour( bool iVisible )
 {
   // if the widget is visible
   // check in which mode we are
@@ -968,7 +968,9 @@ CreateAllViewActions()
   QObject::connect( Change3DPerspectiveToSagittalAction, SIGNAL( triggered() ),
     this, SLOT( Change3DPerspectiveToSagittal( ) ) );
 }
+//-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
 /**
  *
  */
@@ -1202,7 +1204,7 @@ TakeSnapshot()
   // Get the current view displayed in full screen
   int FullScreenView = m_ImageView->GetFullScreenView();
 
-  // TODO enhance the name of the files
+  /// \todo: filename to be changed
 
   switch ( FullScreenView )
     {
@@ -1446,7 +1448,7 @@ SetMegaCaptureFile(
 
   if( static_cast< unsigned int >( m_TimePoint ) != iTimePoint )
     {
-	 	SetTimePoint( iTimePoint );
+    SetTimePoint( iTimePoint );
     }
 
   // Set up QSpinBox in m_VideoRecorderWidget
@@ -2014,10 +2016,13 @@ void
 QGoTabImageView3DwT::
 ShowOneChannel( int iChannel )
 {
-  if( ( iChannel != -1 ) && ( !m_InternalImages.empty() ) )
+  if( !m_InternalImages.empty() )
     {
-    m_Image->ShallowCopy( m_InternalImages[iChannel] );
-    Update();
+    if( ( iChannel > -1 ) && ( iChannel < m_InternalImages.size() ) )
+      {
+      m_Image->ShallowCopy( m_InternalImages[iChannel] );
+      Update();
+      }
     }
 }
 //-------------------------------------------------------------------------
@@ -2435,13 +2440,13 @@ AddTraceFromNodesManager( const unsigned int& iContourID,
     std::string iTrace)
 {
   // If we want to add a contour
-  if( !strcmp(iTrace.c_str(), "contour") )
+  if( iTrace.compare( "contour" ) == 0 )
     {
     AddContourFromNodes(iContourID, iNodes, iRgba, iHighlighted, iTCoord,
         iSaveInDataBase);
     }
   // If we want to add a mesh
-  if( !strcmp(iTrace.c_str(), "mesh") )
+  if( iTrace.compare( "mesh" ) == 0 )
     {
     AddMeshFromNodes(iContourID, iNodes, iRgba, iHighlighted, iTCoord,
         iSaveInDataBase);
