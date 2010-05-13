@@ -99,20 +99,7 @@
 #include "vtkStripper.h"
 #include "vtkTransform.h"
 #include "vtkTransformPolyDataFilter.h"
-
-#include "vtkCleanPolyData.h"
-#include "vtkContourFilter.h"
-
 #include "vtkPolylineDecimation.h"
-
-#include "vtkPolyDataWriter.h"
-
-#include "vtkSurfaceReconstructionFilter.h"
-#include "vtkSmoothPolyDataFilter.h"
-
-#include "vtkPolyDataNormals.h"
-#include "vtkFillHolesFilter.h"
-#include "vtkTriangleFilter.h"
 
 #include "GoFigureMeshAttributes.h"
 
@@ -445,15 +432,15 @@ ActivateSemiAutoSegmentationEditor( const bool& iActivate )
   this->DefaultMode();
 
   if( iActivate )
-    {
-    this->OneClickMode();
-    }
+      {
+      this->OneClickMode();
+      }
 }
 //-------------------------------------------------------------------------
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
-MeshInteractorBehaviour( bool iVisible )
+MeshInteractorBehaviour( bool iVisible)
 {
   // if the widget is visible
   // check in which mode we are
@@ -466,7 +453,7 @@ MeshInteractorBehaviour( bool iVisible )
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
-DefaultInteractorBehaviour( bool iVisible )
+DefaultInteractorBehaviour( bool iVisible)
 {
   // if the widget is visible
   // check in which mode we are
@@ -479,7 +466,7 @@ DefaultInteractorBehaviour( bool iVisible )
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
-ZoomInteractorBehaviour( bool iVisible )
+ZoomInteractorBehaviour( bool iVisible)
 {
   // if the widget is visible
   // check in which mode we are
@@ -492,7 +479,7 @@ ZoomInteractorBehaviour( bool iVisible )
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
-PanInteractorBehaviour( bool iVisible )
+PanInteractorBehaviour( bool iVisible)
 {
   // if the widget is visible
   // check in which mode we are
@@ -968,9 +955,7 @@ CreateAllViewActions()
   QObject::connect( Change3DPerspectiveToSagittalAction, SIGNAL( triggered() ),
     this, SLOT( Change3DPerspectiveToSagittal( ) ) );
 }
-//-------------------------------------------------------------------------
 
-//-------------------------------------------------------------------------
 /**
  *
  */
@@ -1204,7 +1189,7 @@ TakeSnapshot()
   // Get the current view displayed in full screen
   int FullScreenView = m_ImageView->GetFullScreenView();
 
-  /// \todo: filename to be changed
+  // TODO enhance the name of the files
 
   switch ( FullScreenView )
     {
@@ -1448,7 +1433,7 @@ SetMegaCaptureFile(
 
   if( static_cast< unsigned int >( m_TimePoint ) != iTimePoint )
     {
-    SetTimePoint( iTimePoint );
+	 	SetTimePoint( iTimePoint );
     }
 
   // Set up QSpinBox in m_VideoRecorderWidget
@@ -2016,13 +2001,10 @@ void
 QGoTabImageView3DwT::
 ShowOneChannel( int iChannel )
 {
-  if( !m_InternalImages.empty() )
+  if( ( iChannel != -1 ) && ( !m_InternalImages.empty() ) )
     {
-    if( ( iChannel > -1 ) && ( iChannel < m_InternalImages.size() ) )
-      {
-      m_Image->ShallowCopy( m_InternalImages[iChannel] );
-      Update();
-      }
+    m_Image->ShallowCopy( m_InternalImages[iChannel] );
+    Update();
     }
 }
 //-------------------------------------------------------------------------
@@ -2440,13 +2422,13 @@ AddTraceFromNodesManager( const unsigned int& iContourID,
     std::string iTrace)
 {
   // If we want to add a contour
-  if( iTrace.compare( "contour" ) == 0 )
+  if( !strcmp(iTrace.c_str(), "contour") )
     {
     AddContourFromNodes(iContourID, iNodes, iRgba, iHighlighted, iTCoord,
         iSaveInDataBase);
     }
   // If we want to add a mesh
-  if( iTrace.compare( "mesh" ) == 0 )
+  if( !strcmp(iTrace.c_str(), "mesh") )
     {
     AddMeshFromNodes(iContourID, iNodes, iRgba, iHighlighted, iTCoord,
         iSaveInDataBase);
@@ -3371,25 +3353,34 @@ LevelSetSegmentation2D()
 
     vtkImageData* image = filter->GetOutput();
 
+    /////////////////////////////////////////////////////
     // create iso-contours
+    /////////////////////////////////////////////////////
+
     vtkSmartPointer<vtkMarchingSquares> contours =
         vtkSmartPointer<vtkMarchingSquares>::New();
     contours->SetInput( image );
     contours->GenerateValues ( 1, 0, 0 );
 
-    // Create points
+    /////////////////////////////////////////////////////
+    // Create reorganize contours
+    /////////////////////////////////////////////////////
+
     vtkSmartPointer<vtkStripper> stripper =
         vtkSmartPointer<vtkStripper>::New();
     stripper->SetInput( contours->GetOutput() );
+    //Is it useful?? Which number is the best suited?
     stripper->SetMaximumLength( 999 );
     stripper->Update();
 
+    /////////////////////////////////////////////////////
     // Reorder points
+    //////////////////////////////////////////////////////
+
     stripper->GetOutput()->GetLines()->InitTraversal();
 
     // npts = nb of points in the line
     // *pts = pointer to each point
-    // required to create lines
 
     vtkIdType *pts, npts;
     stripper->GetOutput()->GetLines()->GetNextCell(npts,pts);
@@ -3409,13 +3400,25 @@ LevelSetSegmentation2D()
     lines->InsertNextCell( npts + 1, lineIndices);
     delete [] lineIndices;
 
-
     vtkSmartPointer<vtkPolyData> testPolyD =
         vtkSmartPointer<vtkPolyData>::New();
     testPolyD->SetPoints( points );
     testPolyD->SetLines( lines );
 
+    /////////////////////////////////////////////////////
+    //Decimation (has to be after points reorganization)
+    /////////////////////////////////////////////////////
+
+    vtkSmartPointer<vtkPolylineDecimation> decimator =
+      vtkSmartPointer<vtkPolylineDecimation>::New();
+    decimator->SetInput( testPolyD );
+    decimator->SetTargetReduction( 0.9 );
+    decimator->Update();
+
+    /////////////////////////////////////////////////////
     // Translate to real location (i.e. see_pos[])
+    /////////////////////////////////////////////////////
+
     vtkSmartPointer<vtkTransform> t =
         vtkSmartPointer<vtkTransform>::New();
     t->Translate( seed_pos[0], seed_pos[1], seed_pos[2] );
@@ -3423,13 +3426,18 @@ LevelSetSegmentation2D()
     vtkSmartPointer<vtkTransformPolyDataFilter> tf =
         vtkSmartPointer<vtkTransformPolyDataFilter>::New();
     tf->SetTransform( t );
-    tf->SetInput( testPolyD );
+    tf->SetInput( decimator->GetOutput() );
     tf->Update();
 
+    /////////////////////////////////////////////////////
     // Save contour in database
+    /////////////////////////////////////////////////////
     SavePolyDataAsContourInDB( tf->GetOutput() );
 
+    /////////////////////////////////////////////////////
     // Delete everything
+    /////////////////////////////////////////////////////
+
     resliceAxes->Delete();
     reslicer->Delete();
   }
