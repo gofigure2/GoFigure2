@@ -539,31 +539,36 @@ LoadAllTracesFromDatabase( const int& iT, std::string iTrace )
 
       std::set< unsigned int > temp_time_set;
 
-      std::vector< std::vector< std::string > > attributes_values;
-      std::vector< std::string > attributes_name;
+//       std::vector< std::vector< std::string > > attributes_values;
+//       std::vector< std::string > attributes_name;
 
-      std::vector< std::string > volumes;
-      std::vector< std::string > areas;
-      std::vector< std::string > sizes;
+//       std::vector< std::string > volumes;
+//       std::vector< std::string > areas;
+//       std::vector< std::string > sizes;
 
-      unsigned int i = 0;
+//       bool calculation = ( iTrace.compare( "mesh" ) == 0 );
 
       // we don't need here to save this contour in the database,
       // since they have just been extracted from it!
       while( contourmesh_list_it != temp->get< TraceID >().end() )
         {
         // note here it only makes sense when the trace is a mesh (for now)
-        GoFigureMeshAttributes attributes =
-          w3t->ComputeMeshAttributes( contourmesh_list_it->Nodes );
-
-        // i has to be incremented here
-        volumes.push_back( ConvertToString< double >( attributes.m_Volume ) );
-        areas.push_back( ConvertToString< double >( attributes.m_Area ) );
-        sizes.push_back( ConvertToString< int >( attributes.m_Size ) );
+//         if( calculation )
+//           {
+//           if( contourmesh_list_it->Nodes )
+//             {
+//             GoFigureMeshAttributes attributes =
+//               w3t->ComputeMeshAttributes( contourmesh_list_it->Nodes );
+// 
+//             volumes.push_back( ConvertToString< double >( attributes.m_Volume ) );
+//             areas.push_back( ConvertToString< double >( attributes.m_Area ) );
+//             sizes.push_back( ConvertToString< int >( attributes.m_Size ) );
 //         attributes_values[0][i] = ;
 //         attributes_values[1][i] = attributes.m_Area;
 //         attributes_values[2][i] = attributes.m_Size;
 //         attributes_values[3][i] = attributes.m_TotalIntensityMap[ ];//first channel ];
+//             }
+//           }
 
         w3t->AddTraceFromNodesManager(
             contourmesh_list_it->TraceID,
@@ -580,17 +585,19 @@ LoadAllTracesFromDatabase( const int& iT, std::string iTrace )
           }
 
         ++contourmesh_list_it;
-        ++i;
         }
 
-      attributes_name.push_back( "Volume" );
-      attributes_values.push_back( volumes );
-
-      attributes_name.push_back( "Area" );
-      attributes_values.push_back( areas );
-
-      attributes_name.push_back( "Size" );
-      attributes_values.push_back( sizes );
+//       if( calculation )
+//         {
+//         attributes_name.push_back( "Volume" );
+//         attributes_values.push_back( volumes );
+// 
+//         attributes_name.push_back( "Area" );
+//         attributes_values.push_back( areas );
+// 
+//         attributes_name.push_back( "Size" );
+//         attributes_values.push_back( sizes );
+//         }
 
       for( std::set< unsigned int >::iterator time_it = temp_time_set.begin();
         time_it != temp_time_set.end();
