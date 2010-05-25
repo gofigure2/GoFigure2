@@ -456,7 +456,7 @@ InitializeSeedWidgetInteraction()
     this->SeedRep[i]->SetHandleRepresentation(this->Handle[i]);
 
     this->SeedWidget[i] = vtkSmartPointer<vtkSeedWidget>::New();
-    this->SeedWidget[i]->SetPriority( 10.0 );
+    //this->SeedWidget[i]->SetPriority( 10.0 );
     this->SeedWidget[i]->SetRepresentation( this->SeedRep[i] );
     }
 
@@ -1400,19 +1400,20 @@ vtkPoints*
 QGoImageView3D::
 GetAllSeeds()
 {
+  /// TODO Wrong values returned
   double tpos[3];
+
   vtkPoints* oPoints = vtkPoints::New();
 
   for( unsigned int i = 0; i < this->SeedWidget.size(); i++ )
-  {
-    int N = this->SeedRep[i]->GetNumberOfSeeds();
-
-    for( int j = 0; j < N; j++ )
     {
+    int N = this->SeedRep[i]->GetNumberOfSeeds();
+    for( int j = 0; j < N; j++ )
+      {
       this->SeedRep[i]->GetSeedWorldPosition( j, tpos );
       oPoints->InsertNextPoint( tpos );
+      }
     }
-  }
 
   return oPoints;
 }

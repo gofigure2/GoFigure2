@@ -115,6 +115,8 @@
 #include <vtkCursor2D.h>
 #include <vtkPointHandleRepresentation2D.h>
 
+#include <vtkExtractPolyDataGeometry.h>
+
 #include <vector>
 #include <string>
 #include <sstream>
@@ -905,16 +907,148 @@ vtkViewImage2D::AddDataSet( vtkPolyData* dataset,
 //   vtkQuadricLODActor* actor = vtkQuadricLODActor::New();
   vtkActor* actor = vtkActor::New();
 
-  //vtkCutter* cutter = vtkCutter::New();
-  vtkSmartPointer< vtkClipPolyData > cutter = vtkSmartPointer< vtkClipPolyData >::New();
+  vtkSmartPointer< vtkCutter > cutter = vtkSmartPointer< vtkCutter >::New();
+  vtkSmartPointer< vtkExtractPolyDataGeometry > extracter = vtkSmartPointer< vtkExtractPolyDataGeometry >::New();
+  vtkSmartPointer< vtkClipPolyData > clipper = vtkSmartPointer< vtkClipPolyData >::New();
 
-  if( intersection )
+  // check if input data is 2D
+  double* bounds = dataset->GetBounds();
+  //  get origin of slice (x,y,z)
+  double* origin;
+  origin = this->SliceImplicitPlane->GetOrigin();
+  //  get origin of slice (x,y,z)
+  double* normal;
+  normal = this->SliceImplicitPlane->GetNormal();
+/*
+  std::cout << "--------------------------" << std::endl;
+  std::cout << "bounds[0]: " << bounds[0] << std::endl;
+  std::cout << "bounds[1]: " << bounds[1] << std::endl;
+  std::cout << "bounds[2]: " << bounds[2] << std::endl;
+  std::cout << "bounds[3]: " << bounds[3] << std::endl;
+  std::cout << "bounds[4]: " << bounds[4] << std::endl;
+  std::cout << "bounds[5]: " << bounds[5] << std::endl;
+
+
+  std::cout << "origin[0]: " << origin[0] << std::endl;
+  std::cout << "origin[1]: " << origin[1] << std::endl;
+  std::cout << "origin[2]: " << origin[2] << std::endl;
+
+  std::cout << "normal[0]: " << normal[0] << std::endl;
+  std::cout << "normal[1]: " << normal[1] << std::endl;
+  std::cout << "normal[2]: " << normal[2] << std::endl;
+
+  std::cout << "--------------------------" << std::endl;*/
+
+  // if in 2d
+  if( (bounds[0] == bounds[1]) && (normal[1] == 0) && (normal[2] == 0))
+    {
+    //dataset->Print( cout );
+/*
+	    // restore normal
+	    this->SliceImplicitPlane->SetNormal(-1., 0., 0.);
+	    //this->SliceImplicitPlane->SetOrigin(bounds[0], bounds[2], bounds[4]);
+
+    std::cout << "X extraction" << std::endl;
+    std::cout << "--------------------------" << std::endl;
+    std::cout << "--------------------------" << std::endl;
+    std::cout << "bounds[0]: " << bounds[0] << std::endl;
+    std::cout << "bounds[1]: " << bounds[1] << std::endl;
+    std::cout << "bounds[2]: " << bounds[2] << std::endl;
+    std::cout << "bounds[3]: " << bounds[3] << std::endl;
+    std::cout << "bounds[4]: " << bounds[4] << std::endl;
+    std::cout << "bounds[5]: " << bounds[5] << std::endl;
+
+
+    std::cout << "origin[0]: " << origin[0] << std::endl;
+    std::cout << "origin[1]: " << origin[1] << std::endl;
+    std::cout << "origin[2]: " << origin[2] << std::endl;
+
+    std::cout << "normal[0]: " << normal[0] << std::endl;
+    std::cout << "normal[1]: " << normal[1] << std::endl;
+    std::cout << "normal[2]: " << normal[2] << std::endl;
+
+    std::cout << "--------------------------" << std::endl;
+    extracter->SetInputConnection( 0, dataset->GetProducerPort());
+    extracter->SetImplicitFunction( this->SliceImplicitPlane );
+    extracter->Update();
+    mapper->SetInputConnection( 0, extracter->GetOutputPort());
+*/
+    // restore normal
+    //this->SliceImplicitPlane->SetNormal(1., 0., 0.);
+    //this->SliceImplicitPlane->SetOrigin(origin[0], origin[1], origin[2]);
+    }
+  else if ((bounds[2] == bounds[3]) && (normal[2] == 0) && (normal[0] == 0))
+    {
+	  //dataset->Print( cout );
+	  /*
+	    // restore normal
+	    this->SliceImplicitPlane->SetNormal(0., -1., 0.);
+	    //this->SliceImplicitPlane->SetOrigin(bounds[0], bounds[2], bounds[4]);
+    std::cout << "Y extraction" << std::endl;
+    std::cout << "--------------------------" << std::endl;
+    std::cout << "--------------------------" << std::endl;
+    std::cout << "bounds[0]: " << bounds[0] << std::endl;
+    std::cout << "bounds[1]: " << bounds[1] << std::endl;
+    std::cout << "bounds[2]: " << bounds[2] << std::endl;
+    std::cout << "bounds[3]: " << bounds[3] << std::endl;
+    std::cout << "bounds[4]: " << bounds[4] << std::endl;
+    std::cout << "bounds[5]: " << bounds[5] << std::endl;
+
+
+    std::cout << "origin[0]: " << origin[0] << std::endl;
+    std::cout << "origin[1]: " << origin[1] << std::endl;
+    std::cout << "origin[2]: " << origin[2] << std::endl;
+
+    std::cout << "normal[0]: " << normal[0] << std::endl;
+    std::cout << "normal[1]: " << normal[1] << std::endl;
+    std::cout << "normal[2]: " << normal[2] << std::endl;
+
+    std::cout << "--------------------------" << std::endl;
+
+    extracter->SetInputConnection( 0, dataset->GetProducerPort());
+    extracter->SetImplicitFunction( this->SliceImplicitPlane );
+    extracter->Update();
+    mapper->SetInputConnection( 0, extracter->GetOutputPort());
+*/
+    // restore normal
+    //this->SliceImplicitPlane->SetNormal(0., 1., 0.);
+    //this->SliceImplicitPlane->SetOrigin(origin[0], origin[1], origin[2]);
+    }
+  else if ((bounds[4] == bounds[5]) && (normal[0] == 0) && (normal[1] == 0))
+    {
+//	  dataset->Print( cout );
+	  /*
+    std::cout << "Z extraction" << std::endl;
+    std::cout << "--------------------------" << std::endl;
+    std::cout << "--------------------------" << std::endl;
+    std::cout << "bounds[0]: " << bounds[0] << std::endl;
+    std::cout << "bounds[1]: " << bounds[1] << std::endl;
+    std::cout << "bounds[2]: " << bounds[2] << std::endl;
+    std::cout << "bounds[3]: " << bounds[3] << std::endl;
+    std::cout << "bounds[4]: " << bounds[4] << std::endl;
+    std::cout << "bounds[5]: " << bounds[5] << std::endl;
+
+
+    std::cout << "origin[0]: " << origin[0] << std::endl;
+    std::cout << "origin[1]: " << origin[1] << std::endl;
+    std::cout << "origin[2]: " << origin[2] << std::endl;
+
+    std::cout << "normal[0]: " << normal[0] << std::endl;
+    std::cout << "normal[1]: " << normal[1] << std::endl;
+    std::cout << "normal[2]: " << normal[2] << std::endl;
+
+    std::cout << "--------------------------" << std::endl;
+*/
+    extracter->SetInputConnection( 0, dataset->GetProducerPort());
+    extracter->SetImplicitFunction( this->SliceImplicitPlane );
+    extracter->Update();
+    mapper->SetInputConnection( 0, extracter->GetOutputPort());
+    }
+  else if( intersection )
     {
     cutter->SetInputConnection( 0, dataset->GetProducerPort());
-//     cutter->SetCutFunction( this->SliceImplicitPlane );
-    cutter->SetClipFunction( this->SliceImplicitPlane );
-/// \bug apparently it is necessary on yz and not on xz (or the opposite).
-    cutter->InsideOutOn();
+    cutter->SetCutFunction( this->SliceImplicitPlane );
+    cutter->Update();
     mapper->SetInputConnection( 0, cutter->GetOutputPort());
     }
   else
@@ -922,26 +1056,25 @@ vtkViewImage2D::AddDataSet( vtkPolyData* dataset,
     mapper->SetInput( dataset );
     }
 
+
   actor->SetMapper( mapper );
   if( property )
     {
     actor->SetProperty( property );
     }
-  actor->GetProperty()->BackfaceCullingOn();
-
-  actor->SetUserTransform( this->AdjustmentTransform );
-  this->ContourPicker->AddPickList( actor );
-  this->ContourPicker->PickFromListOn();
+  //Useful?
+  //actor->GetProperty()->BackfaceCullingOn();
+  //actor->SetUserTransform( this->AdjustmentTransform );
 
   this->Renderer->AddViewProp( actor );
   this->DataSetCollection->AddItem( dataset );
   this->Prop3DCollection->AddItem( actor );
 
-//   actor->Delete();
   return actor;
 }
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
+
 //vtkQuadricLODActor*
 vtkActor*
 vtkViewImage2D::AddDataSet( vtkDataSet* dataset,
@@ -965,6 +1098,33 @@ vtkViewImage2D::AddDataSet( vtkDataSet* dataset,
   vtkActor* actor = vtkActor::New();
 
   vtkSmartPointer< vtkCutter > cutter = vtkSmartPointer< vtkCutter >::New();
+
+  // check if input data is 2D
+  double* bounds = dataset->GetBounds();
+  //  get origin of slice (x,y,z)
+  double* origin;
+  origin = this->SliceImplicitPlane->GetOrigin();
+  //  get origin of slice (x,y,z)
+  double* normal;
+  normal = this->SliceImplicitPlane->GetNormal();
+/*
+  std::cout << "bounds[0]: " << bounds[0] << std::endl;
+  std::cout << "bounds[1]: " << bounds[1] << std::endl;
+  std::cout << "bounds[2]: " << bounds[2] << std::endl;
+  std::cout << "bounds[3]: " << bounds[3] << std::endl;
+  std::cout << "bounds[4]: " << bounds[4] << std::endl;
+  std::cout << "bounds[5]: " << bounds[5] << std::endl;
+
+
+  std::cout << "origin[0]: " << origin[0] << std::endl;
+  std::cout << "origin[1]: " << origin[1] << std::endl;
+  std::cout << "origin[2]: " << origin[2] << std::endl;
+
+  std::cout << "normal[0]: " << normal[0] << std::endl;
+  std::cout << "normal[1]: " << normal[1] << std::endl;
+  std::cout << "normal[2]: " << normal[2] << std::endl;
+
+  std::cout << "--------------------------" << std::endl;*/
 
   if( intersection )
     {
