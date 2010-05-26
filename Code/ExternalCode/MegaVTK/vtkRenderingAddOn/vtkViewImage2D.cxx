@@ -164,15 +164,15 @@ vtkViewImage2D::vtkViewImage2D()
   this->CursorGenerator->AxesOn();
   this->CursorGenerator->SetRadius(3);
   this->CursorGenerator->SetModelBounds (-40, 40, -40, 40, 0,0);
-  
+
   this->Cursor = vtkPointHandleRepresentation2D::New();
   this->Cursor->ActiveRepresentationOff();
   this->Cursor->SetCursorShape(this->CursorGenerator->GetOutput());
   this->Cursor->GetProperty()->SetColor (0.9,0.9,0.1);
   this->Cursor->SetVisibility (0);
-  
+
   this->Renderer->AddViewProp(this->Cursor);
-  
+
   this->ShowAnnotationsOn();
   this->InitializeSlicePlane();
   this->Zoom = 1.;
@@ -229,7 +229,7 @@ void vtkViewImage2D::SetViewConvention(int convention)
       z_watcher = 1;
       break;
       }
-	///\todo why not adding cardiologic conventions with oblique points of view ?
+  ///\todo why not adding cardiologic conventions with oblique points of view ?
   /// actually we can't: oblique point of view implies resampling data: loss of
   /// data... and we don't want that, do we ?
   }
@@ -592,6 +592,10 @@ void vtkViewImage2D::SetSlice( int slice )
     this->SliceImplicitPlane->SetOrigin( pos );
     this->Superclass::SetSlice( slice );
     this->UpdateSlicePlane();
+
+    // GetWorldCoordinatesForSlice gives pointer to allocated memory :
+    // one has to cleanup after using this function
+    delete[] pos;
     }
 }
 
@@ -797,39 +801,39 @@ void vtkViewImage2D::InstallPipeline()
 
   switch(this->GetInteractorStyleType())
       {
-  	case vtkViewImage2D::INTERACTOR_STYLE_NAVIGATION:
-  	  if (!this->InteractorStyle)
-  	  {
-  	      this->InteractorStyle = vtkInteractorStyleImage2D::New();
-  	      this->Interactor->SetInteractorStyle(this->InteractorStyle);
-  	      if( !this->IsColor )
-  	        {
-  	        this->InteractorStyle->AddObserver(
-  	          vtkCommand::StartWindowLevelEvent, this->Command);
-  	        this->InteractorStyle->AddObserver(
-  	          vtkCommand::WindowLevelEvent, this->Command);
-  	        }
-  	      this->InteractorStyle->AddObserver(
-  	        vtkCommand::KeyPressEvent, this->Command);
-  	      this->InteractorStyle->AddObserver(
-  	        vtkViewImage2DCommand::StartSliceMoveEvent, this->Command);
-  	      this->InteractorStyle->AddObserver(
-  	        vtkViewImage2DCommand::SliceMoveEvent, this->Command);
-  	      this->InteractorStyle->AddObserver(
-  	        vtkViewImage2DCommand::EndSliceMoveEvent, this->Command);
-  	      this->InteractorStyle->AddObserver(
-  	        vtkViewImage2DCommand::ResetViewerEvent, this->Command);
-  	      this->InteractorStyle->AddObserver(
-  	        vtkViewImage2DCommand::ZoomEvent, this->Command);
-  	      this->InteractorStyle->AddObserver(
-  	        vtkViewImage2DCommand::PanEvent, this->Command);
-  	      this->InteractorStyle->AddObserver( vtkCommand::InteractionEvent,
-  	        this->Command);
-  	      this->InteractorStyle->AddObserver( vtkViewImage2DCommand::OneClickEvent,
-  	              this->Command);
-  	  }
-	  	  this->InteractorStyleSwitcher = this->InteractorStyle;
-  	  break;
+    case vtkViewImage2D::INTERACTOR_STYLE_NAVIGATION:
+      if (!this->InteractorStyle)
+      {
+          this->InteractorStyle = vtkInteractorStyleImage2D::New();
+          this->Interactor->SetInteractorStyle(this->InteractorStyle);
+          if( !this->IsColor )
+            {
+            this->InteractorStyle->AddObserver(
+              vtkCommand::StartWindowLevelEvent, this->Command);
+            this->InteractorStyle->AddObserver(
+              vtkCommand::WindowLevelEvent, this->Command);
+            }
+          this->InteractorStyle->AddObserver(
+            vtkCommand::KeyPressEvent, this->Command);
+          this->InteractorStyle->AddObserver(
+            vtkViewImage2DCommand::StartSliceMoveEvent, this->Command);
+          this->InteractorStyle->AddObserver(
+            vtkViewImage2DCommand::SliceMoveEvent, this->Command);
+          this->InteractorStyle->AddObserver(
+            vtkViewImage2DCommand::EndSliceMoveEvent, this->Command);
+          this->InteractorStyle->AddObserver(
+            vtkViewImage2DCommand::ResetViewerEvent, this->Command);
+          this->InteractorStyle->AddObserver(
+            vtkViewImage2DCommand::ZoomEvent, this->Command);
+          this->InteractorStyle->AddObserver(
+            vtkViewImage2DCommand::PanEvent, this->Command);
+          this->InteractorStyle->AddObserver( vtkCommand::InteractionEvent,
+            this->Command);
+          this->InteractorStyle->AddObserver( vtkViewImage2DCommand::OneClickEvent,
+                  this->Command);
+      }
+        this->InteractorStyleSwitcher = this->InteractorStyle;
+      break;
       }
 
     this->Interactor->SetInteractorStyle(this->InteractorStyle);
@@ -940,7 +944,7 @@ vtkViewImage2D::AddDataSet( vtkPolyData* dataset,
   // if in 2d
   if( (bounds[0] == bounds[1]) && (normal[1] == 0) && (normal[2] == 0))
     {
-	  this->SliceImplicitPlane->SetNormal(-1, 0, 0);
+    this->SliceImplicitPlane->SetNormal(-1, 0, 0);
     extracter->SetInputConnection( 0, dataset->GetProducerPort());
     extracter->SetImplicitFunction( this->SliceImplicitPlane );
     extracter->Update();
@@ -970,7 +974,7 @@ vtkViewImage2D::AddDataSet( vtkPolyData* dataset,
     }
   else if ((bounds[2] == bounds[3]) && (normal[2] == 0) && (normal[0] == 0))
     {
-	  this->SliceImplicitPlane->SetNormal(0, -1, 0);
+    this->SliceImplicitPlane->SetNormal(0, -1, 0);
     extracter->SetInputConnection( 0, dataset->GetProducerPort());
     extracter->SetImplicitFunction( this->SliceImplicitPlane );
     extracter->Update();
@@ -1400,13 +1404,13 @@ void vtkViewImage2D::SetAnnotationsFromOrientation(void)
     {
       if (dotX <= std::abs (Xaxis[i]))
       {
-	dotX = std::abs (Xaxis[i]);
-	idX = i;
+  dotX = std::abs (Xaxis[i]);
+  idX = i;
       }
       if (dotY <= std::abs (Yaxis[i]))
       {
-	dotY = std::abs (Yaxis[i]);
-	idY = i;
+  dotY = std::abs (Yaxis[i]);
+  idY = i;
       }
     }
 
@@ -1414,11 +1418,11 @@ void vtkViewImage2D::SetAnnotationsFromOrientation(void)
     double* spacing = this->GetInput()->GetSpacing();
 
     sprintf(this->ImageInformation,
-	    "Image Size:  %i x %i\nVoxel Size: %g x %g mm",
-	    dimensions[idX], dimensions[idY],
-	    spacing[idX], spacing[idY]);
+      "Image Size:  %i x %i\nVoxel Size: %g x %g mm",
+      dimensions[idX], dimensions[idY],
+      spacing[idX], spacing[idY]);
     sprintf(this->SliceAndWindowInformation,
-	    "<slice_and_max>\n<window>\n<level>");
+      "<slice_and_max>\n<window>\n<level>");
 
     this->CornerAnnotation->SetText(2, this->ImageInformation);
     this->CornerAnnotation->SetText(3, this->SliceAndWindowInformation);
@@ -1468,11 +1472,11 @@ void vtkViewImage2D::UpdateCursor (void)
 
   char os[128];
   sprintf(os,
-	  "%s\nXYZ:  %4.2f, %4.2f, %4.2f mm\nValue: %g",
-	  this->ImageInformation,
-	  this->CurrentPoint[0], this->CurrentPoint[1], this->CurrentPoint[2],
-	  this->GetValueAtPosition (this->CurrentPoint)
-	  );
+    "%s\nXYZ:  %4.2f, %4.2f, %4.2f mm\nValue: %g",
+    this->ImageInformation,
+    this->CurrentPoint[0], this->CurrentPoint[1], this->CurrentPoint[2],
+    this->GetValueAtPosition (this->CurrentPoint)
+    );
   this->CornerAnnotation->SetText(2, os);
 
 

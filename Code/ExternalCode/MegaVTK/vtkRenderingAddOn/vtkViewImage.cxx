@@ -295,6 +295,9 @@ void vtkViewImage::SetWorldCoordinates( const double& x,
 double vtkViewImage::GetValueAtPosition( double worldcoordinates[3],
   int component )
 {
+// by default, value = 0.0
+double value = 0.0;
+
   if( !this->GetInput() )
     {
     return 0.0;
@@ -306,17 +309,18 @@ double vtkViewImage::GetValueAtPosition( double worldcoordinates[3],
 
   int* extent = input->GetWholeExtent();
 
-  if ( (indices[0] < extent[0]) || (indices[0] > extent[1]) ||
-       (indices[1] < extent[2]) || (indices[1] > extent[3]) ||
-       (indices[2] < extent[4]) || (indices[2] > extent[5]) )
+  if (!( (indices[0] < extent[0]) || (indices[0] > extent[1]) ||
+         (indices[1] < extent[2]) || (indices[1] > extent[3]) ||
+         (indices[2] < extent[4]) || (indices[2] > extent[5]) ))
     {
-    return 0.0;
+    value = input->GetScalarComponentAsDouble(  indices[0], indices[1],
+                                                indices[2], component );
     }
-  else
-    {
-    return input->GetScalarComponentAsDouble( indices[0], indices[1],
-      indices[2], component );
-    }
+  // have to free the indices array allocated by
+  // GetImageCoordinatesFromWorldCoordinates
+  delete[] indices;
+
+  return value;
 }
 
 

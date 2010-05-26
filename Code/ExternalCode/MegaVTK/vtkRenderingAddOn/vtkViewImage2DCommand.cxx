@@ -309,6 +309,10 @@ void vtkViewImage2DCommand::PrintInformation()
 
   this->Viewer->GetCornerAnnotation()->SetText (3, os2.str().c_str());
   this->Viewer->Render();
+
+  // GetImageCoordinatesFromWorldCoordinates gives a pointer
+  // to allocated but not managed memory : have to cleanup :
+  delete[] idx;
 }
 
 
@@ -360,7 +364,7 @@ void vtkViewImage2DCommand::Panning( )
   vtkInteractorObserver::ComputeDisplayToWorld( ren,
     rwi->GetLastEventPosition()[0],
     rwi->GetLastEventPosition()[1],
-    focalDepth, 
+    focalDepth,
     OldPickPoint );
 
   // Camera motion is reversed

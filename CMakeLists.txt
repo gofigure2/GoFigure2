@@ -24,7 +24,7 @@ ELSE( EXISTS ${CMAKE_SOURCE_DIR}/.svn/ )
 ENDIF( EXISTS ${CMAKE_SOURCE_DIR}/.svn/ )
 #-------------------------------------------------------------------------
 
-# When making one release: update GOFIGURE2_*_VERSION, 
+# When making one release: update GOFIGURE2_*_VERSION,
 # GOFIGURE2_WC_REVISION and the date of the release
 SET( GOFIGURE2_MAJOR_VERSION "0" )
 SET( GOFIGURE2_MINOR_VERSION "5" )
@@ -117,8 +117,8 @@ ENDIF( BUILD_DOCUMENTATION )
 # Main GoFigure Settings
 #---------------------------------------------------------------------------
 
-SET( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} 
-  "${GOFIGURE2_SOURCE_DIR}/CMake/" 
+SET( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
+  "${GOFIGURE2_SOURCE_DIR}/CMake/"
 )
 
 IF( UNIX )
@@ -147,7 +147,7 @@ IF( VTK_FOUND )
   # Determine if GoFigure has to be built in shared or static
   # based on the configuration of VTK
   IF( VTK_BUILD_SHARED_LIBS )
-    SET( LIBS_STYLE "SHARED" )    
+    SET( LIBS_STYLE "SHARED" )
     SET( BUILD_SHARED_LIBS "TRUE" )
     ADD_DEFINITIONS( -DGOFIGURE2_BUILD_SHARED_LIBS )
   ELSE( VTK_BUILD_SHARED_LIBS )
@@ -186,12 +186,12 @@ IF( VTK_FOUND )
     ENDIF( QT_USE_FILE )
 
     SET( QT_PLUGIN_LIBS ${QT_LIBRARIES} )
-   
+
     ADD_DEFINITIONS( ${QT_DEFINITIONS} )
-    # 
+    #
     # ADD_DEFINITIONS( -DQT_GUI_LIBS )
     # ADD_DEFINITIONS( -DQT_CORE_LIB )
-    
+
     SET( GOFIGURE2_EXTERNAL_SOURCE_DIR
       ${GOFIGURE2_SOURCE_DIR}/Code/ExternalCode )
     SET( GOFIGURE2_EXTERNAL_BINARY_DIR
@@ -202,7 +202,7 @@ IF( VTK_FOUND )
     SET( MEGAVTK2_SOURCE_DIR ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/MegaVTK )
     SET( MEGAVTK2_BINARY_DIR ${GOFIGURE2_EXTERNAL_BINARY_DIR}/MegaVTK )
 
-    LINK_DIRECTORIES( 
+    LINK_DIRECTORIES(
       ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
       ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
       ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
@@ -308,12 +308,12 @@ IF( VTK_FOUND )
     OPTION( BUILD_EXAMPLES "Build Examples" OFF )
 
     IF( BUILD_TESTING )
-      SET( BUILDNAME "${BUILDNAME}" 
-             CACHE STRING "Name of build on the dashboard" 
+      SET( BUILDNAME "${BUILDNAME}"
+             CACHE STRING "Name of build on the dashboard"
             )
 
       MARK_AS_ADVANCED( BUILDNAME )
-        
+
       CONFIGURE_FILE( CMake/CTestCustom.cmake.in
         ${CMAKE_CURRENT_BINARY_DIR}/CTestCustom.cmake
         @ONLY
@@ -329,7 +329,7 @@ IF( VTK_FOUND )
     ELSE( BUILD_EXAMPLES )
       SET( BUILD_TESTING OFF )
     ENDIF( BUILD_EXAMPLES )
-    
+
     CONFIGURE_FILE(
       "${CMAKE_CURRENT_SOURCE_DIR}/UseGoFigure2.cmake.in"
       "${CMAKE_CURRENT_BINARY_DIR}/UseGoFigure2.cmake"
