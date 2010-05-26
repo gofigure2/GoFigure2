@@ -88,31 +88,21 @@
 #include <vtkMetaImageWriter.h>
 
 //VTK FILTERS
-#include "vtkMarchingSquares.h"
-#include "vtkMarchingCubes.h"
-#include "vtkExtractVOI.h"
 #include "vtkImageExport.h"
-#include "vtkImageClip.h"
+
+// VTK/ITK
 #include "vtkitkAdaptor.h"
-#include "vtkImageReslice.h"
-#include "vtkMatrix4x4.h"
-#include "vtkStripper.h"
-#include "vtkTransform.h"
-#include "vtkTransformPolyDataFilter.h"
-#include "vtkPolylineDecimation.h"
-
-#include "GoFigureMeshAttributes.h"
-
-//ITK FILTERS
-#include "itkChanAndVeseSegmentationFilter.h"
 #include "itkImage.h"
 #include "itkVTKImageImport.h"
 #include "itkVTKImageToImageFilter.h"
 
+//ITK FILTERS
 #include "itkvtkPolyDataToGoFigureMeshAttributes.h"
 
+#include "GoFigureMeshAttributes.h"
 #include "QGoManualSegmentationSettingsDialog.h"
 #include "QGoTraceManualEditingWidget.h"
+#include "QGoSeedsSegmentation.h"
 
 #include <QCursor>
 
@@ -3127,21 +3117,14 @@ ApplyOneClickSegmentationFilter()
     break;
 
     case 2 :
-    // 2d level set
+    // 3d level set
     this->LevelSetSegmentation3D();
     break;
-/*
-    case 3 :
-    // 3d level set
-    this->LevelSetSegmentation2D();
-    break;
-*/
+
     default :
     break;
     }
 }
-//-------------------------------------------------------------------------
-
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
@@ -3155,66 +3138,42 @@ OneClickSphereContours()
   // pos[] will contain position of a seed
   double seed_pos[3];
 
-  // Create "spheres" for all the points
+  // Initialize the segmentation
+  QGoSeedsSegmentation seedsSegmentation;
+  seedsSegmentation.setRadius(
+      m_ManualSegmentationDockWidget->GetRadius() );
+  seedsSegmentation.setOriginImageInformation(
+      this->m_ImageView->GetImageViewer(0));
+
+  // Apply filter for each seed
   for( int i = 0; i < m_SeedsWorldPosition->GetNumberOfPoints(); i++ )
-  {
-    // List to store contours IDs
+    {
+
     std::list<int> listContoursIDs;
-    // Put position of each seed "i" in "pos[3]"
+    // Put position of each seed "i" in "seed_pos[3]"
     m_SeedsWorldPosition->GetPoint( i, seed_pos );
+    seedsSegmentation.setSeedsPosition( seed_pos );
 
-    // Get pointer to XY view
-    vtkViewImage2D* View = this->m_ImageView->GetImageViewer(0);
+    std::vector< vtkSmartPointer<vtkPolyData> > ContoursForOnePoint;
 
-    // Creates contours for a given view, a given point and radius
-    // Returns vector containing polydatas
-    std::vector< vtkSmartPointer<vtkPolyData> > ContoursForOnePoint =
-        this->CreateSphereContours(*View, seed_pos,
-            this->m_OneClickSegmentationDockWidget->GetRadius());
+    // Each segmentation metho returns the appropriate output
+    ContoursForOnePoint = seedsSegmentation.SphereContoursSegmentation();
 
     // Save polydatas (=contours) in DB
     for( unsigned int j = 1; j < ContoursForOnePoint.size(); j++)
     {
     listContoursIDs.push_back(this->SavePolyDataAsContourInDB( ContoursForOnePoint[j] ));
     }
-
-    std::list<int>::iterator rii;
-    for(rii=listContoursIDs.begin(); rii!=listContoursIDs.end(); ++rii)
-    {
-    std::cout<<"IDS"<<std::endl;
-    cout << *rii << endl;
-    }
-
     // assign contours to mesh
     // will increment mesh ID automatically
     m_DataBaseTables->CreateMeshFromOneClickSegmentation(listContoursIDs);
-/*
-    ////////////////////////////////////////////////////////////////////////
-    ///TODO Track ID must be incremented somewhere else //
-    ////////////////////////////////////////////////////////////////////////
-    //WE KEEP IT JUST IN CASE WE WOULD NEED IT SOMETIMES UNTIL THE IS ANOTHER
-    //SOLUTION
-    /////////////////////////////////////////////////////////////////////////
-
-    // Increment Track ID and keep the good colors for meshes and contours
-    // 1- store mesh and contours colors
-    QColor trackColor = this->m_TraceManualEditingDockWidget->m_TraceWidget->ColorIDCollectionComboBox->GetCurrentColorData().second;
-    QColor meshColor = this->m_TraceManualEditingDockWidget->m_TraceWidget->ColorComboBox->GetCurrentColorData().second;
-    // 2- put the color of the mesh in the contour color
-    this->m_TraceManualEditingDockWidget->m_TraceWidget->ColorComboBox->setCurrentColor( trackColor );
-    this->m_TraceManualEditingDockWidget->m_TraceWidget->ColorComboBox->update();
-    // 3- increase mesh ID // now the new mesh has the same color as the contours
-    this->m_TraceManualEditingDockWidget->m_TraceWidget->ColorIDCollectionComboBox->IncrementTrackID();
-    // 4- update contour color
-    this->m_TraceManualEditingDockWidget->m_TraceWidget->ColorComboBox->setCurrentColor( meshColor );
-    this->m_TraceManualEditingDockWidget->m_TraceWidget->ColorComboBox->update();*/
   }
 
   // Erase seeds once everything is stored in DB
   this->m_ImageView->ClearAllSeeds();
 
   // Update visualization
-  this->m_ImageView->Update();
+  this->m_ImageView->UpdateRenderWindows();
 }
 //-------------------------------------------------------------------------
 
@@ -3229,31 +3188,29 @@ OneClickSphereVolumes()
   // pos[] will contain position of a seed
   double seed_pos[3];
 
+  // Initialize the segmentation
+  QGoSeedsSegmentation seedsSegmentation;
+  seedsSegmentation.setRadius(
+      m_ManualSegmentationDockWidget->GetRadius() );
+
   // Create "spheres" for all the points
   for( int i = 0; i < m_SeedsWorldPosition->GetNumberOfPoints(); i++ )
     {
     // Put position of each seed "i" in "pos[3]"
     m_SeedsWorldPosition->GetPoint( i, seed_pos );
-
-    // Get pointer to XY view
-    vtkViewImage2D* View = this->m_ImageView->GetImageViewer(1);
-
-    // Creates contours for a given view, a given point and radius
-    // Returns vector containing polydatas
-    vtkSmartPointer<vtkPolyData> VolumeForOnePoint =
-        this->CreateSphereVolume( View, seed_pos, this->m_OneClickSegmentationDockWidget->GetRadius());
+    seedsSegmentation.setSeedsPosition( seed_pos );
 
     // Save polydatas/mesh (=volume) in DB
-    this->SavePolyDataAsVolumeInDB( VolumeForOnePoint );
+    this->SavePolyDataAsVolumeInDB(
+        seedsSegmentation.SphereVolumeSegmentation() );
     }
 
   // Erase seeds once everything is stored in DB
   this->m_ImageView->ClearAllSeeds();
 
   // Update visualization
-  this->m_ImageView->Update();
+  this->m_ImageView->UpdateRenderWindows();
 }
-//-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void
@@ -3273,180 +3230,34 @@ LevelSetSegmentation2D()
         m_InternalImages[ m_ManualSegmentationDockWidget->GetChannel() ] );
     }
 
+  // Initialize the segmentation
+  QGoSeedsSegmentation seedsSegmentation;
+  seedsSegmentation.setInputVolume( inputVolume );
+  seedsSegmentation.setRadius(
+      m_ManualSegmentationDockWidget->GetRadius() );
+  seedsSegmentation.setNumberOfIterations(
+      m_ManualSegmentationDockWidget->GetNumberOfIterations() );
+  seedsSegmentation.setCurvatureWeight(
+      m_ManualSegmentationDockWidget->GetCurvatureWeight() );
+
   // Apply filter for each seed
   for( int i = 0; i < m_SeedsWorldPosition->GetNumberOfPoints(); i++ )
     {
     // Put position of each seed "i" in "seed_pos[3]"
     m_SeedsWorldPosition->GetPoint( i, seed_pos );
-
-    // Matrices for axial, coronal, sagittal view orientations
-    static double elements[3][16] = {{
-           1, 0, 0, 0,
-           0, 1, 0, 0,
-           0, 0, 1, 0,
-           0, 0, 0, 1 },{
-           1, 0, 0, 0,
-           0, 0, 1, 0,
-           0,-1, 0, 0,
-           0, 0, 0, 1 },{
-           0, 0,-1, 0,
-           1, 0, 0, 0,
-           0,-1, 0, 0,
-           0, 0, 0, 1 }};
-
-    // Set the slice orientation
-    vtkMatrix4x4 *resliceAxes = vtkMatrix4x4::New();
-    resliceAxes->DeepCopy(elements[0]);
-    // Set the point through which to slice
-    resliceAxes->SetElement(0, 3, seed_pos[0]);
-    resliceAxes->SetElement(1, 3, seed_pos[1]);
-    resliceAxes->SetElement(2, 3, seed_pos[2]);
-
-    vtkImageReslice* reslicer = vtkImageReslice::New();
-    reslicer->SetOutputDimensionality(2);
-    reslicer->SetInterpolationModeToLinear();
-    reslicer->SetInput( inputVolume );
-    reslicer->SetResliceAxes(resliceAxes);
-
-    //Export VTK image to ITK
-    vtkSmartPointer<vtkImageExport> movingExporter =
-        vtkSmartPointer<vtkImageExport>::New();
-    movingExporter->SetInput( reslicer->GetOutput() );
-
-    const unsigned int Dimension = 2;
-
-    // ImageType
-    typedef itk::Image< unsigned char, Dimension > ImageType;
-    // Import VTK Image to ITK
-    typedef itk::VTKImageImport<ImageType> ImageImportType;
-    ImageImportType::Pointer movingImporter = ImageImportType::New();
-
-    ConnectPipelines< vtkImageExport, ImageImportType::Pointer >( movingExporter, movingImporter );
-    // Apply LevelSet segmentation filter
-    typedef itk::Image< unsigned char, Dimension > FeatureImageType;
-
-    typedef itk::ChanAndVeseSegmentationFilter< FeatureImageType >
-        SegmentationFilterType;
-
-    FeatureImageType::PointType pt;
-
-    SegmentationFilterType::Pointer filter = SegmentationFilterType::New();
-    filter->SetFeatureImage( movingImporter->GetOutput() );
-    filter->SetPreprocess( 1 );
-
-    // everything is in world coordinates
-    // need to add newOrigin since origin moves when we extract slice
-    // everything is in world coordinates
-
-    double* newOrigin = reslicer->GetOutput()->GetOrigin();
-    pt[0] = seed_pos[0]+newOrigin[0];
-    pt[1] = seed_pos[1]+newOrigin[1];
-    filter->SetCenter( pt );
-
-    filter->SetRadius(
-        this->m_ManualSegmentationDockWidget->GetRadius() );
-    filter->SetNumberOfIterations(
-        this->m_ManualSegmentationDockWidget->GetNumberOfIterations() );
-    filter->SetCurvatureWeight(
-        this->m_ManualSegmentationDockWidget->GetCurvatureWeight() );
-    filter->Update();
-
-    vtkImageData* image = filter->GetOutput();
-
-    /////////////////////////////////////////////////////
-    // create iso-contours
-    /////////////////////////////////////////////////////
-
-    vtkSmartPointer<vtkMarchingSquares> contours =
-        vtkSmartPointer<vtkMarchingSquares>::New();
-    contours->SetInput( image );
-    contours->GenerateValues ( 1, 0, 0 );
-
-    /////////////////////////////////////////////////////
-    // Create reorganize contours
-    /////////////////////////////////////////////////////
-
-    vtkSmartPointer<vtkStripper> stripper =
-        vtkSmartPointer<vtkStripper>::New();
-    stripper->SetInput( contours->GetOutput() );
-    //Is it useful?? Which number is the best suited?
-    stripper->SetMaximumLength( 999 );
-    stripper->Update();
-
-    /////////////////////////////////////////////////////
-    // Reorder points
-    //////////////////////////////////////////////////////
-
-    stripper->GetOutput()->GetLines()->InitTraversal();
-
-    // npts = nb of points in the line
-    // *pts = pointer to each point
-
-    vtkIdType *pts, npts;
-    stripper->GetOutput()->GetLines()->GetNextCell(npts,pts);
-    vtkSmartPointer<vtkPoints> points =
-        vtkSmartPointer<vtkPoints>::New();
-
-    vtkCellArray *lines       = vtkCellArray::New();
-    vtkIdType    *lineIndices = new vtkIdType[static_cast<int>(npts+1)];
-
-    for ( int k = 0; k< static_cast<int>( npts ); k++ )
-      {
-      points->InsertPoint(k, stripper->GetOutput()->GetPoints()->GetPoint(pts[k]));
-      lineIndices[ k ] = k;
-      }
-
-    lineIndices[ static_cast<int>(npts) ] = 0;
-    lines->InsertNextCell( npts + 1, lineIndices);
-    delete [] lineIndices;
-
-    vtkSmartPointer<vtkPolyData> testPolyD =
-        vtkSmartPointer<vtkPolyData>::New();
-    testPolyD->SetPoints( points );
-    testPolyD->SetLines( lines );
-
-    /////////////////////////////////////////////////////
-    //Decimation (has to be after points reorganization)
-    /////////////////////////////////////////////////////
-
-    vtkSmartPointer<vtkPolylineDecimation> decimator =
-      vtkSmartPointer<vtkPolylineDecimation>::New();
-    decimator->SetInput( testPolyD );
-    decimator->SetTargetReduction( 0.9 );
-    decimator->Update();
-
-    /////////////////////////////////////////////////////
-    // Translate to real location (i.e. see_pos[])
-    /////////////////////////////////////////////////////
-
-    vtkSmartPointer<vtkTransform> t =
-        vtkSmartPointer<vtkTransform>::New();
-    t->Translate( seed_pos[0], seed_pos[1], seed_pos[2] );
-
-    vtkSmartPointer<vtkTransformPolyDataFilter> tf =
-        vtkSmartPointer<vtkTransformPolyDataFilter>::New();
-    tf->SetTransform( t );
-    tf->SetInput( decimator->GetOutput() );
-    tf->Update();
-
-    /////////////////////////////////////////////////////
+    seedsSegmentation.setSeedsPosition( seed_pos );
+    //
+    int orientation = 0;
     // Save contour in database
-    /////////////////////////////////////////////////////
-    SavePolyDataAsContourInDB( tf->GetOutput() );
-
-    /////////////////////////////////////////////////////
-    // Delete everything
-    /////////////////////////////////////////////////////
-
-    resliceAxes->Delete();
-    reslicer->Delete();
+    SavePolyDataAsContourInDB(
+        seedsSegmentation.LevelSetSegmentation2D( orientation ) );
   }
 
   // Erase seeds once everything is stored in DB
   this->m_ImageView->ClearAllSeeds();
 
   // Update visualization
-  this->m_ImageView->Update();
+  this->m_ImageView->UpdateRenderWindows();
 }
 //-------------------------------------------------------------------------
 
@@ -3468,189 +3279,33 @@ LevelSetSegmentation3D()
         m_InternalImages[ m_OneClickSegmentationDockWidget->GetChannel() ] );
     }
 
+  // Initialize the segmentation
+  QGoSeedsSegmentation seedsSegmentation;
+  seedsSegmentation.setInputVolume( inputVolume );
+  seedsSegmentation.setRadius(
+      m_ManualSegmentationDockWidget->GetRadius() );
+  seedsSegmentation.setNumberOfIterations(
+      m_ManualSegmentationDockWidget->GetNumberOfIterations() );
+  seedsSegmentation.setCurvatureWeight(
+      m_ManualSegmentationDockWidget->GetCurvatureWeight() );
+
   // Apply filter for each seed
   for( int i = 0; i < m_SeedsWorldPosition->GetNumberOfPoints(); i++ )
     {
     // Put position of each seed "i" in "seed_pos[3]"
     m_SeedsWorldPosition->GetPoint( i, seed_pos );
+    seedsSegmentation.setSeedsPosition( seed_pos );
 
-    //Export VTK image to ITK
-    vtkImageExport* movingExporter = vtkImageExport::New();
-    movingExporter->SetInput( inputVolume );
-
-    const unsigned int Dimension = 3;
-
-    // ImageType
-    typedef itk::Image< unsigned char, Dimension > ImageType;
-    // Import VTK Image to ITK
-    typedef itk::VTKImageImport<ImageType> ImageImportType;
-    ImageImportType::Pointer movingImporter = ImageImportType::New();
-
-    ConnectPipelines< vtkImageExport, ImageImportType::Pointer >( movingExporter, movingImporter );
-    // Apply LevelSet segmentation filter
-    typedef itk::Image< unsigned char, Dimension > FeatureImageType;
-
-    typedef itk::ChanAndVeseSegmentationFilter< FeatureImageType >
-        SegmentationFilterType;
-
-    FeatureImageType::PointType pt;
-
-    SegmentationFilterType::Pointer filter = SegmentationFilterType::New();
-    filter->SetFeatureImage( movingImporter->GetOutput() );
-    filter->SetPreprocess( 1 );
-
-    // everything is in world coordinates
-    pt[0] = seed_pos[0];
-    pt[1] = seed_pos[1];
-    pt[2] = seed_pos[2];
-    filter->SetCenter( pt );
-
-    filter->SetRadius(
-        this->m_OneClickSegmentationDockWidget->GetRadius() );
-    filter->SetNumberOfIterations(
-        this->m_OneClickSegmentationDockWidget->GetNumberOfIterations() );
-    filter->SetCurvatureWeight(
-        this->m_OneClickSegmentationDockWidget->GetCurvatureWeight() );
-    filter->Update();
-
-    vtkImageData* image = filter->GetOutput();
-
-    // create iso-contours
-    vtkSmartPointer<vtkMarchingCubes> contours =
-        vtkSmartPointer<vtkMarchingCubes>::New();
-    contours->SetInput( image );
-    contours->GenerateValues ( 1, 0, 0 );
-    contours->SetComputeGradients( 0 );
-    contours->SetComputeNormals( 0 );
-    contours->SetComputeScalars( 0 );
-    contours->SetNumberOfContours( 1 );
-
-    SavePolyDataAsVolumeInDB( contours->GetOutput() );
-
-    movingExporter->Delete();
+    SavePolyDataAsVolumeInDB(
+        seedsSegmentation.LevelSetSegmentation3D() );
   }
 
   // Erase seeds once everything is stored in DB
   this->m_ImageView->ClearAllSeeds();
 
   // Update visualization
-  this->m_ImageView->Update();
+  this->m_ImageView->UpdateRenderWindows();
 }
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-vtkSmartPointer<vtkPolyData>
-QGoTabImageView3DwT::
-CreateSphereVolume( vtkViewImage2D* iView, double iCenter[3],
-    double iRadius )
-{
-  (void) iView;
-
-  //int* center_id = iView.GetImageCoordinatesFromWorldCoordinates( iCenter );
-  vtkSmartPointer<vtkPolyData>              spherePolydata;
-
-    // create sphere geometry
-  vtkSmartPointer<vtkSphereSource> sphere =
-      vtkSmartPointer<vtkSphereSource>::New();
-  sphere->SetRadius( iRadius );
-  sphere->SetThetaResolution( 18 );
-  sphere->SetPhiResolution( 18 );
-  sphere->SetCenter( iCenter );
-
-  spherePolydata = sphere->GetOutput();
-
-  return spherePolydata;
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-std::vector< vtkSmartPointer<vtkPolyData> >
-QGoTabImageView3DwT::
-CreateSphereContours( vtkViewImage2D& iView, double iCenter[3],
-    double iRadius )
-{
-  int* center_id = iView.GetImageCoordinatesFromWorldCoordinates( iCenter );
-
-  double corner[3];
-  corner[0] = iCenter[0];
-  corner[1] = iCenter[1];
-  corner[2] = iCenter[2] - iRadius;
-
-  int* corner_id = iView.GetImageCoordinatesFromWorldCoordinates( corner );
-  int zlength = 2 * std::abs( center_id[2] - corner_id[2] );
-
-  int idx[3];
-  idx[0] = corner_id[0];
-  idx[1] = corner_id[1];
-  idx[2] = corner_id[2];
-
-  double* seed_pos;
-
-  std::vector< vtkSmartPointer<vtkPolyData> >              circleContoursVector;
-  circleContoursVector.resize( zlength );
-
-  // numberOfPointsToRepresentCircle: 4 is enough since there is an interpolation
-  // to create the circle after
-
-  int numberOfPointsToRepresentCircle = 4;
-
-  for( int i = 0; i < zlength; i++, idx[2]++ )
-    {
-    seed_pos = iView.GetWorldCoordinatesFromImageCoordinates( idx );
-    vtkSmartPointer<vtkPolyData> circle =
-        GenerateCircleFromGivenSphereAndGivenZ( iCenter, iRadius, seed_pos[2],
-        numberOfPointsToRepresentCircle );
-
-    // Store polyDatas in a vector then return it
-    circleContoursVector[i] = circle;
-    }
-
-  return circleContoursVector;
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-vtkSmartPointer<vtkPolyData>
-QGoTabImageView3DwT::
-GenerateCircleFromGivenSphereAndGivenZ( double iC[3],
-  const double& iRadius, double iZ, const int& iN )
-{
-  double res = ( iC[2] - iZ );
-  res *= res;
-  res = iRadius * iRadius - res;
-
-  if( res < 0 )
-    {
-    return 0;
-    }
-  else
-    {
-    vtkSmartPointer<vtkPolyData> oCircle = vtkSmartPointer<vtkPolyData>::New();
-    vtkPoints    *points      = vtkPoints::New();
-    vtkCellArray *lines       = vtkCellArray::New();
-    vtkIdType    *lineIndices = new vtkIdType[iN+1];
-
-    double theta = 0.;
-    double r = sqrt( res );
-
-    for( int i = 0; i < iN; i++ )
-      {
-      theta = 2. * i * vtkMath::Pi() / static_cast< double >( iN );
-      points->InsertPoint( static_cast< vtkIdType>( i ),
-          iC[0] + r * cos( theta ), iC[1] + r * sin( theta ), iZ );
-      lineIndices[i] = static_cast<vtkIdType>(i);
-      }
-
-    lineIndices[iN] = 0;
-    lines->InsertNextCell(iN+1,lineIndices);
-    delete [] lineIndices;
-    oCircle->SetPoints( points );
-    oCircle->SetLines(lines);
-
-    return oCircle;
-    }
-}
-//-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 int

@@ -62,6 +62,7 @@ SET( QGoGUILIB_SRC
   QGoDBInitCreateAuthorsPage.cxx
   QGoDBInitCreateMicroscopePage.cxx
   QGoOneClickSegmentationDockWidget.cxx
+  QGoSeedsSegmentation.cxx
   ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/QGoAboutWidget.cxx
   ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/QGoNetworkUtilities.cxx
 )
@@ -132,6 +133,7 @@ SET( QGoGUILIB_HDRS
   QGoTraceManualEditingWidget.h
   QGoTraceManualEditingDockWidget.h
   QGoOneClickSegmentationDockWidget.h
+  QGoSeedsSegmentation.h
   QGoAboutWidget.h
   QGoDBInitializationWizard.h
   QGoDBInitCreateUserPage.h
