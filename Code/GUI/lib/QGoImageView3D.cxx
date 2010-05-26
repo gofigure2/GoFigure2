@@ -456,17 +456,16 @@ InitializeSeedWidgetInteraction()
     this->SeedRep[i]->SetHandleRepresentation(this->Handle[i]);
 
     this->SeedWidget[i] = vtkSmartPointer<vtkSeedWidget>::New();
-    //this->SeedWidget[i]->SetPriority( 10.0 );
     this->SeedWidget[i]->SetRepresentation( this->SeedRep[i] );
     }
-
+/*
   this->Handle[0]->SetProjectionNormal( vtkViewImage2D::VIEW_ORIENTATION_AXIAL );
   this->Handle[1]->SetProjectionNormal( vtkViewImage2D::VIEW_ORIENTATION_CORONAL );
-  this->Handle[2]->SetProjectionNormal( vtkViewImage2D::VIEW_ORIENTATION_SAGITTAL );
+  this->Handle[2]->SetProjectionNormal( vtkViewImage2D::VIEW_ORIENTATION_SAGITTAL );*/
 
-  this->SeedWidget[0]->SetInteractor( this->QvtkWidget_XY->GetInteractor() );
-  this->SeedWidget[1]->SetInteractor( this->QvtkWidget_XZ->GetInteractor() );
-  this->SeedWidget[2]->SetInteractor( this->QvtkWidget_YZ->GetInteractor() );
+  this->SeedWidget[0]->SetInteractor( this->m_Pool->GetItem(0)->GetInteractor() );
+  this->SeedWidget[1]->SetInteractor( this->m_Pool->GetItem(1)->GetInteractor() );
+  this->SeedWidget[2]->SetInteractor( this->m_Pool->GetItem(2)->GetInteractor() );
 
   // to remove right click interaction in the one click widget
   this->SeedWidget[0]->GetEventTranslator()->RemoveTranslation(vtkCommand::RightButtonPressEvent );
@@ -1400,7 +1399,7 @@ vtkPoints*
 QGoImageView3D::
 GetAllSeeds()
 {
-  /// TODO Wrong values returned
+  /// TODO Wrong values returned with GetWorldCoordinates
   double tpos[3];
 
   vtkPoints* oPoints = vtkPoints::New();
@@ -1410,8 +1409,14 @@ GetAllSeeds()
     int N = this->SeedRep[i]->GetNumberOfSeeds();
     for( int j = 0; j < N; j++ )
       {
-      this->SeedRep[i]->GetSeedWorldPosition( j, tpos );
-      oPoints->InsertNextPoint( tpos );
+      this->SeedRep[i]->GetSeedDisplayPosition( j, tpos );
+      int intDisplayPosition[3];
+      intDisplayPosition[0] = tpos[0];
+      intDisplayPosition[1] = tpos[1];
+      intDisplayPosition[2] = tpos[2];
+      double* position = this->m_Pool->GetItem(0)
+          ->GetWorldCoordinatesFromDisplayPosition( intDisplayPosition );
+      oPoints->InsertNextPoint( position );
       }
     }
 
