@@ -184,8 +184,8 @@ OnLeftButtonDown()
         this->InvokeEvent(vtkViewImage2DCommand::PanEvent);
         this->Superclass::OnMiddleButtonDown();
         break;
-      case InteractionOneClick:
-        this->InvokeEvent(vtkViewImage2DCommand::OneClickEvent);
+      case InteractionTypeSeed:
+        this->InvokeEvent(vtkViewImage2DCommand::SeedEvent);
         this->Superclass::OnLeftButtonDown();
         break;
       default:
@@ -226,9 +226,6 @@ OnLeftButtonUp()
       this->Superclass::OnMiddleButtonDown();
       break;
     case InteractionTypeWindowLevel :
-      this->Superclass::OnLeftButtonUp();
-      break;
-    case InteractionOneClick:
       this->Superclass::OnLeftButtonUp();
       break;
     default:
@@ -276,9 +273,6 @@ OnMiddleButtonDown()
         this->InvokeEvent(vtkViewImage2DCommand::PanEvent);
         this->Superclass::OnMiddleButtonDown();
         break;
-      case InteractionOneClick:
-        this->Superclass::OnLeftButtonDown();
-        break;
       default:
         this->Superclass::OnMiddleButtonDown();
         break;
@@ -316,7 +310,6 @@ OnMiddleButtonUp()
       this->Superclass::OnMiddleButtonUp();
       break;
     case InteractionTypeWindowLevel :
-    case InteractionOneClick:
       break;
     default:
       this->Superclass::OnMiddleButtonUp();
@@ -349,8 +342,6 @@ OnRightButtonDown()
     case InteractionTypePan:
       this->InvokeEvent(vtkViewImage2DCommand::PanEvent);
       this->Superclass::OnMiddleButtonDown();
-      break;
-    case InteractionOneClick:
       break;
     default:
       this->Superclass::OnRightButtonDown();
@@ -389,8 +380,6 @@ OnRightButtonUp()
       break;
     case InteractionTypeZoom :
       this->Superclass::OnRightButtonUp();
-      break;
-    case InteractionOneClick:
       break;
     default:
       this->Superclass::OnRightButtonUp();
@@ -431,8 +420,6 @@ OnMouseWheelForward()
       break;
     case InteractionTypePan:
       break;
-    case InteractionOneClick:
-      break;
     default:
       this->Superclass::OnMouseWheelForward();
       break;
@@ -467,8 +454,6 @@ OnMouseWheelBackward()
     case InteractionTypeZoom:
       break;
     case InteractionTypePan:
-      break;
-    case InteractionOneClick:
       break;
     default:
       this->Superclass::OnMouseWheelBackward();

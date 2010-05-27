@@ -85,6 +85,9 @@
 
 #include <cstdlib>
 
+#include "vtkCallbackCommand.h"
+void func(vtkObject* caller, unsigned long eid, void* clientdata, void *calldata);
+
 //-------------------------------------------------------------------------
 /**
  *
@@ -458,10 +461,6 @@ InitializeSeedWidgetInteraction()
     this->SeedWidget[i] = vtkSmartPointer<vtkSeedWidget>::New();
     this->SeedWidget[i]->SetRepresentation( this->SeedRep[i] );
     }
-/*
-  this->Handle[0]->SetProjectionNormal( vtkViewImage2D::VIEW_ORIENTATION_AXIAL );
-  this->Handle[1]->SetProjectionNormal( vtkViewImage2D::VIEW_ORIENTATION_CORONAL );
-  this->Handle[2]->SetProjectionNormal( vtkViewImage2D::VIEW_ORIENTATION_SAGITTAL );*/
 
   this->SeedWidget[0]->SetInteractor( this->m_Pool->GetItem(0)->GetInteractor() );
   this->SeedWidget[1]->SetInteractor( this->m_Pool->GetItem(1)->GetInteractor() );
@@ -471,9 +470,45 @@ InitializeSeedWidgetInteraction()
   this->SeedWidget[0]->GetEventTranslator()->RemoveTranslation(vtkCommand::RightButtonPressEvent );
   this->SeedWidget[1]->GetEventTranslator()->RemoveTranslation(vtkCommand::RightButtonPressEvent );
   this->SeedWidget[2]->GetEventTranslator()->RemoveTranslation(vtkCommand::RightButtonPressEvent );
-}
-//-------------------------------------------------------------------------
 
+  vtkSmartPointer<vtkCallbackCommand> seedCallback0 =
+      vtkSmartPointer<vtkCallbackCommand>::New();
+  seedCallback0->SetCallback ( func );
+  seedCallback0->SetClientData ( this->m_Pool->GetItem(0) );
+  this->m_Pool->GetItem(0)->GetInteractor()->AddObserver(vtkViewImage2DCommand::LeftButtonPressEvent,seedCallback0);
+
+  vtkSmartPointer<vtkCallbackCommand> seedCallback1 =
+      vtkSmartPointer<vtkCallbackCommand>::New();
+  seedCallback1->SetCallback ( func );
+  seedCallback1->SetClientData ( this->m_Pool->GetItem(1) );
+  this->m_Pool->GetItem(1)->GetInteractor()->AddObserver(vtkViewImage2DCommand::LeftButtonPressEvent,seedCallback1);
+
+  //this->m_Pool->GetItem(2)->GetInteractor()->Get
+
+  vtkSmartPointer<vtkCallbackCommand> seedCallback2 =
+      vtkSmartPointer<vtkCallbackCommand>::New();
+  seedCallback2->SetCallback ( func );
+  seedCallback2->SetClientData ( this->m_Pool->GetItem(2) );
+  this->m_Pool->GetItem(2)->GetInteractor()->AddObserver(vtkViewImage2DCommand::LeftButtonPressEvent,seedCallback2);
+
+
+}
+/// TODO Correct in this callback the seeds positions?
+/// Would it solve the visualization bug?
+//-------------------------------------------------------------------------
+void func(vtkObject* caller, unsigned long eid, void* clientdata, void *calldata)
+{
+  vtkSmartPointer<vtkRenderWindowInteractor> Interactor =
+      static_cast<vtkRenderWindowInteractor*>(caller);
+
+  vtkSmartPointer<vtkViewImage2D> Viewer =
+      static_cast<vtkViewImage2D*>(clientdata);
+
+  double* pos = Viewer->GetWorldCoordinatesFromDisplayPosition (
+      Interactor->GetEventPosition());
+
+  int* idx = Viewer->GetImageCoordinatesFromWorldCoordinates( pos );
+}
 //-------------------------------------------------------------------------
 /**
  *
@@ -1111,33 +1146,6 @@ AddMesh( const int& iId, vtkPolyData* dataset, vtkProperty* iProperty )
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-// void
-// QGoImageView3D::
-// HighLightContours()
-// {
-//   vtkViewImage2DCollectionCommand* command = m_Pool->GetCommand();
-//   std::list< vtkProp3D* > listofpicked = command->GetListOfPickedActors();
-//
-//   std::list< vtkProp3D* >::iterator it = listofpicked.begin();
-//
-//   while( it != listofpicked.end() )
-//     {
-//     ChangeActorProperty( *it, m_HighlightedContourProperty );
-//     ++it;
-//     }
-//
-//   std::list< vtkProp3D* > listofunpicked = command->GetListOfUnPickedActors();
-//   it = listofunpicked.begin();
-//
-//   while( it != listofunpicked.end() )
-//     {
-//     ChangeActorProperty( *it, m_ActorsPropertyMap[*it] );
-//     ++it;
-//     }
-// }
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
 std::list< vtkProp3D* >
 QGoImageView3D::GetListOfPickedActors()
 {
@@ -1364,7 +1372,13 @@ OneClickMode()
 {
   //Reinitialize cursor interaction
   DefaultMode();
-
+  /*vtkViewImage2D* View1 = this->m_Pool->GetItem( 0 );
+  View1->SetLeftButtonInteractionStyle( vtkInteractorStyleImage2D::InteractionTypeSeed );
+  vtkViewImage2D* View2 = this->m_Pool->GetItem( 1 );
+  View2->SetLeftButtonInteractionStyle( vtkInteractorStyleImage2D::InteractionTypeSeed );
+  vtkViewImage2D* View3 = this->m_Pool->GetItem( 2 );
+  View3->SetLeftButtonInteractionStyle( vtkInteractorStyleImage2D::InteractionTypeSeed );
+  */
   // Enable widget in each slice
   this->EnableOneClickMode();
 }
@@ -1399,8 +1413,10 @@ vtkPoints*
 QGoImageView3D::
 GetAllSeeds()
 {
-  /// TODO Wrong values returned with GetWorldCoordinates
-  double tpos[3];
+  /// TODO Correct it earlier might solve the visualization problem
+  /// regarding the seeds
+
+  double worldPosition[3];
 
   vtkPoints* oPoints = vtkPoints::New();
 
@@ -1409,14 +1425,18 @@ GetAllSeeds()
     int N = this->SeedRep[i]->GetNumberOfSeeds();
     for( int j = 0; j < N; j++ )
       {
-      this->SeedRep[i]->GetSeedDisplayPosition( j, tpos );
-      int intDisplayPosition[3];
-      intDisplayPosition[0] = tpos[0];
-      intDisplayPosition[1] = tpos[1];
-      intDisplayPosition[2] = tpos[2];
-      double* position = this->m_Pool->GetItem(0)
-          ->GetWorldCoordinatesFromDisplayPosition( intDisplayPosition );
-      oPoints->InsertNextPoint( position );
+      // Get World position (may be not accurate if we are between 8 pixels (3D))
+      this->SeedRep[i]->GetSeedWorldPosition( j, worldPosition );
+      // Get indexes of the closest point
+      int* index = this->m_Pool->GetItem(i)->GetImageCoordinatesFromWorldCoordinates( worldPosition );
+      // Convert it back into world position
+      double spacing[3];
+      this->m_Pool->GetItem(i)->GetInput()->GetSpacing( spacing );
+      double correctedPosition[3];
+      correctedPosition[0] = static_cast<double>(index[0])*spacing[0];
+      correctedPosition[1] = static_cast<double>(index[1])*spacing[1];
+      correctedPosition[2] = static_cast<double>(index[2])*spacing[2];
+      oPoints->InsertNextPoint( correctedPosition );
       }
     }
 

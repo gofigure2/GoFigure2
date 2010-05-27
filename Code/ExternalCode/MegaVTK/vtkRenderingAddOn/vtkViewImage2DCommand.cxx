@@ -155,9 +155,9 @@ vtkViewImage2DCommand::Execute( vtkObject*    caller,
 //     }
   }
 
-  if( event == vtkViewImage2DCommand::OneClickEvent )
+  if( event == vtkViewImage2DCommand::SeedEvent )
   {
-    //std::cout << "One click event" << std::endl;
+    std::cout << "Seed event" << std::endl;
   }
 
   if (event == vtkCommand::KeyPressEvent)
@@ -209,6 +209,10 @@ vtkViewImage2DCommand::Execute( vtkObject*    caller,
   {
     double* position = this->Viewer->GetWorldCoordinatesFromDisplayPosition (
       isi->GetRequestedPosition ());
+    /*std::cout << "requested: " << position[0] << std::endl;
+    std::cout << "requested: " << position[1] << std::endl;
+    std::cout << "requested: " << position[2] << std::endl;*/
+
     this->Viewer->SetWorldCoordinates(position);
     this->Viewer->Render();
   }

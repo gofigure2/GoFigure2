@@ -588,7 +588,12 @@ void vtkViewImage2D::SetSlice( int slice )
 //     }
 //   else
     {
+    std::cout << "slice: " << slice << std::endl;
     double* pos = this->GetWorldCoordinatesForSlice( slice );
+    //hope the bug is here
+    std::cout << "position: " << pos[0] << std::endl;
+    std::cout << "position: " << pos[1] << std::endl;
+    std::cout << "position: " << pos[2] << std::endl;
     this->SliceImplicitPlane->SetOrigin( pos );
     this->Superclass::SetSlice( slice );
     this->UpdateSlicePlane();
@@ -829,7 +834,9 @@ void vtkViewImage2D::InstallPipeline()
             vtkViewImage2DCommand::PanEvent, this->Command);
           this->InteractorStyle->AddObserver( vtkCommand::InteractionEvent,
             this->Command);
-          this->InteractorStyle->AddObserver( vtkViewImage2DCommand::OneClickEvent,
+          this->InteractorStyle->AddObserver( vtkViewImage2DCommand::SeedEvent,
+                  this->Command);
+          this->InteractorStyle->AddObserver( vtkViewImage2DCommand::RequestedPositionEvent,
                   this->Command);
       }
         this->InteractorStyleSwitcher = this->InteractorStyle;
@@ -944,12 +951,13 @@ vtkViewImage2D::AddDataSet( vtkPolyData* dataset,
   // if in 2d
   if( (bounds[0] == bounds[1]) && (normal[1] == 0) && (normal[2] == 0))
     {
-    this->SliceImplicitPlane->SetNormal(-1, 0, 0);
+    //this->SliceImplicitPlane->SetNormal(-1, 0, 0);
     extracter->SetInputConnection( 0, dataset->GetProducerPort());
     extracter->SetImplicitFunction( this->SliceImplicitPlane );
     extracter->Update();
     mapper->SetInputConnection( 0, extracter->GetOutputPort());
-    this->SliceImplicitPlane->SetNormal(1, 0, 0);
+
+    //this->SliceImplicitPlane->SetNormal(1, 0, 0);
     std::cout << "--------------------------" << std::endl;
     std::cout << "--------------------------" << std::endl;
     std::cout << "X extraction" << std::endl;
@@ -974,12 +982,12 @@ vtkViewImage2D::AddDataSet( vtkPolyData* dataset,
     }
   else if ((bounds[2] == bounds[3]) && (normal[2] == 0) && (normal[0] == 0))
     {
-    this->SliceImplicitPlane->SetNormal(0, -1, 0);
+    //this->SliceImplicitPlane->SetNormal(0, -1, 0);
     extracter->SetInputConnection( 0, dataset->GetProducerPort());
     extracter->SetImplicitFunction( this->SliceImplicitPlane );
     extracter->Update();
     mapper->SetInputConnection( 0, extracter->GetOutputPort());
-    this->SliceImplicitPlane->SetNormal(0, 1, 0);
+    //this->SliceImplicitPlane->SetNormal(0, 1, 0);
     std::cout << "--------------------------" << std::endl;
     std::cout << "--------------------------" << std::endl;
     std::cout << "Y extraction" << std::endl;
@@ -1009,6 +1017,27 @@ vtkViewImage2D::AddDataSet( vtkPolyData* dataset,
     extracter->SetImplicitFunction( this->SliceImplicitPlane );
     extracter->Update();
     mapper->SetInputConnection( 0, extracter->GetOutputPort());
+    std::cout << "--------------------------" << std::endl;
+    std::cout << "--------------------------" << std::endl;
+    std::cout << "Z extraction" << std::endl;
+    std::cout << "--------------------------" << std::endl;
+    std::cout << "--------------------------" << std::endl;
+    std::cout << "bounds[0]: " << bounds[0] << std::endl;
+    std::cout << "bounds[1]: " << bounds[1] << std::endl;
+    std::cout << "bounds[2]: " << bounds[2] << std::endl;
+    std::cout << "bounds[3]: " << bounds[3] << std::endl;
+    std::cout << "bounds[4]: " << bounds[4] << std::endl;
+    std::cout << "bounds[5]: " << bounds[5] << std::endl;
+
+
+    std::cout << "origin[0]: " << origin[0] << std::endl;
+    std::cout << "origin[1]: " << origin[1] << std::endl;
+    std::cout << "origin[2]: " << origin[2] << std::endl;
+
+    std::cout << "normal[0]: " << normal[0] << std::endl;
+    std::cout << "normal[1]: " << normal[1] << std::endl;
+    std::cout << "normal[2]: " << normal[2] << std::endl;
+    std::cout << "--------------------------" << std::endl;
     }
   // i.e. if volume
   else if( intersection )
@@ -1023,7 +1052,7 @@ vtkViewImage2D::AddDataSet( vtkPolyData* dataset,
     mapper->SetInput( dataset );
     }
 
-
+  mapper->Update();
   actor->SetMapper( mapper );
   if( property )
     {
@@ -1111,7 +1140,7 @@ vtkViewImage2D::AddDataSet( vtkDataSet* dataset,
     }
   actor->GetProperty()->BackfaceCullingOn();
 
-  actor->SetUserTransform( this->AdjustmentTransform );
+  //actor->SetUserTransform( this->AdjustmentTransform );
   this->ContourPicker->AddPickList( actor );
   this->ContourPicker->PickFromListOn();
 
@@ -1453,8 +1482,10 @@ void vtkViewImage2D::SetImplicitPlaneFromOrientation(void)
   // actor (and other added dataset) appear behind the 2D scene...
   double* normal = cam->GetViewPlaneNormal();
   double translation[3];
+  double spacing[3];
+  this->GetInput()->GetSpacing( spacing );
   for (unsigned int i=0; i<3; i++)
-    translation[i] = 0.05 * normal[i];
+    translation[i] = spacing[i] * normal[i];
   this->AdjustmentTransform->Identity();
   this->AdjustmentTransform->Translate (translation);
 

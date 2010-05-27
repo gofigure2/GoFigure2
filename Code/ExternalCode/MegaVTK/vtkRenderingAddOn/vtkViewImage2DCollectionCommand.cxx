@@ -178,6 +178,10 @@ void vtkViewImage2DCollectionCommand::Execute(vtkObject *caller,
   {
     double* position = viewer->GetWorldCoordinatesFromDisplayPosition (
       isi->GetRequestedPosition ());
+    std::cout << "requested collection: " << position[0] << std::endl;
+    std::cout << "requested collection: " << position[1] << std::endl;
+    std::cout << "requested collection: " << position[2] << std::endl;
+
     this->Collection->SyncSetWorldCoordinates(position);
     this->Collection->SyncRender();
   }
@@ -224,8 +228,9 @@ void vtkViewImage2DCollectionCommand::Execute(vtkObject *caller,
 //     }
   }
 
-  if( event == vtkViewImage2DCommand::OneClickEvent )
+  if( event == vtkViewImage2DCommand::SeedEvent )
   {
+    std::cout << "in collection"  << std::endl;
     /*this->GetCollection()->InitTraversal();
     v = this->GetCollection()->GetNextItem();
 
