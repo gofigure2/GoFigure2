@@ -69,6 +69,9 @@
 
 #include "vtkSmartPointer.h"
 
+#include "vtkPolyDataWriter.h"
+#include "vtkCellArray.h"
+
 #include "vtkCamera.h"
 #include "vtkCommand.h"
 #include "vtkImageActor.h"
@@ -588,12 +591,7 @@ void vtkViewImage2D::SetSlice( int slice )
 //     }
 //   else
     {
-    std::cout << "slice: " << slice << std::endl;
     double* pos = this->GetWorldCoordinatesForSlice( slice );
-    //hope the bug is here
-    std::cout << "position: " << pos[0] << std::endl;
-    std::cout << "position: " << pos[1] << std::endl;
-    std::cout << "position: " << pos[2] << std::endl;
     this->SliceImplicitPlane->SetOrigin( pos );
     this->Superclass::SetSlice( slice );
     this->UpdateSlicePlane();
@@ -928,127 +926,91 @@ vtkViewImage2D::AddDataSet( vtkPolyData* dataset,
   //  get origin of slice (x,y,z)
   double* normal;
   normal = this->SliceImplicitPlane->GetNormal();
-/*
-  std::cout << "--------------------------" << std::endl;
-  std::cout << "bounds[0]: " << bounds[0] << std::endl;
-  std::cout << "bounds[1]: " << bounds[1] << std::endl;
-  std::cout << "bounds[2]: " << bounds[2] << std::endl;
-  std::cout << "bounds[3]: " << bounds[3] << std::endl;
-  std::cout << "bounds[4]: " << bounds[4] << std::endl;
-  std::cout << "bounds[5]: " << bounds[5] << std::endl;
-
-
-  std::cout << "origin[0]: " << origin[0] << std::endl;
-  std::cout << "origin[1]: " << origin[1] << std::endl;
-  std::cout << "origin[2]: " << origin[2] << std::endl;
-
-  std::cout << "normal[0]: " << normal[0] << std::endl;
-  std::cout << "normal[1]: " << normal[1] << std::endl;
-  std::cout << "normal[2]: " << normal[2] << std::endl;
-
-  std::cout << "--------------------------" << std::endl;*/
 
   // if in 2d
   if( (bounds[0] == bounds[1]) && (normal[1] == 0) && (normal[2] == 0))
     {
-    //this->SliceImplicitPlane->SetNormal(-1, 0, 0);
     extracter->SetInputConnection( 0, dataset->GetProducerPort());
     extracter->SetImplicitFunction( this->SliceImplicitPlane );
     extracter->Update();
     mapper->SetInputConnection( 0, extracter->GetOutputPort());
-
-    //this->SliceImplicitPlane->SetNormal(1, 0, 0);
-    std::cout << "--------------------------" << std::endl;
-    std::cout << "--------------------------" << std::endl;
-    std::cout << "X extraction" << std::endl;
-    std::cout << "--------------------------" << std::endl;
-    std::cout << "--------------------------" << std::endl;
-    std::cout << "bounds[0]: " << bounds[0] << std::endl;
-    std::cout << "bounds[1]: " << bounds[1] << std::endl;
-    std::cout << "bounds[2]: " << bounds[2] << std::endl;
-    std::cout << "bounds[3]: " << bounds[3] << std::endl;
-    std::cout << "bounds[4]: " << bounds[4] << std::endl;
-    std::cout << "bounds[5]: " << bounds[5] << std::endl;
-
-
-    std::cout << "origin[0]: " << origin[0] << std::endl;
-    std::cout << "origin[1]: " << origin[1] << std::endl;
-    std::cout << "origin[2]: " << origin[2] << std::endl;
-
-    std::cout << "normal[0]: " << normal[0] << std::endl;
-    std::cout << "normal[1]: " << normal[1] << std::endl;
-    std::cout << "normal[2]: " << normal[2] << std::endl;
-    std::cout << "--------------------------" << std::endl;
     }
   else if ((bounds[2] == bounds[3]) && (normal[2] == 0) && (normal[0] == 0))
     {
-    //this->SliceImplicitPlane->SetNormal(0, -1, 0);
     extracter->SetInputConnection( 0, dataset->GetProducerPort());
     extracter->SetImplicitFunction( this->SliceImplicitPlane );
     extracter->Update();
     mapper->SetInputConnection( 0, extracter->GetOutputPort());
-    //this->SliceImplicitPlane->SetNormal(0, 1, 0);
-    std::cout << "--------------------------" << std::endl;
-    std::cout << "--------------------------" << std::endl;
-    std::cout << "Y extraction" << std::endl;
-    std::cout << "--------------------------" << std::endl;
-    std::cout << "--------------------------" << std::endl;
-    std::cout << "bounds[0]: " << bounds[0] << std::endl;
-    std::cout << "bounds[1]: " << bounds[1] << std::endl;
-    std::cout << "bounds[2]: " << bounds[2] << std::endl;
-    std::cout << "bounds[3]: " << bounds[3] << std::endl;
-    std::cout << "bounds[4]: " << bounds[4] << std::endl;
-    std::cout << "bounds[5]: " << bounds[5] << std::endl;
-
-
-    std::cout << "origin[0]: " << origin[0] << std::endl;
-    std::cout << "origin[1]: " << origin[1] << std::endl;
-    std::cout << "origin[2]: " << origin[2] << std::endl;
-
-    std::cout << "normal[0]: " << normal[0] << std::endl;
-    std::cout << "normal[1]: " << normal[1] << std::endl;
-    std::cout << "normal[2]: " << normal[2] << std::endl;
-
-    std::cout << "--------------------------" << std::endl;
     }
   else if ((bounds[4] == bounds[5]) && (normal[0] == 0) && (normal[1] == 0))
     {
-    extracter->SetInputConnection( 0, dataset->GetProducerPort());
+
+    //vtkSmartPointer<vtkPolyDataWriter> writer3 = vtkSmartPointer<vtkPolyDataWriter>::New();
+    //writer3->SetInput(dataset);
+    //writer3->SetFileName("/home/nr52/Desktop/beforecutter.vtk");
+    //writer3->Write();
+
+    extracter->SetInput( dataset );
     extracter->SetImplicitFunction( this->SliceImplicitPlane );
     extracter->Update();
-    mapper->SetInputConnection( 0, extracter->GetOutputPort());
-    std::cout << "--------------------------" << std::endl;
-    std::cout << "--------------------------" << std::endl;
-    std::cout << "Z extraction" << std::endl;
-    std::cout << "--------------------------" << std::endl;
-    std::cout << "--------------------------" << std::endl;
-    std::cout << "bounds[0]: " << bounds[0] << std::endl;
-    std::cout << "bounds[1]: " << bounds[1] << std::endl;
-    std::cout << "bounds[2]: " << bounds[2] << std::endl;
-    std::cout << "bounds[3]: " << bounds[3] << std::endl;
-    std::cout << "bounds[4]: " << bounds[4] << std::endl;
-    std::cout << "bounds[5]: " << bounds[5] << std::endl;
 
+    vtkSmartPointer<vtkPolyData> test = vtkSmartPointer<vtkPolyData>::New();
+    test = extracter->GetOutput();
 
-    std::cout << "origin[0]: " << origin[0] << std::endl;
-    std::cout << "origin[1]: " << origin[1] << std::endl;
-    std::cout << "origin[2]: " << origin[2] << std::endl;
+    //vtkSmartPointer<vtkPolyDataWriter> writer = vtkSmartPointer<vtkPolyDataWriter>::New();
+    //writer->SetInput(extracter->GetOutput());
+    //writer->SetFileName("/home/nr52/Desktop/cutter.vtk");
+    //writer->Write();
 
-    std::cout << "normal[0]: " << normal[0] << std::endl;
-    std::cout << "normal[1]: " << normal[1] << std::endl;
-    std::cout << "normal[2]: " << normal[2] << std::endl;
-    std::cout << "--------------------------" << std::endl;
+    // if no cells, create cells (i.e. lines)
+    // npts = nb of points in the line
+    // *pts = pointer to each point
+
+    // npts = nb of points in the line
+    // *pts = pointer to each point
+
+    vtkIdType npts;
+    npts = extracter->GetOutput()->GetPoints()->GetNumberOfPoints();
+
+    vtkSmartPointer<vtkPolyData> oCircle = vtkSmartPointer<vtkPolyData>::New();
+    vtkPoints    *points      = vtkPoints::New();
+    vtkCellArray *lines       = vtkCellArray::New();
+    vtkIdType    *lineIndices = new vtkIdType[npts+1];
+
+    for( int i = 0; i < npts; i++ )
+      {
+      double* position = extracter->GetOutput()->GetPoints()->GetPoint(i);
+      points->InsertPoint( static_cast< vtkIdType>( i ),position[0] ,position[1] ,position[2] );
+      lineIndices[i] = static_cast<vtkIdType>(i);
+      }
+
+    lineIndices[npts] = 0;
+    lines->InsertNextCell(npts+1,lineIndices);
+    delete [] lineIndices;
+    oCircle->SetPoints( points );
+    oCircle->SetLines(lines);
+    test->SetLines(lines);
+
+    //////////////////////////////////////////////////////////////////////////
+
+    //vtkSmartPointer<vtkPolyDataWriter> writer2 = vtkSmartPointer<vtkPolyDataWriter>::New();
+    //writer2->SetInput(test);
+    //writer2->SetFileName("/home/nr52/Desktop/cutter2.vtk");
+    //writer2->Write();
+
+    mapper->SetInput( test );
     }
   // i.e. if volume
   else if( intersection )
     {
-    cutter->SetInputConnection( 0, dataset->GetProducerPort());
+    cutter->SetInput( dataset );
     cutter->SetCutFunction( this->SliceImplicitPlane );
     cutter->Update();
-    mapper->SetInputConnection( 0, cutter->GetOutputPort());
+    mapper->SetInput( cutter->GetOutput());
     }
   else
     {
+	std::cout << "shoudln't be here" << std::endl;
     mapper->SetInput( dataset );
     }
 
@@ -1061,9 +1023,11 @@ vtkViewImage2D::AddDataSet( vtkPolyData* dataset,
   //Useful?
   //actor->GetProperty()->BackfaceCullingOn();
   //actor->SetUserTransform( this->AdjustmentTransform );
+  double* actororigin = actor->GetOrigin();
+  double* actororientation = actor->GetOrientation();
 
   this->Renderer->AddViewProp( actor );
-  this->DataSetCollection->AddItem( dataset );
+  this->DataSetCollection->AddItem( dynamic_cast<vtkDataSet*>(dataset) );
   this->Prop3DCollection->AddItem( actor );
 
   return actor;
@@ -1103,30 +1067,12 @@ vtkViewImage2D::AddDataSet( vtkDataSet* dataset,
   //  get origin of slice (x,y,z)
   double* normal;
   normal = this->SliceImplicitPlane->GetNormal();
-/*
-  std::cout << "bounds[0]: " << bounds[0] << std::endl;
-  std::cout << "bounds[1]: " << bounds[1] << std::endl;
-  std::cout << "bounds[2]: " << bounds[2] << std::endl;
-  std::cout << "bounds[3]: " << bounds[3] << std::endl;
-  std::cout << "bounds[4]: " << bounds[4] << std::endl;
-  std::cout << "bounds[5]: " << bounds[5] << std::endl;
-
-
-  std::cout << "origin[0]: " << origin[0] << std::endl;
-  std::cout << "origin[1]: " << origin[1] << std::endl;
-  std::cout << "origin[2]: " << origin[2] << std::endl;
-
-  std::cout << "normal[0]: " << normal[0] << std::endl;
-  std::cout << "normal[1]: " << normal[1] << std::endl;
-  std::cout << "normal[2]: " << normal[2] << std::endl;
-
-  std::cout << "--------------------------" << std::endl;*/
 
   if( intersection )
     {
-    cutter->SetInputConnection( 0, dataset->GetProducerPort());
+    cutter->SetInput( dataset);
     cutter->SetCutFunction( this->SliceImplicitPlane );
-    mapper->SetInputConnection( 0, cutter->GetOutputPort());
+    mapper->SetInput( cutter->GetOutput());
     }
   else
     {

@@ -85,8 +85,6 @@
 #include "vtkOutlineFilter.h"
 #include "vtkRenderWindow.h"
 
-#include <vtkMetaImageWriter.h>
-
 //VTK FILTERS
 #include "vtkImageExport.h"
 
@@ -354,7 +352,6 @@ ContourInteractorBehaviour( bool iVisible)
   // Mode 1 = semi auto
   // Mode 2 = auto
   int mode = m_ManualSegmentationDockWidget->GetMode();
-  std::cout << mode << std::endl;
   switch ( mode )
     {
     case 0 :
@@ -396,12 +393,10 @@ ActivateManualSegmentationEditor( const bool& iActivate )
     if( iActivate )
       {
       (*it)->On();
-      std::cout << "Activate " << std::endl;
       }
     else
       {
       (*it)->Off();
-      std::cout << "Disabled " << std::endl;
       }
     ++it;
     }
@@ -2098,7 +2093,7 @@ ValidateContour( const int& iContourID, const int& iDir,
     // fill the container
     for( i = 0; i < contour_actor.size(); i++ )
       {
-      ContourMeshStructure temp( m_ContourId, reinterpret_cast< vtkActor* >( contour_actor[i] ),
+      ContourMeshStructure temp( m_ContourId, contour_actor[i],
         contour_nodes, meshid, iTCoord, iHighlighted, iR, iG, iB, iA, i );
       m_ContourContainer.insert( temp );
       }
@@ -2162,10 +2157,14 @@ ValidateContour( )
 
     if( it->TraceID == m_ContourId )
       {
+      // save color
       r = it->rgba[0];
       g = it->rgba[1];
       b = it->rgba[2];
 //       a = it->rgba[3];
+
+      // We have to remove the polydata from the container too
+      m_ContourContainer.get< TraceID >().erase( m_ContourId );
       }
     }
 
@@ -2565,7 +2564,6 @@ ReEditContour( const unsigned int& iId )
           c_dir = (*it).Direction;
           c_actor = (*it).Actor;
           c_nodes = (*it).Nodes;
-
           RemoveActorFromViewer( c_dir, c_actor );
           }
         else
