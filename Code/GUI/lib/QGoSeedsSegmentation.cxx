@@ -179,110 +179,115 @@ LevelSetSegmentation2D(int iDirection)
   reslicer->SetInput( m_OriginImage );
   reslicer->SetResliceAxes(resliceAxes);
 
-    //Export VTK image to ITK
-    vtkSmartPointer<vtkImageExport> movingExporter =
-        vtkSmartPointer<vtkImageExport>::New();
-    movingExporter->SetInput( reslicer->GetOutput() );
+  //Export VTK image to ITK
+  vtkSmartPointer<vtkImageExport> movingExporter =
+    vtkSmartPointer<vtkImageExport>::New();
+  movingExporter->SetInput( reslicer->GetOutput() );
 
-    const unsigned int Dimension = 2;
+  const unsigned int Dimension = 2;
 
-    // ImageType
-    typedef itk::Image< unsigned char, Dimension > ImageType;
-    // Import VTK Image to ITK
-    typedef itk::VTKImageImport<ImageType> ImageImportType;
-    ImageImportType::Pointer movingImporter = ImageImportType::New();
+  // ImageType
+  typedef itk::Image< unsigned char, Dimension > ImageType;
+  // Import VTK Image to ITK
+  typedef itk::VTKImageImport<ImageType> ImageImportType;
+  typedef ImageImportType::Pointer ImageImportPointer;
+  ImageImportPointer movingImporter = ImageImportType::New();
 
-    ConnectPipelines< vtkImageExport, ImageImportType::Pointer >( movingExporter, movingImporter );
-    // Apply LevelSet segmentation filter
-    typedef itk::Image< unsigned char, Dimension > FeatureImageType;
+  ConnectPipelines< vtkImageExport, ImageImportPointer >( 
+    movingExporter, 
+    movingImporter );
+  // Apply LevelSet segmentation filter
+  typedef itk::Image< unsigned char, Dimension > FeatureImageType;
 
-    typedef itk::ChanAndVeseSegmentationFilter< FeatureImageType >
-        SegmentationFilterType;
+  typedef itk::ChanAndVeseSegmentationFilter< FeatureImageType >
+    SegmentationFilterType;
 
-    FeatureImageType::PointType pt;
+  FeatureImageType::PointType pt;
 
-    SegmentationFilterType::Pointer filter = SegmentationFilterType::New();
-    filter->SetFeatureImage( movingImporter->GetOutput() );
-    filter->SetPreprocess( 1 );
+  SegmentationFilterType::Pointer filter = SegmentationFilterType::New();
+  filter->SetFeatureImage( movingImporter->GetOutput() );
+  filter->SetPreprocess( 1 );
 
-    // everything is in world coordinates
-    // need to add newOrigin since origin moves when we extract slice
-    // everything is in world coordinates
+  // everything is in world coordinates
+  // need to add newOrigin since origin moves when we extract slice
+  // everything is in world coordinates
 
-    double* newOrigin = reslicer->GetOutput()->GetOrigin();
-    pt[0] = m_SeedsPosition[0]+newOrigin[0];
-    pt[1] = m_SeedsPosition[1]+newOrigin[1];
-    filter->SetCenter( pt );
+  double* newOrigin = reslicer->GetOutput()->GetOrigin();
+  pt[0] = m_SeedsPosition[0]+newOrigin[0];
+  pt[1] = m_SeedsPosition[1]+newOrigin[1];
+  filter->SetCenter( pt );
 
-    filter->SetRadius( m_Radius );
-    filter->SetNumberOfIterations( m_NumberOfIterations );
-    filter->SetCurvatureWeight( m_CurvatureWeight );
-    filter->Update();
+  filter->SetRadius( m_Radius );
+  filter->SetNumberOfIterations( m_NumberOfIterations );
+  filter->SetCurvatureWeight( m_CurvatureWeight );
+  filter->Update();
 
-    // create iso-contours
-    vtkSmartPointer<vtkMarchingSquares> contours =
-        vtkSmartPointer<vtkMarchingSquares>::New();
-    contours->SetInput( filter->GetOutput() );
-    contours->GenerateValues ( 1, 0, 0 );
+  // create iso-contours
+  vtkSmartPointer<vtkMarchingSquares> contours =
+    vtkSmartPointer<vtkMarchingSquares>::New();
+  contours->SetInput( filter->GetOutput() );
+  contours->GenerateValues ( 1, 0, 0 );
 
-    // Create reorganize contours
-    vtkSmartPointer<vtkStripper> stripper =
-        vtkSmartPointer<vtkStripper>::New();
-    stripper->SetInput( contours->GetOutput() );
-    //Is it useful?? Which number is the best suited?
-    stripper->SetMaximumLength( 999 );
-    stripper->Update();
+  // Create reorganize contours
+  vtkSmartPointer<vtkStripper> stripper =
+    vtkSmartPointer<vtkStripper>::New();
+  stripper->SetInput( contours->GetOutput() );
+  //Is it useful?? Which number is the best suited?
+  stripper->SetMaximumLength( 999 );
+  stripper->Update();
 
-    // Reorder points
-    stripper->GetOutput()->GetLines()->InitTraversal();
+  // Reorder points
+  stripper->GetOutput()->GetLines()->InitTraversal();
 
-    // npts = nb of points in the line
-    // *pts = pointer to each point
+  // npts = nb of points in the line
+  // *pts = pointer to each point
 
-    vtkIdType *pts, npts;
-    stripper->GetOutput()->GetLines()->GetNextCell(npts,pts);
-    vtkSmartPointer<vtkPoints> points =
-        vtkSmartPointer<vtkPoints>::New();
+  vtkIdType *pts, npts;
+  stripper->GetOutput()->GetLines()->GetNextCell(npts,pts);
+  vtkSmartPointer<vtkPoints> points =
+    vtkSmartPointer<vtkPoints>::New();
 
-    vtkCellArray *lines       = vtkCellArray::New();
-    vtkIdType    *lineIndices = new vtkIdType[static_cast<int>(npts+1)];
+  vtkCellArray *lines       = vtkCellArray::New();
+  vtkIdType    *lineIndices = new vtkIdType[static_cast<int>(npts+1)];
 
-    for ( int k = 0; k< static_cast<int>( npts ); k++ )
-      {
-      points->InsertPoint(k, stripper->GetOutput()->GetPoints()->GetPoint(pts[k]));
-      lineIndices[ k ] = k;
-      }
+  for ( int k = 0; k< static_cast<int>( npts ); k++ )
+    {
+    points->InsertPoint(k, stripper->GetOutput()->GetPoints()->GetPoint(pts[k]));
+    lineIndices[ k ] = k;
+    }
 
-    lineIndices[ static_cast<int>(npts) ] = 0;
-    lines->InsertNextCell( npts + 1, lineIndices);
-    delete [] lineIndices;
+  lineIndices[ static_cast<int>(npts) ] = 0;
+  lines->InsertNextCell( npts + 1, lineIndices);
+  delete [] lineIndices;
 
-    vtkSmartPointer<vtkPolyData> testPolyD =
-        vtkSmartPointer<vtkPolyData>::New();
-    testPolyD->SetPoints( points );
-    testPolyD->SetLines( lines );
+  vtkSmartPointer<vtkPolyData> testPolyD =
+    vtkSmartPointer<vtkPolyData>::New();
+  testPolyD->SetPoints( points );
+  testPolyD->SetLines( lines );
 
-    //Decimation (has to be after points reorganization)
-    vtkSmartPointer<vtkPolylineDecimation> decimator =
-      vtkSmartPointer<vtkPolylineDecimation>::New();
-    decimator->SetInput( testPolyD );
-    decimator->SetTargetReduction( 0.9 );
-    decimator->Update();
+  //Decimation (has to be after points reorganization)
+  vtkSmartPointer<vtkPolylineDecimation> decimator =
+    vtkSmartPointer<vtkPolylineDecimation>::New();
+  decimator->SetInput( testPolyD );
 
-    // Translate to real location (i.e. see_pos[])
-    vtkSmartPointer<vtkTransform> t =
-        vtkSmartPointer<vtkTransform>::New();
-    t->Translate( m_SeedsPosition[0], m_SeedsPosition[1], m_SeedsPosition[2] );
+  /// \todo instead os setting it to 0.9, compute it to make 10 to 20 control points
+  decimator->SetTargetReduction( 0.9 );
+  decimator->Update();
 
-    vtkSmartPointer<vtkTransformPolyDataFilter> tf =
-        vtkSmartPointer<vtkTransformPolyDataFilter>::New();
-    tf->SetTransform( t );
-    tf->SetInput( decimator->GetOutput() );
+  // Translate to real location (i.e. see_pos[])
+  vtkSmartPointer<vtkTransform> t =
+    vtkSmartPointer<vtkTransform>::New();
+  t->Translate( m_SeedsPosition[0], m_SeedsPosition[1], m_SeedsPosition[2] );
 
-    // Update required here
-    tf->Update();
+  vtkSmartPointer<vtkTransformPolyDataFilter> tf =
+    vtkSmartPointer<vtkTransformPolyDataFilter>::New();
+  tf->SetTransform( t );
+  tf->SetInput( decimator->GetOutput() );
 
-    return tf->GetOutput();
+  // Update required here
+  tf->Update();
+
+  return tf->GetOutput();
 }
 
 //--------------------------------------------------------------------------
@@ -380,6 +385,7 @@ SphereContoursSegmentation()
     {
     seed_pos = m_OriginImageInformations
         ->GetWorldCoordinatesFromImageCoordinates( idx );
+
     vtkSmartPointer<vtkPolyData> circle =
         GenerateCircleFromGivenSphereAndGivenZ(
             m_SeedsPosition, m_Radius, seed_pos[2],
@@ -449,3 +455,4 @@ SphereVolumeSegmentation()
 
   return sphere->GetOutput();
 }
+

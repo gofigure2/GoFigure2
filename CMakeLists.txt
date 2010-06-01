@@ -127,8 +127,16 @@ ENDIF( UNIX )
 
 # Everything depends on VTK first
 # that way we can get Qt info from VTK
+#### VTK ####
 FIND_PACKAGE( VTK )
 IF( VTK_FOUND )
+
+  # Check the version of VTK
+  # GoFigure2 requires vtk > 5.6
+  IF( ( VTK_MAJOR_VERSION LESS 5 ) OR ( VTK_MINOR_VERSION LESS 6 ) )
+    MESSAGE( SEND_ERROR "GoFigure2 requires VTK 5.6" )
+  ENDIF( ( VTK_MAJOR_VERSION LESS 5 ) OR ( VTK_MINOR_VERSION LESS 6 ) )
+
   INCLUDE( ${VTK_USE_FILE} )
 
   IF( ${VTK_USE_MYSQL} MATCHES "ON" )
@@ -159,6 +167,7 @@ IF( VTK_FOUND )
 
   #----------------------------------------------------------
   # Then find ITK
+  #### ITK ####
   FIND_PACKAGE( ITK )
   IF( ITK_FOUND )
     INCLUDE( ${ITK_USE_FILE} )
@@ -167,6 +176,7 @@ IF( VTK_FOUND )
 
   #----------------------------------------------------------
   # Then find Boost. Note that we only need headers
+  #### BOOST ####
   FIND_PACKAGE( Boost )
   IF( Boost_FOUND )
     INCLUDE_DIRECTORIES( BEFORE ${Boost_INCLUDE_DIRS} )
@@ -174,6 +184,7 @@ IF( VTK_FOUND )
 
   # Try to find Qt.
   # Note that some command line tools will get compiled even without Qt
+  #### Qt ####
   FIND_PACKAGE( Qt4 )
   IF( QT4_FOUND AND QT_VERSION_MINOR GREATER 4 )
     IF( QT_USE_FILE )

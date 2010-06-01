@@ -57,114 +57,115 @@
 class  QGOGUILIB_EXPORT QGoSeedsSegmentation
 {
 public:
-  /*
+  /**
    * \brief Constructor
    */
   QGoSeedsSegmentation();
 
-  /*
+  /**
    * \brief Destructor
    */
   ~QGoSeedsSegmentation();
 
-  /*
+  /**
    * \brief Set the input Volume to be used for levelset segmentation
    */
   void setInputVolume( vtkImageData* iInputVolume);
   //vtkImageData* inputVolume( );
 
-  /*
+  /**
    * \brief Set the Origin points for all segmentations
    */
   void setSeedsPosition( double iSeedsPosition[3]);
 
-  /*
+  /**
    * \brief Set the radius for all segmentations
    */
   void setRadius( double iRadius );
 
-  /*
+  /**
    * \brief Set the number of iterations for levelset segmentation
    */
   void setNumberOfIterations( int iNumberOfIterations );
 
-  /*
+  /**
    * \brief Set the curvature weight for levelset segmentation
    */
   void setCurvatureWeight( int iCurvatureWeight );
 
-  /*
+  /**
    * \brief Easy way to access informations about input image
    */
   void setOriginImageInformation( vtkViewImage2D* iOriginImageInformation );
 
-  /*
+  /**
    * \brief Get the result of the segmentation in a polydata
    */
   vtkSmartPointer<vtkPolyData> output();
 
-  /*
+  /**
    * \brief 2D levelset segmentation in the choosen direction
    */
   vtkSmartPointer<vtkPolyData> LevelSetSegmentation2D(int iDirection);
 
-  /*
+  /**
    * \brief 3D levelset segmentation
    */
   vtkSmartPointer<vtkPolyData> LevelSetSegmentation3D();
 
-  /*
+  /**
    * \brief Sphere contour segmentation
    */
   std::vector< vtkSmartPointer<vtkPolyData> > SphereContoursSegmentation();
 
-  /*
+  /**
    * \brief Useful fot the sphere contour segmentation
    */
-vtkSmartPointer<vtkPolyData> GenerateCircleFromGivenSphereAndGivenZ(
+  vtkSmartPointer<vtkPolyData> GenerateCircleFromGivenSphereAndGivenZ(
     double iC[3], const double& iRadius, double iZ, const int& iN );
 
-/*
- * \brief Sphere volume segmentation
- */
+  /**
+  * \brief Sphere volume segmentation
+  */
   vtkSmartPointer<vtkPolyData>  SphereVolumeSegmentation();
 
 private:
 
-/*
- * \brief Volume to be used for levelset segmentation
- */
+  /**
+  * \brief Volume to be used for levelset segmentation
+  */
   vtkSmartPointer<vtkImageData> m_OriginImage;
 
-  /*
+  /**
    * \brief Origin points for all segmentations
    */
   double    m_SeedsPosition[3];
 
-  /*
+  /**
    * \brief Output polydata for each segmentation
    */
   vtkSmartPointer<vtkPolyData>  m_OutputPolyData;
 
-  /*
+  /**
    *
    */
   double m_Radius;
 
-  /*
+  /**
    *
    */
   int m_NumberOfIterations;
 
-  /*
+  /**
    *
    */
   int m_CurvatureWeight;
 
-  /*
+  /**
    *
    */
 
   vtkSmartPointer<vtkViewImage2D> m_OriginImageInformations;
 };
 #endif
+
