@@ -69,12 +69,6 @@
 
 #include "vtkSmartPointer.h"
 
-#include "vtkPolyDataWriter.h"
-#include "vtkCellArray.h"
-#include "vtkClipDataSet.h"
-#include "vtkBox.h"
-#include "vtkClipPolyData.h"
-
 #include "vtkCamera.h"
 #include "vtkCommand.h"
 #include "vtkImageActor.h"
@@ -612,13 +606,6 @@ void vtkViewImage2D::UpdateSlicePlane( void )
   vtkSmartPointer< vtkPoints > points = vtkSmartPointer< vtkPoints >::New();
   double x[3];
   double* bounds = this->ImageActor->GetDisplayBounds( );
-  /*std::cout<< "Display bounds: "<< std::endl;
-  std::cout<< "Display bounds: "<< bounds[0] <<  std::endl;
-  std::cout<< "Display bounds: "<< bounds[1] <<  std::endl;
-  std::cout<< "Display bounds: "<< bounds[2] <<  std::endl;
-  std::cout<< "Display bounds: "<< bounds[3] <<  std::endl;
-  std::cout<< "Display bounds: "<< bounds[4] <<  std::endl;
-  std::cout<< "Display bounds: "<< bounds[5] <<  std::endl;*/
   unsigned int added1;
   unsigned int added2;
 
