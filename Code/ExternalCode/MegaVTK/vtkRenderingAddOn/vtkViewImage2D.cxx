@@ -71,6 +71,9 @@
 
 #include "vtkPolyDataWriter.h"
 #include "vtkCellArray.h"
+#include "vtkClipDataSet.h"
+#include "vtkBox.h"
+#include "vtkClipPolyData.h"
 
 #include "vtkCamera.h"
 #include "vtkCommand.h"
@@ -609,6 +612,13 @@ void vtkViewImage2D::UpdateSlicePlane( void )
   vtkSmartPointer< vtkPoints > points = vtkSmartPointer< vtkPoints >::New();
   double x[3];
   double* bounds = this->ImageActor->GetDisplayBounds( );
+  /*std::cout<< "Display bounds: "<< std::endl;
+  std::cout<< "Display bounds: "<< bounds[0] <<  std::endl;
+  std::cout<< "Display bounds: "<< bounds[1] <<  std::endl;
+  std::cout<< "Display bounds: "<< bounds[2] <<  std::endl;
+  std::cout<< "Display bounds: "<< bounds[3] <<  std::endl;
+  std::cout<< "Display bounds: "<< bounds[4] <<  std::endl;
+  std::cout<< "Display bounds: "<< bounds[5] <<  std::endl;*/
   unsigned int added1;
   unsigned int added2;
 
@@ -912,93 +922,25 @@ vtkViewImage2D::AddDataSet( vtkPolyData* dataset,
     vtkSmartPointer< vtkPolyDataMapper >::New();
   mapper->SetScalarVisibility( iDataVisibility );
 
-//   vtkQuadricLODActor* actor = vtkQuadricLODActor::New();
-  vtkActor* actor = vtkActor::New();
-
+  vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
   vtkSmartPointer< vtkCutter > cutter = vtkSmartPointer< vtkCutter >::New();
   vtkSmartPointer< vtkExtractPolyDataGeometry > extracter = vtkSmartPointer< vtkExtractPolyDataGeometry >::New();
 
   // check if input data is 2D
   double* bounds = dataset->GetBounds();
-  //  get origin of slice (x,y,z)
-  double* origin;
-  origin = this->SliceImplicitPlane->GetOrigin();
-  //  get origin of slice (x,y,z)
+  //  get normal
   double* normal;
   normal = this->SliceImplicitPlane->GetNormal();
 
   // if in 2d
-  if( (bounds[0] == bounds[1]) && (normal[1] == 0) && (normal[2] == 0))
+  if( ((bounds[0] == bounds[1]) && (normal[1] == 0) && (normal[2] == 0)) ||
+      ((bounds[2] == bounds[3]) && (normal[2] == 0) && (normal[0] == 0)) ||
+      ((bounds[4] == bounds[5]) && (normal[0] == 0) && (normal[1] == 0)))
     {
-    extracter->SetInputConnection( 0, dataset->GetProducerPort());
-    extracter->SetImplicitFunction( this->SliceImplicitPlane );
-    extracter->Update();
-    mapper->SetInputConnection( 0, extracter->GetOutputPort());
-    }
-  else if ((bounds[2] == bounds[3]) && (normal[2] == 0) && (normal[0] == 0))
-    {
-    extracter->SetInputConnection( 0, dataset->GetProducerPort());
-    extracter->SetImplicitFunction( this->SliceImplicitPlane );
-    extracter->Update();
-    mapper->SetInputConnection( 0, extracter->GetOutputPort());
-    }
-  else if ((bounds[4] == bounds[5]) && (normal[0] == 0) && (normal[1] == 0))
-    {
-
-    //vtkSmartPointer<vtkPolyDataWriter> writer3 = vtkSmartPointer<vtkPolyDataWriter>::New();
-    //writer3->SetInput(dataset);
-    //writer3->SetFileName("/home/nr52/Desktop/beforecutter.vtk");
-    //writer3->Write();
-
     extracter->SetInput( dataset );
     extracter->SetImplicitFunction( this->SliceImplicitPlane );
     extracter->Update();
-
-    vtkSmartPointer<vtkPolyData> test = vtkSmartPointer<vtkPolyData>::New();
-    test = extracter->GetOutput();
-
-    //vtkSmartPointer<vtkPolyDataWriter> writer = vtkSmartPointer<vtkPolyDataWriter>::New();
-    //writer->SetInput(extracter->GetOutput());
-    //writer->SetFileName("/home/nr52/Desktop/cutter.vtk");
-    //writer->Write();
-
-    // if no cells, create cells (i.e. lines)
-    // npts = nb of points in the line
-    // *pts = pointer to each point
-
-    // npts = nb of points in the line
-    // *pts = pointer to each point
-
-    vtkIdType npts;
-    npts = extracter->GetOutput()->GetPoints()->GetNumberOfPoints();
-
-    vtkSmartPointer<vtkPolyData> oCircle = vtkSmartPointer<vtkPolyData>::New();
-    vtkPoints    *points      = vtkPoints::New();
-    vtkCellArray *lines       = vtkCellArray::New();
-    vtkIdType    *lineIndices = new vtkIdType[npts+1];
-
-    for( int i = 0; i < npts; i++ )
-      {
-      double* position = extracter->GetOutput()->GetPoints()->GetPoint(i);
-      points->InsertPoint( static_cast< vtkIdType>( i ),position[0] ,position[1] ,position[2] );
-      lineIndices[i] = static_cast<vtkIdType>(i);
-      }
-
-    lineIndices[npts] = 0;
-    lines->InsertNextCell(npts+1,lineIndices);
-    delete [] lineIndices;
-    oCircle->SetPoints( points );
-    oCircle->SetLines(lines);
-    test->SetLines(lines);
-
-    //////////////////////////////////////////////////////////////////////////
-
-    //vtkSmartPointer<vtkPolyDataWriter> writer2 = vtkSmartPointer<vtkPolyDataWriter>::New();
-    //writer2->SetInput(test);
-    //writer2->SetFileName("/home/nr52/Desktop/cutter2.vtk");
-    //writer2->Write();
-
-    mapper->SetInput( test );
+    mapper->SetInput( extracter->GetOutput() );
     }
   // i.e. if volume
   else if( intersection )
@@ -1010,24 +952,19 @@ vtkViewImage2D::AddDataSet( vtkPolyData* dataset,
     }
   else
     {
-	std::cout << "shoudln't be here" << std::endl;
     mapper->SetInput( dataset );
     }
 
   mapper->Update();
   actor->SetMapper( mapper );
+
   if( property )
     {
     actor->SetProperty( property );
     }
-  //Useful?
-  //actor->GetProperty()->BackfaceCullingOn();
-  //actor->SetUserTransform( this->AdjustmentTransform );
-  double* actororigin = actor->GetOrigin();
-  double* actororientation = actor->GetOrientation();
 
   this->Renderer->AddViewProp( actor );
-  this->DataSetCollection->AddItem( dynamic_cast<vtkDataSet*>(dataset) );
+  this->DataSetCollection->AddItem( dataset );
   this->Prop3DCollection->AddItem( actor );
 
   return actor;
@@ -1055,18 +992,9 @@ vtkViewImage2D::AddDataSet( vtkDataSet* dataset,
   mapper->SetScalarVisibility( iDataVisibility );
 
   //vtkQuadricLODActor* actor = vtkQuadricLODActor::New();
-  vtkActor* actor = vtkActor::New();
+  vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
 
   vtkSmartPointer< vtkCutter > cutter = vtkSmartPointer< vtkCutter >::New();
-
-  // check if input data is 2D
-  double* bounds = dataset->GetBounds();
-  //  get origin of slice (x,y,z)
-  double* origin;
-  origin = this->SliceImplicitPlane->GetOrigin();
-  //  get origin of slice (x,y,z)
-  double* normal;
-  normal = this->SliceImplicitPlane->GetNormal();
 
   if( intersection )
     {
@@ -1094,7 +1022,6 @@ vtkViewImage2D::AddDataSet( vtkDataSet* dataset,
   this->DataSetCollection->AddItem( dataset );
   this->Prop3DCollection->AddItem( actor );
 
-//   actor->Delete();
   return actor;
 }
 
