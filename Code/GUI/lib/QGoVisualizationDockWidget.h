@@ -64,6 +64,8 @@ class QGOGUILIB_EXPORT QGoVisualizationDockWidget :
     ~QGoVisualizationDockWidget();
 
     void SetNumberOfChannels( const unsigned int& iN );
+
+    /** \brief */
     void SetChannel( const unsigned int& i, const QString& iText = QString() );
 
     void SetXMinimumAndMaximum( const int& iMin, const int& iMax );

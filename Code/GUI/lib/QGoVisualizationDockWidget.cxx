@@ -163,11 +163,15 @@ void
 QGoVisualizationDockWidget::
 SetChannel( const unsigned int& i, const QString& iText )
 {
-  QString input = QString( "Ch.%1" ).arg( i );
+  QString input;
 
   if( !iText.isEmpty() )
     {
-    input.append( iText );
+    input = iText;
+    }
+  else
+    {
+    input = QString( "Channel %1" ).arg( i );
     }
   this->ChannelComboBox->insertItem( i, input );
 }
