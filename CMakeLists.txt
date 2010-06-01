@@ -133,9 +133,9 @@ IF( VTK_FOUND )
 
   # Check the version of VTK
   # GoFigure2 requires vtk > 5.6
-  IF( ( VTK_MAJOR_VERSION LESS 5 ) OR ( VTK_MINOR_VERSION LESS 6 ) )
-    MESSAGE( SEND_ERROR "GoFigure2 requires VTK 5.6" )
-  ENDIF( ( VTK_MAJOR_VERSION LESS 5 ) OR ( VTK_MINOR_VERSION LESS 6 ) )
+  IF( ( ${VTK_MAJOR_VERSION} LESS 5 ) OR ( ${VTK_MINOR_VERSION} LESS 6 ) )
+    MESSAGE( SEND_ERROR "GoFigure2 requires VTK 5.6 (your version of VTK is ${VTK_VERSION}" )
+  ENDIF( ( ${VTK_MAJOR_VERSION} LESS 5 ) OR ( ${VTK_MINOR_VERSION} LESS 6 ) )
 
   INCLUDE( ${VTK_USE_FILE} )
 
