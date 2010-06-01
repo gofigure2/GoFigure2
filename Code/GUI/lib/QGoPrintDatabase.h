@@ -60,6 +60,7 @@
 #include "QGoDBSubCellTypeManager.h"
 #include "ContourMeshStructureHelper.h"
 #include "QGoGUILibConfigure.h"
+#include "GoFigureMeshAttributes.h"
 
 /** \class QGoPrintDatabase 
  * \brief Ensure the connection with the Database
@@ -193,7 +194,7 @@ public:
   int SaveMeshFromVisuInDB( unsigned int iXCoordMin,
     unsigned int iYCoordMin, unsigned int iZCoordMin, unsigned int iTCoord,
     unsigned int iXCoordMax, unsigned int iYCoordMax, unsigned int iZCoordMax,
-    vtkPolyData* iMeshNodes);
+    vtkPolyData* iMeshNodes, GoFigureMeshAttributes* iMeshAttributes);
 
   int CreateMeshFromOneClickSegmentation(std::list<int> iListContoursIDs);
 
@@ -358,7 +359,8 @@ protected:
   unsigned int iXCoordMin,unsigned int iYCoordMin,unsigned int iZCoordMin,
   unsigned int iTCoord,unsigned int iXCoordMax,
   unsigned int iYCoordMax,unsigned int iZCoordMax,vtkPolyData* iTraceNodes,
-  vtkMySQLDatabase* iDatabaseConnector,unsigned int iTCoordMax = 0)
+  vtkMySQLDatabase* iDatabaseConnector,unsigned int iTCoordMax = 0, 
+  GoFigureMeshAttributes* iMeshAttributes = 0)
   {
     GoDBCoordinateRow coord_min;
     coord_min.SetField< unsigned int >( "XCoord", iXCoordMin );
@@ -379,11 +381,10 @@ protected:
       {
       coord_max.SetField< unsigned int >( "TCoordMax", iTCoord );
       }
-
-    T trace_row( iDatabaseConnector,iTraceNodes,coord_min, coord_max,
-      this->m_ImgSessionID);
-
-    return trace_row;
+  
+      T trace_row( iDatabaseConnector,iTraceNodes,coord_min, coord_max,
+        this->m_ImgSessionID,iMeshAttributes);
+      return trace_row;
   }
 //-------------------------------------------------------------------------
 

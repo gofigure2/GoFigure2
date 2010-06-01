@@ -50,19 +50,20 @@
 #include "vtkMySQLDatabase.h"
 #include "vtkPolyData.h"
 #include "vtkPolyDataMySQLTextWriter.h"
+#include "GoFigureMeshAttributes.h"
 
 class QGOIO_EXPORT GoDBMeshRow : public GoDBTraceRow
 {
 public:
   GoDBMeshRow();
   /** \brief fill the mesh map with the values gotten from the visualization*/
-  GoDBMeshRow(vtkMySQLDatabase* DatabaseConnector,
+  /*GoDBMeshRow(vtkMySQLDatabase* DatabaseConnector,
     GoDBCoordinateRow Min, GoDBCoordinateRow Max, unsigned int ImgSessionID,
-    vtkPolyData* TraceVisu );
+    vtkPolyData* TraceVisu);*/
 
   GoDBMeshRow(vtkMySQLDatabase* DatabaseConnector,
     vtkPolyData* TraceVisu,GoDBCoordinateRow Min, GoDBCoordinateRow Max,
-    unsigned int ImgSessionID);
+    unsigned int ImgSessionID,GoFigureMeshAttributes* iMeshAttributes = 0 );
 
   ~GoDBMeshRow()
     {}
@@ -85,6 +86,7 @@ public:
 
 protected:
   virtual void InitializeMap();
+  std::map<std::string,int> m_NameChannelWithValues;
 
 };
 

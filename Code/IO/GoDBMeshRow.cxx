@@ -53,29 +53,31 @@ GoDBMeshRow::GoDBMeshRow():GoDBTraceRow()
 //-------------------------------------------------------------------------
 GoDBMeshRow::GoDBMeshRow(vtkMySQLDatabase* DatabaseConnector,
   vtkPolyData* TraceVisu,GoDBCoordinateRow Min, GoDBCoordinateRow Max,
-  unsigned int ImgSessionID):GoDBTraceRow(DatabaseConnector,TraceVisu,
-  Min,Max,ImgSessionID)
+  unsigned int ImgSessionID,GoFigureMeshAttributes* iMeshAttributes):
+  GoDBTraceRow(DatabaseConnector,TraceVisu,Min,Max,ImgSessionID)
 {
   this->InitializeMap();
   if (this->DoesThisBoundingBoxExist(DatabaseConnector))
     {
     std::cout<<"The bounding box already exists for this mesh"<<std::endl;
     }
+  this->m_NameChannelWithValues = iMeshAttributes->m_TotalIntensityMap;
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-GoDBMeshRow::GoDBMeshRow(vtkMySQLDatabase* DatabaseConnector,
+/*GoDBMeshRow::GoDBMeshRow(vtkMySQLDatabase* DatabaseConnector,
   GoDBCoordinateRow Min, GoDBCoordinateRow Max,unsigned int ImgSessionID,
-  vtkPolyData* TraceVisu):GoDBTraceRow(DatabaseConnector,TraceVisu,Min,Max,
-    ImgSessionID)
+  vtkPolyData* TraceVisu,GoFigureMeshAttributes* iMeshAttributes)
+  :GoDBTraceRow(DatabaseConnector,TraceVisu,Min,Max,ImgSessionID)
 {
   this->InitializeMap();
   if (this->DoesThisBoundingBoxExist(DatabaseConnector))
     {
     std::cout<<"The bounding box already exists for this Mesh"<<std::endl;
     }   
-}
+  this->m_NameChannelWithValues = iMeshAttributes->m_TotalIntensityMap;
+}*/
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -97,6 +99,11 @@ int GoDBMeshRow::SaveInDB(vtkMySQLDatabase* DatabaseConnector)
   int NewMeshID = AddOnlyOneNewObjectInTable<GoDBMeshRow>( DatabaseConnector,
     "mesh", this, "MeshID");
   this->SetField("MeshID",NewMeshID);
+  if (!this->m_NameChannelWithValues.empty())
+    {
+    this->SaveInDBTotalIntensityPerChannel(DatabaseConnector,
+      this->m_NameChannelWithValues);
+    }
   return NewMeshID;
 }
 //-------------------------------------------------------------------------

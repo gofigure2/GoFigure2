@@ -64,6 +64,10 @@ class QGOIO_EXPORT GoDBTableWidgetContainer
    /** \brief Return a list with all the ColumnNames to be displayed in the
    tableWidget:*/
    std::list<std::string> GetListColumnsNamesForTableWidget();
+
+   /** \brief Return a list with all the ColumnNames for computed values displayed in the
+   tableWidget:*/
+   std::vector<std::string> GetNameComputedColumns();
    
    /** \brief return a vector of the table.fields to be selected from the database
    for all the fields except the ones with the same name if SameFieldsQuery is set 
@@ -97,6 +101,8 @@ class QGOIO_EXPORT GoDBTableWidgetContainer
    std::vector<std::vector<std::string> > GetChannelsInfo();
    /** \brief Set the info needed for mesh*/
    void SetChannelsInfo(std::vector<std::vector<std::string> > iChannelsInfo);
+
+   unsigned int GetNumberOfRows();
 
    /** \brief Insert a new created trace with the datas contained in the 
    NewTraceContainer into the m_RowContainer*/

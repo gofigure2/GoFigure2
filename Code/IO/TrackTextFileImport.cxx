@@ -326,8 +326,8 @@ SaveMeshInDataBase( const InternalMeshStructure& iMesh )
   coord_max.SetField< unsigned int >( "ZCoord", iMesh.m_ZMax );
   coord_max.SetField< unsigned int >( "TCoord", iMesh.m_TCoord );
 
-  GoDBMeshRow mesh_row( m_DBConnector, coord_min, coord_max,
-    m_ImagingSessionId, iMesh.m_Points );
+  GoDBMeshRow mesh_row( m_DBConnector, iMesh.m_Points,coord_min, coord_max,
+    m_ImagingSessionId);
   mesh_row.SetColor( 165, 44, 23, 255, "KishoreMeshColor", m_DBConnector );
   int mesh_id = mesh_row.SaveInDB( m_DBConnector );
   std::cout << "Mesh ID: " << mesh_id <<std::endl;

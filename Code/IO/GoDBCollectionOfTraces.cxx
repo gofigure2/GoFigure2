@@ -528,7 +528,7 @@ GoDBCollectionOfTraces::DBTableWidgetContainerType
   //then, get the results of the first query:
   std::vector<std::vector<std::string> >ResultsFirstQuery = GetValuesFromSeveralTables(
     DatabaseConnector,this->m_TracesName,SelectFirstFields, "ImagingSessionID",
-    ConvertToString<unsigned int>(this->m_ImgSessionID),JoinFirstTablesOnTraceTable,false);
+    ConvertToString<unsigned int>(this->m_ImgSessionID),JoinFirstTablesOnTraceTable,true);
 
   //fill the row container with the results of the first query:
   m_LinkToRowContainer->FillRowContainer(ResultsFirstQuery,SelectFirstFields);
@@ -554,6 +554,8 @@ GoDBCollectionOfTraces::DBTableWidgetContainerType
       "ImagingSessionID",ConvertToString<unsigned int>(this->m_ImgSessionID)),
       this->m_LinkToRowContainer);
     }
+  /** \todo fill the container with the computed values*/
+  this->FillRowContainerForComputedValues(m_LinkToRowContainer);
 
  return m_LinkToRowContainer->GetRowContainer();
 }
@@ -921,3 +923,40 @@ void GoDBCollectionOfTraces::FillRowContainerForIntensityValues(
   iLinkToRowContainer->FillRowContainer(
     ResultsFromQuery,SelectFields,"ColumnNameTableWidget");
 }
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void GoDBCollectionOfTraces::FillRowContainerForComputedValues(
+  GoDBTableWidgetContainer* iLinkToRowContainer,
+  std::vector<std::vector<std::string> >* iComputedValues)
+{
+  std::vector<std::string> ListComputedNames = 
+    iLinkToRowContainer->GetNameComputedColumns();  
+  if (!ListComputedNames.empty())
+    {
+    std::vector<std::vector<std::string> > ComputedValues;
+    if (iComputedValues == 0 && !ListComputedNames.empty())
+      {
+      for (unsigned int j = 0; j < iLinkToRowContainer->GetNumberOfRows();j++)
+        {
+        std::vector<std::string> EmptyVector;
+        int Size = iLinkToRowContainer->GetNumberOfRows();
+        for (unsigned int i = 0; i < ListComputedNames.size();i++)
+          {
+          EmptyVector.push_back("NV");
+          }
+        ComputedValues.push_back(EmptyVector);
+        EmptyVector.clear();
+        }
+      }
+    else
+      {
+      ComputedValues = *iComputedValues;
+      }
+      iLinkToRowContainer->FillRowContainer(
+        ComputedValues, ListComputedNames,"ColumnNameTableWidget");
+    }
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------

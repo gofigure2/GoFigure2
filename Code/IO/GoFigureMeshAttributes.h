@@ -4,7 +4,7 @@
 #include <map>
 #include <string>
 
-struct GoFigureMeshAttributes
+struct QGOIO_EXPORT GoFigureMeshAttributes
 {
   std::map< std::string, int >    m_TotalIntensityMap;
   std::map< std::string, double > m_MeanIntensityMap;

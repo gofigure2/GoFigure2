@@ -504,6 +504,24 @@ GetListColumnsNamesForTableWidget()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+std::vector<std::string> GoDBTableWidgetContainer::GetNameComputedColumns()
+{
+  std::vector<std::string> ListComputedColumnNames;
+  for (unsigned int i=0;i<m_ColumnsInfos.size();i++)
+    {
+    if (m_ColumnsInfos[i].ColumnNameTableWidget != "None" &&
+      m_ColumnsInfos[i].ColumnNameTableWidget != "NoneID" && 
+      m_ColumnsInfos[i].ColumnNameDatabase == "None" &&
+      m_ColumnsInfos[i].InfoName != "Selected")
+      {
+      ListComputedColumnNames.push_back(m_ColumnsInfos[i].ColumnNameTableWidget);
+      }
+    }
+  return ListComputedColumnNames; 
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
 std::vector<std::string> GoDBTableWidgetContainer::
 GetQueryStringForSelectFieldsTables(bool SameFieldsInQuery)
 {
@@ -776,6 +794,15 @@ void GoDBTableWidgetContainer::SetChannelsInfo(
  //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+ unsigned int GoDBTableWidgetContainer::GetNumberOfRows()
+{
+  if(!this->m_RowContainer.empty())
+    {
+    //return the number of traceID in the container which correspond to the 2nd column
+    return this->m_RowContainer.at(1).second.size();
+    }
+  return 0;
+}
 /*void GoDBTableWidgetContainer::InsertNewCreatedTrace(GoDBTableWidgetContainer
   iLinkToNewTraceContainer)
 {

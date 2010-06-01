@@ -42,6 +42,7 @@
 
 #include "ConvertToStringHelper.h"
 #include "GoDBTraceRow.h"
+#include "GoFigureMeshAttributes.h"
 //#include "GoDBCoordinateRow.h"
 //#include "vtkMySQLDatabase.h"
 //#include "vtkPolyData.h"
@@ -59,10 +60,12 @@ public:
     {}
   
   GoDBContourRow(vtkMySQLDatabase* DatabaseConnector,vtkPolyData* TraceVisu,
-    GoDBCoordinateRow Min, GoDBCoordinateRow Max,unsigned int ImgSessionID);
+    GoDBCoordinateRow Min, GoDBCoordinateRow Max,unsigned int ImgSessionID,
+     GoFigureMeshAttributes* iMeshAttributes = 0);
+
   /**\brief fill the contour map with the values gotten from the visualization*/
-  GoDBContourRow(vtkMySQLDatabase* DatabaseConnector,GoDBCoordinateRow Min, 
-    GoDBCoordinateRow Max,unsigned int ImgSessionID,vtkPolyData* TraceVisu);
+ /* GoDBContourRow(vtkMySQLDatabase* DatabaseConnector,GoDBCoordinateRow Min, 
+    GoDBCoordinateRow Max,unsigned int ImgSessionID,vtkPolyData* TraceVisu);*/
 
   /**\brief return the ContourID of the Contour with the same bounding box
   already registered in the DB or -1 if not yet created*/

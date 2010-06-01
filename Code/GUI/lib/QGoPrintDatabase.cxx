@@ -791,7 +791,7 @@ int QGoPrintDatabase::UpdateContourFromVisuInDB(unsigned int iXCoordMin,
 int QGoPrintDatabase::SaveMeshFromVisuInDB( unsigned int iXCoordMin,
   unsigned int iYCoordMin, unsigned int iZCoordMin, unsigned int iTCoord,
   unsigned int iXCoordMax, unsigned int iYCoordMax, unsigned int iZCoordMax,
-  vtkPolyData* iMeshNodes)
+  vtkPolyData* iMeshNodes, GoFigureMeshAttributes* iMeshAttributes)
 {
   OpenDBConnection();
 
@@ -802,7 +802,7 @@ int QGoPrintDatabase::SaveMeshFromVisuInDB( unsigned int iXCoordMin,
 
   GoDBMeshRow mesh_row = GetTraceRowFromVisu<GoDBMeshRow>(iXCoordMin,
     iYCoordMin,iZCoordMin, iTCoord, iXCoordMax, iYCoordMax, iZCoordMax,
-    iMeshNodes,this->m_DatabaseConnector);
+    iMeshNodes,this->m_DatabaseConnector,0, iMeshAttributes);
 
   mesh_row.SetColor(m_CurrentColorData.second.red(),
     m_CurrentColorData.second.green(),m_CurrentColorData.second.blue(),

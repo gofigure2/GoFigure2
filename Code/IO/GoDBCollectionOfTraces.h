@@ -143,6 +143,12 @@ public:
   ID*/
   int CreateCollectionWithNoTraces(vtkMySQLDatabase* DatabaseConnector, 
     GoDBTraceRow iNewCollection, int iTimePoint);
+  /** \todo find a way to make it ok for all traces, now only for mesh*/
+  /** \brief fill the row container with the values calculated and stored in th
+  meshAttributes*/
+  void FillRowContainerForComputedValues(
+    GoDBTableWidgetContainer* iLinkToRowContainer,
+    std::vector<std::vector<std::string> >* iComputedValues = 0);
 
   template<typename T>
   int CreateNewCollectionFromSelection(
@@ -251,5 +257,6 @@ protected:
   
   void FillRowContainerForIntensityValues(vtkMySQLDatabase* DatabaseConnector,
     std::vector<std::string> iVectMeshIDs,GoDBTableWidgetContainer* iLinkToRowContainer);
+
 };
 #endif

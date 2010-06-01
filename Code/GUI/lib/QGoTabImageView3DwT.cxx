@@ -3505,11 +3505,10 @@ SavePolyDataAsVolumeInDB( vtkPolyData* iView, const int& iContourID,
 
     // Save mesh in database
     //don't use m_ContourId
+    GoFigureMeshAttributes MeshAttributes = ComputeMeshAttributes( iView );
     mesh_id = m_DataBaseTables->SaveMeshFromVisuInDB( min_idx[0],
         min_idx[1], min_idx[2], iTCoord, max_idx[0],
-        max_idx[1], max_idx[2], iView );
-
-    ComputeMeshAttributes( iView );
+        max_idx[1], max_idx[2], iView,&MeshAttributes );  
     }
   else
     {
