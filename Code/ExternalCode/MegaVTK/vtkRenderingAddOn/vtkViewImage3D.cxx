@@ -346,16 +346,9 @@ void vtkViewImage3D::SetupWidgets()
   this->Cube->GetTextEdgesProperty()->SetDiffuse( 0 );
   this->Cube->GetTextEdgesProperty()->SetAmbient( 1 );
   this->Cube->GetTextEdgesProperty()->SetColor( 0.18, 0.28, 0.23 );
-
-#if VTK_MAJOR_VERSION==5 && VTK_MINOR_VERSION>=1
   this->Cube->SetTextEdgesVisibility (1);
   this->Cube->SetCubeVisibility(1);
   this->Cube->SetFaceTextVisibility(1);
-#else
-  this->Cube->TextEdgesOn ();
-  this->Cube->FaceTextOn();
-  this->Cube->CubeOn();
-#endif
 
   this->Cube->GetXPlusFaceProperty()->SetColor (1, 0, 0);
   this->Cube->GetXPlusFaceProperty()->SetInterpolationToFlat();
@@ -741,19 +734,31 @@ void vtkViewImage3D::SetupTextureMapper()
 
   if( mapper3D && !this->GetRenderWindow()->GetNeverRendered() )
   {
+#if VTK_MAJOR_VERSION==5 && VTK_MINOR_VERSION==6
     if( !mapper3D->IsRenderSupported ( this->VolumeProperty ) )
+#else
+    if( !mapper3D->IsRenderSupported( this->VolumeProperty, 
+                                      this->GetRenderer() ) )
+#endif
     {
       //try the ATI fragment program implementation
       // mapper3D->SetPreferredMethodToFragmentProgram();
+
+#if VTK_MAJOR_VERSION==5 && VTK_MINOR_VERSION==6
       if ( !mapper3D->IsRenderSupported ( this->VolumeProperty ) )
+#else
+      if( !mapper3D->IsRenderSupported( this->VolumeProperty,  
+                                        this->GetRenderer() ) )
+#endif
       {
         vtkWarningMacro (
         <<"Warning: 3D Texture volume rendering is not supported by your"
         <<" hardware, I switch to 2D Texture rendering."<<endl);
 
-        vtkVolumeTextureMapper2D* newMapper = vtkVolumeTextureMapper2D::New();
-              newMapper->CroppingOn();
-              newMapper->SetCroppingRegionFlags (0x7ffdfff);
+        vtkVolumeTextureMapper2D* newMapper = 
+          vtkVolumeTextureMapper2D::New();
+        newMapper->CroppingOn();
+        newMapper->SetCroppingRegionFlags (0x7ffdfff);
 
 
         double* range = this->GetInput()->GetScalarRange();
@@ -778,3 +783,4 @@ void vtkViewImage3D::SetupTextureMapper()
     }
   }
 }
+
