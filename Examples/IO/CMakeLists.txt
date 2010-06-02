@@ -70,6 +70,12 @@ ADD_TEST( MegaCaptureHeaderReaderTest
   ${GOFIGURE2_BINARY_DIR}/Testing/earpax2isl11/earpax2isl11.lsm.meg  
 )
 
+ADD_TEST( lsmtomegacaptureTest
+  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/lsmtomegacapture
+  ${TESTING_DATA_PATH}/earpax2isl11.lsm
+  ${GOFIGURE2_BINARY_DIR}/Testing/earpax2isl11_lsmtomegacapture/
+  )
+  
 FOREACH( var ${GODB_SRC} )
   ADD_TEST( ${var} 
     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${var}

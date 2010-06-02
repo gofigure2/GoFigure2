@@ -23,6 +23,12 @@ int main( int argc, char** argv )
 
   LSMToMegaCapture converter;
   converter.SetFileName( argv[1] );
+  converter.SetPlaque( 0 );
+  converter.SetRow( 0 );
+  converter.SetColumn( 0 );
+  converter.SetXTile( 0 );
+  converter.SetYTile( 0 );
+  converter.SetZTile( 0 );
   converter.SetOutputFileType( filetype );
   converter.Export( argv[2] );
 
