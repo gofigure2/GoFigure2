@@ -512,7 +512,7 @@ std::vector<std::string> GoDBTableWidgetContainer::GetNameComputedColumns()
     if (m_ColumnsInfos[i].ColumnNameTableWidget != "None" &&
       m_ColumnsInfos[i].ColumnNameTableWidget != "NoneID" && 
       m_ColumnsInfos[i].ColumnNameDatabase == "None" &&
-      m_ColumnsInfos[i].InfoName != "Selected")
+      m_ColumnsInfos[i].InfoName != "Selected") 
       {
       ListComputedColumnNames.push_back(m_ColumnsInfos[i].ColumnNameTableWidget);
       }
@@ -636,7 +636,8 @@ GetQueryStringForTraceJoinedTables(bool SameFieldsInQuery)
     std::string name = m_ColumnsInfos[i].TableNameDatabase; //for test purpose
     std::string name2 = m_ColumnsInfos[i].ColumnNameDatabase; //for test purpose
     //check first that the ColumnsInfos has direct infosfrom the database:
-    if( m_ColumnsInfos[i].TableNameDatabase != "None")
+    if( m_ColumnsInfos[i].TableNameDatabase != "None" &&  
+        m_ColumnsInfos[i].TableNameDatabase != "intensity")
       {
       //check that the table is not already in the list:
       std::vector<std::string>::iterator iter = SelectJoinTables.begin();
