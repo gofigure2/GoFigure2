@@ -224,11 +224,6 @@ public slots:
   void TakeSnapshot();
   void SetSliceView();
 
-  void DefaultMode();
-  void ZoomMode();
-  void PanMode();
-  void OneClickMode();
-
   void GenerateContourRepresentationProperties();
 
 #if defined ( ENABLEFFMPEG ) || defined ( ENABLEAVI )
@@ -457,9 +452,22 @@ protected:
   void CreateOneClickSegmentationDockWidget();
   void CreateDataBaseTablesConnection();
 
+  /*
+   * \brief Generates contours and a mesh composed by the generated contours
+   * Contours are circles and volume looks like a sphere
+   */
   void OneClickSphereContours();
+  /*
+   * \brief Generates a sphere volume
+   */
   void OneClickSphereVolumes();
+  /*
+   * \brief Generates contours from seeds by levelset segmentation
+   */
   void LevelSetSegmentation2D();
+  /*
+   * \brief Generates volumes from seeds by levelset segmentation
+   */
   void LevelSetSegmentation3D();
 
 #if defined ( ENABLEFFMPEG ) || defined ( ENABLEAVI )
@@ -479,14 +487,6 @@ protected:
   void SetTimePointWithLSMReaders( const int& iTimePoint );
   void SetTimePointWithMegaCapture( const int& iTimePoint );
 
-  std::vector< vtkSmartPointer<vtkPolyData> > CreateSphereContours(
-      vtkViewImage2D& iView, double iCenter[3], double iRadius );
-  vtkSmartPointer<vtkPolyData> GenerateCircleFromGivenSphereAndGivenZ( double iC[3],
-      const double& iRadius, double iZ, const int& iN );
-
-  vtkSmartPointer<vtkPolyData> CreateSphereVolume( vtkViewImage2D* iView,
-      double iCenter[3], double iRadius );
-
 protected slots:
   void AddBookmark();
   void GetTheOpenBookmarksActions();
@@ -497,12 +497,38 @@ protected slots:
   void ShowTraceDockWidgetForMesh(bool OneClickVisible);
   void GoToDefaultMenu(std::string iTracename,std::string iCollectionName);
 
+  /*
+   * \brief Mouse interaction style allows contours segmentation, according to
+   * the selected type of segmentation
+   */
   void ContourInteractorBehaviour( bool );
+  /*
+   * \brief Mouse interaction style allows meshes segmentation, according to
+   * the selected type of segmentation
+   */
   void MeshInteractorBehaviour( bool );
+  /*
+   * \brief Mouse interaction style set as default
+   */
   void DefaultInteractorBehaviour( bool );
+  /*
+   * \brief Mouse interaction style allows user to zoom in/out volume with all
+   * buttons
+   */
   void ZoomInteractorBehaviour( bool );
+  /*
+   * \brief Mouse interaction style allows user to pan volume with all buttons
+   */
   void PanInteractorBehaviour( bool );
+  /*
+   * \brief Mouse interaction style allows user to pick contours
+   */
+  void ContourPickingInteractorBehaviour( bool );
 
+  /*
+   * \brief Mouse interaction style allows user to pick meshes
+   */
+  void MeshPickingInteractorBehaviour( bool );
 };
 
 #endif

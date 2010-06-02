@@ -184,6 +184,9 @@ InitializeAllObservers()
       vtkViewImage2DCommand::ContourPickingEvent,
       this->Command );
     a->GetInteractorStyle()->AddObserver(
+      vtkViewImage2DCommand::MeshPickingEvent,
+      this->Command );
+    a->GetInteractorStyle()->AddObserver(
       vtkViewImage2DCommand::SeedEvent,
       this->Command );
     a = this->GetNextItem();

@@ -107,7 +107,6 @@
 #include "vtkViewImage2DCommand.h"
 #include "vtkProperty.h"
 #include <vtkOrientationAnnotation.h>
-#include <vtkInteractorStyleImage2D.h>
 #include <vtkViewImage2DCommand.h>
 #include <vtkProperty2D.h>
 #include <vtkAxisActor2D.h>
@@ -135,7 +134,7 @@ vtkViewImage2D::vtkViewImage2D()
   this->OrientationAnnotation = vtkOrientationAnnotation::New();
 
   this->ContourPicker = vtkCellPicker::New();
-  this->ContourPicker->SetTolerance( 0.02 );
+  this->ContourPicker->SetTolerance( 0.05 );
 
   this->Command->SetViewer( this);
 
@@ -827,12 +826,16 @@ void vtkViewImage2D::InstallPipeline()
             vtkViewImage2DCommand::ZoomEvent, this->Command);
           this->InteractorStyle->AddObserver(
             vtkViewImage2DCommand::PanEvent, this->Command);
-          this->InteractorStyle->AddObserver( vtkCommand::InteractionEvent,
-            this->Command);
-          this->InteractorStyle->AddObserver( vtkViewImage2DCommand::SeedEvent,
-                  this->Command);
-          this->InteractorStyle->AddObserver( vtkViewImage2DCommand::RequestedPositionEvent,
-                  this->Command);
+          this->InteractorStyle->AddObserver(
+            vtkCommand::InteractionEvent, this->Command);
+          this->InteractorStyle->AddObserver(
+            vtkViewImage2DCommand::SeedEvent, this->Command);
+          this->InteractorStyle->AddObserver(
+            vtkViewImage2DCommand::RequestedPositionEvent, this->Command);
+          this->InteractorStyle->AddObserver(
+            vtkViewImage2DCommand::ContourPickingEvent, this->Command);
+          this->InteractorStyle->AddObserver(
+            vtkViewImage2DCommand::MeshPickingEvent, this->Command);
       }
         this->InteractorStyleSwitcher = this->InteractorStyle;
       break;
@@ -949,6 +952,10 @@ vtkViewImage2D::AddDataSet( vtkPolyData* dataset,
     {
     actor->SetProperty( property );
     }
+  actor->GetProperty()->BackfaceCullingOn();
+
+  this->ContourPicker->AddPickList( actor );
+  this->ContourPicker->PickFromListOn();
 
   this->Renderer->AddViewProp( actor );
   this->DataSetCollection->AddItem( dataset );
@@ -993,6 +1000,7 @@ vtkViewImage2D::AddDataSet( vtkDataSet* dataset,
     {
     mapper->SetInput( vtkPolyData::SafeDownCast( dataset ) );
     }
+  mapper->Update();
 
   actor->SetMapper( mapper );
   if( property )
@@ -1001,7 +1009,6 @@ vtkViewImage2D::AddDataSet( vtkDataSet* dataset,
     }
   actor->GetProperty()->BackfaceCullingOn();
 
-  //actor->SetUserTransform( this->AdjustmentTransform );
   this->ContourPicker->AddPickList( actor );
   this->ContourPicker->PickFromListOn();
 

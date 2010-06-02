@@ -188,6 +188,14 @@ OnLeftButtonDown()
         this->InvokeEvent(vtkViewImage2DCommand::SeedEvent);
         this->Superclass::OnLeftButtonDown();
         break;
+      case InteractionTypeContourPicking:
+        this->InvokeEvent(vtkViewImage2DCommand::ContourPickingEvent);
+        this->Superclass::OnLeftButtonDown();
+        break;
+      case InteractionTypeMeshPicking:
+        this->InvokeEvent(vtkViewImage2DCommand::MeshPickingEvent);
+        this->Superclass::OnLeftButtonDown();
+        break;
       default:
         this->Superclass::OnLeftButtonDown();
         break;

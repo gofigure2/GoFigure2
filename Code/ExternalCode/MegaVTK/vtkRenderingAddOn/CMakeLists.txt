@@ -1,4 +1,22 @@
-FILE( GLOB vtkRenderingAddOn_SRCS2 *.cxx )
+#Define sources
+SET( vtkRenderingAddOn_SRCS2
+  vtkFillImageWithPolyData.cxx
+  vtkImage3DCroppingBoxCallback.cxx
+  vtkImage3DImagePlaneCallback.cxx
+  vtkImageBlendWithMask.cxx
+  vtkInteractorStyleImage2D.cxx
+  vtkInteractorStyleImage3D.cxx
+  vtkLookupTableManager.cxx
+  vtkOrientationAnnotation.cxx
+  vtkOrientedBoxWidget.cxx
+  vtkPolylineDecimation.cxx
+  vtkViewImage.cxx
+  vtkViewImage2D.cxx
+  vtkViewImage2DCollection.cxx
+  vtkViewImage2DCollectionCommand.cxx
+  vtkViewImage2DCommand.cxx
+  vtkViewImage3D.cxx
+  )
 
 INCLUDE_DIRECTORIES( BEFORE
   ${MEGAVTK2_BINARY_DIR}

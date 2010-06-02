@@ -65,91 +65,54 @@
 
  =========================================================================*/
 
-#ifndef _vtk_InteractorStyleImage2D_h_
-#define _vtk_InteractorStyleImage2D_h_
+#ifndef _vtk_InteractorStyleImage3D_h_
+#define _vtk_InteractorStyleImage3D_h_
 
-#include <vtkInteractorStyleImage.h>
+#include <vtkInteractorStyleSwitch.h>
 #include "MegaVTK2Configure.h"
 
-#define VTKIS_SLICE_MOVE  5051
-
-class VTK_RENDERINGADDON2_EXPORT vtkInteractorStyleImage2D :
-  public vtkInteractorStyleImage
+class VTK_RENDERINGADDON2_EXPORT vtkInteractorStyleImage3D :
+  public vtkInteractorStyleSwitch
 {
  public:
-  static vtkInteractorStyleImage2D *New();
-  vtkTypeRevisionMacro (vtkInteractorStyleImage2D, vtkInteractorStyleImage);
+  static vtkInteractorStyleImage3D *New();
+  vtkTypeRevisionMacro (vtkInteractorStyleImage3D, vtkInteractorStyleSwitch);
 
   //BTX
     enum InteractionTypeIds
     {
       InteractionTypeNull = 0,
-      InteractionTypeSlice,
-      InteractionTypeWindowLevel,
-      InteractionTypeZoom,
-      InteractionTypePan,
-      InteractionTypeSeed,
-      InteractionTypeContourPicking,
-      InteractionTypeMeshPicking
+      InteractionTypeMeshPicking,
+      InteractionTypeDefault
     };
-    //ETX
 
-    void SetLeftButtonInteraction( InteractionTypeIds );
-    vtkGetMacro (LeftButtonInteraction, unsigned int);
+  void SetLeftButtonInteraction( InteractionTypeIds );
+  vtkGetMacro (LeftButtonInteraction, unsigned int);
 
-    void SetRightButtonInteraction( InteractionTypeIds );
-    vtkGetMacro (RightButtonInteraction, unsigned int);
+  void SetRightButtonInteraction( InteractionTypeIds );
+  vtkGetMacro (RightButtonInteraction, unsigned int);
 
-    void SetMiddleButtonInteraction( InteractionTypeIds );
-    vtkGetMacro (MiddleButtonInteraction, unsigned int);
+  void SetMiddleButtonInteraction( InteractionTypeIds );
+  vtkGetMacro (MiddleButtonInteraction, unsigned int);
 
-    void SetWheelButtonInteraction( InteractionTypeIds );
-    vtkGetMacro (WheelButtonInteraction, unsigned int);
+  void SetWheelButtonInteraction( InteractionTypeIds );
+  vtkGetMacro (WheelButtonInteraction, unsigned int);
 
-  virtual void OnMouseMove();
   virtual void OnLeftButtonDown();
-  virtual void OnLeftButtonUp();
-  virtual void OnMiddleButtonDown();
-  virtual void OnMiddleButtonUp();
-  virtual void OnRightButtonDown();
-  virtual void OnRightButtonUp();
-  virtual void OnMouseWheelForward();
-  virtual void OnMouseWheelBackward();
-
-  virtual void OnChar();
-  virtual void OnKeyDown();
-  virtual void OnKeyUp();
-  virtual void OnKeyPress();
-  virtual void OnKeyRelease();
-
-  virtual void StartSliceMove();
-  virtual void SliceMove();
-  virtual void EndSliceMove();
-
-  virtual void DefaultMoveAction();
-
-
-  vtkGetMacro( SliceStep, int );
-  int* GetRequestedPosition(void)
-  { return this->RequestedPosition; }
 
  protected:
-  vtkInteractorStyleImage2D();
-  ~vtkInteractorStyleImage2D();
-
-  int SliceStep;
-  int* RequestedPosition;
+  vtkInteractorStyleImage3D();
+  ~vtkInteractorStyleImage3D();
 
  private:
 
-  vtkInteractorStyleImage2D(const vtkInteractorStyleImage2D&);  // Not implemented.
-  void operator=(const vtkInteractorStyleImage2D&);  // Not implemented.
+  vtkInteractorStyleImage3D(const vtkInteractorStyleImage3D&);  // Not implemented.
+  void operator=(const vtkInteractorStyleImage3D&);  // Not implemented.
 
   unsigned int LeftButtonInteraction;
   unsigned int RightButtonInteraction;
   unsigned int MiddleButtonInteraction;
   unsigned int WheelButtonInteraction;
-
 };
 
 #endif

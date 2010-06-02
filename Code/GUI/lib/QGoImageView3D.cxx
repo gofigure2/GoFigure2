@@ -420,23 +420,39 @@ void QGoImageView3D::SetupVTKtoQtConnections()
     vtkViewImage2DCommand::EndSliceMoveEvent,
     this, SLOT( MoveSliderXY() ) );
 
-//   VtkEventQtConnector->Connect(
-//     reinterpret_cast< vtkObject* >( View1->GetInteractorStyle() ),
-//     vtkViewImage2DCommand::ContourPickingEvent,
-//     this, SIGNAL( ActorsSelectionChanged() ) );
+  // Event connection between vtk and qt
+  // when contours picked, send a signal
+   VtkEventQtConnector->Connect(
+     reinterpret_cast< vtkObject* >( View1->GetInteractorStyle() ),
+     vtkViewImage2DCommand::ContourPickingEvent,
+     this, SIGNAL( ContoursSelectionChanged() ) );
 
-//   VtkEventQtConnector->Connect(
-//     reinterpret_cast< vtkObject* >( View2->GetInteractorStyle() ),
-//     vtkViewImage2DCommand::ContourPickingEvent,
-//     this, SIGNAL( ActorsSelectionChanged() ) );
+   VtkEventQtConnector->Connect(
+     reinterpret_cast< vtkObject* >( View2->GetInteractorStyle() ),
+     vtkViewImage2DCommand::ContourPickingEvent,
+     this, SIGNAL( ContoursSelectionChanged() ) );
 
-//   VtkEventQtConnector->Connect(
-//     reinterpret_cast< vtkObject* >( View3->GetInteractorStyle() ),
-//     vtkViewImage2DCommand::ContourPickingEvent,
-//     this, SIGNAL( ActorsSelectionChanged() ) );
+   VtkEventQtConnector->Connect(
+     reinterpret_cast< vtkObject* >( View3->GetInteractorStyle() ),
+     vtkViewImage2DCommand::ContourPickingEvent,
+     this, SIGNAL( ContoursSelectionChanged() ) );
 
-//   QObject::connect( this, SIGNAL( ActorsSelectionChanged() ),
-//     this, SLOT( HighLightContours() ) );
+   // Event connection between vtk and qt
+   // when contours picked, send a signal
+    VtkEventQtConnector->Connect(
+      reinterpret_cast< vtkObject* >( View1->GetInteractorStyle() ),
+      vtkViewImage2DCommand::MeshPickingEvent,
+      this, SIGNAL( ContoursSelectionChanged() ) );
+
+    VtkEventQtConnector->Connect(
+      reinterpret_cast< vtkObject* >( View2->GetInteractorStyle() ),
+      vtkViewImage2DCommand::MeshPickingEvent,
+      this, SIGNAL( ContoursSelectionChanged() ) );
+
+    VtkEventQtConnector->Connect(
+      reinterpret_cast< vtkObject* >( View3->GetInteractorStyle() ),
+      vtkViewImage2DCommand::MeshPickingEvent,
+      this, SIGNAL( ContoursSelectionChanged() ) );
 }
 //-------------------------------------------------------------------------
 
@@ -1459,5 +1475,103 @@ ClearAllSeeds()
       this->SeedRep[i]->RemoveLastHandle();
       }
     }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoImageView3D::
+ContourPickingMode()
+{
+  DisableOneClickMode();
+  //Change cursor
+  this->QvtkWidget_XY->setCursor( Qt::ArrowCursor );
+  this->QvtkWidget_XZ->setCursor( Qt::ArrowCursor );
+  this->QvtkWidget_YZ->setCursor( Qt::ArrowCursor );
+
+  vtkViewImage2D* View1 = this->m_Pool->GetItem( 0 );
+  View1->SetInteractionStyle(
+      vtkInteractorStyleImage2D::InteractionTypeContourPicking );
+
+  vtkViewImage2D* View2 = this->m_Pool->GetItem( 1 );
+  View2->SetInteractionStyle(
+      vtkInteractorStyleImage2D::InteractionTypeContourPicking );
+
+  vtkViewImage2D* View3 = this->m_Pool->GetItem( 2 );
+  View3->SetInteractionStyle(
+      vtkInteractorStyleImage2D::InteractionTypeContourPicking );
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::list< vtkProp3D* >
+QGoImageView3D::
+GetListOfPickedContours()
+{
+  std::list< vtkProp3D* > pickedContoursList;
+  // Get picked contours from all views
+  pickedContoursList = this->m_Pool->GetCommand()->GetListOfPickedActors();
+  return pickedContoursList;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::list< vtkProp3D* >
+QGoImageView3D::
+GetListOfUnPickedContours()
+{
+  std::list< vtkProp3D* > unPickedContoursList;
+  // Get picked contours from all views
+  unPickedContoursList = this->m_Pool->GetCommand()->GetListOfUnPickedActors();
+  return unPickedContoursList;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoImageView3D::
+MeshPickingMode()
+{
+  DisableOneClickMode();
+  //Change cursor
+  this->QvtkWidget_XY->setCursor( Qt::ArrowCursor );
+  this->QvtkWidget_XZ->setCursor( Qt::ArrowCursor );
+  this->QvtkWidget_YZ->setCursor( Qt::ArrowCursor );
+
+  vtkViewImage2D* View1 = this->m_Pool->GetItem( 0 );
+  View1->SetInteractionStyle(
+      vtkInteractorStyleImage2D::InteractionTypeMeshPicking );
+
+  vtkViewImage2D* View2 = this->m_Pool->GetItem( 1 );
+  View2->SetInteractionStyle(
+      vtkInteractorStyleImage2D::InteractionTypeMeshPicking );
+
+  vtkViewImage2D* View3 = this->m_Pool->GetItem( 2 );
+  View3->SetInteractionStyle(
+      vtkInteractorStyleImage2D::InteractionTypeMeshPicking );
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::list< vtkProp3D* >
+QGoImageView3D::
+GetListOfPickedMeshes()
+{
+  std::list< vtkProp3D* > pickedMeshesList;
+  // Get picked contours from all views
+  pickedMeshesList = this->m_Pool->GetCommand()->GetListOfPickedActors();
+  return pickedMeshesList;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::list< vtkProp3D* >
+QGoImageView3D::
+GetListOfUnPickedMeshes()
+{
+  std::list< vtkProp3D* > unPickedMeshesList;
+  // Get picked contours from all views
+  unPickedMeshesList = this->m_Pool->GetCommand()->GetListOfUnPickedActors();
+  return unPickedMeshesList;
 }
 //-------------------------------------------------------------------------

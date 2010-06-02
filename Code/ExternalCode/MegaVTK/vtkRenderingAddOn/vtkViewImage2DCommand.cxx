@@ -139,13 +139,14 @@ vtkViewImage2DCommand::Execute( vtkObject*    caller,
 
   if( event == vtkViewImage2DCommand::ContourPickingEvent )
   {
-    vtkCellPicker* picker = this->Viewer->GetContourPicker();
+  std::cout << "in contour picking single"<< std::endl;
+/*    vtkCellPicker* picker = this->Viewer->GetContourPicker();
     vtkRenderWindowInteractor *rwi =
       this->Viewer->GetRenderWindow()->GetInteractor();
 
     picker->Pick( rwi->GetEventPosition()[0], rwi->GetEventPosition()[1], 0,
       this->Viewer->GetRenderer() );
-
+*/
     /// \todo check the utility of next lines.
 //     vtkAssemblyPath* path = picker->GetPath();
 //     if( path )
@@ -153,6 +154,11 @@ vtkViewImage2DCommand::Execute( vtkObject*    caller,
 //       vtkProp* prop = path->GetFirstNode()->GetViewProp();
 //       std::cout <<"yo" <<std::endl;
 //     }
+  }
+
+  if( event == vtkViewImage2DCommand::MeshPickingEvent )
+  {
+    std::cout<< "Mesh pick single" << std::endl;
   }
 
   if( event == vtkViewImage2DCommand::SeedEvent )
@@ -209,10 +215,6 @@ vtkViewImage2DCommand::Execute( vtkObject*    caller,
   {
     double* position = this->Viewer->GetWorldCoordinatesFromDisplayPosition (
       isi->GetRequestedPosition ());
-    /*std::cout << "requested: " << position[0] << std::endl;
-    std::cout << "requested: " << position[1] << std::endl;
-    std::cout << "requested: " << position[2] << std::endl;*/
-
     this->Viewer->SetWorldCoordinates(position);
     this->Viewer->Render();
   }

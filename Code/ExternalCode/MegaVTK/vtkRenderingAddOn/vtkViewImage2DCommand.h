@@ -93,6 +93,7 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage2DCommand : public vtkCommand
     RequestedPositionEvent,
     ResetViewerEvent,
     ContourPickingEvent,
+    MeshPickingEvent,
     CameraMoveEvent,
     DefaultMoveEvent,
     SeedEvent

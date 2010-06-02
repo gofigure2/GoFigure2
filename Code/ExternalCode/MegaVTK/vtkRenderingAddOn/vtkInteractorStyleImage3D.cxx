@@ -65,91 +65,75 @@
 
  =========================================================================*/
 
-#ifndef _vtk_InteractorStyleImage2D_h_
-#define _vtk_InteractorStyleImage2D_h_
+#include "vtkInteractorStyleImage3D.h"
 
-#include <vtkInteractorStyleImage.h>
-#include "MegaVTK2Configure.h"
+#include <vtkObjectFactory.h>
+#include <vtkRenderWindowInteractor.h>
+#include <iostream>
 
-#define VTKIS_SLICE_MOVE  5051
+vtkCxxRevisionMacro (vtkInteractorStyleImage3D, "$Revision: 1 $");
+vtkStandardNewMacro (vtkInteractorStyleImage3D);
 
-class VTK_RENDERINGADDON2_EXPORT vtkInteractorStyleImage2D :
-  public vtkInteractorStyleImage
+//----------------------------------------------------------------------------
+vtkInteractorStyleImage3D::
+vtkInteractorStyleImage3D()
 {
- public:
-  static vtkInteractorStyleImage2D *New();
-  vtkTypeRevisionMacro (vtkInteractorStyleImage2D, vtkInteractorStyleImage);
+  this->SetCurrentStyleToTrackballCamera();
+}
+//----------------------------------------------------------------------------
 
-  //BTX
-    enum InteractionTypeIds
+//----------------------------------------------------------------------------
+vtkInteractorStyleImage3D::
+~vtkInteractorStyleImage3D()
+{
+}
+//--------------------------------------------------------------------------
+//----------------------------------------------------------------------------
+void
+vtkInteractorStyleImage3D::
+OnLeftButtonDown()
+{
+  std::cout << "left" << std::endl;
+  if (this->Interactor->GetShiftKey())
     {
-      InteractionTypeNull = 0,
-      InteractionTypeSlice,
-      InteractionTypeWindowLevel,
-      InteractionTypeZoom,
-      InteractionTypePan,
-      InteractionTypeSeed,
-      InteractionTypeContourPicking,
-      InteractionTypeMeshPicking
-    };
-    //ETX
+    std::cout << "shift + left" << std::endl;
+    }
+  // Call parent to handle all other states and perform additional work
+  this->Superclass::OnLeftButtonUp();
+}
+//----------------------------------------------------------------------------
 
-    void SetLeftButtonInteraction( InteractionTypeIds );
-    vtkGetMacro (LeftButtonInteraction, unsigned int);
+//----------------------------------------------------------------------------
+void
+vtkInteractorStyleImage3D::
+SetLeftButtonInteraction( InteractionTypeIds interactionType)
+{
+  LeftButtonInteraction = interactionType;
+}
+//----------------------------------------------------------------------------
 
-    void SetRightButtonInteraction( InteractionTypeIds );
-    vtkGetMacro (RightButtonInteraction, unsigned int);
+//----------------------------------------------------------------------------
+void
+vtkInteractorStyleImage3D::
+SetRightButtonInteraction( InteractionTypeIds interactionType)
+{
+  RightButtonInteraction = interactionType;
+}
+//----------------------------------------------------------------------------
 
-    void SetMiddleButtonInteraction( InteractionTypeIds );
-    vtkGetMacro (MiddleButtonInteraction, unsigned int);
+//----------------------------------------------------------------------------
+void
+vtkInteractorStyleImage3D::
+SetMiddleButtonInteraction( InteractionTypeIds interactionType)
+{
+  MiddleButtonInteraction = interactionType;
+}
+//----------------------------------------------------------------------------
 
-    void SetWheelButtonInteraction( InteractionTypeIds );
-    vtkGetMacro (WheelButtonInteraction, unsigned int);
-
-  virtual void OnMouseMove();
-  virtual void OnLeftButtonDown();
-  virtual void OnLeftButtonUp();
-  virtual void OnMiddleButtonDown();
-  virtual void OnMiddleButtonUp();
-  virtual void OnRightButtonDown();
-  virtual void OnRightButtonUp();
-  virtual void OnMouseWheelForward();
-  virtual void OnMouseWheelBackward();
-
-  virtual void OnChar();
-  virtual void OnKeyDown();
-  virtual void OnKeyUp();
-  virtual void OnKeyPress();
-  virtual void OnKeyRelease();
-
-  virtual void StartSliceMove();
-  virtual void SliceMove();
-  virtual void EndSliceMove();
-
-  virtual void DefaultMoveAction();
-
-
-  vtkGetMacro( SliceStep, int );
-  int* GetRequestedPosition(void)
-  { return this->RequestedPosition; }
-
- protected:
-  vtkInteractorStyleImage2D();
-  ~vtkInteractorStyleImage2D();
-
-  int SliceStep;
-  int* RequestedPosition;
-
- private:
-
-  vtkInteractorStyleImage2D(const vtkInteractorStyleImage2D&);  // Not implemented.
-  void operator=(const vtkInteractorStyleImage2D&);  // Not implemented.
-
-  unsigned int LeftButtonInteraction;
-  unsigned int RightButtonInteraction;
-  unsigned int MiddleButtonInteraction;
-  unsigned int WheelButtonInteraction;
-
-};
-
-#endif
+//----------------------------------------------------------------------------
+void
+vtkInteractorStyleImage3D::
+SetWheelButtonInteraction( InteractionTypeIds interactionType)
+{
+  WheelButtonInteraction = interactionType;
+}

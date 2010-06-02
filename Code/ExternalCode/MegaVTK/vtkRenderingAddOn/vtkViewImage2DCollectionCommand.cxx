@@ -178,54 +178,56 @@ void vtkViewImage2DCollectionCommand::Execute(vtkObject *caller,
   {
     double* position = viewer->GetWorldCoordinatesFromDisplayPosition (
       isi->GetRequestedPosition ());
-    std::cout << "requested collection: " << position[0] << std::endl;
-    std::cout << "requested collection: " << position[1] << std::endl;
-    std::cout << "requested collection: " << position[2] << std::endl;
-
     this->Collection->SyncSetWorldCoordinates(position);
     this->Collection->SyncRender();
   }
 
   if( event == vtkViewImage2DCommand::ContourPickingEvent )
   {
-//     vtkCellPicker* picker = viewer->GetContourPicker();
-//     vtkRenderWindowInteractor *rwi =
-//       viewer->GetRenderWindow()->GetInteractor();
-// 
-//     picker->Pick( rwi->GetEventPosition()[0], rwi->GetEventPosition()[1], 0,
-//       viewer->GetRenderer() );
-// 
-//     vtkProp3D* prop = picker->GetProp3D();
-//     if( prop )
-//     {
-//       ListOfPickedActors.clear();
-//       ListOfUnPickedActors.clear();
-// 
-// //       vtkProp* prop = path->GetFirstNode()->GetViewProp();
-//       viewer->GetProp3DCollection()->InitTraversal();
-//       vtkProp3D* prop_temp = viewer->GetProp3DCollection()->GetNextProp3D(); // image
-//       prop_temp = viewer->GetProp3DCollection()->GetNextProp3D(); // 1st plane
-//       prop_temp = viewer->GetProp3DCollection()->GetNextProp3D(); // 2nd plane
-//       prop_temp = viewer->GetProp3DCollection()->GetNextProp3D(); // 3rd plane
-// 
-//       while( prop_temp )
-//       {
-//         if( prop_temp == prop )
-//         {
-//           // to be highlighted
-//           ListOfPickedActors.push_back( prop_temp );
-// 
-//           // viewer->ChangeActorProperty( prop_temp, );
-//           // viewer->HighlightContour( prop_temp, true );
-//         }
-//         else
-//         {
-//           ListOfUnPickedActors.push_back( prop_temp );
-// //           viewer->HighlightContour( prop_temp, false );
-//         }
-//         prop_temp = viewer->GetProp3DCollection()->GetNextProp3D();
-//       }
-//     }
+  std::cout << "in contour picking collection"<< std::endl;
+     vtkCellPicker* picker = viewer->GetContourPicker();
+     vtkRenderWindowInteractor *rwi =
+       viewer->GetRenderWindow()->GetInteractor();
+
+     picker->Pick( rwi->GetEventPosition()[0], rwi->GetEventPosition()[1], 0,
+       viewer->GetRenderer() );
+
+     vtkProp3D* prop = picker->GetProp3D();
+     if( prop )
+     {
+       ListOfPickedActors.clear();
+       ListOfUnPickedActors.clear();
+
+ //       vtkProp* prop = path->GetFirstNode()->GetViewProp();
+       viewer->GetProp3DCollection()->InitTraversal();
+       vtkProp3D* prop_temp = viewer->GetProp3DCollection()->GetNextProp3D(); // image
+       prop_temp = viewer->GetProp3DCollection()->GetNextProp3D(); // 1st plane
+       prop_temp = viewer->GetProp3DCollection()->GetNextProp3D(); // 2nd plane
+       prop_temp = viewer->GetProp3DCollection()->GetNextProp3D(); // 3rd plane
+
+       while( prop_temp )
+       {
+         if( prop_temp == prop )
+         {
+           // to be highlighted
+           ListOfPickedActors.push_back( prop_temp );
+           prop->DragableOn();
+           // viewer->ChangeActorProperty( prop_temp, );
+           // viewer->HighlightContour( prop_temp, true );
+         }
+         else
+         {
+           ListOfUnPickedActors.push_back( prop_temp );
+ //           viewer->HighlightContour( prop_temp, false );
+         }
+         prop_temp = viewer->GetProp3DCollection()->GetNextProp3D();
+       }
+     }
+  }
+
+  if( event == vtkViewImage2DCommand::MeshPickingEvent )
+  {
+    std::cout<< "Mesh pick collection" << std::endl;
   }
 
   if( event == vtkViewImage2DCommand::SeedEvent )

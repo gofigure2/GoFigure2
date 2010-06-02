@@ -69,6 +69,8 @@
 
 #include "vtkSmartPointer.h"
 
+#include "vtkInteractorStyleImage3D.h"
+
 #include "vtkImageAppendComponents.h"
 #include "vtkImageExtractComponents.h"
 #include "vtkCamera.h"
@@ -607,11 +609,11 @@ void vtkViewImage3D::InstallPipeline()
 
   if (this->Interactor)
     {
-    // init the interactor style:
-    vtkSmartPointer< vtkInteractorStyleSwitch > interactorStyle =
-      vtkSmartPointer< vtkInteractorStyleSwitch >::New();
-    interactorStyle->SetCurrentStyleToTrackballCamera();
-    this->Interactor->SetInteractorStyle (interactorStyle);
+    vtkSmartPointer< vtkInteractorStyleImage3D > interactorStyle =
+      vtkSmartPointer< vtkInteractorStyleImage3D >::New();
+
+    this->Interactor->SetInteractorStyle ( interactorStyle );
+
     this->BoxWidget->SetInteractor ( this->Interactor );
     //this->PlaneWidget->SetInteractor ( this->Interactor );
     this->Marker->SetInteractor ( this->Interactor );

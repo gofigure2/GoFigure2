@@ -384,7 +384,7 @@ QGoTabImageView3DwT::
 ActivateManualSegmentationEditor( const bool& iActivate )
 {
   // Initializae cursor behaviour
-  this->DefaultMode();
+  this->m_ImageView->DefaultMode();
 
   std::vector< vtkSmartPointer< vtkContourWidget > >::iterator
     it = m_ContourWidget.begin();
@@ -414,12 +414,12 @@ ActivateSemiAutoSegmentationEditor( const bool& iActivate )
 {
   ActivateManualSegmentationEditor( false );
   // Initializae cursor behaviour
-  this->DefaultMode();
+  this->m_ImageView->DefaultMode();
 
   if( iActivate )
-      {
-      this->OneClickMode();
-      }
+    {
+    this->m_ImageView->OneClickMode();
+    }
 }
 //-------------------------------------------------------------------------
 //-------------------------------------------------------------------------
@@ -431,7 +431,7 @@ MeshInteractorBehaviour( bool iVisible)
   // check in which mode we are
   if( iVisible )
     {
-    this->OneClickMode();
+    this->m_ImageView->OneClickMode();
     }
 }
 //-------------------------------------------------------------------------
@@ -444,7 +444,7 @@ DefaultInteractorBehaviour( bool iVisible)
   // check in which mode we are
   if( iVisible )
     {
-    this->DefaultMode();
+    this->m_ImageView->DefaultMode();
     }
 }
 //-------------------------------------------------------------------------
@@ -457,7 +457,7 @@ ZoomInteractorBehaviour( bool iVisible)
   // check in which mode we are
   if( iVisible )
     {
-    this->ZoomMode();
+    this->m_ImageView->ZoomMode();
     }
 }
 //-------------------------------------------------------------------------
@@ -470,11 +470,36 @@ PanInteractorBehaviour( bool iVisible)
   // check in which mode we are
   if( iVisible )
     {
-    this->PanMode();
+    this->m_ImageView->PanMode();
     }
 }
 //-------------------------------------------------------------------------
-
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+ContourPickingInteractorBehaviour( bool iVisible)
+{
+  // if the widget is visible
+  // check in which mode we are
+  if( iVisible )
+    {
+    this->m_ImageView->ContourPickingMode();
+    }
+}
+//-------------------------------------------------------------------------
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+MeshPickingInteractorBehaviour( bool iVisible)
+{
+  // if the widget is visible
+  // check in which mode we are
+  if( iVisible )
+    {
+    this->m_ImageView->MeshPickingMode();
+    }
+}
+//-------------------------------------------------------------------------
 //-------------------------------------------------------------------------
 /**
  * \brief
@@ -1092,6 +1117,36 @@ void QGoTabImageView3DwT::CreateModeActions()
   QObject::connect( PanAction, SIGNAL( toggled( bool ) ),
     this, SLOT( PanInteractorBehaviour( bool ) ) );
 
+  //---------------------------------//
+  //     Contour picking  mode       //
+  //---------------------------------//
+
+  QAction* ContourPickingAction = new QAction( tr( "Contour Picking" ), this );
+  ContourPickingAction->setCheckable( true );
+  ContourPickingAction->setChecked(false);
+
+  group->addAction( ContourPickingAction );
+
+  this->m_ModeActions.push_back( ContourPickingAction );
+  // it also updates the interactor behaviour
+  QObject::connect( ContourPickingAction, SIGNAL( toggled( bool ) ),
+    this, SLOT( ContourPickingInteractorBehaviour( bool ) ) );
+
+  //---------------------------------//
+  //       Mesh picking  mode        //
+  //---------------------------------//
+
+  QAction* MeshPickingAction = new QAction( tr( "Mesh Picking" ), this );
+  MeshPickingAction->setCheckable( true );
+  MeshPickingAction->setChecked(false);
+
+  group->addAction( MeshPickingAction );
+
+  this->m_ModeActions.push_back( MeshPickingAction );
+  // it also updates the interactor behaviour
+  QObject::connect( MeshPickingAction, SIGNAL( toggled( bool ) ),
+    this, SLOT( MeshPickingInteractorBehaviour( bool ) ) );
+
 }
 //-------------------------------------------------------------------------
 
@@ -1229,9 +1284,11 @@ setupUi( QWidget* iParent )
   QObject::connect( m_ImageView, SIGNAL( FullScreenViewChanged( int ) ),
     this, SIGNAL( FullScreenViewChanged( int ) ) );
 
-  QObject::connect( m_ImageView, SIGNAL( ActorsSelectionChanged( ) ),
-    this, SLOT( HighLightContours() ) );
-  QObject::connect( m_ImageView, SIGNAL( ActorsSelectionChanged( ) ),
+  // connect the contours selection connection
+  QObject::connect( m_ImageView, SIGNAL( ContoursSelectionChanged( ) ),
+      this, SLOT( HighLightContours( ) ) );
+
+  QObject::connect( m_ImageView, SIGNAL( ContoursSelectionChanged( ) ),
     this, SLOT( SelectContoursInTable() ) );
 
   m_LayOut = new QHBoxLayout( iParent );
@@ -2622,7 +2679,7 @@ void
 QGoTabImageView3DwT::
 HighLightContours()
 {
-  std::list< vtkProp3D* > listofpicked = m_ImageView->GetListOfPickedActors();
+  std::list< vtkProp3D* > listofpicked = m_ImageView->GetListOfPickedContours();
 
   std::list< vtkProp3D* >::iterator it = listofpicked.begin();
 
@@ -2813,7 +2870,7 @@ SelectContoursInTable( )
 {
   if( this->m_DataBaseTables->IsDatabaseUsed() )
     {
-    std::list< vtkProp3D* > listofpicked = m_ImageView->GetListOfPickedActors();
+    std::list< vtkProp3D* > listofpicked = m_ImageView->GetListOfPickedContours();
 
     if( !listofpicked.empty() )
       {
@@ -3010,44 +3067,6 @@ SetSliceView()
   m_VideoRecorderWidget->SetCurrentT( this->GetTimePoint() );
 #endif
 }
-//-------------------------------------------------------------------------
-/// IS IT USEFULL TO CALL A FUNCTION FOR THAT?
-//-------------------------------------------------------------------------
-void
-QGoTabImageView3DwT::
-DefaultMode()
-{
-  this->m_ImageView->DefaultMode();
-}
-//-------------------------------------------------------------------------
-/// IS IT USEFULL TO CALL A FUNCTION FOR THAT?
-//-------------------------------------------------------------------------
-void
-QGoTabImageView3DwT::
-ZoomMode()
-{
-  this->m_ImageView->ZoomMode();
-}
-//-------------------------------------------------------------------------
-/// IS IT USEFULL TO CALL A FUNCTION FOR THAT?
-//-------------------------------------------------------------------------
-void
-QGoTabImageView3DwT::
-PanMode()
-{
-  this->m_ImageView->PanMode();
-}
-//-------------------------------------------------------------------------
-/// IS IT USEFULL TO CALL A FUNCTION FOR THAT?
-//-------------------------------------------------------------------------
-void
-QGoTabImageView3DwT::
-OneClickMode()
-{
-  this->m_ImageView->OneClickMode();
-}
-//-------------------------------------------------------------------------
-
 //-------------------------------------------------------------------------
 QGoManualSegmentationDockWidget* QGoTabImageView3DwT::
   GetManualSegmentationWidget()
@@ -3508,7 +3527,7 @@ SavePolyDataAsVolumeInDB( vtkPolyData* iView, const int& iContourID,
     GoFigureMeshAttributes MeshAttributes = ComputeMeshAttributes( iView );
     mesh_id = m_DataBaseTables->SaveMeshFromVisuInDB( min_idx[0],
         min_idx[1], min_idx[2], iTCoord, max_idx[0],
-        max_idx[1], max_idx[2], iView,&MeshAttributes );  
+        max_idx[1], max_idx[2], iView,&MeshAttributes );
     }
   else
     {

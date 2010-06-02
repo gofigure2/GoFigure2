@@ -71,6 +71,8 @@
 #include "vtkViewImage.h"
 #include "MegaVTK2Configure.h"
 
+#include "vtkInteractorStyleImage3D.h"
+
 #include <vtkImageActor.h>
 #include <vtkRenderer.h>
 #include <vtkImageMapToWindowLevelColors.h>

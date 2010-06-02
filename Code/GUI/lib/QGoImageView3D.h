@@ -145,17 +145,73 @@ public:
   void ShowCube3D();
   void UpdateRenderWindows();
 
+  /**
+   * \brief Define the cursor interactor style to the normal behaviour
+   */
   void SetDefaultInteractionStyle( vtkViewImage2D&);
+  /**
+   * \brief Use the default interactor style
+   */
   void DefaultMode();
+  /**
+   * \brief Use the zoom interactor style
+   */
   void ZoomMode();
+  /**
+   * \brief Use the pan interactor style
+   */
   void PanMode();
+  /**
+   * \brief Use the one click interactor style
+   */
   void OneClickMode();
+  /**
+   * \brief Enable the One Click mode (usefull since it is in a vtk widget)
+   */
   void EnableOneClickMode();
+  /**
+   * \brief Disable the One Click mode (usefull since it is in a vtk widget)
+   */
   void DisableOneClickMode();
+  /**
+   * \brief Use the contour picking interactor style
+   */
+  void ContourPickingMode();
+  /**
+   * \brief Use the mesh picking interactor style
+   */
+  void MeshPickingMode();
 
 
+  /**
+   * \brief Get all the seeds positions.
+   * The seeds have been defined using the one click mode.
+   */
   vtkPoints* GetAllSeeds();
+  /**
+   * \brief Clear all the seeds positions after using it.
+   */
   void       ClearAllSeeds();
+
+  /**
+   * \brief Get a list of all the picked contours
+   */
+  std::list< vtkProp3D* > GetListOfPickedContours();
+
+  /**
+   * \brief Get a list of all the unpicked contours
+   */
+  std::list< vtkProp3D* > GetListOfUnPickedContours();
+
+  /**
+   * \brief Get a list of all the picked meshes
+   */
+  std::list< vtkProp3D* > GetListOfPickedMeshes();
+
+  /**
+   * \brief Get a list of all the picked meshes
+   */
+  std::list< vtkProp3D* > GetListOfUnPickedMeshes();
 
 signals:
   void SliceViewXYChanged( int Slice );
@@ -163,7 +219,7 @@ signals:
   void SliceViewYZChanged( int Slice );
 
   void FullScreenViewChanged( int View );
-  void ActorsSelectionChanged();
+  void ContoursSelectionChanged();
 
 public slots:
   QString SnapshotViewXY( const GoFigure::FileType& iType,
