@@ -275,7 +275,7 @@ protected:
   QHBoxLayout*  LayOut4;
   QVTKWidget*   QvtkWidget_XYZ;
 
-  vtkViewImage3D* View3D;
+  vtkSmartPointer<vtkViewImage3D> View3D;
 
   vtkEventQtSlotConnect*    VtkEventQtConnector;
   int                       IsFullScreen;

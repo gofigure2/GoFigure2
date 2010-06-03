@@ -85,9 +85,6 @@
 
 #include <cstdlib>
 
-#include "vtkCallbackCommand.h"
-void func(vtkObject* caller, unsigned long eid, void* clientdata, void *calldata);
-
 //-------------------------------------------------------------------------
 /**
  *
@@ -123,7 +120,7 @@ QGoImageView3D( QWidget* iParent ) :
   QObject::connect(this->HbSplitter, SIGNAL( splitterMoved( int, int ) ),
     this->HtSplitter, SLOT( moveSplitter( int, int ) ) );
 
-  View3D = vtkViewImage3D::New();
+  View3D = vtkSmartPointer<vtkViewImage3D>::New();
 
   vtkSmartPointer<vtkViewImage2D> View1 = vtkSmartPointer<vtkViewImage2D>::New();
   SetupViewGivenQVTKWidget( View1, this->QvtkWidget_XY );
@@ -168,8 +165,8 @@ QGoImageView3D::~QGoImageView3D()
     m_Pool->Delete();
     m_Pool = 0;
     }*/
-  View3D->Delete();
-  View3D = 0;
+  /*View3D->Delete();
+  View3D = 0;*/
   VtkEventQtConnector->Delete();
   m_HighlightedContourProperty->Delete();
 }
@@ -440,7 +437,7 @@ void QGoImageView3D::SetupVTKtoQtConnections()
 
    // Event connection between vtk and qt
    // when contours picked, send a signal
-    VtkEventQtConnector->Connect(
+   /* VtkEventQtConnector->Connect(
       reinterpret_cast< vtkObject* >( View1->GetInteractorStyle() ),
       vtkViewImage2DCommand::MeshPickingEvent,
       this, SIGNAL( ContoursSelectionChanged() ) );
@@ -453,7 +450,7 @@ void QGoImageView3D::SetupVTKtoQtConnections()
     VtkEventQtConnector->Connect(
       reinterpret_cast< vtkObject* >( View3->GetInteractorStyle() ),
       vtkViewImage2DCommand::MeshPickingEvent,
-      this, SIGNAL( ContoursSelectionChanged() ) );
+      this, SIGNAL( ContoursSelectionChanged() ) );*/
 }
 //-------------------------------------------------------------------------
 
@@ -487,46 +484,8 @@ InitializeSeedWidgetInteraction()
   this->SeedWidget[0]->GetEventTranslator()->RemoveTranslation(vtkCommand::RightButtonPressEvent );
   this->SeedWidget[1]->GetEventTranslator()->RemoveTranslation(vtkCommand::RightButtonPressEvent );
   this->SeedWidget[2]->GetEventTranslator()->RemoveTranslation(vtkCommand::RightButtonPressEvent );
-
-  vtkSmartPointer<vtkCallbackCommand> seedCallback0 =
-      vtkSmartPointer<vtkCallbackCommand>::New();
-  seedCallback0->SetCallback ( func );
-  seedCallback0->SetClientData ( this->m_Pool->GetItem(0) );
-  this->m_Pool->GetItem(0)->GetInteractor()->AddObserver(vtkViewImage2DCommand::LeftButtonPressEvent,seedCallback0);
-
-  vtkSmartPointer<vtkCallbackCommand> seedCallback1 =
-      vtkSmartPointer<vtkCallbackCommand>::New();
-  seedCallback1->SetCallback ( func );
-  seedCallback1->SetClientData ( this->m_Pool->GetItem(1) );
-  this->m_Pool->GetItem(1)->GetInteractor()->AddObserver(vtkViewImage2DCommand::LeftButtonPressEvent,seedCallback1);
-
-  //this->m_Pool->GetItem(2)->GetInteractor()->Get
-
-  vtkSmartPointer<vtkCallbackCommand> seedCallback2 =
-      vtkSmartPointer<vtkCallbackCommand>::New();
-  seedCallback2->SetCallback ( func );
-  seedCallback2->SetClientData ( this->m_Pool->GetItem(2) );
-  this->m_Pool->GetItem(2)->GetInteractor()->AddObserver(vtkViewImage2DCommand::LeftButtonPressEvent,seedCallback2);
-
-
 }
-/// TODO Correct in this callback the seeds positions?
-/// Would it solve the visualization bug?
-//-------------------------------------------------------------------------
-void func(vtkObject* caller, unsigned long eid, void* clientdata, void *calldata)
-{
-  vtkSmartPointer<vtkRenderWindowInteractor> Interactor =
-      static_cast<vtkRenderWindowInteractor*>(caller);
 
-  vtkSmartPointer<vtkViewImage2D> Viewer =
-      static_cast<vtkViewImage2D*>(clientdata);
-
-  double* pos = Viewer->GetWorldCoordinatesFromDisplayPosition (
-      Interactor->GetEventPosition());
-
-  int* idx = Viewer->GetImageCoordinatesFromWorldCoordinates( pos );
-}
-//-------------------------------------------------------------------------
 /**
  *
  * @param input
