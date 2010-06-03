@@ -26,7 +26,7 @@ SET( QGOGUILIB_EXAMPLE_SRC
   qgotabimageview3dwt2
 
   qgocomparerTest
-  qgocomparer3DTest
+  qgocomparer3dTest
   qgocomparerorchestraTest
   qgocompareguiTest
 )

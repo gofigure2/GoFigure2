@@ -9,6 +9,8 @@
 #include "vtkRenderer.h"
 #include "vtkSmartPointer.h"
 
+#include <algorithm>
+
 //--------------------------------------------------------------------------
 QGoComparer3DSync::
 QGoComparer3DSync(std::vector<QGoComparer3D*> ioOpenComparers,QObject* iParent):
@@ -305,12 +307,13 @@ void
 QGoComparer3DSync::
 removeComparer( QGoComparer3D* ioComparer )
 {
-std::vector<QGoComparer3D*>::iterator ComparerIt;
   if (ioComparer!=NULL) // this should always be true
     {
     // We look for the comparer in the vector of synchronized comparers
-    ComparerIt = std::find( m_openComparers.begin(), m_openComparers.end(),
-                            ioComparer );
+    std::vector<QGoComparer3D*>::iterator 
+      ComparerIt = std::find( m_openComparers.begin(), 
+                              m_openComparers.end(),
+                              ioComparer );
     if (ComparerIt != m_openComparers.end()) // if we found it
       {
       // remove the callback object from each object's camera
