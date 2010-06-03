@@ -142,7 +142,7 @@ QGoMainWindow( QWidget* iParent, Qt::WindowFlags iFlags ) :
 
   m_AboutWidget = new QGoAboutWidget;
   this->m_AboutWidget->hide();
-  
+
   m_Bar.hide();
   QString temp;
   SetCurrentSingleFile( temp );
@@ -162,9 +162,9 @@ QGoMainWindow( QWidget* iParent, Qt::WindowFlags iFlags ) :
   ReadSettings();
 
   // Updates -------------------------------
-  QObject::connect( m_NetworkUtilities, 
+  QObject::connect( m_NetworkUtilities,
            SIGNAL( CheckForUpdatesDone( QString, bool ) ),
-           this, 
+           this,
            SLOT( DisplayUpdateResults( QString, bool ) ) );
 
   m_ManualUpdate = false;
@@ -311,7 +311,7 @@ void QGoMainWindow::on_actionImportContour_triggered( )
         ImportHelper.ImportContours();
         //put the new contours in the visu:
         std::vector<int> NewContourIDs = ImportHelper.GetVectorNewContourIDs();
-        ContourMeshStructureMultiIndexContainer* ContourToAdd = 
+        ContourMeshStructureMultiIndexContainer* ContourToAdd =
           w3t->m_DataBaseTables->GetContoursFromDBForAGivenTimePoint(w3t->GetTimePoint(),
             NewContourIDs);
           //w3t->m_DataBaseTables->GetContoursForAGivenTimepoint(w3t->GetTimePoint());
@@ -561,7 +561,7 @@ LoadAllTracesFromDatabase( const int& iT, std::string iTrace )
 //             {
 //             GoFigureMeshAttributes attributes =
 //               w3t->ComputeMeshAttributes( contourmesh_list_it->Nodes );
-// 
+//
 //             volumes.push_back( ConvertToString< double >( attributes.m_Volume ) );
 //             areas.push_back( ConvertToString< double >( attributes.m_Area ) );
 //             sizes.push_back( ConvertToString< int >( attributes.m_Size ) );
@@ -593,10 +593,10 @@ LoadAllTracesFromDatabase( const int& iT, std::string iTrace )
 //         {
 //         attributes_name.push_back( "Volume" );
 //         attributes_values.push_back( volumes );
-// 
+//
 //         attributes_name.push_back( "Area" );
 //         attributes_values.push_back( areas );
-// 
+//
 //         attributes_name.push_back( "Size" );
 //         attributes_values.push_back( sizes );
 //         }
@@ -662,7 +662,7 @@ on_actionExport_LSM_to_MegaFile_triggered( )
 {
   //Open the dialog window
   QGoLsmToMegaExportDialog* dlg =
-	    new QGoLsmToMegaExportDialog( this );
+      new QGoLsmToMegaExportDialog( this );
   dlg->show();
 }
 //--------------------------------------------------------------------------
@@ -828,13 +828,13 @@ SetSingleFileName( const QString& iFile )
 void QGoMainWindow::
 OpenLSMImage( const QString& iFile, const int& iTimePoint )
 {
-  m_LSMReader = vtkLSMReader::New();
-  m_LSMReader->SetFileName( iFile.toAscii().data() );
-  m_LSMReader->SetUpdateTimePoint( iTimePoint );
-  m_LSMReader->Update();
+  m_LSMReader.push_back( vtkLSMReader::New() );
+  m_LSMReader.back()->SetFileName( iFile.toAscii().data() );
+  m_LSMReader.back()->SetUpdateTimePoint( iTimePoint );
+  m_LSMReader.back()->Update();
 
   int dim[5];
-  m_LSMReader->GetDimensions( dim );
+  m_LSMReader.back()->GetDimensions( dim );
 
   int ImageDimensionality = 4;
 //   bool Color = ( dim[4] > 1 );
@@ -859,17 +859,17 @@ OpenLSMImage( const QString& iFile, const int& iTimePoint )
     {
     case 2:
       {
-      CreateNewTabFor2DImage( m_LSMReader->GetOutput(), iFile );
+      CreateNewTabFor2DImage( m_LSMReader.back()->GetOutput(), iFile );
       break;
       }
     case 3:
       {
-      CreateNewTabFor3DImage( m_LSMReader->GetOutput(), iFile );
+      CreateNewTabFor3DImage( m_LSMReader.back()->GetOutput(), iFile );
       break;
       }
     case 4:
       {
-      CreateNewTabFor3DwtImage( m_LSMReader, iFile );
+      CreateNewTabFor3DwtImage( m_LSMReader.back(), iFile );
       break;
       }
     }
@@ -1420,7 +1420,7 @@ DisplayUpdateResults( QString result, bool noerror )
     else
       {
       // there is one new version!
-      if( result.compare( tr( "update\n" ), Qt::CaseInsensitive ) == 0 ) 
+      if( result.compare( tr( "update\n" ), Qt::CaseInsensitive ) == 0 )
         {
         QMessageBox msgBox( QMessageBox::Information, tr("GoFigure2 Updates"),
           tr("There is a new version of GoFigure2 available for download!") );

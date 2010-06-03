@@ -300,7 +300,7 @@ double value = 0.0;
 
   if( !this->GetInput() )
     {
-    return 0.0;
+    return value;
     }
 
   int* indices =
@@ -380,6 +380,8 @@ double* vtkViewImage::GetWorldCoordinatesFromImageCoordinates(int indices[3])
   // apply orientation matrix
   double* position = new double[4];
   this->GetOrientationMatrix()->MultiplyPoint(unorientedposition, position);
+
+
   return position;
 }
 

@@ -267,6 +267,7 @@ void vtkViewImage2DCommand::Windowing( vtkInteractorStyleImage2D* isi )
 
 void vtkViewImage2DCommand::PrintInformation()
 {
+
   vtkRenderWindowInteractor *rwi =
     this->Viewer->GetRenderWindow()->GetInteractor();
 

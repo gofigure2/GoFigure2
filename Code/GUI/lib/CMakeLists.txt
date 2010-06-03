@@ -12,10 +12,10 @@ CONFIGURE_FILE( ${GOFIGURE2_SOURCE_DIR}/Code/GUI/lib/QGoGUILibConfigure.h.in
   ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/QGoGUILibConfigure.h @ONLY IMMEDIATE )
 
 CONFIGURE_FILE( ${GOFIGURE2_SOURCE_DIR}/Code/GUI/lib/QGoAboutWidget.cxx.in
-  ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/QGoAboutWidget.cxx @ONLY IMMEDIATE ) 
-  
+  ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/QGoAboutWidget.cxx @ONLY IMMEDIATE )
+
 CONFIGURE_FILE( ${GOFIGURE2_SOURCE_DIR}/Code/GUI/lib/QGoNetworkUtilities.cxx.in
-  ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/QGoNetworkUtilities.cxx @ONLY IMMEDIATE ) 
+  ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/QGoNetworkUtilities.cxx @ONLY IMMEDIATE )
 
 SET( QGoGUILIB_SRC
   QGoConnectServerPage.cxx
@@ -62,7 +62,17 @@ SET( QGoGUILIB_SRC
   QGoDBInitCreateAuthorsPage.cxx
   QGoDBInitCreateMicroscopePage.cxx
   QGoOneClickSegmentationDockWidget.cxx
+
+  QGoComparer.cxx
+  QGoComparer2D.cxx
+  QGoComparer3D.cxx
+  QGoComparer2DSync.cxx
+  QGoComparer3DSync.cxx
+  QGoCompareOrchestra.cxx
+  qgocomparegui.cxx
+
   QGoSeedsSegmentation.cxx
+
   ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/QGoAboutWidget.cxx
   ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/QGoNetworkUtilities.cxx
 )
@@ -139,6 +149,14 @@ SET( QGoGUILIB_HDRS
   QGoDBInitCreateAuthorsPage.h
   QGoDBInitCreateMicroscopePage.h
   QGoNetworkUtilities.h
+
+  QGoComparer.h
+  QGoComparer2D.h
+  QGoComparer3D.h
+  QGoComparer2DSync.h
+  QGoComparer3DSync.h
+  QGoCompareOrchestra.h
+  qgocomparegui.h
 )
 
 #---------------------------------------------------------------------------
@@ -172,6 +190,8 @@ SET( QGoGUILIB_UI
   Resources/QNameDescriptionInputDialog.ui
   Resources/QGoTraceManualEditingWidget.ui
   Resources/OneClickSegmentationDockWidget.ui
+
+  Resources/QGoComparer.ui
 )
 
 #---------------------------------------------------------------------------
@@ -239,6 +259,6 @@ TARGET_LINK_LIBRARIES( QGoGui
 INSTALL( TARGETS QGoGui
   ARCHIVE DESTINATION lib COMPONENT libraries
   LIBRARY DESTINATION lib COMPONENT libraries
-  RUNTIME DESTINATION bin COMPONENT Runtime  
+  RUNTIME DESTINATION bin COMPONENT Runtime
   )
 

@@ -766,8 +766,13 @@ void vtkViewImage2D::GetCameraFocalAndPosition( double focal[3], double pos[3] )
 //----------------------------------------------------------------------------
 double* vtkViewImage2D::GetWorldCoordinatesFromDisplayPosition( int xy[2] )
 {
+  // in one case this function creates an array and don't manage it
+  // in another case, it gives a pointer to a managed array :
+  // MEMORY LEAKS
+
   if( !this->GetInput() || !this->GetRenderer())
     {
+    // case 1 : non managed array pointer
     double* nullpos = new double[3];
     nullpos[0] = 0; nullpos[1] = 0; nullpos[2] = 0;
     return nullpos;
@@ -780,7 +785,12 @@ double* vtkViewImage2D::GetWorldCoordinatesFromDisplayPosition( int xy[2] )
   this->GetRenderer()->SetDisplayPoint( xy[0], xy[1],
     this->GetRenderer()->GetDisplayPoint()[2]);
   this->GetRenderer()->DisplayToWorld();
+  // think about deleting the temporary created array
+  delete[] slicepos;
+
+  // case 2 : pointer to managed array
   return this->GetRenderer()->GetWorldPoint();
+
 }
 
 

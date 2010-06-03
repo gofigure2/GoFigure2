@@ -72,7 +72,7 @@ class QGoNetworkUtilities;
 /**
  * \class QGoMainWindow
  * \brief GoFigure2's main window
- * \image html QGoMainWindow.png 
+ * \image html QGoMainWindow.png
  * */
 class QGoMainWindow : public QMainWindow,
   private Ui::go_mainwindow
@@ -213,7 +213,7 @@ private:
   QGoTabManager*              m_TabManager;
   QToolBar*                   m_ViewToolBar;
   QToolBar*                   m_ModeToolBar;
-  vtkLSMReader*               m_LSMReader;
+  std::list< vtkLSMReader* >  m_LSMReader;
   QGoWizardDB*                m_DBWizard;
   QGoAboutWidget*             m_AboutWidget;
   QGoDBInitializationWizard*  m_DBInitializationWizard;

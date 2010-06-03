@@ -24,6 +24,11 @@ SET( QGOGUILIB_EXAMPLE_SRC
   QGoDeleteDBEntityDialog
   QGoDBInitializationWizardTest
   qgotabimageview3dwt2
+
+  qgocomparerTest
+  qgocomparer3DTest
+  qgocomparerorchestraTest
+  qgocompareguiTest
 )
 
 #---------------------------------------------------------------------------
