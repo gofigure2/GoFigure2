@@ -133,7 +133,6 @@ SET( QGoGUILIB_HDRS
   QGoTraceManualEditingWidget.h
   QGoTraceManualEditingDockWidget.h
   QGoOneClickSegmentationDockWidget.h
-  QGoSeedsSegmentation.h
   QGoAboutWidget.h
   QGoDBInitializationWizard.h
   QGoDBInitCreateUserPage.h
