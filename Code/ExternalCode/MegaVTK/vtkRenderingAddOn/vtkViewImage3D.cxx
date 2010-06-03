@@ -70,6 +70,7 @@
 #include "vtkSmartPointer.h"
 
 #include "vtkInteractorStyleImage3D.h"
+#include "vtkViewImage3DCommand.h"
 
 #include "vtkImageAppendComponents.h"
 #include "vtkImageExtractComponents.h"
@@ -182,10 +183,10 @@ public:
 
     if( event == vtkCommand::ModifiedEvent )
     {
-      this->Actor->SetInput(imagecaller->GetInput());
+      /*this->Actor->SetInput(imagecaller->GetInput());
       this->Actor->SetInterpolate(imagecaller->GetInterpolate());
       this->Actor->SetOpacity(imagecaller->GetOpacity());
-      this->Actor->SetDisplayExtent (imagecaller->GetDisplayExtent());
+      this->Actor->SetDisplayExtent (imagecaller->GetDisplayExtent());*/
     }
   }
 
@@ -231,6 +232,10 @@ vtkViewImage3D::vtkViewImage3D()
   this->BoundsActor.push_back( vtkActor::New() );
   this->BoundsActor.push_back( vtkActor::New() );
 
+  this->Command = vtkViewImage3DCommand::New();
+  // the new interactor style
+  this->InteractorStyle3D = vtkInteractorStyleImage3D::New();
+
 //   this->SetupVolumeRendering();
   this->SetupWidgets();
 }
@@ -265,6 +270,9 @@ vtkViewImage3D::~vtkViewImage3D()
   this->BoundsActor[0]->Delete();
   this->BoundsActor[1]->Delete();
   this->BoundsActor[2]->Delete();
+
+  this->Command->Delete();
+  this->InteractorStyle3D->Delete();
 }
 
 
@@ -594,8 +602,14 @@ SetBoundsActorsVisibility( bool iVisibility )
 }
 //----------------------------------------------------------------------------
 
+void vtkViewImage3D::UpdateInteractorStyle()
 
+{
+  // the new interactor style
+  vtkInteractorStyleImage3D* interactorStyle = vtkInteractorStyleImage3D::New();
 
+  this->Interactor->SetInteractorStyle( interactorStyle );
+}
 //----------------------------------------------------------------------------
 /**
  *
@@ -609,18 +623,24 @@ void vtkViewImage3D::InstallPipeline()
 
   if (this->Interactor)
     {
-    vtkSmartPointer< vtkInteractorStyleImage3D > interactorStyle =
-      vtkSmartPointer< vtkInteractorStyleImage3D >::New();
+    // Add observers
+    this->InteractorStyle3D->AddObserver(
+      vtkViewImage3DCommand::MeshPickingEvent, this->Command);
+    // setup interactor style
+    // can't use this->InteractorStyle because of invalid conversions
+    // between interactors styles
+    this->Interactor->SetInteractorStyle( InteractorStyle3D );
 
-    this->Interactor->SetInteractorStyle ( interactorStyle );
+    this->Interactor->SetRenderWindow(this->RenderWindow);
 
     this->BoxWidget->SetInteractor ( this->Interactor );
     //this->PlaneWidget->SetInteractor ( this->Interactor );
     this->Marker->SetInteractor ( this->Interactor );
-    this->Interactor->SetRenderWindow(this->RenderWindow);
 
     this->Marker->On();
     this->Marker->InteractiveOff ();
+
+
     }
 
 }

@@ -90,6 +90,7 @@
 
 #include <vector>
 
+class vtkViewImage3DCommand;
 class vtkVolumeTextureMapper3D;
 class vtkVolumeMapper;
 class vtkVolumeRayCastFunction;
@@ -127,6 +128,7 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage3D : public vtkViewImage
   // Render the resulting image.
   virtual void Render(void);
 
+  void UpdateInteractorStyle();
   /**
     Add a dataset to the view (has to be subclass of vtkPointSet).
     The dataset will be cut through the implicit slice plane
@@ -309,6 +311,14 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage3D : public vtkViewImage
   // annotated cube actor
   vtkAnnotatedCubeActor*          Cube;
   vtkOrientationMarkerWidget*     Marker;
+
+  /**
+     Access to the command of the viewer.
+     This instance is in charge of observing the interactorstyle (GetInteractorStyle())
+     and update things accordingly in the view (i.e. the slice number when moving slice).
+  */
+  vtkViewImage3DCommand*     Command;
+  vtkInteractorStyleImage3D* InteractorStyle3D;
 
 };
 

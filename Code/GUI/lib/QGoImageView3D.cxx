@@ -120,8 +120,6 @@ QGoImageView3D( QWidget* iParent ) :
   QObject::connect(this->HbSplitter, SIGNAL( splitterMoved( int, int ) ),
     this->HtSplitter, SLOT( moveSplitter( int, int ) ) );
 
-  View3D = vtkSmartPointer<vtkViewImage3D>::New();
-
   vtkSmartPointer<vtkViewImage2D> View1 = vtkSmartPointer<vtkViewImage2D>::New();
   SetupViewGivenQVTKWidget( View1, this->QvtkWidget_XY );
 
@@ -141,8 +139,11 @@ QGoImageView3D( QWidget* iParent ) :
   //View3->Delete();
 
   vtkRenderWindow* renwin4 = this->QvtkWidget_XYZ->GetRenderWindow( );
+  this->View3D = vtkViewImage3D::New();
   this->View3D->SetRenderWindow( renwin4 );
   this->View3D->SetupInteractor( this->QvtkWidget_XYZ->GetInteractor() );
+
+
   this->m_Pool->SetExtraRenderWindow( renwin4 );
 
   InitializeSeedWidgetInteraction();
@@ -165,8 +166,8 @@ QGoImageView3D::~QGoImageView3D()
     m_Pool->Delete();
     m_Pool = 0;
     }*/
-  /*View3D->Delete();
-  View3D = 0;*/
+  View3D->Delete();
+  View3D = 0;
   VtkEventQtConnector->Delete();
   m_HighlightedContourProperty->Delete();
 }

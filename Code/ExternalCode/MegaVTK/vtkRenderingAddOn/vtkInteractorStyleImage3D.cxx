@@ -69,7 +69,7 @@
 
 #include <vtkObjectFactory.h>
 #include <vtkRenderWindowInteractor.h>
-#include <iostream>
+#include "vtkViewImage3DCommand.h"
 
 vtkCxxRevisionMacro (vtkInteractorStyleImage3D, "$Revision: 1 $");
 vtkStandardNewMacro (vtkInteractorStyleImage3D);
@@ -78,7 +78,6 @@ vtkStandardNewMacro (vtkInteractorStyleImage3D);
 vtkInteractorStyleImage3D::
 vtkInteractorStyleImage3D()
 {
-  this->SetCurrentStyleToTrackballCamera();
 }
 //----------------------------------------------------------------------------
 
@@ -93,13 +92,16 @@ void
 vtkInteractorStyleImage3D::
 OnLeftButtonDown()
 {
+
   std::cout << "left" << std::endl;
   if (this->Interactor->GetShiftKey())
     {
     std::cout << "shift + left" << std::endl;
     }
+  this->InvokeEvent(vtkViewImage3DCommand::MeshPickingEvent);
+
   // Call parent to handle all other states and perform additional work
-  this->Superclass::OnLeftButtonUp();
+  this->Superclass::OnLeftButtonDown();
 }
 //----------------------------------------------------------------------------
 

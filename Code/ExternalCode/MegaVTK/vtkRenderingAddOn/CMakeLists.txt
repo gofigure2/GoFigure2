@@ -16,6 +16,7 @@ SET( vtkRenderingAddOn_SRCS2
   vtkViewImage2DCollectionCommand.cxx
   vtkViewImage2DCommand.cxx
   vtkViewImage3D.cxx
+  vtkViewImage3DCommand.cxx
   )
 
 INCLUDE_DIRECTORIES( BEFORE

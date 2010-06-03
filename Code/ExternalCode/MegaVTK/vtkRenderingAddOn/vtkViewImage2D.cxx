@@ -922,8 +922,6 @@ vtkViewImage2D::AddDataSet( vtkPolyData* dataset,
   double* normal;
   normal = this->SliceImplicitPlane->GetNormal();
 
-  dataset->Print(cout);
-  this->SliceImplicitPlane->Print(cout);
   // if in 2d
   if( ((bounds[0] == bounds[1]) && (normal[1] == 0) && (normal[2] == 0)) ||
       ((bounds[2] == bounds[3]) && (normal[2] == 0) && (normal[0] == 0)) ||
@@ -1029,6 +1027,9 @@ void vtkViewImage2D::SetInteractorStyleType(int type)
   this->InteractorStyleType = type;
   this->InstallPipeline();
 }
+//----------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------
 void vtkViewImage2D::UpdateCenter (void)
 {
   if (!this->GetInput())

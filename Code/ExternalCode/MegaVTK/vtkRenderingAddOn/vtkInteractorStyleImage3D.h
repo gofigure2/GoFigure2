@@ -68,15 +68,15 @@
 #ifndef _vtk_InteractorStyleImage3D_h_
 #define _vtk_InteractorStyleImage3D_h_
 
-#include <vtkInteractorStyleSwitch.h>
+#include <vtkInteractorStyleTrackballCamera.h>
 #include "MegaVTK2Configure.h"
 
 class VTK_RENDERINGADDON2_EXPORT vtkInteractorStyleImage3D :
-  public vtkInteractorStyleSwitch
+  public vtkInteractorStyleTrackballCamera
 {
  public:
   static vtkInteractorStyleImage3D *New();
-  vtkTypeRevisionMacro (vtkInteractorStyleImage3D, vtkInteractorStyleSwitch);
+  vtkTypeRevisionMacro (vtkInteractorStyleImage3D, vtkInteractorStyleTrackballCamera);
 
   //BTX
     enum InteractionTypeIds

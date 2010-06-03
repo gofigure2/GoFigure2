@@ -1,0 +1,50 @@
+#ifndef __vtkViewImage3DCommand_h
+#define __vtkViewImage3DCommand_h
+
+#include "vtkCommand.h"
+#include "vtkObject.h"
+#include "MegaVTK2Configure.h"
+
+class VTK_RENDERINGADDON2_EXPORT vtkViewImage3DCommand :
+  public vtkCommand
+{
+ public:
+
+  static vtkViewImage3DCommand* New();
+
+  //BTX
+  enum EventIds
+  {
+    SliceMoveEvent=(vtkCommand::UserEvent+1),
+    StartSliceMoveEvent,
+    EndSliceMoveEvent,
+    ZoomEvent,
+    PanEvent,
+    RequestedPositionEvent,
+    ResetViewerEvent,
+    ContourPickingEvent,
+    MeshPickingEvent,
+    CameraMoveEvent,
+    DefaultMoveEvent,
+    SeedEvent
+  };
+  //ETX
+
+  // Description:
+  // Satisfy the superclass API for callbacks. Recall that the caller is
+  // the instance invoking the event; eid is the event id (see
+  // vtkCommand.h); and calldata is information sent when the callback
+  // was invoked (e.g., progress value in the vtkCommand::ProgressEvent).
+  virtual void Execute( vtkObject *caller, unsigned long event,
+    void *vtkNotUsed(callData) );
+
+
+ protected:
+
+  vtkViewImage3DCommand();
+  ~vtkViewImage3DCommand();
+
+ private:
+};
+
+#endif
