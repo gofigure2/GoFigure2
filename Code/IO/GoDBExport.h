@@ -103,6 +103,11 @@ private:
   void WriteTableInfoFromDB(std::vector<std::string> iListIDs)
    {
     T TableRow;
+    if (iListIDs.empty())
+     {
+     this->WriteNumberOfEntities(TableRow.GetTableName(),0);
+     return;
+     }   
     this->WriteNumberOfEntities(TableRow.GetTableName(),iListIDs.size());
     std::vector<std::string>::iterator iter = iListIDs.begin();
     while(iter != iListIDs.end())
@@ -141,6 +146,9 @@ private:
   /** \brief get the contours info for the corresponding imagingsession from
   the database and write them on the output file*/
   void WriteContoursInfoFromDatabase();
+  
+  void WriteTracksInfoFromDatabase(
+  std::vector<std::string> iListTrackIDsWithMeshesWithContours);
   /** \brief get the meshes info for the corresponding IDs from the database
   and write them on the output file*/
   void WriteMeshesInfoFromDatabase(

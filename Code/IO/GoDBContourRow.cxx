@@ -85,7 +85,7 @@ void GoDBContourRow::InitializeMap()
   this->m_TableIDName = "ContourID";
   //this->m_MapRow["ContourID"] = ConvertToString<int>(0);
   this->m_MapRow[this->m_TableIDName] = ConvertToString<int>(0);
-  this->m_MapRow["MeshID"] = "null";
+  this->m_MapRow["MeshID"] = ConvertToString<int>(0);
 }    
 //-------------------------------------------------------------------------
 

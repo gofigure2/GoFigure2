@@ -86,9 +86,9 @@ void GoDBMeshRow::InitializeMap()
   m_TableName = "mesh";
   m_TableIDName = "MeshID";
   this->m_MapRow[this->m_TableIDName] = ConvertToString<int>(0);
-  this->m_MapRow["CellTypeID"] = ConvertToString<int>(1);
-  this->m_MapRow["SubCellularID"] = ConvertToString<int>(1);
-  this->m_MapRow["TrackID"] = "null";
+  this->m_MapRow["CellTypeID"] = ConvertToString<int>(0);
+  this->m_MapRow["SubCellularID"] = ConvertToString<int>(0);
+  this->m_MapRow["TrackID"] = ConvertToString<int>(0);
 }
 //-------------------------------------------------------------------------
 

@@ -48,6 +48,8 @@
 #include "GoDBCoordinateRow.h"
 #include "GoDBContourRow.h"
 #include "GoDBMeshRow.h"
+#include "GoDBTrackRow.h"
+#include "GoDBLineageRow.h"
 
 
 //--------------------------------------------------------------------------
@@ -168,6 +170,14 @@ void GoDBExport::WriteCoordinatesInfoFromDatabase(
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+void GoDBExport::WriteTracksInfoFromDatabase(
+  std::vector<std::string> iListTrackIDsWithMeshesWithContours)
+{
+  this->WriteTableInfoFromDB<GoDBTrackRow>(iListTrackIDsWithMeshesWithContours);
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
 void GoDBExport::WriteMeshesInfoFromDatabase(
     std::vector<std::string> iListMeshIDsWithContours )
 {
@@ -212,7 +222,7 @@ void GoDBExport::WriteOnTheOutputFile(std::string iNameOfEntity,
 void GoDBExport::WriteNumberOfEntities(std::string iNameOfEntity,int iNumber)
 {
   this->AddTabulation();
-  std::string NameToWrite = "Number Of ";
+  std::string NameToWrite = "NumberOf";
   NameToWrite += iNameOfEntity;
   this->m_outfile << this->GetNameWithBrackets(NameToWrite);
   this->m_outfile << iNumber;

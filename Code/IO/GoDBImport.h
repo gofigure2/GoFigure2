@@ -169,6 +169,12 @@ private:
   {
     std::map<int,int>::iterator iter =
       iMapIDs.find(atoi(ioEntity.GetMapValue(iFieldName).c_str()));
+    //in case the value of the field name is 0 which corresponds to
+    //an not yet associated value, it won't be found in the map:
+    if (iter == iMapIDs.end())
+      {
+      return;
+      }
     int NewID = iter->second;
     ioEntity.SetField(iFieldName,NewID);
   }

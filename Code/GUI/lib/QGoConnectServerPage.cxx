@@ -121,7 +121,7 @@ bool QGoConnectServerPage::validatePage()
 //-------------------------------------------------------------------------
 int QGoConnectServerPage::nextId() const
 {
-  std::string DBName;
+std::string DBName;
   std::list<std::string> ListGoDB = ListGofigureDatabases();
   if (ListGoDB.size() > 1)
     {

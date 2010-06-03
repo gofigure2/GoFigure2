@@ -97,10 +97,14 @@ std::string GoDBImport::SaveNoTracesEntities(std::map<int,int> & ioMapColorIDs,
     {
     getline (this->m_InFile, LineContent);
     }
-  while (this->FindFieldName(LineContent)!= "Number Of mesh")
+  while (this->FindFieldName(LineContent)!= "NumberOfmesh")
     {
     int EntitiesNumber = atoi(this->GetValueForTheLine(LineContent).c_str());
     getline(this->m_InFile, LineContent);
+    //if there is nothing to be saved in the database for this group, just go
+    //to the next line in the file:
+    if (EntitiesNumber != 0)
+      {
       if(this->GetValueForTheLine(LineContent) != "NoValueOnTheLine")
         {
         std::cout<<"There was supposed to be only the name of the entity to save,the entity will not be saved";
@@ -108,33 +112,34 @@ std::string GoDBImport::SaveNoTracesEntities(std::map<int,int> & ioMapColorIDs,
         std::cout << std::endl;
         return LineContent;
         }
-    std::string NameEntity = this->FindFieldName(LineContent);
-    if (NameEntity == "color")
-      {
-      LineContent = this->SaveImportedEntitiesInDatabase<GoDBColorRow>(
-        EntitiesNumber,ioMapColorIDs);
-      }
-    if (NameEntity == "celltype")
-      {
-      LineContent = this->SaveImportedEntitiesInDatabase<GoDBCellTypeRow>(
-      EntitiesNumber,ioMapCellTypeIDs);
-      }
-    if (NameEntity == "subcellulartype")
-      {
-      LineContent = this->SaveImportedEntitiesInDatabase<GoDBSubCellTypeRow>(
-      EntitiesNumber,ioMapSubCellTypeIDs);
-      }
-    if (NameEntity == "coordinate")
-      {
-      LineContent = this->SaveImportedEntitiesInDatabase<GoDBCoordinateRow>(
-      EntitiesNumber,ioMapCoordIDs);
-      }
-    if (NameEntity != "color" && NameEntity != "celltype" && 
-      NameEntity != "subcellulartype" && NameEntity != "coordinate")
-      {
-      std::cout<<"The name of the entity doesn't correspond to any of the no traces entity";
-      std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
-      std::cout << std::endl;
+        std::string NameEntity = this->FindFieldName(LineContent);
+      if (NameEntity == "color")
+        {
+        LineContent = this->SaveImportedEntitiesInDatabase<GoDBColorRow>(
+          EntitiesNumber,ioMapColorIDs);
+        }
+      if (NameEntity == "celltype")
+        {
+        LineContent = this->SaveImportedEntitiesInDatabase<GoDBCellTypeRow>(
+        EntitiesNumber,ioMapCellTypeIDs);
+        }
+      if (NameEntity == "subcellulartype")
+        {
+        LineContent = this->SaveImportedEntitiesInDatabase<GoDBSubCellTypeRow>(
+        EntitiesNumber,ioMapSubCellTypeIDs);
+        }
+      if (NameEntity == "coordinate")
+        {
+        LineContent = this->SaveImportedEntitiesInDatabase<GoDBCoordinateRow>(
+        EntitiesNumber,ioMapCoordIDs);
+        }
+      if (NameEntity != "color" && NameEntity != "celltype" && 
+        NameEntity != "subcellulartype" && NameEntity != "coordinate")
+        {
+        std::cout<<"The name of the entity doesn't correspond to any of the no traces entity";
+        std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
+        std::cout << std::endl;
+        }
       }
     }
   return LineContent;
@@ -263,7 +268,7 @@ std::string GoDBImport::GetValueForTheLine(std::string iLine)
 //--------------------------------------------------------------------------
 bool GoDBImport::IsLineForNumberOfEntities(std::string iLine)
 {
-  size_t BegValue = iLine.find("Number Of",0);
+  size_t BegValue = iLine.find("NumberOf",0);
   if (BegValue != iLine.npos)
     {
     return true;
