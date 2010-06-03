@@ -881,7 +881,7 @@ OpenLSMImage( const QString& iFile, const int& iTimePoint )
  * @param iFileType
  * @param iHeader
  * @param iTimePoint
- * \todo Change the way to provide information about the database
+ * @param iUseDatabase
  */
 QGoTabImageView3DwT*
 QGoMainWindow::
@@ -916,7 +916,7 @@ CreateNewTabFor3DwtImage(
       ImgSessionName );
 
     w3t->m_DataBaseTables->FillTableFromDatabase(w3t->GetTimePoint());
-    w3t->setWindowTitle(ImgSessionName.c_str());
+    w3t->setWindowTitle( QString::fromStdString( ImgSessionName ) );
     // **********************
     }
   else

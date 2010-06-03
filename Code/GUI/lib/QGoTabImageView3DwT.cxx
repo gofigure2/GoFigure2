@@ -3178,9 +3178,9 @@ OneClickSphereContours()
 
     // Save polydatas (=contours) in DB
     for( unsigned int j = 1; j < ContoursForOnePoint.size(); j++)
-    {
-    listContoursIDs.push_back(this->SavePolyDataAsContourInDB( ContoursForOnePoint[j] ));
-    }
+      {
+      listContoursIDs.push_back(this->SavePolyDataAsContourInDB( ContoursForOnePoint[j] ));
+      }
     // assign contours to mesh
     // will increment mesh ID automatically
     m_DataBaseTables->CreateMeshFromOneClickSegmentation(listContoursIDs);
@@ -3268,7 +3268,7 @@ LevelSetSegmentation2D()
     // Save contour in database
     SavePolyDataAsContourInDB(
         seedsSegmentation.LevelSetSegmentation2D( orientation ) );
-  }
+    }
 
   // Erase seeds once everything is stored in DB
   this->m_ImageView->ClearAllSeeds();

@@ -54,7 +54,7 @@
 \brief Contains all segmentations from seed points
 \example GUI/lib/qgotabimageview2d.cxx
 */
-class  QGOGUILIB_EXPORT QGoSeedsSegmentation
+class QGOGUILIB_EXPORT QGoSeedsSegmentation
 {
 public:
   /**
