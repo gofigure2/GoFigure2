@@ -74,6 +74,7 @@ ADD_TEST( lsmtomegacaptureTest
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/lsmtomegacapture
   ${TESTING_DATA_PATH}/earpax2isl11.lsm
   ${GOFIGURE2_BINARY_DIR}/Testing/earpax2isl11_lsmtomegacapture/
+  png
   )
   
 FOREACH( var ${GODB_SRC} )
