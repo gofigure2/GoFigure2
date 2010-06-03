@@ -912,7 +912,7 @@ vtkViewImage2D::AddDataSet( vtkPolyData* dataset,
     vtkSmartPointer< vtkPolyDataMapper >::New();
   mapper->SetScalarVisibility( iDataVisibility );
 
-  vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
+  vtkActor* actor = vtkActor::New();
   vtkSmartPointer< vtkCutter > cutter = vtkSmartPointer< vtkCutter >::New();
   vtkSmartPointer< vtkExtractPolyDataGeometry > extracter = vtkSmartPointer< vtkExtractPolyDataGeometry >::New();
 
@@ -922,6 +922,8 @@ vtkViewImage2D::AddDataSet( vtkPolyData* dataset,
   double* normal;
   normal = this->SliceImplicitPlane->GetNormal();
 
+  dataset->Print(cout);
+  this->SliceImplicitPlane->Print(cout);
   // if in 2d
   if( ((bounds[0] == bounds[1]) && (normal[1] == 0) && (normal[2] == 0)) ||
       ((bounds[2] == bounds[3]) && (normal[2] == 0) && (normal[0] == 0)) ||
@@ -958,7 +960,7 @@ vtkViewImage2D::AddDataSet( vtkPolyData* dataset,
   this->ContourPicker->PickFromListOn();
 
   this->Renderer->AddViewProp( actor );
-  this->DataSetCollection->AddItem( dataset );
+  this->DataSetCollection->AddItem( (vtkDataSet*)dataset );
   this->Prop3DCollection->AddItem( actor );
 
   return actor;
@@ -986,7 +988,7 @@ vtkViewImage2D::AddDataSet( vtkDataSet* dataset,
   mapper->SetScalarVisibility( iDataVisibility );
 
   //vtkQuadricLODActor* actor = vtkQuadricLODActor::New();
-  vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
+  vtkActor* actor = vtkActor::New();
 
   vtkSmartPointer< vtkCutter > cutter = vtkSmartPointer< vtkCutter >::New();
 
@@ -1013,7 +1015,7 @@ vtkViewImage2D::AddDataSet( vtkDataSet* dataset,
   this->ContourPicker->PickFromListOn();
 
   this->Renderer->AddViewProp( actor );
-  this->DataSetCollection->AddItem( dataset );
+  this->DataSetCollection->AddItem( (vtkDataSet*)dataset );
   this->Prop3DCollection->AddItem( actor );
 
   return actor;

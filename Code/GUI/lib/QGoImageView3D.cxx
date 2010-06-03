@@ -163,12 +163,13 @@ QGoImageView3D::~QGoImageView3D()
 
   // note m_Pool is supposed to be deleted in QGoImageView, but due to a bug
   // it has to be deleted in this order...
-  if( m_Pool )
+  /*if( m_Pool )
     {
     m_Pool->Delete();
     m_Pool = 0;
-    }
+    }*/
   View3D->Delete();
+  View3D = 0;
   VtkEventQtConnector->Delete();
   m_HighlightedContourProperty->Delete();
 }
@@ -327,8 +328,8 @@ void QGoImageView3D::Update()
 
   if( m_FirstRender )
     {
-	this->m_Pool->SyncReset();
-	this->m_Pool->InitializeAllObservers();
+    this->m_Pool->SyncReset();
+    this->m_Pool->InitializeAllObservers();
     this->m_Pool->Initialize();
 
     this->SliderXY->setValue( (this->SliderXY->minimum()+this->SliderXY->maximum())/2 );
