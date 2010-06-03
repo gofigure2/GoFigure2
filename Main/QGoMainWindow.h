@@ -165,7 +165,8 @@ private:
     const GoFigureFileInfoHelperMultiIndexContainer& iFileList,
     const GoFigure::FileType& iFileType,
     const std::string& iHeader,
-    const int& iTimePoint );
+    const int& iTimePoint,
+    const bool& iUseDatabase );
 
   QGoTabImageView3DwT* CreateNewTabFor3DwtImage(
     vtkLSMReader* iReader, const QString& iFile );

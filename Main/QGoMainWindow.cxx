@@ -384,7 +384,8 @@ void QGoMainWindow::on_actionOpen_MegaCapture_Files_triggered()
       int TimePoint = importer->GetOutput().get<m_TCoord>().begin()->m_TCoord;
 
       CreateNewTabFor3DwtImage( importer->GetOutput(), filetype,
-        importer->GetHeaderFilename(), TimePoint );
+        importer->GetHeaderFilename(), TimePoint,
+        false ); // do not use the database
       }
     }
 }
@@ -491,7 +492,8 @@ void QGoMainWindow::DisplayFilesfromDB(std::string iFirst_Filename)
   // when using CreateNewTabFor3DwtImage
   int TimePoint = file_container.get< m_TCoord >().begin()->m_TCoord;
   QGoTabImageView3DwT* w3t = CreateNewTabFor3DwtImage( file_container,
-    filetype, Header_FileName, TimePoint );
+    filetype, Header_FileName, TimePoint,
+    true ); // Use the database
 
   QObject::connect( w3t, SIGNAL( UpdateBookmarkOpenActions( std::vector<QAction*> ) ),
     this->m_TabManager, SLOT( UpdateBookmarkMenu( std::vector<QAction*> ) ) );
@@ -887,16 +889,16 @@ CreateNewTabFor3DwtImage(
   const GoFigureFileInfoHelperMultiIndexContainer& iFileList,
   const GoFigure::FileType& iFileType,
   const std::string& iHeader,
-  const int& iTimePoint )
+  const int& iTimePoint,
+  const bool& iUseDatabase )
 {
   // note: do not need to call w3t->Update() since it is internally called in
   // w3t->SetMegaCaptureFile
   QGoTabImageView3DwT* w3t = new QGoTabImageView3DwT;
   w3t->SetMegaCaptureFile( iFileList, iFileType, iHeader, iTimePoint );
-  //w3t->setWindowTitle( QString::fromStdString( iHeader ) );
 
- // if( w3t->m_DataBaseTables->IsDatabaseUsed() )
- //  {
+  if( iUseDatabase )
+    {
     // **********************
     // Database information
     //get the content of the tables fron the database to fill the table widget:
@@ -916,7 +918,11 @@ CreateNewTabFor3DwtImage(
     w3t->m_DataBaseTables->FillTableFromDatabase(w3t->GetTimePoint());
     w3t->setWindowTitle(ImgSessionName.c_str());
     // **********************
- //  }
+    }
+  else
+    {
+    w3t->setWindowTitle( QFileInfo( QString::fromStdString( iHeader ) ).fileName() );
+    }
 
   SetupMenusFromTab( w3t );
 
