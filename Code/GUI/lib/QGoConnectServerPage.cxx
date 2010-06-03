@@ -114,6 +114,19 @@ bool QGoConnectServerPage::validatePage()
     emit NoGofigureDatabase();
     return false;
     }
+
+  if (ListGoDB.size() > 1)
+    {
+    std::cout<<"There is more than one Gofigure DataBase"<<std::endl;
+    std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
+    std::cout << std::endl;
+    return false;
+    }
+
+  std::list<std::string>::iterator i = ListGoDB.begin();
+  std::string DBName = *i;
+  this->wizard()->setField( "DBName", DBName.c_str() );
+  std::cout<<"the db name to open is: "<<field("DBName").toString().toStdString().c_str()<<std::endl;
   return true;
 }
 //-------------------------------------------------------------------------
@@ -121,24 +134,6 @@ bool QGoConnectServerPage::validatePage()
 //-------------------------------------------------------------------------
 int QGoConnectServerPage::nextId() const
 {
-std::string DBName;
-  std::list<std::string> ListGoDB = ListGofigureDatabases();
-  if (ListGoDB.size() > 1)
-    {
-    std::cout<<"There is more than one Gofigure DataBase"<<std::endl;
-    std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
-    std::cout << std::endl;
-    }
-  else
-    {
-    if(!ListGoDB.empty())
-      {
-      std::list<std::string>::iterator i = ListGoDB.begin();
-      DBName = *i;
-      this->wizard()->setField( "DBName", DBName.c_str() );
-      std::cout<<"the db name to open is: "<<field("DBName").toString().toStdString().c_str()<<std::endl;
-      }
-    }
   if(!this->m_IsAnOpenRecentFile)
     {
     return QGoWizardDB::OpenOrCreateProjectPageID;
