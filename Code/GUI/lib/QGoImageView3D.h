@@ -220,6 +220,8 @@ signals:
 
   void FullScreenViewChanged( int View );
   void ContoursSelectionChanged();
+  void MeshesSelectionChanged();
+
 
 public slots:
   QString SnapshotViewXY( const GoFigure::FileType& iType,
@@ -275,7 +277,7 @@ protected:
   QHBoxLayout*  LayOut4;
   QVTKWidget*   QvtkWidget_XYZ;
 
-  vtkViewImage3D* View3D;
+  vtkViewImage3D* m_View3D;
 
   vtkEventQtSlotConnect*    VtkEventQtConnector;
   int                       IsFullScreen;

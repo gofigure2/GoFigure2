@@ -266,6 +266,8 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage3D : public vtkViewImage
 
   void SetBoundsActorsVisibility( bool );
 
+  vtkInteractorStyleImage3D* GetInteractorStyle3D();
+
  protected:
 
   vtkViewImage3D();

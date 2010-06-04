@@ -166,7 +166,7 @@ public:
    * useful when we load a dataset from the databse
    * \param[in] iContourID Trace ID
    * \param[in] iNodes Data to be stored
-   * \param[in] iHighlighted should the trace be highlighted true=yes false=no
+   * \param[in] ied should the trace be highlighted true=yes false=no
    * \param[in] iTCoord Current time point
    * \param[in] iSaveInDataBase Save in database? true=yes false=no
    * \param[in] iTrace Name of the traces to be loaded (contour or mesh)
@@ -286,6 +286,7 @@ public slots:
   void ReEditContour( const unsigned int& iId );
 
   void HighLightContours();
+  void HighLightMeshes();
 
   /**
    * \brief Calls HighLightTracesFromTable( ... ) with the good

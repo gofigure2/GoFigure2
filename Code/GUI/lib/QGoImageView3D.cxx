@@ -74,6 +74,7 @@
 
 #include "vtkViewImage2DCommand.h"
 #include "vtkViewImage2DCollectionCommand.h"
+#include "vtkViewImage3DCommand.h"
 #include "vtkImageActorPointPlacer.h"
 
 #include "vtkCellArray.h"
@@ -139,9 +140,9 @@ QGoImageView3D( QWidget* iParent ) :
   //View3->Delete();
 
   vtkRenderWindow* renwin4 = this->QvtkWidget_XYZ->GetRenderWindow( );
-  this->View3D = vtkViewImage3D::New();
-  this->View3D->SetRenderWindow( renwin4 );
-  this->View3D->SetupInteractor( this->QvtkWidget_XYZ->GetInteractor() );
+  this->m_View3D = vtkViewImage3D::New();
+  this->m_View3D->SetRenderWindow( renwin4 );
+  this->m_View3D->SetupInteractor( this->QvtkWidget_XYZ->GetInteractor() );
 
 
   this->m_Pool->SetExtraRenderWindow( renwin4 );
@@ -166,8 +167,8 @@ QGoImageView3D::~QGoImageView3D()
     m_Pool->Delete();
     m_Pool = 0;
     }*/
-  View3D->Delete();
-  View3D = 0;
+  m_View3D->Delete();
+  m_View3D = 0;
   VtkEventQtConnector->Delete();
   m_HighlightedContourProperty->Delete();
 }
@@ -269,7 +270,7 @@ void QGoImageView3D::Update()
   View1->SetViewOrientation( vtkViewImage2D::VIEW_ORIENTATION_AXIAL );
   View1->SetViewConvention( vtkViewImage2D::VIEW_CONVENTION_NEUROLOGICAL );
 
-  this->View3D->Add2DPhantom( 0,
+  this->m_View3D->Add2DPhantom( 0,
       View1->GetImageActor(), View1->GetSlicePlane() );
 
   int *range = View1->GetSliceRange();
@@ -282,7 +283,7 @@ void QGoImageView3D::Update()
   View2->SetViewConvention( vtkViewImage2D::VIEW_CONVENTION_NEUROLOGICAL );
   View2->SetViewOrientation (vtkViewImage2D::VIEW_ORIENTATION_CORONAL);
 
-  this->View3D->Add2DPhantom( 1,
+  this->m_View3D->Add2DPhantom( 1,
     View2->GetImageActor(), View2->GetSlicePlane() );
 
   range = View2->GetSliceRange();
@@ -296,24 +297,24 @@ void QGoImageView3D::Update()
   View3->SetViewOrientation( vtkViewImage2D::VIEW_ORIENTATION_SAGITTAL );
 
 
-  this->View3D->Add2DPhantom(
+  this->m_View3D->Add2DPhantom(
     2, View3->GetImageActor(), View3->GetSlicePlane() );
 
   range = View3->GetSliceRange();
   this->SliderYZ->setMinimum( range[0] );
   this->SliderYZ->setMaximum( range[1] );
 
-  this->View3D->SetInput( this->m_Image );
-  this->View3D->SetVolumeRenderingOff();
-  this->View3D->SetTriPlanarRenderingOn();
-  this->View3D->SetShowScalarBar( false );
-  this->View3D->ResetCamera();
+  this->m_View3D->SetInput( this->m_Image );
+  this->m_View3D->SetVolumeRenderingOff();
+  this->m_View3D->SetTriPlanarRenderingOn();
+  this->m_View3D->SetShowScalarBar( false );
+  this->m_View3D->ResetCamera();
 
   this->m_Pool->SyncSetBackground( this->m_Pool->GetItem(0)->GetBackground() );
   this->m_Pool->SyncSetShowAnnotations( m_ShowAnnotations );
   this->m_Pool->SetSplinePlaneActorsVisibility( m_ShowSplinePlane );
-  this->View3D->SetBoundsActorsVisibility( m_ShowSplinePlane );
-  this->View3D->SetCubeVisibility( m_ShowCube );
+  this->m_View3D->SetBoundsActorsVisibility( m_ShowSplinePlane );
+  this->m_View3D->SetCubeVisibility( m_ShowCube );
 
   for( int i = 0; i < 3; i++ )
     {
@@ -335,12 +336,12 @@ void QGoImageView3D::Update()
     this->SliderYZ->setValue( (this->SliderYZ->minimum()+this->SliderYZ->maximum())/2 );
 
     // Rotate the camera to show that the view is 3d
-    vtkCamera *camera = this->View3D->GetRenderer()->GetActiveCamera();
+    vtkCamera *camera = this->m_View3D->GetRenderer()->GetActiveCamera();
     camera->Roll( -135 );
     camera->Azimuth( -45 );
 
-    this->View3D->GetRenderer()->SetActiveCamera( camera );
-    this->View3D->ResetCamera();
+    this->m_View3D->GetRenderer()->SetActiveCamera( camera );
+    this->m_View3D->ResetCamera();
 
     m_FirstRender = false;
     }
@@ -355,9 +356,10 @@ void QGoImageView3D::Update()
  */
 void QGoImageView3D::SetupVTKtoQtConnections()
 {
-  vtkViewImage2D* View1 = this->m_Pool->GetItem( 0 );
-  vtkViewImage2D* View2 = this->m_Pool->GetItem( 1 );
-  vtkViewImage2D* View3 = this->m_Pool->GetItem( 2 );
+  vtkViewImage2D* View1  = this->m_Pool->GetItem( 0 );
+  vtkViewImage2D* View2  = this->m_Pool->GetItem( 1 );
+  vtkViewImage2D* View3  = this->m_Pool->GetItem( 2 );
+  vtkViewImage3D* View3D = this->m_View3D;
 
   // Event connection between vtk and qt
   // when RequestedPositionEvent occurs in the XY View (double-click),
@@ -438,20 +440,10 @@ void QGoImageView3D::SetupVTKtoQtConnections()
 
    // Event connection between vtk and qt
    // when contours picked, send a signal
-   /* VtkEventQtConnector->Connect(
-      reinterpret_cast< vtkObject* >( View1->GetInteractorStyle() ),
-      vtkViewImage2DCommand::MeshPickingEvent,
-      this, SIGNAL( ContoursSelectionChanged() ) );
-
     VtkEventQtConnector->Connect(
-      reinterpret_cast< vtkObject* >( View2->GetInteractorStyle() ),
-      vtkViewImage2DCommand::MeshPickingEvent,
-      this, SIGNAL( ContoursSelectionChanged() ) );
-
-    VtkEventQtConnector->Connect(
-      reinterpret_cast< vtkObject* >( View3->GetInteractorStyle() ),
-      vtkViewImage2DCommand::MeshPickingEvent,
-      this, SIGNAL( ContoursSelectionChanged() ) );*/
+      reinterpret_cast< vtkObject* >( View3D->GetInteractorStyle3D() ),
+      vtkViewImage3DCommand::MeshPickingEvent,
+      this, SIGNAL( MeshesSelectionChanged() ) );
 }
 //-------------------------------------------------------------------------
 
@@ -964,7 +956,7 @@ vtkViewImage3D*
 QGoImageView3D::
 GetImageViewer3D()
 {
-  return View3D;
+  return m_View3D;
 }
 //--------------------------------------------------------------------------
 
@@ -986,10 +978,10 @@ AddContour( const int& iId, vtkPolyData* dataset, vtkProperty* iProperty )
     QGoImageView::AddContour( iId, dataset, iProperty );
 
 //   vtkQuadricLODActor* temp =
-  vtkActor* temp = View3D->AddDataSet( (vtkDataSet*) dataset,
+  vtkActor* temp = m_View3D->AddDataSet( (vtkDataSet*) dataset,
     iProperty, false, false );
 
-  View3D->Render();
+  m_View3D->Render();
   oList.push_back( temp );
 
 //   std::vector< vtkQuadricLODActor* >::iterator list_it = oList.begin();
@@ -1013,7 +1005,7 @@ void
 QGoImageView3D::
 ChangeActorProperty( vtkProp3D* iActor, vtkProperty* iProperty )
 {
-  View3D->ChangeActorProperty( iActor, iProperty );
+  m_View3D->ChangeActorProperty( iActor, iProperty );
   QGoImageView::ChangeActorProperty( iActor, iProperty );
 }
 //--------------------------------------------------------------------------
@@ -1032,7 +1024,7 @@ ChangeActorProperty( int iDir, vtkProp3D* iActor, vtkProperty* iProperty )
     {
     if( iDir == 3 )
       {
-      View3D->ChangeActorProperty( iActor, iProperty );
+      m_View3D->ChangeActorProperty( iActor, iProperty );
       }
     }
 }
@@ -1045,7 +1037,7 @@ RemoveActor( const int& iId, vtkActor* iActor )
 {
   if( iId == 3 )
     {
-    View3D->GetRenderer()->RemoveActor( iActor );
+    m_View3D->GetRenderer()->RemoveActor( iActor );
     }
   else
     {
@@ -1061,7 +1053,7 @@ AddActor( const int& iId, vtkActor* iActor )
 {
   if( iId == 3 )
     {
-    View3D->GetRenderer()->AddActor( iActor );
+    m_View3D->GetRenderer()->AddActor( iActor );
     }
   else
     {
@@ -1079,8 +1071,8 @@ SetLookupTable( vtkLookupTable* iLut )
     {
     m_Pool->SyncSetLookupTable( iLut );
     m_Pool->SyncRender();
-    View3D->SetLookupTable( iLut );
-    View3D->Render();
+    m_View3D->SetLookupTable( iLut );
+    m_View3D->Render();
     }
 }
 //--------------------------------------------------------------------------
@@ -1094,8 +1086,8 @@ ShowScalarBar( const bool& iShow )
     {
     m_Pool->SyncSetShowScalarBar( iShow );
     m_Pool->SyncRender();
-    View3D->SetShowScalarBar( iShow );
-    View3D->Render();
+    m_View3D->SetShowScalarBar( iShow );
+    m_View3D->Render();
     }
 }
 //--------------------------------------------------------------------------
@@ -1112,10 +1104,10 @@ AddMesh( const int& iId, vtkPolyData* dataset, vtkProperty* iProperty )
   std::vector< vtkActor* > oList =
     QGoImageView::AddContour( iId, dataset, iProperty );
 
-  vtkActor* temp = View3D->AddDataSet( (vtkDataSet*) dataset,
+  vtkActor* temp = m_View3D->AddDataSet( (vtkDataSet*) dataset,
     iProperty, false, false );
 
-  View3D->Render();
+  m_View3D->Render();
   oList.push_back( temp );
 
   return oList;
@@ -1174,13 +1166,13 @@ ShowSplinePlane()
     {
     m_ShowSplinePlane = false;
     this->m_Pool->SetSplinePlaneActorsVisibility( m_ShowSplinePlane );
-    this->View3D->SetBoundsActorsVisibility( m_ShowSplinePlane );
+    this->m_View3D->SetBoundsActorsVisibility( m_ShowSplinePlane );
     }
   else
     {
     m_ShowSplinePlane = true;
     this->m_Pool->SetSplinePlaneActorsVisibility( m_ShowSplinePlane );
-    this->View3D->SetBoundsActorsVisibility( m_ShowSplinePlane );
+    this->m_View3D->SetBoundsActorsVisibility( m_ShowSplinePlane );
     }
 
     this->UpdateRenderWindows();
@@ -1198,12 +1190,12 @@ ShowCube3D()
   if( m_ShowCube )
     {
     m_ShowCube = false;
-    this->View3D->SetCubeVisibility( m_ShowCube );
+    this->m_View3D->SetCubeVisibility( m_ShowCube );
     }
   else
     {
     m_ShowCube = true;
-    this->View3D->SetCubeVisibility( m_ShowCube );
+    this->m_View3D->SetCubeVisibility( m_ShowCube );
     }
 
   this->UpdateRenderWindows();
@@ -1227,7 +1219,7 @@ UpdateRenderWindows()
   ren = this->m_Pool->GetItem( 0 )->GetRenderWindow();
   ren->Render();
 
-  ren = this->View3D->GetRenderWindow();
+  ren = this->m_View3D->GetRenderWindow();
   ren->Render();
 }
 //-------------------------------------------------------------------------
@@ -1240,7 +1232,7 @@ SetCamera( int iView )
   //Strange behaviour....
 
   vtkCamera *camera = vtkCamera::New();
-  this->View3D->GetRenderer()->SetActiveCamera( camera );
+  this->m_View3D->GetRenderer()->SetActiveCamera( camera );
 
   // Dorsal view
   camera->Roll(180);
@@ -1258,8 +1250,8 @@ SetCamera( int iView )
     camera->Azimuth( -90 );
     }
 
-  this->View3D->ResetCamera();
-  this->View3D->Render();
+  this->m_View3D->ResetCamera();
+  this->m_View3D->Render();
   camera->Delete();
 }
 //-------------------------------------------------------------------------

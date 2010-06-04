@@ -805,4 +805,13 @@ void vtkViewImage3D::SetupTextureMapper()
     }
   }
 }
-
+//----------------------------------------------------------------------------
+/**
+ *
+ */
+vtkInteractorStyleImage3D*
+vtkViewImage3D::
+GetInteractorStyle3D()
+{
+  return this->InteractorStyle3D;
+}

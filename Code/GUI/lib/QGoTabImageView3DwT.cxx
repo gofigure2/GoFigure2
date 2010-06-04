@@ -1294,6 +1294,10 @@ setupUi( QWidget* iParent )
   m_LayOut = new QHBoxLayout( iParent );
   m_LayOut->addWidget( m_ImageView  );
 
+  // connect the contours selection connection
+  QObject::connect( m_ImageView, SIGNAL( MeshesSelectionChanged( ) ),
+      this, SLOT( HighLightMeshes( ) ) );
+
   retranslateUi(iParent);
 
   QMetaObject::connectSlotsByName(iParent);
@@ -2761,6 +2765,15 @@ HighLightContours()
 
     ++it;
     }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+HighLightMeshes()
+{
+  std::cout << "Highlight received" << std::endl;
 }
 //-------------------------------------------------------------------------
 //-------------------------------------------------------------------------
