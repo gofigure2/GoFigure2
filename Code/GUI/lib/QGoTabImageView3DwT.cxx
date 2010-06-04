@@ -1516,8 +1516,6 @@ SetTimePointWithMegaCapture( const int& iTimePoint )
 
   if( NumberOfChannels > 1 )
     {
-    m_MegaCaptureReader->Update();
-
     vtkSmartPointer< vtkImageAppendComponents > append_filter =
       vtkSmartPointer< vtkImageAppendComponents >::New();
 
