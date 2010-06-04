@@ -18,30 +18,29 @@
 
 QGoCompareGUI::QGoCompareGUI()
 {
+  m_CompareOrchestra = new QGoCompareOrchestra(this);
 
-    m_CompareOrchestra = new QGoCompareOrchestra(this);
+  mdiArea = new QMdiArea;
 
-    mdiArea = new QMdiArea;
-
-    setCentralWidget(mdiArea);
-    connect(mdiArea, SIGNAL(subWindowActivated(QMdiSubWindow*)),
+  setCentralWidget(mdiArea);
+  connect(mdiArea, SIGNAL(subWindowActivated(QMdiSubWindow*)),
             this, SLOT(updateMenus()));
 
-    windowMapper = new QSignalMapper(this);
-    connect(windowMapper, SIGNAL(mapped(QWidget*)),
+  windowMapper = new QSignalMapper(this);
+  connect(windowMapper, SIGNAL(mapped(QWidget*)),
             this, SLOT(setActiveSubWindow(QWidget*)));
 
 
-    createActions();
-    createMenus();
-    createToolBars();
-    createStatusBar();
-    updateMenus();
+  createActions();
+  createMenus();
+  createToolBars();
+  createStatusBar();
+  updateMenus();
 
-    setWindowTitle(tr("QGoCompareGUI"));
-    setUnifiedTitleAndToolBarOnMac(true);
+  setWindowTitle(tr("QGoCompareGUI"));
+  setUnifiedTitleAndToolBarOnMac(true);
 
-    //mdiArea->setViewMode(QMdiArea::TabbedView);
+  //mdiArea->setViewMode(QMdiArea::TabbedView);
 
 
 }
@@ -60,38 +59,31 @@ QGoCompareOrchestra* QGoCompareGUI::GetCompareOrchestra()
 
 void QGoCompareGUI::Update()
 {
-
   m_CompareOrchestra->Update();
   m_CompareOrchestra->show();
-
 }
 
 QGoComparer* QGoCompareGUI::newComparer2D(QString iComparerName, vtkImageData* iImage)
 {
+  QGoComparer2D *comparer = m_CompareOrchestra->newComparer2D( iComparerName, iImage);
 
-    QGoComparer2D *comparer = m_CompareOrchestra->newComparer2D( iComparerName, iImage);
-
-    mdiArea->addSubWindow(comparer,Qt::SubWindow);
-    comparer->parentWidget()->resize(300,300);
-    comparer->show();
-    tileAct->trigger();
-    return comparer;
-
-
+  mdiArea->addSubWindow(comparer,Qt::SubWindow);
+  comparer->parentWidget()->resize(300,300);
+  comparer->show();
+  tileAct->trigger();
+  return comparer;
 }
 
 QGoComparer3D* QGoCompareGUI::newComparer3D(QString iComparerName, vtkImageData* iImage)
 {
+  QGoComparer3D *comparer = m_CompareOrchestra->newComparer3D( iComparerName, iImage);
 
-    QGoComparer3D *comparer = m_CompareOrchestra->newComparer3D( iComparerName, iImage);
+  mdiArea->addSubWindow(comparer);
+  comparer->parentWidget()->resize(300,300);
+  comparer->show();
+  tileAct->trigger();
 
-    mdiArea->addSubWindow(comparer);
-    comparer->parentWidget()->resize(300,300);
-    comparer->show();
-    tileAct->trigger();
-
-    return comparer;
-
+  return comparer;
 }
 
 /*
@@ -115,13 +107,11 @@ QGoComparer3D* QGoCompareGUI::newComparer3D(QString iComparerName, QString iImag
 void QGoCompareGUI::deleteComparer2D(const int& iId)
 {
   m_CompareOrchestra->deleteComparer2D(iId);
-
 }
 
 void QGoCompareGUI::deleteComparer3D(const int& iId)
 {
   m_CompareOrchestra->deleteComparer3D(iId);
-
 }
 
 
@@ -589,7 +579,7 @@ QGoComparer *QGoCompareGUI::activeComparer()
 
 QMdiSubWindow *QGoCompareGUI::findComparer(const QString& iComparerName)
 {
-    foreach (QMdiSubWindow *window, mdiArea->subWindowList()) {
+  foreach (QMdiSubWindow *window, mdiArea->subWindowList()) {
         QGoComparer *Comparer = qobject_cast<QGoComparer *>(window->widget());
         if (Comparer->GetName() == iComparerName)
             return window;

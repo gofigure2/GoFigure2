@@ -1540,7 +1540,7 @@ SetTimePointWithMegaCapture( const int& iTimePoint )
         {
         append_filter->AddInput( m_InternalImages[0] );
         }
-        }
+      }
     append_filter->Update();
 
     if( this->m_NavigationDockWidget->ShowAllChannels() )
@@ -1552,8 +1552,8 @@ SetTimePointWithMegaCapture( const int& iTimePoint )
       int ch = this->m_NavigationDockWidget->GetCurrentChannel();
       if( ch != -1 )
         {
-    	m_Image->ShallowCopy( m_InternalImages[ch] );
-    	}
+        m_Image->ShallowCopy( m_InternalImages[ch] );
+        }
       }
     }
   else

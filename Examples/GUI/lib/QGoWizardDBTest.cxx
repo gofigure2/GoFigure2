@@ -77,8 +77,6 @@
     output = app.exec();
     }
 
-  app.closeAllWindows();
-
   if( !test )
     {
     std::vector<std::vector<std::string> > filenames = wizard->GetFilenamesFromDB();
