@@ -1559,6 +1559,7 @@ SetTimePointWithMegaCapture( const int& iTimePoint )
     m_MegaCaptureReader->Update();
 
     m_Image->ShallowCopy( m_MegaCaptureReader->GetOutput() );
+    m_Image->SetNumberOfScalarComponents( 1 );
     }
 
 
