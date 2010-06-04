@@ -471,7 +471,9 @@ void QGoCompareGUI::createActions()
 
 //! [0]
     exitAct = new QAction(tr("E&xit"), this);
+#if ( ( QT_MAJOR_VERSION == 4 ) && ( QT_MINOR_VERSION >= 6 ) )
     exitAct->setShortcuts(QKeySequence::Quit);
+#endif
     exitAct->setStatusTip(tr("Exit the application"));
     connect(exitAct, SIGNAL(triggered()), qApp, SLOT(closeAllWindows()));
 //! [0]

@@ -12,12 +12,13 @@ class QGoImageView3D;
 class QGoCompareOrchestra;
 
 
-class QGoComparer3D : public QGoComparer {
-    Q_OBJECT
+class QGoComparer3D : public QGoComparer 
+{
+  Q_OBJECT
 public:
-    QGoComparer3D(QString iComparerName, QWidget *parent = 0);
+  QGoComparer3D(QString iComparerName, QWidget *parent = 0);
 
-    ~QGoComparer3D();
+  ~QGoComparer3D();
 
     // returns the type of comparer (2 for 2D, 3 for 3D)
     int GetComparerType();
