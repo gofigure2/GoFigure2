@@ -54,6 +54,10 @@ class vtkEventQtSlotConnect;
 class QGoImageView;
 class QGoCompareOrchestra;
 
+/**
+\class QGoComparer
+\brief Abstract class for the (synchronized) view of one vtkImageData*.
+*/
 
 class QGoComparer : public QWidget, protected Ui::QGoComparer {
     Q_OBJECT
@@ -83,7 +87,8 @@ public:
   */
   virtual void Render( void );
 
-  // get the camera of the current viewer;
+  /** \brief get the camera of the current viewer
+  */
   virtual vtkCamera* GetCamera( void );
 
   /** \brief print the comparer information :

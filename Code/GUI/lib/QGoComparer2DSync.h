@@ -8,7 +8,9 @@ class vtkObject;
 class vtkCallbackCommand;
 
 /*
-This object takes two comparer, a master and a slave,
+This object takes a list of comparers and synchronize their cameras
+by setting up callbacks. it is recommended to let the QGoComparerOrchestre deal
+with comparer synchronization.
 and setup a callback to keep slave's camera synchronized with master's
 */
 
