@@ -153,7 +153,6 @@ SET( QGoGUILIB_HDRS
   QGoComparer.h
   QGoComparer2D.h
   QGoComparer3D.h
-  QGoComparer2DSync.h
   QGoComparer3DSync.h
   QGoCompareOrchestra.h
   qgocomparegui.h
