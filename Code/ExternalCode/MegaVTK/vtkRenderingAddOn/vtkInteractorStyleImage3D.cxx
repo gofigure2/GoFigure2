@@ -71,6 +71,8 @@
 #include <vtkRenderWindowInteractor.h>
 #include "vtkViewImage3DCommand.h"
 
+#include <vtkProp.h>
+
 vtkCxxRevisionMacro (vtkInteractorStyleImage3D, "$Revision: 1 $");
 vtkStandardNewMacro (vtkInteractorStyleImage3D);
 
@@ -93,11 +95,13 @@ vtkInteractorStyleImage3D::
 OnLeftButtonDown()
 {
 
-  std::cout << "left" << std::endl;
-  if (this->Interactor->GetShiftKey())
-    {
-    std::cout << "shift + left" << std::endl;
-    }
+  // Testings...
+  //if (this->Interactor->GetShiftKey())
+  //  {
+  //  }
+
+  // if object is picked, send the event
+  if( this->CurrentProp )
   this->InvokeEvent(vtkViewImage3DCommand::MeshPickingEvent);
 
   // Call parent to handle all other states and perform additional work

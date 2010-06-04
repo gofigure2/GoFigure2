@@ -84,61 +84,61 @@ void vtkViewImage2DCollectionCommand::Execute(vtkObject *caller,
   vtkViewImage2D* v = this->GetCollection()->GetNextItem();
   vtkViewImage2D* viewer = NULL;
   while(v)
-  {
-    if (isi == v->GetInteractorStyle())
     {
+    if (isi == v->GetInteractorStyle())
+      {
       viewer = v;
       break;
-    }
+      }
     v = this->GetCollection()->GetNextItem();
-  }
+    }
 
   if (!isi || !viewer || !viewer->GetInput())
-  {
+    {
     return;
-  }
+    }
 
   // Reset
   if (event == vtkCommand::ResetWindowLevelEvent)
-  {
+    {
     this->Collection->SyncResetWindowLevel();
     this->Collection->SyncRender();
     return;
-  }
+    }
   // Reset
   if (event == vtkViewImage2DCommand::ResetViewerEvent)
-  {
+    {
     this->Collection->SyncReset();
     this->Collection->SyncRender();
     return;
-  }
+    }
 
   // Adjust the window level here
   if (event == vtkCommand::WindowLevelEvent)
-  {
+    {
     this->Collection->SyncSetColorWindow(viewer->GetColorWindow());
     this->Collection->SyncSetColorLevel(viewer->GetColorLevel());
     this->Collection->SyncRender();
-  }
+    }
 
   // Move
   if (event == vtkViewImage2DCommand::SliceMoveEvent)
-  {
+    {
     // do not synchronize this, but render all
     this->Collection->SyncRender();
-  }
+    }
 
   if( event == vtkViewImage2DCommand::ZoomEvent )
-  {
+    {
     double z = viewer->GetZoom();
     double parallel_scale =
         viewer->GetRenderer()->GetActiveCamera()->GetParallelScale();
 
     this->Collection->SyncSetZoomAndParallelScale( z, parallel_scale );
-  }
+    }
 
   if( event == vtkViewImage2DCommand::PanEvent )
-  {
+    {
     double motion[3];
     viewer->GetCameraMotionVector( motion );
 
@@ -148,43 +148,42 @@ void vtkViewImage2DCollectionCommand::Execute(vtkObject *caller,
     double dot = 0., u;
 
     while(v)
-    {
-      if( v != viewer )
       {
+      if( v != viewer )
+        {
         v->GetCameraFocalAndPosition( focal, pos );
         v->GetRenderer()->GetActiveCamera()->GetViewPlaneNormal( n );
         dot = vtkMath::Dot( n, motion );
 
         for( int dim = 0; dim < 3; dim++ )
-        {
+          {
           u = motion[dim] - dot * n[dim];
           focal[dim] += u;
           pos[dim] += u;
-        }
+          }
         v->SetCameraFocalAndPosition( focal, pos );
 
         if( v->GetInteractorStyle()->GetInteractor()->GetLightFollowCamera() )
-        {
+          {
           v->GetRenderer()->UpdateLightsGeometryToFollowCamera();
+          }
         }
-      }
       v->Render();
       v = this->GetCollection()->GetNextItem();
+      }
     }
-  }
 
   // Position requested
   if (event == vtkViewImage2DCommand::RequestedPositionEvent)
-  {
+    {
     double* position = viewer->GetWorldCoordinatesFromDisplayPosition (
       isi->GetRequestedPosition ());
     this->Collection->SyncSetWorldCoordinates(position);
     this->Collection->SyncRender();
-  }
+    }
 
   if( event == vtkViewImage2DCommand::ContourPickingEvent )
-  {
-  std::cout << "in contour picking collection"<< std::endl;
+    {
      vtkCellPicker* picker = viewer->GetContourPicker();
      vtkRenderWindowInteractor *rwi =
        viewer->GetRenderWindow()->GetInteractor();
@@ -194,7 +193,7 @@ void vtkViewImage2DCollectionCommand::Execute(vtkObject *caller,
 
      vtkProp3D* prop = picker->GetProp3D();
      if( prop )
-     {
+       {
        ListOfPickedActors.clear();
        ListOfUnPickedActors.clear();
 
@@ -206,32 +205,32 @@ void vtkViewImage2DCollectionCommand::Execute(vtkObject *caller,
        prop_temp = viewer->GetProp3DCollection()->GetNextProp3D(); // 3rd plane
 
        while( prop_temp )
-       {
-         if( prop_temp == prop )
          {
+         if( prop_temp == prop )
+           {
            // to be highlighted
            ListOfPickedActors.push_back( prop_temp );
            prop->DragableOn();
            // viewer->ChangeActorProperty( prop_temp, );
            // viewer->HighlightContour( prop_temp, true );
-         }
+           }
          else
-         {
+           {
            ListOfUnPickedActors.push_back( prop_temp );
  //           viewer->HighlightContour( prop_temp, false );
-         }
+           }
          prop_temp = viewer->GetProp3DCollection()->GetNextProp3D();
+         }
        }
-     }
-  }
+    }
 
   if( event == vtkViewImage2DCommand::MeshPickingEvent )
-  {
+    {
     std::cout<< "Mesh pick collection" << std::endl;
-  }
+    }
 
   if( event == vtkViewImage2DCommand::SeedEvent )
-  {
+    {
     std::cout << "in collection"  << std::endl;
     /*this->GetCollection()->InitTraversal();
     v = this->GetCollection()->GetNextItem();
@@ -246,5 +245,5 @@ void vtkViewImage2DCollectionCommand::Execute(vtkObject *caller,
           v->Render();
           v = this->GetCollection()->GetNextItem();
         }*/
-  }
+    }
 }
