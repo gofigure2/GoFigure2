@@ -70,11 +70,11 @@ public:
 
   /** \brief Set image displayed by the SynchronizedView
   */
-  virtual void SetImage(vtkImageData* iImage);
+  virtual void SetImage(vtkImageData* iImage) = 0;
 
   /** \brief returns the type of SynchronizedView (2 for 2D, 3 for 3D)
   */
-  virtual int GetSynchronizedViewType( void )=0;
+  virtual int GetSynchronizedViewType( void ) = 0;
 
   /** \brief get SynchronizedView's name
   */

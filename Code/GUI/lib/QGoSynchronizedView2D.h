@@ -40,10 +40,11 @@
 #ifndef QGoSynchronizedView2D_H
 #define QGoSynchronizedView2D_H
 
+/*
 #include "itkImageToVTKImageFilter.h"
 #include "itkSmartPointer.h"
 #include "itkImage.h"
-
+*/
 
 #include "QGoSynchronizedView.h"
 
@@ -78,6 +79,7 @@ public:
 
   /** \brief Set ITK image displayed by the SynchronizedView
   */
+  /*
   template <typename ITKInputImageType>
   void SetITKImage(typename ITKInputImageType::Pointer iImage)
   {
@@ -109,6 +111,7 @@ public:
     Update();
 
   }
+  */
 
   /** \brief Returns the imageview managed by this SynchronizedView
   */

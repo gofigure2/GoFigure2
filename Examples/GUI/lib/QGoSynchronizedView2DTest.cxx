@@ -131,7 +131,6 @@ int main( int argc, char** argv )
   reader->SetFileName( argv[1] );
   reader->Update();
 
-
   QString cp0 = "comp0";
   QGoSynchronizedView2D* SynchronizedView0 = new QGoSynchronizedView2D(cp0,0);
 

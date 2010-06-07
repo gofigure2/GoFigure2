@@ -40,13 +40,9 @@
 
 #include <QApplication>
 #include <QTimer>
-
 #include "vtkSmartPointer.h"
 #include "vtkMetaImageReader.h"
-#include "vtkImageGaussianSmooth.h"
-#include "vtkImageGradient.h"
 #include "QGoSynchronizedView3D.h"
-
 #include <QStringList>
 #include <QString>
 
@@ -66,59 +62,25 @@ int main( int argc, char** argv )
   QCoreApplication::setOrganizationName("MegasonLab");
   QCoreApplication::setOrganizationDomain( "http://gofigure2.sourceforge.net" );
 
-
-  // create 3 images from 1
-
-  vtkSmartPointer< vtkMetaImageReader > reader = vtkSmartPointer< vtkMetaImageReader >::New();
+  vtkSmartPointer< vtkMetaImageReader > reader =
+    vtkSmartPointer< vtkMetaImageReader >::New();
   reader->SetFileName( argv[1] );
   reader->Update();
 
-  vtkSmartPointer< vtkImageGaussianSmooth > filter1 =
-                            vtkSmartPointer< vtkImageGaussianSmooth >::New();
-  filter1->SetInputConnection(reader->GetOutputPort());
-  filter1->Update();
-
-  vtkSmartPointer< vtkImageGradient > filter2 =
-                            vtkSmartPointer< vtkImageGradient >::New();
-  filter2->SetInputConnection(reader->GetOutputPort());
-  filter2->Update();
-
-
-
   QString cp0 = "comp0";
-  QString cp1 = "comp1";
-  QString cp2 = "comp3";
-
-
   QGoSynchronizedView3D* SynchronizedView0 = new QGoSynchronizedView3D(cp0,0);
-  QGoSynchronizedView3D* SynchronizedView1 = new QGoSynchronizedView3D("cp1",0);
-  QGoSynchronizedView3D* SynchronizedView2 = new QGoSynchronizedView3D("cp2",0);
-
 
   QTimer* timer = new QTimer;
   timer->setSingleShot( true );
   QObject::connect( timer, SIGNAL( timeout() ), SynchronizedView0, SLOT( close() ) );
-  QObject::connect( timer, SIGNAL( timeout() ), SynchronizedView1, SLOT( close() ) );
-  QObject::connect( timer, SIGNAL( timeout() ), SynchronizedView2, SLOT( close() ) );
 
   SynchronizedView0->SetImage(reader->GetOutput());
-  SynchronizedView1->SetImage(filter1->GetOutput());
-  SynchronizedView2->SetImage(filter2->GetOutput());
-
-
   SynchronizedView0->Update();
   SynchronizedView0->show();
 
-  SynchronizedView1->Update();
-  SynchronizedView1->show();
-
-  SynchronizedView2->Update();
-  SynchronizedView2->show();
-
-
   if( atoi( argv[2] ) == 1 )
     {
-    timer->start( 1000 );
+    timer->start( 1500 );
 
     SynchronizedView0->SetFullScreenView(1);
     if( SynchronizedView0->GetFullScreenView() != 1 )
@@ -130,8 +92,6 @@ int main( int argc, char** argv )
       reader->Delete();
       delete timer;
       delete SynchronizedView0;
-      delete SynchronizedView1;
-      delete SynchronizedView2;
       return EXIT_FAILURE;
       }
 
@@ -144,8 +104,6 @@ int main( int argc, char** argv )
 
       delete timer;
       delete SynchronizedView0;
-      delete SynchronizedView1;
-      delete SynchronizedView2;
       return EXIT_FAILURE;
       }
 
@@ -158,8 +116,6 @@ int main( int argc, char** argv )
 
       delete timer;
       delete SynchronizedView0;
-      delete SynchronizedView1;
-      delete SynchronizedView2;
       return EXIT_FAILURE;
       }
 
@@ -172,8 +128,6 @@ int main( int argc, char** argv )
 
       delete timer;
       delete SynchronizedView0;
-      delete SynchronizedView1;
-      delete SynchronizedView2;
       return EXIT_FAILURE;
       }
 
@@ -186,26 +140,15 @@ int main( int argc, char** argv )
 
       delete timer;
       delete SynchronizedView0;
-      delete SynchronizedView1;
-      delete SynchronizedView2;
       return EXIT_FAILURE;
       }
   }
 
-
   app.processEvents();
-
-
-
   int output = app.exec();
 
   delete timer;
-
   delete SynchronizedView0;
-  delete SynchronizedView1;
-  delete SynchronizedView2;
-
 
   return output;
 }
-

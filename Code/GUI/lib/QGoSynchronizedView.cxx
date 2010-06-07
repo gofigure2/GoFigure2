@@ -107,6 +107,7 @@ void QGoSynchronizedView::changeEvent(QEvent *e)
 //--------------------------------------------------------------------------
 /** \brief Set image displayed by the comparer
 */
+/*
 void
 QGoSynchronizedView::
 SetImage(vtkImageData* iImage)
@@ -130,7 +131,7 @@ SetImage(vtkImageData* iImage)
 
   this->Update();
 }
-
+*/
 
 //--------------------------------------------------------------------------
 /** \brief get comparer's name
