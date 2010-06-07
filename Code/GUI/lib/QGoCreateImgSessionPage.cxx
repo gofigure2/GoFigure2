@@ -110,6 +110,13 @@ QGoCreateImgSessionPage::QGoCreateImgSessionPage( QWidget *iParent )
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+QGoCreateImgSessionPage::~QGoCreateImgSessionPage()
+{
+  delete FirstImage;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 void QGoCreateImgSessionPage::initializePage()
 {
   lineFilename->clear();

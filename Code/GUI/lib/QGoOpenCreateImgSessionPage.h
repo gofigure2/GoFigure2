@@ -58,7 +58,8 @@ class QGoOpenCreateImgSessionPage : public QWizardPage
 
 public:
 
-  QGoOpenCreateImgSessionPage(QWidget *parent = 0);
+  explicit QGoOpenCreateImgSessionPage(QWidget *parent = 0);
+  ~QGoOpenCreateImgSessionPage();
   void initializePage();
   bool validatePage();
   int nextId() const;
@@ -83,6 +84,8 @@ private:
   QString       OpenOrCreateImgSession;
   QRadioButton* OpenImgSessionRadioButton;
   QRadioButton* CreateImgSessionRadioButton;
+  QLineEdit*    lineImgSessionID;
+  QLineEdit*    lineImgSessionName;
   mutable bool  LeavingPage;
 
   QStringList m_ListImgSession;

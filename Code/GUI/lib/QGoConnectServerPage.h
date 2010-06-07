@@ -56,7 +56,7 @@ class QGoConnectServerPage : public QWizardPage
 
 public:
   explicit QGoConnectServerPage(QWidget *parent = 0);
-  ~QGoConnectServerPage() {}
+  ~QGoConnectServerPage();
 
   bool validatePage();
   int nextId() const;

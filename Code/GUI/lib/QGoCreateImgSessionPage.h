@@ -67,7 +67,9 @@ class QGOGUILIB_EXPORT QGoCreateImgSessionPage : public QWizardPage
   Q_OBJECT
 
 public:
-  QGoCreateImgSessionPage(QWidget *parent = 0);
+  explicit QGoCreateImgSessionPage(QWidget *parent = 0);
+  ~QGoCreateImgSessionPage();
+  
   void initializePage();
   bool validatePage();
   void cleanupPage();
@@ -138,6 +140,8 @@ private:
   QTextEdit*      lineFilename;
   QString         newfilename;
   QFileInfo*      FirstImage;
+  QLineEdit*      lineImgSessionID;
+  QLineEdit*      lineImgSessionName;
 
   GoDBCoordinateRow                m_ImgSessionCoordMax;
   GoDBCoordinateRow                m_ImgSessionCoordMin;

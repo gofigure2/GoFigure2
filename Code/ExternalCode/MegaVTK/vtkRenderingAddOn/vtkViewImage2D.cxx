@@ -371,9 +371,7 @@ int vtkViewImage2D::SetCameraToConvention(void)
 
   // Deal with the position :
   // invert it if necessary( symetry among the focal point)
-  bool inverseposition =
-    ( vtkMath::Dot( focaltoposition, conventionposition ) < 0 );
-  if( inverseposition )
+  if( vtkMath::Dot( focaltoposition, conventionposition ) < 0 )
     {
     for( i=0; i<3; i++ )
       {

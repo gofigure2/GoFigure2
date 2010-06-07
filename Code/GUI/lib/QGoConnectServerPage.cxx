@@ -83,6 +83,13 @@ QGoConnectServerPage::QGoConnectServerPage( QWidget *iParent)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+QGoConnectServerPage::~QGoConnectServerPage()
+{
+  delete lineDBName;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 bool QGoConnectServerPage::validatePage()
 {
   if( field("ServerName").toString() == "" ||

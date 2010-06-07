@@ -63,8 +63,8 @@ QGoOpenCreateImgSessionPage( QWidget *iParent ) :
   ChoiceImgSession  = new QComboBox;
   textDescription = new QLabel(tr("Description:"));
   lineDescription  = new QTextEdit;
-  QLineEdit* lineImgSessionID = new QLineEdit;
-  QLineEdit* lineImgSessionName = new QLineEdit;
+  lineImgSessionID = new QLineEdit;
+  lineImgSessionName = new QLineEdit;
 
   QVBoxLayout* vlayout = new QVBoxLayout;
   QVBoxLayout* RadioButtonLayout = new QVBoxLayout;
@@ -92,6 +92,14 @@ QGoOpenCreateImgSessionPage( QWidget *iParent ) :
   QObject::connect( this->CreateImgSessionRadioButton,SIGNAL( clicked() ),
     this,SLOT( ChangeToCreateImgSessionDisplay()));
  }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+QGoOpenCreateImgSessionPage::~QGoOpenCreateImgSessionPage()
+{
+  delete lineImgSessionID;
+  delete lineImgSessionName;
+}
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
