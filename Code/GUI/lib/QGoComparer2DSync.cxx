@@ -8,6 +8,8 @@
 #include "vtkRenderer.h"
 #include "vtkSmartPointer.h"
 
+#include <algorithm>
+
 //--------------------------------------------------------------------------
 QGoComparer2DSync::QGoComparer2DSync(std::vector<QGoComparer2D*> ioOpenComparers)
 :   m_openComparers  (ioOpenComparers)

@@ -5,6 +5,8 @@
 #include "QGoComparer2DSync.h"
 #include "QGoComparer3DSync.h"
 
+#include <algorithm>
+
 
 //--------------------------------------------------------------------------
 QGoCompareOrchestra::QGoCompareOrchestra(QObject *parent) :
