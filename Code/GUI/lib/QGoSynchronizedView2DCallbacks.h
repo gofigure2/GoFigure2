@@ -2,7 +2,8 @@
 #define QGoSynchronizedView2DCallbacks_H
 
 #include "vtkCommand.h"
-#include "QGoSynchronizedView2D.h";
+#include "QGoSynchronizedView2D.h"
+
 class vtkObject;
 class vtkCallbackCommand;
 

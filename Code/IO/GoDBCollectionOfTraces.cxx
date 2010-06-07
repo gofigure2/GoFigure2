@@ -684,7 +684,7 @@ GoDBTableWidgetContainer* GoDBCollectionOfTraces::GetLinkToUpdatedTraceContainer
 
 //--------------------------------------------------------------------------
 int GoDBCollectionOfTraces::CreateCollectionWithNoTraces(
-  vtkMySQLDatabase* DatabaseConnector, GoDBTraceRow iNewCollection,
+  vtkMySQLDatabase* DatabaseConnector, GoDBTraceRow& iNewCollection,
   int iTimePoint)
 {
   iNewCollection.SetField<unsigned int>("ImagingSessionID",this->m_ImgSessionID);
@@ -753,7 +753,7 @@ void GoDBCollectionOfTraces::SetTheTimePointForMesh(int iTimePoint,
 
 //--------------------------------------------------------------------------
 int GoDBCollectionOfTraces::CreateNewCollection(
-  vtkMySQLDatabase* DatabaseConnector, GoDBTraceRow iNewCollection)
+  vtkMySQLDatabase* DatabaseConnector, GoDBTraceRow& iNewCollection)
 {
   if (this->m_CollectionName == "mesh")
     {

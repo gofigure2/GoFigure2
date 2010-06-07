@@ -142,7 +142,7 @@ public:
   /** \brief create the first collection in the database and return the corresponding
   ID*/
   int CreateCollectionWithNoTraces(vtkMySQLDatabase* DatabaseConnector, 
-    GoDBTraceRow iNewCollection, int iTimePoint);
+    GoDBTraceRow& iNewCollection, int iTimePoint);
   /** \todo find a way to make it ok for all traces, now only for mesh*/
   /** \brief fill the row container with the values calculated and stored in th
   meshAttributes*/
@@ -192,7 +192,7 @@ protected:
 
    /** \brief create a new collection in the database and return the corresponding
   ID*/
-  int CreateNewCollection(vtkMySQLDatabase* DatabaseConnector, GoDBTraceRow myNewObject);
+  int CreateNewCollection(vtkMySQLDatabase* DatabaseConnector, GoDBTraceRow& myNewObject);
   
   /** \brief set the timepoint for the coordmax and coordmin of a new created mesh 
   without any contours*/

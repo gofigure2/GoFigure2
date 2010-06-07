@@ -153,7 +153,7 @@ SET( QGoGUILIB_HDRS
   QGoSynchronizedView.h
   QGoSynchronizedView2D.h
   QGoSynchronizedView3D.h
-  QGoSynchronizedView2DCallbacks.h
+#   QGoSynchronizedView2DCallbacks.h
   QGoSynchronizedView3DCallbacks.h
   QGoSynchronizedViewManager.h
   QGoSynchronizedViewMainWindow.h

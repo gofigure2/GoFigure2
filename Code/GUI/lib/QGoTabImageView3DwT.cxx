@@ -72,6 +72,9 @@
 #include "SelectQueryDatabaseHelper.h"
 #include "ConvertToStringHelper.h"
 
+#include "vtkDistanceWidget.h"
+// #include "vtkDistanceRepresentation2D.h"
+
 #include "vtkSphereSource.h"
 
 #include "QGoOneClickSegmentationDockWidget.h"
@@ -125,7 +128,11 @@ QGoTabImageView3DwT( QWidget* iParent ) :
   m_TimePoint( -1 ),
   m_ContourId( 0 ),
   m_MeshId( 1 ),
-  m_ReEditContourMode( false )
+  m_ReEditContourMode( false ),
+  m_ContourWidget( 3, NULL ),
+  m_ContourRepresentation( 3, NULL ),
+  m_DistanceWidget( 3, NULL )//,
+//   m_DistanceRepresentation( 3, NULL )
 {
   m_Image = vtkSmartPointer< vtkImageData >::New();
 
@@ -161,19 +168,28 @@ QGoTabImageView3DwT( QWidget* iParent ) :
 
   for( int i = 0; i < 3; i++ )
     {
-    this->m_ContourRepresentation.push_back(
-      vtkSmartPointer< vtkOrientedGlyphContourRepresentation >::New() );
-    this->m_ContourRepresentation.back()->GetProperty()->SetColor( 0., 1., 1. );
-    this->m_ContourRepresentation.back()->GetLinesProperty()->SetColor( 1., 0., 1. );
-    this->m_ContourRepresentation.back()->GetActiveProperty()->SetColor( 1., 1., 0. );
+    // Contour widget
+    this->m_ContourRepresentation[i] =
+      vtkSmartPointer< vtkOrientedGlyphContourRepresentation >::New();
+    this->m_ContourRepresentation[i]->GetProperty()->SetColor( 0., 1., 1. );
+    this->m_ContourRepresentation[i]->GetLinesProperty()->SetColor( 1., 0., 1. );
+    this->m_ContourRepresentation[i]->GetActiveProperty()->SetColor( 1., 1., 0. );
 
-    this->m_ContourWidget.push_back(
-      vtkSmartPointer< vtkContourWidget >::New() );
-    this->m_ContourWidget.back()->SetPriority( 10.0 );
-    this->m_ContourWidget.back()->SetInteractor( m_ImageView->GetInteractor( i ) );
-    this->m_ContourWidget.back()->Off();
+    this->m_ContourWidget[i] = vtkSmartPointer< vtkContourWidget >::New();
+    this->m_ContourWidget[i]->SetPriority( 10.0 );
+    this->m_ContourWidget[i]->SetInteractor( m_ImageView->GetInteractor( i ) );
+    this->m_ContourWidget[i]->Off();
 
-    this->m_ContourWidget.back()->SetRepresentation( this->m_ContourRepresentation.back() );
+    this->m_ContourWidget[i]->SetRepresentation( this->m_ContourRepresentation[i] );
+
+    // distance widget
+//     this->m_DistanceRepresentation[i] = vtkSmartPointer< vtkDistanceRepresentation2D >::New();
+
+    this->m_DistanceWidget[i] = vtkSmartPointer< vtkDistanceWidget >::New();
+    this->m_DistanceWidget[i]->SetInteractor( m_ImageView->GetInteractor( i ) );
+    this->m_DistanceWidget[i]->CreateDefaultRepresentation();
+
+    this->m_DistanceWidget[i]->Off();
     }
 
   // Generate default color, width and nodes for the contours visualization
@@ -1147,6 +1163,16 @@ void QGoTabImageView3DwT::CreateModeActions()
   QObject::connect( MeshPickingAction, SIGNAL( toggled( bool ) ),
     this, SLOT( MeshPickingInteractorBehaviour( bool ) ) );
 
+  QAction* DistanceAction = new QAction( tr("Measure Distance"), this );
+  DistanceAction->setCheckable( true );
+  DistanceAction->setChecked( false );
+
+  group->addAction( DistanceAction );
+
+  this->m_ModeActions.push_back( DistanceAction );
+
+//   QObject::connect( DistanceAction, SIGNAL( toggled( bool ) ),
+//     this, SLOT() );
 }
 //-------------------------------------------------------------------------
 
