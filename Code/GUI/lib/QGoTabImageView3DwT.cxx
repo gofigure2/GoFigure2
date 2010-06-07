@@ -73,6 +73,7 @@
 #include "ConvertToStringHelper.h"
 
 #include "vtkDistanceWidget.h"
+#include "vtkAngleWidget.h"
 // #include "vtkDistanceRepresentation2D.h"
 
 #include "vtkSphereSource.h"
@@ -129,10 +130,11 @@ QGoTabImageView3DwT( QWidget* iParent ) :
   m_ContourId( 0 ),
   m_MeshId( 1 ),
   m_ReEditContourMode( false ),
-  m_ContourWidget( 3, NULL ),
-  m_ContourRepresentation( 3, NULL ),
-  m_DistanceWidget( 3, NULL )//,
-//   m_DistanceRepresentation( 3, NULL )
+  m_ContourWidget( 3 ),
+  m_ContourRepresentation( 3 ),
+  m_DistanceWidget( 3 ),
+//   m_DistanceRepresentation( 3 )
+  m_AngleWidget( 3 )
 {
   m_Image = vtkSmartPointer< vtkImageData >::New();
 
@@ -190,6 +192,13 @@ QGoTabImageView3DwT( QWidget* iParent ) :
     this->m_DistanceWidget[i]->CreateDefaultRepresentation();
 
     this->m_DistanceWidget[i]->Off();
+
+    // angle widget
+    this->m_AngleWidget[i] = vtkSmartPointer< vtkAngleWidget >::New();
+    this->m_AngleWidget[i]->SetInteractor( m_ImageView->GetInteractor( i ) );
+    this->m_AngleWidget[i]->CreateDefaultRepresentation();
+
+    this->m_AngleWidget[i]->Off();
     }
 
   // Generate default color, width and nodes for the contours visualization
@@ -534,6 +543,28 @@ DistanceWidgetInteractorBehavior( bool iActive )
     for( int i = 0; i < 3; i++ )
       {
       this->m_DistanceWidget[i]->Off();
+      }
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+AngleWidgetInteractorBehavior( bool iActive )
+{
+  if( iActive )
+    {
+    for( int i = 0; i < 3; i++ )
+      {
+      this->m_AngleWidget[i]->On();
+      }
+    }
+  else
+    {
+    for( int i = 0; i < 3; i++ )
+      {
+      this->m_AngleWidget[i]->Off();
       }
     }
 }
@@ -1186,6 +1217,7 @@ void QGoTabImageView3DwT::CreateModeActions()
   QObject::connect( MeshPickingAction, SIGNAL( toggled( bool ) ),
     this, SLOT( MeshPickingInteractorBehavior( bool ) ) );
 
+  // Distance measurement mode
   QAction* DistanceAction = new QAction( tr("Measure Distance"), this );
   DistanceAction->setCheckable( true );
   DistanceAction->setChecked( false );
@@ -1196,6 +1228,18 @@ void QGoTabImageView3DwT::CreateModeActions()
 
   QObject::connect( DistanceAction, SIGNAL( toggled( bool ) ),
     this, SLOT( DistanceWidgetInteractorBehavior( bool ) ) );
+
+  // angle measurement mode
+  QAction* AngleAction = new QAction( tr("Measure Angle"), this );
+  AngleAction->setCheckable( true );
+  AngleAction->setChecked( false );
+
+  group->addAction( AngleAction );
+
+  this->m_ModeActions.push_back( AngleAction );
+
+  QObject::connect( AngleAction, SIGNAL( toggled( bool ) ),
+    this, SLOT( AngleWidgetInteractorBehavior( bool ) ) );
 }
 //-------------------------------------------------------------------------
 

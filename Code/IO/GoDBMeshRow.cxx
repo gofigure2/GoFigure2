@@ -91,7 +91,7 @@ GoDBMeshRow(vtkMySQLDatabase* DatabaseConnector,
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-GoDBMeshRow::GoDBMeshRow(const GoDBMeshRow & iRow)
+GoDBMeshRow::GoDBMeshRow(const GoDBMeshRow & iRow) : GoDBTraceRow()
 {
   this->m_TableName = iRow.m_TableName;
   this->m_TableIDName = iRow.m_TableIDName;

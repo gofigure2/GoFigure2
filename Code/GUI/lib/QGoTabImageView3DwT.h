@@ -69,10 +69,13 @@ class QGoTraceManualEditingWidget;
 
 class vtkLSMReader;
 class vtkImageData;
+
 class vtkContourWidget;
 class vtkOrientedGlyphContourRepresentation;
 class vtkDistanceRepresentation2D;
 class vtkDistanceWidget;
+class vtkAngleWidget;
+
 class vtkMySQLDatabase;
 class vtkProperty;
 // class vtkQuadricLODActor;
@@ -398,6 +401,9 @@ protected:
   // Distance Widget specific members
   std::vector< vtkSmartPointer< vtkDistanceWidget > > m_DistanceWidget;
 //   std::vector< vtkSmartPointer< vtkDistanceRepresentation2D > > m_DistanceRepresentation;
+
+  // Angle widget specific members
+  std::vector< vtkSmartPointer< vtkAngleWidget > > m_AngleWidget;
   
 
   ContourMeshStructureMultiIndexContainer                   m_ContourContainer;
@@ -539,6 +545,7 @@ protected slots:
   void MeshPickingInteractorBehavior( bool );
 
   void DistanceWidgetInteractorBehavior( bool );
+  void AngleWidgetInteractorBehavior( bool );
 
 private:
   Q_DISABLE_COPY( QGoTabImageView3DwT );

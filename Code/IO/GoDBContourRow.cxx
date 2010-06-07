@@ -51,10 +51,12 @@ GoDBContourRow::GoDBContourRow():GoDBTraceRow()
 
 //-------------------------------------------------------------------------
 GoDBContourRow::GoDBContourRow(vtkMySQLDatabase* DatabaseConnector,
-  vtkPolyData* TraceVisu,GoDBCoordinateRow Min, GoDBCoordinateRow Max,
-  unsigned int ImgSessionID, GoFigureMeshAttributes* iMeshAttributes):
-  GoDBTraceRow(DatabaseConnector,TraceVisu,Min,Max,ImgSessionID)
+  vtkPolyData* TraceVisu, GoDBCoordinateRow Min, GoDBCoordinateRow Max,
+  unsigned int ImgSessionID, GoFigureMeshAttributes* iMeshAttributes) :
+GoDBTraceRow( DatabaseConnector, TraceVisu, Min, Max, ImgSessionID)
 {
+  (void) iMeshAttributes;
+  
   this->InitializeMap();
   if (this->DoesThisBoundingBoxExist(DatabaseConnector))
     {
