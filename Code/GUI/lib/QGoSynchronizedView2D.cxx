@@ -118,7 +118,7 @@ createViewer()
     static_cast<QGoImageView2D*>
       (m_currentView)->setContentsMargins( 1, 1, 1, 1 );
     // setup position of the widget
-    gridLayout->addWidget(static_cast<QGoImageView2D*>(m_currentView));
+    this->gridLayout->addWidget(static_cast<QGoImageView2D*>(m_currentView));
     }
 }
 

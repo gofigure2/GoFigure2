@@ -57,7 +57,8 @@ class QGoImageView2D;
 class QGoCompareManager;
 
 
-class QGoSynchronizedView2D : public QGoSynchronizedView {
+class QGoSynchronizedView2D : public QGoSynchronizedView 
+{
     Q_OBJECT
 public:
   QGoSynchronizedView2D(QString iViewName, QWidget *iParent = 0);

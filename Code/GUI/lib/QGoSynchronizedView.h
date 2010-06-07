@@ -58,7 +58,9 @@ class QGoSynchronizedViewManager;
 \brief Abstract class for the (synchronized) view of one vtkImageData*.
 */
 
-class QGoSynchronizedView : public QWidget, protected Ui::QGoSynchronizedView {
+class QGoSynchronizedView : public QWidget, 
+  protected Ui::QGoSynchronizedView 
+{
     Q_OBJECT
 public:
   QGoSynchronizedView(QString iViewName, QWidget *iParent = 0);

@@ -7,8 +7,8 @@
 
 
 //--------------------------------------------------------------------------
-QGoSynchronizedViewManager::QGoSynchronizedViewManager(QObject *parent) :
-    QObject           (parent),
+QGoSynchronizedViewManager::QGoSynchronizedViewManager(QObject *iParent) :
+    QObject           (iParent),
     m_Synchronizer    (NULL),
     m_Synchronizer3D  (NULL)
 {}

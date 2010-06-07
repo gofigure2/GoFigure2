@@ -116,20 +116,21 @@ void QGoSynchronizedViewMainWindow::deleteSynchronizedView3D(const int& iId)
 
 
 
-void QGoSynchronizedViewMainWindow::closeEvent(QCloseEvent *event)
+void QGoSynchronizedViewMainWindow::closeEvent(QCloseEvent *iEvent)
 {
-
     if (m_SynchronizedViewManager!= NULL)
+      {
       delete m_SynchronizedViewManager;
+      }
     mdiArea->closeAllSubWindows();
 
     if (mdiArea->currentSubWindow())
       {
-      event->ignore();
+      iEvent->ignore();
       }
     else
       {
-      event->accept();
+      iEvent->accept();
       }
 }
 
@@ -312,13 +313,12 @@ else
 
 void QGoSynchronizedViewMainWindow::imageinfo()
 {
-
-  std::stringstream imageinfo;
-    if (activeSynchronizedView())
+  std::stringstream timageinfo;
+  if (activeSynchronizedView())
     {
-    activeSynchronizedView()->PrintOs(imageinfo);
+    activeSynchronizedView()->PrintOs(timageinfo);
     QMessageBox::about(this, tr("Image Informations"),
-            QString::fromStdString(imageinfo.str()));
+            QString::fromStdString(timageinfo.str()));
     }
 
 }
@@ -579,12 +579,16 @@ QGoSynchronizedView *QGoSynchronizedViewMainWindow::activeSynchronizedView()
 
 QMdiSubWindow *QGoSynchronizedViewMainWindow::findSynchronizedView(const QString& iSynchronizedViewName)
 {
-  foreach (QMdiSubWindow *window, mdiArea->subWindowList()) {
-        QGoSynchronizedView *SynchronizedView = qobject_cast<QGoSynchronizedView *>(window->widget());
-        if (SynchronizedView->GetName() == iSynchronizedViewName)
-            return window;
+  foreach (QMdiSubWindow *twindow, mdiArea->subWindowList()) 
+    {
+    QGoSynchronizedView *SynchronizedView = 
+      qobject_cast<QGoSynchronizedView *>(twindow->widget());
+    if (SynchronizedView->GetName() == iSynchronizedViewName)
+      {
+      return twindow;
+      }
     }
-    return 0;
+  return NULL;
 }
 
 

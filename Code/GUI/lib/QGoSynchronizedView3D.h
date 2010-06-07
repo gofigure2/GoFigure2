@@ -53,7 +53,7 @@ class QGoSynchronizedView3D : public QGoSynchronizedView
 {
   Q_OBJECT
 public:
-  QGoSynchronizedView3D(QString iViewName, QWidget *iParent = 0);
+  explicit QGoSynchronizedView3D(QString iViewName, QWidget *iParent = 0);
 
   ~QGoSynchronizedView3D();
 
@@ -76,12 +76,12 @@ public:
   *  3D visualization usually contains 4 imageviewers :
   *  three 2D projection and a 3D view : iId=[0-3]
   */
-  void Render(const int& iId);
+  virtual void Render(const int& iId);
 
   /** get the camera of the current viewer;
   *  iId=[0-3]
   */
-  vtkCamera* GetCamera(const int& iId);
+  virtual vtkCamera* GetCamera(const int& iId);
 
   /** Get the fullscreen view : iId = [0-4]
   *  0 : Quadview (all 4 views)
