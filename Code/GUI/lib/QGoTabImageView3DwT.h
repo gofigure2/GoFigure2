@@ -290,6 +290,8 @@ public slots:
   void ReinitializeContour();
   void ReEditContour( const unsigned int& iId );
 
+  void HighLightContainer(
+      ContourMeshStructureMultiIndexContainer& iContainer, vtkActor* iActor );
   void HighLightContours();
   void HighLightMeshes();
 
@@ -310,6 +312,7 @@ public slots:
       std::string iCurrentTrace);
 
   void SelectContoursInTable();
+  void SelectMeshesInTable();
 
   /**
    * \brief Calls DeleteTracesFromTable( ... ) with the good

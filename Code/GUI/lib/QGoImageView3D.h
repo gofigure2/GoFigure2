@@ -203,15 +203,7 @@ public:
    */
   std::list< vtkProp3D* > GetListOfUnPickedContours();
 
-  /**
-   * \brief Get a list of all the picked meshes
-   */
-  std::list< vtkProp3D* > GetListOfPickedMeshes();
-
-  /**
-   * \brief Get a list of all the picked meshes
-   */
-  std::list< vtkProp3D* > GetListOfUnPickedMeshes();
+  vtkProp* GetPickedActor();
 
 signals:
   void SliceViewXYChanged( int Slice );

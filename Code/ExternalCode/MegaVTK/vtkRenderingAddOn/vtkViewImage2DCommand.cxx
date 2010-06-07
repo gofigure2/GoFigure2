@@ -137,25 +137,6 @@ vtkViewImage2DCommand::Execute( vtkObject*    caller,
     return;
   }
 
-  if( event == vtkViewImage2DCommand::ContourPickingEvent )
-  {
-  std::cout << "in contour picking single"<< std::endl;
-/*    vtkCellPicker* picker = this->Viewer->GetContourPicker();
-    vtkRenderWindowInteractor *rwi =
-      this->Viewer->GetRenderWindow()->GetInteractor();
-
-    picker->Pick( rwi->GetEventPosition()[0], rwi->GetEventPosition()[1], 0,
-      this->Viewer->GetRenderer() );
-*/
-    /// \todo check the utility of next lines.
-//     vtkAssemblyPath* path = picker->GetPath();
-//     if( path )
-//     {
-//       vtkProp* prop = path->GetFirstNode()->GetViewProp();
-//       std::cout <<"yo" <<std::endl;
-//     }
-  }
-
   if( event == vtkViewImage2DCommand::MeshPickingEvent )
   {
     std::cout<< "Mesh pick single" << std::endl;

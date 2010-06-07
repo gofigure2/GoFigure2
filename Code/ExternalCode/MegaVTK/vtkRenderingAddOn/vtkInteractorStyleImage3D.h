@@ -71,6 +71,8 @@
 #include <vtkInteractorStyleTrackballCamera.h>
 #include "MegaVTK2Configure.h"
 
+class vtkProp;
+
 class VTK_RENDERINGADDON2_EXPORT vtkInteractorStyleImage3D :
   public vtkInteractorStyleTrackballCamera
 {
@@ -99,6 +101,11 @@ class VTK_RENDERINGADDON2_EXPORT vtkInteractorStyleImage3D :
   vtkGetMacro (WheelButtonInteraction, unsigned int);
 
   virtual void OnLeftButtonDown();
+  virtual void OnChar();
+  virtual void OnKeyUp();
+
+  void     SetCurrentProp();
+  vtkProp* GetCurrentProp();
 
  protected:
   vtkInteractorStyleImage3D();
@@ -113,6 +120,10 @@ class VTK_RENDERINGADDON2_EXPORT vtkInteractorStyleImage3D :
   unsigned int RightButtonInteraction;
   unsigned int MiddleButtonInteraction;
   unsigned int WheelButtonInteraction;
+
+  vtkProp* m_CurrentProp;
+
+  bool m_EnablePickingMode;
 };
 
 #endif

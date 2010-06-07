@@ -233,6 +233,7 @@ vtkViewImage3D::vtkViewImage3D()
   this->BoundsActor.push_back( vtkActor::New() );
 
   this->Command = vtkViewImage3DCommand::New();
+  this->Command->SetVtkImageView3D( this );
   // the new interactor style
   this->InteractorStyle3D = vtkInteractorStyleImage3D::New();
 

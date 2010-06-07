@@ -80,6 +80,7 @@ vtkStandardNewMacro (vtkInteractorStyleImage3D);
 vtkInteractorStyleImage3D::
 vtkInteractorStyleImage3D()
 {
+  m_EnablePickingMode = false;
 }
 //----------------------------------------------------------------------------
 
@@ -95,17 +96,45 @@ vtkInteractorStyleImage3D::
 OnLeftButtonDown()
 {
 
-  // Testings...
-  //if (this->Interactor->GetShiftKey())
-  //  {
-  //  }
-
   // if object is picked, send the event
-  if( this->CurrentProp )
-  this->InvokeEvent(vtkViewImage3DCommand::MeshPickingEvent);
+  if( m_EnablePickingMode )
+    {
+    this->SetCurrentProp();
+    this->InvokeEvent(vtkViewImage3DCommand::MeshPickingEvent);
+    }
 
   // Call parent to handle all other states and perform additional work
   this->Superclass::OnLeftButtonDown();
+}
+//----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
+void
+vtkInteractorStyleImage3D::
+OnChar()
+{
+  vtkRenderWindowInteractor *rwi = this->Interactor;
+  if ((rwi->GetKeyCode() == 'p') || (rwi->GetKeyCode() == 'P'))
+    {
+      this->m_EnablePickingMode = true;
+    }
+
+  this->Superclass::OnChar();
+}
+//----------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------
+void
+vtkInteractorStyleImage3D::
+OnKeyUp()
+{
+  vtkRenderWindowInteractor *rwi = this->Interactor;
+
+  if ((rwi->GetKeyCode() == 'p') || (rwi->GetKeyCode() == 'P'))
+    {
+    this->m_EnablePickingMode = false;
+    }
+
+  this->Superclass::OnKeyUp();
 }
 //----------------------------------------------------------------------------
 
@@ -143,3 +172,24 @@ SetWheelButtonInteraction( InteractionTypeIds interactionType)
 {
   WheelButtonInteraction = interactionType;
 }
+
+//----------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------
+void
+vtkInteractorStyleImage3D::
+SetCurrentProp()
+{
+  this->m_CurrentProp = this->CurrentProp;
+}
+
+//----------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------
+vtkProp*
+vtkInteractorStyleImage3D::
+GetCurrentProp()
+{
+  return this->m_CurrentProp;
+}
+

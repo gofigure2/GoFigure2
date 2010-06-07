@@ -90,7 +90,6 @@ class VTK_RENDERINGADDON2_EXPORT vtkInteractorStyleImage2D :
       InteractionTypePan,
       InteractionTypeSeed,
       InteractionTypeContourPicking,
-      InteractionTypeMeshPicking
     };
     //ETX
 
@@ -133,6 +132,8 @@ class VTK_RENDERINGADDON2_EXPORT vtkInteractorStyleImage2D :
   int* GetRequestedPosition(void)
   { return this->RequestedPosition; }
 
+  vtkProp* GetCurrentProp();
+
  protected:
   vtkInteractorStyleImage2D();
   ~vtkInteractorStyleImage2D();
@@ -149,6 +150,8 @@ class VTK_RENDERINGADDON2_EXPORT vtkInteractorStyleImage2D :
   unsigned int RightButtonInteraction;
   unsigned int MiddleButtonInteraction;
   unsigned int WheelButtonInteraction;
+
+  bool m_EnablePickingMode;
 
 };
 

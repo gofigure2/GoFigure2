@@ -268,6 +268,8 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage3D : public vtkViewImage
 
   vtkInteractorStyleImage3D* GetInteractorStyle3D();
 
+  vtkGetObjectMacro (Command, vtkViewImage3DCommand);
+
  protected:
 
   vtkViewImage3D();

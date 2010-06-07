@@ -1490,41 +1490,12 @@ MeshPickingMode()
   this->QvtkWidget_XY->setCursor( Qt::ArrowCursor );
   this->QvtkWidget_XZ->setCursor( Qt::ArrowCursor );
   this->QvtkWidget_YZ->setCursor( Qt::ArrowCursor );
-
-  vtkViewImage2D* View1 = this->m_Pool->GetItem( 0 );
-  View1->SetInteractionStyle(
-      vtkInteractorStyleImage2D::InteractionTypeMeshPicking );
-
-  vtkViewImage2D* View2 = this->m_Pool->GetItem( 1 );
-  View2->SetInteractionStyle(
-      vtkInteractorStyleImage2D::InteractionTypeMeshPicking );
-
-  vtkViewImage2D* View3 = this->m_Pool->GetItem( 2 );
-  View3->SetInteractionStyle(
-      vtkInteractorStyleImage2D::InteractionTypeMeshPicking );
 }
 //-------------------------------------------------------------------------
-
 //-------------------------------------------------------------------------
-std::list< vtkProp3D* >
+vtkProp*
 QGoImageView3D::
-GetListOfPickedMeshes()
+GetPickedActor()
 {
-  std::list< vtkProp3D* > pickedMeshesList;
-  // Get picked contours from all views
-  pickedMeshesList = this->m_Pool->GetCommand()->GetListOfPickedActors();
-  return pickedMeshesList;
+  return this->m_View3D->GetCommand()->GetPickedActor();
 }
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-std::list< vtkProp3D* >
-QGoImageView3D::
-GetListOfUnPickedMeshes()
-{
-  std::list< vtkProp3D* > unPickedMeshesList;
-  // Get picked contours from all views
-  unPickedMeshesList = this->m_Pool->GetCommand()->GetListOfUnPickedActors();
-  return unPickedMeshesList;
-}
-//-------------------------------------------------------------------------

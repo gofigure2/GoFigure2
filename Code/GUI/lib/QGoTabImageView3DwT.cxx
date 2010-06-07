@@ -2775,86 +2775,14 @@ void
 QGoTabImageView3DwT::
 HighLightContours()
 {
+  /// TODO Check utility of a list
   std::list< vtkProp3D* > listofpicked = m_ImageView->GetListOfPickedContours();
 
   std::list< vtkProp3D* >::iterator it = listofpicked.begin();
 
-  vtkProperty* select_property = vtkProperty::New();
-  select_property->SetColor( 1., 0., 0. );
-  select_property->SetLineWidth( 3. );
-
   while( it != listofpicked.end() )
     {
-    // Change the corresponding highlighted value in the container
-    ContourMeshStructureMultiIndexContainer::nth_index< 1 >::type::iterator
-      actor_it = m_ContourContainer.get< 1 >().find( static_cast< vtkActor* >( *it ) );
-
-    if( actor_it != m_ContourContainer.get< 1 >().end() )
-      {
-      unsigned int trace_id = actor_it->TraceID;
-
-      ContourMeshStructureMultiIndexContainer::index< TraceID >::type::iterator
-        traceid_it = m_ContourContainer.get< TraceID >().find( trace_id );
-
-      if( traceid_it != m_ContourContainer.get< TraceID >().end() )
-        {
-        while( ( traceid_it != m_ContourContainer.get< TraceID >().end() )
-            && ( (*traceid_it).TraceID == trace_id ) )
-          {
-          m_ImageView->ChangeActorProperty( traceid_it->Direction,
-            traceid_it->Actor, select_property );
-
-//           traceid_it->Highlighted = true;
-
-          ++traceid_it;
-          }
-        }
-      }
-
-    ++it;
-    }
-
-  select_property->Delete();
-
-  std::list< vtkProp3D* > listofunpicked = m_ImageView->GetListOfUnPickedActors();
-  it = listofunpicked.begin();
-
-  while( it != listofunpicked.end() )
-    {
-    // find corresponding color from the container
-//     ChangeActorProperty( *it, m_ActorsPropertyMap[*it] );
-    // Change the corresponding highlighted value in the container
-        // Change the corresponding highlighted value in the container
-    ContourMeshStructureMultiIndexContainer::nth_index< 1 >::type::iterator
-      actor_it = m_ContourContainer.get< 1 >().find( static_cast< vtkActor* >( *it ) );
-
-    if( actor_it != m_ContourContainer.get< 1 >().end() )
-      {
-      unsigned int trace_id = actor_it->TraceID;
-
-      ContourMeshStructureMultiIndexContainer::index< TraceID >::type::iterator
-        traceid_it = m_ContourContainer.get< TraceID >().find( trace_id );
-
-      if( traceid_it != m_ContourContainer.get< TraceID >().end() )
-        {
-        while( ( traceid_it != m_ContourContainer.get< TraceID >().end() )
-            && ( (*traceid_it).TraceID == trace_id ) )
-          {
-          vtkProperty* temp_property = vtkProperty::New();
-          temp_property->SetColor( traceid_it->rgba[0], traceid_it->rgba[1], traceid_it->rgba[2] );
-          temp_property->SetLineWidth( 1. );
-
-          m_ImageView->ChangeActorProperty( traceid_it->Direction,
-            traceid_it->Actor, temp_property );
-
-//           traceid_it->Highlighted = false;
-
-          temp_property->Delete();
-          ++traceid_it;
-          }
-        }
-      }
-
+    HighLightContainer(m_ContourContainer, static_cast< vtkActor* >( *it ));
     ++it;
     }
 }
@@ -2865,9 +2793,69 @@ void
 QGoTabImageView3DwT::
 HighLightMeshes()
 {
-  std::cout << "Highlight received" << std::endl;
+  HighLightContainer( m_MeshContainer,
+      static_cast< vtkActor* >( m_ImageView->GetPickedActor() ));
+
 }
 //-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+HighLightContainer( ContourMeshStructureMultiIndexContainer& iContainer, vtkActor* iActor )
+{
+  vtkProperty* select_property = vtkProperty::New();
+  select_property->SetColor( 1., 0., 0. );
+  select_property->SetLineWidth( 3. );
+
+  // Change the corresponding highlighted value in the container
+  ContourMeshStructureMultiIndexContainer::nth_index< 1 >::type::iterator
+    actor_it = iContainer.get< 1 >().find( iActor );
+
+  if( actor_it != iContainer.get< 1 >().end() )
+    {
+    unsigned int trace_id = actor_it->TraceID;
+
+    ContourMeshStructureMultiIndexContainer::index< TraceID >::type::iterator
+      traceid_it = iContainer.get< TraceID >().find( trace_id );
+
+    if( traceid_it != iContainer.get< TraceID >().end() )
+      {
+      while( ( traceid_it != iContainer.get< TraceID >().end() )
+          && ( (*traceid_it).TraceID == trace_id ) )
+        {
+        if( !traceid_it->Highlighted )
+          {
+          m_ImageView->ChangeActorProperty( traceid_it->Direction,
+            traceid_it->Actor, select_property );
+
+          ContourMeshStructure temp( *traceid_it );
+          temp.Highlighted = true;
+          iContainer.get< TraceID >().replace( traceid_it, temp );
+          }
+        else
+          {
+          vtkProperty* temp_property = vtkProperty::New();
+          temp_property->SetColor( traceid_it->rgba[0], traceid_it->rgba[1], traceid_it->rgba[2] );
+          temp_property->SetLineWidth( 1. );
+
+          m_ImageView->ChangeActorProperty( traceid_it->Direction,
+            traceid_it->Actor, temp_property );
+          temp_property->Delete();
+
+          ContourMeshStructure temp( *traceid_it );
+          temp.Highlighted = false;
+          iContainer.get< TraceID >().replace( traceid_it, temp );
+          }
+        ++traceid_it;
+        }
+      }
+    }
+  select_property->Delete();
+}
+
+//-------------------------------------------------------------------------
+
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
@@ -3000,6 +2988,28 @@ SelectContoursInTable( )
       this->m_DataBaseTables->ChangeContoursToHighLightInfoFromVisu(
         listofrowstobeselected, false );
       }
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+SelectMeshesInTable( )
+{
+  if( this->m_DataBaseTables->IsDatabaseUsed() )
+    {
+    std::list< int > listofrowstobeselected;
+    // Change the corresponding highlighted value in the container
+    ContourMeshStructureMultiIndexContainer::nth_index< 1 >::type::iterator
+      actor_it = m_MeshContainer.get< 1 >().find( static_cast< vtkActor* >( m_ImageView->GetPickedActor() ) );
+
+    if( actor_it != m_MeshContainer.get< 1 >().end() )
+      {
+      int trace_id = static_cast< int >( actor_it->TraceID );
+      listofrowstobeselected.push_back( trace_id );
+      }
+    this->m_DataBaseTables->ChangeMeshesToHighLightInfoFromVisu( listofrowstobeselected );
     }
 }
 //-------------------------------------------------------------------------

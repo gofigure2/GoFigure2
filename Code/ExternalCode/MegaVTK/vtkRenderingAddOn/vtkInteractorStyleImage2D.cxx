@@ -95,6 +95,8 @@ vtkInteractorStyleImage2D()
   this->RightButtonInteraction  = InteractionTypeZoom;
   this->MiddleButtonInteraction = InteractionTypePan;
   this->WheelButtonInteraction  = InteractionTypeSlice;
+
+  this->m_EnablePickingMode = false;
 }
 //----------------------------------------------------------------------------
 
@@ -166,6 +168,12 @@ OnLeftButtonDown()
        this->StartSliceMove();
      }
   }
+  // if one actor is selected (i.e. pressing "p" or "P")
+  else if ( m_EnablePickingMode )
+    {
+    this->InvokeEvent(vtkViewImage2DCommand::ContourPickingEvent);
+    this->Superclass::OnLeftButtonDown();
+    }
   else
   {
     switch(this->GetLeftButtonInteraction())
@@ -186,14 +194,6 @@ OnLeftButtonDown()
         break;
       case InteractionTypeSeed:
         this->InvokeEvent(vtkViewImage2DCommand::SeedEvent);
-        this->Superclass::OnLeftButtonDown();
-        break;
-      case InteractionTypeContourPicking:
-        this->InvokeEvent(vtkViewImage2DCommand::ContourPickingEvent);
-        this->Superclass::OnLeftButtonDown();
-        break;
-      case InteractionTypeMeshPicking:
-        this->InvokeEvent(vtkViewImage2DCommand::MeshPickingEvent);
         this->Superclass::OnLeftButtonDown();
         break;
       default:
@@ -500,6 +500,10 @@ OnChar()
     {
       this->InvokeEvent (vtkViewImage2DCommand::ResetViewerEvent, this);
     }
+  else if ((rwi->GetKeyCode() == 'p') || (rwi->GetKeyCode() == 'P'))
+    {
+      this->m_EnablePickingMode = true;
+    }
 
   this->Superclass::OnChar();
 }
@@ -513,27 +517,31 @@ OnKeyUp()
  vtkRenderWindowInteractor *rwi = this->Interactor;
 
   if (!strcmp (rwi->GetKeySym(),"Up" ) )
-  {
+    {
     this->SliceStep = 1;
     this->StartSliceMove();
     this->SliceMove();
     this->EndSliceMove();
-  }
+    }
   else if(!strcmp (rwi->GetKeySym(),"Down" ) )
-  {
+    {
     this->SliceStep = -1;
     this->StartSliceMove();
     this->SliceMove();
     this->EndSliceMove();
-  }
+    }
   else if (!strcmp (rwi->GetKeySym(),"o" ) )
-  {
+    {
     this->InvokeEvent (vtkViewImage2DCommand::ResetViewerEvent, this );
-  }
+    }
   else if (!strcmp (rwi->GetKeySym(),"r" ) )
-  {
+    {
     this->InvokeEvent (vtkViewImage2DCommand::ResetWindowLevelEvent, this );
-  }
+    }
+  else if ((rwi->GetKeyCode() == 'p') || (rwi->GetKeyCode() == 'P'))
+    {
+    this->m_EnablePickingMode = false;
+    }
 
 
   this->Superclass::OnKeyUp();
@@ -656,4 +664,13 @@ vtkInteractorStyleImage2D::
 SetWheelButtonInteraction( InteractionTypeIds interactionType)
 {
   WheelButtonInteraction = interactionType;
+}
+//----------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------
+vtkProp*
+vtkInteractorStyleImage2D::
+GetCurrentProp()
+{
+  return this->CurrentProp;
 }
