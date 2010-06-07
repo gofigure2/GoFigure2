@@ -16,8 +16,6 @@ QGoComparer3DSync::
 QGoComparer3DSync(std::vector<QGoComparer3D*> ioOpenComparers,QObject* iParent):
     QObject           (iParent),
     m_openComparers   (ioOpenComparers)
-
-
 {
 
   // create the callback object
@@ -44,7 +42,6 @@ QGoComparer3DSync(std::vector<QGoComparer3D*> ioOpenComparers,QObject* iParent):
                       ->AddObserver(
             vtkCommand::ModifiedEvent, QGoComparer3DSync::m_vtkCallBackCamSync3 );
 
-
         // we connect the sliders to the synchronizer (monitor slider changes) :
         QObject::connect( (*ComparerIt)->GetImageView(), SIGNAL( SliceViewXYChanged( int ) ),
         this, SIGNAL( SliceViewXYChanged( int ) ) );
@@ -62,9 +59,7 @@ QGoComparer3DSync(std::vector<QGoComparer3D*> ioOpenComparers,QObject* iParent):
         (*ComparerIt)->GetImageView(), SLOT( SetSliceViewYZ( int ) ) );
         }
     }
-
 }
-//--------------------------------------------------------------------------
 
 
 //--------------------------------------------------------------------------
@@ -73,7 +68,7 @@ QGoComparer3DSync(std::vector<QGoComparer3D*> ioOpenComparers,QObject* iParent):
 QGoComparer3DSync::
 ~QGoComparer3DSync()
 {
-std::vector<QGoComparer3D*>::iterator ComparerIt;
+  std::vector<QGoComparer3D*>::iterator ComparerIt;
 
   // we remove the open synchronized comparers
   ComparerIt = m_openComparers.begin();
@@ -103,10 +98,7 @@ std::vector<QGoComparer3D*>::iterator ComparerIt;
   m_vtkCallBackCamSync1->Delete();
   m_vtkCallBackCamSync2->Delete();
   m_vtkCallBackCamSync3->Delete();
-
 }
-//--------------------------------------------------------------------------
-
 
 
 //--------------------------------------------------------------------------
@@ -121,11 +113,9 @@ synchronizeCameras0( vtkObject* caller, long unsigned int eventId, void* clientD
   // we get the p_m_QGoComparer3D array by the following cast :
   std::vector<QGoComparer3D*> p_m_QGoComparer3Ds
                     = *static_cast< std::vector<QGoComparer3D*>* >(clientData);
-
-  // the observer are aet on cameras, so that the caller is a vtk camera*
+  // the observer are set on cameras, so that the caller is a vtk camera*
   vtkCamera* movedCamera
                     = static_cast< vtkCamera* >(caller);
-
   // for every opened comparer :
   for(std::vector<QGoComparer3D*>::iterator ComparerIt = p_m_QGoComparer3Ds.begin();
         ComparerIt != p_m_QGoComparer3Ds.end();
@@ -146,13 +136,13 @@ synchronizeCameras0( vtkObject* caller, long unsigned int eventId, void* clientD
         }
       }
     }
-
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-// this is the callback function : do shallow copies to keep track of
-// master's camera position
+/** this is the callback function : do shallow copies to keep track of
+*  master's camera position
+*/
 void
 QGoComparer3DSync::
 synchronizeCameras1( vtkObject* caller, long unsigned int eventId, void* clientData, void* callData )
@@ -162,11 +152,9 @@ synchronizeCameras1( vtkObject* caller, long unsigned int eventId, void* clientD
   // we get the p_m_QGoComparer3D array by the following cast :
   std::vector<QGoComparer3D*> p_m_QGoComparer3Ds
                     = *static_cast< std::vector<QGoComparer3D*>* >(clientData);
-
-  // the observer are aet on cameras, so that the caller is a vtk camera*
+  // the observer are set on cameras, so that the caller is a vtk camera*
   vtkCamera* movedCamera
                     = static_cast< vtkCamera* >(caller);
-
   // for every opened comparer :
   for(std::vector<QGoComparer3D*>::iterator ComparerIt = p_m_QGoComparer3Ds.begin();
         ComparerIt != p_m_QGoComparer3Ds.end();
@@ -187,14 +175,13 @@ synchronizeCameras1( vtkObject* caller, long unsigned int eventId, void* clientD
         }
       }
     }
-
 }
-//--------------------------------------------------------------------------
 
 
 //--------------------------------------------------------------------------
-// this is the callback function : do shallow copies to keep track of
-// master's camera position
+/** this is the callback function : do shallow copies to keep track of
+*  master's camera position
+*/
 void
 QGoComparer3DSync::
 synchronizeCameras2( vtkObject* caller, long unsigned int eventId, void* clientData, void* callData )
@@ -204,11 +191,9 @@ synchronizeCameras2( vtkObject* caller, long unsigned int eventId, void* clientD
   // we get the p_m_QGoComparer3D array by the following cast :
   std::vector<QGoComparer3D*> p_m_QGoComparer3Ds
                     = *static_cast< std::vector<QGoComparer3D*>* >(clientData);
-
   // the observer are aet on cameras, so that the caller is a vtk camera*
   vtkCamera* movedCamera
                     = static_cast< vtkCamera* >(caller);
-
   // for every opened comparer :
   for(std::vector<QGoComparer3D*>::iterator ComparerIt = p_m_QGoComparer3Ds.begin();
         ComparerIt != p_m_QGoComparer3Ds.end();
@@ -229,9 +214,7 @@ synchronizeCameras2( vtkObject* caller, long unsigned int eventId, void* clientD
         }
       }
     }
-
 }
-//--------------------------------------------------------------------------
 
 
 //--------------------------------------------------------------------------
@@ -273,7 +256,6 @@ synchronizeCameras3( vtkObject* caller, long unsigned int eventId, void* clientD
     }
 
 }
-//--------------------------------------------------------------------------
 
 
 //--------------------------------------------------------------------------
@@ -299,7 +281,6 @@ SetupCallBack()
   m_vtkCallBackCamSync3->SetCallback(QGoComparer3DSync::synchronizeCameras3 );
   m_vtkCallBackCamSync3->SetClientData( &m_openComparers );
 }
-//--------------------------------------------------------------------------
 
 
 //--------------------------------------------------------------------------
@@ -310,8 +291,8 @@ removeComparer( QGoComparer3D* ioComparer )
   if (ioComparer!=NULL) // this should always be true
     {
     // We look for the comparer in the vector of synchronized comparers
-    std::vector<QGoComparer3D*>::iterator 
-      ComparerIt = std::find( m_openComparers.begin(), 
+    std::vector<QGoComparer3D*>::iterator
+      ComparerIt = std::find( m_openComparers.begin(),
                               m_openComparers.end(),
                               ioComparer );
     if (ComparerIt != m_openComparers.end()) // if we found it
@@ -331,7 +312,7 @@ removeComparer( QGoComparer3D* ioComparer )
       }
     }
 }
-//--------------------------------------------------------------------------
+
 
 //--------------------------------------------------------------------------
 void
@@ -340,11 +321,11 @@ addComparer( QGoComparer3D* ioComparer )
 {
   if (ioComparer!=NULL) // this should always be true
     {
-    m_openComparers.push_back(ioComparer);
-
     if ( ioComparer->HasViewer() )
       // add the callback to the comparer's camera
       {
+        m_openComparers.push_back(ioComparer);
+
         ioComparer->GetCamera(0)
                       ->AddObserver(
             vtkCommand::ModifiedEvent, QGoComparer3DSync::m_vtkCallBackCamSync0 );
@@ -357,7 +338,6 @@ addComparer( QGoComparer3D* ioComparer )
         ioComparer->GetCamera(3)
                       ->AddObserver(
             vtkCommand::ModifiedEvent, QGoComparer3DSync::m_vtkCallBackCamSync3 );
-
 
         // we connect the sliders to the synchronizer (monitor slider changes) :
         QObject::connect( ioComparer->GetImageView(), SIGNAL( SliceViewXYChanged( int ) ),
@@ -374,9 +354,12 @@ addComparer( QGoComparer3D* ioComparer )
         ioComparer->GetImageView(), SLOT( SetSliceViewXZ( int ) ) );
         QObject::connect( this, SIGNAL( SliceViewYZChanged( int ) ),
         ioComparer->GetImageView(), SLOT( SetSliceViewYZ( int ) ) );
-
-
+      }
+    else
+      {
+      std::cerr <<"trying to synchronize a visualization object missing a QGoImageView"
+                << std::endl;
       }
     }
 }
-//--------------------------------------------------------------------------
+
