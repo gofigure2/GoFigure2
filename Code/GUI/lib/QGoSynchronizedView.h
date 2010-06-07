@@ -63,7 +63,7 @@ class QGoSynchronizedView : public QWidget,
 {
     Q_OBJECT
 public:
-  QGoSynchronizedView(QString iViewName, QWidget *iParent = 0);
+  explicit QGoSynchronizedView(QString iViewName, QWidget *iParent = 0);
 
   /** \brief Destructor. */
   ~QGoSynchronizedView();
@@ -86,11 +86,11 @@ public:
 
   /** \brief render the viewer contained in the widget if any
   */
-  virtual void Render( void );
+  void Render( void );
 
   /** \brief get the camera of the current viewer
   */
-  virtual vtkCamera* GetCamera( void );
+  vtkCamera* GetCamera( void );
 
 
 

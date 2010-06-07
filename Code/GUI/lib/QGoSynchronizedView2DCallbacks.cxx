@@ -105,6 +105,9 @@ void
 QGoSynchronizedView2DCallbacks::
 synchronizeCameras( vtkObject* caller, long unsigned int eventId, void* clientData, void* callData )
 {
+  (void) eventId;
+  (void) callData;
+
   // client data is a pointer to std::vector<QGoImageView2D*>
   // so client data is a std::vector<QGoSynchronizedView2D*>*
   // we get the p_m_QGoSynchronizedView2D array by the following cast :

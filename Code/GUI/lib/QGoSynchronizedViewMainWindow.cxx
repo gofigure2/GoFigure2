@@ -593,9 +593,9 @@ QMdiSubWindow *QGoSynchronizedViewMainWindow::findSynchronizedView(const QString
 
 
 
-void QGoSynchronizedViewMainWindow::setActiveSubWindow(QWidget *window)
+void QGoSynchronizedViewMainWindow::setActiveSubWindow(QWidget *twindow)
 {
-    if (!window)
+    if (!twindow)
         return;
-    mdiArea->setActiveSubWindow(qobject_cast<QMdiSubWindow *>(window));
+    mdiArea->setActiveSubWindow(qobject_cast<QMdiSubWindow *>(twindow));
 }

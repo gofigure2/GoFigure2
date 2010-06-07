@@ -76,12 +76,12 @@ public:
   *  3D visualization usually contains 4 imageviewers :
   *  three 2D projection and a 3D view : iId=[0-3]
   */
-  virtual void Render(const int& iId);
+  void Render(const int& iId);
 
   /** get the camera of the current viewer;
   *  iId=[0-3]
   */
-  virtual vtkCamera* GetCamera(const int& iId);
+  vtkCamera* GetCamera(const int& iId);
 
   /** Get the fullscreen view : iId = [0-4]
   *  0 : Quadview (all 4 views)
