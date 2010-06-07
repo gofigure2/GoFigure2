@@ -509,34 +509,36 @@ protected slots:
    * \brief Mouse interaction style allows contours segmentation, according to
    * the selected type of segmentation
    */
-  void ContourInteractorBehaviour( bool );
+  void ContourInteractorBehavior( bool );
   /**
    * \brief Mouse interaction style allows meshes segmentation, according to
    * the selected type of segmentation
    */
-  void MeshInteractorBehaviour( bool );
+  void MeshInteractorBehavior( bool );
   /**
    * \brief Mouse interaction style set as default
    */
-  void DefaultInteractorBehaviour( bool );
+  void DefaultInteractorBehavior( bool );
   /**
    * \brief Mouse interaction style allows user to zoom in/out volume with all
    * buttons
    */
-  void ZoomInteractorBehaviour( bool );
+  void ZoomInteractorBehavior( bool );
   /**
    * \brief Mouse interaction style allows user to pan volume with all buttons
    */
-  void PanInteractorBehaviour( bool );
+  void PanInteractorBehavior( bool );
   /**
    * \brief Mouse interaction style allows user to pick contours
    */
-  void ContourPickingInteractorBehaviour( bool );
+  void ContourPickingInteractorBehavior( bool );
 
   /**
    * \brief Mouse interaction style allows user to pick meshes
    */
-  void MeshPickingInteractorBehaviour( bool );
+  void MeshPickingInteractorBehavior( bool );
+
+  void DistanceWidgetInteractorBehavior( bool );
 
 private:
   Q_DISABLE_COPY( QGoTabImageView3DwT );

@@ -348,8 +348,8 @@ CreateManualSegmentationdockWidget()
 
   // Cursor interaction
 
-  QObject::connect( m_ManualSegmentationDockWidget, SIGNAL( UpdateInteractorBehaviour( bool ) ),
-   this, SLOT( ContourInteractorBehaviour( bool ) ) );
+  QObject::connect( m_ManualSegmentationDockWidget, SIGNAL( UpdateInteractorBehavior( bool ) ),
+   this, SLOT( ContourInteractorBehavior( bool ) ) );
 
   // Create action
 
@@ -362,7 +362,7 @@ CreateManualSegmentationdockWidget()
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
-ContourInteractorBehaviour( bool iVisible)
+ContourInteractorBehavior( bool iVisible)
 {
   // Mode 0 = manual
   // Mode 1 = semi auto
@@ -441,7 +441,7 @@ ActivateSemiAutoSegmentationEditor( const bool& iActivate )
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
-MeshInteractorBehaviour( bool iVisible)
+MeshInteractorBehavior( bool iVisible)
 {
   // if the widget is visible
   // check in which mode we are
@@ -454,7 +454,7 @@ MeshInteractorBehaviour( bool iVisible)
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
-DefaultInteractorBehaviour( bool iVisible)
+DefaultInteractorBehavior( bool iVisible)
 {
   // if the widget is visible
   // check in which mode we are
@@ -467,7 +467,7 @@ DefaultInteractorBehaviour( bool iVisible)
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
-ZoomInteractorBehaviour( bool iVisible)
+ZoomInteractorBehavior( bool iVisible)
 {
   // if the widget is visible
   // check in which mode we are
@@ -480,7 +480,7 @@ ZoomInteractorBehaviour( bool iVisible)
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
-PanInteractorBehaviour( bool iVisible)
+PanInteractorBehavior( bool iVisible)
 {
   // if the widget is visible
   // check in which mode we are
@@ -493,7 +493,7 @@ PanInteractorBehaviour( bool iVisible)
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
-ContourPickingInteractorBehaviour( bool iVisible)
+ContourPickingInteractorBehavior( bool iVisible)
 {
   // if the widget is visible
   // check in which mode we are
@@ -506,7 +506,7 @@ ContourPickingInteractorBehaviour( bool iVisible)
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
-MeshPickingInteractorBehaviour( bool iVisible)
+MeshPickingInteractorBehavior( bool iVisible)
 {
   // if the widget is visible
   // check in which mode we are
@@ -516,6 +516,29 @@ MeshPickingInteractorBehaviour( bool iVisible)
     }
 }
 //-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+DistanceWidgetInteractorBehavior( bool iActive )
+{
+  if( iActive )
+    {
+    for( int i = 0; i < 3; i++ )
+      {
+      this->m_DistanceWidget[i]->On();
+      }
+    }
+  else
+    {
+    for( int i = 0; i < 3; i++ )
+      {
+      this->m_DistanceWidget[i]->Off();
+      }
+    }
+}
+//-------------------------------------------------------------------------
+
 //-------------------------------------------------------------------------
 /**
  * \brief
@@ -1037,7 +1060,7 @@ void QGoTabImageView3DwT::CreateModeActions()
 
   // it also updates the interactor behaviour
   QObject::connect( ManualEditingAction, SIGNAL( toggled( bool ) ),
-       this, SLOT( ContourInteractorBehaviour( bool ) ) );
+       this, SLOT( ContourInteractorBehavior( bool ) ) );
 
   //---------------------------------//
   //          one click mode         //
@@ -1064,7 +1087,7 @@ void QGoTabImageView3DwT::CreateModeActions()
 
   // it also updates the interactor behaviour
   QObject::connect( OneClickAction, SIGNAL( toggled( bool ) ),
-    this, SLOT( MeshInteractorBehaviour( bool ) ) );
+    this, SLOT( MeshInteractorBehavior( bool ) ) );
 
   // Add the action to m_ModeActions and to group
   this->m_ModeActions.push_back( OneClickAction );
@@ -1089,7 +1112,7 @@ void QGoTabImageView3DwT::CreateModeActions()
 
   // it also updates the interactor behaviour
   QObject::connect( DefaultAction, SIGNAL( toggled( bool ) ),
-    this, SLOT( DefaultInteractorBehaviour( bool ) ) );
+    this, SLOT( DefaultInteractorBehavior( bool ) ) );
 
   this->m_ModeActions.push_back( DefaultAction );
 
@@ -1111,7 +1134,7 @@ void QGoTabImageView3DwT::CreateModeActions()
   this->m_ModeActions.push_back( ZoomAction );
   // it also updates the interactor behaviour
   QObject::connect( ZoomAction, SIGNAL( toggled( bool ) ),
-    this, SLOT( ZoomInteractorBehaviour( bool ) ) );
+    this, SLOT( ZoomInteractorBehavior( bool ) ) );
 
   //---------------------------------//
   //            Pan  mode            //
@@ -1131,7 +1154,7 @@ void QGoTabImageView3DwT::CreateModeActions()
   this->m_ModeActions.push_back( PanAction );
   // it also updates the interactor behaviour
   QObject::connect( PanAction, SIGNAL( toggled( bool ) ),
-    this, SLOT( PanInteractorBehaviour( bool ) ) );
+    this, SLOT( PanInteractorBehavior( bool ) ) );
 
   //---------------------------------//
   //     Contour picking  mode       //
@@ -1146,7 +1169,7 @@ void QGoTabImageView3DwT::CreateModeActions()
   this->m_ModeActions.push_back( ContourPickingAction );
   // it also updates the interactor behaviour
   QObject::connect( ContourPickingAction, SIGNAL( toggled( bool ) ),
-    this, SLOT( ContourPickingInteractorBehaviour( bool ) ) );
+    this, SLOT( ContourPickingInteractorBehavior( bool ) ) );
 
   //---------------------------------//
   //       Mesh picking  mode        //
@@ -1161,7 +1184,7 @@ void QGoTabImageView3DwT::CreateModeActions()
   this->m_ModeActions.push_back( MeshPickingAction );
   // it also updates the interactor behaviour
   QObject::connect( MeshPickingAction, SIGNAL( toggled( bool ) ),
-    this, SLOT( MeshPickingInteractorBehaviour( bool ) ) );
+    this, SLOT( MeshPickingInteractorBehavior( bool ) ) );
 
   QAction* DistanceAction = new QAction( tr("Measure Distance"), this );
   DistanceAction->setCheckable( true );
@@ -1171,8 +1194,8 @@ void QGoTabImageView3DwT::CreateModeActions()
 
   this->m_ModeActions.push_back( DistanceAction );
 
-//   QObject::connect( DistanceAction, SIGNAL( toggled( bool ) ),
-//     this, SLOT() );
+  QObject::connect( DistanceAction, SIGNAL( toggled( bool ) ),
+    this, SLOT( DistanceWidgetInteractorBehavior( bool ) ) );
 }
 //-------------------------------------------------------------------------
 
