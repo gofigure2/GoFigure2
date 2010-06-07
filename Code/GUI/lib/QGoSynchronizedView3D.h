@@ -46,7 +46,6 @@ class vtkCamera;
 class vtkImageData;
 class vtkEventQtSlotConnect;
 class QGoImageView3D;
-class QGoCompareOrchestra;
 
 
 class QGoSynchronizedView3D : public QGoSynchronizedView
@@ -57,20 +56,18 @@ public:
 
   ~QGoSynchronizedView3D();
 
-  /** print the comparer information :
+  /** print the SynchronizedView information :
   *  it consists in the image information if any.
   */
   void PrintOs(ostream &os);
 
-  int GetComparerType();
-
-  /** Set image displayed by the comparer
+  /** Set image displayed by the SynchronizedView
   */
   void SetImage(vtkImageData* iImage);
 
-  /** \brief returns the type of comparer (2 for 2D, 3 for 3D)
+  /** \brief returns the type of SynchronizedView (2 for 2D, 3 for 3D)
   */
-  virtual int GetSynchronizedViewType( void );
+  int GetSynchronizedViewType( void );
 
   /** render the iId'th imageview:
   *  3D visualization usually contains 4 imageviewers :

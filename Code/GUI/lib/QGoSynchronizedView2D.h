@@ -54,10 +54,9 @@ class vtkCamera;
 class vtkImageData;
 class vtkEventQtSlotConnect;
 class QGoImageView2D;
-class QGoCompareManager;
 
 
-class QGoSynchronizedView2D : public QGoSynchronizedView 
+class QGoSynchronizedView2D : public QGoSynchronizedView
 {
     Q_OBJECT
 public:
@@ -69,19 +68,15 @@ public:
   */
   void PrintOs(ostream &os);
 
-  /** \brief returns the type of comparer (2 for 2D, 3 for 3D)
+  /** \brief returns the type of SynchronizedView (2 for 2D, 3 for 3D)
   */
-  int GetComparerType( void );
+  int GetSynchronizedViewType( void );
 
-  /** \brief returns the type of comparer (2 for 2D, 3 for 3D)
-  */
-  virtual int GetSynchronizedViewType( void );
-
-  /** \brief Set image displayed by the comparer
+  /** \brief Set image displayed by the SynchronizedView
   */
   virtual void SetImage(vtkImageData* iImage);
 
-  /** \brief Set ITK image displayed by the comparer
+  /** \brief Set ITK image displayed by the SynchronizedView
   */
   template <typename ITKInputImageType>
   void SetITKImage(typename ITKInputImageType::Pointer iImage)
@@ -115,7 +110,7 @@ public:
 
   }
 
-  /** \brief Returns the imageview managed by this comparer
+  /** \brief Returns the imageview managed by this SynchronizedView
   */
   QGoImageView2D* GetImageView( void );
 

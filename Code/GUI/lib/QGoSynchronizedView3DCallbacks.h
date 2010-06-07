@@ -11,9 +11,9 @@ class vtkCallbackCommand;
 
 /**
 \class QGoSynchronizedView3DCallbacks
-\brief This object takes a list of comparers and synchronize their cameras
-*  by setting up callbacks. it is recommended to let the QGoSynchronizedViewOrchestre deal
-*  with comparer synchronization.
+\brief This object takes a list of QGoSynchronizedView and synchronize their cameras
+*  by setting up callbacks. it is recommended to let the QGoSynchronizedViewManager deal
+*  with SynchronizedView synchronization.
 */
 
 class QGoSynchronizedView3DCallbacks : public QObject
@@ -22,8 +22,7 @@ class QGoSynchronizedView3DCallbacks : public QObject
   Q_OBJECT
 public:
   /** \brief the constructor do most of the work :
-  *  add observer to master comparer
-  *  call to setup a callback and start it
+  *  add observers & callbacks to QGoSynchronizedViews of the vector
   */
   QGoSynchronizedView3DCallbacks( std::vector<QGoSynchronizedView3D*>
                                     ioOpenSynchronizedViews,
@@ -47,12 +46,12 @@ public:
   static void synchronizeCameras3 ( vtkObject* caller, long unsigned int eventId,
                                    void* clientData, void* callData );
 
-  /** \brief remove a comparer from the vector of synchronized comparers
+  /** \brief remove a Manager from the vector of synchronized Managers
   *  (this method takes care of removing the callback)
   */
   void removeSynchronizedView( QGoSynchronizedView3D* ioSynchronizedView );
 
-  /** \brief add a comparer to the vector of synchronized comparers
+  /** \brief add a Manager to the vector of synchronized Managers
   *  (this method takes care of adding the callback)
   */
   void addSynchronizedView( QGoSynchronizedView3D* ioSynchronizedView );
@@ -60,17 +59,17 @@ public:
 signals:
 
     /** \brief signals for synchronizing sliders (gives current XYslice
-    *  of any changing comparer)
+    *  of any changing Manager)
     */
     void SliceViewXYChanged( int oSlice);
 
     /** \brief signals for synchronizing sliders (gives current XZ slice
-    *  of any changing comparer)
+    *  of any changing Manager)
     */
     void SliceViewXZChanged( int oSlice);
 
     /** \brief signals for synchronizing sliders (gives current YZ slice
-    *  of any changing comparer)
+    *  of any changing Manager)
     */
     void SliceViewYZChanged( int oSlice);
 
@@ -80,14 +79,14 @@ private:
   */
   void SetupCallBack();
 
-  /** callback object to link callback function to master comparer's event
+  /** callback object to link callback function to master Manager's event
   */
   vtkCallbackCommand*            m_vtkCallBackCamSync0;
   vtkCallbackCommand*            m_vtkCallBackCamSync1;
   vtkCallbackCommand*            m_vtkCallBackCamSync2;
   vtkCallbackCommand*            m_vtkCallBackCamSync3;
 
-  /** all open comparers are stored in this array,
+  /** all open Managers are stored in this array,
   *  to transmit it to the callback function
   */
   std::vector<QGoSynchronizedView3D*>      m_openSynchronizedView;

@@ -58,8 +58,8 @@ class QGoSynchronizedViewManager;
 \brief Abstract class for the (synchronized) view of one vtkImageData*.
 */
 
-class QGoSynchronizedView : public QWidget, 
-  protected Ui::QGoSynchronizedView 
+class QGoSynchronizedView : public QWidget,
+  protected Ui::QGoSynchronizedView
 {
     Q_OBJECT
 public:
@@ -68,15 +68,15 @@ public:
   /** \brief Destructor. */
   ~QGoSynchronizedView();
 
-  /** \brief Set image displayed by the comparer
+  /** \brief Set image displayed by the SynchronizedView
   */
   virtual void SetImage(vtkImageData* iImage);
 
-  /** \brief returns the type of comparer (2 for 2D, 3 for 3D)
+  /** \brief returns the type of SynchronizedView (2 for 2D, 3 for 3D)
   */
   virtual int GetSynchronizedViewType( void )=0;
 
-  /** \brief get comparer's name
+  /** \brief get SynchronizedView's name
   */
   QString* GetName( void );
 
@@ -94,7 +94,7 @@ public:
 
 
 
-  /** \brief print the comparer information :
+  /** \brief print the SynchronizedView information :
   *  it consists in the image information if any.
   */
   virtual void PrintOs(ostream &os) = 0;
