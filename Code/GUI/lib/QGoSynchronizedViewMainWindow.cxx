@@ -30,7 +30,6 @@ QGoSynchronizedViewMainWindow::QGoSynchronizedViewMainWindow()
   connect(windowMapper, SIGNAL(mapped(QWidget*)),
             this, SLOT(setActiveSubWindow(QWidget*)));
 
-
   createActions();
   createMenus();
   createToolBars();
@@ -41,15 +40,12 @@ QGoSynchronizedViewMainWindow::QGoSynchronizedViewMainWindow()
   setUnifiedTitleAndToolBarOnMac(true);
 
   //mdiArea->setViewMode(QMdiArea::TabbedView);
-
-
 }
 
 QGoSynchronizedViewMainWindow::~QGoSynchronizedViewMainWindow()
 {
 
 }
-
 
 
 QGoSynchronizedViewManager* QGoSynchronizedViewMainWindow::GetSynchronizedViewManager()
@@ -123,21 +119,13 @@ void QGoSynchronizedViewMainWindow::closeEvent(QCloseEvent *iEvent)
       delete m_SynchronizedViewManager;
       }
     mdiArea->closeAllSubWindows();
-
-    if (mdiArea->currentSubWindow())
-      {
-      iEvent->ignore();
-      }
-    else
-      {
-      iEvent->accept();
-      }
+    QMainWindow::closeEvent(iEvent);
+    iEvent->accept();
 }
 
 
 void QGoSynchronizedViewMainWindow::openfile()
 {
-
   QString filename = QFileDialog::getOpenFileName(
     this,
     tr( "Select Image" ),"",
@@ -148,7 +136,6 @@ void QGoSynchronizedViewMainWindow::openfile()
     {
     this->OpenSynchronizedViewForFile( filename );
     }
-
 }
 
 void QGoSynchronizedViewMainWindow::OpenSynchronizedViewForFile(QString& iFile)
@@ -305,12 +292,6 @@ else
 }
 
 
-
-
-
-
-
-
 void QGoSynchronizedViewMainWindow::imageinfo()
 {
   std::stringstream timageinfo;
@@ -322,9 +303,6 @@ void QGoSynchronizedViewMainWindow::imageinfo()
     }
 
 }
-
-
-
 
 
 void QGoSynchronizedViewMainWindow::synchronize()
@@ -376,9 +354,6 @@ if (activeSynchronizedView() != 0)
 }
 
 
-
-
-
 void QGoSynchronizedViewMainWindow::about()
 {
    QMessageBox::about(this, tr("About QGoCompare"),
@@ -413,7 +388,6 @@ void QGoSynchronizedViewMainWindow::updateMenus()
         XYZviewAct->setEnabled(has3DSynchronizedView);
         QuadviewAct->setEnabled(has3DSynchronizedView);
         View3DToolBar->setVisible(has3DSynchronizedView);
-
 }
 
 void QGoSynchronizedViewMainWindow::updateWindowMenu()
@@ -424,13 +398,7 @@ void QGoSynchronizedViewMainWindow::updateWindowMenu()
     windowMenu->addSeparator();
     windowMenu->addAction(tileAct);
     windowMenu->addAction(cascadeAct);
-
-
 }
-
-
-
-
 
 
 void QGoSynchronizedViewMainWindow::createActions()
@@ -579,9 +547,9 @@ QGoSynchronizedView *QGoSynchronizedViewMainWindow::activeSynchronizedView()
 
 QMdiSubWindow *QGoSynchronizedViewMainWindow::findSynchronizedView(const QString& iSynchronizedViewName)
 {
-  foreach (QMdiSubWindow *twindow, mdiArea->subWindowList()) 
+  foreach (QMdiSubWindow *twindow, mdiArea->subWindowList())
     {
-    QGoSynchronizedView *SynchronizedView = 
+    QGoSynchronizedView *SynchronizedView =
       qobject_cast<QGoSynchronizedView *>(twindow->widget());
     if (SynchronizedView->GetName() == iSynchronizedViewName)
       {

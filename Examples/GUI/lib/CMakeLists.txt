@@ -28,7 +28,7 @@ SET( QGOGUILIB_EXAMPLE_SRC
   QGoSynchronizedView2DTest
   QGoSynchronizedView3DTest
   QGoSynchronizedViewManagerTest
-  QGoSynchronizedViewGUITest.cxx
+  QGoSynchronizedViewGUITest
 )
 
 #---------------------------------------------------------------------------
@@ -172,6 +172,28 @@ ADD_TEST( qgotabimageview3dwtTest2
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qgotabimageview3dwt2
   ${GOFIGURE2_BINARY_DIR}/Testing/earpax2isl11/earpax2isl11.lsm-PL00-CO00-RO00-ZT00-YT00-XT00-TM0000-ch00-zs0000.png
 )
+
+ADD_TEST( QGoSynchronizedView2DTest
+  ${TESTING_DATA_PATH}/Circle.png
+  1
+)
+
+ADD_TEST( QGoSynchronizedView3DTest
+  ${TESTING_DATA_PATH}/Circle3D.mhd
+  1
+)
+
+ADD_TEST( QGoSynchronizedViewManagerTest
+  ${TESTING_DATA_PATH}/Circle.png
+  ${TESTING_DATA_PATH}/Circle3D.mhd
+  1
+)
+
+#ADD_TEST( QGoSynchronizedViewGUITest
+#  ${TESTING_DATA_PATH}/Circle.png
+#  ${TESTING_DATA_PATH}/Circle3D.mhd
+#  1
+#)
 
 #---------------------------------------------------------------------------
 #---------------------------------------------------------------------------

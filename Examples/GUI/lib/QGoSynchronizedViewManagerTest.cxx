@@ -61,7 +61,7 @@ int main( int argc, char** argv )
 
   if( argc != 4 )
     {
-    std::cout <<"Usage : qgocomparertest(.exe) " <<std::endl;
+    std::cout <<"Usage : QGoSynchronizedViewManagerTest(.exe) " <<std::endl;
     std::cout << "1-file.png" <<std::endl;
     std::cout << "2-file.mhd" <<std::endl;
     std::cout << "3-test (boolean)" <<std::endl;
@@ -108,9 +108,6 @@ int main( int argc, char** argv )
   filter23D->Update();
 
 
-
-
-
   QString cp0 = "comp0";
   QString cp1 = "comp1";
   QString cp2 = "comp3";
@@ -123,44 +120,32 @@ int main( int argc, char** argv )
   QTimer* timer = new QTimer;
   timer->setSingleShot( true );
 
-  /*
-  QObject::connect( timer, SIGNAL( timeout() ), SynchronizedView0, SLOT( close() ) );
-  QObject::connect( timer, SIGNAL( timeout() ), SynchronizedView1, SLOT( close() ) );
-  QObject::connect( timer, SIGNAL( timeout() ), SynchronizedView2, SLOT( close() ) );
-*/
+
+  QObject::connect( timer, SIGNAL( timeout() ), qApp, SLOT( closeAllWindows() ) );
+
+  if( atoi( argv[3] ) == 1 )
+    {
+    timer->start( 1000 );
+    }
 
 
-  QGoSynchronizedViewManager* comparaison = new QGoSynchronizedViewManager(0);
+  QGoSynchronizedViewManager* syncViewManage = new QGoSynchronizedViewManager();
 
-  comparaison->newSynchronizedView2D(cp0,reader->GetOutput());
-  comparaison->newSynchronizedView2D(cp1,filter1->GetOutput());
+  syncViewManage->newSynchronizedView2D(cp0,reader->GetOutput());
+  syncViewManage->newSynchronizedView2D(cp1,filter1->GetOutput());
+  syncViewManage->newSynchronizedView3D(cp03D,reader3D->GetOutput());
+  syncViewManage->newSynchronizedView3D(cp13D,filter13D->GetOutput());
 
-  comparaison->newSynchronizedView3D(cp03D,reader3D->GetOutput());
-  comparaison->newSynchronizedView3D(cp13D,filter13D->GetOutput());
-
-  comparaison->Update();
-
-  comparaison->show();
-  comparaison->synchronizeOpenSynchronizedViews();
-
-
-
-
-
-
-
+  syncViewManage->Update();
+  syncViewManage->show();
+  syncViewManage->synchronizeOpenSynchronizedViews();
 
 
   app.processEvents();
-
-
-
   int output = app.exec();
 
   delete timer;
-
-  delete comparaison ;
-
+  delete syncViewManage ;
 
   return output;
 }

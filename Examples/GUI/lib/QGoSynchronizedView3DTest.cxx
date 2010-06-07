@@ -56,7 +56,7 @@ int main( int argc, char** argv )
 
   if( argc != 3 )
     {
-    std::cout <<"Usage : qgocomparer3Dtest(.exe) " <<std::endl;
+    std::cout <<"Usage : QGoSynchronizedView3DTest(.exe) " <<std::endl;
     std::cout << "1-file.mhd" <<std::endl;
     std::cout << "2-test (boolean)" <<std::endl;
     return EXIT_FAILURE;
