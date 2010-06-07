@@ -133,9 +133,6 @@ vtkViewImage2D::vtkViewImage2D()
   this->Command = vtkViewImage2DCommand::New();
   this->OrientationAnnotation = vtkOrientationAnnotation::New();
 
-  this->ContourPicker = vtkCellPicker::New();
-  this->ContourPicker->SetTolerance( 0.05 );
-
   this->Command->SetViewer( this);
 
   this->AdjustmentTransform->Identity();
@@ -187,7 +184,6 @@ vtkViewImage2D::~vtkViewImage2D()
   this->AdjustmentTransform->Delete();
   this->SlicePlane->Delete();
   this->Command->Delete();
-  this->ContourPicker->Delete();
   this->OrientationAnnotation->Delete();
 
   this->Cursor->Delete();
@@ -962,9 +958,6 @@ vtkViewImage2D::AddDataSet( vtkPolyData* dataset,
     }
   actor->GetProperty()->BackfaceCullingOn();
 
-  this->ContourPicker->AddPickList( actor );
-  this->ContourPicker->PickFromListOn();
-
   this->Renderer->AddViewProp( actor );
   this->DataSetCollection->AddItem( (vtkDataSet*)dataset );
   this->Prop3DCollection->AddItem( actor );
@@ -1016,9 +1009,6 @@ vtkViewImage2D::AddDataSet( vtkDataSet* dataset,
     actor->SetProperty( property );
     }
   actor->GetProperty()->BackfaceCullingOn();
-
-  this->ContourPicker->AddPickList( actor );
-  this->ContourPicker->PickFromListOn();
 
   this->Renderer->AddViewProp( actor );
   this->DataSetCollection->AddItem( (vtkDataSet*)dataset );

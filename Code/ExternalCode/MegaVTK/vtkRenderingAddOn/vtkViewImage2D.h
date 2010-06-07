@@ -171,7 +171,6 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage2D : public vtkViewImage
  */
  vtkGetObjectMacro( OrientationAnnotation, vtkOrientationAnnotation );
 
- vtkGetObjectMacro( ContourPicker, vtkCellPicker );
   /**
      \brief The world is not always what we think it is ...
 
@@ -555,8 +554,6 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage2D : public vtkViewImage
      everywhere it goes, and can be activated by pressing 'c'
   */
   vtkCursor2D* CursorGenerator;
-
-  vtkCellPicker*          ContourPicker;
 
   int ViewOrientation;
   int ViewConvention;
