@@ -1,6 +1,6 @@
-#include "QGoComparer2D.h"
+#include "QGoSynchronizedView2D.h"
 
-#include "QGoComparer2DSync.h"
+#include "QGoSynchronizedView2DCallbacks.h"
 
 
 #include "vtkImageData.h"
@@ -9,18 +9,18 @@
 
 #include "SnapshotHelper.h"
 #include "QGoImageView2D.h"
-#include "QGoCompareOrchestra.h"
+#include "QGoSynchronizedViewManager.h"
 
 
 
 //--------------------------------------------------------------------------
 /**
  * \brief Default Constructor.
- * \param iComparerName
+ * \param iSynchronizedViewName
  * \param iParent
  */
-QGoComparer2D::QGoComparer2D( QString iComparerName, QWidget *iParent )
- : QGoComparer(iComparerName,iParent)
+QGoSynchronizedView2D::QGoSynchronizedView2D( QString iViewName, QWidget *iParent )
+ : QGoSynchronizedView( iViewName,iParent )
 {
 }
 
@@ -28,31 +28,31 @@ QGoComparer2D::QGoComparer2D( QString iComparerName, QWidget *iParent )
 /** \brief Print self informations
 */
 void
-QGoComparer2D::
+QGoSynchronizedView2D::
 PrintOs(ostream &os)
 {
   // if we have an imageview, the we print its image information
   if (m_currentImage != NULL)
     {
-    os << "Comparer 2D " << this << " contains :" << std::endl;
+    os << "SynchronizedView 2D " << this << " contains :" << std::endl;
     m_currentImage->Print(os);
     }
   else
     {
-    os << "Comparer 2D " << this << " contains no Image :"<< std::endl;
+    os << "SynchronizedView 2D " << this << " contains no Image :"<< std::endl;
     }
 }
 
 
 //--------------------------------------------------------------------------
-QGoComparer2D::
-  ~QGoComparer2D()
+QGoSynchronizedView2D::
+  ~QGoSynchronizedView2D()
 {
   // remove the comparer from the orchestra
-  if (m_currentOrchestra != NULL)
+  if (m_currentViewManager != NULL)
     {
-    m_currentOrchestra->removeComparer2D(this);
-    m_currentOrchestra = NULL;
+    m_currentViewManager->removeSynchronizedView2D(this);
+    m_currentViewManager = NULL;
     }
 }
 
@@ -61,8 +61,8 @@ QGoComparer2D::
 /** \brief returns the type of comparer (2 for 2D, 3 for 3D)
 */
 int
-QGoComparer2D::
-GetComparerType()
+QGoSynchronizedView2D::
+GetSynchronizedViewType()
 {
   return 2;
 }
@@ -71,7 +71,7 @@ GetComparerType()
 //--------------------------------------------------------------------------
 // set the image to be displaid
 void
-QGoComparer2D::
+QGoSynchronizedView2D::
 SetImage(vtkImageData* iImage)
 {
   if (iImage == NULL)
@@ -103,7 +103,7 @@ SetImage(vtkImageData* iImage)
 /** \brief create the viewer contained in the widget
 */
 void
-QGoComparer2D::
+QGoSynchronizedView2D::
 createViewer()
 {
   // if there is already a viewer
@@ -124,17 +124,8 @@ createViewer()
 
 
 //--------------------------------------------------------------------------
-void
-QGoComparer2D::
-SetCurrentOrchestra(QGoCompareOrchestra* iCurrentOrchetra)
-{
-  m_currentOrchestra = iCurrentOrchetra;
-}
-
-
-//--------------------------------------------------------------------------
 QGoImageView2D*
-QGoComparer2D::
+QGoSynchronizedView2D::
 GetImageView()
 {
   if ( HasViewer() )
@@ -150,7 +141,7 @@ GetImageView()
 
 //--------------------------------------------------------------------------
 QString
-QGoComparer2D::
+QGoSynchronizedView2D::
 SnapshotViewXY( const GoFigure::FileType& iType,
     const QString& iBaseName)
 {

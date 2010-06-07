@@ -37,33 +37,33 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#include "QGoComparer3D.h"
+#include "QGoSynchronizedView3D.h"
 
-#include "QGoComparer3DSync.h"
+#include "QGoSynchronizedView3DCallbacks.h"
 #include "vtkImageData.h"
 #include "vtkViewImage3D.h"
 #include "vtkViewImage2D.h"
 #include "vtkEventQtSlotConnect.h"
 #include "QGoImageView3D.h"
-#include "QGoCompareOrchestra.h"
+#include "QGoSynchronizedViewManager.h"
 #include "SnapshotHelper.h"
 
 //--------------------------------------------------------------------------
-QGoComparer3D::QGoComparer3D( QString iComparerName, QWidget *iParent )
- : QGoComparer( iComparerName, iParent )
+QGoSynchronizedView3D::QGoSynchronizedView3D( QString iViewName, QWidget *iParent )
+ : QGoSynchronizedView( iViewName, iParent )
  {
  }
 
 
 //--------------------------------------------------------------------------
-QGoComparer3D::
-  ~QGoComparer3D()
+QGoSynchronizedView3D::
+  ~QGoSynchronizedView3D()
 {
-  // remove the comparer from the orchestra
-  if (m_currentOrchestra != NULL)
+  // remove the SynchronizedView from the orchestra
+  if (m_currentViewManager != NULL)
     {
-    m_currentOrchestra->removeComparer3D(this);
-    m_currentOrchestra = NULL ;
+    m_currentViewManager->removeSynchronizedView3D(this);
+    m_currentViewManager = NULL ;
     }
 
   // delete the view if any
@@ -78,28 +78,28 @@ QGoComparer3D::
 
 //--------------------------------------------------------------------------
 void
-QGoComparer3D::
+QGoSynchronizedView3D::
 PrintOs(ostream &os)
 {
   // if we have an imageview, the we print its image information
   if (m_currentImage != NULL)
     {
-    os << "Comparer 3D " << this << " contains :" << std::endl;
+    os << "SynchronizedView 3D " << this << " contains :" << std::endl;
     m_currentImage->Print(os);
     }
 else
     {
-    os << "Comparer 3D " << this << " contains no Image :"<< std::endl;
+    os << "SynchronizedView 3D " << this << " contains no Image :"<< std::endl;
     }
 }
 
 
 //--------------------------------------------------------------------------
-/** \brief returns the type of comparer (2 for 2D, 3 for 3D)
+/** \brief returns the type of SynchronizedView (2 for 2D, 3 for 3D)
 */
 int
-QGoComparer3D::
-GetComparerType()
+QGoSynchronizedView3D::
+GetSynchronizedViewType()
 {
   return 3;
 }
@@ -107,7 +107,7 @@ GetComparerType()
 
 //--------------------------------------------------------------------------
 void
-QGoComparer3D::
+QGoSynchronizedView3D::
 SetImage(vtkImageData* iImage)
 {
   if (iImage == NULL)
@@ -133,7 +133,7 @@ SetImage(vtkImageData* iImage)
 
 //--------------------------------------------------------------------------
 void
-QGoComparer3D::
+QGoSynchronizedView3D::
 Render(const int& iId)
 {
   if (static_cast<QGoImageView3D*>(m_currentView) == NULL)
@@ -156,7 +156,7 @@ Render(const int& iId)
 //--------------------------------------------------------------------------
 // get the camera of the current viewer;
 vtkCamera*
-QGoComparer3D::
+QGoSynchronizedView3D::
 GetCamera(const int& iId)
 {
   if (static_cast<QGoImageView3D*>(m_currentView) == NULL)
@@ -183,7 +183,7 @@ GetCamera(const int& iId)
 
 //--------------------------------------------------------------------------
 int
-QGoComparer3D::
+QGoSynchronizedView3D::
 GetFullScreenView()
 {
 if ( HasViewer() )
@@ -199,7 +199,7 @@ else
 
 //--------------------------------------------------------------------------
 QGoImageView3D*
-QGoComparer3D::
+QGoSynchronizedView3D::
 GetImageView()
 {
   if ( HasViewer() )
@@ -215,7 +215,7 @@ GetImageView()
 
 //--------------------------------------------------------------------------
 QString
-QGoComparer3D::
+QGoSynchronizedView3D::
 SnapshotViewXY( const GoFigure::FileType& iType, const QString& iBaseName )
 {
   return GetImageView()->SnapshotViewXY( iType, iBaseName);
@@ -224,7 +224,7 @@ SnapshotViewXY( const GoFigure::FileType& iType, const QString& iBaseName )
 
 //--------------------------------------------------------------------------
 QString
-QGoComparer3D::
+QGoSynchronizedView3D::
 SnapshotView2( const GoFigure::FileType& iType, const QString& iBaseName)
 {
   return GetImageView()->SnapshotView2( iType, iBaseName);
@@ -233,7 +233,7 @@ SnapshotView2( const GoFigure::FileType& iType, const QString& iBaseName)
 
 //--------------------------------------------------------------------------
 QString
-QGoComparer3D::
+QGoSynchronizedView3D::
 SnapshotView3( const GoFigure::FileType& iType, const QString& iBaseName)
 {
   return GetImageView()->SnapshotView3(iType,iBaseName);
@@ -242,7 +242,7 @@ SnapshotView3( const GoFigure::FileType& iType, const QString& iBaseName)
 
 //--------------------------------------------------------------------------
 QString
-QGoComparer3D::
+QGoSynchronizedView3D::
 SnapshotViewXYZ( const GoFigure::FileType& iType, const QString& iBaseName)
 {
   return GetImageView()->SnapshotViewXYZ(iType,iBaseName);
@@ -251,7 +251,7 @@ SnapshotViewXYZ( const GoFigure::FileType& iType, const QString& iBaseName)
 
 //--------------------------------------------------------------------------
 void
-QGoComparer3D::
+QGoSynchronizedView3D::
 SetFullScreenView(const int& iId)
 {
   if ( HasViewer() )
@@ -263,7 +263,7 @@ SetFullScreenView(const int& iId)
 
 //--------------------------------------------------------------------------
 void
-QGoComparer3D::
+QGoSynchronizedView3D::
 SetFullXYScreenView()
 {
   SetFullScreenView(1);
@@ -272,7 +272,7 @@ SetFullXYScreenView()
 
 //--------------------------------------------------------------------------
 void
-QGoComparer3D::
+QGoSynchronizedView3D::
 SetFullXZScreenView()
 {
   SetFullScreenView(2);
@@ -280,7 +280,7 @@ SetFullXZScreenView()
 
 //--------------------------------------------------------------------------
 void
-QGoComparer3D::
+QGoSynchronizedView3D::
 SetFullYZScreenView()
 {
   SetFullScreenView(3);
@@ -289,7 +289,7 @@ SetFullYZScreenView()
 
 //--------------------------------------------------------------------------
 void
-QGoComparer3D::
+QGoSynchronizedView3D::
 SetFullXYZScreenView()
 {
   SetFullScreenView(4);
@@ -298,7 +298,7 @@ SetFullXYZScreenView()
 
 //--------------------------------------------------------------------------
 void
-QGoComparer3D::
+QGoSynchronizedView3D::
 SetQuadView()
 {
   SetFullScreenView(0);
@@ -314,7 +314,7 @@ SetQuadView()
 /** Create the viewer in the widget
 */
 void
-QGoComparer3D::
+QGoSynchronizedView3D::
 createViewer()
 {
   // if there is already a viewer

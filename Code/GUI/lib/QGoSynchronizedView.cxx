@@ -37,28 +37,28 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#include "QGoComparer.h"
+#include "QGoSynchronizedView.h"
 #include "vtkImageData.h"
 #include "vtkViewImage2D.h"
 #include "vtkEventQtSlotConnect.h"
 #include "SnapshotHelper.h"
 #include "QGoImageView2D.h"
-#include "QGoCompareOrchestra.h"
+#include "QGoSynchronizedViewManager.h"
 
 
 
 //--------------------------------------------------------------------------
 /**
  * \brief Default Constructor.
- * \param iComparerName
+ * \param iViewName
  * \param iParent
  */
-QGoComparer::QGoComparer( QString iComparerName, QWidget *iParent )
+QGoSynchronizedView::QGoSynchronizedView( QString iViewName, QWidget *iParent )
  : QWidget                  (iParent),
-    m_currentComparerName   (iComparerName),
+    m_currentViewName       (iViewName),
     m_currentImage          (NULL),
     m_currentView           (NULL),
-    m_currentOrchestra      (NULL)
+    m_currentViewManager    (NULL)
 {
   setupUi(this);
 
@@ -69,14 +69,14 @@ QGoComparer::QGoComparer( QString iComparerName, QWidget *iParent )
   gridLayout->setContentsMargins(1,1,1,1);
   gridLayout->setSpacing(1);
 
-  this->setWindowTitle(iComparerName);
+  this->setWindowTitle(iViewName);
   this->resize(300,300);
 }
 
 
 //--------------------------------------------------------------------------
-QGoComparer::
-  ~QGoComparer()
+QGoSynchronizedView::
+  ~QGoSynchronizedView()
 {
   // delete the view if any
   if (HasViewer())
@@ -89,7 +89,7 @@ QGoComparer::
 
 
 //--------------------------------------------------------------------------
-void QGoComparer::changeEvent(QEvent *e)
+void QGoSynchronizedView::changeEvent(QEvent *e)
 {
   QWidget::changeEvent(e);
 
@@ -108,7 +108,7 @@ void QGoComparer::changeEvent(QEvent *e)
 /** \brief Set image displayed by the comparer
 */
 void
-QGoComparer::
+QGoSynchronizedView::
 SetImage(vtkImageData* iImage)
 {
   if (iImage == NULL)
@@ -136,10 +136,10 @@ SetImage(vtkImageData* iImage)
 /** \brief get comparer's name
 */
 QString*
-QGoComparer::
+QGoSynchronizedView::
 GetName()
 {
-  return &m_currentComparerName;
+  return &m_currentViewName;
 }
 
 
@@ -147,7 +147,7 @@ GetName()
 /** \brief Update the viewer contained in the widget
 */
 void
-QGoComparer::
+QGoSynchronizedView::
 Update()
 {
   if (m_currentView == NULL)
@@ -165,7 +165,7 @@ Update()
 /** \brief render the viewer contained in the widget if any
 */
 void
-QGoComparer::
+QGoSynchronizedView::
 Render()
 {
   if (m_currentView == NULL)
@@ -183,7 +183,7 @@ Render()
 /** \brief get the camera of the current viewer
 */
 vtkCamera*
-QGoComparer::
+QGoSynchronizedView::
 GetCamera()
 {
   if (m_currentView == NULL)
@@ -203,7 +203,7 @@ GetCamera()
 /** \brief true if the widget has a viewer
 */
 bool
-QGoComparer::
+QGoSynchronizedView::
 HasViewer()
 {
   if (m_currentView != NULL)
@@ -217,10 +217,10 @@ HasViewer()
 /** Set the address of the current orchestra
 */
 void
-QGoComparer::
-SetCurrentOrchestra(QGoCompareOrchestra* iCurrentOrchetra)
+QGoSynchronizedView::
+SetCurrentViewManager(QGoSynchronizedViewManager* iCurrentViewManager)
 {
-  m_currentOrchestra = iCurrentOrchetra;
+  m_currentViewManager = iCurrentViewManager;
 }
 
 
@@ -233,7 +233,7 @@ SetCurrentOrchestra(QGoCompareOrchestra* iCurrentOrchetra)
 /** delete the viewer contained in the widget
 */
 void
-QGoComparer::
+QGoSynchronizedView::
 deleteViewer()
 {
   // if there is no viewer

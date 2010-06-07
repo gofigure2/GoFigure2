@@ -37,10 +37,10 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#ifndef QGoComparer3D_H
-#define QGoComparer3D_H
+#ifndef QGoSynchronizedView3D_H
+#define QGoSynchronizedView3D_H
 
-#include "QGoComparer.h"
+#include "QGoSynchronizedView.h"
 #include "vtkSmartPointer.h"
 class vtkCamera;
 class vtkImageData;
@@ -49,13 +49,13 @@ class QGoImageView3D;
 class QGoCompareOrchestra;
 
 
-class QGoComparer3D : public QGoComparer
+class QGoSynchronizedView3D : public QGoSynchronizedView
 {
   Q_OBJECT
 public:
-  QGoComparer3D(QString iComparerName, QWidget *iParent = 0);
+  QGoSynchronizedView3D(QString iViewName, QWidget *iParent = 0);
 
-  ~QGoComparer3D();
+  ~QGoSynchronizedView3D();
 
   /** print the comparer information :
   *  it consists in the image information if any.
@@ -67,6 +67,10 @@ public:
   /** Set image displayed by the comparer
   */
   void SetImage(vtkImageData* iImage);
+
+  /** \brief returns the type of comparer (2 for 2D, 3 for 3D)
+  */
+  virtual int GetSynchronizedViewType( void );
 
   /** render the iId'th imageview:
   *  3D visualization usually contains 4 imageviewers :
@@ -138,4 +142,4 @@ private:
   void createViewer();
 };
 
-#endif // QGoComparer3D_H
+#endif // QGoSynchronizedView3D_H

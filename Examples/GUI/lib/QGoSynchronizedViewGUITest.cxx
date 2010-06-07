@@ -7,12 +7,12 @@
 #include "vtkImageGradient.h"
 #include "vtkMetaImageReader.h"
 /*
-#include "QGoComparer.h"
-#include  "QGoCompareOrchestra.h"
+#include "QGoSynchronizedView.h"
+#include  "QGoSynchronizedViewManager.h"
 #include "vtkMetaImageReader.h"
-#include "QGoComparer3D.h"
+#include "QGoSynchronizedView3D.h"
 */
-#include "qgocomparegui.h"
+#include "QGoSynchronizedViewMainWindow.h"
 
 #include <QStringList>
 #include <QString>
@@ -86,27 +86,28 @@ int main( int argc, char** argv )
   timer->setSingleShot( true );
 
   /*
-  QObject::connect( timer, SIGNAL( timeout() ), Comparer0, SLOT( close() ) );
-  QObject::connect( timer, SIGNAL( timeout() ), Comparer1, SLOT( close() ) );
-  QObject::connect( timer, SIGNAL( timeout() ), Comparer2, SLOT( close() ) );
-*/
+  QObject::connect( timer, SIGNAL( timeout() ), SynchronizedView0, SLOT( close() ) );
+  QObject::connect( timer, SIGNAL( timeout() ), SynchronizedView1, SLOT( close() ) );
+  QObject::connect( timer, SIGNAL( timeout() ), SynchronizedView2, SLOT( close() ) );
+  */
 
 
 
-  QGoCompareGUI* comparegui = new QGoCompareGUI() ;
+  QGoSynchronizedViewMainWindow* SynchronizedViewMainWindow
+    = new QGoSynchronizedViewMainWindow() ;
 
-  comparegui->newComparer2D(cp0,reader->GetOutput());
-  comparegui->newComparer2D(cp1,filter1->GetOutput());
+  SynchronizedViewMainWindow->newSynchronizedView2D(cp0,reader->GetOutput());
+  SynchronizedViewMainWindow->newSynchronizedView2D(cp1,filter1->GetOutput());
 
-  comparegui->newComparer3D(cp03D,reader3D->GetOutput());
-  comparegui->newComparer3D(cp13D,filter13D->GetOutput());
-
-
-
-  comparegui->Update();
+  SynchronizedViewMainWindow->newSynchronizedView3D(cp03D,reader3D->GetOutput());
+  SynchronizedViewMainWindow->newSynchronizedView3D(cp13D,filter13D->GetOutput());
 
 
-  comparegui->show();
+
+  SynchronizedViewMainWindow->Update();
+
+
+  SynchronizedViewMainWindow->show();
 
 
 

@@ -25,10 +25,10 @@ SET( QGOGUILIB_EXAMPLE_SRC
   QGoDBInitializationWizardTest
   qgotabimageview3dwt2
 
-  qgocomparerTest
-  qgocomparer3dTest
-  qgocomparerorchestraTest
-  qgocompareguiTest
+  QGoSynchronizedView2DTest
+  QGoSynchronizedView3DTest
+  QGoSynchronizedViewManagerTest
+  QGoSynchronizedViewGUITest.cxx
 )
 
 #---------------------------------------------------------------------------

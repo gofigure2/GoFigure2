@@ -63,13 +63,13 @@ SET( QGoGUILIB_SRC
   QGoDBInitCreateMicroscopePage.cxx
   QGoOneClickSegmentationDockWidget.cxx
 
-  QGoComparer.cxx
-  QGoComparer2D.cxx
-  QGoComparer3D.cxx
-  QGoComparer2DSync.cxx
-  QGoComparer3DSync.cxx
-  QGoCompareOrchestra.cxx
-  qgocomparegui.cxx
+  QGoSynchronizedView.cxx
+  QGoSynchronizedView2D.cxx
+  QGoSynchronizedView3D.cxx
+  QGoSynchronizedView2DCallbacks.cxx
+  QGoSynchronizedView3DCallbacks.cxx
+  QGoSynchronizedViewManager.cxx
+  QGoSynchronizedViewMainWindow.cxx
 
   QGoSeedsSegmentation.cxx
 
@@ -150,12 +150,13 @@ SET( QGoGUILIB_HDRS
   QGoDBInitCreateMicroscopePage.h
   QGoNetworkUtilities.h
 
-  QGoComparer.h
-  QGoComparer2D.h
-  QGoComparer3D.h
-  QGoComparer3DSync.h
-  QGoCompareOrchestra.h
-  qgocomparegui.h
+  QGoSynchronizedView.h
+  QGoSynchronizedView2D.h
+  QGoSynchronizedView3D.h
+  QGoSynchronizedView2DCallbacks.h
+  QGoSynchronizedView3DCallbacks.h
+  QGoSynchronizedViewManager.h
+  QGoSynchronizedViewMainWindow.h
 )
 
 #---------------------------------------------------------------------------
@@ -190,7 +191,7 @@ SET( QGoGUILIB_UI
   Resources/QGoTraceManualEditingWidget.ui
   Resources/OneClickSegmentationDockWidget.ui
 
-  Resources/QGoComparer.ui
+  Resources/QGoSynchronizedView.ui
 )
 
 #---------------------------------------------------------------------------

@@ -1,12 +1,12 @@
-#ifndef QGOCOMPAREGUI_H
-#define QGOCOMPAREGUI_H
+#ifndef QGOSYNCHRONIZEDVIEWMAINWINDOW_H
+#define QGOSYNCHRONIZEDVIEWMAINWINDOW_H
 
 
 #include <QMainWindow>
 
-class QGoComparer;
-class QGoComparer3D;
-class QGoCompareOrchestra;
+class QGoSynchronizedView;
+class QGoSynchronizedView3D;
+class QGoSynchronizedViewManager;
 class vtkImageData;
 
 QT_BEGIN_NAMESPACE
@@ -17,27 +17,27 @@ class QMdiSubWindow;
 class QSignalMapper;
 QT_END_NAMESPACE
 
-class QGoCompareGUI : public QMainWindow
+class QGoSynchronizedViewMainWindow : public QMainWindow
 {
 // QT macro
   Q_OBJECT
 
 public:
 
-  QGoCompareGUI();
-  ~QGoCompareGUI();
+  QGoSynchronizedViewMainWindow();
+  ~QGoSynchronizedViewMainWindow();
 
-  QGoCompareOrchestra* GetCompareOrchestra();
+  QGoSynchronizedViewManager* GetSynchronizedViewManager();
 
   void Update();
 
-  QGoComparer* newComparer2D(QString iComparerName, vtkImageData* iImage);
-  QGoComparer3D* newComparer3D(QString iComparerName, vtkImageData* iImage);
+  QGoSynchronizedView* newSynchronizedView2D(QString iSynchronizedViewName, vtkImageData* iImage);
+  QGoSynchronizedView3D* newSynchronizedView3D(QString iSynchronizedViewName, vtkImageData* iImage);
 
-  void OpenComparerForFile(QString& iFile);
+  void OpenSynchronizedViewForFile(QString& iFile);
 
-  void deleteComparer2D(const int& iId);
-  void deleteComparer3D(const int& iId);
+  void deleteSynchronizedView2D(const int& iId);
+  void deleteSynchronizedView3D(const int& iId);
 
 
 protected:
@@ -62,8 +62,8 @@ private slots:
   void Quadscreen();
 
 private:
-    
-  void SaveSnapshotInFile( QString& iFile, QGoComparer* Comparer);
+
+  void SaveSnapshotInFile( QString& iFile, QGoSynchronizedView* SynchronizedView);
   void createActions();
   void createMenus();
   void createToolBars();
@@ -73,8 +73,8 @@ private:
 
   void imageinfo();
 
-  QGoComparer *activeComparer();
-  QMdiSubWindow *findComparer(const QString &iComparerName);
+  QGoSynchronizedView *activeSynchronizedView();
+  QMdiSubWindow *findSynchronizedView(const QString &iSynchronizedViewName);
 
   QMdiArea *mdiArea;
   QSignalMapper *windowMapper;
@@ -104,7 +104,7 @@ private:
   QAction *XYZviewAct;
   QAction *QuadviewAct;
 
-  QGoCompareOrchestra* m_CompareOrchestra;
+  QGoSynchronizedViewManager* m_SynchronizedViewManager;
 };
 
-#endif // QGOCOMPAREGUI_H
+#endif // QGOSYNCHRONIZEDVIEWMAINWINDOW_H

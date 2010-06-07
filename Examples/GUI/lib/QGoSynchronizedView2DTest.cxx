@@ -45,26 +45,52 @@
 #include "vtkPNGReader.h"
 #include "vtkImageGaussianSmooth.h"
 #include "vtkImageGradient.h"
-#include "vtkMetaImageReader.h"
-
-#include "QGoComparer.h"
-#include  "QGoCompareOrchestra.h"
-#include "QGoComparer3D.h"
-
+#include "QGoSynchronizedView2D.h"
 
 #include <QStringList>
 #include <QString>
+
+#include "vtksys/SystemTools.hxx"
+
+
+#include "itkImage.h"
+#include "itkCastImageFilter.h"
+#include "itkSmartPointer.h"
+#include "itkImageFileReader.h"
+
+
+
+bool CheckSnapshot( QGoSynchronizedView* iViewer, GoFigure::FileType iType )
+{
+  QString filename = iViewer->SnapshotViewXY( iType );
+  std::string path =
+        vtksys::SystemTools::GetCurrentWorkingDirectory();
+  path += "/";
+  path += filename.toStdString();
+
+  if( vtksys::SystemTools::FileExists( path.c_str() ) )
+    {
+    vtksys::SystemTools::RemoveFile( path.c_str() );
+    return true;
+    }
+  else
+    {
+    std::cerr << "FAILURE * viewer->SnapshotViewXY( " << iType
+      <<" )" <<std::endl;
+    return false;
+    }
+}
+
 
 
 int main( int argc, char** argv )
 {
 
-  if( argc != 4 )
+  if( argc != 3 )
     {
     std::cout <<"Usage : qgocomparertest(.exe) " <<std::endl;
     std::cout << "1-file.png" <<std::endl;
-    std::cout << "2-file.mhd" <<std::endl;
-    std::cout << "3-test (boolean)" <<std::endl;
+    std::cout << "2-test (boolean)" <<std::endl;
     return EXIT_FAILURE;
     }
 
@@ -73,93 +99,85 @@ int main( int argc, char** argv )
   QCoreApplication::setOrganizationDomain( "http://gofigure2.sourceforge.net" );
 
 
-  // create 3 2D images from 1
 
+// ITK Typedefs
+  // ITK Reader and filters Typedef
+  typedef double       InputPixelType;
+  typedef itk::Image< InputPixelType, 2>  InputImage2DType;
+  typedef InputImage2DType::Pointer       InputImage2DPointer;
+
+  typedef unsigned char VisuPixelType;
+  typedef itk::Image< VisuPixelType, 2>  VisuImage2DType;
+  typedef VisuImage2DType::Pointer       VisuImage2DPointer;
+
+  // for visualization purpose we only need unsigned char images
+  typedef itk::Image< VisuPixelType, 2>  VisuImage2DType;
+
+  // cast the input to a reasonable pixel type for visualization
+  typedef itk::CastImageFilter< InputImage2DType, VisuImage2DType >
+          Cast2DFilterType;
+
+  //itk reader
+  typedef itk::ImageFileReader< InputImage2DType> itkReaderType;
+
+  itkReaderType::Pointer itkReader = itkReaderType::New();
+
+  itkReader->SetFileName( argv[1] );
+
+
+
+  // create 3 images from 1
   vtkSmartPointer< vtkPNGReader > reader = vtkSmartPointer< vtkPNGReader >::New();
   reader->SetFileName( argv[1] );
   reader->Update();
 
-  vtkSmartPointer< vtkImageGaussianSmooth > filter1 =
-                            vtkSmartPointer< vtkImageGaussianSmooth >::New();
-  filter1->SetInputConnection(reader->GetOutputPort());
-  filter1->Update();
-
-  vtkSmartPointer< vtkImageGradient > filter2 =
-                            vtkSmartPointer< vtkImageGradient >::New();
-  filter2->SetInputConnection(reader->GetOutputPort());
-  filter2->Update();
-
-
-
-  // create 3 3D images from 1
-
-  vtkSmartPointer< vtkMetaImageReader > reader3D = vtkSmartPointer< vtkMetaImageReader >::New();
-  reader3D->SetFileName( argv[2] );
-  reader3D->Update();
-
-  vtkSmartPointer< vtkImageGaussianSmooth > filter13D =
-                            vtkSmartPointer< vtkImageGaussianSmooth >::New();
-  filter13D->SetInputConnection(reader3D->GetOutputPort());
-  filter13D->Update();
-
-  vtkSmartPointer< vtkImageGradient > filter23D =
-                            vtkSmartPointer< vtkImageGradient >::New();
-  filter23D->SetInputConnection(reader3D->GetOutputPort());
-  filter23D->Update();
-
-
-
-
 
   QString cp0 = "comp0";
-  QString cp1 = "comp1";
-  QString cp2 = "comp3";
-
-  QString cp03D = "comp03D";
-  QString cp13D = "comp13D";
-  QString cp23D = "comp33D";
-
+  QGoSynchronizedView2D* SynchronizedView0 = new QGoSynchronizedView2D(cp0,0);
 
   QTimer* timer = new QTimer;
   timer->setSingleShot( true );
+  QObject::connect( timer, SIGNAL( timeout() ), SynchronizedView0, SLOT( close() ) );
 
-  /*
-  QObject::connect( timer, SIGNAL( timeout() ), Comparer0, SLOT( close() ) );
-  QObject::connect( timer, SIGNAL( timeout() ), Comparer1, SLOT( close() ) );
-  QObject::connect( timer, SIGNAL( timeout() ), Comparer2, SLOT( close() ) );
-*/
+  SynchronizedView0->SetImage(reader->GetOutput());
+  //SynchronizedView0->SetITKImage<InputImage2DType>(itkReader->GetOutput());
+  SynchronizedView0->Update();
+  SynchronizedView0->show();
 
+  if( atoi( argv[2] ) == 1 )
+    {
+    if( !CheckSnapshot( SynchronizedView0, GoFigure::BMP ) )
+      {
+      return EXIT_FAILURE;
+      }
+    if( !CheckSnapshot( SynchronizedView0, GoFigure::PNG ) )
+      {
+      return EXIT_FAILURE;
+      }
+    if( !CheckSnapshot( SynchronizedView0, GoFigure::JPEG ) )
+      {
+      return EXIT_FAILURE;
+      }
+    if( !CheckSnapshot( SynchronizedView0, GoFigure::EPS ) )
+      {
+      return EXIT_FAILURE;
+      }
+    if( !CheckSnapshot( SynchronizedView0, GoFigure::TIFF) )
+      {
+      return EXIT_FAILURE;
+      }
 
-  QGoCompareOrchestra* comparaison = new QGoCompareOrchestra(0);
-
-  comparaison->newComparer2D(cp0,reader->GetOutput());
-  comparaison->newComparer2D(cp1,filter1->GetOutput());
-
-  comparaison->newComparer3D(cp03D,reader3D->GetOutput());
-  comparaison->newComparer3D(cp13D,filter13D->GetOutput());
-
-  comparaison->Update();
-
-  comparaison->show();
-  comparaison->synchronizeOpenComparers();
-
-
-
-
-
-
-
+    timer->start( 1000 );
+    }
 
 
   app.processEvents();
-
-
 
   int output = app.exec();
 
   delete timer;
 
-  delete comparaison ;
+  delete SynchronizedView0;
 
 
   return output;

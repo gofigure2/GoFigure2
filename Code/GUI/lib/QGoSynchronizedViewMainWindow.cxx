@@ -1,13 +1,13 @@
-#include "qgocomparegui.h"
+#include "QGoSynchronizedViewMainWindow.h"
 
 #include <sstream>
 
 #include <QtGui>
 #include "qinputdialog.h"
 
-#include "QGoComparer.h"
-#include "QGoComparer3D.h"
-#include "QGoCompareOrchestra.h"
+#include "QGoSynchronizedView.h"
+#include "QGoSynchronizedView3D.h"
+#include "QGoSynchronizedViewManager.h"
 
 
 #include "itkImageFileReader.h"
@@ -16,9 +16,9 @@
 #include "vtkImageReader2.h"
 #include "vtkImageData.h"
 
-QGoCompareGUI::QGoCompareGUI()
+QGoSynchronizedViewMainWindow::QGoSynchronizedViewMainWindow()
 {
-  m_CompareOrchestra = new QGoCompareOrchestra(this);
+  m_SynchronizedViewManager = new QGoSynchronizedViewManager(this);
 
   mdiArea = new QMdiArea;
 
@@ -37,7 +37,7 @@ QGoCompareGUI::QGoCompareGUI()
   createStatusBar();
   updateMenus();
 
-  setWindowTitle(tr("QGoCompareGUI"));
+  setWindowTitle(tr("QGoSynchronizedViewMainWindow"));
   setUnifiedTitleAndToolBarOnMac(true);
 
   //mdiArea->setViewMode(QMdiArea::TabbedView);
@@ -45,82 +45,82 @@ QGoCompareGUI::QGoCompareGUI()
 
 }
 
-QGoCompareGUI::~QGoCompareGUI()
+QGoSynchronizedViewMainWindow::~QGoSynchronizedViewMainWindow()
 {
 
 }
 
 
 
-QGoCompareOrchestra* QGoCompareGUI::GetCompareOrchestra()
+QGoSynchronizedViewManager* QGoSynchronizedViewMainWindow::GetSynchronizedViewManager()
 {
-  return m_CompareOrchestra;
+  return m_SynchronizedViewManager;
 }
 
-void QGoCompareGUI::Update()
+void QGoSynchronizedViewMainWindow::Update()
 {
-  m_CompareOrchestra->Update();
-  m_CompareOrchestra->show();
+  m_SynchronizedViewManager->Update();
+  m_SynchronizedViewManager->show();
 }
 
-QGoComparer* QGoCompareGUI::newComparer2D(QString iComparerName, vtkImageData* iImage)
+QGoSynchronizedView* QGoSynchronizedViewMainWindow::newSynchronizedView2D(QString iSynchronizedViewName, vtkImageData* iImage)
 {
-  QGoComparer2D *comparer = m_CompareOrchestra->newComparer2D( iComparerName, iImage);
+  QGoSynchronizedView2D *synchronizedView = m_SynchronizedViewManager->newSynchronizedView2D( iSynchronizedViewName, iImage);
 
-  mdiArea->addSubWindow(comparer,Qt::SubWindow);
-  comparer->parentWidget()->resize(300,300);
-  comparer->show();
+  mdiArea->addSubWindow(synchronizedView,Qt::SubWindow);
+  synchronizedView->parentWidget()->resize(300,300);
+  synchronizedView->show();
   tileAct->trigger();
-  return comparer;
+  return synchronizedView;
 }
 
-QGoComparer3D* QGoCompareGUI::newComparer3D(QString iComparerName, vtkImageData* iImage)
+QGoSynchronizedView3D* QGoSynchronizedViewMainWindow::newSynchronizedView3D(QString iSynchronizedViewName, vtkImageData* iImage)
 {
-  QGoComparer3D *comparer = m_CompareOrchestra->newComparer3D( iComparerName, iImage);
+  QGoSynchronizedView3D *synchronizedView = m_SynchronizedViewManager->newSynchronizedView3D( iSynchronizedViewName, iImage);
 
-  mdiArea->addSubWindow(comparer);
-  comparer->parentWidget()->resize(300,300);
-  comparer->show();
+  mdiArea->addSubWindow(synchronizedView);
+  synchronizedView->parentWidget()->resize(300,300);
+  synchronizedView->show();
   tileAct->trigger();
 
-  return comparer;
+  return synchronizedView;
 }
 
 /*
-QGoComparer3D* QGoCompareGUI::newComparer3D(QString iComparerName, QString iImagePath)
+QGoSynchronizedView3D* QGoSynchronizedViewMainWindow::newSynchronizedView3D(QString iSynchronizedViewName, QString iImagePath)
 {
 
 
 
 
 
-    QGoComparer3D *comparer = m_CompareOrchestra->newComparer3D( iComparerName, iImage);
+    QGoSynchronizedView3D *synchronizedView = m_SynchronizedViewManager->newSynchronizedView3D( iSynchronizedViewName, iImage);
 
-    mdiArea->addSubWindow(comparer);
+    mdiArea->addSubWindow(synchronizedView);
 
-    return comparer;
+    return synchronizedView;
 
 }
 
 */
 
-void QGoCompareGUI::deleteComparer2D(const int& iId)
+void QGoSynchronizedViewMainWindow::deleteSynchronizedView2D(const int& iId)
 {
-  m_CompareOrchestra->deleteComparer2D(iId);
+  m_SynchronizedViewManager->deleteSynchronizedView2D(iId);
 }
 
-void QGoCompareGUI::deleteComparer3D(const int& iId)
+void QGoSynchronizedViewMainWindow::deleteSynchronizedView3D(const int& iId)
 {
-  m_CompareOrchestra->deleteComparer3D(iId);
+  m_SynchronizedViewManager->deleteSynchronizedView3D(iId);
 }
 
 
 
-void QGoCompareGUI::closeEvent(QCloseEvent *event)
+void QGoSynchronizedViewMainWindow::closeEvent(QCloseEvent *event)
 {
 
-    if (m_CompareOrchestra!= NULL)
-      delete m_CompareOrchestra;
+    if (m_SynchronizedViewManager!= NULL)
+      delete m_SynchronizedViewManager;
     mdiArea->closeAllSubWindows();
 
     if (mdiArea->currentSubWindow())
@@ -134,7 +134,7 @@ void QGoCompareGUI::closeEvent(QCloseEvent *event)
 }
 
 
-void QGoCompareGUI::openfile()
+void QGoSynchronizedViewMainWindow::openfile()
 {
 
   QString filename = QFileDialog::getOpenFileName(
@@ -145,12 +145,12 @@ void QGoCompareGUI::openfile()
 
   if( !filename.isEmpty( ) )
     {
-    this->OpenComparerForFile( filename );
+    this->OpenSynchronizedViewForFile( filename );
     }
 
 }
 
-void QGoCompareGUI::OpenComparerForFile(QString& iFile)
+void QGoSynchronizedViewMainWindow::OpenSynchronizedViewForFile(QString& iFile)
 {
   if( QFile::exists( iFile ) )
     {
@@ -177,11 +177,11 @@ void QGoCompareGUI::OpenComparerForFile(QString& iFile)
       if( ( dim[0] != 1 ) && ( dim[1] != 1 ) && ( dim[2] != 1 ) )
         {
         std::cout<<"opening2"<<std::endl;
-        newComparer3D( iFile, image );
+        newSynchronizedView3D( iFile, image );
         }
       else
         {
-        newComparer2D( iFile, image );
+        newSynchronizedView2D( iFile, image );
         }
       reader->Delete();
       r_factory->Delete();
@@ -192,9 +192,9 @@ void QGoCompareGUI::OpenComparerForFile(QString& iFile)
 
 
 
-void QGoCompareGUI::snapshotAs()
+void QGoSynchronizedViewMainWindow::snapshotAs()
 {
-QGoComparer* ScreenshotComparer = activeComparer();
+QGoSynchronizedView* ScreenshotSynchronizedView = activeSynchronizedView();
   QString filename = QFileDialog::getSaveFileName(
     this,
     tr( "Select Image" ),"",
@@ -203,17 +203,17 @@ QGoComparer* ScreenshotComparer = activeComparer();
 
   if( !filename.isEmpty( ) )
     {
-    this->SaveSnapshotInFile( filename, ScreenshotComparer);
+    this->SaveSnapshotInFile( filename, ScreenshotSynchronizedView);
     }
 }
 
 
 void
-QGoCompareGUI::SaveSnapshotInFile( QString& iFile, QGoComparer* Comparer)
+QGoSynchronizedViewMainWindow::SaveSnapshotInFile( QString& iFile, QGoSynchronizedView* SynchronizedView)
 {
 
-QGoComparer3D* temp3DComparer = NULL;
-QGoComparer2D* temp2DComparer = NULL;
+QGoSynchronizedView3D* temp3DSynchronizedView = NULL;
+QGoSynchronizedView2D* temp2DSynchronizedView = NULL;
 GoFigure::FileType iType;
 
 QString extension = iFile.section('.', -1);
@@ -221,7 +221,7 @@ QString nameOfScreenshot = iFile.section('/', -1);
 
 if (extension.isEmpty() || nameOfScreenshot.isEmpty())
   {
-  std::cerr << "QGoCompareGUI::SaveSnapshotInFile incorrect name of file"<< std::endl;
+  std::cerr << "QGoSynchronizedViewMainWindow::SaveSnapshotInFile incorrect name of file"<< std::endl;
   return;
   }
 
@@ -249,54 +249,54 @@ std::cout << nameOfScreenshot.toStdString() <<std::endl;
     iType = GoFigure::TIFF;
   else
     {
-    std::cerr << "QGoCompareGUI::SaveSnapshotInFile couldn't find appropriate extension"<< std::endl;
+    std::cerr << "QGoSynchronizedViewMainWindow::SaveSnapshotInFile couldn't find appropriate extension"<< std::endl;
     return;
     }
 
 
-if (Comparer != 0)
-  if (Comparer->GetComparerType()==3) // if we take a snapshot of a 3D comparer
+if (SynchronizedView != 0)
+  if (SynchronizedView->GetSynchronizedViewType()==3) // if we take a snapshot of a 3D synchronizedView
     {
-    temp3DComparer = static_cast<QGoComparer3D*>(Comparer);
+    temp3DSynchronizedView = static_cast<QGoSynchronizedView3D*>(SynchronizedView);
 
-    temp3DComparer->GetFullScreenView();
+    temp3DSynchronizedView->GetFullScreenView();
 
-    switch (temp3DComparer->GetFullScreenView())
+    switch (temp3DSynchronizedView->GetFullScreenView())
       {
       case 0 :
-        temp3DComparer->SnapshotViewXYZ(iType,iFile);
+        temp3DSynchronizedView->SnapshotViewXYZ(iType,iFile);
         break;
 
       case 1 :
-        temp3DComparer->SnapshotViewXY(iType,iFile);
+        temp3DSynchronizedView->SnapshotViewXY(iType,iFile);
         break;
 
       case 2 :
-        temp3DComparer->SnapshotView2(iType,iFile);
+        temp3DSynchronizedView->SnapshotView2(iType,iFile);
         break;
 
       case 3 :
-        temp3DComparer->SnapshotView3(iType,iFile);
+        temp3DSynchronizedView->SnapshotView3(iType,iFile);
         break;
 
       case 4 :
-        temp3DComparer->SnapshotViewXYZ(iType,iFile);
+        temp3DSynchronizedView->SnapshotViewXYZ(iType,iFile);
         break;
 
       default:
-        std::cerr << "QGoCompareGUI::SaveSnapshotInFile can't access fullscreen view"<< std::endl;
+        std::cerr << "QGoSynchronizedViewMainWindow::SaveSnapshotInFile can't access fullscreen view"<< std::endl;
         return;
         break; // facultative
       }
     }
-  else // if we take a snapshot of a 2D comparer
+  else // if we take a snapshot of a 2D synchronizedView
     {
-    temp2DComparer = static_cast<QGoComparer2D*>(Comparer);
-    temp2DComparer->SnapshotViewXY(iType,iFile);
+    temp2DSynchronizedView = static_cast<QGoSynchronizedView2D*>(SynchronizedView);
+    temp2DSynchronizedView->SnapshotViewXY(iType,iFile);
     }
 else
   {
-  std::cerr << "QGoCompareGUI::SaveSnapshotInFile comparer pointer error"<< std::endl;
+  std::cerr << "QGoSynchronizedViewMainWindow::SaveSnapshotInFile synchronizedView pointer error"<< std::endl;
   return;
   }
 
@@ -310,13 +310,13 @@ else
 
 
 
-void QGoCompareGUI::imageinfo()
+void QGoSynchronizedViewMainWindow::imageinfo()
 {
 
   std::stringstream imageinfo;
-    if (activeComparer())
+    if (activeSynchronizedView())
     {
-    activeComparer()->PrintOs(imageinfo);
+    activeSynchronizedView()->PrintOs(imageinfo);
     QMessageBox::about(this, tr("Image Informations"),
             QString::fromStdString(imageinfo.str()));
     }
@@ -327,51 +327,51 @@ void QGoCompareGUI::imageinfo()
 
 
 
-void QGoCompareGUI::synchronize()
+void QGoSynchronizedViewMainWindow::synchronize()
 {
-  if (m_CompareOrchestra->isSynchronizing())
-    m_CompareOrchestra->unSynchronizeOpenComparers();
+  if (m_SynchronizedViewManager->isSynchronizing())
+    m_SynchronizedViewManager->unSynchronizeOpenSynchronizedViews();
   else
-    m_CompareOrchestra->synchronizeOpenComparers();
+    m_SynchronizedViewManager->synchronizeOpenSynchronizedViews();
 
 }
 
-void QGoCompareGUI::FullscreenXY()
+void QGoSynchronizedViewMainWindow::FullscreenXY()
 {
-if (activeComparer() != 0)
-  if (activeComparer()->GetComparerType()==3)
-    static_cast<QGoComparer3D*>(activeComparer())->SetFullXYScreenView();
+if (activeSynchronizedView() != 0)
+  if (activeSynchronizedView()->GetSynchronizedViewType()==3)
+    static_cast<QGoSynchronizedView3D*>(activeSynchronizedView())->SetFullXYScreenView();
 
 }
 
-void QGoCompareGUI::FullscreenXZ()
+void QGoSynchronizedViewMainWindow::FullscreenXZ()
 {
-if (activeComparer() != 0)
-  if (activeComparer()->GetComparerType()==3)
-    static_cast<QGoComparer3D*>(activeComparer())->SetFullXZScreenView();
+if (activeSynchronizedView() != 0)
+  if (activeSynchronizedView()->GetSynchronizedViewType()==3)
+    static_cast<QGoSynchronizedView3D*>(activeSynchronizedView())->SetFullXZScreenView();
 
 }
 
-void QGoCompareGUI::FullscreenYZ()
+void QGoSynchronizedViewMainWindow::FullscreenYZ()
 {
-if (activeComparer() != 0)
-  if (activeComparer()->GetComparerType()==3)
-    static_cast<QGoComparer3D*>(activeComparer())->SetFullYZScreenView();
+if (activeSynchronizedView() != 0)
+  if (activeSynchronizedView()->GetSynchronizedViewType()==3)
+    static_cast<QGoSynchronizedView3D*>(activeSynchronizedView())->SetFullYZScreenView();
 
 }
 
-void QGoCompareGUI::FullscreenXYZ()
+void QGoSynchronizedViewMainWindow::FullscreenXYZ()
 {
-if (activeComparer() != 0)
-  if (activeComparer()->GetComparerType()==3)
-    static_cast<QGoComparer3D*>(activeComparer())->SetFullXYZScreenView();
+if (activeSynchronizedView() != 0)
+  if (activeSynchronizedView()->GetSynchronizedViewType()==3)
+    static_cast<QGoSynchronizedView3D*>(activeSynchronizedView())->SetFullXYZScreenView();
 }
 
-void QGoCompareGUI::Quadscreen()
+void QGoSynchronizedViewMainWindow::Quadscreen()
 {
-if (activeComparer() != 0)
-  if (activeComparer()->GetComparerType()==3)
-    static_cast<QGoComparer3D*>(activeComparer())->SetQuadView();
+if (activeSynchronizedView() != 0)
+  if (activeSynchronizedView()->GetSynchronizedViewType()==3)
+    static_cast<QGoSynchronizedView3D*>(activeSynchronizedView())->SetQuadView();
 
 }
 
@@ -379,7 +379,7 @@ if (activeComparer() != 0)
 
 
 
-void QGoCompareGUI::about()
+void QGoSynchronizedViewMainWindow::about()
 {
    QMessageBox::about(this, tr("About QGoCompare"),
             tr("<b>QGoCompare</b> lets you open multiple VTK/ITK images from a "
@@ -387,7 +387,7 @@ void QGoCompareGUI::about()
                "This program uses Qt, VTK, ITK and GoFigure2 libraries"));
 }
 
-void QGoCompareGUI::aboutGF2()
+void QGoSynchronizedViewMainWindow::aboutGF2()
 {
    QMessageBox::about(this, tr("About GoFigure2"),
             tr("<b>GoFigure2</b> is a cross-platform, free open source software (FOSS),"
@@ -395,28 +395,28 @@ void QGoCompareGUI::aboutGF2()
                "http://gofigure2.sourceforge.net/"));
 }
 
-void QGoCompareGUI::updateMenus()
+void QGoSynchronizedViewMainWindow::updateMenus()
 {
-    bool hasComparer = (activeComparer() != 0);
-    syncAct->setEnabled(hasComparer);
-    closeAct->setEnabled(hasComparer);
-    closeAllAct->setEnabled(hasComparer);
-    tileAct->setEnabled(hasComparer);
-    cascadeAct->setEnabled(hasComparer);
+    bool hasSynchronizedView = (activeSynchronizedView() != 0);
+    syncAct->setEnabled(hasSynchronizedView);
+    closeAct->setEnabled(hasSynchronizedView);
+    closeAllAct->setEnabled(hasSynchronizedView);
+    tileAct->setEnabled(hasSynchronizedView);
+    cascadeAct->setEnabled(hasSynchronizedView);
 
     // if it is a 3D view, we activate the change view actions
-    bool has3DComparer = ( (hasComparer)
-                            && (activeComparer()->GetComparerType()==3) );
-        XYviewAct->setEnabled(has3DComparer);
-        XZviewAct->setEnabled(has3DComparer);
-        YZviewAct->setEnabled(has3DComparer);
-        XYZviewAct->setEnabled(has3DComparer);
-        QuadviewAct->setEnabled(has3DComparer);
-        View3DToolBar->setVisible(has3DComparer);
+    bool has3DSynchronizedView = ( (hasSynchronizedView)
+                            && (activeSynchronizedView()->GetSynchronizedViewType()==3) );
+        XYviewAct->setEnabled(has3DSynchronizedView);
+        XZviewAct->setEnabled(has3DSynchronizedView);
+        YZviewAct->setEnabled(has3DSynchronizedView);
+        XYZviewAct->setEnabled(has3DSynchronizedView);
+        QuadviewAct->setEnabled(has3DSynchronizedView);
+        View3DToolBar->setVisible(has3DSynchronizedView);
 
 }
 
-void QGoCompareGUI::updateWindowMenu()
+void QGoSynchronizedViewMainWindow::updateWindowMenu()
 {
     windowMenu->clear();
     windowMenu->addAction(closeAct);
@@ -433,7 +433,7 @@ void QGoCompareGUI::updateWindowMenu()
 
 
 
-void QGoCompareGUI::createActions()
+void QGoSynchronizedViewMainWindow::createActions()
 {
     openfileAct = new QAction(/*QIcon(":/images/open.png"),*/ tr("&Open an image file"), this);
     openfileAct->setShortcuts(QKeySequence::Open);
@@ -524,7 +524,7 @@ void QGoCompareGUI::createActions()
 
 }
 
-void QGoCompareGUI::createMenus()
+void QGoSynchronizedViewMainWindow::createMenus()
 {
     fileMenu = menuBar()->addMenu(tr("&File"));
     fileMenu->addAction(openfileAct);
@@ -546,7 +546,7 @@ void QGoCompareGUI::createMenus()
     helpMenu->addAction(aboutGF2Act);
 }
 
-void QGoCompareGUI::createToolBars()
+void QGoSynchronizedViewMainWindow::createToolBars()
 {
     ToolBar = addToolBar(tr("ImageActions"));
     ToolBar->addAction(openmemAct);
@@ -562,26 +562,26 @@ void QGoCompareGUI::createToolBars()
     View3DToolBar ->addAction(QuadviewAct);
 }
 
-void QGoCompareGUI::createStatusBar()
+void QGoSynchronizedViewMainWindow::createStatusBar()
 {
     statusBar()->showMessage(tr("Ready"));
 }
 
 
 
-QGoComparer *QGoCompareGUI::activeComparer()
+QGoSynchronizedView *QGoSynchronizedViewMainWindow::activeSynchronizedView()
 {
     if (QMdiSubWindow *activeSubWindow = mdiArea->activeSubWindow())
-        return static_cast<QGoComparer*>(activeSubWindow->widget());
+        return static_cast<QGoSynchronizedView*>(activeSubWindow->widget());
     return 0;
 }
 
 
-QMdiSubWindow *QGoCompareGUI::findComparer(const QString& iComparerName)
+QMdiSubWindow *QGoSynchronizedViewMainWindow::findSynchronizedView(const QString& iSynchronizedViewName)
 {
   foreach (QMdiSubWindow *window, mdiArea->subWindowList()) {
-        QGoComparer *Comparer = qobject_cast<QGoComparer *>(window->widget());
-        if (Comparer->GetName() == iComparerName)
+        QGoSynchronizedView *SynchronizedView = qobject_cast<QGoSynchronizedView *>(window->widget());
+        if (SynchronizedView->GetName() == iSynchronizedViewName)
             return window;
     }
     return 0;
@@ -589,7 +589,7 @@ QMdiSubWindow *QGoCompareGUI::findComparer(const QString& iComparerName)
 
 
 
-void QGoCompareGUI::setActiveSubWindow(QWidget *window)
+void QGoSynchronizedViewMainWindow::setActiveSubWindow(QWidget *window)
 {
     if (!window)
         return;

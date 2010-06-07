@@ -42,10 +42,15 @@
 #include <QTimer>
 
 #include "vtkSmartPointer.h"
-#include "vtkMetaImageReader.h"
+#include "vtkPNGReader.h"
 #include "vtkImageGaussianSmooth.h"
 #include "vtkImageGradient.h"
-#include "QGoComparer3D.h"
+#include "vtkMetaImageReader.h"
+
+#include "QGoSynchronizedView.h"
+#include  "QGoSynchronizedViewManager.h"
+#include "QGoSynchronizedView3D.h"
+
 
 #include <QStringList>
 #include <QString>
@@ -54,11 +59,12 @@
 int main( int argc, char** argv )
 {
 
-  if( argc != 3 )
+  if( argc != 4 )
     {
-    std::cout <<"Usage : qgocomparer3Dtest(.exe) " <<std::endl;
-    std::cout << "1-file.mhd" <<std::endl;
-    std::cout << "2-test (boolean)" <<std::endl;
+    std::cout <<"Usage : qgocomparertest(.exe) " <<std::endl;
+    std::cout << "1-file.png" <<std::endl;
+    std::cout << "2-file.mhd" <<std::endl;
+    std::cout << "3-test (boolean)" <<std::endl;
     return EXIT_FAILURE;
     }
 
@@ -67,9 +73,9 @@ int main( int argc, char** argv )
   QCoreApplication::setOrganizationDomain( "http://gofigure2.sourceforge.net" );
 
 
-  // create 3 images from 1
+  // create 3 2D images from 1
 
-  vtkSmartPointer< vtkMetaImageReader > reader = vtkSmartPointer< vtkMetaImageReader >::New();
+  vtkSmartPointer< vtkPNGReader > reader = vtkSmartPointer< vtkPNGReader >::New();
   reader->SetFileName( argv[1] );
   reader->Update();
 
@@ -85,112 +91,64 @@ int main( int argc, char** argv )
 
 
 
+  // create 3 3D images from 1
+
+  vtkSmartPointer< vtkMetaImageReader > reader3D = vtkSmartPointer< vtkMetaImageReader >::New();
+  reader3D->SetFileName( argv[2] );
+  reader3D->Update();
+
+  vtkSmartPointer< vtkImageGaussianSmooth > filter13D =
+                            vtkSmartPointer< vtkImageGaussianSmooth >::New();
+  filter13D->SetInputConnection(reader3D->GetOutputPort());
+  filter13D->Update();
+
+  vtkSmartPointer< vtkImageGradient > filter23D =
+                            vtkSmartPointer< vtkImageGradient >::New();
+  filter23D->SetInputConnection(reader3D->GetOutputPort());
+  filter23D->Update();
+
+
+
+
+
   QString cp0 = "comp0";
   QString cp1 = "comp1";
   QString cp2 = "comp3";
 
-
-  QGoComparer3D* Comparer0 = new QGoComparer3D(cp0,0);
-  QGoComparer3D* Comparer1 = new QGoComparer3D("cp1",0);
-  QGoComparer3D* Comparer2 = new QGoComparer3D("cp2",0);
+  QString cp03D = "comp03D";
+  QString cp13D = "comp13D";
+  QString cp23D = "comp33D";
 
 
   QTimer* timer = new QTimer;
   timer->setSingleShot( true );
-  QObject::connect( timer, SIGNAL( timeout() ), Comparer0, SLOT( close() ) );
-  QObject::connect( timer, SIGNAL( timeout() ), Comparer1, SLOT( close() ) );
-  QObject::connect( timer, SIGNAL( timeout() ), Comparer2, SLOT( close() ) );
 
-  Comparer0->SetImage(reader->GetOutput());
-  Comparer1->SetImage(filter1->GetOutput());
-  Comparer2->SetImage(filter2->GetOutput());
-
-
-  Comparer0->Update();
-  Comparer0->show();
-
-  Comparer1->Update();
-  Comparer1->show();
-
-  Comparer2->Update();
-  Comparer2->show();
+  /*
+  QObject::connect( timer, SIGNAL( timeout() ), SynchronizedView0, SLOT( close() ) );
+  QObject::connect( timer, SIGNAL( timeout() ), SynchronizedView1, SLOT( close() ) );
+  QObject::connect( timer, SIGNAL( timeout() ), SynchronizedView2, SLOT( close() ) );
+*/
 
 
-  if( atoi( argv[2] ) == 1 )
-    {
-    timer->start( 1000 );
+  QGoSynchronizedViewManager* comparaison = new QGoSynchronizedViewManager(0);
 
-    Comparer0->SetFullScreenView(1);
-    if( Comparer0->GetFullScreenView() != 1 )
-      {
-      std::cerr <<"Comparer0->GetFullScreenView() = " <<Comparer0->GetFullScreenView();
-      std::cerr <<" != 1" <<std::endl;
-      app.closeAllWindows();
+  comparaison->newSynchronizedView2D(cp0,reader->GetOutput());
+  comparaison->newSynchronizedView2D(cp1,filter1->GetOutput());
 
-      reader->Delete();
-      delete timer;
-      delete Comparer0;
-      delete Comparer1;
-      delete Comparer2;
-      return EXIT_FAILURE;
-      }
+  comparaison->newSynchronizedView3D(cp03D,reader3D->GetOutput());
+  comparaison->newSynchronizedView3D(cp13D,filter13D->GetOutput());
 
-    Comparer0->SetFullScreenView(2);
-    if( Comparer0->GetFullScreenView() != 2 )
-      {
-      std::cerr <<"Comparer0->GetFullScreenView() = " <<Comparer0->GetFullScreenView();
-      std::cerr <<" != 2" <<std::endl;
-      app.closeAllWindows();
+  comparaison->Update();
 
-      delete timer;
-      delete Comparer0;
-      delete Comparer1;
-      delete Comparer2;
-      return EXIT_FAILURE;
-      }
+  comparaison->show();
+  comparaison->synchronizeOpenSynchronizedViews();
 
-    Comparer0->SetFullScreenView(3);
-    if( Comparer0->GetFullScreenView() != 3 )
-      {
-      std::cerr <<"Comparer0->GetFullScreenView() = " <<Comparer0->GetFullScreenView();
-      std::cerr <<" != 3" <<std::endl;
-      app.closeAllWindows();
 
-      delete timer;
-      delete Comparer0;
-      delete Comparer1;
-      delete Comparer2;
-      return EXIT_FAILURE;
-      }
 
-    Comparer0->SetFullScreenView(4);
-    if( Comparer0->GetFullScreenView() != 4 )
-      {
-      std::cerr <<"Comparer0->GetFullScreenView() = " <<Comparer0->GetFullScreenView();
-      std::cerr <<" != 4" <<std::endl;
-      app.closeAllWindows();
 
-      delete timer;
-      delete Comparer0;
-      delete Comparer1;
-      delete Comparer2;
-      return EXIT_FAILURE;
-      }
 
-    Comparer0->SetFullScreenView(0);
-    if( Comparer0->GetFullScreenView() != 0 )
-      {
-      std::cerr <<"Comparer0->GetFullScreenView() = " <<Comparer0->GetFullScreenView();
-      std::cerr <<" != 0" <<std::endl;
-      app.closeAllWindows();
 
-      delete timer;
-      delete Comparer0;
-      delete Comparer1;
-      delete Comparer2;
-      return EXIT_FAILURE;
-      }
-  }
+
 
 
   app.processEvents();
@@ -201,11 +159,8 @@ int main( int argc, char** argv )
 
   delete timer;
 
-  delete Comparer0;
-  delete Comparer1;
-  delete Comparer2;
+  delete comparaison ;
 
 
   return output;
 }
-

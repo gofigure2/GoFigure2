@@ -37,32 +37,32 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#ifndef QGOCOMPARER2D_H
-#define QGOCOMPARER2D_H
+#ifndef QGoSynchronizedView2D_H
+#define QGoSynchronizedView2D_H
 
 #include "itkImageToVTKImageFilter.h"
 #include "itkSmartPointer.h"
 #include "itkImage.h"
 
 
-#include "QGoComparer.h"
+#include "QGoSynchronizedView.h"
 
 #include "SnapshotHelper.h"
 #include "vtkSmartPointer.h"
-//#include "ui_QGoComparer.h"
+//#include "ui_QGoSynchronizedView.h"
 class vtkCamera;
 class vtkImageData;
 class vtkEventQtSlotConnect;
 class QGoImageView2D;
-class QGoCompareOrchestra;
+class QGoCompareManager;
 
 
-class QGoComparer2D : public QGoComparer {
+class QGoSynchronizedView2D : public QGoSynchronizedView {
     Q_OBJECT
 public:
-  QGoComparer2D(QString iComparerName, QWidget *iParent = 0);
+  QGoSynchronizedView2D(QString iViewName, QWidget *iParent = 0);
 
-  ~QGoComparer2D();
+  ~QGoSynchronizedView2D();
 
   /** \brief Print self informations
   */
@@ -71,6 +71,10 @@ public:
   /** \brief returns the type of comparer (2 for 2D, 3 for 3D)
   */
   int GetComparerType( void );
+
+  /** \brief returns the type of comparer (2 for 2D, 3 for 3D)
+  */
+  virtual int GetSynchronizedViewType( void );
 
   /** \brief Set image displayed by the comparer
   */
@@ -110,10 +114,6 @@ public:
 
   }
 
-  /** \brief Set the address of the current orchestra
-  */
-  void SetCurrentOrchestra(QGoCompareOrchestra* iCurrentOrchestra);
-
   /** \brief Returns the imageview managed by this comparer
   */
   QGoImageView2D* GetImageView( void );
@@ -130,4 +130,4 @@ private:
   void createViewer( void );
 };
 
-#endif // QGOCOMPARER2D_H
+#endif // QGoSynchronizedView2D_H

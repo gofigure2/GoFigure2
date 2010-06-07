@@ -1,22 +1,22 @@
-#ifndef QGoComparer3DSYNC_H
-#define QGoComparer3DSYNC_H
+#ifndef QGoSynchronizedView3DCallbacks_H
+#define QGoSynchronizedView3DCallbacks_H
 
 
 
 #include "vtkCommand.h"
-#include "QGoComparer3D.h"
+#include "QGoSynchronizedView3D.h"
 
 class vtkObject;
 class vtkCallbackCommand;
 
 /**
-\class QGoComparer3DSync
+\class QGoSynchronizedView3DCallbacks
 \brief This object takes a list of comparers and synchronize their cameras
-*  by setting up callbacks. it is recommended to let the QGoComparerOrchestre deal
+*  by setting up callbacks. it is recommended to let the QGoSynchronizedViewOrchestre deal
 *  with comparer synchronization.
 */
 
-class QGoComparer3DSync : public QObject
+class QGoSynchronizedView3DCallbacks : public QObject
 {
   // QT macro for signals and slots
   Q_OBJECT
@@ -25,10 +25,11 @@ public:
   *  add observer to master comparer
   *  call to setup a callback and start it
   */
-  QGoComparer3DSync(std::vector<QGoComparer3D*> ioOpenComparers,
-                    QObject*                    iParent = 0);
+  QGoSynchronizedView3DCallbacks( std::vector<QGoSynchronizedView3D*>
+                                    ioOpenSynchronizedViews,
+                                  QObject*  iParent = 0);
 
-  ~QGoComparer3DSync();
+  ~QGoSynchronizedView3DCallbacks();
 
   /** \brief callback function to synchornize cameras (has to be public)
   */
@@ -49,12 +50,12 @@ public:
   /** \brief remove a comparer from the vector of synchronized comparers
   *  (this method takes care of removing the callback)
   */
-  void removeComparer( QGoComparer3D* ioComparer );
+  void removeSynchronizedView( QGoSynchronizedView3D* ioSynchronizedView );
 
   /** \brief add a comparer to the vector of synchronized comparers
   *  (this method takes care of adding the callback)
   */
-  void addComparer( QGoComparer3D* ioComparer );
+  void addSynchronizedView( QGoSynchronizedView3D* ioSynchronizedView );
 
 signals:
 
@@ -89,9 +90,9 @@ private:
   /** all open comparers are stored in this array,
   *  to transmit it to the callback function
   */
-  std::vector<QGoComparer3D*>      m_openComparers;
+  std::vector<QGoSynchronizedView3D*>      m_openSynchronizedView;
 
 };
 
 
-#endif // QGoComparer3D3DSYNC_H
+#endif // QGoSynchronizedView3D3DSYNC_H
