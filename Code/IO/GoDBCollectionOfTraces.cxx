@@ -757,9 +757,11 @@ int GoDBCollectionOfTraces::CreateNewCollection(
 {
   if (this->m_CollectionName == "mesh")
     {
-    GoDBMeshRow* NewMesh = static_cast<GoDBMeshRow*>(&iNewCollection);
+    GoDBMeshRow NewMesh;
+    NewMesh.SafeDownCast( iNewCollection );
+
     return AddOnlyOneNewObjectInTable<GoDBMeshRow>(
-      DatabaseConnector,this->m_CollectionName, NewMesh , m_CollectionIDName);
+      DatabaseConnector,this->m_CollectionName, &NewMesh , m_CollectionIDName);
     }
  if (this->m_CollectionName == "track")
     {

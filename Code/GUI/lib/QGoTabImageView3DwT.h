@@ -283,7 +283,7 @@ public slots:
 
   void ValidateContour();
   int  SavePolyDataAsContourInDB( vtkPolyData* iView );
-  void SavePolyDataAsVolumeInDB( vtkPolyData* iView );
+  void SavePolyDataAsMeshInDB( vtkPolyData* iView );
   void ReinitializeContour();
   void ReEditContour( const unsigned int& iId );
 
@@ -443,9 +443,8 @@ protected:
    * @param[in] iA alpha component in [0,1]
    * @param[in] iSaveInDataBase save in data base if true
    * \todo Alpha component is not used at all, it is assumed to be opaque
-   * \todo Change method name. Volume is not coherent with DB design.
    */
-  virtual void SavePolyDataAsVolumeInDB( vtkPolyData* iView, const int& iContourID, const int& iDir,
+  virtual void SavePolyDataAsMeshInDB( vtkPolyData* iView, const int& iContourID, const int& iDir,
     const double& iR, const double& iG, const double& iB, const double& iA,
     const bool& iHighlighted, const unsigned int& iTCoord, const bool& iSaveInDataBase );
 
@@ -463,19 +462,19 @@ protected:
 
   /**
    * \brief Generates contours and a mesh composed by the generated contours
-   * Contours are circles and volume looks like a sphere
+   * Contours are circles and mesh looks like a sphere
    */
   void OneClickSphereContours();
   /**
-   * \brief Generates a sphere volume
+   * \brief Generates a sphere mesh
    */
-  void OneClickSphereVolumes();
+  void OneClickSphereMeshes();
   /**
    * \brief Generates contours from seeds by levelset segmentation
    */
   void LevelSetSegmentation2D();
   /**
-   * \brief Generates volumes from seeds by levelset segmentation
+   * \brief Generates Meshes from seeds by levelset segmentation
    */
   void LevelSetSegmentation3D();
 

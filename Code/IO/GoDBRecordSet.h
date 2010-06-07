@@ -77,7 +77,7 @@ public:
     return &m_RowContainer;
     }
 
-  /**\brief Add a new Object of OriginalObjectType (exp: GoDBprojectRow) in
+  /** \brief Add a new Object of OriginalObjectType (exp: GoDBprojectRow) in
   the m_RowContainer and set the bool to false*/
   void AddObject( OriginalObjectType& object )
     {

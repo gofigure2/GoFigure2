@@ -47,21 +47,29 @@
 GoDBMeshRow::GoDBMeshRow():GoDBTraceRow()
 {
   this->InitializeMap();
+  m_NameChannelWithValues.clear();
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-GoDBMeshRow::GoDBMeshRow(vtkMySQLDatabase* DatabaseConnector,
-  vtkPolyData* TraceVisu,GoDBCoordinateRow Min, GoDBCoordinateRow Max,
-  unsigned int ImgSessionID,GoFigureMeshAttributes* iMeshAttributes):
-  GoDBTraceRow(DatabaseConnector,TraceVisu,Min,Max,ImgSessionID)
+GoDBMeshRow::
+GoDBMeshRow(vtkMySQLDatabase* DatabaseConnector,
+  vtkPolyData* TraceVisu, GoDBCoordinateRow Min, GoDBCoordinateRow Max,
+  unsigned int ImgSessionID, GoFigureMeshAttributes* iMeshAttributes) :
+  GoDBTraceRow( DatabaseConnector, TraceVisu, Min, Max, ImgSessionID )
 {
   this->InitializeMap();
   if (this->DoesThisBoundingBoxExist(DatabaseConnector))
     {
     std::cout<<"The bounding box already exists for this mesh"<<std::endl;
     }
-  this->m_NameChannelWithValues = iMeshAttributes->m_TotalIntensityMap;
+    
+  m_NameChannelWithValues.clear();
+  
+  if( iMeshAttributes )
+    {
+    this->m_NameChannelWithValues = iMeshAttributes->m_TotalIntensityMap;
+    }
 }
 //-------------------------------------------------------------------------
 
@@ -81,6 +89,36 @@ GoDBMeshRow::GoDBMeshRow(vtkMySQLDatabase* DatabaseConnector,
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+GoDBMeshRow::GoDBMeshRow(const GoDBMeshRow & iRow)
+{
+  this->m_TableName = iRow.m_TableName;
+  this->m_TableIDName = iRow.m_TableIDName;
+  this->InitializeMap();
+  this->m_MapRow = iRow.m_MapRow;
+  if( !iRow.m_NameChannelWithValues.empty() )
+    {
+    m_NameChannelWithValues = iRow.m_NameChannelWithValues;
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+GoDBMeshRow::
+SafeDownCast( GoDBTraceRow& iRow )
+{
+  GoDBTraceRow::StringMapConstIterator iRowIt = iRow.ConstMapBegin();
+  while( iRowIt != iRow.ConstMapEnd() )
+    {
+    this->SetField( iRowIt->first, iRowIt->second );
+    ++iRowIt;
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 void GoDBMeshRow::InitializeMap()
 {
   m_TableName = "mesh";
@@ -97,7 +135,7 @@ int GoDBMeshRow::SaveInDB(vtkMySQLDatabase* DatabaseConnector)
 {
   //std::cout <<*this <<std::endl;
   int NewMeshID = AddOnlyOneNewObjectInTable<GoDBMeshRow>( DatabaseConnector,
-    "mesh", this, "MeshID");
+    "mesh", this, "MeshID" );
   this->SetField("MeshID",NewMeshID);
   if (!this->m_NameChannelWithValues.empty())
     {

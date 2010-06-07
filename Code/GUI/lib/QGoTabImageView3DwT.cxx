@@ -2573,7 +2573,7 @@ AddMeshFromNodes( const unsigned int& iContourID,
   const double& iR, const double& iG, const double& iB, const double& iA,
   const bool& iHighlighted, const unsigned int& iTCoord, const bool& iSaveInDataBase )
 {
-  this->SavePolyDataAsVolumeInDB(  iNodes, iContourID, 0, iR,  iG,  iB,
+  this->SavePolyDataAsMeshInDB(  iNodes, iContourID, 0, iR,  iG,  iB,
      iA,  iHighlighted,  iTCoord, iSaveInDataBase );
 }
 
@@ -3168,7 +3168,7 @@ ApplyOneClickSegmentationFilter()
 
     case 1 :
     // sphere (3D volume creation)
-    this->OneClickSphereVolumes();
+    this->OneClickSphereMeshes();
     break;
 
     case 2 :
@@ -3235,7 +3235,7 @@ OneClickSphereContours()
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
-OneClickSphereVolumes()
+OneClickSphereMeshes()
 {
   // Get seeds
   m_SeedsWorldPosition = this->m_ImageView->GetAllSeeds();
@@ -3256,7 +3256,7 @@ OneClickSphereVolumes()
     seedsSegmentation.setSeedsPosition( seed_pos );
 
     // Save polydatas/mesh (=volume) in DB
-    this->SavePolyDataAsVolumeInDB(
+    this->SavePolyDataAsMeshInDB(
         seedsSegmentation.SphereVolumeSegmentation() );
     }
 
@@ -3351,7 +3351,7 @@ LevelSetSegmentation3D()
     m_SeedsWorldPosition->GetPoint( i, seed_pos );
     seedsSegmentation.setSeedsPosition( seed_pos );
 
-    SavePolyDataAsVolumeInDB(
+    SavePolyDataAsMeshInDB(
         seedsSegmentation.LevelSetSegmentation3D() );
   }
 
@@ -3510,7 +3510,7 @@ SavePolyDataAsContourInDB( vtkPolyData* iView )
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
-SavePolyDataAsVolumeInDB( vtkPolyData* iView, const int& iContourID,
+SavePolyDataAsMeshInDB( vtkPolyData* iView, const int& iContourID,
     const int& iDir, const double& iR, const double& iG, const double& iB,
     const double& iA, const bool& iHighlighted, const unsigned int& iTCoord,
     const bool& iSaveInDataBase )
@@ -3563,9 +3563,10 @@ SavePolyDataAsVolumeInDB( vtkPolyData* iView, const int& iContourID,
     // Save mesh in database
     //don't use m_ContourId
     GoFigureMeshAttributes MeshAttributes = ComputeMeshAttributes( iView );
+  
     mesh_id = m_DataBaseTables->SaveMeshFromVisuInDB( min_idx[0],
         min_idx[1], min_idx[2], iTCoord, max_idx[0],
-        max_idx[1], max_idx[2], iView,&MeshAttributes );
+        max_idx[1], max_idx[2], iView, &MeshAttributes );
     }
   else
     {
@@ -3591,7 +3592,7 @@ SavePolyDataAsVolumeInDB( vtkPolyData* iView, const int& iContourID,
  */
 void
 QGoTabImageView3DwT::
-SavePolyDataAsVolumeInDB( vtkPolyData* iView )
+SavePolyDataAsMeshInDB( vtkPolyData* iView )
 {
   // get color from the dock widget
   double r, g, b, a( 1. );
@@ -3619,7 +3620,7 @@ SavePolyDataAsVolumeInDB( vtkPolyData* iView )
   int ContourID = -1;
 
   /// TODO check iDir
-  SavePolyDataAsVolumeInDB( iView, ContourID, 0, r, g, b, a, highlighted,
+  SavePolyDataAsMeshInDB( iView, ContourID, 0, r, g, b, a, highlighted,
       m_TimePoint, saveindatabase );
 }
 //-------------------------------------------------------------------------

@@ -65,6 +65,8 @@ public:
     vtkPolyData* TraceVisu,GoDBCoordinateRow Min, GoDBCoordinateRow Max,
     unsigned int ImgSessionID,GoFigureMeshAttributes* iMeshAttributes = 0 );
 
+  GoDBMeshRow( const GoDBMeshRow& iRow);
+  
   ~GoDBMeshRow()
     {}
   //int DoesThisBoundingBoxMeshExist(vtkMySQLDatabase* DatabaseConnector);
@@ -83,6 +85,8 @@ public:
 
   void SaveInDBTotalIntensityPerChannel(vtkMySQLDatabase* DatabaseConnector,
       std::map<std::string,int> iNameChannelWithValues);
+
+  void SafeDownCast( GoDBTraceRow& iRow );
 
 protected:
   virtual void InitializeMap();

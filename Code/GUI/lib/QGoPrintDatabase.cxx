@@ -800,9 +800,10 @@ int QGoPrintDatabase::SaveMeshFromVisuInDB( unsigned int iXCoordMin,
   emit NeedToGetCurrentSelectedColor();
   emit NeedCurrentSelectedCollectionID();
 
-  GoDBMeshRow mesh_row = GetTraceRowFromVisu<GoDBMeshRow>(iXCoordMin,
-    iYCoordMin,iZCoordMin, iTCoord, iXCoordMax, iYCoordMax, iZCoordMax,
-    iMeshNodes,this->m_DatabaseConnector,0, iMeshAttributes);
+  GoDBMeshRow mesh_row = GetTraceRowFromVisu<GoDBMeshRow>(
+    iXCoordMin, iYCoordMin, iZCoordMin, iTCoord,
+    iXCoordMax, iYCoordMax, iZCoordMax,
+    iMeshNodes, this->m_DatabaseConnector, 0, iMeshAttributes );
 
   mesh_row.SetColor(m_CurrentColorData.second.red(),
     m_CurrentColorData.second.green(),m_CurrentColorData.second.blue(),
