@@ -74,7 +74,11 @@
 QGoPrintDatabase::
 QGoPrintDatabase( QWidget* iParent ) :
   QDockWidget( iParent ),
-  m_DatabaseConnector( 0 ),
+  m_ContoursData( NULL ),
+  m_MeshesData( NULL ),
+  m_TracksData( NULL ),
+  m_LineagesData( NULL ),
+  m_DatabaseConnector( NULL ),
   m_IsDatabaseUsed( false )
 {
   this->setupUi( this );

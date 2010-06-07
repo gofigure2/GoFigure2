@@ -58,15 +58,14 @@ struct TraceInfoStructure
   GoDBCollectionOfTraces*                   CollectionOfTraces;
   ContourMeshStructureMultiIndexContainer*  ListTracesInfoForVisu;
   
-  TraceInfoStructure()
-    {ListTracesInfoForVisu = 0;
-    Table = 0;
-    CollectionOfTraces = 0;}
+  TraceInfoStructure() : Table( NULL ), CollectionOfTraces( NULL ),
+    ListTracesInfoForVisu( NULL )
+    {}
 
-  TraceInfoStructure(std::string iTraceName, QWidget* parent )
+  TraceInfoStructure( const std::string& iTraceName, QWidget* parent ) :
+    Table( NULL ), CollectionOfTraces( NULL ), ListTracesInfoForVisu( NULL )
     {
-    ListTracesInfoForVisu = 0;
-    SetInfoStructure(iTraceName, parent);
+    SetInfoStructure( iTraceName, parent );
     }
     
    ~TraceInfoStructure()
@@ -86,7 +85,7 @@ struct TraceInfoStructure
         }
       }
 
-  void SetInfoStructure(std::string iTraceName, QWidget* parent)
+  void SetInfoStructure( const std::string& iTraceName, QWidget* iParent )
     {
     TraceName = iTraceName;
     TraceNameID = iTraceName;
@@ -116,13 +115,9 @@ struct TraceInfoStructure
     CollectionNameID += "ID";
     CollectionOfID = CollectionOf;
     CollectionOfID += "ID";
-    CollectionOfTraces = new GoDBCollectionOfTraces(
-      CollectionName,TraceName);
-    Table = new QTableWidgetChild(parent);
+    CollectionOfTraces = new GoDBCollectionOfTraces( CollectionName, TraceName );
+    Table = new QTableWidgetChild(iParent);
     } 
 
  };
 #endif
-
-
-  
