@@ -942,7 +942,7 @@ void GoDBCollectionOfTraces::FillRowContainerForComputedValues(
       for (unsigned int j = 0; j < iLinkToRowContainer->GetNumberOfRows();j++)
         {
         std::vector<std::string> EmptyVector;
-        int Size = iLinkToRowContainer->GetNumberOfRows();
+//         int Size = iLinkToRowContainer->GetNumberOfRows();
         for (unsigned int i = 0; i < ListComputedNames.size();i++)
           {
           EmptyVector.push_back("NV");
