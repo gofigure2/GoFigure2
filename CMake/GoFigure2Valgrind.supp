@@ -39626,4 +39626,43 @@
    fun:g_module_symbol
    fun:g_module_open
 }
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Cond
+   fun:floorf
+   obj:/usr/lib/libGLcore.so.185.18.36
+   obj:*
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Cond
+   fun:floorf
+   obj:/usr/lib/libGLcore.so.185.18.36
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Cond
+   fun:floorf
+   obj:/usr/lib/libGLcore.so.185.18.36
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+}
 
