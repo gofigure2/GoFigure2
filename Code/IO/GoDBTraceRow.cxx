@@ -87,7 +87,8 @@ void GoDBTraceRow::InitializeMap()
   this->m_MapRow["ColorID"] = ConvertToString<int>(1);
   this->m_MapRow["CoordIDMax"] = ConvertToString<int>(0);
   this->m_MapRow["CoordIDMin"] = ConvertToString<int>(0);
-  this->m_MapRow["Points"] = "null";
+  //this->m_MapRow["Points"] = "NULL";
+  this->m_MapRow["Points"] = ConvertToString<int>(0);
 }
 //-------------------------------------------------------------------------
 
