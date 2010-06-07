@@ -174,22 +174,26 @@ ADD_TEST( qgotabimageview3dwtTest2
 )
 
 ADD_TEST( QGoSynchronizedView2DTest
+  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/QGoSynchronizedView2DTest
   ${TESTING_DATA_PATH}/Circle.png
   1
 )
 
 ADD_TEST( QGoSynchronizedView3DTest
+  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/QGoSynchronizedView3DTest
   ${TESTING_DATA_PATH}/Circle3D.mhd
   1
 )
 
 ADD_TEST( QGoSynchronizedViewManagerTest
+  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/QGoSynchronizedViewManagerTest
   ${TESTING_DATA_PATH}/Circle.png
   ${TESTING_DATA_PATH}/Circle3D.mhd
   1
 )
 
 #ADD_TEST( QGoSynchronizedViewGUITest
+#  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/QGoSynchronizedViewGUITest
 #  ${TESTING_DATA_PATH}/Circle.png
 #  ${TESTING_DATA_PATH}/Circle3D.mhd
 #  1
