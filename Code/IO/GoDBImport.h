@@ -200,12 +200,16 @@ private:
      }
   }
 
+  typedef std::map< int, int > IntMapType;
   template< typename T >
-  void SaveTraces(std::map<int,int> iMapColorIDs,
-  std::map<int,int> iMapCoordIDs,std::map<int,int>iMapCollectionIDs,
-  std::string & ioLineContent,std::map<int,int> & ioMapTraceIDs = std::map<int,int>(),
-  std::map<int,int> iMapIDsSpecificOne = std::map<int,int>(),
-  std::map<int,int> iMapIDsSpecificTwo = std::map<int,int>())
+  void SaveTraces( IntMapType iMapColorIDs,
+    IntMapType iMapCoordIDs, 
+    IntMapType iMapCollectionIDs,
+    std::string& ioLineContent, 
+    IntMapType& ioMapTraceIDs = IntMapType(),
+    IntMapType iMapIDsSpecificOne = IntMapType(),
+    IntMapType iMapIDsSpecificTwo = IntMapType() 
+  )
 {
   T TraceToSave;
   int NumberOfTraces = atoi(this->GetValueForTheLine(ioLineContent).c_str());
