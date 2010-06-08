@@ -51,6 +51,7 @@
 #include "GoFigureMeshAttributes.h"
 
 #include <QHBoxLayout>
+#include <QSplitter>
 #include <string>
 
 #include "vtkSmartPointer.h"
@@ -355,7 +356,8 @@ public slots:
   void ApplyContourSemiAutoSegmentation();
 
 protected:
-  QHBoxLayout*          m_LayOut;
+  QHBoxLayout*          m_HBoxLayout;
+  QSplitter*            m_VSplitter;
   QGoImageView3D*       m_ImageView;
   std::vector< vtkSmartPointer< vtkLSMReader > > m_LSMReader;
   std::vector< vtkSmartPointer< vtkImageData > > m_InternalImages;

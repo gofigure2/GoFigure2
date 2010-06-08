@@ -65,7 +65,7 @@
 /** \class QGoPrintDatabase 
  * \brief Ensure the connection with the Database
  * */
-class QGOGUILIB_EXPORT QGoPrintDatabase : public QDockWidget,
+class QGOGUILIB_EXPORT QGoPrintDatabase : public QWidget,
   private Ui::WidgetPrintDatabase
 {
   Q_OBJECT

@@ -73,7 +73,7 @@
 //--------------------------------------------------------------------------
 QGoPrintDatabase::
 QGoPrintDatabase( QWidget* iParent ) :
-  QDockWidget( iParent ),
+  QWidget( iParent ),
   m_ContoursData( NULL ),
   m_MeshesData( NULL ),
   m_TracksData( NULL ),

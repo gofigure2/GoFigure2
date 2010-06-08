@@ -140,8 +140,6 @@ QGoTabImageView3DwT( QWidget* iParent ) :
 
   setupUi( this );
 
-  m_DataBaseTables = new QGoPrintDatabase( this );
-
   m_MegaCaptureReader = itk::MegaCaptureReader::New();
 
   CreateVisuDockWidget();
@@ -214,10 +212,10 @@ QGoTabImageView3DwT( QWidget* iParent ) :
       new QGoDockWidgetStatus( m_ManualSegmentationDockWidget, Qt::LeftDockWidgetArea, true, true ),
       m_ManualSegmentationDockWidget ) );
 
-  m_DockWidgetList.push_back(
-    std::pair< QGoDockWidgetStatus*, QDockWidget* >(
-      new QGoDockWidgetStatus( m_DataBaseTables, Qt::TopDockWidgetArea, true, true ),
-      m_DataBaseTables ) );
+//   m_DockWidgetList.push_back(
+//     std::pair< QGoDockWidgetStatus*, QDockWidget* >(
+//       new QGoDockWidgetStatus( m_DataBaseTables, Qt::TopDockWidgetArea, true, true ),
+//       m_DataBaseTables ) );
 
   m_DockWidgetList.push_back(
     std::pair< QGoDockWidgetStatus*, QDockWidget* >(
@@ -1362,8 +1360,14 @@ setupUi( QWidget* iParent )
     iParent->resize(800, 800);
     }
 
-  m_ImageView = new QGoImageView3D( this );
+  m_VSplitter  = new QSplitter( Qt::Vertical, iParent );
+  m_DataBaseTables = new QGoPrintDatabase;
+  m_VSplitter->addWidget( m_DataBaseTables );
+  m_DataBaseTables->hide();
+  
+  m_ImageView = new QGoImageView3D;
   m_ImageView->SetBackgroundColor( m_BackgroundColor );
+  m_VSplitter->addWidget( m_ImageView );
 
   QObject::connect( m_ImageView, SIGNAL( SliceViewXYChanged( int ) ),
     this, SIGNAL( SliceViewXYChanged( int ) ) );
@@ -1384,9 +1388,6 @@ setupUi( QWidget* iParent )
   QObject::connect( m_ImageView, SIGNAL( ContoursSelectionChanged( ) ),
     this, SLOT( SelectContoursInTable() ) );
 
-  m_LayOut = new QHBoxLayout( iParent );
-  m_LayOut->addWidget( m_ImageView  );
-
   // connect the contours selection connection
   QObject::connect( m_ImageView, SIGNAL( MeshesSelectionChanged( ) ),
       this, SLOT( HighLightMeshes( ) ) );
@@ -1394,6 +1395,9 @@ setupUi( QWidget* iParent )
   // connect the contours selection connection
   //QObject::connect( m_ImageView, SIGNAL( MeshesSelectionChanged( ) ),
   //    this, SLOT( SelectMeshesInTable( ) ) );
+
+  m_HBoxLayout = new QHBoxLayout( iParent );
+  m_HBoxLayout->addWidget( m_VSplitter );
 
   retranslateUi(iParent);
 
