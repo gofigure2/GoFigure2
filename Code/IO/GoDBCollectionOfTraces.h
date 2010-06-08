@@ -58,8 +58,8 @@ class QGOIO_EXPORT GoDBCollectionOfTraces
 
 public:
 
-  explicit GoDBCollectionOfTraces();
-  explicit GoDBCollectionOfTraces(
+  GoDBCollectionOfTraces();
+  GoDBCollectionOfTraces(
     std::string CollectionName,std::string Traces);
   virtual  ~GoDBCollectionOfTraces();
 

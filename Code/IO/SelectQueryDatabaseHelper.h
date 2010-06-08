@@ -144,7 +144,8 @@ QGOIO_EXPORT
 std::vector<std::string> ListSpecificValuesForOneColumn(
   vtkMySQLDatabase* DatabaseConnector,
   std::string TableName, std::string ColumnName,
-  std::string field,std::string value,bool Distinct=false);
+  std::string field,std::string value,bool Distinct=false,
+  bool ExcludeZero = false);
 
 
 //query: "SELECT ColumnName FROM TableName WHERE field = value
@@ -155,14 +156,6 @@ std::vector<std::string> ListSpecificValuesForOneColumn(
   std::string TableName, std::string ColumnName,
   std::string field,std::string value,std::string ColumnNameOrder);
 
-//query: "SELECT ColumnNameOne,ColumnName2 FROM TableName 
-//WHERE field = value ORDER BY ColumnNameOrder ASC"
-QGOIO_EXPORT
-std::vector<std::pair<std::string,std::string> >
-  ListSpecificValuesForTwoColumns(vtkMySQLDatabase* DatabaseConnector,
-  std::string TableName, std::string ColumnNameOne,std::string ColumnNameTwo,
-  std::string field,std::string value,std::string ColumnNameOrder);
-
 //query: "SELECT ColumnName FROM TableName WHERE (field = value1
 //or field = value2....)"
 QGOIO_EXPORT
@@ -170,7 +163,15 @@ std::vector<std::string> ListSpecificValuesForOneColumn(
   vtkMySQLDatabase* DatabaseConnector,
   std::string TableName, std::string ColumnName,
   std::string field,std::vector<std::string> VectorValues,
-  bool Distinct=false);
+  bool Distinct=false,bool ExcludeZero = false);
+
+//query: "SELECT ColumnNameOne,ColumnName2 FROM TableName 
+//WHERE field = value ORDER BY ColumnNameOrder ASC"
+QGOIO_EXPORT
+std::vector<std::pair<std::string,std::string> >
+  ListSpecificValuesForTwoColumns(vtkMySQLDatabase* DatabaseConnector,
+  std::string TableName, std::string ColumnNameOne,std::string ColumnNameTwo,
+  std::string field,std::string value,std::string ColumnNameOrder);
 
 //query: "SELECT MAX(ColumnName) FROM TableName WHERE (field = 
 //value1 or field = value2...."
@@ -256,6 +257,11 @@ QGOIO_EXPORT
 std::string SelectQueryStream(std::string iTable, std::string iColumn, std::string iField,
   std::string iValue);
 
+QGOIO_EXPORT
+std::string SelectQueryStreamListConditions(std::string iTable, 
+  std::string iColumn,std::string iField,
+  std::vector<std::string> iListValues,bool Distinct = false);
+
 //query: SELECT where condition1 UNION SELECT where condition1 and condition2
 QGOIO_EXPORT
 std::vector<std::string> GetSamefieldFromTwoTables(vtkMySQLDatabase* DatabaseConnector,
@@ -278,6 +284,10 @@ std::vector<std::string> GetSamefieldsFromTwoTables(vtkMySQLDatabase* DatabaseCo
   std::string iTableOne, std::string iTableTwo,std::string iColumnOne,std::string iColumnTwo,
   std::string iField,std::string iValue,std::string iFieldTwo,
   std::vector<std::string> iListConditionsTwo);
-
+QGOIO_EXPORT
+std::vector<std::string> GetSameFieldsFromSeveralTables(vtkMySQLDatabase* DatabaseConnector,
+  std::vector<std::string> iColumnNames,std::vector<std::string> iVectorTablesNames,
+  std::vector<std::string> iVectorConditionFieldNames,std::vector<std::vector<std::string> >
+  iVectorConditionsValues);
 
 #endif

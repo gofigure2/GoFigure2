@@ -540,11 +540,12 @@ int FindOneID(vtkMySQLDatabase* DatabaseConnector,
 std::vector<std::string> ListSpecificValuesForOneColumn(
   vtkMySQLDatabase* DatabaseConnector,
   std::string TableName, std::string ColumnName,
-  std::string field,std::string value,bool Distinct)
+  std::string field,std::string value,bool Distinct,
+  bool ExcludeZero)
+{ 
+  std::vector< std::string > result;
+  vtkSQLQuery* query = DatabaseConnector->GetQueryInstance();
 
-{ std::vector< std::string > result;
-
-vtkSQLQuery* query = DatabaseConnector->GetQueryInstance();
   std::stringstream querystream;
   querystream << "SELECT ";
   if (Distinct)
@@ -564,9 +565,16 @@ vtkSQLQuery* query = DatabaseConnector->GetQueryInstance();
     querystream << field;
     querystream << " = '";
     querystream << value;
-    querystream << "';";
+    //querystream << "';";
+    querystream << "'";
     }
-
+  if (ExcludeZero)
+    {
+    querystream << " AND WHERE ";
+    querystream << ColumnName;
+    querystream << " <> 0";
+    }
+  
   query->SetQuery( querystream.str().c_str() );
   if ( !query->Execute() )
     {
@@ -647,7 +655,8 @@ std::vector<std::string> ListSpecificValuesForOneColumn(
 std::vector<std::string> ListSpecificValuesForOneColumn(
   vtkMySQLDatabase* DatabaseConnector,
   std::string TableName, std::string ColumnName,
-  std::string field,std::vector<std::string> VectorValues,bool Distinct)
+  std::string field,std::vector<std::string> VectorValues,
+  bool Distinct,bool ExcludeZero)
 {
   std::vector< std::string > result;
 
@@ -673,7 +682,15 @@ std::vector<std::string> ListSpecificValuesForOneColumn(
   querystream << field;
   querystream << " = '";
   querystream << VectorValues[i];
-  querystream << "');";
+  //querystream << "');";  
+  querystream << "'";
+  if (ExcludeZero)
+    {
+    querystream << " AND ";
+    querystream << ColumnName;
+    querystream << " <> 0";
+    }
+  querystream << ")";
 
   query->SetQuery( querystream.str().c_str() );
   if ( !query->Execute() )
@@ -1558,10 +1575,14 @@ std::string SelectQueryStream(std::string iTable, std::string iColumn, std::stri
 //------------------------------------------------------------------------------
 std::string SelectQueryStreamListConditions(std::string iTable, 
   std::string iColumn,std::string iField,
-  std::vector<std::string> iListValues)
+  std::vector<std::string> iListValues,bool Distinct)
 {
   std::stringstream querystream;
   querystream << "SELECT ";
+  if (Distinct)
+    {
+    querystream << "DISTINCT ";
+    }
   querystream << iColumn;
   querystream << " FROM ";
   querystream << iTable;
@@ -1727,3 +1748,68 @@ std::vector<std::string> GetSamefieldsFromTwoTables(vtkMySQLDatabase* DatabaseCo
 
   return result; 
 }
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::vector<std::string> GetSameFieldsFromSeveralTables(
+  vtkMySQLDatabase* DatabaseConnector,std::vector<std::string> iColumnNames,
+  std::vector<std::string> iVectorTablesNames,
+  std::vector<std::string> iVectorConditionFieldNames,
+  std::vector<std::vector<std::string> > iVectorConditionsValues)
+{
+  std::vector< std::string > result;
+  vtkSQLQuery* query = DatabaseConnector->GetQueryInstance();
+  std::stringstream querystream;
+  unsigned int i = 0;
+  while (i<iVectorTablesNames.size()-1)
+    {
+    for (unsigned int j = 0; j<iColumnNames.size();j++)
+      {
+      querystream << SelectQueryStreamListConditions(
+        iVectorTablesNames[i],iColumnNames[j],iVectorConditionFieldNames[i],
+        iVectorConditionsValues[i],true);
+        querystream << " UNION DISTINCT ";
+      }   
+    i++;
+    }
+  unsigned j = 0;
+  while(j<iColumnNames.size()-1)
+    {
+    querystream << SelectQueryStreamListConditions(
+        iVectorTablesNames[i],iColumnNames[j],iVectorConditionFieldNames[i],
+        iVectorConditionsValues[i],true);
+        querystream << " UNION DISTINCT ";
+        j++;
+    }
+
+  querystream << SelectQueryStreamListConditions(
+        iVectorTablesNames[i],iColumnNames[j],iVectorConditionFieldNames[i],
+        iVectorConditionsValues[i],true);
+ 
+  query->SetQuery( querystream.str().c_str() );
+  if ( !query->Execute() )
+    {
+    itkGenericExceptionMacro(
+      << "List of same field for different tables query failed"
+      << query->GetLastErrorText() );
+    DatabaseConnector->Close();
+    DatabaseConnector->Delete();
+    query->Delete();
+    return result;
+    }
+
+  while (query->NextRow())
+    {
+    for( int i = 0; i < query->GetNumberOfFields(); i++)
+      {
+      result.push_back( query->DataValue( i ).ToString() );
+      }
+    }
+
+  query->Delete();
+
+  return result; 
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------

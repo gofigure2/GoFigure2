@@ -69,6 +69,11 @@ private:
   int                      m_ImagingSessionID;
   std::fstream             m_outfile;
 
+  std::vector<std::string> m_VectorContourIDs;
+  std::vector<std::string> m_VectorMeshIDs;
+  std::vector<std::string> m_VectorTrackIDs;
+  std::vector<std::string> m_VectorLineageIDs;
+
   /** \brief return a vector of pair containing the name of the info as .first
   and the info as .second. for Imagingsession such as Name, creation date and
   microscope name*/
@@ -139,33 +144,43 @@ private:
     return oEntityInfo;
   }
 
+  /** \brief fill the different vectors needed for the queries depending
+  on the vectors of IDs */
+  void GetVectorsTableNamesTracesIDsAndFields( 
+    std::vector<std::string> & ioVectorTableNames,
+    std::vector<std::vector<std::string> > & ioVectorTracesIDs,
+    std::vector<std::string> & ioVectorFields);
+
   /** \brief Get the celltype and subcelltype for the needed meshes from
   the database and write them on the output file*/
-  void WriteCellTypeAndSubCellTypeInfoFromDatabase(
-    std::vector<std::string> iListMeshIdsWithContours);
+  void WriteCellTypeAndSubCellTypeInfoFromDatabase();
   /** \brief get the contours info for the corresponding imagingsession from
   the database and write them on the output file*/
   void WriteContoursInfoFromDatabase();
   
-  void WriteTracksInfoFromDatabase(
-  std::vector<std::string> iListTrackIDsWithMeshesWithContours);
+  void WriteTracksInfoFromDatabase();
   /** \brief get the meshes info for the corresponding IDs from the database
   and write them on the output file*/
-  void WriteMeshesInfoFromDatabase(
-    std::vector<std::string> iListMeshIDsWithContours );
+  void WriteMeshesInfoFromDatabase();
+  void WriteLineagesInfoFromDatabase();
+
+  void UpdateVectorContourIDs();
   /** \brief when exporting contours, if the contours belong to
-  meshes, the info regarding these meshes are needed also, so return 
-  the list of IDs of these meshes*/
-  std::vector<std::string> GetListMeshIDsWithContours();
+  meshes, the info regarding these meshes are needed also, so fill
+  the vector of IDs of these meshes*/
+  void UpdateVectorMeshIDsWithContours();
+
+  void UpdateVectorTrackIDsToExportInfo();
+  void UpdateVectorLineageIDsToExportInfo();
+
+  void UpdateAllVectorForTracesIDs();
   /** \brief get the colors info from the database for the corresponding contours
   and meshes and write them in the output file*/
-  void WriteTheColorsInfoFromDatabase(
-    std::vector<std::string> iListMeshIDsWithContours);
+  void WriteTheColorsInfoFromDatabase();
   /** \brief get the coordinates without doublon corresponding to the coordidmax
   and min of the contours and meshes from the database and write them in the
   output file*/
-  void WriteCoordinatesInfoFromDatabase(
-    std::vector<std::string> iListMeshIDsWithContours);
+  void WriteCoordinatesInfoFromDatabase();
   /** \brief return <iName> */
   std::string GetNameWithBrackets(std::string iName);
   /** \brief return </iName> */
