@@ -1607,7 +1607,6 @@ SetTimePointWithMegaCapture( const int& iTimePoint )
   RemoveAllTracesForPresentTimePointManager();
 
   m_TimePoint = iTimePoint;
-  m_MegaCaptureReader->SetChannel( 0 );
   m_MegaCaptureReader->SetTimePoint( m_TimePoint );
 
   unsigned int min_ch = m_MegaCaptureReader->GetMinChannel();

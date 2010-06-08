@@ -258,7 +258,7 @@ Update()
 
   while( f_it != f_end )
     {
-    std::cout <<*f_it <<std::endl;
+//     std::cout <<*f_it <<std::endl;
   
     switch( m_FileType )
       {
