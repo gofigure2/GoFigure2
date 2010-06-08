@@ -1800,9 +1800,9 @@ std::vector<std::string> GetSameFieldsFromSeveralTables(
 
   while (query->NextRow())
     {
-    for( i = 0; i < query->GetNumberOfFields(); i++)
+    for( int k = 0; k < query->GetNumberOfFields(); k++)
       {
-      result.push_back( query->DataValue( i ).ToString() );
+      result.push_back( query->DataValue( k ).ToString() );
       }
     }
 
