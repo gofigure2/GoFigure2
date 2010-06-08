@@ -641,11 +641,22 @@ ChangeContoursToHighLightInfoFromVisu(
         if( traceid_it != 
             CurrentlyUsedTraceData->ListTracesInfoForVisu->get< TraceID >().end() )
           {
+          if (!traceid_it->Highlighted)
+            {
           ContourMeshStructure temp( *traceid_it );
           temp.Highlighted = true;
           CurrentlyUsedTraceData->ListTracesInfoForVisu->get< TraceID >().replace( traceid_it, temp );
           CurrentlyUsedTraceData->Table->SetSelectRowTraceID( CurrentlyUsedTraceData->TraceName,
             *it, true );
+            }
+          else
+            {
+            ContourMeshStructure temp( *traceid_it );
+            temp.Highlighted = false;
+            CurrentlyUsedTraceData->ListTracesInfoForVisu->get< TraceID >().replace( traceid_it, temp );
+            CurrentlyUsedTraceData->Table->SetSelectRowTraceID( CurrentlyUsedTraceData->TraceName,
+              *it, false );
+            }
           }
 
         /*std::list< ContourMeshStructure* > Trace = FindContourGivenTraceID(
@@ -710,11 +721,22 @@ ChangeMeshesToHighLightInfoFromVisu(
         if( traceid_it != 
             CurrentlyUsedTraceData->ListTracesInfoForVisu->get< TraceID >().end() )
           {
+          if (!traceid_it->Highlighted)
+            {
           ContourMeshStructure temp( *traceid_it );
           temp.Highlighted = true;
           CurrentlyUsedTraceData->ListTracesInfoForVisu->get< TraceID >().replace( traceid_it, temp );
           CurrentlyUsedTraceData->Table->SetSelectRowTraceID( CurrentlyUsedTraceData->TraceName,
             *it, true );
+            }
+          else
+            {
+            ContourMeshStructure temp( *traceid_it );
+            temp.Highlighted = false;
+            CurrentlyUsedTraceData->ListTracesInfoForVisu->get< TraceID >().replace( traceid_it, temp );
+            CurrentlyUsedTraceData->Table->SetSelectRowTraceID( CurrentlyUsedTraceData->TraceName,
+              *it, false );
+            }
           }
     }
 

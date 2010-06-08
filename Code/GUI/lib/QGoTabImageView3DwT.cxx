@@ -1391,6 +1391,10 @@ setupUi( QWidget* iParent )
   QObject::connect( m_ImageView, SIGNAL( MeshesSelectionChanged( ) ),
       this, SLOT( HighLightMeshes( ) ) );
 
+  // connect the contours selection connection
+  //QObject::connect( m_ImageView, SIGNAL( MeshesSelectionChanged( ) ),
+  //    this, SLOT( SelectMeshesInTable( ) ) );
+
   retranslateUi(iParent);
 
   QMetaObject::connectSlotsByName(iParent);
@@ -3059,6 +3063,9 @@ DeleteTracesFromTableManager( const std::list< int >& iList )
     {
     DeleteTracesFromTable( m_MeshContainer, iList );
     }
+
+  // Update the visualization
+  this->m_ImageView->UpdateRenderWindows();
 }
 //-------------------------------------------------------------------------
 
