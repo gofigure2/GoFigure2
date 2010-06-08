@@ -233,6 +233,9 @@ void
 QGoSynchronizedView3DCallbacks::
 synchronizeCameras3( vtkObject* caller, long unsigned int eventId, void* clientData, void* callData )
 {
+  (void) eventId;
+  (void) callData;
+
   // client data is a pointer to std::vector<QGoImageView2D*>
   // so client data is a std::vector<QGoSynchronizedView3D*>*
   // we get the p_m_QGoSynchronizedView3D array by the following cast :

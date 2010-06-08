@@ -42,6 +42,7 @@
 
 #include "QGoSynchronizedView.h"
 #include "vtkSmartPointer.h"
+
 class vtkCamera;
 class vtkImageData;
 class vtkEventQtSlotConnect;
@@ -137,6 +138,8 @@ private:
   /** Create the viewer in the widget
   */
   void createViewer();
+
+  Q_DISABLE_COPY( QGoSynchronizedView3D );
 };
 
 #endif // QGoSynchronizedView3D_H

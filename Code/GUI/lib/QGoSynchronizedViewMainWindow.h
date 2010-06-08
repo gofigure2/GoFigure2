@@ -31,8 +31,12 @@ public:
 
   void Update();
 
-  QGoSynchronizedView* newSynchronizedView2D(QString iSynchronizedViewName, vtkImageData* iImage);
-  QGoSynchronizedView3D* newSynchronizedView3D(QString iSynchronizedViewName, vtkImageData* iImage);
+  QGoSynchronizedView* newSynchronizedView2D(
+    QString iSynchronizedViewName, 
+    vtkImageData* iImage);
+  QGoSynchronizedView3D* newSynchronizedView3D(
+    QString iSynchronizedViewName, 
+    vtkImageData* iImage);
 
   void OpenSynchronizedViewForFile(QString& iFile);
 

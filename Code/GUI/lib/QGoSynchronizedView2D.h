@@ -50,7 +50,7 @@
 
 #include "SnapshotHelper.h"
 #include "vtkSmartPointer.h"
-//#include "ui_QGoSynchronizedView.h"
+
 class vtkCamera;
 class vtkImageData;
 class vtkEventQtSlotConnect;
@@ -59,9 +59,10 @@ class QGoImageView2D;
 
 class QGoSynchronizedView2D : public QGoSynchronizedView
 {
-    Q_OBJECT
+  Q_OBJECT
+
 public:
-  QGoSynchronizedView2D(QString iViewName, QWidget *iParent = 0);
+  explicit QGoSynchronizedView2D(QString iViewName, QWidget *iParent = 0);
 
   ~QGoSynchronizedView2D();
 
@@ -75,11 +76,10 @@ public:
 
   /** \brief Set image displayed by the SynchronizedView
   */
-  virtual void SetImage(vtkImageData* iImage);
+  void SetImage(vtkImageData* iImage);
 
-  /** \brief Set ITK image displayed by the SynchronizedView
-  */
   /*
+  /// \brief Set ITK image displayed by the SynchronizedView
   template <typename ITKInputImageType>
   void SetITKImage(typename ITKInputImageType::Pointer iImage)
   {
@@ -121,12 +121,14 @@ public slots:
   /** \brief Save a screenshot of the viewer's content
   */
   QString SnapshotViewXY( const GoFigure::FileType& iType,
-  const QString& iBaseName = tr( "Snapshot" ) );
+    const QString& iBaseName = tr( "Snapshot" ) );
 
 private:
   /** \brief create the viewer contained in the widget
   */
   void createViewer( void );
+
+  Q_DISABLE_COPY( QGoSynchronizedView2D );
 };
 
 #endif // QGoSynchronizedView2D_H

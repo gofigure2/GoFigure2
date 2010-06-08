@@ -242,7 +242,8 @@ LevelSetSegmentation2D(int iDirection)
   // npts = nb of points in the line
   // *pts = pointer to each point
 
-  vtkIdType *pts, npts;
+  vtkIdType *pts = NULL;
+  vtkIdType npts = 0;
   stripper->GetOutput()->GetLines()->GetNextCell(npts,pts);
   vtkSmartPointer<vtkPoints> points =
     vtkSmartPointer<vtkPoints>::New();
