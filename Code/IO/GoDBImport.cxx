@@ -181,10 +181,10 @@ std::string GoDBImport::SaveNoTracesEntities(std::map<int,int> & ioMapColorIDs,
     this->ReplaceCommonFieldsForTraces(
       MeshToSave,iMapColorIDs,iMapCoordIDs);
     int OldMeshID = atoi(MeshToSave.GetMapValue(MeshToSave.GetTableIDName()).c_str());
-    /*in order the query works, the MeshID to be saved has to be set to 0 otherwise 
-    if the MeshID already exits,the query will return the error 
-    "Duplicate entry MeshID for key primary":
-    MeshToSave.SetField(MeshToSave.GetTableIDName(),"0");
+    // in order the query works, the MeshID to be saved has to be set to 0 otherwise 
+    // if the MeshID already exits,the query will return the error 
+    // "Duplicate entry MeshID for key primary":
+    // MeshToSave.SetField(MeshToSave.GetTableIDName(),"0");
     int NewMeshID = MeshToSave.DoesThisBoundingBoxExist(this->m_DatabaseConnector);
     if(NewMeshID == -1)
       {
@@ -218,9 +218,9 @@ void GoDBImport::SaveContours(std::map<int,int> iMapColorIDs,
     this->ReplaceCommonFieldsForContourAndMesh(
       ContourToSave,iMapColorIDs,iMapCoordIDs);
     this->ReplaceTheFieldWithNewIDs<GoDBContourRow>(iMapMeshIDs,"MeshID",ContourToSave);
-    /*in order the query works, the ContourID to be saved has to be set to 0 otherwise 
-    if the ContourID already exits,the query will return the error 
-    "Duplicate entry ContourID for key primary":
+    //in order the query works, the ContourID to be saved has to be set to 0 otherwise 
+    //if the ContourID already exits,the query will return the error 
+    //"Duplicate entry ContourID for key primary":
     int OldContourID = atoi(ContourToSave.GetMapValue(ContourToSave.GetTableIDName()).c_str());
     ContourToSave.SetField(ContourToSave.GetTableIDName(),"0");
     int ContourID = ContourToSave.DoesThisBoundingBoxExist(this->m_DatabaseConnector);
@@ -252,9 +252,9 @@ void GoDBImport::SaveTracks(std::map<int,int> iMapColorIDs,
     this->ReplaceCommonFieldsForTraces(
       TrackToSave,iMapColorIDs,iMapCoordIDs);
     this->ReplaceTheFieldWithNewIDs<GoDBTrackRow>(iMapLineageIDs,"LineageID",TrackToSave);
-    /*in order the query works, the TrackID to be saved has to be set to 0 otherwise 
-    if the TrackID already exits,the query will return the error 
-    "Duplicate entry ContourID for key primary":
+    //in order the query works, the TrackID to be saved has to be set to 0 otherwise 
+    //if the TrackID already exits,the query will return the error 
+    //"Duplicate entry ContourID for key primary":
     int OldTrackID = atoi(TrackToSave.GetMapValue(TrackToSave.GetTableIDName()).c_str());
     TrackToSave.SetField(TrackToSave.GetTableIDName(),"0");
     int TrackID = TrackToSave.DoesThisBoundingBoxExist(this->m_DatabaseConnector);
