@@ -125,7 +125,7 @@ int main( int argc, char** argv )
 
   if( atoi( argv[3] ) == 1 )
     {
-    timer->start( 1000 );
+    timer->start( 2000 );
     }
 
 

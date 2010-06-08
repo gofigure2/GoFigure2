@@ -4,7 +4,7 @@
 #include "QGoSynchronizedView3D.h"
 #include "QGoSynchronizedView2DCallbacks.h"
 #include "QGoSynchronizedView3DCallbacks.h"
-
+#include <algorithm>
 
 //--------------------------------------------------------------------------
 QGoSynchronizedViewManager::QGoSynchronizedViewManager(QObject *iParent) :

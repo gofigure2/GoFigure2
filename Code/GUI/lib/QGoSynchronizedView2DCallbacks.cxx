@@ -44,7 +44,6 @@
 #include "vtkCamera.h"
 #include "vtkRenderer.h"
 #include "vtkSmartPointer.h"
-
 #include <algorithm>
 
 //--------------------------------------------------------------------------
