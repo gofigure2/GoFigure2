@@ -146,3 +146,14 @@ void GoDBTraceRow::SetColor(unsigned int Red, unsigned int Green,
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+std::string GoDBTraceRow::GetCollectionIDName()
+{
+  return this->m_CollectionIDName;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::string GoDBTraceRow::GetCollectionName()
+{
+  return this->m_CollectionName;
+}

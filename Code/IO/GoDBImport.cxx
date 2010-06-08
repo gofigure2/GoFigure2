@@ -48,6 +48,8 @@
 #include "GoDBCoordinateRow.h"
 #include "GoDBContourRow.h"
 #include "GoDBMeshRow.h"
+#include "GoDBTrackRow.h"
+#include "GoDBLineageRow.h"
 
 //--------------------------------------------------------------------------
 GoDBImport::GoDBImport(std::string iServerName,std::string iLogin,
@@ -74,14 +76,27 @@ void GoDBImport::ImportContours()
   std::map<int,int> MapCellTypeIDs;
   std::map<int,int> MapSubCellTypeIDs;
   std::map<int,int> MapCoordIDs;
+  std::map<int,int> MapContourIDs;
   std::map<int,int> MapMeshIDs;
+  std::map<int,int> MapTrackIDs;
+  std::map<int,int> MapLineageIDs;
   std::string       LineContent;
   LineContent = this->SaveNoTracesEntities(MapColorIDs,MapCellTypeIDs,
     MapSubCellTypeIDs,MapCoordIDs); 
-  this->SaveMeshes(MapColorIDs,MapCellTypeIDs,MapSubCellTypeIDs,
-    MapCoordIDs,LineContent,MapMeshIDs); 
-  this->SaveContours(MapColorIDs,MapCoordIDs,LineContent,MapMeshIDs);
+  this->SaveTraces<GoDBLineageRow>(MapColorIDs,MapCoordIDs,
+    MapLineageIDs,LineContent,MapLineageIDs);
+  this->SaveTraces<GoDBTrackRow>(MapColorIDs,MapCoordIDs,MapLineageIDs,
+    LineContent,MapTrackIDs);
+
+  this->SaveTraces<GoDBMeshRow>(MapColorIDs,MapCoordIDs,MapTrackIDs,
+    LineContent,MapMeshIDs,MapCellTypeIDs,MapSubCellTypeIDs);
+  //this->SaveMeshes(MapColorIDs,MapCellTypeIDs,MapSubCellTypeIDs,
+    //MapCoordIDs,LineContent,MapMeshIDs); 
+  this->SaveTraces<GoDBContourRow>(MapColorIDs,MapCoordIDs,MapMeshIDs,
+    LineContent,MapContourIDs);
+  //this->SaveContours(MapColorIDs,MapCoordIDs,LineContent,MapMeshIDs);
   this->FillContourInfoForVisu(this->m_NewContourIDs);
+  /** \todo make the new mesh,track and lineage appear in the tablewidget*/
   this->CloseDBConnection();
 }
 //--------------------------------------------------------------------------
@@ -97,7 +112,7 @@ std::string GoDBImport::SaveNoTracesEntities(std::map<int,int> & ioMapColorIDs,
     {
     getline (this->m_InFile, LineContent);
     }
-  while (this->FindFieldName(LineContent)!= "NumberOfmesh")
+  while (this->FindFieldName(LineContent)!= "NumberOflineage")
     {
     int EntitiesNumber = atoi(this->GetValueForTheLine(LineContent).c_str());
     getline(this->m_InFile, LineContent);
@@ -147,7 +162,7 @@ std::string GoDBImport::SaveNoTracesEntities(std::map<int,int> & ioMapColorIDs,
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void GoDBImport::SaveMeshes(std::map<int,int> iMapColorIDs,
+/*void GoDBImport::SaveMeshes(std::map<int,int> iMapColorIDs,
   std::map<int,int> iMapCellTypeIDs,std::map<int,int> iMapSubCellTypeIDs,
   std::map<int,int> iMapCoordIDs,std::string & ioLineContent,
   std::map<int,int> & ioMapMeshIDs)
@@ -163,12 +178,12 @@ void GoDBImport::SaveMeshes(std::map<int,int> iMapColorIDs,
       iMapCellTypeIDs,"CellTypeID",MeshToSave);
     this->ReplaceTheFieldWithNewIDs<GoDBMeshRow>(
       iMapSubCellTypeIDs,"SubCellularID",MeshToSave);
-    this->ReplaceCommonFieldsForContourAndMesh(
+    this->ReplaceCommonFieldsForTraces(
       MeshToSave,iMapColorIDs,iMapCoordIDs);
     int OldMeshID = atoi(MeshToSave.GetMapValue(MeshToSave.GetTableIDName()).c_str());
     /*in order the query works, the MeshID to be saved has to be set to 0 otherwise 
     if the MeshID already exits,the query will return the error 
-    "Duplicate entry MeshID for key primary":*/
+    "Duplicate entry MeshID for key primary":
     MeshToSave.SetField(MeshToSave.GetTableIDName(),"0");
     int NewMeshID = MeshToSave.DoesThisBoundingBoxExist(this->m_DatabaseConnector);
     if(NewMeshID == -1)
@@ -205,7 +220,7 @@ void GoDBImport::SaveContours(std::map<int,int> iMapColorIDs,
     this->ReplaceTheFieldWithNewIDs<GoDBContourRow>(iMapMeshIDs,"MeshID",ContourToSave);
     /*in order the query works, the ContourID to be saved has to be set to 0 otherwise 
     if the ContourID already exits,the query will return the error 
-    "Duplicate entry ContourID for key primary":*/
+    "Duplicate entry ContourID for key primary":
     int OldContourID = atoi(ContourToSave.GetMapValue(ContourToSave.GetTableIDName()).c_str());
     ContourToSave.SetField(ContourToSave.GetTableIDName(),"0");
     int ContourID = ContourToSave.DoesThisBoundingBoxExist(this->m_DatabaseConnector);
@@ -221,6 +236,40 @@ void GoDBImport::SaveContours(std::map<int,int> iMapColorIDs,
       }
     }
 }
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void GoDBImport::SaveTracks(std::map<int,int> iMapColorIDs,
+    std::map<int,int> iMapCoordIDs,std::string & ioLineContent,
+    std::map<int,int> iMapLineageIDs)
+{
+  GoDBTrackRow TrackToSave; 
+  int NumberOfTracks = atoi(this->GetValueForTheLine(ioLineContent).c_str());
+  getline(this->m_InFile, ioLineContent);
+  for(int i = 0; i < NumberOfTracks; i++)
+    {
+    ioLineContent = this->GetValuesFromInfile<GoDBContourRow>(TrackToSave);
+    this->ReplaceCommonFieldsForTraces(
+      TrackToSave,iMapColorIDs,iMapCoordIDs);
+    this->ReplaceTheFieldWithNewIDs<GoDBTrackRow>(iMapLineageIDs,"LineageID",TrackToSave);
+    /*in order the query works, the TrackID to be saved has to be set to 0 otherwise 
+    if the TrackID already exits,the query will return the error 
+    "Duplicate entry ContourID for key primary":
+    int OldTrackID = atoi(TrackToSave.GetMapValue(TrackToSave.GetTableIDName()).c_str());
+    TrackToSave.SetField(TrackToSave.GetTableIDName(),"0");
+    int TrackID = TrackToSave.DoesThisBoundingBoxExist(this->m_DatabaseConnector);
+    if(TrackID != -1)
+      {
+      std::cout<<"The contour" << OldContourID;
+      std::cout<<"won't be saved because there is already an existing contour with the same bounding box ";
+      std::cout<<"The existing contourID is "<<ContourID <<std::endl;
+      }
+    else
+      {
+      this->m_NewTrackIDs.push_back(ContourToSave.SaveInDB(this->m_DatabaseConnector));
+      }
+    }
+}*/
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------

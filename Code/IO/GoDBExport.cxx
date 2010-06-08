@@ -248,30 +248,21 @@ void GoDBExport::WriteCoordinatesInfoFromDatabase()
 //--------------------------------------------------------------------------
 void GoDBExport::WriteLineagesInfoFromDatabase()
 {
-  if(!this->m_VectorLineageIDs.empty())
-    {
-    this->WriteTableInfoFromDB<GoDBLineageRow>(this->m_VectorLineageIDs);
-    }
+  this->WriteTableInfoFromDB<GoDBLineageRow>(this->m_VectorLineageIDs);
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void GoDBExport::WriteTracksInfoFromDatabase()
 {
-  if(!this->m_VectorTrackIDs.empty())
-    {
-    this->WriteTableInfoFromDB<GoDBTrackRow>(this->m_VectorTrackIDs);
-    }
+  this->WriteTableInfoFromDB<GoDBTrackRow>(this->m_VectorTrackIDs);
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void GoDBExport::WriteMeshesInfoFromDatabase()
 {
-  if(!this->m_VectorMeshIDs.empty())
-    {
-    this->WriteTableInfoFromDB<GoDBMeshRow>(this->m_VectorMeshIDs);
-    }
+  this->WriteTableInfoFromDB<GoDBMeshRow>(this->m_VectorMeshIDs);
 }
 //--------------------------------------------------------------------------
 

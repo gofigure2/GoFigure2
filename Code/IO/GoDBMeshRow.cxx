@@ -95,6 +95,8 @@ GoDBMeshRow::GoDBMeshRow(const GoDBMeshRow & iRow) : GoDBTraceRow()
 {
   this->m_TableName = iRow.m_TableName;
   this->m_TableIDName = iRow.m_TableIDName;
+  this->m_CollectionIDName = iRow.m_CollectionIDName;
+  this->m_CollectionName = iRow.m_CollectionName;
   this->InitializeMap();
   this->m_MapRow = iRow.m_MapRow;
   if( !iRow.m_NameChannelWithValues.empty() )
@@ -121,8 +123,10 @@ SafeDownCast( GoDBTraceRow& iRow )
 //-------------------------------------------------------------------------
 void GoDBMeshRow::InitializeMap()
 {
-  m_TableName = "mesh";
-  m_TableIDName = "MeshID";
+  this->m_TableName = "mesh";
+  this->m_TableIDName = "MeshID";
+  this->m_CollectionName = "track";
+  this->m_CollectionIDName = "TrackID";
   this->m_MapRow[this->m_TableIDName] = ConvertToString<int>(0);
   this->m_MapRow["CellTypeID"] = ConvertToString<int>(0);
   this->m_MapRow["SubCellularID"] = ConvertToString<int>(0);

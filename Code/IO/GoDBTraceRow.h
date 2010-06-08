@@ -68,6 +68,9 @@ public:
  void SetColor(unsigned int Red, unsigned int Green, unsigned int Blue,
    unsigned int Alpha, std::string ColorName,vtkMySQLDatabase* DatabaseConnector);
 
+ std::string GetCollectionIDName();
+ std::string GetCollectionName();
+
 protected:
 
  virtual void InitializeMap();
@@ -77,6 +80,9 @@ protected:
  if the bounding box already exits, a cout is generated*/
  void CreateBoundingBox(vtkMySQLDatabase* DatabaseConnector,GoDBCoordinateRow Min,
   GoDBCoordinateRow Max);
+
+ std::string m_CollectionIDName;
+ std::string m_CollectionName;
 
  };
 #endif

@@ -180,8 +180,9 @@ private:
   }
 
   template< typename T >
-  void ReplaceCommonFieldsForContourAndMesh( T & ioEntityToSave,
-    std::map<int,int> iMapColorIDs,std::map<int,int> iMapCoordIDs)
+  void ReplaceCommonFieldsForTraces( T & ioEntityToSave,
+    std::map<int,int> iMapColorIDs,std::map<int,int> iMapCoordIDs,
+    std::map<int,int> iMapCollectionIDs)
   {
    ioEntityToSave.SetField(
      "ImagingSessionID",this->m_ImagingSessionID);
@@ -191,6 +192,73 @@ private:
      iMapCoordIDs,"CoordIDMax",ioEntityToSave);
    this->ReplaceTheFieldWithNewIDs<T>(
      iMapCoordIDs,"CoordIDMin",ioEntityToSave);
+   if(ioEntityToSave.GetCollectionIDName()!= "NoneID")
+     {
+     this->ReplaceTheFieldWithNewIDs<T>(
+       iMapCollectionIDs,ioEntityToSave.GetCollectionIDName(),
+       ioEntityToSave);
+     }
   }
+
+  template< typename T >
+  void SaveTraces(std::map<int,int> iMapColorIDs,
+  std::map<int,int> iMapCoordIDs,std::map<int,int>iMapCollectionIDs,
+  std::string & ioLineContent,std::map<int,int> & ioMapTraceIDs = std::map<int,int>(),
+  std::map<int,int> iMapIDsSpecificOne = std::map<int,int>(),
+  std::map<int,int> iMapIDsSpecificTwo = std::map<int,int>())
+{
+  T TraceToSave;
+  int NumberOfTraces = atoi(this->GetValueForTheLine(ioLineContent).c_str());
+  getline(this->m_InFile, ioLineContent);
+  for(int i = 0; i < NumberOfTraces; i++)
+    {
+    ioLineContent = this->GetValuesFromInfile<T>(
+      TraceToSave);
+    //for mesh, need to get the new celltype/subcelltype:
+    if(TraceToSave.GetTableName() == "mesh")
+      {
+      if (!iMapIDsSpecificOne.empty())
+        {
+        this->ReplaceTheFieldWithNewIDs<T>(
+          iMapIDsSpecificOne,"CellTypeID",TraceToSave);
+        }
+      if (!iMapIDsSpecificTwo.empty())
+        {
+        this->ReplaceTheFieldWithNewIDs<T>(
+          iMapIDsSpecificTwo,"SubCellularID",TraceToSave);
+        }
+      }
+
+    this->ReplaceCommonFieldsForTraces(
+      TraceToSave,iMapColorIDs,iMapCoordIDs,iMapCollectionIDs);
+    
+    int OldTraceID = atoi(TraceToSave.GetMapValue(TraceToSave.GetTableIDName()).c_str());
+    /*in order the query works, the TraceID to be saved has to be set to 0 otherwise 
+    if the TraceID already exits,the query will return the error 
+    "Duplicate entry TraceID for key primary":*/
+    TraceToSave.SetField(TraceToSave.GetTableIDName(),"0");
+    int NewTraceID = TraceToSave.DoesThisBoundingBoxExist(this->m_DatabaseConnector);
+    if(NewTraceID == -1)
+      {
+      NewTraceID = TraceToSave.SaveInDB(this->m_DatabaseConnector);
+     // this->m_NewTraceIDs.push_back(NewTraceID);
+      }
+    else
+      {
+      std::cout<<"The trace"<<OldTraceID<<" has the same bounding box as ";
+      std::cout<<"the existing trace "<<NewTraceID;
+      std::cout<<"so the imported contours belonging to the mesh "<<OldTraceID;
+      std::cout<<" will belong to the existing mesh "<<NewTraceID<<std::endl;
+      }
+    if(TraceToSave.GetTableName() == "contour")
+      {
+      this->m_NewContourIDs.push_back(NewTraceID);
+      }
+    else
+      {
+      ioMapTraceIDs[OldTraceID]= NewTraceID;
+      }
+    }
+}
 };
 #endif

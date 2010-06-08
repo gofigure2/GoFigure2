@@ -69,6 +69,8 @@ void GoDBLineageRow::InitializeMap()
   //this->m_MapRow["LineageID"] = ConvertToString<int>(0);
   this->m_TableName = "lineage";
   this->m_TableIDName = "LineageID";
+  this->m_CollectionName = "None";
+  this->m_CollectionIDName = "NoneID";
   this->m_MapRow[this->m_TableIDName] = ConvertToString<int>(0);
   this->m_MapRow["TrackIDRoot"] = ConvertToString<int>(0);
  
