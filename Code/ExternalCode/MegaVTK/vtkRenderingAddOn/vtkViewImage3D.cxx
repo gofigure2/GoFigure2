@@ -183,12 +183,14 @@ public:
 
     if( event == vtkCommand::ModifiedEvent )
     {
-      /*this->Actor->SetInput(imagecaller->GetInput());
+      this->Actor->SetInput(imagecaller->GetInput());
       this->Actor->SetInterpolate(imagecaller->GetInterpolate());
       this->Actor->SetOpacity(imagecaller->GetOpacity());
-      this->Actor->SetDisplayExtent (imagecaller->GetDisplayExtent());*/
+      this->Actor->SetDisplayExtent (imagecaller->GetDisplayExtent());
     }
   }
+
+//----------------------------------------------------------------------------
 
   vtkImageActor* Actor;
 protected:
@@ -196,8 +198,6 @@ protected:
   ~ImageActorCallback() {}
 
 };
-
-
 
 //----------------------------------------------------------------------------
 /**
@@ -217,7 +217,6 @@ vtkViewImage3D::vtkViewImage3D()
   this->BoxWidget = vtkOrientedBoxWidget::New();
   this->Callback = vtkImage3DCroppingBoxCallback::New();
   this->Blender = vtkImageBlend::New();
-  //this->PlaneWidget = vtkPlaneWidget::New();
   this->VolumeMapper3D = vtkVolumeTextureMapper3D::New();
 
   this->Phantom.push_back( vtkImageActor::New() );
@@ -275,7 +274,6 @@ vtkViewImage3D::~vtkViewImage3D()
   this->Command->Delete();
   this->InteractorStyle3D->Delete();
 }
-
 
 //----------------------------------------------------------------------------
 /**
@@ -383,10 +381,6 @@ void vtkViewImage3D::SetupWidgets()
   this->BoxWidget->SetPlaceFactor (0.5);
   this->BoxWidget->SetKeyPressActivationValue ('b');
   this->BoxWidget->AddObserver (vtkCommand::InteractionEvent, this->Callback);
-
-  //this->PlaneWidget->SetKeyPressActivationValue ('p');
-  //this->PlaneWidget->NormalToZAxisOn();
-
 }
 
 //----------------------------------------------------------------------------

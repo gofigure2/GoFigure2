@@ -121,19 +121,19 @@ QGoImageView3D( QWidget* iParent ) :
   QObject::connect(this->HbSplitter, SIGNAL( splitterMoved( int, int ) ),
     this->HtSplitter, SLOT( moveSplitter( int, int ) ) );
 
-  vtkSmartPointer<vtkViewImage2D> View1 = vtkSmartPointer<vtkViewImage2D>::New();
+  vtkViewImage2D* View1 = vtkViewImage2D::New();
   SetupViewGivenQVTKWidget( View1, this->QvtkWidget_XY );
 
   this->m_Pool->AddItem( View1 );
   //View1->Delete();
 
-  vtkSmartPointer<vtkViewImage2D> View2 = vtkSmartPointer<vtkViewImage2D>::New();
+  vtkViewImage2D* View2 = vtkViewImage2D::New();
   SetupViewGivenQVTKWidget( View2, this->QvtkWidget_XZ );
 
   this->m_Pool->AddItem( View2 );
   //View2->Delete();
 
-  vtkSmartPointer<vtkViewImage2D> View3 = vtkSmartPointer<vtkViewImage2D>::New();
+  vtkViewImage2D* View3 = vtkViewImage2D::New();
   SetupViewGivenQVTKWidget( View3, this->QvtkWidget_YZ );
 
   this->m_Pool->AddItem( View3 );
