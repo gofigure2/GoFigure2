@@ -63,8 +63,10 @@ std::list< std::string > GetAllFileNamesForGivenTCoordAndChannel(
     }
 
   GoFigureFileInfoHelperChannelViewContainer::nth_index<0>::type::iterator ic0, ic1;
-  ic0 = subset.get<0>().lower_bound( iCh );
-  ic1 = subset.get<0>().upper_bound( iCh );
+  ic0 = subset.get<0>().lower_bound( 0 );
+  ic1 = subset.get<0>().upper_bound( 1 );
+//   ic0 = subset.get<0>().lower_bound( iCh );
+//   ic1 = subset.get<0>().upper_bound( iCh );
 
   GoFigureFileInfoHelperZCoordViewContainer final_container;
 
