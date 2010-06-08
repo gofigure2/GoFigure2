@@ -42,3 +42,8 @@ ADD_TEST( itkvtkPolyDataToGoFigureMeshAttributesTest
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/itkvtkPolyDataToGoFigureMeshAttributesTest
   ${TESTING_DATA_PATH}/Circle3D.mhd
 )
+
+SET_TESTS_PROPERTIES( itkBinaryMaskImageToGoFigureMeshAttributesTest 
+  PROPERTIES DEPENDS 
+  itkvtkPolyDatatoBinaryMaskImageFilterTest
+)
