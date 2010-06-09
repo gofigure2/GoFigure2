@@ -231,6 +231,8 @@ public slots:
   void SetSliceView();
 
   void GenerateContourRepresentationProperties();
+  void GoToDefaultMenu(
+    std::string iTracename,std::string iCollectionName);
 
 #if defined ( ENABLEFFMPEG ) || defined ( ENABLEAVI )
   void SetRendererWindow( int );
@@ -514,7 +516,6 @@ protected slots:
   void SetTheCurrentSubCellType();
   void ShowTraceDockWidgetForContour(bool ManualSegVisible);
   void ShowTraceDockWidgetForMesh(bool OneClickVisible);
-  void GoToDefaultMenu(std::string iTracename,std::string iCollectionName);
 
   /**
    * \brief Mouse interaction style allows contours segmentation, according to

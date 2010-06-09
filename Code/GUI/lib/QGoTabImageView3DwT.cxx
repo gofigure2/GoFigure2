@@ -1399,8 +1399,8 @@ setupUi( QWidget* iParent )
       this, SLOT( HighLightMeshes( ) ) );
 
   // connect the contours selection connection
-  //QObject::connect( m_ImageView, SIGNAL( MeshesSelectionChanged( ) ),
-  //    this, SLOT( SelectMeshesInTable( ) ) );
+  QObject::connect( m_ImageView, SIGNAL( MeshesSelectionChanged( ) ),
+      this, SLOT( SelectMeshesInTable( ) ) );
 
   m_HBoxLayout = new QHBoxLayout( iParent );
   m_HBoxLayout->addWidget( m_VSplitter );
@@ -2811,8 +2811,8 @@ HighLightContainer( ContourMeshStructureMultiIndexContainer& iContainer, vtkActo
   select_property->SetLineWidth( 3. );
 
   // Change the corresponding highlighted value in the container
-  ContourMeshStructureMultiIndexContainer::nth_index< 1 >::type::iterator
-    actor_it = iContainer.get< 1 >().find( iActor );
+  ContourMeshStructureMultiIndexContainer::index< Actor >::type::iterator
+    actor_it = iContainer.get< Actor >().find( iActor );
 
   if( actor_it != iContainer.get< 1 >().end() )
     {
@@ -2976,10 +2976,10 @@ SelectContoursInTable( )
       while( it != listofpicked.end() )
         {
         // Change the corresponding highlighted value in the container
-        ContourMeshStructureMultiIndexContainer::nth_index< 1 >::type::iterator
-          actor_it = m_ContourContainer.get< 1 >().find( static_cast< vtkActor* >( *it ) );
+        ContourMeshStructureMultiIndexContainer::index< Actor >::type::iterator
+          actor_it = m_ContourContainer.get< Actor >().find( static_cast< vtkActor* >( *it ) );
 
-        if( actor_it != m_ContourContainer.get< 1 >().end() )
+        if( actor_it != m_ContourContainer.get< Actor >().end() )
           {
           int trace_id = static_cast< int >( actor_it->TraceID );
           listofrowstobeselected.push_back( trace_id );

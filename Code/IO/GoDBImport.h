@@ -67,6 +67,11 @@ public:
     return this->m_NewContourIDs;
     }
 
+  std::vector<int> GetVectorNewTracksIDs()
+    {
+    return this->m_NewTracksIDs;
+    }
+
   std::vector<ContourMeshStructure> GetNewContourInfo()
     {
     return this->m_NewContourInfoForVisu;
@@ -82,6 +87,8 @@ private:
   std::ifstream                     m_InFile;
   std::vector<int>                  m_NewMeshIDs;
   std::vector<int>                  m_NewContourIDs;
+  std::vector<int>                  m_NewTracksIDs;
+  std::vector<int>                  m_NewLineageIDs;
   std::vector<ContourMeshStructure> m_NewContourInfoForVisu;
 
   /** \brief Return the name of the field contained in the line*/
@@ -105,20 +112,25 @@ private:
   /** \brief Get the info for the meshes to import for the contours, from
   the infile and from the matching IDs maps previously filled, then save them in
   the database if their bounding box doesn't match any existing ones*/
-  void SaveMeshes(std::map<int,int> iMapColorIDs,
+  /*void SaveMeshes(std::map<int,int> iMapColorIDs,
     std::map<int,int> iMapCellTypeIDs,
     std::map<int,int> iMapSubCellTypeIDs,
     std::map<int,int> iMapCoordIDs,
     std::string & ioLineContent,
-    std::map<int,int> & ioMapMeshIDs);
+    std::map<int,int> & ioMapMeshIDs);*/
   
   /** \brief Get the info for the contours from the infile and from the matching
   IDs maps previously filled, then save them in the database if their bounding box
   doesn't match any existing ones*/
-  void SaveContours(std::map<int,int> iMapColorIDs,
+  /*void SaveContours(std::map<int,int> iMapColorIDs,
     std::map<int,int> iMapCoordIDs,
     std::string & ioLineContent,
-    std::map<int,int> iMapMeshIDs);
+    std::map<int,int> iMapMeshIDs);*/
+
+  void SaveTracesEntities(std::map<int,int> iMapColorIDs,
+    std::map<int,int> iMapCoordIDs,std::string iLineContent,
+    std::map<int,int> iMapCellTypeIDs, 
+    std::map<int,int> iMapSubCellTypeIDs);
 
   void FillContourInfoForVisu(
     std::vector<int> iListContourIDs);
@@ -206,6 +218,7 @@ private:
     IntMapType iMapCoordIDs, 
     IntMapType iMapCollectionIDs,
     std::string& ioLineContent, 
+    std::vector<int>& ioNewTracesIDs,
     IntMapType& ioMapTraceIDs = IntMapType(),
     IntMapType iMapIDsSpecificOne = IntMapType(),
     IntMapType iMapIDsSpecificTwo = IntMapType() 
@@ -254,14 +267,10 @@ private:
       std::cout<<"so the imported contours belonging to the mesh "<<OldTraceID;
       std::cout<<" will belong to the existing mesh "<<NewTraceID<<std::endl;
       }
-    if(TraceToSave.GetTableName() == "contour")
-      {
-      this->m_NewContourIDs.push_back(NewTraceID);
-      }
-    else
-      {
-      ioMapTraceIDs[OldTraceID]= NewTraceID;
-      }
+
+    ioNewTracesIDs.push_back(NewTraceID);   
+    ioMapTraceIDs[OldTraceID]= NewTraceID;
+
     }
 }
 };

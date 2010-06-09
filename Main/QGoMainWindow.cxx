@@ -309,28 +309,30 @@ void QGoMainWindow::on_actionImportContour_triggered( )
           this->m_DBWizard->GetPassword().toStdString(),
           this->m_DBWizard->GetImagingSessionID(),filename);
         ImportHelper.ImportContours();
-        //put the new contours in the visu:
+        
         std::vector<int> NewContourIDs = ImportHelper.GetVectorNewContourIDs();
+        std::vector<int> NewMeshIDs = ImportHelper.GetVectorNewMeshIDs();
+        std::vector<int> NewTrackIDs = ImportHelper.GetVectorNewTracksIDs();
+        //put the new contours in the visu:
         ContourMeshStructureMultiIndexContainer* ContourToAdd =
           w3t->m_DataBaseTables->GetContoursFromDBForAGivenTimePoint(w3t->GetTimePoint(),
             NewContourIDs);
-          //w3t->m_DataBaseTables->GetContoursForAGivenTimepoint(w3t->GetTimePoint());
         ContourMeshStructureMultiIndexContainer::iterator c_it = ContourToAdd->begin();
-
-        //for (unsigned int i = 0; i < ContourToAdd->size(); i++)
         while( c_it != ContourToAdd->end() )
           {
-          ContourMeshStructure Contour = *c_it;//ContourToAdd->at(i);
-
+          ContourMeshStructure Contour = *c_it;
           w3t->AddContourFromNodes(Contour.TraceID,Contour.Nodes,Contour.rgba,
             Contour.Highlighted,Contour.TCoord,false);
-
           ++c_it;
           }
-        std::vector<int> ContourToAddTW = ImportHelper.GetVectorNewContourIDs();
-        std::vector<int> MeshesToAddTW = ImportHelper.GetVectorNewMeshIDs();
-        w3t->m_DataBaseTables->AddTracesInTableWidgetFromDB(ContourToAddTW,"contour");
-        w3t->m_DataBaseTables->AddTracesInTableWidgetFromDB(MeshesToAddTW, "mesh");
+        //std::vector<int> ContourToAddTW = ImportHelper.GetVectorNewContourIDs();
+        //add the imported traces in the table widget:
+        
+        w3t->m_DataBaseTables->AddTracesInTableWidgetFromDB(NewContourIDs,"contour");
+        w3t->m_DataBaseTables->AddTracesInTableWidgetFromDB(NewMeshIDs, "mesh");
+        w3t->m_DataBaseTables->AddTracesInTableWidgetFromDB(NewTrackIDs, "track");
+
+        w3t->GoToDefaultMenu("contour","mesh");
         w3t->GetTraceManualEditingWidget()->SetCollectionID(
           w3t->m_DataBaseTables->GetListExistingCollectionIDFromDB("contour",w3t->GetTimePoint()));
         w3t->GetTraceManualEditingWidget()->ColorComboBox->setExistingColors(

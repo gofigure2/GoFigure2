@@ -76,25 +76,13 @@ void GoDBImport::ImportContours()
   std::map<int,int> MapCellTypeIDs;
   std::map<int,int> MapSubCellTypeIDs;
   std::map<int,int> MapCoordIDs;
-  std::map<int,int> MapContourIDs;
-  std::map<int,int> MapMeshIDs;
-  std::map<int,int> MapTrackIDs;
-  std::map<int,int> MapLineageIDs;
   std::string       LineContent;
+
   LineContent = this->SaveNoTracesEntities(MapColorIDs,MapCellTypeIDs,
     MapSubCellTypeIDs,MapCoordIDs); 
-  this->SaveTraces<GoDBLineageRow>(MapColorIDs,MapCoordIDs,
-    MapLineageIDs,LineContent,MapLineageIDs);
-  this->SaveTraces<GoDBTrackRow>(MapColorIDs,MapCoordIDs,MapLineageIDs,
-    LineContent,MapTrackIDs);
-
-  this->SaveTraces<GoDBMeshRow>(MapColorIDs,MapCoordIDs,MapTrackIDs,
-    LineContent,MapMeshIDs,MapCellTypeIDs,MapSubCellTypeIDs);
-  //this->SaveMeshes(MapColorIDs,MapCellTypeIDs,MapSubCellTypeIDs,
-    //MapCoordIDs,LineContent,MapMeshIDs); 
-  this->SaveTraces<GoDBContourRow>(MapColorIDs,MapCoordIDs,MapMeshIDs,
-    LineContent,MapContourIDs);
-  //this->SaveContours(MapColorIDs,MapCoordIDs,LineContent,MapMeshIDs);
+  
+  this->SaveTracesEntities(MapColorIDs,MapCoordIDs,LineContent,MapCellTypeIDs,
+    MapSubCellTypeIDs);
   this->FillContourInfoForVisu(this->m_NewContourIDs);
   /** \todo make the new mesh,track and lineage appear in the tablewidget*/
   this->CloseDBConnection();
@@ -158,6 +146,34 @@ std::string GoDBImport::SaveNoTracesEntities(std::map<int,int> & ioMapColorIDs,
       }
     }
   return LineContent;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void GoDBImport::SaveTracesEntities(std::map<int,int> iMapColorIDs,
+  std::map<int,int> iMapCoordIDs,std::string iLineContent,
+  std::map<int,int> iMapCellTypeIDs, std::map<int,int> iMapSubCellTypeIDs)
+{
+  std::map<int,int> MapContourIDs;
+  std::map<int,int> MapMeshIDs;
+  std::map<int,int> MapTrackIDs;
+  std::map<int,int> MapLineageIDs;
+
+  std::string LineContent = iLineContent;
+
+  this->SaveTraces<GoDBLineageRow>(iMapColorIDs,iMapCoordIDs,
+    MapLineageIDs,LineContent,this->m_NewLineageIDs,MapLineageIDs);
+  this->SaveTraces<GoDBTrackRow>(iMapColorIDs,iMapCoordIDs,MapLineageIDs,
+    LineContent,this->m_NewTracksIDs,MapTrackIDs);
+
+  this->SaveTraces<GoDBMeshRow>(iMapColorIDs,iMapCoordIDs,MapTrackIDs,
+    LineContent,this->m_NewMeshIDs,MapMeshIDs,iMapCellTypeIDs,
+    iMapSubCellTypeIDs);
+  //this->SaveMeshes(MapColorIDs,MapCellTypeIDs,MapSubCellTypeIDs,
+    //MapCoordIDs,LineContent,MapMeshIDs); 
+  this->SaveTraces<GoDBContourRow>(iMapColorIDs,iMapCoordIDs,MapMeshIDs,
+    LineContent,this->m_NewContourIDs,MapContourIDs);
+  //this->SaveContours(MapColorIDs,MapCoordIDs,LineContent,MapMeshIDs);
 }
 //--------------------------------------------------------------------------
 

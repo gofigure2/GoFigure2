@@ -706,8 +706,8 @@ ChangeContoursToHighLightInfoFromVisu(
 void QGoPrintDatabase::
 ChangeMeshesToHighLightInfoFromVisu(
   std::list<int> iListMeshesHighLightedInVisu)
- {
-   std::list<int>::iterator it = iListMeshesHighLightedInVisu.begin();
+{
+  std::list<int>::iterator it = iListMeshesHighLightedInVisu.begin();
   /** \todo get the tracename from the visu dock widget*/
   TraceInfoStructure* CurrentlyUsedTraceData = this->GetTraceInfoStructure("mesh");
 
