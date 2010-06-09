@@ -49,6 +49,10 @@ SET(CTEST_CUSTOM_WARNING_EXCEPTION
 
   # boost suppressions
   "index_matcher.hpp.*warning.*declaration of .* shadows a member of .this"
+  "multi_index_container.hpp.*warning.*declaration of .* shadows a member of .this"
+  "bucket_array.hpp.*warning.*declaration of .* shadows a member of .this"
+  "hashed_index.hpp.*warning.*declaration of .* shadows a member of .this"
+  "ordered_index.hpp.*warning.*declaration of .* shadows a member of .this"
 
   # qt suppressions from vtk...
   # Some VTK dashboards include building bits of Qt which produce lots of
