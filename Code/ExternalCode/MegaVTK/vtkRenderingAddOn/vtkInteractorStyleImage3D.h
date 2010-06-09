@@ -124,6 +124,7 @@ class VTK_RENDERINGADDON2_EXPORT vtkInteractorStyleImage3D :
   vtkProp* m_CurrentProp;
 
   bool m_EnablePickingMode;
+  bool m_EnableBoxSelectionMode;
 };
 
 #endif

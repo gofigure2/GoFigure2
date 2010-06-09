@@ -2814,7 +2814,7 @@ HighLightContainer( ContourMeshStructureMultiIndexContainer& iContainer, vtkActo
   ContourMeshStructureMultiIndexContainer::index< Actor >::type::iterator
     actor_it = iContainer.get< Actor >().find( iActor );
 
-  if( actor_it != iContainer.get< 1 >().end() )
+  if( actor_it != iContainer.get< Actor >().end() )
     {
     unsigned int trace_id = actor_it->TraceID;
 
@@ -3003,10 +3003,10 @@ SelectMeshesInTable( )
     {
     std::list< int > listofrowstobeselected;
     // Change the corresponding highlighted value in the container
-    ContourMeshStructureMultiIndexContainer::nth_index< 1 >::type::iterator
-      actor_it = m_MeshContainer.get< 1 >().find( static_cast< vtkActor* >( m_ImageView->GetPickedActor() ) );
+    ContourMeshStructureMultiIndexContainer::index< Actor >::type::iterator
+      actor_it = m_MeshContainer.get< Actor >().find( static_cast< vtkActor* >( m_ImageView->GetPickedActor() ) );
 
-    if( actor_it != m_MeshContainer.get< 1 >().end() )
+    if( actor_it != m_MeshContainer.get< Actor >().end() )
       {
       int trace_id = static_cast< int >( actor_it->TraceID );
       listofrowstobeselected.push_back( trace_id );
@@ -3590,15 +3590,13 @@ SavePolyDataAsContourInDB( vtkPolyData* iView )
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void
+int
 QGoTabImageView3DwT::
 SavePolyDataAsMeshInDB( vtkPolyData* iView, const int& iContourID,
     const int& iDir, const double& iR, const double& iG, const double& iB,
     const double& iA, const bool& iHighlighted, const unsigned int& iTCoord,
     const bool& iSaveInDataBase )
 {
-  (void) iContourID;
-
   // map to graphics library
   vtkPolyDataMapper *map = vtkPolyDataMapper::New();
   map->SetInput( iView );
@@ -3635,8 +3633,6 @@ SavePolyDataAsMeshInDB( vtkPolyData* iView, const int& iContourID,
   // get meshid from the visu dock widget (SpinBox)
   unsigned int trackid = this->m_TraceManualEditingDockWidget->m_TraceWidget->GetCurrentCollectionID();
 
-  int mesh_id = -1;
-
   if( iSaveInDataBase )
     {
     std::pair< std::string, QColor > ColorData =
@@ -3646,25 +3642,26 @@ SavePolyDataAsMeshInDB( vtkPolyData* iView, const int& iContourID,
     //don't use m_ContourId
     GoFigureMeshAttributes MeshAttributes = ComputeMeshAttributes( iView );
   
-    mesh_id = m_DataBaseTables->SaveMeshFromVisuInDB( min_idx[0],
+    m_MeshId = m_DataBaseTables->SaveMeshFromVisuInDB( min_idx[0],
         min_idx[1], min_idx[2], iTCoord, max_idx[0],
         max_idx[1], max_idx[2], iView, &MeshAttributes );
     }
   else
     {
-    mesh_id = m_MeshId;
+    m_MeshId = iContourID;
     }
 
   // fill the container
   for( i = 0; i < contour_actor.size(); i++ )
     {
-    // why reinterpret_cast< vtkActor* >( contour_actor[i] ) ??
-    ContourMeshStructure temp( mesh_id, contour_actor[i], iView,
+    ContourMeshStructure temp( m_MeshId, contour_actor[i], iView,
         trackid, iTCoord, iHighlighted, iR, iG, iB, iA, i );
     m_MeshContainer.insert( temp );
     }
 
   ++m_MeshId;
+
+  return 0;
 }
 //-------------------------------------------------------------------------
 
@@ -3672,7 +3669,7 @@ SavePolyDataAsMeshInDB( vtkPolyData* iView, const int& iContourID,
 /**
  *
  */
-void
+int
 QGoTabImageView3DwT::
 SavePolyDataAsMeshInDB( vtkPolyData* iView )
 {
@@ -3699,10 +3696,10 @@ SavePolyDataAsMeshInDB( vtkPolyData* iView )
   bool saveindatabase = m_DataBaseTables->IsDatabaseUsed();
 
   // to make sure that m_ContourId is set to the right value
-  int ContourID = -1;
+  int MeshID = -1;
 
   /// TODO check iDir
-  SavePolyDataAsMeshInDB( iView, ContourID, 0, r, g, b, a, highlighted,
+  return SavePolyDataAsMeshInDB( iView, MeshID, 0, r, g, b, a, highlighted,
       m_TimePoint, saveindatabase );
 }
 //-------------------------------------------------------------------------

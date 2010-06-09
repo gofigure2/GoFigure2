@@ -289,7 +289,7 @@ public slots:
 
   void ValidateContour();
   int  SavePolyDataAsContourInDB( vtkPolyData* iView );
-  void SavePolyDataAsMeshInDB( vtkPolyData* iView );
+  int  SavePolyDataAsMeshInDB( vtkPolyData* iView );
   void ReinitializeContour();
   void ReEditContour( const unsigned int& iId );
 
@@ -457,7 +457,7 @@ protected:
    * @param[in] iSaveInDataBase save in data base if true
    * \todo Alpha component is not used at all, it is assumed to be opaque
    */
-  virtual void SavePolyDataAsMeshInDB( vtkPolyData* iView, const int& iContourID, const int& iDir,
+  virtual int SavePolyDataAsMeshInDB( vtkPolyData* iView, const int& iContourID, const int& iDir,
     const double& iR, const double& iG, const double& iB, const double& iA,
     const bool& iHighlighted, const unsigned int& iTCoord, const bool& iSaveInDataBase );
 

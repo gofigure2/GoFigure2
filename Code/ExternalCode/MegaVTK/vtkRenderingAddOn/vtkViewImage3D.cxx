@@ -621,20 +621,21 @@ void vtkViewImage3D::InstallPipeline()
     // Add observers
     this->InteractorStyle3D->AddObserver(
       vtkViewImage3DCommand::MeshPickingEvent, this->Command);
+    this->InteractorStyle3D->AddObserver(
+          vtkViewImage3DCommand::BoxPickingEvent, this->Command);
     // setup interactor style
     // can't use this->InteractorStyle because of invalid conversions
     // between interactors styles
-    this->Interactor->SetInteractorStyle( InteractorStyle3D );
+    this->Interactor->SetInteractorStyle( this->InteractorStyle3D );
 
     this->Interactor->SetRenderWindow(this->RenderWindow);
 
-    this->BoxWidget->SetInteractor ( this->Interactor );
+    //this->BoxWidget->SetInteractor ( this->Interactor );
     //this->PlaneWidget->SetInteractor ( this->Interactor );
     this->Marker->SetInteractor ( this->Interactor );
 
     this->Marker->On();
     this->Marker->InteractiveOff ();
-
 
     }
 

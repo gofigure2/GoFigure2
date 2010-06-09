@@ -95,12 +95,16 @@ void
 vtkInteractorStyleImage3D::
 OnLeftButtonDown()
 {
-
   // if object is picked, send the event
   if( m_EnablePickingMode )
     {
     this->SetCurrentProp();
     this->InvokeEvent(vtkViewImage3DCommand::MeshPickingEvent);
+    }
+
+  if( m_EnableBoxSelectionMode )
+    {
+    this->InvokeEvent(vtkViewImage3DCommand::BoxPickingEvent);
     }
 
   // Call parent to handle all other states and perform additional work
@@ -117,6 +121,10 @@ OnChar()
     {
       this->m_EnablePickingMode = true;
     }
+  if ((rwi->GetKeyCode() == 'b') || (rwi->GetKeyCode() == 'B'))
+    {
+      this->m_EnableBoxSelectionMode = true;
+    }
 
   this->Superclass::OnChar();
 }
@@ -132,6 +140,10 @@ OnKeyUp()
   if ((rwi->GetKeyCode() == 'p') || (rwi->GetKeyCode() == 'P'))
     {
     this->m_EnablePickingMode = false;
+    }
+  if ((rwi->GetKeyCode() == 'b') || (rwi->GetKeyCode() == 'B'))
+    {
+    this->m_EnableBoxSelectionMode = false;
     }
 
   this->Superclass::OnKeyUp();

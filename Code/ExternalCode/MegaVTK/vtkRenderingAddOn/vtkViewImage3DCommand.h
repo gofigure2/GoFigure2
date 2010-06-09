@@ -7,6 +7,7 @@
 
 class vtkProp;
 class vtkViewImage3D;
+class vtkOrientedBoxWidget;
 
 class VTK_RENDERINGADDON2_EXPORT vtkViewImage3DCommand :
   public vtkCommand
@@ -27,6 +28,7 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage3DCommand :
     ResetViewerEvent,
     ContourPickingEvent,
     MeshPickingEvent,
+    BoxPickingEvent,
     CameraMoveEvent,
     DefaultMoveEvent,
     SeedEvent
@@ -41,7 +43,8 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage3DCommand :
   virtual void Execute( vtkObject *caller, unsigned long event,
     void *vtkNotUsed(callData) );
 
-  vtkProp* GetPickedActor();
+  vtkProp*              GetPickedActor();
+  vtkOrientedBoxWidget* GetBoxWidget();
 
   void SetVtkImageView3D( vtkViewImage3D* vtkViewImage3D );
 
@@ -52,8 +55,10 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage3DCommand :
   ~vtkViewImage3DCommand();
 
  private:
-  vtkViewImage3D* m_vtkViewImage3D;
-  vtkProp* m_PickedActor;
+  vtkViewImage3D*       m_vtkViewImage3D;
+  vtkProp*              m_PickedActor;
+  vtkOrientedBoxWidget* m_BoxWidget;
+  //bool                  m_BoxPickingEnabled;
 };
 
 #endif
