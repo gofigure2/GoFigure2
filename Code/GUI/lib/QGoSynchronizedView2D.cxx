@@ -51,8 +51,8 @@
 
 
 //--------------------------------------------------------------------------
-/**
- * \brief Default Constructor.
+/*
+ *  Default Constructor.
  * \param iSynchronizedViewName
  * \param iParent
  */
@@ -63,8 +63,7 @@ QGoSynchronizedView2D( QString iViewName, QWidget *iParent ) :
 }
 
 //--------------------------------------------------------------------------
-/** \brief Print self informations
-*/
+/*  Print self informations */
 void
 QGoSynchronizedView2D::
 PrintOs(ostream &os)
@@ -96,8 +95,7 @@ QGoSynchronizedView2D::
 
 
 //--------------------------------------------------------------------------
-/** \brief returns the type of comparer (2 for 2D, 3 for 3D)
-*/
+/*  returns the type of comparer (2 for 2D, 3 for 3D) */
 int
 QGoSynchronizedView2D::
 GetSynchronizedViewType()
@@ -107,7 +105,7 @@ GetSynchronizedViewType()
 
 
 //--------------------------------------------------------------------------
-// set the image to be displaid
+/* set the image to be displaid */
 void
 QGoSynchronizedView2D::
 SetImage(vtkImageData* iImage)
@@ -138,8 +136,7 @@ SetImage(vtkImageData* iImage)
 
 
 //--------------------------------------------------------------------------
-/** \brief create the viewer contained in the widget
-*/
+/*  create the viewer contained in the widget */
 void
 QGoSynchronizedView2D::
 createViewer()

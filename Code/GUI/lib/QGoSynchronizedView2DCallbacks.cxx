@@ -48,8 +48,8 @@
 
 //--------------------------------------------------------------------------
 QGoSynchronizedView2DCallbacks::
-QGoSynchronizedView2DCallbacks (std::vector<QGoSynchronizedView2D*>
-  ioOpenSynchronizedViews) :
+QGoSynchronizedView2DCallbacks (
+  std::vector<QGoSynchronizedView2D*> ioOpenSynchronizedViews) :
   m_openSynchronizedView  (ioOpenSynchronizedViews)
 {
   // create the callback object
@@ -72,8 +72,8 @@ QGoSynchronizedView2DCallbacks (std::vector<QGoSynchronizedView2D*>
 
 //--------------------------------------------------------------------------
 /** the destructor is very important here, we want to leave clean
-*  SynchronizedViews behind
-*/
+ *  SynchronizedViews behind
+ */
 QGoSynchronizedView2DCallbacks::
 ~QGoSynchronizedView2DCallbacks()
 {
@@ -103,8 +103,8 @@ QGoSynchronizedView2DCallbacks::
 
 //--------------------------------------------------------------------------
 /** this is the callback function : do shallow copies to keep track of
-*  master's camera position
-*/
+ *  master's camera position
+ */
 void
 QGoSynchronizedView2DCallbacks::
 synchronizeCameras( vtkObject* caller,

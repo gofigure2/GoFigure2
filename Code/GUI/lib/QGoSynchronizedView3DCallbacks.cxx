@@ -226,21 +226,24 @@ synchronizeCameras1( vtkObject* caller,
   // so client data is a std::vector<QGoSynchronizedView3D*>*
   // we get the p_m_QGoSynchronizedView3D array by the following cast :
   std::vector<QGoSynchronizedView3D*> p_m_QGoSynchronizedView3Ds
-                    = *static_cast< std::vector<QGoSynchronizedView3D*>* >(clientData);
+                    = *static_cast< std::vector<QGoSynchronizedView3D*>* >
+                      (clientData);
   // the observer are set on cameras, so that the caller is a vtk camera*
   vtkCamera* movedCamera
-                    = static_cast< vtkCamera* >(caller);
+                    = static_cast< vtkCamera* > (caller);
   // for every opened SynchronizedView :
-  for(std::vector<QGoSynchronizedView3D*>::iterator SynchronizedViewIt = p_m_QGoSynchronizedView3Ds.begin();
-        SynchronizedViewIt != p_m_QGoSynchronizedView3Ds.end();
-        SynchronizedViewIt++)
+  for( std::vector<QGoSynchronizedView3D*>::iterator SynchronizedViewIt =
+         p_m_QGoSynchronizedView3Ds.begin();
+       SynchronizedViewIt != p_m_QGoSynchronizedView3Ds.end();
+       SynchronizedViewIt++)
     {
     // if the SynchronizedView is visible and the modified camera is rendrered
     if      ( (*SynchronizedViewIt)->isVisible()
         &&  (   ((*SynchronizedViewIt)->GetFullScreenView() == 0)
             ||  ((*SynchronizedViewIt)->GetFullScreenView() == 2) )  )
       {
-      // we copy the position of the moved camera into each SynchronizedView's camera
+      // we copy the position of the moved camera into each
+      // SynchronizedView's camera
       if  ( ((*SynchronizedViewIt)->GetCamera(1) != NULL )
         &&  ((*SynchronizedViewIt)->GetCamera(1) != movedCamera) )
         {
@@ -271,7 +274,8 @@ synchronizeCameras2( vtkObject* caller,
   // so client data is a std::vector<QGoSynchronizedView3D*>*
   // we get the p_m_QGoSynchronizedView3D array by the following cast :
   std::vector<QGoSynchronizedView3D*> p_m_QGoSynchronizedView3Ds
-                    = *static_cast< std::vector<QGoSynchronizedView3D*>* >(clientData);
+                    = *static_cast< std::vector<QGoSynchronizedView3D*>* >
+                      (clientData);
   // the observer are aet on cameras, so that the caller is a vtk camera*
   vtkCamera* movedCamera
                     = static_cast< vtkCamera* >(caller);
@@ -286,7 +290,8 @@ synchronizeCameras2( vtkObject* caller,
         &&  (   ((*SynchronizedViewIt)->GetFullScreenView() == 0)
             ||  ((*SynchronizedViewIt)->GetFullScreenView() == 3) )  )
       {
-      // we copy the position of the moved camera into each SynchronizedView's camera
+      // we copy the position of the moved camera into each
+      // SynchronizedView's camera
       if  ( ((*SynchronizedViewIt)->GetCamera(2) != NULL )
         &&  ((*SynchronizedViewIt)->GetCamera(2) != movedCamera) )
         {

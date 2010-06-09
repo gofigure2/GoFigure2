@@ -56,7 +56,10 @@ class vtkImageData;
 class vtkEventQtSlotConnect;
 class QGoImageView2D;
 
-
+/**
+\class QGoSynchronizedView
+\brief class for the (synchronized) view of one two dimensionnal vtkImageData* .
+*/
 class QGoSynchronizedView2D : public QGoSynchronizedView
 {
   Q_OBJECT
@@ -67,15 +70,15 @@ public:
   ~QGoSynchronizedView2D();
 
   /** \brief Print self informations
-  */
+   */
   void PrintOs(ostream &os);
 
   /** \brief returns the type of SynchronizedView (2 for 2D, 3 for 3D)
-  */
+   */
   int GetSynchronizedViewType( void );
 
   /** \brief Set image displayed by the SynchronizedView
-  */
+   */
   void SetImage(vtkImageData* iImage);
 
 //  /*
@@ -115,18 +118,18 @@ public:
 //  */
 
   /** \brief Returns the imageview managed by this SynchronizedView
-  */
+   */
   QGoImageView2D* GetImageView( void );
 
 public slots:
   /** \brief Save a screenshot of the viewer's content
-  */
+   */
   QString SnapshotViewXY( const GoFigure::FileType& iType,
     const QString& iBaseName = tr( "Snapshot" ) );
 
 private:
   /** \brief create the viewer contained in the widget
-  */
+   */
   void createViewer( void );
 
   Q_DISABLE_COPY( QGoSynchronizedView2D );

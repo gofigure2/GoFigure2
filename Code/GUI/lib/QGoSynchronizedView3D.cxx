@@ -49,11 +49,11 @@
 #include "SnapshotHelper.h"
 
 //--------------------------------------------------------------------------
-QGoSynchronizedView3D::QGoSynchronizedView3D( QString iViewName, QWidget *iParent )
+QGoSynchronizedView3D::QGoSynchronizedView3D( QString iViewName,
+                                              QWidget *iParent )
  : QGoSynchronizedView( iViewName, iParent )
  {
  }
-
 
 //--------------------------------------------------------------------------
 QGoSynchronizedView3D::
@@ -95,8 +95,7 @@ else
 
 
 //--------------------------------------------------------------------------
-/** \brief returns the type of SynchronizedView (2 for 2D, 3 for 3D)
-*/
+/*  returns the type of SynchronizedView (2 for 2D, 3 for 3D) */
 int
 QGoSynchronizedView3D::
 GetSynchronizedViewType()
@@ -130,7 +129,6 @@ SetImage(vtkImageData* iImage)
 }
 
 
-
 //--------------------------------------------------------------------------
 void
 QGoSynchronizedView3D::
@@ -154,7 +152,7 @@ Render(const int& iId)
 }
 
 //--------------------------------------------------------------------------
-// get the camera of the current viewer;
+/* get the camera of the current viewer */
 vtkCamera*
 QGoSynchronizedView3D::
 GetCamera(const int& iId)
@@ -311,8 +309,7 @@ SetQuadView()
 
 
 //--------------------------------------------------------------------------
-/** Create the viewer in the widget
-*/
+/* Create the viewer in the widget */
 void
 QGoSynchronizedView3D::
 createViewer()

@@ -48,8 +48,8 @@
 
 
 //--------------------------------------------------------------------------
-/**
- * \brief Default Constructor.
+/*
+ *  Default Constructor.
  * \param iViewName
  * \param iParent
  */
@@ -104,38 +104,37 @@ void QGoSynchronizedView::changeEvent(QEvent *e)
 }
 
 
+////--------------------------------------------------------------------------
+///*  Set image displayed by the comparer
+//*/
+///*
+//void
+//QGoSynchronizedView::
+//SetImage(vtkImageData* iImage)
+//{
+//  if (iImage == NULL)
+//    {
+//    return;
+//    }
+//
+//  // if there is no viewer, we create one
+//  if (m_currentView == NULL)
+//    {
+//    createViewer();
+//    }
+//
+//  // set the image to the current view
+//  m_currentView->SetImage(iImage);
+//
+//  // update current image
+//  m_currentImage = iImage;
+//
+//  this->Update();
+//}
+//*/
+
 //--------------------------------------------------------------------------
-/** \brief Set image displayed by the comparer
-*/
-/*
-void
-QGoSynchronizedView::
-SetImage(vtkImageData* iImage)
-{
-  if (iImage == NULL)
-    {
-    return;
-    }
-
-  // if there is no viewer, we create one
-  if (m_currentView == NULL)
-    {
-    createViewer();
-    }
-
-  // set the image to the current view
-  m_currentView->SetImage(iImage);
-
-  // update current image
-  m_currentImage = iImage;
-
-  this->Update();
-}
-*/
-
-//--------------------------------------------------------------------------
-/** \brief get comparer's name
-*/
+/* get comparer's name */
 QString*
 QGoSynchronizedView::
 GetName()
@@ -145,8 +144,7 @@ GetName()
 
 
 //--------------------------------------------------------------------------
-/** \brief Update the viewer contained in the widget
-*/
+/* Update the viewer contained in the widget */
 void
 QGoSynchronizedView::
 Update()
@@ -163,8 +161,7 @@ Update()
 
 
 //--------------------------------------------------------------------------
-/** \brief render the viewer contained in the widget if any
-*/
+/*  render the viewer contained in the widget if any */
 void
 QGoSynchronizedView::
 Render()
@@ -181,8 +178,7 @@ Render()
 
 
 //--------------------------------------------------------------------------
-/** \brief get the camera of the current viewer
-*/
+/*  get the camera of the current viewer */
 vtkCamera*
 QGoSynchronizedView::
 GetCamera()
@@ -201,8 +197,7 @@ GetCamera()
 
 
 //--------------------------------------------------------------------------
-/** \brief true if the widget has a viewer
-*/
+/*  true if the widget has a viewer */
 bool
 QGoSynchronizedView::
 HasViewer()
@@ -215,8 +210,7 @@ HasViewer()
 
 
 //--------------------------------------------------------------------------
-/** Set the address of the current orchestra
-*/
+/* Set the address of the current orchestra */
 void
 QGoSynchronizedView::
 SetCurrentViewManager(QGoSynchronizedViewManager* iCurrentViewManager)
@@ -231,8 +225,7 @@ SetCurrentViewManager(QGoSynchronizedViewManager* iCurrentViewManager)
 
 
 //--------------------------------------------------------------------------
-/** delete the viewer contained in the widget
-*/
+/* delete the viewer contained in the widget */
 void
 QGoSynchronizedView::
 deleteViewer()

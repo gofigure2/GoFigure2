@@ -48,7 +48,10 @@ class vtkImageData;
 class vtkEventQtSlotConnect;
 class QGoImageView3D;
 
-
+/**
+\class QGoSynchronizedView
+\brief class for the (synchronized) view of one three dimensionnal vtkImageData*
+*/
 class QGoSynchronizedView3D : public QGoSynchronizedView
 {
   Q_OBJECT
