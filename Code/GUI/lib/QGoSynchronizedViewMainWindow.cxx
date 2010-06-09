@@ -318,7 +318,7 @@ SaveSnapshotInFile( QString& iFile, QGoSynchronizedView* SynchronizedView )
 
   if (SynchronizedView != 0)
     // if we take a snapshot of a 3D synchronizedView
-    if (SynchronizedView->GetSynchronizedViewType()==3)
+    if (SynchronizedView->GetSynchronizedViewType() == 3)
       {
       temp3DSynchronizedView = static_cast<QGoSynchronizedView3D*>(SynchronizedView);
 

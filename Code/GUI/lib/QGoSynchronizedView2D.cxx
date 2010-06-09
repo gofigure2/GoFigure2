@@ -49,13 +49,12 @@
 #include "QGoSynchronizedViewManager.h"
 
 
-
 //--------------------------------------------------------------------------
 /*
- *  Default Constructor.
- * \param iSynchronizedViewName
- * \param iParent
- */
+*  Default Constructor.
+* \param iSynchronizedViewName
+* \param iParent
+*/
 QGoSynchronizedView2D::
 QGoSynchronizedView2D( QString iViewName, QWidget *iParent ) :
   QGoSynchronizedView( iViewName,iParent )
@@ -130,15 +129,11 @@ SetImage(vtkImageData* iImage)
     }
 }
 
-
-
-/*
-  Private
-*/
-
+// ########################################################################
+// Private
 
 //--------------------------------------------------------------------------
-/*  create the viewer contained in the widget */
+//  create the viewer contained in the widget
 void
 QGoSynchronizedView2D::
 createViewer()

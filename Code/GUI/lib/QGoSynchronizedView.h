@@ -37,8 +37,8 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#ifndef QGoSynchronizedView_H
-#define QGoSynchronizedView_H
+#ifndef __QGoSynchronizedView_h
+#define __QGoSynchronizedView_h
 /*
 #include "itkImageToVTKImageFilter.h"
 #include "itkSmartPointer.h"
@@ -60,7 +60,8 @@ class QGoSynchronizedViewManager;
 class QGoSynchronizedView : public QWidget,
   protected Ui::QGoSynchronizedView
 {
-    Q_OBJECT
+  Q_OBJECT
+
 public:
   explicit QGoSynchronizedView(QString iViewName, QWidget *iParent = 0);
 
@@ -138,4 +139,4 @@ private:
   virtual void createViewer( void ) = 0;
 };
 
-#endif // QGoSynchronizedView_H
+#endif //__QGoSynchronizedView_h

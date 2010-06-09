@@ -46,13 +46,12 @@
 #include "QGoSynchronizedViewManager.h"
 
 
-
 //--------------------------------------------------------------------------
 /*
- *  Default Constructor.
- * \param iViewName
- * \param iParent
- */
+*  Default Constructor.
+* \param iViewName
+* \param iParent
+*/
 QGoSynchronizedView::QGoSynchronizedView( QString iViewName, QWidget *iParent )
  : QWidget                  (iParent),
     m_currentViewName       (iViewName),

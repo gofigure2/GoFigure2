@@ -62,10 +62,9 @@ QGoSynchronizedView2DCallbacks (
         ++SynchronizedViewIt)
     {
     // add the callback object as an observer of each SynchronizedView's camera
-    (*SynchronizedViewIt)->GetCamera()
-                  ->AddObserver(
-                  vtkCommand::ModifiedEvent,
-                  QGoSynchronizedView2DCallbacks::m_vtkCallBackCamSync );
+    (*SynchronizedViewIt)->GetCamera()->AddObserver(
+      vtkCommand::ModifiedEvent,
+      QGoSynchronizedView2DCallbacks::m_vtkCallBackCamSync );
     }
 }
 
@@ -91,10 +90,9 @@ QGoSynchronizedView2DCallbacks::
     if ( m_openSynchronizedView.back()->HasViewer() )
       {
       // remove the callback object from each object's camera
-      m_openSynchronizedView.back()->GetCamera()
-                                   ->RemoveObserver(
-                                     QGoSynchronizedView2DCallbacks::
-                                       m_vtkCallBackCamSync );
+      m_openSynchronizedView.back()->GetCamera()->RemoveObserver(
+        QGoSynchronizedView2DCallbacks::
+        m_vtkCallBackCamSync );
       }
     // we remove the SynchronizedView from the vector
     m_openSynchronizedView.pop_back();
@@ -201,10 +199,9 @@ addSynchronizedView( QGoSynchronizedView2D* ioSynchronizedView )
     // if this SynchronizedView has a viewer, we add an observer
     if ( ioSynchronizedView->HasViewer() )
       // add the callback to the SynchronizedView's camera
-      ioSynchronizedView->GetCamera()
-                        ->AddObserver(  vtkCommand::ModifiedEvent,
-                                        QGoSynchronizedView2DCallbacks::
-                                          m_vtkCallBackCamSync );
+      ioSynchronizedView->GetCamera()->AddObserver( 
+        vtkCommand::ModifiedEvent,
+        QGoSynchronizedView2DCallbacks::m_vtkCallBackCamSync );
     else
       {
       std::cerr <<"trying to synchronize a visualization object missing a QGoImageView"

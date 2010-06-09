@@ -37,8 +37,8 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#ifndef QGoSynchronizedView2D_H
-#define QGoSynchronizedView2D_H
+#ifndef __QGoSynchronizedView2D_h
+#define __QGoSynchronizedView2D_h
 
 /*
 #include "itkImageToVTKImageFilter.h"
@@ -81,41 +81,41 @@ public:
    */
   void SetImage( vtkImageData* iImage );
 
-//  /*
-//  /// \brief Set ITK image displayed by the SynchronizedView
-//  template <typename ITKInputImageType>
-//  void SetITKImage(typename ITKInputImageType::Pointer iImage)
-//  {
-//    // define the itk smartpointer to image type from the given itkimagetype
-//    typedef typename ITKInputImageType::Pointer ITKimagePointerType;
-//    // we create the appropriate connector
-//    typedef typename itk::ImageToVTKImageFilter<ITKInputImageType>
-//      itkvtkConnectorType;
-//    typedef typename itkvtkConnectorType::Pointer itkvtkConnectorPointerType;
-//
-//
-//    itkvtkConnectorPointerType connector = itkvtkConnectorType::New();
-//    connector->SetInput(iImage);
-//    connector->Update();
-//
-//    //connector->DisconnectPipeline();
-//    //ITKimagePointerType ITKImage = connector->GetOutput();
-//    //ITKImage->DisconnectPipeline();
-//    //vtkSmartPointer<vtkImageData> tempvtkImage =
-//      vtkSmartPointer<vtkImageData>::New();
-//    //
-//    //connector->GetOutput();// = vtkSmartPointer<vtkImageData>::New();
-//    //tempvtkImage->ShallowCopy(connector->GetOutput());
-//    // tempvtkImage.Take(connector->GetOutput());
-//    // we store the transformed image
-//    //vtkSmartPointer<vtkImageData> tempvtkImage = connector->GetOutput();
-//
-//    // we set the current image
-//    SetImage(connector->GetOutput());
-//    Update();
-//
-//  }
-//  */
+  //  
+  //  /// \brief Set ITK image displayed by the SynchronizedView
+  //  template <typename ITKInputImageType>
+  //  void SetITKImage(typename ITKInputImageType::Pointer iImage)
+  //  {
+  //    // define the itk smartpointer to image type from the given itkimagetype
+  //    typedef typename ITKInputImageType::Pointer ITKimagePointerType;
+  //    // we create the appropriate connector
+  //    typedef typename itk::ImageToVTKImageFilter<ITKInputImageType>
+  //      itkvtkConnectorType;
+  //    typedef typename itkvtkConnectorType::Pointer itkvtkConnectorPointerType;
+  //
+  //
+  //    itkvtkConnectorPointerType connector = itkvtkConnectorType::New();
+  //    connector->SetInput(iImage);
+  //    connector->Update();
+  //
+  //    //connector->DisconnectPipeline();
+  //    //ITKimagePointerType ITKImage = connector->GetOutput();
+  //    //ITKImage->DisconnectPipeline();
+  //    //vtkSmartPointer<vtkImageData> tempvtkImage =
+  //      vtkSmartPointer<vtkImageData>::New();
+  //    //
+  //    //connector->GetOutput();// = vtkSmartPointer<vtkImageData>::New();
+  //    //tempvtkImage->ShallowCopy(connector->GetOutput());
+  //    // tempvtkImage.Take(connector->GetOutput());
+  //    // we store the transformed image
+  //    //vtkSmartPointer<vtkImageData> tempvtkImage = connector->GetOutput();
+  //
+  //    // we set the current image
+  //    SetImage(connector->GetOutput());
+  //    Update();
+  //
+  //  }
+  //  
 
   /** \brief Returns the imageview managed by this SynchronizedView
    */
@@ -135,4 +135,4 @@ private:
   Q_DISABLE_COPY( QGoSynchronizedView2D );
 };
 
-#endif // QGoSynchronizedView2D_H
+#endif // __QGoSynchronizedView2D_h
