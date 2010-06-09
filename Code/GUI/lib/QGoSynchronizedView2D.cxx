@@ -118,8 +118,9 @@ SetImage(vtkImageData* iImage)
     {
     // if there is no viewer, we create one
     if (static_cast<QGoImageView2D*>(m_currentView) == NULL)
-    createViewer();
-
+      {
+      createViewer();
+      }
     // set the image to the current view
     static_cast<QGoImageView2D*>(m_currentView)->SetImage(iImage);
     // update current image
@@ -128,6 +129,7 @@ SetImage(vtkImageData* iImage)
     this->Update();
     }
 }
+
 
 
 /*

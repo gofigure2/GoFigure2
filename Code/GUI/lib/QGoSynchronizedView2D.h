@@ -71,7 +71,7 @@ public:
 
   /** \brief Print self informations
    */
-  void PrintOs(ostream &os);
+  void PrintOs( ostream &os );
 
   /** \brief returns the type of SynchronizedView (2 for 2D, 3 for 3D)
    */
@@ -79,7 +79,7 @@ public:
 
   /** \brief Set image displayed by the SynchronizedView
    */
-  void SetImage(vtkImageData* iImage);
+  void SetImage( vtkImageData* iImage );
 
 //  /*
 //  /// \brief Set ITK image displayed by the SynchronizedView

@@ -92,8 +92,6 @@ public:
    */
   vtkCamera* GetCamera( void );
 
-
-
   /** \brief print the SynchronizedView information :
    *  it consists in the image information if any.
    */

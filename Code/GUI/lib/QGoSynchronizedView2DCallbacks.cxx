@@ -59,7 +59,7 @@ QGoSynchronizedView2DCallbacks (
   for(std::vector<QGoSynchronizedView2D*>::iterator
     SynchronizedViewIt = m_openSynchronizedView.begin();
         SynchronizedViewIt != m_openSynchronizedView.end();
-        SynchronizedViewIt++)
+        ++SynchronizedViewIt)
     {
     // add the callback object as an observer of each SynchronizedView's camera
     (*SynchronizedViewIt)->GetCamera()
@@ -81,19 +81,23 @@ QGoSynchronizedView2DCallbacks::
   // we remove the open synchronized SynchronizedViews
   SynchronizedViewIt = m_openSynchronizedView.begin();
 
+  // we pop out the element of the vector until it is empty
   while (!m_openSynchronizedView.empty())
     {
     // remove (AND NOT DELETE, this is the Manager's business)
     // all pointers in the vector
 
     // We remove the observer if any
-    if ( (*SynchronizedViewIt)->HasViewer() )
+    if ( m_openSynchronizedView.back()->HasViewer() )
+      {
       // remove the callback object from each object's camera
-      (*SynchronizedViewIt)->GetCamera()
-                    ->RemoveObserver( QGoSynchronizedView2DCallbacks::
-                                        m_vtkCallBackCamSync );
+      m_openSynchronizedView.back()->GetCamera()
+                                   ->RemoveObserver(
+                                     QGoSynchronizedView2DCallbacks::
+                                       m_vtkCallBackCamSync );
+      }
     // we remove the SynchronizedView from the vector
-    m_openSynchronizedView.erase(SynchronizedViewIt);
+    m_openSynchronizedView.pop_back();
     }
 
   // we can now delete the callback !
@@ -119,20 +123,23 @@ synchronizeCameras( vtkObject* caller,
   // so client data is a std::vector<QGoSynchronizedView2D*>*
   // we get the p_m_QGoSynchronizedView2D array by the following cast :
   std::vector<QGoSynchronizedView2D*> p_m_QGoSynchronizedViews
-                    = *static_cast< std::vector<QGoSynchronizedView2D*>* >(clientData);
+                    = *static_cast< std::vector<QGoSynchronizedView2D*>* >
+                        (clientData);
   // the observer are set on cameras, so that the caller is a vtk camera*
   vtkCamera* movedCamera
                     = static_cast< vtkCamera* >(caller);
   // for every opened SynchronizedView :
-  for(std::vector<QGoSynchronizedView2D*>::iterator SynchronizedViewIt = p_m_QGoSynchronizedViews.begin();
-        SynchronizedViewIt != p_m_QGoSynchronizedViews.end();
-        ++SynchronizedViewIt)
+  for( std::vector<QGoSynchronizedView2D*>::iterator SynchronizedViewIt =
+         p_m_QGoSynchronizedViews.begin();
+       SynchronizedViewIt != p_m_QGoSynchronizedViews.end();
+       ++SynchronizedViewIt)
     {
-    // we copy the position of the moved camera into each SynchronizedView's camera
+    // we copy the position of the moved camera into
+    // each SynchronizedView's camera
     if  ( ((*SynchronizedViewIt)->GetCamera() != NULL )
       &&  ((*SynchronizedViewIt)->GetCamera() != movedCamera) )
       {
-      (*SynchronizedViewIt)->GetCamera()->ShallowCopy(movedCamera);
+      (*SynchronizedViewIt)->GetCamera()->DeepCopy(movedCamera);
       // we render all SynchronizedViews
       (*SynchronizedViewIt)->Render();
       }
@@ -172,7 +179,8 @@ removeSynchronizedView( QGoSynchronizedView2D* ioSynchronizedView )
       if ( ioSynchronizedView->HasViewer() )
         // remove the callback object from each object's camera
         ioSynchronizedView->GetCamera()
-                  ->RemoveObserver( QGoSynchronizedView2DCallbacks::m_vtkCallBackCamSync );
+                  ->RemoveObserver( QGoSynchronizedView2DCallbacks::
+                                      m_vtkCallBackCamSync );
       (*SynchronizedViewIt)= NULL;
       // we remove the SynchronizedView
       m_openSynchronizedView.erase(SynchronizedViewIt);

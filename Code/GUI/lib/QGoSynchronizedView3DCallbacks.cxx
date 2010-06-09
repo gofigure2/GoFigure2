@@ -65,7 +65,7 @@ QGoSynchronizedView3DCallbacks( std::vector<QGoSynchronizedView3D*>
   for( std::vector<QGoSynchronizedView3D*>::iterator SynchronizedViewIt =
          m_openSynchronizedView.begin();
          SynchronizedViewIt != m_openSynchronizedView.end();
-         SynchronizedViewIt++ )
+         ++SynchronizedViewIt )
     {
       if ( (*SynchronizedViewIt)->HasViewer() )
         // add the callback to the SynchronizedView's camera
@@ -187,7 +187,7 @@ synchronizeCameras0( vtkObject* caller,
   for( std::vector<QGoSynchronizedView3D*>::iterator SynchronizedViewIt
          = p_m_QGoSynchronizedView3Ds.begin();
        SynchronizedViewIt != p_m_QGoSynchronizedView3Ds.end();
-       SynchronizedViewIt++ )
+       ++SynchronizedViewIt )
     {
     // if the SynchronizedView is visible and the modified camera is rendrered
     if      ( (*SynchronizedViewIt)->isVisible()
@@ -199,7 +199,7 @@ synchronizeCameras0( vtkObject* caller,
       if  ( ((*SynchronizedViewIt)->GetCamera(0) != NULL )
         &&  ((*SynchronizedViewIt)->GetCamera(0) != movedCamera) )
         {
-        (*SynchronizedViewIt)->GetCamera(0)->ShallowCopy(movedCamera);
+        (*SynchronizedViewIt)->GetCamera(0)->DeepCopy(movedCamera);
         // we render all SynchronizedViews
         (*SynchronizedViewIt)->Render(0);
         }
@@ -235,7 +235,7 @@ synchronizeCameras1( vtkObject* caller,
   for( std::vector<QGoSynchronizedView3D*>::iterator SynchronizedViewIt =
          p_m_QGoSynchronizedView3Ds.begin();
        SynchronizedViewIt != p_m_QGoSynchronizedView3Ds.end();
-       SynchronizedViewIt++)
+       ++SynchronizedViewIt)
     {
     // if the SynchronizedView is visible and the modified camera is rendrered
     if      ( (*SynchronizedViewIt)->isVisible()
@@ -247,7 +247,7 @@ synchronizeCameras1( vtkObject* caller,
       if  ( ((*SynchronizedViewIt)->GetCamera(1) != NULL )
         &&  ((*SynchronizedViewIt)->GetCamera(1) != movedCamera) )
         {
-        (*SynchronizedViewIt)->GetCamera(1)->ShallowCopy(movedCamera);
+        (*SynchronizedViewIt)->GetCamera(1)->DeepCopy(movedCamera);
         // we render all SynchronizedViews
         (*SynchronizedViewIt)->Render(1);
         }
@@ -283,7 +283,7 @@ synchronizeCameras2( vtkObject* caller,
   for( std::vector<QGoSynchronizedView3D*>::iterator SynchronizedViewIt =
        p_m_QGoSynchronizedView3Ds.begin();
        SynchronizedViewIt != p_m_QGoSynchronizedView3Ds.end();
-       SynchronizedViewIt++)
+       ++SynchronizedViewIt)
     {
     // if the SynchronizedView is visible and the modified camera is rendrered
     if      ( (*SynchronizedViewIt)->isVisible()
@@ -295,7 +295,7 @@ synchronizeCameras2( vtkObject* caller,
       if  ( ((*SynchronizedViewIt)->GetCamera(2) != NULL )
         &&  ((*SynchronizedViewIt)->GetCamera(2) != movedCamera) )
         {
-        (*SynchronizedViewIt)->GetCamera(2)->ShallowCopy(movedCamera);
+        (*SynchronizedViewIt)->GetCamera(2)->DeepCopy(movedCamera);
         // we render all SynchronizedViews
         (*SynchronizedViewIt)->Render(2);
         }
@@ -331,7 +331,7 @@ synchronizeCameras3( vtkObject* caller,
   for( std::vector<QGoSynchronizedView3D*>::iterator SynchronizedViewIt =
         p_m_QGoSynchronizedView3Ds.begin();
        SynchronizedViewIt != p_m_QGoSynchronizedView3Ds.end();
-       SynchronizedViewIt++ )
+       ++SynchronizedViewIt )
     {
     // if the SynchronizedView is visible and the modified camera is rendrered
     if      ( (*SynchronizedViewIt)->isVisible()
@@ -343,7 +343,7 @@ synchronizeCameras3( vtkObject* caller,
       if  ( ((*SynchronizedViewIt)->GetCamera(3) != NULL )
         &&  ((*SynchronizedViewIt)->GetCamera(3) != movedCamera) )
         {
-        (*SynchronizedViewIt)->GetCamera(3)->ShallowCopy(movedCamera);
+        (*SynchronizedViewIt)->GetCamera(3)->DeepCopy(movedCamera);
         // we render all SynchronizedViews
         (*SynchronizedViewIt)->Render(3);
         }
