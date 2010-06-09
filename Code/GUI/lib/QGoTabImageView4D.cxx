@@ -459,7 +459,6 @@ SetMegaCaptureFile(
   m_Reader1->SetFileType( m_FileType );
   m_Reader1->SetTimeBased( true );
   m_Reader1->SetTimePoint( 0 );
-  m_Reader1->SetChannel( 0 );
   m_Reader1->Update();
 
   unsigned int min_z = m_Reader1->GetMinZSlice();
@@ -472,14 +471,13 @@ SetMegaCaptureFile(
   m_Reader2->SetFileType( m_FileType );
   m_Reader2->SetTimeBased( false );
   m_Reader2->SetZSlice( zslice );
-  m_Reader2->SetChannel( 0 );
 
   unsigned int min_ch = m_Reader1->GetMinChannel();
   unsigned int max_ch = m_Reader1->GetMaxChannel();
 
   unsigned int NumberOfChannels = max_ch - min_ch + 1;
 
-  vtkImageData* temp = m_Reader1->GetOutput();
+  vtkImageData* temp = m_Reader1->GetOutput( min_ch );
 
   int extent[6];
   temp->GetExtent( extent );
@@ -538,8 +536,8 @@ void QGoTabImageView4D::SetTimePoint( const int& iTimePoint )
     else
       {
       m_TimePoint = iTimePoint;
-      m_Reader1->SetChannel( 0 );
       m_Reader1->SetTimePoint( m_TimePoint );
+      m_Reader1->Update();
 
       unsigned int min_ch = m_Reader1->GetMinChannel();
       unsigned int max_ch = m_Reader1->GetMaxChannel();
@@ -551,16 +549,13 @@ void QGoTabImageView4D::SetTimePoint( const int& iTimePoint )
         vtkSmartPointer< vtkImageAppendComponents > append_filter =
           vtkSmartPointer< vtkImageAppendComponents >::New();
 
-        for( int i = 0; i < NumberOfChannels; i++ )
+        for( unsigned int i = min_ch; i < max_ch; i++ )
           {
-          m_Reader1->SetChannel( i );
-          m_Reader1->Update();
-
           if( !m_XYZInternalImages[i] )
             {
             m_XYZInternalImages[i] = vtkSmartPointer< vtkImageData >::New();
             }
-          m_XYZInternalImages[i]->ShallowCopy( m_Reader1->GetOutput() );
+          m_XYZInternalImages[i]->ShallowCopy( m_Reader1->GetOutput( i ) );
           append_filter->AddInput( m_XYZInternalImages[i] );
           }
         // This is really stupid!!!
@@ -577,9 +572,7 @@ void QGoTabImageView4D::SetTimePoint( const int& iTimePoint )
         }
       else
         {
-        m_Reader1->Update();
-
-        m_XYZImage->ShallowCopy( m_Reader1->GetOutput() );
+        m_XYZImage->ShallowCopy( m_Reader1->GetOutput( min_ch ) );
         }
 
       if( !m_FirstUpdate )
@@ -611,12 +604,12 @@ void QGoTabImageView4D::SetZSlice( const int& iZSlice )
     else
       {
       m_ZSlice = iZSlice;
-      m_Reader2->SetChannel( 0 );
       m_Reader2->SetZSlice( m_ZSlice );
 
       unsigned int min_ch = m_Reader2->GetMinChannel();
       unsigned int max_ch = m_Reader2->GetMaxChannel();
-
+      m_Reader2->Update();
+    
       int NumberOfChannels = max_ch - min_ch + 1;
 
       if( NumberOfChannels > 1 )
@@ -624,16 +617,13 @@ void QGoTabImageView4D::SetZSlice( const int& iZSlice )
         vtkSmartPointer< vtkImageAppendComponents > append_filter =
           vtkSmartPointer< vtkImageAppendComponents >::New();
 
-        for( int i = 0; i < NumberOfChannels; i++ )
+        for( unsigned int i = min_ch; i < max_ch; i++ )
           {
-          m_Reader2->SetChannel( i );
-          m_Reader2->Update();
-
           if( !m_XYTInternalImages[i] )
             {
             m_XYTInternalImages[i] = vtkSmartPointer< vtkImageData >::New();
             }
-          m_XYTInternalImages[i]->ShallowCopy( m_Reader2->GetOutput() );
+          m_XYTInternalImages[i]->ShallowCopy( m_Reader2->GetOutput( i ) );
           append_filter->AddInput( m_XYTInternalImages[i] );
           }
         // This is really stupid!!!
@@ -650,9 +640,7 @@ void QGoTabImageView4D::SetZSlice( const int& iZSlice )
         }
       else
         {
-        m_Reader2->Update();
-
-        m_XYTImage->ShallowCopy( m_Reader2->GetOutput() );
+        m_XYTImage->ShallowCopy( m_Reader2->GetOutput( min_ch ) );
         }
 
       if( !m_FirstUpdate )

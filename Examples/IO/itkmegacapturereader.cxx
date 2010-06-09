@@ -21,11 +21,16 @@ int main( int argc, char** argv )
   reader->SetFileType( GoFigure::PNG );
   reader->SetTimeBased( true );
   reader->SetTimePoint( 0 );
-  reader->SetChannel( 0 );
   reader->Update();
 
-  vtkImageData* image = reader->GetOutput();
-  image->Delete();
+  unsigned int minch = reader->GetMinChannel();
+  unsigned int maxch = reader->GetMaxChannel();
+
+  for( unsigned int ch = minch; ch < maxch; ch++ )
+    {
+    vtkImageData* image = reader->GetOutput( ch );
+    image->Delete();
+    }
 
   return EXIT_SUCCESS;
 }

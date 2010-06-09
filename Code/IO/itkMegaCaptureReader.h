@@ -86,15 +86,13 @@ namespace itk
     itkGetConstMacro( MinZSlice, unsigned int );
     itkGetConstMacro( MaxZSlice, unsigned int );
 
-    void SetChannel( const unsigned int& iCh );
-    itkGetConstMacro( UpdateChannel, unsigned int );
-
     itkGetConstMacro( MinChannel, unsigned int );
     itkGetConstMacro( MaxChannel, unsigned int );
 
     void Update();
 
-    vtkImageData* GetOutput();
+    vtkImageData* GetOutput( const unsigned int& iChannel );
+    std::map< unsigned int, vtkImageData* > GetOutputs();
 
   protected:
     MegaCaptureReader();
@@ -102,7 +100,7 @@ namespace itk
 
     void ComputeBounds();
 
-    vtkImageData*                               m_OutputImage;
+    std::map< unsigned int, vtkImageData* >     m_OutputImageMap;
     GoFigureFileInfoHelperMultiIndexContainer   m_FileList;
     GoFigure::FileType                          m_FileType;
     MegaCaptureHeaderReader*                    m_HeaderReader;
@@ -117,9 +115,9 @@ namespace itk
 
     unsigned int m_MinChannel;
     unsigned int m_MaxChannel;
-    unsigned int m_UpdateChannel;
 
     bool m_TimeBased;
+    bool m_Modified;
 
   private:
     MegaCaptureReader( const Self& );

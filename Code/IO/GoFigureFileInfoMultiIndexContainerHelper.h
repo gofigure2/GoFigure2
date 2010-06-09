@@ -57,6 +57,7 @@
 #include <string>
 #include <sstream>
 #include <list>
+#include <map>
 
 #include "QGoIOConfigure.h"
 
@@ -168,6 +169,25 @@ struct QGOIO_EXPORT GoFigureFileInfoHelper
   > GoFigureFileInfoHelperChannelViewContainer;
 
 // }
+
+QGOIO_EXPORT
+std::map< unsigned int, std::list< std::string > >
+GetAllFileNamesForGivenTCoord(
+  const GoFigureFileInfoHelperMultiIndexContainer& iContainer,
+  const unsigned int& iT,
+  const unsigned int& iMinCh,
+  const unsigned int& iMaxCh
+  );
+
+QGOIO_EXPORT
+std::map< unsigned int, std::list< std::string > >
+GetAllFileNamesForGivenZCoord(
+  const GoFigureFileInfoHelperMultiIndexContainer& iContainer,
+  const unsigned int& iZ,
+  const unsigned int& iMinCh,
+  const unsigned int& iMaxCh
+  );
+  
 QGOIO_EXPORT
 std::list< std::string > GetAllFileNamesForGivenTCoordAndChannel(
   const GoFigureFileInfoHelperMultiIndexContainer& iContainer,

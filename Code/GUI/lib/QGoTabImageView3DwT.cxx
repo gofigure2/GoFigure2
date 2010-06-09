@@ -252,11 +252,17 @@ QGoTabImageView3DwT::
       }
     }
 
-  vtkImageData* temp = m_MegaCaptureReader->GetOutput();
-  if( temp )
+  unsigned int minch = m_MegaCaptureReader->GetMinChannel();
+  unsigned int maxch = m_MegaCaptureReader->GetMaxChannel();
+
+  for( unsigned int i = minch; i < maxch; i++ )
     {
-    temp->Delete();
-    temp = 0;
+    vtkImageData* temp = m_MegaCaptureReader->GetOutput( i );
+    if( temp )
+      {
+      temp->Delete();
+      temp = NULL;
+      }
     }
 
 //   DeleteContourMeshStructureElement( m_ContourContainer );
@@ -1532,7 +1538,6 @@ SetMegaCaptureFile(
   m_MegaCaptureReader->SetFileType( m_FileType );
   m_MegaCaptureReader->SetTimeBased( true );
   m_MegaCaptureReader->SetTimePoint( iTimePoint );
-  m_MegaCaptureReader->SetChannel( 0 );
   m_MegaCaptureReader->Update();
 
   unsigned int min_t = m_MegaCaptureReader->GetMinTimePoint();
@@ -1543,7 +1548,7 @@ SetMegaCaptureFile(
 
   unsigned int NumberOfChannels = max_ch - min_ch + 1;
 
-  vtkImageData* temp = m_MegaCaptureReader->GetOutput();
+  vtkImageData* temp = m_MegaCaptureReader->GetOutput( min_ch );
 
   int extent[6];
   temp->GetExtent( extent );
@@ -1611,30 +1616,22 @@ SetTimePointWithMegaCapture( const int& iTimePoint )
 
   unsigned int min_ch = m_MegaCaptureReader->GetMinChannel();
   unsigned int max_ch = m_MegaCaptureReader->GetMaxChannel();
-
-  int NumberOfChannels = max_ch - min_ch + 1;
-
-  if( NumberOfChannels > 1 )
+  m_MegaCaptureReader->Update();
+  
+  if( max_ch != min_ch )
     {
     vtkSmartPointer< vtkImageAppendComponents > append_filter =
       vtkSmartPointer< vtkImageAppendComponents >::New();
 
-    for( int i = 0; i < NumberOfChannels; i++ )
+    for( unsigned int i = min_ch; i <= max_ch; i++ )
       {
-      m_MegaCaptureReader->SetChannel( i );
-      m_MegaCaptureReader->Update();
-
-      if( !m_InternalImages[i] )
-        {
-        m_InternalImages[i] = vtkSmartPointer< vtkImageData >::New();
-        }
-      m_InternalImages[i]->ShallowCopy( m_MegaCaptureReader->GetOutput() );
+      m_InternalImages[i] = m_MegaCaptureReader->GetOutput( i );
       append_filter->AddInput( m_InternalImages[i] );
       }
     // This is really stupid!!!
-    if( NumberOfChannels < 3 )
+    if( max_ch < 2 )
       {
-      for( int i = NumberOfChannels; i < 3; i++ )
+      for( unsigned int i = max_ch + 1; i < 3; i++ )
         {
         append_filter->AddInput( m_InternalImages[0] );
         }
@@ -1656,9 +1653,7 @@ SetTimePointWithMegaCapture( const int& iTimePoint )
     }
   else
     {
-    m_MegaCaptureReader->Update();
-
-    m_Image->ShallowCopy( m_MegaCaptureReader->GetOutput() );
+    m_Image->ShallowCopy( m_MegaCaptureReader->GetOutput( min_ch ) );
     m_Image->SetNumberOfScalarComponents( 1 );
     }
 
