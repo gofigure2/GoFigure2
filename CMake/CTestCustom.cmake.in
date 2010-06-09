@@ -47,6 +47,9 @@ SET(CTEST_CUSTOM_WARNING_EXCEPTION
 
   # vtk suppressions
 
+  # boost suppressions
+  "multi_index*.hpp.*warning.*declaration of .* shadows a member of .this"
+
   # qt suppressions from vtk...
   # Some VTK dashboards include building bits of Qt which produce lots of
   # the following warnings when built with the MS compilers. Qt guys should
