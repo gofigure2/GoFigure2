@@ -1,3 +1,42 @@
+/*=========================================================================
+  Author: $Author$  // Author of last commit
+  Version: $Rev$  // Revision of last commit
+  Date: $Date$  // Date of last commit
+=========================================================================*/
+
+/*=========================================================================
+ Authors: The GoFigure Dev. Team.
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+
+ Copyright (c) 2009-10, President and Fellows of Harvard College.
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are met:
+
+ Redistributions of source code must retain the above copyright notice,
+ this list of conditions and the following disclaimer.
+ Redistributions in binary form must reproduce the above copyright notice,
+ this list of conditions and the following disclaimer in the documentation
+ and/or other materials provided with the distribution.
+ Neither the name of the  President and Fellows of Harvard College
+ nor the names of its contributors may be used to endorse or promote
+ products derived from this software without specific prior written
+ permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS
+ BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
+ OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+ OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+=========================================================================*/
 #ifndef QGOCOMPAREORCHESTRA_H
 #define QGOCOMPAREORCHESTRA_H
 
@@ -12,11 +51,11 @@ class vtkImageData;
 
 
 /** \class QGoSynchronizedViewManager
-* \brief Class dealing with SynchronizedViews for correct synchronization 
-* and handling provides a simple interface to create / delete / 
+* \brief Class dealing with SynchronizedViews for correct synchronization
+* and handling provides a simple interface to create / delete /
 * synchronize SynchronizedViews
 *
-* This class should be used with for any class using QGoSynchronizedView
+* This class should be used with any class using QGoSynchronizedView
 * and QGoSynchronize.
 */
 class QGoSynchronizedViewManager : public QObject
@@ -29,41 +68,52 @@ public:
   ~QGoSynchronizedViewManager();
 
 public slots:
-  /** \brief create and add a SynchronizedView to 
-  * QGoSynchronizedViewManager's parent Object/Widget*/
-  QGoSynchronizedView2D* newSynchronizedView2D( 
-    QString iSynchronizedViewName, 
-    vtkImageData* iImage );
-  /** \brief create and add a SynchronizedView 3D to 
-  * QGoSynchronizedViewManager's parent Object/Widget*/
-  QGoSynchronizedView3D* newSynchronizedView3D( 
-    QString iSynchronizedViewName, 
+  /** \brief create and add a SynchronizedView2D to
+   * QGoSynchronizedViewManager's parent Object/Widget
+   */
+  QGoSynchronizedView2D* newSynchronizedView2D(
+    QString       iSynchronizedViewName,
     vtkImageData* iImage );
 
-  // delete a SynchronizedView from QGoSynchronizedViewManager's parent 
-  // Object/Widget
-  // delete the SynchronizedView
+  /** \brief create and add a SynchronizedView 3D to
+   * QGoSynchronizedViewManager's parent Object/Widget
+   */
+  QGoSynchronizedView3D* newSynchronizedView3D(
+    QString       iSynchronizedViewName,
+    vtkImageData* iImage );
+
+  /** \brief delete a SynchronizedView from QGoSynchronizedViewManager's parent
+   * Object/Widget
+   * delete the SynchronizedView
+   */
   void deleteSynchronizedView2D(QGoSynchronizedView2D* ioSynchronizedView);
   void deleteSynchronizedView2D(const int& iIndex);
   void deleteSynchronizedView3D(QGoSynchronizedView3D* ioSynchronizedView);
   void deleteSynchronizedView3D(const int& iIndex);
 
-  // take a SynchronizedView out of the Manager lists, without deleting it.
-
+  /** \brief take a SynchronizedView out of the Manager lists, without deleting it.
+   */
   void removeSynchronizedView2D(QGoSynchronizedView2D* ioSynchronizedView);
   void removeSynchronizedView3D(QGoSynchronizedView3D* ioSynchronizedView);
 
-  // synchronize all open SynchronizedViews
+  /** \brief synchronize all open SynchronizedViews
+   */
   void synchronizeOpenSynchronizedViews();
-  // remove the synchronization leaving the SynchronizedViews independent
+
+  /** \brief remove the synchronization leaving the SynchronizedViews independent
+   */
   void unSynchronizeOpenSynchronizedViews();
-  // true if the orchestra synchronizes copmarers
+
+  /** \brief true if the orchestra synchronizes copmarers
+   */
   bool isSynchronizing();
 
-  //update the SynchronizedViews
+  /** \brief update the SynchronizedViews
+   */
   void Update();
 
-  //show all the SynchronizedViews
+  /** \brief show all the SynchronizedViews
+   */
   void show();
 
 private:

@@ -58,36 +58,36 @@ public:
   ~QGoSynchronizedView3D();
 
   /** print the SynchronizedView information :
-  *  it consists in the image information if any.
-  */
+   *  it consists in the image information if any.
+   */
   void PrintOs(ostream &os);
 
   /** Set image displayed by the SynchronizedView
-  */
+   */
   void SetImage(vtkImageData* iImage);
 
   /** \brief returns the type of SynchronizedView (2 for 2D, 3 for 3D)
-  */
+   */
   int GetSynchronizedViewType( void );
 
   /** render the iId'th imageview:
-  *  3D visualization usually contains 4 imageviewers :
-  *  three 2D projection and a 3D view : iId=[0-3]
-  */
+   *  3D visualization usually contains 4 imageviewers :
+   *  three 2D projection and a 3D view : iId=[0-3]
+   */
   void Render(const int& iId);
 
   /** get the camera of the current viewer;
-  *  iId=[0-3]
-  */
+   *  iId=[0-3]
+   */
   vtkCamera* GetCamera(const int& iId);
 
   /** Get the fullscreen view : iId = [0-4]
-  *  0 : Quadview (all 4 views)
-  *  1 : XY
-  *  2 : XZ
-  *  3 : YZ
-  *  4 : 3D view
-  */
+   *  0 : Quadview (all 4 views)
+   *  1 : XY
+   *  2 : XZ
+   *  3 : YZ
+   *  4 : 3D view
+   */
   int GetFullScreenView();
 
   QGoImageView3D* GetImageView();
@@ -106,37 +106,37 @@ public slots:
     const QString& iBaseName = QString( "snapshot" ) );
 
   /** Set the fullscreen view : iId = [0-4]
-  *  0 : Quadview (all 4 views)
-  *  1 : XY
-  *  2 : XZ
-  *  3 : YZ
-  *  4 : 3D view
-  */
+   *  0 : Quadview (all 4 views)
+   *  1 : XY
+   *  2 : XZ
+   *  3 : YZ
+   *  4 : 3D view
+   */
   void SetFullScreenView(const int& iId);
 
   /** Set the fullscreen view : XY
-  */
+   */
   void SetFullXYScreenView();
 
   /** Set the fullscreen view : XZ
-  */
+   */
   void SetFullXZScreenView();
 
   /** Set the fullscreen view : YZ
-  */
+   */
   void SetFullYZScreenView();
 
   /** Set the fullscreen view : XYZ
-  */
+   */
   void SetFullXYZScreenView();
 
   /** Set the fullscreen view : 3D view
-  */
+   */
   void SetQuadView();
 
 private:
   /** Create the viewer in the widget
-  */
+   */
   void createViewer();
 
   Q_DISABLE_COPY( QGoSynchronizedView3D );
