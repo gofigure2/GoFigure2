@@ -324,7 +324,7 @@ SaveSnapshotInFile( QString& iFile, QGoSynchronizedView* SynchronizedView )
 
       temp3DSynchronizedView->GetFullScreenView();
 
-      switch (temp3DSynchronizedView->GetFullScreenView() )
+      switch ( temp3DSynchronizedView->GetFullScreenView() )
         {
         case 0 :
           temp3DSynchronizedView->SnapshotViewXYZ(iType,iFile);
@@ -372,9 +372,9 @@ imageinfo()
   std::stringstream timageinfo;
   if (activeSynchronizedView() )
     {
-    activeSynchronizedView()->PrintOs(timageinfo);
-    QMessageBox::about(this, tr( "Image Informations" ),
-      QString::fromStdString(timageinfo.str() ));
+    activeSynchronizedView()->PrintOs( timageinfo);
+    QMessageBox::about( this, tr( "Image Informations" ),
+      QString::fromStdString( timageinfo.str() ));
     }
 
 }
@@ -517,7 +517,7 @@ updateWindowMenu()
   windowMenu->addAction(closeAct);
   windowMenu->addAction(closeAllAct);
   windowMenu->addSeparator();
-  windowMenu->addAction(tileAct);
+  windowMenu->addAction( tileAct);
   windowMenu->addAction(cascadeAct);
 }
 
@@ -721,7 +721,7 @@ QMdiSubWindow *QGoSynchronizedViewMainWindow::findSynchronizedView(const QString
   foreach (QMdiSubWindow *twindow, mdiArea->subWindowList() )
     {
     QGoSynchronizedView *SynchronizedView =
-      qobject_cast<QGoSynchronizedView *>(twindow->widget() );
+      qobject_cast<QGoSynchronizedView *>( twindow->widget() );
     if (SynchronizedView->GetName() == iSynchronizedViewName)
       {
       return twindow;
@@ -740,6 +740,6 @@ void QGoSynchronizedViewMainWindow::setActiveSubWindow(QWidget *twindow)
     }
   else
     {
-    mdiArea->setActiveSubWindow(qobject_cast<QMdiSubWindow *>(twindow) );
+    mdiArea->setActiveSubWindow(qobject_cast<QMdiSubWindow *>( twindow) );
     }
 }
