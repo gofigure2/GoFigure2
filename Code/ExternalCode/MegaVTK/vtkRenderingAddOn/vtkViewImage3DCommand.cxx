@@ -41,9 +41,10 @@ void
 vtkViewImage3DCommand::
 Execute(vtkObject *caller, unsigned long event, void *vtkNotUsed(callData))
 {
-
   vtkInteractorStyleImage3D *isi =
     vtkInteractorStyleImage3D::SafeDownCast(caller);
+
+  (void) isi;
 
   vtkImageData* data = this->m_vtkViewImage3D->GetInput();
   int extent[6];
