@@ -162,11 +162,11 @@ QGoImageView3D::~QGoImageView3D()
 
   // note m_Pool is supposed to be deleted in QGoImageView, but due to a bug
   // it has to be deleted in this order...
-  /*if( m_Pool )
+  if( m_Pool )
     {
     m_Pool->Delete();
     m_Pool = 0;
-    }*/
+    }
   m_View3D->Delete();
   m_View3D = 0;
   VtkEventQtConnector->Delete();
