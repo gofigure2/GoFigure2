@@ -38,6 +38,7 @@
 
 =========================================================================*/
 #include "QGoSynchronizedView2DCallbacks.h"
+
 #include "QGoSynchronizedView.h"
 #include "vtkCommand.h"
 #include "vtkCallbackCommand.h"
@@ -45,6 +46,7 @@
 #include "vtkRenderer.h"
 #include "vtkSmartPointer.h"
 #include <algorithm>
+
 
 //--------------------------------------------------------------------------
 QGoSynchronizedView2DCallbacks::
@@ -70,9 +72,8 @@ QGoSynchronizedView2DCallbacks (
 
 
 //--------------------------------------------------------------------------
-/** the destructor is very important here, we want to leave clean
- *  SynchronizedViews behind
- */
+// the destructor is very important here, we want to leave clean
+//  SynchronizedViews behind
 QGoSynchronizedView2DCallbacks::
 ~QGoSynchronizedView2DCallbacks()
 {
@@ -104,9 +105,8 @@ QGoSynchronizedView2DCallbacks::
 
 
 //--------------------------------------------------------------------------
-/** this is the callback function : do shallow copies to keep track of
- *  master's camera position
- */
+// this is the callback function : do deep copies to keep track of
+//  master's camera position
 void
 QGoSynchronizedView2DCallbacks::
 synchronizeCameras( vtkObject* caller,

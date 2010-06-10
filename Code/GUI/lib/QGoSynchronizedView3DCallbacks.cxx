@@ -40,15 +40,14 @@
 #include "QGoSynchronizedView3DCallbacks.h"
 
 #include "QGoImageView3D.h"
-
 #include "QGoSynchronizedView3D.h"
 #include "vtkCommand.h"
 #include "vtkCallbackCommand.h"
 #include "vtkCamera.h"
 #include "vtkRenderer.h"
 #include "vtkSmartPointer.h"
-
 #include <algorithm>
+
 
 //--------------------------------------------------------------------------
 QGoSynchronizedView3DCallbacks::
@@ -163,7 +162,7 @@ QGoSynchronizedView3DCallbacks::
 
 
 //--------------------------------------------------------------------------
-// this is the callback function : do shallow copies to keep track of
+// this is the callback function : do deep copies to keep track of
 // the moving camera's position
 void
 QGoSynchronizedView3DCallbacks::
@@ -209,9 +208,9 @@ synchronizeCameras0( vtkObject* caller,
 
 
 //--------------------------------------------------------------------------
-/** this is the callback function : do shallow copies to keep track of
-*  master's camera position
-*/
+// this is the callback function : do deep copies to keep track of
+//  master's camera position
+//
 void
 QGoSynchronizedView3DCallbacks::
 synchronizeCameras1( vtkObject* caller,
@@ -257,9 +256,8 @@ synchronizeCameras1( vtkObject* caller,
 
 
 //--------------------------------------------------------------------------
-/** this is the callback function : do shallow copies to keep track of
-*  master's camera position
-*/
+// this is the callback function : do deep copies to keep track of
+// master's camera position
 void
 QGoSynchronizedView3DCallbacks::
 synchronizeCameras2( vtkObject* caller,
@@ -305,7 +303,7 @@ synchronizeCameras2( vtkObject* caller,
 
 
 //--------------------------------------------------------------------------
-// this is the callback function : do shallow copies to keep track of
+// this is the callback function : do deep copies to keep track of
 // master's camera position
 void
 QGoSynchronizedView3DCallbacks::
