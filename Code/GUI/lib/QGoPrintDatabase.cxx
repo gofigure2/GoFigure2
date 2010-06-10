@@ -741,6 +741,7 @@ ChangeMeshesToHighLightInfoFromVisu(
               *it, false );
             }
           }
+      ++it;
     }
 
     /// \todo check it seems to be the same code as in contour

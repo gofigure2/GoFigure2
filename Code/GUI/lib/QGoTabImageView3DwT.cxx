@@ -1419,13 +1419,13 @@ setupUi( QWidget* iParent )
   QObject::connect( m_ImageView, SIGNAL( MeshesSelectionChanged( ) ),
       this, SLOT( HighLightMeshes( ) ) );
 
-  // connect the contours selection connection
+  // connect the meshes selection connection
   QObject::connect( m_ImageView, SIGNAL( ListMeshesSelectionChanged( ) ),
       this, SLOT( ListHighLightMeshes( ) ) );
 
-  // connect the contours selection connection
-  //QObject::connect( m_ImageView, SIGNAL( MeshesSelectionChanged( ) ),
-  //    this, SLOT( SelectMeshesInTable( ) ) );
+  // connect the meshes selection connection
+  QObject::connect( m_ImageView, SIGNAL( MeshesSelectionChanged( ) ),
+      this, SLOT( SelectMeshesInTable( ) ) );
 
   m_HBoxLayout = new QHBoxLayout( iParent );
   m_HBoxLayout->addWidget( m_VSplitter );
