@@ -772,3 +772,25 @@ void QTableWidgetChild::UncheckSelectedRows(std::string iTraceName,
    std::cout << std::endl;
    }
 }
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QTableWidgetChild::AddValuesForID(std::vector<std::string> iColumnsNames,
+  std::vector<std::string> iValues, unsigned int iID, std::string iTraceIDName)
+{
+  int RowIndex = this->findValueGivenColumn(iID,iTraceIDName.c_str());
+  if (RowIndex != -1)
+    {
+    for (unsigned int i = 0; i < iColumnsNames.size(); i++)
+      {
+      int ColumnIndex = this->findColumnName(iColumnsNames.at(i).c_str());
+      if (ColumnIndex != -1 )
+        {
+        QTableWidgetItem* CellTable = new QTableWidgetItem;
+        CellTable->setData(0,QString::fromStdString( iValues.at(i) ).toInt());
+        CellTable->setTextAlignment(Qt::AlignCenter);
+        this->setItem(RowIndex,ColumnIndex,CellTable);
+        }
+      }
+    }
+}

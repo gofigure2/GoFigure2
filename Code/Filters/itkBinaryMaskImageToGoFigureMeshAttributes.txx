@@ -75,8 +75,16 @@ GenerateData()
   ShapeConverterPointer shapeConverter = ShapeConverterType::New();
   shapeConverter->SetInput( m_MaskImage );
   shapeConverter->SetBackgroundValue( 0 );
-  shapeConverter->Update();
-
+  try
+	{
+	shapeConverter->Update();
+	}
+  catch( itk::ExceptionObject & e )
+	{
+	std::cerr << "Exception Caught: " << e << std::endl;
+	return;
+	}
+  
   ShapeLabelMapPointer shapeLabelMap = shapeConverter->GetOutput();
   const ShapeLabelObjectType *shapeObject = shapeLabelMap->GetLabelObject( 255 );
 

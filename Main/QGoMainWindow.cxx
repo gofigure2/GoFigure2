@@ -448,7 +448,8 @@ LoadAllTracesFromDatabase( const int& iT, std::string iTrace )
             {
             GoFigureMeshAttributes attributes =
               w3t->ComputeMeshAttributes( contourmesh_list_it->Nodes );
-
+            w3t->m_DataBaseTables->PrintVolumeAreaForMesh(attributes.m_Volume, 
+              attributes.m_Area, contourmesh_list_it->TraceID);
             std::cout << "TraceID " << contourmesh_list_it->TraceID <<std::endl;
             std::cout << "volume " << attributes.m_Volume  << std::endl;
             std::cout << "area " << attributes.m_Area    << std::endl;

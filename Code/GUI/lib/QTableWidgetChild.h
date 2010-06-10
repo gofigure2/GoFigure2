@@ -97,6 +97,9 @@ public:
   void UpdateIDs(unsigned int iNewCollectionID,std::string iCollectionIDName, 
   QColor ColorNewCollection,std::string TraceIDName,std::list<int> TraceIDToUpdate);
 
+  void AddValuesForID(std::vector<std::string> iColumnsNames,
+    std::vector<std::string> iValues,unsigned int iID, std::string iTraceIDName);
+
 signals:
   void CheckedRowsChanged();
 

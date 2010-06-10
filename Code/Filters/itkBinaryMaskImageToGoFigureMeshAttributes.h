@@ -25,7 +25,7 @@ namespace itk
 
     typedef TMask MaskImageType;
     typedef typename MaskImageType::Pointer MaskImagePointer;
-
+ 
     itkStaticConstMacro( ImageDimension, unsigned int,
                          ImageType::ImageDimension );
 

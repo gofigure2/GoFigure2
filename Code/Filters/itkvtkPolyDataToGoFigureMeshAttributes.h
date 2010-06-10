@@ -4,6 +4,7 @@
 #include "itkLightObject.h"
 #include "itkvtkPolyDataToBinaryMaskImageFilter.h"
 #include "itkBinaryMaskImageToGoFigureMeshAttributes.h"
+#include "itkImageFileWriter.h"
 
 namespace itk
 {
@@ -34,6 +35,8 @@ class vtkPolyDataToGoFigureMeshAttributes : public LightObject
       BinaryMaskImageToGoFigureMeshAttributesType;
     typedef typename BinaryMaskImageToGoFigureMeshAttributesType::Pointer
       BinaryMaskImageToGoFigureMeshAttributesPointer;
+
+    typedef ImageFileWriter< ImageType > WriterType;
 
     virtual void SetImage( ImageType* iImage );
     virtual void SetPolyData( vtkPolyData* iMesh );

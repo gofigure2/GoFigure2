@@ -792,7 +792,7 @@ void GoDBTableWidgetContainer::SetChannelsInfo(
  {
   return this->m_ChannelsInfo;
  }
- //--------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
  unsigned int GoDBTableWidgetContainer::GetNumberOfRows()
@@ -804,6 +804,9 @@ void GoDBTableWidgetContainer::SetChannelsInfo(
     }
   return 0;
 }
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
 /*void GoDBTableWidgetContainer::InsertNewCreatedTrace(GoDBTableWidgetContainer
   iLinkToNewTraceContainer)
 {

@@ -85,8 +85,6 @@ QGoPrintDatabase( QWidget* iParent ) :
   m_IsDatabaseUsed( false )
 {
   this->setupUi( this );
-
-  DBTabWidget->setTabPosition( QTabWidget::West );
   DBTabWidget->setTabShape( QTabWidget::Triangular );
   DBTabWidget->removeTab( 0 );
 
@@ -1912,4 +1910,19 @@ ContourMeshStructureMultiIndexContainer* QGoPrintDatabase::
       NewContourIDs);
     }
   return ContoursForVisu;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoPrintDatabase::PrintVolumeAreaForMesh(double iVolume, 
+  double iArea, unsigned int iMeshID)
+{
+  std::vector<std::string> ColumnNames (2);
+  std::vector<std::string> Values (2);
+  ColumnNames.at(0) = "Area";
+  Values.at(0) = ConvertToString<double>(iArea);
+  ColumnNames.at(1) = "Volume";
+  Values.at(1) = ConvertToString<double>(iVolume);
+  this->m_MeshesData->Table->AddValuesForID(ColumnNames,Values,iMeshID,
+    "MeshID");
 }

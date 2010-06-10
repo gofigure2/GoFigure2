@@ -220,6 +220,9 @@ public:
 
   ContourMeshStructureMultiIndexContainer* ImportContours(int iTimePoint);
 
+  void PrintVolumeAreaForMesh(double iVolume, double iArea, 
+    unsigned int iMeshID);
+
 public slots:
   void ChangeContoursToHighLightInfoFromVisu(
   std::list<int> iListContoursHighLightedInVisu, bool Reedit);

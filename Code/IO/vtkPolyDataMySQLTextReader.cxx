@@ -125,46 +125,52 @@ vtkPolyData* vtkPolyDataMySQLTextReader::GetContour( )
 
 vtkPolyData* vtkPolyDataMySQLTextReader::GetMesh( )
 {
-  vtkPolyData* oMesh = vtkPolyData::New();
-  vtkSmartPointer< vtkPoints > points = 
-    vtkSmartPointer< vtkPoints >::New();
-
   std::stringstream str( m_Text );
 
   vtkIdType N;
   str >>N;
-  points->SetNumberOfPoints( N );
-
-  double pt[3];
-
-  for( vtkIdType i = 0; i < N; i++ )
+  
+  // if N == 0, the mesh is a collection of contours
+  vtkPolyData* oMesh = NULL;
+  if( N != 0 )
     {
-    str >>pt[0] >>pt[1] >>pt[2];
-    points->SetPoint( i, pt );
-    }
-  oMesh->SetPoints( points );
+    oMesh = vtkPolyData::New();
+    vtkSmartPointer< vtkPoints > points = 
+      vtkSmartPointer< vtkPoints >::New();
 
-  vtkSmartPointer< vtkCellArray > cells = 
-    vtkSmartPointer< vtkCellArray >::New();
-  str >>N;
+    points->SetNumberOfPoints( N );
 
-  vtkSmartPointer< vtkIdList > cell_points = 
-    vtkSmartPointer< vtkIdList >::New();
-  vtkIdType NbOfPointsInCell;
-  vtkIdType id;
+    double pt[3];
 
-  for( vtkIdType i = 0; i < N; i++ )
-    {
-    str >> NbOfPointsInCell;
-    cell_points->Reset();
-    for( vtkIdType k = 0; k < NbOfPointsInCell; k++ )
+    for( vtkIdType i = 0; i < N; i++ )
       {
-      str >>id;
-      cell_points->InsertNextId( id );
+      str >>pt[0] >>pt[1] >>pt[2];
+      points->SetPoint( i, pt );
       }
-    cells->InsertNextCell( cell_points );
+    oMesh->SetPoints( points );
+
+    vtkSmartPointer< vtkCellArray > cells = 
+      vtkSmartPointer< vtkCellArray >::New();
+    str >>N;
+
+    vtkSmartPointer< vtkIdList > cell_points = 
+      vtkSmartPointer< vtkIdList >::New();
+    vtkIdType NbOfPointsInCell;
+    vtkIdType id;
+
+    for( vtkIdType i = 0; i < N; i++ )
+      {
+      str >> NbOfPointsInCell;
+      cell_points->Reset();
+      for( vtkIdType k = 0; k < NbOfPointsInCell; k++ )
+        {
+        str >>id;
+        cell_points->InsertNextId( id );
+        }
+      cells->InsertNextCell( cell_points );
+      }
+    oMesh->SetPolys( cells );
     }
-  oMesh->SetPolys( cells );
 
   return oMesh;
 }
