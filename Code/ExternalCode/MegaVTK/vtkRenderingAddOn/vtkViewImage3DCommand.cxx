@@ -118,41 +118,31 @@ Execute(vtkObject *caller, unsigned long event, void *vtkNotUsed(callData))
       if( origin[2] > extent[5] )
         extent[5] = origin[2];
       }
-/*
-    std::cout << "Extent: " << extent[0] << std::endl;
-    std::cout << "Extent: " << extent[1] << std::endl;
-    std::cout << "Extent: " << extent[2] << std::endl;
-    std::cout << "Extent: " << extent[3] << std::endl;
-    std::cout << "Extent: " << extent[4] << std::endl;
-    std::cout << "Extent: " << extent[5] << std::endl;
-*/
+
     // Get Actors
     m_ListOfPickedActors.clear();
+    m_ListOfUnPickedActors.clear();
 
     this->m_vtkViewImage3D->GetProp3DCollection()->InitTraversal();
     vtkProp3D* prop_temp = this->m_vtkViewImage3D->GetProp3DCollection()
-        ->GetNextProp3D(); // image
-    prop_temp = this->m_vtkViewImage3D->GetProp3DCollection()->GetNextProp3D(); // 1st plane
-    prop_temp = this->m_vtkViewImage3D->GetProp3DCollection()->GetNextProp3D(); // 2nd plane
-    prop_temp = this->m_vtkViewImage3D->GetProp3DCollection()->GetNextProp3D(); // 3rd plane
+        ->GetNextProp3D();
 
     while( prop_temp )
       {
-      if(    (extent[0] < prop_temp->GetCenter()[0]) && (extent[1] > prop_temp->GetCenter()[0])
-          && (extent[2] < prop_temp->GetCenter()[1]) && (extent[3] > prop_temp->GetCenter()[1])
-          && (extent[4] < prop_temp->GetCenter()[2]) && (extent[5] > prop_temp->GetCenter()[2]))
+      if(    (extent[0] < prop_temp->GetXRange()[0]) && (extent[1] > prop_temp->GetXRange()[1])
+          && (extent[2] < prop_temp->GetYRange()[0]) && (extent[3] > prop_temp->GetYRange()[1])
+          && (extent[4] < prop_temp->GetZRange()[0]) && (extent[5] > prop_temp->GetZRange()[1]))
         {
         m_ListOfPickedActors.push_back( prop_temp );
-        std::cout << "+1" << std::endl;
+        }
+      else
+        {
+        m_ListOfUnPickedActors.push_back( prop_temp );
         }
       prop_temp = this->m_vtkViewImage3D->GetProp3DCollection()->GetNextProp3D();
       }
-    // If actor in box, emit signal
-    //this->InvokeEvent(vtkViewImage3DCommand::);
-    // Update a list of picked actors
     planes->Delete();
     }
-
 }
 
 //----------------------------------------------------------------------------
@@ -188,5 +178,13 @@ vtkViewImage3DCommand::
 GetListOfPickedActors()
 {
   return m_ListOfPickedActors;
+}
+//----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
+std::list< vtkProp3D* >
+vtkViewImage3DCommand::
+GetListOfUnPickedActors()
+{
+  return m_ListOfUnPickedActors;
 }
 //----------------------------------------------------------------------------

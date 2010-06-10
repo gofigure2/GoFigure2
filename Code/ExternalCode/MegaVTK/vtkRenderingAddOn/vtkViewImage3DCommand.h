@@ -50,6 +50,7 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage3DCommand :
   vtkProp*                 GetPickedActor();
   vtkOrientedBoxWidget*    GetBoxWidget();
   std::list< vtkProp3D* >  GetListOfPickedActors();
+  std::list< vtkProp3D* >  GetListOfUnPickedActors();
 
   void SetVtkImageView3D( vtkViewImage3D* vtkViewImage3D );
 
@@ -65,6 +66,7 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage3DCommand :
   vtkOrientedBoxWidget*   m_BoxWidget;
   //bool                  m_BoxPickingEnabled;
   std::list< vtkProp3D* > m_ListOfPickedActors;
+  std::list< vtkProp3D* > m_ListOfUnPickedActors;
 };
 
 #endif
