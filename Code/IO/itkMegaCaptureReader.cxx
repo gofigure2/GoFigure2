@@ -39,6 +39,7 @@
 =========================================================================*/
 
 #include "itkMegaCaptureReader.h"
+#include "itkNumericTraits.h"
 
 #include "vtkImageData.h"
 #include "vtkImageAppend.h"
@@ -60,12 +61,19 @@ namespace itk
  *
  */
 MegaCaptureReader::
-MegaCaptureReader() : m_FileType( GoFigure::PNG ),
-  m_MinTimePoint( 0 ), m_MaxTimePoint( 0 ), m_UpdateTimePoint( 0 ),
-  m_MinZSlice( 0 ), m_MaxZSlice( 0 ), m_UpdateZSlice( 0 ),
-  m_MinChannel( 0 ), m_MaxChannel( 0 ), m_TimeBased( true ), m_Modified( true )
+MegaCaptureReader() : m_FileType( GoFigure::PNG ), m_TimeBased( true ),
+  m_Modified( true )
 {
   m_HeaderReader = new MegaCaptureHeaderReader( "" );
+  unsigned int max_uint = itk::NumericTraits< unsigned int >::max();
+  m_MinTimePoint = max_uint;
+  m_MaxTimePoint = max_uint;
+  m_UpdateTimePoint = max_uint;
+  m_MinZSlice = max_uint;
+  m_MaxZSlice = max_uint;
+  m_UpdateZSlice = max_uint;
+  m_MinChannel = max_uint;
+  m_MaxChannel = max_uint;
 }
 
 /**

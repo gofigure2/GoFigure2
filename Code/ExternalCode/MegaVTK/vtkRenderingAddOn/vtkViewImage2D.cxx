@@ -918,7 +918,8 @@ vtkViewImage2D::AddDataSet( vtkPolyData* dataset,
 
   vtkActor* actor = vtkActor::New();
   vtkSmartPointer< vtkCutter > cutter = vtkSmartPointer< vtkCutter >::New();
-  vtkSmartPointer< vtkExtractPolyDataGeometry > extracter = vtkSmartPointer< vtkExtractPolyDataGeometry >::New();
+  vtkSmartPointer< vtkExtractPolyDataGeometry > extracter =
+    vtkSmartPointer< vtkExtractPolyDataGeometry >::New();
 
   // check if input data is 2D
   double* bounds = dataset->GetBounds();
@@ -979,7 +980,7 @@ vtkViewImage2D::AddDataSet( vtkDataSet* dataset,
   vtkCamera *cam = this->Renderer ? this->Renderer->GetActiveCamera() : NULL;
   if( !cam )
     {
-    return 0;
+    return NULL;
     }
 
   vtkSmartPointer< vtkPolyDataMapper > mapper =

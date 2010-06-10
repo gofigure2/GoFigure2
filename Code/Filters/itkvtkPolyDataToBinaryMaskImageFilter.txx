@@ -39,11 +39,14 @@ vtkPolyDataToBinaryMaskImageFilter< TInput, TOutput >::GenerateData()
   double bounds[6];
   m_Mesh->GetBounds( bounds );
 
-  if( ( m_Mesh->GetNumberOfCells() == 0 ) || ( m_Mesh->GetNumberOfPoints() == 0 ) )
-	{
-	itkExceptionMacro( "vtkPolyDataToBinaryMaskImageFilter::GenerateData(): m_Mesh has nor cells nor points" );
-	return;
-	}
+  if( ( m_Mesh->GetNumberOfCells() == 0 ) &&
+      ( m_Mesh->GetNumberOfPoints() == 0 ) )
+    {
+    itkExceptionMacro(
+      "vtkPolyDataToBinaryMaskImageFilter::GenerateData(): m_Mesh has nor cells nor points" );
+    return;
+    }
+    
   // origin is the lowest bound!
   double origin[3];
   origin[0] = bounds[0];
