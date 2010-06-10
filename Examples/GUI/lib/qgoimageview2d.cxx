@@ -40,16 +40,12 @@
 
 #include <QApplication>
 #include <QTimer>
-
 #include "vtkSmartPointer.h"
 #include "vtkPNGReader.h"
 #include "vtkImageData.h"
 #include "vtkLookupTable.h"
-
 #include "vtkLookupTableManager.h"
-
 #include "vtksys/SystemTools.hxx"
-
 #include "QGoImageView2D.h"
 
 bool CheckSnapshot( QGoImageView2D* iViewer, GoFigure::FileType iType )
@@ -67,7 +63,7 @@ bool CheckSnapshot( QGoImageView2D* iViewer, GoFigure::FileType iType )
     }
   else
     {
-    std::cerr << "FAILURE * viewer->SnapshotViewXY( " << iType 
+    std::cerr << "FAILURE * viewer->SnapshotViewXY( " << iType
       <<" )" <<std::endl;
     return false;
     }

@@ -119,29 +119,31 @@ int main( int argc, char** argv )
 
   //itk reader
   typedef itk::ImageFileReader< InputImage2DType> itkReaderType;
-
   itkReaderType::Pointer itkReader = itkReaderType::New();
-
   itkReader->SetFileName( argv[1] );
+  itkReader->Update();
 
-
-
-  // create 3 images from 1
+  //vtk reader
   vtkSmartPointer< vtkPNGReader > reader = vtkSmartPointer< vtkPNGReader >::New();
   reader->SetFileName( argv[1] );
   reader->Update();
 
-  QString cp0 = "comp0";
+  QString cp0 = "itkImage";
+  QString cp1 = "vtkImage";
   QGoSynchronizedView2D* SynchronizedView0 = new QGoSynchronizedView2D(cp0,0);
+  QGoSynchronizedView2D* SynchronizedView1 = new QGoSynchronizedView2D(cp1,0);
 
   QTimer* timer = new QTimer;
   timer->setSingleShot( true );
   QObject::connect( timer, SIGNAL( timeout() ), SynchronizedView0, SLOT( close() ) );
 
-  SynchronizedView0->SetImage(reader->GetOutput());
-  //SynchronizedView0->SetITKImage<InputImage2DType>(itkReader->GetOutput());
+  SynchronizedView0->SetImage<InputImage2DType>(itkReader->GetOutput());
   SynchronizedView0->Update();
   SynchronizedView0->show();
+
+  SynchronizedView1->SetImage(reader->GetOutput());
+  SynchronizedView1->Update();
+  SynchronizedView1->show();
 
   if( atoi( argv[2] ) == 1 )
     {
@@ -177,6 +179,7 @@ int main( int argc, char** argv )
   delete timer;
 
   delete SynchronizedView0;
+  delete SynchronizedView1;
 
 
   return output;
