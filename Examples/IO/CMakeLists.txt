@@ -3,7 +3,7 @@ SET( QGOIO_EXAMPLES_SRC
   multifilereader
   gofigurefileinfomultiindexcontainerhelper
   MegaCaptureHeaderReaderTest
-	lsm2mha
+  lsm2mha
   lsmtomegacapture
   itkmegacapturereader
   GenerateImagingSessionPartInMegaCaptureHeaderFromMHA

@@ -92,6 +92,8 @@ public:
   typedef typename InternalImageType::PixelType       InternalPixelType;
   typedef typename InternalImageType::SpacingType     InternalSpacingType;
 
+  typedef ImageRegionIteratorWithIndex< InternalImageType >    InternalRegionIterator;
+
   typedef TFeatureImage                               FeatureImageType;
   typedef typename FeatureImageType::Pointer          FeatureImagePointer;
   typedef typename FeatureImageType::SizeType         FeatureSizeType;
@@ -252,6 +254,32 @@ protected:
     InternalRegionType region2;
     region2.SetSize( m_Size );
     region2.SetIndex( start2 );
+/*
+    ///TODO Allocate image
+    InternalImagePointer image = InternalImageType::New();
+    image->SetRegions( region2 );
+    image->CopyInformation( m_FeatureImage );
+    image->Allocate();
+
+    InternalRegionIterator r_it( image, region2 );
+    r_it.GoToBegin();
+
+    InternalIndexType idx;
+    //float or double d;
+    double d;
+    double r = m_Radius/2;
+    while( !r_it.IsAtEnd() )
+      {
+      idx = r_it.GetIndex();
+      d = 0.;
+      for( unsigned int dim = 0; dim < Dimension; dim++ )
+        {
+        d += ( idx[dim] - cen[dim] ) * ( idx[dim] - cen[dim] ) *
+            spacing[dim] * spacing[dim];
+        }
+      r_it.Set( vcl_sqrt( d ) - r);
+      ++r_it;
+      }*/
 
     typename FastMarchingFilterType::Pointer  fastMarching = FastMarchingFilterType::New();
     fastMarching->SetSpeedConstant( 1.0 );

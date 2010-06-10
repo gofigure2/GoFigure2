@@ -2838,7 +2838,6 @@ void
 QGoTabImageView3DwT::
 ListHighLightMeshes()
 {
-  std::cout << "or here...?" << std::endl;
   std::list< vtkProp3D* > listofpicked = m_ImageView->GetListOfModifiedActors3D();
   std::list< vtkProp3D* >::iterator it = listofpicked.begin();
 

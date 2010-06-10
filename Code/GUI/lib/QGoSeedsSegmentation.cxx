@@ -178,11 +178,13 @@ LevelSetSegmentation2D(int iDirection)
   reslicer->SetInterpolationModeToLinear();
   reslicer->SetInput( m_OriginImage );
   reslicer->SetResliceAxes(resliceAxes);
+  reslicer->Update();
 
   //Export VTK image to ITK
   vtkSmartPointer<vtkImageExport> movingExporter =
     vtkSmartPointer<vtkImageExport>::New();
   movingExporter->SetInput( reslicer->GetOutput() );
+  movingExporter->Update();
 
   const unsigned int Dimension = 2;
 
@@ -265,6 +267,8 @@ LevelSetSegmentation2D(int iDirection)
     vtkSmartPointer<vtkPolyData>::New();
   testPolyD->SetPoints( points );
   testPolyD->SetLines( lines );
+
+  lines->Delete();
 
   //Decimation (has to be after points reorganization)
   vtkSmartPointer<vtkPolylineDecimation> decimator =
