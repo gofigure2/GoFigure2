@@ -200,9 +200,13 @@ Execute(vtkObject *caller, unsigned long event, void *vtkNotUsed(callData))
 //----------------------------------------------------------------------------
 void
 vtkViewImage3DCommand::
-SetVtkImageView3D( vtkViewImage3D* vtkViewImage3D )
+SetVtkImageView3D( vtkViewImage3D* iViewImage3D )
 {
-  m_vtkViewImage3D = vtkViewImage3D;
+  if( iViewImage3D )
+    {
+    m_vtkViewImage3D = iViewImage3D;
+    this->m_BoxWidget->SetInteractor( m_vtkViewImage3D->GetInteractor() );
+    }
 }
 //----------------------------------------------------------------------------
 vtkOrientedBoxWidget*
@@ -231,7 +235,6 @@ Enable3DBoxWidget( bool iValue )
 
   if( iValue && !m_InitializedBoxWidget )
     {
-    this->m_BoxWidget->SetInteractor( this->m_vtkViewImage3D->GetInteractor() );
     this->m_BoxWidget->SetPlaceFactor( 0.5 );
     this->m_BoxWidget->PlaceWidget( extent2[0], extent2[1]*spacing2[0],
         extent2[2], extent2[3]*spacing2[1],

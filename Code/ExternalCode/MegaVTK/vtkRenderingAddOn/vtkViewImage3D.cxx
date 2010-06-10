@@ -214,7 +214,7 @@ vtkViewImage3D::vtkViewImage3D()
   this->VolumeRayCastIsosurfaceFunction =
     vtkVolumeRayCastIsosurfaceFunction::New();
   this->OpacityFunction = vtkPiecewiseFunction::New();
-  this->BoxWidget = vtkOrientedBoxWidget::New();
+  //this->BoxWidget = vtkOrientedBoxWidget::New();
   this->Callback = vtkImage3DCroppingBoxCallback::New();
   this->Blender = vtkImageBlend::New();
   this->VolumeMapper3D = vtkVolumeTextureMapper3D::New();
@@ -251,7 +251,7 @@ vtkViewImage3D::~vtkViewImage3D()
   this->VolumeProperty->Delete();
   this->VolumeActor->Delete();
   this->OpacityFunction->Delete();
-  this->BoxWidget->Delete();
+//   this->BoxWidget->Delete();
   this->Callback->Delete();
   this->Cube->Delete();
   this->Marker->Delete();
@@ -377,10 +377,10 @@ void vtkViewImage3D::SetupWidgets()
   this->Marker->SetOrientationMarker (this->Cube);
   this->Marker->SetViewport (0.0, 0.05, 0.15, 0.15);
 
-  this->BoxWidget->RotationEnabledOff();
-  this->BoxWidget->SetPlaceFactor (0.5);
-  this->BoxWidget->SetKeyPressActivationValue ('b');
-  this->BoxWidget->AddObserver (vtkCommand::InteractionEvent, this->Callback);
+//   this->BoxWidget->RotationEnabledOff();
+//   this->BoxWidget->SetPlaceFactor (0.5);
+//   this->BoxWidget->SetKeyPressActivationValue ('b');
+//   this->BoxWidget->AddObserver (vtkCommand::InteractionEvent, this->Callback);
 }
 
 //----------------------------------------------------------------------------
@@ -415,7 +415,7 @@ void vtkViewImage3D::Render()
 void vtkViewImage3D::SetVolumeRenderingOff()
 {
   this->VolumeActor->SetVisibility (false);
-  this->BoxWidget->Off();
+//   this->BoxWidget->Off();
 }
 
 /**
@@ -482,8 +482,8 @@ void vtkViewImage3D::SetVolumeRenderingOn()
 
     this->SetupTextureMapper();
 
-    this->BoxWidget->SetInput( image );
-    this->BoxWidget->PlaceWidget();
+//     this->BoxWidget->SetInput( image );
+//     this->BoxWidget->PlaceWidget();
 
     //this->PlaneWidget->SetInput (this->GetInput());
     //this->PlaneWidget->PlaceWidget();
