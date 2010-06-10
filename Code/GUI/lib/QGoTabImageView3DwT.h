@@ -511,6 +511,7 @@ protected:
 
 protected slots:
   void AddBookmark();
+  void GetTheRelatedToDBActions();
   void GetTheOpenBookmarksActions();
   void OpenExistingBookmark();
   void SetTheCurrentCellType();
@@ -553,6 +554,7 @@ protected slots:
 
   void DistanceWidgetInteractorBehavior( bool );
   void AngleWidgetInteractorBehavior( bool );
+  void ImportContours();
 
 private:
   Q_DISABLE_COPY( QGoTabImageView3DwT );

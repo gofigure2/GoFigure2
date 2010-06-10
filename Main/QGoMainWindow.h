@@ -113,16 +113,6 @@ private slots:
 
   void on_actionExport_LSM_to_MegaFile_triggered( );
 
-  void on_actionExportContour_triggered( );
-  void on_actionExportMesh_triggered( );
-  void on_actionExportTrack_triggered( );
-  void on_actionExportLineage_triggered( );
-
-  void on_actionImportContour_triggered( );
-  void on_actionImportMesh_triggered( );
-  void on_actionImportTrack_triggered( );
-  void on_actionImportLineage_triggered( );
-
   void on_actionClose_triggered( );
   void on_actionClose_all_triggered( );
   void on_actionQuit_triggered( );

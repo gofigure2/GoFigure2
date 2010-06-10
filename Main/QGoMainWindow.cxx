@@ -99,8 +99,6 @@
 
 #include "QGoTabManager.h"
 #include "QGoWizardDB.h"
-#include "GoDBExport.h"
-#include "GoDBImport.h"
 
 #include <list>
 
@@ -251,114 +249,6 @@ void QGoMainWindow::on_actionOpen_Single_File_triggered( )
 }
 
 //--------------------------------------------------------------------------
-void QGoMainWindow::on_actionExportContour_triggered( )
-{
-  QWidget* w = this->CentralTabWidget->currentWidget();
-  QGoTabImageView3DwT* w3t = dynamic_cast< QGoTabImageView3DwT* >( w );
-  if( w3t )
-    {
-    if( w3t->m_DataBaseTables->IsDatabaseUsed() )
-      {
-      QString p = QFileDialog::getSaveFileName(this,
-       tr( "Save Contour Export File" ),"",tr( "TextFile (*.txt)" ));
-      if ( ! p.isNull() )
-        {
-        QFileInfo pathInfo( p );
-        std::string filename = p.toStdString();
-        GoDBExport ExportHelper(this->m_DBWizard->GetServer().toStdString(),
-          this->m_DBWizard->GetLogin().toStdString(),
-          this->m_DBWizard->GetPassword().toStdString(),
-          this->m_DBWizard->GetImagingSessionID(),filename);
-        ExportHelper.ExportContours();
-        }
-      }
-    }
-}
-
-//--------------------------------------------------------------------------
-void QGoMainWindow::on_actionExportMesh_triggered( )
-{}
-//--------------------------------------------------------------------------
-//--------------------------------------------------------------------------
-void QGoMainWindow::on_actionExportTrack_triggered( )
-{}
-
-//--------------------------------------------------------------------------
-void QGoMainWindow::on_actionExportLineage_triggered( )
-{}
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-void QGoMainWindow::on_actionImportContour_triggered( )
-{
-  QWidget* w = this->CentralTabWidget->currentWidget();
-  QGoTabImageView3DwT* w3t = dynamic_cast< QGoTabImageView3DwT* >( w );
-  if( w3t )
-    {
-    if( w3t->m_DataBaseTables->IsDatabaseUsed() )
-      {
-      QString p = QFileDialog::getOpenFileName(this,
-        tr( "Open Contour Export File" ),"",tr( "TextFile (*.txt)" ));
-      if ( ! p.isNull() )
-        {
-        QFileInfo pathInfo( p );
-        std::string filename = p.toStdString();
-        //import into the database:
-        GoDBImport ImportHelper(this->m_DBWizard->GetServer().toStdString(),
-          this->m_DBWizard->GetLogin().toStdString(),
-          this->m_DBWizard->GetPassword().toStdString(),
-          this->m_DBWizard->GetImagingSessionID(),filename);
-        ImportHelper.ImportContours();
-        
-        std::vector<int> NewContourIDs = ImportHelper.GetVectorNewContourIDs();
-        std::vector<int> NewMeshIDs = ImportHelper.GetVectorNewMeshIDs();
-        std::vector<int> NewTrackIDs = ImportHelper.GetVectorNewTracksIDs();
-        //put the new contours in the visu:
-        ContourMeshStructureMultiIndexContainer* ContourToAdd =
-          w3t->m_DataBaseTables->GetContoursFromDBForAGivenTimePoint(w3t->GetTimePoint(),
-            NewContourIDs);
-        ContourMeshStructureMultiIndexContainer::iterator c_it = ContourToAdd->begin();
-        while( c_it != ContourToAdd->end() )
-          {
-          ContourMeshStructure Contour = *c_it;
-          w3t->AddContourFromNodes(Contour.TraceID,Contour.Nodes,Contour.rgba,
-            Contour.Highlighted,Contour.TCoord,false);
-          ++c_it;
-          }
-        //std::vector<int> ContourToAddTW = ImportHelper.GetVectorNewContourIDs();
-        //add the imported traces in the table widget:
-        
-        w3t->m_DataBaseTables->AddTracesInTableWidgetFromDB(NewContourIDs,"contour");
-        w3t->m_DataBaseTables->AddTracesInTableWidgetFromDB(NewMeshIDs, "mesh");
-        w3t->m_DataBaseTables->AddTracesInTableWidgetFromDB(NewTrackIDs, "track");
-
-        w3t->GoToDefaultMenu("contour","mesh");
-        w3t->GetTraceManualEditingWidget()->SetCollectionID(
-          w3t->m_DataBaseTables->GetListExistingCollectionIDFromDB("contour",w3t->GetTimePoint()));
-        w3t->GetTraceManualEditingWidget()->ColorComboBox->setExistingColors(
-          w3t->m_DataBaseTables->GetColorComboBoxInfofromDB());
-        w3t->GetTraceManualEditingWidget()->SetListCellTypes(
-          w3t->m_DataBaseTables->GetQStringListCellTypes());
-        w3t->GetTraceManualEditingWidget()->SetListSubCellTypes(
-          w3t->m_DataBaseTables->GetQStringListSubCellTypes());
-        }
-      }
-    }
-}
-//--------------------------------------------------------------------------
-void QGoMainWindow::on_actionImportMesh_triggered( )
-{}
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-void QGoMainWindow::on_actionImportTrack_triggered( )
-{}
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-void QGoMainWindow::on_actionImportLineage_triggered( )
-{}
-//--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void QGoMainWindow::on_actionOpen_MegaCapture_Files_triggered()
@@ -485,11 +375,6 @@ void QGoMainWindow::DisplayFilesfromDB(std::string iFirst_Filename)
     {
     return;
     }
-
-  // Enable Export / Import
-  menuExport->setEnabled( true );
-  menuImport->setEnabled( true );
-
   // note: do not need to call w3t->Update(); since it is internally called
   // when using CreateNewTabFor3DwtImage
   int TimePoint = file_container.get< m_TCoord >().begin()->m_TCoord;

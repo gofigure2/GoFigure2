@@ -218,6 +218,8 @@ public:
 
   QAction* toggleViewAction();
 
+  ContourMeshStructureMultiIndexContainer* ImportContours(int iTimePoint);
+
 public slots:
   void ChangeContoursToHighLightInfoFromVisu(
   std::list<int> iListContoursHighLightedInVisu, bool Reedit);
@@ -239,6 +241,7 @@ public slots:
   std::string GetNameNewCellType();
   std::string GetNameNewSubCellType();
   void SetTable(std::string iTablename);
+  void ExportContours();
 
 signals:
   void PrintDBReady();

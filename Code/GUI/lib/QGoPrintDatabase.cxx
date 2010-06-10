@@ -43,6 +43,7 @@
 #include <QWidget>
 #include <QDialog>
 #include <QInputDialog>
+#include <QFileDialog>
 #include <QTableWidgetItem>
 #include <QMessageBox>
 #include <QMenu>
@@ -69,6 +70,8 @@
 #include "QueryDataBaseHelper.h"
 #include "ConvertToStringHelper.h"
 #include "GoDBTraceInfoForTableWidget.h"
+#include "GoDBExport.h"
+#include "GoDBImport.h"
 
 //--------------------------------------------------------------------------
 QGoPrintDatabase::
@@ -1856,4 +1859,56 @@ void QGoPrintDatabase::SetTable(std::string iTablename)
     }
 
   this->DBTabWidget->setCurrentIndex(Index);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoPrintDatabase::ExportContours()
+{
+  QString p = QFileDialog::getSaveFileName(this,
+     tr( "Save Contour Export File" ),"",tr( "TextFile (*.txt)" ));
+  if ( ! p.isNull() )
+    {
+    QFileInfo pathInfo( p );
+    std::string filename = p.toStdString();
+
+    GoDBExport ExportHelper(this->m_Server,this->m_User,
+      this->m_Password,this->m_ImgSessionID,filename);
+     ExportHelper.ExportContours();
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+ContourMeshStructureMultiIndexContainer* QGoPrintDatabase::
+  ImportContours(int iTimePoint)                                  
+{
+  ContourMeshStructureMultiIndexContainer* ContoursForVisu;
+  QString p = QFileDialog::getOpenFileName(this,
+    tr( "Open Contour Export File" ),"",tr( "TextFile (*.txt)" ));
+  if ( ! p.isNull() )
+    {
+    QFileInfo pathInfo( p );
+    std::string filename = p.toStdString();
+    //import into the database:
+    GoDBImport ImportHelper(this->m_Server,this->m_User,
+      this->m_Password,this->m_ImgSessionID,filename);
+    ImportHelper.ImportContours();
+        
+    std::vector<int> NewContourIDs = ImportHelper.GetVectorNewContourIDs();
+    std::vector<int> NewMeshIDs = ImportHelper.GetVectorNewMeshIDs();
+    std::vector<int> NewTrackIDs = ImportHelper.GetVectorNewTracksIDs();
+    
+    //std::vector<int> ContourToAddTW = ImportHelper.GetVectorNewContourIDs();
+    //add the imported traces in the table widget:
+        
+    this->AddTracesInTableWidgetFromDB(NewContourIDs,"contour");
+    this->AddTracesInTableWidgetFromDB(NewMeshIDs, "mesh");
+    this->AddTracesInTableWidgetFromDB(NewTrackIDs, "track");
+
+
+    ContoursForVisu = this->GetContoursFromDBForAGivenTimePoint(iTimePoint,
+      NewContourIDs);
+    }
+  return ContoursForVisu;
 }

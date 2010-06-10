@@ -96,10 +96,6 @@ void QGoTabManager::ClearTabElement( QGoTabElementBase* iE )
     //then remove all actions from the mode menu:
     m_MainWindow->menuMode->clear();
 
-    // Disable the import/export when tab is closed
-    m_MainWindow->menuExport->setDisabled( true );
-    m_MainWindow->menuImport->setDisabled( true );
-
     std::list< QGoTabElementBase::QGoDockWidgetStatusPair >& dock_list = iE->DockWidget();
 
     for( std::list< QGoTabElementBase::QGoDockWidgetStatusPair >::iterator

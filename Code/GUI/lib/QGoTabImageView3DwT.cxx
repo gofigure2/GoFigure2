@@ -1152,7 +1152,7 @@ void QGoTabImageView3DwT::CreateModeActions()
   this->m_ModeActions.push_back( DefaultAction );
 
   //---------------------------------//
-  //            Zoon mode            //
+  //            Zoom mode            //
   //---------------------------------//
 
   QAction* ZoomAction = new QAction( tr( "Zoom" ), this );
@@ -1259,13 +1259,34 @@ void QGoTabImageView3DwT::CreateBookmarkActions()
   QObject::connect(DeleteBookmarkAction,SIGNAL ( triggered() ),
     this->m_DataBaseTables,SLOT( DeleteBookmarks()));
   QObject::connect(this->m_DataBaseTables, SIGNAL (PrintDBReady()),
-    this, SLOT(GetTheOpenBookmarksActions()));
+    this, SLOT(GetTheRelatedToDBActions()));
   QObject::connect(this->m_DataBaseTables, SIGNAL(OpenBookmarksToUpdate()),
     this, SLOT(GetTheOpenBookmarksActions()));
 }
 //-------------------------------------------------------------------------
 
-
+//-------------------------------------------------------------------------
+void QGoTabImageView3DwT::GetTheRelatedToDBActions()
+{
+  this->GetTheOpenBookmarksActions();
+  QMenu* ImportMenu = new QMenu(tr("Import"), this);
+  QAction* ImportContoursAction = new QAction( tr("Contours"), this );
+  QAction* ImportMeshesAction = new QAction( tr("3DMeshes"), this );
+  ImportMenu->addAction(ImportContoursAction);
+  ImportMenu->addAction(ImportMeshesAction);
+  QMenu* ExportMenu = new QMenu(tr("Export"), this);
+  QAction* ExportContoursAction = new QAction( tr("Contours"), this );
+  QAction* ExportMeshesAction = new QAction( tr("3DMeshes"), this );
+  ExportMenu->addAction(ExportContoursAction);
+  ExportMenu->addAction(ExportMeshesAction);
+  this->m_ToolsActions.push_back( ImportMenu->menuAction() );
+  this->m_ToolsActions.push_back( ExportMenu->menuAction() );
+  QObject::connect( ExportContoursAction, SIGNAL( triggered() ),
+    this->m_DataBaseTables, SLOT(ExportContours () ) );
+  QObject::connect( ImportContoursAction, SIGNAL( triggered() ),
+    this, SLOT(ImportContours() ) );
+}
+//-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void QGoTabImageView3DwT::GetTheOpenBookmarksActions()
@@ -3836,4 +3857,32 @@ ComputeMeshAttributes( vtkPolyData* iMesh )
   return oAttributes;
 }
 //-------------------------------------------------------------------------
+void QGoTabImageView3DwT::ImportContours()
+{
+  if( this->m_DataBaseTables->IsDatabaseUsed() )
+    {
+    ContourMeshStructureMultiIndexContainer* ContourToAdd =
+      this->m_DataBaseTables->ImportContours(this->GetTimePoint());
+    //put the new contours in the visu:
+    //ContourMeshStructureMultiIndexContainer* ContourToAdd =
+    //this->m_DataBaseTables->GetContoursFromDBForAGivenTimePoint(this->GetTimePoint(),
+      //NewContourIDs);
 
+    ContourMeshStructureMultiIndexContainer::iterator c_it = ContourToAdd->begin();
+    while( c_it != ContourToAdd->end() )
+      {
+      ContourMeshStructure Contour = *c_it;
+      this->AddContourFromNodes(Contour.TraceID,Contour.Nodes,Contour.rgba,
+        Contour.Highlighted,Contour.TCoord,false);
+      ++c_it;
+      }
+    //update the TraceManualEditingWidget 
+    this->GoToDefaultMenu("contour","mesh");
+    this->GetTraceManualEditingWidget()->ColorComboBox->setExistingColors(
+      this->m_DataBaseTables->GetColorComboBoxInfofromDB());
+    this->GetTraceManualEditingWidget()->SetListCellTypes(
+      this->m_DataBaseTables->GetQStringListCellTypes());
+    this->GetTraceManualEditingWidget()->SetListSubCellTypes(
+      this->m_DataBaseTables->GetQStringListSubCellTypes());
+    }
+}

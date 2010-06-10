@@ -59,7 +59,7 @@
      <x>0</x>
      <y>0</y>
      <width>1434</width>
-     <height>22</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -100,38 +100,12 @@
      <addaction name="menuMultiple_Files"/>
      <addaction name="menuDatabase_Files"/>
     </widget>
-    <widget class="QMenu" name="menuImport">
-     <property name="enabled">
-      <bool>false</bool>
-     </property>
-     <property name="title">
-      <string>Import</string>
-     </property>
-     <addaction name="actionImportContour"/>
-     <addaction name="actionImportMesh"/>
-     <addaction name="actionImportTrack"/>
-     <addaction name="actionImportLineage"/>
-    </widget>
-    <widget class="QMenu" name="menuExport">
-     <property name="enabled">
-      <bool>false</bool>
-     </property>
-     <property name="title">
-      <string>Export</string>
-     </property>
-     <addaction name="actionExportContour"/>
-     <addaction name="actionExportMesh"/>
-     <addaction name="actionExportTrack"/>
-     <addaction name="actionExportLineage"/>
-    </widget>
     <addaction name="actionOpen_Single_File"/>
     <addaction name="actionOpen_MegaCapture_Files"/>
     <addaction name="actionOpen_Mesh"/>
     <addaction name="menuOpen_Recent_Files"/>
     <addaction name="actionUse_DataBase"/>
     <addaction name="separator"/>
-    <addaction name="menuExport"/>
-    <addaction name="menuImport"/>
     <addaction name="actionExport_LSM_to_MegaFile"/>
     <addaction name="separator"/>
     <addaction name="actionClose"/>
