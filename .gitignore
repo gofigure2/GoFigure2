@@ -1,0 +1,9 @@
+*~
+
+#QT creator specifics
+CMakeLists.txt.user
+qtcreator-build/
+
+
+#OSX specifics
+.DS_Store

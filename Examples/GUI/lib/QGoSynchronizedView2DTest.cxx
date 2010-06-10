@@ -106,17 +106,6 @@ int main( int argc, char** argv )
   typedef itk::Image< InputPixelType, 2>  InputImage2DType;
   typedef InputImage2DType::Pointer       InputImage2DPointer;
 
-  typedef unsigned char VisuPixelType;
-  typedef itk::Image< VisuPixelType, 2>  VisuImage2DType;
-  typedef VisuImage2DType::Pointer       VisuImage2DPointer;
-
-  // for visualization purpose we only need unsigned char images
-  typedef itk::Image< VisuPixelType, 2>  VisuImage2DType;
-
-  // cast the input to a reasonable pixel type for visualization
-  typedef itk::CastImageFilter< InputImage2DType, VisuImage2DType >
-          Cast2DFilterType;
-
   //itk reader
   typedef itk::ImageFileReader< InputImage2DType> itkReaderType;
   itkReaderType::Pointer itkReader = itkReaderType::New();
@@ -135,9 +124,12 @@ int main( int argc, char** argv )
 
   QTimer* timer = new QTimer;
   timer->setSingleShot( true );
-  QObject::connect( timer, SIGNAL( timeout() ), SynchronizedView0, SLOT( close() ) );
+  QObject::connect( timer, SIGNAL( timeout() ),
+    SynchronizedView0, SLOT( close() ) );
+  QObject::connect( timer, SIGNAL( timeout() ),
+    SynchronizedView1, SLOT( close() ) );
 
-  SynchronizedView0->SetImage<InputImage2DType>(itkReader->GetOutput());
+  SynchronizedView0->SetImage<InputPixelType>(itkReader->GetOutput());
   SynchronizedView0->Update();
   SynchronizedView0->show();
 
@@ -164,6 +156,27 @@ int main( int argc, char** argv )
       return EXIT_FAILURE;
       }
     if( !CheckSnapshot( SynchronizedView0, GoFigure::TIFF) )
+      {
+      return EXIT_FAILURE;
+      }
+
+    if( !CheckSnapshot( SynchronizedView1, GoFigure::BMP ) )
+      {
+      return EXIT_FAILURE;
+      }
+    if( !CheckSnapshot( SynchronizedView1, GoFigure::PNG ) )
+      {
+      return EXIT_FAILURE;
+      }
+    if( !CheckSnapshot( SynchronizedView1, GoFigure::JPEG ) )
+      {
+      return EXIT_FAILURE;
+      }
+    if( !CheckSnapshot( SynchronizedView1, GoFigure::EPS ) )
+      {
+      return EXIT_FAILURE;
+      }
+    if( !CheckSnapshot( SynchronizedView1, GoFigure::TIFF) )
       {
       return EXIT_FAILURE;
       }

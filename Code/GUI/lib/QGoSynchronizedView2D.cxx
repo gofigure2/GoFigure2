@@ -48,7 +48,9 @@
 #include "QGoImageView2D.h"
 #include "QGoSynchronizedViewManager.h"
 
-
+#include "itkImageToVTKImageFilter.h"
+#include "itkSmartPointer.h"
+#include "itkImage.h"
 //--------------------------------------------------------------------------
 /*
 *  Default Constructor.
@@ -57,9 +59,17 @@
 */
 QGoSynchronizedView2D::
 QGoSynchronizedView2D( QString iViewName, QWidget *iParent ) :
-  QGoSynchronizedView( iViewName,iParent )
+  QGoSynchronizedView( iViewName,iParent ),
+  m_itkvtkConnector ( NULL )
 {
 }
+
+/*
+QGoSynchronizedView2D::
+~QGoSynchronizedView2D()
+{
+}
+*/
 
 //--------------------------------------------------------------------------
 /*  Print self informations */

@@ -40,7 +40,11 @@
 #ifndef __QGoSynchronizedView2D_h
 #define __QGoSynchronizedView2D_h
 
+#include "itkPixelAccessor.h"
+#include "itkImageAdaptor.h"
+
 #include "itkImageToVTKImageFilter.h"
+#include "itkCastImageFilter.h"
 #include "itkSmartPointer.h"
 #include "itkImage.h"
 #include "QGoSynchronizedView.h"
@@ -52,13 +56,23 @@ class vtkImageData;
 class vtkEventQtSlotConnect;
 class QGoImageView2D;
 
+
+
+
+
 /**
 \class QGoSynchronizedView
 \brief class for the (synchronized) view of one two dimensionnal vtkImageData* .
 */
 class QGoSynchronizedView2D : public QGoSynchronizedView
 {
+  // QT macro
   Q_OBJECT
+  // itk typedef :
+  // type of itk image for visualization
+  typedef itk::Image< unsigned char, 2 > VisuImageType;
+  // itk to vtk connector
+  typedef itk::ImageToVTKImageFilter<VisuImageType> itkvtkConnectorType;
 
 public:
   explicit QGoSynchronizedView2D(QString iViewName, QWidget *iParent = 0);
@@ -79,28 +93,29 @@ public:
 
   /** \brief Set ITK image displayed by the SynchronizedView
    */
-  template <typename ITKInputImageType>
-  void SetImage(typename ITKInputImageType::Pointer iImage)
+  //template <typename ITKInputImageType>
+  template< typename TPixel >
+  void SetImage( typename itk::Image< TPixel, 2 >::Pointer iImage )
   {
-    // define the itk smartpointer to image type from the given itkimagetype
-    typedef typename ITKInputImageType::Pointer ITKimagePointerType;
-    // we create the appropriate connector
+    typedef itk::Image< TPixel, 2 > InputImageType;
 
-    typedef typename itk::ImageToVTKImageFilter<ITKInputImageType>
-      itkvtkConnectorType;
-    typedef typename itkvtkConnectorType::Pointer itkvtkConnectorPointerType;
+    // we cast the input to have a known image to display
+    typedef itk::CastImageFilter< InputImageType, VisuImageType  >
+      CastFilterType;
+    typedef typename CastFilterType::Pointer CastFilterTypePointer;
 
-    itkvtkConnectorPointerType connector = itkvtkConnectorType::New();
-    connector->SetInput(iImage);
-    connector->Update();
+    CastFilterTypePointer castITKFilter = CastFilterType::New();
+    m_itkvtkConnector = itkvtkConnectorType::New();
 
-    //vtkImageData* tempVtkImage = NULL;
-    // we set the current image
-    connector->Register();// leak here the filter is never unregistered
-    //tempVtkImage->ShallowCopy(connector->GetOutput());
-    SetImage( connector->GetOutput() );
+    castITKFilter->SetInput( iImage );
+    castITKFilter->Update();
+    m_itkvtkConnector->SetInput( castITKFilter->GetOutput() );
+    m_itkvtkConnector->Update();
+
+    SetImage( m_itkvtkConnector->GetOutput() );
     Update();
   }
+
 
 
   /** \brief Returns the imageview managed by this SynchronizedView
@@ -117,6 +132,8 @@ private:
   /** \brief create the viewer contained in the widget
    */
   void createViewer( void );
+
+  itkvtkConnectorType::Pointer   m_itkvtkConnector;
 
   Q_DISABLE_COPY( QGoSynchronizedView2D );
 };
