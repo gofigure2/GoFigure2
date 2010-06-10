@@ -2,6 +2,7 @@ SET( MEGAVTK_EXAMPLE_SRC
   imageview2d
   imageview3d
   imageviewcollection
+  vtkviewimage3dtest
   SeedWidget
 )
 
@@ -21,6 +22,12 @@ ADD_TEST( imageview2dTest
 
 ADD_TEST( imageview3dTest
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/imageview3d
+  ${TESTING_DATA_PATH}/Circle3D.mhd
+  1
+)
+
+ADD_TEST( vtkviewimage3dtest
+  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/vtkviewimage3dtest
   ${TESTING_DATA_PATH}/Circle3D.mhd
   1
 )
