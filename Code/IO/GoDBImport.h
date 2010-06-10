@@ -51,27 +51,40 @@
 class QGOIO_EXPORT GoDBImport
 {
 public:
+
   GoDBImport(std::string iServerName,std::string iLogin,
     std::string iPassword, int iImagingSessionID,
     std::string iFilename);
   virtual ~GoDBImport();
+
+  /** \brief get the data needed from the import file to
+  save the contours listed in it, including the color,
+  the mesh they belong to, the tracks the previous meshes
+  belong to,etc...and fill the vectors of new IDs and the
+  needed info for the visu to add these new contours*/
   void ImportContours();
 
+  /** \brief return a vector of the IDs for the meshes read from
+  the import file and saved in the database*/
   std::vector<int> GetVectorNewMeshIDs()
     {
     return this->m_NewMeshIDs;
     }
-
+  /** \brief return a vector of the IDs for the contours read from
+  the import file and saved in the database*/
   std::vector<int> GetVectorNewContourIDs()
     {
     return this->m_NewContourIDs;
     }
-
+  /** \brief return a vector of the IDs for the tracks read from
+  the the import file and saved in the database*/
   std::vector<int> GetVectorNewTracksIDs()
     {
     return this->m_NewTracksIDs;
     }
-
+  /** \brief return a vector of the info needed to add in the 
+  visu the contours read from the import file and 
+  saved in the database*/
   std::vector<ContourMeshStructure> GetNewContourInfo()
     {
     return this->m_NewContourInfoForVisu;
@@ -109,34 +122,24 @@ private:
   void OpenDBConnection();
   void CloseDBConnection();
   
-  /** \brief Get the info for the meshes to import for the contours, from
-  the infile and from the matching IDs maps previously filled, then save them in
-  the database if their bounding box doesn't match any existing ones*/
-  /*void SaveMeshes(std::map<int,int> iMapColorIDs,
-    std::map<int,int> iMapCellTypeIDs,
-    std::map<int,int> iMapSubCellTypeIDs,
-    std::map<int,int> iMapCoordIDs,
-    std::string & ioLineContent,
-    std::map<int,int> & ioMapMeshIDs);*/
-  
-  /** \brief Get the info for the contours from the infile and from the matching
+ /** \brief Get the info for the traces from the import file and from the matching
   IDs maps previously filled, then save them in the database if their bounding box
   doesn't match any existing ones*/
-  /*void SaveContours(std::map<int,int> iMapColorIDs,
-    std::map<int,int> iMapCoordIDs,
-    std::string & ioLineContent,
-    std::map<int,int> iMapMeshIDs);*/
-
   void SaveTracesEntities(std::map<int,int> iMapColorIDs,
     std::map<int,int> iMapCoordIDs,std::string iLineContent,
     std::map<int,int> iMapCellTypeIDs, 
     std::map<int,int> iMapSubCellTypeIDs);
 
+  /** \brief fill the info needed for the new imported contours to add
+  them in the visu*/
   void FillContourInfoForVisu(
     std::vector<int> iListContourIDs);
-  /** \brief get the values from the Infile,save the 
-  corresponding number of entities in the database and return
-  the last line content from the infile*/
+
+  /** \brief get the values from the import file,save the 
+  corresponding number of entities in the database, return
+  the last line content from the import file and update the
+  matchingIDs with the new ones matching the old ones written in
+  the import file*/
   template< typename T >
   std::string SaveImportedEntitiesInDatabase(int iNumberOfEntities,
     std::map<int,int> & ioMapMatchingIDs)
@@ -153,7 +156,8 @@ private:
       }
     return LineContent;
     }
-  /** \brief Get the values from the inFile to fill the corresponding GoDBRow*/
+  /** \brief Get the values from the import File to fill 
+  the corresponding GoDBRow*/
   template< typename T >
   std::string GetValuesFromInfile(T & ioEntityToFill)
     {
@@ -172,6 +176,7 @@ private:
     getline(this->m_InFile,LineContent);
     return LineContent;
     }
+
   /** \brief replace in the entity to be saved the fieldname
   with the new IDs created that matches the old one in the 
   iMapIDs*/
@@ -191,6 +196,10 @@ private:
     ioEntity.SetField(iFieldName,NewID);
   }
 
+  /** \brief replace old IDs found in the import file with
+  new created IDs in the trace to be saved for common fields
+  for the 4 traces: colorID, coordIDMin, CoordIDMax and
+  CollectionID*/
   template< typename T >
   void ReplaceCommonFieldsForTraces( T & ioEntityToSave,
     std::map<int,int> iMapColorIDs,std::map<int,int> iMapCoordIDs,
@@ -212,6 +221,8 @@ private:
      }
   }
 
+  /** brief save all the entities in the database for a given
+  trace*/
   typedef std::map< int, int > IntMapType;
   template< typename T >
   void SaveTraces( IntMapType iMapColorIDs,
@@ -245,10 +256,8 @@ private:
           iMapIDsSpecificTwo,"SubCellularID",TraceToSave);
         }
       }
-
     this->ReplaceCommonFieldsForTraces(
-      TraceToSave,iMapColorIDs,iMapCoordIDs,iMapCollectionIDs);
-    
+      TraceToSave,iMapColorIDs,iMapCoordIDs,iMapCollectionIDs);   
     int OldTraceID = atoi(TraceToSave.GetMapValue(TraceToSave.GetTableIDName()).c_str());
     /*in order the query works, the TraceID to be saved has to be set to 0 otherwise 
     if the TraceID already exits,the query will return the error 
@@ -267,11 +276,9 @@ private:
       std::cout<<"so the imported contours belonging to the mesh "<<OldTraceID;
       std::cout<<" will belong to the existing mesh "<<NewTraceID<<std::endl;
       }
-
     ioNewTracesIDs.push_back(NewTraceID);   
     ioMapTraceIDs[OldTraceID]= NewTraceID;
-
     }
-}
+ }
 };
 #endif
