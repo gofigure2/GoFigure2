@@ -82,6 +82,7 @@ class vtkProperty;
 // class vtkQuadricLODActor;
 class vtkActor;
 class vtkViewImage2D;
+class vtkProp3D;
 
 #include "QGoGUILibConfigure.h"
 
@@ -294,9 +295,8 @@ public slots:
   void ReEditContour( const unsigned int& iId );
 
   void HighLightContainer(
-      ContourMeshStructureMultiIndexContainer& iContainer, vtkActor* iActor );
+      ContourMeshStructureMultiIndexContainer& iContainer, vtkActor* iActor);
   void HighLightContours();
-  void HighLightMeshes();
   void ListHighLightMeshes();
 
   /**
@@ -315,8 +315,11 @@ public slots:
       ContourMeshStructureMultiIndexContainer& iContainer,
       std::string iCurrentTrace);
 
-  void SelectContoursInTable();
-  void SelectMeshesInTable();
+  void             SelectContoursInTable();
+  void             ListSelectMeshesInTable();
+  std::list< int > SelectTraceInTable(
+      ContourMeshStructureMultiIndexContainer& iContainer ,
+      std::list< vtkProp3D* >                  iActorList);
 
   /**
    * \brief Calls DeleteTracesFromTable( ... ) with the good

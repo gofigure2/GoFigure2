@@ -450,7 +450,7 @@ void QGoImageView3D::SetupVTKtoQtConnections()
      VtkEventQtConnector->Connect(
        reinterpret_cast< vtkObject* >( View3D->GetCommand()->GetBoxWidget()),
        vtkCommand::InteractionEvent,
-       this, SIGNAL( ListMeshesSelectionChanged() ) );
+       this, SIGNAL( MeshesSelectionChanged() ) );
 }
 //-------------------------------------------------------------------------
 
@@ -1474,7 +1474,6 @@ GetListOfPickedContours()
   pickedContoursList = this->m_Pool->GetCommand()->GetListOfPickedActors();
   return pickedContoursList;
 }
-//-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 std::list< vtkProp3D* >
@@ -1486,7 +1485,6 @@ GetListOfUnPickedContours()
   unPickedContoursList = this->m_Pool->GetCommand()->GetListOfUnPickedActors();
   return unPickedContoursList;
 }
-//-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void
@@ -1500,19 +1498,10 @@ MeshPickingMode()
   this->QvtkWidget_YZ->setCursor( Qt::ArrowCursor );
 }
 //-------------------------------------------------------------------------
-//-------------------------------------------------------------------------
-vtkProp*
-QGoImageView3D::
-GetPickedActor()
-{
-  return this->m_View3D->GetCommand()->GetPickedActor();
-}
-//-------------------------------------------------------------------------
-//-------------------------------------------------------------------------
 std::list< vtkProp3D* >
 QGoImageView3D::
-GetListOfPickedActors3D()
+GetListOfModifiedActors3D()
 {
-  return this->m_View3D->GetCommand()->GetListOfPickedActors();
+  return this->m_View3D->GetCommand()->GetListOfModifiedActors();
 }
 //-------------------------------------------------------------------------
