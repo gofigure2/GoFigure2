@@ -107,6 +107,8 @@ class VTK_RENDERINGADDON2_EXPORT vtkInteractorStyleImage3D :
   void     SetCurrentProp();
   vtkProp* GetCurrentProp();
 
+  void InvokeEventTest();
+
  protected:
   vtkInteractorStyleImage3D();
   ~vtkInteractorStyleImage3D();

@@ -557,6 +557,8 @@ protected slots:
 
   void DistanceWidgetInteractorBehavior( bool );
   void AngleWidgetInteractorBehavior( bool );
+  void Box3DPicking( bool );
+
   void ImportContours();
 
 private:

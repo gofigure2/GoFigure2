@@ -183,6 +183,8 @@ public:
    */
   void MeshPickingMode();
 
+  void SetBox3DPicking( bool );
+
 
   /**
    * \brief Get all the seeds positions.

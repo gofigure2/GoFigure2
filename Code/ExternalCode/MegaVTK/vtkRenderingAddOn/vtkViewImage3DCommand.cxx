@@ -25,6 +25,7 @@ vtkViewImage3DCommand()
   this->m_BoxWidget = vtkOrientedBoxWidget::New();
   // When BoxWidget is modified
   this->m_BoxWidget->AddObserver(vtkCommand::InteractionEvent,this);
+  m_InitializedBoxWidget = false;
 
 }
 //----------------------------------------------------------------------------
@@ -58,15 +59,17 @@ Execute(vtkObject *caller, unsigned long event, void *vtkNotUsed(callData))
 
   vtkImageData* data = this->m_vtkViewImage3D->GetInput();
   int extent[6];
-  double spacing[3];
+  //double spacing[3];
   data->GetExtent( extent );
-  data->GetSpacing( spacing );
+  //data->GetSpacing( spacing );
 
   if ( event == vtkViewImage3DCommand::MeshPickingEvent )
     {
+    std::cout << "where first? here" << std::endl;
     vtkInteractorStyleImage3D* test = static_cast<vtkInteractorStyleImage3D*>(caller);
     m_ListOfModifiedActors.clear();
     m_ListOfModifiedActors.push_back( (vtkProp3D*)test->GetCurrentProp() );
+    test->InvokeEventTest();
     }
   if ( event == vtkViewImage3DCommand::BoxPickingEvent )
     {
@@ -80,13 +83,13 @@ Execute(vtkObject *caller, unsigned long event, void *vtkNotUsed(callData))
       this->m_BoxWidget->SetEnabled( 0 );
       this->m_BoxPickingEnabled = false;
       }*/
-    this->m_BoxWidget->SetInteractor( this->m_vtkViewImage3D->GetInteractor() );
+    /*this->m_BoxWidget->SetInteractor( this->m_vtkViewImage3D->GetInteractor() );
     this->m_BoxWidget->SetPlaceFactor( 0.5 );
     this->m_BoxWidget->PlaceWidget( extent[0], extent[1]*spacing[0],
                                     extent[2], extent[3]*spacing[1],
                                     extent[4], extent[5]*spacing[2]);
     this->m_BoxWidget->RotationEnabledOff();
-    this->m_BoxWidget->SetEnabled( 1 );
+    this->m_BoxWidget->SetEnabled( 1 );*/
     }
   if ( event == vtkCommand::InteractionEvent )
     {
@@ -129,9 +132,9 @@ Execute(vtkObject *caller, unsigned long event, void *vtkNotUsed(callData))
 
     while( prop_temp )
       {
-      if(    (extent[0] < prop_temp->GetXRange()[0]) && (extent[1] > prop_temp->GetXRange()[1])
-          && (extent[2] < prop_temp->GetYRange()[0]) && (extent[3] > prop_temp->GetYRange()[1])
-          && (extent[4] < prop_temp->GetZRange()[0]) && (extent[5] > prop_temp->GetZRange()[1]))
+      if(    (bextent[0] < prop_temp->GetXRange()[0]) && (bextent[1] > prop_temp->GetXRange()[1])
+          && (bextent[2] < prop_temp->GetYRange()[0]) && (bextent[3] > prop_temp->GetYRange()[1])
+          && (bextent[4] < prop_temp->GetZRange()[0]) && (bextent[5] > prop_temp->GetZRange()[1]))
         {
         std::list<vtkProp3D*>::iterator listOfPickedActorsIterator;
         bool doSth = true;
@@ -216,3 +219,29 @@ GetListOfModifiedActors()
   return m_ListOfModifiedActors;
 }
 //----------------------------------------------------------------------------
+void
+vtkViewImage3DCommand::
+Enable3DBoxWidget( bool iValue )
+{
+  vtkImageData* data2 = this->m_vtkViewImage3D->GetInput();
+  int extent2[6];
+  double spacing2[3];
+  data2->GetExtent( extent2 );
+  data2->GetSpacing( spacing2 );
+
+  if( iValue && !m_InitializedBoxWidget )
+    {
+    this->m_BoxWidget->SetInteractor( this->m_vtkViewImage3D->GetInteractor() );
+    this->m_BoxWidget->SetPlaceFactor( 0.5 );
+    this->m_BoxWidget->PlaceWidget( extent2[0], extent2[1]*spacing2[0],
+        extent2[2], extent2[3]*spacing2[1],
+        extent2[4], extent2[5]*spacing2[2]);
+    this->m_BoxWidget->RotationEnabledOff();
+    m_InitializedBoxWidget = true;
+  }
+
+  this->m_BoxWidget->SetEnabled( iValue );
+
+  // Update seleced mesh list...?
+  // which behavior do we want?
+}

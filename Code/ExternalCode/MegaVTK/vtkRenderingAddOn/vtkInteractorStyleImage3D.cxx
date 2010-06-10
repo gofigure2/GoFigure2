@@ -205,3 +205,9 @@ GetCurrentProp()
   return this->m_CurrentProp;
 }
 //----------------------------------------------------------------------------
+void
+vtkInteractorStyleImage3D::
+InvokeEventTest()
+{
+  this->InvokeEvent(vtkViewImage3DCommand::ReadyEvent);
+}

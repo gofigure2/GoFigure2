@@ -35,7 +35,8 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage3DCommand :
     CameraMoveEvent,
     DefaultMoveEvent,
     SeedEvent,
-    BoxWidgetModifiedEvent
+    BoxWidgetModifiedEvent,
+    ReadyEvent
   };
   //ETX
 
@@ -49,6 +50,7 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage3DCommand :
 
   vtkOrientedBoxWidget*    GetBoxWidget();
   std::list< vtkProp3D* >  GetListOfModifiedActors();
+  void                     Enable3DBoxWidget( bool iValue );
 
   void SetVtkImageView3D( vtkViewImage3D* vtkViewImage3D );
 
@@ -63,6 +65,8 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage3DCommand :
   vtkOrientedBoxWidget*   m_BoxWidget;
   std::list< vtkProp3D* > m_ListOfPickedActors;
   std::list< vtkProp3D* > m_ListOfModifiedActors;
+  // which behavior do we want for this widget...?
+  bool                    m_InitializedBoxWidget;
 };
 
 #endif

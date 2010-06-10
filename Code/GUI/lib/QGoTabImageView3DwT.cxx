@@ -573,7 +573,16 @@ AngleWidgetInteractorBehavior( bool iActive )
     }
 }
 //-------------------------------------------------------------------------
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+Box3DPicking( bool iActive )
+{
+  this->m_ImageView->SetBox3DPicking( iActive );
+}
 
+
+//-------------------------------------------------------------------------
 //-------------------------------------------------------------------------
 /**
  * \brief
@@ -1244,6 +1253,21 @@ void QGoTabImageView3DwT::CreateModeActions()
 
   QObject::connect( AngleAction, SIGNAL( toggled( bool ) ),
     this, SLOT( AngleWidgetInteractorBehavior( bool ) ) );
+
+  //---------------------------------//
+  //       Mesh picking  mode        //
+  //---------------------------------//
+
+  QAction* Box3DPickingAction = new QAction( tr( "Box 3D Picking" ), this );
+  Box3DPickingAction->setCheckable( true );
+  Box3DPickingAction->setChecked(false);
+
+  group->addAction( Box3DPickingAction );
+
+  this->m_ModeActions.push_back( Box3DPickingAction );
+  // it also updates the interactor behaviour
+  QObject::connect( Box3DPickingAction, SIGNAL( toggled( bool ) ),
+    this, SLOT( Box3DPicking( bool ) ) );
 }
 //-------------------------------------------------------------------------
 
@@ -2814,6 +2838,7 @@ void
 QGoTabImageView3DwT::
 ListHighLightMeshes()
 {
+  std::cout << "or here...?" << std::endl;
   std::list< vtkProp3D* > listofpicked = m_ImageView->GetListOfModifiedActors3D();
   std::list< vtkProp3D* >::iterator it = listofpicked.begin();
 

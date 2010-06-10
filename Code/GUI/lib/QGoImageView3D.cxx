@@ -442,7 +442,7 @@ void QGoImageView3D::SetupVTKtoQtConnections()
    // when contours picked, send a signal
     VtkEventQtConnector->Connect(
       reinterpret_cast< vtkObject* >( View3D->GetInteractorStyle3D() ),
-      vtkViewImage3DCommand::MeshPickingEvent,
+      vtkViewImage3DCommand::ReadyEvent,
       this, SIGNAL( MeshesSelectionChanged() ) );
 
     // Event connection between vtk and qt
@@ -1505,3 +1505,9 @@ GetListOfModifiedActors3D()
   return this->m_View3D->GetCommand()->GetListOfModifiedActors();
 }
 //-------------------------------------------------------------------------
+void
+QGoImageView3D::
+SetBox3DPicking( bool iValue)
+{
+  return this->m_View3D->GetCommand()->Enable3DBoxWidget( iValue );
+}
