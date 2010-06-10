@@ -91,13 +91,13 @@ Execute(vtkObject *caller, unsigned long event, void *vtkNotUsed(callData))
   if ( event == vtkCommand::InteractionEvent )
     {
     // Get Extent of the box through planes
-    double extent[6];
-    extent[0] = VTK_DOUBLE_MAX;
-    extent[1] = VTK_DOUBLE_MIN;
-    extent[2] = VTK_DOUBLE_MAX;
-    extent[3] = VTK_DOUBLE_MIN;
-    extent[4] = VTK_DOUBLE_MAX;
-    extent[5] = VTK_DOUBLE_MIN;
+    double bextent[6];
+    bextent[0] = VTK_DOUBLE_MAX;
+    bextent[1] = VTK_DOUBLE_MIN;
+    bextent[2] = VTK_DOUBLE_MAX;
+    bextent[3] = VTK_DOUBLE_MIN;
+    bextent[4] = VTK_DOUBLE_MAX;
+    bextent[5] = VTK_DOUBLE_MIN;
 
     vtkPlanes* planes = vtkPlanes::New();
     this->m_BoxWidget->GetPlanes( planes );
@@ -106,18 +106,18 @@ Execute(vtkObject *caller, unsigned long event, void *vtkNotUsed(callData))
       {
       planes->GetPlane(i)->GetOrigin( origin );
 
-      if( origin[0] < extent[0] )
-        extent[0] = origin[0];
-      if( origin[0] > extent[1] )
-        extent[1] = origin[0];
-      if( origin[1] < extent[2] )
-        extent[2] = origin[1];
-      if( origin[1] > extent[3] )
-        extent[3] = origin[1];
-      if( origin[2] < extent[4] )
-        extent[4] = origin[2];
-      if( origin[2] > extent[5] )
-        extent[5] = origin[2];
+      if( origin[0] < bextent[0] )
+        bextent[0] = origin[0];
+      if( origin[0] > bextent[1] )
+        bextent[1] = origin[0];
+      if( origin[1] < bextent[2] )
+        bextent[2] = origin[1];
+      if( origin[1] > bextent[3] )
+        bextent[3] = origin[1];
+      if( origin[2] < bextent[4] )
+        bextent[4] = origin[2];
+      if( origin[2] > bextent[5] )
+        bextent[5] = origin[2];
       }
 
     // Get Actors
