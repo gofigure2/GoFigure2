@@ -435,19 +435,24 @@ LoadAllTracesFromDatabase( const int& iT, std::string iTrace )
 //       std::vector< std::string > areas;
 //       std::vector< std::string > sizes;
 
-//       bool calculation = ( iTrace.compare( "mesh" ) == 0 );
+      bool calculation = ( iTrace.compare( "mesh" ) == 0 );
 
       // we don't need here to save this contour in the database,
       // since they have just been extracted from it!
       while( contourmesh_list_it != temp->get< TraceID >().end() )
         {
         // note here it only makes sense when the trace is a mesh (for now)
-//         if( calculation )
-//           {
-//           if( contourmesh_list_it->Nodes )
-//             {
-//             GoFigureMeshAttributes attributes =
-//               w3t->ComputeMeshAttributes( contourmesh_list_it->Nodes );
+        if( calculation )
+          {
+          if( contourmesh_list_it->Nodes )
+            {
+            GoFigureMeshAttributes attributes =
+              w3t->ComputeMeshAttributes( contourmesh_list_it->Nodes );
+
+            std::cout << "TraceID " << contourmesh_list_it->TraceID <<std::endl;
+            std::cout << "volume " << attributes.m_Volume  << std::endl;
+            std::cout << "area " << attributes.m_Area    << std::endl;
+            std::cout << "size " <<attributes.m_Size    << std::endl;
 //
 //             volumes.push_back( ConvertToString< double >( attributes.m_Volume ) );
 //             areas.push_back( ConvertToString< double >( attributes.m_Area ) );
@@ -456,8 +461,8 @@ LoadAllTracesFromDatabase( const int& iT, std::string iTrace )
 //         attributes_values[1][i] = attributes.m_Area;
 //         attributes_values[2][i] = attributes.m_Size;
 //         attributes_values[3][i] = attributes.m_TotalIntensityMap[ ];//first channel ];
-//             }
-//           }
+            }
+          }
 
         w3t->AddTraceFromNodesManager(
             contourmesh_list_it->TraceID,
@@ -940,7 +945,6 @@ void QGoMainWindow::on_actionDeveloper_mailing_list_triggered( )
 {
   QDesktopServices::openUrl( QUrl("mailto:gofigure2-developers@lists.sourceforge.net?subject=About GoFigure2" ) );
 }
-
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------

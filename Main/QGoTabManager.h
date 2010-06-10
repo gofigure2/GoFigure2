@@ -6,9 +6,9 @@
 
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-10
 
- Copyright (c) 2009, President and Fellows of Harvard College.
+ Copyright (c) 2009-10, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -56,29 +56,31 @@ class QGoTabElementBase;
 class QGoTabManager : public QObject
 {
   Q_OBJECT
-  public:
+public:
 
-    explicit QGoTabManager( QGoMainWindow* iMW = 0, QTabWidget* iTW = 0 );
-    ~QGoTabManager();
+  explicit QGoTabManager( QGoMainWindow* iMW = 0, QTabWidget* iTW = 0 );
+  ~QGoTabManager();
 
-    /** \brief Set the MainWindow if it has not been set by calling the constructor.*/
-    void SetMainWindow( QGoMainWindow* iMW );
+  /** \brief Set the MainWindow if it has not been set by calling the constructor.*/
+  void SetMainWindow( QGoMainWindow* iMW );
 
-    /** \brief Set the TabWidget if it has not been set by calling the constructor.*/
-    void SetTabWidget( QTabWidget* iTW );
+  /** \brief Set the TabWidget if it has not been set by calling the constructor.*/
+  void SetTabWidget( QTabWidget* iTW );
 
-  public slots:
-    void ChangeCurrentTab( int iIdx );
-    void CloseTab( int idx );
-    void CloseAllTabs( );
-    void UpdateBookmarkMenu( std::vector< QAction* > iBookmarkActions );
+public slots:
+  void ChangeCurrentTab( int iIdx );
+  void CloseTab( int idx );
+  void CloseAllTabs( );
+  void UpdateBookmarkMenu( std::vector< QAction* > iBookmarkActions );
 
-  private:
-    QGoMainWindow*  m_MainWindow;
-    QTabWidget*     m_TabWidget;
-    int             m_PreviousTabIndex;
+private:
+  QGoMainWindow*  m_MainWindow;
+  QTabWidget*     m_TabWidget;
+  int             m_PreviousTabIndex;
 
-    void ClearTabElement( QGoTabElementBase* iE );
-    void SetUpTabElement( QGoTabElementBase* iE );
+  void ClearTabElement( QGoTabElementBase* iE );
+  void SetUpTabElement( QGoTabElementBase* iE );
+
+  Q_DISABLE_COPY( QGoTabManager );
 };
 #endif

@@ -351,7 +351,8 @@ GetOutput( const unsigned int& iChannel )
 
 
 std::map< unsigned int, vtkImageData* >
-MegaCaptureReader::GetOutputs()
+MegaCaptureReader::
+GetOutputs()
 {
   return m_OutputImageMap;
 }

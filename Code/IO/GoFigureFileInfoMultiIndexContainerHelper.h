@@ -41,13 +41,6 @@
 #ifndef __GoFigureFileInfoHelperMultiIndexContainer_h
 #define __GoFigureFileInfoHelperMultiIndexContainer_h
 
-//#if !defined(NDEBUG)
-//#define BOOST_MULTI_INDEX_ENABLE_INVARIANT_CHECKING
-//#define BOOST_MULTI_INDEX_ENABLE_SAFE_MODE
-//#endif
-
-
-#include <string>
 #include "boost/multi_index_container.hpp"
 #include "boost/multi_index/member.hpp"
 #include "boost/multi_index/ordered_index.hpp"
@@ -60,9 +53,6 @@
 #include <map>
 
 #include "QGoIOConfigure.h"
-
-// namespace GoFigure
-// {
 
 struct QGOIO_EXPORT GoFigureFileInfoHelper
 {
@@ -164,11 +154,8 @@ struct QGOIO_EXPORT GoFigureFileInfoHelper
     boost::multi_index::indexed_by<
       boost::multi_index::ordered_non_unique<
         BOOST_MULTI_INDEX_MEMBER(GoFigureFileInfoHelper,const unsigned int,m_Channel)>//,
-      //ordered_non_unique<BOOST_MULTI_INDEX_MEMBER(GoFigureFileInfoHelper,const unsigned int,m_ZCoord)>
     >
   > GoFigureFileInfoHelperChannelViewContainer;
-
-// }
 
 QGOIO_EXPORT
 std::map< unsigned int, std::list< std::string > >
@@ -187,7 +174,7 @@ GetAllFileNamesForGivenZCoord(
   const unsigned int& iMinCh,
   const unsigned int& iMaxCh
   );
-  
+
 QGOIO_EXPORT
 std::list< std::string > GetAllFileNamesForGivenTCoordAndChannel(
   const GoFigureFileInfoHelperMultiIndexContainer& iContainer,

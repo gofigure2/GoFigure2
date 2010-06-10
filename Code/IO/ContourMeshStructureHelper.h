@@ -50,12 +50,6 @@
 
 #include "QGoIOConfigure.h"
 
-// #ifndef NDEBUG
-//   #define BOOST_MULTI_INDEX_ENABLE_INVARIANT_CHECKING
-//   #define BOOST_MULTI_INDEX_ENABLE_SAFE_MODE
-// #endif
-
-
 #include <list>
 
 QGOIO_EXPORT

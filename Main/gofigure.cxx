@@ -6,9 +6,9 @@
 
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-10
 
- Copyright (c) 2009, President and Fellows of Harvard College.
+ Copyright (c) 2009-10, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -54,7 +54,7 @@ int main( int argc, char** argv )
 
   QCoreApplication::setOrganizationName( "MegasonLab" );
   QCoreApplication::setOrganizationDomain(
-    "http://sourceforge.net/projects/gofigure2/" );
+    "http://gofigure2.sourceforge.net" );
   QCoreApplication::setApplicationName( "GoFigure2" );
 
   QString inputfilename;
@@ -89,21 +89,23 @@ int main( int argc, char** argv )
 
   splash->showMessage( "Application loading... please wait" );
 
-  QGoMainWindow form;
+  QGoMainWindow* form = new QGoMainWindow;
   if( ( !inputfilename.isEmpty() ) && ( !inputfilename.isNull() ) )
     {
-    form.SetSingleFileName( inputfilename );
+    form->SetSingleFileName( inputfilename );
     }
-  form.show( );
+  form->show( );
 
   splash->showMessage( "Application ready" );
 
   app.processEvents();
 
-  splash->finish( &form );
+  splash->finish( form );
+
+  int output = app.exec();
   
   delete splash;
+  delete form;
 
-  return app.exec();
+  return output;
 }
-

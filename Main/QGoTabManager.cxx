@@ -6,9 +6,9 @@
 
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-10
 
- Copyright (c) 2009, President and Fellows of Harvard College.
+ Copyright (c) 2009-10, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -278,7 +278,7 @@ void QGoTabManager::CloseTab( int idx )
       delete w;
       w = 0;
       }
-//     m_TabWidget->removeTab( idx );
+    //     m_TabWidget->removeTab( idx );
     }
 }
 //--------------------------------------------------------------------------
@@ -303,8 +303,8 @@ void QGoTabManager::CloseAllTabs( )
       }
     }
 
-    m_MainWindow->m_ViewToolBar->clear();
-    m_MainWindow->m_ModeToolBar->clear();
-    m_TabWidget->clear( );
+  m_MainWindow->m_ViewToolBar->clear();
+  m_MainWindow->m_ModeToolBar->clear();
+  m_TabWidget->clear( );
 }
 //--------------------------------------------------------------------------
