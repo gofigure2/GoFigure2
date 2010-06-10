@@ -1919,10 +1919,10 @@ void QGoPrintDatabase::PrintVolumeAreaForMesh(double iVolume,
 {
   std::vector<std::string> ColumnNames (2);
   std::vector<std::string> Values (2);
-  ColumnNames.at(0) = "Area";
+  ColumnNames.at(0) = "SurfaceArea";
   Values.at(0) = ConvertToString<double>(iArea);
   ColumnNames.at(1) = "Volume";
   Values.at(1) = ConvertToString<double>(iVolume);
   this->m_MeshesData->Table->AddValuesForID(ColumnNames,Values,iMeshID,
-    "MeshID");
+    "meshID");
 }

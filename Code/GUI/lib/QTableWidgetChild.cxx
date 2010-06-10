@@ -787,7 +787,8 @@ void QTableWidgetChild::AddValuesForID(std::vector<std::string> iColumnsNames,
       if (ColumnIndex != -1 )
         {
         QTableWidgetItem* CellTable = new QTableWidgetItem;
-        CellTable->setData(0,QString::fromStdString( iValues.at(i) ).toInt());
+        std::string value = iValues.at(i); //for test purpose
+        CellTable->setData(0,QString::fromStdString( iValues.at(i)));
         CellTable->setTextAlignment(Qt::AlignCenter);
         this->setItem(RowIndex,ColumnIndex,CellTable);
         }

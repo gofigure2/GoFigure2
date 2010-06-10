@@ -476,8 +476,8 @@ void GoDBTableWidgetContainer::GetSpecificInfoForTraceTable()
     temp.Clear();
 
     //Get the info for the Surface Area:
-    temp.InfoName = "Surface";
-    temp.ColumnNameTableWidget = "Surface";
+    temp.InfoName = "SurfaceArea";
+    temp.ColumnNameTableWidget = "SurfaceArea";
     m_ColumnsInfos.push_back(temp);
     PairTemp.first = temp;
     m_RowContainer.push_back(PairTemp);
