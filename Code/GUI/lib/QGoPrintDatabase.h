@@ -321,16 +321,17 @@ protected:
   void GetContentAndDisplayFromDB( std::string iTableName );
   void closeEvent(QCloseEvent* event);
 
-  /** \brief Insert a row in the table widget and in the row container 
- * with the corresponding values of the new created Trace*/
-  void UpdateTableWidgetAndRowContainerWithNewCreatedTrace(
-    std::string iTraceName);
+  /** \brief Insert a row in the table widget  
+ * with the corresponding values of the new created Trace and update the
+ database with collectionID if needed*/
+  void UpdateTableWidgetAndDBWithNewCreatedTrace(
+    std::string iTraceName,GoFigureMeshAttributes* iMeshAttributes = 0);
 
   /** \brief Update the IDs in the CollectionID column for the selected traces*/
-  void UpdateTableWidgetAndRowContainerWithNewCollectionID(
-   std::string iTraceName,vtkMySQLDatabase* DatabaseConnector,
-   unsigned int iNewCollectionID,QColor iColorNewCollection,
-   std::list<int> iListSelectedTraces);
+  /*void UpdateTableWidgetAndRowContainerWithNewCollectionID(
+   std::string iTraceName,unsigned int iNewCollectionID, 
+   QColor iColorNewCollection,std::list<int> iListSelectedTraces);*/
+
   /** \brief Get the data for the corresponding trace from the database and 
   replace the printed ones in the tablewidget with them*/
   void UpdateTableWidgetForAnExistingTrace(std::string iTraceName, int iTraceID);

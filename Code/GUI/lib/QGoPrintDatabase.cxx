@@ -775,7 +775,7 @@ int QGoPrintDatabase::SaveContoursFromVisuInDB( unsigned int iXCoordMin,
     this->m_DatabaseConnector);
   contour_row.SetCollectionID(iMeshID);
   int NewContourID = contour_row.SaveInDB( this->m_DatabaseConnector);
-  this->UpdateTableWidgetAndRowContainerWithNewCreatedTrace("contour");
+  this->UpdateTableWidgetAndDBWithNewCreatedTrace("contour");
   std::list<int> ListSelectedTraces;
 
   ListSelectedTraces.push_back(NewContourID);
@@ -842,7 +842,8 @@ int QGoPrintDatabase::SaveMeshFromVisuInDB( unsigned int iXCoordMin,
   mesh_row.SetField("SubCellType",this->m_CurrentSubCellType);
   
   int NewMeshID = mesh_row.SaveInDB( this->m_DatabaseConnector);
-  this->UpdateTableWidgetAndRowContainerWithNewCreatedTrace("mesh");
+  this->UpdateTableWidgetAndDBWithNewCreatedTrace("mesh",
+    iMeshAttributes);
   std::list<int> ListSelectedTraces;
 
   ListSelectedTraces.push_back(NewMeshID);
@@ -1233,16 +1234,12 @@ std::list<std::pair<std::string,QColor> > QGoPrintDatabase::
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoPrintDatabase::UpdateTableWidgetAndRowContainerWithNewCreatedTrace(
-  std::string iTraceName)
+void QGoPrintDatabase::UpdateTableWidgetAndDBWithNewCreatedTrace(
+  std::string iTraceName,GoFigureMeshAttributes* iMeshAttributes)
 {
   TraceInfoStructure* CurrentlyUsedTraceData = this->GetTraceInfoStructure(iTraceName);
   GoDBTableWidgetContainer* LinkToNewTrace = CurrentlyUsedTraceData->CollectionOfTraces->
     GetLinkToNewCreatedTraceContainer(this->m_DatabaseConnector);
-  
-  //update the RowContainer for the trace:
-  //CurrentlyUsedTraceData->CollectionOfTraces->GetLinkToRowContainer()
-    //->InsertNewCreatedTrace(*LinkToNewTrace);
 
   //Update the trace table widget with the new trace:
   CurrentlyUsedTraceData->Table->setSortingEnabled(false);
@@ -1265,17 +1262,21 @@ void QGoPrintDatabase::UpdateTableWidgetAndRowContainerWithNewCreatedTrace(
     //update the table widget for the collection:
   this->UpdateTableWidgetForAnExistingTrace(
     CurrentlyUsedTraceData->CollectionName,CollectionID);
+  //Update the table widget with calculated values:
+  if (iMeshAttributes != 0)
+    {
+    this->PrintVolumeAreaForMesh(iMeshAttributes->m_Volume,
+      iMeshAttributes->m_Area,NewTraceID);
+    }
  }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
- void QGoPrintDatabase::UpdateTableWidgetAndRowContainerWithNewCollectionID(
-   std::string iTraceName, vtkMySQLDatabase* DatabaseConnector,
-   unsigned int iNewCollectionID, QColor iColorNewCollection,
-   std::list<int> iListSelectedTraces)
+ /*void QGoPrintDatabase::UpdateTableWidgetAndRowContainerWithNewCollectionID(
+   std::string iTraceName,unsigned int iNewCollectionID, 
+   QColor iColorNewCollection,std::list<int> iListSelectedTraces)
 {
   // unused arguments
-  (void) DatabaseConnector;
   (void) iListSelectedTraces;
 
   TraceInfoStructure* TraceData = this->GetTraceInfoStructure(
@@ -1283,7 +1284,7 @@ void QGoPrintDatabase::UpdateTableWidgetAndRowContainerWithNewCreatedTrace(
   //Update the TraceTable with the new collectionID + color:
   TraceData->Table->UpdateIDs(iNewCollectionID,TraceData->CollectionNameID,
     iColorNewCollection);
-}
+}*/
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -1321,7 +1322,7 @@ std::pair<std::string,QColor> QGoPrintDatabase::SaveNewCollectionInDB(
 
   //update the table of the collection (which become the trace then):
   CurrentlyUsedTraceData = this->GetTraceInfoStructure(CurrentlyUsedTraceData->CollectionName);
-  this->UpdateTableWidgetAndRowContainerWithNewCreatedTrace(CurrentlyUsedTraceData->TraceName);
+  this->UpdateTableWidgetAndDBWithNewCreatedTrace(CurrentlyUsedTraceData->TraceName);
 
   this->CloseDBConnection();
   return NewCollectionData;
@@ -1573,7 +1574,7 @@ void QGoPrintDatabase::AddListTracesToACollection(
   CurrentlyUsedTraceData = this->GetTraceInfoStructure(CurrentlyUsedTraceData->CollectionName);
   if (IsANewCollection)
     {
-    this->UpdateTableWidgetAndRowContainerWithNewCreatedTrace(
+    this->UpdateTableWidgetAndDBWithNewCreatedTrace(
       CurrentlyUsedTraceData->TraceName);
     }
   else
