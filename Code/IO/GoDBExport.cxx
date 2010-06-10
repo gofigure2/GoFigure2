@@ -83,7 +83,7 @@ void GoDBExport::ExportContours( )
   this->m_outfile << "\">"<<std::endl;
 
   this->WriteOnTheOutputFile("imagingsession",this->GetImagingSessionInfoFromDB());
-  this->UpdateAllVectorForTracesIDs();
+  this->UpdateAllVectorTracesIDsToExportContours();
   this->WriteTheColorsInfoFromDatabase();
   this->WriteCellTypeAndSubCellTypeInfoFromDatabase();
   this->WriteCoordinatesInfoFromDatabase();
@@ -123,7 +123,7 @@ std::pair<std::string,std::string> GoDBExport::GetOneInfoFromDBForImgSession(
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void GoDBExport::UpdateVectorContourIDs()
+void GoDBExport::UpdateVectorContourIDsForExportContours()
 {
   this->m_VectorContourIDs = ListSpecificValuesForOneColumn(
     this->m_DatabaseConnector,"contour", "ContourID","imagingsessionID",
@@ -132,7 +132,7 @@ void GoDBExport::UpdateVectorContourIDs()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void GoDBExport::UpdateVectorMeshIDsWithContours()
+void GoDBExport::UpdateVectorMeshIDsForExportContours()
 {
   this->m_VectorMeshIDs = ListSpecificValuesForOneColumn(
     this->m_DatabaseConnector,"contour", "meshID","ContourID",
@@ -165,10 +165,10 @@ void GoDBExport::UpdateVectorLineageIDsToExportInfo()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void GoDBExport::UpdateAllVectorForTracesIDs()
+void GoDBExport::UpdateAllVectorTracesIDsToExportContours()
 {
-  this->UpdateVectorContourIDs();
-  this->UpdateVectorMeshIDsWithContours();
+  this->UpdateVectorContourIDsForExportContours();
+  this->UpdateVectorMeshIDsForExportContours();
   this->UpdateVectorTrackIDsToExportInfo();
   this->UpdateVectorLineageIDsToExportInfo();
 }
@@ -177,25 +177,6 @@ void GoDBExport::UpdateAllVectorForTracesIDs()
 //--------------------------------------------------------------------------
 void GoDBExport::WriteTheColorsInfoFromDatabase()
 {
-  /*std::vector<std::string> ListColorIDs = GetSamefieldFromTwoTables(
-    this->m_DatabaseConnector,"contour","mesh","ColorID",
-    "ImagingSessionID",ConvertToString<int>(this->m_ImagingSessionID),
-    "MeshID",iListMeshIDsWithContours);
-  std::vector<std::string> TablesNames(4);
-  TablesNames[0] = "contour";
-  TablesNames[1] = "mesh";
-  TablesNames[2] = "track";
-  TablesNames[3] = "lineage";
-  std::vector<std::string> FieldNames(4);
-  FieldNames[0] = "ContourID";
-  FieldNames[1] = "MeshID";
-  FieldNames[2] = "TrackID";
-  FieldNames[3] = "LineageID";
-  std::vector<std::vector<std::string> > VectorTracesIDs(4);
-  VectorTracesIDs[0] = this->m_VectorContourIDs;
-  VectorTracesIDs[1] = this->m_VectorMeshIDs;
-  VectorTracesIDs[2] = this->m_VectorTrackIDs;
-  VectorTracesIDs[4] = this->m_VectorLineageIDs;*/
   std::vector<std::string> TablesNames;
   std::vector<std::string> FieldNames;
   std::vector<std::vector<std::string> > VectorTracesIDs;
@@ -236,10 +217,6 @@ void GoDBExport::WriteCoordinatesInfoFromDatabase()
   ColumnNames[1] = "CoordIDMin";
   std::vector<std::string> ListCoordIDs = GetSameFieldsFromSeveralTables(
     this->m_DatabaseConnector,ColumnNames,TablesNames,FieldNames,VectorTracesIDs);
-  /*std::vector<std::string> ListCoordIDs = GetSamefieldsFromTwoTables(
-    this->m_DatabaseConnector,"contour","mesh","CoordIDMax","CoordIDMin",
-    "ImagingSessionID",ConvertToString<int>(this->m_ImagingSessionID),
-    "MeshID",this->m_VectorMeshIDs);*/
 
   this->WriteTableInfoFromDB<GoDBCoordinateRow>(ListCoordIDs);
 }
@@ -270,10 +247,7 @@ void GoDBExport::WriteMeshesInfoFromDatabase()
 
 void GoDBExport::WriteContoursInfoFromDatabase()
 {
-  std::vector<std::string> ListContoursIDs = ListSpecificValuesForOneColumn(
-    this->m_DatabaseConnector,"contour", "ContourID","ImagingSessionID",
-    ConvertToString<int>(this->m_ImagingSessionID),true);
-  this->WriteTableInfoFromDB<GoDBContourRow>(ListContoursIDs);
+  this->WriteTableInfoFromDB<GoDBContourRow>(m_VectorContourIDs);
 }
 //--------------------------------------------------------------------------
 

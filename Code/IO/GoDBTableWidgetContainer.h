@@ -133,6 +133,8 @@ protected:
   specific to a trace*/
   void GetSpecificInfoForTraceTable();
 
+  void FillRowContainerForComputedValues();
+
 
 
 };

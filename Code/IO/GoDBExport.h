@@ -54,10 +54,12 @@ public:
     std::string iPassword, int iImagingSessionID,
     std::string iFilename);
   virtual ~GoDBExport();
-  void ExportContours();
 
-//private slots:
-  //void on_actionImportContour_triggered( );
+  /** \brief get all the imagingsession info,the info
+  for the contours, the meshes they belong to and the
+  tracks the previous meshes belong to from the database
+  and put them in a text file*/
+  void ExportContours();
 
 private:
   //QGoExport( const QGoExport& );
@@ -144,8 +146,9 @@ private:
     return oEntityInfo;
   }
 
-  /** \brief fill the different vectors needed for the queries depending
-  on the vectors of IDs */
+  /** \brief fill the different vectors needed for the queries 
+  depending if the vectors of IDs are empty or not: get the 
+  tables names, the key for the table and the tracesIDs*/
   void GetVectorsTableNamesTracesIDsAndFields( 
     std::vector<std::string> & ioVectorTableNames,
     std::vector<std::vector<std::string> > & ioVectorTracesIDs,
@@ -154,45 +157,72 @@ private:
   /** \brief Get the celltype and subcelltype for the needed meshes from
   the database and write them on the output file*/
   void WriteCellTypeAndSubCellTypeInfoFromDatabase();
-  /** \brief get the contours info for the corresponding imagingsession from
-  the database and write them on the output file*/
+
+  /** \brief get the contours info which IDs are in the m_VectorContourIDs
+  from the database and write them on the output file*/
   void WriteContoursInfoFromDatabase();
-  
+
+  /** \brief get the tracks info which IDs are in the m_VectorTrackIDs
+  from the database and write them on the output file*/
   void WriteTracksInfoFromDatabase();
-  /** \brief get the meshes info for the corresponding IDs from the database
-  and write them on the output file*/
+
+  /** \brief get the meshes info which IDs are in the m_VectorMeshIDs
+  from the database and write them on the output file*/
   void WriteMeshesInfoFromDatabase();
+
+  /** \brief get the lineages info which IDs are in the m_VectorLineageIDs
+  from the database and write them on the output file*/
   void WriteLineagesInfoFromDatabase();
 
-  void UpdateVectorContourIDs();
+  /** \brief get the IDs of the contour belonging to the current imagingsession
+  and fill the m_VectorContourIDs with them*/
+  void UpdateVectorContourIDsForExportContours();
+
   /** \brief when exporting contours, if the contours belong to
   meshes, the info regarding these meshes are needed also, so fill
-  the vector of IDs of these meshes*/
-  void UpdateVectorMeshIDsWithContours();
+  m_VectorMeshIDs with these meshes IDs*/
+  void UpdateVectorMeshIDsForExportContours();
 
+  /** \brief check if for the meshes IDs found in the m_VectorMeshIDs,
+  the corresponding meshes belongs to tracks, if so these tracks IDs
+  are put in the m_VectorTrackIDs*/
   void UpdateVectorTrackIDsToExportInfo();
-  void UpdateVectorLineageIDsToExportInfo();
 
-  void UpdateAllVectorForTracesIDs();
-  /** \brief get the colors info from the database for the corresponding contours
-  and meshes and write them in the output file*/
+  /** \brief check if for the tracks IDs found in the m_VectorTrackIDs,
+  the corresponding tracks belongs to lineages, if so these lineages IDs
+  are put in the m_VectorLineageIDs*/
+  void UpdateVectorLineageIDsToExportInfo();
+  
+  /** \brief fill the different vectors of traces IDs corresponding to 
+  the contours to export*/
+  void UpdateAllVectorTracesIDsToExportContours();
+
+  /** \brief get the colors info from the database for the corresponding traces
+  to export and write them in the output file*/
   void WriteTheColorsInfoFromDatabase();
+
   /** \brief get the coordinates without doublon corresponding to the coordidmax
-  and min of the contours and meshes from the database and write them in the
+  and min of the traces to export from the database and write them in the
   output file*/
   void WriteCoordinatesInfoFromDatabase();
+
   /** \brief return <iName> */
   std::string GetNameWithBrackets(std::string iName);
+
   /** \brief return </iName> */
   std::string GetNameWithSlashBrackets(std::string iName);
+
   /**\ brief write on the output file the info contained in the vector with
   the name of the entity they describe*/
   void WriteOnTheOutputFile(std::string iNameOfEntity,
     std::vector<std::pair<std::string,std::string> > iInfoToWrite);
+
   /** \brief write on the output file the number of entities that are exported*/
   void WriteNumberOfEntities(std::string iNameOfEntity,int iNumber);
+
   /** \ brief add 2 spaces to the output file for xml tabulation*/
   void AddTabulation();
+
   void OpenDBConnection();
   void CloseDBConnection();
 
