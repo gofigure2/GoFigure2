@@ -1399,8 +1399,12 @@ setupUi( QWidget* iParent )
       this, SLOT( HighLightMeshes( ) ) );
 
   // connect the contours selection connection
-  QObject::connect( m_ImageView, SIGNAL( MeshesSelectionChanged( ) ),
-      this, SLOT( SelectMeshesInTable( ) ) );
+  QObject::connect( m_ImageView, SIGNAL( ListMeshesSelectionChanged( ) ),
+      this, SLOT( ListHighLightMeshes( ) ) );
+
+  // connect the contours selection connection
+  //QObject::connect( m_ImageView, SIGNAL( MeshesSelectionChanged( ) ),
+  //    this, SLOT( SelectMeshesInTable( ) ) );
 
   m_HBoxLayout = new QHBoxLayout( iParent );
   m_HBoxLayout->addWidget( m_VSplitter );
@@ -2798,6 +2802,24 @@ HighLightMeshes()
   HighLightContainer( m_MeshContainer,
       static_cast< vtkActor* >( m_ImageView->GetPickedActor() ));
 
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+ListHighLightMeshes()
+{
+  /// TODO Check utility of a list
+  std::list< vtkProp3D* > listofpicked = m_ImageView->GetListOfPickedActors3D();
+
+  std::list< vtkProp3D* >::iterator it = listofpicked.begin();
+
+  while( it != listofpicked.end() )
+    {
+    HighLightContainer(m_MeshContainer, static_cast< vtkActor* >( *it ));
+    ++it;
+    }
 }
 //-------------------------------------------------------------------------
 

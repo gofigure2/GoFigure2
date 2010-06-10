@@ -297,6 +297,7 @@ public slots:
       ContourMeshStructureMultiIndexContainer& iContainer, vtkActor* iActor );
   void HighLightContours();
   void HighLightMeshes();
+  void ListHighLightMeshes();
 
   /**
    * \brief Calls HighLightTracesFromTable( ... ) with the good

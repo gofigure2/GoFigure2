@@ -444,6 +444,13 @@ void QGoImageView3D::SetupVTKtoQtConnections()
       reinterpret_cast< vtkObject* >( View3D->GetInteractorStyle3D() ),
       vtkViewImage3DCommand::MeshPickingEvent,
       this, SIGNAL( MeshesSelectionChanged() ) );
+
+    // Event connection between vtk and qt
+    // when contours picked, send a signal
+     VtkEventQtConnector->Connect(
+       reinterpret_cast< vtkObject* >( View3D->GetCommand()->GetBoxWidget()),
+       vtkCommand::InteractionEvent,
+       this, SIGNAL( ListMeshesSelectionChanged() ) );
 }
 //-------------------------------------------------------------------------
 
@@ -1116,7 +1123,8 @@ AddMesh( const int& iId, vtkPolyData* dataset, vtkProperty* iProperty )
 
 //--------------------------------------------------------------------------
 std::list< vtkProp3D* >
-QGoImageView3D::GetListOfPickedActors()
+QGoImageView3D::
+GetListOfPickedActors()
 {
   vtkViewImage2DCollectionCommand* command = m_Pool->GetCommand();
   return command->GetListOfPickedActors();
@@ -1499,3 +1507,12 @@ GetPickedActor()
 {
   return this->m_View3D->GetCommand()->GetPickedActor();
 }
+//-------------------------------------------------------------------------
+//-------------------------------------------------------------------------
+std::list< vtkProp3D* >
+QGoImageView3D::
+GetListOfPickedActors3D()
+{
+  return this->m_View3D->GetCommand()->GetListOfPickedActors();
+}
+//-------------------------------------------------------------------------

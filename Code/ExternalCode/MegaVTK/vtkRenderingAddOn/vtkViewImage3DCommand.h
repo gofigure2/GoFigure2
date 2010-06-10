@@ -5,6 +5,9 @@
 #include "vtkObject.h"
 #include "MegaVTK2Configure.h"
 
+#include <list>
+#include "vtkProp3D.h"
+
 class vtkProp;
 class vtkViewImage3D;
 class vtkOrientedBoxWidget;
@@ -31,7 +34,8 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage3DCommand :
     BoxPickingEvent,
     CameraMoveEvent,
     DefaultMoveEvent,
-    SeedEvent
+    SeedEvent,
+    BoxWidgetModifiedEvent
   };
   //ETX
 
@@ -43,8 +47,9 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage3DCommand :
   virtual void Execute( vtkObject *caller, unsigned long event,
     void *vtkNotUsed(callData) );
 
-  vtkProp*              GetPickedActor();
-  vtkOrientedBoxWidget* GetBoxWidget();
+  vtkProp*                 GetPickedActor();
+  vtkOrientedBoxWidget*    GetBoxWidget();
+  std::list< vtkProp3D* >  GetListOfPickedActors();
 
   void SetVtkImageView3D( vtkViewImage3D* vtkViewImage3D );
 
@@ -55,10 +60,11 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage3DCommand :
   ~vtkViewImage3DCommand();
 
  private:
-  vtkViewImage3D*       m_vtkViewImage3D;
-  vtkProp*              m_PickedActor;
-  vtkOrientedBoxWidget* m_BoxWidget;
+  vtkViewImage3D*         m_vtkViewImage3D;
+  vtkProp*                m_PickedActor;
+  vtkOrientedBoxWidget*   m_BoxWidget;
   //bool                  m_BoxPickingEnabled;
+  std::list< vtkProp3D* > m_ListOfPickedActors;
 };
 
 #endif
