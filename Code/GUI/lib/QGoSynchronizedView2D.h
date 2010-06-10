@@ -40,9 +40,6 @@
 #ifndef __QGoSynchronizedView2D_h
 #define __QGoSynchronizedView2D_h
 
-#include "itkPixelAccessor.h"
-#include "itkImageAdaptor.h"
-
 #include "itkImageToVTKImageFilter.h"
 #include "itkCastImageFilter.h"
 #include "itkSmartPointer.h"
@@ -93,12 +90,10 @@ public:
 
   /** \brief Set ITK image displayed by the SynchronizedView
    */
-  //template <typename ITKInputImageType>
   template< typename TPixel >
   void SetImage( typename itk::Image< TPixel, 2 >::Pointer iImage )
   {
     typedef itk::Image< TPixel, 2 > InputImageType;
-
     // we cast the input to have a known image to display
     typedef itk::CastImageFilter< InputImageType, VisuImageType  >
       CastFilterType;

@@ -40,21 +40,16 @@
 
 #include <QApplication>
 #include <QTimer>
-
 #include "vtkSmartPointer.h"
 #include "vtkPNGReader.h"
 #include "vtkImageGaussianSmooth.h"
 #include "vtkImageGradient.h"
 #include "QGoSynchronizedView2D.h"
-
 #include <QStringList>
 #include <QString>
-
 #include "vtksys/SystemTools.hxx"
 
-
 #include "itkImage.h"
-#include "itkCastImageFilter.h"
 #include "itkSmartPointer.h"
 #include "itkImageFileReader.h"
 
@@ -107,19 +102,20 @@ int main( int argc, char** argv )
   typedef InputImage2DType::Pointer       InputImage2DPointer;
 
   //itk reader
-  typedef itk::ImageFileReader< InputImage2DType> itkReaderType;
+  typedef itk::ImageFileReader< InputImage2DType > itkReaderType;
   itkReaderType::Pointer itkReader = itkReaderType::New();
   itkReader->SetFileName( argv[1] );
   itkReader->Update();
 
   //vtk reader
-  vtkSmartPointer< vtkPNGReader > reader = vtkSmartPointer< vtkPNGReader >::New();
+  vtkSmartPointer< vtkPNGReader > reader =
+    vtkSmartPointer< vtkPNGReader >::New();
   reader->SetFileName( argv[1] );
   reader->Update();
 
   QString cp0 = "itkImage";
-  QString cp1 = "vtkImage";
   QGoSynchronizedView2D* SynchronizedView0 = new QGoSynchronizedView2D(cp0,0);
+  QString cp1 = "vtkImage";
   QGoSynchronizedView2D* SynchronizedView1 = new QGoSynchronizedView2D(cp1,0);
 
   QTimer* timer = new QTimer;
@@ -129,11 +125,11 @@ int main( int argc, char** argv )
   QObject::connect( timer, SIGNAL( timeout() ),
     SynchronizedView1, SLOT( close() ) );
 
-  SynchronizedView0->SetImage<InputPixelType>(itkReader->GetOutput());
+  SynchronizedView0->SetImage< InputPixelType >( itkReader->GetOutput() );
   SynchronizedView0->Update();
   SynchronizedView0->show();
 
-  SynchronizedView1->SetImage(reader->GetOutput());
+  SynchronizedView1->SetImage( reader->GetOutput() );
   SynchronizedView1->Update();
   SynchronizedView1->show();
 
