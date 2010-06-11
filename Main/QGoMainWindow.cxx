@@ -407,15 +407,27 @@ LoadAllTracesFromDatabaseManager( const int& iT )
 //--------------------------------------------------------------------------
 void
 QGoMainWindow::
-LoadAllTracesFromDatabase( const int& iT, std::string iTrace )
+LoadAllTracesFromDatabase( const int& iT, std::string iTraceName )
 {
   QGoTabImageView3DwT* w3t =
     dynamic_cast< QGoTabImageView3DwT* >( this->CentralTabWidget->currentWidget() );
 
   if( w3t )
     {
-    ContourMeshStructureMultiIndexContainer* temp =
-      w3t->m_DataBaseTables->GetTracesInfoListForVisu( iTrace );
+    ContourMeshStructureMultiIndexContainer* temp = 
+      new ContourMeshStructureMultiIndexContainer;
+    if (iTraceName == "contour")
+      {
+      //ContourMeshStructureMultiIndexContainer* temp =
+      //  w3t->m_DataBaseTables->GetTracesInfoListForVisu( iTrace );
+      temp =w3t->m_DataBaseTables->
+        GetContoursMultiIndexFromDBForAGivenTimePoint(iT);
+      }
+    if (iTraceName == "mesh")
+      {
+      temp =w3t->m_DataBaseTables->
+        GetMeshesMultiIndexFromDBForAGivenTimePoint(iT);
+      }
 
     if( temp )
       {
@@ -435,7 +447,7 @@ LoadAllTracesFromDatabase( const int& iT, std::string iTrace )
 //       std::vector< std::string > areas;
 //       std::vector< std::string > sizes;
 
-      bool calculation = ( iTrace.compare( "mesh" ) == 0 );
+      bool calculation = ( iTraceName.compare( "mesh" ) == 0 );
 
       // we don't need here to save this contour in the database,
       // since they have just been extracted from it!
@@ -464,7 +476,6 @@ LoadAllTracesFromDatabase( const int& iT, std::string iTrace )
 //         attributes_values[3][i] = attributes.m_TotalIntensityMap[ ];//first channel ];
             }
           }
-
         w3t->AddTraceFromNodesManager(
             contourmesh_list_it->TraceID,
             contourmesh_list_it->Nodes,
@@ -472,7 +483,7 @@ LoadAllTracesFromDatabase( const int& iT, std::string iTrace )
             contourmesh_list_it->Highlighted,
             contourmesh_list_it->TCoord,
             false,  // Not to be saved in database
-            iTrace );  // Name of the trace to add
+            iTraceName );  // Name of the trace to add
 
         if( contourmesh_list_it->TCoord != static_cast<unsigned int>( iT ) )
           {
