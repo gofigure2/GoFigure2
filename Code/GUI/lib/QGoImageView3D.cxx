@@ -125,19 +125,19 @@ QGoImageView3D( QWidget* iParent ) :
   SetupViewGivenQVTKWidget( View1, this->QvtkWidget_XY );
 
   this->m_Pool->AddItem( View1 );
-  //View1->Delete();
+  View1->Delete();
 
   vtkViewImage2D* View2 = vtkViewImage2D::New();
   SetupViewGivenQVTKWidget( View2, this->QvtkWidget_XZ );
 
   this->m_Pool->AddItem( View2 );
-  //View2->Delete();
+  View2->Delete();
 
   vtkViewImage2D* View3 = vtkViewImage2D::New();
   SetupViewGivenQVTKWidget( View3, this->QvtkWidget_YZ );
 
   this->m_Pool->AddItem( View3 );
-  //View3->Delete();
+  View3->Delete();
 
   vtkRenderWindow* renwin4 = this->QvtkWidget_XYZ->GetRenderWindow( );
   this->m_View3D = vtkViewImage3D::New();
