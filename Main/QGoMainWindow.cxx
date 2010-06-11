@@ -414,20 +414,8 @@ LoadAllTracesFromDatabase( const int& iT, std::string iTraceName )
 
   if( w3t )
     {
-    ContourMeshStructureMultiIndexContainer* temp = 
-      new ContourMeshStructureMultiIndexContainer;
-    if (iTraceName == "contour")
-      {
-      //ContourMeshStructureMultiIndexContainer* temp =
-      //  w3t->m_DataBaseTables->GetTracesInfoListForVisu( iTrace );
-      temp =w3t->m_DataBaseTables->
-        GetContoursMultiIndexFromDBForAGivenTimePoint(iT);
-      }
-    if (iTraceName == "mesh")
-      {
-      temp =w3t->m_DataBaseTables->
-        GetMeshesMultiIndexFromDBForAGivenTimePoint(iT);
-      }
+    ContourMeshStructureMultiIndexContainer* temp =
+      w3t->m_DataBaseTables->GetTracesInfoListForVisu( iTraceName );
 
     if( temp )
       {
