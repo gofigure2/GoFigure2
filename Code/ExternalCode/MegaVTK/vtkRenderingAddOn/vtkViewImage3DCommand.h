@@ -45,8 +45,7 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage3DCommand :
   // the instance invoking the event; eid is the event id (see
   // vtkCommand.h); and calldata is information sent when the callback
   // was invoked (e.g., progress value in the vtkCommand::ProgressEvent).
-  virtual void Execute( vtkObject *caller, unsigned long event,
-    void *vtkNotUsed(callData) );
+  virtual void Execute( vtkObject *caller, unsigned long , void * );
 
   vtkOrientedBoxWidget*    GetBoxWidget();
   std::list< vtkProp3D* >  GetListOfModifiedActors();

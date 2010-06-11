@@ -24,7 +24,11 @@ vtkViewImage3DCommand()
 {
   this->m_BoxWidget = vtkOrientedBoxWidget::New();
   // When BoxWidget is modified
-  this->m_BoxWidget->AddObserver(vtkCommand::InteractionEvent,this);
+
+  /// TODO FIX LEAKS
+  // TRY to create a specific callback....?
+
+  //this->m_BoxWidget->AddObserver(vtkCommand::InteractionEvent,this);
   m_InitializedBoxWidget = false;
 
 }
@@ -50,12 +54,14 @@ vtkViewImage3DCommand::New()
 //----------------------------------------------------------------------------
 void
 vtkViewImage3DCommand::
-Execute(vtkObject *caller, unsigned long event, void *vtkNotUsed(callData))
+Execute(vtkObject *caller, unsigned long event, void *callData)
 {
+
   vtkInteractorStyleImage3D *isi =
     vtkInteractorStyleImage3D::SafeDownCast(caller);
 
   (void) isi;
+  (void) callData;
 
   vtkImageData* data = this->m_vtkViewImage3D->GetInput();
   int extent[6];
