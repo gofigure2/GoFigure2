@@ -7,6 +7,7 @@
 
 #include <list>
 #include "vtkProp3D.h"
+#include "vtkSmartPointer.h"
 
 class vtkProp;
 class vtkViewImage3D;
