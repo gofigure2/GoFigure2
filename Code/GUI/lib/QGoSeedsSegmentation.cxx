@@ -52,6 +52,8 @@
 #include "vtkMath.h"
 #include "vtkSphereSource.h"
 
+#include "vtkPointData.h"
+
 //Connection VTK/ITK
 #include "vtkImageExport.h"
 #include "itkVTKImageImport.h"
@@ -457,6 +459,7 @@ SphereVolumeSegmentation()
   sphere->SetPhiResolution( 18 );
   sphere->SetCenter( m_SeedsPosition );
   sphere->Update();
+  sphere->GetOutput()->GetPointData()->SetNormals( NULL );
 
   return sphere->GetOutput();
 }
