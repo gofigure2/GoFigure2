@@ -1630,7 +1630,7 @@ SetMegaCaptureFile(
 
   if( static_cast< unsigned int >( m_TimePoint ) != iTimePoint )
     {
-	 	SetTimePoint( iTimePoint );
+    SetTimePoint( iTimePoint );
     }
 
   // Set up QSpinBox in m_VideoRecorderWidget
@@ -2522,6 +2522,25 @@ RemoveAllTracesForPresentTimePointManager( )
 void
 QGoTabImageView3DwT::
 RemoveAllTracesForGivenTimePoint( const unsigned int& iT,
+      const std::string& iTraceName )
+{
+  if( iTraceName.compare("contour") == 0 )
+    {
+    // Removes contours from visu
+    RemoveAllTracesForGivenTimePoint( iT, m_ContourContainer );
+    }
+  if( iTraceName.compare( "mesh" ) == 0 )
+    {
+    // Removes meshes from visu
+    RemoveAllTracesForGivenTimePoint( iT, m_MeshContainer );
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+RemoveAllTracesForGivenTimePoint( const unsigned int& iT,
     ContourMeshStructureMultiIndexContainer& iContainer )
 {
   if( iContainer.size() > 0 )
@@ -2755,7 +2774,7 @@ ReEditContour( const unsigned int& iId )
       {
       int c_dir;
       vtkActor* c_actor;
-      vtkPolyData* c_nodes = (vtkPolyData*)(0);
+      vtkPolyData* c_nodes = NULL;
 
       while( it != m_ContourContainer.get< TraceID >().end() )
         {

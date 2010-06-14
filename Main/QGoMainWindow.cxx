@@ -397,17 +397,21 @@ void
 QGoMainWindow::
 LoadAllTracesFromDatabaseManager( const int& iT )
 {
+  QApplication::setOverrideCursor( QCursor( Qt::WaitCursor ) );
+
   // Loads contours
   LoadAllTracesFromDatabase( iT, "contour" );
   // Loads meshes
   LoadAllTracesFromDatabase( iT, "mesh" );
+
+  QApplication::restoreOverrideCursor();
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void
 QGoMainWindow::
-LoadAllTracesFromDatabase( const int& iT, std::string iTraceName )
+LoadAllTracesFromDatabase( const int& iT, const std::string& iTraceName )
 {
   QGoTabImageView3DwT* w3t =
     dynamic_cast< QGoTabImageView3DwT* >( this->CentralTabWidget->currentWidget() );
@@ -417,25 +421,15 @@ LoadAllTracesFromDatabase( const int& iT, std::string iTraceName )
     ContourMeshStructureMultiIndexContainer* temp =
       w3t->m_DataBaseTables->GetTracesInfoListForVisu( iTraceName );
 
+    bool calculation = ( iTraceName.compare( "mesh" ) == 0 );
+
     if( temp )
       {
-//       ContourMeshStructureMultiIndexContainer::iterator
-//         contourmesh_list_it = temp->begin();
-
       // let's iterate on the container with increasing TraceID
       ContourMeshStructureMultiIndexContainer::index< TraceID >::type::iterator
         contourmesh_list_it = temp->get< TraceID >().begin();
 
       std::set< unsigned int > temp_time_set;
-
-//       std::vector< std::vector< std::string > > attributes_values;
-//       std::vector< std::string > attributes_name;
-
-//       std::vector< std::string > volumes;
-//       std::vector< std::string > areas;
-//       std::vector< std::string > sizes;
-
-      bool calculation = ( iTraceName.compare( "mesh" ) == 0 );
 
       // we don't need here to save this contour in the database,
       // since they have just been extracted from it!
@@ -448,20 +442,8 @@ LoadAllTracesFromDatabase( const int& iT, std::string iTraceName )
             {
             GoFigureMeshAttributes attributes =
               w3t->ComputeMeshAttributes( contourmesh_list_it->Nodes );
-            w3t->m_DataBaseTables->PrintVolumeAreaForMesh(attributes.m_Volume, 
-              attributes.m_Area, contourmesh_list_it->TraceID);
-            std::cout << "TraceID " << contourmesh_list_it->TraceID <<std::endl;
-            std::cout << "volume " << attributes.m_Volume  << std::endl;
-            std::cout << "area " << attributes.m_Area    << std::endl;
-            std::cout << "size " <<attributes.m_Size    << std::endl;
-//
-//             volumes.push_back( ConvertToString< double >( attributes.m_Volume ) );
-//             areas.push_back( ConvertToString< double >( attributes.m_Area ) );
-//             sizes.push_back( ConvertToString< int >( attributes.m_Size ) );
-//         attributes_values[0][i] = ;
-//         attributes_values[1][i] = attributes.m_Area;
-//         attributes_values[2][i] = attributes.m_Size;
-//         attributes_values[3][i] = attributes.m_TotalIntensityMap[ ];//first channel ];
+            w3t->m_DataBaseTables->PrintVolumeAreaForMesh( attributes.m_Volume, 
+              attributes.m_Area, contourmesh_list_it->TraceID );
             }
           }
         w3t->AddTraceFromNodesManager(
@@ -481,29 +463,26 @@ LoadAllTracesFromDatabase( const int& iT, std::string iTraceName )
         ++contourmesh_list_it;
         }
 
-//       if( calculation )
-//         {
-//         attributes_name.push_back( "Volume" );
-//         attributes_values.push_back( volumes );
-//
-//         attributes_name.push_back( "Area" );
-//         attributes_values.push_back( areas );
-//
-//         attributes_name.push_back( "Size" );
-//         attributes_values.push_back( sizes );
-//         }
-
-      for( std::set< unsigned int >::iterator time_it = temp_time_set.begin();
-        time_it != temp_time_set.end();
-        ++time_it )
+      std::set< unsigned int >::iterator time_it = temp_time_set.begin();
+      while( time_it != temp_time_set.end() )
         {
-        // *temp is the trace to be removed from the visualization
-        w3t->RemoveAllTracesForGivenTimePoint( *time_it, *temp );
+        /// \note temp is the container coming from the database and as of now
+        /// does not contain any information from the visualization. Thus all
+        /// actors are initialized to NULL and can not be removed from the
+        /// visualization.
+        //  w3t->RemoveAllTracesForGivenTimePoint( *time_it, *temp );
+        w3t->RemoveAllTracesForGivenTimePoint( *time_it, iTraceName );
+
+        ++time_it;
         }
       }
 
-    w3t->ReinitializeContour(); // contour widget is reinitialized...
-    w3t->ActivateManualSegmentationEditor( false );
+    // if it we are loading contours
+    if( !calculation )
+      {
+      w3t->ReinitializeContour(); // contour widget is reinitialized...
+      w3t->ActivateManualSegmentationEditor( false );
+      }
     }
 }
 //--------------------------------------------------------------------------

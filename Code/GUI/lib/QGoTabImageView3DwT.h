@@ -284,7 +284,9 @@ public slots:
    */
   void RemoveAllTracesForGivenTimePoint( const unsigned int& iT,
       ContourMeshStructureMultiIndexContainer& iContainer );
-
+  void RemoveAllTracesForGivenTimePoint( const unsigned int& iT,
+      const std::string& iTraceName );
+      
   void ActivateManualSegmentationEditor( const bool& iActivate );
   void ActivateSemiAutoSegmentationEditor( const bool& iActivate );
 
