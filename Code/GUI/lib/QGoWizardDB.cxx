@@ -222,7 +222,10 @@ void QGoWizardDB::closeEvent(QCloseEvent* iEvent)
       field("ImgSessionName").toString().toStdString();
     this->m_ImgSessionID = 0;
     }
-  this->SetFirstFileName();
+  if(!field("DBName").toString().toStdString().empty())
+    {
+    this->SetFirstFileName();
+    }
   this->m_ImgSessionName.clear();
   this->m_IsAnOpenRecentFile = false;
   //this->restart();

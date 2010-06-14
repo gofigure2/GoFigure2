@@ -569,14 +569,14 @@ GoDBTableWidgetContainer* GoDBCollectionOfTraces::GetLinkToNewCreatedTraceContai
     GoDBTableWidgetContainer(this->m_CollectionName,
     this->m_TracesName); 
  
-  if(this->m_TracesName == "mesh")
+  /*if(this->m_TracesName == "mesh")
      {
      //std::vector<std::string> TraceID;
      //TraceID.push_back(ConvertToString<int>(NewTraceID));
      this->SetChannelsInfo(iDatabaseConnector,LinkToNewCreatedTraceContainer);
      //this->FillRowContainerForIntensityValues(iDatabaseConnector,TraceID,
      //  LinkToNewCreatedTraceContainer);
-     }
+     }*/
 
   /*first, get the right parts of the first query:
  all the fields except the ones where table.field are already in the query:*/
@@ -622,11 +622,10 @@ GoDBTableWidgetContainer* GoDBCollectionOfTraces::GetLinkToNewCreatedTraceContai
      {
      std::vector<std::string> TraceID;
      TraceID.push_back(ConvertToString<int>(NewTraceID));
-     //this->SetChannelsInfo(iDatabaseConnector,LinkToNewCreatedTraceContainer);
+     this->SetChannelsInfo(iDatabaseConnector,LinkToNewCreatedTraceContainer);
      this->FillRowContainerForIntensityValues(iDatabaseConnector,TraceID,
        LinkToNewCreatedTraceContainer);
      }
-
    return LinkToNewCreatedTraceContainer;
 }
 //--------------------------------------------------------------------------
