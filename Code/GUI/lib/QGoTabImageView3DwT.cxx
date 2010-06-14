@@ -3354,8 +3354,11 @@ OneClickSphereContours()
       }
     // assign contours to mesh
     // will increment mesh ID automatically
-    m_DataBaseTables->CreateMeshFromOneClickSegmentation(listContoursIDs);
-  }
+    if( m_DataBaseTables->IsDatabaseUsed() )
+      {
+      m_DataBaseTables->CreateMeshFromOneClickSegmentation(listContoursIDs);
+      }
+    }
 
   // Erase seeds once everything is stored in DB
   this->m_ImageView->ClearAllSeeds();
