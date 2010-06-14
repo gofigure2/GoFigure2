@@ -437,52 +437,12 @@ void GoDBTableWidgetContainer:: GetCommonInfoForTwoTracesTable()
 //--------------------------------------------------------------------------
 void GoDBTableWidgetContainer::GetSpecificInfoForTraceTable()
 {
-  GoDBTraceInfoForTableWidget temp;
+  /*GoDBTraceInfoForTableWidget temp;
   std::pair<GoDBTraceInfoForTableWidget,std::vector<std::string> > PairTemp;
   if (this->m_TracesName == "mesh")
     {
-    if (this->m_ChannelsInfo.empty())
-      {
-      std::cout<<"No info for the channels"<<std::endl;
-      std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
-      std::cout << std::endl;
-      return;
-      }
-    //Get the info for the total intensities per channel:
-    int NumberOfChannels = this->m_ChannelsInfo.size();
-    for (int i = 0; i < NumberOfChannels; i++)
-      {
-      std::string InfoName = "TotalIntensityForChannelID";
-      InfoName += this->m_ChannelsInfo.at(i).at(1);
-      temp.InfoName = InfoName;
-      temp.ColumnNameDatabase = "Value";
-      std::string ColumnNameTableWidget = "T.I.";
-      ColumnNameTableWidget += this->m_ChannelsInfo.at(i).at(0);
-      temp.ColumnNameTableWidget = ColumnNameTableWidget;
-      temp.TableNameDatabase = "intensity";
-      temp.TableForeignKeyDatabase = "MeshID";
-      temp.TableKeyDatabase = "MeshID";
-      m_ColumnsInfos.push_back(temp);
-      PairTemp.first = temp;
-      m_RowContainer.push_back(PairTemp);
-      temp.Clear();
-      }
-    //Get the info for the Volume:
-    temp.InfoName = "Volume";
-    temp.ColumnNameTableWidget = "Volume";
-    m_ColumnsInfos.push_back(temp);
-    PairTemp.first = temp;
-    m_RowContainer.push_back(PairTemp);
-    temp.Clear();
-
-    //Get the info for the Surface Area:
-    temp.InfoName = "SurfaceArea";
-    temp.ColumnNameTableWidget = "SurfaceArea";
-    m_ColumnsInfos.push_back(temp);
-    PairTemp.first = temp;
-    m_RowContainer.push_back(PairTemp);
-    temp.Clear();
-    }
+    SetSpecificColumnsInfoForMesh(*/
+    
 }
 //--------------------------------------------------------------------------
 
@@ -776,13 +736,56 @@ int GoDBTableWidgetContainer::GetIndexInsideRowContainer(std::string iInfoName)
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void GoDBTableWidgetContainer::SetChannelsInfo(
+void GoDBTableWidgetContainer::SetSpecificColumnsInfoForMesh(
   std::vector<std::vector<std::string> > iChannelsInfo)
 {
   this->m_ChannelsInfo = iChannelsInfo;
-  m_ColumnsInfos.clear();
+  /*m_ColumnsInfos.clear();
   this->m_RowContainer.clear();
-  m_ColumnsInfos = GetColumnsInfoForTraceTable();
+  m_ColumnsInfos = GetColumnsInfoForTraceTable();*/
+  //Get the info for the total intensities per channel:
+  GoDBTraceInfoForTableWidget temp;
+  std::pair<GoDBTraceInfoForTableWidget,std::vector<std::string> > PairTemp;
+  int NumberOfChannels = this->m_ChannelsInfo.size();
+  if (this->m_ChannelsInfo.empty())
+    {
+    std::cout<<"No info for the channels"<<std::endl;
+    std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
+    std::cout << std::endl;
+    return;
+    }
+  for (int i = 0; i < NumberOfChannels; i++)
+    {
+    std::string InfoName = "TotalIntensityForChannelID";
+    InfoName += this->m_ChannelsInfo.at(i).at(1);
+    temp.InfoName = InfoName;
+    temp.ColumnNameDatabase = "Value";
+    std::string ColumnNameTableWidget = "T.I.";
+    ColumnNameTableWidget += this->m_ChannelsInfo.at(i).at(0);
+    temp.ColumnNameTableWidget = ColumnNameTableWidget;
+    temp.TableNameDatabase = "intensity";
+    temp.TableForeignKeyDatabase = "MeshID";
+    temp.TableKeyDatabase = "MeshID";
+    m_ColumnsInfos.push_back(temp);
+    PairTemp.first = temp;
+    m_RowContainer.push_back(PairTemp);
+    temp.Clear();
+    }
+  //Get the info for the Volume:
+  temp.InfoName = "Volume";
+  temp.ColumnNameTableWidget = "Volume";
+  m_ColumnsInfos.push_back(temp);
+  PairTemp.first = temp;
+  m_RowContainer.push_back(PairTemp);
+  temp.Clear();
+
+  //Get the info for the Surface Area:
+  temp.InfoName = "SurfaceArea";
+  temp.ColumnNameTableWidget = "SurfaceArea";
+  m_ColumnsInfos.push_back(temp);
+  PairTemp.first = temp;
+  m_RowContainer.push_back(PairTemp);
+  temp.Clear();
 }
 //--------------------------------------------------------------------------
 

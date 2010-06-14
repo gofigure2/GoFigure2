@@ -100,7 +100,8 @@ class QGOIO_EXPORT GoDBTableWidgetContainer
 
    std::vector<std::vector<std::string> > GetChannelsInfo();
    /** \brief Set the info needed for mesh*/
-   void SetChannelsInfo(std::vector<std::vector<std::string> > iChannelsInfo);
+   void SetSpecificColumnsInfoForMesh(
+     std::vector<std::vector<std::string> > iChannelsInfo);
 
    unsigned int GetNumberOfRows();
 

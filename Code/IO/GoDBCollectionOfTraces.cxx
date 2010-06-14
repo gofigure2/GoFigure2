@@ -871,10 +871,10 @@ void GoDBCollectionOfTraces::SetChannelsInfo(vtkMySQLDatabase* DatabaseConnector
   GoDBTableWidgetContainer* iLinkToRowContainer)
 {
   std::vector<std::string> SelectFields;
-  GoDBTableWidgetContainer* LinkToRowContainer = iLinkToRowContainer;
+  //GoDBTableWidgetContainer* LinkToRowContainer = iLinkToRowContainer;
   if (iLinkToRowContainer == 0)
     {
-    LinkToRowContainer = this->m_LinkToRowContainer;
+    iLinkToRowContainer = this->m_LinkToRowContainer;
     }
   SelectFields.push_back("Name");
   SelectFields.push_back("channel.ChannelID");
@@ -885,7 +885,8 @@ void GoDBCollectionOfTraces::SetChannelsInfo(vtkMySQLDatabase* DatabaseConnector
   std::vector<std::vector<std::string> > Results = GetValuesFromSeveralTables(
     DatabaseConnector,"image",SelectFields, "ImagingSessionID",
     ConvertToString<unsigned int>(this->m_ImgSessionID),JoinTablesOnTraceTable,true);
-  LinkToRowContainer->SetChannelsInfo(Results);
+  //  iLinkToRowContainer->SetChannelsInfo(Results);
+  iLinkToRowContainer->SetSpecificColumnsInfoForMesh(Results);
 }
 //--------------------------------------------------------------------------
 
