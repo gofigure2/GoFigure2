@@ -56,7 +56,7 @@ TARGET_LINK_LIBRARIES( ContourToMeshFilterTest
   ITKCommon
   )
 
-ADD_TEST( ContourToMeshFilterTest
-  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/ContourToMeshFilterTest
-  )
+#ADD_TEST( ContourToMeshFilterTest
+#  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/ContourToMeshFilterTest
+#  )
 
