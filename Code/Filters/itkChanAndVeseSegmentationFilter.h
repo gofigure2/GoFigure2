@@ -254,7 +254,7 @@ protected:
     InternalRegionType region2;
     region2.SetSize( m_Size );
     region2.SetIndex( start2 );
-/*
+
     ///TODO Allocate image
     InternalImagePointer image = InternalImageType::New();
     image->SetRegions( region2 );
@@ -279,15 +279,15 @@ protected:
         }
       r_it.Set( vcl_sqrt( d ) - r);
       ++r_it;
-      }*/
-
+      }
+/*
     typename FastMarchingFilterType::Pointer  fastMarching = FastMarchingFilterType::New();
     fastMarching->SetSpeedConstant( 1.0 );
     fastMarching->SetOutputOrigin( origin );
     fastMarching->SetOutputSpacing( spacing );
     fastMarching->SetOutputRegion( region2 );
     fastMarching->SetTrialPoints(  seeds  );
-    fastMarching->Update();
+    fastMarching->Update();*/
 
     FeatureImagePointer feature;
     if ( m_Preprocess )
@@ -295,7 +295,14 @@ protected:
       ROIFilterPointer roi = ROIFilterType::New();
       roi->SetInput( m_FeatureImage );
       roi->SetRegionOfInterest( region );
+      try
+        {
       roi->Update();
+        }
+      catch( itk::ExceptionObject& err )
+        {
+        std::cerr << "roi Exception:" << err << std::endl;
+        }
 /*
       std::cout << "Write output WithPreprocessing" << std::endl;
             // Add the MetaImage format to the writer
@@ -309,7 +316,14 @@ protected:
       PreprocessFilterPointer preprocess = PreprocessFilterType::New();
       preprocess->SetInput ( roi->GetOutput() );
       preprocess->SetLargestCellRadius ( m_Radius ); // in real coordinates
+      try
+        {
       preprocess->Update();
+        }
+      catch( itk::ExceptionObject& err )
+        {
+        std::cerr << "preprocess Exception:" << err << std::endl;
+        }
 
       feature = preprocess->GetOutput();
       feature->SetOrigin( origin );
@@ -326,11 +340,13 @@ protected:
     typedef std::vector< unsigned int > VectorType;
     VectorType lookUp( 1, 1 );
 
+    image->CopyInformation( feature );
+
     MultiLevelSetPointer LevelSetFilter = MultiLevelSetType::New();
     LevelSetFilter->SetFunctionCount( 1 );
     LevelSetFilter->SetLookup( lookUp );
     LevelSetFilter->SetFeatureImage( feature );
-    LevelSetFilter->SetLevelSet( 0, fastMarching->GetOutput() );
+    LevelSetFilter->SetLevelSet( 0, image );
     LevelSetFilter->SetNumberOfIterations( m_NumberOfIterations );
     LevelSetFilter->SetMaximumRMSError( 0 );
     LevelSetFilter->SetUseImageSpacing( 1 );
@@ -342,12 +358,27 @@ protected:
     LevelSetFilter->GetDifferenceFunction(0)->SetAreaWeight( 0. );
     LevelSetFilter->GetDifferenceFunction(0)->SetLambda1( 1. );
     LevelSetFilter->GetDifferenceFunction(0)->SetLambda2( 1. );
-    LevelSetFilter->Update();
+    try
+      {
+      LevelSetFilter->Update();
+      }
+    catch( itk::ExceptionObject& err )
+      {
+      std::cerr << "levelsetfilter Exception:" << err << std::endl;
+      }
 
     m_Output = LevelSetFilter->GetLevelSet( 0 );
 
     m_Converter->SetInput( m_Output );
-    m_Converter->Update();
+
+    try
+      {
+      m_Converter->Update();
+      }
+    catch( itk::ExceptionObject& err )
+      {
+      std::cerr << "m_converter Exception:" << err << std::endl;
+      }
 
     m_VTKImage = m_Converter->GetOutput();
     std::cout << "Output Image Size: " << m_VTKImage->GetDimensions()[0]
