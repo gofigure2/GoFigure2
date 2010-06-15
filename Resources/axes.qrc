@@ -30,5 +30,9 @@
         <file>fig/zoom.png</file>
         <file>fig/seedIcon.png</file>
         <file>fig/navigation.png</file>
+		    <file>fig/ContourPicking.png</file>
+		    <file>fig/MeshPicking.png</file>
+		    <file>fig/Distance.png</file>
+        <file>fig/Angle.png</file>
     </qresource>
 </RCC>

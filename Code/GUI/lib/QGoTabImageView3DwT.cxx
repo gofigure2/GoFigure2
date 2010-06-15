@@ -1208,6 +1208,11 @@ void QGoTabImageView3DwT::CreateModeActions()
   QAction* ContourPickingAction = new QAction( tr( "Contour Picking" ), this );
   ContourPickingAction->setCheckable( true );
   ContourPickingAction->setChecked(false);
+  
+  QIcon ContourPickingIcon;
+  ContourPickingIcon.addPixmap( QPixmap(QString::fromUtf8(":/fig/ContourPicking.png")),
+    QIcon::Normal, QIcon::Off );
+  ContourPickingAction->setIcon( ContourPickingIcon );
 
   group->addAction( ContourPickingAction );
 
@@ -1224,6 +1229,11 @@ void QGoTabImageView3DwT::CreateModeActions()
   MeshPickingAction->setCheckable( true );
   MeshPickingAction->setChecked(false);
 
+  QIcon MeshPickingIcon;
+  MeshPickingIcon.addPixmap( QPixmap(QString::fromUtf8(":/fig/MeshPicking.png")),
+    QIcon::Normal, QIcon::Off );
+  MeshPickingAction->setIcon( MeshPickingIcon );
+
   group->addAction( MeshPickingAction );
 
   this->m_ModeActions.push_back( MeshPickingAction );
@@ -1233,8 +1243,14 @@ void QGoTabImageView3DwT::CreateModeActions()
 
   // Distance measurement mode
   QAction* DistanceAction = new QAction( tr("Measure Distance"), this );
+
   DistanceAction->setCheckable( true );
   DistanceAction->setChecked( false );
+  
+  QIcon DistanceIcon;
+  DistanceIcon.addPixmap( QPixmap(QString::fromUtf8(":/fig/Distance.png")),
+    QIcon::Normal, QIcon::Off );
+  DistanceAction->setIcon( DistanceIcon );
 
   group->addAction( DistanceAction );
 
@@ -1248,6 +1264,11 @@ void QGoTabImageView3DwT::CreateModeActions()
   AngleAction->setCheckable( true );
   AngleAction->setChecked( false );
 
+  QIcon AngleIcon;
+  AngleIcon.addPixmap( QPixmap(QString::fromUtf8(":/fig/Angle.png")),
+    QIcon::Normal, QIcon::Off );
+  AngleAction->setIcon( AngleIcon );
+
   group->addAction( AngleAction );
 
   this->m_ModeActions.push_back( AngleAction );
@@ -1256,7 +1277,7 @@ void QGoTabImageView3DwT::CreateModeActions()
     this, SLOT( AngleWidgetInteractorBehavior( bool ) ) );
 
   //---------------------------------//
-  //       Mesh picking  mode        //
+  //       Box 3D picking  mode        //
   //---------------------------------//
 
   QAction* Box3DPickingAction = new QAction( tr( "Box 3D Picking" ), this );

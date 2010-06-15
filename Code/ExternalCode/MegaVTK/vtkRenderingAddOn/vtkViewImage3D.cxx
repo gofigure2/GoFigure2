@@ -183,7 +183,7 @@ public:
 
     if( event == vtkCommand::ModifiedEvent )
     {
-      this->Actor->SetInput(imagecaller->GetInput());
+    this->Actor->SetInput(imagecaller->GetInput());
       this->Actor->SetInterpolate(imagecaller->GetInterpolate());
       this->Actor->SetOpacity(imagecaller->GetOpacity());
       this->Actor->SetDisplayExtent (imagecaller->GetDisplayExtent());
