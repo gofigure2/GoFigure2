@@ -1522,7 +1522,6 @@ MeshPickingMode()
   DisableOneClickMode();
   DisableContourPickingMode();
 
-  std::cout << "in mesh picking" << std::endl;
   //Change cursor
   this->QvtkWidget_XY->setCursor( Qt::ArrowCursor );
   this->QvtkWidget_XZ->setCursor( Qt::ArrowCursor );
@@ -1530,7 +1529,10 @@ MeshPickingMode()
 
   vtkInteractorStyleImage3D* t = m_View3D->GetInteractorStyle3D();
   if (t)
+    {
+    t->EnablePickingMode();
     t->StartPick();
+    }
 }
 
 //-------------------------------------------------------------------------
@@ -1540,7 +1542,10 @@ DisableMeshPickingMode()
 {
   vtkInteractorStyleImage3D* t = m_View3D->GetInteractorStyle3D();
   if (t)
+    {
+    t->DisablePickingMode();
     t->EndPick();
+    }
 }
 
 //-------------------------------------------------------------------------

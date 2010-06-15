@@ -119,6 +119,9 @@ class VTK_RENDERINGADDON2_EXPORT vtkInteractorStyleImage3D :
 
   void HighlightCurrentActor();
 
+  void EnablePickingMode();
+  void DisablePickingMode();
+
  protected:
   vtkInteractorStyleImage3D();
   ~vtkInteractorStyleImage3D();

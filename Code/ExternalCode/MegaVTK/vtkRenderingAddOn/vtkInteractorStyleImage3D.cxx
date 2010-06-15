@@ -85,6 +85,12 @@ vtkInteractorStyleImage3D::
 vtkInteractorStyleImage3D()
 {
   m_EnablePickingMode = false;
+
+
+  this->LeftButtonInteraction   = 0;
+  this->RightButtonInteraction  = 0;
+  this->MiddleButtonInteraction = 0;
+  this->WheelButtonInteraction  = 0;
 }
 
 //----------------------------------------------------------------------------
@@ -98,7 +104,6 @@ void
 vtkInteractorStyleImage3D::
 OnMouseMove()
 {
-  std::cout << "in mouse move: " << this->State << std::endl;
   switch (this->State)
     {
       case VTKIS_PICK3D:
@@ -135,10 +140,10 @@ vtkInteractorStyleImage3D::
 OnChar()
 {
   vtkRenderWindowInteractor *rwi = this->Interactor;
-  if ((rwi->GetKeyCode() == 'p') || (rwi->GetKeyCode() == 'P'))
+  /*if ((rwi->GetKeyCode() == 'p') || (rwi->GetKeyCode() == 'P'))
     {
       this->m_EnablePickingMode = true;
-    }
+    }*/
   if ((rwi->GetKeyCode() == 'b') || (rwi->GetKeyCode() == 'B'))
     {
       this->m_EnableBoxSelectionMode = true;
@@ -154,11 +159,11 @@ vtkInteractorStyleImage3D::
 OnKeyUp()
 {
   vtkRenderWindowInteractor *rwi = this->Interactor;
-
+/*
   if ((rwi->GetKeyCode() == 'p') || (rwi->GetKeyCode() == 'P'))
     {
     this->m_EnablePickingMode = false;
-    }
+    }*/
   if ((rwi->GetKeyCode() == 'b') || (rwi->GetKeyCode() == 'B'))
     {
     this->m_EnableBoxSelectionMode = false;
@@ -234,7 +239,6 @@ void
 vtkInteractorStyleImage3D::
 StartPick()
 {
-  std::cout << "state: " << this->State << std::endl;
   if (this->State != VTKIS_NONE)
     {
     return;
@@ -293,4 +297,20 @@ HighlightCurrentActor()
         }
       rwi->EndPickCallback();
     }
+}
+
+//----------------------------------------------------------------------------
+void
+vtkInteractorStyleImage3D::
+EnablePickingMode()
+{
+  m_EnablePickingMode = true;
+}
+
+//----------------------------------------------------------------------------
+void
+vtkInteractorStyleImage3D::
+DisablePickingMode()
+{
+  m_EnablePickingMode = false;
 }
