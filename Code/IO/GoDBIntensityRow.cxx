@@ -54,6 +54,8 @@ GoDBIntensityRow::~GoDBIntensityRow()
 //-------------------------------------------------------------------------
 void GoDBIntensityRow::InitializeMap()
 {
+  this->m_TableName = "intensity";
+  this->m_TableIDName = "IntensityID";
   this->m_MapRow["IntensityID"] = ConvertToString<int>(0);
   this->m_MapRow["Value"] = ConvertToString<int>(0);
   this->m_MapRow["MeshID"] = ConvertToString<int>(0);

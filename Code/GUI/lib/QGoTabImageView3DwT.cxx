@@ -1331,6 +1331,8 @@ void QGoTabImageView3DwT::GetTheRelatedToDBActions()
     this->m_DataBaseTables, SLOT(ExportContours () ) );
   QObject::connect( ImportContoursAction, SIGNAL( triggered() ),
     this, SLOT(ImportContours() ) );
+  QObject::connect( ExportMeshesAction, SIGNAL( triggered() ),
+    this->m_DataBaseTables, SLOT(ExportMeshes() ) );
 }
 //-------------------------------------------------------------------------
 

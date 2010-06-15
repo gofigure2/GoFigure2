@@ -61,6 +61,8 @@ public:
   and put them in a text file*/
   void ExportContours();
 
+  void ExportMeshes();
+
 private:
   //QGoExport( const QGoExport& );
   //QGoExport operator = ( const QGoExport& );
@@ -70,11 +72,13 @@ private:
   std::string              m_Login;
   int                      m_ImagingSessionID;
   std::fstream             m_outfile;
+  std::string              m_NameDocXml;
 
   std::vector<std::string> m_VectorContourIDs;
   std::vector<std::string> m_VectorMeshIDs;
   std::vector<std::string> m_VectorTrackIDs;
   std::vector<std::string> m_VectorLineageIDs;
+  std::vector<std::string> m_VectorChannelIDs;
 
   /** \brief return a vector of pair containing the name of the info as .first
   and the info as .second. for Imagingsession such as Name, creation date and
@@ -84,6 +88,9 @@ private:
   corresponding info found in the Database for the table imagingsession*/
   std::pair<std::string,std::string> GetOneInfoFromDBForImgSession(
     std::string iNameInfo);
+  
+  /** \brief Write the generale info about the textfile*/
+  void WriteGeneraleInfo();
 
   /** \brief get the info from the database for all the entities from a table or
   with a limitation defined with field and value and write them in the output file
@@ -152,7 +159,8 @@ private:
   void GetVectorsTableNamesTracesIDsAndFields( 
     std::vector<std::string> & ioVectorTableNames,
     std::vector<std::vector<std::string> > & ioVectorTracesIDs,
-    std::vector<std::string> & ioVectorFields);
+    std::vector<std::string> & ioVectorFields,
+    bool IncludeChannelIDs = false);
 
   /** \brief Get the celltype and subcelltype for the needed meshes from
   the database and write them on the output file*/
@@ -173,6 +181,14 @@ private:
   /** \brief get the lineages info which IDs are in the m_VectorLineageIDs
   from the database and write them on the output file*/
   void WriteLineagesInfoFromDatabase();
+  
+  /** \brief get the channels info which IDs are in the m_VectorChannelIDs
+  from the database and write them on the output file*/
+  void WriteChannelsInfoFromDatabase();
+
+  /** \brief get the info for the intensities corresponding to the m_VectorMeshIDs
+  and the m_VectorChannelIDs and write them on the output file*/
+  void WriteIntensityInfoFromDatabase();
 
   /** \brief get the IDs of the contour belonging to the current imagingsession
   and fill the m_VectorContourIDs with them*/
@@ -182,6 +198,17 @@ private:
   meshes, the info regarding these meshes are needed also, so fill
   m_VectorMeshIDs with these meshes IDs*/
   void UpdateVectorMeshIDsForExportContours();
+  
+  /** \brief when exporting meshes, we don't export the potential contours
+  associated to the meshes, so we clear m_VectorContourIDs*/
+  void UpdateVectorContourIDsForExportMeshes();
+  
+  /** \brief when exporting meshes, we export only the meshes with a 3D surface
+  so we fill the m_VectorMeshIDs with the meshes with a non empty "Points"
+  column from the database*/
+  void UpdateVectorMeshIDsForExportMeshes();
+
+  void UpdateVectorChannelIDsForExportMeshes();
 
   /** \brief check if for the meshes IDs found in the m_VectorMeshIDs,
   the corresponding meshes belongs to tracks, if so these tracks IDs
@@ -196,6 +223,10 @@ private:
   /** \brief fill the different vectors of traces IDs corresponding to 
   the contours to export*/
   void UpdateAllVectorTracesIDsToExportContours();
+  
+  /** \brief fill the different vectors of traces IDs corresponding to 
+  the meshes to export*/
+  void UpdateAllVectorTracesIDsToExportMeshes();
 
   /** \brief get the colors info from the database for the corresponding traces
   to export and write them in the output file*/

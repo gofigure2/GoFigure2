@@ -50,6 +50,8 @@
 #include "GoDBMeshRow.h"
 #include "GoDBTrackRow.h"
 #include "GoDBLineageRow.h"
+#include "GoDBChannelRow.h"
+#include "GoDBIntensityRow.h"
 
 
 //--------------------------------------------------------------------------
@@ -72,16 +74,8 @@ GoDBExport::~GoDBExport()
 //--------------------------------------------------------------------------
 void GoDBExport::ExportContours( )
 {
-  std::string NameDocXml = "ExportTraces";
-  int VersionNumber = 1;
+  this->WriteGeneraleInfo();
   this->OpenDBConnection();
-  this->m_outfile << "<?xml version=\"1.0\" ?>" << std::endl;
-  this->m_outfile << "<";
-  this->m_outfile << NameDocXml;
-  this->m_outfile << " version=\"";
-  this->m_outfile << VersionNumber;
-  this->m_outfile << "\">"<<std::endl;
-
   this->WriteOnTheOutputFile("imagingsession",this->GetImagingSessionInfoFromDB());
   this->UpdateAllVectorTracesIDsToExportContours();
   this->WriteTheColorsInfoFromDatabase();
@@ -92,7 +86,43 @@ void GoDBExport::ExportContours( )
   this->WriteMeshesInfoFromDatabase();
   this->WriteContoursInfoFromDatabase();
   this->CloseDBConnection();
-  this->m_outfile << this->GetNameWithSlashBrackets(NameDocXml);
+  this->m_outfile << this->GetNameWithSlashBrackets(this->m_NameDocXml);
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void GoDBExport::ExportMeshes()
+{
+  this->WriteGeneraleInfo();
+  this->OpenDBConnection();
+  this->WriteOnTheOutputFile("imagingsession",
+    this->GetImagingSessionInfoFromDB());
+  this->UpdateAllVectorTracesIDsToExportMeshes();
+  /** \todo add the channel info with the color*/
+  this->WriteTheColorsInfoFromDatabase();
+  this->WriteCellTypeAndSubCellTypeInfoFromDatabase();
+  this->WriteCoordinatesInfoFromDatabase();
+  this->WriteLineagesInfoFromDatabase();
+  this->WriteTracksInfoFromDatabase();
+  this->WriteMeshesInfoFromDatabase();
+  this->WriteIntensityInfoFromDatabase();
+  /** \todo add the intensity for the mesh*/
+  this->CloseDBConnection();
+  this->m_outfile << this->GetNameWithSlashBrackets(this->m_NameDocXml);
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void GoDBExport::WriteGeneraleInfo()
+{
+  this->m_NameDocXml = "ExportTraces";
+  int VersionNumber = 1;
+  this->m_outfile << "<?xml version=\"1.0\" ?>" << std::endl;
+  this->m_outfile << "<";
+  this->m_outfile << this->m_NameDocXml;
+  this->m_outfile << " version=\"";
+  this->m_outfile << VersionNumber;
+  this->m_outfile << "\">"<<std::endl;
 }
 //--------------------------------------------------------------------------
 
@@ -132,11 +162,36 @@ void GoDBExport::UpdateVectorContourIDsForExportContours()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+void GoDBExport::UpdateVectorContourIDsForExportMeshes()
+{
+  this->m_VectorContourIDs.clear();
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
 void GoDBExport::UpdateVectorMeshIDsForExportContours()
 {
   this->m_VectorMeshIDs = ListSpecificValuesForOneColumn(
     this->m_DatabaseConnector,"contour", "meshID","ContourID",
     this->m_VectorContourIDs,true,true);
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void GoDBExport::UpdateVectorMeshIDsForExportMeshes()
+{
+  this->m_VectorMeshIDs = FindSeveralIDs(this->m_DatabaseConnector,
+    "mesh", "MeshID","ImagingSessionID",
+    ConvertToString<int>(this->m_ImagingSessionID),"Points","0");
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void GoDBExport::UpdateVectorChannelIDsForExportMeshes()
+{
+  this->m_VectorChannelIDs = ListSpecificValuesForOneColumn(
+    this->m_DatabaseConnector,"channel", "ChannelID",
+    "ImagingSessionID",ConvertToString<int>(this->m_ImagingSessionID));
 }
 //--------------------------------------------------------------------------
 
@@ -171,6 +226,19 @@ void GoDBExport::UpdateAllVectorTracesIDsToExportContours()
   this->UpdateVectorMeshIDsForExportContours();
   this->UpdateVectorTrackIDsToExportInfo();
   this->UpdateVectorLineageIDsToExportInfo();
+  //no need for channel info when exporting contours at this time:
+  this->m_VectorChannelIDs.clear();
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void GoDBExport::UpdateAllVectorTracesIDsToExportMeshes()
+{
+  this->UpdateVectorContourIDsForExportMeshes();
+  this->UpdateVectorMeshIDsForExportMeshes();
+  this->UpdateVectorTrackIDsToExportInfo();
+  this->UpdateVectorLineageIDsToExportInfo();
+  this->UpdateVectorChannelIDsForExportMeshes();
 }
 //--------------------------------------------------------------------------
 
@@ -181,7 +249,7 @@ void GoDBExport::WriteTheColorsInfoFromDatabase()
   std::vector<std::string> FieldNames;
   std::vector<std::vector<std::string> > VectorTracesIDs;
   this->GetVectorsTableNamesTracesIDsAndFields(
-    TablesNames,VectorTracesIDs,FieldNames);
+    TablesNames,VectorTracesIDs,FieldNames,true);
   std::vector<std::string> ColumnNames(1);
   ColumnNames[0] = "ColorID";
   std::vector<std::string> ListColorIDs = GetSameFieldsFromSeveralTables(
@@ -244,7 +312,24 @@ void GoDBExport::WriteMeshesInfoFromDatabase()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+void GoDBExport::WriteChannelsInfoFromDatabase()
+{
+  this->WriteTableInfoFromDB<GoDBChannelRow>(this->m_VectorChannelIDs);
+}
+//--------------------------------------------------------------------------
 
+//--------------------------------------------------------------------------
+void GoDBExport::WriteIntensityInfoFromDatabase()
+{
+  std::vector<std::string> VectorIntensityIDs = 
+    GetSpecificValueFromOneTableWithConditionsOnTwoColumns(
+    this->m_DatabaseConnector,"IntensityID","intensity",
+    "MeshID",this->m_VectorMeshIDs,"ChannelID", this->m_VectorChannelIDs);
+  this->WriteTableInfoFromDB<GoDBIntensityRow>(VectorIntensityIDs);  
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
 void GoDBExport::WriteContoursInfoFromDatabase()
 {
   this->WriteTableInfoFromDB<GoDBContourRow>(m_VectorContourIDs);
@@ -333,7 +418,7 @@ void GoDBExport::CloseDBConnection()
 void GoDBExport::GetVectorsTableNamesTracesIDsAndFields( 
   std::vector<std::string> & ioVectorTableNames,
   std::vector<std::vector<std::string> > & ioVectorTracesIDs,
-  std::vector<std::string> & ioVectorFields)
+  std::vector<std::string> & ioVectorFields,bool IncludeChannelIDs)
 {
   if (!this->m_VectorContourIDs.empty())
     {
@@ -358,6 +443,15 @@ void GoDBExport::GetVectorsTableNamesTracesIDsAndFields(
     ioVectorTableNames.push_back("lineage");
     ioVectorFields.push_back("LineageID");
     ioVectorTracesIDs.push_back(this->m_VectorLineageIDs);
+    }
+  if(IncludeChannelIDs)
+    {
+    if(!this->m_VectorChannelIDs.empty())
+      {
+      ioVectorTableNames.push_back("channel");
+      ioVectorFields.push_back("ChannelID");
+      ioVectorTracesIDs.push_back(this->m_VectorChannelIDs);
+      }
     }
 }
 //--------------------------------------------------------------------------

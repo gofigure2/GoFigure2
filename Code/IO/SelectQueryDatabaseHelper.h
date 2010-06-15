@@ -112,6 +112,13 @@ int FindOneID(vtkMySQLDatabase* DatabaseConnector,
   std::string ColumnNameTwo,std::string valueTwo);
 
 //query: "SELECT ColumnName FROM TableName WHERE (field1 = value1
+//AND field2 = value2);
+std::vector<std::string> FindSeveralIDs(vtkMySQLDatabase* DatabaseConnector,
+  std::string TableName, std::string ColumnName,
+  std::string ColumnNameOne,std::string valueOne,
+  std::string ColumnNameTwo,std::string valueTwo);
+
+//query: "SELECT ColumnName FROM TableName WHERE (field1 = value1
 //AND field2 = value2 AND field3 = value3 AND field4 = value4);
 QGOIO_EXPORT
 int FindOneID(vtkMySQLDatabase* DatabaseConnector,
@@ -289,5 +296,13 @@ std::vector<std::string> GetSameFieldsFromSeveralTables(vtkMySQLDatabase* Databa
   std::vector<std::string> iColumnNames,std::vector<std::string> iVectorTablesNames,
   std::vector<std::string> iVectorConditionFieldNames,std::vector<std::vector<std::string> >
   iVectorConditionsValues);
+//query: SELECT iColumnName FROM TableName WHERE ( (iFieldOne = iVectorConditionFieldOne(i)
+// OR iFieldOne = iVectorConditionFieldOne(i+1...) AND (iFieldTwo = iVectorConditionFieldTwo(j) OR
+//iVectorConditionFieldTwo(j+1)... ) );
+QGOIO_EXPORT
+std::vector<std::string> GetSpecificValueFromOneTableWithConditionsOnTwoColumns(
+  vtkMySQLDatabase* DatabaseConnector,std::string iColumnName, std::string iTableName,
+  std::string iFieldOne,std::vector<std::string> iVectorConditionFieldOne,
+  std::string iFieldTwo,std::vector<std::string> iVectorConditionFieldTwo);
 
 #endif

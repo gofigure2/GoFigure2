@@ -1877,6 +1877,23 @@ void QGoPrintDatabase::ExportContours()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+void QGoPrintDatabase::ExportMeshes()
+{
+  QString p = QFileDialog::getSaveFileName(this,
+     tr( "Save Contour Export File" ),"",tr( "TextFile (*.txt)" ));
+  if ( ! p.isNull() )
+    {
+    QFileInfo pathInfo( p );
+    std::string filename = p.toStdString();
+
+    GoDBExport ExportHelper(this->m_Server,this->m_User,
+      this->m_Password,this->m_ImgSessionID,filename);
+     ExportHelper.ExportMeshes();
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 ContourMeshStructureMultiIndexContainer* QGoPrintDatabase::
   ImportContours(int iTimePoint)                                  
 {

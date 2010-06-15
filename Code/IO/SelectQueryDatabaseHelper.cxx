@@ -390,6 +390,56 @@ int FindOneID(vtkMySQLDatabase* DatabaseConnector,
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
+std::vector<std::string> FindSeveralIDs(vtkMySQLDatabase* DatabaseConnector,
+  std::string TableName, std::string ColumnName,
+  std::string ColumnNameOne,std::string valueOne,
+  std::string ColumnNameTwo,std::string valueTwo)
+{
+  std::vector<std::string> result;
+
+  vtkSQLQuery* query = DatabaseConnector->GetQueryInstance();
+  std::stringstream querystream;
+  querystream << "SELECT ";
+  querystream << ColumnName;
+  querystream << " FROM ";
+  querystream << TableName;
+  querystream << " WHERE (";
+  querystream << ColumnNameOne;
+  querystream << " = '";
+  querystream << valueOne;
+  querystream << "' AND ";
+  querystream << ColumnNameTwo;
+  querystream << " <> '";
+  querystream << valueTwo;
+  querystream << "');";
+
+  query->SetQuery( querystream.str().c_str() );
+  if ( !query->Execute() )
+    {
+    itkGenericExceptionMacro(
+      << "The FindOneID query failed"
+      << query->GetLastErrorText() );
+    DatabaseConnector->Close();
+    DatabaseConnector->Delete();
+    query->Delete();
+    return result;
+    }
+
+  while (query->NextRow())
+    {
+    for( int i = 0; i < query->GetNumberOfFields(); i++)
+      {
+      result.push_back( query->DataValue( i ).ToString() );
+      }
+    }
+
+  query->Delete();
+
+  return result;
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
 int FindOneID(vtkMySQLDatabase* DatabaseConnector,
   std::string TableName, std::string ColumnName,
   std::string ColumnNameOne,std::string valueOne,
@@ -671,6 +721,12 @@ std::vector<std::string> ListSpecificValuesForOneColumn(
   querystream << " FROM ";
   querystream << TableName;
   querystream << " WHERE (";
+  if (ExcludeZero)
+    {
+    querystream << ColumnName;
+    querystream << " <> 0 AND (";
+    }
+
   unsigned int i;
   for( i=0;i < VectorValues.size()-1; i++ )
     {
@@ -684,14 +740,12 @@ std::vector<std::string> ListSpecificValuesForOneColumn(
   querystream << VectorValues[i];
   //querystream << "');";  
   querystream << "'";
+  querystream << ")";
   if (ExcludeZero)
     {
-    querystream << " AND ";
-    querystream << ColumnName;
-    querystream << " <> 0";
+    querystream << ")";
     }
-  querystream << ")";
-
+  
   query->SetQuery( querystream.str().c_str() );
   if ( !query->Execute() )
     {
@@ -1813,3 +1867,72 @@ std::vector<std::string> GetSameFieldsFromSeveralTables(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+//SELECT iColumnName FROM TableName WHERE ( (iFieldOne = iVectorConditionFieldOne(i)
+// OR iFieldOne = iVectorConditionFieldOne(i+1...) AND (iFieldTwo = iVectorConditionFieldTwo(j) OR
+//iVectorConditionFieldTwo(j+1)... ) );
+std::vector<std::string> GetSpecificValueFromOneTableWithConditionsOnTwoColumns(
+  vtkMySQLDatabase* DatabaseConnector,std::string iColumnName, std::string iTableName,
+  std::string iFieldOne,std::vector<std::string> iVectorConditionFieldOne, 
+  std::string iFieldTwo,std::vector<std::string> iVectorConditionFieldTwo)
+{
+  std::vector< std::string > result;
+  vtkSQLQuery* query = DatabaseConnector->GetQueryInstance();
+
+  std::stringstream querystream;
+  querystream << "SELECT ";
+  querystream << iColumnName;
+  querystream << " FROM ";
+  querystream << iTableName;
+  querystream << " WHERE ((";
+  unsigned int i = 0;
+  while ( i < iVectorConditionFieldOne.size()-1 )
+    {
+    querystream << iFieldOne;
+    querystream << " = '";
+    querystream << iVectorConditionFieldOne.at(i);
+    querystream << "' OR ";
+    i++;
+    }
+  querystream << iFieldOne;
+  querystream << " = '";
+  querystream << iVectorConditionFieldOne.at(i);
+  querystream << "') AND (";
+
+  unsigned j = 0;
+  while(j<iVectorConditionFieldTwo.size()-1)
+    {
+    querystream << iFieldTwo;
+    querystream << " = '";
+    querystream << iVectorConditionFieldTwo.at(j);
+    querystream << "' OR ";
+    j++;
+    }
+  querystream << iFieldTwo;
+  querystream << " = '";
+  querystream << iVectorConditionFieldTwo.at(j);
+  querystream << "'))";
+  
+  query->SetQuery( querystream.str().c_str() );
+  if ( !query->Execute() )
+    {
+    itkGenericExceptionMacro(
+      << "GetSpecificValueFromOneTableWithConditionsOnTwoColumns query failed"
+      << query->GetLastErrorText() );
+    DatabaseConnector->Close();
+    DatabaseConnector->Delete();
+    query->Delete();
+    return result;
+    }
+
+  while (query->NextRow())
+    {
+    for( int k = 0; k < query->GetNumberOfFields(); k++)
+      {
+      result.push_back( query->DataValue( k ).ToString() );
+      }
+    }
+
+  query->Delete();
+
+  return result; 
+}

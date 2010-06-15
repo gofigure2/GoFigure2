@@ -245,6 +245,7 @@ public slots:
   std::string GetNameNewSubCellType();
   void SetTable(std::string iTablename);
   void ExportContours();
+  void ExportMeshes();
 
 signals:
   void PrintDBReady();
