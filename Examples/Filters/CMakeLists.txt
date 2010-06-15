@@ -48,14 +48,14 @@ SET_TESTS_PROPERTIES( itkBinaryMaskImageToGoFigureMeshAttributesTest
   itkvtkPolyDatatoBinaryMaskImageFilterTest
 )
 
-ADD_EXECUTABLE( ContourToMeshFilterTest
-  ContourToMeshFilterTest.cxx
-  )
-TARGET_LINK_LIBRARIES( ContourToMeshFilterTest
-  vtkHybrid
-  ITKCommon
-  )
-
+# ADD_EXECUTABLE( ContourToMeshFilterTest
+#   ContourToMeshFilterTest.cxx
+#   )
+# TARGET_LINK_LIBRARIES( ContourToMeshFilterTest
+#   vtkHybrid
+#   ITKCommon
+#   )
+# 
 #ADD_TEST( ContourToMeshFilterTest
 #  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/ContourToMeshFilterTest
 #  )

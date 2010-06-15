@@ -10,6 +10,8 @@
 #include "vtkImageStencil.h"
 #include "vtkMarchingCubes.h"
 #include "vtkImageData.h"
+#include <../../../GITROOT/FORK/VTK/Common/vtkMath.h>
+#include <../../../GITROOT/FORK/VTK/Common/vtkSmartPointer.h>
 
 namespace itk
 {
@@ -54,70 +56,72 @@ class ContourToMeshFilter : public LightObject
         vtkSmartPointer< vtkAppendPolyData > append =
           vtkSmartPointer< vtkAppendPolyData >::New();
 
+        // compute center of mass
         ContainerConstIterator it = iContainer.begin();
 
+        double center[3];
+        center[0] = 0.;
+        center[1] = 0.;
+        center[2] = 0.;
+        vtkIdType counter = 0;
+      
         while( it != iContainer.end() )
           {
           append->AddInput( *it );
+          for( vtkIdType k = 0; k < (*it)->GetNumberOfPoints(); ++k )
+            {
+            (*it)->GetPoint( k, p );
+            center[0] += p[0];
+            center[1] += p[1];
+            center[2] += p[2];
+            ++counter;
+            }
           ++it;
           }
+
+        center[0] /= static_cast< double >( counter );
+        center[1] /= static_cast< double >( counter );
+        center[2] /= static_cast< double >( counter );
+
         append->Update();
-
-        vtkSmartPointer< vtkImageData > binary_image =
-          vtkSmartPointer< vtkImageData >::New();
-        binary_image->SetScalarTypeToUnsignedChar();
+        vtkSmartPointer< vtkPolyData > input = append->GetOutput();
+        vtkSmartPointer< vtkFloatArray > normals =
+          vtkSmartPointer< vtkFloatArray >::New();
+        normals->Allocate( 3 * counter );
+        normals->SetNumberOfTuples( counter );
+        normals->SetNumberOfComponents( 3 );
+        normals->SetName( "Normals" );
         
-        vtkSmartPointer< vtkLinearExtrusionFilter > extrude =
-          vtkSmartPointer< vtkLinearExtrusionFilter >::New();
-        extrude->SetInput( append->GetOutput() );
-        extrude->SetVector( m_Spacing );
-        extrude->CappingOn();
-        extrude->Update();
-
-        vtkSmartPointer< vtkPolyDataToImageStencil > stencil_converter =
-          vtkSmartPointer< vtkPolyDataToImageStencil >::New();
-        vtkSmartPointer< vtkImageStencil > stencil =
-          vtkSmartPointer< vtkImageStencil >::New();
-        stencil_converter->SetInput( extrude->GetOutput() );
-        stencil_converter->SetTolerance( 0 );
-        stencil_converter->SetInformationInput( m_Image );
-        stencil_converter->Update();
-
-        stencil->SetStencil( stencil_converter->GetOutput() );
-        stencil->SetInput( m_Image );
-
-        vtkSmartPointer< vtkMarchingCubes > mc =
-          vtkSmartPointer< vtkMarchingCubes >::New();
-        mc->SetInput( stencil->GetOutput() );
-        mc->SetValue( 0., 0.5 );
-        mc->Update();
-
-        if( !m_Output )
+        for( vtkIdType k = 0; k < input->GetNumberOfPoints(); ++k )
           {
-          m_Output = vtkPolyData::New();
+          input->GetPoint( k, p );
+          n[0] = p[0] - center[0];
+          n[1] = p[1] - center[1];
+          n[2] = p[2] - center[2];
+          vtkMath::Normalize( n );
+          normals->SetTuple( k, n );
           }
-        m_Output->ShallowCopy( mc->GetOutput() );
-        }
-    }
+          
+        // compute normal of the contour
+        input->GetPointData()->SetNormals( normals );
 
-    vtkPolyData* GetOutput()
-    {
-      return m_Output;
-    }
+        // run the Poisson Reconstruction
+        vtkSmartPointer< vtkPoissonReconstruction > poissonFilter =
+          vtkSmartPointer< vtkPoissonReconstruction >::New();
+        poissonFilter->SetInput( input );
+        poissonFilter->SetDepth( 7 );
+        poissonFilter->Update();
+
+        m_Output = poissonFilter->GetOutput();
+        }
     
   protected:
     ContourToMeshFilter() : m_Image( NULL ), m_Output( NULL )
     {
-      m_Spacing[0] = 0.;
-      m_Spacing[1] = 0.;
-      m_Spacing[2] = 0.;
     }
     ~ContourToMeshFilter() {}
 
-    vtkImageData* m_Image;
     vtkPolyData* m_Output;
-
-    double m_Spacing[3];
 };
 }
 #endif
