@@ -137,8 +137,7 @@ OnMouseMove()
       break;
   }
 
-  // might be useful....
-  //this->Superclass::OnMouseMove();
+  this->Superclass::OnMouseMove();
 
   //Update image information (pixel position and value)
   this->InvokeEvent(vtkViewImage2DCommand::InteractionEvent, this);
