@@ -85,7 +85,7 @@ signals:
   void ApplyFilterPressed();
 
   // Change Mode
-  void UpdateInteractorBehaviour( bool );
+  void UpdateInteractorBehavior( bool );
 
 public slots:
   void UpdateWidget( int );

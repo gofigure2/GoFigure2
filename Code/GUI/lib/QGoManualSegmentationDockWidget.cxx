@@ -131,7 +131,7 @@ UpdateWidget( int iModeSelected )
     default :
       break;
     }
-  emit this->UpdateInteractorBehaviour( true );
+  emit this->UpdateInteractorBehavior( true );
 }
 //---------------------------------------------------------------------------//
 
