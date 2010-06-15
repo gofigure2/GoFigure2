@@ -179,10 +179,24 @@ public:
    */
   void ContourPickingMode();
   /**
+   * \brief Enable the contour picking interactor style
+   */
+  void EnableContourPickingMode();
+  /**
+   * \brief Disable the contour picking interactor style
+   */
+  void DisableContourPickingMode();
+  /**
    * \brief Use the mesh picking interactor style
    */
   void MeshPickingMode();
-
+  /**
+   * \brief Disable the mesh picking interactor style
+   */
+  void DisableMeshPickingMode();
+  /**
+   * \brief Creates a box in 3d view to allow multiple meshes selection
+   */
   void SetBox3DPicking( bool );
 
 

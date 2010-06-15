@@ -525,6 +525,7 @@ MeshPickingInteractorBehavior( bool iVisible)
   // check in which mode we are
   if( iVisible )
     {
+    std::cout << "calls meshpicking mode..." << std::endl;
     this->m_ImageView->MeshPickingMode();
     }
 }

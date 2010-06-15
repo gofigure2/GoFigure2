@@ -127,6 +127,16 @@ class VTK_RENDERINGADDON2_EXPORT vtkInteractorStyleImage2D :
 
   virtual void DefaultMoveAction();
 
+  /*
+   * \brief Highlights the actor which is pointed by the mouse
+   */
+  void HighlightCurrentActor();
+
+  /*
+   * \brief Remove bounding boxes when we leave picking mode
+   */
+  virtual void EndPick();
+
 
   vtkGetMacro( SliceStep, int );
   int* GetRequestedPosition(void)
@@ -150,9 +160,6 @@ class VTK_RENDERINGADDON2_EXPORT vtkInteractorStyleImage2D :
   unsigned int RightButtonInteraction;
   unsigned int MiddleButtonInteraction;
   unsigned int WheelButtonInteraction;
-
-  bool m_EnablePickingMode;
-
 };
 
 #endif

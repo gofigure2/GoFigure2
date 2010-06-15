@@ -73,6 +73,10 @@
 
 #include <vtkProp.h>
 
+// For picking
+#include "vtkAbstractPropPicker.h"
+#include "vtkAssemblyPath.h"
+
 vtkCxxRevisionMacro (vtkInteractorStyleImage3D, "$Revision: 1 $");
 vtkStandardNewMacro (vtkInteractorStyleImage3D);
 
@@ -82,14 +86,28 @@ vtkInteractorStyleImage3D()
 {
   m_EnablePickingMode = false;
 }
-//----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------
 vtkInteractorStyleImage3D::
 ~vtkInteractorStyleImage3D()
 {
 }
-//--------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------
+void
+vtkInteractorStyleImage3D::
+OnMouseMove()
+{
+  std::cout << "in mouse move: " << this->State << std::endl;
+  switch (this->State)
+    {
+      case VTKIS_PICK3D:
+        HighlightCurrentActor();
+        break;
+    }
+
+  this->Superclass::OnMouseMove();
+}
 //----------------------------------------------------------------------------
 void
 vtkInteractorStyleImage3D::
@@ -210,4 +228,69 @@ vtkInteractorStyleImage3D::
 InvokeEventTest()
 {
   this->InvokeEvent(vtkViewImage3DCommand::ReadyEvent);
+}
+//----------------------------------------------------------------------------
+void
+vtkInteractorStyleImage3D::
+StartPick()
+{
+  std::cout << "state: " << this->State << std::endl;
+  if (this->State != VTKIS_NONE)
+    {
+    return;
+    }
+  this->StartState(VTKIS_PICK3D);
+  std::cout << "state: " << this->State << std::endl;
+  this->InvokeEvent(vtkCommand::StartPickEvent, this);
+}
+
+//----------------------------------------------------------------------------
+void
+vtkInteractorStyleImage3D::
+EndPick()
+{
+  // Remove boxes in view
+  this->HighlightProp(NULL);
+  this->PropPicked = 0;
+
+  if (this->State != VTKIS_PICK3D)
+    {
+    return;
+    }
+  this->InvokeEvent(vtkCommand::EndPickEvent, this);
+  this->StopState();
+}
+//----------------------------------------------------------------------------
+void
+vtkInteractorStyleImage3D::
+HighlightCurrentActor()
+{
+  std::cout << "in highlight" << std::endl;
+  vtkRenderWindowInteractor *rwi = this->Interactor;
+  if(this->CurrentRenderer!=0)
+    {
+      vtkAssemblyPath *path = NULL;
+      int *eventPos = rwi->GetEventPosition();
+      this->FindPokedRenderer(eventPos[0], eventPos[1]);
+      rwi->StartPickCallback();
+      vtkAbstractPropPicker *picker =
+        vtkAbstractPropPicker::SafeDownCast(rwi->GetPicker());
+      if ( picker != NULL )
+        {
+        picker->Pick(eventPos[0], eventPos[1],
+                     0.0, this->CurrentRenderer);
+        path = picker->GetPath();
+        }
+      if ( path == NULL )
+        {
+        this->HighlightProp(NULL);
+        this->PropPicked = 0;
+        }
+      else
+        {
+        this->HighlightProp(path->GetFirstNode()->GetViewProp());
+        this->PropPicked = 1;
+        }
+      rwi->EndPickCallback();
+    }
 }

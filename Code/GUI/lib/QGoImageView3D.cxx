@@ -1270,6 +1270,8 @@ QGoImageView3D::
 DefaultMode()
 {
   DisableOneClickMode();
+  DisableContourPickingMode();
+  DisableMeshPickingMode();
   //Change cursor
   this->QvtkWidget_XY->setCursor( Qt::ArrowCursor );
   this->QvtkWidget_XZ->setCursor( Qt::ArrowCursor );
@@ -1302,6 +1304,8 @@ QGoImageView3D::
 ZoomMode()
 {
   DisableOneClickMode();
+  DisableContourPickingMode();
+  DisableMeshPickingMode();
   //Change cursors
   QCursor zoomCursor(QPixmap(QString::fromUtf8(":/fig/zoom.png")),-1,-1);
   this->QvtkWidget_XY->setCursor( zoomCursor );
@@ -1325,6 +1329,8 @@ QGoImageView3D::
 PanMode()
 {
   DisableOneClickMode();
+  DisableContourPickingMode();
+  DisableMeshPickingMode();
   //Change cursor
   this->QvtkWidget_XY->setCursor( Qt::OpenHandCursor );
   this->QvtkWidget_XZ->setCursor( Qt::OpenHandCursor );
@@ -1347,6 +1353,8 @@ void
 QGoImageView3D::
 OneClickMode()
 {
+  DisableContourPickingMode();
+  DisableMeshPickingMode();
   //Reinitialize cursor interaction
   DefaultMode();
   /*vtkViewImage2D* View1 = this->m_Pool->GetItem( 0 );
@@ -1450,20 +1458,39 @@ ContourPickingMode()
   this->QvtkWidget_XZ->setCursor( Qt::ArrowCursor );
   this->QvtkWidget_YZ->setCursor( Qt::ArrowCursor );
 
-  vtkViewImage2D* View1 = this->m_Pool->GetItem( 0 );
-  View1->SetInteractionStyle(
-      vtkInteractorStyleImage2D::InteractionTypeContourPicking );
-
-  vtkViewImage2D* View2 = this->m_Pool->GetItem( 1 );
-  View2->SetInteractionStyle(
-      vtkInteractorStyleImage2D::InteractionTypeContourPicking );
-
-  vtkViewImage2D* View3 = this->m_Pool->GetItem( 2 );
-  View3->SetInteractionStyle(
-      vtkInteractorStyleImage2D::InteractionTypeContourPicking );
+  EnableContourPickingMode();
 }
 //-------------------------------------------------------------------------
+void
+QGoImageView3D::
+EnableContourPickingMode()
+{
+  for( int i=0; i<3; i++)
+    {
+    vtkViewImage2D* View = this->m_Pool->GetItem( i );
+      View->SetInteractionStyle(
+        vtkInteractorStyleImage2D::InteractionTypeContourPicking );
+    vtkInteractorStyleImage2D* t = vtkInteractorStyleImage2D::SafeDownCast (View->GetInteractorStyle());
+    if (t)
+      t->StartPick();
+    }
+}
 
+//-------------------------------------------------------------------------
+void
+QGoImageView3D::
+DisableContourPickingMode()
+{
+  for( int i=0; i<3; i++)
+    {
+    vtkViewImage2D* View = this->m_Pool->GetItem( i );
+      View->SetInteractionStyle(
+        vtkInteractorStyleImage2D::InteractionTypeContourPicking );
+    vtkInteractorStyleImage2D* t = vtkInteractorStyleImage2D::SafeDownCast (View->GetInteractorStyle());
+    if (t)
+      t->EndPick();
+    }
+}
 //-------------------------------------------------------------------------
 std::list< vtkProp3D* >
 QGoImageView3D::
@@ -1492,10 +1519,26 @@ QGoImageView3D::
 MeshPickingMode()
 {
   DisableOneClickMode();
+  DisableContourPickingMode();
+
+  std::cout << "in mesh picking" << std::endl;
   //Change cursor
   this->QvtkWidget_XY->setCursor( Qt::ArrowCursor );
   this->QvtkWidget_XZ->setCursor( Qt::ArrowCursor );
   this->QvtkWidget_YZ->setCursor( Qt::ArrowCursor );
+
+  vtkInteractorStyleImage3D* t = m_View3D->GetInteractorStyle3D();
+  if (t)
+    t->StartPick();
+}
+
+void
+QGoImageView3D::
+DisableMeshPickingMode()
+{
+  vtkInteractorStyleImage3D* t = m_View3D->GetInteractorStyle3D();
+  if (t)
+    t->EndPick();
 }
 //-------------------------------------------------------------------------
 std::list< vtkProp3D* >

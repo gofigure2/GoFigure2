@@ -95,8 +95,6 @@ vtkInteractorStyleImage2D()
   this->RightButtonInteraction  = InteractionTypeZoom;
   this->MiddleButtonInteraction = InteractionTypePan;
   this->WheelButtonInteraction  = InteractionTypeSlice;
-
-  this->m_EnablePickingMode = false;
 }
 //----------------------------------------------------------------------------
 
@@ -134,15 +132,17 @@ OnMouseMove()
     case VTKIS_REVERSEFLY:
       this->InvokeEvent(vtkViewImage2DCommand::CameraMoveEvent, this);
       break;
-    default:
-      this->Superclass::OnMouseMove();
-    break;
+    case VTKIS_PICK:
+      HighlightCurrentActor();
+      break;
   }
+
+  // might be useful....
+  //this->Superclass::OnMouseMove();
 
   //Update image information (pixel position and value)
   this->InvokeEvent(vtkViewImage2DCommand::InteractionEvent, this);
 }
-//----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------
 void
@@ -168,8 +168,7 @@ OnLeftButtonDown()
        this->StartSliceMove();
      }
   }
-  // if one actor is selected (i.e. pressing "p" or "P")
-  else if ( m_EnablePickingMode )
+  else if ( this->State == VTKIS_PICK )
     {
     this->InvokeEvent(vtkViewImage2DCommand::ContourPickingEvent);
     this->Superclass::OnLeftButtonDown();
@@ -206,7 +205,6 @@ OnLeftButtonDown()
   this->Superclass::OnLeftButtonDown();
 
 }
-//----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------
 void
@@ -244,7 +242,6 @@ OnLeftButtonUp()
   // Call parent to handle all other states and perform additional work
   this->Superclass::OnLeftButtonUp();
 }
-//----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------
 void
@@ -290,7 +287,6 @@ OnMiddleButtonDown()
   // Call parent to handle all other states and perform additional work
   this->Superclass::OnMiddleButtonDown();
 }
-//----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------
 void
@@ -327,7 +323,6 @@ OnMiddleButtonUp()
   // Call parent to handle all other states and perform additional work
   this->Superclass::OnMiddleButtonUp();
 }
-//----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------
 void
@@ -359,7 +354,6 @@ OnRightButtonDown()
   // Call parent to handle all other states and perform additional work
   this->Superclass::OnRightButtonDown();
 }
-//----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------
 void
@@ -397,7 +391,6 @@ OnRightButtonUp()
   // Call parent to handle all other states and perform additional work
   this->Superclass::OnRightButtonUp();
 }
-//----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------
 void
@@ -433,7 +426,6 @@ OnMouseWheelForward()
       break;
   }
 }
-//----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------
 void
@@ -468,7 +460,6 @@ OnMouseWheelBackward()
       break;
   }
 }
-//----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------
 void
@@ -500,14 +491,9 @@ OnChar()
     {
       this->InvokeEvent (vtkViewImage2DCommand::ResetViewerEvent, this);
     }
-  else if ((rwi->GetKeyCode() == 'p') || (rwi->GetKeyCode() == 'P'))
-    {
-      this->m_EnablePickingMode = true;
-    }
 
   this->Superclass::OnChar();
 }
-//----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------
 void
@@ -538,15 +524,9 @@ OnKeyUp()
     {
     this->InvokeEvent (vtkViewImage2DCommand::ResetWindowLevelEvent, this );
     }
-  else if ((rwi->GetKeyCode() == 'p') || (rwi->GetKeyCode() == 'P'))
-    {
-    this->m_EnablePickingMode = false;
-    }
-
 
   this->Superclass::OnKeyUp();
 }
-//----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------
 void
@@ -555,7 +535,6 @@ OnKeyPress()
 {
   this->Superclass::OnKeyPress();
 }
-//----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------
 void
@@ -564,7 +543,6 @@ OnKeyRelease()
 {
   this->Superclass::OnKeyRelease();
 }
-//----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------
 void
@@ -578,7 +556,6 @@ StartSliceMove()
   this->StartState(VTKIS_SLICE_MOVE);
   this->InvokeEvent(vtkViewImage2DCommand::StartSliceMoveEvent, this);
 }
-//----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------
 void
@@ -592,7 +569,6 @@ EndSliceMove()
   this->StopState();
   this->InvokeEvent(vtkViewImage2DCommand::EndSliceMoveEvent, this);
 }
-//----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------
 void
@@ -605,7 +581,6 @@ SliceMove()
   }
   this->InvokeEvent(vtkViewImage2DCommand::SliceMoveEvent, this);
 }
-//----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------
 void
@@ -620,7 +595,6 @@ OnKeyDown(void)
   this->OnChar();
   this->Superclass::OnKeyDown();
 }
-//----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------
 void
@@ -629,7 +603,6 @@ DefaultMoveAction()
 {
   this->InvokeEvent (vtkViewImage2DCommand::DefaultMoveEvent ,this);
 }
-//----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------
 void
@@ -638,7 +611,6 @@ SetLeftButtonInteraction( InteractionTypeIds interactionType)
 {
   LeftButtonInteraction = interactionType;
 }
-//----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------
 void
@@ -647,7 +619,6 @@ SetRightButtonInteraction( InteractionTypeIds interactionType)
 {
   RightButtonInteraction = interactionType;
 }
-//----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------
 void
@@ -656,7 +627,6 @@ SetMiddleButtonInteraction( InteractionTypeIds interactionType)
 {
   MiddleButtonInteraction = interactionType;
 }
-//----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------
 void
@@ -665,7 +635,6 @@ SetWheelButtonInteraction( InteractionTypeIds interactionType)
 {
   WheelButtonInteraction = interactionType;
 }
-//----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------
 vtkProp*
@@ -673,4 +642,48 @@ vtkInteractorStyleImage2D::
 GetCurrentProp()
 {
   return this->CurrentProp;
+}
+
+//----------------------------------------------------------------------------
+void
+vtkInteractorStyleImage2D::
+HighlightCurrentActor()
+{
+  vtkRenderWindowInteractor *rwi = this->Interactor;
+  if(this->CurrentRenderer!=0)
+    {
+      vtkAssemblyPath *path = NULL;
+      int *eventPos = rwi->GetEventPosition();
+      this->FindPokedRenderer(eventPos[0], eventPos[1]);
+      rwi->StartPickCallback();
+      vtkAbstractPropPicker *picker =
+        vtkAbstractPropPicker::SafeDownCast(rwi->GetPicker());
+      if ( picker != NULL )
+        {
+        picker->Pick(eventPos[0], eventPos[1],
+                     0.0, this->CurrentRenderer);
+        path = picker->GetPath();
+        }
+      if ( path == NULL )
+        {
+        this->HighlightProp(NULL);
+        this->PropPicked = 0;
+        }
+      else
+        {
+        this->HighlightProp(path->GetFirstNode()->GetViewProp());
+        this->PropPicked = 1;
+        }
+      rwi->EndPickCallback();
+    }
+}
+
+//----------------------------------------------------------------------------
+void
+vtkInteractorStyleImage2D::
+EndPick()
+{
+  this->HighlightProp(NULL);
+  this->PropPicked = 0;
+  this->Superclass::EndPick();
 }

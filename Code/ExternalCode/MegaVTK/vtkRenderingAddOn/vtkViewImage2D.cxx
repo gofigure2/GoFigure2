@@ -1378,6 +1378,4 @@ void vtkViewImage2D::UpdateCursor (void)
     this->GetValueAtPosition (this->CurrentPoint)
     );
   this->CornerAnnotation->SetText(2, os);
-
-
 }

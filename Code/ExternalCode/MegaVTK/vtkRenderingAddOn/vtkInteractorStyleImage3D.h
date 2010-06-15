@@ -73,6 +73,10 @@
 
 class vtkProp;
 
+//MOTION FLAG
+#define VTKIS_PICK3D         1050
+
+
 class VTK_RENDERINGADDON2_EXPORT vtkInteractorStyleImage3D :
   public vtkInteractorStyleTrackballCamera
 {
@@ -100,6 +104,7 @@ class VTK_RENDERINGADDON2_EXPORT vtkInteractorStyleImage3D :
   void SetWheelButtonInteraction( InteractionTypeIds );
   vtkGetMacro (WheelButtonInteraction, unsigned int);
 
+  virtual void OnMouseMove();
   virtual void OnLeftButtonDown();
   virtual void OnChar();
   virtual void OnKeyUp();
@@ -108,6 +113,11 @@ class VTK_RENDERINGADDON2_EXPORT vtkInteractorStyleImage3D :
   vtkProp* GetCurrentProp();
 
   void InvokeEventTest();
+
+  void StartPick();
+  void EndPick();
+
+  void HighlightCurrentActor();
 
  protected:
   vtkInteractorStyleImage3D();
