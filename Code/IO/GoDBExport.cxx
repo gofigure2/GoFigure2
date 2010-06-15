@@ -105,6 +105,7 @@ void GoDBExport::ExportMeshes()
   this->WriteLineagesInfoFromDatabase();
   this->WriteTracksInfoFromDatabase();
   this->WriteMeshesInfoFromDatabase();
+  this->WriteChannelsInfoFromDatabase();
   this->WriteIntensityInfoFromDatabase();
   /** \todo add the intensity for the mesh*/
   this->CloseDBConnection();
