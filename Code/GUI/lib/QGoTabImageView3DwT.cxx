@@ -3329,8 +3329,7 @@ ApplyOneClickSegmentationFilter()
   // Check the filter to be applied
   // 0 = circle contours (sphere aspect)
   // 1 = sphere ( 3D volume - no contours)
-  // 2 = levelset in 2D
-  // 3 = levelset in 3D
+  // 2 = levelset in 3D
   int filterToBeApplied = this->m_OneClickSegmentationDockWidget->GetFilter();
 
   switch ( filterToBeApplied )
@@ -3370,7 +3369,7 @@ OneClickSphereContours()
   // Initialize the segmentation
   QGoSeedsSegmentation seedsSegmentation;
   seedsSegmentation.setRadius(
-      m_ManualSegmentationDockWidget->GetRadius() );
+      m_OneClickSegmentationDockWidget->GetRadius() );
   seedsSegmentation.setOriginImageInformation(
       this->m_ImageView->GetImageViewer(0));
 
@@ -3423,7 +3422,7 @@ OneClickSphereMeshes()
   // Initialize the segmentation
   QGoSeedsSegmentation seedsSegmentation;
   seedsSegmentation.setRadius(
-      m_ManualSegmentationDockWidget->GetRadius() );
+      m_OneClickSegmentationDockWidget->GetRadius() );
 
   // Create "spheres" for all the points
   for( int i = 0; i < m_SeedsWorldPosition->GetNumberOfPoints(); i++ )
@@ -3515,11 +3514,11 @@ LevelSetSegmentation3D()
   QGoSeedsSegmentation seedsSegmentation;
   seedsSegmentation.setInputVolume( inputVolume );
   seedsSegmentation.setRadius(
-      m_ManualSegmentationDockWidget->GetRadius() );
+      m_OneClickSegmentationDockWidget->GetRadius() );
   seedsSegmentation.setNumberOfIterations(
-      m_ManualSegmentationDockWidget->GetNumberOfIterations() );
+      m_OneClickSegmentationDockWidget->GetNumberOfIterations() );
   seedsSegmentation.setCurvatureWeight(
-      m_ManualSegmentationDockWidget->GetCurvatureWeight() );
+      m_OneClickSegmentationDockWidget->GetCurvatureWeight() );
 
   // Apply filter for each seed
   for( int i = 0; i < m_SeedsWorldPosition->GetNumberOfPoints(); i++ )

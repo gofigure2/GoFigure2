@@ -42,6 +42,7 @@
 
 #include <QColorDialog>
 #include <cstdlib>
+#include <iostream>
 
 //---------------------------------------------------------------------------//
 QGoOneClickSegmentationDockWidget::
