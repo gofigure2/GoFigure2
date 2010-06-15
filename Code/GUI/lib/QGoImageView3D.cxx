@@ -1453,6 +1453,7 @@ QGoImageView3D::
 ContourPickingMode()
 {
   DisableOneClickMode();
+  DisableMeshPickingMode();
   //Change cursor
   this->QvtkWidget_XY->setCursor( Qt::ArrowCursor );
   this->QvtkWidget_XZ->setCursor( Qt::ArrowCursor );
@@ -1532,6 +1533,7 @@ MeshPickingMode()
     t->StartPick();
 }
 
+//-------------------------------------------------------------------------
 void
 QGoImageView3D::
 DisableMeshPickingMode()
@@ -1540,6 +1542,7 @@ DisableMeshPickingMode()
   if (t)
     t->EndPick();
 }
+
 //-------------------------------------------------------------------------
 std::list< vtkProp3D* >
 QGoImageView3D::
@@ -1547,6 +1550,7 @@ GetListOfModifiedActors3D()
 {
   return this->m_View3D->GetCommand()->GetListOfModifiedActors();
 }
+
 //-------------------------------------------------------------------------
 void
 QGoImageView3D::
