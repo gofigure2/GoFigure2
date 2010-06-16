@@ -113,6 +113,7 @@ OnMouseMove()
 
   this->Superclass::OnMouseMove();
 }
+
 //----------------------------------------------------------------------------
 void
 vtkInteractorStyleImage3D::
@@ -121,8 +122,16 @@ OnLeftButtonDown()
   // if object is picked, send the event
   if( m_EnablePickingMode )
     {
+    //if no actor selected = change state
+    if (this->PropPicked == 0)
+      this->StopState();
+    }
+
+  if(this->State == VTKIS_PICK3D)
+    {
     this->SetCurrentProp();
     this->InvokeEvent(vtkViewImage3DCommand::MeshPickingEvent);
+    return;
     }
 
   if( m_EnableBoxSelectionMode )
@@ -133,7 +142,54 @@ OnLeftButtonDown()
   // Call parent to handle all other states and perform additional work
   this->Superclass::OnLeftButtonDown();
 }
+
 //----------------------------------------------------------------------------
+void
+vtkInteractorStyleImage3D::
+OnLeftButtonUp()
+{
+  // if object is picked, send the event
+  if( m_EnablePickingMode )
+    {
+    //if no actor selected = change state
+    this->StartState( VTKIS_PICK3D);
+    }
+
+  // Call parent to handle all other states and perform additional work
+  this->Superclass::OnLeftButtonUp();
+}
+
+//----------------------------------------------------------------------------
+void
+vtkInteractorStyleImage3D::
+OnRightButtonDown()
+{
+  // if object is picked, send the event
+  if( m_EnablePickingMode )
+    {
+    this->StopState();
+    }
+
+  // Call parent to handle all other states and perform additional work
+  this->Superclass::OnRightButtonDown();
+}
+
+//----------------------------------------------------------------------------
+void
+vtkInteractorStyleImage3D::
+OnRightButtonUp()
+{
+  // if object is picked, send the event
+  if( m_EnablePickingMode )
+    {
+    //if no actor selected = change state
+    this->StartState( VTKIS_PICK3D);
+    }
+
+  // Call parent to handle all other states and perform additional work
+  this->Superclass::OnRightButtonUp();
+}
+
 //----------------------------------------------------------------------------
 void
 vtkInteractorStyleImage3D::
@@ -292,8 +348,18 @@ HighlightCurrentActor()
         }
       else
         {
-        this->HighlightProp(path->GetFirstNode()->GetViewProp());
-        this->PropPicked = 1;
+        // Check dimensionality
+        double* bounds = path->GetFirstNode()->GetViewProp()->GetBounds();
+        if( bounds[0] != bounds[1] && bounds[2] != bounds[3] && bounds[4] != bounds[5])
+          {
+          this->HighlightProp(path->GetFirstNode()->GetViewProp());
+          this->PropPicked = 1;
+          }
+        else
+          {
+          this->HighlightProp(NULL);
+          this->PropPicked = 0;
+          }
         }
       rwi->EndPickCallback();
     }
