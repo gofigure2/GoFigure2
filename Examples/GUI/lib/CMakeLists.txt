@@ -174,6 +174,12 @@ ADD_TEST( qgotabimageview3dwtTest2
   ${GOFIGURE2_BINARY_DIR}/Testing/earpax2isl11/earpax2isl11.lsm-PL00-CO00-RO00-ZT00-YT00-XT00-TM0000-ch00-zs0000.png
 )
 
+SET_TESTS_PROPERTIES( qgotabimageview3dwtTest2
+  PROPERTIES DEPENDS
+  lsmtomegacaptureTest
+)
+
+
 ADD_TEST( QGoSynchronizedView2DTest
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/QGoSynchronizedView2DTest
   ${TESTING_DATA_PATH}/Circle.png
