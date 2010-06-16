@@ -160,6 +160,18 @@ QGoImageView3D::~QGoImageView3D()
   delete HtSplitter;
   delete HbSplitter;
 
+  std::vector< vtkSeedWidget* >::iterator  seedWidgetIterator = SeedWidget.begin();
+  for(; seedWidgetIterator < SeedWidget.end(); seedWidgetIterator++)
+     (*seedWidgetIterator)->Delete();
+
+  std::vector< vtkConstrainedPointHandleRepresentation* >::iterator  handleIterator = Handle.begin();
+  for(; handleIterator < Handle.end(); handleIterator++)
+       (*handleIterator)->Delete();
+
+  std::vector< vtkSeedRepresentation* >::iterator  seedIterator = SeedRep.begin();
+  for(; seedIterator < SeedRep.end(); seedIterator++)
+       (*seedIterator)->Delete();
+
   // note m_Pool is supposed to be deleted in QGoImageView, but due to a bug
   // it has to be deleted in this order...
   if( m_Pool )
@@ -169,6 +181,7 @@ QGoImageView3D::~QGoImageView3D()
     }
   m_View3D->Delete();
   m_View3D = 0;
+
   VtkEventQtConnector->Delete();
   m_HighlightedContourProperty->Delete();
 }
@@ -452,7 +465,6 @@ void QGoImageView3D::SetupVTKtoQtConnections()
        vtkCommand::InteractionEvent,
        this, SIGNAL( MeshesSelectionChanged() ) );
 }
-//-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void
@@ -466,13 +478,13 @@ InitializeSeedWidgetInteraction()
 
   for( int i = 0; i < this->m_Pool->GetNumberOfItems(); i++)
     {
-    this->Handle[i] = vtkSmartPointer<vtkConstrainedPointHandleRepresentation>::New();
+    this->Handle[i] = vtkConstrainedPointHandleRepresentation::New();
     this->Handle[i]->GetProperty()->SetColor(1,0,0);
 
-    this->SeedRep[i] = vtkSmartPointer<vtkSeedRepresentation>::New();
+    this->SeedRep[i] = vtkSeedRepresentation::New();
     this->SeedRep[i]->SetHandleRepresentation(this->Handle[i]);
 
-    this->SeedWidget[i] = vtkSmartPointer<vtkSeedWidget>::New();
+    this->SeedWidget[i] = vtkSeedWidget::New();
     this->SeedWidget[i]->SetRepresentation( this->SeedRep[i] );
     }
 
@@ -486,6 +498,8 @@ InitializeSeedWidgetInteraction()
   this->SeedWidget[2]->GetEventTranslator()->RemoveTranslation(vtkCommand::RightButtonPressEvent );
 }
 
+
+//-------------------------------------------------------------------------
 /**
  *
  * @param input

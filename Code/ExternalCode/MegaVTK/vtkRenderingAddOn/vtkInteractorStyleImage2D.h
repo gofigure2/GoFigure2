@@ -133,9 +133,15 @@ class VTK_RENDERINGADDON2_EXPORT vtkInteractorStyleImage2D :
   void HighlightCurrentActor();
 
   /*
-   * \brief Remove bounding boxes when we leave picking mode
+   * \brief Reimplemented to remove bounding boxes when we leave picking mode
+   * and to set a boolean to false
    */
   virtual void EndPick();
+
+  /*
+   * \brief Reimplemented to set a boolean to true
+   */
+  virtual void StartPick();
 
 
   vtkGetMacro( SliceStep, int );
@@ -160,6 +166,7 @@ class VTK_RENDERINGADDON2_EXPORT vtkInteractorStyleImage2D :
   unsigned int RightButtonInteraction;
   unsigned int MiddleButtonInteraction;
   unsigned int WheelButtonInteraction;
+  bool         m_PickingModeEnabled;
 };
 
 #endif

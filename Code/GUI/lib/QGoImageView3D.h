@@ -93,10 +93,9 @@ public:
   /** \brief Destructor. */
   virtual ~QGoImageView3D();
 
-  // Creates leaks
-  std::vector< vtkSmartPointer<vtkSeedWidget> >                            SeedWidget;
-  std::vector< vtkSmartPointer<vtkConstrainedPointHandleRepresentation> >  Handle;
-  std::vector< vtkSmartPointer<vtkSeedRepresentation> >                    SeedRep;
+  std::vector< vtkSeedWidget* >                            SeedWidget;
+  std::vector< vtkConstrainedPointHandleRepresentation* >  Handle;
+  std::vector< vtkSeedRepresentation* >                    SeedRep;
 
   /** \brief Set the image to be displaid. */
   virtual void SetImage( vtkImageData* iImage );

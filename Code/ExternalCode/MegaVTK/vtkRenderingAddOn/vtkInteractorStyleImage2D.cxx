@@ -95,6 +95,8 @@ vtkInteractorStyleImage2D()
   this->RightButtonInteraction  = InteractionTypeZoom;
   this->MiddleButtonInteraction = InteractionTypePan;
   this->WheelButtonInteraction  = InteractionTypeSlice;
+
+  this->m_PickingModeEnabled = false;
 }
 //----------------------------------------------------------------------------
 
@@ -133,6 +135,7 @@ OnMouseMove()
       this->InvokeEvent(vtkViewImage2DCommand::CameraMoveEvent, this);
       break;
     case VTKIS_PICK:
+      std::cout << "in pick" <<std::endl;
       HighlightCurrentActor();
       break;
   }
@@ -247,6 +250,11 @@ void
 vtkInteractorStyleImage2D::
 OnMiddleButtonDown()
 {
+  // bool to check
+  if( this->m_PickingModeEnabled )
+    {
+    this->State = VTKIS_PAN;
+    }
 
   int x = this->Interactor->GetEventPosition()[0];
   int y = this->Interactor->GetEventPosition()[1];
@@ -292,6 +300,12 @@ void
 vtkInteractorStyleImage2D::
 OnMiddleButtonUp()
 {
+  // bool to check
+  if( this->m_PickingModeEnabled )
+    {
+    this->State = VTKIS_PICK;
+    }
+
   switch (this->State)
   {
     case VTKIS_SLICE_MOVE:
@@ -328,6 +342,13 @@ void
 vtkInteractorStyleImage2D::
 OnRightButtonDown()
 {
+  // bool to check
+  if( this->m_PickingModeEnabled )
+    {
+    this->State = VTKIS_ZOOM;
+    }
+
+  //change state to zoom
   switch(this->GetRightButtonInteraction())
   {
     case InteractionTypeSlice:
@@ -338,8 +359,10 @@ OnRightButtonDown()
       this->Superclass::OnLeftButtonDown();
       break;
     case InteractionTypeZoom:
+      // change state
       this->InvokeEvent(vtkViewImage2DCommand::ZoomEvent);
       this->Superclass::OnRightButtonDown();
+      // renable state
       break;
     case InteractionTypePan:
       this->InvokeEvent(vtkViewImage2DCommand::PanEvent);
@@ -359,11 +382,19 @@ void
 vtkInteractorStyleImage2D::
 OnRightButtonUp()
 {
+  if( this->m_PickingModeEnabled )
+    {
+    this->State = VTKIS_PICK;
+    }
+
   switch (this->State)
   {
     case VTKIS_SLICE_MOVE:
       this->EndSliceMove();
       break;
+    // To avoid going into the super class we need the following return
+    case VTKIS_PICK:
+      return;
     default:
       break;
   }
@@ -676,7 +707,14 @@ HighlightCurrentActor()
       rwi->EndPickCallback();
     }
 }
-
+//----------------------------------------------------------------------------
+void
+vtkInteractorStyleImage2D::
+StartPick()
+{
+  this->m_PickingModeEnabled = true;
+  this->Superclass::StartPick();
+}
 //----------------------------------------------------------------------------
 void
 vtkInteractorStyleImage2D::
@@ -685,4 +723,5 @@ EndPick()
   this->HighlightProp(NULL);
   this->PropPicked = 0;
   this->Superclass::EndPick();
+  this->m_PickingModeEnabled = false;
 }
