@@ -208,7 +208,7 @@ QGoTabImageView3DwT( QWidget* iParent ) :
 
   m_DockWidgetList.push_back(
     std::pair< QGoDockWidgetStatus*, QDockWidget* >(
-      new QGoDockWidgetStatus( m_NavigationDockWidget, Qt::LeftDockWidgetArea, true, true ),
+      new QGoDockWidgetStatus( m_NavigationDockWidget, Qt::RightDockWidgetArea, true, true ),
       m_NavigationDockWidget ) );
 
   m_DockWidgetList.push_back(
