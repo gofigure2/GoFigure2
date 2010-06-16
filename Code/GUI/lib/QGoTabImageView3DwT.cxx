@@ -138,6 +138,8 @@ QGoTabImageView3DwT( QWidget* iParent ) :
 {
   m_Image = vtkSmartPointer< vtkImageData >::New();
 
+  m_LinesWidth = 1.;
+
   setupUi( this );
 
   m_MegaCaptureReader = itk::MegaCaptureReader::New();

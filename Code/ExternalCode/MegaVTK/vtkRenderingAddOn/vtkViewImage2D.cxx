@@ -329,7 +329,13 @@ int vtkViewImage2D::SetCameraToConvention(void)
     }
 
   double position[4], focalpoint[4], viewup[4];
+
   double conventionposition[4];
+  conventionposition[0] = 0.;
+  conventionposition[1] = 0.;
+  conventionposition[2] = 0.;
+  conventionposition[3] = 0.;
+
   double conventionview[4];
   double focaltoposition[3];
   std::vector<double*> viewupchoices;
