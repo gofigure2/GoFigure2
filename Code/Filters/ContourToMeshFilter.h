@@ -5,13 +5,13 @@
 #include "itkObjectFactory.h"
 
 #include "vtkAppendPolyData.h"
-#include "vtkLinearExtrusionFilter.h"
-#include "vtkPolyDataToImageStencil.h"
-#include "vtkImageStencil.h"
-#include "vtkMarchingCubes.h"
-#include "vtkImageData.h"
-#include <../../../GITROOT/FORK/VTK/Common/vtkMath.h>
-#include <../../../GITROOT/FORK/VTK/Common/vtkSmartPointer.h>
+#include "vtkMath.h"
+#include "vtkSmartPointer.h"
+#include "vtkFloatArray.h"
+#include "vtkPointData.h"
+#include "vtkPoissonReconstruction.h"
+
+#include <iostream>
 
 namespace itk
 {
@@ -33,17 +33,6 @@ class ContourToMeshFilter : public LightObject
     typedef TContainer ContainerType;
     typedef typename ContainerType::const_iterator ContainerConstIterator;
 
-    void SetImage( vtkImageData* iImage )
-    {
-      m_Image = iImage;
-    }
-    void SetSpacing( double iSpacing[3] )
-    {
-      m_Spacing[0] = iSpacing[0];
-      m_Spacing[1] = iSpacing[1];
-      m_Spacing[2] = iSpacing[2];
-    }
-    
     void ProcessContours( const ContainerType& iContainer )
     {
       if( iContainer.empty() )
@@ -64,17 +53,30 @@ class ContourToMeshFilter : public LightObject
         center[1] = 0.;
         center[2] = 0.;
         vtkIdType counter = 0;
-      
+
+        double p[3];
+        p[0] = 0.;
+        p[1] = 0.;
+        p[2] = 0.;
+
+        double n[3];
+        n[0] = 0.;
+        n[1] = 0.;
+        n[2] = 0.;
+        
         while( it != iContainer.end() )
           {
-          append->AddInput( *it );
-          for( vtkIdType k = 0; k < (*it)->GetNumberOfPoints(); ++k )
+          if( (*it) )
             {
-            (*it)->GetPoint( k, p );
-            center[0] += p[0];
-            center[1] += p[1];
-            center[2] += p[2];
-            ++counter;
+            append->AddInput( *it );
+            for( vtkIdType k = 0; k < (*it)->GetNumberOfPoints(); ++k )
+              {
+              (*it)->GetPoint( k, p );
+              center[0] += p[0];
+              center[1] += p[1];
+              center[2] += p[2];
+              ++counter;
+              }
             }
           ++it;
           }
@@ -101,7 +103,10 @@ class ContourToMeshFilter : public LightObject
           vtkMath::Normalize( n );
           normals->SetTuple( k, n );
           }
-          
+
+        double bounds[6];
+        input->GetBounds( bounds );
+        
         // compute normal of the contour
         input->GetPointData()->SetNormals( normals );
 
@@ -110,15 +115,26 @@ class ContourToMeshFilter : public LightObject
           vtkSmartPointer< vtkPoissonReconstruction >::New();
         poissonFilter->SetInput( input );
         poissonFilter->SetDepth( 7 );
+        poissonFilter->SetConfidence( 1. );
         poissonFilter->Update();
 
-        m_Output = poissonFilter->GetOutput();
+        if( !m_Output )
+          {
+          m_Output = vtkPolyData::New();
+          }
+        m_Output->ShallowCopy( poissonFilter->GetOutput() );
+        m_Output->GetBounds( bounds );
         }
+      }
+
+    vtkPolyData* GetOutput()
+      {
+      return m_Output;
+      }
     
   protected:
-    ContourToMeshFilter() : m_Image( NULL ), m_Output( NULL )
-    {
-    }
+    ContourToMeshFilter() : m_Output( NULL )
+    {}
     ~ContourToMeshFilter() {}
 
     vtkPolyData* m_Output;

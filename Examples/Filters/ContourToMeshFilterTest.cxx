@@ -40,7 +40,10 @@ void CreateCircle( const double& iZ,
 
 int main( int argc, char* argv[] )
 {
-  int resolution = 10;
+  (void) argc;
+  (void) argv;
+  
+  int resolution = 100;
   double z = 0.;
   double lastz = 0.;
   double sphereRadius = 1.;
@@ -51,23 +54,23 @@ int main( int argc, char* argv[] )
 
   for( int i = 0; i < 20; i++ )
     {
-    lastz = z;
-    double u = i / 20;
-    z = ( 1. - u ) * zmin + u * zmax;
-    double radius = sqrt( sphereRadius * sphereRadius - z*z );
-    contours[i] = vtkSmartPointer< vtkPolyData >::New();
-    CreateCircle( z, radius, resolution, contours[i] );
+    if( ( i < 4 ) || ( i > 10 ) )
+      {
+      lastz = z;
+      double u = static_cast< double >( i ) / 20.;
+      z = ( 1. - u ) * zmin + u * zmax;
+      double radius = sqrt( sphereRadius * sphereRadius - z*z );
+      contours[i] = vtkSmartPointer< vtkPolyData >::New();
+      CreateCircle( z, radius, resolution, contours[i] );
+      }
+    else
+      {
+      contours[i] = NULL;
+      }
     }
-
-  vtkImageData* image = vtkImageData::New();
-  image->SetDimensions( 100, 100, 100 );
-  image->SetNumberOfScalarComponents(1);
-  image->SetScalarTypeToUnsignedChar();
-
 
   typedef itk::ContourToMeshFilter< std::vector< vtkSmartPointer< vtkPolyData > > > FilterType;
   FilterType::Pointer filter = FilterType::New();
-  filter->SetImage( image );
   filter->ProcessContours( contours );
 
   vtkSmartPointer< vtkPolyDataMapper > mapper =
@@ -91,7 +94,17 @@ int main( int argc, char* argv[] )
   iren->SetRenderWindow( renwin );
 
   renwin->Render();
-  iren->Start();
+
+  if( atoi( argv[1] ) == 1 )
+    {
+    iren->CreateOneShotTimer( 1 );
+    }
+  else
+    {
+    iren->Start();
+    }
+    
+  filter->GetOutput()->Delete();
   
   return EXIT_SUCCESS;
 }

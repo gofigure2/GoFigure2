@@ -248,6 +248,8 @@ IF( VTK_FOUND )
       ${GOFIGURE2_EXTERNAL_BINARY_DIR}/vtkLSM
       ${GOFIGURE2_EXTERNAL_BINARY_DIR}/itkQt
       ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/itkQt
+      ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/PoissonReconstruction
+      ${GOFIGURE2_EXTERNAL_BINARY_DIR}/PoissonReconstruction
     )
 
     # Try to extract Qt variable from VTK
