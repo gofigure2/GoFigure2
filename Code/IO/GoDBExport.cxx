@@ -98,7 +98,6 @@ void GoDBExport::ExportMeshes()
   this->WriteOnTheOutputFile("imagingsession",
     this->GetImagingSessionInfoFromDB());
   this->UpdateAllVectorTracesIDsToExportMeshes();
-  /** \todo add the channel info with the color*/
   this->WriteTheColorsInfoFromDatabase();
   this->WriteCellTypeAndSubCellTypeInfoFromDatabase();
   this->WriteCoordinatesInfoFromDatabase();
@@ -107,7 +106,6 @@ void GoDBExport::ExportMeshes()
   this->WriteMeshesInfoFromDatabase();
   this->WriteChannelsInfoFromDatabase();
   this->WriteIntensityInfoFromDatabase();
-  /** \todo add the intensity for the mesh*/
   this->CloseDBConnection();
   this->m_outfile << this->GetNameWithSlashBrackets(this->m_NameDocXml);
 }

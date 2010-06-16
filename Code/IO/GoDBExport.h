@@ -208,6 +208,8 @@ private:
   column from the database*/
   void UpdateVectorMeshIDsForExportMeshes();
 
+  /** \brief when exporting meshes, the total intensity per channel has to be
+  calculated, and the info for the channels need to be stored*/
   void UpdateVectorChannelIDsForExportMeshes();
 
   /** \brief check if for the meshes IDs found in the m_VectorMeshIDs,
