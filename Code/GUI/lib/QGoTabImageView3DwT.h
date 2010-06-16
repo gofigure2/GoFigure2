@@ -392,9 +392,8 @@ protected:
   QGoManualSegmentationDockWidget*    m_ManualSegmentationDockWidget;
   QGoOneClickSegmentationDockWidget*  m_OneClickSegmentationDockWidget;
 
-  /// \bug Creates one leak
-  /// \todo why here?
-  vtkSmartPointer<vtkPoints>        m_SeedsWorldPosition;
+  /// Useful?
+  vtkPoints*        m_SeedsWorldPosition;
 
   QGoTraceManualEditingDockWidget*     m_TraceManualEditingDockWidget;
   //QDockWidget*                 m_test;

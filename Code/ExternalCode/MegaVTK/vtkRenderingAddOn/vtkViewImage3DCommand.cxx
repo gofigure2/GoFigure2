@@ -239,13 +239,21 @@ Enable3DBoxWidget( bool iValue )
         extent2[4], extent2[5]*spacing2[2]);
     this->m_BoxWidget->RotationEnabledOff();
     this->m_BoxWidget->SetKeyPressActivationValue ('b');
+    // Generates memory leaks
     this->m_BoxWidget->AddObserver(vtkCommand::InteractionEvent,this);
     this->m_BoxWidget->On();
     this->m_InitializedBoxWidget = true;
-  }
+    }
+  else if( iValue )
+    {
+  // To handle the memory leaks....
+    this->m_BoxWidget->AddObserver(vtkCommand::InteractionEvent,this);
+    }
+  else if ( ! iValue )
+    {
+  // To handle the memory leaks....
+    this->m_BoxWidget->RemoveAllObservers();
+    }
 
   this->m_BoxWidget->SetEnabled( iValue );
-
-  // Update seleced mesh list...?
-  // which behavior do we want?
 }

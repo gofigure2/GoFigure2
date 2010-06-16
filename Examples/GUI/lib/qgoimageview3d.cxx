@@ -44,6 +44,7 @@
 #include "vtkMetaImageReader.h"
 #include "vtkImageData.h"
 #include "vtkSmartPointer.h"
+#include "vtkPoints.h"
 
 #include "QGoImageView3D.h"
 
@@ -76,6 +77,34 @@ int main( int argc, char** argv )
   viewer->SetImage( image );
   viewer->Update();
   viewer->show();
+
+  // Stupid tests to increase coverage and track leaks
+  viewer->GetListOfPickedActors();
+  viewer->GetListOfUnPickedActors();
+  viewer->ShowAnnotations();
+  viewer->ShowSplinePlane();
+  viewer->ShowCube3D();
+  viewer->UpdateRenderWindows();
+  /// TODO Fix it
+  //viewer->SetCamera(1);
+  //viewer->SetCamera(2);
+  //viewer->SetCamera(3);
+  viewer->DefaultMode();
+  /// TODO Fix it
+  //viewer->ZoomMode();
+  viewer->PanMode();
+  viewer->OneClickMode();
+  viewer->ContourPickingMode();
+  vtkPoints* points = viewer->GetAllSeeds();
+  points->Delete();
+  viewer->ClearAllSeeds();
+  viewer->GetListOfPickedContours();
+  viewer->GetListOfUnPickedContours();
+  viewer->MeshPickingMode();
+  viewer->GetListOfModifiedActors3D();
+
+  viewer->SetBox3DPicking( true );
+  viewer->SetBox3DPicking( false );
 
   if( atoi( argv[2] ) == 1 )
     {

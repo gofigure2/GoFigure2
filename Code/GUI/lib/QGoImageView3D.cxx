@@ -1417,6 +1417,7 @@ GetAllSeeds()
 
   double worldPosition[3];
 
+  /// TODO MEMORY LEAK HERE
   vtkPoints* oPoints = vtkPoints::New();
 
   for( unsigned int i = 0; i < this->SeedWidget.size(); i++ )

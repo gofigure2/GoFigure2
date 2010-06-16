@@ -325,7 +325,6 @@ void
 vtkInteractorStyleImage3D::
 HighlightCurrentActor()
 {
-  std::cout << "in highlight" << std::endl;
   vtkRenderWindowInteractor *rwi = this->Interactor;
   if(this->CurrentRenderer!=0)
     {

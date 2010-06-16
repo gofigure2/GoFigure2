@@ -140,6 +140,8 @@ QGoTabImageView3DwT( QWidget* iParent ) :
 
   m_LinesWidth = 1.;
 
+  m_SeedsWorldPosition = NULL;
+
   setupUi( this );
 
   m_MegaCaptureReader = itk::MegaCaptureReader::New();
@@ -267,6 +269,9 @@ QGoTabImageView3DwT::
       }
     }
 
+  // If no seeds have been created, don't try do delete it!
+  if( m_SeedsWorldPosition )
+  m_SeedsWorldPosition->Delete();
 //   DeleteContourMeshStructureElement( m_ContourContainer );
 //   DeleteContourMeshStructureElement( m_MeshContainer );
 
@@ -606,9 +611,6 @@ CreateOneClickSegmentationDockWidget()
 
    QObject::connect( m_OneClickSegmentationDockWidget, SIGNAL( visibilityChanged(bool) ),
       this, SLOT( ShowTraceDockWidgetForMesh(bool))); 
-
-  m_SeedsWorldPosition = vtkSmartPointer<vtkPoints>::New();
-
 }
 //-------------------------------------------------------------------------
 
