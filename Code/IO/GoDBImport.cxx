@@ -192,8 +192,7 @@ void GoDBImport::SaveTracesEntities(std::map<int,int> iMapColorIDs,
     iMapSubCellTypeIDs);
   if (SaveIntensities)
     {
-    this->SaveIntensityForMesh(LineContent,this->m_NewMeshIDs,
-      MapMeshIDs,iMapColorIDs);
+    this->SaveIntensityForMesh(LineContent,MapMeshIDs,iMapColorIDs);
     }
   this->SaveTraces<GoDBContourRow>(iMapColorIDs,iMapCoordIDs,MapMeshIDs,
     LineContent,this->m_NewContourIDs,MapContourIDs);
@@ -283,7 +282,6 @@ void GoDBImport::CloseDBConnection()
 
 //--------------------------------------------------------------------------
 void GoDBImport::SaveIntensityForMesh(std::string iLineContent,
-  std::vector<int> iListMeshIDs,
   std::map<int,int> iMapMeshIDs,std::map<int,int> iMapColorIDs)
 {
   std::map<int,int> MapChannelIDs;

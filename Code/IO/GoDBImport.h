@@ -143,7 +143,7 @@ private:
   void FillMeshInfoForVisu(std::vector<int> iListMeshIDs);
 
   void SaveIntensityForMesh(std::string iLineContent,
-    std::vector<int> iListMeshIDs,std::map<int,int> iMapMeshIDs,
+    std::map<int,int> iMapMeshIDs,
     std::map<int,int> iMapColorIDs);
 
   /** \brief get the values from the import file,save the 
