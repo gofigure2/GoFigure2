@@ -519,6 +519,8 @@ protected:
   void SetTimePointWithLSMReaders( const int& iTimePoint );
   void SetTimePointWithMegaCapture( const int& iTimePoint );
 
+  void ChangeColorOfSelectedTraces( ContourMeshStructureMultiIndexContainer& iContainer, std::string iCurrentTrace, QColor iSelectedColor);
+
 protected slots:
   void AddBookmark();
   void GetTheRelatedToDBActions();
@@ -528,6 +530,7 @@ protected slots:
   void SetTheCurrentSubCellType();
   void ShowTraceDockWidgetForContour(bool ManualSegVisible);
   void ShowTraceDockWidgetForMesh(bool OneClickVisible);
+  void ChangeColorOfSelectedTracesManager(std::pair<std::list<int>,QColor>);
 
   /**
    * \brief Mouse interaction style allows contours segmentation, according to

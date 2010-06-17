@@ -116,6 +116,7 @@
 
 #include <set>
 
+#include <QDebug>
 //-------------------------------------------------------------------------
 /**
  * \brief Default Constructor
@@ -772,6 +773,10 @@ CreateDataBaseTablesConnection()
   QObject::connect(
     this->m_DataBaseTables, SIGNAL(TableWidgetTableChanged(std::string,std::string)),
     this, SLOT(GoToDefaultMenu(std::string, std::string)));
+
+  QObject::connect(
+    this->m_DataBaseTables, SIGNAL(ColorChangedForSelectedTraces(std::pair<std::list<int>,QColor>)),
+    this, SLOT(ChangeColorOfSelectedTracesManager(std::pair<std::list<int>,QColor>)));
 }
 //-------------------------------------------------------------------------
 #if defined ( ENABLEFFMPEG ) || defined ( ENABLEAVI )
@@ -3945,6 +3950,73 @@ void QGoTabImageView3DwT::ImportContours()
     }
 }
 //-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+ChangeColorOfSelectedTracesManager(
+  std::pair<std::list<int>,QColor> iSelectedTraces)
+{
+  // In which table are we?
+  std::string currentTrace = this->m_DataBaseTables->InWhichTableAreWe();
+  QColor selectedColor = iSelectedTraces.second;
+
+  // If we are in contour
+  if( currentTrace.compare( "contour" ) == 0 )
+    {
+    ChangeColorOfSelectedTraces( m_ContourContainer, currentTrace, selectedColor );
+    }
+  // If we are in mesh
+  if( currentTrace.compare( "mesh" ) == 0 )
+    {
+    ChangeColorOfSelectedTraces( m_MeshContainer, currentTrace, selectedColor );
+    }
+}
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+ChangeColorOfSelectedTraces( ContourMeshStructureMultiIndexContainer& iContainer,
+    std::string iCurrentTrace, QColor iSelectedColor)
+{
+  ContourMeshStructureMultiIndexContainer::iterator
+  it = this->m_DataBaseTables->GetTracesInfoListForVisu( iCurrentTrace.c_str() )
+                             ->begin();
+  unsigned int trace_id = 0;
+  double rgba[4];
+  rgba[0] = iSelectedColor.redF();
+  rgba[1] = iSelectedColor.greenF();
+  rgba[2] = iSelectedColor.blueF();
+  rgba[3] = 1;
+
+  while( it != this->m_DataBaseTables
+                     ->GetTracesInfoListForVisu( iCurrentTrace.c_str() )->end() )
+      {
+      trace_id = it->TraceID;
+      ContourMeshStructureMultiIndexContainer::index< TraceID >::type::iterator
+      traceid_it = iContainer.get< TraceID >().find( trace_id );
+      if( traceid_it != iContainer.get< TraceID >().end() )
+        {
+        while( ( traceid_it != iContainer.get< TraceID >().end() )
+            && ( (*traceid_it).TraceID == trace_id ) )
+          {
+          if( it->Highlighted == traceid_it->Highlighted )
+            {
+            if ( it->Highlighted )
+              {
+              ContourMeshStructure temp( *traceid_it );
+              temp.Highlighted = it->Highlighted;
+              temp.rgba[0] = rgba[0];
+              temp.rgba[1] = rgba[1];
+              temp.rgba[2] = rgba[2];
+              temp.rgba[3] = rgba[3];
+              iContainer.get< TraceID >().replace( traceid_it, temp );
+              }
+            }
+          ++traceid_it;
+          }
+        }
+      ++it;
+      }
+}
 
 //-------------------------------------------------------------------------
 void
