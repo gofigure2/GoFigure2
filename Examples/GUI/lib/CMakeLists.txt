@@ -25,6 +25,8 @@ SET( QGOGUILIB_EXAMPLE_SRC
   QGoDBInitializationWizardTest
   qgotabimageview3dwt2
   QGoLevelset2DTest
+  QGoDBInitCreateAuthorPageTest
+  QGoDBInitCreateMicroscopePageTest
 
   QGoSynchronizedView2DTest
   QGoSynchronizedView3DTest
@@ -211,6 +213,17 @@ ADD_TEST( QGoLevelset2DTest
   ${TESTING_DATA_PATH}/Circle3D.mhd
   1
 )
+
+ADD_TEST( QGoDBInitCreateAuthorPageTest
+  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/QGoDBInitCreateAuthorPageTest
+  1
+)
+
+ADD_TEST( QGoDBInitCreateMicroscopePageTest
+  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/QGoDBInitCreateMicroscopePageTest
+  1
+)
+
 #---------------------------------------------------------------------------
 #---------------------------------------------------------------------------
 
