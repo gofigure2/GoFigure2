@@ -100,6 +100,7 @@
 
 //ITK FILTERS
 #include "itkvtkPolyDataToGoFigureMeshAttributes.h"
+#include "ContourToMeshFilter.h"
 
 #include "GoFigureMeshAttributes.h"
 #include "QGoManualSegmentationSettingsDialog.h"
@@ -298,6 +299,7 @@ GenerateContourRepresentationProperties()
   double temp = m_ManualSegmentationDockWidget->m_SettingsDialog->GetLineWidth();
 
   if( m_LinesWidth != temp )
+#include <GoDBMeshRow.h>
     {
     m_LinesWidth = temp;
     haschanged = true;
@@ -3941,6 +3943,52 @@ void QGoTabImageView3DwT::ImportContours()
     this->GetTraceManualEditingWidget()->SetListSubCellTypes(
       this->m_DataBaseTables->GetQStringListSubCellTypes());
     }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+CreateMeshFromContours( const unsigned int& iMeshID )
+{
+  // get a container from the database given a meshid
+  std::vector< ContourMeshStructure > container; // =;
+
+  // iterate on the container and fill a list of contours
+  std::vector< ContourMeshStructure >::iterator it = container.begin();
+
+  // get the time point
+  unsigned int tcoord = it->TCoord;
+
+  std::vector< vtkPolyData* > list_contours( container.size(), NULL );
+  size_t id = 0;
+
+  while( it != container.end() )
+    {
+    list_contours[id] = it->Nodes;
+    ++it;
+    ++id;
+    }
+
+  // make the mesh from the list of contours
+  typedef itk::ContourToMeshFilter< std::vector< vtkPolyData* > > FilterType;
+  FilterType::Pointer filter = FilterType::New();
+  filter->ProcessContours( list_contours );
+
+  // get the color from the Trace Editing Widget
+  double rgba[] = { 1., 1., 1., 1. };
+
+  QColor color =
+    this->m_TraceManualEditingDockWidget->m_TraceWidget->ColorComboBox->GetCurrentColorData().second;
+  color.getRgbF( &rgba[0], &rgba[1], &rgba[2] );
+
+  bool highlighted = false;
+
+  // visualize of the generated mesh
+  // save into the database
+  bool saveindatabase = true;
+  this->AddMeshFromNodes( iMeshID, filter->GetOutput(), rgba, highlighted,
+                          tcoord, saveindatabase );
 }
 //-------------------------------------------------------------------------
 

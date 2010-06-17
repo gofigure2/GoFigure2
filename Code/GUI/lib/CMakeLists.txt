@@ -243,6 +243,7 @@ SET( QGoGUI_LIBS
   QVTK
   QGoIO
   vtkRenderingAddOn2
+  PoissonReconstruction
   )
 
 TARGET_LINK_LIBRARIES( QGoGui

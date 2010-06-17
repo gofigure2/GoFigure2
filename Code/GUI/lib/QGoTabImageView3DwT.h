@@ -292,8 +292,13 @@ public slots:
   void ActivateSemiAutoSegmentationEditor( const bool& iActivate );
 
   void ValidateContour();
+
   int  SavePolyDataAsContourInDB( vtkPolyData* iView );
+  
+  /** \brief Save a mesh in the database and render the mesh.
+  \todo to be renamed */
   int  SavePolyDataAsMeshInDB( vtkPolyData* iView );
+  
   void ReinitializeContour();
   void ReEditContour( const unsigned int& iId );
 
@@ -563,6 +568,8 @@ protected slots:
 
   void ImportContours();
   void ImportMeshes();
+
+  void CreateMeshFromContours( const unsigned int& iMeshID );
 
 private:
   Q_DISABLE_COPY( QGoTabImageView3DwT );
