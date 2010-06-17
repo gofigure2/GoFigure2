@@ -42,6 +42,8 @@
 
 #include "QGoVideoRecorder.h"
 
+#include "vtkRenderWindow.h"
+
 //**************************************************************************//
 //                               MAIN                                       //
 //**************************************************************************//
@@ -60,6 +62,19 @@ int main( int argc, char *argv[] )
   timer->setSingleShot( true );
 
   QGoVideoRecorder* window = new QGoVideoRecorder( NULL );
+
+  // Stupid tests
+  window->SetCurrentX( 10 );
+  window->SetCurrentY( 10 );
+  window->SetCurrentZ( 10 );
+  window->SetCurrentT( 10 );
+
+  vtkRenderWindow* iRenderingWindow = vtkRenderWindow::New();
+  window->SetRenderingWindow( iRenderingWindow );
+  iRenderingWindow->Delete();
+
+  window->SetSpecificParametersFrameRate(10);
+  window->SetSpecificParametersQuality(2);
 
   QObject::connect( timer, SIGNAL( timeout() ), window, SLOT( close() ) );
 

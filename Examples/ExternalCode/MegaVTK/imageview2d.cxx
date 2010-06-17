@@ -2,6 +2,7 @@
 #include "vtkImageData.h"
 #include "vtkViewImage2D.h"
 #include "vtkRenderWindowInteractor.h"
+#include "vtkInteractorStyleImage2D.h"
 
 int main( int argc, char** argv )
 {
@@ -22,6 +23,29 @@ int main( int argc, char** argv )
   vtkRenderWindowInteractor* iren = vtkRenderWindowInteractor::New();
   view->SetupInteractor(iren);
 
+  vtkInteractorStyleImage2D* interactorStyle = vtkInteractorStyleImage2D::New();
+  iren->SetInteractorStyle( interactorStyle );
+  // Studpid tests with interactor style
+  interactorStyle->OnMouseMove();
+  interactorStyle->OnLeftButtonDown();
+  interactorStyle->OnLeftButtonUp();
+  interactorStyle->OnMiddleButtonDown();
+  interactorStyle->OnMiddleButtonUp();
+  interactorStyle->OnRightButtonDown();
+  interactorStyle->OnRightButtonUp();
+  interactorStyle->OnMouseWheelForward();
+  interactorStyle->OnMouseWheelBackward();
+  //interactorStyle->OnChar();
+  //interactorStyle->OnKeyUp();
+  interactorStyle->SliceMove();
+  interactorStyle->OnKeyPress();
+  interactorStyle->OnKeyRelease();
+  interactorStyle->StartSliceMove();
+  interactorStyle->EndSliceMove();
+  interactorStyle->SliceMove();
+  interactorStyle->GetCurrentProp();
+  interactorStyle->HighlightCurrentActor();
+
   view->SetInput( reader->GetOutput() );
   view->SetViewOrientation (vtkViewImage2D::VIEW_ORIENTATION_AXIAL);
   view->Render();
@@ -35,6 +59,7 @@ int main( int argc, char** argv )
     iren->Start();
     }
 
+  interactorStyle->Delete();
   view->Delete();
   iren->Delete();
   reader->Delete();
