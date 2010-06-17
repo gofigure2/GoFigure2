@@ -198,9 +198,10 @@ public:
     const double& iR, const double& iG, const double& iB, const double& iA,
     const bool& iHighlighted, const unsigned int& iTCoord, const bool& iSaveInDataBase );
 
-  void AddMeshFromNodes( const unsigned int& iContourID, vtkPolyData* iNodes, const double iRgba[4],
+  void AddMeshFromNodes( const unsigned int& iMeshID, vtkPolyData* iNodes, const double iRgba[4],
     const bool& iHighlighted, const unsigned int& iTCoord, const bool& iSaveInDataBase );
-  void AddMeshFromNodes( const unsigned int& iContourID, vtkPolyData* iNodes,
+
+  void AddMeshFromNodes( const unsigned int& iMeshID, vtkPolyData* iNodes,
     const double& iR, const double& iG, const double& iB, const double& iA,
     const bool& iHighlighted, const unsigned int& iTCoord, const bool& iSaveInDataBase );
 
@@ -561,6 +562,7 @@ protected slots:
   void Box3DPicking( bool );
 
   void ImportContours();
+  void ImportMeshes();
 
 private:
   Q_DISABLE_COPY( QGoTabImageView3DwT );

@@ -52,6 +52,7 @@ public:
    
   ~GoDBImageRow()
     {}
+  int SaveInDB(vtkMySQLDatabase* DatabaseConnector);
 protected:
   virtual void InitializeMap();
 

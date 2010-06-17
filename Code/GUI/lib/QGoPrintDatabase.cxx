@@ -1929,6 +1929,38 @@ ContourMeshStructureMultiIndexContainer* QGoPrintDatabase::
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+ContourMeshStructureMultiIndexContainer* QGoPrintDatabase::
+  ImportMeshes(int iTimePoint)         
+{
+  ContourMeshStructureMultiIndexContainer* MeshesForVisu;
+  QString p = QFileDialog::getOpenFileName(this,
+    tr( "Open Contour Export File" ),"",tr( "TextFile (*.txt)" ));
+  if ( ! p.isNull() )
+    {
+    QFileInfo pathInfo( p );
+    std::string filename = p.toStdString();
+    //import into the database:
+    GoDBImport ImportHelper(this->m_Server,this->m_User,
+      this->m_Password,this->m_ImgSessionID,filename);
+    ImportHelper.ImportMeshes();
+        
+    std::vector<int> NewMeshIDs = ImportHelper.GetVectorNewMeshIDs();
+    std::vector<int> NewTrackIDs = ImportHelper.GetVectorNewTracksIDs();
+    
+    //std::vector<int> ContourToAddTW = ImportHelper.GetVectorNewContourIDs();
+    //add the imported traces in the table widget:
+        
+    this->AddTracesInTableWidgetFromDB(NewMeshIDs, "mesh");
+    this->AddTracesInTableWidgetFromDB(NewTrackIDs, "track");
+
+    MeshesForVisu = this->GetMeshesMultiIndexFromDBForAGivenTimePoint(iTimePoint,
+      NewMeshIDs);
+    }
+  return MeshesForVisu;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 void QGoPrintDatabase::PrintVolumeAreaForMesh(double iVolume, 
   double iArea, unsigned int iMeshID)
 {

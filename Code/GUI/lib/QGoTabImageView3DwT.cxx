@@ -1337,6 +1337,8 @@ void QGoTabImageView3DwT::GetTheRelatedToDBActions()
     this, SLOT(ImportContours() ) );
   QObject::connect( ExportMeshesAction, SIGNAL( triggered() ),
     this->m_DataBaseTables, SLOT(ExportMeshes() ) );
+  QObject::connect( ImportMeshesAction, SIGNAL (triggered() ),
+    this, SLOT (ImportMeshes() ) );
 }
 //-------------------------------------------------------------------------
 
@@ -3914,17 +3916,14 @@ ComputeMeshAttributes( vtkPolyData* iMesh )
   return oAttributes;
 }
 //-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 void QGoTabImageView3DwT::ImportContours()
 {
   if( this->m_DataBaseTables->IsDatabaseUsed() )
     {
     ContourMeshStructureMultiIndexContainer* ContourToAdd =
       this->m_DataBaseTables->ImportContours(this->GetTimePoint());
-    //put the new contours in the visu:
-    //ContourMeshStructureMultiIndexContainer* ContourToAdd =
-    //this->m_DataBaseTables->GetContoursFromDBForAGivenTimePoint(this->GetTimePoint(),
-      //NewContourIDs);
-
     ContourMeshStructureMultiIndexContainer::iterator c_it = ContourToAdd->begin();
     while( c_it != ContourToAdd->end() )
       {
@@ -3935,6 +3934,33 @@ void QGoTabImageView3DwT::ImportContours()
       }
     //update the TraceManualEditingWidget 
     this->GoToDefaultMenu("contour","mesh");
+    this->GetTraceManualEditingWidget()->ColorComboBox->setExistingColors(
+      this->m_DataBaseTables->GetColorComboBoxInfofromDB());
+    this->GetTraceManualEditingWidget()->SetListCellTypes(
+      this->m_DataBaseTables->GetQStringListCellTypes());
+    this->GetTraceManualEditingWidget()->SetListSubCellTypes(
+      this->m_DataBaseTables->GetQStringListSubCellTypes());
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoTabImageView3DwT::ImportMeshes()
+{
+  if( this->m_DataBaseTables->IsDatabaseUsed() )
+    {
+    ContourMeshStructureMultiIndexContainer* MeshToAdd =
+      this->m_DataBaseTables->ImportMeshes(this->GetTimePoint());
+    ContourMeshStructureMultiIndexContainer::iterator c_it = MeshToAdd->begin();
+    while( c_it != MeshToAdd->end() )
+      {
+      ContourMeshStructure Mesh = *c_it;
+      this->AddMeshFromNodes(Mesh.TraceID, Mesh.Nodes,Mesh.rgba, Mesh.Highlighted,
+        Mesh.TCoord,false);
+      ++c_it;
+      }
+    //update the TraceManualEditingWidget 
+    this->GoToDefaultMenu("mesh","track");
     this->GetTraceManualEditingWidget()->ColorComboBox->setExistingColors(
       this->m_DataBaseTables->GetColorComboBoxInfofromDB());
     this->GetTraceManualEditingWidget()->SetListCellTypes(

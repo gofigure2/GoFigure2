@@ -50,6 +50,8 @@
 #include "GoDBMeshRow.h"
 #include "GoDBTrackRow.h"
 #include "GoDBLineageRow.h"
+#include "GoDBChannelRow.h"
+#include "GoDBIntensityRow.h"
 
 //--------------------------------------------------------------------------
 GoDBImport::GoDBImport(std::string iServerName,std::string iLogin,
@@ -84,6 +86,26 @@ void GoDBImport::ImportContours()
   this->SaveTracesEntities(MapColorIDs,MapCoordIDs,LineContent,MapCellTypeIDs,
     MapSubCellTypeIDs);
   this->FillContourInfoForVisu(this->m_NewContourIDs);
+  this->CloseDBConnection();
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void GoDBImport::ImportMeshes()
+{
+  this->OpenDBConnection();
+  this->m_NewContourIDs.clear();
+  std::map<int,int> MapColorIDs;
+  std::map<int,int> MapCellTypeIDs;
+  std::map<int,int> MapSubCellTypeIDs;
+  std::map<int,int> MapCoordIDs;
+  std::string       LineContent;
+  
+  LineContent = this->SaveNoTracesEntities(MapColorIDs,MapCellTypeIDs,
+    MapSubCellTypeIDs,MapCoordIDs); 
+  this->SaveTracesEntities(MapColorIDs,MapCoordIDs,LineContent,MapCellTypeIDs,
+    MapSubCellTypeIDs,true);
+  this->FillMeshInfoForVisu(this->m_NewMeshIDs);
   this->CloseDBConnection();
 }
 //--------------------------------------------------------------------------
@@ -151,7 +173,8 @@ std::string GoDBImport::SaveNoTracesEntities(std::map<int,int> & ioMapColorIDs,
 //--------------------------------------------------------------------------
 void GoDBImport::SaveTracesEntities(std::map<int,int> iMapColorIDs,
   std::map<int,int> iMapCoordIDs,std::string iLineContent,
-  std::map<int,int> iMapCellTypeIDs, std::map<int,int> iMapSubCellTypeIDs)
+  std::map<int,int> iMapCellTypeIDs, std::map<int,int> iMapSubCellTypeIDs,
+  bool SaveIntensities)
 {
   std::map<int,int> MapContourIDs;
   std::map<int,int> MapMeshIDs;
@@ -167,6 +190,11 @@ void GoDBImport::SaveTracesEntities(std::map<int,int> iMapColorIDs,
   this->SaveTraces<GoDBMeshRow>(iMapColorIDs,iMapCoordIDs,MapTrackIDs,
     LineContent,this->m_NewMeshIDs,MapMeshIDs,iMapCellTypeIDs,
     iMapSubCellTypeIDs);
+  if (SaveIntensities)
+    {
+    this->SaveIntensityForMesh(LineContent,this->m_NewMeshIDs,
+      MapMeshIDs,iMapColorIDs);
+    }
   this->SaveTraces<GoDBContourRow>(iMapColorIDs,iMapCoordIDs,MapMeshIDs,
     LineContent,this->m_NewContourIDs,MapContourIDs);
 }
@@ -182,6 +210,18 @@ void GoDBImport::FillContourInfoForVisu(
       this->m_DatabaseConnector,"contour",
       "mesh",iListContourIDs.at(i)));
     }
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void GoDBImport::FillMeshInfoForVisu(std::vector<int> iListMeshIDs)
+{
+  for (unsigned int i = 0; i<iListMeshIDs.size(); i++)
+    {
+    this->m_NewMeshInfoForVisu.push_back(GetTraceInfoFromDB(
+      this->m_DatabaseConnector,"mesh",
+      "track",iListMeshIDs.at(i)));
+    } 
 }
 //--------------------------------------------------------------------------
 
@@ -242,3 +282,78 @@ void GoDBImport::CloseDBConnection()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+void GoDBImport::SaveIntensityForMesh(std::string iLineContent,
+  std::vector<int> iListMeshIDs,
+  std::map<int,int> iMapMeshIDs,std::map<int,int> iMapColorIDs)
+{
+  std::map<int,int> MapChannelIDs;
+  while (this->FindFieldName(iLineContent)!= "NumberOfchannel")
+    {
+    getline (this->m_InFile, iLineContent);
+    }
+ 
+  int EntitiesNumber = atoi(this->GetValueForTheLine(iLineContent).c_str());
+  getline(this->m_InFile, iLineContent);
+  if (EntitiesNumber != 0)
+    {
+    while (this->FindFieldName(iLineContent)!= "NumberOfintensity")
+      {
+      if(this->GetValueForTheLine(iLineContent) != "NoValueOnTheLine")
+        {
+        std::cout<<"There was supposed to be only the name of the entity to save,the entity will not be saved";
+        std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
+        std::cout << std::endl;
+        }
+      std::string NameEntity = this->FindFieldName(iLineContent);
+      if (NameEntity != "channel")
+        {
+        std::cout<<"The name of the entity should be channel but is actually different";
+        std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
+        std::cout << std::endl;
+        }
+      else
+        {
+        GoDBChannelRow NewChannel;
+        iLineContent = this->GetValuesFromInfile<GoDBChannelRow>(NewChannel);
+        this->ReplaceTheFieldWithNewIDs<GoDBChannelRow>(
+          iMapColorIDs,"ColorID",NewChannel);
+        int OldID = atoi(NewChannel.GetMapValue("ChannelID").c_str());
+        NewChannel.SetField("ChannelID","0");
+        NewChannel.SetField("ImagingSessionID",this->m_ImagingSessionID);
+        MapChannelIDs[OldID] = NewChannel.SaveInDB(this->m_DatabaseConnector);
+        }
+      }
+    }
+  EntitiesNumber = atoi(this->GetValueForTheLine(iLineContent).c_str());
+  getline(this->m_InFile, iLineContent);
+  if (EntitiesNumber != 0)
+    {
+    while (this->FindFieldName(iLineContent)!= "ExportTraces")
+      {
+      if(this->GetValueForTheLine(iLineContent) != "NoValueOnTheLine")
+        {
+        std::cout<<"There was supposed to be only the name of the entity to save,the entity will not be saved";
+        std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
+        std::cout << std::endl;
+        }
+      std::string NameEntity = this->FindFieldName(iLineContent);
+      if (NameEntity != "intensity")
+        {
+        std::cout<<"The name of the entity should be channel but is actually different";
+        std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
+        std::cout << std::endl;
+        }
+      else
+        {
+        GoDBIntensityRow NewIntensity;
+        iLineContent = this->GetValuesFromInfile<GoDBIntensityRow>(NewIntensity);
+        this->ReplaceTheFieldWithNewIDs<GoDBIntensityRow>(
+          iMapMeshIDs,"MeshID",NewIntensity);
+        this->ReplaceTheFieldWithNewIDs<GoDBIntensityRow>(
+          MapChannelIDs,"ChannelID",NewIntensity);
+        NewIntensity.SetField("IntensityID","0");
+        NewIntensity.SaveInDB(this->m_DatabaseConnector);
+        }
+       }
+    }
+}

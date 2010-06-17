@@ -54,16 +54,14 @@ public:
    
   ~GoDBChannelRow()
     {}
+ int SaveInDB(vtkMySQLDatabase* DatabaseConnector);
+ 
+ /**\brief check if the channel already exits in the database, if yes, 
+  return the corresponding ID, if not, return -1*/
+ int DoesThisChannelAlreadyExists(vtkMySQLDatabase* DatabaseConnector);
+
 protected:
   virtual void InitializeMap();
-   /* {
-    m_MapRow["ChannelID"] = ConvertToString<int>(0);
-    m_MapRow["Name"] = "";
-    m_MapRow["ImagingSessionID"] = ConvertToString<int>(0);
-    m_MapRow["ColorID"] = ConvertToString<int>(0);
-    m_MapRow["ChannelNumber"] = ConvertToString<int>(0);
-    m_MapRow["NumberOfBits"] = ConvertToString<int>(0);
-    }*/
 };
 
 #endif

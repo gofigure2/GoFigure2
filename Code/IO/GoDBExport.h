@@ -60,7 +60,12 @@ public:
   tracks the previous meshes belong to from the database
   and put them in a text file*/
   void ExportContours();
-
+  
+  /** \brief get all the imagingsession info,the info
+  for the meshes with points(that can be visualized), 
+  the tracks they belong to and the lineages the 
+  previous tracks belong to from the database
+  and put them in a text file*/
   void ExportMeshes();
 
 private:

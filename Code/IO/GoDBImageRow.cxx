@@ -38,6 +38,7 @@
 
 =========================================================================*/
 #include "GoDBImageRow.h"
+#include "GoDBRecordSetHelper.h"
 
 GoDBImageRow::GoDBImageRow()
 {
@@ -54,3 +55,14 @@ void GoDBImageRow::InitializeMap()
   this->m_MapRow["Filename"] = "";
   this->m_MapRow["ChannelID"] = ConvertToString<int>(1);//\todo :change back to 0 or -1
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+int GoDBImageRow::SaveInDB(vtkMySQLDatabase* DatabaseConnector)
+{
+  return AddOnlyOneNewObjectInTable<GoDBImageRow>( DatabaseConnector,
+    "image",*this, "ImageID");
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------

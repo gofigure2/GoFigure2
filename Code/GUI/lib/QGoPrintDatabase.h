@@ -219,6 +219,7 @@ public:
   QAction* toggleViewAction();
 
   ContourMeshStructureMultiIndexContainer* ImportContours(int iTimePoint);
+  ContourMeshStructureMultiIndexContainer* ImportMeshes(int iTimePoint);
 
   void PrintVolumeAreaForMesh(double iVolume, double iArea, 
     unsigned int iMeshID);

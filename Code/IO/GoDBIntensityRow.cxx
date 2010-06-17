@@ -66,6 +66,24 @@ void GoDBIntensityRow::InitializeMap()
 //-------------------------------------------------------------------------
 int GoDBIntensityRow::SaveInDB(vtkMySQLDatabase* DatabaseConnector)
 {
-  return AddOnlyOneNewObjectInTable<GoDBIntensityRow>( DatabaseConnector,
-    "intensity", this, "IntensityID");
+  int IntensityID = this->DoesThisIntensityAlreadyExists(DatabaseConnector);
+  if (IntensityID == -1)
+    {
+    IntensityID = AddOnlyOneNewObjectInTable<GoDBIntensityRow>( 
+      DatabaseConnector,"intensity", this, "IntensityID");
+    }
+  return IntensityID;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+int GoDBIntensityRow::DoesThisIntensityAlreadyExists(
+  vtkMySQLDatabase* DatabaseConnector)
+{
+  std::string ChannelID = this->GetMapValue("ChannelID");
+  std::string MeshID = this->GetMapValue("MeshID");
+  /*return FindOneID(DatabaseConnector,"color", "ColorID","Red",Red,"Green",Green,
+  "Blue",Blue,"Alpha",Alpha,"Name",Name);*/
+  return FindOneID(DatabaseConnector,"intensity", "IntensityID","ChannelID", 
+    ChannelID,"MeshID",MeshID);
 }

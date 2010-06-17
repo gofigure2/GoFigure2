@@ -64,6 +64,8 @@ public:
   needed info for the visu to add these new contours*/
   void ImportContours();
 
+  void ImportMeshes();
+
   /** \brief return a vector of the IDs for the meshes read from
   the import file and saved in the database*/
   std::vector<int> GetVectorNewMeshIDs()
@@ -103,6 +105,7 @@ private:
   std::vector<int>                  m_NewTracksIDs;
   std::vector<int>                  m_NewLineageIDs;
   std::vector<ContourMeshStructure> m_NewContourInfoForVisu;
+  std::vector<ContourMeshStructure> m_NewMeshInfoForVisu;
 
   /** \brief Return the name of the field contained in the line*/
   std::string FindFieldName(std::string iLine);
@@ -124,16 +127,24 @@ private:
   
  /** \brief Get the info for the traces from the import file and from the matching
   IDs maps previously filled, then save them in the database if their bounding box
-  doesn't match any existing ones*/
+  doesn't match any existing ones and save the intensities for the meshes if 
+  SaveIntensities is set to true*/
   void SaveTracesEntities(std::map<int,int> iMapColorIDs,
     std::map<int,int> iMapCoordIDs,std::string iLineContent,
     std::map<int,int> iMapCellTypeIDs, 
-    std::map<int,int> iMapSubCellTypeIDs);
+    std::map<int,int> iMapSubCellTypeIDs,
+    bool SaveIntensities = false);
 
   /** \brief fill the info needed for the new imported contours to add
   them in the visu*/
   void FillContourInfoForVisu(
     std::vector<int> iListContourIDs);
+  
+  void FillMeshInfoForVisu(std::vector<int> iListMeshIDs);
+
+  void SaveIntensityForMesh(std::string iLineContent,
+    std::vector<int> iListMeshIDs,std::map<int,int> iMapMeshIDs,
+    std::map<int,int> iMapColorIDs);
 
   /** \brief get the values from the import file,save the 
   corresponding number of entities in the database, return
