@@ -1897,7 +1897,7 @@ void QGoPrintDatabase::ExportMeshes()
 ContourMeshStructureMultiIndexContainer* QGoPrintDatabase::
   ImportContours(int iTimePoint)                                  
 {
-  ContourMeshStructureMultiIndexContainer* ContoursForVisu;
+  ContourMeshStructureMultiIndexContainer* ContoursForVisu = NULL;
   QString p = QFileDialog::getOpenFileName(this,
     tr( "Open Contour Export File" ),"",tr( "TextFile (*.txt)" ));
   if ( ! p.isNull() )
