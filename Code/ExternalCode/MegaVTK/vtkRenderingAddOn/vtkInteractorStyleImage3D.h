@@ -124,8 +124,12 @@ class VTK_RENDERINGADDON2_EXPORT vtkInteractorStyleImage3D :
 
   void HighlightCurrentActor();
 
-  void EnablePickingMode();
-  void DisablePickingMode();
+  void EnablePickMode();
+  void DisablePickMode();
+
+  void EnableDefaultMode();
+  void EnableZoomMode();
+  void EnablePanMode();
 
  protected:
   vtkInteractorStyleImage3D();
@@ -143,7 +147,9 @@ class VTK_RENDERINGADDON2_EXPORT vtkInteractorStyleImage3D :
 
   vtkProp* m_CurrentProp;
 
-  bool m_EnablePickingMode;
+  bool m_EnablePickMode;
+  bool m_EnableZoomMode;
+  bool m_EnablePanMode;
   bool m_EnableBoxSelectionMode;
 };
 
