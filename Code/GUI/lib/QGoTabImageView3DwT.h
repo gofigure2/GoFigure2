@@ -369,6 +369,8 @@ public slots:
   void ApplyOneClickSegmentationFilter();
   void ApplyContourSemiAutoSegmentation();
 
+  void CreateMeshFromSelectedContours( std::list<int> ListContourIDs );
+
 protected:
   QHBoxLayout*          m_HBoxLayout;
   QSplitter*            m_VSplitter;
@@ -571,8 +573,6 @@ protected slots:
 
   void ImportContours();
   void ImportMeshes();
-
-  void CreateMeshFromSelectedContours( ContourMeshStructureMultiIndexContainer& iContainer );
 
 private:
   Q_DISABLE_COPY( QGoTabImageView3DwT );

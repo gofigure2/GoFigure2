@@ -778,6 +778,9 @@ CreateDataBaseTablesConnection()
   QObject::connect(
     this->m_DataBaseTables, SIGNAL(ColorChangedForSelectedTraces(std::pair<std::list<int>,QColor>)),
     this, SLOT(ChangeColorOfSelectedTracesManager(std::pair<std::list<int>,QColor>)));
+
+  QObject::connect( this->m_DataBaseTables, SIGNAL( NewMeshToGenerate(std::list<int>) ),
+    this, SLOT( CreateMeshFromSelectedContours(std::list<int>) ) );
 }
 //-------------------------------------------------------------------------
 #if defined ( ENABLEFFMPEG ) || defined ( ENABLEAVI )
@@ -4018,25 +4021,28 @@ ChangeColorOfSelectedTraces( ContourMeshStructureMultiIndexContainer& ioContaine
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
-CreateMeshFromSelectedContours( ContourMeshStructureMultiIndexContainer& iContainer )
+CreateMeshFromSelectedContours( std::list<int> iListContourIDs )
 {
-/*  ContourMeshStructureMultiIndexContainer::iterator it = iContainer.begin();
+  std::list< int >::iterator contourid_it = iListContourIDs.begin();
 
-  // get the time point
-  unsigned int tcoord = it->TCoord;
-
-  std::vector< vtkPolyData* > list_contours( container.size(), NULL );
+  std::vector< vtkPolyData* > list_contours( iListContourIDs.size(), NULL );
   size_t id = 0;
   
-  while( it != iContainer.end() )
-    {
-    list_contours[id] = it->Nodes;
-    ++id;
-    ++it;
-    }
+  // get the time point
+  unsigned int tcoord;
 
-  // iterate on the container and fill a list of contours
-  std::vector< ContourMeshStructure >::iterator it = container.begin();
+  while( contourid_it != iListContourIDs.end() )
+    {
+    ContourMeshStructureMultiIndexContainer::index< TraceID >::type::iterator
+      traceid_it = m_ContourContainer.get< TraceID >().find( *contourid_it );
+      
+    if( traceid_it != m_ContourContainer.get< TraceID >().end() )
+      {
+      tcoord = traceid_it->TCoord;
+      list_contours[id++] = vtkPolyData::SafeDownCast( traceid_it->Actor->GetMapper()->GetInput() );
+      }
+    ++contourid_it;
+    }
 
   // make the mesh from the list of contours
   typedef itk::ContourToMeshFilter< std::vector< vtkPolyData* > > FilterType;
@@ -4059,7 +4065,7 @@ CreateMeshFromSelectedContours( ContourMeshStructureMultiIndexContainer& iContai
   // save into the database
   bool saveindatabase = true;
   this->AddMeshFromNodes( meshid, filter->GetOutput(), rgba, highlighted,
-                          tcoord, saveindatabase );*/
+                          tcoord, saveindatabase );
 }
 //-------------------------------------------------------------------------
 
