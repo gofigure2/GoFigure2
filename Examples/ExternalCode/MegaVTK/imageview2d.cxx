@@ -44,7 +44,8 @@ int main( int argc, char** argv )
   interactorStyle->EndSliceMove();
   interactorStyle->SliceMove();
   interactorStyle->GetCurrentProp();
-  interactorStyle->HighlightCurrentActor();
+  // Generates error on Mac
+  //interactorStyle->HighlightCurrentActor();
 
   view->SetInput( reader->GetOutput() );
   view->SetViewOrientation (vtkViewImage2D::VIEW_ORIENTATION_AXIAL);
