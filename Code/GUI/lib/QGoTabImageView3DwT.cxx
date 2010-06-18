@@ -56,6 +56,7 @@
 
 #include "GoDBContourRow.h"
 #include "GoDBCoordinateRow.h"
+#include "GoDBMeshRow.H"
 
 #include "vtkLSMReader.h"
 
@@ -298,7 +299,6 @@ GenerateContourRepresentationProperties()
   double temp = m_ManualSegmentationDockWidget->m_SettingsDialog->GetLineWidth();
 
   if( m_LinesWidth != temp )
-#include <GoDBMeshRow.h>
     {
     m_LinesWidth = temp;
     haschanged = true;

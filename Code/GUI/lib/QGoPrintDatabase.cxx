@@ -408,6 +408,10 @@ void QGoPrintDatabase::CreateCorrespondingCollection()
     CloseDBConnection();
     QString CollectionIDQString = ConvertToString<int>(NewCollectionID).c_str();
     emit NewCreatedCollection(this->m_CurrentColorData.second,CollectionIDQString);
+    if (CurrentlyUsedTraceData->TraceName == "contour")
+      {
+      emit NewMeshToGenerate(ListSelectedTraces);
+      }
     }
 }
 //--------------------------------------------------------------------------
@@ -443,6 +447,13 @@ void QGoPrintDatabase::AddToSelectedCollection()
     OpenDBConnection();
     this->AddListTracesToACollection( ListSelectedTraces,
       this->m_CurrentCollectionData, TraceName, false );
+    if (CurrentlyUsedTraceData->TraceName == "contour")
+      {
+        std::list<int> ListIDs = CurrentlyUsedTraceData->CollectionOfTraces->GetTracesIDPartOfTheCollection(
+        this->m_DatabaseConnector,
+        atoi(this->m_CurrentCollectionData.first.c_str()));
+        emit MeshGenerationToUpdate (ListIDs);
+      }
     CloseDBConnection();
     }
 }

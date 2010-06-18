@@ -150,6 +150,10 @@ public:
     GoDBTableWidgetContainer* iLinkToRowContainer,
     std::vector<std::vector<std::string> >* iComputedValues = 0);
 
+  /** \brief return the list of IDs for the traces part of the collectionID*/
+  std::list<int> GetTracesIDPartOfTheCollection(
+    vtkMySQLDatabase* DatabaseConnector,int iCollectionID);
+
   template<typename T>
   int CreateNewCollectionFromSelection(
   std::list<int> iListSelectedTraces, vtkMySQLDatabase* DatabaseConnector,

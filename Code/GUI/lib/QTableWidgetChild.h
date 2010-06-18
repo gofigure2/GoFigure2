@@ -49,6 +49,7 @@
 #include "GoDBTraceInfoForTableWidget.h"
 #include "GoDBTableWidgetContainer.h"
 #include "ContourMeshStructureHelper.h"
+#include "QGoGUILibConfigure.h"
 
 /**
 \class QTableWidgetchild
@@ -56,7 +57,7 @@
 so it is not possible to connect it directly with a signal.
 that's the reason for the creation of QTableWidgetchild.
 */
-class QTableWidgetChild : public QTableWidget
+class QGOGUILIB_EXPORT QTableWidgetChild : public QTableWidget
 {
   Q_OBJECT
 

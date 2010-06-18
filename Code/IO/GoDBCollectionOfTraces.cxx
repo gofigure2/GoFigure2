@@ -962,3 +962,17 @@ void GoDBCollectionOfTraces::FillRowContainerForComputedValues(
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+std::list<int> GoDBCollectionOfTraces::GetTracesIDPartOfTheCollection(
+  vtkMySQLDatabase* DatabaseConnector,int iCollectionID)
+{
+  std::vector<std::string> ResultsQuery = ListSpecificValuesForOneColumn(
+    DatabaseConnector,this->m_TracesName, this->m_TracesIDName,
+    this->m_CollectionIDName,ConvertToString<int>(iCollectionID));
+
+  std::list<int> ListIDs;
+  for (unsigned int i = 0; i <ResultsQuery.size();i++)
+  {
+    ListIDs.push_back(atoi(ResultsQuery.at(i).c_str()));
+  }
+  return ListIDs;
+}

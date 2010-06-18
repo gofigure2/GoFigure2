@@ -166,8 +166,11 @@ public:
   std::pair<std::string,QColor> SaveNewCollectionInDB(
     std::pair<std::string,QColor> iColorNewCollection, std::string iTraceName,
     int iTimePoint,std::string iCellType = "",std::string iSubCellType = "");
+
   QStringList GetQStringListCellTypes();
+
   QStringList GetQStringListSubCellTypes();
+
   void UpdateCurrentColorData(std::pair<std::string,QColor> iCurrentColorData);
   void SetCurrentCollectionID(std::pair<std::string,QColor> iCurrentCollectionData);
   void UpdateCurrentCellType(std::string iCurrentCellType);
@@ -271,6 +274,8 @@ signals:
   void TheColorNameAlreadyExits();
   void ColorChangedForSelectedTraces(std::pair<std::list<int>,QColor>);
   void TableWidgetTableChanged(std::string, std::string);
+  void NewMeshToGenerate(std::list<int> ListContourIDs);
+  void MeshGenerationToUpdate (std::list<int> ListContourIDs);
 
 protected:
   std::pair<std::string,QColor> m_CurrentColorData;
@@ -399,8 +404,6 @@ protected:
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-
-
 protected slots:
   void CreateContextMenu(const QPoint &pos);
   void DeleteTraces();
