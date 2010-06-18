@@ -193,6 +193,37 @@ OnRightButtonUp()
 //----------------------------------------------------------------------------
 void
 vtkInteractorStyleImage3D::
+OnMiddleButtonDown()
+{
+  // if object is picked, send the event
+  if( m_EnablePickingMode )
+    {
+    this->StopState();
+    }
+
+  // Call parent to handle all other states and perform additional work
+  this->Superclass::OnMiddleButtonDown();
+}
+
+//----------------------------------------------------------------------------
+void
+vtkInteractorStyleImage3D::
+OnMiddleButtonUp()
+{
+  // if object is picked, send the event
+  if( m_EnablePickingMode )
+    {
+    //if no actor selected = change state
+    this->StartState( VTKIS_PICK3D);
+    }
+
+  // Call parent to handle all other states and perform additional work
+  this->Superclass::OnMiddleButtonUp();
+}
+
+//----------------------------------------------------------------------------
+void
+vtkInteractorStyleImage3D::
 OnChar()
 {
   vtkRenderWindowInteractor *rwi = this->Interactor;

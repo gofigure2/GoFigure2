@@ -109,6 +109,8 @@ class VTK_RENDERINGADDON2_EXPORT vtkInteractorStyleImage3D :
   virtual void OnLeftButtonUp();
   virtual void OnRightButtonDown();
   virtual void OnRightButtonUp();
+  virtual void OnMiddleButtonDown();
+  virtual void OnMiddleButtonUp();
   virtual void OnChar();
   virtual void OnKeyUp();
 

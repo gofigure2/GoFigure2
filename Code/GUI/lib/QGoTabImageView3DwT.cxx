@@ -85,9 +85,7 @@
 #include "vtkPolyData.h"
 
 #include "vtkPolyDataMapper.h"
-#include "vtkActor.h"
 #include "vtkOutlineFilter.h"
-#include "vtkRenderWindow.h"
 
 //VTK FILTERS
 #include "vtkImageExport.h"
@@ -3998,9 +3996,7 @@ ChangeColorOfSelectedTraces( ContourMeshStructureMultiIndexContainer& iContainer
         while( ( traceid_it != iContainer.get< TraceID >().end() )
             && ( (*traceid_it).TraceID == trace_id ) )
           {
-          if( it->Highlighted == traceid_it->Highlighted )
-            {
-            if ( it->Highlighted )
+          if ( it->Highlighted )
               {
               ContourMeshStructure temp( *traceid_it );
               temp.Highlighted = it->Highlighted;
@@ -4009,7 +4005,6 @@ ChangeColorOfSelectedTraces( ContourMeshStructureMultiIndexContainer& iContainer
               temp.rgba[2] = rgba[2];
               temp.rgba[3] = rgba[3];
               iContainer.get< TraceID >().replace( traceid_it, temp );
-              }
             }
           ++traceid_it;
           }
