@@ -458,7 +458,7 @@ protected:
     const bool& iHighlighted, const unsigned int& iTCoord, const bool& iSaveInDataBase );
 
   /**
-   * @param[in] iContourID
+   * @param[in] iMeshID
    * @param[in] iDir
    * @param[in] iHighlighted
    * @param[in] iR red component in [0,1]
@@ -468,7 +468,7 @@ protected:
    * @param[in] iSaveInDataBase save in data base if true
    * \todo Alpha component is not used at all, it is assumed to be opaque
    */
-  virtual int SavePolyDataAsMeshInDB( vtkPolyData* iView, const int& iContourID, const int& iDir,
+  virtual int SavePolyDataAsMeshInDB( vtkPolyData* iView, const int& iMeshID, const int& iDir,
     const double& iR, const double& iG, const double& iB, const double& iA,
     const bool& iHighlighted, const unsigned int& iTCoord, const bool& iSaveInDataBase );
 
@@ -572,7 +572,7 @@ protected slots:
   void ImportContours();
   void ImportMeshes();
 
-  void CreateMeshFromContours( const unsigned int& iMeshID );
+  void CreateMeshFromSelectedContours( ContourMeshStructureMultiIndexContainer& iContainer );
 
 private:
   Q_DISABLE_COPY( QGoTabImageView3DwT );

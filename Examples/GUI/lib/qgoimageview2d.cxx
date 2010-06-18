@@ -135,6 +135,9 @@ int main( int argc, char** argv )
   vtkLookupTable * LUT = vtkLookupTableManager::GetHotMetalLookupTable();
 
   viewer->SetLookupTable( LUT );
+  viewer->DefaultMode();
+  viewer->ZoomMode();
+  viewer->PanMode();
 
   app.processEvents();
 

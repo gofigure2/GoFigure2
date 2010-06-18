@@ -77,7 +77,6 @@ public:
   void setupUi( QWidget* parent );
   void retranslateUi(QWidget *parent);
 
-  void SetDefaultInteractionStyle( vtkViewImage2D&);
   void DefaultMode();
   void ZoomMode();
   void PanMode();

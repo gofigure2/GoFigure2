@@ -1452,8 +1452,9 @@ ClearAllSeeds()
   for( unsigned int i = 0; i < this->SeedWidget.size(); i++ )
     {
     int N = this->SeedRep[i]->GetNumberOfSeeds();
-    int k = N - 1;
-    for( int j = 0; j < N; j++ )
+//     int k = N - 1;
+//     for( int j = 0; j < N; j++ )
+    for( int k = N - 1; k > 0; --k )
       {
       this->SeedWidget[i]->DeleteSeed( k-- );
       this->SeedRep[i]->RemoveLastHandle();
@@ -1484,11 +1485,14 @@ EnableContourPickingMode()
   for( int i=0; i<3; i++)
     {
     vtkViewImage2D* View = this->m_Pool->GetItem( i );
-      View->SetInteractionStyle(
-        vtkInteractorStyleImage2D::InteractionTypeContourPicking );
-    vtkInteractorStyleImage2D* t = vtkInteractorStyleImage2D::SafeDownCast (View->GetInteractorStyle());
-    if (t)
+    View->SetInteractionStyle(
+      vtkInteractorStyleImage2D::InteractionTypeContourPicking );
+    vtkInteractorStyleImage2D* t =
+      vtkInteractorStyleImage2D::SafeDownCast( View->GetInteractorStyle() );
+    if( t )
+      {
       t->StartPick();
+      }
     }
 }
 
@@ -1500,11 +1504,14 @@ DisableContourPickingMode()
   for( int i=0; i<3; i++)
     {
     vtkViewImage2D* View = this->m_Pool->GetItem( i );
-      View->SetInteractionStyle(
-        vtkInteractorStyleImage2D::InteractionTypeContourPicking );
-    vtkInteractorStyleImage2D* t = vtkInteractorStyleImage2D::SafeDownCast (View->GetInteractorStyle());
-    if (t)
+    View->SetInteractionStyle(
+      vtkInteractorStyleImage2D::InteractionTypeContourPicking );
+    vtkInteractorStyleImage2D* t =
+      vtkInteractorStyleImage2D::SafeDownCast (View->GetInteractorStyle());
+    if( t )
+      {
       t->EndPick();
+      }
     }
 }
 //-------------------------------------------------------------------------
@@ -1512,9 +1519,9 @@ std::list< vtkProp3D* >
 QGoImageView3D::
 GetListOfPickedContours()
 {
-  std::list< vtkProp3D* > pickedContoursList;
   // Get picked contours from all views
-  pickedContoursList = this->m_Pool->GetCommand()->GetListOfPickedActors();
+  std::list< vtkProp3D* > pickedContoursList =
+    this->m_Pool->GetCommand()->GetListOfPickedActors();
   return pickedContoursList;
 }
 

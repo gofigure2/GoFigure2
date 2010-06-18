@@ -235,20 +235,13 @@ QGoImageView2D::
 DefaultMode()
 {
   vtkViewImage2D* View = m_Pool->GetItem( 0 );
-  this->SetDefaultInteractionStyle( *View );
+  View->SetLeftButtonInteractionStyle( vtkInteractorStyleImage2D::InteractionTypeSlice );
+  View->SetMiddleButtonInteractionStyle( vtkInteractorStyleImage2D::InteractionTypePan );
+  View->SetRightButtonInteractionStyle( vtkInteractorStyleImage2D::InteractionTypeZoom );
+  View->SetWheelInteractionStyle( vtkInteractorStyleImage2D::InteractionTypeSlice );
 }
 //-------------------------------------------------------------------------
 
-//-------------------------------------------------------------------------
-void
-QGoImageView2D::
-SetDefaultInteractionStyle(vtkViewImage2D& image)
-{
-  image.SetLeftButtonInteractionStyle( vtkInteractorStyleImage2D::InteractionTypeSlice );
-  image.SetMiddleButtonInteractionStyle( vtkInteractorStyleImage2D::InteractionTypePan );
-  image.SetRightButtonInteractionStyle( vtkInteractorStyleImage2D::InteractionTypeZoom );
-  image.SetWheelInteractionStyle( vtkInteractorStyleImage2D::InteractionTypeSlice );
-}
 //-------------------------------------------------------------------------
 void
 QGoImageView2D::

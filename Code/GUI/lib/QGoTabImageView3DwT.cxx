@@ -45,6 +45,7 @@
 #include "QGoVisualizationDockWidget.h"
 #include "QGoManualSegmentationDockWidget.h"
 #include "GoDBCoordinateRow.h"
+#include "GoDBMeshRow.h"
 
 #if defined ( ENABLEFFMPEG ) || defined ( ENABLEAVI )
 
@@ -56,7 +57,7 @@
 
 #include "GoDBContourRow.h"
 #include "GoDBCoordinateRow.h"
-#include "GoDBMeshRow.H"
+#include "GoDBMeshRow.h"
 
 #include "vtkLSMReader.h"
 
@@ -272,7 +273,9 @@ QGoTabImageView3DwT::
 
   // If no seeds have been created, don't try do delete it!
   if( m_SeedsWorldPosition )
-  m_SeedsWorldPosition->Delete();
+    {
+    m_SeedsWorldPosition->Delete();
+    }
 //   DeleteContourMeshStructureElement( m_ContourContainer );
 //   DeleteContourMeshStructureElement( m_MeshContainer );
 
@@ -963,7 +966,7 @@ CreateAllViewActions()
   QAction* LookupTableAction = new QAction( tr( "Lookup Table" ), this );
   LookupTableAction->setStatusTip( tr(" Change the associated lookup table" ) );
 
-	//take
+  //take
   QIcon luticon;
   luticon.addPixmap( QPixmap(QString::fromUtf8(":/fig/LookupTable.png")),
     QIcon::Normal, QIcon::Off );
@@ -1058,10 +1061,9 @@ CreateAllViewActions()
   QObject::connect( Change3DPerspectiveToSagittalAction, SIGNAL( triggered() ),
     this, SLOT( Change3DPerspectiveToSagittal( ) ) );
 }
+//-------------------------------------------------------------------------
 
-/**
- *
- */
+//-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
 CreateToolsActions()
@@ -2352,7 +2354,7 @@ ValidateContour( )
   // get color from the dock widget
   double r, g, b, a( 1. );
   //QColor color = m_ManualSegmentationDockWidget->GetValidatedColor();
-  if( this->m_TraceManualEditingDockWidget->m_TraceWidget->GetCurrentCollectionID()  == -1 )
+  if( this->m_TraceManualEditingDockWidget->m_TraceWidget->GetCurrentCollectionID() == -1 )
     {
     r = 0.1;
     g = 0.5;
@@ -3972,7 +3974,7 @@ ChangeColorOfSelectedTracesManager(
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
-ChangeColorOfSelectedTraces( ContourMeshStructureMultiIndexContainer& iContainer,
+ChangeColorOfSelectedTraces( ContourMeshStructureMultiIndexContainer& ioContainer,
     std::string iCurrentTrace, QColor iSelectedColor)
 {
   ContourMeshStructureMultiIndexContainer::iterator
@@ -3987,55 +3989,54 @@ ChangeColorOfSelectedTraces( ContourMeshStructureMultiIndexContainer& iContainer
 
   while( it != this->m_DataBaseTables
                      ->GetTracesInfoListForVisu( iCurrentTrace.c_str() )->end() )
+    {
+    trace_id = it->TraceID;
+    ContourMeshStructureMultiIndexContainer::index< TraceID >::type::iterator
+      traceid_it = ioContainer.get< TraceID >().find( trace_id );
+    if( traceid_it != ioContainer.get< TraceID >().end() )
       {
-      trace_id = it->TraceID;
-      ContourMeshStructureMultiIndexContainer::index< TraceID >::type::iterator
-      traceid_it = iContainer.get< TraceID >().find( trace_id );
-      if( traceid_it != iContainer.get< TraceID >().end() )
+      while( ( traceid_it != ioContainer.get< TraceID >().end() )
+        && ( (*traceid_it).TraceID == trace_id ) )
         {
-        while( ( traceid_it != iContainer.get< TraceID >().end() )
-            && ( (*traceid_it).TraceID == trace_id ) )
+        if ( it->Highlighted )
           {
-          if ( it->Highlighted )
-              {
-              ContourMeshStructure temp( *traceid_it );
-              temp.Highlighted = it->Highlighted;
-              temp.rgba[0] = rgba[0];
-              temp.rgba[1] = rgba[1];
-              temp.rgba[2] = rgba[2];
-              temp.rgba[3] = rgba[3];
-              iContainer.get< TraceID >().replace( traceid_it, temp );
-            }
-          ++traceid_it;
+          ContourMeshStructure temp( *traceid_it );
+          temp.Highlighted = it->Highlighted;
+          temp.rgba[0] = rgba[0];
+          temp.rgba[1] = rgba[1];
+          temp.rgba[2] = rgba[2];
+          temp.rgba[3] = rgba[3];
+          ioContainer.get< TraceID >().replace( traceid_it, temp );
           }
+        ++traceid_it;
         }
-      ++it;
       }
+    ++it;
+    }
 }
 
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
-CreateMeshFromContours( const unsigned int& iMeshID )
+CreateMeshFromSelectedContours( ContourMeshStructureMultiIndexContainer& iContainer )
 {
-  // get a container from the database given a meshid
-  std::vector< ContourMeshStructure > container; // =;
-
-  // iterate on the container and fill a list of contours
-  std::vector< ContourMeshStructure >::iterator it = container.begin();
+/*  ContourMeshStructureMultiIndexContainer::iterator it = iContainer.begin();
 
   // get the time point
   unsigned int tcoord = it->TCoord;
 
   std::vector< vtkPolyData* > list_contours( container.size(), NULL );
   size_t id = 0;
-
-  while( it != container.end() )
+  
+  while( it != iContainer.end() )
     {
     list_contours[id] = it->Nodes;
-    ++it;
     ++id;
+    ++it;
     }
+
+  // iterate on the container and fill a list of contours
+  std::vector< ContourMeshStructure >::iterator it = container.begin();
 
   // make the mesh from the list of contours
   typedef itk::ContourToMeshFilter< std::vector< vtkPolyData* > > FilterType;
@@ -4049,13 +4050,16 @@ CreateMeshFromContours( const unsigned int& iMeshID )
     this->m_TraceManualEditingDockWidget->m_TraceWidget->ColorComboBox->GetCurrentColorData().second;
   color.getRgbF( &rgba[0], &rgba[1], &rgba[2] );
 
+  unsigned int meshid =
+    this->m_TraceManualEditingDockWidget->m_TraceWidget->GetCurrentCollectionID();
+
   bool highlighted = false;
 
   // visualize of the generated mesh
   // save into the database
   bool saveindatabase = true;
-  this->AddMeshFromNodes( iMeshID, filter->GetOutput(), rgba, highlighted,
-                          tcoord, saveindatabase );
+  this->AddMeshFromNodes( meshid, filter->GetOutput(), rgba, highlighted,
+                          tcoord, saveindatabase );*/
 }
 //-------------------------------------------------------------------------
 
