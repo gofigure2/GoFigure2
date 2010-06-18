@@ -135,7 +135,6 @@ OnMouseMove()
       this->InvokeEvent(vtkViewImage2DCommand::CameraMoveEvent, this);
       break;
     case VTKIS_PICK:
-      std::cout << "in pick" <<std::endl;
       HighlightCurrentActor();
       break;
   }

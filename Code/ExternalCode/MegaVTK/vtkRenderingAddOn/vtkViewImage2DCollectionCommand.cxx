@@ -185,11 +185,10 @@ void vtkViewImage2DCollectionCommand::Execute(vtkObject *caller,
   if( event == vtkViewImage2DCommand::ContourPickingEvent )
     {
      vtkProp* prop = isi->GetCurrentProp();
+     ListOfPickedActors.clear();
+     ListOfUnPickedActors.clear();
      if( prop )
        {
-       ListOfPickedActors.clear();
-       ListOfUnPickedActors.clear();
-
        viewer->GetProp3DCollection()->InitTraversal();
        vtkProp3D* prop_temp = viewer->GetProp3DCollection()->GetNextProp3D(); // image
        prop_temp = viewer->GetProp3DCollection()->GetNextProp3D(); // 1st plane
