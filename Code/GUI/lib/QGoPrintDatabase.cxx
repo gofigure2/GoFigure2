@@ -409,10 +409,10 @@ void QGoPrintDatabase::CreateCorrespondingCollection()
     CloseDBConnection();
     QString CollectionIDQString = ConvertToString<int>(NewCollectionID).c_str();
     emit NewCreatedCollection(this->m_CurrentColorData.second,CollectionIDQString);
-    if (CurrentlyUsedTraceData->TraceName == "contour")
-      {
-      emit NewMeshToGenerate(ListSelectedTraces);
-      }
+   // if (CurrentlyUsedTraceData->TraceName == "contour")
+     // {
+      //emit NewMeshToGenerate(ListSelectedTraces);
+      //}
     }
 }
 //--------------------------------------------------------------------------
@@ -453,7 +453,7 @@ void QGoPrintDatabase::AddToSelectedCollection()
         std::list<int> ListIDs = CurrentlyUsedTraceData->CollectionOfTraces->GetTracesIDPartOfTheCollection(
         this->m_DatabaseConnector,
         atoi(this->m_CurrentCollectionData.first.c_str()));
-        emit MeshGenerationToUpdate (ListIDs);
+        //emit MeshGenerationToUpdate (ListIDs);
       }
     CloseDBConnection();
     }
@@ -906,10 +906,8 @@ int QGoPrintDatabase::CreateMeshFromOneClickSegmentation(
       this->m_CurrentColorData.second.blue(),this->m_CurrentColorData.second.alpha(),
       this->m_CurrentColorData.first,this->m_DatabaseConnector);
     NewMesh.SetCollectionID(atoi(this->m_CurrentCollectionData.first.c_str()));
-    NewMesh.SetField("CellTypeID",
-      ConvertToString<int>(this->GetCurrentCellTypeID()));
-    NewMesh.SetField("SubCellularID",
-      ConvertToString<int>(this->GetCurrentSubCellTypeID()));
+    NewMesh.SetField<int>("CellTypeID",this->GetCurrentCellTypeID());
+    NewMesh.SetField<int>("SubCellularID",this->GetCurrentSubCellTypeID());
 
     //create the collection in the database and get the corresponding ID:
     NewMeshID = CurrentlyUsedTraceData->CollectionOfTraces->

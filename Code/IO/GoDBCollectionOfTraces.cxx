@@ -784,25 +784,63 @@ std::list<int> GoDBCollectionOfTraces::UpdateDBDataForAddedTracesToExistingColle
     vtkMySQLDatabase* iDatabaseConnector)
 {
   std::list<int> ListTraceIDWithBoundingBoxUpdated;
-  //update the bounding boxes for the previous collection if the traces had one:
+  std::vector<std::string> VectorSelectedTraces(iListSelectedTraces.size());
   std::list<int>::iterator iter = iListSelectedTraces.begin();
-  while (iter != iListSelectedTraces.end())
+  int i = 0;
+  while(iter != iListSelectedTraces.end())
     {
-    int tempTraceID = *iter;
-    int tempCollectionID = FindOneID(iDatabaseConnector,this->m_TracesName,
-      this->m_CollectionIDName,this->m_TracesIDName, 
-      ConvertToString<int>(tempTraceID));
-    //change the collectionID of the selected trace to the new one:
-    this->UpdateCollectionIDOfSelectedTrace(tempTraceID,iNewCollectionID,
-      iDatabaseConnector);
-    if (tempCollectionID != 0)
-      {     
-      this->RecalculateDBBoundingBox(iDatabaseConnector,tempCollectionID);
-      ListTraceIDWithBoundingBoxUpdated.push_back(tempCollectionID);
-      }
+    int temp = *iter;
+    VectorSelectedTraces.at(i) = ConvertToString<int>(temp);
+    i++;
     iter++;
     }
- 
+  //update the bounding boxes for the previous collection if the traces had one:
+  //std::list<int>::iterator iter = iListSelectedTraces.begin();
+
+  std::vector<std::string> ListCollectionIDWithBoundingBoxToUpdate =
+    ListSpecificValuesForOneColumn(iDatabaseConnector,this->m_TracesName, 
+    this->m_CollectionIDName,this->m_TracesIDName,VectorSelectedTraces,true,true);
+  //change the collectionID of the selected trace to the new one:
+    iter = iListSelectedTraces.begin();
+    while(iter != iListSelectedTraces.end())
+      {
+      this->UpdateCollectionIDOfSelectedTrace(*iter,iNewCollectionID,
+        iDatabaseConnector);
+      iter++;
+      }
+
+  if(!ListCollectionIDWithBoundingBoxToUpdate.empty())
+    {
+
+    //while (iter != iListSelectedTraces.end())
+    //  {
+    //  int tempTraceID = *iter;
+    //  int tempCollectionID = FindOneID(iDatabaseConnector,this->m_TracesName,
+    //    this->m_CollectionIDName,this->m_TracesIDName, 
+    //    ConvertToString<int>(tempTraceID));
+
+      //change the collectionID of the selected trace to the new one:
+     // this->UpdateCollectionIDOfSelectedTrace(tempTraceID,iNewCollectionID,
+      //  iDatabaseConnector);
+    //  if (tempCollectionID != 0)
+    //    {     
+    //    this->RecalculateDBBoundingBox(iDatabaseConnector,tempCollectionID);
+    //    ListTraceIDWithBoundingBoxUpdated.push_back(tempCollectionID);
+    //    }
+    //  iter++;
+    //  }
+
+    std::vector<std::string>::iterator iterVector = 
+      ListCollectionIDWithBoundingBoxToUpdate.begin();
+    while(iterVector != ListCollectionIDWithBoundingBoxToUpdate.end())
+      {
+      std::string temp = *iterVector;
+      this->RecalculateDBBoundingBox(iDatabaseConnector,atoi(temp.c_str()));
+      ListTraceIDWithBoundingBoxUpdated.push_back(atoi(temp.c_str()));
+      iterVector++;
+      }
+    }
+  
   //Get the max and min coordid for the bounding box:
   int CoordMaxID;
   int CoordMinID;

@@ -324,11 +324,6 @@ void QGoTraceManualEditingWidget::UpdateTraceAndCollection(
     this->LabelCellType->hide();
     this->m_ChoseSubCellType->hide();
     this->LabelSubCellType->hide();
-    /** \todo when using lineages, remove the following*/
-    if (iTrace == "track")//at that time, we don't show lineages
-      {
-      this->CollectionName->hide();
-      }
     }
   this->show();
 }
