@@ -34,5 +34,6 @@
 		    <file>fig/MeshPicking.png</file>
 		    <file>fig/Distance.png</file>
         <file>fig/Angle.png</file>
+        <file>fig/Box3DPicking.png</file>
     </qresource>
 </RCC>

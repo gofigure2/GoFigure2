@@ -1298,6 +1298,11 @@ void QGoTabImageView3DwT::CreateModeActions()
   Box3DPickingAction->setCheckable( true );
   Box3DPickingAction->setChecked(false);
 
+  QIcon Box3DPickingIcon;
+  Box3DPickingIcon.addPixmap( QPixmap(QString::fromUtf8(":/fig/Box3DPicking.png")),
+    QIcon::Normal, QIcon::Off );
+  Box3DPickingAction->setIcon( Box3DPickingIcon );
+
   group->addAction( Box3DPickingAction );
 
   this->m_ModeActions.push_back( Box3DPickingAction );
