@@ -2726,14 +2726,14 @@ AddContourFromNodes( const unsigned int& iContourID,
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
-AddMeshFromNodes( const unsigned int& iContourID,
+AddMeshFromNodes( const unsigned int& iMeshID,
   vtkPolyData* iNodes,
   const double iRgba[4],
   const bool& iHighlighted,
   const unsigned int& iTCoord,
   const bool& iSaveInDataBase )
 {
-  AddMeshFromNodes( iContourID, iNodes, iRgba[0], iRgba[1], iRgba[2], iRgba[3],
+  AddMeshFromNodes( iMeshID, iNodes, iRgba[0], iRgba[1], iRgba[2], iRgba[3],
     iHighlighted, iTCoord, iSaveInDataBase );
 }
 //-------------------------------------------------------------------------
@@ -2741,12 +2741,12 @@ AddMeshFromNodes( const unsigned int& iContourID,
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
-AddMeshFromNodes( const unsigned int& iContourID,
+AddMeshFromNodes( const unsigned int& iMeshID,
   vtkPolyData* iNodes,
   const double& iR, const double& iG, const double& iB, const double& iA,
   const bool& iHighlighted, const unsigned int& iTCoord, const bool& iSaveInDataBase )
 {
-  this->SavePolyDataAsMeshInDB(  iNodes, iContourID, 0, iR,  iG,  iB,
+  this->SavePolyDataAsMeshInDB(  iNodes, iMeshID, 0, iR,  iG,  iB,
      iA,  iHighlighted,  iTCoord, iSaveInDataBase );
 }
 
@@ -3704,7 +3704,7 @@ SavePolyDataAsContourInDB( vtkPolyData* iView )
 //-------------------------------------------------------------------------
 int
 QGoTabImageView3DwT::
-SavePolyDataAsMeshInDB( vtkPolyData* iView, const int& iContourID,
+SavePolyDataAsMeshInDB( vtkPolyData* iView, const int& iMeshID,
     const int& iDir, const double& iR, const double& iG, const double& iB,
     const double& iA, const bool& iHighlighted, const unsigned int& iTCoord,
     const bool& iSaveInDataBase )
@@ -3760,7 +3760,7 @@ SavePolyDataAsMeshInDB( vtkPolyData* iView, const int& iContourID,
     }
   else
     {
-    m_MeshId = iContourID;
+    m_MeshId = iMeshID;
     }
 
   // fill the container
