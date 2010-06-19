@@ -788,11 +788,12 @@ int QGoPrintDatabase::SaveContoursFromVisuInDB( unsigned int iXCoordMin,
   std::list<int> ListSelectedTraces;
 
   ListSelectedTraces.push_back(NewContourID);
-
-  emit this->NeedCurrentSelectedCollectionID();
-
-  this->AddListTracesToACollection(
-    ListSelectedTraces,this->m_CurrentCollectionData,"contour",false);
+  if (iMeshID != 0)
+    {
+    emit this->NeedCurrentSelectedCollectionID();
+    this->AddListTracesToACollection(
+      ListSelectedTraces,this->m_CurrentCollectionData,"contour",false);
+    }
   this->AddATraceToContourMeshInfo("contour",NewContourID);
 
   CloseDBConnection();
@@ -1578,16 +1579,19 @@ void QGoPrintDatabase::DeleteTracesAsPartOfACollection(std::string iTraceName,
 //-------------------------------------------------------------------------
 void QGoPrintDatabase::AddListTracesToACollection(
   std::list<int> iListSelectedTraces,std::pair<std::string,QColor> iCollection,
-  std::string iTraceName, bool IsANewCollection)
+  std::string iTraceName, bool IsANewCollection, int iCollectionID)
 {
-  int CollectionID = atoi(iCollection.first.c_str());
+  if (iCollectionID == -1)
+    {
+    iCollectionID = atoi(iCollection.first.c_str());
+    }
   TraceInfoStructure* CurrentlyUsedTraceData =
     this->GetTraceInfoStructure(iTraceName);
   //update the corresponding database data:
   std::list<int> ListCollectionsToUpdateInTableWidget =
     CurrentlyUsedTraceData->CollectionOfTraces->
     UpdateDBDataForAddedTracesToExistingCollection(iListSelectedTraces,
-    CollectionID,this->m_DatabaseConnector);
+    iCollectionID,this->m_DatabaseConnector);
 
   //update the RowContainer for traces with the new ID for the selected traces:
   //GoDBTableWidgetContainer* LinkToRowContainerForTraces =
@@ -1595,7 +1599,7 @@ void QGoPrintDatabase::AddListTracesToACollection(
   //LinkToRowContainerForTraces->UpdateIDs(ListSelectedTraces,CollectionID);
 
   //update the Table Widget Display:
-  CurrentlyUsedTraceData->Table->UpdateIDs(CollectionID,
+  CurrentlyUsedTraceData->Table->UpdateIDs(iCollectionID,
     CurrentlyUsedTraceData->CollectionNameID,iCollection.second,
     CurrentlyUsedTraceData->TraceNameID,iListSelectedTraces);
   //update the Collection Table with the new bounding box:
@@ -1607,7 +1611,7 @@ void QGoPrintDatabase::AddListTracesToACollection(
     }
   else
     {
-    this->UpdateTableWidgetForAnExistingTrace(CurrentlyUsedTraceData->TraceName,CollectionID);
+    this->UpdateTableWidgetForAnExistingTrace(CurrentlyUsedTraceData->TraceName,iCollectionID);
     }
 
   //update the Collection Table with the old updated bounding box:

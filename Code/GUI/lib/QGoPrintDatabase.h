@@ -359,7 +359,7 @@ protected:
   the new collection and the previous collection the traces were part of*/
   void AddListTracesToACollection(std::list<int> iListSelectedTraces,
     std::pair<std::string,QColor> iCollection, std::string iTraceName,
-    bool IsANewCollection);
+    bool IsANewCollection,int iCollectionID = -1);
   
   /** \brief set all the tracesinfostructures */
   void SetTraceInfoStructures();
