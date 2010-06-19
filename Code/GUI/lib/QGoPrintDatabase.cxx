@@ -287,8 +287,9 @@ void QGoPrintDatabase::CreateContextMenu(const QPoint &iPos)
 
   ContextMenu->addAction(tr("Delete checked %1s").arg(TraceName.c_str()),
     this,SLOT(DeleteTraces()));
-  //if (TraceName != "mesh")//for the time being, as creating a track makes GF crash
-  //  {
+  /** \todo when using lineages, remove the following*/
+  if (TraceName != "track")//for the time being, as we don't use lineages
+    {
     ContextMenu->addAction(tr("Create a new %1 from checked %2s")
     .arg(CurrentlyUsedTraceData->CollectionName.c_str())
     .arg(CurrentlyUsedTraceData->TraceName.c_str()),
@@ -298,7 +299,7 @@ void QGoPrintDatabase::CreateContextMenu(const QPoint &iPos)
     .arg(this->m_CurrentCollectionData.first.c_str()),this,SLOT(AddToSelectedCollection()));
   ContextMenu->addAction(tr("ReEdit the checked %1").arg(TraceName.c_str()),
     this,SLOT(ReEditTrace()));
-   // }
+    }
   
   ContextMenu->addAction(tr("Check the selected %1s")
     .arg(CurrentlyUsedTraceData->TraceName.c_str()),this,SLOT(CheckSelectedRows()));

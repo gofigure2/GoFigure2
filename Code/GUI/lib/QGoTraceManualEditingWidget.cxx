@@ -101,7 +101,15 @@ SetCollectionID(
     }
   QString Text(tr("Add a new %1...").arg(CollectionName->text()));
   this->ColorIDCollectionComboBox->setColorDialogEnabled(true,Text.toStdString());
-  this->ColorIDCollectionComboBox->show();
+  /** \todo when using lineages, remove the following*/
+  if (CollectionName->text() == "lineage")//at that time we don't show lineages
+    {
+    this->ColorIDCollectionComboBox->hide();
+    }
+  else
+    {
+    this->ColorIDCollectionComboBox->show();
+    }
 }
 //-------------------------------------------------------------------------
 
@@ -316,6 +324,11 @@ void QGoTraceManualEditingWidget::UpdateTraceAndCollection(
     this->LabelCellType->hide();
     this->m_ChoseSubCellType->hide();
     this->LabelSubCellType->hide();
+    /** \todo when using lineages, remove the following*/
+    if (iTrace == "track")//at that time, we don't show lineages
+      {
+      this->CollectionName->hide();
+      }
     }
   this->show();
 }

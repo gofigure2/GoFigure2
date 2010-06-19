@@ -1291,7 +1291,7 @@ void QGoTabImageView3DwT::CreateModeActions()
     this, SLOT( AngleWidgetInteractorBehavior( bool ) ) );
 
   //---------------------------------//
-  //       Box 3D picking  mode        //
+  //       Box 3D picking  mode      //
   //---------------------------------//
 
   QAction* Box3DPickingAction = new QAction( tr( "Box 3D Picking" ), this );
