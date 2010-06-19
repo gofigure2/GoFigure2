@@ -64,6 +64,11 @@ int main( int argc, char** argv )
     for( int i = 1; i < argc; i++ )
       {
       std::string temp = argv[i];
+      if( temp == "--version" )
+        {
+        std::cout << "@GOFIGURE2_VERSION@" <<std::endl;
+        return EXIT_SUCCESS;
+        }
       if( temp == "--i" )
         {
         inputfilename = argv[++i];
@@ -71,8 +76,12 @@ int main( int argc, char** argv )
         }
       if( temp == "--help" )
         {
+        std::cout <<"GoFigure2 version 0.5.0" <<std::endl;
+        std::cout <<std::endl;
         std::cout <<"gofigure [options]" <<std::endl;
         std::cout <<"--i input file (single file)" <<std::endl;
+        std::cout <<"--help list of all options" <<std::endl;
+        std::cout <<"--version get the version number" <<std::endl;
         return EXIT_SUCCESS;
         }
       }
@@ -109,3 +118,4 @@ int main( int argc, char** argv )
 
   return output;
 }
+

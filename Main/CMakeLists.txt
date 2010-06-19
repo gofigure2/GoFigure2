@@ -1,3 +1,7 @@
+CONFIGURE_FILE( ${GOFIGURE2_SOURCE_DIR}/Main/gofigure.cxx.in
+  ${GOFIGURE2_BINARY_DIR}/Main/gofigure.cxx @ONLY IMMEDIATE
+)
+
 SET( QGoMainWindow_UI
   go.ui
 )
@@ -11,7 +15,7 @@ SET( QGoGUISRC_HDRS
 
 
 SET( GOFIGURE_APPLICATION_SOURCE_LIST
-  gofigure.cxx
+  ${GOFIGURE2_BINARY_DIR}/Main/gofigure.cxx
   QGoTabManager.cxx
   QGoMainWindow.cxx
   QGoPluginManager.cxx
