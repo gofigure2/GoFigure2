@@ -43,7 +43,7 @@ int main( int argc, char* argv[] )
   (void) argc;
   (void) argv;
   
-  int resolution = 6;
+  int resolution = 100;
   double z = 0.;
   double lastz = 0.;
   double sphereRadius = 1.;
