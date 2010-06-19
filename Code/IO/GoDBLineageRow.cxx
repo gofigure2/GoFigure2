@@ -6,9 +6,9 @@
 
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-10
 
- Copyright (c) 2009, President and Fellows of Harvard College.
+ Copyright (c) 2009-10, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -47,7 +47,9 @@ GoDBLineageRow::GoDBLineageRow()
   this->InitializeMap();
 }
 //-------------------------------------------------------------------------
-
+GoDBLineageRow::~GoDBLineageRow ()
+{
+}
 //-------------------------------------------------------------------------
 GoDBLineageRow::GoDBLineageRow(vtkMySQLDatabase* DatabaseConnector,
   GoDBCoordinateRow Min, GoDBCoordinateRow Max,unsigned int ImgSessionID,
