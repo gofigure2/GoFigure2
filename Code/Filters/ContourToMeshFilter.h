@@ -126,10 +126,10 @@ class ContourToMeshFilter : public LightObject
         m_Output->ShallowCopy( poissonFilter->GetOutput() );
         m_Output->GetBounds( bounds );
 
-        vtkSmartPointer< vtkPolyDataWriter > writer = vtkSmartPointer< vtkPolyDataWriter >::New();
-        writer->SetInput( m_Output );
-        writer->SetFileName( "mesh.vtk" );
-        writer->Write();
+//        vtkSmartPointer< vtkPolyDataWriter > writer = vtkSmartPointer< vtkPolyDataWriter >::New();
+//        writer->SetInput( m_Output );
+//        writer->SetFileName( "mesh.vtk" );
+//        writer->Write();
         }
       }
 
