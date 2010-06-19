@@ -1462,12 +1462,9 @@ ClearAllSeeds()
 {
   for( unsigned int i = 0; i < this->SeedWidget.size(); i++ )
     {
-    int N = this->SeedRep[i]->GetNumberOfSeeds();
-//     int k = N - 1;
-//     for( int j = 0; j < N; j++ )
-    for( int k = N - 1; k > 0; --k )
+    for( int k = this->SeedRep[i]->GetNumberOfSeeds() - 1; k >= 0; --k )
       {
-      this->SeedWidget[i]->DeleteSeed( k-- );
+      this->SeedWidget[i]->DeleteSeed( k );
       this->SeedRep[i]->RemoveLastHandle();
       }
     }
@@ -1488,6 +1485,7 @@ void
 QGoImageView3D::
 EnableContourPickingMode()
 {
+  /// \todo move this code in the Collection code
   for( int i=0; i<3; i++)
     {
     vtkViewImage2D* View = this->m_Pool->GetItem( i );
@@ -1507,6 +1505,7 @@ void
 QGoImageView3D::
 DisableContourPickingMode()
 {
+  /// \todo move this code in the Collection code
   for( int i=0; i<3; i++)
     {
     vtkViewImage2D* View = this->m_Pool->GetItem( i );
@@ -1526,9 +1525,7 @@ QGoImageView3D::
 GetListOfPickedContours()
 {
   // Get picked contours from all views
-  std::list< vtkProp3D* > pickedContoursList =
-    this->m_Pool->GetCommand()->GetListOfPickedActors();
-  return pickedContoursList;
+  return this->m_Pool->GetCommand()->GetListOfPickedActors();
 }
 
 //-------------------------------------------------------------------------
@@ -1536,10 +1533,7 @@ std::list< vtkProp3D* >
 QGoImageView3D::
 GetListOfUnPickedContours()
 {
-  std::list< vtkProp3D* > unPickedContoursList;
-  // Get picked contours from all views
-  unPickedContoursList = this->m_Pool->GetCommand()->GetListOfUnPickedActors();
-  return unPickedContoursList;
+  return this->m_Pool->GetCommand()->GetListOfUnPickedActors();
 }
 
 //-------------------------------------------------------------------------

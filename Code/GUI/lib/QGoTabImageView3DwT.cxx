@@ -3655,7 +3655,7 @@ SavePolyDataAsContourInDB( vtkPolyData* iView, const int& iContourID,
   for( i = 0; i < contour_actor.size(); i++ )
     {
     ContourMeshStructure temp( m_ContourId,
-        reinterpret_cast< vtkActor* >( contour_actor[i] ), contour_nodes,
+        contour_actor[i], contour_nodes,
         meshid, iTCoord, iHighlighted, iR, iG, iB, iA, i );
     m_ContourContainer.insert( temp );
     }
