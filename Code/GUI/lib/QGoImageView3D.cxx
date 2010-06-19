@@ -1059,6 +1059,7 @@ RemoveActor( const int& iId, vtkActor* iActor )
   if( iId == 3 )
     {
     m_View3D->GetRenderer()->RemoveActor( iActor );
+    m_View3D->GetProp3DCollection()->RemoveItem( iActor );
     }
   else
     {

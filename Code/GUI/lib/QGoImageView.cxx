@@ -277,6 +277,7 @@ RemoveActor( const int& iId, vtkActor* iActor )
     {
     vtkViewImage2D* viewer = m_Pool->GetItem( iId );
     viewer->GetRenderer()->RemoveActor( iActor );
+    viewer->GetProp3DCollection()->RemoveItem( iActor );
     }
 }
 //--------------------------------------------------------------------------
