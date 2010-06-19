@@ -10,7 +10,7 @@ SET( QGOGUILIB_EXAMPLE_SRC
   qgotabimageview3dwt
   qgotabimageview4d
   qgomanualsegmentationsettingsdialog
-  qgovisualizationdockwidget
+  qgonavigationdockwidget
   qgomanualsegmentationdockwidget
   contourmeshstructurehelpertest
   contourmeshstructurehelpertest2
@@ -120,8 +120,8 @@ ADD_TEST( qgomanualsegmentationsettingsdialogTest
   1
 )
 
-ADD_TEST( qgovisualizationdockwidgetTest
-  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qgovisualizationdockwidget
+ADD_TEST( qgonavigationdockwidgetTest
+  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qgonavigationdockwidget
   1
 )
 

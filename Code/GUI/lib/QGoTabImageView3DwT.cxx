@@ -42,7 +42,7 @@
 
 #include "QGoImageView3D.h"
 #include "QGoLUTDialog.h"
-#include "QGoVisualizationDockWidget.h"
+#include "QGoNavigationDockWidget.h"
 #include "QGoManualSegmentationDockWidget.h"
 #include "GoDBCoordinateRow.h"
 #include "GoDBMeshRow.h"
@@ -631,7 +631,7 @@ CreateVisuDockWidget()
     * x via this dockwidget
     */
 
-  m_NavigationDockWidget = new QGoVisualizationDockWidget( this, 4 );
+  m_NavigationDockWidget = new QGoNavigationDockWidget( this, 4 );
 
   QObject::connect( m_NavigationDockWidget, SIGNAL( XSliceChanged( int ) ),
     this, SLOT( SetSliceViewYZ( int ) ) );

@@ -53,7 +53,7 @@
 
 #include <set>
 
-#include "QGoVisualizationDockWidget.h"
+#include "QGoNavigationDockWidget.h"
 #include "QGoManualSegmentationDockWidget.h"
 
 //--------------------------------------------------------------------------
@@ -68,7 +68,7 @@ QGoTabImageViewElementBase( QWidget* iParent ) :
   m_BackgroundColor( Qt::black ),
   m_ContourId( 0 ),
   m_ReEditContourMode( false ),
-  m_VisuDockWidget( 0 )
+  m_NavigationDockWidget( 0 )
 {
   CreateManualSegmentationdockWidget();
 
@@ -331,10 +331,10 @@ ValidateContour( const int& iId )
 // //  unsigned int meshid = m_ManualSegmentationDockWidget->GetMeshId();
 //   unsigned int meshid = 0;
 //
-//   if( this->m_VisuDockWidget->GetCurrentCollectionID() != -1 )
+//   if( this->m_NavigationDockWidget->GetCurrentCollectionID() != -1 )
 //     {
 //     meshid =
-//       static_cast< unsigned int >( this->m_VisuDockWidget->GetCurrentCollectionID() );
+//       static_cast< unsigned int >( this->m_NavigationDockWidget->GetCurrentCollectionID() );
 //     }
 //
 //   unsigned int timepoint = 0;

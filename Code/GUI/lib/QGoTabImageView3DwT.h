@@ -57,7 +57,7 @@
 #include "vtkSmartPointer.h"
 
 class QGoImageView3D;
-class QGoVisualizationDockWidget;
+class QGoNavigationDockWidget;
 class QGoManualSegmentationDockWidget;
 class QGoPrintDatabase;
 class QGoOneClickSegmentationDockWidget;
@@ -399,8 +399,8 @@ protected:
   unsigned int          m_MeshId;
   bool                  m_ReEditContourMode;
 
-  /// \todo rename as QGoVisualizationDockWidget
-  QGoVisualizationDockWidget*         m_NavigationDockWidget;
+  /// \todo rename as QGoNavigationDockWidget
+  QGoNavigationDockWidget*         m_NavigationDockWidget;
   QGoManualSegmentationDockWidget*    m_ManualSegmentationDockWidget;
   QGoOneClickSegmentationDockWidget*  m_OneClickSegmentationDockWidget;
 

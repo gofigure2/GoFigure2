@@ -41,7 +41,7 @@
 
 #include "QGoImageView2D.h"
 #include "QGoLUTDialog.h"
-#include "QGoVisualizationDockWidget.h"
+#include "QGoNavigationDockWidget.h"
 
 
 #include "vtkLookupTable.h"
@@ -85,13 +85,13 @@ QGoTabImageView2D( QWidget* iParent )
   this->m_ContourWidget.back()->SetInteractor( m_ImageView->GetInteractor() );
   this->m_ContourWidget.back()->Off();
 
-  m_VisuDockWidget = new QGoVisualizationDockWidget( this, 2 );
-  m_VisuDockWidget->resize( 120, 300 );
+  m_NavigationDockWidget = new QGoNavigationDockWidget( this, 2 );
+  m_NavigationDockWidget->resize( 120, 300 );
 
   this->m_DockWidgetList.push_front(
       std::pair< QGoDockWidgetStatus*, QDockWidget* >(
-    new QGoDockWidgetStatus( m_VisuDockWidget, Qt::LeftDockWidgetArea, true, true ),
-    m_VisuDockWidget ) );
+    new QGoDockWidgetStatus( m_NavigationDockWidget, Qt::LeftDockWidgetArea, true, true ),
+    m_NavigationDockWidget ) );
 
   QAction* LookupTableAction = new QAction( tr( "Lookup Table" ), this );
   LookupTableAction->setStatusTip( tr(" Change the associated lookup table" ) );
@@ -128,17 +128,17 @@ QGoTabImageView2D( QWidget* iParent )
   QObject::connect( m_BackgroundColorAction, SIGNAL( triggered() ),
     this, SLOT( ChangeBackgroundColor() ) );
 
-  QObject::connect( m_VisuDockWidget, SIGNAL( ShowAllChannelsChanged( bool ) ),
+  QObject::connect( m_NavigationDockWidget, SIGNAL( ShowAllChannelsChanged( bool ) ),
     this, SLOT( ShowAllChannels( bool ) ) );
 
-  QObject::connect( m_VisuDockWidget, SIGNAL( ShowOneChannelChanged( int ) ),
+  QObject::connect( m_NavigationDockWidget, SIGNAL( ShowOneChannelChanged( int ) ),
     this, SLOT( ShowOneChannel( int ) ) );
 
   QAction* separator2 = new QAction( this );
   separator2->setSeparator( true );
   this->m_ViewActions.push_back( separator2 );
 
-  this->m_ViewActions.push_back( m_VisuDockWidget->toggleViewAction() );
+  this->m_ViewActions.push_back( m_NavigationDockWidget->toggleViewAction() );
 
   CreateModeActions();
 

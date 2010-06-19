@@ -38,7 +38,7 @@ SET( QGoGUILIB_SRC
   QGoTabImageView4D.cxx
   QGoTabImageViewElementBase.cxx
   QGoTabImageViewNDBase.cxx
-  QGoVisualizationDockWidget.cxx
+  QGoNavigationDockWidget.cxx
   QGoWizardDB.cxx
   QSplitterChild.cxx
   QTableWidgetChild.cxx
@@ -124,7 +124,7 @@ SET( QGoGUILIB_HDRS
   QGoTabImageView4D.h
   QGoTabImageViewElementBase.h
   QGoTabImageViewNDBase.h
-  QGoVisualizationDockWidget.h
+  QGoNavigationDockWidget.h
   QGoWizardDB.h
   QSplitterChild.h
   QTableWidgetChild.h
@@ -184,7 +184,7 @@ ENDIF( ENABLE_VIDEO_RECORD_AVI )
 SET( QGoGUILIB_UI
   Resources/ManualSegmentationSettingsDlg.ui
   Resources/ManualSegmentationDockWidget.ui
-  Resources/VisualizationDockWidget.ui
+  Resources/NavigationDockWidget.ui
   Resources/QGoPrintDatabase.ui
   Resources/LsmToMegaExportDialog.ui
   Resources/QNameDescriptionInputDialog.ui

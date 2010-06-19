@@ -46,7 +46,7 @@
 class QGoPrintDatabase;
 
 class QGoImageView3D;
-class QGoVisualizationDockWidget;
+class QGoNavigationDockWidget;
 class QGoManualSegmentationDockWidget;
 
 #ifdef   ENABLEVIDEORECORD
@@ -182,7 +182,7 @@ signals:
     bool                                      m_FirstUpdate;
 
     std::vector< QAction* > m_ViewActions;
-    QGoVisualizationDockWidget*       m_VisuDockWidget;
+    QGoNavigationDockWidget*       m_NavigationDockWidget;
     QGoManualSegmentationDockWidget*  m_ManualSegmentationDockWidget;
 
     #ifdef   ENABLEVIDEORECORD

@@ -38,12 +38,12 @@
 
 =========================================================================*/
 
-#ifndef __QGoVisualizationDockWidget_h
-#define __QGoVisualizationDockWidget_h
+#ifndef __QGoNavigationDockWidget_h
+#define __QGoNavigationDockWidget_h
 
 #include <QDockWidget>
 #include <QComboBox>
-#include "ui_VisualizationDockWidget.h"
+#include "ui_NavigationDockWidget.h"
 
 #include "qtcolorcombobox.h"
 
@@ -52,16 +52,16 @@
 class QHBoxLayout;
 class QVBoxLayout;
 
-class QGOGUILIB_EXPORT QGoVisualizationDockWidget :
+class QGOGUILIB_EXPORT QGoNavigationDockWidget :
   public QDockWidget,
-  private Ui::VisualizationDockWidget
+  private Ui::NavigationDockWidget
 {
   Q_OBJECT
 
   public:
-    explicit QGoVisualizationDockWidget( QWidget* parent = 0,
+    explicit QGoNavigationDockWidget( QWidget* parent = 0,
                                 const unsigned int& iDim = 4 );
-    ~QGoVisualizationDockWidget();
+    ~QGoNavigationDockWidget();
 
     void SetNumberOfChannels( const unsigned int& iN );
 

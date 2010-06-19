@@ -56,7 +56,7 @@ class vtkProperty;
 // class vtkQuadricLODActor;
 class vtkActor;
 
-class QGoVisualizationDockWidget;
+class QGoNavigationDockWidget;
 class QGoManualSegmentationDockWidget;
 
 /**
@@ -136,7 +136,7 @@ protected:
   std::vector< vtkSmartPointer< vtkOrientedGlyphContourRepresentation > > m_ContourRepresentation;
   ContourMeshStructureMultiIndexContainer                                 m_ContourMeshContainer;
 
-  QGoVisualizationDockWidget*       m_VisuDockWidget;
+  QGoNavigationDockWidget*       m_NavigationDockWidget;
   QGoManualSegmentationDockWidget*  m_ManualSegmentationDockWidget;
 
   virtual void CreateManualSegmentationdockWidget();
