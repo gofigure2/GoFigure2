@@ -4032,6 +4032,8 @@ void
 QGoTabImageView3DwT::
 CreateMeshFromSelectedContours( std::list<int> iListContourIDs )
 {
+  (void) iListContourIDs;
+
   std::cout <<"CreateMeshFromSelectedContours" <<std::endl;
 /*
   std::list< int >::iterator contourid_it = iListContourIDs.begin();
