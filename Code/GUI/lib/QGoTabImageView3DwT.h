@@ -355,12 +355,16 @@ public slots:
   void UpdateDBAndCollectionIDComboBoxForANewCreatedCollection();
   //void PassInfoForDBFromCollectionIDComboBox();
 
-  /** \brief Get the info for the current selected color from the visu widget and pass it
-  to the database*/
+  /** \brief Get the info for the current selected color from the trace manual editing 
+  widget and pass it to the database*/
   void PassInfoForDBForCurrentSelectedColor();
-  /** \brief Get the current selected collectionid from the visu dock widget and update the
-  currentCollectionID in the table widget*/
+  /** \brief Get the current selected collectionid from the trace manual editing widget 
+  and update the currentCollectionID in the table widget*/
   void PassInfoForCurrentCollectionID();
+
+  /** \brief Get the current selected celltype and subcelltype from the trace manual editing widget 
+  and update the current celltype and sub celltype in the table widget*/
+  void PassInfoForDBForCurrentSelectedCellTypeAndSubCellType();
 
   void Change3DPerspectiveToAxial();
   void Change3DPerspectiveToCoronal();

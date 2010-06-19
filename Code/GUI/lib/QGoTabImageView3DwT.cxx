@@ -699,6 +699,10 @@ CreateDataBaseTablesConnection()
     this, SLOT(PassInfoForDBForCurrentSelectedColor()) );
 
   QObject::connect( this->m_DataBaseTables,
+    SIGNAL(NeedCurrentSelectedCellTypeAndSubCellType()),
+    this, SLOT(PassInfoForDBForCurrentSelectedCellTypeAndSubCellType()) );
+
+  QObject::connect( this->m_DataBaseTables,
     SIGNAL( NewCreatedCollection(QColor, QString) ),
     this->m_TraceManualEditingDockWidget->m_TraceWidget->ColorIDCollectionComboBox
     , SLOT( addColor(QColor, QString) ));
@@ -2792,7 +2796,8 @@ QGoTabImageView3DwT::
 PassInfoForDBForCurrentSelectedColor()
 {
   this->m_DataBaseTables->UpdateCurrentColorData(
-    this->m_TraceManualEditingDockWidget->m_TraceWidget->ColorComboBox->GetCurrentColorData());
+    this->m_TraceManualEditingDockWidget->m_TraceWidget->
+    ColorComboBox->GetCurrentColorData());
 
 }
 //-------------------------------------------------------------------------
@@ -2803,7 +2808,18 @@ QGoTabImageView3DwT::
 PassInfoForCurrentCollectionID()
 {
   this->m_DataBaseTables->SetCurrentCollectionID(
-    this->m_TraceManualEditingDockWidget->m_TraceWidget->ColorIDCollectionComboBox->GetCurrentColorData());
+    this->m_TraceManualEditingDockWidget->m_TraceWidget->
+    ColorIDCollectionComboBox->GetCurrentColorData());
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoTabImageView3DwT::
+PassInfoForDBForCurrentSelectedCellTypeAndSubCellType()
+{
+  this->m_DataBaseTables->UpdateCurrentCellTypeAndSubCellType(
+    this->m_TraceManualEditingDockWidget->m_TraceWidget->GetCurrentCellType(),
+    this->m_TraceManualEditingDockWidget->m_TraceWidget->GetCurrentSubCellType());
 }
 //-------------------------------------------------------------------------
 

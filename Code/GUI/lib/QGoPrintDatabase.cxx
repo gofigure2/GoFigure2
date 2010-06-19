@@ -832,8 +832,6 @@ int QGoPrintDatabase::SaveMeshFromVisuInDB( unsigned int iXCoordMin,
 {
   OpenDBConnection();
 
-  emit NeedCurrentSelectedCellType();
-  emit NeedCurrentSelectedSubCellType();
   emit NeedToGetCurrentSelectedColor();
   emit NeedCurrentSelectedCollectionID();
 
@@ -847,8 +845,10 @@ int QGoPrintDatabase::SaveMeshFromVisuInDB( unsigned int iXCoordMin,
     m_CurrentColorData.second.alpha(),m_CurrentColorData.first,
     this->m_DatabaseConnector);
   mesh_row.SetCollectionID(atoi(m_CurrentCollectionData.first.c_str()));
-  mesh_row.SetField("CellType",this->m_CurrentCellType);
-  mesh_row.SetField("SubCellType",this->m_CurrentSubCellType);
+  mesh_row.SetField("CellTypeID",
+    ConvertToString<int>(this->GetCurrentCellTypeID()));
+  mesh_row.SetField("SubCellularID",
+    ConvertToString<int>(this->GetCurrentSubCellTypeID()));
   
   int NewMeshID = mesh_row.SaveInDB( this->m_DatabaseConnector);
   this->UpdateTableWidgetAndDBWithNewCreatedTrace("mesh",
@@ -869,6 +869,24 @@ int QGoPrintDatabase::SaveMeshFromVisuInDB( unsigned int iXCoordMin,
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+int QGoPrintDatabase::GetCurrentCellTypeID()
+{
+  emit NeedCurrentSelectedCellTypeAndSubCellType();
+  return FindOneID(this->m_DatabaseConnector,
+  "celltype", "CellTypeID","Name", this->m_CurrentCellType);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+int QGoPrintDatabase::GetCurrentSubCellTypeID()
+{
+  emit NeedCurrentSelectedCellTypeAndSubCellType();
+  return FindOneID(this->m_DatabaseConnector,
+    "subcellulartype", "SubCellularID","Name", this->m_CurrentSubCellType);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 int QGoPrintDatabase::CreateMeshFromOneClickSegmentation(
   std::list<int> iListContoursIDs)
 {
@@ -879,8 +897,7 @@ int QGoPrintDatabase::CreateMeshFromOneClickSegmentation(
     OpenDBConnection();
     //set the color for the new collection:
     GoDBMeshRow NewMesh;
-    emit NeedCurrentSelectedCellType();
-    emit NeedCurrentSelectedSubCellType();
+    //emit NeedCurrentSelectedCellTypeAndSubCellType();
     emit NeedToGetCurrentSelectedColor();
     emit NeedCurrentSelectedCollectionID();
 
@@ -888,8 +905,10 @@ int QGoPrintDatabase::CreateMeshFromOneClickSegmentation(
       this->m_CurrentColorData.second.blue(),this->m_CurrentColorData.second.alpha(),
       this->m_CurrentColorData.first,this->m_DatabaseConnector);
     NewMesh.SetCollectionID(atoi(this->m_CurrentCollectionData.first.c_str()));
-    NewMesh.SetField("CellType",this->m_CurrentCellType);
-    NewMesh.SetField("SubCellType",this->m_CurrentSubCellType);
+    NewMesh.SetField("CellTypeID",
+      ConvertToString<int>(this->GetCurrentCellTypeID()));
+    NewMesh.SetField("SubCellularID",
+      ConvertToString<int>(this->GetCurrentSubCellTypeID()));
 
     //create the collection in the database and get the corresponding ID:
     NewMeshID = CurrentlyUsedTraceData->CollectionOfTraces->
@@ -1797,16 +1816,10 @@ QStringList QGoPrintDatabase::GetQStringListSubCellTypes()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoPrintDatabase::UpdateCurrentCellType(std::string iCurrentCellType)
+void QGoPrintDatabase::UpdateCurrentCellTypeAndSubCellType(
+  std::string iCurrentCellType,std::string iCurrentSubCellType)
 {
   this->m_CurrentCellType = iCurrentCellType;
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void QGoPrintDatabase::UpdateCurrentSubCellType(
-  std::string iCurrentSubCellType)
-{
   this->m_CurrentSubCellType = iCurrentSubCellType;
 }
 //-------------------------------------------------------------------------

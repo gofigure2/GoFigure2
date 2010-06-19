@@ -173,8 +173,8 @@ public:
 
   void UpdateCurrentColorData(std::pair<std::string,QColor> iCurrentColorData);
   void SetCurrentCollectionID(std::pair<std::string,QColor> iCurrentCollectionData);
-  void UpdateCurrentCellType(std::string iCurrentCellType);
-  void UpdateCurrentSubCellType(std::string iCurrentSubCellType);
+  void UpdateCurrentCellTypeAndSubCellType(std::string iCurrentCellType,
+    std::string iCurrentSubCellType);
 
   /** \brief return the info for the visu for the related traces*/
   ContourMeshStructureMultiIndexContainer* GetTracesInfoListForVisu(std::string iTraceName);
@@ -263,8 +263,7 @@ signals:
   void NeedToGetCurrentSelectedColor();
   void NewCreatedCollection(QColor,QString );
   void NeedCurrentSelectedCollectionID();
-  void NeedCurrentSelectedCellType();
-  void NeedCurrentSelectedSubCellType();
+  void NeedCurrentSelectedCellTypeAndSubCellType();
   void TraceToReEdit( unsigned int );
   void DeletedCollection( unsigned int );
   void TracesToDeleteInVisu( std::list< int > );
@@ -365,6 +364,8 @@ protected:
   /** \brief set all the tracesinfostructures */
   void SetTraceInfoStructures();
 
+  int GetCurrentCellTypeID();
+  int GetCurrentSubCellTypeID();
   /** \brief create the trace row with the related data provided by
   the visu, iTCoordMax is equal to 0 as for contour and mesh, it is the
   same as TCoord*/
