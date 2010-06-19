@@ -37,8 +37,8 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#ifndef QGOSYNCHRONIZEDVIEWMAINWINDOW_H
-#define QGOSYNCHRONIZEDVIEWMAINWINDOW_H
+#ifndef __QGoSynchronizedViewMainWindow_h
+#define __QGoSynchronizedViewMainWindow_h
 
 
 #include <QMainWindow>

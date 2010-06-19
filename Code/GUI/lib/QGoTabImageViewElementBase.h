@@ -6,9 +6,9 @@
 
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-10
 
- Copyright (c) 2009, President and Fellows of Harvard College.
+ Copyright (c) 2009-10, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -150,7 +150,7 @@ protected:
   virtual void RemoveActorFromViewer( const int& iId, vtkActor* iActor ) = 0;
   virtual void DisplayActorInViewer( const int& iId, vtkActor* iActor ) = 0;
 
-//   virtual std::vector< vtkQuadricLODActor* >
+  //   virtual std::vector< vtkQuadricLODActor* >
   virtual std::vector< vtkActor* >  AddContour( const int& iId,
       vtkPolyData* dataset,
       vtkProperty* property = NULL ) = 0;

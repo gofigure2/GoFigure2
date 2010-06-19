@@ -37,8 +37,8 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#ifndef QGoSynchronizedView2DCallbacks_H
-#define QGoSynchronizedView2DCallbacks_H
+#ifndef __QGoSynchronizedView2DCallbacks_h
+#define __QGoSynchronizedView2DCallbacks_h
 
 #include "vtkCommand.h"
 #include "QGoSynchronizedView2D.h"

@@ -37,8 +37,8 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#ifndef QGOCOMPAREORCHESTRA_H
-#define QGOCOMPAREORCHESTRA_H
+#ifndef __QGoSynchronizedViewManager_h
+#define __QGoSynchronizedViewManager_h
 
 #include <QObject>
 #include "QGoSynchronizedView2D.h"
@@ -129,4 +129,4 @@ private:
 
 };
 
-#endif // QGOCOMPAREORCHESTRA_H
+#endif // __QGoSynchronizedViewManager_h

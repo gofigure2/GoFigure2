@@ -3357,24 +3357,34 @@ ApplyOneClickSegmentationFilter()
 
   switch ( filterToBeApplied )
     {
-    case 0 :
-    // circle contours creation (sphere aspect)
-    this->OneClickSphereContours();
-    break;
-
-    case 1 :
-    // sphere (3D volume creation)
-    this->OneClickSphereMeshes();
-    break;
-
-    case 2 :
-    // 3d level set
-    this->LevelSetSegmentation3D();
-    break;
+    case 0 : // circle contours creation (sphere aspect)
+      {
+      this->OneClickSphereContours();
+      break;
+      }
+    case 1 : // sphere (3D volume creation)
+      {
+      this->OneClickSphereMeshes();
+      break;
+      }
+    case 2 : // 3d level set
+      {
+      this->LevelSetSegmentation3D();
+      break;
+      }
 
     default :
-    break;
+      {
+      /// \todo call an exception here!
+      break;
+      }
     }
+    
+  // Erase seeds once everything is stored in DB
+  this->m_ImageView->ClearAllSeeds();
+
+  // Update visualization
+  this->m_ImageView->UpdateRenderWindows();
 }
 //-------------------------------------------------------------------------
 void
@@ -3422,12 +3432,6 @@ OneClickSphereContours()
       m_DataBaseTables->CreateMeshFromOneClickSegmentation(listContoursIDs);
       }
     }
-
-  // Erase seeds once everything is stored in DB
-  this->m_ImageView->ClearAllSeeds();
-
-  // Update visualization
-  this->m_ImageView->UpdateRenderWindows();
 }
 //-------------------------------------------------------------------------
 
@@ -3458,12 +3462,6 @@ OneClickSphereMeshes()
     this->SavePolyDataAsMeshInDB(
         seedsSegmentation.SphereVolumeSegmentation() );
     }
-
-  // Erase seeds once everything is stored in DB
-  this->m_ImageView->ClearAllSeeds();
-
-  // Update visualization
-  this->m_ImageView->UpdateRenderWindows();
 }
 
 //-------------------------------------------------------------------------
@@ -3506,12 +3504,6 @@ LevelSetSegmentation2D()
     SavePolyDataAsContourInDB(
         seedsSegmentation.LevelSetSegmentation2D( orientation ) );
     }
-
-  // Erase seeds once everything is stored in DB
-  this->m_ImageView->ClearAllSeeds();
-
-  // Update visualization
-  this->m_ImageView->UpdateRenderWindows();
 }
 //-------------------------------------------------------------------------
 
@@ -3553,12 +3545,6 @@ LevelSetSegmentation3D()
     SavePolyDataAsMeshInDB(
         seedsSegmentation.LevelSetSegmentation3D() );
   }
-
-  // Erase seeds once everything is stored in DB
-  this->m_ImageView->ClearAllSeeds();
-
-  // Update visualization
-  this->m_ImageView->UpdateRenderWindows();
 }
 
 //-------------------------------------------------------------------------

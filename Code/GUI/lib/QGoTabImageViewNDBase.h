@@ -6,9 +6,9 @@
 
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-10
 
- Copyright (c) 2009, President and Fellows of Harvard College.
+ Copyright (c) 2009-10, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -55,34 +55,34 @@ class QGOGUILIB_EXPORT QGoTabImageViewNDBase : public QGoTabImageViewElementBase
 {
   Q_OBJECT
 
-  public:
-    /** \brief Constructor */
-    explicit QGoTabImageViewNDBase( QWidget* parent = 0 );
+public:
+  /** \brief Constructor */
+  explicit QGoTabImageViewNDBase( QWidget* parent = 0 );
 
-    /** \brief Destructor */
-    virtual ~QGoTabImageViewNDBase();
+  /** \brief Destructor */
+  virtual ~QGoTabImageViewNDBase();
 
-    typedef QGoTabImageViewElementBase::QGoDockWidgetStatusPair QGoDockWidgetStatusPair;
+  typedef QGoTabImageViewElementBase::QGoDockWidgetStatusPair QGoDockWidgetStatusPair;
 
-    /** \brief */
-    virtual void SetImage( vtkImageData* iImage );
+  /** \brief */
+  virtual void SetImage( vtkImageData* iImage );
 
-    /** \brief */
-    vtkImageData* GetImage();
+  /** \brief */
+  vtkImageData* GetImage();
 
-  public slots:
-    /** \brief */
-    void ShowAllChannels( bool iChecked );
-    /** \brief */
-    void ShowOneChannel( int iChannel );
-  protected:
-    vtkSmartPointer< vtkImageData > m_Image;
+public slots:
+  /** \brief */
+  void ShowAllChannels( bool iChecked );
+  /** \brief */
+  void ShowOneChannel( int iChannel );
 
-    /** \brief */
-    virtual void SetImageToImageViewer( vtkImageData* image ) = 0;
+protected:
+  vtkSmartPointer< vtkImageData > m_Image;
 
-  private:
-    Q_DISABLE_COPY( QGoTabImageViewNDBase );
-    
+  /** \brief */
+  virtual void SetImageToImageViewer( vtkImageData* image ) = 0;
+
+private:
+  Q_DISABLE_COPY( QGoTabImageViewNDBase );
 };
 #endif

@@ -53,10 +53,6 @@ class vtkImageData;
 class vtkEventQtSlotConnect;
 class QGoImageView2D;
 
-
-
-
-
 /**
 \class QGoSynchronizedView
 \brief class for the (synchronized) view of one two dimensionnal vtkImageData* .

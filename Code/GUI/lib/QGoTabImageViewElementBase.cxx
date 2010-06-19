@@ -6,9 +6,9 @@
 
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-10
 
- Copyright (c) 2009, President and Fellows of Harvard College.
+ Copyright (c) 2009-10, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -112,7 +112,7 @@ QGoTabImageViewElementBase::~QGoTabImageViewElementBase()
       (*NodeSetIt)->Delete();
       ++NodeSetIt;
       }
-  }
+    }
 }
 //--------------------------------------------------------------------------
 
@@ -237,8 +237,6 @@ void QGoTabImageViewElementBase::ChangeBackgroundColor()
 }
 //--------------------------------------------------------------------------
 
-
-
 //--------------------------------------------------------------------------
 /**
  *
@@ -308,7 +306,6 @@ ValidateContour( const int& iId )
 // *** Get the Bounding Box ***
 //   int* min_idx = this->GetImageCoordinatesFromWorldCoordinates( Min );
 //   int* max_idx = this->GetImageCoordinatesFromWorldCoordinates( Max );
-//
 //   (void) min_idx;
 //   (void) max_idx;
 // ****************************
@@ -497,30 +494,3 @@ CreateToolsActions()
 //   viewer->GetRenderer()->AddActor( iActor );
 // }
 //--------------------------------------------------------------------------
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
