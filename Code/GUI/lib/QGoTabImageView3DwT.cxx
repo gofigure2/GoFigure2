@@ -1417,27 +1417,29 @@ TakeSnapshot()
   int FullScreenView = m_ImageView->GetFullScreenView();
 
   // TODO enhance the name of the files
+  QString filename = QDir::toNativeSeparators( QDir::homePath() );
+  filename.append( "snapshot_" );
 
   switch ( FullScreenView )
     {
     case 1 :
     // X Slice
-    m_ImageView->SnapshotViewXY( GoFigure::PNG , "snapshot_" );
+    m_ImageView->SnapshotViewXY( GoFigure::PNG , filename );
     break;
 
     case 2 :
     // Y Slice
-    m_ImageView->SnapshotView2( GoFigure::PNG , "snapshot_" );
+    m_ImageView->SnapshotView2( GoFigure::PNG , filename );
     break;
 
     case 3 :
     // Z Slice
-    m_ImageView->SnapshotView3( GoFigure::PNG , "snapshot_" );
+    m_ImageView->SnapshotView3( GoFigure::PNG , filename );
     break;
 
     default :
     // 3D view
-    m_ImageView->SnapshotViewXYZ( GoFigure::PNG , "snapshot_" );
+    m_ImageView->SnapshotViewXYZ( GoFigure::PNG , filename );
     break;
     }
 }
