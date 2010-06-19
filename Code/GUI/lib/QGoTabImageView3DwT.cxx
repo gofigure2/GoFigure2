@@ -3226,17 +3226,23 @@ DeleteTracesFromTable( ContourMeshStructureMultiIndexContainer& iContainer,
           c_nodes = (*it).Nodes;
 
           RemoveActorFromViewer( c_dir, c_actor );
+
+          c_actor->Delete();
           }
         else
           {
           break;
           }
+        iContainer.get< TraceID >().erase( it );
         ++it;
         }
-      iContainer.erase( *traceid_it );
+      if( c_nodes )
+        {
+        c_nodes->Delete();
+        }
       }
     ++traceid_it;
-  }
+    }
 }
 //-------------------------------------------------------------------------
 
