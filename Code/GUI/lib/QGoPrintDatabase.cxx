@@ -775,9 +775,10 @@ int QGoPrintDatabase::SaveContoursFromVisuInDB( unsigned int iXCoordMin,
   unsigned int iMeshID)
 {
   OpenDBConnection();
-  GoDBContourRow contour_row = GetTraceRowFromVisu<GoDBContourRow>(iXCoordMin,
+  GoDBContourRow contour_row(this->m_ImgSessionID);
+  this->GetTraceRowFromVisu<GoDBContourRow>(iXCoordMin,
     iYCoordMin,iZCoordMin, iTCoord, iXCoordMax, iYCoordMax, iZCoordMax,
-    iContourNodes,this->m_DatabaseConnector);
+    iContourNodes,this->m_DatabaseConnector,contour_row);
   contour_row.SetColor(iColorData.second.red(),iColorData.second.green(),
     iColorData.second.blue(),iColorData.second.alpha(),iColorData.first,
     this->m_DatabaseConnector);
@@ -806,10 +807,13 @@ int QGoPrintDatabase::UpdateContourFromVisuInDB(unsigned int iXCoordMin,
     unsigned int iXCoordMax, unsigned int iYCoordMax, unsigned int iZCoordMax,
     vtkPolyData* iContourNodes,int ContourID )
 {
+  /**  \todo check with the saveindb after getting the specific id from the
+  GoDBContourRow directly*/
   OpenDBConnection();
-  GoDBContourRow contour_row = GetTraceRowFromVisu<GoDBContourRow>(iXCoordMin,
+  GoDBContourRow contour_row(this->m_ImgSessionID);
+  this->GetTraceRowFromVisu<GoDBContourRow>(iXCoordMin,
     iYCoordMin,iZCoordMin, iTCoord, iXCoordMax, iYCoordMax, iZCoordMax,
-    iContourNodes,this->m_DatabaseConnector);
+    iContourNodes,this->m_DatabaseConnector,contour_row);
   contour_row.SetField< int >("ContourID",ContourID);
   UpdateContourInDB(this->m_DatabaseConnector,contour_row);
   int CollectionID = FindOneID(this->m_DatabaseConnector,
@@ -827,7 +831,7 @@ int QGoPrintDatabase::UpdateContourFromVisuInDB(unsigned int iXCoordMin,
 int QGoPrintDatabase::SaveMeshFromVisuInDB( unsigned int iXCoordMin,
   unsigned int iYCoordMin, unsigned int iZCoordMin, unsigned int iTCoord,
   unsigned int iXCoordMax, unsigned int iYCoordMax, unsigned int iZCoordMax,
-  vtkPolyData* iMeshNodes, GoFigureMeshAttributes* iMeshAttributes)
+  vtkPolyData* iMeshNodes, GoFigureMeshAttributes* iMeshAttributes,bool NewMesh)
 {
   OpenDBConnection();
 
@@ -835,35 +839,90 @@ int QGoPrintDatabase::SaveMeshFromVisuInDB( unsigned int iXCoordMin,
   emit NeedCurrentSelectedSubCellType();
   emit NeedToGetCurrentSelectedColor();
   emit NeedCurrentSelectedCollectionID();
+  
+  GoDBMeshRow mesh_row(this->m_ImgSessionID);
+  std::pair<std::string,QColor> CollectionData;
+  int SavedMeshID;
+  
+  if (!NewMesh)
+    {
+    mesh_row.SetValuesForSpecificID(
+      atoi(this->m_CurrentCollectionData.first.c_str()),this->m_DatabaseConnector);
+    CollectionData.first = mesh_row.GetMapValue("TrackID");
+    GoDBTrackRow Collection;
+    Collection.SetValuesForSpecificID(atoi(CollectionData.first.c_str()),
+      this->m_DatabaseConnector);
+    QColor ColorCollection(atoi(Collection.GetMapValue("Red").c_str()),
+      atoi(Collection.GetMapValue("Green").c_str()),
+      atoi(Collection.GetMapValue("Blue").c_str()),
+      atoi(Collection.GetMapValue("Alpha").c_str()));
+    CollectionData.second = ColorCollection;
+    }
 
-  GoDBMeshRow mesh_row = GetTraceRowFromVisu<GoDBMeshRow>(
+  this->GetTraceRowFromVisu<GoDBMeshRow>(iXCoordMin, iYCoordMin, 
+    iZCoordMin, iTCoord,iXCoordMax, iYCoordMax, iZCoordMax,
+    iMeshNodes, this->m_DatabaseConnector,mesh_row, 0, iMeshAttributes );
+  /*GoDBMeshRow mesh_row = GetTraceRowFromVisu<GoDBMeshRow>(
     iXCoordMin, iYCoordMin, iZCoordMin, iTCoord,
     iXCoordMax, iYCoordMax, iZCoordMax,
-    iMeshNodes, this->m_DatabaseConnector, 0, iMeshAttributes );
+    iMeshNodes, this->m_DatabaseConnector, 0, iMeshAttributes );*/
 
-  mesh_row.SetColor(m_CurrentColorData.second.red(),
-    m_CurrentColorData.second.green(),m_CurrentColorData.second.blue(),
-    m_CurrentColorData.second.alpha(),m_CurrentColorData.first,
+  if (NewMesh)
+    {
+      //if the new mesh is created from a collection of contours,
+      //there will be no collectionID from the tracemanualediting widget as
+      //the collection in the widget will be mesh and not track
+    mesh_row.SetColor(m_CurrentColorData.second.red(),
+      m_CurrentColorData.second.green(),m_CurrentColorData.second.blue(),
+      m_CurrentColorData.second.alpha(),m_CurrentColorData.first,
     this->m_DatabaseConnector);
-  mesh_row.SetCollectionID(atoi(m_CurrentCollectionData.first.c_str()));
-  mesh_row.SetField("CellType",this->m_CurrentCellType);
-  mesh_row.SetField("SubCellType",this->m_CurrentSubCellType);
+      if(this->InWhichTableAreWe() == "contour")
+        {
+        mesh_row.SetCollectionID(0);
+        CollectionData.first = "0";
+        QColor WhiteColor(255,255,255,255);
+        CollectionData.second = WhiteColor;
+        }
+      else
+        {
+        mesh_row.SetCollectionID(atoi(m_CurrentCollectionData.first.c_str()));
+        CollectionData = this->m_CurrentCollectionData;       
+        }
+    mesh_row.SetField("CellType",this->m_CurrentCellType);
+    mesh_row.SetField("SubCellType",this->m_CurrentSubCellType);
+    SavedMeshID = mesh_row.SaveInDB( this->m_DatabaseConnector);
+    this->UpdateTableWidgetAndDBWithNewCreatedTrace("mesh",
+     iMeshAttributes);
+    this->AddATraceToContourMeshInfo("mesh",SavedMeshID);
+    }
   
-  int NewMeshID = mesh_row.SaveInDB( this->m_DatabaseConnector);
-  this->UpdateTableWidgetAndDBWithNewCreatedTrace("mesh",
-    iMeshAttributes);
-  std::list<int> ListSelectedTraces;
+  if (!NewMesh)
+    {
+    SavedMeshID = mesh_row.SaveInDB(this->m_DatabaseConnector);
+    this->UpdateTableWidgetForAnExistingTrace(
+      "mesh",atoi(mesh_row.GetMapValue("MeshID").c_str()));
+    }
+  
+ // int NewMeshID = mesh_row.SaveInDB( this->m_DatabaseConnector);
+ // this->UpdateTableWidgetAndDBWithNewCreatedTrace("mesh",
+ //   iMeshAttributes);
+ // std::list<int> ListSelectedTraces;
 
-  ListSelectedTraces.push_back(NewMeshID);
+  //ListSelectedTraces.push_back(NewMeshID);
   //if the meshID needs to be gotten from the manual editing widget:
   
-  this->AddListTracesToACollection(
-    ListSelectedTraces,this->m_CurrentCollectionData,"mesh",false);
-  this->AddATraceToContourMeshInfo("mesh",NewMeshID);
+  //this->AddListTracesToACollection(
+ //   ListSelectedTraces,this->m_CurrentCollectionData,"mesh",false);
+ // this->AddATraceToContourMeshInfo("mesh",NewMeshID);
+  /** \todo check if it is needed for an updated mesh*/
+    std::list<int> ListSelectedTraces;
+    ListSelectedTraces.push_back(SavedMeshID);
+    this->AddListTracesToACollection(
+     ListSelectedTraces,CollectionData,"mesh",false);
 
   CloseDBConnection();
 
-  return NewMeshID;
+  return SavedMeshID;
 }
 //-------------------------------------------------------------------------
 
@@ -1943,7 +2002,7 @@ ContourMeshStructureMultiIndexContainer* QGoPrintDatabase::
 ContourMeshStructureMultiIndexContainer* QGoPrintDatabase::
   ImportMeshes(int iTimePoint)         
 {
-  ContourMeshStructureMultiIndexContainer* MeshesForVisu = NULL;
+  ContourMeshStructureMultiIndexContainer* MeshesForVisu;
   QString p = QFileDialog::getOpenFileName(this,
     tr( "Open Contour Export File" ),"",tr( "TextFile (*.txt)" ));
   if ( ! p.isNull() )

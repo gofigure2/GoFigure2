@@ -194,10 +194,15 @@ public:
     unsigned int iXCoordMax, unsigned int iYCoordMax, unsigned int iZCoordMax,
     vtkPolyData* iContourNodes, int ContourID );
 
+  /** \brief save the mesh into the database for a mesh generated in the 
+  visualization, if the mesh is an updated mesh which already exits(for
+  example a new contour is added to this mesh, the NewMesh has to be set
+  to false*/
   int SaveMeshFromVisuInDB( unsigned int iXCoordMin,
     unsigned int iYCoordMin, unsigned int iZCoordMin, unsigned int iTCoord,
     unsigned int iXCoordMax, unsigned int iYCoordMax, unsigned int iZCoordMax,
-    vtkPolyData* iMeshNodes, GoFigureMeshAttributes* iMeshAttributes);
+    vtkPolyData* iMeshNodes, GoFigureMeshAttributes* iMeshAttributes,
+    bool NewMesh = true);
 
   int CreateMeshFromOneClickSegmentation(std::list<int> iListContoursIDs);
 
@@ -369,11 +374,11 @@ protected:
   the visu, iTCoordMax is equal to 0 as for contour and mesh, it is the
   same as TCoord*/
   template<typename T>
-  T GetTraceRowFromVisu(
+  void GetTraceRowFromVisu(
   unsigned int iXCoordMin, unsigned int iYCoordMin, unsigned int iZCoordMin,
   unsigned int iTCoord, unsigned int iXCoordMax, unsigned int iYCoordMax,
   unsigned int iZCoordMax, vtkPolyData* iTraceNodes,
-  vtkMySQLDatabase* iDatabaseConnector, unsigned int iTCoordMax = 0, 
+  vtkMySQLDatabase* iDatabaseConnector, T &iTrace,unsigned int iTCoordMax = 0, 
   GoFigureMeshAttributes* iMeshAttributes = 0 )
   {
     GoDBCoordinateRow coord_min;
@@ -395,11 +400,12 @@ protected:
       {
       coord_max.SetField< unsigned int >( "TCoordMax", iTCoord );
       }
+    
+    iTrace.SetTheDataFromTheVisu(iDatabaseConnector, iTraceNodes,
+      coord_min, coord_max, iMeshAttributes);
 
-  T trace_row( iDatabaseConnector, iTraceNodes, coord_min, coord_max,
-    this->m_ImgSessionID, iMeshAttributes );
-
-  return trace_row;
+  //T trace_row( iDatabaseConnector, iTraceNodes, coord_min, coord_max,
+    //this->m_ImgSessionID, iMeshAttributes );
   }
 //-------------------------------------------------------------------------
 

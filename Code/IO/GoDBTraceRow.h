@@ -57,6 +57,7 @@ public:
 
   GoDBTraceRow(vtkMySQLDatabase* DatabaseConnector,std::string TraceVisu,
     GoDBCoordinateRow Min, GoDBCoordinateRow Max,unsigned int ImgSessionID);
+  GoDBTraceRow(unsigned int ImgSessionID);
 
   ~GoDBTraceRow()
     {}
@@ -70,6 +71,11 @@ public:
 
  std::string GetCollectionIDName();
  std::string GetCollectionName();
+
+ //set the data from the visu for an existing Trace
+ void SetTheDataFromTheVisu(vtkMySQLDatabase* DatabaseConnector,
+   vtkPolyData* TraceVisu,GoDBCoordinateRow Min,
+   GoDBCoordinateRow Max);
 
 protected:
 

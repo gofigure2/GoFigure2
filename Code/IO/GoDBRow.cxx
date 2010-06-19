@@ -89,17 +89,35 @@ std::string GoDBRow::PrintValues()
 
 //-------------------------------------------------------------------------
 std::string GoDBRow::PrintColumnNames()
-    {
-    std::stringstream ListColumnNames;
-    for( StringMapIterator iter = m_MapRow.begin();
-      iter != m_MapRow.end(); 
-      ++iter )
-      {
-      ListColumnNames << iter->first<< ", ";
-      }
-    size_t n = ListColumnNames.str().length() -2;
-    return ListColumnNames.str().substr(0,n);
-    }
+{
+  std::stringstream ListColumnNames;
+  for( StringMapIterator iter = m_MapRow.begin();
+   iter != m_MapRow.end(); 
+    ++iter )
+   {
+   ListColumnNames << iter->first<< ", ";
+   }
+  size_t n = ListColumnNames.str().length() -2;
+  return ListColumnNames.str().substr(0,n);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::string GoDBRow::PrintColumnNamesWithValues()
+{
+  std::stringstream StringQuery;
+  for( StringMapIterator iter = m_MapRow.begin();
+   iter != m_MapRow.end(); 
+    ++iter )
+  {
+    StringQuery << iter->first;
+    StringQuery << " = ";
+    StringQuery << iter->second;
+    StringQuery << ", ";
+  }
+  size_t n = StringQuery.str().length() -2;
+  return StringQuery.str().substr(0,n);
+}
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------

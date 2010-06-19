@@ -66,6 +66,7 @@ public:
     unsigned int ImgSessionID,GoFigureMeshAttributes* iMeshAttributes = 0 );
 
   GoDBMeshRow( const GoDBMeshRow& iRow);
+  GoDBMeshRow(unsigned int ImagingSessionID);
   
   ~GoDBMeshRow()
     {}
@@ -76,9 +77,11 @@ public:
     std::string SubCellTypeName);
 
   /** \brief save the mesh in the database and return the ID of the new
-  created mesh*/
+  created mesh if the meshID of the GoDBMeshRow is still 0 or update
+  the corresponding meshID in the database with the values from the map
+  if the meshID has been changed*/
   int SaveInDB(vtkMySQLDatabase* DatabaseConnector);
-
+  
   void SetCollectionID (int iCollectionID);
 
   void ReInitializeMapAfterCast();
@@ -87,6 +90,10 @@ public:
       std::map<std::string,int> iNameChannelWithValues);
 
   void SafeDownCast( GoDBTraceRow& iRow );
+
+  void SetTheDataFromTheVisu(vtkMySQLDatabase* DatabaseConnector,
+   vtkPolyData* TraceVisu,GoDBCoordinateRow Min,
+   GoDBCoordinateRow Max,GoFigureMeshAttributes* iMeshAttributes = 0 );
 
 protected:
   virtual void InitializeMap();
