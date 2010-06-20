@@ -118,7 +118,8 @@ int GoDBTraceRow::DoesThisBoundingBoxExist(
 {
   return FindOneID(DatabaseConnector,this->m_TableName,
     this->m_TableIDName,"CoordIDMax",this->GetMapValue("CoordIDMax"),
-    "CoordIDMin",this->GetMapValue("CoordIDMin"));
+    "CoordIDMin",this->GetMapValue("CoordIDMin"),"ImagingSessionID",
+    this->GetMapValue("ImagingSessionID"));
 }
 //-------------------------------------------------------------------------
 
