@@ -4114,3 +4114,14 @@ void QGoTabImageView3DwT::ImportMeshes()
       this->m_DataBaseTables->GetQStringListSubCellTypes());
     }
 }
+
+void
+QGoTabImageView3Dwt::
+GoToLocation( int iX, int iY, int iZ, int iT )
+{
+  this->SetTimePoint( iT );
+  this->SetSliceViewXY( iZ );
+  this->SetSliceViewXZ( iY );
+  this->SetSliceViewYZ( iX );
+}
+

@@ -538,6 +538,8 @@ protected slots:
   void ShowTraceDockWidgetForMesh(bool OneClickVisible);
   void ChangeColorOfSelectedTracesManager(std::pair<std::list<int>,QColor>);
 
+  void GoToLocation( int iX, int iY, int iZ, int iT );
+
   /**
    * \brief Mouse interaction style allows contours segmentation, according to
    * the selected type of segmentation
