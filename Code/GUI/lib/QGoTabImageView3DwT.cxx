@@ -3207,13 +3207,14 @@ DeleteTracesFromTable( ContourMeshStructureMultiIndexContainer& iContainer,
     const std::list< int >& iList )
 {
   std::list< int >::const_iterator traceid_it = iList.begin();
-  ContourMeshStructureMultiIndexContainer::index< TraceID >::type::iterator it;
+  ContourMeshStructureMultiIndexContainer::index< TraceID >::type::iterator it, it2;
 
   while( traceid_it != iList.end() )
     {
     it = iContainer.get< TraceID >().find( *traceid_it );
     if( it != iContainer.get< TraceID >().end() )
       {
+      it2 = it;
       int c_dir;
       vtkActor* c_actor;
       vtkPolyData* c_nodes;
@@ -3233,8 +3234,7 @@ DeleteTracesFromTable( ContourMeshStructureMultiIndexContainer& iContainer,
           {
           break;
           }
-        iContainer.get< TraceID >().erase( it );
-        ++it;
+        iContainer.get< TraceID >().erase( it++ );
         }
 //       if( c_nodes )
 //         {
