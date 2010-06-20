@@ -39872,3 +39872,1278 @@
    obj:/usr/lib/libX11.so.6.3.0
    fun:XGetDefault
 }
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Value8
+   obj:/lib/libc-2.11.1.so
+   fun:_ZL21normalizeTypeInternalPKcS0_bb
+   fun:_ZL21normalizeTypeInternalPKcS0_bb
+   fun:_ZL14qNormalizeTypePcRiR10QByteArray
+   fun:_ZN11QMetaObject14normalizedTypeEPKc
+   fun:_ZN9QMetaType12registerTypeEPKcPFvPvEPFS2_PKvE
+   obj:/usr/lib/libphonon.so.4.4.0
+   obj:/usr/lib/libphonon.so.4.4.0
+   obj:/usr/lib/libphonon.so.4.4.0
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Value8
+   obj:/lib/libc-2.11.1.so
+   fun:_ZL21normalizeTypeInternalPKcS0_bb
+   fun:_ZL21normalizeTypeInternalPKcS0_bb
+   fun:_ZL14qNormalizeTypePcRiR10QByteArray
+   fun:_ZN11QMetaObject14normalizedTypeEPKc
+   fun:_ZN9QMetaType12registerTypeEPKcPFvPvEPFS2_PKvE
+   obj:/usr/lib/libphonon.so.4.4.0
+   obj:/usr/lib/libphonon.so.4.4.0
+   obj:/usr/lib/libphonon.so.4.4.0
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Cond
+   obj:/lib/libc-2.11.1.so
+   fun:_ZL22qMetaTypeType_unlockedRK10QByteArray
+   fun:_ZN9QMetaType12registerTypeEPKcPFvPvEPFS2_PKvE
+   obj:/usr/lib/libphonon.so.4.4.0
+   obj:/usr/lib/libphonon.so.4.4.0
+   obj:/usr/lib/libphonon.so.4.4.0
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Value8
+   obj:/lib/libc-2.11.1.so
+   fun:_ZL22qMetaTypeType_unlockedRK10QByteArray
+   fun:_ZN9QMetaType12registerTypeEPKcPFvPvEPFS2_PKvE
+   obj:/usr/lib/libphonon.so.4.4.0
+   obj:/usr/lib/libphonon.so.4.4.0
+   obj:/usr/lib/libphonon.so.4.4.0
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Value8
+   obj:/lib/libc-2.11.1.so
+   fun:_ZL22qMetaTypeType_unlockedRK10QByteArray
+   fun:_ZN9QMetaType12registerTypeEPKcPFvPvEPFS2_PKvE
+   obj:/usr/lib/libphonon.so.4.4.0
+   obj:/usr/lib/libphonon.so.4.4.0
+   obj:/usr/lib/libphonon.so.4.4.0
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Addr8
+   obj:/lib/libc-2.11.1.so
+   fun:_ZL22qMetaTypeType_unlockedRK10QByteArray
+   fun:_ZN9QMetaType12registerTypeEPKcPFvPvEPFS2_PKvE
+   obj:/usr/lib/libphonon.so.4.4.0
+   obj:/usr/lib/libphonon.so.4.4.0
+   obj:/usr/lib/libphonon.so.4.4.0
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Cond
+   obj:/lib/libc-2.11.1.so
+   fun:_ZL22qMetaTypeType_unlockedRK10QByteArray
+   fun:_ZN9QMetaType12registerTypeEPKcPFvPvEPFS2_PKvE
+   obj:/usr/lib/libphonon.so.4.4.0
+   obj:/usr/lib/libphonon.so.4.4.0
+   obj:/usr/lib/libphonon.so.4.4.0
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Addr8
+   obj:/lib/libc-2.11.1.so
+   fun:_ZL22qMetaTypeType_unlockedRK10QByteArray
+   fun:_ZN9QMetaType12registerTypeEPKcPFvPvEPFS2_PKvE
+   obj:/usr/lib/libphonon.so.4.4.0
+   obj:/usr/lib/libphonon.so.4.4.0
+   obj:/usr/lib/libphonon.so.4.4.0
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Cond
+   obj:/lib/libc-2.11.1.so
+   fun:_ZL22qMetaTypeType_unlockedRK10QByteArray
+   fun:_ZN9QMetaType12registerTypeEPKcPFvPvEPFS2_PKvE
+   obj:/usr/lib/libphonon.so.4.4.0
+   obj:/usr/lib/libphonon.so.4.4.0
+   obj:/usr/lib/libphonon.so.4.4.0
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Value8
+   obj:/lib/libc-2.11.1.so
+   fun:_ZL22qMetaTypeType_unlockedRK10QByteArray
+   fun:_ZN9QMetaType12registerTypeEPKcPFvPvEPFS2_PKvE
+   obj:/usr/lib/libphonon.so.4.4.0
+   obj:/usr/lib/libphonon.so.4.4.0
+   obj:/usr/lib/libphonon.so.4.4.0
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Value8
+   obj:/lib/libc-2.11.1.so
+   fun:_ZL22qMetaTypeType_unlockedRK10QByteArray
+   fun:_ZN9QMetaType12registerTypeEPKcPFvPvEPFS2_PKvE
+   obj:/usr/lib/libphonon.so.4.4.0
+   obj:/usr/lib/libphonon.so.4.4.0
+   obj:/usr/lib/libphonon.so.4.4.0
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Cond
+   obj:/lib/libc-2.11.1.so
+   fun:_ZL22qMetaTypeType_unlockedRK10QByteArray
+   fun:_ZN9QMetaType4typeEPKc
+   fun:_ZN9QMetaType23registerStreamOperatorsEPKcPFvR11QDataStreamPKvEPFvS3_PvE
+   obj:/usr/lib/libphonon.so.4.4.0
+   obj:/usr/lib/libphonon.so.4.4.0
+   obj:/usr/lib/libphonon.so.4.4.0
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Value8
+   obj:/lib/libc-2.11.1.so
+   fun:_ZL22qMetaTypeType_unlockedRK10QByteArray
+   fun:_ZN9QMetaType4typeEPKc
+   fun:_ZN9QMetaType23registerStreamOperatorsEPKcPFvR11QDataStreamPKvEPFvS3_PvE
+   obj:/usr/lib/libphonon.so.4.4.0
+   obj:/usr/lib/libphonon.so.4.4.0
+   obj:/usr/lib/libphonon.so.4.4.0
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Value8
+   obj:/lib/libc-2.11.1.so
+   fun:_ZL22qMetaTypeType_unlockedRK10QByteArray
+   fun:_ZN9QMetaType4typeEPKc
+   fun:_ZN9QMetaType23registerStreamOperatorsEPKcPFvR11QDataStreamPKvEPFvS3_PvE
+   obj:/usr/lib/libphonon.so.4.4.0
+   obj:/usr/lib/libphonon.so.4.4.0
+   obj:/usr/lib/libphonon.so.4.4.0
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Addr8
+   obj:/lib/libc-2.11.1.so
+   fun:_ZL22qMetaTypeType_unlockedRK10QByteArray
+   fun:_ZN9QMetaType4typeEPKc
+   fun:_ZN9QMetaType23registerStreamOperatorsEPKcPFvR11QDataStreamPKvEPFvS3_PvE
+   obj:/usr/lib/libphonon.so.4.4.0
+   obj:/usr/lib/libphonon.so.4.4.0
+   obj:/usr/lib/libphonon.so.4.4.0
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Cond
+   obj:/lib/libc-2.11.1.so
+   fun:_ZL22qMetaTypeType_unlockedRK10QByteArray
+   fun:_ZN9QMetaType4typeEPKc
+   fun:_ZN9QMetaType23registerStreamOperatorsEPKcPFvR11QDataStreamPKvEPFvS3_PvE
+   obj:/usr/lib/libphonon.so.4.4.0
+   obj:/usr/lib/libphonon.so.4.4.0
+   obj:/usr/lib/libphonon.so.4.4.0
+}
+--7238-- REDIR: 0xac04380 (operator delete(void*)) redirected to 0x4c27d7b (operator delete(void*))
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Cond
+   obj:/lib/libc-2.11.1.so
+   fun:_ZN6vtksys11SystemTools15FileIsDirectoryEPKc
+   fun:_ZN6vtksys11SystemTools18AddTranslationPathEPKcS2_
+   fun:_ZN6vtksys11SystemTools15ClassInitializeEv
+   fun:_ZN6vtksys18SystemToolsManagerC1Ev
+   fun:_Z41__static_initialization_and_destruction_0ii
+   fun:_GLOBAL__I__ZN6vtksys11SystemTools7GetTimeEv
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/usr/lib/libQtWebKit.so.4.6.2
+   fun:__libc_csu_init
+   fun:(below main)
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Addr8
+   obj:/lib/libc-2.11.1.so
+   fun:_ZN6vtksys11SystemTools15FileIsDirectoryEPKc
+   fun:_ZN6vtksys11SystemTools18AddTranslationPathEPKcS2_
+   fun:_ZN6vtksys11SystemTools15ClassInitializeEv
+   fun:_ZN6vtksys18SystemToolsManagerC1Ev
+   fun:_Z41__static_initialization_and_destruction_0ii
+   fun:_GLOBAL__I__ZN6vtksys11SystemTools7GetTimeEv
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/usr/lib/libQtWebKit.so.4.6.2
+   fun:__libc_csu_init
+   fun:(below main)
+}
+--7238-- REDIR: 0xb0ec350 (mempcpy) redirected to 0x4c2aac0 (mempcpy)
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Cond
+   obj:/lib/libc-2.11.1.so
+   fun:_ZNSsaSEPKc
+   fun:_Z8RealpathPKcRSs
+   fun:_ZN6vtksys11SystemTools11AddKeepPathEPKc
+   fun:_ZN6vtksys11SystemTools15ClassInitializeEv
+   fun:_ZN6vtksys18SystemToolsManagerC1Ev
+   fun:_Z41__static_initialization_and_destruction_0ii
+   fun:_GLOBAL__I__ZN6vtksys11SystemTools7GetTimeEv
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/usr/lib/libQtWebKit.so.4.6.2
+   fun:__libc_csu_init
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Cond
+   fun:_ZNSs6assignEPKcm
+   fun:_Z8RealpathPKcRSs
+   fun:_ZN6vtksys11SystemTools11AddKeepPathEPKc
+   fun:_ZN6vtksys11SystemTools15ClassInitializeEv
+   fun:_ZN6vtksys18SystemToolsManagerC1Ev
+   fun:_Z41__static_initialization_and_destruction_0ii
+   fun:_GLOBAL__I__ZN6vtksys11SystemTools7GetTimeEv
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/usr/lib/libQtWebKit.so.4.6.2
+   fun:__libc_csu_init
+   fun:(below main)
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Cond
+   fun:_ZNSs9_M_mutateEmmm
+   fun:_ZNSs15_M_replace_safeEmmPKcm
+   fun:_Z8RealpathPKcRSs
+   fun:_ZN6vtksys11SystemTools11AddKeepPathEPKc
+   fun:_ZN6vtksys11SystemTools15ClassInitializeEv
+   fun:_ZN6vtksys18SystemToolsManagerC1Ev
+   fun:_Z41__static_initialization_and_destruction_0ii
+   fun:_GLOBAL__I__ZN6vtksys11SystemTools7GetTimeEv
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/usr/lib/libQtWebKit.so.4.6.2
+   fun:__libc_csu_init
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Cond
+   fun:_ZNSs4_Rep9_S_createEmmRKSaIcE
+   fun:_ZNSs9_M_mutateEmmm
+   fun:_ZNSs15_M_replace_safeEmmPKcm
+   fun:_Z8RealpathPKcRSs
+   fun:_ZN6vtksys11SystemTools11AddKeepPathEPKc
+   fun:_ZN6vtksys11SystemTools15ClassInitializeEv
+   fun:_ZN6vtksys18SystemToolsManagerC1Ev
+   fun:_Z41__static_initialization_and_destruction_0ii
+   fun:_GLOBAL__I__ZN6vtksys11SystemTools7GetTimeEv
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/usr/lib/libQtWebKit.so.4.6.2
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Cond
+   fun:_ZNSs4_Rep9_S_createEmmRKSaIcE
+   fun:_ZNSs9_M_mutateEmmm
+   fun:_ZNSs15_M_replace_safeEmmPKcm
+   fun:_Z8RealpathPKcRSs
+   fun:_ZN6vtksys11SystemTools11AddKeepPathEPKc
+   fun:_ZN6vtksys11SystemTools15ClassInitializeEv
+   fun:_ZN6vtksys18SystemToolsManagerC1Ev
+   fun:_Z41__static_initialization_and_destruction_0ii
+   fun:_GLOBAL__I__ZN6vtksys11SystemTools7GetTimeEv
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/usr/lib/libQtWebKit.so.4.6.2
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Cond
+   fun:_ZNSs4_Rep9_S_createEmmRKSaIcE
+   fun:_ZNSs9_M_mutateEmmm
+   fun:_ZNSs15_M_replace_safeEmmPKcm
+   fun:_Z8RealpathPKcRSs
+   fun:_ZN6vtksys11SystemTools11AddKeepPathEPKc
+   fun:_ZN6vtksys11SystemTools15ClassInitializeEv
+   fun:_ZN6vtksys18SystemToolsManagerC1Ev
+   fun:_Z41__static_initialization_and_destruction_0ii
+   fun:_GLOBAL__I__ZN6vtksys11SystemTools7GetTimeEv
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/usr/lib/libQtWebKit.so.4.6.2
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Value8
+   fun:_ZNSs9_M_mutateEmmm
+   fun:_ZNSs15_M_replace_safeEmmPKcm
+   fun:_Z8RealpathPKcRSs
+   fun:_ZN6vtksys11SystemTools11AddKeepPathEPKc
+   fun:_ZN6vtksys11SystemTools15ClassInitializeEv
+   fun:_ZN6vtksys18SystemToolsManagerC1Ev
+   fun:_Z41__static_initialization_and_destruction_0ii
+   fun:_GLOBAL__I__ZN6vtksys11SystemTools7GetTimeEv
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/usr/lib/libQtWebKit.so.4.6.2
+   fun:__libc_csu_init
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Cond
+   fun:_ZNSs15_M_replace_safeEmmPKcm
+   fun:_Z8RealpathPKcRSs
+   fun:_ZN6vtksys11SystemTools11AddKeepPathEPKc
+   fun:_ZN6vtksys11SystemTools15ClassInitializeEv
+   fun:_ZN6vtksys18SystemToolsManagerC1Ev
+   fun:_Z41__static_initialization_and_destruction_0ii
+   fun:_GLOBAL__I__ZN6vtksys11SystemTools7GetTimeEv
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/usr/lib/libQtWebKit.so.4.6.2
+   fun:__libc_csu_init
+   fun:(below main)
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Cond
+   fun:_ZNSs15_M_replace_safeEmmPKcm
+   fun:_Z8RealpathPKcRSs
+   fun:_ZN6vtksys11SystemTools11AddKeepPathEPKc
+   fun:_ZN6vtksys11SystemTools15ClassInitializeEv
+   fun:_ZN6vtksys18SystemToolsManagerC1Ev
+   fun:_Z41__static_initialization_and_destruction_0ii
+   fun:_GLOBAL__I__ZN6vtksys11SystemTools7GetTimeEv
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/usr/lib/libQtWebKit.so.4.6.2
+   fun:__libc_csu_init
+   fun:(below main)
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Cond
+   fun:memcpy
+   fun:_ZNSs15_M_replace_safeEmmPKcm
+   fun:_Z8RealpathPKcRSs
+   fun:_ZN6vtksys11SystemTools11AddKeepPathEPKc
+   fun:_ZN6vtksys11SystemTools15ClassInitializeEv
+   fun:_ZN6vtksys18SystemToolsManagerC1Ev
+   fun:_Z41__static_initialization_and_destruction_0ii
+   fun:_GLOBAL__I__ZN6vtksys11SystemTools7GetTimeEv
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/usr/lib/libQtWebKit.so.4.6.2
+   fun:__libc_csu_init
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Cond
+   fun:memcpy
+   fun:_ZNSs15_M_replace_safeEmmPKcm
+   fun:_Z8RealpathPKcRSs
+   fun:_ZN6vtksys11SystemTools11AddKeepPathEPKc
+   fun:_ZN6vtksys11SystemTools15ClassInitializeEv
+   fun:_ZN6vtksys18SystemToolsManagerC1Ev
+   fun:_Z41__static_initialization_and_destruction_0ii
+   fun:_GLOBAL__I__ZN6vtksys11SystemTools7GetTimeEv
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/usr/lib/libQtWebKit.so.4.6.2
+   fun:__libc_csu_init
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Cond
+   fun:memcpy
+   fun:_ZNSs15_M_replace_safeEmmPKcm
+   fun:_Z8RealpathPKcRSs
+   fun:_ZN6vtksys11SystemTools11AddKeepPathEPKc
+   fun:_ZN6vtksys11SystemTools15ClassInitializeEv
+   fun:_ZN6vtksys18SystemToolsManagerC1Ev
+   fun:_Z41__static_initialization_and_destruction_0ii
+   fun:_GLOBAL__I__ZN6vtksys11SystemTools7GetTimeEv
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/usr/lib/libQtWebKit.so.4.6.2
+   fun:__libc_csu_init
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Cond
+   fun:memcpy
+   fun:_ZNSs15_M_replace_safeEmmPKcm
+   fun:_Z8RealpathPKcRSs
+   fun:_ZN6vtksys11SystemTools11AddKeepPathEPKc
+   fun:_ZN6vtksys11SystemTools15ClassInitializeEv
+   fun:_ZN6vtksys18SystemToolsManagerC1Ev
+   fun:_Z41__static_initialization_and_destruction_0ii
+   fun:_GLOBAL__I__ZN6vtksys11SystemTools7GetTimeEv
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/usr/lib/libQtWebKit.so.4.6.2
+   fun:__libc_csu_init
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Cond
+   fun:memcpy
+   fun:_ZNSs15_M_replace_safeEmmPKcm
+   fun:_Z8RealpathPKcRSs
+   fun:_ZN6vtksys11SystemTools11AddKeepPathEPKc
+   fun:_ZN6vtksys11SystemTools15ClassInitializeEv
+   fun:_ZN6vtksys18SystemToolsManagerC1Ev
+   fun:_Z41__static_initialization_and_destruction_0ii
+   fun:_GLOBAL__I__ZN6vtksys11SystemTools7GetTimeEv
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/usr/lib/libQtWebKit.so.4.6.2
+   fun:__libc_csu_init
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Addr8
+   obj:/lib/libc-2.11.1.so
+   fun:_ZNSsC1EPKcRKSaIcE
+   fun:_ZN6vtksys11SystemTools18AddTranslationPathEPKcS2_
+   fun:_ZN6vtksys11SystemTools11AddKeepPathEPKc
+   fun:_ZN6vtksys11SystemTools15ClassInitializeEv
+   fun:_ZN6vtksys18SystemToolsManagerC1Ev
+   fun:_Z41__static_initialization_and_destruction_0ii
+   fun:_GLOBAL__I__ZN6vtksys11SystemTools7GetTimeEv
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/usr/lib/libQtWebKit.so.4.6.2
+   fun:__libc_csu_init
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Cond
+   obj:/lib/libc-2.11.1.so
+   fun:_ZNSsC1EPKcRKSaIcE
+   fun:_ZN6vtksys11SystemTools18AddTranslationPathEPKcS2_
+   fun:_ZN6vtksys11SystemTools11AddKeepPathEPKc
+   fun:_ZN6vtksys11SystemTools15ClassInitializeEv
+   fun:_ZN6vtksys18SystemToolsManagerC1Ev
+   fun:_Z41__static_initialization_and_destruction_0ii
+   fun:_GLOBAL__I__ZN6vtksys11SystemTools7GetTimeEv
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/usr/lib/libQtWebKit.so.4.6.2
+   fun:__libc_csu_init
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Cond
+   obj:/usr/lib/libstdc++.so.6.0.13
+   fun:_ZNSsC1EPKcRKSaIcE
+   fun:_ZN6vtksys11SystemTools18AddTranslationPathEPKcS2_
+   fun:_ZN6vtksys11SystemTools11AddKeepPathEPKc
+   fun:_ZN6vtksys11SystemTools15ClassInitializeEv
+   fun:_ZN6vtksys18SystemToolsManagerC1Ev
+   fun:_Z41__static_initialization_and_destruction_0ii
+   fun:_GLOBAL__I__ZN6vtksys11SystemTools7GetTimeEv
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/usr/lib/libQtWebKit.so.4.6.2
+   fun:__libc_csu_init
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Cond
+   fun:_ZNSs4_Rep9_S_createEmmRKSaIcE
+   obj:/usr/lib/libstdc++.so.6.0.13
+   fun:_ZNSsC1EPKcRKSaIcE
+   fun:_ZN6vtksys11SystemTools18AddTranslationPathEPKcS2_
+   fun:_ZN6vtksys11SystemTools11AddKeepPathEPKc
+   fun:_ZN6vtksys11SystemTools15ClassInitializeEv
+   fun:_ZN6vtksys18SystemToolsManagerC1Ev
+   fun:_Z41__static_initialization_and_destruction_0ii
+   fun:_GLOBAL__I__ZN6vtksys11SystemTools7GetTimeEv
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/usr/lib/libQtWebKit.so.4.6.2
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Cond
+   fun:_ZNSs4_Rep9_S_createEmmRKSaIcE
+   obj:/usr/lib/libstdc++.so.6.0.13
+   fun:_ZNSsC1EPKcRKSaIcE
+   fun:_ZN6vtksys11SystemTools18AddTranslationPathEPKcS2_
+   fun:_ZN6vtksys11SystemTools11AddKeepPathEPKc
+   fun:_ZN6vtksys11SystemTools15ClassInitializeEv
+   fun:_ZN6vtksys18SystemToolsManagerC1Ev
+   fun:_Z41__static_initialization_and_destruction_0ii
+   fun:_GLOBAL__I__ZN6vtksys11SystemTools7GetTimeEv
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/usr/lib/libQtWebKit.so.4.6.2
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Cond
+   fun:_ZNSs4_Rep9_S_createEmmRKSaIcE
+   obj:/usr/lib/libstdc++.so.6.0.13
+   fun:_ZNSsC1EPKcRKSaIcE
+   fun:_ZN6vtksys11SystemTools18AddTranslationPathEPKcS2_
+   fun:_ZN6vtksys11SystemTools11AddKeepPathEPKc
+   fun:_ZN6vtksys11SystemTools15ClassInitializeEv
+   fun:_ZN6vtksys18SystemToolsManagerC1Ev
+   fun:_Z41__static_initialization_and_destruction_0ii
+   fun:_GLOBAL__I__ZN6vtksys11SystemTools7GetTimeEv
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/usr/lib/libQtWebKit.so.4.6.2
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Cond
+   obj:/usr/lib/libstdc++.so.6.0.13
+   fun:_ZNSsC1EPKcRKSaIcE
+   fun:_ZN6vtksys11SystemTools18AddTranslationPathEPKcS2_
+   fun:_ZN6vtksys11SystemTools11AddKeepPathEPKc
+   fun:_ZN6vtksys11SystemTools15ClassInitializeEv
+   fun:_ZN6vtksys18SystemToolsManagerC1Ev
+   fun:_Z41__static_initialization_and_destruction_0ii
+   fun:_GLOBAL__I__ZN6vtksys11SystemTools7GetTimeEv
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/usr/lib/libQtWebKit.so.4.6.2
+   fun:__libc_csu_init
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Cond
+   fun:memcpy
+   obj:/usr/lib/libstdc++.so.6.0.13
+   fun:_ZNSsC1EPKcRKSaIcE
+   fun:_ZN6vtksys11SystemTools18AddTranslationPathEPKcS2_
+   fun:_ZN6vtksys11SystemTools11AddKeepPathEPKc
+   fun:_ZN6vtksys11SystemTools15ClassInitializeEv
+   fun:_ZN6vtksys18SystemToolsManagerC1Ev
+   fun:_Z41__static_initialization_and_destruction_0ii
+   fun:_GLOBAL__I__ZN6vtksys11SystemTools7GetTimeEv
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/usr/lib/libQtWebKit.so.4.6.2
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Cond
+   fun:memcpy
+   obj:/usr/lib/libstdc++.so.6.0.13
+   fun:_ZNSsC1EPKcRKSaIcE
+   fun:_ZN6vtksys11SystemTools18AddTranslationPathEPKcS2_
+   fun:_ZN6vtksys11SystemTools11AddKeepPathEPKc
+   fun:_ZN6vtksys11SystemTools15ClassInitializeEv
+   fun:_ZN6vtksys18SystemToolsManagerC1Ev
+   fun:_Z41__static_initialization_and_destruction_0ii
+   fun:_GLOBAL__I__ZN6vtksys11SystemTools7GetTimeEv
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/usr/lib/libQtWebKit.so.4.6.2
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Cond
+   fun:memcpy
+   obj:/usr/lib/libstdc++.so.6.0.13
+   fun:_ZNSsC1EPKcRKSaIcE
+   fun:_ZN6vtksys11SystemTools18AddTranslationPathEPKcS2_
+   fun:_ZN6vtksys11SystemTools11AddKeepPathEPKc
+   fun:_ZN6vtksys11SystemTools15ClassInitializeEv
+   fun:_ZN6vtksys18SystemToolsManagerC1Ev
+   fun:_Z41__static_initialization_and_destruction_0ii
+   fun:_GLOBAL__I__ZN6vtksys11SystemTools7GetTimeEv
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/usr/lib/libQtWebKit.so.4.6.2
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Value8
+   fun:memcpy
+   obj:/usr/lib/libstdc++.so.6.0.13
+   fun:_ZNSsC1EPKcRKSaIcE
+   fun:_ZN6vtksys11SystemTools18AddTranslationPathEPKcS2_
+   fun:_ZN6vtksys11SystemTools11AddKeepPathEPKc
+   fun:_ZN6vtksys11SystemTools15ClassInitializeEv
+   fun:_ZN6vtksys18SystemToolsManagerC1Ev
+   fun:_Z41__static_initialization_and_destruction_0ii
+   fun:_GLOBAL__I__ZN6vtksys11SystemTools7GetTimeEv
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/usr/lib/libQtWebKit.so.4.6.2
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Value8
+   fun:memcpy
+   obj:/usr/lib/libstdc++.so.6.0.13
+   fun:_ZNSsC1EPKcRKSaIcE
+   fun:_ZN6vtksys11SystemTools18AddTranslationPathEPKcS2_
+   fun:_ZN6vtksys11SystemTools11AddKeepPathEPKc
+   fun:_ZN6vtksys11SystemTools15ClassInitializeEv
+   fun:_ZN6vtksys18SystemToolsManagerC1Ev
+   fun:_Z41__static_initialization_and_destruction_0ii
+   fun:_GLOBAL__I__ZN6vtksys11SystemTools7GetTimeEv
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/usr/lib/libQtWebKit.so.4.6.2
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Cond
+   fun:memcpy
+   obj:/usr/lib/libstdc++.so.6.0.13
+   fun:_ZNSsC1EPKcRKSaIcE
+   fun:_ZN6vtksys11SystemTools18AddTranslationPathEPKcS2_
+   fun:_ZN6vtksys11SystemTools11AddKeepPathEPKc
+   fun:_ZN6vtksys11SystemTools15ClassInitializeEv
+   fun:_ZN6vtksys18SystemToolsManagerC1Ev
+   fun:_Z41__static_initialization_and_destruction_0ii
+   fun:_GLOBAL__I__ZN6vtksys11SystemTools7GetTimeEv
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/usr/lib/libQtWebKit.so.4.6.2
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Cond
+   fun:memcpy
+   obj:/usr/lib/libstdc++.so.6.0.13
+   fun:_ZNSsC1EPKcRKSaIcE
+   fun:_ZN6vtksys11SystemTools18AddTranslationPathEPKcS2_
+   fun:_ZN6vtksys11SystemTools11AddKeepPathEPKc
+   fun:_ZN6vtksys11SystemTools15ClassInitializeEv
+   fun:_ZN6vtksys18SystemToolsManagerC1Ev
+   fun:_Z41__static_initialization_and_destruction_0ii
+   fun:_GLOBAL__I__ZN6vtksys11SystemTools7GetTimeEv
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/usr/lib/libQtWebKit.so.4.6.2
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Value8
+   obj:/usr/lib/libstdc++.so.6.0.13
+   fun:_ZNSsC1EPKcRKSaIcE
+   fun:_ZN6vtksys11SystemTools18AddTranslationPathEPKcS2_
+   fun:_ZN6vtksys11SystemTools11AddKeepPathEPKc
+   fun:_ZN6vtksys11SystemTools15ClassInitializeEv
+   fun:_ZN6vtksys18SystemToolsManagerC1Ev
+   fun:_Z41__static_initialization_and_destruction_0ii
+   fun:_GLOBAL__I__ZN6vtksys11SystemTools7GetTimeEv
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/usr/lib/libQtWebKit.so.4.6.2
+   fun:__libc_csu_init
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Cond
+   fun:_ZN6vtksys11SystemTools20ConvertToUnixSlashesERSs
+   fun:_ZN6vtksys11SystemTools18AddTranslationPathEPKcS2_
+   fun:_ZN6vtksys11SystemTools11AddKeepPathEPKc
+   fun:_ZN6vtksys11SystemTools15ClassInitializeEv
+   fun:_ZN6vtksys18SystemToolsManagerC1Ev
+   fun:_Z41__static_initialization_and_destruction_0ii
+   fun:_GLOBAL__I__ZN6vtksys11SystemTools7GetTimeEv
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/usr/lib/libQtWebKit.so.4.6.2
+   fun:__libc_csu_init
+   fun:(below main)
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Cond
+   fun:_ZN6vtksys11SystemTools20ConvertToUnixSlashesERSs
+   fun:_ZN6vtksys11SystemTools18AddTranslationPathEPKcS2_
+   fun:_ZN6vtksys11SystemTools11AddKeepPathEPKc
+   fun:_ZN6vtksys11SystemTools15ClassInitializeEv
+   fun:_ZN6vtksys18SystemToolsManagerC1Ev
+   fun:_Z41__static_initialization_and_destruction_0ii
+   fun:_GLOBAL__I__ZN6vtksys11SystemTools7GetTimeEv
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/usr/lib/libQtWebKit.so.4.6.2
+   fun:__libc_csu_init
+   fun:(below main)
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Value8
+   fun:_ZN6vtksys11SystemTools20ConvertToUnixSlashesERSs
+   fun:_ZN6vtksys11SystemTools18AddTranslationPathEPKcS2_
+   fun:_ZN6vtksys11SystemTools11AddKeepPathEPKc
+   fun:_ZN6vtksys11SystemTools15ClassInitializeEv
+   fun:_ZN6vtksys18SystemToolsManagerC1Ev
+   fun:_Z41__static_initialization_and_destruction_0ii
+   fun:_GLOBAL__I__ZN6vtksys11SystemTools7GetTimeEv
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/usr/lib/libQtWebKit.so.4.6.2
+   fun:__libc_csu_init
+   fun:(below main)
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Addr8
+   obj:/lib/libc-2.11.1.so
+   fun:_ZN6vtksys11SystemTools15FileIsDirectoryEPKc
+   fun:_ZN6vtksys11SystemTools18AddTranslationPathEPKcS2_
+   fun:_ZN6vtksys11SystemTools11AddKeepPathEPKc
+   fun:_ZN6vtksys11SystemTools15ClassInitializeEv
+   fun:_ZN6vtksys18SystemToolsManagerC1Ev
+   fun:_Z41__static_initialization_and_destruction_0ii
+   fun:_GLOBAL__I__ZN6vtksys11SystemTools7GetTimeEv
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/usr/lib/libQtWebKit.so.4.6.2
+   fun:__libc_csu_init
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Cond
+   obj:/lib/libc-2.11.1.so
+   fun:_ZN6vtksys11SystemTools15FileIsDirectoryEPKc
+   fun:_ZN6vtksys11SystemTools18AddTranslationPathEPKcS2_
+   fun:_ZN6vtksys11SystemTools11AddKeepPathEPKc
+   fun:_ZN6vtksys11SystemTools15ClassInitializeEv
+   fun:_ZN6vtksys18SystemToolsManagerC1Ev
+   fun:_Z41__static_initialization_and_destruction_0ii
+   fun:_GLOBAL__I__ZN6vtksys11SystemTools7GetTimeEv
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/usr/lib/libQtWebKit.so.4.6.2
+   fun:__libc_csu_init
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Cond
+   fun:_ZN6vtksys11SystemTools15FileIsDirectoryEPKc
+   fun:_ZN6vtksys11SystemTools18AddTranslationPathEPKcS2_
+   fun:_ZN6vtksys11SystemTools11AddKeepPathEPKc
+   fun:_ZN6vtksys11SystemTools15ClassInitializeEv
+   fun:_ZN6vtksys18SystemToolsManagerC1Ev
+   fun:_Z41__static_initialization_and_destruction_0ii
+   fun:_GLOBAL__I__ZN6vtksys11SystemTools7GetTimeEv
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/usr/lib/libQtWebKit.so.4.6.2
+   fun:__libc_csu_init
+   fun:(below main)
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Value8
+   fun:_ZN6vtksys11SystemTools15FileIsDirectoryEPKc
+   fun:_ZN6vtksys11SystemTools18AddTranslationPathEPKcS2_
+   fun:_ZN6vtksys11SystemTools11AddKeepPathEPKc
+   fun:_ZN6vtksys11SystemTools15ClassInitializeEv
+   fun:_ZN6vtksys18SystemToolsManagerC1Ev
+   fun:_Z41__static_initialization_and_destruction_0ii
+   fun:_GLOBAL__I__ZN6vtksys11SystemTools7GetTimeEv
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/usr/lib/libQtWebKit.so.4.6.2
+   fun:__libc_csu_init
+   fun:(below main)
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Value8
+   fun:_ZN6vtksys11SystemTools15FileIsDirectoryEPKc
+   fun:_ZN6vtksys11SystemTools18AddTranslationPathEPKcS2_
+   fun:_ZN6vtksys11SystemTools11AddKeepPathEPKc
+   fun:_ZN6vtksys11SystemTools15ClassInitializeEv
+   fun:_ZN6vtksys18SystemToolsManagerC1Ev
+   fun:_Z41__static_initialization_and_destruction_0ii
+   fun:_GLOBAL__I__ZN6vtksys11SystemTools7GetTimeEv
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/usr/lib/libQtWebKit.so.4.6.2
+   fun:__libc_csu_init
+   fun:(below main)
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Addr8
+   obj:/lib/libc-2.11.1.so
+   fun:_ZNSsC1EPKcRKSaIcE
+   fun:_ZN6vtksys11SystemTools14FileIsFullPathEPKc
+   fun:_ZN6vtksys11SystemTools18AddTranslationPathEPKcS2_
+   fun:_ZN6vtksys11SystemTools11AddKeepPathEPKc
+   fun:_ZN6vtksys11SystemTools15ClassInitializeEv
+   fun:_ZN6vtksys18SystemToolsManagerC1Ev
+   fun:_Z41__static_initialization_and_destruction_0ii
+   fun:_GLOBAL__I__ZN6vtksys11SystemTools7GetTimeEv
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/usr/lib/libQtWebKit.so.4.6.2
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Cond
+   obj:/lib/libc-2.11.1.so
+   fun:_ZNSsC1EPKcRKSaIcE
+   fun:_ZN6vtksys11SystemTools14FileIsFullPathEPKc
+   fun:_ZN6vtksys11SystemTools18AddTranslationPathEPKcS2_
+   fun:_ZN6vtksys11SystemTools11AddKeepPathEPKc
+   fun:_ZN6vtksys11SystemTools15ClassInitializeEv
+   fun:_ZN6vtksys18SystemToolsManagerC1Ev
+   fun:_Z41__static_initialization_and_destruction_0ii
+   fun:_GLOBAL__I__ZN6vtksys11SystemTools7GetTimeEv
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/usr/lib/libQtWebKit.so.4.6.2
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Cond
+   obj:/usr/lib/libstdc++.so.6.0.13
+   fun:_ZNSsC1EPKcRKSaIcE
+   fun:_ZN6vtksys11SystemTools14FileIsFullPathEPKc
+   fun:_ZN6vtksys11SystemTools18AddTranslationPathEPKcS2_
+   fun:_ZN6vtksys11SystemTools11AddKeepPathEPKc
+   fun:_ZN6vtksys11SystemTools15ClassInitializeEv
+   fun:_ZN6vtksys18SystemToolsManagerC1Ev
+   fun:_Z41__static_initialization_and_destruction_0ii
+   fun:_GLOBAL__I__ZN6vtksys11SystemTools7GetTimeEv
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/usr/lib/libQtWebKit.so.4.6.2
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Cond
+   fun:_ZNSs4_Rep9_S_createEmmRKSaIcE
+   obj:/usr/lib/libstdc++.so.6.0.13
+   fun:_ZNSsC1EPKcRKSaIcE
+   fun:_ZN6vtksys11SystemTools14FileIsFullPathEPKc
+   fun:_ZN6vtksys11SystemTools18AddTranslationPathEPKcS2_
+   fun:_ZN6vtksys11SystemTools11AddKeepPathEPKc
+   fun:_ZN6vtksys11SystemTools15ClassInitializeEv
+   fun:_ZN6vtksys18SystemToolsManagerC1Ev
+   fun:_Z41__static_initialization_and_destruction_0ii
+   fun:_GLOBAL__I__ZN6vtksys11SystemTools7GetTimeEv
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Cond
+   fun:_ZNSs4_Rep9_S_createEmmRKSaIcE
+   obj:/usr/lib/libstdc++.so.6.0.13
+   fun:_ZNSsC1EPKcRKSaIcE
+   fun:_ZN6vtksys11SystemTools14FileIsFullPathEPKc
+   fun:_ZN6vtksys11SystemTools18AddTranslationPathEPKcS2_
+   fun:_ZN6vtksys11SystemTools11AddKeepPathEPKc
+   fun:_ZN6vtksys11SystemTools15ClassInitializeEv
+   fun:_ZN6vtksys18SystemToolsManagerC1Ev
+   fun:_Z41__static_initialization_and_destruction_0ii
+   fun:_GLOBAL__I__ZN6vtksys11SystemTools7GetTimeEv
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Cond
+   fun:_ZNSs4_Rep9_S_createEmmRKSaIcE
+   obj:/usr/lib/libstdc++.so.6.0.13
+   fun:_ZNSsC1EPKcRKSaIcE
+   fun:_ZN6vtksys11SystemTools14FileIsFullPathEPKc
+   fun:_ZN6vtksys11SystemTools18AddTranslationPathEPKcS2_
+   fun:_ZN6vtksys11SystemTools11AddKeepPathEPKc
+   fun:_ZN6vtksys11SystemTools15ClassInitializeEv
+   fun:_ZN6vtksys18SystemToolsManagerC1Ev
+   fun:_Z41__static_initialization_and_destruction_0ii
+   fun:_GLOBAL__I__ZN6vtksys11SystemTools7GetTimeEv
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Cond
+   obj:/usr/lib/libstdc++.so.6.0.13
+   fun:_ZNSsC1EPKcRKSaIcE
+   fun:_ZN6vtksys11SystemTools14FileIsFullPathEPKc
+   fun:_ZN6vtksys11SystemTools18AddTranslationPathEPKcS2_
+   fun:_ZN6vtksys11SystemTools11AddKeepPathEPKc
+   fun:_ZN6vtksys11SystemTools15ClassInitializeEv
+   fun:_ZN6vtksys18SystemToolsManagerC1Ev
+   fun:_Z41__static_initialization_and_destruction_0ii
+   fun:_GLOBAL__I__ZN6vtksys11SystemTools7GetTimeEv
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/usr/lib/libQtWebKit.so.4.6.2
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Cond
+   fun:memcpy
+   obj:/usr/lib/libstdc++.so.6.0.13
+   fun:_ZNSsC1EPKcRKSaIcE
+   fun:_ZN6vtksys11SystemTools14FileIsFullPathEPKc
+   fun:_ZN6vtksys11SystemTools18AddTranslationPathEPKcS2_
+   fun:_ZN6vtksys11SystemTools11AddKeepPathEPKc
+   fun:_ZN6vtksys11SystemTools15ClassInitializeEv
+   fun:_ZN6vtksys18SystemToolsManagerC1Ev
+   fun:_Z41__static_initialization_and_destruction_0ii
+   fun:_GLOBAL__I__ZN6vtksys11SystemTools7GetTimeEv
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Cond
+   fun:memcpy
+   obj:/usr/lib/libstdc++.so.6.0.13
+   fun:_ZNSsC1EPKcRKSaIcE
+   fun:_ZN6vtksys11SystemTools14FileIsFullPathEPKc
+   fun:_ZN6vtksys11SystemTools18AddTranslationPathEPKcS2_
+   fun:_ZN6vtksys11SystemTools11AddKeepPathEPKc
+   fun:_ZN6vtksys11SystemTools15ClassInitializeEv
+   fun:_ZN6vtksys18SystemToolsManagerC1Ev
+   fun:_Z41__static_initialization_and_destruction_0ii
+   fun:_GLOBAL__I__ZN6vtksys11SystemTools7GetTimeEv
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Cond
+   fun:memcpy
+   obj:/usr/lib/libstdc++.so.6.0.13
+   fun:_ZNSsC1EPKcRKSaIcE
+   fun:_ZN6vtksys11SystemTools14FileIsFullPathEPKc
+   fun:_ZN6vtksys11SystemTools18AddTranslationPathEPKcS2_
+   fun:_ZN6vtksys11SystemTools11AddKeepPathEPKc
+   fun:_ZN6vtksys11SystemTools15ClassInitializeEv
+   fun:_ZN6vtksys18SystemToolsManagerC1Ev
+   fun:_Z41__static_initialization_and_destruction_0ii
+   fun:_GLOBAL__I__ZN6vtksys11SystemTools7GetTimeEv
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Value8
+   fun:memcpy
+   obj:/usr/lib/libstdc++.so.6.0.13
+   fun:_ZNSsC1EPKcRKSaIcE
+   fun:_ZN6vtksys11SystemTools14FileIsFullPathEPKc
+   fun:_ZN6vtksys11SystemTools18AddTranslationPathEPKcS2_
+   fun:_ZN6vtksys11SystemTools11AddKeepPathEPKc
+   fun:_ZN6vtksys11SystemTools15ClassInitializeEv
+   fun:_ZN6vtksys18SystemToolsManagerC1Ev
+   fun:_Z41__static_initialization_and_destruction_0ii
+   fun:_GLOBAL__I__ZN6vtksys11SystemTools7GetTimeEv
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Value8
+   fun:memcpy
+   obj:/usr/lib/libstdc++.so.6.0.13
+   fun:_ZNSsC1EPKcRKSaIcE
+   fun:_ZN6vtksys11SystemTools14FileIsFullPathEPKc
+   fun:_ZN6vtksys11SystemTools18AddTranslationPathEPKcS2_
+   fun:_ZN6vtksys11SystemTools11AddKeepPathEPKc
+   fun:_ZN6vtksys11SystemTools15ClassInitializeEv
+   fun:_ZN6vtksys18SystemToolsManagerC1Ev
+   fun:_Z41__static_initialization_and_destruction_0ii
+   fun:_GLOBAL__I__ZN6vtksys11SystemTools7GetTimeEv
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Cond
+   fun:memcpy
+   obj:/usr/lib/libstdc++.so.6.0.13
+   fun:_ZNSsC1EPKcRKSaIcE
+   fun:_ZN6vtksys11SystemTools14FileIsFullPathEPKc
+   fun:_ZN6vtksys11SystemTools18AddTranslationPathEPKcS2_
+   fun:_ZN6vtksys11SystemTools11AddKeepPathEPKc
+   fun:_ZN6vtksys11SystemTools15ClassInitializeEv
+   fun:_ZN6vtksys18SystemToolsManagerC1Ev
+   fun:_Z41__static_initialization_and_destruction_0ii
+   fun:_GLOBAL__I__ZN6vtksys11SystemTools7GetTimeEv
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Cond
+   fun:memcpy
+   obj:/usr/lib/libstdc++.so.6.0.13
+   fun:_ZNSsC1EPKcRKSaIcE
+   fun:_ZN6vtksys11SystemTools14FileIsFullPathEPKc
+   fun:_ZN6vtksys11SystemTools18AddTranslationPathEPKcS2_
+   fun:_ZN6vtksys11SystemTools11AddKeepPathEPKc
+   fun:_ZN6vtksys11SystemTools15ClassInitializeEv
+   fun:_ZN6vtksys18SystemToolsManagerC1Ev
+   fun:_Z41__static_initialization_and_destruction_0ii
+   fun:_GLOBAL__I__ZN6vtksys11SystemTools7GetTimeEv
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Value8
+   obj:/usr/lib/libstdc++.so.6.0.13
+   fun:_ZNSsC1EPKcRKSaIcE
+   fun:_ZN6vtksys11SystemTools14FileIsFullPathEPKc
+   fun:_ZN6vtksys11SystemTools18AddTranslationPathEPKcS2_
+   fun:_ZN6vtksys11SystemTools11AddKeepPathEPKc
+   fun:_ZN6vtksys11SystemTools15ClassInitializeEv
+   fun:_ZN6vtksys18SystemToolsManagerC1Ev
+   fun:_Z41__static_initialization_and_destruction_0ii
+   fun:_GLOBAL__I__ZN6vtksys11SystemTools7GetTimeEv
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/usr/lib/libQtWebKit.so.4.6.2
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Cond
+   fun:_ZN6vtksys11SystemTools14FileIsFullPathEPKc
+   fun:_ZN6vtksys11SystemTools18AddTranslationPathEPKcS2_
+   fun:_ZN6vtksys11SystemTools11AddKeepPathEPKc
+   fun:_ZN6vtksys11SystemTools15ClassInitializeEv
+   fun:_ZN6vtksys18SystemToolsManagerC1Ev
+   fun:_Z41__static_initialization_and_destruction_0ii
+   fun:_GLOBAL__I__ZN6vtksys11SystemTools7GetTimeEv
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/usr/lib/libQtWebKit.so.4.6.2
+   fun:__libc_csu_init
+   fun:(below main)
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Cond
+   fun:_ZN6vtksys11SystemTools18AddTranslationPathEPKcS2_
+   fun:_ZN6vtksys11SystemTools11AddKeepPathEPKc
+   fun:_ZN6vtksys11SystemTools15ClassInitializeEv
+   fun:_ZN6vtksys18SystemToolsManagerC1Ev
+   fun:_Z41__static_initialization_and_destruction_0ii
+   fun:_GLOBAL__I__ZN6vtksys11SystemTools7GetTimeEv
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/usr/lib/libQtWebKit.so.4.6.2
+   fun:__libc_csu_init
+   fun:(below main)
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Value8
+   fun:_ZN6vtksys11SystemTools18AddTranslationPathEPKcS2_
+   fun:_ZN6vtksys11SystemTools11AddKeepPathEPKc
+   fun:_ZN6vtksys11SystemTools15ClassInitializeEv
+   fun:_ZN6vtksys18SystemToolsManagerC1Ev
+   fun:_Z41__static_initialization_and_destruction_0ii
+   fun:_GLOBAL__I__ZN6vtksys11SystemTools7GetTimeEv
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/usr/lib/libQtWebKit.so.4.6.2
+   fun:__libc_csu_init
+   fun:(below main)
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Cond
+   fun:_ZNSspLEc
+   fun:_ZN6vtksys11SystemTools18AddTranslationPathEPKcS2_
+   fun:_ZN6vtksys11SystemTools11AddKeepPathEPKc
+   fun:_ZN6vtksys11SystemTools15ClassInitializeEv
+   fun:_ZN6vtksys18SystemToolsManagerC1Ev
+   fun:_Z41__static_initialization_and_destruction_0ii
+   fun:_GLOBAL__I__ZN6vtksys11SystemTools7GetTimeEv
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/usr/lib/libQtWebKit.so.4.6.2
+   fun:__libc_csu_init
+   fun:(below main)
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Cond
+   fun:_ZNSs7reserveEm
+   fun:_ZNSspLEc
+   fun:_ZN6vtksys11SystemTools18AddTranslationPathEPKcS2_
+   fun:_ZN6vtksys11SystemTools11AddKeepPathEPKc
+   fun:_ZN6vtksys11SystemTools15ClassInitializeEv
+   fun:_ZN6vtksys18SystemToolsManagerC1Ev
+   fun:_Z41__static_initialization_and_destruction_0ii
+   fun:_GLOBAL__I__ZN6vtksys11SystemTools7GetTimeEv
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/usr/lib/libQtWebKit.so.4.6.2
+   fun:__libc_csu_init
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Cond
+   fun:_ZNSs4_Rep9_S_createEmmRKSaIcE
+   fun:_ZNSs4_Rep8_M_cloneERKSaIcEm
+   fun:_ZNSs7reserveEm
+   fun:_ZNSspLEc
+   fun:_ZN6vtksys11SystemTools18AddTranslationPathEPKcS2_
+   fun:_ZN6vtksys11SystemTools11AddKeepPathEPKc
+   fun:_ZN6vtksys11SystemTools15ClassInitializeEv
+   fun:_ZN6vtksys18SystemToolsManagerC1Ev
+   fun:_Z41__static_initialization_and_destruction_0ii
+   fun:_GLOBAL__I__ZN6vtksys11SystemTools7GetTimeEv
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Cond
+   fun:_ZNSs4_Rep9_S_createEmmRKSaIcE
+   fun:_ZNSs4_Rep8_M_cloneERKSaIcEm
+   fun:_ZNSs7reserveEm
+   fun:_ZNSspLEc
+   fun:_ZN6vtksys11SystemTools18AddTranslationPathEPKcS2_
+   fun:_ZN6vtksys11SystemTools11AddKeepPathEPKc
+   fun:_ZN6vtksys11SystemTools15ClassInitializeEv
+   fun:_ZN6vtksys18SystemToolsManagerC1Ev
+   fun:_Z41__static_initialization_and_destruction_0ii
+   fun:_GLOBAL__I__ZN6vtksys11SystemTools7GetTimeEv
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Cond
+   fun:_ZNSs4_Rep9_S_createEmmRKSaIcE
+   fun:_ZNSs4_Rep8_M_cloneERKSaIcEm
+   fun:_ZNSs7reserveEm
+   fun:_ZNSspLEc
+   fun:_ZN6vtksys11SystemTools18AddTranslationPathEPKcS2_
+   fun:_ZN6vtksys11SystemTools11AddKeepPathEPKc
+   fun:_ZN6vtksys11SystemTools15ClassInitializeEv
+   fun:_ZN6vtksys18SystemToolsManagerC1Ev
+   fun:_Z41__static_initialization_and_destruction_0ii
+   fun:_GLOBAL__I__ZN6vtksys11SystemTools7GetTimeEv
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Cond
+   fun:_ZNSs4_Rep8_M_cloneERKSaIcEm
+   fun:_ZNSs7reserveEm
+   fun:_ZNSspLEc
+   fun:_ZN6vtksys11SystemTools18AddTranslationPathEPKcS2_
+   fun:_ZN6vtksys11SystemTools11AddKeepPathEPKc
+   fun:_ZN6vtksys11SystemTools15ClassInitializeEv
+   fun:_ZN6vtksys18SystemToolsManagerC1Ev
+   fun:_Z41__static_initialization_and_destruction_0ii
+   fun:_GLOBAL__I__ZN6vtksys11SystemTools7GetTimeEv
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/usr/lib/libQtWebKit.so.4.6.2
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Cond
+   fun:_ZNSs4_Rep8_M_cloneERKSaIcEm
+   fun:_ZNSs7reserveEm
+   fun:_ZNSspLEc
+   fun:_ZN6vtksys11SystemTools18AddTranslationPathEPKcS2_
+   fun:_ZN6vtksys11SystemTools11AddKeepPathEPKc
+   fun:_ZN6vtksys11SystemTools15ClassInitializeEv
+   fun:_ZN6vtksys18SystemToolsManagerC1Ev
+   fun:_Z41__static_initialization_and_destruction_0ii
+   fun:_GLOBAL__I__ZN6vtksys11SystemTools7GetTimeEv
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/usr/lib/libQtWebKit.so.4.6.2
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Cond
+   fun:memcpy
+   fun:_ZNSs4_Rep8_M_cloneERKSaIcEm
+   fun:_ZNSs7reserveEm
+   fun:_ZNSspLEc
+   fun:_ZN6vtksys11SystemTools18AddTranslationPathEPKcS2_
+   fun:_ZN6vtksys11SystemTools11AddKeepPathEPKc
+   fun:_ZN6vtksys11SystemTools15ClassInitializeEv
+   fun:_ZN6vtksys18SystemToolsManagerC1Ev
+   fun:_Z41__static_initialization_and_destruction_0ii
+   fun:_GLOBAL__I__ZN6vtksys11SystemTools7GetTimeEv
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Cond
+   fun:memcpy
+   fun:_ZNSs4_Rep8_M_cloneERKSaIcEm
+   fun:_ZNSs7reserveEm
+   fun:_ZNSspLEc
+   fun:_ZN6vtksys11SystemTools18AddTranslationPathEPKcS2_
+   fun:_ZN6vtksys11SystemTools11AddKeepPathEPKc
+   fun:_ZN6vtksys11SystemTools15ClassInitializeEv
+   fun:_ZN6vtksys18SystemToolsManagerC1Ev
+   fun:_Z41__static_initialization_and_destruction_0ii
+   fun:_GLOBAL__I__ZN6vtksys11SystemTools7GetTimeEv
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Cond
+   fun:memcpy
+   fun:_ZNSs4_Rep8_M_cloneERKSaIcEm
+   fun:_ZNSs7reserveEm
+   fun:_ZNSspLEc
+   fun:_ZN6vtksys11SystemTools18AddTranslationPathEPKcS2_
+   fun:_ZN6vtksys11SystemTools11AddKeepPathEPKc
+   fun:_ZN6vtksys11SystemTools15ClassInitializeEv
+   fun:_ZN6vtksys18SystemToolsManagerC1Ev
+   fun:_Z41__static_initialization_and_destruction_0ii
+   fun:_GLOBAL__I__ZN6vtksys11SystemTools7GetTimeEv
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Value8
+   fun:memcpy
+   fun:_ZNSs4_Rep8_M_cloneERKSaIcEm
+   fun:_ZNSs7reserveEm
+   fun:_ZNSspLEc
+   fun:_ZN6vtksys11SystemTools18AddTranslationPathEPKcS2_
+   fun:_ZN6vtksys11SystemTools11AddKeepPathEPKc
+   fun:_ZN6vtksys11SystemTools15ClassInitializeEv
+   fun:_ZN6vtksys18SystemToolsManagerC1Ev
+   fun:_Z41__static_initialization_and_destruction_0ii
+   fun:_GLOBAL__I__ZN6vtksys11SystemTools7GetTimeEv
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Value8
+   fun:memcpy
+   fun:_ZNSs4_Rep8_M_cloneERKSaIcEm
+   fun:_ZNSs7reserveEm
+   fun:_ZNSspLEc
+   fun:_ZN6vtksys11SystemTools18AddTranslationPathEPKcS2_
+   fun:_ZN6vtksys11SystemTools11AddKeepPathEPKc
+   fun:_ZN6vtksys11SystemTools15ClassInitializeEv
+   fun:_ZN6vtksys18SystemToolsManagerC1Ev
+   fun:_Z41__static_initialization_and_destruction_0ii
+   fun:_GLOBAL__I__ZN6vtksys11SystemTools7GetTimeEv
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+   obj:/home/nr52/BUILD/GoFigure2/Nightly/MEMORY_LEAKS/STATIC/bin/qgotabimageviewelementbase
+}
