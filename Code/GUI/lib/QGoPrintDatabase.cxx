@@ -532,7 +532,7 @@ void QGoPrintDatabase::LoadContoursAndMeshesFromDB(
 
 //-------------------------------------------------------------------------
 ContourMeshStructureMultiIndexContainer* QGoPrintDatabase::
-  GetContoursFromDBForAGivenTimePoint(int iTimePoint,std::vector<int> iListIDs)
+  AddContoursFromDBForAGivenTimePoint(int iTimePoint,std::vector<int> iListIDs)
 {
   this->OpenDBConnection();
 
@@ -583,8 +583,31 @@ ContourMeshStructureMultiIndexContainer* QGoPrintDatabase::
     GetTracesInfoFromDBMultiIndex( this->m_DatabaseConnector, 
     CurrentlyUsedTraceData->TraceName, CurrentlyUsedTraceData->CollectionName,
     "ImagingSessionID", this->m_ImgSessionID, iTimePoint, iListIDs );
+  
   this->CloseDBConnection();
+
   return MeshesInfo;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+ContourMeshStructureMultiIndexContainer* QGoPrintDatabase::
+  AddMeshesFromDBForAGivenTimePoint(int iTimePoint,std::vector<int> iListIDs)
+{
+  this->OpenDBConnection();
+
+  ContourMeshStructureMultiIndexContainer* MeshesInfoToAdd =
+    GetTracesInfoFromDB( this->m_DatabaseConnector, "mesh", "track",
+      this->m_ImgSessionID, iTimePoint,iListIDs );
+
+  for (unsigned int i = 0; i < iListIDs.size() ; i++)
+    {
+    this->AddATraceToContourMeshInfo( "mesh", iListIDs.at(i) );
+    }
+
+  this->CloseDBConnection();
+
+  return MeshesInfoToAdd;
 }
 //-------------------------------------------------------------------------
 
@@ -1948,7 +1971,7 @@ ContourMeshStructureMultiIndexContainer* QGoPrintDatabase::
     this->AddTracesInTableWidgetFromDB(NewTrackIDs, "track");
 
 
-    ContoursForVisu = this->GetContoursFromDBForAGivenTimePoint(iTimePoint,
+    ContoursForVisu = this->AddContoursFromDBForAGivenTimePoint(iTimePoint,
       NewContourIDs);
     }
   return ContoursForVisu;
@@ -1980,7 +2003,7 @@ ContourMeshStructureMultiIndexContainer* QGoPrintDatabase::
     this->AddTracesInTableWidgetFromDB(NewMeshIDs, "mesh");
     this->AddTracesInTableWidgetFromDB(NewTrackIDs, "track");
 
-    MeshesForVisu = this->GetMeshesMultiIndexFromDBForAGivenTimePoint(iTimePoint,
+    MeshesForVisu = this->AddMeshesFromDBForAGivenTimePoint(iTimePoint,
       NewMeshIDs);
     }
   return MeshesForVisu;

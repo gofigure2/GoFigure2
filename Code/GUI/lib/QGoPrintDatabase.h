@@ -92,10 +92,9 @@ public:
  * and fill the info for the contours and meshes*/
   void FillTableFromDatabase(int iTimePoint);
   
-  /** \brief return the contours info for the visu with the data from
-  the database corresponding to iTimePoint and to the list of given IDs,
-  if no list of IDs is given, will return the info for all the contours*/
-  ContourMeshStructureMultiIndexContainer* GetContoursFromDBForAGivenTimePoint(
+  /** \brief Add the contours in the trcaeinfoForvisu and return all the
+  contours data for the given timepoint, included the new ones*/
+  ContourMeshStructureMultiIndexContainer* AddContoursFromDBForAGivenTimePoint(
     int iTimePoint, std::vector<int> iListIDs = std::vector<int>());
 
    /** \brief return the multi index container for the contours with the 
@@ -118,6 +117,11 @@ public:
   ContourMeshStructureMultiIndexContainer* 
     GetMeshesMultiIndexFromDBForAGivenTimePoint(int iTimePoint, 
   std::vector<int> iListIDs= std::vector<int>());
+  
+  /** \brief Add the meshes in the trcaeinfoForvisu and return all the
+  meshes data for the given timepoint, included the new ones*/
+  ContourMeshStructureMultiIndexContainer*
+    AddMeshesFromDBForAGivenTimePoint(int iTimePoint,std::vector<int> iListIDs);
 
   /** \brief Return a vector of all the contours for the given timepoint*/
   std::vector< ContourMeshStructure > GetContoursForAGivenTimepoint (
