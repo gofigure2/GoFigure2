@@ -50,6 +50,7 @@
 #include "GoDBTableWidgetContainer.h"
 #include "ContourMeshStructureHelper.h"
 #include "QGoGUILibConfigure.h"
+#include "GoDBCoordinateRow.h"
 
 /**
 \class QTableWidgetchild
@@ -101,6 +102,18 @@ public:
   void AddValuesForID(std::vector<std::string> iColumnsNames,
     std::vector<std::string> iValues,unsigned int iID, 
     std::string iColumnNameForTraceID);
+
+  /** \brief calculate the center of the bounding box for the only selected trace
+  and return it as a GoDBCoordinateRow*/
+  GoDBCoordinateRow GetCoordinateCenterBoundingBox();
+
+  /** \brief get the value in the table for the given iRowIndex and
+  for the given column name*/
+  int GetValueForItem(std::string iColumnName, int iRowIndex);
+
+  /** \brief calculate the mean value for both columns in the given row*/
+  std::string GetMeanValue(std::string iColumnNameOne,
+    std::string iColumnNameTwo, unsigned int iRowIndex);
 
 signals:
   void CheckedRowsChanged();

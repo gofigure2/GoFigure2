@@ -795,3 +795,49 @@ void QTableWidgetChild::AddValuesForID(std::vector<std::string> iColumnsNames,
       }
     }
 }
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+GoDBCoordinateRow QTableWidgetChild::GetCoordinateCenterBoundingBox()
+{
+  GoDBCoordinateRow CenterCoord;
+  if(this->m_VectorSelectedRows.size() == 1)
+    {
+    //QString ColumnName = iColumnNameForTraceID.c_str();
+    int RowIndex = this->m_VectorSelectedRows.at(0).second;
+    //int RowIndex =
+      //this->findValueGivenColumn(this->m_VectorSelectedRows.at(0).first,ColumnName);
+    if (RowIndex != -1)
+      {
+      CenterCoord.SetField("TCoord",
+        this->GetValueForItem("TimePoint",RowIndex));
+      CenterCoord.SetField("XCoord",
+        this->GetMeanValue("XMax","XMin",RowIndex));
+      CenterCoord.SetField("YCoord",
+        this->GetMeanValue("YMax","YMin",RowIndex));
+      CenterCoord.SetField("ZCoord",
+        this->GetMeanValue("ZMax","ZMin",RowIndex));
+      }
+    }
+  return CenterCoord;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+int QTableWidgetChild::GetValueForItem(std::string iColumnName, int iRowIndex)
+{
+  return
+    this->item(
+        iRowIndex,this->findColumnName(iColumnName.c_str()))->text().toInt();
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+std::string QTableWidgetChild::GetMeanValue(std::string iColumnNameOne,
+  std::string iColumnNameTwo, unsigned int iRowIndex)
+{
+  int ValueOne = this->GetValueForItem(iColumnNameOne,iRowIndex);
+  int ValueTwo = this->GetValueForItem(iColumnNameTwo,iRowIndex);
+  int meanValue = (ValueOne + ValueTwo)/2;
+  return ConvertToString<int>(meanValue);
+}

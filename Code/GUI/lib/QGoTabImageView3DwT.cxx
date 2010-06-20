@@ -785,6 +785,9 @@ CreateDataBaseTablesConnection()
 
   QObject::connect( this->m_DataBaseTables, SIGNAL( NewMeshToGenerate(std::list<int>) ),
     this, SLOT( CreateMeshFromSelectedContours(std::list<int>) ) );
+
+  QObject::connect(this->m_DataBaseTables, SIGNAL(NeedToGoToTheLocation(int,int,int,int)),
+    this,SLOT(GoToLocation(int,int,int,int)));
 }
 //-------------------------------------------------------------------------
 #if defined ( ENABLEFFMPEG ) || defined ( ENABLEAVI )
@@ -4116,7 +4119,7 @@ void QGoTabImageView3DwT::ImportMeshes()
 }
 
 void
-QGoTabImageView3Dwt::
+QGoTabImageView3DwT::
 GoToLocation( int iX, int iY, int iZ, int iT )
 {
   this->SetTimePoint( iT );

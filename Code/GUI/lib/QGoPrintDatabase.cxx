@@ -285,18 +285,20 @@ void QGoPrintDatabase::CreateContextMenu(const QPoint &iPos)
 
   TraceInfoStructure* CurrentlyUsedTraceData = this->GetTraceInfoStructure(TraceName);
 
-  ContextMenu->addAction(tr("Delete checked %1s").arg(TraceName.c_str()),
-    this,SLOT(DeleteTraces()));
+
   /** \todo when using lineages, remove the following*/
   if (TraceName != "track")//for the time being, as we don't use lineages
     {
+    ContextMenu->addAction(tr("Go to this %1")
+        .arg(CurrentlyUsedTraceData->TraceName.c_str()),
+        this,SLOT(GoToTheTrace()));
     ContextMenu->addAction(tr("Create a new %1 from checked %2s")
-    .arg(CurrentlyUsedTraceData->CollectionName.c_str())
-    .arg(CurrentlyUsedTraceData->TraceName.c_str()),
+        .arg(CurrentlyUsedTraceData->CollectionName.c_str())
+     .arg(CurrentlyUsedTraceData->TraceName.c_str()),
     this,SLOT(CreateCorrespondingCollection()));
     ContextMenu->addAction(
     tr("Add to selected %1 : %2").arg(CurrentlyUsedTraceData->CollectionName.c_str())
-    .arg(this->m_CurrentCollectionData.first.c_str()),this,SLOT(AddToSelectedCollection()));
+        .arg(this->m_CurrentCollectionData.first.c_str()),this,SLOT(AddToSelectedCollection()));
   ContextMenu->addAction(tr("ReEdit the checked %1").arg(TraceName.c_str()),
     this,SLOT(ReEditTrace()));
     }
@@ -307,6 +309,8 @@ void QGoPrintDatabase::CreateContextMenu(const QPoint &iPos)
     .arg(CurrentlyUsedTraceData->TraceName.c_str()),this,SLOT(UncheckSelectedRows()));
   ContextMenu->addAction(tr("Change the color for the checked %1 to the selected color").arg(TraceName.c_str()),
     this,SLOT(ChangeTraceColor()));
+  ContextMenu->addAction(tr("Delete checked %1s").arg(TraceName.c_str()),
+    this,SLOT(DeleteTraces()));
   ContextMenu->addAction(tr("Copy Selection"),
     CurrentlyUsedTraceData->Table,SLOT(CopySelection()));
   ContextMenu->addAction(tr("Copy table"),CurrentlyUsedTraceData->Table,SLOT(CopyTable()));
@@ -371,6 +375,31 @@ void QGoPrintDatabase::DeleteTraces()
       }
     }
 }
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoPrintDatabase::GoToTheTrace()
+{
+  std::string TraceName = this->InWhichTableAreWe();
+  TraceInfoStructure* CurrentlyUsedTraceData =
+       this->GetTraceInfoStructure(TraceName);
+   if(CurrentlyUsedTraceData->Table->GetListCheckedTraceID().size() != 1)
+     {
+     QMessageBox msgBox;
+     msgBox.setText(
+       tr("Please select one and only one %1 to go to")
+       .arg(TraceName.c_str()));
+     msgBox.exec();
+     return;
+     }
+  GoDBCoordinateRow CoordCenter =
+      CurrentlyUsedTraceData->Table->GetCoordinateCenterBoundingBox();
+  emit NeedToGoToTheLocation(atoi(CoordCenter.GetMapValue("XCoord").c_str()),
+    atoi(CoordCenter.GetMapValue("YCoord").c_str()),
+    atoi(CoordCenter.GetMapValue("ZCoord").c_str()),
+    atoi(CoordCenter.GetMapValue("TCoord").c_str()));
+}
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------

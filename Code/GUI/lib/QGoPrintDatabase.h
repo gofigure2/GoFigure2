@@ -279,6 +279,7 @@ signals:
   void TableWidgetTableChanged(std::string, std::string);
   void NewMeshToGenerate(std::list<int> ListContourIDs);
   void MeshGenerationToUpdate (std::list<int> ListContourIDs);
+  void NeedToGoToTheLocation(int XCoord,int YCoord,int ZCoord, int TCoord);
 
 protected:
   std::pair<std::string,QColor> m_CurrentColorData;
@@ -412,6 +413,7 @@ protected:
 protected slots:
   void CreateContextMenu(const QPoint &pos);
   void DeleteTraces();
+  void GoToTheTrace();
   void CheckSelectedRows();
   void UncheckSelectedRows();
   void ChangeTraceColor();
