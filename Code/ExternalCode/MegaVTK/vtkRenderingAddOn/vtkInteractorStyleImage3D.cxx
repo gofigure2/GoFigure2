@@ -393,11 +393,6 @@ EndPick()
   // Remove boxes in view
   this->HighlightProp(NULL);
   this->PropPicked = 0;
-
-  if (this->State != VTKIS_PICK3D)
-    {
-    return;
-    }
   this->InvokeEvent(vtkCommand::EndPickEvent, this);
   this->StopState();
 }

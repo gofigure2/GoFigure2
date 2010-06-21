@@ -1577,5 +1577,6 @@ void
 QGoImageView3D::
 SetBox3DPicking( bool iValue)
 {
+  DefaultMode();
   return m_View3D->GetCommand()->Enable3DBoxWidget( iValue );
 }

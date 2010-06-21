@@ -32,6 +32,7 @@ vtkViewImage3DCommand()
 vtkViewImage3DCommand::
 ~vtkViewImage3DCommand()
 {
+  this->m_BoxWidget->RemoveAllObservers();
   this->m_BoxWidget->Delete();
 }
 //----------------------------------------------------------------------------
@@ -244,7 +245,7 @@ Enable3DBoxWidget( bool iValue )
     this->m_BoxWidget->On();
     this->m_InitializedBoxWidget = true;
     }
-  else if( iValue )
+  /*else if( iValue )
     {
   // To handle the memory leaks....
     this->m_BoxWidget->AddObserver(vtkCommand::InteractionEvent,this);
@@ -252,8 +253,8 @@ Enable3DBoxWidget( bool iValue )
   else if ( ! iValue )
     {
   // To handle the memory leaks....
-    this->m_BoxWidget->RemoveAllObservers();
-    }
+    this->m_BoxWidget->RemoveObserver(vtkCommand::InteractionEvent);
+    }*/
 
   this->m_BoxWidget->SetEnabled( iValue );
 }
