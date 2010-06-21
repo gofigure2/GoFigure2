@@ -3531,6 +3531,13 @@ LevelSetSegmentation2D()
     SavePolyDataAsContourInDB(
         seedsSegmentation.LevelSetSegmentation2D( orientation ) );
     }
+
+  // Erase seeds once everything is stored in DB
+  this->m_ImageView->ClearAllSeeds();
+
+  // Update visualization
+  this->m_ImageView->UpdateRenderWindows();
+
 }
 //-------------------------------------------------------------------------
 
