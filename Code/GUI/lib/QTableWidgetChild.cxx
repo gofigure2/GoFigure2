@@ -338,11 +338,12 @@ void QTableWidgetChild::DisplayContent(GoDBTableWidgetContainer* iLinkToRowConta
               QTableWidgetItem* CellTable = new QTableWidgetItem;
               std::string Value = *iter;
               //CellTable->setText(Value.c_str());
-              CellTable->setData(0,QString::fromStdString( Value ).toInt());
+              CellTable->setData(0,QString::fromStdString( Value ).toDouble() );
+//.toInt());
               CellTable->setTextAlignment(Qt::AlignCenter);
               this->setItem(k,j,CellTable);
-              iter++;
-              k++;
+              ++iter;
+              ++k;
               }//ENDWHILE
             }//ENDIF
           }//ENDFOR
@@ -788,7 +789,8 @@ void QTableWidgetChild::AddValuesForID(std::vector<std::string> iColumnsNames,
       if (ColumnIndex != -1 )
         {
         QTableWidgetItem* CellTable = new QTableWidgetItem;
-        CellTable->setData(0,QString::fromStdString( iValues.at(i)));
+        CellTable->setData(0,QString::fromStdString( iValues.at(i) ).toDouble() );
+//QString::fromStdString( iValues.at(i)));
         CellTable->setTextAlignment(Qt::AlignCenter);
         this->setItem(RowIndex,ColumnIndex,CellTable);
         }
