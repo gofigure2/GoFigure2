@@ -4,9 +4,6 @@ QGoPlugin::QGoPlugin( QObject* iParent ) : QObject( iParent )
 {
 }
 
-QGoPlugin::~QGoPlugin()
-{}
-
 QString QGoPlugin::Name() const
 {
   return m_Information.Name;

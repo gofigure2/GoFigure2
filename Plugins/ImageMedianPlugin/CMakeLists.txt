@@ -18,11 +18,13 @@ INCLUDE_DIRECTORIES( BEFORE
 SET( MEDIANPLUGIN_HDRS
   medianplugin.h 
   QCellPreprocess.h 
+  ${QGoGUIINTERFACES_HDRS}
   )
 
 SET( MEDIANPLUGIN_SRC 
   medianplugin.cxx 
   QCellPreprocess.cxx 
+  ${QGoGUIINTERFACES_SRC}
 )
 
 QT4_WRAP_UI( MEDIANPLUGIN_UI_HDRS
@@ -44,7 +46,6 @@ SET_SOURCE_FILES_PROPERTIES( ${MEDIANPLUGIN_MOC} PROPERTIES
 ADD_LIBRARY( ImageMedianPlugin MODULE
   ${MEDIANPLUGIN_MOC}
   ${MEDIANPLUGIN_SRC}
-  ${QGoGUIINTERFACES_SRC}
 )
 
 ADD_DEPENDENCIES( ImageMedianPlugin QGoGui )
@@ -53,7 +54,6 @@ TARGET_LINK_LIBRARIES( ImageMedianPlugin
   QGoGui
   ITKBasicFilters
 )
-
 
 #ADD_EXECUTABLE( medianpluginExample medianpluginMain.cxx )
 #TARGET_LINK_LIBRARIES( medianpluginExample ${QT_LIBRARIES} )

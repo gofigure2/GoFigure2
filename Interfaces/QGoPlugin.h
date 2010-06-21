@@ -27,7 +27,7 @@ class QGoPlugin : public QObject
     explicit QGoPlugin( QObject* iParent = 0x0 );
 
     /** \brief Destructor.*/
-    virtual ~QGoPlugin();
+    virtual ~QGoPlugin(){};
 
     /** \brief return Plugin Name of the plugin.*/
     QString Name() const;

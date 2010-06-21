@@ -12,9 +12,6 @@ QGoImageFilterPluginBase( QObject* iParent ) : QGoPlugin( iParent ),
   m_VTKInput( 0 ), m_VTKOutput( 0 )
 {}
 
-QGoImageFilterPluginBase::~QGoImageFilterPluginBase()
-{}
-
 void QGoImageFilterPluginBase::SetInput( vtkImageData* iInput )
 {
   m_VTKInput.resize( 1, 0 );

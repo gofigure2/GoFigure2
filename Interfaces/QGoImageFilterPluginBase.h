@@ -22,7 +22,7 @@ class QGoImageFilterPluginBase : public QGoPlugin
   Q_OBJECT
   public:
     explicit QGoImageFilterPluginBase( QObject* iParent = 0x0 );
-    virtual ~QGoImageFilterPluginBase();
+    virtual ~QGoImageFilterPluginBase() {};
 
     virtual void SetInput( vtkImageData* iInput );
     virtual void SetInput( std::vector< vtkImageData* >& iInput );
