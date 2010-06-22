@@ -1765,6 +1765,7 @@ SetTimePointWithMegaCapture( const int& iTimePoint )
 
 
   LoadAllTracesForCurrentTimePointManager();
+  this->ShowTraceDockWidgetForContour(false);
   Update();
 
   QApplication::restoreOverrideCursor();
