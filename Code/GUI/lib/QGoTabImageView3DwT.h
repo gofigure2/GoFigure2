@@ -375,6 +375,8 @@ public slots:
 
   void CreateMeshFromSelectedContours( std::list<int> ListContourIDs );
 
+  void TestMesh();
+
 protected:
   QHBoxLayout*          m_HBoxLayout;
   QSplitter*            m_VSplitter;

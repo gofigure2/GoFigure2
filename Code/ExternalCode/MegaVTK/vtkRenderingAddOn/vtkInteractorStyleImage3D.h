@@ -111,13 +111,12 @@ class VTK_RENDERINGADDON2_EXPORT vtkInteractorStyleImage3D :
   virtual void OnRightButtonUp();
   virtual void OnMiddleButtonDown();
   virtual void OnMiddleButtonUp();
-  virtual void OnChar();
-  virtual void OnKeyUp();
 
   void     SetCurrentProp();
   vtkProp* GetCurrentProp();
 
   void InvokeEventTest();
+  void InvokeEventTest2();
 
   void StartPick();
   void EndPick();
@@ -150,7 +149,6 @@ class VTK_RENDERINGADDON2_EXPORT vtkInteractorStyleImage3D :
   bool m_EnablePickMode;
   bool m_EnableZoomMode;
   bool m_EnablePanMode;
-  bool m_EnableBoxSelectionMode;
 };
 
 #endif

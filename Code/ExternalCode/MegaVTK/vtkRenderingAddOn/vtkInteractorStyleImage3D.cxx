@@ -88,7 +88,6 @@ vtkInteractorStyleImage3D()
   m_EnableZoomMode = false;
   m_EnablePanMode = false;
 
-
   this->LeftButtonInteraction   = 0;
   this->RightButtonInteraction  = 0;
   this->MiddleButtonInteraction = 0;
@@ -146,11 +145,6 @@ OnLeftButtonDown()
     this->SetCurrentProp();
     this->InvokeEvent(vtkViewImage3DCommand::MeshPickingEvent);
     return;
-    }
-
-  if( m_EnableBoxSelectionMode )
-    {
-    this->InvokeEvent(vtkViewImage3DCommand::BoxPickingEvent);
     }
 
   // Call parent to handle all other states and perform additional work
@@ -274,45 +268,6 @@ OnMiddleButtonUp()
 //----------------------------------------------------------------------------
 void
 vtkInteractorStyleImage3D::
-OnChar()
-{
-  vtkRenderWindowInteractor *rwi = this->Interactor;
-  /*if ((rwi->GetKeyCode() == 'p') || (rwi->GetKeyCode() == 'P'))
-    {
-      this->m_EnablePickingMode = true;
-    }*/
-  if ((rwi->GetKeyCode() == 'b') || (rwi->GetKeyCode() == 'B'))
-    {
-      this->m_EnableBoxSelectionMode = true;
-    }
-
-  this->Superclass::OnChar();
-}
-//----------------------------------------------------------------------------
-
-//----------------------------------------------------------------------------
-void
-vtkInteractorStyleImage3D::
-OnKeyUp()
-{
-  vtkRenderWindowInteractor *rwi = this->Interactor;
-/*
-  if ((rwi->GetKeyCode() == 'p') || (rwi->GetKeyCode() == 'P'))
-    {
-    this->m_EnablePickingMode = false;
-    }*/
-  if ((rwi->GetKeyCode() == 'b') || (rwi->GetKeyCode() == 'B'))
-    {
-    this->m_EnableBoxSelectionMode = false;
-    }
-
-  this->Superclass::OnKeyUp();
-}
-//----------------------------------------------------------------------------
-
-//----------------------------------------------------------------------------
-void
-vtkInteractorStyleImage3D::
 SetLeftButtonInteraction( InteractionTypeIds interactionType)
 {
   LeftButtonInteraction = interactionType;
@@ -370,6 +325,14 @@ vtkInteractorStyleImage3D::
 InvokeEventTest()
 {
   this->InvokeEvent(vtkViewImage3DCommand::ReadyEvent);
+}
+
+//----------------------------------------------------------------------------
+void
+vtkInteractorStyleImage3D::
+InvokeEventTest2()
+{
+  this->InvokeEvent(vtkViewImage3DCommand::BoxWidgetReadyEvent);
 }
 //----------------------------------------------------------------------------
 void
@@ -480,4 +443,5 @@ EnableDefaultMode()
 {
   m_EnablePanMode = false;
   m_EnableZoomMode = false;
+  m_EnablePickMode = false;
 }

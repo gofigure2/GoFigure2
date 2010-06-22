@@ -69,26 +69,7 @@ Execute(vtkObject *caller, unsigned long event, void *callData)
     this->m_ListOfModifiedActors.clear();
     this->m_ListOfModifiedActors.push_back( (vtkProp3D*)test->GetCurrentProp() );
     test->InvokeEventTest();
-    }
-  if ( event == vtkViewImage3DCommand::BoxPickingEvent )
-    {
-    /*if( this->m_BoxPickingEnabled )
-      {
-      this->m_BoxWidget->SetEnabled( 0 );
-      this->m_BoxPickingEnabled = false;
-      }
-    else
-      {
-      this->m_BoxWidget->SetEnabled( 0 );
-      this->m_BoxPickingEnabled = false;
-      }*/
-    /*this->m_BoxWidget->SetInteractor( this->m_vtkViewImage3D->GetInteractor() );
-    this->m_BoxWidget->SetPlaceFactor( 0.5 );
-    this->m_BoxWidget->PlaceWidget( extent[0], extent[1]*spacing[0],
-                                    extent[2], extent[3]*spacing[1],
-                                    extent[4], extent[5]*spacing[2]);
-    this->m_BoxWidget->RotationEnabledOff();
-    this->m_BoxWidget->SetEnabled( 1 );*/
+    return;
     }
   if ( event == vtkCommand::InteractionEvent )
     {
@@ -193,6 +174,11 @@ Execute(vtkObject *caller, unsigned long event, void *callData)
         prop_temp = this->m_vtkViewImage3D->GetProp3DCollection()->GetNextProp3D();
       }
     planes->Delete();
+
+    // Tell that list is ready
+    vtkInteractorStyleImage3D* test = static_cast<vtkInteractorStyleImage3D*>(caller);
+    test->InvokeEventTest2();
+    return;
     }
 }
 
@@ -245,16 +231,6 @@ Enable3DBoxWidget( bool iValue )
     this->m_BoxWidget->On();
     this->m_InitializedBoxWidget = true;
     }
-  /*else if( iValue )
-    {
-  // To handle the memory leaks....
-    this->m_BoxWidget->AddObserver(vtkCommand::InteractionEvent,this);
-    }
-  else if ( ! iValue )
-    {
-  // To handle the memory leaks....
-    this->m_BoxWidget->RemoveObserver(vtkCommand::InteractionEvent);
-    }*/
 
   this->m_BoxWidget->SetEnabled( iValue );
 }

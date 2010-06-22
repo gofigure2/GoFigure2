@@ -356,10 +356,10 @@ void QGoImageView3D::Update()
     this->m_View3D->GetRenderer()->SetActiveCamera( camera );
     this->m_View3D->ResetCamera();
 
+    SetupVTKtoQtConnections();
+
     m_FirstRender = false;
     }
-
-  SetupVTKtoQtConnections();
 }
 //-------------------------------------------------------------------------
 
@@ -462,7 +462,7 @@ void QGoImageView3D::SetupVTKtoQtConnections()
     // when contours picked, send a signal
      VtkEventQtConnector->Connect(
        reinterpret_cast< vtkObject* >( View3D->GetCommand()->GetBoxWidget()),
-       vtkCommand::InteractionEvent,
+       vtkViewImage3DCommand::BoxWidgetReadyEvent,
        this, SIGNAL( MeshesSelectionChanged() ) );
 }
 
@@ -1578,5 +1578,5 @@ QGoImageView3D::
 SetBox3DPicking( bool iValue)
 {
   DefaultMode();
-  return m_View3D->GetCommand()->Enable3DBoxWidget( iValue );
+  m_View3D->GetCommand()->Enable3DBoxWidget( iValue );
 }

@@ -1493,6 +1493,13 @@ setupUi( QWidget* iParent )
   QObject::connect( m_ImageView, SIGNAL( ContoursSelectionChanged( ) ),
     this, SLOT( SelectContoursInTable() ) );
 
+
+  //TEST
+  // connect the meshes selection connection
+  QObject::connect( m_ImageView, SIGNAL( MeshesSelectionChanged( ) ),
+      this, SLOT( TestMesh( ) ) );
+
+  /*
   // connect the meshes selection connection
   QObject::connect( m_ImageView, SIGNAL( MeshesSelectionChanged( ) ),
       this, SLOT( ListHighLightMeshes( ) ) );
@@ -1500,7 +1507,7 @@ setupUi( QWidget* iParent )
   // connect the meshes selection connection
   QObject::connect( m_ImageView, SIGNAL( MeshesSelectionChanged( ) ),
       this, SLOT( ListSelectMeshesInTable( ) ) );
-
+*/
   m_HBoxLayout = new QHBoxLayout( iParent );
   m_HBoxLayout->addWidget( m_VSplitter );
 
@@ -3143,8 +3150,11 @@ SelectTraceInTable( ContourMeshStructureMultiIndexContainer& iContainer ,
 
     if( actor_it != iContainer.get< Actor >().end() )
       {
-      int trace_id = static_cast< int >( actor_it->TraceID );
-      listofrowstobeselected.push_back( trace_id );
+      if( actor_it->TCoord ==  m_TimePoint )
+        {
+        int trace_id = static_cast< int >( actor_it->TraceID );
+        listofrowstobeselected.push_back( trace_id );
+        }
       }
     ++it;
     }
@@ -4135,3 +4145,14 @@ GoToLocation( int iX, int iY, int iZ, int iT )
   this->SetSliceViewYZ( iX );
 }
 
+void
+QGoTabImageView3DwT::
+TestMesh()
+{
+  ListHighLightMeshes();
+  ListSelectMeshesInTable();
+
+  // Update the visualization
+  this->m_ImageView->UpdateRenderWindows();
+
+}
