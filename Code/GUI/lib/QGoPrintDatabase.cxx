@@ -840,7 +840,8 @@ int QGoPrintDatabase::SaveContoursFromVisuInDB( unsigned int iXCoordMin,
   std::list<int> ListSelectedTraces;
 
   ListSelectedTraces.push_back(NewContourID);
-  if (iMeshID != 0)
+  //if (iMeshID != 0)
+  if (iMeshID == 0)
     {
     emit this->NeedCurrentSelectedCollectionID();
     this->AddListTracesToACollection(

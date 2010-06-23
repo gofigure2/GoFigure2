@@ -1765,7 +1765,7 @@ SetTimePointWithMegaCapture( const int& iTimePoint )
 
 
   LoadAllTracesForCurrentTimePointManager();
-  this->ShowTraceDockWidgetForContour(false);
+  //this->ShowTraceDockWidgetForContour(false);
   Update();
 
   QApplication::restoreOverrideCursor();
@@ -1868,10 +1868,10 @@ SetTimePoint( const int& iTimePoint )
         {
         SetTimePointWithMegaCapture( iTimePoint );
         emit TimePointChanged( m_TimePoint );
-        if (this->m_DataBaseTables->IsDatabaseUsed())
-          {
-          this->m_DataBaseTables->UpdateListMeshes(iTimePoint);
-          }
+        //if (this->m_DataBaseTables->IsDatabaseUsed())
+          //{
+          //this->m_DataBaseTables->UpdateListMeshes(iTimePoint);
+          //}
         }
       }
     else
