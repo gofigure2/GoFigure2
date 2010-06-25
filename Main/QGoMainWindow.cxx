@@ -59,6 +59,7 @@
 // Qt includes
 #include <QDir>
 #include <QDesktopServices>
+#include <QDesktopWidget>
 #include <QUrl>
 #include <QFileDialog>
 #include <QMessageBox>
@@ -113,6 +114,13 @@ QGoMainWindow( QWidget* iParent, Qt::WindowFlags iFlags ) :
   setCorner(Qt::BottomLeftCorner, Qt::LeftDockWidgetArea);
   setCorner(Qt::TopRightCorner, Qt::RightDockWidgetArea);
   setCorner(Qt::BottomRightCorner, Qt::RightDockWidgetArea);
+
+  QRect screen = QApplication::desktop()->availableGeometry(this);
+  QSize MaximumSize = screen.size();
+  this->setMaximumSize(MaximumSize);
+  //QSize IconSize = this->iconSize();
+  QSize SizeIcon(22,22);
+  this->setIconSize(SizeIcon);
 
   this->setCentralWidget( this->CentralTabWidget );
 
