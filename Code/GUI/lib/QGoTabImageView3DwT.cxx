@@ -138,7 +138,7 @@ QGoTabImageView3DwT( QWidget* iParent ) :
 //   m_DistanceRepresentation( 3 )
   m_AngleWidget( 3 )
 {
-  m_Image = vtkSmartPointer< vtkImageData >::New();
+  m_Image = vtkImageData::New();
 
   m_LinesWidth = 1.;
 
@@ -250,6 +250,8 @@ QGoTabImageView3DwT( QWidget* iParent ) :
 QGoTabImageView3DwT::
 ~QGoTabImageView3DwT( )
 {
+  m_Image->Delete();
+
   if( !m_LSMReader.empty() )
     {
     if( m_LSMReader[0] )

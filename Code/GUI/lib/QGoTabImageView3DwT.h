@@ -383,7 +383,7 @@ protected:
   QGoImageView3D*       m_ImageView;
   std::vector< vtkSmartPointer< vtkLSMReader > > m_LSMReader;
   std::vector< vtkSmartPointer< vtkImageData > > m_InternalImages;
-  vtkSmartPointer< vtkImageData > m_Image;
+  vtkImageData*         m_Image;
 
   double m_LinesWidth;
   QColor m_LinesColor;
