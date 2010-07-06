@@ -92,7 +92,7 @@
 #define CLEAR_CODE 256
 #define EOI_CODE 257
 
-#include "lzw.h"
+//#include "lzw.h"
 
 vtkStandardNewMacro(vtkLSMReader);
 
@@ -1198,6 +1198,7 @@ void vtkLSMReader::DecodeHorizontalDifferencingUnsignedShort(unsigned short *buf
 
 void vtkLSMReader::DecodeLZWCompression(unsigned char* buffer, int size)
 {
+/*
     LZWState *s = new LZWState;
 
     unsigned char *outbuf = new unsigned char[size];
@@ -1240,7 +1241,7 @@ void vtkLSMReader::DecodeLZWCompression(unsigned char* buffer, int size)
     vtkDebugMacro(<<"Decoding done"<<"\n");
     delete s;
     delete []outbuf;
-
+*/
 }
 
 int vtkLSMReader::GetDataTypeForChannel(unsigned int channel)
