@@ -1315,7 +1315,7 @@ void
 QGoImageView3D::
 SetDefaultInteractionStyle(vtkViewImage2D& image)
 {
-  image.SetLeftButtonInteractionStyle( vtkInteractorStyleImage2D::InteractionTypeSlice );
+  image.SetLeftButtonInteractionStyle( vtkInteractorStyleImage2D::InteractionTypeWindowLevel );
   image.SetMiddleButtonInteractionStyle( vtkInteractorStyleImage2D::InteractionTypePan );
   image.SetRightButtonInteractionStyle( vtkInteractorStyleImage2D::InteractionTypeZoom );
   image.SetWheelInteractionStyle( vtkInteractorStyleImage2D::InteractionTypeSlice );
@@ -1491,6 +1491,8 @@ EnableContourPickingMode()
     vtkViewImage2D* View = this->m_Pool->GetItem( i );
     View->SetInteractionStyle(
       vtkInteractorStyleImage2D::InteractionTypeContourPicking );
+    View->SetWheelInteractionStyle(
+      vtkInteractorStyleImage2D::InteractionTypeSlice );
     vtkInteractorStyleImage2D* t =
       vtkInteractorStyleImage2D::SafeDownCast( View->GetInteractorStyle() );
     if( t )

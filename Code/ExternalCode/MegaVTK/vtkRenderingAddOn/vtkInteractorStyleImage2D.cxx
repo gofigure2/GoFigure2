@@ -91,7 +91,7 @@ vtkInteractorStyleImage2D()
   this->RequestedPosition = new int[2];
   this->RequestedPosition[0] = this->RequestedPosition[1] = 0;
 
-  this->LeftButtonInteraction   = InteractionTypeSlice;
+  this->LeftButtonInteraction   = InteractionTypeWindowLevel;
   this->RightButtonInteraction  = InteractionTypeZoom;
   this->MiddleButtonInteraction = InteractionTypePan;
   this->WheelButtonInteraction  = InteractionTypeSlice;
@@ -136,6 +136,9 @@ OnMouseMove()
       break;
     case VTKIS_PICK:
       HighlightCurrentActor();
+      break;
+    default:
+      this->Superclass::OnMouseMove();
       break;
   }
 

@@ -58,7 +58,6 @@
 #include "QGoGUILibConfigure.h"
 
 #include "vtkCommand.h"
-#include "vtkSmartPointer.h"
 #include "vtkSeedRepresentation.h"
 
 #include "vtkPoints.h"
