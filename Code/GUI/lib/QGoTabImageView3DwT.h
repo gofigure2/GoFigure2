@@ -313,6 +313,7 @@ public slots:
    */
   void HighLightTracesFromTableManager( );
 
+
   /**
    * \brief Highlights a trace in the visualization
    * \param[in] iContainer Container which contains traces to be highlighted
@@ -322,6 +323,15 @@ public slots:
   void HighLightTracesFromTable(
       ContourMeshStructureMultiIndexContainer& iContainer,
       std::string iCurrentTrace);
+
+  /**
+   * \brief Show a trace in the visualization
+   * \param[in] iContainer Container which contains traces to be highlighted
+   * \param[in] iCurrentTrace Name of the current trace useful to initialize
+   * the container iterator
+   */
+  void ShowTracesFromTable(ContourMeshStructureMultiIndexContainer& iContainer,
+      std::string iCurrentTrace, bool iVisibility);
 
   void             SelectContoursInTable();
   void             ListSelectMeshesInTable();
@@ -369,6 +379,11 @@ public slots:
   void Change3DPerspectiveToAxial();
   void Change3DPerspectiveToCoronal();
   void Change3DPerspectiveToSagittal();
+
+  /*
+   * \brief Change the visibility of the selected meshes
+   */
+  void ChangeSelectedMeshesVisibility(bool iVisibility);
 
   void ApplyOneClickSegmentationFilter();
   void ApplyContourSemiAutoSegmentation();

@@ -78,8 +78,6 @@
 #include "vtkAngleWidget.h"
 // #include "vtkDistanceRepresentation2D.h"
 
-#include "vtkSphereSource.h"
-
 #include "QGoOneClickSegmentationDockWidget.h"
 #include "vtkViewImage2D.h"
 #include "vtkCellArray.h"
@@ -1035,6 +1033,8 @@ CreateAllViewActions()
     separator4->setSeparator( true );
     this->m_ViewActions.push_back( separator4 );
 
+
+    ///TODO create group actions for views changing
   QAction* Change3DPerspectiveToAxialAction =
     new QAction( tr( "Change 3D view to Posterior " ), this );
   this->m_ViewActions.push_back( Change3DPerspectiveToAxialAction );
@@ -1072,6 +1072,26 @@ CreateAllViewActions()
 
   QObject::connect( Change3DPerspectiveToSagittalAction, SIGNAL( triggered() ),
     this, SLOT( Change3DPerspectiveToSagittal( ) ) );
+
+  //Show/Hide selected meshes
+
+  QAction* VisibilityMeshAction =
+    new QAction( tr( "Change selected meshes visibility " ), this );
+
+  VisibilityMeshAction->setCheckable( true );
+  VisibilityMeshAction->setChecked( true );
+  VisibilityMeshAction->setStatusTip( tr(" Display or not spline planes on each view" ) );
+
+
+  //QIcon sagittalicon;
+  //sagittalicon.addPixmap( QPixmap(QString::fromUtf8(":/fig/LeftView.png")),
+  //  QIcon::Normal, QIcon::Off );
+  //Change3DPerspectiveToSagittalAction->setIcon( sagittalicon );
+
+  QObject::connect( VisibilityMeshAction, SIGNAL( toggled(bool) ),
+    this, SLOT( ChangeSelectedMeshesVisibility(bool) ) );
+
+  this->m_ViewActions.push_back( VisibilityMeshAction );
 }
 //-------------------------------------------------------------------------
 
@@ -2998,7 +3018,6 @@ HighLightContainer( ContourMeshStructureMultiIndexContainer& iContainer, vtkActo
     }
   select_property->Delete();
 }
-
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -3059,14 +3078,14 @@ HighLightTracesFromTable( ContourMeshStructureMultiIndexContainer& iContainer,
             vtkProperty* temp_property = vtkProperty::New();
             temp_property->SetColor( traceid_it->rgba[0], traceid_it->rgba[1], traceid_it->rgba[2] );
             temp_property->SetLineWidth( 1. );
-
+            temp_property->SetOpacity(traceid_it->Actor->GetProperty()->GetOpacity());
             m_ImageView->ChangeActorProperty( traceid_it->Direction,
               traceid_it->Actor, temp_property );
-
             temp_property->Delete();
             }
           else
             {
+            select_property->SetOpacity(traceid_it->Actor->GetProperty()->GetOpacity());
             m_ImageView->ChangeActorProperty( traceid_it->Direction,
               traceid_it->Actor, select_property );
             }
@@ -3081,6 +3100,8 @@ HighLightTracesFromTable( ContourMeshStructureMultiIndexContainer& iContainer,
 
     ++it;
     }
+
+  select_property->Delete();
 }
 //-------------------------------------------------------------------------
 
@@ -3153,7 +3174,7 @@ SelectTraceInTable( ContourMeshStructureMultiIndexContainer& iContainer ,
 
     if( actor_it != iContainer.get< Actor >().end() )
       {
-      if( actor_it->TCoord ==  m_TimePoint )
+      if( actor_it->TCoord ==  static_cast<unsigned int>(m_TimePoint) )
         {
         int trace_id = static_cast< int >( actor_it->TraceID );
         listofrowstobeselected.push_back( trace_id );
@@ -4137,7 +4158,9 @@ void QGoTabImageView3DwT::ImportMeshes()
       this->m_DataBaseTables->GetQStringListSubCellTypes());
     }
 }
+//-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
 GoToLocation( int iX, int iY, int iZ, int iT )
@@ -4147,7 +4170,9 @@ GoToLocation( int iX, int iY, int iZ, int iT )
   this->SetSliceViewXZ( iY );
   this->SetSliceViewYZ( iX );
 }
+//-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
 TestMesh()
@@ -4158,4 +4183,73 @@ TestMesh()
   // Update the visualization
   this->m_ImageView->UpdateRenderWindows();
 
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+ChangeSelectedMeshesVisibility(bool iVisibility)
+{
+  // In which table are we?
+  std::string currentTrace = this->m_DataBaseTables->InWhichTableAreWe();
+
+  // If we are in contour
+  if( currentTrace.compare( "contour" ) == 0 )
+    {
+    ShowTracesFromTable( m_ContourContainer, currentTrace, iVisibility );
+    }
+  // If we are in mesh
+  if( currentTrace.compare( "mesh" ) == 0 )
+    {
+    ShowTracesFromTable( m_MeshContainer, currentTrace, iVisibility );
+    }
+
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+ShowTracesFromTable( ContourMeshStructureMultiIndexContainer& iContainer,
+    std::string iCurrentTrace, bool iVisibility)
+{
+  ContourMeshStructureMultiIndexContainer::iterator
+  it = this->m_DataBaseTables->GetTracesInfoListForVisu( iCurrentTrace.c_str() )
+                             ->begin();
+  unsigned int trace_id = 0;
+
+  while( it != this->m_DataBaseTables
+                   ->GetTracesInfoListForVisu( iCurrentTrace.c_str() )->end() )
+    {
+    trace_id = it->TraceID;
+
+    ContourMeshStructureMultiIndexContainer::index< TraceID >::type::iterator
+        traceid_it = iContainer.get< TraceID >().find( trace_id );
+
+    if( traceid_it != iContainer.get< TraceID >().end() )
+      {
+      while( ( traceid_it != iContainer.get< TraceID >().end() )
+          && ( (*traceid_it).TraceID == trace_id ) )
+        {
+      // if checked, change opacity to the state of the viisibility button
+      // opacity=0 will lead to actor visibility=false
+      // Highlighted means checked
+        if( it->Highlighted )
+          {
+          vtkProperty* select_property = traceid_it->Actor->GetProperty();
+          select_property->SetOpacity(iVisibility);
+          m_ImageView->ChangeActorProperty( traceid_it->Direction,
+            traceid_it->Actor, select_property );
+          }
+        ContourMeshStructure temp( *traceid_it );
+        temp.Highlighted = it->Highlighted;
+
+        iContainer.get< TraceID >().replace( traceid_it, temp );
+        ++traceid_it;
+        }
+      }
+
+    ++it;
+    }
 }

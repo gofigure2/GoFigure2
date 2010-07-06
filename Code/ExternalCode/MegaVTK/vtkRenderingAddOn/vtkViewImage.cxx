@@ -538,9 +538,17 @@ void vtkViewImage::ChangeActorProperty( vtkProp3D* iActor,
     if( Prop3DCollection->IsItemPresent( iActor ) )
       {
       vtkActor* temp = dynamic_cast< vtkActor* >( iActor );
-
       if( temp )
         {
+        // If opacity == 0, the actor don't have to be visible
+        if(iProperty->GetOpacity() == 0)
+          {
+          iActor->SetVisibility( 0 );
+          }
+        else
+          {
+          iActor->SetVisibility( 1 );
+          }
         temp->SetProperty( iProperty );
         temp->Modified();
         Render();
