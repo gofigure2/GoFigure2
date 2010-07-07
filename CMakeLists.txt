@@ -334,7 +334,6 @@ IF( VTK_FOUND )
         ${CMAKE_CURRENT_BINARY_DIR}/CTestCustom.cmake
         @ONLY
         )
-      ENABLE_TESTING()
       INCLUDE ( CTest )
     ENDIF( BUILD_TESTING )
 
