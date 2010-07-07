@@ -4232,15 +4232,14 @@ ShowTracesFromTable( ContourMeshStructureMultiIndexContainer& iContainer,
       while( ( traceid_it != iContainer.get< TraceID >().end() )
           && ( (*traceid_it).TraceID == trace_id ) )
         {
-      // if checked, change opacity to the state of the viisibility button
-      // opacity=0 will lead to actor visibility=false
       // Highlighted means checked
         if( it->Highlighted )
           {
           vtkProperty* select_property = traceid_it->Actor->GetProperty();
-          select_property->SetOpacity(iVisibility);
+          traceid_it->Actor->SetVisibility(iVisibility);
           m_ImageView->ChangeActorProperty( traceid_it->Direction,
             traceid_it->Actor, select_property );
+
           }
         ContourMeshStructure temp( *traceid_it );
         temp.Highlighted = it->Highlighted;
