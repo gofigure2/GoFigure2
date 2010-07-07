@@ -163,9 +163,9 @@ OnLeftButtonDown()
     this->RequestedPosition[1] = y;
     this->InvokeEvent (vtkViewImage2DCommand::RequestedPositionEvent);
     return;
-  }  
-  
-  if (this->Interactor->GetShiftKey() || this->Interactor->GetControlKey()) 
+  }
+
+  if (this->Interactor->GetShiftKey() || this->Interactor->GetControlKey())
   {
     if (this->GetLeftButtonInteraction() == InteractionTypeWindowLevel)
      {

@@ -93,17 +93,17 @@ class VTK_RENDERINGADDON2_EXPORT vtkInteractorStyleImage2D :
     };
     //ETX
 
-    void SetLeftButtonInteraction( InteractionTypeIds );
-    vtkGetMacro (LeftButtonInteraction, unsigned int);
+  void SetLeftButtonInteraction( InteractionTypeIds );
+  vtkGetMacro (LeftButtonInteraction, unsigned int);
 
-    void SetRightButtonInteraction( InteractionTypeIds );
-    vtkGetMacro (RightButtonInteraction, unsigned int);
+  void SetRightButtonInteraction( InteractionTypeIds );
+  vtkGetMacro (RightButtonInteraction, unsigned int);
 
-    void SetMiddleButtonInteraction( InteractionTypeIds );
-    vtkGetMacro (MiddleButtonInteraction, unsigned int);
+  void SetMiddleButtonInteraction( InteractionTypeIds );
+  vtkGetMacro (MiddleButtonInteraction, unsigned int);
 
-    void SetWheelButtonInteraction( InteractionTypeIds );
-    vtkGetMacro (WheelButtonInteraction, unsigned int);
+  void SetWheelButtonInteraction( InteractionTypeIds );
+  vtkGetMacro (WheelButtonInteraction, unsigned int);
 
   virtual void OnMouseMove();
   virtual void OnLeftButtonDown();
@@ -127,18 +127,18 @@ class VTK_RENDERINGADDON2_EXPORT vtkInteractorStyleImage2D :
 
   virtual void DefaultMoveAction();
 
-  /*
+  /**
    * \brief Highlights the actor which is pointed by the mouse
    */
   void HighlightCurrentActor();
 
-  /*
+  /**
    * \brief Reimplemented to remove bounding boxes when we leave picking mode
    * and to set a boolean to false
    */
   virtual void EndPick();
 
-  /*
+  /**
    * \brief Reimplemented to set a boolean to true
    */
   virtual void StartPick();
