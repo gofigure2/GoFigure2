@@ -128,7 +128,7 @@ ENDIF( UNIX )
 # Everything depends on VTK first
 # that way we can get Qt info from VTK
 #### VTK ####
-FIND_PACKAGE( VTK )
+FIND_PACKAGE( VTK REQUIRED )
 IF( VTK_FOUND )
 
   # Check the version of VTK
@@ -169,7 +169,7 @@ IF( VTK_FOUND )
   #----------------------------------------------------------
   # Then find ITK
   #### ITK ####
-  FIND_PACKAGE( ITK )
+  FIND_PACKAGE( ITK REQUIRED )
   IF( ITK_FOUND )
     INCLUDE( ${ITK_USE_FILE} )
   ENDIF( ITK_FOUND )
@@ -178,7 +178,7 @@ IF( VTK_FOUND )
   #----------------------------------------------------------
   # Then find Boost. Note that we only need headers
   #### BOOST ####
-  FIND_PACKAGE( Boost )
+  FIND_PACKAGE( Boost REQUIRED )
   IF( Boost_FOUND )
     INCLUDE_DIRECTORIES( BEFORE ${Boost_INCLUDE_DIRS} )
   ENDIF( Boost_FOUND )
@@ -186,7 +186,7 @@ IF( VTK_FOUND )
   # Try to find Qt.
   # Note that some command line tools will get compiled even without Qt
   #### Qt ####
-  FIND_PACKAGE( Qt4 )
+  FIND_PACKAGE( Qt4 REQUIRED )
   IF( QT4_FOUND AND QT_VERSION_MINOR GREATER 4 )
     IF( QT_USE_FILE )
       SET( QT_USE_QT3SUPPORT FALSE )
