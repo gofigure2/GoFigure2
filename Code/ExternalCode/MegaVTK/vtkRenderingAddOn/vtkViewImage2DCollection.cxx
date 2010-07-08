@@ -140,22 +140,11 @@ InitializeAllObservers()
   while(a)
     {
     vtkInteractorStyle* style = a->GetInteractorStyle();
-    if( a->GetIsColor() )
-      {
-      style->RemoveObservers( vtkCommand::StartWindowLevelEvent );
-      style->RemoveObservers( vtkCommand::ResetWindowLevelEvent );
-      style->RemoveObservers( vtkCommand::WindowLevelEvent );
-      }
+
     style->RemoveObservers( vtkViewImage2DCommand::SliceMoveEvent );
     style->RemoveObservers( vtkViewImage2DCommand::ResetViewerEvent );
     style->RemoveObservers( vtkViewImage2DCommand::RequestedPositionEvent );
 
-    if( !a->GetIsColor() )
-      {
-      style->AddObserver( vtkCommand::StartWindowLevelEvent, this->Command );
-      style->AddObserver( vtkCommand::ResetWindowLevelEvent, this->Command );
-      style->AddObserver( vtkCommand::WindowLevelEvent, this->Command );
-      }
     style->AddObserver( vtkViewImage2DCommand::SliceMoveEvent, this->Command );
     style->AddObserver( vtkViewImage2DCommand::ZoomEvent, this->Command );
     style->AddObserver( vtkViewImage2DCommand::PanEvent, this->Command );
@@ -165,6 +154,30 @@ InitializeAllObservers()
     style->AddObserver( vtkViewImage2DCommand::MeshPickingEvent, this->Command );
     style->AddObserver( vtkViewImage2DCommand::SeedEvent, this->Command );
     
+    a = this->GetNextItem();
+    }
+}
+
+//----------------------------------------------------------------------------
+void vtkViewImage2DCollection::UpdateWindowLevelObservers()
+{
+  this->InitTraversal();
+  vtkViewImage2D* a = this->GetNextItem();
+  while(a)
+    {
+    vtkInteractorStyle* style = a->GetInteractorStyle();
+    if( a->GetIsColor() )
+      {
+      style->RemoveObservers( vtkCommand::StartWindowLevelEvent );
+      style->RemoveObservers( vtkCommand::ResetWindowLevelEvent );
+      style->RemoveObservers( vtkCommand::WindowLevelEvent );
+      }
+    if( !a->GetIsColor() )
+      {
+      style->AddObserver( vtkCommand::StartWindowLevelEvent, this->Command );
+      style->AddObserver( vtkCommand::ResetWindowLevelEvent, this->Command );
+      style->AddObserver( vtkCommand::WindowLevelEvent, this->Command );
+      }
     a = this->GetNextItem();
     }
 }

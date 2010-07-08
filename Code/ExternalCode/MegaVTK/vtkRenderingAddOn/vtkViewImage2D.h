@@ -458,6 +458,8 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage2D : public vtkViewImage
 
   }
 
+  void UpdateWindowLevelObservers();
+
  protected:
 
   vtkViewImage2D();
