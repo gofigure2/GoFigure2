@@ -220,6 +220,8 @@ public:
 
   vtkProp* GetPickedActor();
 
+  void ResetWindowLevel();
+
 signals:
   void SliceViewXYChanged( int Slice );
   void SliceViewXZChanged( int Slice );

@@ -1586,3 +1586,10 @@ SetBox3DPicking( bool iValue)
   DefaultMode();
   m_View3D->GetCommand()->Enable3DBoxWidget( iValue );
 }
+
+void
+QGoImageView3D::
+ResetWindowLevel()
+{
+  m_Pool->SyncResetWindowLevel();
+}
