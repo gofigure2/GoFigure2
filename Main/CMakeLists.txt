@@ -145,20 +145,22 @@ TARGET_LINK_LIBRARIES( gofigure
 #---------------------------------------------------------------------------
 SET( plugin_dest_dir "." )
 SET( qtconf_dest_dir ${GOFIGURE2_INSTALL_BIN_DIR} )
-SET( APPS "\${GOFIGURE2_INSTALL_BIN_DIR}/gofigure" )
 
 IF( APPLE )
   SET( plugin_dest_dir gofigure.app/Contents/MacOS )
   SET( qtconf_dest_dir gofigure.app/Contents/Resources )
-  SET( APPS "${CMAKE_INSTALL_PREFIX}/${GOFIGURE2_INSTALL_BUNDLE_DIR}/gofigure.app" )
+  SET( APPS 
+    "${CMAKE_INSTALL_PREFIX}/${GOFIGURE2_INSTALL_BUNDLE_DIR}/gofigure.app" )
 ENDIF( APPLE )
 
 IF( WIN32 )
-  SET( APPS "${GOFIGURE2_INSTALL_BIN_DIR}/gofigure.exe" )
+  SET( APPS 
+    "${CMAKE_INSTALL_PREFIX}/${GOFIGURE2_INSTALL_BIN_DIR}/gofigure.exe" )
 ENDIF(WIN32)
 
 IF( UNIX AND NOT APPLE )
-  SET( APPS "${GOFIGURE2_INSTALL_BIN_DIR}/gofigure" )
+  SET( APPS 
+    "${CMAKE_INSTALL_PREFIX}/${GOFIGURE2_INSTALL_BIN_DIR}/gofigure" )
 ENDIF( UNIX AND NOT APPLE )
 
 #---------------------------------------------------------------------------
@@ -262,7 +264,7 @@ INSTALL( CODE "
   file( GLOB_RECURSE QTPLUGINS
     \"\${GOFIGURE2_INSTALL_BIN_DIR}/${plugin_dest_dir}/plugins/*${CMAKE_SHARED_LIBRARY_SUFFIX}\" )
     include( BundleUtilities )
-    fixup_bundle(\"${APPS}\" \"\${QTPLUGINS}\" \"${DIRS}\")
+    fixup_bundle(\"${APPS}\" \"\${QTPLUGINS}\" \"${DIRS}\" )
   " COMPONENT Runtime 
   ) 
 
