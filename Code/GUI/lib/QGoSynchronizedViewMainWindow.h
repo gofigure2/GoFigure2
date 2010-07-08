@@ -42,10 +42,14 @@
 
 
 #include <QMainWindow>
+#include <QMdiArea>
 
+#include "itkImage.h"
+#include "itkSmartPointer.h"
+
+#include "QGoSynchronizedViewManager.h"
 class QGoSynchronizedView;
 class QGoSynchronizedView3D;
-class QGoSynchronizedViewManager;
 class vtkImageData;
 
 QT_BEGIN_NAMESPACE
@@ -70,12 +74,43 @@ public:
 
   void Update();
 
-  QGoSynchronizedView* newSynchronizedView2D(
+  QGoSynchronizedView* newSynchronizedView(
     QString iSynchronizedViewName,
     vtkImageData* iImage);
-  QGoSynchronizedView3D* newSynchronizedView3D(
-    QString iSynchronizedViewName,
-    vtkImageData* iImage);
+
+  template< typename TPixel >
+  QGoSynchronizedView* newSynchronizedView(
+    QString       iSynchronizedViewName,
+    typename itk::Image< TPixel, 3 >::Pointer iImage )
+  {
+  QGoSynchronizedView* synchronizedView;
+  synchronizedView = m_SynchronizedViewManager->newSynchronizedView< TPixel >(
+      iSynchronizedViewName, iImage );
+
+  mdiArea->addSubWindow( synchronizedView,Qt::SubWindow );
+  synchronizedView->parentWidget()
+                  ->resize( 300, 300 );
+  synchronizedView->show();
+  tileAct->trigger();
+  return synchronizedView;
+  }
+
+  template< typename TPixel >
+  QGoSynchronizedView* newSynchronizedView(
+    QString       iSynchronizedViewName,
+    typename itk::Image< TPixel, 2 >::Pointer iImage )
+  {
+  QGoSynchronizedView* synchronizedView;
+  synchronizedView = m_SynchronizedViewManager->newSynchronizedView< TPixel >(
+      iSynchronizedViewName, iImage );
+
+  mdiArea->addSubWindow( synchronizedView,Qt::SubWindow );
+  synchronizedView->parentWidget()
+                  ->resize( 300, 300 );
+  synchronizedView->show();
+  tileAct->trigger();
+  return synchronizedView;
+  }
 
   void OpenSynchronizedViewForFile(QString& iFile);
 

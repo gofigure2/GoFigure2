@@ -76,7 +76,7 @@ int main( int argc, char** argv )
   QCoreApplication::setOrganizationName("MegasonLab");
   QCoreApplication::setOrganizationDomain( "http://gofigure2.sourceforge.net" );
 
-// ITK Typedefs
+  // ITK Typedefs
   // ITK Reader Typedef
   typedef double       InputPixelType;
   const unsigned int Dimension = 3;
