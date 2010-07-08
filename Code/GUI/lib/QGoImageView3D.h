@@ -251,6 +251,8 @@ public slots:
 
   void SetCamera( int );
 
+  void UpdateScalarBarIn3DWiew();
+
 //   void HighLightContours();
 
   /**

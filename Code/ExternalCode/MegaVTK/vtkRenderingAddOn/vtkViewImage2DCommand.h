@@ -96,7 +96,8 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage2DCommand : public vtkCommand
     MeshPickingEvent,
     CameraMoveEvent,
     DefaultMoveEvent,
-    SeedEvent
+    SeedEvent,
+    WindowLevelEvent
   };
   //ETX
 

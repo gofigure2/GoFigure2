@@ -468,6 +468,13 @@ void QGoImageView3D::SetupVTKtoQtConnections()
        reinterpret_cast< vtkObject* >( View3D->GetCommand()->GetBoxWidget()),
        vtkViewImage3DCommand::BoxWidgetReadyEvent,
        this, SIGNAL( MeshesSelectionChanged() ) );
+
+    // Event connection between vtk and qt
+    // when contours picked, send a signal
+    VtkEventQtConnector->Connect(
+      reinterpret_cast< vtkObject* >( View1->GetInteractorStyle()),
+      vtkViewImage2DCommand::WindowLevelEvent,
+      this, SLOT( UpdateScalarBarIn3DWiew() ) );
 }
 
 //-------------------------------------------------------------------------
@@ -1531,7 +1538,7 @@ QGoImageView3D::
 GetListOfPickedContours()
 {
   // Get picked contours from all views
-  return this->m_Pool->GetCommand()->GetListOfPickedActors();
+  return m_Pool->GetCommand()->GetListOfPickedActors();
 }
 
 //-------------------------------------------------------------------------
@@ -1539,7 +1546,7 @@ std::list< vtkProp3D* >
 QGoImageView3D::
 GetListOfUnPickedContours()
 {
-  return this->m_Pool->GetCommand()->GetListOfUnPickedActors();
+  return m_Pool->GetCommand()->GetListOfUnPickedActors();
 }
 
 //-------------------------------------------------------------------------
@@ -1587,9 +1594,19 @@ SetBox3DPicking( bool iValue)
   m_View3D->GetCommand()->Enable3DBoxWidget( iValue );
 }
 
+//-------------------------------------------------------------------------
 void
 QGoImageView3D::
 ResetWindowLevel()
 {
   m_Pool->SyncResetWindowLevel();
+}
+
+//-------------------------------------------------------------------------
+void
+QGoImageView3D::
+UpdateScalarBarIn3DWiew()
+{
+  m_Pool->GetItem(0)->GetLookupTable();
+  m_View3D->SetLookupTable( m_Pool->GetItem(0)->GetLookupTable() );
 }

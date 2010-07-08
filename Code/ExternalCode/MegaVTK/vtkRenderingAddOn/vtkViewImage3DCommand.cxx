@@ -22,9 +22,9 @@
 vtkViewImage3DCommand::
 vtkViewImage3DCommand()
 {
-  this->m_BoxWidget = vtkOrientedBoxWidget::New();
+  m_BoxWidget = vtkOrientedBoxWidget::New();
 
-  this->m_InitializedBoxWidget = false;
+  m_InitializedBoxWidget = false;
 }
 //----------------------------------------------------------------------------
 
@@ -32,8 +32,12 @@ vtkViewImage3DCommand()
 vtkViewImage3DCommand::
 ~vtkViewImage3DCommand()
 {
-  this->m_BoxWidget->RemoveAllObservers();
-  this->m_BoxWidget->Delete();
+  if( m_BoxWidget->HasObserver(vtkCommand::InteractionEvent) )
+    {
+    std::cout << "HAS Observer" << std::endl;
+    m_BoxWidget->RemoveObservers(vtkCommand::InteractionEvent);
+    }
+  m_BoxWidget->Delete();
 }
 //----------------------------------------------------------------------------
 
@@ -57,7 +61,7 @@ Execute(vtkObject *caller, unsigned long event, void *callData)
   (void) isi;
   (void) callData;
 
-  vtkImageData* data = this->m_vtkViewImage3D->GetInput();
+  vtkImageData* data = m_vtkViewImage3D->GetInput();
   int extent[6];
   //double spacing[3];
   data->GetExtent( extent );
@@ -66,8 +70,8 @@ Execute(vtkObject *caller, unsigned long event, void *callData)
   if ( event == vtkViewImage3DCommand::MeshPickingEvent )
     {
     vtkInteractorStyleImage3D* test = static_cast<vtkInteractorStyleImage3D*>(caller);
-    this->m_ListOfModifiedActors.clear();
-    this->m_ListOfModifiedActors.push_back( (vtkProp3D*)test->GetCurrentProp() );
+    m_ListOfModifiedActors.clear();
+    m_ListOfModifiedActors.push_back( (vtkProp3D*)test->GetCurrentProp() );
     test->InvokeEventTest();
     return;
     }
@@ -83,7 +87,7 @@ Execute(vtkObject *caller, unsigned long event, void *callData)
     bextent[5] = VTK_DOUBLE_MIN;
 
     vtkPlanes* planes = vtkPlanes::New();
-    this->m_BoxWidget->GetPlanes( planes );
+    m_BoxWidget->GetPlanes( planes );
     double origin[3];
     for( int i=0; i<6; ++i)
       {
@@ -104,10 +108,10 @@ Execute(vtkObject *caller, unsigned long event, void *callData)
       }
 
     // Get Actors
-    this->m_ListOfModifiedActors.clear();
+    m_ListOfModifiedActors.clear();
 
-    this->m_vtkViewImage3D->GetProp3DCollection()->InitTraversal();
-    vtkProp3D* prop_temp = this->m_vtkViewImage3D->GetProp3DCollection()
+    m_vtkViewImage3D->GetProp3DCollection()->InitTraversal();
+    vtkProp3D* prop_temp = m_vtkViewImage3D->GetProp3DCollection()
         ->GetNextProp3D();
 
     while( prop_temp )
@@ -119,8 +123,8 @@ Execute(vtkObject *caller, unsigned long event, void *callData)
         std::list<vtkProp3D*>::iterator listOfPickedActorsIterator;
         bool doSth = true;
 
-        for(listOfPickedActorsIterator = this->m_ListOfPickedActors.begin();
-            listOfPickedActorsIterator != this->m_ListOfPickedActors.end();
+        for(listOfPickedActorsIterator = m_ListOfPickedActors.begin();
+            listOfPickedActorsIterator != m_ListOfPickedActors.end();
             listOfPickedActorsIterator++)
           {
           // if exists in list
@@ -139,8 +143,8 @@ Execute(vtkObject *caller, unsigned long event, void *callData)
         if(doSth)
           {
           // ADD
-          this->m_ListOfPickedActors.push_back( prop_temp );
-          this->m_ListOfModifiedActors.push_back( prop_temp );
+          m_ListOfPickedActors.push_back( prop_temp );
+          m_ListOfModifiedActors.push_back( prop_temp );
           }
 
         }
@@ -149,8 +153,8 @@ Execute(vtkObject *caller, unsigned long event, void *callData)
         std::list<vtkProp3D*>::iterator listOfPickedActorsIterator;
         bool doSth = false;
 
-        for(listOfPickedActorsIterator = this->m_ListOfPickedActors.begin();
-            listOfPickedActorsIterator != this->m_ListOfPickedActors.end();
+        for(listOfPickedActorsIterator = m_ListOfPickedActors.begin();
+            listOfPickedActorsIterator != m_ListOfPickedActors.end();
             listOfPickedActorsIterator++)
           {
           // if exists in list
@@ -167,11 +171,11 @@ Execute(vtkObject *caller, unsigned long event, void *callData)
             }
         if( doSth )
           {
-          this->m_ListOfPickedActors.erase( listOfPickedActorsIterator );
-          this->m_ListOfModifiedActors.push_back( prop_temp );
+          m_ListOfPickedActors.erase( listOfPickedActorsIterator );
+          m_ListOfModifiedActors.push_back( prop_temp );
           }
         }
-        prop_temp = this->m_vtkViewImage3D->GetProp3DCollection()->GetNextProp3D();
+        prop_temp = m_vtkViewImage3D->GetProp3DCollection()->GetNextProp3D();
       }
     planes->Delete();
 
@@ -189,7 +193,7 @@ SetVtkImageView3D( vtkViewImage3D* iViewImage3D )
 {
   if( iViewImage3D )
     {
-    this->m_vtkViewImage3D = iViewImage3D;
+    m_vtkViewImage3D = iViewImage3D;
     }
 }
 //----------------------------------------------------------------------------
@@ -197,40 +201,43 @@ vtkOrientedBoxWidget*
 vtkViewImage3DCommand::
 GetBoxWidget()
 {
-  return this->m_BoxWidget;
+  return m_BoxWidget;
 }
 //----------------------------------------------------------------------------
 std::list< vtkProp3D* >
 vtkViewImage3DCommand::
 GetListOfModifiedActors()
 {
-  return this->m_ListOfModifiedActors;
+  return m_ListOfModifiedActors;
 }
 //----------------------------------------------------------------------------
 void
 vtkViewImage3DCommand::
 Enable3DBoxWidget( bool iValue )
 {
-  vtkImageData* data2 = this->m_vtkViewImage3D->GetInput();
+  vtkImageData* data2 = m_vtkViewImage3D->GetInput();
   int extent2[6];
   double spacing2[3];
   data2->GetExtent( extent2 );
   data2->GetSpacing( spacing2 );
 
-  if( iValue && !this->m_InitializedBoxWidget )
+  if( iValue && !m_InitializedBoxWidget )
     {
-    this->m_BoxWidget->SetInteractor( this->m_vtkViewImage3D->GetInteractor() );
-    this->m_BoxWidget->SetPlaceFactor( 0.5 );
-    this->m_BoxWidget->PlaceWidget( extent2[0], extent2[1]*spacing2[0],
+    m_BoxWidget->SetInteractor( m_vtkViewImage3D->GetInteractor() );
+    m_BoxWidget->SetPlaceFactor( 0.5 );
+    m_BoxWidget->PlaceWidget( extent2[0], extent2[1]*spacing2[0],
         extent2[2], extent2[3]*spacing2[1],
         extent2[4], extent2[5]*spacing2[2]);
-    this->m_BoxWidget->RotationEnabledOff();
-    this->m_BoxWidget->SetKeyPressActivationValue ('b');
+    m_BoxWidget->RotationEnabledOff();
+    m_BoxWidget->SetKeyPressActivationValue ('b');
     // Generates memory leaks
-    this->m_BoxWidget->AddObserver(vtkCommand::InteractionEvent,this);
-    this->m_BoxWidget->On();
-    this->m_InitializedBoxWidget = true;
+    if( !m_BoxWidget->HasObserver(vtkCommand::InteractionEvent))
+      {
+      m_BoxWidget->AddObserver(vtkCommand::InteractionEvent,this);
+      }
+    m_BoxWidget->On();
+    m_InitializedBoxWidget = true;
     }
 
-  this->m_BoxWidget->SetEnabled( iValue );
+  m_BoxWidget->SetEnabled( iValue );
 }
