@@ -787,6 +787,9 @@ CreateDataBaseTablesConnection()
 
   QObject::connect(m_DataBaseTables, SIGNAL(NeedToGoToTheLocation(int,int,int,int)),
     this,SLOT(GoToLocation(int,int,int,int)));
+
+  QObject::connect(this->m_DataBaseTables, SIGNAL(ShowCheckedTracesActivated()),
+    this,SLOT(ChangeSelectedMeshesVisibility()));
 }
 //-------------------------------------------------------------------------
 #if defined ( ENABLEFFMPEG ) || defined ( ENABLEAVI )
@@ -1087,8 +1090,8 @@ CreateAllViewActions()
   //  QIcon::Normal, QIcon::Off );
   //Change3DPerspectiveToSagittalAction->setIcon( sagittalicon );
 
-  QObject::connect( VisibilityMeshAction, SIGNAL( toggled(bool) ),
-    this, SLOT( ChangeSelectedMeshesVisibility(bool) ) );
+ // QObject::connect( VisibilityMeshAction, SIGNAL( toggled(bool) ),
+ //   this, SLOT( ChangeSelectedMeshesVisibility(bool) ) );
 
   m_ViewActions.push_back( VisibilityMeshAction );
 }
@@ -4191,7 +4194,7 @@ TestMesh()
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
-ChangeSelectedMeshesVisibility(bool iVisibility)
+ChangeSelectedMeshesVisibility()
 {
   // In which table are we?
   std::string currentTrace = m_DataBaseTables->InWhichTableAreWe();
@@ -4199,12 +4202,12 @@ ChangeSelectedMeshesVisibility(bool iVisibility)
   // If we are in contour
   if( currentTrace.compare( "contour" ) == 0 )
     {
-    ShowTracesFromTable( m_ContourContainer, currentTrace, iVisibility );
+    ShowTracesFromTable( m_ContourContainer, currentTrace);
     }
   // If we are in mesh
   if( currentTrace.compare( "mesh" ) == 0 )
     {
-    ShowTracesFromTable( m_MeshContainer, currentTrace, iVisibility );
+    ShowTracesFromTable( m_MeshContainer, currentTrace);
     }
 
 }
@@ -4214,7 +4217,7 @@ ChangeSelectedMeshesVisibility(bool iVisibility)
 void
 QGoTabImageView3DwT::
 ShowTracesFromTable( ContourMeshStructureMultiIndexContainer& iContainer,
-    std::string iCurrentTrace, bool iVisibility)
+    std::string iCurrentTrace)
 {
   ContourMeshStructureMultiIndexContainer::iterator
   it = m_DataBaseTables->GetTracesInfoListForVisu( iCurrentTrace.c_str() )
@@ -4235,14 +4238,15 @@ ShowTracesFromTable( ContourMeshStructureMultiIndexContainer& iContainer,
           && ( (*traceid_it).TraceID == trace_id ) )
         {
       // Highlighted means checked
-        if( it->Highlighted )
-          {
+        //if( it->Highlighted )
+          //{
           vtkProperty* select_property = traceid_it->Actor->GetProperty();
-          traceid_it->Actor->SetVisibility(iVisibility);
+          //traceid_it->Actor->SetVisibility(iVisibility);
+          traceid_it->Actor->SetVisibility(it->Highlighted);
           m_ImageView->ChangeActorProperty( traceid_it->Direction,
             traceid_it->Actor, select_property );
-
-          }
+         // }
+        
         ContourMeshStructure temp( *traceid_it );
         temp.Highlighted = it->Highlighted;
 

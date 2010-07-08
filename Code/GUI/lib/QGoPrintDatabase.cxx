@@ -292,6 +292,9 @@ void QGoPrintDatabase::CreateContextMenu(const QPoint &iPos)
     ContextMenu->addAction(tr("Go to this %1")
         .arg(CurrentlyUsedTraceData->TraceName.c_str()),
         this,SLOT(GoToTheTrace()));
+    ContextMenu->addAction(tr("Show only the checked %1s")
+        .arg(CurrentlyUsedTraceData->TraceName.c_str()),
+        this,SIGNAL(ShowCheckedTracesActivated()));
     ContextMenu->addAction(tr("Create a new %1 from checked %2s")
         .arg(CurrentlyUsedTraceData->CollectionName.c_str())
      .arg(CurrentlyUsedTraceData->TraceName.c_str()),

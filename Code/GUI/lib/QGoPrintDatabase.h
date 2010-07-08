@@ -280,6 +280,7 @@ signals:
   void NewMeshToGenerate(std::list<int> ListContourIDs);
   void MeshGenerationToUpdate (std::list<int> ListContourIDs);
   void NeedToGoToTheLocation(int XCoord,int YCoord,int ZCoord, int TCoord);
+  void ShowCheckedTracesActivated();
 
 protected:
   std::pair<std::string,QColor> m_CurrentColorData;

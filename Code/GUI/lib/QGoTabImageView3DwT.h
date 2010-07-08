@@ -331,7 +331,7 @@ public slots:
    * the container iterator
    */
   void ShowTracesFromTable(ContourMeshStructureMultiIndexContainer& iContainer,
-      std::string iCurrentTrace, bool iVisibility);
+      std::string iCurrentTrace);
 
   void             SelectContoursInTable();
   void             ListSelectMeshesInTable();
@@ -383,7 +383,7 @@ public slots:
   /*
    * \brief Change the visibility of the selected meshes
    */
-  void ChangeSelectedMeshesVisibility(bool iVisibility);
+  void ChangeSelectedMeshesVisibility();
 
   void ApplyOneClickSegmentationFilter();
   void ApplyContourSemiAutoSegmentation();
