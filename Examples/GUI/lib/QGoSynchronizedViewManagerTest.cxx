@@ -48,8 +48,12 @@
 #include "vtkMetaImageReader.h"
 
 #include "QGoSynchronizedView.h"
-#include  "QGoSynchronizedViewManager.h"
+#include "QGoSynchronizedViewManager.h"
 #include "QGoSynchronizedView3D.h"
+
+#include "itkImage.h"
+#include "itkSmartPointer.h"
+#include "itkImageFileReader.h"
 
 
 #include <QStringList>
@@ -71,6 +75,19 @@ int main( int argc, char** argv )
   QApplication app( argc, argv );
   QCoreApplication::setOrganizationName("MegasonLab");
   QCoreApplication::setOrganizationDomain( "http://gofigure2.sourceforge.net" );
+
+// ITK Typedefs
+  // ITK Reader Typedef
+  typedef double       InputPixelType;
+  const unsigned int Dimension = 3;
+  typedef itk::Image< InputPixelType, Dimension>  InputImage3DType;
+  typedef InputImage3DType::Pointer       InputImage3DPointer;
+
+  //itk reader
+  typedef itk::ImageFileReader< InputImage3DType > itkReaderType;
+  itkReaderType::Pointer itkReader = itkReaderType::New();
+  itkReader->SetFileName( argv[2] );
+  itkReader->Update();
 
 
   // create 3 2D images from 1
@@ -115,6 +132,7 @@ int main( int argc, char** argv )
   QString cp03D = "comp03D";
   QString cp13D = "comp13D";
   QString cp23D = "comp33D";
+  QString cp33D = "compITK_3D";
 
 
   QTimer* timer = new QTimer;
@@ -135,6 +153,8 @@ int main( int argc, char** argv )
   syncViewManage->newSynchronizedView2D(cp1,filter1->GetOutput());
   syncViewManage->newSynchronizedView3D(cp03D,reader3D->GetOutput());
   syncViewManage->newSynchronizedView3D(cp13D,filter13D->GetOutput());
+
+  syncViewManage->newSynchronizedView< InputPixelType >(cp33D, itkReader->GetOutput() );
 
   syncViewManage->Update();
   syncViewManage->show();

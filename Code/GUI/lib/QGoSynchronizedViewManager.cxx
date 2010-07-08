@@ -53,7 +53,6 @@ QGoSynchronizedViewManager::QGoSynchronizedViewManager(QObject *iParent) :
 {}
 //--------------------------------------------------------------------------
 //--------------------------------------------------------------------------
-
 QGoSynchronizedViewManager::
 ~QGoSynchronizedViewManager()
 {
@@ -89,9 +88,22 @@ QGoSynchronizedViewManager::
 
 
 }
+
+/*
 //--------------------------------------------------------------------------
+QGoSynchronizedView*
+QGoSynchronizedViewManager::
+newSynchronizedView(
+    QString       iSynchronizedViewName,
+    vtkImageData* iImage )
+{
 
 
+
+
+
+}
+*/
 
 //--------------------------------------------------------------------------
 // add a SynchronizedView to QGoSynchronizedViewManager's parent Object/Widget
