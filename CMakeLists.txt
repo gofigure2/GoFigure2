@@ -60,6 +60,35 @@ IF( WIN32 )
   ENDIF( NOT BORLAND )
 ENDIF( WIN32 )
 
+#-----------------------------------------------------------------------
+# Export and Install configuration
+#
+# GOFIGURE2_INSTALL_BUNDLE_DIR       - bundle dir
+# GOFIGURE2_INSTALL_BIN_DIR          - binary dir (executables)
+# GOFIGURE2_INSTALL_LIB_DIR          - library dir (libs)
+# GOFIGURE2_INSTALL_DOC_DIR          - documentation dir
+# GOFIGURE2_INSTALL_LICENSE_DIR      - licenses dir
+#-----------------------------------------------------------------------
+IF( NOT GOFIGURE2_INSTALL_BUNDLE_DIR )
+  SET( GOFIGURE2_INSTALL_BUNDLE_DIR "." )
+ENDIF( NOT GOFIGURE2_INSTALL_BUNDLE_DIR )
+
+IF( NOT GOFIGURE2_INSTALL_BIN_DIR )
+  SET( GOFIGURE2_INSTALL_BIN_DIR "bin" )
+ENDIF( NOT GOFIGURE2_INSTALL_BIN_DIR )
+   
+IF( NOT GOFIGURE2_INSTALL_LIB_DIR )
+  SET( GOFIGURE2_INSTALL_LIB_DIR "lib/gofigure2" )
+ENDIF( NOT GOFIGURE2_INSTALL_LIB_DIR )
+
+IF( NOT GOFIGURE2_INSTALL_DOC_DIR )
+  SET( GOFIGURE2_INSTALL_DOC_DIR "share/doc/gofigure2" )
+ENDIF( NOT GOFIGURE2_INSTALL_DOC_DIR )
+
+IF( NOT GOFIGURE2_INSTALL_LICENSE_DIR )
+  SET( GOFIGURE2_INSTALL_LICENSE_DIR "share/doc/gofigure2/Licenses" )
+ENDIF( NOT GOFIGURE2_INSTALL_LICENSE_DIR )
+
 #---------------------------------------------------------------------------
 # Define CMAKE_whatever_OUTPUT_DIRECTORY
 #---------------------------------------------------------------------------
@@ -100,16 +129,22 @@ IF( BUILD_DOCUMENTATION )
   IF( DOXYGEN_FOUND )
     IF( DOXYGEN_DOT_FOUND )
 
-      OPTION( LINK_EXTERNAL_DOC "Should the documentation be linked with external sources such as VTK?" OFF )
+      OPTION( LINK_EXTERNAL_DOC
+        "Should the doc be linked with external sources (VTK, ITK...)?" 
+        OFF 
+      )
 
       ADD_SUBDIRECTORY( Documentation )
 
     ELSE( DOXYGEN_DOT_FOUND )
-      MESSAGE( STATUS "Warning: Dot (from GraphViz) not found - Documentation
-will not ce generated" )
+      MESSAGE( STATUS 
+        "Warning: Dot (from GraphViz) not found - Documentation will not ce generated" 
+      )
     ENDIF( DOXYGEN_DOT_FOUND )
-  ELSE( DOXYGEN_FOUND AND )
-    MESSAGE( STATUS "Warning: Doxygen not found - Documentation will not be created")
+  ELSE( DOXYGEN_FOUND )
+    MESSAGE( STATUS 
+      "Warning: Doxygen not found - Documentation will not be created"
+    )
   ENDIF( DOXYGEN_FOUND )
 ENDIF( BUILD_DOCUMENTATION )
 
@@ -358,7 +393,7 @@ IF( VTK_FOUND )
       "${CMAKE_CURRENT_BINARY_DIR}/UseGoFigure2.cmake"
       @ONLY
       )
-
+    
     #-----------------------------------------------------------------------
     # PACKAGE With CPack
     #-----------------------------------------------------------------------
@@ -372,7 +407,7 @@ IF( VTK_FOUND )
     ADD_CUSTOM_TARGET( uninstall
       "${CMAKE_COMMAND}" -P "${CMAKE_CURRENT_BINARY_DIR}/GOFIGURE2Uninstall.cmake"
       )
-
+      
     IF( ( ${CMAKE_MAJOR_VERSION} EQUAL 2 )  AND ( ${CMAKE_MINOR_VERSION} GREATER 7 ) )
       INCLUDE( GOFIGURE2CPack.cmake )
     ENDIF( ( ${CMAKE_MAJOR_VERSION} EQUAL 2 )  AND ( ${CMAKE_MINOR_VERSION} GREATER 7 ) )

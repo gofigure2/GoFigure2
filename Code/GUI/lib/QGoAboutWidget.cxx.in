@@ -147,34 +147,25 @@ void QGoAboutWidget::SetTheBackGround(QLabel* ilabel,QTabWidget* TabWidget,
 //--------------------------------------------------------------------------
 QString QGoAboutWidget::ReadLicenseText(QString iFilename)
 {
-  QFile file;
-  QString directory = QCoreApplication::applicationDirPath();
-  QString temp = directory + QString( "/Licenses/" );
-  QString Filename;
+  QString app_dir = QCoreApplication::applicationDirPath();
+  QDir temp = QDir( app_dir );
+  temp.cdUp();
+  QString app_up_dir = temp.path();
+  temp.cdUp();
+  QString app_up_up_dir = temp.path();
+  
+  QStringList search_dir( app_dir + "/Licenses" );
+  search_dir << app_up_dir + "/Licenses";
+  search_dir << app_up_dir + "/share/doc/gofigure2/Licenses";
 
-  if( QDir( temp ).exists() )
-    {
-    Filename = temp;
-    }
-  else
-    {
-    QDir updir = QDir( directory );
-    updir.cdUp();
-    temp = updir.path() + QString( "/Licenses/" );
-    if( QDir( temp ).exists() )
-      {
-      Filename = temp;
-      }
-    else
-      {
-      updir.cdUp();
-      temp = updir.path() + QString( "/Licenses/" );
-      Filename = temp;
-      }
-    }
-  Filename.append(iFilename);
-  file.setFileName(Filename);
+  QDir::setSearchPaths( "licenses", search_dir );
+
+  QString Filename( "licenses:" );
+  Filename.append( iFilename );
+  
+  QFile file( Filename );
   file.open(QIODevice::ReadOnly);
+  
   QTextStream textStream(&file);
   QString LicenseText = textStream.readAll();
   std::string test = LicenseText.toStdString();
