@@ -3665,6 +3665,7 @@ SavePolyDataAsContourInDB( vtkPolyData* iView, const int& iContourID,
     vtkPolyData* contour_nodes = vtkPolyData::New();
     contourRep->GetNodePolyData( contour_nodes );
 
+
     vtkProperty* contour_property = vtkProperty::New();
     contour_property->SetColor( iR, iG, iB );
 
@@ -3792,7 +3793,6 @@ SavePolyDataAsMeshInDB( vtkPolyData* iView, const int& iMeshID,
 
   vtkProperty*  mesh_property = vtkProperty::New();
   mesh_property->SetColor( iR, iG, iB );
-  mesh_property->SetOpacity( iA );
 
   std::vector< vtkActor* > contour_actor;
 
