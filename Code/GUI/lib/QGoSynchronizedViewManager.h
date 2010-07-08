@@ -138,13 +138,11 @@ public slots:
    * depending on the vtk image given as an input, the
    * returned QGoSynchronizedView can be downcasted to
    * QGoSynchronizedView2D or QGoSynchronizedView3D
+   * safe downcasting is user's responsibility.
    */
-   /*
-  QGoSynchronizedView newSynchronizedView(
+  QGoSynchronizedView* newSynchronizedView(
     QString       iSynchronizedViewName,
     vtkImageData* iImage );
-  */
-
 
   /** \brief create and add a SynchronizedView2D to
    * QGoSynchronizedViewManager's parent Object/Widget

@@ -149,10 +149,10 @@ int main( int argc, char** argv )
 
   QGoSynchronizedViewManager* syncViewManage = new QGoSynchronizedViewManager();
 
-  syncViewManage->newSynchronizedView2D(cp0,reader->GetOutput());
-  syncViewManage->newSynchronizedView2D(cp1,filter1->GetOutput());
-  syncViewManage->newSynchronizedView3D(cp03D,reader3D->GetOutput());
-  syncViewManage->newSynchronizedView3D(cp13D,filter13D->GetOutput());
+  syncViewManage->newSynchronizedView(cp0,reader->GetOutput());
+  syncViewManage->newSynchronizedView(cp1,filter1->GetOutput());
+  syncViewManage->newSynchronizedView(cp03D,reader3D->GetOutput());
+  syncViewManage->newSynchronizedView(cp13D,filter13D->GetOutput());
 
   syncViewManage->newSynchronizedView< InputPixelType >(cp33D, itkReader->GetOutput() );
 

@@ -89,7 +89,7 @@ QGoSynchronizedViewManager::
 
 }
 
-/*
+
 //--------------------------------------------------------------------------
 QGoSynchronizedView*
 QGoSynchronizedViewManager::
@@ -97,13 +97,26 @@ newSynchronizedView(
     QString       iSynchronizedViewName,
     vtkImageData* iImage )
 {
+  if ( iImage == NULL )
+    {
+    return NULL;
+    }
 
+  int dim[3];
+  iImage->GetDimensions( dim );
 
-
-
-
+  if( ( dim[0] != 1 ) && ( dim[1] != 1 ) && ( dim[2] != 1 ) )
+    {
+    return static_cast<QGoSynchronizedView*>(
+      newSynchronizedView3D( iSynchronizedViewName, iImage ) );
+    }
+  else
+    {
+    return static_cast<QGoSynchronizedView*>(
+      newSynchronizedView2D( iSynchronizedViewName, iImage ) );
+    }
 }
-*/
+
 
 //--------------------------------------------------------------------------
 // add a SynchronizedView to QGoSynchronizedViewManager's parent Object/Widget
