@@ -227,7 +227,7 @@ INSTALL( FILES ${GOFIGURE2_LICENSE_FILES}
 # this inserts some cmake code into the install script to write the file
 IF( APPLE )
   INSTALL( CODE "
-    file( WRITE \"\${GOFIGURE2_INSTALL_BUNDLE_DIR}/${qtconf_dest_dir}/qt.conf\" \"\")
+    file( WRITE \"\${CMAKE_INSTALL_PREFIX}/${GOFIGURE2_INSTALL_BUNDLE_DIR}/${qtconf_dest_dir}/qt.conf\" \"\")
     " COMPONENT Application 
     )
 ENDIF( APPLE )
