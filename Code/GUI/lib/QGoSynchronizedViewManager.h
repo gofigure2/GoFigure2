@@ -86,21 +86,23 @@ public:
     }
 
   // we create a new SynchronizedView with the same parent windows as this
-  QGoSynchronizedView3D* newSynchronizedView = new QGoSynchronizedView3D(iSynchronizedViewName,static_cast<QWidget*>(this->parent()) );
+  QGoSynchronizedView3D* tempNewSynchronizedView =
+    new QGoSynchronizedView3D( iSynchronizedViewName,
+      static_cast<QWidget*>( this->parent() ) );
   // we add the image to it
-  newSynchronizedView->SetImage< TPixel >(iImage);
+  tempNewSynchronizedView->SetImage< TPixel >(iImage);
   // if we are synchronizing different SynchronizedViews
   if (m_Synchronizer3D != NULL)
     {
     // we tell the synchronizer to also synchronize the new SynchronizedView
-    m_Synchronizer3D->addSynchronizedView(newSynchronizedView);
+    m_Synchronizer3D->addSynchronizedView( tempNewSynchronizedView );
     }
   // tell the SynchronizedView who is his Manager
-  newSynchronizedView->SetCurrentViewManager(this);
+  tempNewSynchronizedView->SetCurrentViewManager(this);
     // we add the SynchronizedView to the list of open SynchronizedViews
-  m_openSynchronizedViews3D.push_back(newSynchronizedView);
+  m_openSynchronizedViews3D.push_back( tempNewSynchronizedView );
 
-  return newSynchronizedView;
+  return tempNewSynchronizedView;
   }
 
   template< typename TPixel >
@@ -115,22 +117,26 @@ public:
     }
 
   // we create a new SynchronizedView with the same parent windows as this
-  QGoSynchronizedView2D* newSynchronizedView = new QGoSynchronizedView2D(iSynchronizedViewName,static_cast<QWidget*>(this->parent()) );
+  QGoSynchronizedView2D* tempNewSynchronizedView =
+    new QGoSynchronizedView2D( iSynchronizedViewName,
+      static_cast<QWidget*>( this->parent() ) );
   // we add the image to it
-  newSynchronizedView->SetImage< TPixel >(iImage);
+  tempNewSynchronizedView->SetImage< TPixel >(iImage);
   // if we are synchronizing different SynchronizedViews
   if (m_Synchronizer != NULL)
     {
     // we tell the synchronizer to also synchronize the new SynchronizedView
-    m_Synchronizer->addSynchronizedView(newSynchronizedView);
+    m_Synchronizer->addSynchronizedView(tempNewSynchronizedView);
     }
   // tell the SynchronizedView who is his Manager
-  newSynchronizedView->SetCurrentViewManager(this);
+  tempNewSynchronizedView->SetCurrentViewManager(this);
   // we add the SynchronizedView to the list of open SynchronizedViews
-  m_openSynchronizedViews.push_back(newSynchronizedView);
+  m_openSynchronizedViews.push_back(tempNewSynchronizedView);
 
-  return newSynchronizedView;
+  return tempNewSynchronizedView;
   }
+
+
 public slots:
 
   /** \brief create and add a SynchronizedView to
