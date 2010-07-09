@@ -1047,9 +1047,11 @@ void
 QGoImageView3D::
 ChangeActorProperty( int iDir, vtkProp3D* iActor, vtkProperty* iProperty )
 {
+  vtkViewImage2D* viewer = NULL;
+
   if( ( iDir >= 0 ) && ( iDir < m_Pool->GetNumberOfItems() ) )
     {
-    vtkViewImage2D* viewer = m_Pool->GetItem( iDir );
+    viewer = m_Pool->GetItem( iDir );
     viewer->ChangeActorProperty( iActor, iProperty );
     }
   else
