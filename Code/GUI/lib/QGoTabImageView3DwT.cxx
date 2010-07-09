@@ -4203,8 +4203,8 @@ ShowTracesFromTable( ContourMeshStructureMultiIndexContainer& iContainer,
   it = m_DataBaseTables->GetTracesInfoListForVisu( iCurrentTrace.c_str() )
                              ->begin();
   unsigned int trace_id = 0;
-  vtkActor* testActor = NULL;
-  bool testHighL = NULL;
+  vtkActor* tempActor = NULL;
+  bool tempHighL = NULL;
   ContourMeshStructure temp;
   ContourMeshStructureMultiIndexContainer::index< TraceID >::type::iterator traceid_it;
 
@@ -4213,16 +4213,16 @@ ShowTracesFromTable( ContourMeshStructureMultiIndexContainer& iContainer,
     {
     trace_id = it->TraceID;
     traceid_it = iContainer.get< TraceID >().find( trace_id );
+    tempHighL = it->Highlighted;
 
     while( (*traceid_it).TraceID == trace_id )
       {
-      testActor = traceid_it->Actor;
-      testHighL = it->Highlighted;
-      testActor->SetVisibility(testHighL);
+      tempActor = traceid_it->Actor;
+      tempActor->SetVisibility(tempHighL);
       m_ImageView->ChangeActorProperty( traceid_it->Direction,
-          testActor, testActor->GetProperty() );
+          tempActor, tempActor->GetProperty() );
       temp = *traceid_it;
-      temp.Highlighted = testHighL;
+      temp.Highlighted = tempHighL;
       iContainer.get< TraceID >().replace( traceid_it, temp );
       ++traceid_it;
       }
