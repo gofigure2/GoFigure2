@@ -194,35 +194,29 @@ void QTableWidgetChild::SetSelectRowTraceID (std::string TraceName,
     //then, set to IsHighlight the selected ones:
     std::list<int>::iterator iter = selected_begin;
 
-    bool found = false;
     unsigned int t_id = (*traceinfo_it).TraceID;
 
-    while( iter != SelectedTraces.end() )
+    iter = std::find( selected_begin, SelectedTraces.end(),
+                      static_cast< int >( t_id ) );
+    if( iter != SelectedTraces.end() )
       {
-      if( t_id == static_cast< unsigned int >( *iter ) )
+      if( !traceinfo_it->Highlighted )
         {
-        if( !traceinfo_it->Highlighted )
-          {
-          oModified = true;
-          }
-        found = true;
+        oModified = true;
         ContourMeshStructure temp( *traceinfo_it );
         temp.Highlighted = true;
         ioTracesInfo->replace( traceinfo_it, temp );
-        break;
         }
-      ++iter;
       }
-
-    if( !found )
+    else
       {
       if( traceinfo_it->Highlighted )
         {
         oModified = true;
+        ContourMeshStructure temp( *traceinfo_it );
+        temp.Highlighted = false;
+        ioTracesInfo->replace( traceinfo_it, temp );
         }
-      ContourMeshStructure temp( *traceinfo_it );
-      temp.Highlighted = false;
-      ioTracesInfo->replace( traceinfo_it, temp );
       }
     ++traceinfo_it;
     }
@@ -234,8 +228,7 @@ void QTableWidgetChild::SetSelectRowTraceID (std::string TraceName,
 //--------------------------------------------------------------------------
 QStringList QTableWidgetChild::ValuesForSelectedRows(QString ColumnName)
 {
-  QList<QTableWidgetSelectionRange> Selection;
-  Selection = this->selectedRanges();
+  QList<QTableWidgetSelectionRange> Selection = this->selectedRanges();
   int ColumnIndex = findColumnName(ColumnName);
 
   QList<QString> Values;
@@ -586,7 +579,7 @@ void QTableWidgetChild::UpdateVectorCheckedRows(int Row,int Column,
     temp.second = Row;
     iVectorOfPair.push_back(temp);
     }
-  //CheckedRowsChanged();
+  //emit CheckedRowsChanged();
 }
 //--------------------------------------------------------------------------
 

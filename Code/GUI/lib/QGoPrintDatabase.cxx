@@ -300,10 +300,10 @@ void QGoPrintDatabase::CreateContextMenu(const QPoint &iPos)
      .arg(CurrentlyUsedTraceData->TraceName.c_str()),
     this,SLOT(CreateCorrespondingCollection()));
     ContextMenu->addAction(
-    tr("Add to selected %1 : %2").arg(CurrentlyUsedTraceData->CollectionName.c_str())
+      tr("Add to selected %1 : %2").arg(CurrentlyUsedTraceData->CollectionName.c_str())
         .arg(this->m_CurrentCollectionData.first.c_str()),this,SLOT(AddToSelectedCollection()));
-  ContextMenu->addAction(tr("ReEdit the checked %1").arg(TraceName.c_str()),
-    this,SLOT(ReEditTrace()));
+    ContextMenu->addAction(tr("ReEdit the checked %1").arg(TraceName.c_str()),
+      this,SLOT(ReEditTrace()));
     }
   
   ContextMenu->addAction(tr("Check the selected %1s")
@@ -515,6 +515,7 @@ void QGoPrintDatabase::ChangeTraceColor()
     int ColorID = FindOneID(
       this->m_DatabaseConnector,"color","ColorID","Name",
       this->m_CurrentColorData.first);
+      
     std::list<int>::iterator iter = ListSelectedTraces.begin();
     while(iter != ListSelectedTraces.end())
       {
@@ -522,8 +523,10 @@ void QGoPrintDatabase::ChangeTraceColor()
         CurrentlyUsedTraceData->TraceName,"ColorID",
         ConvertToString<int>(ColorID), CurrentlyUsedTraceData->TraceNameID,
         ConvertToString<int>(*iter));
+        
       this->UpdateTableWidgetForAnExistingTrace(
-        CurrentlyUsedTraceData->TraceName,*iter);
+        CurrentlyUsedTraceData->TraceName, *iter );
+        
       if (CurrentlyUsedTraceData->CollectionOf != "None")
         {
         std::vector<std::string> ListTracesFromThisCollectionOf = 
@@ -538,7 +541,7 @@ void QGoPrintDatabase::ChangeTraceColor()
             atoi(ListTracesFromThisCollectionOf[i].c_str()));
           }
         }
-      iter++;
+      ++iter;
       std::pair<std::list<int>,QColor> ListIDsWithColor;
       ListIDsWithColor.first = ListSelectedTraces;
       ListIDsWithColor.second = this->m_CurrentColorData.second;
@@ -669,14 +672,14 @@ ChangeTracesToHighLightInfoFromTableWidget()
 
   if( HasBeenModified )
     {
-      if ( TraceName.compare( "contour" ) == 0 )
-        {
-        emit SelectionContoursToHighLightChanged();
-        }
-      else if ( TraceName.compare( "mesh" ) == 0 )
-        {
-        emit SelectionMeshesToHighLightChanged();
-        }
+    if ( TraceName.compare( "contour" ) == 0 )
+      {
+      emit SelectionContoursToHighLightChanged();
+      }
+    else if ( TraceName.compare( "mesh" ) == 0 )
+      {
+      emit SelectionMeshesToHighLightChanged();
+      }
     }
 }
 //-------------------------------------------------------------------------
@@ -708,11 +711,11 @@ ChangeContoursToHighLightInfoFromVisu(
           {
           if (!traceid_it->Highlighted)
             {
-          ContourMeshStructure temp( *traceid_it );
-          temp.Highlighted = true;
-          CurrentlyUsedTraceData->ListTracesInfoForVisu->get< TraceID >().replace( traceid_it, temp );
-          CurrentlyUsedTraceData->Table->SetSelectRowTraceID( CurrentlyUsedTraceData->TraceName,
-            *it, true );
+            ContourMeshStructure temp( *traceid_it );
+            temp.Highlighted = true;
+            CurrentlyUsedTraceData->ListTracesInfoForVisu->get< TraceID >().replace( traceid_it, temp );
+            CurrentlyUsedTraceData->Table->SetSelectRowTraceID( CurrentlyUsedTraceData->TraceName,
+              *it, true );
             }
           else
             {
@@ -779,30 +782,35 @@ ChangeMeshesToHighLightInfoFromVisu(
   while( it != iListMeshesHighLightedInVisu.end() )
     {
     ContourMeshStructureMultiIndexContainer::index< TraceID >::type::iterator 
-          traceid_it =
-            CurrentlyUsedTraceData->ListTracesInfoForVisu->get< TraceID >().find( *it );
+      traceid_it =
+        CurrentlyUsedTraceData->ListTracesInfoForVisu->get< TraceID >().find( *it );
 
-        // note here there is only one element with a given TraceID == *it
-        if( traceid_it != 
-            CurrentlyUsedTraceData->ListTracesInfoForVisu->get< TraceID >().end() )
-          {
-          if (!traceid_it->Highlighted)
-            {
-          ContourMeshStructure temp( *traceid_it );
-          temp.Highlighted = true;
-          CurrentlyUsedTraceData->ListTracesInfoForVisu->get< TraceID >().replace( traceid_it, temp );
-          CurrentlyUsedTraceData->Table->SetSelectRowTraceID( CurrentlyUsedTraceData->TraceName,
-            *it, true );
-            }
-          else
-            {
-            ContourMeshStructure temp( *traceid_it );
-            temp.Highlighted = false;
-            CurrentlyUsedTraceData->ListTracesInfoForVisu->get< TraceID >().replace( traceid_it, temp );
-            CurrentlyUsedTraceData->Table->SetSelectRowTraceID( CurrentlyUsedTraceData->TraceName,
-              *it, false );
-            }
-          }
+    // note here there is only one element with a given TraceID == *it
+    if( traceid_it !=
+      CurrentlyUsedTraceData->ListTracesInfoForVisu->get< TraceID >().end() )
+      {
+      ContourMeshStructure temp( *traceid_it );
+      temp.Highlighted = !traceid_it->Highlighted;
+      CurrentlyUsedTraceData->ListTracesInfoForVisu->get< TraceID >().replace( traceid_it, temp );
+      CurrentlyUsedTraceData->Table->SetSelectRowTraceID( CurrentlyUsedTraceData->TraceName,
+        *it, !traceid_it->Highlighted );
+//       if (!traceid_it->Highlighted)
+//         {
+//         ContourMeshStructure temp( *traceid_it );
+//         temp.Highlighted = true;
+//         CurrentlyUsedTraceData->ListTracesInfoForVisu->get< TraceID >().replace( traceid_it, temp );
+//         CurrentlyUsedTraceData->Table->SetSelectRowTraceID( CurrentlyUsedTraceData->TraceName,
+//           *it, true );
+//         }
+//       else
+//         {
+//         ContourMeshStructure temp( *traceid_it );
+//         temp.Highlighted = false;
+//         CurrentlyUsedTraceData->ListTracesInfoForVisu->get< TraceID >().replace( traceid_it, temp );
+//         CurrentlyUsedTraceData->Table->SetSelectRowTraceID( CurrentlyUsedTraceData->TraceName,
+//           *it, false );
+//         }
+      }
       ++it;
     }
 

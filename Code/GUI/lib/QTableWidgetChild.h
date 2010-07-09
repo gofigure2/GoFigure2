@@ -163,7 +163,8 @@ public slots:
   /** \brief modify the ioTracesInfo in order to set the IsHighLighted parameter to false
   for the traces not selected by the user and set it to true for the selected ones,
   selected ones means at least one cell in the row has been selected by the user in
-  the tableWidget. The TraceName has to be chosen between Contour and Mesh */
+  the tableWidget. The TraceName has to be chosen between Contour and Mesh.
+  \todo TraceName is unused. (Arnaud 07/09/10)*/
   bool TracesToHighlight(std::string TraceName,
     ContourMeshStructureMultiIndexContainer* ioTracesInfo);
 

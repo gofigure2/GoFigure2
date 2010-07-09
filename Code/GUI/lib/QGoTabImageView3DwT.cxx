@@ -2405,15 +2405,15 @@ ValidateContour( )
     color.getRgbF( &r, &g, &b );
     }
   
-  bool highlighted;
-  if (m_ReEditContourMode)
-    {
-    highlighted = true;
-    }
-  else
-    {
-    highlighted = false;
-    }
+  bool highlighted = m_ReEditContourMode;
+//   if (m_ReEditContourMode)
+//     {
+//     highlighted = true;
+//     }
+//   else
+//     {
+//     highlighted = false;
+//     }
 
   // get from m_DataBaseTables if user is using one gofiguredatabase or not.
   // In such case contours are saved in the database, else they are not!
@@ -2682,17 +2682,6 @@ LoadAllTracesForGivenTimePoint( const unsigned int& iT,
 }
 //-------------------------------------------------------------------------
 
-//-------------------------------------------------------------------------
-/*
-void
-QGoTabImageView3DwT::
-AddPolyData( vtkPolyData* iMesh )
-{
-  m_ImageView->AddMesh( iMesh );
-//   this->AddContour( 0, iMesh, 0 );
-}
-*/
-//-------------------------------------------------------------------------
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
@@ -2968,43 +2957,46 @@ HighLightContainer( ContourMeshStructureMultiIndexContainer& iContainer, vtkActo
   ContourMeshStructureMultiIndexContainer::index< Actor >::type::iterator
     actor_it = iContainer.get< Actor >().find( iActor );
 
+  // Is the actor in the container?
   if( actor_it != iContainer.get< Actor >().end() )
     {
+    // get the corresponding TraceID (from the container)
     unsigned int trace_id = actor_it->TraceID;
 
     ContourMeshStructureMultiIndexContainer::index< TraceID >::type::iterator
       traceid_it = iContainer.get< TraceID >().find( trace_id );
 
-    if( traceid_it != iContainer.get< TraceID >().end() )
-      {
-      while( ( traceid_it != iContainer.get< TraceID >().end() )
+    // get all elements from the container where TraceID = trace_id
+    while( ( traceid_it != iContainer.get< TraceID >().end() )
           && ( (*traceid_it).TraceID == trace_id ) )
+      {
+      // if the element was not highlighted
+      if( !traceid_it->Highlighted )
         {
-        if( !traceid_it->Highlighted )
-          {
-          m_ImageView->ChangeActorProperty( traceid_it->Direction,
+        // highlight the element
+        m_ImageView->ChangeActorProperty( traceid_it->Direction,
             traceid_it->Actor, select_property );
 
-          ContourMeshStructure temp( *traceid_it );
-          temp.Highlighted = true;
-          iContainer.get< TraceID >().replace( traceid_it, temp );
-          }
-        else
-          {
-          vtkProperty* temp_property = vtkProperty::New();
-          temp_property->SetColor( traceid_it->rgba[0], traceid_it->rgba[1], traceid_it->rgba[2] );
-          temp_property->SetLineWidth( 1. );
-
-          m_ImageView->ChangeActorProperty( traceid_it->Direction,
-            traceid_it->Actor, temp_property );
-          temp_property->Delete();
-
-          ContourMeshStructure temp( *traceid_it );
-          temp.Highlighted = false;
-          iContainer.get< TraceID >().replace( traceid_it, temp );
-          }
-        ++traceid_it;
+        ContourMeshStructure temp( *traceid_it );
+        temp.Highlighted = true;
+        iContainer.get< TraceID >().replace( traceid_it, temp );
         }
+      else
+        {
+        // change the color of the element to its original color
+        vtkProperty* temp_property = vtkProperty::New();
+        temp_property->SetColor( traceid_it->rgba[0], traceid_it->rgba[1], traceid_it->rgba[2] );
+        temp_property->SetLineWidth( 1. );
+
+        m_ImageView->ChangeActorProperty( traceid_it->Direction,
+          traceid_it->Actor, temp_property );
+        temp_property->Delete();
+
+        ContourMeshStructure temp( *traceid_it );
+        temp.Highlighted = false;
+        iContainer.get< TraceID >().replace( traceid_it, temp );
+        }
+      ++traceid_it;
       }
     }
   select_property->Delete();
@@ -3048,6 +3040,7 @@ HighLightTracesFromTable( ContourMeshStructureMultiIndexContainer& iContainer,
   vtkProperty* select_property = vtkProperty::New();
   select_property->SetColor( 1., 0., 0. );
   select_property->SetLineWidth( 3. );
+  select_property->SetOpacity( 1. );
 
   while( it != this->m_DataBaseTables
                    ->GetTracesInfoListForVisu( iCurrentTrace.c_str() )->end() )
@@ -3055,38 +3048,35 @@ HighLightTracesFromTable( ContourMeshStructureMultiIndexContainer& iContainer,
     trace_id = it->TraceID;
 
     ContourMeshStructureMultiIndexContainer::index< TraceID >::type::iterator
-    traceid_it = iContainer.get< TraceID >().find( trace_id );
+      traceid_it = iContainer.get< TraceID >().find( trace_id );
 
-    if( traceid_it != iContainer.get< TraceID >().end() )
+    while( ( traceid_it != iContainer.get< TraceID >().end() )
+      && ( (*traceid_it).TraceID == trace_id ) )
       {
-      while( ( traceid_it != iContainer.get< TraceID >().end() )
-          && ( (*traceid_it).TraceID == trace_id ) )
+      if( it->Highlighted != traceid_it->Highlighted )
         {
-        if( it->Highlighted != traceid_it->Highlighted )
+        if( !it->Highlighted )
           {
-          if( !it->Highlighted )
-            {
-            vtkProperty* temp_property = vtkProperty::New();
-            temp_property->SetColor( traceid_it->rgba[0], traceid_it->rgba[1], traceid_it->rgba[2] );
-            temp_property->SetLineWidth( 1. );
-            temp_property->SetOpacity(traceid_it->Actor->GetProperty()->GetOpacity());
-            m_ImageView->ChangeActorProperty( traceid_it->Direction,
-              traceid_it->Actor, temp_property );
-            temp_property->Delete();
-            }
-          else
-            {
-            select_property->SetOpacity(traceid_it->Actor->GetProperty()->GetOpacity());
-            m_ImageView->ChangeActorProperty( traceid_it->Direction,
-              traceid_it->Actor, select_property );
-            }
-          ContourMeshStructure temp( *traceid_it );
-          temp.Highlighted = it->Highlighted;
-
-          iContainer.get< TraceID >().replace( traceid_it, temp );
+          vtkProperty* temp_property = vtkProperty::New();
+          temp_property->SetColor( traceid_it->rgba[0], traceid_it->rgba[1], traceid_it->rgba[2] );
+          temp_property->SetOpacity( traceid_it->rgba[3] );
+          temp_property->SetLineWidth( 1. );
+        
+          m_ImageView->ChangeActorProperty( traceid_it->Direction,
+            traceid_it->Actor, temp_property );
+          temp_property->Delete();
           }
-        ++traceid_it;
+        else
+          {
+          m_ImageView->ChangeActorProperty( traceid_it->Direction,
+            traceid_it->Actor, select_property );
+          }
+        ContourMeshStructure temp( *traceid_it );
+        temp.Highlighted = it->Highlighted;
+
+        iContainer.get< TraceID >().replace( traceid_it, temp );
         }
+      ++traceid_it;
       }
 
     ++it;
@@ -3603,7 +3593,7 @@ LevelSetSegmentation3D()
 
     SavePolyDataAsMeshInDB(
         seedsSegmentation.LevelSetSegmentation3D() );
-  }
+    }
 }
 
 //-------------------------------------------------------------------------
@@ -3654,16 +3644,16 @@ SavePolyDataAsContourInDB( vtkPolyData* iView, const int& iContourID,
     vtkPolyData* contour_nodes = vtkPolyData::New();
     contourRep->GetNodePolyData( contour_nodes );
 
-
     vtkProperty* contour_property = vtkProperty::New();
     contour_property->SetColor( iR, iG, iB );
+    contour_property->SetOpacity( iA );
 
     // get corresponding actor from visualization
     vtkPolyData* contour_copy = vtkPolyData::New();
     contour_copy->ShallowCopy( contour );
 
     std::vector< vtkActor* > contour_actor =
-    this->AddContour( iDir, contour_copy, contour_property );
+      this->AddContour( iDir, contour_copy, contour_property );
 
     // get meshid from the visu dock widget (SpinBox)
     // mesh ID will be assigned once all contours are already created in database
@@ -3783,13 +3773,12 @@ SavePolyDataAsMeshInDB( vtkPolyData* iView, const int& iMeshID,
   vtkProperty*  mesh_property = vtkProperty::New();
   mesh_property->SetColor( iR, iG, iB );
 
-  std::vector< vtkActor* > contour_actor;
+  std::vector< vtkActor* > mesh_actor;
 
   // dont't create actors if there is no polydata to be displayed
   if ( iView )
     {
-    contour_actor =
-        this->AddContour( iDir, iView, mesh_property );
+    mesh_actor = this->AddContour( iDir, iView, mesh_property );
     }
 
   // get meshid from the visu dock widget (SpinBox)
@@ -3814,9 +3803,9 @@ SavePolyDataAsMeshInDB( vtkPolyData* iView, const int& iMeshID,
     }
 
   // fill the container
-  for( i = 0; i < contour_actor.size(); i++ )
+  for( i = 0; i < mesh_actor.size(); i++ )
     {
-    ContourMeshStructure temp( m_MeshId, contour_actor[i], iView,
+    ContourMeshStructure temp( m_MeshId, mesh_actor[i], iView,
         trackid, iTCoord, iHighlighted, iR, iG, iB, iA, i );
     m_MeshContainer.insert( temp );
     }
@@ -4046,23 +4035,21 @@ ChangeColorOfSelectedTraces( ContourMeshStructureMultiIndexContainer& ioContaine
     trace_id = it->TraceID;
     ContourMeshStructureMultiIndexContainer::index< TraceID >::type::iterator
       traceid_it = ioContainer.get< TraceID >().find( trace_id );
-    if( traceid_it != ioContainer.get< TraceID >().end() )
+
+    while( ( traceid_it != ioContainer.get< TraceID >().end() )
+      && ( (*traceid_it).TraceID == trace_id ) )
       {
-      while( ( traceid_it != ioContainer.get< TraceID >().end() )
-        && ( (*traceid_it).TraceID == trace_id ) )
+      if ( it->Highlighted )
         {
-        if ( it->Highlighted )
-          {
-          ContourMeshStructure temp( *traceid_it );
-          temp.Highlighted = it->Highlighted;
-          temp.rgba[0] = rgba[0];
-          temp.rgba[1] = rgba[1];
-          temp.rgba[2] = rgba[2];
-          temp.rgba[3] = rgba[3];
-          ioContainer.get< TraceID >().replace( traceid_it, temp );
-          }
-        ++traceid_it;
+        ContourMeshStructure temp( *traceid_it );
+        temp.Highlighted = it->Highlighted;
+        temp.rgba[0] = rgba[0];
+        temp.rgba[1] = rgba[1];
+        temp.rgba[2] = rgba[2];
+        temp.rgba[3] = rgba[3];
+        ioContainer.get< TraceID >().replace( traceid_it, temp );
         }
+      ++traceid_it;
       }
     ++it;
     }
