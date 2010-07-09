@@ -124,27 +124,32 @@ QGoSynchronizedView2D*
 QGoSynchronizedViewManager::
 newSynchronizedView2D(QString iSynchronizedViewName, vtkImageData* iImage)
 {
-  if ( (iSynchronizedViewName.isEmpty()) || (iImage == NULL) )
+  if( (iSynchronizedViewName.isEmpty()) || (iImage == NULL) )
+    {
     return NULL;
+    }
   // we create a new SynchronizedView with the same parent windows as this
-  QGoSynchronizedView2D* newSynchronizedView = new QGoSynchronizedView2D(iSynchronizedViewName,static_cast<QWidget*>(this->parent()) );
+  QGoSynchronizedView2D* nSynchronizedView = 
+    new QGoSynchronizedView2D(iSynchronizedViewName,
+                              static_cast<QWidget*>(this->parent()) );
 
   // we add the vtkimage to it
-  newSynchronizedView->SetImage(iImage);
+  nSynchronizedView->SetImage(iImage);
 
   // we add the SynchronizedView to the list of open SynchronizedViews
-  m_openSynchronizedViews.push_back(newSynchronizedView);
+  m_openSynchronizedViews.push_back(nSynchronizedView);
 
   // if we are synchronizing different SynchronizedViews
   if (m_Synchronizer != NULL)
+    {
     // we tell the synchronizer to also synchronize the new SynchronizedView
-    m_Synchronizer->addSynchronizedView(newSynchronizedView);
-
+    m_Synchronizer->addSynchronizedView(nSynchronizedView);
+    }
 
   // tell the SynchronizedView who is his Manager
-  newSynchronizedView->SetCurrentViewManager(this);
+  nSynchronizedView->SetCurrentViewManager(this);
 
-  return newSynchronizedView;
+  return nSynchronizedView;
 }
 //--------------------------------------------------------------------------
 
@@ -155,25 +160,31 @@ QGoSynchronizedViewManager::
 newSynchronizedView3D(QString iSynchronizedViewName, vtkImageData* iImage)
 {
   if ( (iSynchronizedViewName.isEmpty()) || (iImage == NULL) )
+    {
     return NULL;
+    }
   // we create a new SynchronizedView with the same parent windows as this
-  QGoSynchronizedView3D* newSynchronizedView = new QGoSynchronizedView3D(iSynchronizedViewName,static_cast<QWidget*>(this->parent()) );
+  QGoSynchronizedView3D* nSynchronizedView = 
+    new QGoSynchronizedView3D( iSynchronizedViewName,
+                               static_cast<QWidget*>(this->parent()) );
 
   // we add the vtkimage to it
-  newSynchronizedView->SetImage(iImage);
+  nSynchronizedView->SetImage(iImage);
 
   // we add the SynchronizedView to the list of open SynchronizedViews
-  m_openSynchronizedViews3D.push_back(newSynchronizedView);
+  m_openSynchronizedViews3D.push_back(nSynchronizedView);
 
   // if we are synchronizing different SynchronizedViews
   if (m_Synchronizer3D != NULL)
+    {
     // we tell the synchronizer to also synchronize the new SynchronizedView
-    m_Synchronizer3D->addSynchronizedView(newSynchronizedView);
+    m_Synchronizer3D->addSynchronizedView(nSynchronizedView);
+    }
 
   // tell the SynchronizedView who is his Manager
-  newSynchronizedView->SetCurrentViewManager(this);
+  nSynchronizedView->SetCurrentViewManager(this);
 
-  return newSynchronizedView;
+  return nSynchronizedView;
 }
 //--------------------------------------------------------------------------
 

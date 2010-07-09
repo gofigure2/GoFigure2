@@ -1198,6 +1198,11 @@ void vtkLSMReader::DecodeHorizontalDifferencingUnsignedShort(unsigned short *buf
 
 void vtkLSMReader::DecodeLZWCompression(unsigned char* buffer, int size)
 {
+  (void) buffer;
+  (void) size;
+
+  vtkErrorMacro( 
+    <<"vtkLSMReader does not handle LZW Compression anymore for license issue" );
 /*
     LZWState *s = new LZWState;
 
