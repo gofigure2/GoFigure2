@@ -381,9 +381,10 @@ void QTableWidgetChild::SetVisibleColumn(unsigned int iNbOfRows,
     // Checkbox->setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsEnabled |
     //  Qt::ItemIsSelectable);
     //Checkbox->setFlags(Qt::ItemIsEnabled |Qt::ItemIsUserCheckable);
+    Checkbox->setFlags(Qt::ItemIsEnabled);
     Checkbox->setCheckState(Qt::Unchecked);
     QIcon EyeIcon;
-    EyeIcon.addPixmap( QPixmap(QString::fromUtf8(":/fig/LeftView.png")),
+    EyeIcon.addPixmap( QPixmap(QString::fromUtf8(":/fig/BlankIcon.png")),
     QIcon::Normal, QIcon::Off );
     Checkbox->setIcon(EyeIcon);
     this->setItem(i,indexCol,Checkbox);
@@ -680,7 +681,7 @@ void QTableWidgetChild::UpdateTableWidgetDisplayAndVectorCheckedRows(int Row, in
       {
       this->item(Row,Column)->setCheckState(Qt::Checked);
       QIcon EyeIcon;
-      EyeIcon.addPixmap( QPixmap(QString::fromUtf8(":/fig/LeftView.png")),
+      EyeIcon.addPixmap( QPixmap(QString::fromUtf8(":/fig/EyeIcon.png")),
       QIcon::Normal, QIcon::Off );
       this->item(Row,Column)->setIcon(EyeIcon);
       }
@@ -688,7 +689,7 @@ void QTableWidgetChild::UpdateTableWidgetDisplayAndVectorCheckedRows(int Row, in
       {
       this->item(Row,Column)->setCheckState(Qt::Unchecked);
       QIcon NonEyeIcon;
-      NonEyeIcon.addPixmap( QPixmap(QString::fromUtf8(":/fig/PosteriorView.png")),
+      NonEyeIcon.addPixmap( QPixmap(QString::fromUtf8(":/fig/BlankIcon.png")),
       QIcon::Normal, QIcon::Off );
       this->item(Row,Column)->setIcon(NonEyeIcon);
       }

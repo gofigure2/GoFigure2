@@ -118,9 +118,10 @@ QGoMainWindow( QWidget* iParent, Qt::WindowFlags iFlags ) :
   QRect screen = QApplication::desktop()->availableGeometry(this);
   QSize MaximumSize = screen.size();
   this->setMaximumSize(MaximumSize);
-  //QSize IconSize = this->iconSize();
-  //QSize SizeIcon(22,22);
-  //this->setIconSize(SizeIcon);
+ // QSize IconSize = this->iconSize();
+  QSize SizeIcon(22,22);
+  this->setIconSize(SizeIcon);
+  QSize IconSize = this->iconSize();
 
   this->setCentralWidget( this->CentralTabWidget );
 
