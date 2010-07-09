@@ -205,6 +205,12 @@ void QGoPrintDatabase::SetTraceInfoStructures()
   QObject::connect(this->m_MeshesData->Table, SIGNAL (CheckedRowsChanged()),
         this, SLOT(ChangeTracesToHighLightInfoFromTableWidget()));
 
+  QObject::connect(this->m_ContoursData->Table, SIGNAL (VisibleRowsChanged()),
+      this, SLOT(ChangeTracesToShowInfoFromTableWidget()));
+
+  QObject::connect(this->m_MeshesData->Table, SIGNAL (VisibleRowsChanged()),
+        this, SLOT(ChangeTracesToShowInfoFromTableWidget()));
+
   this->m_ContoursData->CollectionOfTraces->SetImgSessionID(m_ImgSessionID);
   this->m_MeshesData->CollectionOfTraces->SetImgSessionID(m_ImgSessionID);
   this->OpenDBConnection();
@@ -667,7 +673,7 @@ ChangeTracesToHighLightInfoFromTableWidget()
   TraceInfoStructure* CurrentlyUsedTraceData = this->GetTraceInfoStructure(
     TraceName);
   bool HasBeenModified =
-    CurrentlyUsedTraceData->Table->TracesToHighlight( TraceName,
+    CurrentlyUsedTraceData->Table->TracesToHighlight(
       CurrentlyUsedTraceData->ListTracesInfoForVisu );
 
   if( HasBeenModified )
@@ -679,6 +685,32 @@ ChangeTracesToHighLightInfoFromTableWidget()
     else if ( TraceName.compare( "mesh" ) == 0 )
       {
       emit SelectionMeshesToHighLightChanged();
+      }
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoPrintDatabase::
+ChangeTracesToShowInfoFromTableWidget()
+{
+  std::string TraceName = this->InWhichTableAreWe();
+  TraceInfoStructure* CurrentlyUsedTraceData = this->GetTraceInfoStructure(
+    TraceName);
+  bool HasBeenModified =
+    CurrentlyUsedTraceData->Table->TracesToShow(
+      CurrentlyUsedTraceData->ListTracesInfoForVisu );
+
+  if( HasBeenModified )
+    {
+    if ( TraceName.compare( "contour" ) == 0 )
+      {
+      emit SelectionContoursToShowChanged();
+      }
+    else if ( TraceName.compare( "mesh" ) == 0 )
+      {
+      emit SelectionMeshesToShowChanged();
       }
     }
 }

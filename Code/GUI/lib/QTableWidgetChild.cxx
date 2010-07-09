@@ -53,6 +53,9 @@ QTableWidgetChild::QTableWidgetChild( QWidget* iParent ): QTableWidget( iParent 
 {
   PrevCol = -1;
   PrevOrder = -1;
+  this->m_VectorSelectedRows = new std::vector<std::pair<int,int> >;
+  this->m_VectorVisibleRows = new std::vector<std::pair<int,int> >;
+
   QObject::connect( this,
     SIGNAL( cellClicked(int,int) ),
     this,SLOT( UpdateTableWidgetDisplayAndVectorCheckedRows(int,int) ));
@@ -71,6 +74,8 @@ QTableWidgetChild( int rows, int columns, QWidget * iParent ) :
 //--------------------------------------------------------------------------
 QTableWidgetChild::~QTableWidgetChild()
 {
+  delete this->m_VectorSelectedRows;
+  delete this->m_VectorVisibleRows;
 }
 //--------------------------------------------------------------------------
 
@@ -174,16 +179,12 @@ void QTableWidgetChild::SetSelectRowTraceID (std::string TraceName,
 
 //--------------------------------------------------------------------------
  bool QTableWidgetChild::TracesToHighlight(
-  std::string TraceName,
   ContourMeshStructureMultiIndexContainer* ioTracesInfo )
 {
-  // unused argument
-  (void) TraceName;
-
   bool oModified = false;
 
   //get the selected TraceID:
-  std::list<int> SelectedTraces = this->GetListCheckedTraceID();
+  std::list<int> SelectedTraces = this->GetListCheckedTraceID(this->m_VectorSelectedRows);
 
   std::list<int>::iterator selected_begin = SelectedTraces.begin();
 
@@ -226,6 +227,55 @@ void QTableWidgetChild::SetSelectRowTraceID (std::string TraceName,
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+ bool QTableWidgetChild::TracesToShow(
+  ContourMeshStructureMultiIndexContainer* ioTracesInfo )
+{
+  bool oModified = false;
+
+  //get the checked TraceID:
+  std::list<int> CheckedTraces = this->GetListCheckedTraceID(this->m_VectorVisibleRows);
+
+  std::list<int>::iterator checked_begin = CheckedTraces.begin();
+
+  ContourMeshStructureMultiIndexContainer::iterator traceinfo_it = ioTracesInfo->begin();
+
+  while( traceinfo_it != ioTracesInfo->end() )
+    {
+    //then, set to IsHighlight the selected ones:
+    std::list<int>::iterator iter = checked_begin;
+
+    unsigned int t_id = (*traceinfo_it).TraceID;
+
+    iter = std::find( checked_begin, CheckedTraces.end(),
+                      static_cast< int >( t_id ) );
+    if( iter != CheckedTraces.end() )
+      {
+      if( !traceinfo_it->Visibility )
+        {
+        oModified = true;
+        ContourMeshStructure temp( *traceinfo_it );
+        temp.Visibility = true;
+        ioTracesInfo->replace( traceinfo_it, temp );
+        }
+      }
+    else
+      {
+      if( traceinfo_it->Visibility )
+        {
+        oModified = true;
+        ContourMeshStructure temp( *traceinfo_it );
+        temp.Visibility = false;
+        ioTracesInfo->replace( traceinfo_it, temp );
+        }
+      }
+    ++traceinfo_it;
+    }
+
+  return oModified;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
 QStringList QTableWidgetChild::ValuesForSelectedRows(QString ColumnName)
 {
   QList<QTableWidgetSelectionRange> Selection = this->selectedRanges();
@@ -252,7 +302,6 @@ void QTableWidgetChild::DisplayColumnNames( QString TableName,
 {
   size_t numberCol=ColumnNames.size();
   this->setColumnCount(static_cast<int>(numberCol));
-
   int i = 0;
   for( std::list<std::string>::iterator iter = ColumnNames.begin();
     iter!= ColumnNames.end();
@@ -345,7 +394,7 @@ void QTableWidgetChild::DisplayContent(GoDBTableWidgetContainer* iLinkToRowConta
         }//ENDIF
       }//ENDFOR
       SetSelectedColumn(NbofRows,0);
-      SetVisibleColumn(NbofRows,0);
+      SetVisibleColumn(NbofRows,0,TraceName);
       this->SetColorForTable(iLinkToRowContainer,TraceName,0);
       this->SetColorForTable(iLinkToRowContainer,CollectionName,0);
     }//ENDELSE
@@ -372,22 +421,25 @@ void QTableWidgetChild::SetSelectedColumn(unsigned int iNbOfRows,
 
 //--------------------------------------------------------------------------
 void QTableWidgetChild::SetVisibleColumn(unsigned int iNbOfRows,
-  unsigned int StartedRow)
+  unsigned int StartedRow,std::string iTraceName)
 {
   int indexCol = findColumnName("Show");
   for( unsigned int i = StartedRow ; i < iNbOfRows+StartedRow; i++ )
     {
     QTableWidgetItem* Checkbox = new QTableWidgetItem;
-    // Checkbox->setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsEnabled |
-    //  Qt::ItemIsSelectable);
-    //Checkbox->setFlags(Qt::ItemIsEnabled |Qt::ItemIsUserCheckable);
-    Checkbox->setFlags(Qt::ItemIsEnabled);
-    Checkbox->setCheckState(Qt::Unchecked);
+    Checkbox->setFlags(Qt::ItemIsEnabled |Qt::ItemIsSelectable | Qt::ItemIsUserCheckable);
+    Checkbox->setCheckState(Qt::Checked);
     QIcon EyeIcon;
-    EyeIcon.addPixmap( QPixmap(QString::fromUtf8(":/fig/BlankIcon.png")),
+    EyeIcon.addPixmap( QPixmap(QString::fromUtf8(":/fig/EyeIcon.png")),
     QIcon::Normal, QIcon::Off );
     Checkbox->setIcon(EyeIcon);
     this->setItem(i,indexCol,Checkbox);
+    std::pair<int,int> VisibleTrace;
+    std::string TraceIDName = iTraceName;
+    TraceIDName += "ID";
+    VisibleTrace.first = this->GetValueForItem(TraceIDName,i);
+    VisibleTrace.second = i;
+    this->m_VectorVisibleRows->push_back(VisibleTrace);
     }
 }
 //--------------------------------------------------------------------------
@@ -485,7 +537,7 @@ void QTableWidgetChild::InsertNewRow(GoDBTableWidgetContainer* iLinkToRowContain
         }//ENDIF
       }//ENDFOR
     SetSelectedColumn(1,NewRow-1);
-    SetVisibleColumn(1,NewRow-1);
+    SetVisibleColumn(1,NewRow-1,TraceName);
     this->SetColorForTable(iLinkToRowContainer,TraceName,NewRow-1);
     this->SetColorForTable(iLinkToRowContainer,CollectionName,NewRow-1);
     }//ENDELSE
@@ -551,25 +603,28 @@ void QTableWidgetChild::UpdateRow(GoDBTableWidgetContainer* iLinkToRowContainer,
 
 //--------------------------------------------------------------------------
 void QTableWidgetChild::UpdateVectorCheckedRows(int Row,int Column,
-  std::vector<std::pair<int,int> > &iVectorOfPair)
+  std::vector<std::pair<int,int> >* iVectorOfPair)
 {
   if (this->item(Row,Column)->checkState()== 0)
     {
     int ID = this->item(Row,1)->text().toInt();
-
-    std::vector<std::pair<int,int> >::iterator iter = iVectorOfPair.begin();
-
-    //As the initial iterator becomes incompatible once an element of the vector has been
-    //erased, we need a bool to indicate the end of the vector:
-
-    while ( iter != iVectorOfPair.end() )
+  
+    if (!iVectorOfPair->empty())
       {
-      if (iter->first == ID)
+      std::vector<std::pair<int,int> >::iterator iter = iVectorOfPair->begin();
+
+      //As the initial iterator becomes incompatible once an element of the vector has been
+      //erased, we need a bool to indicate the end of the vector:
+
+      while ( iter != iVectorOfPair->end() )
         {
-        iVectorOfPair.erase(iter);
-        break;
+        if (iter->first == ID)
+          {
+          iVectorOfPair->erase(iter);
+          break;
+          }
+        ++iter;
         }
-      ++iter;
       }
     }
   if (this->item(Row,Column)->checkState()== 2)
@@ -578,18 +633,24 @@ void QTableWidgetChild::UpdateVectorCheckedRows(int Row,int Column,
     /** \todo check that the index stays the same even if the user move the columns*/
     temp.first = this->item(Row,1)->text().toInt();
     temp.second = Row;
-    iVectorOfPair.push_back(temp);
+    iVectorOfPair->push_back(temp);
     }
+    
   //emit CheckedRowsChanged();
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-std::list<int> QTableWidgetChild::GetListCheckedTraceID()
+std::list<int> QTableWidgetChild::GetListCheckedTraceID(
+  std::vector<std::pair<int,int> >* iVectorOfPair)
 {
+  if (iVectorOfPair == 0)
+    {
+    iVectorOfPair = this->m_VectorSelectedRows;
+    }
   std::list<int> oListSelectedIDs;
-  std::vector<std::pair<int,int> >::iterator iter = this->m_VectorSelectedRows.begin();
-  while(iter != this->m_VectorSelectedRows.end())
+  std::vector<std::pair<int,int> >::iterator iter = iVectorOfPair->begin();
+  while(iter != iVectorOfPair->end())
     {
     oListSelectedIDs.push_back(iter->first);
     ++iter;
@@ -603,8 +664,8 @@ void QTableWidgetChild::UpdateIDs (unsigned int iNewCollectionID,
   std::string iCollectionIDName,QColor ColorNewCollection )
 {
   int IndexCollectionID = this->findColumnName(iCollectionIDName.c_str());
-  std::vector<std::pair<int,int> >::iterator iter = this->m_VectorSelectedRows.begin();
-  while(iter != this->m_VectorSelectedRows.end())
+  std::vector<std::pair<int,int> >::iterator iter = this->m_VectorSelectedRows->begin();
+  while(iter != this->m_VectorSelectedRows->end())
     {
     this->item(iter->second,IndexCollectionID)->
       setText(ConvertToString<unsigned int>(iNewCollectionID).c_str());
@@ -636,13 +697,13 @@ void QTableWidgetChild::UpdateIDs (unsigned int iNewCollectionID,
 void QTableWidgetChild::DeleteSelectedRows(std::string iTraceNameID)
 {
   unsigned int i = 0;
-  while (i<this->m_VectorSelectedRows.size())
+  while (i<this->m_VectorSelectedRows->size())
     {
     //deselect the row in the m_VectorCheckedRows:
     int ColumnSelectedRow = this->findColumnName("");
     int ColumnVisibleRow = this->findColumnName("Show");
     int RowToDelete = this->findValueGivenColumn(
-      this->m_VectorSelectedRows[i].first,iTraceNameID.c_str());
+      this->m_VectorSelectedRows->at(i).first,iTraceNameID.c_str());
     if (RowToDelete != -1)
       {
       this->item(RowToDelete,ColumnSelectedRow)->setCheckState(Qt::Unchecked);
@@ -851,10 +912,10 @@ void QTableWidgetChild::AddValuesForID(std::vector<std::string> iColumnsNames,
 GoDBCoordinateRow QTableWidgetChild::GetCoordinateCenterBoundingBox()
 {
   GoDBCoordinateRow CenterCoord;
-  if(this->m_VectorSelectedRows.size() == 1)
+  if(this->m_VectorSelectedRows->size() == 1)
     {
     //QString ColumnName = iColumnNameForTraceID.c_str();
-    int RowIndex = this->m_VectorSelectedRows.at(0).second;
+    int RowIndex = this->m_VectorSelectedRows->at(0).second;
     //int RowIndex =
       //this->findValueGivenColumn(this->m_VectorSelectedRows.at(0).first,ColumnName);
     if (RowIndex != -1)

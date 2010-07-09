@@ -281,6 +281,8 @@ signals:
   void MeshGenerationToUpdate (std::list<int> ListContourIDs);
   void NeedToGoToTheLocation(int XCoord,int YCoord,int ZCoord, int TCoord);
   void ShowCheckedTracesActivated();
+  void SelectionContoursToShowChanged();
+  void SelectionMeshesToShowChanged();
 
 protected:
   std::pair<std::string,QColor> m_CurrentColorData;
@@ -430,6 +432,11 @@ protected slots:
  * table the user had clicked with the selected traces and emit a signal 
  * to say which m_tracesInfo has changed*/
   void ChangeTracesToHighLightInfoFromTableWidget();
+  
+  /** \brief Update the m_ContoursInfo or m_MeshesInfo depending on which 
+ * table the user had clicked with the selected traces to show and emit a signal 
+ * to say which m_tracesInfo has changed*/
+  void ChangeTracesToShowInfoFromTableWidget();
   /** \brief Add the new created trace in the vector of ContourMeshInfo
  * \todo once we know more for the visualization of meshes, need to do the
  * same for add a collection*/

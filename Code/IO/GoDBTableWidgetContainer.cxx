@@ -433,7 +433,6 @@ void GoDBTableWidgetContainer:: GetCommonInfoForTwoTracesTable()
     m_RowContainer.push_back(PairTemp);
     temp.Clear();
     }
-
   //for the column "is visible or not":
   temp.InfoName = "Show";
   temp.ColumnNameTableWidget = "Show";
