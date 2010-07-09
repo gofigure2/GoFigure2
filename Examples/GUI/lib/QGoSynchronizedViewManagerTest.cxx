@@ -89,7 +89,6 @@ int main( int argc, char** argv )
   itkReader->SetFileName( argv[2] );
   itkReader->Update();
 
-
   // create 3 2D images from 1
 
   vtkSmartPointer< vtkPNGReader > reader = vtkSmartPointer< vtkPNGReader >::New();
@@ -105,8 +104,6 @@ int main( int argc, char** argv )
                             vtkSmartPointer< vtkImageGradient >::New();
   filter2->SetInputConnection(reader->GetOutputPort());
   filter2->Update();
-
-
 
   // create 3 3D images from 1
 
@@ -124,7 +121,6 @@ int main( int argc, char** argv )
   filter23D->SetInputConnection(reader3D->GetOutputPort());
   filter23D->Update();
 
-
   QString cp0 = "comp0";
   QString cp1 = "comp1";
   QString cp2 = "comp3";
@@ -133,19 +129,6 @@ int main( int argc, char** argv )
   QString cp13D = "comp13D";
   QString cp23D = "comp33D";
   QString cp33D = "compITK_3D";
-
-
-  QTimer* timer = new QTimer;
-  timer->setSingleShot( true );
-
-
-  QObject::connect( timer, SIGNAL( timeout() ), qApp, SLOT( closeAllWindows() ) );
-
-  if( atoi( argv[3] ) == 1 )
-    {
-    timer->start( 2000 );
-    }
-
 
   QGoSynchronizedViewManager* syncViewManage = new QGoSynchronizedViewManager();
 
@@ -160,6 +143,15 @@ int main( int argc, char** argv )
   syncViewManage->show();
   syncViewManage->synchronizeOpenSynchronizedViews();
 
+  QTimer* timer = new QTimer;
+  timer->setSingleShot( true );
+
+  QObject::connect( timer, SIGNAL( timeout() ), qApp, SLOT( closeAllWindows() ) );
+
+  if( atoi( argv[3] ) == 1 )
+    {
+    timer->start( 1000 );
+    }
 
   app.processEvents();
   int output = app.exec();
