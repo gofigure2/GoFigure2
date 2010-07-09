@@ -250,21 +250,21 @@ void QTableWidgetChild::SetSelectRowTraceID (std::string TraceName,
                       static_cast< int >( t_id ) );
     if( iter != CheckedTraces.end() )
       {
-      if( !traceinfo_it->Visibility )
+      if( !traceinfo_it->Visible )
         {
         oModified = true;
         ContourMeshStructure temp( *traceinfo_it );
-        temp.Visibility = true;
+        temp.Visible = true;
         ioTracesInfo->replace( traceinfo_it, temp );
         }
       }
     else
       {
-      if( traceinfo_it->Visibility )
+      if( traceinfo_it->Visible )
         {
         oModified = true;
         ContourMeshStructure temp( *traceinfo_it );
-        temp.Visibility = false;
+        temp.Visible = false;
         ioTracesInfo->replace( traceinfo_it, temp );
         }
       }
