@@ -56,7 +56,7 @@ struct QGOIO_EXPORT ContourMeshStructure
   unsigned int        CollectionID;
   unsigned int        TCoord;
   bool                Highlighted;
-  bool                Visibility;
+  bool                Visible;
   double              rgba[4];
   int                 Direction;
 
@@ -70,7 +70,7 @@ struct QGOIO_EXPORT ContourMeshStructure
 
   ContourMeshStructure( const unsigned int& iTraceID, vtkActor* iActor,
     vtkPolyData* iNodes, const unsigned int& iCollectionID, const unsigned int& iT,
-    const bool& iHighlighted, const bool& iVisibility, const double& r,
+    const bool& iHighlighted, const bool& iVisible, const double& r,
     const double& g, const double& b, const double& alpha, const int& iDir );
 
   ContourMeshStructure( const ContourMeshStructure& iE );
@@ -84,7 +84,7 @@ struct QGOIO_EXPORT ContourMeshStructure
     os <<"CollectionID " <<c.CollectionID <<std::endl;
     os <<"TCoord " <<c.TCoord <<std::endl;
     os <<"Highlighted " <<c.Highlighted <<std::endl;
-    os <<"Visibility " <<c.Visibility <<std::endl;
+    os <<"Visible " <<c.Visible <<std::endl;
     os <<"RGBA [" <<c.rgba[0] <<", " <<c.rgba[1] <<", " <<c.rgba[2]
        <<", " <<c.rgba[3] <<"]" <<std::endl;
     os <<"Direction " <<c.Direction <<std::endl;

@@ -42,7 +42,7 @@
 //#include <QDebug>
 
 ContourMeshStructure::ContourMeshStructure( ) : TraceID( 0 ), CollectionID( 0 ),
-    TCoord( 0 ), Highlighted( false ), Visibility( true ), Direction( 0 )
+    TCoord( 0 ), Highlighted( false ), Visible( true ), Direction( 0 )
 {
     this->Actor = 0;
     this->Nodes = 0;
@@ -58,12 +58,12 @@ ContourMeshStructure::ContourMeshStructure( const unsigned int& iTraceID, vtkAct
     const bool& iHighlighted, const double& r, const double& g, const double& b,
     const double& alpha, const int& iDir )
     : TraceID( iTraceID ), Actor( iActor ), Nodes( iNodes ), CollectionID( iCollectionID ),
-      TCoord( iT ), Highlighted( iHighlighted ), Visibility( true ), Direction( iDir )
+      TCoord( iT ), Highlighted( iHighlighted ), Visible( true ), Direction( iDir )
     {
     //qDebug() << "deprecated:";
     //qDebug() << "ContourMeshStructure( iTraceID, iActor, iNodes, iCollectionID, iT, iHighlighted, r, g, b, alpha, iDir )";
     //qDebug() << "use:";
-    //qDebug() << "ContourMeshStructure( iTraceID, iActor, iNodes, iCollectionID, iT, iHighlighted, iVisibility, r, g, b, alpha, iDir ):";
+    //qDebug() << "ContourMeshStructure( iTraceID, iActor, iNodes, iCollectionID, iT, iHighlighted, iVisible, r, g, b, alpha, iDir ):";
     this->rgba[0] = r;
     this->rgba[1] = g;
     this->rgba[2] = b;
@@ -72,11 +72,11 @@ ContourMeshStructure::ContourMeshStructure( const unsigned int& iTraceID, vtkAct
 
 ContourMeshStructure::ContourMeshStructure( const unsigned int& iTraceID, vtkActor* iActor,
     vtkPolyData* iNodes, const unsigned int& iCollectionID, const unsigned int& iT,
-    const bool& iHighlighted, const bool& iVisibility,
+    const bool& iHighlighted, const bool& iVisible,
     const double& r, const double& g, const double& b, const double& alpha,
     const int& iDir )
     : TraceID( iTraceID ), Actor( iActor ), Nodes( iNodes ), CollectionID( iCollectionID ),
-      TCoord( iT ), Highlighted( iHighlighted ), Visibility( iVisibility ), Direction( iDir )
+      TCoord( iT ), Highlighted( iHighlighted ), Visible( iVisible ), Direction( iDir )
     {
     this->rgba[0] = r;
     this->rgba[1] = g;
@@ -86,7 +86,7 @@ ContourMeshStructure::ContourMeshStructure( const unsigned int& iTraceID, vtkAct
 
 ContourMeshStructure::ContourMeshStructure( const ContourMeshStructure& iE ) :
     TraceID( iE.TraceID ), Actor( iE.Actor ), Nodes( iE.Nodes ), CollectionID( iE.CollectionID ),
-    TCoord( iE.TCoord ), Highlighted( iE.Highlighted ), Visibility( iE.Visibility ),
+    TCoord( iE.TCoord ), Highlighted( iE.Highlighted ), Visible( iE.Visible ),
     Direction( iE.Direction )
     {
     for( int i = 0; i < 4; i++ )
