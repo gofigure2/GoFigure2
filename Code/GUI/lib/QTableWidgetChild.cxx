@@ -46,6 +46,7 @@
 #include <QSettings>
 #include <QApplication>
 #include <QClipboard>
+#include <QToolButton>
 
 
 QTableWidgetChild::QTableWidgetChild( QWidget* iParent ): QTableWidget( iParent )
@@ -165,7 +166,8 @@ void QTableWidgetChild::SetSelectRowTraceID (std::string TraceName,
       {
       this->item(RowIndex,0)->setCheckState(Qt::Unchecked);
       }
-    this->UpdateVectorCheckedRows(RowIndex,0);
+    this->UpdateVectorCheckedRows(RowIndex,0,this->m_VectorSelectedRows);
+    emit CheckedRowsChanged();
     }
 }
 //--------------------------------------------------------------------------
@@ -350,6 +352,7 @@ void QTableWidgetChild::DisplayContent(GoDBTableWidgetContainer* iLinkToRowConta
         }//ENDIF
       }//ENDFOR
       SetSelectedColumn(NbofRows,0);
+      SetVisibleColumn(NbofRows,0);
       this->SetColorForTable(iLinkToRowContainer,TraceName,0);
       this->SetColorForTable(iLinkToRowContainer,CollectionName,0);
     }//ENDELSE
@@ -369,6 +372,27 @@ void QTableWidgetChild::SetSelectedColumn(unsigned int iNbOfRows,
     Checkbox->setFlags(Qt::ItemIsEnabled |Qt::ItemIsSelectable);
 
     Checkbox->setCheckState(Qt::Unchecked);
+    this->setItem(i,indexCol,Checkbox);
+    }
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QTableWidgetChild::SetVisibleColumn(unsigned int iNbOfRows,
+  unsigned int StartedRow)
+{
+  int indexCol = findColumnName("Show");
+  for( unsigned int i = StartedRow ; i < iNbOfRows+StartedRow; i++ )
+    {
+    QTableWidgetItem* Checkbox = new QTableWidgetItem;
+    // Checkbox->setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsEnabled |
+    //  Qt::ItemIsSelectable);
+    //Checkbox->setFlags(Qt::ItemIsEnabled |Qt::ItemIsUserCheckable);
+    Checkbox->setCheckState(Qt::Unchecked);
+    QIcon EyeIcon;
+    EyeIcon.addPixmap( QPixmap(QString::fromUtf8(":/fig/LeftView.png")),
+    QIcon::Normal, QIcon::Off );
+    Checkbox->setIcon(EyeIcon);
     this->setItem(i,indexCol,Checkbox);
     }
 }
@@ -467,6 +491,7 @@ void QTableWidgetChild::InsertNewRow(GoDBTableWidgetContainer* iLinkToRowContain
         }//ENDIF
       }//ENDFOR
     SetSelectedColumn(1,NewRow-1);
+    SetVisibleColumn(1,NewRow-1);
     this->SetColorForTable(iLinkToRowContainer,TraceName,NewRow-1);
     this->SetColorForTable(iLinkToRowContainer,CollectionName,NewRow-1);
     }//ENDELSE
@@ -531,22 +556,23 @@ void QTableWidgetChild::UpdateRow(GoDBTableWidgetContainer* iLinkToRowContainer,
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QTableWidgetChild::UpdateVectorCheckedRows(int Row,int Column)
+void QTableWidgetChild::UpdateVectorCheckedRows(int Row,int Column,
+  std::vector<std::pair<int,int> > &iVectorOfPair)
 {
   if (this->item(Row,Column)->checkState()== 0)
     {
     int ID = this->item(Row,1)->text().toInt();
 
-    std::vector<std::pair<int,int> >::iterator iter = this->m_VectorSelectedRows.begin();
+    std::vector<std::pair<int,int> >::iterator iter = iVectorOfPair.begin();
 
     //As the initial iterator becomes incompatible once an element of the vector has been
     //erased, we need a bool to indicate the end of the vector:
 
-    while ( iter != this->m_VectorSelectedRows.end() )
+    while ( iter != iVectorOfPair.end() )
       {
       if (iter->first == ID)
         {
-        this->m_VectorSelectedRows.erase(iter);
+        iVectorOfPair.erase(iter);
         break;
         }
       ++iter;
@@ -558,9 +584,9 @@ void QTableWidgetChild::UpdateVectorCheckedRows(int Row,int Column)
     /** \todo check that the index stays the same even if the user move the columns*/
     temp.first = this->item(Row,1)->text().toInt();
     temp.second = Row;
-    this->m_VectorSelectedRows.push_back(temp);
+    iVectorOfPair.push_back(temp);
     }
-  CheckedRowsChanged();
+  //CheckedRowsChanged();
 }
 //--------------------------------------------------------------------------
 
@@ -620,12 +646,17 @@ void QTableWidgetChild::DeleteSelectedRows(std::string iTraceNameID)
     {
     //deselect the row in the m_VectorCheckedRows:
     int ColumnSelectedRow = this->findColumnName("");
+    int ColumnVisibleRow = this->findColumnName("Show");
     int RowToDelete = this->findValueGivenColumn(
       this->m_VectorSelectedRows[i].first,iTraceNameID.c_str());
     if (RowToDelete != -1)
       {
       this->item(RowToDelete,ColumnSelectedRow)->setCheckState(Qt::Unchecked);
-      this->UpdateVectorCheckedRows(RowToDelete,ColumnSelectedRow);
+      this->item(RowToDelete,ColumnVisibleRow)->setCheckState(Qt::Unchecked);
+      this->UpdateVectorCheckedRows(RowToDelete,ColumnSelectedRow,this->m_VectorSelectedRows);
+      emit CheckedRowsChanged();
+      this->UpdateVectorCheckedRows(RowToDelete,ColumnVisibleRow,this->m_VectorVisibleRows);
+      emit VisibleRowsChanged();
       this->removeRow(RowToDelete);
       }
     }
@@ -647,8 +678,31 @@ void QTableWidgetChild::UpdateTableWidgetDisplayAndVectorCheckedRows(int Row, in
       {
       this->item(Row,Column)->setCheckState(Qt::Unchecked);
       }
-    this->UpdateVectorCheckedRows(Row,Column);
+    this->UpdateVectorCheckedRows(Row,Column,this->m_VectorSelectedRows);
+    emit CheckedRowsChanged();
     }
+  if (this->horizontalHeaderItem(Column)->text() == "Show")
+    {
+    if (this->item(Row,Column)->checkState()== 0)
+      {
+      this->item(Row,Column)->setCheckState(Qt::Checked);
+      QIcon EyeIcon;
+      EyeIcon.addPixmap( QPixmap(QString::fromUtf8(":/fig/LeftView.png")),
+      QIcon::Normal, QIcon::Off );
+      this->item(Row,Column)->setIcon(EyeIcon);
+      }
+    else
+      {
+      this->item(Row,Column)->setCheckState(Qt::Unchecked);
+      QIcon NonEyeIcon;
+      NonEyeIcon.addPixmap( QPixmap(QString::fromUtf8(":/fig/PosteriorView.png")),
+      QIcon::Normal, QIcon::Off );
+      this->item(Row,Column)->setIcon(NonEyeIcon);
+      }
+    this->UpdateVectorCheckedRows(Row,Column,this->m_VectorVisibleRows);
+    emit VisibleRowsChanged();
+    }
+
 }
 //--------------------------------------------------------------------------
 

@@ -117,6 +117,7 @@ public:
 
 signals:
   void CheckedRowsChanged();
+  void VisibleRowsChanged();
 
 protected:
   int PrevCol;
@@ -124,6 +125,9 @@ protected:
   
   /** \brief Vector containing the ID of the selected row and the index in the table widget*/
   std::vector<std::pair<int,int> > m_VectorSelectedRows;
+  
+  /** \brief Vector containing the ID of the visible row and the index in the table widget*/
+  std::vector<std::pair<int,int> > m_VectorVisibleRows;
 
   /** \brief return the row index where the given value is located when specifying
   the column name: */
@@ -134,7 +138,7 @@ protected:
   int findColumnName(QString ColumnName);
 
   /** \brief Update the m_VectorSelectedRows */
-  void UpdateVectorCheckedRows(int Row,int Column);
+  void UpdateVectorCheckedRows(int Row,int Column,std::vector<std::pair<int,int> > &iVectorOfPair);
   /** \brief put the text in the cells which are part of the range in a 
   QString and insert \n and \t to be read by other applications*/
   void PrepareRangeToCopy(QTableWidgetSelectionRange Range, QString &str);
@@ -169,6 +173,8 @@ public slots:
 
   /** \brief Put checkboxes in the column "Selected" */
   void SetSelectedColumn(unsigned int iNbOfRows,unsigned int StartedRow);
+  /** \brief Put checkboxes in the column "Show" */
+  void SetVisibleColumn(unsigned int iNbOfRows,unsigned int StartedRow);
 
   void SetColorForTable (GoDBTableWidgetContainer* iLinkToRowContainer,
   std::string NameGroupColor,unsigned int StartRow);
