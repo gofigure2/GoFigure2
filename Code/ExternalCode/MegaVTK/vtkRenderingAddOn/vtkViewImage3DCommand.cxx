@@ -15,8 +15,9 @@
 #include "vtkOrientedBoxWidget.h"
 
 #include "vtkProp3DCollection.h"
-#include "vtkPlanes.h"
-#include "vtkPlane.h"
+#include "vtkPolyData.h"
+
+#include <algorithm>
 
 //----------------------------------------------------------------------------
 vtkViewImage3DCommand::
@@ -54,7 +55,6 @@ void
 vtkViewImage3DCommand::
 Execute(vtkObject *caller, unsigned long event, void *callData)
 {
-
   vtkInteractorStyleImage3D *isi =
     vtkInteractorStyleImage3D::SafeDownCast(caller);
 
@@ -77,107 +77,85 @@ Execute(vtkObject *caller, unsigned long event, void *callData)
     }
   if ( event == vtkCommand::InteractionEvent )
     {
-    // Get Extent of the box through planes
+    vtkPolyData* pd = vtkPolyData::New();
+    m_BoxWidget->GetPolyData( pd );
+
+    double pt[3];
+    pd->GetPoint( 0, pt );
+  
     double bextent[6];
-    bextent[0] = VTK_DOUBLE_MAX;
-    bextent[1] = VTK_DOUBLE_MIN;
-    bextent[2] = VTK_DOUBLE_MAX;
-    bextent[3] = VTK_DOUBLE_MIN;
-    bextent[4] = VTK_DOUBLE_MAX;
-    bextent[5] = VTK_DOUBLE_MIN;
-
-    vtkPlanes* planes = vtkPlanes::New();
-    m_BoxWidget->GetPlanes( planes );
-    double origin[3];
-    for( int i=0; i<6; ++i)
+    bextent[0] = pt[0];
+    bextent[1] = pt[0];
+    bextent[2] = pt[1];
+    bextent[3] = pt[1];
+    bextent[4] = pt[2];
+    bextent[5] = pt[2];
+    
+    for( int i = 1; i < 8; i+=2 )
       {
-      planes->GetPlane(i)->GetOrigin( origin );
+      pd->GetPoint( i, pt );
 
-      if( origin[0] < bextent[0] )
-        bextent[0] = origin[0];
-      if( origin[0] > bextent[1] )
-        bextent[1] = origin[0];
-      if( origin[1] < bextent[2] )
-        bextent[2] = origin[1];
-      if( origin[1] > bextent[3] )
-        bextent[3] = origin[1];
-      if( origin[2] < bextent[4] )
-        bextent[4] = origin[2];
-      if( origin[2] > bextent[5] )
-        bextent[5] = origin[2];
+      if( pt[0] < bextent[0] )
+        bextent[0] = pt[0];
+      if( pt[0] > bextent[1] )
+        bextent[1] = pt[0];
+      if( pt[1] < bextent[2] )
+        bextent[2] = pt[1];
+      if( pt[1] > bextent[3] )
+        bextent[3] = pt[1];
+      if( pt[2] < bextent[4] )
+        bextent[4] = pt[2];
+      if( pt[2] > bextent[5] )
+        bextent[5] = pt[2];
       }
+    pd->Delete();
 
     // Get Actors
     m_ListOfModifiedActors.clear();
 
-    m_vtkViewImage3D->GetProp3DCollection()->InitTraversal();
-    vtkProp3D* prop_temp = m_vtkViewImage3D->GetProp3DCollection()
-        ->GetNextProp3D();
+    vtkProp3DCollection* prop_collection = m_vtkViewImage3D->GetProp3DCollection();
+
+    
+    prop_collection->InitTraversal();
+    vtkProp3D* prop_temp = prop_collection->GetNextProp3D();
+        
+    double bounds[6];
 
     while( prop_temp )
       {
-      if(    (bextent[0] < prop_temp->GetXRange()[0]) && (bextent[1] > prop_temp->GetXRange()[1])
-          && (bextent[2] < prop_temp->GetYRange()[0]) && (bextent[3] > prop_temp->GetYRange()[1])
-          && (bextent[4] < prop_temp->GetZRange()[0]) && (bextent[5] > prop_temp->GetZRange()[1]))
+      bool inside = true;
+
+      prop_temp->GetBounds( bounds );
+
+      for( int i = 0; ( i < 3 ) && inside; ++i )
         {
-        std::list<vtkProp3D*>::iterator listOfPickedActorsIterator;
-        bool doSth = true;
+        inside = ( bextent[2*i] < bounds[2*i] ) && ( bounds[2*i+1] < bextent[2*i+1] );
+        }
 
-        for(listOfPickedActorsIterator = m_ListOfPickedActors.begin();
-            listOfPickedActorsIterator != m_ListOfPickedActors.end();
-            listOfPickedActorsIterator++)
-          {
-          // if exists in list
-        if(    ((*listOfPickedActorsIterator)->GetXRange()[0] == prop_temp->GetXRange()[0])
-            && ((*listOfPickedActorsIterator)->GetXRange()[1] == prop_temp->GetXRange()[1])
-            && ((*listOfPickedActorsIterator)->GetYRange()[0] == prop_temp->GetYRange()[0])
-            && ((*listOfPickedActorsIterator)->GetYRange()[1] == prop_temp->GetYRange()[1])
-            && ((*listOfPickedActorsIterator)->GetZRange()[0] == prop_temp->GetZRange()[0])
-            && ((*listOfPickedActorsIterator)->GetZRange()[1] == prop_temp->GetZRange()[1]))
-            {
-            doSth = false;
-            break;
-            }
-          }
+      std::list<vtkProp3D*>::iterator it = std::find( m_ListOfPickedActors.begin(),
+                                                      m_ListOfPickedActors.end(),
+                                                      prop_temp );
 
-        if(doSth)
+      if( inside )
+        {
+        if( it == m_ListOfPickedActors.end() )
           {
           // ADD
           m_ListOfPickedActors.push_back( prop_temp );
           m_ListOfModifiedActors.push_back( prop_temp );
           }
-
         }
       else
         {
-        std::list<vtkProp3D*>::iterator listOfPickedActorsIterator;
-        bool doSth = false;
-
-        for(listOfPickedActorsIterator = m_ListOfPickedActors.begin();
-            listOfPickedActorsIterator != m_ListOfPickedActors.end();
-            listOfPickedActorsIterator++)
+        if( it != m_ListOfPickedActors.end() )
           {
-          // if exists in list
-          if(    ((*listOfPickedActorsIterator)->GetXRange()[0] == prop_temp->GetXRange()[0])
-              && ((*listOfPickedActorsIterator)->GetXRange()[1] == prop_temp->GetXRange()[1])
-              && ((*listOfPickedActorsIterator)->GetYRange()[0] == prop_temp->GetYRange()[0])
-              && ((*listOfPickedActorsIterator)->GetYRange()[1] == prop_temp->GetYRange()[1])
-              && ((*listOfPickedActorsIterator)->GetZRange()[0] == prop_temp->GetZRange()[0])
-              && ((*listOfPickedActorsIterator)->GetZRange()[1] == prop_temp->GetZRange()[1]))
-              {
-              doSth = true;
-              break;
-              }
-            }
-        if( doSth )
-          {
-          m_ListOfPickedActors.erase( listOfPickedActorsIterator );
+          // ADD
+          m_ListOfPickedActors.erase( it );
           m_ListOfModifiedActors.push_back( prop_temp );
           }
         }
-        prop_temp = m_vtkViewImage3D->GetProp3DCollection()->GetNextProp3D();
+      prop_temp = prop_collection->GetNextProp3D();
       }
-    planes->Delete();
 
     // Tell that list is ready
     vtkInteractorStyleImage3D* test = static_cast<vtkInteractorStyleImage3D*>(caller);
