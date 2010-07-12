@@ -3042,7 +3042,6 @@ HighLightTracesFromTable( ContourMeshStructureMultiIndexContainer& iContainer,
   select_property->SetLineWidth( 3. );
   select_property->SetOpacity( 1. );
 
-  ContourMeshStructure temp;
   ContourMeshStructureMultiIndexContainer::index< TraceID >::type::iterator
       traceid_it;
   ContourMeshStructureMultiIndexContainer::index< TraceID >::type::iterator
