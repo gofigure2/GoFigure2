@@ -331,7 +331,8 @@ emitActivatedColor( int index )
     else
       {
       // Get a new color from the color dialog.
-      QColor col = QColorDialog::getColor();
+      QColor col = QColorDialog::getColor( Qt::white, NULL, "Pick a new color",
+                                           QColorDialog::ShowAlphaChannel );
       if (col.isValid())
         {
         // Unless the user pressed cancel, insert the new color at
@@ -340,13 +341,13 @@ emitActivatedColor( int index )
         QString ColorName = QInputDialog::getText(this, tr("New Color Name:"),
           tr("Please enter the name for your new color:"),QLineEdit::Normal,"",&ok);
         if (ok && !ColorName.isEmpty())
-          {	        
+          {
           //pass the data for the new color to be saved in the database
           this->PassDataForNewColorToBeSaved(col,ColorName.toStdString());
           if(this->NewColorToBeAdded)
             {
             addColor(col, ColorName);
-	          setCurrentIndex(index);
+            setCurrentIndex(index);
             }
           else
             {

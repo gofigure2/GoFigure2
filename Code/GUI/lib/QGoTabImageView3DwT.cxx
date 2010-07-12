@@ -2995,6 +2995,7 @@ HighLightContainer( ContourMeshStructureMultiIndexContainer& iContainer, vtkActo
         // change the color of the element to its original color
         vtkProperty* temp_property = vtkProperty::New();
         temp_property->SetColor( traceid_it->rgba[0], traceid_it->rgba[1], traceid_it->rgba[2] );
+        temp_property->SetOpacity( traceid_it->rgba[3] );
         temp_property->SetLineWidth( 1. );
 
         m_ImageView->ChangeActorProperty( traceid_it->Direction,
@@ -3053,18 +3054,16 @@ HighLightTracesFromTable( ContourMeshStructureMultiIndexContainer& iContainer,
 
   ContourMeshStructure tempStructure;
   ContourMeshStructureMultiIndexContainer::index< TraceID >::type::iterator
-      traceid_it;
+    traceid_it;
   ContourMeshStructureMultiIndexContainer::index< TraceID >::type::iterator
-        test_it;
-
-  test_it = iContainer.get< TraceID >().end();;
+    test_it = iContainer.get< TraceID >().end();;
 
   while( it != this->m_DataBaseTables
                    ->GetTracesInfoListForVisu( iCurrentTrace.c_str() )->end() )
     {
     trace_id = it->TraceID;
 
-      traceid_it = iContainer.get< TraceID >().find( trace_id );
+    traceid_it = iContainer.get< TraceID >().find( trace_id );
 
     while( ( traceid_it != iContainer.get< TraceID >().end() )
       && ( (*traceid_it).TraceID == trace_id ) )
@@ -3100,23 +3099,6 @@ HighLightTracesFromTable( ContourMeshStructureMultiIndexContainer& iContainer,
 
   select_property->Delete();
 }
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-/*void
-//QGoTabImageView3DwT::
-//ChangeContourColorFromTable( const QColor& iColor )
-{
-  // 1-get a container of modified contours
-  //this->m_DataBaseTables->
-
-  // 2-iterate on the container
-  //    for each element
-  //      - get the new color
-  //      - update m_ContourContainer
-  //      - update contour color in the visualization
-  
-}*/
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
