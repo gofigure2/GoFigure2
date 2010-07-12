@@ -536,7 +536,6 @@ MeshPickingInteractorBehavior( bool iVisible)
   // check in which mode we are
   if( iVisible )
     {
-    std::cout << "calls meshpicking mode..." << std::endl;
     this->m_ImageView->MeshPickingMode();
     }
 }
@@ -791,6 +790,16 @@ CreateDataBaseTablesConnection()
 
   QObject::connect(this->m_DataBaseTables, SIGNAL(ShowCheckedTracesActivated()),
     this,SLOT(ChangeSelectedMeshesVisibility()));
+
+
+  // Show/hide
+  QObject::connect( this->m_DataBaseTables,
+    SIGNAL( SelectionContoursToShowChanged() ),
+    this, SLOT( ModifyTracesVisibilityFromTableManager() ) );
+
+  QObject::connect( this->m_DataBaseTables,
+      SIGNAL( SelectionMeshesToShowChanged() ),
+      this, SLOT( ModifyTracesVisibilityFromTableManager() ) );
 }
 //-------------------------------------------------------------------------
 #if defined ( ENABLEFFMPEG ) || defined ( ENABLEAVI )
@@ -3042,6 +3051,7 @@ HighLightTracesFromTable( ContourMeshStructureMultiIndexContainer& iContainer,
   select_property->SetLineWidth( 3. );
   select_property->SetOpacity( 1. );
 
+  ContourMeshStructure tempStructure;
   ContourMeshStructureMultiIndexContainer::index< TraceID >::type::iterator
       traceid_it;
   ContourMeshStructureMultiIndexContainer::index< TraceID >::type::iterator
@@ -3077,10 +3087,10 @@ HighLightTracesFromTable( ContourMeshStructureMultiIndexContainer& iContainer,
           m_ImageView->ChangeActorProperty( traceid_it->Direction,
             traceid_it->Actor, select_property );
           }
-        ContourMeshStructure temp( *traceid_it );
-        temp.Highlighted = it->Highlighted;
+        tempStructure = *traceid_it;
+        tempStructure.Highlighted = it->Highlighted;
 
-        iContainer.get< TraceID >().replace( traceid_it, temp );
+        iContainer.get< TraceID >().replace( traceid_it, tempStructure );
         }
       ++traceid_it;
       }
@@ -4067,8 +4077,6 @@ QGoTabImageView3DwT::
 CreateMeshFromSelectedContours( std::list<int> iListContourIDs )
 {
   (void) iListContourIDs;
-
-  std::cout <<"CreateMeshFromSelectedContours" <<std::endl;
 /*
   std::list< int >::iterator contourid_it = iListContourIDs.begin();
 
@@ -4191,7 +4199,7 @@ ChangeSelectedMeshesVisibility()
 
 }
 //-------------------------------------------------------------------------
-
+// should update new container
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
@@ -4228,3 +4236,74 @@ ShowTracesFromTable( ContourMeshStructureMultiIndexContainer& iContainer,
     ++it;
     }
 }
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+ModifyTracesVisibilityFromTableManager( )
+{
+  // In which table are we?
+  std::string currentTrace = this->m_DataBaseTables->InWhichTableAreWe();
+
+  // If we are in contour
+  if( currentTrace.compare( "contour" ) == 0 )
+    {
+    ModifyTracesVisibilityFromTable( m_ContourContainer, currentTrace );
+    }
+  // If we are in mesh
+  if( currentTrace.compare( "mesh" ) == 0 )
+    {
+    ModifyTracesVisibilityFromTable( m_MeshContainer, currentTrace );
+    }
+}
+//-------------------------------------------------------------------------
+
+// Maybe we should add the "highlight property" as a parameter
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+ModifyTracesVisibilityFromTable( ContourMeshStructureMultiIndexContainer& iContainer,
+    std::string iCurrentTrace)
+{
+  ContourMeshStructureMultiIndexContainer::iterator
+  it = this->m_DataBaseTables->GetTracesInfoListForVisu( iCurrentTrace.c_str() )
+                             ->begin();
+  unsigned int trace_id = 0;
+
+  ContourMeshStructure tempStructure;
+  ContourMeshStructureMultiIndexContainer::index< TraceID >::type::iterator
+      traceid_it;
+  ContourMeshStructureMultiIndexContainer::index< TraceID >::type::iterator
+        test_it;
+
+  test_it = iContainer.get< TraceID >().end();;
+
+  while( it != this->m_DataBaseTables
+                   ->GetTracesInfoListForVisu( iCurrentTrace.c_str() )->end() )
+    {
+    trace_id = it->TraceID;
+
+      traceid_it = iContainer.get< TraceID >().find( trace_id );
+
+    while( ( traceid_it != iContainer.get< TraceID >().end() )
+      && ( (*traceid_it).TraceID == trace_id ) )
+      {
+      if( it->Visible != traceid_it->Visible )
+        {
+        traceid_it->Actor->SetVisibility(it->Visible);;
+        tempStructure = *traceid_it;
+        tempStructure.Visible = it->Visible;
+
+        iContainer.get< TraceID >().replace( traceid_it, tempStructure );
+        }
+      ++traceid_it;
+      }
+
+    ++it;
+    }
+
+  // update view
+  m_ImageView->UpdateRenderWindows();
+}
+//-------------------------------------------------------------------------

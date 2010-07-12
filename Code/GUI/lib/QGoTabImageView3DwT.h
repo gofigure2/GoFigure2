@@ -385,6 +385,12 @@ public slots:
    */
   void ChangeSelectedMeshesVisibility();
 
+  void ModifyTracesVisibilityFromTableManager();
+
+  void ModifyTracesVisibilityFromTable(
+      ContourMeshStructureMultiIndexContainer& iContainer,
+      std::string iCurrentTrace);
+
   void ApplyOneClickSegmentationFilter();
   void ApplyContourSemiAutoSegmentation();
 
