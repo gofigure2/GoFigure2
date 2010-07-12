@@ -822,7 +822,7 @@ ChangeMeshesToHighLightInfoFromVisu(
       CurrentlyUsedTraceData->ListTracesInfoForVisu->get< TraceID >().end() )
       {
       ContourMeshStructure temp( *traceid_it );
-      temp.Highlighted = !traceid_it->Highlighted;
+      temp.Highlighted = traceid_it->Highlighted;
       CurrentlyUsedTraceData->ListTracesInfoForVisu->get< TraceID >().replace( traceid_it, temp );
       CurrentlyUsedTraceData->Table->SetSelectRowTraceID( CurrentlyUsedTraceData->TraceName,
         *it, !traceid_it->Highlighted );
