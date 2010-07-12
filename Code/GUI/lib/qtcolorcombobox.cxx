@@ -160,17 +160,17 @@ QtColorComboBox(QWidget *iParent, const char * /*name*/)
 
 //-------------------------------------------------------------------------
 /*!
-    Enables the color dialog if \a enabled is true; otherwise disables
-    it.
+Enables the color dialog if \a enabled is true; otherwise disables
+it.
 
-    When the color dialog is enabled, an extra item is available at
-    the bottom of the list of colors in the combobox with the
-    translatable text "More...". Selecting this item will pop up the
-    color dialog, allowing the user to add new colors to the list. The
-    new colors will be called "User color 1", "User color 2", and so
-    on; the names can be changed by translating "User color %1".
+When the color dialog is enabled, an extra item is available at
+the bottom of the list of colors in the combobox with the
+translatable text "More...". Selecting this item will pop up the
+color dialog, allowing the user to add new colors to the list. The
+new colors will be called "User color 1", "User color 2", and so
+on; the names can be changed by translating "User color %1".
 
-    \sa insertColor()
+\sa insertColor()
 */
 void
 QtColorComboBox::
@@ -180,7 +180,7 @@ setColorDialogEnabled(bool enabled,std::string TextToAdd)
   //return;
   if ((colorDialogEnabled = enabled) == true)
     {
-  // Add the color dialog item if it's disabled from before.
+    // Add the color dialog item if it's disabled from before.
     addItem(tr(TextToAdd.c_str()));
     }
   else
@@ -192,22 +192,22 @@ setColorDialogEnabled(bool enabled,std::string TextToAdd)
 }
 void QtColorComboBox::setCreationCollection(bool enabled)
 {
-    creationCollection = enabled;
+  creationCollection = enabled;
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 /*!
-  \fn void QtColorComboBox::addColor(const QColor &color, const QString &name)
+\fn void QtColorComboBox::addColor(const QColor &color, const QString &name)
 
-    Appends the color \a color with the text \a name to the combobox.
+Appends the color \a color with the text \a name to the combobox.
 */
 
 /*!
-    Inserts the color \a color with the text \a name at position \a
-    index.
+Inserts the color \a color with the text \a name at position \a
+index.
 
-    If \a index is -1, then color is prepended to the beginning end of the list.
+If \a index is -1, then color is prepended to the beginning end of the list.
 */
 void
 QtColorComboBox::
@@ -339,7 +339,8 @@ emitActivatedColor( int index )
         // the end of the list.
         bool ok = false;
         QString ColorName = QInputDialog::getText(this, tr("New Color Name:"),
-          tr("Please enter the name for your new color:"),QLineEdit::Normal,"",&ok);
+          tr("Please enter the name for your new color:"),
+          QLineEdit::Normal,"",&ok);
         if (ok && !ColorName.isEmpty())
           {
           //pass the data for the new color to be saved in the database
@@ -382,18 +383,19 @@ emitActivatedColor( int index )
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/*! \internal
+/*!
+\internal
 
-    This slot is triggered by QComboBox' highlighted() signal. If the
-    highlighted item is a color, emits the highlighted() signal with
-    that color.
+This slot is triggered by QComboBox' highlighted() signal. If the
+highlighted item is a color, emits the highlighted() signal with
+that color.
 */
 void QtColorComboBox::emitHighlightedColor(int index)
 {
   if (!colorDialogEnabled || index != colorCount())
-  {
+    {
     emit highlighted(color(index));
-  }
+    }
 }
 //-------------------------------------------------------------------------
 
@@ -414,34 +416,34 @@ sizeHint() const
 
 //-------------------------------------------------------------------------
 /*!
-    Adds the 17 predefined colors from the Qt namespace.
+Adds the 17 predefined colors from the Qt namespace.
 
-    (The names given to the colors, "Black", "White", "Red", etc., are
-    all translatable.)
+(The names given to the colors, "Black", "White", "Red", etc., are
+all translatable.)
 
-    \sa insertColor()
+\sa insertColor()
 */
 void
 QtColorComboBox::
 setStandardColors()
 {
-    addColor(Qt::black, tr("Black"));
-    addColor(Qt::white, tr("White"));
-    addColor(Qt::red, tr("Red"));
-    addColor(Qt::darkRed, tr("Dark red"));
-    addColor(Qt::green, tr("Green"));
-    addColor(Qt::darkGreen, tr("Dark green"));
-    addColor(Qt::blue, tr("Blue"));
-    addColor(Qt::darkBlue, tr("Dark blue"));
-    addColor(Qt::cyan, tr("Cyan"));
-    addColor(Qt::darkCyan, tr("Dark cyan"));
-    addColor(Qt::magenta, tr("Magenta"));
-    addColor(Qt::darkMagenta, tr("Dark magenta"));
-    addColor(Qt::yellow, tr("Yellow"));
-    addColor(Qt::darkYellow, tr("Dark yellow"));
-    addColor(Qt::gray, tr("Gray"));
-    addColor(Qt::darkGray, tr("Dark gray"));
-    addColor(Qt::lightGray, tr("Light gray"));
+  addColor(Qt::black, tr("Black"));
+  addColor(Qt::white, tr("White"));
+  addColor(Qt::red, tr("Red"));
+  addColor(Qt::darkRed, tr("Dark red"));
+  addColor(Qt::green, tr("Green"));
+  addColor(Qt::darkGreen, tr("Dark green"));
+  addColor(Qt::blue, tr("Blue"));
+  addColor(Qt::darkBlue, tr("Dark blue"));
+  addColor(Qt::cyan, tr("Cyan"));
+  addColor(Qt::darkCyan, tr("Dark cyan"));
+  addColor(Qt::magenta, tr("Magenta"));
+  addColor(Qt::darkMagenta, tr("Dark magenta"));
+  addColor(Qt::yellow, tr("Yellow"));
+  addColor(Qt::darkYellow, tr("Dark yellow"));
+  addColor(Qt::gray, tr("Gray"));
+  addColor(Qt::darkGray, tr("Dark gray"));
+  addColor(Qt::lightGray, tr("Light gray"));
 }
 //-------------------------------------------------------------------------
 

@@ -61,7 +61,9 @@ class vtkRenderWindowMovieRecorder;
 #ifdef ENABLEAVI
   class vtkAVIRenderWindowRecorder;
 #endif
-
+/*
+ * \brief QGoVideoRecorder to record videos to using AVI or FFMPEG
+ */
 class QGOGUILIB_EXPORT QGoVideoRecorder :
     public QDockWidget, private Ui::NewDockWidgetVideoRecorder
 {

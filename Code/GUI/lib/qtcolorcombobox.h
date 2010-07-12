@@ -108,9 +108,13 @@
 //#  define QT_QTCOLORCOMBOBOX_EXPORT
 //#endif
 
+/**
+ * \brief Defines the QtColorCombobox
+ */
+
 class QGOGUILIB_EXPORT QtColorComboBox : public QComboBox
 {
-    Q_OBJECT
+  Q_OBJECT
 public:
     explicit QtColorComboBox(QWidget *parent = 0, const char *name = 0);
 
@@ -158,7 +162,7 @@ public slots:
       { insertColor( colorCount(), iColor, iName ); }
     /** \brief insert the existing colors with the data taken from the database,
     containing the color names with the associated vector of rgba*/
-     void setExistingColors(
+    void setExistingColors(
        std::list<std::pair<std::string,std::vector<int> > > iDataColorsFromDB);
     /** \brief delete the corresponding collectionID in the list displayed
     by the colorcombobox*/

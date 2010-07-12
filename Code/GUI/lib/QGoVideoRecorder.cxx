@@ -139,11 +139,11 @@ QGoVideoRecorder::
 ~QGoVideoRecorder( )
 {
 #ifdef ENABLEFFMPEG
-    m_FFMPEGWriter->Delete();
+  m_FFMPEGWriter->Delete();
 #endif
 
 #ifdef ENABLEAVI
-    m_AVIWriter->Delete();
+  m_AVIWriter->Delete();
 #endif
 }
 //-------------------------------------------------------------------------
@@ -298,7 +298,7 @@ UpdateQSpinBoxFT( int value )
       }
 
     default:
-      case 3:
+    case 3:
       {
       // Z Slice
       this->tSpinMin_2->setMinimum(m_TMin);
@@ -312,7 +312,7 @@ UpdateQSpinBoxFT( int value )
       m_SliceFT = 3;
       break;
       }
-  }
+    }
 }
 //-------------------------------------------------------------------------
 
@@ -378,19 +378,19 @@ on_tSpinMax_2_valueChanged( int value )
       break;
       }
 
-  case 1 :
-    {
+    case 1 :
+      {
       // Y Slice
       m_YMaxForVideo = value;
       break;
-    }
+      }
 
-  case 2 :
+    case 2 :
       {
-    // Y Slice
-    m_ZMaxForVideo = value;
-    break;
-    }
+      // Y Slice
+      m_ZMaxForVideo = value;
+      break;
+      }
 
     default :
     case 3 :
@@ -501,7 +501,7 @@ void
 QGoVideoRecorder::
 onStartVideoClicked()
 {
-//something to record first view
+  //something to record first view
   if( m_VideoName2.isNull() ||  m_VideoName2.isEmpty() || ( !m_RenderWindowSelected ) )
     {
     QPalette plt;
@@ -514,32 +514,32 @@ onStartVideoClicked()
     }
   else
     {
-      QString fileName = m_VideoName2;
-      QString fileName2 = m_VideoName2;
+    QString fileName = m_VideoName2;
+    QString fileName2 = m_VideoName2;
 
-      if(!fileName.endsWith(".avi"))
+    if(!fileName.endsWith(".avi"))
       {
-        fileName.insert( fileName.size(), QString(".avi") );
-        fileName2.insert( fileName.size(), QString(".txt") );
+      fileName.insert( fileName.size(), QString(".avi") );
+      fileName2.insert( fileName.size(), QString(".txt") );
       }
-      else
+    else
       {
       fileName2.replace( QString(".avi"), QString(".txt") );
       }
 
-      m_VideoRecorder->SetFileName( fileName.toStdString() );
-      m_VideoRecorder->StartCapture();
+    m_VideoRecorder->SetFileName( fileName.toStdString() );
+    m_VideoRecorder->StartCapture();
 
-      this->startVideo->setEnabled(false);
+    this->startVideo->setEnabled(false);
 
-      m_OutputVideoFile.open( fileName2.toStdString().c_str() );
-      m_OutputVideoFile << "FrameRate: ";
-      m_OutputVideoFile << m_FrameRate2;
-      m_OutputVideoFile << "\nVideoQuality: ";
-      m_OutputVideoFile << m_VideoQuality2;
-      m_OutputVideoFile << "\nX Y Z T ";
+    m_OutputVideoFile.open( fileName2.toStdString().c_str() );
+    m_OutputVideoFile << "FrameRate: ";
+    m_OutputVideoFile << m_FrameRate2;
+    m_OutputVideoFile << "\nVideoQuality: ";
+    m_OutputVideoFile << m_VideoQuality2;
+    m_OutputVideoFile << "\nX Y Z T ";
 
-      AcquireWithPause( m_SliceFT );
+    AcquireWithPause( m_SliceFT );
     }
 }
 //-------------------------------------------------------------------------
@@ -570,9 +570,9 @@ onStartRecordClicked()
     QString fileName = m_VideoName2;
 
     if(!fileName.endsWith(".avi"))
-    {
-    fileName.insert( fileName.size(), QString(".avi"));
-    }
+      {
+      fileName.insert( fileName.size(), QString(".avi"));
+      }
 
     m_VideoRecorder->SetFileName( fileName.toStdString() );
 
@@ -648,18 +648,18 @@ SetRenderingWindow( vtkRenderWindow* iRenderingWindow )
     }
 
   //Tell the user to go in full screen mode
- /* if( iRenderingWindow )
-  {
-this->warning_1->hide();
-this->warning_2->hide();
-  }
-  else
-  {
-this->warning_1->show();
-this->warning_2->show();
-  }*/
+  /* if( iRenderingWindow )
+       {
+       this->warning_1->hide();
+       this->warning_2->hide();
+       }
+     else
+       {
+       this->warning_1->show();
+       this->warning_2->show();
+       }*/
 
-/**
+  /**
  * \todo Resize image with the first one if we want to change views during record
  */
 }
@@ -683,38 +683,38 @@ AcquireWithPause( int value )
   unsigned int iMax;
 
   switch ( value )
+    {
+    case 0 :
       {
-      case 0 :
-        {
-        // X Slice
-        iMin = m_XMinForVideo;
-        iMax = m_XMaxForVideo;
-        break;
-        }
-      case 1 :
-        {
-        // Y Slice
-        iMin = m_YMinForVideo;
-        iMax = m_YMaxForVideo;
-        break;
-        }
+      // X Slice
+      iMin = m_XMinForVideo;
+      iMax = m_XMaxForVideo;
+      break;
+      }
+    case 1 :
+      {
+      // Y Slice
+      iMin = m_YMinForVideo;
+      iMax = m_YMaxForVideo;
+      break;
+      }
 
-      case 2 :
-        {
-        // Z Slice
-        iMin = m_ZMinForVideo;
-        iMax = m_ZMaxForVideo;
-        break;
-        }
+    case 2 :
+      {
+      // Z Slice
+      iMin = m_ZMinForVideo;
+      iMax = m_ZMaxForVideo;
+      break;
+      }
 
-   default:
-      case 3:
-        {
-        // T Slice
-        iMin = m_TMinForVideo;
-        iMax = m_TMaxForVideo;
-        break;
-        }
+    default:
+    case 3:
+      {
+      // T Slice
+      iMin = m_TMinForVideo;
+      iMax = m_TMaxForVideo;
+      break;
+      }
     }
 
   for(unsigned int i = iMin; i < iMax+1; i++)
@@ -777,26 +777,26 @@ emitChangeSliceSignal(const int& iSlice, const int & iSlide)
       break;
       }
     case 1 :
-       {
-       // Y Slice
-       emit YSliceChanged(iSlide);
-       break;
-       }
+      {
+      // Y Slice
+      emit YSliceChanged(iSlide);
+      break;
+      }
     case 2:
-       {
-       // Z Slice
-       emit ZSliceChanged(iSlide);
-       break;
-       }
+      {
+      // Z Slice
+      emit ZSliceChanged(iSlide);
+      break;
+      }
 
     default:
-     case 3:
-       {
-       // Z Slice
-       emit TSliceChanged(iSlide);
-       break;
-       }
-   }
+    case 3:
+      {
+      // Z Slice
+      emit TSliceChanged(iSlide);
+      break;
+      }
+    }
 }
 
 void

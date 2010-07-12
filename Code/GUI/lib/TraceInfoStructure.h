@@ -68,22 +68,22 @@ struct TraceInfoStructure
     SetInfoStructure( iTraceName, parent );
     }
     
-   ~TraceInfoStructure()
-     {
-     // Table has a parent that is supposed to delete it
-     //if( Table )
-     //   {
-     //   delete Table;
-     //   }
-      if( ListTracesInfoForVisu )
-        {
-        delete ListTracesInfoForVisu;
-        }
-      if( CollectionOfTraces )
-        {
-        delete CollectionOfTraces;
-        }
-      }
+  ~TraceInfoStructure()
+    {
+    // Table has a parent that is supposed to delete it
+    //if( Table )
+    //   {
+    //   delete Table;
+    //   }
+     if( ListTracesInfoForVisu )
+       {
+       delete ListTracesInfoForVisu;
+       }
+     if( CollectionOfTraces )
+       {
+       delete CollectionOfTraces;
+       }
+     }
 
   void SetInfoStructure( const std::string& iTraceName, QWidget* iParent )
     {
@@ -119,5 +119,5 @@ struct TraceInfoStructure
     Table = new QTableWidgetChild(iParent);
     } 
 
- };
+};
 #endif
