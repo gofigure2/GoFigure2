@@ -147,7 +147,7 @@ QStringList QTableWidgetChild::recordHeaderNamesOrder()
 
 //--------------------------------------------------------------------------
 void QTableWidgetChild::SetSelectRowTraceID (std::string TraceName,
-  int TraceID,bool IsSelected,std::vector<std::pair<int,int>>* iVectorOfPair)
+  int TraceID,bool IsSelected,std::vector<std::pair<int,int> >* iVectorOfPair)
 {
   std::stringstream TraceIDName;
   TraceIDName << TraceName;
