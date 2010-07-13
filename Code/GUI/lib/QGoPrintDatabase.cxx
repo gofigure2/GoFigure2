@@ -298,9 +298,9 @@ void QGoPrintDatabase::CreateContextMenu(const QPoint &iPos)
     ContextMenu->addAction(tr("Go to this %1")
         .arg(CurrentlyUsedTraceData->TraceName.c_str()),
         this,SLOT(GoToTheTrace()));
-    ContextMenu->addAction(tr("Show only the checked %1s")
-        .arg(CurrentlyUsedTraceData->TraceName.c_str()),
-        this,SIGNAL(ShowCheckedTracesActivated()));
+   // ContextMenu->addAction(tr("Show only the checked %1s")
+     //   .arg(CurrentlyUsedTraceData->TraceName.c_str()),
+       // this,SIGNAL(ShowCheckedTracesActivated()));
     ContextMenu->addAction(tr("Create a new %1 from checked %2s")
         .arg(CurrentlyUsedTraceData->CollectionName.c_str())
      .arg(CurrentlyUsedTraceData->TraceName.c_str()),
@@ -316,6 +316,11 @@ void QGoPrintDatabase::CreateContextMenu(const QPoint &iPos)
     .arg(CurrentlyUsedTraceData->TraceName.c_str()),this,SLOT(CheckSelectedRows()));
   ContextMenu->addAction(tr("Uncheck the selected %1s")
     .arg(CurrentlyUsedTraceData->TraceName.c_str()),this,SLOT(UncheckSelectedRows()));
+  ContextMenu->addAction(tr("Show the selected %1s")
+    .arg(CurrentlyUsedTraceData->TraceName.c_str()),this,SLOT(ShowSelectedRows()));
+  ContextMenu->addAction(tr("Hide the selected %1s")
+    .arg(CurrentlyUsedTraceData->TraceName.c_str()),this,SLOT(HideSelectedRows()));
+
   ContextMenu->addAction(tr("Change the color for the checked %1 to the selected color").arg(TraceName.c_str()),
     this,SLOT(ChangeTraceColor()));
   ContextMenu->addAction(tr("Delete checked %1s").arg(TraceName.c_str()),
@@ -1869,6 +1874,26 @@ void QGoPrintDatabase::UncheckSelectedRows()
   TraceInfoStructure* CurrentlyUsedTraceData = 
     this->GetTraceInfoStructure(this->InWhichTableAreWe());
   CurrentlyUsedTraceData->Table->UncheckSelectedRows(CurrentlyUsedTraceData->TraceName,
+    CurrentlyUsedTraceData->TraceNameID);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoPrintDatabase::ShowSelectedRows()
+{
+  TraceInfoStructure* CurrentlyUsedTraceData = 
+    this->GetTraceInfoStructure(this->InWhichTableAreWe());
+  CurrentlyUsedTraceData->Table->ShowSelectedRows(CurrentlyUsedTraceData->TraceName,
+    CurrentlyUsedTraceData->TraceNameID);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoPrintDatabase::HideSelectedRows()
+{
+  TraceInfoStructure* CurrentlyUsedTraceData = 
+    this->GetTraceInfoStructure(this->InWhichTableAreWe());
+  CurrentlyUsedTraceData->Table->HideSelectedRows(CurrentlyUsedTraceData->TraceName,
     CurrentlyUsedTraceData->TraceNameID);
 }
 //-------------------------------------------------------------------------

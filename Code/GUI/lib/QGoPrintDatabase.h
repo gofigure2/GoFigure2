@@ -419,6 +419,8 @@ protected slots:
   void GoToTheTrace();
   void CheckSelectedRows();
   void UncheckSelectedRows();
+  void ShowSelectedRows();
+  void HideSelectedRows();
   void ChangeTraceColor();
   void TheTabIsChanged(int iIndex);
 

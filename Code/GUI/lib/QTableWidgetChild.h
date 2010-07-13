@@ -148,10 +148,10 @@ public slots:
   /** \brief sort items given one column and one sort order. */
   void sortItems(int column, Qt::SortOrder order);
 
-  /** \brief select or unselect the row corresponding to the given TraceID.
+  /** \brief select or unselect the row corresponding to the given TraceID in the corresponding column.
   */
   void SetSelectRowTraceID (std::string TraceName, int TraceID,
-    bool IsSelected);
+    bool IsSelected,std::vector<std::pair<int,int> >* iVectorOfPair = 0);
 
   /** \brief check the boxes for the rows where at least one cell is selected */
   void CheckSelectedRows(std::string iTraceName,
@@ -159,6 +159,12 @@ public slots:
   /** \brief uncheck the boxes for the rows where at least one cell is selected */
   void UncheckSelectedRows(std::string iTraceName,
     std::string iTraceNameID);
+  
+  /** \brief check the visible boxes for the rows where at least one cell is selected */
+  void ShowSelectedRows(std::string iTraceName, std::string iTraceNameID);
+  /** \brief uncheck the visible boxes for the rows where at least one cell is selected */
+  void HideSelectedRows(std::string iTraceName, std::string iTraceNameID);
+
   void UpdateTableWidgetDisplayAndVectorCheckedRows(int Row, int Column);
 
   /** \brief modify the ioTracesInfo in order to set the IsHighLighted parameter to false

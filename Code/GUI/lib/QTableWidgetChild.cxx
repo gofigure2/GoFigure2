@@ -147,11 +147,30 @@ QStringList QTableWidgetChild::recordHeaderNamesOrder()
 
 //--------------------------------------------------------------------------
 void QTableWidgetChild::SetSelectRowTraceID (std::string TraceName,
-  int TraceID,bool IsSelected)
+  int TraceID,bool IsSelected,std::vector<std::pair<int,int>>* iVectorOfPair)
 {
   std::stringstream TraceIDName;
   TraceIDName << TraceName;
   TraceIDName <<"ID";
+  std::vector<std::pair<int,int> >* VectorOfPair;
+  int ColumnIndex = 0;
+  if (iVectorOfPair == 0)
+    {
+    VectorOfPair = this->m_VectorSelectedRows;
+    ColumnIndex = this->findColumnName("");
+    }
+  else
+    {
+    VectorOfPair = iVectorOfPair;
+    if (iVectorOfPair == this->m_VectorVisibleRows)
+      {
+      ColumnIndex = this->findColumnName("Show");
+      }
+    else
+      {
+      ColumnIndex = this->findColumnName("");
+      }
+    }
 
   int RowIndex = this->findValueGivenColumn(TraceID, TraceIDName.str().c_str());
   if (RowIndex == -1)
@@ -164,15 +183,21 @@ void QTableWidgetChild::SetSelectRowTraceID (std::string TraceName,
   else
     {
     if (IsSelected)
-      {
-      this->item(RowIndex,0)->setCheckState(Qt::Checked);
+      {//if the row is already checked, no need to do anything:
+        if (this->item(RowIndex,0)->checkState() != 2)
+          {
+          this->item(RowIndex,ColumnIndex)->setCheckState(Qt::Checked);
+          this->UpdateVectorCheckedRows(RowIndex,ColumnIndex,VectorOfPair);
+          }
       }
     else
       {
-      this->item(RowIndex,0)->setCheckState(Qt::Unchecked);
-      }
-    this->UpdateVectorCheckedRows(RowIndex,0,this->m_VectorSelectedRows);
-    emit CheckedRowsChanged();
+        if(this->item(RowIndex,ColumnIndex)->checkState() != 0)
+          {
+          this->item(RowIndex,ColumnIndex)->setCheckState(Qt::Unchecked);
+          this->UpdateVectorCheckedRows(RowIndex,ColumnIndex,VectorOfPair);
+          }
+      }  
     }
 }
 //--------------------------------------------------------------------------
@@ -636,7 +661,14 @@ void QTableWidgetChild::UpdateVectorCheckedRows(int Row,int Column,
     iVectorOfPair->push_back(temp);
     }
     
-  //emit CheckedRowsChanged();
+  if (iVectorOfPair == this->m_VectorSelectedRows)
+    {
+    emit CheckedRowsChanged();
+    }
+  if (iVectorOfPair == this->m_VectorVisibleRows)
+    {
+    emit VisibleRowsChanged();
+    }
 }
 //--------------------------------------------------------------------------
 
@@ -709,9 +741,9 @@ void QTableWidgetChild::DeleteSelectedRows(std::string iTraceNameID)
       this->item(RowToDelete,ColumnSelectedRow)->setCheckState(Qt::Unchecked);
       this->item(RowToDelete,ColumnVisibleRow)->setCheckState(Qt::Unchecked);
       this->UpdateVectorCheckedRows(RowToDelete,ColumnSelectedRow,this->m_VectorSelectedRows);
-      emit CheckedRowsChanged();
+      //emit CheckedRowsChanged();
       this->UpdateVectorCheckedRows(RowToDelete,ColumnVisibleRow,this->m_VectorVisibleRows);
-      emit VisibleRowsChanged();
+      //emit VisibleRowsChanged();
       this->removeRow(RowToDelete);
       }
     }
@@ -734,7 +766,7 @@ void QTableWidgetChild::UpdateTableWidgetDisplayAndVectorCheckedRows(int Row, in
       this->item(Row,Column)->setCheckState(Qt::Unchecked);
       }
     this->UpdateVectorCheckedRows(Row,Column,this->m_VectorSelectedRows);
-    emit CheckedRowsChanged();
+    //emit CheckedRowsChanged();
     }
   if (this->horizontalHeaderItem(Column)->text() == "Show")
     {
@@ -755,7 +787,7 @@ void QTableWidgetChild::UpdateTableWidgetDisplayAndVectorCheckedRows(int Row, in
       this->item(Row,Column)->setIcon(NonEyeIcon);
       }
     this->UpdateVectorCheckedRows(Row,Column,this->m_VectorVisibleRows);
-    emit VisibleRowsChanged();
+    //emit VisibleRowsChanged();
     }
 
 }
@@ -849,7 +881,8 @@ void QTableWidgetChild::CheckSelectedRows(std::string iTraceName,
     for(int i=0; i<ListSelectedTracesID.size();i++)
       {
       this->SetSelectRowTraceID (iTraceName, 
-        atoi(ListSelectedTracesID.at(i).toStdString().c_str()),true);
+        atoi(ListSelectedTracesID.at(i).toStdString().c_str()),true,
+        this->m_VectorSelectedRows);
       }
     }
   else
@@ -872,7 +905,56 @@ void QTableWidgetChild::UncheckSelectedRows(std::string iTraceName,
     for(int i=0; i<ListSelectedTracesID.size();i++)
       {
       this->SetSelectRowTraceID (iTraceName, 
-        atoi(ListSelectedTracesID.at(i).toStdString().c_str()),false);
+        atoi(ListSelectedTracesID.at(i).toStdString().c_str()),false,
+        this->m_VectorSelectedRows);
+      }
+    }
+  else
+   {
+   std::cout<<"The list of selected Traces ID is empty";
+   std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
+   std::cout << std::endl;
+   }
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QTableWidgetChild::ShowSelectedRows(std::string iTraceName,
+  std::string iTraceNameID)
+{
+  QStringList ListSelectedTracesID = this->ValuesForSelectedRows(
+    iTraceNameID.c_str());
+  if (!ListSelectedTracesID.empty())
+    {
+    for(int i=0; i<ListSelectedTracesID.size();i++)
+      {
+      this->SetSelectRowTraceID (iTraceName, 
+        atoi(ListSelectedTracesID.at(i).toStdString().c_str()),true,
+        this->m_VectorVisibleRows);
+      }
+    }
+  else
+    {
+    std::cout<<"The list of selected Traces ID is empty";
+    std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
+    std::cout << std::endl;
+    }
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QTableWidgetChild::HideSelectedRows(std::string iTraceName,
+ std::string iTraceNameID)
+{
+  QStringList ListSelectedTracesID = this->ValuesForSelectedRows(
+    iTraceNameID.c_str());
+  if (!ListSelectedTracesID.empty())
+    {
+    for(int i=0; i<ListSelectedTracesID.size();i++)
+      {
+      this->SetSelectRowTraceID (iTraceName, 
+        atoi(ListSelectedTracesID.at(i).toStdString().c_str()),false,
+        this->m_VectorVisibleRows);
       }
     }
   else
