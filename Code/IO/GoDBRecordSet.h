@@ -265,7 +265,7 @@ private:
 template< class TObject >
 bool
 GoDBRecordSet<TObject>::
-SaveEachRow( vtkSQLQuery *query, bool Update = false)
+SaveEachRow( vtkSQLQuery *query, bool Update )
 {
   // modified rows
   myIteratorType start = m_RowContainer.begin();

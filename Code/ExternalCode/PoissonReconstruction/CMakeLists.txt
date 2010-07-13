@@ -1,4 +1,5 @@
 ADD_LIBRARY( PoissonReconstruction
+  vtkNormalEstimationFilter.cxx
   vtkPoissonReconstruction.cxx
   Factor.cpp
   Geometry.cpp

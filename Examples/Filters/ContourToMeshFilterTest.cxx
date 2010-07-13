@@ -40,10 +40,14 @@ void CreateCircle( const double& iZ,
 
 int main( int argc, char* argv[] )
 {
-  (void) argc;
-  (void) argv;
+  if( argc != 2 )
+  {
+    std::cerr <<"./ContourToMeshFilter(.exe) takes 1 arguments" <<std::endl;
+    std::cerr <<"1- boolean value (test)" <<std::endl;
+    return EXIT_FAILURE;
+  }
   
-  int resolution = 6;
+  int resolution = 10;
   double z = 0.;
   double lastz = 0.;
   double sphereRadius = 1.;

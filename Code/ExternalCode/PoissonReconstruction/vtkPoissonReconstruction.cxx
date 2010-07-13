@@ -53,7 +53,7 @@ int vtkPoissonReconstruction::RequestData(vtkInformation *vtkNotUsed(request),
   
   vtkPolyData *output = vtkPolyData::SafeDownCast(
       outInfo->Get(vtkDataObject::DATA_OBJECT()));
-    
+      
   const int Degree = 2;
   
   Point3D<float> center;
