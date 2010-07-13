@@ -3722,7 +3722,7 @@ SavePolyDataAsContourInDB( vtkPolyData* iView )
     {
     QColor color =
       this->m_TraceManualEditingDockWidget->m_TraceWidget->ColorComboBox->GetCurrentColorData().second;
-    color.getRgbF( &r, &g, &b );
+    color.getRgbF( &r, &g, &b, &a );
     }
 
   bool highlighted( false );
@@ -3770,6 +3770,7 @@ SavePolyDataAsMeshInDB( vtkPolyData* iView, const int& iMeshID,
 
   vtkProperty*  mesh_property = vtkProperty::New();
   mesh_property->SetColor( iR, iG, iB );
+  mesh_property->SetOpacity( iA );
 
   std::vector< vtkActor* > mesh_actor;
 
@@ -3835,7 +3836,7 @@ SavePolyDataAsMeshInDB( vtkPolyData* iView )
     {
     QColor color =
       this->m_TraceManualEditingDockWidget->m_TraceWidget->ColorComboBox->GetCurrentColorData().second;
-    color.getRgbF( &r, &g, &b );
+    color.getRgbF( &r, &g, &b, &a );
     }
 
   bool highlighted( false );
