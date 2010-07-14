@@ -85,6 +85,7 @@ GoDBMeshRow(vtkMySQLDatabase* DatabaseConnector,
 GoDBMeshRow::GoDBMeshRow(unsigned int ImagingSessionID):
   GoDBTraceRow(ImagingSessionID)
 {
+  this->InitializeMap();
 }
 //-------------------------------------------------------------------------
 
