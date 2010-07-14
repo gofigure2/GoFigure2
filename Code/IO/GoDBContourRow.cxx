@@ -69,6 +69,7 @@ GoDBTraceRow( DatabaseConnector, TraceVisu, Min, Max, ImgSessionID)
 GoDBContourRow::GoDBContourRow(unsigned int ImagingSessionID):
   GoDBTraceRow(ImagingSessionID)
 {
+  this->InitializeMap();
 }
 /*GoDBContourRow::GoDBContourRow(vtkMySQLDatabase* DatabaseConnector,
   GoDBCoordinateRow Min, GoDBCoordinateRow Max,unsigned int ImgSessionID,
