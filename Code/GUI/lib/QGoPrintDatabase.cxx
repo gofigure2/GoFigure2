@@ -452,10 +452,10 @@ void QGoPrintDatabase::CreateCorrespondingCollection()
     CloseDBConnection();
     QString CollectionIDQString = ConvertToString<int>(NewCollectionID).c_str();
     emit NewCreatedCollection(this->m_CurrentColorData.second,CollectionIDQString);
-   // if (CurrentlyUsedTraceData->TraceName == "contour")
-     // {
-      //emit NewMeshToGenerate(ListSelectedTraces);
-      //}
+    if (CurrentlyUsedTraceData->TraceName == "contour")
+      {
+     emit NewMeshToGenerate(ListSelectedTraces);
+      }
     }
 }
 //--------------------------------------------------------------------------

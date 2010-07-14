@@ -4059,8 +4059,6 @@ void
 QGoTabImageView3DwT::
 CreateMeshFromSelectedContours( std::list<int> iListContourIDs )
 {
-  (void) iListContourIDs;
-/*
   std::list< int >::iterator contourid_it = iListContourIDs.begin();
 
   std::vector< vtkPolyData* > list_contours( iListContourIDs.size(), NULL );
@@ -4105,7 +4103,6 @@ CreateMeshFromSelectedContours( std::list<int> iListContourIDs )
   bool saveindatabase = true;
   this->AddMeshFromNodes( meshid, filter->GetOutput(), rgba, highlighted,
                           tcoord, saveindatabase );
-*/
 }
 //-------------------------------------------------------------------------
 
