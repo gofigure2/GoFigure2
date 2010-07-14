@@ -161,6 +161,30 @@ ENDIF(WIN32)
 IF( UNIX AND NOT APPLE )
   SET( APPS 
     "${CMAKE_INSTALL_PREFIX}/${GOFIGURE2_INSTALL_BIN_DIR}/gofigure" )
+
+  IF( NOT DESKTOP_ENTRY )
+    SET( DESKTOP_ENTRY gofigure2.desktop )
+  ENDIF( NOT DESKTOP_ENTRY )
+
+  CONFIGURE_FILE( ${GOFIGURE2_SOURCE_DIR}/Main/gf2-desktop.sh.in
+    ${GOFIGURE2_BINARY_DIR}/Main/gf2-desktop.sh @ONLY IMMEDIATE
+  )
+
+  ADD_CUSTOM_COMMAND( OUTPUT ${DESKTOP_ENTRY}
+    COMMAND touch ${DESKTOP_ENTRY} 
+    COMMAND sh ${GOFIGURE2_BINARY_DIR}/Main/gf2-desktop.sh 
+      ${CMAKE_INSTALL_PREFIX} >${DESKTOP_ENTRY}
+    DEPENDS ${GOFIGURE2_BINARY_DIR}/Main/gf2-desktop.sh
+    COMMENT "Generating desktop entry file"
+  )
+
+  ADD_CUSTOM_TARGET( DESKTOP_ENTRY_FILE ALL
+    DEPENDS ${DESKTOP_ENTRY}
+  )
+
+  SET( GOFIGURE2_ICON ${GOFIGURE2_SOURCE_DIR}/Resources/fig/Myapp2.png )
+
+  INSTALL( FILES ${GOFIGURE2_ICON} DESTINATION share/gofigure2/icons )
 ENDIF( UNIX AND NOT APPLE )
 
 #---------------------------------------------------------------------------

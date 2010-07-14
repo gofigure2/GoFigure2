@@ -1,0 +1,13 @@
+#!/bin/sh
+cat <<EOF
+[Desktop Entry]
+Version=@GOFIGURE2_VERSION@
+Type=Application
+Name=GoFigure2
+GenericName=Browse And Analyse your microscopic images
+Comment=Visualization and Analysis of bio-images
+TryExec=$1/bin/gofigure
+Exec=$1/bin/gofigure &
+Categories=Applications;Scientific;
+Icon=$1/share/gofigure2/icons/Myapp2.png
+EOF
