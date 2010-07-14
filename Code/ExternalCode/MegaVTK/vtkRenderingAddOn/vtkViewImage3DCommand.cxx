@@ -33,11 +33,9 @@ vtkViewImage3DCommand()
 vtkViewImage3DCommand::
 ~vtkViewImage3DCommand()
 {
-  if( m_BoxWidget->HasObserver(vtkCommand::InteractionEvent) )
-    {
-    std::cout << "HAS Observer" << std::endl;
-    m_BoxWidget->RemoveObservers(vtkCommand::InteractionEvent);
-    }
+  // not working, generates leaks
+  // but boxwidget has to be reiplemented somewhere else
+  m_BoxWidget->RemoveAllObservers();
   m_BoxWidget->Delete();
 }
 //----------------------------------------------------------------------------
@@ -125,6 +123,13 @@ Execute(vtkObject *caller, unsigned long event, void *callData)
       {
       bool inside = true;
 
+      // Don't do anything if an actor is invisible
+      /*if(!prop_temp->GetVisibility())
+        {
+        std::cout << "Visibility: " << prop_temp->GetVisibility();
+        return;
+        }*/
+
       prop_temp->GetBounds( bounds );
 
       for( int i = 0; ( i < 3 ) && inside; ++i )
@@ -208,13 +213,18 @@ Enable3DBoxWidget( bool iValue )
         extent2[4], extent2[5]*spacing2[2]);
     m_BoxWidget->RotationEnabledOff();
     m_BoxWidget->SetKeyPressActivationValue ('b');
-    // Generates memory leaks
-    if( !m_BoxWidget->HasObserver(vtkCommand::InteractionEvent))
-      {
-      m_BoxWidget->AddObserver(vtkCommand::InteractionEvent,this);
-      }
     m_BoxWidget->On();
     m_InitializedBoxWidget = true;
+    }
+
+  // Generates memory leaks
+  if( iValue)
+    {
+    m_BoxWidget->AddObserver(vtkCommand::InteractionEvent,this);
+    }
+  else
+    {
+    m_BoxWidget->RemoveObservers(vtkCommand::InteractionEvent);
     }
 
   m_BoxWidget->SetEnabled( iValue );
