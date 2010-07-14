@@ -39,7 +39,7 @@
 =========================================================================*/
 #include <QApplication>
 #include <QTimer>
-#include "QGoVisualizationDockWidget.h"
+#include "QGoNavigationDockWidget.h"
 #include <iostream>
 
 int main( int argc, char** argv )
@@ -54,18 +54,18 @@ int main( int argc, char** argv )
   QCoreApplication::setOrganizationName("MegasonLab");
   QCoreApplication::setOrganizationDomain( "http://gofigure2.sourceforge.net" );
 
-  QGoVisualizationDockWidget*
-    dock2d = new QGoVisualizationDockWidget( 0, 2 );
+  QGoNavigationDockWidget*
+    dock2d = new QGoNavigationDockWidget( 0, 2 );
 
   dock2d->show();
 
-  QGoVisualizationDockWidget*
-    dock3d = new QGoVisualizationDockWidget( 0, 3 );
+  QGoNavigationDockWidget*
+    dock3d = new QGoNavigationDockWidget( 0, 3 );
 
   dock3d->show();
 
-  QGoVisualizationDockWidget*
-    dock4d = new QGoVisualizationDockWidget( 0, 4 );
+  QGoNavigationDockWidget*
+    dock4d = new QGoNavigationDockWidget( 0, 4 );
 
   dock4d->show();
 

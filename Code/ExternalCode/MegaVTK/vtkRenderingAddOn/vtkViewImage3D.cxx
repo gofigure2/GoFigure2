@@ -122,7 +122,6 @@
 #include <vtkVolumeTextureMapper2D.h>
 #include <vtkProperty.h>
 #include <vtkVolume.h>
-#include <vtkImageMapToWindowLevelColors.h>
 #include <vtkImageDataGeometryFilter.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkImageActor.h>
@@ -141,7 +140,6 @@
 #include "vtkRenderWindow.h"
 #include "vtkScalarsToColors.h"
 #include "vtkColorTransferFunction.h"
-#include <vtkCamera.h>
 #include <vtkImageShiftScale.h>
 #include <vtkDataSet.h>
 #include <vtkDataSetMapper.h>
@@ -689,6 +687,7 @@ vtkViewImage3D::AddDataSet( vtkDataSet* dataset,
     // Generates bug in visu
     //actor3d->SetProperty( property );
     actor3d->GetProperty()->SetColor( property->GetColor() );
+    actor3d->GetProperty()->SetOpacity( property->GetOpacity() );
     }
   // Generates problems in visu 3d
   //contActor->GetProperty()->BackfaceCullingOn();

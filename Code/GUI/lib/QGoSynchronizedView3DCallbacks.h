@@ -37,8 +37,8 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#ifndef QGoSynchronizedView3DCallbacks_H
-#define QGoSynchronizedView3DCallbacks_H
+#ifndef __GoSynchronizedView3DCallbacks_h
+#define __GoSynchronizedView3DCallbacks_h
 
 
 

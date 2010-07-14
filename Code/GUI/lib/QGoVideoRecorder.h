@@ -6,9 +6,9 @@
 
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-10
 
- Copyright (c) 2009, President and Fellows of Harvard College.
+ Copyright (c) 2009-10, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -61,7 +61,9 @@ class vtkRenderWindowMovieRecorder;
 #ifdef ENABLEAVI
   class vtkAVIRenderWindowRecorder;
 #endif
-
+/*
+ * \brief QGoVideoRecorder to record videos to using AVI or FFMPEG
+ */
 class QGOGUILIB_EXPORT QGoVideoRecorder :
     public QDockWidget, private Ui::NewDockWidgetVideoRecorder
 {

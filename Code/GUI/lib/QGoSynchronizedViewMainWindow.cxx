@@ -110,35 +110,24 @@ Update()
 
 QGoSynchronizedView*
 QGoSynchronizedViewMainWindow::
-newSynchronizedView2D(QString iSynchronizedViewName, vtkImageData* iImage)
+newSynchronizedView(QString iSynchronizedViewName, vtkImageData* iImage)
 {
-  QGoSynchronizedView2D *synchronizedView =
-    m_SynchronizedViewManager->newSynchronizedView2D( iSynchronizedViewName,
-                                                      iImage );
+  QGoSynchronizedView* synchronizedView;
+
+  synchronizedView = dynamic_cast< QGoSynchronizedView* > (
+    m_SynchronizedViewManager->newSynchronizedView( iSynchronizedViewName,
+                                                      iImage ) );
 
   mdiArea->addSubWindow( synchronizedView,Qt::SubWindow );
   synchronizedView->parentWidget()
                   ->resize( 300, 300 );
+
   synchronizedView->show();
   tileAct->trigger();
 
   return synchronizedView;
 }
 
-QGoSynchronizedView3D*
-QGoSynchronizedViewMainWindow::
-newSynchronizedView3D( QString iSynchronizedViewName, vtkImageData* iImage )
-{
-  QGoSynchronizedView3D *synchronizedView = m_SynchronizedViewManager->newSynchronizedView3D( iSynchronizedViewName, iImage);
-
-  mdiArea->addSubWindow( synchronizedView );
-  synchronizedView->parentWidget()
-                  ->resize( 300, 300 );
-  synchronizedView->show();
-  tileAct->trigger();
-
-  return synchronizedView;
-}
 
 ///*
 //QGoSynchronizedView3D* QGoSynchronizedViewMainWindow::newSynchronizedView3D(QString iSynchronizedViewName, QString iImagePath)
@@ -217,18 +206,8 @@ OpenSynchronizedViewForFile( QString& iFile )
 
       vtkImageData* image = reader->GetOutput();
 
-      int dim[3];
-      image->GetDimensions( dim );
+      newSynchronizedView( iFile, image );
 
-      if( ( dim[0] != 1 ) && ( dim[1] != 1 ) && ( dim[2] != 1 ) )
-        {
-        std::cout<<"opening2"<<std::endl;
-        newSynchronizedView3D( iFile, image );
-        }
-      else
-        {
-        newSynchronizedView2D( iFile, image );
-        }
       reader->Delete();
       r_factory->Delete();
       }

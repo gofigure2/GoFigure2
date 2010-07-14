@@ -315,6 +315,8 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage2DCollection : public vtkCollection
   vtkstd::vector<vtkActor*>        SlicePlaneActors;
 //   vtkstd::vector<vtkQuadricLODActor*>        SlicePlaneActors;
 
+  void UpdateWindowLevelObservers();
+
  protected:
 
   vtkViewImage2DCollection();

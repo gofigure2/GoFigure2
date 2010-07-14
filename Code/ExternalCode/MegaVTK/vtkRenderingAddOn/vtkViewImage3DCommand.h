@@ -37,7 +37,8 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage3DCommand :
     DefaultMoveEvent,
     SeedEvent,
     BoxWidgetModifiedEvent,
-    ReadyEvent
+    ReadyEvent,
+    BoxWidgetReadyEvent
   };
   //ETX
 

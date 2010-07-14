@@ -50,6 +50,7 @@
 #include "GoDBTableWidgetContainer.h"
 #include "ContourMeshStructureHelper.h"
 #include "QGoGUILibConfigure.h"
+#include "GoDBCoordinateRow.h"
 
 /**
 \class QTableWidgetchild
@@ -87,7 +88,8 @@ public:
 
   void DeleteSelectedRows(std::string iTraceNameID);
 
-  std::list<int> GetListCheckedTraceID();
+  std::list<int> GetListCheckedTraceID(
+    std::vector<std::pair<int,int> >* iVectorOfPair = 0);
 
   /** \brief Change the CollectionID in the trace table of the selected
   rows with the newCollectionID and set the background with the colorNewCollection*/
@@ -102,15 +104,31 @@ public:
     std::vector<std::string> iValues,unsigned int iID, 
     std::string iColumnNameForTraceID);
 
+  /** \brief calculate the center of the bounding box for the only selected trace
+  and return it as a GoDBCoordinateRow*/
+  GoDBCoordinateRow GetCoordinateCenterBoundingBox();
+
+  /** \brief get the value in the table for the given iRowIndex and
+  for the given column name*/
+  int GetValueForItem(std::string iColumnName, int iRowIndex);
+
+  /** \brief calculate the mean value for both columns in the given row*/
+  std::string GetMeanValue(std::string iColumnNameOne,
+    std::string iColumnNameTwo, unsigned int iRowIndex);
+
 signals:
   void CheckedRowsChanged();
+  void VisibleRowsChanged();
 
 protected:
   int PrevCol;
   int PrevOrder;
   
   /** \brief Vector containing the ID of the selected row and the index in the table widget*/
-  std::vector<std::pair<int,int> > m_VectorSelectedRows;
+  std::vector<std::pair<int,int> >* m_VectorSelectedRows;
+  
+  /** \brief Vector containing the ID of the visible row and the index in the table widget*/
+  std::vector<std::pair<int,int> >* m_VectorVisibleRows;
 
   /** \brief return the row index where the given value is located when specifying
   the column name: */
@@ -121,7 +139,7 @@ protected:
   int findColumnName(QString ColumnName);
 
   /** \brief Update the m_VectorSelectedRows */
-  void UpdateVectorCheckedRows(int Row,int Column);
+  void UpdateVectorCheckedRows(int Row,int Column,std::vector<std::pair<int,int> >* iVectorOfPair);
   /** \brief put the text in the cells which are part of the range in a 
   QString and insert \n and \t to be read by other applications*/
   void PrepareRangeToCopy(QTableWidgetSelectionRange Range, QString &str);
@@ -130,10 +148,10 @@ public slots:
   /** \brief sort items given one column and one sort order. */
   void sortItems(int column, Qt::SortOrder order);
 
-  /** \brief select or unselect the row corresponding to the given TraceID.
+  /** \brief select or unselect the row corresponding to the given TraceID in the corresponding column.
   */
   void SetSelectRowTraceID (std::string TraceName, int TraceID,
-    bool IsSelected);
+    bool IsSelected,std::vector<std::pair<int,int> >* iVectorOfPair = 0);
 
   /** \brief check the boxes for the rows where at least one cell is selected */
   void CheckSelectedRows(std::string iTraceName,
@@ -141,14 +159,21 @@ public slots:
   /** \brief uncheck the boxes for the rows where at least one cell is selected */
   void UncheckSelectedRows(std::string iTraceName,
     std::string iTraceNameID);
+  
+  /** \brief check the visible boxes for the rows where at least one cell is selected */
+  void ShowSelectedRows(std::string iTraceName, std::string iTraceNameID);
+  /** \brief uncheck the visible boxes for the rows where at least one cell is selected */
+  void HideSelectedRows(std::string iTraceName, std::string iTraceNameID);
+
   void UpdateTableWidgetDisplayAndVectorCheckedRows(int Row, int Column);
 
   /** \brief modify the ioTracesInfo in order to set the IsHighLighted parameter to false
   for the traces not selected by the user and set it to true for the selected ones,
   selected ones means at least one cell in the row has been selected by the user in
-  the tableWidget. The TraceName has to be chosen between Contour and Mesh */
-  bool TracesToHighlight(std::string TraceName,
-    ContourMeshStructureMultiIndexContainer* ioTracesInfo);
+  the tableWidget. The TraceName has to be chosen between Contour and Mesh.*/
+  bool TracesToHighlight(ContourMeshStructureMultiIndexContainer* ioTracesInfo);
+
+  bool TracesToShow(ContourMeshStructureMultiIndexContainer* ioTracesInfo );
 
   /** \brief return a list of the values of a specific column for the rows where the user
        has selected at least one cell.*/
@@ -156,6 +181,8 @@ public slots:
 
   /** \brief Put checkboxes in the column "Selected" */
   void SetSelectedColumn(unsigned int iNbOfRows,unsigned int StartedRow);
+  /** \brief Put checkboxes in the column "Show" */
+  void SetVisibleColumn(unsigned int iNbOfRows,unsigned int StartedRow,std::string iTraceName);
 
   void SetColorForTable (GoDBTableWidgetContainer* iLinkToRowContainer,
   std::string NameGroupColor,unsigned int StartRow);

@@ -6,9 +6,9 @@
 
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-10
 
- Copyright (c) 2009, President and Fellows of Harvard College.
+ Copyright (c) 2009-10, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -42,7 +42,7 @@
 
 #include "QGoImageView3D.h"
 #include "QGoLUTDialog.h"
-#include "QGoVisualizationDockWidget.h"
+#include "QGoNavigationDockWidget.h"
 #include "QGoManualSegmentationDockWidget.h"
 
 #ifdef   ENABLEVIDEORECORD
@@ -298,36 +298,36 @@ void QGoTabImageView4D::CreateModeActions()
  */
 void QGoTabImageView4D::CreateVisuDockWidget()
 {
-  m_VisuDockWidget = new QGoVisualizationDockWidget( this, 4 );
+  m_NavigationDockWidget = new QGoNavigationDockWidget( this, 4 );
 
-  QObject::connect( m_VisuDockWidget, SIGNAL( XSliceChanged( int ) ),
+  QObject::connect( m_NavigationDockWidget, SIGNAL( XSliceChanged( int ) ),
     this, SLOT( SetXSlice( int ) ) );
 
   QObject::connect( this, SIGNAL( XSliceChanged( int ) ),
-    m_VisuDockWidget, SLOT( SetXSlice( int ) ) );
+    m_NavigationDockWidget, SLOT( SetXSlice( int ) ) );
 
-  QObject::connect( m_VisuDockWidget, SIGNAL( YSliceChanged( int ) ),
+  QObject::connect( m_NavigationDockWidget, SIGNAL( YSliceChanged( int ) ),
     this, SLOT( SetYSlice( int ) ) );
 
   QObject::connect( this, SIGNAL( YSliceChanged( int ) ),
-    m_VisuDockWidget, SLOT( SetYSlice( int ) ) );
+    m_NavigationDockWidget, SLOT( SetYSlice( int ) ) );
 
-  QObject::connect( m_VisuDockWidget, SIGNAL( ZSliceChanged( int ) ),
+  QObject::connect( m_NavigationDockWidget, SIGNAL( ZSliceChanged( int ) ),
     this, SLOT( SetZSlice( int ) ) );
 
   QObject::connect( this, SIGNAL( ZSliceChanged( int ) ),
-    m_VisuDockWidget, SLOT( SetZSlice( int ) ) );
+    m_NavigationDockWidget, SLOT( SetZSlice( int ) ) );
 
-  QObject::connect( m_VisuDockWidget, SIGNAL( TSliceChanged( int ) ),
+  QObject::connect( m_NavigationDockWidget, SIGNAL( TSliceChanged( int ) ),
     this, SLOT( SetTimePoint( int ) ) );
 
   QObject::connect( this, SIGNAL( TimePointChanged( int ) ),
-    m_VisuDockWidget, SLOT( SetTSlice( int ) ) );
+    m_NavigationDockWidget, SLOT( SetTSlice( int ) ) );
 
-  QObject::connect( m_VisuDockWidget, SIGNAL( ShowAllChannelsChanged( bool ) ),
+  QObject::connect( m_NavigationDockWidget, SIGNAL( ShowAllChannelsChanged( bool ) ),
     this, SLOT( ShowAllChannels( bool ) ) );
 
-  QObject::connect( m_VisuDockWidget, SIGNAL( ShowOneChannelChanged( int ) ),
+  QObject::connect( m_NavigationDockWidget, SIGNAL( ShowOneChannelChanged( int ) ),
     this, SLOT( ShowOneChannel( int ) ) );
 
 }
@@ -482,27 +482,27 @@ SetMegaCaptureFile(
   int extent[6];
   temp->GetExtent( extent );
 
-  m_VisuDockWidget->SetXMinimumAndMaximum( extent[0], extent[1] );
-  m_VisuDockWidget->SetYMinimumAndMaximum( extent[2], extent[3] );
-  m_VisuDockWidget->SetZMinimumAndMaximum( extent[4], extent[5] );
+  m_NavigationDockWidget->SetXMinimumAndMaximum( extent[0], extent[1] );
+  m_NavigationDockWidget->SetYMinimumAndMaximum( extent[2], extent[3] );
+  m_NavigationDockWidget->SetZMinimumAndMaximum( extent[4], extent[5] );
 
   unsigned int min_t = m_Reader1->GetMinTimePoint();
   unsigned int max_t = m_Reader1->GetMaxTimePoint();
 
-  m_VisuDockWidget->SetTMinimumAndMaximum( min_t, max_t );
-  m_VisuDockWidget->SetTSlice( 0 );
+  m_NavigationDockWidget->SetTMinimumAndMaximum( min_t, max_t );
+  m_NavigationDockWidget->SetTSlice( 0 );
 
-  m_VisuDockWidget->SetNumberOfChannels( NumberOfChannels );
+  m_NavigationDockWidget->SetNumberOfChannels( NumberOfChannels );
 
   if( NumberOfChannels > 1 )
     {
-    m_VisuDockWidget->SetChannel( 0 );
+    m_NavigationDockWidget->SetChannel( 0 );
     m_XYZInternalImages.resize( NumberOfChannels, NULL );
     m_XYTInternalImages.resize( NumberOfChannels, NULL );
 
     for( unsigned int i = 1; i < NumberOfChannels; i++ )
       {
-      m_VisuDockWidget->SetChannel( i );
+      m_NavigationDockWidget->SetChannel( i );
       }
     }
 
@@ -510,9 +510,9 @@ SetMegaCaptureFile(
   SetZSlice( zslice );
   Update();
 
-  m_VisuDockWidget->SetXSlice( ( extent[0] + extent[1] ) / 2 );
-  m_VisuDockWidget->SetYSlice( ( extent[2] + extent[3] ) / 2 );
-  m_VisuDockWidget->SetZSlice( zslice );
+  m_NavigationDockWidget->SetXSlice( ( extent[0] + extent[1] ) / 2 );
+  m_NavigationDockWidget->SetYSlice( ( extent[2] + extent[3] ) / 2 );
+  m_NavigationDockWidget->SetZSlice( zslice );
 
 }
 //--------------------------------------------------------------------------
@@ -1022,7 +1022,7 @@ void QGoTabImageView4D::ShowAllChannels( bool iChecked )
     }
   else
     {
-    int ch = this->m_VisuDockWidget->GetCurrentChannel();
+    int ch = this->m_NavigationDockWidget->GetCurrentChannel();
     if( ch != -1 )
       {
       m_XYZImage->ShallowCopy( m_XYZInternalImages[ch] );
@@ -1196,7 +1196,7 @@ ValidateContour( const int& iId )
     // get meshid from the dock widget (SpinBox)
     // unsigned int meshid = m_ManualSegmentationDockWidget->GetMeshId();
     // unused?
-    // unsigned int meshid = this->m_VisuDockWidget->GetCurrentCollectionID();
+    // unsigned int meshid = this->m_NavigationDockWidget->GetCurrentCollectionID();
     // unsigned int timepoint = static_cast< unsigned int >( m_TimePoint );
     // bool highlighted = false;
 

@@ -139,56 +139,45 @@ InitializeAllObservers()
   vtkViewImage2D* a = this->GetNextItem();
   while(a)
     {
+    vtkInteractorStyle* style = a->GetInteractorStyle();
+
+    style->RemoveObservers( vtkViewImage2DCommand::SliceMoveEvent );
+    style->RemoveObservers( vtkViewImage2DCommand::ResetViewerEvent );
+    style->RemoveObservers( vtkViewImage2DCommand::RequestedPositionEvent );
+
+    style->AddObserver( vtkViewImage2DCommand::SliceMoveEvent, this->Command );
+    style->AddObserver( vtkViewImage2DCommand::ZoomEvent, this->Command );
+    style->AddObserver( vtkViewImage2DCommand::PanEvent, this->Command );
+    style->AddObserver( vtkViewImage2DCommand::RequestedPositionEvent, this->Command );
+    style->AddObserver( vtkViewImage2DCommand::ResetViewerEvent, this->Command );
+    style->AddObserver( vtkViewImage2DCommand::ContourPickingEvent, this->Command );
+    style->AddObserver( vtkViewImage2DCommand::MeshPickingEvent, this->Command );
+    style->AddObserver( vtkViewImage2DCommand::SeedEvent, this->Command );
+    
+    a = this->GetNextItem();
+    }
+}
+
+//----------------------------------------------------------------------------
+void vtkViewImage2DCollection::UpdateWindowLevelObservers()
+{
+  this->InitTraversal();
+  vtkViewImage2D* a = this->GetNextItem();
+  while(a)
+    {
+    vtkInteractorStyle* style = a->GetInteractorStyle();
     if( a->GetIsColor() )
       {
-      a->GetInteractorStyle()->RemoveObservers(
-        vtkCommand::StartWindowLevelEvent );
-      a->GetInteractorStyle()->RemoveObservers(
-        vtkCommand::ResetWindowLevelEvent );
-      a->GetInteractorStyle()->RemoveObservers(
-        vtkCommand::WindowLevelEvent );
+      style->RemoveObservers( vtkCommand::StartWindowLevelEvent );
+      style->RemoveObservers( vtkCommand::ResetWindowLevelEvent );
+      style->RemoveObservers( vtkCommand::WindowLevelEvent );
       }
-    a->GetInteractorStyle()->RemoveObservers(
-      vtkViewImage2DCommand::SliceMoveEvent );
-    a->GetInteractorStyle()->RemoveObservers(
-      vtkViewImage2DCommand::ResetViewerEvent );
-    a->GetInteractorStyle()->RemoveObservers( vtkViewImage2DCommand::
-      RequestedPositionEvent );
-
     if( !a->GetIsColor() )
       {
-      a->GetInteractorStyle()->AddObserver(
-        vtkCommand::StartWindowLevelEvent,
-        this->Command );
-      a->GetInteractorStyle()->AddObserver( vtkCommand::ResetWindowLevelEvent,
-        this->Command );
-      a->GetInteractorStyle()->AddObserver( vtkCommand::WindowLevelEvent,
-        this->Command );
+      style->AddObserver( vtkCommand::StartWindowLevelEvent, this->Command );
+      style->AddObserver( vtkCommand::ResetWindowLevelEvent, this->Command );
+      style->AddObserver( vtkCommand::WindowLevelEvent, this->Command );
       }
-    a->GetInteractorStyle()->AddObserver(
-      vtkViewImage2DCommand::SliceMoveEvent,
-      this->Command );
-    a->GetInteractorStyle()->AddObserver(
-      vtkViewImage2DCommand::ZoomEvent,
-      this->Command );
-    a->GetInteractorStyle()->AddObserver(
-      vtkViewImage2DCommand::PanEvent,
-      this->Command );
-    a->GetInteractorStyle()->AddObserver(
-      vtkViewImage2DCommand::RequestedPositionEvent,
-      this->Command );
-    a->GetInteractorStyle()->AddObserver(
-      vtkViewImage2DCommand::ResetViewerEvent,
-      this->Command );
-    a->GetInteractorStyle()->AddObserver(
-      vtkViewImage2DCommand::ContourPickingEvent,
-      this->Command );
-    a->GetInteractorStyle()->AddObserver(
-      vtkViewImage2DCommand::MeshPickingEvent,
-      this->Command );
-    a->GetInteractorStyle()->AddObserver(
-      vtkViewImage2DCommand::SeedEvent,
-      this->Command );
     a = this->GetNextItem();
     }
 }
@@ -435,12 +424,12 @@ void vtkViewImage2DCollection::SetLinkSliceMove(unsigned int v)
       {
       if( !style->HasObserver (vtkViewImage2DCommand::SliceMoveEvent, this->Command) )
         {
-	      style->AddObserver (vtkViewImage2DCommand::SliceMoveEvent, this->Command);
+        style->AddObserver (vtkViewImage2DCommand::SliceMoveEvent, this->Command);
         }
       }
     else
       {
-	    style->RemoveObservers (vtkViewImage2DCommand::SliceMoveEvent, this->Command);
+      style->RemoveObservers (vtkViewImage2DCommand::SliceMoveEvent, this->Command);
       }
 
     item = this->GetNextItem();
@@ -460,13 +449,13 @@ void vtkViewImage2DCollection::SetLinkColorWindowLevel(unsigned int v)
     if( v )
       {
       if( !style->HasObserver (vtkCommand::WindowLevelEvent, this->Command) )
-	      {
+        {
         style->AddObserver (vtkCommand::WindowLevelEvent, this->Command);
         }
       }
     else
       {
-	    style->RemoveObservers (vtkCommand::WindowLevelEvent, this->Command);
+      style->RemoveObservers (vtkCommand::WindowLevelEvent, this->Command);
       }
 
     item = this->GetNextItem();
@@ -487,12 +476,12 @@ void vtkViewImage2DCollection::SetLinkResetWindowLevel(unsigned int v)
       {
       if( !style->HasObserver(vtkCommand::ResetWindowLevelEvent, this->Command) )
         {
-	      style->AddObserver (vtkCommand::ResetWindowLevelEvent, this->Command);
+        style->AddObserver (vtkCommand::ResetWindowLevelEvent, this->Command);
         }
       }
     else
       {
-	    style->RemoveObservers (vtkCommand::ResetWindowLevelEvent, this->Command);
+      style->RemoveObservers (vtkCommand::ResetWindowLevelEvent, this->Command);
       }
 
     item = this->GetNextItem();
@@ -511,7 +500,7 @@ void vtkViewImage2DCollection::SetLinkResetViewer(unsigned int v)
     vtkInteractorStyle* style = item->GetInteractorStyle();
     if( v )
       {
-	    if( !style->HasObserver (vtkViewImage2DCommand::ResetViewerEvent, this->Command) )
+      if( !style->HasObserver (vtkViewImage2DCommand::ResetViewerEvent, this->Command) )
         {
         style->AddObserver (vtkViewImage2DCommand::ResetViewerEvent, this->Command);
         }
@@ -537,14 +526,14 @@ void vtkViewImage2DCollection::SetLinkRequestedPosition(unsigned int v)
     vtkInteractorStyle* style = item->GetInteractorStyle();
     if (v)
       {
-	    if (!style->HasObserver (vtkViewImage2DCommand::RequestedPositionEvent, this->Command) )
-	      {
+      if (!style->HasObserver (vtkViewImage2DCommand::RequestedPositionEvent, this->Command) )
+        {
         style->AddObserver (vtkViewImage2DCommand::RequestedPositionEvent, this->Command);
         }
       }
     else
       {
-	    style->RemoveObservers (vtkViewImage2DCommand::RequestedPositionEvent, this->Command);
+      style->RemoveObservers (vtkViewImage2DCommand::RequestedPositionEvent, this->Command);
       }
 
     item = this->GetNextItem();
@@ -564,14 +553,14 @@ void vtkViewImage2DCollection::SetLinkCamera( unsigned int v )
       
     if( v )
       {
-	    if( !style->HasObserver( vtkViewImage2DCommand::CameraMoveEvent, this->Command ) )
-	      {
+      if( !style->HasObserver( vtkViewImage2DCommand::CameraMoveEvent, this->Command ) )
+        {
         item->GetInteractorStyle()->AddObserver( vtkViewImage2DCommand::CameraMoveEvent, this->Command );
         }
       }
     else
       {
-	    style->RemoveObservers( vtkViewImage2DCommand::CameraMoveEvent, this->Command );
+      style->RemoveObservers( vtkViewImage2DCommand::CameraMoveEvent, this->Command );
       }
 
     item = this->GetNextItem();
@@ -594,11 +583,11 @@ void vtkViewImage2DCollection::SetLinkPosition(unsigned int v)
       {
       if(! style->HasObserver( vtkViewImage2DCommand::DefaultMoveEvent, this->Command ) )
         {
-	      style->AddObserver( vtkViewImage2DCommand::DefaultMoveEvent, this->Command );
+        style->AddObserver( vtkViewImage2DCommand::DefaultMoveEvent, this->Command );
         }
       else
         {
-	      style->RemoveObservers( vtkViewImage2DCommand::DefaultMoveEvent, this->Command );
+        style->RemoveObservers( vtkViewImage2DCommand::DefaultMoveEvent, this->Command );
         }
       }
 
@@ -624,11 +613,11 @@ void vtkViewImage2DCollection::SetShowAxes (unsigned int v)
     {
       vtkViewImage2D* Vj = vtkViewImage2D::SafeDownCast (this->GetItem (j));
       if (Vi && Vj)
-	if (i != j)
-	{
-	  vtkActor* a = Vi->GetDataSetActor (Vj->GetSlicePlane());
-	  a->SetVisibility (this->ShowAxes);
-	}
+  if (i != j)
+  {
+  vtkActor* a = Vi->GetDataSetActor (Vj->GetSlicePlane());
+  a->SetVisibility (this->ShowAxes);
+  }
     }
   }*/
 }

@@ -6,9 +6,9 @@
 
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-10
 
- Copyright (c) 2009, President and Fellows of Harvard College.
+ Copyright (c) 2009-10, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -39,7 +39,7 @@
 =========================================================================*/
 
 #include "QGoTabImageViewNDBase.h"
-#include "QGoVisualizationDockWidget.h"
+#include "QGoNavigationDockWidget.h"
 
 #include "vtkImageData.h"
 #include "vtkSmartPointer.h"
@@ -79,26 +79,26 @@ SetImage( vtkImageData* iImage )
   m_Image = iImage;
 
   int n = m_Image->GetNumberOfScalarComponents();
-  this->m_VisuDockWidget->SetNumberOfChannels( n );
+  this->m_NavigationDockWidget->SetNumberOfChannels( n );
 
   if( n != 1 )
     {
     if( ( n == 3 ) || ( n == 4 ) )
       {
-      this->m_VisuDockWidget->SetChannel( 0, tr( "Red" ) );
-      this->m_VisuDockWidget->SetChannel( 1, tr( "Green" ) );
-      this->m_VisuDockWidget->SetChannel( 2, tr( "Blue" ) );
+      this->m_NavigationDockWidget->SetChannel( 0, tr( "Red" ) );
+      this->m_NavigationDockWidget->SetChannel( 1, tr( "Green" ) );
+      this->m_NavigationDockWidget->SetChannel( 2, tr( "Blue" ) );
 
       if( n == 4 )
         {
-        this->m_VisuDockWidget->SetChannel( 3, tr( "Alpha" ) );
+        this->m_NavigationDockWidget->SetChannel( 3, tr( "Alpha" ) );
         }
       }
     else
       {
       for( int i = 0; i < n; i++ )
         {
-        this->m_VisuDockWidget->SetChannel( i );
+        this->m_NavigationDockWidget->SetChannel( i );
         }
       }
     }
@@ -108,14 +108,14 @@ SetImage( vtkImageData* iImage )
 
   this->SetImageToImageViewer( m_Image );
 
-  this->m_VisuDockWidget->SetXMinimumAndMaximum( extent[0], extent[1] );
-  this->m_VisuDockWidget->SetXSlice( (extent[0]+extent[1])/2 );
+  this->m_NavigationDockWidget->SetXMinimumAndMaximum( extent[0], extent[1] );
+  this->m_NavigationDockWidget->SetXSlice( (extent[0]+extent[1])/2 );
 
-  this->m_VisuDockWidget->SetYMinimumAndMaximum( extent[2], extent[3] );
-  this->m_VisuDockWidget->SetYSlice( (extent[2]+extent[3])/2 );
+  this->m_NavigationDockWidget->SetYMinimumAndMaximum( extent[2], extent[3] );
+  this->m_NavigationDockWidget->SetYSlice( (extent[2]+extent[3])/2 );
 
-  this->m_VisuDockWidget->SetZMinimumAndMaximum( extent[4], extent[5] );
-  this->m_VisuDockWidget->SetZSlice( (extent[4]+extent[5])/2 );
+  this->m_NavigationDockWidget->SetZMinimumAndMaximum( extent[4], extent[5] );
+  this->m_NavigationDockWidget->SetZSlice( (extent[4]+extent[5])/2 );
 }
 //--------------------------------------------------------------------------
 
@@ -143,7 +143,7 @@ ShowAllChannels( bool iChecked )
     }
   else
     {
-    int ch = this->m_VisuDockWidget->GetCurrentChannel();
+    int ch = this->m_NavigationDockWidget->GetCurrentChannel();
     if( ch != -1 )
       {
       vtkSmartPointer< vtkImageExtractComponents > extract =

@@ -6,9 +6,9 @@
 
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-10
 
- Copyright (c) 2009, President and Fellows of Harvard College.
+ Copyright (c) 2009-10, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -42,7 +42,7 @@
 
 #include "QGoImageView3D.h"
 #include "QGoLUTDialog.h"
-#include "QGoVisualizationDockWidget.h"
+#include "QGoNavigationDockWidget.h"
 
 #include "vtkImageData.h"
 #include "vtkLookupTable.h"
@@ -87,37 +87,37 @@ QGoTabImageView3D( QWidget* iParent )
     this->m_ContourWidget.back()->Off();
     }
 
-  m_VisuDockWidget = new QGoVisualizationDockWidget( this, 3 );
-  m_VisuDockWidget->resize( 120, 300 );
+  m_NavigationDockWidget = new QGoNavigationDockWidget( this, 3 );
+  m_NavigationDockWidget->resize( 120, 300 );
 
-  QObject::connect( m_VisuDockWidget, SIGNAL( XSliceChanged( int ) ),
+  QObject::connect( m_NavigationDockWidget, SIGNAL( XSliceChanged( int ) ),
     this, SLOT( SetSliceViewYZ( int ) ) );
 
   QObject::connect( this, SIGNAL( SliceViewYZChanged( int ) ),
-    m_VisuDockWidget, SLOT( SetXSlice( int ) ) );
+    m_NavigationDockWidget, SLOT( SetXSlice( int ) ) );
 
-  QObject::connect( m_VisuDockWidget, SIGNAL( YSliceChanged( int ) ),
+  QObject::connect( m_NavigationDockWidget, SIGNAL( YSliceChanged( int ) ),
     this, SLOT( SetSliceViewXZ( int ) ) );
 
   QObject::connect( this, SIGNAL( SliceViewXZChanged( int ) ),
-    m_VisuDockWidget, SLOT( SetYSlice( int ) ) );
+    m_NavigationDockWidget, SLOT( SetYSlice( int ) ) );
 
-  QObject::connect( m_VisuDockWidget, SIGNAL( ZSliceChanged( int ) ),
+  QObject::connect( m_NavigationDockWidget, SIGNAL( ZSliceChanged( int ) ),
     this, SLOT( SetSliceViewXY( int ) ) );
 
   QObject::connect( this, SIGNAL( SliceViewXYChanged( int ) ),
-    m_VisuDockWidget, SLOT( SetZSlice( int ) ) );
+    m_NavigationDockWidget, SLOT( SetZSlice( int ) ) );
 
-  QObject::connect( m_VisuDockWidget, SIGNAL( ShowAllChannelsChanged( bool ) ),
+  QObject::connect( m_NavigationDockWidget, SIGNAL( ShowAllChannelsChanged( bool ) ),
     this, SLOT( ShowAllChannels( bool ) ) );
 
-  QObject::connect( m_VisuDockWidget, SIGNAL( ShowOneChannelChanged( int ) ),
+  QObject::connect( m_NavigationDockWidget, SIGNAL( ShowOneChannelChanged( int ) ),
     this, SLOT( ShowOneChannel( int ) ) );
 
   this->m_DockWidgetList.push_front(
       std::pair< QGoDockWidgetStatus*, QDockWidget* >(
-        new QGoDockWidgetStatus( m_VisuDockWidget, Qt::LeftDockWidgetArea, true, true ),
-        m_VisuDockWidget ) );
+        new QGoDockWidgetStatus( m_NavigationDockWidget, Qt::LeftDockWidgetArea, true, true ),
+        m_NavigationDockWidget ) );
 
   CreateAllViewActions();
 
@@ -255,7 +255,7 @@ void QGoTabImageView3D::CreateAllViewActions()
   separator2->setSeparator( true );
   this->m_ViewActions.push_back( separator2 );
 
-  this->m_ViewActions.push_back( m_VisuDockWidget->toggleViewAction() );
+  this->m_ViewActions.push_back( m_NavigationDockWidget->toggleViewAction() );
 
   QAction* separator3 = new QAction( this );
   separator3->setSeparator( true );
@@ -473,9 +473,9 @@ void QGoTabImageView3D::Update()
   int extent[6];
   m_Image->GetExtent( extent );
 
-  m_VisuDockWidget->SetXSlice( ( extent[0] + extent[1] ) / 2 );
-  m_VisuDockWidget->SetYSlice( ( extent[2] + extent[3] ) / 2 );
-  m_VisuDockWidget->SetZSlice( ( extent[4] + extent[5] ) / 2 );
+  m_NavigationDockWidget->SetXSlice( ( extent[0] + extent[1] ) / 2 );
+  m_NavigationDockWidget->SetYSlice( ( extent[2] + extent[3] ) / 2 );
+  m_NavigationDockWidget->SetZSlice( ( extent[4] + extent[5] ) / 2 );
 }
 //--------------------------------------------------------------------------
 

@@ -126,12 +126,12 @@ SetImage(vtkImageData* iImage)
   else
     {
     // if there is no viewer, we create one
-    if (static_cast<QGoImageView2D*>(m_currentView) == NULL)
+    if ( m_currentView == NULL)
       {
       createViewer();
       }
     // set the image to the current view
-    static_cast<QGoImageView2D*>(m_currentView)->SetImage(iImage);
+    dynamic_cast<QGoImageView2D*>(m_currentView)->SetImage(iImage);
     // update current image
     m_currentImage = iImage;
 
@@ -149,7 +149,7 @@ QGoSynchronizedView2D::
 createViewer()
 {
   // if there is already a viewer
-  if (static_cast<QGoImageView2D*>(m_currentView) != NULL)
+  if ( m_currentView != NULL)
     {
     return;
     }
@@ -157,10 +157,10 @@ createViewer()
     {
     // else we create one
     m_currentView = new QGoImageView2D(this);
-    static_cast<QGoImageView2D*>
+    dynamic_cast<QGoImageView2D*>
       (m_currentView)->setContentsMargins( 1, 1, 1, 1 );
     // setup position of the widget
-    this->gridLayout->addWidget(static_cast<QGoImageView2D*>(m_currentView));
+    this->gridLayout->addWidget(dynamic_cast<QGoImageView2D*>(m_currentView));
     }
 }
 
@@ -172,7 +172,7 @@ GetImageView()
 {
   if ( HasViewer() )
     {
-    return static_cast<QGoImageView2D*>(m_currentView);
+    return dynamic_cast<QGoImageView2D*>(m_currentView);
     }
   else
     {

@@ -6,9 +6,9 @@
 
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-10
 
- Copyright (c) 2009, President and Fellows of Harvard College.
+ Copyright (c) 2009-10, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -84,8 +84,8 @@
 **
 ****************************************************************************/
 
-#ifndef COLORCOMBOBOX_H
-#define COLORCOMBOBOX_H
+#ifndef __QtColorComboBox_h
+#define __QtColorComboBox_h
 
 #include <QtGui/QComboBox>
 #include <QtGui/QColor>
@@ -108,9 +108,13 @@
 //#  define QT_QTCOLORCOMBOBOX_EXPORT
 //#endif
 
+/**
+ * \brief Defines the QtColorCombobox
+ */
+
 class QGOGUILIB_EXPORT QtColorComboBox : public QComboBox
 {
-    Q_OBJECT
+  Q_OBJECT
 public:
     explicit QtColorComboBox(QWidget *parent = 0, const char *name = 0);
 
@@ -158,7 +162,7 @@ public slots:
       { insertColor( colorCount(), iColor, iName ); }
     /** \brief insert the existing colors with the data taken from the database,
     containing the color names with the associated vector of rgba*/
-     void setExistingColors(
+    void setExistingColors(
        std::list<std::pair<std::string,std::vector<int> > > iDataColorsFromDB);
     /** \brief delete the corresponding collectionID in the list displayed
     by the colorcombobox*/

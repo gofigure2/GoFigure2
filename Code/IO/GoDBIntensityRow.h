@@ -6,9 +6,9 @@
 
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-10
 
- Copyright (c) 2009, President and Fellows of Harvard College.
+ Copyright (c) 2009-10, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -47,6 +47,10 @@
 #include "GoDBRow.h"
 #include "ConvertToStringHelper.h"
 
+/**
+\class GoDBIntensityRow
+\brief 
+*/
 class QGOIO_EXPORT GoDBIntensityRow : public GoDBRow
 {
 public:
@@ -54,7 +58,7 @@ public:
    
   ~GoDBIntensityRow();
 
-  /**\brief check if the intensity already exits in the database, if yes, 
+  /** \brief check if the intensity already exits in the database, if yes, 
   return the corresponding ID, if not, return -1*/
   int DoesThisIntensityAlreadyExists(vtkMySQLDatabase* DatabaseConnector);
   

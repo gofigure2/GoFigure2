@@ -6,9 +6,9 @@
 
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-10
 
- Copyright (c) 2009, President and Fellows of Harvard College.
+ Copyright (c) 2009-10, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -384,9 +384,11 @@ std::vector<GoDBTraceInfoForTableWidget> GoDBTableWidgetContainer::
 //--------------------------------------------------------------------------
 void GoDBTableWidgetContainer:: GetCommonInfoForTwoTracesTable()
 {
+  GoDBTraceInfoForTableWidget temp;
+  std::pair<GoDBTraceInfoForTableWidget,std::vector<std::string> > PairTemp;
   if (this->m_TracesName == "contour" || this->m_TracesName == "mesh")
     {
-    GoDBTraceInfoForTableWidget temp;
+    //GoDBTraceInfoForTableWidget temp;
     
     //Get the info for the Time Point:
     temp.InfoName = "TimePoint";
@@ -396,14 +398,14 @@ void GoDBTableWidgetContainer:: GetCommonInfoForTwoTracesTable()
     temp.TableForeignKeyDatabase = "CoordIDMin";
     temp.TableKeyDatabase = "CoordID";
     m_ColumnsInfos.push_back(temp);
-    std::pair<GoDBTraceInfoForTableWidget,std::vector<std::string> > PairTemp;
+    //std::pair<GoDBTraceInfoForTableWidget,std::vector<std::string> > PairTemp;
     PairTemp.first = temp;
     m_RowContainer.push_back(PairTemp);
     temp.Clear();
     }
   else
     {
-    GoDBTraceInfoForTableWidget temp;
+    //GoDBTraceInfoForTableWidget temp;
     
     //Get the info for the Time Point Min:
     temp.InfoName = "TimePointMin";
@@ -413,7 +415,7 @@ void GoDBTableWidgetContainer:: GetCommonInfoForTwoTracesTable()
     temp.TableForeignKeyDatabase = "CoordIDMin";
     temp.TableKeyDatabase = "CoordID";
     m_ColumnsInfos.push_back(temp);
-    std::pair<GoDBTraceInfoForTableWidget,std::vector<std::string> > PairTemp;
+    //std::pair<GoDBTraceInfoForTableWidget,std::vector<std::string> > PairTemp;
     PairTemp.first = temp;
     m_RowContainer.push_back(PairTemp);
     temp.Clear();
@@ -431,6 +433,13 @@ void GoDBTableWidgetContainer:: GetCommonInfoForTwoTracesTable()
     m_RowContainer.push_back(PairTemp);
     temp.Clear();
     }
+  //for the column "is visible or not":
+  temp.InfoName = "Show";
+  temp.ColumnNameTableWidget = "Show";
+  m_ColumnsInfos.push_back(temp);
+  PairTemp.first = temp;
+  m_RowContainer.push_back(PairTemp);
+  temp.Clear();
 }
 //--------------------------------------------------------------------------
 

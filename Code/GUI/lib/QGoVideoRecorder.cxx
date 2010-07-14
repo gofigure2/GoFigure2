@@ -6,9 +6,9 @@
 
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-10
 
- Copyright (c) 2009, President and Fellows of Harvard College.
+ Copyright (c) 2009-10, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -139,11 +139,11 @@ QGoVideoRecorder::
 ~QGoVideoRecorder( )
 {
 #ifdef ENABLEFFMPEG
-    m_FFMPEGWriter->Delete();
+  m_FFMPEGWriter->Delete();
 #endif
 
 #ifdef ENABLEAVI
-    m_AVIWriter->Delete();
+  m_AVIWriter->Delete();
 #endif
 }
 //-------------------------------------------------------------------------
@@ -214,7 +214,7 @@ void
 QGoVideoRecorder::
 SetCurrentX( const int& X)
 {
-	m_CurrentX = X;
+  m_CurrentX = X;
 }
 //-------------------------------------------------------------------------
 
@@ -223,7 +223,7 @@ void
 QGoVideoRecorder::
 SetCurrentY( const int& Y)
 {
-	m_CurrentY = Y;
+  m_CurrentY = Y;
 }
 //-------------------------------------------------------------------------
 
@@ -232,7 +232,7 @@ void
 QGoVideoRecorder::
 SetCurrentZ( const int& Z)
 {
-	m_CurrentZ = Z;
+  m_CurrentZ = Z;
 }
 //-------------------------------------------------------------------------
 
@@ -241,7 +241,7 @@ void
 QGoVideoRecorder::
 SetCurrentT( const int& T)
 {
-	m_CurrentT = T;
+  m_CurrentT = T;
 }
 //-------------------------------------------------------------------------
 
@@ -298,7 +298,7 @@ UpdateQSpinBoxFT( int value )
       }
 
     default:
-      case 3:
+    case 3:
       {
       // Z Slice
       this->tSpinMin_2->setMinimum(m_TMin);
@@ -312,7 +312,7 @@ UpdateQSpinBoxFT( int value )
       m_SliceFT = 3;
       break;
       }
-	}
+    }
 }
 //-------------------------------------------------------------------------
 
@@ -378,19 +378,19 @@ on_tSpinMax_2_valueChanged( int value )
       break;
       }
 
-	case 1 :
-	  {
+    case 1 :
+      {
       // Y Slice
       m_YMaxForVideo = value;
       break;
-	  }
+      }
 
-	case 2 :
+    case 2 :
       {
-	  // Y Slice
-	  m_ZMaxForVideo = value;
-	  break;
-	  }
+      // Y Slice
+      m_ZMaxForVideo = value;
+      break;
+      }
 
     default :
     case 3 :
@@ -408,16 +408,16 @@ void
 QGoVideoRecorder::
 on_createFile_clicked()
 {
-	m_VideoName2 = QFileDialog::getSaveFileName( this,
-	      tr( "Folder to Save Video" ), "fileName", 0 );
+  m_VideoName2 = QFileDialog::getSaveFileName( this,
+    tr( "Folder to Save Video" ), "fileName", 0 );
 
-	this->createFile->setStyleSheet("background-color: rgb(0, 255, 0); color: rgb(0, 0, 0)");
-	this->createFile_2->setStyleSheet("background-color: rgb(255, 165, 0); color: rgb(0, 0, 0)");
+  this->createFile->setStyleSheet("background-color: rgb(0, 255, 0); color: rgb(0, 0, 0)");
+  this->createFile_2->setStyleSheet("background-color: rgb(255, 165, 0); color: rgb(0, 0, 0)");
 
-	QPalette plt;
-	plt.setColor(QPalette::WindowText, Qt::black);
-	this->label->setPalette(plt);
-	this->label_2->setPalette(plt);
+  QPalette plt;
+  plt.setColor(QPalette::WindowText, Qt::black);
+  this->label->setPalette(plt);
+  this->label_2->setPalette(plt);
 }
 //-------------------------------------------------------------------------
 
@@ -501,45 +501,45 @@ void
 QGoVideoRecorder::
 onStartVideoClicked()
 {
-//something to record first view
+  //something to record first view
   if( m_VideoName2.isNull() ||  m_VideoName2.isEmpty() || ( !m_RenderWindowSelected ) )
     {
-	QPalette plt;
-	plt.setColor(QPalette::WindowText, Qt::red);
-	this->label->setPalette(plt);
-	this->label_2->setPalette(plt);
+    QPalette plt;
+    plt.setColor(QPalette::WindowText, Qt::red);
+    this->label->setPalette(plt);
+    this->label_2->setPalette(plt);
 
-	this->createFile->setStyleSheet("background-color: rgb(255, 0, 0); color: rgb(0, 0, 0)");
-	this->createFile_2->setStyleSheet("background-color: rgb(255, 0, 0)");
+    this->createFile->setStyleSheet("background-color: rgb(255, 0, 0); color: rgb(0, 0, 0)");
+    this->createFile_2->setStyleSheet("background-color: rgb(255, 0, 0)");
     }
   else
     {
-      QString fileName = m_VideoName2;
-      QString fileName2 = m_VideoName2;
+    QString fileName = m_VideoName2;
+    QString fileName2 = m_VideoName2;
 
-      if(!fileName.endsWith(".avi"))
+    if(!fileName.endsWith(".avi"))
       {
-        fileName.insert( fileName.size(), QString(".avi") );
-        fileName2.insert( fileName.size(), QString(".txt") );
+      fileName.insert( fileName.size(), QString(".avi") );
+      fileName2.insert( fileName.size(), QString(".txt") );
       }
-      else
+    else
       {
-    	fileName2.replace( QString(".avi"), QString(".txt") );
+      fileName2.replace( QString(".avi"), QString(".txt") );
       }
 
-      m_VideoRecorder->SetFileName( fileName.toStdString() );
-      m_VideoRecorder->StartCapture();
+    m_VideoRecorder->SetFileName( fileName.toStdString() );
+    m_VideoRecorder->StartCapture();
 
-      this->startVideo->setEnabled(false);
+    this->startVideo->setEnabled(false);
 
-      m_OutputVideoFile.open( fileName2.toStdString().c_str() );
-      m_OutputVideoFile << "FrameRate: ";
-      m_OutputVideoFile << m_FrameRate2;
-      m_OutputVideoFile << "\nVideoQuality: ";
-      m_OutputVideoFile << m_VideoQuality2;
-      m_OutputVideoFile << "\nX Y Z T ";
+    m_OutputVideoFile.open( fileName2.toStdString().c_str() );
+    m_OutputVideoFile << "FrameRate: ";
+    m_OutputVideoFile << m_FrameRate2;
+    m_OutputVideoFile << "\nVideoQuality: ";
+    m_OutputVideoFile << m_VideoQuality2;
+    m_OutputVideoFile << "\nX Y Z T ";
 
-      AcquireWithPause( m_SliceFT );
+    AcquireWithPause( m_SliceFT );
     }
 }
 //-------------------------------------------------------------------------
@@ -551,12 +551,12 @@ onStartRecordClicked()
 {
   if( ( m_VideoName2 == NULL ) || ( !m_RenderWindowSelected ))
     {
-	QPalette plt;
-	plt.setColor(QPalette::WindowText, Qt::red);
-	this->label->setPalette(plt);
-	this->label_2->setPalette(plt);
-	this->createFile->setStyleSheet("background-color: rgb(255, 0, 0)");
-	this->createFile_2->setStyleSheet("background-color: rgb(255, 0, 0); color: rgb(0, 0, 0)");
+    QPalette plt;
+    plt.setColor(QPalette::WindowText, Qt::red);
+    this->label->setPalette(plt);
+    this->label_2->setPalette(plt);
+    this->createFile->setStyleSheet("background-color: rgb(255, 0, 0)");
+    this->createFile_2->setStyleSheet("background-color: rgb(255, 0, 0); color: rgb(0, 0, 0)");
     }
   else
     {
@@ -570,9 +570,9 @@ onStartRecordClicked()
     QString fileName = m_VideoName2;
 
     if(!fileName.endsWith(".avi"))
-    {
-    fileName.insert( fileName.size(), QString(".avi"));
-    }
+      {
+      fileName.insert( fileName.size(), QString(".avi"));
+      }
 
     m_VideoRecorder->SetFileName( fileName.toStdString() );
 
@@ -618,18 +618,18 @@ timeout()
   QString value = QString::number( test, 10 );
 
   if ( test >= 10 )
-  	{
+    {
     value.insert( value.size()-2, QString("."));
-  	}
+    }
   else
-  	{
+    {
     value.insert( value.size()-1, QString(".0"));
-  	}
+    }
 
   if(test<100)
-  	{
+    {
     value.insert( value.size()-3, QString("0"));
-  	}
+    }
   this->videoLenght->display(value);
 }
 //---------------------------------------------------------------------------
@@ -648,18 +648,18 @@ SetRenderingWindow( vtkRenderWindow* iRenderingWindow )
     }
 
   //Tell the user to go in full screen mode
- /* if( iRenderingWindow )
-  {
-	this->warning_1->hide();
-	this->warning_2->hide();
-  }
-  else
-  {
-	this->warning_1->show();
-	this->warning_2->show();
-  }*/
+  /* if( iRenderingWindow )
+       {
+       this->warning_1->hide();
+       this->warning_2->hide();
+       }
+     else
+       {
+       this->warning_1->show();
+       this->warning_2->show();
+       }*/
 
-/**
+  /**
  * \todo Resize image with the first one if we want to change views during record
  */
 }
@@ -683,55 +683,55 @@ AcquireWithPause( int value )
   unsigned int iMax;
 
   switch ( value )
+    {
+    case 0 :
       {
-      case 0 :
-        {
-        // X Slice
-        iMin = m_XMinForVideo;
-        iMax = m_XMaxForVideo;
-        break;
-        }
-      case 1 :
-        {
-        // Y Slice
-        iMin = m_YMinForVideo;
-        iMax = m_YMaxForVideo;
-        break;
-        }
+      // X Slice
+      iMin = m_XMinForVideo;
+      iMax = m_XMaxForVideo;
+      break;
+      }
+    case 1 :
+      {
+      // Y Slice
+      iMin = m_YMinForVideo;
+      iMax = m_YMaxForVideo;
+      break;
+      }
 
-      case 2 :
-        {
-        // Z Slice
-        iMin = m_ZMinForVideo;
-        iMax = m_ZMaxForVideo;
-        break;
-        }
+    case 2 :
+      {
+      // Z Slice
+      iMin = m_ZMinForVideo;
+      iMax = m_ZMaxForVideo;
+      break;
+      }
 
-   default:
-      case 3:
-        {
-        // T Slice
-        iMin = m_TMinForVideo;
-        iMax = m_TMaxForVideo;
-        break;
-        }
+    default:
+    case 3:
+      {
+      // T Slice
+      iMin = m_TMinForVideo;
+      iMax = m_TMaxForVideo;
+      break;
+      }
     }
 
   for(unsigned int i = iMin; i < iMax+1; i++)
     {
     //send signal to change slice
-	emitChangeSliceSignal(value, i);
+    emitChangeSliceSignal(value, i);
 
-	//send signal to know our position in the 3D volume
-	emit GetSliceView();
-	m_OutputVideoFile << "\n";
-	m_OutputVideoFile << m_CurrentX;
-	m_OutputVideoFile << " ";
-	m_OutputVideoFile << m_CurrentY;
-	m_OutputVideoFile << " ";
-	m_OutputVideoFile << m_CurrentZ;
-	m_OutputVideoFile << " ";
-	m_OutputVideoFile << m_CurrentT;
+    //send signal to know our position in the 3D volume
+    emit GetSliceView();
+    m_OutputVideoFile << "\n";
+    m_OutputVideoFile << m_CurrentX;
+    m_OutputVideoFile << " ";
+    m_OutputVideoFile << m_CurrentY;
+    m_OutputVideoFile << " ";
+    m_OutputVideoFile << m_CurrentZ;
+    m_OutputVideoFile << " ";
+    m_OutputVideoFile << m_CurrentT;
 
     //capture screen
     m_VideoRecorder->TakeSnapshot();
@@ -746,7 +746,7 @@ void
 QGoVideoRecorder::
 on_pauseVideo_clicked()
 {
-	AcquireWithPause( m_SliceFT );
+  AcquireWithPause( m_SliceFT );
 }
 //-------------------------------------------------------------------------
 
@@ -769,34 +769,34 @@ QGoVideoRecorder::
 emitChangeSliceSignal(const int& iSlice, const int & iSlide)
 {
   switch ( iSlice )
-	{
-	case 0 :
-	   {
-	   // X Slice
-	   emit XSliceChanged(iSlide);
-	   break;
-	   }
+    {
+    case 0 :
+      {
+      // X Slice
+      emit XSliceChanged(iSlide);
+      break;
+      }
     case 1 :
-       {
-       // Y Slice
-       emit YSliceChanged(iSlide);
-       break;
-       }
+      {
+      // Y Slice
+      emit YSliceChanged(iSlide);
+      break;
+      }
     case 2:
-       {
-       // Z Slice
-       emit ZSliceChanged(iSlide);
-       break;
-       }
+      {
+      // Z Slice
+      emit ZSliceChanged(iSlide);
+      break;
+      }
 
     default:
-     case 3:
-       {
-       // Z Slice
-       emit TSliceChanged(iSlide);
-       break;
-       }
-   }
+    case 3:
+      {
+      // Z Slice
+      emit TSliceChanged(iSlide);
+      break;
+      }
+    }
 }
 
 void

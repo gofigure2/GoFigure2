@@ -48,8 +48,12 @@
 #include "vtkMetaImageReader.h"
 
 #include "QGoSynchronizedView.h"
-#include  "QGoSynchronizedViewManager.h"
+#include "QGoSynchronizedViewManager.h"
 #include "QGoSynchronizedView3D.h"
+
+#include "itkImage.h"
+#include "itkSmartPointer.h"
+#include "itkImageFileReader.h"
 
 
 #include <QStringList>
@@ -72,6 +76,18 @@ int main( int argc, char** argv )
   QCoreApplication::setOrganizationName("MegasonLab");
   QCoreApplication::setOrganizationDomain( "http://gofigure2.sourceforge.net" );
 
+  // ITK Typedefs
+  // ITK Reader Typedef
+  typedef double       InputPixelType;
+  const unsigned int Dimension = 3;
+  typedef itk::Image< InputPixelType, Dimension>  InputImage3DType;
+  typedef InputImage3DType::Pointer       InputImage3DPointer;
+
+  //itk reader
+  typedef itk::ImageFileReader< InputImage3DType > itkReaderType;
+  itkReaderType::Pointer itkReader = itkReaderType::New();
+  itkReader->SetFileName( argv[2] );
+  itkReader->Update();
 
   // create 3 2D images from 1
 
@@ -89,8 +105,6 @@ int main( int argc, char** argv )
   filter2->SetInputConnection(reader->GetOutputPort());
   filter2->Update();
 
-
-
   // create 3 3D images from 1
 
   vtkSmartPointer< vtkMetaImageReader > reader3D = vtkSmartPointer< vtkMetaImageReader >::New();
@@ -107,7 +121,6 @@ int main( int argc, char** argv )
   filter23D->SetInputConnection(reader3D->GetOutputPort());
   filter23D->Update();
 
-
   QString cp0 = "comp0";
   QString cp1 = "comp1";
   QString cp2 = "comp3";
@@ -115,31 +128,30 @@ int main( int argc, char** argv )
   QString cp03D = "comp03D";
   QString cp13D = "comp13D";
   QString cp23D = "comp33D";
-
-
-  QTimer* timer = new QTimer;
-  timer->setSingleShot( true );
-
-
-  QObject::connect( timer, SIGNAL( timeout() ), qApp, SLOT( closeAllWindows() ) );
-
-  if( atoi( argv[3] ) == 1 )
-    {
-    timer->start( 2000 );
-    }
-
+  QString cp33D = "compITK_3D";
 
   QGoSynchronizedViewManager* syncViewManage = new QGoSynchronizedViewManager();
 
-  syncViewManage->newSynchronizedView2D(cp0,reader->GetOutput());
-  syncViewManage->newSynchronizedView2D(cp1,filter1->GetOutput());
-  syncViewManage->newSynchronizedView3D(cp03D,reader3D->GetOutput());
-  syncViewManage->newSynchronizedView3D(cp13D,filter13D->GetOutput());
+  syncViewManage->newSynchronizedView(cp0,reader->GetOutput());
+  syncViewManage->newSynchronizedView(cp1,filter1->GetOutput());
+  syncViewManage->newSynchronizedView(cp03D,reader3D->GetOutput());
+  syncViewManage->newSynchronizedView(cp13D,filter13D->GetOutput());
+
+  syncViewManage->newSynchronizedView< InputPixelType >(cp33D, itkReader->GetOutput() );
 
   syncViewManage->Update();
   syncViewManage->show();
   syncViewManage->synchronizeOpenSynchronizedViews();
 
+  QTimer* timer = new QTimer;
+  timer->setSingleShot( true );
+
+  QObject::connect( timer, SIGNAL( timeout() ), qApp, SLOT( closeAllWindows() ) );
+
+  if( atoi( argv[3] ) == 1 )
+    {
+    timer->start( 1000 );
+    }
 
   app.processEvents();
   int output = app.exec();

@@ -6,9 +6,9 @@
 
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-10
 
- Copyright (c) 2009, President and Fellows of Harvard College.
+ Copyright (c) 2009-10, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -38,13 +38,13 @@
 
 =========================================================================*/
 
-#include "QGoVisualizationDockWidget.h"
+#include "QGoNavigationDockWidget.h"
 #include <QLabel>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 
-QGoVisualizationDockWidget::
-QGoVisualizationDockWidget( QWidget* iParent, const unsigned int& iDim ) :
+QGoNavigationDockWidget::
+QGoNavigationDockWidget( QWidget* iParent, const unsigned int& iDim ) :
   QDockWidget( iParent ),
   m_Dimension( iDim )
 {
@@ -98,14 +98,14 @@ QGoVisualizationDockWidget( QWidget* iParent, const unsigned int& iDim ) :
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-QGoVisualizationDockWidget::
-~QGoVisualizationDockWidget()
+QGoNavigationDockWidget::
+~QGoNavigationDockWidget()
 {
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoVisualizationDockWidget::
+void QGoNavigationDockWidget::
 SetXSlice( int iSlice )
 {
   this->XSliceSpinBox->setValue( iSlice );
@@ -113,7 +113,7 @@ SetXSlice( int iSlice )
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoVisualizationDockWidget::
+void QGoNavigationDockWidget::
 SetYSlice( int iSlice )
 {
   this->YSliceSpinBox->setValue( iSlice );
@@ -121,7 +121,7 @@ SetYSlice( int iSlice )
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoVisualizationDockWidget::
+void QGoNavigationDockWidget::
 SetZSlice( int iSlice )
 {
   this->ZSliceSpinBox->setValue( iSlice );
@@ -129,7 +129,7 @@ SetZSlice( int iSlice )
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoVisualizationDockWidget::
+void QGoNavigationDockWidget::
 SetTSlice( int iSlice )
 {
   this->TSliceSpinBox->setValue( iSlice );
@@ -138,7 +138,7 @@ SetTSlice( int iSlice )
 
 //-------------------------------------------------------------------------
 void
-QGoVisualizationDockWidget::
+QGoNavigationDockWidget::
 SetNumberOfChannels( const unsigned int& iN )
 {
   if( iN < 2 )
@@ -160,7 +160,7 @@ SetNumberOfChannels( const unsigned int& iN )
 
 //-------------------------------------------------------------------------
 void
-QGoVisualizationDockWidget::
+QGoNavigationDockWidget::
 SetChannel( const unsigned int& i, const QString& iText )
 {
   QString input;
@@ -178,7 +178,7 @@ SetChannel( const unsigned int& i, const QString& iText )
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoVisualizationDockWidget::
+void QGoNavigationDockWidget::
 SetXMinimumAndMaximum( const int& iMin, const int& iMax )
 {
   this->XSliceSpinBox->setMinimum( iMin );
@@ -192,7 +192,7 @@ SetXMinimumAndMaximum( const int& iMin, const int& iMax )
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoVisualizationDockWidget::
+void QGoNavigationDockWidget::
 SetYMinimumAndMaximum( const int& iMin, const int& iMax )
 {
   this->YSliceSpinBox->setMinimum( iMin );
@@ -205,7 +205,7 @@ SetYMinimumAndMaximum( const int& iMin, const int& iMax )
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoVisualizationDockWidget::
+void QGoNavigationDockWidget::
 SetZMinimumAndMaximum( const int& iMin, const int& iMax )
 {
   this->ZSliceSpinBox->setMinimum( iMin );
@@ -218,7 +218,7 @@ SetZMinimumAndMaximum( const int& iMin, const int& iMax )
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoVisualizationDockWidget::
+void QGoNavigationDockWidget::
 SetTMinimumAndMaximum( const int& iMin, const int& iMax )
 {
   this->TSliceSpinBox->setMinimum( iMin );
@@ -231,7 +231,7 @@ SetTMinimumAndMaximum( const int& iMin, const int& iMax )
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-int QGoVisualizationDockWidget::
+int QGoNavigationDockWidget::
 GetCurrentChannel() const
 {
   return this->ChannelComboBox->currentIndex();
@@ -239,7 +239,7 @@ GetCurrentChannel() const
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-bool QGoVisualizationDockWidget::
+bool QGoNavigationDockWidget::
 ShowAllChannels() const
 {
   return this->AllChannelsBtn->isChecked();
@@ -247,7 +247,7 @@ ShowAllChannels() const
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-QString QGoVisualizationDockWidget::GetChannelName( const int& iIdx )
+QString QGoNavigationDockWidget::GetChannelName( const int& iIdx )
 {
   return this->ChannelComboBox->itemText( iIdx );
 }

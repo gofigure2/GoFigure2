@@ -538,11 +538,10 @@ void vtkViewImage::ChangeActorProperty( vtkProp3D* iActor,
     if( Prop3DCollection->IsItemPresent( iActor ) )
       {
       vtkActor* temp = dynamic_cast< vtkActor* >( iActor );
-
       if( temp )
         {
         temp->SetProperty( iProperty );
-        temp->Modified();
+        //temp->Modified();
         Render();
         }
       }

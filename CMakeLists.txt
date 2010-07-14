@@ -35,6 +35,9 @@ SET( DATE "04/22/2010" )
 SET( GOFIGURE2_VERSION
   "${GOFIGURE2_MAJOR_VERSION}.${GOFIGURE2_MINOR_VERSION}.${GOFIGURE2_WC_REVISION}" )
 
+SET( GOFIGURE2_LIB_VERSION
+  "${GOFIGURE2_MAJOR_VERSION}.${GOFIGURE2_MINOR_VERSION}" )
+
 MESSAGE( STATUS "GoFigure2 version ${GOFIGURE2_VERSION}" )
 
 # On Visual Studio 8 MS deprecated C. This removes all 1.276E1265 security
@@ -59,6 +62,35 @@ IF( WIN32 )
     ENDIF( NOT CYGWIN )
   ENDIF( NOT BORLAND )
 ENDIF( WIN32 )
+
+#-----------------------------------------------------------------------
+# Export and Install configuration
+#
+# GOFIGURE2_INSTALL_BUNDLE_DIR       - bundle dir
+# GOFIGURE2_INSTALL_BIN_DIR          - binary dir (executables)
+# GOFIGURE2_INSTALL_LIB_DIR          - library dir (libs)
+# GOFIGURE2_INSTALL_DOC_DIR          - documentation dir
+# GOFIGURE2_INSTALL_LICENSE_DIR      - licenses dir
+#-----------------------------------------------------------------------
+IF( NOT GOFIGURE2_INSTALL_BUNDLE_DIR )
+  SET( GOFIGURE2_INSTALL_BUNDLE_DIR "." )
+ENDIF( NOT GOFIGURE2_INSTALL_BUNDLE_DIR )
+
+IF( NOT GOFIGURE2_INSTALL_BIN_DIR )
+  SET( GOFIGURE2_INSTALL_BIN_DIR "bin" )
+ENDIF( NOT GOFIGURE2_INSTALL_BIN_DIR )
+   
+IF( NOT GOFIGURE2_INSTALL_LIB_DIR )
+  SET( GOFIGURE2_INSTALL_LIB_DIR "lib/gofigure2" )
+ENDIF( NOT GOFIGURE2_INSTALL_LIB_DIR )
+
+IF( NOT GOFIGURE2_INSTALL_DOC_DIR )
+  SET( GOFIGURE2_INSTALL_DOC_DIR "share/doc/gofigure2" )
+ENDIF( NOT GOFIGURE2_INSTALL_DOC_DIR )
+
+IF( NOT GOFIGURE2_INSTALL_LICENSE_DIR )
+  SET( GOFIGURE2_INSTALL_LICENSE_DIR "share/doc/gofigure2/Licenses" )
+ENDIF( NOT GOFIGURE2_INSTALL_LICENSE_DIR )
 
 #---------------------------------------------------------------------------
 # Define CMAKE_whatever_OUTPUT_DIRECTORY
@@ -100,16 +132,22 @@ IF( BUILD_DOCUMENTATION )
   IF( DOXYGEN_FOUND )
     IF( DOXYGEN_DOT_FOUND )
 
-      OPTION( LINK_EXTERNAL_DOC "Should the documentation be linked with external sources such as VTK?" OFF )
+      OPTION( LINK_EXTERNAL_DOC
+        "Should the doc be linked with external sources (VTK, ITK...)?" 
+        OFF 
+      )
 
       ADD_SUBDIRECTORY( Documentation )
 
     ELSE( DOXYGEN_DOT_FOUND )
-      MESSAGE( STATUS "Warning: Dot (from GraphViz) not found - Documentation
-will not ce generated" )
+      MESSAGE( STATUS 
+        "Warning: Dot (from GraphViz) not found - Documentation will not ce generated" 
+      )
     ENDIF( DOXYGEN_DOT_FOUND )
-  ELSE( DOXYGEN_FOUND AND )
-    MESSAGE( STATUS "Warning: Doxygen not found - Documentation will not be created")
+  ELSE( DOXYGEN_FOUND )
+    MESSAGE( STATUS 
+      "Warning: Doxygen not found - Documentation will not be created"
+    )
   ENDIF( DOXYGEN_FOUND )
 ENDIF( BUILD_DOCUMENTATION )
 
@@ -128,7 +166,7 @@ ENDIF( UNIX )
 # Everything depends on VTK first
 # that way we can get Qt info from VTK
 #### VTK ####
-FIND_PACKAGE( VTK )
+FIND_PACKAGE( VTK REQUIRED )
 IF( VTK_FOUND )
 
   # Check the version of VTK
@@ -142,8 +180,8 @@ IF( VTK_FOUND )
 
   IF( ${VTK_USE_MYSQL} MATCHES "ON" )
     FIND_PACKAGE( MySQL REQUIRED )
-    SET( MYSQL_LIBRARY ${MYSQL_LIBRARY} CACHE FILEPATH "" )
-    SET( MYSQL_EXTRA_LIBRARIES ${MYSQL_EXTRA_LIBRARIES} CACHE FILEPATH "" )
+    SET( MYSQL_LIBRARIES ${MYSQL_LIBRARIES} CACHE FILEPATH "" )
+#    SET( MYSQL_EXTRA_LIBRARIES ${MYSQL_EXTRA_LIBRARIES} CACHE FILEPATH "" )
   ELSE( ${VTK_USE_MYSQL} MATCHES "ON" )
     MESSAGE( SEND_ERROR "VTK must be compiled with MySQL support" )
     # TODO (arnaudgelas)
@@ -169,16 +207,24 @@ IF( VTK_FOUND )
   #----------------------------------------------------------
   # Then find ITK
   #### ITK ####
-  FIND_PACKAGE( ITK )
+  FIND_PACKAGE( ITK REQUIRED )
   IF( ITK_FOUND )
     INCLUDE( ${ITK_USE_FILE} )
+
+    IF( ( ${ITK_VERSION_MAJOR} LESS 3 ) OR 
+        ( ${ITK_VERSION_MINOR} LESS 18 ) )
+      MESSAGE( SEND_ERROR
+        "GoFigure2 requires ITK 3.18 or newer version (your version of ITK is ${ITK_VERSION})" )
+    ENDIF( ( ${ITK_VERSION_MAJOR} LESS 3 ) OR 
+        ( ${ITK_VERSION_MINOR} LESS 18 ) )
+ 
   ENDIF( ITK_FOUND )
   #----------------------------------------------------------
 
   #----------------------------------------------------------
   # Then find Boost. Note that we only need headers
   #### BOOST ####
-  FIND_PACKAGE( Boost )
+  FIND_PACKAGE( Boost REQUIRED )
   IF( Boost_FOUND )
     INCLUDE_DIRECTORIES( BEFORE ${Boost_INCLUDE_DIRS} )
   ENDIF( Boost_FOUND )
@@ -186,7 +232,7 @@ IF( VTK_FOUND )
   # Try to find Qt.
   # Note that some command line tools will get compiled even without Qt
   #### Qt ####
-  FIND_PACKAGE( Qt4 )
+  FIND_PACKAGE( Qt4 REQUIRED )
   IF( QT4_FOUND AND QT_VERSION_MINOR GREATER 4 )
     IF( QT_USE_FILE )
       SET( QT_USE_QT3SUPPORT FALSE )
@@ -250,6 +296,8 @@ IF( VTK_FOUND )
       ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/itkQt
       ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/PoissonReconstruction
       ${GOFIGURE2_EXTERNAL_BINARY_DIR}/PoissonReconstruction
+      ${GOFIGURE2_SOURCE_DIR}/Main
+      ${GOFIGURE2_BINARY_DIR}/Main
     )
 
     # Try to extract Qt variable from VTK
@@ -332,7 +380,6 @@ IF( VTK_FOUND )
         ${CMAKE_CURRENT_BINARY_DIR}/CTestCustom.cmake
         @ONLY
         )
-      ENABLE_TESTING()
       INCLUDE ( CTest )
     ENDIF( BUILD_TESTING )
 
@@ -349,7 +396,7 @@ IF( VTK_FOUND )
       "${CMAKE_CURRENT_BINARY_DIR}/UseGoFigure2.cmake"
       @ONLY
       )
-
+    
     #-----------------------------------------------------------------------
     # PACKAGE With CPack
     #-----------------------------------------------------------------------
@@ -363,7 +410,7 @@ IF( VTK_FOUND )
     ADD_CUSTOM_TARGET( uninstall
       "${CMAKE_COMMAND}" -P "${CMAKE_CURRENT_BINARY_DIR}/GOFIGURE2Uninstall.cmake"
       )
-
+      
     IF( ( ${CMAKE_MAJOR_VERSION} EQUAL 2 )  AND ( ${CMAKE_MINOR_VERSION} GREATER 7 ) )
       INCLUDE( GOFIGURE2CPack.cmake )
     ENDIF( ( ${CMAKE_MAJOR_VERSION} EQUAL 2 )  AND ( ${CMAKE_MINOR_VERSION} GREATER 7 ) )

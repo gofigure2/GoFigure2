@@ -91,7 +91,7 @@ vtkInteractorStyleImage2D()
   this->RequestedPosition = new int[2];
   this->RequestedPosition[0] = this->RequestedPosition[1] = 0;
 
-  this->LeftButtonInteraction   = InteractionTypeSlice;
+  this->LeftButtonInteraction   = InteractionTypeWindowLevel;
   this->RightButtonInteraction  = InteractionTypeZoom;
   this->MiddleButtonInteraction = InteractionTypePan;
   this->WheelButtonInteraction  = InteractionTypeSlice;
@@ -137,6 +137,14 @@ OnMouseMove()
     case VTKIS_PICK:
       HighlightCurrentActor();
       break;
+    case VTKIS_WINDOW_LEVEL:
+      this->Superclass::OnMouseMove();
+      // Send event to update Scalar bar in 3D view
+      this->InvokeEvent(vtkViewImage2DCommand::WindowLevelEvent, NULL);
+      break;
+    default:
+      this->Superclass::OnMouseMove();
+      break;
   }
 
   //this->Superclass::OnMouseMove();
@@ -160,9 +168,9 @@ OnLeftButtonDown()
     this->RequestedPosition[1] = y;
     this->InvokeEvent (vtkViewImage2DCommand::RequestedPositionEvent);
     return;
-  }  
-  
-  if (this->Interactor->GetShiftKey() || this->Interactor->GetControlKey()) 
+  }
+
+  if (this->Interactor->GetShiftKey() || this->Interactor->GetControlKey())
   {
     if (this->GetLeftButtonInteraction() == InteractionTypeWindowLevel)
      {

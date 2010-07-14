@@ -47,7 +47,7 @@ int main( int argc, char* argv[] )
     return EXIT_FAILURE;
   }
   
-  int resolution = 10;
+  int resolution = 100;
   double z = 0.;
   double lastz = 0.;
   double sphereRadius = 1.;

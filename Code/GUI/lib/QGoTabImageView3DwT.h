@@ -6,9 +6,9 @@
 
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-10
 
- Copyright (c) 2009, President and Fellows of Harvard College.
+ Copyright (c) 2009-10, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -57,7 +57,7 @@
 #include "vtkSmartPointer.h"
 
 class QGoImageView3D;
-class QGoVisualizationDockWidget;
+class QGoNavigationDockWidget;
 class QGoManualSegmentationDockWidget;
 class QGoPrintDatabase;
 class QGoOneClickSegmentationDockWidget;
@@ -313,6 +313,7 @@ public slots:
    */
   void HighLightTracesFromTableManager( );
 
+
   /**
    * \brief Highlights a trace in the visualization
    * \param[in] iContainer Container which contains traces to be highlighted
@@ -321,6 +322,15 @@ public slots:
    */
   void HighLightTracesFromTable(
       ContourMeshStructureMultiIndexContainer& iContainer,
+      std::string iCurrentTrace);
+
+  /**
+   * \brief Show a trace in the visualization
+   * \param[in] iContainer Container which contains traces to be highlighted
+   * \param[in] iCurrentTrace Name of the current trace useful to initialize
+   * the container iterator
+   */
+  void ShowTracesFromTable(ContourMeshStructureMultiIndexContainer& iContainer,
       std::string iCurrentTrace);
 
   void             SelectContoursInTable();
@@ -355,21 +365,38 @@ public slots:
   void UpdateDBAndCollectionIDComboBoxForANewCreatedCollection();
   //void PassInfoForDBFromCollectionIDComboBox();
 
-  /** \brief Get the info for the current selected color from the visu widget and pass it
-  to the database*/
+  /** \brief Get the info for the current selected color from the trace manual editing 
+  widget and pass it to the database*/
   void PassInfoForDBForCurrentSelectedColor();
-  /** \brief Get the current selected collectionid from the visu dock widget and update the
-  currentCollectionID in the table widget*/
+  /** \brief Get the current selected collectionid from the trace manual editing widget 
+  and update the currentCollectionID in the table widget*/
   void PassInfoForCurrentCollectionID();
+
+  /** \brief Get the current selected celltype and subcelltype from the trace manual editing widget 
+  and update the current celltype and sub celltype in the table widget*/
+  void PassInfoForDBForCurrentSelectedCellTypeAndSubCellType();
 
   void Change3DPerspectiveToAxial();
   void Change3DPerspectiveToCoronal();
   void Change3DPerspectiveToSagittal();
 
+  /*
+   * \brief Change the visibility of the selected meshes
+   */
+  void ChangeSelectedMeshesVisibility();
+
+  void ModifyTracesVisibilityFromTableManager();
+
+  void ModifyTracesVisibilityFromTable(
+      ContourMeshStructureMultiIndexContainer& iContainer,
+      std::string iCurrentTrace);
+
   void ApplyOneClickSegmentationFilter();
   void ApplyContourSemiAutoSegmentation();
 
   void CreateMeshFromSelectedContours( std::list<int> ListContourIDs );
+
+  void TestMesh();
 
 protected:
   QHBoxLayout*          m_HBoxLayout;
@@ -377,7 +404,7 @@ protected:
   QGoImageView3D*       m_ImageView;
   std::vector< vtkSmartPointer< vtkLSMReader > > m_LSMReader;
   std::vector< vtkSmartPointer< vtkImageData > > m_InternalImages;
-  vtkSmartPointer< vtkImageData > m_Image;
+  vtkImageData*         m_Image;
 
   double m_LinesWidth;
   QColor m_LinesColor;
@@ -395,8 +422,8 @@ protected:
   unsigned int          m_MeshId;
   bool                  m_ReEditContourMode;
 
-  /// \todo rename as QGoVisualizationDockWidget
-  QGoVisualizationDockWidget*         m_NavigationDockWidget;
+  /// \todo rename as QGoNavigationDockWidget
+  QGoNavigationDockWidget*         m_NavigationDockWidget;
   QGoManualSegmentationDockWidget*    m_ManualSegmentationDockWidget;
   QGoOneClickSegmentationDockWidget*  m_OneClickSegmentationDockWidget;
 
@@ -533,6 +560,8 @@ protected slots:
   void ShowTraceDockWidgetForContour(bool ManualSegVisible);
   void ShowTraceDockWidgetForMesh(bool OneClickVisible);
   void ChangeColorOfSelectedTracesManager(std::pair<std::list<int>,QColor>);
+
+  void GoToLocation( int iX, int iY, int iZ, int iT );
 
   /**
    * \brief Mouse interaction style allows contours segmentation, according to

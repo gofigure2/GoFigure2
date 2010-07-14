@@ -6,9 +6,9 @@
 
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-10
 
- Copyright (c) 2009, President and Fellows of Harvard College.
+ Copyright (c) 2009-10, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -52,6 +52,10 @@
 #include "vtkPolyDataMySQLTextWriter.h"
 #include "GoFigureMeshAttributes.h"
 
+/**
+\class GoDBMeshRow
+\brief
+*/
 class QGOIO_EXPORT GoDBMeshRow : public GoDBTraceRow
 {
 public:
@@ -61,15 +65,15 @@ public:
     GoDBCoordinateRow Min, GoDBCoordinateRow Max, unsigned int ImgSessionID,
     vtkPolyData* TraceVisu);*/
 
-  GoDBMeshRow(vtkMySQLDatabase* DatabaseConnector,
-    vtkPolyData* TraceVisu,GoDBCoordinateRow Min, GoDBCoordinateRow Max,
-    unsigned int ImgSessionID,GoFigureMeshAttributes* iMeshAttributes = 0 );
+  explicit GoDBMeshRow( vtkMySQLDatabase* DatabaseConnector,
+    vtkPolyData* TraceVisu, GoDBCoordinateRow Min, GoDBCoordinateRow Max,
+    unsigned int ImgSessionID, GoFigureMeshAttributes* iMeshAttributes = 0 );
 
-  GoDBMeshRow( const GoDBMeshRow& iRow);
+  GoDBMeshRow( const GoDBMeshRow& iRow );
   GoDBMeshRow(unsigned int ImagingSessionID);
   
-  ~GoDBMeshRow()
-    {}
+  ~GoDBMeshRow();
+  
   //int DoesThisBoundingBoxMeshExist(vtkMySQLDatabase* DatabaseConnector);
   void SetCellType(vtkMySQLDatabase* DatabaseConnector,
     std::string CellTypeName);

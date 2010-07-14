@@ -6,9 +6,9 @@
 
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-10
 
- Copyright (c) 2009, President and Fellows of Harvard College.
+ Copyright (c) 2009-10, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -68,22 +68,22 @@ struct TraceInfoStructure
     SetInfoStructure( iTraceName, parent );
     }
     
-   ~TraceInfoStructure()
-     {
-     // Table has a parent that is supposed to delete it
-     //if( Table )
-     //   {
-     //   delete Table;
-     //   }
-      if( ListTracesInfoForVisu )
-        {
-        delete ListTracesInfoForVisu;
-        }
-      if( CollectionOfTraces )
-        {
-        delete CollectionOfTraces;
-        }
-      }
+  ~TraceInfoStructure()
+    {
+    // Table has a parent that is supposed to delete it
+    //if( Table )
+    //   {
+    //   delete Table;
+    //   }
+     if( ListTracesInfoForVisu )
+       {
+       delete ListTracesInfoForVisu;
+       }
+     if( CollectionOfTraces )
+       {
+       delete CollectionOfTraces;
+       }
+     }
 
   void SetInfoStructure( const std::string& iTraceName, QWidget* iParent )
     {
@@ -119,5 +119,5 @@ struct TraceInfoStructure
     Table = new QTableWidgetChild(iParent);
     } 
 
- };
+};
 #endif

@@ -282,6 +282,7 @@ void QGoImageView3D::Update()
   View1->SetInput( this->m_Image );
   View1->SetViewOrientation( vtkViewImage2D::VIEW_ORIENTATION_AXIAL );
   View1->SetViewConvention( vtkViewImage2D::VIEW_CONVENTION_NEUROLOGICAL );
+  View1->UpdateWindowLevelObservers();
 
   this->m_View3D->Add2DPhantom( 0,
       View1->GetImageActor(), View1->GetSlicePlane() );
@@ -295,6 +296,7 @@ void QGoImageView3D::Update()
   View2->SetInput( this->m_Image );
   View2->SetViewConvention( vtkViewImage2D::VIEW_CONVENTION_NEUROLOGICAL );
   View2->SetViewOrientation (vtkViewImage2D::VIEW_ORIENTATION_CORONAL);
+  View2->UpdateWindowLevelObservers();
 
   this->m_View3D->Add2DPhantom( 1,
     View2->GetImageActor(), View2->GetSlicePlane() );
@@ -308,6 +310,7 @@ void QGoImageView3D::Update()
   View3->SetInput( this->m_Image );
   View3->SetViewConvention( vtkViewImage2D::VIEW_CONVENTION_NEUROLOGICAL );
   View3->SetViewOrientation( vtkViewImage2D::VIEW_ORIENTATION_SAGITTAL );
+  View3->UpdateWindowLevelObservers();
 
 
   this->m_View3D->Add2DPhantom(
@@ -335,6 +338,7 @@ void QGoImageView3D::Update()
     this->m_Pool->GetItem(i)->GetTextProperty()->SetFontSize( 14 );
     }
 
+  this->m_Pool->UpdateWindowLevelObservers();
   this->m_Pool->SyncSetShowScalarBar( false );
   this->m_Pool->SyncRender();
 
@@ -356,10 +360,10 @@ void QGoImageView3D::Update()
     this->m_View3D->GetRenderer()->SetActiveCamera( camera );
     this->m_View3D->ResetCamera();
 
+    SetupVTKtoQtConnections();
+
     m_FirstRender = false;
     }
-
-  SetupVTKtoQtConnections();
 }
 //-------------------------------------------------------------------------
 
@@ -462,8 +466,15 @@ void QGoImageView3D::SetupVTKtoQtConnections()
     // when contours picked, send a signal
      VtkEventQtConnector->Connect(
        reinterpret_cast< vtkObject* >( View3D->GetCommand()->GetBoxWidget()),
-       vtkCommand::InteractionEvent,
+       vtkViewImage3DCommand::BoxWidgetReadyEvent,
        this, SIGNAL( MeshesSelectionChanged() ) );
+
+    // Event connection between vtk and qt
+    // when contours picked, send a signal
+    VtkEventQtConnector->Connect(
+      reinterpret_cast< vtkObject* >( View1->GetInteractorStyle()),
+      vtkViewImage2DCommand::WindowLevelEvent,
+      this, SLOT( UpdateScalarBarIn3DWiew() ) );
 }
 
 //-------------------------------------------------------------------------
@@ -1036,9 +1047,11 @@ void
 QGoImageView3D::
 ChangeActorProperty( int iDir, vtkProp3D* iActor, vtkProperty* iProperty )
 {
+  vtkViewImage2D* viewer = NULL;
+
   if( ( iDir >= 0 ) && ( iDir < m_Pool->GetNumberOfItems() ) )
     {
-    vtkViewImage2D* viewer = m_Pool->GetItem( iDir );
+    viewer = m_Pool->GetItem( iDir );
     viewer->ChangeActorProperty( iActor, iProperty );
     }
   else
@@ -1315,7 +1328,7 @@ void
 QGoImageView3D::
 SetDefaultInteractionStyle(vtkViewImage2D& image)
 {
-  image.SetLeftButtonInteractionStyle( vtkInteractorStyleImage2D::InteractionTypeSlice );
+  image.SetLeftButtonInteractionStyle( vtkInteractorStyleImage2D::InteractionTypeWindowLevel );
   image.SetMiddleButtonInteractionStyle( vtkInteractorStyleImage2D::InteractionTypePan );
   image.SetRightButtonInteractionStyle( vtkInteractorStyleImage2D::InteractionTypeZoom );
   image.SetWheelInteractionStyle( vtkInteractorStyleImage2D::InteractionTypeSlice );
@@ -1462,12 +1475,9 @@ ClearAllSeeds()
 {
   for( unsigned int i = 0; i < this->SeedWidget.size(); i++ )
     {
-    int N = this->SeedRep[i]->GetNumberOfSeeds();
-//     int k = N - 1;
-//     for( int j = 0; j < N; j++ )
-    for( int k = N - 1; k > 0; --k )
+    for( int k = this->SeedRep[i]->GetNumberOfSeeds() - 1; k >= 0; --k )
       {
-      this->SeedWidget[i]->DeleteSeed( k-- );
+      this->SeedWidget[i]->DeleteSeed( k );
       this->SeedRep[i]->RemoveLastHandle();
       }
     }
@@ -1488,11 +1498,14 @@ void
 QGoImageView3D::
 EnableContourPickingMode()
 {
+  /// \todo move this code in the Collection code
   for( int i=0; i<3; i++)
     {
     vtkViewImage2D* View = this->m_Pool->GetItem( i );
     View->SetInteractionStyle(
       vtkInteractorStyleImage2D::InteractionTypeContourPicking );
+    View->SetWheelInteractionStyle(
+      vtkInteractorStyleImage2D::InteractionTypeSlice );
     vtkInteractorStyleImage2D* t =
       vtkInteractorStyleImage2D::SafeDownCast( View->GetInteractorStyle() );
     if( t )
@@ -1507,6 +1520,7 @@ void
 QGoImageView3D::
 DisableContourPickingMode()
 {
+  /// \todo move this code in the Collection code
   for( int i=0; i<3; i++)
     {
     vtkViewImage2D* View = this->m_Pool->GetItem( i );
@@ -1526,9 +1540,7 @@ QGoImageView3D::
 GetListOfPickedContours()
 {
   // Get picked contours from all views
-  std::list< vtkProp3D* > pickedContoursList =
-    this->m_Pool->GetCommand()->GetListOfPickedActors();
-  return pickedContoursList;
+  return m_Pool->GetCommand()->GetListOfPickedActors();
 }
 
 //-------------------------------------------------------------------------
@@ -1536,10 +1548,7 @@ std::list< vtkProp3D* >
 QGoImageView3D::
 GetListOfUnPickedContours()
 {
-  std::list< vtkProp3D* > unPickedContoursList;
-  // Get picked contours from all views
-  unPickedContoursList = this->m_Pool->GetCommand()->GetListOfUnPickedActors();
-  return unPickedContoursList;
+  return m_Pool->GetCommand()->GetListOfUnPickedActors();
 }
 
 //-------------------------------------------------------------------------
@@ -1583,5 +1592,23 @@ void
 QGoImageView3D::
 SetBox3DPicking( bool iValue)
 {
-  return m_View3D->GetCommand()->Enable3DBoxWidget( iValue );
+  DefaultMode();
+  m_View3D->GetCommand()->Enable3DBoxWidget( iValue );
+}
+
+//-------------------------------------------------------------------------
+void
+QGoImageView3D::
+ResetWindowLevel()
+{
+  m_Pool->SyncResetWindowLevel();
+}
+
+//-------------------------------------------------------------------------
+void
+QGoImageView3D::
+UpdateScalarBarIn3DWiew()
+{
+  m_Pool->GetItem(0)->GetLookupTable();
+  m_View3D->SetLookupTable( m_Pool->GetItem(0)->GetLookupTable() );
 }

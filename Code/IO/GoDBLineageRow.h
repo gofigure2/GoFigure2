@@ -6,9 +6,9 @@
 
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-10
 
- Copyright (c) 2009, President and Fellows of Harvard College.
+ Copyright (c) 2009-10, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -53,17 +53,17 @@ class GoDBLineageRow : public GoDBTraceRow
 public:
   GoDBLineageRow();
   
-  ~GoDBLineageRow()
-    {}
-   /**\brief fill the lineage map with the values gotten from the visualization*/
+  ~GoDBLineageRow();
+
+  /** \brief fill the lineage map with the values gotten from the visualization*/
   GoDBLineageRow(vtkMySQLDatabase* DatabaseConnector,GoDBCoordinateRow Min, 
     GoDBCoordinateRow Max,unsigned int ImgSessionID,vtkPolyData* TraceVisu);
 
-   /**\brief return the LineageID of the Lineage with the same bounding box
+   /** \brief return the LineageID of the Lineage with the same bounding box
   already registered in the DB or -1 if not yet created*/
   int DoesThisBoundingBoxLineageExist(vtkMySQLDatabase* DatabaseConnector);
 
-  /**\brief save the lineage in the database and return the ID of the new 
+  /** \brief save the lineage in the database and return the ID of the new 
   created lineage*/
   int SaveInDB(vtkMySQLDatabase* DatabaseConnector);
 

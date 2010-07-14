@@ -37,8 +37,8 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#ifndef QGoSynchronizedView3D_H
-#define QGoSynchronizedView3D_H
+#ifndef __QGoSynchronizedView3D_h
+#define __QGoSynchronizedView3D_h
 
 #include "itkImageToVTKImageFilter.h"
 #include "itkCastImageFilter.h"

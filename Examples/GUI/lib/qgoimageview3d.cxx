@@ -75,6 +75,8 @@ int main( int argc, char** argv )
   QObject::connect( timer, SIGNAL( timeout() ), viewer, SLOT( close() ) );
 
   viewer->SetImage( image );
+  std::cout << viewer->GetImage() <<std::endl;
+
   viewer->Update();
   viewer->show();
 

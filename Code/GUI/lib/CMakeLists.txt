@@ -38,7 +38,7 @@ SET( QGoGUILIB_SRC
   QGoTabImageView4D.cxx
   QGoTabImageViewElementBase.cxx
   QGoTabImageViewNDBase.cxx
-  QGoVisualizationDockWidget.cxx
+  QGoNavigationDockWidget.cxx
   QGoWizardDB.cxx
   QSplitterChild.cxx
   QTableWidgetChild.cxx
@@ -124,7 +124,7 @@ SET( QGoGUILIB_HDRS
   QGoTabImageView4D.h
   QGoTabImageViewElementBase.h
   QGoTabImageViewNDBase.h
-  QGoVisualizationDockWidget.h
+  QGoNavigationDockWidget.h
   QGoWizardDB.h
   QSplitterChild.h
   QTableWidgetChild.h
@@ -184,7 +184,7 @@ ENDIF( ENABLE_VIDEO_RECORD_AVI )
 SET( QGoGUILIB_UI
   Resources/ManualSegmentationSettingsDlg.ui
   Resources/ManualSegmentationDockWidget.ui
-  Resources/VisualizationDockWidget.ui
+  Resources/NavigationDockWidget.ui
   Resources/QGoPrintDatabase.ui
   Resources/LsmToMegaExportDialog.ui
   Resources/QNameDescriptionInputDialog.ui
@@ -257,9 +257,22 @@ TARGET_LINK_LIBRARIES( QGoGui
   ITKNumerics
   )
 
+SET_TARGET_PROPERTIES( QGoGui PROPERTIES VERSION ${GOFIGURE2_LIB_VERSION} SOVERSION ${GOFIGURE2_LIB_VERSION} )
+
+# Runtime
 INSTALL( TARGETS QGoGui
-  ARCHIVE DESTINATION lib COMPONENT libraries
-  LIBRARY DESTINATION lib COMPONENT libraries
-  RUNTIME DESTINATION bin COMPONENT Runtime
+  EXPORT GoFigure2Targets
+  RUNTIME DESTINATION ${GOFIGURE2_INSTALL_BIN_DIR} COMPONENT Applications
+  ARCHIVE DESTINATION ${GOFIGURE2_INSTALL_LIB_DIR} COMPONENT libraries
+  LIBRARY DESTINATION ${GOFIGURE2_INSTALL_LIB_DIR} NAMELINK_SKIP COMPONENT Libraries
   )
+  
+# Development
+INSTALL( TARGETS QGoGui
+  EXPORT GoFigure2Targets
+  RUNTIME DESTINATION ${GOFIGURE2_INSTALL_BIN_DIR} COMPONENT Applications
+  ARCHIVE DESTINATION ${GOFIGURE2_INSTALL_LIB_DIR} COMPONENT libraries
+  LIBRARY DESTINATION ${GOFIGURE2_INSTALL_LIB_DIR} COMPONENT Libraries NAMELINK_ONLY
+  )
+  
 

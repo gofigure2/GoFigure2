@@ -6,9 +6,9 @@
 
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-10
 
- Copyright (c) 2009, President and Fellows of Harvard College.
+ Copyright (c) 2009-10, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -53,7 +53,7 @@
 
 #include <set>
 
-#include "QGoVisualizationDockWidget.h"
+#include "QGoNavigationDockWidget.h"
 #include "QGoManualSegmentationDockWidget.h"
 
 //--------------------------------------------------------------------------
@@ -68,7 +68,7 @@ QGoTabImageViewElementBase( QWidget* iParent ) :
   m_BackgroundColor( Qt::black ),
   m_ContourId( 0 ),
   m_ReEditContourMode( false ),
-  m_VisuDockWidget( 0 )
+  m_NavigationDockWidget( 0 )
 {
   CreateManualSegmentationdockWidget();
 
@@ -112,7 +112,7 @@ QGoTabImageViewElementBase::~QGoTabImageViewElementBase()
       (*NodeSetIt)->Delete();
       ++NodeSetIt;
       }
-  }
+    }
 }
 //--------------------------------------------------------------------------
 
@@ -237,8 +237,6 @@ void QGoTabImageViewElementBase::ChangeBackgroundColor()
 }
 //--------------------------------------------------------------------------
 
-
-
 //--------------------------------------------------------------------------
 /**
  *
@@ -308,7 +306,6 @@ ValidateContour( const int& iId )
 // *** Get the Bounding Box ***
 //   int* min_idx = this->GetImageCoordinatesFromWorldCoordinates( Min );
 //   int* max_idx = this->GetImageCoordinatesFromWorldCoordinates( Max );
-//
 //   (void) min_idx;
 //   (void) max_idx;
 // ****************************
@@ -334,10 +331,10 @@ ValidateContour( const int& iId )
 // //  unsigned int meshid = m_ManualSegmentationDockWidget->GetMeshId();
 //   unsigned int meshid = 0;
 //
-//   if( this->m_VisuDockWidget->GetCurrentCollectionID() != -1 )
+//   if( this->m_NavigationDockWidget->GetCurrentCollectionID() != -1 )
 //     {
 //     meshid =
-//       static_cast< unsigned int >( this->m_VisuDockWidget->GetCurrentCollectionID() );
+//       static_cast< unsigned int >( this->m_NavigationDockWidget->GetCurrentCollectionID() );
 //     }
 //
 //   unsigned int timepoint = 0;
@@ -497,30 +494,3 @@ CreateToolsActions()
 //   viewer->GetRenderer()->AddActor( iActor );
 // }
 //--------------------------------------------------------------------------
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

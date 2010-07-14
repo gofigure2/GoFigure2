@@ -92,10 +92,9 @@ public:
  * and fill the info for the contours and meshes*/
   void FillTableFromDatabase(int iTimePoint);
   
-  /** \brief return the contours info for the visu with the data from
-  the database corresponding to iTimePoint and to the list of given IDs,
-  if no list of IDs is given, will return the info for all the contours*/
-  ContourMeshStructureMultiIndexContainer* GetContoursFromDBForAGivenTimePoint(
+  /** \brief Add the contours in the trcaeinfoForvisu and return all the
+  contours data for the given timepoint, included the new ones*/
+  ContourMeshStructureMultiIndexContainer* AddContoursFromDBForAGivenTimePoint(
     int iTimePoint, std::vector<int> iListIDs = std::vector<int>());
 
    /** \brief return the multi index container for the contours with the 
@@ -118,6 +117,11 @@ public:
   ContourMeshStructureMultiIndexContainer* 
     GetMeshesMultiIndexFromDBForAGivenTimePoint(int iTimePoint, 
   std::vector<int> iListIDs= std::vector<int>());
+  
+  /** \brief Add the meshes in the trcaeinfoForvisu and return all the
+  meshes data for the given timepoint, included the new ones*/
+  ContourMeshStructureMultiIndexContainer*
+    AddMeshesFromDBForAGivenTimePoint(int iTimePoint,std::vector<int> iListIDs);
 
   /** \brief Return a vector of all the contours for the given timepoint*/
   std::vector< ContourMeshStructure > GetContoursForAGivenTimepoint (
@@ -173,8 +177,8 @@ public:
 
   void UpdateCurrentColorData(std::pair<std::string,QColor> iCurrentColorData);
   void SetCurrentCollectionID(std::pair<std::string,QColor> iCurrentCollectionData);
-  void UpdateCurrentCellType(std::string iCurrentCellType);
-  void UpdateCurrentSubCellType(std::string iCurrentSubCellType);
+  void UpdateCurrentCellTypeAndSubCellType(std::string iCurrentCellType,
+    std::string iCurrentSubCellType);
 
   /** \brief return the info for the visu for the related traces*/
   ContourMeshStructureMultiIndexContainer* GetTracesInfoListForVisu(std::string iTraceName);
@@ -268,8 +272,7 @@ signals:
   void NeedToGetCurrentSelectedColor();
   void NewCreatedCollection(QColor,QString );
   void NeedCurrentSelectedCollectionID();
-  void NeedCurrentSelectedCellType();
-  void NeedCurrentSelectedSubCellType();
+  void NeedCurrentSelectedCellTypeAndSubCellType();
   void TraceToReEdit( unsigned int );
   void DeletedCollection( unsigned int );
   void TracesToDeleteInVisu( std::list< int > );
@@ -281,6 +284,10 @@ signals:
   void TableWidgetTableChanged(std::string, std::string);
   void NewMeshToGenerate(std::list<int> ListContourIDs);
   void MeshGenerationToUpdate (std::list<int> ListContourIDs);
+  void NeedToGoToTheLocation(int XCoord,int YCoord,int ZCoord, int TCoord);
+  void ShowCheckedTracesActivated();
+  void SelectionContoursToShowChanged();
+  void SelectionMeshesToShowChanged();
 
 protected:
   std::pair<std::string,QColor> m_CurrentColorData;
@@ -365,11 +372,13 @@ protected:
   the new collection and the previous collection the traces were part of*/
   void AddListTracesToACollection(std::list<int> iListSelectedTraces,
     std::pair<std::string,QColor> iCollection, std::string iTraceName,
-    bool IsANewCollection);
+    bool IsANewCollection,int iCollectionID = -1);
   
   /** \brief set all the tracesinfostructures */
   void SetTraceInfoStructures();
 
+  int GetCurrentCellTypeID();
+  int GetCurrentSubCellTypeID();
   /** \brief create the trace row with the related data provided by
   the visu, iTCoordMax is equal to 0 as for contour and mesh, it is the
   same as TCoord*/
@@ -413,8 +422,11 @@ protected:
 protected slots:
   void CreateContextMenu(const QPoint &pos);
   void DeleteTraces();
+  void GoToTheTrace();
   void CheckSelectedRows();
   void UncheckSelectedRows();
+  void ShowSelectedRows();
+  void HideSelectedRows();
   void ChangeTraceColor();
   void TheTabIsChanged(int iIndex);
 
@@ -428,6 +440,11 @@ protected slots:
  * table the user had clicked with the selected traces and emit a signal 
  * to say which m_tracesInfo has changed*/
   void ChangeTracesToHighLightInfoFromTableWidget();
+  
+  /** \brief Update the m_ContoursInfo or m_MeshesInfo depending on which 
+ * table the user had clicked with the selected traces to show and emit a signal 
+ * to say which m_tracesInfo has changed*/
+  void ChangeTracesToShowInfoFromTableWidget();
   /** \brief Add the new created trace in the vector of ContourMeshInfo
  * \todo once we know more for the visualization of meshes, need to do the
  * same for add a collection*/

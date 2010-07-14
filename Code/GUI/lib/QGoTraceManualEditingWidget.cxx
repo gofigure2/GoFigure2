@@ -6,9 +6,9 @@
 
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-10
 
- Copyright (c) 2009, President and Fellows of Harvard College.
+ Copyright (c) 2009-10, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -101,7 +101,15 @@ SetCollectionID(
     }
   QString Text(tr("Add a new %1...").arg(CollectionName->text()));
   this->ColorIDCollectionComboBox->setColorDialogEnabled(true,Text.toStdString());
-  this->ColorIDCollectionComboBox->show();
+  /** \todo when using lineages, remove the following*/
+  if (CollectionName->text() == "lineage")//at that time we don't show lineages
+    {
+    this->ColorIDCollectionComboBox->hide();
+    }
+  else
+    {
+    this->ColorIDCollectionComboBox->show();
+    }
 }
 //-------------------------------------------------------------------------
 

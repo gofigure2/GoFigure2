@@ -815,13 +815,6 @@ void vtkViewImage2D::InstallPipeline()
       {
           this->InteractorStyle = vtkInteractorStyleImage2D::New();
           this->Interactor->SetInteractorStyle(this->InteractorStyle);
-          if( !this->IsColor )
-            {
-            this->InteractorStyle->AddObserver(
-              vtkCommand::StartWindowLevelEvent, this->Command);
-            this->InteractorStyle->AddObserver(
-              vtkCommand::WindowLevelEvent, this->Command);
-            }
           this->InteractorStyle->AddObserver(
             vtkCommand::KeyPressEvent, this->Command);
           this->InteractorStyle->AddObserver(
@@ -869,6 +862,33 @@ void vtkViewImage2D::InstallPipeline()
     }
 }
 
+//----------------------------------------------------------------------------
+void vtkViewImage2D::UpdateWindowLevelObservers()
+{
+  if( this->Interactor )
+    {
+    if( !this->IsColor )
+      {
+      if( !this->InteractorStyle->HasObserver (
+          vtkCommand::WindowLevelEvent, this->Command) )
+        {
+        this->InteractorStyle->AddObserver(
+          vtkCommand::StartWindowLevelEvent, this->Command);
+        this->InteractorStyle->AddObserver(
+          vtkCommand::WindowLevelEvent, this->Command);
+        }
+      }
+    else
+      {
+      if( this->InteractorStyle->HasObserver (
+          vtkCommand::WindowLevelEvent, this->Command) )
+        {
+        this->InteractorStyle->RemoveObservers(vtkCommand::StartWindowLevelEvent);
+        this->InteractorStyle->RemoveObservers(vtkCommand::WindowLevelEvent);
+         }
+      }
+  }
+}
 //----------------------------------------------------------------------------
 void vtkViewImage2D::SetInterpolate(const int& val )
 {

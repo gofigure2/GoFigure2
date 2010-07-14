@@ -70,7 +70,7 @@ QGoSynchronizedView3D::
   if (HasViewer())
     {
     // we delete the viewer
-    delete(static_cast<QGoImageView3D*>(m_currentView));
+    delete(dynamic_cast<QGoImageView3D*>(m_currentView));
     m_currentView = NULL;
     }
 }
@@ -116,12 +116,12 @@ SetImage(vtkImageData* iImage)
   else
     {
     // if there is no viewer, we create one
-    if (static_cast<QGoImageView3D*>(m_currentView) == NULL)
+    if ( m_currentView == NULL)
       {
       createViewer();
       }
     // set the image to the current view
-    static_cast<QGoImageView3D*>(m_currentView)->SetImage(iImage);
+    dynamic_cast<QGoImageView3D*>(m_currentView)->SetImage(iImage);
     // update current image
     m_currentImage = iImage;
     this->Update();
@@ -134,7 +134,7 @@ void
 QGoSynchronizedView3D::
 Render(const int& iId)
 {
-  if (static_cast<QGoImageView3D*>(m_currentView) == NULL)
+  if ( m_currentView == NULL)
     {
     return;
     }
@@ -142,11 +142,11 @@ Render(const int& iId)
     {
     if (iId <= 2) // if we want to render one of the 2D view
       {
-      static_cast<QGoImageView3D*>(m_currentView)->GetImageViewer(iId)->Render();
+      dynamic_cast<QGoImageView3D*>(m_currentView)->GetImageViewer(iId)->Render();
       }
     else // if we want to render the 3D view
       {
-      static_cast<QGoImageView3D*>(m_currentView)->GetImageViewer3D()->Render();
+      dynamic_cast<QGoImageView3D*>(m_currentView)->GetImageViewer3D()->Render();
       }
     }
 }
@@ -157,7 +157,7 @@ vtkCamera*
 QGoSynchronizedView3D::
 GetCamera(const int& iId)
 {
-  if (static_cast<QGoImageView3D*>(m_currentView) == NULL)
+  if ( m_currentView == NULL)
     {
     return NULL;
     }
@@ -165,13 +165,13 @@ GetCamera(const int& iId)
     {
     if (iId <= 2)
       {
-      return static_cast<QGoImageView3D*>(m_currentView)->GetImageViewer(iId)
+      return dynamic_cast<QGoImageView3D*>(m_currentView)->GetImageViewer(iId)
                                                         ->GetRenderer()
                                                         ->GetActiveCamera();
       }
     else
       {
-      return static_cast<QGoImageView3D*>(m_currentView)->GetImageViewer3D()
+      return dynamic_cast<QGoImageView3D*>(m_currentView)->GetImageViewer3D()
                                                         ->GetRenderer()
                                                         ->GetActiveCamera();
       }
@@ -186,7 +186,7 @@ GetFullScreenView()
 {
 if ( HasViewer() )
   {
-  return static_cast<QGoImageView3D*>(m_currentView)->GetFullScreenView();
+  return dynamic_cast<QGoImageView3D*>(m_currentView)->GetFullScreenView();
   }
 else
   {
@@ -202,7 +202,7 @@ GetImageView()
 {
   if ( HasViewer() )
     {
-    return static_cast<QGoImageView3D*>(m_currentView);
+    return dynamic_cast<QGoImageView3D*>(m_currentView);
     }
   else
     {
@@ -254,7 +254,7 @@ SetFullScreenView(const int& iId)
 {
   if ( HasViewer() )
     {
-    static_cast<QGoImageView3D*>(m_currentView)->SetFullScreenView(iId);
+    dynamic_cast<QGoImageView3D*>(m_currentView)->SetFullScreenView(iId);
     }
 }
 
@@ -315,7 +315,7 @@ QGoSynchronizedView3D::
 createViewer()
 {
   // if there is already a viewer
-  if (static_cast<QGoImageView3D*>(m_currentView) != NULL)
+  if ( m_currentView != NULL)
     {
     return;
     }
@@ -323,9 +323,9 @@ createViewer()
     {
     // else we create one
     m_currentView = new QGoImageView3D(this);
-    static_cast<QGoImageView3D*>
+    dynamic_cast<QGoImageView3D*>
       (m_currentView)->setContentsMargins( 1, 1, 1, 1 );
     // setup position of the widget
-    gridLayout->addWidget(static_cast<QGoImageView3D*>(m_currentView) );
+    gridLayout->addWidget(dynamic_cast<QGoImageView3D*>(m_currentView) );
     }
 }
