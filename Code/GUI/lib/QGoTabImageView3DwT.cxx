@@ -546,20 +546,20 @@ void
 QGoTabImageView3DwT::
 DistanceWidgetInteractorBehavior( bool iActive )
 {
-  if( iActive )
+  //if( iActive )
     {
     for( int i = 0; i < 3; i++ )
       {
-      this->m_DistanceWidget[i]->On();
+      this->m_DistanceWidget[i]->SetEnabled( iActive );
       }
     }
-  else
+/*  else
     {
     for( int i = 0; i < 3; i++ )
       {
       this->m_DistanceWidget[i]->Off();
       }
-    }
+    }*/
 }
 //-------------------------------------------------------------------------
 

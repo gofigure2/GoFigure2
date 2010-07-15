@@ -145,10 +145,6 @@ public:
   void UpdateRenderWindows();
 
   /**
-   * \brief Define the cursor interactor style to the normal behaviour
-   */
-  void SetDefaultInteractionStyle( vtkViewImage2D&);
-  /**
    * \brief Use the default interactor style
    */
   void DefaultMode();
@@ -164,34 +160,16 @@ public:
    * \brief Use the one click interactor style
    */
   void OneClickMode();
-  /**
-   * \brief Enable the One Click mode (usefull since it is in a vtk widget)
-   */
-  void EnableOneClickMode();
-  /**
-   * \brief Disable the One Click mode (usefull since it is in a vtk widget)
-   */
-  void DisableOneClickMode();
+    
   /**
    * \brief Use the contour picking interactor style
    */
   void ContourPickingMode();
-  /**
-   * \brief Enable the contour picking interactor style
-   */
-  void EnableContourPickingMode();
-  /**
-   * \brief Disable the contour picking interactor style
-   */
-  void DisableContourPickingMode();
-  /**
-   * \brief Use the mesh picking interactor style
-   */
+  
+  
   void MeshPickingMode();
-  /**
-   * \brief Disable the mesh picking interactor style
-   */
-  void DisableMeshPickingMode();
+  
+   
   /**
    * \brief Creates a box in 3d view to allow multiple meshes selection
    */
@@ -290,18 +268,20 @@ protected:
   QVTKWidget*   QvtkWidget_XYZ;
 
   vtkViewImage3D* m_View3D;
-
+  
   vtkEventQtSlotConnect*    VtkEventQtConnector;
+  vtkProperty* m_HighlightedContourProperty;
   int                       IsFullScreen;
   bool                      m_FirstRender;
   bool                      m_Initialized;
-
-  vtkProperty* m_HighlightedContourProperty;
+  
+  bool m_ShowAnnotations;
+  bool m_ShowSplinePlane;
+  bool m_ShowCube;
 
   virtual void resizeEvent( QResizeEvent* event );
 
   void SetupVTKtoQtConnections();
-//   std::map< vtkProp3D*, vtkProperty* > m_ActorsPropertyMap;
 
   void Quadview();
   void FullScreenViewXY();
@@ -310,15 +290,29 @@ protected:
   void FullScreenViewXYZ();
 
   void InitializeSeedWidgetInteraction();
-
-  bool m_ShowAnnotations;
-  bool m_ShowSplinePlane;
-  bool m_ShowCube;
+  
+   /**
+   * \brief Enable the One Click mode (usefull since it is in a vtk widget)
+   */
+  void EnableOneClickMode( bool iEnable );
+  
+  /**
+   * \brief Enable/Disable the contour picking interactor style
+   */
+  void EnableContourPickingMode( bool iEnable );
+  
+  /**
+   * \brief Use the mesh picking interactor style
+   */
+  void EnableMeshPickingMode( bool iEnable );
 
 protected slots:
   void MoveSliderXY();
   void MoveSliderXZ();
   void MoveSliderYZ();
+  
+private:
+  Q_DISABLE_COPY( QGoImageView3D );
 
 };
 

@@ -144,7 +144,6 @@ QGoImageView3D( QWidget* iParent ) :
   this->m_View3D->SetRenderWindow( renwin4 );
   this->m_View3D->SetupInteractor( this->QvtkWidget_XYZ->GetInteractor() );
 
-
   this->m_Pool->SetExtraRenderWindow( renwin4 );
 
   InitializeSeedWidgetInteraction();
@@ -161,26 +160,37 @@ QGoImageView3D::~QGoImageView3D()
   delete HbSplitter;
 
   std::vector< vtkSeedWidget* >::iterator  seedWidgetIterator = SeedWidget.begin();
-  for(; seedWidgetIterator < SeedWidget.end(); seedWidgetIterator++)
-     (*seedWidgetIterator)->Delete();
+  while( seedWidgetIterator != SeedWidget.end() )
+    {
+    (*seedWidgetIterator)->Delete();
+    ++seedWidgetIterator;
+    }
 
-  std::vector< vtkConstrainedPointHandleRepresentation* >::iterator  handleIterator = Handle.begin();
-  for(; handleIterator < Handle.end(); handleIterator++)
-       (*handleIterator)->Delete();
+  std::vector< vtkConstrainedPointHandleRepresentation* >::iterator  
+    handleIterator = Handle.begin();
+  while( handleIterator != Handle.end() )
+    {
+    (*handleIterator)->Delete();
+    ++handleIterator;
+    }
 
-  std::vector< vtkSeedRepresentation* >::iterator  seedIterator = SeedRep.begin();
-  for(; seedIterator < SeedRep.end(); seedIterator++)
-       (*seedIterator)->Delete();
+  std::vector< vtkSeedRepresentation* >::iterator
+    seedIterator = SeedRep.begin();
+  while( seedIterator != SeedRep.end() )
+    { 
+    (*seedIterator)->Delete();
+    ++seedIterator;
+    }
 
   // note m_Pool is supposed to be deleted in QGoImageView, but due to a bug
   // it has to be deleted in this order...
   if( m_Pool )
     {
     m_Pool->Delete();
-    m_Pool = 0;
+    m_Pool = NULL;
     }
   m_View3D->Delete();
-  m_View3D = 0;
+  m_View3D = NULL;
 
   VtkEventQtConnector->Delete();
   m_HighlightedContourProperty->Delete();
@@ -440,38 +450,38 @@ void QGoImageView3D::SetupVTKtoQtConnections()
 
   // Event connection between vtk and qt
   // when contours picked, send a signal
-   VtkEventQtConnector->Connect(
+  VtkEventQtConnector->Connect(
      reinterpret_cast< vtkObject* >( View1->GetInteractorStyle() ),
      vtkViewImage2DCommand::ContourPickingEvent,
      this, SIGNAL( ContoursSelectionChanged() ) );
 
-   VtkEventQtConnector->Connect(
+  VtkEventQtConnector->Connect(
      reinterpret_cast< vtkObject* >( View2->GetInteractorStyle() ),
      vtkViewImage2DCommand::ContourPickingEvent,
      this, SIGNAL( ContoursSelectionChanged() ) );
 
-   VtkEventQtConnector->Connect(
+  VtkEventQtConnector->Connect(
      reinterpret_cast< vtkObject* >( View3->GetInteractorStyle() ),
      vtkViewImage2DCommand::ContourPickingEvent,
      this, SIGNAL( ContoursSelectionChanged() ) );
 
-   // Event connection between vtk and qt
-   // when contours picked, send a signal
-    VtkEventQtConnector->Connect(
+  // Event connection between vtk and qt
+  // when contours picked, send a signal
+  VtkEventQtConnector->Connect(
       reinterpret_cast< vtkObject* >( View3D->GetInteractorStyle3D() ),
       vtkViewImage3DCommand::ReadyEvent,
       this, SIGNAL( MeshesSelectionChanged() ) );
 
-    // Event connection between vtk and qt
-    // when contours picked, send a signal
-     VtkEventQtConnector->Connect(
+  // Event connection between vtk and qt
+  // when contours picked, send a signal
+  VtkEventQtConnector->Connect(
        reinterpret_cast< vtkObject* >( View3D->GetCommand()->GetBoxWidget()),
        vtkViewImage3DCommand::BoxWidgetReadyEvent,
        this, SIGNAL( MeshesSelectionChanged() ) );
 
-    // Event connection between vtk and qt
-    // when contours picked, send a signal
-    VtkEventQtConnector->Connect(
+  // Event connection between vtk and qt
+  // when contours picked, send a signal
+  VtkEventQtConnector->Connect(
       reinterpret_cast< vtkObject* >( View1->GetInteractorStyle()),
       vtkViewImage2DCommand::WindowLevelEvent,
       this, SLOT( UpdateScalarBarIn3DWiew() ) );
@@ -482,33 +492,32 @@ void
 QGoImageView3D::
 InitializeSeedWidgetInteraction()
 {
+  int N = this->m_Pool->GetNumberOfItems();
+  
   // Enable seed interaction
-  this->Handle.resize( this->m_Pool->GetNumberOfItems() );
-  this->SeedRep.resize( this->m_Pool->GetNumberOfItems() );
-  this->SeedWidget.resize( this->m_Pool->GetNumberOfItems() );
+  this->Handle.resize( N );
+  this->SeedRep.resize( N );
+  this->SeedWidget.resize( N );
 
-  for( int i = 0; i < this->m_Pool->GetNumberOfItems(); i++)
+  for( int i = 0; i < N; ++i )
     {
     this->Handle[i] = vtkConstrainedPointHandleRepresentation::New();
     this->Handle[i]->GetProperty()->SetColor(1,0,0);
 
     this->SeedRep[i] = vtkSeedRepresentation::New();
-    this->SeedRep[i]->SetHandleRepresentation(this->Handle[i]);
+    this->SeedRep[i]->SetHandleRepresentation( this->Handle[i] );
 
     this->SeedWidget[i] = vtkSeedWidget::New();
     this->SeedWidget[i]->SetRepresentation( this->SeedRep[i] );
+  
+    this->SeedWidget[i]->SetInteractor( 
+      this->m_Pool->GetItem(i)->GetInteractor() );
+    
+    // to remove right click interaction in the one click widget
+    this->SeedWidget[i]->GetEventTranslator()->RemoveTranslation(
+      vtkCommand::RightButtonPressEvent );
     }
-
-  this->SeedWidget[0]->SetInteractor( this->m_Pool->GetItem(0)->GetInteractor() );
-  this->SeedWidget[1]->SetInteractor( this->m_Pool->GetItem(1)->GetInteractor() );
-  this->SeedWidget[2]->SetInteractor( this->m_Pool->GetItem(2)->GetInteractor() );
-
-  // to remove right click interaction in the one click widget
-  this->SeedWidget[0]->GetEventTranslator()->RemoveTranslation(vtkCommand::RightButtonPressEvent );
-  this->SeedWidget[1]->GetEventTranslator()->RemoveTranslation(vtkCommand::RightButtonPressEvent );
-  this->SeedWidget[2]->GetEventTranslator()->RemoveTranslation(vtkCommand::RightButtonPressEvent );
 }
-
 
 //-------------------------------------------------------------------------
 /**
@@ -556,7 +565,7 @@ vtkImageActor* QGoImageView3D::GetImageActor( const int& iId )
 {
   if( ( iId < 0 ) || ( iId > 2 ) )
     {
-    return 0;
+    return NULL;
     }
   else
     {
@@ -577,7 +586,7 @@ QVTKInteractor* QGoImageView3D::GetInteractor( const int& iId )
 
   if( ( iId < 0 ) || ( iId > 3 ) )
     {
-    return 0;
+    return NULL;
     }
   else
     {
@@ -799,10 +808,6 @@ void QGoImageView3D::FullScreenViewXYZ()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/**
- *
- * @return
- */
 int QGoImageView3D::GetFullScreenView( ) const
 {
   return IsFullScreen;
@@ -810,10 +815,6 @@ int QGoImageView3D::GetFullScreenView( ) const
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/**
- *
- * @param iEvent
- */
 void QGoImageView3D::resizeEvent( QResizeEvent* iEvent )
 {
   QWidget::resizeEvent( iEvent );
@@ -822,10 +823,6 @@ void QGoImageView3D::resizeEvent( QResizeEvent* iEvent )
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/**
- *
- * @param iSlice
- */
 void QGoImageView3D::SetSliceViewXY( const int& iSlice )
 {
   if( m_Initialized )
@@ -843,10 +840,6 @@ void QGoImageView3D::SetSliceViewXY( const int& iSlice )
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/**
- *
- * @return
- */
 int QGoImageView3D::GetSliceViewXY() const
 {
   return this->m_Pool->GetItem( 0 )->GetSlice();
@@ -854,10 +847,6 @@ int QGoImageView3D::GetSliceViewXY() const
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/**
- *
- * @param iSlice
- */
 void QGoImageView3D::SetSliceViewXZ( const int& iSlice )
 {
   if( m_Initialized )
@@ -875,19 +864,13 @@ void QGoImageView3D::SetSliceViewXZ( const int& iSlice )
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/**
- *
- * @return
- */
 int QGoImageView3D::GetSliceViewXZ() const
 {
   return this->m_Pool->GetItem( 1 )->GetSlice();
 }
 //-------------------------------------------------------------------------
-/**
- *
- * @param iSlice
- */
+
+//-------------------------------------------------------------------------
 void QGoImageView3D::SetSliceViewYZ( const int& iSlice )
 {
   if( m_Initialized )
@@ -903,10 +886,8 @@ void QGoImageView3D::SetSliceViewYZ( const int& iSlice )
     }
 }
 //-------------------------------------------------------------------------
-/**
- *
- * @return
- */
+
+//-------------------------------------------------------------------------
 int QGoImageView3D::GetSliceViewYZ() const
 {
   return this->m_Pool->GetItem( 2 )->GetSlice();
@@ -914,9 +895,6 @@ int QGoImageView3D::GetSliceViewYZ() const
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/**
- *
- */
 void QGoImageView3D::MoveSliderXY( )
 {
   if( m_Initialized )
@@ -933,9 +911,6 @@ void QGoImageView3D::MoveSliderXY( )
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/**
- *
- */
 void QGoImageView3D::MoveSliderXZ( )
 {
   if( m_Initialized )
@@ -952,9 +927,6 @@ void QGoImageView3D::MoveSliderXZ( )
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/**
- *
- */
 void QGoImageView3D::MoveSliderYZ( )
 {
   if( m_Initialized )
@@ -971,9 +943,6 @@ void QGoImageView3D::MoveSliderYZ( )
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/**
- *
- */
 void QGoImageView3D::SaveStateSplitters()
 {
   QSettings settings;
@@ -993,13 +962,6 @@ GetImageViewer3D()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-/**
- *
- * @param iId
- * @param dataset
- * @param iProperty
- * @return
- */
 // std::vector< vtkQuadricLODActor* >
 std::vector< vtkActor* >
 QGoImageView3D::
@@ -1028,11 +990,6 @@ AddContour( const int& iId, vtkPolyData* dataset, vtkProperty* iProperty )
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-/**
- *
- * @param iProp
- * @param iToDo
- */
 void
 QGoImageView3D::
 ChangeActorProperty( vtkProp3D* iActor, vtkProperty* iProperty )
@@ -1210,7 +1167,7 @@ ShowSplinePlane()
     this->m_View3D->SetBoundsActorsVisibility( m_ShowSplinePlane );
     }
 
-    this->UpdateRenderWindows();
+  this->UpdateRenderWindows();
 }
 
 //--------------------------------------------------------------------------
@@ -1246,14 +1203,14 @@ UpdateRenderWindows()
 {
   // Update Visualization
   // Update() not used because just want to update the renderWindow)
-
-  vtkRenderWindow* ren = this->m_Pool->GetItem( 2 )->GetRenderWindow();
-  ren->Render();
-  ren = this->m_Pool->GetItem( 1 )->GetRenderWindow();
-  ren->Render();
-  ren = this->m_Pool->GetItem( 0 )->GetRenderWindow();
-  ren->Render();
-
+  vtkRenderWindow* ren;
+  
+  for( int i = 0; i < this->m_Pool->GetNumberOfItems(); ++i )
+    {
+    ren = this->m_Pool->GetItem( i )->GetRenderWindow();
+    ren->Render();
+    }
+  
   ren = this->m_View3D->GetRenderWindow();
   ren->Render();
 }
@@ -1273,14 +1230,14 @@ SetCamera( int iView )
   camera->Roll(180);
 
   // Posterior view
-  if ( iView == 1)
+  if ( iView == 1 )
     {
     camera->SetRoll(0);
     camera->Elevation( 90 );
     }
 
   // Left view
-  if ( iView == 3)
+  if ( iView == 3 )
     {
     camera->Azimuth( -90 );
     }
@@ -1296,9 +1253,9 @@ void
 QGoImageView3D::
 DefaultMode()
 {
-  DisableOneClickMode();
-  DisableContourPickingMode();
-  DisableMeshPickingMode();
+  EnableOneClickMode( false );
+  EnableContourPickingMode( false );
+  EnableMeshPickingMode( false );
 
   //Change cursor
   QvtkWidget_XY->setCursor( Qt::ArrowCursor );
@@ -1306,14 +1263,11 @@ DefaultMode()
   QvtkWidget_YZ->setCursor( Qt::ArrowCursor );
   QvtkWidget_XYZ->setCursor( Qt::ArrowCursor );
 
-  vtkViewImage2D* View1 = this->m_Pool->GetItem( 0 );
-  this->SetDefaultInteractionStyle( *View1 );
-
-  vtkViewImage2D* View2 = this->m_Pool->GetItem( 1 );
-  this->SetDefaultInteractionStyle( *View2 );
-
-  vtkViewImage2D* View3 = this->m_Pool->GetItem( 2 );
-  this->SetDefaultInteractionStyle( *View3 );
+  for( int i = 0; i < this->m_Pool->GetNumberOfItems(); ++i )
+    {
+    vtkViewImage2D* View = this->m_Pool->GetItem( i );
+    View->SetDefaultInteractionStyle( );
+    }
 
   vtkInteractorStyleImage3D* t = m_View3D->GetInteractorStyle3D();
   if (t)
@@ -1323,17 +1277,6 @@ DefaultMode()
 }
 //-------------------------------------------------------------------------
 
-//-------------------------------------------------------------------------
-void
-QGoImageView3D::
-SetDefaultInteractionStyle(vtkViewImage2D& image)
-{
-  image.SetLeftButtonInteractionStyle( vtkInteractorStyleImage2D::InteractionTypeWindowLevel );
-  image.SetMiddleButtonInteractionStyle( vtkInteractorStyleImage2D::InteractionTypePan );
-  image.SetRightButtonInteractionStyle( vtkInteractorStyleImage2D::InteractionTypeZoom );
-  image.SetWheelInteractionStyle( vtkInteractorStyleImage2D::InteractionTypeSlice );
-}
-//-------------------------------------------------------------------------
 void
 QGoImageView3D::
 ZoomMode()
@@ -1347,15 +1290,12 @@ ZoomMode()
   this->QvtkWidget_YZ->setCursor( zoomCursor );
   this->QvtkWidget_XYZ->setCursor(zoomCursor );
 
-  vtkViewImage2D* View1 = this->m_Pool->GetItem( 0 );
-  View1->SetInteractionStyle(vtkInteractorStyleImage2D::InteractionTypeZoom );
-
-  vtkViewImage2D* View2 = this->m_Pool->GetItem( 1 );
-  View2->SetInteractionStyle(vtkInteractorStyleImage2D::InteractionTypeZoom );
-
-  vtkViewImage2D* View3 = this->m_Pool->GetItem( 2 );
-  View3->SetInteractionStyle(vtkInteractorStyleImage2D::InteractionTypeZoom );
-
+  for( int i = 0; i < this->m_Pool->GetNumberOfItems(); ++i )
+    {
+    vtkViewImage2D* View = this->m_Pool->GetItem( i );
+    View->SetInteractionStyle( vtkInteractorStyleImage2D::InteractionTypeZoom );
+    }
+  
   vtkInteractorStyleImage3D* t = m_View3D->GetInteractorStyle3D();
   if (t)
     {
@@ -1377,15 +1317,11 @@ PanMode()
   QvtkWidget_YZ->setCursor( Qt::OpenHandCursor );
   QvtkWidget_XYZ->setCursor( Qt::OpenHandCursor );
 
-
-  vtkViewImage2D* View1 = this->m_Pool->GetItem( 0 );
-  View1->SetInteractionStyle(vtkInteractorStyleImage2D::InteractionTypePan );
-
-  vtkViewImage2D* View2 = this->m_Pool->GetItem( 1 );
-  View2->SetInteractionStyle(vtkInteractorStyleImage2D::InteractionTypePan );
-
-  vtkViewImage2D* View3 = this->m_Pool->GetItem( 2 );
-  View3->SetInteractionStyle(vtkInteractorStyleImage2D::InteractionTypePan );
+  for( int i = 0; i < this->m_Pool->GetNumberOfItems(); ++i )
+    {
+    vtkViewImage2D* View = this->m_Pool->GetItem( i );
+    View->SetInteractionStyle( vtkInteractorStyleImage2D::InteractionTypePan );
+    }
 
   vtkInteractorStyleImage3D* t = m_View3D->GetInteractorStyle3D();
   if (t)
@@ -1403,30 +1339,18 @@ OneClickMode()
   //Reinitialize cursor interaction
   DefaultMode();
   // Enable widget in each slice
-  EnableOneClickMode();
+  EnableOneClickMode( true );
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void
 QGoImageView3D::
-EnableOneClickMode()
+EnableOneClickMode( bool iEnable )
 {
   for( int i = 0; i < this->m_Pool->GetNumberOfItems(); i++ )
   {
-    SeedWidget[i]->On();
-  }
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
-QGoImageView3D::
-DisableOneClickMode()
-{
-  for( int i = 0; i < this->m_Pool->GetNumberOfItems(); i++ )
-  {
-    this->SeedWidget[i]->Off();
+    SeedWidget[i]->SetEnabled( iEnable );
   }
 }
 //-------------------------------------------------------------------------
@@ -1487,19 +1411,32 @@ ClearAllSeeds()
 //-------------------------------------------------------------------------
 void
 QGoImageView3D::
+MeshPickingMode()
+{
+  DefaultMode();
+
+  EnableMeshPickingMode( true );
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoImageView3D::
 ContourPickingMode()
 {
   DefaultMode();
 
-  EnableContourPickingMode();
+  EnableContourPickingMode( true );
 }
 //-------------------------------------------------------------------------
 void
 QGoImageView3D::
-EnableContourPickingMode()
+EnableContourPickingMode( bool iEnable )
 {
   /// \todo move this code in the Collection code
-  for( int i=0; i<3; i++)
+  int N = this->m_Pool->GetNumberOfItems();
+  
+  for( int i=0; i<N; ++i )
     {
     vtkViewImage2D* View = this->m_Pool->GetItem( i );
     View->SetInteractionStyle(
@@ -1510,30 +1447,19 @@ EnableContourPickingMode()
       vtkInteractorStyleImage2D::SafeDownCast( View->GetInteractorStyle() );
     if( t )
       {
-      t->StartPick();
+      if( iEnable )
+        {
+        t->StartPick();
+        }
+      else
+        {
+        t->EndPick();
+        }
       }
     }
 }
 
-//-------------------------------------------------------------------------
-void
-QGoImageView3D::
-DisableContourPickingMode()
-{
-  /// \todo move this code in the Collection code
-  for( int i=0; i<3; i++)
-    {
-    vtkViewImage2D* View = this->m_Pool->GetItem( i );
-    View->SetInteractionStyle(
-      vtkInteractorStyleImage2D::InteractionTypeContourPicking );
-    vtkInteractorStyleImage2D* t =
-      vtkInteractorStyleImage2D::SafeDownCast (View->GetInteractorStyle());
-    if( t )
-      {
-      t->EndPick();
-      }
-    }
-}
+
 //-------------------------------------------------------------------------
 std::list< vtkProp3D* >
 QGoImageView3D::
@@ -1554,28 +1480,23 @@ GetListOfUnPickedContours()
 //-------------------------------------------------------------------------
 void
 QGoImageView3D::
-MeshPickingMode()
+EnableMeshPickingMode( bool iEnable )
 {
   DefaultMode();
 
   vtkInteractorStyleImage3D* t = m_View3D->GetInteractorStyle3D();
   if (t)
     {
-    t->EnablePickMode();
-    t->StartPick();
-    }
-}
-
-//-------------------------------------------------------------------------
-void
-QGoImageView3D::
-DisableMeshPickingMode()
-{
-  vtkInteractorStyleImage3D* t = m_View3D->GetInteractorStyle3D();
-  if (t)
-    {
-    t->DisablePickMode();
-    t->EndPick();
+    if( iEnable )
+      {
+      t->EnablePickMode();
+      t->StartPick();
+      }
+    else
+      {
+      t->DisablePickMode();
+      t->EndPick();
+      }
     }
 }
 
@@ -1590,7 +1511,7 @@ GetListOfModifiedActors3D()
 //-------------------------------------------------------------------------
 void
 QGoImageView3D::
-SetBox3DPicking( bool iValue)
+SetBox3DPicking( bool iValue )
 {
   DefaultMode();
   m_View3D->GetCommand()->Enable3DBoxWidget( iValue );

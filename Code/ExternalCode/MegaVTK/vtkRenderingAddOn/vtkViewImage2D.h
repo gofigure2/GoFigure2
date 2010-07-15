@@ -322,6 +322,18 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage2D : public vtkViewImage
 
     virtual void Update (void)
     { this->UpdateOrientation(); }
+    
+    void SetDefaultInteractionStyle( void )
+    {
+      vtkInteractorStyleImage2D* t = vtkInteractorStyleImage2D::SafeDownCast (this->InteractorStyle);
+      if( t )
+        {
+        t->SetLeftButtonInteraction( vtkInteractorStyleImage2D::InteractionTypeWindowLevel );
+        t->SetRightButtonInteraction( vtkInteractorStyleImage2D::InteractionTypeZoom );
+        t->SetMiddleButtonInteraction( vtkInteractorStyleImage2D::InteractionTypePan );
+        t->SetWheelButtonInteraction( vtkInteractorStyleImage2D::InteractionTypeSlice );
+        }
+    }
 
     /**
        Change the interaction triggered by the mouse buttons.
@@ -438,9 +450,11 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage2D : public vtkViewImage
     PropertyContainerIterator prop_it = iProperty.begin();
     PropertyContainerIterator prop_end = iProperty.end();
 
-    for( ; contour_it != contour_end; ++contour_it, ++prop_it )
+    while( contour_it != contour_end ) 
     {
       this->AddDataSet( *contour_it, *prop_it, iIntersection );
+      ++contour_it;
+      ++prop_it;
     }
   }
 
@@ -451,9 +465,10 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage2D : public vtkViewImage
     ContourContainerIterator contour_it = iContours.begin();
     ContourContainerIterator contour_end = iContours.end();
 
-    for( ; contour_it != contour_end; ++contour_it )
+    while( contour_it != contour_end )
     {
       this->RemoveDataSet( *contour_it );
+      ++contour_it;
     }
 
   }
