@@ -67,123 +67,121 @@ namespace itk
 *
 */
 class QGOIO_EXPORT MultiFileReader : public LightProcessObject
-{
+  {
 public:
 
-
   /** Standard class typedefs.      */
-  typedef MultiFileReader             Self;
-  typedef LightProcessObject          Superclass;
-  typedef SmartPointer< Self >        Pointer;
-  typedef SmartPointer< const Self >  ConstPointer;
+  typedef MultiFileReader          Self;
+  typedef LightProcessObject       Superclass;
+  typedef SmartPointer<Self>       Pointer;
+  typedef SmartPointer<const Self> ConstPointer;
 
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
-  itkTypeMacro( MultiFileReader, LightProcessObject );
+  itkTypeMacro(MultiFileReader, LightProcessObject);
 
   enum FILETYPE
-  {
+    {
     BMP = 0,
     JPEG,
     PNG,
     TIFF,
     MHA,
     LSM
-  };
+    };
 
   /** \brief set the time point you want to extract and load in memory the
   corresponding XYZ volume. */
-  void SetTimePoint( const int& UserTimePoint );
+  void SetTimePoint(const int& UserTimePoint);
   /** \brief set the z slice you want to extract and load in memory the
   corresponding XYT volume. */
-  void SetZDepth( const int& iZ );
+  void SetZDepth(const int& iZ);
 
   /** \brief */
-  itkBooleanMacro( TimeBased );
-  itkSetMacro( TimeBased, bool );
+  itkBooleanMacro(TimeBased);
+  itkSetMacro(TimeBased, bool);
 
   /** \brief set the channel you want to extract
       and load in memory. -1 for all channels.         */
-  void SetChannel( const unsigned int& UserChannel );
+  void SetChannel(const unsigned int& UserChannel);
   void UpdateChannel();
 
   /** \brief set the input as a GoFigure format file list */
-  void SetInput( GoFigureFileInfoHelperMultiIndexContainer UserFileList );
+  void SetInput(GoFigureFileInfoHelperMultiIndexContainer UserFileList);
 
   /** \brief  */
-  itkSetMacro( FileType, FILETYPE );
+  itkSetMacro(FileType, FILETYPE);
 
   /** \brief  */
-  itkSetMacro( Dimensionality, int );
-  itkGetConstMacro( Dimensionality, int );
+  itkSetMacro(Dimensionality, int);
+  itkGetConstMacro(Dimensionality, int);
 
-  itkGetConstMacro( NumberOfTimePoints, int );
-  itkGetConstMacro( NumberOfSlices, int );
-  itkGetConstMacro( NumberOfChannels, int );
-
-  /** \brief  */
-  itkSetMacro( MultiChannelImages, bool );
-  itkBooleanMacro( MultiChannelImages );
+  itkGetConstMacro(NumberOfTimePoints, int);
+  itkGetConstMacro(NumberOfSlices, int);
+  itkGetConstMacro(NumberOfChannels, int);
 
   /** \brief  */
-  vtkImageData* GetOutput( ) const;
+  itkSetMacro(MultiChannelImages, bool);
+  itkBooleanMacro(MultiChannelImages);
+
+  /** \brief  */
+  vtkImageData* GetOutput() const;
 
   // Fake It. The output is not of itkDataObject type
   // so pipeline mechanism would not work.
-  void Update( );
+  void Update();
 
 //   void SetProgressBar( QProgressBar* PB );
 
-
   /** \brief Mandatory PrintSelf */
-  void PrintSelf( std::ostream& os, Indent indent) const;
+  void PrintSelf(std::ostream& os, Indent indent) const;
 
 protected:
-  MultiFileReader( );
-  virtual ~MultiFileReader( );
+  MultiFileReader();
+  virtual ~MultiFileReader();
 
 private:
   void ComputeUpdateFileList();
 
-  MultiFileReader(const Self&); //purposely not implemented
-  void operator=(const Self&); //purposely not implemented
+  MultiFileReader(const Self &); //purposely not implemented
+  void operator =(const Self&); //purposely not implemented
 
-  vtkImageData*  m_OutputImage;
-  GoFigureFileInfoHelperMultiIndexContainer  m_FileList;
-  std::list< std::string > m_UpdateFileList;
+  vtkImageData*                             m_OutputImage;
+  GoFigureFileInfoHelperMultiIndexContainer m_FileList;
+  std::list<std::string>                    m_UpdateFileList;
 //   FileListType   m_UpdateFileList;
-  FILETYPE       m_FileType;        // suppose same file format for all files
-  int            m_Dimensionality;  // suppose same dimensionality for all files
-  int            m_DataScalarType;  // suppose same type for all files
-  unsigned int   m_NumberOfChannels;// OfScalarComponents;
-  unsigned int   m_NumberOfTimePoints;
-  unsigned int   m_NumberOfSlices;
-  unsigned int   m_UpdateTimePoint;
-  unsigned int   m_UpdateZSlice;
-  unsigned int   m_UpdateChannel;
-  bool           m_MultiChannelImages;
-  bool           m_TimeBased;
+  FILETYPE     m_FileType;          // suppose same file format for all files
+  int          m_Dimensionality;    // suppose same dimensionality for all files
+  int          m_DataScalarType;    // suppose same type for all files
+  unsigned int m_NumberOfChannels;  // OfScalarComponents;
+  unsigned int m_NumberOfTimePoints;
+  unsigned int m_NumberOfSlices;
+  unsigned int m_UpdateTimePoint;
+  unsigned int m_UpdateZSlice;
+  unsigned int m_UpdateChannel;
+  bool         m_MultiChannelImages;
+  bool         m_TimeBased;
 
 //   QProgressBar*    m_ProgressBar;
 //   bool             m_IsProgressBarSet;
 
   virtual void GenerateData();
 
-  template< class TReader >
-  void Copy3DImage( vtkImageData* ioImage, const std::string& iFileName )
-    {
+  template<class TReader>
+  void Copy3DImage(vtkImageData* ioImage, const std::string& iFileName)
+  {
     typedef TReader ReaderType;
     ReaderType* reader = ReaderType::New();
-    reader->SetFileName( iFileName.c_str() );
-    reader->SetFileDimensionality( 3 );
+    reader->SetFileName(iFileName.c_str());
+    reader->SetFileDimensionality(3);
     reader->Update();
-    ioImage->ShallowCopy( reader->GetOutput() );
+    ioImage->ShallowCopy(reader->GetOutput());
     reader->Delete();
-    }
+  }
 
   void BuildVolumeFrom2DImages();
   void CreateVolumeFromOne3DImageFile();
-};
+  };
 
 } // end of namespace itk
 

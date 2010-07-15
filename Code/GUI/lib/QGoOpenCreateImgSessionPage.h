@@ -51,9 +51,8 @@
 #include <string>
 #include "vtkMySQLDatabase.h"
 
-
 class QGoOpenCreateImgSessionPage : public QWizardPage
-{
+  {
   Q_OBJECT
 
 public:
@@ -64,7 +63,7 @@ public:
   bool validatePage();
   int nextId() const;
   void cleanupPage();
-  mutable vtkMySQLDatabase* m_DatabaseConnector;
+  mutable vtkMySQLDatabase * m_DatabaseConnector;
 
 private:
 
@@ -75,7 +74,7 @@ private:
    */
   bool GetListImgSession();
 
-  void OpenDBConnection()const;
+  void OpenDBConnection() const;
 
   QLabel*       textDescription;
   QTextEdit*    lineDescription;
@@ -86,10 +85,10 @@ private:
   QRadioButton* CreateImgSessionRadioButton;
   QLineEdit*    lineImgSessionID;
   QLineEdit*    lineImgSessionName;
-  mutable bool  LeavingPage;
+  mutable bool LeavingPage;
 
-  QStringList m_ListImgSession;
-  std::map<std::string,std::string> m_MapImgSessionIDName;
+  QStringList                        m_ListImgSession;
+  std::map<std::string, std::string> m_MapImgSessionIDName;
 
 protected slots:
   /**
@@ -100,6 +99,5 @@ protected slots:
   void ChangeToCreateImgSessionDisplay();
   void ChangeToOpenImgSessionDisplay();
 
-
-};
+  };
 #endif

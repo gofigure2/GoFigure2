@@ -49,21 +49,21 @@
 
 QGOIO_EXPORT bool IsDatabaseOfGoFigureType(
   vtkMySQLDatabase* DataBaseConnector);
-QGOIO_EXPORT bool DoesDatabaseExit(std::string ServerName, std::string login, 
-  std::string Password, std::string DBName);
+QGOIO_EXPORT bool DoesDatabaseExit(std::string ServerName, std::string login,
+                                   std::string Password, std::string DBName);
 
 QGOIO_EXPORT void Query(vtkMySQLDatabase* DataBaseConnector,
-           std::string queryScript);
+                        std::string queryScript);
 
 QGOIO_EXPORT bool CreateGoFigureDataBase(
   std::string ServerName, std::string login,
-  std::string Password, std::string DBName );
+  std::string Password, std::string DBName);
 QGOIO_EXPORT bool CreateDataBase(vtkMySQLDatabase* DataBaseConnector,
-  std::string DBName);
+                                 std::string DBName);
 QGOIO_EXPORT void CreateTables(
-  vtkMySQLDatabase* DataBaseConnector );
+  vtkMySQLDatabase* DataBaseConnector);
 QGOIO_EXPORT void CreateForeignKeys(
-  vtkMySQLDatabase* DataBaseConnector );
+  vtkMySQLDatabase* DataBaseConnector);
 
 QGOIO_EXPORT std::string CellTypeTable();
 QGOIO_EXPORT std::string AuthorTable();

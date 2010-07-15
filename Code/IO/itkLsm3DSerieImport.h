@@ -56,31 +56,31 @@
 namespace itk
 {
 
-class ITK_EXPORT Lsm3DSerieImport: public LightProcessObject
-{
+class ITK_EXPORT Lsm3DSerieImport : public LightProcessObject
+  {
 public:
-  typedef std::vector < int >         IntVectorType;
-  typedef std::vector < std::string > StringVectorType;
+  typedef std::vector <int>         IntVectorType;
+  typedef std::vector <std::string> StringVectorType;
 
   /** Standard class typedefs.      */
-  typedef Lsm3DSerieImport            Self;
-  typedef LightProcessObject          Superclass;
-  typedef SmartPointer< Self >        Pointer;
-  typedef SmartPointer< const Self >  ConstPointer;
+  typedef Lsm3DSerieImport         Self;
+  typedef LightProcessObject       Superclass;
+  typedef SmartPointer<Self>       Pointer;
+  typedef SmartPointer<const Self> ConstPointer;
 
   /** Run-time type information (and related methods). */
-  itkTypeMacro( Lsm3DSerieImport, LightProcessObject );
+  itkTypeMacro(Lsm3DSerieImport, LightProcessObject);
 
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
 
-  void SetFileName( std::string name );
+  void SetFileName(std::string name);
 
   GoFigureFileInfoHelperMultiIndexContainer GetOutput();
 
   void Update(void);
 
-  void SetGroupId( int Uservalue );
+  void SetGroupId(int Uservalue);
 
 protected:
   Lsm3DSerieImport();
@@ -89,19 +89,18 @@ protected:
   void Glob();
   void CreateOutput();
 
-
 private:
-  Lsm3DSerieImport (const Self&); //purposely not implemented
-  void operator=(const Self&); //purposely not implemented
+  Lsm3DSerieImport (const Self &); //purposely not implemented
+  void operator =(const Self&); //purposely not implemented
 
-  IntVectorType    m_numGroupStart;
-  IntVectorType    m_numGroupLength;
-  int              m_GroupId;
-  StringVectorType m_FileNameS;
-  GoFigureFileInfoHelperMultiIndexContainer     m_OutputFileList;
-  std::string      m_FileName;
+  IntVectorType                             m_numGroupStart;
+  IntVectorType                             m_numGroupLength;
+  int                                       m_GroupId;
+  StringVectorType                          m_FileNameS;
+  GoFigureFileInfoHelperMultiIndexContainer m_OutputFileList;
+  std::string                               m_FileName;
 
-};
+  };
 
 // #ifndef ITK_MANUAL_INSTANTIATION
 // #include "itkLsm3DSerieImport.txx"

@@ -45,24 +45,23 @@
 #include <sstream>
 #include <string>
 
-
 //------------------------------------------------------------------------------
 bool IsDatabaseOfGoFigureType(vtkMySQLDatabase * DatabaseConnector)
 {
-  return (  DoesTableExist( DatabaseConnector, "bookmark" )
-    && DoesTableExist( DatabaseConnector, "contour" )
-    && DoesTableExist( DatabaseConnector, "lineage" )
-    && DoesTableExist( DatabaseConnector, "mesh" )
-    && DoesTableExist( DatabaseConnector, "image" )
-    && DoesTableExist( DatabaseConnector, "track" ) );
+  return (DoesTableExist(DatabaseConnector, "bookmark")
+          && DoesTableExist(DatabaseConnector, "contour")
+          && DoesTableExist(DatabaseConnector, "lineage")
+          && DoesTableExist(DatabaseConnector, "mesh")
+          && DoesTableExist(DatabaseConnector, "image")
+          && DoesTableExist(DatabaseConnector, "track"));
 
 }
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-bool DoesDatabaseExit(vtkMySQLDatabase * DataBaseConnector,std::string DBName)
+bool DoesDatabaseExit(vtkMySQLDatabase * DataBaseConnector, std::string DBName)
 {
-  vtkSQLQuery* query = DataBaseConnector->GetQueryInstance();
+  vtkSQLQuery*      query = DataBaseConnector->GetQueryInstance();
   std::stringstream queryScript;
   queryScript << "SHOW DATABASES LIKE '";
   queryScript << DBName;
@@ -73,12 +72,12 @@ bool DoesDatabaseExit(vtkMySQLDatabase * DataBaseConnector,std::string DBName)
     {
     itkGenericExceptionMacro(
     << "Does database already exist query failed."
-    << query->GetLastErrorText() );
+    << query->GetLastErrorText());
     query->Delete();
     return true;
     }
 
-  if( query->NextRow() )
+  if (query->NextRow())
     {
     query->Delete();
     return true;
@@ -93,32 +92,32 @@ bool DoesDatabaseExit(vtkMySQLDatabase * DataBaseConnector,std::string DBName)
 //------------------------------------------------------------------------------
 bool CreateGoFigureDataBase(
   std::string ServerName, std::string login,
-  std::string Password, std::string DBName )
+  std::string Password, std::string DBName)
 {
-  std::pair<bool,vtkMySQLDatabase*> ConnectionServer = ConnectToServer(
-    ServerName, login, Password );
+  std::pair<bool, vtkMySQLDatabase*> ConnectionServer = ConnectToServer(
+    ServerName, login, Password);
 
   if (!ConnectionServer.first)
     {
-    std::cout<<"Can not connect to the server"<<std::endl;
+    std::cout << "Can not connect to the server" << std::endl;
     std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
     std::cout << std::endl;
     return false;
     }
 
-    vtkMySQLDatabase* ServerConnector = ConnectionServer.second;
+  vtkMySQLDatabase* ServerConnector = ConnectionServer.second;
 
-  if (!DoesDatabaseExit(ServerConnector,DBName))
+  if (!DoesDatabaseExit(ServerConnector, DBName))
     {
-    bool DatabaseCreated = CreateDataBase(ServerConnector,DBName);
+    bool DatabaseCreated = CreateDataBase(ServerConnector, DBName);
     ServerConnector->Close();
     ServerConnector->Delete();
-    if(!DatabaseCreated)
+    if (!DatabaseCreated)
       {
       return false;
       }
-    std::pair< bool,vtkMySQLDatabase* > Connection = ConnectToDatabase(ServerName,
-      login,Password,DBName);
+    std::pair<bool, vtkMySQLDatabase*> Connection = ConnectToDatabase(ServerName,
+                                                                      login, Password, DBName);
     if (!Connection.first)
       {
       return false;
@@ -129,28 +128,28 @@ bool CreateGoFigureDataBase(
     DataBaseConnector->Close();
     DataBaseConnector->Delete();
     }
-   else
-     {
-     ServerConnector->Close();
-     ServerConnector->Delete();
-     return true;
-     }
+  else
+    {
+    ServerConnector->Close();
+    ServerConnector->Delete();
+    return true;
+    }
   return true;
 }
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-bool CreateDataBase( vtkMySQLDatabase* DataBaseConnector, std::string DBName )
+bool CreateDataBase(vtkMySQLDatabase* DataBaseConnector, std::string DBName)
 {
-  vtkSQLQuery* query = DataBaseConnector->GetQueryInstance();
+  vtkSQLQuery*      query = DataBaseConnector->GetQueryInstance();
   std::stringstream insertQuery;
-  insertQuery<< "CREATE DATABASE "<< DBName;
-  query->SetQuery( insertQuery.str().c_str() );
-  if ( !query->Execute() )
+  insertQuery << "CREATE DATABASE " << DBName;
+  query->SetQuery(insertQuery.str().c_str());
+  if (!query->Execute())
     {
     itkGenericExceptionMacro(
       << "Create query failed"
-      << query->GetLastErrorText() );
+      << query->GetLastErrorText());
     std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
     std::cout << std::endl;
     query->Delete();
@@ -158,38 +157,38 @@ bool CreateDataBase( vtkMySQLDatabase* DataBaseConnector, std::string DBName )
     }
   query->Delete();
   return true;
- }
+}
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-void CreateTables( vtkMySQLDatabase* DataBaseConnector )
+void CreateTables(vtkMySQLDatabase* DataBaseConnector)
 {
-  Query(DataBaseConnector,AuthorTable());
-  Query(DataBaseConnector,BookmarkTable());
-  Query(DataBaseConnector,CalculatedValueTable());
-  Query(DataBaseConnector,CellTypeTable());
-  Query(DataBaseConnector,ChannelTable());
-  Query(DataBaseConnector,ColorTableScript());
-  Query(DataBaseConnector,ContourTable());
-  Query(DataBaseConnector,ContourValueTable());
-  Query(DataBaseConnector,CoordinateTable());
-  Query(DataBaseConnector,ImageTable());
-  Query(DataBaseConnector,ImageValueTable());
-  Query(DataBaseConnector,ImagingSessionTable());
-  Query(DataBaseConnector,ImagingSessionValueTable());
-  Query(DataBaseConnector,IntensityTable());
-  Query(DataBaseConnector,LineageTable());
-  Query(DataBaseConnector,LineageValueTable());
-  Query(DataBaseConnector,MeshTable());
-  Query(DataBaseConnector,MeshValueTable());
-  Query(DataBaseConnector,MicroscopeTable());
-  Query(DataBaseConnector,ProjectTable());
-  Query(DataBaseConnector,SubCellularTypeTable());
-  Query(DataBaseConnector,TrackFamilyTable());
-  Query(DataBaseConnector,TrackTable());
-  Query(DataBaseConnector,TrackValueTable());
-  Query(DataBaseConnector,ValuePerVectorCoordTable());
-  Query(DataBaseConnector,ValueTypeTable());
+  Query(DataBaseConnector, AuthorTable());
+  Query(DataBaseConnector, BookmarkTable());
+  Query(DataBaseConnector, CalculatedValueTable());
+  Query(DataBaseConnector, CellTypeTable());
+  Query(DataBaseConnector, ChannelTable());
+  Query(DataBaseConnector, ColorTableScript());
+  Query(DataBaseConnector, ContourTable());
+  Query(DataBaseConnector, ContourValueTable());
+  Query(DataBaseConnector, CoordinateTable());
+  Query(DataBaseConnector, ImageTable());
+  Query(DataBaseConnector, ImageValueTable());
+  Query(DataBaseConnector, ImagingSessionTable());
+  Query(DataBaseConnector, ImagingSessionValueTable());
+  Query(DataBaseConnector, IntensityTable());
+  Query(DataBaseConnector, LineageTable());
+  Query(DataBaseConnector, LineageValueTable());
+  Query(DataBaseConnector, MeshTable());
+  Query(DataBaseConnector, MeshValueTable());
+  Query(DataBaseConnector, MicroscopeTable());
+  Query(DataBaseConnector, ProjectTable());
+  Query(DataBaseConnector, SubCellularTypeTable());
+  Query(DataBaseConnector, TrackFamilyTable());
+  Query(DataBaseConnector, TrackTable());
+  Query(DataBaseConnector, TrackValueTable());
+  Query(DataBaseConnector, ValuePerVectorCoordTable());
+  Query(DataBaseConnector, ValueTypeTable());
 }
 //----------------------------------------------------------------------------
 
@@ -197,71 +196,71 @@ void CreateTables( vtkMySQLDatabase* DataBaseConnector )
 void CreateForeignKeys(vtkMySQLDatabase* DataBaseConnector)
 {
 
-  Query(DataBaseConnector,ProjectFK());
-  Query(DataBaseConnector,ImagingSessionFKMicroscopeName());
-  Query(DataBaseConnector,ImagingSessionFKProjectName());
- // Query(DataBaseConnector,ImagingSessionFKCoordIDMin());
- // Query(DataBaseConnector,ImagingSessionFKCoordIDMax());
-  Query(DataBaseConnector,TrackFamilyFKTrackIDDaughter1());
-  Query(DataBaseConnector,TrackFamilyFKTrackIDDaughter2());
-  Query(DataBaseConnector,TrackFamilyFKTrackIDMother());
-  Query(DataBaseConnector,TrackFKColor());
-  Query(DataBaseConnector,TrackFKLineage());
-  Query(DataBaseConnector,TrackFKCoordIDMax());
-  Query(DataBaseConnector,TrackFKCoordIDMin());
-  Query(DataBaseConnector,TrackFKTrackFamily());
-  Query(DataBaseConnector,MeshFKImagingSession());
-  Query(DataBaseConnector,MeshFKTrackID());
-  Query(DataBaseConnector,MeshFKColor());
-  Query(DataBaseConnector,MeshFKCoordIDMin());
-  Query(DataBaseConnector,MeshFKCoordIDMax());
-  Query(DataBaseConnector,MeshFKSubCellType());
-  Query(DataBaseConnector,MeshFKCellType());
-  Query(DataBaseConnector,ContourFKImagingSession());
-  Query(DataBaseConnector,ContourFKCoordIDMin());
-  Query(DataBaseConnector,ContourFKCoordIDMax());
-  Query(DataBaseConnector,ContourFKMesh());
-  Query(DataBaseConnector,ChannelFKColor());
-  Query(DataBaseConnector,ChannelFKImagingSession());
-  Query(DataBaseConnector,ImageFKChannel());
-  Query(DataBaseConnector,ImageFKCoordIDMin());
-  Query(DataBaseConnector,ImageFKImagingSession());
-  Query(DataBaseConnector,LineageFKImagingSession());
-  Query(DataBaseConnector,LineageFKTrackRoot());
-  Query(DataBaseConnector,LineageFKColor());
-  Query(DataBaseConnector,LineageFKCoordIDMin());
-  Query(DataBaseConnector,LineageFKCoordIDMax());
-  Query(DataBaseConnector,BookmarkFKCoord());
-  Query(DataBaseConnector,BookmarkFKImagingSession());
-  Query(DataBaseConnector,IntensityFKChannel());
-  Query(DataBaseConnector,IntensityFKMesh());
-  Query(DataBaseConnector,ValueperVectorCoordFKCalculatedValue());
-  Query(DataBaseConnector,CalculatedValueFKValueType());
-  Query(DataBaseConnector,MeshValueFKCalculatedValue());
-  Query(DataBaseConnector,MeshValueFKMesh());
-  Query(DataBaseConnector,TrackValueFKCalculatedValue());
-  Query(DataBaseConnector,TrackValueFKTrack());
-  Query(DataBaseConnector,ImageValueFKCalculatedValue());
-  Query(DataBaseConnector,ImageValueFKImage());
-  Query(DataBaseConnector,ImagingSessionValueFKCalculatedValue());
-  Query(DataBaseConnector,ImagingSessionValueFKImagingSession());
-  Query(DataBaseConnector,ContourValueFKCalculatedValue());
-  Query(DataBaseConnector,ContourValueFKContour());
-  Query(DataBaseConnector,LineageValueFKCalculatedValue());
-  Query(DataBaseConnector,LineageValueFKLineage());
+  Query(DataBaseConnector, ProjectFK());
+  Query(DataBaseConnector, ImagingSessionFKMicroscopeName());
+  Query(DataBaseConnector, ImagingSessionFKProjectName());
+  // Query(DataBaseConnector,ImagingSessionFKCoordIDMin());
+  // Query(DataBaseConnector,ImagingSessionFKCoordIDMax());
+  Query(DataBaseConnector, TrackFamilyFKTrackIDDaughter1());
+  Query(DataBaseConnector, TrackFamilyFKTrackIDDaughter2());
+  Query(DataBaseConnector, TrackFamilyFKTrackIDMother());
+  Query(DataBaseConnector, TrackFKColor());
+  Query(DataBaseConnector, TrackFKLineage());
+  Query(DataBaseConnector, TrackFKCoordIDMax());
+  Query(DataBaseConnector, TrackFKCoordIDMin());
+  Query(DataBaseConnector, TrackFKTrackFamily());
+  Query(DataBaseConnector, MeshFKImagingSession());
+  Query(DataBaseConnector, MeshFKTrackID());
+  Query(DataBaseConnector, MeshFKColor());
+  Query(DataBaseConnector, MeshFKCoordIDMin());
+  Query(DataBaseConnector, MeshFKCoordIDMax());
+  Query(DataBaseConnector, MeshFKSubCellType());
+  Query(DataBaseConnector, MeshFKCellType());
+  Query(DataBaseConnector, ContourFKImagingSession());
+  Query(DataBaseConnector, ContourFKCoordIDMin());
+  Query(DataBaseConnector, ContourFKCoordIDMax());
+  Query(DataBaseConnector, ContourFKMesh());
+  Query(DataBaseConnector, ChannelFKColor());
+  Query(DataBaseConnector, ChannelFKImagingSession());
+  Query(DataBaseConnector, ImageFKChannel());
+  Query(DataBaseConnector, ImageFKCoordIDMin());
+  Query(DataBaseConnector, ImageFKImagingSession());
+  Query(DataBaseConnector, LineageFKImagingSession());
+  Query(DataBaseConnector, LineageFKTrackRoot());
+  Query(DataBaseConnector, LineageFKColor());
+  Query(DataBaseConnector, LineageFKCoordIDMin());
+  Query(DataBaseConnector, LineageFKCoordIDMax());
+  Query(DataBaseConnector, BookmarkFKCoord());
+  Query(DataBaseConnector, BookmarkFKImagingSession());
+  Query(DataBaseConnector, IntensityFKChannel());
+  Query(DataBaseConnector, IntensityFKMesh());
+  Query(DataBaseConnector, ValueperVectorCoordFKCalculatedValue());
+  Query(DataBaseConnector, CalculatedValueFKValueType());
+  Query(DataBaseConnector, MeshValueFKCalculatedValue());
+  Query(DataBaseConnector, MeshValueFKMesh());
+  Query(DataBaseConnector, TrackValueFKCalculatedValue());
+  Query(DataBaseConnector, TrackValueFKTrack());
+  Query(DataBaseConnector, ImageValueFKCalculatedValue());
+  Query(DataBaseConnector, ImageValueFKImage());
+  Query(DataBaseConnector, ImagingSessionValueFKCalculatedValue());
+  Query(DataBaseConnector, ImagingSessionValueFKImagingSession());
+  Query(DataBaseConnector, ContourValueFKCalculatedValue());
+  Query(DataBaseConnector, ContourValueFKContour());
+  Query(DataBaseConnector, LineageValueFKCalculatedValue());
+  Query(DataBaseConnector, LineageValueFKLineage());
 }
 //----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------
-void Query(vtkMySQLDatabase* DataBaseConnector,std::string queryScript)
+void Query(vtkMySQLDatabase* DataBaseConnector, std::string queryScript)
 {
   vtkSQLQuery* query = DataBaseConnector->GetQueryInstance();
-  query->SetQuery( queryScript.c_str() );
-  if ( !query->Execute() )
+  query->SetQuery(queryScript.c_str());
+  if (!query->Execute())
     {
     itkGenericExceptionMacro(
       << "Create query failed"
-      << query->GetLastErrorText() );
+      << query->GetLastErrorText());
     std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
     std::cout << std::endl;
     query->Delete();
@@ -269,7 +268,7 @@ void Query(vtkMySQLDatabase* DataBaseConnector,std::string queryScript)
     }
   query->Delete();
 
- }
+}
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
@@ -281,7 +280,7 @@ std::string CellTypeTable()
     `Name` TEXT NOT NULL ,\
     `Description` VARCHAR(1000) NULL ,\
     PRIMARY KEY (`CellTypeID`)\
-    );";
+    );"                                                                                                                                                                                                  ;
 }
 //------------------------------------------------------------------------------
 
@@ -296,7 +295,7 @@ std::string AuthorTable()
     `MiddleName` VARCHAR(45) NOT NULL DEFAULT '<none>' ,\
     UNIQUE INDEX UniqueAuthor (`LastName`,`FirstName`,`MiddleName`),\
     PRIMARY KEY (`authorID`)\
-    );";
+    );"                                                                                                                                                                                                                                                                                                                                        ;
 }
 //------------------------------------------------------------------------------
 
@@ -309,7 +308,7 @@ std::string SubCellularTypeTable()
     `Name` VARCHAR(45) NOT NULL ,\
     `Description` VARCHAR(1000) NULL ,\
     PRIMARY KEY (`SubCellularID`)\
-    );";
+    );"                                                                                                                                                                                                                       ;
 }
 //------------------------------------------------------------------------------
 
@@ -330,11 +329,11 @@ std::string CoordinateTable()
     `ZCoord` FLOAT UNSIGNED NOT NULL DEFAULT 0,\
     `TCoord` FLOAT UNSIGNED NOT NULL DEFAULT 0,\
     PRIMARY KEY (`CoordID`)\
-    );";
+    );"                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                ;
 }
-  //if needed:
-  // UNIQUE INDEX UniqueCoordinate (`PCoord`,`RCoord`,`CCoord`,`XTileCoord`,
-  // `YTileCoord`,`ZTileCoord`,`XCoord`,`YCoord`,`ZCoord`,`TCoord`),
+//if needed:
+// UNIQUE INDEX UniqueCoordinate (`PCoord`,`RCoord`,`CCoord`,`XTileCoord`,
+// `YTileCoord`,`ZTileCoord`,`XCoord`,`YCoord`,`ZCoord`,`TCoord`),
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
@@ -351,8 +350,8 @@ std::string ColorTableScript()
     `Description` VARCHAR(1000) NULL ,\
      UNIQUE INDEX UniqueColor (`Red`,`Green`,`Blue`,`Alpha`,`Name`),\
      PRIMARY KEY (`ColorID`)\
-     );";
- }
+     );"                                                                                                                                                                                                                                                                                                                                                                                                                                     ;
+}
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
@@ -362,7 +361,7 @@ std::string MicroscopeTable()
     "CREATE  TABLE IF NOT EXISTS `microscope` (\
     `Name` VARCHAR(255) NOT NULL ,\
     PRIMARY KEY (`Name`)\
-    );";
+    );"                                                                                                               ;
 }
 //------------------------------------------------------------------------------
 
@@ -378,7 +377,7 @@ std::string ProjectTable()
     `DatabaseVersion` VARCHAR(45) NOT NULL ,\
     PRIMARY KEY (`Name`) ,\
     INDEX `FK_Project_AuthorID` (`AuthorID` ASC)\
-    );";
+    );"                                                                                                                                                                                                                                                                                                                         ;
 }
 //------------------------------------------------------------------------------
 
@@ -410,7 +409,7 @@ std::string ImagingSessionTable()
     INDEX `FK_ImagingSession_CoordIDMin` (`CoordIDMin` ASC) ,\
     INDEX `FK_ImagingSession_ProjectName` (`ProjectName` ASC) ,\
     INDEX `FK_ImagingSession_MicroscopeName` (`MicroscopeName` ASC)\
-    );";
+    );"                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  ;
 }
 //------------------------------------------------------------------------------
 
@@ -427,7 +426,7 @@ std::string TrackFamilyTable()
     INDEX `FK_TrackFamily_TrackIDMother` (`TrackIDMother` ASC) ,\
     INDEX `FK_TrackFamily_TrackIDDaughter1` (`TrackIDDaughter1` ASC) ,\
     INDEX `FK_TrackFamily_TrackIDDaughter2` (`TrackIDDaughter2` ASC)\
-    );";
+    );"                                                                                                                                                                                                                                                                                                                                                                                                                                                                            ;
 }
 //------------------------------------------------------------------------------
 
@@ -451,7 +450,7 @@ std::string TrackTable()
     INDEX `FK_Track_CoordIDMin` (`CoordIDMin` ASC) ,\
     INDEX `FK_Track_TrackFamilyID` (`TrackFamilyID` ASC) ,\
     INDEX `FK_Track_ImagingSessionID` (`ImagingSessionID` ASC)\
-    );";
+    );"                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                ;
 }
 //------------------------------------------------------------------------------
 
@@ -477,7 +476,7 @@ std::string MeshTable()
     INDEX `FK_Mesh_TrackID` (`TrackID` ASC) ,\
     INDEX `FK_Mesh_ImagingSessionID` (`ImagingSessionID` ASC) ,\
     INDEX `FK_Mesh_SubCellularID` (`SubCellularID` ASC)\
-    );";
+    );"                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             ;
 }
 //------------------------------------------------------------------------------
 
@@ -498,7 +497,7 @@ std::string ContourTable()
     INDEX `FK_Contour_CoordIDMax` (`CoordIDMax` ASC) ,\
     INDEX `FK_Contour_CoordIDMin` (`CoordIDMin` ASC) ,\
     INDEX `FK_Contour_ImagingSessionID` (`ImagingSessionID` ASC) \
-    );";
+    );"                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           ;
 }
 //------------------------------------------------------------------------------
 
@@ -517,7 +516,7 @@ std::string ChannelTable()
     PRIMARY KEY (`ChannelID`) ,\
     INDEX `FK_Channel_ColorID` (`ColorID` ASC), \
     INDEX `FK_Channel_ImagingSessionID`(`ImagingSessionID` ASC)\
-    );";
+    );"                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              ;
 }
 //------------------------------------------------------------------------------
 
@@ -535,7 +534,7 @@ std::string ImageTable()
     INDEX `FK_Image_ImagingSessionID` (`ImagingSessionID` ASC) ,\
     INDEX `FK_Image_CoordIDMin` (`CoordIDMin` ASC) ,\
     INDEX `FK_Image_ChannelID` (`ChannelID` ASC)\
-    );";
+    );"                                                                                                                                                                                                                                                                                                                                                                                                                                          ;
 }
 //------------------------------------------------------------------------------
 
@@ -557,7 +556,7 @@ std::string LineageTable()
     INDEX `FK_Lineage_ColorID` (`ColorID` ASC) ,\
     INDEX `FK_Lineage_TrackIDRoot` (`TrackIDRoot` ASC) ,\
     INDEX `FK_Lineage_ImagingSessionID` (`ImagingSessionID` ASC)\
-    );";
+    );"                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  ;
 }
 //------------------------------------------------------------------------------
 
@@ -575,7 +574,7 @@ std::string BookmarkTable()
     PRIMARY KEY (`BookmarkID`) ,\
     INDEX `FK_Bookmark_ImagingSessionID` (`ImagingSessionID` ASC) ,\
     INDEX `FK_Bookmark_CoordID` (`CoordID` ASC) \
-    );";
+    );"                                                                                                                                                                                                                                                                                                                                                                                                                                           ;
 }
 //------------------------------------------------------------------------------
 
@@ -591,7 +590,7 @@ std::string IntensityTable()
     PRIMARY KEY (`IntensityID`) ,\
     INDEX `FK_Intensity_MeshID` (`MeshID` ASC) ,\
     INDEX `FK_Intensity_ChannelID` (`ChannelID` ASC) \
-    );";
+    );"                                                                                                                                                                                                                                                                                                                                      ;
 }
 //------------------------------------------------------------------------------
 
@@ -604,7 +603,7 @@ std::string ValueTypeTable()
     `Name` VARCHAR(45) NOT NULL ,\
     `Description` VARCHAR(1000) NULL ,\
     PRIMARY KEY (`ValueTypeID`) \
-    );";
+    );"                                                                                                                                                                                                              ;
 }
 //------------------------------------------------------------------------------
 
@@ -617,7 +616,7 @@ std::string CalculatedValueTable()
     `ValueTypeID` INT NOT NULL ,\
     PRIMARY KEY (`CalculatedValueID`) ,\
     INDEX `FK_CalculatedValue_ValueTypeID` (`ValueTypeID` ASC)\
-    );";
+    );"                                                                                                                                                                                                                                                        ;
 }
 //------------------------------------------------------------------------------
 
@@ -633,7 +632,7 @@ std::string ValuePerVectorCoordTable()
     `CalculatedValueID` INT NOT NULL ,\
     PRIMARY KEY (`ValuePerVectorCoordID`) ,\
     INDEX `FK_ValuePerVectorCoord_CalculatedValueID` (`CalculatedValueID` ASC) \
-    );";
+    );"                                                                                                                                                                                                                                                                                                                                                                                                     ;
 }
 //------------------------------------------------------------------------------
 
@@ -647,7 +646,7 @@ std::string MeshValueTable()
     PRIMARY KEY (`CalculatedValueID`, `MeshID`),\
     INDEX `FK_MeshValue_MeshID` (`MeshID` ASC) ,\
     INDEX `FK_MeshValue_CalculatedValueID` (`CalculatedValueID` ASC)\
-    );";
+    );"                                                                                                                                                                                                                                                                                               ;
 }
 //------------------------------------------------------------------------------
 
@@ -661,7 +660,7 @@ std::string TrackValueTable()
     PRIMARY KEY (`TrackID`, `CalculatedValueID`) ,\
     INDEX `FK_TrackValue_TrackID` (`TrackID` ASC) ,\
     INDEX `CalculatedValueID` (`CalculatedValueID` ASC)\
-    );";
+    );"                                                                                                                                                                                                                                                                                         ;
 }
 //------------------------------------------------------------------------------
 
@@ -675,7 +674,7 @@ std::string ImageValueTable()
     PRIMARY KEY (`ImageID`, `CalculatedValueID`),\
     INDEX `FK_ImageValue_ImageID` (`ImageID` ASC) ,\
     INDEX `FK_ImageValue_CalculatedValueID` (`CalculatedValueID` ASC)\
-    );";
+    );"                                                                                                                                                                                                                                                                                                      ;
 }
 //------------------------------------------------------------------------------
 
@@ -689,7 +688,7 @@ std::string ImagingSessionValueTable()
     PRIMARY KEY (`ImagingSessionID`, `CalculatedValueID`) ,\
     INDEX `ImagingSessionID` (`ImagingSessionID` ASC) ,\
     INDEX `CalculatedValueID` (`CalculatedValueID` ASC)\
-    );";
+    );"                                                                                                                                                                                                                                                                                                                        ;
 }
 //------------------------------------------------------------------------------
 
@@ -703,7 +702,7 @@ std::string ContourValueTable()
     PRIMARY KEY (`ContourID`, `CalculatedValueID`),\
     INDEX `FK_ContourValue_ContourID` (`ContourID` ASC) ,\
     INDEX `FK_ContourValue_CalculatedValueID` (`CalculatedValueID` ASC)\
-    );";
+    );"                                                                                                                                                                                                                                                                                                                    ;
 }
 //------------------------------------------------------------------------------
 
@@ -717,7 +716,7 @@ std::string LineageValueTable()
     PRIMARY KEY (`LineageID`, `CalculatedValueID`),\
     INDEX `FK_LineageValue_LineageID` (`LineageID` ASC) ,\
     INDEX `FK_LineageValue_CalculatedValueID` (`CalculatedValueID` ASC)\
-    );";
+    );"                                                                                                                                                                                                                                                                                                                    ;
 }
 //------------------------------------------------------------------------------
 
@@ -731,8 +730,8 @@ std::string ProjectFK()
      REFERENCES `author`(`AuthorID`)\
      ON DELETE NO ACTION\
      ON UPDATE NO ACTION\
-     ;";
- }
+     ;"                                                                                                                                                                                                   ;
+}
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
@@ -745,8 +744,8 @@ std::string ImagingSessionFKCoordIDMax()
      REFERENCES `coordinate`(`CoordID`)\
      ON DELETE NO ACTION\
      ON UPDATE NO ACTION\
-     ;";
- }
+     ;"                                                                                                                                                                                                                     ;
+}
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
@@ -759,7 +758,7 @@ std::string ImagingSessionFKCoordIDMin()
      REFERENCES `coordinate`(`CoordID`)\
      ON DELETE NO ACTION\
      ON UPDATE NO ACTION\
-     ;";
+     ;"                                                                                                                                                                                                                     ;
 }
 //------------------------------------------------------------------------------
 
@@ -767,13 +766,13 @@ std::string ImagingSessionFKCoordIDMin()
 std::string ImagingSessionFKProjectName()
 {
   return
-     "ALTER TABLE `imagingsession` ADD\
+    "ALTER TABLE `imagingsession` ADD\
       CONSTRAINT `FK_ImagingSession_ProjectName`\
       FOREIGN KEY (`ProjectName`)\
       REFERENCES `project`(`Name`)\
       ON DELETE NO ACTION\
       ON UPDATE NO ACTION\
-      ;";
+      ;"                                                                                                                                                                                                                      ;
 }
 //------------------------------------------------------------------------------
 
@@ -781,13 +780,13 @@ std::string ImagingSessionFKProjectName()
 std::string ImagingSessionFKMicroscopeName()
 {
   return
-     "ALTER TABLE `imagingsession` ADD\
+    "ALTER TABLE `imagingsession` ADD\
       CONSTRAINT `FK_ImagingSession_MicroscopeName`\
       FOREIGN KEY (`MicroscopeName`)\
       REFERENCES `microscope`(`Name`)\
       ON DELETE NO ACTION\
       ON UPDATE NO ACTION\
-      ;";
+      ;"                                                                                                                                                                                                                               ;
 }
 //------------------------------------------------------------------------------
 
@@ -795,13 +794,13 @@ std::string ImagingSessionFKMicroscopeName()
 std::string TrackFamilyFKTrackIDMother()
 {
   return
-     "ALTER TABLE `trackfamily` ADD\
+    "ALTER TABLE `trackfamily` ADD\
       CONSTRAINT `FK_TrackFamily_TrackIDMother`\
       FOREIGN KEY (`TrackIDMother`)\
       REFERENCES `track`(`TrackID`)\
       ON DELETE NO ACTION\
       ON UPDATE NO ACTION\
-      ;";
+      ;"                                                                                                                                                                                                                     ;
 }
 //------------------------------------------------------------------------------
 
@@ -809,13 +808,13 @@ std::string TrackFamilyFKTrackIDMother()
 std::string TrackFamilyFKTrackIDDaughter1()
 {
   return
-     "ALTER TABLE `trackfamily` ADD\
+    "ALTER TABLE `trackfamily` ADD\
       CONSTRAINT `FK_TrackFamily_TrackIDDaughter1`\
       FOREIGN KEY (`TrackIDDaughter1`)\
       REFERENCES `track`(`TrackID`)\
       ON DELETE NO ACTION\
       ON UPDATE NO ACTION\
-      ;";
+      ;"                                                                                                                                                                                                                           ;
 }
 //------------------------------------------------------------------------------
 
@@ -823,13 +822,13 @@ std::string TrackFamilyFKTrackIDDaughter1()
 std::string TrackFamilyFKTrackIDDaughter2()
 {
   return
-     "ALTER TABLE `trackfamily` ADD\
+    "ALTER TABLE `trackfamily` ADD\
       CONSTRAINT `FK_TrackFamily_TrackIDDaughter2`\
       FOREIGN KEY (`TrackIDDaughter2`)\
       REFERENCES `track`(`TrackID`)\
       ON DELETE NO ACTION\
       ON UPDATE NO ACTION\
-      ;";
+      ;"                                                                                                                                                                                                                           ;
 }
 //------------------------------------------------------------------------------
 
@@ -837,13 +836,13 @@ std::string TrackFamilyFKTrackIDDaughter2()
 std::string TrackFKColor()
 {
   return
-   "ALTER TABLE `track` ADD\
+    "ALTER TABLE `track` ADD\
     CONSTRAINT `FK_Track_ColorID`\
     FOREIGN KEY (`ColorID`)\
     REFERENCES `color`(`ColorID`)\
     ON DELETE NO ACTION\
     ON UPDATE NO ACTION\
-    ;";
+    ;"                                                                                                                                                                                   ;
 }
 //------------------------------------------------------------------------------
 
@@ -851,13 +850,13 @@ std::string TrackFKColor()
 std::string TrackFKLineage()
 {
   return
-   "ALTER TABLE `track` ADD\
+    "ALTER TABLE `track` ADD\
     CONSTRAINT `FK_Track_LineageID`\
     FOREIGN KEY (`LineageID`)\
     REFERENCES `lineage`(`LineageID`)\
     ON DELETE NO ACTION\
     ON UPDATE NO ACTION\
-    ;";
+    ;"                                                                                                                                                                                           ;
 }
 //------------------------------------------------------------------------------
 
@@ -865,13 +864,13 @@ std::string TrackFKLineage()
 std::string TrackFKCoordIDMax()
 {
   return
-   "ALTER TABLE `track` ADD\
+    "ALTER TABLE `track` ADD\
     CONSTRAINT `FK_Track_CoordIDMax`\
     FOREIGN KEY (`CoordIDMax`)\
     REFERENCES `coordinate`(`CoordID`)\
     ON DELETE NO ACTION\
     ON UPDATE NO ACTION\
-    ;";
+    ;"                                                                                                                                                                                              ;
 }
 //------------------------------------------------------------------------------
 
@@ -879,13 +878,13 @@ std::string TrackFKCoordIDMax()
 std::string TrackFKCoordIDMin()
 {
   return
-   "ALTER TABLE `track` ADD\
+    "ALTER TABLE `track` ADD\
     CONSTRAINT `FK_Track_CoordIDMin`\
     FOREIGN KEY (`CoordIDMin`)\
     REFERENCES `coordinate`(`CoordID`)\
     ON DELETE NO ACTION\
     ON UPDATE NO ACTION\
-    ;";
+    ;"                                                                                                                                                                                              ;
 }
 //------------------------------------------------------------------------------
 
@@ -893,13 +892,13 @@ std::string TrackFKCoordIDMin()
 std::string TrackFKTrackFamily()
 {
   return
-   "ALTER TABLE `track` ADD\
+    "ALTER TABLE `track` ADD\
     CONSTRAINT `FK_Track_TrackFamilyID`\
     FOREIGN KEY (`TrackFamilyID`)\
     REFERENCES `trackfamily`(`TrackFamilyID`)\
     ON DELETE NO ACTION\
     ON UPDATE NO ACTION\
-    ;";
+    ;"                                                                                                                                                                                                           ;
 }
 //------------------------------------------------------------------------------
 
@@ -907,13 +906,13 @@ std::string TrackFKTrackFamily()
 std::string TrackFKImagingSession()
 {
   return
-   "ALTER TABLE `track` ADD\
+    "ALTER TABLE `track` ADD\
     CONSTRAINT `FK_Track_ImagingSessionID`\
     FOREIGN KEY (`ImagingSessionID`)\
     REFERENCES `imagingsession`(`ImagingSessionID`)\
     ON DELETE NO ACTION\
     ON UPDATE NO ACTION\
-    ;";
+    ;"                                                                                                                                                                                                                       ;
 }
 //------------------------------------------------------------------------------
 
@@ -921,13 +920,13 @@ std::string TrackFKImagingSession()
 std::string MeshFKCellType()
 {
   return
-   "ALTER TABLE `mesh` ADD\
+    "ALTER TABLE `mesh` ADD\
     CONSTRAINT `FK_Mesh_CellTypeID`\
     FOREIGN KEY (`CellTypeID`)\
     REFERENCES `celltype`(`CellTypeID`)\
     ON DELETE NO ACTION\
     ON UPDATE NO ACTION\
-    ;";
+    ;"                                                                                                                                                                                             ;
 }
 //------------------------------------------------------------------------------
 
@@ -935,13 +934,13 @@ std::string MeshFKCellType()
 std::string MeshFKSubCellType()
 {
   return
-   "ALTER TABLE `mesh` ADD\
+    "ALTER TABLE `mesh` ADD\
     CONSTRAINT `FK_Mesh_SubCellularID`\
     FOREIGN KEY (`SubCellularID`)\
     REFERENCES `subcellulartype`(`SubCellularID`)\
     ON DELETE NO ACTION\
     ON UPDATE NO ACTION\
-    ;";
+    ;"                                                                                                                                                                                                             ;
 }
 //------------------------------------------------------------------------------
 
@@ -949,13 +948,13 @@ std::string MeshFKSubCellType()
 std::string MeshFKCoordIDMax()
 {
   return
-   "ALTER TABLE `mesh` ADD\
+    "ALTER TABLE `mesh` ADD\
     CONSTRAINT `FK_Mesh_CoordIDMax`\
     FOREIGN KEY (`CoordIDMax`)\
     REFERENCES `coordinate`(`CoordID`)\
     ON DELETE NO ACTION\
     ON UPDATE NO ACTION\
-    ;";
+    ;"                                                                                                                                                                                            ;
 }
 //------------------------------------------------------------------------------
 
@@ -963,13 +962,13 @@ std::string MeshFKCoordIDMax()
 std::string MeshFKCoordIDMin()
 {
   return
-   "ALTER TABLE `mesh` ADD\
+    "ALTER TABLE `mesh` ADD\
     CONSTRAINT `FK_Mesh_CoordIDMin`\
     FOREIGN KEY (`CoordIDMin`)\
     REFERENCES `coordinate`(`CoordID`)\
     ON DELETE NO ACTION\
     ON UPDATE NO ACTION\
-    ;";
+    ;"                                                                                                                                                                                            ;
 }
 //------------------------------------------------------------------------------
 
@@ -977,13 +976,13 @@ std::string MeshFKCoordIDMin()
 std::string MeshFKColor()
 {
   return
-   "ALTER TABLE `mesh` ADD\
+    "ALTER TABLE `mesh` ADD\
     CONSTRAINT `FK_Mesh_ColorID`\
     FOREIGN KEY (`ColorID`)\
     REFERENCES `color`(`ColorID`)\
     ON DELETE NO ACTION\
     ON UPDATE NO ACTION\
-    ;";
+    ;"                                                                                                                                                                                 ;
 }
 //------------------------------------------------------------------------------
 
@@ -991,13 +990,13 @@ std::string MeshFKColor()
 std::string MeshFKTrackID()
 {
   return
-   "ALTER TABLE `mesh` ADD\
+    "ALTER TABLE `mesh` ADD\
     CONSTRAINT `FK_Mesh_TrackID`\
     FOREIGN KEY (`TrackID`)\
     REFERENCES `track`(`TrackID`)\
     ON DELETE NO ACTION\
     ON UPDATE NO ACTION\
-    ;";
+    ;"                                                                                                                                                                                 ;
 }
 //------------------------------------------------------------------------------
 
@@ -1005,13 +1004,13 @@ std::string MeshFKTrackID()
 std::string MeshFKImagingSession()
 {
   return
-   "ALTER TABLE `mesh` ADD\
+    "ALTER TABLE `mesh` ADD\
     CONSTRAINT `FK_Mesh_ImagingSessionID`\
     FOREIGN KEY (`ImagingSessionID`)\
     REFERENCES `imagingSession`(`ImagingSessionID`)\
     ON DELETE NO ACTION\
     ON UPDATE NO ACTION\
-    ;";
+    ;"                                                                                                                                                                                                                     ;
 }
 //------------------------------------------------------------------------------
 
@@ -1019,13 +1018,13 @@ std::string MeshFKImagingSession()
 std::string ContourFKMesh()
 {
   return
-   "ALTER TABLE `contour` ADD\
+    "ALTER TABLE `contour` ADD\
     CONSTRAINT `FK_Contour_MeshID`\
     FOREIGN KEY (`MeshID`)\
     REFERENCES `mesh`(`MeshID`)\
     ON DELETE NO ACTION\
     ON UPDATE NO ACTION\
-    ;";
+    ;"                                                                                                                                                                                   ;
 }
 //------------------------------------------------------------------------------
 
@@ -1033,13 +1032,13 @@ std::string ContourFKMesh()
 std::string ContourFKCoordIDMax()
 {
   return
-   "ALTER TABLE `contour` ADD\
+    "ALTER TABLE `contour` ADD\
     CONSTRAINT `FK_Contour_CoordIDMax`\
     FOREIGN KEY (`CoordIDMax`)\
     REFERENCES `coordinate`(`CoordID`)\
     ON DELETE NO ACTION\
     ON UPDATE NO ACTION\
-    ;";
+    ;"                                                                                                                                                                                                  ;
 }
 //------------------------------------------------------------------------------
 
@@ -1047,13 +1046,13 @@ std::string ContourFKCoordIDMax()
 std::string ContourFKCoordIDMin()
 {
   return
-   "ALTER TABLE `contour` ADD\
+    "ALTER TABLE `contour` ADD\
     CONSTRAINT `FK_Contour_CoordIDMin`\
     FOREIGN KEY (`CoordIDMin`)\
     REFERENCES `coordinate`(`CoordID`)\
     ON DELETE NO ACTION\
     ON UPDATE NO ACTION\
-    ;";
+    ;"                                                                                                                                                                                                  ;
 }
 //------------------------------------------------------------------------------
 
@@ -1061,13 +1060,13 @@ std::string ContourFKCoordIDMin()
 std::string ContourFKImagingSession()
 {
   return
-   "ALTER TABLE `contour` ADD\
+    "ALTER TABLE `contour` ADD\
     CONSTRAINT `FK_Contour_ImagingSessionID`\
     FOREIGN KEY (`ImagingSessionID`)\
     REFERENCES `imagingsession`(`ImagingSessionID`)\
     ON DELETE NO ACTION\
     ON UPDATE NO ACTION\
-    ;";
+    ;"                                                                                                                                                                                                                           ;
 }
 //------------------------------------------------------------------------------
 
@@ -1075,13 +1074,13 @@ std::string ContourFKImagingSession()
 std::string ChannelFKColor()
 {
   return
-   "ALTER TABLE `channel` ADD\
+    "ALTER TABLE `channel` ADD\
     CONSTRAINT `FK_Channel_ColorID`\
     FOREIGN KEY (`ColorID`)\
     REFERENCES `color`(`ColorID`)\
     ON DELETE NO ACTION\
     ON UPDATE NO ACTION\
-    ;";
+    ;"                                                                                                                                                                                       ;
 }
 //------------------------------------------------------------------------------
 
@@ -1089,13 +1088,13 @@ std::string ChannelFKColor()
 std::string ChannelFKImagingSession()
 {
   return
-   "ALTER TABLE `channel` ADD\
+    "ALTER TABLE `channel` ADD\
     CONSTRAINT `FK_Channel_ImagingSessionID`\
     FOREIGN KEY (`ImagingSessionID`)\
     REFERENCES `imagingsession`(`ImagingSessionID`)\
     ON DELETE NO ACTION\
     ON UPDATE NO ACTION\
-    ;";
+    ;"                                                                                                                                                                                                                           ;
 }
 //------------------------------------------------------------------------------
 
@@ -1103,13 +1102,13 @@ std::string ChannelFKImagingSession()
 std::string ImageFKImagingSession()
 {
   return
-   "ALTER TABLE `image` ADD\
+    "ALTER TABLE `image` ADD\
     CONSTRAINT `FK_Image_ImagingSessionID`\
     FOREIGN KEY (`ImagingSessionID`)\
     REFERENCES `imagingsession`(`ImagingSessionID`)\
     ON DELETE NO ACTION\
     ON UPDATE NO ACTION\
-    ;";
+    ;"                                                                                                                                                                                                                       ;
 }
 //------------------------------------------------------------------------------
 
@@ -1117,13 +1116,13 @@ std::string ImageFKImagingSession()
 std::string ImageFKCoordIDMin()
 {
   return
-   "ALTER TABLE `image` ADD\
+    "ALTER TABLE `image` ADD\
     CONSTRAINT `FK_Image_CoordIDMin`\
     FOREIGN KEY (`CoordIDMin`)\
     REFERENCES `coordinate`(`CoordID`)\
     ON DELETE NO ACTION\
     ON UPDATE NO ACTION\
-    ;";
+    ;"                                                                                                                                                                                              ;
 }
 //------------------------------------------------------------------------------
 
@@ -1131,13 +1130,13 @@ std::string ImageFKCoordIDMin()
 std::string ImageFKChannel()
 {
   return
-   "ALTER TABLE `image` ADD\
+    "ALTER TABLE `image` ADD\
     CONSTRAINT `FK_Image_ChannelID`\
     FOREIGN KEY (`ChannelID`)\
     REFERENCES `channel`(`ChannelID`)\
     ON DELETE NO ACTION\
     ON UPDATE NO ACTION\
-    ;";
+    ;"                                                                                                                                                                                           ;
 }
 //------------------------------------------------------------------------------
 
@@ -1145,13 +1144,13 @@ std::string ImageFKChannel()
 std::string LineageFKCoordIDMax()
 {
   return
-   "ALTER TABLE `lineage` ADD\
+    "ALTER TABLE `lineage` ADD\
     CONSTRAINT `FK_Lineage_CoordIDMax`\
     FOREIGN KEY (`CoordIDMax`)\
     REFERENCES `coordinate`(`CoordID`)\
     ON DELETE NO ACTION\
     ON UPDATE NO ACTION\
-    ;";
+    ;"                                                                                                                                                                                                  ;
 }
 //------------------------------------------------------------------------------
 
@@ -1159,13 +1158,13 @@ std::string LineageFKCoordIDMax()
 std::string LineageFKCoordIDMin()
 {
   return
-   "ALTER TABLE `lineage` ADD\
+    "ALTER TABLE `lineage` ADD\
     CONSTRAINT `FK_Lineage_CoordIDMin`\
     FOREIGN KEY (`CoordIDMin`)\
     REFERENCES `coordinate`(`CoordID`)\
     ON DELETE NO ACTION\
     ON UPDATE NO ACTION\
-    ;";
+    ;"                                                                                                                                                                                                  ;
 }
 //------------------------------------------------------------------------------
 
@@ -1173,13 +1172,13 @@ std::string LineageFKCoordIDMin()
 std::string LineageFKColor()
 {
   return
-   "ALTER TABLE `lineage` ADD\
+    "ALTER TABLE `lineage` ADD\
     CONSTRAINT `FK_Lineage_ColorID`\
     FOREIGN KEY (`ColorID`)\
     REFERENCES `color`(`ColorID`)\
     ON DELETE NO ACTION\
     ON UPDATE NO ACTION\
-    ;";
+    ;"                                                                                                                                                                                       ;
 }
 //------------------------------------------------------------------------------
 
@@ -1187,13 +1186,13 @@ std::string LineageFKColor()
 std::string LineageFKTrackRoot()
 {
   return
-   "ALTER TABLE `lineage` ADD\
+    "ALTER TABLE `lineage` ADD\
     CONSTRAINT `FK_Lineage_TrackIDRoot`\
     FOREIGN KEY (`TrackIDRoot`)\
     REFERENCES `track`(`TrackID`)\
     ON DELETE NO ACTION\
     ON UPDATE NO ACTION\
-    ;";
+    ;"                                                                                                                                                                                               ;
 }
 //------------------------------------------------------------------------------
 
@@ -1201,13 +1200,13 @@ std::string LineageFKTrackRoot()
 std::string LineageFKImagingSession()
 {
   return
-   "ALTER TABLE `lineage` ADD\
+    "ALTER TABLE `lineage` ADD\
     CONSTRAINT `FK_Lineage_ImagingSessionID`\
     FOREIGN KEY (`ImagingSessionID`)\
     REFERENCES `imagingsession`(`ImagingSessionID`)\
     ON DELETE NO ACTION\
     ON UPDATE NO ACTION\
-    ;";
+    ;"                                                                                                                                                                                                                           ;
 }
 //------------------------------------------------------------------------------
 
@@ -1215,13 +1214,13 @@ std::string LineageFKImagingSession()
 std::string BookmarkFKImagingSession()
 {
   return
-   "ALTER TABLE `bookmark` ADD\
+    "ALTER TABLE `bookmark` ADD\
     CONSTRAINT `FK_Bookmark_ImagingSessionID`\
     FOREIGN KEY (`ImagingSessionID`)\
     REFERENCES `imagingsession`(`ImagingSessionID`)\
     ON DELETE NO ACTION\
     ON UPDATE NO ACTION\
-    ;";
+    ;"                                                                                                                                                                                                                             ;
 }
 //------------------------------------------------------------------------------
 
@@ -1229,13 +1228,13 @@ std::string BookmarkFKImagingSession()
 std::string BookmarkFKCoord()
 {
   return
-   "ALTER TABLE `bookmark` ADD\
+    "ALTER TABLE `bookmark` ADD\
     CONSTRAINT `FK_Bookmark_CoordID`\
     FOREIGN KEY (`CoordID`)\
     REFERENCES `coordinate`(`CoordID`)\
     ON DELETE NO ACTION\
     ON UPDATE NO ACTION\
-    ;";
+    ;"                                                                                                                                                                                              ;
 }
 //------------------------------------------------------------------------------
 
@@ -1243,13 +1242,13 @@ std::string BookmarkFKCoord()
 std::string IntensityFKMesh()
 {
   return
-   "ALTER TABLE `intensity` ADD\
+    "ALTER TABLE `intensity` ADD\
     CONSTRAINT `FK_Intensity_MeshID`\
     FOREIGN KEY (`MeshID`)\
     REFERENCES `mesh`(`MeshID`)\
     ON DELETE NO ACTION\
     ON UPDATE NO ACTION\
-    ;";
+    ;"                                                                                                                                                                                       ;
 }
 //------------------------------------------------------------------------------
 
@@ -1257,13 +1256,13 @@ std::string IntensityFKMesh()
 std::string IntensityFKChannel()
 {
   return
-   "ALTER TABLE `intensity` ADD\
+    "ALTER TABLE `intensity` ADD\
     CONSTRAINT `FK_Intensity_ChannelID`\
     FOREIGN KEY (`ChannelID`)\
     REFERENCES `channel`(`ChannelID`)\
     ON DELETE NO ACTION\
     ON UPDATE NO ACTION\
-    ;";
+    ;"                                                                                                                                                                                                   ;
 }
 //------------------------------------------------------------------------------
 
@@ -1271,13 +1270,13 @@ std::string IntensityFKChannel()
 std::string CalculatedValueFKValueType()
 {
   return
-   "ALTER TABLE `calculatedvalue` ADD\
+    "ALTER TABLE `calculatedvalue` ADD\
     CONSTRAINT `FK_CalculatedValue_ValueTypeID`\
     FOREIGN KEY (`ValueTypeID`)\
     REFERENCES `valuetype`(`ValueTypeID`)\
     ON DELETE NO ACTION\
     ON UPDATE NO ACTION\
-    ;";
+    ;"                                                                                                                                                                                                                       ;
 }
 //------------------------------------------------------------------------------
 
@@ -1285,13 +1284,13 @@ std::string CalculatedValueFKValueType()
 std::string ValueperVectorCoordFKCalculatedValue()
 {
   return
-   "ALTER TABLE `valuepervectorcoord` ADD\
+    "ALTER TABLE `valuepervectorcoord` ADD\
     CONSTRAINT `FK_ValuePerVectorCoord_CalculatedValueID`\
     FOREIGN KEY (`CalculatedValueID`)\
     REFERENCES `calculatedvalue`(`CalculatedValueID`)\
     ON DELETE NO ACTION\
     ON UPDATE NO ACTION\
-    ;";
+    ;"                                                                                                                                                                                                                                                       ;
 }
 //------------------------------------------------------------------------------
 
@@ -1299,13 +1298,13 @@ std::string ValueperVectorCoordFKCalculatedValue()
 std::string MeshValueFKMesh()
 {
   return
-   "ALTER TABLE `meshvalue` ADD\
+    "ALTER TABLE `meshvalue` ADD\
     CONSTRAINT `FK_MeshValue_MeshID`\
     FOREIGN KEY (`MeshID`)\
     REFERENCES `mesh`(`MeshID`)\
     ON DELETE NO ACTION\
     ON UPDATE NO ACTION\
-    ;";
+    ;"                                                                                                                                                                                       ;
 }
 //------------------------------------------------------------------------------
 
@@ -1313,13 +1312,13 @@ std::string MeshValueFKMesh()
 std::string MeshValueFKCalculatedValue()
 {
   return
-   "ALTER TABLE `meshvalue` ADD\
+    "ALTER TABLE `meshvalue` ADD\
     CONSTRAINT `FK_MeshValue_CalculatedValueID`\
     FOREIGN KEY (`CalculatedValueID`)\
     REFERENCES `calculatedvalue`(`CalculatedValueID`)\
     ON DELETE NO ACTION\
     ON UPDATE NO ACTION\
-    ;";
+    ;"                                                                                                                                                                                                                                   ;
 }
 //------------------------------------------------------------------------------
 
@@ -1327,13 +1326,13 @@ std::string MeshValueFKCalculatedValue()
 std::string TrackValueFKTrack()
 {
   return
-   "ALTER TABLE `trackvalue` ADD\
+    "ALTER TABLE `trackvalue` ADD\
     CONSTRAINT `FK_TrackValue_TrackID`\
     FOREIGN KEY (`TrackID`)\
     REFERENCES `track`(`TrackID`)\
     ON DELETE NO ACTION\
     ON UPDATE NO ACTION\
-    ;";
+    ;"                                                                                                                                                                                             ;
 }
 //------------------------------------------------------------------------------
 
@@ -1341,13 +1340,13 @@ std::string TrackValueFKTrack()
 std::string TrackValueFKCalculatedValue()
 {
   return
-   "ALTER TABLE `trackvalue` ADD\
+    "ALTER TABLE `trackvalue` ADD\
     CONSTRAINT `FK_TrackValue_CalculatedValueID`\
     FOREIGN KEY (`CalculatedValueID`)\
     REFERENCES `calculatedvalue`(`CalculatedValueID`)\
     ON DELETE NO ACTION\
     ON UPDATE NO ACTION\
-    ;";
+    ;"                                                                                                                                                                                                                                     ;
 }
 //------------------------------------------------------------------------------
 
@@ -1355,13 +1354,13 @@ std::string TrackValueFKCalculatedValue()
 std::string ImageValueFKImage()
 {
   return
-   "ALTER TABLE `imagevalue` ADD\
+    "ALTER TABLE `imagevalue` ADD\
     CONSTRAINT `FK_ImageValue_ImageID`\
     FOREIGN KEY (`ImageID`)\
     REFERENCES `image`(`ImageID`)\
     ON DELETE NO ACTION\
     ON UPDATE NO ACTION\
-    ;";
+    ;"                                                                                                                                                                                             ;
 }
 //------------------------------------------------------------------------------
 
@@ -1375,7 +1374,7 @@ std::string ImageValueFKCalculatedValue()
     REFERENCES `calculatedvalue`(`CalculatedValueID`)\
     ON DELETE NO ACTION\
     ON UPDATE NO ACTION\
-    ;";
+    ;"                                                                                                                                                                                                                                     ;
 }
 //------------------------------------------------------------------------------
 
@@ -1383,13 +1382,13 @@ std::string ImageValueFKCalculatedValue()
 std::string ImagingSessionValueFKImagingSession()
 {
   return
-   "ALTER TABLE `imagingsessionvalue` ADD\
+    "ALTER TABLE `imagingsessionvalue` ADD\
     CONSTRAINT `FK_ImagingSessionValue_ImagingSessionID`\
     FOREIGN KEY (`ImagingSessionID`)\
     REFERENCES `imagingsession`(`ImagingSessionID`)\
     ON DELETE NO ACTION\
     ON UPDATE NO ACTION\
-    ;";
+    ;"                                                                                                                                                                                                                                                   ;
 }
 //------------------------------------------------------------------------------
 
@@ -1397,13 +1396,13 @@ std::string ImagingSessionValueFKImagingSession()
 std::string ImagingSessionValueFKCalculatedValue()
 {
   return
-   "ALTER TABLE `imagingsessionvalue` ADD\
+    "ALTER TABLE `imagingsessionvalue` ADD\
     CONSTRAINT `FK_ImagingSessionValue_CalculatedValueID`\
     FOREIGN KEY (`CalculatedValueID`)\
     REFERENCES `calculatedvalue`(`CalculatedValueID`)\
     ON DELETE NO ACTION\
     ON UPDATE NO ACTION\
-    ;";
+    ;"                                                                                                                                                                                                                                                       ;
 }
 //------------------------------------------------------------------------------
 
@@ -1411,13 +1410,13 @@ std::string ImagingSessionValueFKCalculatedValue()
 std::string ContourValueFKContour()
 {
   return
-   "ALTER TABLE `contourvalue` ADD\
+    "ALTER TABLE `contourvalue` ADD\
     CONSTRAINT `FK_ContourValue_ContourID`\
     FOREIGN KEY (`ContourID`)\
     REFERENCES `contour`(`ContourID`)\
     ON DELETE NO ACTION\
     ON UPDATE NO ACTION\
-    ;";
+    ;"                                                                                                                                                                                                         ;
 }
 //------------------------------------------------------------------------------
 
@@ -1425,13 +1424,13 @@ std::string ContourValueFKContour()
 std::string ContourValueFKCalculatedValue()
 {
   return
-   "ALTER TABLE `contourvalue` ADD\
+    "ALTER TABLE `contourvalue` ADD\
     CONSTRAINT `FK_ContourValue_CalculatedValueID`\
     FOREIGN KEY (`CalculatedValueID`)\
     REFERENCES `calculatedvalue`(`CalculatedValueID`)\
     ON DELETE NO ACTION\
     ON UPDATE NO ACTION\
-    ;";
+    ;"                                                                                                                                                                                                                                         ;
 }
 //------------------------------------------------------------------------------
 
@@ -1439,13 +1438,13 @@ std::string ContourValueFKCalculatedValue()
 std::string LineageValueFKLineage()
 {
   return
-   "ALTER TABLE `lineagevalue` ADD\
+    "ALTER TABLE `lineagevalue` ADD\
     CONSTRAINT `FK_LineageValue_LineageID`\
     FOREIGN KEY (`LineageID`)\
     REFERENCES `lineage`(`LineageID`)\
     ON DELETE NO ACTION\
     ON UPDATE NO ACTION\
-    ;";
+    ;"                                                                                                                                                                                                         ;
 }
 //------------------------------------------------------------------------------
 
@@ -1453,11 +1452,11 @@ std::string LineageValueFKLineage()
 std::string LineageValueFKCalculatedValue()
 {
   return
-   "ALTER TABLE `lineagevalue` ADD\
+    "ALTER TABLE `lineagevalue` ADD\
     CONSTRAINT `FK_LineageValue_CalculatedValueID`\
     FOREIGN KEY (`CalculatedValueID`)\
     REFERENCES `calculatedvalue`(`CalculatedValueID`)\
     ON DELETE NO ACTION\
     ON UPDATE NO ACTION\
-    ;";
+    ;"                                                                                                                                                                                                                                         ;
 }

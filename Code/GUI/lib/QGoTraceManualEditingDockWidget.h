@@ -46,17 +46,17 @@
 
 class QGOGUILIB_EXPORT QGoTraceManualEditingDockWidget :
   public QDockWidget
-{
+  {
   Q_OBJECT
 
-  public:
-    explicit QGoTraceManualEditingDockWidget(QWidget* iParent = 0);
-    ~QGoTraceManualEditingDockWidget();
+public:
+  explicit QGoTraceManualEditingDockWidget(QWidget* iParent = 0);
+  ~QGoTraceManualEditingDockWidget();
   QGoTraceManualEditingWidget* m_TraceWidget;
 
-  public slots:
-    void ShowAndUpdate(std::string iTraceName, 
-      std::string iCollectionName);
+public slots:
+  void ShowAndUpdate(std::string iTraceName,
+                     std::string iCollectionName);
 
-};
+  };
 #endif

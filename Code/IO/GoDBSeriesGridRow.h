@@ -43,7 +43,7 @@
 #include <string>
 
 class GoDBSeriesGridRow
-{
+  {
 public:
 
   int         imageID;
@@ -57,7 +57,7 @@ public:
   std::string filename;
 
   std::string PrintValues()
-    {
+  {
     std::stringstream myString;
 
     myString << imageID << ", ";
@@ -71,7 +71,7 @@ public:
     myString << "\"" << filename << "\"";
 
     return myString.str();
-    }
+  }
 
   GoDBSeriesGridRow()
     {
@@ -86,48 +86,48 @@ public:
     filename = "";
     }
 
-    bool SetFieldValueAsString( unsigned int FieldID, std::string ValueAsString )
-    {
-      switch( FieldID )
-        {
+  bool SetFieldValueAsString(unsigned int FieldID, std::string ValueAsString)
+  {
+    switch (FieldID)
+      {
       case 0:
         {
-        this->imageID = atoi( ValueAsString.c_str() );
+        this->imageID = atoi(ValueAsString.c_str());
         break;
         }
       case 1:
         {
-        this->experimentID = atoi( ValueAsString.c_str() );
+        this->experimentID = atoi(ValueAsString.c_str());
         break;
         }
       case 2:
         {
-        this->RCoord = atoi( ValueAsString.c_str() );
+        this->RCoord = atoi(ValueAsString.c_str());
         break;
         }
       case 3:
         {
-        this->CCoord = atoi( ValueAsString.c_str() );
+        this->CCoord = atoi(ValueAsString.c_str());
         break;
         }
       case 4:
         {
-        this->TCoord = atoi( ValueAsString.c_str() );
+        this->TCoord = atoi(ValueAsString.c_str());
         break;
         }
       case 5:
         {
-        this->YCoord = atoi( ValueAsString.c_str() );
+        this->YCoord = atoi(ValueAsString.c_str());
         break;
         }
       case 6:
         {
-        this->XCoord = atoi( ValueAsString.c_str() );
+        this->XCoord = atoi(ValueAsString.c_str());
         break;
         }
       case 7:
         {
-        this->ZCoord = atoi( ValueAsString.c_str() );
+        this->ZCoord = atoi(ValueAsString.c_str());
         break;
         }
       case 8:
@@ -141,8 +141,8 @@ public:
         }
       }
     return true;
-    }
+  }
 
-};
+  };
 
 #endif

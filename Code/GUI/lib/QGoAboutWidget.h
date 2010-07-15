@@ -49,7 +49,7 @@
 #include "QGoGUILibConfigure.h"
 
 class QGOGUILIB_EXPORT QGoAboutWidget : public QWidget
-{
+  {
   Q_OBJECT
 
 public:
@@ -59,15 +59,14 @@ public:
 private:
 
   void AddTabAbout(QString iTextLicense, QString iTabTitle,
-    QTabWidget* iTabWidget);
+                   QTabWidget* iTabWidget);
 
   QString GetContributors();
   void SetTabWidget(QTabWidget* iTabWidget);
-  void SetTheBackGround(QLabel* iLabel,QTabWidget* TabWidget,
-    QLabel* iLabeltwo);
+  void SetTheBackGround(QLabel* iLabel, QTabWidget* TabWidget,
+                        QLabel* iLabeltwo);
   QString ReadLicenseText(QString iFilename);
   void WriteLicenseText(QTabWidget* iTabWidget);
 
-};
+  };
 #endif
-

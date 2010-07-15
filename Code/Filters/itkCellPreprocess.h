@@ -57,78 +57,78 @@
 namespace itk
 {
 
- /** \class CellPreprocess
- *  \brief Denoise images - remove median noise and perform morphological
- * reconstruction. Makes it easier to segment and prevents formation of holes
- * in the segmentation.
- * \todo Change class name
- */
-  template < class TInputImage, class TOutputImage = TInputImage >
-  class ITK_EXPORT CellPreprocess : public ImageToImageFilter<
-        TInputImage, TOutputImage >
-    {
-    public:
+/** \class CellPreprocess
+*  \brief Denoise images - remove median noise and perform morphological
+* reconstruction. Makes it easier to segment and prevents formation of holes
+* in the segmentation.
+* \todo Change class name
+*/
+template <class TInputImage, class TOutputImage = TInputImage>
+class ITK_EXPORT CellPreprocess : public ImageToImageFilter<
+    TInputImage, TOutputImage>
+  {
+public:
 
-      typedef CellPreprocess        Self;
-      typedef ImageToImageFilter< TInputImage, TOutputImage > Superclass;
-      typedef SmartPointer< Self >          Pointer;
-      typedef SmartPointer< const Self >        ConstPointer;
+  typedef CellPreprocess                                Self;
+  typedef ImageToImageFilter<TInputImage, TOutputImage> Superclass;
+  typedef SmartPointer<Self>                            Pointer;
+  typedef SmartPointer<const Self>                      ConstPointer;
 
-      itkStaticConstMacro ( ImageDimension, unsigned int,
-                            TInputImage::ImageDimension );
+  itkStaticConstMacro (ImageDimension, unsigned int,
+                       TInputImage::ImageDimension);
 
-      /** Method for creation through object factory */
-      itkNewMacro ( Self );
+  /** Method for creation through object factory */
+  itkNewMacro (Self);
 
-      /** Run-time type information */
-      itkTypeMacro ( CellPreprocess, ImageToImageFilter );
+  /** Run-time type information */
+  itkTypeMacro (CellPreprocess, ImageToImageFilter);
 
-      /** Display */
-      void PrintSelf ( std::ostream& os, Indent indent ) const;
+  /** Display */
+  void PrintSelf(std::ostream& os, Indent indent) const;
 
-      typedef Image< float,ImageDimension >    ImageType;
-      typedef typename ImageType::Pointer      ImagePointer;
-      typedef typename ImageType::ConstPointer ImageConstPointer;
-      typedef typename ImageType::PixelType    ImagePixelType;
-      typedef typename ImageType::RegionType   ImageRegionType;
-      typedef typename ImageType::SizeType     ImageSizeType;
-      typedef typename ImageSizeType::SizeValueType ImageSizeValueType;
+  typedef Image<float, ImageDimension>          ImageType;
+  typedef typename ImageType::Pointer           ImagePointer;
+  typedef typename ImageType::ConstPointer      ImageConstPointer;
+  typedef typename ImageType::PixelType         ImagePixelType;
+  typedef typename ImageType::RegionType        ImageRegionType;
+  typedef typename ImageType::SizeType          ImageSizeType;
+  typedef typename ImageSizeType::SizeValueType ImageSizeValueType;
 
-      typedef typename ImageType::SpacingType  ImageSpacingType;
-      typedef typename ImageType::IndexType    ImageIndexType;
-      typedef typename ImageType::PointType    ImagePointType;
+  typedef typename ImageType::SpacingType ImageSpacingType;
+  typedef typename ImageType::IndexType   ImageIndexType;
+  typedef typename ImageType::PointType   ImagePointType;
 
-      typedef CastImageFilter< TInputImage, ImageType > InputCastType;
-      typedef typename InputCastType::Pointer           InputCastPointer;
+  typedef CastImageFilter<TInputImage, ImageType> InputCastType;
+  typedef typename InputCastType::Pointer         InputCastPointer;
 
-      typedef MedianImageFilter< ImageType, ImageType> MedianFilterType;
-      typedef typename MedianFilterType::Pointer MedianFilterPointer;
-      typedef RecursiveGaussianImageFilter< ImageType, ImageType >
-      SmoothingFilterType;
-      typedef typename SmoothingFilterType::Pointer     SmoothingFilterPointer;
-      typedef GrayscaleFillholeImageFilter< ImageType, ImageType > GrayscaleFillholeFilterType;
-      typedef typename GrayscaleFillholeFilterType::Pointer GrayscaleFillholePointer;
-      typedef CastImageFilter< ImageType, TOutputImage > OutputCastType;
-      typedef typename OutputCastType::Pointer OutputCastPointer;
+  typedef MedianImageFilter<ImageType, ImageType> MedianFilterType;
+  typedef typename MedianFilterType::Pointer      MedianFilterPointer;
+  typedef RecursiveGaussianImageFilter<ImageType, ImageType>
+  SmoothingFilterType;
+  typedef typename SmoothingFilterType::Pointer              SmoothingFilterPointer;
+  typedef GrayscaleFillholeImageFilter<ImageType, ImageType> GrayscaleFillholeFilterType;
+  typedef typename GrayscaleFillholeFilterType::Pointer      GrayscaleFillholePointer;
+  typedef CastImageFilter<ImageType, TOutputImage>           OutputCastType;
+  typedef typename OutputCastType::Pointer                   OutputCastPointer;
 
-      itkGetConstMacro ( LargestCellRadius,double );
-      itkSetMacro ( LargestCellRadius,double );
+  itkGetConstMacro (LargestCellRadius, double);
+  itkSetMacro (LargestCellRadius, double);
 
-    protected:
+protected:
 
-      CellPreprocess();
-      ~CellPreprocess() {}
-      void GenerateData();
+  CellPreprocess();
+  ~CellPreprocess() {}
+  void GenerateData();
 
-      double m_LargestCellRadius;
+  double m_LargestCellRadius;
 
-    private:
+private:
 
-      CellPreprocess ( Self& );   // intentionally not implemented
-      void operator= ( const Self& );   // intentionally not implemented
-    };
+  CellPreprocess (Self &);        // intentionally not implemented
+  void operator =(const Self&);         // intentionally not implemented
+  };
 
-  } /* namespace itk */
+}   /* namespace itk */
 
 #include "itkCellPreprocess.txx"
 #endif

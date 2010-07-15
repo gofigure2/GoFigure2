@@ -57,11 +57,11 @@ class QGoImageView3D;
 \brief class for the (synchronized) view of one three dimensionnal vtkImageData*
 */
 class QGoSynchronizedView3D : public QGoSynchronizedView
-{
+  {
   Q_OBJECT
   // itk typedef :
   // type of itk image for visualization
-  typedef itk::Image< unsigned char, 3 > VisuImageType;
+  typedef itk::Image<unsigned char, 3> VisuImageType;
   // itk to vtk connector
   typedef itk::ImageToVTKImageFilter<VisuImageType> itkvtkConnectorType;
 
@@ -73,7 +73,7 @@ public:
   /** print the SynchronizedView information :
    *  it consists in the image information if any.
    */
-  void PrintOs(ostream &os);
+  void PrintOs(ostream& os);
 
   /** Set image displayed by the SynchronizedView
    */
@@ -81,30 +81,30 @@ public:
 
   /** \brief Set ITK image displayed by the SynchronizedView
    */
-  template< typename TPixel >
-  void SetImage( typename itk::Image< TPixel, 3 >::Pointer iImage )
+  template<typename TPixel>
+  void SetImage(typename itk::Image<TPixel, 3>::Pointer iImage)
   {
-    typedef itk::Image< TPixel, 3 > InputImageType;
+    typedef itk::Image<TPixel, 3> InputImageType;
     // we cast the input to have a known image to display
-    typedef itk::CastImageFilter< InputImageType, VisuImageType  >
-      CastFilterType;
+    typedef itk::CastImageFilter<InputImageType, VisuImageType>
+    CastFilterType;
     typedef typename CastFilterType::Pointer CastFilterTypePointer;
 
     CastFilterTypePointer castITKFilter = CastFilterType::New();
     m_itkvtkConnector = itkvtkConnectorType::New();
 
-    castITKFilter->SetInput( iImage );
+    castITKFilter->SetInput(iImage);
     castITKFilter->Update();
-    m_itkvtkConnector->SetInput( castITKFilter->GetOutput() );
+    m_itkvtkConnector->SetInput(castITKFilter->GetOutput());
     m_itkvtkConnector->Update();
 
-    SetImage( m_itkvtkConnector->GetOutput() );
+    SetImage(m_itkvtkConnector->GetOutput());
     Update();
   }
 
   /** \brief returns the type of SynchronizedView (2 for 2D, 3 for 3D)
    */
-  int GetSynchronizedViewType( void );
+  int GetSynchronizedViewType(void);
 
   /** render the iId'th imageview:
    *  3D visualization usually contains 4 imageviewers :
@@ -129,17 +129,17 @@ public:
   QGoImageView3D* GetImageView();
 
 public slots:
-  QString SnapshotViewXY( const GoFigure::FileType& iType,
-    const QString& iBaseName = tr( "Snapshot" ) );
+  QString SnapshotViewXY(const GoFigure::FileType& iType,
+                         const QString& iBaseName = tr("Snapshot"));
 
-  QString SnapshotView2( const GoFigure::FileType& iType,
-    const QString& iBaseName = QString( "snapshot" ) );
+  QString SnapshotView2(const GoFigure::FileType& iType,
+                        const QString& iBaseName = QString("snapshot"));
 
-  QString SnapshotView3( const GoFigure::FileType& iType,
-    const QString& iBaseName = QString( "snapshot" ) );
+  QString SnapshotView3(const GoFigure::FileType& iType,
+                        const QString& iBaseName = QString("snapshot"));
 
-  QString SnapshotViewXYZ( const GoFigure::FileType& iType,
-    const QString& iBaseName = QString( "snapshot" ) );
+  QString SnapshotViewXYZ(const GoFigure::FileType& iType,
+                          const QString& iBaseName = QString("snapshot"));
 
   /** Set the fullscreen view : iId = [0-4]
    *  0 : Quadview (all 4 views)
@@ -175,9 +175,9 @@ private:
    */
   void createViewer();
 
-  itkvtkConnectorType::Pointer   m_itkvtkConnector;
+  itkvtkConnectorType::Pointer m_itkvtkConnector;
 
-  Q_DISABLE_COPY( QGoSynchronizedView3D );
-};
+  Q_DISABLE_COPY(QGoSynchronizedView3D);
+  };
 
 #endif // QGoSynchronizedView3D_H

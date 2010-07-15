@@ -99,83 +99,83 @@ vtkStandardNewMacro(vtkLookupTableManager);
 #include <time.h>
 
 vtkLookupTableManager::vtkLookupTableManager()
-{}
-
+  {
+  }
 
 vtkLookupTableManager::~vtkLookupTableManager()
-{}
-
+  {
+  }
 
 std::vector<std::string> vtkLookupTableManager::GetAvailableLookupTables()
 {
-  std::string lutNames[]={"B/W", "B/W Inverse", "Spectrum", "HotMetal", "GEColor", "Flow", "LONI", "LONI2", "Asymmetry", "P-Value", "ROI"};
+  std::string lutNames[] =
+         { "B/W", "B/W Inverse", "Spectrum", "HotMetal", "GEColor", "Flow", "LONI", "LONI2", "Asymmetry", "P-Value",
+         "ROI"};
 
   std::vector<std::string> v_lutNames;
-  for( int i=0; i<10; i++)
-  {
+  for (int i = 0; i < 10; i++)
+    {
     v_lutNames.push_back(lutNames[i]);
-  }
+    }
 
   return v_lutNames;
 }
 
-
 vtkLookupTable* vtkLookupTableManager::GetLookupTable(const int& n)
 {
   vtkLookupTable* lut = 0;
-  switch(n)
-  {
-      case LUT_BW:
-        lut = vtkLookupTableManager::GetBWLookupTable();
-        break;
+  switch (n)
+    {
+    case LUT_BW:
+      lut = vtkLookupTableManager::GetBWLookupTable();
+      break;
 
-      case LUT_BWINV:
-        lut = vtkLookupTableManager::GetBWInverseLookupTable();
-        break;
+    case LUT_BWINV:
+      lut = vtkLookupTableManager::GetBWInverseLookupTable();
+      break;
 
-      case LUT_SPECTTUM:
-        lut = vtkLookupTableManager::GetSpectrumLookupTable();
-        break;
+    case LUT_SPECTTUM:
+      lut = vtkLookupTableManager::GetSpectrumLookupTable();
+      break;
 
-      case LUT_HOTMETAL:
-        lut = vtkLookupTableManager::GetHotMetalLookupTable();
-        break;
+    case LUT_HOTMETAL:
+      lut = vtkLookupTableManager::GetHotMetalLookupTable();
+      break;
 
-      case LUT_GECOLORS:
-        lut = vtkLookupTableManager::GetGEColorLookupTable();
-        break;
+    case LUT_GECOLORS:
+      lut = vtkLookupTableManager::GetGEColorLookupTable();
+      break;
 
-      case LUT_FLOW:
-        lut = vtkLookupTableManager::GetFlowLookupTable();
-        break;
+    case LUT_FLOW:
+      lut = vtkLookupTableManager::GetFlowLookupTable();
+      break;
 
-      case LUT_LONI:
-        lut = vtkLookupTableManager::GetLONILookupTable();
-        break;
+    case LUT_LONI:
+      lut = vtkLookupTableManager::GetLONILookupTable();
+      break;
 
-      case LUT_LONI2:
-        lut = vtkLookupTableManager::GetLONI2LookupTable();
-        break;
+    case LUT_LONI2:
+      lut = vtkLookupTableManager::GetLONI2LookupTable();
+      break;
 
-      case LUT_ASYMETRY:
-        lut = vtkLookupTableManager::GetAsymmetryLookupTable();
-        break;
+    case LUT_ASYMETRY:
+      lut = vtkLookupTableManager::GetAsymmetryLookupTable();
+      break;
 
-      case LUT_PVALUE:
-        lut = vtkLookupTableManager::GetPValueLookupTable();
-        break;
+    case LUT_PVALUE:
+      lut = vtkLookupTableManager::GetPValueLookupTable();
+      break;
 
-      case LUT_ROI:
-        lut = vtkLookupTableManager::GetROILookupTable();
-        break;
+    case LUT_ROI:
+      lut = vtkLookupTableManager::GetROILookupTable();
+      break;
 
-      default:
-        break;
-  }
+    default:
+      break;
+    }
 
   return lut;
 }
-
 
 vtkLookupTable* vtkLookupTableManager::GetBWLookupTable()
 {
@@ -189,7 +189,6 @@ vtkLookupTable* vtkLookupTableManager::GetBWLookupTable()
   return bwLut;
 }
 
-
 vtkLookupTable* vtkLookupTableManager::GetBWInverseLookupTable()
 {
   vtkLookupTable* bwLut = vtkLookupTable::New();
@@ -202,22 +201,20 @@ vtkLookupTable* vtkLookupTableManager::GetBWInverseLookupTable()
   return bwLut;
 }
 
-
-
 vtkLookupTable* vtkLookupTableManager::GetSpectrumLookupTable()
 {
-   vtkLookupTable* lut = vtkLookupTable::New();
+  vtkLookupTable* lut = vtkLookupTable::New();
   lut->SetNumberOfTableValues(256);
   lut->Build();
 
-  for( int i=0; i<256; i++)
-  {
-	lut->SetTableValue(i, (double)Spectrum[i]/255.0, (double)Spectrum[256+i]/255.0, (double)Spectrum[256*2+i]/255.0, 1.0);
-  }
+  for (int i = 0; i < 256; i++)
+    {
+    lut->SetTableValue(i, (double) Spectrum[i] / 255.0, (double) Spectrum[256 + i] / 255.0,
+                       (double) Spectrum[256 * 2 + i] / 255.0, 1.0);
+    }
 
   return lut;
 }
-
 
 vtkLookupTable* vtkLookupTableManager::GetHotMetalLookupTable()
 {
@@ -225,14 +222,14 @@ vtkLookupTable* vtkLookupTableManager::GetHotMetalLookupTable()
   lut->SetNumberOfTableValues(256);
   lut->Build();
 
-  for( int i=0; i<256; i++)
-  {
-	lut->SetTableValue(i, (double)HotMetal[i]/255.0, (double)HotMetal[256+i]/255.0, (double)HotMetal[256*2+i]/255.0, 1.0);
-  }
+  for (int i = 0; i < 256; i++)
+    {
+    lut->SetTableValue(i, (double) HotMetal[i] / 255.0, (double) HotMetal[256 + i] / 255.0,
+                       (double) HotMetal[256 * 2 + i] / 255.0, 1.0);
+    }
 
   return lut;
 }
-
 
 vtkLookupTable* vtkLookupTableManager::GetGEColorLookupTable()
 {
@@ -240,14 +237,17 @@ vtkLookupTable* vtkLookupTableManager::GetGEColorLookupTable()
   lut->SetNumberOfTableValues(256);
   lut->Build();
 
-  for( int i=0; i<256; i++)
-  {
-	lut->SetTableValue(i, (double)GEColor[i]/255.0, (double)GEColor[256+i]/255.0, (double)GEColor[256*2+i]/255.0, 1.0);
-  }
+  for (int i = 0; i < 256; i++)
+    {
+    lut->SetTableValue(i,
+                       (double) GEColor[i] / 255.0,
+                       (double) GEColor[256 + i] / 255.0,
+                       (double) GEColor[256 * 2 + i] / 255.0,
+                       1.0);
+    }
 
   return lut;
 }
-
 
 vtkLookupTable* vtkLookupTableManager::GetFlowLookupTable()
 {
@@ -255,14 +255,17 @@ vtkLookupTable* vtkLookupTableManager::GetFlowLookupTable()
   lut->SetNumberOfTableValues(256);
   lut->Build();
 
-  for( int i=0; i<256; i++)
-  {
-	lut->SetTableValue(i, (double)Flow[i]/255.0, (double)Flow[256+i]/255.0, (double)Flow[256*2+i]/255.0, 1.0);
-  }
+  for (int i = 0; i < 256; i++)
+    {
+    lut->SetTableValue(i,
+                       (double) Flow[i] / 255.0,
+                       (double) Flow[256 + i] / 255.0,
+                       (double) Flow[256 * 2 + i] / 255.0,
+                       1.0);
+    }
 
   return lut;
 }
-
 
 vtkLookupTable* vtkLookupTableManager::GetLONILookupTable()
 {
@@ -270,14 +273,13 @@ vtkLookupTable* vtkLookupTableManager::GetLONILookupTable()
   lut->SetNumberOfTableValues(203);
   lut->Build();
 
-  for( int i=0; i<203; i++)
-  {
-    lut->SetTableValue(i, (double)LONI[i][0], (double)LONI[i][1], (double)LONI[i][2], 1.0);
-  }
+  for (int i = 0; i < 203; i++)
+    {
+    lut->SetTableValue(i, (double) LONI[i][0], (double) LONI[i][1], (double) LONI[i][2], 1.0);
+    }
 
   return lut;
 }
-
 
 vtkLookupTable* vtkLookupTableManager::GetLONI2LookupTable()
 {
@@ -285,14 +287,13 @@ vtkLookupTable* vtkLookupTableManager::GetLONI2LookupTable()
   lut->SetNumberOfTableValues(120);
   lut->Build();
 
-  for( int i=0; i<120; i++)
-  {
-    lut->SetTableValue(i, (double)LONI2[i][0], (double)LONI2[i][1], (double)LONI2[i][2], 1.0);
-  }
+  for (int i = 0; i < 120; i++)
+    {
+    lut->SetTableValue(i, (double) LONI2[i][0], (double) LONI2[i][1], (double) LONI2[i][2], 1.0);
+    }
 
   return lut;
 }
-
 
 vtkLookupTable* vtkLookupTableManager::GetAsymmetryLookupTable()
 {
@@ -300,14 +301,13 @@ vtkLookupTable* vtkLookupTableManager::GetAsymmetryLookupTable()
   lut->SetNumberOfTableValues(256);
   lut->Build();
 
-  for( int i=0; i<256; i++)
-  {
-    lut->SetTableValue(i, (double)AsymmetryLUT[i][0], (double)AsymmetryLUT[i][1], (double)AsymmetryLUT[i][2], 1.0);
-  }
+  for (int i = 0; i < 256; i++)
+    {
+    lut->SetTableValue(i, (double) AsymmetryLUT[i][0], (double) AsymmetryLUT[i][1], (double) AsymmetryLUT[i][2], 1.0);
+    }
 
   return lut;
 }
-
 
 vtkLookupTable* vtkLookupTableManager::GetPValueLookupTable()
 {
@@ -321,7 +321,6 @@ vtkLookupTable* vtkLookupTableManager::GetPValueLookupTable()
 
   return lut;
 }
-
 
 vtkLookupTable* vtkLookupTableManager::GetROILookupTable()
 {
@@ -343,8 +342,6 @@ vtkLookupTable* vtkLookupTableManager::GetROILookupTable()
   lut->SetTableValue (11, 0.5, 1.0, 1.0, 0.5);
   lut->SetTableValue (12, 1.0, 0.5, 1.0, 0.5);
 
-
-
   // Fill the rest of the labels with color ramps, code taken from SNAP
 //   for (int i = 13; i < 256; i++)
 //   {
@@ -361,7 +358,6 @@ vtkLookupTable* vtkLookupTableManager::GetROILookupTable()
 //       lut->SetTableValue (i, ((i-170)/85.0 * 200.0 + 50)/255.0, 0.0, ((255.0-i)/85.0 * 200.0 + 50)/255.0, 0.5);
 //     }
 //   }
-
 
   // Fill the rest with random colors
 
@@ -388,32 +384,31 @@ vtkLookupTable* vtkLookupTableManager::GetROILookupTable()
 //   }
 
   for (int i = 12; i < 256; i++)
-  {
-    if (i%12 == 0)
-      lut->SetTableValue (i, 1.0, 0.0, 0.0, 0.5);
-    else if (i%12 == 1)
+    {
+    if (i % 12 == 0) lut->SetTableValue (i, 1.0, 0.0, 0.0, 0.5);
+    else if (i % 12 == 1)
       lut->SetTableValue (i, 0.0, 1.0, 0.0, 0.5);
-    else if (i%12 == 2)
+    else if (i % 12 == 2)
       lut->SetTableValue (i, 0.0, 0.0, 1.0, 0.5);
-    else if (i%12 == 3)
+    else if (i % 12 == 3)
       lut->SetTableValue (i, 1.0, 1.0, 0.0, 0.5);
-    else if (i%12 == 4)
+    else if (i % 12 == 4)
       lut->SetTableValue (i, 0.0, 1.0, 1.0, 0.5);
-    else if (i%12 == 5)
+    else if (i % 12 == 5)
       lut->SetTableValue (i, 1.0, 0.0, 1.0, 0.5);
-    else if (i%12 == 6)
+    else if (i % 12 == 6)
       lut->SetTableValue (i, 1.0, 0.5, 0.0, 0.5);
-    else if (i%12 == 7)
+    else if (i % 12 == 7)
       lut->SetTableValue (i, 0.0, 1.0, 0.5, 0.5);
-    else if (i%12 == 8)
+    else if (i % 12 == 8)
       lut->SetTableValue (i, 0.5, 0.0, 1.0, 0.5);
-    else if (i%12 == 9)
+    else if (i % 12 == 9)
       lut->SetTableValue (i, 1.0, 1.0, 0.5, 0.5);
-    else if (i%12 == 10)
+    else if (i % 12 == 10)
       lut->SetTableValue (i, 0.5, 1.0, 1.0, 0.5);
-    else if (i%12 == 11)
+    else if (i % 12 == 11)
       lut->SetTableValue (i, 1.0, 0.5, 1.0, 0.5);
-  }
+    }
 
   return lut;
 

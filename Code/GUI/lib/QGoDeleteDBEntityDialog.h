@@ -54,19 +54,19 @@
 stored in the database.
 */
 class QGOGUILIB_EXPORT QGoDeleteDBEntityDialog : public QDialog
-{
+  {
   Q_OBJECT
 
 public:
   explicit QGoDeleteDBEntityDialog(QWidget* iParent = 0,
-    std::string iEntityName = "", int iImgSessionID = 0,
-    vtkMySQLDatabase* iDatabaseConnector = 0);
+                                   std::string iEntityName = "", int iImgSessionID = 0,
+                                   vtkMySQLDatabase* iDatabaseConnector = 0);
   virtual ~QGoDeleteDBEntityDialog();
 
 protected:
-  std::string       m_EntityName;
-  int               m_ImgSessionID;
-  QListWidget*      m_ListWidget;
+  std::string  m_EntityName;
+  int          m_ImgSessionID;
+  QListWidget* m_ListWidget;
   /** \brief Get the list of the existing entities names from
   the database*/
   QStringList GetListExistingEntities(
@@ -75,20 +75,19 @@ protected:
   /** \brief delete the corresponding items selected in the
   database*/
   void DeleteSelection(
-    QList<QListWidgetItem*> iListEntitiesToDelete );
+    QList<QListWidgetItem*> iListEntitiesToDelete);
 
   /** \brief get the names of the entities from the database
   and create the corresponding QListWidgetItems*/
   void SetItemsInTheList(vtkMySQLDatabase* iDatabaseConnector);
 
 protected slots:
-  /** \brief ask the user to select at least one item if 
-  nothying has been selected and ask the user confirmation 
+  /** \brief ask the user to select at least one item if
+  nothying has been selected and ask the user confirmation
   if selection is not null*/
   void SelectionValidation();
 signals:
   void ListEntitiesChanged();
-};
+  };
 
 #endif
-

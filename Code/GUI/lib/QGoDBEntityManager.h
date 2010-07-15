@@ -49,58 +49,58 @@
 #include "QNameDescriptionInputDialog.h"
 #include "GoDBCoordinateRow.h"
 
-class QGoDBEntityManager:
+class QGoDBEntityManager :
   public QWidget
-{
+  {
   Q_OBJECT
 
-  public:
-    explicit QGoDBEntityManager (QWidget* iParent = 0,
-      std::string iEntityName = "", int iImgSessionID = 0);
-    
-    ~QGoDBEntityManager();
+public:
+  explicit QGoDBEntityManager (QWidget* iParent = 0,
+                               std::string iEntityName = "", int iImgSessionID = 0);
 
-    typedef std::vector<std::pair<std::string,std::string> > 
-      NamesDescrContainerType;
-    /** \brief execute the dialog asking the user to enter a name and a
-    description, validates the name, set the m_DatabaseConnectorForNewBkmrk
-    and save the entity in the DB*/
-    void AddAnEntity(vtkMySQLDatabase* iDatabaseConnector);
+  ~QGoDBEntityManager();
 
-    /** \brief return the list of all the existing entities stored 
-    in the database*/
-    NamesDescrContainerType GetListExistingEntities(
-      vtkMySQLDatabase* iDatabaseConnector);
-   /** \brief show the list of the existing entities so the user can
-   choose the ones he wants to delete, then delete them from the 
-   database*/
-    void DeleteEntity(vtkMySQLDatabase* iDatabaseConnector);
-    std::string GetNameNewEntity();
+  typedef std::vector<std::pair<std::string, std::string> >
+  NamesDescrContainerType;
+  /** \brief execute the dialog asking the user to enter a name and a
+  description, validates the name, set the m_DatabaseConnectorForNewBkmrk
+  and save the entity in the DB*/
+  void AddAnEntity(vtkMySQLDatabase* iDatabaseConnector);
 
-  protected:
-    int                          m_ImgSessionID;
-    std::string                  m_EntityName;
-    int                          m_CoordIDForNewEntity;
-    QNameDescriptionInputDialog* m_NameDescDialog;
-    vtkMySQLDatabase*            m_DatabaseConnectorForNewEntity;
-    std::string                  m_NameNewEntity;
+  /** \brief return the list of all the existing entities stored
+  in the database*/
+  NamesDescrContainerType GetListExistingEntities(
+    vtkMySQLDatabase* iDatabaseConnector);
+  /** \brief show the list of the existing entities so the user can
+  choose the ones he wants to delete, then delete them from the
+  database*/
+  void DeleteEntity(vtkMySQLDatabase* iDatabaseConnector);
+  std::string GetNameNewEntity();
 
-  protected slots:
-    /** \brief save the new bookmark in the database, the 
-    m_DatabaseConnectorForNewBkmrk needs to be set before
-    calling this method. Check that the bookmark doesn't 
-    already exits in the database, if so, give the user
-    the name of the existing bookmark*/
-    virtual void SaveNewEntityInDB()= 0;
+protected:
+  int                          m_ImgSessionID;
+  std::string                  m_EntityName;
+  int                          m_CoordIDForNewEntity;
+  QNameDescriptionInputDialog* m_NameDescDialog;
+  vtkMySQLDatabase*            m_DatabaseConnectorForNewEntity;
+  std::string                  m_NameNewEntity;
 
-    /** \brief check that the name doesn't already exists in the 
-    database, if so, make the m_NameDescDialog asks the user to
-    choose another one, if no, close the m_NameDescDialog and 
-    call SaveNewBookmarkInDB()*/
-    virtual void ValidateName()= 0;
+protected slots:
+  /** \brief save the new bookmark in the database, the
+  m_DatabaseConnectorForNewBkmrk needs to be set before
+  calling this method. Check that the bookmark doesn't
+  already exits in the database, if so, give the user
+  the name of the existing bookmark*/
+  virtual void SaveNewEntityInDB() = 0;
+
+  /** \brief check that the name doesn't already exists in the
+  database, if so, make the m_NameDescDialog asks the user to
+  choose another one, if no, close the m_NameDescDialog and
+  call SaveNewBookmarkInDB()*/
+  virtual void ValidateName() = 0;
 
 signals:
-    void ListEntitiesChanged();
+  void ListEntitiesChanged();
 
-};
+  };
 #endif

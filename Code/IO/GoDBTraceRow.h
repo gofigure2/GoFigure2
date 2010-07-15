@@ -45,44 +45,43 @@
 #include "vtkPolyData.h"
 #include "vtkPolyDataMySQLTextWriter.h"
 
-
 class QGOIO_EXPORT GoDBTraceRow : public GoDBRow
-{
+  {
 public:
   GoDBTraceRow();
 
-   /**\brief fill the trace map with the values gotten from the visualization*/
-  GoDBTraceRow(vtkMySQLDatabase* DatabaseConnector,vtkPolyData* TraceVisu,
-  GoDBCoordinateRow Min, GoDBCoordinateRow Max,unsigned int ImgSessionID);
+  /**\brief fill the trace map with the values gotten from the visualization*/
+  GoDBTraceRow(vtkMySQLDatabase * DatabaseConnector, vtkPolyData * TraceVisu,
+               GoDBCoordinateRow Min, GoDBCoordinateRow Max, unsigned int ImgSessionID);
 
-  GoDBTraceRow(vtkMySQLDatabase* DatabaseConnector,std::string TraceVisu,
-    GoDBCoordinateRow Min, GoDBCoordinateRow Max,unsigned int ImgSessionID);
+  GoDBTraceRow(vtkMySQLDatabase * DatabaseConnector, std::string TraceVisu,
+               GoDBCoordinateRow Min, GoDBCoordinateRow Max, unsigned int ImgSessionID);
 
   ~GoDBTraceRow()
-    {}
-  
+        {}
+
 /**\brief return the TraceID of the Trace with the same bounding box
   already registered in the DB or -1 if not yet created*/
- int  DoesThisBoundingBoxExist(vtkMySQLDatabase* DatabaseConnector);
+  int  DoesThisBoundingBoxExist(vtkMySQLDatabase* DatabaseConnector);
 
- void SetColor(unsigned int Red, unsigned int Green, unsigned int Blue,
-   unsigned int Alpha, std::string ColorName,vtkMySQLDatabase* DatabaseConnector);
+  void SetColor(unsigned int Red, unsigned int Green, unsigned int Blue,
+                unsigned int Alpha, std::string ColorName, vtkMySQLDatabase* DatabaseConnector);
 
- std::string GetCollectionIDName();
- std::string GetCollectionName();
+  std::string GetCollectionIDName();
+  std::string GetCollectionName();
 
 protected:
 
- virtual void InitializeMap();
- /**\brief check in the database if the Coordinate Min adn Max already exits,
- if yes fill the map["CoordIDMin"] and ["CoordIDmax"] with the existing CoordinateID
- if not, create the coordinates in the database and fill the map with the new created ID,
- if the bounding box already exits, a cout is generated*/
- void CreateBoundingBox(vtkMySQLDatabase* DatabaseConnector,GoDBCoordinateRow Min,
-  GoDBCoordinateRow Max);
+  virtual void InitializeMap();
+  /**\brief check in the database if the Coordinate Min adn Max already exits,
+  if yes fill the map["CoordIDMin"] and ["CoordIDmax"] with the existing CoordinateID
+  if not, create the coordinates in the database and fill the map with the new created ID,
+  if the bounding box already exits, a cout is generated*/
+  void CreateBoundingBox(vtkMySQLDatabase* DatabaseConnector, GoDBCoordinateRow Min,
+                         GoDBCoordinateRow Max);
 
- std::string m_CollectionIDName;
- std::string m_CollectionName;
+  std::string m_CollectionIDName;
+  std::string m_CollectionName;
 
- };
+  };
 #endif

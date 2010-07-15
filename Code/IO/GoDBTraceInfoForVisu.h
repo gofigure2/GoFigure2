@@ -42,30 +42,29 @@
 
 #include "vtkPolyData.h"
 
-/**\brief structure to pass the information between the visualization 
+/**\brief structure to pass the information between the visualization
 and the Database*/
 struct GoDBTraceInfoForVisu
-{
-  unsigned int    TraceID;
-  vtkPolyData*    Points;
-  unsigned int    Red;
-  unsigned int    Green;
-  unsigned int    Blue;
-  unsigned int    Alpha;
-  unsigned int    TimePoint;
-  bool            IsHighLighted;
-  
-  
-  GoDBTraceInfoForVisu()
   {
-  TraceID       = 0;
-  Red           = 0;
-  Green         = 0;
-  Blue          = 0;
-  Alpha         = 255;
-  TimePoint     = 0;
-  IsHighLighted = false;
-  }
+  unsigned int TraceID;
+  vtkPolyData* Points;
+  unsigned int Red;
+  unsigned int Green;
+  unsigned int Blue;
+  unsigned int Alpha;
+  unsigned int TimePoint;
+  bool IsHighLighted;
 
-};
+  GoDBTraceInfoForVisu()
+    {
+    TraceID       = 0;
+    Red           = 0;
+    Green         = 0;
+    Blue          = 0;
+    Alpha         = 255;
+    TimePoint     = 0;
+    IsHighLighted = false;
+    }
+
+  };
 #endif

@@ -57,32 +57,31 @@ class QWidget;
  * \brief
 */
 class QGoImageFilterPluginBase : public QGoPlugin
-{
+  {
   Q_OBJECT
-  public:
-    explicit QGoImageFilterPluginBase( QObject* iParent = 0x0 );
-    virtual ~QGoImageFilterPluginBase() {};
+public:
+  explicit QGoImageFilterPluginBase(QObject* iParent = 0x0);
+  virtual ~QGoImageFilterPluginBase() {}
 
-    virtual void SetInput( vtkImageData* iInput );
-    virtual void SetInput( std::vector< vtkImageData* >& iInput );
-    virtual void Update();
-    virtual std::vector< vtkImageData* > GetOutput();
+  virtual void SetInput(vtkImageData* iInput);
+  virtual void SetInput(std::vector<vtkImageData*>& iInput);
+  virtual void Update();
+  virtual std::vector<vtkImageData*> GetOutput();
 
-  signals:
-    void Done( std::vector< vtkImageData* > );
+signals:
+  void Done(std::vector<vtkImageData*> );
 
-  protected:
-    std::vector< vtkImageData* > m_VTKInput;
-    std::vector< vtkImageData* > m_VTKOutput;
+protected:
+  std::vector<vtkImageData*> m_VTKInput;
+  std::vector<vtkImageData*> m_VTKOutput;
 
-    virtual void Process( ) = 0;
+  virtual void Process() = 0;
 
-  private:
-    Q_DISABLE_COPY( QGoImageFilterPluginBase );
-};
+private:
+  Q_DISABLE_COPY(QGoImageFilterPluginBase);
+  };
 
-Q_DECLARE_INTERFACE( QGoImageFilterPluginBase,
-  "GoFigure2.QGoImageFilterPluginBase/1.0" )
+Q_DECLARE_INTERFACE(QGoImageFilterPluginBase,
+                    "GoFigure2.QGoImageFilterPluginBase/1.0")
 
 #endif
-

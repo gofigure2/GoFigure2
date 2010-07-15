@@ -8,14 +8,14 @@ are permitted provided that the following conditions are met:
 Redistributions of source code must retain the above copyright notice, this list of
 conditions and the following disclaimer. Redistributions in binary form must reproduce
 the above copyright notice, this list of conditions and the following disclaimer
-in the documentation and/or other materials provided with the distribution. 
+in the documentation and/or other materials provided with the distribution.
 
 Neither the name of the Johns Hopkins University nor the names of its contributors
 may be used to endorse or promote products derived from this software without specific
-prior written permission. 
+prior written permission.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY
-EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO THE IMPLIED WARRANTIES 
+EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO THE IMPLIED WARRANTIES
 OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
 SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
 INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
@@ -34,126 +34,141 @@ DAMAGE.
 
 template <class T>
 struct MatrixEntry
-{
-	MatrixEntry( void )		{ N =-1; Value = 0; }
-	MatrixEntry( int i )	{ N = i; Value = 0; }
-	int N;
-	T Value;
-};
-template <class T,int Dim>
+  {
+  MatrixEntry(void)             { N = -1; Value = 0; }
+  MatrixEntry(int i)    { N = i; Value = 0; }
+  int N;
+  T Value;
+  };
+template <class T, int Dim>
 struct NMatrixEntry
-{
-	NMatrixEntry( void )		{ N =-1; memset(Value,0,sizeof(T)*Dim); }
-	NMatrixEntry( int i )	{ N = i; memset(Value,0,sizeof(T)*Dim); }
-	int N;
-	T Value[Dim];
-};
+  {
+  NMatrixEntry(void)            { N = -1; memset(Value, 0, sizeof(T)*Dim); }
+  NMatrixEntry(int i)   { N = i; memset(Value, 0, sizeof(T) * Dim); }
+  int N;
+  T Value[Dim];
+  };
 
 template<class T> class SparseMatrix
-{
+  {
 private:
-	static int UseAlloc;
+  static int UseAlloc;
 public:
-	static Allocator<MatrixEntry<T> > MatrixAllocator;
-	static int UseAllocator(void);
-	static void SetAllocator(const int& blockSize);
+  static Allocator<MatrixEntry<T> > MatrixAllocator;
+  static int UseAllocator(void);
+  static void SetAllocator(const int& blockSize);
 
-	int rows;
-	int* rowSizes;
-	MatrixEntry<T>** m_ppElements;
+  int              rows;
+  int*             rowSizes;
+  MatrixEntry<T>** m_ppElements;
 
-	SparseMatrix();
-	SparseMatrix( int rows );
-	void Resize( int rows );
-	void SetRowSize( int row , int count );
-	int Entries(void);
+  SparseMatrix();
+  SparseMatrix(int rows);
+  void Resize(int rows);
+  void SetRowSize(int row, int count);
+  int Entries(void);
 
-	SparseMatrix( const SparseMatrix& M );
-	~SparseMatrix();
+  SparseMatrix(const SparseMatrix& M);
+  ~SparseMatrix();
 
-	void SetZero();
-	void SetIdentity();
+  void SetZero();
+  void SetIdentity();
 
-	SparseMatrix<T>& operator = (const SparseMatrix<T>& M);
+  SparseMatrix<T>& operator =(const SparseMatrix<T>& M);
 
-	SparseMatrix<T> operator * (const T& V) const;
-	SparseMatrix<T>& operator *= (const T& V);
+  SparseMatrix<T> operator *(const T& V) const;
+  SparseMatrix<T>& operator *=(const T& V);
 
+  SparseMatrix<T> operator *(const SparseMatrix<T>& M) const;
+  SparseMatrix<T> Multiply(const SparseMatrix<T>& M) const;
+  SparseMatrix<T> MultiplyTranspose(const SparseMatrix<T>& Mt) const;
 
-	SparseMatrix<T> operator * (const SparseMatrix<T>& M) const;
-	SparseMatrix<T> Multiply( const SparseMatrix<T>& M ) const;
-	SparseMatrix<T> MultiplyTranspose( const SparseMatrix<T>& Mt ) const;
+  template<class T2>
+  Vector<T2> operator *(const Vector<T2>& V) const;
+  template<class T2>
+  Vector<T2> Multiply(const Vector<T2>& V) const;
+  template<class T2>
+  void Multiply(const Vector<T2>& In, Vector<T2>& Out) const;
 
-	template<class T2>
-	Vector<T2> operator * (const Vector<T2>& V) const;
-	template<class T2>
-	Vector<T2> Multiply( const Vector<T2>& V ) const;
-	template<class T2>
-	void Multiply( const Vector<T2>& In, Vector<T2>& Out ) const;
+  SparseMatrix<T> Transpose() const;
 
+  static int Solve(const SparseMatrix<T>& M,
+                   const Vector<T>& b,
+                   const int& iters,
+                   Vector<T>& solution,
+                   const T eps = 1e-8);
 
-	SparseMatrix<T> Transpose() const;
+  template<class T2>
+  static int SolveSymmetric(const SparseMatrix<T>& M,
+                            const Vector<T2>& b,
+                            const int& iters,
+                            Vector<T2>& solution,
+                            const T2 eps = 1e-8,
+                            const int& reset = 1);
 
-	static int Solve			(const SparseMatrix<T>& M,const Vector<T>& b,const int& iters,Vector<T>& solution,const T eps=1e-8);
-
-	template<class T2>
-	static int SolveSymmetric	(const SparseMatrix<T>& M,const Vector<T2>& b,const int& iters,Vector<T2>& solution,const T2 eps=1e-8,const int& reset=1);
-
-};
-template<class T,int Dim> class SparseNMatrix
-{
+  };
+template<class T, int Dim> class SparseNMatrix
+  {
 private:
-	static int UseAlloc;
+  static int UseAlloc;
 public:
-	static Allocator<NMatrixEntry<T,Dim> > NMatrixAllocator;
-	static int UseAllocator(void);
-	static void SetAllocator(const int& blockSize);
+  static Allocator<NMatrixEntry<T, Dim> > NMatrixAllocator;
+  static int UseAllocator(void);
+  static void SetAllocator(const int& blockSize);
 
-	int rows;
-	int* rowSizes;
-	NMatrixEntry<T,Dim>** m_ppElements;
+  int                    rows;
+  int*                   rowSizes;
+  NMatrixEntry<T, Dim>** m_ppElements;
 
-	SparseNMatrix();
-	SparseNMatrix( int rows );
-	void Resize( int rows );
-	void SetRowSize( int row , int count );
-	int Entries(void);
+  SparseNMatrix();
+  SparseNMatrix(int rows);
+  void Resize(int rows);
+  void SetRowSize(int row, int count);
+  int Entries(void);
 
-	SparseNMatrix( const SparseNMatrix& M );
-	~SparseNMatrix();
+  SparseNMatrix(const SparseNMatrix& M);
+  ~SparseNMatrix();
 
-	SparseNMatrix& operator = (const SparseNMatrix& M);
+  SparseNMatrix& operator =(const SparseNMatrix& M);
 
-	SparseNMatrix  operator *  (const T& V) const;
-	SparseNMatrix& operator *= (const T& V);
+  SparseNMatrix operator *(const T& V) const;
+  SparseNMatrix& operator *=(const T& V);
 
-	template<class T2>
-	NVector<T2,Dim> operator * (const Vector<T2>& V) const;
-	template<class T2>
-	Vector<T2> operator * (const NVector<T2,Dim>& V) const;
-};
-
-
+  template<class T2>
+  NVector<T2, Dim> operator *(const Vector<T2>& V) const;
+  template<class T2>
+  Vector<T2> operator *(const NVector<T2, Dim>& V) const;
+  };
 
 template <class T>
 class SparseSymmetricMatrix : public SparseMatrix<T>{
 public:
 
   template<class T2>
-	Vector<T2> operator * (const Vector<T2>& V) const;
-	template<class T2>
-	Vector<T2> Multiply( const Vector<T2>& V ) const;
-	template<class T2>
-	void Multiply( const Vector<T2>& In, Vector<T2>& Out ) const;
+  Vector<T2> operator *(const Vector<T2>& V) const;
+  template<class T2>
+  Vector<T2> Multiply(const Vector<T2>& V) const;
+  template<class T2>
+  void Multiply(const Vector<T2>& In, Vector<T2>& Out) const;
 
-	template<class T2>
-	static int Solve(const SparseSymmetricMatrix<T>& M,const Vector<T2>& b,const int& iters,Vector<T2>& solution,const T2 eps=1e-8,const int& reset=1);
+  template<class T2>
+  static int Solve(const SparseSymmetricMatrix<T>& M,
+                   const Vector<T2>& b,
+                   const int& iters,
+                   Vector<T2>& solution,
+                   const T2 eps = 1e-8,
+                   const int& reset = 1);
 
-	template<class T2>
-	static int Solve(const SparseSymmetricMatrix<T>& M,const Vector<T>& diagonal,const Vector<T2>& b,const int& iters,Vector<T2>& solution,const T2 eps=1e-8,const int& reset=1);
-};
+  template<class T2>
+  static int Solve(const SparseSymmetricMatrix<T>& M,
+                   const Vector<T>& diagonal,
+                   const Vector<T2>& b,
+                   const int& iters,
+                   Vector<T2>& solution,
+                   const T2 eps = 1e-8,
+                   const int& reset = 1);
+  };
 
 #include "SparseMatrix.inl"
 
 #endif
-

@@ -42,9 +42,9 @@
 #include "GoDBRecordSetHelper.h"
 
 GoDBColorRow::GoDBColorRow()
-{
+  {
   this->InitializeMap();
-}
+  }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -60,7 +60,7 @@ void GoDBColorRow::InitializeMap()
   this->m_MapRow["Alpha"] = ConvertToString<int>(0);
   this->m_MapRow["Description"] = "";
   std::string NoDescription = "None";
-  this->SetField("Description",NoDescription);
+  this->SetField("Description", NoDescription);
 }
 //-------------------------------------------------------------------------
 
@@ -74,8 +74,8 @@ int GoDBColorRow::DoesThisColorAlreadyExists(vtkMySQLDatabase* DatabaseConnector
   std::string Name  = this->GetMapValue("Name");
   /*return FindOneID(DatabaseConnector,"color", "ColorID","Red",Red,"Green",Green,
   "Blue",Blue,"Alpha",Alpha,"Name",Name);*/
-  return FindOneID(DatabaseConnector,"color", "ColorID","Name", 
-    this->GetMapValue("Name"));
+  return FindOneID(DatabaseConnector, "color", "ColorID", "Name",
+                   this->GetMapValue("Name"));
 }
 //-------------------------------------------------------------------------
 
@@ -85,8 +85,8 @@ int GoDBColorRow::SaveInDB(vtkMySQLDatabase* DatabaseConnector)
   int ColorID = this->DoesThisColorAlreadyExists(DatabaseConnector);
   if (ColorID == -1)
     {
-    ColorID = AddOnlyOneNewObjectInTable<GoDBColorRow>( DatabaseConnector,
-    "color",*this, "ColorID");
+    ColorID = AddOnlyOneNewObjectInTable<GoDBColorRow>(DatabaseConnector,
+                                                       "color", *this, "ColorID");
     }
   return ColorID;
 }

@@ -47,15 +47,14 @@ class QString;
 \brief
 */
 struct PluginInformationBase
-{
-  public:
-    QString Name;
-    QString Version;
-    QString GoFigureCompatibilityVersion;
-    QString Distributor;
-    QString Copyright;
-    QString License;
-    QString Description;
-};
+  {
+public:
+  QString Name;
+  QString Version;
+  QString GoFigureCompatibilityVersion;
+  QString Distributor;
+  QString Copyright;
+  QString License;
+  QString Description;
+  };
 #endif
-

@@ -47,19 +47,19 @@
 
 //--------------------------------------------------------------------------
 QGoTabImageViewNDBase::
-QGoTabImageViewNDBase( QWidget* iParent ) :
-  QGoTabImageViewElementBase( iParent ),
-  m_Image( 0 )
-{
-  
-}
+QGoTabImageViewNDBase(QWidget* iParent) :
+  QGoTabImageViewElementBase(iParent),
+  m_Image(0)
+  {
+
+  }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 QGoTabImageViewNDBase::
-~QGoTabImageViewNDBase( )
-{
-}
+~QGoTabImageViewNDBase()
+  {
+  }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
@@ -68,54 +68,54 @@ QGoTabImageViewNDBase::
  * \param[in] iImage
  */
 void QGoTabImageViewNDBase::
-SetImage( vtkImageData* iImage )
+SetImage(vtkImageData* iImage)
 {
-  if( !iImage )
+  if (!iImage)
     {
-    std::cerr <<"QGoTabImageViewNDBase::SetImage( 0x0 )" <<std::endl;
+    std::cerr << "QGoTabImageViewNDBase::SetImage( 0x0 )" << std::endl;
     return;
     }
 
   m_Image = iImage;
 
   int n = m_Image->GetNumberOfScalarComponents();
-  this->m_NavigationDockWidget->SetNumberOfChannels( n );
+  this->m_NavigationDockWidget->SetNumberOfChannels(n);
 
-  if( n != 1 )
+  if (n != 1)
     {
-    if( ( n == 3 ) || ( n == 4 ) )
+    if ((n == 3) || (n == 4))
       {
-      this->m_NavigationDockWidget->SetChannel( 0, tr( "Red" ) );
-      this->m_NavigationDockWidget->SetChannel( 1, tr( "Green" ) );
-      this->m_NavigationDockWidget->SetChannel( 2, tr( "Blue" ) );
+      this->m_NavigationDockWidget->SetChannel(0, tr("Red"));
+      this->m_NavigationDockWidget->SetChannel(1, tr("Green"));
+      this->m_NavigationDockWidget->SetChannel(2, tr("Blue"));
 
-      if( n == 4 )
+      if (n == 4)
         {
-        this->m_NavigationDockWidget->SetChannel( 3, tr( "Alpha" ) );
+        this->m_NavigationDockWidget->SetChannel(3, tr("Alpha"));
         }
       }
     else
       {
-      for( int i = 0; i < n; i++ )
+      for (int i = 0; i < n; i++)
         {
-        this->m_NavigationDockWidget->SetChannel( i );
+        this->m_NavigationDockWidget->SetChannel(i);
         }
       }
     }
 
   int extent[6];
-  m_Image->GetExtent( extent );
+  m_Image->GetExtent(extent);
 
-  this->SetImageToImageViewer( m_Image );
+  this->SetImageToImageViewer(m_Image);
 
-  this->m_NavigationDockWidget->SetXMinimumAndMaximum( extent[0], extent[1] );
-  this->m_NavigationDockWidget->SetXSlice( (extent[0]+extent[1])/2 );
+  this->m_NavigationDockWidget->SetXMinimumAndMaximum(extent[0], extent[1]);
+  this->m_NavigationDockWidget->SetXSlice((extent[0] + extent[1]) / 2);
 
-  this->m_NavigationDockWidget->SetYMinimumAndMaximum( extent[2], extent[3] );
-  this->m_NavigationDockWidget->SetYSlice( (extent[2]+extent[3])/2 );
+  this->m_NavigationDockWidget->SetYMinimumAndMaximum(extent[2], extent[3]);
+  this->m_NavigationDockWidget->SetYSlice((extent[2] + extent[3]) / 2);
 
-  this->m_NavigationDockWidget->SetZMinimumAndMaximum( extent[4], extent[5] );
-  this->m_NavigationDockWidget->SetZSlice( (extent[4]+extent[5])/2 );
+  this->m_NavigationDockWidget->SetZMinimumAndMaximum(extent[4], extent[5]);
+  this->m_NavigationDockWidget->SetZSlice((extent[4] + extent[5]) / 2);
 }
 //--------------------------------------------------------------------------
 
@@ -128,31 +128,30 @@ GetImage()
 }
 //--------------------------------------------------------------------------
 
-
 //--------------------------------------------------------------------------
 /**
  * \brief
  * \param[in] iChecked
  */
 void QGoTabImageViewNDBase::
-ShowAllChannels( bool iChecked )
+ShowAllChannels(bool iChecked)
 {
-  if( iChecked )
+  if (iChecked)
     {
-    this->SetImageToImageViewer( m_Image );
+    this->SetImageToImageViewer(m_Image);
     }
   else
     {
     int ch = this->m_NavigationDockWidget->GetCurrentChannel();
-    if( ch != -1 )
+    if (ch != -1)
       {
-      vtkSmartPointer< vtkImageExtractComponents > extract =
-        vtkSmartPointer< vtkImageExtractComponents >::New();
-      extract->SetInput( m_Image );
-      extract->SetComponents( ch );
+      vtkSmartPointer<vtkImageExtractComponents> extract =
+        vtkSmartPointer<vtkImageExtractComponents>::New();
+      extract->SetInput(m_Image);
+      extract->SetComponents(ch);
       extract->Update();
 
-      this->SetImageToImageViewer( extract->GetOutput() );
+      this->SetImageToImageViewer(extract->GetOutput());
       }
     }
 }
@@ -164,19 +163,19 @@ ShowAllChannels( bool iChecked )
  * \param[in] iChannel
  */
 void QGoTabImageViewNDBase::
-ShowOneChannel( int iChannel )
+ShowOneChannel(int iChannel)
 {
-  if( m_Image )
+  if (m_Image)
     {
-    if( iChannel != -1 )
+    if (iChannel != -1)
       {
-      vtkSmartPointer< vtkImageExtractComponents > extract =
-        vtkSmartPointer< vtkImageExtractComponents >::New();
-      extract->SetInput( m_Image );
-      extract->SetComponents( iChannel );
+      vtkSmartPointer<vtkImageExtractComponents> extract =
+        vtkSmartPointer<vtkImageExtractComponents>::New();
+      extract->SetInput(m_Image);
+      extract->SetComponents(iChannel);
       extract->Update();
 
-      this->SetImageToImageViewer( extract->GetOutput() );
+      this->SetImageToImageViewer(extract->GetOutput());
       }
     }
 }

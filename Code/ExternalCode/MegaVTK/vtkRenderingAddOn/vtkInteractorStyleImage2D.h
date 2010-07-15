@@ -75,34 +75,34 @@
 
 class VTK_RENDERINGADDON2_EXPORT vtkInteractorStyleImage2D :
   public vtkInteractorStyleImage
-{
- public:
+  {
+public:
   static vtkInteractorStyleImage2D *New();
   vtkTypeRevisionMacro (vtkInteractorStyleImage2D, vtkInteractorStyleImage);
 
   //BTX
-    enum InteractionTypeIds
+  enum InteractionTypeIds
     {
-      InteractionTypeNull = 0,
-      InteractionTypeSlice,
-      InteractionTypeWindowLevel,
-      InteractionTypeZoom,
-      InteractionTypePan,
-      InteractionTypeSeed,
-      InteractionTypeContourPicking,
+    InteractionTypeNull = 0,
+    InteractionTypeSlice,
+    InteractionTypeWindowLevel,
+    InteractionTypeZoom,
+    InteractionTypePan,
+    InteractionTypeSeed,
+    InteractionTypeContourPicking,
     };
-    //ETX
+  //ETX
 
-  void SetLeftButtonInteraction( InteractionTypeIds );
+  void SetLeftButtonInteraction(InteractionTypeIds);
   vtkGetMacro (LeftButtonInteraction, unsigned int);
 
-  void SetRightButtonInteraction( InteractionTypeIds );
+  void SetRightButtonInteraction(InteractionTypeIds);
   vtkGetMacro (RightButtonInteraction, unsigned int);
 
-  void SetMiddleButtonInteraction( InteractionTypeIds );
+  void SetMiddleButtonInteraction(InteractionTypeIds);
   vtkGetMacro (MiddleButtonInteraction, unsigned int);
 
-  void SetWheelButtonInteraction( InteractionTypeIds );
+  void SetWheelButtonInteraction(InteractionTypeIds);
   vtkGetMacro (WheelButtonInteraction, unsigned int);
 
   virtual void OnMouseMove();
@@ -143,30 +143,29 @@ class VTK_RENDERINGADDON2_EXPORT vtkInteractorStyleImage2D :
    */
   virtual void StartPick();
 
-
-  vtkGetMacro( SliceStep, int );
+  vtkGetMacro(SliceStep, int);
   int* GetRequestedPosition(void)
   { return this->RequestedPosition; }
 
   vtkProp* GetCurrentProp();
 
- protected:
+protected:
   vtkInteractorStyleImage2D();
   ~vtkInteractorStyleImage2D();
 
-  int SliceStep;
+  int  SliceStep;
   int* RequestedPosition;
 
- private:
+private:
 
-  vtkInteractorStyleImage2D(const vtkInteractorStyleImage2D&);  // Not implemented.
-  void operator=(const vtkInteractorStyleImage2D&);  // Not implemented.
+  vtkInteractorStyleImage2D(const vtkInteractorStyleImage2D &);  // Not implemented.
+  void operator =(const vtkInteractorStyleImage2D&);  // Not implemented.
 
   unsigned int LeftButtonInteraction;
   unsigned int RightButtonInteraction;
   unsigned int MiddleButtonInteraction;
   unsigned int WheelButtonInteraction;
   bool         m_PickingModeEnabled;
-};
+  };
 
 #endif

@@ -43,8 +43,8 @@
 #include <string>
 #include <sstream>
 
-template< typename T >
-std::string ConvertToString( const T& ToConvert )
+template<typename T>
+std::string ConvertToString(const T& ToConvert)
 {
   std::stringstream st;
   st << ToConvert;

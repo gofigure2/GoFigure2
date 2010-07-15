@@ -52,7 +52,7 @@
 class vtkLSMReader;
 
 class QGOGUILIB_EXPORT ConversionLsmToMegaThread : public QThread
-{
+  {
   Q_OBJECT
 
 public:
@@ -70,31 +70,31 @@ public:
    * \brief Set the base name of the LSM file to convert
    * \param[in] iBaseName Name of the LSM file
    */
-  void SetBaseName( std::string iBaseName);
+  void SetBaseName(std::string iBaseName);
 
   /**
    * \brief Set the path to the LSM file to convert and initialise LSM reader
    * \param[in] iLsmPath Path of the LSM file
    */
-  void SetLsmPath( std::string iLsmPath);
+  void SetLsmPath(std::string iLsmPath);
 
   /**
    * \brief Set the path of the MegaCapture file to create
    * \param[in] iMegaPath Path of the MegaCapture file
    */
-  void SetMegaPath( std::string iMegaPath);
+  void SetMegaPath(std::string iMegaPath);
 
   /**
    * \brief Set the output file type
    * \param[in] iFileType File type: PNG or TIFF
    */
-  void SetOutputFileType( const GoFigure::FileType& iFileType );
+  void SetOutputFileType(const GoFigure::FileType& iFileType);
 
   /**
    * \brief Start the conversion to MegaCapture
    * \param[in] iMegaPath path of the output MegaCapture file
    */
-  void ExportWithReimplemented( std::string iMegaPath );
+  void ExportWithReimplemented(std::string iMegaPath);
 
   /**
    * \brief Returns the number of signals to be sent for the progress bar
@@ -103,7 +103,7 @@ public:
 
 public slots:
 
- signals:
+signals:
   void ConversionTerminatedSent();
   void InitialisationProgressSent();
   void ProgressSent();
@@ -115,25 +115,25 @@ protected:
   void run();
 
 private:
-  ConversionLsmToMegaThread( const ConversionLsmToMegaThread& );
-  ConversionLsmToMegaThread operator = ( const ConversionLsmToMegaThread& );
-  std::string m_BaseName;
-  std::string m_LsmPath;
-  std::string m_MegaPath;
-  GoFigure::FileType m_FileType;
-  std::vector< vtkLSMReader* > m_LSMReaders;
-  unsigned int m_Plaque;
-  unsigned int m_Row;
-  unsigned int m_Column;
-  unsigned int m_XTile;
-  unsigned int m_YTile;
-  unsigned int m_ZTile;
-  double m_XOverlap;
-  double m_YOverlap;
-  double m_ZOverlap;
-  unsigned int m_NumberOfChannels;
-  unsigned int m_NumberOfTimePoints;
-  unsigned int m_Dim;
-};
+  ConversionLsmToMegaThread(const ConversionLsmToMegaThread &);
+  ConversionLsmToMegaThread operator =(const ConversionLsmToMegaThread&);
+  std::string                m_BaseName;
+  std::string                m_LsmPath;
+  std::string                m_MegaPath;
+  GoFigure::FileType         m_FileType;
+  std::vector<vtkLSMReader*> m_LSMReaders;
+  unsigned int               m_Plaque;
+  unsigned int               m_Row;
+  unsigned int               m_Column;
+  unsigned int               m_XTile;
+  unsigned int               m_YTile;
+  unsigned int               m_ZTile;
+  double                     m_XOverlap;
+  double                     m_YOverlap;
+  double                     m_ZOverlap;
+  unsigned int               m_NumberOfChannels;
+  unsigned int               m_NumberOfTimePoints;
+  unsigned int               m_Dim;
+  };
 
 #endif

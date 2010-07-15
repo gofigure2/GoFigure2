@@ -53,28 +53,27 @@ class vtkViewImage2DCollection;
 class QVTKWidget;
 class vtkEventQtSlotConnect;
 
-
 /**
 \class QGoImageView2D
 \brief Widget to visualize a 2D image (represented as vtkImageData).
 \example GUI/lib/qgoimageview2d.cxx
 */
 class QGOGUILIB_EXPORT QGoImageView2D : public QGoImageView
-{
+  {
   Q_OBJECT
 public:
-  explicit QGoImageView2D( QWidget* parent = 0 );
+  explicit QGoImageView2D(QWidget* parent = 0);
   ~QGoImageView2D();
 
-  void SetImage( vtkImageData* iImage );
+  void SetImage(vtkImageData* iImage);
   vtkImageData* GetImage();
 
-  vtkImageActor* GetImageActor( const int& i = 0 );
-  QVTKInteractor* GetInteractor( const int& i = 0 );
+  vtkImageActor* GetImageActor(const int& i = 0);
+  QVTKInteractor* GetInteractor(const int& i = 0);
 
   void Update();
 
-  void setupUi( QWidget* parent );
+  void setupUi(QWidget* parent);
   void retranslateUi(QWidget *parent);
 
   void DefaultMode();
@@ -82,15 +81,15 @@ public:
   void PanMode();
 
 public slots:
-  void SetLookupTable( vtkLookupTable* iLut );
-  void ShowScalarBar( const bool& );
+  void SetLookupTable(vtkLookupTable* iLut);
+  void ShowScalarBar(const bool&);
 
-  QString SnapshotViewXY( const GoFigure::FileType& iType,
-    const QString& iBaseName = tr( "Snapshot" ) );
+  QString SnapshotViewXY(const GoFigure::FileType& iType,
+                         const QString& iBaseName = tr("Snapshot"));
 
 protected:
-  QHBoxLayout*                      m_LayOut;
-  QVTKWidget*                       m_QVTKWidgetXY;
-  vtkEventQtSlotConnect*            m_VTKEventQtConnector;
-};
+  QHBoxLayout*           m_LayOut;
+  QVTKWidget*            m_QVTKWidgetXY;
+  vtkEventQtSlotConnect* m_VTKEventQtConnector;
+  };
 #endif

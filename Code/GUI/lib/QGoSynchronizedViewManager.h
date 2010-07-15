@@ -51,8 +51,6 @@ class QGoSynchronizedView2DCallbacks;
 class QGoSynchronizedView3DCallbacks;
 class vtkImageData;
 
-
-
 /** \class QGoSynchronizedViewManager
 * \brief Class dealing with SynchronizedViews for correct synchronization
 * and handling provides a simple interface to create / delete /
@@ -62,7 +60,7 @@ class vtkImageData;
 * and QGoSynchronize.
 */
 class QGoSynchronizedViewManager : public QObject
-{
+  {
   Q_OBJECT
 
 public:
@@ -70,72 +68,70 @@ public:
   explicit QGoSynchronizedViewManager(QObject *parent = 0);
   ~QGoSynchronizedViewManager();
 
-
   /** \brief create and add a SynchronizedView to
    * QGoSynchronizedViewManager's parent Object/Widget
    */
-  template< typename TPixel >
+  template<typename TPixel>
   QGoSynchronizedView3D* newSynchronizedView(
-    QString       iSynchronizedViewName,
-    typename itk::Image< TPixel, 3 >::Pointer iImage )
+    QString iSynchronizedViewName,
+    typename itk::Image<TPixel, 3>::Pointer iImage)
   {
-  // verify input
-  if ( (iSynchronizedViewName.isEmpty()) || (iImage.IsNull()) )
-    {
-    return NULL;
-    }
+    // verify input
+    if ((iSynchronizedViewName.isEmpty()) || (iImage.IsNull()))
+      {
+      return NULL;
+      }
 
-  // we create a new SynchronizedView with the same parent windows as this
-  QGoSynchronizedView3D* tempNewSynchronizedView =
-    new QGoSynchronizedView3D( iSynchronizedViewName,
-      static_cast<QWidget*>( this->parent() ) );
-  // we add the image to it
-  tempNewSynchronizedView->SetImage< TPixel >(iImage);
-  // if we are synchronizing different SynchronizedViews
-  if (m_Synchronizer3D != NULL)
-    {
-    // we tell the synchronizer to also synchronize the new SynchronizedView
-    m_Synchronizer3D->addSynchronizedView( tempNewSynchronizedView );
-    }
-  // tell the SynchronizedView who is his Manager
-  tempNewSynchronizedView->SetCurrentViewManager(this);
+    // we create a new SynchronizedView with the same parent windows as this
+    QGoSynchronizedView3D* tempNewSynchronizedView =
+      new QGoSynchronizedView3D(iSynchronizedViewName,
+                                static_cast<QWidget*>(this->parent()));
+    // we add the image to it
+    tempNewSynchronizedView->SetImage<TPixel>(iImage);
+    // if we are synchronizing different SynchronizedViews
+    if (m_Synchronizer3D != NULL)
+      {
+      // we tell the synchronizer to also synchronize the new SynchronizedView
+      m_Synchronizer3D->addSynchronizedView(tempNewSynchronizedView);
+      }
+    // tell the SynchronizedView who is his Manager
+    tempNewSynchronizedView->SetCurrentViewManager(this);
     // we add the SynchronizedView to the list of open SynchronizedViews
-  m_openSynchronizedViews3D.push_back( tempNewSynchronizedView );
+    m_openSynchronizedViews3D.push_back(tempNewSynchronizedView);
 
-  return tempNewSynchronizedView;
+    return tempNewSynchronizedView;
   }
 
-  template< typename TPixel >
+  template<typename TPixel>
   QGoSynchronizedView2D* newSynchronizedView(
-    QString       iSynchronizedViewName,
-    typename itk::Image< TPixel, 2 >::Pointer iImage )
+    QString iSynchronizedViewName,
+    typename itk::Image<TPixel, 2>::Pointer iImage)
   {
-  // verify input
-  if ( (iSynchronizedViewName.isEmpty()) || (iImage.IsNull()) )
-    {
-    return NULL;
-    }
+    // verify input
+    if ((iSynchronizedViewName.isEmpty()) || (iImage.IsNull()))
+      {
+      return NULL;
+      }
 
-  // we create a new SynchronizedView with the same parent windows as this
-  QGoSynchronizedView2D* tempNewSynchronizedView =
-    new QGoSynchronizedView2D( iSynchronizedViewName,
-      static_cast<QWidget*>( this->parent() ) );
-  // we add the image to it
-  tempNewSynchronizedView->SetImage< TPixel >(iImage);
-  // if we are synchronizing different SynchronizedViews
-  if (m_Synchronizer != NULL)
-    {
-    // we tell the synchronizer to also synchronize the new SynchronizedView
-    m_Synchronizer->addSynchronizedView(tempNewSynchronizedView);
-    }
-  // tell the SynchronizedView who is his Manager
-  tempNewSynchronizedView->SetCurrentViewManager(this);
-  // we add the SynchronizedView to the list of open SynchronizedViews
-  m_openSynchronizedViews.push_back(tempNewSynchronizedView);
+    // we create a new SynchronizedView with the same parent windows as this
+    QGoSynchronizedView2D* tempNewSynchronizedView =
+      new QGoSynchronizedView2D(iSynchronizedViewName,
+                                static_cast<QWidget*>(this->parent()));
+    // we add the image to it
+    tempNewSynchronizedView->SetImage<TPixel>(iImage);
+    // if we are synchronizing different SynchronizedViews
+    if (m_Synchronizer != NULL)
+      {
+      // we tell the synchronizer to also synchronize the new SynchronizedView
+      m_Synchronizer->addSynchronizedView(tempNewSynchronizedView);
+      }
+    // tell the SynchronizedView who is his Manager
+    tempNewSynchronizedView->SetCurrentViewManager(this);
+    // we add the SynchronizedView to the list of open SynchronizedViews
+    m_openSynchronizedViews.push_back(tempNewSynchronizedView);
 
-  return tempNewSynchronizedView;
+    return tempNewSynchronizedView;
   }
-
 
 public slots:
 
@@ -147,22 +143,22 @@ public slots:
    * safe downcasting is user's responsibility.
    */
   QGoSynchronizedView* newSynchronizedView(
-    QString       iSynchronizedViewName,
-    vtkImageData* iImage );
+    QString iSynchronizedViewName,
+    vtkImageData* iImage);
 
   /** \brief create and add a SynchronizedView2D to
    * QGoSynchronizedViewManager's parent Object/Widget
    */
   QGoSynchronizedView2D* newSynchronizedView2D(
-    QString       iSynchronizedViewName,
-    vtkImageData* iImage );
+    QString iSynchronizedViewName,
+    vtkImageData* iImage);
 
   /** \brief create and add a SynchronizedView 3D to
    * QGoSynchronizedViewManager's parent Object/Widget
    */
   QGoSynchronizedView3D* newSynchronizedView3D(
-    QString       iSynchronizedViewName,
-    vtkImageData* iImage );
+    QString iSynchronizedViewName,
+    vtkImageData* iImage);
 
   /** \brief delete a SynchronizedView from QGoSynchronizedViewManager's parent
    * Object/Widget
@@ -201,14 +197,14 @@ public slots:
 private:
 
   // vector to store the open SynchronizedViews
-  std::vector<QGoSynchronizedView2D*>       m_openSynchronizedViews;
-  std::vector<QGoSynchronizedView3D*>       m_openSynchronizedViews3D;
+  std::vector<QGoSynchronizedView2D*> m_openSynchronizedViews;
+  std::vector<QGoSynchronizedView3D*> m_openSynchronizedViews3D;
 
-  QGoSynchronizedView2DCallbacks*           m_Synchronizer;
-  QGoSynchronizedView3DCallbacks*           m_Synchronizer3D;
+  QGoSynchronizedView2DCallbacks* m_Synchronizer;
+  QGoSynchronizedView3DCallbacks* m_Synchronizer3D;
 
-  Q_DISABLE_COPY( QGoSynchronizedViewManager );
+  Q_DISABLE_COPY(QGoSynchronizedViewManager);
 
-};
+  };
 
 #endif // __QGoSynchronizedViewManager_h

@@ -45,47 +45,44 @@
 #include "QGoImageView2D.h"
 #include "QGoSynchronizedViewManager.h"
 
-
 //--------------------------------------------------------------------------
 /*
 *  Default Constructor.
 * \param iViewName
 * \param iParent
 */
-QGoSynchronizedView::QGoSynchronizedView( QString iViewName, QWidget *iParent )
- : QWidget                  (iParent),
-    m_currentViewName       (iViewName),
-    m_currentImage          (NULL),
-    m_currentView           (NULL),
-    m_currentViewManager    (NULL)
-{
+QGoSynchronizedView::QGoSynchronizedView(QString iViewName, QWidget *iParent)
+  : QWidget                  (iParent),
+  m_currentViewName       (iViewName),
+  m_currentImage          (NULL),
+  m_currentView           (NULL),
+  m_currentViewManager    (NULL)
+  {
   setupUi(this);
 
   // the widget View is just for representing the place of the viewer
   // it is useless
   delete (View);
 
-  gridLayout->setContentsMargins(1,1,1,1);
+  gridLayout->setContentsMargins(1, 1, 1, 1);
   gridLayout->setSpacing(1);
 
   this->setWindowTitle(iViewName);
-  this->resize(300,300);
-}
-
+  this->resize(300, 300);
+  }
 
 //--------------------------------------------------------------------------
 QGoSynchronizedView::
-  ~QGoSynchronizedView()
-{
+~QGoSynchronizedView()
+  {
   // delete the view if any
   if (HasViewer())
     {
     // we delete the viewer
-    delete(m_currentView);
+    delete (m_currentView);
     m_currentView = NULL;
     }
-}
-
+  }
 
 //--------------------------------------------------------------------------
 void QGoSynchronizedView::changeEvent(QEvent *e)
@@ -101,7 +98,6 @@ void QGoSynchronizedView::changeEvent(QEvent *e)
       break;
     }
 }
-
 
 ////--------------------------------------------------------------------------
 ///*  Set image displayed by the comparer
@@ -141,7 +137,6 @@ GetName()
   return &m_currentViewName;
 }
 
-
 //--------------------------------------------------------------------------
 /* Update the viewer contained in the widget */
 void
@@ -157,7 +152,6 @@ Update()
     m_currentView->Update();
     }
 }
-
 
 //--------------------------------------------------------------------------
 /*  render the viewer contained in the widget if any */
@@ -175,7 +169,6 @@ Render()
     }
 }
 
-
 //--------------------------------------------------------------------------
 /*  get the camera of the current viewer */
 vtkCamera*
@@ -189,11 +182,10 @@ GetCamera()
   else
     {
     return m_currentView->GetImageViewer(0)
-                        ->GetRenderer()
-                        ->GetActiveCamera();
+           ->GetRenderer()
+           ->GetActiveCamera();
     }
 }
-
 
 //--------------------------------------------------------------------------
 /*  true if the widget has a viewer */
@@ -201,12 +193,10 @@ bool
 QGoSynchronizedView::
 HasViewer()
 {
-  if (m_currentView != NULL)
-    return true;
+  if (m_currentView != NULL) return true;
   else
     return false;
 }
-
 
 //--------------------------------------------------------------------------
 /* Set the address of the current orchestra */
@@ -217,11 +207,9 @@ SetCurrentViewManager(QGoSynchronizedViewManager* iCurrentViewManager)
   m_currentViewManager = iCurrentViewManager;
 }
 
-
 /*
   Private
 */
-
 
 //--------------------------------------------------------------------------
 /* delete the viewer contained in the widget */

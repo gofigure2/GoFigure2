@@ -52,76 +52,76 @@ class vtkImageData;
 
 namespace itk
 {
-  class QGOIO_EXPORT MegaCaptureReader : public LightProcessObject
+class QGOIO_EXPORT MegaCaptureReader : public LightProcessObject
   {
-  public:
-    /** Standard class typedefs.      */
-    typedef MegaCaptureReader           Self;
-    typedef LightProcessObject          Superclass;
-    typedef SmartPointer< Self >        Pointer;
-    typedef SmartPointer< const Self >  ConstPointer;
+public:
+  /** Standard class typedefs.      */
+  typedef MegaCaptureReader        Self;
+  typedef LightProcessObject       Superclass;
+  typedef SmartPointer<Self>       Pointer;
+  typedef SmartPointer<const Self> ConstPointer;
 
-    itkNewMacro( Self );
+  itkNewMacro(Self);
 
-    itkTypeMacro( MegaCaptureReader, LightProcessObject );
+  itkTypeMacro(MegaCaptureReader, LightProcessObject);
 
-    /** \brief set the input as a GoFigure format file list */
-    void SetInput( const GoFigureFileInfoHelperMultiIndexContainer& UserFileList );
+  /** \brief set the input as a GoFigure format file list */
+  void SetInput(const GoFigureFileInfoHelperMultiIndexContainer& UserFileList);
 
-    void SetMegaCaptureHeader( const std::string& iHeader );
+  void SetMegaCaptureHeader(const std::string& iHeader);
 
-    /** \brief  */
-    itkSetMacro( FileType, GoFigure::FileType );
-    itkSetMacro( TimeBased, bool );
+  /** \brief  */
+  itkSetMacro(FileType, GoFigure::FileType);
+  itkSetMacro(TimeBased, bool);
 
-    void SetTimePoint( const unsigned int& iTm );
-    itkGetConstMacro( UpdateTimePoint, unsigned int );
+  void SetTimePoint(const unsigned int& iTm);
+  itkGetConstMacro(UpdateTimePoint, unsigned int);
 
-    itkGetConstMacro( MinTimePoint, unsigned int );
-    itkGetConstMacro( MaxTimePoint, unsigned int );
+  itkGetConstMacro(MinTimePoint, unsigned int);
+  itkGetConstMacro(MaxTimePoint, unsigned int);
 
-    void SetZSlice( const unsigned int& iZs );
-    itkGetConstMacro( UpdateZSlice, unsigned int );
+  void SetZSlice(const unsigned int& iZs);
+  itkGetConstMacro(UpdateZSlice, unsigned int);
 
-    itkGetConstMacro( MinZSlice, unsigned int );
-    itkGetConstMacro( MaxZSlice, unsigned int );
+  itkGetConstMacro(MinZSlice, unsigned int);
+  itkGetConstMacro(MaxZSlice, unsigned int);
 
-    itkGetConstMacro( MinChannel, unsigned int );
-    itkGetConstMacro( MaxChannel, unsigned int );
+  itkGetConstMacro(MinChannel, unsigned int);
+  itkGetConstMacro(MaxChannel, unsigned int);
 
-    void Update();
+  void Update();
 
-    vtkImageData* GetOutput( const unsigned int& iChannel );
-    std::map< unsigned int, vtkImageData* > GetOutputs();
+  vtkImageData* GetOutput(const unsigned int& iChannel);
+  std::map<unsigned int, vtkImageData*> GetOutputs();
 
-  protected:
-    MegaCaptureReader();
-    ~MegaCaptureReader();
+protected:
+  MegaCaptureReader();
+  ~MegaCaptureReader();
 
-    void ComputeBounds();
+  void ComputeBounds();
 
-    std::map< unsigned int, vtkImageData* >     m_OutputImageMap;
-    GoFigureFileInfoHelperMultiIndexContainer   m_FileList;
-    GoFigure::FileType                          m_FileType;
-    MegaCaptureHeaderReader*                    m_HeaderReader;
+  std::map<unsigned int, vtkImageData*>     m_OutputImageMap;
+  GoFigureFileInfoHelperMultiIndexContainer m_FileList;
+  GoFigure::FileType                        m_FileType;
+  MegaCaptureHeaderReader*                  m_HeaderReader;
 
-    unsigned int m_MinTimePoint;
-    unsigned int m_MaxTimePoint;
-    unsigned int m_UpdateTimePoint;
+  unsigned int m_MinTimePoint;
+  unsigned int m_MaxTimePoint;
+  unsigned int m_UpdateTimePoint;
 
-    unsigned int m_MinZSlice;
-    unsigned int m_MaxZSlice;
-    unsigned int m_UpdateZSlice;
+  unsigned int m_MinZSlice;
+  unsigned int m_MaxZSlice;
+  unsigned int m_UpdateZSlice;
 
-    unsigned int m_MinChannel;
-    unsigned int m_MaxChannel;
+  unsigned int m_MinChannel;
+  unsigned int m_MaxChannel;
 
-    bool m_TimeBased;
-    bool m_Modified;
+  bool m_TimeBased;
+  bool m_Modified;
 
-  private:
-    MegaCaptureReader( const Self& );
-    void operator = ( const Self& );
+private:
+  MegaCaptureReader(const Self &);
+  void operator =(const Self&);
   };
 }
 #endif

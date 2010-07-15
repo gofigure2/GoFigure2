@@ -49,49 +49,49 @@ class vtkPolyData;
 #include "QGoIOConfigure.h"
 
 struct QGOIO_EXPORT ContourMeshStructure
-{
-  unsigned int        TraceID;
-  vtkActor*           Actor;
-  vtkPolyData*        Nodes;
-  unsigned int        CollectionID;
-  unsigned int        TCoord;
-  bool                Highlighted;
-  bool                Visible;
-  double              rgba[4];
-  int                 Direction;
+  {
+  unsigned int TraceID;
+  vtkActor* Actor;
+  vtkPolyData* Nodes;
+  unsigned int CollectionID;
+  unsigned int TCoord;
+  bool Highlighted;
+  bool Visible;
+  double rgba[4];
+  int Direction;
 
-  ContourMeshStructure( );
+  ContourMeshStructure();
 
   // Obsolete...
-  ContourMeshStructure( const unsigned int& iTraceID, vtkActor* iActor,
-    vtkPolyData* iNodes, const unsigned int& iCollectionID, const unsigned int& iT,
-    const bool& iHighlighted, const double& r, const double& g, const double& b,
-    const double& alpha, const int& iDir );
+  ContourMeshStructure(const unsigned int & iTraceID, vtkActor * iActor,
+                       vtkPolyData * iNodes, const unsigned int & iCollectionID, const unsigned int & iT,
+                       const bool & iHighlighted, const double & r, const double & g, const double & b,
+                       const double & alpha, const int & iDir);
 
-  ContourMeshStructure( const unsigned int& iTraceID, vtkActor* iActor,
-    vtkPolyData* iNodes, const unsigned int& iCollectionID, const unsigned int& iT,
-    const bool& iHighlighted, const bool& iVisible, const double& r,
-    const double& g, const double& b, const double& alpha, const int& iDir );
+  ContourMeshStructure(const unsigned int & iTraceID, vtkActor * iActor,
+                       vtkPolyData * iNodes, const unsigned int & iCollectionID, const unsigned int & iT,
+                       const bool & iHighlighted, const bool & iVisible, const double & r,
+                       const double & g, const double & b, const double & alpha, const int & iDir);
 
-  ContourMeshStructure( const ContourMeshStructure& iE );
+  ContourMeshStructure(const ContourMeshStructure &iE);
   ~ContourMeshStructure();
 
-  friend std::ostream& operator << ( std::ostream& os, const ContourMeshStructure& c )
-    {
-    os <<"TraceID " <<c.TraceID <<std::endl;
-    os <<"Actor " <<c.Actor <<std::endl;
-    os <<"Nodes "<<c.Nodes <<std::endl;
-    os <<"CollectionID " <<c.CollectionID <<std::endl;
-    os <<"TCoord " <<c.TCoord <<std::endl;
-    os <<"Highlighted " <<c.Highlighted <<std::endl;
-    os <<"Visible " <<c.Visible <<std::endl;
-    os <<"RGBA [" <<c.rgba[0] <<", " <<c.rgba[1] <<", " <<c.rgba[2]
-       <<", " <<c.rgba[3] <<"]" <<std::endl;
-    os <<"Direction " <<c.Direction <<std::endl;
+  friend std::ostream& operator <<(std::ostream& os, const ContourMeshStructure& c)
+  {
+    os << "TraceID " << c.TraceID << std::endl;
+    os << "Actor " << c.Actor << std::endl;
+    os << "Nodes " << c.Nodes << std::endl;
+    os << "CollectionID " << c.CollectionID << std::endl;
+    os << "TCoord " << c.TCoord << std::endl;
+    os << "Highlighted " << c.Highlighted << std::endl;
+    os << "Visible " << c.Visible << std::endl;
+    os << "RGBA [" << c.rgba[0] << ", " << c.rgba[1] << ", " << c.rgba[2]
+       << ", " << c.rgba[3] << "]" << std::endl;
+    os << "Direction " << c.Direction << std::endl;
 
     return os;
-    }
-};
+  }
+  };
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 struct TraceID {};

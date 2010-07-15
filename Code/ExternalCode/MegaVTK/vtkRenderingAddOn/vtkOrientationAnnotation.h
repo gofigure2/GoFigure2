@@ -79,12 +79,11 @@
 #include "vtkCornerAnnotation.h"
 #include "MegaVTK2Configure.h"
 
-
 class VTK_RENDERINGADDON2_EXPORT vtkOrientationAnnotation :
   public vtkCornerAnnotation
-{
+  {
 public:
-  vtkTypeRevisionMacro(vtkOrientationAnnotation,vtkCornerAnnotation);
+  vtkTypeRevisionMacro(vtkOrientationAnnotation, vtkCornerAnnotation);
 
   // Description:
   // Instantiate object with a rectangle in normaled view coordinates
@@ -101,12 +100,8 @@ protected:
   virtual void SetTextActorsJustification();
 
 private:
-  vtkOrientationAnnotation(const vtkOrientationAnnotation&);  // Not implemented.
-  void operator=(const vtkOrientationAnnotation&);  // Not implemented.
-};
-
+  vtkOrientationAnnotation(const vtkOrientationAnnotation &);  // Not implemented.
+  void operator =(const vtkOrientationAnnotation&);  // Not implemented.
+  };
 
 #endif
-
-
-

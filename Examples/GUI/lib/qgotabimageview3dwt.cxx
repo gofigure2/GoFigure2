@@ -48,62 +48,62 @@
 
 #include "QGoTabImageView3DwT.h"
 
-int main( int argc, char** argv )
+int main(int argc, char** argv)
 {
-  if( argc != 3 )
+  if (argc != 3)
     {
-    std::cerr <<"qgotabimageview3dwt requires 2 arguments:" <<std::endl;
-    std::cerr <<"1-filename" <<std::endl;
-    std::cerr <<"2-test (boolean)" <<std::endl;
+    std::cerr << "qgotabimageview3dwt requires 2 arguments:" << std::endl;
+    std::cerr << "1-filename" << std::endl;
+    std::cerr << "2-test (boolean)" << std::endl;
     return EXIT_FAILURE;
     }
-  QApplication app( argc, argv );
+  QApplication app(argc, argv);
   QCoreApplication::setOrganizationName("MegasonLab");
-  QCoreApplication::setOrganizationDomain( "http://gofigure2.sourceforge.net" );
+  QCoreApplication::setOrganizationDomain("http://gofigure2.sourceforge.net");
 
   vtkLSMReader* reader = vtkLSMReader::New();
-  reader->SetFileName( argv[1] );
-  reader->SetUpdateTimePoint( 0 );
+  reader->SetFileName(argv[1]);
+  reader->SetUpdateTimePoint(0);
   reader->Update();
 
   QGoTabImageView3DwT* tab = new QGoTabImageView3DwT;
-  tab->SetLSMReader( reader, 0 );
+  tab->SetLSMReader(reader, 0);
   tab->show();
 
-  QMenuBar* menubar = new QMenuBar;
-  std::vector< QAction* > action_vector = tab->ViewActions();
+  QMenuBar*             menubar = new QMenuBar;
+  std::vector<QAction*> action_vector = tab->ViewActions();
 
-  for( std::vector< QAction* >::iterator q_it = action_vector.begin();
-    q_it != action_vector.end();
-    q_it++ )
+  for (std::vector<QAction*>::iterator q_it = action_vector.begin();
+       q_it != action_vector.end();
+       q_it++)
     {
-    menubar->addAction( *q_it );
+    menubar->addAction(*q_it);
     }
   menubar->show();
 
   QTimer* timer = new QTimer;
-  timer->setSingleShot( true );
-  QObject::connect( timer, SIGNAL( timeout() ), tab, SLOT( close() ) );
-  QObject::connect( timer, SIGNAL( timeout() ), menubar, SLOT( close() ) );
+  timer->setSingleShot(true);
+  QObject::connect(timer, SIGNAL(timeout()), tab, SLOT(close()));
+  QObject::connect(timer, SIGNAL(timeout()), menubar, SLOT(close()));
 
-  std::list< std::pair< QGoDockWidgetStatus*, QDockWidget* > > dockwidget_list = tab->DockWidget();
+  std::list<std::pair<QGoDockWidgetStatus*, QDockWidget*> > dockwidget_list = tab->DockWidget();
 
-  for( std::list< std::pair< QGoDockWidgetStatus*, QDockWidget* > >::iterator
-      it = dockwidget_list.begin();
-    it != dockwidget_list.end();
-    it++ )
+  for (std::list<std::pair<QGoDockWidgetStatus*, QDockWidget*> >::iterator
+       it = dockwidget_list.begin();
+       it != dockwidget_list.end();
+       it++)
     {
-    if( it->second )
+    if (it->second)
       {
       it->second->show();
-      QObject::connect( timer, SIGNAL( timeout() ), it->second, SLOT( close() ) );
+      QObject::connect(timer, SIGNAL(timeout()), it->second, SLOT(close()));
       }
     }
 
-  if( atoi( argv[2] ) == 1 )
+  if (atoi(argv[2]) == 1)
     {
-    tab->SetTimePoint( 0 );
-    timer->start( 1000 );
+    tab->SetTimePoint(0);
+    timer->start(1000);
     }
 
   app.processEvents();

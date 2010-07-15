@@ -50,19 +50,19 @@
 #include "QGoDeleteDBEntityDialog.h"
 
 QGoDBEntityManager::QGoDBEntityManager(QWidget* iParent,
-   std::string iEntityName, int iImgSessionID):
-  QWidget( iParent)
-{
+                                       std::string iEntityName, int iImgSessionID) :
+  QWidget(iParent)
+  {
   this->m_EntityName = iEntityName;
   this->m_ImgSessionID = iImgSessionID;
   this->m_NameNewEntity = "";
-}
+  }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 QGoDBEntityManager::~QGoDBEntityManager()
-{
-}
+  {
+  }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -71,10 +71,10 @@ void QGoDBEntityManager::AddAnEntity(
 {
   //this->m_CoordIDForNewEntity = iCoordID;
   this->m_NameDescDialog = new QNameDescriptionInputDialog(
-    this,this->m_EntityName.c_str());
+    this, this->m_EntityName.c_str());
   this->m_DatabaseConnectorForNewEntity = iDatabaseConnector;
   QObject::connect (this->m_NameDescDialog, SIGNAL(NameNonEmpty()),
-    this, SLOT(ValidateName()));
+                    this, SLOT(ValidateName()));
   this->m_NameDescDialog->exec();
 }
 //-------------------------------------------------------------------------
@@ -87,7 +87,7 @@ void QGoDBEntityManager::AddAnEntity(
   NewBookmark.SetField("Description",
     this->m_NameDescDialog->GetInputTextForDescription());
   QDateTime CreationDate = QDateTime::currentDateTime();
-  std::string CreationDateStr = 
+  std::string CreationDateStr =
     CreationDate.toString(Qt::ISODate).toStdString();
   NewBookmark.SetField("CreationDate",CreationDateStr);
   NewBookmark.SetField<int>("CoordID",this->m_CoordIDForNewBookmark);
@@ -112,18 +112,18 @@ void QGoDBEntityManager::AddAnEntity(
 
 //-------------------------------------------------------------------------
 QGoDBEntityManager::NamesDescrContainerType QGoDBEntityManager::
-  GetListExistingEntities(vtkMySQLDatabase* iDatabaseConnector)
+GetListExistingEntities(vtkMySQLDatabase* iDatabaseConnector)
 {
   if (this->m_ImgSessionID != 0)
     {
     return ListSpecificValuesForTwoColumns(iDatabaseConnector,
-      this->m_EntityName, "Name","Description","ImagingSessionID",
-      ConvertToString<int>(this->m_ImgSessionID),"Name");
+                                           this->m_EntityName, "Name", "Description", "ImagingSessionID",
+                                           ConvertToString<int>(this->m_ImgSessionID), "Name");
     }
   else
     {
     return VectorTwoColumnsFromTable(iDatabaseConnector, "Name",
-      "Description", this->m_EntityName, "Name");
+                                     "Description", this->m_EntityName, "Name");
     }
 }
 //-------------------------------------------------------------------------
@@ -172,16 +172,16 @@ void QGoDBEntityManager::DeleteEntity(
   vtkMySQLDatabase* iDatabaseConnector)
 {
   QGoDeleteDBEntityDialog* Dialog = new QGoDeleteDBEntityDialog(
-    this,this->m_EntityName,this->m_ImgSessionID,iDatabaseConnector);
-  QObject::connect(Dialog,SIGNAL(ListEntitiesChanged()),
-    this,SIGNAL(ListEntitiesChanged()));
+    this, this->m_EntityName, this->m_ImgSessionID, iDatabaseConnector);
+  QObject::connect(Dialog, SIGNAL(ListEntitiesChanged()),
+                   this, SIGNAL(ListEntitiesChanged()));
   Dialog->show();
   Dialog->exec();
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
- std::string QGoDBEntityManager::GetNameNewEntity()
+std::string QGoDBEntityManager::GetNameNewEntity()
 {
   return this->m_NameNewEntity;
 }

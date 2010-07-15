@@ -39,27 +39,26 @@
 =========================================================================*/
 #include "QGoTraceManualEditingDockWidget.h"
 
-
 QGoTraceManualEditingDockWidget::QGoTraceManualEditingDockWidget(
-  QWidget* iParent):QDockWidget(iParent)
-{
- this->m_TraceWidget =  
-   new QGoTraceManualEditingWidget(this);
- this->setWindowTitle(tr("Trace settings"));
- this->setWidget(this->m_TraceWidget);
-}
+  QWidget* iParent) : QDockWidget(iParent)
+  {
+  this->m_TraceWidget =
+    new QGoTraceManualEditingWidget(this);
+  this->setWindowTitle(tr("Trace settings"));
+  this->setWidget(this->m_TraceWidget);
+  }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 QGoTraceManualEditingDockWidget::~QGoTraceManualEditingDockWidget()
-{
-}
+  {
+  }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoTraceManualEditingDockWidget::ShowAndUpdate(std::string iTraceName, 
-  std::string iCollectionName)
+void QGoTraceManualEditingDockWidget::ShowAndUpdate(std::string iTraceName,
+                                                    std::string iCollectionName)
 {
-  this->m_TraceWidget->UpdateTraceAndCollection(iTraceName,iCollectionName);
+  this->m_TraceWidget->UpdateTraceAndCollection(iTraceName, iCollectionName);
   this->show();
 }

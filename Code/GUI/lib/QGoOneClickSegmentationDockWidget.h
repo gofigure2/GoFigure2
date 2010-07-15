@@ -50,13 +50,13 @@ class vtkProperty;
 class QGoOneClickSegmentationDockWidget :
   public QDockWidget,
   private Ui::OneClickSegmentationDockWidget
-{
+  {
   Q_OBJECT
 public:
-  explicit QGoOneClickSegmentationDockWidget( QWidget* iParent = 0 );
+  explicit QGoOneClickSegmentationDockWidget(QWidget* iParent = 0);
   ~QGoOneClickSegmentationDockWidget();
 
-  void SetNumberOfChannels( int );
+  void SetNumberOfChannels(int);
 
   // Methods to get useful informations
   int    GetFilter();
@@ -67,7 +67,7 @@ public:
 
 private:
 
-  void UpdateWidget( bool iUse );
+  void UpdateWidget(bool iUse);
   void InitializeLevelsetParameters();
 
   // useless parameters (yet?)
@@ -75,11 +75,11 @@ private:
 
 public slots:
   void ApplyFilterEmit();
-  void FilterChanged( int );
-  void AdvancedMode( bool );
+  void FilterChanged(int);
+  void AdvancedMode(bool);
 
 signals:
   void ApplyFilterPressed();
-};
+  };
 
 #endif

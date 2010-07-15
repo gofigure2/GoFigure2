@@ -45,16 +45,15 @@
 #include <QLineEdit>
 #include "vtkMySQLDatabase.h"
 
-
 class QGoDBInitCreateMicroscopePage : public QWizardPage
-{
+  {
   Q_OBJECT
 
 public:
   explicit QGoDBInitCreateMicroscopePage(QWidget *iparent = 0);
   ~QGoDBInitCreateMicroscopePage() {}
   void SetDatabaseVariables(
-    std::string iUser,std::string iPassword);
+    std::string iUser, std::string iPassword);
   bool validatePage();
   //int nextId() const;
 
@@ -65,16 +64,16 @@ signals:
   void NewMicroscopeCreated();
 
 private:
-  Q_DISABLE_COPY( QGoDBInitCreateMicroscopePage );
+  Q_DISABLE_COPY(QGoDBInitCreateMicroscopePage);
 
-  QLineEdit*          lineMicroscopeName;
-  QPushButton*        CreateButton;
-  vtkMySQLDatabase*   m_DatabaseConnector;
-  std::string         m_Server;
-  std::string         m_User;
-  std::string         m_Password;
-  std::string         m_DBName;
-  
+  QLineEdit*        lineMicroscopeName;
+  QPushButton*      CreateButton;
+  vtkMySQLDatabase* m_DatabaseConnector;
+  std::string       m_Server;
+  std::string       m_User;
+  std::string       m_Password;
+  std::string       m_DBName;
+
   void OpenDBConnection();
-};
+  };
 #endif

@@ -50,9 +50,9 @@
 #include <QLabel>
 #include <QTextLayout>
 
-QGoDBInitCreateUserPage::QGoDBInitCreateUserPage( QWidget *iParent)
-  : QWizardPage( iParent )
-{
+QGoDBInitCreateUserPage::QGoDBInitCreateUserPage(QWidget *iParent)
+  : QWizardPage(iParent)
+  {
   QFont tfont;
   tfont.setBold(false);
   this->setFont(tfont);
@@ -60,7 +60,7 @@ QGoDBInitCreateUserPage::QGoDBInitCreateUserPage( QWidget *iParent)
   m_ServerName = "localhost";
   m_DBName     = "gofiguredatabase";
 
-  setSubTitle( tr("Create a user for MySQL Database local Server:"));
+  setSubTitle(tr("Create a user for MySQL Database local Server:"));
 
   QFormLayout* formLayout = new QFormLayout;
   lineUserName = new QLineEdit;
@@ -68,44 +68,44 @@ QGoDBInitCreateUserPage::QGoDBInitCreateUserPage( QWidget *iParent)
   linePassword->setEchoMode(QLineEdit::Password);
   linePassword->displayText();
 
-  formLayout->addRow( tr("Choose a User name:"),  lineUserName );
-  formLayout->addRow( tr("Choose a Password:"),   linePassword );
-  setLayout( formLayout );
+  formLayout->addRow(tr("Choose a User name:"),  lineUserName);
+  formLayout->addRow(tr("Choose a Password:"),   linePassword);
+  setLayout(formLayout);
 
-  setLayout( formLayout );
+  setLayout(formLayout);
 
-  registerField( "User",       lineUserName );
-  registerField( "Password",   linePassword );
-}
+  registerField("User",       lineUserName);
+  registerField("Password",   linePassword);
+  }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 bool QGoDBInitCreateUserPage::validatePage()
 {
   QMessageBox msgBox;
-  if(field("User").toString() == "" ||
-       field("Password").toString() == "")
+  if (field("User").toString() == "" ||
+      field("Password").toString() == "")
     {
     msgBox.setText(
-      tr("Please fill all the fields.") );
+      tr("Please fill all the fields."));
     msgBox.exec();
     return false;
     }
-   if(!this->CreateUser())
+  if (!this->CreateUser())
     {
     return false;
     }
-   if(
-    !CreateGoFigureDataBase(this->m_ServerName,field("User").toString().toStdString(),
-    field("Password").toString().toStdString(),this->m_DBName))
-     {
-     msgBox.setText(
-        tr("There is a problem with the creation of your database,check the password for your user.") );
-     msgBox.exec();
-     return false;
-     }
-   emit UserAndDatabaseCreated();
-    return true;
+  if (
+    !CreateGoFigureDataBase(this->m_ServerName, field("User").toString().toStdString(),
+                            field("Password").toString().toStdString(), this->m_DBName))
+    {
+    msgBox.setText(
+      tr("There is a problem with the creation of your database,check the password for your user."));
+    msgBox.exec();
+    return false;
+    }
+  emit UserAndDatabaseCreated();
+  return true;
 }
 //-------------------------------------------------------------------------
 
@@ -116,60 +116,60 @@ bool QGoDBInitCreateUserPage::CreateUser()
   std::string Password = field("Password").toString().toStdString();
 
   vtkMySQLDatabase * DataBaseConnector = vtkMySQLDatabase::New();
-  DataBaseConnector->SetHostName( this->m_ServerName.c_str() );
-  DataBaseConnector->SetUser( "root" );
-   bool ok;
-   QString text = QInputDialog::getText(0,"Enter your root password for MySQL:",
-                                          "Root Password:", QLineEdit::Password,
-                                          QDir::home().dirName(), &ok);
-   if (ok)
-     {
-     if (text.isEmpty())
-       {
-       DataBaseConnector->SetPassword("");
-       }
-     else
-       {
-       DataBaseConnector->SetPassword(text.toStdString().c_str());
-       }
-     if (!DataBaseConnector->Open())
-       {
-       QMessageBox msgBox;
-       msgBox.setText(
-         tr("There is a problem with the connection to your root.") );
-       msgBox.exec();
-       return false;
-        }
-      }
-    if( !this->UserNameAlreadyExits(DataBaseConnector,Login,
-          this->m_ServerName,Password))
+  DataBaseConnector->SetHostName(this->m_ServerName.c_str());
+  DataBaseConnector->SetUser("root");
+  bool    ok;
+  QString text = QInputDialog::getText(0, "Enter your root password for MySQL:",
+                                       "Root Password:", QLineEdit::Password,
+                                       QDir::home().dirName(), &ok);
+  if (ok)
+    {
+    if (text.isEmpty())
       {
-      if(this->QuestionToUser(
-        tr("Do you want to create this new user with a new database?")))
-        {
-        return this->CreateGofigureUserWithDatabaseConnector(DataBaseConnector,Login,
-          this->m_ServerName,Password);
-        }
-      else
-        {
-        return false;
-        }
+      DataBaseConnector->SetPassword("");
       }
     else
       {
-      return this->QuestionToUser(
-        tr("The user you entered already exits, \ndo you want to create a database for this user?"));
+      DataBaseConnector->SetPassword(text.toStdString().c_str());
       }
+    if (!DataBaseConnector->Open())
+      {
+      QMessageBox msgBox;
+      msgBox.setText(
+        tr("There is a problem with the connection to your root."));
+      msgBox.exec();
+      return false;
+      }
+    }
+  if (!this->UserNameAlreadyExits(DataBaseConnector, Login,
+                                  this->m_ServerName, Password))
+    {
+    if (this->QuestionToUser(
+          tr("Do you want to create this new user with a new database?")))
+      {
+      return this->CreateGofigureUserWithDatabaseConnector(DataBaseConnector, Login,
+                                                           this->m_ServerName, Password);
+      }
+    else
+      {
+      return false;
+      }
+    }
+  else
+    {
+    return this->QuestionToUser(
+             tr("The user you entered already exits, \ndo you want to create a database for this user?"));
+    }
   return false;
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 bool QGoDBInitCreateUserPage::CreateGofigureUserWithDatabaseConnector(
-  vtkMySQLDatabase* DatabaseConnector,std::string iLogin,
+  vtkMySQLDatabase* DatabaseConnector, std::string iLogin,
   std::string iServerName, std::string iPassword)
 {
-  vtkSQLQuery* query = DatabaseConnector->GetQueryInstance();
+  vtkSQLQuery*      query = DatabaseConnector->GetQueryInstance();
   std::stringstream queryScript;
   queryScript << "CREATE USER '";
   queryScript <<  iLogin;
@@ -182,7 +182,7 @@ bool QGoDBInitCreateUserPage::CreateGofigureUserWithDatabaseConnector(
   query->Execute();
   query->Delete();
 
-  vtkSQLQuery* queryPrivileges = DatabaseConnector->GetQueryInstance();
+  vtkSQLQuery*      queryPrivileges = DatabaseConnector->GetQueryInstance();
   std::stringstream PrivilegesScript;
   PrivilegesScript << "GRANT ALL PRIVILEGES ON *.* TO '";
   PrivilegesScript << iLogin;
@@ -190,14 +190,14 @@ bool QGoDBInitCreateUserPage::CreateGofigureUserWithDatabaseConnector(
   PrivilegesScript << iServerName;
   PrivilegesScript << "';";
   queryPrivileges->SetQuery(PrivilegesScript.str().c_str());
-  if(!queryPrivileges->Execute())
+  if (!queryPrivileges->Execute())
     {
     DatabaseConnector->Close();
     DatabaseConnector->Delete();
     queryPrivileges->Delete();
     QMessageBox msgBox;
     msgBox.setText(
-      tr("Sorry, there is a problem with the creation of your user.") );
+      tr("Sorry, there is a problem with the creation of your user."));
     msgBox.exec();
     return false;
     }
@@ -209,16 +209,16 @@ bool QGoDBInitCreateUserPage::CreateGofigureUserWithDatabaseConnector(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-bool 
+bool
 QGoDBInitCreateUserPage::
-UserNameAlreadyExits( vtkMySQLDatabase* DatabaseConnector,
-  std::string iLogin, std::string iServerName, std::string iPassword )
+UserNameAlreadyExits(vtkMySQLDatabase* DatabaseConnector,
+                     std::string iLogin, std::string iServerName, std::string iPassword)
 {
   // unused parameters
   (void) iServerName;
   (void) iPassword;
 
-  vtkSQLQuery* queryUserExist = DatabaseConnector->GetQueryInstance();
+  vtkSQLQuery*      queryUserExist = DatabaseConnector->GetQueryInstance();
   std::stringstream UserExistScript;
   UserExistScript << "SELECT USER FROM mysql.user WHERE user = '";
   UserExistScript <<  iLogin;
@@ -228,7 +228,7 @@ UserNameAlreadyExits( vtkMySQLDatabase* DatabaseConnector,
     {
     QMessageBox msgBox;
     msgBox.setText(
-      tr("There is a problem to check your existing users.") );
+      tr("There is a problem to check your existing users."));
     msgBox.exec();
     queryUserExist->Delete();
     DatabaseConnector->Close();
@@ -236,7 +236,7 @@ UserNameAlreadyExits( vtkMySQLDatabase* DatabaseConnector,
     queryUserExist->Delete();
     return false;
     }
-  if( queryUserExist->NextRow() )
+  if (queryUserExist->NextRow())
     {
     queryUserExist->Delete();
     DatabaseConnector->Close();
@@ -252,17 +252,17 @@ UserNameAlreadyExits( vtkMySQLDatabase* DatabaseConnector,
 //-------------------------------------------------------------------------
 bool QGoDBInitCreateUserPage::QuestionToUser(QString iQuestion)
 {
-  QDialogButtonBox* button= new QDialogButtonBox(QDialogButtonBox::Ok
-                                      | QDialogButtonBox::Cancel);
-  QDialog* Dialog = new QDialog;
-  QLabel* Label = new QLabel(iQuestion);
+  QDialogButtonBox* button = new QDialogButtonBox(QDialogButtonBox::Ok
+                                                  | QDialogButtonBox::Cancel);
+  QDialog*     Dialog = new QDialog;
+  QLabel*      Label = new QLabel(iQuestion);
   QFormLayout* Layout = new QFormLayout(this);
   Layout->addWidget(Label);
   Layout->addWidget(button);
   Dialog->setLayout(Layout);
   QObject::connect(button, SIGNAL(accepted()), Dialog, SLOT(accept()));
   QObject::connect(button, SIGNAL(rejected()), Dialog, SLOT(reject()));
- 
+
   int Result = Dialog->exec();
   if (Result == 0)
     {

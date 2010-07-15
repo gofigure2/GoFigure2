@@ -52,17 +52,17 @@
 
 #include <stdio.h>
 
-int main( int argc, char* argv[] )
+int main(int argc, char* argv[])
 {
-  if( argc != 2 )
+  if (argc != 2)
     {
-    std::cerr <<"Usage: " <<std::endl;
-    std::cerr <<"" <<std::endl;
+    std::cerr << "Usage: " << std::endl;
+    std::cerr << "" << std::endl;
     return EXIT_FAILURE;
     }
 
-  int err = 0;
-  int exists = 0;
+  int           err = 0;
+  int           exists = 0;
   unsigned long length = 0;
 
   // create sphere geometry
@@ -78,11 +78,11 @@ int main( int argc, char* argv[] )
   // actor creation and properties definition
   vtkActor *aSphere = vtkActor::New();
   aSphere->SetMapper(map);
-  aSphere->GetProperty()->SetColor(1,1,1);
+  aSphere->GetProperty()->SetColor(1, 1, 1);
   aSphere->GetProperty()->SetOpacity(0.5);
 
   // a renderer and render window
-  vtkRenderer *ren1 = vtkRenderer::New();
+  vtkRenderer *    ren1 = vtkRenderer::New();
   vtkRenderWindow *renWin = vtkRenderWindow::New();
   renWin->AddRenderer(ren1);
 
@@ -93,40 +93,40 @@ int main( int argc, char* argv[] )
 
   // add the actor to the scene
   ren1->AddActor(aSphere);
-  ren1->SetBackground(1,0,0); // Background color white
+  ren1->SetBackground(1, 0, 0); // Background color white
 
   // create the video
   vtkAVIRenderWindowRecorder *testRecorder = vtkAVIRenderWindowRecorder::New();
   testRecorder->SetRenderingWindow(renWin);
-  testRecorder->SetFileName( argv[1] );
+  testRecorder->SetFileName(argv[1]);
   testRecorder->SetFrameRate(10);
   testRecorder->SetVideoQuality(1);
   testRecorder->SetSpecificParameters();
   testRecorder->StartCapture();
 
-  for (int i = 0; i < 30; i ++)
+  for (int i = 0; i < 30; i++)
     {
     renWin->Render();
     testRecorder->TakeSnapshot();
     }
 
-  ren1->SetBackground(0,1,0);
-  for (int i = 0; i < 30; i ++)
-      {
-      renWin->Render();
-      testRecorder->TakeSnapshot();
-      }
+  ren1->SetBackground(0, 1, 0);
+  for (int i = 0; i < 30; i++)
+    {
+    renWin->Render();
+    testRecorder->TakeSnapshot();
+    }
 
-  ren1->SetBackground(0,0,1);
-  for (int i = 0; i < 30; i ++)
-        {
-        renWin->Render();
-        testRecorder->TakeSnapshot();
-        }
+  ren1->SetBackground(0, 0, 1);
+  for (int i = 0; i < 30; i++)
+    {
+    renWin->Render();
+    testRecorder->TakeSnapshot();
+    }
 
   testRecorder->EndCapture();
 
-  std::cout<< "End capture" << std::endl;
+  std::cout << "End capture" << std::endl;
 
   // Test
   exists = (int) vtksys::SystemTools::FileExists(argv[1]);
@@ -142,7 +142,7 @@ int main( int argc, char* argv[] )
     {
     vtksys::SystemTools::RemoveFile(argv[1]);
     }
-  if (0==length)
+  if (0 == length)
     {
     err = 2;
     cerr << "ERROR: 2 - Test failing because TestAVIRecorder file has zero length..." << endl;

@@ -42,11 +42,11 @@
 #include "GoDBRecordSetHelper.h"
 
 GoDBCoordinateRow::GoDBCoordinateRow()
-{
+  {
   this->InitializeMap();
   this->m_TableName = "coordinate";
   this->m_TableIDName = "CoordID";
-}
+  }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -69,17 +69,17 @@ void GoDBCoordinateRow::InitializeMap()
 //-------------------------------------------------------------------------
 int GoDBCoordinateRow::DoesThisCoordinateExist(vtkMySQLDatabase* DatabaseConnector)
 {
- return FindOneID(DatabaseConnector,"coordinate", "CoordID",
-    "PCoord",this->GetMapValue("PCoord"),
-    "RCoord",this->GetMapValue("RCoord"),
-    "CCoord",this->GetMapValue("CCoord"),
-    "XTileCoord",this->GetMapValue("XTileCoord"),
-    "YTileCoord",this->GetMapValue("YTileCoord"),
-    "ZTileCoord",this->GetMapValue("ZTileCoord"),
-    "XCoord",this->GetMapValue("XCoord"),
-    "YCoord",this->GetMapValue("YCoord"),
-    "ZCoord",this->GetMapValue("ZCoord"),
-    "TCoord",this->GetMapValue("TCoord"));
+  return FindOneID(DatabaseConnector, "coordinate", "CoordID",
+                   "PCoord", this->GetMapValue("PCoord"),
+                   "RCoord", this->GetMapValue("RCoord"),
+                   "CCoord", this->GetMapValue("CCoord"),
+                   "XTileCoord", this->GetMapValue("XTileCoord"),
+                   "YTileCoord", this->GetMapValue("YTileCoord"),
+                   "ZTileCoord", this->GetMapValue("ZTileCoord"),
+                   "XCoord", this->GetMapValue("XCoord"),
+                   "YCoord", this->GetMapValue("YCoord"),
+                   "ZCoord", this->GetMapValue("ZCoord"),
+                   "TCoord", this->GetMapValue("TCoord"));
 }
 //-------------------------------------------------------------------------
 
@@ -87,10 +87,10 @@ int GoDBCoordinateRow::DoesThisCoordinateExist(vtkMySQLDatabase* DatabaseConnect
 int GoDBCoordinateRow::SaveInDB(vtkMySQLDatabase* DatabaseConnector)
 {
   int ID = this->DoesThisCoordinateExist(DatabaseConnector);
-  if ( ID == -1)
+  if (ID == -1)
     {
-    return AddOnlyOneNewObjectInTable<GoDBCoordinateRow>( DatabaseConnector,
-      "coordinate",*this, "CoordID");
+    return AddOnlyOneNewObjectInTable<GoDBCoordinateRow>(DatabaseConnector,
+                                                         "coordinate", *this, "CoordID");
     }
   else
     {

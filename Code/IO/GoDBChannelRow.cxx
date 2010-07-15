@@ -41,9 +41,9 @@
 #include "GoDBRecordSetHelper.h"
 
 GoDBChannelRow::GoDBChannelRow()
-{
+  {
   this->InitializeMap();
-}
+  }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -61,13 +61,13 @@ void GoDBChannelRow::InitializeMap()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-int GoDBChannelRow::SaveInDB (vtkMySQLDatabase* DatabaseConnector)
+int GoDBChannelRow::SaveInDB(vtkMySQLDatabase* DatabaseConnector)
 {
   int ChannelID = this->DoesThisChannelAlreadyExists(DatabaseConnector);
   if (ChannelID == -1)
     {
-    ChannelID = AddOnlyOneNewObjectInTable<GoDBChannelRow>( 
-      DatabaseConnector,"channel",*this, "ChannelID");
+    ChannelID = AddOnlyOneNewObjectInTable<GoDBChannelRow>(
+      DatabaseConnector, "channel", *this, "ChannelID");
     }
   return ChannelID;
 }
@@ -79,9 +79,9 @@ int GoDBChannelRow::DoesThisChannelAlreadyExists(
 {
   std::string ImagingSessionID = this->GetMapValue("ImagingSessionID");
   std::string ChannelNumber = this->GetMapValue("ChannelNumber");
-  
-  return FindOneID(DatabaseConnector,"channel", "ChannelID","ImagingSessionID", 
-    ImagingSessionID,"ChannelNumber",ChannelNumber);
+
+  return FindOneID(DatabaseConnector, "channel", "ChannelID", "ImagingSessionID",
+                   ImagingSessionID, "ChannelNumber", ChannelNumber);
   /** \todo Once we get the channel names from the megacapture file,
   the uniqueness of the channel can be ImagingSessionID + Name*/
 }

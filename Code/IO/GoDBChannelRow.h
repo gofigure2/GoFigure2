@@ -48,20 +48,20 @@
 #include "ConvertToStringHelper.h"
 
 class QGOIO_EXPORT GoDBChannelRow : public GoDBRow
-{
+  {
 public:
-  GoDBChannelRow();// : GoDBRow()
-   
+  GoDBChannelRow(); // : GoDBRow()
+
   ~GoDBChannelRow()
-    {}
- int SaveInDB(vtkMySQLDatabase* DatabaseConnector);
- 
- /**\brief check if the channel already exits in the database, if yes, 
-  return the corresponding ID, if not, return -1*/
- int DoesThisChannelAlreadyExists(vtkMySQLDatabase* DatabaseConnector);
+        {}
+  int SaveInDB(vtkMySQLDatabase* DatabaseConnector);
+
+  /**\brief check if the channel already exits in the database, if yes,
+   return the corresponding ID, if not, return -1*/
+  int DoesThisChannelAlreadyExists(vtkMySQLDatabase* DatabaseConnector);
 
 protected:
   virtual void InitializeMap();
-};
+  };
 
 #endif

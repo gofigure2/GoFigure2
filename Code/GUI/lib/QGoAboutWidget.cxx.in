@@ -52,67 +52,67 @@
 #include <iostream>
 
 QGoAboutWidget::QGoAboutWidget()
-{
-  Q_INIT_RESOURCE( axes );
+  {
+  Q_INIT_RESOURCE(axes);
 
-  QString version( "@GOFIGURE2_VERSION@" );
-  QString date( "Date: @DATE@\n\n" );
+  QString version("@GOFIGURE2_VERSION@");
+  QString date("Date: @DATE@\n\n");
   QString about_gofigure(
-    tr( "Description: Software for the visualization and \nthe analysis of biological microscope images.\n" ) );
-  QString message = QString( "Version: GoFigure2-%1\n\n" ).arg( version );
-  message.append( date );
-  message.append( about_gofigure );
+    tr("Description: Software for the visualization and \nthe analysis of biological microscope images.\n"));
+  QString message = QString("Version: GoFigure2-%1\n\n").arg(version);
+  message.append(date);
+  message.append(about_gofigure);
   QVBoxLayout* vlayout = new QVBoxLayout(this);
-  QLabel* GofigureLabel = new QLabel(message,this);
+  QLabel*      GofigureLabel = new QLabel(message, this);
   GofigureLabel->setAlignment(Qt::AlignCenter);
   QLabel* TabExplanation = new QLabel(
-	tr("\nGofigure uses different librairies,click on the tabs bellow to have a look at their copyright:\n"),this);
+    tr("\nGofigure uses different librairies,click on the tabs bellow to have a look at their copyright:\n"), this);
   TabExplanation->setAlignment(Qt::AlignJustify);
-  
+
   QTabWidget* TabWidget = new QTabWidget(this);
   this->SetTabWidget(TabWidget);
-  this->SetTheBackGround(GofigureLabel,TabWidget,TabExplanation);
+  this->SetTheBackGround(GofigureLabel, TabWidget, TabExplanation);
   vlayout->addWidget(GofigureLabel);
   vlayout->addWidget(TabExplanation);
   vlayout->addWidget(TabWidget);
   this->setLayout(vlayout);
-}
+  }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 QGoAboutWidget::~QGoAboutWidget()
-{
-}
+  {
+  }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void QGoAboutWidget::AddTabAbout(QString iTextLicense, QString iTabTitle,
-                                QTabWidget* iTabWidget)
+                                 QTabWidget* iTabWidget)
 {
-  QLabel* TextLicense = new QLabel(iTextLicense);
+  QLabel*      TextLicense = new QLabel(iTextLicense);
   QScrollArea* scrollArea = new QScrollArea;
   scrollArea->setBackgroundRole(QPalette::Light);
   scrollArea->setWidget(TextLicense);
   TextLicense->setStyleSheet("font-size:6x");
   //TextLicense->setAlignment(Qt::AlignCenter);
   TextLicense->setAlignment(Qt::AlignJustify);
-  iTabWidget->addTab(scrollArea,iTabTitle);
+  iTabWidget->addTab(scrollArea, iTabTitle);
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 QString QGoAboutWidget::GetContributors()
 {
-  QString authors( tr( "Authors:\n\n" ) );
+  QString authors(tr("Authors:\n\n"));
 
-  authors.append( " * 2008 ~ A. Gelas\n" );
-  authors.append( " * 2008 ~ L. Souhait\n" );
-  authors.append( " * 2008 ~ K. Mosaliganti\n" );
-  authors.append( " * 2009 ~ N. Rannou\n" );
-  authors.append( " * 2010 ~ A. Perrot-Audet\n" );
-  authors.append( " * 2007-2009 ~ A. Gouaillard\n" );
-  authors.append( " * 2006 ~ S. G. Megason\n" );
-  
+  authors.append(" * 2008 ~ A. Gelas\n");
+  authors.append(" * 2008 ~ L. Souhait\n");
+  authors.append(" * 2008 ~ K. Mosaliganti\n");
+  authors.append(" * 2009 ~ N. Rannou\n");
+  authors.append(" * 2010 ~ A. Perrot-Audet\n");
+  authors.append(" * 2007-2009 ~ A. Gouaillard\n");
+  authors.append(" * 2006 ~ S. G. Megason\n");
+
   return authors;
 }
 //--------------------------------------------------------------------------
@@ -121,16 +121,16 @@ QString QGoAboutWidget::GetContributors()
 void QGoAboutWidget::SetTabWidget(QTabWidget* iTabWidget)
 {
   QString TabTitle(tr("Contributors"));
-  this->AddTabAbout(this->GetContributors(),TabTitle,iTabWidget);
+  this->AddTabAbout(this->GetContributors(), TabTitle, iTabWidget);
   this->WriteLicenseText(iTabWidget);
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoAboutWidget::SetTheBackGround(QLabel* ilabel,QTabWidget* TabWidget,
-	QLabel* ilabeltwo)
+void QGoAboutWidget::SetTheBackGround(QLabel* ilabel, QTabWidget* TabWidget,
+                                      QLabel* ilabeltwo)
 {
-  QPixmap Image(QString::fromUtf8(":/fig/splash2.png"));  
+  QPixmap Image(QString::fromUtf8(":/fig/splash2.png"));
   ilabel->setMaximumSize(Image.size());
   ilabel->setMinimumSize(Image.size());
   ilabel->setStyleSheet("QLabel{color:rgb(255,255,255);background-image: url(:/fig/splash2.png); font: bold 12px}");
@@ -148,26 +148,26 @@ void QGoAboutWidget::SetTheBackGround(QLabel* ilabel,QTabWidget* TabWidget,
 QString QGoAboutWidget::ReadLicenseText(QString iFilename)
 {
   QString app_dir = QCoreApplication::applicationDirPath();
-  QDir temp = QDir( app_dir );
+  QDir    temp = QDir(app_dir);
   temp.cdUp();
   QString app_up_dir = temp.path();
   temp.cdUp();
   QString app_up_up_dir = temp.path();
-  
-  QStringList search_dir( app_dir + "/Licenses" );
+
+  QStringList search_dir(app_dir + "/Licenses");
   search_dir << app_up_dir + "/Licenses";
   search_dir << app_up_dir + "/share/doc/gofigure2/Licenses";
 
-  QDir::setSearchPaths( "licenses", search_dir );
+  QDir::setSearchPaths("licenses", search_dir);
 
-  QString Filename( "licenses:" );
-  Filename.append( iFilename );
-  
-  QFile file( Filename );
+  QString Filename("licenses:");
+  Filename.append(iFilename);
+
+  QFile file(Filename);
   file.open(QIODevice::ReadOnly);
-  
-  QTextStream textStream(&file);
-  QString LicenseText = textStream.readAll();
+
+  QTextStream textStream(& file);
+  QString     LicenseText = textStream.readAll();
   std::string test = LicenseText.toStdString();
   return LicenseText;
 }
@@ -177,23 +177,23 @@ QString QGoAboutWidget::ReadLicenseText(QString iFilename)
 void QGoAboutWidget::WriteLicenseText(QTabWidget* iTabWidget)
 {
   this->AddTabAbout(this->ReadLicenseText("Copyright.txt"),
-	  "Gofigure",iTabWidget);
+                    "Gofigure", iTabWidget);
   this->AddTabAbout(this->ReadLicenseText("CopyrightOxygen.txt"),
-	  "Icon Oxygen",iTabWidget);
+                    "Icon Oxygen", iTabWidget);
   this->AddTabAbout(this->ReadLicenseText("CopyrightNuvola.txt"),
-	  "Icon Nuvola",iTabWidget);
+                    "Icon Nuvola", iTabWidget);
   this->AddTabAbout(this->ReadLicenseText("CopyrightCrystal.txt"),
-	  "Icon Crystal",iTabWidget);
+                    "Icon Crystal", iTabWidget);
   this->AddTabAbout(this->ReadLicenseText("VTKCopyright.txt"),
-	  "Vtk",iTabWidget);
+                    "Vtk", iTabWidget);
   this->AddTabAbout(this->ReadLicenseText("ITKCopyright.txt"),
-	  "Itk",iTabWidget);
+                    "Itk", iTabWidget);
   this->AddTabAbout(this->ReadLicenseText("vtkINRIA3DCopyright.txt"),
-	  "VtkInria3D",iTabWidget);
+                    "VtkInria3D", iTabWidget);
   this->AddTabAbout(this->ReadLicenseText("BioimageXDCopyright.txt"),
-	  "BioImageXD",iTabWidget);
+                    "BioImageXD", iTabWidget);
 #ifdef ENABLEFFMPEG
   this->AddTabAbout(this->ReadLicenseText("FFmpegCopyright.txt"),
-	  "FFmpeg",iTabWidget);
+                    "FFmpeg", iTabWidget);
 #endif
 }

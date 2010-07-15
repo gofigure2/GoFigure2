@@ -44,36 +44,36 @@
 #include "vtkMySQLDatabase.h"
 
 class QGOIO_EXPORT GoDBNameDescRow : public GoDBRow
-{
+  {
 public:
   GoDBNameDescRow();
 
   ~GoDBNameDescRow()
-    {}
+        {}
   /**\brief check if the bookmark already exits in the DB, if yes,
-  return the existing ID, if not, save it in the DB and return the 
+  return the existing ID, if not, save it in the DB and return the
   ID for new created bookmark*/
-  virtual int SaveInDB(vtkMySQLDatabase* DatabaseConnector)= 0;
-
-   /** \brief check if the entity already exists in the database
- based on its own uniqueness definition, return the ID of the 
- entity already exiting or -1 if not yet created:*/
- virtual int DoesThisEntityAlreadyExists(
-  vtkMySQLDatabase* DatabaseConnector)=0;
+  virtual int SaveInDB(vtkMySQLDatabase* DatabaseConnector) = 0;
 
   /** \brief check if the entity already exists in the database
- based on its own uniqueness definition, return the ID of the 
+based on its own uniqueness definition, return the ID of the
+entity already exiting or -1 if not yet created:*/
+  virtual int DoesThisEntityAlreadyExists(
+    vtkMySQLDatabase* DatabaseConnector) = 0;
+
+  /** \brief check if the entity already exists in the database
+ based on its own uniqueness definition, return the ID of the
  entity already exiting or -1 if not yet created and change the
  ioName with the name of the existing entity:*/
- virtual int DoesThisEntityAlreadyExists(
-  vtkMySQLDatabase* DatabaseConnector,std::string &ioName)=0;
+  virtual int DoesThisEntityAlreadyExists(
+    vtkMySQLDatabase* DatabaseConnector, std::string& ioName) = 0;
 
- /**\brief check if the name already exits in the database, if yes, 
- return the corresponding ID, if not -1*/
- int DoesThisNameAlreadyExists(vtkMySQLDatabase* DatabaseConnector);
+  /**\brief check if the name already exits in the database, if yes,
+  return the corresponding ID, if not -1*/
+  int DoesThisNameAlreadyExists(vtkMySQLDatabase* DatabaseConnector);
 
 protected:
- virtual void InitializeMap();
- 
- };
+  virtual void InitializeMap();
+
+  };
 #endif

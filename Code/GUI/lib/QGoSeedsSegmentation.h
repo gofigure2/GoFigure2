@@ -55,7 +55,7 @@
 \example GUI/lib/qgotabimageview2d.cxx
 */
 class QGOGUILIB_EXPORT QGoSeedsSegmentation
-{
+  {
 public:
   /**
    * \brief Constructor
@@ -70,33 +70,33 @@ public:
   /**
    * \brief Set the input Volume to be used for levelset segmentation
    */
-  void setInputVolume( vtkImageData* iInputVolume);
+  void setInputVolume(vtkImageData* iInputVolume);
   //vtkImageData* inputVolume( );
 
   /**
    * \brief Set the Origin points for all segmentations
    */
-  void setSeedsPosition( double iSeedsPosition[3]);
+  void setSeedsPosition(double iSeedsPosition[3]);
 
   /**
    * \brief Set the radius for all segmentations
    */
-  void setRadius( double iRadius );
+  void setRadius(double iRadius);
 
   /**
    * \brief Set the number of iterations for levelset segmentation
    */
-  void setNumberOfIterations( int iNumberOfIterations );
+  void setNumberOfIterations(int iNumberOfIterations);
 
   /**
    * \brief Set the curvature weight for levelset segmentation
    */
-  void setCurvatureWeight( int iCurvatureWeight );
+  void setCurvatureWeight(int iCurvatureWeight);
 
   /**
    * \brief Easy way to access informations about input image
    */
-  void setOriginImageInformation( vtkViewImage2D* iOriginImageInformation );
+  void setOriginImageInformation(vtkViewImage2D* iOriginImageInformation);
 
   /**
    * \brief Get the result of the segmentation in a polydata
@@ -116,13 +116,13 @@ public:
   /**
    * \brief Sphere contour segmentation
    */
-  std::vector< vtkSmartPointer<vtkPolyData> > SphereContoursSegmentation();
+  std::vector<vtkSmartPointer<vtkPolyData> > SphereContoursSegmentation();
 
   /**
    * \brief Useful fot the sphere contour segmentation
    */
   vtkSmartPointer<vtkPolyData> GenerateCircleFromGivenSphereAndGivenZ(
-    double iC[3], const double& iRadius, double iZ, const int& iN );
+    double iC[3], const double & iRadius, double iZ, const int & iN);
 
   /**
   * \brief Sphere volume segmentation
@@ -139,12 +139,12 @@ private:
   /**
    * \brief Origin points for all segmentations
    */
-  double    m_SeedsPosition[3];
+  double m_SeedsPosition[3];
 
   /**
    * \brief Output polydata for each segmentation
    */
-  vtkSmartPointer<vtkPolyData>  m_OutputPolyData;
+  vtkSmartPointer<vtkPolyData> m_OutputPolyData;
 
   /**
    *
@@ -166,6 +166,5 @@ private:
    */
 
   vtkSmartPointer<vtkViewImage2D> m_OriginImageInformations;
-};
+  };
 #endif
-

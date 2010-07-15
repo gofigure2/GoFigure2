@@ -8,14 +8,14 @@ are permitted provided that the following conditions are met:
 Redistributions of source code must retain the above copyright notice, this list of
 conditions and the following disclaimer. Redistributions in binary form must reproduce
 the above copyright notice, this list of conditions and the following disclaimer
-in the documentation and/or other materials provided with the distribution. 
+in the documentation and/or other materials provided with the distribution.
 
 Neither the name of the Johns Hopkins University nor the names of its contributors
 may be used to endorse or promote products derived from this software without specific
-prior written permission. 
+prior written permission.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY
-EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO THE IMPLIED WARRANTIES 
+EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO THE IMPLIED WARRANTIES
 OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
 SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
 INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
@@ -29,47 +29,45 @@ DAMAGE.
 #ifndef FUNCTION_DATA_INCLUDED
 #define FUNCTION_DATA_INCLUDED
 
-
 #include "PPolynomial.h"
 
-template<int Degree,class Real>
-class FunctionData{
-	int useDotRatios;
-	int normalize;
+template<int Degree, class Real>
+class FunctionData {
+  int useDotRatios;
+  int normalize;
 public:
-	const static int     DOT_FLAG;
-	const static int   D_DOT_FLAG;
-	const static int  D2_DOT_FLAG;
-	const static int   VALUE_FLAG;
-	const static int D_VALUE_FLAG;
+  const static int DOT_FLAG;
+  const static int D_DOT_FLAG;
+  const static int D2_DOT_FLAG;
+  const static int VALUE_FLAG;
+  const static int D_VALUE_FLAG;
 
-	int depth,res,res2;
-	Real *dotTable,*dDotTable,*d2DotTable;
-	Real *valueTables,*dValueTables;
-	PPolynomial<Degree> baseFunction;
-	PPolynomial<Degree-1> dBaseFunction;
-	PPolynomial<Degree+1>* baseFunctions;
+  int                      depth, res, res2;
+  Real *                   dotTable, *dDotTable, *d2DotTable;
+  Real *                   valueTables, *dValueTables;
+  PPolynomial<Degree>      baseFunction;
+  PPolynomial<Degree - 1>  dBaseFunction;
+  PPolynomial<Degree + 1>* baseFunctions;
 
-	FunctionData(void);
-	virtual ~FunctionData(void);
+  FunctionData(void);
+  virtual ~FunctionData(void);
 
-	virtual void   setDotTables(const int& flags);
-	virtual void clearDotTables(const int& flags);
+  virtual void   setDotTables(const int& flags);
+  virtual void clearDotTables(const int& flags);
 
-	virtual void   setValueTables(const int& flags,const double& smooth=0);
-	virtual void   setValueTables(const int& flags,const double& valueSmooth,const double& normalSmooth);
-	virtual void clearValueTables(void);
+  virtual void   setValueTables(const int& flags, const double& smooth = 0);
+  virtual void   setValueTables(const int& flags, const double& valueSmooth, const double& normalSmooth);
+  virtual void clearValueTables(void);
 
-	void set(const int& maxDepth,const PPolynomial<Degree>& F,const int& normalize,const int& useDotRatios=1);
+  void set(const int& maxDepth, const PPolynomial<Degree>& F, const int& normalize, const int& useDotRatios = 1);
 
-	Real   dotProduct(const double& center1,const double& width1,const double& center2,const double& width2) const;
-	Real  dDotProduct(const double& center1,const double& width1,const double& center2,const double& width2) const;
-	Real d2DotProduct(const double& center1,const double& width1,const double& center2,const double& width2) const;
+  Real   dotProduct(const double& center1, const double& width1, const double& center2, const double& width2) const;
+  Real  dDotProduct(const double& center1, const double& width1, const double& center2, const double& width2) const;
+  Real d2DotProduct(const double& center1, const double& width1, const double& center2, const double& width2) const;
 
-	static inline int SymmetricIndex(const int& i1,const int& i2);
-	static inline int SymmetricIndex(const int& i1,const int& i2,int& index);
-};
-
+  static inline int SymmetricIndex(const int& i1, const int& i2);
+  static inline int SymmetricIndex(const int& i1, const int& i2, int& index);
+  };
 
 #include "FunctionData.inl"
 #endif // FUNCTION_DATA_INCLUDED

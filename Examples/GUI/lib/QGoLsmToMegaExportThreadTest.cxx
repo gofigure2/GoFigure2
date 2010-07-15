@@ -59,56 +59,56 @@
 #include <cstdlib>
 #include "LSMToMegaCapture.h"
 
-int main( int argc, char** argv )
+int main(int argc, char** argv)
 {
 
   QApplication app(argc, argv);
 
-  if( argc != 5 )
+  if (argc != 5)
     {
-    std::cerr <<"lsmtomegacapture requires 3 argument:" <<std::endl;
-    std::cerr <<"1-lsm filename (without.lsm)" <<std::endl;
-    std::cerr <<"2-lsm full name (full path with .lsm)" <<std::endl;
-    std::cerr <<"3-lsm output path (output  directory with folder/)" <<std::endl;
-    std::cerr <<"4-test (boolean)" <<std::endl;
+    std::cerr << "lsmtomegacapture requires 3 argument:" << std::endl;
+    std::cerr << "1-lsm filename (without.lsm)" << std::endl;
+    std::cerr << "2-lsm full name (full path with .lsm)" << std::endl;
+    std::cerr << "3-lsm output path (output  directory with folder/)" << std::endl;
+    std::cerr << "4-test (boolean)" << std::endl;
     return EXIT_FAILURE;
     }
 
   // Note: EXIT_SUCCESS = 0
   int err = EXIT_SUCCESS;
 
-  ConversionLsmToMegaThread* ConversionLsmToMegaThreadSend = 
+  ConversionLsmToMegaThread* ConversionLsmToMegaThreadSend =
     new ConversionLsmToMegaThread;
 
-  QString BaseName( argv[1] );
-  QString LsmPath( argv[2] );
-  QString MegaPath( argv[3] );
+  QString BaseName(argv[1]);
+  QString LsmPath(argv[2]);
+  QString MegaPath(argv[3]);
 
-  vtksys::SystemTools::MakeDirectory( argv[3] );
+  vtksys::SystemTools::MakeDirectory(argv[3]);
 
   ConversionLsmToMegaThreadSend->SetBaseName(BaseName.toStdString());
   ConversionLsmToMegaThreadSend->SetLsmPath(LsmPath.toStdString());
   ConversionLsmToMegaThreadSend->SetOutputFileType(GoFigure::PNG);
   ConversionLsmToMegaThreadSend->SetMegaPath(MegaPath.toStdString());
 
-  ConversionLsmToMegaThreadSend->start( );
+  ConversionLsmToMegaThreadSend->start();
 
   // Wait until thread finishes running
-  while(ConversionLsmToMegaThreadSend->isRunning())
+  while (ConversionLsmToMegaThreadSend->isRunning())
     {
-	// waiting loop
+    // waiting loop
     }
 
-  if( atoi( argv[4] ) == 1 )
+  if (atoi(argv[4]) == 1)
     {
     // check if the directory containing Meg files is empty
     unsigned long length = 0;
     length = vtksys::SystemTools::FileLength(argv[3]);
 
-    if( length == 0 )
+    if (length == 0)
       {
-  	  err = EXIT_FAILURE;
-    	std::cerr << "ERROR: Test failing because directory is empty..." << std::endl;
+      err = EXIT_FAILURE;
+      std::cerr << "ERROR: Test failing because directory is empty..." << std::endl;
       }
 
     // other test will use resulting megacapture as inputs
@@ -121,4 +121,3 @@ int main( int argc, char** argv )
   // err = 0 means that the test succeeded
   return err;
 }
-

@@ -59,50 +59,50 @@ so it is not possible to connect it directly with a signal.
 that's the reason for the creation of QTableWidgetchild.
 */
 class QGOGUILIB_EXPORT QTableWidgetChild : public QTableWidget
-{
+  {
   Q_OBJECT
 
 public:
-  explicit QTableWidgetChild( QWidget* parent = 0 );
-  explicit QTableWidgetChild( int rows, int columns, QWidget * parent = 0 );
+  explicit QTableWidgetChild(QWidget* parent = 0);
+  explicit QTableWidgetChild(int rows, int columns, QWidget * parent = 0);
 
   virtual ~QTableWidgetChild();
   QStringList recordHeaderNamesOrder();
 
   typedef GoDBTableWidgetContainer::DBTableWidgetContainerType
-    DBTableWidgetContainerType;
+  DBTableWidgetContainerType;
 
-  void DisplayColumnNames( QString TableName,std::list<std::string> ColumnNames);
+  void DisplayColumnNames(QString TableName, std::list<std::string> ColumnNames);
   void DisplayContent(GoDBTableWidgetContainer* iLinkToRowContainer,
-    std::string TraceName, std::string CollectionName);
+                      std::string TraceName, std::string CollectionName);
 
-   /** \brief Insert a new row and fill the cells with the data
-  contained in the RowContainer with the link: iLinkToRowContainer*/
+  /** \brief Insert a new row and fill the cells with the data
+ contained in the RowContainer with the link: iLinkToRowContainer*/
   void InsertNewRow(GoDBTableWidgetContainer* iLinkToRowContainer,
-    std::string TraceName, std::string CollectionName);
+                    std::string TraceName, std::string CollectionName);
 
   /** \brief Replace the data in the cells corresponding to the traceID with
   the new data contained in the RowContainer with the link: iLinkToRowContainer*/
   void UpdateRow(GoDBTableWidgetContainer* iLinkToRowContainer,
-    int TraceID,std::string TraceName, std::string CollectionName);
+                 int TraceID, std::string TraceName, std::string CollectionName);
 
   void DeleteSelectedRows(std::string iTraceNameID);
 
   std::list<int> GetListCheckedTraceID(
-    std::vector<std::pair<int,int> >* iVectorOfPair = 0);
+    std::vector<std::pair<int, int> >* iVectorOfPair = 0);
 
   /** \brief Change the CollectionID in the trace table of the selected
   rows with the newCollectionID and set the background with the colorNewCollection*/
-  void UpdateIDs (unsigned int iNewCollectionID,std::string iCollectionIDName, 
-    QColor ColorNewCollection);
+  void UpdateIDs(unsigned int iNewCollectionID, std::string iCollectionIDName,
+                 QColor ColorNewCollection);
   /** \brief Change the CollectionID in the trace table of the TraceIDToUpdate
   with the newCollectionID and set the background with the colorNewCollection*/
-  void UpdateIDs(unsigned int iNewCollectionID,std::string iCollectionIDName, 
-  QColor ColorNewCollection,std::string TraceIDName,std::list<int> TraceIDToUpdate);
+  void UpdateIDs(unsigned int iNewCollectionID, std::string iCollectionIDName,
+                 QColor ColorNewCollection, std::string TraceIDName, std::list<int> TraceIDToUpdate);
 
   void AddValuesForID(std::vector<std::string> iColumnsNames,
-    std::vector<std::string> iValues,unsigned int iID, 
-    std::string iColumnNameForTraceID);
+                      std::vector<std::string> iValues, unsigned int iID,
+                      std::string iColumnNameForTraceID);
 
   /** \brief calculate the center of the bounding box for the only selected trace
   and return it as a GoDBCoordinateRow*/
@@ -114,7 +114,7 @@ public:
 
   /** \brief calculate the mean value for both columns in the given row*/
   std::string GetMeanValue(std::string iColumnNameOne,
-    std::string iColumnNameTwo, unsigned int iRowIndex);
+                           std::string iColumnNameTwo, unsigned int iRowIndex);
 
 signals:
   void CheckedRowsChanged();
@@ -123,12 +123,12 @@ signals:
 protected:
   int PrevCol;
   int PrevOrder;
-  
+
   /** \brief Vector containing the ID of the selected row and the index in the table widget*/
-  std::vector<std::pair<int,int> >* m_VectorSelectedRows;
-  
+  std::vector<std::pair<int, int> >* m_VectorSelectedRows;
+
   /** \brief Vector containing the ID of the visible row and the index in the table widget*/
-  std::vector<std::pair<int,int> >* m_VectorVisibleRows;
+  std::vector<std::pair<int, int> >* m_VectorVisibleRows;
 
   /** \brief return the row index where the given value is located when specifying
   the column name: */
@@ -139,10 +139,10 @@ protected:
   int findColumnName(QString ColumnName);
 
   /** \brief Update the m_VectorSelectedRows */
-  void UpdateVectorCheckedRows(int Row,int Column,std::vector<std::pair<int,int> >* iVectorOfPair);
-  /** \brief put the text in the cells which are part of the range in a 
+  void UpdateVectorCheckedRows(int Row, int Column, std::vector<std::pair<int, int> >* iVectorOfPair);
+  /** \brief put the text in the cells which are part of the range in a
   QString and insert \n and \t to be read by other applications*/
-  void PrepareRangeToCopy(QTableWidgetSelectionRange Range, QString &str);
+  void PrepareRangeToCopy(QTableWidgetSelectionRange Range, QString& str);
 
 public slots:
   /** \brief sort items given one column and one sort order. */
@@ -150,16 +150,16 @@ public slots:
 
   /** \brief select or unselect the row corresponding to the given TraceID in the corresponding column.
   */
-  void SetSelectRowTraceID (std::string TraceName, int TraceID,
-    bool IsSelected,std::vector<std::pair<int,int> >* iVectorOfPair = 0);
+  void SetSelectRowTraceID(std::string TraceName, int TraceID,
+                           bool IsSelected, std::vector<std::pair<int, int> >* iVectorOfPair = 0);
 
   /** \brief check the boxes for the rows where at least one cell is selected */
   void CheckSelectedRows(std::string iTraceName,
-    std::string iTraceNameID);
+                         std::string iTraceNameID);
   /** \brief uncheck the boxes for the rows where at least one cell is selected */
   void UncheckSelectedRows(std::string iTraceName,
-    std::string iTraceNameID);
-  
+                           std::string iTraceNameID);
+
   /** \brief check the visible boxes for the rows where at least one cell is selected */
   void ShowSelectedRows(std::string iTraceName, std::string iTraceNameID);
   /** \brief uncheck the visible boxes for the rows where at least one cell is selected */
@@ -173,29 +173,29 @@ public slots:
   the tableWidget. The TraceName has to be chosen between Contour and Mesh.*/
   bool TracesToHighlight(ContourMeshStructureMultiIndexContainer* ioTracesInfo);
 
-  bool TracesToShow(ContourMeshStructureMultiIndexContainer* ioTracesInfo );
+  bool TracesToShow(ContourMeshStructureMultiIndexContainer* ioTracesInfo);
 
   /** \brief return a list of the values of a specific column for the rows where the user
        has selected at least one cell.*/
-  QStringList ValuesForSelectedRows(QString ColumnName );
+  QStringList ValuesForSelectedRows(QString ColumnName);
 
   /** \brief Put checkboxes in the column "Selected" */
-  void SetSelectedColumn(unsigned int iNbOfRows,unsigned int StartedRow);
+  void SetSelectedColumn(unsigned int iNbOfRows, unsigned int StartedRow);
   /** \brief Put checkboxes in the column "Show" */
-  void SetVisibleColumn(unsigned int iNbOfRows,unsigned int StartedRow,std::string iTraceName);
+  void SetVisibleColumn(unsigned int iNbOfRows, unsigned int StartedRow, std::string iTraceName);
 
-  void SetColorForTable (GoDBTableWidgetContainer* iLinkToRowContainer,
-  std::string NameGroupColor,unsigned int StartRow);
+  void SetColorForTable(GoDBTableWidgetContainer* iLinkToRowContainer,
+                        std::string NameGroupColor, unsigned int StartRow);
 
   //std::vector<unsigned int> GetListCheckedRows();
-  /** \brief convert the text in the selection to a QString with \n and \t 
+  /** \brief convert the text in the selection to a QString with \n and \t
   and put it in the Clipboard to be pasted in other applications*/
   void CopySelection();
-  /** \brief convert the text in the all table and the columns namse 
-  to a QString with \n and \t and put it in the Clipboard to be 
+  /** \brief convert the text in the all table and the columns namse
+  to a QString with \n and \t and put it in the Clipboard to be
   pasted in other applications*/
   void CopyTable();
 
-};
+  };
 
 #endif

@@ -105,11 +105,11 @@
 
 //--------------------------------------------------------------------------
 QGoMainWindow::
-QGoMainWindow( QWidget* iParent, Qt::WindowFlags iFlags ) :
-  QMainWindow( iParent, iFlags )
-{
-  QString title( "<*)0|00|0>< ~~ <*)0|00|0><     GoFigure    ><0|00|0(*> ~~ ><0|00|0(*>");
-  this->setupUi( this );
+QGoMainWindow(QWidget* iParent, Qt::WindowFlags iFlags) :
+  QMainWindow(iParent, iFlags)
+  {
+  QString title("<*)0|00|0>< ~~ <*)0|00|0><     GoFigure    ><0|00|0(*> ~~ ><0|00|0(*>");
+  this->setupUi(this);
   setCorner(Qt::TopLeftCorner, Qt::LeftDockWidgetArea);
   setCorner(Qt::BottomLeftCorner, Qt::LeftDockWidgetArea);
   setCorner(Qt::TopRightCorner, Qt::RightDockWidgetArea);
@@ -118,30 +118,30 @@ QGoMainWindow( QWidget* iParent, Qt::WindowFlags iFlags ) :
   QRect screen = QApplication::desktop()->availableGeometry(this);
   QSize MaximumSize = screen.size();
   this->setMaximumSize(MaximumSize);
- // QSize IconSize = this->iconSize();
-  QSize SizeIcon(22,22);
+  // QSize IconSize = this->iconSize();
+  QSize SizeIcon(22, 22);
   this->setIconSize(SizeIcon);
   QSize IconSize = this->iconSize();
 
-  this->setCentralWidget( this->CentralTabWidget );
+  this->setCentralWidget(this->CentralTabWidget);
 
-  this->setWindowTitle( title );
-  this->statusbar->showMessage( tr( "No data" ) );
+  this->setWindowTitle(title);
+  this->statusbar->showMessage(tr("No data"));
 
   this->CentralTabWidget->clear();
-  this->CentralTabWidget->setTabsClosable( true );
-  this->CentralTabWidget->setMovable( true );
+  this->CentralTabWidget->setTabsClosable(true);
+  this->CentralTabWidget->setMovable(true);
 
-  this->statusbar->addPermanentWidget( &m_Bar );
+  this->statusbar->addPermanentWidget(&m_Bar);
 
-  m_TabManager = new QGoTabManager( this, this->CentralTabWidget );
-  this->m_ViewToolBar = new QToolBar( tr("View"), this );
-  this->m_ViewToolBar->setObjectName( tr("View") );
-  this->addToolBar( Qt::TopToolBarArea, this->m_ViewToolBar );
+  m_TabManager = new QGoTabManager(this, this->CentralTabWidget);
+  this->m_ViewToolBar = new QToolBar(tr("View"), this);
+  this->m_ViewToolBar->setObjectName(tr("View"));
+  this->addToolBar(Qt::TopToolBarArea, this->m_ViewToolBar);
 
-  this->m_ModeToolBar = new QToolBar( tr("Mode"),this);
-  this->m_ModeToolBar->setObjectName( tr("Mode") );
-  this->addToolBar(Qt::TopToolBarArea,this->m_ModeToolBar);
+  this->m_ModeToolBar = new QToolBar(tr("Mode"), this);
+  this->m_ModeToolBar->setObjectName(tr("Mode"));
+  this->addToolBar(Qt::TopToolBarArea, this->m_ModeToolBar);
 
 //   m_LSMReader = vtkLSMReader::New();
   m_DBWizard  = new QGoWizardDB(this);
@@ -152,8 +152,8 @@ QGoMainWindow( QWidget* iParent, Qt::WindowFlags iFlags ) :
 
   m_Bar.hide();
   QString temp;
-  SetCurrentSingleFile( temp );
-  SetCurrentMultiFile( temp );
+  SetCurrentSingleFile(temp);
+  SetCurrentMultiFile(temp);
   SetCurrentDatabaseFile(temp);
   //temp:
   this->actionExportMesh->setVisible(false);
@@ -163,16 +163,16 @@ QGoMainWindow( QWidget* iParent, Qt::WindowFlags iFlags ) :
   this->actionImportTrack->setVisible(false);
   this->actionImportLineage->setVisible(false);
 
-  m_NetworkUtilities = new QGoNetworkUtilities( this );
+  m_NetworkUtilities = new QGoNetworkUtilities(this);
 
   CreateSignalSlotsConnection();
   ReadSettings();
 
   // Updates -------------------------------
-  QObject::connect( m_NetworkUtilities,
-           SIGNAL( CheckForUpdatesDone( QString, bool ) ),
-           this,
-           SLOT( DisplayUpdateResults( QString, bool ) ) );
+  QObject::connect(m_NetworkUtilities,
+                   SIGNAL(CheckForUpdatesDone(QString, bool)),
+                   this,
+                   SLOT(DisplayUpdateResults(QString, bool)));
 
   m_ManualUpdate = false;
 
@@ -181,79 +181,79 @@ QGoMainWindow( QWidget* iParent, Qt::WindowFlags iFlags ) :
 
   // Database set up
   this->m_DatabaseSetUp = false;
-  if(!this->m_DatabaseSetUp)
+  if (!this->m_DatabaseSetUp)
     {
     actionSet_Up_Database = new QAction(
-      tr("Set Up Database"),this->menuDatabase);
+      tr("Set Up Database"), this->menuDatabase);
     this->menuDatabase->addAction(actionSet_Up_Database);
     m_DBInitializationWizard = new QGoDBInitializationWizard(this);
     this->m_DBInitializationWizard->hide();
     QObject::connect(this->actionSet_Up_Database, SIGNAL(triggered()),
-      SLOT(SetUpDatabase()));
-    QObject::connect(this->m_DBInitializationWizard,SIGNAL(DatabaseAndUserCreated()),
-    this, SLOT(RemoveSetUpDatabaseMenu()));
+                     SLOT(SetUpDatabase()));
+    QObject::connect(this->m_DBInitializationWizard, SIGNAL(DatabaseAndUserCreated()),
+                     this, SLOT(RemoveSetUpDatabaseMenu()));
     }
   // LoadPlugins();
-}
+  }
 
 //--------------------------------------------------------------------------
 QGoMainWindow::~QGoMainWindow()
-{
+  {
 //   m_LSMReader->Delete();
   this->WriteSettings();
-}
+  }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void QGoMainWindow::CreateSignalSlotsConnection()
 {
   //QObject::connect( this->actionOpen, SIGNAL( triggered( ) ),
-    //this, SLOT( showprogressloading() ) );
-  QObject::connect( this->CentralTabWidget,
-    SIGNAL( tabCloseRequested( int ) ),
-    m_TabManager, SLOT( CloseTab( int ) ) );
+  //this, SLOT( showprogressloading() ) );
+  QObject::connect(this->CentralTabWidget,
+                   SIGNAL(tabCloseRequested(int)),
+                   m_TabManager, SLOT(CloseTab(int)));
 
-  QObject::connect( this->CentralTabWidget,
-    SIGNAL( currentChanged( int ) ),
-    m_TabManager, SLOT( ChangeCurrentTab( int ) ) );
+  QObject::connect(this->CentralTabWidget,
+                   SIGNAL(currentChanged(int)),
+                   m_TabManager, SLOT(ChangeCurrentTab(int)));
 
-  QObject::connect( &m_SignalAdaptor, SIGNAL(Signal()),
-    &(this->m_Bar), SLOT(hide()) );
+  QObject::connect(&m_SignalAdaptor, SIGNAL(Signal()),
+                   &(this->m_Bar), SLOT(hide()));
 
-  for( int i = 0; i < MaxRecentFiles; ++i )
+  for (int i = 0; i < MaxRecentFiles; ++i)
     {
     recentSingleFileActions[i] = new QAction(this);
     recentSingleFileActions[i]->setVisible(false);
     QObject::connect(this->recentSingleFileActions[i], SIGNAL(triggered()),
-      this, SLOT(openRecentSingleFile()));
+                     this, SLOT(openRecentSingleFile()));
 
     recentMultipleFileActions[i] = new QAction(this);
     recentMultipleFileActions[i]->setVisible(false);
     QObject::connect(this->recentMultipleFileActions[i], SIGNAL(triggered()),
-      this, SLOT(openRecentMultipleFile()));
+                     this, SLOT(openRecentMultipleFile()));
 
     recentDatabaseFileActions[i] = new QAction(this);
     recentDatabaseFileActions[i]->setVisible(false);
     QObject::connect(recentDatabaseFileActions[i], SIGNAL(triggered()),
-      this, SLOT(openRecentDatabaseFile()));
+                     this, SLOT(openRecentDatabaseFile()));
     }
 
-  QObject::connect( m_DBWizard, SIGNAL( accepted() ),
-    this, SLOT( openFilesfromDB() ) );
+  QObject::connect(m_DBWizard, SIGNAL(accepted()),
+                   this, SLOT(openFilesfromDB()));
 }
 
 //--------------------------------------------------------------------------
-void QGoMainWindow::on_actionOpen_Single_File_triggered( )
+void QGoMainWindow::on_actionOpen_Single_File_triggered()
 {
   QString filename = QFileDialog::getOpenFileName(
     this,
-    tr( "Select Image" ),"",
-    tr( "Images (*.png *.bmp *.jpg *.jpeg *.tiff *.mha *.mhd *.img *.lsm)" )
+    tr("Select Image"), "",
+    tr("Images (*.png *.bmp *.jpg *.jpeg *.tiff *.mha *.mhd *.img *.lsm)")
     );
 
-  if( !filename.isEmpty( ) )
+  if (!filename.isEmpty())
     {
-    this->SetSingleFileName( filename );
+    this->SetSingleFileName(filename);
     }
 }
 
@@ -264,38 +264,37 @@ void QGoMainWindow::on_actionOpen_MegaCapture_Files_triggered()
 {
   QString filename = QFileDialog::getOpenFileName(
     this,
-    tr( "Select One Image from the Dataset" ), "",
-    tr( "Images (*.png *.tif *.tiff *.jpg *.jpeg)")
+    tr("Select One Image from the Dataset"), "",
+    tr("Images (*.png *.tif *.tiff *.jpg *.jpeg)")
     );
 
-  if( !filename.isEmpty() )
+  if (!filename.isEmpty())
     {
-    if( QFile::exists( filename ) )
+    if (QFile::exists(filename))
       {
       itk::MegaCaptureImport::Pointer importer = itk::MegaCaptureImport::New();
-      importer->SetFileName( filename.toStdString() );
+      importer->SetFileName(filename.toStdString());
       importer->Update();
 
       GoFigure::FileType filetype;
 
-      if( !ComputeFileType( filename, filetype ) )
+      if (!ComputeFileType(filename, filetype))
         {
         return;
         }
       int TimePoint = importer->GetOutput().get<m_TCoord>().begin()->m_TCoord;
 
-      CreateNewTabFor3DwtImage( importer->GetOutput(), filetype,
-        importer->GetHeaderFilename(), TimePoint,
-        false ); // do not use the database
+      CreateNewTabFor3DwtImage(importer->GetOutput(), filetype,
+                               importer->GetHeaderFilename(), TimePoint,
+                               false); // do not use the database
       }
     }
 }
 
-
 //--------------------------------------------------------------------------
 void QGoMainWindow::on_actionUse_DataBase_triggered()
 {
-  if( !m_DBWizard->isVisible() )
+  if (!m_DBWizard->isVisible())
     {
     m_DBWizard->SetIsAnOpenRecentFile(false);
     m_DBWizard->show();
@@ -306,34 +305,34 @@ void QGoMainWindow::on_actionUse_DataBase_triggered()
 
 bool
 QGoMainWindow::
-ComputeFileType( const QString& iFileName, GoFigure::FileType& oFileType )
+ComputeFileType(const QString& iFileName, GoFigure::FileType& oFileType)
 {
-  QString extension = QFileInfo( iFileName ).suffix();
+  QString extension = QFileInfo(iFileName).suffix();
 
-  if( extension.compare( "png", Qt::CaseInsensitive ) == 0 )
+  if (extension.compare("png", Qt::CaseInsensitive) == 0)
     {
     oFileType = GoFigure::PNG;
     return true;
     }
   else
     {
-    if( ( extension.compare( "tif", Qt::CaseInsensitive ) == 0 ) ||
-        ( extension.compare( "tiff", Qt::CaseInsensitive ) == 0 ) )
+    if ((extension.compare("tif", Qt::CaseInsensitive) == 0) ||
+        (extension.compare("tiff", Qt::CaseInsensitive) == 0))
       {
       oFileType = GoFigure::TIFF;
       return true;
       }
     else
       {
-      if( ( extension.compare( "jpg", Qt::CaseInsensitive ) == 0 ) ||
-          ( extension.compare( "jpeg", Qt::CaseInsensitive ) == 0 ) )
+      if ((extension.compare("jpg", Qt::CaseInsensitive) == 0) ||
+          (extension.compare("jpeg", Qt::CaseInsensitive) == 0))
         {
         oFileType = GoFigure::JPEG;
         return true;
         }
       else
         {
-        std::cerr << "file not supported for megacapture!!!" <<std::endl;
+        std::cerr << "file not supported for megacapture!!!" << std::endl;
         return false;
         }
       }
@@ -345,57 +344,57 @@ ComputeFileType( const QString& iFileName, GoFigure::FileType& oFileType )
 //--------------------------------------------------------------------------
 void QGoMainWindow::openFilesfromDB()
 {
- if (this->m_DBWizard->GetIsAnOpenRecentFile())
-   {
-   this->openRecentFilesfromDB();
-   }
- else
-   {
-   std::string temp = "";
-   this->DisplayFilesfromDB(temp);
-   this->SetCurrentDatabaseFile(
-     this->m_DBWizard->GetImagingSessionName());
-   }
+  if (this->m_DBWizard->GetIsAnOpenRecentFile())
+    {
+    this->openRecentFilesfromDB();
+    }
+  else
+    {
+    std::string temp = "";
+    this->DisplayFilesfromDB(temp);
+    this->SetCurrentDatabaseFile(
+      this->m_DBWizard->GetImagingSessionName());
+    }
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void QGoMainWindow::DisplayFilesfromDB(std::string iFirst_Filename)
 {
-  std::string Header_FileName;
+  std::string                               Header_FileName;
   GoFigureFileInfoHelperMultiIndexContainer file_container =
     this->GetFileContainerForMultiFiles(
-    Header_FileName,iFirst_Filename);
-  if ( file_container.size() == 0 )
+      Header_FileName, iFirst_Filename);
+  if (file_container.size() == 0)
     {
-    std::cout<<"GoFigureFileInfoHelperMultiIndexContainer empty ";
+    std::cout << "GoFigureFileInfoHelperMultiIndexContainer empty ";
     std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
     std::cout << std::endl;
     return;
     }
   GoFigureFileInfoHelperMultiIndexContainer::iterator
-    temp_it = file_container.begin();
+  temp_it = file_container.begin();
 
-  QString temp_filename = QString::fromStdString( temp_it->m_Filename );
+  QString temp_filename = QString::fromStdString(temp_it->m_Filename);
 
   GoFigure::FileType filetype;
 
-  if( !ComputeFileType( temp_filename, filetype ) )
+  if (!ComputeFileType(temp_filename, filetype))
     {
     return;
     }
   // note: do not need to call w3t->Update(); since it is internally called
   // when using CreateNewTabFor3DwtImage
-  int TimePoint = file_container.get< m_TCoord >().begin()->m_TCoord;
-  QGoTabImageView3DwT* w3t = CreateNewTabFor3DwtImage( file_container,
-    filetype, Header_FileName, TimePoint,
-    true ); // Use the database
+  int                  TimePoint = file_container.get<m_TCoord>().begin()->m_TCoord;
+  QGoTabImageView3DwT* w3t = CreateNewTabFor3DwtImage(file_container,
+                                                      filetype, Header_FileName, TimePoint,
+                                                      true); // Use the database
 
-  QObject::connect( w3t, SIGNAL( UpdateBookmarkOpenActions( std::vector<QAction*> ) ),
-    this->m_TabManager, SLOT( UpdateBookmarkMenu( std::vector<QAction*> ) ) );
+  QObject::connect(w3t, SIGNAL(UpdateBookmarkOpenActions(std::vector<QAction*> )),
+                   this->m_TabManager, SLOT(UpdateBookmarkMenu(std::vector<QAction*> )));
 
   // Load all contours and only display the ones from the first time point
-  LoadAllTracesFromDatabaseManager( TimePoint );
+  LoadAllTracesFromDatabaseManager(TimePoint);
 
   this->menuBookmarks->setEnabled(true);
 }
@@ -404,14 +403,14 @@ void QGoMainWindow::DisplayFilesfromDB(std::string iFirst_Filename)
 //--------------------------------------------------------------------------
 void
 QGoMainWindow::
-LoadAllTracesFromDatabaseManager( const int& iT )
+LoadAllTracesFromDatabaseManager(const int& iT)
 {
-  QApplication::setOverrideCursor( QCursor( Qt::WaitCursor ) );
+  QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
   // Loads contours
-  LoadAllTracesFromDatabase( iT, "contour" );
+  LoadAllTracesFromDatabase(iT, "contour");
   // Loads meshes
-  LoadAllTracesFromDatabase( iT, "mesh" );
+  LoadAllTracesFromDatabase(iT, "mesh");
 
   QApplication::restoreOverrideCursor();
 }
@@ -420,77 +419,77 @@ LoadAllTracesFromDatabaseManager( const int& iT )
 //--------------------------------------------------------------------------
 void
 QGoMainWindow::
-LoadAllTracesFromDatabase( const int& iT, const std::string& iTraceName )
+LoadAllTracesFromDatabase(const int& iT, const std::string& iTraceName)
 {
   QGoTabImageView3DwT* w3t =
-    dynamic_cast< QGoTabImageView3DwT* >( this->CentralTabWidget->currentWidget() );
+    dynamic_cast<QGoTabImageView3DwT*>(this->CentralTabWidget->currentWidget());
 
-  if( w3t )
+  if (w3t)
     {
     ContourMeshStructureMultiIndexContainer* temp =
-      w3t->m_DataBaseTables->GetTracesInfoListForVisu( iTraceName );
+      w3t->m_DataBaseTables->GetTracesInfoListForVisu(iTraceName);
 
-    bool calculation = ( iTraceName.compare( "mesh" ) == 0 );
+    bool calculation = (iTraceName.compare("mesh") == 0);
 
-    if( temp )
+    if (temp)
       {
       // let's iterate on the container with increasing TraceID
-      ContourMeshStructureMultiIndexContainer::index< TraceID >::type::iterator
-        contourmesh_list_it = temp->get< TraceID >().begin();
+      ContourMeshStructureMultiIndexContainer::index<TraceID>::type::iterator
+      contourmesh_list_it = temp->get<TraceID>().begin();
 
-      std::set< unsigned int > temp_time_set;
+      std::set<unsigned int> temp_time_set;
 
       // we don't need here to save this contour in the database,
       // since they have just been extracted from it!
-      while( contourmesh_list_it != temp->get< TraceID >().end() )
+      while (contourmesh_list_it != temp->get<TraceID>().end())
         {
         // note here it only makes sense when the trace is a mesh (for now)
-        if( calculation )
+        if (calculation)
           {
-          if( contourmesh_list_it->Nodes )
+          if (contourmesh_list_it->Nodes)
             {
             GoFigureMeshAttributes attributes =
-              w3t->ComputeMeshAttributes( contourmesh_list_it->Nodes );
-            w3t->m_DataBaseTables->PrintVolumeAreaForMesh( attributes.m_Volume, 
-              attributes.m_Area, contourmesh_list_it->TraceID );
+              w3t->ComputeMeshAttributes(contourmesh_list_it->Nodes);
+            w3t->m_DataBaseTables->PrintVolumeAreaForMesh(attributes.m_Volume,
+                                                          attributes.m_Area, contourmesh_list_it->TraceID);
             }
           }
         w3t->AddTraceFromNodesManager(
-            contourmesh_list_it->TraceID,
-            contourmesh_list_it->Nodes,
-            contourmesh_list_it->rgba,
-            contourmesh_list_it->Highlighted,
-            contourmesh_list_it->TCoord,
-            false,  // Not to be saved in database
-            iTraceName );  // Name of the trace to add
+          contourmesh_list_it->TraceID,
+          contourmesh_list_it->Nodes,
+          contourmesh_list_it->rgba,
+          contourmesh_list_it->Highlighted,
+          contourmesh_list_it->TCoord,
+          false,    // Not to be saved in database
+          iTraceName);     // Name of the trace to add
 
-        if( contourmesh_list_it->TCoord != static_cast<unsigned int>( iT ) )
+        if (contourmesh_list_it->TCoord != static_cast<unsigned int>(iT))
           {
-          temp_time_set.insert( contourmesh_list_it->TCoord );
+          temp_time_set.insert(contourmesh_list_it->TCoord);
           }
 
         ++contourmesh_list_it;
         }
 
-      std::set< unsigned int >::iterator time_it = temp_time_set.begin();
-      while( time_it != temp_time_set.end() )
+      std::set<unsigned int>::iterator time_it = temp_time_set.begin();
+      while (time_it != temp_time_set.end())
         {
         /// \note temp is the container coming from the database and as of now
         /// does not contain any information from the visualization. Thus all
         /// actors are initialized to NULL and can not be removed from the
         /// visualization.
         //  w3t->RemoveAllTracesForGivenTimePoint( *time_it, *temp );
-        w3t->RemoveAllTracesForGivenTimePoint( *time_it, iTraceName );
+        w3t->RemoveAllTracesForGivenTimePoint(*time_it, iTraceName);
 
         ++time_it;
         }
       }
 
     // if it we are loading contours
-    if( !calculation )
+    if (!calculation)
       {
       w3t->ReinitializeContour(); // contour widget is reinitialized...
-      w3t->ActivateManualSegmentationEditor( false );
+      w3t->ActivateManualSegmentationEditor(false);
       }
     }
 }
@@ -499,8 +498,8 @@ LoadAllTracesFromDatabase( const int& iT, const std::string& iTraceName )
 //--------------------------------------------------------------------------
 GoFigureFileInfoHelperMultiIndexContainer
 QGoMainWindow::
-GetFileContainerForMultiFiles( std::string &ioHeader_Filename,
-  std::string iFirst_FileName )
+GetFileContainerForMultiFiles(std::string& ioHeader_Filename,
+                              std::string iFirst_FileName)
 {
   GoFigureFileInfoHelperMultiIndexContainer ofile_container;
 
@@ -511,15 +510,15 @@ GetFileContainerForMultiFiles( std::string &ioHeader_Filename,
     //this->m_DBWizard->setImgSessionName(ImgSessionName);
     ofile_container = this->m_DBWizard->GetMultiIndexFileContainer();
     }
-   iFirst_FileName = this->m_DBWizard->GetFirstFileName();
+  iFirst_FileName = this->m_DBWizard->GetFirstFileName();
 
   // if the size is diiferent than 0, the imagingsession has
   // just been created and the wizard has already filled the
   // GoFigureFileInfoHelperMultiIndexContainer using MegcaptureImport
-  if (ofile_container.size() == 0 ||!iFirst_FileName.empty())
+  if (ofile_container.size() == 0 || !iFirst_FileName.empty())
     {
     itk::MegaCaptureImport::Pointer importer = itk::MegaCaptureImport::New();
-    importer->SetFileName( iFirst_FileName );
+    importer->SetFileName(iFirst_FileName);
     importer->Update();
     ofile_container = importer->GetOutput();
     ioHeader_Filename = importer->GetHeaderFilename();
@@ -538,11 +537,11 @@ GetFileContainerForMultiFiles( std::string &ioHeader_Filename,
  */
 void
 QGoMainWindow::
-on_actionExport_LSM_to_MegaFile_triggered( )
+on_actionExport_LSM_to_MegaFile_triggered()
 {
   //Open the dialog window
   QGoLsmToMegaExportDialog* dlg =
-      new QGoLsmToMegaExportDialog( this );
+    new QGoLsmToMegaExportDialog(this);
   dlg->show();
 }
 //--------------------------------------------------------------------------
@@ -558,82 +557,82 @@ void QGoMainWindow::on_actionClose_all_triggered()
 void QGoMainWindow::on_actionClose_triggered()
 {
   int idx = this->CentralTabWidget->currentIndex();
-  m_TabManager->CloseTab( idx );
+  m_TabManager->CloseTab(idx);
 }
 //--------------------------------------------------------------------------
-void QGoMainWindow::on_actionOpen_Mesh_triggered( )
+void QGoMainWindow::on_actionOpen_Mesh_triggered()
 {
-  if( this->CentralTabWidget->count() > 0 )
+  if (this->CentralTabWidget->count() > 0)
     {
     int idx = this->CentralTabWidget->currentIndex();
 
-    if( idx >= 0 )
-    {
+    if (idx >= 0)
+      {
       QStringList filename = QFileDialog::getOpenFileNames(
         this,
-        tr( "Select meshes or contours"), "",
-        tr( "vtk - vtkPolyData (*.vtk);;ply - Polygon File Format (*.ply)" ) );
+        tr("Select meshes or contours"), "",
+        tr("vtk - vtkPolyData (*.vtk);;ply - Polygon File Format (*.ply)"));
 
-      if( !filename.isEmpty() )
+      if (!filename.isEmpty())
         {
-        QStringList::Iterator it = filename.begin();
-        std::list< vtkPolyData* > mesh_list;
-        std::list< vtkProperty* > property_list;
-        property_list.push_back( 0 );
+        QStringList::Iterator   it = filename.begin();
+        std::list<vtkPolyData*> mesh_list;
+        std::list<vtkProperty*> property_list;
+        property_list.push_back(0);
 
-        while( it != filename.end() )
+        while (it != filename.end())
           {
-          if( QFile::exists( *it ) )
+          if (QFile::exists(*it))
             {
-            QString extension = QFileInfo( *it ).suffix();
+            QString extension = QFileInfo(*it).suffix();
 
             vtkPolyData* mesh = vtkPolyData::New();
 
-            if( extension.compare( "vtk", Qt::CaseInsensitive ) == 0 )
+            if (extension.compare("vtk", Qt::CaseInsensitive) == 0)
               {
-              vtkSmartPointer< vtkPolyDataReader > mesh_reader =
-                vtkSmartPointer< vtkPolyDataReader >::New();
-              mesh_reader->SetFileName( (*it).toAscii( ).data( ) );
+              vtkSmartPointer<vtkPolyDataReader> mesh_reader =
+                vtkSmartPointer<vtkPolyDataReader>::New();
+              mesh_reader->SetFileName((*it).toAscii().data());
               mesh_reader->Update();
 
-              mesh->ShallowCopy( mesh_reader->GetOutput() );
-              mesh_list.push_back( mesh );
+              mesh->ShallowCopy(mesh_reader->GetOutput());
+              mesh_list.push_back(mesh);
               }
             else
               {
-              if( extension.compare( "ply", Qt::CaseInsensitive ) == 0 )
+              if (extension.compare("ply", Qt::CaseInsensitive) == 0)
                 {
-                vtkSmartPointer< vtkPLYReader > mesh_reader =
-                  vtkSmartPointer< vtkPLYReader >::New();
-                mesh_reader->SetFileName( (*it).toAscii( ).data( ) );
+                vtkSmartPointer<vtkPLYReader> mesh_reader =
+                  vtkSmartPointer<vtkPLYReader>::New();
+                mesh_reader->SetFileName((*it).toAscii().data());
                 mesh_reader->Update();
 
-                mesh->ShallowCopy( mesh_reader->GetOutput() );
-                mesh_list.push_back( mesh );
+                mesh->ShallowCopy(mesh_reader->GetOutput());
+                mesh_list.push_back(mesh);
                 }
               }
             }
           ++it;
           }
 
-        if( !mesh_list.empty() )
+        if (!mesh_list.empty())
           {
           double mesh_bounds[6];
-          mesh_list.front()->GetBounds( mesh_bounds );
+          mesh_list.front()->GetBounds(mesh_bounds);
           bool IsContour = false;
 
-          for( int i = 0; ( i < 3 ) && ( !IsContour ); ++i )
+          for (int i = 0; (i < 3) && (!IsContour); ++i)
             {
-            if( mesh_bounds[2*i] == mesh_bounds[2*i+1] )
+            if (mesh_bounds[2 * i] == mesh_bounds[2 * i + 1])
               {
               IsContour = true;
               }
             }
           }
 
-        while( !mesh_list.empty() )
+        while (!mesh_list.empty())
           {
-          if( mesh_list.back() )
+          if (mesh_list.back())
             {
             mesh_list.back()->Delete();
             }
@@ -646,8 +645,8 @@ void QGoMainWindow::on_actionOpen_Mesh_triggered( )
     {
     /// \note Do we need to create a view mesh if there is no opened image?
     /// \todo this action must be enabled only if there are tabs
-    QMessageBox::warning( this, tr( "Open Mesh / Contour Warning" ),
-      tr( "One image needs to be opened first to be able to load contours or meshes" ) );
+    QMessageBox::warning(this, tr("Open Mesh / Contour Warning"),
+                         tr("One image needs to be opened first to be able to load contours or meshes"));
     }
 
 }
@@ -655,7 +654,7 @@ void QGoMainWindow::on_actionOpen_Mesh_triggered( )
 
 //--------------------------------------------------------------------------
 void QGoMainWindow::
-on_actionQuit_triggered( )
+on_actionQuit_triggered()
 {
   this->close();
   this->WriteSettings();
@@ -664,38 +663,38 @@ on_actionQuit_triggered( )
 
 //--------------------------------------------------------------------------
 void QGoMainWindow::
-SetSingleFileName( const QString& iFile )
+SetSingleFileName(const QString& iFile)
 {
-  if( QFile::exists( iFile ) )
+  if (QFile::exists(iFile))
     {
-    this->SetCurrentSingleFile( iFile );
+    this->SetCurrentSingleFile(iFile);
 
     // parse extension
-    QString ext = QFileInfo( iFile ).suffix();
-    if( ext.compare( "lsm", Qt::CaseInsensitive ) == 0 )
+    QString ext = QFileInfo(iFile).suffix();
+    if (ext.compare("lsm", Qt::CaseInsensitive) == 0)
       {
-      this->OpenLSMImage( m_CurrentFile, 0 );
+      this->OpenLSMImage(m_CurrentFile, 0);
       }
     else
       {
       vtkImageReader2Factory* r_factory = vtkImageReader2Factory::New();
-      vtkImageReader2* reader = r_factory->CreateImageReader2( iFile.toAscii().data() );
+      vtkImageReader2*        reader = r_factory->CreateImageReader2(iFile.toAscii().data());
 
-      reader->SetFileName( iFile.toAscii().data() );
+      reader->SetFileName(iFile.toAscii().data());
       reader->Update();
 
       vtkImageData* image = reader->GetOutput();
 
       int dim[3];
-      image->GetDimensions( dim );
+      image->GetDimensions(dim);
 
-      if( ( dim[0] != 1 ) && ( dim[1] != 1 ) && ( dim[2] != 1 ) )
+      if ((dim[0] != 1) && (dim[1] != 1) && (dim[2] != 1))
         {
-        CreateNewTabFor3DImage( image, iFile );
+        CreateNewTabFor3DImage(image, iFile);
         }
       else
         {
-        CreateNewTabFor2DImage( image, iFile );
+        CreateNewTabFor2DImage(image, iFile);
         }
       reader->Delete();
       r_factory->Delete();
@@ -706,22 +705,22 @@ SetSingleFileName( const QString& iFile )
 
 //--------------------------------------------------------------------------
 void QGoMainWindow::
-OpenLSMImage( const QString& iFile, const int& iTimePoint )
+OpenLSMImage(const QString& iFile, const int& iTimePoint)
 {
-  m_LSMReader.push_back( vtkLSMReader::New() );
-  m_LSMReader.back()->SetFileName( iFile.toAscii().data() );
-  m_LSMReader.back()->SetUpdateTimePoint( iTimePoint );
+  m_LSMReader.push_back(vtkLSMReader::New());
+  m_LSMReader.back()->SetFileName(iFile.toAscii().data());
+  m_LSMReader.back()->SetUpdateTimePoint(iTimePoint);
   m_LSMReader.back()->Update();
 
   int dim[5];
-  m_LSMReader.back()->GetDimensions( dim );
+  m_LSMReader.back()->GetDimensions(dim);
 
   int ImageDimensionality = 4;
 //   bool Color = ( dim[4] > 1 );
 
-  if( dim[3] == 1 ) // only one time point
+  if (dim[3] == 1)  // only one time point
     {
-    if( dim[2] == 1 ) // only one z slice
+    if (dim[2] == 1)  // only one z slice
       {
       ImageDimensionality = 2;
       }
@@ -735,21 +734,21 @@ OpenLSMImage( const QString& iFile, const int& iTimePoint )
     ImageDimensionality = 4;
     }
 
-  switch( ImageDimensionality )
+  switch (ImageDimensionality)
     {
     case 2:
       {
-      CreateNewTabFor2DImage( m_LSMReader.back()->GetOutput(), iFile );
+      CreateNewTabFor2DImage(m_LSMReader.back()->GetOutput(), iFile);
       break;
       }
     case 3:
       {
-      CreateNewTabFor3DImage( m_LSMReader.back()->GetOutput(), iFile );
+      CreateNewTabFor3DImage(m_LSMReader.back()->GetOutput(), iFile);
       break;
       }
     case 4:
       {
-      CreateNewTabFor3DwtImage( m_LSMReader.back(), iFile );
+      CreateNewTabFor3DwtImage(m_LSMReader.back(), iFile);
       break;
       }
     }
@@ -770,14 +769,14 @@ CreateNewTabFor3DwtImage(
   const GoFigure::FileType& iFileType,
   const std::string& iHeader,
   const int& iTimePoint,
-  const bool& iUseDatabase )
+  const bool& iUseDatabase)
 {
   // note: do not need to call w3t->Update() since it is internally called in
   // w3t->SetMegaCaptureFile
   QGoTabImageView3DwT* w3t = new QGoTabImageView3DwT;
-  w3t->SetMegaCaptureFile( iFileList, iFileType, iHeader, iTimePoint );
+  w3t->SetMegaCaptureFile(iFileList, iFileType, iHeader, iTimePoint);
 
-  if( iUseDatabase )
+  if (iUseDatabase)
     {
     // **********************
     // Database information
@@ -790,21 +789,23 @@ CreateNewTabFor3DwtImage(
       ImgSessionName = this->m_CurrentFile.toStdString();
       this->m_DBWizard->SetIsAnOpenRecentFile(false);
       }
-    w3t->m_DataBaseTables->SetDatabaseVariables( "gofiguredatabase",
-      m_DBWizard->GetServer().toStdString(), m_DBWizard->GetLogin().toStdString(),
-      m_DBWizard->GetPassword().toStdString(), m_DBWizard->GetImagingSessionID(),
-      ImgSessionName );
+    w3t->m_DataBaseTables->SetDatabaseVariables("gofiguredatabase",
+                                                m_DBWizard->GetServer().toStdString(),
+                                                m_DBWizard->GetLogin().toStdString(),
+                                                m_DBWizard->GetPassword().toStdString(),
+                                                m_DBWizard->GetImagingSessionID(),
+                                                ImgSessionName);
 
     w3t->m_DataBaseTables->FillTableFromDatabase(w3t->GetTimePoint());
-    w3t->setWindowTitle( QString::fromStdString( ImgSessionName ) );
+    w3t->setWindowTitle(QString::fromStdString(ImgSessionName));
     // **********************
     }
   else
     {
-    w3t->setWindowTitle( QFileInfo( QString::fromStdString( iHeader ) ).fileName() );
+    w3t->setWindowTitle(QFileInfo(QString::fromStdString(iHeader)).fileName());
     }
 
-  SetupMenusFromTab( w3t );
+  SetupMenusFromTab(w3t);
 
   return w3t;
 }
@@ -813,54 +814,54 @@ CreateNewTabFor3DwtImage(
 //--------------------------------------------------------------------------
 void
 QGoMainWindow::
-SetupMenusFromTab( QGoTabElementBase* iT )
+SetupMenusFromTab(QGoTabElementBase* iT)
 {
-  for( std::list< QAction* >::iterator
-    list_it = m_TabDimPluginActionMap[iT->GetTabDimensionType()].begin();
-    list_it != m_TabDimPluginActionMap[iT->GetTabDimensionType()].end();
-    list_it++
-    )
+  for (std::list<QAction*>::iterator
+       list_it = m_TabDimPluginActionMap[iT->GetTabDimensionType()].begin();
+       list_it != m_TabDimPluginActionMap[iT->GetTabDimensionType()].end();
+       list_it++
+       )
     {
-    (*list_it)->setEnabled( true );
+    (*list_it)->setEnabled(true);
     }
 
-  iT->SetPluginActions( m_TabDimPluginActionMap[iT->GetTabDimensionType()] );
+  iT->SetPluginActions(m_TabDimPluginActionMap[iT->GetTabDimensionType()]);
 
-  std::list< QGoTabElementBase::QGoDockWidgetStatusPair > dock_list = iT->DockWidget();
+  std::list<QGoTabElementBase::QGoDockWidgetStatusPair> dock_list = iT->DockWidget();
 
-  for( std::list< QGoTabElementBase::QGoDockWidgetStatusPair >::iterator
-    dck_it = dock_list.begin();
-    dck_it != dock_list.end();
-    ++dck_it )
+  for (std::list<QGoTabElementBase::QGoDockWidgetStatusPair>::iterator
+       dck_it = dock_list.begin();
+       dck_it != dock_list.end();
+       ++dck_it)
     {
-    if( dck_it->first->m_Attached )
+    if (dck_it->first->m_Attached)
       {
-      this->addDockWidget( dck_it->first->m_Area, dck_it->second );
+      this->addDockWidget(dck_it->first->m_Area, dck_it->second);
       }
-    dck_it->second->setVisible( dck_it->first->m_Visibility );
+    dck_it->second->setVisible(dck_it->first->m_Visibility);
     }
 
-  int idx = this->CentralTabWidget->addTab( iT, iT->windowTitle() );
-  this->menuView->setEnabled( true );
-  this->menuFiltering->setEnabled( true );
-  this->menuSegmentation->setEnabled( true );
-  this->menuTools->setEnabled( true );
-  this->menuMode->setEnabled( true );
+  int idx = this->CentralTabWidget->addTab(iT, iT->windowTitle());
+  this->menuView->setEnabled(true);
+  this->menuFiltering->setEnabled(true);
+  this->menuSegmentation->setEnabled(true);
+  this->menuTools->setEnabled(true);
+  this->menuMode->setEnabled(true);
 
-  this->CentralTabWidget->setCurrentIndex( idx );
+  this->CentralTabWidget->setCurrentIndex(idx);
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 QGoTabImageView3DwT*
 QGoMainWindow::
-CreateNewTabFor3DwtImage( vtkLSMReader* iReader, const QString& iFile )
+CreateNewTabFor3DwtImage(vtkLSMReader* iReader, const QString& iFile)
 {
   QGoTabImageView3DwT* w3t = new QGoTabImageView3DwT;
-  w3t->setWindowTitle( QFileInfo( iFile ).fileName() );
-  w3t->SetLSMReader( iReader, 0 );
+  w3t->setWindowTitle(QFileInfo(iFile).fileName());
+  w3t->SetLSMReader(iReader, 0);
 
-  SetupMenusFromTab( w3t );
+  SetupMenusFromTab(w3t);
 
   // w3t->m_DataBaseTables->hide();
 
@@ -871,14 +872,14 @@ CreateNewTabFor3DwtImage( vtkLSMReader* iReader, const QString& iFile )
 //--------------------------------------------------------------------------
 QGoTabImageView3D*
 QGoMainWindow::
-CreateNewTabFor3DImage( vtkImageData* iInput, const QString& iFile )
+CreateNewTabFor3DImage(vtkImageData* iInput, const QString& iFile)
 {
   QGoTabImageView3D* w3 = new QGoTabImageView3D;
-  w3->SetImage( iInput );
-  w3->setWindowTitle( QFileInfo( iFile ).fileName() );
+  w3->SetImage(iInput);
+  w3->setWindowTitle(QFileInfo(iFile).fileName());
   w3->Update();
 
-  SetupMenusFromTab( w3 );
+  SetupMenusFromTab(w3);
 
   return w3;
 }
@@ -887,51 +888,51 @@ CreateNewTabFor3DImage( vtkImageData* iInput, const QString& iFile )
 //--------------------------------------------------------------------------
 QGoTabImageView2D*
 QGoMainWindow::
-CreateNewTabFor2DImage( vtkImageData* iInput, const QString& iFile )
+CreateNewTabFor2DImage(vtkImageData* iInput, const QString& iFile)
 {
   QGoTabImageView2D* w2 = new QGoTabImageView2D;
-  w2->SetImage( iInput );
-  w2->setWindowTitle( QFileInfo( iFile ).fileName() );
+  w2->SetImage(iInput);
+  w2->setWindowTitle(QFileInfo(iFile).fileName());
   w2->Update();
 
-  SetupMenusFromTab( w2 );
+  SetupMenusFromTab(w2);
 
   return w2;
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------------
-void QGoMainWindow::on_actionAbout_triggered( )
+void QGoMainWindow::on_actionAbout_triggered()
 {
   this->m_AboutWidget->show();
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoMainWindow::on_actionAbout_Qt_triggered( )
+void QGoMainWindow::on_actionAbout_Qt_triggered()
 {
-  QMessageBox::aboutQt( this, tr( "About Qt" ) );
+  QMessageBox::aboutQt(this, tr("About Qt"));
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoMainWindow::on_actionGoFigure2_Website_triggered( )
+void QGoMainWindow::on_actionGoFigure2_Website_triggered()
 {
-  QDesktopServices::openUrl( QUrl("http://gofigure2.sourceforge.net") );
+  QDesktopServices::openUrl(QUrl("http://gofigure2.sourceforge.net"));
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoMainWindow::on_actionUser_mailing_list_triggered( )
+void QGoMainWindow::on_actionUser_mailing_list_triggered()
 {
-  QDesktopServices::openUrl( QUrl("mailto:gofigure2-users@lists.sourceforge.net?subject=About GoFigure2") );
+  QDesktopServices::openUrl(QUrl("mailto:gofigure2-users@lists.sourceforge.net?subject=About GoFigure2"));
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoMainWindow::on_actionDeveloper_mailing_list_triggered( )
+void QGoMainWindow::on_actionDeveloper_mailing_list_triggered()
 {
-  QDesktopServices::openUrl( QUrl("mailto:gofigure2-developers@lists.sourceforge.net?subject=About GoFigure2" ) );
+  QDesktopServices::openUrl(QUrl("mailto:gofigure2-developers@lists.sourceforge.net?subject=About GoFigure2"));
 }
 //--------------------------------------------------------------------------
 
@@ -944,18 +945,18 @@ void QGoMainWindow::SetUpDatabase()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoMainWindow::SetCurrentSingleFile( const QString &fileName )
+void QGoMainWindow::SetCurrentSingleFile(const QString& fileName)
 {
   m_CurrentFile = fileName;
-  this->setWindowModified( false );
+  this->setWindowModified(false);
   QString shownName = "Untitled";
-  if( !m_CurrentFile.isEmpty() )
+  if (!m_CurrentFile.isEmpty())
     {
-    shownName = strippedName( m_CurrentFile );
-    m_RecentSingleFiles.removeAll( m_CurrentFile );
-    m_RecentSingleFiles.prepend( m_CurrentFile );
-    UpdateRecentFileActions( m_RecentSingleFiles, menuSingle_Files,
-      recentSingleFileActions );
+    shownName = strippedName(m_CurrentFile);
+    m_RecentSingleFiles.removeAll(m_CurrentFile);
+    m_RecentSingleFiles.prepend(m_CurrentFile);
+    UpdateRecentFileActions(m_RecentSingleFiles, menuSingle_Files,
+                            recentSingleFileActions);
     }
 }
 //--------------------------------------------------------------------------
@@ -963,20 +964,20 @@ void QGoMainWindow::SetCurrentSingleFile( const QString &fileName )
 //--------------------------------------------------------------------------
 void QGoMainWindow::LoadPlugins()
 {
-  foreach( QObject *plugin, QPluginLoader::staticInstances() )
+  foreach(QObject * plugin, QPluginLoader::staticInstances())
     {
-    this->PopulateMenus( plugin );
+    this->PopulateMenus(plugin);
     }
 
-  m_PluginsDir = FindPluginDirectory( "plugins" );
+  m_PluginsDir = FindPluginDirectory("plugins");
 
-  foreach( QString fileName, m_PluginsDir.entryList( QDir::Files ) )
+  foreach(QString fileName, m_PluginsDir.entryList(QDir::Files))
     {
-    QPluginLoader loader( m_PluginsDir.absoluteFilePath( fileName ) );
-    QObject* plugin = loader.instance();
-    if( plugin )
+    QPluginLoader loader(m_PluginsDir.absoluteFilePath(fileName));
+    QObject*      plugin = loader.instance();
+    if (plugin)
       {
-      this->PopulateMenus( plugin );
+      this->PopulateMenus(plugin);
       m_PluginFileNames += fileName;
       }
     }
@@ -984,52 +985,52 @@ void QGoMainWindow::LoadPlugins()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoMainWindow::PopulateMenus( QObject *plugin )
+void QGoMainWindow::PopulateMenus(QObject *plugin)
 {
   QGoImageFilterPluginBase* filter =
-    qobject_cast< QGoImageFilterPluginBase* >( plugin );
-  if( filter )
+    qobject_cast<QGoImageFilterPluginBase*>(plugin);
+  if (filter)
     {
-    this->AddToMenu( plugin, QStringList( filter->Name() ),
-      this->menuFiltering, SLOT( ApplyImageFilter() ), 0 );
+    this->AddToMenu(plugin, QStringList(filter->Name()),
+                    this->menuFiltering, SLOT(ApplyImageFilter()), 0);
     }
   else
     {
-    std::cout <<"This is not QGoImageFilterPlugin" <<std::endl;
+    std::cout << "This is not QGoImageFilterPlugin" << std::endl;
     }
- }
+}
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void QGoMainWindow::AddToMenu(
-  QObject *plugin, const QStringList &texts,
+  QObject *plugin, const QStringList& texts,
   QMenu* menu, const char *member,
-  QActionGroup *actionGroup )
+  QActionGroup *actionGroup)
 {
-  std::list< GoFigure::TabDimensionType > dim_list;
+  std::list<GoFigure::TabDimensionType> dim_list;
 
-  QGoPlugin* temp = dynamic_cast< QGoPlugin* >( plugin );
+  QGoPlugin* temp = dynamic_cast<QGoPlugin*>(plugin);
 
-  if( temp )
+  if (temp)
     {
     dim_list = temp->TabElementCompatibility();
     }
 
-  foreach( QString text, texts )
+  foreach(QString text, texts)
     {
     QAction *taction = new QAction(text, plugin);
-    taction->setDisabled( true );
-    QObject::connect( taction, SIGNAL(triggered()), this, member);
+    taction->setDisabled(true);
+    QObject::connect(taction, SIGNAL(triggered()), this, member);
 //    QObject::connect( plugin, SIGNAL( Done( std::vector< vtkImageData* > ) ),
 //      this, SLOT( tobedone( std::vector< vtkImageData* > ) ) );
 
     menu->addAction(taction);
 
-    for( std::list< GoFigure::TabDimensionType >::iterator it = dim_list.begin();
-      it != dim_list.end();
-      ++it )
+    for (std::list<GoFigure::TabDimensionType>::iterator it = dim_list.begin();
+         it != dim_list.end();
+         ++it)
       {
-      m_TabDimPluginActionMap[ *it ].push_back( taction );
+      m_TabDimPluginActionMap[*it].push_back(taction);
       }
 
     if (actionGroup)
@@ -1041,30 +1042,30 @@ void QGoMainWindow::AddToMenu(
 }
 //--------------------------------------------------------------------------
 
-void QGoMainWindow::tobedone( std::vector< vtkImageData* > iImages )
+void QGoMainWindow::tobedone(std::vector<vtkImageData*> iImages)
 {
   QWidget* w = this->CentralTabWidget->currentWidget();
 
-  QGoTabImageViewNDBase* WnD = dynamic_cast< QGoTabImageViewNDBase* >( w );
+  QGoTabImageViewNDBase* WnD = dynamic_cast<QGoTabImageViewNDBase*>(w);
 
-  if( WnD )
+  if (WnD)
     {
-    WnD->SetImage( iImages[0] );
+    WnD->SetImage(iImages[0]);
     }
 }
 //--------------------------------------------------------------------------
 void QGoMainWindow::ApplyImageFilter()
 {
-  QAction *taction = qobject_cast< QAction* >( sender( ) );
+  QAction *                 taction = qobject_cast<QAction*>(sender());
   QGoImageFilterPluginBase* filter =
-    qobject_cast< QGoImageFilterPluginBase* >( taction->parent() );
+    qobject_cast<QGoImageFilterPluginBase*>(taction->parent());
 
   QWidget* w = this->CentralTabWidget->currentWidget();
 
-  QGoTabImageViewNDBase* WnD = dynamic_cast< QGoTabImageViewNDBase* >( w );
-  if( WnD )
+  QGoTabImageViewNDBase* WnD = dynamic_cast<QGoTabImageViewNDBase*>(w);
+  if (WnD)
     {
-    filter->SetInput( WnD->GetImage() );
+    filter->SetInput(WnD->GetImage());
     filter->Update();
 //     WnD->SetImage( filter->GetOutput()[0] );
     }
@@ -1072,50 +1073,50 @@ void QGoMainWindow::ApplyImageFilter()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoMainWindow::SetCurrentMultiFile( const QString &fileName )
+void QGoMainWindow::SetCurrentMultiFile(const QString& fileName)
 {
   m_CurrentFile = fileName;
-  this->setWindowModified( false );
+  this->setWindowModified(false);
   QString shownName = "Untitled";
-  if( !m_CurrentFile.isEmpty() )
+  if (!m_CurrentFile.isEmpty())
     {
-    shownName = strippedName( m_CurrentFile );
-    m_RecentMultipleFiles.removeAll( m_CurrentFile );
-    m_RecentMultipleFiles.prepend( m_CurrentFile );
-    UpdateRecentFileActions( m_RecentMultipleFiles,
-      menuMultiple_Files,
-      recentMultipleFileActions );
+    shownName = strippedName(m_CurrentFile);
+    m_RecentMultipleFiles.removeAll(m_CurrentFile);
+    m_RecentMultipleFiles.prepend(m_CurrentFile);
+    UpdateRecentFileActions(m_RecentMultipleFiles,
+                            menuMultiple_Files,
+                            recentMultipleFileActions);
     }
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoMainWindow::SetCurrentDatabaseFile( const QString &fileName )
+void QGoMainWindow::SetCurrentDatabaseFile(const QString& fileName)
 {
   m_CurrentFile = fileName;
-  this->setWindowModified( false );
-  if( !m_CurrentFile.isEmpty() )
+  this->setWindowModified(false);
+  if (!m_CurrentFile.isEmpty())
     {
-    this->m_RecentDatabaseFiles.removeAll( m_CurrentFile );
-    this->m_RecentDatabaseFiles.prepend( m_CurrentFile );
-    UpdateRecentFileActions( this->m_RecentDatabaseFiles,
-      menuDatabase_Files,
-      recentDatabaseFileActions );
+    this->m_RecentDatabaseFiles.removeAll(m_CurrentFile);
+    this->m_RecentDatabaseFiles.prepend(m_CurrentFile);
+    UpdateRecentFileActions(this->m_RecentDatabaseFiles,
+                            menuDatabase_Files,
+                            recentDatabaseFileActions);
     }
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-QString QGoMainWindow::strippedName(const QString &fullFileName)
+QString QGoMainWindow::strippedName(const QString& fullFileName)
 {
   return QFileInfo(fullFileName).fileName();
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoMainWindow::UpdateRecentFileActions( QStringList list,
-  QMenu *menu,
-  QAction *recentFileActions[MaxRecentFiles] )
+void QGoMainWindow::UpdateRecentFileActions(QStringList list,
+                                            QMenu *menu,
+                                            QAction *recentFileActions[MaxRecentFiles])
 {
   //if the items in the list are imagingsession names,from
   // the menuDatabase_Files, they don't corresponds to real
@@ -1143,8 +1144,8 @@ void QGoMainWindow::UpdateRecentFileActions( QStringList list,
     if (j < list.count())
       {
       QString text = tr("&%1 %2 ")
-        .arg(j + 1)
-        .arg(strippedName(list[j]));
+                     .arg(j + 1)
+                     .arg(strippedName(list[j]));
 
       recentFileActions[j]->setText(text);
       recentFileActions[j]->setData(list[j]);
@@ -1158,10 +1159,10 @@ void QGoMainWindow::UpdateRecentFileActions( QStringList list,
 //--------------------------------------------------------------------------
 void QGoMainWindow::openRecentSingleFile()
 {
-  QAction* taction = qobject_cast< QAction* >( sender() );
-  if( action )
+  QAction* taction = qobject_cast<QAction*>(sender());
+  if (action)
     {
-    this->SetSingleFileName( taction->data().toString() );
+    this->SetSingleFileName(taction->data().toString());
     }
 }
 //--------------------------------------------------------------------------------
@@ -1169,8 +1170,8 @@ void QGoMainWindow::openRecentSingleFile()
 //--------------------------------------------------------------------------------
 void QGoMainWindow::openRecentMultipleFile()
 {
-  QAction* taction = qobject_cast< QAction* >( sender() );
-  if( taction )
+  QAction* taction = qobject_cast<QAction*>(sender());
+  if (taction)
     {
 //     this->SetMultiFileName( taction->data().toString() );
     }
@@ -1180,11 +1181,11 @@ void QGoMainWindow::openRecentMultipleFile()
 //--------------------------------------------------------------------------------
 void QGoMainWindow::openRecentDatabaseFile()
 {
-  QAction* taction = qobject_cast< QAction* >( sender() );
-  if( taction )
+  QAction* taction = qobject_cast<QAction*>(sender());
+  if (taction)
     {
     std::string ImgSessionName = taction->data().toString().toStdString();
-    this->SetCurrentDatabaseFile( ImgSessionName.c_str() );
+    this->SetCurrentDatabaseFile(ImgSessionName.c_str());
     this->m_DBWizard->setImgSessionName(ImgSessionName);
     this->m_DBWizard->restart();
     this->m_DBWizard->show();
@@ -1212,32 +1213,32 @@ void QGoMainWindow::ReadSettings()
 {
   QSettings settings;
   m_RecentSingleFiles =
-    settings.value( "RecentSingleFiles" ).toStringList( );
+    settings.value("RecentSingleFiles").toStringList();
   m_RecentMultipleFiles =
-    settings.value( "RecentMultipleFiles" ).toStringList( );
+    settings.value("RecentMultipleFiles").toStringList();
   m_RecentDatabaseFiles =
-    settings.value( "RecentDatabaseFiles").toStringList( );
+    settings.value("RecentDatabaseFiles").toStringList();
   m_DatabaseSetUp =
-    settings.value( "DatabaseSetUp").toBool();
+    settings.value("DatabaseSetUp").toBool();
 
-  this->UpdateRecentFileActions( m_RecentSingleFiles,
-    this->menuSingle_Files, this->recentSingleFileActions );
-  this->UpdateRecentFileActions( m_RecentMultipleFiles,
-    this->menuMultiple_Files, this->recentMultipleFileActions );
+  this->UpdateRecentFileActions(m_RecentSingleFiles,
+                                this->menuSingle_Files, this->recentSingleFileActions);
+  this->UpdateRecentFileActions(m_RecentMultipleFiles,
+                                this->menuMultiple_Files, this->recentMultipleFileActions);
   this->UpdateRecentFileActions(this->m_RecentDatabaseFiles,
-    this->menuDatabase_Files,this->recentDatabaseFileActions);
+                                this->menuDatabase_Files, this->recentDatabaseFileActions);
 
-  settings.beginGroup( "MainWindow" );
-  QSize tsize = settings.value( "size" ).toSize();
+  settings.beginGroup("MainWindow");
+  QSize tsize = settings.value("size").toSize();
 
-  if( tsize.isValid() )
+  if (tsize.isValid())
     {
-    this->resize( tsize );
-    this->move( settings.value("pos").toPoint() );
+    this->resize(tsize);
+    this->move(settings.value("pos").toPoint());
     }
   else
     {
-    this->resize( 1450, 750 );
+    this->resize(1450, 750);
     }
 
   QByteArray state = settings.value("state", QByteArray()).toByteArray();
@@ -1260,7 +1261,7 @@ void QGoMainWindow::WriteSettings()
   settings.setValue("pos", pos());
   settings.setValue("state", saveState());
   settings.endGroup();
-  settings.setValue("DatabaseSetUp",this->m_DatabaseSetUp);
+  settings.setValue("DatabaseSetUp", this->m_DatabaseSetUp);
 }
 //-------------------------------------------------------------------------
 
@@ -1274,54 +1275,54 @@ QGoMainWindow::on_actionCheck_For_Updates_triggered()
 //-------------------------------------------------------------------------
 void
 QGoMainWindow::
-DisplayUpdateResults( QString result, bool noerror )
+DisplayUpdateResults(QString result, bool noerror)
 {
-  if( !noerror ) // error during the connection to the server
+  if (!noerror)  // error during the connection to the server
     {
-    if( m_ManualUpdate )
+    if (m_ManualUpdate)
       {
       QMessageBox::warning(this, tr("GoFigure2 Updates"),
-        tr("There was an error while trying to GoFigure2's update website!\n " \
-         "Check your internet connection and try again later!" ) );
+                           tr("There was an error while trying to GoFigure2's update website!\n " \
+                              "Check your internet connection and try again later!"));
       }
     }
   else
     {
     // no new version!
-    if( result.compare( tr( "no-update\n" ), Qt::CaseInsensitive ) == 0 )
+    if (result.compare(tr("no-update\n"), Qt::CaseInsensitive) == 0)
       {
-      if( m_ManualUpdate )
+      if (m_ManualUpdate)
         {
-        QMessageBox::information( this, tr("GoFigure2 Updates"),
-                                tr("You have the lastest version!"));
+        QMessageBox::information(this, tr("GoFigure2 Updates"),
+                                 tr("You have the lastest version!"));
         }
       }
     else
       {
       // there is one new version!
-      if( result.compare( tr( "update\n" ), Qt::CaseInsensitive ) == 0 )
+      if (result.compare(tr("update\n"), Qt::CaseInsensitive) == 0)
         {
-        QMessageBox msgBox( QMessageBox::Information, tr("GoFigure2 Updates"),
-          tr("There is a new version of GoFigure2 available for download!") );
+        QMessageBox msgBox(QMessageBox::Information, tr("GoFigure2 Updates"),
+                           tr("There is a new version of GoFigure2 available for download!"));
 
         QPushButton *goButton =
-          msgBox.addButton( tr("Go to GoFigure2's website!"),
-                            QMessageBox::ActionRole );
+          msgBox.addButton(tr("Go to GoFigure2's website!"),
+                           QMessageBox::ActionRole);
 
         QPushButton *notnowButton =
-            msgBox.addButton( tr("Not Now!"),
-                              QMessageBox::ActionRole );
+          msgBox.addButton(tr("Not Now!"),
+                           QMessageBox::ActionRole);
 
         msgBox.exec();
 
         if (msgBox.clickedButton() == goButton)
           {
           QUrl address("http://sourceforge.net/projects/gofigure2/files/");
-          QDesktopServices::openUrl( address );
+          QDesktopServices::openUrl(address);
           }
         else
           {
-          if(msgBox.clickedButton() == notnowButton)
+          if (msgBox.clickedButton() == notnowButton)
             {
             msgBox.close();
             }
@@ -1330,5 +1331,3 @@ DisplayUpdateResults( QString result, bool noerror )
       }
     }
 }
-
-

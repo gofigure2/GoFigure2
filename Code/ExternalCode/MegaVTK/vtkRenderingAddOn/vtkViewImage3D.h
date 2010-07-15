@@ -109,7 +109,6 @@ class vtkViewImage2D;
 class vtkScalarsToColors;
 class vtkColorTransferFunction;
 
-
 /**
 
 */
@@ -117,9 +116,9 @@ class vtkColorTransferFunction;
 class ImageActorCallback;
 
 class VTK_RENDERINGADDON2_EXPORT vtkViewImage3D : public vtkViewImage
-{
+  {
 
- public:
+public:
 
   static vtkViewImage3D* New();
   vtkTypeRevisionMacro(vtkViewImage3D, vtkViewImage);
@@ -139,10 +138,10 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage3D : public vtkViewImage
     A vtkProperty of the dataset can be specified.
   */
 //   virtual vtkQuadricLODActor*
-   virtual vtkActor* AddDataSet (vtkDataSet* dataset,
-    vtkProperty* property = NULL,
-    const bool& intersection = true,
-    const bool& iDataVisibility = true );
+  virtual vtkActor* AddDataSet(vtkDataSet* dataset,
+                               vtkProperty* property = NULL,
+                               const bool& intersection = true,
+                               const bool& iDataVisibility = true);
   /**
      Set/Get the current slice to display (depending on the orientation
      this can be in X, Y or Z).
@@ -160,14 +159,14 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage3D : public vtkViewImage
   // be displayed since the current display extent is probably outside
   // the new whole extent. Calling this method will ensure that the display
   // extent is reset properly.
-  virtual void UpdateDisplayExtent(){};
+  virtual void UpdateDisplayExtent(){}
 
   virtual void Add2DPhantom(
     const unsigned int& i,
     vtkImageActor* input,
-    vtkPolyData* in_bounds = NULL );
+    vtkPolyData* in_bounds = NULL);
 
-  virtual void SetOrientationMatrix (vtkMatrix4x4* matrix);
+  virtual void SetOrientationMatrix(vtkMatrix4x4* matrix);
 
   void SetVolumeRenderingOff();
   void SetVolumeRenderingOn();
@@ -175,49 +174,44 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage3D : public vtkViewImage
   void SetTriPlanarRenderingOn();
   void SetTriPlanarRenderingOff();
 
-  void SetVolumeMapperToTexture (void)
+  void SetVolumeMapperToTexture(void)
   {
-    this->VolumeActor->SetMapper ( this->VolumeMapper3D );
-    this->Callback->SetVolumeMapper ( this->VolumeMapper3D );
+    this->VolumeActor->SetMapper (this->VolumeMapper3D);
+    this->Callback->SetVolumeMapper (this->VolumeMapper3D);
   }
 
-  void SetVolumeMapperToRayCast (void)
+  void SetVolumeMapperToRayCast(void)
   {
-    this->VolumeActor->SetMapper ( this->VolumeRayCastMapper );
-    this->Callback->SetVolumeMapper ( this->VolumeRayCastMapper );
+    this->VolumeActor->SetMapper (this->VolumeRayCastMapper);
+    this->Callback->SetVolumeMapper (this->VolumeRayCastMapper);
   }
 
-  void SetVolumeRayCastFunctionToComposite (void)
-  {
-    this->VolumeRayCastMapper->SetVolumeRayCastFunction
-      (this->VolumeRayCastCompositeFunction );
-  }
-
-
-  void SetVolumeRayCastFunctionToMIP (void)
+  void SetVolumeRayCastFunctionToComposite(void)
   {
     this->VolumeRayCastMapper->SetVolumeRayCastFunction
-      ( this->VolumeRayCastMIPFunction );
+                  (this->VolumeRayCastCompositeFunction);
   }
 
-
-  void SetVolumeRayCastFunctionToIsosurface (void)
+  void SetVolumeRayCastFunctionToMIP(void)
   {
     this->VolumeRayCastMapper->SetVolumeRayCastFunction
-      ( this->VolumeRayCastIsosurfaceFunction );
+                  (this->VolumeRayCastMIPFunction);
   }
 
-
+  void SetVolumeRayCastFunctionToIsosurface(void)
+  {
+    this->VolumeRayCastMapper->SetVolumeRayCastFunction
+                  (this->VolumeRayCastIsosurfaceFunction);
+  }
 
   /** Set the box widget visibility */
-  void SetBoxWidgetVisibility (const bool& a)
+  void SetBoxWidgetVisibility(const bool& a)
   {
-    if (this->Interactor)
-      this->BoxWidget->SetEnabled (a);
+    if (this->Interactor) this->BoxWidget->SetEnabled (a);
   }
-  bool GetBoxWidgetVisibility (void)
+  bool GetBoxWidgetVisibility(void)
   {
-    return ( this->BoxWidget->GetEnabled() == 1 );
+    return (this->BoxWidget->GetEnabled() == 1);
   }
   vtkBooleanMacro (BoxWidgetVisibility, int);
 
@@ -234,27 +228,25 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage3D : public vtkViewImage
   vtkBooleanMacro (PlaneWidgetVisibility, int);*/
 
   /** Set the cube widget on */
-  void SetCubeVisibility (const bool& a)
+  void SetCubeVisibility(const bool& a)
   {
-    if (this->Interactor)
-      this->Marker->SetEnabled (a);
+    if (this->Interactor) this->Marker->SetEnabled (a);
   }
-  bool GetCubeVisibility (void)
+  bool GetCubeVisibility(void)
   {
-    return ( this->Marker->GetEnabled() == 1 );
+    return (this->Marker->GetEnabled() == 1);
   }
   vtkBooleanMacro (CubeVisibility, int);
 
-  void SetShade (const bool& a)
+  void SetShade(const bool& a)
   {
     this->VolumeProperty->SetShade (a);
   }
-  bool GetShade (void)
+  bool GetShade(void)
   {
-    return ( this->VolumeProperty->GetShade() == 1 );
+    return (this->VolumeProperty->GetShade() == 1);
   }
   vtkBooleanMacro (Shade, int);
-
 
   /** Get volume actor */
   vtkGetObjectMacro (VolumeActor, vtkVolume);
@@ -262,15 +254,15 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage3D : public vtkViewImage
   vtkGetObjectMacro (VolumeProperty, vtkVolumeProperty);
   vtkGetObjectMacro (BoxWidget, vtkOrientedBoxWidget);
 
-  virtual void SetWorldCoordinates (double pos[3]) { (void) pos;}
+  virtual void SetWorldCoordinates(double pos[3]) { (void) pos;}
 
-  void SetBoundsActorsVisibility( bool );
+  void SetBoundsActorsVisibility(bool);
 
   vtkInteractorStyleImage3D* GetInteractorStyle3D();
 
   vtkGetObjectMacro (Command, vtkViewImage3DCommand);
 
- protected:
+protected:
 
   vtkViewImage3D();
   ~vtkViewImage3D();
@@ -284,37 +276,37 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage3D : public vtkViewImage
   virtual void SetupTextureMapper();
 
   // texture mapper in 3D
-  vtkVolumeMapper*                VolumeMapper3D;
+  vtkVolumeMapper* VolumeMapper3D;
   // volume ray cast mapper
-  vtkVolumeRayCastMapper*         VolumeRayCastMapper;
+  vtkVolumeRayCastMapper* VolumeRayCastMapper;
   // ray cast function
-  vtkVolumeRayCastMIPFunction*        VolumeRayCastMIPFunction;
+  vtkVolumeRayCastMIPFunction* VolumeRayCastMIPFunction;
   // ray cast function
-  vtkVolumeRayCastCompositeFunction*  VolumeRayCastCompositeFunction;
+  vtkVolumeRayCastCompositeFunction* VolumeRayCastCompositeFunction;
   // ray cast function
   vtkVolumeRayCastIsosurfaceFunction* VolumeRayCastIsosurfaceFunction;
   // volume property
-  vtkVolumeProperty*              VolumeProperty;
+  vtkVolumeProperty* VolumeProperty;
   // volume actor
-  vtkVolume*                      VolumeActor;
+  vtkVolume* VolumeActor;
   // opacity transfer function
-  vtkPiecewiseFunction*           OpacityFunction;
+  vtkPiecewiseFunction* OpacityFunction;
   // blender
-  vtkImageBlend*                  Blender;
+  vtkImageBlend* Blender;
   // image 3D cropping box callback
-  vtkImage3DCroppingBoxCallback*  Callback;
+  vtkImage3DCroppingBoxCallback* Callback;
 
-  std::vector< vtkImageActor* >   Phantom;
-  std::vector< ImageActorCallback* > PhantomCallback;
-  std::vector< vtkActor* >  BoundsActor;
+  std::vector<vtkImageActor*>      Phantom;
+  std::vector<ImageActorCallback*> PhantomCallback;
+  std::vector<vtkActor*>           BoundsActor;
 
   // box widget
-  vtkOrientedBoxWidget*                   BoxWidget;
+  vtkOrientedBoxWidget* BoxWidget;
   // vtkPlane widget
   // vtkPlaneWidget*                 PlaneWidget;
   // annotated cube actor
-  vtkAnnotatedCubeActor*          Cube;
-  vtkOrientationMarkerWidget*     Marker;
+  vtkAnnotatedCubeActor*      Cube;
+  vtkOrientationMarkerWidget* Marker;
 
   /**
      Access to the command of the viewer.
@@ -324,6 +316,6 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage3D : public vtkViewImage
   vtkViewImage3DCommand*     Command;
   vtkInteractorStyleImage3D* InteractorStyle3D;
 
-};
+  };
 
 #endif /* _vtkViewImage3D_h_ */

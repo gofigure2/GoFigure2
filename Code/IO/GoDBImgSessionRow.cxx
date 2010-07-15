@@ -40,11 +40,10 @@
 #include "GoDBImgSessionRow.h"
 #include "SelectQueryDatabaseHelper.h"
 
-
 GoDBImgSessionRow::GoDBImgSessionRow()
-{
+  {
   this->InitializeMap();
-}
+  }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -67,7 +66,7 @@ void GoDBImgSessionRow::InitializeMap()
   this->m_MapRow["XTileOverlap"] = ConvertToString<float>(0);
   this->m_MapRow["YTileOverlap"] = ConvertToString<float>(0);
   this->m_MapRow["ZTileOverlap"] = ConvertToString<float>(0);
-}    
+}
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -77,9 +76,7 @@ int GoDBImgSessionRow::DoesThisImagingSessionExist(
   //std::string MicroscopeName = this->GetMapValue("MicroscopeName");
   //std::string CreationDate = this->GetMapValue("CreationDate");
 
-  return FindOneID(DatabaseConnector,"imagingsession", "ImagingSessionID",
-    "MicroscopeName",this->GetMapValue("MicroscopeName"),
-    "CreationDate",this->GetMapValue("CreationDate"));
+  return FindOneID(DatabaseConnector, "imagingsession", "ImagingSessionID",
+                   "MicroscopeName", this->GetMapValue("MicroscopeName"),
+                   "CreationDate", this->GetMapValue("CreationDate"));
 }
-
-

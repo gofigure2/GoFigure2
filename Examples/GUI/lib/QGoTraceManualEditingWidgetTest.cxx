@@ -45,8 +45,8 @@
 
 int main(int argc, char * argv[])
 {
-  
-  QApplication app( argc, argv );
+
+  QApplication app(argc, argv);
 
   QGoTraceManualEditingWidget* win = new QGoTraceManualEditingWidget();
 
@@ -57,9 +57,9 @@ int main(int argc, char * argv[])
   win->show();
 
 //  if( atoi( argv[1] ) == 1 )
-  //  {
-   // timer->start( 1000 );
-   // }
+//  {
+// timer->start( 1000 );
+// }
 
   app.processEvents();
 

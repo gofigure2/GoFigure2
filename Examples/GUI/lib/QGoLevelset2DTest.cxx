@@ -47,19 +47,19 @@
 
 #include "QGoSeedsSegmentation.h"
 
-int main( int argc, char** argv )
+int main(int argc, char** argv)
 {
-  if( argc != 3 )
+  if (argc != 3)
     {
-    std::cout <<"Usage : qgoimageview3d(.exe) " <<std::endl;
-    std::cout << "1-file.mhd" <<std::endl;
-    std::cout << "2-test (boolean)" <<std::endl;
+    std::cout << "Usage : qgoimageview3d(.exe) " << std::endl;
+    std::cout << "1-file.mhd" << std::endl;
+    std::cout << "2-test (boolean)" << std::endl;
     return EXIT_FAILURE;
     }
 
-  vtkSmartPointer< vtkMetaImageReader > reader =
-    vtkSmartPointer< vtkMetaImageReader >::New();
-  reader->SetFileName( argv[1] );
+  vtkSmartPointer<vtkMetaImageReader> reader =
+    vtkSmartPointer<vtkMetaImageReader>::New();
+  reader->SetFileName(argv[1]);
 
   vtkSmartPointer<vtkImageCast> castFilter = vtkSmartPointer<vtkImageCast>::New();
   castFilter->SetInput(reader->GetOutput());
@@ -68,26 +68,26 @@ int main( int argc, char** argv )
 
   // Initialize the segmentation
   QGoSeedsSegmentation seedsSegmentation;
-  seedsSegmentation.setInputVolume( castFilter->GetOutput() );
+  seedsSegmentation.setInputVolume(castFilter->GetOutput());
   seedsSegmentation.setRadius(
-      2 );
+    2);
   seedsSegmentation.setNumberOfIterations(
-      50 );
+    50);
   seedsSegmentation.setCurvatureWeight(
-      10 );
+    10);
 
   double seedPos[3];
   seedPos[0] = 5;
   seedPos[1] = 5;
   seedPos[2] = 5;
 
-  seedsSegmentation.setSeedsPosition( seedPos );
+  seedsSegmentation.setSeedsPosition(seedPos);
 
   //
   int orientation = 0;
 
   // if there is an output
-  if( seedsSegmentation.LevelSetSegmentation2D( orientation ) )
+  if (seedsSegmentation.LevelSetSegmentation2D(orientation))
     {
     return EXIT_SUCCESS;
     }

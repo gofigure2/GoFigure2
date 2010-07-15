@@ -43,15 +43,15 @@
 #include "QGoDBInitializationWizard.h"
 
 int main(int argc, char *argv[])
- {
-  if( argc != 1 )
+{
+  if (argc != 1)
     {
-    std::cerr <<"QGoDBInitializationWizardTest don't need argument" <<std::endl;
+    std::cerr << "QGoDBInitializationWizardTest don't need argument" << std::endl;
     return EXIT_FAILURE;
     }
 
   //Q_INIT_RESOURCE(qgocreatedb);
-  QApplication app( argc, argv );
+  QApplication app(argc, argv);
 
   QGoDBInitializationWizard* wizard = new QGoDBInitializationWizard;
   wizard->show();
@@ -95,4 +95,4 @@ int main(int argc, char *argv[])
 
   //return output;
   return EXIT_SUCCESS;
- }
+}

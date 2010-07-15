@@ -51,7 +51,6 @@
 #include <QString>
 #include <QCheckBox>
 
-
 #include <iostream>
 #include <list>
 
@@ -67,13 +66,13 @@
  * \class QGoWizardDB
  * \brief This class leads the user to chose its imagingsession and enables
  * to get the corresponding filenames from the database.
- * \sa QGoConnectServerPage 
- * \sa QGoCreateDataBasePage 
+ * \sa QGoConnectServerPage
+ * \sa QGoCreateDataBasePage
  * \sa QGoOpenCreateProjectPage
  * \sa QGoOpenCreateImgSessionPage
  * */
 class QGOGUILIB_EXPORT QGoWizardDB : public QWizard
-{
+  {
   Q_OBJECT
 
 public:
@@ -83,7 +82,7 @@ public:
     OpenOrCreateProjectPageID,
     OpenOrCreateImgSessionPageID,
     CreateImgSessionPageID
-  };
+    };
 
   explicit QGoWizardDB(QWidget *parent = 0);
   ~QGoWizardDB(){}
@@ -99,7 +98,7 @@ public:
   QPushButton* nextButton;
 
   /**
-   * \brief return a list for each channel of the filenames for the images 
+   * \brief return a list for each channel of the filenames for the images
    * in the database as a vector of vector
    */
   std::vector<std::vector<std::string> > GetFilenamesFromDB();
@@ -110,18 +109,17 @@ public:
   std::string GetFirstFileName();
   void SetIsAnOpenRecentFile(bool iIsAnOpenRecentFile);
 
-
 protected:
   void closeEvent(QCloseEvent* iEvent);
   void SetFirstFileName();
-  QGoConnectServerPage*   m_ConnectServerPage;
-  std::string             m_ImgSessionName;
-  std::string             m_FirstFileName;
-  int                     m_ImgSessionID;
-  bool                    m_IsAnOpenRecentFile;
+  QGoConnectServerPage* m_ConnectServerPage;
+  std::string           m_ImgSessionName;
+  std::string           m_FirstFileName;
+  int                   m_ImgSessionID;
+  bool                  m_IsAnOpenRecentFile;
 
 private:
-  Q_DISABLE_COPY( QGoWizardDB );
+  Q_DISABLE_COPY(QGoWizardDB);
 
-};
+  };
 #endif

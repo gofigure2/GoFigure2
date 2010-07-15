@@ -8,21 +8,21 @@
 
  This is an open-source copyright as follows:
  Copyright (c) 2004-2008 BioImageXD Development Team
- 
+
  All rights reserved.
- 
+
  Redistribution and use in source and binary forms, with or without
- modification, are permitted provided that the following conditions are met: 
- 
+ modification, are permitted provided that the following conditions are met:
+
  * Redistributions of source code must retain the above copyright notice,
-   this list of conditions and the following disclaimer. 
+   this list of conditions and the following disclaimer.
 
  * Redistributions in binary form must reproduce the above copyright notice,
    this list of conditions and the following disclaimer in the documentation
-   and/or other materials provided with the distribution.   
+   and/or other materials provided with the distribution.
 
  * Modified source versions must be plainly marked as such, and must not be
-   misrepresented as being the original software.   
+   misrepresented as being the original software.
 
  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS ``AS
  IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
@@ -34,44 +34,43 @@
  INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- POSSIBILITY OF SUCH DAMAGE.          
+ POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
 
 /*=========================================================================
  Modifications were made by the GoFigure Dev. Team.
- while at Megason Lab, Systems biology, Harvard Medical school, 2009 
- 
+ while at Megason Lab, Systems biology, Harvard Medical school, 2009
+
  Copyright (c) 2009, President and Fellows of Harvard College.
  All rights reserved.
- 
+
  Redistribution and use in source and binary forms, with or without
  modification, are permitted provided that the following conditions are met:
- 
- Redistributions of source code must retain the above copyright notice, 
+
+ Redistributions of source code must retain the above copyright notice,
  this list of conditions and the following disclaimer.
  Redistributions in binary form must reproduce the above copyright notice,
- this list of conditions and the following disclaimer in the documentation 
+ this list of conditions and the following disclaimer in the documentation
  and/or other materials provided with the distribution.
- Neither the name of the  President and Fellows of Harvard College 
+ Neither the name of the  President and Fellows of Harvard College
  nor the names of its contributors may be used to endorse or promote
- products derived from this software without specific prior written 
+ products derived from this software without specific prior written
  permission.
- 
- THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
- THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+ THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
  PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS
  BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
- OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT 
- OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; 
- OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
- WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
- OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF 
+ OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
+ OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+ OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- 
- =========================================================================*/
 
+ =========================================================================*/
 
 #define TIF_NEWSUBFILETYPE 254
 #define TIF_IMAGEWIDTH 256
@@ -145,7 +144,6 @@
 #define RECORDING_ENTRY_PRECESSION          0x010000035
 #define RECORDING_ENTRY_SAMPLE_0TIME        0x010000036
 
-
 #define LASER_ENTRY_NAME                         0x050000001
 #define LASER_ENTRY_ACQUIRE                      0x050000002
 #define LASER_ENTRY_POWER                        0x050000003
@@ -180,8 +178,7 @@
 // Dan White <dan@chalkie.org.uk>
 // Kalle Pahajoki <kalpaha@st.jyu.fi>
 // Pasi Kankaanp�� <ppkank@bytl.jyu.fi>
-// 
-
+//
 
 #ifndef __vtkLSMReader_h
 #define __vtkLSMReader_h
@@ -211,23 +208,22 @@
 
 #include "vtkLSMConfigure.h"
 
-
 class VTKLSM_EXPORT vtkLSMReader : public vtkImageAlgorithm
-{
+  {
 public:
- 
+
   static vtkLSMReader *New();
-  vtkTypeMacro(vtkLSMReader,vtkImageAlgorithm);
+  vtkTypeMacro(vtkLSMReader, vtkImageAlgorithm);
   virtual void PrintSelf(ostream& os, vtkIndent indent);
 
   // Description:
   // Get the file extensions for this format.
-  // Returns a string with a space separated list of extensions in 
+  // Returns a string with a space separated list of extensions in
   // the format .extension
   const char* GetFileExtensions()
-    {
+  {
     return ".lsm .LSM";
-    }
+  }
 
   int GetHeaderIdentifier();
   bool IsValidLSMFile();
@@ -236,14 +232,14 @@ public:
   int GetNumberOfChannels();
   int OpenFile();
 
-  int GetChannelColorComponent(int,int);
+  int GetChannelColorComponent(int, int);
   char* GetChannelName(int);
   void SetFileName(const char *);
   //void ExecuteInformation();
   int RequestInformation (
-    vtkInformation       * vtkNotUsed( request ),
-    vtkInformationVector** vtkNotUsed( inputVector ),
-    vtkInformationVector * outputVector);    
+    vtkInformation       * vtkNotUsed(request),
+    vtkInformationVector * *vtkNotUsed(inputVector),
+    vtkInformationVector * outputVector);
   void SetUpdateTimePoint(int);
   void SetUpdateChannel(int);
 
@@ -255,32 +251,32 @@ public:
 
   // Description:
   // Set/Get the byte swapping to explicitly swap the bytes of a file.
-  vtkSetMacro(SwapBytes,int);
-  virtual int GetSwapBytes() {return this->SwapBytes;}
-  vtkBooleanMacro(SwapBytes,int);
+  vtkSetMacro(SwapBytes, int);
+  virtual int GetSwapBytes() { return this->SwapBytes;}
+  vtkBooleanMacro(SwapBytes, int);
 
   int GetDataTypeForChannel(unsigned int channel);
-  
+
   vtkGetStringMacro(Objective);
   vtkGetStringMacro(Description);
 
   vtkGetStringMacro(FileName);
-  vtkGetVector3Macro(VoxelSizes,double);
-  vtkGetVectorMacro(Dimensions,int,5);
-  vtkGetVectorMacro(NumberOfIntensityValues,int,4);
-  vtkGetVectorMacro(DataSpacing,double,3);
-  vtkGetMacro(Identifier,unsigned short);
-  vtkGetMacro(NewSubFileType,unsigned int);
-  vtkGetMacro(Compression,unsigned int);
-  vtkGetMacro(SamplesPerPixel,unsigned int);
-  vtkGetMacro(ScanType,unsigned short);
-  vtkGetMacro(DataType,int);
+  vtkGetVector3Macro(VoxelSizes, double);
+  vtkGetVectorMacro(Dimensions, int, 5);
+  vtkGetVectorMacro(NumberOfIntensityValues, int, 4);
+  vtkGetVectorMacro(DataSpacing, double, 3);
+  vtkGetMacro(Identifier, unsigned short);
+  vtkGetMacro(NewSubFileType, unsigned int);
+  vtkGetMacro(Compression, unsigned int);
+  vtkGetMacro(SamplesPerPixel, unsigned int);
+  vtkGetMacro(ScanType, unsigned short);
+  vtkGetMacro(DataType, int);
   vtkGetMacro(TimeInterval, double);
-  vtkGetObjectMacro(TimeStampInformation,vtkDoubleArray);
-  vtkGetObjectMacro(ChannelColors,vtkIntArray);
+  vtkGetObjectMacro(TimeStampInformation, vtkDoubleArray);
+  vtkGetObjectMacro(ChannelColors, vtkIntArray);
   vtkGetObjectMacro(TrackWavelengths, vtkDoubleArray);
   unsigned int GetUpdateChannel();
-  vtkImageData* GetTimePointOutput(int,int);
+  vtkImageData* GetTimePointOutput(int, int);
 
 protected:
 
@@ -291,17 +287,17 @@ protected:
   int BYTES_BY_DATA_TYPE(int);
   void ClearFileName();
   void Clean();
-  unsigned long ReadImageDirectory(ifstream *,unsigned long);
+  unsigned long ReadImageDirectory(ifstream *, unsigned long);
   int AllocateChannelNames(int);
-  int SetChannelName(const char *,int);
+  int SetChannelName(const char *, int);
   int ClearChannelNames();
   int FindChannelNameStart(const char *, int);
   int ReadChannelName(const char *, int, char *);
   int ReadChannelDataTypes(ifstream*, unsigned long);
-  int ReadChannelColorsAndNames(ifstream *,unsigned long);
-  int ReadTimeStampInformation(ifstream *,unsigned long);
-  int ReadLSMSpecificInfo(ifstream *,unsigned long);
-  int AnalyzeTag(ifstream *,unsigned long);
+  int ReadChannelColorsAndNames(ifstream *, unsigned long);
+  int ReadTimeStampInformation(ifstream *, unsigned long);
+  int ReadLSMSpecificInfo(ifstream *, unsigned long);
+  int AnalyzeTag(ifstream *, unsigned long);
   int ReadScanInformation(ifstream*, unsigned long);
   int NeedToReadHeaderInformation();
   void NeedToReadHeaderInformationOn();
@@ -310,38 +306,38 @@ protected:
   unsigned long GetOffsetToImage(int, int);
   ifstream *GetFile();
 
-  int RequestUpdateExtent (
+  int RequestUpdateExtent(
     vtkInformation* request,
     vtkInformationVector** inputVector,
     vtkInformationVector* outputVector);
-  
+
   int RequestData(
-    vtkInformation *vtkNotUsed(request),
-    vtkInformationVector **vtkNotUsed(inputVector),
-    vtkInformationVector *outputVector);
+    vtkInformation * vtkNotUsed(request),
+    vtkInformationVector * *vtkNotUsed(inputVector),
+    vtkInformationVector * outputVector);
 
   //void ExecuteData(vtkDataObject *out);
-  void CalculateExtentAndSpacing(int extent[6],double spacing[3]);
-  void DecodeHorizontalDifferencing(unsigned char *,int);
-  void DecodeHorizontalDifferencingUnsignedShort(unsigned short*, int); 
-  void DecodeLZWCompression(unsigned  char *,int);
+  void CalculateExtentAndSpacing(int extent[6], double spacing[3]);
+  void DecodeHorizontalDifferencing(unsigned char *, int);
+  void DecodeHorizontalDifferencingUnsignedShort(unsigned short*, int);
+  void DecodeLZWCompression(unsigned char *, int);
   void ConstructSliceOffsets();
   unsigned long GetStripByteCount(unsigned int timepoint, unsigned int slice);
   unsigned long GetSliceOffset(unsigned int timepoint, unsigned int slice);
 
-  vtkStringArray*         LaserNames;
+  vtkStringArray* LaserNames;
 
-  vtkDoubleArray*         TrackWavelengths;
-  vtkDoubleArray*         DetectorOffsetFirstImage;
-  vtkDoubleArray*         DetectorOffsetLastImage;
+  vtkDoubleArray* TrackWavelengths;
+  vtkDoubleArray* DetectorOffsetFirstImage;
+  vtkDoubleArray* DetectorOffsetLastImage;
 
-  vtkUnsignedLongArray*    ImageOffsets;
-  vtkUnsignedLongArray*    ReadSizes;
-  vtkUnsignedIntArray*    StripOffset;
-  vtkUnsignedIntArray*    ChannelDataTypes;
-  vtkUnsignedIntArray*    StripByteCount;
+  vtkUnsignedLongArray* ImageOffsets;
+  vtkUnsignedLongArray* ReadSizes;
+  vtkUnsignedIntArray*  StripOffset;
+  vtkUnsignedIntArray*  ChannelDataTypes;
+  vtkUnsignedIntArray*  StripByteCount;
 
-  vtkUnsignedShortArray*  BitsPerSample;
+  vtkUnsignedShortArray* BitsPerSample;
 
   double VoxelSizes[3];
 
@@ -350,13 +346,13 @@ protected:
   unsigned long ChannelInfoOffset;
   unsigned long ChannelDataTypesOffset;
   unsigned long NumberOfLastAccessedImage;
-  
+
   unsigned int SamplesPerPixel;
   unsigned int LSMSpecificInfoOffset;
   unsigned int NewSubFileType;
   unsigned int Compression;
 
-  int Dimensions[5];// x,y,z,time,channels
+  int Dimensions[5]; // x,y,z,time,channels
   int NumberOfIntensityValues[4];
   int DataScalarType;
   int IntUpdateExtent[6];
@@ -368,22 +364,21 @@ protected:
   unsigned short PlanarConfiguration;
   unsigned short Predictor;
   unsigned short ScanType;
-  
-  ifstream *File;
-  char *FileName;
 
+  ifstream *File;
+  char *    FileName;
 
   double DataSpacing[3];
-  int DataExtent[6];
-  int NumberOfScalarComponents;
-  int DataType;
+  int    DataExtent[6];
+  int    NumberOfScalarComponents;
+  int    DataType;
 
-  vtkIntArray *ChannelColors;
-  char **ChannelNames;
+  vtkIntArray *   ChannelColors;
+  char **         ChannelNames;
   vtkDoubleArray *TimeStampInformation;
-  char* Objective;
-  char* Description;
-  double TimeInterval;
+  char*           Objective;
+  char*           Description;
+  double          TimeInterval;
 
   unsigned char CharPointerToUnsignedChar(char *);
   int CharPointerToInt(char *);
@@ -392,17 +387,16 @@ protected:
   unsigned short CharPointerToUnsignedShort(char *);
   double CharPointerToDouble(char *);
 
-  int ReadInt(ifstream *, unsigned long& );
-  unsigned int ReadUnsignedInt(ifstream *, unsigned long& );
-  short ReadShort(ifstream *, unsigned long& );
-  unsigned short ReadUnsignedShort(ifstream *, unsigned long& );
-  double ReadDouble(ifstream *, unsigned long& );
-  std::streamsize ReadFile(ifstream *, unsigned long& , unsigned int, char *, bool swap=false);
-  std::streamsize ReadData(ifstream *, unsigned long& , unsigned int, char *);
- 
+  int ReadInt(ifstream *, unsigned long&);
+  unsigned int ReadUnsignedInt(ifstream *, unsigned long&);
+  short ReadShort(ifstream *, unsigned long&);
+  unsigned short ReadUnsignedShort(ifstream *, unsigned long&);
+  double ReadDouble(ifstream *, unsigned long&);
+  std::streamsize ReadFile(ifstream *, unsigned long&, unsigned int, char *, bool swap = false);
+  std::streamsize ReadData(ifstream *, unsigned long&, unsigned int, char *);
 
 private:
-  vtkLSMReader(const vtkLSMReader&);  // Not implemented.
-  void operator=(const vtkLSMReader&);  // Not implemented.
-};
+  vtkLSMReader(const vtkLSMReader &);  // Not implemented.
+  void operator =(const vtkLSMReader&);  // Not implemented.
+  };
 #endif

@@ -76,32 +76,31 @@ class vtkProp;
 //MOTION FLAG
 #define VTKIS_PICK3D         1050
 
-
 class VTK_RENDERINGADDON2_EXPORT vtkInteractorStyleImage3D :
   public vtkInteractorStyleTrackballCamera
-{
- public:
+  {
+public:
   static vtkInteractorStyleImage3D *New();
   vtkTypeRevisionMacro (vtkInteractorStyleImage3D, vtkInteractorStyleTrackballCamera);
 
   //BTX
-    enum InteractionTypeIds
+  enum InteractionTypeIds
     {
-      InteractionTypeNull = 0,
-      InteractionTypeMeshPicking,
-      InteractionTypeDefault
+    InteractionTypeNull = 0,
+    InteractionTypeMeshPicking,
+    InteractionTypeDefault
     };
 
-  void SetLeftButtonInteraction( InteractionTypeIds );
+  void SetLeftButtonInteraction(InteractionTypeIds);
   vtkGetMacro (LeftButtonInteraction, unsigned int);
 
-  void SetRightButtonInteraction( InteractionTypeIds );
+  void SetRightButtonInteraction(InteractionTypeIds);
   vtkGetMacro (RightButtonInteraction, unsigned int);
 
-  void SetMiddleButtonInteraction( InteractionTypeIds );
+  void SetMiddleButtonInteraction(InteractionTypeIds);
   vtkGetMacro (MiddleButtonInteraction, unsigned int);
 
-  void SetWheelButtonInteraction( InteractionTypeIds );
+  void SetWheelButtonInteraction(InteractionTypeIds);
   vtkGetMacro (WheelButtonInteraction, unsigned int);
 
   virtual void OnMouseMove();
@@ -130,14 +129,14 @@ class VTK_RENDERINGADDON2_EXPORT vtkInteractorStyleImage3D :
   void EnableZoomMode();
   void EnablePanMode();
 
- protected:
+protected:
   vtkInteractorStyleImage3D();
   ~vtkInteractorStyleImage3D();
 
- private:
+private:
 
-  vtkInteractorStyleImage3D(const vtkInteractorStyleImage3D&);  // Not implemented.
-  void operator=(const vtkInteractorStyleImage3D&);  // Not implemented.
+  vtkInteractorStyleImage3D(const vtkInteractorStyleImage3D &);  // Not implemented.
+  void operator =(const vtkInteractorStyleImage3D&);  // Not implemented.
 
   unsigned int LeftButtonInteraction;
   unsigned int RightButtonInteraction;
@@ -149,6 +148,6 @@ class VTK_RENDERINGADDON2_EXPORT vtkInteractorStyleImage3D :
   bool m_EnablePickMode;
   bool m_EnableZoomMode;
   bool m_EnablePanMode;
-};
+  };
 
 #endif

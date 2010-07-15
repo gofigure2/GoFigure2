@@ -56,84 +56,82 @@
 #include "itkGradientAnisotropicDiffusionImageFilter.h"
 
 namespace itk
+{
+
+template <class TInputImage, class TOutputImage = TInputImage>
+class ITK_EXPORT CellPreprocess :
+  public ImageToImageFilter<TInputImage, TOutputImage>
   {
+public:
 
-  template < class TInputImage, class TOutputImage = TInputImage >
-  class ITK_EXPORT CellPreprocess : 
-    public ImageToImageFilter< TInputImage, TOutputImage >
-    {
-    public:
+  typedef CellPreprocess                                Self;
+  typedef ImageToImageFilter<TInputImage, TOutputImage> Superclass;
+  typedef SmartPointer<Self>                            Pointer;
+  typedef SmartPointer<const Self>                      ConstPointer;
 
-      typedef CellPreprocess        Self;
-      typedef ImageToImageFilter< TInputImage, TOutputImage > Superclass;
-      typedef SmartPointer< Self >          Pointer;
-      typedef SmartPointer< const Self >        ConstPointer;
+  itkStaticConstMacro (ImageDimension, unsigned int,
+                       TInputImage::ImageDimension);
 
-      itkStaticConstMacro ( ImageDimension, unsigned int,
-                            TInputImage::ImageDimension );
+  /** Method for creation through object factory */
+  itkNewMacro (Self);
 
-      /** Method for creation through object factory */
-      itkNewMacro ( Self );
+  /** Run-time type information */
+  itkTypeMacro (CellPreprocess, ImageToImageFilter);
 
-      /** Run-time type information */
-      itkTypeMacro ( CellPreprocess, ImageToImageFilter );
+  /** Display */
+  void PrintSelf(std::ostream& os, Indent indent) const;
 
-      /** Display */
-      void PrintSelf ( std::ostream& os, Indent indent ) const;
+  typedef Image<float, ImageDimension>          ImageType;
+  typedef typename ImageType::Pointer           ImagePointer;
+  typedef typename ImageType::ConstPointer      ImageConstPointer;
+  typedef typename ImageType::PixelType         ImagePixelType;
+  typedef typename ImageType::RegionType        ImageRegionType;
+  typedef typename ImageType::SizeType          ImageSizeType;
+  typedef typename ImageSizeType::SizeValueType ImageSizeValueType;
 
-      typedef Image< float,ImageDimension >    ImageType;
-      typedef typename ImageType::Pointer      ImagePointer;
-      typedef typename ImageType::ConstPointer ImageConstPointer;
-      typedef typename ImageType::PixelType    ImagePixelType;
-      typedef typename ImageType::RegionType   ImageRegionType;
-      typedef typename ImageType::SizeType     ImageSizeType;
-      typedef typename ImageSizeType::SizeValueType ImageSizeValueType;
+  typedef typename ImageType::SpacingType ImageSpacingType;
+  typedef typename ImageType::IndexType   ImageIndexType;
+  typedef typename ImageType::PointType   ImagePointType;
 
-      typedef typename ImageType::SpacingType  ImageSpacingType;
-      typedef typename ImageType::IndexType    ImageIndexType;
-      typedef typename ImageType::PointType    ImagePointType;
+  typedef CastImageFilter<TInputImage, ImageType> InputCastType;
+  typedef typename InputCastType::Pointer         InputCastPointer;
 
-      typedef CastImageFilter< TInputImage, ImageType > InputCastType;
-      typedef typename InputCastType::Pointer           InputCastPointer;
+  typedef MedianImageFilter<ImageType, ImageType> MedianFilterType;
+  typedef typename MedianFilterType::Pointer      MedianFilterPointer;
 
-      typedef MedianImageFilter< ImageType, ImageType> MedianFilterType;
-      typedef typename MedianFilterType::Pointer MedianFilterPointer;
+  typedef GradientAnisotropicDiffusionImageFilter<ImageType,
+                                                  ImageType> SmoothingFilterType;
+  typedef typename SmoothingFilterType::Pointer
+  SmoothingFilterPointer;
 
-      typedef GradientAnisotropicDiffusionImageFilter< ImageType, 
-        ImageType > SmoothingFilterType;
-      typedef typename SmoothingFilterType::Pointer     
-                    SmoothingFilterPointer;
+  typedef GrayscaleFillholeImageFilter<ImageType, ImageType> GrayscaleFillholeFilterType;
+  typedef typename GrayscaleFillholeFilterType::Pointer      GrayscaleFillholePointer;
 
-      typedef GrayscaleFillholeImageFilter< ImageType, ImageType > GrayscaleFillholeFilterType;
-      typedef typename GrayscaleFillholeFilterType::Pointer GrayscaleFillholePointer;
+  typedef CastImageFilter<ImageType, TOutputImage> OutputCastType;
+  typedef typename OutputCastType::Pointer         OutputCastPointer;
 
-      typedef CastImageFilter< ImageType, TOutputImage > OutputCastType;
-      typedef typename OutputCastType::Pointer OutputCastPointer;
+  itkGetConstMacro (LargestCellRadius, double);
+  itkSetMacro (LargestCellRadius, double);
+  itkGetConstMacro (MembraneData, bool);
+  itkSetMacro (MembraneData, bool);
 
-      itkGetConstMacro ( LargestCellRadius, double );
-      itkSetMacro ( LargestCellRadius, double );
-      itkGetConstMacro ( MembraneData, bool );
-      itkSetMacro ( MembraneData, bool );
+protected:
 
+  CellPreprocess();
+  ~CellPreprocess() {}
 
-    protected:
+  void GenerateData();
 
-      CellPreprocess();
-      ~CellPreprocess() {}
+  double m_LargestCellRadius;
+  bool   m_MembraneData;
 
-      void GenerateData();
+private:
 
-      double m_LargestCellRadius;
-      bool   m_MembraneData;
+  CellPreprocess (Self &);        // intentionally not implemented
+  void operator =(const Self&);         // intentionally not implemented
+  };
 
-    private:
-
-      CellPreprocess ( Self& );   // intentionally not implemented
-      void operator= ( const Self& );   // intentionally not implemented
-    };
-
-  } /* namespace itk */
+}   /* namespace itk */
 
 #include "itkCellPreprocess.txx"
 #endif
-

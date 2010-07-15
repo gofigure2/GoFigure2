@@ -48,7 +48,6 @@
 #include "QGoSynchronizedView3D.h"
 #include "QGoSynchronizedViewManager.h"
 
-
 #include "itkImageFileReader.h"
 
 #include "vtkImageReader2Factory.h"
@@ -57,22 +56,22 @@
 
 QGoSynchronizedViewMainWindow::
 QGoSynchronizedViewMainWindow()
-{
-  m_SynchronizedViewManager = new QGoSynchronizedViewManager( this );
+  {
+  m_SynchronizedViewManager = new QGoSynchronizedViewManager(this);
 
   mdiArea = new QMdiArea;
 
-  setCentralWidget( mdiArea );
-  connect( mdiArea,
-           SIGNAL( subWindowActivated( QMdiSubWindow* ) ),
-           this,
-           SLOT( updateMenus() ) );
+  setCentralWidget(mdiArea);
+  connect(mdiArea,
+          SIGNAL(subWindowActivated(QMdiSubWindow*)),
+          this,
+          SLOT(updateMenus()));
 
-  windowMapper = new QSignalMapper( this );
-  connect( windowMapper,
-           SIGNAL(mapped( QWidget* ) ),
-           this,
-           SLOT( setActiveSubWindow( QWidget* ) ) );
+  windowMapper = new QSignalMapper(this);
+  connect(windowMapper,
+          SIGNAL(mapped(QWidget*)),
+          this,
+          SLOT(setActiveSubWindow(QWidget*)));
 
   createActions();
   createMenus();
@@ -80,18 +79,17 @@ QGoSynchronizedViewMainWindow()
   createStatusBar();
   updateMenus();
 
-  setWindowTitle( tr( "QGoSynchronizedViewMainWindow" ) );
-  setUnifiedTitleAndToolBarOnMac( true);
+  setWindowTitle(tr("QGoSynchronizedViewMainWindow"));
+  setUnifiedTitleAndToolBarOnMac(true);
 
   //mdiArea->setViewMode(QMdiArea::TabbedView);
-}
+  }
 
 QGoSynchronizedViewMainWindow::
 ~QGoSynchronizedViewMainWindow()
-{
+  {
 
-}
-
+  }
 
 QGoSynchronizedViewManager*
 QGoSynchronizedViewMainWindow::
@@ -114,20 +112,19 @@ newSynchronizedView(QString iSynchronizedViewName, vtkImageData* iImage)
 {
   QGoSynchronizedView* synchronizedView;
 
-  synchronizedView = dynamic_cast< QGoSynchronizedView* > (
-    m_SynchronizedViewManager->newSynchronizedView( iSynchronizedViewName,
-                                                      iImage ) );
+  synchronizedView = dynamic_cast<QGoSynchronizedView*> (
+    m_SynchronizedViewManager->newSynchronizedView(iSynchronizedViewName,
+                                                   iImage));
 
-  mdiArea->addSubWindow( synchronizedView,Qt::SubWindow );
+  mdiArea->addSubWindow(synchronizedView, Qt::SubWindow);
   synchronizedView->parentWidget()
-                  ->resize( 300, 300 );
+  ->resize(300, 300);
 
   synchronizedView->show();
   tileAct->trigger();
 
   return synchronizedView;
 }
-
 
 ///*
 //QGoSynchronizedView3D* QGoSynchronizedViewMainWindow::newSynchronizedView3D(QString iSynchronizedViewName, QString iImagePath)
@@ -142,33 +139,30 @@ newSynchronizedView(QString iSynchronizedViewName, vtkImageData* iImage)
 
 void
 QGoSynchronizedViewMainWindow::
-deleteSynchronizedView2D( const int& iId )
+deleteSynchronizedView2D(const int& iId)
 {
   m_SynchronizedViewManager->deleteSynchronizedView2D(iId);
 }
 
 void
 QGoSynchronizedViewMainWindow::
-deleteSynchronizedView3D( const int& iId )
+deleteSynchronizedView3D(const int& iId)
 {
   m_SynchronizedViewManager->deleteSynchronizedView3D(iId);
 }
 
-
-
 void
 QGoSynchronizedViewMainWindow::
-closeEvent( QCloseEvent *iEvent )
+closeEvent(QCloseEvent *iEvent)
 {
-    if ( m_SynchronizedViewManager != NULL )
-      {
-      delete m_SynchronizedViewManager;
-      }
-    mdiArea->closeAllSubWindows();
-    QMainWindow::closeEvent(iEvent);
-    iEvent->accept();
+  if (m_SynchronizedViewManager != NULL)
+    {
+    delete m_SynchronizedViewManager;
+    }
+  mdiArea->closeAllSubWindows();
+  QMainWindow::closeEvent(iEvent);
+  iEvent->accept();
 }
-
 
 void
 QGoSynchronizedViewMainWindow::
@@ -176,21 +170,21 @@ openfile()
 {
   QString filename = QFileDialog::getOpenFileName(
     this,
-    tr( "Select Image" ),"",
-    tr( "Images (*.png *.bmp *.jpg *.jpeg *.tiff *.mha *.mhd *.img *.lsm)" ) );
-  if( !filename.isEmpty( ) )
+    tr("Select Image"), "",
+    tr("Images (*.png *.bmp *.jpg *.jpeg *.tiff *.mha *.mhd *.img *.lsm)"));
+  if (!filename.isEmpty())
     {
-    this->OpenSynchronizedViewForFile( filename );
+    this->OpenSynchronizedViewForFile(filename);
     }
 }
 
 void QGoSynchronizedViewMainWindow::
-OpenSynchronizedViewForFile( QString& iFile )
+OpenSynchronizedViewForFile(QString& iFile)
 {
-  if( QFile::exists( iFile ) )
+  if (QFile::exists(iFile))
     {
     // parse extension
-    QString ext = QFileInfo( iFile ).suffix();
+    QString ext = QFileInfo(iFile).suffix();
     //if( ext.compare( "lsm", Qt::CaseInsensitive ) == 0 )
     //  {
     //  this->OpenLSMImage( m_CurrentFile, 0 );
@@ -198,15 +192,15 @@ OpenSynchronizedViewForFile( QString& iFile )
     //else
       {
       vtkImageReader2Factory* r_factory = vtkImageReader2Factory::New();
-      vtkImageReader2* reader =
-        r_factory->CreateImageReader2( iFile.toAscii().data() );
+      vtkImageReader2*        reader =
+        r_factory->CreateImageReader2(iFile.toAscii().data());
 
-      reader->SetFileName( iFile.toAscii().data() );
+      reader->SetFileName(iFile.toAscii().data());
       reader->Update();
 
       vtkImageData* image = reader->GetOutput();
 
-      newSynchronizedView( iFile, image );
+      newSynchronizedView(iFile, image);
 
       reader->Delete();
       r_factory->Delete();
@@ -215,85 +209,82 @@ OpenSynchronizedViewForFile( QString& iFile )
 
 }
 
-
-
 void
 QGoSynchronizedViewMainWindow::
 snapshotAs()
 {
   QGoSynchronizedView* ScreenshotSynchronizedView = activeSynchronizedView();
-  QString filename = QFileDialog::getSaveFileName(
+  QString              filename = QFileDialog::getSaveFileName(
     this,
-    tr( "Select Image" ),"",
-    tr( "Images (*.png *.bmp *.jpg *.jpeg *.tiff)" )
+    tr("Select Image"), "",
+    tr("Images (*.png *.bmp *.jpg *.jpeg *.tiff)")
     );
 
-  if( !filename.isEmpty( ) )
+  if (!filename.isEmpty())
     {
-    this->SaveSnapshotInFile( filename, ScreenshotSynchronizedView);
+    this->SaveSnapshotInFile(filename, ScreenshotSynchronizedView);
     }
 }
 
-
 void
 QGoSynchronizedViewMainWindow::
-SaveSnapshotInFile( QString& iFile, QGoSynchronizedView* SynchronizedView )
+SaveSnapshotInFile(QString& iFile, QGoSynchronizedView* SynchronizedView)
 {
   QGoSynchronizedView3D* temp3DSynchronizedView = NULL;
   QGoSynchronizedView2D* temp2DSynchronizedView = NULL;
-  GoFigure::FileType iType;
+  GoFigure::FileType     iType;
 
   QString extension = iFile.section('.', -1);
   QString nameOfScreenshot = iFile.section('/', -1);
 
-  if (extension.isEmpty() || nameOfScreenshot.isEmpty() )
+  if (extension.isEmpty() || nameOfScreenshot.isEmpty())
     {
-    std::cerr << "QGoSynchronizedViewMainWindow::SaveSnapshotInFile incorrect name of file"<< std::endl;
+    std::cerr << "QGoSynchronizedViewMainWindow::SaveSnapshotInFile incorrect name of file" << std::endl;
     return;
     }
-  std::cout << iFile.toStdString() <<std::endl;
-  std::cout << extension.toStdString() <<std::endl;
-  std::cout << nameOfScreenshot.toStdString() <<std::endl;
+  std::cout << iFile.toStdString() << std::endl;
+  std::cout << extension.toStdString() << std::endl;
+  std::cout << nameOfScreenshot.toStdString() << std::endl;
   // file extension  parsing
-  if ( (extension.contains( "jpg",Qt::CaseInsensitive) )
-       || (extension.contains( "jpeg",Qt::CaseInsensitive) ) )
+  if ((extension.contains("jpg", Qt::CaseInsensitive))
+      || (extension.contains("jpeg", Qt::CaseInsensitive)))
     {
     iType = GoFigure::JPEG;
     }
   else
     {
-    if (extension.contains( "bmp",Qt::CaseInsensitive) )
+    if (extension.contains("bmp", Qt::CaseInsensitive))
       {
       iType = GoFigure::BMP;
       }
     else
       {
-      if (extension.contains( "png",Qt::CaseInsensitive) )
+      if (extension.contains("png", Qt::CaseInsensitive))
         {
         iType = GoFigure::PNG;
         }
       else
         {
-        if (extension.contains( "eps",Qt::CaseInsensitive) )
+        if (extension.contains("eps", Qt::CaseInsensitive))
           {
           iType = GoFigure::EPS;
           }
         else
           {
-          if (extension.contains( "tiff",Qt::CaseInsensitive) )
+          if (extension.contains("tiff", Qt::CaseInsensitive))
             {
             iType = GoFigure::TIFF;
             }
           else
             {
-            std::cerr << "QGoSynchronizedViewMainWindow::SaveSnapshotInFile couldn't find appropriate extension"<< std::endl;
+            std::cerr << "QGoSynchronizedViewMainWindow::SaveSnapshotInFile couldn't find appropriate extension" <<
+            std::endl;
             return;
             }
           }
         }
       }
     }
-
 
   if (SynchronizedView != 0)
     // if we take a snapshot of a 3D synchronizedView
@@ -303,30 +294,30 @@ SaveSnapshotInFile( QString& iFile, QGoSynchronizedView* SynchronizedView )
 
       temp3DSynchronizedView->GetFullScreenView();
 
-      switch ( temp3DSynchronizedView->GetFullScreenView() )
+      switch (temp3DSynchronizedView->GetFullScreenView())
         {
-        case 0 :
-          temp3DSynchronizedView->SnapshotViewXYZ(iType,iFile);
+        case 0:
+          temp3DSynchronizedView->SnapshotViewXYZ(iType, iFile);
           break;
 
-        case 1 :
-          temp3DSynchronizedView->SnapshotViewXY(iType,iFile);
+        case 1:
+          temp3DSynchronizedView->SnapshotViewXY(iType, iFile);
           break;
 
-        case 2 :
-          temp3DSynchronizedView->SnapshotView2(iType,iFile);
+        case 2:
+          temp3DSynchronizedView->SnapshotView2(iType, iFile);
           break;
 
-        case 3 :
-          temp3DSynchronizedView->SnapshotView3(iType,iFile);
+        case 3:
+          temp3DSynchronizedView->SnapshotView3(iType, iFile);
           break;
 
-        case 4 :
-          temp3DSynchronizedView->SnapshotViewXYZ(iType,iFile);
+        case 4:
+          temp3DSynchronizedView->SnapshotViewXYZ(iType, iFile);
           break;
 
         default:
-          std::cerr << "QGoSynchronizedViewMainWindow::SaveSnapshotInFile can't access fullscreen view"<< std::endl;
+          std::cerr << "QGoSynchronizedViewMainWindow::SaveSnapshotInFile can't access fullscreen view" << std::endl;
           return;
           break; // facultative
         }
@@ -334,26 +325,25 @@ SaveSnapshotInFile( QString& iFile, QGoSynchronizedView* SynchronizedView )
     else // if we take a snapshot of a 2D synchronizedView
       {
       temp2DSynchronizedView = static_cast<QGoSynchronizedView2D*>(SynchronizedView);
-      temp2DSynchronizedView->SnapshotViewXY(iType,iFile);
+      temp2DSynchronizedView->SnapshotViewXY(iType, iFile);
       }
   else
     {
-    std::cerr << "QGoSynchronizedViewMainWindow::SaveSnapshotInFile synchronizedView pointer error"<< std::endl;
+    std::cerr << "QGoSynchronizedViewMainWindow::SaveSnapshotInFile synchronizedView pointer error" << std::endl;
     return;
     }
 }
-
 
 void
 QGoSynchronizedViewMainWindow::
 imageinfo()
 {
   std::stringstream timageinfo;
-  if (activeSynchronizedView() )
+  if (activeSynchronizedView())
     {
-    activeSynchronizedView()->PrintOs( timageinfo);
-    QMessageBox::about( this, tr( "Image Informations" ),
-      QString::fromStdString( timageinfo.str() ));
+    activeSynchronizedView()->PrintOs(timageinfo);
+    QMessageBox::about(this, tr("Image Informations"),
+                       QString::fromStdString(timageinfo.str()));
     }
 
 }
@@ -362,7 +352,7 @@ void
 QGoSynchronizedViewMainWindow::
 synchronize()
 {
-  if (m_SynchronizedViewManager->isSynchronizing() )
+  if (m_SynchronizedViewManager->isSynchronizing())
     {
     m_SynchronizedViewManager->unSynchronizeOpenSynchronizedViews();
     }
@@ -378,9 +368,9 @@ FullscreenXY()
 {
   if (activeSynchronizedView() != 0)
     {
-    if (activeSynchronizedView()->GetSynchronizedViewType()==3)
+    if (activeSynchronizedView()->GetSynchronizedViewType() == 3)
       {
-      static_cast<QGoSynchronizedView3D*>(activeSynchronizedView() )->SetFullXYScreenView();
+      static_cast<QGoSynchronizedView3D*>(activeSynchronizedView())->SetFullXYScreenView();
       }
     }
 }
@@ -391,9 +381,9 @@ FullscreenXZ()
 {
   if (activeSynchronizedView() != 0)
     {
-    if (activeSynchronizedView()->GetSynchronizedViewType()==3)
+    if (activeSynchronizedView()->GetSynchronizedViewType() == 3)
       {
-      static_cast<QGoSynchronizedView3D*>(activeSynchronizedView() )->SetFullXZScreenView();
+      static_cast<QGoSynchronizedView3D*>(activeSynchronizedView())->SetFullXZScreenView();
       }
     }
 }
@@ -404,9 +394,9 @@ FullscreenYZ()
 {
   if (activeSynchronizedView() != 0)
     {
-    if (activeSynchronizedView()->GetSynchronizedViewType()==3)
+    if (activeSynchronizedView()->GetSynchronizedViewType() == 3)
       {
-      static_cast<QGoSynchronizedView3D*>(activeSynchronizedView() )->SetFullYZScreenView();
+      static_cast<QGoSynchronizedView3D*>(activeSynchronizedView())->SetFullYZScreenView();
       }
     }
 }
@@ -417,9 +407,9 @@ FullscreenXYZ()
 {
   if (activeSynchronizedView() != 0)
     {
-    if (activeSynchronizedView()->GetSynchronizedViewType()==3)
+    if (activeSynchronizedView()->GetSynchronizedViewType() == 3)
       {
-      static_cast<QGoSynchronizedView3D*>(activeSynchronizedView() )->SetFullXYZScreenView();
+      static_cast<QGoSynchronizedView3D*>(activeSynchronizedView())->SetFullXYZScreenView();
       }
     }
 }
@@ -428,42 +418,39 @@ void
 QGoSynchronizedViewMainWindow::
 Quadscreen()
 {
-if (activeSynchronizedView() != 0)
-  {
-  if (activeSynchronizedView()->GetSynchronizedViewType()==3)
+  if (activeSynchronizedView() != 0)
     {
-    static_cast<QGoSynchronizedView3D*>(activeSynchronizedView() )->SetQuadView();
+    if (activeSynchronizedView()->GetSynchronizedViewType() == 3)
+      {
+      static_cast<QGoSynchronizedView3D*>(activeSynchronizedView())->SetQuadView();
+      }
     }
-  }
 }
-
 
 void
 QGoSynchronizedViewMainWindow::
 about()
 {
-  QMessageBox::about( this,
-                      tr( "About QGoCompare" ),
-                      tr( "<b>QGoCompare</b> lets you open multiple"
-                          " VTK/ITK images from a"
-                          " VTK or ITK pipeline and compare them."
-                          " This program uses"
-                          " Qt, VTK, ITK and GoFigure2 libraries" ) );
+  QMessageBox::about(this,
+                     tr("About QGoCompare"),
+                     tr("<b>QGoCompare</b> lets you open multiple"
+                        " VTK/ITK images from a"
+                        " VTK or ITK pipeline and compare them."
+                        " This program uses"
+                        " Qt, VTK, ITK and GoFigure2 libraries"));
 }
-
 
 void
 QGoSynchronizedViewMainWindow::
 aboutGF2()
 {
-   QMessageBox::about( this,
-                       tr( "About GoFigure2" ),
-                       tr( "<b>GoFigure2</b> is a cross-platform,"
-                           " free open source software (FOSS), for"
-                           " visualizing, processing and analysing of bioimages"
-                           " http://gofigure2.sourceforge.net/" ) );
+  QMessageBox::about(this,
+                     tr("About GoFigure2"),
+                     tr("<b>GoFigure2</b> is a cross-platform,"
+                        " free open source software (FOSS), for"
+                        " visualizing, processing and analysing of bioimages"
+                        " http://gofigure2.sourceforge.net/"));
 }
-
 
 void
 QGoSynchronizedViewMainWindow::
@@ -477,8 +464,8 @@ updateMenus()
   cascadeAct->setEnabled(hasSynchronizedView);
 
   // if it is a 3D view, we activate the change view actions
-  bool has3DSynchronizedView = ( (hasSynchronizedView)
-                          && (activeSynchronizedView()->GetSynchronizedViewType()==3) );
+  bool has3DSynchronizedView = ((hasSynchronizedView)
+                                && (activeSynchronizedView()->GetSynchronizedViewType() == 3));
   XYviewAct->setEnabled(has3DSynchronizedView);
   XZviewAct->setEnabled(has3DSynchronizedView);
   YZviewAct->setEnabled(has3DSynchronizedView);
@@ -486,7 +473,6 @@ updateMenus()
   QuadviewAct->setEnabled(has3DSynchronizedView);
   View3DToolBar->setVisible(has3DSynchronizedView);
 }
-
 
 void
 QGoSynchronizedViewMainWindow::
@@ -496,164 +482,161 @@ updateWindowMenu()
   windowMenu->addAction(closeAct);
   windowMenu->addAction(closeAllAct);
   windowMenu->addSeparator();
-  windowMenu->addAction( tileAct);
+  windowMenu->addAction(tileAct);
   windowMenu->addAction(cascadeAct);
 }
-
 
 void
 QGoSynchronizedViewMainWindow::
 createActions()
 {
   openfileAct = new QAction( /*QIcon( ":/images/open.png" ),*/
-                             tr( "&Open an image file" ), this);
+    tr("&Open an image file"), this);
   openfileAct->setShortcuts(QKeySequence::Open);
-  openfileAct->setStatusTip( tr( "Open an image from file" ) );
-  connect( openfileAct,
-           SIGNAL( triggered() ),
-           this,
-           SLOT( openfile() ) );
+  openfileAct->setStatusTip(tr("Open an image from file"));
+  connect(openfileAct,
+          SIGNAL(triggered()),
+          this,
+          SLOT(openfile()));
 
   openmemAct = new QAction( /*QIcon( ":/images/open.png" ), */
-                            tr( "Open from &memory" ), this);
+    tr("Open from &memory"), this);
   //    openmemAct->setShortcuts(QKeySequence::Open);
-  openmemAct->setStatusTip( tr( "Open an image from memory" ) );
-  connect( openmemAct,
-           SIGNAL( triggered() ),
-           this,
-           SLOT( openfile() ) );
+  openmemAct->setStatusTip(tr("Open an image from memory"));
+  connect(openmemAct,
+          SIGNAL(triggered()),
+          this,
+          SLOT(openfile()));
 
-
-  syncAct = new QAction( tr( "&Synchronize images" ), this);
+  syncAct = new QAction(tr("&Synchronize images"), this);
   //    syncAct->setShortcuts(QKeySequence::SaveAs);
   syncAct->setStatusTip(
-             tr( "Synchronize open images for point-to-point comparison" ) );
-  connect( syncAct,
-           SIGNAL( triggered() ),
-           this,
-           SLOT( synchronize() ) );
+    tr("Synchronize open images for point-to-point comparison"));
+  connect(syncAct,
+          SIGNAL(triggered()),
+          this,
+          SLOT(synchronize()));
 
-  snapshotAsAct = new QAction( tr( "Sna&pshot..." ), this );
-  snapshotAsAct->setShortcuts( QKeySequence::SaveAs );
-  snapshotAsAct->setStatusTip( tr( "Save a Snapshot as.." ) );
-  connect( snapshotAsAct,
-           SIGNAL( triggered() ),
-           this,
-           SLOT( snapshotAs() ) );
+  snapshotAsAct = new QAction(tr("Sna&pshot..."), this);
+  snapshotAsAct->setShortcuts(QKeySequence::SaveAs);
+  snapshotAsAct->setStatusTip(tr("Save a Snapshot as.."));
+  connect(snapshotAsAct,
+          SIGNAL(triggered()),
+          this,
+          SLOT(snapshotAs()));
 
   //! [0]
-  exitAct = new QAction( tr( "E&xit" ), this);
-  #if ( ( QT_MAJOR_VERSION == 4 ) && ( QT_MINOR_VERSION >= 6 ) )
-    exitAct->setShortcuts(QKeySequence::Quit);
+  exitAct = new QAction(tr("E&xit"), this);
+  #if ((QT_MAJOR_VERSION == 4) && (QT_MINOR_VERSION >= 6))
+  exitAct->setShortcuts(QKeySequence::Quit);
   #endif
-  exitAct->setStatusTip( tr( "Exit the application" ) );
-  connect( exitAct,
-           SIGNAL( triggered() ),
-           qApp,
-           SLOT(closeAllWindows() ) );
+  exitAct->setStatusTip(tr("Exit the application"));
+  connect(exitAct,
+          SIGNAL(triggered()),
+          qApp,
+          SLOT(closeAllWindows()));
   //! [0]
 
-  closeAct = new QAction( tr( "Cl&ose" ), this );
-  closeAct->setStatusTip( tr( "Close the active image" ) );
-  connect( closeAct,
-           SIGNAL( triggered() ),
-           mdiArea,
-           SLOT( closeActiveSubWindow() ) );
+  closeAct = new QAction(tr("Cl&ose"), this);
+  closeAct->setStatusTip(tr("Close the active image"));
+  connect(closeAct,
+          SIGNAL(triggered()),
+          mdiArea,
+          SLOT(closeActiveSubWindow()));
 
-  closeAllAct = new QAction( tr( "Close &All" ), this );
-  closeAllAct->setStatusTip( tr( "Close all images" ) );
-  connect( closeAllAct,
-           SIGNAL( triggered() ),
-           mdiArea,
-           SLOT( closeAllSubWindows() ) );
+  closeAllAct = new QAction(tr("Close &All"), this);
+  closeAllAct->setStatusTip(tr("Close all images"));
+  connect(closeAllAct,
+          SIGNAL(triggered()),
+          mdiArea,
+          SLOT(closeAllSubWindows()));
 
-  tileAct = new QAction( tr( "&Tile" ), this);
-  tileAct->setStatusTip( tr( "Tile the images" ) );
-  connect( tileAct,
-           SIGNAL( triggered() ),
-           mdiArea,
-           SLOT( tileSubWindows() ) );
+  tileAct = new QAction(tr("&Tile"), this);
+  tileAct->setStatusTip(tr("Tile the images"));
+  connect(tileAct,
+          SIGNAL(triggered()),
+          mdiArea,
+          SLOT(tileSubWindows()));
 
-  cascadeAct = new QAction( tr( "&Cascade" ), this);
-  cascadeAct->setStatusTip( tr( "Cascade the images" ) );
-  connect( cascadeAct,
-           SIGNAL( triggered() ),
-           mdiArea,
-           SLOT( cascadeSubWindows() ) );
+  cascadeAct = new QAction(tr("&Cascade"), this);
+  cascadeAct->setStatusTip(tr("Cascade the images"));
+  connect(cascadeAct,
+          SIGNAL(triggered()),
+          mdiArea,
+          SLOT(cascadeSubWindows()));
 
+  aboutAct = new QAction(tr("&About"), this);
+  aboutAct->setStatusTip(tr("Show the application's About box"));
+  connect(aboutAct,
+          SIGNAL(triggered()),
+          this,
+          SLOT(about()));
 
-  aboutAct = new QAction( tr( "&About" ), this);
-  aboutAct->setStatusTip( tr( "Show the application's About box" ) );
-  connect( aboutAct,
-           SIGNAL( triggered() ),
-           this,
-           SLOT( about() ) );
+  aboutGF2Act = new QAction(tr("About &GoFigure2"), this);
+  aboutGF2Act->setStatusTip(tr("Show the Gofigure2 About box"));
+  connect(aboutGF2Act,
+          SIGNAL(triggered()),
+          this,
+          SLOT(aboutGF2()));
 
-  aboutGF2Act = new QAction( tr( "About &GoFigure2" ), this );
-  aboutGF2Act->setStatusTip( tr( "Show the Gofigure2 About box" ) );
-  connect( aboutGF2Act,
-           SIGNAL( triggered() ),
-           this,
-           SLOT( aboutGF2() ) );
+  aboutQtAct = new QAction(tr("About &Qt"), this);
+  aboutQtAct->setStatusTip(tr("Show the Qt library's About box"));
+  connect(aboutQtAct,
+          SIGNAL(triggered()),
+          qApp,
+          SLOT(aboutQt()));
 
-  aboutQtAct = new QAction( tr( "About &Qt" ), this );
-  aboutQtAct->setStatusTip( tr( "Show the Qt library's About box" ) );
-  connect( aboutQtAct,
-           SIGNAL( triggered() ),
-           qApp,
-           SLOT( aboutQt() ) );
+  XYviewAct = new QAction(tr("XY view"), this);
+  aboutQtAct->setStatusTip(tr("Shows XY view"));
+  connect(XYviewAct,
+          SIGNAL(triggered()),
+          this,
+          SLOT(FullscreenXY()));
 
-  XYviewAct = new QAction( tr( "XY view" ), this );
-  aboutQtAct->setStatusTip( tr( "Shows XY view" ) );
-  connect( XYviewAct,
-           SIGNAL( triggered() ),
-           this,
-           SLOT( FullscreenXY() ) );
+  XZviewAct = new QAction(tr("XZ view"), this);
+  aboutQtAct->setStatusTip(tr("Shows XZ view"));
+  connect(XZviewAct,
+          SIGNAL(triggered()),
+          this,
+          SLOT(FullscreenXZ()));
 
-  XZviewAct = new QAction( tr( "XZ view" ), this);
-  aboutQtAct->setStatusTip( tr( "Shows XZ view" ) );
-  connect( XZviewAct,
-           SIGNAL( triggered() ),
-           this,
-           SLOT( FullscreenXZ() ) );
+  YZviewAct = new QAction(tr("YZ view"), this);
+  aboutQtAct->setStatusTip(tr("Shows YZ view"));
+  connect(YZviewAct,
+          SIGNAL(triggered()),
+          this,
+          SLOT(FullscreenYZ()));
 
-  YZviewAct = new QAction( tr( "YZ view" ), this );
-  aboutQtAct->setStatusTip( tr( "Shows YZ view" ) );
-  connect( YZviewAct ,
-           SIGNAL( triggered() ),
-           this,
-           SLOT( FullscreenYZ() ) );
+  XYZviewAct = new QAction(tr("3D view"), this);
+  aboutQtAct->setStatusTip(tr("Show 3D view"));
+  connect(XYZviewAct,
+          SIGNAL(triggered()),
+          this,
+          SLOT(FullscreenXYZ()));
 
-  XYZviewAct = new QAction( tr( "3D view" ), this );
-  aboutQtAct->setStatusTip( tr( "Show 3D view" ) );
-  connect( XYZviewAct,
-           SIGNAL( triggered() ),
-           this,
-           SLOT( FullscreenXYZ() ) );
-
-  QuadviewAct = new QAction( tr( "Quad-view" ), this);
-  aboutQtAct->setStatusTip( tr( "Show 3D view and XY,XZ,YZ projections" ) );
-  connect( QuadviewAct,
-           SIGNAL( triggered() ),
-           this,
-           SLOT( Quadscreen() ) );
+  QuadviewAct = new QAction(tr("Quad-view"), this);
+  aboutQtAct->setStatusTip(tr("Show 3D view and XY,XZ,YZ projections"));
+  connect(QuadviewAct,
+          SIGNAL(triggered()),
+          this,
+          SLOT(Quadscreen()));
 }
 
 void QGoSynchronizedViewMainWindow::createMenus()
 {
-  fileMenu = menuBar()->addMenu( tr( "&File" ) );
+  fileMenu = menuBar()->addMenu(tr("&File"));
   fileMenu->addAction(openfileAct);
   fileMenu->addAction(openmemAct);
   fileMenu->addAction(snapshotAsAct);
   fileMenu->addSeparator();
 
-  windowMenu = menuBar()->addMenu( tr( "&Window" ) );
+  windowMenu = menuBar()->addMenu(tr("&Window"));
   updateWindowMenu();
-  connect(windowMenu, SIGNAL(aboutToShow() ), this, SLOT(updateWindowMenu() ));
+  connect(windowMenu, SIGNAL(aboutToShow()), this, SLOT(updateWindowMenu()));
 
   menuBar()->addSeparator();
 
-  helpMenu = menuBar()->addMenu( tr( "&Help" ) );
+  helpMenu = menuBar()->addMenu(tr("&Help"));
   helpMenu->addAction(aboutAct);
   helpMenu->addAction(aboutQtAct);
   helpMenu->addAction(aboutGF2Act);
@@ -661,32 +644,30 @@ void QGoSynchronizedViewMainWindow::createMenus()
 
 void QGoSynchronizedViewMainWindow::createToolBars()
 {
-  ToolBar = addToolBar( tr( "ImageActions" ) );
+  ToolBar = addToolBar(tr("ImageActions"));
   ToolBar->addAction(openmemAct);
   ToolBar->addAction(openfileAct);
   ToolBar->addAction(snapshotAsAct);
   ToolBar->addAction(syncAct);
 
-  View3DToolBar = addToolBar( tr( "Image 3D View selection" ) );
-  View3DToolBar ->addAction(XYviewAct);
-  View3DToolBar ->addAction(XZviewAct);
-  View3DToolBar ->addAction(YZviewAct);
-  View3DToolBar ->addAction(XYZviewAct);
-  View3DToolBar ->addAction(QuadviewAct);
+  View3DToolBar = addToolBar(tr("Image 3D View selection"));
+  View3DToolBar->addAction(XYviewAct);
+  View3DToolBar->addAction(XZviewAct);
+  View3DToolBar->addAction(YZviewAct);
+  View3DToolBar->addAction(XYZviewAct);
+  View3DToolBar->addAction(QuadviewAct);
 }
 
 void QGoSynchronizedViewMainWindow::createStatusBar()
 {
-  statusBar()->showMessage( tr( "Ready" ) );
+  statusBar()->showMessage(tr("Ready"));
 }
-
-
 
 QGoSynchronizedView *QGoSynchronizedViewMainWindow::activeSynchronizedView()
 {
-  if (QMdiSubWindow *activeSubWindow = mdiArea->activeSubWindow() )
+  if (QMdiSubWindow * activeSubWindow = mdiArea->activeSubWindow())
     {
-    return static_cast<QGoSynchronizedView*>( activeSubWindow->widget() );
+    return static_cast<QGoSynchronizedView*>(activeSubWindow->widget());
     }
   else
     {
@@ -694,13 +675,12 @@ QGoSynchronizedView *QGoSynchronizedViewMainWindow::activeSynchronizedView()
     }
 }
 
-
 QMdiSubWindow *QGoSynchronizedViewMainWindow::findSynchronizedView(const QString& iSynchronizedViewName)
 {
-  foreach (QMdiSubWindow *twindow, mdiArea->subWindowList() )
+  foreach (QMdiSubWindow * twindow, mdiArea->subWindowList())
     {
     QGoSynchronizedView *SynchronizedView =
-      qobject_cast<QGoSynchronizedView *>( twindow->widget() );
+      qobject_cast<QGoSynchronizedView *>(twindow->widget());
     if (SynchronizedView->GetName() == iSynchronizedViewName)
       {
       return twindow;
@@ -708,8 +688,6 @@ QMdiSubWindow *QGoSynchronizedViewMainWindow::findSynchronizedView(const QString
     }
   return NULL;
 }
-
-
 
 void QGoSynchronizedViewMainWindow::setActiveSubWindow(QWidget *twindow)
 {
@@ -719,6 +697,6 @@ void QGoSynchronizedViewMainWindow::setActiveSubWindow(QWidget *twindow)
     }
   else
     {
-    mdiArea->setActiveSubWindow(qobject_cast<QMdiSubWindow *>( twindow) );
+    mdiArea->setActiveSubWindow(qobject_cast<QMdiSubWindow *>(twindow));
     }
 }

@@ -50,15 +50,14 @@
 #include <QDir>
 #include <QPushButton>
 
-
-QGoDBInitCreateAuthorsPage::QGoDBInitCreateAuthorsPage( QWidget *iParent)
-  : QWizardPage( iParent )
-{
+QGoDBInitCreateAuthorsPage::QGoDBInitCreateAuthorsPage(QWidget *iParent)
+  : QWizardPage(iParent)
+  {
   QFont tfont;
   tfont.setBold(false);
   this->setFont(tfont);
   m_DatabaseConnector = 0;
-  setSubTitle( tr("Create the authors for the gofigure projects:"));
+  setSubTitle(tr("Create the authors for the gofigure projects:"));
 
   QFormLayout* formLayout = new QFormLayout;
 
@@ -67,34 +66,34 @@ QGoDBInitCreateAuthorsPage::QGoDBInitCreateAuthorsPage( QWidget *iParent)
   lineFirstName  = new QLineEdit;
   CreateButton   = new QPushButton(tr("Create Author"));
 
-  formLayout->addRow( tr("Enter the Author FirstName:"),   lineFirstName );
-  formLayout->addRow( tr("Enter the Author MiddleName:"),   lineMiddleName );
-  formLayout->addRow( tr("Enter the Author LastName:"),  lineLastName );
+  formLayout->addRow(tr("Enter the Author FirstName:"),   lineFirstName);
+  formLayout->addRow(tr("Enter the Author MiddleName:"),   lineMiddleName);
+  formLayout->addRow(tr("Enter the Author LastName:"),  lineLastName);
   formLayout->addWidget(CreateButton);
 
-  QObject::connect(this->CreateButton,SIGNAL(clicked()),
-    this,SLOT(CreateAuthor()));
+  QObject::connect(this->CreateButton, SIGNAL(clicked()),
+                   this, SLOT(CreateAuthor()));
 
-  setLayout( formLayout );
-}
+  setLayout(formLayout);
+  }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 bool QGoDBInitCreateAuthorsPage::validatePage()
 {
-this->OpenDBConnection();
+  this->OpenDBConnection();
 
-  if( ListAllValuesForOneColumn(this->m_DatabaseConnector,
-      "AuthorID", "author").empty())
+  if (ListAllValuesForOneColumn(this->m_DatabaseConnector,
+                                "AuthorID", "author").empty())
     {
     QMessageBox msgBox;
     msgBox.setText(
-      tr("Please create at least one author for your project.") );
+      tr("Please create at least one author for your project."));
     msgBox.exec();
     if (CloseDatabaseConnection(m_DatabaseConnector))
-        {
-        m_DatabaseConnector = 0;
-        }
+      {
+      m_DatabaseConnector = 0;
+      }
     return false;
     }
   if (CloseDatabaseConnection(m_DatabaseConnector))
@@ -114,20 +113,20 @@ void QGoDBInitCreateAuthorsPage::CreateAuthor()
   std::string FirstName = lineFirstName->text().toStdString();
   std::string MiddleName =  lineMiddleName->text().toStdString();
 
-  if(FindOneID(this->m_DatabaseConnector,"author", "AuthorID",
-    "LastName",LastName,"FirstName",FirstName)!= -1 && MiddleName.empty())
+  if (FindOneID(this->m_DatabaseConnector, "author", "AuthorID",
+                "LastName", LastName, "FirstName", FirstName) != -1 && MiddleName.empty())
     {
     msgBox.setText(
-      tr("There is already an Author with the same lastname and firstname, please enter a middlename") );
+      tr("There is already an Author with the same lastname and firstname, please enter a middlename"));
     msgBox.exec();
     return;
     }
 
-  if(FindOneID(this->m_DatabaseConnector,"author", "AuthorID",
-    "LastName",LastName,"FirstName",FirstName,"MiddleName",MiddleName) != -1 && !MiddleName.empty())
+  if (FindOneID(this->m_DatabaseConnector, "author", "AuthorID",
+                "LastName", LastName, "FirstName", FirstName, "MiddleName", MiddleName) != -1 && !MiddleName.empty())
     {
     msgBox.setText(
-      tr("This author already exits") );
+      tr("This author already exits"));
     msgBox.exec();
     return;
     }
@@ -152,14 +151,14 @@ void QGoDBInitCreateAuthorsPage::CreateAuthor()
   query->SetQuery(queryScript.str().c_str());
   if (!query->Execute())
     {
-    std::cout<< "Insert Author query failed."<<std::endl;
+    std::cout << "Insert Author query failed." << std::endl;
     query->Delete();
     return;
     }
 
   query->Delete();
   msgBox.setText(
-    tr("Your author has been successfully created") );
+    tr("Your author has been successfully created"));
   msgBox.exec();
   emit NewAuthorCreated();
 
@@ -173,22 +172,22 @@ void QGoDBInitCreateAuthorsPage::CreateAuthor()
 //------------------------------------------------------------------------------
 void QGoDBInitCreateAuthorsPage::OpenDBConnection()
 {
-  if(this->m_User.empty() || this->m_Password.empty())
+  if (this->m_User.empty() || this->m_Password.empty())
     {
     this->SetDatabaseVariables(field("User").toString().toStdString(),
-      field("Password").toString().toStdString());
+                               field("Password").toString().toStdString());
     }
   if (this->m_DatabaseConnector == 0)
     {
     m_DatabaseConnector = OpenDatabaseConnection(
-      this->m_Server,this->m_User,this->m_Password,this->m_DBName);
+      this->m_Server, this->m_User, this->m_Password, this->m_DBName);
     }
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void QGoDBInitCreateAuthorsPage::SetDatabaseVariables(
-  std::string iUser,std::string iPassword)
+  std::string iUser, std::string iPassword)
 {
   this->m_User = iUser;
   this->m_Password = iPassword;

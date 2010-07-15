@@ -49,25 +49,24 @@
 #include "QGoDBEntityManager.h"
 #include "GoDBCellTypeRow.h"
 
-class QGoDBCellTypeManager:public QGoDBEntityManager
-{
+class QGoDBCellTypeManager : public QGoDBEntityManager
+  {
   Q_OBJECT
 
-  public:
-    explicit QGoDBCellTypeManager (QWidget* iParent = 0);
-    
-    ~QGoDBCellTypeManager()
-      {};
+public:
+  explicit QGoDBCellTypeManager (QWidget* iParent = 0);
 
-  protected:
-     GoDBCellTypeRow m_NewCellType;
+  ~QGoDBCellTypeManager()
+          {}
 
-  protected slots:
-   
-    virtual void SaveNewEntityInDB();
+protected:
+  GoDBCellTypeRow m_NewCellType;
 
-    virtual void ValidateName();
+protected slots:
 
+  virtual void SaveNewEntityInDB();
 
-};
+  virtual void ValidateName();
+
+  };
 #endif

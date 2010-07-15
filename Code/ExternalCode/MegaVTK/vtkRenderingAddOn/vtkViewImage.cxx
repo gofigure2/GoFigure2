@@ -112,7 +112,7 @@ vtkCxxRevisionMacro(vtkViewImage, "$Revision: 546 $");
 
 //----------------------------------------------------------------------------
 vtkViewImage::vtkViewImage()
-{
+  {
   this->OrientationMatrix = vtkMatrix4x4::New();
   this->CornerAnnotation = vtkCornerAnnotation::New();
   this->TextProperty = vtkTextProperty::New();
@@ -124,14 +124,14 @@ vtkViewImage::vtkViewImage()
 
   this->OrientationMatrix->Identity();
   this->CornerAnnotation->SetNonlinearFontScaleFactor (0.35);
-  this->CornerAnnotation->SetTextProperty ( this->TextProperty );
+  this->CornerAnnotation->SetTextProperty (this->TextProperty);
 
   this->ScalarBarActor->GetLabelTextProperty()->BoldOff();
   this->ScalarBarActor->GetLabelTextProperty()->ItalicOff();
   this->ScalarBarActor->SetNumberOfLabels (3);
   this->ScalarBarActor->SetWidth (0.1);
   this->ScalarBarActor->SetHeight (0.5);
-  this->ScalarBarActor->SetPosition (0.9,0.3);
+  this->ScalarBarActor->SetPosition (0.9, 0.3);
   this->LookupTable->SetTableRange (0, 1);
   this->LookupTable->SetSaturationRange (0, 0);
   this->LookupTable->SetHueRange (0, 0);
@@ -145,9 +145,9 @@ vtkViewImage::vtkViewImage()
 
   this->ScalarBarActor->SetLookupTable (this->LookupTable);
 
-  this->Renderer->AddViewProp ( this->CornerAnnotation );
+  this->Renderer->AddViewProp (this->CornerAnnotation);
 
-  this->Renderer->AddViewProp ( this->ScalarBarActor );
+  this->Renderer->AddViewProp (this->ScalarBarActor);
 
   this->IsColor = false;
 
@@ -159,38 +159,36 @@ vtkViewImage::vtkViewImage()
   this->DirectionAnnotationMatrix[2][0] = "V";
   this->DirectionAnnotationMatrix[2][1] = "D";
 
-}
-
+  }
 
 //----------------------------------------------------------------------------
-void vtkViewImage::SetInput( vtkImageData* in )
+void vtkViewImage::SetInput(vtkImageData* in)
 {
-  if( in )
+  if (in)
     {
-    Superclass::SetInput( in );
+    Superclass::SetInput(in);
 
-    this->IsColor = ( in->GetNumberOfScalarComponents() > 1 );
+    this->IsColor = (in->GetNumberOfScalarComponents() > 1);
 
-    if( this->IsColor )
+    if (this->IsColor)
       {
-      this->WindowLevel->SetLookupTable( NULL );
+      this->WindowLevel->SetLookupTable(NULL);
       this->ShowScalarBar = false;
-      this->ScalarBarActor->SetVisibility( this->ShowScalarBar );
+      this->ScalarBarActor->SetVisibility(this->ShowScalarBar);
       }
     else
       {
       this->WindowLevel->SetLookupTable(this->LookupTable);
       }
-  }
+    }
 }
-
 
 //----------------------------------------------------------------------------
 vtkViewImage::~vtkViewImage()
-{
-  this->OrientationTransform->SetInput( NULL );
+  {
+  this->OrientationTransform->SetInput(NULL);
 
-  if( this->OrientationMatrix )
+  if (this->OrientationMatrix)
     {
     this->OrientationMatrix->Delete();
     }
@@ -202,55 +200,54 @@ vtkViewImage::~vtkViewImage()
   this->ScalarBarActor->Delete();
   this->Prop3DCollection->Delete();
   this->DataSetCollection->Delete();
-}
-
+  }
 
 //----------------------------------------------------------------------------
-void vtkViewImage::SetOrientationMatrix (vtkMatrix4x4* matrix)
+void vtkViewImage::SetOrientationMatrix(vtkMatrix4x4* matrix)
 {
-  vtkSetObjectMacro2Body( OrientationMatrix, vtkMatrix4x4, matrix );
-  this->ImageActor->SetUserMatrix( this->OrientationMatrix );
-  this->OrientationTransform->SetInput( this->OrientationMatrix );
+  vtkSetObjectMacro2Body(OrientationMatrix, vtkMatrix4x4, matrix);
+  this->ImageActor->SetUserMatrix(this->OrientationMatrix);
+  this->OrientationTransform->SetInput(this->OrientationMatrix);
 
   this->UpdateOrientation();
 }
 
 //----------------------------------------------------------------------------
-void vtkViewImage::SetLookupTable (vtkLookupTable* lookuptable)
+void vtkViewImage::SetLookupTable(vtkLookupTable* lookuptable)
 {
-  if( !this->IsColor )
+  if (!this->IsColor)
     {
-    vtkSetObjectMacro2Body( LookupTable, vtkLookupTable, lookuptable );
-    this->WindowLevel->SetLookupTable( this->LookupTable );
-    this->ScalarBarActor->SetLookupTable( this->LookupTable );
+    vtkSetObjectMacro2Body(LookupTable, vtkLookupTable, lookuptable);
+    this->WindowLevel->SetLookupTable(this->LookupTable);
+    this->ScalarBarActor->SetLookupTable(this->LookupTable);
     }
   else
     {
     this->ShowScalarBar = false;
-    this->ScalarBarActor->SetVisibility( this->ShowScalarBar );
+    this->ScalarBarActor->SetVisibility(this->ShowScalarBar);
     }
 }
 
 //----------------------------------------------------------------------------
-void vtkViewImage::SetTextProperty (vtkTextProperty* textproperty)
+void vtkViewImage::SetTextProperty(vtkTextProperty* textproperty)
 {
   vtkSetObjectMacro2Body (TextProperty, vtkTextProperty, textproperty);
   this->CornerAnnotation->SetTextProperty (this->TextProperty);
 }
 
 //----------------------------------------------------------------------------
-void vtkViewImage::SetColorWindow( double s )
+void vtkViewImage::SetColorWindow(double s)
 {
   double t = s;
 
-  if( t < 0. )
+  if (t < 0.)
     {
     t = 1.;
     }
 
-  Superclass::SetColorWindow( t );
+  Superclass::SetColorWindow(t);
 
-  if( !this->IsColor )
+  if (!this->IsColor)
     {
     double level = this->GetColorLevel();
     t *= 0.5;
@@ -261,60 +258,60 @@ void vtkViewImage::SetColorWindow( double s )
   else
     {
     this->ShowScalarBar = false;
-    this->ScalarBarActor->SetVisibility( this->ShowScalarBar );
+    this->ScalarBarActor->SetVisibility(this->ShowScalarBar);
     }
 }
 
 //----------------------------------------------------------------------------
-void vtkViewImage::SetColorLevel( double s)
+void vtkViewImage::SetColorLevel(double s)
 {
   Superclass::SetColorLevel(s);
 
-  if( !this->IsColor )
+  if (!this->IsColor)
     {
-    double t = 0.5*this->GetColorWindow();
+    double t = 0.5 * this->GetColorWindow();
     double v_min = s - t;
     double v_max = s + t;
-    this->LookupTable->SetRange( v_min, v_max );
+    this->LookupTable->SetRange(v_min, v_max);
     }
   else
     {
     this->ShowScalarBar = false;
-    this->ScalarBarActor->SetVisibility( this->ShowScalarBar );
+    this->ScalarBarActor->SetVisibility(this->ShowScalarBar);
     }
 }
 
 //----------------------------------------------------------------------------
-void vtkViewImage::SetWorldCoordinates( const double& x,
-    const double& y, const double& z )
+void vtkViewImage::SetWorldCoordinates(const double& x,
+                                       const double& y, const double& z)
 {
-  double pos[3] = {x,y,z};
-  this->SetWorldCoordinates( pos );
+  double pos[3] = { x, y, z};
+  this->SetWorldCoordinates(pos);
 }
 //----------------------------------------------------------------------------
-double vtkViewImage::GetValueAtPosition( double worldcoordinates[3],
-  int component )
+double vtkViewImage::GetValueAtPosition(double worldcoordinates[3],
+                                        int component)
 {
 // by default, value = 0.0
-double value = 0.0;
+  double value = 0.0;
 
-  if( !this->GetInput() )
+  if (!this->GetInput())
     {
     return value;
     }
 
   int* indices =
-    this->GetImageCoordinatesFromWorldCoordinates( worldcoordinates );
+    this->GetImageCoordinatesFromWorldCoordinates(worldcoordinates);
   vtkImageData* input = this->GetInput();
 
   int* extent = input->GetWholeExtent();
 
-  if (!( (indices[0] < extent[0]) || (indices[0] > extent[1]) ||
-         (indices[1] < extent[2]) || (indices[1] > extent[3]) ||
-         (indices[2] < extent[4]) || (indices[2] > extent[5]) ))
+  if (!((indices[0] < extent[0]) || (indices[0] > extent[1]) ||
+        (indices[1] < extent[2]) || (indices[1] > extent[3]) ||
+        (indices[2] < extent[4]) || (indices[2] > extent[5])))
     {
-    value = input->GetScalarComponentAsDouble(  indices[0], indices[1],
-                                                indices[2], component );
+    value = input->GetScalarComponentAsDouble(indices[0], indices[1],
+                                              indices[2], component);
     }
   // have to free the indices array allocated by
   // GetImageCoordinatesFromWorldCoordinates
@@ -323,20 +320,19 @@ double value = 0.0;
   return value;
 }
 
-
 //----------------------------------------------------------------------------
-bool vtkViewImage::RemoveDataSet( vtkDataSet* dataset )
+bool vtkViewImage::RemoveDataSet(vtkDataSet* dataset)
 {
-  unsigned int index = this->DataSetCollection->IsItemPresent( dataset );
+  unsigned int index = this->DataSetCollection->IsItemPresent(dataset);
 
-  if( !index )
+  if (!index)
     {
     return false;
     }
   else
     {
     this->Renderer->RemoveViewProp (
-      vtkProp::SafeDownCast( this->Prop3DCollection->GetItemAsObject( index ) ) );
+      vtkProp::SafeDownCast(this->Prop3DCollection->GetItemAsObject(index)));
     this->DataSetCollection->RemoveItem(index);
     this->Prop3DCollection->RemoveItem(index);
 
@@ -344,11 +340,11 @@ bool vtkViewImage::RemoveDataSet( vtkDataSet* dataset )
     }
 }
 
-void vtkViewImage::RemoveProp( vtkProp* prop )
+void vtkViewImage::RemoveProp(vtkProp* prop)
 {
-  this->Renderer->RemoveViewProp( prop );
+  this->Renderer->RemoveViewProp(prop);
 
-  unsigned int index = this->DataSetCollection->IsItemPresent( prop );
+  unsigned int index = this->DataSetCollection->IsItemPresent(prop);
   this->Prop3DCollection->RemoveItem(index);
 }
 
@@ -357,7 +353,7 @@ double* vtkViewImage::GetWorldCoordinatesFromImageCoordinates(int indices[3])
 {
   vtkImageData* input = this->GetInput();
 
-  if( !input )
+  if (!input)
     {
     double* nullpos = new double[3];
     nullpos[0] = 0.;
@@ -371,16 +367,15 @@ double* vtkViewImage::GetWorldCoordinatesFromImageCoordinates(int indices[3])
   double* origin = input->GetOrigin();
 
   double unorientedposition[4];
-  for( unsigned int i=0; i<3; i++ )
+  for (unsigned int i = 0; i < 3; i++)
     {
-    unorientedposition[i] = origin[i] + spacing[i]*indices[i];
+    unorientedposition[i] = origin[i] + spacing[i] * indices[i];
     }
   unorientedposition[3] = 1;
 
   // apply orientation matrix
   double* position = new double[4];
   this->GetOrientationMatrix()->MultiplyPoint(unorientedposition, position);
-
 
   return position;
 }
@@ -390,7 +385,7 @@ int* vtkViewImage::GetImageCoordinatesFromWorldCoordinates(double position[3])
 {
   vtkImageData* input = this->GetInput();
 
-  if (!input )
+  if (!input)
     {
     int* nullpos = new int[3];
     nullpos[0] = 0;
@@ -400,27 +395,27 @@ int* vtkViewImage::GetImageCoordinatesFromWorldCoordinates(double position[3])
     }
 
   // Get information
-  double unorientedposition[4] = {position[0], position[1], position[2], 1};
-  double spacing[4] = {input->GetSpacing()[0],
-    input->GetSpacing()[1],
-    input->GetSpacing()[2],
-    0};
-  double origin[4] = {input->GetOrigin()[0],
-    input->GetOrigin()[1],
-    input->GetOrigin()[2],
-    1};
+  double unorientedposition[4] = { position[0], position[1], position[2], 1};
+  double spacing[4] = { input->GetSpacing()[0],
+                        input->GetSpacing()[1],
+                        input->GetSpacing()[2],
+                        0};
+  double origin[4] = { input->GetOrigin()[0],
+                       input->GetOrigin()[1],
+                       input->GetOrigin()[2],
+                       1};
 
   // apply inverted orientation matrix to the world-coordinate position
-  vtkSmartPointer< vtkMatrix4x4 > inverse = vtkSmartPointer< vtkMatrix4x4 >::New();
+  vtkSmartPointer<vtkMatrix4x4> inverse = vtkSmartPointer<vtkMatrix4x4>::New();
   vtkMatrix4x4::Invert (this->GetOrientationMatrix(), inverse);
   inverse->MultiplyPoint (unorientedposition, unorientedposition);
 
   int* indices = new int[3];
-  for( unsigned int i=0; i<3; i++ )
+  for (unsigned int i = 0; i < 3; i++)
     {
-    if(fabs (spacing[i]) > 1e-5)
+    if (fabs (spacing[i]) > 1e-5)
       {
-      indices[i] = vtkMath::Round((unorientedposition[i]-origin[i])/spacing[i]);
+      indices[i] = vtkMath::Round((unorientedposition[i] - origin[i]) / spacing[i]);
       }
     else
       {
@@ -433,24 +428,24 @@ int* vtkViewImage::GetImageCoordinatesFromWorldCoordinates(double position[3])
 //----------------------------------------------------------------------------
 void vtkViewImage::SetBackground(double rgb[3])
 {
-  if( this->Renderer )
+  if (this->Renderer)
     {
     this->Renderer->SetBackground(rgb);
     }
 }
 //----------------------------------------------------------------------------
-void vtkViewImage::SetBackground( const double& r, const double& g, const double& b)
+void vtkViewImage::SetBackground(const double& r, const double& g, const double& b)
 {
-  if( this->Renderer )
+  if (this->Renderer)
     {
-    this->Renderer->SetBackground(r,g,b);
+    this->Renderer->SetBackground(r, g, b);
     }
 }
 
 //----------------------------------------------------------------------------
 double* vtkViewImage::GetBackground()
 {
-  if( this->Renderer )
+  if (this->Renderer)
     {
     return this->Renderer->GetBackground();
     }
@@ -461,36 +456,36 @@ double* vtkViewImage::GetBackground()
 }
 
 //----------------------------------------------------------------------------
-void vtkViewImage::ResetWindowLevel( void )
+void vtkViewImage::ResetWindowLevel(void)
 {
   vtkImageData* input = this->GetInput();
 
-  if( !input )
+  if (!input)
     {
     return;
     }
 
-  if( !this->IsColor )
+  if (!this->IsColor)
     {
     double* range = input->GetScalarRange();
-    double window = range[1]-range[0];
-    double level = 0.5*(range[1]+range[0]);
+    double  window = range[1] - range[0];
+    double  level = 0.5 * (range[1] + range[0]);
 
-    this->SetColorWindow(  window );
-    this->SetColorLevel(  level );
+    this->SetColorWindow(window);
+    this->SetColorLevel(level);
     }
 }
 //----------------------------------------------------------------------------
-void vtkViewImage::ResetCamera (void)
+void vtkViewImage::ResetCamera(void)
 {
-  if( this->Renderer )
+  if (this->Renderer)
     {
     this->Renderer->ResetCamera();
     }
 }
 
 //----------------------------------------------------------------------------
-void vtkViewImage::Reset (void)
+void vtkViewImage::Reset(void)
 {
   this->Update();
   this->ResetWindowLevel();
@@ -498,25 +493,25 @@ void vtkViewImage::Reset (void)
 }
 
 //----------------------------------------------------------------------------
-void vtkViewImage::Enable (void)
+void vtkViewImage::Enable(void)
 {
   this->Interactor->Enable();
 }
 //----------------------------------------------------------------------------
-void vtkViewImage::Disable (void)
+void vtkViewImage::Disable(void)
 {
   this->Interactor->Disable();
 }
 //----------------------------------------------------------------------------
-bool vtkViewImage::GetEnabled (void)
+bool vtkViewImage::GetEnabled(void)
 {
-  return ( this->Interactor->GetEnabled() == 1 );
+  return (this->Interactor->GetEnabled() == 1);
 }
 
 //----------------------------------------------------------------------------
-void vtkViewImage::SetShowScalarBar( const bool& val )
+void vtkViewImage::SetShowScalarBar(const bool& val)
 {
-  if( !this->IsColor )
+  if (!this->IsColor)
     {
     this->ShowScalarBar = val;
     this->ScalarBarActor->SetVisibility(val);
@@ -524,23 +519,23 @@ void vtkViewImage::SetShowScalarBar( const bool& val )
   else
     {
     this->ShowScalarBar = false;
-    this->ScalarBarActor->SetVisibility( this->ShowScalarBar );
+    this->ScalarBarActor->SetVisibility(this->ShowScalarBar);
     }
 }
 //----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------
-void vtkViewImage::ChangeActorProperty( vtkProp3D* iActor,
-    vtkProperty* iProperty )
+void vtkViewImage::ChangeActorProperty(vtkProp3D* iActor,
+                                       vtkProperty* iProperty)
 {
-  if( iActor && iProperty )
+  if (iActor && iProperty)
     {
-    if( Prop3DCollection->IsItemPresent( iActor ) )
+    if (Prop3DCollection->IsItemPresent(iActor))
       {
-      vtkActor* temp = dynamic_cast< vtkActor* >( iActor );
-      if( temp )
+      vtkActor* temp = dynamic_cast<vtkActor*>(iActor);
+      if (temp)
         {
-        temp->SetProperty( iProperty );
+        temp->SetProperty(iProperty);
         //temp->Modified();
         Render();
         }
@@ -578,19 +573,19 @@ void vtkViewImage::ChangeActorProperty( vtkProp3D* iActor,
 //----------------------------------------------------------------------------
 void vtkViewImage::Render()
 {
-  if( this->RenderWindow && !this->RenderWindow->GetNeverRendered() )
-  {
-    if (this->FirstRender)
+  if (this->RenderWindow && !this->RenderWindow->GetNeverRendered())
     {
+    if (this->FirstRender)
+      {
       this->ResetCamera();
       this->FirstRender = 0;
+      }
     }
-  }
 
-  if( this->GetInput() )
-  {
+  if (this->GetInput())
+    {
     this->RenderWindow->Render();
-  }
+    }
 }
 //----------------------------------------------------------------------------
 
@@ -604,52 +599,52 @@ vtkRenderWindowInteractor* vtkViewImage::GetInteractor()
 //----------------------------------------------------------------------------
 vtkRenderWindowInteractor* vtkViewImage::GetRenderWindowInteractor()
 {
-  if( this->GetRenderWindow() )
+  if (this->GetRenderWindow())
     {
     return this->GetRenderWindow()->GetInteractor();
     }
   else
     {
-    return static_cast< vtkRenderWindowInteractor* >( 0x0 );
+    return static_cast<vtkRenderWindowInteractor*>(0x0);
     }
 }
 //----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------
-void vtkViewImage::SetCameraPosition (double* arg)
+void vtkViewImage::SetCameraPosition(double* arg)
 {
-  if( this->Renderer )
+  if (this->Renderer)
     {
     vtkCamera *cam = this->Renderer->GetActiveCamera();
-    if( cam )
+    if (cam)
       {
       cam->SetPosition (arg);
       }
     }
 }
 
-double* vtkViewImage::GetCameraPosition (void)
+double* vtkViewImage::GetCameraPosition(void)
 {
-  if( this->Renderer )
+  if (this->Renderer)
     {
     vtkCamera *cam = this->Renderer->GetActiveCamera();
-    if( cam )
+    if (cam)
       {
       return cam->GetPosition ();
       }
     }
 
-  return static_cast< double* >( 0x0 );
+  return static_cast<double*>(0x0);
 }
 //----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------
-void vtkViewImage::SetCameraFocalPoint (double* arg)
+void vtkViewImage::SetCameraFocalPoint(double* arg)
 {
-  if( this->Renderer )
+  if (this->Renderer)
     {
     vtkCamera *cam = this->Renderer->GetActiveCamera();
-    if( cam )
+    if (cam)
       {
       cam->SetFocalPoint (arg);
       }
@@ -658,27 +653,27 @@ void vtkViewImage::SetCameraFocalPoint (double* arg)
 //----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------
-double* vtkViewImage::GetCameraFocalPoint (void)
+double* vtkViewImage::GetCameraFocalPoint(void)
 {
-  if( this->Renderer )
+  if (this->Renderer)
     {
     vtkCamera *cam = this->Renderer->GetActiveCamera();
-    if( cam )
+    if (cam)
       {
       return cam->GetFocalPoint ();
       }
     }
-  return static_cast< double* >( 0x0 );
+  return static_cast<double*>(0x0);
 }
 //----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------
-void vtkViewImage::SetCameraViewUp (double* arg)
+void vtkViewImage::SetCameraViewUp(double* arg)
 {
-  if( this->Renderer )
+  if (this->Renderer)
     {
     vtkCamera *cam = this->Renderer->GetActiveCamera();
-    if( cam )
+    if (cam)
       {
       cam->SetViewUp (arg);
       }
@@ -687,29 +682,29 @@ void vtkViewImage::SetCameraViewUp (double* arg)
 //----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------
-double* vtkViewImage::GetCameraViewUp (void)
+double* vtkViewImage::GetCameraViewUp(void)
 {
-  if( this->Renderer )
+  if (this->Renderer)
     {
     vtkCamera *cam = this->Renderer->GetActiveCamera();
 
-    if( cam )
+    if (cam)
       {
       return cam->GetViewUp();
       }
     }
-  return static_cast< double* >( 0x0 );
+  return static_cast<double*>(0x0);
 }
 //----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------
-void vtkViewImage::SetCameraParallelScale (double arg)
+void vtkViewImage::SetCameraParallelScale(double arg)
 {
-  if( this->Renderer )
+  if (this->Renderer)
     {
     vtkCamera *cam = this->Renderer->GetActiveCamera();
 
-    if( cam )
+    if (cam)
       {
       cam->SetParallelScale (arg);
       }
@@ -718,13 +713,13 @@ void vtkViewImage::SetCameraParallelScale (double arg)
 //----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------
-double vtkViewImage::GetCameraParallelScale (void)
+double vtkViewImage::GetCameraParallelScale(void)
 {
-  if( this->Renderer )
+  if (this->Renderer)
     {
     vtkCamera *cam = this->Renderer->GetActiveCamera();
 
-    if( cam )
+    if (cam)
       {
       return cam->GetParallelScale();
       }
@@ -735,7 +730,7 @@ double vtkViewImage::GetCameraParallelScale (void)
 //----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------
-void vtkViewImage::SetShowAnnotations( const int& val )
+void vtkViewImage::SetShowAnnotations(const int& val)
 {
   this->ShowAnnotations = val;
   this->CornerAnnotation->SetVisibility (val);

@@ -42,26 +42,27 @@
 
 #include <iostream>
 
-QSplitterChild::QSplitterChild( QWidget* iParent ): QSplitter( iParent )
-{
-  Prevpos=0;
-  Previndex=0;
-}
+QSplitterChild::QSplitterChild(QWidget* iParent) : QSplitter(iParent)
+  {
+  Prevpos = 0;
+  Previndex = 0;
+  }
 
-QSplitterChild::QSplitterChild( Qt::Orientation iOrientation,
-  QWidget* iParent) : QSplitter( iOrientation, iParent )
-{}
+QSplitterChild::QSplitterChild(Qt::Orientation iOrientation,
+                               QWidget* iParent) : QSplitter(iOrientation, iParent)
+  {
+  }
 
 QSplitterChild::~QSplitterChild()
-{}
+  {
+  }
 
-void QSplitterChild::moveSplitter( int iPos, int index )
+void QSplitterChild::moveSplitter(int iPos, int index)
 {
-  if( ( Prevpos != iPos ) || ( Previndex != index ) )
+  if ((Prevpos != iPos) || (Previndex != index))
     {
-    Prevpos=iPos;
-    Previndex=index;
-    QSplitter::moveSplitter( iPos, index );
+    Prevpos = iPos;
+    Previndex = index;
+    QSplitter::moveSplitter(iPos, index);
     }
 }
-

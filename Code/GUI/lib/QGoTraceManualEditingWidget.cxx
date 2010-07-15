@@ -45,25 +45,24 @@
 #include <QVBoxLayout>
 #include <QFont>
 
-
 QGoTraceManualEditingWidget::
-QGoTraceManualEditingWidget( QWidget* iParent) :
-  QWidget( iParent )
-{
-   this->setupUi( this );
-   SetColorComboBox();
-   SetTraceColorIDCollectionComboBox();
-   SetCellTypeComboBox();
-   SetSubCellTypeComboBox();
-   UpdateTraceAndCollection("contour", "mesh");
-}
+QGoTraceManualEditingWidget(QWidget* iParent) :
+  QWidget(iParent)
+  {
+  this->setupUi(this);
+  SetColorComboBox();
+  SetTraceColorIDCollectionComboBox();
+  SetCellTypeComboBox();
+  SetSubCellTypeComboBox();
+  UpdateTraceAndCollection("contour", "mesh");
+  }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 QGoTraceManualEditingWidget::
 ~QGoTraceManualEditingWidget()
-{
-}
+  {
+  }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -72,13 +71,13 @@ QGoTraceManualEditingWidget::
 GetCurrentCollectionID()
 {
   std::string temp = this->ColorIDCollectionComboBox->GetCurrentColorData().first;
-  if( temp.empty() )
+  if (temp.empty())
     {
     return -1;
     }
   else
     {
-    return atoi( temp.c_str() );
+    return atoi(temp.c_str());
     }
 }
 //-------------------------------------------------------------------------
@@ -87,22 +86,22 @@ GetCurrentCollectionID()
 void
 QGoTraceManualEditingWidget::
 SetCollectionID(
-  std::list<std::pair<std::string,QColor> > iListExistingID)
+  std::list<std::pair<std::string, QColor> > iListExistingID)
 {
   this->ColorIDCollectionComboBox->clear();
-  std::list<std::pair<std::string,QColor> >::iterator iter =
+  std::list<std::pair<std::string, QColor> >::iterator iter =
     iListExistingID.begin();
   while (iter != iListExistingID.end())
     {
-    QColor color = iter->second;
+    QColor  color = iter->second;
     QString name = iter->first.c_str();
-    this->ColorIDCollectionComboBox->addColor(color,name);
+    this->ColorIDCollectionComboBox->addColor(color, name);
     iter++;
     }
   QString Text(tr("Add a new %1...").arg(CollectionName->text()));
-  this->ColorIDCollectionComboBox->setColorDialogEnabled(true,Text.toStdString());
+  this->ColorIDCollectionComboBox->setColorDialogEnabled(true, Text.toStdString());
   /** \todo when using lineages, remove the following*/
-  if (CollectionName->text() == "lineage")//at that time we don't show lineages
+  if (CollectionName->text() == "lineage") //at that time we don't show lineages
     {
     this->ColorIDCollectionComboBox->hide();
     }
@@ -183,15 +182,15 @@ SetCellTypeComboBox()
   QHBoxLayout* HLayoutForCellType = new QHBoxLayout;
   HLayoutForCellType->addWidget(m_ChoseCellType);
   this->VLayoutCellType->addLayout(HLayoutForCellType);
-  QObject::connect(this->m_ChoseCellType,SIGNAL(activated(QString)),
-    SLOT(CheckUserAction(QString)));
+  QObject::connect(this->m_ChoseCellType, SIGNAL(activated(QString)),
+                   SLOT(CheckUserAction(QString)));
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void
 QGoTraceManualEditingWidget::
-SetListCellTypes( QStringList iListCellTypes )
+SetListCellTypes(QStringList iListCellTypes)
 {
   this->m_ChoseCellType->clear();
   this->m_ChoseCellType->addItems(iListCellTypes);
@@ -204,16 +203,16 @@ SetListCellTypes( QStringList iListCellTypes )
 //-------------------------------------------------------------------------
 void
 QGoTraceManualEditingWidget::
-CheckUserAction( QString iCellTypeText )
+CheckUserAction(QString iCellTypeText)
 {
- if (iCellTypeText == "Add a celltype...")
-   {  
-   emit AddANewCellType();
-   }
- if (iCellTypeText == "Delete a celltype...")
-   {
-   emit DeleteCellType();
-   }
+  if (iCellTypeText == "Add a celltype...")
+    {
+    emit AddANewCellType();
+    }
+  if (iCellTypeText == "Delete a celltype...")
+    {
+    emit DeleteCellType();
+    }
 }
 //-------------------------------------------------------------------------
 
@@ -225,15 +224,15 @@ SetSubCellTypeComboBox()
   this->m_ChoseSubCellType = new QComboBox(this);
   this->VLayoutSubCellType->addWidget(LabelSubCellType);
   this->VLayoutSubCellType->addWidget(m_ChoseSubCellType);
-  QObject::connect(this->m_ChoseSubCellType,SIGNAL(activated(QString)),
-    SLOT(CheckUserActionSubCell(QString)));
+  QObject::connect(this->m_ChoseSubCellType, SIGNAL(activated(QString)),
+                   SLOT(CheckUserActionSubCell(QString)));
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void
 QGoTraceManualEditingWidget::
-SetListSubCellTypes( QStringList iListSubCellTypes )
+SetListSubCellTypes(QStringList iListSubCellTypes)
 {
   this->m_ChoseSubCellType->clear();
   this->m_ChoseSubCellType->addItems(iListSubCellTypes);
@@ -246,16 +245,16 @@ SetListSubCellTypes( QStringList iListSubCellTypes )
 //-------------------------------------------------------------------------
 void
 QGoTraceManualEditingWidget::
-CheckUserActionSubCell( QString iCellTypeText )
+CheckUserActionSubCell(QString iCellTypeText)
 {
- if (iCellTypeText == "Add a subcelltype...")
-   {
-   emit AddANewSubCellType();
-   }
- if (iCellTypeText == "Delete a subcelltype...")
-   {
-   emit DeleteSubCellType();
-   }
+  if (iCellTypeText == "Add a subcelltype...")
+    {
+    emit AddANewSubCellType();
+    }
+  if (iCellTypeText == "Delete a subcelltype...")
+    {
+    emit DeleteSubCellType();
+    }
 }
 //-------------------------------------------------------------------------
 
@@ -266,7 +265,7 @@ std::string QGoTraceManualEditingWidget::GetCurrentCellType()
 }
 //-------------------------------------------------------------------------
 
-//-------------------------------------------------------------------------  
+//-------------------------------------------------------------------------
 std::string QGoTraceManualEditingWidget::GetCurrentSubCellType()
 {
   return this->m_ChoseSubCellType->currentText().toStdString();
@@ -308,7 +307,7 @@ void QGoTraceManualEditingWidget::SetCurrentSubCellType(
 //-------------------------------------------------------------------------
 void QGoTraceManualEditingWidget::UpdateTraceAndCollection(
   std::string iTrace, std::string iCollection)
-{ 
+{
   this->TraceName->setText(iTrace.c_str());
   this->CollectionName->setText(iCollection.c_str());
   if (iTrace == "contour" || iTrace == "mesh")

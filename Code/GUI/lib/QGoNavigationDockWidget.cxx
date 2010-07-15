@@ -44,116 +44,116 @@
 #include <QVBoxLayout>
 
 QGoNavigationDockWidget::
-QGoNavigationDockWidget( QWidget* iParent, const unsigned int& iDim ) :
-  QDockWidget( iParent ),
-  m_Dimension( iDim )
-{
-  this->setupUi( this );
+QGoNavigationDockWidget(QWidget* iParent, const unsigned int& iDim) :
+  QDockWidget(iParent),
+  m_Dimension(iDim)
+  {
+  this->setupUi(this);
   QIcon Navigation;
-  Navigation.addPixmap( QPixmap(QString::fromUtf8(":/fig/navigation.png")),
-    QIcon::Normal, QIcon::Off );
+  Navigation.addPixmap(QPixmap(QString::fromUtf8(":/fig/navigation.png")),
+                       QIcon::Normal, QIcon::Off);
   //temp->setIcon(Navigation);
   this->toggleViewAction()->setIcon(Navigation);
- 
-  if( m_Dimension < 3 )
-    {
-    this->XSliceLbl->setVisible( false );
-    this->XSliceSpinBox->setVisible( false );
-    this->YSliceLbl->setVisible( false );
-    this->YSliceSpinBox->setVisible( false );
-    this->ZSliceLbl->setVisible( false );
-    this->ZSliceSpinBox->setVisible( false );
-    this->TSliceLbl->setVisible( false );
-    this->TSliceSpinBox->setVisible( false );
 
-    this->line->setVisible( false );
+  if (m_Dimension < 3)
+    {
+    this->XSliceLbl->setVisible(false);
+    this->XSliceSpinBox->setVisible(false);
+    this->YSliceLbl->setVisible(false);
+    this->YSliceSpinBox->setVisible(false);
+    this->ZSliceLbl->setVisible(false);
+    this->ZSliceSpinBox->setVisible(false);
+    this->TSliceLbl->setVisible(false);
+    this->TSliceSpinBox->setVisible(false);
+
+    this->line->setVisible(false);
     }
   else
     {
-    if( m_Dimension == 3 )
+    if (m_Dimension == 3)
       {
-      this->TSliceLbl->setVisible( false );
-      this->TSliceSpinBox->setVisible( false );
+      this->TSliceLbl->setVisible(false);
+      this->TSliceSpinBox->setVisible(false);
       }
     }
 
-    QObject::connect( this->XSliceSpinBox, SIGNAL( valueChanged( int ) ),
-                      this, SIGNAL( XSliceChanged( int ) ) );
+  QObject::connect(this->XSliceSpinBox, SIGNAL(valueChanged(int)),
+                   this, SIGNAL(XSliceChanged(int)));
 
-    QObject::connect( this->YSliceSpinBox, SIGNAL( valueChanged( int ) ),
-                      this, SIGNAL( YSliceChanged( int ) ) );
+  QObject::connect(this->YSliceSpinBox, SIGNAL(valueChanged(int)),
+                   this, SIGNAL(YSliceChanged(int)));
 
-    QObject::connect( this->ZSliceSpinBox, SIGNAL( valueChanged( int ) ),
-                      this, SIGNAL( ZSliceChanged( int ) ) );
+  QObject::connect(this->ZSliceSpinBox, SIGNAL(valueChanged(int)),
+                   this, SIGNAL(ZSliceChanged(int)));
 
-    QObject::connect( this->TSliceSpinBox, SIGNAL( valueChanged( int ) ),
-                      this, SIGNAL( TSliceChanged( int ) ) );
+  QObject::connect(this->TSliceSpinBox, SIGNAL(valueChanged(int)),
+                   this, SIGNAL(TSliceChanged(int)));
 
-    QObject::connect( this->AllChannelsBtn, SIGNAL( toggled( bool ) ),
-                      this, SIGNAL( ShowAllChannelsChanged( bool ) ) );
+  QObject::connect(this->AllChannelsBtn, SIGNAL(toggled(bool)),
+                   this, SIGNAL(ShowAllChannelsChanged(bool)));
 
-    QObject::connect( this->ChannelComboBox, SIGNAL( currentIndexChanged( int ) ),
-                      this, SIGNAL( ShowOneChannelChanged( int ) ) );
-}
+  QObject::connect(this->ChannelComboBox, SIGNAL(currentIndexChanged(int)),
+                   this, SIGNAL(ShowOneChannelChanged(int)));
+  }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 QGoNavigationDockWidget::
 ~QGoNavigationDockWidget()
+  {
+  }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoNavigationDockWidget::
+SetXSlice(int iSlice)
 {
+  this->XSliceSpinBox->setValue(iSlice);
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void QGoNavigationDockWidget::
-SetXSlice( int iSlice )
+SetYSlice(int iSlice)
 {
-  this->XSliceSpinBox->setValue( iSlice );
+  this->YSliceSpinBox->setValue(iSlice);
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void QGoNavigationDockWidget::
-SetYSlice( int iSlice )
+SetZSlice(int iSlice)
 {
-  this->YSliceSpinBox->setValue( iSlice );
+  this->ZSliceSpinBox->setValue(iSlice);
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void QGoNavigationDockWidget::
-SetZSlice( int iSlice )
+SetTSlice(int iSlice)
 {
-  this->ZSliceSpinBox->setValue( iSlice );
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void QGoNavigationDockWidget::
-SetTSlice( int iSlice )
-{
-  this->TSliceSpinBox->setValue( iSlice );
+  this->TSliceSpinBox->setValue(iSlice);
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void
 QGoNavigationDockWidget::
-SetNumberOfChannels( const unsigned int& iN )
+SetNumberOfChannels(const unsigned int& iN)
 {
-  if( iN < 2 )
+  if (iN < 2)
     {
-    this->line->setVisible( false );
-    this->AllChannelsBtn->setVisible( false );
-    this->OneChannelBtn->setVisible( false );
-    this->ChannelComboBox->setVisible( false );
+    this->line->setVisible(false);
+    this->AllChannelsBtn->setVisible(false);
+    this->OneChannelBtn->setVisible(false);
+    this->ChannelComboBox->setVisible(false);
     }
   else
     {
-    this->line->setVisible( true );
-    this->AllChannelsBtn->setVisible( true );
-    this->OneChannelBtn->setVisible( true );
-    this->ChannelComboBox->setMaxCount( iN );
+    this->line->setVisible(true);
+    this->AllChannelsBtn->setVisible(true);
+    this->OneChannelBtn->setVisible(true);
+    this->ChannelComboBox->setMaxCount(iN);
     }
 }
 //-------------------------------------------------------------------------
@@ -161,30 +161,30 @@ SetNumberOfChannels( const unsigned int& iN )
 //-------------------------------------------------------------------------
 void
 QGoNavigationDockWidget::
-SetChannel( const unsigned int& i, const QString& iText )
+SetChannel(const unsigned int& i, const QString& iText)
 {
   QString input;
 
-  if( !iText.isEmpty() )
+  if (!iText.isEmpty())
     {
     input = iText;
     }
   else
     {
-    input = QString( "Channel %1" ).arg( i );
+    input = QString("Channel %1").arg(i);
     }
-  this->ChannelComboBox->insertItem( i, input );
+  this->ChannelComboBox->insertItem(i, input);
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void QGoNavigationDockWidget::
-SetXMinimumAndMaximum( const int& iMin, const int& iMax )
+SetXMinimumAndMaximum(const int& iMin, const int& iMax)
 {
-  this->XSliceSpinBox->setMinimum( iMin );
-  this->XSliceSpinBox->setMaximum( iMax );
-  this->XSliceSlider->setMinimum( iMin );
-  this->XSliceSlider->setMaximum( iMax );
+  this->XSliceSpinBox->setMinimum(iMin);
+  this->XSliceSpinBox->setMaximum(iMax);
+  this->XSliceSlider->setMinimum(iMin);
+  this->XSliceSlider->setMaximum(iMax);
   //this->MinXSlicelbl->setText(ConvertToString<int>(iMin).c_str());
   this->MinXSlicelbl->setText(tr("%1").arg(iMin));
   this->MaxXSlicelbl->setText(tr("%1").arg(iMax));
@@ -193,12 +193,12 @@ SetXMinimumAndMaximum( const int& iMin, const int& iMax )
 
 //-------------------------------------------------------------------------
 void QGoNavigationDockWidget::
-SetYMinimumAndMaximum( const int& iMin, const int& iMax )
+SetYMinimumAndMaximum(const int& iMin, const int& iMax)
 {
-  this->YSliceSpinBox->setMinimum( iMin );
-  this->YSliceSpinBox->setMaximum( iMax );
-  this->YSliceSlider->setMinimum ( iMin );
-  this->YSliceSlider->setMaximum( iMax );
+  this->YSliceSpinBox->setMinimum(iMin);
+  this->YSliceSpinBox->setMaximum(iMax);
+  this->YSliceSlider->setMinimum (iMin);
+  this->YSliceSlider->setMaximum(iMax);
   this->MinYSlicelbl->setText(tr("%1").arg(iMin));
   this->MaxYSlicelbl->setText(tr("%1").arg(iMax));
 }
@@ -206,25 +206,25 @@ SetYMinimumAndMaximum( const int& iMin, const int& iMax )
 
 //-------------------------------------------------------------------------
 void QGoNavigationDockWidget::
-SetZMinimumAndMaximum( const int& iMin, const int& iMax )
+SetZMinimumAndMaximum(const int& iMin, const int& iMax)
 {
-  this->ZSliceSpinBox->setMinimum( iMin );
-  this->ZSliceSpinBox->setMaximum( iMax );
-  this->ZSliceSlider->setMinimum ( iMin );
-  this->ZSliceSlider->setMaximum( iMax );
+  this->ZSliceSpinBox->setMinimum(iMin);
+  this->ZSliceSpinBox->setMaximum(iMax);
+  this->ZSliceSlider->setMinimum (iMin);
+  this->ZSliceSlider->setMaximum(iMax);
   this->MinZSlicelbl->setText(tr("%1").arg(iMin));
-  this->MaxZSlicelbl->setText( tr("%1").arg(iMax));
+  this->MaxZSlicelbl->setText(tr("%1").arg(iMax));
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void QGoNavigationDockWidget::
-SetTMinimumAndMaximum( const int& iMin, const int& iMax )
+SetTMinimumAndMaximum(const int& iMin, const int& iMax)
 {
-  this->TSliceSpinBox->setMinimum( iMin );
-  this->TSliceSpinBox->setMaximum( iMax );
-  this->TSliceSlider->setMinimum ( iMin );
-  this->TSliceSlider->setMaximum( iMax );
+  this->TSliceSpinBox->setMinimum(iMin);
+  this->TSliceSpinBox->setMaximum(iMax);
+  this->TSliceSlider->setMinimum (iMin);
+  this->TSliceSlider->setMaximum(iMax);
   this->MinTSlicelbl->setText(tr("%1").arg(iMin));
   this->MaxTSlicelbl->setText(tr("%1").arg(iMax));
 }
@@ -247,8 +247,8 @@ ShowAllChannels() const
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-QString QGoNavigationDockWidget::GetChannelName( const int& iIdx )
+QString QGoNavigationDockWidget::GetChannelName(const int& iIdx)
 {
-  return this->ChannelComboBox->itemText( iIdx );
+  return this->ChannelComboBox->itemText(iIdx);
 }
 //-------------------------------------------------------------------------

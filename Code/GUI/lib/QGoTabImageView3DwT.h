@@ -65,7 +65,7 @@ class QGoManualSegmentationSettingsDialog;
 class QGoTraceManualEditingWidget;
 
 #if defined ENABLEFFMPEG || defined ENABLEAVI
-  class QGoVideoRecorder;
+class QGoVideoRecorder;
 #endif /* ENABLEFFMPEG */
 
 class vtkLSMReader;
@@ -92,36 +92,35 @@ class vtkProp3D;
 \example GUI/lib/qgotabimageview3dwt.cxx
 */
 class QGOGUILIB_EXPORT QGoTabImageView3DwT : public QGoTabElementBase
-{
+  {
   Q_OBJECT
 public:
   /**
    * \brief Default Constructor
    * @param parent
    */
-  QGoTabImageView3DwT( QWidget* parent = 0 );
-
+  QGoTabImageView3DwT(QWidget * parent = 0);
 
   /**
    * \brief Destructor
    */
   virtual ~QGoTabImageView3DwT();
 
-  typedef QGoTabElementBase::QGoDockWidgetStatusPair  QGoDockWidgetStatusPair;
-  typedef QGoPrintDatabase::NamesDescrContainerType   NamesDescrContainerType;
+  typedef QGoTabElementBase::QGoDockWidgetStatusPair QGoDockWidgetStatusPair;
+  typedef QGoPrintDatabase::NamesDescrContainerType  NamesDescrContainerType;
 
   /**
    * \brief
    * @return
    */
-  GoFigure::TabDimensionType GetTabDimensionType( ) const;
+  GoFigure::TabDimensionType GetTabDimensionType() const;
 
   /**
    *
    * @param iReader
    * @param iTimePoint
    */
-  void SetLSMReader( vtkLSMReader* iReader, const int& iTimePoint );
+  void SetLSMReader(vtkLSMReader* iReader, const int& iTimePoint);
 
   /**
    *
@@ -134,7 +133,7 @@ public:
     const GoFigureFileInfoHelperMultiIndexContainer& iContainer,
     const GoFigure::FileType& iFileType,
     const std::string& iHeader,
-    const unsigned int& iTimePoint  );
+    const unsigned int& iTimePoint);
 
   /**
    *
@@ -145,19 +144,19 @@ public:
    *
    * @param parent
    */
-  void setupUi( QWidget* parent );
+  void setupUi(QWidget* parent);
   /**
    *
    * @param parent
    */
-  void retranslateUi( QWidget *parent );
+  void retranslateUi(QWidget *parent);
 
   /**
    *
    * @return
    */
-  virtual std::list< QWidget* > AdditionalWidget()
-    {return std::list< QWidget* >(); }
+  virtual std::list<QWidget*> AdditionalWidget()
+  { return std::list<QWidget*>(); }
 
   /**
    *
@@ -178,13 +177,13 @@ public:
    * \param[in] iSaveInDataBase Save in database? true=yes false=no
    * \param[in] iTrace Name of the traces to be loaded (contour or mesh)
    */
-  void AddTraceFromNodesManager( const unsigned int& iContourID,
-      vtkPolyData* iNodes,
-      const double iRgba[4],
-      const bool& iHighlighted,
-      const unsigned int& iTCoord,
-      const bool& iSaveInDataBase,
-      std::string iTrace);
+  void AddTraceFromNodesManager(const unsigned int& iContourID,
+                                vtkPolyData* iNodes,
+                                const double iRgba[4],
+                                const bool& iHighlighted,
+                                const unsigned int& iTCoord,
+                                const bool& iSaveInDataBase,
+                                std::string iTrace);
 
   /**
    *
@@ -192,18 +191,18 @@ public:
    * @param[in] iRgba[]
    * @param[in] iHighlighted
    */
-  void AddContourFromNodes( const unsigned int& iContourID, vtkPolyData* iNodes, const double iRgba[4],
-    const bool& iHighlighted, const unsigned int& iTCoord, const bool& iSaveInDataBase );
-  void AddContourFromNodes( const unsigned int& iContourID, vtkPolyData* iNodes,
-    const double& iR, const double& iG, const double& iB, const double& iA,
-    const bool& iHighlighted, const unsigned int& iTCoord, const bool& iSaveInDataBase );
+  void AddContourFromNodes(const unsigned int& iContourID, vtkPolyData* iNodes, const double iRgba[4],
+                           const bool& iHighlighted, const unsigned int& iTCoord, const bool& iSaveInDataBase);
+  void AddContourFromNodes(const unsigned int& iContourID, vtkPolyData* iNodes,
+                           const double& iR, const double& iG, const double& iB, const double& iA,
+                           const bool& iHighlighted, const unsigned int& iTCoord, const bool& iSaveInDataBase);
 
-  void AddMeshFromNodes( const unsigned int& iMeshID, vtkPolyData* iNodes, const double iRgba[4],
-    const bool& iHighlighted, const unsigned int& iTCoord, const bool& iSaveInDataBase );
+  void AddMeshFromNodes(const unsigned int& iMeshID, vtkPolyData* iNodes, const double iRgba[4],
+                        const bool& iHighlighted, const unsigned int& iTCoord, const bool& iSaveInDataBase);
 
-  void AddMeshFromNodes( const unsigned int& iMeshID, vtkPolyData* iNodes,
-    const double& iR, const double& iG, const double& iB, const double& iA,
-    const bool& iHighlighted, const unsigned int& iTCoord, const bool& iSaveInDataBase );
+  void AddMeshFromNodes(const unsigned int& iMeshID, vtkPolyData* iNodes,
+                        const double& iR, const double& iG, const double& iB, const double& iA,
+                        const bool& iHighlighted, const unsigned int& iTCoord, const bool& iSaveInDataBase);
 
   int GetSliceViewXY() const;
   int GetSliceViewXZ() const;
@@ -213,19 +212,19 @@ public:
   QGoTraceManualEditingWidget*     GetTraceManualEditingWidget();
   QGoPrintDatabase* m_DataBaseTables;
 
-  GoFigureMeshAttributes ComputeMeshAttributes( vtkPolyData* iMesh );
+  GoFigureMeshAttributes ComputeMeshAttributes(vtkPolyData* iMesh);
 
 signals:
-  void TimePointChanged( int TimePoint );
-  void SliceViewXYChanged( int Slice );
-  void SliceViewXZChanged( int Slice );
-  void SliceViewYZChanged( int Slice );
-  void FullScreenViewChanged( int FullScreen );
+  void TimePointChanged(int TimePoint);
+  void SliceViewXYChanged(int Slice);
+  void SliceViewXZChanged(int Slice);
+  void SliceViewYZChanged(int Slice);
+  void FullScreenViewChanged(int FullScreen);
   void UpdateBookmarkOpenActions(std::vector<QAction*>);
   void ContourRepresentationPropertiesChanged();
 
 public slots:
-  void SetTimePoint( const int& );
+  void SetTimePoint(const int&);
   void DisplayAnnotations();
   void DisplaySplinePlanes();
   void DisplayCube();
@@ -234,26 +233,26 @@ public slots:
 
   void GenerateContourRepresentationProperties();
   void GoToDefaultMenu(
-    std::string iTracename,std::string iCollectionName);
+    std::string iTracename, std::string iCollectionName);
 
-#if defined ( ENABLEFFMPEG ) || defined ( ENABLEAVI )
-  void SetRendererWindow( int );
+#if defined (ENABLEFFMPEG) || defined (ENABLEAVI)
+  void SetRendererWindow(int);
 #endif /* ENABLEVIDEORECORD */
 
-  QString SnapshotViewXY( const GoFigure::FileType& iType,
-    const QString& iBaseName = QString( "snapshot" ) );
-  QString SnapshotView2( const GoFigure::FileType& iType,
-    const QString& iBaseName = QString( "snapshot" ) );
-  QString SnapshotView3( const GoFigure::FileType& iType,
-    const QString& iBaseName = QString( "snapshot" ) );
-  QString SnapshotViewXYZ( const GoFigure::FileType& iType,
-    const QString& iBaseName = QString( "snapshot" ) );
+  QString SnapshotViewXY(const GoFigure::FileType& iType,
+                         const QString& iBaseName = QString("snapshot"));
+  QString SnapshotView2(const GoFigure::FileType& iType,
+                        const QString& iBaseName = QString("snapshot"));
+  QString SnapshotView3(const GoFigure::FileType& iType,
+                        const QString& iBaseName = QString("snapshot"));
+  QString SnapshotViewXYZ(const GoFigure::FileType& iType,
+                          const QString& iBaseName = QString("snapshot"));
 
-  void SetSliceViewXY( const int& );
-  void SetSliceViewXZ( const int& );
-  void SetSliceViewYZ( const int& );
+  void SetSliceViewXY(const int&);
+  void SetSliceViewXZ(const int&);
+  void SetSliceViewYZ(const int&);
 
-  void SetFullScreenView( const int& iS );
+  void SetFullScreenView(const int& iS);
   void Quadview();
   void FullScreenViewXY();
   void FullScreenViewXZ();
@@ -261,11 +260,11 @@ public slots:
   void FullScreenViewXYZ();
 
   void ChangeLookupTable();
-  void ShowScalarBar( const bool& );
+  void ShowScalarBar(const bool&);
   void ChangeBackgroundColor();
 
-  void ShowAllChannels( bool iChecked );
-  void ShowOneChannel( int iChannel );
+  void ShowAllChannels(bool iChecked);
+  void ShowOneChannel(int iChannel);
 
   /**
    *
@@ -274,36 +273,36 @@ public slots:
   /**
    *
    */
-  void LoadAllTracesForGivenTimePoint( const unsigned int& iT,
-      ContourMeshStructureMultiIndexContainer& iContainer );
+  void LoadAllTracesForGivenTimePoint(const unsigned int& iT,
+                                      ContourMeshStructureMultiIndexContainer& iContainer);
   /**
    *
    */
-  void RemoveAllTracesForPresentTimePointManager( );
+  void RemoveAllTracesForPresentTimePointManager();
   /**
    *
    */
-  void RemoveAllTracesForGivenTimePoint( const unsigned int& iT,
-      ContourMeshStructureMultiIndexContainer& iContainer );
-  void RemoveAllTracesForGivenTimePoint( const unsigned int& iT,
-      const std::string& iTraceName );
-      
-  void ActivateManualSegmentationEditor( const bool& iActivate );
-  void ActivateSemiAutoSegmentationEditor( const bool& iActivate );
+  void RemoveAllTracesForGivenTimePoint(const unsigned int& iT,
+                                        ContourMeshStructureMultiIndexContainer& iContainer);
+  void RemoveAllTracesForGivenTimePoint(const unsigned int& iT,
+                                        const std::string& iTraceName);
+
+  void ActivateManualSegmentationEditor(const bool& iActivate);
+  void ActivateSemiAutoSegmentationEditor(const bool& iActivate);
 
   void ValidateContour();
 
-  int  SavePolyDataAsContourInDB( vtkPolyData* iView );
-  
+  int  SavePolyDataAsContourInDB(vtkPolyData* iView);
+
   /** \brief Save a mesh in the database and render the mesh.
   \todo to be renamed */
-  int  SavePolyDataAsMeshInDB( vtkPolyData* iView );
-  
+  int  SavePolyDataAsMeshInDB(vtkPolyData* iView);
+
   void ReinitializeContour();
-  void ReEditContour( const unsigned int& iId );
+  void ReEditContour(const unsigned int& iId);
 
   void HighLightContainer(
-      ContourMeshStructureMultiIndexContainer& iContainer, vtkActor* iActor);
+    ContourMeshStructureMultiIndexContainer& iContainer, vtkActor* iActor);
   void HighLightContours();
   void ListHighLightMeshes();
 
@@ -311,8 +310,7 @@ public slots:
    * \brief Calls HighLightTracesFromTable( ... ) with the good
    *  container and trace name
    */
-  void HighLightTracesFromTableManager( );
-
+  void HighLightTracesFromTableManager();
 
   /**
    * \brief Highlights a trace in the visualization
@@ -321,8 +319,8 @@ public slots:
    * the container iterator
    */
   void HighLightTracesFromTable(
-      ContourMeshStructureMultiIndexContainer& iContainer,
-      std::string iCurrentTrace);
+    ContourMeshStructureMultiIndexContainer& iContainer,
+    std::string iCurrentTrace);
 
   /**
    * \brief Show a trace in the visualization
@@ -331,28 +329,28 @@ public slots:
    * the container iterator
    */
   void ShowTracesFromTable(ContourMeshStructureMultiIndexContainer& iContainer,
-      std::string iCurrentTrace);
+                           std::string iCurrentTrace);
 
   void             SelectContoursInTable();
   void             ListSelectMeshesInTable();
-  std::list< int > SelectTraceInTable(
-      ContourMeshStructureMultiIndexContainer& iContainer ,
-      std::list< vtkProp3D* >                  iActorList);
+  std::list<int> SelectTraceInTable(
+    ContourMeshStructureMultiIndexContainer& iContainer,
+    std::list<vtkProp3D*>                  iActorList);
 
   /**
    * \brief Calls DeleteTracesFromTable( ... ) with the good
    *  container and list
    * \param[in] iList Contains the selected traces in tablewidget
    */
-  void DeleteTracesFromTableManager( const std::list< int >& iList );
+  void DeleteTracesFromTableManager(const std::list<int>& iList);
 
   /**
    * \brief Deletes the selected traces from the table and visu
    * \param[in] iList Contains the selected traces in tablewidget
    * \param[in] iContainer Useful to delete in the visu
    */
-  void DeleteTracesFromTable( ContourMeshStructureMultiIndexContainer& iContainer,
-      const std::list< int >& iList );
+  void DeleteTracesFromTable(ContourMeshStructureMultiIndexContainer& iContainer,
+                             const std::list<int>& iList);
 
   /**
    * \brief Changes the apparence of a contour in the contourWidget
@@ -365,14 +363,14 @@ public slots:
   void UpdateDBAndCollectionIDComboBoxForANewCreatedCollection();
   //void PassInfoForDBFromCollectionIDComboBox();
 
-  /** \brief Get the info for the current selected color from the trace manual editing 
+  /** \brief Get the info for the current selected color from the trace manual editing
   widget and pass it to the database*/
   void PassInfoForDBForCurrentSelectedColor();
-  /** \brief Get the current selected collectionid from the trace manual editing widget 
+  /** \brief Get the current selected collectionid from the trace manual editing widget
   and update the currentCollectionID in the table widget*/
   void PassInfoForCurrentCollectionID();
 
-  /** \brief Get the current selected celltype and subcelltype from the trace manual editing widget 
+  /** \brief Get the current selected celltype and subcelltype from the trace manual editing widget
   and update the current celltype and sub celltype in the table widget*/
   void PassInfoForDBForCurrentSelectedCellTypeAndSubCellType();
 
@@ -388,23 +386,23 @@ public slots:
   void ModifyTracesVisibilityFromTableManager();
 
   void ModifyTracesVisibilityFromTable(
-      ContourMeshStructureMultiIndexContainer& iContainer,
-      std::string iCurrentTrace);
+    ContourMeshStructureMultiIndexContainer& iContainer,
+    std::string iCurrentTrace);
 
   void ApplyOneClickSegmentationFilter();
   void ApplyContourSemiAutoSegmentation();
 
-  void CreateMeshFromSelectedContours( std::list<int> ListContourIDs );
+  void CreateMeshFromSelectedContours(std::list<int> ListContourIDs);
 
   void TestMesh();
 
 protected:
-  QHBoxLayout*          m_HBoxLayout;
-  QSplitter*            m_VSplitter;
-  QGoImageView3D*       m_ImageView;
-  std::vector< vtkSmartPointer< vtkLSMReader > > m_LSMReader;
-  std::vector< vtkSmartPointer< vtkImageData > > m_InternalImages;
-  vtkImageData*         m_Image;
+  QHBoxLayout*                                m_HBoxLayout;
+  QSplitter*                                  m_VSplitter;
+  QGoImageView3D*                             m_ImageView;
+  std::vector<vtkSmartPointer<vtkLSMReader> > m_LSMReader;
+  std::vector<vtkSmartPointer<vtkImageData> > m_InternalImages;
+  vtkImageData*                               m_Image;
 
   double m_LinesWidth;
   QColor m_LinesColor;
@@ -413,63 +411,45 @@ protected:
 
   itk::MegaCaptureReader::Pointer           m_MegaCaptureReader;
   GoFigureFileInfoHelperMultiIndexContainer m_FileList;
-  GoFigure::FileType    m_FileType;
-  QColor                m_BackgroundColor;
-  QAction*              m_BackgroundColorAction;
-  QAction*              m_TakeSnapshotAction;
-  int                   m_TimePoint;
-  unsigned int          m_ContourId;
-  unsigned int          m_MeshId;
-  bool                  m_ReEditContourMode;
+  GoFigure::FileType                        m_FileType;
+  QColor                                    m_BackgroundColor;
+  QAction*                                  m_BackgroundColorAction;
+  QAction*                                  m_TakeSnapshotAction;
+  int                                       m_TimePoint;
+  unsigned int                              m_ContourId;
+  unsigned int                              m_MeshId;
+  bool                                      m_ReEditContourMode;
 
   /// \todo rename as QGoNavigationDockWidget
-  QGoNavigationDockWidget*         m_NavigationDockWidget;
-  QGoManualSegmentationDockWidget*    m_ManualSegmentationDockWidget;
-  QGoOneClickSegmentationDockWidget*  m_OneClickSegmentationDockWidget;
+  QGoNavigationDockWidget*           m_NavigationDockWidget;
+  QGoManualSegmentationDockWidget*   m_ManualSegmentationDockWidget;
+  QGoOneClickSegmentationDockWidget* m_OneClickSegmentationDockWidget;
 
   /// Useful?
-  vtkPoints*        m_SeedsWorldPosition;
+  vtkPoints* m_SeedsWorldPosition;
 
-  QGoTraceManualEditingDockWidget*     m_TraceManualEditingDockWidget;
+  QGoTraceManualEditingDockWidget* m_TraceManualEditingDockWidget;
   //QDockWidget*                 m_test;
 
-    
-
-   /// \todo remove m_FFMPEGWriter and m_AVIWriter from this class
+  /// \todo remove m_FFMPEGWriter and m_AVIWriter from this class
   #if defined ENABLEFFMPEG || defined ENABLEAVI
-    QGoVideoRecorder*                         m_VideoRecorderWidget;
+  QGoVideoRecorder* m_VideoRecorderWidget;
   #endif /* ENABLEFFMPEG || ENABLEAVI */
 
   // Contour Widget specific members
   /// \todo move the three following instance into the visualization element.
-  std::vector< vtkSmartPointer< vtkContourWidget > >                      m_ContourWidget;
-  std::vector< vtkSmartPointer< vtkOrientedGlyphContourRepresentation > > m_ContourRepresentation;
+  std::vector<vtkSmartPointer<vtkContourWidget> >                      m_ContourWidget;
+  std::vector<vtkSmartPointer<vtkOrientedGlyphContourRepresentation> > m_ContourRepresentation;
 
   // Distance Widget specific members
-  std::vector< vtkSmartPointer< vtkDistanceWidget > > m_DistanceWidget;
+  std::vector<vtkSmartPointer<vtkDistanceWidget> > m_DistanceWidget;
 //   std::vector< vtkSmartPointer< vtkDistanceRepresentation2D > > m_DistanceRepresentation;
 
   // Angle widget specific members
-  std::vector< vtkSmartPointer< vtkAngleWidget > > m_AngleWidget;
-  
+  std::vector<vtkSmartPointer<vtkAngleWidget> > m_AngleWidget;
 
-  ContourMeshStructureMultiIndexContainer                   m_ContourContainer;
-  ContourMeshStructureMultiIndexContainer                   m_MeshContainer;
-
-  /**
-   * @param[in] iContourID
-   * @param[in] iDir
-   * @param[in] iHighlighted
-   * @param[in] iR red component in [0,1]
-   * @param[in] iG green component in [0,1]
-   * @param[in] iB blue component in [0,1]
-   * @param[in] iA alpha component in [0,1]
-   * @param[in] iSaveInDataBase save in data base if true
-   * \todo Alpha component is not used at all, it is assumed to be opaque
-   */
-  virtual void ValidateContour( const int& iContourID, const int& iDir,
-    const double& iR, const double& iG, const double& iB, const double& iA,
-    const bool& iHighlighted, const unsigned int& iTCoord, const bool& iSaveInDataBase );
+  ContourMeshStructureMultiIndexContainer m_ContourContainer;
+  ContourMeshStructureMultiIndexContainer m_MeshContainer;
 
   /**
    * @param[in] iContourID
@@ -482,9 +462,31 @@ protected:
    * @param[in] iSaveInDataBase save in data base if true
    * \todo Alpha component is not used at all, it is assumed to be opaque
    */
-  virtual int SavePolyDataAsContourInDB( vtkPolyData* iView, const int& iContourID, const int& iDir,
-    const double& iR, const double& iG, const double& iB, const double& iA,
-    const bool& iHighlighted, const unsigned int& iTCoord, const bool& iSaveInDataBase );
+  virtual void ValidateContour(const int& iContourID, const int& iDir,
+                               const double& iR, const double& iG, const double& iB, const double& iA,
+                               const bool& iHighlighted, const unsigned int& iTCoord, const bool& iSaveInDataBase);
+
+  /**
+   * @param[in] iContourID
+   * @param[in] iDir
+   * @param[in] iHighlighted
+   * @param[in] iR red component in [0,1]
+   * @param[in] iG green component in [0,1]
+   * @param[in] iB blue component in [0,1]
+   * @param[in] iA alpha component in [0,1]
+   * @param[in] iSaveInDataBase save in data base if true
+   * \todo Alpha component is not used at all, it is assumed to be opaque
+   */
+  virtual int SavePolyDataAsContourInDB(vtkPolyData* iView,
+                                        const int& iContourID,
+                                        const int& iDir,
+                                        const double& iR,
+                                        const double& iG,
+                                        const double& iB,
+                                        const double& iA,
+                                        const bool& iHighlighted,
+                                        const unsigned int& iTCoord,
+                                        const bool& iSaveInDataBase);
 
   /**
    * @param[in] iMeshID
@@ -497,12 +499,12 @@ protected:
    * @param[in] iSaveInDataBase save in data base if true
    * \todo Alpha component is not used at all, it is assumed to be opaque
    */
-  virtual int SavePolyDataAsMeshInDB( vtkPolyData* iView, const int& iMeshID, const int& iDir,
-    const double& iR, const double& iG, const double& iB, const double& iA,
-    const bool& iHighlighted, const unsigned int& iTCoord, const bool& iSaveInDataBase );
+  virtual int SavePolyDataAsMeshInDB(vtkPolyData* iView, const int& iMeshID, const int& iDir,
+                                     const double& iR, const double& iG, const double& iB, const double& iA,
+                                     const bool& iHighlighted, const unsigned int& iTCoord, const bool& iSaveInDataBase);
 
-  void GetBackgroundColorFromImageViewer( );
-  void SetBackgroundColorToImageViewer( );
+  void GetBackgroundColorFromImageViewer();
+  void SetBackgroundColorToImageViewer();
   void CreateAllViewActions();
   void CreateToolsActions();
   void CreateBookmarkActions();
@@ -531,24 +533,26 @@ protected:
    */
   void LevelSetSegmentation3D();
 
-#if defined ( ENABLEFFMPEG ) || defined ( ENABLEAVI )
+#if defined (ENABLEFFMPEG) || defined (ENABLEAVI)
   void CreateVideoRecorderWidget();
 #endif /* ENABLEVIDEORECORD */
 
-  void RemoveActorFromViewer( const int& iId, vtkActor* iActor );
-  void DisplayActorInViewer( const int& iId, vtkActor* iActor );
+  void RemoveActorFromViewer(const int& iId, vtkActor* iActor);
+  void DisplayActorInViewer(const int& iId, vtkActor* iActor);
 
-  int* GetImageCoordinatesFromWorldCoordinates( double pos[3] );
+  int* GetImageCoordinatesFromWorldCoordinates(double pos[3]);
 
 //   std::vector< vtkQuadricLODActor* >
-  std::vector< vtkActor* > AddContour( const int& iId,
-      vtkPolyData* dataset,
-      vtkProperty* property = NULL );
+  std::vector<vtkActor*> AddContour(const int& iId,
+                                    vtkPolyData* dataset,
+                                    vtkProperty* property = NULL);
 
-  void SetTimePointWithLSMReaders( const int& iTimePoint );
-  void SetTimePointWithMegaCapture( const int& iTimePoint );
+  void SetTimePointWithLSMReaders(const int& iTimePoint);
+  void SetTimePointWithMegaCapture(const int& iTimePoint);
 
-  void ChangeColorOfSelectedTraces( ContourMeshStructureMultiIndexContainer& iContainer, std::string iCurrentTrace, QColor iSelectedColor);
+  void ChangeColorOfSelectedTraces(ContourMeshStructureMultiIndexContainer& iContainer,
+                                   std::string iCurrentTrace,
+                                   QColor iSelectedColor);
 
 protected slots:
   void AddBookmark();
@@ -559,52 +563,52 @@ protected slots:
   void SetTheCurrentSubCellType();
   void ShowTraceDockWidgetForContour(bool ManualSegVisible);
   void ShowTraceDockWidgetForMesh(bool OneClickVisible);
-  void ChangeColorOfSelectedTracesManager(std::pair<std::list<int>,QColor>);
+  void ChangeColorOfSelectedTracesManager(std::pair<std::list<int>, QColor>);
 
-  void GoToLocation( int iX, int iY, int iZ, int iT );
+  void GoToLocation(int iX, int iY, int iZ, int iT);
 
   /**
    * \brief Mouse interaction style allows contours segmentation, according to
    * the selected type of segmentation
    */
-  void ContourInteractorBehavior( bool );
+  void ContourInteractorBehavior(bool);
   /**
    * \brief Mouse interaction style allows meshes segmentation, according to
    * the selected type of segmentation
    */
-  void MeshInteractorBehavior( bool );
+  void MeshInteractorBehavior(bool);
   /**
    * \brief Mouse interaction style set as default
    */
-  void DefaultInteractorBehavior( bool );
+  void DefaultInteractorBehavior(bool);
   /**
    * \brief Mouse interaction style allows user to zoom in/out volume with all
    * buttons
    */
-  void ZoomInteractorBehavior( bool );
+  void ZoomInteractorBehavior(bool);
   /**
    * \brief Mouse interaction style allows user to pan volume with all buttons
    */
-  void PanInteractorBehavior( bool );
+  void PanInteractorBehavior(bool);
   /**
    * \brief Mouse interaction style allows user to pick contours
    */
-  void ContourPickingInteractorBehavior( bool );
+  void ContourPickingInteractorBehavior(bool);
 
   /**
    * \brief Mouse interaction style allows user to pick meshes
    */
-  void MeshPickingInteractorBehavior( bool );
+  void MeshPickingInteractorBehavior(bool);
 
-  void DistanceWidgetInteractorBehavior( bool );
-  void AngleWidgetInteractorBehavior( bool );
-  void Box3DPicking( bool );
+  void DistanceWidgetInteractorBehavior(bool);
+  void AngleWidgetInteractorBehavior(bool);
+  void Box3DPicking(bool);
 
   void ImportContours();
   void ImportMeshes();
 
 private:
-  Q_DISABLE_COPY( QGoTabImageView3DwT );
-};
+  Q_DISABLE_COPY(QGoTabImageView3DwT);
+  };
 
 #endif

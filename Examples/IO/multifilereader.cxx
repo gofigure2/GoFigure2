@@ -42,18 +42,18 @@
 
 #include "vtkImageData.h"
 
-int main( int argc, char** argv )
+int main(int argc, char** argv)
 {
-  if( argc != 3 )
+  if (argc != 3)
     {
-    std::cout <<"Usage: ./multifilereader(.exe) takes 2 arguments" <<std::endl;
-    std::cout <<"1-filename (.jpg)" <<std::endl;
-    std::cout <<"2-timebased (boolean)" <<std::endl;
+    std::cout << "Usage: ./multifilereader(.exe) takes 2 arguments" << std::endl;
+    std::cout << "1-filename (.jpg)" << std::endl;
+    std::cout << "2-timebased (boolean)" << std::endl;
     return EXIT_FAILURE;
     }
 
   itk::MegaCaptureImport::Pointer importer = itk::MegaCaptureImport::New();
-  importer->SetFileName( argv[1] );
+  importer->SetFileName(argv[1]);
   importer->Update();
   GoFigureFileInfoHelperMultiIndexContainer listoffiles = importer->GetOutput();
 

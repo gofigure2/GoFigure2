@@ -42,43 +42,43 @@
 #include "GoDBRecordSetHelper.h"
 #include <iostream>
 
-GoDBTrackRow::GoDBTrackRow():GoDBTraceRow()
-{
+GoDBTrackRow::GoDBTrackRow() : GoDBTraceRow()
+  {
   this->InitializeMap();
-}
+  }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 GoDBTrackRow::GoDBTrackRow(vtkMySQLDatabase* DatabaseConnector,
-  GoDBCoordinateRow Min, GoDBCoordinateRow Max,unsigned int ImgSessionID,
-  std::string TraceVisu):GoDBTraceRow(DatabaseConnector,TraceVisu,Min,Max,
-    ImgSessionID)
-{
+                           GoDBCoordinateRow Min, GoDBCoordinateRow Max, unsigned int ImgSessionID,
+                           std::string TraceVisu) : GoDBTraceRow(DatabaseConnector, TraceVisu, Min, Max,
+                                                                 ImgSessionID)
+  {
   //GoDBTraceRow::GoDBTraceRow(DatabaseConnector,TraceVisu,Min,Max,
-    //ImgSessionID);
+  //ImgSessionID);
 
-  cout << "Track ID found: "<< this->DoesThisBoundingBoxTrackExist(DatabaseConnector) <<endl;
+  cout << "Track ID found: " << this->DoesThisBoundingBoxTrackExist(DatabaseConnector) << endl;
 
   if (this->DoesThisBoundingBoxTrackExist(DatabaseConnector))
     {
-    std::cout<<"The bounding box already exists for this track"<<std::endl;
+    std::cout << "The bounding box already exists for this track" << std::endl;
     }
-}
+  }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void GoDBTrackRow::InitializeMap()
-{ 
+{
   //GoDBTraceRow::InitializeMap();
   //this->m_MapRow["TrackID"] = ConvertToString<int>(0);
   this->m_TableName = "track";
-  this->m_TableIDName = "TrackID"; 
+  this->m_TableIDName = "TrackID";
   this->m_CollectionName = "lineage";
   this->m_CollectionIDName = "LineageID";
   this->m_MapRow[this->m_TableIDName] = ConvertToString<int>(0);
   this->m_MapRow["LineageID"] = ConvertToString<int>(0);
   this->m_MapRow["TrackFamilyID"] = ConvertToString<int>(0);
-}    
+}
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -86,15 +86,15 @@ int GoDBTrackRow::DoesThisBoundingBoxTrackExist(
   vtkMySQLDatabase* DatabaseConnector)
 {
 
-  return FindOneID(DatabaseConnector,"track","TrackID",
-    "CoordIDMax",this->GetMapValue("CoordIDMax"),
-    "CoordIDMin",this->GetMapValue("CoordIDMin"));
+  return FindOneID(DatabaseConnector, "track", "TrackID",
+                   "CoordIDMax", this->GetMapValue("CoordIDMax"),
+                   "CoordIDMin", this->GetMapValue("CoordIDMin"));
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 int GoDBTrackRow::SaveInDB(vtkMySQLDatabase* DatabaseConnector)
 {
-  return AddOnlyOneNewObjectInTable<GoDBTrackRow>( DatabaseConnector,
-    "track",*this, "TrackID");
+  return AddOnlyOneNewObjectInTable<GoDBTrackRow>(DatabaseConnector,
+                                                  "track", *this, "TrackID");
 }

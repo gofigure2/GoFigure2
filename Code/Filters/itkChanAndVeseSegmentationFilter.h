@@ -64,173 +64,174 @@ namespace itk
  * \class ChanAndVeseSegmentationFilter
  * \brief
 */
-template< class TFeatureImage >
+template<class TFeatureImage>
 class ChanAndVeseSegmentationFilter : public Object
-{
+  {
 public:
   typedef ChanAndVeseSegmentationFilter Self;
-  typedef SmartPointer< Self >          Pointer;
-  typedef SmartPointer< const Self >    ConstPointer;
+  typedef SmartPointer<Self>            Pointer;
+  typedef SmartPointer<const Self>      ConstPointer;
   typedef Object                        Superclass;
 
   /** Run-time type information (and related methods).   */
-  itkTypeMacro( ChanAndVeseSegmentationFilter, Object );
+  itkTypeMacro(ChanAndVeseSegmentationFilter, Object);
   /** New macro for creation of through a Smart Pointer   */
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
-  itkStaticConstMacro( Dimension, unsigned int, TFeatureImage::ImageDimension);
+  itkStaticConstMacro(Dimension, unsigned int, TFeatureImage::ImageDimension);
 
-  typedef Image< float, Dimension >                   InternalImageType;
-  typedef typename InternalImageType::Pointer         InternalImagePointer;
-  typedef typename InternalImageType::PointType       InternalPointType;
-  typedef typename InternalPointType::CoordRepType    InternalCoordRepType;
-  typedef typename InternalImageType::IndexType       InternalIndexType;
-  typedef typename InternalIndexType::IndexValueType  InternalIndexValueType;
-  typedef typename InternalImageType::SizeType        InternalSizeType;
-  typedef typename InternalSizeType::SizeValueType    InternalSizeValueType;
-  typedef typename InternalImageType::RegionType      InternalRegionType;
-  typedef typename InternalImageType::PixelType       InternalPixelType;
-  typedef typename InternalImageType::SpacingType     InternalSpacingType;
+  typedef Image<float, Dimension>                    InternalImageType;
+  typedef typename InternalImageType::Pointer        InternalImagePointer;
+  typedef typename InternalImageType::PointType      InternalPointType;
+  typedef typename InternalPointType::CoordRepType   InternalCoordRepType;
+  typedef typename InternalImageType::IndexType      InternalIndexType;
+  typedef typename InternalIndexType::IndexValueType InternalIndexValueType;
+  typedef typename InternalImageType::SizeType       InternalSizeType;
+  typedef typename InternalSizeType::SizeValueType   InternalSizeValueType;
+  typedef typename InternalImageType::RegionType     InternalRegionType;
+  typedef typename InternalImageType::PixelType      InternalPixelType;
+  typedef typename InternalImageType::SpacingType    InternalSpacingType;
 
-  typedef ImageRegionIteratorWithIndex< InternalImageType >    InternalRegionIterator;
+  typedef ImageRegionIteratorWithIndex<InternalImageType> InternalRegionIterator;
 
-  typedef TFeatureImage                               FeatureImageType;
-  typedef typename FeatureImageType::Pointer          FeatureImagePointer;
-  typedef typename FeatureImageType::SizeType         FeatureSizeType;
-  typedef typename FeatureImageType::SpacingType      FeatureSpacingType;
+  typedef TFeatureImage                          FeatureImageType;
+  typedef typename FeatureImageType::Pointer     FeatureImagePointer;
+  typedef typename FeatureImageType::SizeType    FeatureSizeType;
+  typedef typename FeatureImageType::SpacingType FeatureSpacingType;
 
-  typedef TFeatureImage                               OutputImageType;
-  typedef typename OutputImageType::Pointer           OutputImagePointer;
+  typedef TFeatureImage                     OutputImageType;
+  typedef typename OutputImageType::Pointer OutputImagePointer;
 
-  typedef ScalarChanAndVeseLevelSetFunctionData< InternalImageType,
-    FeatureImageType > DataHelperType;
+  typedef ScalarChanAndVeseLevelSetFunctionData<InternalImageType,
+                                                FeatureImageType> DataHelperType;
 
-  typedef ConstrainedRegionBasedLevelSetFunctionSharedData< InternalImageType,
-    FeatureImageType, DataHelperType >                SharedDataHelperType;
+  typedef ConstrainedRegionBasedLevelSetFunctionSharedData<InternalImageType,
+                                                           FeatureImageType,
+                                                           DataHelperType>                SharedDataHelperType;
 
-  typedef ScalarChanAndVeseLevelSetFunction< InternalImageType,
-    FeatureImageType, SharedDataHelperType >          FunctionType;
-  typedef ScalarChanAndVeseSparseLevelSetImageFilter< InternalImageType,
-    FeatureImageType, OutputImageType, FunctionType, SharedDataHelperType >
-                                                      MultiLevelSetType;
-  typedef typename MultiLevelSetType::Pointer         MultiLevelSetPointer;
+  typedef ScalarChanAndVeseLevelSetFunction<InternalImageType,
+                                            FeatureImageType, SharedDataHelperType>          FunctionType;
+  typedef ScalarChanAndVeseSparseLevelSetImageFilter<InternalImageType,
+                                                     FeatureImageType, OutputImageType, FunctionType,
+                                                     SharedDataHelperType>
+  MultiLevelSetType;
+  typedef typename MultiLevelSetType::Pointer MultiLevelSetPointer;
 
-  typedef itk::CellPreprocess< FeatureImageType, FeatureImageType >
-                                                      PreprocessFilterType;
+  typedef itk::CellPreprocess<FeatureImageType, FeatureImageType>
+  PreprocessFilterType;
   typedef typename PreprocessFilterType::Pointer PreprocessFilterPointer;
 
   typedef RegionOfInterestImageFilter<
-    FeatureImageType, FeatureImageType >              ROIFilterType;
-  typedef typename ROIFilterType::Pointer             ROIFilterPointer;
+    FeatureImageType, FeatureImageType>              ROIFilterType;
+  typedef typename ROIFilterType::Pointer ROIFilterPointer;
 
-  typedef AtanRegularizedHeavisideStepFunction< InternalPixelType, InternalPixelType >
-    DomainFunctionType;
+  typedef AtanRegularizedHeavisideStepFunction<InternalPixelType, InternalPixelType>
+  DomainFunctionType;
   typedef typename DomainFunctionType::Pointer
-    DomainFunctionPointer;
+  DomainFunctionPointer;
 
-  typedef  FastMarchingImageFilter< InternalImageType,
-    InternalImageType >                               FastMarchingFilterType;
+  typedef  FastMarchingImageFilter<InternalImageType,
+                                   InternalImageType>                               FastMarchingFilterType;
   typedef typename FastMarchingFilterType::NodeContainer
-                                                      NodeContainer;
-  typedef typename FastMarchingFilterType::NodeType   NodeType;
+  NodeContainer;
+  typedef typename FastMarchingFilterType::NodeType NodeType;
 
-  typedef ImageToVTKImageFilter< InternalImageType >  ConverterType;
-  typedef typename ConverterType::Pointer             ConverterPointer;
+  typedef ImageToVTKImageFilter<InternalImageType> ConverterType;
+  typedef typename ConverterType::Pointer          ConverterPointer;
 
-  void SetCenter( const InternalPointType& iC )
-    {
+  void SetCenter(const InternalPointType& iC)
+  {
     m_Center = iC;
-    }
+  }
 
-  InternalPointType GetCenter( ) const
-    {
+  InternalPointType GetCenter() const
+  {
     return m_Center;
-    }
+  }
 
-  void SetRadius( const InternalCoordRepType& iR )
-    {
+  void SetRadius(const InternalCoordRepType& iR)
+  {
     m_Radius = iR;
-    }
-  InternalCoordRepType GetRadius( ) const
-    {
+  }
+  InternalCoordRepType GetRadius() const
+  {
     return m_Radius;
-    }
+  }
 
-  void SetFeatureImage( FeatureImageType* iImage )
-    {
+  void SetFeatureImage(FeatureImageType* iImage)
+  {
     m_FeatureImage = iImage;
-    }
+  }
 
-  void SetNumberOfIterations( int iNumberOfIterations )
-    {
+  void SetNumberOfIterations(int iNumberOfIterations)
+  {
     m_NumberOfIterations = iNumberOfIterations;
-    }
+  }
 
-  void SetCurvatureWeight( int iCurvatureWeight )
-    {
+  void SetCurvatureWeight(int iCurvatureWeight)
+  {
     m_CurvatureWeight = iCurvatureWeight;
-    }
+  }
 
   void Update()
-    {
+  {
     GenerateData();
-    }
+  }
 
   vtkImageData* GetOutput()
-    {
+  {
     return m_VTKImage;
-    }
+  }
 
-  itkGetConstMacro ( Preprocess, bool );
-  itkSetMacro ( Preprocess, bool );
+  itkGetConstMacro (Preprocess, bool);
+  itkSetMacro (Preprocess, bool);
 
 protected:
-  ChanAndVeseSegmentationFilter() : m_VTKImage( 0 ), m_FeatureImage( 0 )
+  ChanAndVeseSegmentationFilter() : m_VTKImage(0), m_FeatureImage(0)
     {
     m_Converter = ConverterType::New();
-    m_Center.Fill( 0. );
-    m_Size.Fill( 0 );
+    m_Center.Fill(0.);
+    m_Size.Fill(0);
     m_Radius = 0.;
     m_Preprocess = false;
     }
 
   ~ChanAndVeseSegmentationFilter()  {}
 
-  vtkImageData*         m_VTKImage;
-  ConverterPointer      m_Converter;
-  FeatureImagePointer   m_FeatureImage; // Raw image -- very large in size
-  InternalPointType     m_Center; // Center of the cell/nucleus
-  InternalSizeType      m_Size; // Level-set image size
-  InternalCoordRepType  m_Radius; // Radius of the cell
-  InternalImagePointer  m_Output;
-  bool                  m_Preprocess;
-  int                   m_NumberOfIterations;
-  int                   m_CurvatureWeight;
-
+  vtkImageData*        m_VTKImage;
+  ConverterPointer     m_Converter;
+  FeatureImagePointer  m_FeatureImage;  // Raw image -- very large in size
+  InternalPointType    m_Center;  // Center of the cell/nucleus
+  InternalSizeType     m_Size;  // Level-set image size
+  InternalCoordRepType m_Radius;  // Radius of the cell
+  InternalImagePointer m_Output;
+  bool                 m_Preprocess;
+  int                  m_NumberOfIterations;
+  int                  m_CurvatureWeight;
 
   void GenerateData()
-    {
-    if( m_FeatureImage.IsNull() )
+  {
+    if (m_FeatureImage.IsNull())
       {
-      std::cerr <<"m_FeatureImage is Null" <<std::endl;
+      std::cerr << "m_FeatureImage is Null" << std::endl;
       return;
       }
     FeatureSpacingType spacing = m_FeatureImage->GetSpacing();
-    FeatureSizeType inputSize = m_FeatureImage->GetLargestPossibleRegion().GetSize();
+    FeatureSizeType    inputSize = m_FeatureImage->GetLargestPossibleRegion().GetSize();
 
     InternalIndexType start, start2;
     InternalPointType origin;
     InternalIndexType cen;
 
-    for( unsigned int j = 0; j < Dimension; j++ )
+    for (unsigned int j = 0; j < Dimension; j++)
       {
       m_Size[j] =
-        1 + 4. * static_cast< InternalSizeValueType >( m_Radius / spacing[j] );
-      cen[j] = static_cast< InternalSizeValueType >( 2 * m_Radius / spacing[j] );
+        1 + 4. * static_cast<InternalSizeValueType>(m_Radius / spacing[j]);
+      cen[j] = static_cast<InternalSizeValueType>(2 * m_Radius / spacing[j]);
       origin[j] = m_Center[j] - 2 * m_Radius;
       start2[j] = 0;
       }
-    m_FeatureImage->TransformPhysicalPointToIndex( origin, start );
+    m_FeatureImage->TransformPhysicalPointToIndex(origin, start);
 
     std::cout << "Spacing: " << spacing << std::endl;
     std::cout << "Input Size: " << inputSize << std::endl;
@@ -240,44 +241,44 @@ protected:
     std::cout << "Center: " << cen << std::endl;
 
     InternalRegionType region;
-    region.SetSize( m_Size );
-    region.SetIndex( start );
+    region.SetSize(m_Size);
+    region.SetIndex(start);
 
     NodeType node;
-    node.SetValue( - m_Radius/2 );
-    node.SetIndex( cen );
+    node.SetValue(-m_Radius / 2);
+    node.SetIndex(cen);
 
     typename NodeContainer::Pointer seeds = NodeContainer::New();
     seeds->Initialize();
-    seeds->InsertElement( 0, node );
+    seeds->InsertElement(0, node);
 
     InternalRegionType region2;
-    region2.SetSize( m_Size );
-    region2.SetIndex( start2 );
+    region2.SetSize(m_Size);
+    region2.SetIndex(start2);
 
     ///TODO Allocate image
     InternalImagePointer image = InternalImageType::New();
-    image->SetRegions( region2 );
-    image->CopyInformation( m_FeatureImage );
+    image->SetRegions(region2);
+    image->CopyInformation(m_FeatureImage);
     image->Allocate();
 
-    InternalRegionIterator r_it( image, region2 );
+    InternalRegionIterator r_it(image, region2);
     r_it.GoToBegin();
 
     InternalIndexType idx;
     //float or double d;
     double d;
-    double r = m_Radius/2;
-    while( !r_it.IsAtEnd() )
+    double r = m_Radius / 2;
+    while (!r_it.IsAtEnd())
       {
       idx = r_it.GetIndex();
       d = 0.;
-      for( unsigned int dim = 0; dim < Dimension; dim++ )
+      for (unsigned int dim = 0; dim < Dimension; dim++)
         {
-        d += ( idx[dim] - cen[dim] ) * ( idx[dim] - cen[dim] ) *
-            spacing[dim] * spacing[dim];
+        d += (idx[dim] - cen[dim]) * (idx[dim] - cen[dim]) *
+             spacing[dim] * spacing[dim];
         }
-      r_it.Set( vcl_sqrt( d ) - r);
+      r_it.Set(vcl_sqrt(d) - r);
       ++r_it;
       }
 /*
@@ -290,16 +291,16 @@ protected:
     fastMarching->Update();*/
 
     FeatureImagePointer feature;
-    if ( m_Preprocess )
+    if (m_Preprocess)
       {
       ROIFilterPointer roi = ROIFilterType::New();
-      roi->SetInput( m_FeatureImage );
-      roi->SetRegionOfInterest( region );
+      roi->SetInput(m_FeatureImage);
+      roi->SetRegionOfInterest(region);
       try
         {
-      roi->Update();
+        roi->Update();
         }
-      catch( itk::ExceptionObject& err )
+      catch (itk::ExceptionObject& err)
         {
         std::cerr << "roi Exception:" << err << std::endl;
         }
@@ -314,19 +315,19 @@ protected:
             metaWriter1->Write();*/
 
       PreprocessFilterPointer preprocess = PreprocessFilterType::New();
-      preprocess->SetInput ( roi->GetOutput() );
-      preprocess->SetLargestCellRadius ( m_Radius ); // in real coordinates
+      preprocess->SetInput (roi->GetOutput());
+      preprocess->SetLargestCellRadius (m_Radius);   // in real coordinates
       try
         {
-      preprocess->Update();
+        preprocess->Update();
         }
-      catch( itk::ExceptionObject& err )
+      catch (itk::ExceptionObject& err)
         {
         std::cerr << "preprocess Exception:" << err << std::endl;
         }
 
       feature = preprocess->GetOutput();
-      feature->SetOrigin( origin );
+      feature->SetOrigin(origin);
       feature->DisconnectPipeline();
       }
     else
@@ -335,60 +336,60 @@ protected:
       }
 
     DomainFunctionPointer domainFunction = DomainFunctionType::New();
-    domainFunction->SetEpsilon( 1. );
+    domainFunction->SetEpsilon(1.);
 
-    typedef std::vector< unsigned int > VectorType;
-    VectorType lookUp( 1, 1 );
+    typedef std::vector<unsigned int> VectorType;
+    VectorType lookUp(1, 1);
 
-    image->CopyInformation( feature );
+    image->CopyInformation(feature);
 
     MultiLevelSetPointer LevelSetFilter = MultiLevelSetType::New();
-    LevelSetFilter->SetFunctionCount( 1 );
-    LevelSetFilter->SetLookup( lookUp );
-    LevelSetFilter->SetFeatureImage( feature );
-    LevelSetFilter->SetLevelSet( 0, image );
-    LevelSetFilter->SetNumberOfIterations( m_NumberOfIterations );
-    LevelSetFilter->SetMaximumRMSError( 0 );
-    LevelSetFilter->SetUseImageSpacing( 1 );
-    LevelSetFilter->SetInPlace( false );
+    LevelSetFilter->SetFunctionCount(1);
+    LevelSetFilter->SetLookup(lookUp);
+    LevelSetFilter->SetFeatureImage(feature);
+    LevelSetFilter->SetLevelSet(0, image);
+    LevelSetFilter->SetNumberOfIterations(m_NumberOfIterations);
+    LevelSetFilter->SetMaximumRMSError(0);
+    LevelSetFilter->SetUseImageSpacing(1);
+    LevelSetFilter->SetInPlace(false);
 
-    LevelSetFilter->GetDifferenceFunction(0)->SetDomainFunction( domainFunction );
+    LevelSetFilter->GetDifferenceFunction(0)->SetDomainFunction(domainFunction);
     LevelSetFilter->GetDifferenceFunction(0)->
-        SetCurvatureWeight( m_CurvatureWeight );
-    LevelSetFilter->GetDifferenceFunction(0)->SetAreaWeight( 0. );
-    LevelSetFilter->GetDifferenceFunction(0)->SetLambda1( 1. );
-    LevelSetFilter->GetDifferenceFunction(0)->SetLambda2( 1. );
+    SetCurvatureWeight(m_CurvatureWeight);
+    LevelSetFilter->GetDifferenceFunction(0)->SetAreaWeight(0.);
+    LevelSetFilter->GetDifferenceFunction(0)->SetLambda1(1.);
+    LevelSetFilter->GetDifferenceFunction(0)->SetLambda2(1.);
     try
       {
       LevelSetFilter->Update();
       }
-    catch( itk::ExceptionObject& err )
+    catch (itk::ExceptionObject& err)
       {
       std::cerr << "levelsetfilter Exception:" << err << std::endl;
       }
 
-    m_Output = LevelSetFilter->GetLevelSet( 0 );
+    m_Output = LevelSetFilter->GetLevelSet(0);
 
-    m_Converter->SetInput( m_Output );
+    m_Converter->SetInput(m_Output);
 
     try
       {
       m_Converter->Update();
       }
-    catch( itk::ExceptionObject& err )
+    catch (itk::ExceptionObject& err)
       {
       std::cerr << "m_converter Exception:" << err << std::endl;
       }
 
     m_VTKImage = m_Converter->GetOutput();
     std::cout << "Output Image Size: " << m_VTKImage->GetDimensions()[0]
-      << " " << m_VTKImage->GetDimensions()[1]
-      << " " << m_VTKImage->GetDimensions()[2] << std::endl;
-    }
+              << " " << m_VTKImage->GetDimensions()[1]
+              << " " << m_VTKImage->GetDimensions()[2] << std::endl;
+  }
 
 private:
-  ChanAndVeseSegmentationFilter( const Self& );
-  void operator = ( const Self& );
-};
+  ChanAndVeseSegmentationFilter(const Self&);
+  void operator =(const Self&);
+  };
 }
 #endif

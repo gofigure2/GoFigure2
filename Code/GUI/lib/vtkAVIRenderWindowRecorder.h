@@ -50,14 +50,14 @@
 #include "QGoGUILibConfigure.h"
 
 class QGOGUILIB_EXPORT vtkAVIRenderWindowRecorder : public vtkRenderWindowMovieRecorder
-{
-   public:
-      static vtkAVIRenderWindowRecorder *New();
-      vtkTypeMacro(vtkAVIRenderWindowRecorder,vtkRenderWindowMovieRecorder);
-     // set/get the quality of the video
-     void SetSpecificParameters();
-   protected:
-     vtkAVIRenderWindowRecorder();
-     ~vtkAVIRenderWindowRecorder();
-};
+  {
+public:
+  static vtkAVIRenderWindowRecorder *New();
+  vtkTypeMacro(vtkAVIRenderWindowRecorder, vtkRenderWindowMovieRecorder);
+  // set/get the quality of the video
+  void SetSpecificParameters();
+protected:
+  vtkAVIRenderWindowRecorder();
+  ~vtkAVIRenderWindowRecorder();
+  };
 #endif /*__VTKAVIRENDERWINDOWRECORDER_H*/

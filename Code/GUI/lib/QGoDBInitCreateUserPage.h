@@ -45,9 +45,8 @@
 #include <QLineEdit>
 #include "vtkMySQLDatabase.h"
 
-
 class QGoDBInitCreateUserPage : public QWizardPage
-{
+  {
   Q_OBJECT
 
 public:
@@ -57,19 +56,19 @@ public:
   bool validatePage();
 
 private:
-  Q_DISABLE_COPY( QGoDBInitCreateUserPage );
+  Q_DISABLE_COPY(QGoDBInitCreateUserPage);
 
-  QLineEdit*          lineUserName;
-  QLineEdit*          linePassword;
-  std::string         m_ServerName;
-  std::string         m_DBName;
+  QLineEdit*  lineUserName;
+  QLineEdit*  linePassword;
+  std::string m_ServerName;
+  std::string m_DBName;
 
   bool CreateUser();
-  bool CreateGofigureUserWithDatabaseConnector (
-    vtkMySQLDatabase* DatabaseConnector,std::string iLogin, 
+  bool CreateGofigureUserWithDatabaseConnector(
+    vtkMySQLDatabase* DatabaseConnector, std::string iLogin,
     std::string iServerName, std::string iPassword);
   bool UserNameAlreadyExits(
-    vtkMySQLDatabase* DatabaseConnector,std::string iLogin, 
+    vtkMySQLDatabase* DatabaseConnector, std::string iLogin,
     std::string iServerName, std::string iPassword);
   /** \brief create a dialog with OK and Cancel button asking iquestion to the
   user, return true if the user press OK, false if press Cancel*/
@@ -78,5 +77,5 @@ private:
 signals:
   void UserAndDatabaseCreated();
 
-};
+  };
 #endif

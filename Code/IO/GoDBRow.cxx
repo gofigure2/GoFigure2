@@ -44,31 +44,31 @@
 #include "SelectQueryDatabaseHelper.h"
 
 GoDBRow::GoDBRow()
-{
-}
+  {
+  }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 GoDBRow::~GoDBRow()
-{
+  {
 
-}
+  }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void GoDBRow::SetField( std::string key, std::string value )
+void GoDBRow::SetField(std::string key, std::string value)
 {
-  StringMapIterator it = m_MapRow.find( key );
+  StringMapIterator it = m_MapRow.find(key);
 
-  if( it != m_MapRow.end() )
+  if (it != m_MapRow.end())
     {
     std::stringstream valueToQuery;
-    valueToQuery <<"\"" << value <<"\"";
+    valueToQuery << "\"" << value << "\"";
     it->second = valueToQuery.str();
     }
   else
     {
-    std::cerr <<"This field does not exist!!!" <<std::endl;
+    std::cerr << "This field does not exist!!!" << std::endl;
     }
 }
 //-------------------------------------------------------------------------
@@ -77,38 +77,38 @@ void GoDBRow::SetField( std::string key, std::string value )
 std::string GoDBRow::PrintValues()
 {
   std::stringstream ListValues;
-  for( StringMapIterator iter = m_MapRow.begin();
-    iter != m_MapRow.end(); ++iter )
+  for (StringMapIterator iter = m_MapRow.begin();
+       iter != m_MapRow.end(); ++iter)
     {
-    ListValues << iter->second<< ", ";
+    ListValues << iter->second << ", ";
     }
-  size_t n = ListValues.str().length() -2;
-  return ListValues.str().substr(0,n);
+  size_t n = ListValues.str().length() - 2;
+  return ListValues.str().substr(0, n);
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 std::string GoDBRow::PrintColumnNames()
+{
+  std::stringstream ListColumnNames;
+  for (StringMapIterator iter = m_MapRow.begin();
+       iter != m_MapRow.end();
+       ++iter)
     {
-    std::stringstream ListColumnNames;
-    for( StringMapIterator iter = m_MapRow.begin();
-      iter != m_MapRow.end(); 
-      ++iter )
-      {
-      ListColumnNames << iter->first<< ", ";
-      }
-    size_t n = ListColumnNames.str().length() -2;
-    return ListColumnNames.str().substr(0,n);
+    ListColumnNames << iter->first << ", ";
     }
+  size_t n = ListColumnNames.str().length() - 2;
+  return ListColumnNames.str().substr(0, n);
+}
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 std::vector<std::string> GoDBRow::GetVectorColumnNames()
 {
-  std::vector<std::string> VectorColumnNames; 
-  for( StringMapIterator iter = m_MapRow.begin();
-      iter != m_MapRow.end(); 
-      ++iter )
+  std::vector<std::string> VectorColumnNames;
+  for (StringMapIterator iter = m_MapRow.begin();
+       iter != m_MapRow.end();
+       ++iter)
     {
     VectorColumnNames.push_back(iter->first);
     }
@@ -128,10 +128,10 @@ std::vector<std::string> GoDBRow::GetVectorColumnNames()
   return ListColumnNames;
 
 }*/
- //-------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-GoDBRow::StringMapIterator 
+GoDBRow::StringMapIterator
 GoDBRow::MapBegin()
 {
   return m_MapRow.begin();
@@ -147,7 +147,7 @@ GoDBRow::MapEnd()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-GoDBRow::StringMapConstIterator 
+GoDBRow::StringMapConstIterator
 GoDBRow::ConstMapBegin()
 {
   return m_MapRow.begin();
@@ -164,14 +164,14 @@ GoDBRow::ConstMapEnd()
 
 //-------------------------------------------------------------------------
 // std::string GoDBRow::GetMapValue( const std::string& key )
-std::string GoDBRow::GetMapValue( std::string key )
+std::string GoDBRow::GetMapValue(std::string key)
 {
   std::string oMapValue = "noValue";
 
 /// \todo check this alternative. It may be more efficient to use std::map::find
-  StringMapIterator iter = m_MapRow.find( key );
+  StringMapIterator iter = m_MapRow.find(key);
 
-  if( iter == m_MapRow.end() )
+  if (iter == m_MapRow.end())
     {
     return oMapValue;
     }
@@ -182,13 +182,13 @@ std::string GoDBRow::GetMapValue( std::string key )
     // Need to test if the value is not a string previously put in the map by SetField
     // if so, the value will be ""value"" and need to be transformed to "value". First,
     // find the 1rst character and save it as CharacterToCompare:
-    std::string CharacterToCompare = oMapValue.substr(0,1);
+    std::string CharacterToCompare = oMapValue.substr(0, 1);
 
     //test if it is equal to " :
     if (CharacterToCompare == "\"")
       {
       //if yes, remove the " at the beginning of the string and at the end:
-      oMapValue = oMapValue.substr(1,oMapValue.size()-2);
+      oMapValue = oMapValue.substr(1, oMapValue.size() - 2);
       }
 
     return oMapValue;
@@ -205,7 +205,7 @@ std::string GoDBRow::GetMapValue( std::string key )
 //       // if so, the value will be ""value"" and need to be transformed to "value". First,
 //       // find the 1rst character and save it as CharacterToCompare:
 //       std::string CharacterToCompare = oMapValue.substr(0,1);
-// 
+//
 //       //test if it is equal to " :
 //       if (CharacterToCompare == "\"")
 //         {
@@ -214,7 +214,7 @@ std::string GoDBRow::GetMapValue( std::string key )
 //         return oMapValue;
 //         }
 //       std::cout<<oMapValue.c_str()<<std::endl;
-// 
+//
 //       return oMapValue;
 //       }
 //     }
@@ -223,28 +223,28 @@ std::string GoDBRow::GetMapValue( std::string key )
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void GoDBRow::SetValuesForSpecificID(int ID, 
-  vtkMySQLDatabase* iDatabaseConnector)
-{ 
-  std::vector<std::string> ResultQuery = 
+void GoDBRow::SetValuesForSpecificID(int ID,
+                                     vtkMySQLDatabase* iDatabaseConnector)
+{
+  std::vector<std::string> ResultQuery =
     ListSpecificValuesForOneColumn(
       iDatabaseConnector, this->m_TableName, this->PrintColumnNames(),
-      this->m_TableIDName, ConvertToString<int>(ID) );
+      this->m_TableIDName, ConvertToString<int>(ID));
 
   if (this->m_MapRow.size() != ResultQuery.size())
     {
-    std::cout<<"pb the map and the query results are not the same size";
+    std::cout << "pb the map and the query results are not the same size";
     std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
     std::cout << std::endl;
     }
   else
     {
-    std::vector<std::string>::iterator iterResultQuery = 
+    std::vector<std::string>::iterator iterResultQuery =
       ResultQuery.begin();
 
     StringMapIterator iterMap = this->MapBegin();
 
-    while ( iterMap != this->MapEnd() )
+    while (iterMap != this->MapEnd())
       {
       iterMap->second = *iterResultQuery;
       ++iterMap;
@@ -257,15 +257,12 @@ void GoDBRow::SetValuesForSpecificID(int ID,
 //-------------------------------------------------------------------------
 std::string GoDBRow::GetTableName()
 {
- return this->m_TableName;
+  return this->m_TableName;
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 std::string GoDBRow::GetTableIDName()
 {
- return this->m_TableIDName;
+  return this->m_TableIDName;
 }
-
-
-

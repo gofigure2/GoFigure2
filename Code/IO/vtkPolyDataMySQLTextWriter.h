@@ -51,13 +51,13 @@
 #include "QGoIOConfigure.h"
 
 class QGOIO_EXPORT vtkPolyDataMySQLTextWriter : public vtkObject
-{
+  {
 public:
   static vtkPolyDataMySQLTextWriter* New();
-  vtkTypeRevisionMacro( vtkPolyDataMySQLTextWriter, vtkObject );
+  vtkTypeRevisionMacro(vtkPolyDataMySQLTextWriter, vtkObject);
 
-  std::string GetMySQLText( vtkPolyData* iPolyData );
-  bool GetIsContour() const {return IsContour;}
+  std::string GetMySQLText(vtkPolyData* iPolyData);
+  bool GetIsContour() const { return IsContour;}
 
 protected:
   vtkPolyDataMySQLTextWriter();
@@ -73,7 +73,7 @@ protected:
   std::string MeshProcessing();
 
 private:
-  vtkPolyDataMySQLTextWriter( const vtkPolyDataMySQLTextWriter& );
-  void operator = ( const vtkPolyDataMySQLTextWriter& );
-};
+  vtkPolyDataMySQLTextWriter(const vtkPolyDataMySQLTextWriter &);
+  void operator =(const vtkPolyDataMySQLTextWriter&);
+  };
 #endif
