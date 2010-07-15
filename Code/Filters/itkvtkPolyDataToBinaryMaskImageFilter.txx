@@ -37,6 +37,9 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
+#ifndef __itkvtkPolyDataToBinaryMaskImageFilter_txx
+#define __itkvtkPolyDataToBinaryMaskImageFilter_txx
+
 #include "itkvtkPolyDataToBinaryMaskImageFilter.h"
 
 #include "vtkPointData.h"
@@ -145,3 +148,6 @@ vtkPolyDataToBinaryMaskImageFilter<TInput, TOutput>::GenerateData()
 }
 
 }
+
+#endif
+

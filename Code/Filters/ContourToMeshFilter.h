@@ -74,7 +74,7 @@ public:
   typedef typename ContainerType::const_iterator ContainerConstIterator;
 
   void ProcessContours(const ContainerType& iContainer)
-  {
+    {
     if (iContainer.empty())
       {
       std::cerr << "error, no contours!" << std::endl;
@@ -170,16 +170,16 @@ public:
 //        writer->SetFileName( "mesh.vtk" );
 //        writer->Write();
       }
-  }
+    }
 
   vtkPolyData* GetOutput()
-  {
+    {
     return m_Output;
-  }
+    }
 
 protected:
   ContourToMeshFilter() : m_Output(NULL)
-          {}
+    {}
   ~ContourToMeshFilter() {}
 
   vtkPolyData* m_Output;

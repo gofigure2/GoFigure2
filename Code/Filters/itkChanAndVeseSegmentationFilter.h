@@ -140,48 +140,48 @@ public:
   typedef typename ConverterType::Pointer          ConverterPointer;
 
   void SetCenter(const InternalPointType& iC)
-  {
+    {
     m_Center = iC;
-  }
+    }
 
   InternalPointType GetCenter() const
-  {
+    {
     return m_Center;
-  }
+    }
 
   void SetRadius(const InternalCoordRepType& iR)
-  {
+    {
     m_Radius = iR;
-  }
+    }
   InternalCoordRepType GetRadius() const
-  {
+    {
     return m_Radius;
-  }
+    }
 
   void SetFeatureImage(FeatureImageType* iImage)
-  {
+    {
     m_FeatureImage = iImage;
-  }
+    }
 
   void SetNumberOfIterations(int iNumberOfIterations)
-  {
+    {
     m_NumberOfIterations = iNumberOfIterations;
-  }
+    }
 
   void SetCurvatureWeight(int iCurvatureWeight)
-  {
+    {
     m_CurvatureWeight = iCurvatureWeight;
-  }
+    }
 
   void Update()
-  {
+    {
     GenerateData();
-  }
+    }
 
   vtkImageData* GetOutput()
-  {
+    {
     return m_VTKImage;
-  }
+    }
 
   itkGetConstMacro (Preprocess, bool);
   itkSetMacro (Preprocess, bool);
@@ -210,7 +210,7 @@ protected:
   int                  m_CurvatureWeight;
 
   void GenerateData()
-  {
+    {
     if (m_FeatureImage.IsNull())
       {
       std::cerr << "m_FeatureImage is Null" << std::endl;
@@ -281,14 +281,6 @@ protected:
       r_it.Set(vcl_sqrt(d) - r);
       ++r_it;
       }
-/*
-    typename FastMarchingFilterType::Pointer  fastMarching = FastMarchingFilterType::New();
-    fastMarching->SetSpeedConstant( 1.0 );
-    fastMarching->SetOutputOrigin( origin );
-    fastMarching->SetOutputSpacing( spacing );
-    fastMarching->SetOutputRegion( region2 );
-    fastMarching->SetTrialPoints(  seeds  );
-    fastMarching->Update();*/
 
     FeatureImagePointer feature;
     if (m_Preprocess)
@@ -304,15 +296,6 @@ protected:
         {
         std::cerr << "roi Exception:" << err << std::endl;
         }
-/*
-      std::cout << "Write output WithPreprocessing" << std::endl;
-            // Add the MetaImage format to the writer
-      typedef itk::ImageFileWriter< FeatureImageType > WriterType;
-      typedef itk::ImageFileWriter< FeatureImageType > WriterType;
-            typename WriterType::Pointer metaWriter1 =  WriterType::New();
-            metaWriter1->SetInput( roi->GetOutput() );
-            metaWriter1->SetFileName( "WithPreprocessingROI.mhd" );
-            metaWriter1->Write();*/
 
       PreprocessFilterPointer preprocess = PreprocessFilterType::New();
       preprocess->SetInput (roi->GetOutput());

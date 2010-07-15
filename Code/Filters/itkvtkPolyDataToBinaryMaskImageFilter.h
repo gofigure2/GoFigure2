@@ -37,8 +37,8 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#ifndef __vtkPolyDataToBinaryMaskImageFilter_h
-#define __vtkPolyDataToBinaryMaskImageFilter_h
+#ifndef __itkvtkPolyDataToBinaryMaskImageFilter_h
+#define __itkvtkPolyDataToBinaryMaskImageFilter_h
 
 #include "itkImageToImageFilter.h"
 

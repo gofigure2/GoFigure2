@@ -83,8 +83,9 @@ public:
   typedef typename ShapeLabelObjectType::Pointer      ShapeLabelObjectPointer;
 
   typedef StatisticsLabelObject<LabelType, ImageDimension>
-  StatLabelObjectType;
-  typedef typename StatLabelObjectType::Pointer StatLabelObjectPointer;
+    StatLabelObjectType;
+  typedef typename StatLabelObjectType::Pointer 
+    StatLabelObjectPointer;
 
   typedef LabelMap<ShapeLabelObjectType>      ShapeLabelMapType;
   typedef typename ShapeLabelMapType::Pointer ShapeLabelMapPointer;
@@ -93,11 +94,13 @@ public:
   typedef typename StatLabelMapType::Pointer StatLabelMapPointer;
 
   typedef LabelImageToShapeLabelMapFilter<MaskImageType, ShapeLabelMapType>
-  ShapeConverterType;
-  typedef typename ShapeConverterType::Pointer ShapeConverterPointer;
+    ShapeConverterType;
+  typedef typename ShapeConverterType::Pointer 
+    ShapeConverterPointer;
 
   typedef LabelImageToStatisticsLabelMapFilter<MaskImageType,
-                                               ImageType, StatLabelMapType>               StatConverterType;
+    ImageType, 
+    StatLabelMapType>                         StatConverterType;
   typedef typename StatConverterType::Pointer StatConverterPointer;
 
   void SetImage(ImageType* iInput);

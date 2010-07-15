@@ -87,10 +87,6 @@
 #include <cstdlib>
 
 //-------------------------------------------------------------------------
-/**
- *
- * @param iParent
- */
 QGoImageView3D::
 QGoImageView3D(QWidget* iParent) :
   QGoImageView(iParent),
@@ -151,9 +147,6 @@ QGoImageView3D(QWidget* iParent) :
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/**
- *
- */
 QGoImageView3D::~QGoImageView3D()
   {
   delete HtSplitter;
@@ -198,10 +191,6 @@ QGoImageView3D::~QGoImageView3D()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/**
- *
- * @param iParent
- */
 void QGoImageView3D::setupUi(QWidget* iParent)
 {
   if (iParent->objectName().isEmpty())
@@ -271,10 +260,6 @@ void QGoImageView3D::setupUi(QWidget* iParent)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/**
- *
- * @param iParent
- */
 void QGoImageView3D::retranslateUi(QWidget *iParent)
 {
   iParent->setWindowTitle(tr("QGoImageView3D"));
@@ -283,9 +268,6 @@ void QGoImageView3D::retranslateUi(QWidget *iParent)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/**
- *
- */
 void QGoImageView3D::Update()
 {
   vtkViewImage2D* View1 = this->m_Pool->GetItem(0);
@@ -377,9 +359,6 @@ void QGoImageView3D::Update()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/**
- *
- */
 void QGoImageView3D::SetupVTKtoQtConnections()
 {
   vtkViewImage2D* View1  = this->m_Pool->GetItem(0);
@@ -519,10 +498,6 @@ InitializeSeedWidgetInteraction()
 }
 
 //-------------------------------------------------------------------------
-/**
- *
- * @param input
- */
 void QGoImageView3D::SetImage(vtkImageData* input)
 {
   if (!input)
@@ -544,10 +519,6 @@ void QGoImageView3D::SetImage(vtkImageData* input)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/**
- *
- * @return
- */
 vtkImageData* QGoImageView3D::GetImage()
 {
   return m_Image;
@@ -555,11 +526,6 @@ vtkImageData* QGoImageView3D::GetImage()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/**
- *
- * @param iId
- * @return
- */
 vtkImageActor* QGoImageView3D::GetImageActor(const int& iId)
 {
   if ((iId < 0) || (iId > 2))
@@ -575,11 +541,6 @@ vtkImageActor* QGoImageView3D::GetImageActor(const int& iId)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/**
- *
- * @param iId
- * @return
- */
 QVTKInteractor* QGoImageView3D::GetInteractor(const int& iId)
 {
 
@@ -614,12 +575,6 @@ QVTKInteractor* QGoImageView3D::GetInteractor(const int& iId)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/**
- *
- * @param iType
- * @param iBaseName
- * @return
- */
 QString QGoImageView3D::SnapshotViewXY(const GoFigure::FileType& iType,
                                        const QString& iBaseName)
 {
@@ -632,12 +587,6 @@ QString QGoImageView3D::SnapshotViewXY(const GoFigure::FileType& iType,
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/**
- *
- * @param iType
- * @param iBaseName
- * @return
- */
 QString QGoImageView3D::SnapshotView2(const GoFigure::FileType& iType,
                                       const QString& iBaseName)
 {
@@ -650,12 +599,6 @@ QString QGoImageView3D::SnapshotView2(const GoFigure::FileType& iType,
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/**
- *
- * @param iType
- * @param iBaseName
- * @return
- */
 QString QGoImageView3D::SnapshotView3(
   const GoFigure::FileType& iType,
   const QString& iBaseName)
@@ -669,12 +612,6 @@ QString QGoImageView3D::SnapshotView3(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/**
- *
- * @param iType
- * @param iBaseName
- * @return
- */
 QString QGoImageView3D::SnapshotViewXYZ(
   const GoFigure::FileType& iType,
   const QString& iBaseName)
@@ -688,10 +625,6 @@ QString QGoImageView3D::SnapshotViewXYZ(
 //------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/**
- *
- * @param iS
- */
 void QGoImageView3D::SetFullScreenView(const int& iS)
 {
   if (IsFullScreen == iS)
@@ -737,9 +670,6 @@ void QGoImageView3D::SetFullScreenView(const int& iS)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/**
- *
- */
 void QGoImageView3D::Quadview()
 {
   IsFullScreen = 0;
@@ -751,9 +681,6 @@ void QGoImageView3D::Quadview()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/**
- *
- */
 void QGoImageView3D::FullScreenViewXY()
 {
   IsFullScreen = 1;
@@ -765,9 +692,6 @@ void QGoImageView3D::FullScreenViewXY()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/**
- *
- */
 void QGoImageView3D::FullScreenViewXZ()
 {
   IsFullScreen = 2;
@@ -779,9 +703,6 @@ void QGoImageView3D::FullScreenViewXZ()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/**
- *
- */
 void QGoImageView3D::FullScreenViewYZ()
 {
   IsFullScreen = 3;
@@ -793,9 +714,6 @@ void QGoImageView3D::FullScreenViewYZ()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/**
- *
- */
 void QGoImageView3D::FullScreenViewXYZ()
 {
   IsFullScreen = 4;
