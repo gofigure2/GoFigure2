@@ -41,7 +41,9 @@
 #ifndef __LSMToMegaCapture_h
 #define __LSMToMegaCapture_h
 
+#if defined(WIN32)
 #pragma warning( disable: 4251 )
+#endif
 
 #include <vector>
 #include <string>
