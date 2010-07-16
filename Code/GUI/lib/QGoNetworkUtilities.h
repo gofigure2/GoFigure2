@@ -42,10 +42,12 @@
 
 #include <QObject>
 
+#include "QGoGUILibConfigure.h"
+
 class QNetworkAccessManager;
 class QNetworkReply;
 
-class QGoNetworkUtilities : public QObject
+class QGOGUILIB_EXPORT QGoNetworkUtilities : public QObject
   {
   Q_OBJECT
 public:

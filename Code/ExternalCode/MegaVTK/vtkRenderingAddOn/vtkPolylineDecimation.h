@@ -5,7 +5,9 @@
 #include <vtkPriorityQueue.h>
 #include <vtkPolyDataAlgorithm.h>
 
-class vtkPolylineDecimation : public vtkPolyDataAlgorithm
+#include "MegaVTK2Configure.h"
+
+class VTK_RENDERINGADDON2_EXPORT vtkPolylineDecimation : public vtkPolyDataAlgorithm
   {
 public:
   // Description:

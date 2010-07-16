@@ -32,6 +32,8 @@ DAMAGE.
 #include <vector>
 #include "Hash.h"
 
+#include "PoissonReconstructionConfigure.h"
+
 template<class Real>
 Real Random(void);
 

@@ -41,6 +41,8 @@
 #ifndef __TrackTextFileImport_h
 #define __TrackTextFileImport_h
 
+#pragma warning( disable: 4251 )
+
 #include <string>
 #include <list>
 #include <vector>
@@ -133,4 +135,5 @@ private:
                            const std::string& iT,
                            bool iTimePoint);
   };
+
 #endif

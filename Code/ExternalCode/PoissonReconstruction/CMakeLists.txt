@@ -1,3 +1,16 @@
+IF( WIN32 )
+  IF( NOT CYGWIN )
+    IF( NOT MINGW )
+      IF( BUILD_SHARED_LIBS )
+        ADD_DEFINITIONS( -DQGoGUI_EXPORT )
+      ENDIF( BUILD_SHARED_LIBS )
+    ENDIF( NOT MINGW )
+  ENDIF( NOT CYGWIN )
+ENDIF( WIN32 )
+
+CONFIGURE_FILE( ${GOFIGURE2_SOURCE_DIR}/Code/ExternalCode/PoissonReconstruction/PoissonReconstructionConfigure.h.in
+  ${GOFIGURE2_BINARY_DIR}/Code/ExternalCode/PoissonReconstruction/PoissonReconstructionConfigure.h @ONLY IMMEDIATE )
+  
 ADD_LIBRARY( PoissonReconstruction
   vtkPoissonReconstruction.cxx
   Factor.cpp

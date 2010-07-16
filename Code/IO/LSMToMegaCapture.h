@@ -41,6 +41,8 @@
 #ifndef __LSMToMegaCapture_h
 #define __LSMToMegaCapture_h
 
+#pragma warning( disable: 4251 )
+
 #include <vector>
 #include <string>
 #include "GoFigureGlobalDefinition.h"
