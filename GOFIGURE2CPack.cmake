@@ -74,13 +74,13 @@ SET( CPACK_PACKAGE_EXECUTABLES "gofigure" "GoFigure2" )
 
 IF( WIN32 )
 	INSTALL( PROGRAMS ${CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS} 
-		DESTINATION bin COMPONENT Runtime )
+		DESTINATION bin COMPONENT Applications )
 ENDIF( WIN32 )
 
 
 SET( CPACK_COMPONENTS_ALL
-  Runtime
-  libraries
+  Applications
+  Libraries
 #  headers
 )
 

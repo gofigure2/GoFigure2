@@ -6,7 +6,7 @@
 /* Whether we are building shared libraries.  */
 #if defined (WIN32) && defined (GOFIGURE2_BUILD_SHARED_LIBS)
 
- #if defined (QGoIO_EXPORT)
+ #if defined (PoissonReconstruction_EXPORTS)
   #define PoissonReconstruction_EXPORT __declspec(dllexport)
  #else
   #define PoissonReconstruction_EXPORT __declspec(dllimport)
