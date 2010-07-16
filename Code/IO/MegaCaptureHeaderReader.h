@@ -46,7 +46,9 @@
 
 #include "QGoIOConfigure.h"
 
+#if defined(WIN32)
 #pragma warning( disable: 4251 )
+#endif
 
 class QGOIO_EXPORT MegaCaptureHeaderReader
   {

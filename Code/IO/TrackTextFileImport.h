@@ -41,7 +41,9 @@
 #ifndef __TrackTextFileImport_h
 #define __TrackTextFileImport_h
 
+#if defined(WIN32)
 #pragma warning( disable: 4251 )
+#endif
 
 #include <string>
 #include <list>
