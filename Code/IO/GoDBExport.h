@@ -256,7 +256,7 @@ private:
                             std::vector<std::pair<std::string, std::string> > iInfoToWrite);
 
   /** \brief write on the output file the number of entities that are exported*/
-  void WriteNumberOfEntities(std::string iNameOfEntity, int iNumber);
+  void WriteNumberOfEntities(std::string iNameOfEntity, size_t iNumber);
 
   /** \ brief add 2 spaces to the output file for xml tabulation*/
   void AddTabulation();

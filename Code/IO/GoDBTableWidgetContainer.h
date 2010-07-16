@@ -103,7 +103,7 @@ public:
   void SetSpecificColumnsInfoForMesh(
     std::vector<std::vector<std::string> > iChannelsInfo);
 
-  unsigned int GetNumberOfRows();
+  size_t GetNumberOfRows();
 
   /** \brief Insert a new created trace with the datas contained in the
   NewTraceContainer into the m_RowContainer*/

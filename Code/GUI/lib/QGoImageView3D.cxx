@@ -1395,8 +1395,6 @@ void
 QGoImageView3D::
 EnableMeshPickingMode(bool iEnable)
 {
-  DefaultMode();
-
   vtkInteractorStyleImage3D* t = m_View3D->GetInteractorStyle3D();
   if (t)
     {

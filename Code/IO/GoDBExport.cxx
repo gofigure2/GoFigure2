@@ -357,7 +357,7 @@ void GoDBExport::WriteOnTheOutputFile(std::string iNameOfEntity,
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void GoDBExport::WriteNumberOfEntities(std::string iNameOfEntity, int iNumber)
+void GoDBExport::WriteNumberOfEntities(std::string iNameOfEntity, size_t iNumber)
 {
   this->AddTabulation();
   std::string NameToWrite = "NumberOf";

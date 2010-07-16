@@ -382,8 +382,8 @@ void QTableWidgetChild::DisplayContent(GoDBTableWidgetContainer* iLinkToRowConta
     }
   else
     {
-    unsigned int NbofRows = 0;
-    for (unsigned int i = 0; i < RowContainer.size(); i++)
+    size_t NbofRows = 0;
+    for (size_t i = 0; i < RowContainer.size(); i++)
       {
       bool RowsCountSet = false;
       //check that the column has to be displayed in the table widget and that there are
@@ -393,7 +393,7 @@ void QTableWidgetChild::DisplayContent(GoDBTableWidgetContainer* iLinkToRowConta
         if (NbofRows == 0)
           {
           NbofRows = RowContainer[i].second.size();
-          this->setRowCount(NbofRows);
+          this->setRowCount( static_cast< int >( NbofRows ) );
           RowsCountSet = true;
           }
         for (int j = 0; j < this->columnCount(); j++)
@@ -419,8 +419,8 @@ void QTableWidgetChild::DisplayContent(GoDBTableWidgetContainer* iLinkToRowConta
           } //ENDFOR
         } //ENDIF
       } //ENDFOR
-    SetSelectedColumn(NbofRows, 0);
-    SetVisibleColumn(NbofRows, 0, TraceName);
+    SetSelectedColumn( static_cast< unsigned int >( NbofRows ), 0);
+    SetVisibleColumn( static_cast< unsigned int >( NbofRows ), 0, TraceName);
     this->SetColorForTable(iLinkToRowContainer, TraceName, 0);
     this->SetColorForTable(iLinkToRowContainer, CollectionName, 0);
     } //ENDELSE

@@ -755,7 +755,7 @@ void GoDBTableWidgetContainer::SetSpecificColumnsInfoForMesh(
   //Get the info for the total intensities per channel:
   GoDBTraceInfoForTableWidget                                       temp;
   std::pair<GoDBTraceInfoForTableWidget, std::vector<std::string> > PairTemp;
-  int                                                               NumberOfChannels = this->m_ChannelsInfo.size();
+  size_t                                                            NumberOfChannels = this->m_ChannelsInfo.size();
   if (this->m_ChannelsInfo.empty())
     {
     std::cout << "No info for the channels" << std::endl;
@@ -763,7 +763,7 @@ void GoDBTableWidgetContainer::SetSpecificColumnsInfoForMesh(
     std::cout << std::endl;
     return;
     }
-  for (int i = 0; i < NumberOfChannels; i++)
+  for (size_t i = 0; i < NumberOfChannels; i++)
     {
     std::string InfoName = "TotalIntensityForChannelID";
     InfoName += this->m_ChannelsInfo.at(i).at(1);
@@ -807,7 +807,7 @@ GetChannelsInfo()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-unsigned int GoDBTableWidgetContainer::GetNumberOfRows()
+size_t GoDBTableWidgetContainer::GetNumberOfRows()
 {
   if (!this->m_RowContainer.empty())
     {

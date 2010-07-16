@@ -272,6 +272,7 @@ protected:
   bool m_ShowAnnotations;
   bool m_ShowSplinePlane;
   bool m_ShowCube;
+  bool m_Default;
 
   virtual void resizeEvent(QResizeEvent* event);
 
