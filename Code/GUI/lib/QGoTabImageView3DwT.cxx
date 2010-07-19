@@ -2311,11 +2311,13 @@ ValidateContour(const int& iContourID, const int& iDir,
     if (iHighlighted)
       {
       contour_property->SetColor(1., 0., 0.);
+      contour_property->SetOpacity(1.);
       contour_property->SetLineWidth(3.);
       }
     else
       {
       contour_property->SetColor(iR, iG, iB);
+      contour_property->SetOpacity(iA);
       }
 
     // get corresponding actor from visualization
@@ -2409,18 +2411,10 @@ ValidateContour()
     {
     QColor color =
       this->m_TraceManualEditingDockWidget->m_TraceWidget->ColorComboBox->GetCurrentColorData().second;
-    color.getRgbF(&r, &g, &b);
+    color.getRgbF(&r, &g, &b, &a);
     }
 
   bool highlighted = m_ReEditContourMode;
-//   if (m_ReEditContourMode)
-//     {
-//     highlighted = true;
-//     }
-//   else
-//     {
-//     highlighted = false;
-//     }
 
   // get from m_DataBaseTables if user is using one gofiguredatabase or not.
   // In such case contours are saved in the database, else they are not!
@@ -2443,7 +2437,7 @@ ValidateContour()
       r = it->rgba[0];
       g = it->rgba[1];
       b = it->rgba[2];
-//       a = it->rgba[3];
+      a = it->rgba[3];
 
       // We have to remove the polydata from the container too
       m_ContourContainer.get<TraceID>().erase(m_ContourId);
@@ -3639,7 +3633,6 @@ SavePolyDataAsContourInDB(vtkPolyData* iView, const int& iContourID,
 
     vtkPolyData* contour_nodes = vtkPolyData::New();
     contourRep->GetNodePolyData(contour_nodes);
-
     vtkProperty* contour_property = vtkProperty::New();
     contour_property->SetColor(iR, iG, iB);
     contour_property->SetOpacity(iA);
