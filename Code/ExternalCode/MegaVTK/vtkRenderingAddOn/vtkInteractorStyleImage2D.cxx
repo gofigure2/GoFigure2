@@ -117,7 +117,7 @@ OnMouseMove()
     {
     case VTKIS_SLICE_MOVE:
       this->SliceMove();
-      this->InvokeEvent(vtkViewImage2DCommand::SliceMoveEvent, this);
+      this->InvokeEvent(vtkViewImage2DCommand::SyncViewsEvent, this);
       break;
     case VTKIS_PAN:
       this->InvokeEvent(vtkViewImage2DCommand::PanEvent);
@@ -144,8 +144,6 @@ OnMouseMove()
       this->Superclass::OnMouseMove();
       break;
     }
-
-  //this->Superclass::OnMouseMove();
 
   //Update image information (pixel position and value)
   this->InvokeEvent(vtkViewImage2DCommand::InteractionEvent, this);
@@ -603,6 +601,8 @@ EndSliceMove()
     }
   this->StopState();
   this->InvokeEvent(vtkViewImage2DCommand::EndSliceMoveEvent, this);
+  // Call one more time to update views...
+  this->InvokeEvent(vtkViewImage2DCommand::SyncViewsEvent, this);
 }
 
 //----------------------------------------------------------------------------
@@ -614,7 +614,7 @@ SliceMove()
     {
     return;
     }
-  this->InvokeEvent(vtkViewImage2DCommand::SliceMoveEvent, this);
+  this->InvokeEvent(vtkViewImage2DCommand::SyncViewsEvent, this);
 }
 
 //----------------------------------------------------------------------------

@@ -97,7 +97,8 @@ public:
     CameraMoveEvent,
     DefaultMoveEvent,
     SeedEvent,
-    WindowLevelEvent
+    WindowLevelEvent,
+    SyncViewsEvent
     };
   //ETX
 

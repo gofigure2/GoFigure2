@@ -140,11 +140,11 @@ InitializeAllObservers()
     {
     vtkInteractorStyle* style = a->GetInteractorStyle();
 
-    style->RemoveObservers(vtkViewImage2DCommand::SliceMoveEvent);
+    style->RemoveObservers(vtkViewImage2DCommand::SyncViewsEvent);
     style->RemoveObservers(vtkViewImage2DCommand::ResetViewerEvent);
     style->RemoveObservers(vtkViewImage2DCommand::RequestedPositionEvent);
 
-    style->AddObserver(vtkViewImage2DCommand::SliceMoveEvent, this->Command);
+    style->AddObserver(vtkViewImage2DCommand::SyncViewsEvent, this->Command);
     style->AddObserver(vtkViewImage2DCommand::ZoomEvent, this->Command);
     style->AddObserver(vtkViewImage2DCommand::PanEvent, this->Command);
     style->AddObserver(vtkViewImage2DCommand::RequestedPositionEvent, this->Command);
@@ -421,14 +421,14 @@ void vtkViewImage2DCollection::SetLinkSliceMove(unsigned int v)
     vtkInteractorStyle* style = item->GetInteractorStyle();
     if (v)
       {
-      if (!style->HasObserver (vtkViewImage2DCommand::SliceMoveEvent, this->Command))
+      if (!style->HasObserver (vtkViewImage2DCommand::SyncViewsEvent, this->Command))
         {
-        style->AddObserver (vtkViewImage2DCommand::SliceMoveEvent, this->Command);
+        style->AddObserver (vtkViewImage2DCommand::SyncViewsEvent, this->Command);
         }
       }
     else
       {
-      style->RemoveObservers (vtkViewImage2DCommand::SliceMoveEvent, this->Command);
+      style->RemoveObservers (vtkViewImage2DCommand::SyncViewsEvent, this->Command);
       }
 
     item = this->GetNextItem();

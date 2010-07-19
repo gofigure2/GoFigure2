@@ -138,12 +138,12 @@ vtkViewImage2DCommand::Execute(vtkObject*    caller,
 
   if (event == vtkViewImage2DCommand::MeshPickingEvent)
     {
-    std::cout << "Mesh pick single" << std::endl;
+    //std::cout << "Mesh pick single" << std::endl;
     }
 
   if (event == vtkViewImage2DCommand::SeedEvent)
     {
-    std::cout << "Seed event" << std::endl;
+    //std::cout << "Seed event" << std::endl;
     }
 
   if (event == vtkCommand::KeyPressEvent)

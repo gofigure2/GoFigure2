@@ -161,9 +161,8 @@ void vtkViewImage2DCollectionCommand::Execute(vtkObject *caller,
     }
 
   // Move
-  if (event == vtkViewImage2DCommand::SliceMoveEvent)
+  if (event == vtkViewImage2DCommand::SyncViewsEvent)
     {
-    // do not synchronize this, but render all
     this->Collection->SyncRender();
     }
 
