@@ -1928,7 +1928,7 @@ ChangeLookupTable()
     {
     /// \todo there may be one memory leak in here!
     vtkLookupTable* lut = QGoLUTDialog::GetLookupTable(this,
-                                               tr("Choose one look-up table"));
+                                                       tr("Choose one look-up table"));
     m_ImageView->SetLookupTable(lut);
 
     // free memory since it is not freed in the QGoLUTDialog

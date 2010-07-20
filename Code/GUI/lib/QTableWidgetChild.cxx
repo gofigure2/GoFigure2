@@ -393,7 +393,7 @@ void QTableWidgetChild::DisplayContent(GoDBTableWidgetContainer* iLinkToRowConta
         if (NbofRows == 0)
           {
           NbofRows = RowContainer[i].second.size();
-          this->setRowCount( static_cast< int >( NbofRows ) );
+          this->setRowCount(static_cast<int>(NbofRows));
           RowsCountSet = true;
           }
         for (int j = 0; j < this->columnCount(); j++)
@@ -419,8 +419,8 @@ void QTableWidgetChild::DisplayContent(GoDBTableWidgetContainer* iLinkToRowConta
           } //ENDFOR
         } //ENDIF
       } //ENDFOR
-    SetSelectedColumn( static_cast< unsigned int >( NbofRows ), 0);
-    SetVisibleColumn( static_cast< unsigned int >( NbofRows ), 0, TraceName);
+    SetSelectedColumn(static_cast<unsigned int>(NbofRows), 0);
+    SetVisibleColumn(static_cast<unsigned int>(NbofRows), 0, TraceName);
     this->SetColorForTable(iLinkToRowContainer, TraceName, 0);
     this->SetColorForTable(iLinkToRowContainer, CollectionName, 0);
     } //ENDELSE
