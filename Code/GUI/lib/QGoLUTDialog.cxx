@@ -75,7 +75,8 @@ QGoLUTDialog::QGoLUTDialog(QWidget* iParent) :
 
 QGoLUTDialog::~QGoLUTDialog()
   {
-  this->LUT->Delete();
+  // Is deleted outside
+  //this->LUT->Delete();
   delete this->QvtkWidget;
   }
 

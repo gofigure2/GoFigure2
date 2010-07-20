@@ -1927,11 +1927,12 @@ ChangeLookupTable()
   if (image->GetNumberOfScalarComponents() == 1)
     {
     /// \todo there may be one memory leak in here!
-    vtkSmartPointer<vtkLookupTable> lut =
-      vtkSmartPointer<vtkLookupTable>::New();
-    lut->DeepCopy(QGoLUTDialog::GetLookupTable(this,
-                                               tr("Choose one look-up table")));
+    vtkLookupTable* lut = QGoLUTDialog::GetLookupTable(this,
+                                               tr("Choose one look-up table"));
     m_ImageView->SetLookupTable(lut);
+
+    // free memory since it is not freed in the QGoLUTDialog
+    lut->Delete();
     }
 }
 //-------------------------------------------------------------------------
