@@ -53,133 +53,126 @@
 #include "itkSmartPointer.h"
 #include "itkImageFileReader.h"
 
-
-
-bool CheckSnapshot( QGoSynchronizedView* iViewer, GoFigure::FileType iType )
+bool CheckSnapshot(QGoSynchronizedView* iViewer, GoFigure::FileType iType)
 {
-  QString filename = iViewer->SnapshotViewXY( iType );
+  QString     filename = iViewer->SnapshotViewXY(iType);
   std::string path =
-        vtksys::SystemTools::GetCurrentWorkingDirectory();
+    vtksys::SystemTools::GetCurrentWorkingDirectory();
   path += "/";
   path += filename.toStdString();
 
-  if( vtksys::SystemTools::FileExists( path.c_str() ) )
+  if (vtksys::SystemTools::FileExists(path.c_str()))
     {
-    vtksys::SystemTools::RemoveFile( path.c_str() );
+    vtksys::SystemTools::RemoveFile(path.c_str());
     return true;
     }
   else
     {
     std::cerr << "FAILURE * viewer->SnapshotViewXY( " << iType
-      <<" )" <<std::endl;
+              << " )" << std::endl;
     return false;
     }
 }
 
-
-
-int main( int argc, char** argv )
+int main(int argc, char** argv)
 {
 
-  if( argc != 3 )
+  if (argc != 3)
     {
-    std::cout <<"Usage : QGoSynchronizedView2DTest(.exe) " <<std::endl;
-    std::cout << "1-file.png" <<std::endl;
-    std::cout << "2-test (boolean)" <<std::endl;
+    std::cout << "Usage : QGoSynchronizedView2DTest(.exe) " << std::endl;
+    std::cout << "1-file.png" << std::endl;
+    std::cout << "2-test (boolean)" << std::endl;
     return EXIT_FAILURE;
     }
 
-  QApplication app( argc, argv );
+  QApplication app(argc, argv);
   QCoreApplication::setOrganizationName("MegasonLab");
-  QCoreApplication::setOrganizationDomain( "http://gofigure2.sourceforge.net" );
-
-
+  QCoreApplication::setOrganizationDomain("http://gofigure2.sourceforge.net");
 
 // ITK Typedefs
-  // ITK Reader and filters Typedef
-  typedef double       InputPixelType;
-  typedef itk::Image< InputPixelType, 2>  InputImage2DType;
-  typedef InputImage2DType::Pointer       InputImage2DPointer;
+// ITK Reader and filters Typedef
+  typedef double                        InputPixelType;
+  typedef itk::Image<InputPixelType, 2> InputImage2DType;
+  typedef InputImage2DType::Pointer     InputImage2DPointer;
 
   //itk reader
-  typedef itk::ImageFileReader< InputImage2DType > itkReaderType;
+  typedef itk::ImageFileReader<InputImage2DType> itkReaderType;
   itkReaderType::Pointer itkReader = itkReaderType::New();
-  itkReader->SetFileName( argv[1] );
+  itkReader->SetFileName(argv[1]);
   itkReader->Update();
 
   //vtk reader
-  vtkSmartPointer< vtkPNGReader > reader =
-    vtkSmartPointer< vtkPNGReader >::New();
-  reader->SetFileName( argv[1] );
+  vtkSmartPointer<vtkPNGReader> reader =
+    vtkSmartPointer<vtkPNGReader>::New();
+  reader->SetFileName(argv[1]);
   reader->Update();
 
-  QString cp0 = "itkImage";
-  QGoSynchronizedView2D* SynchronizedView0 = new QGoSynchronizedView2D(cp0,0);
-  QString cp1 = "vtkImage";
-  QGoSynchronizedView2D* SynchronizedView1 = new QGoSynchronizedView2D(cp1,0);
+  QString                cp0 = "itkImage";
+  QGoSynchronizedView2D* SynchronizedView0 = new QGoSynchronizedView2D(cp0, 0);
+  QString                cp1 = "vtkImage";
+  QGoSynchronizedView2D* SynchronizedView1 = new QGoSynchronizedView2D(cp1, 0);
 
   QTimer* timer = new QTimer;
-  timer->setSingleShot( true );
-  QObject::connect( timer, SIGNAL( timeout() ),
-    SynchronizedView0, SLOT( close() ) );
-  QObject::connect( timer, SIGNAL( timeout() ),
-    SynchronizedView1, SLOT( close() ) );
+  timer->setSingleShot(true);
+  QObject::connect(timer, SIGNAL(timeout()),
+                   SynchronizedView0, SLOT(close()));
+  QObject::connect(timer, SIGNAL(timeout()),
+                   SynchronizedView1, SLOT(close()));
 
-  SynchronizedView0->SetImage< InputPixelType >( itkReader->GetOutput() );
+  SynchronizedView0->SetImage<InputPixelType>(itkReader->GetOutput());
   SynchronizedView0->Update();
   SynchronizedView0->show();
 
-  SynchronizedView1->SetImage( reader->GetOutput() );
+  SynchronizedView1->SetImage(reader->GetOutput());
   SynchronizedView1->Update();
   SynchronizedView1->show();
 
-  if( atoi( argv[2] ) == 1 )
+  if (atoi(argv[2]) == 1)
     {
-    if( !CheckSnapshot( SynchronizedView0, GoFigure::BMP ) )
+    if (!CheckSnapshot(SynchronizedView0, GoFigure::BMP))
       {
       return EXIT_FAILURE;
       }
-    if( !CheckSnapshot( SynchronizedView0, GoFigure::PNG ) )
+    if (!CheckSnapshot(SynchronizedView0, GoFigure::PNG))
       {
       return EXIT_FAILURE;
       }
-    if( !CheckSnapshot( SynchronizedView0, GoFigure::JPEG ) )
+    if (!CheckSnapshot(SynchronizedView0, GoFigure::JPEG))
       {
       return EXIT_FAILURE;
       }
-    if( !CheckSnapshot( SynchronizedView0, GoFigure::EPS ) )
+    if (!CheckSnapshot(SynchronizedView0, GoFigure::EPS))
       {
       return EXIT_FAILURE;
       }
-    if( !CheckSnapshot( SynchronizedView0, GoFigure::TIFF) )
-      {
-      return EXIT_FAILURE;
-      }
-
-    if( !CheckSnapshot( SynchronizedView1, GoFigure::BMP ) )
-      {
-      return EXIT_FAILURE;
-      }
-    if( !CheckSnapshot( SynchronizedView1, GoFigure::PNG ) )
-      {
-      return EXIT_FAILURE;
-      }
-    if( !CheckSnapshot( SynchronizedView1, GoFigure::JPEG ) )
-      {
-      return EXIT_FAILURE;
-      }
-    if( !CheckSnapshot( SynchronizedView1, GoFigure::EPS ) )
-      {
-      return EXIT_FAILURE;
-      }
-    if( !CheckSnapshot( SynchronizedView1, GoFigure::TIFF) )
+    if (!CheckSnapshot(SynchronizedView0, GoFigure::TIFF))
       {
       return EXIT_FAILURE;
       }
 
-    timer->start( 1000 );
+    if (!CheckSnapshot(SynchronizedView1, GoFigure::BMP))
+      {
+      return EXIT_FAILURE;
+      }
+    if (!CheckSnapshot(SynchronizedView1, GoFigure::PNG))
+      {
+      return EXIT_FAILURE;
+      }
+    if (!CheckSnapshot(SynchronizedView1, GoFigure::JPEG))
+      {
+      return EXIT_FAILURE;
+      }
+    if (!CheckSnapshot(SynchronizedView1, GoFigure::EPS))
+      {
+      return EXIT_FAILURE;
+      }
+    if (!CheckSnapshot(SynchronizedView1, GoFigure::TIFF))
+      {
+      return EXIT_FAILURE;
+      }
+
+    timer->start(1000);
     }
-
 
   app.processEvents();
 
@@ -189,7 +182,6 @@ int main( int argc, char** argv )
 
   delete SynchronizedView0;
   delete SynchronizedView1;
-
 
   return output;
 }

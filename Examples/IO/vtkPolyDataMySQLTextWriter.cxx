@@ -43,27 +43,26 @@
 
 #include "vtkPolyDataMySQLTextWriter.h"
 
-int main( int argc, char** argv )
+int main(int argc, char** argv)
 {
-  if( argc != 2 )
+  if (argc != 2)
     {
-    std::cout <<"Usage:" <<std::endl;
-    std::cout <<"./vtkPolyDataMySQLTextWriter vtkfile" <<std::endl;
+    std::cout << "Usage:" << std::endl;
+    std::cout << "./vtkPolyDataMySQLTextWriter vtkfile" << std::endl;
     return EXIT_FAILURE;
     }
 
   vtkPolyDataReader* reader = vtkPolyDataReader::New();
-  reader->SetFileName( argv[1] );
+  reader->SetFileName(argv[1]);
   reader->Update();
 
   vtkPolyData* contour = reader->GetOutput();
 
   vtkPolyDataMySQLTextWriter* convert = vtkPolyDataMySQLTextWriter::New();
-  std::cout <<convert->GetMySQLText( contour ) <<std::endl;
+  std::cout << convert->GetMySQLText(contour) << std::endl;
 
   convert->Delete();
   reader->Delete();
 
   return EXIT_SUCCESS;
 }
-

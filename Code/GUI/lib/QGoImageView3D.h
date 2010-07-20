@@ -83,21 +83,21 @@ class vtkImageActorPointPlacer;
 \example GUI/lib/qgoimageview3d.cxx
 */
 class QGOGUILIB_EXPORT QGoImageView3D : public QGoImageView
-{
+  {
   Q_OBJECT
 public:
   /** \brief Constructor by default */
-  explicit QGoImageView3D( QWidget* parent = 0 );
+  explicit QGoImageView3D(QWidget* parent = 0);
 
   /** \brief Destructor. */
   virtual ~QGoImageView3D();
 
-  std::vector< vtkSeedWidget* >                            SeedWidget;
-  std::vector< vtkConstrainedPointHandleRepresentation* >  Handle;
-  std::vector< vtkSeedRepresentation* >                    SeedRep;
+  std::vector<vtkSeedWidget*>                           SeedWidget;
+  std::vector<vtkConstrainedPointHandleRepresentation*> Handle;
+  std::vector<vtkSeedRepresentation*>                   SeedRep;
 
   /** \brief Set the image to be displaid. */
-  virtual void SetImage( vtkImageData* iImage );
+  virtual void SetImage(vtkImageData* iImage);
 
   /** \brief Get the displaid image.*/
   virtual vtkImageData* GetImage();
@@ -106,25 +106,25 @@ public:
 
   vtkViewImage3D* GetImageViewer3D();
 
-  vtkImageActor* GetImageActor( const int& );
-  QVTKInteractor* GetInteractor( const int& );
+  vtkImageActor* GetImageActor(const int&);
+  QVTKInteractor* GetInteractor(const int&);
 
-  virtual void RemoveActor( const int& iId, vtkActor* iActor );
-  virtual void AddActor( const int& iId, vtkActor* iActor );
+  virtual void RemoveActor(const int& iId, vtkActor* iActor);
+  virtual void AddActor(const int& iId, vtkActor* iActor);
 
-  std::vector< vtkActor* > AddMesh( const int& iId,
-       vtkPolyData* dataset,
-       vtkProperty* property = NULL );
+  std::vector<vtkActor*> AddMesh(const int& iId,
+                                 vtkPolyData* dataset,
+                                 vtkProperty* property = NULL);
 
 //   std::vector< vtkQuadricLODActor* >
-  std::vector< vtkActor* > AddContour( const int& iId,
-      vtkPolyData* dataset,
-      vtkProperty* property = NULL );
+  std::vector<vtkActor*> AddContour(const int& iId,
+                                    vtkPolyData* dataset,
+                                    vtkProperty* property = NULL);
 
-  virtual void setupUi( QWidget* parent );
+  virtual void setupUi(QWidget* parent);
   virtual void retranslateUi(QWidget *parent);
 
-  int GetFullScreenView( ) const;
+  int GetFullScreenView() const;
 
   void SaveStateSplitters();
 
@@ -132,12 +132,12 @@ public:
   int GetSliceViewXZ() const;
   int GetSliceViewYZ() const;
 
-  virtual void ChangeActorProperty( vtkProp3D* iActor, vtkProperty* iProperty );
-  virtual void ChangeActorProperty( int iDir, vtkProp3D* iActor, vtkProperty* iProperty );
+  virtual void ChangeActorProperty(vtkProp3D* iActor, vtkProperty* iProperty);
+  virtual void ChangeActorProperty(int iDir, vtkProp3D* iActor, vtkProperty* iProperty);
 
-  std::list< vtkProp3D* > GetListOfPickedActors();
-  std::list< vtkProp3D* > GetListOfUnPickedActors();
-  std::list< vtkProp3D* > GetListOfModifiedActors3D();
+  std::list<vtkProp3D*> GetListOfPickedActors();
+  std::list<vtkProp3D*> GetListOfUnPickedActors();
+  std::list<vtkProp3D*> GetListOfModifiedActors3D();
 
   void ShowAnnotations();
   void ShowSplinePlane();
@@ -147,7 +147,7 @@ public:
   /**
    * \brief Define the cursor interactor style to the normal behaviour
    */
-  void SetDefaultInteractionStyle( vtkViewImage2D&);
+  void SetDefaultInteractionStyle(vtkViewImage2D&);
   /**
    * \brief Use the default interactor style
    */
@@ -195,8 +195,7 @@ public:
   /**
    * \brief Creates a box in 3d view to allow multiple meshes selection
    */
-  void SetBox3DPicking( bool );
-
+  void SetBox3DPicking(bool);
 
   /**
    * \brief Get all the seeds positions.
@@ -211,45 +210,44 @@ public:
   /**
    * \brief Get a list of all the picked contours
    */
-  std::list< vtkProp3D* > GetListOfPickedContours();
+  std::list<vtkProp3D*> GetListOfPickedContours();
 
   /**
    * \brief Get a list of all the unpicked contours
    */
-  std::list< vtkProp3D* > GetListOfUnPickedContours();
+  std::list<vtkProp3D*> GetListOfUnPickedContours();
 
   vtkProp* GetPickedActor();
 
   void ResetWindowLevel();
 
 signals:
-  void SliceViewXYChanged( int Slice );
-  void SliceViewXZChanged( int Slice );
-  void SliceViewYZChanged( int Slice );
+  void SliceViewXYChanged(int Slice);
+  void SliceViewXZChanged(int Slice);
+  void SliceViewYZChanged(int Slice);
 
-  void FullScreenViewChanged( int View );
+  void FullScreenViewChanged(int View);
   void ContoursSelectionChanged();
   void MeshesSelectionChanged();
   void ListMeshesSelectionChanged();
 
-
 public slots:
-  QString SnapshotViewXY( const GoFigure::FileType& iType,
-    const QString& iBaseName = QString( "snapshot" ) );
-  QString SnapshotView2( const GoFigure::FileType& iType,
-    const QString& iBaseName = QString( "snapshot" ) );
-  QString SnapshotView3( const GoFigure::FileType& iType,
-    const QString& iBaseName = QString( "snapshot" ) );
-  QString SnapshotViewXYZ( const GoFigure::FileType& iType,
-    const QString& iBaseName = QString( "snapshot" ) );
+  QString SnapshotViewXY(const GoFigure::FileType& iType,
+                         const QString& iBaseName = QString("snapshot"));
+  QString SnapshotView2(const GoFigure::FileType& iType,
+                        const QString& iBaseName = QString("snapshot"));
+  QString SnapshotView3(const GoFigure::FileType& iType,
+                        const QString& iBaseName = QString("snapshot"));
+  QString SnapshotViewXYZ(const GoFigure::FileType& iType,
+                          const QString& iBaseName = QString("snapshot"));
 
-  void SetSliceViewXY( const int& );
-  void SetSliceViewXZ( const int& );
-  void SetSliceViewYZ( const int& );
+  void SetSliceViewXY(const int&);
+  void SetSliceViewXZ(const int&);
+  void SetSliceViewYZ(const int&);
 
-  void SetFullScreenView( const int& iS );
+  void SetFullScreenView(const int& iS);
 
-  void SetCamera( int );
+  void SetCamera(int);
 
   void UpdateScalarBarIn3DWiew();
 
@@ -259,46 +257,44 @@ public slots:
    *
    * @param
    */
-  virtual void SetLookupTable( vtkLookupTable* );
+  virtual void SetLookupTable(vtkLookupTable*);
 
-  virtual void ShowScalarBar( const bool& );
-
-
+  virtual void ShowScalarBar(const bool&);
 
 protected:
-  QSplitter*          VSplitter;
-  QSplitterChild*     HtSplitter;
-  QSplitterChild*     HbSplitter;
+  QSplitter*      VSplitter;
+  QSplitterChild* HtSplitter;
+  QSplitterChild* HbSplitter;
 
-  QWidget*      LayOutWidget1;
-  QHBoxLayout*  LayOut1;
-  QSlider*      SliderXY;
-  QVTKWidget*   QvtkWidget_XY;
+  QWidget*     LayOutWidget1;
+  QHBoxLayout* LayOut1;
+  QSlider*     SliderXY;
+  QVTKWidget*  QvtkWidget_XY;
 
-  QWidget*      LayOutWidget2;
-  QHBoxLayout*  LayOut2;
-  QSlider*      SliderXZ;
-  QVTKWidget*   QvtkWidget_XZ;
+  QWidget*     LayOutWidget2;
+  QHBoxLayout* LayOut2;
+  QSlider*     SliderXZ;
+  QVTKWidget*  QvtkWidget_XZ;
 
-  QWidget*      LayOutWidget3;
-  QHBoxLayout*  LayOut3;
-  QSlider*      SliderYZ;
-  QVTKWidget*   QvtkWidget_YZ;
+  QWidget*     LayOutWidget3;
+  QHBoxLayout* LayOut3;
+  QSlider*     SliderYZ;
+  QVTKWidget*  QvtkWidget_YZ;
 
-  QWidget*      LayOutWidget4;
-  QHBoxLayout*  LayOut4;
-  QVTKWidget*   QvtkWidget_XYZ;
+  QWidget*     LayOutWidget4;
+  QHBoxLayout* LayOut4;
+  QVTKWidget*  QvtkWidget_XYZ;
 
   vtkViewImage3D* m_View3D;
 
-  vtkEventQtSlotConnect*    VtkEventQtConnector;
-  int                       IsFullScreen;
-  bool                      m_FirstRender;
-  bool                      m_Initialized;
+  vtkEventQtSlotConnect* VtkEventQtConnector;
+  int                    IsFullScreen;
+  bool                   m_FirstRender;
+  bool                   m_Initialized;
 
   vtkProperty* m_HighlightedContourProperty;
 
-  virtual void resizeEvent( QResizeEvent* event );
+  virtual void resizeEvent(QResizeEvent* event);
 
   void SetupVTKtoQtConnections();
 //   std::map< vtkProp3D*, vtkProperty* > m_ActorsPropertyMap;
@@ -320,6 +316,6 @@ protected slots:
   void MoveSliderXZ();
   void MoveSliderYZ();
 
-};
+  };
 
 #endif

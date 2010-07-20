@@ -49,25 +49,24 @@
 #include "vtkMySQLDatabase.h"
 
 class QGOIO_EXPORT GoDBColorRow : public GoDBRow
-{
+  {
 public:
   GoDBColorRow();
-  
+
   ~GoDBColorRow()
-    {}
+        {}
   /**\brief check if the color already exits in the DB, if yes,
-  return the existing ID, if not, save it in the DB and return the 
+  return the existing ID, if not, save it in the DB and return the
   ID for new created color*/
   int SaveInDB(vtkMySQLDatabase* DatabaseConnector);
 
-/**\brief check if the color already exits in the database, if yes, 
+/**\brief check if the color already exits in the database, if yes,
   return the corresponding ID, if not, return -1*/
   int DoesThisColorAlreadyExists(vtkMySQLDatabase* DatabaseConnector);
 
 protected:
   virtual void InitializeMap();
-  
-    
-};
+
+  };
 
 #endif

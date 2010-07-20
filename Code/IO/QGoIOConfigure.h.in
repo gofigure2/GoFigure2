@@ -7,11 +7,11 @@
 #if defined (WIN32) && defined (GOFIGURE2_BUILD_SHARED_LIBS)
 
  #if defined (QGoIO_EXPORT)
-  #define QGOIO_EXPORT __declspec( dllexport )
+  #define QGOIO_EXPORT __declspec(dllexport)
  #else
-  #define QGOIO_EXPORT __declspec( dllimport )
+  #define QGOIO_EXPORT __declspec(dllimport)
  #endif
- 
+
 #else
 
   #define QGOIO_EXPORT

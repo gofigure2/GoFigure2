@@ -50,29 +50,29 @@
 #include "QGoDeleteDBEntityDialog.h"
 
 QGoDBBookmarkManager::QGoDBBookmarkManager(QWidget* iParent,
-  int iImgSessionID):
-  QWidget( iParent)
-{
+                                           int iImgSessionID) :
+  QWidget(iParent)
+  {
   this->m_ImgSessionID = iImgSessionID;
-}
+  }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 QGoDBBookmarkManager::~QGoDBBookmarkManager()
-{
-}
+  {
+  }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void QGoDBBookmarkManager::AddABookmark(int iCoordID,
-  vtkMySQLDatabase* iDatabaseConnector)
+                                        vtkMySQLDatabase* iDatabaseConnector)
 {
   this->m_CoordIDForNewBookmark = iCoordID;
   this->m_NameDescDialog = new QNameDescriptionInputDialog(
-    this,"Bookmark");
+    this, "Bookmark");
   this->m_DatabaseConnectorForNewBkmrk = iDatabaseConnector;
   QObject::connect (this->m_NameDescDialog, SIGNAL(NameNonEmpty()),
-    this, SLOT(ValidateName()));
+                    this, SLOT(ValidateName()));
   this->m_NameDescDialog->exec();
 }
 //-------------------------------------------------------------------------
@@ -81,19 +81,19 @@ void QGoDBBookmarkManager::AddABookmark(int iCoordID,
 void QGoDBBookmarkManager::SaveNewBookmarkInDB()
 {
   GoDBBookmarkRow NewBookmark;
-  NewBookmark.SetField("Name",this->m_NameDescDialog->GetInputTextForName());
+  NewBookmark.SetField("Name", this->m_NameDescDialog->GetInputTextForName());
   NewBookmark.SetField("Description",
-    this->m_NameDescDialog->GetInputTextForDescription());
-  QDateTime CreationDate = QDateTime::currentDateTime();
-  std::string CreationDateStr = 
+                       this->m_NameDescDialog->GetInputTextForDescription());
+  QDateTime   CreationDate = QDateTime::currentDateTime();
+  std::string CreationDateStr =
     CreationDate.toString(Qt::ISODate).toStdString();
-  NewBookmark.SetField("CreationDate",CreationDateStr);
-  NewBookmark.SetField<int>("CoordID",this->m_CoordIDForNewBookmark);
-  NewBookmark.SetField<int>("ImagingSessionID",this->m_ImgSessionID);
+  NewBookmark.SetField("CreationDate", CreationDateStr);
+  NewBookmark.SetField<int>("CoordID", this->m_CoordIDForNewBookmark);
+  NewBookmark.SetField<int>("ImagingSessionID", this->m_ImgSessionID);
 
   std::string BookmarkName = NewBookmark.GetMapValue("Name");
   if (NewBookmark.DoesThisBookmarkAlreadyExists(
-    this->m_DatabaseConnectorForNewBkmrk,BookmarkName) != -1)
+        this->m_DatabaseConnectorForNewBkmrk, BookmarkName) != -1)
     {
     QMessageBox msgBox;
     msgBox.setText(
@@ -110,13 +110,13 @@ void QGoDBBookmarkManager::SaveNewBookmarkInDB()
 
 //-------------------------------------------------------------------------
 QGoDBBookmarkManager::NamesDescrContainerType QGoDBBookmarkManager::
-  GetListExistingBookmarks(vtkMySQLDatabase* iDatabaseConnector)
+GetListExistingBookmarks(vtkMySQLDatabase* iDatabaseConnector)
 {
- // return ListSpecificValuesForOneColumn(iDatabaseConnector,"bookmark", 
- //   "Name","ImagingSessionID",ConvertToString<int>(this->m_ImgSessionID));
-  return ListSpecificValuesForTwoColumns(iDatabaseConnector,"bookmark", 
-    "Name","Description","ImagingSessionID",
-    ConvertToString<int>(this->m_ImgSessionID),"Name");
+  // return ListSpecificValuesForOneColumn(iDatabaseConnector,"bookmark",
+  //   "Name","ImagingSessionID",ConvertToString<int>(this->m_ImgSessionID));
+  return ListSpecificValuesForTwoColumns(iDatabaseConnector, "bookmark",
+                                         "Name", "Description", "ImagingSessionID",
+                                         ConvertToString<int>(this->m_ImgSessionID), "Name");
 }
 //-------------------------------------------------------------------------
 
@@ -126,26 +126,26 @@ GoDBCoordinateRow QGoDBBookmarkManager::GetCoordinatesForBookmark(
 {
   GoDBCoordinateRow BookmarkCoord;
   BookmarkCoord.SetValuesForSpecificID(
-    this->GetCoordIDForBookmark(iDatabaseConnector,iName),iDatabaseConnector);
+    this->GetCoordIDForBookmark(iDatabaseConnector, iName), iDatabaseConnector);
   return BookmarkCoord;
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 int QGoDBBookmarkManager::GetCoordIDForBookmark(
-  vtkMySQLDatabase* iDatabaseConnector,std::string iName)
+  vtkMySQLDatabase* iDatabaseConnector, std::string iName)
 {
-  return FindOneID(iDatabaseConnector,"bookmark",
-    "CoordID","Name", iName);
+  return FindOneID(iDatabaseConnector, "bookmark",
+                   "CoordID", "Name", iName);
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 bool QGoDBBookmarkManager::DoesThisBookmarkNameAlreadyExistsInTheDB(
-  vtkMySQLDatabase* DatabaseConnector,std::string iName)
+  vtkMySQLDatabase* DatabaseConnector, std::string iName)
 {
-  int ID = FindOneID(DatabaseConnector,"bookmark", "BookmarkID",
-    "Name",iName);
+  int ID = FindOneID(DatabaseConnector, "bookmark", "BookmarkID",
+                     "Name", iName);
   if (ID == -1)
     {
     return false;
@@ -158,8 +158,8 @@ bool QGoDBBookmarkManager::DoesThisBookmarkNameAlreadyExistsInTheDB(
 void QGoDBBookmarkManager::ValidateName()
 {
   if (this->DoesThisBookmarkNameAlreadyExistsInTheDB(
-    this->m_DatabaseConnectorForNewBkmrk,
-    this->m_NameDescDialog->GetInputTextForName()))
+        this->m_DatabaseConnectorForNewBkmrk,
+        this->m_NameDescDialog->GetInputTextForName()))
     {
     this->m_NameDescDialog->NameAlreadyExists();
     }
@@ -176,9 +176,9 @@ void QGoDBBookmarkManager::DeleteBookmark(
   vtkMySQLDatabase* iDatabaseConnector)
 {
   QGoDeleteDBEntityDialog* Dialog = new QGoDeleteDBEntityDialog(
-    this,"bookmark",this->m_ImgSessionID,iDatabaseConnector);
-  QObject::connect(Dialog,SIGNAL(ListEntitiesChanged()),
-    this,SIGNAL(ListBookmarksChanged()));
+    this, "bookmark", this->m_ImgSessionID, iDatabaseConnector);
+  QObject::connect(Dialog, SIGNAL(ListEntitiesChanged()),
+                   this, SIGNAL(ListBookmarksChanged()));
   Dialog->show();
   Dialog->exec();
 }

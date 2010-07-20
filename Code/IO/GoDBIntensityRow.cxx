@@ -41,14 +41,15 @@
 #include "GoDBRecordSetHelper.h"
 
 GoDBIntensityRow::GoDBIntensityRow()
-{
+  {
   this->InitializeMap();
-}
+  }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 GoDBIntensityRow::~GoDBIntensityRow()
-{}
+  {
+  }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -69,8 +70,8 @@ int GoDBIntensityRow::SaveInDB(vtkMySQLDatabase* DatabaseConnector)
   int IntensityID = this->DoesThisIntensityAlreadyExists(DatabaseConnector);
   if (IntensityID == -1)
     {
-    IntensityID = AddOnlyOneNewObjectInTable<GoDBIntensityRow>( 
-      DatabaseConnector,"intensity", this, "IntensityID");
+    IntensityID = AddOnlyOneNewObjectInTable<GoDBIntensityRow>(
+      DatabaseConnector, "intensity", this, "IntensityID");
     }
   return IntensityID;
 }
@@ -84,6 +85,6 @@ int GoDBIntensityRow::DoesThisIntensityAlreadyExists(
   std::string MeshID = this->GetMapValue("MeshID");
   /*return FindOneID(DatabaseConnector,"color", "ColorID","Red",Red,"Green",Green,
   "Blue",Blue,"Alpha",Alpha,"Name",Name);*/
-  return FindOneID(DatabaseConnector,"intensity", "IntensityID","ChannelID", 
-    ChannelID,"MeshID",MeshID);
+  return FindOneID(DatabaseConnector, "intensity", "IntensityID", "ChannelID",
+                   ChannelID, "MeshID", MeshID);
 }

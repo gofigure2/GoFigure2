@@ -44,29 +44,29 @@
 #include <iostream>
 
 //--------------------------------------------------------------------------
-QCellPreprocess::QCellPreprocess( QWidget* iParent ) : QWidget( iParent )
-{
-  this->setupUi( this );
+QCellPreprocess::QCellPreprocess(QWidget* iParent) : QWidget(iParent)
+  {
+  this->setupUi(this);
   m_CellRadius = 4.0;
   m_MembraneData = true;
 
-  this->buttonGroup->setId( allChRadioButton, 0 );
-  this->buttonGroup->setId( singleChRadioButton, 1 );
-  this->ChannelComboBox->setEnabled( false );
-}
+  this->buttonGroup->setId(allChRadioButton, 0);
+  this->buttonGroup->setId(singleChRadioButton, 1);
+  this->ChannelComboBox->setEnabled(false);
+  }
 
-void QCellPreprocess::SetMembraneDataType( bool x )
+void QCellPreprocess::SetMembraneDataType(bool x)
 {
   m_MembraneData = x;
 }
 
-void QCellPreprocess::SetInput( std::vector< vtkImageData* >& iImg )
+void QCellPreprocess::SetInput(std::vector<vtkImageData*>& iImg)
 {
   m_VTKInput = iImg;
-  m_VTKOutput.resize( m_VTKInput.size(), 0 );
+  m_VTKOutput.resize(m_VTKInput.size(), 0);
 }
 
-std::vector< vtkImageData* > QCellPreprocess::GetOutput()
+std::vector<vtkImageData*> QCellPreprocess::GetOutput()
 {
   return m_VTKOutput;
 }
@@ -74,7 +74,7 @@ std::vector< vtkImageData* > QCellPreprocess::GetOutput()
 //--------------------------------------------------------------------------
 void QCellPreprocess::GetParameters()
 { // Get the current snapshot of parameters
-  m_CellRadius = static_cast<double>( this->RadiusSpinBox->value() );
+  m_CellRadius = static_cast<double>(this->RadiusSpinBox->value());
 }
 
 //--------------------------------------------------------------------------
@@ -87,10 +87,10 @@ void QCellPreprocess::on_RadiusSpinBox_valueChanged()
   int max_slider = this->RadiusSlider->maximum();
   int min_slider = this->RadiusSlider->minimum();
 
-  int out = static_cast<int>( min_slider +
-    (max_slider - min_slider) * (t-min_spin)/( max_spin-min_spin ) );
+  int out = static_cast<int>(min_slider +
+                             (max_slider - min_slider) * (t - min_spin) / (max_spin - min_spin));
 
-  this->RadiusSlider->setValue( out );
+  this->RadiusSlider->setValue(out);
 }
 
 //--------------------------------------------------------------------------
@@ -104,79 +104,78 @@ void QCellPreprocess::on_RadiusSlider_sliderReleased()
   int max_slider = this->RadiusSlider->maximum();
   int min_slider = this->RadiusSlider->minimum();
 
-  double out = static_cast<double>( min_spin +
-    (max_spin - min_spin) * (t-min_slider)/( max_slider - min_slider ) );
+  double out = static_cast<double>(min_spin +
+                                   (max_spin - min_spin) * (t - min_slider) / (max_slider - min_slider));
 
-  this->RadiusSpinBox->setValue( out );
+  this->RadiusSpinBox->setValue(out);
 }
 
 //--------------------------------------------------------------------------
 void QCellPreprocess::on_allChRadioButton_clicked()
 {
-  this->ChannelComboBox->setEnabled( false );
+  this->ChannelComboBox->setEnabled(false);
 }
-
 
 //--------------------------------------------------------------------------
 void QCellPreprocess::on_singleChRadioButton_clicked()
 {
-  this->ChannelComboBox->setEnabled( true );
+  this->ChannelComboBox->setEnabled(true);
 }
 
 //--------------------------------------------------------------------------
 void QCellPreprocess::on_GlobalResetButton_clicked()
 {
   this->m_CellRadius = 4.0;
-  this->RadiusSpinBox->setValue( this->m_CellRadius );
+  this->RadiusSpinBox->setValue(this->m_CellRadius);
 }
 
 //--------------------------------------------------------------------------
 void QCellPreprocess::on_GlobalApplyButton_clicked()
 {
-  unsigned int option = static_cast<unsigned int>( this->buttonGroup->checkedId() );
-  if ( !option )
-  {
-    Preprocess( 0 );
+  unsigned int option = static_cast<unsigned int>(this->buttonGroup->checkedId());
+  if (!option)
+    {
+    Preprocess(0);
 //    Preprocess( 1 );
 //    Preprocess( 2 );
-  }
+    }
   else
-  {
-    unsigned int channel = static_cast<unsigned int>( this->ChannelComboBox->currentIndex() );
-    Preprocess( channel );
-  }
+    {
+    unsigned int channel = static_cast<unsigned int>(this->ChannelComboBox->currentIndex());
+    Preprocess(channel);
+    }
 
-  emit Done( m_VTKOutput );
+  emit Done(m_VTKOutput);
 }
 
-void QCellPreprocess::Preprocess( unsigned int i )
+void QCellPreprocess::Preprocess(unsigned int i)
 {
-  if ( m_VTKInput[i] )
+  if (m_VTKInput[i])
     {
     // convert VTK image to ITK image
     vtkImageExport* vtkExporter = vtkImageExport::New();
-    vtkExporter->SetInput( m_VTKInput[i] );
+    vtkExporter->SetInput(m_VTKInput[i]);
 
     ImageImportPointer itkImporter = ImageImportType::New();
 
-    ConnectPipelines( vtkExporter, itkImporter );
+    ConnectPipelines(vtkExporter, itkImporter);
 
     InputImagePointer m_ITKImage = itkImporter->GetOutput();
 
     PreprocessFilterPointer filter = PreprocessFilterType::New();
-    filter->SetInput ( m_ITKImage );
-    filter->SetLargestCellRadius ( m_CellRadius ); // in real coordinates
-    filter->SetMembraneData( m_MembraneData );
+    filter->SetInput (m_ITKImage);
+    filter->SetLargestCellRadius (m_CellRadius);   // in real coordinates
+    filter->SetMembraneData(m_MembraneData);
     filter->Update();
 
     InputImagePointer m_ITKOutputImage = filter->GetOutput();
 
     ImageExportType::Pointer itkExporter = ImageExportType::New();
-    itkExporter->SetInput( m_ITKOutputImage );
+    itkExporter->SetInput(m_ITKOutputImage);
 
     vtkImageImport* vtkImporter = vtkImageImport::New();
 
-    ConnectPipelines( itkExporter, vtkImporter );
+    ConnectPipelines(itkExporter, vtkImporter);
 
     m_VTKOutput[i] = vtkImporter->GetOutput();
 
@@ -184,4 +183,3 @@ void QCellPreprocess::Preprocess( unsigned int i )
     vtkImporter->Delete();
     }
 }
-

@@ -40,11 +40,10 @@
 #include "GoDBCellTypeRow.h"
 #include "GoDBRecordSetHelper.h"
 
-
-GoDBCellTypeRow::GoDBCellTypeRow(): GoDBNameDescRow()
-{
-  this->InitializeMap();  
-}
+GoDBCellTypeRow::GoDBCellTypeRow() : GoDBNameDescRow()
+  {
+  this->InitializeMap();
+  }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -57,7 +56,7 @@ void GoDBCellTypeRow::InitializeMap()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
- int GoDBCellTypeRow::DoesThisEntityAlreadyExists(
+int GoDBCellTypeRow::DoesThisEntityAlreadyExists(
   vtkMySQLDatabase* DatabaseConnector)
 {
   return DoesThisNameAlreadyExists(DatabaseConnector);
@@ -65,16 +64,16 @@ void GoDBCellTypeRow::InitializeMap()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
- int GoDBCellTypeRow::DoesThisEntityAlreadyExists(
-  vtkMySQLDatabase* DatabaseConnector,std::string &ioName)
+int GoDBCellTypeRow::DoesThisEntityAlreadyExists(
+  vtkMySQLDatabase* DatabaseConnector, std::string& ioName)
 {
   int ID = DoesThisNameAlreadyExists(DatabaseConnector);
   if (ID == -1)
     {
     return ID;
     }
-  ioName = ReturnOnlyOneValue(DatabaseConnector,this->m_TableName, "Name",
-    this->m_TableIDName,ConvertToString<int>(ID));
+  ioName = ReturnOnlyOneValue(DatabaseConnector, this->m_TableName, "Name",
+                              this->m_TableIDName, ConvertToString<int>(ID));
   return ID;
 }
 //-------------------------------------------------------------------------
@@ -85,8 +84,8 @@ int GoDBCellTypeRow::SaveInDB(vtkMySQLDatabase* DatabaseConnector)
   int CellTypeID = this->DoesThisEntityAlreadyExists(DatabaseConnector);
   if (CellTypeID == -1)
     {
-    CellTypeID = AddOnlyOneNewObjectInTable<GoDBCellTypeRow>( DatabaseConnector,
-    this->m_TableName,*this, this->m_TableIDName);
+    CellTypeID = AddOnlyOneNewObjectInTable<GoDBCellTypeRow>(DatabaseConnector,
+                                                             this->m_TableName, *this, this->m_TableIDName);
     }
   return CellTypeID;
 }

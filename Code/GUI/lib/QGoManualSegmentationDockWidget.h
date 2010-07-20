@@ -54,15 +54,15 @@ class QGoManualSegmentationSettingsDialog;
 class QGOGUILIB_EXPORT QGoManualSegmentationDockWidget :
   public QDockWidget,
   private Ui::ManualSegmentationDockWidget
-{
+  {
   Q_OBJECT
 public:
-  QGoManualSegmentationDockWidget( QWidget* parent = 0 );
+  QGoManualSegmentationDockWidget(QWidget * parent = 0);
   ~QGoManualSegmentationDockWidget();
 
   QGoManualSegmentationSettingsDialog* m_SettingsDialog;
 
-  void SetNumberOfChannels( int );
+  void SetNumberOfChannels(int);
 
   // Methods to get useful informations
   int    GetMode();
@@ -72,8 +72,8 @@ public:
   int    GetCurvatureWeight();
 
 private:
-  void ShowManual( bool iUse );
-  void ShowSemiAuto( bool iUse );
+  void ShowManual(bool iUse);
+  void ShowSemiAuto(bool iUse);
 
   void InitializeLevelsetParameters();
 
@@ -85,13 +85,13 @@ signals:
   void ApplyFilterPressed();
 
   // Change Mode
-  void UpdateInteractorBehavior( bool );
+  void UpdateInteractorBehavior(bool);
 
 public slots:
-  void UpdateWidget( int );
-  void AdvancedMode( bool );
+  void UpdateWidget(int);
+  void AdvancedMode(bool);
   void ApplyFilterEmit();
 
-};
+  };
 
 #endif

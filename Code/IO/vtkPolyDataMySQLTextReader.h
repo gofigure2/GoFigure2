@@ -49,13 +49,13 @@ class vtkPolyData;
 #include "QGoIOConfigure.h"
 
 class QGOIO_EXPORT vtkPolyDataMySQLTextReader : public vtkObject
-{
+  {
 public:
   static vtkPolyDataMySQLTextReader* New();
-  vtkTypeRevisionMacro( vtkPolyDataMySQLTextReader, vtkObject );
+  vtkTypeRevisionMacro(vtkPolyDataMySQLTextReader, vtkObject);
 
-  vtkPolyData* GetPolyData( const std::string& iString );
-  void SetIsContour( const bool& );
+  vtkPolyData* GetPolyData(const std::string& iString);
+  void SetIsContour(const bool&);
 
 protected:
   vtkPolyDataMySQLTextReader();
@@ -64,12 +64,12 @@ protected:
   std::string m_Text;
   bool        IsContour;
 
-  vtkPolyData* GetContour( );
-  vtkPolyData* GetMesh( );
+  vtkPolyData* GetContour();
+  vtkPolyData* GetMesh();
 
 private:
-  vtkPolyDataMySQLTextReader( const vtkPolyDataMySQLTextReader& );
-  void operator = ( const vtkPolyDataMySQLTextReader& );
-};
+  vtkPolyDataMySQLTextReader(const vtkPolyDataMySQLTextReader &);
+  void operator =(const vtkPolyDataMySQLTextReader&);
+  };
 
 #endif

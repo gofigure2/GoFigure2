@@ -39,17 +39,16 @@
 =========================================================================*/
 #include "QGoCreateMeshDialog.h"
 
-
-QGoCreateMeshDialog::QGoCreateMeshDialog( QWidget* iParent ) :
-  QDialog( iParent )
-{
+QGoCreateMeshDialog::QGoCreateMeshDialog(QWidget* iParent) :
+  QDialog(iParent)
+  {
   /*this->VLayoutLabel       = new QVBoxLayout;
   this->VLayoutCombobox    = new QVBoxLayout;
   this->VLayoutDescription = new QVBoxLayout;
   this->HorizontalLayout   = new QHBoxLayout;*/
   //this->HorizontalSpacer   = new QSpacerItem;
   this->GridLayout         = new QGridLayout;
-  this->LineCellType       = new QLabel(tr("Select the Cell Type:")) ;
+  this->LineCellType       = new QLabel(tr("Select the Cell Type:"));
   this->LineSubCellType    = new QLabel(tr("Select the SubCellular type:"));
   this->LineColor          = new QLabel(tr("Select the color"));
   this->SelectCellType     = new QComboBox;
@@ -74,8 +73,8 @@ QGoCreateMeshDialog::QGoCreateMeshDialog( QWidget* iParent ) :
   this->NewCellType        = new QPushButton(tr("New One"));
   this->NewSubCellType     = new QPushButton(tr("New One"));
   this->NewColor           = new QPushButton(tr("New One"));
-  this->ButtonBox->addButton(OkButton,QDialogButtonBox::AcceptRole);
-  this->ButtonBox->addButton(CancelButton,QDialogButtonBox::RejectRole);
+  this->ButtonBox->addButton(OkButton, QDialogButtonBox::AcceptRole);
+  this->ButtonBox->addButton(CancelButton, QDialogButtonBox::RejectRole);
 
   /*this->VLayoutLabel->addWidget(this->LineCellType);
   this->VLayoutLabel->addWidget(this->LineSubCellType);
@@ -84,7 +83,7 @@ QGoCreateMeshDialog::QGoCreateMeshDialog( QWidget* iParent ) :
   this->VLayoutCombobox->addWidget(this->SelectCellType);
   this->VLayoutCombobox->addWidget(this->SelectSubCellType);
   this->VLayoutCombobox->addWidget(this->SelectColor);
-  
+
   this->VLayoutDescription->addWidget(this->DescriptionCell);
   this->VLayoutDescription->addWidget(this->DescriptionSubCell);
   this->VLayoutDescription->addWidget(this->DescriptionColor);
@@ -95,37 +94,37 @@ QGoCreateMeshDialog::QGoCreateMeshDialog( QWidget* iParent ) :
   this->HorizontalLayout->addWidget(this->ButtonBox);
 
   this->setLayout(this->HorizontalLayout);*/
-  this->GridLayout->addWidget(this->LineCellType,1,1);
-  this->GridLayout->addWidget(this->LineSubCellType,2,1);
-  this->GridLayout->addWidget(this->LineColor,3,1);
+  this->GridLayout->addWidget(this->LineCellType, 1, 1);
+  this->GridLayout->addWidget(this->LineSubCellType, 2, 1);
+  this->GridLayout->addWidget(this->LineColor, 3, 1);
 
-  this->GridLayout->addWidget(this->SelectCellType,1,2);
-  this->GridLayout->addWidget(this->SelectSubCellType,2,2);
-  this->GridLayout->addWidget(this->SelectColor,3,2);
-  
+  this->GridLayout->addWidget(this->SelectCellType, 1, 2);
+  this->GridLayout->addWidget(this->SelectSubCellType, 2, 2);
+  this->GridLayout->addWidget(this->SelectColor, 3, 2);
+
   /*this->GridLayout->addWidget(this->DescriptionCell,1,3);
   this->GridLayout->addWidget(this->DescriptionSubCell,2,3);
   this->GridLayout->addWidget(this->DescriptionColor,3,3);*/
-  
+
   //this->GridLayout->addWidget(this->ScrollDescrCell,1,3);
   //this->GridLayout->addWidget(this->ScrollDescrSubCell,2,3);
   //this->GridLayout->addWidget(this->ScrollDescrColor,3,3);
 
-  this->GridLayout->addWidget(this->NewCellType,1,4);
-  this->GridLayout->addWidget(this->NewSubCellType,2,4);
-  this->GridLayout->addWidget(this->NewColor,3,4);
+  this->GridLayout->addWidget(this->NewCellType, 1, 4);
+  this->GridLayout->addWidget(this->NewSubCellType, 2, 4);
+  this->GridLayout->addWidget(this->NewColor, 3, 4);
 
-  this->GridLayout->addWidget(this->ButtonBox,4,1);
+  this->GridLayout->addWidget(this->ButtonBox, 4, 1);
 
   this->setLayout(this->GridLayout);
 
-}
+  }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 QGoCreateMeshDialog::~QGoCreateMeshDialog()
-{
-}
+  {
+  }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------

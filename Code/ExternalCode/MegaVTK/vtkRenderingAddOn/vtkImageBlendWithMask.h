@@ -74,19 +74,15 @@
 
 class VTK_RENDERINGADDON2_EXPORT vtkImageBlendWithMask :
   public vtkThreadedImageAlgorithm
-{
- public:
+  {
+public:
   static vtkImageBlendWithMask *New();
   vtkTypeRevisionMacro (vtkImageBlendWithMask, vtkThreadedImageAlgorithm);
-  void PrintSelf (ostream &os, vtkIndent indent);
-
+  void PrintSelf(ostream& os, vtkIndent indent);
 
   // Set/Get the LUT to map the mask
   vtkSetObjectMacro (LookupTable, vtkLookupTable);
   vtkGetObjectMacro (LookupTable, vtkLookupTable);
-
-
-
 
   // Description:
   // Set the input to be masked.
@@ -98,34 +94,30 @@ class VTK_RENDERINGADDON2_EXPORT vtkImageBlendWithMask :
 
   // Description:
   // Set the two inputs to this filter
-  virtual void SetInput1(vtkDataObject *in) { this->SetInput(0,in); }
-  virtual void SetInput2(vtkDataObject *in) { this->SetInput(1,in); }
+  virtual void SetInput1(vtkDataObject *in) { this->SetInput(0, in); }
+  virtual void SetInput2(vtkDataObject *in) { this->SetInput(1, in); }
 
- protected:
+protected:
   vtkImageBlendWithMask();
   ~vtkImageBlendWithMask();
 
   vtkLookupTable* LookupTable;
 
-  virtual int RequestInformation (vtkInformation *vtkNotUsed(request),
-                                  vtkInformationVector **inputVector,
-                                  vtkInformationVector *outputVector);
+  virtual int RequestInformation (vtkInformation * vtkNotUsed(request),
+                                  vtkInformationVector * *inputVector,
+                                  vtkInformationVector * outputVector);
 
-
-  virtual void ThreadedRequestData(vtkInformation *vtkNotUsed( request ),
-                                   vtkInformationVector **vtkNotUsed( inputVector ),
-                                   vtkInformationVector *vtkNotUsed( outputVector ),
-                                   vtkImageData ***inData,
-                                   vtkImageData **outData,
+  virtual void ThreadedRequestData(vtkInformation * vtkNotUsed(request),
+                                   vtkInformationVector * *vtkNotUsed(inputVector),
+                                   vtkInformationVector * vtkNotUsed(outputVector),
+                                   vtkImageData * **inData,
+                                   vtkImageData * *outData,
                                    int extent[6], int threadId);
 
+private:
+  vtkImageBlendWithMask (const vtkImageBlendWithMask &);
+  void operator =(const vtkImageBlendWithMask&);
 
- private:
-  vtkImageBlendWithMask (const vtkImageBlendWithMask&);
-  void operator=(const vtkImageBlendWithMask&);
-
-};
-
-
+  };
 
 #endif

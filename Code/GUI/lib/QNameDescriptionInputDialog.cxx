@@ -42,46 +42,46 @@
 #include <QMessageBox>
 #include "QTextEditChild.h"
 
-QNameDescriptionInputDialog::QNameDescriptionInputDialog( QWidget* iParent,
-  QString iEntityName):QDialog(iParent)
-{
+QNameDescriptionInputDialog::QNameDescriptionInputDialog(QWidget* iParent,
+                                                         QString iEntityName) : QDialog(iParent)
+  {
   this->setupUi(this);
   this->m_EntityName = iEntityName;
   this->setWindowTitle(tr("Create a %1").arg(this->m_EntityName));
   this->EntityLabel->setText(tr("new %1 you want to save:").arg(iEntityName));
   this->NameLineEdit->setMaxLength(45);
-  this->m_DescriptionTextEdit = new QTextEditChild(this,1000);
-  this->formLayout->addRow("Description:",this->m_DescriptionTextEdit);
+  this->m_DescriptionTextEdit = new QTextEditChild(this, 1000);
+  this->formLayout->addRow("Description:", this->m_DescriptionTextEdit);
 
-  QObject::connect(this->NameDescriptionButtonBox,SIGNAL(accepted()),
-    this,SLOT(ValidationRequested()));
-}
+  QObject::connect(this->NameDescriptionButtonBox, SIGNAL(accepted()),
+                   this, SLOT(ValidationRequested()));
+  }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 QNameDescriptionInputDialog::~QNameDescriptionInputDialog()
-{
-}
+  {
+  }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 std::string QNameDescriptionInputDialog::GetInputTextForName()
 {
- return this->NameLineEdit->text().toStdString();
+  return this->NameLineEdit->text().toStdString();
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 std::string QNameDescriptionInputDialog::GetInputTextForDescription()
 {
- return this->m_DescriptionTextEdit->toPlainText().toStdString();
+  return this->m_DescriptionTextEdit->toPlainText().toStdString();
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void QNameDescriptionInputDialog::ValidationRequested()
 {
-  if(this->GetInputTextForName().empty())
+  if (this->GetInputTextForName().empty())
     {
     QMessageBox msgBox;
     msgBox.setText(
@@ -99,7 +99,7 @@ void QNameDescriptionInputDialog::ValidationRequested()
 void QNameDescriptionInputDialog::NameAlreadyExists()
 {
   QMessageBox msgBox;
-    msgBox.setText(
-      tr("This name already exists, please choose another one"));
-    msgBox.exec();
+  msgBox.setText(
+    tr("This name already exists, please choose another one"));
+  msgBox.exec();
 }

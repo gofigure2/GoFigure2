@@ -49,8 +49,8 @@
   Copyright (c) 2002 Insight Consortium. All rights reserved.
   See ITKCopyright.txt or http://www.itk.org/HTML/Copyright.htm for details.
 
-     This software is distributed WITHOUT ANY WARRANTY; without even 
-     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+     This software is distributed WITHOUT ANY WARRANTY; without even
+     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
      PURPOSE.  See the above copyright notices for more information.
 
 =========================================================================*/
@@ -62,15 +62,13 @@
 namespace itk
 {
 
-
-
 /**
  * Constructor
  */
 template <class TInputImage>
 ImageToVTKImageFilter<TInputImage>
 ::ImageToVTKImageFilter()
-{
+  {
 
   m_Importer = vtkImageImport::New();
 
@@ -89,10 +87,7 @@ ImageToVTKImageFilter<TInputImage>
   m_Importer->SetBufferPointerCallback(m_Exporter->GetBufferPointerCallback());
   m_Importer->SetCallbackUserData(m_Exporter->GetCallbackUserData());
 
-}
-
-
-
+  }
 
 /**
  * Destructor
@@ -100,24 +95,20 @@ ImageToVTKImageFilter<TInputImage>
 template <class TInputImage>
 ImageToVTKImageFilter<TInputImage>
 ::~ImageToVTKImageFilter()
-{
-	m_Importer->Delete();
-}
-
-
+  {
+  m_Importer->Delete();
+  }
 
 /**
- * Set an itk::Image as input 
+ * Set an itk::Image as input
  */
 template <class TInputImage>
 void
 ImageToVTKImageFilter<TInputImage>
-::SetInput( const InputImageType * inputImage )
+::SetInput(const InputImageType * inputImage)
 {
-  m_Exporter->SetInput( inputImage );
+  m_Exporter->SetInput(inputImage);
 }
-
-
 
 /**
  * Get a vtkImage as output
@@ -130,9 +121,6 @@ ImageToVTKImageFilter<TInputImage>
   return m_Importer->GetOutput();
 }
 
-
-
-
 /**
  * Get the importer filter
  */
@@ -143,8 +131,6 @@ ImageToVTKImageFilter<TInputImage>
 {
   return m_Importer;
 }
-
-
 
 /**
  * Get the exporter filter
@@ -157,8 +143,6 @@ ImageToVTKImageFilter<TInputImage>
   return m_Exporter.GetPointer();
 }
 
-
-
 /**
  * Delegate the Update to the importer
  */
@@ -170,11 +154,6 @@ ImageToVTKImageFilter<TInputImage>
   m_Importer->Update();
 }
 
-
-
-
-
 } // end namespace itk
 
 #endif
-

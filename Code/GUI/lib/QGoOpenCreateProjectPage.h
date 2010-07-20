@@ -40,7 +40,6 @@
 #ifndef __QGoOpenCreateProjectPage_h
 #define __QGoOpenCreateProjectPage_h
 
-
 #include <QWizardPage>
 #include <QLineEdit>
 #include <QLabel>
@@ -54,30 +53,30 @@
 #include "QTextEditChild.h"
 
 class QGoOpenCreateProjectPage : public QWizardPage
-{
+  {
   Q_OBJECT
 
 public:
   QGoOpenCreateProjectPage(QWidget *parent = 0);
-  mutable vtkMySQLDatabase* m_DatabaseConnector;
+  mutable vtkMySQLDatabase * m_DatabaseConnector;
 
   void initializePage();
-  bool validatePage();  
+  bool validatePage();
   void cleanupPage();
   int nextId() const;
-  
+
 private:
 
-   /** \brief update the m_ListProject and return true if the list is not empty,
-  false if there is no existing project.*/
-  bool GetListProject()const;
+  /** \brief update the m_ListProject and return true if the list is not empty,
+ false if there is no existing project.*/
+  bool GetListProject() const;
 
-  /** \brief insert the new project in the database with the information 
+  /** \brief insert the new project in the database with the information
   filled by the user*/
   void CreateProject();
 
   /** \brief return the QStringList of the authors to be visualized by the user
-  (concatenation of the firstname, middle name and last name and fill the map 
+  (concatenation of the firstname, middle name and last name and fill the map
   mapping the concatenated names with the AuthorID.*/
   QStringList GetListAuthors();
 
@@ -85,15 +84,15 @@ private:
   on the name selected by the user in the combobox.*/
   int AuthorIDForNewProject();
 
-   /** \brief open a connection to the database.*/
-  void OpenDBConnection()const;
+  /** \brief open a connection to the database.*/
+  void OpenDBConnection() const;
 
   /** \brief get the list of the existing imaging session for the selected project
   and return true if the list is not empty.*/
-  bool DoesProjectHaveExistingImgSession()const;
+  bool DoesProjectHaveExistingImgSession() const;
 
-  void BackFromNextPage()const;
-  
+  void BackFromNextPage() const;
+
   std::string     m_DatabaseVersion;
   QLabel*         textNewProjectName;
   QLineEdit*      lineNewProjectName;
@@ -109,17 +108,16 @@ private:
   QString         OpenOrCreateProject;
   QRadioButton*   OpenProjectRadioButton;
   QRadioButton*   CreateProjectRadioButton;
- 
-  mutable QStringList m_ListProject; 
-  std::map<std::string,int> m_MapAuthorIDName;
-  bool ExistingImgSession;
-  mutable bool LeavingPage;
 
+  mutable QStringList m_ListProject;
+  std::map<std::string, int> m_MapAuthorIDName;
+  bool                       ExistingImgSession;
+  mutable bool LeavingPage;
 
 protected slots:
   /** \brief  hides/shows the related QLabel,QLineEdit...and enables
   the fields where the user has to enter information to create a project*/
-  void ChangeToCreateProjectDisplay(); 
+  void ChangeToCreateProjectDisplay();
 
   /** \brief  hides/shows the related QLabel,QLineEdit...and display
   the related information of the first existing project on the combobox */
@@ -131,6 +129,5 @@ protected slots:
   void AddAuthors();
   void UpdateListAuthors();
 
-
-};
+  };
 #endif

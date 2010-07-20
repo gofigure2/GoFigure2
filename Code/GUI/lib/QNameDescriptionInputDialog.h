@@ -52,20 +52,20 @@ description are asked to the user.
 */
 class QNameDescriptionInputDialog : public QDialog,
   private Ui::QNameDescriptionInputDialog
-{
+  {
   Q_OBJECT
 
 public:
   //explicit QNameDescriptionInputDialog( QWidget* iParent = 0 );
-  explicit QNameDescriptionInputDialog( QWidget* iParent = 0, 
-    QString iEntityName = "" );
+  explicit QNameDescriptionInputDialog(QWidget* iParent = 0,
+                                       QString iEntityName = "");
 
   virtual ~QNameDescriptionInputDialog();
 
   std::string GetInputTextForName();
   std::string GetInputTextForDescription();
 
-  /** \brief open a messagebox to tell the user that the name he 
+  /** \brief open a messagebox to tell the user that the name he
   choose already exits*/
   void NameAlreadyExists();
 
@@ -81,6 +81,6 @@ protected slots:
   empty, if so, tell the user he needs to enter a name*/
   void ValidationRequested();
 
-};
+  };
 
 #endif

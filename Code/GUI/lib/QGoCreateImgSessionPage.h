@@ -63,13 +63,13 @@
 #include "QGoGUILibConfigure.h"
 
 class QGOGUILIB_EXPORT QGoCreateImgSessionPage : public QWizardPage
-{
+  {
   Q_OBJECT
 
 public:
   explicit QGoCreateImgSessionPage(QWidget *parent = 0);
   ~QGoCreateImgSessionPage();
-  
+
   void initializePage();
   bool validatePage();
   void cleanupPage();
@@ -90,27 +90,26 @@ private:
   /** \brief create the imaging session, all the channels into the DB,
   then the images selected by the user and at the end, update the CoordIDMax
   and Min of the imaging session into the DB*/
-  void ImportImages(vtkMySQLDatabase* DatabaseConnector);//,QString newfilename);
-
+  void ImportImages(vtkMySQLDatabase* DatabaseConnector); //,QString newfilename);
 
   typedef GoFigureFileInfoHelperMultiIndexContainer::iterator
-    MultiIndexContainerIteratorType;
+  MultiIndexContainerIteratorType;
 
   /** \brief create the coordinate CoordMin in the DB, check and update if its values
   are less than the other CoordMin created for the images belonging to the same imaging
   session and return the CoordID of the coordinate just created */
-  int CreateImageCoordMin( vtkMySQLDatabase* DatabaseConnector,
-    MultiIndexContainerIteratorType It );
+  int CreateImageCoordMin(vtkMySQLDatabase* DatabaseConnector,
+                          MultiIndexContainerIteratorType It);
 
   /** \brief return the ChannelID from the DB corresponding to the imaging session and
   to the channel number given by the image filename*/
-  int FindChannelIDForImage( vtkMySQLDatabase* DatabaseConnector,
-    int ImagingSessionID,
-    int ChannelNumber );
+  int FindChannelIDForImage(vtkMySQLDatabase* DatabaseConnector,
+                            int ImagingSessionID,
+                            int ChannelNumber);
 
   /** \brief return a GoDBImageRow filled with all the data corresponding */
-  GoDBImageRow CreateImage( vtkMySQLDatabase* DatabaseConnector,
-    MultiIndexContainerIteratorType It, int ImagingSessionID );
+  GoDBImageRow CreateImage(vtkMySQLDatabase* DatabaseConnector,
+                           MultiIndexContainerIteratorType It, int ImagingSessionID);
 
   /** \brief create the channels and their corresponding colors in the database,
   from the data gotten from the headerfile*/
@@ -119,7 +118,7 @@ private:
   /** \brief create into the DB the coordinates corresponding to the CoordID
   Min and Max for the Imaging Session and update the CoordIDMax and Min for
   the imaging session in the DB with the newly created coordinates*/
-  void CreateImgSessionCoord(vtkMySQLDatabase* DatabaseConnector,int ImagingSessionID);
+  void CreateImgSessionCoord(vtkMySQLDatabase* DatabaseConnector, int ImagingSessionID);
 
   void OpenDBConnection();
 
@@ -143,10 +142,10 @@ private:
   QLineEdit*      lineImgSessionID;
   QLineEdit*      lineImgSessionName;
 
-  GoDBCoordinateRow                m_ImgSessionCoordMax;
-  GoDBCoordinateRow                m_ImgSessionCoordMin;
-  MegaCaptureHeaderReader          m_HeaderFileInfo;
-  itk::MegaCaptureImport::Pointer  m_importFileInfoList;
+  GoDBCoordinateRow               m_ImgSessionCoordMax;
+  GoDBCoordinateRow               m_ImgSessionCoordMin;
+  MegaCaptureHeaderReader         m_HeaderFileInfo;
+  itk::MegaCaptureImport::Pointer m_importFileInfoList;
 
 protected slots:
 
@@ -154,6 +153,5 @@ protected slots:
   void AddMicroscopes();
   void UpdateListMicroscopes();
 
-
-};
+  };
 #endif

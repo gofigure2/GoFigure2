@@ -56,13 +56,13 @@
 class QGOGUILIB_EXPORT QGoLsmToMegaExportDialog :
   public QDialog,
   private Ui::LsmToMegaExportDialog
-{
+  {
   Q_OBJECT
 public:
   /**
    * \brief Constructor
    */
-  explicit QGoLsmToMegaExportDialog( QWidget* parent = 0);
+  explicit QGoLsmToMegaExportDialog(QWidget* parent = 0);
   /**
    * \brief Desctructor
    */
@@ -83,7 +83,7 @@ protected slots:
    * \brief Select the output format
    * \param[in] index 0: PNG, 1:TIFF
    */
-  void on_outputFormat_activated( int index );
+  void on_outputFormat_activated(int index);
   /**
    * \brief Disable buttons and send thread to launch conversion
    */
@@ -113,5 +113,5 @@ private:
   QProgressDialog* m_ProgressDialog;
   int              m_Counter;
 
-};
+  };
 #endif

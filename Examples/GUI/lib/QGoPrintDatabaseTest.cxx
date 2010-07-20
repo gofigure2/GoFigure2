@@ -43,36 +43,35 @@
 
 #include "QGoPrintDatabase.h"
 
-
 int main(int argc, char * argv[])
 {
-  if( argc != 2 )
+  if (argc != 2)
     {
-    std::cerr <<"QGoPrintDatabaseTest requires 1 argument:" <<std::endl;
-    std::cerr <<"1-test (boolean)" <<std::endl;
+    std::cerr << "QGoPrintDatabaseTest requires 1 argument:" << std::endl;
+    std::cerr << "1-test (boolean)" << std::endl;
     return EXIT_FAILURE;
     }
 
-  QApplication app( argc, argv );
+  QApplication app(argc, argv);
   QCoreApplication::setOrganizationName("MegasonLab");
-  QCoreApplication::setOrganizationDomain( "http://gofigure2.sourceforge.net" );
+  QCoreApplication::setOrganizationDomain("http://gofigure2.sourceforge.net");
 
   QGoPrintDatabase* win = new QGoPrintDatabase;
- // win.FillTableFromDatabase(argv[1],"localhost","gofigure",
+  // win.FillTableFromDatabase(argv[1],"localhost","gofigure",
   //    "gofigure",atoi(argv[2]), argv[3]);
   win->SetDatabaseVariables(
-    "gofiguredatabase","localhost","gofigure",
-   "gofigure",8, "LSM_Converter");
+    "gofiguredatabase", "localhost", "gofigure",
+    "gofigure", 8, "LSM_Converter");
   win->FillTableFromDatabase(2);
   win->show();
 
   QTimer* timer = new QTimer;
-  timer->setSingleShot( true );
-  QObject::connect( timer, SIGNAL( timeout() ), win, SLOT( close() ) );
+  timer->setSingleShot(true);
+  QObject::connect(timer, SIGNAL(timeout()), win, SLOT(close()));
 
-  if( atoi( argv[1] ) == 1 )
+  if (atoi(argv[1]) == 1)
     {
-    timer->start( 1000 );
+    timer->start(1000);
     }
 
   int output = app.exec();

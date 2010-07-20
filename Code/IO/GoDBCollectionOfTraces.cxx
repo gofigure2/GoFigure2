@@ -52,34 +52,33 @@
 #include <string>
 #include <map>
 
-
 GoDBCollectionOfTraces::GoDBCollectionOfTraces()
-{
+  {
   m_LinkToRowContainer = 0;
-}
+  }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-GoDBCollectionOfTraces::GoDBCollectionOfTraces( 
-  std::string iCollectionName,std::string iTracesName )
-{
+GoDBCollectionOfTraces::GoDBCollectionOfTraces(
+  std::string iCollectionName, std::string iTracesName)
+  {
   this->SetCollectionInfo(iCollectionName, iTracesName);
-}
+  }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 GoDBCollectionOfTraces::~GoDBCollectionOfTraces()
-{
+  {
   if (m_LinkToRowContainer)
     {
     delete m_LinkToRowContainer;
     }
-}
+  }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void GoDBCollectionOfTraces::SetCollectionInfo(std::string iCollectionName,
-  std::string iTracesName)
+                                               std::string iTracesName)
 {
   m_CollectionName   = iCollectionName;
   m_CollectionIDName = m_CollectionName;
@@ -87,28 +86,28 @@ void GoDBCollectionOfTraces::SetCollectionInfo(std::string iCollectionName,
   m_TracesName       = iTracesName;
   m_TracesIDName     = m_TracesName;
   m_TracesIDName     += "ID";
-  
-  m_LinkToRowContainer = new GoDBTableWidgetContainer(iCollectionName,iTracesName);
+
+  m_LinkToRowContainer = new GoDBTableWidgetContainer(iCollectionName, iTracesName);
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void GoDBCollectionOfTraces::SetImgSessionID (unsigned int iImgSessionID)
+void GoDBCollectionOfTraces::SetImgSessionID(unsigned int iImgSessionID)
 {
-  m_ImgSessionID = iImgSessionID;  
+  m_ImgSessionID = iImgSessionID;
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void GoDBCollectionOfTraces::DeleteTracesInDB(std::list<int> TracesToDelete,
-  vtkMySQLDatabase* DatabaseConnector)
+                                              vtkMySQLDatabase* DatabaseConnector)
 {
   std::list<int>::iterator iter = TracesToDelete.begin();
   while (iter != TracesToDelete.end())
     {
     int ID = *iter;
 
-    DeleteRow(DatabaseConnector,m_TracesName,m_TracesIDName,ConvertToString<int>(ID));
+    DeleteRow(DatabaseConnector, m_TracesName, m_TracesIDName, ConvertToString<int>(ID));
     iter++;
     }
 }
@@ -116,25 +115,25 @@ void GoDBCollectionOfTraces::DeleteTracesInDB(std::list<int> TracesToDelete,
 
 //--------------------------------------------------------------------------
 void GoDBCollectionOfTraces::DeleteTraceInDB(int TraceToDelete,
-  vtkMySQLDatabase* DatabaseConnector)
+                                             vtkMySQLDatabase* DatabaseConnector)
 {
-  DeleteRow(DatabaseConnector,m_TracesName,m_TracesIDName,
-    ConvertToString<int>(TraceToDelete));
+  DeleteRow(DatabaseConnector, m_TracesName, m_TracesIDName,
+            ConvertToString<int>(TraceToDelete));
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void GoDBCollectionOfTraces::UpdateCollectionIDOfSelectedTraces(
-  std::list<int> iListSelectedTraces,int inewCollectionID,
+  std::list<int> iListSelectedTraces, int inewCollectionID,
   vtkMySQLDatabase* DatabaseConnector)
 {
-  std::string newCollectionIDstring = ConvertToString<int>(inewCollectionID);
+  std::string              newCollectionIDstring = ConvertToString<int>(inewCollectionID);
   std::list<int>::iterator iter = iListSelectedTraces.begin();
   while (iter != iListSelectedTraces.end())
     {
     int TraceID = *iter;
-    UpdateValueInDB(DatabaseConnector,m_TracesName,m_CollectionIDName, 
-      newCollectionIDstring,m_TracesIDName, ConvertToString<int>(TraceID));
+    UpdateValueInDB(DatabaseConnector, m_TracesName, m_CollectionIDName,
+                    newCollectionIDstring, m_TracesIDName, ConvertToString<int>(TraceID));
     iter++;
     }
 }
@@ -142,48 +141,48 @@ void GoDBCollectionOfTraces::UpdateCollectionIDOfSelectedTraces(
 
 //--------------------------------------------------------------------------
 void GoDBCollectionOfTraces::UpdateCollectionIDOfSelectedTrace(
-  int iSelectedTraceID,int inewCollectionID,
+  int iSelectedTraceID, int inewCollectionID,
   vtkMySQLDatabase* DatabaseConnector)
 {
-  UpdateValueInDB(DatabaseConnector,m_TracesName,m_CollectionIDName, 
-    ConvertToString<int>(inewCollectionID),m_TracesIDName, 
-    ConvertToString<int>(iSelectedTraceID));
+  UpdateValueInDB(DatabaseConnector, m_TracesName, m_CollectionIDName,
+                  ConvertToString<int>(inewCollectionID), m_TracesIDName,
+                  ConvertToString<int>(iSelectedTraceID));
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void GoDBCollectionOfTraces::RecalculateDBBoundingBox(
-  vtkMySQLDatabase* iDatabaseConnector,int iCollectionID)
+  vtkMySQLDatabase* iDatabaseConnector, int iCollectionID)
 {
   //update the corresponding bounding box:
-  int CoordIDMax = this->GetCoordMaxID(iDatabaseConnector,iCollectionID);
-  int CoordIDMin = this->GetCoordMinID(iDatabaseConnector,iCollectionID);
- 
-  this->UpdateCollectionBoundingBoxInDB(CoordIDMin,CoordIDMax,
-    iCollectionID,iDatabaseConnector);
+  int CoordIDMax = this->GetCoordMaxID(iDatabaseConnector, iCollectionID);
+  int CoordIDMin = this->GetCoordMinID(iDatabaseConnector, iCollectionID);
+
+  this->UpdateCollectionBoundingBoxInDB(CoordIDMin, CoordIDMax,
+                                        iCollectionID, iDatabaseConnector);
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 QStringList GoDBCollectionOfTraces::ListCollectionID(
   vtkMySQLDatabase* DatabaseConnector)
- {
-   QStringList ListIDs;
-   std::vector<std::string> vectListIDs = ListAllValuesForOneColumn(
-     DatabaseConnector,m_CollectionIDName,m_CollectionName);
+{
+  QStringList              ListIDs;
+  std::vector<std::string> vectListIDs = ListAllValuesForOneColumn(
+    DatabaseConnector, m_CollectionIDName, m_CollectionName);
 
-   for( unsigned int i = 0; i < vectListIDs.size(); ++i )
-     {
-     ListIDs.append( vectListIDs[i].c_str( ) );
-     }
+  for (unsigned int i = 0; i < vectListIDs.size(); ++i)
+    {
+    ListIDs.append(vectListIDs[i].c_str());
+    }
 
-   return ListIDs;
- }
+  return ListIDs;
+}
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 int GoDBCollectionOfTraces::GetCoordMinID(vtkMySQLDatabase* DatabaseConnector,
-  int CollectionID,std::list<int> ListSelectedTraces)
+                                          int CollectionID, std::list<int> ListSelectedTraces)
 {
   GoDBCoordinateRow NewCollectionCoordMin;
   //transform the std::list<int> to a vector<string>:
@@ -197,38 +196,38 @@ int GoDBCollectionOfTraces::GetCoordMinID(vtkMySQLDatabase* DatabaseConnector,
     }
   //Get the min of the selecting traces to add:
   GoDBCoordinateRow SelectingCoordMin = GetSelectingTracesCoordMin(
-    DatabaseConnector, VectorSelectedTraces );
+    DatabaseConnector, VectorSelectedTraces);
 
   //Get the CoordMin of the existing Collection if it is not a new one:
   //if it is a new one, the CollectionID will be 0
   if (CollectionID != 0)
-    { 
+    {
     //find the CoordIDMin of the existing collection:
     int CollectionCoordIDMin = FindOneID(DatabaseConnector,
-      this->m_CollectionName,"CoordIDMin",this->m_CollectionIDName,
-      ConvertToString<int>(CollectionID)); 
+                                         this->m_CollectionName, "CoordIDMin", this->m_CollectionIDName,
+                                         ConvertToString<int>(CollectionID));
     //fill the ExistingCoordMin with the values from the DB of the coordinate values
     // of the coordMin for the existing collection
     GoDBCoordinateRow ExistingCoordMin = GetExistingCoordMin(DatabaseConnector,
-      CollectionCoordIDMin, CollectionID );
-    
+                                                             CollectionCoordIDMin, CollectionID);
+
     //get the column names for the coordinate table:
     std::vector<std::string> ColumnNames = NewCollectionCoordMin.GetVectorColumnNames();
-    bool SameCoord = true;
-    //put the min between the existing coord value and the selecting ones in the 
+    bool                     SameCoord = true;
+    //put the min between the existing coord value and the selecting ones in the
     //NewCollectionCoorMin
-    for( unsigned int i = 0; i <ColumnNames.size(); i++ )
+    for (unsigned int i = 0; i < ColumnNames.size(); i++)
       {
       int ValueExistingCoordMin = atoi(ExistingCoordMin.GetMapValue(ColumnNames[i]).c_str());
       int ValueSelectingCoordMin = atoi(SelectingCoordMin.GetMapValue(ColumnNames[i]).c_str());
       if (ValueExistingCoordMin > ValueSelectingCoordMin)
         {
         SameCoord = false;
-        NewCollectionCoordMin.SetField(ColumnNames[i],ValueSelectingCoordMin);
+        NewCollectionCoordMin.SetField(ColumnNames[i], ValueSelectingCoordMin);
         }
       else
         {
-        NewCollectionCoordMin.SetField(ColumnNames[i],ValueExistingCoordMin);
+        NewCollectionCoordMin.SetField(ColumnNames[i], ValueExistingCoordMin);
         }
       }
     if (SameCoord == true)
@@ -241,26 +240,26 @@ int GoDBCollectionOfTraces::GetCoordMinID(vtkMySQLDatabase* DatabaseConnector,
     NewCollectionCoordMin = SelectingCoordMin;
     }
   //check if the coordinate already exists in the DB, if not, will be = -1:
-   /*int ID = NewCollectionCoordMin.DoesThisCoordinateExist(DatabaseConnector);
-   if (ID != -1)
-     {
-     return ID;
-     }
-   //if ID == -1, there is no coordinate already in the DB, so have to create it:
-   return AddOnlyOneNewObjectInTable<GoDBCoordinateRow>( DatabaseConnector,
-    "coordinate",NewCollectionCoordMin, "CoordID");*/
+  /*int ID = NewCollectionCoordMin.DoesThisCoordinateExist(DatabaseConnector);
+  if (ID != -1)
+    {
+    return ID;
+    }
+  //if ID == -1, there is no coordinate already in the DB, so have to create it:
+  return AddOnlyOneNewObjectInTable<GoDBCoordinateRow>( DatabaseConnector,
+   "coordinate",NewCollectionCoordMin, "CoordID");*/
   return NewCollectionCoordMin.SaveInDB(DatabaseConnector);
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 int GoDBCollectionOfTraces::GetCoordMinID(vtkMySQLDatabase* iDatabaseConnector,
-  int iCollectionID)
+                                          int iCollectionID)
 {
   //Get the list of the tracesID belonging to the collection:
   std::vector<std::string> VectorTracesIDs = ListSpecificValuesForOneColumn(
-    iDatabaseConnector,this->m_TracesName,this->m_TracesIDName,
-    this->m_CollectionIDName,ConvertToString<int>(iCollectionID));
+    iDatabaseConnector, this->m_TracesName, this->m_TracesIDName,
+    this->m_CollectionIDName, ConvertToString<int>(iCollectionID));
 
   if (VectorTracesIDs.empty())
     {
@@ -271,24 +270,24 @@ int GoDBCollectionOfTraces::GetCoordMinID(vtkMySQLDatabase* iDatabaseConnector,
     //Get the max of the traces:
     GoDBCoordinateRow TracesCoordMin = GetSelectingTracesCoordMin(
       iDatabaseConnector, VectorTracesIDs);
-    
-  //check if the coordinate already exists in the DB, if not, will be = -1:
-  /* int ID = TracesCoordMin.DoesThisCoordinateExist(iDatabaseConnector);
-   if (ID != -1)
-     {
-     return ID;
-     }
-   //if ID == -1, there is no coordinate already in the DB, so have to create it:
-    return AddOnlyOneNewObjectInTable<GoDBCoordinateRow>( iDatabaseConnector,
-      "coordinate",TracesCoordMin, "CoordID");*/
+
+    //check if the coordinate already exists in the DB, if not, will be = -1:
+    /* int ID = TracesCoordMin.DoesThisCoordinateExist(iDatabaseConnector);
+     if (ID != -1)
+       {
+       return ID;
+       }
+     //if ID == -1, there is no coordinate already in the DB, so have to create it:
+      return AddOnlyOneNewObjectInTable<GoDBCoordinateRow>( iDatabaseConnector,
+        "coordinate",TracesCoordMin, "CoordID");*/
     return TracesCoordMin.SaveInDB(iDatabaseConnector);
-    }  
+    }
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 int GoDBCollectionOfTraces::GetCoordMaxID(vtkMySQLDatabase* DatabaseConnector,
-  int CollectionID,std::list<int> ListSelectedTraces)
+                                          int CollectionID, std::list<int> ListSelectedTraces)
 {
   GoDBCoordinateRow NewCollectionCoordMax;
   //transform the std::list<int> to a vector<string>:
@@ -300,43 +299,43 @@ int GoDBCollectionOfTraces::GetCoordMaxID(vtkMySQLDatabase* DatabaseConnector,
     VectorSelectedTraces.push_back(ConvertToString<int>(ID));
     iter++;
     }
-  
+
   //Get the max of the selecting traces to add:
   GoDBCoordinateRow SelectingCoordMax = GetSelectingTracesCoordMax(
-    DatabaseConnector, VectorSelectedTraces );
+    DatabaseConnector, VectorSelectedTraces);
 
   //Get the CoordMax of the existing Collection if it is not a new one:
   //if it is a new one, the CollectionID will be 0
   if (CollectionID != 0)
-    { 
+    {
     //find the CoordIDMax of the existing collection:
     int CollectionCoordIDMax = FindOneID(DatabaseConnector,
-      this->m_CollectionName,"CoordIDMax",this->m_CollectionIDName,
-      ConvertToString<int>(CollectionID)); 
+                                         this->m_CollectionName, "CoordIDMax", this->m_CollectionIDName,
+                                         ConvertToString<int>(CollectionID));
     //fill the ExistingCoordMax with the values from the DB of the coordinate values
     // of the coordMax for the existing collection
     GoDBCoordinateRow ExistingCoordMax = GetExistingCoordMax(DatabaseConnector,
-      CollectionCoordIDMax, CollectionID );
-    
+                                                             CollectionCoordIDMax, CollectionID);
+
     //get the column names for the coordinate table:
-    std::vector<std::string> ColumnNames = GetFieldNames("coordinate",DatabaseConnector);
-    bool SameCoord = true;
-    //put the max between the existing coord value and the selecting ones in the 
+    std::vector<std::string> ColumnNames = GetFieldNames("coordinate", DatabaseConnector);
+    bool                     SameCoord = true;
+    //put the max between the existing coord value and the selecting ones in the
     //NewCollectionCoorMax
-    for( unsigned int i = 0; i <ColumnNames.size(); i++ )
+    for (unsigned int i = 0; i < ColumnNames.size(); i++)
       {
-      if(ColumnNames[i]!= "CoordID")
+      if (ColumnNames[i] != "CoordID")
         {
         int ValueExistingCoordMax = atoi(ExistingCoordMax.GetMapValue(ColumnNames[i]).c_str());
         int ValueSelectingCoordMax = atoi(SelectingCoordMax.GetMapValue(ColumnNames[i]).c_str());
         if (ValueExistingCoordMax < ValueSelectingCoordMax)
           {
           SameCoord = false;
-          NewCollectionCoordMax.SetField(ColumnNames[i],ValueSelectingCoordMax);
+          NewCollectionCoordMax.SetField(ColumnNames[i], ValueSelectingCoordMax);
           }
         else
           {
-          NewCollectionCoordMax.SetField(ColumnNames[i],ValueExistingCoordMax);
+          NewCollectionCoordMax.SetField(ColumnNames[i], ValueExistingCoordMax);
           }
         }
       }
@@ -364,12 +363,12 @@ int GoDBCollectionOfTraces::GetCoordMaxID(vtkMySQLDatabase* DatabaseConnector,
 
 //--------------------------------------------------------------------------
 int GoDBCollectionOfTraces::GetCoordMaxID(vtkMySQLDatabase* iDatabaseConnector,
-  int iCollectionID)
+                                          int iCollectionID)
 {
   //Get the list of the tracesID belonging to the collection:
   std::vector<std::string> VectorTracesIDs = ListSpecificValuesForOneColumn(
-    iDatabaseConnector,this->m_TracesName,this->m_TracesIDName,
-    this->m_CollectionIDName,ConvertToString<int>(iCollectionID));
+    iDatabaseConnector, this->m_TracesName, this->m_TracesIDName,
+    this->m_CollectionIDName, ConvertToString<int>(iCollectionID));
 
   if (VectorTracesIDs.empty())
     {
@@ -380,43 +379,43 @@ int GoDBCollectionOfTraces::GetCoordMaxID(vtkMySQLDatabase* iDatabaseConnector,
     //Get the max of the traces:
     GoDBCoordinateRow TracesCoordMax = GetSelectingTracesCoordMax(
       iDatabaseConnector, VectorTracesIDs);
-    
-  //check if the coordinate already exists in the DB, if not, will be = -1:
-  /* int ID = TracesCoordMax.DoesThisCoordinateExist(iDatabaseConnector);
-   if (ID != -1)
-     {
-     return ID;
-     }
-   //if ID == -1, there is no coordinate already in the DB, so have to create it:
-   return AddOnlyOneNewObjectInTable<GoDBCoordinateRow>( iDatabaseConnector,
-    "coordinate",TracesCoordMax, "CoordID");*/
+
+    //check if the coordinate already exists in the DB, if not, will be = -1:
+    /* int ID = TracesCoordMax.DoesThisCoordinateExist(iDatabaseConnector);
+     if (ID != -1)
+       {
+       return ID;
+       }
+     //if ID == -1, there is no coordinate already in the DB, so have to create it:
+     return AddOnlyOneNewObjectInTable<GoDBCoordinateRow>( iDatabaseConnector,
+      "coordinate",TracesCoordMax, "CoordID");*/
     return TracesCoordMax.SaveInDB(iDatabaseConnector);
-    }  
+    }
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 GoDBCoordinateRow GoDBCollectionOfTraces::GetSelectingTracesCoordMin(
-  vtkMySQLDatabase* DatabaseConnector, 
-  std::vector<std::string> ListSelectedTracesID )
-{ 
+  vtkMySQLDatabase* DatabaseConnector,
+  std::vector<std::string> ListSelectedTracesID)
+{
   GoDBCoordinateRow CoordMin;
-   //First, get the coordID in the contour table that corresponds to the
+  //First, get the coordID in the contour table that corresponds to the
   //coordIDMin of the Contours selected:
-  std::vector<std::string> ListSelectedTracesCoordIDMin = 
+  std::vector<std::string> ListSelectedTracesCoordIDMin =
     ListSpecificValuesForOneColumn(DatabaseConnector,
-    this->m_TracesName,"CoordIDMin",this->m_TracesIDName,ListSelectedTracesID);
+                                   this->m_TracesName, "CoordIDMin", this->m_TracesIDName, ListSelectedTracesID);
   //then, go to the coordinate table and compare the values for the coordID
   //corresponding to the coordIDMax of the selected contours:
   std::vector<std::string> ColumnNames = CoordMin.GetVectorColumnNames();
-  for( unsigned int i = 0; i <ColumnNames.size(); i++ )
+  for (unsigned int i = 0; i < ColumnNames.size(); i++)
     {
     //don't compare the coordID !!!:
     if (ColumnNames[i] != "CoordID")
       {
-      CoordMin.SetField(ColumnNames[i],MinValueForOneColumnInTable(
-        DatabaseConnector,ColumnNames[i],"coordinate","CoordID",
-        ListSelectedTracesCoordIDMin));
+      CoordMin.SetField(ColumnNames[i], MinValueForOneColumnInTable(
+                          DatabaseConnector, ColumnNames[i], "coordinate", "CoordID",
+                          ListSelectedTracesCoordIDMin));
       }
     }
   return CoordMin;
@@ -425,26 +424,26 @@ GoDBCoordinateRow GoDBCollectionOfTraces::GetSelectingTracesCoordMin(
 
 //--------------------------------------------------------------------------
 GoDBCoordinateRow GoDBCollectionOfTraces::GetSelectingTracesCoordMax(
-  vtkMySQLDatabase* DatabaseConnector, 
-  std::vector<std::string> ListSelectedTracesID )
-{ 
+  vtkMySQLDatabase* DatabaseConnector,
+  std::vector<std::string> ListSelectedTracesID)
+{
   GoDBCoordinateRow CoordMax;
   //First, get the coordID in the contour table that corresponds to the
   //coordIDMax of the Contours selected:
-  std::vector<std::string> ListSelectedTracesCoordIDMax = 
+  std::vector<std::string> ListSelectedTracesCoordIDMax =
     ListSpecificValuesForOneColumn(DatabaseConnector,
-    this->m_TracesName,"CoordIDMax",this->m_TracesIDName,ListSelectedTracesID);
+                                   this->m_TracesName, "CoordIDMax", this->m_TracesIDName, ListSelectedTracesID);
   //then, go to the coordinate table and compare the values for the coordID
   //corresponding to the coordIDMax of the selected contours:
   std::vector<std::string> ColumnNames = CoordMax.GetVectorColumnNames();
-  for( unsigned int i = 0; i <ColumnNames.size(); i++ )
+  for (unsigned int i = 0; i < ColumnNames.size(); i++)
     {
     //don't compare the coordID !!!:
     if (ColumnNames[i] != "CoordID")
       {
-      CoordMax.SetField(ColumnNames[i],MaxValueForOneColumnInTable(
-        DatabaseConnector,ColumnNames[i],"coordinate","CoordID",
-        ListSelectedTracesCoordIDMax));
+      CoordMax.SetField(ColumnNames[i], MaxValueForOneColumnInTable(
+                          DatabaseConnector, ColumnNames[i], "coordinate", "CoordID",
+                          ListSelectedTracesCoordIDMax));
       }
     }
   return CoordMax;
@@ -452,27 +451,27 @@ GoDBCoordinateRow GoDBCollectionOfTraces::GetSelectingTracesCoordMax(
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-GoDBCoordinateRow 
+GoDBCoordinateRow
 GoDBCollectionOfTraces::
-GetExistingCoordMin( vtkMySQLDatabase* DatabaseConnector, 
-  int CollectionCoordIDMin,
-  int CollectionID )
+GetExistingCoordMin(vtkMySQLDatabase* DatabaseConnector,
+                    int CollectionCoordIDMin,
+                    int CollectionID)
 {
   (void) CollectionID;
   GoDBCoordinateRow ExistingCoordMin;
 
-  std::vector<std::string> VectorValuesExistingCoordMin = 
-    ListSpecificValuesForRow( DatabaseConnector,
-      "coordinate", "CoordID",
-      ConvertToString<int>( CollectionCoordIDMin ) );
+  std::vector<std::string> VectorValuesExistingCoordMin =
+    ListSpecificValuesForRow(DatabaseConnector,
+                             "coordinate", "CoordID",
+                             ConvertToString<int>(CollectionCoordIDMin));
 
-  std::vector<std::string> ColumnNames = 
-    GetFieldNames( "coordinate", DatabaseConnector );
+  std::vector<std::string> ColumnNames =
+    GetFieldNames("coordinate", DatabaseConnector);
 
-  for( unsigned int i = 0; i <ColumnNames.size(); i++ )
+  for (unsigned int i = 0; i < ColumnNames.size(); i++)
     {
-    ExistingCoordMin.SetField( ColumnNames[i],
-                               VectorValuesExistingCoordMin[i] );
+    ExistingCoordMin.SetField(ColumnNames[i],
+                              VectorValuesExistingCoordMin[i]);
     }
 
   return ExistingCoordMin;
@@ -480,26 +479,26 @@ GetExistingCoordMin( vtkMySQLDatabase* DatabaseConnector,
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-GoDBCoordinateRow 
+GoDBCoordinateRow
 GoDBCollectionOfTraces::
-GetExistingCoordMax( vtkMySQLDatabase* DatabaseConnector, 
-  int CollectionCoordIDMax,
-  int CollectionID )
+GetExistingCoordMax(vtkMySQLDatabase* DatabaseConnector,
+                    int CollectionCoordIDMax,
+                    int CollectionID)
 {
   (void) CollectionID;
 
-  GoDBCoordinateRow ExistingCoordMax;
-  std::vector<std::string> VectorValuesExistingCoordMax = 
-    ListSpecificValuesForRow( DatabaseConnector, "coordinate", "CoordID",
-      ConvertToString<int>( CollectionCoordIDMax ) );
+  GoDBCoordinateRow        ExistingCoordMax;
+  std::vector<std::string> VectorValuesExistingCoordMax =
+    ListSpecificValuesForRow(DatabaseConnector, "coordinate", "CoordID",
+                             ConvertToString<int>(CollectionCoordIDMax));
 
-  std::vector<std::string> ColumnNames = GetFieldNames( "coordinate",
-    DatabaseConnector );
+  std::vector<std::string> ColumnNames = GetFieldNames("coordinate",
+                                                       DatabaseConnector);
 
-  for( unsigned int i = 0; i <ColumnNames.size(); i++ )
+  for (unsigned int i = 0; i < ColumnNames.size(); i++)
     {
-    ExistingCoordMax.SetField( ColumnNames[i],
-                               VectorValuesExistingCoordMax[i] );
+    ExistingCoordMax.SetField(ColumnNames[i],
+                              VectorValuesExistingCoordMax[i]);
     }
 
   return ExistingCoordMax;
@@ -516,59 +515,61 @@ GetListColumnsNamesForTableWidget()
 
 //--------------------------------------------------------------------------
 GoDBCollectionOfTraces::DBTableWidgetContainerType
-  GoDBCollectionOfTraces::GetRowContainer(vtkMySQLDatabase* DatabaseConnector)
+GoDBCollectionOfTraces::GetRowContainer(vtkMySQLDatabase* DatabaseConnector)
 {
- /*first, get the right parts of the first query:
- all the fields except the ones where table.field are already in the query:*/
-  std::vector<std::string> JoinFirstTablesOnTraceTable = 
+  /*first, get the right parts of the first query:
+  all the fields except the ones where table.field are already in the query:*/
+  std::vector<std::string> JoinFirstTablesOnTraceTable =
     m_LinkToRowContainer->GetQueryStringForTraceJoinedTables(false);
-  std::vector<std::string> SelectFirstFields = 
+  std::vector<std::string> SelectFirstFields =
     m_LinkToRowContainer->GetQueryStringForSelectFieldsTables(false);
 
   //then, get the results of the first query:
-  std::vector<std::vector<std::string> >ResultsFirstQuery = GetValuesFromSeveralTables(
-    DatabaseConnector,this->m_TracesName,SelectFirstFields, "ImagingSessionID",
-    ConvertToString<unsigned int>(this->m_ImgSessionID),JoinFirstTablesOnTraceTable,true);
+  std::vector<std::vector<std::string> > ResultsFirstQuery = GetValuesFromSeveralTables(
+    DatabaseConnector, this->m_TracesName, SelectFirstFields, "ImagingSessionID",
+    ConvertToString<unsigned int>(this->m_ImgSessionID), JoinFirstTablesOnTraceTable, true);
 
   //fill the row container with the results of the first query:
-  m_LinkToRowContainer->FillRowContainer(ResultsFirstQuery,SelectFirstFields);
+  m_LinkToRowContainer->FillRowContainer(ResultsFirstQuery, SelectFirstFields);
 
   //Get the right parts of the second query (with only the remaining fields):
-   std::vector<std::string> JoinSecondTablesOnTraceTable = 
+  std::vector<std::string> JoinSecondTablesOnTraceTable =
     m_LinkToRowContainer->GetQueryStringForTraceJoinedTables(true);
-  std::vector<std::string> SelectSecondFields = 
+  std::vector<std::string> SelectSecondFields =
     m_LinkToRowContainer->GetQueryStringForSelectFieldsTables(true);
 
   //then, get the results of the second query:
-  std::vector<std::vector<std::string> >ResultsSecondQuery = GetValuesFromSeveralTables(
-    DatabaseConnector,this->m_TracesName,SelectSecondFields, "ImagingSessionID",
-    ConvertToString<unsigned int>(this->m_ImgSessionID),JoinSecondTablesOnTraceTable,false);
-  
+  std::vector<std::vector<std::string> > ResultsSecondQuery = GetValuesFromSeveralTables(
+    DatabaseConnector, this->m_TracesName, SelectSecondFields, "ImagingSessionID",
+    ConvertToString<unsigned int>(this->m_ImgSessionID), JoinSecondTablesOnTraceTable, false);
+
   //fill the row container with the results of the second query:
-  m_LinkToRowContainer->FillRowContainer(ResultsSecondQuery,SelectSecondFields);
+  m_LinkToRowContainer->FillRowContainer(ResultsSecondQuery, SelectSecondFields);
 
   if (this->m_TracesName == "mesh")
     {
     this->FillRowContainerForIntensityValues(DatabaseConnector,
-      ListSpecificValuesForOneColumn(DatabaseConnector,"mesh", "MeshID",
-      "ImagingSessionID",ConvertToString<unsigned int>(this->m_ImgSessionID)),
-      this->m_LinkToRowContainer);
+                                             ListSpecificValuesForOneColumn(DatabaseConnector, "mesh", "MeshID",
+                                                                            "ImagingSessionID",
+                                                                            ConvertToString<unsigned int>(this->
+                                                                                                          m_ImgSessionID)),
+                                             this->m_LinkToRowContainer);
     }
   /** \todo fill the container with the computed values*/
   this->FillRowContainerForComputedValues(m_LinkToRowContainer);
 
- return m_LinkToRowContainer->GetRowContainer();
+  return m_LinkToRowContainer->GetRowContainer();
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 GoDBTableWidgetContainer* GoDBCollectionOfTraces::GetLinkToNewCreatedTraceContainer(
-  vtkMySQLDatabase* iDatabaseConnector,int iTraceID)
+  vtkMySQLDatabase* iDatabaseConnector, int iTraceID)
 {
   GoDBTableWidgetContainer* LinkToNewCreatedTraceContainer = new
-    GoDBTableWidgetContainer(this->m_CollectionName,
-    this->m_TracesName); 
- 
+                                                             GoDBTableWidgetContainer(this->m_CollectionName,
+                                                                                      this->m_TracesName);
+
   /*if(this->m_TracesName == "mesh")
      {
      //std::vector<std::string> TraceID;
@@ -580,104 +581,104 @@ GoDBTableWidgetContainer* GoDBCollectionOfTraces::GetLinkToNewCreatedTraceContai
 
   /*first, get the right parts of the first query:
  all the fields except the ones where table.field are already in the query:*/
-  std::vector<std::string> JoinFirstTablesOnTraceTable = 
+  std::vector<std::string> JoinFirstTablesOnTraceTable =
     m_LinkToRowContainer->GetQueryStringForTraceJoinedTables(false);
-  std::vector<std::string> SelectFirstFields = 
+  std::vector<std::string> SelectFirstFields =
     m_LinkToRowContainer->GetQueryStringForSelectFieldsTables(false);
-  
+
   int NewTraceID = iTraceID;
   if (NewTraceID == 0)
     {
     //then, get the last ID in the database, corresponding to the new created trace:
     NewTraceID = MaxValueForOneColumnInTable(iDatabaseConnector,
-    this->m_TracesIDName,this->m_TracesName,"ImagingSessionID",
-    ConvertToString<unsigned int>(this->m_ImgSessionID));
+                                             this->m_TracesIDName, this->m_TracesName, "ImagingSessionID",
+                                             ConvertToString<unsigned int>(this->m_ImgSessionID));
     }
 
   //then, get the results of the first query:
-  std::vector<std::vector<std::string> >ResultsFirstQuery = GetValuesFromSeveralTables(
-    iDatabaseConnector,this->m_TracesName,SelectFirstFields, this->m_TracesIDName,
-    ConvertToString<int>(NewTraceID),JoinFirstTablesOnTraceTable,false);
+  std::vector<std::vector<std::string> > ResultsFirstQuery = GetValuesFromSeveralTables(
+    iDatabaseConnector, this->m_TracesName, SelectFirstFields, this->m_TracesIDName,
+    ConvertToString<int>(NewTraceID), JoinFirstTablesOnTraceTable, false);
 
   //insert into the row container, the results of the first query:
- // m_LinkToRowContainer->FillRowContainer(ResultsFirstQuery,SelectFirstFields);
-  LinkToNewCreatedTraceContainer->FillRowContainer(ResultsFirstQuery,SelectFirstFields);
+  // m_LinkToRowContainer->FillRowContainer(ResultsFirstQuery,SelectFirstFields);
+  LinkToNewCreatedTraceContainer->FillRowContainer(ResultsFirstQuery, SelectFirstFields);
 
   //Get the right parts of the second query (with only the remaining fields):
-   std::vector<std::string> JoinSecondTablesOnTraceTable = 
+  std::vector<std::string> JoinSecondTablesOnTraceTable =
     m_LinkToRowContainer->GetQueryStringForTraceJoinedTables(true);
-  std::vector<std::string> SelectSecondFields = 
+  std::vector<std::string> SelectSecondFields =
     m_LinkToRowContainer->GetQueryStringForSelectFieldsTables(true);
 
   //then, get the results of the second query:
-  std::vector<std::vector<std::string> >ResultsSecondQuery = GetValuesFromSeveralTables(
-    iDatabaseConnector,this->m_TracesName,SelectSecondFields, this->m_TracesIDName,
-    ConvertToString<int>(NewTraceID),JoinSecondTablesOnTraceTable,false);
-  
+  std::vector<std::vector<std::string> > ResultsSecondQuery = GetValuesFromSeveralTables(
+    iDatabaseConnector, this->m_TracesName, SelectSecondFields, this->m_TracesIDName,
+    ConvertToString<int>(NewTraceID), JoinSecondTablesOnTraceTable, false);
+
   //insert into the row container, the results of the second query:
   //m_LinkToRowContainer->FillRowContainer(ResultsSecondQuery,SelectSecondFields);
-   LinkToNewCreatedTraceContainer->FillRowContainer(ResultsSecondQuery,SelectSecondFields);
+  LinkToNewCreatedTraceContainer->FillRowContainer(ResultsSecondQuery, SelectSecondFields);
 
-   if(this->m_TracesName == "mesh")
-     {
-     std::vector<std::string> TraceID;
-     TraceID.push_back(ConvertToString<int>(NewTraceID));
-     this->SetChannelsInfo(iDatabaseConnector,LinkToNewCreatedTraceContainer);
-     this->FillRowContainerForIntensityValues(iDatabaseConnector,TraceID,
-       LinkToNewCreatedTraceContainer);
-     }
-   return LinkToNewCreatedTraceContainer;
+  if (this->m_TracesName == "mesh")
+    {
+    std::vector<std::string> TraceID;
+    TraceID.push_back(ConvertToString<int>(NewTraceID));
+    this->SetChannelsInfo(iDatabaseConnector, LinkToNewCreatedTraceContainer);
+    this->FillRowContainerForIntensityValues(iDatabaseConnector, TraceID,
+                                             LinkToNewCreatedTraceContainer);
+    }
+  return LinkToNewCreatedTraceContainer;
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 GoDBTableWidgetContainer* GoDBCollectionOfTraces::GetLinkToUpdatedTraceContainer(
-    vtkMySQLDatabase* iDatabaseConnector, int iUpdatedTraceID)
+  vtkMySQLDatabase* iDatabaseConnector, int iUpdatedTraceID)
 {
   GoDBTableWidgetContainer* LinkToUpdatedTraceContainer = new
-    GoDBTableWidgetContainer(this->m_CollectionName,
-    this->m_TracesName); 
- 
+                                                          GoDBTableWidgetContainer(this->m_CollectionName,
+                                                                                   this->m_TracesName);
+
   /*first, get the right parts of the first query:
  all the fields except the ones where table.field are already in the query:*/
-  std::vector<std::string> JoinFirstTablesOnTraceTable = 
+  std::vector<std::string> JoinFirstTablesOnTraceTable =
     m_LinkToRowContainer->GetQueryStringForTraceJoinedTables(false);
-  std::vector<std::string> SelectFirstFields = 
+  std::vector<std::string> SelectFirstFields =
     m_LinkToRowContainer->GetQueryStringForSelectFieldsTables(false);
 
   //then, get the results of the first query:
-  std::vector<std::vector<std::string> >ResultsFirstQuery = GetValuesFromSeveralTables(
-    iDatabaseConnector,this->m_TracesName,SelectFirstFields, this->m_TracesIDName,
-    ConvertToString<int>(iUpdatedTraceID),JoinFirstTablesOnTraceTable,false);
+  std::vector<std::vector<std::string> > ResultsFirstQuery = GetValuesFromSeveralTables(
+    iDatabaseConnector, this->m_TracesName, SelectFirstFields, this->m_TracesIDName,
+    ConvertToString<int>(iUpdatedTraceID), JoinFirstTablesOnTraceTable, false);
 
   //insert into the row container, the results of the first query:
- // m_LinkToRowContainer->FillRowContainer(ResultsFirstQuery,SelectFirstFields);
-  LinkToUpdatedTraceContainer->FillRowContainer(ResultsFirstQuery,SelectFirstFields);
+  // m_LinkToRowContainer->FillRowContainer(ResultsFirstQuery,SelectFirstFields);
+  LinkToUpdatedTraceContainer->FillRowContainer(ResultsFirstQuery, SelectFirstFields);
 
   //Get the right parts of the second query (with only the remaining fields):
-   std::vector<std::string> JoinSecondTablesOnTraceTable = 
+  std::vector<std::string> JoinSecondTablesOnTraceTable =
     m_LinkToRowContainer->GetQueryStringForTraceJoinedTables(true);
-  std::vector<std::string> SelectSecondFields = 
+  std::vector<std::string> SelectSecondFields =
     m_LinkToRowContainer->GetQueryStringForSelectFieldsTables(true);
 
   //then, get the results of the second query:
-  std::vector<std::vector<std::string> >ResultsSecondQuery = GetValuesFromSeveralTables(
-    iDatabaseConnector,this->m_TracesName,SelectSecondFields, this->m_TracesIDName,
-    ConvertToString<int>(iUpdatedTraceID),JoinSecondTablesOnTraceTable,false);
-  
+  std::vector<std::vector<std::string> > ResultsSecondQuery = GetValuesFromSeveralTables(
+    iDatabaseConnector, this->m_TracesName, SelectSecondFields, this->m_TracesIDName,
+    ConvertToString<int>(iUpdatedTraceID), JoinSecondTablesOnTraceTable, false);
+
   //insert into the row container, the results of the second query:
-   LinkToUpdatedTraceContainer->FillRowContainer(ResultsSecondQuery,SelectSecondFields);
+  LinkToUpdatedTraceContainer->FillRowContainer(ResultsSecondQuery, SelectSecondFields);
 
-   if(this->m_TracesName == "mesh")
-     {
-     std::vector<std::string> TraceIDs;
-     TraceIDs.push_back(ConvertToString<int>(iUpdatedTraceID));
-     this->SetChannelsInfo(iDatabaseConnector, LinkToUpdatedTraceContainer);
-     this->FillRowContainerForIntensityValues(iDatabaseConnector,TraceIDs,
-      LinkToUpdatedTraceContainer);
-     }
+  if (this->m_TracesName == "mesh")
+    {
+    std::vector<std::string> TraceIDs;
+    TraceIDs.push_back(ConvertToString<int>(iUpdatedTraceID));
+    this->SetChannelsInfo(iDatabaseConnector, LinkToUpdatedTraceContainer);
+    this->FillRowContainerForIntensityValues(iDatabaseConnector, TraceIDs,
+                                             LinkToUpdatedTraceContainer);
+    }
 
-   return LinkToUpdatedTraceContainer;
+  return LinkToUpdatedTraceContainer;
 }
 //--------------------------------------------------------------------------
 
@@ -686,19 +687,19 @@ int GoDBCollectionOfTraces::CreateCollectionWithNoTraces(
   vtkMySQLDatabase* DatabaseConnector, GoDBTraceRow& iNewCollection,
   int iTimePoint)
 {
-  iNewCollection.SetField<unsigned int>("ImagingSessionID",this->m_ImgSessionID);
- 
+  iNewCollection.SetField<unsigned int>("ImagingSessionID", this->m_ImgSessionID);
+
   int CoordIDMax = GetCoordIDMaxForBoundingBoxWithNoTraces(DatabaseConnector);
   int CoordIDMin = GetCoordIDMinForBoundingBoxWithNoTraces(DatabaseConnector);
 
-  iNewCollection.SetField< int >( "CoordIDMax", CoordIDMax );
-  iNewCollection.SetField< int >( "CoordIDMin", CoordIDMin );
+  iNewCollection.SetField<int>("CoordIDMax", CoordIDMax);
+  iNewCollection.SetField<int>("CoordIDMin", CoordIDMin);
 
   if (this->m_CollectionName == "mesh")
     {
-     SetTheTimePointForMesh(iTimePoint,iNewCollection,DatabaseConnector);
+    SetTheTimePointForMesh(iTimePoint, iNewCollection, DatabaseConnector);
     }
-  return this->CreateNewCollection(DatabaseConnector,iNewCollection);    
+  return this->CreateNewCollection(DatabaseConnector, iNewCollection);
 }
 //--------------------------------------------------------------------------
 
@@ -709,40 +710,40 @@ int GoDBCollectionOfTraces::GetCoordIDMinForBoundingBoxWithNoTraces(
   // As there is no traces in the collection, the bounding box is the minimum one:
   // CoordIDMin correspond to the imagingsession Max:
   return FindOneID(iDatabaseConnector, "imagingsession", "CoordIDMax",
-    "ImagingSessionID", ConvertToString<int>(this->m_ImgSessionID));
+                   "ImagingSessionID", ConvertToString<int>(this->m_ImgSessionID));
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 int GoDBCollectionOfTraces::GetCoordIDMaxForBoundingBoxWithNoTraces(
   vtkMySQLDatabase* iDatabaseConnector)
-{ 
- // As there is no traces in the collection, the bounding box is the minimum one:
- // CoordIDMax correspond to the imagingsession Min:
+{
+  // As there is no traces in the collection, the bounding box is the minimum one:
+  // CoordIDMax correspond to the imagingsession Min:
   return FindOneID(iDatabaseConnector, "imagingsession", "CoordIDMin",
-    "ImagingSessionID", ConvertToString<int>(this->m_ImgSessionID));
+                   "ImagingSessionID", ConvertToString<int>(this->m_ImgSessionID));
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void GoDBCollectionOfTraces::SetTheTimePointForMesh(int iTimePoint,
-  GoDBTraceRow & ioNewMesh,vtkMySQLDatabase* iDatabaseConnector)
+                                                    GoDBTraceRow& ioNewMesh, vtkMySQLDatabase* iDatabaseConnector)
 {
   GoDBCoordinateRow Coordinate;
   Coordinate.SetValuesForSpecificID(
-    atoi(ioNewMesh.GetMapValue("CoordIDMax").c_str()),iDatabaseConnector);
-  Coordinate.SetField<int>("TCoord",iTimePoint);
-  ioNewMesh.SetField<int>("CoordIDMax",Coordinate.SaveInDB(iDatabaseConnector));
+    atoi(ioNewMesh.GetMapValue("CoordIDMax").c_str()), iDatabaseConnector);
+  Coordinate.SetField<int>("TCoord", iTimePoint);
+  ioNewMesh.SetField<int>("CoordIDMax", Coordinate.SaveInDB(iDatabaseConnector));
   Coordinate.SetValuesForSpecificID(
-    atoi(ioNewMesh.GetMapValue("CoordIDMin").c_str()),iDatabaseConnector);
-  Coordinate.SetField<int>("TCoord",iTimePoint);
-  Coordinate.SetField("CoordID","0");
+    atoi(ioNewMesh.GetMapValue("CoordIDMin").c_str()), iDatabaseConnector);
+  Coordinate.SetField<int>("TCoord", iTimePoint);
+  Coordinate.SetField("CoordID", "0");
   int coord = Coordinate.SaveInDB(iDatabaseConnector);
 
   // unused variable coord
   (void) coord;
 
-  ioNewMesh.SetField<int>("CoordIDMin",Coordinate.SaveInDB(iDatabaseConnector));
+  ioNewMesh.SetField<int>("CoordIDMin", Coordinate.SaveInDB(iDatabaseConnector));
 }
 //--------------------------------------------------------------------------
 
@@ -757,22 +758,22 @@ int GoDBCollectionOfTraces::CreateNewCollection(
   if (this->m_CollectionName == "mesh")
     {
     GoDBMeshRow NewMesh;
-    NewMesh.SafeDownCast( iNewCollection );
+    NewMesh.SafeDownCast(iNewCollection);
 
     return AddOnlyOneNewObjectInTable<GoDBMeshRow>(
-      DatabaseConnector,this->m_CollectionName, &NewMesh , m_CollectionIDName);
+             DatabaseConnector, this->m_CollectionName, &NewMesh, m_CollectionIDName);
     }
- if (this->m_CollectionName == "track")
+  if (this->m_CollectionName == "track")
     {
     GoDBTrackRow* NewTrack = static_cast<GoDBTrackRow*>(&iNewCollection);
     return AddOnlyOneNewObjectInTable<GoDBTrackRow>(
-      DatabaseConnector,this->m_CollectionName, NewTrack , m_CollectionIDName);
+             DatabaseConnector, this->m_CollectionName, NewTrack, m_CollectionIDName);
     }
- if (this->m_CollectionName == "lineage")
+  if (this->m_CollectionName == "lineage")
     {
     GoDBLineageRow* NewLineage = static_cast<GoDBLineageRow*>(&iNewCollection);
     return AddOnlyOneNewObjectInTable<GoDBLineageRow>(
-      DatabaseConnector,this->m_CollectionName, NewLineage , m_CollectionIDName);
+             DatabaseConnector, this->m_CollectionName, NewLineage, m_CollectionIDName);
     }
   return 0;
 }
@@ -780,14 +781,14 @@ int GoDBCollectionOfTraces::CreateNewCollection(
 
 //--------------------------------------------------------------------------
 std::list<int> GoDBCollectionOfTraces::UpdateDBDataForAddedTracesToExistingCollection(
-    std::list<int> iListSelectedTraces,int iNewCollectionID,
-    vtkMySQLDatabase* iDatabaseConnector)
+  std::list<int> iListSelectedTraces, int iNewCollectionID,
+  vtkMySQLDatabase* iDatabaseConnector)
 {
-  std::list<int> ListTraceIDWithBoundingBoxUpdated;
+  std::list<int>           ListTraceIDWithBoundingBoxUpdated;
   std::vector<std::string> VectorSelectedTraces(iListSelectedTraces.size());
   std::list<int>::iterator iter = iListSelectedTraces.begin();
-  int i = 0;
-  while(iter != iListSelectedTraces.end())
+  int                      i = 0;
+  while (iter != iListSelectedTraces.end())
     {
     int temp = *iter;
     VectorSelectedTraces.at(i) = ConvertToString<int>(temp);
@@ -798,56 +799,56 @@ std::list<int> GoDBCollectionOfTraces::UpdateDBDataForAddedTracesToExistingColle
   //std::list<int>::iterator iter = iListSelectedTraces.begin();
 
   std::vector<std::string> ListCollectionIDWithBoundingBoxToUpdate =
-    ListSpecificValuesForOneColumn(iDatabaseConnector,this->m_TracesName, 
-    this->m_CollectionIDName,this->m_TracesIDName,VectorSelectedTraces,true,true);
+    ListSpecificValuesForOneColumn(iDatabaseConnector, this->m_TracesName,
+                                   this->m_CollectionIDName, this->m_TracesIDName, VectorSelectedTraces, true, true);
   //change the collectionID of the selected trace to the new one:
-    iter = iListSelectedTraces.begin();
-    while(iter != iListSelectedTraces.end())
-      {
-      this->UpdateCollectionIDOfSelectedTrace(*iter,iNewCollectionID,
-        iDatabaseConnector);
-      iter++;
-      }
+  iter = iListSelectedTraces.begin();
+  while (iter != iListSelectedTraces.end())
+    {
+    this->UpdateCollectionIDOfSelectedTrace(*iter, iNewCollectionID,
+                                            iDatabaseConnector);
+    iter++;
+    }
 
-  if(!ListCollectionIDWithBoundingBoxToUpdate.empty())
+  if (!ListCollectionIDWithBoundingBoxToUpdate.empty())
     {
 
     //while (iter != iListSelectedTraces.end())
     //  {
     //  int tempTraceID = *iter;
     //  int tempCollectionID = FindOneID(iDatabaseConnector,this->m_TracesName,
-    //    this->m_CollectionIDName,this->m_TracesIDName, 
+    //    this->m_CollectionIDName,this->m_TracesIDName,
     //    ConvertToString<int>(tempTraceID));
 
-      //change the collectionID of the selected trace to the new one:
-     // this->UpdateCollectionIDOfSelectedTrace(tempTraceID,iNewCollectionID,
-      //  iDatabaseConnector);
+    //change the collectionID of the selected trace to the new one:
+    // this->UpdateCollectionIDOfSelectedTrace(tempTraceID,iNewCollectionID,
+    //  iDatabaseConnector);
     //  if (tempCollectionID != 0)
-    //    {     
+    //    {
     //    this->RecalculateDBBoundingBox(iDatabaseConnector,tempCollectionID);
     //    ListTraceIDWithBoundingBoxUpdated.push_back(tempCollectionID);
     //    }
     //  iter++;
     //  }
 
-    std::vector<std::string>::iterator iterVector = 
+    std::vector<std::string>::iterator iterVector =
       ListCollectionIDWithBoundingBoxToUpdate.begin();
-    while(iterVector != ListCollectionIDWithBoundingBoxToUpdate.end())
+    while (iterVector != ListCollectionIDWithBoundingBoxToUpdate.end())
       {
       std::string temp = *iterVector;
-      this->RecalculateDBBoundingBox(iDatabaseConnector,atoi(temp.c_str()));
+      this->RecalculateDBBoundingBox(iDatabaseConnector, atoi(temp.c_str()));
       ListTraceIDWithBoundingBoxUpdated.push_back(atoi(temp.c_str()));
       iterVector++;
       }
     }
-  
+
   //Get the max and min coordid for the bounding box:
   int CoordMaxID;
   int CoordMinID;
   if (!iListSelectedTraces.empty())
     {
-    CoordMaxID = this->GetCoordMaxID(iDatabaseConnector,iNewCollectionID,iListSelectedTraces);
-    CoordMinID = this->GetCoordMinID(iDatabaseConnector,iNewCollectionID,iListSelectedTraces);
+    CoordMaxID = this->GetCoordMaxID(iDatabaseConnector, iNewCollectionID, iListSelectedTraces);
+    CoordMinID = this->GetCoordMinID(iDatabaseConnector, iNewCollectionID, iListSelectedTraces);
     }
   else
     {
@@ -856,9 +857,9 @@ std::list<int> GoDBCollectionOfTraces::UpdateDBDataForAddedTracesToExistingColle
     }
 
   //Update the bounding box for the collection where traces are added:
-  this->UpdateCollectionBoundingBoxInDB(CoordMinID,CoordMaxID,iNewCollectionID,
-    iDatabaseConnector);
-  
+  this->UpdateCollectionBoundingBoxInDB(CoordMinID, CoordMaxID, iNewCollectionID,
+                                        iDatabaseConnector);
+
   return ListTraceIDWithBoundingBoxUpdated;
 }
 //--------------------------------------------------------------------------
@@ -883,29 +884,31 @@ std::string GoDBCollectionOfTraces::GetCollectionOf()
     return "track";
     }
 
-  return ""; 
+  return "";
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void GoDBCollectionOfTraces::UpdateCollectionBoundingBoxInDB(int iCoordIDMin,
-  int iCoordIDMax,int iCollectionID, vtkMySQLDatabase* iDatabaseConnector)
+                                                             int iCoordIDMax,
+                                                             int iCollectionID,
+                                                             vtkMySQLDatabase* iDatabaseConnector)
 {
   //update the bounding box for the max coord:
-  UpdateValueInDB(iDatabaseConnector,this->m_CollectionName, "CoordIDMax", 
-    ConvertToString<int>(iCoordIDMax), this->m_CollectionIDName, 
-    ConvertToString<int>(iCollectionID));
+  UpdateValueInDB(iDatabaseConnector, this->m_CollectionName, "CoordIDMax",
+                  ConvertToString<int>(iCoordIDMax), this->m_CollectionIDName,
+                  ConvertToString<int>(iCollectionID));
 
   //update the bounding box for the min coord:
-  UpdateValueInDB(iDatabaseConnector,this->m_CollectionName, "CoordIDMin", 
-    ConvertToString<int>(iCoordIDMin),this->m_CollectionIDName, 
-    ConvertToString<int>(iCollectionID)); 
+  UpdateValueInDB(iDatabaseConnector, this->m_CollectionName, "CoordIDMin",
+                  ConvertToString<int>(iCoordIDMin), this->m_CollectionIDName,
+                  ConvertToString<int>(iCollectionID));
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void GoDBCollectionOfTraces::SetChannelsInfo(vtkMySQLDatabase* DatabaseConnector,
-  GoDBTableWidgetContainer* iLinkToRowContainer)
+                                             GoDBTableWidgetContainer* iLinkToRowContainer)
 {
   std::vector<std::string> SelectFields;
   //GoDBTableWidgetContainer* LinkToRowContainer = iLinkToRowContainer;
@@ -918,10 +921,10 @@ void GoDBCollectionOfTraces::SetChannelsInfo(vtkMySQLDatabase* DatabaseConnector
   std::vector<std::string> JoinTablesOnTraceTable;
   JoinTablesOnTraceTable.push_back("channel");
   JoinTablesOnTraceTable.push_back("image.ChannelID = channel.ChannelID");
-  
+
   std::vector<std::vector<std::string> > Results = GetValuesFromSeveralTables(
-    DatabaseConnector,"image",SelectFields, "ImagingSessionID",
-    ConvertToString<unsigned int>(this->m_ImgSessionID),JoinTablesOnTraceTable,true);
+    DatabaseConnector, "image", SelectFields, "ImagingSessionID",
+    ConvertToString<unsigned int>(this->m_ImgSessionID), JoinTablesOnTraceTable, true);
   //  iLinkToRowContainer->SetChannelsInfo(Results);
   iLinkToRowContainer->SetSpecificColumnsInfoForMesh(Results);
 }
@@ -929,39 +932,39 @@ void GoDBCollectionOfTraces::SetChannelsInfo(vtkMySQLDatabase* DatabaseConnector
 
 //--------------------------------------------------------------------------
 void GoDBCollectionOfTraces::FillRowContainerForIntensityValues(
-  vtkMySQLDatabase* DatabaseConnector,std::vector<std::string> iVectMeshIDs,
+  vtkMySQLDatabase* DatabaseConnector, std::vector<std::string> iVectMeshIDs,
   GoDBTableWidgetContainer* iLinkToRowContainer)
 {
   std::vector<std::vector<std::string> > ResultsFromQuery;
-  std::vector<std::string> SelectFields;
-  std::vector<std::vector<std::string> > ChannelsInfo = 
+  std::vector<std::string>               SelectFields;
+  std::vector<std::vector<std::string> > ChannelsInfo =
     iLinkToRowContainer->GetChannelsInfo();
 
-  for (unsigned int i = 0; i<ChannelsInfo.size();i++)
+  for (unsigned int i = 0; i < ChannelsInfo.size(); i++)
     {
     std::string NameTableWidgetColumn = "T.I.";
     NameTableWidgetColumn += ChannelsInfo.at(i).at(0);
     SelectFields.push_back(NameTableWidgetColumn);
     }
-    std::vector<std::string>::iterator iter = iVectMeshIDs.begin();
-    std::vector<std::string> temp;
-  while(iter!=iVectMeshIDs.end())
-    {     
-    for(unsigned int i = 0; i<ChannelsInfo.size();i++)
+  std::vector<std::string>::iterator iter = iVectMeshIDs.begin();
+  std::vector<std::string>           temp;
+  while (iter != iVectMeshIDs.end())
+    {
+    for (unsigned int i = 0; i < ChannelsInfo.size(); i++)
       {
       std::string ChannelID = ChannelsInfo.at(i).at(1);
       std::string MeshID = *iter;
-      int ValueIntensity = FindOneID(DatabaseConnector,
-        "intensity", "Value","MeshID",MeshID,
-        "ChannelID",ChannelID);
-       temp.push_back(ConvertToString<int>(ValueIntensity));
+      int         ValueIntensity = FindOneID(DatabaseConnector,
+                                             "intensity", "Value", "MeshID", MeshID,
+                                             "ChannelID", ChannelID);
+      temp.push_back(ConvertToString<int>(ValueIntensity));
       }
     ResultsFromQuery.push_back(temp);
     temp.clear();
     iter++;
-    }   
+    }
   iLinkToRowContainer->FillRowContainer(
-    ResultsFromQuery,SelectFields,"ColumnNameTableWidget");
+    ResultsFromQuery, SelectFields, "ColumnNameTableWidget");
 }
 //--------------------------------------------------------------------------
 
@@ -970,18 +973,18 @@ void GoDBCollectionOfTraces::FillRowContainerForComputedValues(
   GoDBTableWidgetContainer* iLinkToRowContainer,
   std::vector<std::vector<std::string> >* iComputedValues)
 {
-  std::vector<std::string> ListComputedNames = 
-    iLinkToRowContainer->GetNameComputedColumns();  
+  std::vector<std::string> ListComputedNames =
+    iLinkToRowContainer->GetNameComputedColumns();
   if (!ListComputedNames.empty())
     {
     std::vector<std::vector<std::string> > ComputedValues;
     if (iComputedValues == 0 && !ListComputedNames.empty())
       {
-      for (unsigned int j = 0; j < iLinkToRowContainer->GetNumberOfRows();j++)
+      for (unsigned int j = 0; j < iLinkToRowContainer->GetNumberOfRows(); j++)
         {
         std::vector<std::string> EmptyVector;
 //         int Size = iLinkToRowContainer->GetNumberOfRows();
-        for (unsigned int i = 0; i < ListComputedNames.size();i++)
+        for (unsigned int i = 0; i < ListComputedNames.size(); i++)
           {
           EmptyVector.push_back("NV");
           }
@@ -993,24 +996,24 @@ void GoDBCollectionOfTraces::FillRowContainerForComputedValues(
       {
       ComputedValues = *iComputedValues;
       }
-      iLinkToRowContainer->FillRowContainer(
-        ComputedValues, ListComputedNames,"ColumnNameTableWidget");
+    iLinkToRowContainer->FillRowContainer(
+      ComputedValues, ListComputedNames, "ColumnNameTableWidget");
     }
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 std::list<int> GoDBCollectionOfTraces::GetTracesIDPartOfTheCollection(
-  vtkMySQLDatabase* DatabaseConnector,int iCollectionID)
+  vtkMySQLDatabase* DatabaseConnector, int iCollectionID)
 {
   std::vector<std::string> ResultsQuery = ListSpecificValuesForOneColumn(
-    DatabaseConnector,this->m_TracesName, this->m_TracesIDName,
-    this->m_CollectionIDName,ConvertToString<int>(iCollectionID));
+    DatabaseConnector, this->m_TracesName, this->m_TracesIDName,
+    this->m_CollectionIDName, ConvertToString<int>(iCollectionID));
 
   std::list<int> ListIDs;
-  for (unsigned int i = 0; i <ResultsQuery.size();i++)
-  {
+  for (unsigned int i = 0; i < ResultsQuery.size(); i++)
+    {
     ListIDs.push_back(atoi(ResultsQuery.at(i).c_str()));
-  }
+    }
   return ListIDs;
 }

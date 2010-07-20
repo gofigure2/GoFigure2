@@ -47,36 +47,36 @@
 
 //--------------------------------------------------------------------------
 QGoTabManager::
-QGoTabManager( QGoMainWindow* iMW, QTabWidget* iTW ) : m_MainWindow( iMW ),
-  m_TabWidget( iTW ), m_PreviousTabIndex( -1 )
-{
-}
+QGoTabManager(QGoMainWindow* iMW, QTabWidget* iTW) : m_MainWindow(iMW),
+  m_TabWidget(iTW), m_PreviousTabIndex(-1)
+  {
+  }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 QGoTabManager::~QGoTabManager()
-{
-}
+  {
+  }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoTabManager::SetMainWindow( QGoMainWindow* iMW )
+void QGoTabManager::SetMainWindow(QGoMainWindow* iMW)
 {
   m_MainWindow = iMW;
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoTabManager::SetTabWidget( QTabWidget* iTW )
+void QGoTabManager::SetTabWidget(QTabWidget* iTW)
 {
   m_TabWidget = iTW;
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoTabManager::ClearTabElement( QGoTabElementBase* iE )
+void QGoTabManager::ClearTabElement(QGoTabElementBase* iE)
 {
-  if( iE )
+  if (iE)
     {
     // First remove all toolbar related to the previous tab
     m_MainWindow->m_ViewToolBar->clear();
@@ -92,37 +92,37 @@ void QGoTabManager::ClearTabElement( QGoTabElementBase* iE )
 
     // Then remove all actions from the bookmark menu
     m_MainWindow->menuBookmarks->clear();
-    
+
     //then remove all actions from the mode menu:
     m_MainWindow->menuMode->clear();
 
-    std::list< QGoTabElementBase::QGoDockWidgetStatusPair >& dock_list = iE->DockWidget();
+    std::list<QGoTabElementBase::QGoDockWidgetStatusPair>& dock_list = iE->DockWidget();
 
-    for( std::list< QGoTabElementBase::QGoDockWidgetStatusPair >::iterator
-        dck_it = dock_list.begin();
-        dck_it != dock_list.end();
-        ++dck_it )
+    for (std::list<QGoTabElementBase::QGoDockWidgetStatusPair>::iterator
+         dck_it = dock_list.begin();
+         dck_it != dock_list.end();
+         ++dck_it)
       {
-      dck_it->first->m_Area = m_MainWindow->dockWidgetArea( dck_it->second );
+      dck_it->first->m_Area = m_MainWindow->dockWidgetArea(dck_it->second);
       bool temp = dck_it->second->isVisible();
 
-      m_MainWindow->removeDockWidget( dck_it->second );
+      m_MainWindow->removeDockWidget(dck_it->second);
 
       dck_it->first->m_Visibility = temp;
       }
 
     GoFigure::TabDimensionType dim = iE->GetTabDimensionType();
 
-    std::map< GoFigure::TabDimensionType, std::list< QAction* > >::iterator
-      map_it = m_MainWindow->m_TabDimPluginActionMap.find( dim );
+    std::map<GoFigure::TabDimensionType, std::list<QAction*> >::iterator
+    map_it = m_MainWindow->m_TabDimPluginActionMap.find(dim);
 
-    if( map_it != m_MainWindow->m_TabDimPluginActionMap.end() )
+    if (map_it != m_MainWindow->m_TabDimPluginActionMap.end())
       {
-      for( std::list< QAction* >::iterator list_it = (map_it->second).begin();
-            list_it != (map_it->second).end();
-            list_it++ )
+      for (std::list<QAction*>::iterator list_it = (map_it->second).begin();
+           list_it != (map_it->second).end();
+           list_it++)
         {
-        (*list_it)->setDisabled( true );
+        (*list_it)->setDisabled(true);
         }
       }
     }
@@ -130,95 +130,94 @@ void QGoTabManager::ClearTabElement( QGoTabElementBase* iE )
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoTabManager::SetUpTabElement( QGoTabElementBase* iE )
+void QGoTabManager::SetUpTabElement(QGoTabElementBase* iE)
 {
-  if( iE )
+  if (iE)
     {
     // Then add all actions related to the new tab from menuView
-    std::vector< QAction* > action_vector2 = iE->ViewActions();
+    std::vector<QAction*> action_vector2 = iE->ViewActions();
 
-    for( std::vector< QAction* >::iterator it = action_vector2.begin();
-        it != action_vector2.end();
-        ++it )
+    for (std::vector<QAction*>::iterator it = action_vector2.begin();
+         it != action_vector2.end();
+         ++it)
       {
-      m_MainWindow->menuView->addAction( *it );
-      m_MainWindow->m_ViewToolBar->addAction( *it );
+      m_MainWindow->menuView->addAction(*it);
+      m_MainWindow->m_ViewToolBar->addAction(*it);
       }
 
     action_vector2 = iE->ModeActions();
 
-    for( std::vector< QAction* >::iterator it = action_vector2.begin();
-        it != action_vector2.end();
-        ++it )
+    for (std::vector<QAction*>::iterator it = action_vector2.begin();
+         it != action_vector2.end();
+         ++it)
       {
-      m_MainWindow->menuMode->addAction( *it );
-      m_MainWindow->m_ModeToolBar->addAction( *it );
+      m_MainWindow->menuMode->addAction(*it);
+      m_MainWindow->m_ModeToolBar->addAction(*it);
       }
 
     action_vector2 = iE->SegmentationActions();
 
-    for( std::vector< QAction* >::iterator it = action_vector2.begin();
-        it != action_vector2.end();
-        ++it )
+    for (std::vector<QAction*>::iterator it = action_vector2.begin();
+         it != action_vector2.end();
+         ++it)
       {
-      m_MainWindow->menuSegmentation->addAction( *it );
+      m_MainWindow->menuSegmentation->addAction(*it);
       }
-    
+
     action_vector2 = iE->ToolsActions();
 
-    for( std::vector< QAction* >::iterator it = action_vector2.begin();
-        it != action_vector2.end();
-        ++it )
+    for (std::vector<QAction*>::iterator it = action_vector2.begin();
+         it != action_vector2.end();
+         ++it)
       {
-      m_MainWindow->menuTools->addAction( *it );
+      m_MainWindow->menuTools->addAction(*it);
       }
 
     action_vector2 = iE->BookmarkActions();
 
-    for( std::vector< QAction* >::iterator it = action_vector2.begin();
-        it != action_vector2.end();
-        ++it )
+    for (std::vector<QAction*>::iterator it = action_vector2.begin();
+         it != action_vector2.end();
+         ++it)
       {
-      m_MainWindow->menuBookmarks->addAction( *it );
+      m_MainWindow->menuBookmarks->addAction(*it);
       }
 
-    std::list< QGoTabElementBase::QGoDockWidgetStatusPair > dock_list = iE->DockWidget();
+    std::list<QGoTabElementBase::QGoDockWidgetStatusPair> dock_list = iE->DockWidget();
 
-    for( std::list< QGoTabElementBase::QGoDockWidgetStatusPair >::iterator
-          dck_it = dock_list.begin();
-          dck_it != dock_list.end();
-          ++dck_it )
+    for (std::list<QGoTabElementBase::QGoDockWidgetStatusPair>::iterator
+         dck_it = dock_list.begin();
+         dck_it != dock_list.end();
+         ++dck_it)
       {
-      if( dck_it->first->m_Attached )
+      if (dck_it->first->m_Attached)
         {
-        if( dck_it->first->m_Area == Qt::NoDockWidgetArea )
+        if (dck_it->first->m_Area == Qt::NoDockWidgetArea)
           {
           dck_it->first->m_Area = dck_it->first->m_DefaultArea;
           }
-        m_MainWindow->addDockWidget( dck_it->first->m_Area, dck_it->second );
+        m_MainWindow->addDockWidget(dck_it->first->m_Area, dck_it->second);
         }
-      dck_it->second->setVisible( dck_it->first->m_Visibility );
+      dck_it->second->setVisible(dck_it->first->m_Visibility);
       }
 
     GoFigure::TabDimensionType dim = iE->GetTabDimensionType();
 
-    if ( dim == GoFigure::THREE_D_WITH_T )
-    {
+    if (dim == GoFigure::THREE_D_WITH_T)
+      {
       ///\todo: Check if there is a connection with database to update import/export in menu
       std::cout << "Check if there is a connection with database to update import/export in menu" << std::endl;
-    }
+      }
 
+    std::map<GoFigure::TabDimensionType, std::list<QAction*> >::iterator
+    map_it = m_MainWindow->m_TabDimPluginActionMap.find(dim);
 
-    std::map< GoFigure::TabDimensionType, std::list< QAction* > >::iterator
-      map_it = m_MainWindow->m_TabDimPluginActionMap.find( dim );
-
-    if( map_it != m_MainWindow->m_TabDimPluginActionMap.end() )
+    if (map_it != m_MainWindow->m_TabDimPluginActionMap.end())
       {
-      for( std::list< QAction* >::iterator list_it = (map_it->second).begin();
-            list_it != (map_it->second).end();
-            list_it++ )
+      for (std::list<QAction*>::iterator list_it = (map_it->second).begin();
+           list_it != (map_it->second).end();
+           list_it++)
         {
-        (*list_it)->setEnabled( true );
+        (*list_it)->setEnabled(true);
         }
       }
     }
@@ -226,24 +225,24 @@ void QGoTabManager::SetUpTabElement( QGoTabElementBase* iE )
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoTabManager::ChangeCurrentTab( int iIdx )
+void QGoTabManager::ChangeCurrentTab(int iIdx)
 {
-  if( m_PreviousTabIndex != -1 )
+  if (m_PreviousTabIndex != -1)
     {
     QGoTabElementBase* w =
-      dynamic_cast< QGoTabElementBase* >(
-        m_TabWidget->widget( m_PreviousTabIndex ) );
+      dynamic_cast<QGoTabElementBase*>(
+        m_TabWidget->widget(m_PreviousTabIndex));
 
-    ClearTabElement( w );
+    ClearTabElement(w);
     }
 
-  if( iIdx != -1 )
+  if (iIdx != -1)
     {
     QGoTabElementBase* w2 =
-      dynamic_cast< QGoTabElementBase* >(
-        m_TabWidget->widget( iIdx ) );
+      dynamic_cast<QGoTabElementBase*>(
+        m_TabWidget->widget(iIdx));
 
-    SetUpTabElement( w2 );
+    SetUpTabElement(w2);
     }
 
   m_PreviousTabIndex = iIdx;
@@ -251,30 +250,30 @@ void QGoTabManager::ChangeCurrentTab( int iIdx )
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoTabManager::UpdateBookmarkMenu(std::vector<QAction*> iBookmarkActions )
+void QGoTabManager::UpdateBookmarkMenu(std::vector<QAction*> iBookmarkActions)
 {
   m_MainWindow->menuBookmarks->clear();
 
-  for( std::vector< QAction* >::iterator it = iBookmarkActions.begin();
-        it != iBookmarkActions.end();
-        ++it )
+  for (std::vector<QAction*>::iterator it = iBookmarkActions.begin();
+       it != iBookmarkActions.end();
+       ++it)
     {
-    m_MainWindow->menuBookmarks->addAction( *it );
+    m_MainWindow->menuBookmarks->addAction(*it);
     }
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoTabManager::CloseTab( int idx )
+void QGoTabManager::CloseTab(int idx)
 {
-  if( idx >= 0 )
+  if (idx >= 0)
     {
     QGoTabElementBase* w =
-      dynamic_cast< QGoTabElementBase* >( m_TabWidget->widget( idx ) );
-    if( w )
+      dynamic_cast<QGoTabElementBase*>(m_TabWidget->widget(idx));
+    if (w)
       {
       w->WriteSettings();
-      ClearTabElement( w );
+      ClearTabElement(w);
       delete w;
       w = 0;
       }
@@ -284,19 +283,19 @@ void QGoTabManager::CloseTab( int idx )
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoTabManager::CloseAllTabs( )
+void QGoTabManager::CloseAllTabs()
 {
   int NumberOfTabs = m_TabWidget->count();
 
-  for( int i = 0; i < NumberOfTabs; i++ )
+  for (int i = 0; i < NumberOfTabs; i++)
     {
-    int k = NumberOfTabs - 1 - i;
+    int                k = NumberOfTabs - 1 - i;
     QGoTabElementBase* w =
-      dynamic_cast< QGoTabElementBase* >( m_TabWidget->widget( k ) );
+      dynamic_cast<QGoTabElementBase*>(m_TabWidget->widget(k));
 
-    if( w )
+    if (w)
       {
-      ClearTabElement( w );
+      ClearTabElement(w);
 
       w->WriteSettings();
       delete w;
@@ -305,6 +304,6 @@ void QGoTabManager::CloseAllTabs( )
 
   m_MainWindow->m_ViewToolBar->clear();
   m_MainWindow->m_ModeToolBar->clear();
-  m_TabWidget->clear( );
+  m_TabWidget->clear();
 }
 //--------------------------------------------------------------------------

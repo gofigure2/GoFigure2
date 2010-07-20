@@ -45,9 +45,8 @@
 #include <QLineEdit>
 #include "vtkMySQLDatabase.h"
 
-
 class QGoDBInitCreateAuthorsPage : public QWizardPage
-{
+  {
   Q_OBJECT
 
 public:
@@ -57,24 +56,24 @@ public:
   bool validatePage();
   //int nextId() const;
   void SetDatabaseVariables(
-    std::string iUser,std::string iPassword);
+    std::string iUser, std::string iPassword);
 protected slots:
   void CreateAuthor();
 signals:
   void NewAuthorCreated();
 private:
-  Q_DISABLE_COPY( QGoDBInitCreateAuthorsPage );
+  Q_DISABLE_COPY(QGoDBInitCreateAuthorsPage);
 
-  QLineEdit*          lineLastName;
-  QLineEdit*          lineMiddleName;
-  QLineEdit*          lineFirstName;
-  QPushButton*        CreateButton;
-  vtkMySQLDatabase*   m_DatabaseConnector;
-  std::string         m_Server;
-  std::string         m_User;
-  std::string         m_Password;
-  std::string         m_DBName;
-  
+  QLineEdit*        lineLastName;
+  QLineEdit*        lineMiddleName;
+  QLineEdit*        lineFirstName;
+  QPushButton*      CreateButton;
+  vtkMySQLDatabase* m_DatabaseConnector;
+  std::string       m_Server;
+  std::string       m_User;
+  std::string       m_Password;
+  std::string       m_DBName;
+
   void OpenDBConnection();
-};
+  };
 #endif

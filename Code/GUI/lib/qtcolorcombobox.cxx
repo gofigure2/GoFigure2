@@ -41,17 +41,17 @@
 /****************************************************************************
 **
 ** This file is part of a Qt Solutions component.
-** 
+**
 ** Copyright (c) 2009 Nokia Corporation and/or its subsidiary(-ies).
-** 
+**
 ** Contact:  Qt Software Information (qt-info@nokia.com)
-** 
-** Commercial Usage  
+**
+** Commercial Usage
 ** Licensees holding valid Qt Commercial licenses may use this file in
 ** accordance with the Qt Solutions Commercial License Agreement provided
 ** with the Software or, alternatively, in accordance with the terms
 ** contained in a written agreement between you and Nokia.
-** 
+**
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
 ** General Public License version 2.1 as published by the Free Software
@@ -59,29 +59,29 @@
 ** packaging of this file.  Please review the following information to
 ** ensure the GNU Lesser General Public License version 2.1 requirements
 ** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
-** 
+**
 ** In addition, as a special exception, Nokia gives you certain
 ** additional rights. These rights are described in the Nokia Qt LGPL
 ** Exception version 1.0, included in the file LGPL_EXCEPTION.txt in this
 ** package.
-** 
-** GNU General Public License Usage 
+**
+** GNU General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU
 ** General Public License version 3.0 as published by the Free Software
 ** Foundation and appearing in the file LICENSE.GPL included in the
 ** packaging of this file.  Please review the following information to
 ** ensure the GNU General Public License version 3.0 requirements will be
 ** met: http://www.gnu.org/copyleft/gpl.html.
-** 
+**
 ** Please note Third Party Software included with Qt Solutions may impose
 ** additional restrictions and it is the user's responsibility to ensure
 ** that they have met the licensing requirements of the GPL, LGPL, or Qt
 ** Solutions Commercial license and the relevant license of the Third
 ** Party Software they are using.
-** 
+**
 ** If you are unsure which license is appropriate for your use, please
 ** contact the sales department at qt-sales@nokia.com.
-** 
+**
 ****************************************************************************/
 
 #include <QtGui/QColorDialog>
@@ -144,18 +144,18 @@
 */
 QtColorComboBox::
 QtColorComboBox(QWidget *iParent, const char * /*name*/)
-    : QComboBox(iParent), numUserColors(0)
-{
+  : QComboBox(iParent), numUserColors(0)
+  {
   colorDialogEnabled = false;
   NewColorToBeAdded = true;
- 
+
   this->hide();
   // QtColorComboBox uses QColor based signals with the same name.
   // We intercept the int signals emitted by QtComboBox in able to
   // do our logics.
   connect(this, SIGNAL(activated(int)), SLOT(emitActivatedColor(int)));
   connect(this, SIGNAL(highlighted(int)), SLOT(emitHighlightedColor(int)));
-}
+  }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -174,7 +174,7 @@ on; the names can be changed by translating "User color %1".
 */
 void
 QtColorComboBox::
-setColorDialogEnabled(bool enabled,std::string TextToAdd)
+setColorDialogEnabled(bool enabled, std::string TextToAdd)
 {
   // if (colorDialogEnabled == enabled)
   //return;
@@ -211,9 +211,9 @@ If \a index is -1, then color is prepended to the beginning end of the list.
 */
 void
 QtColorComboBox::
-insertColor(int index, const QColor &iColor, const QString &iName)
+insertColor(int index, const QColor& iColor, const QString& iName)
 {
-  QPixmap pix(12, 12);
+  QPixmap  pix(12, 12);
   QPainter painter(&pix);
   if (iColor.isValid())
     {
@@ -254,7 +254,7 @@ QColor
 QtColorComboBox::
 currentColor() const
 {
-  return qVariantValue<QColor>(itemData(currentIndex()) );
+  return qVariantValue<QColor>(itemData(currentIndex()));
 }
 
 //-------------------------------------------------------------------------
@@ -268,14 +268,14 @@ currentColor() const
 */
 void
 QtColorComboBox::
-setCurrentColor(const QColor &iColor)
+setCurrentColor(const QColor& iColor)
 {
   for (int i = 0; i < colorCount(); i++)
     {
-    if( QtColorComboBox::color(i) == iColor )
+    if (QtColorComboBox::color(i) == iColor)
       {
-        setCurrentIndex(i);
-        break;
+      setCurrentIndex(i);
+      break;
       }
     }
 }
@@ -293,15 +293,15 @@ color(int index) const
 
   // discard out of bounds requests
   if (!var.isValid())
-  {
+    {
     return QColor();
-  }
+    }
 
   // discard requests for the "more" item
   if (colorDialogEnabled && index == colorCount())
-  {
-  return QColor();
-  }
+    {
+    return QColor();
+    }
 
   return qVariantValue<QColor>(var);
 }
@@ -317,7 +317,7 @@ color(int index) const
 */
 void
 QtColorComboBox::
-emitActivatedColor( int index )
+emitActivatedColor(int index)
 {
   if (colorDialogEnabled && index == colorCount())
     {
@@ -331,21 +331,21 @@ emitActivatedColor( int index )
     else
       {
       // Get a new color from the color dialog.
-      QColor col = QColorDialog::getColor( Qt::white, NULL, "Pick a new color",
-                                           QColorDialog::ShowAlphaChannel );
+      QColor col = QColorDialog::getColor(Qt::white, NULL, "Pick a new color",
+                                          QColorDialog::ShowAlphaChannel);
       if (col.isValid())
         {
         // Unless the user pressed cancel, insert the new color at
         // the end of the list.
-        bool ok = false;
+        bool    ok = false;
         QString ColorName = QInputDialog::getText(this, tr("New Color Name:"),
-          tr("Please enter the name for your new color:"),
-          QLineEdit::Normal,"",&ok);
+                                                  tr("Please enter the name for your new color:"),
+                                                  QLineEdit::Normal, "", &ok);
         if (ok && !ColorName.isEmpty())
           {
           //pass the data for the new color to be saved in the database
-          this->PassDataForNewColorToBeSaved(col,ColorName.toStdString());
-          if(this->NewColorToBeAdded)
+          this->PassDataForNewColorToBeSaved(col, ColorName.toStdString());
+          if (this->NewColorToBeAdded)
             {
             addColor(col, ColorName);
             setCurrentIndex(index);
@@ -374,11 +374,11 @@ emitActivatedColor( int index )
     {
     // If any other item than the color dialog item was activated,
     // pull out the color of that item.
-    QColor col = qVariantValue<QColor>(itemData(index) );
+    QColor col = qVariantValue<QColor>(itemData(index));
     update();
     lastActivated = col;
     emit activated(col);
-  }
+    }
 }
 //-------------------------------------------------------------------------
 
@@ -406,11 +406,11 @@ QSize
 QtColorComboBox::
 sizeHint() const
 {
-  QFontMetrics fm = fontMetrics();
+  QFontMetrics         fm = fontMetrics();
   QStyleOptionComboBox box;
   box.init(this);
-  return style()->sizeFromContents( QStyle::CT_ComboBox, &box,
-  QSize(fm.width(tr("User Color 99")) + 16 + 4, fm.height() + 4), this);
+  return style()->sizeFromContents(QStyle::CT_ComboBox, &box,
+                                   QSize(fm.width(tr("User Color 99")) + 16 + 4, fm.height() + 4), this);
 }
 //-------------------------------------------------------------------------
 
@@ -456,7 +456,7 @@ bool
 QtColorComboBox::
 isColorDialogEnabled() const
 {
-    return colorDialogEnabled;
+  return colorDialogEnabled;
 }
 //-------------------------------------------------------------------------
 
@@ -464,20 +464,20 @@ isColorDialogEnabled() const
 void
 QtColorComboBox::
 setExistingColors(
-    std::list<std::pair<std::string,std::vector<int> > > iDataColorsFromDB )
-{ 
+  std::list<std::pair<std::string, std::vector<int> > > iDataColorsFromDB)
+{
   this->clear();
   if (!iDataColorsFromDB.empty())
     {
-    std::list<std::pair<std::string,std::vector<int> > >::iterator iter =
+    std::list<std::pair<std::string, std::vector<int> > >::iterator iter =
       iDataColorsFromDB.begin();
     while (iter != iDataColorsFromDB.end())
       {
-      int Red = iter->second[0];
-      int Green = iter->second[1];
-      int Blue = iter->second[2];
-      int Alpha = iter->second[3];
-      QColor Color(Red,Green,Blue,Alpha);
+      int    Red = iter->second[0];
+      int    Green = iter->second[1];
+      int    Blue = iter->second[2];
+      int    Alpha = iter->second[3];
+      QColor Color(Red, Green, Blue, Alpha);
       this->addColor(Color, iter->first.c_str());
       iter++;
       }
@@ -490,7 +490,7 @@ setExistingColors(
 //-------------------------------------------------------------------------
 void
 QtColorComboBox::
-PassDataForNewColorToBeSaved( QColor Color, std::string NameColor )
+PassDataForNewColorToBeSaved(QColor Color, std::string NameColor)
 {
   std::vector<std::string> NewColorData;
   NewColorData.push_back(NameColor);
@@ -498,30 +498,30 @@ PassDataForNewColorToBeSaved( QColor Color, std::string NameColor )
   NewColorData.push_back(ConvertToString<int>(Color.green()));
   NewColorData.push_back(ConvertToString<int>(Color.blue()));
   NewColorData.push_back(ConvertToString<int>(Color.alpha()));
-  
+
   NewColorToBeSaved(NewColorData);
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-std::pair<std::string,QColor>
+std::pair<std::string, QColor>
 QtColorComboBox::
 GetCurrentColorData()
 {
- std::pair<std::string,QColor> CurrentColor;
- std::string test = QtColorComboBox::currentText().toStdString();//test 
- CurrentColor.first = QtColorComboBox::currentText().toStdString();
- CurrentColor.second = QtColorComboBox::currentColor();
- return CurrentColor;
+  std::pair<std::string, QColor> CurrentColor;
+  std::string                    test = QtColorComboBox::currentText().toStdString(); //test
+  CurrentColor.first = QtColorComboBox::currentText().toStdString();
+  CurrentColor.second = QtColorComboBox::currentColor();
+  return CurrentColor;
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 int
 QtColorComboBox::
-FindItemText( std::string Text )
+FindItemText(std::string Text)
 {
-  for (int i =0; i < this->colorCount(); i++)
+  for (int i = 0; i < this->colorCount(); i++)
     {
     if (this->itemText(i) == Text.c_str())
       {
@@ -535,10 +535,10 @@ FindItemText( std::string Text )
 //-------------------------------------------------------------------------
 void
 QtColorComboBox::
-DeleteCollectionID( unsigned int CollectionID )
+DeleteCollectionID(unsigned int CollectionID)
 {
   int index = this->FindItemText(ConvertToString<unsigned int>(CollectionID));
-  if( index != -1 )
+  if (index != -1)
     {
     this->removeItem(index);
     }
@@ -563,5 +563,5 @@ IncrementTrackID()
   unsigned int numberOfColors = this->colorCount();
 
   // Simulates click one the last object (i.e. add new mesh)
-  this->emitActivatedColor( numberOfColors );
+  this->emitActivatedColor(numberOfColors);
 }

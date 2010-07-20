@@ -52,44 +52,44 @@
 
 //--------------------------------------------------------------------------
 QGoImageView2D::
-QGoImageView2D( QWidget* iiParent ) : QGoImageView( iiParent )
-{
+QGoImageView2D(QWidget* iiParent) : QGoImageView(iiParent)
+  {
   m_VTKEventQtConnector = vtkEventQtSlotConnect::New();
 
-  this->setupUi( this );
+  this->setupUi(this);
 
   vtkViewImage2D* View = vtkViewImage2D::New();
 
-  SetupViewGivenQVTKWidget( View, m_QVTKWidgetXY );
+  SetupViewGivenQVTKWidget(View, m_QVTKWidgetXY);
 
-  m_Pool->AddItem( View );
+  m_Pool->AddItem(View);
   View->Delete();
-}
+  }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 QGoImageView2D::
 ~QGoImageView2D()
-{
+  {
   m_VTKEventQtConnector->Delete();
-}
+  }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void
 QGoImageView2D::
-setupUi( QWidget* iiParent )
+setupUi(QWidget* iiParent)
 {
-  if(iiParent->objectName().isEmpty())
+  if (iiParent->objectName().isEmpty())
     {
     iiParent->resize(800, 800);
     }
 
-  m_QVTKWidgetXY = new QVTKWidget( this );
-  m_QVTKWidgetXY->resize(800,800);
+  m_QVTKWidgetXY = new QVTKWidget(this);
+  m_QVTKWidgetXY->resize(800, 800);
 
-  m_LayOut = new QHBoxLayout( iiParent );
-  m_LayOut->addWidget( m_QVTKWidgetXY  );
+  m_LayOut = new QHBoxLayout(iiParent);
+  m_LayOut->addWidget(m_QVTKWidgetXY);
 
   retranslateUi(iiParent);
 
@@ -102,7 +102,7 @@ void
 QGoImageView2D::
 retranslateUi(QWidget *iParent)
 {
-  iParent->setWindowTitle( tr("QGoImageView2D") );
+  iParent->setWindowTitle(tr("QGoImageView2D"));
   Q_UNUSED(iParent);
 }
 //------------------------------------------------------------------------------
@@ -110,16 +110,16 @@ retranslateUi(QWidget *iParent)
 //--------------------------------------------------------------------------
 void
 QGoImageView2D::
-SetImage( vtkImageData* iImage )
+SetImage(vtkImageData* iImage)
 {
   int dim[3];
-  iImage->GetDimensions( dim );
+  iImage->GetDimensions(dim);
 
-  if( ( dim[0] > 1 ) && ( dim[1] > 1 ) && ( dim[2] > 1 ) )
+  if ((dim[0] > 1) && (dim[1] > 1) && (dim[2] > 1))
     {
-    std::cout <<"void QGoTabImageView2D::SetImage( vtkImageData* iImage )"
-      <<std::endl;
-    std::cout <<"This widget only display 2D images." <<std::endl;
+    std::cout << "void QGoTabImageView2D::SetImage( vtkImageData* iImage )"
+              << std::endl;
+    std::cout << "This widget only display 2D images." << std::endl;
     return;
     }
   else
@@ -132,7 +132,7 @@ SetImage( vtkImageData* iImage )
 //--------------------------------------------------------------------------
 vtkImageData*
 QGoImageView2D::
-GetImage( )
+GetImage()
 {
   return m_Image;
 }
@@ -141,11 +141,11 @@ GetImage( )
 //--------------------------------------------------------------------------
 vtkImageActor*
 QGoImageView2D::
-GetImageActor( const int& i )
+GetImageActor(const int& i)
 {
-  if( i == 0 )
+  if (i == 0)
     {
-    vtkViewImage2D* View = m_Pool->GetItem( i );
+    vtkViewImage2D* View = m_Pool->GetItem(i);
     return View->GetImageActor();
     }
   else
@@ -158,9 +158,9 @@ GetImageActor( const int& i )
 //--------------------------------------------------------------------------
 QVTKInteractor*
 QGoImageView2D::
-GetInteractor( const int& i )
+GetInteractor(const int& i)
 {
-  if( i == 0 )
+  if (i == 0)
     {
     return m_QVTKWidgetXY->GetInteractor();
     }
@@ -174,19 +174,19 @@ GetInteractor( const int& i )
 //--------------------------------------------------------------------------
 void
 QGoImageView2D::
-Update( )
+Update()
 {
-  vtkViewImage2D* View = m_Pool->GetItem( 0 );
-  View->SetInput( this->m_Image );
+  vtkViewImage2D* View = m_Pool->GetItem(0);
+  View->SetInput(this->m_Image);
   View->GetTextProperty()->SetFontFamilyToArial();
-  View->GetTextProperty()->SetFontSize( 20 );
-  View->SetViewOrientation( vtkViewImage2D::VIEW_ORIENTATION_AXIAL );
-  View->SetViewConvention( vtkViewImage2D::VIEW_CONVENTION_NEUROLOGICAL );
+  View->GetTextProperty()->SetFontSize(20);
+  View->SetViewOrientation(vtkViewImage2D::VIEW_ORIENTATION_AXIAL);
+  View->SetViewConvention(vtkViewImage2D::VIEW_CONVENTION_NEUROLOGICAL);
 
   m_Pool->Initialize();
   m_Pool->InitializeAllObservers();
-  m_Pool->SyncSetShowAnnotations( true );
-  m_Pool->SyncSetShowScalarBar( false );
+  m_Pool->SyncSetShowAnnotations(true);
+  m_Pool->SyncSetShowScalarBar(false);
   m_Pool->SyncRender();
   m_Pool->SyncReset();
 }
@@ -195,11 +195,11 @@ Update( )
 //--------------------------------------------------------------------------
 void
 QGoImageView2D::
-SetLookupTable( vtkLookupTable* iLut )
+SetLookupTable(vtkLookupTable* iLut)
 {
-  if( this->m_Image->GetNumberOfScalarComponents() == 1 )
+  if (this->m_Image->GetNumberOfScalarComponents() == 1)
     {
-    m_Pool->SyncSetLookupTable( iLut );
+    m_Pool->SyncSetLookupTable(iLut);
     }
 }
 //--------------------------------------------------------------------------
@@ -207,11 +207,11 @@ SetLookupTable( vtkLookupTable* iLut )
 //--------------------------------------------------------------------------
 void
 QGoImageView2D::
-ShowScalarBar( const bool& iShow )
+ShowScalarBar(const bool& iShow)
 {
-  if( this->m_Image->GetNumberOfScalarComponents() == 1 )
+  if (this->m_Image->GetNumberOfScalarComponents() == 1)
     {
-    m_Pool->SyncSetShowScalarBar( iShow );
+    m_Pool->SyncSetShowScalarBar(iShow);
     }
 }
 //--------------------------------------------------------------------------
@@ -219,10 +219,10 @@ ShowScalarBar( const bool& iShow )
 //--------------------------------------------------------------------------
 QString
 QGoImageView2D::
-SnapshotViewXY( const GoFigure::FileType& iType, const QString& iBaseName )
+SnapshotViewXY(const GoFigure::FileType& iType, const QString& iBaseName)
 {
-  QString filename = SnapshotView( this->m_QVTKWidgetXY, iType,
-    iBaseName, m_SnapshotId );
+  QString filename = SnapshotView(this->m_QVTKWidgetXY, iType,
+                                  iBaseName, m_SnapshotId);
 
   m_SnapshotId++;
   return filename;
@@ -234,11 +234,11 @@ void
 QGoImageView2D::
 DefaultMode()
 {
-  vtkViewImage2D* View = m_Pool->GetItem( 0 );
-  View->SetLeftButtonInteractionStyle( vtkInteractorStyleImage2D::InteractionTypeSlice );
-  View->SetMiddleButtonInteractionStyle( vtkInteractorStyleImage2D::InteractionTypePan );
-  View->SetRightButtonInteractionStyle( vtkInteractorStyleImage2D::InteractionTypeZoom );
-  View->SetWheelInteractionStyle( vtkInteractorStyleImage2D::InteractionTypeSlice );
+  vtkViewImage2D* View = m_Pool->GetItem(0);
+  View->SetLeftButtonInteractionStyle(vtkInteractorStyleImage2D::InteractionTypeSlice);
+  View->SetMiddleButtonInteractionStyle(vtkInteractorStyleImage2D::InteractionTypePan);
+  View->SetRightButtonInteractionStyle(vtkInteractorStyleImage2D::InteractionTypeZoom);
+  View->SetWheelInteractionStyle(vtkInteractorStyleImage2D::InteractionTypeSlice);
 }
 //-------------------------------------------------------------------------
 
@@ -247,8 +247,8 @@ void
 QGoImageView2D::
 ZoomMode()
 {
-  vtkViewImage2D* View = m_Pool->GetItem( 0 );
-  View->SetInteractionStyle(vtkInteractorStyleImage2D::InteractionTypeZoom );
+  vtkViewImage2D* View = m_Pool->GetItem(0);
+  View->SetInteractionStyle(vtkInteractorStyleImage2D::InteractionTypeZoom);
 }
 //-------------------------------------------------------------------------
 
@@ -257,7 +257,7 @@ void
 QGoImageView2D::
 PanMode()
 {
-  vtkViewImage2D* View = m_Pool->GetItem( 0 );
-  View->SetInteractionStyle(vtkInteractorStyleImage2D::InteractionTypePan );
+  vtkViewImage2D* View = m_Pool->GetItem(0);
+  View->SetInteractionStyle(vtkInteractorStyleImage2D::InteractionTypePan);
 }
 //-------------------------------------------------------------------------

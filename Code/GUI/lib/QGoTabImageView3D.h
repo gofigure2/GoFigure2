@@ -64,97 +64,97 @@ class QGoImageView3D;
 \example GUI/lib/qgotabimageview3d.cxx
 */
 class QGOGUILIB_EXPORT QGoTabImageView3D : public QGoTabImageViewNDBase
-{
+  {
   Q_OBJECT
-  public:
-    explicit QGoTabImageView3D( QWidget* parent = 0 );
-    virtual ~QGoTabImageView3D();
+public:
+  explicit QGoTabImageView3D(QWidget* parent = 0);
+  virtual ~QGoTabImageView3D();
 
-    typedef QGoTabImageViewNDBase::QGoDockWidgetStatusPair QGoDockWidgetStatusPair;
+  typedef QGoTabImageViewNDBase::QGoDockWidgetStatusPair QGoDockWidgetStatusPair;
 
-    GoFigure::TabDimensionType GetTabDimensionType( ) const;
+  GoFigure::TabDimensionType GetTabDimensionType() const;
 
-    virtual void Update();
+  virtual void Update();
 
-    void setupUi( QWidget* parent );
-    void retranslateUi( QWidget *parent );
+  void setupUi(QWidget* parent);
+  void retranslateUi(QWidget *parent);
 
-    virtual std::list< QWidget* > AdditionalWidget()
-      {return std::list< QWidget* >(); }
+  virtual std::list<QWidget*> AdditionalWidget()
+  { return std::list<QWidget*>(); }
 
-    virtual void WriteSettings() {}
-    virtual void ReadSettings() {}
+  virtual void WriteSettings() {}
+  virtual void ReadSettings() {}
 
-  signals:
-    void SliceViewXYChanged( int Slice );
-    void SliceViewXZChanged( int Slice );
-    void SliceViewYZChanged( int Slice );
+signals:
+  void SliceViewXYChanged(int Slice);
+  void SliceViewXZChanged(int Slice);
+  void SliceViewYZChanged(int Slice);
 
-    void FullScreenViewChanged( int View );
+  void FullScreenViewChanged(int View);
 
-  public slots:
-    QString SnapshotViewXY( const GoFigure::FileType& iType,
-      const QString& iBaseName = QString( "snapshot" ) );
-    QString SnapshotView2( const GoFigure::FileType& iType,
-      const QString& iBaseName = QString( "snapshot" ) );
-    QString SnapshotView3( const GoFigure::FileType& iType,
-      const QString& iBaseName = QString( "snapshot" ) );
-    QString SnapshotViewXYZ( const GoFigure::FileType& iType,
-      const QString& iBaseName = QString( "snapshot" ) );
+public slots:
+  QString SnapshotViewXY(const GoFigure::FileType& iType,
+                         const QString& iBaseName = QString("snapshot"));
+  QString SnapshotView2(const GoFigure::FileType& iType,
+                        const QString& iBaseName = QString("snapshot"));
+  QString SnapshotView3(const GoFigure::FileType& iType,
+                        const QString& iBaseName = QString("snapshot"));
+  QString SnapshotViewXYZ(const GoFigure::FileType& iType,
+                          const QString& iBaseName = QString("snapshot"));
 
-    void SetSliceViewXY( const int& );
-    void SetSliceViewXZ( const int& );
-    void SetSliceViewYZ( const int& );
+  void SetSliceViewXY(const int&);
+  void SetSliceViewXZ(const int&);
+  void SetSliceViewYZ(const int&);
 
-    void SetFullScreenView( const int& iS );
-    void Quadview();
-    void FullScreenViewXY();
-    void FullScreenViewXZ();
-    void FullScreenViewYZ();
-    void FullScreenViewXYZ();
+  void SetFullScreenView(const int& iS);
+  void Quadview();
+  void FullScreenViewXY();
+  void FullScreenViewXZ();
+  void FullScreenViewYZ();
+  void FullScreenViewXYZ();
 
-    void ChangeLookupTable();
-    void ShowScalarBar( const bool& );
-    void ChangeBackgroundColor();
+  void ChangeLookupTable();
+  void ShowScalarBar(const bool&);
+  void ChangeBackgroundColor();
 
-    void DisplayAnnotations();
-    void DisplaySplinePlanes();
-    void DisplayCube();
+  void DisplayAnnotations();
+  void DisplaySplinePlanes();
+  void DisplayCube();
 
-    void Change3DPerspectiveToAxial();
-    void Change3DPerspectiveToCoronal();
-    void Change3DPerspectiveToSagittal();
+  void Change3DPerspectiveToAxial();
+  void Change3DPerspectiveToCoronal();
+  void Change3DPerspectiveToSagittal();
 
-    void DefaultMode();
-    void ZoomMode();
-    void PanMode();
+  void DefaultMode();
+  void ZoomMode();
+  void PanMode();
 
-    void TakeSnapshot();
+  void TakeSnapshot();
 
-  protected:
-    QGoImageView3D*   m_ImageView;
+protected:
+  QGoImageView3D* m_ImageView;
 
-    QAction*              m_BackgroundColorAction;
+  QAction* m_BackgroundColorAction;
 
-    void GetBackgroundColorFromImageViewer( );
-    void SetBackgroundColorToImageViewer( );
-    void CreateAllViewActions();
-    void CreateModeActions();
+  void GetBackgroundColorFromImageViewer();
+  void SetBackgroundColorToImageViewer();
+  void CreateAllViewActions();
+  void CreateModeActions();
 
-    void SetImageToImageViewer( vtkImageData* image );
-    int* GetImageCoordinatesFromWorldCoordinates( double pos[3] );
+  void SetImageToImageViewer(vtkImageData* image);
+  int* GetImageCoordinatesFromWorldCoordinates(double pos[3]);
 
-    virtual void RemoveActorFromViewer( const int& iId, vtkActor* iActor );
-    virtual void DisplayActorInViewer( const int& iId, vtkActor* iActor );
+  virtual void RemoveActorFromViewer(const int& iId, vtkActor* iActor);
+  virtual void DisplayActorInViewer(const int& iId, vtkActor* iActor);
 
 //     virtual std::vector< vtkQuadricLODActor* >
-    virtual std::vector< vtkActor* > AddContour( const int& iId,
-      vtkPolyData* dataset,
-      vtkProperty* property = NULL );
+  virtual std::vector<vtkActor*> AddContour(const int& iId,
+                                            vtkPolyData* dataset,
+                                            vtkProperty* property = NULL);
 
-    virtual void SetSlice( int iDir, int* iIdx );
+  virtual void SetSlice(int iDir, int* iIdx);
 
-  private:
-    Q_DISABLE_COPY( QGoTabImageView3D );
-};
+private:
+  Q_DISABLE_COPY(QGoTabImageView3D);
+  };
 #endif

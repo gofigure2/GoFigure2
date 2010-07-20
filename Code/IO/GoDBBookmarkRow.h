@@ -49,32 +49,30 @@
 #include "vtkMySQLDatabase.h"
 
 class QGOIO_EXPORT GoDBBookmarkRow : public GoDBRow
-{
+  {
 public:
   GoDBBookmarkRow();
-  
+
   ~GoDBBookmarkRow()
-    {}
+        {}
   /**\brief check if the bookmark already exits in the DB, if yes,
-  return the existing ID, if not, save it in the DB and return the 
+  return the existing ID, if not, save it in the DB and return the
   ID for new created bookmark*/
   int SaveInDB(vtkMySQLDatabase* DatabaseConnector);
 
-  /**\brief check if the bookmark already exits in the database, if yes, 
+  /**\brief check if the bookmark already exits in the database, if yes,
   return the corresponding ID, if not, return -1*/
   int DoesThisBookmarkAlreadyExists(vtkMySQLDatabase* DatabaseConnector);
 
-  /**\brief check if the bookmark already exits in the database, if yes, 
+  /**\brief check if the bookmark already exits in the database, if yes,
   return the corresponding ID, if not, return -1 and the name of the
   existing bookmark*/
   int DoesThisBookmarkAlreadyExists(vtkMySQLDatabase* DatabaseConnector,
-    std::string &ioName);
-
+                                    std::string& ioName);
 
 protected:
   virtual void InitializeMap();
-  
-    
-};
+
+  };
 
 #endif

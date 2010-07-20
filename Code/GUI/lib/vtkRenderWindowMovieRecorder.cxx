@@ -50,21 +50,21 @@
  * \brief Constructor
  */
 vtkRenderWindowMovieRecorder::
-vtkRenderWindowMovieRecorder() : m_VideoQuality( 1 ), m_FrameRate( 10 )
-    /*:
-  m_FileName("goFigure2"), m_ControlIfVideoStarted (false)*/
-{
+vtkRenderWindowMovieRecorder() : m_VideoQuality(1), m_FrameRate(10)
+  /*:
+m_FileName("goFigure2"), m_ControlIfVideoStarted (false)*/
+  {
   m_ImageFilter = vtkWindowToImageFilter::New();
-}
+  }
 
 /**
  * \brief Destructor
  */
 vtkRenderWindowMovieRecorder::
 ~vtkRenderWindowMovieRecorder()
-{
+  {
   m_ImageFilter->Delete();
-}
+  }
 
 /**
  * \brief Set the name of the video
@@ -72,7 +72,7 @@ vtkRenderWindowMovieRecorder::
  */
 void
 vtkRenderWindowMovieRecorder::
-SetFileName( const std::string& iFileName)
+SetFileName(const std::string& iFileName)
 {
   m_FileName = iFileName;
 }
@@ -83,7 +83,7 @@ SetFileName( const std::string& iFileName)
  */
 void
 vtkRenderWindowMovieRecorder::
-SetRenderingWindow( vtkRenderWindow* iRenderWindow)
+SetRenderingWindow(vtkRenderWindow* iRenderWindow)
 {
   m_RenderWindow = iRenderWindow;
   m_ImageFilter->SetInput(m_RenderWindow);
@@ -100,7 +100,7 @@ StartCapture()
 {
   m_ImageWriter->SetFileName(m_FileName.c_str());
 
-  if( m_ImageWriter->GetInput() )
+  if (m_ImageWriter->GetInput())
     {
     m_ImageWriter->Start();
     m_ControlIfVideoStarted = true;
@@ -114,7 +114,7 @@ void
 vtkRenderWindowMovieRecorder::
 EndCapture()
 {
-  if( m_ControlIfVideoStarted )
+  if (m_ControlIfVideoStarted)
     {
     m_ImageWriter->End();
     m_ControlIfVideoStarted = false;
@@ -137,14 +137,14 @@ TakeSnapshot()
 
 void
 vtkRenderWindowMovieRecorder::
-SetVideoQuality( int value)
+SetVideoQuality(int value)
 {
   m_VideoQuality = value;
 }
 
 void
 vtkRenderWindowMovieRecorder::
-SetFrameRate( int value)
+SetFrameRate(int value)
 {
   m_FrameRate = value;
 }

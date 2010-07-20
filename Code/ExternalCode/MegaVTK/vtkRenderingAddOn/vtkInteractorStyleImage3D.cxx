@@ -83,7 +83,7 @@ vtkStandardNewMacro (vtkInteractorStyleImage3D);
 //----------------------------------------------------------------------------
 vtkInteractorStyleImage3D::
 vtkInteractorStyleImage3D()
-{
+  {
   m_EnablePickMode = false;
   m_EnableZoomMode = false;
   m_EnablePanMode = false;
@@ -92,13 +92,13 @@ vtkInteractorStyleImage3D()
   this->RightButtonInteraction  = 0;
   this->MiddleButtonInteraction = 0;
   this->WheelButtonInteraction  = 0;
-}
+  }
 
 //----------------------------------------------------------------------------
 vtkInteractorStyleImage3D::
 ~vtkInteractorStyleImage3D()
-{
-}
+  {
+  }
 
 //----------------------------------------------------------------------------
 void
@@ -107,9 +107,9 @@ OnMouseMove()
 {
   switch (this->State)
     {
-      case VTKIS_PICK3D:
-        HighlightCurrentActor();
-        break;
+    case VTKIS_PICK3D:
+      HighlightCurrentActor();
+      break;
     }
 
   this->Superclass::OnMouseMove();
@@ -121,26 +121,25 @@ vtkInteractorStyleImage3D::
 OnLeftButtonDown()
 {
   // if object is picked, send the event
-  if( m_EnablePickMode )
+  if (m_EnablePickMode)
     {
     //if no actor selected = change state
-    if (this->PropPicked == 0)
-      this->StopState();
+    if (this->PropPicked == 0) this->StopState();
     }
 
-  if( m_EnableZoomMode )
+  if (m_EnableZoomMode)
     {
     this->Superclass::OnRightButtonDown();
     return;
     }
 
-  if( m_EnablePanMode )
+  if (m_EnablePanMode)
     {
     this->Superclass::OnMiddleButtonDown();
     return;
     }
 
-  if(this->State == VTKIS_PICK3D)
+  if (this->State == VTKIS_PICK3D)
     {
     this->SetCurrentProp();
     this->InvokeEvent(vtkViewImage3DCommand::MeshPickingEvent);
@@ -157,19 +156,19 @@ vtkInteractorStyleImage3D::
 OnLeftButtonUp()
 {
   // if object is picked, send the event
-  if( m_EnablePickMode )
+  if (m_EnablePickMode)
     {
     //if no actor selected = change state
-    this->StartState( VTKIS_PICK3D);
+    this->StartState(VTKIS_PICK3D);
     }
 
-  if( m_EnableZoomMode )
+  if (m_EnableZoomMode)
     {
     this->Superclass::OnRightButtonUp();
     return;
     }
 
-  if( m_EnablePanMode )
+  if (m_EnablePanMode)
     {
     this->Superclass::OnMiddleButtonUp();
     return;
@@ -185,12 +184,12 @@ vtkInteractorStyleImage3D::
 OnRightButtonDown()
 {
   // if object is picked, send the event
-  if( m_EnablePickMode )
+  if (m_EnablePickMode)
     {
     this->StopState();
     }
 
-  if( m_EnablePanMode )
+  if (m_EnablePanMode)
     {
     this->Superclass::OnMiddleButtonDown();
     return;
@@ -206,13 +205,13 @@ vtkInteractorStyleImage3D::
 OnRightButtonUp()
 {
   // if object is picked, send the event
-  if( m_EnablePickMode )
+  if (m_EnablePickMode)
     {
     //if no actor selected = change state
-    this->StartState( VTKIS_PICK3D);
+    this->StartState(VTKIS_PICK3D);
     }
 
-  if( m_EnablePanMode )
+  if (m_EnablePanMode)
     {
     this->Superclass::OnMiddleButtonUp();
     return;
@@ -228,12 +227,12 @@ vtkInteractorStyleImage3D::
 OnMiddleButtonDown()
 {
   // if object is picked, send the event
-  if( m_EnablePickMode )
+  if (m_EnablePickMode)
     {
     this->StopState();
     }
 
-  if( m_EnableZoomMode )
+  if (m_EnableZoomMode)
     {
     this->Superclass::OnRightButtonDown();
     return;
@@ -249,13 +248,13 @@ vtkInteractorStyleImage3D::
 OnMiddleButtonUp()
 {
   // if object is picked, send the event
-  if( m_EnablePickMode )
+  if (m_EnablePickMode)
     {
     //if no actor selected = change state
-    this->StartState( VTKIS_PICK3D);
+    this->StartState(VTKIS_PICK3D);
     }
 
-  if( m_EnableZoomMode )
+  if (m_EnableZoomMode)
     {
     this->Superclass::OnRightButtonUp();
     return;
@@ -268,7 +267,7 @@ OnMiddleButtonUp()
 //----------------------------------------------------------------------------
 void
 vtkInteractorStyleImage3D::
-SetLeftButtonInteraction( InteractionTypeIds interactionType)
+SetLeftButtonInteraction(InteractionTypeIds interactionType)
 {
   LeftButtonInteraction = interactionType;
 }
@@ -277,7 +276,7 @@ SetLeftButtonInteraction( InteractionTypeIds interactionType)
 //----------------------------------------------------------------------------
 void
 vtkInteractorStyleImage3D::
-SetRightButtonInteraction( InteractionTypeIds interactionType)
+SetRightButtonInteraction(InteractionTypeIds interactionType)
 {
   RightButtonInteraction = interactionType;
 }
@@ -286,7 +285,7 @@ SetRightButtonInteraction( InteractionTypeIds interactionType)
 //----------------------------------------------------------------------------
 void
 vtkInteractorStyleImage3D::
-SetMiddleButtonInteraction( InteractionTypeIds interactionType)
+SetMiddleButtonInteraction(InteractionTypeIds interactionType)
 {
   MiddleButtonInteraction = interactionType;
 }
@@ -295,7 +294,7 @@ SetMiddleButtonInteraction( InteractionTypeIds interactionType)
 //----------------------------------------------------------------------------
 void
 vtkInteractorStyleImage3D::
-SetWheelButtonInteraction( InteractionTypeIds interactionType)
+SetWheelButtonInteraction(InteractionTypeIds interactionType)
 {
   WheelButtonInteraction = interactionType;
 }
@@ -365,41 +364,41 @@ vtkInteractorStyleImage3D::
 HighlightCurrentActor()
 {
   vtkRenderWindowInteractor *rwi = this->Interactor;
-  if(this->CurrentRenderer!=0)
+  if (this->CurrentRenderer != 0)
     {
-      vtkAssemblyPath *path = NULL;
-      int *eventPos = rwi->GetEventPosition();
-      this->FindPokedRenderer(eventPos[0], eventPos[1]);
-      rwi->StartPickCallback();
-      vtkAbstractPropPicker *picker =
-        vtkAbstractPropPicker::SafeDownCast(rwi->GetPicker());
-      if ( picker != NULL )
+    vtkAssemblyPath *path = NULL;
+    int *            eventPos = rwi->GetEventPosition();
+    this->FindPokedRenderer(eventPos[0], eventPos[1]);
+    rwi->StartPickCallback();
+    vtkAbstractPropPicker *picker =
+      vtkAbstractPropPicker::SafeDownCast(rwi->GetPicker());
+    if (picker != NULL)
+      {
+      picker->Pick(eventPos[0], eventPos[1],
+                   0.0, this->CurrentRenderer);
+      path = picker->GetPath();
+      }
+    if (path == NULL)
+      {
+      this->HighlightProp(NULL);
+      this->PropPicked = 0;
+      }
+    else
+      {
+      // Check dimensionality
+      double* bounds = path->GetFirstNode()->GetViewProp()->GetBounds();
+      if (bounds[0] != bounds[1] && bounds[2] != bounds[3] && bounds[4] != bounds[5])
         {
-        picker->Pick(eventPos[0], eventPos[1],
-                     0.0, this->CurrentRenderer);
-        path = picker->GetPath();
+        this->HighlightProp(path->GetFirstNode()->GetViewProp());
+        this->PropPicked = 1;
         }
-      if ( path == NULL )
+      else
         {
         this->HighlightProp(NULL);
         this->PropPicked = 0;
         }
-      else
-        {
-        // Check dimensionality
-        double* bounds = path->GetFirstNode()->GetViewProp()->GetBounds();
-        if( bounds[0] != bounds[1] && bounds[2] != bounds[3] && bounds[4] != bounds[5])
-          {
-          this->HighlightProp(path->GetFirstNode()->GetViewProp());
-          this->PropPicked = 1;
-          }
-        else
-          {
-          this->HighlightProp(NULL);
-          this->PropPicked = 0;
-          }
-        }
-      rwi->EndPickCallback();
+      }
+    rwi->EndPickCallback();
     }
 }
 

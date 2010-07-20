@@ -52,36 +52,36 @@
 #include <map>
 
 class QGOIO_EXPORT GoDBContourRow : public GoDBTraceRow
-{
+  {
 public:
   GoDBContourRow();
 
   ~GoDBContourRow()
-    {}
-  
-  GoDBContourRow(vtkMySQLDatabase* DatabaseConnector,vtkPolyData* TraceVisu,
-    GoDBCoordinateRow Min, GoDBCoordinateRow Max,unsigned int ImgSessionID,
-     GoFigureMeshAttributes* iMeshAttributes = 0);
+        {}
+
+  GoDBContourRow(vtkMySQLDatabase * DatabaseConnector, vtkPolyData * TraceVisu,
+                 GoDBCoordinateRow Min, GoDBCoordinateRow Max, unsigned int ImgSessionID,
+                 GoFigureMeshAttributes * iMeshAttributes = 0);
   GoDBContourRow(unsigned int ImagingSessionID);
   /**\brief fill the contour map with the values gotten from the visualization*/
- /* GoDBContourRow(vtkMySQLDatabase* DatabaseConnector,GoDBCoordinateRow Min, 
-    GoDBCoordinateRow Max,unsigned int ImgSessionID,vtkPolyData* TraceVisu);*/
+  /* GoDBContourRow(vtkMySQLDatabase* DatabaseConnector,GoDBCoordinateRow Min,
+     GoDBCoordinateRow Max,unsigned int ImgSessionID,vtkPolyData* TraceVisu);*/
 
   /**\brief return the ContourID of the Contour with the same bounding box
   already registered in the DB or -1 if not yet created*/
- //int DoesThisBoundingBoxContourExist(vtkMySQLDatabase* DatabaseConnector);
+  //int DoesThisBoundingBoxContourExist(vtkMySQLDatabase* DatabaseConnector);
 
- /**\brief save the contour in the database and return the ID of the new 
- created contour*/
- int SaveInDB(vtkMySQLDatabase* DatabaseConnector);
+  /**\brief save the contour in the database and return the ID of the new
+  created contour*/
+  int SaveInDB(vtkMySQLDatabase* DatabaseConnector);
 
-  void SetCollectionID (int iCollectionID);
+  void SetCollectionID(int iCollectionID);
   void ReInitializeMapAfterCast();
-  void SetTheDataFromTheVisu(vtkMySQLDatabase* DatabaseConnector,vtkPolyData* TraceVisu,
-    GoDBCoordinateRow Min, GoDBCoordinateRow Max,GoFigureMeshAttributes* iMeshAttributes = 0);
+  void SetTheDataFromTheVisu(vtkMySQLDatabase* DatabaseConnector, vtkPolyData* TraceVisu,
+                             GoDBCoordinateRow Min, GoDBCoordinateRow Max, GoFigureMeshAttributes* iMeshAttributes = 0);
 
 protected:
   virtual void InitializeMap();
 
- };
+  };
 #endif

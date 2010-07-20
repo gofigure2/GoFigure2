@@ -67,7 +67,7 @@
 //--------------------------------------------------------------------------
 QGoSeedsSegmentation::
 QGoSeedsSegmentation()
-{
+  {
   m_OriginImage    = vtkSmartPointer<vtkImageData>::New();
 
   m_OutputPolyData = vtkSmartPointer<vtkPolyData>::New();
@@ -82,24 +82,24 @@ QGoSeedsSegmentation()
 
   m_CurvatureWeight = 0;
 
-  m_OriginImageInformations = vtkSmartPointer<vtkViewImage2D> ::New();
-}
+  m_OriginImageInformations = vtkSmartPointer<vtkViewImage2D>::New();
+  }
 //--------------------------------------------------------------------------
 QGoSeedsSegmentation::
 ~QGoSeedsSegmentation()
-{
-}
+  {
+  }
 //--------------------------------------------------------------------------
 void
 QGoSeedsSegmentation::
-setInputVolume( vtkImageData* iInputVolume )
+setInputVolume(vtkImageData* iInputVolume)
 {
   m_OriginImage = iInputVolume;
 }
 //--------------------------------------------------------------------------
 void
 QGoSeedsSegmentation::
-setSeedsPosition( double iSeedsPosition[3] )
+setSeedsPosition(double iSeedsPosition[3])
 {
   m_SeedsPosition[0] = iSeedsPosition[0];
   m_SeedsPosition[1] = iSeedsPosition[1];
@@ -108,21 +108,21 @@ setSeedsPosition( double iSeedsPosition[3] )
 //--------------------------------------------------------------------------
 void
 QGoSeedsSegmentation::
-setRadius( double iRadius )
+setRadius(double iRadius)
 {
   m_Radius = iRadius;
 }
 //--------------------------------------------------------------------------
 void
 QGoSeedsSegmentation::
-setNumberOfIterations( int iNumberOfIterations )
+setNumberOfIterations(int iNumberOfIterations)
 {
   m_NumberOfIterations = iNumberOfIterations;
 }
 //--------------------------------------------------------------------------
 void
 QGoSeedsSegmentation::
-setCurvatureWeight( int iCurvatureWeight )
+setCurvatureWeight(int iCurvatureWeight)
 {
   m_CurvatureWeight = iCurvatureWeight;
 }
@@ -130,7 +130,7 @@ setCurvatureWeight( int iCurvatureWeight )
 //--------------------------------------------------------------------------
 void
 QGoSeedsSegmentation::
-setOriginImageInformation( vtkViewImage2D* iOriginImageInformation )
+setOriginImageInformation(vtkViewImage2D* iOriginImageInformation)
 {
   m_OriginImageInformations = iOriginImageInformation;
 }
@@ -147,27 +147,30 @@ QGoSeedsSegmentation::
 LevelSetSegmentation2D(int iDirection)
 {
   // Not implemented yet
-  (void)iDirection;
+  (void) iDirection;
 
   // To be adapted depending on choosen orientation
   // Matrices for axial, coronal, sagittal view orientations
-  static double elements[3][16] = {{
-         1, 0, 0, 0,
-         0, 1, 0, 0,
-         0, 0, 1, 0,
-         0, 0, 0, 1 },{
-         1, 0, 0, 0,
-         0, 0, 1, 0,
-         0,-1, 0, 0,
-         0, 0, 0, 1 },{
-         0, 0,-1, 0,
-         1, 0, 0, 0,
-         0,-1, 0, 0,
-         0, 0, 0, 1 }};
+  static double elements[3][16] = { {
+                                      1, 0, 0, 0,
+                                      0, 1, 0, 0,
+                                      0, 0, 1, 0,
+                                      0, 0, 0, 1
+                                      }, {
+                                      1, 0, 0, 0,
+                                      0, 0, 1, 0,
+                                      0, -1, 0, 0,
+                                      0, 0, 0, 1
+                                      }, {
+                                      0, 0, -1, 0,
+                                      1, 0, 0, 0,
+                                      0, -1, 0, 0,
+                                      0, 0, 0, 1
+                                      }};
 
   // Set the slice orientation
   vtkSmartPointer<vtkMatrix4x4> resliceAxes =
-      vtkSmartPointer<vtkMatrix4x4>::New();
+    vtkSmartPointer<vtkMatrix4x4>::New();
   resliceAxes->DeepCopy(elements[0]);
   // Set the point through which to slice
   resliceAxes->SetElement(0, 3, m_SeedsPosition[0]);
@@ -175,69 +178,69 @@ LevelSetSegmentation2D(int iDirection)
   resliceAxes->SetElement(2, 3, m_SeedsPosition[2]);
 
   vtkSmartPointer<vtkImageReslice> reslicer =
-      vtkSmartPointer<vtkImageReslice>::New();
+    vtkSmartPointer<vtkImageReslice>::New();
   reslicer->SetOutputDimensionality(2);
   reslicer->SetInterpolationModeToLinear();
-  reslicer->SetInput( m_OriginImage );
+  reslicer->SetInput(m_OriginImage);
   reslicer->SetResliceAxes(resliceAxes);
   reslicer->Update();
 
   //Export VTK image to ITK
   vtkSmartPointer<vtkImageExport> movingExporter =
     vtkSmartPointer<vtkImageExport>::New();
-  movingExporter->SetInput( reslicer->GetOutput() );
+  movingExporter->SetInput(reslicer->GetOutput());
   movingExporter->Update();
 
   const unsigned int Dimension = 2;
 
   // ImageType
-  typedef itk::Image< unsigned char, Dimension > ImageType;
+  typedef itk::Image<unsigned char, Dimension> ImageType;
   // Import VTK Image to ITK
   typedef itk::VTKImageImport<ImageType> ImageImportType;
-  typedef ImageImportType::Pointer ImageImportPointer;
+  typedef ImageImportType::Pointer       ImageImportPointer;
   ImageImportPointer movingImporter = ImageImportType::New();
 
-  ConnectPipelines< vtkImageExport, ImageImportPointer >( 
-    movingExporter, 
-    movingImporter );
+  ConnectPipelines<vtkImageExport, ImageImportPointer>(
+    movingExporter,
+    movingImporter);
   // Apply LevelSet segmentation filter
-  typedef itk::Image< unsigned char, Dimension > FeatureImageType;
+  typedef itk::Image<unsigned char, Dimension> FeatureImageType;
 
-  typedef itk::ChanAndVeseSegmentationFilter< FeatureImageType >
-    SegmentationFilterType;
+  typedef itk::ChanAndVeseSegmentationFilter<FeatureImageType>
+  SegmentationFilterType;
 
   FeatureImageType::PointType pt;
 
   SegmentationFilterType::Pointer filter = SegmentationFilterType::New();
-  filter->SetFeatureImage( movingImporter->GetOutput() );
-  filter->SetPreprocess( 1 );
+  filter->SetFeatureImage(movingImporter->GetOutput());
+  filter->SetPreprocess(1);
 
   // everything is in world coordinates
   // need to add newOrigin since origin moves when we extract slice
   // everything is in world coordinates
 
   double* newOrigin = reslicer->GetOutput()->GetOrigin();
-  pt[0] = m_SeedsPosition[0]+newOrigin[0];
-  pt[1] = m_SeedsPosition[1]+newOrigin[1];
-  filter->SetCenter( pt );
+  pt[0] = m_SeedsPosition[0] + newOrigin[0];
+  pt[1] = m_SeedsPosition[1] + newOrigin[1];
+  filter->SetCenter(pt);
 
-  filter->SetRadius( m_Radius );
-  filter->SetNumberOfIterations( m_NumberOfIterations );
-  filter->SetCurvatureWeight( m_CurvatureWeight );
+  filter->SetRadius(m_Radius);
+  filter->SetNumberOfIterations(m_NumberOfIterations);
+  filter->SetCurvatureWeight(m_CurvatureWeight);
   filter->Update();
 
   // create iso-contours
   vtkSmartPointer<vtkMarchingSquares> contours =
     vtkSmartPointer<vtkMarchingSquares>::New();
-  contours->SetInput( filter->GetOutput() );
-  contours->GenerateValues ( 1, 0, 0 );
+  contours->SetInput(filter->GetOutput());
+  contours->GenerateValues (1, 0, 0);
 
   // Create reorganize contours
   vtkSmartPointer<vtkStripper> stripper =
     vtkSmartPointer<vtkStripper>::New();
-  stripper->SetInput( contours->GetOutput() );
+  stripper->SetInput(contours->GetOutput());
   //Is it useful?? Which number is the best suited?
-  stripper->SetMaximumLength( 999 );
+  stripper->SetMaximumLength(999);
   stripper->Update();
 
   // Reorder points
@@ -247,49 +250,49 @@ LevelSetSegmentation2D(int iDirection)
   // *pts = pointer to each point
 
   vtkIdType *pts = NULL;
-  vtkIdType npts = 0;
-  stripper->GetOutput()->GetLines()->GetNextCell(npts,pts);
+  vtkIdType  npts = 0;
+  stripper->GetOutput()->GetLines()->GetNextCell(npts, pts);
   vtkSmartPointer<vtkPoints> points =
     vtkSmartPointer<vtkPoints>::New();
 
   vtkCellArray *lines       = vtkCellArray::New();
-  vtkIdType    *lineIndices = new vtkIdType[static_cast<int>(npts+1)];
+  vtkIdType *   lineIndices = new vtkIdType[static_cast<int>(npts + 1)];
 
-  for ( int k = 0; k< static_cast<int>( npts ); k++ )
+  for (int k = 0; k < static_cast<int>(npts); k++)
     {
     points->InsertPoint(k, stripper->GetOutput()->GetPoints()->GetPoint(pts[k]));
-    lineIndices[ k ] = k;
+    lineIndices[k] = k;
     }
 
-  lineIndices[ static_cast<int>(npts) ] = 0;
-  lines->InsertNextCell( npts + 1, lineIndices);
-  delete [] lineIndices;
+  lineIndices[static_cast<int>(npts)] = 0;
+  lines->InsertNextCell(npts + 1, lineIndices);
+  delete[] lineIndices;
 
   vtkSmartPointer<vtkPolyData> testPolyD =
     vtkSmartPointer<vtkPolyData>::New();
-  testPolyD->SetPoints( points );
-  testPolyD->SetLines( lines );
+  testPolyD->SetPoints(points);
+  testPolyD->SetLines(lines);
 
   lines->Delete();
 
   //Decimation (has to be after points reorganization)
   vtkSmartPointer<vtkPolylineDecimation> decimator =
     vtkSmartPointer<vtkPolylineDecimation>::New();
-  decimator->SetInput( testPolyD );
+  decimator->SetInput(testPolyD);
 
   /// \todo instead os setting it to 0.9, compute it to make 10 to 20 control points
-  decimator->SetTargetReduction( 0.9 );
+  decimator->SetTargetReduction(0.9);
   decimator->Update();
 
   // Translate to real location (i.e. see_pos[])
   vtkSmartPointer<vtkTransform> t =
     vtkSmartPointer<vtkTransform>::New();
-  t->Translate( m_SeedsPosition[0], m_SeedsPosition[1], m_SeedsPosition[2] );
+  t->Translate(m_SeedsPosition[0], m_SeedsPosition[1], m_SeedsPosition[2]);
 
   vtkSmartPointer<vtkTransformPolyDataFilter> tf =
     vtkSmartPointer<vtkTransformPolyDataFilter>::New();
-  tf->SetTransform( t );
-  tf->SetInput( decimator->GetOutput() );
+  tf->SetTransform(t);
+  tf->SetInput(decimator->GetOutput());
 
   // Update required here
   tf->Update();
@@ -304,51 +307,51 @@ LevelSetSegmentation3D()
 {
 //Export VTK image to ITK
   vtkSmartPointer<vtkImageExport> movingExporter =
-      vtkSmartPointer<vtkImageExport>::New();
+    vtkSmartPointer<vtkImageExport>::New();
 
-  movingExporter->SetInput( m_OriginImage );
+  movingExporter->SetInput(m_OriginImage);
 
   const unsigned int Dimension = 3;
 
   // ImageType
-  typedef itk::Image< unsigned char, Dimension > ImageType;
+  typedef itk::Image<unsigned char, Dimension> ImageType;
   // Import VTK Image to ITK
   typedef itk::VTKImageImport<ImageType> ImageImportType;
   ImageImportType::Pointer movingImporter = ImageImportType::New();
 
-  ConnectPipelines< vtkImageExport, ImageImportType::Pointer >( movingExporter, movingImporter );
+  ConnectPipelines<vtkImageExport, ImageImportType::Pointer>(movingExporter, movingImporter);
   // Apply LevelSet segmentation filter
-  typedef itk::Image< unsigned char, Dimension > FeatureImageType;
+  typedef itk::Image<unsigned char, Dimension> FeatureImageType;
 
-  typedef itk::ChanAndVeseSegmentationFilter< FeatureImageType >
-      SegmentationFilterType;
+  typedef itk::ChanAndVeseSegmentationFilter<FeatureImageType>
+  SegmentationFilterType;
 
   FeatureImageType::PointType pt;
 
   SegmentationFilterType::Pointer filter = SegmentationFilterType::New();
-  filter->SetFeatureImage( movingImporter->GetOutput() );
-  filter->SetPreprocess( 1 );
+  filter->SetFeatureImage(movingImporter->GetOutput());
+  filter->SetPreprocess(1);
 
   // everything is in world coordinates
   pt[0] = m_SeedsPosition[0];
   pt[1] = m_SeedsPosition[1];
   pt[2] = m_SeedsPosition[2];
-  filter->SetCenter( pt );
+  filter->SetCenter(pt);
 
-  filter->SetRadius( m_Radius );
-  filter->SetNumberOfIterations( m_NumberOfIterations );
-  filter->SetCurvatureWeight( m_CurvatureWeight );
+  filter->SetRadius(m_Radius);
+  filter->SetNumberOfIterations(m_NumberOfIterations);
+  filter->SetCurvatureWeight(m_CurvatureWeight);
   filter->Update();
 
   // create iso-contours
   vtkSmartPointer<vtkMarchingCubes> contours =
-      vtkSmartPointer<vtkMarchingCubes>::New();
-  contours->SetInput( filter->GetOutput() );
-  contours->GenerateValues ( 1, 0, 0 );
-  contours->SetComputeGradients( 0 );
-  contours->SetComputeNormals( 0 );
-  contours->SetComputeScalars( 0 );
-  contours->SetNumberOfContours( 1 );
+    vtkSmartPointer<vtkMarchingCubes>::New();
+  contours->SetInput(filter->GetOutput());
+  contours->GenerateValues (1, 0, 0);
+  contours->SetComputeGradients(0);
+  contours->SetComputeNormals(0);
+  contours->SetComputeScalars(0);
+  contours->SetNumberOfContours(1);
 
   //Update required here!!
   contours->Update();
@@ -357,12 +360,12 @@ LevelSetSegmentation3D()
 }
 
 //--------------------------------------------------------------------------
-std::vector< vtkSmartPointer<vtkPolyData> >
+std::vector<vtkSmartPointer<vtkPolyData> >
 QGoSeedsSegmentation::
 SphereContoursSegmentation()
 {
   int* center_id = m_OriginImageInformations
-      ->GetImageCoordinatesFromWorldCoordinates( m_SeedsPosition );
+                   ->GetImageCoordinatesFromWorldCoordinates(m_SeedsPosition);
 
   double corner[3];
   corner[0] = m_SeedsPosition[0];
@@ -370,8 +373,8 @@ SphereContoursSegmentation()
   corner[2] = m_SeedsPosition[2] - m_Radius;
 
   int* corner_id = m_OriginImageInformations
-      ->GetImageCoordinatesFromWorldCoordinates( corner );
-  int zlength = 2 * std::abs( center_id[2] - corner_id[2] );
+                   ->GetImageCoordinatesFromWorldCoordinates(corner);
+  int zlength = 2 * std::abs(center_id[2] - corner_id[2]);
 
   int idx[3];
   idx[0] = corner_id[0];
@@ -380,23 +383,23 @@ SphereContoursSegmentation()
 
   double* seed_pos;
 
-  std::vector< vtkSmartPointer<vtkPolyData> >              circleContoursVector;
-  circleContoursVector.resize( zlength );
+  std::vector<vtkSmartPointer<vtkPolyData> > circleContoursVector;
+  circleContoursVector.resize(zlength);
 
   // numberOfPointsToRepresentCircle: 4 is enough since there is an interpolation
   // to create the circle after
 
   int numberOfPointsToRepresentCircle = 4;
 
-  for( int i = 0; i < zlength; i++, idx[2]++ )
+  for (int i = 0; i < zlength; i++, idx[2]++)
     {
     seed_pos = m_OriginImageInformations
-        ->GetWorldCoordinatesFromImageCoordinates( idx );
+               ->GetWorldCoordinatesFromImageCoordinates(idx);
 
     vtkSmartPointer<vtkPolyData> circle =
-        GenerateCircleFromGivenSphereAndGivenZ(
-            m_SeedsPosition, m_Radius, seed_pos[2],
-                numberOfPointsToRepresentCircle );
+      GenerateCircleFromGivenSphereAndGivenZ(
+        m_SeedsPosition, m_Radius, seed_pos[2],
+        numberOfPointsToRepresentCircle);
 
     // Store polyDatas in a vector then return it
     circleContoursVector[i] = circle;
@@ -408,39 +411,39 @@ SphereContoursSegmentation()
 //--------------------------------------------------------------------------
 vtkSmartPointer<vtkPolyData>
 QGoSeedsSegmentation::
-GenerateCircleFromGivenSphereAndGivenZ( double iC[3],
-  const double& iRadius, double iZ, const int& iN )
+GenerateCircleFromGivenSphereAndGivenZ(double iC[3],
+                                       const double& iRadius, double iZ, const int& iN)
 {
-  double res = ( iC[2] - iZ );
+  double res = (iC[2] - iZ);
   res *= res;
   res = iRadius * iRadius - res;
 
-  if( res < 0 )
+  if (res < 0)
     {
     return 0;
     }
   else
     {
     vtkSmartPointer<vtkPolyData> oCircle = vtkSmartPointer<vtkPolyData>::New();
-    vtkPoints    *points      = vtkPoints::New();
-    vtkCellArray *lines       = vtkCellArray::New();
-    vtkIdType    *lineIndices = new vtkIdType[iN+1];
+    vtkPoints *                  points      = vtkPoints::New();
+    vtkCellArray *               lines       = vtkCellArray::New();
+    vtkIdType *                  lineIndices = new vtkIdType[iN + 1];
 
     double theta = 0.;
-    double r = sqrt( res );
+    double r = sqrt(res);
 
-    for( int i = 0; i < iN; i++ )
+    for (int i = 0; i < iN; i++)
       {
-      theta = 2. * i * vtkMath::Pi() / static_cast< double >( iN );
-      points->InsertPoint( static_cast< vtkIdType>( i ),
-          iC[0] + r * cos( theta ), iC[1] + r * sin( theta ), iZ );
+      theta = 2. * i * vtkMath::Pi() / static_cast<double>(iN);
+      points->InsertPoint(static_cast<vtkIdType>(i),
+                          iC[0] + r * cos(theta), iC[1] + r * sin(theta), iZ);
       lineIndices[i] = static_cast<vtkIdType>(i);
       }
 
     lineIndices[iN] = 0;
-    lines->InsertNextCell(iN+1,lineIndices);
-    delete [] lineIndices;
-    oCircle->SetPoints( points );
+    lines->InsertNextCell(iN + 1, lineIndices);
+    delete[] lineIndices;
+    oCircle->SetPoints(points);
     oCircle->SetLines(lines);
 
     return oCircle;
@@ -451,16 +454,15 @@ vtkSmartPointer<vtkPolyData>
 QGoSeedsSegmentation::
 SphereVolumeSegmentation()
 {
-    // create sphere geometry
+  // create sphere geometry
   vtkSmartPointer<vtkSphereSource> sphere =
-      vtkSmartPointer<vtkSphereSource>::New();
-  sphere->SetRadius( m_Radius );
-  sphere->SetThetaResolution( 18 );
-  sphere->SetPhiResolution( 18 );
-  sphere->SetCenter( m_SeedsPosition );
+    vtkSmartPointer<vtkSphereSource>::New();
+  sphere->SetRadius(m_Radius);
+  sphere->SetThetaResolution(18);
+  sphere->SetPhiResolution(18);
+  sphere->SetCenter(m_SeedsPosition);
   sphere->Update();
-  sphere->GetOutput()->GetPointData()->SetNormals( NULL );
+  sphere->GetOutput()->GetPointData()->SetNormals(NULL);
 
   return sphere->GetOutput();
 }
-

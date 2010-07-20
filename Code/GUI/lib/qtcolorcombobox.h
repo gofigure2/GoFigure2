@@ -113,79 +113,78 @@
  */
 
 class QGOGUILIB_EXPORT QtColorComboBox : public QComboBox
-{
+  {
   Q_OBJECT
 public:
-    explicit QtColorComboBox(QWidget *parent = 0, const char *name = 0);
+  explicit QtColorComboBox(QWidget *parent = 0, const char *name = 0);
 
-    /** \brief insert a color at a given index*/
-    void insertColor(int index, const QColor &color, const QString &name);
+  /** \brief insert a color at a given index*/
+  void insertColor(int index, const QColor& color, const QString& name);
 
-    int colorCount() const;
+  int colorCount() const;
 
-    void setCurrentColor(const QColor &color);
-    QColor currentColor() const;
+  void setCurrentColor(const QColor& color);
+  QColor currentColor() const;
 
-    QColor color(int index) const;
+  QColor color(int index) const;
 
-    void setColorDialogEnabled(bool enabled = true,std::string TextToAdd = "More...");
-    bool isColorDialogEnabled() const;
+  void setColorDialogEnabled(bool enabled = true, std::string TextToAdd = "More...");
+  bool isColorDialogEnabled() const;
 
-    void setCreationCollection(bool enabled = true);
-    bool isCreationCollectionEnabled() const;
+  void setCreationCollection(bool enabled = true);
+  bool isCreationCollectionEnabled() const;
 
-    void setStandardColors();
+  void setStandardColors();
 
-    int FindItemText(std::string Text);
+  int FindItemText(std::string Text);
 
-    void IncrementTrackID();
+  void IncrementTrackID();
 
-    QSize sizeHint() const;
+  QSize sizeHint() const;
 
-    /** \brief return the name and the QColor of the current selected color*/
-    std::pair<std::string,QColor> GetCurrentColorData();
+  /** \brief return the name and the QColor of the current selected color*/
+  std::pair<std::string, QColor> GetCurrentColorData();
 
 signals:
-    void activated(const QColor &color);
-    void highlighted(const QColor &color);
-    /** \brief  signal emitted when a new color has been created by the user, in order
-    to be saved in the database*/
-    void NewColorToBeSaved(std::vector<std::string>);
-    /** \brief  signal emitted when a new collection has been created by the user, in order
-    to be saved in the database*/
-    void NewCollectionToBeSaved();
+  void activated(const QColor& color);
+  void highlighted(const QColor& color);
+  /** \brief  signal emitted when a new color has been created by the user, in order
+  to be saved in the database*/
+  void NewColorToBeSaved(std::vector<std::string>);
+  /** \brief  signal emitted when a new collection has been created by the user, in order
+  to be saved in the database*/
+  void NewCollectionToBeSaved();
 
 public slots:
-    /** \brief insert a color at the end, before the "more" if the ColorDialog
-    is enabled*/
-    void addColor(const QColor &iColor, const QString &iName)
-      { insertColor( colorCount(), iColor, iName ); }
-    /** \brief insert the existing colors with the data taken from the database,
-    containing the color names with the associated vector of rgba*/
-    void setExistingColors(
-       std::list<std::pair<std::string,std::vector<int> > > iDataColorsFromDB);
-    /** \brief delete the corresponding collectionID in the list displayed
-    by the colorcombobox*/
-    void DeleteCollectionID(unsigned int);
-    void DontAddTheColor();
+  /** \brief insert a color at the end, before the "more" if the ColorDialog
+  is enabled*/
+  void addColor(const QColor& iColor, const QString& iName)
+  { insertColor(colorCount(), iColor, iName); }
+  /** \brief insert the existing colors with the data taken from the database,
+  containing the color names with the associated vector of rgba*/
+  void setExistingColors(
+    std::list<std::pair<std::string, std::vector<int> > > iDataColorsFromDB);
+  /** \brief delete the corresponding collectionID in the list displayed
+  by the colorcombobox*/
+  void DeleteCollectionID(unsigned int);
+  void DontAddTheColor();
 
 private slots:
-    void emitHighlightedColor(int index);
-    void emitActivatedColor(int index);
+  void emitHighlightedColor(int index);
+  void emitActivatedColor(int index);
 
 private:
-    QColor lastActivated;
-    int numUserColors;
-    bool NewColorToBeAdded;
-    /** \brief list of pair containing all the datas for the existing colors from the database
-    with, for each color: a color name and a vector if rgba*/
-    std::list<std::pair<std::string,std::vector<int> > > m_DataFromDB;
-    bool colorDialogEnabled;   
-    bool creationCollection;
-    /** \brief convert the QColor and NameColor to string and emit the signal for the
-    new color to be saved in the database*/
-    void PassDataForNewColorToBeSaved(QColor Color,std::string NameColor);
-};
+  QColor lastActivated;
+  int    numUserColors;
+  bool   NewColorToBeAdded;
+  /** \brief list of pair containing all the datas for the existing colors from the database
+  with, for each color: a color name and a vector if rgba*/
+  std::list<std::pair<std::string, std::vector<int> > > m_DataFromDB;
+  bool                                                  colorDialogEnabled;
+  bool                                                  creationCollection;
+  /** \brief convert the QColor and NameColor to string and emit the signal for the
+  new color to be saved in the database*/
+  void PassDataForNewColorToBeSaved(QColor Color, std::string NameColor);
+  };
 
 #endif
-

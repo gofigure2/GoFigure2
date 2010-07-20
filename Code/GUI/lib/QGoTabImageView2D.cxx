@@ -43,7 +43,6 @@
 #include "QGoLUTDialog.h"
 #include "QGoNavigationDockWidget.h"
 
-
 #include "vtkLookupTable.h"
 #include "vtkEventQtSlotConnect.h"
 #include "vtkRenderWindow.h"
@@ -67,96 +66,96 @@
 
 //--------------------------------------------------------------------------
 QGoTabImageView2D::
-QGoTabImageView2D( QWidget* iParent )
- : QGoTabImageViewNDBase( iParent )
-{
+QGoTabImageView2D(QWidget* iParent)
+  : QGoTabImageViewNDBase(iParent)
+  {
   m_Image = 0;
-  setupUi( this );
+  setupUi(this);
 
   this->m_ContourRepresentation.push_back(
-    vtkSmartPointer< vtkOrientedGlyphContourRepresentation >::New() );
-  this->m_ContourRepresentation.back()->GetProperty()->SetColor( 0., 1., 1. );
-  this->m_ContourRepresentation.back()->GetLinesProperty()->SetColor( 1., 0., 1. );
-  this->m_ContourRepresentation.back()->GetActiveProperty()->SetColor( 1., 1., 0. );
+    vtkSmartPointer<vtkOrientedGlyphContourRepresentation>::New());
+  this->m_ContourRepresentation.back()->GetProperty()->SetColor(0., 1., 1.);
+  this->m_ContourRepresentation.back()->GetLinesProperty()->SetColor(1., 0., 1.);
+  this->m_ContourRepresentation.back()->GetActiveProperty()->SetColor(1., 1., 0.);
 
   this->m_ContourWidget.push_back(
-    vtkSmartPointer< vtkContourWidget >::New() );
-  this->m_ContourWidget.back()->SetPriority( 10.0 );
-  this->m_ContourWidget.back()->SetInteractor( m_ImageView->GetInteractor() );
+    vtkSmartPointer<vtkContourWidget>::New());
+  this->m_ContourWidget.back()->SetPriority(10.0);
+  this->m_ContourWidget.back()->SetInteractor(m_ImageView->GetInteractor());
   this->m_ContourWidget.back()->Off();
 
-  m_NavigationDockWidget = new QGoNavigationDockWidget( this, 2 );
-  m_NavigationDockWidget->resize( 120, 300 );
+  m_NavigationDockWidget = new QGoNavigationDockWidget(this, 2);
+  m_NavigationDockWidget->resize(120, 300);
 
   this->m_DockWidgetList.push_front(
-      std::pair< QGoDockWidgetStatus*, QDockWidget* >(
-    new QGoDockWidgetStatus( m_NavigationDockWidget, Qt::LeftDockWidgetArea, true, true ),
-    m_NavigationDockWidget ) );
+    std::pair<QGoDockWidgetStatus*, QDockWidget*>(
+      new QGoDockWidgetStatus(m_NavigationDockWidget, Qt::LeftDockWidgetArea, true, true),
+      m_NavigationDockWidget));
 
-  QAction* LookupTableAction = new QAction( tr( "Lookup Table" ), this );
-  LookupTableAction->setStatusTip( tr(" Change the associated lookup table" ) );
+  QAction* LookupTableAction = new QAction(tr("Lookup Table"), this);
+  LookupTableAction->setStatusTip(tr(" Change the associated lookup table"));
 
   QIcon luticon;
-  luticon.addPixmap( QPixmap(QString::fromUtf8(":/fig/LookupTable.png")),
-    QIcon::Normal, QIcon::Off );
-  LookupTableAction->setIcon( luticon );
+  luticon.addPixmap(QPixmap(QString::fromUtf8(":/fig/LookupTable.png")),
+                    QIcon::Normal, QIcon::Off);
+  LookupTableAction->setIcon(luticon);
 
   // Here write the connection
-  QObject::connect( LookupTableAction, SIGNAL( triggered() ),
-    this, SLOT( ChangeLookupTable() ) );
+  QObject::connect(LookupTableAction, SIGNAL(triggered()),
+                   this, SLOT(ChangeLookupTable()));
 
-  this->m_ViewActions.push_back( LookupTableAction );
+  this->m_ViewActions.push_back(LookupTableAction);
 
-  QAction* ScalarBarAction = new QAction( tr( "Display Scalar Bar" ), this );
-  ScalarBarAction->setCheckable( true );
+  QAction* ScalarBarAction = new QAction(tr("Display Scalar Bar"), this);
+  ScalarBarAction->setCheckable(true);
 
   QIcon scalarbaricon;
-  scalarbaricon.addPixmap( QPixmap(QString::fromUtf8(":/fig/scalarbar.png")),
-    QIcon::Normal, QIcon::Off );
-  ScalarBarAction->setIcon( scalarbaricon );
+  scalarbaricon.addPixmap(QPixmap(QString::fromUtf8(":/fig/scalarbar.png")),
+                          QIcon::Normal, QIcon::Off);
+  ScalarBarAction->setIcon(scalarbaricon);
 
-  this->m_ViewActions.push_back( ScalarBarAction );
+  this->m_ViewActions.push_back(ScalarBarAction);
 
-  QObject::connect( ScalarBarAction, SIGNAL( toggled( bool ) ),
-    this, SLOT( ShowScalarBar( bool ) ) );
+  QObject::connect(ScalarBarAction, SIGNAL(toggled(bool)),
+                   this, SLOT(ShowScalarBar(bool)));
 
   QPixmap Pix(16, 16);
   Pix.fill(Qt::black);
-  m_BackgroundColorAction = new QAction(Pix, tr("Set Background Color"), this );
-  this->m_ViewActions.push_back( m_BackgroundColorAction );
+  m_BackgroundColorAction = new QAction(Pix, tr("Set Background Color"), this);
+  this->m_ViewActions.push_back(m_BackgroundColorAction);
 
-  QObject::connect( m_BackgroundColorAction, SIGNAL( triggered() ),
-    this, SLOT( ChangeBackgroundColor() ) );
+  QObject::connect(m_BackgroundColorAction, SIGNAL(triggered()),
+                   this, SLOT(ChangeBackgroundColor()));
 
-  QObject::connect( m_NavigationDockWidget, SIGNAL( ShowAllChannelsChanged( bool ) ),
-    this, SLOT( ShowAllChannels( bool ) ) );
+  QObject::connect(m_NavigationDockWidget, SIGNAL(ShowAllChannelsChanged(bool)),
+                   this, SLOT(ShowAllChannels(bool)));
 
-  QObject::connect( m_NavigationDockWidget, SIGNAL( ShowOneChannelChanged( int ) ),
-    this, SLOT( ShowOneChannel( int ) ) );
+  QObject::connect(m_NavigationDockWidget, SIGNAL(ShowOneChannelChanged(int)),
+                   this, SLOT(ShowOneChannel(int)));
 
-  QAction* separator2 = new QAction( this );
-  separator2->setSeparator( true );
-  this->m_ViewActions.push_back( separator2 );
+  QAction* separator2 = new QAction(this);
+  separator2->setSeparator(true);
+  this->m_ViewActions.push_back(separator2);
 
-  this->m_ViewActions.push_back( m_NavigationDockWidget->toggleViewAction() );
+  this->m_ViewActions.push_back(m_NavigationDockWidget->toggleViewAction());
 
   CreateModeActions();
 
   ReadSettings();
-}
+  }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 QGoTabImageView2D::
 ~QGoTabImageView2D()
-{
-}
+  {
+  }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 GoFigure::TabDimensionType
 QGoTabImageView2D::
-GetTabDimensionType( ) const
+GetTabDimensionType() const
 {
   return GoFigure::TWO_D;
 }
@@ -165,18 +164,18 @@ GetTabDimensionType( ) const
 //--------------------------------------------------------------------------
 void
 QGoTabImageView2D::
-setupUi( QWidget* iParent )
+setupUi(QWidget* iParent)
 {
-  if(iParent->objectName().isEmpty())
+  if (iParent->objectName().isEmpty())
     {
     iParent->resize(800, 800);
     }
 
-  m_ImageView = new QGoImageView2D( this );
-  m_ImageView->SetBackgroundColor( m_BackgroundColor );
+  m_ImageView = new QGoImageView2D(this);
+  m_ImageView->SetBackgroundColor(m_BackgroundColor);
 
-  this->m_LayOut = new QHBoxLayout( iParent );
-  this->m_LayOut->addWidget( m_ImageView  );
+  this->m_LayOut = new QHBoxLayout(iParent);
+  this->m_LayOut->addWidget(m_ImageView);
 
   retranslateUi(iParent);
 
@@ -189,7 +188,7 @@ void
 QGoTabImageView2D::
 retranslateUi(QWidget *iParent)
 {
-  iParent->setWindowTitle( tr( "QGoTabImageView2D" ) );
+  iParent->setWindowTitle(tr("QGoTabImageView2D"));
   Q_UNUSED(iParent);
 }
 //--------------------------------------------------------------------------
@@ -197,7 +196,7 @@ retranslateUi(QWidget *iParent)
 //--------------------------------------------------------------------------
 void
 QGoTabImageView2D::
-Update( )
+Update()
 {
   m_ImageView->Update();
 }
@@ -208,18 +207,18 @@ void
 QGoTabImageView2D::
 SetBackgroundColorToImageViewer()
 {
-  m_ImageView->SetBackgroundColor( this->m_BackgroundColor );
+  m_ImageView->SetBackgroundColor(this->m_BackgroundColor);
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void
 QGoTabImageView2D::
-GetBackgroundColorFromImageViewer( )
+GetBackgroundColorFromImageViewer()
 {
   double r, g, b;
-  m_ImageView->GetBackgroundColor( r, g, b );
-  this->m_BackgroundColor.setRgbF( r, g, b );
+  m_ImageView->GetBackgroundColor(r, g, b);
+  this->m_BackgroundColor.setRgbF(r, g, b);
 }
 //--------------------------------------------------------------------------
 
@@ -229,9 +228,9 @@ QGoTabImageView2D::
 ChangeLookupTable()
 {
   vtkLookupTable* lut = vtkLookupTable::New();
-  lut->DeepCopy( QGoLUTDialog::GetLookupTable( this,
-    tr( "Choose one look-up table") ) );
-  m_ImageView->SetLookupTable( lut );
+  lut->DeepCopy(QGoLUTDialog::GetLookupTable(this,
+                                             tr("Choose one look-up table")));
+  m_ImageView->SetLookupTable(lut);
   lut->Delete();
 }
 //--------------------------------------------------------------------------
@@ -239,18 +238,18 @@ ChangeLookupTable()
 //--------------------------------------------------------------------------
 void
 QGoTabImageView2D::
-ShowScalarBar( const bool& iShow )
+ShowScalarBar(const bool& iShow)
 {
-  m_ImageView->ShowScalarBar( iShow );
+  m_ImageView->ShowScalarBar(iShow);
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-std::list< QWidget* >
+std::list<QWidget*>
 QGoTabImageView2D::
 AdditionalWidget()
 {
-  std::list< QWidget* > oList;
+  std::list<QWidget*> oList;
   return oList;
 }
 //--------------------------------------------------------------------------
@@ -276,64 +275,64 @@ ReadSettings()
 //--------------------------------------------------------------------------
 void
 QGoTabImageView2D::
-SetImageToImageViewer( vtkImageData* iImage )
+SetImageToImageViewer(vtkImageData* iImage)
 {
-  m_ImageView->SetImage( iImage );
+  m_ImageView->SetImage(iImage);
   m_ImageView->Update();
 
   vtkImageActorPointPlacer* point_placer = vtkImageActorPointPlacer::New();
-  point_placer->SetImageActor( m_ImageView->GetImageActor() );
+  point_placer->SetImageActor(m_ImageView->GetImageActor());
 
-  this->m_ContourRepresentation.back()->SetPointPlacer( point_placer );
+  this->m_ContourRepresentation.back()->SetPointPlacer(point_placer);
   point_placer->Delete();
 
   this->m_ContourWidget.back()->SetRepresentation(
-    this->m_ContourRepresentation.back() );
+    this->m_ContourRepresentation.back());
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 int*
 QGoTabImageView2D::
-GetImageCoordinatesFromWorldCoordinates( double iPos[3] )
+GetImageCoordinatesFromWorldCoordinates(double iPos[3])
 {
-  return m_ImageView->GetImageCoordinatesFromWorldCoordinates( iPos );
+  return m_ImageView->GetImageCoordinatesFromWorldCoordinates(iPos);
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 // std::vector< vtkQuadricLODActor* >
-std::vector< vtkActor* >
+std::vector<vtkActor*>
 QGoTabImageView2D::
-AddContour( const int& iId, vtkPolyData* dataset,
-  vtkProperty* iProperty )
+AddContour(const int& iId, vtkPolyData* dataset,
+           vtkProperty* iProperty)
 {
-  return m_ImageView->AddContour( iId, dataset, iProperty );
+  return m_ImageView->AddContour(iId, dataset, iProperty);
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void
 QGoTabImageView2D::
-RemoveActorFromViewer( const int& iId, vtkActor* iActor )
+RemoveActorFromViewer(const int& iId, vtkActor* iActor)
 {
-  m_ImageView->RemoveActor( iId, iActor );
+  m_ImageView->RemoveActor(iId, iActor);
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void
 QGoTabImageView2D::
-DisplayActorInViewer( const int& iId, vtkActor* iActor )
+DisplayActorInViewer(const int& iId, vtkActor* iActor)
 {
-  m_ImageView->AddActor( iId, iActor );
+  m_ImageView->AddActor(iId, iActor);
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void
 QGoTabImageView2D::
-SetSlice( int iDir, int* iIdx  )
+SetSlice(int iDir, int* iIdx)
 {
   (void) iDir;
   (void) iIdx;
@@ -346,16 +345,16 @@ QGoTabImageView2D::
 ChangeBackgroundColor()
 {
   double r, g, b;
-  m_ImageView->GetBackgroundColor( r, g, b );
-  m_BackgroundColor.setRgbF( r, g, b );
+  m_ImageView->GetBackgroundColor(r, g, b);
+  m_BackgroundColor.setRgbF(r, g, b);
 
-  QColor temp = QColorDialog::getColor( m_BackgroundColor,
-    this, tr( "Choose Background Color" ) );
+  QColor temp = QColorDialog::getColor(m_BackgroundColor,
+                                       this, tr("Choose Background Color"));
 
-  if( temp != m_BackgroundColor )
+  if (temp != m_BackgroundColor)
     {
     m_BackgroundColor = temp;
-    m_ImageView->SetBackgroundColor( m_BackgroundColor );
+    m_ImageView->SetBackgroundColor(m_BackgroundColor);
     QPixmap Pix(16, 16);
     Pix.fill(temp);
     m_BackgroundColorAction->setIcon(Pix);
@@ -366,52 +365,52 @@ ChangeBackgroundColor()
 //-------------------------------------------------------------------------
 void QGoTabImageView2D::CreateModeActions()
 {
-  QActionGroup* group = new QActionGroup( this );
+  QActionGroup* group = new QActionGroup(this);
 
-  QAction* DefaultAction = new QAction( tr( "Default" ), this );
-  DefaultAction->setCheckable( true );
+  QAction* DefaultAction = new QAction(tr("Default"), this);
+  DefaultAction->setCheckable(true);
   DefaultAction->setChecked(true);
 
   QIcon DefaultIcon;
-  DefaultIcon.addPixmap( QPixmap(QString::fromUtf8(":/fig/mouse-cursor.png")),
-    QIcon::Normal, QIcon::Off );
-  DefaultAction->setIcon( DefaultIcon );
+  DefaultIcon.addPixmap(QPixmap(QString::fromUtf8(":/fig/mouse-cursor.png")),
+                        QIcon::Normal, QIcon::Off);
+  DefaultAction->setIcon(DefaultIcon);
 
-  group->addAction( DefaultAction );
+  group->addAction(DefaultAction);
 
-  this->m_ModeActions.push_back( DefaultAction );
-  QObject::connect( DefaultAction, SIGNAL( triggered() ),
-    this, SLOT( DefaultMode() ) );
+  this->m_ModeActions.push_back(DefaultAction);
+  QObject::connect(DefaultAction, SIGNAL(triggered()),
+                   this, SLOT(DefaultMode()));
 
-  QAction* ZoomAction = new QAction( tr( "Zoom" ), this );
-  ZoomAction->setCheckable( true );
+  QAction* ZoomAction = new QAction(tr("Zoom"), this);
+  ZoomAction->setCheckable(true);
   ZoomAction->setChecked(false);
 
   QIcon ZoomIcon;
-  ZoomIcon.addPixmap( QPixmap(QString::fromUtf8(":/fig/zoom.png")),
-    QIcon::Normal, QIcon::Off );
-  ZoomAction->setIcon( ZoomIcon );
+  ZoomIcon.addPixmap(QPixmap(QString::fromUtf8(":/fig/zoom.png")),
+                     QIcon::Normal, QIcon::Off);
+  ZoomAction->setIcon(ZoomIcon);
 
-  group->addAction( ZoomAction );
+  group->addAction(ZoomAction);
 
-  this->m_ModeActions.push_back( ZoomAction );
-  QObject::connect( ZoomAction, SIGNAL( triggered() ),
-    this, SLOT( ZoomMode() ) );
+  this->m_ModeActions.push_back(ZoomAction);
+  QObject::connect(ZoomAction, SIGNAL(triggered()),
+                   this, SLOT(ZoomMode()));
 
-  QAction* PanAction = new QAction( tr( "Pan" ), this );
-  PanAction->setCheckable( true );
+  QAction* PanAction = new QAction(tr("Pan"), this);
+  PanAction->setCheckable(true);
   PanAction->setChecked(false);
 
   QIcon PanIcon;
-  PanIcon.addPixmap( QPixmap(QString::fromUtf8(":/fig/Hand.png")),
-    QIcon::Normal, QIcon::Off );
-  PanAction->setIcon( PanIcon );
+  PanIcon.addPixmap(QPixmap(QString::fromUtf8(":/fig/Hand.png")),
+                    QIcon::Normal, QIcon::Off);
+  PanAction->setIcon(PanIcon);
 
-  group->addAction( PanAction );
+  group->addAction(PanAction);
 
-  this->m_ModeActions.push_back( PanAction );
-  QObject::connect( PanAction, SIGNAL( triggered() ),
-    this, SLOT( PanMode() ) );
+  this->m_ModeActions.push_back(PanAction);
+  QObject::connect(PanAction, SIGNAL(triggered()),
+                   this, SLOT(PanMode()));
 }
 //-------------------------------------------------------------------------
 
@@ -420,7 +419,7 @@ void
 QGoTabImageView2D::
 TakeSnapshot()
 {
-  m_ImageView->SnapshotViewXY( GoFigure::PNG , "snapshot_" );
+  m_ImageView->SnapshotViewXY(GoFigure::PNG, "snapshot_");
 }
 
 //-------------------------------------------------------------------------
@@ -429,7 +428,7 @@ QGoTabImageView2D::
 DefaultMode()
 {
   //Change cursor
-  this->setCursor( Qt::ArrowCursor );
+  this->setCursor(Qt::ArrowCursor);
 
   m_ImageView->DefaultMode();
 }
@@ -441,8 +440,8 @@ QGoTabImageView2D::
 ZoomMode()
 {
   //Change cursors
-  QCursor zoomCursor(QPixmap(QString::fromUtf8(":/fig/zoom.png")),-1,-1);
-  this->setCursor( zoomCursor );
+  QCursor zoomCursor(QPixmap(QString::fromUtf8(":/fig/zoom.png")), -1, -1);
+  this->setCursor(zoomCursor);
 
   m_ImageView->ZoomMode();
 }
@@ -454,7 +453,7 @@ QGoTabImageView2D::
 PanMode()
 {
   //Change cursor
-  this->setCursor( Qt::OpenHandCursor );
+  this->setCursor(Qt::OpenHandCursor);
 
   m_ImageView->PanMode();
 }

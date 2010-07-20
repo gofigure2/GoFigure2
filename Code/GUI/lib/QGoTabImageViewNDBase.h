@@ -52,12 +52,12 @@ class vtkImageData;
  *  contains 2D or 3D image (without any temporal component).
  */
 class QGOGUILIB_EXPORT QGoTabImageViewNDBase : public QGoTabImageViewElementBase
-{
+  {
   Q_OBJECT
 
 public:
   /** \brief Constructor */
-  explicit QGoTabImageViewNDBase( QWidget* parent = 0 );
+  explicit QGoTabImageViewNDBase(QWidget* parent = 0);
 
   /** \brief Destructor */
   virtual ~QGoTabImageViewNDBase();
@@ -65,24 +65,24 @@ public:
   typedef QGoTabImageViewElementBase::QGoDockWidgetStatusPair QGoDockWidgetStatusPair;
 
   /** \brief */
-  virtual void SetImage( vtkImageData* iImage );
+  virtual void SetImage(vtkImageData* iImage);
 
   /** \brief */
   vtkImageData* GetImage();
 
 public slots:
   /** \brief */
-  void ShowAllChannels( bool iChecked );
+  void ShowAllChannels(bool iChecked);
   /** \brief */
-  void ShowOneChannel( int iChannel );
+  void ShowOneChannel(int iChannel);
 
 protected:
-  vtkSmartPointer< vtkImageData > m_Image;
+  vtkSmartPointer<vtkImageData> m_Image;
 
   /** \brief */
-  virtual void SetImageToImageViewer( vtkImageData* image ) = 0;
+  virtual void SetImageToImageViewer(vtkImageData* image) = 0;
 
 private:
-  Q_DISABLE_COPY( QGoTabImageViewNDBase );
-};
+  Q_DISABLE_COPY(QGoTabImageViewNDBase);
+  };
 #endif

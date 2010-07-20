@@ -45,54 +45,53 @@
 
 #include "QGoManualSegmentationSettingsDialog.h"
 
-
 //---------------------------------------------------------------------------//
 QGoManualSegmentationDockWidget::
-QGoManualSegmentationDockWidget( QWidget* iParent ) :
-  QDockWidget( iParent )
-{
-  this->setupUi( this );
+QGoManualSegmentationDockWidget(QWidget* iParent) :
+  QDockWidget(iParent)
+  {
+  this->setupUi(this);
 
-  m_SettingsDialog = new QGoManualSegmentationSettingsDialog( this );
+  m_SettingsDialog = new QGoManualSegmentationSettingsDialog(this);
 
-  QObject::connect( this->contourMode, SIGNAL( activated( int ) ),
-        this, SLOT( UpdateWidget( int ) ) );
+  QObject::connect(this->contourMode, SIGNAL(activated(int)),
+                   this, SLOT(UpdateWidget(int)));
 
-  QObject::connect( this->ReinitializeBtn, SIGNAL( pressed() ),
-    this, SIGNAL( ReinitializePressed() ) );
+  QObject::connect(this->ReinitializeBtn, SIGNAL(pressed()),
+                   this, SIGNAL(ReinitializePressed()));
 
-  QObject::connect( this->ValidateBtn, SIGNAL( pressed() ),
-    this, SIGNAL( ValidatePressed() ) );
+  QObject::connect(this->ValidateBtn, SIGNAL(pressed()),
+                   this, SIGNAL(ValidatePressed()));
 
-  QObject::connect( this->SettingsBtn, SIGNAL( pressed() ),
-    m_SettingsDialog, SLOT ( exec() ) );
+  QObject::connect(this->SettingsBtn, SIGNAL(pressed()),
+                   m_SettingsDialog, SLOT (exec()));
 
-  QObject::connect( m_SettingsDialog, SIGNAL( accepted() ),
-      this, SIGNAL( UpdateContourRepresentationProperties( ) ) );
+  QObject::connect(m_SettingsDialog, SIGNAL(accepted()),
+                   this, SIGNAL(UpdateContourRepresentationProperties()));
 
-  QObject::connect( this->applyFilterBtn, SIGNAL( pressed() ),
-      this, SLOT( ApplyFilterEmit() ) );
+  QObject::connect(this->applyFilterBtn, SIGNAL(pressed()),
+                   this, SLOT(ApplyFilterEmit()));
 
-  QObject::connect( this->advanceMode, SIGNAL( toggled( bool ) ),
-          this, SLOT( AdvancedMode( bool ) ) );
+  QObject::connect(this->advanceMode, SIGNAL(toggled(bool)),
+                   this, SLOT(AdvancedMode(bool)));
 
   // Initialize visualization
   // 0 = manual segmentation
   // 1 = semi auto segmentation
   // 3 = auto
-  UpdateWidget( 0 );
-  AdvancedMode( false );
+  UpdateWidget(0);
+  AdvancedMode(false);
 
   // Initialize levelset parameters
   InitializeLevelsetParameters();
-}
+  }
 //---------------------------------------------------------------------------//
 
 //---------------------------------------------------------------------------//
 QGoManualSegmentationDockWidget::
 ~QGoManualSegmentationDockWidget()
-{
-}
+  {
+  }
 //---------------------------------------------------------------------------//
 
 //---------------------------------------------------------------------------//
@@ -100,82 +99,82 @@ void
 QGoManualSegmentationDockWidget::
 InitializeLevelsetParameters()
 {
-  this->numberOfIterations->setValue( 50 );
-  this->curvatureWeight->setValue( 1 );
+  this->numberOfIterations->setValue(50);
+  this->curvatureWeight->setValue(1);
 }
 //---------------------------------------------------------------------------//
 
 //---------------------------------------------------------------------------//
 void
 QGoManualSegmentationDockWidget::
-UpdateWidget( int iModeSelected )
+UpdateWidget(int iModeSelected)
 {
   // 0 = manual segmentation
   // 1 = semi automatic segmentation
   // 2 = auto
 
-  switch ( iModeSelected )
+  switch (iModeSelected)
     {
-    case 0 :
+    case 0:
       // manual segmentation
-      this->ShowManual( true );
-      this->ShowSemiAuto( false );
+      this->ShowManual(true);
+      this->ShowSemiAuto(false);
       break;
 
-    case 1 :
+    case 1:
       // semi automatic segmentation
-      this->ShowManual( false );
-      this->ShowSemiAuto( true );
+      this->ShowManual(false);
+      this->ShowSemiAuto(true);
       break;
 
-    default :
+    default:
       break;
     }
-  emit this->UpdateInteractorBehavior( true );
+  emit this->UpdateInteractorBehavior(true);
 }
 //---------------------------------------------------------------------------//
 
 //---------------------------------------------------------------------------//
 void
 QGoManualSegmentationDockWidget::
-ShowManual( bool iUse )
+ShowManual(bool iUse)
 {
-  this->ValidateBtn->setVisible( iUse );
-  this->ReinitializeBtn->setVisible( iUse );
-  this->SettingsBtn->setVisible( iUse );
+  this->ValidateBtn->setVisible(iUse);
+  this->ReinitializeBtn->setVisible(iUse);
+  this->SettingsBtn->setVisible(iUse);
 }
 //---------------------------------------------------------------------------//
 
 //---------------------------------------------------------------------------//
 void
 QGoManualSegmentationDockWidget::
-ShowSemiAuto( bool iUse )
+ShowSemiAuto(bool iUse)
 {
-  this->LevelsetParametersLabel->setVisible( iUse );
+  this->LevelsetParametersLabel->setVisible(iUse);
 
-  this->channelLabel->setVisible( iUse );
-  this->channel->setVisible( iUse );
+  this->channelLabel->setVisible(iUse);
+  this->channel->setVisible(iUse);
 
-  this->radiusLabel->setVisible( iUse );
-  this->radius->setVisible( iUse );
+  this->radiusLabel->setVisible(iUse);
+  this->radius->setVisible(iUse);
 
-  this->advanceModeLabel->setVisible( iUse );
-  this->advanceMode->setVisible( iUse );
+  this->advanceModeLabel->setVisible(iUse);
+  this->advanceMode->setVisible(iUse);
 
-  this->applyFilterBtn->setVisible( iUse );
+  this->applyFilterBtn->setVisible(iUse);
 }
 //---------------------------------------------------------------------------//
 
 //---------------------------------------------------------------------------//
 void
 QGoManualSegmentationDockWidget::
-AdvancedMode( bool iAdvanced )
+AdvancedMode(bool iAdvanced)
 {
-  this->numberOfIterationsLabel->setVisible( iAdvanced );
-  this->numberOfIterations->setVisible( iAdvanced );
+  this->numberOfIterationsLabel->setVisible(iAdvanced);
+  this->numberOfIterations->setVisible(iAdvanced);
 
-  this->curvatureWeightLabel->setVisible( iAdvanced );
-  this->curvatureWeight->setVisible( iAdvanced );
+  this->curvatureWeightLabel->setVisible(iAdvanced);
+  this->curvatureWeight->setVisible(iAdvanced);
 }
 //---------------------------------------------------------------------------//
 
@@ -191,9 +190,9 @@ ApplyFilterEmit()
 //---------------------------------------------------------------------------//
 void
 QGoManualSegmentationDockWidget::
-SetNumberOfChannels( int iNumberOfChannels )
+SetNumberOfChannels(int iNumberOfChannels)
 {
-  this->channel->setMaximum( iNumberOfChannels );
+  this->channel->setMaximum(iNumberOfChannels);
 }
 //---------------------------------------------------------------------------//
 
@@ -240,4 +239,3 @@ GetMode()
   return this->contourMode->currentIndex();
 }
 //---------------------------------------------------------------------------//
-

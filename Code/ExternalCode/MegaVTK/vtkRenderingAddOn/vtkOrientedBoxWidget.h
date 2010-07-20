@@ -88,17 +88,17 @@ class vtkMatrix4x4;
    \see vtk3DWidget vtkBoxWidget
  */
 class VTK_RENDERINGADDON2_EXPORT vtkOrientedBoxWidget : public vtkBoxWidget
-{
+  {
 
- public:
+public:
 
   static vtkOrientedBoxWidget* New();
   vtkTypeRevisionMacro(vtkOrientedBoxWidget, vtkBoxWidget);
 
   vtkGetObjectMacro (OrientationMatrix, vtkMatrix4x4);
-  virtual void SetOrientationMatrix (vtkMatrix4x4* matrix);
+  virtual void SetOrientationMatrix(vtkMatrix4x4* matrix);
 
- protected:
+protected:
 
   vtkOrientedBoxWidget();
   ~vtkOrientedBoxWidget();
@@ -108,7 +108,6 @@ class VTK_RENDERINGADDON2_EXPORT vtkOrientedBoxWidget : public vtkBoxWidget
   vtkMatrix4x4* OrientationMatrix;
   vtkMatrix4x4* InvertedOrientationMatrix;
 
-
-};
+  };
 
 #endif /* _vtkOrientedBoxWidget_h_ */

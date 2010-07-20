@@ -42,42 +42,42 @@
 #include "QGoNavigationDockWidget.h"
 #include <iostream>
 
-int main( int argc, char** argv )
+int main(int argc, char** argv)
 {
-  if( argc != 2 )
+  if (argc != 2)
     {
-    std::cerr <<"qgovisualizationdockwidget requires 1 argument1:" <<std::endl;
-    std::cerr <<"1-test (boolean)" <<std::endl;
+    std::cerr << "qgovisualizationdockwidget requires 1 argument1:" << std::endl;
+    std::cerr << "1-test (boolean)" << std::endl;
     return EXIT_FAILURE;
     }
-  QApplication app( argc, argv );
+  QApplication app(argc, argv);
   QCoreApplication::setOrganizationName("MegasonLab");
-  QCoreApplication::setOrganizationDomain( "http://gofigure2.sourceforge.net" );
+  QCoreApplication::setOrganizationDomain("http://gofigure2.sourceforge.net");
 
   QGoNavigationDockWidget*
-    dock2d = new QGoNavigationDockWidget( 0, 2 );
+  dock2d = new QGoNavigationDockWidget(0, 2);
 
   dock2d->show();
 
   QGoNavigationDockWidget*
-    dock3d = new QGoNavigationDockWidget( 0, 3 );
+  dock3d = new QGoNavigationDockWidget(0, 3);
 
   dock3d->show();
 
   QGoNavigationDockWidget*
-    dock4d = new QGoNavigationDockWidget( 0, 4 );
+  dock4d = new QGoNavigationDockWidget(0, 4);
 
   dock4d->show();
 
   QTimer* timer = new QTimer;
-  timer->setSingleShot( true );
-  QObject::connect( timer, SIGNAL( timeout() ), dock2d, SLOT( close() ) );
-  QObject::connect( timer, SIGNAL( timeout() ), dock3d, SLOT( close() ) );
-  QObject::connect( timer, SIGNAL( timeout() ), dock4d, SLOT( close() ) );
+  timer->setSingleShot(true);
+  QObject::connect(timer, SIGNAL(timeout()), dock2d, SLOT(close()));
+  QObject::connect(timer, SIGNAL(timeout()), dock3d, SLOT(close()));
+  QObject::connect(timer, SIGNAL(timeout()), dock4d, SLOT(close()));
 
-  if( atoi( argv[1] ) == 1 )
+  if (atoi(argv[1]) == 1)
     {
-    timer->start( 100 );
+    timer->start(100);
     }
 
   app.processEvents();

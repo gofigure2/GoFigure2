@@ -54,72 +54,71 @@
 #include "QGoGUILibConfigure.h"
 
 class QGOGUILIB_EXPORT QGoImageInfo : public QWidget
-{
+  {
   Q_OBJECT
 public:
-    explicit QGoImageInfo( QWidget* parent = 0 );
-    virtual ~QGoImageInfo( );
+  explicit QGoImageInfo(QWidget* parent = 0);
+  virtual ~QGoImageInfo();
 
 public slots:
-    void setDimension( const unsigned int& );
-    void setNumberOfChannels( const unsigned int& );
-    void setMemory( const unsigned long& );
-    void setSize( const std::vector< unsigned int >& );
-    void setSpacing( const std::vector< float >& );
-    void setPixelPosition( const std::vector< unsigned int >& );
-    void setWorldPosition( const std::vector< float >& );
-    void setTimePoint( const float& );
-    void setValue( const std::vector< float >& );
-
+  void setDimension(const unsigned int&);
+  void setNumberOfChannels(const unsigned int&);
+  void setMemory(const unsigned long&);
+  void setSize(const std::vector<unsigned int>&);
+  void setSpacing(const std::vector<float>&);
+  void setPixelPosition(const std::vector<unsigned int>&);
+  void setWorldPosition(const std::vector<float>&);
+  void setTimePoint(const float&);
+  void setValue(const std::vector<float>&);
 
 protected:
-    QVBoxLayout     *verticalLayout;
-    QScrollArea     *scrollArea;
-    QWidget         *scrollAreaWidgetContents;
-    QGridLayout     *gridLayout;
+  QVBoxLayout *verticalLayout;
+  QScrollArea *scrollArea;
+  QWidget *    scrollAreaWidgetContents;
+  QGridLayout *gridLayout;
 
-    QLabel *TImageStaticlabel;
-    QLabel *TImageLabel;
-    QLabel *DimensionStaticLabel;
-    QLabel *DimensionLabel;
-    QLabel *ChannelStaticLabel;
-    QLabel *ChannelLabel;
-    QLabel *SpacingStaticLabel;
-    QLabel *SpacingLabel;
-    QLabel *PPositionLabel;
-    QLabel *WPositionStaticLabel;
-    QLabel *WPositionLabel;
-    QLabel *TTimeStaticLabel;
-    QLabel *TTimeLabel;
-    QLabel *TValueStaticLabel;
-    QLabel *TValueLabel;
-    QLabel *ValueStaticLabel;
-    QLabel *ValueLabel;
-    QLabel *SizeStaticLabel;
-    QLabel *SizeLabel;
-    QLabel *TimeStaticLabel;
-    QLabel *TimeLabel;
-    QLabel *TPositionLabel;
-    QLabel *TPositionStaticLabel;
-    QLabel *MemoryStaticLabel;
-    QLabel *MemoryLabel;
-    QLabel *PPositionStaticLabel;
+  QLabel *TImageStaticlabel;
+  QLabel *TImageLabel;
+  QLabel *DimensionStaticLabel;
+  QLabel *DimensionLabel;
+  QLabel *ChannelStaticLabel;
+  QLabel *ChannelLabel;
+  QLabel *SpacingStaticLabel;
+  QLabel *SpacingLabel;
+  QLabel *PPositionLabel;
+  QLabel *WPositionStaticLabel;
+  QLabel *WPositionLabel;
+  QLabel *TTimeStaticLabel;
+  QLabel *TTimeLabel;
+  QLabel *TValueStaticLabel;
+  QLabel *TValueLabel;
+  QLabel *ValueStaticLabel;
+  QLabel *ValueLabel;
+  QLabel *SizeStaticLabel;
+  QLabel *SizeLabel;
+  QLabel *TimeStaticLabel;
+  QLabel *TimeLabel;
+  QLabel *TPositionLabel;
+  QLabel *TPositionStaticLabel;
+  QLabel *MemoryStaticLabel;
+  QLabel *MemoryLabel;
+  QLabel *PPositionStaticLabel;
 
-    unsigned int  m_Dimension;
-    unsigned int  m_Channel;
-    unsigned long m_Memory;
+  unsigned int  m_Dimension;
+  unsigned int  m_Channel;
+  unsigned long m_Memory;
 
-    std::vector< unsigned int > m_Size;
-    std::vector< float >        m_Spacing;
-    std::vector< unsigned int > m_PPos;
-    std::vector< float >        m_WPos;
-    std::vector< float >        m_Value;
-    float                       m_TimePoint;
+  std::vector<unsigned int> m_Size;
+  std::vector<float>        m_Spacing;
+  std::vector<unsigned int> m_PPos;
+  std::vector<float>        m_WPos;
+  std::vector<float>        m_Value;
+  float                     m_TimePoint;
 
-    template< class TContainer >
-    QString ConvertToQString( const TContainer& iVector )
-    {
-    if ( iVector.empty() )
+  template<class TContainer>
+  QString ConvertToQString(const TContainer& iVector)
+  {
+    if (iVector.empty())
       {
       return QString();
       }
@@ -127,38 +126,38 @@ protected:
       {
       size_t tsize = iVector.size();
 
-      if ( tsize == 1 )
+      if (tsize == 1)
         {
-        return QString( "%1" ).arg( *iVector.begin() );
+        return QString("%1").arg(*iVector.begin());
         }
       else
         {
-        QString v( "[ ");
+        QString      v("[ ");
         unsigned int i = 0;
-        for ( typename TContainer::const_iterator it = iVector.begin();
-            it != iVector.end();
-            ++it, ++i )
+        for (typename TContainer::const_iterator it = iVector.begin();
+             it != iVector.end();
+             ++it, ++i)
           {
-          if ( i == ( tsize - 1 ) )
+          if (i == (tsize - 1))
             {
-            v.append( QString( "%1 ]" ).arg( *it ) );
+            v.append(QString("%1 ]").arg(*it));
             }
           else
             {
-            v.append( QString( "%1 ; " ).arg( *it ) );
+            v.append(QString("%1 ; ").arg(*it));
             }
           }
         return v;
         }
       }
-    }
+  }
 
-  void setupUi( QWidget* Form );
+  void setupUi(QWidget* Form);
   void retranslateUi(QWidget* Form);
 
 private:
-  QGoImageInfo( const QGoImageInfo& );
-  void operator = ( const QGoImageInfo& );
-};
+  QGoImageInfo(const QGoImageInfo &);
+  void operator =(const QGoImageInfo&);
+  };
 
 #endif

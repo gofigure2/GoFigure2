@@ -48,93 +48,93 @@
 #include "vtksys/SystemTools.hxx"
 #include "QGoImageView2D.h"
 
-bool CheckSnapshot( QGoImageView2D* iViewer, GoFigure::FileType iType )
+bool CheckSnapshot(QGoImageView2D* iViewer, GoFigure::FileType iType)
 {
-  QString filename = iViewer->SnapshotViewXY( iType );
+  QString     filename = iViewer->SnapshotViewXY(iType);
   std::string path =
-        vtksys::SystemTools::GetCurrentWorkingDirectory();
+    vtksys::SystemTools::GetCurrentWorkingDirectory();
   path += "/";
   path += filename.toStdString();
 
-  if( vtksys::SystemTools::FileExists( path.c_str() ) )
+  if (vtksys::SystemTools::FileExists(path.c_str()))
     {
-    vtksys::SystemTools::RemoveFile( path.c_str() );
+    vtksys::SystemTools::RemoveFile(path.c_str());
     return true;
     }
   else
     {
     std::cerr << "FAILURE * viewer->SnapshotViewXY( " << iType
-      <<" )" <<std::endl;
+              << " )" << std::endl;
     return false;
     }
 }
 
-int main( int argc, char** argv )
+int main(int argc, char** argv)
 {
-  if( argc != 3 )
+  if (argc != 3)
     {
-    std::cout <<"Usage : qgoimageview2d(.exe) " <<std::endl;
-    std::cout << "1-file.png" <<std::endl;
-    std::cout << "2-test (boolean)" <<std::endl;
+    std::cout << "Usage : qgoimageview2d(.exe) " << std::endl;
+    std::cout << "1-file.png" << std::endl;
+    std::cout << "2-test (boolean)" << std::endl;
     return EXIT_FAILURE;
     }
-  QApplication app( argc, argv );
+  QApplication app(argc, argv);
   QCoreApplication::setOrganizationName("MegasonLab");
-  QCoreApplication::setOrganizationDomain( "http://gofigure2.sourceforge.net" );
+  QCoreApplication::setOrganizationDomain("http://gofigure2.sourceforge.net");
 
   QGoImageView2D* viewer = new QGoImageView2D;
 
-  vtkSmartPointer< vtkPNGReader > reader = vtkSmartPointer< vtkPNGReader >::New();
-  reader->SetFileName( argv[1] );
+  vtkSmartPointer<vtkPNGReader> reader = vtkSmartPointer<vtkPNGReader>::New();
+  reader->SetFileName(argv[1]);
   reader->Update();
 
   QTimer* timer = new QTimer;
-  timer->setSingleShot( true );
-  QObject::connect( timer, SIGNAL( timeout() ), viewer, SLOT( close() ) );
+  timer->setSingleShot(true);
+  QObject::connect(timer, SIGNAL(timeout()), viewer, SLOT(close()));
 
-  viewer->SetImage( reader->GetOutput() );
+  viewer->SetImage(reader->GetOutput());
   viewer->Update();
   viewer->show();
 
-  if( atoi( argv[2] ) == 1 )
+  if (atoi(argv[2]) == 1)
     {
-    if( !CheckSnapshot( viewer, GoFigure::BMP ) )
+    if (!CheckSnapshot(viewer, GoFigure::BMP))
       {
       return EXIT_FAILURE;
       }
-    if( !CheckSnapshot( viewer, GoFigure::PNG ) )
+    if (!CheckSnapshot(viewer, GoFigure::PNG))
       {
       return EXIT_FAILURE;
       }
-    if( !CheckSnapshot( viewer, GoFigure::JPEG ) )
+    if (!CheckSnapshot(viewer, GoFigure::JPEG))
       {
       return EXIT_FAILURE;
       }
-    if( !CheckSnapshot( viewer, GoFigure::EPS ) )
+    if (!CheckSnapshot(viewer, GoFigure::EPS))
       {
       return EXIT_FAILURE;
       }
-    if( !CheckSnapshot( viewer, GoFigure::TIFF) )
+    if (!CheckSnapshot(viewer, GoFigure::TIFF))
       {
       return EXIT_FAILURE;
       }
 
-    timer->start( 1000 );
+    timer->start(1000);
     }
 
-  viewer->ShowScalarBar( true );
+  viewer->ShowScalarBar(true);
 
-  std::cout <<viewer->GetImageActor( 0 ) <<std::endl;
-  std::cout <<viewer->GetImageActor( 1 ) <<std::endl;
+  std::cout << viewer->GetImageActor(0) << std::endl;
+  std::cout << viewer->GetImageActor(1) << std::endl;
 
-  std::cout <<viewer->GetInteractor( 0 ) <<std::endl;
-  std::cout <<viewer->GetInteractor( 1 ) <<std::endl;
+  std::cout << viewer->GetInteractor(0) << std::endl;
+  std::cout << viewer->GetInteractor(1) << std::endl;
 
-  std::cout <<viewer->GetImage() <<std::endl;
+  std::cout << viewer->GetImage() << std::endl;
 
   vtkLookupTable * LUT = vtkLookupTableManager::GetHotMetalLookupTable();
 
-  viewer->SetLookupTable( LUT );
+  viewer->SetLookupTable(LUT);
   viewer->DefaultMode();
   viewer->ZoomMode();
   viewer->PanMode();

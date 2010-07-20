@@ -83,34 +83,33 @@
    However this might be not the best place to define it...
 */
 //BTX
-#define vtkSyncSetMacro(name, type, base )			\
-  virtual void SyncSet##name (type _arg)		\
-  {							\
-    this->InitTraversal();				\
-    base* item = this->GetNextItem();	\
-    while(item)						\
-    {							\
-      item->Set##name (_arg);				\
-      item = this->GetNextItem();			\
-    }							\
-  }
+#define vtkSyncSetMacro(name, type, base)                      \
+  virtual void SyncSet ## name (type _arg)                \
+    {                                                     \
+    this->InitTraversal();                              \
+    base* item = this->GetNextItem();   \
+    while (item)                                         \
+      {                                                   \
+      item->Set ## name (_arg);                           \
+      item = this->GetNextItem();                       \
+      }                                                   \
+    }
 ///ETX
 
 ///BTX
-#define vtkSyncSetObjectMacro(name, type, base)		\
-  virtual void SyncSet##name (type* _arg)		\
-  {							\
-    this->InitTraversal();				\
-    base* item = this->GetNextItem();	\
-    while(item)						\
-    {							\
-      item->Set##name (_arg);				\
-      item = this->GetNextItem();			\
-    }							\
-  }
+#define vtkSyncSetObjectMacro(name, type, base)         \
+  virtual void SyncSet ## name (type * _arg)               \
+    {                                                     \
+    this->InitTraversal();                              \
+    base* item = this->GetNextItem();   \
+    while (item)                                         \
+      {                                                   \
+      item->Set ## name (_arg);                           \
+      item = this->GetNextItem();                       \
+      }                                                   \
+    }
 
 ///ETX
-
 
 class vtkScalarBarActor;
 class vtkLookupTable;
@@ -132,8 +131,8 @@ class vtkViewImage2DCollectionCommand;
 */
 
 class VTK_RENDERINGADDON2_EXPORT vtkViewImage2DCollection : public vtkCollection
-{
- public:
+  {
+public:
 
   static vtkViewImage2DCollection* New();
   vtkTypeRevisionMacro(vtkViewImage2DCollection, vtkCollection);
@@ -141,13 +140,17 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage2DCollection : public vtkCollection
   // Description:
   // Get the next vtkViewImage2D in the list. Return NULL when at the end of the
   // list.
-  vtkViewImage2D *GetNextItem() {
-    return static_cast<vtkViewImage2D *>(this->GetNextItemAsObject());};
+  vtkViewImage2D *GetNextItem()
+  {
+    return static_cast<vtkViewImage2D *>(this->GetNextItemAsObject());
+  }
   // Description:
   // Get the next vtkViewImage2D2D in the list. Return NULL when at the end of
   // the list.
-  vtkViewImage2D *GetItem(int i) {
-    return static_cast<vtkViewImage2D *>(this->GetItemAsObject(i));};
+  vtkViewImage2D *GetItem(int i)
+  {
+    return static_cast<vtkViewImage2D *>(this->GetItemAsObject(i));
+  }
   // Description:
   // Add an object to the list. Does not prevent duplicate entries.
   void AddItem(vtkViewImage2D*);
@@ -179,10 +182,9 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage2DCollection : public vtkCollection
   void Initialize();
   void InitializeAllObservers();
 
-
   vtkGetObjectMacro (Command, vtkViewImage2DCollectionCommand);
   vtkGetObjectMacro (ExtraRenderWindow, vtkRenderWindow);
-  void SetExtraRenderWindow (vtkRenderWindow* win)
+  void SetExtraRenderWindow(vtkRenderWindow* win)
   { this->ExtraRenderWindow = win; }
 
   vtkSyncSetMacro (Slice, int, vtkViewImage2D);
@@ -234,96 +236,96 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage2DCollection : public vtkCollection
   vtkSyncSet2DMacro (InteractionStyle, int);*/
 
   /// Description: Synchronize dataset addition between views
-  virtual void SyncAddDataSet (vtkDataSet* dataset, vtkProperty* property = NULL);
+  virtual void SyncAddDataSet(vtkDataSet* dataset, vtkProperty* property = NULL);
   /// Description: Synchronize dataset removal between views
-  virtual void SyncRemoveDataSet (vtkDataSet* dataset);
+  virtual void SyncRemoveDataSet(vtkDataSet* dataset);
 
   /// Description: Synchronize reset window level between views
-  virtual void SyncResetWindowLevel (void);
+  virtual void SyncResetWindowLevel(void);
   /// Description: Synchronize reset camera between views
-  virtual void SyncResetCamera (void);
+  virtual void SyncResetCamera(void);
   /// Description: Synchronize render between views
-  virtual void SyncRender ( );
+  virtual void SyncRender();
   /// Description: Synchronize reset between views
-  virtual void SyncReset (void);
+  virtual void SyncReset(void);
   /// Description: Synchronize interactor start between views
-  virtual void SyncStart (void);
+  virtual void SyncStart(void);
 
   // Decide weither or not the collection will link interactions
 
   /// Description: link slice flag
   vtkGetMacro (LinkSliceMove, unsigned int);
   /// Description: link slice flag
-  virtual void SetLinkSliceMove (unsigned int v);
+  virtual void SetLinkSliceMove(unsigned int v);
   /// Description: link slice flag
   vtkBooleanMacro (LinkSliceMove, unsigned int);
 
   /// Description: link color window flag
   vtkGetMacro (LinkColorWindowLevel, unsigned int);
   /// Description: link color window flag
-  virtual void SetLinkColorWindowLevel (unsigned int v);
+  virtual void SetLinkColorWindowLevel(unsigned int v);
   /// Description: link color window flag
   vtkBooleanMacro (LinkColorWindowLevel, unsigned int);
 
   /// Description: link reset color window flag
   vtkGetMacro (LinkResetWindowLevel, unsigned int);
   /// Description: link reset color window flag
-  virtual void SetLinkResetWindowLevel (unsigned int v);
+  virtual void SetLinkResetWindowLevel(unsigned int v);
   /// Description: link reset color window flag
   vtkBooleanMacro (LinkResetWindowLevel, unsigned int);
 
   /// Description: link reset viewer flag
   vtkGetMacro (LinkResetViewer, unsigned int);
   /// Description: link reset viewer flag
-  virtual void SetLinkResetViewer (unsigned int v);
+  virtual void SetLinkResetViewer(unsigned int v);
   /// Description: link reset viewer flag
   vtkBooleanMacro (LinkResetViewer, unsigned int);
 
   /// Description: link requested position (double click) flag
   vtkGetMacro (LinkRequestedPosition, unsigned int);
   /// Description: link requested position (double click) flag
-  virtual void SetLinkRequestedPosition (unsigned int v);
+  virtual void SetLinkRequestedPosition(unsigned int v);
   /// Description: link requested position (double click) flag
   vtkBooleanMacro (LinkRequestedPosition, unsigned int);
 
   /// Description: link camera flag
   vtkGetMacro (LinkCamera, unsigned int);
   /// Description: link camera flag
-  virtual void SetLinkCamera (unsigned int v);
+  virtual void SetLinkCamera(unsigned int v);
   /// Description: link camera flag
   vtkBooleanMacro (LinkCamera, unsigned int);
 
   /// Description: link position flag
   vtkGetMacro (LinkPosition, unsigned int);
   /// Description: link position flag
-  virtual void SetLinkPosition (unsigned int v);
+  virtual void SetLinkPosition(unsigned int v);
   /// Description: link position flag
   vtkBooleanMacro (LinkPosition, unsigned int);
 
   /// Description: show axes (view intersections) flag
-  virtual void SetShowAxes (unsigned int v);
+  virtual void SetShowAxes(unsigned int v);
   /// Description: show axes (view intersections) flag
   vtkBooleanMacro (ShowAxes, unsigned int);
   /// Description: show axes (view intersections) flag
   vtkGetMacro (ShowAxes, unsigned int);
 
-  void SyncSetBackground( double* rgb );
+  void SyncSetBackground(double* rgb);
   void SyncPan();
-  void SyncSetZoomAndParallelScale( double Zoom, double ParallelScale );
+  void SyncSetZoomAndParallelScale(double Zoom, double ParallelScale);
 
-  void SetSplinePlaneActorsVisibility( bool );
-  vtkstd::vector<vtkActor*>        SlicePlaneActors;
+  void SetSplinePlaneActorsVisibility(bool);
+  vtkstd::vector<vtkActor*> SlicePlaneActors;
 //   vtkstd::vector<vtkQuadricLODActor*>        SlicePlaneActors;
 
   void UpdateWindowLevelObservers();
 
- protected:
+protected:
 
   vtkViewImage2DCollection();
   ~vtkViewImage2DCollection();
 
   vtkViewImage2DCollectionCommand* Command;
-  vtkRenderWindow* ExtraRenderWindow;
+  vtkRenderWindow*                 ExtraRenderWindow;
 
   unsigned int LinkSliceMove;
   unsigned int LinkColorWindowLevel;
@@ -333,7 +335,6 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage2DCollection : public vtkCollection
   unsigned int LinkCamera;
   unsigned int LinkPosition;
   unsigned int ShowAxes;
-};
-
+  };
 
 #endif /* _vtkViewImage2DCollection_h_ */

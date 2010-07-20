@@ -41,26 +41,25 @@
 #include "QGoImageInfo.h"
 #include <iostream>
 
-QGoImageInfo::QGoImageInfo( QWidget* iParent ) :QWidget( iParent )
-{
-  setupUi( this );
-}
+QGoImageInfo::QGoImageInfo(QWidget* iParent) : QWidget(iParent)
+  {
+  setupUi(this);
+  }
 
 QGoImageInfo::~QGoImageInfo()
-{
-}
+  {
+  }
 
-void QGoImageInfo::setupUi( QWidget *ImageInfo )
+void QGoImageInfo::setupUi(QWidget *ImageInfo)
 {
-  if (ImageInfo->objectName().isEmpty())
-    ImageInfo->setObjectName(QString::fromUtf8("ImageInfo"));
+  if (ImageInfo->objectName().isEmpty()) ImageInfo->setObjectName(QString::fromUtf8("ImageInfo"));
   ImageInfo->resize(293, 315);
-  QSizePolicy tsizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+  QSizePolicy tsizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
   tsizePolicy.setHorizontalStretch(0);
   tsizePolicy.setVerticalStretch(0);
-  tsizePolicy.setHeightForWidth( 
-    ImageInfo->sizePolicy().hasHeightForWidth() );
-  ImageInfo->setSizePolicy( tsizePolicy );
+  tsizePolicy.setHeightForWidth(
+    ImageInfo->sizePolicy().hasHeightForWidth());
+  ImageInfo->setSizePolicy(tsizePolicy);
   verticalLayout = new QVBoxLayout(ImageInfo);
   verticalLayout->setContentsMargins(3, -1, 3, -1);
   scrollArea = new QScrollArea(ImageInfo);
@@ -231,7 +230,6 @@ void QGoImageInfo::setupUi( QWidget *ImageInfo )
 
   verticalLayout->addWidget(scrollArea);
 
-
   retranslateUi(ImageInfo);
 
   QMetaObject::connectSlotsByName(ImageInfo);
@@ -241,30 +239,30 @@ void QGoImageInfo::retranslateUi(QWidget *Form)
 {
   Form->setWindowTitle(QApplication::translate("Form", "Form", 0, QApplication::UnicodeUTF8));
   TImageStaticlabel->setText(QApplication::translate("Form",
-    "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-    "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
-    "p, li { white-space: pre-wrap; }\n"
-    "</style></head><body style=\" font-family:'Sans Serif'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
-    "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">"
-    "<span style=\" font-weight:600; color:#0000ff;\">Image :</span></p></body></html>",
-    0, QApplication::UnicodeUTF8));
+                                                     "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+                                                     "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+                                                     "p, li { white-space: pre-wrap; }\n"
+                                                     "</style></head><body style=\" font-family:'Sans Serif'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
+                                                     "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">"
+                                                     "<span style=\" font-weight:600; color:#0000ff;\">Image :</span></p></body></html>",
+                                                     0, QApplication::UnicodeUTF8));
   DimensionStaticLabel->setText(QApplication::translate("Form",
-    "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-    "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
-    "p, li { white-space: pre-wrap; }\n"
-    "</style></head><body style=\" font-family:'Sans Serif'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
-    "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">"
-    "<span style=\" font-size:9pt; font-weight:600;\">  Dimension :</span></p></body></html>",
-    0, QApplication::UnicodeUTF8));
+                                                        "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+                                                        "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+                                                        "p, li { white-space: pre-wrap; }\n"
+                                                        "</style></head><body style=\" font-family:'Sans Serif'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
+                                                        "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">"
+                                                        "<span style=\" font-size:9pt; font-weight:600;\">  Dimension :</span></p></body></html>",
+                                                        0, QApplication::UnicodeUTF8));
   DimensionLabel->setText(QString());
   SizeStaticLabel->setText(QApplication::translate("Form",
-    "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-    "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
-    "p, li { white-space: pre-wrap; }\n"
-    "</style></head><body style=\" font-family:'Sans Serif'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
-    "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">"
-    "<span style=\" font-size:9pt; font-weight:600;\">  Size :</span></p></body></html>",
-    0, QApplication::UnicodeUTF8));
+                                                   "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+                                                   "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+                                                   "p, li { white-space: pre-wrap; }\n"
+                                                   "</style></head><body style=\" font-family:'Sans Serif'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
+                                                   "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">"
+                                                   "<span style=\" font-size:9pt; font-weight:600;\">  Size :</span></p></body></html>",
+                                                   0, QApplication::UnicodeUTF8));
   SizeLabel->setText(QString());
   SpacingLabel->setText(QString());
   MemoryLabel->setText(QString());
@@ -272,265 +270,264 @@ void QGoImageInfo::retranslateUi(QWidget *Form)
   WPositionLabel->setText(QString());
   TimeLabel->setText(QString());
   SpacingStaticLabel->setText(QApplication::translate("Form",
-    "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-    "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
-    "p, li { white-space: pre-wrap; }\n"
-    "</style></head><body style=\" font-family:'Sans Serif'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
-    "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">"
-    "<span style=\" font-size:9pt; font-weight:600;\">  Spacing :</span></p></body></html>",
-    0, QApplication::UnicodeUTF8));
+                                                      "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+                                                      "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+                                                      "p, li { white-space: pre-wrap; }\n"
+                                                      "</style></head><body style=\" font-family:'Sans Serif'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
+                                                      "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">"
+                                                      "<span style=\" font-size:9pt; font-weight:600;\">  Spacing :</span></p></body></html>",
+                                                      0, QApplication::UnicodeUTF8));
   MemoryStaticLabel->setText(QApplication::translate("Form",
-    "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-    "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
-    "p, li { white-space: pre-wrap; }\n"
-    "</style></head><body style=\" font-family:'Sans Serif'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
-    "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">"
-    "<span style=\" font-size:9pt; font-weight:600;\">  Memory :</span></p></body></html>",
-    0, QApplication::UnicodeUTF8));
+                                                     "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+                                                     "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+                                                     "p, li { white-space: pre-wrap; }\n"
+                                                     "</style></head><body style=\" font-family:'Sans Serif'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
+                                                     "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">"
+                                                     "<span style=\" font-size:9pt; font-weight:600;\">  Memory :</span></p></body></html>",
+                                                     0, QApplication::UnicodeUTF8));
   TPositionStaticLabel->setText(QApplication::translate("Form",
-  "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-  "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
-  "p, li { white-space: pre-wrap; }\n"
-  "</style></head><body style=\" font-family:'Sans Serif'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
-  "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">"
-  "<span style=\" font-weight:600; color:#0000ff;\">Position :</span></p></body></html>",
-  0, QApplication::UnicodeUTF8));
+                                                        "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+                                                        "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+                                                        "p, li { white-space: pre-wrap; }\n"
+                                                        "</style></head><body style=\" font-family:'Sans Serif'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
+                                                        "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">"
+                                                        "<span style=\" font-weight:600; color:#0000ff;\">Position :</span></p></body></html>",
+                                                        0, QApplication::UnicodeUTF8));
   PPositionStaticLabel->setText(QApplication::translate("Form",
-  "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-  "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
-  "p, li { white-space: pre-wrap; }\n"
-  "</style></head><body style=\" font-family:'Sans Serif'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
-  "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">"
-  "<span style=\" font-size:9pt; font-weight:600;\">  Position (pixel) :</span></p></body></html>",
-  0, QApplication::UnicodeUTF8));
+                                                        "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+                                                        "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+                                                        "p, li { white-space: pre-wrap; }\n"
+                                                        "</style></head><body style=\" font-family:'Sans Serif'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
+                                                        "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">"
+                                                        "<span style=\" font-size:9pt; font-weight:600;\">  Position (pixel) :</span></p></body></html>",
+                                                        0, QApplication::UnicodeUTF8));
   WPositionStaticLabel->setText(QApplication::translate("Form",
-  "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-  "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
-  "p, li { white-space: pre-wrap; }\n"
-  "</style></head><body style=\" font-family:'Sans Serif'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
-  "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">"
-  "<span style=\" font-size:9pt; font-weight:600;\">  Position (um) :</span></p></body></html>",
-  0, QApplication::UnicodeUTF8));
+                                                        "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+                                                        "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+                                                        "p, li { white-space: pre-wrap; }\n"
+                                                        "</style></head><body style=\" font-family:'Sans Serif'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
+                                                        "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">"
+                                                        "<span style=\" font-size:9pt; font-weight:600;\">  Position (um) :</span></p></body></html>",
+                                                        0, QApplication::UnicodeUTF8));
   ChannelStaticLabel->setText(QApplication::translate("Form",
-  "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-  "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
-  "p, li { white-space: pre-wrap; }\n"
-  "</style></head><body style=\" font-family:'Sans Serif'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
-  "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">"
-  "<span style=\" font-size:9pt; font-weight:600;\">  # Channels : </span></p></body></html>",
-  0, QApplication::UnicodeUTF8));
+                                                      "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+                                                      "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+                                                      "p, li { white-space: pre-wrap; }\n"
+                                                      "</style></head><body style=\" font-family:'Sans Serif'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
+                                                      "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">"
+                                                      "<span style=\" font-size:9pt; font-weight:600;\">  # Channels : </span></p></body></html>",
+                                                      0, QApplication::UnicodeUTF8));
   TTimeStaticLabel->setText(QApplication::translate("Form",
-  "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-  "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
-  "p, li { white-space: pre-wrap; }\n"
-  "</style></head><body style=\" font-family:'Sans Serif'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
-  "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">"
-  "<span style=\" font-weight:600; color:#0000ff;\">Time :</span></p></body></html>",
-  0, QApplication::UnicodeUTF8));
+                                                    "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+                                                    "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+                                                    "p, li { white-space: pre-wrap; }\n"
+                                                    "</style></head><body style=\" font-family:'Sans Serif'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
+                                                    "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">"
+                                                    "<span style=\" font-weight:600; color:#0000ff;\">Time :</span></p></body></html>",
+                                                    0, QApplication::UnicodeUTF8));
   TValueStaticLabel->setText(QApplication::translate("Form",
-  "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-  "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
-  "p, li { white-space: pre-wrap; }\n"
-  "</style></head><body style=\" font-family:'Sans Serif'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
-  "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">"
-  "<span style=\" font-weight:600; color:#0000ff;\">Value :</span></p></body></html>",
-  0, QApplication::UnicodeUTF8));
+                                                     "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+                                                     "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+                                                     "p, li { white-space: pre-wrap; }\n"
+                                                     "</style></head><body style=\" font-family:'Sans Serif'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
+                                                     "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">"
+                                                     "<span style=\" font-weight:600; color:#0000ff;\">Value :</span></p></body></html>",
+                                                     0, QApplication::UnicodeUTF8));
   ValueStaticLabel->setText(QApplication::translate("Form",
-  "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-  "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
-  "p, li { white-space: pre-wrap; }\n"
-  "</style></head><body style=\" font-family:'Sans Serif'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
-  "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">"
-  "<span style=\" font-size:9pt; font-weight:600;\">  Pixel value :</span></p></body></html>",
-  0, QApplication::UnicodeUTF8));
+                                                    "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+                                                    "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+                                                    "p, li { white-space: pre-wrap; }\n"
+                                                    "</style></head><body style=\" font-family:'Sans Serif'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
+                                                    "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">"
+                                                    "<span style=\" font-size:9pt; font-weight:600;\">  Pixel value :</span></p></body></html>",
+                                                    0, QApplication::UnicodeUTF8));
   ValueLabel->setText(QString());
   ChannelLabel->setText(QString());
   TimeStaticLabel->setText(QApplication::translate("Form",
-  "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-  "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
-  "p, li { white-space: pre-wrap; }\n"
-  "</style></head><body style=\" font-family:'Sans Serif'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
-  "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">"
-  "<span style=\" font-size:9pt; font-weight:600;\">  Time Point :</span></p></body></html>",
-  0, QApplication::UnicodeUTF8));
+                                                   "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+                                                   "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+                                                   "p, li { white-space: pre-wrap; }\n"
+                                                   "</style></head><body style=\" font-family:'Sans Serif'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
+                                                   "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">"
+                                                   "<span style=\" font-size:9pt; font-weight:600;\">  Time Point :</span></p></body></html>",
+                                                   0, QApplication::UnicodeUTF8));
   Q_UNUSED(Form);
 } // retranslateUi
 
-
-void QGoImageInfo::setDimension( const unsigned int& dim )
-  {
+void QGoImageInfo::setDimension(const unsigned int& dim)
+{
   m_Dimension = dim;
-  this->DimensionLabel->setText( QString( "%1" ).arg( m_Dimension ) );
-  m_Size.resize( dim );
-  m_Spacing.resize( dim );
+  this->DimensionLabel->setText(QString("%1").arg(m_Dimension));
+  m_Size.resize(dim);
+  m_Spacing.resize(dim);
 
-  bool space_time = ( dim > 3 );
-  this->TTimeStaticLabel->setVisible( space_time );
-  this->TTimeLabel->setVisible( space_time );
-  this->TimeStaticLabel->setVisible( space_time );
-  this->TimeLabel->setVisible( space_time );
+  bool space_time = (dim > 3);
+  this->TTimeStaticLabel->setVisible(space_time);
+  this->TTimeLabel->setVisible(space_time);
+  this->TimeStaticLabel->setVisible(space_time);
+  this->TimeLabel->setVisible(space_time);
 
-  if ( space_time )
+  if (space_time)
     {
-    m_PPos.resize( 3 );
-    m_WPos.resize( 3 );
+    m_PPos.resize(3);
+    m_WPos.resize(3);
     }
   else
     {
-    m_PPos.resize( dim );
-    m_WPos.resize( dim );
+    m_PPos.resize(dim);
+    m_WPos.resize(dim);
     }
-  }
+}
 
-void QGoImageInfo::setNumberOfChannels( const unsigned int& channel )
-  {
+void QGoImageInfo::setNumberOfChannels(const unsigned int& channel)
+{
   m_Channel = channel;
-  this->ChannelLabel->setText( QString( "%1" ).arg( m_Channel ) );
+  this->ChannelLabel->setText(QString("%1").arg(m_Channel));
 
-  m_Value.resize( m_Channel );
-  }
+  m_Value.resize(m_Channel);
+}
 
-void QGoImageInfo::setMemory( const unsigned long& iMem )
-  {
+void QGoImageInfo::setMemory(const unsigned long& iMem)
+{
   m_Memory = iMem;
 
-  if ( static_cast< double >( m_Memory ) > 1e12 )
+  if (static_cast<double>(m_Memory) > 1e12)
     {
-    this->MemoryLabel->setText( QString( "%1 TB").arg( 1e-12 * static_cast< double >( m_Memory ), 0, 'g', 3 ) );
+    this->MemoryLabel->setText(QString("%1 TB").arg(1e-12 * static_cast<double>(m_Memory), 0, 'g', 3));
     }
   else
     {
-    if ( static_cast< double >( m_Memory ) > 1e9 )
+    if (static_cast<double>(m_Memory) > 1e9)
       {
-      this->MemoryLabel->setText( QString( "%1 GB").arg( 1e-9 * static_cast< double >( m_Memory ), 0, 'g', 3 ) );
+      this->MemoryLabel->setText(QString("%1 GB").arg(1e-9 * static_cast<double>(m_Memory), 0, 'g', 3));
       }
     else
       {
-      if ( static_cast< double >( m_Memory ) > 1e6 )
+      if (static_cast<double>(m_Memory) > 1e6)
         {
-        this->MemoryLabel->setText( QString( "%1 MB").arg( 1e-6 * static_cast< double >( m_Memory ), 0, 'g', 3 ) );
+        this->MemoryLabel->setText(QString("%1 MB").arg(1e-6 * static_cast<double>(m_Memory), 0, 'g', 3));
         }
       else
         {
-        if ( static_cast< double >( m_Memory ) > 1e3 )
+        if (static_cast<double>(m_Memory) > 1e3)
           {
-          this->MemoryLabel->setText( QString( "%1 KB").arg( 1e-3 * static_cast< double >( m_Memory ), 0, 'g', 3 ) );
+          this->MemoryLabel->setText(QString("%1 KB").arg(1e-3 * static_cast<double>(m_Memory), 0, 'g', 3));
           }
         else
           {
-          this->MemoryLabel->setText( QString( "%1").arg( m_Memory ) );
+          this->MemoryLabel->setText(QString("%1").arg(m_Memory));
           }
         }
       }
     }
-  }
+}
 
-void QGoImageInfo::setSize( const std::vector< unsigned int >& iSize )
-  {
-  if ( !m_Size.empty() )
+void QGoImageInfo::setSize(const std::vector<unsigned int>& iSize)
+{
+  if (!m_Size.empty())
     {
-    if ( iSize.size() == m_Dimension )
+    if (iSize.size() == m_Dimension)
       {
       m_Size = iSize;
-      this->SizeLabel->setText( ConvertToQString( m_Size ) );
+      this->SizeLabel->setText(ConvertToQString(m_Size));
       }
     else
       {
-      std::cout <<"iSize.size() != " <<m_Dimension <<std::endl;
+      std::cout << "iSize.size() != " << m_Dimension << std::endl;
       }
     }
   else
     {
-    std::cout <<"Please setDimension first!" <<std::endl;
+    std::cout << "Please setDimension first!" << std::endl;
     }
-  }
+}
 
-void QGoImageInfo::setSpacing( const std::vector< float >& iSpacing )
-  {
-  if ( !m_Spacing.empty() )
+void QGoImageInfo::setSpacing(const std::vector<float>& iSpacing)
+{
+  if (!m_Spacing.empty())
     {
-    if ( iSpacing.size() == m_Dimension )
+    if (iSpacing.size() == m_Dimension)
       {
       m_Spacing = iSpacing;
-      this->SpacingLabel->setText( ConvertToQString( m_Spacing ) );
+      this->SpacingLabel->setText(ConvertToQString(m_Spacing));
       }
     else
       {
-      std::cout <<"iSpacing.size() != " <<m_Dimension <<std::endl;
+      std::cout << "iSpacing.size() != " << m_Dimension << std::endl;
       }
     }
   else
     {
-    std::cout <<"Please setDimension first!" <<std::endl;
+    std::cout << "Please setDimension first!" << std::endl;
     }
-  }
+}
 
-void QGoImageInfo::setPixelPosition( const std::vector< unsigned int >& iPos )
-  {
-  if ( !m_PPos.empty() )
+void QGoImageInfo::setPixelPosition(const std::vector<unsigned int>& iPos)
+{
+  if (!m_PPos.empty())
     {
-    unsigned int len = ( m_Dimension > 3 ) ? 3 : m_Dimension;
-    if ( iPos.size() == len )
+    unsigned int len = (m_Dimension > 3) ? 3 : m_Dimension;
+    if (iPos.size() == len)
       {
       m_PPos = iPos;
-      this->PPositionLabel->setText( ConvertToQString( m_PPos ) );
+      this->PPositionLabel->setText(ConvertToQString(m_PPos));
       }
     else
       {
-      std::cout <<"iPos.size() != " <<len <<std::endl;
+      std::cout << "iPos.size() != " << len << std::endl;
       }
     }
   else
     {
-    std::cout <<"Please setDimension first!" <<std::endl;
+    std::cout << "Please setDimension first!" << std::endl;
     }
-  }
+}
 
-void QGoImageInfo::setWorldPosition( const std::vector< float >& iPos )
-  {
-  if ( !m_WPos.empty() )
+void QGoImageInfo::setWorldPosition(const std::vector<float>& iPos)
+{
+  if (!m_WPos.empty())
     {
-    unsigned int len = ( m_Dimension > 3 ) ? 3 : m_Dimension;
-    if ( iPos.size() == len )
+    unsigned int len = (m_Dimension > 3) ? 3 : m_Dimension;
+    if (iPos.size() == len)
       {
       m_WPos = iPos;
-      this->WPositionLabel->setText( ConvertToQString( m_WPos ) );
+      this->WPositionLabel->setText(ConvertToQString(m_WPos));
       }
     else
       {
-      std::cout <<"iPos.size() != " <<len <<std::endl;
+      std::cout << "iPos.size() != " << len << std::endl;
       }
     }
   else
     {
-    std::cout <<"Please setDimension first!" <<std::endl;
+    std::cout << "Please setDimension first!" << std::endl;
     }
-  }
+}
 
-void QGoImageInfo::setTimePoint( const float& iTime )
-  {
+void QGoImageInfo::setTimePoint(const float& iTime)
+{
   m_TimePoint = iTime;
-  this->TimeLabel->setText( QString( "%1" ).arg( m_TimePoint ) );
-  }
+  this->TimeLabel->setText(QString("%1").arg(m_TimePoint));
+}
 
-void QGoImageInfo::setValue( const std::vector< float >& iVal )
-  {
+void QGoImageInfo::setValue(const std::vector<float>& iVal)
+{
   QString val;
 
-  if ( !m_Value.empty() )
+  if (!m_Value.empty())
     {
-    if ( iVal.size() == m_Channel )
+    if (iVal.size() == m_Channel)
       {
       m_Value = iVal;
-      this->ValueLabel->setText( ConvertToQString( m_Value ) );
+      this->ValueLabel->setText(ConvertToQString(m_Value));
       }
     else
       {
-      std::cout <<"iVal.size() != " <<m_Channel <<std::endl;
+      std::cout << "iVal.size() != " << m_Channel << std::endl;
       }
     }
   else
     {
-    std::cout <<"Please setDimension first!" <<std::endl;
+    std::cout << "Please setDimension first!" << std::endl;
     }
-  }
+}

@@ -61,7 +61,7 @@ class QGoSynchronizedViewManager;
 */
 class QGoSynchronizedView : public QWidget,
   protected Ui::QGoSynchronizedView
-{
+  {
   Q_OBJECT
 
 public:
@@ -77,32 +77,32 @@ public:
 
   /** \brief returns the type of SynchronizedView (2 for 2D, 3 for 3D)
    */
-  virtual int GetSynchronizedViewType( void ) = 0;
+  virtual int GetSynchronizedViewType(void) = 0;
 
   /** \brief get SynchronizedView's name
    */
-  QString* GetName( void );
+  QString* GetName(void);
 
   /** \brief Update the viewer contained in the widget
    */
-  virtual void Update( void );
+  virtual void Update(void);
 
   /** \brief render the viewer contained in the widget if any
    */
-  void Render( void );
+  void Render(void);
 
   /** \brief get the camera of the current viewer
    */
-  vtkCamera* GetCamera( void );
+  vtkCamera* GetCamera(void);
 
   /** \brief print the SynchronizedView information :
    *  it consists in the image information if any.
    */
-  virtual void PrintOs(ostream &os) = 0;
+  virtual void PrintOs(ostream& os) = 0;
 
   /** \brief true if the widget has a viewer
    */
-  bool HasViewer( void );
+  bool HasViewer(void);
 
   /** \brief Set the address of the current QGoSynchronizedViewManager
    */
@@ -111,21 +111,20 @@ public:
 public slots:
   /** \brief Save a snapshot of the displaid view, in a iType file
    */
-  virtual QString SnapshotViewXY( const GoFigure::FileType& iType,
-    const QString& iBaseName = tr( "Snapshot" ) ) = 0;
-
+  virtual QString SnapshotViewXY(const GoFigure::FileType& iType,
+                                 const QString& iBaseName = tr("Snapshot")) = 0;
 
 protected:
   /** \brief Qt change event function
    */
   void changeEvent(QEvent *e);
 
-  QString                           m_currentViewName;
-  vtkImageData*                     m_currentImage;
-  QString                           m_currentImageName;
-  QGoImageView*                     m_currentView;
-  QGoSynchronizedViewManager*       m_currentViewManager;
-  vtkEventQtSlotConnect*            m_VTKEventQtConnector;
+  QString                     m_currentViewName;
+  vtkImageData*               m_currentImage;
+  QString                     m_currentImageName;
+  QGoImageView*               m_currentView;
+  QGoSynchronizedViewManager* m_currentViewManager;
+  vtkEventQtSlotConnect*      m_VTKEventQtConnector;
 
 private slots:
   // the QMetaObject::connectSlotsByName(SynchronizedView)
@@ -134,11 +133,11 @@ private slots:
 private:
   /** delete the viewer contained in the widget
    */
-  void deleteViewer( void );
+  void deleteViewer(void);
 
   /** create the viewer contained in the widget
    */
-  virtual void createViewer( void ) = 0;
-};
+  virtual void createViewer(void) = 0;
+  };
 
 #endif //__QGoSynchronizedView_h

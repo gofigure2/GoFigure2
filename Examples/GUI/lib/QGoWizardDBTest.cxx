@@ -42,34 +42,34 @@
 #include <QTimer>
 
 #include "QGoWizardDB.h"
- 
- int main(int argc, char *argv[])
- {
-  if( argc != 2 )
+
+int main(int argc, char *argv[])
+{
+  if (argc != 2)
     {
-    std::cerr <<"QGoWizardTest requires 1 argument:" <<std::endl;
-    std::cerr <<"1-test (boolean)" <<std::endl;
+    std::cerr << "QGoWizardTest requires 1 argument:" << std::endl;
+    std::cerr << "1-test (boolean)" << std::endl;
     return EXIT_FAILURE;
     }
 
   //Q_INIT_RESOURCE(qgocreatedb);
-  QApplication app( argc, argv );
+  QApplication app(argc, argv);
   QCoreApplication::setOrganizationName("MegasonLab");
-  QCoreApplication::setOrganizationDomain( "http://gofigure2.sourceforge.net" );
+  QCoreApplication::setOrganizationDomain("http://gofigure2.sourceforge.net");
 
   QGoWizardDB* wizard = new QGoWizardDB;
   wizard->show();
 
   QTimer* timer = new QTimer;
-  timer->setSingleShot( true );
-  QObject::connect( timer, SIGNAL( timeout() ), wizard, SLOT( close() ) );
+  timer->setSingleShot(true);
+  QObject::connect(timer, SIGNAL(timeout()), wizard, SLOT(close()));
 
-  int output;
-  bool test = ( atoi( argv[1] ) == 1 );
+  int  output;
+  bool test = (atoi(argv[1]) == 1);
 
-  if( test )
+  if (test)
     {
-    timer->start( 1000 );
+    timer->start(1000);
     output = EXIT_SUCCESS;
     }
   else
@@ -77,16 +77,16 @@
     output = app.exec();
     }
 
-  if( !test )
+  if (!test)
     {
     std::vector<std::vector<std::string> > filenames = wizard->GetFilenamesFromDB();
 
-    for (unsigned int i =0; i < filenames.size(); i++)
+    for (unsigned int i = 0; i < filenames.size(); i++)
       {
-      for (unsigned int j = 0; j < filenames[i].size();j++)
+      for (unsigned int j = 0; j < filenames[i].size(); j++)
         {
-        std::cout<<"image filename with channel "
-          <<i <<" " <<filenames[i][j].c_str()<<std::endl;
+        std::cout << "image filename with channel "
+                  << i << " " << filenames[i][j].c_str() << std::endl;
         }
       }
     }
@@ -95,5 +95,4 @@
   delete timer;
 
   return output;
- }
-
+}

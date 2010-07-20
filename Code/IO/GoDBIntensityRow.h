@@ -49,22 +49,22 @@
 
 /**
 \class GoDBIntensityRow
-\brief 
+\brief
 */
 class QGOIO_EXPORT GoDBIntensityRow : public GoDBRow
-{
+  {
 public:
   GoDBIntensityRow();
-   
+
   ~GoDBIntensityRow();
 
-  /** \brief check if the intensity already exits in the database, if yes, 
+  /** \brief check if the intensity already exits in the database, if yes,
   return the corresponding ID, if not, return -1*/
   int DoesThisIntensityAlreadyExists(vtkMySQLDatabase* DatabaseConnector);
-  
+
   int SaveInDB(vtkMySQLDatabase* DatabaseConnector);
 protected:
   virtual void InitializeMap();
-};
+  };
 
 #endif

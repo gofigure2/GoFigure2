@@ -55,36 +55,36 @@
 \todo define \code std::map< std::string, std::string > \endcode
 */
 class QGOIO_EXPORT GoDBRow
-{
+  {
 public:
 
-  typedef std::map< std::string, std::string >  StringMapType;
-  typedef StringMapType::iterator               StringMapIterator;
-  typedef StringMapType::const_iterator         StringMapConstIterator;
+  typedef std::map<std::string, std::string> StringMapType;
+  typedef StringMapType::iterator            StringMapIterator;
+  typedef StringMapType::const_iterator      StringMapConstIterator;
 
   GoDBRow();
   virtual ~GoDBRow();
 
   template<typename T>
-  void SetField( std::string key, T value )
-    {
-    StringMapIterator it = m_MapRow.find( key );
+  void SetField(std::string key, T value)
+  {
+    StringMapIterator it = m_MapRow.find(key);
 
-    if( it != m_MapRow.end() )
+    if (it != m_MapRow.end())
       {
       it->second = ConvertToString<T>(value);
       }
     else
       {
-      std::cerr <<"This field does not exist!!!" <<std::endl;
+      std::cerr << "This field does not exist!!!" << std::endl;
       }
-    }
+  }
 
   /**
   \brief set value as the value of map[key] after having put " at the beginning
   and at the end of the string, as value is a string and it will be needed for
   the database queries */
-  void SetField( std::string key, std::string value );
+  void SetField(std::string key, std::string value);
 
   std::string GetTableName();
   std::string GetTableIDName();
@@ -102,29 +102,28 @@ public:
   \brief return the value for the field map[key] after having removed the "
   at the beginning and at the end of the value if it is a string in order to get
   the original value. */
-  std::string GetMapValue (std::string key);
+  std::string GetMapValue(std::string key);
 
-  friend std::ostream& operator << ( std::ostream& os, const GoDBRow& c )
-    {
-    for( StringMapConstIterator it = c.m_MapRow.begin();
-        it != c.m_MapRow.end();
-        ++it )
+  friend std::ostream& operator <<(std::ostream& os, const GoDBRow& c)
+  {
+    for (StringMapConstIterator it = c.m_MapRow.begin();
+         it != c.m_MapRow.end();
+         ++it)
       {
-      os <<it->first <<" = " <<it->second <<std::endl;
+      os << it->first << " = " << it->second << std::endl;
       }
 
     return os;
-    }
+  }
 
-  void SetValuesForSpecificID(int ID,vtkMySQLDatabase* iDatabaseConnector);
+  void SetValuesForSpecificID(int ID, vtkMySQLDatabase* iDatabaseConnector);
 
 protected:
   virtual void InitializeMap() = 0;
   StringMapType m_MapRow;
-  std::string m_TableName;
-  std::string m_TableIDName;
+  std::string   m_TableName;
+  std::string   m_TableIDName;
 
-};
+  };
 
 #endif
-

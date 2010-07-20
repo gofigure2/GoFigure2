@@ -44,67 +44,67 @@
 #include "vtkSmartPointer.h"
 
 GoDBTraceRow::GoDBTraceRow()
-{
+  {
   this->InitializeMap();
-}
+  }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 GoDBTraceRow::GoDBTraceRow(vtkMySQLDatabase* DatabaseConnector,
-  vtkPolyData* TraceVisu,GoDBCoordinateRow Min, GoDBCoordinateRow Max,
-  unsigned int ImgSessionID)
-{
+                           vtkPolyData* TraceVisu, GoDBCoordinateRow Min, GoDBCoordinateRow Max,
+                           unsigned int ImgSessionID)
+  {
   this->InitializeMap();
   //this->CreateBoundingBox(DatabaseConnector,Min,Max);
   this->m_MapRow["ImagingSessionID"] =
     ConvertToString<unsigned int>(ImgSessionID);
-  this->SetTheDataFromTheVisu(DatabaseConnector,TraceVisu,Min,Max);
+  this->SetTheDataFromTheVisu(DatabaseConnector, TraceVisu, Min, Max);
   //vtkSmartPointer<vtkPolyDataMySQLTextWriter> convert =
   //  vtkSmartPointer<vtkPolyDataMySQLTextWriter>::New();
- // std::string PointsString = convert->GetMySQLText(TraceVisu);
+  // std::string PointsString = convert->GetMySQLText(TraceVisu);
 
- // this->SetField("Points",PointsString);
-}
+  // this->SetField("Points",PointsString);
+  }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void GoDBTraceRow::SetTheDataFromTheVisu(vtkMySQLDatabase* DatabaseConnector,
-   vtkPolyData* TraceVisu,GoDBCoordinateRow Min,GoDBCoordinateRow Max)
+                                         vtkPolyData* TraceVisu, GoDBCoordinateRow Min, GoDBCoordinateRow Max)
 {
-  this->CreateBoundingBox(DatabaseConnector,Min,Max);
+  this->CreateBoundingBox(DatabaseConnector, Min, Max);
   vtkSmartPointer<vtkPolyDataMySQLTextWriter> convert =
-  vtkSmartPointer<vtkPolyDataMySQLTextWriter>::New();
+    vtkSmartPointer<vtkPolyDataMySQLTextWriter>::New();
   std::string PointsString = convert->GetMySQLText(TraceVisu);
-  this->SetField("Points",PointsString);
+  this->SetField("Points", PointsString);
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 GoDBTraceRow::GoDBTraceRow(unsigned int ImgSessionID)
-{
+  {
   this->InitializeMap();
   this->m_MapRow["ImagingSessionID"] =
     ConvertToString<unsigned int>(ImgSessionID);
-}
+  }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 GoDBTraceRow::GoDBTraceRow(vtkMySQLDatabase* DatabaseConnector,
-  std::string TraceVisu,GoDBCoordinateRow Min, GoDBCoordinateRow Max,
-  unsigned int ImgSessionID)
-{
+                           std::string TraceVisu, GoDBCoordinateRow Min, GoDBCoordinateRow Max,
+                           unsigned int ImgSessionID)
+  {
   this->InitializeMap();
-  this->CreateBoundingBox(DatabaseConnector,Min,Max);
+  this->CreateBoundingBox(DatabaseConnector, Min, Max);
   this->m_MapRow["ImagingSessionID"] =
     ConvertToString<unsigned int>(ImgSessionID);
 
-  this->SetField("Points",TraceVisu);
-}
+  this->SetField("Points", TraceVisu);
+  }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void GoDBTraceRow::InitializeMap()
-{ 
+{
   this->m_MapRow["ImagingSessionID"] = ConvertToString<int>(0);
   this->m_MapRow["ColorID"] = ConvertToString<int>(1);
   this->m_MapRow["CoordIDMax"] = ConvertToString<int>(0);
@@ -116,7 +116,7 @@ void GoDBTraceRow::InitializeMap()
 
 //-------------------------------------------------------------------------
 void GoDBTraceRow::CreateBoundingBox(vtkMySQLDatabase* DatabaseConnector,
-  GoDBCoordinateRow Min,GoDBCoordinateRow Max)
+                                     GoDBCoordinateRow Min, GoDBCoordinateRow Max)
 {
   int CoordMin = Min.DoesThisCoordinateExist(DatabaseConnector);
   if (CoordMin == -1)
@@ -138,23 +138,23 @@ void GoDBTraceRow::CreateBoundingBox(vtkMySQLDatabase* DatabaseConnector,
 int GoDBTraceRow::DoesThisBoundingBoxExist(
   vtkMySQLDatabase* DatabaseConnector)
 {
-  return FindOneID(DatabaseConnector,this->m_TableName,
-    this->m_TableIDName,"CoordIDMax",this->GetMapValue("CoordIDMax"),
-    "CoordIDMin",this->GetMapValue("CoordIDMin"),"ImagingSessionID",
-    this->GetMapValue("ImagingSessionID"));
+  return FindOneID(DatabaseConnector, this->m_TableName,
+                   this->m_TableIDName, "CoordIDMax", this->GetMapValue("CoordIDMax"),
+                   "CoordIDMin", this->GetMapValue("CoordIDMin"), "ImagingSessionID",
+                   this->GetMapValue("ImagingSessionID"));
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void GoDBTraceRow::SetColor(unsigned int Red, unsigned int Green,
-  unsigned int Blue,unsigned int Alpha, std::string ColorName,
-  vtkMySQLDatabase* DatabaseConnector)
+                            unsigned int Blue, unsigned int Alpha, std::string ColorName,
+                            vtkMySQLDatabase* DatabaseConnector)
 {
   GoDBColorRow ColorRow;
-  ColorRow.SetField<int>("Red",Red);
-  ColorRow.SetField<int>("Green",Green);
-  ColorRow.SetField<int>("Blue",Blue);
-  ColorRow.SetField<int>("Alpha",Alpha);
+  ColorRow.SetField<int>("Red", Red);
+  ColorRow.SetField<int>("Green", Green);
+  ColorRow.SetField<int>("Blue", Blue);
+  ColorRow.SetField<int>("Alpha", Alpha);
   ColorRow.SetField("Name", ColorName);
   int ColorID = ColorRow.DoesThisColorAlreadyExists(DatabaseConnector);
   if (ColorID == -1)
@@ -163,7 +163,7 @@ void GoDBTraceRow::SetColor(unsigned int Red, unsigned int Green,
     }
   else
     {
-    this->SetField<int>("ColorID",ColorID);
+    this->SetField<int>("ColorID", ColorID);
     }
 }
 //-------------------------------------------------------------------------

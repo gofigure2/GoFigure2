@@ -44,13 +44,12 @@
 #include "QGoDBInitCreateMicroscopePage.h"
 
 QGoDBInitializationWizard::QGoDBInitializationWizard(QWidget *iParent)
-: QWizard( iParent )
-{
-   this->m_CreateUserPage = new QGoDBInitCreateUserPage;
-   setPage(CreateUserPageID, this->m_CreateUserPage);
-   setPage(CreateAuthorsPageID, new QGoDBInitCreateAuthorsPage);
-   setPage(CreateMicroscopePageID, new QGoDBInitCreateMicroscopePage);
-   QObject::connect(this->m_CreateUserPage,SIGNAL(UserAndDatabaseCreated()),
-     this,SIGNAL(DatabaseAndUserCreated()));
-}
-
+  : QWizard(iParent)
+  {
+  this->m_CreateUserPage = new QGoDBInitCreateUserPage;
+  setPage(CreateUserPageID, this->m_CreateUserPage);
+  setPage(CreateAuthorsPageID, new QGoDBInitCreateAuthorsPage);
+  setPage(CreateMicroscopePageID, new QGoDBInitCreateMicroscopePage);
+  QObject::connect(this->m_CreateUserPage, SIGNAL(UserAndDatabaseCreated()),
+                   this, SIGNAL(DatabaseAndUserCreated()));
+  }

@@ -52,11 +52,10 @@
 #include "QueryDataBaseHelper.h"
 #include "ConvertToStringHelper.h"
 
-
-QGoDeleteDBEntityDialog::QGoDeleteDBEntityDialog( QWidget* iParent,
-  std::string iEntityName,int iImgSessionID, 
-  vtkMySQLDatabase* iDatabaseConnector):QDialog(iParent)
-{
+QGoDeleteDBEntityDialog::QGoDeleteDBEntityDialog(QWidget* iParent,
+                                                 std::string iEntityName, int iImgSessionID,
+                                                 vtkMySQLDatabase* iDatabaseConnector) : QDialog(iParent)
+  {
   this->m_EntityName = iEntityName;
   this->m_ImgSessionID = iImgSessionID;
   this->m_DatabaseConnector = iDatabaseConnector;
@@ -65,21 +64,21 @@ QGoDeleteDBEntityDialog::QGoDeleteDBEntityDialog( QWidget* iParent,
   this->m_ListWidget->setSelectionMode(QAbstractItemView::MultiSelection);
 
   QDialogButtonBox* ButtonBox = new QDialogButtonBox(QDialogButtonBox::Ok
-                                      | QDialogButtonBox::Cancel);
+                                                     | QDialogButtonBox::Cancel);
   QObject::connect(ButtonBox, SIGNAL(rejected()), this, SLOT(reject()));
-  QObject::connect(ButtonBox,SIGNAL(accepted()), this, SLOT(SelectionValidation()));
+  QObject::connect(ButtonBox, SIGNAL(accepted()), this, SLOT(SelectionValidation()));
   QVBoxLayout* vlayout = new QVBoxLayout(this);
   vlayout->addWidget(this->m_ListWidget);
   vlayout->addWidget(ButtonBox);
   this->setWindowTitle(tr("Delete a %1").arg(this->m_EntityName.c_str()));
   this->setLayout(vlayout);
-}
+  }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 QGoDeleteDBEntityDialog::~QGoDeleteDBEntityDialog()
-{
-}
+  {
+  }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
@@ -88,23 +87,23 @@ QStringList QGoDeleteDBEntityDialog::GetListExistingEntities(
 {
   QStringList ListEntities;
 
-  if( iDatabaseConnector )
+  if (iDatabaseConnector)
     {
     std::vector<std::string> ResultsQuery;
     // if m_ImgSessionID = 0, the entity name is not related to an imagingsession
     if (this->m_ImgSessionID != 0)
       {
       ResultsQuery = ListSpecificValuesForOneColumn(
-        iDatabaseConnector,this->m_EntityName,"Name","ImagingSessionID",
-        ConvertToString<int>(this->m_ImgSessionID),"Name");
+        iDatabaseConnector, this->m_EntityName, "Name", "ImagingSessionID",
+        ConvertToString<int>(this->m_ImgSessionID), "Name");
       }
     else
       {
       ResultsQuery = ListAllValuesForOneColumn(iDatabaseConnector,
-        "Name",this->m_EntityName);
+                                               "Name", this->m_EntityName);
       }
 
-    for( size_t i = 0; i < ResultsQuery.size(); i++ )
+    for (size_t i = 0; i < ResultsQuery.size(); i++)
       {
       ListEntities.append(ResultsQuery[i].c_str());
       }
@@ -118,63 +117,63 @@ QStringList QGoDeleteDBEntityDialog::GetListExistingEntities(
 void QGoDeleteDBEntityDialog::SetItemsInTheList(
   vtkMySQLDatabase* iDatabaseConnector)
 {
- QStringList ListNamesEntities 
-   = this->GetListExistingEntities( iDatabaseConnector );
- for( int i = 0; i < ListNamesEntities.size(); i++ )
-   {
-   QListWidgetItem* item
-      = new QListWidgetItem( ListNamesEntities.at(i), this->m_ListWidget );
+  QStringList ListNamesEntities
+    = this->GetListExistingEntities(iDatabaseConnector);
+  for (int i = 0; i < ListNamesEntities.size(); i++)
+    {
+    QListWidgetItem* item
+      = new QListWidgetItem(ListNamesEntities.at(i), this->m_ListWidget);
 
-   // unused variable
-   (void) item;
-   }
+    // unused variable
+    (void) item;
+    }
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void QGoDeleteDBEntityDialog::SelectionValidation()
 {
- QList<QListWidgetItem*> ListEntitiesToDelete = 
+  QList<QListWidgetItem*> ListEntitiesToDelete =
     this->m_ListWidget->selectedItems();
- if (!ListEntitiesToDelete.empty())
-   {
-   QMessageBox msgBox;
-   msgBox.setText(
-     tr("Are you sure you want to delete these %1s ?")
-     .arg(this->m_EntityName.c_str()));
-   msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-   int r = msgBox.exec(); 
-   if(r == 16384)
-     {
-     DeleteSelection(ListEntitiesToDelete);
-     this->accept();
-     }
-   else
-     {
-     msgBox.close();
-     }
-   }
- else
-   {
-   QMessageBox msgBox;
-   msgBox.setText(
-     tr("Please select at least one %1.")
-     .arg(this->m_EntityName.c_str()));
-   msgBox.exec();
-   }
+  if (!ListEntitiesToDelete.empty())
+    {
+    QMessageBox msgBox;
+    msgBox.setText(
+      tr("Are you sure you want to delete these %1s ?")
+      .arg(this->m_EntityName.c_str()));
+    msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+    int r = msgBox.exec();
+    if (r == 16384)
+      {
+      DeleteSelection(ListEntitiesToDelete);
+      this->accept();
+      }
+    else
+      {
+      msgBox.close();
+      }
+    }
+  else
+    {
+    QMessageBox msgBox;
+    msgBox.setText(
+      tr("Please select at least one %1.")
+      .arg(this->m_EntityName.c_str()));
+    msgBox.exec();
+    }
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoDeleteDBEntityDialog::DeleteSelection( 
-  QList<QListWidgetItem*> iListEntitiesToDelete )
-{ 
+void QGoDeleteDBEntityDialog::DeleteSelection(
+  QList<QListWidgetItem*> iListEntitiesToDelete)
+{
   std::vector<std::string> VectorNamesToDelete;
-  for (int i=0; i<iListEntitiesToDelete.size();i++)
+  for (int i = 0; i < iListEntitiesToDelete.size(); i++)
     {
     VectorNamesToDelete.push_back(iListEntitiesToDelete.at(i)->text().toStdString());
-    }  
-  DeleteRows(this->m_DatabaseConnector,this->m_EntityName, 
-  "Name", VectorNamesToDelete);
+    }
+  DeleteRows(this->m_DatabaseConnector, this->m_EntityName,
+             "Name", VectorNamesToDelete);
   emit ListEntitiesChanged();
 }

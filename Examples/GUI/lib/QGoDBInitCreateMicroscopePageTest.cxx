@@ -48,28 +48,28 @@
 //                               MAIN                                       //
 //**************************************************************************//
 
-int main( int argc, char *argv[] )
+int main(int argc, char *argv[])
 {
-  if( argc != 2 )
+  if (argc != 2)
     {
-    std::cout <<"Usage : ./VideoRecorderTest " <<std::endl;
-    std::cout << "1-test (boolean)" <<std::endl;
+    std::cout << "Usage : ./VideoRecorderTest " << std::endl;
+    std::cout << "1-test (boolean)" << std::endl;
     return EXIT_FAILURE;
     }
 
   QApplication app(argc, argv);
-  QTimer* timer = new QTimer;
-  timer->setSingleShot( true );
+  QTimer*      timer = new QTimer;
+  timer->setSingleShot(true);
 
-  QGoDBInitCreateAuthorsPage* window = new QGoDBInitCreateAuthorsPage( NULL );
+  QGoDBInitCreateAuthorsPage* window = new QGoDBInitCreateAuthorsPage(NULL);
   //window->validatePage();
   window->SetDatabaseVariables("user", "password");
 
-  QObject::connect( timer, SIGNAL( timeout() ), window, SLOT( close() ) );
+  QObject::connect(timer, SIGNAL(timeout()), window, SLOT(close()));
 
-  if( atoi( argv[1] ) == 1 )
+  if (atoi(argv[1]) == 1)
     {
-    timer->start( 1000 );
+    timer->start(1000);
     }
 
   window->show();

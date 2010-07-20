@@ -57,7 +57,7 @@
 \brief
 */
 class QGOIO_EXPORT GoDBMeshRow : public GoDBTraceRow
-{
+  {
 public:
   GoDBMeshRow();
   /** \brief fill the mesh map with the values gotten from the visualization*/
@@ -65,44 +65,44 @@ public:
     GoDBCoordinateRow Min, GoDBCoordinateRow Max, unsigned int ImgSessionID,
     vtkPolyData* TraceVisu);*/
 
-  explicit GoDBMeshRow( vtkMySQLDatabase* DatabaseConnector,
-    vtkPolyData* TraceVisu, GoDBCoordinateRow Min, GoDBCoordinateRow Max,
-    unsigned int ImgSessionID, GoFigureMeshAttributes* iMeshAttributes = 0 );
+  explicit GoDBMeshRow(vtkMySQLDatabase* DatabaseConnector,
+                       vtkPolyData* TraceVisu, GoDBCoordinateRow Min, GoDBCoordinateRow Max,
+                       unsigned int ImgSessionID, GoFigureMeshAttributes* iMeshAttributes = 0);
 
-  GoDBMeshRow( const GoDBMeshRow& iRow );
+  GoDBMeshRow(const GoDBMeshRow &iRow);
   GoDBMeshRow(unsigned int ImagingSessionID);
-  
+
   ~GoDBMeshRow();
-  
+
   //int DoesThisBoundingBoxMeshExist(vtkMySQLDatabase* DatabaseConnector);
   void SetCellType(vtkMySQLDatabase* DatabaseConnector,
-    std::string CellTypeName);
+                   std::string CellTypeName);
   void SetSubCellType(vtkMySQLDatabase* DatabaseConnector,
-    std::string SubCellTypeName);
+                      std::string SubCellTypeName);
 
   /** \brief save the mesh in the database and return the ID of the new
   created mesh if the meshID of the GoDBMeshRow is still 0 or update
   the corresponding meshID in the database with the values from the map
   if the meshID has been changed*/
   int SaveInDB(vtkMySQLDatabase* DatabaseConnector);
-  
-  void SetCollectionID (int iCollectionID);
+
+  void SetCollectionID(int iCollectionID);
 
   void ReInitializeMapAfterCast();
 
   void SaveInDBTotalIntensityPerChannel(vtkMySQLDatabase* DatabaseConnector,
-      std::map<std::string,int> iNameChannelWithValues);
+                                        std::map<std::string, int> iNameChannelWithValues);
 
-  void SafeDownCast( GoDBTraceRow& iRow );
+  void SafeDownCast(GoDBTraceRow& iRow);
 
   void SetTheDataFromTheVisu(vtkMySQLDatabase* DatabaseConnector,
-   vtkPolyData* TraceVisu,GoDBCoordinateRow Min,
-   GoDBCoordinateRow Max,GoFigureMeshAttributes* iMeshAttributes = 0 );
+                             vtkPolyData* TraceVisu, GoDBCoordinateRow Min,
+                             GoDBCoordinateRow Max, GoFigureMeshAttributes* iMeshAttributes = 0);
 
 protected:
   virtual void InitializeMap();
-  std::map<std::string,int> m_NameChannelWithValues;
+  std::map<std::string, int> m_NameChannelWithValues;
 
-};
+  };
 
 #endif

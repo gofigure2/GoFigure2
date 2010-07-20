@@ -12,7 +12,7 @@
  #else
   #define QGOGUILIB_EXPORT Q_DECL_IMPORT
  #endif
- 
+
 #else
 
   #define QGOGUILIB_EXPORT

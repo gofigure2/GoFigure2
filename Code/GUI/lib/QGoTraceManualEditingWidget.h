@@ -55,54 +55,54 @@
 class QGOGUILIB_EXPORT QGoTraceManualEditingWidget :
   public QWidget,
   private Ui::QGoTraceManualEditingWidget
-{
+  {
   Q_OBJECT
 
-  public:
-    explicit QGoTraceManualEditingWidget( QWidget* parent = 0);
-    ~QGoTraceManualEditingWidget();
-    
-    int GetCurrentCollectionID ();
-    void SetEnableTraceCollectionColorBoxes(bool Enable);
-    std::string GetCurrentColor();
-    std::string GetCurrentCellType();
-    std::string GetCurrentSubCellType();
+public:
+  explicit QGoTraceManualEditingWidget(QWidget* parent = 0);
+  ~QGoTraceManualEditingWidget();
 
-    void UpdateTraceAndCollection(
-      std::string iTrace, std::string iCollection);
+  int GetCurrentCollectionID();
+  void SetEnableTraceCollectionColorBoxes(bool Enable);
+  std::string GetCurrentColor();
+  std::string GetCurrentCellType();
+  std::string GetCurrentSubCellType();
 
-    QtColorComboBox* ColorComboBox;
-    QtColorComboBox* ColorIDCollectionComboBox;
-    QComboBox*       m_ChoseCellType;
-    QComboBox*       m_ChoseSubCellType;
-    QLabel* TraceName;
-    QLabel* CollectionName;
+  void UpdateTraceAndCollection(
+    std::string iTrace, std::string iCollection);
 
-  public slots:
-    void SetCollectionID(
-      std::list<std::pair<std::string,QColor> > iListExistingID);
-    void SetListCellTypes(QStringList iListCellTypes);
-    void SetListSubCellTypes(QStringList iListSubCellTypes);
-    void CheckUserAction(QString iCellTypeText);
-    void CheckUserActionSubCell(QString iSubCellTypeText);
-    void SetCurrentCellType(std::string iSubCellTypeText);
-    void SetCurrentSubCellType(std::string iSubCellTypeText);
+  QtColorComboBox* ColorComboBox;
+  QtColorComboBox* ColorIDCollectionComboBox;
+  QComboBox*       m_ChoseCellType;
+  QComboBox*       m_ChoseSubCellType;
+  QLabel*          TraceName;
+  QLabel*          CollectionName;
 
-  signals:
-    void AddANewCellType();
-    void DeleteCellType();
-    void AddANewSubCellType();
-    void DeleteSubCellType();
-    void ListSubCellTypesReady();
-    void ListCellTypesReady();
+public slots:
+  void SetCollectionID(
+    std::list<std::pair<std::string, QColor> > iListExistingID);
+  void SetListCellTypes(QStringList iListCellTypes);
+  void SetListSubCellTypes(QStringList iListSubCellTypes);
+  void CheckUserAction(QString iCellTypeText);
+  void CheckUserActionSubCell(QString iSubCellTypeText);
+  void SetCurrentCellType(std::string iSubCellTypeText);
+  void SetCurrentSubCellType(std::string iSubCellTypeText);
 
-  protected:
-    std::list<std::pair<std::string,std::vector<int> > > m_DataColors;
-    void SetColorComboBox();
-    void SetTraceColorIDCollectionComboBox();
-    void SetCellTypeComboBox();
-    void SetSubCellTypeComboBox();
-    QHBoxLayout* HLayoutForColor;
-    QVBoxLayout* VLayoutForCollection;
-};
+signals:
+  void AddANewCellType();
+  void DeleteCellType();
+  void AddANewSubCellType();
+  void DeleteSubCellType();
+  void ListSubCellTypesReady();
+  void ListCellTypesReady();
+
+protected:
+  std::list<std::pair<std::string, std::vector<int> > > m_DataColors;
+  void SetColorComboBox();
+  void SetTraceColorIDCollectionComboBox();
+  void SetCellTypeComboBox();
+  void SetSubCellTypeComboBox();
+  QHBoxLayout* HLayoutForColor;
+  QVBoxLayout* VLayoutForCollection;
+  };
 #endif

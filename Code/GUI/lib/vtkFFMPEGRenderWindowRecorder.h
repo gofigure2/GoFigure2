@@ -48,17 +48,16 @@
 #include "vtkObject.h"
 
 class vtkFFMPEGRenderWindowRecorder : public vtkRenderWindowMovieRecorder
-{
-   public:
-      static vtkFFMPEGRenderWindowRecorder *New();
-      vtkTypeMacro(vtkFFMPEGRenderWindowRecorder, vtkRenderWindowMovieRecorder);
-     // set/get the quality of the video
+  {
+public:
+  static vtkFFMPEGRenderWindowRecorder *New();
+  vtkTypeMacro(vtkFFMPEGRenderWindowRecorder, vtkRenderWindowMovieRecorder);
+  // set/get the quality of the video
 
-     void SetSpecificParameters();
+  void SetSpecificParameters();
 
-
-   protected:
-     vtkFFMPEGRenderWindowRecorder();
-     ~vtkFFMPEGRenderWindowRecorder();
-};
+protected:
+  vtkFFMPEGRenderWindowRecorder();
+  ~vtkFFMPEGRenderWindowRecorder();
+  };
 #endif

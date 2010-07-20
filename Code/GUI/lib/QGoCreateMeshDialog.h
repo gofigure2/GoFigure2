@@ -50,46 +50,45 @@
 #include "QGoGUILibConfigure.h"
 
 class QGOGUILIB_EXPORT QGoCreateMeshDialog : public QDialog
-{
+  {
   Q_OBJECT
 
 public:
-  explicit QGoCreateMeshDialog( QWidget* parent = 0 );
+  explicit QGoCreateMeshDialog(QWidget* parent = 0);
   virtual ~QGoCreateMeshDialog();
-
 
 public slots:
   // void ChangeLookupTable( const int& );
 
 protected:
-  
-  QDialogButtonBox*  ButtonBox;
+
+  QDialogButtonBox* ButtonBox;
   /*QVBoxLayout*       VLayoutLabel;
   QVBoxLayout*       VLayoutCombobox;
   QVBoxLayout*       VLayoutDescription;
   QHBoxLayout*       HorizontalLayout;*/
-  QGridLayout*       GridLayout;
-  QSpacerItem*       HorizontalSpacer;
-  QLabel*            LineCellType;
-  QLabel*            LineSubCellType;
-  QLabel*            LineColor;
-  QComboBox*         SelectCellType;
-  QComboBox*         SelectSubCellType;
-  QComboBox*         SelectColor;
+  QGridLayout* GridLayout;
+  QSpacerItem* HorizontalSpacer;
+  QLabel*      LineCellType;
+  QLabel*      LineSubCellType;
+  QLabel*      LineColor;
+  QComboBox*   SelectCellType;
+  QComboBox*   SelectSubCellType;
+  QComboBox*   SelectColor;
   //QTextEdit*         DescriptionCell;
   //QTextEdit*         DescriptionSubCell;
   //QTextEdit*         DescriptionColor;
-  QLineEdit*            DescriptionCell;
-  QLineEdit*            DescriptionSubCell;
-  QLineEdit*            DescriptionColor;
-  QScrollArea*       ScrollDescrCell;
-  QScrollArea*       ScrollDescrSubCell;
-  QScrollArea*       ScrollDescrColor;
-  QPushButton*       OkButton;
-  QPushButton*       CancelButton;
-  QPushButton*       NewCellType;
-  QPushButton*       NewSubCellType;
-  QPushButton*       NewColor;
+  QLineEdit*   DescriptionCell;
+  QLineEdit*   DescriptionSubCell;
+  QLineEdit*   DescriptionColor;
+  QScrollArea* ScrollDescrCell;
+  QScrollArea* ScrollDescrSubCell;
+  QScrollArea* ScrollDescrColor;
+  QPushButton* OkButton;
+  QPushButton* CancelButton;
+  QPushButton* NewCellType;
+  QPushButton* NewSubCellType;
+  QPushButton* NewColor;
 
-};
+  };
 #endif

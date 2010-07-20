@@ -54,55 +54,55 @@
 
 namespace itk
 {
-template< class TInput, class TOutput >
+template<class TInput, class TOutput>
 class vtkPolyDataToBinaryMaskImageFilter :
-  public ImageToImageFilter< TInput, TOutput >
-{
-  public:
-    typedef vtkPolyDataToBinaryMaskImageFilter    Self;
-    typedef ImageToImageFilter< TInput, TOutput > Superclass;
-    typedef SmartPointer< Self >                  Pointer;
-    typedef SmartPointer< const Self >            ConstPointer;
+  public ImageToImageFilter<TInput, TOutput>
+  {
+public:
+  typedef vtkPolyDataToBinaryMaskImageFilter  Self;
+  typedef ImageToImageFilter<TInput, TOutput> Superclass;
+  typedef SmartPointer<Self>                  Pointer;
+  typedef SmartPointer<const Self>            ConstPointer;
 
-    /** Method for creation through object factory */
-    itkNewMacro( Self );
+  /** Method for creation through object factory */
+  itkNewMacro(Self);
 
-    /** Run-time type information */
-    itkTypeMacro( vtkPolyDataToBinaryMaskImageFilter, ImageToImageFilter );
+  /** Run-time type information */
+  itkTypeMacro(vtkPolyDataToBinaryMaskImageFilter, ImageToImageFilter);
 
-    typedef TInput                                  InputImageType;
-    typedef typename InputImageType::Pointer        InputImagePointer;
-    typedef typename InputImageType::ConstPointer   InputImageConstPointer;
-    typedef typename InputImageType::SizeType       InputImageSizeType;
-    typedef typename InputImageType::SpacingType    InputImageSpacingType;
+  typedef TInput                                InputImageType;
+  typedef typename InputImageType::Pointer      InputImagePointer;
+  typedef typename InputImageType::ConstPointer InputImageConstPointer;
+  typedef typename InputImageType::SizeType     InputImageSizeType;
+  typedef typename InputImageType::SpacingType  InputImageSpacingType;
 
-    itkStaticConstMacro( ImageDimension, unsigned int,
-                         InputImageType::ImageDimension );
+  itkStaticConstMacro(ImageDimension, unsigned int,
+                      InputImageType::ImageDimension);
 
-    typedef TOutput                                 BinaryMaskImageType;
-    typedef typename BinaryMaskImageType::Pointer   BinaryMaskImagePointer;
+  typedef TOutput                               BinaryMaskImageType;
+  typedef typename BinaryMaskImageType::Pointer BinaryMaskImagePointer;
 
-    typedef VTKImageImport< BinaryMaskImageType >   ImageImportType;
-    typedef typename ImageImportType::Pointer       ImageImportPointer;
+  typedef VTKImageImport<BinaryMaskImageType> ImageImportType;
+  typedef typename ImageImportType::Pointer   ImageImportPointer;
 
-    virtual void SetPolyData( vtkPolyData* iMesh );
+  virtual void SetPolyData(vtkPolyData* iMesh);
 
-  protected:
-    vtkPolyDataToBinaryMaskImageFilter();
-    ~vtkPolyDataToBinaryMaskImageFilter();
+protected:
+  vtkPolyDataToBinaryMaskImageFilter();
+  ~vtkPolyDataToBinaryMaskImageFilter();
 
-    vtkPolyData*                                m_Mesh;
-    vtkSmartPointer<vtkImageData>               m_WhiteImage;
-    vtkSmartPointer<vtkPolyDataToImageStencil>  m_Pol2stenc;
-    vtkSmartPointer<vtkImageStencil>            m_ImageStencil;
-    vtkSmartPointer<vtkImageExport>             m_VTKExporter;
-    ImageImportPointer                          m_ITKImporter;
-    virtual void GenerateData();
+  vtkPolyData*                               m_Mesh;
+  vtkSmartPointer<vtkImageData>              m_WhiteImage;
+  vtkSmartPointer<vtkPolyDataToImageStencil> m_Pol2stenc;
+  vtkSmartPointer<vtkImageStencil>           m_ImageStencil;
+  vtkSmartPointer<vtkImageExport>            m_VTKExporter;
+  ImageImportPointer                         m_ITKImporter;
+  virtual void GenerateData();
 
-  private:
-    vtkPolyDataToBinaryMaskImageFilter( const Self& );
-    void operator = ( const Self& );
-};
+private:
+  vtkPolyDataToBinaryMaskImageFilter(const Self&);
+  void operator =(const Self&);
+  };
 
 }
 

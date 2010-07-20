@@ -39,9 +39,9 @@
 =========================================================================*/
 #include "QGoPlugin.h"
 
-QGoPlugin::QGoPlugin( QObject* iParent ) : QObject( iParent )
-{
-}
+QGoPlugin::QGoPlugin(QObject* iParent) : QObject(iParent)
+  {
+  }
 
 QString QGoPlugin::Name() const
 {

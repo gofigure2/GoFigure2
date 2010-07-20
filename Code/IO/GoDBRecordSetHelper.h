@@ -53,59 +53,59 @@ in the database: add a new ImagingSession, new Image, new Mesh...
 \param[in] TableName
 \param[in] myNewObject
 */
-template< class T >
-void AddOnlyOneNewObjectInTable( vtkMySQLDatabase* DatabaseConnector,
-  const std::string& TableName, T& myNewObject )
+template<class T>
+void AddOnlyOneNewObjectInTable(vtkMySQLDatabase* DatabaseConnector,
+                                const std::string& TableName, T& myNewObject)
 {
-  typedef GoDBRecordSet< T >   SetType;
+  typedef GoDBRecordSet<T> SetType;
 
   SetType mySet;
-  mySet.SetConnector( DatabaseConnector );
-  mySet.SetTableName( TableName );
-  mySet.AddObject( myNewObject );
+  mySet.SetConnector(DatabaseConnector);
+  mySet.SetTableName(TableName);
+  mySet.AddObject(myNewObject);
   mySet.SaveInDB();
 }
 
-template< class T >
-int AddOnlyOneNewObjectInTable( vtkMySQLDatabase* DatabaseConnector,
-  const std::string& TableName,T& myNewObject, const std::string IDColumnName )
+template<class T>
+int AddOnlyOneNewObjectInTable(vtkMySQLDatabase* DatabaseConnector,
+                               const std::string& TableName, T& myNewObject, const std::string IDColumnName)
 {
-  typedef GoDBRecordSet< T >   SetType;
+  typedef GoDBRecordSet<T> SetType;
 
   SetType mySet;
-  mySet.SetConnector( DatabaseConnector );
-  mySet.SetTableName( TableName );
-  mySet.AddObject( myNewObject );
+  mySet.SetConnector(DatabaseConnector);
+  mySet.SetTableName(TableName);
+  mySet.AddObject(myNewObject);
   mySet.SaveInDB();
 
-  return MaxValueForOneColumnInTable(DatabaseConnector,IDColumnName,TableName );
+  return MaxValueForOneColumnInTable(DatabaseConnector, IDColumnName, TableName);
 }
 
-template< class T >
-int AddOnlyOneNewObjectInTable( vtkMySQLDatabase* DatabaseConnector,
-  const std::string& TableName,T* myNewObject, const std::string IDColumnName )
+template<class T>
+int AddOnlyOneNewObjectInTable(vtkMySQLDatabase* DatabaseConnector,
+                               const std::string& TableName, T* myNewObject, const std::string IDColumnName)
 {
-  typedef GoDBRecordSet< T >   SetType;
+  typedef GoDBRecordSet<T> SetType;
 
   SetType mySet;
-  mySet.SetConnector( DatabaseConnector );
-  mySet.SetTableName( TableName );
-  mySet.AddObject( *myNewObject );
+  mySet.SetConnector(DatabaseConnector);
+  mySet.SetTableName(TableName);
+  mySet.AddObject(*myNewObject);
   mySet.SaveInDB();
 
-  return MaxValueForOneColumnInTable(DatabaseConnector,IDColumnName,TableName );
+  return MaxValueForOneColumnInTable(DatabaseConnector, IDColumnName, TableName);
 }
 
-template< class T >
+template<class T>
 int UpdateOneNewObjectInTable(vtkMySQLDatabase* DatabaseConnector,
-  T* myNewObject)
+                              T* myNewObject)
 {
-  typedef GoDBRecordSet< T >   SetType;
+  typedef GoDBRecordSet<T> SetType;
 
   SetType mySet;
-  mySet.SetConnector( DatabaseConnector );
-  mySet.SetTableName( myNewObject->GetTableName() );
-  mySet.AddObject( *myNewObject );
+  mySet.SetConnector(DatabaseConnector);
+  mySet.SetTableName(myNewObject->GetTableName());
+  mySet.AddObject(*myNewObject);
   mySet.SaveInDB(true);
 
   return atoi(myNewObject->GetMapValue(myNewObject->GetTableIDName()).c_str());

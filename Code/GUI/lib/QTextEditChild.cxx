@@ -41,7 +41,6 @@
 #include "QTextEditChild.h"
 #include <QTextEdit>
 
-
 //QTextEditChild::QTextEditChild( QWidget* iParent ): QTextEdit( iParent )
 //{
 //}
@@ -50,39 +49,39 @@
 //--------------------------------------------------------------------------
 //QTextEditChild::
 //QTextEditChild(const QString & iText, QWidget *iParent ):
- // QTextEdit( iText,iParent )
+// QTextEdit( iText,iParent )
 //{
 //}
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 QTextEditChild::
-QTextEditChild(QWidget* iParent, int iNumberMaxCharacters):
-QTextEdit( iParent )
-{
+QTextEditChild(QWidget* iParent, int iNumberMaxCharacters) :
+  QTextEdit(iParent)
+  {
   this->m_MaxCharacters = iNumberMaxCharacters;
-  QObject::connect(this,SIGNAL( textChanged()),
-    this, SLOT(RestrainInputCharacters()));
-}
+  QObject::connect(this, SIGNAL(textChanged()),
+                   this, SLOT(RestrainInputCharacters()));
+  }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 QTextEditChild::~QTextEditChild()
-{
-}
+  {
+  }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void QTextEditChild::RestrainInputCharacters()
 {
   QString text;
-  int leftChar = 0;
-  int sizeText = this->toPlainText().size();
+  int     leftChar = 0;
+  int     sizeText = this->toPlainText().size();
   leftChar = this->m_MaxCharacters - sizeText;
   if (leftChar < 0)
     {
     text = this->toPlainText().left(this->m_MaxCharacters);
     this->setText(text);
-    this->moveCursor(QTextCursor::End,QTextCursor::MoveAnchor);
+    this->moveCursor(QTextCursor::End, QTextCursor::MoveAnchor);
     }
 }

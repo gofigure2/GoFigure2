@@ -51,64 +51,64 @@
 
 #include "QGoGUILibConfigure.h"
 
-class QGOGUILIB_EXPORT QGoDBBookmarkManager:
+class QGOGUILIB_EXPORT QGoDBBookmarkManager :
   public QWidget
-{
+  {
   Q_OBJECT
 
-  public:
-    explicit QGoDBBookmarkManager (QWidget* iParent = 0,
-      int iImgSessionID = 0);
-    
-    ~QGoDBBookmarkManager();
+public:
+  explicit QGoDBBookmarkManager(QWidget* iParent = 0,
+                                int iImgSessionID = 0);
 
-    typedef std::vector<std::pair<std::string,std::string> > 
-      NamesDescrContainerType;
+  ~QGoDBBookmarkManager();
 
-    /** \brief execute the dialog asking the user to enter a name and a
-    description, validates the name, set the m_DatabaseConnectorForNewBkmrk
-    and save the bookmark in the DB*/
-    void AddABookmark(int iCoordID, vtkMySQLDatabase* iDatabaseConnector);
+  typedef std::vector<std::pair<std::string, std::string> >
+  NamesDescrContainerType;
 
-    /** \brief return the list of existing bookmarks for the imagingsession
-    stored in the database*/
-    NamesDescrContainerType GetListExistingBookmarks(
-      vtkMySQLDatabase* iDatabaseConnector);
+  /** \brief execute the dialog asking the user to enter a name and a
+  description, validates the name, set the m_DatabaseConnectorForNewBkmrk
+  and save the bookmark in the DB*/
+  void AddABookmark(int iCoordID, vtkMySQLDatabase* iDatabaseConnector);
 
-    /** \brief return the coordinate for the bookmark with the name iName*/
-    GoDBCoordinateRow GetCoordinatesForBookmark(
-      vtkMySQLDatabase* iDatabaseConnector, std::string iName); 
+  /** \brief return the list of existing bookmarks for the imagingsession
+  stored in the database*/
+  NamesDescrContainerType GetListExistingBookmarks(
+    vtkMySQLDatabase* iDatabaseConnector);
 
-    void DeleteBookmark(vtkMySQLDatabase* iDatabaseConnector);
+  /** \brief return the coordinate for the bookmark with the name iName*/
+  GoDBCoordinateRow GetCoordinatesForBookmark(
+    vtkMySQLDatabase* iDatabaseConnector, std::string iName);
 
-  protected:
-    int                          m_ImgSessionID;
-    int                          m_CoordIDForNewBookmark;
-    QNameDescriptionInputDialog* m_NameDescDialog;
-    vtkMySQLDatabase*            m_DatabaseConnectorForNewBkmrk;
-    
-     bool DoesThisBookmarkNameAlreadyExistsInTheDB(
-      vtkMySQLDatabase* DatabaseConnector, std::string iName);
+  void DeleteBookmark(vtkMySQLDatabase* iDatabaseConnector);
 
-  protected slots:
-    /** \brief save the new bookmark in the database, the 
-    m_DatabaseConnectorForNewBkmrk needs to be set before
-    calling this method. Check that the bookmark doesn't 
-    already exits in the database, if so, give the user
-    the name of the existing bookmark*/
-    void SaveNewBookmarkInDB();
+protected:
+  int                          m_ImgSessionID;
+  int                          m_CoordIDForNewBookmark;
+  QNameDescriptionInputDialog* m_NameDescDialog;
+  vtkMySQLDatabase*            m_DatabaseConnectorForNewBkmrk;
 
-    int GetCoordIDForBookmark(vtkMySQLDatabase* iDatabaseConnector,
-      std::string iName);
+  bool DoesThisBookmarkNameAlreadyExistsInTheDB(
+    vtkMySQLDatabase* DatabaseConnector, std::string iName);
 
-    /** \brief check that the name doesn't already exists in the 
-    database, if so, make the m_NameDescDialog asks the user to
-    choose another one, if no, close the m_NameDescDialog and 
-    call SaveNewBookmarkInDB()*/
-    void ValidateName();
+protected slots:
+  /** \brief save the new bookmark in the database, the
+  m_DatabaseConnectorForNewBkmrk needs to be set before
+  calling this method. Check that the bookmark doesn't
+  already exits in the database, if so, give the user
+  the name of the existing bookmark*/
+  void SaveNewBookmarkInDB();
+
+  int GetCoordIDForBookmark(vtkMySQLDatabase* iDatabaseConnector,
+                            std::string iName);
+
+  /** \brief check that the name doesn't already exists in the
+  database, if so, make the m_NameDescDialog asks the user to
+  choose another one, if no, close the m_NameDescDialog and
+  call SaveNewBookmarkInDB()*/
+  void ValidateName();
 
 signals:
-    void ListBookmarksChanged();
+  void ListBookmarksChanged();
 
-};
+  };
 #endif

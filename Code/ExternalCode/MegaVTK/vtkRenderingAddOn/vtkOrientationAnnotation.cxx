@@ -76,22 +76,21 @@ vtkCxxRevisionMacro(vtkOrientationAnnotation, "$Revision: 490 $");
 
 //----------------------------------------------------------------------------
 vtkOrientationAnnotation::vtkOrientationAnnotation()
-{
-}
+  {
+  }
 
 //----------------------------------------------------------------------------
 vtkOrientationAnnotation::~vtkOrientationAnnotation()
-{
-}
-
+  {
+  }
 
 //----------------------------------------------------------------------------
 void vtkOrientationAnnotation::SetTextActorsPosition(int vsize[2])
 {
-  this->TextActor[2]->SetPosition(5, vsize[1]/2);
-  this->TextActor[3]->SetPosition(vsize[0]/2, 5);
-  this->TextActor[0]->SetPosition(vsize[0]-5, vsize[1]/2);
-  this->TextActor[1]->SetPosition(vsize[0]/2, vsize[1]-5);
+  this->TextActor[2]->SetPosition(5, vsize[1] / 2);
+  this->TextActor[3]->SetPosition(vsize[0] / 2, 5);
+  this->TextActor[0]->SetPosition(vsize[0] - 5, vsize[1] / 2);
+  this->TextActor[1]->SetPosition(vsize[0] / 2, vsize[1] - 5);
 }
 
 //----------------------------------------------------------------------------

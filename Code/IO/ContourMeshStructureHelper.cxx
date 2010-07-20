@@ -45,16 +45,16 @@
 
 // ---------------------------------------------------------------------------
 int
-ComputeDirectionFromContour( vtkPolyData* iContour )
+ComputeDirectionFromContour(vtkPolyData* iContour)
 {
   double bounds[6];
-  iContour->GetBounds( bounds );
+  iContour->GetBounds(bounds);
 
   int oDir = -1;
 
-  for( int i = 0; i < 3; i++ )
+  for (int i = 0; i < 3; i++)
     {
-    if( bounds[2*i] == bounds[2*i+1] )
+    if (bounds[2 * i] == bounds[2 * i + 1])
       {
       oDir = 2 - i;
       }
@@ -65,23 +65,23 @@ ComputeDirectionFromContour( vtkPolyData* iContour )
 // ---------------------------------------------------------------------------
 
 // ---------------------------------------------------------------------------
-std::list< ContourMeshStructure* >
+std::list<ContourMeshStructure*>
 FindContourGivenTraceID(
   const ContourMeshStructureMultiIndexContainer& iContainer,
-  const unsigned int& iId )
+  const unsigned int& iId)
 {
-  std::list< ContourMeshStructure* > oList;
+  std::list<ContourMeshStructure*> oList;
 
-  if( iContainer.size() != 0 )
+  if (iContainer.size() != 0)
     {
-    ContourMeshStructureMultiIndexContainer::index< TraceID >::type::iterator
-      it = iContainer.get< TraceID >().find( iId );
+    ContourMeshStructureMultiIndexContainer::index<TraceID>::type::iterator
+    it = iContainer.get<TraceID>().find(iId);
 
-    if( it != iContainer.get< TraceID >().end() )
+    if (it != iContainer.get<TraceID>().end())
       {
-      while( it->TraceID == iId )
+      while (it->TraceID == iId)
         {
-        oList.push_back( const_cast< ContourMeshStructure* >( &*it ) );
+        oList.push_back(const_cast<ContourMeshStructure*>(&*it));
         ++it;
         }
       }
@@ -95,16 +95,16 @@ FindContourGivenTraceID(
 ContourMeshStructure*
 FindContourGivenActor(
   const ContourMeshStructureMultiIndexContainer& iContainer,
-  vtkActor* iActor )
+  vtkActor* iActor)
 {
-  if( iContainer.size() != 0 )
+  if (iContainer.size() != 0)
     {
-    ContourMeshStructureMultiIndexContainer::nth_index< 1 >::type::iterator
-      it = iContainer.get< 1 >().find( iActor );
+    ContourMeshStructureMultiIndexContainer::nth_index<1>::type::iterator
+    it = iContainer.get<1>().find(iActor);
 
-    if( it != iContainer.get< 1 >().end() )
+    if (it != iContainer.get<1>().end())
       {
-      return const_cast< ContourMeshStructure* >( &(*it) );
+      return const_cast<ContourMeshStructure*>(&(*it));
       }
     else
       {
@@ -116,25 +116,25 @@ FindContourGivenActor(
 // ---------------------------------------------------------------------------
 
 // ---------------------------------------------------------------------------
-std::list< ContourMeshStructure* >
+std::list<ContourMeshStructure*>
 FindContourGivenNodes(
   const ContourMeshStructureMultiIndexContainer& iContainer,
-  vtkPolyData* iNodes )
+  vtkPolyData* iNodes)
 {
-  std::list< ContourMeshStructure* > oList;
+  std::list<ContourMeshStructure*> oList;
 
-  if( !iContainer.empty() )
+  if (!iContainer.empty())
     {
-    ContourMeshStructureMultiIndexContainer::nth_index< 2 >::type::iterator
-      it = iContainer.get< 2 >().find( iNodes );
+    ContourMeshStructureMultiIndexContainer::nth_index<2>::type::iterator
+    it = iContainer.get<2>().find(iNodes);
 
-    if( it != iContainer.get< 2 >().end() )
+    if (it != iContainer.get<2>().end())
       {
-      while( it != iContainer.get< 2 >().end() )
+      while (it != iContainer.get<2>().end())
         {
-        if( (*it).Nodes == iNodes )
+        if ((*it).Nodes == iNodes)
           {
-          oList.push_back( const_cast< ContourMeshStructure* >( &*it ) );
+          oList.push_back(const_cast<ContourMeshStructure*>(&*it));
           }
         ++it;
         }
@@ -145,19 +145,19 @@ FindContourGivenNodes(
 // ---------------------------------------------------------------------------
 
 // ---------------------------------------------------------------------------
-std::list< ContourMeshStructure* >
+std::list<ContourMeshStructure*>
 FindContourGivenTimePoint(
   const ContourMeshStructureMultiIndexContainer& iContainer,
-  const unsigned int& iTimePoint )
+  const unsigned int& iTimePoint)
 {
-  ContourMeshStructureMultiIndexContainer::index< TCoord >::type::iterator it0, it1;
-  boost::tuples::tie(it0,it1) = iContainer.get< TCoord >().equal_range( iTimePoint );
+  ContourMeshStructureMultiIndexContainer::index<TCoord>::type::iterator it0, it1;
+  boost::tuples::tie(it0, it1) = iContainer.get<TCoord>().equal_range(iTimePoint);
 
-  std::list< ContourMeshStructure* > oList;
+  std::list<ContourMeshStructure*> oList;
 
-  while( it0 != it1 )
+  while (it0 != it1)
     {
-    oList.push_back( const_cast< ContourMeshStructure* >( &*it0 ) );
+    oList.push_back(const_cast<ContourMeshStructure*>(&*it0));
     ++it0;
     }
   return oList;
@@ -171,28 +171,28 @@ void DeleteContourMeshStructureElement(
   ContourMeshStructureMultiIndexContainer::iterator it = iContainer.begin();
   ContourMeshStructureMultiIndexContainer::iterator end = iContainer.end();
 
-  std::set< vtkPolyData* > NodeSet;
+  std::set<vtkPolyData*> NodeSet;
 
-  while( it != end )
+  while (it != end)
     {
-    NodeSet.insert( it->Nodes );
-    if( it->Actor )
+    NodeSet.insert(it->Nodes);
+    if (it->Actor)
       {
       it->Actor->Delete();
       }
     ++it;
     }
 
-  std::set< vtkPolyData* >::iterator NodeSetIt = NodeSet.begin();
-  std::set< vtkPolyData* >::iterator NodeSetEnd = NodeSet.end();
+  std::set<vtkPolyData*>::iterator NodeSetIt = NodeSet.begin();
+  std::set<vtkPolyData*>::iterator NodeSetEnd = NodeSet.end();
 
-  while( NodeSetIt != NodeSetEnd )
+  while (NodeSetIt != NodeSetEnd)
     {
-    if( (*NodeSetIt) )
+    if ((*NodeSetIt))
       {
       (*NodeSetIt)->Delete();
       }
     ++NodeSetIt;
     }
-     
+
 }

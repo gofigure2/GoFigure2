@@ -42,11 +42,11 @@
 #include "GoDBRecordSetHelper.h"
 
 GoDBBookmarkRow::GoDBBookmarkRow()
-{
+  {
   this->m_TableName = "bookmark";
   this->m_TableIDName = "BookmarkID";
-  this->InitializeMap();  
-}
+  this->InitializeMap();
+  }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -59,7 +59,7 @@ void GoDBBookmarkRow::InitializeMap()
   this->m_MapRow["CreationDate"] = "";
   this->m_MapRow["Description"] = "";
   std::string NoDescription = "None";
-  this->SetField("Description",NoDescription);
+  this->SetField("Description", NoDescription);
 }
 //-------------------------------------------------------------------------
 
@@ -67,26 +67,26 @@ void GoDBBookmarkRow::InitializeMap()
 int GoDBBookmarkRow::DoesThisBookmarkAlreadyExists(
   vtkMySQLDatabase* DatabaseConnector)
 {
-  int ID = FindOneID(DatabaseConnector,"bookmark", "BookmarkID",
-    "ImagingSessionID",this->GetMapValue("ImagingSessionID"),"CoordID",
-    this->GetMapValue("CoordID"));
+  int ID = FindOneID(DatabaseConnector, "bookmark", "BookmarkID",
+                     "ImagingSessionID", this->GetMapValue("ImagingSessionID"), "CoordID",
+                     this->GetMapValue("CoordID"));
   return ID;
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 int GoDBBookmarkRow::DoesThisBookmarkAlreadyExists(
-  vtkMySQLDatabase* DatabaseConnector,std::string &ioName)
+  vtkMySQLDatabase* DatabaseConnector, std::string& ioName)
 {
-  int ID = FindOneID(DatabaseConnector,"bookmark", "BookmarkID",
-    "ImagingSessionID",this->GetMapValue("ImagingSessionID"),"CoordID",
-    this->GetMapValue("CoordID"));
+  int ID = FindOneID(DatabaseConnector, "bookmark", "BookmarkID",
+                     "ImagingSessionID", this->GetMapValue("ImagingSessionID"), "CoordID",
+                     this->GetMapValue("CoordID"));
   if (ID == -1)
     {
     return ID;
     }
-  ioName = ReturnOnlyOneValue(DatabaseConnector,"bookmark", "Name",
-    "BookmarkID",ConvertToString<int>(ID));
+  ioName = ReturnOnlyOneValue(DatabaseConnector, "bookmark", "Name",
+                              "BookmarkID", ConvertToString<int>(ID));
   return ID;
 }
 //-------------------------------------------------------------------------
@@ -97,8 +97,8 @@ int GoDBBookmarkRow::SaveInDB(vtkMySQLDatabase* DatabaseConnector)
   int BookmarkID = this->DoesThisBookmarkAlreadyExists(DatabaseConnector);
   if (BookmarkID == -1)
     {
-    BookmarkID = AddOnlyOneNewObjectInTable<GoDBBookmarkRow>( DatabaseConnector,
-    "bookmark",*this, "BookmarkID");
+    BookmarkID = AddOnlyOneNewObjectInTable<GoDBBookmarkRow>(DatabaseConnector,
+                                                             "bookmark", *this, "BookmarkID");
     }
   return BookmarkID;
 }

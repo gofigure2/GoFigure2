@@ -50,19 +50,19 @@
 #include "QGoIOConfigure.h"
 
 QGOIO_EXPORT
-std::pair<bool,vtkMySQLDatabase*> ConnectToServer(
+std::pair<bool, vtkMySQLDatabase*> ConnectToServer(
   std::string ServerName, std::string login,
   std::string Password);
 
 QGOIO_EXPORT
-std::pair<bool,vtkMySQLDatabase*> ConnectToDatabase(
-  std::string ServerName,std::string login,
-  std::string Password,std::string DBName);
+std::pair<bool, vtkMySQLDatabase*> ConnectToDatabase(
+  std::string ServerName, std::string login,
+  std::string Password, std::string DBName);
 
 QGOIO_EXPORT
 vtkMySQLDatabase* OpenDatabaseConnection(
-  std::string ServerName,std::string login,
-  std::string Password,std::string DBName);
+  std::string ServerName, std::string login,
+  std::string Password, std::string DBName);
 
 /**\brief return true if the connection has been closed, false if
 the connection was already closed*/
@@ -76,13 +76,13 @@ std::vector<std::string> ListDatabases(
 
 QGOIO_EXPORT
 std::vector<std::string> ListTables(
-  vtkMySQLDatabase* DatabaseConnector );
+  vtkMySQLDatabase* DatabaseConnector);
 
 //query: "UPDATE TableName SET field = newValue WHERE ColumnName = value"
 QGOIO_EXPORT
 void UpdateValueInDB(vtkMySQLDatabase* DatabaseConnector,
-  std::string TableName, std::string field, std::string newValue,
-  std::string ColumnName, std::string value);
+                     std::string TableName, std::string field, std::string newValue,
+                     std::string ColumnName, std::string value);
 
 /** \todo to review*/
 QGOIO_EXPORT
@@ -90,14 +90,14 @@ void UpdateContourInDB(vtkMySQLDatabase* DatabaseConnector,
                        GoDBContourRow UpdatedContour);
 
 QGOIO_EXPORT
-void DropDatabase( 
+void DropDatabase(
   vtkMySQLDatabase* ServerConnector,
-  std::string DBName );
+  std::string DBName);
 
 QGOIO_EXPORT
 void DropTable(
   vtkMySQLDatabase* DatabaseConnector,
-  std::string TableName );
+  std::string TableName);
 
 // query: "DELETE FROM TableName WHERE field = value"
 QGOIO_EXPORT
@@ -105,27 +105,27 @@ void DeleteRow(
   vtkMySQLDatabase* DatabaseConnector,
   std::string TableName, std::string field, std::string value);
 
-// query: "DELETE FROM TableName WHERE (field = 
+// query: "DELETE FROM TableName WHERE (field =
 //value1 or field = value2...."
 QGOIO_EXPORT
 void DeleteRows(
   vtkMySQLDatabase* DatabaseConnector,
-  std::string TableName, std::string field, 
+  std::string TableName, std::string field,
   std::vector<std::string> VectorValues);
 
 QGOIO_EXPORT
 bool DoesDatabaseExist(
   vtkMySQLDatabase* ServerConnector,
-  std::string DBName );
+  std::string DBName);
 
 QGOIO_EXPORT
 bool DoesTableExist(
   vtkMySQLDatabase* DatabaseConnector,
-  std::string TableName );
+  std::string TableName);
 
 //query: "DESCRIBE TableName"
 QGOIO_EXPORT
 std::vector<std::string> GetFieldNames(std::string TableName,
-  vtkMySQLDatabase* ServerConnector);
+                                       vtkMySQLDatabase* ServerConnector);
 
 #endif

@@ -42,31 +42,31 @@
 #include <QTimer>
 #include "QGoDeleteDBEntityDialog.h"
 
-int main( int argc, char** argv )
+int main(int argc, char** argv)
 {
-  if( argc != 2 )
+  if (argc != 2)
     {
-    std::cerr <<"./QGoDBDeleteEntityDialog(.exe) takes 1 argument" <<std::endl;
-    std::cerr <<"1-Test (Boolean)" <<std::endl;
+    std::cerr << "./QGoDBDeleteEntityDialog(.exe) takes 1 argument" << std::endl;
+    std::cerr << "1-Test (Boolean)" << std::endl;
     return EXIT_FAILURE;
     }
-    
-  QApplication app( argc, argv );
-  QCoreApplication::setOrganizationName("MegasonLab");
-  QCoreApplication::setOrganizationDomain( "http://gofigure2.sourceforge.net" );
 
-  QGoDeleteDBEntityDialog* win = 
-    new QGoDeleteDBEntityDialog( 0x0, "entity", 0, 0x0 );
-    
+  QApplication app(argc, argv);
+  QCoreApplication::setOrganizationName("MegasonLab");
+  QCoreApplication::setOrganizationDomain("http://gofigure2.sourceforge.net");
+
+  QGoDeleteDBEntityDialog* win =
+    new QGoDeleteDBEntityDialog(0x0, "entity", 0, 0x0);
+
   QTimer* timer = new QTimer;
-  timer->setSingleShot( true );
-  QObject::connect( timer, SIGNAL( timeout() ), win, SLOT( close() ) );
+  timer->setSingleShot(true);
+  QObject::connect(timer, SIGNAL(timeout()), win, SLOT(close()));
 
   win->show();
 
-  if( atoi( argv[1] ) == 1 )
+  if (atoi(argv[1]) == 1)
     {
-    timer->start( 1000 );
+    timer->start(1000);
     }
 
   app.processEvents();
@@ -81,4 +81,3 @@ int main( int argc, char** argv )
 
   return EXIT_SUCCESS;
 }
-

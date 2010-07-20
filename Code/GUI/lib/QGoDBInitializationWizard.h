@@ -46,7 +46,7 @@
 #include "QGoDBInitCreateUserPage.h"
 
 class QGOGUILIB_EXPORT QGoDBInitializationWizard : public QWizard
-{
+  {
   Q_OBJECT
 
 public:
@@ -59,7 +59,7 @@ public:
     OpenOrCreateProjectPageID,
     OpenOrCreateImgSessionPageID,
     CreateImgSessionPageID*/
-  };
+    };
 
   explicit QGoDBInitializationWizard(QWidget *parent = 0);
   ~QGoDBInitializationWizard() {}
@@ -68,10 +68,7 @@ public:
   QString GetLogin();
   QString GetPassword();*/
 
-
   QPushButton* nextButton;
-
-
 
 protected:
   /*void closeEvent(QCloseEvent* iEvent);
@@ -84,9 +81,9 @@ protected:
   QGoDBInitCreateUserPage* m_CreateUserPage;
 
 private:
-  Q_DISABLE_COPY( QGoDBInitializationWizard);
+  Q_DISABLE_COPY(QGoDBInitializationWizard);
 
 signals:
   void DatabaseAndUserCreated();
-};
+  };
 #endif

@@ -45,25 +45,25 @@
 /**
 \class QTextEditChild
 \brief in the QTextEdit class, there is no method to have a restriction
-on the number of characters the user can enter, that's the reason for 
+on the number of characters the user can enter, that's the reason for
 the creation of this class
 */
 class QTextEditChild : public QTextEdit
-{
+  {
   Q_OBJECT
 
 public:
   //explicit QTextEditChild(const QString & iText, QWidget * iParent =0 );
-  explicit QTextEditChild(QWidget* iParent = 0, int iNumberMaxCharacters = 1000); 
+  explicit QTextEditChild(QWidget* iParent = 0, int iNumberMaxCharacters = 1000);
 
   virtual ~QTextEditChild();
 
 protected:
-  int      m_MaxCharacters;
+  int m_MaxCharacters;
 
 protected slots:
   void     RestrainInputCharacters();
 
-};
+  };
 
 #endif

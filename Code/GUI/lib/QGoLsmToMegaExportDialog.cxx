@@ -43,35 +43,35 @@
 #include <QFileDialog>
 #include <QProgressDialog>
 
-
 //-------------------------------------------------------------------------
 QGoLsmToMegaExportDialog::
-QGoLsmToMegaExportDialog( QWidget* iParent) : QDialog( iParent ), m_LsmPath(""),
-		m_LsmName(""), m_MegaPath(""), m_FileFormatIsPNG(true), m_Counter(0)
-{
-  this->setupUi( this );
+QGoLsmToMegaExportDialog(QWidget* iParent) : QDialog(iParent), m_LsmPath(""),
+  m_LsmName(""), m_MegaPath(""), m_FileFormatIsPNG(true), m_Counter(0)
+  {
+  this->setupUi(this);
 
   m_ProgressDialog = new QProgressDialog("Conversion in progress.", "Cancel", 0, 100, this);
 
   ConversionLsmToMegaThreadSend = new ConversionLsmToMegaThread;
 
-  QObject::connect( ConversionLsmToMegaThreadSend, SIGNAL( ConversionTerminatedSent() ),
-      this, SLOT( ConversionTerminatedReceived() ) );
+  QObject::connect(ConversionLsmToMegaThreadSend, SIGNAL(ConversionTerminatedSent()),
+                   this, SLOT(ConversionTerminatedReceived()));
 
-  QObject::connect(ConversionLsmToMegaThreadSend, SIGNAL(InitialisationProgressSent()), this, SLOT(InitialisationProgressReceived()));
+  QObject::connect(ConversionLsmToMegaThreadSend, SIGNAL(InitialisationProgressSent()), this,
+                   SLOT(InitialisationProgressReceived()));
 
   QObject::connect(ConversionLsmToMegaThreadSend, SIGNAL(ProgressSent()), this, SLOT(ProgressReceived()));
 
   QObject::connect(m_ProgressDialog, SIGNAL(canceled()), this, SLOT(CanceledReceived()));
-}
+  }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 QGoLsmToMegaExportDialog::
 ~QGoLsmToMegaExportDialog()
-{
+  {
   delete  ConversionLsmToMegaThreadSend;
-}
+  }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -79,17 +79,17 @@ void
 QGoLsmToMegaExportDialog::
 on_selectLsmFile_clicked()
 {
-  m_LsmPath = QFileDialog::getOpenFileName( this,
-      tr( "Select the LSM file to convert" ), QDir::currentPath()
-, tr("Image Files (*.lsm)"));
+  m_LsmPath = QFileDialog::getOpenFileName(this,
+                                           tr("Select the LSM file to convert"), QDir::currentPath()
+                                           , tr("Image Files (*.lsm)"));
 
-  QFileInfo fileInfo( m_LsmPath );
+  QFileInfo fileInfo(m_LsmPath);
 
   m_LsmName = fileInfo.fileName();
-  m_LsmName.replace( QString( " " ), QString( "_" ) );
+  m_LsmName.replace(QString(" "), QString("_"));
 
   // Write the lsm file name in the dialog window
-  lsmFileName->setText( m_LsmName );
+  lsmFileName->setText(m_LsmName);
 }
 //-------------------------------------------------------------------------
 
@@ -99,20 +99,21 @@ QGoLsmToMegaExportDialog::
 on_selectMegaPath_clicked()
 {
   m_MegaPath = QFileDialog::getExistingDirectory(this, tr("Open Directory"),
-    QDir::homePath(), QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+                                                 QDir::homePath(), QFileDialog::ShowDirsOnly |
+                                                 QFileDialog::DontResolveSymlinks);
 
   m_MegaPath.insert(m_MegaPath.size(), QString("/"));
 
-  megaFilePath->setText( m_MegaPath );
+  megaFilePath->setText(m_MegaPath);
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void
 QGoLsmToMegaExportDialog::
-on_outputFormat_activated( int index )
+on_outputFormat_activated(int index)
 {
-  if ( index == 0 )
+  if (index == 0)
     {
     m_FileFormatIsPNG = true;
     }
@@ -129,10 +130,10 @@ QGoLsmToMegaExportDialog::
 on_convert_clicked()
 {
   if (m_LsmName.isNull() ||  m_LsmName.isEmpty() || m_LsmPath.isNull() ||
-	  m_LsmPath.isEmpty() || m_MegaPath.isNull() ||  m_MegaPath.isEmpty() )
+      m_LsmPath.isEmpty() || m_MegaPath.isNull() ||  m_MegaPath.isEmpty())
     {
-	/// \todo use QMessageBox
-	std::cerr <<"Please select good path for lsm and megacapture"<<std::endl;
+    /// \todo use QMessageBox
+    std::cerr << "Please select good path for lsm and megacapture" << std::endl;
     }
   else
     {
@@ -149,18 +150,17 @@ on_convert_clicked()
     this->outputFormatLabel->setEnabled(false);
     this->label_2->setEnabled(false);
 
-    this->convertLabel->setText( tr("READS LSM READERS")  );
-
+    this->convertLabel->setText(tr("READS LSM READERS"));
 
     // Set conversion parameters
     GoFigure::FileType filetype = GoFigure::PNG;
-    if( !m_FileFormatIsPNG )
+    if (!m_FileFormatIsPNG)
       {
-	    filetype = GoFigure::TIFF;
-	    }
+      filetype = GoFigure::TIFF;
+      }
 
     // Remove extension
-    m_LsmName.replace( QString(".lsm"), QString("_lsm") );
+    m_LsmName.replace(QString(".lsm"), QString("_lsm"));
 
     // conversion fonction called from there to enable progress bar
     ConversionLsmToMegaThreadSend->SetBaseName(m_LsmName.toStdString());
@@ -192,7 +192,7 @@ void
 QGoLsmToMegaExportDialog::
 InitialisationProgressReceived()
 {
-  this->convertLabel->setText( tr("CONVERSION in PROGRESS") );
+  this->convertLabel->setText(tr("CONVERSION in PROGRESS"));
 
   int sizeProgressBar = ConversionLsmToMegaThreadSend->GetNumberOfPoints();
 
@@ -203,7 +203,7 @@ InitialisationProgressReceived()
   // +1 because m_Counter starts at 1
   // +1 to prevent that the dialoProgressWindow automatically close
   //    then re-open when 100% reached
-  m_ProgressDialog->setRange(0,sizeProgressBar+5);
+  m_ProgressDialog->setRange(0, sizeProgressBar + 5);
   m_ProgressDialog->setValue(m_Counter);
 }
 //-------------------------------------------------------------------------

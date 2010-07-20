@@ -74,35 +74,33 @@
 #include <vtkObjectFactory.h>
 #include "MegaVTK2Configure.h"
 
-class VTK_RENDERINGADDON2_EXPORT vtkImage3DCroppingBoxCallback:
-public vtkCommand
-{
+class VTK_RENDERINGADDON2_EXPORT vtkImage3DCroppingBoxCallback :
+  public vtkCommand
+  {
 
- public:
+public:
   static vtkImage3DCroppingBoxCallback* New()
   { return new vtkImage3DCroppingBoxCallback; }
 
-  virtual void Execute ( vtkObject *caller, unsigned long, void* );
+  virtual void Execute(vtkObject *caller, unsigned long, void*);
 
-  void SetVolumeMapper (vtkVolumeMapper* mapper)
+  void SetVolumeMapper(vtkVolumeMapper* mapper)
   {
     this->VolumeMapper = mapper;
   }
-  vtkVolumeMapper* GetVolumeMapper (void) const
+  vtkVolumeMapper* GetVolumeMapper(void) const
   {
     return this->VolumeMapper;
   }
 
-
- protected:
-  vtkImage3DCroppingBoxCallback() : VolumeMapper( 0 ) {}
+protected:
+  vtkImage3DCroppingBoxCallback() : VolumeMapper(0) {}
   ~vtkImage3DCroppingBoxCallback(){}
 
- private:
+private:
 
   vtkVolumeMapper* VolumeMapper;
 
-};
-
+  };
 
 #endif

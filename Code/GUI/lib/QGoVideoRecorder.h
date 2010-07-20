@@ -55,199 +55,195 @@ class vtkRenderWindow;
 class vtkRenderWindowMovieRecorder;
 
 #ifdef ENABLEFFMPEG
-  class vtkFFMPEGRenderWindowRecorder;
+class vtkFFMPEGRenderWindowRecorder;
 #endif
 
 #ifdef ENABLEAVI
-  class vtkAVIRenderWindowRecorder;
+class vtkAVIRenderWindowRecorder;
 #endif
 /*
  * \brief QGoVideoRecorder to record videos to using AVI or FFMPEG
  */
 class QGOGUILIB_EXPORT QGoVideoRecorder :
-    public QDockWidget, private Ui::NewDockWidgetVideoRecorder
-{
-    Q_OBJECT
+  public QDockWidget, private Ui::NewDockWidgetVideoRecorder
+  {
+  Q_OBJECT
 
-    public:
-        /**
-         * \brief Constructor
-         */
-        explicit QGoVideoRecorder( QWidget* parent = 0);
-        /**
-         * \brief Destructor
-         */
-        ~QGoVideoRecorder();
+public:
+  /**
+   * \brief Constructor
+   */
+  explicit QGoVideoRecorder(QWidget* parent = 0);
+  /**
+   * \brief Destructor
+   */
+  ~QGoVideoRecorder();
 
-        /**
-         * \brief Set value X/Y/Z/T Min and Max for a given image (useful for spin boxes)
-         * when image is loaded, to know boundaries of the spin box to be used
-         */
-        void SetXMinAndMax( const int& , const int& );
-        void SetYMinAndMax( const int& , const int& );
-        void SetZMinAndMax( const int& , const int& );
-        void SetTMinAndMax( const int& , const int& );
+  /**
+   * \brief Set value X/Y/Z/T Min and Max for a given image (useful for spin boxes)
+   * when image is loaded, to know boundaries of the spin box to be used
+   */
+  void SetXMinAndMax(const int&, const int&);
+  void SetYMinAndMax(const int&, const int&);
+  void SetZMinAndMax(const int&, const int&);
+  void SetTMinAndMax(const int&, const int&);
 
-        void SetCurrentX( const int&);
-        void SetCurrentY( const int&);
-        void SetCurrentZ( const int&);
-        void SetCurrentT( const int&);
+  void SetCurrentX(const int&);
+  void SetCurrentY(const int&);
+  void SetCurrentZ(const int&);
+  void SetCurrentT(const int&);
 
-        std::ofstream m_OutputVideoFile;
+  std::ofstream m_OutputVideoFile;
 
-        QString m_VideoName2;
+  QString m_VideoName2;
 
-        unsigned int m_FrameRate2;
-        unsigned int m_VideoQuality2;
-        int m_SliceFT;
-        // in tab "record video"
-        unsigned int m_WindowSelected;
+  unsigned int m_FrameRate2;
+  unsigned int m_VideoQuality2;
+  int          m_SliceFT;
+  // in tab "record video"
+  unsigned int m_WindowSelected;
 
-        unsigned int m_XMinForVideo;
-        unsigned int m_XMaxForVideo;
-        unsigned int m_YMinForVideo;
-        unsigned int m_YMaxForVideo;
-        unsigned int m_ZMinForVideo;
-        unsigned int m_ZMaxForVideo;
-        unsigned int m_TMinForVideo;
-        unsigned int m_TMaxForVideo;
+  unsigned int m_XMinForVideo;
+  unsigned int m_XMaxForVideo;
+  unsigned int m_YMinForVideo;
+  unsigned int m_YMaxForVideo;
+  unsigned int m_ZMinForVideo;
+  unsigned int m_ZMaxForVideo;
+  unsigned int m_TMinForVideo;
+  unsigned int m_TMaxForVideo;
 
-        QTimer *m_InternalTimer;
-        unsigned int m_FrameCounter;
+  QTimer *     m_InternalTimer;
+  unsigned int m_FrameCounter;
 
-        bool m_RenderWindowSelected;
+  bool m_RenderWindowSelected;
 
-        void SetMovieRecorder( vtkRenderWindowMovieRecorder* );
+  void SetMovieRecorder(vtkRenderWindowMovieRecorder*);
 
-    public slots:
-      void SetSpecificParametersFrameRate(int iValue);
-      void SetSpecificParametersQuality(int iValue);
+public slots:
+  void SetSpecificParametersFrameRate(int iValue);
+  void SetSpecificParametersQuality(int iValue);
 
-     signals:
-      void XSliceChanged( int );
-      void YSliceChanged( int );
-      void ZSliceChanged( int );
-      void TSliceChanged( int );
-      void QualityChanged( int );
-      void FrameRateChanged( int );
-      void GetSliceView();
+signals:
+  void XSliceChanged(int);
+  void YSliceChanged(int);
+  void ZSliceChanged(int);
+  void TSliceChanged(int);
+  void QualityChanged(int);
+  void FrameRateChanged(int);
+  void GetSliceView();
 
 protected:
 #ifdef ENABLEFFMPEG
-      vtkFFMPEGRenderWindowRecorder*  m_FFMPEGWriter;
+  vtkFFMPEGRenderWindowRecorder *  m_FFMPEGWriter;
 #else
   #ifdef ENABLEAVI
-      vtkAVIRenderWindowRecorder*     m_AVIWriter;
+  vtkAVIRenderWindowRecorder *     m_AVIWriter;
   #endif
 #endif
 
-
 private:
 
-        // Video recorder
-        vtkRenderWindowMovieRecorder* m_VideoRecorder;
+  // Video recorder
+  vtkRenderWindowMovieRecorder* m_VideoRecorder;
 
-        // Min/Max value of X/Y/ZSlice to set up spin box
-        unsigned int m_XMin;
-        unsigned int m_XMax;
-        unsigned int m_YMin;
-        unsigned int m_YMax;
-        unsigned int m_ZMin;
-        unsigned int m_ZMax;
-        unsigned int m_TMin;
-        unsigned int m_TMax;
+  // Min/Max value of X/Y/ZSlice to set up spin box
+  unsigned int m_XMin;
+  unsigned int m_XMax;
+  unsigned int m_YMin;
+  unsigned int m_YMax;
+  unsigned int m_ZMin;
+  unsigned int m_ZMax;
+  unsigned int m_TMin;
+  unsigned int m_TMax;
 
-        unsigned int m_CurrentX;
-        unsigned int m_CurrentY;
-        unsigned int m_CurrentZ;
-        unsigned int m_CurrentT;
+  unsigned int m_CurrentX;
+  unsigned int m_CurrentY;
+  unsigned int m_CurrentZ;
+  unsigned int m_CurrentT;
 
-        /**
-         * \brief Function to update spinbox extent according to selected slice
-        **/
-        void UpdateQSpinBoxFT( int );
+  /**
+   * \brief Function to update spinbox extent according to selected slice
+  **/
+  void UpdateQSpinBoxFT(int);
 
-        /**
-         * \brief Function to create the video with "pauses"
-        **/
-        void AcquireWithPause( int );
+  /**
+   * \brief Function to create the video with "pauses"
+  **/
+  void AcquireWithPause(int);
 
-        void emitChangeSliceSignal(const int&, const int &);
+  void emitChangeSliceSignal(const int&, const int&);
 
+private slots:
 
-    private slots:
+  // in tab "create video"
+  //Choose a slice T Fixed
+  /**
+   * \brief Update starting slice for video (fixed time point)
+   */
+  void on_tSpinMin_2_valueChanged(int);
+  /**
+   * \brief Update ending slice for video (fixed time point)
+   */
+  void on_tSpinMax_2_valueChanged(int);
+  //Video parameters
+  /**
+   * \brief Create the video from
+   */
+  void on_createFile_clicked();
+  /**
+   * \brief Function called when FrameRate changes
+   */
+  void on_frameRate_valueChanged(int);
+  /**
+   * \brief Function called when VideoQuality changes
+   */
+  void on_videoQuality_valueChanged(int);
+  //Video parameters
+  /**
+   * \brief Function called to choose name/path of output file
+   */
+  void on_createFile_2_clicked();
+  /**
+   * \brief Update value of frame rate
+   */
+  void on_frameRate_2_valueChanged(int);
+  /**
+   * \brief Update value of video quality
+   */
+  void on_videoQuality_2_valueChanged(int);
+  /**
+   * \brief Update content of spin box depending of selected slice (X,Y,Z)
+   */
+  void on_SliceFT_activated(int);
+  /**
+   * \brief Function called when "Create video" clicked in Create tab
+  **/
+  void onStartVideoClicked();
+  /**
+   * \brief Function called when "Create video" clicked in Record tab
+  **/
+  void onStartRecordClicked();
+  /**
+    * \brief Function called when "End video" clicked in Record tab
+   **/
+  void onEndRecordClicked();
+  /**
+    * \brief Function called with the timer to take snapshots
+  **/
+  void timeout();
 
-    // in tab "create video"
-    //Choose a slice T Fixed
-    /**
-     * \brief Update starting slice for video (fixed time point)
-     */
-    void on_tSpinMin_2_valueChanged( int );
-    /**
-     * \brief Update ending slice for video (fixed time point)
-     */
-    void on_tSpinMax_2_valueChanged( int );
-    //Video parameters
-    /**
-     * \brief Create the video from
-     */
-    void on_createFile_clicked();
-    /**
-     * \brief Function called when FrameRate changes
-     */
-    void on_frameRate_valueChanged( int );
-    /**
-     * \brief Function called when VideoQuality changes
-     */
-    void on_videoQuality_valueChanged( int );
-    //Video parameters
-    /**
-     * \brief Function called to choose name/path of output file
-     */
-    void on_createFile_2_clicked();
-    /**
-     * \brief Update value of frame rate
-     */
-    void on_frameRate_2_valueChanged( int );
-    /**
-     * \brief Update value of video quality
-     */
-    void on_videoQuality_2_valueChanged( int );
-    /**
-     * \brief Update content of spin box depending of selected slice (X,Y,Z)
-     */
-    void on_SliceFT_activated( int );
-    /**
-     * \brief Function called when "Create video" clicked in Create tab
-    **/
-    void onStartVideoClicked();
-    /**
-     * \brief Function called when "Create video" clicked in Record tab
-    **/
-    void onStartRecordClicked();
-    /**
-      * \brief Function called when "End video" clicked in Record tab
-     **/
-    void onEndRecordClicked();
-    /**
-      * \brief Function called with the timer to take snapshots
-    **/
-    void timeout();
+  /**
+   * \brief Function called when we want to restart video while it is in pause
+  **/
+  void on_pauseVideo_clicked();
+  /**
+   * \brief Function called when we want to stop video while it is in pause
+  **/
+  void on_endVideo_clicked();
 
-    /**
-     * \brief Function called when we want to restart video while it is in pause
-    **/
-    void on_pauseVideo_clicked();
-    /**
-     * \brief Function called when we want to stop video while it is in pause
-    **/
-    void on_endVideo_clicked();
+public slots:
+  void SetRenderingWindow(vtkRenderWindow*);
 
-
-    public slots:
-        void SetRenderingWindow( vtkRenderWindow* );
-
-
-};
+  };
 
 #endif

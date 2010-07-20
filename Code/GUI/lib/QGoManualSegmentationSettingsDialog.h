@@ -56,39 +56,39 @@ class vtkPolyData;
 class QGOGUILIB_EXPORT QGoManualSegmentationSettingsDialog :
   public QDialog,
   private Ui::ManualSegmentationSettingsDlg
-{
+  {
   Q_OBJECT
 public:
-  explicit QGoManualSegmentationSettingsDialog( QWidget* parent = 0,
-    const double& iWidth = 1.,
-    const QColor& iLineColor = Qt::magenta,
-    const QColor& iNodeColor = Qt::cyan,
-    const QColor& iActivatedNodeColor = Qt::yellow );
+  explicit QGoManualSegmentationSettingsDialog(QWidget* parent = 0,
+                                               const double& iWidth = 1.,
+                                               const QColor& iLineColor = Qt::magenta,
+                                               const QColor& iNodeColor = Qt::cyan,
+                                               const QColor& iActivatedNodeColor = Qt::yellow);
   virtual ~QGoManualSegmentationSettingsDialog();
 
-  double GetLineWidth( ) const;
-  QColor GetLineColor( ) const;
-  QColor GetNodeColor( ) const;
-  QColor GetActivatedNodeColor( ) const;
+  double GetLineWidth() const;
+  QColor GetLineColor() const;
+  QColor GetNodeColor() const;
+  QColor GetActivatedNodeColor() const;
 
 public slots:
-  void SetLineWidth( const double& );
-  void SelectLineColor( );
-  void SelectNodeColor( );
-  void SelectActivatedNodeColor( );
+  void SetLineWidth(const double&);
+  void SelectLineColor();
+  void SelectNodeColor();
+  void SelectActivatedNodeColor();
 
 protected:
   virtual void ReadSettings();
   virtual void WriteSettings();
 
-  vtkSmartPointer< vtkOrientedGlyphContourRepresentation > m_ContourRepresentation;
-  vtkSmartPointer< vtkContourWidget > m_ContourWidget;
-  vtkSmartPointer< vtkRenderer >      m_Renderer;
-  vtkSmartPointer< vtkPolyData >      m_InitPD;
+  vtkSmartPointer<vtkOrientedGlyphContourRepresentation> m_ContourRepresentation;
+  vtkSmartPointer<vtkContourWidget>                      m_ContourWidget;
+  vtkSmartPointer<vtkRenderer>                           m_Renderer;
+  vtkSmartPointer<vtkPolyData>                           m_InitPD;
 
   double m_LineWidth;
   QColor m_LineColor;
   QColor m_NodeColor;
   QColor m_ActivatedNodeColor;
-};
+  };
 #endif

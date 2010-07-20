@@ -42,35 +42,34 @@
 #include "GoDBRecordSetHelper.h"
 #include <iostream>
 
-
-GoDBContourRow::GoDBContourRow():GoDBTraceRow()
-{ 
+GoDBContourRow::GoDBContourRow() : GoDBTraceRow()
+  {
   this->InitializeMap();
-}
+  }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 GoDBContourRow::GoDBContourRow(vtkMySQLDatabase* DatabaseConnector,
-  vtkPolyData* TraceVisu, GoDBCoordinateRow Min, GoDBCoordinateRow Max,
-  unsigned int ImgSessionID, GoFigureMeshAttributes* iMeshAttributes) :
-GoDBTraceRow( DatabaseConnector, TraceVisu, Min, Max, ImgSessionID)
-{
+                               vtkPolyData* TraceVisu, GoDBCoordinateRow Min, GoDBCoordinateRow Max,
+                               unsigned int ImgSessionID, GoFigureMeshAttributes* iMeshAttributes) :
+  GoDBTraceRow(DatabaseConnector, TraceVisu, Min, Max, ImgSessionID)
+  {
   (void) iMeshAttributes;
-  
+
   this->InitializeMap();
   if (this->DoesThisBoundingBoxExist(DatabaseConnector))
     {
-    std::cout<<"The bounding box already exists for this contour"<<std::endl;
+    std::cout << "The bounding box already exists for this contour" << std::endl;
     }
-}
+  }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-GoDBContourRow::GoDBContourRow(unsigned int ImagingSessionID):
+GoDBContourRow::GoDBContourRow(unsigned int ImagingSessionID) :
   GoDBTraceRow(ImagingSessionID)
-{
+  {
   this->InitializeMap();
-}
+  }
 /*GoDBContourRow::GoDBContourRow(vtkMySQLDatabase* DatabaseConnector,
   GoDBCoordinateRow Min, GoDBCoordinateRow Max,unsigned int ImgSessionID,
   vtkPolyData* TraceVisu):
@@ -95,21 +94,21 @@ void GoDBContourRow::InitializeMap()
   //this->m_MapRow["ContourID"] = ConvertToString<int>(0);
   this->m_MapRow[this->m_TableIDName] = ConvertToString<int>(0);
   this->m_MapRow["MeshID"] = ConvertToString<int>(0);
-}    
+}
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 int GoDBContourRow::SaveInDB(vtkMySQLDatabase* DatabaseConnector)
 {
-  return AddOnlyOneNewObjectInTable<GoDBContourRow>( DatabaseConnector,
-    "contour",*this, "ContourID");
+  return AddOnlyOneNewObjectInTable<GoDBContourRow>(DatabaseConnector,
+                                                    "contour", *this, "ContourID");
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void GoDBContourRow::SetCollectionID (int iCollectionID)
+void GoDBContourRow::SetCollectionID(int iCollectionID)
 {
-  this->SetField<int>("MeshID",iCollectionID);
+  this->SetField<int>("MeshID", iCollectionID);
 }
 //-------------------------------------------------------------------------
 
@@ -122,14 +121,14 @@ void GoDBContourRow::ReInitializeMapAfterCast()
 
 //-------------------------------------------------------------------------
 void GoDBContourRow::SetTheDataFromTheVisu(
-  vtkMySQLDatabase* DatabaseConnector,vtkPolyData* TraceVisu,
-  GoDBCoordinateRow Min, GoDBCoordinateRow Max,GoFigureMeshAttributes* iMeshAttributes)
+  vtkMySQLDatabase* DatabaseConnector, vtkPolyData* TraceVisu,
+  GoDBCoordinateRow Min, GoDBCoordinateRow Max, GoFigureMeshAttributes* iMeshAttributes)
 {
-   GoDBTraceRow::SetTheDataFromTheVisu(DatabaseConnector,TraceVisu,Min,Max);
+  GoDBTraceRow::SetTheDataFromTheVisu(DatabaseConnector, TraceVisu, Min, Max);
 
-   if (this->DoesThisBoundingBoxExist(DatabaseConnector))
+  if (this->DoesThisBoundingBoxExist(DatabaseConnector))
     {
-    std::cout<<"The bounding box already exists for this mesh"<<std::endl;
+    std::cout << "The bounding box already exists for this mesh" << std::endl;
     }
 
 }

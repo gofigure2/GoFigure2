@@ -48,42 +48,42 @@
 #include <QDebug>
 
 QGoNetworkUtilities::
-QGoNetworkUtilities( QObject* iParent ) : QObject( iParent ), m_Reply( 0 )
-{
-  m_Manager = new QNetworkAccessManager( this );
+QGoNetworkUtilities(QObject* iParent) : QObject(iParent), m_Reply(0)
+  {
+  m_Manager = new QNetworkAccessManager(this);
 
-  QObject::connect( m_Manager, SIGNAL( finished( QNetworkReply* ) ),
-    this, SLOT( DisplayResults( QNetworkReply* ) ) );
-}
+  QObject::connect(m_Manager, SIGNAL(finished(QNetworkReply*)),
+                   this, SLOT(DisplayResults(QNetworkReply*)));
+  }
 
 QGoNetworkUtilities::~QGoNetworkUtilities()
-{
+  {
   // segfault here ...
-  if( m_Reply )
+  if (m_Reply)
     {
     delete m_Reply;
     m_Reply = 0;
     }
-}
+  }
 
 void QGoNetworkUtilities::CheckForUpdates()
 {
   // address
-  QString address( "http://gofigure2.sourceforge.net/check_update.php?version=" );
-  address.append( "@GOFIGURE2_VERSION@" );
-  QUrl url( address );
-  m_Reply = m_Manager->get( QNetworkRequest( url ) );
+  QString address("http://gofigure2.sourceforge.net/check_update.php?version=");
+  address.append("@GOFIGURE2_VERSION@");
+  QUrl url(address);
+  m_Reply = m_Manager->get(QNetworkRequest(url));
 }
 
 void
 QGoNetworkUtilities::
-DisplayResults( QNetworkReply* reply )
+DisplayResults(QNetworkReply* reply)
 {
   QString response;
-  bool ok = (reply->error() == QNetworkReply::NoError);
+  bool    ok = (reply->error() == QNetworkReply::NoError);
 
   // no error received?
-  if( ok )
+  if (ok)
     {
     // read data from QNetworkReply here
     QByteArray bytes = reply->readAll();
@@ -95,8 +95,6 @@ DisplayResults( QNetworkReply* reply )
   //  ok = false;
   //  }
 
-
-  emit CheckForUpdatesDone( response, ok );
+  emit CheckForUpdatesDone(response, ok);
 
 }
-

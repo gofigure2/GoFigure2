@@ -48,74 +48,73 @@
 
 #include "QGoMainWindow.h"
 
-int main( int argc, char** argv )
+int main(int argc, char** argv)
 {
   QApplication app(argc, argv);
 
-  QCoreApplication::setOrganizationName( "MegasonLab" );
+  QCoreApplication::setOrganizationName("MegasonLab");
   QCoreApplication::setOrganizationDomain(
-    "http://gofigure2.sourceforge.net" );
-  QCoreApplication::setApplicationName( "GoFigure2" );
+    "http://gofigure2.sourceforge.net");
+  QCoreApplication::setApplicationName("GoFigure2");
 
   QString inputfilename;
 
-  if( argc > 1 )
+  if (argc > 1)
     {
-    for( int i = 1; i < argc; i++ )
+    for (int i = 1; i < argc; i++)
       {
       std::string temp = argv[i];
-      if( temp == "--version" )
+      if (temp == "--version")
         {
-        std::cout << "@GOFIGURE2_VERSION@" <<std::endl;
+        std::cout << "@GOFIGURE2_VERSION@" << std::endl;
         return EXIT_SUCCESS;
         }
-      if( temp == "--i" )
+      if (temp == "--i")
         {
         inputfilename = argv[++i];
-        std::cout <<inputfilename.toStdString().c_str() <<std::endl;
+        std::cout << inputfilename.toStdString().c_str() << std::endl;
         }
-      if( temp == "--help" )
+      if (temp == "--help")
         {
-        std::cout <<"GoFigure2 version @GOFIGURE2_VERSION@" <<std::endl;
-        std::cout <<std::endl;
-        std::cout <<"gofigure [options]" <<std::endl;
-        std::cout <<"--i input file (single file)" <<std::endl;
-        std::cout <<"--help list of all options" <<std::endl;
-        std::cout <<"--version get the version number" <<std::endl;
+        std::cout << "GoFigure2 version @GOFIGURE2_VERSION@" << std::endl;
+        std::cout << std::endl;
+        std::cout << "gofigure [options]" << std::endl;
+        std::cout << "--i input file (single file)" << std::endl;
+        std::cout << "--help list of all options" << std::endl;
+        std::cout << "--version get the version number" << std::endl;
         return EXIT_SUCCESS;
         }
       }
     }
 
-  QPixmap pixmap( QString::fromUtf8( ":/fig/splash.png" ) );
+  QPixmap pixmap(QString::fromUtf8(":/fig/splash.png"));
   QSplashScreen *splash = new QSplashScreen(
-    pixmap.scaledToWidth( 800, Qt::SmoothTransformation ),
-    Qt::WindowStaysOnTopHint );
+    pixmap.scaledToWidth(800, Qt::SmoothTransformation),
+    Qt::WindowStaysOnTopHint);
 
   splash->show();
 
   app.processEvents();
 
-  splash->showMessage( "Application loading... please wait" );
+  splash->showMessage("Application loading... please wait");
 
   QGoMainWindow* form = new QGoMainWindow;
-  if( ( !inputfilename.isEmpty() ) && ( !inputfilename.isNull() ) )
+  if ((!inputfilename.isEmpty()) && (!inputfilename.isNull()))
     {
-    form->SetSingleFileName( inputfilename );
+    form->SetSingleFileName(inputfilename);
     }
-  form->show( );
+  form->show();
 
-  splash->showMessage( "Application ready" );
+  splash->showMessage("Application ready");
 
   app.processEvents();
 
-  splash->finish( form );
+  splash->finish(form);
 
   int output = app.exec();
-  
+
   delete splash;
   delete form;
 
   return output;
 }
-

@@ -46,34 +46,34 @@
 
 //---------------------------------------------------------------------------//
 QGoOneClickSegmentationDockWidget::
-QGoOneClickSegmentationDockWidget( QWidget* iParent) : QDockWidget( iParent ),
-m_Filter(0)
-{
-  this->setupUi( this );
+QGoOneClickSegmentationDockWidget(QWidget* iParent) : QDockWidget(iParent),
+  m_Filter(0)
+  {
+  this->setupUi(this);
 
-  QObject::connect( this->applyFilterBtn, SIGNAL( pressed() ),
-      this, SLOT( ApplyFilterEmit() ) );
+  QObject::connect(this->applyFilterBtn, SIGNAL(pressed()),
+                   this, SLOT(ApplyFilterEmit()));
 
-  QObject::connect( this->filterType, SIGNAL( activated( int ) ),
-        this, SLOT( FilterChanged( int ) ) );
+  QObject::connect(this->filterType, SIGNAL(activated(int)),
+                   this, SLOT(FilterChanged(int)));
 
-  QObject::connect( this->advanceMode, SIGNAL( toggled( bool ) ),
-          this, SLOT( AdvancedMode( bool ) ) );
+  QObject::connect(this->advanceMode, SIGNAL(toggled(bool)),
+                   this, SLOT(AdvancedMode(bool)));
 
   // Initialize visualization
-  UpdateWidget( true );
-  AdvancedMode( false );
+  UpdateWidget(true);
+  AdvancedMode(false);
 
   // Initialize parameters for levelset
   InitializeLevelsetParameters();
-}
+  }
 //---------------------------------------------------------------------------//
 
 //---------------------------------------------------------------------------//
 QGoOneClickSegmentationDockWidget::
 ~QGoOneClickSegmentationDockWidget()
-{
-}
+  {
+  }
 //---------------------------------------------------------------------------//
 
 //---------------------------------------------------------------------------//
@@ -81,8 +81,8 @@ void
 QGoOneClickSegmentationDockWidget::
 InitializeLevelsetParameters()
 {
-  this->numberOfIterations->setValue( 50 );
-  this->curvatureWeight->setValue( 1 );
+  this->numberOfIterations->setValue(50);
+  this->curvatureWeight->setValue(1);
 }
 //---------------------------------------------------------------------------//
 
@@ -98,9 +98,9 @@ ApplyFilterEmit()
 //---------------------------------------------------------------------------//
 void
 QGoOneClickSegmentationDockWidget::
-SetNumberOfChannels( int iNumberOfChannels )
+SetNumberOfChannels(int iNumberOfChannels)
 {
-  this->channel->setMaximum( iNumberOfChannels );
+  this->channel->setMaximum(iNumberOfChannels);
 }
 
 //---------------------------------------------------------------------------//
@@ -155,36 +155,36 @@ GetCurvatureWeight()
 //---------------------------------------------------------------------------//
 void
 QGoOneClickSegmentationDockWidget::
-FilterChanged( int filterSelected )
+FilterChanged(int filterSelected)
 {
   // 0 = circle contours (sphere aspect)
   // 1 = sphere ( 3D volume - no contours)
   // 2 = 3D levelset
 
-  switch ( filterSelected )
+  switch (filterSelected)
     {
-    case 0 :
-    // circle contours creation (sphere aspect)
-    this->UpdateWidget( true );
-    break;
+    case 0:
+      // circle contours creation (sphere aspect)
+      this->UpdateWidget(true);
+      break;
 
-    case 1 :
-    // sphere (3D volume creation)
-    this->UpdateWidget( true );
-    break;
+    case 1:
+      // sphere (3D volume creation)
+      this->UpdateWidget(true);
+      break;
 
-    case 2 :
-    // sphere (3d level set)
-    this->UpdateWidget( false );
-    break;
-/*
-    case 3 :
-    // sphere (3d level set)
-    this->UpdateWidget( false );
-    break;*/
+    case 2:
+      // sphere (3d level set)
+      this->UpdateWidget(false);
+      break;
+    /*
+        case 3 :
+        // sphere (3d level set)
+        this->UpdateWidget( false );
+        break;*/
 
-    default :
-    break;
+    default:
+      break;
     }
 }
 //---------------------------------------------------------------------------//
@@ -192,26 +192,26 @@ FilterChanged( int filterSelected )
 //---------------------------------------------------------------------------//
 void
 QGoOneClickSegmentationDockWidget::
-UpdateWidget( bool iUse )
+UpdateWidget(bool iUse)
 {
-  this->LevelsetParametersLabel->setVisible( !iUse );
+  this->LevelsetParametersLabel->setVisible(!iUse);
 
-  this->channelLabel->setVisible( !iUse );
-  this->channel->setVisible( !iUse );
+  this->channelLabel->setVisible(!iUse);
+  this->channel->setVisible(!iUse);
 
-  this->advanceModeLabel->setVisible( !iUse );
-  this->advanceMode->setVisible( !iUse );
+  this->advanceModeLabel->setVisible(!iUse);
+  this->advanceMode->setVisible(!iUse);
 }
 //---------------------------------------------------------------------------//
 
 //---------------------------------------------------------------------------//
 void
 QGoOneClickSegmentationDockWidget::
-AdvancedMode( bool iAdvanced )
+AdvancedMode(bool iAdvanced)
 {
-  this->numberOfIterationsLabel->setVisible( iAdvanced );
-  this->numberOfIterations->setVisible( iAdvanced );
+  this->numberOfIterationsLabel->setVisible(iAdvanced);
+  this->numberOfIterations->setVisible(iAdvanced);
 
-  this->curvatureWeightLabel->setVisible( iAdvanced );
-  this->curvatureWeight->setVisible( iAdvanced );
+  this->curvatureWeightLabel->setVisible(iAdvanced);
+  this->curvatureWeight->setVisible(iAdvanced);
 }

@@ -46,15 +46,15 @@
 #include "QGoGUILibConfigure.h"
 
 class QGOGUILIB_EXPORT QGoCreateDataBasePage : public QWizardPage
-{
+  {
   Q_OBJECT
 
 public:
-  QGoCreateDataBasePage(QWidget *parent = 0);
+  QGoCreateDataBasePage(QWidget * parent = 0);
   void initializePage();
   bool validatePage();
 
 private:
   QLineEdit* lineNewDBName;
-};
+  };
 #endif

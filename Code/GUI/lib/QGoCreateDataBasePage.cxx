@@ -46,10 +46,9 @@
 #include <QVariant>
 #include <iostream>
 
-
 QGoCreateDataBasePage::QGoCreateDataBasePage(QWidget *iParent)
-:QWizardPage(iParent)
-{
+  : QWizardPage(iParent)
+  {
   QFont tfont;
   tfont.setBold(false);
   this->setFont(tfont);
@@ -59,7 +58,7 @@ QGoCreateDataBasePage::QGoCreateDataBasePage(QWidget *iParent)
   formLayout->addRow(tr("Name of the new DB to create:"), lineNewDBName);
 
   setLayout(formLayout);
-}
+  }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -72,22 +71,22 @@ void QGoCreateDataBasePage::initializePage()
 //-------------------------------------------------------------------------
 bool QGoCreateDataBasePage::validatePage()
 {
-  QString DBName =lineNewDBName->text();
-  if( DBName.isEmpty() )
+  QString DBName = lineNewDBName->text();
+  if (DBName.isEmpty())
     {
     QMessageBox msgBox;
-    msgBox.setText( 
-      tr( "Please enter a name for your new DataBase :" ) );
+    msgBox.setText(
+      tr("Please enter a name for your new DataBase :"));
     msgBox.exec();
     return false;
     }
-  this->wizard()->setField( "DBName", DBName );
-  std::cout<<"the DBName to create is: "<<field("DBName").toString().toStdString().c_str()<<std::endl;
- 
+  this->wizard()->setField("DBName", DBName);
+  std::cout << "the DBName to create is: " << field("DBName").toString().toStdString().c_str() << std::endl;
+
   CreateGoFigureDataBase(field("ServerName").toString().toStdString(),
-      field("User").toString().toStdString(),
-      field("Password").toString().toStdString(),
-      field("DBName").toString().toStdString());
- 
+                         field("User").toString().toStdString(),
+                         field("Password").toString().toStdString(),
+                         field("DBName").toString().toStdString());
+
   return true;
 }

@@ -15,15 +15,15 @@ class vtkOrientedBoxWidget;
 
 class VTK_RENDERINGADDON2_EXPORT vtkViewImage3DCommand :
   public vtkCommand
-{
- public:
+  {
+public:
 
   static vtkViewImage3DCommand* New();
 
   //BTX
   enum EventIds
-  {
-    SliceMoveEvent=(vtkCommand::UserEvent+1),
+    {
+    SliceMoveEvent = (vtkCommand::UserEvent + 1),
     StartSliceMoveEvent,
     EndSliceMoveEvent,
     ZoomEvent,
@@ -39,7 +39,7 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage3DCommand :
     BoxWidgetModifiedEvent,
     ReadyEvent,
     BoxWidgetReadyEvent
-  };
+    };
   //ETX
 
   // Description:
@@ -47,27 +47,26 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage3DCommand :
   // the instance invoking the event; eid is the event id (see
   // vtkCommand.h); and calldata is information sent when the callback
   // was invoked (e.g., progress value in the vtkCommand::ProgressEvent).
-  virtual void Execute( vtkObject *caller, unsigned long , void * );
+  virtual void Execute(vtkObject *caller, unsigned long, void *);
 
   vtkOrientedBoxWidget*    GetBoxWidget();
-  std::list< vtkProp3D* >  GetListOfModifiedActors();
-  void                     Enable3DBoxWidget( bool iValue );
+  std::list<vtkProp3D*>  GetListOfModifiedActors();
+  void                     Enable3DBoxWidget(bool iValue);
 
-  void SetVtkImageView3D( vtkViewImage3D* vtkViewImage3D );
+  void SetVtkImageView3D(vtkViewImage3D* vtkViewImage3D);
 
-
- protected:
+protected:
 
   vtkViewImage3DCommand();
   ~vtkViewImage3DCommand();
 
- private:
-  vtkViewImage3D*         m_vtkViewImage3D;
-  vtkOrientedBoxWidget*   m_BoxWidget;
-  std::list< vtkProp3D* > m_ListOfPickedActors;
-  std::list< vtkProp3D* > m_ListOfModifiedActors;
+private:
+  vtkViewImage3D*       m_vtkViewImage3D;
+  vtkOrientedBoxWidget* m_BoxWidget;
+  std::list<vtkProp3D*> m_ListOfPickedActors;
+  std::list<vtkProp3D*> m_ListOfModifiedActors;
   // which behavior do we want for this widget...?
-  bool                    m_InitializedBoxWidget;
-};
+  bool m_InitializedBoxWidget;
+  };
 
 #endif

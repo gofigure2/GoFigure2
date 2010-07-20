@@ -42,21 +42,21 @@
 #include "SelectQueryDatabaseHelper.h"
 #include "GoDBRecordSetHelper.h"
 
-GoDBNameDescRow::GoDBNameDescRow(): GoDBRow()
-{
+GoDBNameDescRow::GoDBNameDescRow() : GoDBRow()
+  {
   this->InitializeMap();
-}
+  }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void GoDBNameDescRow::InitializeMap()
-{ 
+{
   this->m_MapRow["Name"] = "";
   this->m_MapRow["Description"] = "";
   std::string NoDescription = "None";
   std::string NoName = "None";
-  this->SetField("Description",NoDescription);
-  this->SetField ("Name",NoName);
+  this->SetField("Description", NoDescription);
+  this->SetField ("Name", NoName);
 }
 //-------------------------------------------------------------------------
 
@@ -64,8 +64,8 @@ void GoDBNameDescRow::InitializeMap()
 int GoDBNameDescRow::DoesThisNameAlreadyExists(
   vtkMySQLDatabase* DatabaseConnector)
 {
-  return FindOneID(DatabaseConnector,this->m_TableName, 
-    this->m_TableIDName,"Name",this->GetMapValue("Name"));
+  return FindOneID(DatabaseConnector, this->m_TableName,
+                   this->m_TableIDName, "Name", this->GetMapValue("Name"));
 }
 //-------------------------------------------------------------------------
 
