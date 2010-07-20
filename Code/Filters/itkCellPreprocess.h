@@ -104,17 +104,12 @@ public:
   typedef MedianImageFilter<ImageType, ImageType> MedianFilterType;
   typedef typename MedianFilterType::Pointer      MedianFilterPointer;
   typedef RecursiveGaussianImageFilter<ImageType, ImageType>
-    SmoothingFilterType;
-  typedef typename SmoothingFilterType::Pointer              
-    SmoothingFilterPointer;
-  typedef GrayscaleFillholeImageFilter<ImageType, ImageType> 
-    GrayscaleFillholeFilterType;
-  typedef typename GrayscaleFillholeFilterType::Pointer
-    GrayscaleFillholePointer;
-  typedef CastImageFilter<ImageType, TOutputImage>
-    OutputCastType;
-  typedef typename OutputCastType::Pointer                   
-    OutputCastPointer;
+  SmoothingFilterType;
+  typedef typename SmoothingFilterType::Pointer              SmoothingFilterPointer;
+  typedef GrayscaleFillholeImageFilter<ImageType, ImageType> GrayscaleFillholeFilterType;
+  typedef typename GrayscaleFillholeFilterType::Pointer      GrayscaleFillholePointer;
+  typedef CastImageFilter<ImageType, TOutputImage>           OutputCastType;
+  typedef typename OutputCastType::Pointer                   OutputCastPointer;
 
   itkGetConstMacro (LargestCellRadius, double);
   itkSetMacro (LargestCellRadius, double);

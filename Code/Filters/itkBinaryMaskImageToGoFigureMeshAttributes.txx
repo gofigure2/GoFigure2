@@ -46,12 +46,14 @@ namespace itk
 template<class TInput, class TMask>
 BinaryMaskImageToGoFigureMeshAttributes<TInput, TMask>::
 BinaryMaskImageToGoFigureMeshAttributes()
-{}
+  {
+  }
 
 template<class TInput, class TMask>
 BinaryMaskImageToGoFigureMeshAttributes<TInput, TMask>::
 ~BinaryMaskImageToGoFigureMeshAttributes()
-{}
+  {
+  }
 
 template<class TInput, class TMask>
 void

@@ -46,7 +46,7 @@ protected:
   vtkPriorityQueue*     PriorityQueue;
 
 private:
-  vtkPolylineDecimation(const vtkPolylineDecimation&);      // Not implemented.
+  vtkPolylineDecimation(const vtkPolylineDecimation &);      // Not implemented.
   void operator =(const vtkPolylineDecimation&);     // Not implemented.
   };
 #endif

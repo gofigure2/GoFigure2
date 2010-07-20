@@ -140,48 +140,48 @@ public:
   typedef typename ConverterType::Pointer          ConverterPointer;
 
   void SetCenter(const InternalPointType& iC)
-    {
+  {
     m_Center = iC;
-    }
+  }
 
   InternalPointType GetCenter() const
-    {
+  {
     return m_Center;
-    }
+  }
 
   void SetRadius(const InternalCoordRepType& iR)
-    {
+  {
     m_Radius = iR;
-    }
+  }
   InternalCoordRepType GetRadius() const
-    {
+  {
     return m_Radius;
-    }
+  }
 
   void SetFeatureImage(FeatureImageType* iImage)
-    {
+  {
     m_FeatureImage = iImage;
-    }
+  }
 
   void SetNumberOfIterations(int iNumberOfIterations)
-    {
+  {
     m_NumberOfIterations = iNumberOfIterations;
-    }
+  }
 
   void SetCurvatureWeight(int iCurvatureWeight)
-    {
+  {
     m_CurvatureWeight = iCurvatureWeight;
-    }
+  }
 
   void Update()
-    {
+  {
     GenerateData();
-    }
+  }
 
   vtkImageData* GetOutput()
-    {
+  {
     return m_VTKImage;
-    }
+  }
 
   itkGetConstMacro (Preprocess, bool);
   itkSetMacro (Preprocess, bool);
@@ -210,7 +210,7 @@ protected:
   int                  m_CurvatureWeight;
 
   void GenerateData()
-    {
+  {
     if (m_FeatureImage.IsNull())
       {
       std::cerr << "m_FeatureImage is Null" << std::endl;

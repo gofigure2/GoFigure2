@@ -150,4 +150,3 @@ vtkPolyDataToBinaryMaskImageFilter<TInput, TOutput>::GenerateData()
 }
 
 #endif
-
