@@ -143,24 +143,24 @@ TARGET_LINK_LIBRARIES( gofigure
 #---------------------------------------------------------------------------
 # Now the installation stuff below
 #---------------------------------------------------------------------------
-SET( plugin_dest_dir "." )
+SET( plugin_dest_dir ${GOFIGURE2_INSTALL_BIN_DIR} )
 SET( qtconf_dest_dir ${GOFIGURE2_INSTALL_BIN_DIR} )
 
 IF( APPLE )
   SET( plugin_dest_dir gofigure.app/Contents/MacOS )
   SET( qtconf_dest_dir gofigure.app/Contents/Resources )
   SET( APPS 
-    "${CMAKE_INSTALL_PREFIX}/${GOFIGURE2_INSTALL_BUNDLE_DIR}/gofigure.app" )
+    "\${CMAKE_INSTALL_PREFIX}/${GOFIGURE2_INSTALL_BUNDLE_DIR}/gofigure.app" )
 ENDIF( APPLE )
 
 IF( WIN32 )
   SET( APPS 
-    "${CMAKE_INSTALL_PREFIX}/${GOFIGURE2_INSTALL_BIN_DIR}/gofigure.exe" )
+    "\${CMAKE_INSTALL_PREFIX}/${GOFIGURE2_INSTALL_BIN_DIR}/gofigure.exe" )
 ENDIF(WIN32)
 
 IF( UNIX AND NOT APPLE )
   SET( APPS 
-    "${CMAKE_INSTALL_PREFIX}/${GOFIGURE2_INSTALL_BIN_DIR}/gofigure" )
+    "\${CMAKE_INSTALL_PREFIX}/${GOFIGURE2_INSTALL_BIN_DIR}/gofigure" )
 
   IF( NOT DESKTOP_ENTRY )
     SET( DESKTOP_ENTRY gofigure2.desktop )
@@ -184,8 +184,11 @@ IF( UNIX AND NOT APPLE )
 
   SET( GOFIGURE2_ICON ${GOFIGURE2_SOURCE_DIR}/Resources/fig/Myapp2.png )
 
-  INSTALL( FILES ${GOFIGURE2_ICON} DESTINATION share/gofigure2/icons )
+  INSTALL( FILES ${GOFIGURE2_ICON} 
+    DESTINATION share/gofigure2/icons COMPONENT Runtime )
 ENDIF( UNIX AND NOT APPLE )
+
+# MESSAGE( ${APPS} )
 
 #---------------------------------------------------------------------------
 # Install gofigure, on Apple, the bundle is at the root of the
@@ -194,8 +197,8 @@ ENDIF( UNIX AND NOT APPLE )
 INSTALL( TARGETS gofigure
   ARCHIVE DESTINATION ${GOFIGURE2_INSTALL_LIB_DIR} COMPONENT Libraries
   LIBRARY DESTINATION ${GOFIGURE2_INSTALL_LIB_DIR} COMPONENT Libraries
-  RUNTIME DESTINATION ${GOFIGURE2_INSTALL_BIN_DIR} COMPONENT Applications
-  BUNDLE  DESTINATION ${GOFIGURE2_INSTALL_BUNDLE_DIR} COMPONENT Applications
+  RUNTIME DESTINATION ${GOFIGURE2_INSTALL_BIN_DIR} COMPONENT Runtime
+  BUNDLE  DESTINATION ${GOFIGURE2_INSTALL_BUNDLE_DIR} COMPONENT Runtime
   )
 
 #-----------------------------------------------------
@@ -242,21 +245,7 @@ ELSE( UNIX AND NOT APPLE )
     ENDIF( APPLE )
   ENDIF( WIN32 )
 ENDIF( UNIX AND NOT APPLE )
-
-INSTALL( FILES ${GOFIGURE2_LICENSE_FILES} 
-  DESTINATION ${GOFIGURE2_INSTALL_LICENSE_DIR} COMPONENT Applications 
-  )
 #-----------------------------------------------------
-
-#---------------------------------------------------------------------------
-# install a qt.conf file
-# this inserts some cmake code into the install script to write the file
-IF( APPLE )
-  INSTALL( CODE "
-    file( WRITE \"\${CMAKE_INSTALL_PREFIX}/${GOFIGURE2_INSTALL_BUNDLE_DIR}/${qtconf_dest_dir}/qt.conf\" \"\")
-    " COMPONENT Applications 
-    )
-ENDIF( APPLE )
 
 #---------------------------------------------------------------------------
 # Use BundleUtilities to get all other dependencies for the application to 
@@ -266,13 +255,13 @@ ENDIF( APPLE )
 
 # directories to look for dependencies
 SET( DIRS 
-  ${QT_LIBRARY_DIRS}
+  ${QT_LIBRARY_DIR}
+  ${QT_PLUGINS_DIR}
+  ${CMAKE_INSTALL_PREFIX}/${GOFIGURE2_INSTALL_BIN_DIR}
+  ${CMAKE_INSTALL_PREFIX}/${GOFIGURE2_INSTALL_LIB_DIR}
   ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
   ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
-  ${GOFIGURE2_INSTALL_LIB_DIR}
-  ${GOFIGURE2_INSTALL_BIN_DIR}
-  ${GOFIGURE2_INSTALL_BUNDLE_DIR}
   ${ITK_LIBRARY_DIRS}
   ${VTK_LIBRARY_DIRS}
 )
@@ -284,17 +273,33 @@ SET( DIRS
 # Note that the image plugins depend on QtSvg and QtXml, and it got those 
 # copied over.
 
-INSTALL( CODE "
-  file( GLOB_RECURSE QTPLUGINS
-    \"\${GOFIGURE2_INSTALL_BIN_DIR}/${plugin_dest_dir}/plugins/*${CMAKE_SHARED_LIBRARY_SUFFIX}\" )
+
+
+INSTALL( CODE " 
+    file( GLOB_RECURSE QTPLUGINS
+    # \"\${CMAKE_INSTALL_PREFIX}/*${CMAKE_SHARED_LIBRARY_SUFFIX}\" )
+    \"\${CMAKE_INSTALL_PREFIX}/${plugin_dest_dir}/plugins/*${CMAKE_SHARED_LIBRARY_SUFFIX}\" )
     include( BundleUtilities )
-    fixup_bundle(\"${APPS}\" \"\${QTPLUGINS}\" \"${DIRS}\" )
-  " COMPONENT Runtime 
-  ) 
+    fixup_bundle(\"${APPS}\" \"\${QTPLUGINS}\" \"${DIRS}\")
+  " 
+  COMPONENT Runtime ) 
 
 IF( APPLE )
+  #---------------------------------------------------------------------------
+  # install a qt.conf file
+  # this inserts some cmake code into the install script to write the file
+  INSTALL( CODE "
+    file( WRITE \"\${CMAKE_INSTALL_PREFIX}/${GOFIGURE2_INSTALL_BUNDLE_DIR}/${qtconf_dest_dir}/qt.conf\" \"\")
+    " COMPONENT Runtime 
+    )
+    
   INSTALL( FILES ${GOFIGURE2_LICENSE_FILES}
     DESTINATION ${plugin_dest_dir}/Licenses
     COMPONENT Runtime
+    )
+ELSE( APPLE )
+  INSTALL( FILES ${GOFIGURE2_LICENSE_FILES} 
+    DESTINATION ${GOFIGURE2_INSTALL_LICENSE_DIR} 
+    COMPONENT Runtime 
     )
 ENDIF( APPLE )

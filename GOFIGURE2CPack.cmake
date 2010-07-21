@@ -13,7 +13,7 @@ SET( CPACK_PACKAGE_DESCRIPTION_SUMMARY
   "GoFigure2 is a cross-platform application for microscope image visualization and analysis" 
   )
 SET( CPACK_PACKAGE_VENDOR "Megason Lab, Systems Biology, HMS" )
-SET( CPACK_PACKAGE_CONTACT "gofigure2-developpers@lists.sourceforge.net" )
+SET( CPACK_PACKAGE_CONTACT "gofigure2-developers@lists.sourceforge.net" )
 SET( CPACK_PACKAGE_DESCRIPTION_FILE "${GOFIGURE2_SOURCE_DIR}/ReadMe.txt")
 SET( CPACK_RESOURCE_FILE_LICENSE "${GOFIGURE2_SOURCE_DIR}/Licenses/Copyright.txt")
 SET( CPACK_RESOURCE_FILE_WELCOME "${GOFIGURE2_SOURCE_DIR}/CPack.GenericWelcome.txt" )
@@ -74,12 +74,11 @@ SET( CPACK_PACKAGE_EXECUTABLES "gofigure" "GoFigure2" )
 
 IF( WIN32 )
 	INSTALL( PROGRAMS ${CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS} 
-		DESTINATION bin COMPONENT Applications )
+		DESTINATION bin COMPONENT Runtime )
 ENDIF( WIN32 )
 
-
 SET( CPACK_COMPONENTS_ALL
-  Applications
+  Runtime
   Libraries
 #  headers
 )

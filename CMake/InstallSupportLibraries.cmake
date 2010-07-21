@@ -6,7 +6,7 @@ INCLUDE( InstallRequiredSystemLibraries )
 
 # ------------------------------------------------------------------------- 
 # Find/Install the needed Qt4 libraries. 
-SET( QTLIBLIST QtCore QtGui )
+SET( QTLIBLIST QtCore QtGui QtNetwork )
 IF( NOT Q_WS_MAC )
   FOREACH( qtlib ${QTLIBLIST} )
     IF( WIN32 )
