@@ -978,9 +978,10 @@ SetLookupTable(vtkLookupTable* iLut)
   if (this->m_Image->GetNumberOfScalarComponents() == 1)
     {
     m_Pool->SyncSetLookupTable(iLut);
-    m_Pool->SyncRender();
     m_View3D->SetLookupTable(iLut);
-    m_View3D->Render();
+
+    m_Pool->SyncResetWindowLevel();
+    m_Pool->SyncRender();
     }
 }
 //--------------------------------------------------------------------------
