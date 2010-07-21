@@ -144,6 +144,8 @@ void QGoImageView::SetBackgroundColor(const double& r,
     tproperty->SetFontSize(14);
     tproperty->SetColor(textcolor);
     }
+
+  m_Pool->SyncRender();
 }
 //-------------------------------------------------------------------------
 
