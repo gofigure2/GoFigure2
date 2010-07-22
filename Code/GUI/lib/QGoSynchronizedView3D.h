@@ -59,13 +59,14 @@ class QGoImageView3D;
 class QGoSynchronizedView3D : public QGoSynchronizedView
   {
   Q_OBJECT
+
+public:
   // itk typedef :
   // type of itk image for visualization
   typedef itk::Image<unsigned char, 3> VisuImageType;
   // itk to vtk connector
   typedef itk::ImageToVTKImageFilter<VisuImageType> itkvtkConnectorType;
-
-public:
+  
   explicit QGoSynchronizedView3D(QString iViewName, QWidget *iParent = 0);
 
   ~QGoSynchronizedView3D();

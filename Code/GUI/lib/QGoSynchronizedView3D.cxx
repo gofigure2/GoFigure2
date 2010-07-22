@@ -60,14 +60,14 @@ QGoSynchronizedView3D::
 ~QGoSynchronizedView3D()
   {
   // remove the SynchronizedView from the orchestra
-  if (m_currentViewManager != NULL)
+  if (m_currentViewManager)
     {
     m_currentViewManager->removeSynchronizedView3D(this);
     m_currentViewManager = NULL;
     }
 
   // delete the view if any
-  if (HasViewer())
+  if (m_currentView)
     {
     // we delete the viewer
     delete (dynamic_cast<QGoImageView3D*>(m_currentView));
@@ -106,14 +106,10 @@ void
 QGoSynchronizedView3D::
 SetImage(vtkImageData* iImage)
 {
-  if (iImage == NULL)
-    {
-    return;
-    }
-  else
+  if (iImage)
     {
     // if there is no viewer, we create one
-    if (m_currentView == NULL)
+    if (!m_currentView)
       {
       createViewer();
       }
@@ -130,13 +126,9 @@ void
 QGoSynchronizedView3D::
 Render(const int& iId)
 {
-  if (m_currentView == NULL)
+  if (m_currentView)
     {
-    return;
-    }
-  else
-    {
-    if (iId <= 2) // if we want to render one of the 2D view
+    if ( (iId>=0) && (iId <= 2) )// if we want to render one of the 2D view
       {
       dynamic_cast<QGoImageView3D*>(m_currentView)->GetImageViewer(iId)->Render();
       }
@@ -153,13 +145,9 @@ vtkCamera*
 QGoSynchronizedView3D::
 GetCamera(const int& iId)
 {
-  if (m_currentView == NULL)
+  if (m_currentView)
     {
-    return NULL;
-    }
-  else
-    {
-    if (iId <= 2)
+    if ( (iId>=0) && (iId <= 2) )
       {
       return dynamic_cast<QGoImageView3D*>(m_currentView)->GetImageViewer(iId)
              ->GetRenderer()
@@ -209,7 +197,15 @@ QString
 QGoSynchronizedView3D::
 SnapshotViewXY(const GoFigure::FileType& iType, const QString& iBaseName)
 {
-  return GetImageView()->SnapshotViewXY(iType, iBaseName);
+  QGoImageView3D* viewer = this->GetImageView();
+  if (viewer)
+    {
+    return viewer->SnapshotViewXY(iType, iBaseName);
+    }
+  else
+    {
+    return QString();
+    }
 }
 
 //--------------------------------------------------------------------------
@@ -217,7 +213,15 @@ QString
 QGoSynchronizedView3D::
 SnapshotView2(const GoFigure::FileType& iType, const QString& iBaseName)
 {
-  return GetImageView()->SnapshotView2(iType, iBaseName);
+  QGoImageView3D* viewer = this->GetImageView();
+  if (viewer)
+    {
+    return viewer->SnapshotView2(iType, iBaseName);
+    }
+  else
+    {
+    return QString();
+    }
 }
 
 //--------------------------------------------------------------------------
@@ -225,7 +229,15 @@ QString
 QGoSynchronizedView3D::
 SnapshotView3(const GoFigure::FileType& iType, const QString& iBaseName)
 {
-  return GetImageView()->SnapshotView3(iType, iBaseName);
+  QGoImageView3D* viewer = this->GetImageView();
+  if (viewer)
+    {
+    return viewer->SnapshotView3(iType, iBaseName);
+    }
+  else
+    {
+    return QString();
+    }
 }
 
 //--------------------------------------------------------------------------
@@ -233,7 +245,15 @@ QString
 QGoSynchronizedView3D::
 SnapshotViewXYZ(const GoFigure::FileType& iType, const QString& iBaseName)
 {
-  return GetImageView()->SnapshotViewXYZ(iType, iBaseName);
+  QGoImageView3D* viewer = this->GetImageView();
+  if (viewer)
+    {
+    return viewer->SnapshotViewXYZ(iType, iBaseName);
+    }
+  else
+    {
+    return QString();
+    }
 }
 
 //--------------------------------------------------------------------------
@@ -298,11 +318,7 @@ QGoSynchronizedView3D::
 createViewer()
 {
   // if there is already a viewer
-  if (m_currentView != NULL)
-    {
-    return;
-    }
-  else
+  if (!m_currentView)
     {
     // else we create one
     m_currentView = new QGoImageView3D(this);

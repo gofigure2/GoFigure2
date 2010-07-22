@@ -60,10 +60,9 @@ QGoSynchronizedView3DCallbacks(std::vector<QGoSynchronizedView3D*>
   SetupCallBack();
 
   // for every opened SynchronizedView :
-  for (std::vector<QGoSynchronizedView3D*>::iterator SynchronizedViewIt =
+  std::vector<QGoSynchronizedView3D*>::iterator SynchronizedViewIt =
          m_openSynchronizedView.begin();
-       SynchronizedViewIt != m_openSynchronizedView.end();
-       ++SynchronizedViewIt)
+  while ( SynchronizedViewIt != m_openSynchronizedView.end() )
     {
     if ((*SynchronizedViewIt)->HasViewer())
     // add the callback to the SynchronizedView's camera
@@ -113,6 +112,7 @@ QGoSynchronizedView3DCallbacks(std::vector<QGoSynchronizedView3D*>
                        (*SynchronizedViewIt)->GetImageView(),
                        SLOT(SetSliceViewYZ(int)));
       }
+      ++SynchronizedViewIt'
     }
   }
 
@@ -180,10 +180,9 @@ synchronizeCameras0(vtkObject* caller,
   vtkCamera* movedCamera
     = static_cast<vtkCamera*>(caller);
   // for every opened SynchronizedView :
-  for (std::vector<QGoSynchronizedView3D*>::iterator SynchronizedViewIt
+  std::vector<QGoSynchronizedView3D*>::iterator SynchronizedViewIt
          = p_m_QGoSynchronizedView3Ds.begin();
-       SynchronizedViewIt != p_m_QGoSynchronizedView3Ds.end();
-       ++SynchronizedViewIt)
+  while ( SynchronizedViewIt != p_m_QGoSynchronizedView3Ds.end() )
     {
     // if the SynchronizedView is visible and the modified camera is rendrered
     if      ((*SynchronizedViewIt)->isVisible()
@@ -200,6 +199,7 @@ synchronizeCameras0(vtkObject* caller,
         (*SynchronizedViewIt)->Render(0);
         }
       }
+    ++SynchronizedViewIt;
     }
 }
 

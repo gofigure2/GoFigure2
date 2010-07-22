@@ -64,12 +64,11 @@ QGoSynchronizedView2D(QString iViewName, QWidget *iParent) :
   {
   }
 
-/*
+
 QGoSynchronizedView2D::
 ~QGoSynchronizedView2D()
 {
 }
-*/
 
 //--------------------------------------------------------------------------
 /*  Print self informations */
@@ -78,7 +77,7 @@ QGoSynchronizedView2D::
 PrintOs(ostream& os)
 {
   // if we have an imageview, the we print its image information
-  if (m_currentImage != NULL)
+  if (m_currentImage)
     {
     os << "SynchronizedView 2D " << this << " contains :" << std::endl;
     m_currentImage->Print(os);
@@ -116,14 +115,10 @@ void
 QGoSynchronizedView2D::
 SetImage(vtkImageData* iImage)
 {
-  if (iImage == NULL)
-    {
-    return;
-    }
-  else
+  if (iImage)
     {
     // if there is no viewer, we create one
-    if (m_currentView == NULL)
+    if (!m_currentView)
       {
       createViewer();
       }
@@ -146,18 +141,16 @@ QGoSynchronizedView2D::
 createViewer()
 {
   // if there is already a viewer
-  if (m_currentView != NULL)
-    {
-    return;
-    }
-  else
+  if (!m_currentView)
     {
     // else we create one
-    m_currentView = new QGoImageView2D(this);
-    dynamic_cast<QGoImageView2D*>
-    (m_currentView)->setContentsMargins(1, 1, 1, 1);
+    QGoImageView2D* v = new QGoImageView2D(this);
+    v->setContentsMargins(1, 1, 1, 1);
+    
     // setup position of the widget
-    this->gridLayout->addWidget(dynamic_cast<QGoImageView2D*>(m_currentView));
+    this->gridLayout->addWidget( v );
+            
+    m_currentView = v;    
     }
 }
 
@@ -182,12 +175,13 @@ QGoSynchronizedView2D::
 SnapshotViewXY(const GoFigure::FileType& iType,
                const QString& iBaseName)
 {
-  if (!HasViewer())
+  QGoImageView2D* viewer = GetImageView();
+  if (viewer)
     {
-    return tr("");
+    return viewer->SnapshotViewXY(iType, iBaseName);
     }
   else
     {
-    return GetImageView()->SnapshotViewXY(iType, iBaseName);
+    return QString();
     }
 }

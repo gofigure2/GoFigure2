@@ -76,12 +76,7 @@ QGoSynchronizedView::
 ~QGoSynchronizedView()
   {
   // delete the view if any
-  if (HasViewer())
-    {
-    // we delete the viewer
-    delete (m_currentView);
-    m_currentView = NULL;
-    }
+  deleteViewer();
   }
 
 //--------------------------------------------------------------------------
@@ -92,8 +87,10 @@ void QGoSynchronizedView::changeEvent(QEvent *e)
   switch (e->type())
     {
     case QEvent::LanguageChange:
+      {
       retranslateUi(this);
       break;
+      }
     default:
       break;
     }
@@ -143,11 +140,7 @@ void
 QGoSynchronizedView::
 Update()
 {
-  if (m_currentView == NULL)
-    {
-    return;
-    }
-  else
+  if (m_currentView)
     {
     m_currentView->Update();
     }
@@ -159,11 +152,7 @@ void
 QGoSynchronizedView::
 Render()
 {
-  if (m_currentView == NULL)
-    {
-    return;
-    }
-  else
+  if (m_currentView)
     {
     m_currentView->GetImageViewer(0)->Render();
     }
@@ -175,11 +164,7 @@ vtkCamera*
 QGoSynchronizedView::
 GetCamera()
 {
-  if (m_currentView == NULL)
-    {
-    return NULL;
-    }
-  else
+  if ( m_currentView )
     {
     return m_currentView->GetImageViewer(0)
            ->GetRenderer()
@@ -193,9 +178,7 @@ bool
 QGoSynchronizedView::
 HasViewer()
 {
-  if (m_currentView != NULL) return true;
-  else
-    return false;
+  return (m_currentView != NULL);
 }
 
 //--------------------------------------------------------------------------
@@ -218,11 +201,7 @@ QGoSynchronizedView::
 deleteViewer()
 {
   // if there is no viewer
-  if (m_currentView == NULL)
-    {
-    return;
-    }
-  else
+  if (m_currentView)
     {
     // delete object
     delete (m_currentView);
