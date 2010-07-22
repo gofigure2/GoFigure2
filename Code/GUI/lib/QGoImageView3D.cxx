@@ -430,7 +430,7 @@ void QGoImageView3D::SetupVTKtoQtConnections()
   VtkEventQtConnector->Connect(
     reinterpret_cast<vtkObject*>(View1->GetInteractorStyle()),
     vtkViewImage2DCommand::WindowLevelEvent,
-    this, SLOT(UpdateScalarBarIn3DWiew()));
+    this, SLOT(UpdateScalarBarIn3DView()));
 }
 
 //-------------------------------------------------------------------------
@@ -946,10 +946,6 @@ void
 QGoImageView3D::
 DefaultMode()
 {
-  QGoImageView::EnableOneClickMode(false);
-  QGoImageView::EnableContourPickingMode(false);
-  EnableMeshPickingMode(false);
-
   // Call superclass default mode
   QGoImageView::DefaultMode();
 
@@ -963,7 +959,6 @@ void
 QGoImageView3D::
 ZoomMode()
 {
-  DefaultMode();
   // Call superclass default mode
   QGoImageView::ZoomMode();
 
@@ -976,7 +971,6 @@ void
 QGoImageView3D::
 PanMode()
 {
-  DefaultMode();
   // Call superclass default mode
   QGoImageView::PanMode();
 
@@ -989,10 +983,12 @@ void
 QGoImageView3D::
 OneClickMode()
 {
-  //Reinitialize cursor interaction
-  DefaultMode();
   // Enable widget in each slice
   QGoImageView::EnableOneClickMode(true);
+
+  // Update behavior in 3d view
+  vtkInteractorStyleImage3D* t = m_View3D->GetInteractorStyle3D();
+  t->EnableDefaultMode();
 }
 
 //-------------------------------------------------------------------------
@@ -1009,8 +1005,11 @@ void
 QGoImageView3D::
 ContourPickingMode()
 {
-  DefaultMode();
   QGoImageView::EnableContourPickingMode(true);
+
+  // Update behavior in 3d view
+  vtkInteractorStyleImage3D* t = m_View3D->GetInteractorStyle3D();
+  t->EnableDefaultMode();
 }
 
 //-------------------------------------------------------------------------

@@ -252,7 +252,7 @@ protected:
   /**
    * \brief Use the mesh picking interactor style
    */
-  void EnableMeshPickingMode(bool iEnable);
+  virtual void EnableMeshPickingMode(bool iEnable);
 
 protected slots:
   void MoveSliderXY();

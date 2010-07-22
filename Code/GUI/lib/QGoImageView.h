@@ -221,6 +221,8 @@ public:
    */
   void       ClearAllSeeds();
 
+  virtual void EnableMeshPickingMode(bool iEnable){(void)iEnable;};
+
 public slots:
   /** \brief Set background color for all views.
   \param[in] r red

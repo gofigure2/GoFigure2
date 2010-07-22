@@ -287,6 +287,11 @@ void
 QGoImageView::
 DefaultMode()
 {
+  EnableOneClickMode(false);
+  EnableContourPickingMode(false);
+  // Reimplemented in 3D
+  EnableMeshPickingMode(false);
+
   //Change cursor
   ChangeCursorShape(Qt::ArrowCursor);
 
@@ -299,6 +304,8 @@ void
 QGoImageView::
 ZoomMode()
 {
+  DefaultMode();
+
   //Change cursors
   QCursor zoomCursor(QPixmap(QString::fromUtf8(":/fig/zoom.png")), -1, -1);
   ChangeCursorShape(zoomCursor);
@@ -312,6 +319,8 @@ void
 QGoImageView::
 PanMode()
 {
+  DefaultMode();
+
   //Change cursor
   ChangeCursorShape(Qt::OpenHandCursor);
 
@@ -408,6 +417,11 @@ void
 QGoImageView::
 EnableContourPickingMode(bool iEnable)
 {
+  if(iEnable)
+    {
+    DefaultMode();
+    }
+
   // Change mode in the collection
   m_Pool->EnableContourPickingMode(iEnable);
 }
@@ -475,6 +489,11 @@ void
 QGoImageView::
 EnableOneClickMode(bool iEnable)
 {
+  if(iEnable)
+    {
+    DefaultMode();
+    }
+
   for (int i = 0; i < this->m_Pool->GetNumberOfItems(); i++)
     {
     SeedWidget[i]->SetEnabled(iEnable);
