@@ -74,10 +74,6 @@
 #include "SelectQueryDatabaseHelper.h"
 #include "ConvertToStringHelper.h"
 
-#include "vtkDistanceWidget.h"
-#include "vtkAngleWidget.h"
-// #include "vtkDistanceRepresentation2D.h"
-
 #include "QGoOneClickSegmentationDockWidget.h"
 #include "vtkViewImage2D.h"
 #include "vtkCellArray.h"
@@ -131,10 +127,7 @@ QGoTabImageView3DwT(QWidget* iParent) :
   m_MeshId(1),
   m_ReEditContourMode(false),
   m_ContourWidget(3),
-  m_ContourRepresentation(3),
-  m_DistanceWidget(3),
-//   m_DistanceRepresentation( 3 )
-  m_AngleWidget(3)
+  m_ContourRepresentation(3)
   {
   m_Image = vtkImageData::New();
 
@@ -185,22 +178,6 @@ QGoTabImageView3DwT(QWidget* iParent) :
     this->m_ContourWidget[i]->Off();
 
     this->m_ContourWidget[i]->SetRepresentation(this->m_ContourRepresentation[i]);
-
-    // distance widget
-//     this->m_DistanceRepresentation[i] = vtkSmartPointer< vtkDistanceRepresentation2D >::New();
-
-    this->m_DistanceWidget[i] = vtkSmartPointer<vtkDistanceWidget>::New();
-    this->m_DistanceWidget[i]->SetInteractor(m_ImageView->GetInteractor(i));
-    this->m_DistanceWidget[i]->CreateDefaultRepresentation();
-
-    this->m_DistanceWidget[i]->Off();
-
-    // angle widget
-    this->m_AngleWidget[i] = vtkSmartPointer<vtkAngleWidget>::New();
-    this->m_AngleWidget[i]->SetInteractor(m_ImageView->GetInteractor(i));
-    this->m_AngleWidget[i]->CreateDefaultRepresentation();
-
-    this->m_AngleWidget[i]->Off();
     }
 
   // Generate default color, width and nodes for the contours visualization
@@ -545,10 +522,7 @@ void
 QGoTabImageView3DwT::
 DistanceWidgetInteractorBehavior(bool iActive)
 {
-  for (int i = 0; i < 3; i++)
-    {
-    this->m_DistanceWidget[i]->SetEnabled(iActive);
-    }
+  this->m_ImageView->DistanceWidgetMode(iActive);
 }
 //-------------------------------------------------------------------------
 
@@ -557,20 +531,7 @@ void
 QGoTabImageView3DwT::
 AngleWidgetInteractorBehavior(bool iActive)
 {
-  if (iActive)
-    {
-    for (int i = 0; i < 3; i++)
-      {
-      this->m_AngleWidget[i]->On();
-      }
-    }
-  else
-    {
-    for (int i = 0; i < 3; i++)
-      {
-      this->m_AngleWidget[i]->Off();
-      }
-    }
+  this->m_ImageView->AngleWidgetMode(iActive);
 }
 //-------------------------------------------------------------------------
 //-------------------------------------------------------------------------

@@ -133,7 +133,9 @@ QGoImageView3D(QWidget* iParent) :
 
   this->m_Pool->SetExtraRenderWindow(renwin4);
 
-  InitializeSeedWidgetInteraction();
+  QGoImageView::InitializeSeedWidget();
+  QGoImageView::InitializeDistanceWidget();
+  QGoImageView::InitializeAngleWidget();
   }
 
 //-------------------------------------------------------------------------

@@ -41,6 +41,7 @@
 #define __QGoImageView_h
 
 #include <QWidget>
+#include "vtkSmartPointer.h"
 
 class vtkLookupTable;
 class vtkImageData;
@@ -59,6 +60,12 @@ class QVTKInteractor;
 class vtkSeedWidget;
 class vtkConstrainedPointHandleRepresentation;
 class vtkImageActorPointPlacer;
+
+// For the distance widget...
+class vtkDistanceWidget;
+
+// For the angle widget...
+class vtkAngleWidget;
 
 #include "QGoGUILibConfigure.h"
 
@@ -206,7 +213,21 @@ public:
   /**
   * \brief Initializae the seed widget
   */
-  void InitializeSeedWidgetInteraction();
+  void InitializeSeedWidget();
+
+  /**
+  * \brief Initializae the distance widget
+  */
+  void InitializeDistanceWidget();
+
+  /**
+  * \brief Initializae the angle widget
+  */
+  void InitializeAngleWidget();
+
+  void DistanceWidgetMode(bool iEnable);
+
+  void AngleWidgetMode(bool iActive);
   /**
   * \brief Enable the One Click mode (usefull since it is in a vtk widget)
   */
@@ -239,9 +260,16 @@ public slots:
 protected:
   vtkViewImage2DCollection* m_Pool;
   vtkImageData*             m_Image;
-  std::vector<vtkSeedWidget*>                           SeedWidget;
-  std::vector<vtkConstrainedPointHandleRepresentation*> Handle;
-  std::vector<vtkSeedRepresentation*>                   SeedRep;
+  std::vector<vtkSeedWidget*>                           m_SeedWidget;
+  std::vector<vtkConstrainedPointHandleRepresentation*> m_Handle;
+  std::vector<vtkSeedRepresentation*>                   m_SeedRep;
+
+  // Distance Widget specific members
+  std::vector<vtkSmartPointer<vtkDistanceWidget> > m_DistanceWidget;
+//   std::vector< vtkSmartPointer< vtkDistanceRepresentation2D > > m_DistanceRepresentation;
+
+  // Angle widget specific members
+  std::vector<vtkSmartPointer<vtkAngleWidget> > m_AngleWidget;
   unsigned int              m_SnapshotId;
   bool                      m_ShowAnnotations;
   bool                      m_ShowSplinePlane;

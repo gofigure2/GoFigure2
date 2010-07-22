@@ -58,6 +58,12 @@
 #include "vtkWidgetEvent.h"
 #include "vtkWidgetEventTranslator.h"
 
+// For the distance widget...
+#include "vtkDistanceWidget.h"
+
+// For the angle widget...
+#include "vtkAngleWidget.h"
+
 //--------------------------------------------------------------------------
 /**
  * \brief Default Constructor.
@@ -78,24 +84,24 @@ QGoImageView(QWidget* iParent) : QWidget(iParent),
 QGoImageView::
 ~QGoImageView()
   {
-  std::vector<vtkSeedWidget*>::iterator seedWidgetIterator = SeedWidget.begin();
-  while (seedWidgetIterator != SeedWidget.end())
+  std::vector<vtkSeedWidget*>::iterator seedWidgetIterator = m_SeedWidget.begin();
+  while (seedWidgetIterator != m_SeedWidget.end())
     {
     (*seedWidgetIterator)->Delete();
     ++seedWidgetIterator;
     }
 
   std::vector<vtkConstrainedPointHandleRepresentation*>::iterator
-  handleIterator = Handle.begin();
-  while (handleIterator != Handle.end())
+  handleIterator = m_Handle.begin();
+  while (handleIterator != m_Handle.end())
     {
     (*handleIterator)->Delete();
     ++handleIterator;
     }
 
   std::vector<vtkSeedRepresentation*>::iterator
-  seedIterator = SeedRep.begin();
-  while (seedIterator != SeedRep.end())
+  seedIterator = m_SeedRep.begin();
+  while (seedIterator != m_SeedRep.end())
     {
     (*seedIterator)->Delete();
     ++seedIterator;
@@ -454,32 +460,32 @@ GetImage()
 //-------------------------------------------------------------------------
 void
 QGoImageView::
-InitializeSeedWidgetInteraction()
+InitializeSeedWidget()
 {
   int N = this->m_Pool->GetNumberOfItems();
 
   // Enable seed interaction
-  this->Handle.resize(N);
-  this->SeedRep.resize(N);
-  this->SeedWidget.resize(N);
+  this->m_Handle.resize(N);
+  this->m_SeedRep.resize(N);
+  this->m_SeedWidget.resize(N);
 
   for (int i = 0; i < N; ++i)
     {
-    this->Handle[i] = vtkConstrainedPointHandleRepresentation::New();
-    this->Handle[i]->GetProperty()->SetColor(1, 0, 0);
+    this->m_Handle[i] = vtkConstrainedPointHandleRepresentation::New();
+    this->m_Handle[i]->GetProperty()->SetColor(1, 0, 0);
 
-    this->SeedRep[i] = vtkSeedRepresentation::New();
-    this->SeedRep[i]->SetHandleRepresentation(this->Handle[i]);
+    this->m_SeedRep[i] = vtkSeedRepresentation::New();
+    this->m_SeedRep[i]->SetHandleRepresentation(this->m_Handle[i]);
 
-    this->SeedWidget[i] = vtkSeedWidget::New();
-    this->SeedWidget[i]->SetRepresentation(this->SeedRep[i]);
-    this->SeedWidget[i]->SetRepresentation(this->SeedRep[i]);
+    this->m_SeedWidget[i] = vtkSeedWidget::New();
+    this->m_SeedWidget[i]->SetRepresentation(this->m_SeedRep[i]);
+    this->m_SeedWidget[i]->SetRepresentation(this->m_SeedRep[i]);
 
-    this->SeedWidget[i]->SetInteractor(
+    this->m_SeedWidget[i]->SetInteractor(
       this->m_Pool->GetItem(i)->GetInteractor());
 
     // to remove right click interaction in the one click widget
-    this->SeedWidget[i]->GetEventTranslator()->RemoveTranslation(
+    this->m_SeedWidget[i]->GetEventTranslator()->RemoveTranslation(
       vtkCommand::RightButtonPressEvent);
     }
 }
@@ -496,7 +502,7 @@ EnableOneClickMode(bool iEnable)
 
   for (int i = 0; i < this->m_Pool->GetNumberOfItems(); i++)
     {
-    SeedWidget[i]->SetEnabled(iEnable);
+    m_SeedWidget[i]->SetEnabled(iEnable);
     }
 }
 
@@ -510,13 +516,13 @@ GetAllSeeds()
   /// TODO MEMORY LEAK HERE
   vtkPoints* oPoints = vtkPoints::New();
 
-  for (unsigned int i = 0; i < this->SeedWidget.size(); i++)
+  for (unsigned int i = 0; i < this->m_SeedWidget.size(); i++)
     {
-    int N = this->SeedRep[i]->GetNumberOfSeeds();
+    int N = this->m_SeedRep[i]->GetNumberOfSeeds();
     for (int j = 0; j < N; j++)
       {
       // Get World position (may be not accurate if we are between 8 pixels (3D))
-      this->SeedRep[i]->GetSeedWorldPosition(j, worldPosition);
+      this->m_SeedRep[i]->GetSeedWorldPosition(j, worldPosition);
       // Get indexes of the closest point
       int* index = this->m_Pool->GetItem(i)->GetImageCoordinatesFromWorldCoordinates(worldPosition);
       // Convert it back into world position
@@ -538,12 +544,77 @@ void
 QGoImageView::
 ClearAllSeeds()
 {
-  for (unsigned int i = 0; i < this->SeedWidget.size(); i++)
+  for (unsigned int i = 0; i < this->m_SeedWidget.size(); i++)
     {
-    for (int k = this->SeedRep[i]->GetNumberOfSeeds() - 1; k >= 0; --k)
+    for (int k = this->m_SeedRep[i]->GetNumberOfSeeds() - 1; k >= 0; --k)
       {
-      this->SeedWidget[i]->DeleteSeed(k);
-      this->SeedRep[i]->RemoveLastHandle();
+      this->m_SeedWidget[i]->DeleteSeed(k);
+      this->m_SeedRep[i]->RemoveLastHandle();
       }
     }
+}
+
+//-------------------------------------------------------------------------
+void
+QGoImageView::
+InitializeDistanceWidget()
+{
+  int N = this->m_Pool->GetNumberOfItems();
+  m_DistanceWidget.resize(N);
+  for (int i = 0; i < N; ++i)
+    {
+    this->m_DistanceWidget[i] = vtkSmartPointer<vtkDistanceWidget>::New();
+    this->m_DistanceWidget[i]->SetInteractor(this->m_Pool->GetItem(i)->GetInteractor());
+    this->m_DistanceWidget[i]->CreateDefaultRepresentation();
+
+    this->m_DistanceWidget[i]->Off();
+    }
+}
+
+//-------------------------------------------------------------------------
+void
+QGoImageView::
+DistanceWidgetMode(bool iActive)
+{
+  int N = this->m_Pool->GetNumberOfItems();
+  for (int i = 0; i < N; i++)
+  {
+  this->m_DistanceWidget[i]->SetEnabled(iActive);
+  }
+}
+
+//-------------------------------------------------------------------------
+void
+QGoImageView::
+InitializeAngleWidget()
+{
+  int N = this->m_Pool->GetNumberOfItems();
+  m_AngleWidget.resize(N);
+  for (int i = 0; i < N; ++i)
+    {
+    this->m_AngleWidget[i] = vtkSmartPointer<vtkAngleWidget>::New();
+    this->m_AngleWidget[i]->SetInteractor(this->m_Pool->GetItem(i)->GetInteractor());
+    this->m_AngleWidget[i]->CreateDefaultRepresentation();
+
+    this->m_AngleWidget[i]->Off();
+    }
+}
+
+//-------------------------------------------------------------------------
+void
+QGoImageView::
+AngleWidgetMode(bool iActive)
+{
+  int N = this->m_Pool->GetNumberOfItems();
+  for (int i = 0; i < N; i++)
+  {
+  if (iActive)
+    {
+    this->m_AngleWidget[i]->On();
+    }
+  else
+    {
+    this->m_AngleWidget[i]->Off();
+    }
+  }
 }

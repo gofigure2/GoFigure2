@@ -74,8 +74,6 @@ class vtkImageData;
 class vtkContourWidget;
 class vtkOrientedGlyphContourRepresentation;
 class vtkDistanceRepresentation2D;
-class vtkDistanceWidget;
-class vtkAngleWidget;
 
 class vtkMySQLDatabase;
 class vtkProperty;
@@ -440,13 +438,6 @@ protected:
   /// \todo move the three following instance into the visualization element.
   std::vector<vtkSmartPointer<vtkContourWidget> >                      m_ContourWidget;
   std::vector<vtkSmartPointer<vtkOrientedGlyphContourRepresentation> > m_ContourRepresentation;
-
-  // Distance Widget specific members
-  std::vector<vtkSmartPointer<vtkDistanceWidget> > m_DistanceWidget;
-//   std::vector< vtkSmartPointer< vtkDistanceRepresentation2D > > m_DistanceRepresentation;
-
-  // Angle widget specific members
-  std::vector<vtkSmartPointer<vtkAngleWidget> > m_AngleWidget;
 
   ContourMeshStructureMultiIndexContainer m_ContourContainer;
   ContourMeshStructureMultiIndexContainer m_MeshContainer;
