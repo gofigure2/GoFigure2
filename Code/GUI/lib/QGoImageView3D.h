@@ -106,7 +106,6 @@ public:
 
   vtkViewImage3D* GetImageViewer3D();
 
-  vtkImageActor* GetImageActor(const int&);
   QVTKInteractor* GetInteractor(const int&);
 
   virtual void RemoveActor(const int& iId, vtkActor* iActor);
@@ -133,13 +132,10 @@ public:
   int GetSliceViewYZ() const;
 
   virtual void ChangeActorProperty(vtkProp3D* iActor, vtkProperty* iProperty);
-  virtual void ChangeActorProperty(int iDir, vtkProp3D* iActor, vtkProperty* iProperty);
+  void ChangeActorProperty(int iDir, vtkProp3D* iActor, vtkProperty* iProperty);
 
-  std::list<vtkProp3D*> GetListOfPickedActors();
-  std::list<vtkProp3D*> GetListOfUnPickedActors();
   std::list<vtkProp3D*> GetListOfModifiedActors3D();
 
-  void ShowAnnotations();
   void ShowSplinePlane();
   void ShowCube3D();
   void UpdateRenderWindows();
@@ -194,8 +190,6 @@ public:
   std::list<vtkProp3D*> GetListOfUnPickedContours();
 
   vtkProp* GetPickedActor();
-
-  void ResetWindowLevel();
 
 signals:
   void SliceViewXYChanged(int Slice);
@@ -269,8 +263,6 @@ protected:
   bool                   m_FirstRender;
   bool                   m_Initialized;
 
-  bool m_ShowAnnotations;
-  bool m_ShowSplinePlane;
   bool m_ShowCube;
   
   virtual void resizeEvent(QResizeEvent* event);
@@ -307,6 +299,7 @@ protected slots:
 
 private:
   Q_DISABLE_COPY(QGoImageView3D);
+  void ChangeCursorShape(QCursor iCursorShape);
   };
 
 #endif

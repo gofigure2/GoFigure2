@@ -319,6 +319,21 @@ public:
 
   void UpdateWindowLevelObservers();
 
+  /**
+   * \brief Change Interaction mode of the collection to DefaultMode()
+   */
+  void EnableDefaultInteractionMode();
+
+  /**
+   * \brief Change Interaction mode of the collection to ZoomMode()
+   */
+  void EnableZoomInteractionMode();
+
+  /**
+   * \brief Change Interaction mode of the collection to ZoomMode()
+   */
+  void EnablePanInteractionMode();
+
 protected:
 
   vtkViewImage2DCollection();

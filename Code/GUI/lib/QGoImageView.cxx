@@ -47,6 +47,7 @@
 #include "vtkImageData.h"
 #include "vtkTextProperty.h"
 #include "vtkViewImage2DCollection.h"
+#include "vtkViewImage2DCollectionCommand.h"
 #include "vtkViewImage2D.h"
 
 //--------------------------------------------------------------------------
@@ -58,7 +59,9 @@ QGoImageView::
 QGoImageView(QWidget* iParent) : QWidget(iParent),
   m_Pool(0),
   m_Image(0),
-  m_SnapshotId(0)
+  m_SnapshotId(0),
+  m_ShowAnnotations(true),
+  m_ShowSplinePlane(true)
   {
   m_Pool = vtkViewImage2DCollection::New();
   }
@@ -294,4 +297,148 @@ AddActor(const int& iId, vtkActor* iActor)
     viewer->GetRenderer()->AddActor(iActor);
     }
 }
+
 //--------------------------------------------------------------------------
+void
+QGoImageView::
+DefaultMode()
+{
+  // Change mode in the collection
+  m_Pool->EnableDefaultInteractionMode();
+}
+
+//--------------------------------------------------------------------------
+void
+QGoImageView::
+ZoomMode()
+{
+  // Change mode in the collection
+  m_Pool->EnableZoomInteractionMode();
+}
+
+//--------------------------------------------------------------------------
+void
+QGoImageView::
+PanMode()
+{
+  // Change mode in the collection
+  m_Pool->EnablePanInteractionMode();
+}
+
+//-------------------------------------------------------------------------
+void
+QGoImageView::
+ResetWindowLevel()
+{
+  m_Pool->SyncResetWindowLevel();
+}
+
+//-------------------------------------------------------------------------
+void
+QGoImageView::
+SetLookupTable(vtkLookupTable* iLut)
+{
+  if (this->m_Image->GetNumberOfScalarComponents() == 1)
+    {
+    m_Pool->SyncSetLookupTable(iLut);
+    m_Pool->SyncResetWindowLevel();
+    m_Pool->SyncRender();
+    }
+}
+
+//-------------------------------------------------------------------------
+void
+QGoImageView::
+ShowScalarBar(const bool& iShow)
+{
+  if (this->m_Image->GetNumberOfScalarComponents() == 1)
+    {
+    m_Pool->SyncSetShowScalarBar(iShow);
+    m_Pool->SyncRender();
+    }
+}
+
+//-------------------------------------------------------------------------
+void
+QGoImageView::
+UpdateRenderWindows()
+{
+  // Update Visualization
+  // Update() not used because just want to update the renderWindow)
+  vtkRenderWindow* ren;
+
+  for (int i = 0; i < this->m_Pool->GetNumberOfItems(); ++i)
+    {
+    ren = this->m_Pool->GetItem(i)->GetRenderWindow();
+    ren->Render();
+    }
+}
+
+//-------------------------------------------------------------------------
+void
+QGoImageView::
+ShowAnnotations()
+{
+  if (m_ShowAnnotations)
+    {
+    // remove annotations in 2d views
+    m_ShowAnnotations = false;
+    this->m_Pool->SyncSetShowAnnotations(m_ShowAnnotations);
+    }
+  else
+    {
+    m_ShowAnnotations = true;
+    this->m_Pool->SyncSetShowAnnotations(m_ShowAnnotations);
+    }
+
+  UpdateRenderWindows();
+}
+
+//--------------------------------------------------------------------------
+std::list<vtkProp3D*>
+QGoImageView::
+GetListOfPickedActors()
+{
+  return m_Pool->GetCommand()->GetListOfPickedActors();
+}
+
+//--------------------------------------------------------------------------
+std::list<vtkProp3D*>
+QGoImageView::
+GetListOfUnPickedActors()
+{
+  return m_Pool->GetCommand()->GetListOfUnPickedActors();
+}
+
+//-------------------------------------------------------------------------
+vtkImageActor*
+QGoImageView::
+GetImageActor(const int& iId)
+{
+  if ((iId < 0) || (iId > 2))
+    {
+    return NULL;
+    }
+  else
+    {
+    return m_Pool->GetItem(iId)->GetImageActor();
+    }
+}
+
+//-------------------------------------------------------------------------
+void
+QGoImageView::
+ChangeActorProperty(int iDir, vtkProp3D* iActor, vtkProperty* iProperty)
+{
+  m_Pool->GetItem(iDir)->ChangeActorProperty(iActor, iProperty);
+}
+
+//--------------------------------------------------------------------------
+void
+QGoImageView::
+ShowSplinePlane()
+{
+  // Invert state of m_ShowPlane
+  m_ShowSplinePlane = !m_ShowSplinePlane;
+  this->m_Pool->SetSplinePlaneActorsVisibility(m_ShowSplinePlane);
+}

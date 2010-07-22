@@ -4073,7 +4073,7 @@ CreateMeshFromSelectedContours(std::list<int> iListContourIDs)
 
   QColor color =
     this->m_TraceManualEditingDockWidget->m_TraceWidget->ColorComboBox->GetCurrentColorData().second;
-  color.getRgbF(&rgba[0], &rgba[1], &rgba[2]);
+  color.getRgbF(&rgba[0], &rgba[1], &rgba[2], &rgba[3]);
 
   unsigned int meshid =
     this->m_TraceManualEditingDockWidget->m_TraceWidget->GetCurrentCollectionID();

@@ -593,7 +593,6 @@ void vtkViewImage2DCollection::SetLinkPosition(unsigned int v)
     item = this->GetNextItem();
     }
 }
-//----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------
 void vtkViewImage2DCollection::SetShowAxes(unsigned int v)
@@ -619,4 +618,40 @@ void vtkViewImage2DCollection::SetShowAxes(unsigned int v)
   }
     }
   }*/
+}
+
+//----------------------------------------------------------------------------
+void vtkViewImage2DCollection::EnableDefaultInteractionMode()
+{
+  this->InitTraversal();
+  vtkViewImage2D* item = this->GetNextItem();
+  while (item)
+    {
+    item->SetDefaultInteractionStyle();
+    item = this->GetNextItem();
+    }
+}
+
+//----------------------------------------------------------------------------
+void vtkViewImage2DCollection::EnableZoomInteractionMode()
+{
+  this->InitTraversal();
+  vtkViewImage2D* item = this->GetNextItem();
+  while (item)
+    {
+    item->SetInteractionStyle(vtkInteractorStyleImage2D::InteractionTypeZoom);
+    item = this->GetNextItem();
+    }
+}
+
+//----------------------------------------------------------------------------
+void vtkViewImage2DCollection::EnablePanInteractionMode()
+{
+  this->InitTraversal();
+  vtkViewImage2D* item = this->GetNextItem();
+  while (item)
+    {
+    item->SetInteractionStyle(vtkInteractorStyleImage2D::InteractionTypePan);
+    item = this->GetNextItem();
+    }
 }

@@ -82,9 +82,6 @@ public:
 
   virtual void Update() = 0;
 
-  /** \brief Returns Image actor rendered on one given view. */
-  virtual vtkImageActor* GetImageActor(const int&) = 0;
-
   /** \brief Returns the interactor for one given view. */
   virtual QVTKInteractor* GetInteractor(const int&) = 0;
 
@@ -113,6 +110,71 @@ public:
   /** \brief Highlight a given contour (iProp) if iToDo is true. */
   virtual void ChangeActorProperty(vtkProp3D* iActor, vtkProperty* iProperty);
 
+  /**
+   * \brief Use the default interactor style
+   */
+  void DefaultMode();
+
+  /**
+   * \brief Use the zoom interactor style
+   */
+  void ZoomMode();
+
+  /**
+   * \brief Use the pan interactor style
+   */
+  void PanMode();
+
+  /**
+   * \brief Reset collection Window level
+   */
+  void ResetWindowLevel();
+
+  /**
+   * \brief Set the lookup table in the collection
+   */
+  void SetLookupTable(vtkLookupTable* iLut);
+
+  /**
+   * \brief Show/hide the scalar bar in the collection
+   */
+  void ShowScalarBar(const bool&);
+
+  /**
+   * \brief Update only the visualization
+   */
+  void UpdateRenderWindows();
+
+  /**
+   * \brief Show annotations in the collection
+   */
+  void ShowAnnotations();
+
+  /**
+   * \brief Get list of the 2D picked actors
+   */
+  std::list<vtkProp3D*> GetListOfPickedActors();
+
+  /**
+   * \brief Get list of the 2D unpicked actors
+   */
+  std::list<vtkProp3D*> GetListOfUnPickedActors();
+
+  /**
+   * \brief Get the image actor
+   */
+  vtkImageActor* GetImageActor(const int& iId);
+
+  /**
+   * \brief Change the select actor property in the selected view
+   */
+  void ChangeActorProperty(int iDir, vtkProp3D* iActor, vtkProperty* iProperty);
+
+  /**
+   * \brief Invert visibility of the Spline Plane
+   */
+  void ShowSplinePlane();
+
 public slots:
   /** \brief Set background color for all views.
   \param[in] r red
@@ -126,13 +188,12 @@ public slots:
   /** \overload */
   void SetBackgroundColor(const QColor& iColor);
 
-  virtual void SetLookupTable(vtkLookupTable* iLut) = 0;
-  virtual void ShowScalarBar(const bool&) = 0;
-
 protected:
   vtkViewImage2DCollection* m_Pool;
   vtkImageData*             m_Image;
   unsigned int              m_SnapshotId;
+  bool                      m_ShowAnnotations;
+  bool                      m_ShowSplinePlane;
   };
 
 #endif
