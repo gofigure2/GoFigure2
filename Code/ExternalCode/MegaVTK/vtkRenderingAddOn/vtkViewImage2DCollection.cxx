@@ -655,3 +655,32 @@ void vtkViewImage2DCollection::EnablePanInteractionMode()
     item = this->GetNextItem();
     }
 }
+
+//----------------------------------------------------------------------------
+void vtkViewImage2DCollection::EnableContourPickingMode(bool iEnable)
+{
+  this->InitTraversal();
+  vtkViewImage2D* item = this->GetNextItem();
+  while (item)
+    {
+    item->SetInteractionStyle(
+      vtkInteractorStyleImage2D::InteractionTypeContourPicking);
+    item->SetWheelInteractionStyle(
+      vtkInteractorStyleImage2D::InteractionTypeSlice);
+
+    vtkInteractorStyleImage2D* t =
+      vtkInteractorStyleImage2D::SafeDownCast(item->GetInteractorStyle());
+    if (t)
+      {
+      if (iEnable)
+        {
+        t->StartPick();
+        }
+      else
+        {
+        t->EndPick();
+        }
+      }
+    item = this->GetNextItem();
+    }
+}

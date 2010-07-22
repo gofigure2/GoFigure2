@@ -464,6 +464,7 @@ void QGoImageView3D::SetupVTKtoQtConnections()
     this, SLOT(UpdateScalarBarIn3DWiew()));
 }
 
+/// TODO moving to QGoImageView
 //-------------------------------------------------------------------------
 void
 QGoImageView3D::
@@ -515,13 +516,6 @@ void QGoImageView3D::SetImage(vtkImageData* input)
       this->m_Image = input;
       }
     }
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-vtkImageData* QGoImageView3D::GetImage()
-{
-  return m_Image;
 }
 
 //-------------------------------------------------------------------------
@@ -819,7 +813,6 @@ void QGoImageView3D::MoveSliderYZ()
       }
     }
 }
-//-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void QGoImageView3D::SaveStateSplitters()
@@ -829,7 +822,6 @@ void QGoImageView3D::SaveStateSplitters()
   settings.setValue("HtSplitterSizes", HtSplitter->saveState());
   settings.setValue("HbSplitterSizes", HbSplitter->saveState());
 }
-//-------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 vtkViewImage3D*
@@ -838,7 +830,6 @@ GetImageViewer3D()
 {
   return m_View3D;
 }
-//--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 // std::vector< vtkQuadricLODActor* >
@@ -858,7 +849,6 @@ AddContour(const int& iId, vtkPolyData* dataset, vtkProperty* iProperty)
 
   return oList;
 }
-//--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void
@@ -901,7 +891,6 @@ RemoveActor(const int& iId, vtkActor* iActor)
     QGoImageView::RemoveActor(iId, iActor);
     }
 }
-//--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void
@@ -917,7 +906,6 @@ AddActor(const int& iId, vtkActor* iActor)
     QGoImageView::AddActor(iId, iActor);
     }
 }
-//--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void
@@ -931,7 +919,6 @@ SetLookupTable(vtkLookupTable* iLut)
 
   QGoImageView::SetLookupTable(iLut);
 }
-//--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void
@@ -946,7 +933,6 @@ ShowScalarBar(const bool& iShow)
 
   QGoImageView::ShowScalarBar(iShow);
 }
-//--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 
@@ -1043,7 +1029,7 @@ QGoImageView3D::
 DefaultMode()
 {
   EnableOneClickMode(false);
-  EnableContourPickingMode(false);
+  QGoImageView::EnableContourPickingMode(false);
   EnableMeshPickingMode(false);
 
   //Change cursor
@@ -1182,56 +1168,7 @@ QGoImageView3D::
 ContourPickingMode()
 {
   DefaultMode();
-
-  EnableContourPickingMode(true);
-}
-//-------------------------------------------------------------------------
-void
-QGoImageView3D::
-EnableContourPickingMode(bool iEnable)
-{
-  /// \todo move this code in the Collection code
-  int N = this->m_Pool->GetNumberOfItems();
-
-  for (int i = 0; i < N; ++i)
-    {
-    vtkViewImage2D* View = this->m_Pool->GetItem(i);
-    View->SetInteractionStyle(
-      vtkInteractorStyleImage2D::InteractionTypeContourPicking);
-    View->SetWheelInteractionStyle(
-      vtkInteractorStyleImage2D::InteractionTypeSlice);
-
-    vtkInteractorStyleImage2D* t =
-      vtkInteractorStyleImage2D::SafeDownCast(View->GetInteractorStyle());
-    if (t)
-      {
-      if (iEnable)
-        {
-        t->StartPick();
-        }
-      else
-        {
-        t->EndPick();
-        }
-      }
-    }
-}
-
-//-------------------------------------------------------------------------
-std::list<vtkProp3D*>
-QGoImageView3D::
-GetListOfPickedContours()
-{
-  // Get picked contours from all views
-  return m_Pool->GetCommand()->GetListOfPickedActors();
-}
-
-//-------------------------------------------------------------------------
-std::list<vtkProp3D*>
-QGoImageView3D::
-GetListOfUnPickedContours()
-{
-  return m_Pool->GetCommand()->GetListOfUnPickedActors();
+  QGoImageView::EnableContourPickingMode(true);
 }
 
 //-------------------------------------------------------------------------

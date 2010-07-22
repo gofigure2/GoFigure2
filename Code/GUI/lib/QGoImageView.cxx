@@ -65,13 +65,10 @@ QGoImageView(QWidget* iParent) : QWidget(iParent),
   {
   m_Pool = vtkViewImage2DCollection::New();
   }
-//--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-/**
- * \brief Default Destructor.
- */
-QGoImageView::~QGoImageView()
+QGoImageView::
+~QGoImageView()
   {
   if (m_Pool)
     {
@@ -79,16 +76,11 @@ QGoImageView::~QGoImageView()
     m_Pool = 0;
     }
   }
-//--------------------------------------------------------------------------
 
-//-------------------------------------------------------------------------
-/**
- * \brief Returns used background color by viewers.
- * \param[out] r red
- * \param[out] g green
- * \param[out] b blue
- */
-void QGoImageView::GetBackgroundColor(double& r,
+//--------------------------------------------------------------------------
+void
+QGoImageView::
+GetBackgroundColor(double& r,
                                       double& g, double& b)
 {
   double* rgb = this->GetBackgroundColor();
@@ -96,26 +88,19 @@ void QGoImageView::GetBackgroundColor(double& r,
   g = rgb[1];
   b = rgb[2];
 }
-//-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/**
- * \overload
- */
-double* QGoImageView::GetBackgroundColor()
+double*
+QGoImageView::
+GetBackgroundColor()
 {
   return m_Pool->GetItem(0)->GetBackground();
 }
-//-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/**
- * \brief Set background color to be used by viewers.
- * \param[in] r
- * \param[in] g
- * \param[in] b
- */
-void QGoImageView::SetBackgroundColor(const double& r,
+void
+QGoImageView::
+SetBackgroundColor(const double& r,
                                       const double& g,
                                       const double& b)
 {
@@ -150,37 +135,28 @@ void QGoImageView::SetBackgroundColor(const double& r,
 
   m_Pool->SyncRender();
 }
-//-------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-/**
- * \overload
- */
-void QGoImageView::SetBackgroundColor(double rgb[3])
+void
+QGoImageView::
+SetBackgroundColor(double rgb[3])
 {
   this->SetBackgroundColor(rgb[0], rgb[1], rgb[2]);
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-/**
- * \overload
- */
-void QGoImageView::SetBackgroundColor(const QColor& iColor)
+void
+QGoImageView::
+SetBackgroundColor(const QColor& iColor)
 {
   double r, g, b;
   iColor.getRgbF(&r, &g, &b);
 
   this->SetBackgroundColor(r, g, b);
 }
-//--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-/**
- *
- * \param[in] pos
- * \return
- */
 int*
 QGoImageView::
 GetImageCoordinatesFromWorldCoordinates(double iPos[3])
@@ -188,45 +164,25 @@ GetImageCoordinatesFromWorldCoordinates(double iPos[3])
   vtkViewImage2D* View = m_Pool->GetItem(0);
   return View->GetImageCoordinatesFromWorldCoordinates(iPos);
 }
-//--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-/**
- * \brief
- * \param[in] iId
- * \return
- */
+
 vtkViewImage2D*
 QGoImageView::
 GetImageViewer(const int& iId)
 {
   return m_Pool->GetItem(iId);
 }
-//--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-/**
- * \brief
- * \return
- */
 int
 QGoImageView::
 GetNumberOfImageViewers()
 {
   return m_Pool->GetNumberOfItems();
 }
-//--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-/**
- * \brief Add contour with given property into the visualization.
- * \param[in] iId direction
- * \param[in] iDataset contour
- * \param[in] iProperty
- * \return vector of vtkActor rendered in each 2D viewer.
- * \todo check the utility of iId.
- */
-// std::vector< vtkQuadricLODActor* >
 std::vector<vtkActor*>
 QGoImageView::
 AddContour(const int& iId, vtkPolyData* iDataset, vtkProperty* iProperty)
@@ -236,13 +192,10 @@ AddContour(const int& iId, vtkPolyData* iDataset, vtkProperty* iProperty)
   int n = m_Pool->GetNumberOfItems();
 
   std::vector<vtkActor*> oActorVector(n);
-//   std::vector< vtkQuadricLODActor* > oActorVector( n );
 
   for (int i = 0; i < n; i++)
     {
     vtkViewImage2D* viewer = m_Pool->GetItem(i);
-    //viewer-
-//     vtkQuadricLODActor* temp =
     vtkActor* temp = viewer->AddDataSet(iDataset, iProperty);
     viewer->Render();
     oActorVector[i] = temp;
@@ -394,22 +347,6 @@ ShowAnnotations()
   UpdateRenderWindows();
 }
 
-//--------------------------------------------------------------------------
-std::list<vtkProp3D*>
-QGoImageView::
-GetListOfPickedActors()
-{
-  return m_Pool->GetCommand()->GetListOfPickedActors();
-}
-
-//--------------------------------------------------------------------------
-std::list<vtkProp3D*>
-QGoImageView::
-GetListOfUnPickedActors()
-{
-  return m_Pool->GetCommand()->GetListOfUnPickedActors();
-}
-
 //-------------------------------------------------------------------------
 vtkImageActor*
 QGoImageView::
@@ -440,5 +377,39 @@ ShowSplinePlane()
 {
   // Invert state of m_ShowPlane
   m_ShowSplinePlane = !m_ShowSplinePlane;
-  this->m_Pool->SetSplinePlaneActorsVisibility(m_ShowSplinePlane);
+  m_Pool->SetSplinePlaneActorsVisibility(m_ShowSplinePlane);
+}
+
+//-------------------------------------------------------------------------
+void
+QGoImageView::
+EnableContourPickingMode(bool iEnable)
+{
+  // Change mode in the collection
+  m_Pool->EnableContourPickingMode(iEnable);
+}
+
+//-------------------------------------------------------------------------
+std::list<vtkProp3D*>
+QGoImageView::
+GetListOfPickedContours()
+{
+  // Get picked contours from all views
+  return m_Pool->GetCommand()->GetListOfPickedActors();
+}
+
+//-------------------------------------------------------------------------
+std::list<vtkProp3D*>
+QGoImageView::
+GetListOfUnPickedContours()
+{
+  return m_Pool->GetCommand()->GetListOfUnPickedActors();
+}
+
+//-------------------------------------------------------------------------
+vtkImageData*
+QGoImageView::
+GetImage()
+{
+  return m_Image;
 }

@@ -96,17 +96,14 @@ public:
   std::vector<vtkConstrainedPointHandleRepresentation*> Handle;
   std::vector<vtkSeedRepresentation*>                   SeedRep;
 
-  /** \brief Set the image to be displaid. */
-  virtual void SetImage(vtkImageData* iImage);
-
-  /** \brief Get the displaid image.*/
-  virtual vtkImageData* GetImage();
-
   virtual void Update();
 
   vtkViewImage3D* GetImageViewer3D();
 
   QVTKInteractor* GetInteractor(const int&);
+
+  /** \brief Set the image to displaid. */
+  virtual void SetImage(vtkImageData* iImage);
 
   virtual void RemoveActor(const int& iId, vtkActor* iActor);
   virtual void AddActor(const int& iId, vtkActor* iActor);
@@ -158,9 +155,13 @@ public:
   void OneClickMode();
 
   /**
-   * \brief Use the contour picking interactor style
+   * \brief switch to contour picking mode
    */
   void ContourPickingMode();
+
+  /**
+   * \brief Use the mesh picking interactor style
+   */
 
   void MeshPickingMode();
 
@@ -178,16 +179,6 @@ public:
    * \brief Clear all the seeds positions after using it.
    */
   void       ClearAllSeeds();
-
-  /**
-   * \brief Get a list of all the picked contours
-   */
-  std::list<vtkProp3D*> GetListOfPickedContours();
-
-  /**
-   * \brief Get a list of all the unpicked contours
-   */
-  std::list<vtkProp3D*> GetListOfUnPickedContours();
 
   vtkProp* GetPickedActor();
 

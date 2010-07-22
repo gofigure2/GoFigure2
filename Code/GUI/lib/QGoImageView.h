@@ -75,7 +75,7 @@ public:
   virtual void SetImage(vtkImageData* iImage) = 0;
 
   /** \brief Get the displaid image.*/
-  virtual vtkImageData* GetImage() = 0;
+  vtkImageData* GetImage();
 
   /** \brief Get Image Coordinates from World Coordinates. */
   int* GetImageCoordinatesFromWorldCoordinates(double pos[3]);
@@ -96,6 +96,11 @@ public:
   /** \overload */
   double* GetBackgroundColor();
 
+  /**
+   * \brief
+   * \param[in] iId
+   * \return
+   */
   vtkViewImage2D* GetImageViewer(const int& iId);
   int GetNumberOfImageViewers();
 
@@ -103,6 +108,16 @@ public:
   virtual void AddActor(const int& iId, vtkActor* iActor);
 
 //   virtual std::vector< vtkQuadricLODActor* >
+
+  /**
+   * \brief Add contour with given property into the visualization.
+   * \param[in] iId direction
+   * \param[in] iDataset contour
+   * \param[in] iProperty
+   * \return vector of vtkActor rendered in each 2D viewer.
+   * \todo check the utility of iId.
+   */
+
   virtual std::vector<vtkActor*> AddContour(const int& iId,
                                             vtkPolyData* dataset,
                                             vtkProperty* property = NULL);
@@ -124,6 +139,11 @@ public:
    * \brief Use the pan interactor style
    */
   void PanMode();
+
+  /**
+   * \brief Use the contour picking mode
+   */
+  void EnableContourPickingMode(bool iEnable);
 
   /**
    * \brief Reset collection Window level
@@ -151,16 +171,6 @@ public:
   void ShowAnnotations();
 
   /**
-   * \brief Get list of the 2D picked actors
-   */
-  std::list<vtkProp3D*> GetListOfPickedActors();
-
-  /**
-   * \brief Get list of the 2D unpicked actors
-   */
-  std::list<vtkProp3D*> GetListOfUnPickedActors();
-
-  /**
    * \brief Get the image actor
    */
   vtkImageActor* GetImageActor(const int& iId);
@@ -174,6 +184,16 @@ public:
    * \brief Invert visibility of the Spline Plane
    */
   void ShowSplinePlane();
+
+  /**
+   * \brief Get list of the 2D picked actors
+   */
+  std::list<vtkProp3D*> GetListOfPickedContours();
+
+  /**
+   * \brief Get list of the 2D unpicked actors
+   */
+  std::list<vtkProp3D*> GetListOfUnPickedContours();
 
 public slots:
   /** \brief Set background color for all views.

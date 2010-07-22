@@ -334,6 +334,11 @@ public:
    */
   void EnablePanInteractionMode();
 
+  /**
+   * \brief Change Interaction mode of the collection to ContourPickingMode()
+   */
+  void EnableContourPickingMode(bool iEnable);
+
 protected:
 
   vtkViewImage2DCollection();
