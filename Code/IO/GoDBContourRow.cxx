@@ -124,6 +124,8 @@ void GoDBContourRow::SetTheDataFromTheVisu(
   vtkMySQLDatabase* DatabaseConnector, vtkPolyData* TraceVisu,
   GoDBCoordinateRow Min, GoDBCoordinateRow Max, GoFigureMeshAttributes* iMeshAttributes)
 {
+  (void) iMeshAttributes;
+
   GoDBTraceRow::SetTheDataFromTheVisu(DatabaseConnector, TraceVisu, Min, Max);
 
   if (this->DoesThisBoundingBoxExist(DatabaseConnector))

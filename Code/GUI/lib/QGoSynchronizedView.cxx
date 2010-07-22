@@ -170,6 +170,10 @@ GetCamera()
            ->GetRenderer()
            ->GetActiveCamera();
     }
+  else
+    {
+    return NULL;
+    }
 }
 
 //--------------------------------------------------------------------------
