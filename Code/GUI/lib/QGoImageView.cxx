@@ -357,15 +357,7 @@ void
 QGoImageView::
 UpdateRenderWindows()
 {
-  // Update Visualization
-  // Update() not used because just want to update the renderWindow)
-  vtkRenderWindow* ren;
-
-  for (int i = 0; i < this->m_Pool->GetNumberOfItems(); ++i)
-    {
-    ren = this->m_Pool->GetItem(i)->GetRenderWindow();
-    ren->Render();
-    }
+  this->m_Pool->SyncRender();
 }
 
 //-------------------------------------------------------------------------

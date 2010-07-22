@@ -895,7 +895,7 @@ ShowSplinePlane()
   QGoImageView::ShowSplinePlane();
   this->m_View3D->SetBoundsActorsVisibility(m_ShowSplinePlane);
 
-  this->UpdateRenderWindows();
+  QGoImageView::UpdateRenderWindows();
 }
 
 //--------------------------------------------------------------------------
@@ -906,20 +906,6 @@ ShowCube3D()
   // Invert state of m_ShowCubes
   m_ShowCube = !m_ShowCube;
   this->m_View3D->SetCubeVisibility(m_ShowCube);
-
-  UpdateRenderWindows();
-}
-
-//--------------------------------------------------------------------------
-void
-QGoImageView3D::
-UpdateRenderWindows()
-{
-  // Update Visualization
-  // Update() not used because just want to update the renderWindow)
-  vtkRenderWindow* ren;
-  ren = this->m_View3D->GetRenderWindow();
-  ren->Render();
 
   QGoImageView::UpdateRenderWindows();
 }

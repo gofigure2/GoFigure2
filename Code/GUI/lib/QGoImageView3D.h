@@ -124,7 +124,6 @@ public:
 
   void ShowSplinePlane();
   void ShowCube3D();
-  void UpdateRenderWindows();
 
   /**
    * \brief Use the default interactor style
