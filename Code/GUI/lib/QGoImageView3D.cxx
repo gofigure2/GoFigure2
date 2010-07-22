@@ -40,10 +40,6 @@
 
 #include "QGoImageView3D.h"
 
-#include "vtkConstrainedPointHandleRepresentation.h"
-#include "vtkSeedWidget.h"
-#include "vtkImageActorPointPlacer.h"
-
 #include "vtkImageData.h"
 #include "vtkViewImage2D.h"
 #include "vtkViewImage3D.h"
@@ -80,9 +76,6 @@
 #include "vtkCellArray.h"
 #include "vtkMath.h"
 #include "vtkPolyData.h"
-
-#include "vtkWidgetEvent.h"
-#include "vtkWidgetEventTranslator.h"
 
 #include <cstdlib>
 
@@ -142,36 +135,12 @@ QGoImageView3D(QWidget* iParent) :
 
   InitializeSeedWidgetInteraction();
   }
-//-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 QGoImageView3D::~QGoImageView3D()
   {
   delete HtSplitter;
   delete HbSplitter;
-
-  std::vector<vtkSeedWidget*>::iterator seedWidgetIterator = SeedWidget.begin();
-  while (seedWidgetIterator != SeedWidget.end())
-    {
-    (*seedWidgetIterator)->Delete();
-    ++seedWidgetIterator;
-    }
-
-  std::vector<vtkConstrainedPointHandleRepresentation*>::iterator
-  handleIterator = Handle.begin();
-  while (handleIterator != Handle.end())
-    {
-    (*handleIterator)->Delete();
-    ++handleIterator;
-    }
-
-  std::vector<vtkSeedRepresentation*>::iterator
-  seedIterator = SeedRep.begin();
-  while (seedIterator != SeedRep.end())
-    {
-    (*seedIterator)->Delete();
-    ++seedIterator;
-    }
 
   // note m_Pool is supposed to be deleted in QGoImageView, but due to a bug
   // it has to be deleted in this order...
@@ -462,40 +431,6 @@ void QGoImageView3D::SetupVTKtoQtConnections()
     reinterpret_cast<vtkObject*>(View1->GetInteractorStyle()),
     vtkViewImage2DCommand::WindowLevelEvent,
     this, SLOT(UpdateScalarBarIn3DWiew()));
-}
-
-/// TODO moving to QGoImageView
-//-------------------------------------------------------------------------
-void
-QGoImageView3D::
-InitializeSeedWidgetInteraction()
-{
-  int N = this->m_Pool->GetNumberOfItems();
-
-  // Enable seed interaction
-  this->Handle.resize(N);
-  this->SeedRep.resize(N);
-  this->SeedWidget.resize(N);
-
-  for (int i = 0; i < N; ++i)
-    {
-    this->Handle[i] = vtkConstrainedPointHandleRepresentation::New();
-    this->Handle[i]->GetProperty()->SetColor(1, 0, 0);
-
-    this->SeedRep[i] = vtkSeedRepresentation::New();
-    this->SeedRep[i]->SetHandleRepresentation(this->Handle[i]);
-
-    this->SeedWidget[i] = vtkSeedWidget::New();
-    this->SeedWidget[i]->SetRepresentation(this->SeedRep[i]);
-    this->SeedWidget[i]->SetRepresentation(this->SeedRep[i]);
-
-    this->SeedWidget[i]->SetInteractor(
-      this->m_Pool->GetItem(i)->GetInteractor());
-
-    // to remove right click interaction in the one click widget
-    this->SeedWidget[i]->GetEventTranslator()->RemoveTranslation(
-      vtkCommand::RightButtonPressEvent);
-    }
 }
 
 //-------------------------------------------------------------------------
@@ -832,7 +767,6 @@ GetImageViewer3D()
 }
 
 //--------------------------------------------------------------------------
-// std::vector< vtkQuadricLODActor* >
 std::vector<vtkActor*>
 QGoImageView3D::
 AddContour(const int& iId, vtkPolyData* dataset, vtkProperty* iProperty)
@@ -840,7 +774,6 @@ AddContour(const int& iId, vtkPolyData* dataset, vtkProperty* iProperty)
   std::vector<vtkActor*> oList =
     QGoImageView::AddContour(iId, dataset, iProperty);
 
-//   vtkQuadricLODActor* temp =
   vtkActor* temp = m_View3D->AddDataSet((vtkDataSet*) dataset,
                                         iProperty, false, false);
 
@@ -935,7 +868,6 @@ ShowScalarBar(const bool& iShow)
 }
 
 //--------------------------------------------------------------------------
-
 /**
  * \todo use dynamic_cast or more appropriate cast operator
  */
@@ -1028,7 +960,7 @@ void
 QGoImageView3D::
 DefaultMode()
 {
-  EnableOneClickMode(false);
+  QGoImageView::EnableOneClickMode(false);
   QGoImageView::EnableContourPickingMode(false);
   EnableMeshPickingMode(false);
 
@@ -1046,7 +978,6 @@ QGoImageView3D::
 ZoomMode()
 {
   DefaultMode();
-
   // Call superclass default mode
   QGoImageView::ZoomMode();
 
@@ -1060,7 +991,6 @@ QGoImageView3D::
 PanMode()
 {
   DefaultMode();
-
   // Call superclass default mode
   QGoImageView::PanMode();
 
@@ -1076,70 +1006,7 @@ OneClickMode()
   //Reinitialize cursor interaction
   DefaultMode();
   // Enable widget in each slice
-  EnableOneClickMode(true);
-}
-
-// should be in QGoImage (the seed widget+contour widget)
-//-------------------------------------------------------------------------
-void
-QGoImageView3D::
-EnableOneClickMode(bool iEnable)
-{
-  for (int i = 0; i < this->m_Pool->GetNumberOfItems(); i++)
-    {
-    SeedWidget[i]->SetEnabled(iEnable);
-    }
-}
-
-//-------------------------------------------------------------------------
-vtkPoints*
-QGoImageView3D::
-GetAllSeeds()
-{
-  /// TODO Correct it earlier might solve the visualization problem
-  /// regarding the seeds
-
-  double worldPosition[3];
-
-  /// TODO MEMORY LEAK HERE
-  vtkPoints* oPoints = vtkPoints::New();
-
-  for (unsigned int i = 0; i < this->SeedWidget.size(); i++)
-    {
-    int N = this->SeedRep[i]->GetNumberOfSeeds();
-    for (int j = 0; j < N; j++)
-      {
-      // Get World position (may be not accurate if we are between 8 pixels (3D))
-      this->SeedRep[i]->GetSeedWorldPosition(j, worldPosition);
-      // Get indexes of the closest point
-      int* index = this->m_Pool->GetItem(i)->GetImageCoordinatesFromWorldCoordinates(worldPosition);
-      // Convert it back into world position
-      double spacing[3];
-      this->m_Pool->GetItem(i)->GetInput()->GetSpacing(spacing);
-      double correctedPosition[3];
-      correctedPosition[0] = static_cast<double>(index[0]) * spacing[0];
-      correctedPosition[1] = static_cast<double>(index[1]) * spacing[1];
-      correctedPosition[2] = static_cast<double>(index[2]) * spacing[2];
-      oPoints->InsertNextPoint(correctedPosition);
-      }
-    }
-
-  return oPoints;
-}
-
-//-------------------------------------------------------------------------
-void
-QGoImageView3D::
-ClearAllSeeds()
-{
-  for (unsigned int i = 0; i < this->SeedWidget.size(); i++)
-    {
-    for (int k = this->SeedRep[i]->GetNumberOfSeeds() - 1; k >= 0; --k)
-      {
-      this->SeedWidget[i]->DeleteSeed(k);
-      this->SeedRep[i]->RemoveLastHandle();
-      }
-    }
+  QGoImageView::EnableOneClickMode(true);
 }
 
 //-------------------------------------------------------------------------
@@ -1148,7 +1015,6 @@ QGoImageView3D::
 MeshPickingMode()
 {
   DefaultMode();
-
   EnableMeshPickingMode(true);
 }
 
@@ -1202,7 +1068,7 @@ SetBox3DPicking(bool iValue)
 //-------------------------------------------------------------------------
 void
 QGoImageView3D::
-UpdateScalarBarIn3DWiew()
+UpdateScalarBarIn3DView()
 {
   m_View3D->SetLookupTable(m_Pool->GetItem(0)->GetLookupTable());
 }

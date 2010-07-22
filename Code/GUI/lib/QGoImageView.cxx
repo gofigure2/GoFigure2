@@ -50,6 +50,14 @@
 #include "vtkViewImage2DCollectionCommand.h"
 #include "vtkViewImage2D.h"
 
+// For the seed widget
+#include "vtkConstrainedPointHandleRepresentation.h"
+#include "vtkSeedWidget.h"
+#include "vtkImageActorPointPlacer.h"
+#include "vtkProperty.h"
+#include "vtkWidgetEvent.h"
+#include "vtkWidgetEventTranslator.h"
+
 //--------------------------------------------------------------------------
 /**
  * \brief Default Constructor.
@@ -70,6 +78,29 @@ QGoImageView(QWidget* iParent) : QWidget(iParent),
 QGoImageView::
 ~QGoImageView()
   {
+  std::vector<vtkSeedWidget*>::iterator seedWidgetIterator = SeedWidget.begin();
+  while (seedWidgetIterator != SeedWidget.end())
+    {
+    (*seedWidgetIterator)->Delete();
+    ++seedWidgetIterator;
+    }
+
+  std::vector<vtkConstrainedPointHandleRepresentation*>::iterator
+  handleIterator = Handle.begin();
+  while (handleIterator != Handle.end())
+    {
+    (*handleIterator)->Delete();
+    ++handleIterator;
+    }
+
+  std::vector<vtkSeedRepresentation*>::iterator
+  seedIterator = SeedRep.begin();
+  while (seedIterator != SeedRep.end())
+    {
+    (*seedIterator)->Delete();
+    ++seedIterator;
+    }
+
   if (m_Pool)
     {
     m_Pool->Delete();
@@ -412,4 +443,96 @@ QGoImageView::
 GetImage()
 {
   return m_Image;
+}
+
+//-------------------------------------------------------------------------
+void
+QGoImageView::
+InitializeSeedWidgetInteraction()
+{
+  int N = this->m_Pool->GetNumberOfItems();
+
+  // Enable seed interaction
+  this->Handle.resize(N);
+  this->SeedRep.resize(N);
+  this->SeedWidget.resize(N);
+
+  for (int i = 0; i < N; ++i)
+    {
+    this->Handle[i] = vtkConstrainedPointHandleRepresentation::New();
+    this->Handle[i]->GetProperty()->SetColor(1, 0, 0);
+
+    this->SeedRep[i] = vtkSeedRepresentation::New();
+    this->SeedRep[i]->SetHandleRepresentation(this->Handle[i]);
+
+    this->SeedWidget[i] = vtkSeedWidget::New();
+    this->SeedWidget[i]->SetRepresentation(this->SeedRep[i]);
+    this->SeedWidget[i]->SetRepresentation(this->SeedRep[i]);
+
+    this->SeedWidget[i]->SetInteractor(
+      this->m_Pool->GetItem(i)->GetInteractor());
+
+    // to remove right click interaction in the one click widget
+    this->SeedWidget[i]->GetEventTranslator()->RemoveTranslation(
+      vtkCommand::RightButtonPressEvent);
+    }
+}
+
+//-------------------------------------------------------------------------
+void
+QGoImageView::
+EnableOneClickMode(bool iEnable)
+{
+  for (int i = 0; i < this->m_Pool->GetNumberOfItems(); i++)
+    {
+    SeedWidget[i]->SetEnabled(iEnable);
+    }
+}
+
+//-------------------------------------------------------------------------
+vtkPoints*
+QGoImageView::
+GetAllSeeds()
+{
+  double worldPosition[3];
+
+  /// TODO MEMORY LEAK HERE
+  vtkPoints* oPoints = vtkPoints::New();
+
+  for (unsigned int i = 0; i < this->SeedWidget.size(); i++)
+    {
+    int N = this->SeedRep[i]->GetNumberOfSeeds();
+    for (int j = 0; j < N; j++)
+      {
+      // Get World position (may be not accurate if we are between 8 pixels (3D))
+      this->SeedRep[i]->GetSeedWorldPosition(j, worldPosition);
+      // Get indexes of the closest point
+      int* index = this->m_Pool->GetItem(i)->GetImageCoordinatesFromWorldCoordinates(worldPosition);
+      // Convert it back into world position
+      double spacing[3];
+      this->m_Pool->GetItem(i)->GetInput()->GetSpacing(spacing);
+      double correctedPosition[3];
+      correctedPosition[0] = static_cast<double>(index[0]) * spacing[0];
+      correctedPosition[1] = static_cast<double>(index[1]) * spacing[1];
+      correctedPosition[2] = static_cast<double>(index[2]) * spacing[2];
+      oPoints->InsertNextPoint(correctedPosition);
+      }
+    }
+
+  return oPoints;
+}
+
+//-------------------------------------------------------------------------
+void
+QGoImageView::
+ClearAllSeeds()
+{
+  for (unsigned int i = 0; i < this->SeedWidget.size(); i++)
+    {
+    for (int k = this->SeedRep[i]->GetNumberOfSeeds() - 1; k >= 0; --k)
+      {
+      this->SeedWidget[i]->DeleteSeed(k);
+      this->SeedRep[i]->RemoveLastHandle();
+      }
+    }
 }

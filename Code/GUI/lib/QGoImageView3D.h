@@ -58,9 +58,6 @@
 #include "QGoGUILibConfigure.h"
 
 #include "vtkCommand.h"
-#include "vtkSeedRepresentation.h"
-
-#include "vtkPoints.h"
 
 class QVTKWidget;
 class vtkEventQtSlotConnect;
@@ -72,10 +69,6 @@ class vtkImageData;
 class vtkViewImage2D;
 class vtkViewImage3D;
 class vtkViewImage2DCollection;
-
-class vtkSeedWidget;
-class vtkConstrainedPointHandleRepresentation;
-class vtkImageActorPointPlacer;
 
 /**
 \class QGoImageView3D
@@ -91,10 +84,6 @@ public:
 
   /** \brief Destructor. */
   virtual ~QGoImageView3D();
-
-  std::vector<vtkSeedWidget*>                           SeedWidget;
-  std::vector<vtkConstrainedPointHandleRepresentation*> Handle;
-  std::vector<vtkSeedRepresentation*>                   SeedRep;
 
   virtual void Update();
 
@@ -170,16 +159,6 @@ public:
    */
   void SetBox3DPicking(bool);
 
-  /**
-   * \brief Get all the seeds positions.
-   * The seeds have been defined using the one click mode.
-   */
-  vtkPoints* GetAllSeeds();
-  /**
-   * \brief Clear all the seeds positions after using it.
-   */
-  void       ClearAllSeeds();
-
   vtkProp* GetPickedActor();
 
 signals:
@@ -210,7 +189,7 @@ public slots:
 
   void SetCamera(int);
 
-  void UpdateScalarBarIn3DWiew();
+  void UpdateScalarBarIn3DView();
 
 //   void HighLightContours();
 
@@ -265,13 +244,6 @@ protected:
   void FullScreenViewXZ();
   void FullScreenViewYZ();
   void FullScreenViewXYZ();
-
-  void InitializeSeedWidgetInteraction();
-
-  /**
-  * \brief Enable the One Click mode (usefull since it is in a vtk widget)
-  */
-  void EnableOneClickMode(bool iEnable);
 
   /**
    * \brief Enable/Disable the contour picking interactor style

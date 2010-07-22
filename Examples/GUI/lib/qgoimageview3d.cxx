@@ -81,8 +81,6 @@ int main(int argc, char** argv)
   viewer->show();
 
   // Stupid tests to increase coverage and track leaks
-  viewer->GetListOfPickedActors();
-  viewer->GetListOfUnPickedActors();
   viewer->ShowAnnotations();
   viewer->ShowSplinePlane();
   viewer->ShowCube3D();

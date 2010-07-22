@@ -47,12 +47,18 @@ class vtkImageData;
 class vtkViewImage2D;
 class vtkViewImage2DCollection;
 class vtkImageActor;
-// class vtkQuadricLODActor;
 class vtkActor;
 class vtkPolyData;
 class vtkProperty;
 class vtkProp3D;
 class QVTKInteractor;
+
+// For the seed widget
+#include "vtkPoints.h"
+#include "vtkSeedRepresentation.h"
+class vtkSeedWidget;
+class vtkConstrainedPointHandleRepresentation;
+class vtkImageActorPointPlacer;
 
 #include "QGoGUILibConfigure.h"
 
@@ -197,6 +203,24 @@ public:
 
   virtual void ChangeCursorShape(QCursor iCursorShape) = 0;
 
+  /**
+  * \brief Initializae the seed widget
+  */
+  void InitializeSeedWidgetInteraction();
+  /**
+  * \brief Enable the One Click mode (usefull since it is in a vtk widget)
+  */
+  void EnableOneClickMode(bool iEnable);
+  /**
+   * \brief Get all the seeds positions.
+   * The seeds have been defined using the one click mode.
+   */
+  vtkPoints* GetAllSeeds();
+  /**
+   * \brief Clear all the seeds positions after using it.
+   */
+  void       ClearAllSeeds();
+
 public slots:
   /** \brief Set background color for all views.
   \param[in] r red
@@ -213,6 +237,9 @@ public slots:
 protected:
   vtkViewImage2DCollection* m_Pool;
   vtkImageData*             m_Image;
+  std::vector<vtkSeedWidget*>                           SeedWidget;
+  std::vector<vtkConstrainedPointHandleRepresentation*> Handle;
+  std::vector<vtkSeedRepresentation*>                   SeedRep;
   unsigned int              m_SnapshotId;
   bool                      m_ShowAnnotations;
   bool                      m_ShowSplinePlane;
