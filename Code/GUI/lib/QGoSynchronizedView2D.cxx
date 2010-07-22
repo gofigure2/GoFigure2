@@ -65,10 +65,18 @@ QGoSynchronizedView2D(QString iViewName, QWidget *iParent) :
   }
 
 
+//--------------------------------------------------------------------------
 QGoSynchronizedView2D::
 ~QGoSynchronizedView2D()
-{
-}
+  {
+  // remove the comparer from the orchestra
+  if (m_currentViewManager != NULL)
+    {
+    m_currentViewManager->removeSynchronizedView2D(this);
+    m_currentViewManager = NULL;
+    }
+  }
+
 
 //--------------------------------------------------------------------------
 /*  Print self informations */
@@ -87,18 +95,6 @@ PrintOs(ostream& os)
     os << "SynchronizedView 2D " << this << " contains no Image :" << std::endl;
     }
 }
-
-//--------------------------------------------------------------------------
-QGoSynchronizedView2D::
-~QGoSynchronizedView2D()
-  {
-  // remove the comparer from the orchestra
-  if (m_currentViewManager != NULL)
-    {
-    m_currentViewManager->removeSynchronizedView2D(this);
-    m_currentViewManager = NULL;
-    }
-  }
 
 //--------------------------------------------------------------------------
 /*  returns the type of comparer (2 for 2D, 3 for 3D) */

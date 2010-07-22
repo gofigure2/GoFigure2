@@ -112,7 +112,7 @@ QGoSynchronizedView3DCallbacks(std::vector<QGoSynchronizedView3D*>
                        (*SynchronizedViewIt)->GetImageView(),
                        SLOT(SetSliceViewYZ(int)));
       }
-      ++SynchronizedViewIt'
+      ++SynchronizedViewIt;
     }
   }
 
