@@ -76,14 +76,7 @@ public:
   void setupUi(QWidget* parent);
   void retranslateUi(QWidget *parent);
 
-  void DefaultMode();
-  void ZoomMode();
-  void PanMode();
-
 public slots:
-  void SetLookupTable(vtkLookupTable* iLut);
-  void ShowScalarBar(const bool&);
-
   QString SnapshotViewXY(const GoFigure::FileType& iType,
                          const QString& iBaseName = tr("Snapshot"));
 

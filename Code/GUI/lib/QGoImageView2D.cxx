@@ -190,31 +190,6 @@ Update()
   m_Pool->SyncRender();
   m_Pool->SyncReset();
 }
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-void
-QGoImageView2D::
-SetLookupTable(vtkLookupTable* iLut)
-{
-  if (this->m_Image->GetNumberOfScalarComponents() == 1)
-    {
-    m_Pool->SyncSetLookupTable(iLut);
-    }
-}
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-void
-QGoImageView2D::
-ShowScalarBar(const bool& iShow)
-{
-  if (this->m_Image->GetNumberOfScalarComponents() == 1)
-    {
-    m_Pool->SyncSetShowScalarBar(iShow);
-    }
-}
-//--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 QString
@@ -227,37 +202,3 @@ SnapshotViewXY(const GoFigure::FileType& iType, const QString& iBaseName)
   m_SnapshotId++;
   return filename;
 }
-//--------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
-QGoImageView2D::
-DefaultMode()
-{
-  vtkViewImage2D* View = m_Pool->GetItem(0);
-  View->SetLeftButtonInteractionStyle(vtkInteractorStyleImage2D::InteractionTypeSlice);
-  View->SetMiddleButtonInteractionStyle(vtkInteractorStyleImage2D::InteractionTypePan);
-  View->SetRightButtonInteractionStyle(vtkInteractorStyleImage2D::InteractionTypeZoom);
-  View->SetWheelInteractionStyle(vtkInteractorStyleImage2D::InteractionTypeSlice);
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
-QGoImageView2D::
-ZoomMode()
-{
-  vtkViewImage2D* View = m_Pool->GetItem(0);
-  View->SetInteractionStyle(vtkInteractorStyleImage2D::InteractionTypeZoom);
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
-QGoImageView2D::
-PanMode()
-{
-  vtkViewImage2D* View = m_Pool->GetItem(0);
-  View->SetInteractionStyle(vtkInteractorStyleImage2D::InteractionTypePan);
-}
-//-------------------------------------------------------------------------

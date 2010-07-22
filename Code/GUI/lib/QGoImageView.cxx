@@ -332,18 +332,8 @@ void
 QGoImageView::
 ShowAnnotations()
 {
-  if (m_ShowAnnotations)
-    {
-    // remove annotations in 2d views
-    m_ShowAnnotations = false;
-    this->m_Pool->SyncSetShowAnnotations(m_ShowAnnotations);
-    }
-  else
-    {
-    m_ShowAnnotations = true;
-    this->m_Pool->SyncSetShowAnnotations(m_ShowAnnotations);
-    }
-
+  m_ShowAnnotations = !m_ShowAnnotations;
+  this->m_Pool->SyncSetShowAnnotations(m_ShowAnnotations);
   UpdateRenderWindows();
 }
 
