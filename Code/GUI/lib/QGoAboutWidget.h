@@ -53,11 +53,10 @@ class QGOGUILIB_EXPORT QGoAboutWidget : public QWidget
   Q_OBJECT
 
 public:
-
-  QGoAboutWidget();
+  explicit QGoAboutWidget( QWidget* iParent = NULL );
   ~QGoAboutWidget();
-private:
 
+protected:
   void AddTabAbout(QString iTextLicense, QString iTabTitle,
                    QTabWidget* iTabWidget);
 
@@ -68,5 +67,7 @@ private:
   QString ReadLicenseText(QString iFilename);
   void WriteLicenseText(QTabWidget* iTabWidget);
 
+private:
+  Q_DISABLE_COPY( QGoAboutWidget );
   };
 #endif

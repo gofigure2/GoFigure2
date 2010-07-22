@@ -51,7 +51,7 @@
 
 #include <iostream>
 
-QGoAboutWidget::QGoAboutWidget()
+QGoAboutWidget::QGoAboutWidget( QWidget* iParent ) : QWidget( iParent )
   {
   Q_INIT_RESOURCE(axes);
 

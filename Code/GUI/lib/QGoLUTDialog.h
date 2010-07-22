@@ -78,7 +78,8 @@ public:
 
   /** \brief get the selected look up table*/
   static vtkLookupTable* GetLookupTable(QWidget* iParent,
-                                        const QString& iTitle);
+                                        const QString& iTitle,
+                                        const int& iIdx = 0 );
 
 public slots:
   /** \brief Change look up table*/

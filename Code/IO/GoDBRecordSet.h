@@ -267,6 +267,8 @@ bool
 GoDBRecordSet<TObject>::
 SaveEachRow(vtkSQLQuery *query, bool Update)
 {
+  (void) Update;
+
   // modified rows
   myIteratorType start = m_RowContainer.begin();
   myIteratorType firstFalseElement = start;
