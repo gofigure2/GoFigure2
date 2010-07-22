@@ -70,6 +70,7 @@ public:
                        unsigned int ImgSessionID, GoFigureMeshAttributes* iMeshAttributes = 0);
 
   GoDBMeshRow(const GoDBMeshRow &iRow);
+  GoDBMeshRow(unsigned int ImagingSessionID);
 
   ~GoDBMeshRow();
 
@@ -91,6 +92,10 @@ public:
                                         std::map<std::string, int> iNameChannelWithValues);
 
   void SafeDownCast(GoDBTraceRow& iRow);
+
+  void SetTheDataFromTheVisu(vtkMySQLDatabase* DatabaseConnector,
+                             vtkPolyData* TraceVisu, GoDBCoordinateRow Min,
+                             GoDBCoordinateRow Max, GoFigureMeshAttributes* iMeshAttributes = 0);
 
 protected:
   virtual void InitializeMap();

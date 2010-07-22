@@ -174,7 +174,7 @@ public:
   }
 
   // save content to DB - ASYNCHRONOUS
-  bool SaveInDB()
+  bool SaveInDB(bool Update = false)
   {
     if (m_RowContainer.empty())
       {
@@ -190,15 +190,31 @@ public:
 
     vtkSQLQuery* query = m_DatabaseConnector->GetQueryInstance();
 
-    if (this->SaveEachRow(query))
+    if (Update)
       {
-      query->Delete();
-      return true;
+      if (this->SaveEachRow(query, true))
+        {
+        query->Delete();
+        return true;
+        }
+      else
+        {
+        query->Delete();
+        return false;
+        }
       }
     else
       {
-      query->Delete();
-      return false;
+      if (this->SaveEachRow(query, false))
+        {
+        query->Delete();
+        return true;
+        }
+      else
+        {
+        query->Delete();
+        return false;
+        }
       }
   }
 
@@ -226,8 +242,9 @@ private:
 
   void PopulateColumnNamesContainer();
 
-  bool SaveEachRow(vtkSQLQuery* query);
+  bool SaveEachRow(vtkSQLQuery* query, bool Update = false);
   bool SaveRows(vtkSQLQuery* query, std::string what, myIteratorType start, myIteratorType end);
+  bool UpdateRows(vtkSQLQuery * query, myIteratorType start, myIteratorType end);
 
   // colum names container
   std::vector<std::string> m_ColumnNamesContainer;
@@ -248,7 +265,7 @@ private:
 template<class TObject>
 bool
 GoDBRecordSet<TObject>::
-SaveEachRow(vtkSQLQuery *query)
+SaveEachRow(vtkSQLQuery *query, bool Update)
 {
   // modified rows
   myIteratorType start = m_RowContainer.begin();
@@ -274,7 +291,17 @@ SaveEachRow(vtkSQLQuery *query)
     {
     if (!SaveRows(query, "INSERT ", firstFalseElement, end))
       {
-      return false;
+      if (!UpdateRows(query, firstFalseElement, end))
+        {
+        return false;
+        }
+      }
+    else
+      {
+      if (!SaveRows(query, "INSERT ", firstFalseElement, end))
+        {
+        return false;
+        }
       }
     }
 
@@ -324,6 +351,43 @@ SaveRows(vtkSQLQuery * query, std::string what, myIteratorType start, myIterator
       // replace by exception
       std::cerr << "Save query failed: ";
       std::cerr << rowQueryString.str().c_str() << std::endl;
+      return false;
+      }
+    rowIt++;
+    }
+  return true;
+}
+
+/**\brief uses the INSERT or REPLACE query to save all the objects GoDB..Row currently
+in the m_RowContainer located between start and end */
+template<class TObject>
+bool
+GoDBRecordSet<TObject>::
+UpdateRows(vtkSQLQuery * query, myIteratorType start, myIteratorType end)
+{
+  myIteratorType rowIt = start;
+
+  std::stringstream queryString;
+  queryString << "UPDATE ";
+  queryString << this->TableName << " SET ";
+  queryString << rowIt->second.PrintColumnNamesWithValues();
+  queryString << " WHERE ";
+  queryString << rowIt->second.GetTableIDName();
+  queryString << " = ";
+  queryString << rowIt->second.GetMapValue(rowIt->second.GetTableIDName());
+
+  // row dependent part of the query: one row corresponds to the values of one
+  //OriginalObjectType (exp:GoProjectRow)to be saved into the Database. So this part
+  //saves the values for all the OriginalObjectType contained in the vector m_RowContainer:
+  while (rowIt != end)
+    {
+    queryString << ";";
+    query->SetQuery(queryString.str().c_str());
+    if (!query->Execute())
+      {
+      // replace by exception
+      std::cerr << "Save query failed: ";
+      std::cerr << queryString.str().c_str() << std::endl;
       return false;
       }
     rowIt++;

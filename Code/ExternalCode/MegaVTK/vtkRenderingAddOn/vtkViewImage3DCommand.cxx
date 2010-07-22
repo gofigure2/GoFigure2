@@ -122,7 +122,6 @@ Execute(vtkObject *caller, unsigned long event, void *callData)
         std::cout << "Visibility: " << prop_temp->GetVisibility();
         return;
         }*/
-
       prop_temp->GetBounds(bounds);
 
       for (int i = 0; (i < 3) && inside; ++i)

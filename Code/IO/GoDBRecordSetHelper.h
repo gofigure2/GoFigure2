@@ -96,4 +96,19 @@ int AddOnlyOneNewObjectInTable(vtkMySQLDatabase* DatabaseConnector,
   return MaxValueForOneColumnInTable(DatabaseConnector, IDColumnName, TableName);
 }
 
+template<class T>
+int UpdateOneNewObjectInTable(vtkMySQLDatabase* DatabaseConnector,
+                              T* myNewObject)
+{
+  typedef GoDBRecordSet<T> SetType;
+
+  SetType mySet;
+  mySet.SetConnector(DatabaseConnector);
+  mySet.SetTableName(myNewObject->GetTableName());
+  mySet.AddObject(*myNewObject);
+  mySet.SaveInDB(true);
+
+  return atoi(myNewObject->GetMapValue(myNewObject->GetTableIDName()).c_str());
+}
+
 #endif

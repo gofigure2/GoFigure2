@@ -54,7 +54,6 @@ vtkViewImage2DCollectionCommand::
 vtkViewImage2DCollectionCommand()
   {
   }
-//--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 vtkViewImage2DCollectionCommand::

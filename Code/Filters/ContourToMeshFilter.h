@@ -48,6 +48,7 @@
 #include "vtkSmartPointer.h"
 #include "vtkFloatArray.h"
 #include "vtkPointData.h"
+#include "vtkNormalEstimationFilter.h"
 #include "vtkPoissonReconstruction.h"
 #include "vtkPolyDataWriter.h"
 
@@ -88,72 +89,24 @@ public:
       // compute center of mass
       ContainerConstIterator it = iContainer.begin();
 
-      double center[3];
-      center[0] = 0.;
-      center[1] = 0.;
-      center[2] = 0.;
-      vtkIdType counter = 0;
-
-      double p[3];
-      p[0] = 0.;
-      p[1] = 0.;
-      p[2] = 0.;
-
-      double n[3];
-      n[0] = 0.;
-      n[1] = 0.;
-      n[2] = 0.;
-
       while (it != iContainer.end())
         {
         if ((*it))
           {
           append->AddInput(*it);
-          for (vtkIdType k = 0; k < (*it)->GetNumberOfPoints(); ++k)
-            {
-            (*it)->GetPoint(k, p);
-            center[0] += p[0];
-            center[1] += p[1];
-            center[2] += p[2];
-            ++counter;
-            }
           }
         ++it;
         }
 
-      center[0] /= static_cast<double>(counter);
-      center[1] /= static_cast<double>(counter);
-      center[2] /= static_cast<double>(counter);
-
-      append->Update();
-      vtkSmartPointer<vtkPolyData>   input = append->GetOutput();
-      vtkSmartPointer<vtkFloatArray> normals =
-        vtkSmartPointer<vtkFloatArray>::New();
-      normals->Allocate(3 * counter);
-      normals->SetNumberOfTuples(counter);
-      normals->SetNumberOfComponents(3);
-      normals->SetName("Normals");
-
-      for (vtkIdType k = 0; k < input->GetNumberOfPoints(); ++k)
-        {
-        input->GetPoint(k, p);
-        n[0] = p[0] - center[0];
-        n[1] = p[1] - center[1];
-        n[2] = p[2] - center[2];
-        vtkMath::Normalize(n);
-        normals->SetTuple(k, n);
-        }
-
-      double bounds[6];
-      input->GetBounds(bounds);
-
-      // compute normal of the contour
-      input->GetPointData()->SetNormals(normals);
+      vtkSmartPointer<vtkNormalEstimationFilter> normal_filter =
+        vtkSmartPointer<vtkNormalEstimationFilter>::New();
+      normal_filter->SetInput(append->GetOutput());
+      normal_filter->Update();
 
       // run the Poisson Reconstruction
       vtkSmartPointer<vtkPoissonReconstruction> poissonFilter =
         vtkSmartPointer<vtkPoissonReconstruction>::New();
-      poissonFilter->SetInput(input);
+      poissonFilter->SetInput(normal_filter->GetOutput());
       poissonFilter->SetDepth(7);
       poissonFilter->SetConfidence(1.);
       poissonFilter->Update();
@@ -163,6 +116,8 @@ public:
         m_Output = vtkPolyData::New();
         }
       m_Output->ShallowCopy(poissonFilter->GetOutput());
+
+      double bounds[6];
       m_Output->GetBounds(bounds);
 
 //        vtkSmartPointer< vtkPolyDataWriter > writer = vtkSmartPointer< vtkPolyDataWriter >::New();
@@ -179,10 +134,11 @@ public:
 
 protected:
   ContourToMeshFilter() : m_Output(NULL)
-      {}
+        {}
   ~ContourToMeshFilter() {}
 
   vtkPolyData* m_Output;
   };
+
 }
 #endif

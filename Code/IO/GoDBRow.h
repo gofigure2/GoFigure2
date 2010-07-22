@@ -92,6 +92,8 @@ public:
   std::string PrintColumnNames();
   std::vector<std::string> GetVectorColumnNames();
   //std::list<std::string> GetListColumnNames();
+  std::string PrintColumnNamesWithValues();
+  
   StringMapIterator MapBegin();
   StringMapConstIterator ConstMapBegin();
   StringMapIterator MapEnd();

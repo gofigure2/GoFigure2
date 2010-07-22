@@ -37,8 +37,7 @@ DAMAGE.
 
 PoissonReconstruction_EXPORT
 double ArcTan2(const double& y, const double& x);
-PoissonReconstruction_EXPORT
-double Angle(const double in[2]);
+
 PoissonReconstruction_EXPORT
 void Sqrt(const double in[2], double out[2]);
 PoissonReconstruction_EXPORT

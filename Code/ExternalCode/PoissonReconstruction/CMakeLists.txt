@@ -12,6 +12,7 @@ CONFIGURE_FILE( ${GOFIGURE2_SOURCE_DIR}/Code/ExternalCode/PoissonReconstruction/
   ${GOFIGURE2_BINARY_DIR}/Code/ExternalCode/PoissonReconstruction/PoissonReconstructionConfigure.h @ONLY IMMEDIATE )
   
 ADD_LIBRARY( PoissonReconstruction
+  vtkNormalEstimationFilter.cxx
   vtkPoissonReconstruction.cxx
   Factor.cpp
   Geometry.cpp

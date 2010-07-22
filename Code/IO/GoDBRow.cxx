@@ -103,6 +103,24 @@ std::string GoDBRow::PrintColumnNames()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+std::string GoDBRow::PrintColumnNamesWithValues()
+{
+  std::stringstream StringQuery;
+  for (StringMapIterator iter = m_MapRow.begin();
+       iter != m_MapRow.end();
+       ++iter)
+    {
+    StringQuery << iter->first;
+    StringQuery << " = ";
+    StringQuery << iter->second;
+    StringQuery << ", ";
+    }
+  size_t n = StringQuery.str().length() - 2;
+  return StringQuery.str().substr(0, n);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 std::vector<std::string> GoDBRow::GetVectorColumnNames()
 {
   std::vector<std::string> VectorColumnNames;

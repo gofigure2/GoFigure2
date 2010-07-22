@@ -65,17 +65,27 @@ GoDBMeshRow(vtkMySQLDatabase* DatabaseConnector,
   GoDBTraceRow(DatabaseConnector, TraceVisu, Min, Max, ImgSessionID)
   {
   this->InitializeMap();
-  if (this->DoesThisBoundingBoxExist(DatabaseConnector))
+  this->SetTheDataFromTheVisu(DatabaseConnector, TraceVisu, Min,
+                              Max, iMeshAttributes);
+  /*if (this->DoesThisBoundingBoxExist(DatabaseConnector))
     {
     std::cout << "The bounding box already exists for this mesh" << std::endl;
     }
 
   m_NameChannelWithValues.clear();
 
-  if (iMeshAttributes)
+  if( iMeshAttributes )
     {
     this->m_NameChannelWithValues = iMeshAttributes->m_TotalIntensityMap;
-    }
+    }*/
+  }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+GoDBMeshRow::GoDBMeshRow(unsigned int ImagingSessionID) :
+  GoDBTraceRow(ImagingSessionID)
+  {
+  this->InitializeMap();
   }
 //-------------------------------------------------------------------------
 
@@ -113,6 +123,27 @@ GoDBMeshRow::GoDBMeshRow(const GoDBMeshRow& iRow) : GoDBTraceRow()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+void GoDBMeshRow::SetTheDataFromTheVisu(vtkMySQLDatabase* DatabaseConnector,
+                                        vtkPolyData* TraceVisu, GoDBCoordinateRow Min,
+                                        GoDBCoordinateRow Max, GoFigureMeshAttributes* iMeshAttributes)
+{
+  GoDBTraceRow::SetTheDataFromTheVisu(DatabaseConnector, TraceVisu, Min, Max);
+
+  if (this->DoesThisBoundingBoxExist(DatabaseConnector))
+    {
+    std::cout << "The bounding box already exists for this mesh" << std::endl;
+    }
+
+  m_NameChannelWithValues.clear();
+
+  if (iMeshAttributes)
+    {
+    this->m_NameChannelWithValues = iMeshAttributes->m_TotalIntensityMap;
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 void
 GoDBMeshRow::
 SafeDownCast(GoDBTraceRow& iRow)
@@ -143,16 +174,25 @@ void GoDBMeshRow::InitializeMap()
 //-------------------------------------------------------------------------
 int GoDBMeshRow::SaveInDB(vtkMySQLDatabase* DatabaseConnector)
 {
-  //std::cout <<*this <<std::endl;
-  int NewMeshID = AddOnlyOneNewObjectInTable<GoDBMeshRow>(DatabaseConnector,
-                                                          "mesh", this, "MeshID");
-  this->SetField("MeshID", NewMeshID);
+  int SavedMeshID;
+  //in case the ID is different from 0, this means the values have been
+  //updated for this mesh, so we update it in the database:
+  if (this->m_MapRow[this->m_TableIDName] != "0")
+    {
+    SavedMeshID = UpdateOneNewObjectInTable<GoDBMeshRow> (DatabaseConnector,
+                                                          this);
+    }
+
+  SavedMeshID = AddOnlyOneNewObjectInTable<GoDBMeshRow>(DatabaseConnector,
+                                                        "mesh", this, "MeshID");
+  this->SetField("MeshID", SavedMeshID);
+
   if (!this->m_NameChannelWithValues.empty())
     {
     this->SaveInDBTotalIntensityPerChannel(DatabaseConnector,
                                            this->m_NameChannelWithValues);
     }
-  return NewMeshID;
+  return SavedMeshID;
 }
 //-------------------------------------------------------------------------
 

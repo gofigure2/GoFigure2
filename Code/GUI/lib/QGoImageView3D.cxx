@@ -487,6 +487,7 @@ InitializeSeedWidgetInteraction()
 
     this->SeedWidget[i] = vtkSeedWidget::New();
     this->SeedWidget[i]->SetRepresentation(this->SeedRep[i]);
+    this->SeedWidget[i]->SetRepresentation(this->SeedRep[i]);
 
     this->SeedWidget[i]->SetInteractor(
       this->m_Pool->GetItem(i)->GetInteractor());
@@ -1192,6 +1193,7 @@ DefaultMode()
 }
 //-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
 void
 QGoImageView3D::
 ZoomMode()
@@ -1358,6 +1360,7 @@ EnableContourPickingMode(bool iEnable)
       vtkInteractorStyleImage2D::InteractionTypeContourPicking);
     View->SetWheelInteractionStyle(
       vtkInteractorStyleImage2D::InteractionTypeSlice);
+
     vtkInteractorStyleImage2D* t =
       vtkInteractorStyleImage2D::SafeDownCast(View->GetInteractorStyle());
     if (t)

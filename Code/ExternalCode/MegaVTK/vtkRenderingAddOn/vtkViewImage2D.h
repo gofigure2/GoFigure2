@@ -464,7 +464,6 @@ public:
       this->RemoveDataSet(*contour_it);
       ++contour_it;
       }
-
   }
 
   void UpdateWindowLevelObservers();

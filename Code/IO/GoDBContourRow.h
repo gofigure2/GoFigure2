@@ -62,6 +62,7 @@ public:
   GoDBContourRow(vtkMySQLDatabase * DatabaseConnector, vtkPolyData * TraceVisu,
                  GoDBCoordinateRow Min, GoDBCoordinateRow Max, unsigned int ImgSessionID,
                  GoFigureMeshAttributes * iMeshAttributes = 0);
+  GoDBContourRow(unsigned int ImagingSessionID);
 
   /**\brief fill the contour map with the values gotten from the visualization*/
   /* GoDBContourRow(vtkMySQLDatabase* DatabaseConnector,GoDBCoordinateRow Min,
@@ -77,6 +78,9 @@ public:
 
   void SetCollectionID(int iCollectionID);
   void ReInitializeMapAfterCast();
+
+  void SetTheDataFromTheVisu(vtkMySQLDatabase* DatabaseConnector, vtkPolyData* TraceVisu,
+                             GoDBCoordinateRow Min, GoDBCoordinateRow Max, GoFigureMeshAttributes* iMeshAttributes = 0);
 
 protected:
   virtual void InitializeMap();

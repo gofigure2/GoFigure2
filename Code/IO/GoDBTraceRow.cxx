@@ -58,11 +58,36 @@ GoDBTraceRow::GoDBTraceRow(vtkMySQLDatabase* DatabaseConnector,
   this->CreateBoundingBox(DatabaseConnector, Min, Max);
   this->m_MapRow["ImagingSessionID"] =
     ConvertToString<unsigned int>(ImgSessionID);
+
+  this->SetTheDataFromTheVisu(DatabaseConnector, TraceVisu, Min, Max);
+  //vtkSmartPointer<vtkPolyDataMySQLTextWriter> convert =
+  //  vtkSmartPointer<vtkPolyDataMySQLTextWriter>::New();
+  // std::string PointsString = convert->GetMySQLText(TraceVisu);
+
+  // this->SetField("Points",PointsString);
+  }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void GoDBTraceRow::SetTheDataFromTheVisu(vtkMySQLDatabase* DatabaseConnector,
+                                         vtkPolyData* TraceVisu, GoDBCoordinateRow Min, GoDBCoordinateRow Max)
+{
+  this->CreateBoundingBox(DatabaseConnector, Min, Max);
+
   vtkSmartPointer<vtkPolyDataMySQLTextWriter> convert =
     vtkSmartPointer<vtkPolyDataMySQLTextWriter>::New();
   std::string PointsString = convert->GetMySQLText(TraceVisu);
 
   this->SetField("Points", PointsString);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+GoDBTraceRow::GoDBTraceRow(unsigned int ImgSessionID)
+  {
+  this->InitializeMap();
+  this->m_MapRow["ImagingSessionID"] =
+    ConvertToString<unsigned int>(ImgSessionID);
   }
 //-------------------------------------------------------------------------
 

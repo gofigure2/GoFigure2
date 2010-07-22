@@ -756,6 +756,7 @@ void GoDBTableWidgetContainer::SetSpecificColumnsInfoForMesh(
   GoDBTraceInfoForTableWidget                                       temp;
   std::pair<GoDBTraceInfoForTableWidget, std::vector<std::string> > PairTemp;
   size_t                                                            NumberOfChannels = this->m_ChannelsInfo.size();
+
   if (this->m_ChannelsInfo.empty())
     {
     std::cout << "No info for the channels" << std::endl;

@@ -124,7 +124,6 @@ protected:
   double m_LargestCellRadius;
 
 private:
-
   CellPreprocess (Self &);        // intentionally not implemented
   void operator =(const Self&);         // intentionally not implemented
   };

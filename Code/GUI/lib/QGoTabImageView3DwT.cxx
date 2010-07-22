@@ -545,20 +545,10 @@ void
 QGoTabImageView3DwT::
 DistanceWidgetInteractorBehavior(bool iActive)
 {
-  //if( iActive )
+  for (int i = 0; i < 3; i++)
     {
-    for (int i = 0; i < 3; i++)
-      {
-      this->m_DistanceWidget[i]->SetEnabled(iActive);
-      }
+    this->m_DistanceWidget[i]->SetEnabled(iActive);
     }
-/*  else
-    {
-    for( int i = 0; i < 3; i++ )
-      {
-      this->m_DistanceWidget[i]->Off();
-      }
-    }*/
 }
 //-------------------------------------------------------------------------
 
@@ -2219,7 +2209,7 @@ ShowAllChannels(bool iChecked)
     {
     // Reset the window level
     m_ImageView->ResetWindowLevel();
-
+    
     vtkSmartPointer<vtkImageAppendComponents> append_filter =
       vtkSmartPointer<vtkImageAppendComponents>::New();
 
@@ -3634,6 +3624,7 @@ SavePolyDataAsContourInDB(vtkPolyData* iView, const int& iContourID,
 
     vtkPolyData* contour_nodes = vtkPolyData::New();
     contourRep->GetNodePolyData(contour_nodes);
+
     vtkProperty* contour_property = vtkProperty::New();
     contour_property->SetColor(iR, iG, iB);
     contour_property->SetOpacity(iA);
@@ -4051,17 +4042,15 @@ void
 QGoTabImageView3DwT::
 CreateMeshFromSelectedContours(std::list<int> iListContourIDs)
 {
-  (void) iListContourIDs;
-/*
-  std::list< int >::iterator contourid_it = iListContourIDs.begin();
+  std::list<int>::iterator contourid_it = iListContourIDs.begin();
 
-  std::vector< vtkPolyData* > list_contours( iListContourIDs.size(), NULL );
-  size_t id = 0;
+  std::vector<vtkPolyData*> list_contours(iListContourIDs.size(), NULL);
+  size_t                    id = 0;
 
   // get the time point
   unsigned int tcoord;
 
-  while( contourid_it != iListContourIDs.end() )
+  while (contourid_it != iListContourIDs.end())
     {
     ContourMeshStructureMultiIndexContainer::index< TraceID >::type::iterator
       traceid_it = m_ContourContainer.get< TraceID >().find( *contourid_it );
@@ -4069,22 +4058,22 @@ CreateMeshFromSelectedContours(std::list<int> iListContourIDs)
     if( traceid_it != m_ContourContainer.get< TraceID >().end() )
       {
       tcoord = traceid_it->TCoord;
-      list_contours[id++] = vtkPolyData::SafeDownCast( traceid_it->Actor->GetMapper()->GetInput() );
+      list_contours[id++] = vtkPolyData::SafeDownCast(traceid_it->Actor->GetMapper()->GetInput());
       }
     ++contourid_it;
     }
 
   // make the mesh from the list of contours
-  typedef itk::ContourToMeshFilter< std::vector< vtkPolyData* > > FilterType;
+  typedef itk::ContourToMeshFilter<std::vector<vtkPolyData*> > FilterType;
   FilterType::Pointer filter = FilterType::New();
-  filter->ProcessContours( list_contours );
+  filter->ProcessContours(list_contours);
 
   // get the color from the Trace Editing Widget
   double rgba[] = { 1., 1., 1., 1. };
 
   QColor color =
     this->m_TraceManualEditingDockWidget->m_TraceWidget->ColorComboBox->GetCurrentColorData().second;
-  color.getRgbF( &rgba[0], &rgba[1], &rgba[2] );
+  color.getRgbF(&rgba[0], &rgba[1], &rgba[2]);
 
   unsigned int meshid =
     this->m_TraceManualEditingDockWidget->m_TraceWidget->GetCurrentCollectionID();
@@ -4094,9 +4083,8 @@ CreateMeshFromSelectedContours(std::list<int> iListContourIDs)
   // visualize of the generated mesh
   // save into the database
   bool saveindatabase = true;
-  this->AddMeshFromNodes( meshid, filter->GetOutput(), rgba, highlighted,
-                          tcoord, saveindatabase );
-*/
+  this->AddMeshFromNodes(meshid, filter->GetOutput(), rgba, highlighted,
+                         tcoord, saveindatabase);
 }
 //-------------------------------------------------------------------------
 

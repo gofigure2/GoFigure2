@@ -40,7 +40,7 @@
 #include "GoDBChannelRow.h"
 #include "GoDBRecordSetHelper.h"
 
-GoDBChannelRow::GoDBChannelRow()
+GoDBChannelRow::GoDBChannelRow() : GoDBRow()
   {
   this->InitializeMap();
   }

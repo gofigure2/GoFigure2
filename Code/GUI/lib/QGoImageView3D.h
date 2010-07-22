@@ -307,7 +307,6 @@ protected slots:
 
 private:
   Q_DISABLE_COPY(QGoImageView3D);
-
   };
 
 #endif
