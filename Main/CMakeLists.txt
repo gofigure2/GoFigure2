@@ -270,9 +270,6 @@ SET( DIRS
 # install(SCRIPT  ...).
 # Note that the image plugins depend on QtSvg and QtXml, and it got those 
 # copied over.
-
-
-
 INSTALL( CODE " 
     file( GLOB_RECURSE QTPLUGINS
     # \"\${CMAKE_INSTALL_PREFIX}/*${CMAKE_SHARED_LIBRARY_SUFFIX}\" )

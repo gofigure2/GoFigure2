@@ -410,6 +410,7 @@ int vtkNormalEstimationFilter::RequestData(
   output->SetPoints(points);
   output->GetPointData()->SetNormals(normals);
 
+  normals->Delete();
 //   delete[] m_SurfacePoints;
 
   return ok;
