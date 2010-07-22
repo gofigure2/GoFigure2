@@ -64,6 +64,10 @@ QGoImageView2D(QWidget* iiParent) : QGoImageView(iiParent)
 
   m_Pool->AddItem(View);
   View->Delete();
+
+  QGoImageView::InitializeSeedWidget();
+  QGoImageView::InitializeDistanceWidget();
+  QGoImageView::InitializeAngleWidget();
   }
 
 //--------------------------------------------------------------------------

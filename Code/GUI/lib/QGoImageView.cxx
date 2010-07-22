@@ -390,7 +390,9 @@ vtkImageActor*
 QGoImageView::
 GetImageActor(const int& iId)
 {
-  if ((iId < 0) || (iId > 2))
+  int N = this->m_Pool->GetNumberOfItems();
+
+  if ((iId < 0) || (iId >= N))
     {
     return NULL;
     }

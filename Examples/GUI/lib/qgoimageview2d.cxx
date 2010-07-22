@@ -138,6 +138,11 @@ int main(int argc, char** argv)
   viewer->DefaultMode();
   viewer->ZoomMode();
   viewer->PanMode();
+  viewer->DistanceWidgetMode(true);
+  viewer->DistanceWidgetMode(false);
+  viewer->AngleWidgetMode(true);
+  viewer->AngleWidgetMode(false);
+
 
   app.processEvents();
 

@@ -93,6 +93,10 @@ int main(int argc, char** argv)
   /// TODO Fix it
   //viewer->ZoomMode();
   viewer->PanMode();
+  viewer->AngleWidgetMode(true);
+  viewer->AngleWidgetMode(false);
+  viewer->DistanceWidgetMode(true);
+  viewer->DistanceWidgetMode(false);
   viewer->OneClickMode();
   viewer->ContourPickingMode();
   vtkPoints* points = viewer->GetAllSeeds();
