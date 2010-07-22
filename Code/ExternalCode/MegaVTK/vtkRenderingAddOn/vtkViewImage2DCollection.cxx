@@ -630,6 +630,11 @@ void vtkViewImage2DCollection::EnableDefaultInteractionMode()
     item->SetDefaultInteractionStyle();
     item = this->GetNextItem();
     }
+  /*if (this->ExtraRenderWindow)
+    {
+    this->ExtraRenderWindow->GetInteractor()->GetInteractorStyle()->EnableDefaultMode();
+    }*/
+
 }
 
 //----------------------------------------------------------------------------
