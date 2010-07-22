@@ -281,7 +281,7 @@ SetImageToImageViewer(vtkImageData* iImage)
   m_ImageView->Update();
 
   vtkImageActorPointPlacer* point_placer = vtkImageActorPointPlacer::New();
-  point_placer->SetImageActor(m_ImageView->GetImageActor());
+  point_placer->SetImageActor(m_ImageView->GetImageActor(0));
 
   this->m_ContourRepresentation.back()->SetPointPlacer(point_placer);
   point_placer->Delete();
@@ -427,9 +427,6 @@ void
 QGoTabImageView2D::
 DefaultMode()
 {
-  //Change cursor
-  this->setCursor(Qt::ArrowCursor);
-
   m_ImageView->DefaultMode();
 }
 //-------------------------------------------------------------------------
@@ -439,10 +436,6 @@ void
 QGoTabImageView2D::
 ZoomMode()
 {
-  //Change cursors
-  QCursor zoomCursor(QPixmap(QString::fromUtf8(":/fig/zoom.png")), -1, -1);
-  this->setCursor(zoomCursor);
-
   m_ImageView->ZoomMode();
 }
 //-------------------------------------------------------------------------
@@ -452,8 +445,5 @@ void
 QGoTabImageView2D::
 PanMode()
 {
-  //Change cursor
-  this->setCursor(Qt::OpenHandCursor);
-
   m_ImageView->PanMode();
 }

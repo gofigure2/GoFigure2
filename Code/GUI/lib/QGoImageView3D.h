@@ -290,7 +290,7 @@ protected slots:
 
 private:
   Q_DISABLE_COPY(QGoImageView3D);
-  void ChangeCursorShape(QCursor iCursorShape);
+  virtual void ChangeCursorShape(QCursor iCursorShape);
   };
 
 #endif

@@ -1032,9 +1032,6 @@ DefaultMode()
   QGoImageView::EnableContourPickingMode(false);
   EnableMeshPickingMode(false);
 
-  //Change cursor
-  ChangeCursorShape(Qt::ArrowCursor);
-
   // Call superclass default mode
   QGoImageView::DefaultMode();
 
@@ -1050,10 +1047,6 @@ ZoomMode()
 {
   DefaultMode();
 
-  //Change cursors
-  QCursor zoomCursor(QPixmap(QString::fromUtf8(":/fig/zoom.png")), -1, -1);
-  ChangeCursorShape(zoomCursor);
-
   // Call superclass default mode
   QGoImageView::ZoomMode();
 
@@ -1067,9 +1060,6 @@ QGoImageView3D::
 PanMode()
 {
   DefaultMode();
-
-  //Change cursor
-  ChangeCursorShape(Qt::OpenHandCursor);
 
   // Call superclass default mode
   QGoImageView::PanMode();

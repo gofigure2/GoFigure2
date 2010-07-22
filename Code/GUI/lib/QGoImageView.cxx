@@ -256,6 +256,9 @@ void
 QGoImageView::
 DefaultMode()
 {
+  //Change cursor
+  ChangeCursorShape(Qt::ArrowCursor);
+
   // Change mode in the collection
   m_Pool->EnableDefaultInteractionMode();
 }
@@ -265,6 +268,10 @@ void
 QGoImageView::
 ZoomMode()
 {
+  //Change cursors
+  QCursor zoomCursor(QPixmap(QString::fromUtf8(":/fig/zoom.png")), -1, -1);
+  ChangeCursorShape(zoomCursor);
+
   // Change mode in the collection
   m_Pool->EnableZoomInteractionMode();
 }
@@ -274,6 +281,9 @@ void
 QGoImageView::
 PanMode()
 {
+  //Change cursor
+  ChangeCursorShape(Qt::OpenHandCursor);
+
   // Change mode in the collection
   m_Pool->EnablePanInteractionMode();
 }

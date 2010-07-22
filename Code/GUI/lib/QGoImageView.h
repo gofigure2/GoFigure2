@@ -195,6 +195,8 @@ public:
    */
   std::list<vtkProp3D*> GetListOfUnPickedContours();
 
+  virtual void ChangeCursorShape(QCursor iCursorShape) = 0;
+
 public slots:
   /** \brief Set background color for all views.
   \param[in] r red

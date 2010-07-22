@@ -170,3 +170,12 @@ SnapshotViewXY(const GoFigure::FileType& iType, const QString& iBaseName)
   m_SnapshotId++;
   return filename;
 }
+
+//-------------------------------------------------------------------------
+void
+QGoImageView2D::
+ChangeCursorShape(QCursor iCursorShape)
+{
+  //Change cursor
+  m_QVTKWidgetXY->setCursor(iCursorShape);
+}

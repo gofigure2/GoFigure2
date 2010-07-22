@@ -82,5 +82,7 @@ protected:
   QHBoxLayout*           m_LayOut;
   QVTKWidget*            m_QVTKWidgetXY;
   vtkEventQtSlotConnect* m_VTKEventQtConnector;
+
+  virtual void ChangeCursorShape(QCursor iCursorShape);
   };
 #endif
