@@ -64,6 +64,11 @@
 // For the angle widget...
 #include "vtkAngleWidget.h"
 
+// For the contour widget...
+#include "vtkContourWidget.h"
+#include "vtkOrientedGlyphContourRepresentation.h"
+#include "vtkPolyData.h"
+
 //--------------------------------------------------------------------------
 /**
  * \brief Default Constructor.
@@ -619,4 +624,140 @@ AngleWidgetMode(bool iActive)
     this->m_AngleWidget[i]->Off();
     }
   }
+}
+
+//-------------------------------------------------------------------------
+void
+QGoImageView::
+InitializeContourWidget()
+{
+  int N = this->m_Pool->GetNumberOfItems();
+  m_ContourWidget.resize(N);
+  m_ContourRepresentation.resize(N);
+
+  // use while iterator
+  for (int i = 0; i < N; ++i)
+    {
+    // Contour widget
+    m_ContourRepresentation[i] =
+      vtkSmartPointer<vtkOrientedGlyphContourRepresentation>::New();
+    m_ContourRepresentation[i]->GetProperty()->SetColor(0., 1., 1.);
+    m_ContourRepresentation[i]->GetLinesProperty()->SetColor(1., 0., 1.);
+    m_ContourRepresentation[i]->GetActiveProperty()->SetColor(1., 1., 0.);
+
+    m_ContourWidget[i] = vtkSmartPointer<vtkContourWidget>::New();
+    m_ContourWidget[i]->SetPriority(10.0);
+    m_ContourWidget[i]->SetInteractor(this->m_Pool->GetItem(i)->GetInteractor());
+    m_ContourWidget[i]->Off();
+
+    m_ContourWidget[i]->SetRepresentation(this->m_ContourRepresentation[i]);
+    }
+}
+
+//-------------------------------------------------------------------------
+void
+QGoImageView::
+ContourWidgetMode(bool iActivate)
+{
+  std::vector<vtkSmartPointer<vtkContourWidget> >::iterator
+  it = m_ContourWidget.begin();
+  while (it != m_ContourWidget.end())
+    {
+    (*it)->SetEnabled(iActivate);
+    ++it;
+    }
+}
+
+//-------------------------------------------------------------------------
+void
+QGoImageView::
+InitializeContourWidgetNodes( int iDir, vtkPolyData* iNodes )
+{
+  if( (iDir >= 0) && (iDir < m_Pool->GetNumberOfItems()) )
+    {
+    m_ContourWidget[iDir]->SetEnabled(1);
+    m_ContourWidget[iDir]->Initialize(iNodes);
+    }
+}
+
+//-------------------------------------------------------------------------
+void
+QGoImageView::
+ReinitializeContourWidget()
+{
+  for (unsigned int i = 0; i < m_ContourWidget.size(); i++)
+    {
+    InitializeContourWidgetNodes( i, NULL );
+    }
+}
+
+//-------------------------------------------------------------------------
+void
+QGoImageView::
+UpdateContourRepresentationProperties(float  linewidth, QColor linecolor,
+                                      QColor nodecolor, QColor activenodecolor)
+{
+  m_LinesWidth = linewidth;
+  m_LinesColor = linecolor;
+  m_NodesColor = nodecolor;
+  m_ActiveNodesColor = activenodecolor;
+
+  double rl, gl, bl;
+  linecolor.getRgbF(&rl, &gl, &bl);
+
+  double rn, gn, bn;
+  nodecolor.getRgbF(&rn, &gn, &bn);
+
+  double ra, ga, ba;
+  activenodecolor.getRgbF(&ra, &ga, &ba);
+
+  std::vector<vtkSmartPointer<vtkOrientedGlyphContourRepresentation> >::iterator
+  it = m_ContourRepresentation.begin();
+  while (it != m_ContourRepresentation.end())
+    {
+    (*it)->GetLinesProperty()->SetLineWidth(linewidth);
+    (*it)->GetLinesProperty()->SetColor(rl, gl, bl);
+    (*it)->GetProperty()->SetColor(rn, gn, bn);
+    (*it)->GetActiveProperty()->SetColor(ra, ga, ba);
+    ++it;
+    }
+}
+
+//-------------------------------------------------------------------------
+vtkPolyData*
+QGoImageView::
+GetContourRepresentationAsPolydata(int iDir)
+{
+  return m_ContourRepresentation[iDir]->GetContourRepresentationAsPolyData();
+}
+
+//-------------------------------------------------------------------------
+vtkPolyData*
+QGoImageView::
+GetContourRepresentationNodePolydata(int iDir)
+{
+  vtkPolyData* contour_nodes = vtkPolyData::New();
+  m_ContourRepresentation[iDir]->GetNodePolyData(contour_nodes);
+  return contour_nodes;
+}
+
+//-------------------------------------------------------------------------
+void
+QGoImageView::
+Update()
+{
+  std::vector<vtkSmartPointer<vtkOrientedGlyphContourRepresentation> >::iterator
+  it = m_ContourRepresentation.begin();
+  int i=0;
+
+  while (it != m_ContourRepresentation.end())
+    {
+    vtkSmartPointer<vtkImageActorPointPlacer> point_placer =
+      vtkSmartPointer<vtkImageActorPointPlacer>::New();
+    point_placer->SetImageActor(GetImageActor(i));
+
+    (*it)->SetPointPlacer(point_placer);
+    ++it;
+    ++i;
+    }
 }

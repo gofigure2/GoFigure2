@@ -85,7 +85,7 @@ public:
   /** \brief Destructor. */
   virtual ~QGoImageView3D();
 
-  virtual void Update();
+  void Update();
 
   vtkViewImage3D* GetImageViewer3D();
 

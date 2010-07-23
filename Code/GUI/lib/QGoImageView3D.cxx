@@ -136,6 +136,7 @@ QGoImageView3D(QWidget* iParent) :
   QGoImageView::InitializeSeedWidget();
   QGoImageView::InitializeDistanceWidget();
   QGoImageView::InitializeAngleWidget();
+  QGoImageView::InitializeContourWidget();
   }
 
 //-------------------------------------------------------------------------
@@ -325,6 +326,7 @@ void QGoImageView3D::Update()
 
     m_FirstRender = false;
     }
+  QGoImageView::Update();
 }
 //-------------------------------------------------------------------------
 

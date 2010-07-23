@@ -71,10 +71,6 @@ class QGoVideoRecorder;
 class vtkLSMReader;
 class vtkImageData;
 
-class vtkContourWidget;
-class vtkOrientedGlyphContourRepresentation;
-class vtkDistanceRepresentation2D;
-
 class vtkMySQLDatabase;
 class vtkProperty;
 // class vtkQuadricLODActor;
@@ -433,11 +429,6 @@ protected:
   #if defined ENABLEFFMPEG || defined ENABLEAVI
   QGoVideoRecorder* m_VideoRecorderWidget;
   #endif /* ENABLEFFMPEG || ENABLEAVI */
-
-  // Contour Widget specific members
-  /// \todo move the three following instance into the visualization element.
-  std::vector<vtkSmartPointer<vtkContourWidget> >                      m_ContourWidget;
-  std::vector<vtkSmartPointer<vtkOrientedGlyphContourRepresentation> > m_ContourRepresentation;
 
   ContourMeshStructureMultiIndexContainer m_ContourContainer;
   ContourMeshStructureMultiIndexContainer m_MeshContainer;

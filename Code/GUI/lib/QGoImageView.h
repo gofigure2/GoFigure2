@@ -67,6 +67,11 @@ class vtkDistanceWidget;
 // For the angle widget...
 class vtkAngleWidget;
 
+// For the contour widget
+class vtkContourWidget;
+class vtkOrientedGlyphContourRepresentation;
+class vtkDistanceRepresentation2D;
+
 #include "QGoGUILibConfigure.h"
 
 /**
@@ -93,7 +98,7 @@ public:
   /** \brief Get Image Coordinates from World Coordinates. */
   int* GetImageCoordinatesFromWorldCoordinates(double pos[3]);
 
-  virtual void Update() = 0;
+  void Update();
 
   /** \brief Returns the interactor for one given view. */
   virtual QVTKInteractor* GetInteractor(const int&) = 0;
@@ -219,15 +224,26 @@ public:
   * \brief Initializae the distance widget
   */
   void InitializeDistanceWidget();
+  void DistanceWidgetMode(bool iEnable);
 
   /**
   * \brief Initializae the angle widget
   */
   void InitializeAngleWidget();
-
-  void DistanceWidgetMode(bool iEnable);
-
   void AngleWidgetMode(bool iActive);
+
+  /**
+  * \brief Initializae the angle widget
+  */
+  void InitializeContourWidget();
+  void ContourWidgetMode(bool iActivate);
+  void InitializeContourWidgetNodes( int iDir, vtkPolyData* iNodes );
+  void ReinitializeContourWidget();
+  void UpdateContourRepresentationProperties(float  linewidth, QColor linecolor,
+                                        QColor nodecolor, QColor activenodecolor);
+  vtkPolyData* GetContourRepresentationAsPolydata(int iDir);
+  vtkPolyData* GetContourRepresentationNodePolydata(int iDir);
+
   /**
   * \brief Enable the One Click mode (usefull since it is in a vtk widget)
   */
@@ -270,6 +286,15 @@ protected:
 
   // Angle widget specific members
   std::vector<vtkSmartPointer<vtkAngleWidget> > m_AngleWidget;
+
+  // Contour Widget specific members
+  std::vector<vtkSmartPointer<vtkContourWidget> >                      m_ContourWidget;
+  std::vector<vtkSmartPointer<vtkOrientedGlyphContourRepresentation> > m_ContourRepresentation;
+  float  m_LinesWidth;
+  QColor m_LinesColor;
+  QColor m_NodesColor;
+  QColor m_ActiveNodesColor;
+
   unsigned int              m_SnapshotId;
   bool                      m_ShowAnnotations;
   bool                      m_ShowSplinePlane;

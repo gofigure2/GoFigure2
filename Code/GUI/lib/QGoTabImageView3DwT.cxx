@@ -125,9 +125,7 @@ QGoTabImageView3DwT(QWidget* iParent) :
   m_TimePoint(-1),
   m_ContourId(0),
   m_MeshId(1),
-  m_ReEditContourMode(false),
-  m_ContourWidget(3),
-  m_ContourRepresentation(3)
+  m_ReEditContourMode(false)
   {
   m_Image = vtkImageData::New();
 
@@ -162,23 +160,6 @@ QGoTabImageView3DwT(QWidget* iParent) :
   CreateModeActions();
 
   ReadSettings();
-
-  for (int i = 0; i < 3; i++)
-    {
-    // Contour widget
-    this->m_ContourRepresentation[i] =
-      vtkSmartPointer<vtkOrientedGlyphContourRepresentation>::New();
-    this->m_ContourRepresentation[i]->GetProperty()->SetColor(0., 1., 1.);
-    this->m_ContourRepresentation[i]->GetLinesProperty()->SetColor(1., 0., 1.);
-    this->m_ContourRepresentation[i]->GetActiveProperty()->SetColor(1., 1., 0.);
-
-    this->m_ContourWidget[i] = vtkSmartPointer<vtkContourWidget>::New();
-    this->m_ContourWidget[i]->SetPriority(10.0);
-    this->m_ContourWidget[i]->SetInteractor(m_ImageView->GetInteractor(i));
-    this->m_ContourWidget[i]->Off();
-
-    this->m_ContourWidget[i]->SetRepresentation(this->m_ContourRepresentation[i]);
-    }
 
   // Generate default color, width and nodes for the contours visualization
   GenerateContourRepresentationProperties();
@@ -254,7 +235,6 @@ QGoTabImageView3DwT::
     }
 //   DeleteContourMeshStructureElement( m_ContourContainer );
 //   DeleteContourMeshStructureElement( m_MeshContainer );
-
   }
 //-------------------------------------------------------------------------
 
@@ -388,7 +368,6 @@ ContourInteractorBehavior(bool iVisible)
       break;
     }
 }
-//-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 /**
@@ -401,23 +380,8 @@ ActivateManualSegmentationEditor(const bool& iActivate)
 {
   // Initializae cursor behaviour
   this->m_ImageView->DefaultMode();
-
-  std::vector<vtkSmartPointer<vtkContourWidget> >::iterator
-  it = m_ContourWidget.begin();
-  while (it != m_ContourWidget.end())
-    {
-    if (iActivate)
-      {
-      (*it)->On();
-      }
-    else
-      {
-      (*it)->Off();
-      }
-    ++it;
-    }
+  this->m_ImageView->ContourWidgetMode(iActivate);
 }
-//-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 /**
@@ -437,7 +401,7 @@ ActivateSemiAutoSegmentationEditor(const bool& iActivate)
     this->m_ImageView->OneClickMode();
     }
 }
-//-------------------------------------------------------------------------
+
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
@@ -450,7 +414,7 @@ MeshInteractorBehavior(bool iVisible)
     this->m_ImageView->OneClickMode();
     }
 }
-//-------------------------------------------------------------------------
+
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
@@ -463,7 +427,7 @@ DefaultInteractorBehavior(bool iVisible)
     this->m_ImageView->DefaultMode();
     }
 }
-//-------------------------------------------------------------------------
+
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
@@ -476,7 +440,7 @@ ZoomInteractorBehavior(bool iVisible)
     this->m_ImageView->ZoomMode();
     }
 }
-//-------------------------------------------------------------------------
+
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
@@ -489,7 +453,7 @@ PanInteractorBehavior(bool iVisible)
     this->m_ImageView->PanMode();
     }
 }
-//-------------------------------------------------------------------------
+
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
@@ -502,7 +466,7 @@ ContourPickingInteractorBehavior(bool iVisible)
     this->m_ImageView->ContourPickingMode();
     }
 }
-//-------------------------------------------------------------------------
+
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
@@ -515,7 +479,6 @@ MeshPickingInteractorBehavior(bool iVisible)
     this->m_ImageView->MeshPickingMode();
     }
 }
-//-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void
@@ -524,7 +487,6 @@ DistanceWidgetInteractorBehavior(bool iActive)
 {
   this->m_ImageView->DistanceWidgetMode(iActive);
 }
-//-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void
@@ -533,7 +495,7 @@ AngleWidgetInteractorBehavior(bool iActive)
 {
   this->m_ImageView->AngleWidgetMode(iActive);
 }
-//-------------------------------------------------------------------------
+
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
@@ -543,10 +505,6 @@ Box3DPicking(bool iActive)
 }
 
 //-------------------------------------------------------------------------
-//-------------------------------------------------------------------------
-/**
- * \brief
- */
 void
 QGoTabImageView3DwT::
 CreateOneClickSegmentationDockWidget()
@@ -564,12 +522,8 @@ CreateOneClickSegmentationDockWidget()
   QObject::connect(m_OneClickSegmentationDockWidget, SIGNAL(visibilityChanged(bool)),
                    this, SLOT(ShowTraceDockWidgetForMesh(bool)));
 }
-//-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/**
- *
- */
 void
 QGoTabImageView3DwT::
 CreateVisuDockWidget()
@@ -611,12 +565,8 @@ CreateVisuDockWidget()
   QObject::connect(m_NavigationDockWidget, SIGNAL(ShowOneChannelChanged(int)),
                    this, SLOT(ShowOneChannel(int)));
 }
-//-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/**
- *
- */
 void
 QGoTabImageView3DwT::
 CreateDataBaseTablesConnection()
@@ -1843,7 +1793,6 @@ SetTimePoint(const int& iTimePoint)
       }
     }
 }
-//-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 /**
@@ -1853,17 +1802,7 @@ void QGoTabImageView3DwT::Update()
 {
   m_ImageView->SetImage(m_Image);
   m_ImageView->Update();
-
-  for (unsigned int i = 0; i < this->m_ContourWidget.size(); i++)
-    {
-    vtkSmartPointer<vtkImageActorPointPlacer> point_placer =
-      vtkSmartPointer<vtkImageActorPointPlacer>::New();
-    point_placer->SetImageActor(m_ImageView->GetImageActor(i));
-
-    this->m_ContourRepresentation[i]->SetPointPlacer(point_placer);
-    }
 }
-//-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 /**
@@ -2233,8 +2172,7 @@ ValidateContour(const int& iContourID, const int& iDir,
                 const bool& iHighlighted, const unsigned int& iTCoord,
                 const bool& iSaveInDataBase)
 {
-  vtkPolyData* contour =
-    m_ContourRepresentation[iDir]->GetContourRepresentationAsPolyData();
+  vtkPolyData* contour = m_ImageView->GetContourRepresentationAsPolydata(iDir);
 
   if ((contour->GetNumberOfPoints() > 2) && (m_TimePoint >= 0))
     {
@@ -2255,9 +2193,7 @@ ValidateContour(const int& iContourID, const int& iDir,
     int* min_idx = this->GetImageCoordinatesFromWorldCoordinates(Min);
     int* max_idx = this->GetImageCoordinatesFromWorldCoordinates(Max);
 
-    vtkPolyData* contour_nodes = vtkPolyData::New();
-    m_ContourRepresentation[iDir]->GetNodePolyData(contour_nodes);
-
+    vtkPolyData* contour_nodes = m_ImageView->GetContourRepresentationNodePolydata(iDir);
     vtkProperty* contour_property = vtkProperty::New();
 
     if (iHighlighted)
@@ -2396,7 +2332,7 @@ ValidateContour()
       }
     }
 
-  for (i = 0; i < m_ContourWidget.size(); i++)
+  for (i = 0; i < m_ImageView->GetNumberOfImageViewers(); i++)
     {
     ValidateContour(ContourID, i, r, g, b, a, highlighted, m_TimePoint, saveindatabase);
     }
@@ -2405,10 +2341,7 @@ ValidateContour()
     {
     m_ManualSegmentationDockWidget->setEnabled(false);
 
-    for (i = 0; i < m_ContourWidget.size(); i++)
-      {
-      m_ContourWidget[i]->Initialize(NULL);
-      }
+    m_ImageView->ReinitializeContourWidget();
 
     std::list<int> listofrowstobeselected;
     listofrowstobeselected.push_back(m_ContourId);
@@ -2421,54 +2354,25 @@ ValidateContour()
     m_ReEditContourMode = false;
     }
 }
-//-------------------------------------------------------------------------
 
+/// TODO temporary classes
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
 ReinitializeContour()
 {
-  for (unsigned int i = 0; i < m_ContourWidget.size(); i++)
-    {
-    // Enable then initialize the widget
-    m_ContourWidget[i]->SetEnabled(1);
-    m_ContourWidget[i]->Initialize(NULL);
-    }
+  m_ImageView->ReinitializeContourWidget();
 }
-//-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/**
- *
- */
+/// TODO temporary class
 void
 QGoTabImageView3DwT::
 ChangeContourRepresentationProperty()
 {
-  float  linewidth = static_cast<float>(m_LinesWidth);
-  QColor linecolor = m_LinesColor;
-  QColor nodecolor = m_NodesColor;
-  QColor activenodecolor = m_ActiveNodesColor;
-
-  double rl, gl, bl;
-  linecolor.getRgbF(&rl, &gl, &bl);
-
-  double rn, gn, bn;
-  nodecolor.getRgbF(&rn, &gn, &bn);
-
-  double ra, ga, ba;
-  activenodecolor.getRgbF(&ra, &ga, &ba);
-
-  for (unsigned int i = 0; i < m_ContourRepresentation.size(); i++)
-    {
-    m_ContourRepresentation[i]->GetLinesProperty()->SetLineWidth(linewidth);
-    m_ContourRepresentation[i]->GetLinesProperty()->SetColor(rl, gl, bl);
-
-    m_ContourRepresentation[i]->GetProperty()->SetColor(rn, gn, bn);
-    m_ContourRepresentation[i]->GetActiveProperty()->SetColor(ra, ga, ba);
-    }
+  m_ImageView->UpdateContourRepresentationProperties(static_cast<float>(m_LinesWidth),
+      m_LinesColor, m_NodesColor, m_ActiveNodesColor);
 }
-//-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 /**
@@ -2482,7 +2386,6 @@ GetImageCoordinatesFromWorldCoordinates(double iPos[3])
 {
   return m_ImageView->GetImageCoordinatesFromWorldCoordinates(iPos);
 }
-//-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 /**
@@ -2689,13 +2592,11 @@ AddContourFromNodes(const unsigned int& iContourID,
 
     if (dir != -1)
       {
-      /// \todo m_ContourWidget needs to be correctly set up,
-      /// before turning it on
-      m_ContourWidget[dir]->On();
-      m_ContourWidget[dir]->Initialize(iNodes);
-      this->ValidateContour(iContourID, dir, iR, iG, iB, iA, iHighlighted,
+      m_ImageView->ContourWidgetMode( true );
+      m_ImageView->InitializeContourWidgetNodes( dir, iNodes );
+      ValidateContour(iContourID, dir, iR, iG, iB, iA, iHighlighted,
                             iTCoord, iSaveInDataBase);
-      m_ContourWidget[dir]->Off();
+      m_ImageView->ContourWidgetMode( false );
       }
     }
 }
@@ -2856,7 +2757,7 @@ ReEditContour(const unsigned int& iId)
           }
         this->m_ManualSegmentationDockWidget->show();
         this->m_ModeActions[0]->setChecked(true);
-        m_ContourWidget[dir]->Initialize(c_nodes);
+        m_ImageView->InitializeContourWidgetNodes( dir, c_nodes );
         m_ManualSegmentationDockWidget->setEnabled(true);
         this->m_TraceManualEditingDockWidget->setEnabled(false);
         }
@@ -3549,7 +3450,6 @@ SavePolyDataAsContourInDB(vtkPolyData* iView, const int& iContourID,
   //generate contour
   vtkSmartPointer<vtkOrientedGlyphContourRepresentation> contourRep =
     vtkSmartPointer<vtkOrientedGlyphContourRepresentation>::New();
-  //contourRep->GetLinesProperty()->SetColor(1, 0, 0); //set color to red
 
   vtkSmartPointer<vtkContourWidget> contourWidget =
     vtkSmartPointer<vtkContourWidget>::New();
