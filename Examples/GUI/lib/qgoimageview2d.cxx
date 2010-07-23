@@ -135,6 +135,20 @@ int main(int argc, char** argv)
   vtkLookupTable * LUT = vtkLookupTableManager::GetHotMetalLookupTable();
 
   viewer->SetLookupTable(LUT);
+
+  double rgb[3];
+  rgb[0] = 1.;
+  rgb[1] = 0.;
+  rgb[2] = 0.;
+  viewer->SetBackgroundColor(rgb);
+
+  if(viewer->GetNumberOfImageViewers() != 1)
+    {
+    return EXIT_FAILURE;
+    }
+
+  viewer->ResetWindowLevel();
+
   viewer->DefaultMode();
   viewer->ZoomMode();
   viewer->PanMode();
@@ -142,6 +156,8 @@ int main(int argc, char** argv)
   viewer->DistanceWidgetMode(false);
   viewer->AngleWidgetMode(true);
   viewer->AngleWidgetMode(false);
+  viewer->ContourWidgetMode(true);
+  viewer->ContourWidgetMode(false);
 
 
   app.processEvents();
