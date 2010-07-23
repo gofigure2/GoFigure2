@@ -20,6 +20,9 @@ vtkNormalEstimationFilter::vtkNormalEstimationFilter()
   this->NeighborhoodSize = 20;
   }
 
+vtkNormalEstimationFilter::~vtkNormalEstimationFilter()
+{}
+
 // some simple routines for vector math
 void vtkCopyBToA(double* a, double* b)
 {

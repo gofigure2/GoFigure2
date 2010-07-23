@@ -155,13 +155,6 @@ bool BuildScreenshotFromImage(vtkImageData* image,
     //   resample_output->GetDimensions(resample_output_dims);
 
     screenshot->ShallowCopy(resample_output);
-// SetImage(
-//     (const unsigned char*) resample_output->GetScalarPointer(),
-//     resample_output_dims[0],
-//     resample_output_dims[1],
-//     3,
-//     0,
-//     vtkKWIcon::ImageOptionFlipVertical);
     }
   else
     {

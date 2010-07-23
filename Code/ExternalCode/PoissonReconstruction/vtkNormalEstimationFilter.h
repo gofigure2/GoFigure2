@@ -33,7 +33,7 @@ public:
 
 protected:
   vtkNormalEstimationFilter();
-  ~vtkNormalEstimationFilter() {};
+  ~vtkNormalEstimationFilter();
 
   SurfacePoint* m_SurfacePoints;
 

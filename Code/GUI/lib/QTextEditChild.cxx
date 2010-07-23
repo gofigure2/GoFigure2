@@ -41,25 +41,11 @@
 #include "QTextEditChild.h"
 #include <QTextEdit>
 
-//QTextEditChild::QTextEditChild( QWidget* iParent ): QTextEdit( iParent )
-//{
-//}
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-//QTextEditChild::
-//QTextEditChild(const QString & iText, QWidget *iParent ):
-// QTextEdit( iText,iParent )
-//{
-//}
-//--------------------------------------------------------------------------
-
 //--------------------------------------------------------------------------
 QTextEditChild::
 QTextEditChild(QWidget* iParent, int iNumberMaxCharacters) :
-  QTextEdit(iParent)
+  QTextEdit(iParent), m_MaxCharacters( iNumberMaxCharacters )
   {
-  this->m_MaxCharacters = iNumberMaxCharacters;
   QObject::connect(this, SIGNAL(textChanged()),
                    this, SLOT(RestrainInputCharacters()));
   }

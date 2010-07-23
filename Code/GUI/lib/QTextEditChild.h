@@ -64,6 +64,8 @@ protected:
 protected slots:
   void     RestrainInputCharacters();
 
+private:
+  Q_DISABLE_COPY( QTextEditChild );
   };
 
 #endif
