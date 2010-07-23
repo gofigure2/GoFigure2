@@ -562,16 +562,16 @@ protected slots:
   /**
    * \brief Mouse interaction style set as default
    */
-  void DefaultInteractorBehavior(bool);
+  virtual void DefaultInteractorBehavior(bool);
   /**
    * \brief Mouse interaction style allows user to zoom in/out volume with all
    * buttons
    */
-  void ZoomInteractorBehavior(bool);
+  virtual void ZoomInteractorBehavior(bool);
   /**
    * \brief Mouse interaction style allows user to pan volume with all buttons
    */
-  void PanInteractorBehavior(bool);
+  virtual void PanInteractorBehavior(bool);
   /**
    * \brief Mouse interaction style allows user to pick contours
    */

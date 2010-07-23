@@ -125,3 +125,69 @@ void QGoTabElementBase::SetPluginActions(std::list<QAction*> iList)
   m_PluginActionList = iList;
 }
 //--------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoTabElementBase::CreateModeActions(QActionGroup* group)
+{
+  //---------------------------------//
+  //           default mode          //
+  //---------------------------------//
+
+  // Create/initialize the default action
+  QAction* DefaultAction = new QAction(tr("Default"), this);
+  DefaultAction->setCheckable(true);
+  DefaultAction->setChecked(true);
+
+  QIcon DefaultIcon;
+  DefaultIcon.addPixmap(QPixmap(QString::fromUtf8(":/fig/mouse-cursor.png")),
+                        QIcon::Normal, QIcon::Off);
+  DefaultAction->setIcon(DefaultIcon);
+
+  group->addAction(DefaultAction);
+
+  // it also updates the interactor behaviour
+  QObject::connect(DefaultAction, SIGNAL(toggled(bool)),
+                   this, SLOT(DefaultInteractorBehavior(bool)));
+
+  this->m_ModeActions.push_back(DefaultAction);
+
+  //---------------------------------//
+  //            Zoom mode            //
+  //---------------------------------//
+
+  QAction* ZoomAction = new QAction(tr("Zoom"), this);
+  ZoomAction->setCheckable(true);
+  ZoomAction->setChecked(false);
+
+  QIcon ZoomIcon;
+  ZoomIcon.addPixmap(QPixmap(QString::fromUtf8(":/fig/zoom.png")),
+                     QIcon::Normal, QIcon::Off);
+  ZoomAction->setIcon(ZoomIcon);
+
+  group->addAction(ZoomAction);
+
+  this->m_ModeActions.push_back(ZoomAction);
+  // it also updates the interactor behaviour
+  QObject::connect(ZoomAction, SIGNAL(toggled(bool)),
+                   this, SLOT(ZoomInteractorBehavior(bool)));
+
+  //---------------------------------//
+  //            Pan  mode            //
+  //---------------------------------//
+
+  QAction* PanAction = new QAction(tr("Pan"), this);
+  PanAction->setCheckable(true);
+  PanAction->setChecked(false);
+
+  QIcon PanIcon;
+  PanIcon.addPixmap(QPixmap(QString::fromUtf8(":/fig/Hand.png")),
+                    QIcon::Normal, QIcon::Off);
+  PanAction->setIcon(PanIcon);
+
+  group->addAction(PanAction);
+
+  this->m_ModeActions.push_back(PanAction);
+  // it also updates the interactor behaviour
+  QObject::connect(PanAction, SIGNAL(toggled(bool)),
+                   this, SLOT(PanInteractorBehavior(bool)));
+}

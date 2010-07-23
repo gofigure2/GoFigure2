@@ -366,51 +366,8 @@ ChangeBackgroundColor()
 void QGoTabImageView2D::CreateModeActions()
 {
   QActionGroup* group = new QActionGroup(this);
-
-  QAction* DefaultAction = new QAction(tr("Default"), this);
-  DefaultAction->setCheckable(true);
-  DefaultAction->setChecked(true);
-
-  QIcon DefaultIcon;
-  DefaultIcon.addPixmap(QPixmap(QString::fromUtf8(":/fig/mouse-cursor.png")),
-                        QIcon::Normal, QIcon::Off);
-  DefaultAction->setIcon(DefaultIcon);
-
-  group->addAction(DefaultAction);
-
-  this->m_ModeActions.push_back(DefaultAction);
-  QObject::connect(DefaultAction, SIGNAL(triggered()),
-                   this, SLOT(DefaultMode()));
-
-  QAction* ZoomAction = new QAction(tr("Zoom"), this);
-  ZoomAction->setCheckable(true);
-  ZoomAction->setChecked(false);
-
-  QIcon ZoomIcon;
-  ZoomIcon.addPixmap(QPixmap(QString::fromUtf8(":/fig/zoom.png")),
-                     QIcon::Normal, QIcon::Off);
-  ZoomAction->setIcon(ZoomIcon);
-
-  group->addAction(ZoomAction);
-
-  this->m_ModeActions.push_back(ZoomAction);
-  QObject::connect(ZoomAction, SIGNAL(triggered()),
-                   this, SLOT(ZoomMode()));
-
-  QAction* PanAction = new QAction(tr("Pan"), this);
-  PanAction->setCheckable(true);
-  PanAction->setChecked(false);
-
-  QIcon PanIcon;
-  PanIcon.addPixmap(QPixmap(QString::fromUtf8(":/fig/Hand.png")),
-                    QIcon::Normal, QIcon::Off);
-  PanAction->setIcon(PanIcon);
-
-  group->addAction(PanAction);
-
-  this->m_ModeActions.push_back(PanAction);
-  QObject::connect(PanAction, SIGNAL(triggered()),
-                   this, SLOT(PanMode()));
+  // Call superclass
+  QGoTabElementBase::CreateModeActions(group);
 }
 //-------------------------------------------------------------------------
 
@@ -425,8 +382,9 @@ TakeSnapshot()
 //-------------------------------------------------------------------------
 void
 QGoTabImageView2D::
-DefaultMode()
+DefaultInteractorBehavior(bool iEnable)
 {
+  (void) iEnable;
   m_ImageView->DefaultMode();
 }
 //-------------------------------------------------------------------------
@@ -434,8 +392,9 @@ DefaultMode()
 //-------------------------------------------------------------------------
 void
 QGoTabImageView2D::
-ZoomMode()
+ZoomInteractorBehavior(bool iEnable)
 {
+  (void) iEnable;
   m_ImageView->ZoomMode();
 }
 //-------------------------------------------------------------------------
@@ -443,7 +402,8 @@ ZoomMode()
 //-------------------------------------------------------------------------
 void
 QGoTabImageView2D::
-PanMode()
+PanInteractorBehavior(bool iEnable)
 {
+  (void) iEnable;
   m_ImageView->PanMode();
 }

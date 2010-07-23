@@ -125,9 +125,19 @@ public slots:
   void Change3DPerspectiveToCoronal();
   void Change3DPerspectiveToSagittal();
 
-  void DefaultMode();
-  void ZoomMode();
-  void PanMode();
+  /**
+   * \brief Mouse interaction style set as default
+   */
+  virtual void DefaultInteractorBehavior(bool);
+  /**
+   * \brief Mouse interaction style allows user to zoom in/out volume with all
+   * buttons
+   */
+  virtual void ZoomInteractorBehavior(bool);
+  /**
+   * \brief Mouse interaction style allows user to pan volume with all buttons
+   */
+  virtual void PanInteractorBehavior(bool);
 
   void TakeSnapshot();
 

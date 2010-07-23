@@ -100,6 +100,22 @@ public:
   /** \brief Read Settings for the related tab element.*/
   virtual void ReadSettings() = 0;
 
+  void CreateModeActions( QActionGroup* group );
+
+  /**
+   * \brief Mouse interaction style set as default
+   */
+  virtual void DefaultInteractorBehavior(bool){};
+  /**
+   * \brief Mouse interaction style allows user to zoom in/out volume with all
+   * buttons
+   */
+  virtual void ZoomInteractorBehavior(bool){};
+  /**
+   * \brief Mouse interaction style allows user to pan volume with all buttons
+   */
+  virtual void PanInteractorBehavior(bool){};
+
 protected:
   std::list<QAction*> m_PluginActionList;
 

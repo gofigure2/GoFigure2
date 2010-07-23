@@ -68,6 +68,7 @@ QGoImageView2D(QWidget* iiParent) : QGoImageView(iiParent)
   QGoImageView::InitializeSeedWidget();
   QGoImageView::InitializeDistanceWidget();
   QGoImageView::InitializeAngleWidget();
+  QGoImageView::InitializeContourWidget();
   }
 
 //--------------------------------------------------------------------------

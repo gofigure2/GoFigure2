@@ -1018,6 +1018,9 @@ void QGoTabImageView3DwT::CreateModeActions()
 {
   QActionGroup* group = new QActionGroup(this);
 
+  // Call superclass
+  QGoTabElementBase::CreateModeActions(group);
+
   //---------------------------------//
   //            Manual mode          //
   //---------------------------------//
@@ -1075,68 +1078,6 @@ void QGoTabImageView3DwT::CreateModeActions()
   // Add the action to m_ModeActions and to group
   this->m_ModeActions.push_back(OneClickAction);
   group->addAction(OneClickAction);
-
-  //---------------------------------//
-  //           default mode          //
-  //---------------------------------//
-
-  // Create/initialize the default action
-  QAction* DefaultAction = new QAction(tr("Default"), this);
-  DefaultAction->setCheckable(true);
-  DefaultAction->setChecked(true);
-
-  QIcon DefaultIcon;
-  DefaultIcon.addPixmap(QPixmap(QString::fromUtf8(":/fig/mouse-cursor.png")),
-                        QIcon::Normal, QIcon::Off);
-  DefaultAction->setIcon(DefaultIcon);
-
-  group->addAction(DefaultAction);
-
-  // it also updates the interactor behaviour
-  QObject::connect(DefaultAction, SIGNAL(toggled(bool)),
-                   this, SLOT(DefaultInteractorBehavior(bool)));
-
-  this->m_ModeActions.push_back(DefaultAction);
-
-  //---------------------------------//
-  //            Zoom mode            //
-  //---------------------------------//
-
-  QAction* ZoomAction = new QAction(tr("Zoom"), this);
-  ZoomAction->setCheckable(true);
-  ZoomAction->setChecked(false);
-
-  QIcon ZoomIcon;
-  ZoomIcon.addPixmap(QPixmap(QString::fromUtf8(":/fig/zoom.png")),
-                     QIcon::Normal, QIcon::Off);
-  ZoomAction->setIcon(ZoomIcon);
-
-  group->addAction(ZoomAction);
-
-  this->m_ModeActions.push_back(ZoomAction);
-  // it also updates the interactor behaviour
-  QObject::connect(ZoomAction, SIGNAL(toggled(bool)),
-                   this, SLOT(ZoomInteractorBehavior(bool)));
-
-  //---------------------------------//
-  //            Pan  mode            //
-  //---------------------------------//
-
-  QAction* PanAction = new QAction(tr("Pan"), this);
-  PanAction->setCheckable(true);
-  PanAction->setChecked(false);
-
-  QIcon PanIcon;
-  PanIcon.addPixmap(QPixmap(QString::fromUtf8(":/fig/Hand.png")),
-                    QIcon::Normal, QIcon::Off);
-  PanAction->setIcon(PanIcon);
-
-  group->addAction(PanAction);
-
-  this->m_ModeActions.push_back(PanAction);
-  // it also updates the interactor behaviour
-  QObject::connect(PanAction, SIGNAL(toggled(bool)),
-                   this, SLOT(PanInteractorBehavior(bool)));
 
   //---------------------------------//
   //     Contour picking  mode       //
@@ -3749,7 +3690,7 @@ void QGoTabImageView3DwT::GoToDefaultMenu(std::string iTracename,
   this->m_ManualSegmentationDockWidget->hide();
   this->m_OneClickSegmentationDockWidget->setDisabled(true);
   this->m_OneClickSegmentationDockWidget->hide();
-  this->m_ModeActions.at(2)->setChecked(true);
+  this->m_ModeActions.at(0)->setChecked(true);
   this->m_TraceManualEditingDockWidget->ShowAndUpdate(iTracename,
                                                       iCollectionName);
   if (this->m_DataBaseTables->IsDatabaseUsed())
