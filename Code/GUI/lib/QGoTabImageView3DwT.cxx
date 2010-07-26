@@ -3479,7 +3479,6 @@ SavePolyDataAsMeshInDB(vtkPolyData* iView, const int& iMeshID,
                        const double& iA, const bool& iHighlighted, const unsigned int& iTCoord,
                        const bool& iSaveInDataBase)
 {
-
   // map to graphics library
   vtkPolyDataMapper *map = vtkPolyDataMapper::New();
   map->SetInput(iView);
@@ -3498,6 +3497,8 @@ SavePolyDataAsMeshInDB(vtkPolyData* iView, const int& iMeshID,
     Max[i] = bounds[k++];
     }
 
+  map->Delete();
+
   int* min_idx = this->GetImageCoordinatesFromWorldCoordinates(Min);
   int* max_idx = this->GetImageCoordinatesFromWorldCoordinates(Max);
 
@@ -3512,6 +3513,8 @@ SavePolyDataAsMeshInDB(vtkPolyData* iView, const int& iMeshID,
     {
     mesh_actor = this->AddContour(iDir, iView, mesh_property);
     }
+
+  mesh_property->Delete();
 
   // get meshid from the visu dock widget (SpinBox)
   unsigned int trackid = this->m_TraceManualEditingDockWidget->m_TraceWidget->GetCurrentCollectionID();
