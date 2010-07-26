@@ -192,11 +192,13 @@ public:
                            const bool& iHighlighted, const unsigned int& iTCoord, const bool& iSaveInDataBase);
 
   void AddMeshFromNodes(const unsigned int& iMeshID, vtkPolyData* iNodes, const double iRgba[4],
-                        const bool& iHighlighted, const unsigned int& iTCoord, const bool& iSaveInDataBase);
+                        const bool& iHighlighted, const unsigned int& iTCoord, const bool& iSaveInDataBase,
+                        bool NewMesh = true);
 
   void AddMeshFromNodes(const unsigned int& iMeshID, vtkPolyData* iNodes,
                         const double& iR, const double& iG, const double& iB, const double& iA,
-                        const bool& iHighlighted, const unsigned int& iTCoord, const bool& iSaveInDataBase);
+                        const bool& iHighlighted, const unsigned int& iTCoord, const bool& iSaveInDataBase,
+                        bool NewMesh = true);
 
   int GetSliceViewXY() const;
   int GetSliceViewXZ() const;
@@ -386,7 +388,7 @@ public slots:
   void ApplyOneClickSegmentationFilter();
   void ApplyContourSemiAutoSegmentation();
 
-  void CreateMeshFromSelectedContours(std::list<int> ListContourIDs);
+  void CreateMeshFromSelectedContours(std::list<int> ListContourIDs,int iMeshID);
 
   void TestMesh();
 
@@ -486,7 +488,8 @@ protected:
    */
   virtual int SavePolyDataAsMeshInDB(vtkPolyData* iView, const int& iMeshID, const int& iDir,
                                      const double& iR, const double& iG, const double& iB, const double& iA,
-                                     const bool& iHighlighted, const unsigned int& iTCoord, const bool& iSaveInDataBase);
+                                     const bool& iHighlighted, const unsigned int& iTCoord, const bool& iSaveInDataBase,
+                                     bool NewMesh = true);
 
   void GetBackgroundColorFromImageViewer();
   void SetBackgroundColorToImageViewer();

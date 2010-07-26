@@ -681,8 +681,8 @@ CreateDataBaseTablesConnection()
     this->m_DataBaseTables, SIGNAL(ColorChangedForSelectedTraces(std::pair<std::list<int>, QColor>)),
     this, SLOT(ChangeColorOfSelectedTracesManager(std::pair<std::list<int>, QColor>)));
 
-  QObject::connect(this->m_DataBaseTables, SIGNAL(NewMeshToGenerate(std::list<int>)),
-                   this, SLOT(CreateMeshFromSelectedContours(std::list<int>)));
+  QObject::connect(this->m_DataBaseTables, SIGNAL(NewMeshToGenerate(std::list<int>,int)),
+                   this, SLOT(CreateMeshFromSelectedContours(std::list<int>,int)));
 
   QObject::connect(this->m_DataBaseTables, SIGNAL(NeedToGoToTheLocation(int, int, int, int)),
                    this, SLOT(GoToLocation(int, int, int, int)));
@@ -2557,10 +2557,11 @@ AddMeshFromNodes(const unsigned int& iMeshID,
                  const double iRgba[4],
                  const bool& iHighlighted,
                  const unsigned int& iTCoord,
-                 const bool& iSaveInDataBase)
+                 const bool& iSaveInDataBase,
+                 bool NewMesh)
 {
   AddMeshFromNodes(iMeshID, iNodes, iRgba[0], iRgba[1], iRgba[2], iRgba[3],
-                   iHighlighted, iTCoord, iSaveInDataBase);
+                   iHighlighted, iTCoord, iSaveInDataBase,NewMesh);
 }
 //-------------------------------------------------------------------------
 
@@ -2570,10 +2571,11 @@ QGoTabImageView3DwT::
 AddMeshFromNodes(const unsigned int& iMeshID,
                  vtkPolyData* iNodes,
                  const double& iR, const double& iG, const double& iB, const double& iA,
-                 const bool& iHighlighted, const unsigned int& iTCoord, const bool& iSaveInDataBase)
+                 const bool& iHighlighted, const unsigned int& iTCoord, const bool& iSaveInDataBase,
+                 bool NewMesh)
 {
   this->SavePolyDataAsMeshInDB(iNodes, iMeshID, 0, iR,  iG,  iB,
-                               iA,  iHighlighted,  iTCoord, iSaveInDataBase);
+                               iA,  iHighlighted,  iTCoord, iSaveInDataBase,NewMesh);
 }
 
 //-------------------------------------------------------------------------
@@ -3477,7 +3479,7 @@ QGoTabImageView3DwT::
 SavePolyDataAsMeshInDB(vtkPolyData* iView, const int& iMeshID,
                        const int& iDir, const double& iR, const double& iG, const double& iB,
                        const double& iA, const bool& iHighlighted, const unsigned int& iTCoord,
-                       const bool& iSaveInDataBase)
+                       const bool& iSaveInDataBase, bool NewMesh)
 {
   // map to graphics library
   vtkPolyDataMapper *map = vtkPolyDataMapper::New();
@@ -3513,10 +3515,9 @@ SavePolyDataAsMeshInDB(vtkPolyData* iView, const int& iMeshID,
     {
     mesh_actor = this->AddContour(iDir, iView, mesh_property);
     }
-
   mesh_property->Delete();
-
-  // get meshid from the visu dock widget (SpinBox)
+  // get meshid from the visu dock widget (SpinBox)/** todo: this is not the track id when creating
+  //mesh from the context menu: this is the selected mesh in the combolist !!!
   unsigned int trackid = this->m_TraceManualEditingDockWidget->m_TraceWidget->GetCurrentCollectionID();
 
   if (iSaveInDataBase)
@@ -3527,10 +3528,13 @@ SavePolyDataAsMeshInDB(vtkPolyData* iView, const int& iMeshID,
     // Save mesh in database
     //don't use m_ContourId
     GoFigureMeshAttributes MeshAttributes = ComputeMeshAttributes(iView);
-
+    
+    //if the mesh needs to be updated in the Database, the NewMesh will be false and the iMeshID will
+    //be = 0 if the meshID needs to be gotten from the trace manual editing widget, if it is a new
+    //mesh, the NewMesh will be true and iMeshID = 0:
     m_MeshId = m_DataBaseTables->SaveMeshFromVisuInDB(min_idx[0],
                                                       min_idx[1], min_idx[2], iTCoord, max_idx[0],
-                                                      max_idx[1], max_idx[2], iView, &MeshAttributes);
+                                                      max_idx[1], max_idx[2], iView, &MeshAttributes,NewMesh,iMeshID);
     }
   else
     {
@@ -3545,6 +3549,7 @@ SavePolyDataAsMeshInDB(vtkPolyData* iView, const int& iMeshID,
     m_MeshContainer.insert(temp);
     }
 
+  //to check:
   ++m_MeshId;
 
   return 0;
@@ -3776,7 +3781,7 @@ ChangeColorOfSelectedTraces(ContourMeshStructureMultiIndexContainer& ioContainer
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
-CreateMeshFromSelectedContours(std::list<int> iListContourIDs)
+CreateMeshFromSelectedContours(std::list<int> iListContourIDs,int iMeshID)
 {
   std::list<int>::iterator contourid_it = iListContourIDs.begin();
 
@@ -3811,16 +3816,18 @@ CreateMeshFromSelectedContours(std::list<int> iListContourIDs)
     this->m_TraceManualEditingDockWidget->m_TraceWidget->ColorComboBox->GetCurrentColorData().second;
   color.getRgbF(&rgba[0], &rgba[1], &rgba[2], &rgba[3]);
 
-  unsigned int meshid =
-    this->m_TraceManualEditingDockWidget->m_TraceWidget->GetCurrentCollectionID();
+  //unsigned int meshid =
+    //this->m_TraceManualEditingDockWidget->m_TraceWidget->GetCurrentCollectionID();
 
   bool highlighted = false;
 
   // visualize of the generated mesh
   // save into the database
   bool saveindatabase = true;
-  this->AddMeshFromNodes(meshid, filter->GetOutput(), rgba, highlighted,
-                         tcoord, saveindatabase);
+  //this->AddMeshFromNodes(meshid, filter->GetOutput(), rgba, highlighted,
+                        // tcoord, saveindatabase);
+  this->AddMeshFromNodes(iMeshID, filter->GetOutput(), rgba, highlighted,
+                         tcoord, saveindatabase,false);
 }
 //-------------------------------------------------------------------------
 

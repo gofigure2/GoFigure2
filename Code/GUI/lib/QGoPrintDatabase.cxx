@@ -453,7 +453,7 @@ void QGoPrintDatabase::CreateCorrespondingCollection()
     emit    NewCreatedCollection(this->m_CurrentColorData.second, CollectionIDQString);
     if (CurrentlyUsedTraceData->TraceName == "contour")
       {
-      emit NewMeshToGenerate(ListSelectedTraces);
+      emit NewMeshToGenerate(ListSelectedTraces,NewCollectionID);
       }
     }
 }
@@ -957,7 +957,7 @@ int QGoPrintDatabase::SaveMeshFromVisuInDB(unsigned int iXCoordMin,
                                            unsigned int iZCoordMax,
                                            vtkPolyData* iMeshNodes,
                                            GoFigureMeshAttributes* iMeshAttributes,
-                                           bool NewMesh)
+                                           bool NewMesh, int iMeshID)
 {
   OpenDBConnection();
 
@@ -970,9 +970,16 @@ int QGoPrintDatabase::SaveMeshFromVisuInDB(unsigned int iXCoordMin,
 
   if (!NewMesh)
     {
-    mesh_row.SetValuesForSpecificID(
-      atoi(this->m_CurrentCollectionData.first.c_str()), this->m_DatabaseConnector);
-    CollectionData.first = mesh_row.GetMapValue("TrackID");
+    if (iMeshID == 0)
+      {
+      mesh_row.SetValuesForSpecificID(
+        atoi(this->m_CurrentCollectionData.first.c_str()), this->m_DatabaseConnector);
+      CollectionData.first = mesh_row.GetMapValue("TrackID");
+      }
+    else
+      {
+      mesh_row.SetValuesForSpecificID(iMeshID, this->m_DatabaseConnector);
+      }
     GoDBTrackRow Collection;
     Collection.SetValuesForSpecificID(atoi(CollectionData.first.c_str()),
                                       this->m_DatabaseConnector);

@@ -206,7 +206,7 @@ public:
                            unsigned int iYCoordMin, unsigned int iZCoordMin, unsigned int iTCoord,
                            unsigned int iXCoordMax, unsigned int iYCoordMax, unsigned int iZCoordMax,
                            vtkPolyData* iMeshNodes, GoFigureMeshAttributes* iMeshAttributes,
-                           bool NewMesh = true);
+                           bool NewMesh = true, int iMeshID = 0);
 
   int CreateMeshFromOneClickSegmentation(std::list<int> iListContoursIDs);
 
@@ -282,7 +282,7 @@ signals:
   void TheColorNameAlreadyExits();
   void ColorChangedForSelectedTraces(std::pair<std::list<int>, QColor>);
   void TableWidgetTableChanged(std::string, std::string);
-  void NewMeshToGenerate(std::list<int> ListContourIDs);
+  void NewMeshToGenerate(std::list<int> ListContourIDs,int iNewMeshID);
   void MeshGenerationToUpdate(std::list<int> ListContourIDs);
   void NeedToGoToTheLocation(int XCoord, int YCoord, int ZCoord, int TCoord);
   void ShowCheckedTracesActivated();

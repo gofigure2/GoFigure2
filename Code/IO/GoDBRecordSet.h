@@ -192,7 +192,7 @@ public:
 
     if (Update)
       {
-      if (this->SaveEachRow(query, true))
+        if (this->UpdateRows(query,start,end))
         {
         query->Delete();
         return true;
@@ -267,8 +267,6 @@ bool
 GoDBRecordSet<TObject>::
 SaveEachRow(vtkSQLQuery *query, bool Update)
 {
-  (void) Update;
-
   // modified rows
   myIteratorType start = m_RowContainer.begin();
   myIteratorType firstFalseElement = start;
@@ -291,7 +289,7 @@ SaveEachRow(vtkSQLQuery *query, bool Update)
   // new rows
   if (end - firstFalseElement > 0)
     {
-    if (!SaveRows(query, "INSERT ", firstFalseElement, end))
+    if (Update)
       {
       if (!UpdateRows(query, firstFalseElement, end))
         {

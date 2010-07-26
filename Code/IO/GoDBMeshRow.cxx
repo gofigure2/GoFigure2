@@ -182,16 +182,19 @@ int GoDBMeshRow::SaveInDB(vtkMySQLDatabase* DatabaseConnector)
     SavedMeshID = UpdateOneNewObjectInTable<GoDBMeshRow> (DatabaseConnector,
                                                           this);
     }
-
-  SavedMeshID = AddOnlyOneNewObjectInTable<GoDBMeshRow>(DatabaseConnector,
-                                                        "mesh", this, "MeshID");
-  this->SetField("MeshID", SavedMeshID);
+  else
+    {
+    SavedMeshID = AddOnlyOneNewObjectInTable<GoDBMeshRow>(DatabaseConnector,
+                                                          "mesh", this, "MeshID");
+    this->SetField("MeshID", SavedMeshID);
+    } 
 
   if (!this->m_NameChannelWithValues.empty())
     {
     this->SaveInDBTotalIntensityPerChannel(DatabaseConnector,
                                            this->m_NameChannelWithValues);
     }
+
   return SavedMeshID;
 }
 //-------------------------------------------------------------------------
