@@ -2106,14 +2106,15 @@ ShowOneChannel(int iChannel)
  *
  * \param iId
  */
-void
+int
 QGoTabImageView3DwT::
 ValidateContour(const int& iContourID, const int& iDir,
                 const double& iR, const double& iG, const double& iB, const double& iA,
                 const bool& iHighlighted, const unsigned int& iTCoord,
-                const bool& iSaveInDataBase)
+                const bool& iSaveInDataBase,
+                vtkPolyData* contour, vtkPolyData* contour_nodes)
 {
-  vtkPolyData* contour = m_ImageView->GetContourRepresentationAsPolydata(iDir);
+  //vtkPolyData* contour = m_ImageView->GetContourRepresentationAsPolydata(iDir);
 
   if ((contour->GetNumberOfPoints() > 2) && (m_TimePoint >= 0))
     {
@@ -2134,7 +2135,7 @@ ValidateContour(const int& iContourID, const int& iDir,
     int* min_idx = this->GetImageCoordinatesFromWorldCoordinates(Min);
     int* max_idx = this->GetImageCoordinatesFromWorldCoordinates(Max);
 
-    vtkPolyData* contour_nodes = m_ImageView->GetContourRepresentationNodePolydata(iDir);
+    //vtkPolyData* contour_nodes = m_ImageView->GetContourRepresentationNodePolydata(iDir);
     vtkProperty* contour_property = vtkProperty::New();
 
     if (iHighlighted)
@@ -2216,6 +2217,8 @@ ValidateContour(const int& iContourID, const int& iDir,
       ++m_ContourId;
       }
     }
+
+  return iContourID;
 }
 //-------------------------------------------------------------------------
 
@@ -2275,7 +2278,9 @@ ValidateContour()
   int i;
   for (i = 0; i < m_ImageView->GetNumberOfImageViewers(); i++)
     {
-    ValidateContour(ContourID, i, r, g, b, a, highlighted, m_TimePoint, saveindatabase);
+    ValidateContour(ContourID, i, r, g, b, a, highlighted, m_TimePoint, saveindatabase,
+        m_ImageView->GetContourRepresentationAsPolydata(i),
+        m_ImageView->GetContourRepresentationNodePolydata(i));
     }
 
   if (m_ReEditContourMode)
@@ -2536,7 +2541,9 @@ AddContourFromNodes(const unsigned int& iContourID,
       m_ImageView->ContourWidgetMode( true );
       m_ImageView->InitializeContourWidgetNodes( dir, iNodes );
       ValidateContour(iContourID, dir, iR, iG, iB, iA, iHighlighted,
-                            iTCoord, iSaveInDataBase);
+                            iTCoord, iSaveInDataBase,
+                            m_ImageView->GetContourRepresentationAsPolydata(dir),
+                            m_ImageView->GetContourRepresentationNodePolydata(dir));
       m_ImageView->ContourWidgetMode( false );
       }
     }
@@ -3388,12 +3395,27 @@ SavePolyDataAsContourInDB(vtkPolyData* iView, const int& iContourID,
                           const double& iA, const bool& iHighlighted, const unsigned int& iTCoord,
                           const bool& iSaveInDataBase)
 {
-  //generate contour
-  vtkSmartPointer<vtkOrientedGlyphContourRepresentation> contourRep =
-    vtkSmartPointer<vtkOrientedGlyphContourRepresentation>::New();
+  vtkPolyData* contour_nodes = vtkPolyData::New();
+  CreateContour( contour_nodes, iView );
 
-  vtkSmartPointer<vtkContourWidget> contourWidget =
-    vtkSmartPointer<vtkContourWidget>::New();
+  // Save the polydata in DB and container (i.e. validate)
+  return ValidateContour(iContourID, iDir, iR, iG, iB, iA,
+      iHighlighted, iTCoord, iSaveInDataBase,
+      iView, contour_nodes);
+}
+
+//-------------------------------------------------------------------------
+
+void
+QGoTabImageView3DwT::
+CreateContour(vtkPolyData* contour_nodes, vtkPolyData* iView)
+{
+  //generate contour
+  vtkOrientedGlyphContourRepresentation* contourRep =
+    vtkOrientedGlyphContourRepresentation::New();
+
+  vtkContourWidget* contourWidget = vtkContourWidget::New();
+
   contourWidget->SetInteractor(this->m_ImageView->GetImageViewer(0)
                                ->GetInteractor());
   contourWidget->SetRepresentation(contourRep);
@@ -3402,89 +3424,11 @@ SavePolyDataAsContourInDB(vtkPolyData* iView, const int& iContourID,
   contourWidget->Initialize(iView);
   contourWidget->CloseLoop();
 
-  vtkPolyData* contour =
-    contourRep->GetContourRepresentationAsPolyData();
+  contourRep->GetNodePolyData(contour_nodes);
 
-  if ((contour->GetNumberOfPoints() > 2) && (m_TimePoint >= 0))
-    {
-    // Compute Bounding Box
-    double bounds[6];
-    contour->GetBounds(bounds);
-
-    // Extract Min and Max from bounds
-    double       Min[3], Max[3];
-    int          k = 0;
-    unsigned int i;
-    for (i = 0; i < 3; i++)
-      {
-      Min[i] = bounds[k++];
-      Max[i] = bounds[k++];
-      }
-
-    int* min_idx = this->GetImageCoordinatesFromWorldCoordinates(Min);
-    int* max_idx = this->GetImageCoordinatesFromWorldCoordinates(Max);
-
-    vtkPolyData* contour_nodes = vtkPolyData::New();
-    contourRep->GetNodePolyData(contour_nodes);
-
-    vtkProperty* contour_property = vtkProperty::New();
-    contour_property->SetColor(iR, iG, iB);
-    contour_property->SetOpacity(iA);
-
-    // get corresponding actor from visualization
-    vtkPolyData* contour_copy = vtkPolyData::New();
-    contour_copy->ShallowCopy(contour);
-
-    std::vector<vtkActor*> contour_actor =
-      this->AddContour(iDir, contour_copy, contour_property);
-
-    // get meshid from the visu dock widget (SpinBox)
-    // mesh ID will be assigned once all contours are already created in database
-    // using a special method which will also create tracks
-    unsigned int meshid = 0;
-
-    if (iSaveInDataBase)
-      {
-      std::pair<std::string, QColor> ColorData =
-        this->m_TraceManualEditingDockWidget->m_TraceWidget->ColorComboBox->GetCurrentColorData();
-
-      // Save contour in database!
-      m_ContourId = m_DataBaseTables->SaveContoursFromVisuInDB(min_idx[0],
-                                                               min_idx[1], min_idx[2], iTCoord, max_idx[0],
-                                                               max_idx[1], max_idx[2], contour_nodes, ColorData, meshid);
-
-      }
-    else
-      {
-      if (iContourID != -1)
-        {
-        m_ContourId = iContourID;
-        }
-      }
-
-    contour_copy->Delete();
-    contour_property->Delete();
-
-    // fill the container
-    for (i = 0; i < contour_actor.size(); i++)
-      {
-      ContourMeshStructure temp(m_ContourId,
-                                contour_actor[i], contour_nodes,
-                                meshid, iTCoord, iHighlighted, iR, iG, iB, iA, i);
-      m_ContourContainer.insert(temp);
-      }
-
-    if ((!iSaveInDataBase) && (iContourID != -1))
-      {
-      ++m_ContourId;
-      }
-    }
-
-  contourWidget->Off();
-
-  return m_ContourId;
+  contourWidget->Delete();
+  contourRep->Delete();
 }
-//-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 /**
@@ -3532,6 +3476,7 @@ SavePolyDataAsMeshInDB(vtkPolyData* iView, const int& iMeshID,
                        const double& iA, const bool& iHighlighted, const unsigned int& iTCoord,
                        const bool& iSaveInDataBase)
 {
+
   // map to graphics library
   vtkPolyDataMapper *map = vtkPolyDataMapper::New();
   map->SetInput(iView);
@@ -3598,7 +3543,6 @@ SavePolyDataAsMeshInDB(vtkPolyData* iView, const int& iMeshID,
 
   return 0;
 }
-//-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 /**

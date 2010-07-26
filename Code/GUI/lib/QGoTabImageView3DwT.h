@@ -444,9 +444,10 @@ protected:
    * @param[in] iSaveInDataBase save in data base if true
    * \todo Alpha component is not used at all, it is assumed to be opaque
    */
-  virtual void ValidateContour(const int& iContourID, const int& iDir,
+  virtual int ValidateContour(const int& iContourID, const int& iDir,
                                const double& iR, const double& iG, const double& iB, const double& iA,
-                               const bool& iHighlighted, const unsigned int& iTCoord, const bool& iSaveInDataBase);
+                               const bool& iHighlighted, const unsigned int& iTCoord, const bool& iSaveInDataBase,
+                               vtkPolyData* contour, vtkPolyData* contour_nodes);
 
   /**
    * @param[in] iContourID
@@ -469,6 +470,8 @@ protected:
                                         const bool& iHighlighted,
                                         const unsigned int& iTCoord,
                                         const bool& iSaveInDataBase);
+
+  void CreateContour( vtkPolyData* contour_nodes,vtkPolyData* iView);
 
   /**
    * @param[in] iMeshID
