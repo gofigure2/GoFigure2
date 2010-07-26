@@ -539,6 +539,8 @@ protected:
                                    std::string iCurrentTrace,
                                    QColor iSelectedColor);
 
+  void GetTraceColor(double* rgba);
+
 protected slots:
   void AddBookmark();
   void GetTheRelatedToDBActions();

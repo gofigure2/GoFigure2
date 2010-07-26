@@ -3439,34 +3439,37 @@ QGoTabImageView3DwT::
 SavePolyDataAsContourInDB(vtkPolyData* iView)
 {
   // get color from the dock widget
-  double r, g, b, a(1.);
-  //QColor color = m_ManualSegmentationDockWidget->GetValidatedColor();
-  if (this->m_TraceManualEditingDockWidget->m_TraceWidget->GetCurrentCollectionID() == -1)
-    {
-    r = 0.1;
-    g = 0.5;
-    b = 0.7;
-    }
-  else
-    {
-    QColor color =
-      this->m_TraceManualEditingDockWidget->m_TraceWidget->ColorComboBox->GetCurrentColorData().second;
-    color.getRgbF(&r, &g, &b, &a);
-    }
-
-  bool highlighted(false);
+  //double r, g, b, a(1.);
+  double rgba[4];
+  GetTraceColor(rgba);
 
   // get from m_DataBaseTables if user is using one gofiguredatabase or not.
   // In such a case contours are saved in the database, else they are not!
   bool saveindatabase = m_DataBaseTables->IsDatabaseUsed();
 
-  // to make sure that m_ContourId is set to the right value
-  int ContourID = -1;
-
-  return SavePolyDataAsContourInDB(iView, ContourID, 0, r, g, b, a, highlighted,
-                                   m_TimePoint, saveindatabase);
+  return SavePolyDataAsContourInDB(iView, -1, 0, rgba[0], rgba[1], rgba[2], rgba[3],
+                                   false, m_TimePoint, saveindatabase);
 }
 //-------------------------------------------------------------------------
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+GetTraceColor(double* rgba)
+{
+  if (this->m_TraceManualEditingDockWidget->m_TraceWidget->GetCurrentCollectionID() == -1)
+    {
+    rgba[0] = 0.1;
+    rgba[1] = 0.5;
+    rgba[2] = 0.7;
+    rgba[3] = 1;
+    }
+  else
+    {
+    QColor color =
+      this->m_TraceManualEditingDockWidget->m_TraceWidget->ColorComboBox->GetCurrentColorData().second;
+    color.getRgbF(&rgba[0], &rgba[1], &rgba[2], &rgba[3]);
+    }
+}
 
 //-------------------------------------------------------------------------
 int
@@ -3553,33 +3556,17 @@ QGoTabImageView3DwT::
 SavePolyDataAsMeshInDB(vtkPolyData* iView)
 {
   // get color from the dock widget
-  double r, g, b, a(1.);
-  //QColor color = m_ManualSegmentationDockWidget->GetValidatedColor();
-  if (this->m_TraceManualEditingDockWidget->m_TraceWidget->GetCurrentCollectionID() == -1)
-    {
-    r = 0.1;
-    g = 0.5;
-    b = 0.7;
-    }
-  else
-    {
-    QColor color =
-      this->m_TraceManualEditingDockWidget->m_TraceWidget->ColorComboBox->GetCurrentColorData().second;
-    color.getRgbF(&r, &g, &b, &a);
-    }
-
-  bool highlighted(false);
+  double rgba[4];
+  GetTraceColor(rgba);
 
   // get from m_DataBaseTables if user is using one gofiguredatabase or not.
   // In such a case contours are saved in the database, else they are not!
   bool saveindatabase = m_DataBaseTables->IsDatabaseUsed();
 
-  // to make sure that m_ContourId is set to the right value
-  int MeshID = -1;
+  return SavePolyDataAsMeshInDB(iView, -1, 0, rgba[0], rgba[1], rgba[2], rgba[3],
+                                false, m_TimePoint, saveindatabase);
 
-  /// TODO check iDir
-  return SavePolyDataAsMeshInDB(iView, MeshID, 0, r, g, b, a, highlighted,
-                                m_TimePoint, saveindatabase);
+
 }
 //-------------------------------------------------------------------------
 
