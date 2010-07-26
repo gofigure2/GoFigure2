@@ -804,6 +804,7 @@ void
 QGoTabImageView3D::
 DefaultInteractorBehavior(bool iEnable)
 {
+  (void)iEnable;
   this->m_ImageView->DefaultMode();
 }
 //-------------------------------------------------------------------------
@@ -813,6 +814,7 @@ void
 QGoTabImageView3D::
 ZoomInteractorBehavior(bool iEnable)
 {
+  (void)iEnable;
   this->m_ImageView->ZoomMode();
 }
 //-------------------------------------------------------------------------
@@ -822,6 +824,7 @@ void
 QGoTabImageView3D::
 PanInteractorBehavior(bool iEnable)
 {
+  (void)iEnable;
   this->m_ImageView->PanMode();
 }
 //------------------------------------------------------------------------------

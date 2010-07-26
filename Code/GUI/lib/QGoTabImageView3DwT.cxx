@@ -2251,7 +2251,6 @@ ValidateContour()
 
   // to make sure that m_ContourId is set to the right value
   int          ContourID = -1;
-  unsigned int i;
 
   if (m_ReEditContourMode)
     {
@@ -2273,6 +2272,7 @@ ValidateContour()
       }
     }
 
+  int i;
   for (i = 0; i < m_ImageView->GetNumberOfImageViewers(); i++)
     {
     ValidateContour(ContourID, i, r, g, b, a, highlighted, m_TimePoint, saveindatabase);
