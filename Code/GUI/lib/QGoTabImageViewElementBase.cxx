@@ -274,20 +274,16 @@ ValidateContour(const int& iId)
     m_ContourRepresentation[iId]->GetContourRepresentationAsPolyData();
 
   // get color from the dock widget
-  double r, g, b;
+  double r, g, b, a;
   r = 0.1;
   g = 0.5;
   b = 0.7;
-  //   QColor color = m_ManualSegmentationDockWidget->GetValidatedColor();
-  //   color.getRgbF( &r, &g, &b );
-
-  /// \todo get alpha from QColor (it is not supposed to 255 all the time!)
-  // unused
-  // double alpha = 1.;
+  a = 1.;
 
   vtkProperty* contour_property = vtkProperty::New();
   contour_property->SetRepresentationToWireframe();
   contour_property->SetColor(r, g, b);
+  contour_property->SetOpacity( a );
 
   // Compute Bounding Box
   double bounds[6];
@@ -467,29 +463,3 @@ CreateToolsActions()
   this->m_ToolsActions.push_back(m_TakeSnapshotAction);
 }
 //-------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-/**
- * \brief Remove the contour (vtkActor) from the viewer (iId).
- * Note that iActor is not deleted. It has to be deleted by the end-user.
- * \param iId
- * \param iActor
- */
-// void
-// QGoTabImageViewElementBase::
-// RemoveContour( const int& iId, vtkActor* iActor )
-// {
-//   vtkViewImage2D* viewer = this->m_Pool->GetItem( iId );
-//   viewer->GetRenderer()->RemoveActor( iActor );
-// }
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-// void
-// QGoTabImageViewElementBase::
-// DisplayContour( const int& iId, vtkActor* iActor )
-// {
-//   vtkViewImage2D* viewer = this->m_Pool->GetItem( iId );
-//   viewer->GetRenderer()->AddActor( iActor );
-// }
-//--------------------------------------------------------------------------
