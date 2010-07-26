@@ -3810,24 +3810,14 @@ CreateMeshFromSelectedContours(std::list<int> iListContourIDs,int iMeshID)
   filter->ProcessContours(list_contours);
 
   // get the color from the Trace Editing Widget
-  double rgba[] = { 1., 1., 1., 1. };
-
-  QColor color =
-    this->m_TraceManualEditingDockWidget->m_TraceWidget->ColorComboBox->GetCurrentColorData().second;
-  color.getRgbF(&rgba[0], &rgba[1], &rgba[2], &rgba[3]);
+  double rgba[4];
+  GetTraceColor(rgba);
 
   //unsigned int meshid =
     //this->m_TraceManualEditingDockWidget->m_TraceWidget->GetCurrentCollectionID();
 
-  bool highlighted = false;
-
-  // visualize of the generated mesh
-  // save into the database
-  bool saveindatabase = true;
-  //this->AddMeshFromNodes(meshid, filter->GetOutput(), rgba, highlighted,
-                        // tcoord, saveindatabase);
-  this->AddMeshFromNodes(iMeshID, filter->GetOutput(), rgba, highlighted,
-                         tcoord, saveindatabase,false);
+  this->AddMeshFromNodes(meshid, filter->GetOutput(), rgba, false,
+                         tcoord, true);
 }
 //-------------------------------------------------------------------------
 
