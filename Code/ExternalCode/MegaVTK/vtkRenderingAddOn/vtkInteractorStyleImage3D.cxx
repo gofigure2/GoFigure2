@@ -271,7 +271,6 @@ SetLeftButtonInteraction(InteractionTypeIds interactionType)
 {
   LeftButtonInteraction = interactionType;
 }
-//----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------
 void
@@ -280,7 +279,6 @@ SetRightButtonInteraction(InteractionTypeIds interactionType)
 {
   RightButtonInteraction = interactionType;
 }
-//----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------
 void
@@ -289,7 +287,6 @@ SetMiddleButtonInteraction(InteractionTypeIds interactionType)
 {
   MiddleButtonInteraction = interactionType;
 }
-//----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------
 void
@@ -300,8 +297,6 @@ SetWheelButtonInteraction(InteractionTypeIds interactionType)
 }
 
 //----------------------------------------------------------------------------
-
-//----------------------------------------------------------------------------
 void
 vtkInteractorStyleImage3D::
 SetCurrentProp()
@@ -310,29 +305,13 @@ SetCurrentProp()
 }
 
 //----------------------------------------------------------------------------
-
-//----------------------------------------------------------------------------
 vtkProp*
 vtkInteractorStyleImage3D::
 GetCurrentProp()
 {
   return this->m_CurrentProp;
 }
-//----------------------------------------------------------------------------
-void
-vtkInteractorStyleImage3D::
-InvokeEventTest()
-{
-  this->InvokeEvent(vtkViewImage3DCommand::ReadyEvent);
-}
 
-//----------------------------------------------------------------------------
-void
-vtkInteractorStyleImage3D::
-InvokeEventTest2()
-{
-  this->InvokeEvent(vtkViewImage3DCommand::BoxWidgetReadyEvent);
-}
 //----------------------------------------------------------------------------
 void
 vtkInteractorStyleImage3D::
@@ -343,7 +322,6 @@ StartPick()
     return;
     }
   this->StartState(VTKIS_PICK3D);
-  std::cout << "state: " << this->State << std::endl;
   this->InvokeEvent(vtkCommand::StartPickEvent, this);
 }
 
@@ -401,7 +379,7 @@ HighlightCurrentActor()
     rwi->EndPickCallback();
     }
 }
-
+/// TODO improve it
 //----------------------------------------------------------------------------
 void
 vtkInteractorStyleImage3D::

@@ -70,6 +70,9 @@ class vtkViewImage2D;
 class vtkViewImage3D;
 class vtkViewImage2DCollection;
 
+// For the box widget
+class vtkOrientedBoxWidget;
+
 /**
 \class QGoImageView3D
 \brief class for the visualization of 3D Image represented by one vtkImageData*.
@@ -228,6 +231,7 @@ protected:
 
   vtkEventQtSlotConnect* VtkEventQtConnector;
   vtkProperty*           m_HighlightedContourProperty;
+  vtkOrientedBoxWidget*  m_BoxWidget;
   int                    IsFullScreen;
   bool                   m_FirstRender;
   bool                   m_Initialized;
@@ -253,6 +257,8 @@ protected:
    * \brief Use the mesh picking interactor style
    */
   virtual void EnableMeshPickingMode(bool iEnable);
+
+  void InitializeBoxWidget();
 
 protected slots:
   void MoveSliderXY();

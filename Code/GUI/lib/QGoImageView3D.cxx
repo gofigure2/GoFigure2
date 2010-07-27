@@ -133,6 +133,7 @@ QGoImageView3D(QWidget* iParent) :
 
   this->m_Pool->SetExtraRenderWindow(renwin4);
 
+  // Initialize widget which doesn't require information about the input image
   QGoImageView::InitializeSeedWidget();
   QGoImageView::InitializeDistanceWidget();
   QGoImageView::InitializeAngleWidget();
@@ -157,6 +158,7 @@ QGoImageView3D::~QGoImageView3D()
 
   VtkEventQtConnector->Delete();
   m_HighlightedContourProperty->Delete();
+  m_BoxWidget->Delete();
   }
 
 //-------------------------------------------------------------------------
@@ -324,6 +326,9 @@ void QGoImageView3D::Update()
 
     SetupVTKtoQtConnections();
 
+    // Initialize widgets which requiere information about the input image
+    InitializeBoxWidget();
+
     m_FirstRender = false;
     }
   QGoImageView::Update();
@@ -425,7 +430,7 @@ void QGoImageView3D::SetupVTKtoQtConnections()
   // Event connection between vtk and qt
   // when contours picked, send a signal
   VtkEventQtConnector->Connect(
-    reinterpret_cast<vtkObject*>(View3D->GetCommand()->GetBoxWidget()),
+    reinterpret_cast<vtkObject*>(View3D),
     vtkViewImage3DCommand::BoxWidgetReadyEvent,
     this, SIGNAL(MeshesSelectionChanged()));
 
@@ -1042,7 +1047,7 @@ std::list<vtkProp3D*>
 QGoImageView3D::
 GetListOfModifiedActors3D()
 {
-  return m_View3D->GetCommand()->GetListOfModifiedActors();
+  return m_View3D->GetListOfModifiedActors3D();
 }
 
 //-------------------------------------------------------------------------
@@ -1051,7 +1056,7 @@ QGoImageView3D::
 SetBox3DPicking(bool iValue)
 {
   DefaultMode();
-  m_View3D->GetCommand()->Enable3DBoxWidget(iValue);
+  m_BoxWidget->SetEnabled(iValue);
 }
 
 //-------------------------------------------------------------------------
@@ -1072,4 +1077,29 @@ QvtkWidget_XY->setCursor(iCursorShape);
 QvtkWidget_XZ->setCursor(iCursorShape);
 QvtkWidget_YZ->setCursor(iCursorShape);
 QvtkWidget_XYZ->setCursor(iCursorShape);
+}
+
+//-------------------------------------------------------------------------
+void
+QGoImageView3D::
+InitializeBoxWidget()
+{
+  m_BoxWidget = vtkOrientedBoxWidget::New();
+  vtkImageData* data = this->m_Image;
+  int           extent[6];
+  double        spacing[3];
+  data->GetExtent(extent);
+  data->GetSpacing(spacing);
+
+  m_BoxWidget->SetInteractor(m_View3D->GetInteractor());
+  m_BoxWidget->SetPlaceFactor(0.5);
+  m_BoxWidget->PlaceWidget(extent[0], extent[1] * spacing[0],
+      extent[2], extent[3] * spacing[1],
+      extent[4], extent[5] * spacing[2]);
+  m_BoxWidget->RotationEnabledOff();
+  m_BoxWidget->SetKeyPressActivationValue ('b');
+
+  // has observer to be removed manually??
+  m_BoxWidget->AddObserver(
+      vtkViewImage2DCommand::InteractionEvent, m_View3D->GetCommand());
 }

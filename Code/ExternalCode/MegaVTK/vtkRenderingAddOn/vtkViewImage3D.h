@@ -90,6 +90,11 @@
 
 #include <vector>
 
+// For the picked/unpicked actors
+#include <list>
+#include "vtkProp3D.h"
+
+
 class vtkViewImage3DCommand;
 class vtkVolumeTextureMapper3D;
 class vtkVolumeMapper;
@@ -205,7 +210,7 @@ public:
   }
 
   /** Set the box widget visibility */
-  void SetBoxWidgetVisibility(const bool& a)
+  /*void SetBoxWidgetVisibility(const bool& a)
   {
     if (this->Interactor) this->BoxWidget->SetEnabled (a);
   }
@@ -214,7 +219,7 @@ public:
     return (this->BoxWidget->GetEnabled() == 1);
   }
   vtkBooleanMacro (BoxWidgetVisibility, int);
-
+*/
   /** Set the plane widget on */
   /*void SetPlaneWidgetVisibility (const bool& a)
   {
@@ -252,7 +257,7 @@ public:
   vtkGetObjectMacro (VolumeActor, vtkVolume);
   //vtkGetObjectMacro (PlaneWidget, vtkPlaneWidget);
   vtkGetObjectMacro (VolumeProperty, vtkVolumeProperty);
-  vtkGetObjectMacro (BoxWidget, vtkOrientedBoxWidget);
+  //vtkGetObjectMacro (BoxWidget, vtkOrientedBoxWidget);
 
   virtual void SetWorldCoordinates(double pos[3]) { (void) pos;}
 
@@ -261,6 +266,10 @@ public:
   vtkInteractorStyleImage3D* GetInteractorStyle3D();
 
   vtkGetObjectMacro (Command, vtkViewImage3DCommand);
+
+  void UpdateActorsStatus(double* iBoundingBox);
+  std::list<vtkProp3D*> GetListOfModifiedActors3D();
+  void UpdateCurrentActor();
 
 protected:
 
@@ -301,7 +310,7 @@ protected:
   std::vector<vtkActor*>           BoundsActor;
 
   // box widget
-  vtkOrientedBoxWidget* BoxWidget;
+  //vtkOrientedBoxWidget* BoxWidget;
   // vtkPlane widget
   // vtkPlaneWidget*                 PlaneWidget;
   // annotated cube actor
@@ -315,6 +324,10 @@ protected:
   */
   vtkViewImage3DCommand*     Command;
   vtkInteractorStyleImage3D* InteractorStyle3D;
+
+
+  std::list<vtkProp3D*> m_ListOfPickedActors;
+  std::list<vtkProp3D*> m_ListOfModifiedActors;
 
   };
 

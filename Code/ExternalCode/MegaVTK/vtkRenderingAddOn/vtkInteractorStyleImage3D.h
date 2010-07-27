@@ -114,9 +114,6 @@ public:
   void     SetCurrentProp();
   vtkProp* GetCurrentProp();
 
-  void InvokeEventTest();
-  void InvokeEventTest2();
-
   void StartPick();
   void EndPick();
 

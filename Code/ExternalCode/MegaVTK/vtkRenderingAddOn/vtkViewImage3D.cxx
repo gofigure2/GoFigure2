@@ -153,6 +153,7 @@
 
 #include <vector>
 #include <string>
+#include <algorithm>
 
 vtkCxxRevisionMacro(vtkViewImage3D, "$Revision: 501 $");
 vtkStandardNewMacro(vtkViewImage3D);
@@ -207,7 +208,6 @@ vtkViewImage3D::vtkViewImage3D()
   this->VolumeRayCastIsosurfaceFunction =
     vtkVolumeRayCastIsosurfaceFunction::New();
   this->OpacityFunction = vtkPiecewiseFunction::New();
-  //this->BoxWidget = vtkOrientedBoxWidget::New();
   this->Callback = vtkImage3DCroppingBoxCallback::New();
   this->Blender = vtkImageBlend::New();
   this->VolumeMapper3D = vtkVolumeTextureMapper3D::New();
@@ -244,7 +244,6 @@ vtkViewImage3D::~vtkViewImage3D()
   this->VolumeProperty->Delete();
   this->VolumeActor->Delete();
   this->OpacityFunction->Delete();
-//   this->BoxWidget->Delete();
   this->Callback->Delete();
   this->Cube->Delete();
   this->Marker->Delete();
@@ -368,11 +367,6 @@ void vtkViewImage3D::SetupWidgets()
   this->Marker->SetOutlineColor (0.93, 0.57, 0.13);
   this->Marker->SetOrientationMarker (this->Cube);
   this->Marker->SetViewport (0.0, 0.05, 0.15, 0.15);
-
-//   this->BoxWidget->RotationEnabledOff();
-//   this->BoxWidget->SetPlaceFactor (0.5);
-//   this->BoxWidget->SetKeyPressActivationValue ('b');
-//   this->BoxWidget->AddObserver (vtkCommand::InteractionEvent, this->Callback);
 }
 
 //----------------------------------------------------------------------------
@@ -407,7 +401,6 @@ void vtkViewImage3D::Render()
 void vtkViewImage3D::SetVolumeRenderingOff()
 {
   this->VolumeActor->SetVisibility (false);
-//   this->BoxWidget->Off();
 }
 
 /**
@@ -474,14 +467,8 @@ void vtkViewImage3D::SetVolumeRenderingOn()
 
     this->SetupTextureMapper();
 
-//     this->BoxWidget->SetInput( image );
-//     this->BoxWidget->PlaceWidget();
-
     //this->PlaneWidget->SetInput (this->GetInput());
     //this->PlaneWidget->PlaceWidget();
-
-    // line to be removed: the box has to be called externally
-    // this->BoxWidget->On();
 
     this->VolumeActor->SetVisibility (true);
     }
@@ -613,14 +600,10 @@ void vtkViewImage3D::InstallPipeline()
       vtkViewImage3DCommand::MeshPickingEvent, this->Command);
     this->InteractorStyle3D->AddObserver(
       vtkViewImage3DCommand::BoxPickingEvent, this->Command);
-    // setup interactor style
-    // can't use this->InteractorStyle because of invalid conversions
-    // between interactors styles
-    this->Interactor->SetInteractorStyle(this->InteractorStyle3D);
 
+    this->Interactor->SetInteractorStyle(this->InteractorStyle3D);
     this->Interactor->SetRenderWindow(this->RenderWindow);
 
-    //this->BoxWidget->SetInteractor ( this->Interactor );
     //this->PlaneWidget->SetInteractor ( this->Interactor );
     this->Marker->SetInteractor (this->Interactor);
 
@@ -720,7 +703,7 @@ void vtkViewImage3D::SetOrientationMatrix(vtkMatrix4x4* matrix)
   this->Superclass::SetOrientationMatrix (matrix);
 
   this->VolumeActor->SetUserMatrix (matrix);
-  this->BoxWidget->SetOrientationMatrix (matrix);
+  //this->BoxWidget->SetOrientationMatrix (matrix);
 //   this->PlaneWidget->SetTransform (transform);
 }
 
@@ -799,3 +782,76 @@ GetInteractorStyle3D()
 {
   return this->InteractorStyle3D;
 }
+
+//----------------------------------------------------------------------------
+/// TODO enhance efficiency
+/// TODO check highlight bug
+void
+vtkViewImage3D::
+UpdateActorsStatus(double* iBoundingBox)
+{
+  // Get Actors
+  m_ListOfModifiedActors.clear();
+
+  vtkProp3DCollection* prop_collection = this->GetProp3DCollection();
+
+  prop_collection->InitTraversal();
+  vtkProp3D* prop_temp = prop_collection->GetNextProp3D();
+
+  double bounds[6];
+
+  while (prop_temp)
+    {
+    bool inside = true;
+    prop_temp->GetBounds(bounds);
+
+    for (int i = 0; (i < 3) && inside; ++i)
+      {
+      inside = (iBoundingBox[2 * i] < bounds[2 * i]) && (bounds[2 * i + 1] < iBoundingBox[2 * i + 1]);
+      }
+
+  std::list<vtkProp3D*>::iterator it = std::find(m_ListOfPickedActors.begin(),
+                                                 m_ListOfPickedActors.end(),
+                                                 prop_temp);
+  if (inside)
+    {
+    if (it == m_ListOfPickedActors.end())
+      {
+      // ADD
+      m_ListOfPickedActors.push_back(prop_temp);
+      m_ListOfModifiedActors.push_back(prop_temp);
+      }
+    }
+  else
+    {
+    if (it != m_ListOfPickedActors.end())
+      {
+      // ADD
+      m_ListOfPickedActors.erase(it);
+      m_ListOfModifiedActors.push_back(prop_temp);
+      }
+    }
+  prop_temp = prop_collection->GetNextProp3D();
+  }
+
+  this->InvokeEvent(vtkViewImage3DCommand::BoxWidgetReadyEvent);
+}
+
+//-------------------------------------------------------------------------
+std::list<vtkProp3D*>
+vtkViewImage3D::
+GetListOfModifiedActors3D()
+{
+  return m_ListOfModifiedActors;
+}
+
+//-------------------------------------------------------------------------
+void
+vtkViewImage3D::
+UpdateCurrentActor()
+{
+m_ListOfModifiedActors.clear();
+m_ListOfModifiedActors.push_back((vtkProp3D*) this->GetInteractorStyle3D()->GetCurrentProp());
+this->InvokeEvent(vtkViewImage3DCommand::ReadyEvent);
+}
+//-------------------------------------------------------------------------

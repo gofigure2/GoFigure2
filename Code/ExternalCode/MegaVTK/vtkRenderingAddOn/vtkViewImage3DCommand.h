@@ -5,13 +5,7 @@
 #include "vtkObject.h"
 #include "MegaVTK2Configure.h"
 
-#include <list>
-#include "vtkProp3D.h"
-#include "vtkSmartPointer.h"
-
-class vtkProp;
 class vtkViewImage3D;
-class vtkOrientedBoxWidget;
 
 class VTK_RENDERINGADDON2_EXPORT vtkViewImage3DCommand :
   public vtkCommand
@@ -30,12 +24,10 @@ public:
     PanEvent,
     RequestedPositionEvent,
     ResetViewerEvent,
-    ContourPickingEvent,
     MeshPickingEvent,
     BoxPickingEvent,
     CameraMoveEvent,
     DefaultMoveEvent,
-    SeedEvent,
     BoxWidgetModifiedEvent,
     ReadyEvent,
     BoxWidgetReadyEvent
@@ -49,10 +41,6 @@ public:
   // was invoked (e.g., progress value in the vtkCommand::ProgressEvent).
   virtual void Execute(vtkObject *caller, unsigned long, void *);
 
-  vtkOrientedBoxWidget*    GetBoxWidget();
-  std::list<vtkProp3D*>  GetListOfModifiedActors();
-  void                     Enable3DBoxWidget(bool iValue);
-
   void SetVtkImageView3D(vtkViewImage3D* vtkViewImage3D);
 
 protected:
@@ -62,11 +50,6 @@ protected:
 
 private:
   vtkViewImage3D*       m_vtkViewImage3D;
-  vtkOrientedBoxWidget* m_BoxWidget;
-  std::list<vtkProp3D*> m_ListOfPickedActors;
-  std::list<vtkProp3D*> m_ListOfModifiedActors;
-  // which behavior do we want for this widget...?
-  bool m_InitializedBoxWidget;
   };
 
 #endif
