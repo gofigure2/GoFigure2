@@ -188,6 +188,7 @@ void QTableWidgetChild::SetSelectRowTraceID(std::string TraceName,
       if (this->item(RowIndex, 0)->checkState() != 2)
         {
         this->item(RowIndex, ColumnIndex)->setCheckState(Qt::Checked);
+        this->item(RowIndex, ColumnIndex)->setText("1");
         this->UpdateVectorCheckedRows(RowIndex, ColumnIndex, VectorOfPair);
         }
       }
@@ -196,6 +197,7 @@ void QTableWidgetChild::SetSelectRowTraceID(std::string TraceName,
       if (this->item(RowIndex, ColumnIndex)->checkState() != 0)
         {
         this->item(RowIndex, ColumnIndex)->setCheckState(Qt::Unchecked);
+        this->item(RowIndex, ColumnIndex)->setText("0");
         this->UpdateVectorCheckedRows(RowIndex, ColumnIndex, VectorOfPair);
         }
       }
@@ -459,11 +461,11 @@ void QTableWidgetChild::SetVisibleColumn(unsigned int iNbOfRows,
     //Checkbox->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsUserCheckable);
     Checkbox->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
     Checkbox->setCheckState(Qt::Checked);
+    Checkbox->setText("1");
     QIcon EyeIcon;
     EyeIcon.addPixmap(QPixmap(QString::fromUtf8(":/fig/EyeIcon.png")),
                       QIcon::Normal, QIcon::Off);
     Checkbox->setIcon(EyeIcon);
-    Checkbox->setText("1");
     QColor WhiteColor(Qt::white);
     Checkbox->setTextColor(WhiteColor);
     this->setItem(i, indexCol, Checkbox);
@@ -748,7 +750,9 @@ void QTableWidgetChild::DeleteSelectedRows(std::string iTraceNameID)
     if (RowToDelete != -1)
       {
       this->item(RowToDelete, ColumnSelectedRow)->setCheckState(Qt::Unchecked);
+      this->item(RowToDelete, ColumnSelectedRow)->setText("0");
       this->item(RowToDelete, ColumnVisibleRow)->setCheckState(Qt::Unchecked);
+      this->item(RowToDelete, ColumnVisibleRow)->setText("0");
       this->UpdateVectorCheckedRows(RowToDelete, ColumnSelectedRow, this->m_VectorSelectedRows);
       //emit CheckedRowsChanged();
       this->UpdateVectorCheckedRows(RowToDelete, ColumnVisibleRow, this->m_VectorVisibleRows);
@@ -793,6 +797,7 @@ void QTableWidgetChild::UpdateTableWidgetDisplayAndVectorCheckedRows(int Row, in
     else
       {
       this->item(Row, Column)->setCheckState(Qt::Unchecked);
+      this->item(Row, Column)->setText("0");
       QIcon NonEyeIcon;
       NonEyeIcon.addPixmap(QPixmap(QString::fromUtf8(":/fig/BlankIcon.png")),
                            QIcon::Normal, QIcon::Off);
