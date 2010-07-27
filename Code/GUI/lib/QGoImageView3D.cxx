@@ -423,7 +423,7 @@ void QGoImageView3D::SetupVTKtoQtConnections()
   // Event connection between vtk and qt
   // when contours picked, send a signal
   VtkEventQtConnector->Connect(
-    reinterpret_cast<vtkObject*>(View3D->GetInteractorStyle3D()),
+    reinterpret_cast<vtkObject*>(View3D),
     vtkViewImage3DCommand::ReadyEvent,
     this, SIGNAL(MeshesSelectionChanged()));
 
