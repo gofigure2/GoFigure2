@@ -65,7 +65,7 @@ void Square::FactorEdgeIndex(const int& idx,int& orientation,int& i){
 	};
 }
 void Square::EdgeCorners(const int& idx,int& c1,int& c2){
-	int orientation,i;
+	int orientation=0,i=0;
 	FactorEdgeIndex(idx,orientation,i);
 	switch(orientation){
 		case 0:
@@ -80,7 +80,7 @@ void Square::EdgeCorners(const int& idx,int& c1,int& c2){
 }
 int Square::ReflectEdgeIndex(const int& idx,const int& edgeIndex){
 	int orientation=edgeIndex%2;
-	int o,i;
+	int o=0,i=0;
 	FactorEdgeIndex(idx,o,i);
 	if(o!=orientation){return idx;}
 	else{return EdgeIndex(o,(i+1)%2);}
@@ -368,7 +368,7 @@ int MarchingSquares::AddEdgeIndices(const double v[Square::CORNERS],const double
 	return nEdges;
 }
 void MarchingSquares::SetVertex(const int& e,const double values[Square::CORNERS],const double& iso){
-	int o,i,c1,c2;
+	int o=0,i=0,c1=0,c2=0;
 	Square::FactorEdgeIndex(e,o,i);
 	Square::EdgeCorners(e,c1,c2);
 	switch(o){

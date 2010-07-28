@@ -1980,7 +1980,7 @@ inline int Octree<Degree>::IsBoundaryEdge(const TreeOctNode* node,const int& edg
 template<int Degree>
 inline int Octree<Degree>::IsBoundaryEdge(const TreeOctNode* node,const int& dir,const int& x,const int& y,const int& subdivideDepth)
 {
-	int d,o[3],idx1,idx2,mask;
+	int d=0,o[3],idx1=0,idx2=0,mask=0;
 
 	if(subdivideDepth<0){return 0;}
 	if(node->d<=subdivideDepth){return 1;}
