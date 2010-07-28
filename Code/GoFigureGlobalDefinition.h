@@ -55,7 +55,8 @@ enum FileType
 
 enum TabDimensionType
   {
-  TWO_D = 2,
+  TWO_D_WITH_T = 1,
+  TWO_D,
   THREE_D,
   THREE_D_WITH_T,
   FOUR_D

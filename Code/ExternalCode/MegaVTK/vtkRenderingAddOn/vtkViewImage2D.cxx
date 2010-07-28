@@ -923,7 +923,7 @@ vtkViewImage2D::AddDataSet(vtkPolyData* dataset,
                            const bool& intersection,
                            const bool& iDataVisibility)
 {
-  vtkCamera *cam = 0;
+  vtkCamera *cam = NULL;
 
   if (this->Renderer)
     {
@@ -931,7 +931,7 @@ vtkViewImage2D::AddDataSet(vtkPolyData* dataset,
     }
   else
     {
-    return 0;
+    return NULL;
     }
 
   vtkSmartPointer<vtkPolyDataMapper> mapper =
@@ -999,8 +999,13 @@ vtkViewImage2D::AddDataSet(vtkDataSet* dataset,
 {
 //   return this->AddDataSet( vtkPolyData::SafeDownCast( dataset ),
 //     property, intersection, iDataVisibility );
-  vtkCamera *cam = this->Renderer ? this->Renderer->GetActiveCamera() : NULL;
-  if (!cam)
+  vtkCamera *cam = NULL;
+
+  if (this->Renderer)
+    {
+    cam = this->Renderer->GetActiveCamera();
+    }
+  else
     {
     return NULL;
     }
@@ -1053,9 +1058,20 @@ void vtkViewImage2D::SetInteractorStyleType(int type)
 //----------------------------------------------------------------------------
 void vtkViewImage2D::UpdateCenter(void)
 {
-  if (!this->GetInput()) return;
-  vtkCamera *cam = this->Renderer ? this->Renderer->GetActiveCamera() : NULL;
-  if (!cam) return;
+  if (!this->GetInput())
+    {
+    return;
+    }
+  vtkCamera *cam = NULL;
+
+  if (this->Renderer)
+    {
+    cam = this->Renderer->GetActiveCamera();
+    }
+  else
+    {
+    return;
+    }
   int* dimensions = this->GetInput()->GetDimensions();
 
   int indices[3] = { 0, 0, 0};
@@ -1068,7 +1084,9 @@ void vtkViewImage2D::UpdateCenter(void)
   double* center = this->GetWorldCoordinatesFromImageCoordinates (indices);
 
   for (unsigned int i = 0; i < 3; i++)
+    {
     this->ViewCenter[i] = center[i];
+    }
 }
 //----------------------------------------------------------------------------
 

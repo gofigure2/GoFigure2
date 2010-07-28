@@ -272,7 +272,6 @@ SET( DIRS
 # copied over.
 INSTALL( CODE " 
     file( GLOB_RECURSE QTPLUGINS
-    # \"\${CMAKE_INSTALL_PREFIX}/*${CMAKE_SHARED_LIBRARY_SUFFIX}\" )
     \"\${CMAKE_INSTALL_PREFIX}/${plugin_dest_dir}/plugins/*${CMAKE_SHARED_LIBRARY_SUFFIX}\" )
     include( BundleUtilities )
     fixup_bundle(\"${APPS}\" \"\${QTPLUGINS}\" \"${DIRS}\")
