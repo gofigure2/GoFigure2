@@ -50,9 +50,9 @@ PURPOSE.  See the above copyright notices for more information.
 
 /*=========================================================================
  Modifications were made by the GoFigure Dev. Team.
- while at Megason Lab, Systems biology, Harvard Medical school, 2009
+ while at Megason Lab, Systems biology, Harvard Medical school, 2009-10
 
- Copyright (c) 2009, President and Fellows of Harvard College.
+ Copyright (c) 2009-10, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
