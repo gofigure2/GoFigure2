@@ -163,6 +163,8 @@ public:
 
   vtkProp* GetPickedActor();
 
+  void EnableVolumeRendering(bool iValue);
+
 signals:
   void SliceViewXYChanged(int Slice);
   void SliceViewXZChanged(int Slice);

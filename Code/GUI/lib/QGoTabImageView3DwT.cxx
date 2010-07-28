@@ -980,13 +980,20 @@ CreateAllViewActions()
   QObject::connect(Change3DPerspectiveToSagittalAction, SIGNAL(triggered()),
                    this, SLOT(Change3DPerspectiveToSagittal()));
 
-  //QIcon sagittalicon;
-  //sagittalicon.addPixmap( QPixmap(QString::fromUtf8(":/fig/LeftView.png")),
-  //  QIcon::Normal, QIcon::Off );
-  //Change3DPerspectiveToSagittalAction->setIcon( sagittalicon );
+  // Enable volume rendering
+  QAction* VolumeRenderingAction =
+    new QAction(tr("Enable the volume rendering for the current channel(s)"), this);
+  VolumeRenderingAction->setCheckable(true);
+  VolumeRenderingAction->setChecked(false);
+  this->m_ViewActions.push_back(VolumeRenderingAction);
 
-  // QObject::connect( VisibilityMeshAction, SIGNAL( toggled(bool) ),
-  //   this, SLOT( ChangeSelectedMeshesVisibility(bool) ) );
+  QIcon volumerenderingicon;
+  volumerenderingicon.addPixmap(QPixmap(QString::fromUtf8(":/fig/VolumeRendering1.png")),
+                         QIcon::Normal, QIcon::Off);
+  VolumeRenderingAction->setIcon(volumerenderingicon);
+
+  QObject::connect(VolumeRenderingAction, SIGNAL(toggled(bool)),
+                    this, SLOT(EnableVolumeRendering(bool)));
 }
 //-------------------------------------------------------------------------
 
@@ -4003,3 +4010,9 @@ ModifyTracesVisibilityFromTable(ContourMeshStructureMultiIndexContainer& iContai
   m_ImageView->UpdateRenderWindows();
 }
 //-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+EnableVolumeRendering(bool iVisible)
+{
+  m_ImageView->EnableVolumeRendering(iVisible);
+}

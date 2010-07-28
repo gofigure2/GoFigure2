@@ -127,7 +127,6 @@
 #include <vtkAxes.h>
 #include <vtkMatrix4x4.h>
 #include <vtkTubeFilter.h>
-#include <vtkLookupTable.h>
 #include <vtkAnnotatedCubeActor.h>
 #include <vtkPropAssembly.h>
 #include <vtkAxesActor.h>
@@ -421,7 +420,15 @@ void vtkViewImage3D::SetVolumeRenderingOn()
       vtkWarningMacro (<< "Cannot do volume rendering for a single slice, skipping" << endl);
       return;
       }
-
+/*
+    if (!this->IsColor)
+          {
+    vtkImageMapToWindowLevelColors* test = this->GetWindowLevel();
+    test->SetInput(image);
+    vtkImageData* imagenew = vtkImageData::New();
+    imagenew = test->GetOutput();
+    image = imagenew;
+          }*/
     this->SetupVolumeRendering();
 
     int NbOfComp = image->GetNumberOfScalarComponents();

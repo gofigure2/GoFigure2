@@ -1055,6 +1055,7 @@ void
 QGoImageView3D::
 SetBox3DPicking(bool iValue)
 {
+
   DefaultMode();
   m_BoxWidget->SetEnabled(iValue);
 }
@@ -1102,4 +1103,19 @@ InitializeBoxWidget()
   // has observer to be removed manually??
   m_BoxWidget->AddObserver(
       vtkViewImage2DCommand::InteractionEvent, m_View3D->GetCommand());
+}
+
+//-------------------------------------------------------------------------
+void
+QGoImageView3D::
+EnableVolumeRendering(bool iValue)
+{
+  if(iValue)
+    {
+  m_View3D->SetVolumeRenderingOn();
+    }
+  else
+    {
+  m_View3D->SetVolumeRenderingOff();
+    }
 }
