@@ -218,7 +218,7 @@ QGoTabImageView3DwT::
   unsigned int minch = m_MegaCaptureReader->GetMinChannel();
   unsigned int maxch = m_MegaCaptureReader->GetMaxChannel();
 
-  for (unsigned int i = minch; i < maxch; i++)
+  for (unsigned int i = minch; i < maxch+1; i++)
     {
     vtkImageData* temp = m_MegaCaptureReader->GetOutput(i);
     if (temp)
