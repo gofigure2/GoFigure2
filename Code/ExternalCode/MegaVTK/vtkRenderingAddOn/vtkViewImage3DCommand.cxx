@@ -63,6 +63,7 @@ void
 vtkViewImage3DCommand::
 Execute(vtkObject *caller, unsigned long event, void *callData)
 {
+  (void)callData;
 
   if (event == vtkViewImage3DCommand::MeshPickingEvent)
     {

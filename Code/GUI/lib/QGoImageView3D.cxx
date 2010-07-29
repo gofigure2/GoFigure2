@@ -1091,11 +1091,11 @@ QGoImageView3D::
 InitializeBoxWidget()
 {
   m_BoxWidget = vtkOrientedBoxWidget::New();
-  vtkImageData* data = this->m_Image;
+  vtkImageData* imageData = this->m_Image;
   int           extent[6];
   double        spacing[3];
-  data->GetExtent(extent);
-  data->GetSpacing(spacing);
+  imageData->GetExtent(extent);
+  imageData->GetSpacing(spacing);
 
   m_BoxWidget->SetInteractor(m_View3D->GetInteractor());
   m_BoxWidget->SetPlaceFactor(0.5);

@@ -151,7 +151,7 @@ QStringList QTableWidgetChild::recordHeaderNamesOrder()
 //--------------------------------------------------------------------------
 void QTableWidgetChild::SetSelectRowTraceID(std::string TraceName,
                                             int TraceID,
-                                            Qt::CheckState state,
+                                            Qt::CheckState iState,
                                             std::vector<std::pair<int, int> >* iVectorOfPair)
 {
   QIcon * Icon = new QIcon;
@@ -173,7 +173,7 @@ void QTableWidgetChild::SetSelectRowTraceID(std::string TraceName,
     if (iVectorOfPair == this->m_VectorVisibleRows)
       {
       ColumnIndex = this->findColumnName("Show");
-      if (state == Qt::Checked)
+      if (iState == Qt::Checked)
         {
         Icon = &this->m_EyeIcon;
         }
@@ -200,7 +200,7 @@ void QTableWidgetChild::SetSelectRowTraceID(std::string TraceName,
     }
   else
     {
-    this->setCheckStateCheckBox(this->item(RowIndex,ColumnIndex),state,Icon);
+    this->setCheckStateCheckBox(this->item(RowIndex,ColumnIndex),iState,Icon);
     }
 }
 //--------------------------------------------------------------------------
@@ -455,6 +455,8 @@ void QTableWidgetChild::SetSelectedColumn(unsigned int iNbOfRows,
 void QTableWidgetChild::SetVisibleColumn(unsigned int iNbOfRows,
                                          unsigned int StartedRow, std::string iTraceName)
 {
+  (void)iTraceName;
+
   int indexCol = findColumnName("Show");
   //need to block the signal sent by setCheckStateCheckbox for the visu:
   this->blockSignals(true);
@@ -729,6 +731,7 @@ void QTableWidgetChild::DeleteSelectedRows(std::string iTraceNameID)
     //deselect the row in the m_VectorCheckedRows:
     int ColumnSelectedRow = this->findColumnName("");
     int ColumnVisibleRow = this->findColumnName("Show");
+    (void)ColumnVisibleRow;
     int RowToDelete = this->findValueGivenColumn(
       this->m_VectorSelectedRows->at(i).first, iTraceNameID.c_str());
     if (RowToDelete != -1)
@@ -1018,9 +1021,9 @@ std::string QTableWidgetChild::GetMeanValue(std::string iColumnNameOne,
 
 //--------------------------------------------------------------------------
 void QTableWidgetChild::setCheckStateCheckBox(QTableWidgetItem * item,
-                                              Qt::CheckState state, QIcon* Icon)
+                                              Qt::CheckState iState, QIcon* Icon)
 {
-  if(state == Qt::Checked)
+  if(iState == Qt::Checked)
   {
     //if the row is already checked, no need to do anything:
     if (item->checkState() != 2)
