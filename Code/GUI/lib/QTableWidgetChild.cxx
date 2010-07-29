@@ -1020,26 +1020,26 @@ std::string QTableWidgetChild::GetMeanValue(std::string iColumnNameOne,
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QTableWidgetChild::setCheckStateCheckBox(QTableWidgetItem * item,
+void QTableWidgetChild::setCheckStateCheckBox(QTableWidgetItem * iItem,
                                               Qt::CheckState iState, QIcon* Icon)
 {
   if(iState == Qt::Checked)
   {
     //if the row is already checked, no need to do anything:
-    if (item->checkState() != 2)
+    if (iItem->checkState() != 2)
      {
-     item->setCheckState(Qt::Checked);
-     item->setText("1");
+     iItem->setCheckState(Qt::Checked);
+     iItem->setText("1");
      // if there is an icon, it is the visible column:
      if (Icon != 0)
       {
-      item->setIcon(*Icon);
-      this->UpdateVectorCheckedRows(item->row(), item->column(), this->m_VectorVisibleRows);
+       iItem->setIcon(*Icon);
+      this->UpdateVectorCheckedRows(iItem->row(), iItem->column(), this->m_VectorVisibleRows);
       emit VisibleRowsChanged();
       }
      else
       {
-      this->UpdateVectorCheckedRows(item->row(),item->column(),this->m_VectorSelectedRows);
+      this->UpdateVectorCheckedRows(iItem->row(),iItem->column(),this->m_VectorSelectedRows);
       emit CheckedRowsChanged();
       }
      }
@@ -1047,20 +1047,20 @@ void QTableWidgetChild::setCheckStateCheckBox(QTableWidgetItem * item,
   else
     {
     //if the row is already unchecked, no need to do anything:
-    if (item->checkState() != Qt::Unchecked)
+    if (iItem->checkState() != Qt::Unchecked)
       {
-      item->setCheckState(Qt::Unchecked);
-      item->setText("0");
+      iItem->setCheckState(Qt::Unchecked);
+      iItem->setText("0");
       // if there is an icon, it is the visible column:
       if (Icon != 0)
        {
-       item->setIcon(*Icon);
-       this->UpdateVectorCheckedRows(item->row(), item->column(), this->m_VectorVisibleRows);
+       iItem->setIcon(*Icon);
+       this->UpdateVectorCheckedRows(iItem->row(), iItem->column(), this->m_VectorVisibleRows);
        emit VisibleRowsChanged();
        }
       else
        {
-       this->UpdateVectorCheckedRows(item->row(),item->column(),this->m_VectorSelectedRows);
+       this->UpdateVectorCheckedRows(iItem->row(),iItem->column(),this->m_VectorSelectedRows);
        emit CheckedRowsChanged();
        }
       }
