@@ -353,7 +353,8 @@ protected:
 
   /** \brief Get the data for the corresponding trace from the database and
   replace the printed ones in the tablewidget with them*/
-  void UpdateTableWidgetForAnExistingTrace(std::string iTraceName, int iTraceID);
+  void UpdateTableWidgetForAnExistingTrace(std::string iTraceName, int iTraceID,
+    GoFigureMeshAttributes* iMeshAttributes = 0);
 
   void DeleteTraceInContourMeshStructure(int iTraceID,
                                          ContourMeshStructureMultiIndexContainer* iTraceInfo);

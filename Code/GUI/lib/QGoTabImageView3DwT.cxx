@@ -3824,7 +3824,7 @@ CreateMeshFromSelectedContours(std::list<int> iListContourIDs,int iMeshID)
     //this->m_TraceManualEditingDockWidget->m_TraceWidget->GetCurrentCollectionID();
 
   this->AddMeshFromNodes(iMeshID, filter->GetOutput(), rgba, false,
-                         tcoord, false);
+                         tcoord, true,false);
 }
 //-------------------------------------------------------------------------
 

@@ -987,10 +987,6 @@ int QGoPrintDatabase::SaveMeshFromVisuInDB(unsigned int iXCoordMin,
   this->GetTraceRowFromVisu<GoDBMeshRow>(iXCoordMin, iYCoordMin,
                                          iZCoordMin, iTCoord, iXCoordMax, iYCoordMax, iZCoordMax,
                                          iMeshNodes, this->m_DatabaseConnector, mesh_row, 0, iMeshAttributes);
-  /*GoDBMeshRow mesh_row = GetTraceRowFromVisu<GoDBMeshRow>(
-    iXCoordMin, iYCoordMin, iZCoordMin, iTCoord,
-    iXCoordMax, iYCoordMax, iZCoordMax,
-    iMeshNodes, this->m_DatabaseConnector, 0, iMeshAttributes);*/
 
   if (NewMesh)
     {
@@ -1025,18 +1021,9 @@ int QGoPrintDatabase::SaveMeshFromVisuInDB(unsigned int iXCoordMin,
     {
     SavedMeshID = mesh_row.SaveInDB(this->m_DatabaseConnector);
     this->UpdateTableWidgetForAnExistingTrace(
-      "mesh", atoi(mesh_row.GetMapValue("MeshID").c_str()));
+      "mesh", atoi(mesh_row.GetMapValue("MeshID").c_str()),iMeshAttributes);
     }
-  // int NewMeshID = mesh_row.SaveInDB( this->m_DatabaseConnector);
-  // this->UpdateTableWidgetAndDBWithNewCreatedTrace("mesh",
-  //   iMeshAttributes);
-  // std::list<int> ListSelectedTraces;
-
-  //ListSelectedTraces.push_back(NewMeshID);
-
-  //this->AddListTracesToACollection(
-  //   ListSelectedTraces,this->m_CurrentCollectionData,"mesh",false);
-  // this->AddATraceToContourMeshInfo("mesh",NewMeshID);
+ 
   /** \todo check if it is needed for an updated mesh*/
   std::list<int> ListSelectedTraces;
   ListSelectedTraces.push_back(SavedMeshID);
@@ -1595,13 +1582,18 @@ void QGoPrintDatabase::ReEditTrace()
 
 //-------------------------------------------------------------------------
 void QGoPrintDatabase::UpdateTableWidgetForAnExistingTrace(
-  std::string iTraceName, int iTraceID)
+  std::string iTraceName, int iTraceID,GoFigureMeshAttributes* iMeshAttributes)
 {
   TraceInfoStructure*       CurrentlyUsedTraceData = this->GetTraceInfoStructure(iTraceName);
   GoDBTableWidgetContainer* LinkToUpdatedRow = CurrentlyUsedTraceData->CollectionOfTraces->
                                                GetLinkToUpdatedTraceContainer(this->m_DatabaseConnector, iTraceID);
   CurrentlyUsedTraceData->Table->UpdateRow(LinkToUpdatedRow, iTraceID, iTraceName,
                                            CurrentlyUsedTraceData->CollectionName);
+  if (iMeshAttributes != 0)
+    {
+    this->PrintVolumeAreaForMesh(iMeshAttributes->m_Volume,
+                                 iMeshAttributes->m_Area, iTraceID);
+    }
 }
 //-------------------------------------------------------------------------
 
