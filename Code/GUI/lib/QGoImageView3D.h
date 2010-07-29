@@ -233,13 +233,15 @@ protected:
 
   vtkEventQtSlotConnect* VtkEventQtConnector;
   vtkProperty*           m_HighlightedContourProperty;
-  vtkOrientedBoxWidget*  m_BoxWidget;
+
   int                    IsFullScreen;
   bool                   m_FirstRender;
   bool                   m_Initialized;
 
   bool m_ShowCube;
   
+  vtkOrientedBoxWidget*  m_BoxWidget;
+
   virtual void resizeEvent(QResizeEvent* event);
 
   void SetupVTKtoQtConnections();

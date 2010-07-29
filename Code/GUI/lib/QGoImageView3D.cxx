@@ -86,7 +86,8 @@ QGoImageView3D(QWidget* iParent) :
   IsFullScreen(0),
   m_FirstRender(true),
   m_Initialized(false),
-  m_ShowCube(true)
+  m_ShowCube(true),
+  m_BoxWidget(0)
   {
   VtkEventQtConnector = vtkEventQtSlotConnect::New();
 
@@ -138,6 +139,9 @@ QGoImageView3D(QWidget* iParent) :
   QGoImageView::InitializeDistanceWidget();
   QGoImageView::InitializeAngleWidget();
   QGoImageView::InitializeContourWidget();
+  /*// Create the box widget
+  // Initialization done in Update since we need information about the target image
+  m_BoxWidget = vtkOrientedBoxWidget::New();*/
   }
 
 //-------------------------------------------------------------------------
@@ -158,7 +162,11 @@ QGoImageView3D::~QGoImageView3D()
 
   VtkEventQtConnector->Delete();
   m_HighlightedContourProperty->Delete();
-  m_BoxWidget->Delete();
+  if(m_BoxWidget)
+    {
+    m_BoxWidget->Delete();
+    m_BoxWidget = NULL;
+    }
   }
 
 //-------------------------------------------------------------------------
