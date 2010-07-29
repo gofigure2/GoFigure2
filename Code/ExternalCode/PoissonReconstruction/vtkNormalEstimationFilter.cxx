@@ -46,6 +46,7 @@
 #include "vtkPointLocator.h"
 #include "vtkPoints.h"
 #include "vtkDoubleArray.h"
+#include "vtkSmartPointer.h"
 
 vtkStandardNewMacro(vtkNormalEstimationFilter);
 
@@ -430,7 +431,7 @@ int vtkNormalEstimationFilter::RequestData(
   // vertex as visited, add any new neighbors to the neighbors list.
   int ok = ConsistencyPropagation();
 
-  vtkPoints* points = vtkPoints::New();
+  vtkSmartPointer<vtkPoints> points = vtkSmartPointer<vtkPoints>::New();
   points->SetNumberOfPoints(input->GetNumberOfPoints());
 
   vtkFloatArray* normals = vtkFloatArray::New();
@@ -448,7 +449,8 @@ int vtkNormalEstimationFilter::RequestData(
   output->GetPointData()->SetNormals(normals);
 
   normals->Delete();
-//   delete[] m_SurfacePoints;
+  // was commented... why?
+  delete[] m_SurfacePoints;
 
   return ok;
 }

@@ -139,9 +139,6 @@ QGoImageView3D(QWidget* iParent) :
   QGoImageView::InitializeDistanceWidget();
   QGoImageView::InitializeAngleWidget();
   QGoImageView::InitializeContourWidget();
-  /*// Create the box widget
-  // Initialization done in Update since we need information about the target image
-  m_BoxWidget = vtkOrientedBoxWidget::New();*/
   }
 
 //-------------------------------------------------------------------------
