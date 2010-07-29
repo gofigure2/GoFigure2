@@ -751,7 +751,7 @@ ChangeContoursToHighLightInfoFromVisu(
             temp.Highlighted = true;
             CurrentlyUsedTraceData->ListTracesInfoForVisu->get<TraceID>().replace(traceid_it, temp);
             CurrentlyUsedTraceData->Table->SetSelectRowTraceID(CurrentlyUsedTraceData->TraceName,
-                                                               *it, true);
+              *it, Qt::Checked);
             }
           else
             {
@@ -759,7 +759,7 @@ ChangeContoursToHighLightInfoFromVisu(
             temp.Highlighted = false;
             CurrentlyUsedTraceData->ListTracesInfoForVisu->get<TraceID>().replace(traceid_it, temp);
             CurrentlyUsedTraceData->Table->SetSelectRowTraceID(CurrentlyUsedTraceData->TraceName,
-                                                               *it, false);
+              *it, Qt::Unchecked);
             }
           }
 
@@ -790,7 +790,7 @@ ChangeContoursToHighLightInfoFromVisu(
           temp.Highlighted = false;
           CurrentlyUsedTraceData->ListTracesInfoForVisu->replace(trace_it, temp);
           CurrentlyUsedTraceData->Table->SetSelectRowTraceID(
-            CurrentlyUsedTraceData->TraceName, trace_it->TraceID, false);
+            CurrentlyUsedTraceData->TraceName, trace_it->TraceID, Qt::Unchecked);
           }
         ++trace_it;
         }
@@ -828,24 +828,18 @@ ChangeMeshesToHighLightInfoFromVisu(
       ContourMeshStructure temp(*traceid_it);
       temp.Highlighted = traceid_it->Highlighted;
       CurrentlyUsedTraceData->ListTracesInfoForVisu->get<TraceID>().replace(traceid_it, temp);
-      CurrentlyUsedTraceData->Table->SetSelectRowTraceID(CurrentlyUsedTraceData->TraceName,
-                                                         *it, !traceid_it->Highlighted);
-//       if (!traceid_it->Highlighted)
-//         {
-//         ContourMeshStructure temp( *traceid_it );
-//         temp.Highlighted = true;
-//         CurrentlyUsedTraceData->ListTracesInfoForVisu->get< TraceID >().replace( traceid_it, temp );
-//         CurrentlyUsedTraceData->Table->SetSelectRowTraceID( CurrentlyUsedTraceData->TraceName,
-//           *it, true );
-//         }
-//       else
-//         {
-//         ContourMeshStructure temp( *traceid_it );
-//         temp.Highlighted = false;
-//         CurrentlyUsedTraceData->ListTracesInfoForVisu->get< TraceID >().replace( traceid_it, temp );
-//         CurrentlyUsedTraceData->Table->SetSelectRowTraceID( CurrentlyUsedTraceData->TraceName,
-//           *it, false );
-//         }
+      /*CurrentlyUsedTraceData->Table->SetSelectRowTraceID(CurrentlyUsedTraceData->TraceName,
+                                                         *it, !traceid_it->Highlighted);*/
+       if (!traceid_it->Highlighted)
+         {
+         CurrentlyUsedTraceData->Table->SetSelectRowTraceID( CurrentlyUsedTraceData->TraceName,
+           *it, Qt::Checked );
+         }
+       else
+         {
+         CurrentlyUsedTraceData->Table->SetSelectRowTraceID( CurrentlyUsedTraceData->TraceName,
+           *it, Qt::Unchecked );
+         }
       }
     ++it;
     }

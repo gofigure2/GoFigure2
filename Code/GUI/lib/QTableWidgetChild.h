@@ -124,6 +124,9 @@ protected:
   int PrevCol;
   int PrevOrder;
 
+  QIcon m_EyeIcon;
+  QIcon m_NonEyeIcon;
+
   /** \brief Vector containing the ID of the selected row and the index in the table widget*/
   std::vector<std::pair<int, int> >* m_VectorSelectedRows;
 
@@ -144,6 +147,8 @@ protected:
   QString and insert \n and \t to be read by other applications*/
   void PrepareRangeToCopy(QTableWidgetSelectionRange Range, QString& str);
 
+  void setCheckStateCheckBox(QTableWidgetItem * item,Qt::CheckState state, QIcon* Icon = 0);
+
 public slots:
   /** \brief sort items given one column and one sort order. */
   void sortItems(int column, Qt::SortOrder order);
@@ -151,7 +156,7 @@ public slots:
   /** \brief select or unselect the row corresponding to the given TraceID in the corresponding column.
   */
   void SetSelectRowTraceID(std::string TraceName, int TraceID,
-                           bool IsSelected, std::vector<std::pair<int, int> >* iVectorOfPair = 0);
+    Qt::CheckState state, std::vector<std::pair<int, int> >* iVectorOfPair = 0);
 
   /** \brief check the boxes for the rows where at least one cell is selected */
   void CheckSelectedRows(std::string iTraceName,

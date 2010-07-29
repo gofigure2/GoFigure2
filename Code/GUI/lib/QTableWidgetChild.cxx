@@ -53,7 +53,11 @@ QTableWidgetChild::QTableWidgetChild(QWidget* iParent) : QTableWidget(iParent)
   PrevCol = -1;
   PrevOrder = -1;
   this->m_VectorSelectedRows = new std::vector<std::pair<int, int> >;
-  this->m_VectorVisibleRows = new std::vector<std::pair<int, int> >;
+  this->m_VectorVisibleRows = new std::vector<std::pair<int, int> >; 
+  this->m_EyeIcon.addPixmap(QPixmap(QString::fromUtf8(":/fig/EyeIcon.png")),
+                        QIcon::Normal, QIcon::Off);
+  this->m_NonEyeIcon.addPixmap(QPixmap(QString::fromUtf8(":/fig/BlankIcon.png")),
+                           QIcon::Normal, QIcon::Off);
 
   QObject::connect(this,
                    SIGNAL(cellClicked(int, int)),
@@ -147,18 +151,21 @@ QStringList QTableWidgetChild::recordHeaderNamesOrder()
 //--------------------------------------------------------------------------
 void QTableWidgetChild::SetSelectRowTraceID(std::string TraceName,
                                             int TraceID,
-                                            bool IsSelected,
+                                            Qt::CheckState state,
                                             std::vector<std::pair<int, int> >* iVectorOfPair)
 {
+  QIcon * Icon = new QIcon;
   std::stringstream TraceIDName;
   TraceIDName << TraceName;
   TraceIDName << "ID";
   std::vector<std::pair<int, int> >* VectorOfPair;
   int                                ColumnIndex = 0;
+  //get the icon and column indexes depending on the iVectorOfPair:
   if (iVectorOfPair == 0)
     {
     VectorOfPair = this->m_VectorSelectedRows;
     ColumnIndex = this->findColumnName("");
+    Icon = 0;
     }
   else
     {
@@ -166,14 +173,24 @@ void QTableWidgetChild::SetSelectRowTraceID(std::string TraceName,
     if (iVectorOfPair == this->m_VectorVisibleRows)
       {
       ColumnIndex = this->findColumnName("Show");
+      if (state == Qt::Checked)
+        {
+        Icon = &this->m_EyeIcon;
+        }
+      else
+        {
+        Icon = &this->m_NonEyeIcon;
+        }
       }
     else
       {
       ColumnIndex = this->findColumnName("");
+      Icon = 0;
       }
     }
-
+  //get the row index based on TraceName:
   int RowIndex = this->findValueGivenColumn(TraceID, TraceIDName.str().c_str());
+  //set the check state of the corresponding checkbox based on the state:
   if (RowIndex == -1)
     {
     std::cerr << "The contour " << TraceID << "has not been found ";
@@ -183,24 +200,7 @@ void QTableWidgetChild::SetSelectRowTraceID(std::string TraceName,
     }
   else
     {
-    if (IsSelected)
-      { //if the row is already checked, no need to do anything:
-      if (this->item(RowIndex, 0)->checkState() != 2)
-        {
-        this->item(RowIndex, ColumnIndex)->setCheckState(Qt::Checked);
-        this->item(RowIndex, ColumnIndex)->setText("1");
-        this->UpdateVectorCheckedRows(RowIndex, ColumnIndex, VectorOfPair);
-        }
-      }
-    else
-      {
-      if (this->item(RowIndex, ColumnIndex)->checkState() != 0)
-        {
-        this->item(RowIndex, ColumnIndex)->setCheckState(Qt::Unchecked);
-        this->item(RowIndex, ColumnIndex)->setText("0");
-        this->UpdateVectorCheckedRows(RowIndex, ColumnIndex, VectorOfPair);
-        }
-      }
+    this->setCheckStateCheckBox(this->item(RowIndex,ColumnIndex),state,Icon);
     }
 }
 //--------------------------------------------------------------------------
@@ -438,8 +438,9 @@ void QTableWidgetChild::SetSelectedColumn(unsigned int iNbOfRows,
     {
     QTableWidgetItem* Checkbox = new QTableWidgetItem;
     //Checkbox->setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsEnabled |
-    //  Qt::ItemIsSelectable);
+    //  Qt::ItemIsSelectable );
     Checkbox->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+   // Checkbox->setFlags( Qt::ItemIsUserCheckable);
 
     Checkbox->setCheckState(Qt::Unchecked);
     Checkbox->setText("0");
@@ -455,27 +456,19 @@ void QTableWidgetChild::SetVisibleColumn(unsigned int iNbOfRows,
                                          unsigned int StartedRow, std::string iTraceName)
 {
   int indexCol = findColumnName("Show");
+  //need to block the signal sent by setCheckStateCheckbox for the visu:
+  this->blockSignals(true);
   for (unsigned int i = StartedRow; i < iNbOfRows + StartedRow; i++)
     {
     QTableWidgetItem* Checkbox = new QTableWidgetItem;
     //Checkbox->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsUserCheckable);
     Checkbox->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-    Checkbox->setCheckState(Qt::Checked);
-    Checkbox->setText("1");
-    QIcon EyeIcon;
-    EyeIcon.addPixmap(QPixmap(QString::fromUtf8(":/fig/EyeIcon.png")),
-                      QIcon::Normal, QIcon::Off);
-    Checkbox->setIcon(EyeIcon);
     QColor WhiteColor(Qt::white);
     Checkbox->setTextColor(WhiteColor);
-    this->setItem(i, indexCol, Checkbox);
-    std::pair<int, int> VisibleTrace;
-    std::string         TraceIDName = iTraceName;
-    TraceIDName += "ID";
-    VisibleTrace.first = this->GetValueForItem(TraceIDName, i);
-    VisibleTrace.second = i;
-    this->m_VectorVisibleRows->push_back(VisibleTrace);
+    this->setItem(i, indexCol, Checkbox);  
+    this->setCheckStateCheckBox(Checkbox,Qt::Checked,&this->m_EyeIcon);
     }
+   this->blockSignals(false);
 }
 //--------------------------------------------------------------------------
 
@@ -749,14 +742,10 @@ void QTableWidgetChild::DeleteSelectedRows(std::string iTraceNameID)
       this->m_VectorSelectedRows->at(i).first, iTraceNameID.c_str());
     if (RowToDelete != -1)
       {
-      this->item(RowToDelete, ColumnSelectedRow)->setCheckState(Qt::Unchecked);
-      this->item(RowToDelete, ColumnSelectedRow)->setText("0");
-      this->item(RowToDelete, ColumnVisibleRow)->setCheckState(Qt::Unchecked);
-      this->item(RowToDelete, ColumnVisibleRow)->setText("0");
-      this->UpdateVectorCheckedRows(RowToDelete, ColumnSelectedRow, this->m_VectorSelectedRows);
-      //emit CheckedRowsChanged();
-      this->UpdateVectorCheckedRows(RowToDelete, ColumnVisibleRow, this->m_VectorVisibleRows);
-      //emit VisibleRowsChanged();
+      this->setCheckStateCheckBox(
+        this->item(RowToDelete,ColumnSelectedRow),Qt::Unchecked);
+      this->setCheckStateCheckBox(
+        this->item(RowToDelete,ColumnSelectedRow),Qt::Unchecked,&this->m_NonEyeIcon);
       this->removeRow(RowToDelete);
       }
     }
@@ -772,42 +761,24 @@ void QTableWidgetChild::UpdateTableWidgetDisplayAndVectorCheckedRows(int Row, in
     //directly in the checkbox but in the cell containing it:
     if (this->item(Row, Column)->checkState() == 0)
       {
-      this->item(Row, Column)->setCheckState(Qt::Checked);
-      this->item(Row, Column)->setText("1");
+      this->setCheckStateCheckBox(this->item(Row,Column),Qt::Checked);
       }
     else
       {
-      this->item(Row, Column)->setCheckState(Qt::Unchecked);
-      this->item(Row, Column)->setText("0");
+      this->setCheckStateCheckBox(this->item(Row,Column),Qt::Unchecked);
       }
-    this->UpdateVectorCheckedRows(Row, Column, this->m_VectorSelectedRows);
-    //emit CheckedRowsChanged();
     }
   if (this->horizontalHeaderItem(Column)->text() == "Show")
     {
     if (this->item(Row, Column)->checkState() == 0)
       {
-      this->item(Row, Column)->setCheckState(Qt::Checked);
-      this->item(Row, Column)->setText("1");
-      QIcon EyeIcon;
-      EyeIcon.addPixmap(QPixmap(QString::fromUtf8(":/fig/EyeIcon.png")),
-                        QIcon::Normal, QIcon::Off);
-      this->item(Row, Column)->setIcon(EyeIcon);
+      this->setCheckStateCheckBox(this->item(Row,Column),Qt::Checked,&this->m_EyeIcon);
       }
     else
       {
-      this->item(Row, Column)->setCheckState(Qt::Unchecked);
-      this->item(Row, Column)->setText("0");
-      QIcon NonEyeIcon;
-      NonEyeIcon.addPixmap(QPixmap(QString::fromUtf8(":/fig/BlankIcon.png")),
-                           QIcon::Normal, QIcon::Off);
-      this->item(Row, Column)->setIcon(NonEyeIcon);
-      this->item(Row, Column)->setText("0");
+      this->setCheckStateCheckBox(this->item(Row,Column),Qt::Unchecked,&this->m_NonEyeIcon);
       }
-    this->UpdateVectorCheckedRows(Row, Column, this->m_VectorVisibleRows);
-    //emit VisibleRowsChanged();
     }
-
 }
 //--------------------------------------------------------------------------
 
@@ -899,7 +870,7 @@ void QTableWidgetChild::CheckSelectedRows(std::string iTraceName,
     for (int i = 0; i < ListSelectedTracesID.size(); i++)
       {
       this->SetSelectRowTraceID (iTraceName,
-                                 atoi(ListSelectedTracesID.at(i).toStdString().c_str()), true,
+        atoi(ListSelectedTracesID.at(i).toStdString().c_str()), Qt::Checked,
                                  this->m_VectorSelectedRows);
       }
     }
@@ -923,7 +894,7 @@ void QTableWidgetChild::UncheckSelectedRows(std::string iTraceName,
     for (int i = 0; i < ListSelectedTracesID.size(); i++)
       {
       this->SetSelectRowTraceID (iTraceName,
-                                 atoi(ListSelectedTracesID.at(i).toStdString().c_str()), false,
+        atoi(ListSelectedTracesID.at(i).toStdString().c_str()), Qt::Unchecked,
                                  this->m_VectorSelectedRows);
       }
     }
@@ -947,7 +918,7 @@ void QTableWidgetChild::ShowSelectedRows(std::string iTraceName,
     for (int i = 0; i < ListSelectedTracesID.size(); i++)
       {
       this->SetSelectRowTraceID (iTraceName,
-                                 atoi(ListSelectedTracesID.at(i).toStdString().c_str()), true,
+        atoi(ListSelectedTracesID.at(i).toStdString().c_str()), Qt::Checked,
                                  this->m_VectorVisibleRows);
       }
     }
@@ -971,7 +942,7 @@ void QTableWidgetChild::HideSelectedRows(std::string iTraceName,
     for (int i = 0; i < ListSelectedTracesID.size(); i++)
       {
       this->SetSelectRowTraceID (iTraceName,
-                                 atoi(ListSelectedTracesID.at(i).toStdString().c_str()), false,
+        atoi(ListSelectedTracesID.at(i).toStdString().c_str()), Qt::Unchecked,
                                  this->m_VectorVisibleRows);
       }
     }
@@ -1051,4 +1022,49 @@ std::string QTableWidgetChild::GetMeanValue(std::string iColumnNameOne,
   int ValueTwo = this->GetValueForItem(iColumnNameTwo, iRowIndex);
   int meanValue = (ValueOne + ValueTwo) / 2;
   return ConvertToString<int>(meanValue);
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QTableWidgetChild::setCheckStateCheckBox(QTableWidgetItem * item,
+                                              Qt::CheckState state, QIcon* Icon)
+{
+  if(state == Qt::Checked)
+  {
+    //if the row is already checked, no need to do anything:
+    if (item->checkState() != 2)
+     {
+     item->setCheckState(Qt::Checked);
+     item->setText("1");
+     // if there is an icon, it is the visible column:
+     if (Icon != 0)
+      {
+      item->setIcon(*Icon);
+      this->UpdateVectorCheckedRows(item->row(), item->column(), this->m_VectorVisibleRows);
+      }
+     else
+      {
+      this->UpdateVectorCheckedRows(item->row(),item->column(),this->m_VectorSelectedRows);
+      }
+     }
+  }
+  else
+    {
+    //if the row is already unchecked, no need to do anything:
+    if (item->checkState() != Qt::Unchecked)
+      {
+      item->setCheckState(Qt::Unchecked);
+      item->setText("0");
+      // if there is an icon, it is the visible column:
+      if (Icon != 0)
+       {
+       item->setIcon(*Icon);
+       this->UpdateVectorCheckedRows(item->row(), item->column(), this->m_VectorVisibleRows);
+       }
+      else
+       {
+       this->UpdateVectorCheckedRows(item->row(),item->column(),this->m_VectorSelectedRows);
+       }
+      }
+    }
 }
