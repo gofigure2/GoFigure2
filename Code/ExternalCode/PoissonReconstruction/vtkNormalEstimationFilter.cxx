@@ -48,6 +48,20 @@
 #include "vtkDoubleArray.h"
 #include "vtkSmartPointer.h"
 
+//-----------------------------------------------------------------------------
+struct SurfacePoint
+  {
+  double loc[3];
+  double o[3], n[3]; // plane centre and normal
+  vtkIdList *neighbors; // id's of points within LocalRadius of this point
+  double *costs; // should have same length as neighbors, cost for corresponding points
+  char isVisited;
+
+  // simple constructor to initialise the members
+  SurfacePoint() : neighbors(vtkIdList::New()), isVisited(0) {}
+  ~SurfacePoint() { delete[] costs; neighbors->Delete(); }
+  };
+
 vtkStandardNewMacro(vtkNormalEstimationFilter);
 
 vtkNormalEstimationFilter::vtkNormalEstimationFilter()
@@ -56,7 +70,9 @@ vtkNormalEstimationFilter::vtkNormalEstimationFilter()
   }
 
 vtkNormalEstimationFilter::~vtkNormalEstimationFilter()
-{}
+  {
+    delete[] m_SurfacePoints;
+  }
 
 // some simple routines for vector math
 void vtkCopyBToA(double* a, double* b)
@@ -87,13 +103,6 @@ void vtkMultiplyBy(double* a, double f)
     a[i] *= f;
     }
 }
-void vtkDivideBy(double* a, double f)
-{
-  for (int i = 0; i < 3; i++)
-    {
-    a[i] /= f;
-    }
-}
 
 // Routines for matrix creation
 void vtkSRFreeMatrix(double **m, long nrl, long nrh, long ncl, long nch);
@@ -104,7 +113,7 @@ double *vtkSRVector(long nl, long nh);
 // set a matrix to zero
 void vtkSRMakeZero(double **m, long nrl, long nrh, long ncl, long nch)
 {
-  int i, j;
+  long i, j;
   for (i = nrl; i <= nrh; i++)
     {
     for (j = ncl; j <= nch; j++)
@@ -120,7 +129,7 @@ void vtkSRAddOuterProduct(double **m, double *v);
 // scalar multiply a matrix
 void vtkSRMultiply(double **m, double f, long nrl, long nrh, long ncl, long nch)
 {
-  int i, j;
+  long i, j;
   for (i = nrl; i <= nrh; i++)
     {
     for (j = ncl; j <= nch; j++)
@@ -154,19 +163,7 @@ int vtkNormalEstimationFilter::RequestInformation(
   return 1;
 }
 
-//-----------------------------------------------------------------------------
-struct SurfacePoint
-  {
-  double loc[3];
-  double o[3], n[3]; // plane centre and normal
-  vtkIdList *neighbors; // id's of points within LocalRadius of this point
-  double *costs; // should have same length as neighbors, cost for corresponding points
-  char isVisited;
 
-  // simple constructor to initialise the members
-  SurfacePoint() : neighbors(vtkIdList::New()), isVisited(0) {}
-  ~SurfacePoint() { delete[] costs; neighbors->Delete(); }
-  };
 
 void vtkNormalEstimationFilter::BuildLocalConnectivity(vtkDataSet* input)
 {
@@ -226,11 +223,13 @@ void vtkNormalEstimationFilter::EstimatePlanes(vtkDataSet* input)
       vtkAddBToA(p->o, pointi);
       number++;
       }
-    vtkDivideBy(p->o, number);
+    vtkMultiplyBy(p->o, 1. / number);
     // then compute the covariance matrix
     vtkSRMakeZero(covar, 0, 2, 0, 2);
     for (k = 0; k < 3; k++)
+      {
       v3d[k] = p->loc[k] - p->o[k];
+      }
     vtkSRAddOuterProduct(covar, v3d);
     for (j = 0; j < p->neighbors->GetNumberOfIds(); j++)
       {
@@ -449,8 +448,6 @@ int vtkNormalEstimationFilter::RequestData(
   output->GetPointData()->SetNormals(normals);
 
   normals->Delete();
-  // was commented... why?
-  delete[] m_SurfacePoints;
 
   return ok;
 }
