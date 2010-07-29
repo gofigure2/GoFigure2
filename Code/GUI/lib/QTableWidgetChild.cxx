@@ -664,15 +664,6 @@ void QTableWidgetChild::UpdateVectorCheckedRows(int Row, int Column,
     temp.second = Row;
     iVectorOfPair->push_back(temp);
     }
-
-  if (iVectorOfPair == this->m_VectorSelectedRows)
-    {
-    emit CheckedRowsChanged();
-    }
-  if (iVectorOfPair == this->m_VectorVisibleRows)
-    {
-    emit VisibleRowsChanged();
-    }
 }
 //--------------------------------------------------------------------------
 
@@ -1041,10 +1032,12 @@ void QTableWidgetChild::setCheckStateCheckBox(QTableWidgetItem * item,
       {
       item->setIcon(*Icon);
       this->UpdateVectorCheckedRows(item->row(), item->column(), this->m_VectorVisibleRows);
+      emit VisibleRowsChanged();
       }
      else
       {
       this->UpdateVectorCheckedRows(item->row(),item->column(),this->m_VectorSelectedRows);
+      emit CheckedRowsChanged();
       }
      }
   }
@@ -1060,10 +1053,12 @@ void QTableWidgetChild::setCheckStateCheckBox(QTableWidgetItem * item,
        {
        item->setIcon(*Icon);
        this->UpdateVectorCheckedRows(item->row(), item->column(), this->m_VectorVisibleRows);
+       emit VisibleRowsChanged();
        }
       else
        {
        this->UpdateVectorCheckedRows(item->row(),item->column(),this->m_VectorSelectedRows);
+       emit CheckedRowsChanged();
        }
       }
     }

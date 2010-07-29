@@ -138,6 +138,7 @@ public:
 
   int FindItemText(std::string Text);
 
+  //not used
   void IncrementTrackID();
 
   QSize sizeHint() const;
