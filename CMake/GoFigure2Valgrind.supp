@@ -40043,7 +40043,6 @@
    obj:/usr/lib/libphonon.so.4.4.0
    obj:/usr/lib/libphonon.so.4.4.0
 }
---7238-- REDIR: 0xac04380 (operator delete(void*)) redirected to 0x4c27d7b (operator delete(void*))
 {
    <insert_a_suppression_name_here>
    Memcheck:Cond
@@ -40076,7 +40075,6 @@
    fun:__libc_csu_init
    fun:(below main)
 }
---7238-- REDIR: 0xb0ec350 (mempcpy) redirected to 0x4c2aac0 (mempcpy)
 {
    <insert_a_suppression_name_here>
    Memcheck:Cond
