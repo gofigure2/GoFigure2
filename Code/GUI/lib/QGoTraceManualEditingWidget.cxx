@@ -89,7 +89,7 @@ SetListCollectionID(
   std::list<ItemColorComboboxData> iListExistingID)
 {
   //this->ColorIDCollectionComboBox->clear();
-  this->m_CollectionColorComboBox->setItemsWithColorFromDB(
+  this->m_CollectionColorComboBox->setItemsWithColorFromList(
     iListExistingID,CollectionName->text().toStdString());
   /*std::list<std::pair<std::string, QColor> >::iterator iter =
     iListExistingID.begin();
@@ -111,6 +111,14 @@ SetListCollectionID(
     {
     this->m_CollectionColorComboBox->show();
     }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoTraceManualEditingWidget::SetListColors(
+  std::list<ItemColorComboboxData> iListColors)
+{
+  this->m_SelectedColorComboBox->setItemsWithColorFromList(iListColors);
 }
 //-------------------------------------------------------------------------
 
@@ -215,7 +223,7 @@ SetListCellTypes(QStringList iListCellTypes)
   this->m_ChoseCellType->addItem(tr("Delete a celltype..."));
   //to check::
   //emit NewCellTypeActivated(this->m_ChoseCellType->currentText());
-  emit ListCellTypesReady();
+  //emit ListCellTypesReady();
 }
 //-------------------------------------------------------------------------
 
@@ -236,7 +244,7 @@ CheckUserAction(QString iCellTypeText)
       }
     else
       {
-      emit NewCellTypeActivated(iCellTypeText);
+      emit NewCellTypeActivated(iCellTypeText.toStdString());
       }
     }
 }
@@ -287,7 +295,7 @@ CheckUserActionSubCell(QString iCellTypeText)
     }
   else
     {
-    emit NewSubCellTypeActivated(iCellTypeText);
+    emit NewSubCellTypeActivated(iCellTypeText.toStdString());
     }
   }
 }
@@ -368,4 +376,37 @@ void QGoTraceManualEditingWidget::SetListExistingColors(
   std::list<ItemColorComboboxData> iListExistingColors)
 {
   this->m_SelectedColorComboBox->setItemsWithColorFromDB(iListExistingColors);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::string QGoTraceManualEditingWidget::GetTraceName()
+{
+  return this->TraceName.text().toStdString();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoTraceManualEditingWidget::AddANewCollectionID(
+  ItemColorComboboxData iNewCollectionID)
+{
+  this->m_CollectionColorComboBox->AddItemWithColor(iNewCollectionID,true);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoTraceManualEditingWidget::UpdateCollectionComboboxWithDeletedItem(
+  std::list<ItemColorComboboxData> iListExistingID)
+{
+  this->m_CollectionColorComboBox->ListToUpdateWithItemDeleted(
+    iListExistingID);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoTraceManualEditingWidget::UpdateColorComboboxWithDeletedItem(
+    std::list<ItemColorComboboxData> iListColors)
+{
+  this->m_SelectedColorComboBox->ListToUpdateWithItemDeleted(
+    iListColors);
 }

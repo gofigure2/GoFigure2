@@ -66,7 +66,7 @@ QGoDBEntityManager::~QGoDBEntityManager()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoDBEntityManager::AddAnEntity(
+std::string QGoDBEntityManager::AddAnEntity(
   vtkMySQLDatabase* iDatabaseConnector)
 {
   //this->m_CoordIDForNewEntity = iCoordID;
@@ -76,6 +76,7 @@ void QGoDBEntityManager::AddAnEntity(
   QObject::connect (this->m_NameDescDialog, SIGNAL(NameNonEmpty()),
                     this, SLOT(ValidateName()));
   this->m_NameDescDialog->exec();
+  return this->m_NameNewEntity;
 }
 //-------------------------------------------------------------------------
 

@@ -94,7 +94,7 @@ signals:
  // void NewCollectionToBeSaved();
 
 public slots:
-  void setItemsWithColorFromDB(std::list<ItemColorComboboxData> iDataFromDB,
+  void setItemsWithColorFromList(std::list<ItemColorComboboxData> iDataFromList,
     std::string iCollectionName);
   /** \brief insert an item with color at the end, before the "more"*/
   //void AddItemWithColor(std::string iName,QColor iColor);

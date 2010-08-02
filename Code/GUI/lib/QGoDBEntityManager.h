@@ -63,9 +63,9 @@ public:
   typedef std::vector<std::pair<std::string, std::string> >
   NamesDescrContainerType;
   /** \brief execute the dialog asking the user to enter a name and a
-  description, validates the name, set the m_DatabaseConnectorForNewBkmrk
-  and save the entity in the DB*/
-  void AddAnEntity(vtkMySQLDatabase* iDatabaseConnector);
+  description, validates the name, set the m_DatabaseConnectorForNewBkmrk,
+  save the entity in the DB and return the name of the new entity*/
+  std::string AddAnEntity(vtkMySQLDatabase* iDatabaseConnector);
 
   /** \brief return the list of all the existing entities stored
   in the database*/
@@ -97,7 +97,7 @@ protected slots:
   database, if so, make the m_NameDescDialog asks the user to
   choose another one, if no, close the m_NameDescDialog and
   call SaveNewBookmarkInDB()*/
-  virtual void ValidateName() = 0;
+  virtual std::string ValidateName() = 0;
 
 signals:
   void ListEntitiesChanged();

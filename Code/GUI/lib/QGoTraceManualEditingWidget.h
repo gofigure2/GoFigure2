@@ -68,9 +68,10 @@ public:
 
   //int GetCurrentCollectionID();
   void SetEnableTraceCollectionColorBoxes(bool Enable);
-  std::string GetCurrentColor();
-  std::string GetCurrentCellType();
-  std::string GetCurrentSubCellType();
+  //std::string GetCurrentColor();
+  //std::string GetCurrentCellType();
+  //std::string GetCurrentSubCellType();
+  std::string GetTraceName();
 
   void UpdateTraceAndCollection(
     std::string iTrace, std::string iCollection);
@@ -81,16 +82,26 @@ public:
   QLabel*                   CollectionName;
 
 public slots:
+  /** \brief replace the list of collectionID with the ID and corresponding color
+  in the iListExistingID*/
   void SetListCollectionID(
     std::list<ItemColorComboboxData> iListExistingID);
-  void SetListExistingColors(std::list<ItemColorComboboxData> iListExistingColors);
+   /** \brief replace the list of colors with the name and corresponding color
+  in the iListColors*/
+  void SetListColors(std::list<ItemColorComboboxData> iListColors);
   void SetListCellTypes(QStringList iListCellTypes);
   void SetListSubCellTypes(QStringList iListSubCellTypes);
-
+  void AddANewCollectionID(ItemColorComboboxData iNewCollectionID);
+  void AddANewCellType (std::string iNewCellType);
   void CheckUserAction(QString iCellTypeText);
   void CheckUserActionSubCell(QString iSubCellTypeText);
   void SetCurrentCellType(std::string iSubCellTypeText);
   void SetCurrentSubCellType(std::string iSubCellTypeText);
+
+  void UpdateCollectionComboboxWithDeletedItem(
+    std::list<ItemColorComboboxData> iListExistingID);
+  void UpdateColorComboboxWithDeletedItem(
+    std::list<ItemColorComboboxData> iListColors);
 
 signals:
   void AddANewCellType();
@@ -101,15 +112,15 @@ signals:
   void ListCellTypesReady();
   void NewCollectionActivated(ItemColorComboboxData);
   void NewSelectedColorActivated(ItemColorComboboxData);
-  void NewSubCellTypeActivated(QString);
-  void NewCellTypeActivated(QString);
+  void NewSubCellTypeActivated(std::string);
+  void NewCellTypeActivated(std::string);
   void NewColorToBeSaved(ItemColorComboboxData);
   void NewCollectionToBeCreated();
 
 protected:
   //QtColorComboBox* ColorComboBox;
-  QGoSelectedColorComboBox* m_SelectedColorComboBox;
-  QGoCollectionColorComboBox*   m_CollectionColorComboBox;
+  QGoSelectedColorComboBox*         m_SelectedColorComboBox;
+  QGoCollectionColorComboBox*       m_CollectionColorComboBox;
   std::list<ItemColorComboboxData > m_DataColors;
   void SetSelectedColorComboBox();
   void SetTraceCollectionColorComboBox();

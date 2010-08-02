@@ -95,8 +95,9 @@ signals:
  // void NewCollectionToBeSaved();
 
 public slots:
-  /** \brief insert an item with color at the end, before the "more"*/
-  void AddItemWithColor(std::string iName,QColor iColor);
+  /** \brief insert an item with color at the end, before the "more" and select it if 
+  selectetheaddeditem is set to true*/
+  void AddItemWithColor(ItemColorComboboxData,bool SelectTheAddedItem = true);
  // void addColor(const QColor& iColor, const QString& iName)
  // { insertColor(colorCount(), iColor, iName); }
   /** \brief insert the existing colors with the data taken from the database,
@@ -104,7 +105,8 @@ public slots:
   //to keep:
   //void setExistingColors(
   //  std::list<std::pair<std::string, std::vector<int> > > iDataColorsFromDB);
-  void setItemsWithColorFromDB(std::list< ItemColorComboboxData > iDataFromDB);
+  void setItemsWithColorFromList(std::list< ItemColorComboboxData > iDataFromList);
+  void ListToUpdateWithItemDeleted(std::list< ItemColorComboboxData > iDataFromList);
   
   /** \brief delete the corresponding collectionID in the list displayed
   by the colorcombobox*/

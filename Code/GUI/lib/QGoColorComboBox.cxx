@@ -64,17 +64,18 @@ QGoColorComboBox::~QGoColorComboBox()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoColorComboBox::setItemsWithColorFromDB(
-  std::list<ItemColorComboboxData> iDataFromDB)
+void QGoColorComboBox::setItemsWithColorFromList(
+  std::list<ItemColorComboboxData> iDataFromList)
 {
   this->clear();
-  if (!iDataFromDB.empty())
+  if (!iDataFromList.empty())
     {
-    std::list<std::pair<std::string, QColor> >::iterator iter =
-      iDataFromDB.begin();
-    while (iter != iDataFromDB.end())
+    std::list<ItemColorComboboxData >::iterator iter =
+      iDataFromList.begin();
+    while (iter != iDataFromList.end())
       {
-      this->AddItemWithColor(iter->first,iter->second);
+      this->AddItemWithColor(iter,false);//we don't want the signal emitted for each added item,
+      //only the currentIndex one at the end of the added list.
       iter++;
       }
     this->addItem(this->m_TextToAddANewOne.c_str());
@@ -85,14 +86,15 @@ void QGoColorComboBox::setItemsWithColorFromDB(
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoColorComboBox::AddItemWithColor(std::string iName,QColor iColor)
+void QGoColorComboBox::AddItemWithColor(ItemColorComboboxData iNewItemData,
+   bool SelectTheAddedItem)
 {
   QPixmap  pix(12, 12);
   QPainter painter(&pix);
-  if (iColor.isValid())
+  if (iNewItemData.second.isValid())
     {
     painter.setPen(Qt::gray);
-    painter.setBrush(QBrush(iColor));
+    painter.setBrush(QBrush(iNewItemData.second));
     painter.drawRect(0, 0, 12, 12);
     }
   QIcon Icon;
@@ -100,7 +102,12 @@ void QGoColorComboBox::AddItemWithColor(std::string iName,QColor iColor)
   //we want to insert the item before the "more":
   //if the index is 0 or negative,the new item is prepended to the list of existing items:
   int Index = this->count() -1;
-  this->insertItem(Index,Icon,iName.c_str(),iColor);
+  this->insertItem(Index,Icon,iNewItemData.first,iNewItemData.second);
+  if (SelectTheAddedItem)
+    {
+    this->setCurrentIndex(Index);
+    this->emitActivatedItem(Index);
+    }
 }
 //--------------------------------------------------------------------------
 
@@ -140,4 +147,14 @@ QGoColorComboBox::GetTheItemColorComboBoxData(int iIndex)
   int alpha = Item.second.alpha();
 
   return Item;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoColorComboBox::ListToUpdateWithItemDeleted(
+  std::list< ItemColorComboboxData > iDataFromList)
+{
+  this->setItemsWithColorFromList(iDataFromList);
+  int Index = this->findText(this->m_LastActivated);
+  this->setCurrentIndex(Index);
 }

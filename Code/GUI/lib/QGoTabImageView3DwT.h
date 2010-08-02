@@ -46,7 +46,7 @@
 #include "itkMegaCaptureReader.h"
 #include "ContourMeshStructureHelper.h"
 #include "QGoPrintDatabase.h"
-#include "QGoTraceManualEditingDockWidget.h"
+//#include "QGoTraceManualEditingDockWidget.h"
 
 #include "GoFigureMeshAttributes.h"
 
@@ -357,7 +357,7 @@ public slots:
   /** \brief Get the info for the new created collection from the collectionIDcombobox,
   pass them to the database to be saved in and update the list of collection IDs
   in the visu dock widget*/
-  void UpdateDBAndCollectionIDComboBoxForANewCreatedCollection();
+  //void UpdateDBAndCollectionIDComboBoxForANewCreatedCollection();
   //void PassInfoForDBFromCollectionIDComboBox();
 
   /** \brief Get the info for the current selected color from the trace manual editing
@@ -369,7 +369,7 @@ public slots:
 
   /** \brief Get the current selected celltype and subcelltype from the trace manual editing widget
   and update the current celltype and sub celltype in the table widget*/
-  void PassInfoForDBForCurrentSelectedCellTypeAndSubCellType();
+  //void PassInfoForDBForCurrentSelectedCellTypeAndSubCellType();
 
   void Change3DPerspectiveToAxial();
   void Change3DPerspectiveToCoronal();
@@ -425,7 +425,7 @@ protected:
   /// Useful?
   vtkPoints* m_SeedsWorldPosition;
 
-  QGoTraceManualEditingDockWidget* m_TraceManualEditingDockWidget;
+  //QGoTraceManualEditingDockWidget* m_TraceManualEditingDockWidget;
   //QDockWidget*                 m_test;
 
   /// \todo remove m_FFMPEGWriter and m_AVIWriter from this class
@@ -499,7 +499,7 @@ protected:
   void CreateBookmarkActions();
   void CreateModeActions();
   void CreateVisuDockWidget();
-  void CreateSettingAndDialogSegmentationWidgets();
+  //void CreateSettingAndDialogSegmentationWidgets();
   void CreateManualSegmentationdockWidget();
   void CreateOneClickSegmentationDockWidget();
   void CreateDataBaseTablesConnection();
