@@ -422,7 +422,7 @@ void QTableWidgetChild::DisplayContent(GoDBTableWidgetContainer* iLinkToRowConta
         } //ENDIF
       } //ENDFOR
     SetSelectedColumn(static_cast<unsigned int>(NbofRows), 0);
-    SetVisibleColumn(static_cast<unsigned int>(NbofRows), 0, TraceName);
+    SetVisibleColumn(static_cast<unsigned int>(NbofRows), 0);
     this->SetColorForTable(iLinkToRowContainer, TraceName, 0);
     this->SetColorForTable(iLinkToRowContainer, CollectionName, 0);
     } //ENDELSE
@@ -453,10 +453,8 @@ void QTableWidgetChild::SetSelectedColumn(unsigned int iNbOfRows,
 
 //--------------------------------------------------------------------------
 void QTableWidgetChild::SetVisibleColumn(unsigned int iNbOfRows,
-                                         unsigned int StartedRow, std::string iTraceName)
+                                         unsigned int StartedRow)
 {
-  (void)iTraceName;
-
   int indexCol = findColumnName("Show");
   //need to block the signal sent by setCheckStateCheckbox for the visu:
   this->blockSignals(true);
@@ -567,7 +565,7 @@ void QTableWidgetChild::InsertNewRow(GoDBTableWidgetContainer* iLinkToRowContain
         } //ENDIF
       } //ENDFOR
     SetSelectedColumn(1, NewRow - 1);
-    SetVisibleColumn(1, NewRow - 1, TraceName);
+    SetVisibleColumn(1, NewRow - 1);
     this->SetColorForTable(iLinkToRowContainer, TraceName, NewRow - 1);
     this->SetColorForTable(iLinkToRowContainer, CollectionName, NewRow - 1);
     } //ENDELSE

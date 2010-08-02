@@ -48,7 +48,8 @@
 #include <string>
 
 std::vector<std::string> ListAllValuesForOneColumn(vtkMySQLDatabase* DatabaseConnector,
-                                                   std::string ColumnName, std::string TableName)
+                                                   std::string ColumnName, std::string TableName,
+                                                   std::string OrderByColumnName)
 {
   std::vector<std::string> result;
 
@@ -58,6 +59,11 @@ std::vector<std::string> ListAllValuesForOneColumn(vtkMySQLDatabase* DatabaseCon
   querystream << ColumnName;
   querystream << " FROM ";
   querystream << TableName;
+  if (!OrderByColumnName.empty())
+    {
+    querystream << " ORDER BY ";
+    querystream << OrderByColumnName;
+    }
   querystream << ";";
 
   query->SetQuery(querystream.str().c_str());

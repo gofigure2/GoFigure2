@@ -164,7 +164,7 @@ public slots:
   /** \brief insert the existing colors with the data taken from the database,
   containing the color names with the associated vector of rgba*/
   void setExistingColors(
-    std::list<std::pair<std::string, std::vector<int> > > iDataColorsFromDB);
+    std::list<std::pair<std::string, QColor > > iDataColorsFromDB);
   /** \brief delete the corresponding collectionID in the list displayed
   by the colorcombobox*/
   void DeleteCollectionID(unsigned int);

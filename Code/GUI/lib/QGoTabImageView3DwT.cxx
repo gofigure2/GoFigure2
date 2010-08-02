@@ -571,30 +571,40 @@ void
 QGoTabImageView3DwT::
 CreateDataBaseTablesConnection()
 {
+  QObject::connect(this->m_TraceManualEditingDockWidget->m_TraceWidget,
+                   SIGNAL(NewSelectedColorActivated(ItemColorComboboxData)),
+                   this->m_DataBaseTables,
+                   SLOT(UpdateCurrentColorData(ItemColorComboboxData)));
+
+  QObject::connect(this->m_TraceManualEditingDockWidget->m_TraceWidget,
+                   SIGNAL(NewCollectionActivated(ItemColorComboboxData)),
+                   this->m_DataBaseTables,
+                   SLOT(UpdateCurrentCollectionID(ItemColorComboboxData)));
+  
   QObject::connect(this->m_DataBaseTables,
-                   SIGNAL(PrintExistingColorsFromDB(std::list<std::pair<std::string, std::vector<int> > >)),
-                   this->m_TraceManualEditingDockWidget->m_TraceWidget->ColorComboBox,
-                   SLOT(setExistingColors(std::list<std::pair<std::string, std::vector<int> > >)));
+                   SIGNAL(PrintExistingColorsFromDB(std::list<ItemColorComboboxData>)),
+                   this->m_TraceManualEditingDockWidget->m_TraceWidget,
+                   SLOT(SetListExistingColors(std::list<ItemColorComboboxData>)));
 
   QObject::connect(this->m_DataBaseTables,
                    SIGNAL(PrintExistingCollectionIDsFromDB(std::list<std::pair<std::string, QColor> >)),
                    this->m_TraceManualEditingDockWidget->m_TraceWidget,
-                   SLOT(SetCollectionID(std::list<std::pair<std::string, QColor> >)));
+                   SLOT(SetListCollectionID(std::list<ItemColorComboboxData>)));
 
   QObject::connect(
-    this->m_TraceManualEditingDockWidget->m_TraceWidget->ColorComboBox,
-    SIGNAL(NewColorToBeSaved(std::vector<std::string>)),
+    this->m_TraceManualEditingDockWidget->m_TraceWidget,
+    SIGNAL(NewColorToBeSaved(ItemColorComboboxData)),
     this->m_DataBaseTables,
-    SLOT(SaveNewColorInDB(std::vector<std::string> )));
+    SLOT(SaveNewColorInDB(ItemColorComboboxData)));
 
   QObject::connect(
     this->m_TraceManualEditingDockWidget->m_TraceWidget->ColorIDCollectionComboBox,
     SIGNAL(NewCollectionToBeSaved()),
     this, SLOT(UpdateDBAndCollectionIDComboBoxForANewCreatedCollection()));
 
-  QObject::connect(this->m_DataBaseTables,
+  /*QObject::connect(this->m_DataBaseTables,
                    SIGNAL(NeedToGetCurrentSelectedColor()),
-                   this, SLOT(PassInfoForDBForCurrentSelectedColor()));
+                   this, SLOT(PassInfoForDBForCurrentSelectedColor()));*/
 
   QObject::connect(this->m_DataBaseTables,
                    SIGNAL(NeedCurrentSelectedCellTypeAndSubCellType()),
@@ -613,9 +623,9 @@ CreateDataBaseTablesConnection()
                    SIGNAL(SelectionMeshesToHighLightChanged()),
                    this, SLOT(HighLightTracesFromTableManager()));
 
-  QObject::connect(this->m_DataBaseTables,
+ /* QObject::connect(this->m_DataBaseTables,
                    SIGNAL(NeedCurrentSelectedCollectionID()),
-                   this, SLOT(PassInfoForCurrentCollectionID()));
+                   this, SLOT(PassInfoForCurrentCollectionID()));*/
 
   QObject::connect(this->m_DataBaseTables,
                    SIGNAL(DeletedCollection(unsigned int)),
@@ -2615,7 +2625,7 @@ UpdateDBAndCollectionIDComboBoxForANewCreatedCollection()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void
+/*void
 QGoTabImageView3DwT::
 PassInfoForDBForCurrentSelectedColor()
 {
@@ -2634,7 +2644,7 @@ PassInfoForCurrentCollectionID()
   this->m_DataBaseTables->SetCurrentCollectionID(
     this->m_TraceManualEditingDockWidget->m_TraceWidget->
     ColorIDCollectionComboBox->GetCurrentColorData());
-}
+}*/
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------

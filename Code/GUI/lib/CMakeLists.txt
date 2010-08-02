@@ -62,6 +62,9 @@ SET( QGoGUILIB_SRC
   QGoDBInitCreateAuthorsPage.cxx
   QGoDBInitCreateMicroscopePage.cxx
   QGoOneClickSegmentationDockWidget.cxx
+  QGoColorComboBox.cxx
+  QGoSelectedColorComboBox.cxx
+  QGoCollectionColorComboBox.cxx
 
   QGoSynchronizedView.cxx
   QGoSynchronizedView2D.cxx
@@ -157,6 +160,9 @@ SET( QGoGUILIB_HDRS
   QGoSynchronizedView3DCallbacks.h
   QGoSynchronizedViewManager.h
   QGoSynchronizedViewMainWindow.h
+  QGoColorComboBox.h
+  QGoSelectedColorComboBox.h
+  QGoCollectionColorComboBox.h
 )
 
 #---------------------------------------------------------------------------

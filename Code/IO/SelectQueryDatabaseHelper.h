@@ -54,7 +54,8 @@
 QGOIO_EXPORT
 std::vector<std::string> ListAllValuesForOneColumn(
   vtkMySQLDatabase* DatabaseConnector,
-  std::string ColumnName, std::string TableName);
+  std::string ColumnName, std::string TableName,
+  std::string OrderByColumnName = "");
 
 //query: "SELECT ColumnNameOne,ColumnNameTwo FROM TableName ORDER BY
 //ColumnName ASC"

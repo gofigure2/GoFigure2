@@ -102,6 +102,7 @@ public:
 
   typedef QGoTabElementBase::QGoDockWidgetStatusPair QGoDockWidgetStatusPair;
   typedef QGoPrintDatabase::NamesDescrContainerType  NamesDescrContainerType;
+  typedef QGoTraceManualEditingWidget::ItemColorComboboxData ItemColorComboboxData;
 
   /**
    * \brief
@@ -361,10 +362,10 @@ public slots:
 
   /** \brief Get the info for the current selected color from the trace manual editing
   widget and pass it to the database*/
-  void PassInfoForDBForCurrentSelectedColor();
+  //void PassInfoForDBForCurrentSelectedColor();
   /** \brief Get the current selected collectionid from the trace manual editing widget
   and update the currentCollectionID in the table widget*/
-  void PassInfoForCurrentCollectionID();
+  //void PassInfoForCurrentCollectionID();
 
   /** \brief Get the current selected celltype and subcelltype from the trace manual editing widget
   and update the current celltype and sub celltype in the table widget*/

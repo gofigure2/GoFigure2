@@ -261,8 +261,8 @@ void QGoPrintDatabase::FillTableFromDatabase(int iTimePoint)
   LoadContoursAndMeshesFromDB(m_DatabaseConnector);
 
   m_IsDatabaseUsed = true;
-  std::list<std::pair<std::string, std::vector<int> > > test =
-    this->GetColorComboBoxInfofromDB(); //for test
+  //std::list<std::pair<std::string, std::vector<int> > > test =
+    //this->GetColorComboBoxInfofromDB(); //for test
   emit PrintExistingColorsFromDB(this->GetColorComboBoxInfofromDB());
 
   /** \todo get the trace name from the visudockwidget*/
@@ -285,7 +285,7 @@ void QGoPrintDatabase::closeEvent(QCloseEvent* iEvent)
 void QGoPrintDatabase::CreateContextMenu(const QPoint& iPos)
 {
   QMenu* ContextMenu = new QMenu;
-  NeedCurrentSelectedCollectionID();
+  //NeedCurrentSelectedCollectionID();
   std::string TraceName = this->InWhichTableAreWe();
 
   TraceInfoStructure* CurrentlyUsedTraceData = this->GetTraceInfoStructure(TraceName);
@@ -434,7 +434,7 @@ void QGoPrintDatabase::CreateCorrespondingCollection()
     OpenDBConnection();
     //set the color for the new collection:
     GoDBTraceRow NewCollection;
-    emit         NeedToGetCurrentSelectedColor();
+    //emit         NeedToGetCurrentSelectedColor();
     NewCollection.SetColor(this->m_CurrentColorData.second.red(), this->m_CurrentColorData.second.green(),
                            this->m_CurrentColorData.second.blue(), this->m_CurrentColorData.second.alpha(),
                            this->m_CurrentColorData.first, this->m_DatabaseConnector);
@@ -473,7 +473,7 @@ void QGoPrintDatabase::AddToSelectedCollection()
   std::string         TraceName = this->InWhichTableAreWe();
   TraceInfoStructure* CurrentlyUsedTraceData = this->GetTraceInfoStructure(TraceName);
   std::list<int>      ListSelectedTraces = CurrentlyUsedTraceData->Table->GetListCheckedTraceID();
-  emit                NeedCurrentSelectedCollectionID();
+  //emit                NeedCurrentSelectedCollectionID();
 
   if (ListSelectedTraces.empty())
     {
@@ -510,7 +510,7 @@ void QGoPrintDatabase::ChangeTraceColor()
     this->GetTraceInfoStructure(TraceName);
   std::list<int> ListSelectedTraces =
     CurrentlyUsedTraceData->Table->GetListCheckedTraceID();
-  emit NeedToGetCurrentSelectedColor();
+  //emit NeedToGetCurrentSelectedColor();
   if (ListSelectedTraces.empty())
     {
     QMessageBox msgBox;
@@ -899,7 +899,7 @@ int QGoPrintDatabase::SaveContoursFromVisuInDB(unsigned int iXCoordMin,
   //if (iMeshID != 0)
   if (iMeshID == 0)
     {
-    emit this->NeedCurrentSelectedCollectionID();
+    //emit this->NeedCurrentSelectedCollectionID();
     this->AddListTracesToACollection(
       ListSelectedTraces, this->m_CurrentCollectionData, "contour", false);
     }
@@ -955,8 +955,8 @@ int QGoPrintDatabase::SaveMeshFromVisuInDB(unsigned int iXCoordMin,
 {
   OpenDBConnection();
 
-  emit NeedToGetCurrentSelectedColor();
-  emit NeedCurrentSelectedCollectionID();
+  //emit NeedToGetCurrentSelectedColor();
+  //emit NeedCurrentSelectedCollectionID();
 
   GoDBMeshRow                    mesh_row(this->m_ImgSessionID);
   std::pair<std::string, QColor> CollectionData;
@@ -1065,9 +1065,9 @@ int QGoPrintDatabase::CreateMeshFromOneClickSegmentation(
     OpenDBConnection();
     //set the color for the new collection:
     GoDBMeshRow NewMesh;
-    //emit NeedCurrentSelectedCellTypeAndSubCellType();
-    emit NeedToGetCurrentSelectedColor();
-    emit NeedCurrentSelectedCollectionID();
+    emit NeedCurrentSelectedCellTypeAndSubCellType();
+    //emit NeedToGetCurrentSelectedColor();
+    //emit NeedCurrentSelectedCollectionID();
 
     NewMesh.SetColor(this->m_CurrentColorData.second.red(), this->m_CurrentColorData.second.green(),
                      this->m_CurrentColorData.second.blue(), this->m_CurrentColorData.second.alpha(),
@@ -1227,24 +1227,27 @@ GetTracesForAGivenZCoord(ContourMeshStructureMultiIndexContainer iAllTraces,
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-std::list<std::pair<std::string, std::vector<int> > > QGoPrintDatabase::
+std::list<QGoPrintDatabase::ColorStringData > QGoPrintDatabase::
 GetColorComboBoxInfofromDB()
 {
   this->OpenDBConnection();
-  std::list<std::pair<std::string, std::vector<int> > > oInfoColors;
+  std::list<ColorStringData > oInfoColors;
   std::vector<std::string>                              ResultsQuery  = ListAllValuesForOneColumn(
-    m_DatabaseConnector, "*", "color");
+    m_DatabaseConnector, "*", "color","name");
   unsigned int i = 0;
   while (i < ResultsQuery.size())
     {
-    std::pair<std::string, std::vector<int> > temp;
+    ColorStringData temp;
     temp.first = ResultsQuery[i + 1];
-    std::string Red = ResultsQuery[i + 2];
+    QColor tempColor(atoi(ResultsQuery[i + 2].c_str()),atoi(ResultsQuery[i + 3].c_str()),
+      atoi(ResultsQuery[i + 4].c_str()),atoi(ResultsQuery[i + 5].c_str()));
+    /*std::string Red = ResultsQuery[i + 2];
 
     temp.second.push_back(atoi(Red.c_str()));
     temp.second.push_back(atoi(ResultsQuery[i + 3].c_str()));
     temp.second.push_back(atoi(ResultsQuery[i + 4].c_str()));
-    temp.second.push_back(atoi(ResultsQuery[i + 5].c_str()));
+    temp.second.push_back(atoi(ResultsQuery[i + 5].c_str()));*/
+    temp.second = tempColor;
     oInfoColors.push_back(temp);
     i = i + 7;
     }
@@ -1256,20 +1259,20 @@ GetColorComboBoxInfofromDB()
 //-------------------------------------------------------------------------
 void
 QGoPrintDatabase::
-SaveNewColorInDB(std::vector<std::string> iDataNewColor)
+SaveNewColorInDB(ColorStringData iDataNewColor)
 {
   this->OpenDBConnection();
   GoDBColorRow NewColor;
-  if (iDataNewColor.size() != 5)
+  /*if (iDataNewColor.size() != 5)
     {
     std::cout << "Pb: the number of data for the new color is not 5";
     std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
     std::cout << std::endl;
     }
   else
-    {
-    NewColor.SetField("Name", iDataNewColor[0]);
-    if (NewColor.DoesThisColorAlreadyExists(this->m_DatabaseConnector)
+    {*/
+    NewColor.SetField("Name", iDataNewColor.first);
+    /*if (NewColor.DoesThisColorAlreadyExists(this->m_DatabaseConnector)
         != -1)
       {
       QMessageBox msgBox;
@@ -1279,13 +1282,13 @@ SaveNewColorInDB(std::vector<std::string> iDataNewColor)
       emit TheColorNameAlreadyExits();
       }
     else
-      {
-      NewColor.SetField("Red", iDataNewColor[1]);
-      NewColor.SetField("Green", iDataNewColor[2]);
-      NewColor.SetField("Blue", iDataNewColor[3]);
-      NewColor.SetField("Alpha", iDataNewColor[4]);
-      NewColor.SaveInDB(m_DatabaseConnector);
-      }
+      {*/
+    NewColor.SetField<int>("Red", iDataNewColor.second.red());
+    NewColor.SetField<int>("Green", iDataNewColor.second.green());
+    NewColor.SetField<int>("Blue", iDataNewColor.second.blue());
+    NewColor.SetField<int>("Alpha", iDataNewColor.second.alpha());
+    NewColor.SaveInDB(m_DatabaseConnector);
+      //}
     }
 }
 //-------------------------------------------------------------------------
@@ -1298,12 +1301,12 @@ bool QGoPrintDatabase::IsDatabaseUsed()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-std::list<std::pair<std::string, QColor> > QGoPrintDatabase::
+std::list<QGoPrintDatabase::ColorStringData> QGoPrintDatabase::
 GetListExistingCollectionIDFromDB(std::string TraceName, int iTimePoint)
 {
   OpenDBConnection();
   TraceInfoStructure*                        CurrentlyUsedTraceData = this->GetTraceInfoStructure(TraceName);
-  std::list<std::pair<std::string, QColor> > oListCollectionIDs;
+  std::list<ColorStringData > oListCollectionIDs;
   //First, build the query with selected fields and table to join with on conditions:
   std::vector<std::string> SelectFields;
   std::string              CollectionID = CurrentlyUsedTraceData->CollectionName;
@@ -1363,7 +1366,7 @@ GetListExistingCollectionIDFromDB(std::string TraceName, int iTimePoint)
     int                            intBlue  = atoi(ResultsOneRow[i + 3].c_str());
     int                            intAlpha = atoi(ResultsOneRow[i + 4].c_str());
     QColor                         Color(intRed, intGreen, intBlue, intAlpha);
-    std::pair<std::string, QColor> temp;
+    ColorStringData temp;
     temp.first = ResultsOneRow[i];
     temp.second = Color;
     oListCollectionIDs.push_back(temp);

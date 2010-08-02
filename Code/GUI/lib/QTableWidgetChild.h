@@ -187,7 +187,7 @@ public slots:
   /** \brief Put checkboxes in the column "Selected" */
   void SetSelectedColumn(unsigned int iNbOfRows, unsigned int StartedRow);
   /** \brief Put checkboxes in the column "Show" */
-  void SetVisibleColumn(unsigned int iNbOfRows, unsigned int StartedRow, std::string iTraceName);
+  void SetVisibleColumn(unsigned int iNbOfRows, unsigned int StartedRow);
 
   void SetColorForTable(GoDBTableWidgetContainer* iLinkToRowContainer,
                         std::string NameGroupColor, unsigned int StartRow);

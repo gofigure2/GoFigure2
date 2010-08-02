@@ -32,6 +32,7 @@ SET( QGOGUILIB_EXAMPLE_SRC
   QGoSynchronizedView3DTest
   QGoSynchronizedViewManagerTest
   QGoSynchronizedViewGUITest
+  QGoColorComboBoxTest
 )
 
 #---------------------------------------------------------------------------

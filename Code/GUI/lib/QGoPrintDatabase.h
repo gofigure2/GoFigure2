@@ -80,6 +80,7 @@ public:
 
   typedef GoDBCollectionOfTraces::DBTableWidgetContainerType DBTableWidgetContainerType;
   typedef QGoDBBookmarkManager::NamesDescrContainerType      NamesDescrContainerType;
+  typedef std::pair<std::string,QColor> ColorStringData;
 
   /** \brief set all the values needed for the database*/
   void SetDatabaseVariables(
@@ -149,7 +150,7 @@ public:
 
   /** \brief return a list containing the existing colornames with their
  * corresponding rgba from the database*/
-  std::list<std::pair<std::string, std::vector<int> > > GetColorComboBoxInfofromDB();
+  std::list<std::pair<std::string, QColor > > GetColorComboBoxInfofromDB();
 
   /** \brief return a list of the IDs for the collection corresponding to
  * the tracename with their colors for all the timepoints*/
@@ -176,7 +177,7 @@ public:
   QStringList GetQStringListSubCellTypes();
 
   void UpdateCurrentColorData(std::pair<std::string, QColor> iCurrentColorData);
-  void SetCurrentCollectionID(std::pair<std::string, QColor> iCurrentCollectionData);
+  void UpdateCurrentCollectionID(std::pair<std::string, QColor> iCurrentCollectionData);
   void UpdateCurrentCellTypeAndSubCellType(std::string iCurrentCellType,
                                            std::string iCurrentSubCellType);
 
@@ -245,7 +246,7 @@ public slots:
 
   /** \brief Save a new color in the database with rgba and the name of
  * the color*/
-  void SaveNewColorInDB(std::vector<std::string> iDataNewColor);
+  void SaveNewColorInDB(ColorStringData iDataNewColor);
   void DeleteBookmarks();
   void AddNewCellType();
   void AddNewSubCellType();
@@ -266,12 +267,12 @@ signals:
   void SelectionContoursToHighLightChanged();
   void SelectionMeshesToHighLightChanged();
   void PrintExistingColorsFromDB(
-    std::list<std::pair<std::string, std::vector<int> > >);
+    std::list<ColorStringData>);
   void PrintExistingCollectionIDsFromDB(
-    std::list<std::pair<std::string, QColor> >);
-  void NeedToGetCurrentSelectedColor();
+    std::list<ColorStringData >);
+  //void NeedToGetCurrentSelectedColor();
   void NewCreatedCollection(QColor, QString);
-  void NeedCurrentSelectedCollectionID();
+  //void NeedCurrentSelectedCollectionID();
   void NeedCurrentSelectedCellTypeAndSubCellType();
   void TraceToReEdit(unsigned int);
   void DeletedCollection(unsigned int);
