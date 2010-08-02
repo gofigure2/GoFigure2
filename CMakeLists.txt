@@ -211,14 +211,14 @@ IF( VTK_FOUND )
   IF( ITK_FOUND )
     INCLUDE( ${ITK_USE_FILE} )
 
-    IF( ( ( ${ITK_VERSION_MAJOR} EQUAL 3 ) AND
-          ( ${ITK_VERSION_MINOR} LESS 18 ) ) OR NOT
-        ( ${ITK_VERSION_MAJOR} EQUAL 4 ) )
+    IF( ( ${ITK_VERSION_MAJOR} LESS 3 ) OR
+        ( ( ${ITK_VERSION_MAJOR} EQUAL 3 ) AND
+          ( ${ITK_VERSION_MINOR} LESS 18 ) ) ) 
       MESSAGE( SEND_ERROR
         "GoFigure2 requires ITK 3.18 or newer version (your version of ITK is ${ITK_VERSION_MAJOR}.${ITK_VERSION_MINOR}.${ITK_VERSION_PATCH})" )
-    ENDIF( ( ( ${ITK_VERSION_MAJOR} EQUAL 3 ) AND
-          ( ${ITK_VERSION_MINOR} LESS 18 ) ) OR NOT
-        ( ${ITK_VERSION_MAJOR} EQUAL 4 ) )
+    ENDIF( ( ${ITK_VERSION_MAJOR} LESS 3 ) OR
+        ( ( ${ITK_VERSION_MAJOR} EQUAL 3 ) AND
+          ( ${ITK_VERSION_MINOR} LESS 18 ) ) ) 
 
   
   IF( ${ITK_VERSION_MAJOR} EQUAL 3 ) 
