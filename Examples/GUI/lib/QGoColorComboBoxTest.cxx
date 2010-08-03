@@ -57,11 +57,12 @@ int main(int argc, char * argv[])
   QCoreApplication::setOrganizationName("MegasonLab");
   QCoreApplication::setOrganizationDomain("http://gofigure2.sourceforge.net");
 
-  QGoSelectedColorComboBox* win = new QGoSelectedColorComboBox("Add a new color...");
+  QGoSelectedColorComboBox* win = new QGoSelectedColorComboBox;
   QGoPrintDatabase* DBTables = new QGoPrintDatabase;
   DBTables->SetDatabaseVariables("gofiguredatabase", "localhost", "gofigure",
     "gofigure", atoi(argv[1]), argv[2]);
-  win->setItemsWithColorFromDB(DBTables->GetColorComboBoxInfofromDB());
+  //win->setItemsWithColorFromDB(DBTables->GetColorComboBoxInfofromDB());
+  //DBTables->SetColorComboBoxInfofromDB();
   //QGoPrintDatabase* win = new QGoPrintDatabase;
   // win.FillTableFromDatabase(argv[1],"localhost","gofigure",
   //    "gofigure",atoi(argv[2]), argv[3]);

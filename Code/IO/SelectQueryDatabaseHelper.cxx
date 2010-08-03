@@ -1236,7 +1236,7 @@ ContourMeshStructureMultiIndexContainer* GetTracesInfoFromDB(
       temp.TraceID = query->DataValue(0).ToInt();
       vtkSmartPointer<vtkPolyDataMySQLTextReader> convert_reader =
         vtkSmartPointer<vtkPolyDataMySQLTextReader>::New();
-      temp.CollectionID = query->DataValue(1).ToUnsignedInt();
+      //temp.CollectionID = query->DataValue(1).ToUnsignedInt();
       std::string polydata_string = query->DataValue(2).ToString();
       if (!polydata_string.empty())
         {
@@ -1317,7 +1317,7 @@ ContourMeshStructure GetTraceInfoFromDB(
       Results.TraceID = TraceID;
       vtkSmartPointer<vtkPolyDataMySQLTextReader> convert_reader =
         vtkSmartPointer<vtkPolyDataMySQLTextReader>::New();
-      Results.CollectionID = query->DataValue(0).ToUnsignedInt();
+      //Results.CollectionID = query->DataValue(0).ToUnsignedInt();
       std::string polydata_string = query->DataValue(1).ToString();
       if (!polydata_string.empty())
         {
@@ -1430,7 +1430,7 @@ ContourMeshStructureMultiIndexContainer* GetTracesInfoFromDBMultiIndex(
       temp.TraceID = query->DataValue(0).ToInt();
       vtkSmartPointer<vtkPolyDataMySQLTextReader> convert_reader =
         vtkSmartPointer<vtkPolyDataMySQLTextReader>::New();
-      temp.CollectionID = query->DataValue(1).ToUnsignedInt();
+      //temp.CollectionID = query->DataValue(1).ToUnsignedInt();
       std::string polydata_string = query->DataValue(2).ToString();
       if (!polydata_string.empty())
         {

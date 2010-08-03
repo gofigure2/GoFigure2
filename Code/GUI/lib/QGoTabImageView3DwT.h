@@ -103,6 +103,7 @@ public:
   typedef QGoTabElementBase::QGoDockWidgetStatusPair QGoDockWidgetStatusPair;
   typedef QGoPrintDatabase::NamesDescrContainerType  NamesDescrContainerType;
   typedef QGoTraceManualEditingWidget::ItemColorComboboxData ItemColorComboboxData;
+  typedef QGoPrintDatabase::IDWithColorData          IDWithColorData;
 
   /**
    * \brief
@@ -197,9 +198,10 @@ public:
                         bool NewMesh = true);
 
   void AddMeshFromNodes(const unsigned int& iMeshID, vtkPolyData* iNodes,
-                        const double& iR, const double& iG, const double& iB, const double& iA,
                         const bool& iHighlighted, const unsigned int& iTCoord, const bool& iSaveInDataBase,
-                        bool NewMesh = true);
+                        bool NewMesh = true,
+                        const double& iR = 0, const double& iG = 0, const double& iB = 0, const double& iA = 0
+                        );
 
   int GetSliceViewXY() const;
   int GetSliceViewXZ() const;
@@ -448,7 +450,7 @@ protected:
    * \todo Alpha component is not used at all, it is assumed to be opaque
    */
   virtual int ValidateContour(const int& iContourID, const int& iDir,
-                               const double& iR, const double& iG, const double& iB, const double& iA,
+                               //const double& iR, const double& iG, const double& iB, const double& iA,
                                const bool& iHighlighted, const unsigned int& iTCoord, const bool& iSaveInDataBase,
                                vtkPolyData* contour, vtkPolyData* contour_nodes);
 
@@ -466,10 +468,10 @@ protected:
   virtual int SavePolyDataAsContourInDB(vtkPolyData* iView,
                                         const int& iContourID,
                                         const int& iDir,
-                                        const double& iR,
-                                        const double& iG,
-                                        const double& iB,
-                                        const double& iA,
+                                        //const double& iR,
+                                       // const double& iG,
+                                        //const double& iB,
+                                        //const double& iA,
                                         const bool& iHighlighted,
                                         const unsigned int& iTCoord,
                                         const bool& iSaveInDataBase);
@@ -488,8 +490,8 @@ protected:
    * \todo Alpha component is not used at all, it is assumed to be opaque
    */
   virtual int SavePolyDataAsMeshInDB(vtkPolyData* iView, const int& iMeshID, const int& iDir,
-                                     const double& iR, const double& iG, const double& iB, const double& iA,
                                      const bool& iHighlighted, const unsigned int& iTCoord, const bool& iSaveInDataBase,
+                                     const double& iR = 0, const double& iG = 0, const double& iB = 0, const double& iA = 0,
                                      bool NewMesh = true);
 
   void GetBackgroundColorFromImageViewer();
@@ -543,15 +545,15 @@ protected:
                                    std::string iCurrentTrace,
                                    QColor iSelectedColor);
 
-  void GetTraceColor(double* rgba);
+  //void GetTraceColor(double* rgba);
 
 protected slots:
   void AddBookmark();
   void GetTheRelatedToDBActions();
   void GetTheOpenBookmarksActions();
   void OpenExistingBookmark();
-  void SetTheCurrentCellType();
-  void SetTheCurrentSubCellType();
+  //void SetTheCurrentCellType();
+  //void SetTheCurrentSubCellType();
   void ShowTraceDockWidgetForContour(bool ManualSegVisible);
   void ShowTraceDockWidgetForMesh(bool OneClickVisible);
   void ChangeColorOfSelectedTracesManager(std::pair<std::list<int>, QColor>);

@@ -75,7 +75,7 @@ void QGoDBCellTypeManager::SaveNewEntityInDB()
 //------------------------------------------------------------------------------
 void QGoDBCellTypeManager::ValidateName()
 {
-  this->m_NewCellType.SetField("Name",this->m_NameDescDialog->GetInputTextForName(););
+  this->m_NewCellType.SetField("Name",this->m_NameDescDialog->GetInputTextForName());
   //if (this->DoesThisBookmarkNameAlreadyExistsInTheDB(
   //this->m_DatabaseConnectorForNewBkmrk,iName))
   if (this->m_NewCellType.DoesThisNameAlreadyExists(
@@ -87,6 +87,5 @@ void QGoDBCellTypeManager::ValidateName()
     {
     this->m_NameDescDialog->accept();
     this->SaveNewEntityInDB();
-    Name = this->m_NameDescDialog->GetInputTextForName();
     }
 }

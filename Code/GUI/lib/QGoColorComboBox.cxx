@@ -74,7 +74,7 @@ void QGoColorComboBox::setItemsWithColorFromList(
       iDataFromList.begin();
     while (iter != iDataFromList.end())
       {
-      this->AddItemWithColor(iter,false);//we don't want the signal emitted for each added item,
+      this->AddItemWithColor(*iter,false);//we don't want the signal emitted for each added item,
       //only the currentIndex one at the end of the added list.
       iter++;
       }
@@ -102,7 +102,7 @@ void QGoColorComboBox::AddItemWithColor(ItemColorComboboxData iNewItemData,
   //we want to insert the item before the "more":
   //if the index is 0 or negative,the new item is prepended to the list of existing items:
   int Index = this->count() -1;
-  this->insertItem(Index,Icon,iNewItemData.first,iNewItemData.second);
+  this->insertItem(Index,Icon,iNewItemData.first.c_str(),iNewItemData.second);
   if (SelectTheAddedItem)
     {
     this->setCurrentIndex(Index);

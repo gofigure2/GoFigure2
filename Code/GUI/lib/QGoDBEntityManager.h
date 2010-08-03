@@ -97,7 +97,7 @@ protected slots:
   database, if so, make the m_NameDescDialog asks the user to
   choose another one, if no, close the m_NameDescDialog and
   call SaveNewBookmarkInDB()*/
-  virtual std::string ValidateName() = 0;
+  virtual void ValidateName() = 0;
 
 signals:
   void ListEntitiesChanged();

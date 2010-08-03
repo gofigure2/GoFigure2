@@ -190,9 +190,9 @@ QGoTabImageView3DwT(QWidget* iParent) :
       m_TraceManualEditingDockWidget));*/
   m_DockWidgetList.push_back(
     std::pair<QGoDockWidgetStatus*, QDockWidget*>(
-      new QGoDockWidgetStatus(this->m_DBTables->GetTraceManualEditingDockWidget(), 
+      new QGoDockWidgetStatus(this->m_DataBaseTables->GetTraceManualEditingDockWidget(), 
       Qt::LeftDockWidgetArea, true, true),
-      this->m_DBTables->GetTraceManualEditingDockWidget()));
+      this->m_DataBaseTables->GetTraceManualEditingDockWidget()));
 
 #if defined (ENABLEFFMPEG) || defined (ENABLEAVI)
   m_DockWidgetList.push_back(
@@ -2134,13 +2134,13 @@ ShowOneChannel(int iChannel)
 int
 QGoTabImageView3DwT::
 ValidateContour(const int& iContourID, const int& iDir,
-                const double& iR, const double& iG, const double& iB, const double& iA,
+                //const double& iR, const double& iG, const double& iB, const double& iA,
                 const bool& iHighlighted, const unsigned int& iTCoord,
                 const bool& iSaveInDataBase,
                 vtkPolyData* contour, vtkPolyData* contour_nodes)
 {
   //vtkPolyData* contour = m_ImageView->GetContourRepresentationAsPolydata(iDir);
-
+  double r, g, b, a(1.);
   if ((contour->GetNumberOfPoints() > 2) && (m_TimePoint >= 0))
     {
     // Compute Bounding Box
@@ -2163,6 +2163,52 @@ ValidateContour(const int& iContourID, const int& iDir,
     //vtkPolyData* contour_nodes = m_ImageView->GetContourRepresentationNodePolydata(iDir);
     vtkProperty* contour_property = vtkProperty::New();
 
+    // get meshid from the visu dock widget (SpinBox)
+    //unsigned int meshid = m_ManualSegmentationDockWidget->GetMeshId();
+    //unsigned int meshid = this->m_TraceManualEditingDockWidget
+      //                    ->m_TraceWidget->GetCurrentCollectionID();
+
+    if (iSaveInDataBase)
+      {
+      IDWithColorData ContourData;
+      if (!m_ReEditContourMode)
+        {
+        //std::pair<std::string, QColor> ColorData =
+          //this->m_TraceManualEditingDockWidget->m_TraceWidget->ColorComboBox->GetCurrentColorData();
+
+        // Save contour in database!
+        ContourData = m_DataBaseTables->SaveContoursFromVisuInDB(min_idx[0],
+                                                                 min_idx[1],
+                                                                 min_idx[2],
+                                                                 iTCoord,
+                                                                 max_idx[0],
+                                                                 max_idx[1],
+                                                                 max_idx[2],
+                                                                 contour_nodes);
+                                                                 //ColorData,
+                                                                 //meshid);
+        }
+      else
+        {
+        //m_ContourId = iContourID;
+
+        ContourData = m_DataBaseTables->UpdateContourFromVisuInDB(min_idx[0],
+                                                    min_idx[1], min_idx[2], iTCoord, max_idx[0],
+                                                    max_idx[1], max_idx[2], contour_nodes, iContourID);
+        this->m_DataBaseTables->GetTraceManualEditingDockWidget()->setEnabled(true);
+        //this->m_TraceManualEditingDockWidget->setEnabled(true);
+        }
+        m_ContourId = ContourData.first;
+        ContourData.second.getRgbF(&r, &g, &b, &a);
+      }
+    else
+      {
+      if (iContourID != -1)
+        {
+        m_ContourId = iContourID;
+        }
+      }
+    
     if (iHighlighted)
       {
       contour_property->SetColor(1., 0., 0.);
@@ -2171,8 +2217,10 @@ ValidateContour(const int& iContourID, const int& iDir,
       }
     else
       {
-      contour_property->SetColor(iR, iG, iB);
-      contour_property->SetOpacity(iA);
+      //contour_property->SetColor(iR, iG, iB);
+      //contour_property->SetOpacity(iA);
+      contour_property->SetColor(r, g, b);
+      contour_property->SetOpacity(a);
       }
 
     // get corresponding actor from visualization
@@ -2184,56 +2232,18 @@ ValidateContour(const int& iContourID, const int& iDir,
       this->AddContour(iDir, contour_copy,
                        contour_property);
 
-    // get meshid from the visu dock widget (SpinBox)
-    //unsigned int meshid = m_ManualSegmentationDockWidget->GetMeshId();
-    unsigned int meshid = this->m_TraceManualEditingDockWidget
-                          ->m_TraceWidget->GetCurrentCollectionID();
-
-    if (iSaveInDataBase)
-      {
-      if (!m_ReEditContourMode)
-        {
-        std::pair<std::string, QColor> ColorData =
-          this->m_TraceManualEditingDockWidget->m_TraceWidget->ColorComboBox->GetCurrentColorData();
-
-        // Save contour in database!
-        m_ContourId = m_DataBaseTables->SaveContoursFromVisuInDB(min_idx[0],
-                                                                 min_idx[1],
-                                                                 min_idx[2],
-                                                                 iTCoord,
-                                                                 max_idx[0],
-                                                                 max_idx[1],
-                                                                 max_idx[2],
-                                                                 contour_nodes,
-                                                                 ColorData,
-                                                                 meshid);
-        }
-      else
-        {
-        m_ContourId = iContourID;
-
-        m_DataBaseTables->UpdateContourFromVisuInDB(min_idx[0],
-                                                    min_idx[1], min_idx[2], iTCoord, max_idx[0],
-                                                    max_idx[1], max_idx[2], contour_nodes, m_ContourId);
-        this->m_TraceManualEditingDockWidget->setEnabled(true);
-        }
-      }
-    else
-      {
-      if (iContourID != -1)
-        {
-        m_ContourId = iContourID;
-        }
-      }
-
     contour_copy->Delete();
     contour_property->Delete();
 
     // fill the container
     for (i = 0; i < contour_actor.size(); i++)
       {
+      /*ContourMeshStructure temp(m_ContourId, contour_actor[i],
+                                contour_nodes, meshid, iTCoord, iHighlighted, iR, iG, iB, iA, i);*/
+      //ContourMeshStructure temp(m_ContourId, contour_actor[i],
+        //                        contour_nodes, iTCoord, iHighlighted, iR, iG, iB, iA, i);
       ContourMeshStructure temp(m_ContourId, contour_actor[i],
-                                contour_nodes, meshid, iTCoord, iHighlighted, iR, iG, iB, iA, i);
+                                contour_nodes, iTCoord, iHighlighted, r, g, b, a, i);
       m_ContourContainer.insert(temp);
       }
 
@@ -2256,9 +2266,9 @@ QGoTabImageView3DwT::
 ValidateContour()
 {
   // get color from the dock widget
-  double r, g, b, a(1.);
+  //double r, g, b, a(1.);
   //QColor color = m_ManualSegmentationDockWidget->GetValidatedColor();
-  if (this->m_TraceManualEditingDockWidget->m_TraceWidget->GetCurrentCollectionID() == -1)
+  /*if (this->m_TraceManualEditingDockWidget->m_TraceWidget->GetCurrentCollectionID() == -1)
     {
     r = 0.1;
     g = 0.5;
@@ -2269,7 +2279,7 @@ ValidateContour()
     QColor color =
       this->m_TraceManualEditingDockWidget->m_TraceWidget->ColorComboBox->GetCurrentColorData().second;
     color.getRgbF(&r, &g, &b, &a);
-    }
+    }*/
 
   bool highlighted = m_ReEditContourMode;
 
@@ -2290,10 +2300,10 @@ ValidateContour()
     if (it->TraceID == m_ContourId)
       {
       // save color
-      r = it->rgba[0];
-      g = it->rgba[1];
-      b = it->rgba[2];
-      a = it->rgba[3];
+      //r = it->rgba[0];
+      //g = it->rgba[1];
+      //b = it->rgba[2];
+      //a = it->rgba[3];
 
       // We have to remove the polydata from the container too
       m_ContourContainer.get<TraceID>().erase(m_ContourId);
@@ -2303,14 +2313,17 @@ ValidateContour()
   int i;
   for (i = 0; i < m_ImageView->GetNumberOfImageViewers(); i++)
     {
-    ValidateContour(ContourID, i, r, g, b, a, highlighted, m_TimePoint, saveindatabase,
+    /*ValidateContour(ContourID, i, r, g, b, a, highlighted, m_TimePoint, saveindatabase,
+        m_ImageView->GetContourRepresentationAsPolydata(i),
+        m_ImageView->GetContourRepresentationNodePolydata(i));*/
+      ValidateContour(ContourID, i, highlighted, m_TimePoint, saveindatabase,
         m_ImageView->GetContourRepresentationAsPolydata(i),
         m_ImageView->GetContourRepresentationNodePolydata(i));
     }
 
   if (m_ReEditContourMode)
     {
-    m_ManualSegmentationDockWidget->setEnabled(false);
+    this->m_DataBaseTables->GetTraceManualEditingDockWidget()->setEnabled(false);
 
     m_ImageView->ReinitializeContourWidget();
 
@@ -2320,8 +2333,8 @@ ValidateContour()
     m_DataBaseTables->ChangeContoursToHighLightInfoFromVisu(listofrowstobeselected,
                                                             m_ReEditContourMode);
 
-    m_ManualSegmentationDockWidget->setEnabled(true);
-    this->m_TraceManualEditingDockWidget->setEnabled(true);
+    this->m_DataBaseTables->GetTraceManualEditingDockWidget()->setEnabled(true);
+   // this->m_TraceManualEditingDockWidget->setEnabled(true);
     m_ReEditContourMode = false;
     }
 }
@@ -2565,7 +2578,11 @@ AddContourFromNodes(const unsigned int& iContourID,
       {
       m_ImageView->ContourWidgetMode( true );
       m_ImageView->InitializeContourWidgetNodes( dir, iNodes );
-      ValidateContour(iContourID, dir, iR, iG, iB, iA, iHighlighted,
+      /*ValidateContour(iContourID, dir, iR, iG, iB, iA, iHighlighted,
+                            iTCoord, iSaveInDataBase,
+                            m_ImageView->GetContourRepresentationAsPolydata(dir),
+                            m_ImageView->GetContourRepresentationNodePolydata(dir));*/
+      ValidateContour(iContourID, dir, iHighlighted,
                             iTCoord, iSaveInDataBase,
                             m_ImageView->GetContourRepresentationAsPolydata(dir),
                             m_ImageView->GetContourRepresentationNodePolydata(dir));
@@ -2595,12 +2612,14 @@ void
 QGoTabImageView3DwT::
 AddMeshFromNodes(const unsigned int& iMeshID,
                  vtkPolyData* iNodes,
-                 const double& iR, const double& iG, const double& iB, const double& iA,
+                 //const double& iR, const double& iG, const double& iB, const double& iA,
                  const bool& iHighlighted, const unsigned int& iTCoord, const bool& iSaveInDataBase,
-                 bool NewMesh)
+                 bool NewMesh,
+                 const double& iR, const double& iG, const double& iB, const double& iA
+                 )
 {
-  this->SavePolyDataAsMeshInDB(iNodes, iMeshID, 0, iR,  iG,  iB,
-                               iA,  iHighlighted,  iTCoord, iSaveInDataBase,NewMesh);
+  this->SavePolyDataAsMeshInDB(iNodes, iMeshID, 0,iHighlighted,  iTCoord, iSaveInDataBase,
+                               iR,  iG,  iB, iA,NewMesh);
 }
 
 //-------------------------------------------------------------------------
@@ -2734,7 +2753,7 @@ ReEditContour(const unsigned int& iId)
         this->m_ModeActions[0]->setChecked(true);
         m_ImageView->InitializeContourWidgetNodes( dir, c_nodes );
         m_ManualSegmentationDockWidget->setEnabled(true);
-        this->m_TraceManualEditingDockWidget->setEnabled(false);
+        this->m_DataBaseTables->GetTraceManualEditingDockWidget()->setEnabled(false);
         }
       }
     }
@@ -3171,11 +3190,11 @@ GetManualSegmentationWidget()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-QGoTraceManualEditingWidget* QGoTabImageView3DwT::
+/*QGoTraceManualEditingWidget* QGoTabImageView3DwT::
 GetTraceManualEditingWidget()
 {
   return this->m_TraceManualEditingDockWidget->m_TraceWidget;
-}
+}*/
 
 //-------------------------------------------------------------------------
 
@@ -3418,15 +3437,18 @@ LevelSetSegmentation3D()
 int
 QGoTabImageView3DwT::
 SavePolyDataAsContourInDB(vtkPolyData* iView, const int& iContourID,
-                          const int& iDir, const double& iR, const double& iG, const double& iB,
-                          const double& iA, const bool& iHighlighted, const unsigned int& iTCoord,
+                          const int& iDir, //const double& iR, const double& iG, const double& iB,const double& iA, 
+                          const bool& iHighlighted, const unsigned int& iTCoord,
                           const bool& iSaveInDataBase)
 {
   vtkPolyData* contour_nodes = vtkPolyData::New();
   CreateContour( contour_nodes, iView );
 
   // Save the polydata in DB and container (i.e. validate)
-  return ValidateContour(iContourID, iDir, iR, iG, iB, iA,
+  /*return ValidateContour(iContourID, iDir, iR, iG, iB, iA,
+      iHighlighted, iTCoord, iSaveInDataBase,
+      iView, contour_nodes);*/
+  return ValidateContour(iContourID, iDir,
       iHighlighted, iTCoord, iSaveInDataBase,
       iView, contour_nodes);
 }
@@ -3467,19 +3489,21 @@ SavePolyDataAsContourInDB(vtkPolyData* iView)
 {
   // get color from the dock widget
   //double r, g, b, a(1.);
-  double rgba[4];
-  GetTraceColor(rgba);
+  //double rgba[4];
+  //GetTraceColor(rgba);
 
   // get from m_DataBaseTables if user is using one gofiguredatabase or not.
   // In such a case contours are saved in the database, else they are not!
   bool saveindatabase = m_DataBaseTables->IsDatabaseUsed();
 
-  return SavePolyDataAsContourInDB(iView, -1, 0, rgba[0], rgba[1], rgba[2], rgba[3],
+  /*return SavePolyDataAsContourInDB(iView, -1, 0, rgba[0], rgba[1], rgba[2], rgba[3],
+                                   false, m_TimePoint, saveindatabase);*/
+  return SavePolyDataAsContourInDB(iView, -1, 0,
                                    false, m_TimePoint, saveindatabase);
 }
 //-------------------------------------------------------------------------
 //-------------------------------------------------------------------------
-void
+/*void
 QGoTabImageView3DwT::
 GetTraceColor(double* rgba)
 {
@@ -3496,16 +3520,19 @@ GetTraceColor(double* rgba)
       this->m_TraceManualEditingDockWidget->m_TraceWidget->ColorComboBox->GetCurrentColorData().second;
     color.getRgbF(&rgba[0], &rgba[1], &rgba[2], &rgba[3]);
     }
-}
+}*/
 
 //-------------------------------------------------------------------------
 int
 QGoTabImageView3DwT::
 SavePolyDataAsMeshInDB(vtkPolyData* iView, const int& iMeshID,
-                       const int& iDir, const double& iR, const double& iG, const double& iB,
-                       const double& iA, const bool& iHighlighted, const unsigned int& iTCoord,
-                       const bool& iSaveInDataBase, bool NewMesh)
+                       const int& iDir,const bool& iHighlighted, const unsigned int& iTCoord,
+                       const bool& iSaveInDataBase, 
+                       const double& iR, const double& iG, const double& iB,
+                       const double& iA,
+                       bool NewMesh)
 {
+  double r,g,b,a(1.);
   // map to graphics library
   vtkPolyDataMapper *map = vtkPolyDataMapper::New();
   map->SetInput(iView);
@@ -3528,10 +3555,38 @@ SavePolyDataAsMeshInDB(vtkPolyData* iView, const int& iMeshID,
 
   int* min_idx = this->GetImageCoordinatesFromWorldCoordinates(Min);
   int* max_idx = this->GetImageCoordinatesFromWorldCoordinates(Max);
+   if (iSaveInDataBase)
+    {
+    //std::pair<std::string, QColor> ColorData =
+      //this->m_TraceManualEditingDockWidget->m_TraceWidget->ColorComboBox->GetCurrentColorData();
+
+    // Save mesh in database
+    //don't use m_ContourId
+    GoFigureMeshAttributes MeshAttributes = ComputeMeshAttributes(iView);
+    
+    //if the mesh needs to be updated in the Database, the NewMesh will be false and the iMeshID will
+    //be = 0 if the meshID needs to be gotten from the trace manual editing widget, if it is a new
+    //mesh, the NewMesh will be true and iMeshID = 0:
+    IDWithColorData MeshData = m_DataBaseTables->SaveMeshFromVisuInDB(min_idx[0],
+                                                      min_idx[1], min_idx[2], iTCoord, max_idx[0],
+                                                      max_idx[1], max_idx[2], iView, &MeshAttributes,NewMesh,iMeshID);
+    m_MeshId = MeshData.first;
+    MeshData.second.getRgbF(&r,&g,&b,&a);
+    }
+  else
+    {
+    m_MeshId = iMeshID;
+    r = iR;
+    g = iG;
+    b = iB;
+    a = iA;
+    }
 
   vtkProperty* mesh_property = vtkProperty::New();
-  mesh_property->SetColor(iR, iG, iB);
-  mesh_property->SetOpacity(iA);
+  //mesh_property->SetColor(iR, iG, iB);
+  //mesh_property->SetOpacity(iA);
+  mesh_property->SetColor(r, g, b);
+  mesh_property->SetOpacity(a);
 
   std::vector<vtkActor*> mesh_actor;
 
@@ -3543,34 +3598,15 @@ SavePolyDataAsMeshInDB(vtkPolyData* iView, const int& iMeshID,
   mesh_property->Delete();
   // get meshid from the visu dock widget (SpinBox)/** todo: this is not the track id when creating
   //mesh from the context menu: this is the selected mesh in the combolist !!!
-  unsigned int trackid = this->m_TraceManualEditingDockWidget->m_TraceWidget->GetCurrentCollectionID();
-
-  if (iSaveInDataBase)
-    {
-    std::pair<std::string, QColor> ColorData =
-      this->m_TraceManualEditingDockWidget->m_TraceWidget->ColorComboBox->GetCurrentColorData();
-
-    // Save mesh in database
-    //don't use m_ContourId
-    GoFigureMeshAttributes MeshAttributes = ComputeMeshAttributes(iView);
-    
-    //if the mesh needs to be updated in the Database, the NewMesh will be false and the iMeshID will
-    //be = 0 if the meshID needs to be gotten from the trace manual editing widget, if it is a new
-    //mesh, the NewMesh will be true and iMeshID = 0:
-    m_MeshId = m_DataBaseTables->SaveMeshFromVisuInDB(min_idx[0],
-                                                      min_idx[1], min_idx[2], iTCoord, max_idx[0],
-                                                      max_idx[1], max_idx[2], iView, &MeshAttributes,NewMesh,iMeshID);
-    }
-  else
-    {
-    m_MeshId = iMeshID;
-    }
+  //unsigned int trackid = this->m_TraceManualEditingDockWidget->m_TraceWidget->GetCurrentCollectionID();
 
   // fill the container
   for (i = 0; i < mesh_actor.size(); i++)
     {
+    /*ContourMeshStructure temp(m_MeshId, mesh_actor[i], iView,
+                              trackid, iTCoord, iHighlighted, iR, iG, iB, iA, i);*/
     ContourMeshStructure temp(m_MeshId, mesh_actor[i], iView,
-                              trackid, iTCoord, iHighlighted, iR, iG, iB, iA, i);
+                              iTCoord, iHighlighted, r, g, b, a, i);
     m_MeshContainer.insert(temp);
     }
 
@@ -3589,15 +3625,16 @@ QGoTabImageView3DwT::
 SavePolyDataAsMeshInDB(vtkPolyData* iView)
 {
   // get color from the dock widget
-  double rgba[4];
-  GetTraceColor(rgba);
+  //double rgba[4];
+  //GetTraceColor(rgba);
 
   // get from m_DataBaseTables if user is using one gofiguredatabase or not.
   // In such a case contours are saved in the database, else they are not!
   bool saveindatabase = m_DataBaseTables->IsDatabaseUsed();
 
-  return SavePolyDataAsMeshInDB(iView, -1, 0, rgba[0], rgba[1], rgba[2], rgba[3],
-                                false, m_TimePoint, saveindatabase);
+  /*return SavePolyDataAsMeshInDB(iView, -1, 0, rgba[0], rgba[1], rgba[2], rgba[3],
+                                false, m_TimePoint, saveindatabase);*/
+  return SavePolyDataAsMeshInDB(iView, -1, 0,false, m_TimePoint, saveindatabase);
 
 
 }
@@ -3611,13 +3648,14 @@ void QGoTabImageView3DwT::ShowTraceDockWidgetForContour(
     {
     if (this->m_DataBaseTables->IsDatabaseUsed())
       {
-      this->m_TraceManualEditingDockWidget->ShowAndUpdate("contour", "mesh");
+      this->m_DataBaseTables->UpdateWidgetsForCorrespondingTrace("contour","mesh");
+      /*this->m_TraceManualEditingDockWidget->ShowAndUpdate("contour", "mesh");
       this->m_TraceManualEditingDockWidget->m_TraceWidget->SetCollectionID(
         this->m_DataBaseTables->GetListExistingCollectionIDFromDB(
           "contour", this->GetTimePoint()));
       this->m_DataBaseTables->blockSignals(true);
       this->m_DataBaseTables->SetTable("contour");
-      this->m_DataBaseTables->blockSignals(false);
+      this->m_DataBaseTables->blockSignals(false);*/
       }
     this->m_OneClickSegmentationDockWidget->setDisabled(true);
     this->m_OneClickSegmentationDockWidget->hide();
@@ -3633,12 +3671,13 @@ void QGoTabImageView3DwT::ShowTraceDockWidgetForMesh(
     {
     if (this->m_DataBaseTables->IsDatabaseUsed())
       {
-      this->m_TraceManualEditingDockWidget->ShowAndUpdate("mesh", "track");
+      /*this->m_TraceManualEditingDockWidget->ShowAndUpdate("mesh", "track");
       this->m_TraceManualEditingDockWidget->m_TraceWidget->SetCollectionID(
         this->m_DataBaseTables->GetListExistingCollectionIDFromDB("mesh"));
       this->m_DataBaseTables->blockSignals(true);
       this->m_DataBaseTables->SetTable("mesh");
-      this->m_DataBaseTables->blockSignals(false);
+      this->m_DataBaseTables->blockSignals(false);*/
+      this->m_DataBaseTables->UpdateWidgetsForCorrespondingTrace("mesh","track");
       }
     this->m_ManualSegmentationDockWidget->setDisabled(true);
     this->m_ManualSegmentationDockWidget->hide();
@@ -3655,11 +3694,13 @@ void QGoTabImageView3DwT::GoToDefaultMenu(std::string iTracename,
   this->m_OneClickSegmentationDockWidget->setDisabled(true);
   this->m_OneClickSegmentationDockWidget->hide();
   this->m_ModeActions.at(0)->setChecked(true);
-  this->m_TraceManualEditingDockWidget->ShowAndUpdate(iTracename,
-                                                      iCollectionName);
+ // this->m_TraceManualEditingDockWidget->ShowAndUpdate(iTracename,
+   //                                                   iCollectionName);
   if (this->m_DataBaseTables->IsDatabaseUsed())
     {
-    if (iTracename == "contour")
+    this->m_DataBaseTables->UpdateWidgetsForCorrespondingTrace(iTracename,
+    iCollectionName,false);
+   /* if (iTracename == "contour")
       {
       this->m_TraceManualEditingDockWidget->m_TraceWidget->SetCollectionID(
         this->m_DataBaseTables->GetListExistingCollectionIDFromDB(
@@ -3669,7 +3710,7 @@ void QGoTabImageView3DwT::GoToDefaultMenu(std::string iTracename,
       {
       this->m_TraceManualEditingDockWidget->m_TraceWidget->SetCollectionID(
         this->m_DataBaseTables->GetListExistingCollectionIDFromDB(iTracename));
-      }
+      }*/
     }
 }
 //-------------------------------------------------------------------------
@@ -3731,12 +3772,16 @@ void QGoTabImageView3DwT::ImportContours()
       }
     //update the TraceManualEditingWidget
     this->GoToDefaultMenu("contour", "mesh");
-    this->GetTraceManualEditingWidget()->ColorComboBox->setExistingColors(
+    //as in the import contours file, there are data such as colors,celltype
+    //and subcelltype, the lists may have been updated in the database:
+    this->m_DataBaseTables->InitializeTheComboboxesNotTraceRelated();
+
+    /*this->GetTraceManualEditingWidget()->ColorComboBox->setExistingColors(
       this->m_DataBaseTables->GetColorComboBoxInfofromDB());
     this->GetTraceManualEditingWidget()->SetListCellTypes(
       this->m_DataBaseTables->GetQStringListCellTypes());
     this->GetTraceManualEditingWidget()->SetListSubCellTypes(
-      this->m_DataBaseTables->GetQStringListSubCellTypes());
+      this->m_DataBaseTables->GetQStringListSubCellTypes());*/
     }
 }
 //-------------------------------------------------------------------------
@@ -3835,13 +3880,15 @@ CreateMeshFromSelectedContours(std::list<int> iListContourIDs,int iMeshID)
   filter->ProcessContours(list_contours);
 
   // get the color from the Trace Editing Widget
-  double rgba[4];
-  GetTraceColor(rgba);
+  //double rgba[4];
+  //GetTraceColor(rgba);
 
   //unsigned int meshid =
     //this->m_TraceManualEditingDockWidget->m_TraceWidget->GetCurrentCollectionID();
 
-  this->AddMeshFromNodes(iMeshID, filter->GetOutput(), rgba, false,
+  //this->AddMeshFromNodes(iMeshID, filter->GetOutput(), rgba, false,
+    //                     tcoord, true,false);
+  this->AddMeshFromNodes(iMeshID, filter->GetOutput(),false,
                          tcoord, true,false);
 }
 //-------------------------------------------------------------------------
@@ -3863,12 +3910,13 @@ void QGoTabImageView3DwT::ImportMeshes()
       }
     //update the TraceManualEditingWidget
     GoToDefaultMenu("mesh", "track");
-    GetTraceManualEditingWidget()->ColorComboBox->setExistingColors(
+    this->m_DataBaseTables->InitializeTheComboboxesNotTraceRelated();
+    /*GetTraceManualEditingWidget()->ColorComboBox->setExistingColors(
       m_DataBaseTables->GetColorComboBoxInfofromDB());
     GetTraceManualEditingWidget()->SetListCellTypes(
       m_DataBaseTables->GetQStringListCellTypes());
     GetTraceManualEditingWidget()->SetListSubCellTypes(
-      m_DataBaseTables->GetQStringListSubCellTypes());
+      m_DataBaseTables->GetQStringListSubCellTypes());*/
     }
 }
 //-------------------------------------------------------------------------

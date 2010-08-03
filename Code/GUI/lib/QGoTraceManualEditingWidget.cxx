@@ -139,8 +139,9 @@ SetSelectedColorComboBox()
     this,SIGNAL(NewSelectedColorActivated(ItemColorComboboxData)));
 
   QObject::connect(this->m_SelectedColorComboBox,
-    SIGNAL(NewCollectionToCreate()),
-    this,SIGNAL(NewCollectionToBeCreated()));
+    SIGNAL(NewColorToBeSaved(ItemColorComboboxData)),
+    this,SIGNAL(NewColorToBeSaved(ItemColorComboboxData)));
+
 }
 //-------------------------------------------------------------------------
 
@@ -180,11 +181,15 @@ SetTraceCollectionColorComboBox()
 
   QObject::connect(this->m_CollectionColorComboBox,
     SIGNAL(ItemSelected(ItemColorComboboxData)),
-    this,SIGNAL(NewSelectedColorActivated(ItemColorComboboxData)));
+    this,SIGNAL(NewCollectionActivated(ItemColorComboboxData)));
+
+ /* QObject::connect(this->m_CollectionColorComboBox,
+    SIGNAL(NewColorToBeSaved(ItemColorComboboxData)),
+    this,SIGNAL(NewColorToBeSaved(ItemColorComboboxData)));*/
 
   QObject::connect(this->m_CollectionColorComboBox,
-    SIGNAL(NewColorToBeSaved(ItemColorComboboxData)),
-    this,SIGNAL(NewColorToBeSaved(ItemColorComboboxData)));
+    SIGNAL(NewCollectionToCreate()),
+    this,SIGNAL(NewCollectionToBeCreated()));
 }
 //-------------------------------------------------------------------------
 
@@ -223,7 +228,7 @@ SetListCellTypes(QStringList iListCellTypes)
   this->m_ChoseCellType->addItem(tr("Delete a celltype..."));
   //to check::
   //emit NewCellTypeActivated(this->m_ChoseCellType->currentText());
-  //emit ListCellTypesReady();
+  emit ListCellTypesReady();
 }
 //-------------------------------------------------------------------------
 
@@ -302,7 +307,7 @@ CheckUserActionSubCell(QString iCellTypeText)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-std::string QGoTraceManualEditingWidget::GetCurrentCellType()
+/*std::string QGoTraceManualEditingWidget::GetCurrentCellType()
 {
   return this->m_ChoseCellType->currentText().toStdString();
 }
@@ -312,7 +317,7 @@ std::string QGoTraceManualEditingWidget::GetCurrentCellType()
 std::string QGoTraceManualEditingWidget::GetCurrentSubCellType()
 {
   return this->m_ChoseSubCellType->currentText().toStdString();
-}
+}*/
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -372,17 +377,9 @@ void QGoTraceManualEditingWidget::UpdateTraceAndCollection(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoTraceManualEditingWidget::SetListExistingColors(
-  std::list<ItemColorComboboxData> iListExistingColors)
-{
-  this->m_SelectedColorComboBox->setItemsWithColorFromDB(iListExistingColors);
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
 std::string QGoTraceManualEditingWidget::GetTraceName()
 {
-  return this->TraceName.text().toStdString();
+  return this->TraceName->text().toStdString();
 }
 //-------------------------------------------------------------------------
 

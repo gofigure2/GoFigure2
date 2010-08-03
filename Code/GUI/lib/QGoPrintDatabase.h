@@ -83,6 +83,7 @@ public:
   typedef GoDBCollectionOfTraces::DBTableWidgetContainerType DBTableWidgetContainerType;
   typedef QGoDBBookmarkManager::NamesDescrContainerType      NamesDescrContainerType;
   typedef QGoTraceManualEditingWidget::ItemColorComboboxData ItemColorComboboxData;
+  typedef std::pair<int,QColor>                              IDWithColorData;
 
   /** \brief set all the values needed for the database*/
   void SetDatabaseVariables(
@@ -167,15 +168,15 @@ public:
 
   /** \brief save a new contour from the visu into the database, update
  * the table widget with the row container and the m_ContoursInfo*/
-  int SaveContoursFromVisuInDB(unsigned int iXCoordMin,
+  IDWithColorData SaveContoursFromVisuInDB(unsigned int iXCoordMin,
                                unsigned int iYCoordMin, unsigned int iZCoordMin, unsigned int iTCoord,
                                unsigned int iXCoordMax, unsigned int iYCoordMax, unsigned int iZCoordMax,
-                               vtkPolyData* iContourNodes, std::pair<std::string, QColor> iColorData,
-                               unsigned int iMeshID = 0);
+                               vtkPolyData* iContourNodes);//, std::pair<std::string, QColor> iColorData,
+                               //unsigned int iMeshID = 0);
 
   /** \brief Update the data for the reedited contour into the database and
  * update the table widget*/
-  int UpdateContourFromVisuInDB(unsigned int iXCoordMin,
+  IDWithColorData UpdateContourFromVisuInDB(unsigned int iXCoordMin,
                                 unsigned int iYCoordMin, unsigned int iZCoordMin, unsigned int iTCoord,
                                 unsigned int iXCoordMax, unsigned int iYCoordMax, unsigned int iZCoordMax,
                                 vtkPolyData* iContourNodes, int ContourID);
@@ -184,7 +185,7 @@ public:
   visualization, if the mesh is an updated mesh which already exits(for
   example a new contour is added to this mesh, the NewMesh has to be set
   to false*/
-  int SaveMeshFromVisuInDB(unsigned int iXCoordMin,
+  IDWithColorData SaveMeshFromVisuInDB(unsigned int iXCoordMin,
                            unsigned int iYCoordMin, unsigned int iZCoordMin, unsigned int iTCoord,
                            unsigned int iXCoordMax, unsigned int iYCoordMax, unsigned int iZCoordMax,
                            vtkPolyData* iMeshNodes, GoFigureMeshAttributes* iMeshAttributes,
@@ -219,6 +220,16 @@ public:
                               unsigned int iMeshID);
   /** \brief return the TraceManualEditingDockWidget*/
   QGoTraceManualEditingDockWidget* GetTraceManualEditingDockWidget();
+
+  /** \brief update the tracemanualeditingwidget for the trace with the 
+  corresponding list of collectionID and set the tablewidget for the
+  trace table*/
+  void UpdateWidgetsForCorrespondingTrace(std::string iTraceName,
+    std::string iCollectionName,bool UpdatetableWidget = true);
+  
+  /** \brief Initialize or reinitialized the celltype,subcelltype
+  and color list from the database into the tracemanualeditingwidget*/
+  void InitializeTheComboboxesNotTraceRelated();
 
 public slots:
   void ChangeContoursToHighLightInfoFromVisu(
@@ -429,6 +440,15 @@ protected:
 
     //T trace_row( iDatabaseConnector, iTraceNodes, coord_min, coord_max,
     //this->m_ImgSessionID, iMeshAttributes );
+  }
+ template<typename T>
+  QColor GetQColorFromTraceRow(T iTraceRow)
+  {
+    QColor Color(atoi(iTraceRow.GetMapValue("Red").c_str()),
+                           atoi(iTraceRow.GetMapValue("Green").c_str()),
+                           atoi(iTraceRow.GetMapValue("Blue").c_str()),
+                           atoi(iTraceRow.GetMapValue("Alpha").c_str()));
+    return Color;
   }
 //-------------------------------------------------------------------------
 

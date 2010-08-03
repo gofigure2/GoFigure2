@@ -55,8 +55,8 @@ public:
   QGoTraceManualEditingWidget* m_TraceWidget;
 
 public slots:
-  void ShowAndUpdate(std::string iTraceName,
-                     std::string iCollectionName);
+  //void ShowAndUpdate(std::string iTraceName,
+                   //  std::string iCollectionName);
 
   };
 #endif
