@@ -2603,8 +2603,9 @@ AddMeshFromNodes(const unsigned int& iMeshID,
                  const bool& iSaveInDataBase,
                  bool NewMesh)
 {
-  AddMeshFromNodes(iMeshID, iNodes, iRgba[0], iRgba[1], iRgba[2], iRgba[3],
-                   iHighlighted, iTCoord, iSaveInDataBase,NewMesh);
+  AddMeshFromNodes(iMeshID, iNodes, 
+                   iHighlighted, iTCoord, iSaveInDataBase,NewMesh,
+                   iRgba[0], iRgba[1], iRgba[2], iRgba[3]);
 }
 //-------------------------------------------------------------------------
 
@@ -3574,7 +3575,8 @@ SavePolyDataAsMeshInDB(vtkPolyData* iView, const int& iMeshID,
     m_MeshId = MeshData.first;
     MeshData.second.getRgbF(&r,&g,&b,&a);
     }
-  else
+  else //in case this function is called only to render existing meshes from the database when loading
+    //all traces after opening a new imagingsession:
     {
     m_MeshId = iMeshID;
     r = iR;
