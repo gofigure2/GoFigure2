@@ -2134,10 +2134,10 @@ ShowOneChannel(int iChannel)
 int
 QGoTabImageView3DwT::
 ValidateContour(const int& iContourID, const int& iDir,
-                //const double& iR, const double& iG, const double& iB, const double& iA,
                 const bool& iHighlighted, const unsigned int& iTCoord,
                 const bool& iSaveInDataBase,
-                vtkPolyData* contour, vtkPolyData* contour_nodes)
+                vtkPolyData* contour, vtkPolyData* contour_nodes,
+                const double& iR, const double& iG, const double& iB, const double& iA)
 {
   //vtkPolyData* contour = m_ImageView->GetContourRepresentationAsPolydata(iDir);
   double r, g, b, a(1.);
@@ -2206,6 +2206,10 @@ ValidateContour(const int& iContourID, const int& iDir,
       if (iContourID != -1)
         {
         m_ContourId = iContourID;
+        r = iR;
+        g = iG;
+        b = iB;
+        a = iA;
         }
       }
     
@@ -2578,14 +2582,11 @@ AddContourFromNodes(const unsigned int& iContourID,
       {
       m_ImageView->ContourWidgetMode( true );
       m_ImageView->InitializeContourWidgetNodes( dir, iNodes );
-      /*ValidateContour(iContourID, dir, iR, iG, iB, iA, iHighlighted,
-                            iTCoord, iSaveInDataBase,
-                            m_ImageView->GetContourRepresentationAsPolydata(dir),
-                            m_ImageView->GetContourRepresentationNodePolydata(dir));*/
       ValidateContour(iContourID, dir, iHighlighted,
-                            iTCoord, iSaveInDataBase,
-                            m_ImageView->GetContourRepresentationAsPolydata(dir),
-                            m_ImageView->GetContourRepresentationNodePolydata(dir));
+                      iTCoord, iSaveInDataBase,
+                      m_ImageView->GetContourRepresentationAsPolydata(dir),
+                      m_ImageView->GetContourRepresentationNodePolydata(dir),
+                      iR, iG, iB, iA);
       m_ImageView->ContourWidgetMode( false );
       }
     }

@@ -450,9 +450,10 @@ protected:
    * \todo Alpha component is not used at all, it is assumed to be opaque
    */
   virtual int ValidateContour(const int& iContourID, const int& iDir,
-                               //const double& iR, const double& iG, const double& iB, const double& iA,
-                               const bool& iHighlighted, const unsigned int& iTCoord, const bool& iSaveInDataBase,
-                               vtkPolyData* contour, vtkPolyData* contour_nodes);
+                              const bool& iHighlighted, const unsigned int& iTCoord, const bool& iSaveInDataBase,
+                              vtkPolyData* contour, vtkPolyData* contour_nodes,
+                              const double& iR = 0, const double& iG = 0, const double& iB = 0, const double& iA = 0
+                              );
 
   /**
    * @param[in] iContourID

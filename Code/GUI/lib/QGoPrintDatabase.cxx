@@ -96,6 +96,12 @@ QGoPrintDatabase(QWidget* iParent) :
                             QIcon::Normal, QIcon::Off);
   m_VisibilityAction->setIcon(TableWidgetIcon);
   m_VisibilityAction->setCheckable(true);
+  
+  this->m_TraceManualEditingDockWidget =
+    new QGoTraceManualEditingDockWidget(this);
+
+  this->m_TraceWidget = 
+    this->m_TraceManualEditingDockWidget->m_TraceWidget;
 
   QObject::connect(m_VisibilityAction, SIGNAL(toggled(bool)),
                    this, SLOT(setVisible(bool)));
@@ -185,12 +191,6 @@ void QGoPrintDatabase::SetDatabaseVariables(
   this->m_CellTypeManager = new QGoDBCellTypeManager(this);
   //to check: set the list directly ?
   this->m_SubCellTypeManager = new QGoDBSubCellTypeManager(this);
-
-  this->m_TraceManualEditingDockWidget =
-    new QGoTraceManualEditingDockWidget(this);
-
-  this->m_TraceWidget = 
-    this->m_TraceManualEditingDockWidget->m_TraceWidget;
   this->InitializeTheComboboxesNotTraceRelated();
   this->SetListExistingCollectionIDFromDB();
 }
