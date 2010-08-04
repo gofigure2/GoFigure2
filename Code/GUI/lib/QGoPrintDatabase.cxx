@@ -2373,6 +2373,7 @@ void QGoPrintDatabase::UpdateWidgetsForCorrespondingTrace(std::string iTraceName
      this->SetTable(iTraceName);
      this->blockSignals(false);
      }
+   this->m_TraceManualEditingDockWidget->show();
 }
 //-------------------------------------------------------------------------
 
