@@ -73,9 +73,10 @@ void QGoSelectedColorComboBox::ActionWhenNewOneRequested()
             NewItemData.first = ColorName.toStdString();
             NewItemData.second = col;
           //pass the data for the new color to be saved in the database
-            emit NewColorToBeSaved(NewItemData);
-            this->m_LastActivated = ColorName;
-            emit activated(ColorName);
+            //this->m_LastActivated = ColorName;
+            emit NewColorToBeSaved(NewItemData);           
+            //emit activated(ColorName);
+            emit activated(this->findText(ColorName));
             }
           else
             {
@@ -102,3 +103,23 @@ bool QGoSelectedColorComboBox::NewColorNameAlreadyExist(QString iText)
   }
   return true;
 }
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+/*void QGoSelectedColorComboBox::SetActivatedItem()
+{
+  //set the selected item to the last one activated if it still exists, if not, to the one
+  // selected automatically by the combobox:
+  int index;
+  int IndexLastActivated = this->findText(this->m_LastActivated);
+  if ( IndexLastActivated != -1)
+    {
+    index = IndexLastActivated;
+    }
+  else
+    {
+    index = this->currentIndex();
+    }
+  emit ItemSelected(this->GetTheItemColorComboBoxData(index));
+}
+*/

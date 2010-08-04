@@ -102,6 +102,7 @@ QGoPrintDatabase(QWidget* iParent) :
 
   this->m_TraceWidget = 
     this->m_TraceManualEditingDockWidget->m_TraceWidget;
+  this->CreateConnectionsForTraceManualEditingWidget();
 
   QObject::connect(m_VisibilityAction, SIGNAL(toggled(bool)),
                    this, SLOT(setVisible(bool)));
@@ -1322,6 +1323,7 @@ SaveNewColorInDB(ItemColorComboboxData iDataNewColor)
     NewColor.SaveInDB(m_DatabaseConnector);
 
     this->CloseDBConnection();
+    this->SetColorComboBoxInfofromDB();
     //this->m_TraceWidget->AddAnewColorInCombobox(iDataNewColor);
       //}
     //}

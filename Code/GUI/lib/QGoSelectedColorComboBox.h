@@ -110,6 +110,9 @@ public slots:
  // void DeleteCollectionID(unsigned int);
 //  void DontAddTheColor();
 
+  protected: 
+  //virtual void SetActivatedItem();
+
 protected slots:
   virtual void ActionWhenNewOneRequested();
   //void emitActivatedItem(int iIndexActivatedItem);

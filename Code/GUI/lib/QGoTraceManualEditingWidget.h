@@ -128,5 +128,6 @@ protected:
   void SetSubCellTypeComboBox();
   QHBoxLayout* HLayoutForColor;
   QVBoxLayout* VLayoutForCollection;
+
   };
 #endif

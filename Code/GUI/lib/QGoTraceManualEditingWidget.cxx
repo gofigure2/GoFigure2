@@ -141,7 +141,6 @@ SetSelectedColorComboBox()
   QObject::connect(this->m_SelectedColorComboBox,
     SIGNAL(NewColorToBeSaved(ItemColorComboboxData)),
     this,SIGNAL(NewColorToBeSaved(ItemColorComboboxData)));
-
 }
 //-------------------------------------------------------------------------
 

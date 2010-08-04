@@ -80,7 +80,8 @@ void QGoColorComboBox::setItemsWithColorFromList(
       }
     this->addItem(this->m_TextToAddANewOne.c_str());
     this->show();
-    emit ItemSelected(this->GetTheItemColorComboBoxData(this->currentIndex()));
+    //emit ItemSelected(this->GetTheItemColorComboBoxData(this->currentIndex()));
+    this->SetActivatedItem();
     }
 }
 //--------------------------------------------------------------------------
@@ -157,4 +158,12 @@ void QGoColorComboBox::ListToUpdateWithItemDeleted(
   this->setItemsWithColorFromList(iDataFromList);
   int Index = this->findText(this->m_LastActivated);
   this->setCurrentIndex(Index);
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoColorComboBox::SetActivatedItem()
+{
+  //by default, the one selected by the combobox is the one to stick to:
+  this->emitActivatedItem(this->currentIndex());
 }

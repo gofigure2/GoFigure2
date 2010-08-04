@@ -117,6 +117,8 @@ protected:
   QString     m_LastActivated;
   ItemColorComboboxData GetTheItemColorComboBoxData(int iIndex);
 
+  virtual     void SetActivatedItem();
+
 
 protected slots:
   virtual void ActionWhenNewOneRequested() = 0;
