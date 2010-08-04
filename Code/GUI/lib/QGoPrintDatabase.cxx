@@ -2006,9 +2006,9 @@ void QGoPrintDatabase::SetListSubCellTypes(std::string iNewSubCellType)
 void QGoPrintDatabase::AddNewSubCellType()
 {
   this->OpenDBConnection();
-  std::string NewCellType = 
+  std::string NewSubCellType = 
     this->m_SubCellTypeManager->AddAnEntity(this->m_DatabaseConnector);
-  this->SetListCellTypes(NewCellType);
+  this->SetListSubCellTypes(NewSubCellType);
   this->CloseDBConnection();
 }
 //-------------------------------------------------------------------------
