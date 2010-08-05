@@ -1905,7 +1905,8 @@ GetListBookmarks()
 {
   this->OpenDBConnection();
   NamesDescrContainerType ListBookmarks =
-    this->m_BookmarkManager->GetListExistingBookmarks(this->m_DatabaseConnector);
+    this->m_BookmarkManager->GetListExistingEntities(this->m_DatabaseConnector);
+    //this->m_BookmarkManager->GetListExistingBookmarks(this->m_DatabaseConnector);
   this->CloseDBConnection();
   return ListBookmarks;
 }

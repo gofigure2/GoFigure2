@@ -41,18 +41,21 @@
 #ifndef __QGoDBBookmarkManager_h
 #define __QGoDBBookmarkManager_h
 
-#include <QDialog>
-#include <QWidget>
-#include <QTextEdit>
-#include <QMenu>
-#include "vtkMySQLDatabase.h"
-#include "QNameDescriptionInputDialog.h"
+//#include <QDialog>
+//#include <QWidget>
+//#include <QTextEdit>
+//#include <QMenu>
+//#include "vtkMySQLDatabase.h"
+//#include "QNameDescriptionInputDialog.h"
 #include "GoDBCoordinateRow.h"
+#include "GoDBBookmarkRow.h"
 
 #include "QGoGUILibConfigure.h"
+#include "QGoDBEntityManager.h"
 
 class QGOGUILIB_EXPORT QGoDBBookmarkManager :
-  public QWidget
+  //public QWidget
+  public QGoDBEntityManager
   {
   Q_OBJECT
 
@@ -62,8 +65,8 @@ public:
 
   ~QGoDBBookmarkManager();
 
-  typedef std::vector<std::pair<std::string, std::string> >
-  NamesDescrContainerType;
+  //typedef std::vector<std::pair<std::string, std::string> >
+  //NamesDescrContainerType;
 
   /** \brief execute the dialog asking the user to enter a name and a
   description, validates the name, set the m_DatabaseConnectorForNewBkmrk
@@ -72,8 +75,8 @@ public:
 
   /** \brief return the list of existing bookmarks for the imagingsession
   stored in the database*/
-  NamesDescrContainerType GetListExistingBookmarks(
-    vtkMySQLDatabase* iDatabaseConnector);
+  //NamesDescrContainerType GetListExistingBookmarks(
+    //vtkMySQLDatabase* iDatabaseConnector);
 
   /** \brief return the coordinate for the bookmark with the name iName*/
   GoDBCoordinateRow GetCoordinatesForBookmark(
@@ -82,13 +85,11 @@ public:
   void DeleteBookmark(vtkMySQLDatabase* iDatabaseConnector);
 
 protected:
-  int                          m_ImgSessionID;
+  //int                          m_ImgSessionID;
+  GoDBBookmarkRow              m_NewBookmark;
   int                          m_CoordIDForNewBookmark;
-  QNameDescriptionInputDialog* m_NameDescDialog;
-  vtkMySQLDatabase*            m_DatabaseConnectorForNewBkmrk;
-
-  bool DoesThisBookmarkNameAlreadyExistsInTheDB(
-    vtkMySQLDatabase* DatabaseConnector, std::string iName);
+  //QNameDescriptionInputDialog* m_NameDescDialog;
+  //vtkMySQLDatabase*            m_DatabaseConnectorForNewBkmrk;
 
 protected slots:
   /** \brief save the new bookmark in the database, the
@@ -96,7 +97,7 @@ protected slots:
   calling this method. Check that the bookmark doesn't
   already exits in the database, if so, give the user
   the name of the existing bookmark*/
-  void SaveNewBookmarkInDB(std::string iName, std::string
+  void SaveNewEntityInDB(std::string iName, std::string
     iDescription);
 
   int GetCoordIDForBookmark(vtkMySQLDatabase* iDatabaseConnector,

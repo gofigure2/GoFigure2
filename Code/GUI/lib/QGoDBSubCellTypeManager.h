@@ -64,9 +64,6 @@ protected:
   virtual void SaveNewEntityInDB(std::string iName, std::string iDescription);
 
 protected slots:
-
-  //virtual void SaveNewEntityInDB();
-
   virtual void ValidateName(std::string iName, std::string iDescription);
 
   };

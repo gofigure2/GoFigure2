@@ -51,9 +51,9 @@
 
 QGoDBBookmarkManager::QGoDBBookmarkManager(QWidget* iParent,
                                            int iImgSessionID) :
-  QWidget(iParent)
+  QGoDBEntityManager(iParent,"bookmark",iImgSessionID)
   {
-  this->m_ImgSessionID = iImgSessionID;
+  //this->m_ImgSessionID = iImgSessionID;
   }
 //-------------------------------------------------------------------------
 
@@ -68,52 +68,56 @@ void QGoDBBookmarkManager::AddABookmark(int iCoordID,
                                         vtkMySQLDatabase* iDatabaseConnector)
 {
   this->m_CoordIDForNewBookmark = iCoordID;
-  this->m_NameDescDialog = new QNameDescriptionInputDialog(
+  this->AddAnEntity(iDatabaseConnector);
+ /* this->m_NameDescDialog = new QNameDescriptionInputDialog(
     this, "Bookmark");
   this->m_DatabaseConnectorForNewBkmrk = iDatabaseConnector;
   QObject::connect (this->m_NameDescDialog, 
                     SIGNAL(NewNameDescription(std::string, std::string)),
                     this, SLOT(ValidateName(std::string,std::string)));
-  this->m_NameDescDialog->exec();
+  this->m_NameDescDialog->exec();*/
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoDBBookmarkManager::SaveNewBookmarkInDB(std::string iName, 
+void QGoDBBookmarkManager::SaveNewEntityInDB(std::string iName, 
                                                std::string iDescription)
 {
-  GoDBBookmarkRow NewBookmark;
   //NewBookmark.SetField("Name", this->m_NameDescDialog->GetInputTextForName());
-  NewBookmark.SetField("Name", iName);
   //NewBookmark.SetField("Description",
                      //  this->m_NameDescDialog->GetInputTextForDescription());
-  NewBookmark.SetField("Description", iDescription);
+  //this->m_NewBookmark.SetField("Description", iDescription);
   QDateTime   CreationDate = QDateTime::currentDateTime();
   std::string CreationDateStr =
     CreationDate.toString(Qt::ISODate).toStdString();
-  NewBookmark.SetField("CreationDate", CreationDateStr);
-  NewBookmark.SetField<int>("CoordID", this->m_CoordIDForNewBookmark);
-  NewBookmark.SetField<int>("ImagingSessionID", this->m_ImgSessionID);
+  this->m_NewBookmark.SetField("CreationDate", CreationDateStr);
+  this->m_NewBookmark.SetField<int>("CoordID", this->m_CoordIDForNewBookmark);
+  this->m_NewBookmark.SetField<int>("ImagingSessionID", this->m_ImgSessionID);
 
-  std::string BookmarkName = NewBookmark.GetMapValue("Name");
-  if (NewBookmark.DoesThisBookmarkAlreadyExists(
-        this->m_DatabaseConnectorForNewBkmrk, BookmarkName) != -1)
+  /*if (this->m_NewBookmark.DoesThisEntityAlreadyExists(
+    this->m_DatabaseConnectorForNewEntity, iName) != -1)
     {
     QMessageBox msgBox;
     msgBox.setText(
-      tr("This bookmark already exists, its name is: ' %1 ' ").arg(BookmarkName.c_str()));
+      tr("This bookmark already exists, its name is: ' %1 ' ").arg(iName.c_str()));
     msgBox.exec();
     }
   else
     {
-    NewBookmark.SaveInDB(this->m_DatabaseConnectorForNewBkmrk);
+    this->m_NewBookmark.SaveInDB(this->m_DatabaseConnectorForNewEntity);
     emit ListBookmarksChanged();
+    }*/
+  if(!this->CheckEntityAlreadyExists<GoDBBookmarkRow>(
+    this->m_NewBookmark,iName,iDescription))
+    {
+    this->m_NewBookmark.SaveInDB(this->m_DatabaseConnectorForNewEntity);
+      emit ListBookmarksChanged();
     }
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-QGoDBBookmarkManager::NamesDescrContainerType QGoDBBookmarkManager::
+/*QGoDBBookmarkManager::NamesDescrContainerType QGoDBBookmarkManager::
 GetListExistingBookmarks(vtkMySQLDatabase* iDatabaseConnector)
 {
   // return ListSpecificValuesForOneColumn(iDatabaseConnector,"bookmark",
@@ -121,7 +125,7 @@ GetListExistingBookmarks(vtkMySQLDatabase* iDatabaseConnector)
   return ListSpecificValuesForTwoColumns(iDatabaseConnector, "bookmark",
                                          "Name", "Description", "ImagingSessionID",
                                          ConvertToString<int>(this->m_ImgSessionID), "Name");
-}
+}*/
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -145,7 +149,7 @@ int QGoDBBookmarkManager::GetCoordIDForBookmark(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-bool QGoDBBookmarkManager::DoesThisBookmarkNameAlreadyExistsInTheDB(
+/*bool QGoDBBookmarkManager::DoesThisBookmarkNameAlreadyExistsInTheDB(
   vtkMySQLDatabase* DatabaseConnector, std::string iName)
 {
   int ID = FindOneID(DatabaseConnector, "bookmark", "BookmarkID",
@@ -155,25 +159,28 @@ bool QGoDBBookmarkManager::DoesThisBookmarkNameAlreadyExistsInTheDB(
     return false;
     }
   return true;
-}
+}*/
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void QGoDBBookmarkManager::ValidateName(std::string iName, 
                                         std::string iDescription)
 {
-  if (this->DoesThisBookmarkNameAlreadyExistsInTheDB(
-        this->m_DatabaseConnectorForNewBkmrk,
+  this->ValidateNameTemplate<GoDBBookmarkRow>(this->m_NewBookmark,
+    iName,iDescription);
+  /*this->m_NewBookmark.SetField("Name",iName);
+  if (this->m_NewBookmark.DoesThisNameAlreadyExists(
+    this->m_DatabaseConnectorForNewEntity) != -1)
        // this->m_NameDescDialog->GetInputTextForName()))
-       iName))
+       //iName))
     {
     this->m_NameDescDialog->NameAlreadyExists();
     }
   else
     {
     this->m_NameDescDialog->accept();
-    this->SaveNewBookmarkInDB(iName,iDescription);
-    }
+    this->SaveNewEntityInDB(iName,iDescription);
+    }*/
 }
 //-------------------------------------------------------------------------
 
@@ -181,10 +188,16 @@ void QGoDBBookmarkManager::ValidateName(std::string iName,
 void QGoDBBookmarkManager::DeleteBookmark(
   vtkMySQLDatabase* iDatabaseConnector)
 {
-  QGoDeleteDBEntityDialog* Dialog = new QGoDeleteDBEntityDialog(
+ /* QGoDeleteDBEntityDialog* Dialog = new QGoDeleteDBEntityDialog(
     this, "bookmark", this->m_ImgSessionID, iDatabaseConnector);
   QObject::connect(Dialog, SIGNAL(ListEntitiesChanged()),
                    this, SIGNAL(ListBookmarksChanged()));
   Dialog->show();
-  Dialog->exec();
+  Dialog->exec();*/
+  bool ok = QGoDBEntityManager::DeleteEntity(iDatabaseConnector);
+  if (ok)
+    {
+    emit ListBookmarksChanged();//to update the menu for bookmarks;
+    }
+
 }

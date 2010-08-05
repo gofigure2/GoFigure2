@@ -70,7 +70,7 @@ entity already exiting or -1 if not yet created:*/
 
   /**\brief check if the name already exits in the database, if yes,
   return the corresponding ID, if not -1*/
-  int DoesThisNameAlreadyExists(vtkMySQLDatabase* DatabaseConnector);
+  virtual int DoesThisNameAlreadyExists(vtkMySQLDatabase* DatabaseConnector);
 
 protected:
   virtual void InitializeMap();

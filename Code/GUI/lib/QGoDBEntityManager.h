@@ -77,6 +77,14 @@ public:
   bool DeleteEntity(vtkMySQLDatabase* iDatabaseConnector);
   std::string GetNameNewEntity();
 
+protected slots:
+
+  /** \brief check that the name doesn't already exists in the
+  database, if so, make the m_NameDescDialog asks the user to
+  choose another one, if no, close the m_NameDescDialog and
+  call SaveNewEntityInDB()*/
+  virtual void ValidateName(std::string,std::string) = 0;
+
 protected:
   int                          m_ImgSessionID;
   std::string                  m_EntityName;
@@ -92,27 +100,48 @@ protected:
   the name of the existing entity*/
   virtual void SaveNewEntityInDB(std::string iName,
     std::string iDescription) = 0;
-
-protected slots:
-  /** \brief save the new entity in the database, the
-  m_DatabaseConnectorForNewEntity needs to be set before
-  calling this method. Check that the entity doesn't
-  already exits in the database, if so, give the user
-  the name of the existing entity*/
-  //virtual void SaveNewEntityInDB(std::string iName,
-   // std::string iDescription) = 0;
-
-  /** \brief check that the name doesn't already exists in the
-  database, if so, make the m_NameDescDialog asks the user to
-  choose another one, if no, close the m_NameDescDialog and
-  call SaveNewEntityInDB()*/
-  virtual void ValidateName(std::string,std::string) = 0;
   
-signals:
+  template <typename T>
+  bool CheckEntityAlreadyExists(T &iNewEntity,std::string iName,
+    std::string iDescription)
+  {
+    iNewEntity.SetField("Description",iDescription);
+    if (iNewEntity.DoesThisEntityAlreadyExists(
+        this->m_DatabaseConnectorForNewEntity, iName) != -1)
+      {
+      QMessageBox msgBox;
+      msgBox.setText(
+        tr("This %1 already exists, its name is: ' %2 ' ")
+        .arg(this->m_EntityName.c_str())
+        .arg(iName.c_str()));
+      msgBox.exec();
+      return true;
+      }
+    else
+      {
+      //iNewEntity.SaveInDB(this->m_DatabaseConnectorForNewEntity);
+      this->m_NameNewEntity =iName;
+      return false;
+      }
+  }
 
-  //void ListEntitiesChanged();
-  //void CancelRequested();
-
-
+  template< typename T>
+  void ValidateNameTemplate(T &iNewEntity, std::string iName, std::string iDescription)
+  {
+  iNewEntity.SetField("Name",iName);
+  if (iNewEntity.DoesThisNameAlreadyExists(
+    this->m_DatabaseConnectorForNewEntity) != -1)
+       // this->m_NameDescDialog->GetInputTextForName()))
+       //iName))
+    {
+    this->m_NameDescDialog->NameAlreadyExists();
+    }
+  else
+    {
+    this->m_NameDescDialog->accept();
+    this->SaveNewEntityInDB(iName,iDescription);
+    }
+  }
+  
   };
 #endif

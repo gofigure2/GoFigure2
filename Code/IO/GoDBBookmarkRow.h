@@ -44,11 +44,11 @@
 #include <map>
 #include <iostream>
 #include <sstream>
-#include "GoDBRow.h"
+#include "GoDBNameDescRow.h"
 #include "ConvertToStringHelper.h"
 #include "vtkMySQLDatabase.h"
 
-class QGOIO_EXPORT GoDBBookmarkRow : public GoDBRow
+class QGOIO_EXPORT GoDBBookmarkRow : public GoDBNameDescRow
   {
 public:
   GoDBBookmarkRow();
@@ -58,17 +58,31 @@ public:
   /**\brief check if the bookmark already exits in the DB, if yes,
   return the existing ID, if not, save it in the DB and return the
   ID for new created bookmark*/
-  int SaveInDB(vtkMySQLDatabase* DatabaseConnector);
+  virtual int SaveInDB(vtkMySQLDatabase* DatabaseConnector);
 
   /**\brief check if the bookmark already exits in the database, if yes,
   return the corresponding ID, if not, return -1*/
-  int DoesThisBookmarkAlreadyExists(vtkMySQLDatabase* DatabaseConnector);
+  //int DoesThisBookmarkAlreadyExists(vtkMySQLDatabase* DatabaseConnector);
+
+   virtual int DoesThisEntityAlreadyExists(
+    vtkMySQLDatabase* DatabaseConnector);
+
+   virtual int DoesThisEntityAlreadyExists(
+    vtkMySQLDatabase* DatabaseConnector, std::string& ioName);
+
+   virtual int DoesThisNameAlreadyExists(
+    vtkMySQLDatabase* DatabaseConnector);
 
   /**\brief check if the bookmark already exits in the database, if yes,
   return the corresponding ID, if not, return -1 and the name of the
   existing bookmark*/
-  int DoesThisBookmarkAlreadyExists(vtkMySQLDatabase* DatabaseConnector,
-                                    std::string& ioName);
+  //int DoesThisBookmarkAlreadyExists(vtkMySQLDatabase* DatabaseConnector,
+                                    //std::string& ioName);
+  
+  /**\brief check if the bookmark name already exits in the database, if yes,
+  return true, if not, return false*/
+  //bool DoesThisBookmarkNameAlreadyExistsInTheDB(
+    //vtkMySQLDatabase* DatabaseConnector);
 
 protected:
   virtual void InitializeMap();
