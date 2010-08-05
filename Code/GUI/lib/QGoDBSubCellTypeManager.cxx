@@ -70,7 +70,7 @@ void QGoDBSubCellTypeManager::SaveNewEntityInDB(
     {
     this->m_NewSubCellType.SaveInDB(this->m_DatabaseConnectorForNewEntity);
     this->m_NameNewEntity = SubCellTypeName;
-    emit ListEntitiesChanged();
+    //emit ListEntitiesChanged();
     }
 }
 //------------------------------------------------------------------------------

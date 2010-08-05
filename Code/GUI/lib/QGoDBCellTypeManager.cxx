@@ -68,7 +68,7 @@ void QGoDBCellTypeManager::SaveNewEntityInDB(std::string iName, std::string iDes
     {
     this->m_NewCellType.SaveInDB(this->m_DatabaseConnectorForNewEntity);
     this->m_NameNewEntity = CellTypeName;
-    emit ListEntitiesChanged();
+    //emit ListEntitiesChanged();
     }
 }
 //------------------------------------------------------------------------------

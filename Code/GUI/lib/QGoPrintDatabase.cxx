@@ -1979,10 +1979,14 @@ void QGoPrintDatabase::AddNewCellType()
 void QGoPrintDatabase::DeleteCellType()
 {
   this->OpenDBConnection();
-  this->m_CellTypeManager->DeleteEntity(this->m_DatabaseConnector);
-  //get the last selected cell type, which is the one stored in m_SelectedCellType
-  //as the selected one:
-  this->SetListCellTypes(this->m_SelectedCellType);
+  if(this->m_CellTypeManager->DeleteEntity(this->m_DatabaseConnector))
+    {
+    this->SetListCellTypes(this->m_SelectedCellType);
+    }
+  else //if the user cancelled, go to the last selected one:
+    {
+    this->m_TraceWidget->SetCurrentCellType(this->m_SelectedCellType);
+    }
   this->CloseDBConnection();
 }
 //-------------------------------------------------------------------------
@@ -2021,7 +2025,7 @@ void QGoPrintDatabase::AddNewSubCellType()
     {
     this->SetListSubCellTypes(NewSubCellType);
     }
-  else
+  else //if the NewSubCellType is empty, go to the last selected one:
     {
     this->m_TraceWidget->SetCurrentSubCellType(this->m_SelectedSubCellType);
     }
@@ -2033,8 +2037,14 @@ void QGoPrintDatabase::AddNewSubCellType()
 void QGoPrintDatabase::DeleteSubCellType()
 {
   this->OpenDBConnection();
-  this->m_SubCellTypeManager->DeleteEntity(this->m_DatabaseConnector);
-  this->SetListSubCellTypes(this->m_SelectedSubCellType);
+  if (this->m_SubCellTypeManager->DeleteEntity(this->m_DatabaseConnector))
+    {
+    this->SetListSubCellTypes(this->m_SelectedSubCellType);
+    }
+  else //if the user cancelled, go to the last selected one:
+    {
+    this->m_TraceWidget->SetCurrentSubCellType(this->m_SelectedSubCellType);
+    }
   this->CloseDBConnection();
 }
 //-------------------------------------------------------------------------

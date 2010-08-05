@@ -74,7 +74,7 @@ public:
   /** \brief show the list of the existing entities so the user can
   choose the ones he wants to delete, then delete them from the
   database*/
-  void DeleteEntity(vtkMySQLDatabase* iDatabaseConnector);
+  bool DeleteEntity(vtkMySQLDatabase* iDatabaseConnector);
   std::string GetNameNewEntity();
 
 protected:
@@ -110,8 +110,8 @@ protected slots:
   
 signals:
 
-  void ListEntitiesChanged();
-  void CancelRequested();
+  //void ListEntitiesChanged();
+  //void CancelRequested();
 
 
   };

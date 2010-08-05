@@ -178,17 +178,17 @@ GetListExistingEntities(vtkMySQLDatabase* iDatabaseConnector)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoDBEntityManager::DeleteEntity(
+bool QGoDBEntityManager::DeleteEntity(
   vtkMySQLDatabase* iDatabaseConnector)
 {
   QGoDeleteDBEntityDialog* Dialog = new QGoDeleteDBEntityDialog(
     this, this->m_EntityName, this->m_ImgSessionID, iDatabaseConnector);
-  QObject::connect(Dialog, SIGNAL(ListEntitiesChanged()),
-                   this, SIGNAL(ListEntitiesChanged()));
-  QObject::connect(Dialog,SIGNAL(CancelRequested()),
-                    this, SIGNAL(GoToLastSelectedOne()));
+  //QObject::connect(Dialog, SIGNAL(ListEntitiesChanged()),
+   //                this, SIGNAL(ListEntitiesChanged()));
+  //QObject::connect(Dialog,SIGNAL(CancelRequested()),
+                    //this, SIGNAL(GoToLastSelectedOne()));
   Dialog->show();
-  Dialog->exec();
+  return Dialog->exec();
 }
 //-------------------------------------------------------------------------
 
