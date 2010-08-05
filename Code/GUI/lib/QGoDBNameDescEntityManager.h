@@ -1,7 +1,7 @@
 /*=========================================================================
-  Author: $Author$  // Author of last commit
-  Version: $Rev$  // Revision of last commit
-  Date: $Date$  // Date of last commit
+  Author: $Author: lsouhait $  // Author of last commit
+  Version: $Rev: 1902 $  // Revision of last commit
+  Date: $Date: 2010-08-05 15:24:47 -0400 (Thu, 05 Aug 2010) $  // Date of last commit
 =========================================================================*/
 
 /*=========================================================================
@@ -38,30 +38,33 @@
 
 =========================================================================*/
 
-#ifndef __QGoDBEntityManager_h
-#define __QGoDBEntityManager_h
+#ifndef __QGoDBNameDescEntityManager_h
+#define __QGoDBNameDescEntityManager_h
 
-//#include <QDialog>
 #include <QWidget>
-//#include <QTextEdit>
-//#include <QMenu>
+#include <QMessageBox>
 #include "vtkMySQLDatabase.h"
 #include "QNameDescriptionInputDialog.h"
-//#include "GoDBCoordinateRow.h"
 
-class QGoDBEntityManager :
+/**
+\class QGoDBEntityManager
+\brief the QGoDBNameDescEntityManager manages the interactions between the user and the database
+for all the DBtables containing a name and a description.
+*/
+class QGoDBNameDescEntityManager :
   public QWidget
   {
   Q_OBJECT
 
 public:
-  explicit QGoDBEntityManager (QWidget* iParent = 0,
+  explicit QGoDBNameDescEntityManager (QWidget* iParent = 0,
                                std::string iEntityName = "", int iImgSessionID = 0);
 
-  ~QGoDBEntityManager();
+  ~QGoDBNameDescEntityManager();
 
   typedef std::vector<std::pair<std::string, std::string> >
   NamesDescrContainerType;
+
   /** \brief execute the dialog asking the user to enter a name and a
   description, validates the name, set the m_DatabaseConnectorForNewBkmrk,
   save the entity in the DB and return the name of the new entity*/
@@ -71,6 +74,7 @@ public:
   in the database*/
   NamesDescrContainerType GetListExistingEntities(
     vtkMySQLDatabase* iDatabaseConnector);
+
   /** \brief show the list of the existing entities so the user can
   choose the ones he wants to delete, then delete them from the
   database*/
@@ -88,7 +92,6 @@ protected slots:
 protected:
   int                          m_ImgSessionID;
   std::string                  m_EntityName;
-  int                          m_CoordIDForNewEntity;
   QNameDescriptionInputDialog* m_NameDescDialog;
   vtkMySQLDatabase*            m_DatabaseConnectorForNewEntity;
   std::string                  m_NameNewEntity;
@@ -101,6 +104,9 @@ protected:
   virtual void SaveNewEntityInDB(std::string iName,
     std::string iDescription) = 0;
   
+  /** \brief check if the entity already exists in the database,
+  if yes, give the name of the existing entity to the user, if
+  no, record the name iName as the name of the new entity*/
   template <typename T>
   bool CheckEntityAlreadyExists(T &iNewEntity,std::string iName,
     std::string iDescription)
@@ -119,20 +125,19 @@ protected:
       }
     else
       {
-      //iNewEntity.SaveInDB(this->m_DatabaseConnectorForNewEntity);
       this->m_NameNewEntity =iName;
       return false;
       }
   }
 
+  /** \brief check if the name already exists for this entity in the database, if
+  yes, let the user know, if not, call SaveNewEntityInDB*/
   template< typename T>
   void ValidateNameTemplate(T &iNewEntity, std::string iName, std::string iDescription)
   {
   iNewEntity.SetField("Name",iName);
   if (iNewEntity.DoesThisNameAlreadyExists(
     this->m_DatabaseConnectorForNewEntity) != -1)
-       // this->m_NameDescDialog->GetInputTextForName()))
-       //iName))
     {
     this->m_NameDescDialog->NameAlreadyExists();
     }

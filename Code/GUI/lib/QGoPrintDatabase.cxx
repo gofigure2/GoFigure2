@@ -957,10 +957,11 @@ QGoPrintDatabase::IDWithColorData QGoPrintDatabase::UpdateContourFromVisuInDB(un
   CloseDBConnection();
   IDWithColorData UpdatedContourData;
   UpdatedContourData.first = ContourID;
-  QColor Color(atoi(contour_row.GetMapValue("red").c_str()),
+  /*QColor Color(atoi(contour_row.GetMapValue("red").c_str()),
                atoi(contour_row.GetMapValue("green").c_str()),
                atoi(contour_row.GetMapValue("blue").c_str()),
-               atoi(contour_row.GetMapValue("alpha").c_str()));
+               atoi(contour_row.GetMapValue("alpha").c_str()));*/
+  QColor Color = this->GetQColorFromTraceRow<GoDBContourRow>(contour_row);
   UpdatedContourData.second = Color;
   return UpdatedContourData;
 }
@@ -1290,10 +1291,11 @@ SaveNewColorInDB(ItemColorComboboxData iDataNewColor)
   this->OpenDBConnection();
   GoDBColorRow NewColor;
   NewColor.SetField("Name", iDataNewColor.first);
-  NewColor.SetField<int>("Red", iDataNewColor.second.red());
+  this->SetTheColorForTheRow<GoDBColorRow>(NewColor,iDataNewColor.second);
+  /*NewColor.SetField<int>("Red", iDataNewColor.second.red());
   NewColor.SetField<int>("Green", iDataNewColor.second.green());
   NewColor.SetField<int>("Blue", iDataNewColor.second.blue());
-  NewColor.SetField<int>("Alpha", iDataNewColor.second.alpha());
+  NewColor.SetField<int>("Alpha", iDataNewColor.second.alpha());*/
   NewColor.SaveInDB(m_DatabaseConnector);
 
   this->CloseDBConnection();

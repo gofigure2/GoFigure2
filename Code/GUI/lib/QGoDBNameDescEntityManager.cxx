@@ -1,7 +1,7 @@
 /*=========================================================================
-  Author: $Author$  // Author of last commit
-  Version: $Rev$  // Revision of last commit
-  Date: $Date$  // Date of last commit
+  Author: $Author: lsouhait $  // Author of last commit
+  Version: $Rev: 1902 $  // Revision of last commit
+  Date: $Date: 2010-08-05 15:24:47 -0400 (Thu, 05 Aug 2010) $  // Date of last commit
 =========================================================================*/
 
 /*=========================================================================
@@ -37,16 +37,9 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-
 #include "QGoDBNameDescEntityManager.h"
-//#include "GoDBNameDescRow.h"
-//#include <QMessageBox>
-//#include <QDateTime>
-//#include <QFormLayout>
-//#include <QTextEdit>
-//#include "QueryDataBaseHelper.h"
-//#include "QNameDescriptionInputDialog.h"
-//#include "SelectQueryDatabaseHelper.h"
+#include "ConvertToStringHelper.h"
+#include "SelectQueryDatabaseHelper.h"
 #include "QGoDeleteDBEntityDialog.h"
 
 QGoDBNameDescEntityManager::QGoDBNameDescEntityManager(QWidget* iParent,
@@ -60,7 +53,7 @@ QGoDBNameDescEntityManager::QGoDBNameDescEntityManager(QWidget* iParent,
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-QGoDBNameDescEntityManager::~QGoDBEntityManager()
+QGoDBNameDescEntityManager::~QGoDBNameDescEntityManager()
   {
   }
 //-------------------------------------------------------------------------
@@ -88,8 +81,8 @@ std::string QGoDBNameDescEntityManager::AddAnEntity(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-QGoDBNameDescEntityManager::NamesDescrContainerType QGoDBEntityManager::
-GetListExistingEntities(vtkMySQLDatabase* iDatabaseConnector)
+QGoDBNameDescEntityManager::NamesDescrContainerType 
+QGoDBNameDescEntityManager::GetListExistingEntities(vtkMySQLDatabase* iDatabaseConnector)
 {
   if (this->m_ImgSessionID != 0)
     {

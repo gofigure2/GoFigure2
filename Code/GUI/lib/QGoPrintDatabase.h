@@ -431,7 +431,7 @@ protected:
     //T trace_row( iDatabaseConnector, iTraceNodes, coord_min, coord_max,
     //this->m_ImgSessionID, iMeshAttributes );
   }
- template<typename T>
+  template<typename T>
   QColor GetQColorFromTraceRow(T iTraceRow)
   {
     QColor Color(atoi(iTraceRow.GetMapValue("Red").c_str()),
@@ -439,6 +439,15 @@ protected:
                            atoi(iTraceRow.GetMapValue("Blue").c_str()),
                            atoi(iTraceRow.GetMapValue("Alpha").c_str()));
     return Color;
+  }
+
+  template<typename T>
+  void SetTheColorForTheRow(T &ioRow, QColor iColor)
+  {
+    ioRow.SetField<int>("Red",iColor.red());
+    ioRow.SetField<int>("Green",iColor.green());
+    ioRow.SetField<int>("Blue",iColor.blue());
+    ioRow.SetField<int>("Alpha",iColor.Alpha());
   }
 //-------------------------------------------------------------------------
 
