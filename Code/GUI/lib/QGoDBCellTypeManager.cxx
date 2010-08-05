@@ -38,13 +38,11 @@
 
 =========================================================================*/
 #include "QGoDBCellTypeManager.h"
-#include "GoDBCellTypeRow.h"
-#include <QMessageBox>
 
 QGoDBCellTypeManager::QGoDBCellTypeManager (QWidget* iParent) :
-  QGoDBEntityManager(iParent, "celltype", 0)
-  {
-  }
+  QGoDBNameDescEntityManager(iParent, "celltype", 0)
+{
+}
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
@@ -55,21 +53,6 @@ void QGoDBCellTypeManager::SaveNewEntityInDB(std::string iName, std::string iDes
     {
     this->m_NewCellType.SaveInDB(this->m_DatabaseConnectorForNewEntity);
     }
-  /*this->m_NewCellType.SetField("Description",iDescription);
-
-  if (this->m_NewCellType.DoesThisEntityAlreadyExists(
-        this->m_DatabaseConnectorForNewEntity, iName) != -1)
-    {
-    QMessageBox msgBox;
-    msgBox.setText(
-      tr("This celltype already exists, its name is: ' %1 ' ").arg(iName.c_str()));
-    msgBox.exec();
-    }
-  else
-    {
-    this->m_NewCellType.SaveInDB(this->m_DatabaseConnectorForNewEntity);
-    this->m_NameNewEntity =iName;
-    }*/
 }
 //------------------------------------------------------------------------------
 
@@ -78,15 +61,4 @@ void QGoDBCellTypeManager::ValidateName(std::string iName, std::string iDescript
 {
   this->ValidateNameTemplate<GoDBCellTypeRow>(this->m_NewCellType,iName,
     iDescription);
-  /*this->m_NewCellType.SetField("Name",iName);
-  if (this->m_NewCellType.DoesThisNameAlreadyExists(
-        this->m_DatabaseConnectorForNewEntity) != -1)
-    {
-    this->m_NameDescDialog->NameAlreadyExists();
-    }
-  else
-    {
-    this->m_NameDescDialog->accept();
-    this->SaveNewEntityInDB(iName,iDescription);
-    }*/
 }

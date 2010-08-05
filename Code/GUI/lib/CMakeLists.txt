@@ -52,7 +52,7 @@ SET( QGoGUILIB_SRC
   QNameDescriptionInputDialog.cxx
   QGoDockWidgetStatus.cxx
   QGoDeleteDBEntityDialog.cxx
-  QGoDBEntityManager.cxx
+  QGoDBNameDescEntityManager.cxx
   QGoDBCellTypeManager.cxx
   QGoDBSubCellTypeManager.cxx
   QGoTraceManualEditingWidget.cxx
@@ -140,7 +140,7 @@ SET( QGoGUILIB_HDRS
   QNameDescriptionInputDialog.h
   QGoDockWidgetStatus.h
   QGoDeleteDBEntityDialog.h
-  QGoDBEntityManager.h
+  QGoDBNameDescEntityManager.h
   QGoDBCellTypeManager.h
   QGoDBSubCellTypeManager.h
   QGoTraceManualEditingWidget.h

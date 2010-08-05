@@ -38,18 +38,18 @@
 
 =========================================================================*/
 
-#include "QGoDBEntityManager.h"
-#include "GoDBNameDescRow.h"
-#include <QMessageBox>
-#include <QDateTime>
-#include <QFormLayout>
-#include <QTextEdit>
-#include "QueryDataBaseHelper.h"
-#include "QNameDescriptionInputDialog.h"
-#include "SelectQueryDatabaseHelper.h"
+#include "QGoDBNameDescEntityManager.h"
+//#include "GoDBNameDescRow.h"
+//#include <QMessageBox>
+//#include <QDateTime>
+//#include <QFormLayout>
+//#include <QTextEdit>
+//#include "QueryDataBaseHelper.h"
+//#include "QNameDescriptionInputDialog.h"
+//#include "SelectQueryDatabaseHelper.h"
 #include "QGoDeleteDBEntityDialog.h"
 
-QGoDBEntityManager::QGoDBEntityManager(QWidget* iParent,
+QGoDBNameDescEntityManager::QGoDBNameDescEntityManager(QWidget* iParent,
                                        std::string iEntityName, int iImgSessionID) :
   QWidget(iParent)
   {
@@ -60,13 +60,13 @@ QGoDBEntityManager::QGoDBEntityManager(QWidget* iParent,
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-QGoDBEntityManager::~QGoDBEntityManager()
+QGoDBNameDescEntityManager::~QGoDBEntityManager()
   {
   }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-std::string QGoDBEntityManager::AddAnEntity(
+std::string QGoDBNameDescEntityManager::AddAnEntity(
   vtkMySQLDatabase* iDatabaseConnector)
 {
  this->m_NameDescDialog = new QNameDescriptionInputDialog(
@@ -88,7 +88,7 @@ std::string QGoDBEntityManager::AddAnEntity(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-QGoDBEntityManager::NamesDescrContainerType QGoDBEntityManager::
+QGoDBNameDescEntityManager::NamesDescrContainerType QGoDBEntityManager::
 GetListExistingEntities(vtkMySQLDatabase* iDatabaseConnector)
 {
   if (this->m_ImgSessionID != 0)
@@ -106,7 +106,7 @@ GetListExistingEntities(vtkMySQLDatabase* iDatabaseConnector)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-bool QGoDBEntityManager::DeleteEntity(
+bool QGoDBNameDescEntityManager::DeleteEntity(
   vtkMySQLDatabase* iDatabaseConnector)
 {
   QGoDeleteDBEntityDialog* Dialog = new QGoDeleteDBEntityDialog(
@@ -117,7 +117,7 @@ bool QGoDBEntityManager::DeleteEntity(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-std::string QGoDBEntityManager::GetNameNewEntity()
+std::string QGoDBNameDescEntityManager::GetNameNewEntity()
 {
   return this->m_NameNewEntity;
 }

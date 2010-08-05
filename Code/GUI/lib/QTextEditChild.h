@@ -53,7 +53,6 @@ class QTextEditChild : public QTextEdit
   Q_OBJECT
 
 public:
-  //explicit QTextEditChild(const QString & iText, QWidget * iParent =0 );
   explicit QTextEditChild(QWidget* iParent = 0, int iNumberMaxCharacters = 1000);
 
   virtual ~QTextEditChild();

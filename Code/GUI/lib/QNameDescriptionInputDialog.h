@@ -56,7 +56,7 @@ class QNameDescriptionInputDialog : public QDialog,
   Q_OBJECT
 
 public:
-  //explicit QNameDescriptionInputDialog( QWidget* iParent = 0 );
+ 
   explicit QNameDescriptionInputDialog(QWidget* iParent = 0,
                                        QString iEntityName = "");
 

@@ -41,15 +41,10 @@
 #ifndef __QGoDBCellTypeManager_h
 #define __QGoDBCellTypeManager_h
 
-#include <QDialog>
-#include <QWidget>
-#include <QTextEdit>
-#include <QMenu>
-#include "vtkMySQLDatabase.h"
-#include "QGoDBEntityManager.h"
+#include "QGoDBNameDescEntityManager.h"
 #include "GoDBCellTypeRow.h"
 
-class QGoDBCellTypeManager : public QGoDBEntityManager
+class QGoDBCellTypeManager : public QGoDBNameDescEntityManager
   {
   Q_OBJECT
 

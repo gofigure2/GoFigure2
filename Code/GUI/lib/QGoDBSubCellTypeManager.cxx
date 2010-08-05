@@ -38,11 +38,9 @@
 
 =========================================================================*/
 #include "QGoDBSubCellTypeManager.h"
-#include "GoDBSubCellTypeRow.h"
-#include <QMessageBox>
 
 QGoDBSubCellTypeManager::QGoDBSubCellTypeManager (QWidget* iParent) :
-  QGoDBEntityManager(iParent, "subcellulartype", 0)
+  QGoDBNameDescEntityManager(iParent, "subcellulartype", 0)
   {
   }
 //------------------------------------------------------------------------------
@@ -56,21 +54,6 @@ void QGoDBSubCellTypeManager::SaveNewEntityInDB(
     {
     this->m_NewSubCellType.SaveInDB(this->m_DatabaseConnectorForNewEntity);
     }
-  /*this->m_NewSubCellType.SetField("Description",iDescription);
-
-  if (this->m_NewSubCellType.DoesThisEntityAlreadyExists(
-        this->m_DatabaseConnectorForNewEntity, iName) != -1)
-    {
-    QMessageBox msgBox;
-    msgBox.setText(
-      tr("This subcelltype already exists, its name is: ' %1 ' ").arg(iName.c_str()));
-    msgBox.exec();
-    }
-  else
-    {
-    this->m_NewSubCellType.SaveInDB(this->m_DatabaseConnectorForNewEntity);
-    this->m_NameNewEntity = iName;
-    }*/
 }
 //------------------------------------------------------------------------------
 
@@ -79,15 +62,4 @@ void QGoDBSubCellTypeManager::ValidateName(std::string iName, std::string iDescr
 {
   this->ValidateNameTemplate<GoDBSubCellTypeRow>(this->m_NewSubCellType,
     iName, iDescription);
-  /*this->m_NewSubCellType.SetField("Name", iName);
-  if (this->m_NewSubCellType.DoesThisNameAlreadyExists(
-        this->m_DatabaseConnectorForNewEntity) != -1)
-    {
-    this->m_NameDescDialog->NameAlreadyExists();
-    }
-  else
-    {
-    this->m_NameDescDialog->accept();
-    this->SaveNewEntityInDB(iName,iDescription);
-    }*/
 }

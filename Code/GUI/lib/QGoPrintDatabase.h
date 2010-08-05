@@ -158,10 +158,6 @@ public:
 
   //useful ???
   std::pair<std::string, QColor> GetSelectedCollectionData();
-   //useful ???
-  QStringList GetQStringListCellTypes();
-   //useful ???
-  //QStringList GetQStringListSubCellTypes();
 
   /** \brief return the info for the visu for the related traces*/
   ContourMeshStructureMultiIndexContainer* GetTracesInfoListForVisu(std::string iTraceName);
@@ -204,8 +200,6 @@ public:
   std::string InWhichTableAreWe();
 
   NamesDescrContainerType GetListBookmarks();
-  void SetListCellTypes(std::string iNewCellType = "");
-  void SetListSubCellTypes(std::string iNewSubCellType = "");
   GoDBCoordinateRow GetCoordinateForBookmark(std::string iName);
   /** \brief return a bool to know if the user is using the database or
  * not*/
@@ -239,16 +233,10 @@ public slots:
     std::list<int> iListMeshesHighLightedInVisu);
 
   void DeleteBookmarks();
-  //protected ?
-  void AddNewCellType();
-  void AddNewSubCellType();
-  void DeleteCellType();
-  void DeleteSubCellType();
+ 
   /** \brief get the list of meshes for the current timepoint from the
  * database, emit a signal for the list to be printed in the GUI-not used*/
   //void UpdateListMeshes(int iTimePoint);
-  //std::string GetNameNewCellType();
-  //std::string GetNameNewSubCellType();
   void SetTable(std::string iTablename);
   void ExportContours();
   void ExportMeshes();
@@ -267,13 +255,11 @@ signals:
   //void NeedToGetCurrentSelectedColor();
   //void NewCreatedCollection(QColor, QString);
   //void NeedCurrentSelectedCollectionID();
-  //void NeedCurrentSelectedCellTypeAndSubCellType();
   void TraceToReEdit(unsigned int);
   void DeletedCollection(unsigned int);
   void TracesToDeleteInVisu(std::list<int> );
   void OpenBookmarksToUpdate();
-  //void ListCellTypesToUpdate(QStringList);
-  //void ListSubCellTypesToUpdate(QStringList);
+
   //void TheColorNameAlreadyExits();
   void ColorChangedForSelectedTraces(std::pair<std::list<int>, QColor>);
   void TableWidgetTableChanged(std::string, std::string);
@@ -319,8 +305,15 @@ protected:
   void OpenDBConnection();
   void CloseDBConnection();
 
-    //std::pair<std::string, QColor> iColorNewCollection, std::string iTraceName,
-    //int iTimePoint, std::string iCellType = "", std::string iSubCellType = "");
+  /** \brief get the list of celltype from the database, put them in 
+  the combobox and if the string is not empty, the combobox will have as
+  selected item the string*/
+  void SetListCellTypes(std::string iNewCellType = "");
+
+  /** \brief get the list of subcelltype from the database, put them in 
+  the combobox and if the string is not empty, the combobox will have as
+  selected item the string*/
+  void SetListSubCellTypes(std::string iNewSubCellType = "");
 
   /** \brief get a list of the IDs for the collection corresponding to
  * the tracename with their colors for the given timepoint if the
@@ -495,6 +488,11 @@ protected slots:
  * \todo once we know more for the visualization of meshes, need to do the
  * same for add a collection*/
   void AddATraceToContourMeshInfo(std::string iTraceName, int iTraceID);
+
+  void AddNewCellType();
+  void AddNewSubCellType();
+  void DeleteCellType();
+  void DeleteSubCellType();
 
 private:
   Q_DISABLE_COPY(QGoPrintDatabase);

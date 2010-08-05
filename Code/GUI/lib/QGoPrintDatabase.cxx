@@ -1074,7 +1074,6 @@ QGoPrintDatabase::IDWithColorData QGoPrintDatabase::SaveMeshFromVisuInDB(
 //-------------------------------------------------------------------------
 int QGoPrintDatabase::GetSelectedCellTypeID()
 {
-  //emit NeedCurrentSelectedCellTypeAndSubCellType();
   return FindOneID(this->m_DatabaseConnector,
                    "celltype", "CellTypeID", "Name", this->m_SelectedCellType);
 }
@@ -1083,7 +1082,6 @@ int QGoPrintDatabase::GetSelectedCellTypeID()
 //-------------------------------------------------------------------------
 int QGoPrintDatabase::GetSelectedSubCellTypeID()
 {
-  //emit NeedCurrentSelectedCellTypeAndSubCellType();
   return FindOneID(this->m_DatabaseConnector,
                    "subcellulartype", "SubCellularID", "Name", this->m_SelectedSubCellType);
 }
@@ -1100,7 +1098,6 @@ int QGoPrintDatabase::CreateMeshFromOneClickSegmentation(
     OpenDBConnection();
     //set the color for the new collection:
     GoDBMeshRow NewMesh;
-    //emit NeedCurrentSelectedCellTypeAndSubCellType();
     //emit NeedToGetCurrentSelectedColor();
     //emit NeedCurrentSelectedCollectionID();
 
@@ -1276,12 +1273,6 @@ SetColorComboBoxInfofromDB()
     temp.first = ResultsQuery[i + 1];
     QColor tempColor(atoi(ResultsQuery[i + 2].c_str()),atoi(ResultsQuery[i + 3].c_str()),
       atoi(ResultsQuery[i + 4].c_str()),atoi(ResultsQuery[i + 5].c_str()));
-    /*std::string Red = ResultsQuery[i + 2];
-
-    temp.second.push_back(atoi(Red.c_str()));
-    temp.second.push_back(atoi(ResultsQuery[i + 3].c_str()));
-    temp.second.push_back(atoi(ResultsQuery[i + 4].c_str()));
-    temp.second.push_back(atoi(ResultsQuery[i + 5].c_str()));*/
     temp.second = tempColor;
     InfoColors.push_back(temp);
     i = i + 7;
@@ -1298,37 +1289,15 @@ SaveNewColorInDB(ItemColorComboboxData iDataNewColor)
 {
   this->OpenDBConnection();
   GoDBColorRow NewColor;
-  /*if (iDataNewColor.size() != 5)
-    {
-    std::cout << "Pb: the number of data for the new color is not 5";
-    std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
-    std::cout << std::endl;
-    }
-  else
-    {*/
-    NewColor.SetField("Name", iDataNewColor.first);
-    /*if (NewColor.DoesThisColorAlreadyExists(this->m_DatabaseConnector)
-        != -1)
-      {
-      QMessageBox msgBox;
-      msgBox.setText(
-        tr("This name already exits, please chose another one"));
-      msgBox.exec();
-      emit TheColorNameAlreadyExits();
-      }
-    else
-      {*/
-    NewColor.SetField<int>("Red", iDataNewColor.second.red());
-    NewColor.SetField<int>("Green", iDataNewColor.second.green());
-    NewColor.SetField<int>("Blue", iDataNewColor.second.blue());
-    NewColor.SetField<int>("Alpha", iDataNewColor.second.alpha());
-    NewColor.SaveInDB(m_DatabaseConnector);
+  NewColor.SetField("Name", iDataNewColor.first);
+  NewColor.SetField<int>("Red", iDataNewColor.second.red());
+  NewColor.SetField<int>("Green", iDataNewColor.second.green());
+  NewColor.SetField<int>("Blue", iDataNewColor.second.blue());
+  NewColor.SetField<int>("Alpha", iDataNewColor.second.alpha());
+  NewColor.SaveInDB(m_DatabaseConnector);
 
-    this->CloseDBConnection();
-    this->SetColorComboBoxInfofromDB();
-    //this->m_TraceWidget->AddAnewColorInCombobox(iDataNewColor);
-      //}
-    //}
+  this->CloseDBConnection();
+  this->SetColorComboBoxInfofromDB();
 }
 //-------------------------------------------------------------------------
 
@@ -1906,7 +1875,6 @@ GetListBookmarks()
   this->OpenDBConnection();
   NamesDescrContainerType ListBookmarks =
     this->m_BookmarkManager->GetListExistingEntities(this->m_DatabaseConnector);
-    //this->m_BookmarkManager->GetListExistingBookmarks(this->m_DatabaseConnector);
   this->CloseDBConnection();
   return ListBookmarks;
 }
@@ -1948,7 +1916,6 @@ void QGoPrintDatabase::SetListCellTypes(std::string iCellTypeToSelect)
     iter++;
     }
   this->m_ListCellType = QListCellTypes;
-  //emit ListCellTypesToUpdate(QListCellTypes);
   this->m_TraceWidget->SetListCellTypes(QListCellTypes);
   if (!iCellTypeToSelect.empty())
     {
@@ -2006,9 +1973,7 @@ void QGoPrintDatabase::SetListSubCellTypes(std::string iNewSubCellType)
     QListSubCellTypes.append(iter->first.c_str());
     iter++;
     }
-  //this->m_ListSubCellType = QListSubCellTypes;
   this->m_TraceWidget->SetListSubCellTypes(QListSubCellTypes);
-  //emit ListSubCellTypesToUpdate(QListSubCellTypes);
   if (!iNewSubCellType.empty())
     {
     this->m_TraceWidget->SetCurrentSubCellType(iNewSubCellType);
@@ -2119,47 +2084,10 @@ void QGoPrintDatabase::AddTracesInTableWidgetFromDB(std::vector<int> ListTracesI
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/*QStringList QGoPrintDatabase::GetQStringListCellTypes()
-{
-  return this->m_ListCellType;
-}*/
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-/*QStringList QGoPrintDatabase::GetQStringListSubCellTypes()
-{
-  return this->m_ListSubCellType;
-}*/
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-/*void QGoPrintDatabase::UpdateSelectedCellTypeAndSubCellType(
-  std::string iSelectedCellType, std::string iSelectedSubCellType)
-{
-  this->m_SelectedCellType = iSelectedCellType;
-  this->m_SelectedSubCellType = iSelectedSubCellType;
-}*/
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
 void QGoPrintDatabase::UpdateSelectedTimePoint(int iTimePoint)
 {
   this->m_SelectedTimePoint = iTimePoint;
 }
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-/*std::string QGoPrintDatabase::GetNameNewCellType()
-{
-  return this->m_CellTypeManager->GetNameNewEntity();
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-std::string QGoPrintDatabase::GetNameNewSubCellType()
-{
-  return this->m_SubCellTypeManager->GetNameNewEntity();
-}*/
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------

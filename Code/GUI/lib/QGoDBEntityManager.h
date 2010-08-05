@@ -41,13 +41,13 @@
 #ifndef __QGoDBEntityManager_h
 #define __QGoDBEntityManager_h
 
-#include <QDialog>
+//#include <QDialog>
 #include <QWidget>
-#include <QTextEdit>
-#include <QMenu>
+//#include <QTextEdit>
+//#include <QMenu>
 #include "vtkMySQLDatabase.h"
 #include "QNameDescriptionInputDialog.h"
-#include "GoDBCoordinateRow.h"
+//#include "GoDBCoordinateRow.h"
 
 class QGoDBEntityManager :
   public QWidget
