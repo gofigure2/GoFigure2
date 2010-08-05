@@ -225,9 +225,10 @@ SetListCellTypes(QStringList iListCellTypes)
   this->m_ChoseCellType->addItems(iListCellTypes);
   this->m_ChoseCellType->addItem(tr("Add a celltype..."));
   this->m_ChoseCellType->addItem(tr("Delete a celltype..."));
-  //to check::
+  
   //emit NewCellTypeActivated(this->m_ChoseCellType->currentText());
-  emit ListCellTypesReady();
+  //to check::
+  //emit ListCellTypesReady();
 }
 //-------------------------------------------------------------------------
 
@@ -278,7 +279,7 @@ SetListSubCellTypes(QStringList iListSubCellTypes)
   this->m_ChoseSubCellType->addItems(iListSubCellTypes);
   this->m_ChoseSubCellType->addItem(tr("Add a subcelltype..."));
   this->m_ChoseSubCellType->addItem(tr("Delete a subcelltype..."));
-  emit ListSubCellTypesReady();
+  //emit ListSubCellTypesReady();
 }
 //-------------------------------------------------------------------------
 

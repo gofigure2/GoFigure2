@@ -48,11 +48,12 @@ QGoDBCellTypeManager::QGoDBCellTypeManager (QWidget* iParent) :
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-void QGoDBCellTypeManager::SaveNewEntityInDB()
+void QGoDBCellTypeManager::SaveNewEntityInDB(std::string iName, std::string iDescription)
 {
   //this->m_NewCellType.SetField("Name",this->m_NameDescDialog->GetInputTextForName());
-  this->m_NewCellType.SetField("Description",
-                               this->m_NameDescDialog->GetInputTextForDescription());
+  //this->m_NewCellType.SetField("Description",
+                               //this->m_NameDescDialog->GetInputTextForDescription());
+  this->m_NewCellType.SetField("Description",iDescription);
 
   std::string CellTypeName = this->m_NewCellType.GetMapValue("Name");
   if (this->m_NewCellType.DoesThisEntityAlreadyExists(
@@ -73,9 +74,10 @@ void QGoDBCellTypeManager::SaveNewEntityInDB()
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-void QGoDBCellTypeManager::ValidateName()
+void QGoDBCellTypeManager::ValidateName(std::string iName, std::string iDescription)
 {
-  this->m_NewCellType.SetField("Name",this->m_NameDescDialog->GetInputTextForName());
+  //this->m_NewCellType.SetField("Name",this->m_NameDescDialog->GetInputTextForName());
+  this->m_NewCellType.SetField("Name",iName);
   //if (this->DoesThisBookmarkNameAlreadyExistsInTheDB(
   //this->m_DatabaseConnectorForNewBkmrk,iName))
   if (this->m_NewCellType.DoesThisNameAlreadyExists(
@@ -86,6 +88,6 @@ void QGoDBCellTypeManager::ValidateName()
   else
     {
     this->m_NameDescDialog->accept();
-    this->SaveNewEntityInDB();
+    this->SaveNewEntityInDB(iName,iDescription);
     }
 }

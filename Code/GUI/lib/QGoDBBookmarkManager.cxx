@@ -71,19 +71,23 @@ void QGoDBBookmarkManager::AddABookmark(int iCoordID,
   this->m_NameDescDialog = new QNameDescriptionInputDialog(
     this, "Bookmark");
   this->m_DatabaseConnectorForNewBkmrk = iDatabaseConnector;
-  QObject::connect (this->m_NameDescDialog, SIGNAL(NameNonEmpty()),
-                    this, SLOT(ValidateName()));
+  QObject::connect (this->m_NameDescDialog, 
+                    SIGNAL(NewNameDescription(std::string, std::string)),
+                    this, SLOT(ValidateName(std::string,std::string)));
   this->m_NameDescDialog->exec();
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoDBBookmarkManager::SaveNewBookmarkInDB()
+void QGoDBBookmarkManager::SaveNewBookmarkInDB(std::string iName, 
+                                               std::string iDescription)
 {
   GoDBBookmarkRow NewBookmark;
-  NewBookmark.SetField("Name", this->m_NameDescDialog->GetInputTextForName());
-  NewBookmark.SetField("Description",
-                       this->m_NameDescDialog->GetInputTextForDescription());
+  //NewBookmark.SetField("Name", this->m_NameDescDialog->GetInputTextForName());
+  NewBookmark.SetField("Name", iName);
+  //NewBookmark.SetField("Description",
+                     //  this->m_NameDescDialog->GetInputTextForDescription());
+  NewBookmark.SetField("Description", iDescription);
   QDateTime   CreationDate = QDateTime::currentDateTime();
   std::string CreationDateStr =
     CreationDate.toString(Qt::ISODate).toStdString();
@@ -155,18 +159,20 @@ bool QGoDBBookmarkManager::DoesThisBookmarkNameAlreadyExistsInTheDB(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoDBBookmarkManager::ValidateName()
+void QGoDBBookmarkManager::ValidateName(std::string iName, 
+                                        std::string iDescription)
 {
   if (this->DoesThisBookmarkNameAlreadyExistsInTheDB(
         this->m_DatabaseConnectorForNewBkmrk,
-        this->m_NameDescDialog->GetInputTextForName()))
+       // this->m_NameDescDialog->GetInputTextForName()))
+       iName))
     {
     this->m_NameDescDialog->NameAlreadyExists();
     }
   else
     {
     this->m_NameDescDialog->accept();
-    this->SaveNewBookmarkInDB();
+    this->SaveNewBookmarkInDB(iName,iDescription);
     }
 }
 //-------------------------------------------------------------------------

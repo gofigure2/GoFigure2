@@ -96,7 +96,8 @@ protected slots:
   calling this method. Check that the bookmark doesn't
   already exits in the database, if so, give the user
   the name of the existing bookmark*/
-  void SaveNewBookmarkInDB();
+  void SaveNewBookmarkInDB(std::string iName, std::string
+    iDescription);
 
   int GetCoordIDForBookmark(vtkMySQLDatabase* iDatabaseConnector,
                             std::string iName);
@@ -105,7 +106,7 @@ protected slots:
   database, if so, make the m_NameDescDialog asks the user to
   choose another one, if no, close the m_NameDescDialog and
   call SaveNewBookmarkInDB()*/
-  void ValidateName();
+  void ValidateName(std::string iName, std::string iDescription);
 
 signals:
   void ListBookmarksChanged();

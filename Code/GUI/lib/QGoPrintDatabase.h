@@ -56,13 +56,13 @@
 #include "ContourMeshStructure.h"
 #include "TraceInfoStructure.h"
 #include "QGoDBBookmarkManager.h"
-#include "QGoDBCellTypeManager.h"
-#include "QGoDBSubCellTypeManager.h"
 #include "ContourMeshStructureHelper.h"
 #include "QGoGUILibConfigure.h"
 #include "GoFigureMeshAttributes.h"
 #include "QGoTraceManualEditingDockWidget.h"
 #include "QGoTraceManualEditingWidget.h"
+#include "QGoDBCellTypeManager.h"
+#include "QGoDBSubCellTypeManager.h"
 
 /** \class QGoPrintDatabase
  * \brief Ensure the connection with the Database
@@ -247,8 +247,8 @@ public slots:
   /** \brief get the list of meshes for the current timepoint from the
  * database, emit a signal for the list to be printed in the GUI-not used*/
   //void UpdateListMeshes(int iTimePoint);
-  std::string GetNameNewCellType();
-  std::string GetNameNewSubCellType();
+  //std::string GetNameNewCellType();
+  //std::string GetNameNewSubCellType();
   void SetTable(std::string iTablename);
   void ExportContours();
   void ExportMeshes();
@@ -319,9 +319,6 @@ protected:
   void OpenDBConnection();
   void CloseDBConnection();
 
-  /** \brief Save the new collection in the database and update the
-  colorcombobox*/
-  void SaveNewCollectionInDB();
     //std::pair<std::string, QColor> iColorNewCollection, std::string iTraceName,
     //int iTimePoint, std::string iCellType = "", std::string iSubCellType = "");
 
@@ -474,6 +471,10 @@ protected slots:
   /** \brief Save a new color in the database with rgba and the name of
  * the color and update the list in the colorcombobox*/
   void SaveNewColorInDB(ItemColorComboboxData iDataNewColor);
+
+  /** \brief Save the new collection in the database and update the
+  colorcombobox*/
+  void SaveNewCollectionInDB();
 
   /** \brief Create a new Collection row in the collection table and change the
   collection ID of the selected contours to the new CollectionID created:*/

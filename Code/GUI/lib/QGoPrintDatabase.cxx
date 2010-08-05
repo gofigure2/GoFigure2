@@ -102,6 +102,11 @@ QGoPrintDatabase(QWidget* iParent) :
 
   this->m_TraceWidget = 
     this->m_TraceManualEditingDockWidget->m_TraceWidget;
+
+  this->m_CellTypeManager = new QGoDBCellTypeManager(this);
+  
+  this->m_SubCellTypeManager = new QGoDBSubCellTypeManager(this);
+
   this->CreateConnectionsForTraceManualEditingWidget();
 
   QObject::connect(m_VisibilityAction, SIGNAL(toggled(bool)),
@@ -188,10 +193,7 @@ void QGoPrintDatabase::SetDatabaseVariables(
   this->m_BookmarkManager = new QGoDBBookmarkManager(this, this->m_ImgSessionID);
   QObject::connect(this->m_BookmarkManager, SIGNAL(ListBookmarksChanged()),
                    this, SIGNAL(OpenBookmarksToUpdate()));
-  //to check: set the list directly ?
-  this->m_CellTypeManager = new QGoDBCellTypeManager(this);
-  //to check: set the list directly ?
-  this->m_SubCellTypeManager = new QGoDBSubCellTypeManager(this);
+  
   this->InitializeTheComboboxesNotTraceRelated();
   this->SetListExistingCollectionIDFromDB();
 }
@@ -1961,7 +1963,14 @@ void QGoPrintDatabase::AddNewCellType()
   this->OpenDBConnection();
   std::string NewCellType = this->m_CellTypeManager->AddAnEntity(
     this->m_DatabaseConnector);
-  this->SetListCellTypes(NewCellType);
+  if (!NewCellType.empty())
+    {
+    this->SetListCellTypes(NewCellType);
+    }
+  else //if the NewCellType is empty, go to the last selected one:
+    {
+    this->m_TraceWidget->SetCurrentCellType(this->m_SelectedCellType);
+    }
   this->CloseDBConnection();
 }
 //-------------------------------------------------------------------------
@@ -2008,7 +2017,14 @@ void QGoPrintDatabase::AddNewSubCellType()
   this->OpenDBConnection();
   std::string NewSubCellType = 
     this->m_SubCellTypeManager->AddAnEntity(this->m_DatabaseConnector);
-  this->SetListSubCellTypes(NewSubCellType);
+  if(!NewSubCellType.empty())
+    {
+    this->SetListSubCellTypes(NewSubCellType);
+    }
+  else
+    {
+    this->m_TraceWidget->SetCurrentSubCellType(this->m_SelectedSubCellType);
+    }
   this->CloseDBConnection();
 }
 //-------------------------------------------------------------------------
@@ -2122,7 +2138,7 @@ void QGoPrintDatabase::UpdateSelectedTimePoint(int iTimePoint)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-std::string QGoPrintDatabase::GetNameNewCellType()
+/*std::string QGoPrintDatabase::GetNameNewCellType()
 {
   return this->m_CellTypeManager->GetNameNewEntity();
 }
@@ -2132,7 +2148,7 @@ std::string QGoPrintDatabase::GetNameNewCellType()
 std::string QGoPrintDatabase::GetNameNewSubCellType()
 {
   return this->m_SubCellTypeManager->GetNameNewEntity();
-}
+}*/
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -2323,12 +2339,12 @@ void QGoPrintDatabase::CreateConnectionsForTraceManualEditingWidget()
   QObject::connect(this->m_TraceWidget,
                    SIGNAL(NewCellTypeActivated(std::string)),
                    this,
-                   SLOT(this->UpdateSelectedCellType(std::string)));
+                   SLOT(UpdateSelectedCellType(std::string)));
 
   QObject::connect(this->m_TraceWidget,
                    SIGNAL(NewSubCellTypeActivated(std::string)),
                    this,
-                   SLOT(this->UpdateSelectedSubCellType(std::string)));
+                   SLOT(UpdateSelectedSubCellType(std::string)));
 
   QObject::connect(this->m_TraceWidget,
                    SIGNAL(NewColorToBeSaved(ItemColorComboboxData)),
@@ -2358,6 +2374,7 @@ void QGoPrintDatabase::CreateConnectionsForTraceManualEditingWidget()
                    SIGNAL(DeleteSubCellType()), 
                    this,
                    SLOT(DeleteSubCellType()));
+
 }
 //-------------------------------------------------------------------------
 
@@ -2386,3 +2403,6 @@ void QGoPrintDatabase::InitializeTheComboboxesNotTraceRelated()
   this->SetListCellTypes();
   this->SetListSubCellTypes();
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------

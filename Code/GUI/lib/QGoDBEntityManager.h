@@ -84,23 +84,35 @@ protected:
   QNameDescriptionInputDialog* m_NameDescDialog;
   vtkMySQLDatabase*            m_DatabaseConnectorForNewEntity;
   std::string                  m_NameNewEntity;
+  
+  /** \brief save the new entity in the database, the
+  m_DatabaseConnectorForNewEntity needs to be set before
+  calling this method. Check that the entity doesn't
+  already exits in the database, if so, give the user
+  the name of the existing entity*/
+  virtual void SaveNewEntityInDB(std::string iName,
+    std::string iDescription) = 0;
 
 protected slots:
-  /** \brief save the new bookmark in the database, the
-  m_DatabaseConnectorForNewBkmrk needs to be set before
-  calling this method. Check that the bookmark doesn't
+  /** \brief save the new entity in the database, the
+  m_DatabaseConnectorForNewEntity needs to be set before
+  calling this method. Check that the entity doesn't
   already exits in the database, if so, give the user
-  the name of the existing bookmark*/
-  virtual void SaveNewEntityInDB() = 0;
+  the name of the existing entity*/
+  //virtual void SaveNewEntityInDB(std::string iName,
+   // std::string iDescription) = 0;
 
   /** \brief check that the name doesn't already exists in the
   database, if so, make the m_NameDescDialog asks the user to
   choose another one, if no, close the m_NameDescDialog and
-  call SaveNewBookmarkInDB()*/
-  virtual void ValidateName() = 0;
-
+  call SaveNewEntityInDB()*/
+  virtual void ValidateName(std::string,std::string) = 0;
+  
 signals:
+
   void ListEntitiesChanged();
+  void CancelRequested();
+
 
   };
 #endif

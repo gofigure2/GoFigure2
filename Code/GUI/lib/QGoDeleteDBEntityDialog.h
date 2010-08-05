@@ -88,6 +88,7 @@ protected slots:
   void SelectionValidation();
 signals:
   void ListEntitiesChanged();
+  void CancelRequested();
   };
 
 #endif

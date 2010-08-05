@@ -48,7 +48,6 @@
 #include <QVBoxLayout>
 #include "QGoSelectedColorComboBox.h"
 #include "QGoCollectionColorComboBox.h"
-#include "qtcolorcombobox.h"
 
 #include "ui_QGoTraceManualEditingWidget.h"
 
@@ -72,6 +71,8 @@ public:
   //std::string GetCurrentCellType();
   //std::string GetCurrentSubCellType();
   std::string GetTraceName();
+  void SetCurrentCellType(std::string iSubCellTypeText);
+  void SetCurrentSubCellType(std::string iSubCellTypeText);
 
   void UpdateTraceAndCollection(
     std::string iTrace, std::string iCollection);
@@ -95,8 +96,6 @@ public slots:
   //void AddANewCellType (std::string iNewCellType);
   void CheckUserAction(QString iCellTypeText);
   void CheckUserActionSubCell(QString iSubCellTypeText);
-  void SetCurrentCellType(std::string iSubCellTypeText);
-  void SetCurrentSubCellType(std::string iSubCellTypeText);
 
   void UpdateCollectionComboboxWithDeletedItem(
     std::list<ItemColorComboboxData> iListExistingID);
@@ -121,7 +120,9 @@ protected:
   //QtColorComboBox* ColorComboBox;
   QGoSelectedColorComboBox*         m_SelectedColorComboBox;
   QGoCollectionColorComboBox*       m_CollectionColorComboBox;
+
   std::list<ItemColorComboboxData > m_DataColors;
+
   void SetSelectedColorComboBox();
   void SetTraceCollectionColorComboBox();
   void SetCellTypeComboBox();

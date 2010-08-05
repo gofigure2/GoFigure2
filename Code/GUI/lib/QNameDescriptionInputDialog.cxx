@@ -55,6 +55,11 @@ QNameDescriptionInputDialog::QNameDescriptionInputDialog(QWidget* iParent,
 
   QObject::connect(this->NameDescriptionButtonBox, SIGNAL(accepted()),
                    this, SLOT(ValidationRequested()));
+
+  //QObject::connect(this->NameDescriptionButtonBox,SIGNAL(rejected()),
+                  // this, SIGNAL(CancelRequested()));
+  //QObject::connect(this->NameDescriptionButtonBox,SIGNAL(rejected()),
+      //             this, SIGNAL(CancelRequested()));
   }
 //--------------------------------------------------------------------------
 
@@ -90,7 +95,8 @@ void QNameDescriptionInputDialog::ValidationRequested()
     }
   else
     {
-    emit NameNonEmpty();
+    emit NewNameDescription(
+      this->GetInputTextForName(),this->GetInputTextForDescription());
     }
 }
 //-------------------------------------------------------------------------

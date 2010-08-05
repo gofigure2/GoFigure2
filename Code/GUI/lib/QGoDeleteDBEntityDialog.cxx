@@ -66,6 +66,7 @@ QGoDeleteDBEntityDialog::QGoDeleteDBEntityDialog(QWidget* iParent,
   QDialogButtonBox* ButtonBox = new QDialogButtonBox(QDialogButtonBox::Ok
                                                      | QDialogButtonBox::Cancel);
   QObject::connect(ButtonBox, SIGNAL(rejected()), this, SLOT(reject()));
+  QObject::connect(ButtonBox, SIGNAL(rejected()), this, SIGNAL(CancelRequested()));
   QObject::connect(ButtonBox, SIGNAL(accepted()), this, SLOT(SelectionValidation()));
   QVBoxLayout* vlayout = new QVBoxLayout(this);
   vlayout->addWidget(this->m_ListWidget);

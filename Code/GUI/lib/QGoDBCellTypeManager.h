@@ -61,12 +61,14 @@ public:
 
 protected:
   GoDBCellTypeRow m_NewCellType;
+  virtual void SaveNewEntityInDB(std::string iName, 
+    std::string iDescription);
 
 protected slots:
 
-  virtual void SaveNewEntityInDB();
+  //virtual void SaveNewEntityInDB();
 
-  virtual void ValidateName();
+  virtual void ValidateName(std::string iName, std::string iDescription);
 
   };
 #endif

@@ -62,19 +62,21 @@ public:
 
   virtual ~QNameDescriptionInputDialog();
 
-  std::string GetInputTextForName();
-  std::string GetInputTextForDescription();
-
   /** \brief open a messagebox to tell the user that the name he
   choose already exits*/
   void NameAlreadyExists();
 
 signals:
-  void NameNonEmpty();
+
+  void NewNameDescription(std::string,std::string);
+  //void CancelRequested();
 
 protected:
   QTextEditChild* m_DescriptionTextEdit;
   QString         m_EntityName;
+
+  std::string GetInputTextForName();
+  std::string GetInputTextForDescription();
 
 protected slots:
   /** \brief check that the qlineEdit for the name is not

@@ -70,17 +70,26 @@ std::string QGoDBEntityManager::AddAnEntity(
   vtkMySQLDatabase* iDatabaseConnector)
 {
   //this->m_CoordIDForNewEntity = iCoordID;
-  this->m_NameDescDialog = new QNameDescriptionInputDialog(
+ this->m_NameDescDialog = new QNameDescriptionInputDialog(
     this, this->m_EntityName.c_str());
+
   this->m_DatabaseConnectorForNewEntity = iDatabaseConnector;
-  QObject::connect (this->m_NameDescDialog, SIGNAL(NameNonEmpty()),
-                    this, SLOT(ValidateName()));
-  this->m_NameDescDialog->exec();
+  QObject::connect (this->m_NameDescDialog, SIGNAL(NewNameDescription(std::string,
+                    std::string)),
+                    this, SLOT(ValidateName(std::string,std::string)));
+  //QObject::connect(this->m_NameDescDialog,SIGNAL(CancelRequested()),
+                    //this, SIGNAL(GoToLastSelectedOne()));
+  //QObject::connect(this->m_NameDescDialog,SIGNAL(CancelRequested()),
+                  // this, SLOT(EmitCancelRequestForAdd()));
+  bool ok = this->m_NameDescDialog->exec();
+  if (!ok)
+    {
+    this->m_NameNewEntity.clear();
+    //emit CancelRequested();
+    }
   return this->m_NameNewEntity;
 }
-//-------------------------------------------------------------------------
 
-//-------------------------------------------------------------------------
 /*void QGoDBEntityManager::SaveNewEntityInDB()
 {
   GoDBBookmarkRow NewBookmark;
@@ -176,6 +185,8 @@ void QGoDBEntityManager::DeleteEntity(
     this, this->m_EntityName, this->m_ImgSessionID, iDatabaseConnector);
   QObject::connect(Dialog, SIGNAL(ListEntitiesChanged()),
                    this, SIGNAL(ListEntitiesChanged()));
+  QObject::connect(Dialog,SIGNAL(CancelRequested()),
+                    this, SIGNAL(GoToLastSelectedOne()));
   Dialog->show();
   Dialog->exec();
 }
