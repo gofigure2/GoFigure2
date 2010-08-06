@@ -65,21 +65,6 @@ void GoDBColorRow::InitializeMap()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/*int GoDBColorRow::DoesThisEntityAlreadyExists(vtkMySQLDatabase* DatabaseConnector)
-{
-  std::string Red = this->GetMapValue("Red");
-  std::string Blue = this->GetMapValue("Blue");
-  std::string Green = this->GetMapValue("Green");
-  std::string Alpha = this->GetMapValue("Alpha");
-  std::string Name  = this->GetMapValue("Name");
-  /*return FindOneID(DatabaseConnector,"color", "ColorID","Red",Red,"Green",Green,
-  "Blue",Blue,"Alpha",Alpha,"Name",Name);
-  return FindOneID(DatabaseConnector, "color", "ColorID", "Name",
-                   this->GetMapValue("Name"));
-}*/
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
 int GoDBColorRow::DoesThisEntityAlreadyExists(
   vtkMySQLDatabase* iDatabaseConnector)
 {
@@ -99,3 +84,18 @@ int GoDBColorRow::SaveInDB(vtkMySQLDatabase* iDatabaseConnector)
   return ColorID;*/
   return this->SaveInDBTemplate<GoDBColorRow>(iDatabaseConnector,*this);
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+/*int GoDBColorRow::DoesThisEntityAlreadyExists(vtkMySQLDatabase* DatabaseConnector)
+{
+  std::string Red = this->GetMapValue("Red");
+  std::string Blue = this->GetMapValue("Blue");
+  std::string Green = this->GetMapValue("Green");
+  std::string Alpha = this->GetMapValue("Alpha");
+  std::string Name  = this->GetMapValue("Name");
+  /*return FindOneID(DatabaseConnector,"color", "ColorID","Red",Red,"Green",Green,
+  "Blue",Blue,"Alpha",Alpha,"Name",Name);
+  return FindOneID(DatabaseConnector, "color", "ColorID", "Name",
+                   this->GetMapValue("Name"));
+}*/

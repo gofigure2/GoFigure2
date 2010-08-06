@@ -93,7 +93,7 @@ public:
   \param[out] bool is true if the user chooses to delete an entity,
   false if he canceled the deleting
   */
-  bool DeleteEntity(vtkMySQLDatabase* iDatabaseConnector);
+  virtual bool DeleteEntity(vtkMySQLDatabase* iDatabaseConnector);
 
   /**
   \brief return the name of the new entity added
