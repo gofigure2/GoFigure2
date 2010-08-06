@@ -34,9 +34,6 @@
 #ifndef BINARY_NODE_INCLUDED
 #define BINARY_NODE_INCLUDED
 
-/**
- * \ingroup PoissonReconstruction
- */
 template<class Real>
 class BinaryNode {
 public:

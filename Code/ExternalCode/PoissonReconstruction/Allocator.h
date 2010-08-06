@@ -35,9 +35,6 @@
 #include <vector>
 #include <cstdio>
 
-/**
- * \ingroup PoissonReconstruction
- * */
 class AllocatorState {
 public:
   int index, remains;
@@ -51,6 +48,8 @@ public:
   * The allocator is templated off of the class of objects that we would 
   * like it to allocate, ensuring that appropriate constructors and 
   * destructors are called as necessary.
+  *
+  * \ingroup PoissonReconstruction
   */
 template<class T>
 class Allocator {
