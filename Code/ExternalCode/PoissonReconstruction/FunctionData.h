@@ -36,6 +36,7 @@
 
 #include "PPolynomial.h"
 
+/** \ingroup PoissonReconstruction*/
 template<int Degree, class Real>
 class FunctionData {
   int useDotRatios;

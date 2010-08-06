@@ -37,6 +37,16 @@
 
 #include "vtkPolyDataAlgorithm.h"
 
+/**
+ * \defgroup PoissonReconstruction PoissonReconstruction
+ */
+/**
+ * \class vtkPoissonReconstruction
+ * \brief vtk Wrapping of the Poisson Reconstruction method.
+ * see http://www.midasjournal.org/browse/publication/718 for reference.
+ *
+ * \ingroup PoissonReconstruction
+ * */
 class vtkPoissonReconstruction : public vtkPolyDataAlgorithm
   {
 public:
