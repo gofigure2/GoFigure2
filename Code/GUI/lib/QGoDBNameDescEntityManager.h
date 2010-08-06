@@ -48,7 +48,7 @@
 
 /**
 \class QGoDBEntityManager
-\brief the QGoDBNameDescEntityManager manages the interactions between the user and the database
+\brief Abstract class : the QGoDBNameDescEntityManager manages the interactions between the user and the database
 for all the DBtables containing a name and a description.
 */
 class QGoDBNameDescEntityManager :
@@ -57,6 +57,11 @@ class QGoDBNameDescEntityManager :
   Q_OBJECT
 
 public:
+  /**
+  \param[in] iParent QWidget parent
+  \param[in] iEntityName Name of the DBTable
+  \param[in] iImagingSessionID ID of the current imagingsession
+  */
   explicit QGoDBNameDescEntityManager (QWidget* iParent = 0,
                                std::string iEntityName = "", int iImgSessionID = 0);
 
@@ -65,29 +70,49 @@ public:
   typedef std::vector<std::pair<std::string, std::string> >
   NamesDescrContainerType;
 
-  /** \brief execute the dialog asking the user to enter a name and a
+  /** 
+  \brief execute the dialog asking the user to enter a name and a
   description, validates the name, set the m_DatabaseConnectorForNewBkmrk,
-  save the entity in the DB and return the name of the new entity*/
+  save the entity in the DB and return the name of the new entity
+  \param[out] std::string Name of the new entity, empty if the user canceled the adding
+  */
   std::string AddAnEntity(vtkMySQLDatabase* iDatabaseConnector);
 
-  /** \brief return the list of all the existing entities stored
-  in the database*/
+  /** 
+  \brief return the list of all the existing entities stored
+  in the database
+  \param[out] NamesDescrContainerType vector of all the names associated with their description
+  */
   NamesDescrContainerType GetListExistingEntities(
     vtkMySQLDatabase* iDatabaseConnector);
 
-  /** \brief show the list of the existing entities so the user can
+  /** 
+  \brief show the list of the existing entities so the user can
   choose the ones he wants to delete, then delete them from the
-  database*/
+  database
+  \param[out] bool is true if the user chooses to delete an entity,
+  false if he canceled the deleting
+  */
   bool DeleteEntity(vtkMySQLDatabase* iDatabaseConnector);
+
+  /**
+  \brief return the name of the new entity added
+  \param[out] std::string name of the new entity
+  */
   std::string GetNameNewEntity();
 
 protected slots:
 
-  /** \brief check that the name doesn't already exists in the
+  /** 
+  \brief Pure Virtual method : check that the name doesn't already exists in the
   database, if so, make the m_NameDescDialog asks the user to
   choose another one, if no, close the m_NameDescDialog and
-  call SaveNewEntityInDB()*/
-  virtual void ValidateName(std::string,std::string) = 0;
+  call SaveNewEntityInDB()
+  \param[in] iName name entered by the user
+  \param[in] iDescription description entered by the user
+  */
+  virtual void ValidateName(
+    std::string iName,std::string iDescription) = 0;
 
 protected:
   int                          m_ImgSessionID;
@@ -96,47 +121,59 @@ protected:
   vtkMySQLDatabase*            m_DatabaseConnectorForNewEntity;
   std::string                  m_NameNewEntity;
   
-  /** \brief save the new entity in the database, the
+  /** 
+  \brief Pure Virtual method : save the new entity in the database, the
   m_DatabaseConnectorForNewEntity needs to be set before
   calling this method. Check that the entity doesn't
   already exits in the database, if so, give the user
-  the name of the existing entity*/
-  virtual void SaveNewEntityInDB(std::string iName,
-    std::string iDescription) = 0;
+  the name of the existing entity
+  */
+  virtual void SaveNewEntityInDB() = 0;
   
-  /** \brief check if the entity already exists in the database,
+  /** 
+  \brief check if the entity already exists in the database,
   if yes, give the name of the existing entity to the user, if
-  no, record the name iName as the name of the new entity*/
+  no, record the name iName as the name of the new entity
+  \param[in] iNewEntity contains data to check if it already exists
+  \param[out] bool return true if it already exists, false if not
+  \tparam T this method takes only children of GoDBNameDescRow as type
+  */
   template <typename T>
-  bool CheckEntityAlreadyExists(T &iNewEntity,std::string iName,
-    std::string iDescription)
+  bool CheckEntityAlreadyExists(T iNewEntity)
   {
-    iNewEntity.SetField("Description",iDescription);
+    std::string Name = iNewEntity.GetMapValue("Name");
     if (iNewEntity.DoesThisEntityAlreadyExists(
-        this->m_DatabaseConnectorForNewEntity, iName) != -1)
+        this->m_DatabaseConnectorForNewEntity, Name) != -1)
       {
       QMessageBox msgBox;
       msgBox.setText(
         tr("This %1 already exists, its name is: ' %2 ' ")
         .arg(this->m_EntityName.c_str())
-        .arg(iName.c_str()));
+        .arg(Name.c_str()));
       msgBox.exec();
       return true;
       }
     else
       {
-      this->m_NameNewEntity =iName;
+      this->m_NameNewEntity = Name;
       return false;
       }
   }
 
-  /** \brief check if the name already exists for this entity in the database, if
-  yes, let the user know, if not, call SaveNewEntityInDB*/
+  /** 
+  \brief check if the name already exists for this entity in the database, if
+  yes, let the user know, if not, call SaveNewEntityInDB
+  \tparam T this method takes only children of GoDBNameDescRow as type
+  \param[in] iName name for the new entity entered by the user
+  \param[in] iDescription description for the new entity entered by the user
+  \param[in|out] ioNewEntity fields name and description modified by the method
+  */
   template< typename T>
-  void ValidateNameTemplate(T &iNewEntity, std::string iName, std::string iDescription)
+  void ValidateNameTemplate(T &ioNewEntity, std::string iName, std::string iDescription)
   {
-  iNewEntity.SetField("Name",iName);
-  if (iNewEntity.DoesThisNameAlreadyExists(
+  ioNewEntity.SetField("Name",iName);
+  ioNewEntity.SetField("Description",iDescription);
+  if (ioNewEntity.DoesThisNameAlreadyExists(
     this->m_DatabaseConnectorForNewEntity) != -1)
     {
     this->m_NameDescDialog->NameAlreadyExists();
@@ -144,7 +181,7 @@ protected:
   else
     {
     this->m_NameDescDialog->accept();
-    this->SaveNewEntityInDB(iName,iDescription);
+    this->SaveNewEntityInDB();
     }
   }
   

@@ -447,7 +447,7 @@ protected:
     ioRow.SetField<int>("Red",iColor.red());
     ioRow.SetField<int>("Green",iColor.green());
     ioRow.SetField<int>("Blue",iColor.blue());
-    ioRow.SetField<int>("Alpha",iColor.Alpha());
+    ioRow.SetField<int>("Alpha",iColor.alpha());
   }
 //-------------------------------------------------------------------------
 

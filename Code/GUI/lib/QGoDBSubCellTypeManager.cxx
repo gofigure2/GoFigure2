@@ -46,11 +46,9 @@ QGoDBSubCellTypeManager::QGoDBSubCellTypeManager (QWidget* iParent) :
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-void QGoDBSubCellTypeManager::SaveNewEntityInDB(
-    std::string iName,std::string iDescription)
+void QGoDBSubCellTypeManager::SaveNewEntityInDB()
 {
-  if(!this->CheckEntityAlreadyExists<GoDBSubCellTypeRow>(this->m_NewSubCellType,
-    iName,iDescription))
+  if(!this->CheckEntityAlreadyExists<GoDBSubCellTypeRow>(this->m_NewSubCellType))
     {
     this->m_NewSubCellType.SaveInDB(this->m_DatabaseConnectorForNewEntity);
     }
@@ -60,6 +58,6 @@ void QGoDBSubCellTypeManager::SaveNewEntityInDB(
 //------------------------------------------------------------------------------
 void QGoDBSubCellTypeManager::ValidateName(std::string iName, std::string iDescription)
 {
-  this->ValidateNameTemplate<GoDBSubCellTypeRow>(this->m_NewSubCellType,
-    iName, iDescription);
+  this->ValidateNameTemplate<GoDBSubCellTypeRow>(this->m_NewSubCellType, iName,
+    iDescription);
 }

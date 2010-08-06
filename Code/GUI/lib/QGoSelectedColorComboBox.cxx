@@ -64,7 +64,14 @@ void QGoSelectedColorComboBox::ActionWhenNewOneRequested()
         QString ColorName = QInputDialog::getText(this, tr("New Color Name:"),
                                                   tr("Please enter the name for your new color:"),
                                                   QLineEdit::Normal, "", &ok);
-        if (ok && !ColorName.isEmpty())
+        if (ok && ColorName.isEmpty())
+          {
+          QMessageBox msgBox;
+          msgBox.setText(
+          tr("Please enter the name for the Color to add"));
+          msgBox.exec();
+          }
+        if(ok && !ColorName.isEmpty())
           {
           //if the color already exist in combobox, no need to do anything:
           if (!this->NewColorNameAlreadyExist(ColorName))
@@ -75,7 +82,6 @@ void QGoSelectedColorComboBox::ActionWhenNewOneRequested()
           //pass the data for the new color to be saved in the database
             //this->m_LastActivated = ColorName;
             emit NewColorToBeSaved(NewItemData);           
-            //emit activated(ColorName);
             emit activated(this->findText(ColorName));
             }
           else

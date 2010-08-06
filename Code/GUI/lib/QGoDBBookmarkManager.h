@@ -47,6 +47,11 @@
 #include "QGoGUILibConfigure.h"
 #include "QGoDBNameDescEntityManager.h"
 
+/**
+\class QGoDBBookmarkManager
+\brief the QGoDBBookmarkManager manages the interactions between the user and the database
+for the Bookmark DBTable.
+*/
 class QGOGUILIB_EXPORT QGoDBBookmarkManager :
   public QGoDBNameDescEntityManager
   {
@@ -58,12 +63,19 @@ public:
 
   ~QGoDBBookmarkManager();
 
-  /** \brief execute the dialog asking the user to enter a name and a
+  /**
+  \brief execute the dialog asking the user to enter a name and a
   description, validates the name, set the m_DatabaseConnectorForNewBkmrk
-  and save the bookmark in the DB*/
+  and save the bookmark in the DB
+  \param[in] iCoordID ID for the coordinate to be saved in the bookmark table
+  */
   void AddABookmark(int iCoordID, vtkMySQLDatabase* iDatabaseConnector);
 
-  /** \brief return the coordinate for the bookmark with the name iName*/
+  /** 
+  \brief return the coordinate for the bookmark with the name iName
+  \param[in] iName name of the bookmark for which we want to get the coordinate
+  \param[out] GoDBCoordinateRow containing the data for the coordinate which name is iName
+  */
   GoDBCoordinateRow GetCoordinatesForBookmark(
     vtkMySQLDatabase* iDatabaseConnector, std::string iName);
 
@@ -76,19 +88,18 @@ protected:
   int                          m_CoordIDForNewBookmark;
 
 protected slots:
-  /** \brief save the new bookmark in the database, the
-  m_DatabaseConnectorForNewBkmrk needs to be set before
-  calling this method. Check that the bookmark doesn't
-  already exits in the database, if so, give the user
-  the name of the existing bookmark*/
-  void SaveNewEntityInDB(std::string iName, std::string
-    iDescription);
+  //mother class method
+  void SaveNewEntityInDB();
 
-  /** \brief get the coordid for the bookmark with the name
-  iName*/
+  /** 
+  \brief get the coordid for the bookmark with the name
+  iName
+  \param[in] iName Name of the bookmark
+  \param[out] int ID for the coordinate in the bookmark DBTable
+  */
   int GetCoordIDForBookmark(vtkMySQLDatabase* iDatabaseConnector,
                             std::string iName);
-
+  //mother class method
   void ValidateName(std::string iName, std::string iDescription);
 
 signals:

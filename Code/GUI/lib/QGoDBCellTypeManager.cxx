@@ -46,10 +46,9 @@ QGoDBCellTypeManager::QGoDBCellTypeManager (QWidget* iParent) :
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-void QGoDBCellTypeManager::SaveNewEntityInDB(std::string iName, std::string iDescription)
+void QGoDBCellTypeManager::SaveNewEntityInDB()
 {
-  if(!this->CheckEntityAlreadyExists<GoDBCellTypeRow>(this->m_NewCellType, iName,
-    iDescription))
+  if(!this->CheckEntityAlreadyExists<GoDBCellTypeRow>(this->m_NewCellType))
     {
     this->m_NewCellType.SaveInDB(this->m_DatabaseConnectorForNewEntity);
     }

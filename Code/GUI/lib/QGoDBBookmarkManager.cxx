@@ -65,8 +65,7 @@ void QGoDBBookmarkManager::AddABookmark(int iCoordID,
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoDBBookmarkManager::SaveNewEntityInDB(std::string iName, 
-                                               std::string iDescription)
+void QGoDBBookmarkManager::SaveNewEntityInDB()
 {
   QDateTime   CreationDate = QDateTime::currentDateTime();
   std::string CreationDateStr =
@@ -75,8 +74,7 @@ void QGoDBBookmarkManager::SaveNewEntityInDB(std::string iName,
   this->m_NewBookmark.SetField<int>("CoordID", this->m_CoordIDForNewBookmark);
   this->m_NewBookmark.SetField<int>("ImagingSessionID", this->m_ImgSessionID);
 
-  if(!this->CheckEntityAlreadyExists<GoDBBookmarkRow>(
-    this->m_NewBookmark,iName,iDescription))
+  if(!this->CheckEntityAlreadyExists<GoDBBookmarkRow>(this->m_NewBookmark))
     {
     this->m_NewBookmark.SaveInDB(this->m_DatabaseConnectorForNewEntity);
       emit ListBookmarksChanged();

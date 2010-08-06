@@ -44,6 +44,11 @@
 #include "QGoDBNameDescEntityManager.h"
 #include "GoDBCellTypeRow.h"
 
+/**
+\class QGoDBCellTypeManager
+\brief the QGoDBCellTypeManager manages the interactions between the user and the database
+for the celltype DBTable.
+*/
 class QGoDBCellTypeManager : public QGoDBNameDescEntityManager
   {
   Q_OBJECT
@@ -56,11 +61,11 @@ public:
 
 protected:
   GoDBCellTypeRow m_NewCellType;
-  virtual void SaveNewEntityInDB(std::string iName, 
-    std::string iDescription);
+  //mother class method
+  virtual void SaveNewEntityInDB();
 
 protected slots:
-
+  //mother class method
   virtual void ValidateName(std::string iName, std::string iDescription);
 
   };
