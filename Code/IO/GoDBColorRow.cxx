@@ -41,7 +41,7 @@
 #include "SelectQueryDatabaseHelper.h"
 #include "GoDBRecordSetHelper.h"
 
-GoDBColorRow::GoDBColorRow()
+GoDBColorRow::GoDBColorRow():GoDBNameDescRow()
   {
   this->InitializeMap();
   }
@@ -53,19 +53,19 @@ void GoDBColorRow::InitializeMap()
   this->m_TableName = "color";
   this->m_TableIDName = "ColorID";
   this->m_MapRow[this->m_TableIDName] = ConvertToString<int>(0);
-  this->m_MapRow["Name"] = "";
+  //this->m_MapRow["Name"] = "";
   this->m_MapRow["Red"] = ConvertToString<int>(0);
   this->m_MapRow["Green"] = ConvertToString<int>(0);
   this->m_MapRow["Blue"] = ConvertToString<int>(0);
   this->m_MapRow["Alpha"] = ConvertToString<int>(0);
-  this->m_MapRow["Description"] = "";
-  std::string NoDescription = "None";
-  this->SetField("Description", NoDescription);
+  //this->m_MapRow["Description"] = "";
+  //std::string NoDescription = "None";
+  //this->SetField("Description", NoDescription);
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-int GoDBColorRow::DoesThisColorAlreadyExists(vtkMySQLDatabase* DatabaseConnector)
+/*int GoDBColorRow::DoesThisEntityAlreadyExists(vtkMySQLDatabase* DatabaseConnector)
 {
   std::string Red = this->GetMapValue("Red");
   std::string Blue = this->GetMapValue("Blue");
@@ -73,20 +73,29 @@ int GoDBColorRow::DoesThisColorAlreadyExists(vtkMySQLDatabase* DatabaseConnector
   std::string Alpha = this->GetMapValue("Alpha");
   std::string Name  = this->GetMapValue("Name");
   /*return FindOneID(DatabaseConnector,"color", "ColorID","Red",Red,"Green",Green,
-  "Blue",Blue,"Alpha",Alpha,"Name",Name);*/
+  "Blue",Blue,"Alpha",Alpha,"Name",Name);
   return FindOneID(DatabaseConnector, "color", "ColorID", "Name",
                    this->GetMapValue("Name"));
+}*/
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+int GoDBColorRow::DoesThisEntityAlreadyExists(
+  vtkMySQLDatabase* iDatabaseConnector)
+{
+  return this->DoesThisNameAlreadyExists(iDatabaseConnector);
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-int GoDBColorRow::SaveInDB(vtkMySQLDatabase* DatabaseConnector)
+int GoDBColorRow::SaveInDB(vtkMySQLDatabase* iDatabaseConnector)
 {
-  int ColorID = this->DoesThisColorAlreadyExists(DatabaseConnector);
+  /*int ColorID = this->DoesThisEntityAlreadyExists(DatabaseConnector);
   if (ColorID == -1)
     {
     ColorID = AddOnlyOneNewObjectInTable<GoDBColorRow>(DatabaseConnector,
                                                        "color", *this, "ColorID");
     }
-  return ColorID;
+  return ColorID;*/
+  return this->SaveInDBTemplate<GoDBColorRow>(iDatabaseConnector,*this);
 }

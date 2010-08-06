@@ -135,14 +135,14 @@ protected:
   if yes, give the name of the existing entity to the user, if
   no, record the name iName as the name of the new entity
   \param[in] iNewEntity contains data to check if it already exists
-  \param[out] bool return true if it already exists, false if not
+  \return bool return true if it already exists, false if not
   \tparam T this method takes only children of GoDBNameDescRow as type
   */
   template <typename T>
   bool CheckEntityAlreadyExists(T iNewEntity)
   {
     std::string Name = iNewEntity.GetMapValue("Name");
-    if (iNewEntity.DoesThisEntityAlreadyExists(
+    if (iNewEntity.DoesThisEntityAlreadyExists2(
         this->m_DatabaseConnectorForNewEntity, Name) != -1)
       {
       QMessageBox msgBox;

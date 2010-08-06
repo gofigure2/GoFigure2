@@ -101,9 +101,9 @@ int GoDBBookmarkRow::DoesThisNameAlreadyExists(
 
 //-------------------------------------------------------------------------
 int GoDBBookmarkRow::DoesThisEntityAlreadyExists(
-  vtkMySQLDatabase* DatabaseConnector)
+  vtkMySQLDatabase* iDatabaseConnector)
 {
-  int ID = FindOneID(DatabaseConnector, "bookmark", "BookmarkID",
+  int ID = FindOneID(iDatabaseConnector, "bookmark", "BookmarkID",
                      "ImagingSessionID", this->GetMapValue("ImagingSessionID"), "CoordID",
                      this->GetMapValue("CoordID"));
   return ID;
@@ -128,31 +128,33 @@ int GoDBBookmarkRow::DoesThisEntityAlreadyExists(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-int GoDBBookmarkRow::DoesThisEntityAlreadyExists(
-    vtkMySQLDatabase* DatabaseConnector, std::string& ioName)
+/*int GoDBBookmarkRow::DoesThisEntityAlreadyExists(
+    vtkMySQLDatabase* iDatabaseConnector, std::string& ioName)
 {
-  int ID = FindOneID(DatabaseConnector, "bookmark", "BookmarkID",
+  /*int ID = FindOneID(iDatabaseConnector, "bookmark", "BookmarkID",
                      "ImagingSessionID", this->GetMapValue("ImagingSessionID"), "CoordID",
                      this->GetMapValue("CoordID"));
+  int ID = this->DoesThisEntityAlreadyExists(iDatabaseConnector);
   if (ID == -1)
     {
     return ID;
     }
-  ioName = ReturnOnlyOneValue(DatabaseConnector, "bookmark", "Name",
+  ioName = ReturnOnlyOneValue(iDatabaseConnector, "bookmark", "Name",
                               "BookmarkID", ConvertToString<int>(ID));
   return ID;
-}
+}*/
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-int GoDBBookmarkRow::SaveInDB(vtkMySQLDatabase* DatabaseConnector)
+int GoDBBookmarkRow::SaveInDB(vtkMySQLDatabase* iDatabaseConnector)
 {
   //int BookmarkID = this->DoesThisBookmarkAlreadyExists(DatabaseConnector);
-  int BookmarkID = this->DoesThisEntityAlreadyExists(DatabaseConnector);
+ /* int BookmarkID = this->DoesThisEntityAlreadyExists(DatabaseConnector);
   if (BookmarkID == -1)
     {
     BookmarkID = AddOnlyOneNewObjectInTable<GoDBBookmarkRow>(DatabaseConnector,
                                                              "bookmark", *this, "BookmarkID");
     }
-  return BookmarkID;
+  return BookmarkID;*/
+  return this->SaveInDBTemplate<GoDBBookmarkRow>(iDatabaseConnector,*this);
 }

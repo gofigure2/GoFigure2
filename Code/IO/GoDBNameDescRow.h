@@ -43,6 +43,11 @@
 #include "GoDBRow.h"
 #include "vtkMySQLDatabase.h"
 
+/**
+\class GoDBNameDescRow
+\brief Abstract. manages the map with the keys matching the fields for the
+DBtable containing a name and description fields.
+*/
 class QGOIO_EXPORT GoDBNameDescRow : public GoDBRow
   {
 public:
@@ -50,30 +55,76 @@ public:
 
   ~GoDBNameDescRow()
         {}
-  /**\brief check if the bookmark already exits in the DB, if yes,
+  /**
+  \brief Pure Virtual :check if the entity already exits in the DB, if yes,
   return the existing ID, if not, save it in the DB and return the
-  ID for new created bookmark*/
-  virtual int SaveInDB(vtkMySQLDatabase* DatabaseConnector) = 0;
+  ID for the new created entity
+  \return int existing or new created ID for the entity
+  */
+  virtual int SaveInDB(vtkMySQLDatabase* iDatabaseConnector) = 0;
 
-  /** \brief check if the entity already exists in the database
-based on its own uniqueness definition, return the ID of the
-entity already exiting or -1 if not yet created:*/
+  /** 
+  \brief Pure Virtual :check if the entity already exists in the database
+  based on its own uniqueness definition, return the ID of the
+  entity already existing or -1 if not yet created.
+  \return int existing ID or -1 if the entity doesn't exists
+  */
   virtual int DoesThisEntityAlreadyExists(
-    vtkMySQLDatabase* DatabaseConnector) = 0;
+    vtkMySQLDatabase* iDatabaseConnector) = 0;
 
-  /** \brief check if the entity already exists in the database
- based on its own uniqueness definition, return the ID of the
- entity already exiting or -1 if not yet created and change the
- ioName with the name of the existing entity:*/
-  virtual int DoesThisEntityAlreadyExists(
-    vtkMySQLDatabase* DatabaseConnector, std::string& ioName) = 0;
+  /** 
+  \brief check if the entity already exists in the database
+  based on its own uniqueness definition, return the ID of the
+  entity already exiting or -1 if not yet created and change the
+  ioName with the name of the existing entity
+  \param[in|out] ioName modified if the entity already exists with the
+  name of the existing entity
+  \return int existing ID or -1 if the entity doesn't exists
+ */
+  virtual int DoesThisEntityAlreadyExists2(
+    vtkMySQLDatabase* iDatabaseConnector, std::string& ioName);
 
-  /**\brief check if the name already exits in the database, if yes,
-  return the corresponding ID, if not -1*/
-  virtual int DoesThisNameAlreadyExists(vtkMySQLDatabase* DatabaseConnector);
+  /** 
+  \brief check if the entity already exists in the database
+  based on its own uniqueness definition, return the ID of the
+  entity already exiting or -1 if not yet created and change the
+  ioName with the name of the existing entity
+  \param[in|out] ioName modified if the entity already exists with the
+  name of the existing entity
+  \return int existing ID or -1 if the entity doesn't exists
+ */
+  //virtual int DoesThisEntityAlreadyExists(
+   // vtkMySQLDatabase* iDatabaseConnector, std::string& ioName) = 0;
+
+  /**
+  \brief check if the name already exits in the database, if yes,
+  return the corresponding ID, if not -1
+  \return int return the ID of the existing entity with the same name
+  or -1 if no entity has the same name
+  */
+  virtual int DoesThisNameAlreadyExists(vtkMySQLDatabase* iDatabaseConnector);
 
 protected:
+  //mother class method
   virtual void InitializeMap();
+
+  /**
+  \brief
+  \
+  */
+  template<typename T>
+  int SaveInDBTemplate(vtkMySQLDatabase* iDatabaseConnector, T iNewEntity)
+  {
+    int NewEntityID = iNewEntity.DoesThisEntityAlreadyExists(iDatabaseConnector);
+    if (NewEntityID == -1)
+    {
+    NewEntityID = 
+      AddOnlyOneNewObjectInTable<T>(iDatabaseConnector,
+                                    iNewEntity.m_TableName, 
+                                    iNewEntity, iNewEntity.m_TableIDName);
+    }
+  return NewEntityID;
+  }
 
   };
 #endif
