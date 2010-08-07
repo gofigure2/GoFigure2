@@ -37,21 +37,21 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#ifndef __QGoDeleteDBEntityDialog_h
-#define __QGoDeleteDBEntityDialog_h
+#ifndef __QGoDeleteFromListDialog_h
+#define __QGoDeleteFromListDialog_h
 
 #include <QDialog>
 #include <QStringList>
 #include <QListWidget>
 #include <QListWidgetItem>
-#include "vtkMySQLDatabase.h"
+//#include "vtkMySQLDatabase.h"
 
 #include "QGoGUILibConfigure.h"
 
 /**
-\class QGoDeleteDBEntityDialog
-\brief this class displays the corresponding entities
-stored in the database.
+\class QGoDeleteFromListDialog
+\brief this class displays a list of entities and return the list of the 
+ones selected by the user. class based on Qt
 */
 class QGOGUILIB_EXPORT QGoDeleteDBEntityDialog : public QDialog
   {

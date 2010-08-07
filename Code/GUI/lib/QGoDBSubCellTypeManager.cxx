@@ -50,7 +50,7 @@ void QGoDBSubCellTypeManager::SaveNewEntityInDB()
 {
   if(!this->CheckEntityAlreadyExists<GoDBSubCellTypeRow>(this->m_NewSubCellType))
     {
-    this->m_NewSubCellType.SaveInDB(this->m_DatabaseConnectorForNewEntity);
+    this->m_NewSubCellType.SaveInDB(this->m_DatabaseConnector);
     }
 }
 //------------------------------------------------------------------------------

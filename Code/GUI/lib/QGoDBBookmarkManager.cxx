@@ -76,7 +76,7 @@ void QGoDBBookmarkManager::SaveNewEntityInDB()
 
   if(!this->CheckEntityAlreadyExists<GoDBBookmarkRow>(this->m_NewBookmark))
     {
-    this->m_NewBookmark.SaveInDB(this->m_DatabaseConnectorForNewEntity);
+    this->m_NewBookmark.SaveInDB(this->m_DatabaseConnector);
       emit ListBookmarksChanged();
     }
 }

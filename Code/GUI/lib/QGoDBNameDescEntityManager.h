@@ -44,12 +44,14 @@
 #include <QWidget>
 #include <QMessageBox>
 #include "vtkMySQLDatabase.h"
-#include "QNameDescriptionInputDialog.h"
+#include "QGoNameDescriptionInputDialog.h"
 
 /**
-\class QGoDBEntityManager
-\brief Abstract class : the QGoDBNameDescEntityManager manages the interactions between the user and the database
-for all the DBtables containing a name and a description.
+\class QGoDBNameDescEntityManager
+\brief Abstract class : the QGoDBNameDescEntityManager manages the interactions 
+between the user and the database (add a new one, delete)for a DBTable 
+containing a name and a description.Has some Qt widgets and manages queries for 
+this particular DBTable (i.e get list of existing ones).
 */
 class QGoDBNameDescEntityManager :
   public QWidget
@@ -114,12 +116,21 @@ protected slots:
   virtual void ValidateName(
     std::string iName,std::string iDescription) = 0;
 
+  /** 
+  \brief Delete in the database the entities with the names contained in
+  the vector
+  \param[in] iVectorNamesEntitiesToDelete vector of the names for the
+  entities to be deleted in the database
+  */
+  void DeleteEntitiesFromList(
+    std::vector<std::string> iVectorNamesEntitiesToDelete);
+
 protected:
-  int                          m_ImgSessionID;
-  std::string                  m_EntityName;
-  QNameDescriptionInputDialog* m_NameDescDialog;
-  vtkMySQLDatabase*            m_DatabaseConnectorForNewEntity;
-  std::string                  m_NameNewEntity;
+  int                            m_ImgSessionID;
+  std::string                    m_EntityName;
+  QGoNameDescriptionInputDialog* m_NameDescDialog;
+  vtkMySQLDatabase*              m_DatabaseConnector;
+  std::string                    m_NameNewEntity;
   
   /** 
   \brief Pure Virtual method : save the new entity in the database, the
@@ -129,6 +140,12 @@ protected:
   the name of the existing entity
   */
   virtual void SaveNewEntityInDB() = 0;
+
+  /**
+  \brief return the names of all the entities stored in the database
+  \return vector of the names 
+  */
+  std::vector<std::string> GetNameExistingEntities(vtkMySQLDatabase* iDatabaseConnector);
   
   /** 
   \brief check if the entity already exists in the database,
@@ -143,7 +160,7 @@ protected:
   {
     std::string Name = iNewEntity.GetMapValue("Name");
     if (iNewEntity.DoesThisEntityAlreadyExists2(
-        this->m_DatabaseConnectorForNewEntity, Name) != -1)
+        this->m_DatabaseConnector, Name) != -1)
       {
       QMessageBox msgBox;
       msgBox.setText(
@@ -174,7 +191,7 @@ protected:
   ioNewEntity.SetField("Name",iName);
   ioNewEntity.SetField("Description",iDescription);
   if (ioNewEntity.DoesThisNameAlreadyExists(
-    this->m_DatabaseConnectorForNewEntity) != -1)
+    this->m_DatabaseConnector) != -1)
     {
     this->m_NameDescDialog->NameAlreadyExists();
     }
@@ -184,6 +201,6 @@ protected:
     this->SaveNewEntityInDB();
     }
   }
-  
+ 
   };
 #endif

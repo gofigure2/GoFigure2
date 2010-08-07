@@ -38,8 +38,8 @@
 
 =========================================================================*/
 
-#ifndef __QNameDescriptionInputDialog_h
-#define __QNameDescriptionInputDialog_h
+#ifndef __QGoNameDescriptionInputDialog_h
+#define __QGoNameDescriptionInputDialog_h
 
 #include <QDialog>
 #include "ui_QNameDescriptionInputDialog.h"
@@ -50,17 +50,17 @@
 \brief for the creation of several entities in the database, the name and the
 description are asked to the user.
 */
-class QNameDescriptionInputDialog : public QDialog,
+class QGoNameDescriptionInputDialog : public QDialog,
   private Ui::QNameDescriptionInputDialog
   {
   Q_OBJECT
 
 public:
  
-  explicit QNameDescriptionInputDialog(QWidget* iParent = 0,
+  explicit QGoNameDescriptionInputDialog(QWidget* iParent = 0,
                                        QString iEntityName = "");
 
-  virtual ~QNameDescriptionInputDialog();
+  virtual ~QGoNameDescriptionInputDialog();
 
   /** \brief open a messagebox to tell the user that the name he
   choose already exits*/

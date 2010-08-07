@@ -49,9 +49,9 @@ SET( QGoGUILIB_SRC
   ConversionLsmToMegaThread.cxx
   QGoDBBookmarkManager.cxx
   QTextEditChild.cxx
-  QNameDescriptionInputDialog.cxx
+  QGoNameDescriptionInputDialog.cxx
   QGoDockWidgetStatus.cxx
-  QGoDeleteDBEntityDialog.cxx
+  QGoDeleteFromListDialog.cxx
   QGoDBNameDescEntityManager.cxx
   QGoDBCellTypeManager.cxx
   QGoDBSubCellTypeManager.cxx
@@ -137,9 +137,9 @@ SET( QGoGUILIB_HDRS
   ConversionLsmToMegaThread.h
   QGoDBBookmarkManager.h
   QTextEditChild.h
-  QNameDescriptionInputDialog.h
+  QGoNameDescriptionInputDialog.h
   QGoDockWidgetStatus.h
-  QGoDeleteDBEntityDialog.h
+  QGoDeleteFromListDialog.h
   QGoDBNameDescEntityManager.h
   QGoDBCellTypeManager.h
   QGoDBSubCellTypeManager.h
