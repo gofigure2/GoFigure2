@@ -1,7 +1,7 @@
 /*=========================================================================
-  Author: $Author$  // Author of last commit
-  Version: $Rev$  // Revision of last commit
-  Date: $Date$  // Date of last commit
+  Author: $Author: lsouhait $  // Author of last commit
+  Version: $Rev: 1910 $  // Revision of last commit
+  Date: $Date: 2010-08-06 18:43:09 -0400 (Fri, 06 Aug 2010) $  // Date of last commit
 =========================================================================*/
 
 /*=========================================================================
@@ -53,54 +53,67 @@
 \brief this class displays a list of entities and return the list of the 
 ones selected by the user. class based on Qt
 */
-class QGOGUILIB_EXPORT QGoDeleteDBEntityDialog : public QDialog
+class QGOGUILIB_EXPORT QGoDeleteFromListDialog : public QDialog
   {
   Q_OBJECT
 
 public:
 
   typedef std::pair<std::string,QColor> ItemColorComboboxData;
-  explicit QGoDeleteDBEntityDialog(QWidget* iParent = 0,
-                                   std::string iEntityName = "", int iImgSessionID = 0,
-                                   vtkMySQLDatabase* iDatabaseConnector = 0);
-  explicit QGoDeleteDBEntityDialog(std::list< ItemColorComboboxData > iDataListWithColor,
+  
+  explicit QGoDeleteFromListDialog(std::vector<std::string> iVectorEntities,
+                                   QWidget* iParent = 0,     
+                                   std::string iEntityName = "");
+
+  explicit QGoDeleteFromListDialog(std::list< ItemColorComboboxData > iDataListWithColor,
                                    QWidget* iParent = 0,
-                                   std::string iEntityName = "", 
-                                   int iImgSessionID = 0,
-                                   vtkMySQLDatabase* iDatabaseConnector = 0);
-  virtual ~QGoDeleteDBEntityDialog();
+                                   std::string iEntityName = "");
+                                   
+  virtual ~QGoDeleteFromListDialog();
 
 protected:
   std::string  m_EntityName;
-  int          m_ImgSessionID;
   QListWidget* m_ListWidget;
 
-  void SetUpUi(std::string iEntityName, int iImgSessionID,
-                                      vtkMySQLDatabase* iDatabaseConnector);
-  /** \brief Get the list of the existing entities names from
-  the database*/
-  QStringList GetListExistingEntities(
-    vtkMySQLDatabase* iDatabaseConnector);
-  vtkMySQLDatabase* m_DatabaseConnector;
-  /** \brief delete the corresponding items selected in the
-  database*/
+  /**
+  \brief set the layout with all the objects, the connections and
+  the entity name 
+  \param[in] iEntityName name of the entity to be deleted
+  */
+  void SetUpUi(std::string iEntityName);
+                                    
+  /** 
+  \brief emit a signal which sends vector with the names of the entities
+  the user selected to be deleted
+  \param[in] iListEntitiesToDelete list of the items selected by the user
+  */
   void DeleteSelection(
     QList<QListWidgetItem*> iListEntitiesToDelete);
 
-  /** \brief get the names of the entities from the database
-  and create the corresponding QListWidgetItems*/
-  void SetItemsInTheListFromDB(vtkMySQLDatabase* iDatabaseConnector);
-
+  /** 
+  \brief create the corresponding QListWidgetItems
+  \parma[in] iVectorItems vector with the names of the entities to be displayed
+  */  
+  void SetItemsFromTheVector(std::vector<std::string> iVectorItems);
+  
+  /** 
+  \brief create the corresponding QListWidgetItems with a QColor
+  \parma[in] iDataList list with the names of the entities and their color to be displayed
+  */ 
   void SetItemsInTheListWithColor(std::list<ItemColorComboboxData> iDataList);
 
 protected slots:
-  /** \brief ask the user to select at least one item if
+  /** 
+  \brief ask the user to select at least one item if
   nothying has been selected and ask the user confirmation
-  if selection is not null*/
+  if the selection is not null
+  */
   void SelectionValidation();
+
 signals:
-  void ListEntitiesChanged();
+  
   void CancelRequested();
+  void ListEntitiesToDelete(std::vector<std::string>);
   };
 
 #endif

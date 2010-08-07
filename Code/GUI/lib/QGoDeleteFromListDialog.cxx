@@ -1,7 +1,7 @@
 /*=========================================================================
-  Author: $Author$  // Author of last commit
-  Version: $Rev$  // Revision of last commit
-  Date: $Date$  // Date of last commit
+  Author: $Author: lsouhait $  // Author of last commit
+  Version: $Rev: 1910 $  // Revision of last commit
+  Date: $Date: 2010-08-06 18:43:09 -0400 (Fri, 06 Aug 2010) $  // Date of last commit
 =========================================================================*/
 
 /*=========================================================================
@@ -37,7 +37,7 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#include "QGoDeleteDBEntityDialog.h"
+#include "QGoDeleteFromListDialog.h"
 #include <QStringListModel>
 #include <QStringList>
 #include <QTreeWidget>
@@ -49,105 +49,53 @@
 #include <QMessageBox>
 #include <QModelIndex>
 #include <QPainter>
-#include "SelectQueryDatabaseHelper.h"
-#include "QueryDataBaseHelper.h"
 #include "ConvertToStringHelper.h"
 
-QGoDeleteDBEntityDialog::QGoDeleteDBEntityDialog(QWidget* iParent,
-                                                 std::string iEntityName, int iImgSessionID,
-                                                 vtkMySQLDatabase* iDatabaseConnector
-                                                 ) : QDialog(iParent)
+QGoDeleteFromListDialog::QGoDeleteFromListDialog
+                                   (std::vector<std::string> iVectorEntities,
+                                    QWidget* iParent,     
+                                    std::string iEntityName, 
+                                    int iImgSessionID
+                                    ) : QDialog(iParent)
 {
-  this->SetUpUi(iEntityName,iImgSessionID,iDatabaseConnector);
-  //this->m_DatabaseConnector = iDatabaseConnector;
-  this->SetItemsInTheListFromDB(this->m_DatabaseConnector);
-  /*this->m_EntityName = iEntityName;
-  this->m_ImgSessionID = iImgSessionID;
-  this->m_DatabaseConnector = iDatabaseConnector;
-  this->m_ListWidget = new QListWidget(this);
-  this->SetItemsInTheList(iDatabaseConnector);
-  this->m_ListWidget->setSelectionMode(QAbstractItemView::MultiSelection);
-
-  QDialogButtonBox* ButtonBox = new QDialogButtonBox(QDialogButtonBox::Ok
-                                                     | QDialogButtonBox::Cancel);
-  QObject::connect(ButtonBox, SIGNAL(rejected()), this, SLOT(reject()));
-  QObject::connect(ButtonBox, SIGNAL(rejected()), this, SIGNAL(CancelRequested()));
-  QObject::connect(ButtonBox, SIGNAL(accepted()), this, SLOT(SelectionValidation()));
-  QVBoxLayout* vlayout = new QVBoxLayout(this);
-  vlayout->addWidget(this->m_ListWidget);
-  vlayout->addWidget(ButtonBox);
-  this->setWindowTitle(tr("Delete a %1").arg(this->m_EntityName.c_str()));
-  this->setLayout(vlayout);*/
+  this->SetUpUi(iEntityName,iImgSessionID);
+  this->SetItemsFromTheVector(iVectorEntities);
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-QGoDeleteDBEntityDialog::QGoDeleteDBEntityDialog(
-  std::list<QGoDeleteDBEntityDialog::ItemColorComboboxData > iDataListWithColor,
+QGoDeleteFromListDialog::QGoDeleteFromListDialog(
+  std::list<QGoDeleteFromListDialog::ItemColorComboboxData > iDataListWithColor,
                         QWidget* iParent,
                         std::string iEntityName, 
-                        int iImgSessionID,
-                        vtkMySQLDatabase* iDatabaseConnector): QDialog(iParent)
+                        int iImgSessionID
+                        ): QDialog(iParent)
 {
- this->SetUpUi(iEntityName,iImgSessionID,iDatabaseConnector);
+ this->SetUpUi(iEntityName,iImgSessionID);
  this->SetItemsInTheListWithColor(iDataListWithColor);
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-QGoDeleteDBEntityDialog::~QGoDeleteDBEntityDialog()
+QGoDeleteFromListDialog::~QGoDeleteFromListDialog()
   {
   }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-QStringList QGoDeleteDBEntityDialog::GetListExistingEntities(
-  vtkMySQLDatabase* iDatabaseConnector)
+void QGoDeleteFromListDialog::SetItemsFromTheVector(
+  std::vector<std::string> iVectorItems)
 {
-  QStringList ListEntities;
-
-  if (iDatabaseConnector)
-    {
-    std::vector<std::string> ResultsQuery;
-    // if m_ImgSessionID = 0, the entity name is not related to an imagingsession
-    if (this->m_ImgSessionID != 0)
-      {
-      ResultsQuery = ListSpecificValuesForOneColumn(
-        iDatabaseConnector, this->m_EntityName, "Name", "ImagingSessionID",
-        ConvertToString<int>(this->m_ImgSessionID), "Name");
-      }
-    else
-      {
-      ResultsQuery = ListAllValuesForOneColumn(iDatabaseConnector,
-                                               "Name", this->m_EntityName);
-      }
-
-    for (size_t i = 0; i < ResultsQuery.size(); i++)
-      {
-      ListEntities.append(ResultsQuery[i].c_str());
-      }
-    }
-
-  return ListEntities;
-}
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-void QGoDeleteDBEntityDialog::SetItemsInTheListFromDB(
-  vtkMySQLDatabase* iDatabaseConnector)
-{
-  QStringList ListNamesEntities
-    = this->GetListExistingEntities(iDatabaseConnector);
-  for (int i = 0; i < ListNamesEntities.size(); i++)
+  for (int i = 0; i < iVectorItems.size(); i++)
     {
     QListWidgetItem* item
-      = new QListWidgetItem(ListNamesEntities.at(i), this->m_ListWidget);
+      = new QListWidgetItem(iVectorItems[i].c_str(), this->m_ListWidget);
     }
 }
 //--------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoDeleteDBEntityDialog::SetItemsInTheListWithColor(
+void QGoDeleteFromListDialog::SetItemsInTheListWithColor(
   std::list<ItemColorComboboxData> iDataList)
 {
   std::list<ItemColorComboboxData>::iterator iter = iDataList.begin();
@@ -171,7 +119,7 @@ void QGoDeleteDBEntityDialog::SetItemsInTheListWithColor(
 //--------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoDeleteDBEntityDialog::SelectionValidation()
+void QGoDeleteFromListDialog::SelectionValidation()
 {
   QList<QListWidgetItem*> ListEntitiesToDelete =
     this->m_ListWidget->selectedItems();
@@ -205,7 +153,7 @@ void QGoDeleteDBEntityDialog::SelectionValidation()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoDeleteDBEntityDialog::DeleteSelection(
+void QGoDeleteFromListDialog::DeleteSelection(
   QList<QListWidgetItem*> iListEntitiesToDelete)
 {
   std::vector<std::string> VectorNamesToDelete;
@@ -213,21 +161,15 @@ void QGoDeleteDBEntityDialog::DeleteSelection(
     {
     VectorNamesToDelete.push_back(iListEntitiesToDelete.at(i)->text().toStdString());
     }
-  DeleteRows(this->m_DatabaseConnector, this->m_EntityName,
-             "Name", VectorNamesToDelete);
-  emit ListEntitiesChanged();
+  emit ListEntitiesToDelete(VectorNamesToDelete) ;
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoDeleteDBEntityDialog::SetUpUi(std::string iEntityName, int iImgSessionID,
-                                      vtkMySQLDatabase* iDatabaseConnector)
+void QGoDeleteFromListDialog::SetUpUi(std::string iEntityName, int iImgSessionID)
 {
   this->m_EntityName = iEntityName;
-  this->m_ImgSessionID = iImgSessionID;
-  //this->m_DatabaseConnector = iDatabaseConnector;
   this->m_ListWidget = new QListWidget(this);
-  //this->SetItemsInTheList(iDatabaseConnector);
   this->m_ListWidget->setSelectionMode(QAbstractItemView::MultiSelection);
 
   QDialogButtonBox* ButtonBox = new QDialogButtonBox(QDialogButtonBox::Ok
@@ -242,5 +184,4 @@ void QGoDeleteDBEntityDialog::SetUpUi(std::string iEntityName, int iImgSessionID
   QObject::connect(ButtonBox, SIGNAL(rejected()), this, SLOT(reject()));
   QObject::connect(ButtonBox, SIGNAL(rejected()), this, SIGNAL(CancelRequested()));
   QObject::connect(ButtonBox, SIGNAL(accepted()), this, SLOT(SelectionValidation()));
-
 }
