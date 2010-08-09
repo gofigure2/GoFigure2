@@ -63,6 +63,7 @@
 #include "QGoTraceManualEditingWidget.h"
 #include "QGoDBCellTypeManager.h"
 #include "QGoDBSubCellTypeManager.h"
+#include "QGoDBColorManager.h"
 
 /** \class QGoPrintDatabase
  * \brief Ensure the connection with the Database
@@ -299,6 +300,7 @@ protected:
   QGoDBBookmarkManager*    m_BookmarkManager;
   QGoDBCellTypeManager*    m_CellTypeManager;
   QGoDBSubCellTypeManager* m_SubCellTypeManager;
+  QGoDBColorManager*       m_ColorManager;
   QStringList              m_ListCellType;
   //QStringList              m_ListSubCellType;
 
@@ -329,8 +331,9 @@ protected:
   std::list<ItemColorComboboxData> GetListCollectionIDFromDB();
 
   /** \brief get the data for the colorcombobox from the database
-  and update the list of colors in the colorcombobox*/
-  void SetColorComboBoxInfofromDB();
+  put them in the colorcombobox and if the string is not empty, 
+  the combobox will have as selected item the string*/
+  void SetColorComboBoxInfofromDB(std::string iNewColorToSelect = "");
 
   /** \brief Return the TraceInfoStructure corresponding to the trace name*/
   TraceInfoStructure* GetTraceInfoStructure(std::string iTraceName);
@@ -472,7 +475,7 @@ protected slots:
   void UpdateSelectedSubCellType(std::string iSelectedSubCellType);
   /** \brief Save a new color in the database with rgba and the name of
  * the color and update the list in the colorcombobox*/
-  void SaveNewColorInDB(ItemColorComboboxData iDataNewColor);
+  //void SaveNewColorInDB(ItemColorComboboxData iDataNewColor);
 
   /** \brief Save the new collection in the database and update the
   colorcombobox*/
@@ -500,8 +503,10 @@ protected slots:
 
   void AddNewCellType();
   void AddNewSubCellType();
+  void AddNewColor();
   void DeleteCellType();
   void DeleteSubCellType();
+  void DeleteColor();
 
 private:
   Q_DISABLE_COPY(QGoPrintDatabase);

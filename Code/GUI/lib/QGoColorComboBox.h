@@ -49,7 +49,8 @@ class QGOGUILIB_EXPORT QGoColorComboBox : public QComboBox
   {
   Q_OBJECT
 public:
-  explicit QGoColorComboBox(std::string iTextToAddANewOne,QWidget *parent = 0);
+  explicit QGoColorComboBox(std::string iTextToAddANewOne,
+      QWidget *parent = 0,std::string iTextToDelete = "");
   virtual ~QGoColorComboBox();
 
   typedef std::pair<std::string, QColor> ItemColorComboboxData;
@@ -85,6 +86,7 @@ public:
 signals:
   void AddANewOneActivated();
   void ItemSelected(ItemColorComboboxData);
+  void DeleteActivated();
   //void activated(const QColor& color);
   //void highlighted(const QColor& color);
   /** \brief  signal emitted when a new color has been created by the user, in order
@@ -95,9 +97,12 @@ signals:
  // void NewCollectionToBeSaved();
 
 public slots:
-  /** \brief insert an item with color at the end, before the "more" and select it if 
-  selectetheaddeditem is set to true*/
+  /** \brief add an item with color at the end of the list befor the "add new..."
+  if they have already been added to the list and select it if 
+  selectetheaddeditem is set to true. */
   void AddItemWithColor(ItemColorComboboxData,bool SelectTheAddedItem = true);
+
+  //void InsertItemWithColor((ItemColorComboboxData,bool SelectTheAddedItem = true);
  // void addColor(const QColor& iColor, const QString& iName)
  // { insertColor(colorCount(), iColor, iName); }
   /** \brief insert the existing colors with the data taken from the database,
@@ -106,7 +111,7 @@ public slots:
   //void setExistingColors(
   //  std::list<std::pair<std::string, std::vector<int> > > iDataColorsFromDB);
   void setItemsWithColorFromList(std::list< ItemColorComboboxData > iDataFromList);
-  void ListToUpdateWithItemDeleted(std::list< ItemColorComboboxData > iDataFromList);
+  //void ListToUpdateWithItemDeleted(std::list< ItemColorComboboxData > iDataFromList);
   
   /** \brief delete the corresponding collectionID in the list displayed
   by the colorcombobox*/
@@ -114,7 +119,7 @@ public slots:
 //  void DontAddTheColor();
 
 protected:
-  QString     m_LastActivated;
+  //QString     m_LastActivated;
   ItemColorComboboxData GetTheItemColorComboBoxData(int iIndex);
 
   virtual     void SetActivatedItem();
@@ -125,11 +130,14 @@ protected slots:
 
 private slots:
   void emitActivatedItem(int iIndexActivatedItem);
+
   //void emitHighlightedColor(int index);
   //void emitActivatedColor(int index);
 
 private:
   std::string m_TextToAddANewOne;
+  std::string m_TextToDelete;
+  int         m_NumberOfItemsAfterList;
  /// QColor lastActivated;
  // int    numUserColors;
  // bool   NewColorToBeAdded;

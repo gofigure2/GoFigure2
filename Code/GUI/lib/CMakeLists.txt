@@ -55,6 +55,7 @@ SET( QGoGUILIB_SRC
   QGoDBNameDescEntityManager.cxx
   QGoDBCellTypeManager.cxx
   QGoDBSubCellTypeManager.cxx
+  QGoDBColorManager.cxx
   QGoTraceManualEditingWidget.cxx
   QGoTraceManualEditingDockWidget.cxx
   QGoDBInitializationWizard.cxx
@@ -143,6 +144,7 @@ SET( QGoGUILIB_HDRS
   QGoDBNameDescEntityManager.h
   QGoDBCellTypeManager.h
   QGoDBSubCellTypeManager.h
+  QGoDBColorManager.h
   QGoTraceManualEditingWidget.h
   QGoTraceManualEditingDockWidget.h
   QGoOneClickSegmentationDockWidget.h

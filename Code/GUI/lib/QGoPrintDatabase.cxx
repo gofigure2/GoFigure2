@@ -107,6 +107,8 @@ QGoPrintDatabase(QWidget* iParent) :
   
   this->m_SubCellTypeManager = new QGoDBSubCellTypeManager(this);
 
+  this->m_ColorManager = new QGoDBColorManager(this);
+
   this->CreateConnectionsForTraceManualEditingWidget();
 
   QObject::connect(m_VisibilityAction, SIGNAL(toggled(bool)),
@@ -1261,10 +1263,16 @@ GetTracesForAGivenZCoord(ContourMeshStructureMultiIndexContainer iAllTraces,
 
 //-------------------------------------------------------------------------
 void QGoPrintDatabase::
-SetColorComboBoxInfofromDB()
+SetColorComboBoxInfofromDB(std::string iNewColorToSelect)
 {
   this->OpenDBConnection();
-  std::list<ItemColorComboboxData > InfoColors;
+  this->m_TraceWidget->SetListColors(
+    this->m_ColorManager->GetListExistingColors(this->m_DatabaseConnector));
+  if (!iNewColorToSelect.empty())
+    {
+    this->m_TraceWidget->SetCurrentColor(iNewColorToSelect);
+    }
+  /*std::list<ItemColorComboboxData > InfoColors;
   std::vector<std::string> ResultsQuery  = ListAllValuesForOneColumn(
     m_DatabaseConnector, "*", "color","name");
   unsigned int i = 0;
@@ -1277,14 +1285,13 @@ SetColorComboBoxInfofromDB()
     temp.second = tempColor;
     InfoColors.push_back(temp);
     i = i + 7;
-    }
+    }*/
   this->CloseDBConnection();
-  this->m_TraceWidget->SetListColors(InfoColors);  
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void
+/*void
 QGoPrintDatabase::
 SaveNewColorInDB(ItemColorComboboxData iDataNewColor)
 {
@@ -1295,12 +1302,12 @@ SaveNewColorInDB(ItemColorComboboxData iDataNewColor)
   /*NewColor.SetField<int>("Red", iDataNewColor.second.red());
   NewColor.SetField<int>("Green", iDataNewColor.second.green());
   NewColor.SetField<int>("Blue", iDataNewColor.second.blue());
-  NewColor.SetField<int>("Alpha", iDataNewColor.second.alpha());*/
+  NewColor.SetField<int>("Alpha", iDataNewColor.second.alpha());
   NewColor.SaveInDB(m_DatabaseConnector);
 
   this->CloseDBConnection();
   this->SetColorComboBoxInfofromDB();
-}
+}*/
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -1451,8 +1458,10 @@ SetListExistingCollectionIDFromDB()
 //-------------------------------------------------------------------------
 void QGoPrintDatabase::UpdateListCollectionIDFromDB()
 {
-  this->m_TraceWidget->UpdateCollectionComboboxWithDeletedItem(
-    this->GetListCollectionIDFromDB());
+  //this->m_TraceWidget->UpdateCollectionComboboxWithDeletedItem(
+    //this->GetListCollectionIDFromDB());
+  this->m_TraceWidget->SetListCollectionID(this->GetListCollectionIDFromDB());
+  this->m_TraceWidget->SetCurrentCollectionID(this->m_SelectedCollectionData.first);
 }
 //-------------------------------------------------------------------------
 
@@ -1946,6 +1955,24 @@ void QGoPrintDatabase::AddNewCellType()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+void QGoPrintDatabase::AddNewColor()
+{
+  this->OpenDBConnection();
+  ItemColorComboboxData NewColor = this->m_ColorManager->AddANewColor(
+    this->m_DatabaseConnector);
+  if (!NewColor.first.empty())
+    {
+    this->SetColorComboBoxInfofromDB(NewColor.first);
+    }
+  else //if the NewColor name is empty, go to the last selected one:
+    {
+    this->m_TraceWidget->SetCurrentColor(this->m_SelectedColorData.first);
+    }
+  this->CloseDBConnection();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 void QGoPrintDatabase::DeleteCellType()
 {
   this->OpenDBConnection();
@@ -1956,6 +1983,22 @@ void QGoPrintDatabase::DeleteCellType()
   else //if the user cancelled, go to the last selected one:
     {
     this->m_TraceWidget->SetCurrentCellType(this->m_SelectedCellType);
+    }
+  this->CloseDBConnection();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoPrintDatabase::DeleteColor()
+{
+  this->OpenDBConnection();
+  if(this->m_ColorManager->DeleteEntity(this->m_DatabaseConnector))
+    {
+    this->SetColorComboBoxInfofromDB(this->m_SelectedColorData.first);
+    }
+  else //if the user cancelled, go to the last selected one:
+    {
+    this->m_TraceWidget->SetCurrentColor(this->m_SelectedColorData.first);
     }
   this->CloseDBConnection();
 }
@@ -2287,10 +2330,20 @@ void QGoPrintDatabase::CreateConnectionsForTraceManualEditingWidget()
                    this,
                    SLOT(UpdateSelectedSubCellType(std::string)));
 
-  QObject::connect(this->m_TraceWidget,
+ /* QObject::connect(this->m_TraceWidget,
                    SIGNAL(NewColorToBeSaved(ItemColorComboboxData)),
                    this,
-                   SLOT(SaveNewColorInDB(ItemColorComboboxData)));
+                   SLOT(SaveNewColorInDB(ItemColorComboboxData)));*/
+
+  QObject::connect(this->m_TraceWidget,
+                   SIGNAL(AddNewColor()),
+                   this,
+                   SLOT(AddNewColor()));
+
+  QObject::connect(this->m_TraceWidget,
+                   SIGNAL(DeleteColor()),
+                   this,
+                   SLOT(DeleteColor()));
 
   QObject::connect(this->m_TraceWidget,
                    SIGNAL(NewCollectionToBeCreated()),

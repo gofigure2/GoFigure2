@@ -73,6 +73,8 @@ public:
   std::string GetTraceName();
   void SetCurrentCellType(std::string iSubCellTypeText);
   void SetCurrentSubCellType(std::string iSubCellTypeText);
+  void SetCurrentColor(std::string iColorText);
+  void SetCurrentCollectionID(std::string iID);
 
   void UpdateTraceAndCollection(
     std::string iTrace, std::string iCollection);
@@ -96,24 +98,27 @@ public slots:
   //void AddANewCellType (std::string iNewCellType);
   void CheckUserAction(QString iCellTypeText);
   void CheckUserActionSubCell(QString iSubCellTypeText);
+  //void CheckUserActionColor(ItemColorComboboxData iActivatedColor);
 
-  void UpdateCollectionComboboxWithDeletedItem(
-    std::list<ItemColorComboboxData> iListExistingID);
-  void UpdateColorComboboxWithDeletedItem(
-    std::list<ItemColorComboboxData> iListColors);
+  //void UpdateCollectionComboboxWithDeletedItem(
+  //  std::list<ItemColorComboboxData> iListExistingID);
+  //void UpdateColorComboboxWithDeletedItem(
+  //  std::list<ItemColorComboboxData> iListColors);
 
 signals:
   void AddANewCellType();//useful
   void DeleteCellType();//useful
   void AddANewSubCellType();//useful
   void DeleteSubCellType();//useful
-  void ListSubCellTypesReady();
-  void ListCellTypesReady();
+  void AddNewColor();
+  void DeleteColor();
+  //void ListSubCellTypesReady();
+  //void ListCellTypesReady();
   void NewCollectionActivated(ItemColorComboboxData);//useful
   void NewSelectedColorActivated(ItemColorComboboxData);//useful
   void NewSubCellTypeActivated(std::string);//useful
   void NewCellTypeActivated(std::string);//useful
-  void NewColorToBeSaved(ItemColorComboboxData);//useful
+  //void NewColorToBeSaved(ItemColorComboboxData);//useful
   void NewCollectionToBeCreated();//useful
 
 protected:

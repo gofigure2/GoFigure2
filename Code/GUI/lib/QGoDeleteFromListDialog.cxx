@@ -54,11 +54,10 @@
 QGoDeleteFromListDialog::QGoDeleteFromListDialog
                                    (std::vector<std::string> iVectorEntities,
                                     QWidget* iParent,     
-                                    std::string iEntityName, 
-                                    int iImgSessionID
+                                    std::string iEntityName
                                     ) : QDialog(iParent)
 {
-  this->SetUpUi(iEntityName,iImgSessionID);
+  this->SetUpUi(iEntityName);
   this->SetItemsFromTheVector(iVectorEntities);
 }
 //--------------------------------------------------------------------------
@@ -67,11 +66,10 @@ QGoDeleteFromListDialog::QGoDeleteFromListDialog
 QGoDeleteFromListDialog::QGoDeleteFromListDialog(
   std::list<QGoDeleteFromListDialog::ItemColorComboboxData > iDataListWithColor,
                         QWidget* iParent,
-                        std::string iEntityName, 
-                        int iImgSessionID
+                        std::string iEntityName
                         ): QDialog(iParent)
 {
- this->SetUpUi(iEntityName,iImgSessionID);
+ this->SetUpUi(iEntityName);
  this->SetItemsInTheListWithColor(iDataListWithColor);
 }
 //--------------------------------------------------------------------------
@@ -166,7 +164,7 @@ void QGoDeleteFromListDialog::DeleteSelection(
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoDeleteFromListDialog::SetUpUi(std::string iEntityName, int iImgSessionID)
+void QGoDeleteFromListDialog::SetUpUi(std::string iEntityName)
 {
   this->m_EntityName = iEntityName;
   this->m_ListWidget = new QListWidget(this);

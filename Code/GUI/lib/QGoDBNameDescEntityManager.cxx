@@ -56,9 +56,6 @@ QGoDBNameDescEntityManager::QGoDBNameDescEntityManager(QWidget* iParent,
 //-------------------------------------------------------------------------
 QGoDBNameDescEntityManager::~QGoDBNameDescEntityManager()
   {
-    this->m_DatabaseConnector = 0;
-    this->m_DatabaseConnector->Close();
-    this->m_DatabaseConnector->Delete();
   }
 //-------------------------------------------------------------------------
 
@@ -108,7 +105,7 @@ bool QGoDBNameDescEntityManager::DeleteEntity(
 {
   QGoDeleteFromListDialog* Dialog = new QGoDeleteFromListDialog(
     this->GetNameExistingEntities(iDatabaseConnector),
-    this, this->m_EntityName, this->m_ImgSessionID);
+    this, this->m_EntityName);
   
   this->m_DatabaseConnector = iDatabaseConnector;
   QObject::connect(Dialog,

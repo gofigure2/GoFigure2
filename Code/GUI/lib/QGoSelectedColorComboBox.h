@@ -81,7 +81,8 @@ public:
 //  std::pair<std::string, QColor> GetCurrentColorData();
 
 signals:
-  void NewColorToBeSaved(ItemColorComboboxData);
+  //void NewColorToBeSaved(ItemColorComboboxData);
+  void AddNewColorActivated();
   //void AddANewOneActivated();
   //void ItemSelected(ItemColorCombobox);
   //void activated(const QColor& color);
@@ -123,7 +124,7 @@ private:
   //std::string m_TextToAddANewOne;
  /// QColor lastActivated;
  // int    numUserColors;
-  bool NewColorNameAlreadyExist(QString iText);
+ // bool NewColorNameAlreadyExist(QString iText);
   /** \brief list of pair containing all the datas for the existing colors from the database
   with, for each color: a color name and a vector if rgba*/
  // std::list<std::pair<std::string, std::vector<int> > > m_DataFromDB;

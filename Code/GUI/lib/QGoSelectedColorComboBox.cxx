@@ -42,7 +42,7 @@
 #include <QColorDialog>
 
 QGoSelectedColorComboBox::QGoSelectedColorComboBox(QWidget *parent)
-:QGoColorComboBox("Add a new color...", parent)
+:QGoColorComboBox("Add a new color...",parent,"Delete colors...")
 {
 }
 //--------------------------------------------------------------------------
@@ -56,7 +56,8 @@ QGoSelectedColorComboBox::~QGoSelectedColorComboBox()
 //--------------------------------------------------------------------------
 void QGoSelectedColorComboBox::ActionWhenNewOneRequested()
 {
-  QColor col = QColorDialog::getColor(Qt::white, NULL, "Pick a new color",
+  emit AddNewColorActivated();
+  /*QColor col = QColorDialog::getColor(Qt::white, NULL, "Pick a new color",
                                           QColorDialog::ShowAlphaChannel);
       if (col.isValid())
         {
@@ -96,19 +97,19 @@ void QGoSelectedColorComboBox::ActionWhenNewOneRequested()
         // The user pressed cancel - reset the current color to
         // what it was before the color dialog was shown.
         this->setCurrentIndex(this->findText(this->m_LastActivated));
-        }
+        }*/
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-bool QGoSelectedColorComboBox::NewColorNameAlreadyExist(QString iText)
+/*bool QGoSelectedColorComboBox::NewColorNameAlreadyExist(QString iText)
 {
   if (this->findText(iText) == -1)
   {
     return false;
   }
   return true;
-}
+}*/
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------

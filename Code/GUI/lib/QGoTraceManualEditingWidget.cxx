@@ -134,13 +134,26 @@ SetSelectedColorComboBox()
   this->VLayoutColor->addWidget(ColorLbl);
   this->VLayoutColor->addWidget(this->m_SelectedColorComboBox);
 
+  /*QObject::connect(this->m_SelectedColorComboBox,
+    SIGNAL(ItemSelected(ItemColorComboboxData)),
+    this,SLOT(CheckUserActionColor(ItemColorComboboxData)));*/
+
+  /*QObject::connect(this->m_SelectedColorComboBox,
+    SIGNAL(NewColorToBeSaved(ItemColorComboboxData)),
+    this,SIGNAL(NewColorToBeSaved(ItemColorComboboxData)));*/
   QObject::connect(this->m_SelectedColorComboBox,
     SIGNAL(ItemSelected(ItemColorComboboxData)),
     this,SIGNAL(NewSelectedColorActivated(ItemColorComboboxData)));
 
   QObject::connect(this->m_SelectedColorComboBox,
-    SIGNAL(NewColorToBeSaved(ItemColorComboboxData)),
-    this,SIGNAL(NewColorToBeSaved(ItemColorComboboxData)));
+    SIGNAL(AddNewColorActivated()),
+    this,SIGNAL(AddNewColor()));
+
+  QObject::connect(this->m_SelectedColorComboBox,
+    SIGNAL(DeleteActivated()),
+    this,SIGNAL(DeleteColor()));
+
+  
 }
 //-------------------------------------------------------------------------
 
@@ -256,6 +269,29 @@ CheckUserAction(QString iCellTypeText)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+/*void
+QGoTraceManualEditingWidget::
+CheckUserActionColor(ItemColorComboboxData iColorData)
+{
+  if (iColorData.first == "Add a color...")
+    {
+    emit AddANewColor();
+    }
+  else
+    {
+    if (iColorData.first == "Delete a color...")
+      {
+      emit DeleteColor();
+      }
+    else
+      {
+      emit NewSelectedColorActivated(iColorData);
+      }
+    }
+}*/
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 void
 QGoTraceManualEditingWidget::
 SetSubCellTypeComboBox()
@@ -353,6 +389,36 @@ void QGoTraceManualEditingWidget::SetCurrentSubCellType(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+void QGoTraceManualEditingWidget::SetCurrentColor(std::string iColorText)
+{
+  int index = this->m_SelectedColorComboBox->findText(iColorText.c_str());
+  if (index == -1)
+    {
+    this->m_SelectedColorComboBox->setCurrentIndex(0);
+    }
+  else
+    {
+    this->m_SelectedColorComboBox->setCurrentIndex(index);
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoTraceManualEditingWidget::SetCurrentCollectionID(std::string iID)
+{
+  int index = this->m_CollectionColorComboBox->findText(iID.c_str());
+  if (index == -1)
+    {
+    this->m_CollectionColorComboBox->setCurrentIndex(0);
+    }
+  else
+    {
+    this->m_CollectionColorComboBox->setCurrentIndex(index);
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 void QGoTraceManualEditingWidget::UpdateTraceAndCollection(
   std::string iTrace, std::string iCollection)
 {
@@ -392,18 +458,19 @@ void QGoTraceManualEditingWidget::AddANewCollectionID(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoTraceManualEditingWidget::UpdateCollectionComboboxWithDeletedItem(
+/*void QGoTraceManualEditingWidget::UpdateCollectionComboboxWithDeletedItem(
   std::list<ItemColorComboboxData> iListExistingID)
 {
+  
   this->m_CollectionColorComboBox->ListToUpdateWithItemDeleted(
     iListExistingID);
-}
+}*/
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoTraceManualEditingWidget::UpdateColorComboboxWithDeletedItem(
+/*void QGoTraceManualEditingWidget::UpdateColorComboboxWithDeletedItem(
     std::list<ItemColorComboboxData> iListColors)
 {
   this->m_SelectedColorComboBox->ListToUpdateWithItemDeleted(
     iListColors);
-}
+}*/
