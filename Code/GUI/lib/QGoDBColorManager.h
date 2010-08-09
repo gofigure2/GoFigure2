@@ -68,6 +68,10 @@ public:
   ItemColorComboboxData AddANewColor(vtkMySQLDatabase* iDatabaseConnector);
   virtual bool DeleteEntity(vtkMySQLDatabase* iDatabaseConnector);
 
+  /**
+  \brief get the list of the existing colors from the database
+  \return a list of pair with the name and the QColor of each color
+  */
   std::list<ItemColorComboboxData> GetListExistingColors(
     vtkMySQLDatabase* iDatabaseConnector);
 

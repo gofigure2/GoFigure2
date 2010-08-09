@@ -37,17 +37,12 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#include "QGoColorComboBox.h"
+#include "QGoComboBox.h"
 #include <iostream>
 #include <sstream>
-#include <QStringListModel>
-#include <QHeaderView>
-#include <QSettings>
-#include <QApplication>
-#include <QClipboard>
-#include <QToolButton>
 
-QGoColorComboBox::QGoColorComboBox(std::string iTextToAddANewOne,
+
+QGoComboBox::QGoComboBox(std::string iTextToAddANewOne,
                                    QWidget *parent,
                                    std::string iTextToDelete)
                                    :QComboBox(parent)
@@ -63,81 +58,60 @@ QGoColorComboBox::QGoColorComboBox(std::string iTextToAddANewOne,
     this->m_NumberOfItemsAfterList = 2;
     }
   QObject::connect(this, SIGNAL(activated(int)), SLOT(emitActivatedItem(int )));
-  QObject::connect(this, SIGNAL(AddANewOneActivated()), 
-     this,SLOT(ActionWhenNewOneRequested()));
+
+  QObject::connect(this, 
+                   SIGNAL(activated(int)),
+                   this,
+                   SLOT(CheckUserAction(int)));
+  //QObject::connect(this, SIGNAL(AddANewOneActivated()), 
+    // this,SLOT(ActionWhenNewOneRequested()));
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-QGoColorComboBox::~QGoColorComboBox()
+QGoComboBox::~QGoComboBox()
 {
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoColorComboBox::setItemsWithColorFromList(
-  std::list<ItemColorComboboxData> iDataFromList)
+void QGoComboBox::InitializeTheList(QStringList iListItems)
+{
+  this->addItems(iListItems);
+  this->AddItemsEndOfList();  
+  //if it is the 1rst time for the list to be displayed, there has to be an activated
+  //item:
+ //by default, the one selected by the combobox is the one to stick to:
+  this->EmitActivatedItem(this->currentIndex());
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoComboBox::AddItemsEndOfList()
+{
+   this->addItem(this->m_TextToAddANewOne.c_str());
+   if (!this->m_TextToDelete.empty())
+    {
+    this->addItem(this->m_TextToDelete.c_str());
+    }
+  this->show();
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoComboBox::SetItemsFromList(QStringList iDataFromList)
 {
   this->clear();
   if (!iDataFromList.empty())
     {
-    std::list<ItemColorComboboxData >::iterator iter =
-      iDataFromList.begin();
-    while (iter != iDataFromList.end())
-      {
-      this->AddItemWithColor(*iter,false);//we don't want the signal emitted for each added item,
-      //only the currentIndex one at the end of the added list.
-      iter++;
-      }
-    this->addItem(this->m_TextToAddANewOne.c_str());
-    if (!this->m_TextToDelete.empty())
-      {
-      this->addItem(this->m_TextToDelete.c_str());
-      }
-    this->show();
-    //if it is the 1rst time for the list to be displayed, there has to be an activated
-    //item:
-    this->SetActivatedItem();
+    this->addItems(iDataFromList);
+    this->AddItemsEndOfList();
     }
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoColorComboBox::AddItemWithColor(ItemColorComboboxData iNewItemData,
-   bool SelectTheAddedItem)
-{
-  QPixmap  pix(12, 12);
-  QPainter painter(&pix);
-  if (iNewItemData.second.isValid())
-    {
-    painter.setPen(Qt::gray);
-    painter.setBrush(QBrush(iNewItemData.second));
-    painter.drawRect(0, 0, 12, 12);
-    }
-  QIcon Icon;
-  Icon.addPixmap(pix);
-  //we want to insert the item before the "add new item"/"delete items...":
-  //if the index is 0 or negative,the new item is prepended to the list of existing items:
-   int Index = this->count() - this->m_NumberOfItemsAfterList;
-   if (this->GetTheItemColorComboBoxData(this->count()-1).second.isValid())
-    {
-     this->addItem(Icon,iNewItemData.first.c_str(),iNewItemData.second);
-    }
-   else
-    {
-    this->insertItem(Index,Icon,iNewItemData.first.c_str(),iNewItemData.second);
-    }
-   //this->addItem(Icon,iNewItemData.first.c_str(),iNewItemData.second);
-  if (SelectTheAddedItem)
-    {
-    this->setCurrentIndex(Index);
-    this->emitActivatedItem(Index);
-    }
-}
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-void QGoColorComboBox::emitActivatedItem(int iIndexActivatedItem)
+void QGoComboBox::CheckUserAction(int iIndexActivatedItem)
 {
   int numberitem = this->count();
   int IndexAdd = this->count() - this->m_NumberOfItemsAfterList;
@@ -157,29 +131,27 @@ void QGoColorComboBox::emitActivatedItem(int iIndexActivatedItem)
       }
     }
   
-  ItemColorComboboxData ItemActivated = 
-    this->GetTheItemColorComboBoxData(iIndexActivatedItem);
-  //this->m_LastActivated = ItemActivated.first.c_str();
-  //this->setCurrentIndex(iIndexActivatedItem);
-  emit ItemSelected(ItemActivated);
+  this->EmitActivatedItem(iIndexActivatedItem);
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-QGoColorComboBox::ItemColorComboboxData 
-QGoColorComboBox::GetTheItemColorComboBoxData(int iIndex)
+void QGoComboBox::EmitActivatedItem(int iIndexActivatedItem)
 {
-  ItemColorComboboxData Item;
-  QVariant variant = this->itemData(iIndex);
-  Item.second = variant.value<QColor>();
-  Item.first = this->itemText(iIndex).toStdString();
-  return Item;
+  emit ItemSelected(this->itemText(iIndexActivatedItem).toStdString());
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoColorComboBox::SetActivatedItem()
+void QGoComboBox::SetCurrentItem(std::string iItemText)
 {
-  //by default, the one selected by the combobox is the one to stick to:
-  this->emitActivatedItem(this->currentIndex());
+  int index = this->findText(iItemText.c_str());
+  if (index == -1)
+    {
+    this->setCurrentIndex(0);
+    }
+  else
+    {
+    this->setCurrentIndex(index);
+    }
 }

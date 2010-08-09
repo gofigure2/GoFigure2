@@ -48,6 +48,7 @@
 #include <QVBoxLayout>
 #include "QGoSelectedColorComboBox.h"
 #include "QGoCollectionColorComboBox.h"
+#include "QGoComboBox.h"
 
 #include "ui_QGoTraceManualEditingWidget.h"
 
@@ -79,10 +80,10 @@ public:
   void UpdateTraceAndCollection(
     std::string iTrace, std::string iCollection);
 
-  QComboBox*                m_ChoseCellType;
-  QComboBox*                m_ChoseSubCellType;
-  QLabel*                   TraceName;
-  QLabel*                   CollectionName;
+ // QComboBox*                m_ChoseCellType;
+ // QComboBox*                m_ChoseSubCellType;
+ // QLabel*                   TraceName;
+ // QLabel*                   CollectionName;
 
 public slots:
   /** \brief replace the list of collectionID with the ID and corresponding color
@@ -95,9 +96,11 @@ public slots:
   void SetListCellTypes(QStringList iListCellTypes);
   void SetListSubCellTypes(QStringList iListSubCellTypes);
   void AddANewCollectionID(ItemColorComboboxData iNewCollectionID);
+  void InitializeListCellTypes(QStringList iListCellTypes);
+  void InitializeListSubCellTypes(QStringList iListSubCellTypes);
   //void AddANewCellType (std::string iNewCellType);
-  void CheckUserAction(QString iCellTypeText);
-  void CheckUserActionSubCell(QString iSubCellTypeText);
+  //void CheckUserAction(QString iCellTypeText);
+  //void CheckUserActionSubCell(QString iSubCellTypeText);
   //void CheckUserActionColor(ItemColorComboboxData iActivatedColor);
 
   //void UpdateCollectionComboboxWithDeletedItem(
@@ -123,8 +126,12 @@ signals:
 
 protected:
   //QtColorComboBox* ColorComboBox;
+  QLabel*                           m_TraceName;
+  QLabel*                           m_CollectionName;
   QGoSelectedColorComboBox*         m_SelectedColorComboBox;
   QGoCollectionColorComboBox*       m_CollectionColorComboBox;
+  QGoComboBox*                      m_ChoseCellType;
+  QGoComboBox*                      m_ChoseSubCellType;
 
   std::list<ItemColorComboboxData > m_DataColors;
 

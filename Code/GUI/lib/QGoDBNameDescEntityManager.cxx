@@ -113,7 +113,6 @@ bool QGoDBNameDescEntityManager::DeleteEntity(
                    this,
                    SLOT(DeleteEntitiesFromList(std::vector<std::string>))
                    );
-
   Dialog->show();
   return Dialog->exec();
 }

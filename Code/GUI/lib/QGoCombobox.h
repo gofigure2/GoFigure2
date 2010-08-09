@@ -38,48 +38,74 @@
 
 =========================================================================*/
 
-#ifndef __QGoColorComboBox_h
-#define __QGoColorComboBox_h
+#ifndef __QGoComboBox_h
+#define __QGoComboBox_h
 
 #include <QComboBox>
 #include <QtGui>
 #include "QGoGUILibConfigure.h"
 
-class QGOGUILIB_EXPORT QGoColorComboBox : public QComboBox
+/**
+\class QGoComboBox
+\brief inherits from Qt QCombobox but add a the end of the list of items, 1 or 2 items:
+the first one to add new items and the second one to delete them
+*/
+class QGOGUILIB_EXPORT QGoComboBox : public QComboBox
   {
   Q_OBJECT
 public:
-  explicit QGoColorComboBox(std::string iTextToAddANewOne,
+  /**
+  \brief if the string iTextToDelete is empty, there will be only the add
+  a new item at the end of the list
+  */
+  explicit QGoComboBox(std::string iTextToAddANewOne,
       QWidget *parent = 0,std::string iTextToDelete = "");
-  virtual ~QGoColorComboBox();
-
-  typedef std::pair<std::string, QColor> ItemColorComboboxData;
+  virtual ~QGoComboBox();
 
 signals:
   void AddANewOneActivated();
-  void ItemSelected(ItemColorComboboxData);
+  void ItemSelected(std::string);
   void DeleteActivated();
   
 public slots:
-  /** \brief add an item with color at the end of the list befor the "add new..."
-  if they have already been added to the list and select it if 
-  selectetheaddeditem is set to true. */
-  void AddItemWithColor(ItemColorComboboxData,bool SelectTheAddedItem = true);
+  /**
+  \brief call the method SetItemsFromList and send a signal with the current index.
+  \param[in] iListItems contains the names of the items to be displayed in the combobox
+  */
+  virtual void InitializeTheList(QStringList iListItems);
+  /**
+  \brief clear the items already in the combobox,displayed the one in the QStringList and
+  the items to add/delete
+  \param[in] iListItems contains the names of the items to be displayed in the combobox
+  */
+  virtual void SetItemsFromList(QStringList iDataFromList);
 
-  void setItemsWithColorFromList(std::list< ItemColorComboboxData > iDataFromList);
-  //void ListToUpdateWithItemDeleted(std::list< ItemColorComboboxData > iDataFromList);
+  /**
+  \brief set the activated item corresponding to the iTemText (no need to emit the signal
+  ItemSelected)
+  \parma[in] iTemText name of the item to be set to activated in the combobox
+  */
+  void SetCurrentItem(std::string iItemText);
   
 protected:
-  ItemColorComboboxData GetTheItemColorComboBoxData(int iIndex);
-
-  virtual     void SetActivatedItem();
-
+  void AddItemsEndOfList();
 
 protected slots:
-  virtual void ActionWhenNewOneRequested() = 0;
+  /**
+  \brief check which item has been clicked and emit the corresponding signal: addanewone,
+  deleteactivated or itemselected
+  \parma[in] iIndexActivatedItem index of the clicked item
+  */
+  void CheckUserAction(int iIndexActivatedItem);
+
+  /**
+  \brief call the signal to send the index of the activated item.
+  \param[in] iIndexActivatedItem index of the activated item
+  */
+  virtual void EmitActivatedItem(int iIndexActivatedItem);
 
 private slots:
-  void emitActivatedItem(int iIndexActivatedItem);
+  
 
 private:
   std::string m_TextToAddANewOne;

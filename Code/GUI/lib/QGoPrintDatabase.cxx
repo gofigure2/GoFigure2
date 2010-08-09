@@ -1926,11 +1926,16 @@ void QGoPrintDatabase::SetListCellTypes(std::string iCellTypeToSelect)
     QListCellTypes.append(iter->first.c_str());
     iter++;
     }
-  this->m_ListCellType = QListCellTypes;
-  this->m_TraceWidget->SetListCellTypes(QListCellTypes);
+  //this->m_ListCellType = QListCellTypes;
+  //this->m_TraceWidget->SetListCellTypes(QListCellTypes);
   if (!iCellTypeToSelect.empty())
     {
+    this->m_TraceWidget->SetListCellTypes(QListCellTypes);
     this->m_TraceWidget->SetCurrentCellType(iCellTypeToSelect);
+    }
+  else
+    {
+    this->m_TraceWidget->InitializeListCellTypes(QListCellTypes);
     }
   
 }
@@ -2018,10 +2023,15 @@ void QGoPrintDatabase::SetListSubCellTypes(std::string iNewSubCellType)
     QListSubCellTypes.append(iter->first.c_str());
     iter++;
     }
-  this->m_TraceWidget->SetListSubCellTypes(QListSubCellTypes);
+  //this->m_TraceWidget->SetListSubCellTypes(QListSubCellTypes);
   if (!iNewSubCellType.empty())
     {
+    this->m_TraceWidget->SetListSubCellTypes(QListSubCellTypes);
     this->m_TraceWidget->SetCurrentSubCellType(iNewSubCellType);
+    }
+  else
+    {
+    this->m_TraceWidget->InitializeListSubCellTypes(QListSubCellTypes);
     }
 }
 //-------------------------------------------------------------------------

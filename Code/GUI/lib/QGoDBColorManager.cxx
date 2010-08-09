@@ -65,34 +65,11 @@ QGoDBColorManager::ItemColorComboboxData QGoDBColorManager::AddANewColor(
                                           QColorDialog::ShowAlphaChannel);
  if (col.isValid())
   {
-    this->m_NewColorData.second = col;
-    this->m_NewColorData.first = QGoDBNameDescEntityManager::AddAnEntity(iDatabaseConnector);
-   // if (!this->m_NewColorData.first.empty())
-     // {
-      //this->m_NewColorData.second = col;
-      //}
-    //for test:
-    int red = col.red();
-    int g = col.green();
-    int b =col.blue();
-  //  }
+  this->m_NewColorData.second = col;
+  this->m_NewColorData.first = QGoDBNameDescEntityManager::AddAnEntity(iDatabaseConnector);
   }
  return this->m_NewColorData;
  }
- 
- /*this->m_NameDescDialog = new QNameDescriptionInputDialog(
-    this, this->m_EntityName.c_str());
-
-  this->m_DatabaseConnectorForNewEntity = iDatabaseConnector;
-  QObject::connect (this->m_NameDescDialog, SIGNAL(NewNameDescription(std::string,
-                    std::string)),
-                    this, SLOT(ValidateName(std::string,std::string)));
-  bool ok = this->m_NameDescDialog->exec();
-  if (!ok)
-    {
-    this->m_NameNewEntity.clear();
-    }
-  return this->m_NameNewEntity;*/
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------

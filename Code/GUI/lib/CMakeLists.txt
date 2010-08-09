@@ -66,6 +66,7 @@ SET( QGoGUILIB_SRC
   QGoColorComboBox.cxx
   QGoSelectedColorComboBox.cxx
   QGoCollectionColorComboBox.cxx
+  QGoComboBox.cxx
 
   QGoSynchronizedView.cxx
   QGoSynchronizedView2D.cxx
@@ -165,6 +166,7 @@ SET( QGoGUILIB_HDRS
   QGoColorComboBox.h
   QGoSelectedColorComboBox.h
   QGoCollectionColorComboBox.h
+  QGoComboBox.h
 )
 
 #---------------------------------------------------------------------------
