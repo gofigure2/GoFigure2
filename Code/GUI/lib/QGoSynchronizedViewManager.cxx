@@ -66,7 +66,7 @@ QGoSynchronizedViewManager::
   if (m_Synchronizer != NULL) delete (m_Synchronizer);
   if (m_Synchronizer3D != NULL) delete (m_Synchronizer3D);
 
-  // and the we delete the SynchronizedViews
+  // and the we delete the SynchronizedViews2D
   SynchronizedViewIt = m_openSynchronizedViews.begin();
   while (!m_openSynchronizedViews.empty())
     {
@@ -76,6 +76,7 @@ QGoSynchronizedViewManager::
     delete (tempComp);
     }
 
+  // and the we delete the SynchronizedViews3D
   SynchronizedView3DIt = m_openSynchronizedViews3D.begin();
   while (!m_openSynchronizedViews3D.empty())
     {

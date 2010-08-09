@@ -53,9 +53,13 @@ class vtkEventQtSlotConnect;
 class QGoImageView3D;
 
 /**
-\class QGoSynchronizedView
-\brief class for the (synchronized) view of one three dimensionnal vtkImageData*
-*/
+ * \class QGoSynchronizedView3D
+ * \brief class used to display a QWidget containing a two dimensional
+ * a vtkimagedata* or an itkimage*.
+ * QGoSynchronizedView3D provide the interface to synchronize cameras among
+ * several GoSynchronizedView3D.
+ * \example GUI/lib/qgosynchronizedview3dtest.cxx
+ */
 class QGoSynchronizedView3D : public QGoSynchronizedView
   {
   Q_OBJECT
@@ -66,7 +70,7 @@ public:
   typedef itk::Image<unsigned char, 3> VisuImageType;
   // itk to vtk connector
   typedef itk::ImageToVTKImageFilter<VisuImageType> itkvtkConnectorType;
-  
+
   explicit QGoSynchronizedView3D(QString iViewName, QWidget *iParent = 0);
 
   ~QGoSynchronizedView3D();
@@ -118,7 +122,11 @@ public:
    */
   vtkCamera* GetCamera(const int& iId);
 
-  /** Get the fullscreen view : iId = [0-4]
+  /** Returns the QGoImageView3D* displayed.
+   */
+  QGoImageView3D* GetImageView();
+
+  /** Get the fullscreen view :
    *  0 : Quadview (all 4 views)
    *  1 : XY
    *  2 : XZ
@@ -126,8 +134,6 @@ public:
    *  4 : 3D view
    */
   int GetFullScreenView();
-
-  QGoImageView3D* GetImageView();
 
 public slots:
   QString SnapshotViewXY(const GoFigure::FileType& iType,

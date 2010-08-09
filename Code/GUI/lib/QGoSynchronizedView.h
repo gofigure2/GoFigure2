@@ -39,11 +39,7 @@
 =========================================================================*/
 #ifndef __QGoSynchronizedView_h
 #define __QGoSynchronizedView_h
-/*
-#include "itkImageToVTKImageFilter.h"
-#include "itkSmartPointer.h"
-#include "itkImage.h"
-*/
+
 #include "SnapshotHelper.h"
 #include "vtkSmartPointer.h"
 #include "ui_QGoSynchronizedView.h"
@@ -56,9 +52,14 @@ class QGoImageView;
 class QGoSynchronizedViewManager;
 
 /**
-\class QGoSynchronizedView
-\brief Abstract class for the (synchronized) view of one vtkImageData*.
-*/
+ * \class QGoSynchronizedView
+ * \brief base class for QGoSynchronizedView2D and QGoSynchronizedView3D.
+ * Those classes are used to display a QWidget containing a
+ * a vtkimagedata* or an itkimage*.
+ * They provide the interface to synchronize cameras.
+ * \example GUI/lib/qgosynchronizedview2dtest.cxx
+ */
+
 class QGoSynchronizedView : public QWidget,
   protected Ui::QGoSynchronizedView
   {

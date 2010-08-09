@@ -59,6 +59,22 @@ class QMdiSubWindow;
 class QSignalMapper;
 QT_END_NAMESPACE
 
+
+/**
+ * \class QGoSynchronizedViewMainWindow
+ * \brief This object is intended to demonstrate the use of the
+ * comparer classes package :
+ * QGoSynchronizedViewManager
+ * QGoSynchronizedView
+ * QGoSynchronizedView2D
+ * QGoSynchronizedView3D
+ * QGoSynchronizedView3DCallbacks
+ * QGoSynchronizedView2DCallbacks
+ * It is not documented.
+ * It is used by the example program : qgosynchronizedviewguitest.cxx
+ * \example GUI/lib/qgosynchronizedviewguitest.cxx
+ */
+
 class QGoSynchronizedViewMainWindow : public QMainWindow
   {
 // QT macro

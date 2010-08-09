@@ -54,9 +54,13 @@ class vtkEventQtSlotConnect;
 class QGoImageView2D;
 
 /**
-\class QGoSynchronizedView
-\brief class for the (synchronized) view of one two dimensionnal vtkImageData* .
-*/
+ * \class QGoSynchronizedView2D
+ * \brief class used to display a QWidget containing a two dimensional
+ * a vtkimagedata* or an itkimage*.
+ * QGoSynchronizedView2D provide the interface to synchronize cameras among
+ * several GoSynchronizedView2D.
+ * \example GUI/lib/qgosynchronizedview2dtest.cxx
+ */
 class QGoSynchronizedView2D : public QGoSynchronizedView
   {
   // QT macro
@@ -64,7 +68,7 @@ class QGoSynchronizedView2D : public QGoSynchronizedView
   // itk typedef :
   // type of itk image for visualization
   typedef itk::Image<unsigned char, 2> VisuImageType;
-  // itk to vtk connector
+  // itk to vtk connector typdef
   typedef itk::ImageToVTKImageFilter<VisuImageType> itkvtkConnectorType;
 
 public:
