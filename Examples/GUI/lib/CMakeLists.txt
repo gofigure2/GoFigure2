@@ -28,10 +28,10 @@ SET( QGOGUILIB_EXAMPLE_SRC
   QGoDBInitCreateAuthorPageTest
   QGoDBInitCreateMicroscopePageTest
 
-  QGoSynchronizedView2DTest
-  QGoSynchronizedView3DTest
-  QGoSynchronizedViewManagerTest
-  QGoSynchronizedViewGUITest
+  qgosynchronizedview2dtest
+  qgosynchronizedview3dtest
+  qgosynchronizedviewmanagertest
+  qgosynchronizedviewguitest
 )
 
 #---------------------------------------------------------------------------
@@ -182,27 +182,27 @@ SET_TESTS_PROPERTIES( qgotabimageview3dwtTest2
 )
 
 
-ADD_TEST( QGoSynchronizedView2DTest
-  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/QGoSynchronizedView2DTest
+ADD_TEST( qgosynchronizedview2dtest
+  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qgosynchronizedview2dtest
   ${TESTING_DATA_PATH}/Circle.png
   1
 )
 
-ADD_TEST( QGoSynchronizedView3DTest
-  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/QGoSynchronizedView3DTest
+ADD_TEST( qgosynchronizedview3dtest
+  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qgosynchronizedview3dtest
   ${TESTING_DATA_PATH}/Circle3D.mhd
   1
 )
 
-ADD_TEST( QGoSynchronizedViewManagerTest
-  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/QGoSynchronizedViewManagerTest
+ADD_TEST( qgosynchronizedviewmanagertest
+  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qgosynchronizedviewmanagertest
   ${TESTING_DATA_PATH}/Circle.png
   ${TESTING_DATA_PATH}/Circle3D.mhd
   1
 )
 
-#ADD_TEST( QGoSynchronizedViewGUITest
-#  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/QGoSynchronizedViewGUITest
+#ADD_TEST( qgosynchronizedviewguitest
+#  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qgosynchronizedviewguitest
 #  ${TESTING_DATA_PATH}/Circle.png
 #  ${TESTING_DATA_PATH}/Circle3D.mhd
 #  1
