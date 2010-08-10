@@ -210,11 +210,6 @@ public:
   virtual void ChangeCursorShape(QCursor iCursorShape) = 0;
 
   /**
-  * \brief Initializae the seed widget
-  */
-  void InitializeSeedWidget();
-
-  /**
   * \brief Initializae the distance widget
   */
   void InitializeDistanceWidget();
@@ -230,7 +225,7 @@ public:
   * \brief Initializae the angle widget
   */
   void InitializeContourWidget();
-  void ContourWidgetMode(bool iActivate);
+  void EnableContourWidget(bool iActivate);
   void InitializeContourWidgetNodes( int iDir, vtkPolyData* iNodes );
   void ReinitializeContourWidget();
   void UpdateContourRepresentationProperties(float  linewidth, QColor linecolor,
@@ -239,8 +234,9 @@ public:
   vtkPolyData* GetContourRepresentationNodePolydata(int iDir);
 
   /**
-  * \brief Enable the One Click mode (useful since it is in a vtk widget)
+  * \brief Initializae the seed widget
   */
+  void InitializeSeedWidget();
   void EnableSeedWidget(bool iEnable);
   /**
    * \brief Get all the seeds positions.
@@ -251,8 +247,6 @@ public:
    * \brief Clear all the seeds positions after using it.
    */
   void       ClearAllSeeds();
-
-  virtual void EnableMeshPickingMode(bool iEnable){(void)iEnable;};
 
 public slots:
   /** \brief Set background color for all views.

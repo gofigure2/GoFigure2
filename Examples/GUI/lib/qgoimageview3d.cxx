@@ -95,6 +95,7 @@ int main(int argc, char** argv)
   viewer->ZoomMode();
   viewer->PanMode();
   viewer->EnableContourPickingMode();
+  // Protected should be public
   //viewer->EnableMeshPickingMode();
 
   // Widgets
@@ -102,10 +103,12 @@ int main(int argc, char** argv)
   viewer->EnableDistanceWidget(false);
   viewer->EnableAngleWidget(true);
   viewer->EnableAngleWidget(false);
-  viewer->ContourWidgetMode(true);
-  viewer->ContourWidgetMode(false);
+  viewer->EnableContourWidget(true);
+  viewer->EnableContourWidget(false);
   viewer->EnableSeedWidget(true);
   viewer->EnableSeedWidget(false);
+  viewer->EnableBoxWidget(true);
+  viewer->EnableBoxWidget(false);
 
   vtkPoints* points = viewer->GetAllSeeds();
   points->Delete();
@@ -113,10 +116,6 @@ int main(int argc, char** argv)
   viewer->GetListOfPickedContours();
   viewer->GetListOfUnPickedContours();
   viewer->GetListOfModifiedActors3D();
-
-  /// TODO Define a real widget
-  viewer->SetBox3DPicking(true);
-  viewer->SetBox3DPicking(false);
 
   if (atoi(argv[2]) == 1)
     {

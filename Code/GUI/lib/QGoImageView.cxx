@@ -494,7 +494,7 @@ void
 QGoImageView::
 EnableSeedWidget(bool iEnable)
 {
-  std::cout << "One Click ---Mode---" <<std::endl;
+  std::cout << "Seed ---Widget---" <<std::endl;
 
   if(iEnable)
     {
@@ -580,7 +580,7 @@ void
 QGoImageView::
 EnableDistanceWidget(bool iActive)
 {
-  std::cout << "Distance ---Mode---" <<std::endl;
+  std::cout << "Distance ---Widget---" <<std::endl;
   if(iActive)
     {
     DefaultMode();
@@ -615,7 +615,7 @@ void
 QGoImageView::
 EnableAngleWidget(bool iActive)
 {
-  std::cout << "Angle ---Mode---" <<std::endl;
+  std::cout << "Angle ---Widget---" <<std::endl;
 
   if(iActive)
     {
@@ -667,9 +667,9 @@ InitializeContourWidget()
 //-------------------------------------------------------------------------
 void
 QGoImageView::
-ContourWidgetMode(bool iActivate)
+EnableContourWidget(bool iActivate)
 {
-  std::cout << "Contour ---Mode---" <<std::endl;
+  std::cout << "Contour ---Widget---" <<std::endl;
 
   if(iActivate)
     {

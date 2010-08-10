@@ -378,9 +378,8 @@ void
 QGoTabImageView3DwT::
 ActivateManualSegmentationEditor(const bool& iActivate)
 {
-  this->m_ImageView->ContourWidgetMode(iActivate);
+  this->m_ImageView->EnableContourWidget(iActivate);
 }
-/// TODO 2 identical methods!!!!!!
 //-------------------------------------------------------------------------
 /**
  *
@@ -479,7 +478,7 @@ void
 QGoTabImageView3DwT::
 Box3DPicking(bool iActive)
 {
-  this->m_ImageView->SetBox3DPicking(iActive);
+  this->m_ImageView->EnableBoxWidget(iActive);
 }
 
 //-------------------------------------------------------------------------
@@ -2523,13 +2522,13 @@ AddContourFromNodes(const unsigned int& iContourID,
 
     if (dir != -1)
       {
-      m_ImageView->ContourWidgetMode( true );
+      m_ImageView->EnableContourWidget( true );
       m_ImageView->InitializeContourWidgetNodes( dir, iNodes );
       ValidateContour(iContourID, dir, iR, iG, iB, iA, iHighlighted,
                             iTCoord, iSaveInDataBase,
                             m_ImageView->GetContourRepresentationAsPolydata(dir),
                             m_ImageView->GetContourRepresentationNodePolydata(dir));
-      m_ImageView->ContourWidgetMode( false );
+      m_ImageView->EnableContourWidget( false );
       }
     }
 }

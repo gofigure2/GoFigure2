@@ -1008,8 +1008,10 @@ ContourPickingMode()
 //-------------------------------------------------------------------------
 void
 QGoImageView3D::
-EnableMeshPickingMode()
+MeshPickingMode()
 {
+  std::cout << "Mesh Picking Mode" <<std::endl;
+
   vtkInteractorStyleImage3D* t = m_View3D->GetInteractorStyle3D();
   t->EnablePickMode();
 }
@@ -1028,14 +1030,6 @@ EnableSeedWidget( bool iActivate )
 }
 
 //-------------------------------------------------------------------------
-void
-QGoImageView3D::
-MeshPickingMode()
-{
-  EnableMeshPickingMode();
-}
-
-//-------------------------------------------------------------------------
 std::list<vtkProp3D*>
 QGoImageView3D::
 GetListOfModifiedActors3D()
@@ -1046,9 +1040,9 @@ GetListOfModifiedActors3D()
 //-------------------------------------------------------------------------
 void
 QGoImageView3D::
-SetBox3DPicking(bool iValue)
+EnableBoxWidget(bool iValue)
 {
-
+  std::cout << "Box ---Widget---" <<std::endl;
   DefaultMode();
   m_BoxWidget->SetEnabled(iValue);
 }

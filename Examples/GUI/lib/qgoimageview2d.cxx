@@ -160,8 +160,8 @@ int main(int argc, char** argv)
   viewer->EnableDistanceWidget(false);
   viewer->EnableAngleWidget(true);
   viewer->EnableAngleWidget(false);
-  viewer->ContourWidgetMode(true);
-  viewer->ContourWidgetMode(false);
+  viewer->EnableContourWidget(true);
+  viewer->EnableContourWidget(false);
   viewer->EnableSeedWidget(true);
   viewer->EnableSeedWidget(false);
 
