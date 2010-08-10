@@ -88,6 +88,13 @@ public slots:
   void SetCurrentItem(std::string iItemText);
   
 protected:
+  std::string m_TextToAddANewOne;
+  std::string m_TextToDelete;
+  int         m_NumberOfItemsAfterList;
+
+  /**
+  \brief Add the "Add a new one..." and "Delete..." text items at the end of the items list
+  */
   void AddItemsEndOfList();
 
 protected slots:
@@ -103,15 +110,7 @@ protected slots:
   \param[in] iIndexActivatedItem index of the activated item
   */
   virtual void EmitActivatedItem(int iIndexActivatedItem);
-
-private slots:
   
-
-private:
-  std::string m_TextToAddANewOne;
-  std::string m_TextToDelete;
-  int         m_NumberOfItemsAfterList;
-
   };
 
 #endif

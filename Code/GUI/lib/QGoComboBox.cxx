@@ -63,8 +63,6 @@ QGoComboBox::QGoComboBox(std::string iTextToAddANewOne,
                    SIGNAL(activated(int)),
                    this,
                    SLOT(CheckUserAction(int)));
-  //QObject::connect(this, SIGNAL(AddANewOneActivated()), 
-    // this,SLOT(ActionWhenNewOneRequested()));
 }
 //--------------------------------------------------------------------------
 
