@@ -159,3 +159,14 @@ GetNameExistingEntities(vtkMySQLDatabase* iDatabaseConnector)
     }
   return ResultsQuery;
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+int QGoDBNameDescEntityManager::GetTheEntityID(std::string iName,
+                                               vtkMySQLDatabase* iDatabaseConnector)
+{
+  std::string EntityNameID = this->m_EntityName;
+  EntityNameID += "ID";
+  return FindOneID(iDatabaseConnector,
+                   this->m_EntityName, EntityNameID, "Name", iName);
+}

@@ -57,7 +57,6 @@ QGoComboBox::QGoComboBox(std::string iTextToAddANewOne,
     {
     this->m_NumberOfItemsAfterList = 2;
     }
-  QObject::connect(this, SIGNAL(activated(int)), SLOT(emitActivatedItem(int )));
 
   QObject::connect(this, 
                    SIGNAL(activated(int)),

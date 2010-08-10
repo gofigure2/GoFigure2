@@ -56,6 +56,8 @@ public:
   explicit QGoCollectionColorComboBox(QWidget *parent = 0);
   virtual ~QGoCollectionColorComboBox();
 
+  void SetTextToAdd(std::string iCollectionName);
+
 signals:
   void NewCollectionToCreate();
 

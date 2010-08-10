@@ -41,7 +41,7 @@
 #include <iostream>
 
 QGoCollectionColorComboBox::QGoCollectionColorComboBox(QWidget *parent)
-:QGoColorComboBox("Add a new contour...",parent)
+:QGoColorComboBox("Add a new mesh...",parent)
 {
 }
 //--------------------------------------------------------------------------
@@ -64,6 +64,13 @@ void QGoCollectionColorComboBox::SetItemsFromList(
   std::list<ItemColorComboboxData> iDataFromList, std::string iCollectionName)
 {
   QGoColorComboBox::SetItemsFromList(iDataFromList);
+  this->SetTextToAdd(iCollectionName);
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoCollectionColorComboBox::SetTextToAdd(std::string iCollectionName)
+{
   QString TextForNewOne(tr("Add a new %1 ...").arg(iCollectionName.c_str()));
   this->setItemText(this->count()-1,TextForNewOne);
 }

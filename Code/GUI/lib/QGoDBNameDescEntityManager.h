@@ -103,6 +103,8 @@ public:
   */
   std::string GetNameNewEntity();
 
+  int GetTheEntityID(std::string iName,vtkMySQLDatabase* iDatabaseConnector);
+
 protected slots:
 
   /** 

@@ -321,11 +321,11 @@ protected:
  * the tracename with their colors for the given timepoint if the
  * collection is a mesh or for all timepoint for tracks and lineages and
  * update the colorcombobox*/
-  void SetListExistingCollectionIDFromDB();
+  void SetListExistingCollectionIDFromDB(std::string iIDToSelect = "");
   
   /** \brief get the info from the database for the collectionid, set the list in the
   combobox and select the last activated item (i.e after delete)*/
-  void UpdateListCollectionIDFromDB();
+ // void UpdateListCollectionIDFromDB();
 
   /** \brief get the collection id with their corresponding color from the database*/
   std::list<ItemColorComboboxData> GetListCollectionIDFromDB();
@@ -393,8 +393,8 @@ protected:
   /** \brief set all the tracesinfostructures */
   void SetTraceInfoStructures();
 
-  int GetSelectedCellTypeID();
-  int GetSelectedSubCellTypeID();
+  //int GetSelectedCellTypeID();
+  //int GetSelectedSubCellTypeID();
 
   void CreateConnectionsForTraceManualEditingWidget();
   /** \brief create the trace row with the related data provided by
