@@ -1563,6 +1563,7 @@ void QGoPrintDatabase::SaveNewCollectionInDB()
   NewCollectionData.first = ConvertToString<int>(NewCollectionID);
   NewCollectionData.second = this->m_SelectedColorData.second;
   this->m_TraceWidget->AddANewCollectionID(NewCollectionData);
+  this->UpdateSelectedCollectionID(NewCollectionData);
 }
 //-------------------------------------------------------------------------
 
@@ -1918,24 +1919,16 @@ void QGoPrintDatabase::SetListCellTypes(std::string iCellTypeToSelect)
   this->OpenDBConnection();
   NamesDescrContainerType ListCellTypes =
     this->m_CellTypeManager->GetListExistingEntities(this->m_DatabaseConnector);
-  QStringList                       QListCellTypes;
   this->CloseDBConnection();
-  NamesDescrContainerType::iterator iter = ListCellTypes.begin();
-  while (iter != ListCellTypes.end())
-    {
-    QListCellTypes.append(iter->first.c_str());
-    iter++;
-    }
-  //this->m_ListCellType = QListCellTypes;
-  //this->m_TraceWidget->SetListCellTypes(QListCellTypes);
+  
   if (!iCellTypeToSelect.empty())
     {
-    this->m_TraceWidget->SetListCellTypes(QListCellTypes);
+    this->m_TraceWidget->SetListCellTypes(ListCellTypes);
     this->m_TraceWidget->SetCurrentCellType(iCellTypeToSelect);
     }
   else
     {
-    this->m_TraceWidget->InitializeListCellTypes(QListCellTypes);
+    this->m_TraceWidget->InitializeListCellTypes(ListCellTypes);
     }
   
 }
@@ -1949,6 +1942,7 @@ void QGoPrintDatabase::AddNewCellType()
     this->m_DatabaseConnector);
   if (!NewCellType.empty())
     {
+    this->UpdateSelectedCellType(NewCellType);
     this->SetListCellTypes(NewCellType);
     }
   else //if the NewCellType is empty, go to the last selected one:
@@ -1967,6 +1961,7 @@ void QGoPrintDatabase::AddNewColor()
     this->m_DatabaseConnector);
   if (!NewColor.first.empty())
     {
+    this->UpdateSelectedColorData(NewColor);
     this->SetColorComboBoxInfofromDB(NewColor.first);
     }
   else //if the NewColor name is empty, go to the last selected one:
@@ -2016,22 +2011,15 @@ void QGoPrintDatabase::SetListSubCellTypes(std::string iNewSubCellType)
   NamesDescrContainerType ListSubCellTypes =
     this->m_SubCellTypeManager->GetListExistingEntities(this->m_DatabaseConnector);
   this->CloseDBConnection();
-  QStringList                       QListSubCellTypes;
-  NamesDescrContainerType::iterator iter = ListSubCellTypes.begin();
-  while (iter != ListSubCellTypes.end())
-    {
-    QListSubCellTypes.append(iter->first.c_str());
-    iter++;
-    }
-  //this->m_TraceWidget->SetListSubCellTypes(QListSubCellTypes);
+
   if (!iNewSubCellType.empty())
     {
-    this->m_TraceWidget->SetListSubCellTypes(QListSubCellTypes);
+    this->m_TraceWidget->SetListSubCellTypes(ListSubCellTypes);
     this->m_TraceWidget->SetCurrentSubCellType(iNewSubCellType);
     }
   else
     {
-    this->m_TraceWidget->InitializeListSubCellTypes(QListSubCellTypes);
+    this->m_TraceWidget->InitializeListSubCellTypes(ListSubCellTypes);
     }
 }
 //-------------------------------------------------------------------------
@@ -2044,6 +2032,7 @@ void QGoPrintDatabase::AddNewSubCellType()
     this->m_SubCellTypeManager->AddAnEntity(this->m_DatabaseConnector);
   if(!NewSubCellType.empty())
     {
+    this->UpdateSelectedSubCellType(NewSubCellType);
     this->SetListSubCellTypes(NewSubCellType);
     }
   else //if the NewSubCellType is empty, go to the last selected one:

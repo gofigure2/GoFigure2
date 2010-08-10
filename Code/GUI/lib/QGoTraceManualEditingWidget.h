@@ -65,6 +65,8 @@ public:
   ~QGoTraceManualEditingWidget();
 
   typedef QGoColorComboBox::ItemColorComboboxData ItemColorComboboxData;
+  typedef std::vector<std::pair<std::string, std::string> >
+    NamesDescrContainerType;
 
   //int GetCurrentCollectionID();
   void SetEnableTraceCollectionColorBoxes(bool Enable);
@@ -93,11 +95,15 @@ public slots:
    /** \brief replace the list of colors with the name and corresponding color
   in the iListColors*/
   void SetListColors(std::list<ItemColorComboboxData> iListColors);
-  void SetListCellTypes(QStringList iListCellTypes);
-  void SetListSubCellTypes(QStringList iListSubCellTypes);
+  void SetListCellTypes(NamesDescrContainerType iCellTypesData);
+  void SetListSubCellTypes(NamesDescrContainerType iSubCellData);
+  //void SetListCellTypes(QStringList iListCellTypes);
+  //void SetListSubCellTypes(QStringList iListSubCellTypes);
   void AddANewCollectionID(ItemColorComboboxData iNewCollectionID);
-  void InitializeListCellTypes(QStringList iListCellTypes);
-  void InitializeListSubCellTypes(QStringList iListSubCellTypes);
+  //void InitializeListCellTypes(QStringList iListCellTypes);
+  //void InitializeListSubCellTypes(QStringList iListSubCellTypes);
+  void InitializeListCellTypes(NamesDescrContainerType iCellTypesData);
+  void InitializeListSubCellTypes(NamesDescrContainerType iSubCellTypesData);
   //void AddANewCellType (std::string iNewCellType);
   //void CheckUserAction(QString iCellTypeText);
   //void CheckUserActionSubCell(QString iSubCellTypeText);

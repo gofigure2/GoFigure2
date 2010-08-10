@@ -61,6 +61,7 @@ public:
   explicit QGoComboBox(std::string iTextToAddANewOne,
       QWidget *parent = 0,std::string iTextToDelete = "");
   virtual ~QGoComboBox();
+  typedef std::vector<std::pair<std::string, std::string> > NamesDescrContainerType;
 
 signals:
   void AddANewOneActivated();
@@ -73,12 +74,19 @@ public slots:
   \param[in] iListItems contains the names of the items to be displayed in the combobox
   */
   virtual void InitializeTheList(QStringList iListItems);
+
+  virtual void InitializeTheList(NamesDescrContainerType iItemsData);
   /**
   \brief clear the items already in the combobox,displayed the one in the QStringList and
   the items to add/delete
   \param[in] iListItems contains the names of the items to be displayed in the combobox
   */
   virtual void SetItemsFromList(QStringList iDataFromList);
+
+  /**
+  \overload
+  */
+  virtual void SetItemsFromList(NamesDescrContainerType iItemsData);
 
   /**
   \brief set the activated item corresponding to the iTemText (no need to emit the signal
@@ -96,6 +104,12 @@ protected:
   \brief Add the "Add a new one..." and "Delete..." text items at the end of the items list
   */
   void AddItemsEndOfList();
+  /**
+  \brief Get a QStringList with the names of the item from a NamesDescrContainerType
+  \param[in] iContainer contains all the items with their name and description
+  \return QStringList with the names of the items
+  */
+  QStringList GetQStringListNames(NamesDescrContainerType iContainer);
 
 protected slots:
   /**

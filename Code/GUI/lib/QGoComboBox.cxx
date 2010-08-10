@@ -85,6 +85,13 @@ void QGoComboBox::InitializeTheList(QStringList iListItems)
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+void QGoComboBox::InitializeTheList(NamesDescrContainerType iItemsData)
+{
+  this->InitializeTheList(this->GetQStringListNames(iItemsData));
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
 void QGoComboBox::AddItemsEndOfList()
 {
    this->addItem(this->m_TextToAddANewOne.c_str());
@@ -105,6 +112,27 @@ void QGoComboBox::SetItemsFromList(QStringList iDataFromList)
     this->addItems(iDataFromList);
     this->AddItemsEndOfList();
     }
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoComboBox::SetItemsFromList(NamesDescrContainerType iItemsData)
+{
+  this->SetItemsFromList(this->GetQStringListNames(iItemsData));
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+QStringList QGoComboBox::GetQStringListNames(NamesDescrContainerType iContainer)
+{
+  QStringList oQListItems;
+  NamesDescrContainerType::iterator iter = iContainer.begin();
+  while (iter != iContainer.end())
+    {
+    oQListItems.append(iter->first.c_str());
+    iter++;
+    }
+  return oQListItems;
 }
 //--------------------------------------------------------------------------
 

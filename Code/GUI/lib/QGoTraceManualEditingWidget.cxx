@@ -66,23 +66,6 @@ QGoTraceManualEditingWidget::
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/*int
-QGoTraceManualEditingWidget::
-GetCurrentCollectionID()
-{
-  std::string temp = this->m_CollectionColorComboBox->GetCurrentColorData().first;
-  if (temp.empty())
-    {
-    return -1;
-    }
-  else
-    {
-    return atoi(temp.c_str());
-    }
-}*/
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
 void
 QGoTraceManualEditingWidget::
 SetListCollectionID(
@@ -128,19 +111,10 @@ QGoTraceManualEditingWidget::
 SetSelectedColorComboBox()
 {
   this->m_SelectedColorComboBox = new QGoSelectedColorComboBox;
- // ColorComboBox->setCreationCollection(false);
 
-  //this->VLayoutColor->addLayout(HLayoutForTrace);
   this->VLayoutColor->addWidget(ColorLbl);
   this->VLayoutColor->addWidget(this->m_SelectedColorComboBox);
 
-  /*QObject::connect(this->m_SelectedColorComboBox,
-    SIGNAL(ItemSelected(ItemColorComboboxData)),
-    this,SLOT(CheckUserActionColor(ItemColorComboboxData)));*/
-
-  /*QObject::connect(this->m_SelectedColorComboBox,
-    SIGNAL(NewColorToBeSaved(ItemColorComboboxData)),
-    this,SIGNAL(NewColorToBeSaved(ItemColorComboboxData)));*/
   QObject::connect(this->m_SelectedColorComboBox,
     SIGNAL(ItemSelected(ItemColorComboboxData)),
     this,SIGNAL(NewSelectedColorActivated(ItemColorComboboxData)));
@@ -219,7 +193,6 @@ void
 QGoTraceManualEditingWidget::
 SetCellTypeComboBox()
 {
-  //this->m_ChoseCellType = new QComboBox(this);
   this->m_ChoseCellType = new QGoComboBox("Add a new celltype...",
     this,"Delete a celltype...");
   QHBoxLayout* HLayoutForCellType = new QHBoxLayout;
@@ -237,78 +210,25 @@ SetCellTypeComboBox()
    QObject::connect(this->m_ChoseCellType,
     SIGNAL(DeleteActivated()),
     this,SIGNAL(DeleteCellType()));
- // QObject::connect(this->m_ChoseCellType, SIGNAL(activated(QString)),
-                  // SLOT(CheckUserAction(QString)));
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void
 QGoTraceManualEditingWidget::
-SetListCellTypes(QStringList iListCellTypes)
+SetListCellTypes(NamesDescrContainerType iCellTypesData)
 {
-  /*this->m_ChoseCellType->clear();
-  this->m_ChoseCellType->addItems(iListCellTypes);
-  this->m_ChoseCellType->addItem(tr("Add a celltype..."));
-  this->m_ChoseCellType->addItem(tr("Delete a celltype..."));*/
-  
-  //emit NewCellTypeActivated(this->m_ChoseCellType->currentText());
-  //to check::
-  //emit ListCellTypesReady();
-  this->m_ChoseCellType->SetItemsFromList(iListCellTypes);
+  this->m_ChoseCellType->SetItemsFromList(iCellTypesData);
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void
 QGoTraceManualEditingWidget::
-InitializeListCellTypes(QStringList iListCellTypes)
+InitializeListCellTypes(NamesDescrContainerType iCellTypesData)
 {
-  this->m_ChoseCellType->InitializeTheList(iListCellTypes);
+  this->m_ChoseCellType->InitializeTheList(iCellTypesData);
 }
-/*void
-QGoTraceManualEditingWidget::
-CheckUserAction(QString iCellTypeText)
-{
-  if (iCellTypeText == "Add a celltype...")
-    {
-    emit AddANewCellType();
-    }
-  else
-    {
-    if (iCellTypeText == "Delete a celltype...")
-      {
-      emit DeleteCellType();
-      }
-    else
-      {
-      emit NewCellTypeActivated(iCellTypeText.toStdString());
-      }
-    }
-}*/
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-/*void
-QGoTraceManualEditingWidget::
-CheckUserActionColor(ItemColorComboboxData iColorData)
-{
-  if (iColorData.first == "Add a color...")
-    {
-    emit AddANewColor();
-    }
-  else
-    {
-    if (iColorData.first == "Delete a color...")
-      {
-      emit DeleteColor();
-      }
-    else
-      {
-      emit NewSelectedColorActivated(iColorData);
-      }
-    }
-}*/
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -316,16 +236,11 @@ void
 QGoTraceManualEditingWidget::
 SetSubCellTypeComboBox()
 {
-  //this->m_ChoseSubCellType = new QComboBox(this);
   this->m_ChoseSubCellType = new QGoComboBox("Add a new subcelltype...",this,
     "Delete a subcelltype...");
   this->VLayoutSubCellType->addWidget(LabelSubCellType);
   this->VLayoutSubCellType->addWidget(m_ChoseSubCellType);
-  //to check::
-  //emit NewSubCellTypeActivated(this->m_ChoseSubCellType->currentText());
-  //QObject::connect(this->m_ChoseSubCellType, SIGNAL(activated(QString)),
-               //    SLOT(CheckUserActionSubCell(QString)));
-
+ 
     QObject::connect(this->m_ChoseSubCellType,
      SIGNAL(ItemSelected(std::string)),
     this,SIGNAL(NewSubCellTypeActivated(std::string)));
@@ -343,73 +258,26 @@ SetSubCellTypeComboBox()
 //-------------------------------------------------------------------------
 void
 QGoTraceManualEditingWidget::
-SetListSubCellTypes(QStringList iListSubCellTypes)
+SetListSubCellTypes(NamesDescrContainerType iSubCellTypesData)
 {
-  /*this->m_ChoseSubCellType->clear();
-  this->m_ChoseSubCellType->addItems(iListSubCellTypes);
-  this->m_ChoseSubCellType->addItem(tr("Add a subcelltype..."));
-  this->m_ChoseSubCellType->addItem(tr("Delete a subcelltype..."));*/
-  //emit ListSubCellTypesReady();
-  this->m_ChoseSubCellType->SetItemsFromList(iListSubCellTypes);
+  this->m_ChoseSubCellType->SetItemsFromList(iSubCellTypesData);
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void
 QGoTraceManualEditingWidget::
-InitializeListSubCellTypes(QStringList iListSubCellTypes)
+InitializeListSubCellTypes(NamesDescrContainerType iSubCellTypesData)
 {
-  this->m_ChoseSubCellType->InitializeTheList(iListSubCellTypes);
+  this->m_ChoseSubCellType->InitializeTheList(iSubCellTypesData);
 }
-/*void
-QGoTraceManualEditingWidget::
-CheckUserActionSubCell(QString iCellTypeText)
-{
-  if (iCellTypeText == "Add a subcelltype...")
-    {
-    emit AddANewSubCellType();
-    }
-  else
-  {
-  if (iCellTypeText == "Delete a subcelltype...")
-    {
-    emit DeleteSubCellType();
-    }
-  else
-    {
-    emit NewSubCellTypeActivated(iCellTypeText.toStdString());
-    }
-  }
-}*/
-//-------------------------------------------------------------------------
 
-//-------------------------------------------------------------------------
-/*std::string QGoTraceManualEditingWidget::GetCurrentCellType()
-{
-  return this->m_ChoseCellType->currentText().toStdString();
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-std::string QGoTraceManualEditingWidget::GetCurrentSubCellType()
-{
-  return this->m_ChoseSubCellType->currentText().toStdString();
-}*/
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void QGoTraceManualEditingWidget::SetCurrentCellType(
   std::string iCellTypeText)
 {
-  /*int index = this->m_ChoseCellType->findText(iCellTypeText.c_str());
-  if (index == -1)
-    {
-    this->m_ChoseCellType->setCurrentIndex(0);
-    }
-  else
-    {
-    this->m_ChoseCellType->setCurrentIndex(index);
-    }*/
   this->m_ChoseCellType->SetCurrentItem(iCellTypeText);
 }
 //-------------------------------------------------------------------------
@@ -418,15 +286,6 @@ void QGoTraceManualEditingWidget::SetCurrentCellType(
 void QGoTraceManualEditingWidget::SetCurrentSubCellType(
   std::string iSubCellTypeText)
 {
-  /*int index = this->m_ChoseSubCellType->findText(iSubCellTypeText.c_str());
-  if (index == -1)
-    {
-    this->m_ChoseSubCellType->setCurrentIndex(0);
-    }
-  else
-    {
-    this->m_ChoseSubCellType->setCurrentIndex(index);
-    }*/
   this->m_ChoseSubCellType->SetCurrentItem(iSubCellTypeText);
 }
 //-------------------------------------------------------------------------
@@ -434,15 +293,6 @@ void QGoTraceManualEditingWidget::SetCurrentSubCellType(
 //-------------------------------------------------------------------------
 void QGoTraceManualEditingWidget::SetCurrentColor(std::string iColorText)
 {
-  /*int index = this->m_SelectedColorComboBox->findText(iColorText.c_str());
-  if (index == -1)
-    {
-    this->m_SelectedColorComboBox->setCurrentIndex(0);
-    }
-  else
-    {
-    this->m_SelectedColorComboBox->setCurrentIndex(index);
-    }*/
   this->m_SelectedColorComboBox->SetCurrentItem(iColorText);
 }
 //-------------------------------------------------------------------------
@@ -450,15 +300,6 @@ void QGoTraceManualEditingWidget::SetCurrentColor(std::string iColorText)
 //-------------------------------------------------------------------------
 void QGoTraceManualEditingWidget::SetCurrentCollectionID(std::string iID)
 {
- /* int index = this->m_CollectionColorComboBox->findText(iID.c_str());
-  if (index == -1)
-    {
-    this->m_CollectionColorComboBox->setCurrentIndex(0);
-    }
-  else
-    {
-    this->m_CollectionColorComboBox->setCurrentIndex(index);
-    }*/
   this->m_CollectionColorComboBox->SetCurrentItem(iID);
 }
 //-------------------------------------------------------------------------
