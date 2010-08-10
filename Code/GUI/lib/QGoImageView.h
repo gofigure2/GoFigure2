@@ -155,7 +155,7 @@ public:
   /**
    * \brief Use the contour picking mode
    */
-  void EnableContourPickingMode(bool iEnable);
+  void EnableContourPickingMode();
 
   /**
    * \brief Reset collection Window level
@@ -218,13 +218,13 @@ public:
   * \brief Initializae the distance widget
   */
   void InitializeDistanceWidget();
-  void DistanceWidgetMode(bool iEnable);
+  void EnableDistanceWidget(bool iEnable);
 
   /**
   * \brief Initializae the angle widget
   */
   void InitializeAngleWidget();
-  void AngleWidgetMode(bool iActive);
+  void EnableAngleWidget(bool iActive);
 
   /**
   * \brief Initializae the angle widget
@@ -239,9 +239,9 @@ public:
   vtkPolyData* GetContourRepresentationNodePolydata(int iDir);
 
   /**
-  * \brief Enable the One Click mode (usefull since it is in a vtk widget)
+  * \brief Enable the One Click mode (useful since it is in a vtk widget)
   */
-  void EnableOneClickMode(bool iEnable);
+  void EnableSeedWidget(bool iEnable);
   /**
    * \brief Get all the seeds positions.
    * The seeds have been defined using the one click mode.

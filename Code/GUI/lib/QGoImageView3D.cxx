@@ -976,6 +976,7 @@ ZoomMode()
   // Call superclass default mode
   QGoImageView::ZoomMode();
 
+  // Update behavior in 3d view
   vtkInteractorStyleImage3D* t = m_View3D->GetInteractorStyle3D();
   t->EnableZoomMode();
 }
@@ -988,19 +989,40 @@ PanMode()
   // Call superclass default mode
   QGoImageView::PanMode();
 
+  // Update behavior in 3d view
   vtkInteractorStyleImage3D* t = m_View3D->GetInteractorStyle3D();
   t->EnablePanMode();
+}
+//-------------------------------------------------------------------------
+void
+QGoImageView3D::
+ContourPickingMode()
+{
+  QGoImageView::EnableContourPickingMode();
+
+  // Update behavior in 3d view to default mode
+  vtkInteractorStyleImage3D* t = m_View3D->GetInteractorStyle3D();
+  t->EnableDefaultMode();
 }
 
 //-------------------------------------------------------------------------
 void
 QGoImageView3D::
-OneClickMode()
+EnableMeshPickingMode()
+{
+  vtkInteractorStyleImage3D* t = m_View3D->GetInteractorStyle3D();
+  t->EnablePickMode();
+}
+
+//-------------------------------------------------------------------------
+void
+QGoImageView3D::
+EnableSeedWidget( bool iActivate )
 {
   // Enable widget in each slice
-  QGoImageView::EnableOneClickMode(true);
+  QGoImageView::EnableSeedWidget(iActivate);
 
-  // Update behavior in 3d view
+  // Update behavior to default mode in 3d view to default mode
   vtkInteractorStyleImage3D* t = m_View3D->GetInteractorStyle3D();
   t->EnableDefaultMode();
 }
@@ -1010,41 +1032,7 @@ void
 QGoImageView3D::
 MeshPickingMode()
 {
-  DefaultMode();
-  EnableMeshPickingMode(true);
-}
-
-//-------------------------------------------------------------------------
-void
-QGoImageView3D::
-ContourPickingMode()
-{
-  QGoImageView::EnableContourPickingMode(true);
-
-  // Update behavior in 3d view
-  vtkInteractorStyleImage3D* t = m_View3D->GetInteractorStyle3D();
-  t->EnableDefaultMode();
-}
-
-//-------------------------------------------------------------------------
-void
-QGoImageView3D::
-EnableMeshPickingMode(bool iEnable)
-{
-  vtkInteractorStyleImage3D* t = m_View3D->GetInteractorStyle3D();
-  if (t)
-    {
-    if (iEnable)
-      {
-      t->EnablePickMode();
-      t->StartPick();
-      }
-    else
-      {
-      t->DisablePickMode();
-      t->EndPick();
-      }
-    }
+  EnableMeshPickingMode();
 }
 
 //-------------------------------------------------------------------------

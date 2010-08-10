@@ -378,11 +378,9 @@ void
 QGoTabImageView3DwT::
 ActivateManualSegmentationEditor(const bool& iActivate)
 {
-  // Initializae cursor behaviour
-  this->m_ImageView->DefaultMode();
   this->m_ImageView->ContourWidgetMode(iActivate);
 }
-
+/// TODO 2 identical methods!!!!!!
 //-------------------------------------------------------------------------
 /**
  *
@@ -392,14 +390,7 @@ void
 QGoTabImageView3DwT::
 ActivateSemiAutoSegmentationEditor(const bool& iActivate)
 {
-  ActivateManualSegmentationEditor(false);
-  // Initializae cursor behaviour
-  this->m_ImageView->DefaultMode();
-
-  if (iActivate)
-    {
-    this->m_ImageView->OneClickMode();
-    }
+  this->m_ImageView->EnableSeedWidget( iActivate );
 }
 
 //-------------------------------------------------------------------------
@@ -407,12 +398,9 @@ void
 QGoTabImageView3DwT::
 MeshInteractorBehavior(bool iVisible)
 {
-  // if the widget is visible
-  // check in which mode we are
-  if (iVisible)
-    {
-    this->m_ImageView->OneClickMode();
-    }
+  // There is only one mode yet....
+  //this->m_ImageView->OneClickMode( iVisible );
+  ActivateSemiAutoSegmentationEditor(iVisible);
 }
 
 //-------------------------------------------------------------------------
@@ -420,8 +408,6 @@ void
 QGoTabImageView3DwT::
 DefaultInteractorBehavior(bool iVisible)
 {
-  // if the widget is visible
-  // check in which mode we are
   if (iVisible)
     {
     this->m_ImageView->DefaultMode();
@@ -433,8 +419,6 @@ void
 QGoTabImageView3DwT::
 ZoomInteractorBehavior(bool iVisible)
 {
-  // if the widget is visible
-  // check in which mode we are
   if (iVisible)
     {
     this->m_ImageView->ZoomMode();
@@ -446,8 +430,6 @@ void
 QGoTabImageView3DwT::
 PanInteractorBehavior(bool iVisible)
 {
-  // if the widget is visible
-  // check in which mode we are
   if (iVisible)
     {
     this->m_ImageView->PanMode();
@@ -459,8 +441,6 @@ void
 QGoTabImageView3DwT::
 ContourPickingInteractorBehavior(bool iVisible)
 {
-  // if the widget is visible
-  // check in which mode we are
   if (iVisible)
     {
     this->m_ImageView->ContourPickingMode();
@@ -472,8 +452,6 @@ void
 QGoTabImageView3DwT::
 MeshPickingInteractorBehavior(bool iVisible)
 {
-  // if the widget is visible
-  // check in which mode we are
   if (iVisible)
     {
     this->m_ImageView->MeshPickingMode();
@@ -485,7 +463,7 @@ void
 QGoTabImageView3DwT::
 DistanceWidgetInteractorBehavior(bool iActive)
 {
-  this->m_ImageView->DistanceWidgetMode(iActive);
+  this->m_ImageView->EnableDistanceWidget(iActive);
 }
 
 //-------------------------------------------------------------------------
@@ -493,7 +471,7 @@ void
 QGoTabImageView3DwT::
 AngleWidgetInteractorBehavior(bool iActive)
 {
-  this->m_ImageView->AngleWidgetMode(iActive);
+  this->m_ImageView->EnableAngleWidget(iActive);
 }
 
 //-------------------------------------------------------------------------
@@ -2753,7 +2731,6 @@ ListHighLightMeshes()
     ++it;
     }
 }
-//-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void

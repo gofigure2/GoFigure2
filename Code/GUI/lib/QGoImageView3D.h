@@ -143,7 +143,7 @@ public:
   /**
    * \brief Use the one click interactor style
    */
-  void OneClickMode();
+  void EnableSeedWidget( bool iActivate );
 
   /**
    * \brief switch to contour picking mode
@@ -253,14 +253,9 @@ protected:
   void FullScreenViewXYZ();
 
   /**
-   * \brief Enable/Disable the contour picking interactor style
-   */
-  void EnableContourPickingMode(bool iEnable);
-
-  /**
    * \brief Use the mesh picking interactor style
    */
-  virtual void EnableMeshPickingMode(bool iEnable);
+  virtual void EnableMeshPickingMode();
 
   void InitializeBoxWidget();
 

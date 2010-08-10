@@ -89,24 +89,32 @@ int main(int argc, char** argv)
   //viewer->SetCamera(1);
   //viewer->SetCamera(2);
   //viewer->SetCamera(3);
+
+  // Modes
   viewer->DefaultMode();
-  /// TODO Fix it
-  //viewer->ZoomMode();
+  viewer->ZoomMode();
   viewer->PanMode();
-  viewer->AngleWidgetMode(true);
-  viewer->AngleWidgetMode(false);
-  viewer->DistanceWidgetMode(true);
-  viewer->DistanceWidgetMode(false);
-  viewer->OneClickMode();
-  viewer->ContourPickingMode();
+  viewer->EnableContourPickingMode();
+  //viewer->EnableMeshPickingMode();
+
+  // Widgets
+  viewer->EnableDistanceWidget(true);
+  viewer->EnableDistanceWidget(false);
+  viewer->EnableAngleWidget(true);
+  viewer->EnableAngleWidget(false);
+  viewer->ContourWidgetMode(true);
+  viewer->ContourWidgetMode(false);
+  viewer->EnableSeedWidget(true);
+  viewer->EnableSeedWidget(false);
+
   vtkPoints* points = viewer->GetAllSeeds();
   points->Delete();
   viewer->ClearAllSeeds();
   viewer->GetListOfPickedContours();
   viewer->GetListOfUnPickedContours();
-  viewer->MeshPickingMode();
   viewer->GetListOfModifiedActors3D();
 
+  /// TODO Define a real widget
   viewer->SetBox3DPicking(true);
   viewer->SetBox3DPicking(false);
 
