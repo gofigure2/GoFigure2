@@ -60,10 +60,10 @@ void QGoCollectionColorComboBox::ActionWhenNewOneRequested()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoCollectionColorComboBox::setItemsWithColorFromList(
+void QGoCollectionColorComboBox::SetItemsFromList(
   std::list<ItemColorComboboxData> iDataFromList, std::string iCollectionName)
 {
-  QGoColorComboBox::setItemsWithColorFromList(iDataFromList);
+  QGoColorComboBox::SetItemsFromList(iDataFromList);
   QString TextForNewOne(tr("Add a new %1 ...").arg(iCollectionName.c_str()));
   this->setItemText(this->count()-1,TextForNewOne);
 }

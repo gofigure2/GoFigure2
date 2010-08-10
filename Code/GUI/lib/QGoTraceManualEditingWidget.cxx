@@ -89,7 +89,7 @@ SetListCollectionID(
   std::list<ItemColorComboboxData> iListExistingID)
 {
   //this->ColorIDCollectionComboBox->clear();
-  this->m_CollectionColorComboBox->setItemsWithColorFromList(
+  this->m_CollectionColorComboBox->SetItemsFromList(
     iListExistingID,this->m_CollectionName->text().toStdString());
   /*std::list<std::pair<std::string, QColor> >::iterator iter =
     iListExistingID.begin();
@@ -118,7 +118,7 @@ SetListCollectionID(
 void QGoTraceManualEditingWidget::SetListColors(
   std::list<ItemColorComboboxData> iListColors)
 {
-  this->m_SelectedColorComboBox->setItemsWithColorFromList(iListColors);
+  this->m_SelectedColorComboBox->SetItemsFromList(iListColors);
 }
 //-------------------------------------------------------------------------
 
@@ -434,7 +434,7 @@ void QGoTraceManualEditingWidget::SetCurrentSubCellType(
 //-------------------------------------------------------------------------
 void QGoTraceManualEditingWidget::SetCurrentColor(std::string iColorText)
 {
-  int index = this->m_SelectedColorComboBox->findText(iColorText.c_str());
+  /*int index = this->m_SelectedColorComboBox->findText(iColorText.c_str());
   if (index == -1)
     {
     this->m_SelectedColorComboBox->setCurrentIndex(0);
@@ -442,14 +442,15 @@ void QGoTraceManualEditingWidget::SetCurrentColor(std::string iColorText)
   else
     {
     this->m_SelectedColorComboBox->setCurrentIndex(index);
-    }
+    }*/
+  this->m_SelectedColorComboBox->SetCurrentItem(iColorText);
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void QGoTraceManualEditingWidget::SetCurrentCollectionID(std::string iID)
 {
-  int index = this->m_CollectionColorComboBox->findText(iID.c_str());
+ /* int index = this->m_CollectionColorComboBox->findText(iID.c_str());
   if (index == -1)
     {
     this->m_CollectionColorComboBox->setCurrentIndex(0);
@@ -457,7 +458,8 @@ void QGoTraceManualEditingWidget::SetCurrentCollectionID(std::string iID)
   else
     {
     this->m_CollectionColorComboBox->setCurrentIndex(index);
-    }
+    }*/
+  this->m_CollectionColorComboBox->SetCurrentItem(iID);
 }
 //-------------------------------------------------------------------------
 

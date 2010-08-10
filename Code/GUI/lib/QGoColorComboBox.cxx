@@ -50,19 +50,9 @@
 QGoColorComboBox::QGoColorComboBox(std::string iTextToAddANewOne,
                                    QWidget *parent,
                                    std::string iTextToDelete)
-                                   :QComboBox(parent)
+                                   :QGoComboBox(iTextToAddANewOne,
+                                   parent,iTextToDelete)
 {
-  this->m_TextToAddANewOne = iTextToAddANewOne;
-  this->m_TextToDelete = iTextToDelete;
-  if (this->m_TextToDelete.empty())
-    {
-    this->m_NumberOfItemsAfterList = 1;
-    }
-  else
-    {
-    this->m_NumberOfItemsAfterList = 2;
-    }
-  QObject::connect(this, SIGNAL(activated(int)), SLOT(emitActivatedItem(int )));
   QObject::connect(this, SIGNAL(AddANewOneActivated()), 
      this,SLOT(ActionWhenNewOneRequested()));
 }
@@ -75,7 +65,18 @@ QGoColorComboBox::~QGoColorComboBox()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoColorComboBox::setItemsWithColorFromList(
+void QGoColorComboBox::InitializeTheList(std::list<ItemColorComboboxData> iDataFromList)
+{
+  this->SetItemsFromList(iDataFromList);
+  //if it is the 1rst time for the list to be displayed, there has to be an activated
+  //item:
+  //by default, the one selected by the combobox is the one to stick to:
+  this->EmitActivatedItem(this->currentIndex());
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoColorComboBox::SetItemsFromList(
   std::list<ItemColorComboboxData> iDataFromList)
 {
   this->clear();
@@ -89,15 +90,7 @@ void QGoColorComboBox::setItemsWithColorFromList(
       //only the currentIndex one at the end of the added list.
       iter++;
       }
-    this->addItem(this->m_TextToAddANewOne.c_str());
-    if (!this->m_TextToDelete.empty())
-      {
-      this->addItem(this->m_TextToDelete.c_str());
-      }
-    this->show();
-    //if it is the 1rst time for the list to be displayed, there has to be an activated
-    //item:
-    this->SetActivatedItem();
+    this->AddItemsEndOfList();
     }
 }
 //--------------------------------------------------------------------------
@@ -131,36 +124,16 @@ void QGoColorComboBox::AddItemWithColor(ItemColorComboboxData iNewItemData,
   if (SelectTheAddedItem)
     {
     this->setCurrentIndex(Index);
-    this->emitActivatedItem(Index);
+    this->EmitActivatedItem(Index);
     }
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoColorComboBox::emitActivatedItem(int iIndexActivatedItem)
+void QGoColorComboBox::EmitActivatedItem(int iIndexActivatedItem)
 {
-  int numberitem = this->count();
-  int IndexAdd = this->count() - this->m_NumberOfItemsAfterList;
-  int IndexDelete = this->count()- 1;
-  if(iIndexActivatedItem == IndexAdd)
-  {
-  emit AddANewOneActivated();
-  return;
-  }
-  //if there is an item "Delete..."
-  if (IndexDelete != IndexAdd)
-    {
-    if (iIndexActivatedItem == IndexDelete)
-      {
-      emit DeleteActivated();
-      return;
-      }
-    }
-  
   ItemColorComboboxData ItemActivated = 
     this->GetTheItemColorComboBoxData(iIndexActivatedItem);
-  //this->m_LastActivated = ItemActivated.first.c_str();
-  //this->setCurrentIndex(iIndexActivatedItem);
   emit ItemSelected(ItemActivated);
 }
 //--------------------------------------------------------------------------
@@ -174,12 +147,4 @@ QGoColorComboBox::GetTheItemColorComboBoxData(int iIndex)
   Item.second = variant.value<QColor>();
   Item.first = this->itemText(iIndex).toStdString();
   return Item;
-}
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-void QGoColorComboBox::SetActivatedItem()
-{
-  //by default, the one selected by the combobox is the one to stick to:
-  this->emitActivatedItem(this->currentIndex());
 }

@@ -41,50 +41,75 @@
 #ifndef __QGoColorComboBox_h
 #define __QGoColorComboBox_h
 
-#include <QComboBox>
 #include <QtGui>
 #include "QGoGUILibConfigure.h"
+#include "QGoComboBox.h"
 
-class QGOGUILIB_EXPORT QGoColorComboBox : public QComboBox
+/**
+\class QGoColorCombobox
+\brief inherits from QGoCombobox, display not ony the names but also the QColor of
+the items as an Icon in the combobox
+*/
+class QGOGUILIB_EXPORT QGoColorComboBox : public QGoComboBox
   {
   Q_OBJECT
 public:
   explicit QGoColorComboBox(std::string iTextToAddANewOne,
       QWidget *parent = 0,std::string iTextToDelete = "");
+
   virtual ~QGoColorComboBox();
 
   typedef std::pair<std::string, QColor> ItemColorComboboxData;
+  
+  /**
+  \brief call the method setItemsWithColorFromList and send a signal with the current index.
+  \param[in] iDataFromList contains the names and the QColor of the items to be displayed 
+  in the combobox
+  \overload from the mother class method
+  */
+  void InitializeTheList(std::list<ItemColorComboboxData> iDataFromList);
+
+  /** 
+  \brief add an item with color at the end of the list befor the "add new..."
+  if they have already been added to the list and select it if 
+  selectetheaddeditem is set to true. 
+  \param[in] iNewItemData name and QColor of the new item to be added
+  \param[in] SelectTheAddedItem if true, the new added item will be the selectedone
+  in the combobox
+  */
+  void AddItemWithColor(ItemColorComboboxData iNewItemData,
+    bool SelectTheAddedItem = true);
+  
+  /**
+  \brief clear the items already in the combobox,displayed the one in the iDataFromList
+  and the items to add/delete
+  \param[in] iDataFromList contains the names and QColor of the items to be 
+  displayed in the combobox
+  \overload from the mother class method
+  */
+  void SetItemsFromList(std::list< ItemColorComboboxData > iDataFromList);
 
 signals:
-  void AddANewOneActivated();
   void ItemSelected(ItemColorComboboxData);
-  void DeleteActivated();
-  
-public slots:
-  /** \brief add an item with color at the end of the list befor the "add new..."
-  if they have already been added to the list and select it if 
-  selectetheaddeditem is set to true. */
-  void AddItemWithColor(ItemColorComboboxData,bool SelectTheAddedItem = true);
 
-  void setItemsWithColorFromList(std::list< ItemColorComboboxData > iDataFromList);
-  //void ListToUpdateWithItemDeleted(std::list< ItemColorComboboxData > iDataFromList);
-  
 protected:
+  /**
+  \brief get the name and the QColor of the item located at the index iIndex
+  \parma[in] iIndex index for which the name and QColor are wanted
+  \return ItemColorComboboxData contains the name and QColor of the item 
+  located at index iIndex
+  */
   ItemColorComboboxData GetTheItemColorComboBoxData(int iIndex);
-
-  virtual     void SetActivatedItem();
 
 
 protected slots:
+
+  /**
+  \brief slot linked to the signal AddANewOneActivated()
+  */
   virtual void ActionWhenNewOneRequested() = 0;
-
-private slots:
-  void emitActivatedItem(int iIndexActivatedItem);
-
-private:
-  std::string m_TextToAddANewOne;
-  std::string m_TextToDelete;
-  int         m_NumberOfItemsAfterList;
+  //mother class method
+  virtual void EmitActivatedItem(int iIndexActivatedItem);
 
   };
 

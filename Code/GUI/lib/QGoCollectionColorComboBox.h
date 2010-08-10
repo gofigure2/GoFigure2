@@ -43,6 +43,12 @@
 
 #include "QGoColorComboBox.h"
 
+/**
+\class QGoCollectionColorComboBox
+\brief this class inherits from QGoColorComboBox, has only the add item option and
+update the text according to the iCollectionName. It handles the printing of the
+collection IDs
+*/
 class QGOGUILIB_EXPORT QGoCollectionColorComboBox : public QGoColorComboBox
   {
   Q_OBJECT
@@ -54,10 +60,19 @@ signals:
   void NewCollectionToCreate();
 
 public slots:
-  void setItemsWithColorFromList(std::list<ItemColorComboboxData> iDataFromList,
+  /**
+  \brief clear the items already in the combobox,displayed the one in the iDataFromList,
+  the items to add/delete and adjust the text to add an item according to the iCollectionName.
+  \param[in] iDataFromList contains the names and QColor of the items to be 
+  displayed in the combobox
+  \param[in] iCollectionName name to use in the add an item
+  \overload from the mother class method
+  */
+  void SetItemsFromList(std::list<ItemColorComboboxData> iDataFromList,
     std::string iCollectionName);
  
 protected slots:
+  //mother class method
   virtual void ActionWhenNewOneRequested();
 
   };
