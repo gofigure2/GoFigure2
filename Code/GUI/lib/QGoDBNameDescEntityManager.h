@@ -74,7 +74,7 @@ public:
 
   /** 
   \brief execute the dialog asking the user to enter a name and a
-  description, validates the name, set the m_DatabaseConnectorForNewBkmrk,
+  description, validates the name, set the m_DatabaseConnector,
   save the entity in the DB and return the name of the new entity
   \param[out] std::string Name of the new entity, empty if the user canceled the adding
   */

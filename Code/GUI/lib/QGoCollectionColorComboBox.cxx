@@ -60,6 +60,18 @@ void QGoCollectionColorComboBox::ActionWhenNewOneRequested()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+void QGoCollectionColorComboBox::InitializeTheList(
+  std::list<ItemColorComboboxData> iDataFromList, std::string iCollectionName)
+{
+  this->SetItemsFromList(iDataFromList,iCollectionName);
+  //if it is the 1rst time for the list to be displayed, there has to be an activated
+  //item:
+  //by default, the one selected by the combobox is the one to stick to:
+  this->EmitActivatedItem(this->currentIndex());
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
 void QGoCollectionColorComboBox::SetItemsFromList(
   std::list<ItemColorComboboxData> iDataFromList, std::string iCollectionName)
 {

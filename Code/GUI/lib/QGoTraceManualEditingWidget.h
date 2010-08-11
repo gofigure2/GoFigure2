@@ -172,10 +172,6 @@ protected:
   QGoCollectionColorComboBox*       m_CollectionColorComboBox;
   QGoComboBox*                      m_ChoseCellType;
   QGoComboBox*                      m_ChoseSubCellType;
-  // QHBoxLayout*                     m_HLayoutForColor;
-  //QVBoxLayout*                      m_VLayoutForCollection;
-
-  //std::list<ItemColorComboboxData > m_DataColors;
 
   /**
   \brief add the SelectedColorCombobox to the layout and make the signal/slot connections

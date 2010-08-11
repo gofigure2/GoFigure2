@@ -70,7 +70,16 @@ public slots:
   \param[in] iCollectionName name to use in the add an item
   \overload from the mother class method
   */
-  void SetItemsFromList(std::list<ItemColorComboboxData> iDataFromList,
+  virtual void SetItemsFromList(std::list<ItemColorComboboxData> iDataFromList,
+    std::string iCollectionName);
+
+  /**
+  \brief
+  \param[in] iCollectionName name of the collection to add in the text to add a new
+  collection
+  \overload from mother class method
+  */
+  void InitializeTheList(std::list<ItemColorComboboxData> iDataFromList,
     std::string iCollectionName);
  
 protected slots:

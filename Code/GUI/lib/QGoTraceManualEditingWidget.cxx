@@ -79,7 +79,8 @@ SetListCollectionID(
     }
   else
     {
-    this->m_CollectionColorComboBox->InitializeTheList(iListExistingID);
+    this->m_CollectionColorComboBox->InitializeTheList(iListExistingID,
+      this->m_CollectionName->text().toStdString());
     }
   /** \todo when using lineages, remove the following*/
   if (this->m_CollectionName->text() == "lineage") //at that time we don't show lineages
@@ -119,7 +120,6 @@ QGoTraceManualEditingWidget::
 SetListSubCellTypes(NamesDescrContainerType iSubCellTypesData,
                     std::string iSubCellTypeToSelect)
 {
-  //this->m_ChoseSubCellType->SetItemsFromList(iSubCellTypesData);
   this->SetListItemAndSelect<QGoComboBox>(this->m_ChoseSubCellType,
     iSubCellTypesData,iSubCellTypeToSelect);
 }
@@ -176,7 +176,7 @@ SetTraceCollectionColorComboBox()
   ifont.setCapitalization(QFont::AllUppercase);
   ifont.setBold(true);
   this->m_CollectionName->setFont(ifont);
-  /// \todo make the names change with the interaction
+ 
   QHBoxLayout* HLayoutForCollection = new QHBoxLayout;
   HLayoutForCollection->addWidget(this->m_CollectionName);
   HLayoutForCollection->addWidget(this->m_CollectionColorComboBox);
@@ -230,15 +230,6 @@ SetCellTypeComboBox()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/*void
-QGoTraceManualEditingWidget::
-InitializeListCellTypes(NamesDescrContainerType iCellTypesData)
-{
-  this->m_ChoseCellType->InitializeTheList(iCellTypesData);
-}*/
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
 void
 QGoTraceManualEditingWidget::
 SetSubCellTypeComboBox()
@@ -260,16 +251,6 @@ SetSubCellTypeComboBox()
     SIGNAL(DeleteActivated()),
     this,SIGNAL(DeleteSubCellType()));
 }
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-/*void
-QGoTraceManualEditingWidget::
-InitializeListSubCellTypes(NamesDescrContainerType iSubCellTypesData)
-{
-  this->m_ChoseSubCellType->InitializeTheList(iSubCellTypesData);
-}
-*/
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -308,7 +289,7 @@ void QGoTraceManualEditingWidget::UpdateTraceAndCollection(
 {
   this->m_TraceName->setText(iTrace.c_str());
   this->m_CollectionName->setText(iCollection.c_str());
-  this->m_CollectionColorComboBox->SetTextToAdd(iCollection);
+  //this->m_CollectionColorComboBox->SetTextToAdd(iCollection);
   if (iTrace == "contour" || iTrace == "mesh")
     {
     this->m_ChoseCellType->show();
@@ -343,19 +324,3 @@ void QGoTraceManualEditingWidget::AddANewCollectionID(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/*void QGoTraceManualEditingWidget::UpdateCollectionComboboxWithDeletedItem(
-  std::list<ItemColorComboboxData> iListExistingID)
-{
-  
-  this->m_CollectionColorComboBox->ListToUpdateWithItemDeleted(
-    iListExistingID);
-}*/
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-/*void QGoTraceManualEditingWidget::UpdateColorComboboxWithDeletedItem(
-    std::list<ItemColorComboboxData> iListColors)
-{
-  this->m_SelectedColorComboBox->ListToUpdateWithItemDeleted(
-    iListColors);
-}*/

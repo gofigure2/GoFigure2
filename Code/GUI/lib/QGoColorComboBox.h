@@ -87,7 +87,7 @@ public:
   displayed in the combobox
   \overload from the mother class method
   */
-  void SetItemsFromList(std::list< ItemColorComboboxData > iDataFromList);
+  virtual void SetItemsFromList(std::list< ItemColorComboboxData > iDataFromList);
 
 signals:
   void ItemSelected(ItemColorComboboxData);
