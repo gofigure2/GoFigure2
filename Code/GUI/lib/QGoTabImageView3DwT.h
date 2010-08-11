@@ -46,7 +46,6 @@
 #include "itkMegaCaptureReader.h"
 #include "ContourMeshStructureHelper.h"
 #include "QGoPrintDatabase.h"
-//#include "QGoTraceManualEditingDockWidget.h"
 
 #include "GoFigureMeshAttributes.h"
 
@@ -231,8 +230,7 @@ public slots:
   void SetSliceView();
 
   void GenerateContourRepresentationProperties();
-  void GoToDefaultMenu(
-    std::string iTracename, std::string iCollectionName);
+  void GoToDefaultMenu();
 
 #if defined (ENABLEFFMPEG) || defined (ENABLEAVI)
   void SetRendererWindow(int);
@@ -356,23 +354,6 @@ public slots:
    */
   void ChangeContourRepresentationProperty();
 
-  /** \brief Get the info for the new created collection from the collectionIDcombobox,
-  pass them to the database to be saved in and update the list of collection IDs
-  in the visu dock widget*/
-  //void UpdateDBAndCollectionIDComboBoxForANewCreatedCollection();
-  //void PassInfoForDBFromCollectionIDComboBox();
-
-  /** \brief Get the info for the current selected color from the trace manual editing
-  widget and pass it to the database*/
-  //void PassInfoForDBForCurrentSelectedColor();
-  /** \brief Get the current selected collectionid from the trace manual editing widget
-  and update the currentCollectionID in the table widget*/
-  //void PassInfoForCurrentCollectionID();
-
-  /** \brief Get the current selected celltype and subcelltype from the trace manual editing widget
-  and update the current celltype and sub celltype in the table widget*/
-  //void PassInfoForDBForCurrentSelectedCellTypeAndSubCellType();
-
   void Change3DPerspectiveToAxial();
   void Change3DPerspectiveToCoronal();
   void Change3DPerspectiveToSagittal();
@@ -426,9 +407,6 @@ protected:
 
   /// Useful?
   vtkPoints* m_SeedsWorldPosition;
-
-  //QGoTraceManualEditingDockWidget* m_TraceManualEditingDockWidget;
-  //QDockWidget*                 m_test;
 
   /// \todo remove m_FFMPEGWriter and m_AVIWriter from this class
   #if defined ENABLEFFMPEG || defined ENABLEAVI
@@ -553,8 +531,6 @@ protected slots:
   void GetTheRelatedToDBActions();
   void GetTheOpenBookmarksActions();
   void OpenExistingBookmark();
-  //void SetTheCurrentCellType();
-  //void SetTheCurrentSubCellType();
   void ShowTraceDockWidgetForContour(bool ManualSegVisible);
   void ShowTraceDockWidgetForMesh(bool OneClickVisible);
   void ChangeColorOfSelectedTracesManager(std::pair<std::list<int>, QColor>);

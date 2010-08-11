@@ -184,10 +184,6 @@ QGoTabImageView3DwT(QWidget* iParent) :
       new QGoDockWidgetStatus(m_OneClickSegmentationDockWidget, Qt::LeftDockWidgetArea, true, true),
       m_OneClickSegmentationDockWidget));
 
-  /*m_DockWidgetList.push_back(
-    std::pair<QGoDockWidgetStatus*, QDockWidget*>(
-      new QGoDockWidgetStatus(m_TraceManualEditingDockWidget, Qt::LeftDockWidgetArea, true, true),
-      m_TraceManualEditingDockWidget));*/
   m_DockWidgetList.push_back(
     std::pair<QGoDockWidgetStatus*, QDockWidget*>(
       new QGoDockWidgetStatus(this->m_DataBaseTables->GetTraceManualEditingDockWidget(), 
@@ -576,53 +572,11 @@ void
 QGoTabImageView3DwT::
 CreateDataBaseTablesConnection()
 {
-  /*QObject::connect(this->m_TraceManualEditingDockWidget->m_TraceWidget,
-                   SIGNAL(NewSelectedColorActivated(ItemColorComboboxData)),
-                   this->m_DataBaseTables,
-                   SLOT(UpdateCurrentColorData(ItemColorComboboxData)));
-
-  QObject::connect(this->m_TraceManualEditingDockWidget->m_TraceWidget,
-                   SIGNAL(NewCollectionActivated(ItemColorComboboxData)),
-                   this->m_DataBaseTables,
-                   SLOT(UpdateCurrentCollectionID(ItemColorComboboxData)));
-  
-  QObject::connect(this->m_DataBaseTables,
-                   SIGNAL(PrintExistingColorsFromDB(std::list<ItemColorComboboxData>)),
-                   this->m_TraceManualEditingDockWidget->m_TraceWidget,
-                   SLOT(SetListExistingColors(std::list<ItemColorComboboxData>)));
-
-  QObject::connect(this->m_DataBaseTables,
-                   SIGNAL(PrintExistingCollectionIDsFromDB(std::list<std::pair<std::string, QColor> >)),
-                   this->m_TraceManualEditingDockWidget->m_TraceWidget,
-                   SLOT(SetListCollectionID(std::list<ItemColorComboboxData>)));
-
-  QObject::connect(
-    this->m_TraceManualEditingDockWidget->m_TraceWidget,
-    SIGNAL(NewColorToBeSaved(ItemColorComboboxData)),
-    this->m_DataBaseTables,
-    SLOT(SaveNewColorInDB(ItemColorComboboxData)));*/
   QObject::connect(this,
                    SIGNAL(TimePointChanged(int)),
                    this->m_DataBaseTables,
                    SLOT(UpdateSelectedTimePoint(int)));
-  /*QObject::connect(
-    this->m_TraceManualEditingDockWidget->m_TraceWidget->ColorIDCollectionComboBox,
-    SIGNAL(NewCollectionToBeSaved()),
-    this, SLOT(UpdateDBAndCollectionIDComboBoxForANewCreatedCollection()));*/
-
-  /*QObject::connect(this->m_DataBaseTables,
-                   SIGNAL(NeedToGetCurrentSelectedColor()),
-                   this, SLOT(PassInfoForDBForCurrentSelectedColor()));*/
-
-  /*QObject::connect(this->m_DataBaseTables,
-                   SIGNAL(NeedCurrentSelectedCellTypeAndSubCellType()),
-                   this, SLOT(PassInfoForDBForCurrentSelectedCellTypeAndSubCellType()));*/
-
-  /*QObject::connect(this->m_DataBaseTables,
-                   SIGNAL(NewCreatedCollection(QColor, QString)),
-                   this->m_TraceManualEditingDockWidget->m_TraceWidget->ColorIDCollectionComboBox
-                   , SLOT(addColor(QColor, QString)));*/
-
+ 
   QObject::connect(this->m_DataBaseTables,
                    SIGNAL(SelectionContoursToHighLightChanged()),
                    this, SLOT(HighLightTracesFromTableManager()));
@@ -630,15 +584,6 @@ CreateDataBaseTablesConnection()
   QObject::connect(this->m_DataBaseTables,
                    SIGNAL(SelectionMeshesToHighLightChanged()),
                    this, SLOT(HighLightTracesFromTableManager()));
-
- /* QObject::connect(this->m_DataBaseTables,
-                   SIGNAL(NeedCurrentSelectedCollectionID()),
-                   this, SLOT(PassInfoForCurrentCollectionID()));*/
-
-  /*QObject::connect(this->m_DataBaseTables,
-                   SIGNAL(DeletedCollection(unsigned int)),
-                   this->m_TraceManualEditingDockWidget->m_TraceWidget->ColorIDCollectionComboBox,
-                   SLOT(DeleteCollectionID(unsigned int)));*/
 
   QObject::connect(this->m_DataBaseTables,
                    SIGNAL(TraceToReEdit(unsigned int)),
@@ -648,52 +593,9 @@ CreateDataBaseTablesConnection()
                    SIGNAL(TracesToDeleteInVisu(std::list<int> )),
                    this, SLOT(DeleteTracesFromTableManager(std::list<int> )));
 
-  /*QObject::connect(this->m_DataBaseTables,
-                   SIGNAL(ListCellTypesToUpdate(QStringList)),
-                   this->m_TraceManualEditingDockWidget->m_TraceWidget,
-                   SLOT(SetListCellTypes(QStringList)));*/
-
-  /*QObject::connect(
-    this->m_TraceManualEditingDockWidget->m_TraceWidget,
-    SIGNAL(AddANewCellType()), this->m_DataBaseTables,
-    SLOT(AddNewCellType()));*/
-
-  /*QObject::connect(
-    this->m_TraceManualEditingDockWidget->m_TraceWidget,
-    SIGNAL(DeleteCellType()), this->m_DataBaseTables,
-    SLOT(DeleteCellType()));*/
-
-  /*QObject::connect(this->m_DataBaseTables,
-                   SIGNAL(ListSubCellTypesToUpdate(QStringList)),
-                   this->m_TraceManualEditingDockWidget->m_TraceWidget,
-                   SLOT(SetListSubCellTypes(QStringList)));*/
-
-  /*QObject::connect(
-    this->m_TraceManualEditingDockWidget->m_TraceWidget,
-    SIGNAL(AddANewSubCellType()), this->m_DataBaseTables,
-    SLOT(AddNewSubCellType()));*/
-
-  /*QObject::connect(
-    this->m_TraceManualEditingDockWidget->m_TraceWidget,
-    SIGNAL(DeleteSubCellType()), this->m_DataBaseTables,
-    SLOT(DeleteSubCellType()));*/
-
-  /*QObject::connect(
-    this->m_DataBaseTables, SIGNAL(TheColorNameAlreadyExits()),
-    this->m_TraceManualEditingDockWidget->m_TraceWidget->ColorComboBox,
-    SLOT(DontAddTheColor()));*/
-
-  /*QObject::connect(
-    this->m_TraceManualEditingDockWidget->m_TraceWidget, SIGNAL(ListCellTypesReady()),
-    this, SLOT(SetTheCurrentCellType()));
-
   QObject::connect(
-    this->m_TraceManualEditingDockWidget->m_TraceWidget, SIGNAL(ListSubCellTypesReady()),
-    this, SLOT(SetTheCurrentSubCellType()));*/
-
-  QObject::connect(
-    this->m_DataBaseTables, SIGNAL(TableWidgetTableChanged(std::string, std::string)),
-    this, SLOT(GoToDefaultMenu(std::string, std::string)));
+    this->m_DataBaseTables, SIGNAL(TableWidgetTabChanged()),
+    this, SLOT(GoToDefaultMenu()));
 
   QObject::connect(
     this->m_DataBaseTables, SIGNAL(ColorChangedForSelectedTraces(std::pair<std::list<int>, QColor>)),
@@ -1745,10 +1647,6 @@ SetTimePoint(const int& iTimePoint)
         {
         SetTimePointWithMegaCapture(iTimePoint);
         emit TimePointChanged(m_TimePoint);
-        //if (this->m_DataBaseTables->IsDatabaseUsed())
-        //{
-        //this->m_DataBaseTables->UpdateListMeshes(iTimePoint);
-        //}
         }
       }
     else
@@ -2627,66 +2525,6 @@ AddMeshFromNodes(const unsigned int& iMeshID,
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/*void
-QGoTabImageView3DwT::
-UpdateDBAndCollectionIDComboBoxForANewCreatedCollection()
-{
-  //first, save in the database:
-  std::string TraceName =  this->m_TraceManualEditingDockWidget->m_TraceWidget->TraceName->text().toStdString();
-  std::string CellType = "";
-  std::string SubCellType = "";
-  if (TraceName == "contour")  //for a mesh, collection of contour;
-    {
-    CellType = this->m_TraceManualEditingDockWidget->m_TraceWidget->GetCurrentCellType();
-    SubCellType = this->m_TraceManualEditingDockWidget->m_TraceWidget->GetCurrentSubCellType();
-    }
-  std::pair<std::string, QColor> NewCollectionToAddInComboBox =
-
-    this->m_DataBaseTables->SaveNewCollectionInDB(
-      this->m_TraceManualEditingDockWidget->m_TraceWidget->ColorComboBox->GetCurrentColorData(),
-      this->m_TraceManualEditingDockWidget->m_TraceWidget->TraceName->text().toStdString(),
-      this->GetTimePoint(), CellType, SubCellType);
-
-  //second, update the ColorIDCollectionComboBox with the new created ID:
-  this->m_TraceManualEditingDockWidget->m_TraceWidget->ColorIDCollectionComboBox->addColor(
-    NewCollectionToAddInComboBox.second, NewCollectionToAddInComboBox.first.c_str());
-}*/
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-/*void
-QGoTabImageView3DwT::
-PassInfoForDBForCurrentSelectedColor()
-{
-  this->m_DataBaseTables->UpdateCurrentColorData(
-    this->m_TraceManualEditingDockWidget->m_TraceWidget->
-    ColorComboBox->GetCurrentColorData());
-
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
-QGoTabImageView3DwT::
-PassInfoForCurrentCollectionID()
-{
-  this->m_DataBaseTables->SetCurrentCollectionID(
-    this->m_TraceManualEditingDockWidget->m_TraceWidget->
-    ColorIDCollectionComboBox->GetCurrentColorData());
-}*/
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-/*void QGoTabImageView3DwT::
-PassInfoForDBForCurrentSelectedCellTypeAndSubCellType()
-{
-  this->m_DataBaseTables->UpdateCurrentCellTypeAndSubCellType(
-    this->m_TraceManualEditingDockWidget->m_TraceWidget->GetCurrentCellType(),
-    this->m_TraceManualEditingDockWidget->m_TraceWidget->GetCurrentSubCellType());
-}*/
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
 ReEditContour(const unsigned int& iId)
@@ -3192,31 +3030,6 @@ GetManualSegmentationWidget()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/*QGoTraceManualEditingWidget* QGoTabImageView3DwT::
-GetTraceManualEditingWidget()
-{
-  return this->m_TraceManualEditingDockWidget->m_TraceWidget;
-}*/
-
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-/*void QGoTabImageView3DwT::SetTheCurrentCellType()
-{
-  this->m_TraceManualEditingDockWidget->m_TraceWidget
-  ->SetCurrentCellType(this->m_DataBaseTables->GetNameNewCellType());
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void QGoTabImageView3DwT::SetTheCurrentSubCellType()
-{
-  this->m_TraceManualEditingDockWidget->m_TraceWidget
-  ->SetCurrentSubCellType(this->m_DataBaseTables->GetNameNewSubCellType());
-}*/
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
 ApplyContourSemiAutoSegmentation()
@@ -3504,25 +3317,6 @@ SavePolyDataAsContourInDB(vtkPolyData* iView)
                                    false, m_TimePoint, saveindatabase);
 }
 //-------------------------------------------------------------------------
-//-------------------------------------------------------------------------
-/*void
-QGoTabImageView3DwT::
-GetTraceColor(double* rgba)
-{
-  if (this->m_TraceManualEditingDockWidget->m_TraceWidget->GetCurrentCollectionID() == -1)
-    {
-    rgba[0] = 0.1;
-    rgba[1] = 0.5;
-    rgba[2] = 0.7;
-    rgba[3] = 1;
-    }
-  else
-    {
-    QColor color =
-      this->m_TraceManualEditingDockWidget->m_TraceWidget->ColorComboBox->GetCurrentColorData().second;
-    color.getRgbF(&rgba[0], &rgba[1], &rgba[2], &rgba[3]);
-    }
-}*/
 
 //-------------------------------------------------------------------------
 int
@@ -3652,13 +3446,6 @@ void QGoTabImageView3DwT::ShowTraceDockWidgetForContour(
     if (this->m_DataBaseTables->IsDatabaseUsed())
       {
       this->m_DataBaseTables->UpdateWidgetsForCorrespondingTrace("contour","mesh");
-      /*this->m_TraceManualEditingDockWidget->ShowAndUpdate("contour", "mesh");
-      this->m_TraceManualEditingDockWidget->m_TraceWidget->SetCollectionID(
-        this->m_DataBaseTables->GetListExistingCollectionIDFromDB(
-          "contour", this->GetTimePoint()));
-      this->m_DataBaseTables->blockSignals(true);
-      this->m_DataBaseTables->SetTable("contour");
-      this->m_DataBaseTables->blockSignals(false);*/
       }
     this->m_OneClickSegmentationDockWidget->setDisabled(true);
     this->m_OneClickSegmentationDockWidget->hide();
@@ -3674,12 +3461,6 @@ void QGoTabImageView3DwT::ShowTraceDockWidgetForMesh(
     {
     if (this->m_DataBaseTables->IsDatabaseUsed())
       {
-      /*this->m_TraceManualEditingDockWidget->ShowAndUpdate("mesh", "track");
-      this->m_TraceManualEditingDockWidget->m_TraceWidget->SetCollectionID(
-        this->m_DataBaseTables->GetListExistingCollectionIDFromDB("mesh"));
-      this->m_DataBaseTables->blockSignals(true);
-      this->m_DataBaseTables->SetTable("mesh");
-      this->m_DataBaseTables->blockSignals(false);*/
       this->m_DataBaseTables->UpdateWidgetsForCorrespondingTrace("mesh","track");
       }
     this->m_ManualSegmentationDockWidget->setDisabled(true);
@@ -3689,32 +3470,13 @@ void QGoTabImageView3DwT::ShowTraceDockWidgetForMesh(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoTabImageView3DwT::GoToDefaultMenu(std::string iTracename,
-                                          std::string iCollectionName)
+void QGoTabImageView3DwT::GoToDefaultMenu()
 {
   this->m_ManualSegmentationDockWidget->setDisabled(true);
   this->m_ManualSegmentationDockWidget->hide();
   this->m_OneClickSegmentationDockWidget->setDisabled(true);
   this->m_OneClickSegmentationDockWidget->hide();
   this->m_ModeActions.at(0)->setChecked(true);
- // this->m_TraceManualEditingDockWidget->ShowAndUpdate(iTracename,
-   //                                                   iCollectionName);
-  if (this->m_DataBaseTables->IsDatabaseUsed())
-    {
-    this->m_DataBaseTables->UpdateWidgetsForCorrespondingTrace(iTracename,
-    iCollectionName,false);
-   /* if (iTracename == "contour")
-      {
-      this->m_TraceManualEditingDockWidget->m_TraceWidget->SetCollectionID(
-        this->m_DataBaseTables->GetListExistingCollectionIDFromDB(
-          "contour", this->GetTimePoint()));
-      }
-    else
-      {
-      this->m_TraceManualEditingDockWidget->m_TraceWidget->SetCollectionID(
-        this->m_DataBaseTables->GetListExistingCollectionIDFromDB(iTracename));
-      }*/
-    }
 }
 //-------------------------------------------------------------------------
 
@@ -3773,18 +3535,10 @@ void QGoTabImageView3DwT::ImportContours()
                                 Contour.Highlighted, Contour.TCoord, false);
       ++c_it;
       }
-    //update the TraceManualEditingWidget
-    this->GoToDefaultMenu("contour", "mesh");
+    this->GoToDefaultMenu();
     //as in the import contours file, there are data such as colors,celltype
     //and subcelltype, the lists may have been updated in the database:
     this->m_DataBaseTables->InitializeTheComboboxesNotTraceRelated();
-
-    /*this->GetTraceManualEditingWidget()->ColorComboBox->setExistingColors(
-      this->m_DataBaseTables->GetColorComboBoxInfofromDB());
-    this->GetTraceManualEditingWidget()->SetListCellTypes(
-      this->m_DataBaseTables->GetQStringListCellTypes());
-    this->GetTraceManualEditingWidget()->SetListSubCellTypes(
-      this->m_DataBaseTables->GetQStringListSubCellTypes());*/
     }
 }
 //-------------------------------------------------------------------------
@@ -3911,15 +3665,8 @@ void QGoTabImageView3DwT::ImportMeshes()
                        Mesh.TCoord, false);
       ++c_it;
       }
-    //update the TraceManualEditingWidget
-    GoToDefaultMenu("mesh", "track");
+    GoToDefaultMenu();
     this->m_DataBaseTables->InitializeTheComboboxesNotTraceRelated();
-    /*GetTraceManualEditingWidget()->ColorComboBox->setExistingColors(
-      m_DataBaseTables->GetColorComboBoxInfofromDB());
-    GetTraceManualEditingWidget()->SetListCellTypes(
-      m_DataBaseTables->GetQStringListCellTypes());
-    GetTraceManualEditingWidget()->SetListSubCellTypes(
-      m_DataBaseTables->GetQStringListSubCellTypes());*/
     }
 }
 //-------------------------------------------------------------------------

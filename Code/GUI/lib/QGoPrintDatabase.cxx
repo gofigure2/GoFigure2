@@ -235,7 +235,7 @@ void QGoPrintDatabase::OpenDBConnection()
 {
   if (m_DatabaseConnector == 0)
     {
-    m_DatabaseConnector = OpenDatabaseConnection(m_Server, m_User,
+    this->m_DatabaseConnector = OpenDatabaseConnection(m_Server, m_User,
                                                  m_Password, m_DBName);
     }
 }
@@ -246,7 +246,7 @@ void QGoPrintDatabase::CloseDBConnection()
 {
   if (CloseDatabaseConnection(m_DatabaseConnector))
     {
-    m_DatabaseConnector = 0;
+    this->m_DatabaseConnector = 0;
     }
 }
 //--------------------------------------------------------------------------
@@ -258,7 +258,7 @@ void QGoPrintDatabase::FillTableFromDatabase(int iTimePoint)
 
   QString title = QString("Imaging Session: %1 ").arg(m_ImgSessionName.c_str());
   this->setWindowTitle(title);
-
+  this->DBTabWidget->blockSignals(true);
   GetContentAndDisplayFromDB("contour");
   GetContentAndDisplayFromDB("mesh");
 
@@ -280,6 +280,7 @@ void QGoPrintDatabase::FillTableFromDatabase(int iTimePoint)
   //PrintExistingCollectionIDsFromDB(
     //this->GetListExistingCollectionIDFromDB("contour", iTimePoint));
   CloseDBConnection();
+  this->DBTabWidget->blockSignals(false);
   emit PrintDBReady();
 }
 //--------------------------------------------------------------------------
@@ -1070,22 +1071,6 @@ QGoPrintDatabase::IDWithColorData QGoPrintDatabase::SaveMeshFromVisuInDB(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/*int QGoPrintDatabase::GetSelectedCellTypeID()
-{
-  return FindOneID(this->m_DatabaseConnector,
-                   "celltype", "CellTypeID", "Name", this->m_SelectedCellType);
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-int QGoPrintDatabase::GetSelectedSubCellTypeID()
-{
-  return FindOneID(this->m_DatabaseConnector,
-                   "subcellulartype", "SubCellularID", "Name", this->m_SelectedSubCellType);
-}*/
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
 int QGoPrintDatabase::CreateMeshFromOneClickSegmentation(
   std::list<int> iListContoursIDs)
 {
@@ -1139,7 +1124,7 @@ void QGoPrintDatabase::GetContentAndDisplayFromDB(std::string iTraceName)
     iTraceName.c_str(), ColumnsNames);
   this->DBTabWidget->addTab(CurrentlyUsedTraceData->Table, iTraceName.c_str());
   DBTableWidgetContainerType Row_Container =
-    CurrentlyUsedTraceData->CollectionOfTraces->GetRowContainer(m_DatabaseConnector);
+    CurrentlyUsedTraceData->CollectionOfTraces->GetRowContainer(this->m_DatabaseConnector);
   CurrentlyUsedTraceData->Table->DisplayContent(CurrentlyUsedTraceData->CollectionOfTraces->GetLinkToRowContainer(),
                                                 iTraceName, CurrentlyUsedTraceData->CollectionName);
   CurrentlyUsedTraceData->Table->setSortingEnabled(true);
@@ -1489,7 +1474,6 @@ void QGoPrintDatabase::SaveNewCollectionInDB()
 
   this->CloseDBConnection();
   //return NewCollectionData;
-  //this->SetListExistingCollectionIDFromDB();
   //update the colorcombobox and set the new collection as the selected one:
   ItemColorComboboxData NewCollectionData;
   NewCollectionData.first = ConvertToString<int>(NewCollectionID);
@@ -1857,15 +1841,6 @@ void QGoPrintDatabase::HideSelectedRows()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/*void QGoPrintDatabase::UpdateListMeshes(int iTimePoint)
-{
-  this->SetListExistingCollectionIDFromDB();
-  //emit PrintExistingCollectionIDsFromDB(
-    //this->GetListExistingCollectionIDFromDB("contour", iTimePoint));
-}*/
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
 void QGoPrintDatabase::AddTracesInTableWidgetFromDB(std::vector<int> ListTracesIDs,
                                                     std::string iTraceName)
 {
@@ -1922,8 +1897,9 @@ void QGoPrintDatabase::TheTabIsChanged(int iIndex)
       break;
     }
 
-  emit TableWidgetTableChanged(CurrentlyUsedTraceData->TraceName,
-                               CurrentlyUsedTraceData->CollectionName);
+  this->UpdateWidgetsForCorrespondingTrace(CurrentlyUsedTraceData->TraceName,
+                               CurrentlyUsedTraceData->CollectionName, false);
+  emit TableWidgetTabChanged();
 }
 //-------------------------------------------------------------------------
 
@@ -1943,7 +1919,6 @@ void QGoPrintDatabase::SetTable(std::string iTablename)
     {
     Index = 3;
     }
-
   this->DBTabWidget->setCurrentIndex(Index);
 }
 //-------------------------------------------------------------------------
@@ -2138,13 +2113,13 @@ void QGoPrintDatabase::CreateConnectionsForTraceManualEditingWidget()
 void QGoPrintDatabase::UpdateWidgetsForCorrespondingTrace(std::string iTraceName,
   std::string iCollectionName,bool UpdateTableWidget)
 {
-   //this->m_TraceManualEditingDockWidget->ShowAndUpdate("contour", "mesh");
-   //this->SetTMListCollectionID();
    this->m_TraceWidget->UpdateTraceAndCollection(iTraceName, iCollectionName);
    this->SetTMListCollectionID();
    if(UpdateTableWidget)
      {
-     /** \todo check if it is still needed to block the signals*/
+     //if the TableWidget has to be set to match the trace name, no need for the
+     //signal TabHasChanged to be emitted, it would results in the Segmentation
+     //widgets to be hidden
      this->blockSignals(true);
      this->SetTable(iTraceName);
      this->blockSignals(false);

@@ -225,7 +225,7 @@ public:
   corresponding list of collectionID and set the tablewidget for the
   trace table*/
   void UpdateWidgetsForCorrespondingTrace(std::string iTraceName,
-    std::string iCollectionName,bool UpdatetableWidget = true);
+    std::string iCollectionName,bool UpdateTableWidget = true);
   
   /** \brief Initialize or reinitialized the celltype,subcelltype
   and color list from the database into the tracemanualeditingwidget*/
@@ -240,9 +240,6 @@ public slots:
 
   void DeleteBookmarks();
  
-  /** \brief get the list of meshes for the current timepoint from the
- * database, emit a signal for the list to be printed in the GUI-not used*/
-  //void UpdateListMeshes(int iTimePoint);
   void SetTable(std::string iTablename);
   void ExportContours();
   void ExportMeshes();
@@ -258,7 +255,7 @@ signals:
   void TracesToDeleteInVisu(std::list<int> );
   void OpenBookmarksToUpdate();
   void ColorChangedForSelectedTraces(std::pair<std::list<int>, QColor>);
-  void TableWidgetTableChanged(std::string, std::string);
+  void TableWidgetTabChanged();
   void NewMeshToGenerate(std::list<int> ListContourIDs,int iNewMeshID);
   void MeshGenerationToUpdate(std::list<int> ListContourIDs);
   void NeedToGoToTheLocation(int XCoord, int YCoord, int ZCoord, int TCoord);
