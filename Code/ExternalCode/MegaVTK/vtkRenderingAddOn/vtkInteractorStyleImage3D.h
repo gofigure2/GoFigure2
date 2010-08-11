@@ -69,7 +69,6 @@
 #define _vtk_InteractorStyleImage3D_h_
 
 #include <vtkInteractorStyleTrackballCamera.h>
-//#include "vtkInteractorStyleInterface.h"
 #include "MegaVTK2Configure.h"
 
 class vtkProp;
@@ -81,13 +80,14 @@ class vtkProp;
 /*
  * \class vtkInteractorStyleImage3D
  * \ingroup visualization
- * \brief Define the interactor behavior withing a vtk3DImage.
+ * \brief Define the interactor behavior withing a vtkImage3D.
+ * 4 modes (Default, Zoom, Pan and Pick)
  */
 //MOTION FLAG
 #define VTKIS_PICK3D         1050
 
 class VTK_RENDERINGADDON2_EXPORT vtkInteractorStyleImage3D :
-  public vtkInteractorStyleTrackballCamera//, public vtkInteractorStyleInterface
+  public vtkInteractorStyleTrackballCamera
   {
 public:
   static vtkInteractorStyleImage3D *New();
@@ -111,36 +111,50 @@ public:
   virtual void OnMiddleButtonDown();
   virtual void OnMiddleButtonUp();
 
+  /**
+   * \ingroup visualization
+   * \brief Store the actor which is pointed by the cursor into "m_CurrentProp"
+   */
   void     SetCurrentProp();
+  /**
+   * \ingroup visualization
+   * \brief Return the actor which is pointed by the cursor
+   */
   vtkProp* GetCurrentProp();
 
   /**
-   *
+   * \ingroup visualization
+   * \brief Start Pick Mode by updating the "State" and sending the "StartPickEvent"
    */
   void StartPick();
 
   /**
-   *
-   */
+    * \ingroup visualization
+    * \brief Draw a bounding box around the "m_CurrentProp" (i.e. actor pointed
+    * by the mouse)
+    */
   void HighlightCurrentActor();
 
   /**
-   *
-   */
-  void EnablePickMode();
-
-  /**
-   *
-   */
+    * \ingroup visualization
+    * \brief Start the Default Mode
+    */
   void EnableDefaultMode();
   /**
-   *
-   */
+    * \ingroup visualization
+    * \brief Start the Zoom Mode
+    */
   void EnableZoomMode();
   /**
-   *
-   */
+    * \ingroup visualization
+    * \brief Start the Pan Mode
+    */
   void EnablePanMode();
+  /**
+    * \ingroup visualization
+    * \brief Start the Pick Mode
+    */
+  void EnablePickMode();
 
 protected:
   vtkInteractorStyleImage3D();

@@ -73,6 +73,17 @@
 
 #define VTKIS_SLICE_MOVE  5051
 
+/*
+ * \defgroup visualization ‘‘Visualization’’
+ */
+
+/*
+ * \class vtkInteractorStyleImage2D
+ * \ingroup visualization
+ * \brief Define the interactor behavior withing a vtkImage2D.
+ * 4 modes (Default, Zoom, Pan and Pick)
+ */
+
 class VTK_RENDERINGADDON2_EXPORT vtkInteractorStyleImage2D :
   public vtkInteractorStyleImage
   {
@@ -112,13 +123,31 @@ public:
 
   virtual void DefaultMoveAction();
 
+  // Different modes
+  /**
+    * \ingroup visualization
+    * \brief Start the Default Mode
+    */
   void SetDefaultMode();
+  /**
+    * \ingroup visualization
+    * \brief Start the Zoom Mode
+    */
   void SetZoomMode();
+  /**
+    * \ingroup visualization
+    * \brief Start the Pan Mode
+    */
   void SetPanMode();
+  /**
+    * \ingroup visualization
+    * \brief Start the Pick Mode
+    */
   void SetPickMode();
 
   /**
-   * \brief Highlights the actor which is pointed by the mouse
+   * \ingroup visualization
+   * \brief Draw a bounding box around the actor which is pointed by the cursor
    */
   void HighlightCurrentActor();
 
@@ -126,6 +155,10 @@ public:
   int* GetRequestedPosition(void)
   { return this->RequestedPosition; }
 
+  /**
+   * \ingroup visualization
+   * \brief Return the actor which is pointed by the cursor
+   */
   vtkProp* GetCurrentProp();
 
 protected:
