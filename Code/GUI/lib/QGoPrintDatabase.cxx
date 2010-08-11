@@ -124,7 +124,7 @@ QGoPrintDatabase(QWidget* iParent) :
 
   // QObject::connect( this->MeshTable, SIGNAL(itemSelectionChanged()),
   //   this, SLOT(ChangeTracesToHighLightInfoFromTableWidget()));
-
+ 
   }
 //--------------------------------------------------------------------------
 
@@ -191,7 +191,6 @@ void QGoPrintDatabase::SetDatabaseVariables(
   m_ImgSessionName = iImgSessionName;
 
   this->SetTraceInfoStructures();
-
   this->m_BookmarkManager = new QGoDBBookmarkManager(this, this->m_ImgSessionID);
   QObject::connect(this->m_BookmarkManager, SIGNAL(ListBookmarksChanged()),
                    this, SIGNAL(OpenBookmarksToUpdate()));
@@ -1888,7 +1887,18 @@ void QGoPrintDatabase::AddTracesInTableWidgetFromDB(std::vector<int> ListTracesI
 //-------------------------------------------------------------------------
 void QGoPrintDatabase::UpdateSelectedTimePoint(int iTimePoint)
 {
+
   this->m_SelectedTimePoint = iTimePoint;
+  if (!this->m_Server.empty()) //if empty, the database variables are not
+    //been set up yet.
+  {
+  if (this->m_TraceWidget->GetTraceName() == "contour")
+    {
+    //if we change the timepoint, the list of meshes will be different from the 
+    //previous one, so, initialize the list is needed (no pre-selected collection)
+    this->SetTMListCollectionID();
+    }
+  }
 }
 //-------------------------------------------------------------------------
 
