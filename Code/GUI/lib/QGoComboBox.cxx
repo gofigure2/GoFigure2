@@ -74,8 +74,9 @@ QGoComboBox::~QGoComboBox()
 //--------------------------------------------------------------------------
 void QGoComboBox::InitializeTheList(QStringList iListItems)
 {
-  this->addItems(iListItems);
-  this->AddItemsEndOfList();  
+  //this->addItems(iListItems);
+  //this->AddItemsEndOfList();  
+  this->SetItemsFromList(iListItems);
   //if it is the 1rst time for the list to be displayed, there has to be an activated
   //item:
  //by default, the one selected by the combobox is the one to stick to:
@@ -93,11 +94,12 @@ void QGoComboBox::InitializeTheList(NamesDescrContainerType iItemsData)
 //--------------------------------------------------------------------------
 void QGoComboBox::AddItemsEndOfList()
 {
-   this->addItem(this->m_TextToAddANewOne.c_str());
-   if (!this->m_TextToDelete.empty())
-    {
-    this->addItem(this->m_TextToDelete.c_str());
-    }
+   //this->addItem(this->m_TextToAddANewOne.c_str());
+  this->SetAddText();
+  if (!this->m_TextToDelete.empty())
+   {
+   this->addItem(this->m_TextToDelete.c_str());
+   }
   this->show();
 }
 //--------------------------------------------------------------------------
@@ -110,6 +112,10 @@ void QGoComboBox::SetItemsFromList(QStringList iDataFromList)
     {
     this->addItems(iDataFromList);
     this->AddItemsEndOfList();
+    }
+  else
+    {
+    this->SetAddText();
     }
 }
 //--------------------------------------------------------------------------
@@ -141,6 +147,13 @@ void QGoComboBox::CheckUserAction(int iIndexActivatedItem)
   int numberitem = this->count();
   int IndexAdd = this->count() - this->m_NumberOfItemsAfterList;
   int IndexDelete = this->count()- 1;
+  //in case there is normally an add and a delete but the list is empty,so
+  //there is temporally only the "add..":
+  if (IndexAdd < 0)
+    {
+    IndexAdd = IndexDelete;
+    }
+
   if(iIndexActivatedItem == IndexAdd)
   {
   emit AddANewOneActivated();
@@ -179,4 +192,11 @@ void QGoComboBox::SetCurrentItem(std::string iItemText)
     {
     this->setCurrentIndex(index);
     }
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoComboBox::SetAddText()
+{
+  this->addItem(this->m_TextToAddANewOne.c_str());
 }

@@ -92,6 +92,10 @@ void QGoColorComboBox::SetItemsFromList(
       }
     this->AddItemsEndOfList();
     }
+  else
+    {
+    this->SetAddText();
+    }
 }
 //--------------------------------------------------------------------------
 

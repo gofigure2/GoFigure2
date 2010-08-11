@@ -111,6 +111,11 @@ protected:
   */
   QStringList GetQStringListNames(NamesDescrContainerType iContainer);
 
+  /**
+  \brief add the "add new one" item at the end of the list
+  */
+  void SetAddText();
+
 protected slots:
   /**
   \brief check which item has been clicked and emit the corresponding signal: addanewone,

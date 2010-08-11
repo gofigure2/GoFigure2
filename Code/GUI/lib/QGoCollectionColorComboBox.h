@@ -56,8 +56,6 @@ public:
   explicit QGoCollectionColorComboBox(QWidget *parent = 0);
   virtual ~QGoCollectionColorComboBox();
 
-  void SetTextToAdd(std::string iCollectionName);
-
 signals:
   void NewCollectionToCreate();
 
@@ -85,6 +83,12 @@ public slots:
 protected slots:
   //mother class method
   virtual void ActionWhenNewOneRequested();
+
+  /**
+  \brief add m_TextToAddANewOne as a new item if the list is empty, if not,
+  replace the actual text with a new one.
+  */
+ // void SetTextToAdd();
 
   };
 
