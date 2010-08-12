@@ -31,7 +31,10 @@ SET( QGOGUILIB_EXAMPLE_SRC
   qgosynchronizedview2dtest
   qgosynchronizedview3dtest
   qgosynchronizedviewmanagertest
-  qgosynchronizedviewguitest
+
+  compareexample
+  compareguiexample
+  comparepipelineexample
 )
 
 #---------------------------------------------------------------------------
@@ -200,13 +203,6 @@ ADD_TEST( qgosynchronizedviewmanagertest
   ${TESTING_DATA_PATH}/Circle3D.mhd
   1
 )
-
-#ADD_TEST( qgosynchronizedviewguitest
-#  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qgosynchronizedviewguitest
-#  ${TESTING_DATA_PATH}/Circle.png
-#  ${TESTING_DATA_PATH}/Circle3D.mhd
-#  1
-#)
 
 ADD_TEST( QGoLevelset2DTest
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/QGoLevelset2DTest
