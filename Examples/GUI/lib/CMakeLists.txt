@@ -36,7 +36,6 @@ SET( QGOGUILIB_EXAMPLE_SRC
   compareguiexample
   comparepipelineexample
   QGoColorComboBoxTest
-  QGoColorComboBoxTest
 )
 
 #---------------------------------------------------------------------------
