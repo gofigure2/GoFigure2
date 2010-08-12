@@ -169,11 +169,6 @@ ADD_TEST( QGoDBCreateBookmarkDialogTest
   1
 )
 
-ADD_TEST( QGoDeleteDBEntityDialogTest
-  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/QGoDeleteDBEntityDialog
-  1
-)
-
 ADD_TEST( qgotabimageview3dwtTest2
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qgotabimageview3dwt2
   ${GOFIGURE2_BINARY_DIR}/Testing/earpax2isl11/earpax2isl11.lsm-PL00-CO00-RO00-ZT00-YT00-XT00-TM0000-ch00-zs0000.png
