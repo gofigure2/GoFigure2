@@ -1,7 +1,7 @@
 /*=========================================================================
-  Author: $Author$  // Author of last commit
-  Version: $Rev$  // Revision of last commit
-  Date: $Date$  // Date of last commit
+  Author: $Author: lydiesouhait $  // Author of last commit
+  Version: $Rev: 1873 $  // Revision of last commit
+  Date: $Date: 2010-07-29 13:12:06 -0400 (Thu, 29 Jul 2010) $  // Date of last commit
 =========================================================================*/
 
 /*=========================================================================
@@ -37,36 +37,24 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
+#include "QGoSelectedColorComboBox.h"
+#include <iostream>
+#include <QColorDialog>
 
-#ifndef __QGoDBCellTypeManager_h
-#define __QGoDBCellTypeManager_h
+QGoSelectedColorComboBox::QGoSelectedColorComboBox(QWidget *parent)
+:QGoColorComboBox("Add a new color...",parent,"Delete colors...")
+{
+}
+//--------------------------------------------------------------------------
 
-#include "QGoDBNameDescEntityManager.h"
-#include "GoDBCellTypeRow.h"
+//--------------------------------------------------------------------------
+QGoSelectedColorComboBox::~QGoSelectedColorComboBox()
+{
+}
+//--------------------------------------------------------------------------
 
-/**
-\class QGoDBCellTypeManager
-\brief the QGoDBCellTypeManager manages the interactions between the user and the database
-for the celltype DBTable.
-*/
-class QGoDBCellTypeManager : public QGoDBNameDescEntityManager
-  {
-  Q_OBJECT
-
-public:
-  explicit QGoDBCellTypeManager (QWidget* iParent = 0);
-
-  ~QGoDBCellTypeManager()
-          {}
-
-protected:
-  GoDBCellTypeRow m_NewCellType;
-  //mother class method
-  virtual void SaveNewEntityInDB();
-
-protected slots:
-  //mother class method
-  virtual void ValidateName(std::string iName, std::string iDescription);
-
-  };
-#endif
+//--------------------------------------------------------------------------
+void QGoSelectedColorComboBox::ActionWhenNewOneRequested()
+{
+  emit AddNewColorActivated();
+}

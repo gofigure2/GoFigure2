@@ -38,54 +38,26 @@
 
 =========================================================================*/
 #include "QGoDBCellTypeManager.h"
-#include "GoDBCellTypeRow.h"
-#include <QMessageBox>
 
 QGoDBCellTypeManager::QGoDBCellTypeManager (QWidget* iParent) :
-  QGoDBEntityManager(iParent, "celltype", 0)
-  {
-  }
+  QGoDBNameDescEntityManager(iParent, "celltype", 0)
+{
+}
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
 void QGoDBCellTypeManager::SaveNewEntityInDB()
 {
-  //this->m_NewCellType.SetField("Name",this->m_NameDescDialog->GetInputTextForName());
-  this->m_NewCellType.SetField("Description",
-                               this->m_NameDescDialog->GetInputTextForDescription());
-
-  std::string CellTypeName = this->m_NewCellType.GetMapValue("Name");
-  if (this->m_NewCellType.DoesThisEntityAlreadyExists(
-        this->m_DatabaseConnectorForNewEntity, CellTypeName) != -1)
+  if(!this->CheckEntityAlreadyExists<GoDBCellTypeRow>(this->m_NewCellType))
     {
-    QMessageBox msgBox;
-    msgBox.setText(
-      tr("This bookmark already exists, its name is: ' %1 ' ").arg(CellTypeName.c_str()));
-    msgBox.exec();
-    }
-  else
-    {
-    this->m_NewCellType.SaveInDB(this->m_DatabaseConnectorForNewEntity);
-    this->m_NameNewEntity = CellTypeName;
-    emit ListEntitiesChanged();
+    this->m_NewCellType.SaveInDB(this->m_DatabaseConnector);
     }
 }
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-void QGoDBCellTypeManager::ValidateName()
+void QGoDBCellTypeManager::ValidateName(std::string iName, std::string iDescription)
 {
-  this->m_NewCellType.SetField("Name", this->m_NameDescDialog->GetInputTextForName());
-  //if (this->DoesThisBookmarkNameAlreadyExistsInTheDB(
-  //this->m_DatabaseConnectorForNewBkmrk,iName))
-  if (this->m_NewCellType.DoesThisNameAlreadyExists(
-        this->m_DatabaseConnectorForNewEntity) != -1)
-    {
-    this->m_NameDescDialog->NameAlreadyExists();
-    }
-  else
-    {
-    this->m_NameDescDialog->accept();
-    this->SaveNewEntityInDB();
-    }
+  this->ValidateNameTemplate<GoDBCellTypeRow>(this->m_NewCellType,iName,
+    iDescription);
 }

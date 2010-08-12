@@ -44,11 +44,16 @@
 #include <map>
 #include <iostream>
 #include <sstream>
-#include "GoDBRow.h"
+#include "GoDBNameDescRow.h"
 #include "ConvertToStringHelper.h"
 #include "vtkMySQLDatabase.h"
 
-class QGOIO_EXPORT GoDBColorRow : public GoDBRow
+/**
+\class GoDBColorRow
+\brief this class manages the map with the keys matching the fields of the
+color DBTable
+*/
+class QGOIO_EXPORT GoDBColorRow : public GoDBNameDescRow
   {
 public:
   GoDBColorRow();
@@ -58,11 +63,11 @@ public:
   /**\brief check if the color already exits in the DB, if yes,
   return the existing ID, if not, save it in the DB and return the
   ID for new created color*/
-  int SaveInDB(vtkMySQLDatabase* DatabaseConnector);
+  virtual int SaveInDB(vtkMySQLDatabase* iDatabaseConnector);
 
 /**\brief check if the color already exits in the database, if yes,
   return the corresponding ID, if not, return -1*/
-  int DoesThisColorAlreadyExists(vtkMySQLDatabase* DatabaseConnector);
+  virtual int DoesThisEntityAlreadyExists(vtkMySQLDatabase* iDatabaseConnector);
 
 protected:
   virtual void InitializeMap();

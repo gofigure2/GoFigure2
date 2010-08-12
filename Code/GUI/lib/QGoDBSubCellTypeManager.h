@@ -41,15 +41,15 @@
 #ifndef __QGoDBSubCellTypeManager_h
 #define __QGoDBSubCellTypeManager_h
 
-#include <QDialog>
-#include <QWidget>
-#include <QTextEdit>
-#include <QMenu>
-#include "vtkMySQLDatabase.h"
-#include "QGoDBEntityManager.h"
+#include "QGoDBNameDescEntityManager.h"
 #include "GoDBSubCellTypeRow.h"
 
-class QGoDBSubCellTypeManager : public QGoDBEntityManager
+/**
+\class QGoDBSubCellTypeManager
+\brief the QGoDBSubCellTypeManager manages the interactions between the user and the database
+for the SubCellularType DBTable.
+*/
+class QGoDBSubCellTypeManager : public QGoDBNameDescEntityManager
   {
   Q_OBJECT
 
@@ -61,12 +61,12 @@ public:
 
 protected:
   GoDBSubCellTypeRow m_NewSubCellType;
-
-protected slots:
-
+  //mother class method
   virtual void SaveNewEntityInDB();
 
-  virtual void ValidateName();
+protected slots:
+  //mother class method
+  virtual void ValidateName(std::string iName, std::string iDescription);
 
   };
 #endif

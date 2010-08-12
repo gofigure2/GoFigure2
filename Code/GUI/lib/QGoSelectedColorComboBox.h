@@ -1,7 +1,7 @@
 /*=========================================================================
-  Author: $Author$  // Author of last commit
-  Version: $Rev$  // Revision of last commit
-  Date: $Date$  // Date of last commit
+  Author: $Author: lsouhait $  // Author of last commit
+  Version: $Rev: 1869 $  // Revision of last commit
+  Date: $Date: 2010-07-29 11:24:36 -0400 (Thu, 29 Jul 2010) $  // Date of last commit
 =========================================================================*/
 
 /*=========================================================================
@@ -38,35 +38,24 @@
 
 =========================================================================*/
 
-#ifndef __QGoDBCellTypeManager_h
-#define __QGoDBCellTypeManager_h
+#ifndef __QGoSelectedColorComboBox_h
+#define __QGoSelectedColorComboBox_h
 
-#include "QGoDBNameDescEntityManager.h"
-#include "GoDBCellTypeRow.h"
+#include "QGoColorComboBox.h"
 
-/**
-\class QGoDBCellTypeManager
-\brief the QGoDBCellTypeManager manages the interactions between the user and the database
-for the celltype DBTable.
-*/
-class QGoDBCellTypeManager : public QGoDBNameDescEntityManager
+class QGOGUILIB_EXPORT QGoSelectedColorComboBox : public QGoColorComboBox
   {
   Q_OBJECT
-
 public:
-  explicit QGoDBCellTypeManager (QWidget* iParent = 0);
+  explicit QGoSelectedColorComboBox(QWidget *parent = 0);
+  virtual ~QGoSelectedColorComboBox();
 
-  ~QGoDBCellTypeManager()
-          {}
-
-protected:
-  GoDBCellTypeRow m_NewCellType;
-  //mother class method
-  virtual void SaveNewEntityInDB();
-
+signals:
+  void AddNewColorActivated();
+ 
 protected slots:
-  //mother class method
-  virtual void ValidateName(std::string iName, std::string iDescription);
+  virtual void ActionWhenNewOneRequested();
 
   };
+
 #endif

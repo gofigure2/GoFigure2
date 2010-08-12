@@ -1,7 +1,7 @@
 /*=========================================================================
-  Author: $Author$  // Author of last commit
-  Version: $Rev$  // Revision of last commit
-  Date: $Date$  // Date of last commit
+  Author: $Author: lsouhait $  // Author of last commit
+  Version: $Rev: 1906 $  // Revision of last commit
+  Date: $Date: 2010-08-06 15:22:03 -0400 (Fri, 06 Aug 2010) $  // Date of last commit
 =========================================================================*/
 
 /*=========================================================================
@@ -38,72 +38,53 @@
 
 =========================================================================*/
 
-#ifndef __QGoDBBookmarkManager_h
-#define __QGoDBBookmarkManager_h
+#ifndef __QGoDBColorManager_h
+#define __QGoDBColorManager_h
 
-#include "GoDBCoordinateRow.h"
-#include "GoDBBookmarkRow.h"
-
-#include "QGoGUILibConfigure.h"
 #include "QGoDBNameDescEntityManager.h"
+#include "GoDBColorRow.h"
+#include "QGoDeleteFromListDialog.h"
 
 /**
-\class QGoDBBookmarkManager
-\brief the QGoDBBookmarkManager manages the interactions between the user and the database
-for the Bookmark DBTable.
+\class QGoDBColorManager
+\brief the QGoDBColorManager manages the interactions between the user and the database
+for the color DBTable (add a new one, delete...).
 */
-class QGOGUILIB_EXPORT QGoDBBookmarkManager :
-  public QGoDBNameDescEntityManager
+class QGoDBColorManager : public QGoDBNameDescEntityManager
   {
   Q_OBJECT
 
 public:
-  explicit QGoDBBookmarkManager(QWidget* iParent = 0,
-                                int iImgSessionID = 0);
+  explicit QGoDBColorManager (QWidget* iParent = 0);
+  typedef  QGoDeleteFromListDialog::ItemColorComboboxData ItemColorComboboxData;
 
-  ~QGoDBBookmarkManager();
+  ~QGoDBColorManager();
+  /** 
+  \brief ask the user the color he wants, the name, description of the new color and
+  saves it in the database.
+  \return ItemColorComboboxData with the data for the new color saved or 
+  with the name of the color empty if the user canceled the "add new"
+  */
+  ItemColorComboboxData AddANewColor(vtkMySQLDatabase* iDatabaseConnector);
+  virtual bool DeleteEntity(vtkMySQLDatabase* iDatabaseConnector);
 
   /**
-  \brief execute the dialog asking the user to enter a name and a
-  description, validates the name, set the m_DatabaseConnectorForNewBkmrk
-  and save the bookmark in the DB
-  \param[in] iCoordID ID for the coordinate to be saved in the bookmark table
+  \brief get the list of the existing colors from the database
+  \return a list of pair with the name and the QColor of each color
   */
-  void AddABookmark(int iCoordID, vtkMySQLDatabase* iDatabaseConnector);
-
-  /** 
-  \brief return the coordinate for the bookmark with the name iName
-  \param[in] iName name of the bookmark for which we want to get the coordinate
-  \param[out] GoDBCoordinateRow containing the data for the coordinate which name is iName
-  */
-  GoDBCoordinateRow GetCoordinatesForBookmark(
-    vtkMySQLDatabase* iDatabaseConnector, std::string iName);
-
-  /** \brief delete the bookmarks from the database from a list the user 
-  selects and send a signal to tell that the list has changed*/
-  void DeleteBookmark(vtkMySQLDatabase* iDatabaseConnector);
+  std::list<ItemColorComboboxData> GetListExistingColors(
+    vtkMySQLDatabase* iDatabaseConnector);
 
 protected:
-  GoDBBookmarkRow              m_NewBookmark;
-  int                          m_CoordIDForNewBookmark;
+  GoDBColorRow          m_NewColor;
+  ItemColorComboboxData m_NewColorData;
+  //mother class method
+  virtual void SaveNewEntityInDB();
 
+  
 protected slots:
   //mother class method
-  void SaveNewEntityInDB();
-
-  /** 
-  \brief get the coordid for the bookmark with the name
-  iName
-  \param[in] iName Name of the bookmark
-  \param[out] int ID for the coordinate in the bookmark DBTable
-  */
-  int GetCoordIDForBookmark(vtkMySQLDatabase* iDatabaseConnector,
-                            std::string iName);
-  //mother class method
-  void ValidateName(std::string iName, std::string iDescription);
-
-signals:
-  void ListBookmarksChanged();
+  virtual void ValidateName(std::string iName, std::string iDescription);
 
   };
 #endif

@@ -55,8 +55,8 @@ public:
   virtual int SaveInDB(vtkMySQLDatabase* DatabaseConnector);
   virtual int DoesThisEntityAlreadyExists(
     vtkMySQLDatabase* DatabaseConnector);
-  virtual int DoesThisEntityAlreadyExists(
-    vtkMySQLDatabase* DatabaseConnector, std::string& ioName);
+  //virtual int DoesThisEntityAlreadyExists(
+   // vtkMySQLDatabase* DatabaseConnector, std::string& ioName);
 
 protected:
 

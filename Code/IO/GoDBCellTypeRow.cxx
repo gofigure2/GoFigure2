@@ -64,7 +64,7 @@ int GoDBCellTypeRow::DoesThisEntityAlreadyExists(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-int GoDBCellTypeRow::DoesThisEntityAlreadyExists(
+/*int GoDBCellTypeRow::DoesThisEntityAlreadyExists(
   vtkMySQLDatabase* DatabaseConnector, std::string& ioName)
 {
   int ID = DoesThisNameAlreadyExists(DatabaseConnector);
@@ -75,17 +75,18 @@ int GoDBCellTypeRow::DoesThisEntityAlreadyExists(
   ioName = ReturnOnlyOneValue(DatabaseConnector, this->m_TableName, "Name",
                               this->m_TableIDName, ConvertToString<int>(ID));
   return ID;
-}
+}*/
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-int GoDBCellTypeRow::SaveInDB(vtkMySQLDatabase* DatabaseConnector)
+int GoDBCellTypeRow::SaveInDB(vtkMySQLDatabase* iDatabaseConnector)
 {
-  int CellTypeID = this->DoesThisEntityAlreadyExists(DatabaseConnector);
+  /*int CellTypeID = this->DoesThisEntityAlreadyExists(DatabaseConnector);
   if (CellTypeID == -1)
     {
     CellTypeID = AddOnlyOneNewObjectInTable<GoDBCellTypeRow>(DatabaseConnector,
                                                              this->m_TableName, *this, this->m_TableIDName);
     }
-  return CellTypeID;
+  return CellTypeID;*/
+  return GoDBNameDescRow::SaveInDBTemplate<GoDBCellTypeRow>(iDatabaseConnector,*this);
 }

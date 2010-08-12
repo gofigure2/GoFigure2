@@ -49,12 +49,13 @@ SET( QGoGUILIB_SRC
   ConversionLsmToMegaThread.cxx
   QGoDBBookmarkManager.cxx
   QTextEditChild.cxx
-  QNameDescriptionInputDialog.cxx
+  QGoNameDescriptionInputDialog.cxx
   QGoDockWidgetStatus.cxx
-  QGoDeleteDBEntityDialog.cxx
-  QGoDBEntityManager.cxx
+  QGoDeleteFromListDialog.cxx
+  QGoDBNameDescEntityManager.cxx
   QGoDBCellTypeManager.cxx
   QGoDBSubCellTypeManager.cxx
+  QGoDBColorManager.cxx
   QGoTraceManualEditingWidget.cxx
   QGoTraceManualEditingDockWidget.cxx
   QGoDBInitializationWizard.cxx
@@ -62,6 +63,10 @@ SET( QGoGUILIB_SRC
   QGoDBInitCreateAuthorsPage.cxx
   QGoDBInitCreateMicroscopePage.cxx
   QGoOneClickSegmentationDockWidget.cxx
+  QGoColorComboBox.cxx
+  QGoSelectedColorComboBox.cxx
+  QGoCollectionColorComboBox.cxx
+  QGoComboBox.cxx
 
   QGoSynchronizedView.cxx
   QGoSynchronizedView2D.cxx
@@ -134,12 +139,13 @@ SET( QGoGUILIB_HDRS
   ConversionLsmToMegaThread.h
   QGoDBBookmarkManager.h
   QTextEditChild.h
-  QNameDescriptionInputDialog.h
+  QGoNameDescriptionInputDialog.h
   QGoDockWidgetStatus.h
-  QGoDeleteDBEntityDialog.h
-  QGoDBEntityManager.h
+  QGoDeleteFromListDialog.h
+  QGoDBNameDescEntityManager.h
   QGoDBCellTypeManager.h
   QGoDBSubCellTypeManager.h
+  QGoDBColorManager.h
   QGoTraceManualEditingWidget.h
   QGoTraceManualEditingDockWidget.h
   QGoOneClickSegmentationDockWidget.h
@@ -157,6 +163,10 @@ SET( QGoGUILIB_HDRS
   QGoSynchronizedView3DCallbacks.h
   QGoSynchronizedViewManager.h
   QGoSynchronizedViewMainWindow.h
+  QGoColorComboBox.h
+  QGoSelectedColorComboBox.h
+  QGoCollectionColorComboBox.h
+  QGoComboBox.h
 )
 
 #---------------------------------------------------------------------------

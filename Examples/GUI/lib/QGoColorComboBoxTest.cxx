@@ -1,14 +1,14 @@
 /*=========================================================================
-  Author: $Author$  // Author of last commit
-  Version: $Rev$  // Revision of last commit
-  Date: $Date$  // Date of last commit
+  Author: $Author: lydiesouhait $  // Author of last commit
+  Version: $Rev: 1803 $  // Revision of last commit
+  Date: $Date: 2010-07-15 13:48:08 -0400 (Thu, 15 Jul 2010) $  // Date of last commit
 =========================================================================*/
 
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -37,36 +37,57 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
+#include <QApplication>
+#include <QTimer>
+#include <iostream>
 
-#ifndef __QGoDBCellTypeManager_h
-#define __QGoDBCellTypeManager_h
+#include "QGoSelectedColorComboBox.h"
+#include "QGoPrintDatabase.h"
 
-#include "QGoDBNameDescEntityManager.h"
-#include "GoDBCellTypeRow.h"
+int main(int argc, char * argv[])
+{
+  if (argc != 3)
+    {
+    std::cerr << "QGoColorComboTest requires 2 arguments:" << std::endl;
+    std::cerr << "1-test (boolean)" << std::endl;
+    return EXIT_FAILURE;
+    }
 
-/**
-\class QGoDBCellTypeManager
-\brief the QGoDBCellTypeManager manages the interactions between the user and the database
-for the celltype DBTable.
-*/
-class QGoDBCellTypeManager : public QGoDBNameDescEntityManager
-  {
-  Q_OBJECT
+  QApplication app(argc, argv);
+  QCoreApplication::setOrganizationName("MegasonLab");
+  QCoreApplication::setOrganizationDomain("http://gofigure2.sourceforge.net");
 
-public:
-  explicit QGoDBCellTypeManager (QWidget* iParent = 0);
+  QGoSelectedColorComboBox* win = new QGoSelectedColorComboBox;
+  QGoPrintDatabase* DBTables = new QGoPrintDatabase;
+  DBTables->SetDatabaseVariables("gofiguredatabase", "localhost", "gofigure",
+    "gofigure", atoi(argv[1]), argv[2]);
+  //win->setItemsWithColorFromDB(DBTables->GetColorComboBoxInfofromDB());
+  //DBTables->SetColorComboBoxInfofromDB();
+  //QGoPrintDatabase* win = new QGoPrintDatabase;
+  // win.FillTableFromDatabase(argv[1],"localhost","gofigure",
+  //    "gofigure",atoi(argv[2]), argv[3]);
+  //win->SetDatabaseVariables(
+  //  "gofiguredatabase", "localhost", "gofigure",
+ //   "gofigure", 8, "LSM_Converter");
+ // win->FillTableFromDatabase(2);
 
-  ~QGoDBCellTypeManager()
-          {}
+  win->show();
 
-protected:
-  GoDBCellTypeRow m_NewCellType;
-  //mother class method
-  virtual void SaveNewEntityInDB();
+/*  QTimer* timer = new QTimer;
+  timer->setSingleShot(true);
+  QObject::connect(timer, SIGNAL(timeout()), win, SLOT(close()));
 
-protected slots:
-  //mother class method
-  virtual void ValidateName(std::string iName, std::string iDescription);
+  if (atoi(argv[1]) == 0)
+    {
+    timer->start(1000);
+    }*/
 
-  };
-#endif
+  int output = app.exec();
+
+  app.closeAllWindows();
+
+  delete win;
+ // delete timer;
+
+  return output;
+}

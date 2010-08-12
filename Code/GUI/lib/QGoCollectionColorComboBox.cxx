@@ -1,7 +1,7 @@
 /*=========================================================================
-  Author: $Author$  // Author of last commit
-  Version: $Rev$  // Revision of last commit
-  Date: $Date$  // Date of last commit
+  Author: $Author: lydiesouhait $  // Author of last commit
+  Version: $Rev: 1873 $  // Revision of last commit
+  Date: $Date: 2010-07-29 13:12:06 -0400 (Thu, 29 Jul 2010) $  // Date of last commit
 =========================================================================*/
 
 /*=========================================================================
@@ -37,70 +37,48 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#include "QGoNameDescriptionInputDialog.h"
-#include <QLabel>
-#include <QMessageBox>
-#include "QTextEditChild.h"
+#include "QGoCollectionColorComboBox.h"
+#include <iostream>
 
-QNameDescriptionInputDialog::QNameDescriptionInputDialog(QWidget* iParent,
-                                                         QString iEntityName) : QDialog(iParent)
-  {
-  this->setupUi(this);
-  this->m_EntityName = iEntityName;
-  this->setWindowTitle(tr("Create a %1").arg(this->m_EntityName));
-  this->EntityLabel->setText(tr("new %1 you want to save:").arg(iEntityName));
-  this->NameLineEdit->setMaxLength(45);
-  this->m_DescriptionTextEdit = new QTextEditChild(this, 1000);
-  this->formLayout->addRow("Description:", this->m_DescriptionTextEdit);
-
-  QObject::connect(this->NameDescriptionButtonBox, SIGNAL(accepted()),
-                   this, SLOT(ValidationRequested()));
-  }
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-QNameDescriptionInputDialog::~QNameDescriptionInputDialog()
-  {
-  }
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-std::string QNameDescriptionInputDialog::GetInputTextForName()
+QGoCollectionColorComboBox::QGoCollectionColorComboBox(QWidget *parent)
+:QGoColorComboBox("Add a new mesh...",parent)
 {
-  return this->NameLineEdit->text().toStdString();
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-std::string QNameDescriptionInputDialog::GetInputTextForDescription()
+QGoCollectionColorComboBox::~QGoCollectionColorComboBox()
 {
-  return this->m_DescriptionTextEdit->toPlainText().toStdString();
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QNameDescriptionInputDialog::ValidationRequested()
+void QGoCollectionColorComboBox::ActionWhenNewOneRequested()
 {
-  if (this->GetInputTextForName().empty())
-    {
-    QMessageBox msgBox;
-    msgBox.setText(
-      tr("Please enter the name for the %1 to add").arg(this->m_EntityName));
-    msgBox.exec();
-    }
-  else
-    {
-    emit NewNameDescription(
-      this->GetInputTextForName(),this->GetInputTextForDescription());
-    }
+  emit NewCollectionToCreate();
 }
-//-------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 
-//-------------------------------------------------------------------------
-void QNameDescriptionInputDialog::NameAlreadyExists()
+//--------------------------------------------------------------------------
+void QGoCollectionColorComboBox::InitializeTheList(
+  std::list<ItemColorComboboxData> iDataFromList, std::string iCollectionName)
 {
-  QMessageBox msgBox;
-  msgBox.setText(
-    tr("This name already exists, please choose another one"));
-  msgBox.exec();
+  this->SetItemsFromList(iDataFromList,iCollectionName);
+  //if it is the 1rst time for the list to be displayed, there has to be an activated
+  //item:
+  //by default, the one selected by the combobox is the one to stick to:
+  this->EmitActivatedItem(this->currentIndex());
 }
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoCollectionColorComboBox::SetItemsFromList(
+  std::list<ItemColorComboboxData> iDataFromList, std::string iCollectionName)
+{
+  QString TextForNewOne(tr("Add a new %1 ...").arg(iCollectionName.c_str()));
+  this->m_TextToAddANewOne = TextForNewOne.toStdString();
+  QGoColorComboBox::SetItemsFromList(iDataFromList);
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------

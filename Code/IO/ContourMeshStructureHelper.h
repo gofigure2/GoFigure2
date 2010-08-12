@@ -71,11 +71,11 @@ typedef boost::multi_index::multi_index_container<
     boost::multi_index::hashed_non_unique<
       boost::multi_index::tag<TraceID>,
       BOOST_MULTI_INDEX_MEMBER(ContourMeshStructure, unsigned int, TraceID)
-      >,
+      >/*,
     boost::multi_index::hashed_non_unique<
       boost::multi_index::tag<CollectionID>,
       BOOST_MULTI_INDEX_MEMBER(ContourMeshStructure, unsigned int, CollectionID)
-      >
+      >*/
     >
   > ContourMeshStructureMultiIndexContainer;
 
@@ -87,13 +87,13 @@ typedef boost::multi_index::multi_index_container<
     >
   > ContourMeshStructureTraceIDViewContainer;
 
-typedef boost::multi_index::multi_index_container<
+/*typedef boost::multi_index::multi_index_container<
   ContourMeshStructure*,
   boost::multi_index::indexed_by<
     boost::multi_index::hashed_non_unique<
       BOOST_MULTI_INDEX_MEMBER(ContourMeshStructure, unsigned int, CollectionID)>
     >
-  > ContourMeshStructureCollectionIDViewContainer;
+  > ContourMeshStructureCollectionIDViewContainer;*/
 
 typedef boost::multi_index::multi_index_container<
   ContourMeshStructure*,

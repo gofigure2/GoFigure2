@@ -1142,11 +1142,12 @@ ValidateContour(const int& iId)
     // get color from the dock widget
     double r, g, b;
     /// \todo to be fixed!
-    QColor color; //= m_ManualSegmentationDockWidget->GetValidatedColor();
-    color.getRgbF(&r, &g, &b);
+    //QColor color; //= m_ManualSegmentationDockWidget->GetValidatedColor();
+    //iColor.getRgbF(&r, &g, &b);
 
     vtkProperty* contour_property = vtkProperty::New();
     contour_property->SetRepresentationToWireframe();
+    /** \todo: how to get the color*/
     contour_property->SetColor(r, g, b);
 
     // Compute Bounding Box

@@ -1,7 +1,7 @@
 /*=========================================================================
-  Author: $Author$  // Author of last commit
-  Version: $Rev$  // Revision of last commit
-  Date: $Date$  // Date of last commit
+  Author: $Author: nicolasrannou $  // Author of last commit
+  Version: $Rev: 1803 $  // Revision of last commit
+  Date: $Date: 2010-07-15 13:48:08 -0400 (Thu, 15 Jul 2010) $  // Date of last commit
 =========================================================================*/
 
 /*=========================================================================
@@ -42,7 +42,7 @@
 #include <QMessageBox>
 #include "QTextEditChild.h"
 
-QNameDescriptionInputDialog::QNameDescriptionInputDialog(QWidget* iParent,
+QGoNameDescriptionInputDialog::QGoNameDescriptionInputDialog(QWidget* iParent,
                                                          QString iEntityName) : QDialog(iParent)
   {
   this->setupUi(this);
@@ -59,27 +59,27 @@ QNameDescriptionInputDialog::QNameDescriptionInputDialog(QWidget* iParent,
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-QNameDescriptionInputDialog::~QNameDescriptionInputDialog()
+QGoNameDescriptionInputDialog::~QGoNameDescriptionInputDialog()
   {
   }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-std::string QNameDescriptionInputDialog::GetInputTextForName()
+std::string QGoNameDescriptionInputDialog::GetInputTextForName()
 {
   return this->NameLineEdit->text().toStdString();
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-std::string QNameDescriptionInputDialog::GetInputTextForDescription()
+std::string QGoNameDescriptionInputDialog::GetInputTextForDescription()
 {
   return this->m_DescriptionTextEdit->toPlainText().toStdString();
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QNameDescriptionInputDialog::ValidationRequested()
+void QGoNameDescriptionInputDialog::ValidationRequested()
 {
   if (this->GetInputTextForName().empty())
     {
@@ -97,7 +97,7 @@ void QNameDescriptionInputDialog::ValidationRequested()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QNameDescriptionInputDialog::NameAlreadyExists()
+void QGoNameDescriptionInputDialog::NameAlreadyExists()
 {
   QMessageBox msgBox;
   msgBox.setText(

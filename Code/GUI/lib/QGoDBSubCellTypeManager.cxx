@@ -38,11 +38,9 @@
 
 =========================================================================*/
 #include "QGoDBSubCellTypeManager.h"
-#include "GoDBSubCellTypeRow.h"
-#include <QMessageBox>
 
 QGoDBSubCellTypeManager::QGoDBSubCellTypeManager (QWidget* iParent) :
-  QGoDBEntityManager(iParent, "subcellulartype", 0)
+  QGoDBNameDescEntityManager(iParent, "subcellulartype", 0)
   {
   }
 //------------------------------------------------------------------------------
@@ -50,42 +48,16 @@ QGoDBSubCellTypeManager::QGoDBSubCellTypeManager (QWidget* iParent) :
 //------------------------------------------------------------------------------
 void QGoDBSubCellTypeManager::SaveNewEntityInDB()
 {
-  //this->m_NewCellType.SetField("Name",this->m_NameDescDialog->GetInputTextForName());
-  this->m_NewSubCellType.SetField("Description",
-                                  this->m_NameDescDialog->GetInputTextForDescription());
-
-  std::string SubCellTypeName = this->m_NewSubCellType.GetMapValue("Name");
-  if (this->m_NewSubCellType.DoesThisEntityAlreadyExists(
-        this->m_DatabaseConnectorForNewEntity, SubCellTypeName) != -1)
+  if(!this->CheckEntityAlreadyExists<GoDBSubCellTypeRow>(this->m_NewSubCellType))
     {
-    QMessageBox msgBox;
-    msgBox.setText(
-      tr("This subcelltype already exists, its name is: ' %1 ' ").arg(SubCellTypeName.c_str()));
-    msgBox.exec();
-    }
-  else
-    {
-    this->m_NewSubCellType.SaveInDB(this->m_DatabaseConnectorForNewEntity);
-    this->m_NameNewEntity = SubCellTypeName;
-    emit ListEntitiesChanged();
+    this->m_NewSubCellType.SaveInDB(this->m_DatabaseConnector);
     }
 }
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-void QGoDBSubCellTypeManager::ValidateName()
+void QGoDBSubCellTypeManager::ValidateName(std::string iName, std::string iDescription)
 {
-  this->m_NewSubCellType.SetField("Name", this->m_NameDescDialog->GetInputTextForName());
-  //if (this->DoesThisBookmarkNameAlreadyExistsInTheDB(
-  //this->m_DatabaseConnectorForNewBkmrk,iName))
-  if (this->m_NewSubCellType.DoesThisNameAlreadyExists(
-        this->m_DatabaseConnectorForNewEntity) != -1)
-    {
-    this->m_NameDescDialog->NameAlreadyExists();
-    }
-  else
-    {
-    this->m_NameDescDialog->accept();
-    this->SaveNewEntityInDB();
-    }
+  this->ValidateNameTemplate<GoDBSubCellTypeRow>(this->m_NewSubCellType, iName,
+    iDescription);
 }

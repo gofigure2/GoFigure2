@@ -53,7 +53,7 @@ struct QGOIO_EXPORT ContourMeshStructure
   unsigned int TraceID;
   vtkActor* Actor;
   vtkPolyData* Nodes;
-  unsigned int CollectionID;
+  //unsigned int CollectionID;
   unsigned int TCoord;
   bool Highlighted;
   bool Visible;
@@ -63,13 +63,23 @@ struct QGOIO_EXPORT ContourMeshStructure
   ContourMeshStructure();
 
   // Obsolete...
-  ContourMeshStructure(const unsigned int & iTraceID, vtkActor * iActor,
+  /*ContourMeshStructure(const unsigned int & iTraceID, vtkActor * iActor,
                        vtkPolyData * iNodes, const unsigned int & iCollectionID, const unsigned int & iT,
                        const bool & iHighlighted, const double & r, const double & g, const double & b,
                        const double & alpha, const int & iDir);
 
   ContourMeshStructure(const unsigned int & iTraceID, vtkActor * iActor,
                        vtkPolyData * iNodes, const unsigned int & iCollectionID, const unsigned int & iT,
+                       const bool & iHighlighted, const bool & iVisible, const double & r,
+                       const double & g, const double & b, const double & alpha, const int & iDir);*/
+
+  ContourMeshStructure(const unsigned int & iTraceID, vtkActor * iActor,
+                       vtkPolyData * iNodes, const unsigned int & iT,
+                       const bool & iHighlighted, const double & r, const double & g, const double & b,
+                       const double & alpha, const int & iDir);
+
+  ContourMeshStructure(const unsigned int & iTraceID, vtkActor * iActor,
+                       vtkPolyData * iNodes, const unsigned int & iT,
                        const bool & iHighlighted, const bool & iVisible, const double & r,
                        const double & g, const double & b, const double & alpha, const int & iDir);
 
@@ -81,7 +91,7 @@ struct QGOIO_EXPORT ContourMeshStructure
     os << "TraceID " << c.TraceID << std::endl;
     os << "Actor " << c.Actor << std::endl;
     os << "Nodes " << c.Nodes << std::endl;
-    os << "CollectionID " << c.CollectionID << std::endl;
+    //os << "CollectionID " << c.CollectionID << std::endl;
     os << "TCoord " << c.TCoord << std::endl;
     os << "Highlighted " << c.Highlighted << std::endl;
     os << "Visible " << c.Visible << std::endl;
@@ -97,7 +107,7 @@ struct QGOIO_EXPORT ContourMeshStructure
 struct TraceID {};
 struct Actor {};
 struct Nodes {};
-struct CollectionID {};
+//struct CollectionID {};
 struct TCoord {};
 #endif
 

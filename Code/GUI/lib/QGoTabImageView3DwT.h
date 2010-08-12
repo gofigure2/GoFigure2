@@ -46,7 +46,6 @@
 #include "itkMegaCaptureReader.h"
 #include "ContourMeshStructureHelper.h"
 #include "QGoPrintDatabase.h"
-#include "QGoTraceManualEditingDockWidget.h"
 
 #include "GoFigureMeshAttributes.h"
 
@@ -62,7 +61,6 @@ class QGoManualSegmentationDockWidget;
 class QGoPrintDatabase;
 class QGoOneClickSegmentationDockWidget;
 class QGoManualSegmentationSettingsDialog;
-class QGoTraceManualEditingWidget;
 
 #if defined ENABLEFFMPEG || defined ENABLEAVI
 class QGoVideoRecorder;
@@ -102,6 +100,7 @@ public:
 
   typedef QGoTabElementBase::QGoDockWidgetStatusPair QGoDockWidgetStatusPair;
   typedef QGoPrintDatabase::NamesDescrContainerType  NamesDescrContainerType;
+  typedef QGoPrintDatabase::IDWithColorData          IDWithColorData;
 
   /**
    * \brief
@@ -196,9 +195,10 @@ public:
                         bool NewMesh = true);
 
   void AddMeshFromNodes(const unsigned int& iMeshID, vtkPolyData* iNodes,
-                        const double& iR, const double& iG, const double& iB, const double& iA,
                         const bool& iHighlighted, const unsigned int& iTCoord, const bool& iSaveInDataBase,
-                        bool NewMesh = true);
+                        bool NewMesh = true,
+                        const double& iR = 0, const double& iG = 0, const double& iB = 0, const double& iA = 0
+                        );
 
   int GetSliceViewXY() const;
   int GetSliceViewXZ() const;
@@ -228,8 +228,7 @@ public slots:
   void SetSliceView();
 
   void GenerateContourRepresentationProperties();
-  void GoToDefaultMenu(
-    std::string iTracename, std::string iCollectionName);
+  void GoToDefaultMenu();
 
 #if defined (ENABLEFFMPEG) || defined (ENABLEAVI)
   void SetRendererWindow(int);
@@ -353,23 +352,6 @@ public slots:
    */
   void ChangeContourRepresentationProperty();
 
-  /** \brief Get the info for the new created collection from the collectionIDcombobox,
-  pass them to the database to be saved in and update the list of collection IDs
-  in the visu dock widget*/
-  void UpdateDBAndCollectionIDComboBoxForANewCreatedCollection();
-  //void PassInfoForDBFromCollectionIDComboBox();
-
-  /** \brief Get the info for the current selected color from the trace manual editing
-  widget and pass it to the database*/
-  void PassInfoForDBForCurrentSelectedColor();
-  /** \brief Get the current selected collectionid from the trace manual editing widget
-  and update the currentCollectionID in the table widget*/
-  void PassInfoForCurrentCollectionID();
-
-  /** \brief Get the current selected celltype and subcelltype from the trace manual editing widget
-  and update the current celltype and sub celltype in the table widget*/
-  void PassInfoForDBForCurrentSelectedCellTypeAndSubCellType();
-
   void Change3DPerspectiveToAxial();
   void Change3DPerspectiveToCoronal();
   void Change3DPerspectiveToSagittal();
@@ -424,9 +406,6 @@ protected:
   /// Useful?
   vtkPoints* m_SeedsWorldPosition;
 
-  QGoTraceManualEditingDockWidget* m_TraceManualEditingDockWidget;
-  //QDockWidget*                 m_test;
-
   /// \todo remove m_FFMPEGWriter and m_AVIWriter from this class
   #if defined ENABLEFFMPEG || defined ENABLEAVI
   QGoVideoRecorder* m_VideoRecorderWidget;
@@ -447,9 +426,10 @@ protected:
    * \todo Alpha component is not used at all, it is assumed to be opaque
    */
   virtual int ValidateContour(const int& iContourID, const int& iDir,
-                               const double& iR, const double& iG, const double& iB, const double& iA,
-                               const bool& iHighlighted, const unsigned int& iTCoord, const bool& iSaveInDataBase,
-                               vtkPolyData* contour, vtkPolyData* contour_nodes);
+                              const bool& iHighlighted, const unsigned int& iTCoord, const bool& iSaveInDataBase,
+                              vtkPolyData* contour, vtkPolyData* contour_nodes,
+                              const double& iR = 0, const double& iG = 0, const double& iB = 0, const double& iA = 0
+                              );
 
   /**
    * @param[in] iContourID
@@ -465,10 +445,10 @@ protected:
   virtual int SavePolyDataAsContourInDB(vtkPolyData* iView,
                                         const int& iContourID,
                                         const int& iDir,
-                                        const double& iR,
-                                        const double& iG,
-                                        const double& iB,
-                                        const double& iA,
+                                        //const double& iR,
+                                       // const double& iG,
+                                        //const double& iB,
+                                        //const double& iA,
                                         const bool& iHighlighted,
                                         const unsigned int& iTCoord,
                                         const bool& iSaveInDataBase);
@@ -487,8 +467,8 @@ protected:
    * \todo Alpha component is not used at all, it is assumed to be opaque
    */
   virtual int SavePolyDataAsMeshInDB(vtkPolyData* iView, const int& iMeshID, const int& iDir,
-                                     const double& iR, const double& iG, const double& iB, const double& iA,
                                      const bool& iHighlighted, const unsigned int& iTCoord, const bool& iSaveInDataBase,
+                                     const double& iR = 0, const double& iG = 0, const double& iB = 0, const double& iA = 0,
                                      bool NewMesh = true);
 
   void GetBackgroundColorFromImageViewer();
@@ -498,7 +478,7 @@ protected:
   void CreateBookmarkActions();
   void CreateModeActions();
   void CreateVisuDockWidget();
-  void CreateSettingAndDialogSegmentationWidgets();
+  //void CreateSettingAndDialogSegmentationWidgets();
   void CreateManualSegmentationdockWidget();
   void CreateOneClickSegmentationDockWidget();
   void CreateDataBaseTablesConnection();
@@ -542,15 +522,13 @@ protected:
                                    std::string iCurrentTrace,
                                    QColor iSelectedColor);
 
-  void GetTraceColor(double* rgba);
+  //void GetTraceColor(double* rgba);
 
 protected slots:
   void AddBookmark();
   void GetTheRelatedToDBActions();
   void GetTheOpenBookmarksActions();
   void OpenExistingBookmark();
-  void SetTheCurrentCellType();
-  void SetTheCurrentSubCellType();
   void ShowTraceDockWidgetForContour(bool ManualSegVisible);
   void ShowTraceDockWidgetForMesh(bool OneClickVisible);
   void ChangeColorOfSelectedTracesManager(std::pair<std::list<int>, QColor>);
