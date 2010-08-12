@@ -1014,7 +1014,8 @@ QGoPrintDatabase::IDWithColorData QGoPrintDatabase::SaveMeshFromVisuInDB(
                            atoi(mesh_row.GetMapValue("Blue").c_str()),
                            atoi(mesh_row.GetMapValue("Alpha").c_str()));*/
     MeshData.first = atoi(mesh_row.GetMapValue("MeshID").c_str());
-    MeshData.second = this->GetQColorFromTraceRow<GoDBMeshRow>(mesh_row);
+    //MeshData.second = this->GetQColorFromTraceRow<GoDBMeshRow>(mesh_row);
+    MeshData.second = this->m_SelectedColorData.second;
     }
 
   this->GetTraceRowFromVisu<GoDBMeshRow>(iXCoordMin, iYCoordMin,
@@ -1661,8 +1662,10 @@ void QGoPrintDatabase::UpdateInfoForTracesToBeDeletedAsCollectionOf(
         }
       //update everything for the collection of: exp: for contour if the trace deleted is a mesh:
       CurrentlyUsedTraceData = this->GetTraceInfoStructure(CurrentlyUsedTraceData->CollectionOf);
+      this->OpenDBConnection();
       CurrentlyUsedTraceData->CollectionOfTraces->UpdateCollectionIDOfSelectedTraces(
         TracesWithCollectionToBeNull, 0, this->m_DatabaseConnector);
+      this->CloseDBConnection();
       QColor Color(255, 255, 255, 255);
       CurrentlyUsedTraceData->Table->UpdateIDs(0, CurrentlyUsedTraceData->CollectionNameID, Color,
                                                CurrentlyUsedTraceData->TraceNameID, TracesWithCollectionToBeNull);
