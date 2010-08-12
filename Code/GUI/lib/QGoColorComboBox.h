@@ -63,13 +63,13 @@ public:
   
   /**
   \brief call the method setItemsWithColorFromList and send a signal with the current index.
-  \param[in] iDataFromList contains the names and the QColor of the items to be displayed 
+  \param[in] iDataFromList contains the names and the QColor of the items to be displayed
   in the combobox
   \overload from the mother class method
   */
-  void InitializeTheList(std::list<ItemColorComboboxData> iDataFromList);
+  virtual void InitializeTheList(std::list<ItemColorComboboxData> iDataFromList);
 
-  /** 
+  /**
   \brief add an item with color at the end of the list befor the "add new..."
   if they have already been added to the list and select it if 
   selectetheaddeditem is set to true. 

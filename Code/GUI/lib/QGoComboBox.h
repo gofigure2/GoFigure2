@@ -74,7 +74,7 @@ signals:
   void AddANewOneActivated();
   void ItemSelected(std::string);
   void DeleteActivated();
-  
+
 public slots:
   /**
   \brief call the method SetItemsFromList and send a signal with the current index.
