@@ -88,7 +88,7 @@ public:
   \overload from the mother class method
   */
   virtual void SetItemsFromList(std::list< ItemColorComboboxData > iDataFromList);
-
+  
 signals:
   void ItemSelected(ItemColorComboboxData);
 
@@ -108,6 +108,7 @@ protected slots:
   \brief slot linked to the signal AddANewOneActivated()
   */
   virtual void ActionWhenNewOneRequested() = 0;
+
   //mother class method
   virtual void EmitActivatedItem(int iIndexActivatedItem);
 

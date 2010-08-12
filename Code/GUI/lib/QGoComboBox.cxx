@@ -74,8 +74,6 @@ QGoComboBox::~QGoComboBox()
 //--------------------------------------------------------------------------
 void QGoComboBox::InitializeTheList(QStringList iListItems)
 {
-  //this->addItems(iListItems);
-  //this->AddItemsEndOfList();  
   this->SetItemsFromList(iListItems);
   //if it is the 1rst time for the list to be displayed, there has to be an activated
   //item:
@@ -94,7 +92,6 @@ void QGoComboBox::InitializeTheList(NamesDescrContainerType iItemsData)
 //--------------------------------------------------------------------------
 void QGoComboBox::AddItemsEndOfList()
 {
-   //this->addItem(this->m_TextToAddANewOne.c_str());
   this->SetAddText();
   if (!this->m_TextToDelete.empty())
    {
@@ -148,7 +145,7 @@ void QGoComboBox::CheckUserAction(int iIndexActivatedItem)
   int IndexAdd = this->count() - this->m_NumberOfItemsAfterList;
   int IndexDelete = this->count()- 1;
   //in case there is normally an add and a delete but the list is empty,so
-  //there is temporally only the "add..":
+  //there is temporarily only the "add..":
   if (IndexAdd < 0)
     {
     IndexAdd = IndexDelete;
@@ -199,4 +196,12 @@ void QGoComboBox::SetCurrentItem(std::string iItemText)
 void QGoComboBox::SetAddText()
 {
   this->addItem(this->m_TextToAddANewOne.c_str());
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoComboBox::SetCurrentItemAndActivate(int iIndex)
+{
+  this->setCurrentIndex(iIndex);
+  this->EmitActivatedItem(iIndex);
 }

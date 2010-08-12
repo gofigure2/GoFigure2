@@ -78,19 +78,7 @@ void QGoCollectionColorComboBox::SetItemsFromList(
   QString TextForNewOne(tr("Add a new %1 ...").arg(iCollectionName.c_str()));
   this->m_TextToAddANewOne = TextForNewOne.toStdString();
   QGoColorComboBox::SetItemsFromList(iDataFromList);
-  //this->SetTextToAdd();
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-/*void QGoCollectionColorComboBox::SetTextToAdd()
-{
-  if(this->count()-1 <0)
-    {
-    this->SetAddText();
-    }
-  else //replace only the text with the new one:
-    {
-    this->setItemText(this->count()-1,this->m_TextToAddANewOne.c_str());
-    }
-}*/

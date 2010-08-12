@@ -62,6 +62,13 @@ public:
       QWidget *parent = 0,std::string iTextToDelete = "");
   virtual ~QGoComboBox();
   typedef std::vector<std::pair<std::string, std::string> > NamesDescrContainerType;
+  
+  /**
+  \brief select the current item located at iIndex and send a signal with the name
+  of this item.
+  \param[in] iIndex index to select and at which to get the info
+  */
+  void SetCurrentItemAndActivate(int iIndex);
 
 signals:
   void AddANewOneActivated();

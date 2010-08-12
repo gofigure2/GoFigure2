@@ -84,12 +84,6 @@ protected slots:
   //mother class method
   virtual void ActionWhenNewOneRequested();
 
-  /**
-  \brief add m_TextToAddANewOne as a new item if the list is empty, if not,
-  replace the actual text with a new one.
-  */
- // void SetTextToAdd();
-
   };
 
 #endif

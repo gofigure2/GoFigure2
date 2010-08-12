@@ -208,14 +208,21 @@ protected:
     std::string iTextItemToSelect = "")
   {
     if (!iTextItemToSelect.empty())
-    {
-    iComboBox->SetItemsFromList(iItemsData);
-    iComboBox->SetCurrentItem(iTextItemToSelect);
-    }
-  else
-    {
-    iComboBox->InitializeTheList(iItemsData);
-    }
+      {
+      iComboBox->SetItemsFromList(iItemsData);
+      if(iComboBox->findText(iTextItemToSelect.c_str())!= -1)
+        {
+        iComboBox->SetCurrentItem(iTextItemToSelect);
+        }
+      else
+        {
+        iComboBox->SetCurrentItemAndActivate(0);
+        }
+      }
+    else
+      {
+      iComboBox->InitializeTheList(iItemsData);
+      }
   }
 
   /**
@@ -226,14 +233,21 @@ protected:
    std::string iTextItemToSelect = "")
   {
     if (!iTextItemToSelect.empty())
-    {
-    iComboBox->SetItemsFromList(iItemsData);
-    iComboBox->SetCurrentItem(iTextItemToSelect);
-    }
-  else
-    {
-    iComboBox->InitializeTheList(iItemsData);
-    }
+      {
+      iComboBox->SetItemsFromList(iItemsData);
+      if(iComboBox->findText(iTextItemToSelect.c_str())!= -1)
+        {
+        iComboBox->SetCurrentItem(iTextItemToSelect);
+        }
+      else
+        {
+        iComboBox->SetCurrentItemAndActivate(0);
+        }
+      }
+    else
+      {
+      iComboBox->InitializeTheList(iItemsData);
+      }
   }
 
 

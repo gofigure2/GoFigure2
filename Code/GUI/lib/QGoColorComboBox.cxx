@@ -152,3 +152,6 @@ QGoColorComboBox::GetTheItemColorComboBoxData(int iIndex)
   Item.first = this->itemText(iIndex).toStdString();
   return Item;
 }
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
