@@ -2044,30 +2044,6 @@ ValidateContour(const int& iContourID, const int& iDir,
     int* min_idx = this->GetImageCoordinatesFromWorldCoordinates(Min);
     int* max_idx = this->GetImageCoordinatesFromWorldCoordinates(Max);
 
-    //vtkPolyData* contour_nodes = m_ImageView->GetContourRepresentationNodePolydata(iDir);
-    vtkProperty* contour_property = vtkProperty::New();
-
-    /*if (iHighlighted)
-      {
-      contour_property->SetColor(1., 0., 0.);
-      contour_property->SetOpacity(1.);
-      contour_property->SetLineWidth(3.);
-      }
-    else
-      {
-      contour_property->SetColor(iR, iG, iB);
-      contour_property->SetOpacity(iA);
-      }*/
-
-    // get corresponding actor from visualization
-    vtkPolyData* contour_copy = vtkPolyData::New();
-    contour_copy->ShallowCopy(contour);
-
-//     std::vector< vtkQuadricLODActor* > contour_actor =
-    std::vector<vtkActor*> contour_actor =
-      this->AddContour(iDir, contour_copy,
-                       contour_property);
-
     // get meshid from the visu dock widget (SpinBox)
     //unsigned int meshid = m_ManualSegmentationDockWidget->GetMeshId();
     //unsigned int meshid = this->m_TraceManualEditingDockWidget
@@ -2117,7 +2093,22 @@ ValidateContour(const int& iContourID, const int& iDir,
         a = iA;
         }
       }
-    
+
+    //vtkPolyData* contour_nodes = m_ImageView->GetContourRepresentationNodePolydata(iDir);
+    vtkProperty* contour_property = vtkProperty::New();
+
+    /*if (iHighlighted)
+      {
+      contour_property->SetColor(1., 0., 0.);
+      contour_property->SetOpacity(1.);
+      contour_property->SetLineWidth(3.);
+      }
+    else
+      {
+      contour_property->SetColor(iR, iG, iB);
+      contour_property->SetOpacity(iA);
+      }*/
+
     if (iHighlighted)
       {
       contour_property->SetColor(1., 0., 0.);
@@ -2132,6 +2123,15 @@ ValidateContour(const int& iContourID, const int& iDir,
       contour_property->SetOpacity(a);
       }
 
+    // get corresponding actor from visualization
+    vtkPolyData* contour_copy = vtkPolyData::New();
+    contour_copy->ShallowCopy(contour);
+
+//     std::vector< vtkQuadricLODActor* > contour_actor =
+    std::vector<vtkActor*> contour_actor =
+      this->AddContour(iDir, contour_copy,
+                       contour_property);
+    
     // get corresponding actor from visualization
     //vtkPolyData* contour_copy = vtkPolyData::New();
     //contour_copy->ShallowCopy(contour);
