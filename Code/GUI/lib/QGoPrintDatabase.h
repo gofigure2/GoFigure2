@@ -254,7 +254,7 @@ signals:
   void TraceToReEdit(unsigned int);
   void TracesToDeleteInVisu(std::list<int> );
   void OpenBookmarksToUpdate();
-  void ColorChangedForSelectedTraces(std::pair<std::list<int>, QColor>);
+  void ColorChangedForSelectedTraces(QColor);
   void TableWidgetTabChanged();
   void NewMeshToGenerate(std::list<int> ListContourIDs,int iNewMeshID);
   void MeshGenerationToUpdate(std::list<int> ListContourIDs);

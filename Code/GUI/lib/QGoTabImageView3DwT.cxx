@@ -584,8 +584,8 @@ CreateDataBaseTablesConnection()
     this, SLOT(GoToDefaultMenu()));
 
   QObject::connect(
-    this->m_DataBaseTables, SIGNAL(ColorChangedForSelectedTraces(std::pair<std::list<int>, QColor>)),
-    this, SLOT(ChangeColorOfSelectedTracesManager(std::pair<std::list<int>, QColor>)));
+    this->m_DataBaseTables, SIGNAL(ColorChangedForSelectedTraces(QColor)),
+    this, SLOT(ChangeColorOfSelectedTracesManager(QColor)));
 
   QObject::connect(this->m_DataBaseTables, SIGNAL(NewMeshToGenerate(std::list<int>,int)),
                    this, SLOT(CreateMeshFromSelectedContours(std::list<int>,int)));
@@ -3557,22 +3557,22 @@ void QGoTabImageView3DwT::ImportContours()
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
-ChangeColorOfSelectedTracesManager(
-  std::pair<std::list<int>, QColor> iSelectedTraces)
+ChangeColorOfSelectedTracesManager(QColor iSelectedColor)
+  //std::pair<std::list<int>, QColor> iSelectedTraces)
 {
   // In which table are we?
   std::string currentTrace = this->m_DataBaseTables->InWhichTableAreWe();
-  QColor      selectedColor = iSelectedTraces.second;
+  //QColor      selectedColor = iSelectedTraces.second;
 
   // If we are in contour
   if (currentTrace.compare("contour") == 0)
     {
-    ChangeColorOfSelectedTraces(m_ContourContainer, currentTrace, selectedColor);
+    ChangeColorOfSelectedTraces(m_ContourContainer, currentTrace, iSelectedColor);
     }
   // If we are in mesh
   if (currentTrace.compare("mesh") == 0)
     {
-    ChangeColorOfSelectedTraces(m_MeshContainer, currentTrace, selectedColor);
+    ChangeColorOfSelectedTraces(m_MeshContainer, currentTrace, iSelectedColor);
     }
 }
 

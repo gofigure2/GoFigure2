@@ -531,7 +531,7 @@ protected slots:
   void OpenExistingBookmark();
   void ShowTraceDockWidgetForContour(bool ManualSegVisible);
   void ShowTraceDockWidgetForMesh(bool OneClickVisible);
-  void ChangeColorOfSelectedTracesManager(std::pair<std::list<int>, QColor>);
+  void ChangeColorOfSelectedTracesManager(QColor iSelectedColor);
   void EnableVolumeRendering(bool iVisible);
 
   void GoToLocation(int iX, int iY, int iZ, int iT);
