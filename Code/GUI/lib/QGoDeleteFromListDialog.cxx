@@ -84,10 +84,11 @@ QGoDeleteFromListDialog::~QGoDeleteFromListDialog()
 void QGoDeleteFromListDialog::SetItemsFromTheVector(
   std::vector<std::string> iVectorItems)
 {
-  for (int i = 0; i < iVectorItems.size(); i++)
+  for ( size_t i = 0; i < iVectorItems.size(); ++i )
     {
     QListWidgetItem* item
       = new QListWidgetItem(iVectorItems[i].c_str(), this->m_ListWidget);
+    (void) item;
     }
 }
 //--------------------------------------------------------------------------
@@ -107,11 +108,12 @@ void QGoDeleteFromListDialog::SetItemsInTheListWithColor(
       painter.setPen(Qt::gray);
       painter.setBrush(QBrush(iter->second));
       painter.drawRect(0, 0, 12, 12);
-      }   
+      }
     Icon.addPixmap(pix);
     QListWidgetItem* item
       = new QListWidgetItem(Icon,iter->first.c_str(),this->m_ListWidget);
-    iter++;
+    (void) item;
+    ++iter;
     }
 }
 //--------------------------------------------------------------------------

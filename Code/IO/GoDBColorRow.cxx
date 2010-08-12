@@ -94,8 +94,8 @@ int GoDBColorRow::SaveInDB(vtkMySQLDatabase* iDatabaseConnector)
   std::string Green = this->GetMapValue("Green");
   std::string Alpha = this->GetMapValue("Alpha");
   std::string Name  = this->GetMapValue("Name");
-  /*return FindOneID(DatabaseConnector,"color", "ColorID","Red",Red,"Green",Green,
-  "Blue",Blue,"Alpha",Alpha,"Name",Name);
+  //return FindOneID(DatabaseConnector,"color", "ColorID","Red",Red,"Green",Green,
+  //"Blue",Blue,"Alpha",Alpha,"Name",Name);
   return FindOneID(DatabaseConnector, "color", "ColorID", "Name",
                    this->GetMapValue("Name"));
 }*/

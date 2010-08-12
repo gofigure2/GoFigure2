@@ -1629,7 +1629,8 @@ void QGoPrintDatabase::UpdateInfoForTracesToBeDeletedAsCollectionOf(
     while (iterSelec != iTracesAsCollectionToBeDeleted.end())
       {
       std::string  TraceIDstr = *iterSelec;
-      unsigned int TraceID = atoi(TraceIDstr.c_str());
+//      unsigned int TraceID = 
+//        static_cast< unsigned int >( atoi(TraceIDstr.c_str()) );
       //emit         DeletedCollection(TraceID);
       if(this->m_TraceWidget->GetTraceName()== iTraceName)
         {

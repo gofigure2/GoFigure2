@@ -131,9 +131,9 @@ int GoDBBookmarkRow::DoesThisEntityAlreadyExists(
 /*int GoDBBookmarkRow::DoesThisEntityAlreadyExists(
     vtkMySQLDatabase* iDatabaseConnector, std::string& ioName)
 {
-  /*int ID = FindOneID(iDatabaseConnector, "bookmark", "BookmarkID",
-                     "ImagingSessionID", this->GetMapValue("ImagingSessionID"), "CoordID",
-                     this->GetMapValue("CoordID"));
+  // int ID = FindOneID(iDatabaseConnector, "bookmark", "BookmarkID",
+  //  "ImagingSessionID", this->GetMapValue("ImagingSessionID"), "CoordID",
+  //  this->GetMapValue("CoordID"));
   int ID = this->DoesThisEntityAlreadyExists(iDatabaseConnector);
   if (ID == -1)
     {

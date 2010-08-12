@@ -141,7 +141,7 @@ QStringList QGoComboBox::GetQStringListNames(NamesDescrContainerType iContainer)
 //--------------------------------------------------------------------------
 void QGoComboBox::CheckUserAction(int iIndexActivatedItem)
 {
-  int numberitem = this->count();
+  //int numberitem = this->count();
   int IndexAdd = this->count() - this->m_NumberOfItemsAfterList;
   int IndexDelete = this->count()- 1;
   //in case there is normally an add and a delete but the list is empty,so

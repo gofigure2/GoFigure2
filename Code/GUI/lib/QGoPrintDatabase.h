@@ -466,10 +466,10 @@ protected:
   template<typename T>
   void SetTheColorForTheRow(T &ioRow, QColor iColor)
   {
-    ioRow.SetField<int>("Red",iColor.red());
-    ioRow.SetField<int>("Green",iColor.green());
-    ioRow.SetField<int>("Blue",iColor.blue());
-    ioRow.SetField<int>("Alpha",iColor.alpha());
+    ioRow.SetField("Red",iColor.red());
+    ioRow.SetField("Green",iColor.green());
+    ioRow.SetField("Blue",iColor.blue());
+    ioRow.SetField("Alpha",iColor.alpha());
   }
 //-------------------------------------------------------------------------
 

@@ -41,6 +41,7 @@
 #define __GoDBNameDescRow_h
 
 #include "GoDBRow.h"
+#include "GoDBRecordSetHelper.h"
 #include "vtkMySQLDatabase.h"
 
 /**

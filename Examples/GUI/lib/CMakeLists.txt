@@ -21,7 +21,6 @@ SET( QGOGUILIB_EXAMPLE_SRC
   QGoLsmToMegaExportThreadTest
   QGoDBCreateBookmarkDialogTest
   QGoTraceManualEditingWidgetTest
-  QGoDeleteDBEntityDialog
   QGoDBInitializationWizardTest
   qgotabimageview3dwt2
   QGoLevelset2DTest

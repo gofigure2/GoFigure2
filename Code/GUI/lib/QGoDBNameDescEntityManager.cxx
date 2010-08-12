@@ -40,7 +40,7 @@
 #include "QGoDBNameDescEntityManager.h"
 #include "ConvertToStringHelper.h"
 #include "SelectQueryDatabaseHelper.h"
-#include "QueryDatabaseHelper.h"
+#include "QueryDataBaseHelper.h"
 #include "QGoDeleteFromListDialog.h"
 
 QGoDBNameDescEntityManager::QGoDBNameDescEntityManager(QWidget* iParent,

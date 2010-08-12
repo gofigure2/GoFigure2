@@ -60,7 +60,7 @@ public:
   /** \brief get the data needed from the import file to
   save the contours listed in it, including the color,
   the mesh they belong to, the tracks the previous meshes
-  belong to,etc...and fill the vectors of new IDs and the
+  belong to, etc...and fill the vectors of new IDs and the
   needed info for the visu to add these new contours*/
   void ImportContours();
 
@@ -119,7 +119,8 @@ private:
   /** \brief Get the values from the Infile, save the non traces entities,
   fill the matching map for old and new IDs and return the current line content*/
   std::string SaveNoTracesEntities(std::map<int, int>& ioMapColorIDs,
-                                   std::map<int, int>& ioMapCellTypeIDs, std::map<int, int>& ioMapSubCellTypeIDs,
+                                   std::map<int, int>& ioMapCellTypeIDs,
+                                   std::map<int, int>& ioMapSubCellTypeIDs,
                                    std::map<int, int>& ioMapCoordIDs);
   void OpenDBConnection();
   void CloseDBConnection();
@@ -129,7 +130,8 @@ private:
    doesn't match any existing ones and save the intensities for the meshes if
    SaveIntensities is set to true*/
   void SaveTracesEntities(std::map<int, int> iMapColorIDs,
-                          std::map<int, int> iMapCoordIDs, std::string iLineContent,
+                          std::map<int, int> iMapCoordIDs,
+                          std::string iLineContent,
                           std::map<int, int> iMapCellTypeIDs,
                           std::map<int, int> iMapSubCellTypeIDs,
                           bool SaveIntensities = false);
@@ -212,7 +214,8 @@ private:
   CollectionID*/
   template<typename T>
   void ReplaceCommonFieldsForTraces(T& ioEntityToSave,
-                                    std::map<int, int> iMapColorIDs, std::map<int, int> iMapCoordIDs,
+                                    std::map<int, int> iMapColorIDs,
+                                    std::map<int, int> iMapCoordIDs,
                                     std::map<int, int> iMapCollectionIDs)
   {
     ioEntityToSave.SetField(
