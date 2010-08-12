@@ -85,6 +85,5 @@ protected:
 protected slots:
   //mother class method
   virtual void ValidateName(std::string iName, std::string iDescription);
-
   };
 #endif

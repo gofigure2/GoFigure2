@@ -1256,9 +1256,9 @@ bool QGoPrintDatabase::IsDatabaseUsed()
 
 //-------------------------------------------------------------------------
 std::list<QGoPrintDatabase::ItemColorComboboxData> 
-QGoPrintDatabase::GetListCollectionIDFromDB()
+QGoPrintDatabase::GetListCollectionIDFromDB(vtkMySQLDatabase* iDatabaseConnector)
 {
-  OpenDBConnection();
+  //OpenDBConnection();
   std::string TraceName = this->m_TraceWidget->GetTraceName();
   TraceInfoStructure* CurrentlyUsedTraceData = this->GetTraceInfoStructure(TraceName);
   std::list<ItemColorComboboxData > oListCollectionIDs;
@@ -1299,14 +1299,14 @@ QGoPrintDatabase::GetListCollectionIDFromDB()
     WhereAndConditions.push_back("coordinate.TCoord");
     WhereAndConditions.push_back(ConvertToString<int>(this->m_SelectedTimePoint));
 
-    ResultsQuery = GetValuesFromSeveralTables(this->m_DatabaseConnector,
+    ResultsQuery = GetValuesFromSeveralTables(iDatabaseConnector,
                                               CurrentlyUsedTraceData->CollectionName, SelectFields, WhereAndConditions,
                                               JoinTablesOnTraceTable, true);
     }
   else
     {
     //Get the results for the query:(for trace as mesh, tracks):
-    ResultsQuery  = GetValuesFromSeveralTables(this->m_DatabaseConnector,
+    ResultsQuery  = GetValuesFromSeveralTables(iDatabaseConnector,
                                                CurrentlyUsedTraceData->CollectionName, SelectFields, "ImagingSessionID",
                                                ConvertToString<unsigned int>(
                                                  this->m_ImgSessionID), JoinTablesOnTraceTable, true);
@@ -1379,7 +1379,7 @@ QGoPrintDatabase::GetListCollectionIDFromDB()
      temp.first = ConvertToString<int>(NewID);
      oListCollectionIDs.push_back(temp);
      }*/
-  CloseDBConnection();
+  //CloseDBConnection();
   return oListCollectionIDs;
 }
 //-------------------------------------------------------------------------
@@ -1641,10 +1641,12 @@ void QGoPrintDatabase::UpdateInfoForTracesToBeDeletedAsCollectionOf(
       }
     //Get the belonging traces for the traces that are going to be deleted
     //and are collection of these 'belonging traces':
+    this->OpenDBConnection();
     std::vector<std::string> ListBelongingTraces = ListSpecificValuesForOneColumn(
       this->m_DatabaseConnector, CurrentlyUsedTraceData->CollectionOf,
       CurrentlyUsedTraceData->CollectionOfID, CurrentlyUsedTraceData->TraceNameID,
       iTracesAsCollectionToBeDeleted);
+    this->CloseDBConnection();
 
     if (!ListBelongingTraces.empty())
       {
@@ -1674,6 +1676,7 @@ void QGoPrintDatabase::DeleteTracesAsPartOfACollection(std::string iTraceName,
                                                        std::list<int> iTracesToDelete)
 {
   std::list<int>::iterator iterator = iTracesToDelete.begin();
+ this->OpenDBConnection();
   while (iterator != iTracesToDelete.end())
     {
     TraceInfoStructure* CurrentlyUsedTraceData = this->GetTraceInfoStructure(iTraceName);
@@ -1698,6 +1701,7 @@ void QGoPrintDatabase::DeleteTracesAsPartOfACollection(std::string iTraceName,
       }
     iterator++;
     }
+  this->CloseDBConnection();
 }
 //-------------------------------------------------------------------------
 
@@ -2156,8 +2160,11 @@ SetTMListColors(std::string iNewColorToSelect)
 void QGoPrintDatabase::
 SetTMListCollectionID(std::string iIDToSelect)
 {  
-  this->m_TraceWidget->SetListCollectionID(this->GetListCollectionIDFromDB(),
+  this->OpenDBConnection();
+  this->m_TraceWidget->SetListCollectionID(
+    this->GetListCollectionIDFromDB(this->m_DatabaseConnector),
     iIDToSelect);
+  this->CloseDBConnection();
 }
 //-------------------------------------------------------------------------
 

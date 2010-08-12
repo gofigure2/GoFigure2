@@ -348,7 +348,8 @@ protected:
  // void UpdateListCollectionIDFromDB();
 
   /** \brief get the collection id with their corresponding color from the database*/
-  std::list<ItemColorComboboxData> GetListCollectionIDFromDB();
+  std::list<ItemColorComboboxData> GetListCollectionIDFromDB(
+    vtkMySQLDatabase* iDatabaseConnector);
 
   
   /** \brief Return the TraceInfoStructure corresponding to the trace name*/
