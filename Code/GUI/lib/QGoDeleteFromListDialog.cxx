@@ -121,9 +121,9 @@ void QGoDeleteFromListDialog::SetItemsInTheListWithColor(
 //-------------------------------------------------------------------------
 void QGoDeleteFromListDialog::SelectionValidation()
 {
-  QList<QListWidgetItem*> ListEntitiesToDelete =
+  QList<QListWidgetItem*> ListEntitiesToDeleteSelected =
     this->m_ListWidget->selectedItems();
-  if (!ListEntitiesToDelete.empty())
+  if (!ListEntitiesToDeleteSelected.empty())
     {
     QMessageBox msgBox;
     msgBox.setText(
@@ -133,7 +133,7 @@ void QGoDeleteFromListDialog::SelectionValidation()
     int r = msgBox.exec();
     if (r == 16384)
       {
-      DeleteSelection(ListEntitiesToDelete);
+      DeleteSelection(ListEntitiesToDeleteSelected);
       this->accept();
       }
     else
