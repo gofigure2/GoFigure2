@@ -41,7 +41,7 @@
 #include <iostream>
 
 QGoCollectionColorComboBox::QGoCollectionColorComboBox(QWidget *iparent)
-:QGoColorComboBox("Add a new mesh...",parent)
+:QGoColorComboBox("Add a new mesh...",iparent)
 {
 }
 //--------------------------------------------------------------------------
