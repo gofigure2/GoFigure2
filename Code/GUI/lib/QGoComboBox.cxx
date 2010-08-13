@@ -43,7 +43,7 @@
 
 
 QGoComboBox::QGoComboBox(std::string iTextToAddANewOne,
-                                   QWidget *parent,
+                                   QWidget *iparent,
                                    std::string iTextToDelete)
                                    :QComboBox(parent)
 {

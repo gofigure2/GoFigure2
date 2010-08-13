@@ -56,7 +56,7 @@ class QGOGUILIB_EXPORT QGoColorComboBox : public QGoComboBox
   Q_OBJECT
 public:
   explicit QGoColorComboBox(std::string iTextToAddANewOne,
-      QWidget *parent = 0,std::string iTextToDelete = "");
+      QWidget *iparent = 0,std::string iTextToDelete = "");
 
   virtual ~QGoColorComboBox();
 

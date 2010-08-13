@@ -48,10 +48,10 @@
 #include <QToolButton>
 
 QGoColorComboBox::QGoColorComboBox(std::string iTextToAddANewOne,
-                                   QWidget *parent,
+                                   QWidget *iparent,
                                    std::string iTextToDelete)
                                    :QGoComboBox(iTextToAddANewOne,
-                                   parent,iTextToDelete)
+                                   iparent,iTextToDelete)
 {
   QObject::connect(this, SIGNAL(AddANewOneActivated()), 
      this,SLOT(ActionWhenNewOneRequested()));

@@ -52,7 +52,7 @@ class QGOGUILIB_EXPORT QGoSelectedColorComboBox : public QGoColorComboBox
   {
   Q_OBJECT
 public:
-  explicit QGoSelectedColorComboBox(QWidget *parent = 0);
+  explicit QGoSelectedColorComboBox(QWidget *iparent = 0);
   virtual ~QGoSelectedColorComboBox();
 
 signals:

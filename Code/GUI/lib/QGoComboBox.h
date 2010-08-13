@@ -59,7 +59,7 @@ public:
   a new item at the end of the list
   */
   explicit QGoComboBox(std::string iTextToAddANewOne,
-      QWidget *parent = 0,std::string iTextToDelete = "");
+      QWidget *iparent = 0,std::string iTextToDelete = "");
   virtual ~QGoComboBox();
   typedef std::vector<std::pair<std::string, std::string> > NamesDescrContainerType;
   

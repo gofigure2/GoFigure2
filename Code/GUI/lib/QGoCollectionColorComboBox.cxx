@@ -40,7 +40,7 @@
 #include "QGoCollectionColorComboBox.h"
 #include <iostream>
 
-QGoCollectionColorComboBox::QGoCollectionColorComboBox(QWidget *parent)
+QGoCollectionColorComboBox::QGoCollectionColorComboBox(QWidget *iparent)
 :QGoColorComboBox("Add a new mesh...",parent)
 {
 }

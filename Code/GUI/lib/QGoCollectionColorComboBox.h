@@ -54,7 +54,7 @@ class QGOGUILIB_EXPORT QGoCollectionColorComboBox : public QGoColorComboBox
   {
   Q_OBJECT
 public:
-  explicit QGoCollectionColorComboBox(QWidget *parent = 0);
+  explicit QGoCollectionColorComboBox(QWidget *iparent = 0);
   virtual ~QGoCollectionColorComboBox();
 
 signals:
