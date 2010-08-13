@@ -116,7 +116,7 @@ public:
 
   /**
    * \brief Set the 2d image related to this 2d event manager
-   * \param[in] vtkViewImage2D Target 2D image
+   * \param[in] viewer vtkViewImage2D Target 2D image
    */
   void SetViewer(vtkViewImage2D *viewer)
   { this->Viewer = viewer; }
