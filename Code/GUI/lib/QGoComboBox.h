@@ -98,7 +98,7 @@ public slots:
   /**
   \brief set the activated item corresponding to the iTemText (no need to emit the signal
   ItemSelected)
-  \parma[in] iTemText name of the item to be set to activated in the combobox
+  \param[in] iTemText name of the item to be set to activated in the combobox
   */
   void SetCurrentItem(std::string iItemText);
   
@@ -127,7 +127,7 @@ protected slots:
   /**
   \brief check which item has been clicked and emit the corresponding signal: addanewone,
   deleteactivated or itemselected
-  \parma[in] iIndexActivatedItem index of the clicked item
+  \param[in] iIndexActivatedItem index of the clicked item
   */
   void CheckUserAction(int iIndexActivatedItem);
 

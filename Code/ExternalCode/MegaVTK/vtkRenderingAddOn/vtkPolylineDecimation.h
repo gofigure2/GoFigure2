@@ -73,9 +73,10 @@ protected:
   vtkPolylineDecimation();
   ~vtkPolylineDecimation();
 
-  int RequestData(vtkInformation *,
-                  vtkInformationVector **,
-                  vtkInformationVector *);
+  int RequestData( 
+    vtkInformation *vtkNotUsed(request),
+    vtkInformationVector **inputVector,
+    vtkInformationVector *outputVector );
 
   double ComputeError(vtkPolyData* input, int prev, int id, int next);
   void UpdateError(vtkPolyData* input, const int& iId);

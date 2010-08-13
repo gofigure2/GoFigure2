@@ -85,7 +85,7 @@ public:
   virtual int DoesThisEntityAlreadyExists2(
     vtkMySQLDatabase* iDatabaseConnector, std::string& ioName);
 
-  /** 
+  /* 
   \brief check if the entity already exists in the database
   based on its own uniqueness definition, return the ID of the
   entity already exiting or -1 if not yet created and change the

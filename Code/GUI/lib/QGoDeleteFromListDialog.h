@@ -92,13 +92,13 @@ protected:
 
   /** 
   \brief create the corresponding QListWidgetItems
-  \parma[in] iVectorItems vector with the names of the entities to be displayed
+  \param[in] iVectorItems vector with the names of the entities to be displayed
   */  
   void SetItemsFromTheVector(std::vector<std::string> iVectorItems);
   
   /** 
   \brief create the corresponding QListWidgetItems with a QColor
-  \parma[in] iDataList list with the names of the entities and their color to be displayed
+  \param[in] iDataList list with the names of the entities and their color to be displayed
   */ 
   void SetItemsInTheListWithColor(std::list<ItemColorComboboxData> iDataList);
 

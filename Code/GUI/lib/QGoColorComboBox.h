@@ -97,7 +97,7 @@ signals:
 protected:
   /**
   \brief get the name and the QColor of the item located at the index iIndex
-  \parma[in] iIndex index for which the name and QColor are wanted
+  \param[in] iIndex index for which the name and QColor are wanted
   \return ItemColorComboboxData contains the name and QColor of the item 
   located at index iIndex
   */

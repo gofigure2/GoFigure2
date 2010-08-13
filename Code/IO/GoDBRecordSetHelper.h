@@ -46,10 +46,7 @@
 
 /** \brief help add a new object of type T in the table "TableName"
 in the database: add a new ImagingSession, new Image, new Mesh...
-\param[in] ServerName
-\param[in] User
-\param[in] Password
-\param[in] DBName
+\param[in] DatabaseConnector
 \param[in] TableName
 \param[in] myNewObject
 */
