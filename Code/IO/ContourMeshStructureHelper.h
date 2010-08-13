@@ -122,10 +122,10 @@ typedef boost::multi_index::multi_index_container<
 /**
 \brief Return the direction of a given contour iContour
 \param[in] iContour
-\return 0 \if z coordinates are constant
-\return 1 \if y coordinates are constant
-\return 2 \if x coordinates are constant
-\return -1 \else
+\return 0 if z coordinates are constant
+\return 1 if y coordinates are constant
+\return 2 if x coordinates are constant
+\return -1 else
 */
 QGOIO_EXPORT
 int
