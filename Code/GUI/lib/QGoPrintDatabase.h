@@ -64,10 +64,15 @@
 #include "QGoDBCellTypeManager.h"
 #include "QGoDBSubCellTypeManager.h"
 #include "QGoDBColorManager.h"
+  /**
+  \defgroup DB Database
+  \defgroup GUI GUI
+  */
 
-/** \class QGoPrintDatabase
- * \brief Ensure the connection with the Database
- * */
+  /** 
+  \class QGoPrintDatabase
+  \brief Ensure the connection with the Database
+ */
 class QGOGUILIB_EXPORT QGoPrintDatabase : public QWidget,
   private Ui::WidgetPrintDatabase
   {
@@ -95,7 +100,7 @@ public:
   /** \brief Create the QTableWidgetChild,get the columns names and the
  * values stored in the database, display them in the QTableWidgetChild
  * and fill the info for the contours and meshes*/
-  void FillTableFromDatabase(int iTimePoint);
+  void FillTableFromDatabase();
 
   /** \brief Add the contours in the trcaeinfoForvisu and return all the
   contours data for the given timepoint, included the new ones*/

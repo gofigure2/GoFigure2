@@ -48,6 +48,7 @@
 \class QGoDBCellTypeManager
 \brief the QGoDBCellTypeManager manages the interactions between the user and the database
 for the celltype DBTable.
+\ingroup DB GUI
 */
 class QGoDBCellTypeManager : public QGoDBNameDescEntityManager
   {

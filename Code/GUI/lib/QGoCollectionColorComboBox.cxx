@@ -60,10 +60,10 @@ void QGoCollectionColorComboBox::ActionWhenNewOneRequested()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoCollectionColorComboBox::InitializeTheList(
+void QGoCollectionColorComboBox::InitializeTheListWithColor(
   std::list<ItemColorComboboxData> iDataFromList, std::string iCollectionName)
 {
-  this->SetItemsFromList(iDataFromList,iCollectionName);
+  this->SetItemsFromListWithColor(iDataFromList,iCollectionName);
   //if it is the 1rst time for the list to be displayed, there has to be an activated
   //item:
   //by default, the one selected by the combobox is the one to stick to:
@@ -72,12 +72,12 @@ void QGoCollectionColorComboBox::InitializeTheList(
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoCollectionColorComboBox::SetItemsFromList(
+void QGoCollectionColorComboBox::SetItemsFromListWithColor(
   std::list<ItemColorComboboxData> iDataFromList, std::string iCollectionName)
 {
   QString TextForNewOne(tr("Add a new %1 ...").arg(iCollectionName.c_str()));
   this->m_TextToAddANewOne = TextForNewOne.toStdString();
-  QGoColorComboBox::SetItemsFromList(iDataFromList);
+  QGoColorComboBox::SetItemsFromListWithColor(iDataFromList);
 }
 //--------------------------------------------------------------------------
 

@@ -74,12 +74,12 @@ SetListCollectionID(
 {
   if (!iCollectionIDtoSelect.empty())
     {
-    this->m_CollectionColorComboBox->SetItemsFromList(iListExistingID,
+    this->m_CollectionColorComboBox->SetItemsFromListWithColor(iListExistingID,
       this->m_CollectionName->text().toStdString());
     }
   else
     {
-    this->m_CollectionColorComboBox->InitializeTheList(iListExistingID,
+    this->m_CollectionColorComboBox->InitializeTheListWithColor(iListExistingID,
       this->m_CollectionName->text().toStdString());
     }
   /** \todo when using lineages, remove the following*/

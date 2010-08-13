@@ -49,6 +49,7 @@
 \class QGoDBColorManager
 \brief the QGoDBColorManager manages the interactions between the user and the database
 for the color DBTable (add a new one, delete...).
+\ingroup DB GUI
 */
 class QGoDBColorManager : public QGoDBNameDescEntityManager
   {

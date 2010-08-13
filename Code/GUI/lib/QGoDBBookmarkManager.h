@@ -51,6 +51,7 @@
 \class QGoDBBookmarkManager
 \brief the QGoDBBookmarkManager manages the interactions between the user and the database
 for the Bookmark DBTable.
+\ingroup DB GUI
 */
 class QGOGUILIB_EXPORT QGoDBBookmarkManager :
   public QGoDBNameDescEntityManager

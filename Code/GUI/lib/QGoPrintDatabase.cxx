@@ -252,7 +252,7 @@ void QGoPrintDatabase::CloseDBConnection()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoPrintDatabase::FillTableFromDatabase(int iTimePoint)
+void QGoPrintDatabase::FillTableFromDatabase()
 {
   OpenDBConnection();
 

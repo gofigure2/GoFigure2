@@ -48,6 +48,7 @@
 \brief this class inherits from QGoColorComboBox, has only the add item option and
 update the text according to the iCollectionName. It handles the printing of the
 collection IDs
+\ingroup GUI
 */
 class QGOGUILIB_EXPORT QGoCollectionColorComboBox : public QGoColorComboBox
   {
@@ -68,7 +69,7 @@ public slots:
   \param[in] iCollectionName name to use in the add an item
   \overload from the mother class method
   */
-  virtual void SetItemsFromList(std::list<ItemColorComboboxData> iDataFromList,
+  void SetItemsFromListWithColor(std::list<ItemColorComboboxData> iDataFromList,
     std::string iCollectionName);
 
   /**
@@ -77,7 +78,7 @@ public slots:
   collection
   \overload from mother class method
   */
-  void InitializeTheList(std::list<ItemColorComboboxData> iDataFromList,
+  void InitializeTheListWithColor(std::list<ItemColorComboboxData> iDataFromList,
     std::string iCollectionName);
  
 protected slots:

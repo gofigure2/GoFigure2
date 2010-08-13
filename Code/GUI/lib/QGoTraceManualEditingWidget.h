@@ -54,6 +54,12 @@
 
 #include "QGoGUILibConfigure.h"
 
+/**
+\class QGoTraceManualEditingWidget
+\brief this class contains all the comboboxes for collectionID,color,
+celltypes and subcelltypes, and displays the trace and collection name.
+\ingroup GUI
+*/
 class QGOGUILIB_EXPORT QGoTraceManualEditingWidget :
   public QWidget,
   private Ui::QGoTraceManualEditingWidget
@@ -234,7 +240,7 @@ protected:
   {
     if (!iTextItemToSelect.empty())
       {
-      iComboBox->SetItemsFromList(iItemsData);
+      iComboBox->SetItemsFromListWithColor(iItemsData);
       if(iComboBox->findText(iTextItemToSelect.c_str())!= -1)
         {
         iComboBox->SetCurrentItem(iTextItemToSelect);
@@ -246,7 +252,7 @@ protected:
       }
     else
       {
-      iComboBox->InitializeTheList(iItemsData);
+      iComboBox->InitializeTheListWithColor(iItemsData);
       }
   }
 

@@ -796,7 +796,7 @@ CreateNewTabFor3DwtImage(
                                                 m_DBWizard->GetImagingSessionID(),
                                                 ImgSessionName);
 
-    w3t->m_DataBaseTables->FillTableFromDatabase(w3t->GetTimePoint());
+    w3t->m_DataBaseTables->FillTableFromDatabase();
     w3t->setWindowTitle(QString::fromStdString(ImgSessionName));
     // **********************
     }

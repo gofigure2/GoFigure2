@@ -48,12 +48,14 @@
 \class QGoDBSubCellTypeManager
 \brief the QGoDBSubCellTypeManager manages the interactions between the user and the database
 for the SubCellularType DBTable.
+\ingroup DB GUI
 */
 class QGoDBSubCellTypeManager : public QGoDBNameDescEntityManager
   {
   Q_OBJECT
 
 public:
+  /** \todo make a class template for celltype/subcelltype */
   explicit QGoDBSubCellTypeManager (QWidget* iParent = 0);
 
   ~QGoDBSubCellTypeManager()

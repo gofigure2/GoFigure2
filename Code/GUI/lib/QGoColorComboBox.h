@@ -49,6 +49,7 @@
 \class QGoColorCombobox
 \brief inherits from QGoCombobox, display not ony the names but also the QColor of
 the items as an Icon in the combobox
+\ingroup GUI
 */
 class QGOGUILIB_EXPORT QGoColorComboBox : public QGoComboBox
   {
@@ -67,7 +68,8 @@ public:
   in the combobox
   \overload from the mother class method
   */
-  virtual void InitializeTheList(std::list<ItemColorComboboxData> iDataFromList);
+  virtual void InitializeTheListWithColor(
+    std::list<ItemColorComboboxData> iDataFromList);
 
   /**
   \brief add an item with color at the end of the list befor the "add new..."
@@ -87,7 +89,8 @@ public:
   displayed in the combobox
   \overload from the mother class method
   */
-  virtual void SetItemsFromList(std::list< ItemColorComboboxData > iDataFromList);
+  virtual void SetItemsFromListWithColor(
+    std::list< ItemColorComboboxData > iDataFromList);
   
 signals:
   void ItemSelected(ItemColorComboboxData);

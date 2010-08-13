@@ -42,7 +42,12 @@
 #define __QGoSelectedColorComboBox_h
 
 #include "QGoColorComboBox.h"
-
+/** 
+\class QGoSelectedColorComboBox
+\brief This class enables the Combobox to display item with colors icon for
+the color and sends a signal when "add new color " is clicked by the user
+\ingroup GUI
+*/
 class QGOGUILIB_EXPORT QGoSelectedColorComboBox : public QGoColorComboBox
   {
   Q_OBJECT

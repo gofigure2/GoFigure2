@@ -52,6 +52,7 @@
 between the user and the database (add a new one, delete)for a DBTable 
 containing a name and a description.Has some Qt widgets and manages queries for 
 this particular DBTable (i.e get list of existing ones).
+\ingroup DB GUI
 */
 class QGoDBNameDescEntityManager :
   public QWidget

@@ -65,9 +65,10 @@ QGoColorComboBox::~QGoColorComboBox()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoColorComboBox::InitializeTheList(std::list<ItemColorComboboxData> iDataFromList)
+void QGoColorComboBox::InitializeTheListWithColor(
+  std::list<ItemColorComboboxData> iDataFromList)
 {
-  this->SetItemsFromList(iDataFromList);
+  this->SetItemsFromListWithColor(iDataFromList);
   //if it is the 1rst time for the list to be displayed, there has to be an activated
   //item:
   //by default, the one selected by the combobox is the one to stick to:
@@ -76,7 +77,7 @@ void QGoColorComboBox::InitializeTheList(std::list<ItemColorComboboxData> iDataF
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoColorComboBox::SetItemsFromList(
+void QGoColorComboBox::SetItemsFromListWithColor(
   std::list<ItemColorComboboxData> iDataFromList)
 {
   this->clear();
