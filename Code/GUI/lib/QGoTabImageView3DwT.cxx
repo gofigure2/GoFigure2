@@ -3374,12 +3374,6 @@ SavePolyDataAsMeshInDB(vtkPolyData* iView, const int& iMeshID,
                                                       min_idx[1], min_idx[2], iTCoord, max_idx[0],
                                                       max_idx[1], max_idx[2], iView, &MeshAttributes,NewMesh,iMeshID);
     m_MeshId = MeshData.first;
-    //for test:
-    int rt = MeshData.second.red();
-    int gt = MeshData.second.green();
-    int bt = MeshData.second.blue();
-    int at = MeshData.second.alpha();
-
     MeshData.second.getRgbF(&r,&g,&b,&a);
     }
   else //in case this function is called only to render existing meshes from the database when loading
