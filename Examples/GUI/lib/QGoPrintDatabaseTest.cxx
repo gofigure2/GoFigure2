@@ -62,7 +62,7 @@ int main(int argc, char * argv[])
   win->SetDatabaseVariables(
     "gofiguredatabase", "localhost", "gofigure",
     "gofigure", 8, "LSM_Converter");
-  win->FillTableFromDatabase(2);
+  win->FillTableFromDatabase();
   win->show();
 
   QTimer* timer = new QTimer;
