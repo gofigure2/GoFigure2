@@ -72,8 +72,10 @@ QT_END_NAMESPACE
  * QGoSynchronizedView2DCallbacks
  * It is not documented.
  * It is used by the example program : qgosynchronizedviewguitest.cxx
- * \example GUI/lib/qgosynchronizedviewguitest.cxx
  */
+
+ // \example GUI/lib/qgosynchronizedviewguitest.cxx
+
 
 class QGoSynchronizedViewMainWindow : public QMainWindow
   {
