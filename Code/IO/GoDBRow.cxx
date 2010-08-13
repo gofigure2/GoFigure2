@@ -186,7 +186,6 @@ std::string GoDBRow::GetMapValue(std::string key)
 {
   std::string oMapValue = "noValue";
 
-/// \todo check this alternative. It may be more efficient to use std::map::find
   StringMapIterator iter = m_MapRow.find(key);
 
   if (iter == m_MapRow.end())

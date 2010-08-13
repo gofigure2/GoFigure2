@@ -52,7 +52,6 @@
 
 /**
 \class GoDBRow
-\todo define \code std::map< std::string, std::string > \endcode
 */
 class QGOIO_EXPORT GoDBRow
   {
