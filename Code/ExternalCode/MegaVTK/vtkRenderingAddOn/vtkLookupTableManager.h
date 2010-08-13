@@ -1,20 +1,3 @@
-/*=========================================================================
-
-Program:   vtkINRIA3D
-Module:    $Id: vtkLookupTableManager.h 700 2008-02-22 16:19:25Z filus $
-Language:  C++
-Author:    $Author: arnaudgelas $
-Date:      $Date: 2009-07-31 14:33:39 -0400 (Fri, 31 Jul 2009) $
-Version:   $Revision: 490 $
-
-Copyright (c) 2007 INRIA - Asclepios Project. All rights reserved.
-
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
-
-=========================================================================*/
-
 /*========================================================================
  Copyright (c) INRIA - ASCLEPIOS Project (http://www-sop.inria.fr/asclepios).
  All rights reserved.
@@ -91,6 +74,11 @@ PURPOSE.  See the above copyright notices for more information.
 #include <vtkLookupTable.h>
 #include "MegaVTK2Configure.h"
 
+/**
+ \brief vtkLookupTableManager
+ \ingroup MegaVTK
+ \brief 
+ */ 
 class VTK_RENDERINGADDON2_EXPORT vtkLookupTableManager : public vtkObject
   {
 

@@ -126,16 +126,11 @@ class vtkDataSetCollection;
 class vtkMatrixToLinearTransform;
 class vtkViewImage2DCollectionCommand;
 
-/*
- * \defgroup visualization ‘‘Visualization’’
- */
-
-/*
+/**
  * \class vtkViewImage2DCollection
- * \ingroup visualization
+ * \ingroup MegaVTK
  * \brief Manage a collection of 2D views
  */
-
 class VTK_RENDERINGADDON2_EXPORT vtkViewImage2DCollection : public vtkCollection
   {
 public:

@@ -41,14 +41,12 @@
 
 #include "MegaVTK2Configure.h"
 
-/*
- * \defgroup visualization ‘‘Visualization’’
- */
-
-/*
+/**
  * \class vtkPolylineDecimation
- * \ingroup visualization
- * \brief Decimate a vtkPolydata
+ * \ingroup MegaVTK
+ * \brief Decimate a polyline
+ * \note With the git version of VTK, this class does not make any sense
+ * (the code has been contributed back to VTK)
  */
 
 class VTK_RENDERINGADDON2_EXPORT vtkPolylineDecimation : public vtkPolyDataAlgorithm
@@ -59,8 +57,7 @@ public:
   vtkTypeRevisionMacro(vtkPolylineDecimation, vtkPolyDataAlgorithm);
   void PrintSelf(ostream& os, vtkIndent indent);
 
-  /*
-   * \ingroup visualization
+  /**
    * \brief Instantiate this object with a target reduction of 0.90.
    */
   static vtkPolylineDecimation *New();
