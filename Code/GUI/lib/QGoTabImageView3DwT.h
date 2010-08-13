@@ -413,23 +413,6 @@ protected:
   ContourMeshStructureMultiIndexContainer m_ContourContainer;
   ContourMeshStructureMultiIndexContainer m_MeshContainer;
 
-  /**
-   * @param[in] iContourID
-   * @param[in] iDir
-   * @param[in] iHighlighted
-   * @param[in] iR red component in [0,1]
-   * @param[in] iG green component in [0,1]
-   * @param[in] iB blue component in [0,1]
-   * @param[in] iA alpha component in [0,1]
-   * @param[in] iSaveInDataBase save in data base if true
-   * \todo Alpha component is not used at all, it is assumed to be opaque
-   */
-  virtual int ValidateContour(const int& iContourID, const int& iDir,
-                              const bool& iHighlighted, const unsigned int& iTCoord, const bool& iSaveInDataBase,
-                              vtkPolyData* contour, vtkPolyData* contour_nodes,
-                              const double& iR = 0, const double& iG = 0, const double& iB = 0, const double& iA = 0
-                              );
-
   // ID + color map, real save+real visu
   IDWithColorData RealValidateContour(const int& iContourID, const int& iDir,
                                 const bool& iHighlighted, const unsigned int& iTCoord,
