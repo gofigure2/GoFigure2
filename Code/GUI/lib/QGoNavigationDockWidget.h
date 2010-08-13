@@ -45,8 +45,6 @@
 #include <QComboBox>
 #include "ui_NavigationDockWidget.h"
 
-#include "qtcolorcombobox.h"
-
 #include "QGoGUILibConfigure.h"
 
 class QHBoxLayout;

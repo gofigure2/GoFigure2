@@ -950,8 +950,7 @@ QGoPrintDatabase::IDWithColorData QGoPrintDatabase::UpdateContourFromVisuInDB(un
   this->GetTraceRowFromVisu<GoDBContourRow>(iXCoordMin,
                                             iYCoordMin, iZCoordMin, iTCoord, iXCoordMax, iYCoordMax, iZCoordMax,
                                             iContourNodes, this->m_DatabaseConnector, contour_row);
-  contour_row.SetField<int>("ContourID", ContourID);
-  UpdateContourInDB(this->m_DatabaseConnector, contour_row);
+  contour_row.SaveInDB(this->m_DatabaseConnector);
 
   int CollectionID = FindOneID(this->m_DatabaseConnector,
                                "contour", "meshID", "contourID", ConvertToString<int>(ContourID));
@@ -959,10 +958,11 @@ QGoPrintDatabase::IDWithColorData QGoPrintDatabase::UpdateContourFromVisuInDB(un
     this->m_DatabaseConnector, CollectionID);
   this->UpdateTableWidgetForAnExistingTrace("mesh", CollectionID);
   this->UpdateTableWidgetForAnExistingTrace("contour", ContourID);
-  CloseDBConnection();
   IDWithColorData UpdatedContourData;
   UpdatedContourData.first = ContourID;
-  QColor Color = this->GetQColorFromTraceRow<GoDBContourRow>(contour_row);
+  QColor Color = this->GetQColorFromTraceRow<GoDBContourRow>(contour_row,
+    this->m_DatabaseConnector);
+  CloseDBConnection();
   UpdatedContourData.second = Color;
   return UpdatedContourData;
 }
@@ -1009,7 +1009,8 @@ QGoPrintDatabase::IDWithColorData QGoPrintDatabase::SaveMeshFromVisuInDB(
                            atoi(Collection.GetMapValue("Green").c_str()),
                            atoi(Collection.GetMapValue("Blue").c_str()),
                            atoi(Collection.GetMapValue("Alpha").c_str()));*/
-    CollectionData.second = this->GetQColorFromTraceRow<GoDBTrackRow>(Collection);
+    CollectionData.second = this->GetQColorFromTraceRow<GoDBTrackRow>(Collection,
+      this->m_DatabaseConnector);
     /*QColor ColorMesh(atoi(mesh_row.GetMapValue("Red").c_str()),
                            atoi(mesh_row.GetMapValue("Green").c_str()),
                            atoi(mesh_row.GetMapValue("Blue").c_str()),

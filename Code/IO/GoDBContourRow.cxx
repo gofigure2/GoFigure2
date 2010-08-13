@@ -100,8 +100,22 @@ void GoDBContourRow::InitializeMap()
 //-------------------------------------------------------------------------
 int GoDBContourRow::SaveInDB(vtkMySQLDatabase* DatabaseConnector)
 {
-  return AddOnlyOneNewObjectInTable<GoDBContourRow>(DatabaseConnector,
-                                                    "contour", *this, "ContourID");
+  /** \todo put it in GoDBRow ??*/
+   int SavedContourID;
+  //in case the ID is different from 0, this means the values have been
+  //updated for this mesh, so we update it in the database:
+  if (this->m_MapRow[this->m_TableIDName] != "0")
+    {
+    SavedContourID = UpdateOneNewObjectInTable<GoDBContourRow> (DatabaseConnector,                                                          this);
+    }
+  else
+    {
+    SavedContourID = AddOnlyOneNewObjectInTable<GoDBContourRow>(DatabaseConnector,
+                                                          "contour", this, "ContourID");
+    this->SetField("ContourID", SavedContourID);
+    } 
+
+  return SavedContourID;
 }
 //-------------------------------------------------------------------------
 
