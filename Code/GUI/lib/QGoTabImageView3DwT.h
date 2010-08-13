@@ -175,7 +175,6 @@ public:
                                 const double iRgba[4],
                                 const bool& iHighlighted,
                                 const unsigned int& iTCoord,
-                                const bool& iSaveInDataBase,
                                 std::string iTrace);
 
   /**
@@ -185,13 +184,13 @@ public:
    * @param[in] iHighlighted
    */
   void AddContourFromNodes(const unsigned int& iContourID, vtkPolyData* iNodes, const double iRgba[4],
-                           const bool& iHighlighted, const unsigned int& iTCoord, const bool& iSaveInDataBase);
+                           const bool& iHighlighted, const unsigned int& iTCoord);
   void AddContourFromNodes(const unsigned int& iContourID, vtkPolyData* iNodes,
                            const double& iR, const double& iG, const double& iB, const double& iA,
-                           const bool& iHighlighted, const unsigned int& iTCoord, const bool& iSaveInDataBase);
+                           const bool& iHighlighted, const unsigned int& iTCoord);
 
   void AddMeshFromNodes(const unsigned int& iMeshID, vtkPolyData* iNodes, const double iRgba[4],
-                        const bool& iHighlighted, const unsigned int& iTCoord, const bool& iSaveInDataBase,
+                        const bool& iHighlighted, const unsigned int& iTCoord,
                         bool NewMesh = true);
 
   void AddMeshFromNodes(const unsigned int& iMeshID, vtkPolyData* iNodes,
@@ -431,27 +430,19 @@ protected:
                               const double& iR = 0, const double& iG = 0, const double& iB = 0, const double& iA = 0
                               );
 
-  /**
-   * @param[in] iContourID
-   * @param[in] iDir
-   * @param[in] iHighlighted
-   * @param[in] iR red component in [0,1]
-   * @param[in] iG green component in [0,1]
-   * @param[in] iB blue component in [0,1]
-   * @param[in] iA alpha component in [0,1]
-   * @param[in] iSaveInDataBase save in data base if true
-   * \todo Alpha component is not used at all, it is assumed to be opaque
-   */
-  virtual int SavePolyDataAsContourInDB(vtkPolyData* iView,
-                                        const int& iContourID,
-                                        const int& iDir,
-                                        //const double& iR,
-                                       // const double& iG,
-                                        //const double& iB,
-                                        //const double& iA,
-                                        const bool& iHighlighted,
-                                        const unsigned int& iTCoord,
-                                        const bool& iSaveInDataBase);
+  // ID + color map, real save+real visu
+  IDWithColorData RealValidateContour(const int& iContourID, const int& iDir,
+                                const bool& iHighlighted, const unsigned int& iTCoord,
+                                vtkPolyData* contour, vtkPolyData* contour_nodes);
+
+  int RealVisuContour(const int& iContourID, const int& iDir,
+      const bool& iHighlighted, const unsigned int& iTCoord,
+      vtkPolyData* contour, vtkPolyData* contour_nodes,
+      const double& iR = 0, const double& iG = 0, const double& iB = 0, const double& iA  =0);
+
+  int RealSavePolyDataAsContourInDB(vtkPolyData* iView,
+      const unsigned int& iTCoord,
+      const bool& iSaveInDataBase);
 
   void CreateContour( vtkPolyData* contour_nodes,vtkPolyData* iView);
 

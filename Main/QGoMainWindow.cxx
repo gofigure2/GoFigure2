@@ -460,7 +460,6 @@ LoadAllTracesFromDatabase(const int& iT, const std::string& iTraceName)
           contourmesh_list_it->rgba,
           contourmesh_list_it->Highlighted,
           contourmesh_list_it->TCoord,
-          false,    // Not to be saved in database
           iTraceName);     // Name of the trace to add
 
         if (contourmesh_list_it->TCoord != static_cast<unsigned int>(iT))
