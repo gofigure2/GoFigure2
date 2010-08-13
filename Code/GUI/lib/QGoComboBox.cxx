@@ -45,7 +45,7 @@
 QGoComboBox::QGoComboBox(std::string iTextToAddANewOne,
                                    QWidget *iparent,
                                    std::string iTextToDelete)
-                                   :QComboBox(parent)
+                                   :QComboBox(iparent)
 {
   this->m_TextToAddANewOne = iTextToAddANewOne;
   this->m_TextToDelete = iTextToDelete;
