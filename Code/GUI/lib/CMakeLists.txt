@@ -44,7 +44,6 @@ SET( QGoGUILIB_SRC
   QTableWidgetChild.cxx
   SnapshotHelper.cxx
   QGoCreateMeshDialog.cxx
-  qtcolorcombobox.cxx
   QGoLsmToMegaExportDialog.cxx
   ConversionLsmToMegaThread.cxx
   QGoDBBookmarkManager.cxx
@@ -67,7 +66,6 @@ SET( QGoGUILIB_SRC
   QGoSelectedColorComboBox.cxx
   QGoCollectionColorComboBox.cxx
   QGoComboBox.cxx
-
   QGoSynchronizedView.cxx
   QGoSynchronizedView2D.cxx
   QGoSynchronizedView3D.cxx
@@ -134,7 +132,6 @@ SET( QGoGUILIB_HDRS
   QSplitterChild.h
   QTableWidgetChild.h
   QGoCreateMeshDialog.h
-  qtcolorcombobox.h
   QGoLsmToMegaExportDialog.h
   ConversionLsmToMegaThread.h
   QGoDBBookmarkManager.h
