@@ -66,9 +66,8 @@ public:
   \brief call the method setItemsWithColorFromList and send a signal with the current index.
   \param[in] iDataFromList contains the names and the QColor of the items to be displayed
   in the combobox
-  \overload from the mother class method
   */
-  virtual void InitializeTheListWithColor(
+  void InitializeTheListWithColor(
     std::list<ItemColorComboboxData> iDataFromList);
 
   /**
