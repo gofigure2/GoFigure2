@@ -47,7 +47,7 @@ class QGoTabImageViewElementBaseTestHelper :
   public QGoTabImageViewElementBase
   {
 public:
-  QGoTabImageViewElementBaseTestHelper(QWidget* iParent = 0)
+  explicit QGoTabImageViewElementBaseTestHelper(QWidget* iParent = 0)
     : QGoTabImageViewElementBase(iParent) {}
   virtual ~QGoTabImageViewElementBaseTestHelper() {}
 

@@ -89,7 +89,7 @@ class QGOGUILIB_EXPORT QGoTabImageView3DwT : public QGoTabElementBase
 public:
   /**
    * \brief Default Constructor
-   * @param parent
+   * \param parent
    */
   QGoTabImageView3DwT(QWidget * parent = 0);
 
@@ -104,23 +104,23 @@ public:
 
   /**
    * \brief
-   * @return
+   * \return
    */
   GoFigure::TabDimensionType GetTabDimensionType() const;
 
   /**
    *
-   * @param iReader
-   * @param iTimePoint
+   * \param iReader
+   * \param iTimePoint
    */
   void SetLSMReader(vtkLSMReader* iReader, const int& iTimePoint);
 
   /**
    *
-   * @param iContainer
-   * @param iFileType
-   * @param iHeader
-   * @param iTimePoint
+   * \param iContainer
+   * \param iFileType
+   * \param iHeader
+   * \param iTimePoint
    */
   void SetMegaCaptureFile(
     const GoFigureFileInfoHelperMultiIndexContainer& iContainer,
@@ -135,18 +135,18 @@ public:
 
   /**
    *
-   * @param parent
+   * \param parent
    */
   void setupUi(QWidget* parent);
   /**
    *
-   * @param parent
+   * \param parent
    */
   void retranslateUi(QWidget *parent);
 
   /**
    *
-   * @return
+   * \return
    */
   virtual std::list<QWidget*> AdditionalWidget()
   { return std::list<QWidget*>(); }
@@ -172,14 +172,14 @@ public:
    */
   void AddTraceFromNodesManager(const unsigned int& iContourID,
                                 vtkPolyData* iNodes,
-                                const double iRgba[4],
+                                double iRgba[4],
                                 const unsigned int& iTCoord,
                                 std::string iTrace);
   /**
    *
-   * @param[in] iNodes Nodes to be used by
-   * @param[in] iRgba[]
-   * @param[in] iHighlighted
+   * \param[in] iNodes Nodes to be used by
+   * \param[in] iRgba[]
+   * \param[in] iHighlighted
    */
   void AddContourFromNodes(const unsigned int& iContourID, vtkPolyData* iNodes, double iRgba[4],
                            const unsigned int& iTCoord);
@@ -309,7 +309,7 @@ public slots:
    * the container iterator
    */
   void ShowTracesFromTable(ContourMeshStructureMultiIndexContainer& iContainer,
-                           std::string iCurrentTrace);
+                           ContourMeshStructureMultiIndexContainer* iTbContainer );
 
   void             SelectContoursInTable();
   void             ListSelectMeshesInTable();
@@ -350,7 +350,7 @@ public slots:
 
   void ModifyTracesVisibilityFromTable(
     ContourMeshStructureMultiIndexContainer& iContainer,
-    std::string iCurrentTrace);
+    ContourMeshStructureMultiIndexContainer* iTbContainer );
 
   void ApplyOneClickSegmentationFilter();
   void ApplyContourSemiAutoSegmentation();
@@ -411,14 +411,14 @@ protected:
   void CreateContour( vtkPolyData* contour_nodes,vtkPolyData* iView);
 
   /**
-   * @param[in] iMeshID
-   * @param[in] iDir
-   * @param[in] iHighlighted
-   * @param[in] iR red component in [0,1]
-   * @param[in] iG green component in [0,1]
-   * @param[in] iB blue component in [0,1]
-   * @param[in] iA alpha component in [0,1]
-   * @param[in] iSaveInDataBase save in data base if true
+   * \param[in] iMeshID
+   * \param[in] iDir
+   * \param[in] iHighlighted
+   * \param[in] iR red component in [0,1]
+   * \param[in] iG green component in [0,1]
+   * \param[in] iB blue component in [0,1]
+   * \param[in] iA alpha component in [0,1]
+   * \param[in] iSaveInDataBase save in data base if true
    * \todo Alpha component is not used at all, it is assumed to be opaque
    */
   IDWithColorData SaveMesh(vtkPolyData* iView, const int& iMeshID, const int& iDir,
@@ -472,9 +472,11 @@ protected:
   void SetTimePointWithLSMReaders(const int& iTimePoint);
   void SetTimePointWithMegaCapture(const int& iTimePoint);
 
-  void ChangeColorOfSelectedTraces(ContourMeshStructureMultiIndexContainer& iContainer,
-                                   std::string iCurrentTrace,
-                                   QColor iSelectedColor);
+  void
+  ChangeColorOfSelectedTraces(
+      ContourMeshStructureMultiIndexContainer& ioContainer,
+      ContourMeshStructureMultiIndexContainer* iTbContainer,
+      QColor iSelectedColor );
 
   //void GetTraceColor(double* rgba);
 

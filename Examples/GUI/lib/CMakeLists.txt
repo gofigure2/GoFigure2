@@ -12,8 +12,8 @@ SET( QGOGUILIB_EXAMPLE_SRC
   qgomanualsegmentationsettingsdialog
   qgonavigationdockwidget
   qgomanualsegmentationdockwidget
-  contourmeshstructurehelpertest
-  contourmeshstructurehelpertest2
+#  contourmeshstructurehelpertest
+#  contourmeshstructurehelpertest2
   QGoWizardDBTest
   QGoPrintDatabaseTest
   qgocreatemeshdialogtest

@@ -100,7 +100,22 @@ QGoTabImageViewElementBase::~QGoTabImageViewElementBase()
     while (it != end)
       {
       NodeSet.insert(it->Nodes);
-      it->Actor->Delete();
+      if( it->ActorXY )
+        {
+        it->ActorXY->Delete();
+        }
+      if( it->ActorXZ )
+        {
+        it->ActorXZ->Delete();
+        }
+      if( it->ActorYZ )
+        {
+        it->ActorYZ->Delete();
+        }
+      if( it->ActorXYZ )
+        {
+        it->ActorXYZ->Delete();
+        }
       ++it;
       }
 
@@ -378,27 +393,14 @@ ReEditContour(const unsigned int& iId)
 
     if (it != m_ContourMeshContainer.get<TraceID>().end())
       {
-      int          c_dir;
-      vtkActor*    c_actor;
-      vtkPolyData* c_nodes = (vtkPolyData*)(0);
+      vtkPolyData* c_nodes = NULL;
 
-      while (it != m_ContourMeshContainer.get<TraceID>().end())
-        {
-        if (it->TraceID == iId)
-          {
-          c_dir = (*it).Direction;
-          c_actor = (*it).Actor;
-          c_nodes = (*it).Nodes;
-
-          RemoveActorFromViewer(c_dir, c_actor);
-          }
-        else
-          {
-          break;
-          }
-
-        ++it;
-        }
+      /// \todo remove actor from the visualization and update!
+//          c_dir = (*it).Direction;
+//          c_actor = (*it).Actor;
+//          c_nodes = (*it).Nodes;
+//
+//          RemoveActorFromViewer(c_dir, c_actor);
 
       m_ContourMeshContainer.erase(iId);
 

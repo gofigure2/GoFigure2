@@ -45,51 +45,83 @@ class vtkActor;
 class vtkPolyData;
 
 #include <ostream>
+#include <vector>
 
 #include "QGoIOConfigure.h"
 
 struct QGOIO_EXPORT ContourMeshStructure
   {
   unsigned int TraceID;
-  vtkActor* Actor;
+  vtkActor* ActorXY;
+  vtkActor* ActorXZ;
+  vtkActor* ActorYZ;
+  vtkActor* ActorXYZ;
+
   vtkPolyData* Nodes;
+
   //unsigned int CollectionID;
   unsigned int TCoord;
   bool Highlighted;
   bool Visible;
   double rgba[4];
-  int Direction;
+
+  /**
+  \brief Return the direction of a given contour iContour
+  \return 0 \if z coordinates are constant
+  \return 1 \if y coordinates are constant
+  \return 2 \if x coordinates are constant
+  \return -1 \else
+  */
+  int GetDirection();
+  bool IsAContour();
+
 
   ContourMeshStructure();
 
-  // Obsolete...
-  /*ContourMeshStructure(const unsigned int & iTraceID, vtkActor * iActor,
-                       vtkPolyData * iNodes, const unsigned int & iCollectionID, const unsigned int & iT,
-                       const bool & iHighlighted, const double & r, const double & g, const double & b,
-                       const double & alpha, const int & iDir);
+  ContourMeshStructure(const unsigned int & iTraceID,
+                       std::vector< vtkActor* > iActors,
+                       vtkPolyData * iNodes,
+                       const unsigned int & iT,
+                       const bool & iHighlighted,
+                       const bool & iVisible,
+                       const double & r,
+                       const double & g,
+                       const double & b,
+                       const double & alpha );
 
-  ContourMeshStructure(const unsigned int & iTraceID, vtkActor * iActor,
-                       vtkPolyData * iNodes, const unsigned int & iCollectionID, const unsigned int & iT,
-                       const bool & iHighlighted, const bool & iVisible, const double & r,
-                       const double & g, const double & b, const double & alpha, const int & iDir);*/
+  ContourMeshStructure(const unsigned int & iTraceID,
+                       std::vector< vtkActor* > iActors,
+                       vtkPolyData * iNodes,
+                       const unsigned int & iT,
+                       const bool & iHighlighted,
+                       const bool & iVisible,
+                       double iRgba[4] );
 
-  ContourMeshStructure(const unsigned int & iTraceID, vtkActor * iActor,
-                       vtkPolyData * iNodes, const unsigned int & iT,
-                       const bool & iHighlighted, const double & r, const double & g, const double & b,
-                       const double & alpha, const int & iDir);
-
-  ContourMeshStructure(const unsigned int & iTraceID, vtkActor * iActor,
-                       vtkPolyData * iNodes, const unsigned int & iT,
-                       const bool & iHighlighted, const bool & iVisible, const double & r,
-                       const double & g, const double & b, const double & alpha, const int & iDir);
+  ContourMeshStructure(const unsigned int & iTraceID,
+                       vtkActor* iActorXY,
+                       vtkActor* iActorYZ,
+                       vtkActor* iActorXZ,
+                       vtkActor* iActorXYZ,
+                       vtkPolyData * iNodes,
+                       const unsigned int & iT,
+                       const bool & iHighlighted,
+                       const bool & iVisible,
+                       const double & r,
+                       const double & g,
+                       const double & b,
+                       const double & alpha );
 
   ContourMeshStructure(const ContourMeshStructure &iE);
   ~ContourMeshStructure();
 
-  friend std::ostream& operator <<(std::ostream& os, const ContourMeshStructure& c)
+  friend std::ostream& operator <<
+      (std::ostream& os, const ContourMeshStructure& c)
   {
     os << "TraceID " << c.TraceID << std::endl;
-    os << "Actor " << c.Actor << std::endl;
+    os << "ActorXY " << c.ActorXY << std::endl;
+    os << "ActorXZ " << c.ActorXZ << std::endl;
+    os << "ActorYZ " << c.ActorYZ << std::endl;
+    os << "ActorXYZ " << c.ActorXYZ << std::endl;
     os << "Nodes " << c.Nodes << std::endl;
     //os << "CollectionID " << c.CollectionID << std::endl;
     os << "TCoord " << c.TCoord << std::endl;
@@ -97,7 +129,6 @@ struct QGOIO_EXPORT ContourMeshStructure
     os << "Visible " << c.Visible << std::endl;
     os << "RGBA [" << c.rgba[0] << ", " << c.rgba[1] << ", " << c.rgba[2]
        << ", " << c.rgba[3] << "]" << std::endl;
-    os << "Direction " << c.Direction << std::endl;
 
     return os;
   }
@@ -105,7 +136,10 @@ struct QGOIO_EXPORT ContourMeshStructure
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 struct TraceID {};
-struct Actor {};
+struct ActorXY {};
+struct ActorXZ {};
+struct ActorYZ {};
+struct ActorXYZ {};
 struct Nodes {};
 //struct CollectionID {};
 struct TCoord {};

@@ -184,7 +184,7 @@ QGoTabImageView3DwT(QWidget* iParent) :
 
   m_DockWidgetList.push_back(
     std::pair<QGoDockWidgetStatus*, QDockWidget*>(
-      new QGoDockWidgetStatus(this->m_DataBaseTables->GetTraceManualEditingDockWidget(), 
+      new QGoDockWidgetStatus(this->m_DataBaseTables->GetTraceManualEditingDockWidget(),
       Qt::LeftDockWidgetArea, true, true),
       this->m_DataBaseTables->GetTraceManualEditingDockWidget()));
 
@@ -467,7 +467,7 @@ void
 QGoTabImageView3DwT::
 DistanceWidgetInteractorBehavior(bool iActive)
 {
- this->m_ImageView->EnableDistanceWidget(iActive); 
+ this->m_ImageView->EnableDistanceWidget(iActive);
 }
 
 //-------------------------------------------------------------------------
@@ -475,7 +475,7 @@ void
 QGoTabImageView3DwT::
 AngleWidgetInteractorBehavior(bool iActive)
 {
-  this->m_ImageView->EnableAngleWidget(iActive); 
+  this->m_ImageView->EnableAngleWidget(iActive);
 }
 
 //-------------------------------------------------------------------------
@@ -483,7 +483,7 @@ void
 QGoTabImageView3DwT::
 Box3DPicking(bool iActive)
 {
-  this->m_ImageView->EnableBoxWidget(iActive); 
+  this->m_ImageView->EnableBoxWidget(iActive);
 }
 
 //-------------------------------------------------------------------------
@@ -557,7 +557,7 @@ CreateDataBaseTablesConnection()
                    SIGNAL(TimePointChanged(int)),
                    this->m_DataBaseTables,
                    SLOT(UpdateSelectedTimePoint(int)));
- 
+
   QObject::connect(this->m_DataBaseTables,
                    SIGNAL(SelectionContoursToHighLightChanged()),
                    this, SLOT(HighLightTracesFromTableManager()));
@@ -1948,7 +1948,7 @@ ShowAllChannels(bool iChecked)
     {
     // Reset the window level
     m_ImageView->ResetWindowLevel();
-    
+
     vtkSmartPointer<vtkImageAppendComponents> append_filter =
       vtkSmartPointer<vtkImageAppendComponents>::New();
 
@@ -2091,14 +2091,13 @@ VisualizeContour(const int& iContourID, const int& iDir,
 
     contour_property->Delete();
 
-    int i;
     // fill the container
-    for (i = 0; i < contour_actor.size(); i++)
-      {
-      ContourMeshStructure temp(m_ContourId, contour_actor[i],
-                                contour_nodes, iTCoord, iHighlighted, r, g, b, a, i);
-      m_ContourContainer.insert(temp);
-      }
+    ContourMeshStructure temp( m_ContourId, contour_actor,
+                               contour_nodes, iTCoord,
+                               iHighlighted,
+                               true, // Visible
+                               r, g, b, a );
+    m_ContourContainer.insert(temp);
 
     if (iContourID != -1)
       {
@@ -2140,7 +2139,7 @@ ValidateContour()
     IDWithColorData test =  SaveContour(
         m_ImageView->GetContourRepresentationAsPolydata(i),
         m_ImageView->GetContourRepresentationNodePolydata(i));
-    double rgba[4] = {.0, .0, .0, .0};
+    double rgba[4] = {0., 0., 0., 0.};
     int ID = test.first;
     test.second.getRgbF(&rgba[0], &rgba[1], &rgba[2], &rgba[3]);
     // visu
@@ -2259,10 +2258,10 @@ RemoveAllTracesForGivenTimePoint(const unsigned int& iT,
 
     while (it0 != it1)
       {
-      c_dir = (*it0).Direction;
-      c_actor = (*it0).Actor;
-
-      m_ImageView->RemoveActor(c_dir, c_actor);
+      this->m_ImageView->RemoveActor( 0, (*it0).ActorXY );
+      this->m_ImageView->RemoveActor( 1, (*it0).ActorXZ );
+      this->m_ImageView->RemoveActor( 2, (*it0).ActorYZ );
+      this->m_ImageView->RemoveActor( 3, (*it0).ActorXYZ );
       ++it0;
       }
     }
@@ -2302,10 +2301,11 @@ LoadAllTracesForGivenTimePoint(const unsigned int& iT,
 
     while (it0 != it1)
       {
-      c_dir = (*it0).Direction;
-      c_actor = (*it0).Actor;
+      this->m_ImageView->AddActor( 0, (*it0).ActorXY );
+      this->m_ImageView->AddActor( 1, (*it0).ActorXZ );
+      this->m_ImageView->AddActor( 2, (*it0).ActorYZ );
+      this->m_ImageView->AddActor( 3, (*it0).ActorXYZ );
 
-      m_ImageView->AddActor(c_dir, c_actor);
       ++it0;
       }
     }
@@ -2317,20 +2317,20 @@ void
 QGoTabImageView3DwT::
 AddTraceFromNodesManager(const unsigned int& iContourID,
                          vtkPolyData* iNodes,
-                         const double iRgba[4],
+                         double iRgba[4],
                          const unsigned int& iTCoord,
                          std::string iTrace)
 {
   // If we want to add a contour
   if (iTrace.compare("contour") == 0)
     {
-    AddContourFromNodes(iContourID, iNodes, const_cast<double*>(iRgba), iTCoord);
+    AddContourFromNodes(iContourID, iNodes, iRgba, iTCoord);
     }
   // If we want to add a mesh
   if (iTrace.compare("mesh") == 0)
     {
   /// should be visu only
-    AddMeshFromNodes(iContourID, iNodes,const_cast<double*>(iRgba), iTCoord, false, true);
+    AddMeshFromNodes(iContourID, iNodes, iRgba, iTCoord, false, true);
     }
 }
 
@@ -2354,7 +2354,7 @@ AddContourFromNodes(const unsigned int& iContourID, vtkPolyData* iNodes,
                       m_ImageView->GetContourRepresentationAsPolydata(dir),
                       m_ImageView->GetContourRepresentationNodePolydata(dir),
                       iRgba);
-       m_ImageView->EnableContourWidget( false ); 
+       m_ImageView->EnableContourWidget( false );
       }
     }
 }
@@ -2390,21 +2390,12 @@ ReEditContour(const unsigned int& iId)
       vtkActor*    c_actor;
       vtkPolyData* c_nodes = NULL;
 
-      while (it != m_ContourContainer.get<TraceID>().end())
+      if (it != m_ContourContainer.get<TraceID>().end())
         {
-        if (it->TraceID == iId)
-          {
-          c_dir = (*it).Direction;
-          c_actor = (*it).Actor;
-          c_nodes = (*it).Nodes;
-          m_ImageView->RemoveActor(c_dir, c_actor);
-          }
-        else
-          {
-          break;
-          }
-
-        ++it;
+        this->m_ImageView->RemoveActor( 0, (*it).ActorXY );
+        this->m_ImageView->RemoveActor( 1, (*it).ActorXZ );
+        this->m_ImageView->RemoveActor( 2, (*it).ActorYZ );
+        this->m_ImageView->RemoveActor( 3, (*it).ActorXYZ );
         }
 
       m_ContourContainer.erase(iId);
@@ -2492,51 +2483,54 @@ HighLightContainer(ContourMeshStructureMultiIndexContainer& iContainer, vtkActor
   select_property->SetLineWidth(3.);
 
   // Change the corresponding highlighted value in the container
-  ContourMeshStructureMultiIndexContainer::index<Actor>::type::iterator
-  actor_it = iContainer.get<Actor>().find(iActor);
+  ContourMeshStructureMultiIndexContainer::index<ActorXY>::type::iterator
+  actor_it = iContainer.get<ActorXY>().find(iActor);
 
   // Is the actor in the container?
-  if (actor_it != iContainer.get<Actor>().end())
+  if (actor_it != iContainer.get<ActorXY>().end())
     {
     // get the corresponding TraceID (from the container)
-    unsigned int trace_id = actor_it->TraceID;
-
-    ContourMeshStructureMultiIndexContainer::index<TraceID>::type::iterator
-    traceid_it = iContainer.get<TraceID>().find(trace_id);
-
-    // get all elements from the container where TraceID = trace_id
-    while ((traceid_it != iContainer.get<TraceID>().end())
-           && ((*traceid_it).TraceID == trace_id))
-      {
+//    unsigned int trace_id = actor_it->TraceID;
+//
+//    ContourMeshStructureMultiIndexContainer::index<TraceID>::type::iterator
+//    traceid_it = iContainer.get<TraceID>().find(trace_id);
+//
+//     get all elements from the container where TraceID = trace_id
+//    while ((traceid_it != iContainer.get<TraceID>().end())
+//           && ((*traceid_it).TraceID == trace_id))
+//      {
       // if the element was not highlighted
-      if (!traceid_it->Highlighted)
+      if (!actor_it->Highlighted)
         {
         // highlight the element
-        m_ImageView->ChangeActorProperty(traceid_it->Direction,
-                                         traceid_it->Actor, select_property);
 
-        ContourMeshStructure temp(*traceid_it);
+        /// \todo fix method ChangeActorProperty
+//        m_ImageView->ChangeActorProperty(actor_it->Direction,
+//                                         actor_it->ActorXY, select_property);
+
+        ContourMeshStructure temp(*actor_it);
         temp.Highlighted = true;
-        iContainer.get<TraceID>().replace(traceid_it, temp);
+        iContainer.get<ActorXY>().replace(actor_it, temp);
         }
       else
         {
         // change the color of the element to its original color
         vtkProperty* temp_property = vtkProperty::New();
-        temp_property->SetColor(traceid_it->rgba[0], traceid_it->rgba[1], traceid_it->rgba[2]);
-        temp_property->SetOpacity(traceid_it->rgba[3]);
+        temp_property->SetColor(actor_it->rgba[0], actor_it->rgba[1], actor_it->rgba[2]);
+        temp_property->SetOpacity(actor_it->rgba[3]);
         temp_property->SetLineWidth(1.);
 
-        m_ImageView->ChangeActorProperty(traceid_it->Direction,
-                                         traceid_it->Actor, temp_property);
+        /// \todo fix method ChangeActorProperty
+//        m_ImageView->ChangeActorProperty(actor_it->Direction,
+//                                         actor_it->Actor, temp_property);
         temp_property->Delete();
 
-        ContourMeshStructure temp(*traceid_it);
+        ContourMeshStructure temp(*actor_it);
         temp.Highlighted = false;
-        iContainer.get<TraceID>().replace(traceid_it, temp);
+        iContainer.get<ActorXY>().replace(actor_it, temp);
         }
-      ++traceid_it;
-      }
+//      ++traceid_it;
+//      }
     }
   select_property->Delete();
 }
@@ -2571,62 +2565,62 @@ QGoTabImageView3DwT::
 HighLightTracesFromTable(ContourMeshStructureMultiIndexContainer& iContainer,
                          std::string iCurrentTrace)
 {
-  ContourMeshStructureMultiIndexContainer::iterator
-  it = this->m_DataBaseTables->GetTracesInfoListForVisu(iCurrentTrace.c_str())
-       ->begin();
-  unsigned int trace_id = 0;
-
-  vtkProperty* select_property = vtkProperty::New();
-  select_property->SetColor(1., 0., 0.);
-  select_property->SetLineWidth(3.);
-  select_property->SetOpacity(1.);
-
-  ContourMeshStructure tempStructure;
-  ContourMeshStructureMultiIndexContainer::index<TraceID>::type::iterator
-  traceid_it;
-  ContourMeshStructureMultiIndexContainer::index<TraceID>::type::iterator
-  test_it = iContainer.get<TraceID>().end();
-
-  while (it != this->m_DataBaseTables
-         ->GetTracesInfoListForVisu(iCurrentTrace.c_str())->end())
-    {
-    trace_id = it->TraceID;
-
-    traceid_it = iContainer.get<TraceID>().find(trace_id);
-
-    while ((traceid_it != iContainer.get<TraceID>().end())
-           && ((*traceid_it).TraceID == trace_id))
-      {
-      if (it->Highlighted != traceid_it->Highlighted)
-        {
-        if (!it->Highlighted)
-          {
-          vtkProperty* temp_property = vtkProperty::New();
-          temp_property->SetColor(traceid_it->rgba[0], traceid_it->rgba[1], traceid_it->rgba[2]);
-          temp_property->SetOpacity(traceid_it->rgba[3]);
-          temp_property->SetLineWidth(1.);
-
-          m_ImageView->ChangeActorProperty(traceid_it->Direction,
-                                           traceid_it->Actor, temp_property);
-          temp_property->Delete();
-          }
-        else
-          {
-          m_ImageView->ChangeActorProperty(traceid_it->Direction,
-                                           traceid_it->Actor, select_property);
-          }
-        tempStructure = *traceid_it;
-        tempStructure.Highlighted = it->Highlighted;
-
-        iContainer.get<TraceID>().replace(traceid_it, tempStructure);
-        }
-      ++traceid_it;
-      }
-
-    ++it;
-    }
-
-  select_property->Delete();
+//  ContourMeshStructureMultiIndexContainer::iterator
+//  it = this->m_DataBaseTables->GetTracesInfoListForVisu(iCurrentTrace.c_str())
+//       ->begin();
+//  unsigned int trace_id = 0;
+//
+//  vtkProperty* select_property = vtkProperty::New();
+//  select_property->SetColor(1., 0., 0.);
+//  select_property->SetLineWidth(3.);
+//  select_property->SetOpacity(1.);
+//
+//  ContourMeshStructure tempStructure;
+//  ContourMeshStructureMultiIndexContainer::index<TraceID>::type::iterator
+//  traceid_it;
+//  ContourMeshStructureMultiIndexContainer::index<TraceID>::type::iterator
+//  test_it = iContainer.get<TraceID>().end();
+//
+//  while (it != this->m_DataBaseTables
+//         ->GetTracesInfoListForVisu(iCurrentTrace.c_str())->end())
+//    {
+//    trace_id = it->TraceID;
+//
+//    traceid_it = iContainer.get<TraceID>().find(trace_id);
+//
+//    while ((traceid_it != iContainer.get<TraceID>().end())
+//           && ((*traceid_it).TraceID == trace_id))
+//      {
+//      if (it->Highlighted != traceid_it->Highlighted)
+//        {
+//        if (!it->Highlighted)
+//          {
+//          vtkProperty* temp_property = vtkProperty::New();
+//          temp_property->SetColor(traceid_it->rgba[0], traceid_it->rgba[1], traceid_it->rgba[2]);
+//          temp_property->SetOpacity(traceid_it->rgba[3]);
+//          temp_property->SetLineWidth(1.);
+//
+//          m_ImageView->ChangeActorProperty(traceid_it->Direction,
+//                                           traceid_it->Actor, temp_property);
+//          temp_property->Delete();
+//          }
+//        else
+//          {
+//          m_ImageView->ChangeActorProperty(traceid_it->Direction,
+//                                           traceid_it->Actor, select_property);
+//          }
+//        tempStructure = *traceid_it;
+//        tempStructure.Highlighted = it->Highlighted;
+//
+//        iContainer.get<TraceID>().replace(traceid_it, tempStructure);
+//        }
+//      ++traceid_it;
+//      }
+//
+//    ++it;
+//    }
+//
+//  select_property->Delete();
 }
 //-------------------------------------------------------------------------
 
@@ -2674,22 +2668,22 @@ SelectTraceInTable(ContourMeshStructureMultiIndexContainer& iContainer,
   std::list<int>                  listofrowstobeselected;
   std::list<vtkProp3D*>::iterator it = iActorList.begin();
 
-  while (it != iActorList.end())
-    {
-    // Change the corresponding highlighted value in the container
-    ContourMeshStructureMultiIndexContainer::index<Actor>::type::iterator
-    actor_it = iContainer.get<Actor>().find(static_cast<vtkActor*>(*it));
-
-    if (actor_it != iContainer.get<Actor>().end())
-      {
-      if (actor_it->TCoord ==  static_cast<unsigned int>(m_TimePoint))
-        {
-        int trace_id = static_cast<int>(actor_it->TraceID);
-        listofrowstobeselected.push_back(trace_id);
-        }
-      }
-    ++it;
-    }
+//  while (it != iActorList.end())
+//    {
+//    // Change the corresponding highlighted value in the container
+//    ContourMeshStructureMultiIndexContainer::index<Actor>::type::iterator
+//    actor_it = iContainer.get<Actor>().find(static_cast<vtkActor*>(*it));
+//
+//    if (actor_it != iContainer.get<Actor>().end())
+//      {
+//      if (actor_it->TCoord ==  static_cast<unsigned int>(m_TimePoint))
+//        {
+//        int trace_id = static_cast<int>(actor_it->TraceID);
+//        listofrowstobeselected.push_back(trace_id);
+//        }
+//      }
+//    ++it;
+//    }
 
   return listofrowstobeselected;
 }
@@ -2734,18 +2728,16 @@ DeleteTracesFromTable(ContourMeshStructureMultiIndexContainer& iContainer,
     if (it != iContainer.get<TraceID>().end())
       {
       it2 = it;
-      int          c_dir;
       vtkActor*    c_actor;
       vtkPolyData* c_nodes;
       while (it != iContainer.get<TraceID>().end())
         {
         if (static_cast<int>(it->TraceID) == *traceid_it)
           {
-          c_dir = (*it).Direction;
-          c_actor = (*it).Actor;
+//          c_actor = (*it).Actor;
           c_nodes = (*it).Nodes;
 
-          m_ImageView->RemoveActor(c_dir, c_actor);
+//          RemoveActorFromViewer(c_dir, c_actor);
 
 //           c_actor->Delete();
           }
@@ -3102,7 +3094,7 @@ SaveAndVisuContour(vtkPolyData* iView, const unsigned int& iTCoord,
   // Save in DB
   IDWithColorData test =  SaveContour(iView, contour_nodes);
 
-  double rgba[4] = {.0, .0, .0, .0};
+  double rgba[4] = {0., 0., 0., 0.};
   int ID = test.first;
   test.second.getRgbF(&rgba[0], &rgba[1], &rgba[2], &rgba[3]);
   // visu
@@ -3140,7 +3132,7 @@ QGoTabImageView3DwT::IDWithColorData
 QGoTabImageView3DwT::
 SaveMesh(vtkPolyData* iView, const int& iMeshID,
                        const int& iDir,const bool& iHighlighted,
-                       const bool& iSaveInDataBase, 
+                       const bool& iSaveInDataBase,
                        double iRgba[4],
                        bool NewMesh)
 {
@@ -3155,8 +3147,8 @@ SaveMesh(vtkPolyData* iView, const int& iMeshID,
   // Extract Min and Max from bounds
   double       Min[3], Max[3];
   int          k = 0;
-  unsigned int i;
-  for (i = 0; i < 3; i++)
+
+  for (int i = 0; i < 3; i++)
     {
     Min[i] = bounds[k++];
     Max[i] = bounds[k++];
@@ -3174,9 +3166,11 @@ SaveMesh(vtkPolyData* iView, const int& iMeshID,
   //if the mesh needs to be updated in the Database, the NewMesh will be false and the iMeshID will
   //be = 0 if the meshID needs to be gotten from the trace manual editing widget, if it is a new
   //mesh, the NewMesh will be true and iMeshID = 0:
-  IDWithColorData MeshData = m_DataBaseTables->SaveMeshFromVisuInDB(min_idx[0],
-                                                    min_idx[1], min_idx[2], m_TimePoint, max_idx[0],
-                                                    max_idx[1], max_idx[2], iView, &MeshAttributes,NewMesh,iMeshID);
+  IDWithColorData MeshData =
+      m_DataBaseTables->SaveMeshFromVisuInDB( min_idx[0], min_idx[1], min_idx[2],
+                                              m_TimePoint, max_idx[0],
+                                              max_idx[1], max_idx[2], iView,
+                                              &MeshAttributes, NewMesh, iMeshID);
 
   delete min_idx;
   delete max_idx;
@@ -3218,13 +3212,11 @@ VisualizeMesh(vtkPolyData* iView, const int& iMeshID,
   //unsigned int trackid = this->m_TraceManualEditingDockWidget->m_TraceWidget->GetCurrentCollectionID();
 
   // fill the container
-  int i(0);
-  for (i = 0; i < mesh_actor.size(); i++)
-    {
-    ContourMeshStructure temp(m_MeshId, mesh_actor[i], iView,
-                              iTCoord, iHighlighted, r, g, b, a, i);
-    m_MeshContainer.insert(temp);
-    }
+  ContourMeshStructure temp( m_MeshId, mesh_actor, iView,
+                             iTCoord, iHighlighted,
+                             true, // visible
+                             r, g, b, a );
+  m_MeshContainer.insert(temp);
 
   /// TODO Check accuracy
   ++m_MeshId;
@@ -3241,7 +3233,7 @@ SavePolyDataAsMeshInDB(vtkPolyData* iView)
   // get from m_DataBaseTables if user is using one gofiguredatabase or not.
   // In such a case contours are saved in the database, else they are not!
   bool saveindatabase = m_DataBaseTables->IsDatabaseUsed();
-  double RGBA[4] = {.0, .0, .0, .0};
+  double RGBA[4] = {0., 0., 0., 0.};
   int iID(0);
   // save in DB
   IDWithColorData MeshData = SaveMesh(iView, -1, 0,false, saveindatabase,RGBA);
@@ -3342,9 +3334,12 @@ void QGoTabImageView3DwT::ImportContours()
 {
   if (this->m_DataBaseTables->IsDatabaseUsed())
     {
+    int t = this->GetTimePoint();
     ContourMeshStructureMultiIndexContainer* ContourToAdd =
-      this->m_DataBaseTables->ImportContours(this->GetTimePoint());
+      this->m_DataBaseTables->ImportContours( t );
+
     ContourMeshStructureMultiIndexContainer::iterator c_it = ContourToAdd->begin();
+
     while (c_it != ContourToAdd->end())
       {
       ContourMeshStructure Contour = *c_it;
@@ -3367,45 +3362,49 @@ ChangeColorOfSelectedTracesManager(QColor iSelectedColor)
 {
   // In which table are we?
   std::string currentTrace = this->m_DataBaseTables->InWhichTableAreWe();
+
+  ContourMeshStructureMultiIndexContainer* tb_container =
+    this->m_DataBaseTables->GetTracesInfoListForVisu( currentTrace );
   //QColor      selectedColor = iSelectedTraces.second;
 
   // If we are in contour
   if (currentTrace.compare("contour") == 0)
     {
-    ChangeColorOfSelectedTraces(m_ContourContainer, currentTrace, iSelectedColor);
+    ChangeColorOfSelectedTraces(m_ContourContainer, tb_container, iSelectedColor);
     }
   // If we are in mesh
   if (currentTrace.compare("mesh") == 0)
     {
-    ChangeColorOfSelectedTraces(m_MeshContainer, currentTrace, iSelectedColor);
+    ChangeColorOfSelectedTraces(m_MeshContainer, tb_container, iSelectedColor);
     }
 }
+//-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
 ChangeColorOfSelectedTraces(ContourMeshStructureMultiIndexContainer& ioContainer,
-                            std::string iCurrentTrace, QColor iSelectedColor)
+                            ContourMeshStructureMultiIndexContainer* iTbContainer,
+                            QColor iSelectedColor)
 {
   ContourMeshStructureMultiIndexContainer::iterator
-  it = this->m_DataBaseTables->GetTracesInfoListForVisu(iCurrentTrace.c_str())
-       ->begin();
+    it = iTbContainer->begin();
+
   unsigned int trace_id = 0;
   double       rgba[4];
   rgba[0] = iSelectedColor.redF();
   rgba[1] = iSelectedColor.greenF();
   rgba[2] = iSelectedColor.blueF();
-  rgba[3] = 1;
+  rgba[3] = iSelectedColor.alphaF();
 
-  while (it != this->m_DataBaseTables
-         ->GetTracesInfoListForVisu(iCurrentTrace.c_str())->end())
+  while (it != iTbContainer->end())
     {
     trace_id = it->TraceID;
-    ContourMeshStructureMultiIndexContainer::index<TraceID>::type::iterator
-    traceid_it = ioContainer.get<TraceID>().find(trace_id);
 
-    while ((traceid_it != ioContainer.get<TraceID>().end())
-           && ((*traceid_it).TraceID == trace_id))
+    ContourMeshStructureMultiIndexContainer::index<TraceID>::type::iterator
+      traceid_it = ioContainer.get<TraceID>().find(trace_id);
+
+    if( traceid_it != ioContainer.get<TraceID>().end() )
       {
       if (it->Highlighted)
         {
@@ -3417,17 +3416,19 @@ ChangeColorOfSelectedTraces(ContourMeshStructureMultiIndexContainer& ioContainer
         temp.rgba[3] = rgba[3];
         ioContainer.get<TraceID>().replace(traceid_it, temp);
         }
-      ++traceid_it;
       }
     ++it;
     }
 }
+//-------------------------------------------------------------------------
 
 /// TODO Bug iMeshID is not the one it is supposed to be (+1)
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
-CreateMeshFromSelectedContours(std::list<int> iListContourIDs,int iMeshID)
+CreateMeshFromSelectedContours(
+    std::list<int> iListContourIDs,
+    int iMeshID )
 {
   std::list<int>::iterator contourid_it = iListContourIDs.begin();
 
@@ -3445,7 +3446,8 @@ CreateMeshFromSelectedContours(std::list<int> iListContourIDs,int iMeshID)
     if( traceid_it != m_ContourContainer.get< TraceID >().end() )
       {
       tcoord = traceid_it->TCoord;
-      list_contours[id++] = vtkPolyData::SafeDownCast(traceid_it->Actor->GetMapper()->GetInput());
+      list_contours[id++] =
+          vtkPolyData::SafeDownCast(traceid_it->ActorXYZ->GetMapper()->GetInput());
       }
     ++contourid_it;
     }
@@ -3455,8 +3457,8 @@ CreateMeshFromSelectedContours(std::list<int> iListContourIDs,int iMeshID)
   FilterType::Pointer filter = FilterType::New();
   filter->ProcessContours(list_contours);
 
-  // save
-  double RGBA[4] = {.0, .0, .0, .0};
+  double RGBA[4] = {0., 0., 0., 0.};
+
   int iID(0);
   // save in DB
   IDWithColorData MeshData = this->SaveMesh(filter->GetOutput(), iMeshID, 0,false, true, RGBA, false);
@@ -3474,12 +3476,18 @@ void QGoTabImageView3DwT::ImportMeshes()
 {
   if (this->m_DataBaseTables->IsDatabaseUsed())
     {
+    double RGBA[4] = {0., 0., 0., 0.};
+    int t = this->GetTimePoint();
+
     ContourMeshStructureMultiIndexContainer* MeshToAdd =
-      m_DataBaseTables->ImportMeshes(GetTimePoint());
+      m_DataBaseTables->ImportMeshes( t );
+
     ContourMeshStructureMultiIndexContainer::iterator c_it = MeshToAdd->begin();
+
     while (c_it != MeshToAdd->end())
       {
       ContourMeshStructure Mesh = *c_it;
+
       // save + visu....
       // NOT ENOUGH ONLY VISU YET
       AddMeshFromNodes(Mesh.TraceID, Mesh.Nodes, Mesh.rgba, Mesh.TCoord, false);
@@ -3527,15 +3535,18 @@ ChangeSelectedMeshesVisibility()
   // In which table are we?
   std::string currentTrace = m_DataBaseTables->InWhichTableAreWe();
 
+  ContourMeshStructureMultiIndexContainer* tb_container =
+    this->m_DataBaseTables->GetTracesInfoListForVisu( currentTrace );
+
   // If we are in contour
   if (currentTrace.compare("contour") == 0)
     {
-    ShowTracesFromTable(m_ContourContainer, currentTrace);
+    ShowTracesFromTable(m_ContourContainer, tb_container);
     }
   // If we are in mesh
   if (currentTrace.compare("mesh") == 0)
     {
-    ShowTracesFromTable(m_MeshContainer, currentTrace);
+    ShowTracesFromTable(m_MeshContainer, tb_container);
     }
 
 }
@@ -3545,34 +3556,36 @@ ChangeSelectedMeshesVisibility()
 void
 QGoTabImageView3DwT::
 ShowTracesFromTable(ContourMeshStructureMultiIndexContainer& iContainer,
-                    std::string iCurrentTrace)
+                    ContourMeshStructureMultiIndexContainer* iTbContainer )
 {
   ContourMeshStructureMultiIndexContainer::iterator
-  it = m_DataBaseTables->GetTracesInfoListForVisu(iCurrentTrace.c_str())
-       ->begin();
-  unsigned int                                                            trace_id = 0;
-  vtkActor*                                                               tempActor = NULL;
-  bool                                                                    tempHighL = NULL;
-  ContourMeshStructure                                                    temp;
-  ContourMeshStructureMultiIndexContainer::index<TraceID>::type::iterator traceid_it;
+      it = iTbContainer->begin();
+  unsigned int trace_id = 0;
+  vtkActor* tempActor = NULL;
+  bool tempHighL = NULL;
 
-  while (it != m_DataBaseTables
-         ->GetTracesInfoListForVisu(iCurrentTrace.c_str())->end())
+  ContourMeshStructure  temp;
+
+  ContourMeshStructureMultiIndexContainer::index<TraceID>::type::iterator
+      traceid_it;
+
+  while (it != iTbContainer->end())
     {
     trace_id = it->TraceID;
     traceid_it = iContainer.get<TraceID>().find(trace_id);
     tempHighL = it->Highlighted;
 
-    while ((*traceid_it).TraceID == trace_id)
+    if( traceid_it != iContainer.get<TraceID>().end() )
       {
-      tempActor = traceid_it->Actor;
       tempActor->SetVisibility(tempHighL);
-      m_ImageView->ChangeActorProperty(traceid_it->Direction,
-                                       tempActor, tempActor->GetProperty());
+      /// \todo update All Actors property!
+//      tempActor = traceid_it->Actor;
+//      m_ImageView->ChangeActorProperty(traceid_it->Direction,
+//                                       tempActor, tempActor->GetProperty());
       temp = *traceid_it;
       temp.Highlighted = tempHighL;
+
       iContainer.get<TraceID>().replace(traceid_it, temp);
-      ++traceid_it;
       }
     ++it;
     }
@@ -3586,15 +3599,18 @@ ModifyTracesVisibilityFromTableManager()
   // In which table are we?
   std::string currentTrace = this->m_DataBaseTables->InWhichTableAreWe();
 
+  ContourMeshStructureMultiIndexContainer* tb_container =
+    this->m_DataBaseTables->GetTracesInfoListForVisu( currentTrace );
+
   // If we are in contour
   if (currentTrace.compare("contour") == 0)
     {
-    ModifyTracesVisibilityFromTable(m_ContourContainer, currentTrace);
+    ModifyTracesVisibilityFromTable(m_ContourContainer, tb_container);
     }
   // If we are in mesh
   if (currentTrace.compare("mesh") == 0)
     {
-    ModifyTracesVisibilityFromTable(m_MeshContainer, currentTrace);
+    ModifyTracesVisibilityFromTable(m_MeshContainer, tb_container);
     }
 }
 //-------------------------------------------------------------------------
@@ -3604,12 +3620,12 @@ ModifyTracesVisibilityFromTableManager()
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
-ModifyTracesVisibilityFromTable(ContourMeshStructureMultiIndexContainer& iContainer,
-                                std::string iCurrentTrace)
+ModifyTracesVisibilityFromTable(
+    ContourMeshStructureMultiIndexContainer& iContainer,
+    ContourMeshStructureMultiIndexContainer* iTbContainer )
 {
   ContourMeshStructureMultiIndexContainer::iterator
-  it = this->m_DataBaseTables->GetTracesInfoListForVisu(iCurrentTrace.c_str())
-       ->begin();
+  it = iTbContainer->begin();
   unsigned int trace_id = 0;
 
   ContourMeshStructure tempStructure;
@@ -3620,19 +3636,21 @@ ModifyTracesVisibilityFromTable(ContourMeshStructureMultiIndexContainer& iContai
 
   test_it = iContainer.get<TraceID>().end();
 
-  while (it != this->m_DataBaseTables
-         ->GetTracesInfoListForVisu(iCurrentTrace.c_str())->end())
+  while (it != iTbContainer->end())
     {
     trace_id = it->TraceID;
 
     traceid_it = iContainer.get<TraceID>().find(trace_id);
 
-    while ((traceid_it != iContainer.get<TraceID>().end())
-           && ((*traceid_it).TraceID == trace_id))
+    if( traceid_it != iContainer.get<TraceID>().end() )
       {
       if (it->Visible != traceid_it->Visible)
         {
-        traceid_it->Actor->SetVisibility(it->Visible);
+        traceid_it->ActorXY->SetVisibility(it->Visible);
+        traceid_it->ActorXZ->SetVisibility(it->Visible);
+        traceid_it->ActorYZ->SetVisibility(it->Visible);
+        traceid_it->ActorXYZ->SetVisibility(it->Visible);
+
         tempStructure = *traceid_it;
         tempStructure.Visible = it->Visible;
 

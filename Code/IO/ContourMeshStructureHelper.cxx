@@ -63,7 +63,7 @@ ComputeDirectionFromContour(vtkPolyData* iContour)
   return oDir;
 }
 // ---------------------------------------------------------------------------
-
+/*
 // ---------------------------------------------------------------------------
 std::list<ContourMeshStructure*>
 FindContourGivenTraceID(
@@ -93,7 +93,55 @@ FindContourGivenTraceID(
 
 // ---------------------------------------------------------------------------
 ContourMeshStructure*
-FindContourGivenActor(
+FindContourGivenActorXY(
+  const ContourMeshStructureMultiIndexContainer& iContainer,
+  vtkActor* iActor)
+{
+  if (iContainer.size() != 0)
+    {
+    ContourMeshStructureMultiIndexContainer::nth_index<1>::type::iterator
+    it = iContainer.get<1>().find(iActor);
+
+    if (it != iContainer.get<1>().end())
+      {
+      return const_cast<ContourMeshStructure*>(&(*it));
+      }
+    else
+      {
+      return 0;
+      }
+    }
+  return 0;
+}
+// ---------------------------------------------------------------------------
+
+// ---------------------------------------------------------------------------
+ContourMeshStructure*
+FindContourGivenActorXY(
+  const ContourMeshStructureMultiIndexContainer& iContainer,
+  vtkActor* iActor)
+{
+  if (iContainer.size() != 0)
+    {
+    ContourMeshStructureMultiIndexContainer::nth_index<1>::type::iterator
+    it = iContainer.get<1>().find(iActor);
+
+    if (it != iContainer.get<1>().end())
+      {
+      return const_cast<ContourMeshStructure*>(&(*it));
+      }
+    else
+      {
+      return 0;
+      }
+    }
+  return 0;
+}
+// ---------------------------------------------------------------------------
+
+// ---------------------------------------------------------------------------
+ContourMeshStructure*
+FindContourGivenActorXY(
   const ContourMeshStructureMultiIndexContainer& iContainer,
   vtkActor* iActor)
 {
@@ -125,12 +173,12 @@ FindContourGivenNodes(
 
   if (!iContainer.empty())
     {
-    ContourMeshStructureMultiIndexContainer::nth_index<2>::type::iterator
-    it = iContainer.get<2>().find(iNodes);
+    ContourMeshStructureMultiIndexContainer::index<Nodes>::type::iterator
+    it = iContainer.get<Nodes>().find(iNodes);
 
-    if (it != iContainer.get<2>().end())
+    if (it != iContainer.get<Nodes>().end())
       {
-      while (it != iContainer.get<2>().end())
+      while (it != iContainer.get<Nodes>().end())
         {
         if ((*it).Nodes == iNodes)
           {
@@ -163,7 +211,7 @@ FindContourGivenTimePoint(
   return oList;
 }
 // ---------------------------------------------------------------------------
-
+*/
 // ---------------------------------------------------------------------------
 void DeleteContourMeshStructureElement(
   ContourMeshStructureMultiIndexContainer iContainer)
@@ -176,9 +224,21 @@ void DeleteContourMeshStructureElement(
   while (it != end)
     {
     NodeSet.insert(it->Nodes);
-    if (it->Actor)
+    if (it->ActorXY)
       {
-      it->Actor->Delete();
+      it->ActorXY->Delete();
+      }
+    if (it->ActorXZ)
+      {
+      it->ActorXZ->Delete();
+      }
+    if (it->ActorYZ)
+      {
+      it->ActorYZ->Delete();
+      }
+    if (it->ActorXYZ)
+      {
+      it->ActorXYZ->Delete();
       }
     ++it;
     }

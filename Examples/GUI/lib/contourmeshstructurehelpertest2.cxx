@@ -62,19 +62,19 @@ int main(int, char**)
 
   unsigned int i;
 
-  for (i = 0; i < ActorVector.size(); i++)
-    {
-    if (i < NodesVector.size())
-      {
-      NodesVector[i] = vtkPolyData::New();
-      }
-    ActorVector[i] = vtkActor::New();
-
-    unsigned int timepoint = i % 12;
-    container.insert(ContourMeshStructure(i, ActorVector[i],
-                                          NodesVector[i % NodesVector.size()],
-                                          meshid, timepoint, highlighted, r, g, b, a, i % 4));
-    }
+//  for (i = 0; i < ActorVector.size(); i++)
+//    {
+//    if (i < NodesVector.size())
+//      {
+//      NodesVector[i] = vtkPolyData::New();
+//      }
+//    ActorVector[i] = vtkActor::New();
+//
+//    unsigned int timepoint = i % 12;
+//    container.insert(ContourMeshStructure(i, ActorVector[i],
+//                                          NodesVector[i % NodesVector.size()],
+//                                          meshid, timepoint, highlighted, r, g, b, a, i % 4));
+//    }
 
   std::list<ContourMeshStructure*> list =
     FindContourGivenTraceID(container, 0);
