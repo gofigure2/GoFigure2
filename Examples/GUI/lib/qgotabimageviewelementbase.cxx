@@ -89,8 +89,7 @@ protected:
   virtual void DisplayActorInViewer(const int&, vtkActor*)
   {}
 
-  virtual std::vector<vtkActor*> AddContour(const int&,
-                                            vtkPolyData*,
+  virtual std::vector<vtkActor*> AddContour(vtkPolyData*,
                                             vtkProperty* iProperty = NULL)
   {
     (void) iProperty;
