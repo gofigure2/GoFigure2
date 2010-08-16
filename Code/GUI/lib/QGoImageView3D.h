@@ -124,9 +124,6 @@ public:
 
   std::list<vtkProp3D*> GetListOfModifiedActors3D();
 
-  void ShowSplinePlane();
-  void ShowCube3D();
-
   // MODES
 
   /**
@@ -166,11 +163,6 @@ public:
    */
   vtkProp* GetPickedActor();
 
-  /**
-   * \brief Creates a box in 3d view to allow multiple meshes selection
-   */
-  void EnableVolumeRendering(bool iValue);
-
 signals:
   void SliceViewXYChanged(int Slice);
   void SliceViewXZChanged(int Slice);
@@ -200,6 +192,14 @@ public slots:
   void SetCamera(int);
 
   void UpdateScalarBarIn3DView();
+
+  void ShowSplinePlane();
+  void ShowCube3D();
+
+  /**
+   * \brief Creates a box in 3d view to allow multiple meshes selection
+   */
+  void EnableVolumeRendering(bool iValue);
 
 //   void HighLightContours();
 

@@ -744,7 +744,7 @@ CreateAllViewActions()
   ActionDisplayAnnotations->setIcon(displayannotationsicon);
 
   QObject::connect(ActionDisplayAnnotations, SIGNAL(triggered()),
-                   this, SLOT(DisplayAnnotations()));
+                   this->m_ImageView, SLOT(ShowAnnotations()));
 
   this->m_ViewActions.push_back(ActionDisplayAnnotations);
 
@@ -760,7 +760,7 @@ CreateAllViewActions()
   ActionDisplaySplinePlanes->setIcon(displaysplineplaneicon);
 
   QObject::connect(ActionDisplaySplinePlanes, SIGNAL(triggered()),
-                   this, SLOT(DisplaySplinePlanes()));
+                   this->m_ImageView, SLOT(ShowSplinePlane()));
 
   this->m_ViewActions.push_back(ActionDisplaySplinePlanes);
 
@@ -775,7 +775,7 @@ CreateAllViewActions()
   DisplayCube3D->setIcon(cube3dicon);
 
   QObject::connect(DisplayCube3D, SIGNAL(triggered()),
-                   this, SLOT(DisplayCube()));
+      this->m_ImageView, SLOT(ShowCube3D()));
 
   this->m_ViewActions.push_back(DisplayCube3D);
 
@@ -894,7 +894,7 @@ CreateAllViewActions()
   VolumeRenderingAction->setIcon(volumerenderingicon);
 
   QObject::connect(VolumeRenderingAction, SIGNAL(toggled(bool)),
-                    this, SLOT(EnableVolumeRendering(bool)));
+                    this->m_ImageView, SLOT(EnableVolumeRendering(bool)));
 }
 //-------------------------------------------------------------------------
 
@@ -1260,20 +1260,10 @@ setupUi(QWidget* iParent)
   QObject::connect(m_ImageView, SIGNAL(ContoursSelectionChanged()),
                    this, SLOT(SelectContoursInTable()));
 
-  //TEST
   // connect the meshes selection connection
   QObject::connect(m_ImageView, SIGNAL(MeshesSelectionChanged()),
                    this, SLOT(TestMesh()));
 
-  /*
-  // connect the meshes selection connection
-  QObject::connect( m_ImageView, SIGNAL( MeshesSelectionChanged( ) ),
-      this, SLOT( ListHighLightMeshes( ) ) );
-
-  // connect the meshes selection connection
-  QObject::connect( m_ImageView, SIGNAL( MeshesSelectionChanged( ) ),
-      this, SLOT( ListSelectMeshesInTable( ) ) );
-*/
   m_HBoxLayout = new QHBoxLayout(iParent);
   m_HBoxLayout->addWidget(m_VSplitter);
 
@@ -2127,12 +2117,6 @@ void
 QGoTabImageView3DwT::
 ValidateContour()
 {
-  bool highlighted = m_ReEditContourMode;
-
-  // get from m_DataBaseTables if user is using one gofiguredatabase or not.
-  // In such case contours are saved in the database, else they are not!
-  bool saveindatabase = m_DataBaseTables->IsDatabaseUsed();
-
   // to make sure that m_ContourId is set to the right value
   int          ContourID = -1;
 
@@ -2334,20 +2318,19 @@ QGoTabImageView3DwT::
 AddTraceFromNodesManager(const unsigned int& iContourID,
                          vtkPolyData* iNodes,
                          const double iRgba[4],
-                         const bool& iHighlighted,
                          const unsigned int& iTCoord,
                          std::string iTrace)
 {
   // If we want to add a contour
   if (iTrace.compare("contour") == 0)
     {
-    AddContourFromNodes(iContourID, iNodes, const_cast<double*>(iRgba), iHighlighted, iTCoord);
+    AddContourFromNodes(iContourID, iNodes, const_cast<double*>(iRgba), iTCoord);
     }
   // If we want to add a mesh
   if (iTrace.compare("mesh") == 0)
     {
   /// should be visu only
-    AddMeshFromNodes(iContourID, iNodes,const_cast<double*>(iRgba), iHighlighted, iTCoord, false, true);
+    AddMeshFromNodes(iContourID, iNodes,const_cast<double*>(iRgba), iTCoord, false, true);
     }
 }
 
@@ -2355,10 +2338,8 @@ AddTraceFromNodesManager(const unsigned int& iContourID,
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
-AddContourFromNodes(const unsigned int& iContourID,
-                    vtkPolyData* iNodes,
-                    double iRgba[4],
-                    const bool& iHighlighted, const unsigned int& iTCoord)
+AddContourFromNodes(const unsigned int& iContourID, vtkPolyData* iNodes,
+                    double iRgba[4], const unsigned int& iTCoord)
 {
   if (iNodes->GetNumberOfPoints() > 2)
     {
@@ -2381,14 +2362,14 @@ AddContourFromNodes(const unsigned int& iContourID,
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
-AddMeshFromNodes(const unsigned int& iMeshID,
-                 vtkPolyData* iNodes, double iRgba[4],
-                 const bool& iHighlighted, const unsigned int& iTCoord, const bool& iSaveInDataBase,
+AddMeshFromNodes(const unsigned int& iMeshID, vtkPolyData* iNodes, double iRgba[4],
+                 const unsigned int& iTCoord, const bool& iSaveInDataBase,
                  bool NewMesh
                  )
 {
-  this->SavePolyDataAsMeshInDB(iNodes, iMeshID, 0,iHighlighted,  iTCoord, iSaveInDataBase,
-      iRgba,NewMesh);
+  // ONLY VISU HERE!!!!
+  this->VisualizeMesh(iNodes, iMeshID, 0,false,  iTCoord, iSaveInDataBase,
+                      iRgba,NewMesh);
 }
 
 //-------------------------------------------------------------------------
@@ -2711,32 +2692,6 @@ SelectTraceInTable(ContourMeshStructureMultiIndexContainer& iContainer,
     }
 
   return listofrowstobeselected;
-}
-
-//-------------------------------------------------------------------------
-void
-QGoTabImageView3DwT::
-DisplayAnnotations()
-{
-  this->m_ImageView->ShowAnnotations();
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
-QGoTabImageView3DwT::
-DisplaySplinePlanes()
-{
-  this->m_ImageView->ShowSplinePlane();
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
-QGoTabImageView3DwT::
-DisplayCube()
-{
-  this->m_ImageView->ShowCube3D();
 }
 //-------------------------------------------------------------------------
 
@@ -3181,15 +3136,14 @@ CreateContour(vtkPolyData* contour_nodes, vtkPolyData* iView)
 }
 
 //-------------------------------------------------------------------------
-int
+QGoTabImageView3DwT::IDWithColorData
 QGoTabImageView3DwT::
-SavePolyDataAsMeshInDB(vtkPolyData* iView, const int& iMeshID,
-                       const int& iDir,const bool& iHighlighted, const unsigned int& iTCoord,
+SaveMesh(vtkPolyData* iView, const int& iMeshID,
+                       const int& iDir,const bool& iHighlighted,
                        const bool& iSaveInDataBase, 
                        double iRgba[4],
                        bool NewMesh)
 {
-  double r,g,b,a(1.);
   // map to graphics library
   vtkPolyDataMapper *map = vtkPolyDataMapper::New();
   map->SetInput(iView);
@@ -3212,41 +3166,42 @@ SavePolyDataAsMeshInDB(vtkPolyData* iView, const int& iMeshID,
 
   int* min_idx = this->GetImageCoordinatesFromWorldCoordinates(Min);
   int* max_idx = this->GetImageCoordinatesFromWorldCoordinates(Max);
-   if (iSaveInDataBase)
-    {
-    //std::pair<std::string, QColor> ColorData =
-      //this->m_TraceManualEditingDockWidget->m_TraceWidget->ColorComboBox->GetCurrentColorData();
 
-    // Save mesh in database
-    //don't use m_ContourId
-    GoFigureMeshAttributes MeshAttributes = ComputeMeshAttributes(iView);
-    
-    //if the mesh needs to be updated in the Database, the NewMesh will be false and the iMeshID will
-    //be = 0 if the meshID needs to be gotten from the trace manual editing widget, if it is a new
-    //mesh, the NewMesh will be true and iMeshID = 0:
-    IDWithColorData MeshData = m_DataBaseTables->SaveMeshFromVisuInDB(min_idx[0],
-                                                      min_idx[1], min_idx[2], iTCoord, max_idx[0],
-                                                      max_idx[1], max_idx[2], iView, &MeshAttributes,NewMesh,iMeshID);
-    m_MeshId = MeshData.first;
+  // Save mesh in database
+  //don't use m_ContourId
+  GoFigureMeshAttributes MeshAttributes = ComputeMeshAttributes(iView);
 
-    MeshData.second.getRgbF(&r,&g,&b,&a);
+  //if the mesh needs to be updated in the Database, the NewMesh will be false and the iMeshID will
+  //be = 0 if the meshID needs to be gotten from the trace manual editing widget, if it is a new
+  //mesh, the NewMesh will be true and iMeshID = 0:
+  IDWithColorData MeshData = m_DataBaseTables->SaveMeshFromVisuInDB(min_idx[0],
+                                                    min_idx[1], min_idx[2], m_TimePoint, max_idx[0],
+                                                    max_idx[1], max_idx[2], iView, &MeshAttributes,NewMesh,iMeshID);
 
-    delete min_idx;
-    delete max_idx;
-    }
-  else //in case this function is called only to render existing meshes from the database when loading
-    //all traces after opening a new imagingsession:
-    {
-    m_MeshId = iMeshID;
-    r = iRgba[0];
-    g = iRgba[1];
-    b = iRgba[2];
-    a = iRgba[3];
-    }
+  delete min_idx;
+  delete max_idx;
+
+  return MeshData;
+}
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+VisualizeMesh(vtkPolyData* iView, const int& iMeshID,
+                       const int& iDir,const bool& iHighlighted, const unsigned int& iTCoord,
+                       const bool& iSaveInDataBase,
+                       double iRgba[4],
+                       bool NewMesh)
+{
+  double r,g,b,a(1.);
+  m_MeshId = iMeshID;
+
+  r = iRgba[0];
+  g = iRgba[1];
+  b = iRgba[2];
+  a = iRgba[3];
 
   vtkProperty* mesh_property = vtkProperty::New();
-  //mesh_property->SetColor(iR, iG, iB);
-  //mesh_property->SetOpacity(iA);
   mesh_property->SetColor(r, g, b);
   mesh_property->SetOpacity(a);
 
@@ -3263,19 +3218,16 @@ SavePolyDataAsMeshInDB(vtkPolyData* iView, const int& iMeshID,
   //unsigned int trackid = this->m_TraceManualEditingDockWidget->m_TraceWidget->GetCurrentCollectionID();
 
   // fill the container
+  int i(0);
   for (i = 0; i < mesh_actor.size(); i++)
     {
-    /*ContourMeshStructure temp(m_MeshId, mesh_actor[i], iView,
-                              trackid, iTCoord, iHighlighted, iR, iG, iB, iA, i);*/
     ContourMeshStructure temp(m_MeshId, mesh_actor[i], iView,
                               iTCoord, iHighlighted, r, g, b, a, i);
     m_MeshContainer.insert(temp);
     }
 
-  //to check:
+  /// TODO Check accuracy
   ++m_MeshId;
-
-  return 0;
 }
 
 //-------------------------------------------------------------------------
@@ -3286,20 +3238,19 @@ int
 QGoTabImageView3DwT::
 SavePolyDataAsMeshInDB(vtkPolyData* iView)
 {
-  // get color from the dock widget
-  //double rgba[4];
-  //GetTraceColor(rgba);
-
   // get from m_DataBaseTables if user is using one gofiguredatabase or not.
   // In such a case contours are saved in the database, else they are not!
   bool saveindatabase = m_DataBaseTables->IsDatabaseUsed();
-
   double RGBA[4] = {.0, .0, .0, .0};
+  int iID(0);
+  // save in DB
+  IDWithColorData MeshData = SaveMesh(iView, -1, 0,false, saveindatabase,RGBA);
+  iID = MeshData.first;
+  MeshData.second.getRgbF(&RGBA[0],&RGBA[1],&RGBA[2],&RGBA[3]);
+  // visu
+  VisualizeMesh(iView, iID, 0,false, m_TimePoint, saveindatabase,RGBA);
 
-  // save + visu
-  return SavePolyDataAsMeshInDB(iView, -1, 0,false, m_TimePoint, saveindatabase,RGBA);
-
-
+  return 1;
 }
 //-------------------------------------------------------------------------
 
@@ -3397,8 +3348,9 @@ void QGoTabImageView3DwT::ImportContours()
     while (c_it != ContourToAdd->end())
       {
       ContourMeshStructure Contour = *c_it;
-      this->AddContourFromNodes(Contour.TraceID, Contour.Nodes, Contour.rgba,
-                                Contour.Highlighted, Contour.TCoord);
+      // NOT ENOUGH (ONLY VISU YET)
+      this->AddContourFromNodes(Contour.TraceID, Contour.Nodes, Contour.rgba
+          , Contour.TCoord);
       ++c_it;
       }
     this->GoToDefaultMenu();
@@ -3471,6 +3423,7 @@ ChangeColorOfSelectedTraces(ContourMeshStructureMultiIndexContainer& ioContainer
     }
 }
 
+/// TODO Bug iMeshID is not the one it is supposed to be (+1)
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
@@ -3502,11 +3455,17 @@ CreateMeshFromSelectedContours(std::list<int> iListContourIDs,int iMeshID)
   FilterType::Pointer filter = FilterType::New();
   filter->ProcessContours(list_contours);
 
+  // save
   double RGBA[4] = {.0, .0, .0, .0};
+  int iID(0);
+  // save in DB
+  IDWithColorData MeshData = this->SaveMesh(filter->GetOutput(), iMeshID, 0,false, true, RGBA, false);
+  iID = MeshData.first;
+  MeshData.second.getRgbF(&RGBA[0],&RGBA[1],&RGBA[2],&RGBA[3]);
+  // visu
+  this->VisualizeMesh(filter->GetOutput(), iID, 0,false,  tcoord, true, RGBA,
+          false);
 
-  // save +visu
-  this->SavePolyDataAsMeshInDB(filter->GetOutput(), iMeshID, 0,false,  tcoord, true,
-        false);
 }
 //-------------------------------------------------------------------------
 
@@ -3515,16 +3474,15 @@ void QGoTabImageView3DwT::ImportMeshes()
 {
   if (this->m_DataBaseTables->IsDatabaseUsed())
     {
-    double RGBA[4] = {.0, .0, .0, .0};
     ContourMeshStructureMultiIndexContainer* MeshToAdd =
       m_DataBaseTables->ImportMeshes(GetTimePoint());
     ContourMeshStructureMultiIndexContainer::iterator c_it = MeshToAdd->begin();
     while (c_it != MeshToAdd->end())
       {
       ContourMeshStructure Mesh = *c_it;
-      // save + visu
-      AddMeshFromNodes(Mesh.TraceID, Mesh.Nodes, Mesh.rgba, Mesh.Highlighted,
-                       Mesh.TCoord, false);
+      // save + visu....
+      // NOT ENOUGH ONLY VISU YET
+      AddMeshFromNodes(Mesh.TraceID, Mesh.Nodes, Mesh.rgba, Mesh.TCoord, false);
       ++c_it;
       }
     GoToDefaultMenu();
@@ -3551,11 +3509,10 @@ QGoTabImageView3DwT::
 TestMesh()
 {
   // Fill container + send sth to visu
-  // should not send anything to the visu
+  // should not send anything back to the visu
   ListHighLightMeshes();
   // Fill table widget
   ListSelectMeshesInTable();
-
   // Update the visualization
   this->m_ImageView->UpdateRenderWindows();
 
@@ -3689,11 +3646,4 @@ ModifyTracesVisibilityFromTable(ContourMeshStructureMultiIndexContainer& iContai
 
   // update view
   m_ImageView->UpdateRenderWindows();
-}
-//-------------------------------------------------------------------------
-void
-QGoTabImageView3DwT::
-EnableVolumeRendering(bool iVisible)
-{
-  m_ImageView->EnableVolumeRendering(iVisible);
 }

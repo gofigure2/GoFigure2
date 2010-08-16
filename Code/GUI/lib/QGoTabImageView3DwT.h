@@ -173,10 +173,8 @@ public:
   void AddTraceFromNodesManager(const unsigned int& iContourID,
                                 vtkPolyData* iNodes,
                                 const double iRgba[4],
-                                const bool& iHighlighted,
                                 const unsigned int& iTCoord,
                                 std::string iTrace);
-
   /**
    *
    * @param[in] iNodes Nodes to be used by
@@ -184,14 +182,11 @@ public:
    * @param[in] iHighlighted
    */
   void AddContourFromNodes(const unsigned int& iContourID, vtkPolyData* iNodes, double iRgba[4],
-                           const bool& iHighlighted, const unsigned int& iTCoord);
-  void AddContourFromNodes(const unsigned int& iContourID, vtkPolyData* iNodes,
-                           const double& iR, const double& iG, const double& iB, const double& iA,
-                           const bool& iHighlighted, const unsigned int& iTCoord);
+                           const unsigned int& iTCoord);
 
   void AddMeshFromNodes(const unsigned int& iMeshID, vtkPolyData* iNodes, double iRgba[4],
-                        const bool& iHighlighted, const unsigned int& iTCoord,
-                        const bool& iSaveInDataBase, bool NewMesh = true);
+                        const unsigned int& iTCoord,const bool& iSaveInDataBase,
+                        bool NewMesh = true);
 
   int GetSliceViewXY() const;
   int GetSliceViewXZ() const;
@@ -214,9 +209,6 @@ signals:
 
 public slots:
   void SetTimePoint(const int&);
-  void DisplayAnnotations();
-  void DisplaySplinePlanes();
-  void DisplayCube();
   void TakeSnapshot();
   void SetSliceView();
 
@@ -283,6 +275,8 @@ public slots:
   /** \brief Save a mesh in the database and render the mesh.
   \todo to be renamed */
   int  SavePolyDataAsMeshInDB(vtkPolyData* iView);
+
+
 
   void ReinitializeContour();
   void ReEditContour(const unsigned int& iId);
@@ -427,9 +421,13 @@ protected:
    * @param[in] iSaveInDataBase save in data base if true
    * \todo Alpha component is not used at all, it is assumed to be opaque
    */
-  virtual int SavePolyDataAsMeshInDB(vtkPolyData* iView, const int& iMeshID, const int& iDir,
-                                     const bool& iHighlighted, const unsigned int& iTCoord, const bool& iSaveInDataBase,
+  IDWithColorData SaveMesh(vtkPolyData* iView, const int& iMeshID, const int& iDir,
+                                     const bool& iHighlighted, const bool& iSaveInDataBase,
                                      double iRGBA[4], bool NewMesh = true);
+
+  void VisualizeMesh(vtkPolyData* iView, const int& iMeshID, const int& iDir,
+      const bool& iHighlighted, const unsigned int& iTCoord, const bool& iSaveInDataBase,
+      double iRGBA[4], bool NewMesh = true);
 
   void GetBackgroundColorFromImageViewer();
   void SetBackgroundColorToImageViewer();
@@ -488,7 +486,6 @@ protected slots:
   void ShowTraceDockWidgetForContour(bool ManualSegVisible);
   void ShowTraceDockWidgetForMesh(bool OneClickVisible);
   void ChangeColorOfSelectedTracesManager(QColor iSelectedColor);
-  void EnableVolumeRendering(bool iVisible);
 
   void GoToLocation(int iX, int iY, int iZ, int iT);
 

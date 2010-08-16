@@ -458,7 +458,6 @@ LoadAllTracesFromDatabase(const int& iT, const std::string& iTraceName)
           contourmesh_list_it->TraceID,
           contourmesh_list_it->Nodes,
           contourmesh_list_it->rgba,
-          contourmesh_list_it->Highlighted,
           contourmesh_list_it->TCoord,
           iTraceName);     // Name of the trace to add
 

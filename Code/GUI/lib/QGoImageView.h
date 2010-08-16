@@ -177,11 +177,6 @@ public:
   void UpdateRenderWindows();
 
   /**
-   * \brief Show annotations in the collection
-   */
-  void ShowAnnotations();
-
-  /**
    * \brief Get the image actor
    */
   vtkImageActor* GetImageActor(const int& iId);
@@ -259,6 +254,10 @@ public slots:
   void SetBackgroundColor(double rgb[3]);
   /** \overload */
   void SetBackgroundColor(const QColor& iColor);
+  /**
+   * \brief Show annotations in the collection
+   */
+  void ShowAnnotations();
 
 protected:
   vtkViewImage2DCollection* m_Pool;
