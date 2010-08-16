@@ -185,8 +185,7 @@ public:
                            const unsigned int& iTCoord);
 
   void AddMeshFromNodes(const unsigned int& iMeshID, vtkPolyData* iNodes, double iRgba[4],
-                        const unsigned int& iTCoord,const bool& iSaveInDataBase,
-                        bool NewMesh = true);
+                        const unsigned int& iTCoord, bool NewMesh = true);
 
   int GetSliceViewXY() const;
   int GetSliceViewXZ() const;
@@ -274,9 +273,7 @@ public slots:
 
   /** \brief Save a mesh in the database and render the mesh.
   \todo to be renamed */
-  int  SavePolyDataAsMeshInDB(vtkPolyData* iView);
-
-
+  void  SaveAndVisuMesh(vtkPolyData* iView);
 
   void ReinitializeContour();
   void ReEditContour(const unsigned int& iId);
@@ -404,9 +401,7 @@ protected:
       vtkPolyData* contour, vtkPolyData* contour_nodes,
       double iRGBA[4]);
 
-  int SaveAndVisuContour(vtkPolyData* iView,
-      const unsigned int& iTCoord,
-      const bool& iSaveInDataBase);
+  int SaveAndVisuContour(vtkPolyData* iView);
 
   void CreateContour( vtkPolyData* contour_nodes,vtkPolyData* iView);
 
@@ -421,13 +416,11 @@ protected:
    * \param[in] iSaveInDataBase save in data base if true
    * \todo Alpha component is not used at all, it is assumed to be opaque
    */
-  IDWithColorData SaveMesh(vtkPolyData* iView, const int& iMeshID, const int& iDir,
-                                     const bool& iHighlighted, const bool& iSaveInDataBase,
-                                     double iRGBA[4], bool NewMesh = true);
+  IDWithColorData SaveMesh(vtkPolyData* iView, const int& iMeshID,double iRGBA[4],
+      bool NewMesh = true);
 
-  void VisualizeMesh(vtkPolyData* iView, const int& iMeshID, const int& iDir,
-      const bool& iHighlighted, const unsigned int& iTCoord, const bool& iSaveInDataBase,
-      double iRGBA[4], bool NewMesh = true);
+  void VisualizeMesh(vtkPolyData* iView, const int& iMeshID, const bool& iHighlighted,
+      const unsigned int& iTCoord, double iRGBA[4], bool NewMesh = true);
 
   void GetBackgroundColorFromImageViewer();
   void SetBackgroundColorToImageViewer();

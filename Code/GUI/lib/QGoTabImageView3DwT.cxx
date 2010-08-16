@@ -2052,9 +2052,8 @@ SaveContour(vtkPolyData* contour, vtkPolyData* contour_nodes)
 
 int QGoTabImageView3DwT::
 VisualizeContour(const int& iContourID, const int& iDir,
-      const bool& iHighlighted, const unsigned int& iTCoord,
-      vtkPolyData* contour, vtkPolyData* contour_nodes,
-      double iRGBA[4])
+      const bool& iHighlighted,const unsigned int& iTCoord, vtkPolyData* contour,
+      vtkPolyData* contour_nodes, double iRGBA[4])
 {
   double r(1.), g(0.), b(0.), a(1.);
   if ((contour->GetNumberOfPoints() > 2) && (m_TimePoint >= 0))
@@ -2099,6 +2098,7 @@ VisualizeContour(const int& iContourID, const int& iDir,
                                r, g, b, a );
     m_ContourContainer.insert(temp);
 
+    // should it be there...?
     if (iContourID != -1)
       {
       ++m_ContourId;
@@ -2253,9 +2253,6 @@ RemoveAllTracesForGivenTimePoint(const unsigned int& iT,
     boost::tuples::tie(it0, it1) =
       iContainer.get<TCoord>().equal_range(iT);
 
-    int       c_dir;
-    vtkActor* c_actor;
-
     while (it0 != it1)
       {
       this->m_ImageView->RemoveActor( 0, (*it0).ActorXY );
@@ -2296,9 +2293,6 @@ LoadAllTracesForGivenTimePoint(const unsigned int& iT,
     boost::tuples::tie(it0, it1) =
       iContainer.get<TCoord>().equal_range(iT);
 
-    int       c_dir;
-    vtkActor* c_actor;
-
     while (it0 != it1)
       {
       this->m_ImageView->AddActor( 0, (*it0).ActorXY );
@@ -2329,8 +2323,7 @@ AddTraceFromNodesManager(const unsigned int& iContourID,
   // If we want to add a mesh
   if (iTrace.compare("mesh") == 0)
     {
-  /// should be visu only
-    AddMeshFromNodes(iContourID, iNodes, iRgba, iTCoord, false, true);
+    AddMeshFromNodes(iContourID, iNodes, iRgba, iTCoord, false);
     }
 }
 
@@ -2363,13 +2356,9 @@ AddContourFromNodes(const unsigned int& iContourID, vtkPolyData* iNodes,
 void
 QGoTabImageView3DwT::
 AddMeshFromNodes(const unsigned int& iMeshID, vtkPolyData* iNodes, double iRgba[4],
-                 const unsigned int& iTCoord, const bool& iSaveInDataBase,
-                 bool NewMesh
-                 )
+                 const unsigned int& iTCoord,bool NewMesh)
 {
-  // ONLY VISU HERE!!!!
-  this->VisualizeMesh(iNodes, iMeshID, 0,false,  iTCoord, iSaveInDataBase,
-                      iRgba,NewMesh);
+  this->VisualizeMesh(iNodes, iMeshID, false, iTCoord, iRgba,NewMesh);
 }
 
 //-------------------------------------------------------------------------
@@ -2386,8 +2375,6 @@ ReEditContour(const unsigned int& iId)
 
     if (it != m_ContourContainer.get<TraceID>().end())
       {
-      int          c_dir;
-      vtkActor*    c_actor;
       vtkPolyData* c_nodes = NULL;
 
       if (it != m_ContourContainer.get<TraceID>().end())
@@ -2728,7 +2715,6 @@ DeleteTracesFromTable(ContourMeshStructureMultiIndexContainer& iContainer,
     if (it != iContainer.get<TraceID>().end())
       {
       it2 = it;
-      vtkActor*    c_actor;
       vtkPolyData* c_nodes;
       while (it != iContainer.get<TraceID>().end())
         {
@@ -2934,9 +2920,8 @@ OneClickSphereContours()
     // Save polydatas (=contours) in DB and update visualization
     for (unsigned int j = 1; j < ContoursForOnePoint.size(); j++)
       {
-      bool saveindatabase = m_DataBaseTables->IsDatabaseUsed();
       //save in db
-      listContoursIDs.push_back(SaveAndVisuContour(ContoursForOnePoint[j], m_TimePoint, saveindatabase));
+      listContoursIDs.push_back(SaveAndVisuContour(ContoursForOnePoint[j]));
       //update visu
       }
     // assign contours to mesh
@@ -2976,8 +2961,7 @@ OneClickSphereMeshes()
 
     // save + visu
     // Save polydatas/mesh (=volume) in DB
-    this->SavePolyDataAsMeshInDB(
-      seedsSegmentation.SphereVolumeSegmentation());
+    this->SaveAndVisuMesh(seedsSegmentation.SphereVolumeSegmentation());
     }
 
   m_SeedsWorldPosition->Delete();
@@ -3020,10 +3004,8 @@ LevelSetSegmentation2D()
     seedsSegmentation.setSeedsPosition(seed_pos);
     //
     int orientation = 0;
-    bool saveindatabase = m_DataBaseTables->IsDatabaseUsed();
     //save in db and see it
-    SaveAndVisuContour(seedsSegmentation.LevelSetSegmentation2D(orientation),
-        m_TimePoint, saveindatabase);
+    SaveAndVisuContour(seedsSegmentation.LevelSetSegmentation2D(orientation));
     }
 
   // Erase seeds once everything is stored in DB
@@ -3074,8 +3056,7 @@ LevelSetSegmentation3D()
     seedsSegmentation.setSeedsPosition(seed_pos);
 
     // save + visu
-    SavePolyDataAsMeshInDB(
-      seedsSegmentation.LevelSetSegmentation3D());
+    SaveAndVisuMesh(seedsSegmentation.LevelSetSegmentation3D());
     }
   m_SeedsWorldPosition->Delete();
 }
@@ -3083,9 +3064,12 @@ LevelSetSegmentation3D()
 //-------------------------------------------------------------------------
 int
 QGoTabImageView3DwT::
-SaveAndVisuContour(vtkPolyData* iView, const unsigned int& iTCoord,
-                   const bool& iSaveInDataBase)
+SaveAndVisuContour(vtkPolyData* iView)
 {
+  if(!m_DataBaseTables->IsDatabaseUsed())
+    {
+    std::cerr << "Problem with DB" << std::endl;
+    }
   // Create Node for the associated contour (useful for reedit mode)
   vtkPolyData* contour_nodes = vtkPolyData::New();
   CreateContour( contour_nodes, iView );
@@ -3098,7 +3082,7 @@ SaveAndVisuContour(vtkPolyData* iView, const unsigned int& iTCoord,
   int ID = test.first;
   test.second.getRgbF(&rgba[0], &rgba[1], &rgba[2], &rgba[3]);
   // visu
-  return VisualizeContour(ID, 0, false, iTCoord, iView, contour_nodes, rgba);
+  return VisualizeContour(ID, 0, false, m_TimePoint, iView, contour_nodes, rgba);
 }
 
 //-------------------------------------------------------------------------
@@ -3130,11 +3114,7 @@ CreateContour(vtkPolyData* contour_nodes, vtkPolyData* iView)
 //-------------------------------------------------------------------------
 QGoTabImageView3DwT::IDWithColorData
 QGoTabImageView3DwT::
-SaveMesh(vtkPolyData* iView, const int& iMeshID,
-                       const int& iDir,const bool& iHighlighted,
-                       const bool& iSaveInDataBase,
-                       double iRgba[4],
-                       bool NewMesh)
+SaveMesh(vtkPolyData* iView, const int& iMeshID, double iRgba[4], bool NewMesh)
 {
   // map to graphics library
   vtkPolyDataMapper *map = vtkPolyDataMapper::New();
@@ -3181,11 +3161,8 @@ SaveMesh(vtkPolyData* iView, const int& iMeshID,
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
-VisualizeMesh(vtkPolyData* iView, const int& iMeshID,
-                       const int& iDir,const bool& iHighlighted, const unsigned int& iTCoord,
-                       const bool& iSaveInDataBase,
-                       double iRgba[4],
-                       bool NewMesh)
+VisualizeMesh(vtkPolyData* iView, const int& iMeshID,const bool& iHighlighted,
+              const unsigned int& iTCoord, double iRgba[4], bool NewMesh)
 {
   double r,g,b,a(1.);
   m_MeshId = iMeshID;
@@ -3219,6 +3196,7 @@ VisualizeMesh(vtkPolyData* iView, const int& iMeshID,
   m_MeshContainer.insert(temp);
 
   /// TODO Check accuracy
+  // should it be there??
   ++m_MeshId;
 }
 
@@ -3226,23 +3204,22 @@ VisualizeMesh(vtkPolyData* iView, const int& iMeshID,
 /**
  *
  */
-int
+void
 QGoTabImageView3DwT::
-SavePolyDataAsMeshInDB(vtkPolyData* iView)
+SaveAndVisuMesh(vtkPolyData* iView)
 {
-  // get from m_DataBaseTables if user is using one gofiguredatabase or not.
-  // In such a case contours are saved in the database, else they are not!
-  bool saveindatabase = m_DataBaseTables->IsDatabaseUsed();
+  if(!m_DataBaseTables->IsDatabaseUsed())
+    {
+    std::cerr << "Problem with DB" << std::endl;
+    }
   double RGBA[4] = {0., 0., 0., 0.};
   int iID(0);
   // save in DB
-  IDWithColorData MeshData = SaveMesh(iView, -1, 0,false, saveindatabase,RGBA);
+  IDWithColorData MeshData = SaveMesh(iView, -1,RGBA, true);
   iID = MeshData.first;
   MeshData.second.getRgbF(&RGBA[0],&RGBA[1],&RGBA[2],&RGBA[3]);
   // visu
-  VisualizeMesh(iView, iID, 0,false, m_TimePoint, saveindatabase,RGBA);
-
-  return 1;
+  VisualizeMesh(iView, iID,false, m_TimePoint ,RGBA);
 }
 //-------------------------------------------------------------------------
 
@@ -3422,7 +3399,7 @@ ChangeColorOfSelectedTraces(ContourMeshStructureMultiIndexContainer& ioContainer
 }
 //-------------------------------------------------------------------------
 
-/// TODO Bug iMeshID is not the one it is supposed to be (+1)
+/// TODO Bug iMeshID is not the one it is supposed to be
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
@@ -3461,12 +3438,11 @@ CreateMeshFromSelectedContours(
 
   int iID(0);
   // save in DB
-  IDWithColorData MeshData = this->SaveMesh(filter->GetOutput(), iMeshID, 0,false, true, RGBA, false);
+  IDWithColorData MeshData = this->SaveMesh(filter->GetOutput(), iMeshID, RGBA, false);
   iID = MeshData.first;
   MeshData.second.getRgbF(&RGBA[0],&RGBA[1],&RGBA[2],&RGBA[3]);
   // visu
-  this->VisualizeMesh(filter->GetOutput(), iID, 0,false,  tcoord, true, RGBA,
-          false);
+  this->VisualizeMesh(filter->GetOutput(), iID,false, m_TimePoint, RGBA, false);
 
 }
 //-------------------------------------------------------------------------
@@ -3476,7 +3452,6 @@ void QGoTabImageView3DwT::ImportMeshes()
 {
   if (this->m_DataBaseTables->IsDatabaseUsed())
     {
-    double RGBA[4] = {0., 0., 0., 0.};
     int t = this->GetTimePoint();
 
     ContourMeshStructureMultiIndexContainer* MeshToAdd =
@@ -3490,7 +3465,7 @@ void QGoTabImageView3DwT::ImportMeshes()
 
       // save + visu....
       // NOT ENOUGH ONLY VISU YET
-      AddMeshFromNodes(Mesh.TraceID, Mesh.Nodes, Mesh.rgba, Mesh.TCoord, false);
+      AddMeshFromNodes(Mesh.TraceID, Mesh.Nodes, Mesh.rgba, Mesh.TCoord);
       ++c_it;
       }
     GoToDefaultMenu();
