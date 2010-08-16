@@ -783,10 +783,10 @@ GetImageViewer3D()
 //--------------------------------------------------------------------------
 std::vector<vtkActor*>
 QGoImageView3D::
-AddContour(const int& iId, vtkPolyData* dataset, vtkProperty* iProperty)
+AddContour(vtkPolyData* dataset, vtkProperty* iProperty)
 {
   std::vector<vtkActor*> oList =
-    QGoImageView::AddContour(iId, dataset, iProperty);
+    QGoImageView::AddContour(dataset, iProperty);
 
   vtkActor* temp = m_View3D->AddDataSet((vtkDataSet*) dataset,
                                         iProperty, false, false);
@@ -890,7 +890,7 @@ QGoImageView3D::
 AddMesh(const int& iId, vtkPolyData* dataset, vtkProperty* iProperty)
 {
   std::vector<vtkActor*> oList =
-    QGoImageView::AddContour(iId, dataset, iProperty);
+    QGoImageView::AddContour(dataset, iProperty);
 
   vtkActor* temp = m_View3D->AddDataSet((vtkDataSet*) dataset,
                                         iProperty, false, false);

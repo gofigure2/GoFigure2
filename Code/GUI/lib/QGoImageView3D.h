@@ -105,8 +105,7 @@ public:
                                  vtkProperty* property = NULL);
 
 //   std::vector< vtkQuadricLODActor* >
-  std::vector<vtkActor*> AddContour(const int& iId,
-                                    vtkPolyData* dataset,
+  std::vector<vtkActor*> AddContour(vtkPolyData* dataset,
                                     vtkProperty* property = NULL);
 
   virtual void setupUi(QWidget* parent);

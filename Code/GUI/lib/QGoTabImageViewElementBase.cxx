@@ -314,7 +314,7 @@ ValidateContour(const int& iId)
 
 //   std::vector< vtkQuadricLODActor* > contour_actor =
   std::vector<vtkActor*> contour_actor =
-    this->AddContour(iId, contour_copy,
+    this->AddContour(contour_copy,
                      contour_property);
 
   contour_copy->Delete();

@@ -183,21 +183,15 @@ public:
    * @param[in] iRgba[]
    * @param[in] iHighlighted
    */
-  void AddContourFromNodes(const unsigned int& iContourID, vtkPolyData* iNodes, const double iRgba[4],
+  void AddContourFromNodes(const unsigned int& iContourID, vtkPolyData* iNodes, double iRgba[4],
                            const bool& iHighlighted, const unsigned int& iTCoord);
   void AddContourFromNodes(const unsigned int& iContourID, vtkPolyData* iNodes,
                            const double& iR, const double& iG, const double& iB, const double& iA,
                            const bool& iHighlighted, const unsigned int& iTCoord);
 
-  void AddMeshFromNodes(const unsigned int& iMeshID, vtkPolyData* iNodes, const double iRgba[4],
+  void AddMeshFromNodes(const unsigned int& iMeshID, vtkPolyData* iNodes, double iRgba[4],
                         const bool& iHighlighted, const unsigned int& iTCoord,
-                        bool NewMesh = true);
-
-  void AddMeshFromNodes(const unsigned int& iMeshID, vtkPolyData* iNodes,
-                        const bool& iHighlighted, const unsigned int& iTCoord, const bool& iSaveInDataBase,
-                        bool NewMesh = true,
-                        const double& iR = 0, const double& iG = 0, const double& iB = 0, const double& iA = 0
-                        );
+                        const bool& iSaveInDataBase, bool NewMesh = true);
 
   int GetSliceViewXY() const;
   int GetSliceViewXZ() const;
@@ -285,8 +279,6 @@ public slots:
   void ActivateSemiAutoSegmentationEditor(const bool& iActivate);
 
   void ValidateContour();
-
-  int  SavePolyDataAsContourInDB(vtkPolyData* iView);
 
   /** \brief Save a mesh in the database and render the mesh.
   \todo to be renamed */
@@ -402,9 +394,6 @@ protected:
   QGoManualSegmentationDockWidget*   m_ManualSegmentationDockWidget;
   QGoOneClickSegmentationDockWidget* m_OneClickSegmentationDockWidget;
 
-  /// Useful?
-  vtkPoints* m_SeedsWorldPosition;
-
   /// \todo remove m_FFMPEGWriter and m_AVIWriter from this class
   #if defined ENABLEFFMPEG || defined ENABLEAVI
   QGoVideoRecorder* m_VideoRecorderWidget;
@@ -414,16 +403,14 @@ protected:
   ContourMeshStructureMultiIndexContainer m_MeshContainer;
 
   // ID + color map, real save+real visu
-  IDWithColorData RealValidateContour(const int& iContourID, const int& iDir,
-                                const bool& iHighlighted, const unsigned int& iTCoord,
-                                vtkPolyData* contour, vtkPolyData* contour_nodes);
+  IDWithColorData SaveContour(vtkPolyData* contour, vtkPolyData* contour_nodes);
 
-  int RealVisuContour(const int& iContourID, const int& iDir,
+  int VisualizeContour(const int& iContourID, const int& iDir,
       const bool& iHighlighted, const unsigned int& iTCoord,
       vtkPolyData* contour, vtkPolyData* contour_nodes,
-      const double& iR = 0, const double& iG = 0, const double& iB = 0, const double& iA  =0);
+      double iRGBA[4]);
 
-  int RealSavePolyDataAsContourInDB(vtkPolyData* iView,
+  int SaveAndVisuContour(vtkPolyData* iView,
       const unsigned int& iTCoord,
       const bool& iSaveInDataBase);
 
@@ -442,8 +429,7 @@ protected:
    */
   virtual int SavePolyDataAsMeshInDB(vtkPolyData* iView, const int& iMeshID, const int& iDir,
                                      const bool& iHighlighted, const unsigned int& iTCoord, const bool& iSaveInDataBase,
-                                     const double& iR = 0, const double& iG = 0, const double& iB = 0, const double& iA = 0,
-                                     bool NewMesh = true);
+                                     double iRGBA[4], bool NewMesh = true);
 
   void GetBackgroundColorFromImageViewer();
   void SetBackgroundColorToImageViewer();
@@ -479,14 +465,10 @@ protected:
   void CreateVideoRecorderWidget();
 #endif /* ENABLEVIDEORECORD */
 
-  void RemoveActorFromViewer(const int& iId, vtkActor* iActor);
-  void DisplayActorInViewer(const int& iId, vtkActor* iActor);
-
   int* GetImageCoordinatesFromWorldCoordinates(double pos[3]);
 
 //   std::vector< vtkQuadricLODActor* >
-  std::vector<vtkActor*> AddContour(const int& iId,
-                                    vtkPolyData* dataset,
+  std::vector<vtkActor*> AddContour(vtkPolyData* dataset,
                                     vtkProperty* property = NULL);
 
   void SetTimePointWithLSMReaders(const int& iTimePoint);
@@ -542,7 +524,6 @@ protected slots:
    * \brief Mouse interaction style allows user to pick meshes
    */
   void MeshPickingInteractorBehavior(bool);
-
   void DistanceWidgetInteractorBehavior(bool);
   void AngleWidgetInteractorBehavior(bool);
   void Box3DPicking(bool);

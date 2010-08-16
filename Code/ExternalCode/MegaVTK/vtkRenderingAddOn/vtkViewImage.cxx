@@ -380,7 +380,7 @@ double* vtkViewImage::GetWorldCoordinatesFromImageCoordinates(int indices[3])
   return position;
 }
 
-//----------------------------------------------------------------------------
+/// NOTE indices has to be erased
 int* vtkViewImage::GetImageCoordinatesFromWorldCoordinates(double position[3])
 {
   vtkImageData* input = this->GetInput();

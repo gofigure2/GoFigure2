@@ -131,8 +131,6 @@ QGoTabImageView3DwT(QWidget* iParent) :
 
   m_LinesWidth = 1.;
 
-  m_SeedsWorldPosition = NULL;
-
   setupUi(this);
 
   m_MegaCaptureReader = itk::MegaCaptureReader::New();
@@ -229,11 +227,6 @@ QGoTabImageView3DwT::
       }
     }
 
-  // If no seeds have been created, don't try do delete it!
-  if (m_SeedsWorldPosition)
-    {
-    m_SeedsWorldPosition->Delete();
-    }
 //   DeleteContourMeshStructureElement( m_ContourContainer );
 //   DeleteContourMeshStructureElement( m_MeshContainer );
   }
@@ -353,11 +346,13 @@ ContourInteractorBehavior(bool iVisible)
     {
     case 0:
       // Manual
+      ActivateSemiAutoSegmentationEditor(!iVisible);
       ActivateManualSegmentationEditor(iVisible);
       break;
 
     case 1:
       // Semi auto
+      ActivateManualSegmentationEditor(!iVisible);
       ActivateSemiAutoSegmentationEditor(iVisible);
       break;
 
@@ -378,8 +373,8 @@ ContourInteractorBehavior(bool iVisible)
 void
 QGoTabImageView3DwT::
 ActivateManualSegmentationEditor(const bool& iActivate)
-{ 
-  this->m_ImageView->EnableContourWidget(iActivate); 
+{
+  this->m_ImageView->EnableContourWidget(iActivate);
 }
 
 //-------------------------------------------------------------------------
@@ -391,7 +386,7 @@ void
 QGoTabImageView3DwT::
 ActivateSemiAutoSegmentationEditor(const bool& iActivate)
 {
- this->m_ImageView->EnableSeedWidget( iActivate ); 
+ this->m_ImageView->EnableSeedWidget( iActivate );
 }
 
 //-------------------------------------------------------------------------
@@ -399,7 +394,7 @@ void
 QGoTabImageView3DwT::
 MeshInteractorBehavior(bool iVisible)
 {
- ActivateSemiAutoSegmentationEditor(iVisible); 
+ ActivateSemiAutoSegmentationEditor(iVisible);
 }
 
 //-------------------------------------------------------------------------
@@ -925,7 +920,7 @@ CreateToolsActions()
 
   this->m_ToolsActions.push_back(m_TakeSnapshotAction);
 }
-//-------------------------------------------------------------------------
+
 //-------------------------------------------------------------------------
 void QGoTabImageView3DwT::CreateModeActions()
 {
@@ -1032,7 +1027,9 @@ void QGoTabImageView3DwT::CreateModeActions()
   QObject::connect(MeshPickingAction, SIGNAL(toggled(bool)),
                    this, SLOT(MeshPickingInteractorBehavior(bool)));
 
-  // Distance measurement mode
+  //---------------------------------//
+  //         Distance    mode        //
+  //---------------------------------//
   QAction* DistanceAction = new QAction(tr("Measure Distance"), this);
 
   DistanceAction->setCheckable(true);
@@ -1050,7 +1047,9 @@ void QGoTabImageView3DwT::CreateModeActions()
   QObject::connect(DistanceAction, SIGNAL(toggled(bool)),
                    this, SLOT(DistanceWidgetInteractorBehavior(bool)));
 
-  // angle measurement mode
+  //---------------------------------//
+  //           Angle     mode        //
+  //---------------------------------//
   QAction* AngleAction = new QAction(tr("Measure Angle"), this);
   AngleAction->setCheckable(true);
   AngleAction->setChecked(false);
@@ -2017,10 +2016,10 @@ ShowOneChannel(int iChannel)
  */
 QGoTabImageView3DwT::IDWithColorData
 QGoTabImageView3DwT::
-RealValidateContour(const int& iContourID, const int& iDir,
-                const bool& iHighlighted, const unsigned int& iTCoord,
-                vtkPolyData* contour, vtkPolyData* contour_nodes)
+SaveContour(vtkPolyData* contour, vtkPolyData* contour_nodes)
 {
+  IDWithColorData ContourData = IDWithColorData(-1, QColor(Qt::white));
+
   if ((contour->GetNumberOfPoints() > 2) && (m_TimePoint >= 0))
     {
     // Compute Bounding Box
@@ -2041,26 +2040,31 @@ RealValidateContour(const int& iContourID, const int& iDir,
     int* max_idx = this->GetImageCoordinatesFromWorldCoordinates(Max);
 
     // Save contour in database!
-    IDWithColorData ContourData;
     ContourData = m_DataBaseTables->SaveContoursFromVisuInDB(min_idx[0],
-                                                                 min_idx[1],
-                                                                 min_idx[2],
-                                                                 iTCoord,
-                                                                 max_idx[0],
-                                                                 max_idx[1],
-                                                                 max_idx[2],
-                                                                 contour_nodes);
-    return ContourData;
+                                                             min_idx[1],
+                                                             min_idx[2],
+                                                             m_TimePoint,
+                                                             max_idx[0],
+                                                             max_idx[1],
+                                                             max_idx[2],
+                                                             contour_nodes);
+    delete min_idx;
+    delete max_idx;
     }
+  else
+    {
+    std::cerr << "(contour->GetNumberOfPoints() < 2) or  (m_TimePoint < 0)" << std::endl;
+    }
+  return ContourData;
 }
 
 //-------------------------------------------------------------------------
 
 int QGoTabImageView3DwT::
-RealVisuContour(const int& iContourID, const int& iDir,
+VisualizeContour(const int& iContourID, const int& iDir,
       const bool& iHighlighted, const unsigned int& iTCoord,
       vtkPolyData* contour, vtkPolyData* contour_nodes,
-      const double& iR, const double& iG, const double& iB, const double& iA)
+      double iRGBA[4])
 {
   double r(1.), g(0.), b(0.), a(1.);
   if ((contour->GetNumberOfPoints() > 2) && (m_TimePoint >= 0))
@@ -2068,10 +2072,10 @@ RealVisuContour(const int& iContourID, const int& iDir,
       if (iContourID != -1)
         {
         m_ContourId = iContourID;
-        r = iR;
-        g = iG;
-        b = iB;
-        a = iA;
+        r = iRGBA[0];
+        g = iRGBA[1];
+        b = iRGBA[2];
+        a = iRGBA[3];
         }
     vtkProperty* contour_property = vtkProperty::New();
 
@@ -2087,13 +2091,13 @@ RealVisuContour(const int& iContourID, const int& iDir,
       contour_property->SetOpacity(a);
       }
 
+    /// TODO shallow copy...?
     // get corresponding actor from visualization
     vtkPolyData* contour_copy = vtkPolyData::New();
     contour_copy->ShallowCopy(contour);
 
     std::vector<vtkActor*> contour_actor =
-      this->AddContour(iDir, contour_copy,
-                       contour_property);
+      this->AddContour(contour_copy, contour_property);
 
     contour_property->Delete();
 
@@ -2149,17 +2153,17 @@ ValidateContour()
   int i;
   for (i = 0; i < m_ImageView->GetNumberOfImageViewers(); i++)
     {
-    IDWithColorData test =  RealValidateContour(ContourID, i, highlighted, m_TimePoint,
+    IDWithColorData test =  SaveContour(
         m_ImageView->GetContourRepresentationAsPolydata(i),
         m_ImageView->GetContourRepresentationNodePolydata(i));
-    double r, g , b, a;
+    double rgba[4] = {.0, .0, .0, .0};
     int ID = test.first;
-    test.second.getRgbF(&r, &g, &b, &a);
+    test.second.getRgbF(&rgba[0], &rgba[1], &rgba[2], &rgba[3]);
     // visu
-    RealVisuContour(ID, 0, false, m_TimePoint,
+    VisualizeContour(ID, 0, false, m_TimePoint,
         m_ImageView->GetContourRepresentationAsPolydata(i),
         m_ImageView->GetContourRepresentationNodePolydata(i),
-        r, g, b, a);
+        rgba);
     }
 
   if (m_ReEditContourMode)
@@ -2216,41 +2220,10 @@ GetImageCoordinatesFromWorldCoordinates(double iPos[3])
 // std::vector< vtkQuadricLODActor* >
 std::vector<vtkActor*>
 QGoTabImageView3DwT::
-AddContour(const int& iId,
-           vtkPolyData* dataset,
-           vtkProperty* iProperty)
+AddContour(vtkPolyData* dataset, vtkProperty* iProperty)
 {
-  return this->m_ImageView->AddContour(iId, dataset, iProperty);
+  return this->m_ImageView->AddContour(dataset, iProperty);
 }
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-/**
- *
- * \param iId
- * \param iActor
- */
-void
-QGoTabImageView3DwT::
-RemoveActorFromViewer(const int& iId, vtkActor* iActor)
-{
-  m_ImageView->RemoveActor(iId, iActor);
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-/**
- *
- * \param iId
- * \param iActor
- */
-void
-QGoTabImageView3DwT::
-DisplayActorInViewer(const int& iId, vtkActor* iActor)
-{
-  m_ImageView->AddActor(iId, iActor);
-}
-//-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void
@@ -2265,7 +2238,6 @@ RemoveAllTracesForPresentTimePointManager()
     RemoveAllTracesForGivenTimePoint(m_TimePoint, m_MeshContainer);
     }
 }
-//-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void
@@ -2306,7 +2278,7 @@ RemoveAllTracesForGivenTimePoint(const unsigned int& iT,
       c_dir = (*it0).Direction;
       c_actor = (*it0).Actor;
 
-      RemoveActorFromViewer(c_dir, c_actor);
+      m_ImageView->RemoveActor(c_dir, c_actor);
       ++it0;
       }
     }
@@ -2349,7 +2321,7 @@ LoadAllTracesForGivenTimePoint(const unsigned int& iT,
       c_dir = (*it0).Direction;
       c_actor = (*it0).Actor;
 
-      DisplayActorInViewer(c_dir, c_actor);
+      m_ImageView->AddActor(c_dir, c_actor);
       ++it0;
       }
     }
@@ -2369,35 +2341,23 @@ AddTraceFromNodesManager(const unsigned int& iContourID,
   // If we want to add a contour
   if (iTrace.compare("contour") == 0)
     {
-    AddContourFromNodes(iContourID, iNodes, iRgba, iHighlighted, iTCoord);
+    AddContourFromNodes(iContourID, iNodes, const_cast<double*>(iRgba), iHighlighted, iTCoord);
     }
   // If we want to add a mesh
   if (iTrace.compare("mesh") == 0)
     {
-    AddMeshFromNodes(iContourID, iNodes, iRgba, iHighlighted, iTCoord);
+  /// should be visu only
+    AddMeshFromNodes(iContourID, iNodes,const_cast<double*>(iRgba), iHighlighted, iTCoord, false, true);
     }
 }
 
-//-------------------------------------------------------------------------
-//-------------------------------------------------------------------------
-void
-QGoTabImageView3DwT::
-AddContourFromNodes(const unsigned int& iContourID,
-                    vtkPolyData* iNodes,
-                    const double iRgba[4],
-                    const bool& iHighlighted,
-                    const unsigned int& iTCoord)
-{
-  AddContourFromNodes(iContourID, iNodes, iRgba[0], iRgba[1], iRgba[2], iRgba[3],
-                      iHighlighted, iTCoord);
-}
-//-------------------------------------------------------------------------
+
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
 AddContourFromNodes(const unsigned int& iContourID,
                     vtkPolyData* iNodes,
-                    const double& iR, const double& iG, const double& iB, const double& iA,
+                    double iRgba[4],
                     const bool& iHighlighted, const unsigned int& iTCoord)
 {
   if (iNodes->GetNumberOfPoints() > 2)
@@ -2408,45 +2368,27 @@ AddContourFromNodes(const unsigned int& iContourID,
       {
       m_ImageView->EnableContourWidget( true );
       m_ImageView->InitializeContourWidgetNodes( dir, iNodes );
-      RealVisuContour(iContourID, 0, false,
+      VisualizeContour(iContourID, 0, false,
                       iTCoord,
                       m_ImageView->GetContourRepresentationAsPolydata(dir),
                       m_ImageView->GetContourRepresentationNodePolydata(dir),
-                      iR, iG, iB, iA);
+                      iRgba);
        m_ImageView->EnableContourWidget( false ); 
       }
     }
 }
-//-------------------------------------------------------------------------
-//-------------------------------------------------------------------------
-void
-QGoTabImageView3DwT::
-AddMeshFromNodes(const unsigned int& iMeshID,
-                 vtkPolyData* iNodes,
-                 const double iRgba[4],
-                 const bool& iHighlighted,
-                 const unsigned int& iTCoord,
-                 bool NewMesh)
-{
-  AddMeshFromNodes(iMeshID, iNodes, 
-                   iHighlighted, iTCoord, false,NewMesh,
-                   iRgba[0], iRgba[1], iRgba[2], iRgba[3]);
-}
-//-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
 AddMeshFromNodes(const unsigned int& iMeshID,
-                 vtkPolyData* iNodes,
-                 //const double& iR, const double& iG, const double& iB, const double& iA,
+                 vtkPolyData* iNodes, double iRgba[4],
                  const bool& iHighlighted, const unsigned int& iTCoord, const bool& iSaveInDataBase,
-                 bool NewMesh,
-                 const double& iR, const double& iG, const double& iB, const double& iA
+                 bool NewMesh
                  )
 {
   this->SavePolyDataAsMeshInDB(iNodes, iMeshID, 0,iHighlighted,  iTCoord, iSaveInDataBase,
-                               iR,  iG,  iB, iA,NewMesh);
+      iRgba,NewMesh);
 }
 
 //-------------------------------------------------------------------------
@@ -2474,7 +2416,7 @@ ReEditContour(const unsigned int& iId)
           c_dir = (*it).Direction;
           c_actor = (*it).Actor;
           c_nodes = (*it).Nodes;
-          RemoveActorFromViewer(c_dir, c_actor);
+          m_ImageView->RemoveActor(c_dir, c_actor);
           }
         else
           {
@@ -2848,7 +2790,7 @@ DeleteTracesFromTable(ContourMeshStructureMultiIndexContainer& iContainer,
           c_actor = (*it).Actor;
           c_nodes = (*it).Nodes;
 
-          RemoveActorFromViewer(c_dir, c_actor);
+          m_ImageView->RemoveActor(c_dir, c_actor);
 
 //           c_actor->Delete();
           }
@@ -3012,6 +2954,7 @@ void
 QGoTabImageView3DwT::
 OneClickSphereContours()
 {
+  vtkPoints* m_SeedsWorldPosition;
   // Get seeds
   m_SeedsWorldPosition = this->m_ImageView->GetAllSeeds();
 
@@ -3044,8 +2987,9 @@ OneClickSphereContours()
     // Save polydatas (=contours) in DB and update visualization
     for (unsigned int j = 1; j < ContoursForOnePoint.size(); j++)
       {
+      bool saveindatabase = m_DataBaseTables->IsDatabaseUsed();
       //save in db
-      listContoursIDs.push_back(SavePolyDataAsContourInDB(ContoursForOnePoint[j]));
+      listContoursIDs.push_back(SaveAndVisuContour(ContoursForOnePoint[j], m_TimePoint, saveindatabase));
       //update visu
       }
     // assign contours to mesh
@@ -3055,6 +2999,7 @@ OneClickSphereContours()
       m_DataBaseTables->CreateMeshFromOneClickSegmentation(listContoursIDs);
       }
     }
+  m_SeedsWorldPosition->Delete();
 }
 //-------------------------------------------------------------------------
 
@@ -3063,6 +3008,7 @@ void
 QGoTabImageView3DwT::
 OneClickSphereMeshes()
 {
+  vtkPoints* m_SeedsWorldPosition;
   // Get seeds
   m_SeedsWorldPosition = this->m_ImageView->GetAllSeeds();
 
@@ -3081,10 +3027,13 @@ OneClickSphereMeshes()
     m_SeedsWorldPosition->GetPoint(i, seed_pos);
     seedsSegmentation.setSeedsPosition(seed_pos);
 
+    // save + visu
     // Save polydatas/mesh (=volume) in DB
     this->SavePolyDataAsMeshInDB(
       seedsSegmentation.SphereVolumeSegmentation());
     }
+
+  m_SeedsWorldPosition->Delete();
 }
 
 //-------------------------------------------------------------------------
@@ -3092,6 +3041,7 @@ void
 QGoTabImageView3DwT::
 LevelSetSegmentation2D()
 {
+  vtkPoints* m_SeedsWorldPosition;
   // Get seeds (centers for level sets)
   m_SeedsWorldPosition = this->m_ImageView->GetAllSeeds();
   // pos[] will contain position of a seed
@@ -3123,9 +3073,10 @@ LevelSetSegmentation2D()
     seedsSegmentation.setSeedsPosition(seed_pos);
     //
     int orientation = 0;
-    // Save contour in database
-    SavePolyDataAsContourInDB(
-          seedsSegmentation.LevelSetSegmentation2D(orientation));
+    bool saveindatabase = m_DataBaseTables->IsDatabaseUsed();
+    //save in db and see it
+    SaveAndVisuContour(seedsSegmentation.LevelSetSegmentation2D(orientation),
+        m_TimePoint, saveindatabase);
     }
 
   // Erase seeds once everything is stored in DB
@@ -3133,6 +3084,8 @@ LevelSetSegmentation2D()
 
   // Update visualization
   this->m_ImageView->UpdateRenderWindows();
+
+  m_SeedsWorldPosition->Delete();
 
 }
 //-------------------------------------------------------------------------
@@ -3142,6 +3095,7 @@ void
 QGoTabImageView3DwT::
 LevelSetSegmentation3D()
 {
+  vtkPoints* m_SeedsWorldPosition;
   // Get seeds (centers for level sets)
   m_SeedsWorldPosition = this->m_ImageView->GetAllSeeds();
   // pos[] will contain position of a seed
@@ -3172,16 +3126,18 @@ LevelSetSegmentation3D()
     m_SeedsWorldPosition->GetPoint(i, seed_pos);
     seedsSegmentation.setSeedsPosition(seed_pos);
 
+    // save + visu
     SavePolyDataAsMeshInDB(
       seedsSegmentation.LevelSetSegmentation3D());
     }
+  m_SeedsWorldPosition->Delete();
 }
 
 //-------------------------------------------------------------------------
 int
 QGoTabImageView3DwT::
-RealSavePolyDataAsContourInDB(vtkPolyData* iView, const unsigned int& iTCoord,
-                          const bool& iSaveInDataBase)
+SaveAndVisuContour(vtkPolyData* iView, const unsigned int& iTCoord,
+                   const bool& iSaveInDataBase)
 {
   // Create Node for the associated contour (useful for reedit mode)
   vtkPolyData* contour_nodes = vtkPolyData::New();
@@ -3189,13 +3145,13 @@ RealSavePolyDataAsContourInDB(vtkPolyData* iView, const unsigned int& iTCoord,
 
   // Check if there is a DB cause now we assume there is one
   // Save in DB
-  IDWithColorData test =  RealValidateContour(-1, 0, false, iTCoord, iView, contour_nodes);
+  IDWithColorData test =  SaveContour(iView, contour_nodes);
 
-  double r, g , b, a;
+  double rgba[4] = {.0, .0, .0, .0};
   int ID = test.first;
-  test.second.getRgbF(&r, &g, &b, &a);
+  test.second.getRgbF(&rgba[0], &rgba[1], &rgba[2], &rgba[3]);
   // visu
-  return RealVisuContour(ID, 0, false, iTCoord, iView, contour_nodes, r, g, b, a);
+  return VisualizeContour(ID, 0, false, iTCoord, iView, contour_nodes, rgba);
 }
 
 //-------------------------------------------------------------------------
@@ -3225,25 +3181,12 @@ CreateContour(vtkPolyData* contour_nodes, vtkPolyData* iView)
 }
 
 //-------------------------------------------------------------------------
-/**
- *
- */
-int
-QGoTabImageView3DwT::
-SavePolyDataAsContourInDB(vtkPolyData* iView)
-{
-  bool saveindatabase = m_DataBaseTables->IsDatabaseUsed();
-  return RealSavePolyDataAsContourInDB(iView, m_TimePoint, saveindatabase);
-}
-
-//-------------------------------------------------------------------------
 int
 QGoTabImageView3DwT::
 SavePolyDataAsMeshInDB(vtkPolyData* iView, const int& iMeshID,
                        const int& iDir,const bool& iHighlighted, const unsigned int& iTCoord,
                        const bool& iSaveInDataBase, 
-                       const double& iR, const double& iG, const double& iB,
-                       const double& iA,
+                       double iRgba[4],
                        bool NewMesh)
 {
   double r,g,b,a(1.);
@@ -3287,15 +3230,18 @@ SavePolyDataAsMeshInDB(vtkPolyData* iView, const int& iMeshID,
     m_MeshId = MeshData.first;
 
     MeshData.second.getRgbF(&r,&g,&b,&a);
+
+    delete min_idx;
+    delete max_idx;
     }
   else //in case this function is called only to render existing meshes from the database when loading
     //all traces after opening a new imagingsession:
     {
     m_MeshId = iMeshID;
-    r = iR;
-    g = iG;
-    b = iB;
-    a = iA;
+    r = iRgba[0];
+    g = iRgba[1];
+    b = iRgba[2];
+    a = iRgba[3];
     }
 
   vtkProperty* mesh_property = vtkProperty::New();
@@ -3309,7 +3255,7 @@ SavePolyDataAsMeshInDB(vtkPolyData* iView, const int& iMeshID,
   // dont't create actors if there is no polydata to be displayed
   if (iView)
     {
-    mesh_actor = this->AddContour(iDir, iView, mesh_property);
+    mesh_actor = this->AddContour(iView, mesh_property);
     }
   mesh_property->Delete();
   // get meshid from the visu dock widget (SpinBox)/** todo: this is not the track id when creating
@@ -3348,9 +3294,10 @@ SavePolyDataAsMeshInDB(vtkPolyData* iView)
   // In such a case contours are saved in the database, else they are not!
   bool saveindatabase = m_DataBaseTables->IsDatabaseUsed();
 
-  /*return SavePolyDataAsMeshInDB(iView, -1, 0, rgba[0], rgba[1], rgba[2], rgba[3],
-                                false, m_TimePoint, saveindatabase);*/
-  return SavePolyDataAsMeshInDB(iView, -1, 0,false, m_TimePoint, saveindatabase);
+  double RGBA[4] = {.0, .0, .0, .0};
+
+  // save + visu
+  return SavePolyDataAsMeshInDB(iView, -1, 0,false, m_TimePoint, saveindatabase,RGBA);
 
 
 }
@@ -3555,17 +3502,11 @@ CreateMeshFromSelectedContours(std::list<int> iListContourIDs,int iMeshID)
   FilterType::Pointer filter = FilterType::New();
   filter->ProcessContours(list_contours);
 
-  // get the color from the Trace Editing Widget
-  //double rgba[4];
-  //GetTraceColor(rgba);
+  double RGBA[4] = {.0, .0, .0, .0};
 
-  //unsigned int meshid =
-    //this->m_TraceManualEditingDockWidget->m_TraceWidget->GetCurrentCollectionID();
-
-  //this->AddMeshFromNodes(iMeshID, filter->GetOutput(), rgba, false,
-    //                     tcoord, true,false);
-  this->AddMeshFromNodes(iMeshID, filter->GetOutput(),false,
-                         tcoord, true,false);
+  // save +visu
+  this->SavePolyDataAsMeshInDB(filter->GetOutput(), iMeshID, 0,false,  tcoord, true,
+        false);
 }
 //-------------------------------------------------------------------------
 
@@ -3574,12 +3515,14 @@ void QGoTabImageView3DwT::ImportMeshes()
 {
   if (this->m_DataBaseTables->IsDatabaseUsed())
     {
+    double RGBA[4] = {.0, .0, .0, .0};
     ContourMeshStructureMultiIndexContainer* MeshToAdd =
       m_DataBaseTables->ImportMeshes(GetTimePoint());
     ContourMeshStructureMultiIndexContainer::iterator c_it = MeshToAdd->begin();
     while (c_it != MeshToAdd->end())
       {
       ContourMeshStructure Mesh = *c_it;
+      // save + visu
       AddMeshFromNodes(Mesh.TraceID, Mesh.Nodes, Mesh.rgba, Mesh.Highlighted,
                        Mesh.TCoord, false);
       ++c_it;
@@ -3607,7 +3550,10 @@ void
 QGoTabImageView3DwT::
 TestMesh()
 {
+  // Fill container + send sth to visu
+  // should not send anything to the visu
   ListHighLightMeshes();
+  // Fill table widget
   ListSelectMeshesInTable();
 
   // Update the visualization

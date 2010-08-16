@@ -130,8 +130,7 @@ public:
    * \todo check the utility of iId.
    */
 
-  virtual std::vector<vtkActor*> AddContour(const int& iId,
-                                            vtkPolyData* dataset,
+  virtual std::vector<vtkActor*> AddContour(vtkPolyData* dataset,
                                             vtkProperty* property = NULL);
 
   /** \brief Highlight a given contour (iProp) if iToDo is true. */
