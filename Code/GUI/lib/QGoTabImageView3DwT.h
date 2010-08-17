@@ -266,9 +266,6 @@ public slots:
   void RemoveAllTracesForGivenTimePoint(const unsigned int& iT,
                                         const std::string& iTraceName);
 
-  void ActivateManualSegmentationEditor(const bool& iActivate);
-  void ActivateSemiAutoSegmentationEditor(const bool& iActivate);
-
   void ValidateContour();
 
   /** \brief Save a mesh in the database and render the mesh.

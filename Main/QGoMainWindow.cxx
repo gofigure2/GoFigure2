@@ -487,7 +487,6 @@ LoadAllTracesFromDatabase(const int& iT, const std::string& iTraceName)
     if (!calculation)
       {
       w3t->ReinitializeContour(); // contour widget is reinitialized...
-      w3t->ActivateManualSegmentationEditor(false);
       }
     }
 }

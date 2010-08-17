@@ -335,14 +335,14 @@ ContourInteractorBehavior(bool iVisible)
     {
     case 0:
       // Manual
-      ActivateSemiAutoSegmentationEditor(!iVisible);
-      ActivateManualSegmentationEditor(iVisible);
+      this->m_ImageView->EnableSeedWidget(!iVisible);
+      this->m_ImageView->EnableContourWidget(iVisible);
       break;
 
     case 1:
       // Semi auto
-      ActivateManualSegmentationEditor(!iVisible);
-      ActivateSemiAutoSegmentationEditor(iVisible);
+      this->m_ImageView->EnableContourWidget(!iVisible);
+      this->m_ImageView->EnableSeedWidget(iVisible);
       break;
 
     case 2:
@@ -358,25 +358,9 @@ ContourInteractorBehavior(bool iVisible)
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
-ActivateManualSegmentationEditor(const bool& iActivate)
-{
-  this->m_ImageView->EnableContourWidget(iActivate);
-}
-
-//-------------------------------------------------------------------------
-void
-QGoTabImageView3DwT::
-ActivateSemiAutoSegmentationEditor(const bool& iActivate)
-{
- this->m_ImageView->EnableSeedWidget( iActivate );
-}
-
-//-------------------------------------------------------------------------
-void
-QGoTabImageView3DwT::
 MeshInteractorBehavior(bool iVisible)
 {
- ActivateSemiAutoSegmentationEditor(iVisible);
+  this->m_ImageView->EnableSeedWidget(iVisible);
 }
 
 //-------------------------------------------------------------------------
