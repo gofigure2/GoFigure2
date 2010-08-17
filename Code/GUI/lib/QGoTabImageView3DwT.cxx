@@ -112,10 +112,6 @@
 
 #include <QDebug>
 //-------------------------------------------------------------------------
-/**
- * \brief Default Constructor
- * \param iParent
- */
 QGoTabImageView3DwT::
 QGoTabImageView3DwT(QWidget* iParent) :
   QGoTabElementBase(iParent),
@@ -197,9 +193,6 @@ QGoTabImageView3DwT(QWidget* iParent) :
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/**
- * \brief Destructor
- */
 QGoTabImageView3DwT::
 ~QGoTabImageView3DwT()
   {
@@ -284,12 +277,9 @@ GenerateContourRepresentationProperties()
     emit ContourRepresentationPropertiesChanged();
     }
 }
+//-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-//-------------------------------------------------------------------------
-/**
- * \brief
- */
 void
 QGoTabImageView3DwT::
 CreateManualSegmentationdockWidget()
@@ -363,12 +353,9 @@ ContourInteractorBehavior(bool iVisible)
       break;
     }
 }
+//-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/**
- *
- * \param iActivate
- */
 void
 QGoTabImageView3DwT::
 ActivateManualSegmentationEditor(const bool& iActivate)
@@ -377,10 +364,6 @@ ActivateManualSegmentationEditor(const bool& iActivate)
 }
 
 //-------------------------------------------------------------------------
-/**
- *
- * \param iActivate
- */
 void
 QGoTabImageView3DwT::
 ActivateSemiAutoSegmentationEditor(const bool& iActivate)
@@ -642,9 +625,7 @@ SetRendererWindow(int iValue)
 }
 #endif /* ENABLEVIDEORECORD */
 //-------------------------------------------------------------------------
-/**
- *
- */
+
 void
 QGoTabImageView3DwT::
 CreateAllViewActions()
@@ -1179,9 +1160,9 @@ void QGoTabImageView3DwT::OpenExistingBookmark()
   this->SetSliceViewXZ(atoi(Coord.GetMapValue("YCoord").c_str()));
   this->SetSliceViewYZ(atoi(Coord.GetMapValue("XCoord").c_str()));
 }
-//--------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 
-//--------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
 TakeSnapshot()
@@ -1218,10 +1199,6 @@ TakeSnapshot()
 }
 
 //-------------------------------------------------------------------------
-/**
- * \brief
- * \param iParent
- */
 void
 QGoTabImageView3DwT::
 setupUi(QWidget* iParent)
@@ -1273,10 +1250,6 @@ setupUi(QWidget* iParent)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/**
- *
- * \param iParent
- */
 void
 QGoTabImageView3DwT::
 retranslateUi(QWidget *iParent)
@@ -1287,10 +1260,6 @@ retranslateUi(QWidget *iParent)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/**
- *
- * \return
- */
 GoFigure::TabDimensionType
 QGoTabImageView3DwT::
 GetTabDimensionType() const
@@ -1304,11 +1273,6 @@ GetTabDimensionType() const
 // Set Inputs
 
 //-------------------------------------------------------------------------
-/**
- * \brief
- * \param[in] iReader
- * \param[in] iTimePoint
- */
 void
 QGoTabImageView3DwT::
 SetLSMReader(vtkLSMReader* iReader, const int& iTimePoint)
@@ -1582,10 +1546,6 @@ SetTimePointWithLSMReaders(const int& iTimePoint)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/**
- *
- * \param iTimePoint
- */
 void
 QGoTabImageView3DwT::
 SetTimePoint(const int& iTimePoint)
@@ -1633,9 +1593,6 @@ SetTimePoint(const int& iTimePoint)
 }
 
 //-------------------------------------------------------------------------
-/**
- *
- */
 void QGoTabImageView3DwT::Update()
 {
   m_ImageView->SetImage(m_Image);
@@ -1643,9 +1600,6 @@ void QGoTabImageView3DwT::Update()
 }
 
 //-------------------------------------------------------------------------
-/**
- *
- */
 void
 QGoTabImageView3DwT::
 ChangeLookupTable()
@@ -1666,10 +1620,6 @@ ChangeLookupTable()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/**
- *
- * \param[in] iShow
- */
 void
 QGoTabImageView3DwT::
 ShowScalarBar(const bool& iShow)
@@ -1684,12 +1634,6 @@ ShowScalarBar(const bool& iShow)
 //------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/**
- *
- * \param[in] iType
- * \param[in] iBaseName
- * \return
- */
 QString
 QGoTabImageView3DwT::
 SnapshotViewXY(
@@ -1701,12 +1645,6 @@ SnapshotViewXY(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/**
- *
- * \param[in] iType
- * \param[in] iBaseName
- * \return
- */
 QString
 QGoTabImageView3DwT::
 SnapshotView2(
@@ -1718,12 +1656,6 @@ SnapshotView2(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/**
- *
- * \param[in] iType
- * \param[in] iBaseName
- * \return
- */
 QString
 QGoTabImageView3DwT::
 SnapshotView3(
@@ -1735,12 +1667,6 @@ SnapshotView3(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/**
- *
- * \param[in] iType
- * \param[in] iBaseName
- * \return
- */
 QString
 QGoTabImageView3DwT::
 SnapshotViewXYZ(
@@ -1752,10 +1678,6 @@ SnapshotViewXYZ(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/**
- *
- * \param[in] iS
- */
 void
 QGoTabImageView3DwT::
 SetSliceViewXY(const int& iS)
@@ -1765,10 +1687,6 @@ SetSliceViewXY(const int& iS)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/**
- *
- * \param[in] iS
- */
 void
 QGoTabImageView3DwT::
 SetSliceViewXZ(const int& iS)
@@ -1778,10 +1696,6 @@ SetSliceViewXZ(const int& iS)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/**
- *
- * \param[in] iS
- */
 void
 QGoTabImageView3DwT::
 SetSliceViewYZ(const int& iS)
@@ -1791,10 +1705,6 @@ SetSliceViewYZ(const int& iS)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/**
- *
- * \param[in] iS
- */
 void
 QGoTabImageView3DwT::
 SetFullScreenView(const int& iS)
@@ -1804,9 +1714,6 @@ SetFullScreenView(const int& iS)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/**
- *
- */
 void
 QGoTabImageView3DwT::
 Quadview()
@@ -1820,9 +1727,6 @@ Quadview()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/**
- *
- */
 void
 QGoTabImageView3DwT::
 FullScreenViewXY()
@@ -1836,9 +1740,6 @@ FullScreenViewXY()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/**
- *
- */
 void
 QGoTabImageView3DwT::
 FullScreenViewXZ()
@@ -1852,9 +1753,6 @@ FullScreenViewXZ()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/**
- *
- */
 void
 QGoTabImageView3DwT::
 FullScreenViewYZ()
@@ -1868,9 +1766,6 @@ FullScreenViewYZ()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/**
- *
- */
 void
 QGoTabImageView3DwT::
 FullScreenViewXYZ()
@@ -1884,9 +1779,6 @@ FullScreenViewXYZ()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/**
- *
- */
 void
 QGoTabImageView3DwT::
 GetBackgroundColorFromImageViewer()
@@ -1898,9 +1790,6 @@ GetBackgroundColorFromImageViewer()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/**
- *
- */
 void
 QGoTabImageView3DwT::
 SetBackgroundColorToImageViewer()
@@ -1910,9 +1799,6 @@ SetBackgroundColorToImageViewer()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/**
- *
- */
 void
 QGoTabImageView3DwT::
 ChangeBackgroundColor()
@@ -1935,10 +1821,6 @@ ChangeBackgroundColor()
 }
 
 //-------------------------------------------------------------------------
-/**
- *
- * \param iChecked
- */
 void
 QGoTabImageView3DwT::
 ShowAllChannels(bool iChecked)
@@ -1982,10 +1864,6 @@ ShowAllChannels(bool iChecked)
 //------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/**
- * \brief
- * \param[in] iChannel
- */
 void
 QGoTabImageView3DwT::
 ShowOneChannel(int iChannel)
@@ -1999,10 +1877,6 @@ ShowOneChannel(int iChannel)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/**
- *
- * \param iId
- */
 QGoTabImageView3DwT::IDWithColorData
 QGoTabImageView3DwT::
 SaveContour(vtkPolyData* contour, vtkPolyData* contour_nodes)
@@ -2087,9 +1961,6 @@ VisualizeContour(const int& iContourID, const unsigned int& iTCoord,
 }
 
 //-------------------------------------------------------------------------
-/**
- *
- */
 void
 QGoTabImageView3DwT::
 ValidateContour()
@@ -2158,11 +2029,6 @@ ChangeContourRepresentationProperty()
 }
 
 //-------------------------------------------------------------------------
-/**
- *
- * \param[in] pos[]
- * \return
- */
 int*
 QGoTabImageView3DwT::
 GetImageCoordinatesFromWorldCoordinates(double iPos[3])
@@ -2171,13 +2037,6 @@ GetImageCoordinatesFromWorldCoordinates(double iPos[3])
 }
 
 //-------------------------------------------------------------------------
-/**
- *
- * \param iId
- * \param dataset
- * \param property
- * \return
- */
 // std::vector< vtkQuadricLODActor* >
 std::vector<vtkActor*>
 QGoTabImageView3DwT::
@@ -3183,9 +3042,6 @@ VisualizeMesh(vtkPolyData* iView, const int& iMeshID, const unsigned int& iTCoor
 }
 
 //-------------------------------------------------------------------------
-/**
- *
- */
 void
 QGoTabImageView3DwT::
 SaveAndVisuMesh(vtkPolyData* iView)
