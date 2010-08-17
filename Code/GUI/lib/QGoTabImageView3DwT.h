@@ -534,4 +534,5 @@ private:
   Q_DISABLE_COPY(QGoTabImageView3DwT);
   };
 
+#include "QGoTabImageView3DwT.txx"
 #endif
