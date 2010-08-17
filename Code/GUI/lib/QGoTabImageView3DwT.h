@@ -377,7 +377,6 @@ protected:
   QAction*                                  m_TakeSnapshotAction;
   int                                       m_TimePoint;
   unsigned int                              m_ContourId;
-  unsigned int                              m_MeshId;
   bool                                      m_ReEditContourMode;
 
   /// \todo rename as QGoNavigationDockWidget

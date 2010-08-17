@@ -124,7 +124,6 @@ QGoTabImageView3DwT(QWidget* iParent) :
   m_BackgroundColor(Qt::black),
   m_TimePoint(-1),
   m_ContourId(0),
-  m_MeshId(1),
   m_ReEditContourMode(false)
   {
   m_Image = vtkImageData::New();
@@ -2353,7 +2352,7 @@ ReEditContour(const unsigned int& iId)
 
     if (it != m_ContourContainer.get<TraceID>().end())
       {
-      vtkPolyData* c_nodes = NULL;
+      vtkPolyData* c_nodes = (*it).Nodes;
 
       if (it != m_ContourContainer.get<TraceID>().end())
         {
@@ -3142,8 +3141,6 @@ QGoTabImageView3DwT::
 VisualizeMesh(vtkPolyData* iView, const int& iMeshID, const unsigned int& iTCoord,
     double iRgba[4])
 {
-  m_MeshId = iMeshID;
-
   vtkProperty* mesh_property = vtkProperty::New();
   mesh_property->SetColor(iRgba[0], iRgba[1], iRgba[2]);
   mesh_property->SetOpacity(iRgba[3]);
@@ -3161,16 +3158,11 @@ VisualizeMesh(vtkPolyData* iView, const int& iMeshID, const unsigned int& iTCoor
   //unsigned int trackid = this->m_TraceManualEditingDockWidget->m_TraceWidget->GetCurrentCollectionID();
 
   // fill the container
-  ContourMeshStructure temp( m_MeshId, mesh_actor, iView,
+  ContourMeshStructure temp( iMeshID, mesh_actor, iView,
                              iTCoord, false, //highlighted
                              true, // visible
                              iRgba[0], iRgba[1], iRgba[2], iRgba[3]);
   m_MeshContainer.insert(temp);
-
-  /// TODO Check accuracy
-  // should it be there??
-  // to be returned??
-  ++m_MeshId;
 }
 
 //-------------------------------------------------------------------------
