@@ -1902,7 +1902,7 @@ QGoTabImageView3DwT::IDWithColorData
 QGoTabImageView3DwT::
 UpdateContour(vtkPolyData* contour, vtkPolyData* contour_nodes)
 {
-  IDWithColorData ContourData = IDWithColorData(-1, QColor(Qt::white));
+  IDWithColorData ContourData( -1, QColor(Qt::white) );
 
   if ((contour->GetNumberOfPoints() > 2) && (m_TimePoint >= 0))
     {
@@ -1928,11 +1928,11 @@ UpdateContour(vtkPolyData* contour, vtkPolyData* contour_nodes)
 
 //-------------------------------------------------------------------------
 int*
-QGoTabImageView3DwT::GetBoundingBox(vtkPolyData* contour)
+QGoTabImageView3DwT::GetBoundingBox(vtkPolyData* iElement)
 {
   // Compute Bounding Box
   double bounds[6];
-  contour->GetBounds(bounds);
+  iElement->GetBounds(bounds);
 
   // Extract Min and Max from bounds
   double       Min[3], Max[3];
@@ -2620,11 +2620,15 @@ SelectTraceInTable(ContourMeshStructureMultiIndexContainer& iContainer,
   std::list<int>                  listofrowstobeselected;
   std::list<vtkProp3D*>::iterator it = iActorList.begin();
 
-//  while (it != iActorList.end())
-//    {
+  vtkActor* t_actor( NULL );
+
+  while (it != iActorList.end())
+    {
+    t_actor = static_cast<vtkActor*>( *it );
+
 //    // Change the corresponding highlighted value in the container
 //    ContourMeshStructureMultiIndexContainer::index<Actor>::type::iterator
-//    actor_it = iContainer.get<Actor>().find(static_cast<vtkActor*>(*it));
+//    actor_it = iContainer.get<Actor>().find();
 //
 //    if (actor_it != iContainer.get<Actor>().end())
 //      {
@@ -2635,7 +2639,7 @@ SelectTraceInTable(ContourMeshStructureMultiIndexContainer& iContainer,
 //        }
 //      }
 //    ++it;
-//    }
+    }
 
   return listofrowstobeselected;
 }
@@ -3107,22 +3111,19 @@ VisualizeMesh(vtkPolyData* iView, const int& iMeshID, const unsigned int& iTCoor
   mesh_property->SetColor(iRgba[0], iRgba[1], iRgba[2]);
   mesh_property->SetOpacity(iRgba[3]);
 
-  std::vector<vtkActor*> mesh_actor;
-
-  /// TODO should we have to check it?
-  // dont't create actors if there is no polydata to be displayed
-  if (iView)
-    {
-    mesh_actor = this->AddContour(iView, mesh_property);
-    }
+  std::vector<vtkActor*> mesh_actor = this->AddContour(iView, mesh_property);
   mesh_property->Delete();
-  // get meshid from the visu dock widget (SpinBox)/** todo: this is not the track id when creating
+
+  // get meshid from the visu dock widget (SpinBox)
+  /// \todo: this is not the track id when creating
   //mesh from the context menu: this is the selected mesh in the combolist !!!
-  //unsigned int trackid = this->m_TraceManualEditingDockWidget->m_TraceWidget->GetCurrentCollectionID();
+  //unsigned int trackid =
+  // this->m_TraceManualEditingDockWidget->m_TraceWidget->GetCurrentCollectionID();
 
   // fill the container
   ContourMeshStructure temp( iMeshID, mesh_actor, iView,
-                             iTCoord, false, //highlighted
+                             iTCoord,
+                             false, //highlighted
                              true, // visible
                              iRgba[0], iRgba[1], iRgba[2], iRgba[3]);
   m_MeshContainer.insert(temp);
@@ -3213,14 +3214,17 @@ ComputeMeshAttributes(vtkPolyData* iMesh)
     itk::VTKImageImport<ImageType>::Pointer itk_importer =
       itk::VTKImageImport<ImageType>::New();
     vtk_exporter->SetInput(m_InternalImages[i]);
-    ConnectPipelines<vtkImageExport, itk::VTKImageImport<ImageType>::Pointer>(vtk_exporter, itk_importer);
+
+    ConnectPipelines<vtkImageExport, itk::VTKImageImport<ImageType>::Pointer>(
+        vtk_exporter, itk_importer );
     calculator->SetImage(itk_importer->GetOutput());
     calculator->Update();
 
     QString     q_channelname = this->m_NavigationDockWidget->GetChannelName(i);
     std::string channelname = q_channelname.toStdString();
 
-    oAttributes.m_TotalIntensityMap[channelname] = static_cast<int>(calculator->GetSumIntensity());
+    oAttributes.m_TotalIntensityMap[channelname] =
+        static_cast<int>(calculator->GetSumIntensity());
     oAttributes.m_MeanIntensityMap[channelname] = calculator->GetMeanIntensity();
     oAttributes.m_Volume = calculator->GetPhysicalSize();
     oAttributes.m_Area = calculator->GetArea();
@@ -3246,8 +3250,8 @@ void QGoTabImageView3DwT::ImportContours()
       {
       ContourMeshStructure Contour = *c_it;
       // NOT ENOUGH (ONLY VISU YET)
-      this->AddContourFromNodes(Contour.TraceID, Contour.Nodes, Contour.rgba
-          , Contour.TCoord);
+      this->AddContourFromNodes( Contour.TraceID, Contour.Nodes,
+                                 Contour.rgba, Contour.TCoord );
       ++c_it;
       }
     this->GoToDefaultMenu();
@@ -3472,16 +3476,30 @@ ShowTracesFromTable(ContourMeshStructureMultiIndexContainer& iContainer,
   while (it != iTbContainer->end())
     {
     trace_id = it->TraceID;
-    traceid_it = iContainer.get<TraceID>().find(trace_id);
     tempHighL = it->Highlighted;
+
+    traceid_it = iContainer.get<TraceID>().find(trace_id);
 
     if( traceid_it != iContainer.get<TraceID>().end() )
       {
       tempActor->SetVisibility(tempHighL);
-      /// \todo update All Actors property!
-//      tempActor = traceid_it->Actor;
-//      m_ImageView->ChangeActorProperty(traceid_it->Direction,
-//                                       tempActor, tempActor->GetProperty());
+
+      m_ImageView->ChangeActorProperty( 0,
+                                        traceid_it->ActorXY,
+                                        traceid_it->ActorXY->GetProperty() );
+
+      m_ImageView->ChangeActorProperty( 1,
+                                        traceid_it->ActorXZ,
+                                        traceid_it->ActorXZ->GetProperty() );
+
+      m_ImageView->ChangeActorProperty( 2,
+                                        traceid_it->ActorYZ,
+                                        traceid_it->ActorYZ->GetProperty() );
+
+      m_ImageView->ChangeActorProperty( 3,
+                                        traceid_it->ActorXYZ,
+                                        traceid_it->ActorXYZ->GetProperty() );
+
       temp = *traceid_it;
       temp.Highlighted = tempHighL;
 
@@ -3556,7 +3574,6 @@ ModifyTracesVisibilityFromTable(
 
         iContainer.get<TraceID>().replace(traceid_it, tempStructure);
         }
-      ++traceid_it;
       }
 
     ++it;
