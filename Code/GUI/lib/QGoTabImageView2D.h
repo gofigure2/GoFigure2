@@ -72,8 +72,6 @@ public:
   void setupUi(QWidget* parent);
   void retranslateUi(QWidget *parent);
 
-  virtual std::list<QWidget*> AdditionalWidget();
-
   virtual void WriteSettings();
   virtual void ReadSettings();
 

@@ -89,7 +89,7 @@ public:
 
   /** \brief Get all the DockWidgets with its status (visibility, location). */
   virtual std::list<QGoDockWidgetStatusPair>& DockWidget();
-  virtual std::list<QWidget*> AdditionalWidget();
+
 //   virtual QStatusBar* StatusBar();
 
   virtual std::list<QAction*> GetPluginActions();

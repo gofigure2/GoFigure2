@@ -71,7 +71,6 @@ int main(int argc, char** argv)
   QGoTabElementTestHelper* test = new QGoTabElementTestHelper;
   test->ViewActions();
   test->DockWidget();
-  test->AdditionalWidget();
   test->GetPluginActions();
   test->SetPluginActions(std::list<QAction*>());
 

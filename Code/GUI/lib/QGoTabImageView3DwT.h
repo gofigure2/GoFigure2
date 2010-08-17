@@ -110,17 +110,17 @@ public:
 
   /**
    *
-   * \param iReader
-   * \param iTimePoint
+   * \param[in] iReader
+   * \param[in] iTimePoint
    */
   void SetLSMReader(vtkLSMReader* iReader, const int& iTimePoint);
 
   /**
    *
-   * \param iContainer
-   * \param iFileType
-   * \param iHeader
-   * \param iTimePoint
+   * \param[in] iContainer  MegaCapture file container
+   * \param[in] iFileType   file type (PNG, JPEG...)
+   * \param[in] iHeader     path to MegaCapture header
+   * \param[in] iTimePoint  Time point
    */
   void SetMegaCaptureFile(
     const GoFigureFileInfoHelperMultiIndexContainer& iContainer,
@@ -129,27 +129,20 @@ public:
     const unsigned int& iTimePoint);
 
   /**
-   *
+   * \brief
    */
   virtual void Update();
 
   /**
-   *
+   * \brief
    * \param parent
    */
   void setupUi(QWidget* parent);
   /**
-   *
+   * \brief
    * \param parent
    */
   void retranslateUi(QWidget *parent);
-
-  /**
-   *
-   * \return
-   */
-  virtual std::list<QWidget*> AdditionalWidget()
-  { return std::list<QWidget*>(); }
 
   /**
    *
@@ -164,10 +157,9 @@ public:
    * \brief Add the current trace in the database and updates the visualization
    * useful when we load a dataset from the databse
    * \param[in] iContourID Trace ID
-   * \param[in] iNodes Data to be stored
-   * \param[in] ied should the trace be highlighted true=yes false=no
+   * \param[in] iNodes Data to be stored in the DB
+   * \param[in] iRgba
    * \param[in] iTCoord Current time point
-   * \param[in] iSaveInDataBase Save in database? true=yes false=no
    * \param[in] iTrace Name of the traces to be loaded (contour or mesh)
    */
   void AddTraceFromNodesManager(const unsigned int& iContourID,
@@ -181,11 +173,11 @@ public:
    * \param[in] iRgba[]
    * \param[in] iHighlighted
    */
-  void AddContourFromNodes(const unsigned int& iContourID, vtkPolyData* iNodes, double iRgba[4],
-                           const unsigned int& iTCoord);
+  void AddContourFromNodes(const unsigned int& iContourID, vtkPolyData* iNodes,
+                           double iRgba[4], const unsigned int& iTCoord);
 
-  void AddMeshFromNodes(const unsigned int& iMeshID, vtkPolyData* iNodes, double iRgba[4],
-                        const unsigned int& iTCoord);
+  void AddMeshFromNodes(const unsigned int& iMeshID, vtkPolyData* iNodes,
+                        double iRgba[4], const unsigned int& iTCoord);
 
   int GetSliceViewXY() const;
   int GetSliceViewXZ() const;
@@ -374,7 +366,15 @@ protected:
   QColor                                    m_BackgroundColor;
   QAction*                                  m_BackgroundColorAction;
   QAction*                                  m_TakeSnapshotAction;
-  int                                       m_TimePoint;
+
+  int m_PCoord;
+  int m_RCoord;
+  int m_CCoord;
+  int m_XTileCoord;
+  int m_YTileCoord;
+  int m_ZTileCoord;
+  int m_TCoord;
+
   unsigned int                              m_ContourId;
   bool                                      m_ReEditContourMode;
 

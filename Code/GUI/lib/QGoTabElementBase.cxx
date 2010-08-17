@@ -106,13 +106,6 @@ QGoTabElementBase::DockWidget()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-std::list<QWidget*> QGoTabElementBase::AdditionalWidget()
-{
-  return std::list<QWidget*>();
-}
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
 std::list<QAction*> QGoTabElementBase::GetPluginActions()
 {
   return m_PluginActionList;

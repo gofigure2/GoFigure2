@@ -118,7 +118,13 @@ QGoTabImageView3DwT(QWidget* iParent) :
   m_LSMReader(0),
   m_Image(0),
   m_BackgroundColor(Qt::black),
-  m_TimePoint(-1),
+  m_PCoord( 0 ),
+  m_RCoord( 0 ),
+  m_CCoord( 0 ),
+  m_XTileCoord( 0 ),
+  m_YTileCoord( 0 ),
+  m_ZTileCoord( 0 ),
+  m_TCoord(-1),
   m_ContourId(0),
   m_ReEditContourMode(false)
   {
@@ -1320,7 +1326,7 @@ SetLSMReader(vtkLSMReader* iReader, const int& iTimePoint)
 
     m_NavigationDockWidget->SetTMinimumAndMaximum(0, dim[3] - 1);
     m_NavigationDockWidget->SetTSlice(iTimePoint);
-    if (m_TimePoint != iTimePoint)
+    if (m_TCoord != iTimePoint)
       {
       SetTimePoint(iTimePoint);
       }
@@ -1398,7 +1404,7 @@ SetMegaCaptureFile(
   m_NavigationDockWidget->SetTMinimumAndMaximum(min_t, max_t);
   m_NavigationDockWidget->SetTSlice(iTimePoint);
 
-  if (static_cast<unsigned int>(m_TimePoint) != iTimePoint)
+  if (static_cast<unsigned int>(m_TCoord) != iTimePoint)
     {
     SetTimePoint(iTimePoint);
     }
@@ -1425,8 +1431,8 @@ SetTimePointWithMegaCapture(const int& iTimePoint)
 
   RemoveAllTracesForPresentTimePointManager();
 
-  m_TimePoint = iTimePoint;
-  m_MegaCaptureReader->SetTimePoint(m_TimePoint);
+  m_TCoord = iTimePoint;
+  m_MegaCaptureReader->SetTimePoint(m_TCoord);
 
   unsigned int min_ch = m_MegaCaptureReader->GetMinChannel();
   unsigned int max_ch = m_MegaCaptureReader->GetMaxChannel();
@@ -1488,8 +1494,8 @@ SetTimePointWithLSMReaders(const int& iTimePoint)
 
   RemoveAllTracesForPresentTimePointManager();
 
-  m_TimePoint = iTimePoint;
-  m_LSMReader[0]->SetUpdateTimePoint(m_TimePoint);
+  m_TCoord = iTimePoint;
+  m_LSMReader[0]->SetUpdateTimePoint(m_TCoord);
 
   int NumberOfChannels = m_LSMReader[0]->GetNumberOfChannels();
 
@@ -1503,7 +1509,7 @@ SetTimePointWithLSMReaders(const int& iTimePoint)
 
     for (int i = 1; i < NumberOfChannels; i++)
       {
-      m_LSMReader[i]->SetUpdateTimePoint(m_TimePoint);
+      m_LSMReader[i]->SetUpdateTimePoint(m_TCoord);
       m_LSMReader[i]->Update();
 
       m_InternalImages[i] = m_LSMReader[i]->GetOutput();
@@ -1540,7 +1546,7 @@ void
 QGoTabImageView3DwT::
 SetTimePoint(const int& iTimePoint)
 {
-  if (iTimePoint == m_TimePoint)
+  if (iTimePoint == m_TCoord)
     {
     return;
     }
@@ -1554,7 +1560,7 @@ SetTimePoint(const int& iTimePoint)
     else
       {
       SetTimePointWithLSMReaders(iTimePoint);
-      emit TimePointChanged(m_TimePoint);
+      emit TimePointChanged(m_TCoord);
       }
     }
   else
@@ -1570,7 +1576,7 @@ SetTimePoint(const int& iTimePoint)
       else
         {
         SetTimePointWithMegaCapture(iTimePoint);
-        emit TimePointChanged(m_TimePoint);
+        emit TimePointChanged(m_TCoord);
         }
       }
     else
@@ -1873,7 +1879,7 @@ SaveContour(vtkPolyData* contour, vtkPolyData* contour_nodes)
 {
   IDWithColorData ContourData = IDWithColorData(-1, QColor(Qt::white));
 
-  if ((contour->GetNumberOfPoints() > 2) && (m_TimePoint >= 0))
+  if ((contour->GetNumberOfPoints() > 2) && (m_TCoord >= 0))
     {
     // Compute Bounding Box
     int* bounds = GetBoundingBox(contour);
@@ -1882,7 +1888,7 @@ SaveContour(vtkPolyData* contour, vtkPolyData* contour_nodes)
     ContourData = m_DataBaseTables->SaveContoursFromVisuInDB(bounds[0],
                                                              bounds[1],
                                                              bounds[2],
-                                                             m_TimePoint,
+                                                             m_TCoord,
                                                              bounds[3],
                                                              bounds[4],
                                                              bounds[5],
@@ -1891,7 +1897,7 @@ SaveContour(vtkPolyData* contour, vtkPolyData* contour_nodes)
     }
   else
     {
-    std::cerr << "(contour->GetNumberOfPoints() < 2) or  (m_TimePoint < 0)" << std::endl;
+    std::cerr << "(contour->GetNumberOfPoints() < 2) or  (m_TCoord < 0)" << std::endl;
     }
   return ContourData;
 }
@@ -1904,7 +1910,7 @@ UpdateContour(vtkPolyData* contour, vtkPolyData* contour_nodes)
 {
   IDWithColorData ContourData( -1, QColor(Qt::white) );
 
-  if ((contour->GetNumberOfPoints() > 2) && (m_TimePoint >= 0))
+  if ((contour->GetNumberOfPoints() > 2) && (m_TCoord >= 0))
     {
     // Compute Bounding Box
     int* bounds = GetBoundingBox(contour);
@@ -1912,7 +1918,7 @@ UpdateContour(vtkPolyData* contour, vtkPolyData* contour_nodes)
     /// TODO Fix bug here, returned color is wrong
     // update contour in database!
     ContourData = m_DataBaseTables->UpdateContourFromVisuInDB(bounds[0],
-        bounds[1], bounds[2], m_TimePoint, bounds[1],
+        bounds[1], bounds[2], m_TCoord, bounds[1],
         bounds[2], bounds[3], contour_nodes, m_ContourId);
     this->m_DataBaseTables->GetTraceManualEditingDockWidget()->setEnabled(true);
 
@@ -1920,7 +1926,7 @@ UpdateContour(vtkPolyData* contour, vtkPolyData* contour_nodes)
     }
   else
     {
-    std::cerr << "(contour->GetNumberOfPoints() < 2) or  (m_TimePoint < 0)" << std::endl;
+    std::cerr << "(contour->GetNumberOfPoints() < 2) or  (m_TCoord < 0)" << std::endl;
     }
   return ContourData;
 }
@@ -1968,7 +1974,7 @@ int QGoTabImageView3DwT::
 VisualizeContour(const int& iContourID, const unsigned int& iTCoord,
     vtkPolyData* contour, vtkPolyData* contour_nodes, double iRGBA[4])
 {
-  if ((contour->GetNumberOfPoints() > 2) && (m_TimePoint >= 0))
+  if ((contour->GetNumberOfPoints() > 2) && (m_TCoord >= 0))
     {
     m_ContourId = iContourID;
 
@@ -2034,7 +2040,7 @@ ValidateContour()
       test.second.getRgbF(&rgba[0], &rgba[1], &rgba[2], &rgba[3]);
       std::cout <<"RGBA: " << rgba[0] << " " << rgba[1] << " " << rgba[2] << std::endl;
       // visu
-      VisualizeContour(ID, m_TimePoint,
+      VisualizeContour(ID, m_TCoord,
           m_ImageView->GetContourRepresentationAsPolydata(i),
           m_ImageView->GetContourRepresentationNodePolydata(i),
           rgba);
@@ -2064,7 +2070,7 @@ ValidateContour()
 
     // visu
     VisualizeContour(ContourID,
-                     m_TimePoint,
+                     m_TCoord,
                      m_ImageView->GetContourRepresentationAsPolydata(i),
                      m_ImageView->GetContourRepresentationNodePolydata(i),
                      rgba);
@@ -2113,12 +2119,12 @@ void
 QGoTabImageView3DwT::
 RemoveAllTracesForPresentTimePointManager()
 {
-  if (m_TimePoint >= 0)
+  if (m_TCoord >= 0)
     {
     // Removes contours from visu
-    RemoveAllTracesForGivenTimePoint(m_TimePoint, m_ContourContainer);
+    RemoveAllTracesForGivenTimePoint(m_TCoord, m_ContourContainer);
     // Removes meshes from visu
-    RemoveAllTracesForGivenTimePoint(m_TimePoint, m_MeshContainer);
+    RemoveAllTracesForGivenTimePoint(m_TCoord, m_MeshContainer);
     }
 }
 
@@ -2173,12 +2179,12 @@ void
 QGoTabImageView3DwT::
 LoadAllTracesForCurrentTimePointManager()
 {
-  if (m_TimePoint >= 0)
+  if (m_TCoord >= 0)
     {
     // Loads contours for visu
-    LoadAllTracesForGivenTimePoint(m_TimePoint, m_ContourContainer);
+    LoadAllTracesForGivenTimePoint(m_TCoord, m_ContourContainer);
     // Loads meshes for visu
-    LoadAllTracesForGivenTimePoint(m_TimePoint, m_MeshContainer);
+    LoadAllTracesForGivenTimePoint(m_TCoord, m_MeshContainer);
     }
 }
 //-------------------------------------------------------------------------
@@ -2542,7 +2548,7 @@ SelectTraceInTable(ContourMeshStructureMultiIndexContainer& iContainer,
 //
 //    if (actor_it != iContainer.get<Actor>().end())
 //      {
-//      if (actor_it->TCoord ==  static_cast<unsigned int>(m_TimePoint))
+//      if (actor_it->TCoord ==  static_cast<unsigned int>(m_TCoord))
 //        {
 //        int trace_id = static_cast<int>(actor_it->TraceID);
 //        listofrowstobeselected.push_back(trace_id);
@@ -2641,7 +2647,7 @@ GetSliceViewYZ() const
 int QGoTabImageView3DwT::
 GetTimePoint() const
 {
-  return m_TimePoint;
+  return m_TCoord;
 }
 //-------------------------------------------------------------------------
 
@@ -2953,7 +2959,7 @@ SaveAndVisuContour(vtkPolyData* iView)
   int ID = test.first;
   test.second.getRgbF(&rgba[0], &rgba[1], &rgba[2], &rgba[3]);
   // visu
-  return VisualizeContour(ID, m_TimePoint, iView, contour_nodes, rgba);
+  return VisualizeContour(ID, m_TCoord, iView, contour_nodes, rgba);
 }
 
 //-------------------------------------------------------------------------
@@ -3000,7 +3006,7 @@ SaveMesh(vtkPolyData* iView, const int& iMeshID, double iRgba[4], bool NewMesh)
   // true and iMeshID = 0:
   IDWithColorData MeshData =
       m_DataBaseTables->SaveMeshFromVisuInDB( bounds[0], bounds[1], bounds[2],
-                                              m_TimePoint,
+                                              m_TCoord,
                                               bounds[3], bounds[4], bounds[5],
                                               iView,
                                               &MeshAttributes,
@@ -3060,7 +3066,7 @@ SaveAndVisuMesh(vtkPolyData* iView)
   iID = MeshData.first;
   MeshData.second.getRgbF(&RGBA[0],&RGBA[1],&RGBA[2],&RGBA[3]);
   // visu
-  VisualizeMesh(iView, iID, m_TimePoint ,RGBA);
+  VisualizeMesh(iView, iID, m_TCoord ,RGBA);
 }
 //-------------------------------------------------------------------------
 
@@ -3286,7 +3292,7 @@ CreateMeshFromSelectedContours(
   iID = MeshData.first;
   MeshData.second.getRgbF(&RGBA[0],&RGBA[1],&RGBA[2],&RGBA[3]);
   // visu
-  this->VisualizeMesh(filter->GetOutput(), iID, m_TimePoint, RGBA);
+  this->VisualizeMesh(filter->GetOutput(), iID, m_TCoord, RGBA);
 
 }
 //-------------------------------------------------------------------------

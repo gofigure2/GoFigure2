@@ -98,9 +98,6 @@ public:
 
   virtual std::vector<QAction*> ViewActions();
 
-  virtual std::list<QWidget*> AdditionalWidget()
-  { return std::list<QWidget*>(); }
-
   virtual void WriteSettings() {}
   virtual void ReadSettings() {}
 
