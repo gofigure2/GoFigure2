@@ -2051,34 +2051,17 @@ SaveContour(vtkPolyData* contour, vtkPolyData* contour_nodes)
 //-------------------------------------------------------------------------
 
 int QGoTabImageView3DwT::
-VisualizeContour(const int& iContourID, const int& iDir,
-      const bool& iHighlighted,const unsigned int& iTCoord, vtkPolyData* contour,
-      vtkPolyData* contour_nodes, double iRGBA[4])
+VisualizeContour(const int& iContourID, const unsigned int& iTCoord,
+    vtkPolyData* contour, vtkPolyData* contour_nodes, double iRGBA[4])
 {
-  double r(1.), g(0.), b(0.), a(1.);
   if ((contour->GetNumberOfPoints() > 2) && (m_TimePoint >= 0))
     {
-      if (iContourID != -1)
-        {
-        m_ContourId = iContourID;
-        r = iRGBA[0];
-        g = iRGBA[1];
-        b = iRGBA[2];
-        a = iRGBA[3];
-        }
+    m_ContourId = iContourID;
+
     vtkProperty* contour_property = vtkProperty::New();
 
-    if (iHighlighted)
-      {
-      contour_property->SetColor(1., 0., 0.);
-      contour_property->SetOpacity(1.);
-      contour_property->SetLineWidth(3.);
-      }
-    else
-      {
-      contour_property->SetColor(r, g, b);
-      contour_property->SetOpacity(a);
-      }
+    contour_property->SetColor(iRGBA[0], iRGBA[1], iRGBA[2]);
+    contour_property->SetOpacity(iRGBA[3]);
 
     /// TODO shallow copy...?
     // get corresponding actor from visualization
@@ -2093,16 +2076,12 @@ VisualizeContour(const int& iContourID, const int& iDir,
     // fill the container
     ContourMeshStructure temp( m_ContourId, contour_actor,
                                contour_nodes, iTCoord,
-                               iHighlighted,
+                               false, // highlighted
                                true, // Visible
-                               r, g, b, a );
+                               iRGBA[0], iRGBA[1], iRGBA[2], iRGBA[3] );
     m_ContourContainer.insert(temp);
 
-    // should it be there...?
-    if (iContourID != -1)
-      {
-      ++m_ContourId;
-      }
+    ++m_ContourId;
     }
 
   return iContourID;
@@ -2143,7 +2122,7 @@ ValidateContour()
     int ID = test.first;
     test.second.getRgbF(&rgba[0], &rgba[1], &rgba[2], &rgba[3]);
     // visu
-    VisualizeContour(ID, 0, false, m_TimePoint,
+    VisualizeContour(ID, m_TimePoint,
         m_ImageView->GetContourRepresentationAsPolydata(i),
         m_ImageView->GetContourRepresentationNodePolydata(i),
         rgba);
@@ -2323,7 +2302,7 @@ AddTraceFromNodesManager(const unsigned int& iContourID,
   // If we want to add a mesh
   if (iTrace.compare("mesh") == 0)
     {
-    AddMeshFromNodes(iContourID, iNodes, iRgba, iTCoord, false);
+    AddMeshFromNodes(iContourID, iNodes, iRgba, iTCoord);
     }
 }
 
@@ -2342,8 +2321,7 @@ AddContourFromNodes(const unsigned int& iContourID, vtkPolyData* iNodes,
       {
       m_ImageView->EnableContourWidget( true );
       m_ImageView->InitializeContourWidgetNodes( dir, iNodes );
-      VisualizeContour(iContourID, 0, false,
-                      iTCoord,
+      VisualizeContour(iContourID, iTCoord,
                       m_ImageView->GetContourRepresentationAsPolydata(dir),
                       m_ImageView->GetContourRepresentationNodePolydata(dir),
                       iRgba);
@@ -2356,9 +2334,9 @@ AddContourFromNodes(const unsigned int& iContourID, vtkPolyData* iNodes,
 void
 QGoTabImageView3DwT::
 AddMeshFromNodes(const unsigned int& iMeshID, vtkPolyData* iNodes, double iRgba[4],
-                 const unsigned int& iTCoord,bool NewMesh)
+                 const unsigned int& iTCoord)
 {
-  this->VisualizeMesh(iNodes, iMeshID, false, iTCoord, iRgba,NewMesh);
+  this->VisualizeMesh(iNodes, iMeshID, iTCoord, iRgba);
 }
 
 //-------------------------------------------------------------------------
@@ -3082,7 +3060,7 @@ SaveAndVisuContour(vtkPolyData* iView)
   int ID = test.first;
   test.second.getRgbF(&rgba[0], &rgba[1], &rgba[2], &rgba[3]);
   // visu
-  return VisualizeContour(ID, 0, false, m_TimePoint, iView, contour_nodes, rgba);
+  return VisualizeContour(ID, m_TimePoint, iView, contour_nodes, rgba);
 }
 
 //-------------------------------------------------------------------------
@@ -3161,20 +3139,14 @@ SaveMesh(vtkPolyData* iView, const int& iMeshID, double iRgba[4], bool NewMesh)
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
-VisualizeMesh(vtkPolyData* iView, const int& iMeshID,const bool& iHighlighted,
-              const unsigned int& iTCoord, double iRgba[4], bool NewMesh)
+VisualizeMesh(vtkPolyData* iView, const int& iMeshID, const unsigned int& iTCoord,
+    double iRgba[4])
 {
-  double r,g,b,a(1.);
   m_MeshId = iMeshID;
 
-  r = iRgba[0];
-  g = iRgba[1];
-  b = iRgba[2];
-  a = iRgba[3];
-
   vtkProperty* mesh_property = vtkProperty::New();
-  mesh_property->SetColor(r, g, b);
-  mesh_property->SetOpacity(a);
+  mesh_property->SetColor(iRgba[0], iRgba[1], iRgba[2]);
+  mesh_property->SetOpacity(iRgba[3]);
 
   std::vector<vtkActor*> mesh_actor;
 
@@ -3190,13 +3162,14 @@ VisualizeMesh(vtkPolyData* iView, const int& iMeshID,const bool& iHighlighted,
 
   // fill the container
   ContourMeshStructure temp( m_MeshId, mesh_actor, iView,
-                             iTCoord, iHighlighted,
+                             iTCoord, false, //highlighted
                              true, // visible
-                             r, g, b, a );
+                             iRgba[0], iRgba[1], iRgba[2], iRgba[3]);
   m_MeshContainer.insert(temp);
 
   /// TODO Check accuracy
   // should it be there??
+  // to be returned??
   ++m_MeshId;
 }
 
@@ -3219,7 +3192,7 @@ SaveAndVisuMesh(vtkPolyData* iView)
   iID = MeshData.first;
   MeshData.second.getRgbF(&RGBA[0],&RGBA[1],&RGBA[2],&RGBA[3]);
   // visu
-  VisualizeMesh(iView, iID,false, m_TimePoint ,RGBA);
+  VisualizeMesh(iView, iID, m_TimePoint ,RGBA);
 }
 //-------------------------------------------------------------------------
 
@@ -3442,7 +3415,7 @@ CreateMeshFromSelectedContours(
   iID = MeshData.first;
   MeshData.second.getRgbF(&RGBA[0],&RGBA[1],&RGBA[2],&RGBA[3]);
   // visu
-  this->VisualizeMesh(filter->GetOutput(), iID,false, m_TimePoint, RGBA, false);
+  this->VisualizeMesh(filter->GetOutput(), iID, m_TimePoint, RGBA);
 
 }
 //-------------------------------------------------------------------------

@@ -185,7 +185,7 @@ public:
                            const unsigned int& iTCoord);
 
   void AddMeshFromNodes(const unsigned int& iMeshID, vtkPolyData* iNodes, double iRgba[4],
-                        const unsigned int& iTCoord, bool NewMesh = true);
+                        const unsigned int& iTCoord);
 
   int GetSliceViewXY() const;
   int GetSliceViewXZ() const;
@@ -396,10 +396,9 @@ protected:
   // ID + color map, real save+real visu
   IDWithColorData SaveContour(vtkPolyData* contour, vtkPolyData* contour_nodes);
 
-  int VisualizeContour(const int& iContourID, const int& iDir,
-      const bool& iHighlighted, const unsigned int& iTCoord,
-      vtkPolyData* contour, vtkPolyData* contour_nodes,
-      double iRGBA[4]);
+  int VisualizeContour(const int& iContourID,
+      const unsigned int& iTCoord, vtkPolyData* contour,
+      vtkPolyData* contour_nodes, double iRGBA[4]);
 
   int SaveAndVisuContour(vtkPolyData* iView);
 
@@ -419,8 +418,8 @@ protected:
   IDWithColorData SaveMesh(vtkPolyData* iView, const int& iMeshID,double iRGBA[4],
       bool NewMesh = true);
 
-  void VisualizeMesh(vtkPolyData* iView, const int& iMeshID, const bool& iHighlighted,
-      const unsigned int& iTCoord, double iRGBA[4], bool NewMesh = true);
+  void VisualizeMesh(vtkPolyData* iView, const int& iMeshID,
+      const unsigned int& iTCoord, double iRGBA[4]);
 
   void GetBackgroundColorFromImageViewer();
   void SetBackgroundColorToImageViewer();
