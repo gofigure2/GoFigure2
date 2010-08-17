@@ -1892,33 +1892,18 @@ SaveContour(vtkPolyData* contour, vtkPolyData* contour_nodes)
   if ((contour->GetNumberOfPoints() > 2) && (m_TimePoint >= 0))
     {
     // Compute Bounding Box
-    double bounds[6];
-    contour->GetBounds(bounds);
-
-    // Extract Min and Max from bounds
-    double       Min[3], Max[3];
-    int          k = 0;
-    unsigned int i;
-    for (i = 0; i < 3; i++)
-      {
-      Min[i] = bounds[k++];
-      Max[i] = bounds[k++];
-      }
-
-    int* min_idx = this->GetImageCoordinatesFromWorldCoordinates(Min);
-    int* max_idx = this->GetImageCoordinatesFromWorldCoordinates(Max);
+    int* bounds = GetBoundingBox(contour);
 
     // Save contour in database!
-    ContourData = m_DataBaseTables->SaveContoursFromVisuInDB(min_idx[0],
-                                                             min_idx[1],
-                                                             min_idx[2],
+    ContourData = m_DataBaseTables->SaveContoursFromVisuInDB(bounds[0],
+                                                             bounds[1],
+                                                             bounds[2],
                                                              m_TimePoint,
-                                                             max_idx[0],
-                                                             max_idx[1],
-                                                             max_idx[2],
+                                                             bounds[3],
+                                                             bounds[4],
+                                                             bounds[5],
                                                              contour_nodes);
-    delete min_idx;
-    delete max_idx;
+    delete bounds;
     }
   else
     {
@@ -1926,9 +1911,75 @@ SaveContour(vtkPolyData* contour, vtkPolyData* contour_nodes)
     }
   return ContourData;
 }
-
 //-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
+QGoTabImageView3DwT::IDWithColorData
+QGoTabImageView3DwT::
+UpdateContour(vtkPolyData* contour, vtkPolyData* contour_nodes)
+{
+  IDWithColorData ContourData = IDWithColorData(-1, QColor(Qt::white));
+
+  if ((contour->GetNumberOfPoints() > 2) && (m_TimePoint >= 0))
+    {
+    // Compute Bounding Box
+    int* bounds = GetBoundingBox(contour);
+
+    /// TODO Fix bug here, returned color is wrong
+    // update contour in database!
+    ContourData = m_DataBaseTables->UpdateContourFromVisuInDB(bounds[0],
+        bounds[1], bounds[2], m_TimePoint, bounds[1],
+        bounds[2], bounds[3], contour_nodes, m_ContourId);
+    this->m_DataBaseTables->GetTraceManualEditingDockWidget()->setEnabled(true);
+
+    delete bounds;
+    }
+  else
+    {
+    std::cerr << "(contour->GetNumberOfPoints() < 2) or  (m_TimePoint < 0)" << std::endl;
+    }
+  return ContourData;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+int*
+QGoTabImageView3DwT::GetBoundingBox(vtkPolyData* contour)
+{
+  // Compute Bounding Box
+  double bounds[6];
+  contour->GetBounds(bounds);
+
+  // Extract Min and Max from bounds
+  double       Min[3], Max[3];
+  int          k = 0;
+  unsigned int i;
+  for (i = 0; i < 3; i++)
+    {
+    Min[i] = bounds[k++];
+    Max[i] = bounds[k++];
+    }
+
+  int* min_idx = this->GetImageCoordinatesFromWorldCoordinates(Min);
+  int* max_idx = this->GetImageCoordinatesFromWorldCoordinates(Max);
+
+  int* boundingBox = new int;
+  boundingBox[0] = min_idx[0];
+  boundingBox[1] = min_idx[1];
+  boundingBox[2] = min_idx[2];
+
+  boundingBox[3] = max_idx[0];
+  boundingBox[4] = max_idx[1];
+  boundingBox[4] = max_idx[2];
+
+  delete min_idx;
+  delete max_idx;
+
+  return boundingBox;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 int QGoTabImageView3DwT::
 VisualizeContour(const int& iContourID, const unsigned int& iTCoord,
     vtkPolyData* contour, vtkPolyData* contour_nodes, double iRGBA[4])
@@ -1960,6 +2011,7 @@ VisualizeContour(const int& iContourID, const unsigned int& iTCoord,
                                iRGBA[0], iRGBA[1], iRGBA[2], iRGBA[3] );
     m_ContourContainer.insert(temp);
 
+    // to increase accurately
     ++m_ContourId;
     }
 
@@ -1980,12 +2032,38 @@ ValidateContour()
 
     ContourMeshStructureMultiIndexContainer::index<TraceID>::type::iterator
     it = m_ContourContainer.get<TraceID>().find(m_ContourId);
-
+    // delete...? why...?
     if( it != m_ContourContainer.get<TraceID>().end() )
       {
       // We have to remove the polydata from the container too
       m_ContourContainer.get<TraceID>().erase(m_ContourId);
       }
+
+    int i;
+    for (i = 0; i < m_ImageView->GetNumberOfImageViewers(); i++)
+      {
+      IDWithColorData test =  UpdateContour(
+          m_ImageView->GetContourRepresentationAsPolydata(i),
+          m_ImageView->GetContourRepresentationNodePolydata(i));
+      double rgba[4] = {0., 0., 0., 0.};
+      int ID = test.first;
+      test.second.getRgbF(&rgba[0], &rgba[1], &rgba[2], &rgba[3]);
+      std::cout <<"RGBA: " << rgba[0] << " " << rgba[1] << " " << rgba[2] << std::endl;
+      // visu
+      VisualizeContour(ID, m_TimePoint,
+          m_ImageView->GetContourRepresentationAsPolydata(i),
+          m_ImageView->GetContourRepresentationNodePolydata(i),
+          rgba);
+      }
+
+    std::list<int> listofrowstobeselected;
+    listofrowstobeselected.push_back(m_ContourId);
+
+    m_DataBaseTables->ChangeContoursToHighLightInfoFromVisu(listofrowstobeselected,
+                                                            m_ReEditContourMode);
+    m_ReEditContourMode = false;
+
+    return;
     }
 
   for (int i = 0; i < m_ImageView->GetNumberOfImageViewers(); i++)
@@ -2006,16 +2084,6 @@ ValidateContour()
                      m_ImageView->GetContourRepresentationAsPolydata(i),
                      m_ImageView->GetContourRepresentationNodePolydata(i),
                      rgba);
-    }
-
-  if (m_ReEditContourMode)
-    {
-    std::list<int> listofrowstobeselected;
-    listofrowstobeselected.push_back(m_ContourId);
-
-    m_DataBaseTables->ChangeContoursToHighLightInfoFromVisu(listofrowstobeselected,
-                                                            m_ReEditContourMode);
-    m_ReEditContourMode = false;
     }
 }
 
@@ -3022,21 +3090,7 @@ QGoTabImageView3DwT::
 SaveMesh(vtkPolyData* iView, const int& iMeshID, double iRgba[4], bool NewMesh)
 {
   // Compute Bounding Box
-  double bounds[6];
-  iView->GetBounds(bounds);
-
-  // Extract Min and Max from bounds
-  double       Min[3], Max[3];
-  int          k = 0;
-
-  for (int i = 0; i < 3; i++)
-    {
-    Min[i] = bounds[k++];
-    Max[i] = bounds[k++];
-    }
-
-  int* min_idx = this->GetImageCoordinatesFromWorldCoordinates(Min);
-  int* max_idx = this->GetImageCoordinatesFromWorldCoordinates(Max);
+  int* bounds = GetBoundingBox(iView);
 
   // Save mesh in database
   //don't use m_ContourId
@@ -3047,16 +3101,14 @@ SaveMesh(vtkPolyData* iView, const int& iMeshID, double iRgba[4], bool NewMesh)
   // trace manual editing widget, if it is a new mesh, the NewMesh will be
   // true and iMeshID = 0:
   IDWithColorData MeshData =
-      m_DataBaseTables->SaveMeshFromVisuInDB( min_idx[0], min_idx[1], min_idx[2],
+      m_DataBaseTables->SaveMeshFromVisuInDB( bounds[0], bounds[1], bounds[2],
                                               m_TimePoint,
-                                              max_idx[0], max_idx[1], max_idx[2],
+                                              bounds[3], bounds[4], bounds[5],
                                               iView,
                                               &MeshAttributes,
                                               NewMesh,
                                               iMeshID);
-
-  delete min_idx;
-  delete max_idx;
+  delete bounds;
 
   return MeshData;
 }
@@ -3073,6 +3125,7 @@ VisualizeMesh(vtkPolyData* iView, const int& iMeshID, const unsigned int& iTCoor
 
   std::vector<vtkActor*> mesh_actor;
 
+  /// TODO should we have to check it?
   // dont't create actors if there is no polydata to be displayed
   if (iView)
     {

@@ -396,12 +396,15 @@ protected:
 
   // ID + color map, real save+real visu
   IDWithColorData SaveContour(vtkPolyData* contour, vtkPolyData* contour_nodes);
+  IDWithColorData UpdateContour(vtkPolyData* contour, vtkPolyData* contour_nodes);
 
   int VisualizeContour(const int& iContourID,
       const unsigned int& iTCoord, vtkPolyData* contour,
       vtkPolyData* contour_nodes, double iRGBA[4]);
 
   int SaveAndVisuContour(vtkPolyData* iView);
+
+  int* GetBoundingBox(vtkPolyData* contour);
 
   void CreateContour( vtkPolyData* contour_nodes,vtkPolyData* iView);
 
