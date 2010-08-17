@@ -2267,7 +2267,9 @@ LoadAllTracesForGivenTimePoint(const unsigned int& iT,
 {
   if (iContainer.size() > 0)
     {
-    ContourMeshStructureMultiIndexContainer::index<TCoord>::type::iterator it0, it1;
+    ContourMeshStructureMultiIndexContainer::index<TCoord>::type::iterator
+        it0, it1;
+
     boost::tuples::tie(it0, it1) =
       iContainer.get<TCoord>().equal_range(iT);
 
@@ -2352,19 +2354,14 @@ ReEditContour(const unsigned int& iId)
 
     if (it != m_ContourContainer.get<TraceID>().end())
       {
-      vtkPolyData* c_nodes = (*it).Nodes;
-
-      if (it != m_ContourContainer.get<TraceID>().end())
-        {
-        this->m_ImageView->RemoveActor( 0, (*it).ActorXY );
-        this->m_ImageView->RemoveActor( 1, (*it).ActorXZ );
-        this->m_ImageView->RemoveActor( 2, (*it).ActorYZ );
-        this->m_ImageView->RemoveActor( 3, (*it).ActorXYZ );
-        }
+      this->m_ImageView->RemoveActor( 0, (*it).ActorXY );
+      this->m_ImageView->RemoveActor( 1, (*it).ActorXZ );
+      this->m_ImageView->RemoveActor( 2, (*it).ActorYZ );
+      this->m_ImageView->RemoveActor( 3, (*it).ActorXYZ );
 
       m_ContourContainer.erase(iId);
 
-      int dir = ComputeDirectionFromContour(c_nodes);
+      int dir = ComputeDirectionFromContour(it->Nodes);
 
       if (dir != -1)
         {
@@ -2372,7 +2369,7 @@ ReEditContour(const unsigned int& iId)
         m_ContourId = iId;
 
         double p[3];
-        c_nodes->GetPoint(0, p);
+        it->Nodes->GetPoint(0, p);
         int* idx = GetImageCoordinatesFromWorldCoordinates(p);
 
         switch (dir)
@@ -2394,9 +2391,13 @@ ReEditContour(const unsigned int& iId)
             break;
             }
           }
+        delete idx;
+
         this->m_ManualSegmentationDockWidget->show();
         this->m_ModeActions[0]->setChecked(true);
-        m_ImageView->InitializeContourWidgetNodes( dir, c_nodes );
+
+        m_ImageView->InitializeContourWidgetNodes( dir, it->Nodes );
+
         m_ManualSegmentationDockWidget->setEnabled(true);
         this->m_DataBaseTables->GetTraceManualEditingDockWidget()->setEnabled(false);
         }
@@ -2411,13 +2412,16 @@ QGoTabImageView3DwT::
 HighLightContours()
 {
   /// Modifiy "picked" to "modified"
-  std::list<vtkProp3D*>           listofpicked = m_ImageView->GetListOfPickedContours();
-  std::list<vtkProp3D*>::iterator it = listofpicked.begin();
+  std::list<vtkProp3D*>
+      listofpicked = m_ImageView->GetListOfPickedContours();
+
+  std::list<vtkProp3D*>::iterator
+      it = listofpicked.begin();
 
   while (it != listofpicked.end())
     {
     // Mode 0: One click selection
-    HighLightContainer(m_ContourContainer, static_cast<vtkActor*>(*it));
+    HighLightContainer(m_ContourContainer, static_cast<vtkActor*>(*it) );
     ++it;
     }
 }
@@ -2426,8 +2430,11 @@ void
 QGoTabImageView3DwT::
 ListHighLightMeshes()
 {
-  std::list<vtkProp3D*>           listofpicked = m_ImageView->GetListOfModifiedActors3D();
-  std::list<vtkProp3D*>::iterator it = listofpicked.begin();
+  std::list<vtkProp3D*>
+      listofpicked = m_ImageView->GetListOfModifiedActors3D();
+
+  std::list<vtkProp3D*>::iterator
+      it = listofpicked.begin();
 
   while (it != listofpicked.end())
     {
@@ -2440,7 +2447,8 @@ ListHighLightMeshes()
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
-HighLightContainer(ContourMeshStructureMultiIndexContainer& iContainer, vtkActor* iActor)
+HighLightContainer( ContourMeshStructureMultiIndexContainer& iContainer,
+                    vtkActor* iActor )
 {
   vtkProperty* select_property = vtkProperty::New();
   select_property->SetColor(1., 0., 0.);
@@ -2529,62 +2537,82 @@ QGoTabImageView3DwT::
 HighLightTracesFromTable(ContourMeshStructureMultiIndexContainer& iContainer,
                          std::string iCurrentTrace)
 {
-//  ContourMeshStructureMultiIndexContainer::iterator
-//  it = this->m_DataBaseTables->GetTracesInfoListForVisu(iCurrentTrace.c_str())
-//       ->begin();
-//  unsigned int trace_id = 0;
-//
-//  vtkProperty* select_property = vtkProperty::New();
-//  select_property->SetColor(1., 0., 0.);
-//  select_property->SetLineWidth(3.);
-//  select_property->SetOpacity(1.);
-//
-//  ContourMeshStructure tempStructure;
-//  ContourMeshStructureMultiIndexContainer::index<TraceID>::type::iterator
-//  traceid_it;
-//  ContourMeshStructureMultiIndexContainer::index<TraceID>::type::iterator
-//  test_it = iContainer.get<TraceID>().end();
-//
-//  while (it != this->m_DataBaseTables
-//         ->GetTracesInfoListForVisu(iCurrentTrace.c_str())->end())
-//    {
-//    trace_id = it->TraceID;
-//
-//    traceid_it = iContainer.get<TraceID>().find(trace_id);
-//
-//    while ((traceid_it != iContainer.get<TraceID>().end())
-//           && ((*traceid_it).TraceID == trace_id))
-//      {
-//      if (it->Highlighted != traceid_it->Highlighted)
-//        {
-//        if (!it->Highlighted)
-//          {
-//          vtkProperty* temp_property = vtkProperty::New();
-//          temp_property->SetColor(traceid_it->rgba[0], traceid_it->rgba[1], traceid_it->rgba[2]);
-//          temp_property->SetOpacity(traceid_it->rgba[3]);
-//          temp_property->SetLineWidth(1.);
-//
-//          m_ImageView->ChangeActorProperty(traceid_it->Direction,
-//                                           traceid_it->Actor, temp_property);
-//          temp_property->Delete();
-//          }
-//        else
-//          {
-//          m_ImageView->ChangeActorProperty(traceid_it->Direction,
-//                                           traceid_it->Actor, select_property);
-//          }
-//        tempStructure = *traceid_it;
-//        tempStructure.Highlighted = it->Highlighted;
-//
-//        iContainer.get<TraceID>().replace(traceid_it, tempStructure);
-//        }
-//      ++traceid_it;
-//      }
-//
-//    ++it;
-//    }
-//
-//  select_property->Delete();
+  ContourMeshStructureMultiIndexContainer::iterator
+  it = this->m_DataBaseTables->GetTracesInfoListForVisu(iCurrentTrace.c_str())
+       ->begin();
+  unsigned int trace_id = 0;
+
+  vtkProperty* select_property = vtkProperty::New();
+  select_property->SetColor(1., 0., 0.);
+  select_property->SetLineWidth(3.);
+  select_property->SetOpacity(1.);
+
+  ContourMeshStructure tempStructure;
+  ContourMeshStructureMultiIndexContainer::index<TraceID>::type::iterator
+  traceid_it;
+  ContourMeshStructureMultiIndexContainer::index<TraceID>::type::iterator
+  test_it = iContainer.get<TraceID>().end();
+
+  while (it != this->m_DataBaseTables
+         ->GetTracesInfoListForVisu(iCurrentTrace.c_str())->end())
+    {
+    trace_id = it->TraceID;
+
+    traceid_it = iContainer.get<TraceID>().find(trace_id);
+
+    if( traceid_it != iContainer.get<TraceID>().end() )
+      {
+      if (it->Highlighted != traceid_it->Highlighted)
+        {
+        if (!it->Highlighted)
+          {
+          vtkProperty* temp_property = vtkProperty::New();
+          temp_property->SetColor( traceid_it->rgba[0],
+                                   traceid_it->rgba[1],
+                                   traceid_it->rgba[2]);
+          temp_property->SetOpacity( traceid_it->rgba[3] );
+          temp_property->SetLineWidth(1.);
+
+          m_ImageView->ChangeActorProperty( 0,
+                                            traceid_it->ActorXY,
+                                            temp_property);
+          m_ImageView->ChangeActorProperty( 1,
+                                            traceid_it->ActorXZ,
+                                            temp_property);
+          m_ImageView->ChangeActorProperty( 2,
+                                            traceid_it->ActorYZ,
+                                            temp_property);
+          m_ImageView->ChangeActorProperty( 3,
+                                            traceid_it->ActorXYZ,
+                                            temp_property);
+          temp_property->Delete();
+          }
+        else
+          {
+          m_ImageView->ChangeActorProperty( 0,
+                                            traceid_it->ActorXY,
+                                            select_property);
+          m_ImageView->ChangeActorProperty( 1,
+                                            traceid_it->ActorXZ,
+                                            select_property);
+          m_ImageView->ChangeActorProperty( 2,
+                                            traceid_it->ActorYZ,
+                                            select_property);
+          m_ImageView->ChangeActorProperty( 3,
+                                            traceid_it->ActorXYZ,
+                                            select_property);
+          }
+        tempStructure = *traceid_it;
+        tempStructure.Highlighted = it->Highlighted;
+
+        iContainer.get<TraceID>().replace(traceid_it, tempStructure);
+        }
+      }
+
+    ++it;
+    }
+
+  select_property->Delete();
 }
 //-------------------------------------------------------------------------
 
@@ -2691,29 +2719,18 @@ DeleteTracesFromTable(ContourMeshStructureMultiIndexContainer& iContainer,
     it = iContainer.get<TraceID>().find(*traceid_it);
     if (it != iContainer.get<TraceID>().end())
       {
-      it2 = it;
-      vtkPolyData* c_nodes;
-      while (it != iContainer.get<TraceID>().end())
-        {
-        if (static_cast<int>(it->TraceID) == *traceid_it)
-          {
-//          c_actor = (*it).Actor;
-          c_nodes = (*it).Nodes;
+      this->m_ImageView->RemoveActor( 0, it->ActorXY );
+      this->m_ImageView->RemoveActor( 1, it->ActorXZ );
+      this->m_ImageView->RemoveActor( 2, it->ActorYZ );
+      this->m_ImageView->RemoveActor( 3, it->ActorXYZ );
 
-//          RemoveActorFromViewer(c_dir, c_actor);
+      it->Nodes->Delete();
+      it->ActorXY->Delete();
+      it->ActorXZ->Delete();
+      it->ActorYZ->Delete();
+      it->ActorXYZ->Delete();
 
-//           c_actor->Delete();
-          }
-        else
-          {
-          break;
-          }
-        iContainer.get<TraceID>().erase(it++);
-        }
-//       if( c_nodes )
-//         {
-//         c_nodes->Delete();
-//         }
+      iContainer.get<TraceID>().erase(it);
       }
     ++traceid_it;
     }
@@ -2757,7 +2774,9 @@ GetTimePoint() const
 void QGoTabImageView3DwT::AddBookmark()
 {
   this->m_DataBaseTables->AddBookmark(this->GetSliceViewYZ(),
-                                      this->GetSliceViewXZ(), this->GetSliceViewXY(), this->GetTimePoint());
+                                      this->GetSliceViewXZ(),
+                                      this->GetSliceViewXY(),
+                                      this->GetTimePoint());
 }
 //-------------------------------------------------------------------------
 
@@ -3093,13 +3112,9 @@ QGoTabImageView3DwT::IDWithColorData
 QGoTabImageView3DwT::
 SaveMesh(vtkPolyData* iView, const int& iMeshID, double iRgba[4], bool NewMesh)
 {
-  // map to graphics library
-  vtkPolyDataMapper *map = vtkPolyDataMapper::New();
-  map->SetInput(iView);
-
   // Compute Bounding Box
   double bounds[6];
-  map->GetBounds(bounds);
+  iView->GetBounds(bounds);
 
   // Extract Min and Max from bounds
   double       Min[3], Max[3];
@@ -3111,8 +3126,6 @@ SaveMesh(vtkPolyData* iView, const int& iMeshID, double iRgba[4], bool NewMesh)
     Max[i] = bounds[k++];
     }
 
-  map->Delete();
-
   int* min_idx = this->GetImageCoordinatesFromWorldCoordinates(Min);
   int* max_idx = this->GetImageCoordinatesFromWorldCoordinates(Max);
 
@@ -3120,14 +3133,18 @@ SaveMesh(vtkPolyData* iView, const int& iMeshID, double iRgba[4], bool NewMesh)
   //don't use m_ContourId
   GoFigureMeshAttributes MeshAttributes = ComputeMeshAttributes(iView);
 
-  //if the mesh needs to be updated in the Database, the NewMesh will be false and the iMeshID will
-  //be = 0 if the meshID needs to be gotten from the trace manual editing widget, if it is a new
-  //mesh, the NewMesh will be true and iMeshID = 0:
+  //if the mesh needs to be updated in the Database, the NewMesh will be false
+  // and the iMeshID will be = 0 if the meshID needs to be gotten from the
+  // trace manual editing widget, if it is a new mesh, the NewMesh will be
+  // true and iMeshID = 0:
   IDWithColorData MeshData =
       m_DataBaseTables->SaveMeshFromVisuInDB( min_idx[0], min_idx[1], min_idx[2],
-                                              m_TimePoint, max_idx[0],
-                                              max_idx[1], max_idx[2], iView,
-                                              &MeshAttributes, NewMesh, iMeshID);
+                                              m_TimePoint,
+                                              max_idx[0], max_idx[1], max_idx[2],
+                                              iView,
+                                              &MeshAttributes,
+                                              NewMesh,
+                                              iMeshID);
 
   delete min_idx;
   delete max_idx;
