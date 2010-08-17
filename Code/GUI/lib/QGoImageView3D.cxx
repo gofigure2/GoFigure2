@@ -413,17 +413,17 @@ void QGoImageView3D::SetupVTKtoQtConnections()
   VtkEventQtConnector->Connect(
     reinterpret_cast<vtkObject*>(View1->GetInteractorStyle()),
     vtkViewImage2DCommand::ContourPickingEvent,
-    this, SIGNAL(ContoursSelectionChanged()));
+    this, SIGNAL(ContoursSelectionXYChanged()));
 
   VtkEventQtConnector->Connect(
     reinterpret_cast<vtkObject*>(View2->GetInteractorStyle()),
     vtkViewImage2DCommand::ContourPickingEvent,
-    this, SIGNAL(ContoursSelectionChanged()));
+    this, SIGNAL(ContoursSelectionXZChanged()));
 
   VtkEventQtConnector->Connect(
     reinterpret_cast<vtkObject*>(View3->GetInteractorStyle()),
     vtkViewImage2DCommand::ContourPickingEvent,
-    this, SIGNAL(ContoursSelectionChanged()));
+    this, SIGNAL(ContoursSelectionYZChanged()));
 
   // Event connection between vtk and qt
   // when contours picked, send a signal

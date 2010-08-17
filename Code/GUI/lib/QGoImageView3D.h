@@ -169,7 +169,12 @@ signals:
   void SliceViewYZChanged(int Slice);
 
   void FullScreenViewChanged(int View);
-  void ContoursSelectionChanged();
+
+  void ContoursSelectionXYChanged();
+  void ContoursSelectionXZChanged();
+  void ContoursSelectionYZChanged();
+//  void ContoursSelectionXYZChanged();
+
   void MeshesSelectionChanged();
   void ListMeshesSelectionChanged();
 
@@ -245,7 +250,7 @@ protected:
   bool                   m_Initialized;
 
   bool m_ShowCube;
-  
+
   vtkOrientedBoxWidget*  m_BoxWidget;
 
   virtual void resizeEvent(QResizeEvent* event);

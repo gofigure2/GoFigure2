@@ -449,7 +449,7 @@ void
 QGoTabImageView3DwT::
 DistanceWidgetInteractorBehavior(bool iActive)
 {
- this->m_ImageView->EnableDistanceWidget(iActive);
+  this->m_ImageView->EnableDistanceWidget(iActive);
 }
 
 //-------------------------------------------------------------------------
@@ -1155,10 +1155,16 @@ void QGoTabImageView3DwT::OpenExistingBookmark()
   QAction*          taction = qobject_cast<QAction*>(sender());
   std::string       BookmarkName = taction->text().toStdString();
   GoDBCoordinateRow Coord = this->m_DataBaseTables->GetCoordinateForBookmark(BookmarkName);
-  this->SetTimePoint(atoi(Coord.GetMapValue("TCoord").c_str()));
-  this->SetSliceViewXY(atoi(Coord.GetMapValue("ZCoord").c_str()));
-  this->SetSliceViewXZ(atoi(Coord.GetMapValue("YCoord").c_str()));
-  this->SetSliceViewYZ(atoi(Coord.GetMapValue("XCoord").c_str()));
+
+  int t = atoi(Coord.GetMapValue("TCoord").c_str());
+  int z = atoi(Coord.GetMapValue("TCoord").c_str());
+  int y = atoi(Coord.GetMapValue("TCoord").c_str());
+  int x = atoi(Coord.GetMapValue("TCoord").c_str());
+
+  this->SetTimePoint( t );
+  this->SetSliceViewXY( z );
+  this->SetSliceViewXZ( y );
+  this->SetSliceViewYZ( x );
 }
 //-------------------------------------------------------------------------
 
@@ -1975,27 +1981,31 @@ ValidateContour()
     ContourMeshStructureMultiIndexContainer::index<TraceID>::type::iterator
     it = m_ContourContainer.get<TraceID>().find(m_ContourId);
 
-    if (it->TraceID == m_ContourId)
+    if( it != m_ContourContainer.get<TraceID>().end() )
       {
       // We have to remove the polydata from the container too
       m_ContourContainer.get<TraceID>().erase(m_ContourId);
       }
     }
 
-  int i;
-  for (i = 0; i < m_ImageView->GetNumberOfImageViewers(); i++)
+  for (int i = 0; i < m_ImageView->GetNumberOfImageViewers(); i++)
     {
     IDWithColorData test =  SaveContour(
         m_ImageView->GetContourRepresentationAsPolydata(i),
         m_ImageView->GetContourRepresentationNodePolydata(i));
+
     double rgba[4] = {0., 0., 0., 0.};
-    int ID = test.first;
+
+    ContourID = test.first;
+
     test.second.getRgbF(&rgba[0], &rgba[1], &rgba[2], &rgba[3]);
+
     // visu
-    VisualizeContour(ID, m_TimePoint,
-        m_ImageView->GetContourRepresentationAsPolydata(i),
-        m_ImageView->GetContourRepresentationNodePolydata(i),
-        rgba);
+    VisualizeContour(ContourID,
+                     m_TimePoint,
+                     m_ImageView->GetContourRepresentationAsPolydata(i),
+                     m_ImageView->GetContourRepresentationNodePolydata(i),
+                     rgba);
     }
 
   if (m_ReEditContourMode)
@@ -2024,7 +2034,8 @@ void
 QGoTabImageView3DwT::
 ChangeContourRepresentationProperty()
 {
-  m_ImageView->UpdateContourRepresentationProperties(static_cast<float>(m_LinesWidth),
+  m_ImageView->UpdateContourRepresentationProperties(
+      static_cast<float>(m_LinesWidth),
       m_LinesColor, m_NodesColor, m_ActiveNodesColor);
 }
 
@@ -2086,7 +2097,9 @@ RemoveAllTracesForGivenTimePoint(const unsigned int& iT,
 {
   if (iContainer.size() > 0)
     {
-    ContourMeshStructureMultiIndexContainer::index<TCoord>::type::iterator it0, it1;
+    ContourMeshStructureMultiIndexContainer::index<TCoord>::type::iterator
+        it0, it1;
+
     boost::tuples::tie(it0, it1) =
       iContainer.get<TCoord>().equal_range(iT);
 
@@ -2268,6 +2281,36 @@ ReEditContour(const unsigned int& iId)
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
+HighlightContoursXY()
+{
+  HighLightContours<ActorXY>();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+HighlightContoursXZ()
+{
+  HighLightContours<ActorXZ>();
+}
+
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+HighlightContoursYZ()
+{
+  HighLightContours<ActorYZ>();
+}
+
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+template< typename TActor >
+void
+QGoTabImageView3DwT::
 HighLightContours()
 {
   /// Modifiy "picked" to "modified"
@@ -2280,7 +2323,7 @@ HighLightContours()
   while (it != listofpicked.end())
     {
     // Mode 0: One click selection
-    HighLightContainer(m_ContourContainer, static_cast<vtkActor*>(*it) );
+    HighLightActorsInContainer< TActor >(m_ContourContainer, static_cast<vtkActor*>(*it) );
     ++it;
     }
 }
@@ -2297,72 +2340,78 @@ ListHighLightMeshes()
 
   while (it != listofpicked.end())
     {
-    HighLightContainer(m_MeshContainer, static_cast<vtkActor*>(*it));
+//    HighLightActorsInContainer(m_MeshContainer, static_cast<vtkActor*>(*it));
     ++it;
     }
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+template< typename TActor >
 void
 QGoTabImageView3DwT::
-HighLightContainer( ContourMeshStructureMultiIndexContainer& iContainer,
-                    vtkActor* iActor )
+HighLightActorsInContainer(
+    ContourMeshStructureMultiIndexContainer& iContainer,
+    vtkActor* iActor )
 {
   vtkProperty* select_property = vtkProperty::New();
   select_property->SetColor(1., 0., 0.);
   select_property->SetLineWidth(3.);
 
   // Change the corresponding highlighted value in the container
-  ContourMeshStructureMultiIndexContainer::index<ActorXY>::type::iterator
-  actor_it = iContainer.get<ActorXY>().find(iActor);
+  typename ContourMeshStructureMultiIndexContainer::index<TActor>::type::iterator
+    actor_it = iContainer.get<TActor>().find(iActor);
 
   // Is the actor in the container?
-  if (actor_it != iContainer.get<ActorXY>().end())
+  if (actor_it != iContainer.get<TActor>().end())
     {
-    // get the corresponding TraceID (from the container)
-//    unsigned int trace_id = actor_it->TraceID;
-//
-//    ContourMeshStructureMultiIndexContainer::index<TraceID>::type::iterator
-//    traceid_it = iContainer.get<TraceID>().find(trace_id);
-//
-//     get all elements from the container where TraceID = trace_id
-//    while ((traceid_it != iContainer.get<TraceID>().end())
-//           && ((*traceid_it).TraceID == trace_id))
-//      {
-      // if the element was not highlighted
-      if (!actor_it->Highlighted)
-        {
-        // highlight the element
+    // if the element was not highlighted
+    if ( !actor_it->Highlighted )
+      {
+      // highlight the element
+      this->m_ImageView->ChangeActorProperty( 0,
+                                              actor_it->ActorXY,
+                                              select_property );
+      this->m_ImageView->ChangeActorProperty( 1,
+                                              actor_it->ActorXZ,
+                                              select_property );
+      this->m_ImageView->ChangeActorProperty( 2,
+                                              actor_it->ActorYZ,
+                                              select_property );
+      this->m_ImageView->ChangeActorProperty( 3,
+                                              actor_it->ActorXYZ,
+                                              select_property );
+      }
+    else
+      {
+      // change the color of the element to its original color
+      vtkProperty* temp_property = vtkProperty::New();
+      temp_property->SetColor( actor_it->rgba[0],
+                               actor_it->rgba[1],
+                               actor_it->rgba[2] );
+      temp_property->SetOpacity( actor_it->rgba[3] );
+      temp_property->SetLineWidth(1.);
 
-        /// \todo fix method ChangeActorProperty
-//        m_ImageView->ChangeActorProperty(actor_it->Direction,
-//                                         actor_it->ActorXY, select_property);
+      this->m_ImageView->ChangeActorProperty( 0,
+                                              actor_it->ActorXY,
+                                              temp_property );
+      this->m_ImageView->ChangeActorProperty( 1,
+                                              actor_it->ActorXZ,
+                                              temp_property );
+      this->m_ImageView->ChangeActorProperty( 2,
+                                              actor_it->ActorYZ,
+                                              temp_property );
+      this->m_ImageView->ChangeActorProperty( 3,
+                                              actor_it->ActorXYZ,
+                                              temp_property );
+      temp_property->Delete();
+      }
 
-        ContourMeshStructure temp(*actor_it);
-        temp.Highlighted = true;
-        iContainer.get<ActorXY>().replace(actor_it, temp);
-        }
-      else
-        {
-        // change the color of the element to its original color
-        vtkProperty* temp_property = vtkProperty::New();
-        temp_property->SetColor(actor_it->rgba[0], actor_it->rgba[1], actor_it->rgba[2]);
-        temp_property->SetOpacity(actor_it->rgba[3]);
-        temp_property->SetLineWidth(1.);
-
-        /// \todo fix method ChangeActorProperty
-//        m_ImageView->ChangeActorProperty(actor_it->Direction,
-//                                         actor_it->Actor, temp_property);
-        temp_property->Delete();
-
-        ContourMeshStructure temp(*actor_it);
-        temp.Highlighted = false;
-        iContainer.get<ActorXY>().replace(actor_it, temp);
-        }
-//      ++traceid_it;
-//      }
+    ContourMeshStructure temp(*actor_it);
+    temp.Highlighted = !actor_it->Highlighted;
+    iContainer.get<TActor>().replace(actor_it, temp);
     }
+
   select_property->Delete();
 }
 //-------------------------------------------------------------------------
@@ -2571,7 +2620,8 @@ DeleteTracesFromTable(ContourMeshStructureMultiIndexContainer& iContainer,
                       const std::list<int>& iList)
 {
   std::list<int>::const_iterator traceid_it = iList.begin();
-  ContourMeshStructureMultiIndexContainer::index<TraceID>::type::iterator it, it2;
+
+  ContourMeshStructureMultiIndexContainer::index<TraceID>::type::iterator it;
 
   while (traceid_it != iList.end())
     {

@@ -1140,7 +1140,7 @@ ValidateContour(const int& iId)
   if ((contour->GetNumberOfPoints() > 2) && (m_TimePoint >= 0))
     {
     // get color from the dock widget
-    double r, g, b;
+    double r( 1. ), g( 1. ), b( 1. );
     /// \todo to be fixed!
     //QColor color; //= m_ManualSegmentationDockWidget->GetValidatedColor();
     //iColor.getRgbF(&r, &g, &b);

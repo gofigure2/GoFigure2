@@ -278,9 +278,11 @@ public slots:
   void ReinitializeContour();
   void ReEditContour(const unsigned int& iId);
 
-  void HighLightContainer(
-    ContourMeshStructureMultiIndexContainer& iContainer, vtkActor* iActor);
-  void HighLightContours();
+  void HighlightContoursXY();
+  void HighlightContoursXZ();
+  void HighlightContoursYZ();
+
+
   void ListHighLightMeshes();
 
   /**
@@ -431,6 +433,13 @@ protected:
   void CreateManualSegmentationdockWidget();
   void CreateOneClickSegmentationDockWidget();
   void CreateDataBaseTablesConnection();
+
+  template< typename TActor >
+  void HighLightActorsInContainer(
+    ContourMeshStructureMultiIndexContainer& iContainer, vtkActor* iActor);
+
+  template< typename TActor >
+  void HighLightContours();
 
   /**
    * \brief Generates contours and a mesh composed by the generated contours
