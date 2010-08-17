@@ -482,12 +482,6 @@ LoadAllTracesFromDatabase(const int& iT, const std::string& iTraceName)
         ++time_it;
         }
       }
-
-    // if it we are loading contours
-    if (!calculation)
-      {
-      w3t->ReinitializeContour(); // contour widget is reinitialized...
-      }
     }
 }
 //--------------------------------------------------------------------------

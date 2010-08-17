@@ -2250,6 +2250,7 @@ AddContourFromNodes(const unsigned int& iContourID, vtkPolyData* iNodes,
                       m_ImageView->GetContourRepresentationAsPolydata(dir),
                       m_ImageView->GetContourRepresentationNodePolydata(dir),
                       iRgba);
+       m_ImageView->ReinitializeContourWidget();
        m_ImageView->EnableContourWidget( false );
       }
     }
@@ -3111,7 +3112,12 @@ VisualizeMesh(vtkPolyData* iView, const int& iMeshID, const unsigned int& iTCoor
   mesh_property->SetColor(iRgba[0], iRgba[1], iRgba[2]);
   mesh_property->SetOpacity(iRgba[3]);
 
-  std::vector<vtkActor*> mesh_actor = this->AddContour(iView, mesh_property);
+  /// TODO fix bug, shouldn't be required
+  std::vector<vtkActor*> mesh_actor;
+  if (iView)
+    {
+    mesh_actor = this->AddContour(iView, mesh_property);
+    }
   mesh_property->Delete();
 
   // get meshid from the visu dock widget (SpinBox)
