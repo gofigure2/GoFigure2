@@ -1236,6 +1236,17 @@ setupUi(QWidget* iParent)
   QObject::connect(m_ImageView, SIGNAL(MeshesSelectionChanged()),
                    this, SLOT(TestMesh()));
 
+  // connect the contours selection connection
+  QObject::connect(m_ImageView, SIGNAL(ContoursSelectionXYChanged()),
+                   this, SLOT(HighlightContoursXY()));
+  // connect the contours selection connection
+  QObject::connect(m_ImageView, SIGNAL(ContoursSelectionXZChanged()),
+                   this, SLOT(HighlightContoursXZ()));
+  // connect the contours selection connection
+  QObject::connect(m_ImageView, SIGNAL(ContoursSelectionYZChanged()),
+                   this, SLOT(HighlightContoursYZ()));
+
+
   m_HBoxLayout = new QHBoxLayout(iParent);
   m_HBoxLayout->addWidget(m_VSplitter);
 
