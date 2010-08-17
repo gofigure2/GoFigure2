@@ -1954,7 +1954,7 @@ QGoTabImageView3DwT::GetBoundingBox(vtkPolyData* contour)
 
   boundingBox[3] = max_idx[0];
   boundingBox[4] = max_idx[1];
-  boundingBox[4] = max_idx[2];
+  boundingBox[5] = max_idx[2];
 
   delete min_idx;
   delete max_idx;
