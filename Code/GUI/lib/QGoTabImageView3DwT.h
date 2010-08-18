@@ -345,7 +345,7 @@ public slots:
 
   void CreateMeshFromSelectedContours(std::list<int> ListContourIDs,int iMeshID);
 
-  void TestMesh();
+  void HighlightMeshXYZ();
 
 protected:
   QHBoxLayout*                                m_HBoxLayout;
@@ -440,6 +440,9 @@ protected:
 
   template< typename TActor >
   void HighLightContours();
+
+  template< typename TActor >
+  void HighLightMeshes();
 
   /**
    * \brief Generates contours and a mesh composed by the generated contours

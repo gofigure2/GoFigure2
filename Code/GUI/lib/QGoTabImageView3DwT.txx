@@ -71,6 +71,27 @@ HighLightContours()
 template< typename TActor >
 void
 QGoTabImageView3DwT::
+HighLightMeshes()
+{
+  std::list<vtkProp3D*>
+      listofpicked = m_ImageView->GetListOfModifiedActors3D();
+
+  std::list<vtkProp3D*>::iterator
+      it = listofpicked.begin();
+
+  while (it != listofpicked.end())
+    {
+    HighLightActorsInContainer< TActor >( m_MeshContainer,
+                                          static_cast<vtkActor*>(*it) );
+  ++it;
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+template< typename TActor >
+void
+QGoTabImageView3DwT::
 HighLightActorsInContainer(
     ContourMeshStructureMultiIndexContainer& iContainer,
     vtkActor* iActor )

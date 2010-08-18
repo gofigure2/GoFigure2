@@ -110,6 +110,8 @@
 
 #include <set>
 
+#include "vtkRenderWindow.h"
+
 #include <QDebug>
 //-------------------------------------------------------------------------
 QGoTabImageView3DwT::
@@ -1224,17 +1226,17 @@ setupUi(QWidget* iParent)
 
   QObject::connect(m_ImageView, SIGNAL(FullScreenViewChanged(int)),
                    this, SIGNAL(FullScreenViewChanged(int)));
-
+/*
   // connect the contours selection connection
   QObject::connect(m_ImageView, SIGNAL(ContoursSelectionChanged()),
                    this, SLOT(HighLightContours()));
 
   QObject::connect(m_ImageView, SIGNAL(ContoursSelectionChanged()),
-                   this, SLOT(SelectContoursInTable()));
+                   this, SLOT(SelectContoursInTable()));*/
 
   // connect the meshes selection connection
   QObject::connect(m_ImageView, SIGNAL(MeshesSelectionChanged()),
-                   this, SLOT(TestMesh()));
+                   this, SLOT(HighlightMeshXYZ()));
 
   // connect the contours selection connection
   QObject::connect(m_ImageView, SIGNAL(ContoursSelectionXYChanged()),
@@ -2389,6 +2391,8 @@ ListHighLightMeshes()
 
   while (it != listofpicked.end())
     {
+    ///HighLightContours<ActorXYZ>();
+    //HighLightActorsInContainer(m_MeshContainer, );
 //    HighLightActorsInContainer(m_MeshContainer, static_cast<vtkActor*>(*it));
     ++it;
     }
@@ -3350,16 +3354,13 @@ GoToLocation(int iX, int iY, int iZ, int iT)
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
-TestMesh()
+HighlightMeshXYZ()
 {
   // Fill container + send sth to visu
-  // should not send anything back to the visu
-  ListHighLightMeshes();
+  /// Modifiy "picked" to "modified"
+  HighLightMeshes<ActorXYZ>();
   // Fill table widget
-  ListSelectMeshesInTable();
-  // Update the visualization
-  this->m_ImageView->UpdateRenderWindows();
-
+  //ListSelectMeshesInTable();
 }
 //-------------------------------------------------------------------------
 
