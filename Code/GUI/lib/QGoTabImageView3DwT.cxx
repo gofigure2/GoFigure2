@@ -1930,9 +1930,10 @@ UpdateContour(vtkPolyData* contour, vtkPolyData* contour_nodes)
 
     /// TODO Fix bug here, returned color is wrong
     // update contour in database!
-    ContourData = m_DataBaseTables->UpdateContourFromVisuInDB(bounds[0],
-        bounds[1], bounds[2], m_TCoord, bounds[1],
-        bounds[2], bounds[3], contour_nodes, m_ContourId);
+    ContourData = m_DataBaseTables->UpdateContourFromVisuInDB(
+        bounds[0], bounds[2], bounds[4],
+        m_TCoord,
+        bounds[1], bounds[3], bounds[5], contour_nodes, m_ContourId);
     this->m_DataBaseTables->GetTraceManualEditingDockWidget()->setEnabled(true);
 
     delete bounds;
@@ -1968,11 +1969,12 @@ QGoTabImageView3DwT::GetBoundingBox(vtkPolyData* iElement)
 
   int* boundingBox = new int;
   boundingBox[0] = min_idx[0];
-  boundingBox[1] = min_idx[1];
-  boundingBox[2] = min_idx[2];
+  boundingBox[1] = max_idx[0];
 
-  boundingBox[3] = max_idx[0];
-  boundingBox[4] = max_idx[1];
+  boundingBox[2] = min_idx[1];
+  boundingBox[3] = max_idx[1];
+
+  boundingBox[4] = min_idx[2];
   boundingBox[5] = max_idx[2];
 
   delete min_idx;
@@ -2291,54 +2293,39 @@ ReEditContour(const unsigned int& iId)
     if (it != m_ContourContainer.get<TraceID>().end())
       {
       vtkPolyData* nodes = it->Nodes;
+      int* bounds = this->GetBoundingBox( nodes );
 
-      this->m_ImageView->RemoveActor( 0, it->ActorXY );
-      this->m_ImageView->RemoveActor( 1, it->ActorXZ );
-      this->m_ImageView->RemoveActor( 2, it->ActorYZ );
-      this->m_ImageView->RemoveActor( 3, it->ActorXYZ );
+      int dir = ComputeDirectionFromBounds<int>( bounds );
 
-      m_ContourContainer.get<TraceID>().erase(it);
-
-      int dir = ComputeDirectionFromContour( nodes );
-
-      if (dir != -1)
+      if( dir != -1 )
         {
-        m_ReEditContourMode = true;
-        m_ContourId = iId;
+        this->m_ReEditContourMode = true;
+        this->m_ContourId = iId;
 
-        double p[3];
-        nodes->GetPoint(0, p);
-        int* idx = GetImageCoordinatesFromWorldCoordinates(p);
+        this->m_ImageView->RemoveActor( 0, it->ActorXY );
+        this->m_ImageView->RemoveActor( 1, it->ActorXZ );
+        this->m_ImageView->RemoveActor( 2, it->ActorYZ );
+        this->m_ImageView->RemoveActor( 3, it->ActorXYZ );
 
-        switch (dir)
-          {
-          default:
-          case 0:
-            {
-            this->SetSliceViewXY(idx[2]);
-            break;
-            }
-          case 1:
-            {
-            this->SetSliceViewXZ(idx[1]);
-            break;
-            }
-          case 2:
-            {
-            this->SetSliceViewXY(idx[0]);
-            break;
-            }
-          }
-        delete idx;
+        m_ContourContainer.get<TraceID>().erase(it);
+
+        int idx[3];
+        idx[0] = ( bounds[0] + bounds[1] ) / 2;
+        idx[1] = ( bounds[2] + bounds[3] ) / 2;
+        idx[2] = ( bounds[4] + bounds[5] ) / 2;
+
+        this->GoToLocation( idx[0], idx[1], idx[2], m_TCoord );
 
         this->m_ManualSegmentationDockWidget->show();
         this->m_ModeActions[0]->setChecked(true);
 
-        m_ImageView->InitializeContourWidgetNodes( dir, nodes );
+        m_ImageView->InitializeContourWidgetNodes( dir , nodes );
 
         m_ManualSegmentationDockWidget->setEnabled(true);
         this->m_DataBaseTables->GetTraceManualEditingDockWidget()->setEnabled(false);
         }
+
+      delete bounds;
       }
     }
 }
@@ -3014,9 +3001,9 @@ SaveMesh(vtkPolyData* iView, const int& iMeshID, double iRgba[4], bool NewMesh)
   // trace manual editing widget, if it is a new mesh, the NewMesh will be
   // true and iMeshID = 0:
   IDWithColorData MeshData =
-      m_DataBaseTables->SaveMeshFromVisuInDB( bounds[0], bounds[1], bounds[2],
+      m_DataBaseTables->SaveMeshFromVisuInDB( bounds[0], bounds[2], bounds[4],
                                               m_TCoord,
-                                              bounds[3], bounds[4], bounds[5],
+                                              bounds[1], bounds[3], bounds[5],
                                               iView,
                                               &MeshAttributes,
                                               NewMesh,

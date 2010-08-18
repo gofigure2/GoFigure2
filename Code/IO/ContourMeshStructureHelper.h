@@ -156,6 +156,24 @@ int
 ComputeDirectionFromContour(vtkPolyData* iContour);
 
 QGOIO_EXPORT
+template< typename T >
+int
+ComputeDirectionFromBounds( T* iBounds )
+{
+  int oDir = -1;
+
+  for (int i = 0; i < 3; i++)
+    {
+    if (iBounds[2 * i] == iBounds[2 * i + 1])
+      {
+      oDir = 2 - i;
+      }
+    }
+
+  return oDir;
+}
+
+QGOIO_EXPORT
 std::list<ContourMeshStructure*>
 FindContourGivenTraceID(
   const ContourMeshStructureMultiIndexContainer& iContainer,

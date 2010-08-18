@@ -50,18 +50,10 @@ ComputeDirectionFromContour(vtkPolyData* iContour)
   double bounds[6];
   iContour->GetBounds(bounds);
 
-  int oDir = -1;
-
-  for (int i = 0; i < 3; i++)
-    {
-    if (bounds[2 * i] == bounds[2 * i + 1])
-      {
-      oDir = 2 - i;
-      }
-    }
-
-  return oDir;
+  return ComputeDirectionFromBounds<double>( bounds );
 }
+// ---------------------------------------------------------------------------
+
 // ---------------------------------------------------------------------------
 /*
 // ---------------------------------------------------------------------------
