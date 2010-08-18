@@ -811,5 +811,6 @@ QGoVideoRecorder::
 SetSpecificParametersQuality(int iValue)
 {
   m_VideoRecorder->SetVideoQuality(iValue);
+  m_VideoRecorder->SetBitRate(iValue*1024*1024*32);
   m_VideoRecorder->SetSpecificParameters();
 }

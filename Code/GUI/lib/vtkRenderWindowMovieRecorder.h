@@ -73,6 +73,7 @@ public:
 
   virtual void SetVideoQuality(int);
   virtual void SetFrameRate(int);
+  virtual void SetBitRate(int);
 
 protected:
   vtkRenderWindowMovieRecorder();
@@ -85,6 +86,7 @@ protected:
   bool                    m_ControlIfVideoStarted;
   int                     m_VideoQuality;
   int                     m_FrameRate;
+  int                     m_BitRate;
   };
 
 #endif /* VTKRENDERWINDOWMOVIERECORDER_H_ */

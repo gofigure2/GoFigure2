@@ -50,7 +50,8 @@
  * \brief Constructor
  */
 vtkRenderWindowMovieRecorder::
-vtkRenderWindowMovieRecorder() : m_VideoQuality(1), m_FrameRate(10)
+vtkRenderWindowMovieRecorder() : m_VideoQuality(1), m_FrameRate(10),
+m_BitRate(1024*1024*32)
   /*:
 m_FileName("goFigure2"), m_ControlIfVideoStarted (false)*/
   {
@@ -147,4 +148,11 @@ vtkRenderWindowMovieRecorder::
 SetFrameRate(int value)
 {
   m_FrameRate = value;
+}
+
+void
+vtkRenderWindowMovieRecorder::
+SetBitRate(int value)
+{
+  m_BitRate = value;
 }
