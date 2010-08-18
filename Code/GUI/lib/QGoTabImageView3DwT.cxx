@@ -2030,49 +2030,29 @@ ValidateContour()
 {
   // to make sure that m_ContourId is set to the right value
   int          ContourID = -1;
+  IDWithColorData test;
 
-  if (m_ReEditContourMode)
+  for ( int i = 0; i < m_ImageView->GetNumberOfImageViewers(); i++)
     {
-    ContourID = m_ContourId;
-
-    int i;
-    for (i = 0; i < m_ImageView->GetNumberOfImageViewers(); i++)
+    if( m_ReEditContourMode )
       {
-      IDWithColorData test =  UpdateContour(
-          m_ImageView->GetContourRepresentationAsPolydata(i),
-          m_ImageView->GetContourRepresentationNodePolydata(i));
-      double rgba[4] = {0., 0., 0., 0.};
-      int ID = test.first;
-      test.second.getRgbF(&rgba[0], &rgba[1], &rgba[2], &rgba[3]);
-      std::cout <<"RGBA: " << rgba[0] << " " << rgba[1] << " " << rgba[2] << std::endl;
-      // visu
-      VisualizeContour(ID, m_TCoord,
-          m_ImageView->GetContourRepresentationAsPolydata(i),
-          m_ImageView->GetContourRepresentationNodePolydata(i),
-          rgba);
+      ContourID = m_ContourId;
+
+      test = UpdateContour( m_ImageView->GetContourRepresentationAsPolydata(i),
+                            m_ImageView->GetContourRepresentationNodePolydata(i));
+      }
+    else
+      {
+      test = SaveContour( m_ImageView->GetContourRepresentationAsPolydata(i),
+                          m_ImageView->GetContourRepresentationNodePolydata(i) );
+      ContourID = test.first;
       }
 
-    std::list<int> listofrowstobeselected;
-    listofrowstobeselected.push_back(m_ContourId);
-
-    m_DataBaseTables->ChangeContoursToHighLightInfoFromVisu(listofrowstobeselected,
-                                                            m_ReEditContourMode);
-    m_ReEditContourMode = false;
-
-    return;
-    }
-
-  for (int i = 0; i < m_ImageView->GetNumberOfImageViewers(); i++)
-    {
-    IDWithColorData test =  SaveContour(
-        m_ImageView->GetContourRepresentationAsPolydata(i),
-        m_ImageView->GetContourRepresentationNodePolydata(i));
 
     double rgba[4] = {0., 0., 0., 0.};
 
-    ContourID = test.first;
-
     test.second.getRgbF(&rgba[0], &rgba[1], &rgba[2], &rgba[3]);
+    std::cout <<"RGBA: " << rgba[0] << " " << rgba[1] << " " << rgba[2] << std::endl;
 
     // visu
     VisualizeContour(ContourID,
@@ -2080,6 +2060,16 @@ ValidateContour()
                      m_ImageView->GetContourRepresentationAsPolydata(i),
                      m_ImageView->GetContourRepresentationNodePolydata(i),
                      rgba);
+    }
+
+  if (m_ReEditContourMode)
+    {
+    std::list<int> listofrowstobeselected;
+    listofrowstobeselected.push_back(m_ContourId);
+
+    m_DataBaseTables->ChangeContoursToHighLightInfoFromVisu(listofrowstobeselected,
+                                                            m_ReEditContourMode);
+    m_ReEditContourMode = false;
     }
 }
 
