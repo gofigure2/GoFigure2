@@ -413,26 +413,13 @@ PanInteractorBehavior(bool iVisible)
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
-ContourPickingInteractorBehavior(bool iVisible)
+ActorPickingInteractorBehavior(bool iVisible)
 {
   // if the widget is visible
   // check in which mode we are
   if (iVisible)
     {
-    this->m_ImageView->ContourPickingMode();
-    }
-}
-
-//-------------------------------------------------------------------------
-void
-QGoTabImageView3DwT::
-MeshPickingInteractorBehavior(bool iVisible)
-{
-  // if the widget is visible
-  // check in which mode we are
-  if (iVisible)
-    {
-    this->m_ImageView->MeshPickingMode();
+    this->m_ImageView->ActorPickingMode();
     }
 }
 
@@ -958,7 +945,7 @@ void QGoTabImageView3DwT::CreateModeActions()
   // Add the action to m_ModeActions and to group
   this->m_ModeActions.push_back(OneClickAction);
   group->addAction(OneClickAction);
-
+/*
   //---------------------------------//
   //     Contour picking  mode       //
   //---------------------------------//
@@ -998,6 +985,27 @@ void QGoTabImageView3DwT::CreateModeActions()
   // it also updates the interactor behaviour
   QObject::connect(MeshPickingAction, SIGNAL(toggled(bool)),
                    this, SLOT(MeshPickingInteractorBehavior(bool)));
+*/
+
+  //---------------------------------//
+  //       Actor picking  mode       //
+  //---------------------------------//
+
+  QAction* ActorPickingAction = new QAction(tr("Actor Picking"), this);
+  ActorPickingAction->setCheckable(true);
+  ActorPickingAction->setChecked(false);
+
+  QIcon ActorPickingIcon;
+  ActorPickingIcon.addPixmap(QPixmap(QString::fromUtf8(":/fig/MeshPicking.png")),
+                               QIcon::Normal, QIcon::Off);
+  ActorPickingAction->setIcon(ActorPickingIcon);
+
+  group->addAction(ActorPickingAction);
+
+  this->m_ModeActions.push_back(ActorPickingAction);
+  // it also updates the interactor behaviour
+  QObject::connect(ActorPickingAction, SIGNAL(toggled(bool)),
+                   this, SLOT(ActorPickingInteractorBehavior(bool)));
 
   //---------------------------------//
   //         Distance    mode        //
@@ -1239,15 +1247,19 @@ setupUi(QWidget* iParent)
                    this, SLOT(HighlightMeshXYZ()));
 
   // connect the contours selection connection
-  QObject::connect(m_ImageView, SIGNAL(ContoursSelectionXYChanged()),
-                   this, SLOT(HighlightContoursXY()));
+  /*QObject::connect(m_ImageView, SIGNAL(ContoursSelectionXYChanged()),
+                   this, SLOT(HighlightContoursXY()));*/
+  QObject::connect(m_ImageView, SIGNAL(SelectionXYChanged()),
+                     this, SLOT(HighlightXY()));
   // connect the contours selection connection
-  QObject::connect(m_ImageView, SIGNAL(ContoursSelectionXZChanged()),
-                   this, SLOT(HighlightContoursXZ()));
+  QObject::connect(m_ImageView, SIGNAL(SelectionXZChanged()),
+                   this, SLOT(HighlightXZ()));
   // connect the contours selection connection
-  QObject::connect(m_ImageView, SIGNAL(ContoursSelectionYZChanged()),
-                   this, SLOT(HighlightContoursYZ()));
-
+  QObject::connect(m_ImageView, SIGNAL(SelectionYZChanged()),
+                   this, SLOT(HighlightYZ()));
+  // connect the contours selection connection
+  QObject::connect(m_ImageView, SIGNAL(SelectionXYZChanged()),
+                   this, SLOT(HighlightXYZ()));
 
   m_HBoxLayout = new QHBoxLayout(iParent);
   m_HBoxLayout->addWidget(m_VSplitter);
@@ -2324,17 +2336,61 @@ ReEditContour(const unsigned int& iId)
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
+HighlightXY()
+{
+  HighLightActorsInContainer< ActorXY >( m_ContourContainer,
+          m_ImageView->GetCurrentActor() );
+  HighLightActorsInContainer< ActorXY >( m_MeshContainer,
+            m_ImageView->GetCurrentActor() );
+}
+//-------------------------------------------------------------------------
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+HighlightXZ()
+{
+  HighLightActorsInContainer< ActorXZ >( m_ContourContainer,
+            m_ImageView->GetCurrentActor() );
+  HighLightActorsInContainer< ActorXZ >( m_MeshContainer,
+            m_ImageView->GetCurrentActor() );
+}
+//-------------------------------------------------------------------------
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+HighlightYZ()
+{
+  HighLightActorsInContainer< ActorYZ >( m_ContourContainer,
+            m_ImageView->GetCurrentActor() );
+  HighLightActorsInContainer< ActorYZ >( m_MeshContainer,
+            m_ImageView->GetCurrentActor() );
+}
+//-------------------------------------------------------------------------
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+HighlightXYZ()
+{
+  HighLightActorsInContainer< ActorXYZ >( m_ContourContainer,
+            m_ImageView->GetCurrentActor() );
+  HighLightActorsInContainer< ActorXYZ >( m_MeshContainer,
+            m_ImageView->GetCurrentActor() );
+}
+//-------------------------------------------------------------------------
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
 HighlightContoursXY()
 {
   HighLightContours<ActorXY>();
 }
 //-------------------------------------------------------------------------
-
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
 HighlightContoursXZ()
 {
+
   HighLightContours<ActorXZ>();
 }
 
@@ -2346,27 +2402,6 @@ QGoTabImageView3DwT::
 HighlightContoursYZ()
 {
   HighLightContours<ActorYZ>();
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
-QGoTabImageView3DwT::
-ListHighLightMeshes()
-{
-  std::list<vtkProp3D*>
-      listofpicked = m_ImageView->GetListOfModifiedActors3D();
-
-  std::list<vtkProp3D*>::iterator
-      it = listofpicked.begin();
-
-  while (it != listofpicked.end())
-    {
-    ///HighLightContours<ActorXYZ>();
-    //HighLightActorsInContainer(m_MeshContainer, );
-//    HighLightActorsInContainer(m_MeshContainer, static_cast<vtkActor*>(*it));
-    ++it;
-    }
 }
 //-------------------------------------------------------------------------
 
@@ -2485,13 +2520,14 @@ SelectContoursInTable()
 {
   if (this->m_DataBaseTables->IsDatabaseUsed())
     {
+  /*
     std::list<vtkProp3D*> listofpicked = m_ImageView->GetListOfPickedContours();
 
     if (!listofpicked.empty())
       {
       this->m_DataBaseTables->ChangeContoursToHighLightInfoFromVisu(
         SelectTraceInTable(m_ContourContainer, listofpicked), false);
-      }
+      }*/
     }
 }
 
@@ -2500,6 +2536,8 @@ void
 QGoTabImageView3DwT::
 ListSelectMeshesInTable()
 {
+  /// TODO Fix bug here
+  /*
   if (this->m_DataBaseTables->IsDatabaseUsed())
     {
     std::list<vtkProp3D*> listofpicked = m_ImageView->GetListOfModifiedActors3D();
@@ -2510,6 +2548,7 @@ ListSelectMeshesInTable()
         SelectTraceInTable(m_MeshContainer, listofpicked));
       }
     }
+    */
 }
 //-------------------------------------------------------------------------
 

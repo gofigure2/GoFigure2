@@ -273,10 +273,6 @@ public:
 
   vtkGetObjectMacro (Command, vtkViewImage3DCommand);
 
-  void UpdateActorsStatus(double* iBoundingBox);
-  std::list<vtkProp3D*> GetListOfModifiedActors3D();
-  void UpdateCurrentActor();
-
 protected:
 
   vtkViewImage3D();
@@ -330,11 +326,6 @@ protected:
   */
   vtkViewImage3DCommand*     Command;
   vtkInteractorStyleImage3D* InteractorStyle3D;
-
-
-  std::list<vtkProp3D*> m_ListOfPickedActors;
-  std::list<vtkProp3D*> m_ListOfModifiedActors;
-
   };
 
 #endif /* _vtkViewImage3D_h_ */

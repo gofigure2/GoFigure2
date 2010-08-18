@@ -50,6 +50,7 @@ void
 QGoTabImageView3DwT::
 HighLightContours()
 {
+/*
   /// Modifiy "picked" to "modified"
   std::list<vtkProp3D*>
       listofpicked = m_ImageView->GetListOfPickedContours();
@@ -61,9 +62,10 @@ HighLightContours()
     {
     // Mode 0: One click selection
     HighLightActorsInContainer< TActor >( m_ContourContainer,
-                                          static_cast<vtkActor*>(*it) );
+        m_ImageView->GetCurrentActor() );
+
     ++it;
-    }
+    }*/
 }
 //-------------------------------------------------------------------------
 
@@ -73,8 +75,9 @@ void
 QGoTabImageView3DwT::
 HighLightMeshes()
 {
+/*
   std::list<vtkProp3D*>
-      listofpicked = m_ImageView->GetListOfModifiedActors3D();
+      listofpicked = m_ImageView->GetListOfPickedContours();
 
   std::list<vtkProp3D*>::iterator
       it = listofpicked.begin();
@@ -82,9 +85,9 @@ HighLightMeshes()
   while (it != listofpicked.end())
     {
     HighLightActorsInContainer< TActor >( m_MeshContainer,
-                                          static_cast<vtkActor*>(*it) );
-  ++it;
-    }
+        m_ImageView->GetCurrentActor() );
+    ++it;
+    }*/
 }
 //-------------------------------------------------------------------------
 

@@ -538,18 +538,8 @@ HighlightCurrentActor()
       }
     else
       {
-      //  if selected actor is not one of the 4 first:
-      // should check some how if it is a mesh cut or not....
-      //if(  )
-      //  {
-      //  this->HighlightProp( NULL );
-      //  this->PropPicked = 0;
-      //  }
-      //else
-      //  {
       this->HighlightProp(path->GetFirstNode()->GetViewProp());
       this->PropPicked = 1;
-      //  }
       }
     rwi->EndPickCallback();
     }

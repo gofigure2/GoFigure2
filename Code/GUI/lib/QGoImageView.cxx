@@ -430,23 +430,6 @@ EnableContourPickingMode()
 }
 
 //-------------------------------------------------------------------------
-std::list<vtkProp3D*>
-QGoImageView::
-GetListOfPickedContours()
-{
-  // Get picked contours from all views
-  return m_Pool->GetCommand()->GetListOfPickedActors();
-}
-
-//-------------------------------------------------------------------------
-std::list<vtkProp3D*>
-QGoImageView::
-GetListOfUnPickedContours()
-{
-  return m_Pool->GetCommand()->GetListOfUnPickedActors();
-}
-
-//-------------------------------------------------------------------------
 vtkImageData*
 QGoImageView::
 GetImage()

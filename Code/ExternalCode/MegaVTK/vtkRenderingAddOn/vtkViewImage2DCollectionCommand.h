@@ -77,9 +77,6 @@ public:
   virtual void Execute(vtkObject * caller, unsigned long event,
                        void *vtkNotUsed(callData));
 
-  std::list<vtkProp3D*> GetListOfPickedActors();
-  std::list<vtkProp3D*> GetListOfUnPickedActors();
-
 protected:
 
   vtkViewImage2DCollectionCommand();
@@ -90,9 +87,6 @@ private:
 
   double InitialWindow;
   double InitialLevel;
-
-  std::list<vtkProp3D*> ListOfPickedActors;
-  std::list<vtkProp3D*> ListOfUnPickedActors;
   };
 
 #endif

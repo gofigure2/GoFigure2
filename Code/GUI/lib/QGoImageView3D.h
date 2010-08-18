@@ -122,10 +122,7 @@ public:
   virtual void ChangeActorProperty(vtkProp3D* iActor, vtkProperty* iProperty);
   void ChangeActorProperty(int iDir, vtkProp3D* iActor, vtkProperty* iProperty);
 
-  std::list<vtkProp3D*> GetListOfModifiedActors3D();
-
   // MODES
-
   /**
    * \brief Use the default interactor style
    */
@@ -141,11 +138,7 @@ public:
   /**
    * \brief switch to contour picking mode
    */
-  void ContourPickingMode();
-  /**
-   * \brief Use the mesh picking interactor style
-   */
-  void MeshPickingMode();
+  void ActorPickingMode();
 
   // WIDGETS
   /**
@@ -163,12 +156,21 @@ public:
    */
   vtkProp* GetPickedActor();
 
+  vtkActor* GetCurrentActor();
+
 signals:
   void SliceViewXYChanged(int Slice);
   void SliceViewXZChanged(int Slice);
   void SliceViewYZChanged(int Slice);
 
   void FullScreenViewChanged(int View);
+
+  void SelectionXYChanged();
+  void SelectionXZChanged();
+  void SelectionYZChanged();
+  void SelectionXYZChanged();
+
+  void CurrentActorUpdated();
 
   void ContoursSelectionXYChanged();
   void ContoursSelectionXZChanged();
@@ -206,6 +208,7 @@ public slots:
    */
   void EnableVolumeRendering(bool iValue);
 
+  void UpdateCurrentActor(vtkObject* caller);
 //   void HighLightContours();
 
   /**
@@ -252,6 +255,8 @@ protected:
   bool m_ShowCube;
 
   vtkOrientedBoxWidget*  m_BoxWidget;
+
+  vtkActor* m_CurrentActor;
 
   virtual void resizeEvent(QResizeEvent* event);
 

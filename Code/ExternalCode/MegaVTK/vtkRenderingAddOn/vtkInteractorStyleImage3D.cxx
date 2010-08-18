@@ -294,18 +294,18 @@ HighlightCurrentActor()
       }
     else
       {
-      // Check dimensionality
+     /* // Check dimensionality
       double* bounds = path->GetFirstNode()->GetViewProp()->GetBounds();
       if (bounds[0] != bounds[1] && bounds[2] != bounds[3] && bounds[4] != bounds[5])
-        {
+        {*/
         this->HighlightProp(path->GetFirstNode()->GetViewProp());
         this->PropPicked = 1;
-        }
+        /*}
       else
         {
         this->HighlightProp(NULL);
         this->PropPicked = 0;
-        }
+        }*/
       }
     rwi->EndPickCallback();
     }

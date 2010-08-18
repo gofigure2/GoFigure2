@@ -191,16 +191,6 @@ public:
    */
   void ShowSplinePlane();
 
-  /**
-   * \brief Get list of the 2D picked actors
-   */
-  std::list<vtkProp3D*> GetListOfPickedContours();
-
-  /**
-   * \brief Get list of the 2D unpicked actors
-   */
-  std::list<vtkProp3D*> GetListOfUnPickedContours();
-
   virtual void ChangeCursorShape(QCursor iCursorShape) = 0;
 
   /**

@@ -267,12 +267,14 @@ public slots:
   void ReinitializeContour();
   void ReEditContour(const unsigned int& iId);
 
+  void HighlightXY();
+  void HighlightXZ();
+  void HighlightYZ();
+  void HighlightXYZ();
+
   void HighlightContoursXY();
   void HighlightContoursXZ();
   void HighlightContoursYZ();
-
-
-  void ListHighLightMeshes();
 
   /**
    * \brief Calls HighLightTracesFromTable( ... ) with the good
@@ -517,15 +519,18 @@ protected slots:
    * \brief Mouse interaction style allows user to pan volume with all buttons
    */
   virtual void PanInteractorBehavior(bool);
+
   /**
    * \brief Mouse interaction style allows user to pick contours
    */
-  void ContourPickingInteractorBehavior(bool);
+ /* void ContourPickingInteractorBehavior(bool);
+*/
 
   /**
-   * \brief Mouse interaction style allows user to pick meshes
+   * \brief Mouse interaction style allows user to pick contours
    */
-  void MeshPickingInteractorBehavior(bool);
+  void ActorPickingInteractorBehavior(bool);
+
   void DistanceWidgetInteractorBehavior(bool);
   void AngleWidgetInteractorBehavior(bool);
   void Box3DPicking(bool);
