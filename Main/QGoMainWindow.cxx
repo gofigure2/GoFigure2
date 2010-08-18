@@ -451,7 +451,8 @@ LoadAllTracesFromDatabase(const int& iT, const std::string& iTraceName)
             GoFigureMeshAttributes attributes =
               w3t->ComputeMeshAttributes(contourmesh_list_it->Nodes);
             w3t->m_DataBaseTables->PrintVolumeAreaForMesh(attributes.m_Volume,
-                                                          attributes.m_Area, contourmesh_list_it->TraceID);
+                                                          attributes.m_Area,
+                                                          contourmesh_list_it->TraceID);
             }
           }
         w3t->AddTraceFromNodesManager(

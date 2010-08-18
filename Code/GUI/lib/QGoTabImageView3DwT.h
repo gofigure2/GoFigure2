@@ -174,10 +174,10 @@ public:
    * \param[in] iHighlighted
    */
   void AddContourFromNodes(const unsigned int& iContourID, vtkPolyData* iNodes,
-                           double iRgba[4], const unsigned int& iTCoord);
+                           const double iRgba[4], const unsigned int& iTCoord);
 
   void AddMeshFromNodes(const unsigned int& iMeshID, vtkPolyData* iNodes,
-                        double iRgba[4], const unsigned int& iTCoord);
+                        const double iRgba[4], const unsigned int& iTCoord);
 
   int GetSliceViewXY() const;
   int GetSliceViewXZ() const;
@@ -397,7 +397,7 @@ protected:
 
   int VisualizeContour(const int& iContourID,
       const unsigned int& iTCoord, vtkPolyData* contour,
-      vtkPolyData* contour_nodes, double iRGBA[4]);
+      vtkPolyData* contour_nodes, const double iRGBA[4]);
 
   int SaveAndVisuContour(vtkPolyData* iView);
 
@@ -416,11 +416,11 @@ protected:
    * \param[in] iSaveInDataBase save in data base if true
    * \todo Alpha component is not used at all, it is assumed to be opaque
    */
-  IDWithColorData SaveMesh(vtkPolyData* iView, const int& iMeshID,double iRGBA[4],
-      bool NewMesh = true);
+  IDWithColorData SaveMesh(vtkPolyData* iView, const int& iMeshID,
+                           double iRGBA[4], bool NewMesh );
 
   void VisualizeMesh(vtkPolyData* iView, const int& iMeshID,
-      const unsigned int& iTCoord, double iRGBA[4]);
+      const unsigned int& iTCoord, const double iRGBA[4]);
 
   void GetBackgroundColorFromImageViewer();
   void SetBackgroundColorToImageViewer();
