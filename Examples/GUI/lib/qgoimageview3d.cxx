@@ -113,9 +113,6 @@ int main(int argc, char** argv)
   vtkPoints* points = viewer->GetAllSeeds();
   points->Delete();
   viewer->ClearAllSeeds();
-  viewer->GetListOfPickedContours();
-  viewer->GetListOfUnPickedContours();
-  viewer->GetListOfModifiedActors3D();
 
   if (atoi(argv[2]) == 1)
     {
