@@ -89,7 +89,7 @@ class QGOGUILIB_EXPORT QGoTabImageView3DwT : public QGoTabElementBase
 public:
   /**
    * \brief Default Constructor
-   * @param parent
+   * \param parent
    */
   QGoTabImageView3DwT(QWidget * parent = 0);
 
@@ -104,23 +104,23 @@ public:
 
   /**
    * \brief
-   * @return
+   * \return
    */
   GoFigure::TabDimensionType GetTabDimensionType() const;
 
   /**
    *
-   * @param iReader
-   * @param iTimePoint
+   * \param[in] iReader
+   * \param[in] iTimePoint
    */
   void SetLSMReader(vtkLSMReader* iReader, const int& iTimePoint);
 
   /**
    *
-   * @param iContainer
-   * @param iFileType
-   * @param iHeader
-   * @param iTimePoint
+   * \param[in] iContainer  MegaCapture file container
+   * \param[in] iFileType   file type (PNG, JPEG...)
+   * \param[in] iHeader     path to MegaCapture header
+   * \param[in] iTimePoint  Time point
    */
   void SetMegaCaptureFile(
     const GoFigureFileInfoHelperMultiIndexContainer& iContainer,
@@ -129,27 +129,20 @@ public:
     const unsigned int& iTimePoint);
 
   /**
-   *
+   * \brief
    */
   virtual void Update();
 
   /**
-   *
-   * @param parent
+   * \brief
+   * \param parent
    */
   void setupUi(QWidget* parent);
   /**
-   *
-   * @param parent
+   * \brief
+   * \param parent
    */
   void retranslateUi(QWidget *parent);
-
-  /**
-   *
-   * @return
-   */
-  virtual std::list<QWidget*> AdditionalWidget()
-  { return std::list<QWidget*>(); }
 
   /**
    *
@@ -164,41 +157,27 @@ public:
    * \brief Add the current trace in the database and updates the visualization
    * useful when we load a dataset from the databse
    * \param[in] iContourID Trace ID
-   * \param[in] iNodes Data to be stored
-   * \param[in] ied should the trace be highlighted true=yes false=no
+   * \param[in] iNodes Data to be stored in the DB
+   * \param[in] iRgba
    * \param[in] iTCoord Current time point
-   * \param[in] iSaveInDataBase Save in database? true=yes false=no
    * \param[in] iTrace Name of the traces to be loaded (contour or mesh)
    */
   void AddTraceFromNodesManager(const unsigned int& iContourID,
                                 vtkPolyData* iNodes,
-                                const double iRgba[4],
-                                const bool& iHighlighted,
+                                double iRgba[4],
                                 const unsigned int& iTCoord,
-                                const bool& iSaveInDataBase,
                                 std::string iTrace);
-
   /**
    *
-   * @param[in] iNodes Nodes to be used by
-   * @param[in] iRgba[]
-   * @param[in] iHighlighted
+   * \param[in] iNodes Nodes to be used by
+   * \param[in] iRgba[]
+   * \param[in] iHighlighted
    */
-  void AddContourFromNodes(const unsigned int& iContourID, vtkPolyData* iNodes, const double iRgba[4],
-                           const bool& iHighlighted, const unsigned int& iTCoord, const bool& iSaveInDataBase);
   void AddContourFromNodes(const unsigned int& iContourID, vtkPolyData* iNodes,
-                           const double& iR, const double& iG, const double& iB, const double& iA,
-                           const bool& iHighlighted, const unsigned int& iTCoord, const bool& iSaveInDataBase);
-
-  void AddMeshFromNodes(const unsigned int& iMeshID, vtkPolyData* iNodes, const double iRgba[4],
-                        const bool& iHighlighted, const unsigned int& iTCoord, const bool& iSaveInDataBase,
-                        bool NewMesh = true);
+                           const double iRgba[4], const unsigned int& iTCoord);
 
   void AddMeshFromNodes(const unsigned int& iMeshID, vtkPolyData* iNodes,
-                        const bool& iHighlighted, const unsigned int& iTCoord, const bool& iSaveInDataBase,
-                        bool NewMesh = true,
-                        const double& iR = 0, const double& iG = 0, const double& iB = 0, const double& iA = 0
-                        );
+                        const double iRgba[4], const unsigned int& iTCoord);
 
   int GetSliceViewXY() const;
   int GetSliceViewXZ() const;
@@ -221,9 +200,6 @@ signals:
 
 public slots:
   void SetTimePoint(const int&);
-  void DisplayAnnotations();
-  void DisplaySplinePlanes();
-  void DisplayCube();
   void TakeSnapshot();
   void SetSliceView();
 
@@ -282,24 +258,23 @@ public slots:
   void RemoveAllTracesForGivenTimePoint(const unsigned int& iT,
                                         const std::string& iTraceName);
 
-  void ActivateManualSegmentationEditor(const bool& iActivate);
-  void ActivateSemiAutoSegmentationEditor(const bool& iActivate);
-
   void ValidateContour();
-
-  int  SavePolyDataAsContourInDB(vtkPolyData* iView);
 
   /** \brief Save a mesh in the database and render the mesh.
   \todo to be renamed */
-  int  SavePolyDataAsMeshInDB(vtkPolyData* iView);
+  void  SaveAndVisuMesh(vtkPolyData* iView);
 
   void ReinitializeContour();
   void ReEditContour(const unsigned int& iId);
 
-  void HighLightContainer(
-    ContourMeshStructureMultiIndexContainer& iContainer, vtkActor* iActor);
-  void HighLightContours();
-  void ListHighLightMeshes();
+  void HighlightXY();
+  void HighlightXZ();
+  void HighlightYZ();
+  void HighlightXYZ();
+
+  void HighlightContoursXY();
+  void HighlightContoursXZ();
+  void HighlightContoursYZ();
 
   /**
    * \brief Calls HighLightTracesFromTable( ... ) with the good
@@ -324,7 +299,7 @@ public slots:
    * the container iterator
    */
   void ShowTracesFromTable(ContourMeshStructureMultiIndexContainer& iContainer,
-                           std::string iCurrentTrace);
+                           ContourMeshStructureMultiIndexContainer* iTbContainer );
 
   void             SelectContoursInTable();
   void             ListSelectMeshesInTable();
@@ -365,14 +340,14 @@ public slots:
 
   void ModifyTracesVisibilityFromTable(
     ContourMeshStructureMultiIndexContainer& iContainer,
-    std::string iCurrentTrace);
+    ContourMeshStructureMultiIndexContainer* iTbContainer );
 
   void ApplyOneClickSegmentationFilter();
   void ApplyContourSemiAutoSegmentation();
 
   void CreateMeshFromSelectedContours(std::list<int> ListContourIDs,int iMeshID);
 
-  void TestMesh();
+  void HighlightMeshXYZ();
 
 protected:
   QHBoxLayout*                                m_HBoxLayout;
@@ -393,18 +368,22 @@ protected:
   QColor                                    m_BackgroundColor;
   QAction*                                  m_BackgroundColorAction;
   QAction*                                  m_TakeSnapshotAction;
-  int                                       m_TimePoint;
+
+  int m_PCoord;
+  int m_RCoord;
+  int m_CCoord;
+  int m_XTileCoord;
+  int m_YTileCoord;
+  int m_ZTileCoord;
+  int m_TCoord;
+
   unsigned int                              m_ContourId;
-  unsigned int                              m_MeshId;
   bool                                      m_ReEditContourMode;
 
   /// \todo rename as QGoNavigationDockWidget
   QGoNavigationDockWidget*           m_NavigationDockWidget;
   QGoManualSegmentationDockWidget*   m_ManualSegmentationDockWidget;
   QGoOneClickSegmentationDockWidget* m_OneClickSegmentationDockWidget;
-
-  /// Useful?
-  vtkPoints* m_SeedsWorldPosition;
 
   /// \todo remove m_FFMPEGWriter and m_AVIWriter from this class
   #if defined ENABLEFFMPEG || defined ENABLEAVI
@@ -414,62 +393,36 @@ protected:
   ContourMeshStructureMultiIndexContainer m_ContourContainer;
   ContourMeshStructureMultiIndexContainer m_MeshContainer;
 
-  /**
-   * @param[in] iContourID
-   * @param[in] iDir
-   * @param[in] iHighlighted
-   * @param[in] iR red component in [0,1]
-   * @param[in] iG green component in [0,1]
-   * @param[in] iB blue component in [0,1]
-   * @param[in] iA alpha component in [0,1]
-   * @param[in] iSaveInDataBase save in data base if true
-   * \todo Alpha component is not used at all, it is assumed to be opaque
-   */
-  virtual int ValidateContour(const int& iContourID, const int& iDir,
-                              const bool& iHighlighted, const unsigned int& iTCoord, const bool& iSaveInDataBase,
-                              vtkPolyData* contour, vtkPolyData* contour_nodes,
-                              const double& iR = 0, const double& iG = 0, const double& iB = 0, const double& iA = 0
-                              );
+  // ID + color map, real save+real visu
+  IDWithColorData SaveContour(vtkPolyData* contour, vtkPolyData* contour_nodes);
+  IDWithColorData UpdateContour(vtkPolyData* contour, vtkPolyData* contour_nodes);
 
-  /**
-   * @param[in] iContourID
-   * @param[in] iDir
-   * @param[in] iHighlighted
-   * @param[in] iR red component in [0,1]
-   * @param[in] iG green component in [0,1]
-   * @param[in] iB blue component in [0,1]
-   * @param[in] iA alpha component in [0,1]
-   * @param[in] iSaveInDataBase save in data base if true
-   * \todo Alpha component is not used at all, it is assumed to be opaque
-   */
-  virtual int SavePolyDataAsContourInDB(vtkPolyData* iView,
-                                        const int& iContourID,
-                                        const int& iDir,
-                                        //const double& iR,
-                                       // const double& iG,
-                                        //const double& iB,
-                                        //const double& iA,
-                                        const bool& iHighlighted,
-                                        const unsigned int& iTCoord,
-                                        const bool& iSaveInDataBase);
+  int VisualizeContour(const int& iContourID,
+      const unsigned int& iTCoord, vtkPolyData* contour,
+      vtkPolyData* contour_nodes, const double iRGBA[4]);
+
+  int SaveAndVisuContour(vtkPolyData* iView);
+
+  int* GetBoundingBox(vtkPolyData* contour);
 
   void CreateContour( vtkPolyData* contour_nodes,vtkPolyData* iView);
 
   /**
-   * @param[in] iMeshID
-   * @param[in] iDir
-   * @param[in] iHighlighted
-   * @param[in] iR red component in [0,1]
-   * @param[in] iG green component in [0,1]
-   * @param[in] iB blue component in [0,1]
-   * @param[in] iA alpha component in [0,1]
-   * @param[in] iSaveInDataBase save in data base if true
+   * \param[in] iMeshID
+   * \param[in] iDir
+   * \param[in] iHighlighted
+   * \param[in] iR red component in [0,1]
+   * \param[in] iG green component in [0,1]
+   * \param[in] iB blue component in [0,1]
+   * \param[in] iA alpha component in [0,1]
+   * \param[in] iSaveInDataBase save in data base if true
    * \todo Alpha component is not used at all, it is assumed to be opaque
    */
-  virtual int SavePolyDataAsMeshInDB(vtkPolyData* iView, const int& iMeshID, const int& iDir,
-                                     const bool& iHighlighted, const unsigned int& iTCoord, const bool& iSaveInDataBase,
-                                     const double& iR = 0, const double& iG = 0, const double& iB = 0, const double& iA = 0,
-                                     bool NewMesh = true);
+  IDWithColorData SaveMesh(vtkPolyData* iView, const int& iMeshID,
+                           double iRGBA[4], bool NewMesh );
+
+  void VisualizeMesh(vtkPolyData* iView, const int& iMeshID,
+      const unsigned int& iTCoord, const double iRGBA[4]);
 
   void GetBackgroundColorFromImageViewer();
   void SetBackgroundColorToImageViewer();
@@ -482,6 +435,16 @@ protected:
   void CreateManualSegmentationdockWidget();
   void CreateOneClickSegmentationDockWidget();
   void CreateDataBaseTablesConnection();
+
+  template< typename TActor >
+  void HighLightActorsInContainer(
+    ContourMeshStructureMultiIndexContainer& iContainer, vtkActor* iActor);
+
+  template< typename TActor >
+  void HighLightContours();
+
+  template< typename TActor >
+  void HighLightMeshes();
 
   /**
    * \brief Generates contours and a mesh composed by the generated contours
@@ -505,22 +468,20 @@ protected:
   void CreateVideoRecorderWidget();
 #endif /* ENABLEVIDEORECORD */
 
-  void RemoveActorFromViewer(const int& iId, vtkActor* iActor);
-  void DisplayActorInViewer(const int& iId, vtkActor* iActor);
-
   int* GetImageCoordinatesFromWorldCoordinates(double pos[3]);
 
 //   std::vector< vtkQuadricLODActor* >
-  std::vector<vtkActor*> AddContour(const int& iId,
-                                    vtkPolyData* dataset,
+  std::vector<vtkActor*> AddContour(vtkPolyData* dataset,
                                     vtkProperty* property = NULL);
 
   void SetTimePointWithLSMReaders(const int& iTimePoint);
   void SetTimePointWithMegaCapture(const int& iTimePoint);
 
-  void ChangeColorOfSelectedTraces(ContourMeshStructureMultiIndexContainer& iContainer,
-                                   std::string iCurrentTrace,
-                                   QColor iSelectedColor);
+  void
+  ChangeColorOfSelectedTraces(
+      ContourMeshStructureMultiIndexContainer& ioContainer,
+      ContourMeshStructureMultiIndexContainer* iTbContainer,
+      QColor iSelectedColor );
 
   //void GetTraceColor(double* rgba);
 
@@ -532,7 +493,6 @@ protected slots:
   void ShowTraceDockWidgetForContour(bool ManualSegVisible);
   void ShowTraceDockWidgetForMesh(bool OneClickVisible);
   void ChangeColorOfSelectedTracesManager(QColor iSelectedColor);
-  void EnableVolumeRendering(bool iVisible);
 
   void GoToLocation(int iX, int iY, int iZ, int iT);
 
@@ -559,15 +519,17 @@ protected slots:
    * \brief Mouse interaction style allows user to pan volume with all buttons
    */
   virtual void PanInteractorBehavior(bool);
+
   /**
    * \brief Mouse interaction style allows user to pick contours
    */
-  void ContourPickingInteractorBehavior(bool);
+ /* void ContourPickingInteractorBehavior(bool);
+*/
 
   /**
-   * \brief Mouse interaction style allows user to pick meshes
+   * \brief Mouse interaction style allows user to pick contours
    */
-  void MeshPickingInteractorBehavior(bool);
+  void ActorPickingInteractorBehavior(bool);
 
   void DistanceWidgetInteractorBehavior(bool);
   void AngleWidgetInteractorBehavior(bool);
@@ -580,4 +542,5 @@ private:
   Q_DISABLE_COPY(QGoTabImageView3DwT);
   };
 
+#include "QGoTabImageView3DwT.txx"
 #endif

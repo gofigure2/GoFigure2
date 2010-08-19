@@ -105,8 +105,7 @@ public:
                                  vtkProperty* property = NULL);
 
 //   std::vector< vtkQuadricLODActor* >
-  std::vector<vtkActor*> AddContour(const int& iId,
-                                    vtkPolyData* dataset,
+  std::vector<vtkActor*> AddContour(vtkPolyData* dataset,
                                     vtkProperty* property = NULL);
 
   virtual void setupUi(QWidget* parent);
@@ -123,13 +122,7 @@ public:
   virtual void ChangeActorProperty(vtkProp3D* iActor, vtkProperty* iProperty);
   void ChangeActorProperty(int iDir, vtkProp3D* iActor, vtkProperty* iProperty);
 
-  std::list<vtkProp3D*> GetListOfModifiedActors3D();
-
-  void ShowSplinePlane();
-  void ShowCube3D();
-
   // MODES
-
   /**
    * \brief Use the default interactor style
    */
@@ -145,11 +138,7 @@ public:
   /**
    * \brief switch to contour picking mode
    */
-  void ContourPickingMode();
-  /**
-   * \brief Use the mesh picking interactor style
-   */
-  void MeshPickingMode();
+  void ActorPickingMode();
 
   // WIDGETS
   /**
@@ -167,10 +156,7 @@ public:
    */
   vtkProp* GetPickedActor();
 
-  /**
-   * \brief Creates a box in 3d view to allow multiple meshes selection
-   */
-  void EnableVolumeRendering(bool iValue);
+  vtkActor* GetCurrentActor();
 
 signals:
   void SliceViewXYChanged(int Slice);
@@ -178,7 +164,19 @@ signals:
   void SliceViewYZChanged(int Slice);
 
   void FullScreenViewChanged(int View);
-  void ContoursSelectionChanged();
+
+  void SelectionXYChanged();
+  void SelectionXZChanged();
+  void SelectionYZChanged();
+  void SelectionXYZChanged();
+
+  void CurrentActorUpdated();
+
+  void ContoursSelectionXYChanged();
+  void ContoursSelectionXZChanged();
+  void ContoursSelectionYZChanged();
+//  void ContoursSelectionXYZChanged();
+
   void MeshesSelectionChanged();
   void ListMeshesSelectionChanged();
 
@@ -202,6 +200,15 @@ public slots:
 
   void UpdateScalarBarIn3DView();
 
+  void ShowSplinePlane();
+  void ShowCube3D();
+
+  /**
+   * \brief Creates a box in 3d view to allow multiple meshes selection
+   */
+  void EnableVolumeRendering(bool iValue);
+
+  void UpdateCurrentActor(vtkObject* caller);
 //   void HighLightContours();
 
   /**
@@ -246,8 +253,10 @@ protected:
   bool                   m_Initialized;
 
   bool m_ShowCube;
-  
+
   vtkOrientedBoxWidget*  m_BoxWidget;
+
+  vtkActor* m_CurrentActor;
 
   virtual void resizeEvent(QResizeEvent* event);
 

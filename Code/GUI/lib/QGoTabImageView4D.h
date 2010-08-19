@@ -98,9 +98,6 @@ public:
 
   virtual std::vector<QAction*> ViewActions();
 
-  virtual std::list<QWidget*> AdditionalWidget()
-  { return std::list<QWidget*>(); }
-
   virtual void WriteSettings() {}
   virtual void ReadSettings() {}
 
@@ -201,8 +198,7 @@ protected:
   void SetBackgroundColorToImageViewer();
 
 //    std::vector< vtkQuadricLODActor* >
-  std::vector<vtkActor*> AddContour(const int& iId,
-                                    vtkPolyData* dataset,
+  std::vector<vtkActor*> AddContour(vtkPolyData* dataset,
                                     vtkProperty* property = NULL);
 
   int* GetImageCoordinatesFromWorldCoordinates(double pos[3]);

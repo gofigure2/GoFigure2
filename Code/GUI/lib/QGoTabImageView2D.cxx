@@ -245,16 +245,6 @@ ShowScalarBar(const bool& iShow)
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-std::list<QWidget*>
-QGoTabImageView2D::
-AdditionalWidget()
-{
-  std::list<QWidget*> oList;
-  return oList;
-}
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
 void
 QGoTabImageView2D::
 WriteSettings()
@@ -304,10 +294,9 @@ GetImageCoordinatesFromWorldCoordinates(double iPos[3])
 // std::vector< vtkQuadricLODActor* >
 std::vector<vtkActor*>
 QGoTabImageView2D::
-AddContour(const int& iId, vtkPolyData* dataset,
-           vtkProperty* iProperty)
+AddContour(vtkPolyData* dataset, vtkProperty* iProperty)
 {
-  return m_ImageView->AddContour(iId, dataset, iProperty);
+  return m_ImageView->AddContour(dataset, iProperty);
 }
 //--------------------------------------------------------------------------
 

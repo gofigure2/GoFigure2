@@ -227,10 +227,8 @@ GetNumberOfImageViewers()
 //--------------------------------------------------------------------------
 std::vector<vtkActor*>
 QGoImageView::
-AddContour(const int& iId, vtkPolyData* iDataset, vtkProperty* iProperty)
+AddContour(vtkPolyData* iDataset, vtkProperty* iProperty)
 {
-  (void) iId;
-
   int n = m_Pool->GetNumberOfItems();
 
   std::vector<vtkActor*> oActorVector(n);
@@ -440,23 +438,6 @@ EnableContourPickingMode()
 }
 
 //-------------------------------------------------------------------------
-std::list<vtkProp3D*>
-QGoImageView::
-GetListOfPickedContours()
-{
-  // Get picked contours from all views
-  return m_Pool->GetCommand()->GetListOfPickedActors();
-}
-
-//-------------------------------------------------------------------------
-std::list<vtkProp3D*>
-QGoImageView::
-GetListOfUnPickedContours()
-{
-  return m_Pool->GetCommand()->GetListOfUnPickedActors();
-}
-
-//-------------------------------------------------------------------------
 vtkImageData*
 QGoImageView::
 GetImage()
@@ -518,6 +499,7 @@ EnableSeedWidget(bool iEnable)
     }
 }
 
+/// NOTE Returned value has to be deleted
 //-------------------------------------------------------------------------
 vtkPoints*
 QGoImageView::
@@ -525,7 +507,6 @@ GetAllSeeds()
 {
   double worldPosition[3];
 
-  /// TODO MEMORY LEAK HERE
   vtkPoints* oPoints = vtkPoints::New();
 
   for (unsigned int i = 0; i < this->m_SeedWidget.size(); i++)

@@ -1140,7 +1140,7 @@ ValidateContour(const int& iId)
   if ((contour->GetNumberOfPoints() > 2) && (m_TimePoint >= 0))
     {
     // get color from the dock widget
-    double r, g, b;
+    double r( 1. ), g( 1. ), b( 1. );
     /// \todo to be fixed!
     //QColor color; //= m_ManualSegmentationDockWidget->GetValidatedColor();
     //iColor.getRgbF(&r, &g, &b);
@@ -1181,7 +1181,7 @@ ValidateContour(const int& iId)
 
 //     std::vector< vtkQuadricLODActor* > contour_actor =
     std::vector<vtkActor*> contour_actor =
-      this->AddContour(iId, contour_copy,
+      this->AddContour(contour_copy,
                        contour_property);
 
     // Save contour in database!
@@ -1239,8 +1239,7 @@ GetImageCoordinatesFromWorldCoordinates(double iPos[3])
 // std::vector< vtkQuadricLODActor* >
 std::vector<vtkActor*>
 QGoTabImageView4D::
-AddContour(const int& iId,
-           vtkPolyData* dataset,
+AddContour(vtkPolyData* dataset,
            vtkProperty* iProperty)
 {
 // Adding contour in xyt is not straightforward (it is not the same coordinates)
@@ -1248,7 +1247,7 @@ AddContour(const int& iId,
 //  vtkViewImage3D* viewer3D = this->m_XYTImageView->GetImageViewer3D();
 
 //   std::vector< vtkQuadricLODActor* > oActorVector = this->m_XYZImageView->AddContour( iId, dataset, iProperty );
-  std::vector<vtkActor*> oActorVector = this->m_XYZImageView->AddContour(iId, dataset, iProperty);
+  std::vector<vtkActor*> oActorVector = this->m_XYZImageView->AddContour(dataset, iProperty);
 
 //  viewer->GetRenderer()->AddViewProp( oActorVector[0] );
 //  viewer->Render();

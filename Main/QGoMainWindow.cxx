@@ -451,16 +451,15 @@ LoadAllTracesFromDatabase(const int& iT, const std::string& iTraceName)
             GoFigureMeshAttributes attributes =
               w3t->ComputeMeshAttributes(contourmesh_list_it->Nodes);
             w3t->m_DataBaseTables->PrintVolumeAreaForMesh(attributes.m_Volume,
-                                                          attributes.m_Area, contourmesh_list_it->TraceID);
+                                                          attributes.m_Area,
+                                                          contourmesh_list_it->TraceID);
             }
           }
         w3t->AddTraceFromNodesManager(
           contourmesh_list_it->TraceID,
           contourmesh_list_it->Nodes,
-          contourmesh_list_it->rgba,
-          contourmesh_list_it->Highlighted,
+          const_cast< double* >( contourmesh_list_it->rgba ),
           contourmesh_list_it->TCoord,
-          false,    // Not to be saved in database
           iTraceName);     // Name of the trace to add
 
         if (contourmesh_list_it->TCoord != static_cast<unsigned int>(iT))
@@ -483,13 +482,6 @@ LoadAllTracesFromDatabase(const int& iT, const std::string& iTraceName)
 
         ++time_it;
         }
-      }
-
-    // if it we are loading contours
-    if (!calculation)
-      {
-      w3t->ReinitializeContour(); // contour widget is reinitialized...
-      w3t->ActivateManualSegmentationEditor(false);
       }
     }
 }

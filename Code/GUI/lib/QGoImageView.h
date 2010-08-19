@@ -130,8 +130,7 @@ public:
    * \todo check the utility of iId.
    */
 
-  virtual std::vector<vtkActor*> AddContour(const int& iId,
-                                            vtkPolyData* dataset,
+  virtual std::vector<vtkActor*> AddContour(vtkPolyData* dataset,
                                             vtkProperty* property = NULL);
 
   /** \brief Highlight a given contour (iProp) if iToDo is true. */
@@ -176,11 +175,6 @@ public:
    * \brief Update only the visualization
    */
   void UpdateRenderWindows();
-
-  /**
-   * \brief Show annotations in the collection
-   */
-  void ShowAnnotations();
 
   /**
    * \brief Get the image actor
@@ -265,6 +259,10 @@ public slots:
   void SetBackgroundColor(double rgb[3]);
   /** \overload */
   void SetBackgroundColor(const QColor& iColor);
+  /**
+   * \brief Show annotations in the collection
+   */
+  void ShowAnnotations();
 
 protected:
   vtkViewImage2DCollection* m_Pool;

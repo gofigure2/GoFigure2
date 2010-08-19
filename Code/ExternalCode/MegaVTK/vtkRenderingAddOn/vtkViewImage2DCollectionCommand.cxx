@@ -89,24 +89,6 @@ GetCollection()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-std::list<vtkProp3D*>
-vtkViewImage2DCollectionCommand::
-GetListOfPickedActors()
-{
-  return ListOfPickedActors;
-}
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-std::list<vtkProp3D*>
-vtkViewImage2DCollectionCommand::
-GetListOfUnPickedActors()
-{
-  return ListOfUnPickedActors;
-}
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
 void vtkViewImage2DCollectionCommand::Execute(vtkObject *caller,
                                               unsigned long event,
                                               void *vtkNotUsed(callData))
@@ -217,33 +199,5 @@ void vtkViewImage2DCollectionCommand::Execute(vtkObject *caller,
       isi->GetRequestedPosition ());
     this->Collection->SyncSetWorldCoordinates(position);
     this->Collection->SyncRender();
-    }
-
-  if (event == vtkViewImage2DCommand::ContourPickingEvent)
-    {
-    vtkProp* prop = isi->GetCurrentProp();
-    ListOfPickedActors.clear();
-    ListOfUnPickedActors.clear();
-    if (prop)
-      {
-      viewer->GetProp3DCollection()->InitTraversal();
-      vtkProp3D* prop_temp = viewer->GetProp3DCollection()->GetNextProp3D();  // image
-      prop_temp = viewer->GetProp3DCollection()->GetNextProp3D();  // 1st plane
-      prop_temp = viewer->GetProp3DCollection()->GetNextProp3D();  // 2nd plane
-      prop_temp = viewer->GetProp3DCollection()->GetNextProp3D();  // 3rd plane
-
-      while (prop_temp)
-        {
-        if (prop_temp == prop)
-          {
-          ListOfPickedActors.push_back(prop_temp);
-          }
-        else
-          {
-          ListOfUnPickedActors.push_back(prop_temp);
-          }
-        prop_temp = viewer->GetProp3DCollection()->GetNextProp3D();
-        }
-      }
     }
 }

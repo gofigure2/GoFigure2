@@ -151,8 +151,7 @@ protected:
   virtual void DisplayActorInViewer(const int& iId, vtkActor* iActor) = 0;
 
   //   virtual std::vector< vtkQuadricLODActor* >
-  virtual std::vector<vtkActor*>  AddContour(const int& iId,
-                                             vtkPolyData* dataset,
+  virtual std::vector<vtkActor*>  AddContour(vtkPolyData* dataset,
                                              vtkProperty* property = NULL) = 0;
 
   virtual void SetSlice(int iDir, int* iIdx) = 0;

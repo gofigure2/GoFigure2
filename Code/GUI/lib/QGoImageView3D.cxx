@@ -44,10 +44,12 @@
 #include "vtkViewImage2D.h"
 #include "vtkViewImage3D.h"
 #include "vtkViewImage2DCollection.h"
-
+///////////////////////////////////////////////////////////////
+#include "vtkRenderWindowInteractor.h"
 #include "vtkRenderWindow.h"
 #include "vtkRendererCollection.h"
 #include "vtkRenderer.h"
+///////////////////////////////////////////////////////////////
 #include "vtkTextProperty.h"
 #include "vtkProperty.h"
 #include "vtkImageClip.h"
@@ -164,7 +166,7 @@ QGoImageView3D::~QGoImageView3D()
     m_BoxWidget->Delete();
     m_BoxWidget = NULL;
     }
-  }
+}
 
 //-------------------------------------------------------------------------
 void QGoImageView3D::setupUi(QWidget* iParent)
@@ -408,29 +410,33 @@ void QGoImageView3D::SetupVTKtoQtConnections()
     vtkViewImage2DCommand::EndSliceMoveEvent,
     this, SLOT(MoveSliderXY()));
 
+  /////////////////////////////////////////////////////////////////////////
+
   // Event connection between vtk and qt
   // when contours picked, send a signal
   VtkEventQtConnector->Connect(
     reinterpret_cast<vtkObject*>(View1->GetInteractorStyle()),
     vtkViewImage2DCommand::ContourPickingEvent,
-    this, SIGNAL(ContoursSelectionChanged()));
+    this, SLOT(UpdateCurrentActor(vtkObject*)));
 
   VtkEventQtConnector->Connect(
     reinterpret_cast<vtkObject*>(View2->GetInteractorStyle()),
     vtkViewImage2DCommand::ContourPickingEvent,
-    this, SIGNAL(ContoursSelectionChanged()));
+    this, SLOT(UpdateCurrentActor(vtkObject*)));
 
   VtkEventQtConnector->Connect(
     reinterpret_cast<vtkObject*>(View3->GetInteractorStyle()),
     vtkViewImage2DCommand::ContourPickingEvent,
-    this, SIGNAL(ContoursSelectionChanged()));
+    this, SLOT(UpdateCurrentActor(vtkObject*)));
 
   // Event connection between vtk and qt
   // when contours picked, send a signal
   VtkEventQtConnector->Connect(
-    reinterpret_cast<vtkObject*>(View3D),
-    vtkViewImage3DCommand::ReadyEvent,
-    this, SIGNAL(MeshesSelectionChanged()));
+    reinterpret_cast<vtkObject*>(View3D->GetInteractorStyle3D()),
+    vtkViewImage3DCommand::MeshPickingEvent,
+    this, SLOT(UpdateCurrentActor(vtkObject*)));
+
+  /////////////////////////////////////////////////////////////////////////
 
   // Event connection between vtk and qt
   // when contours picked, send a signal
@@ -783,10 +789,10 @@ GetImageViewer3D()
 //--------------------------------------------------------------------------
 std::vector<vtkActor*>
 QGoImageView3D::
-AddContour(const int& iId, vtkPolyData* dataset, vtkProperty* iProperty)
+AddContour(vtkPolyData* dataset, vtkProperty* iProperty)
 {
   std::vector<vtkActor*> oList =
-    QGoImageView::AddContour(iId, dataset, iProperty);
+    QGoImageView::AddContour(dataset, iProperty);
 
   vtkActor* temp = m_View3D->AddDataSet((vtkDataSet*) dataset,
                                         iProperty, false, false);
@@ -890,7 +896,7 @@ QGoImageView3D::
 AddMesh(const int& iId, vtkPolyData* dataset, vtkProperty* iProperty)
 {
   std::vector<vtkActor*> oList =
-    QGoImageView::AddContour(iId, dataset, iProperty);
+    QGoImageView::AddContour(dataset, iProperty);
 
   vtkActor* temp = m_View3D->AddDataSet((vtkDataSet*) dataset,
                                         iProperty, false, false);
@@ -996,22 +1002,11 @@ PanMode()
 //-------------------------------------------------------------------------
 void
 QGoImageView3D::
-ContourPickingMode()
+ActorPickingMode()
 {
   QGoImageView::EnableContourPickingMode();
 
-  // Update behavior in 3d view to default mode
-  vtkInteractorStyleImage3D* t = m_View3D->GetInteractorStyle3D();
-  t->EnableDefaultMode();
-}
-
-//-------------------------------------------------------------------------
-void
-QGoImageView3D::
-MeshPickingMode()
-{
-  std::cout << "Mesh Picking Mode" <<std::endl;
-
+  // Update behavior in 3d view to pick mode
   vtkInteractorStyleImage3D* t = m_View3D->GetInteractorStyle3D();
   t->EnablePickMode();
 }
@@ -1028,15 +1023,6 @@ EnableSeedWidget( bool iActivate )
   vtkInteractorStyleImage3D* t = m_View3D->GetInteractorStyle3D();
   t->EnableDefaultMode();
 }
-
-//-------------------------------------------------------------------------
-std::list<vtkProp3D*>
-QGoImageView3D::
-GetListOfModifiedActors3D()
-{
-  return m_View3D->GetListOfModifiedActors3D();
-}
-
 //-------------------------------------------------------------------------
 void
 QGoImageView3D::
@@ -1106,3 +1092,51 @@ EnableVolumeRendering(bool iValue)
   m_View3D->SetVolumeRenderingOff();
     }
 }
+//---------------------------------------------------------------------------
+
+//---------------------------------------------------------------------------
+void
+QGoImageView3D::
+UpdateCurrentActor(vtkObject* caller)
+{
+  vtkInteractorStyleImage2D* t =
+  static_cast<vtkInteractorStyleImage2D*>(caller);
+  m_CurrentActor = vtkActor::SafeDownCast (t->GetCurrentProp());
+
+  if (t == m_Pool->GetItem(0)->GetInteractorStyle())
+    {
+  std::cout << "in XY" << std::endl;
+    emit SelectionXYChanged();
+    }
+  else if (t == m_Pool->GetItem(1)->GetInteractorStyle())
+    {
+  std::cout << "in XZ" << std::endl;
+    emit SelectionXZChanged();
+    }
+  else if (t == m_Pool->GetItem(2)->GetInteractorStyle())
+    {
+    std::cout << "in YZ" << std::endl;
+    emit SelectionYZChanged();
+    }
+  else if (t == (vtkInteractorStyleImage2D*)this->m_View3D->GetInteractorStyle3D())
+    {
+    std::cout << "in 3D" << std::endl;
+    emit SelectionXYZChanged();
+    }
+  else
+    {
+    std::cout << "no match" << std::endl;
+    }
+}
+//---------------------------------------------------------------------------
+
+//---------------------------------------------------------------------------
+vtkActor*
+QGoImageView3D::
+GetCurrentActor()
+{
+  return m_CurrentActor;
+}
+//---------------------------------------------------------------------------
+
+

@@ -47,7 +47,7 @@ class QGoTabImageViewElementBaseTestHelper :
   public QGoTabImageViewElementBase
   {
 public:
-  QGoTabImageViewElementBaseTestHelper(QWidget* iParent = 0)
+  explicit QGoTabImageViewElementBaseTestHelper(QWidget* iParent = 0)
     : QGoTabImageViewElementBase(iParent) {}
   virtual ~QGoTabImageViewElementBaseTestHelper() {}
 
@@ -89,8 +89,7 @@ protected:
   virtual void DisplayActorInViewer(const int&, vtkActor*)
   {}
 
-  virtual std::vector<vtkActor*> AddContour(const int&,
-                                            vtkPolyData*,
+  virtual std::vector<vtkActor*> AddContour(vtkPolyData*,
                                             vtkProperty* iProperty = NULL)
   {
     (void) iProperty;

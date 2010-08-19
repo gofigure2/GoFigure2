@@ -64,12 +64,6 @@ vtkViewImage3DCommand::
 Execute(vtkObject *caller, unsigned long event, void *callData)
 {
   (void)callData;
-
-  if (event == vtkViewImage3DCommand::MeshPickingEvent)
-    {
-    m_vtkViewImage3D->UpdateCurrentActor();
-    return;
-    }
   if (event == vtkCommand::InteractionEvent)
     {
     vtkOrientedBoxWidget* test = static_cast<vtkOrientedBoxWidget*>(caller);
@@ -100,9 +94,6 @@ Execute(vtkObject *caller, unsigned long event, void *callData)
       if (pt[2] > bextent[5]) bextent[5] = pt[2];
       }
     pd->Delete();
-
-    //Get Actors which are in the box (picked/unpicked)
-    m_vtkViewImage3D->UpdateActorsStatus(bextent);
     return;
     }
 }

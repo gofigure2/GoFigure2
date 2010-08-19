@@ -79,9 +79,6 @@ public:
   void setupUi(QWidget* parent);
   void retranslateUi(QWidget *parent);
 
-  virtual std::list<QWidget*> AdditionalWidget()
-  { return std::list<QWidget*>(); }
-
   virtual void WriteSettings() {}
   virtual void ReadSettings() {}
 
@@ -158,8 +155,7 @@ protected:
   virtual void DisplayActorInViewer(const int& iId, vtkActor* iActor);
 
 //     virtual std::vector< vtkQuadricLODActor* >
-  virtual std::vector<vtkActor*> AddContour(const int& iId,
-                                            vtkPolyData* dataset,
+  virtual std::vector<vtkActor*> AddContour(vtkPolyData* dataset,
                                             vtkProperty* property = NULL);
 
   virtual void SetSlice(int iDir, int* iIdx);

@@ -70,22 +70,22 @@ int main(int, char**)
   unsigned int              t = 0;
   unsigned int              i;
 
-  for (i = 0; i < 20; i++)
-    {
-    ActorVector[i] = vtkActor::New();
-    NodesVector[i] = vtkPolyData::New();
-
-    id = i / 4;
-    t = id;
-    container.insert(ContourMeshStructure(i, ActorVector[i], NodesVector[i],
-                                          id, t, (i == 10), 0.5, 0.5, 0.5, 1., 0));
-    }
+//  for (i = 0; i < 20; i++)
+//    {
+//    ActorVector[i] = vtkActor::New();
+//    NodesVector[i] = vtkPolyData::New();
+//
+//    id = i / 4;
+//    t = id;
+//    container.insert(ContourMeshStructure(i, ActorVector[i], NodesVector[i],
+//                                          id, t, (i == 10), 0.5, 0.5, 0.5, 1., 0));
+//    }
 
   std::list<ContourMeshStructure*> list = FindContourGivenTraceID(container, 10);
   ContourMeshStructure*            c0 = list.front();
   std::cout << *c0 << std::endl;
 
-  if (c0->Actor != ActorVector[10])
+//  if (c0->Actor != ActorVector[10])
     {
     std::cerr << "c0.Actor != ActorVector[10]" << std::endl;
     for (i = 0; i < 20; i++)
