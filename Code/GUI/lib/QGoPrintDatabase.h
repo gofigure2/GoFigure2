@@ -64,10 +64,15 @@
 #include "QGoDBCellTypeManager.h"
 #include "QGoDBSubCellTypeManager.h"
 #include "QGoDBColorManager.h"
+  /**
+  \defgroup DB Database
+  \defgroup GUI GUI
+  */
 
-/** \class QGoPrintDatabase
- * \brief Ensure the connection with the Database
- * */
+  /** 
+  \class QGoPrintDatabase
+  \brief Ensure the connection with the Database
+ */
 class QGOGUILIB_EXPORT QGoPrintDatabase : public QWidget,
   private Ui::WidgetPrintDatabase
   {
@@ -455,12 +460,16 @@ protected:
   \return QColor with the values corresponding to the color values of the iTraceRow
   */
   template<typename T>
-  QColor GetQColorFromTraceRow(T iTraceRow)
+  QColor GetQColorFromTraceRow(T iTraceRow,vtkMySQLDatabase* iDatabaseConnector)
   {
-    QColor Color(atoi(iTraceRow.GetMapValue("Red").c_str()),
-                           atoi(iTraceRow.GetMapValue("Green").c_str()),
-                           atoi(iTraceRow.GetMapValue("Blue").c_str()),
-                           atoi(iTraceRow.GetMapValue("Alpha").c_str()));
+    /** \todo put this method in GoDBTraceRow directly ?*/
+    GoDBColorRow ColorRow;
+    ColorRow.SetValuesForSpecificID(atoi(iTraceRow.GetMapValue("ColorID").c_str()),
+      iDatabaseConnector);
+    QColor Color(atoi(ColorRow.GetMapValue("Red").c_str()),
+                           atoi(ColorRow.GetMapValue("Green").c_str()),
+                           atoi(ColorRow.GetMapValue("Blue").c_str()),
+                           atoi(ColorRow.GetMapValue("Alpha").c_str()));
     return Color;
   }
 
