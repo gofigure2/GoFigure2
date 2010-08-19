@@ -76,6 +76,8 @@ class vtkActor;
 class vtkViewImage2D;
 class vtkProp3D;
 
+class QGoSeedsSegmentation;
+
 #include "QGoGUILibConfigure.h"
 
 /**
@@ -342,8 +344,8 @@ public slots:
     ContourMeshStructureMultiIndexContainer& iContainer,
     ContourMeshStructureMultiIndexContainer* iTbContainer );
 
-  void ApplyOneClickSegmentationFilter();
-  void ApplyContourSemiAutoSegmentation();
+  void ApplySeedMeshSegmentationFilter();
+  void ApplySeedContourSegmentationFilter();
 
   void CreateMeshFromSelectedContours(std::list<int> ListContourIDs,int iMeshID);
 
@@ -450,19 +452,16 @@ protected:
    * \brief Generates contours and a mesh composed by the generated contours
    * Contours are circles and mesh looks like a sphere
    */
-  void OneClickSphereContours();
-  /**
-   * \brief Generates a sphere mesh
-   */
-  void OneClickSphereMeshes();
+  void MeshSphereContours(QGoSeedsSegmentation iSeedsSegmentation);
   /**
    * \brief Generates contours from seeds by levelset segmentation
    */
-  void LevelSetSegmentation2D();
-  /**
-   * \brief Generates Meshes from seeds by levelset segmentation
-   */
-  void LevelSetSegmentation3D();
+  void LevelSetSegmentation2D(vtkPoints* iImage3D,
+      QGoSeedsSegmentation iSeedsSegmentation);
+
+  void InitializeSeedSegmentationFilter(QGoSeedsSegmentation& ioSeedsSegmentation,
+      double iRadius, vtkImageData* inputVolume, int iNbOfIterations,
+      int iCurvatureWeight, vtkViewImage2D* iInformations);
 
 #if defined (ENABLEFFMPEG) || defined (ENABLEAVI)
   void CreateVideoRecorderWidget();
