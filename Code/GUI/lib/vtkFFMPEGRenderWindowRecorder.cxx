@@ -54,8 +54,10 @@ vtkFFMPEGRenderWindowRecorder()
   // initialise values in the writer
   vtkFFMPEGWriter* tempFFFFMPEG = vtkFFMPEGWriter::SafeDownCast(m_ImageWriter);
   tempFFFFMPEG->SetQuality(m_VideoQuality);
+#if defined (VTKTRUNK)
   tempFFFFMPEG->SetBitRate(m_BitRate);
   tempFFFFMPEG->SetBitRateTolerance(m_BitRate);
+#endif /* VTKTRUNK */
   tempFFFFMPEG->SetRate(m_FrameRate);
   }
 
@@ -74,8 +76,10 @@ SetSpecificParameters()
 {
   vtkFFMPEGWriter* tempFFFFMPEG = vtkFFMPEGWriter::SafeDownCast(m_ImageWriter);
   tempFFFFMPEG->SetQuality(m_VideoQuality);
+#if defined (VTKTRUNK)
   tempFFFFMPEG->SetBitRate(m_BitRate);
   tempFFFFMPEG->SetBitRateTolerance(m_BitRate);
+#endif /* VTKTRUNK */
   tempFFFFMPEG->SetRate(m_FrameRate);
 }
 
