@@ -74,12 +74,16 @@ private:
   int m_Filter;
 
 public slots:
-  void ApplyFilterEmit();
   void FilterChanged(int);
   void AdvancedMode(bool);
 
 signals:
   void ApplyFilterPressed();
+  void UpdateSegmentationMethod(int);
+  void RadiusChanged(double);
+  void ChannelChanged(int);
+  void NbOfIterationsChanged(int);
+  void CurvatureWeightChanged(int);
   };
 
 #endif

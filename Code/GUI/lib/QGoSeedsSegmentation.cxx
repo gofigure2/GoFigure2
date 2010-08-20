@@ -66,7 +66,15 @@
 
 //--------------------------------------------------------------------------
 QGoSeedsSegmentation::
-QGoSeedsSegmentation()
+QGoSeedsSegmentation(QObject* parent,
+    vtkViewImage2D* iOriginImageInformations,
+    vtkPoints* iSeedsWorldPosition,
+    std::vector<vtkSmartPointer<vtkImageData> > iInputVolume,
+    vtkPolyData* ioOutput):
+    m_OriginImageInformations(iOriginImageInformations),
+    m_SeedsWorldPosition(iSeedsWorldPosition),
+    m_InputVolume(iInputVolume),
+    m_Output(ioOutput)
   {
   m_OriginImage    = vtkSmartPointer<vtkImageData>::New();
 
@@ -78,11 +86,13 @@ QGoSeedsSegmentation()
 
   m_Radius = 0.;
 
+  m_Channel = 0;
+
   m_NumberOfIterations = 0;
 
   m_CurvatureWeight = 0;
 
-  m_OriginImageInformations = vtkSmartPointer<vtkViewImage2D>::New();
+  m_SegmentationMethod = 0;
   }
 //--------------------------------------------------------------------------
 QGoSeedsSegmentation::
@@ -140,6 +150,104 @@ QGoSeedsSegmentation::
 output()
 {
   return m_OutputPolyData;
+}
+//--------------------------------------------------------------------------
+void
+QGoSeedsSegmentation::
+ApplySeedContourSegmentationFilter()
+{
+  std::cout << "Apply contour received" << std::endl;
+}
+//--------------------------------------------------------------------------
+void
+QGoSeedsSegmentation::
+ApplySeedMeshSegmentationFilter()
+{
+  std::cout << "Apply mesh received" << std::endl;
+  std::cout << "seg method: " << m_SegmentationMethod << std::endl;
+  std::cout << "radius: " << m_Radius << std::endl;
+  std::cout << "channel: " << m_Channel << std::endl;
+  std::cout << "nb Of it: " << m_NumberOfIterations << std::endl;
+  std::cout << "curvature weight: " << m_CurvatureWeight << std::endl;
+
+  double seed_pos[3];
+
+  //////////////////////////////////////////
+  // Run segmentation on all seeds
+  //////////////////////////////////////////
+  for (int i = 0; i < m_SeedsWorldPosition->GetNumberOfPoints(); i++)
+    {
+    // Put position of each seed "i" in "pos[3]"
+    m_SeedsWorldPosition->GetPoint(i, seed_pos);
+    setSeedsPosition(seed_pos);
+
+    switch (m_SegmentationMethod)
+      {
+      case 0:  // circle contours creation (sphere aspect)
+        {
+        /// TODO enhance this one
+        //MeshSphereContours(seedsSegmentation);
+        break;
+        }
+      case 1:  // sphere (3D volume creation)
+        {
+        m_Output = SphereVolumeSegmentation();
+        //SaveAndVisuMesh(seedsSegmentation.SphereVolumeSegmentation());
+        break;
+        }
+      case 2:  // 3d level set
+        {
+        m_Output = LevelSetSegmentation3D();
+        //SaveAndVisuMesh(seedsSegmentation.LevelSetSegmentation3D());
+        break;
+        }
+      default:
+        {
+        /// \todo call an exception here!
+        break;
+        }
+      }
+    }
+
+  // Erase everything
+  m_SeedsWorldPosition->Delete();
+  //this->m_ImageView->ClearAllSeeds();
+}
+//--------------------------------------------------------------------------
+void
+QGoSeedsSegmentation::
+UpdateSegmentationMethod(int iMethod)
+{
+  m_SegmentationMethod = iMethod;
+}
+//--------------------------------------------------------------------------
+void
+QGoSeedsSegmentation::
+RadiusChanged(double iRadius)
+{
+  m_Radius = iRadius;
+}
+//--------------------------------------------------------------------------
+void
+QGoSeedsSegmentation::
+ChannelChanged(int iChannel)
+{
+  m_Channel = iChannel;
+  m_OriginImage->ShallowCopy(m_InputVolume[m_Channel]);
+}
+//--------------------------------------------------------------------------
+void
+QGoSeedsSegmentation::
+NbOfIterationsChanged(int iNbOfIterations)
+{
+  m_NumberOfIterations = iNbOfIterations;
+}
+//--------------------------------------------------------------------------
+void
+QGoSeedsSegmentation::
+CurvatureWeightChanged(int iCurvatureWeight)
+{
+  m_CurvatureWeight = iCurvatureWeight;
 }
 //--------------------------------------------------------------------------
 vtkSmartPointer<vtkPolyData>

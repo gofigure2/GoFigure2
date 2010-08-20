@@ -110,8 +110,6 @@
 
 #include <set>
 
-#include "vtkRenderWindow.h"
-
 #include <QDebug>
 //-------------------------------------------------------------------------
 QGoTabImageView3DwT::
@@ -141,6 +139,10 @@ QGoTabImageView3DwT(QWidget* iParent) :
   CreateVisuDockWidget();
 
   //CreateSettingAndDialogSegmentationWidgets();
+
+  m_SegmentationOutput = vtkPolyData::New();
+  m_SeedsSegmentation = new QGoSeedsSegmentation(0, m_ImageView->GetImageViewer(0),
+      m_ImageView->GetAllSeeds(), m_InternalImages, m_SegmentationOutput);
 
   CreateManualSegmentationdockWidget();
 
@@ -227,6 +229,8 @@ QGoTabImageView3DwT::
       }
     }
 
+  delete m_SeedsSegmentation;
+  m_SegmentationOutput->Delete();
 //   DeleteContourMeshStructureElement( m_ContourContainer );
 //   DeleteContourMeshStructureElement( m_MeshContainer );
   }
@@ -313,17 +317,15 @@ CreateManualSegmentationdockWidget()
                    this, SLOT(ChangeContourRepresentationProperty()));
 
   // Connect semi auto segmentation
-
   QObject::connect(m_ManualSegmentationDockWidget, SIGNAL(ApplyFilterPressed()),
-                   this, SLOT(ApplySeedContourSegmentationFilter()));
+                     m_SeedsSegmentation,
+                     SLOT(ApplySeedContourSegmentationFilter()));
 
   // Cursor interaction
-
   QObject::connect(m_ManualSegmentationDockWidget, SIGNAL(UpdateInteractorBehavior(bool)),
                    this, SLOT(ContourInteractorBehavior(bool)));
 
   // Create action
-
   QAction* tempaction = m_ManualSegmentationDockWidget->toggleViewAction();
 
   this->m_SegmentationActions.push_back(tempaction);
@@ -459,11 +461,28 @@ CreateOneClickSegmentationDockWidget()
 
   this->m_SegmentationActions.push_back(tempaction);
 
-  QObject::connect(m_OneClickSegmentationDockWidget, SIGNAL(ApplyFilterPressed()),
-                   this, SLOT(ApplySeedMeshSegmentationFilter()));
-
   QObject::connect(m_OneClickSegmentationDockWidget, SIGNAL(visibilityChanged(bool)),
                    this, SLOT(ShowTraceDockWidgetForMesh(bool)));
+
+  QObject::connect(m_OneClickSegmentationDockWidget, SIGNAL(ApplyFilterPressed()),
+                   m_SeedsSegmentation,
+                   SLOT(ApplySeedMeshSegmentationFilter()));
+
+  QObject::connect(m_OneClickSegmentationDockWidget, SIGNAL(UpdateSegmentationMethod(int)),
+                   m_SeedsSegmentation, SLOT(UpdateSegmentationMethod(int)));
+
+  QObject::connect(m_OneClickSegmentationDockWidget, SIGNAL(RadiusChanged(double)),
+                     m_SeedsSegmentation, SLOT(RadiusChanged(double)));
+
+  QObject::connect(m_OneClickSegmentationDockWidget, SIGNAL(ChannelChanged(int)),
+                     m_SeedsSegmentation, SLOT(ChannelChanged(int)));
+
+  QObject::connect(m_OneClickSegmentationDockWidget, SIGNAL(NbOfIterationsChanged(int)),
+                       m_SeedsSegmentation, SLOT(NbOfIterationsChanged(int)));
+
+  QObject::connect(m_OneClickSegmentationDockWidget, SIGNAL(CurvatureWeightChanged(int)),
+                       m_SeedsSegmentation, SLOT(CurvatureWeightChanged(int)));
+  /// TODO CONNECT SIGNAL TO GET POLYDATA BACK
 }
 
 //-------------------------------------------------------------------------
@@ -2697,136 +2716,11 @@ SetSliceView()
 #endif
 }
 //-------------------------------------------------------------------------
-QGoManualSegmentationDockWidget* QGoTabImageView3DwT::
+QGoManualSegmentationDockWidget*
+QGoTabImageView3DwT::
 GetManualSegmentationWidget()
 {
   return this->m_ManualSegmentationDockWidget;
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
-QGoTabImageView3DwT::
-ApplySeedContourSegmentationFilter()
-{
-  // Initialize the segmentation
-  QGoSeedsSegmentation seedsSegmentation;
-  // Get input volume, according to selected channel
-  vtkSmartPointer<vtkImageData> inputVolume = vtkSmartPointer<vtkImageData>::New();
-  if ((!m_InternalImages.empty()))
-    {
-    inputVolume->ShallowCopy(
-        m_InternalImages[m_OneClickSegmentationDockWidget->GetChannel()]);
-    }
-
-  InitializeSeedSegmentationFilter(seedsSegmentation,
-      m_OneClickSegmentationDockWidget->GetRadius(),
-      inputVolume,
-      m_OneClickSegmentationDockWidget->GetNumberOfIterations(),
-      m_OneClickSegmentationDockWidget->GetCurvatureWeight(),
-      NULL // should be sth else
-      );
-
-  vtkPoints* m_SeedsWorldPosition = m_ImageView->GetAllSeeds();
-
-  double seed_pos[3];
-
-  // Apply filter for each seed
-  for (int i = 0; i < m_SeedsWorldPosition->GetNumberOfPoints(); i++)
-    {
-    // Put position of each seed "i" in "seed_pos[3]"
-    m_SeedsWorldPosition->GetPoint(i, seed_pos);
-    seedsSegmentation.setSeedsPosition(seed_pos);
-    //
-    int orientation = 0;
-    //save in db and see it
-    SaveAndVisuContour(seedsSegmentation.LevelSetSegmentation2D(orientation));
-    }
-
-  // Erase everything
-  m_SeedsWorldPosition->Delete();
-  this->m_ImageView->ClearAllSeeds();
-
-  // Update visualization
-  this->m_ImageView->UpdateRenderWindows();
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
-QGoTabImageView3DwT::
-ApplySeedMeshSegmentationFilter()
-{
-  // Check the filter to be applied
-  // 0 = circle contours (sphere aspect)
-  // 1 = sphere ( 3D volume - no contours)
-  // 2 = levelset in 3D
-
-  int filterToBeApplied = this->m_OneClickSegmentationDockWidget->GetFilter();
-
-  ///////////////////////////////
-  // Initialize the segmentation
-  ///////////////////////////////
-  QGoSeedsSegmentation seedsSegmentation;
-  vtkSmartPointer<vtkImageData> inputVolume = vtkSmartPointer<vtkImageData>::New();
-  if ((!m_InternalImages.empty()))
-    {
-    inputVolume->ShallowCopy(
-        m_InternalImages[m_OneClickSegmentationDockWidget->GetChannel()]);
-    }
-
-  InitializeSeedSegmentationFilter(seedsSegmentation,
-      m_OneClickSegmentationDockWidget->GetRadius(),
-      inputVolume,
-      m_OneClickSegmentationDockWidget->GetNumberOfIterations(),
-      m_OneClickSegmentationDockWidget->GetCurvatureWeight(),
-      m_ImageView->GetImageViewer(0)
-      );
-
-  vtkPoints* m_SeedsWorldPosition = m_ImageView->GetAllSeeds();
-  double seed_pos[3];
-
-  //////////////////////////////////////////
-  // Run segmentation on all seeds
-  //////////////////////////////////////////
-  for (int i = 0; i < m_SeedsWorldPosition->GetNumberOfPoints(); i++)
-    {
-    // Put position of each seed "i" in "pos[3]"
-    m_SeedsWorldPosition->GetPoint(i, seed_pos);
-    seedsSegmentation.setSeedsPosition(seed_pos);
-
-    switch (filterToBeApplied)
-      {
-      case 0:  // circle contours creation (sphere aspect)
-        {
-        /// TODO enhance this one
-        MeshSphereContours(seedsSegmentation);
-        break;
-        }
-      case 1:  // sphere (3D volume creation)
-        {
-        SaveAndVisuMesh(seedsSegmentation.SphereVolumeSegmentation());
-        break;
-        }
-      case 2:  // 3d level set
-        {
-        SaveAndVisuMesh(seedsSegmentation.LevelSetSegmentation3D());
-        break;
-        }
-      default:
-        {
-        /// \todo call an exception here!
-        break;
-        }
-      }
-    }
-
-  // Erase everything
-  m_SeedsWorldPosition->Delete();
-  this->m_ImageView->ClearAllSeeds();
-
-  // Update visualization
-  this->m_ImageView->UpdateRenderWindows();
 }
 //-------------------------------------------------------------------------
 

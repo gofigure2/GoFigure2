@@ -40,12 +40,15 @@
 #ifndef __QGoSeedsSegmentation_h
 #define __QGoSeedsSegmentation_h
 
+#include <QObject>
 #include "QGoGUILibConfigure.h"
 
 #include "vtkImageData.h"
 #include "vtkPoints.h"
 #include "vtkPolyData.h"
 #include "vtkViewImage2D.h"
+
+#include <vector>
 
 #include "vtkSmartPointer.h"
 
@@ -54,13 +57,18 @@
 \brief Contains all segmentations from seed points
 \example GUI/lib/qgotabimageview2d.cxx
 */
-class QGOGUILIB_EXPORT QGoSeedsSegmentation
+class QGOGUILIB_EXPORT QGoSeedsSegmentation : public QObject
   {
+  Q_OBJECT
 public:
   /**
    * \brief Constructor
    */
-  QGoSeedsSegmentation();
+  explicit QGoSeedsSegmentation(QObject* parent,
+      vtkViewImage2D* iOriginImageInformations,
+      vtkPoints*      iSeedsWorldPosition,
+      std::vector<vtkSmartPointer<vtkImageData> >   iInputVolume,
+      vtkPolyData* ioOutput);
 
   /**
    * \brief Destructor
@@ -129,12 +137,31 @@ public:
   */
   vtkSmartPointer<vtkPolyData>  SphereVolumeSegmentation();
 
+signals:
+  void MeshSegmentationFinished();
+  void ContourSegmentationFinished();
+  void ContourMeshSegmentationFinished();
+
+public slots:
+  void ApplySeedContourSegmentationFilter();
+  void ApplySeedMeshSegmentationFilter();
+  void UpdateSegmentationMethod(int iSegmentationMethod);
+  void RadiusChanged(double iRadius);
+  void ChannelChanged(int iChannel);
+  void NbOfIterationsChanged(int iNbOfIterations);
+  void CurvatureWeightChanged(int iCurvatureWeight);
+
 private:
 
   /**
   * \brief Volume to be used for levelset segmentation
   */
   vtkSmartPointer<vtkImageData> m_OriginImage;
+
+  /**
+  * \brief Volume to be used for levelset segmentation
+  */
+  std::vector<vtkSmartPointer<vtkImageData> > m_InternalImage;
 
   /**
    * \brief Origin points for all segmentations
@@ -165,6 +192,16 @@ private:
    *
    */
 
-  vtkSmartPointer<vtkViewImage2D> m_OriginImageInformations;
+  vtkViewImage2D* m_OriginImageInformations;
+
+  vtkPoints*      m_SeedsWorldPosition;
+
+  std::vector<vtkSmartPointer<vtkImageData> >   m_InputVolume;
+
+  int m_SegmentationMethod;
+
+  int m_Channel;
+
+  vtkPolyData* m_Output;
   };
 #endif

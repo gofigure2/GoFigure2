@@ -52,13 +52,28 @@ QGoOneClickSegmentationDockWidget(QWidget* iParent) : QDockWidget(iParent),
   this->setupUi(this);
 
   QObject::connect(this->applyFilterBtn, SIGNAL(pressed()),
-                   this, SLOT(ApplyFilterEmit()));
+                   this, SIGNAL(ApplyFilterPressed()));
 
   QObject::connect(this->filterType, SIGNAL(activated(int)),
                    this, SLOT(FilterChanged(int)));
 
+  QObject::connect(this->filterType, SIGNAL(activated(int)),
+                   this, SIGNAL(UpdateSegmentationMethod(int)));
+
   QObject::connect(this->advanceMode, SIGNAL(toggled(bool)),
                    this, SLOT(AdvancedMode(bool)));
+
+  QObject::connect(this->radiusSpinBox, SIGNAL(valueChanged(double)),
+                   this, SIGNAL(RadiusChanged(double)));
+
+  QObject::connect(this->channel, SIGNAL(valueChanged(int)),
+                   this, SIGNAL(ChannelChanged(int)));
+
+  QObject::connect(this->numberOfIterations, SIGNAL(valueChanged(int)),
+                   this, SIGNAL(NbOfIterationsChanged(int)));
+
+  QObject::connect(this->curvatureWeight, SIGNAL(valueChanged(int)),
+                   this, SIGNAL(CurvatureWeightChanged(int)));
 
   // Initialize visualization
   UpdateWidget(true);
@@ -83,15 +98,6 @@ InitializeLevelsetParameters()
 {
   this->numberOfIterations->setValue(50);
   this->curvatureWeight->setValue(1);
-}
-//---------------------------------------------------------------------------//
-
-//---------------------------------------------------------------------------//
-void
-QGoOneClickSegmentationDockWidget::
-ApplyFilterEmit()
-{
-  emit ApplyFilterPressed();
 }
 //---------------------------------------------------------------------------//
 

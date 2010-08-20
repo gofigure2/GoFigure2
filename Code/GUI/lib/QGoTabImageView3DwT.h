@@ -344,9 +344,6 @@ public slots:
     ContourMeshStructureMultiIndexContainer& iContainer,
     ContourMeshStructureMultiIndexContainer* iTbContainer );
 
-  void ApplySeedMeshSegmentationFilter();
-  void ApplySeedContourSegmentationFilter();
-
   void CreateMeshFromSelectedContours(std::list<int> ListContourIDs,int iMeshID);
 
   void HighlightMeshXYZ();
@@ -386,6 +383,8 @@ protected:
   QGoNavigationDockWidget*           m_NavigationDockWidget;
   QGoManualSegmentationDockWidget*   m_ManualSegmentationDockWidget;
   QGoOneClickSegmentationDockWidget* m_OneClickSegmentationDockWidget;
+  QGoSeedsSegmentation*              m_SeedsSegmentation;
+  vtkPolyData*                       m_SegmentationOutput;
 
   /// \todo remove m_FFMPEGWriter and m_AVIWriter from this class
   #if defined ENABLEFFMPEG || defined ENABLEAVI
