@@ -133,13 +133,13 @@ ADD_TEST( qgomanualsegmentationdockwidgetTest
   1
 )
 
-ADD_TEST( contourmeshstructurehelperTest
-  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/contourmeshstructurehelpertest
-)
+#ADD_TEST( contourmeshstructurehelperTest
+#  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/contourmeshstructurehelpertest
+#)
 
-ADD_TEST( contourmeshstructurehelperTest2
-  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/contourmeshstructurehelpertest2
-)
+#ADD_TEST( contourmeshstructurehelperTest2
+#  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/contourmeshstructurehelpertest2
+#)
 
 ADD_TEST( QGoLsmToMegaExportDialogTest
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/QGoLsmToMegaExportDialogTest
