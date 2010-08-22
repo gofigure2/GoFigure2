@@ -46,6 +46,7 @@
 #include <QApplication>
 #include <QClipboard>
 #include <QToolButton>
+#include <QPainter>
 
 QGoColorComboBox::QGoColorComboBox(std::string iTextToAddANewOne,
                                    QWidget *iparent,

@@ -42,7 +42,6 @@
 #define __QGoComboBox_h
 
 #include <QComboBox>
-#include <QtGui>
 #include "QGoGUILibConfigure.h"
 
 /**

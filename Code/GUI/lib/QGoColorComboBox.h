@@ -41,7 +41,6 @@
 #ifndef __QGoColorComboBox_h
 #define __QGoColorComboBox_h
 
-#include <QtGui>
 #include "QGoGUILibConfigure.h"
 #include "QGoComboBox.h"
 
