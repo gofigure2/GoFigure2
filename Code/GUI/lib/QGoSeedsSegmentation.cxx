@@ -66,28 +66,32 @@
 
 //--------------------------------------------------------------------------
 QGoSeedsSegmentation::
-QGoSeedsSegmentation()
+QGoSeedsSegmentation(QObject* parent,
+    vtkViewImage2D* iOriginImageInformations,
+    std::vector<vtkImageData*>* iInputVolume):
+    m_OriginImageInformations(iOriginImageInformations),
+    m_InputVolume(iInputVolume)
   {
-  m_OriginImage    = vtkSmartPointer<vtkImageData>::New();
-
-  m_OutputPolyData = vtkSmartPointer<vtkPolyData>::New();
-
   m_SeedsPosition[0] = 0.;
   m_SeedsPosition[1] = 0.;
   m_SeedsPosition[2] = 0.;
 
-  m_Radius = 0.;
+  // initialize to 0 leads to segfaults
+  m_Radius = 3.;
 
-  m_NumberOfIterations = 0;
+  m_Channel = 0;
 
-  m_CurvatureWeight = 0;
+  m_NumberOfIterations = 1;
 
-  m_OriginImageInformations = vtkSmartPointer<vtkViewImage2D>::New();
+  m_CurvatureWeight = 1;
+
+  m_SegmentationMethod = 0;
   }
 //--------------------------------------------------------------------------
 QGoSeedsSegmentation::
 ~QGoSeedsSegmentation()
   {
+  m_SeedsWorldPosition->Delete();
   }
 //--------------------------------------------------------------------------
 void
@@ -135,11 +139,104 @@ setOriginImageInformation(vtkViewImage2D* iOriginImageInformation)
   m_OriginImageInformations = iOriginImageInformation;
 }
 //--------------------------------------------------------------------------
-vtkSmartPointer<vtkPolyData>
+void
 QGoSeedsSegmentation::
-output()
+ApplySeedContourSegmentationFilter(vtkPoints* iPoints)
 {
-  return m_OutputPolyData;
+  m_SeedsWorldPosition = iPoints;
+
+  double seed_pos[3];
+
+  // Apply filter for each seed
+  for (int i = 0; i < m_SeedsWorldPosition->GetNumberOfPoints(); i++)
+    {
+    // Put position of each seed "i" in "seed_pos[3]"
+    m_SeedsWorldPosition->GetPoint(i, seed_pos);
+    setSeedsPosition(seed_pos);
+    //
+    int orientation = 0;
+    //save in db and see it
+    emit ContourSegmentationFinished(LevelSetSegmentation2D(orientation));
+    }
+}
+//--------------------------------------------------------------------------
+void
+QGoSeedsSegmentation::
+ApplySeedMeshSegmentationFilter(vtkPoints* iPoints)
+{
+  m_SeedsWorldPosition = iPoints;
+
+  double seed_pos[3];
+
+  //////////////////////////////////////////
+  // Run segmentation on all seeds
+  //////////////////////////////////////////
+  for (int i = 0; i < m_SeedsWorldPosition->GetNumberOfPoints(); i++)
+    {
+    // Put position of each seed "i" in "pos[3]"
+    m_SeedsWorldPosition->GetPoint(i, seed_pos);
+    setSeedsPosition(seed_pos);
+
+    switch (m_SegmentationMethod)
+      {
+      case 0:  // circle contours creation (sphere aspect)
+        {
+        emit ContourSphereSegmentationFinished(SphereContoursSegmentation());
+        break;
+        }
+      case 1:  // sphere (3D volume creation)
+        {
+        emit MeshSegmentationFinished(SphereVolumeSegmentation());
+        break;
+        }
+      case 2:  // 3d level set
+        {
+        emit MeshSegmentationFinished(LevelSetSegmentation3D());
+        break;
+        }
+      default:
+        {
+        /// \todo call an exception here!
+        break;
+        }
+      }
+    }
+}
+//--------------------------------------------------------------------------
+void
+QGoSeedsSegmentation::
+UpdateSegmentationMethod(int iMethod)
+{
+  m_SegmentationMethod = iMethod;
+}
+//--------------------------------------------------------------------------
+void
+QGoSeedsSegmentation::
+RadiusChanged(double iRadius)
+{
+  m_Radius = iRadius;
+}
+//--------------------------------------------------------------------------
+void
+QGoSeedsSegmentation::
+ChannelChanged(int iChannel)
+{
+  m_Channel = iChannel;
+  m_OriginImage = (*m_InputVolume)[m_Channel];
+}
+//--------------------------------------------------------------------------
+void
+QGoSeedsSegmentation::
+NbOfIterationsChanged(int iNbOfIterations)
+{
+  m_NumberOfIterations = iNbOfIterations;
+}
+//--------------------------------------------------------------------------
+void
+QGoSeedsSegmentation::
+CurvatureWeightChanged(int iCurvatureWeight)
+{
+  m_CurvatureWeight = iCurvatureWeight;
 }
 //--------------------------------------------------------------------------
 vtkSmartPointer<vtkPolyData>
@@ -360,7 +457,7 @@ LevelSetSegmentation3D()
 }
 
 //--------------------------------------------------------------------------
-std::vector<vtkSmartPointer<vtkPolyData> >
+std::vector<vtkPolyData* >*
 QGoSeedsSegmentation::
 SphereContoursSegmentation()
 {
@@ -383,8 +480,8 @@ SphereContoursSegmentation()
 
   double* seed_pos;
 
-  std::vector<vtkSmartPointer<vtkPolyData> > circleContoursVector;
-  circleContoursVector.resize(zlength);
+  std::vector<vtkPolyData* >* circleContoursVector = new std::vector<vtkPolyData* >;
+  (*circleContoursVector).resize(zlength);
 
   // numberOfPointsToRepresentCircle: 4 is enough since there is an interpolation
   // to create the circle after
@@ -396,20 +493,20 @@ SphereContoursSegmentation()
     seed_pos = m_OriginImageInformations
                ->GetWorldCoordinatesFromImageCoordinates(idx);
 
-    vtkSmartPointer<vtkPolyData> circle =
+    vtkPolyData* circle =
       GenerateCircleFromGivenSphereAndGivenZ(
         m_SeedsPosition, m_Radius, seed_pos[2],
         numberOfPointsToRepresentCircle);
 
     // Store polyDatas in a vector then return it
-    circleContoursVector[i] = circle;
+    (*circleContoursVector)[i] = circle;
     }
 
   return circleContoursVector;
 }
 
 //--------------------------------------------------------------------------
-vtkSmartPointer<vtkPolyData>
+vtkPolyData*
 QGoSeedsSegmentation::
 GenerateCircleFromGivenSphereAndGivenZ(double iC[3],
                                        const double& iRadius, double iZ, const int& iN)
@@ -424,10 +521,10 @@ GenerateCircleFromGivenSphereAndGivenZ(double iC[3],
     }
   else
     {
-    vtkSmartPointer<vtkPolyData> oCircle = vtkSmartPointer<vtkPolyData>::New();
-    vtkPoints *                  points      = vtkPoints::New();
-    vtkCellArray *               lines       = vtkCellArray::New();
-    vtkIdType *                  lineIndices = new vtkIdType[iN + 1];
+    vtkPolyData*   oCircle     = vtkPolyData::New();
+    vtkPoints *    points      = vtkPoints::New();
+    vtkCellArray * lines       = vtkCellArray::New();
+    vtkIdType *    lineIndices = new vtkIdType[iN + 1];
 
     double theta = 0.;
     double r = sqrt(res);

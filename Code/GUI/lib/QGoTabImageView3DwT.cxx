@@ -110,9 +110,10 @@
 
 #include <set>
 
-#include "vtkRenderWindow.h"
-
 #include <QDebug>
+
+// testings
+#include "vtkRenderWindow.h"
 //-------------------------------------------------------------------------
 QGoTabImageView3DwT::
 QGoTabImageView3DwT(QWidget* iParent) :
@@ -142,9 +143,12 @@ QGoTabImageView3DwT(QWidget* iParent) :
 
   //CreateSettingAndDialogSegmentationWidgets();
 
-  CreateManualSegmentationdockWidget();
+  m_SeedsSegmentation = new QGoSeedsSegmentation(0, m_ImageView->GetImageViewer(0),
+      &m_InternalImages);
 
-  CreateOneClickSegmentationDockWidget();
+  CreateContourSegmentationdockWidget();
+
+  CreateMeshSegmentationDockWidget();
 
   CreateDataBaseTablesConnection();
 
@@ -172,8 +176,8 @@ QGoTabImageView3DwT(QWidget* iParent) :
 
   m_DockWidgetList.push_back(
     std::pair<QGoDockWidgetStatus*, QDockWidget*>(
-      new QGoDockWidgetStatus(m_ManualSegmentationDockWidget, Qt::LeftDockWidgetArea, true, true),
-      m_ManualSegmentationDockWidget));
+      new QGoDockWidgetStatus(m_ContourSegmentationDockWidget, Qt::LeftDockWidgetArea, true, true),
+      m_ContourSegmentationDockWidget));
 
 //   m_DockWidgetList.push_back(
 //     std::pair< QGoDockWidgetStatus*, QDockWidget* >(
@@ -182,8 +186,8 @@ QGoTabImageView3DwT(QWidget* iParent) :
 
   m_DockWidgetList.push_back(
     std::pair<QGoDockWidgetStatus*, QDockWidget*>(
-      new QGoDockWidgetStatus(m_OneClickSegmentationDockWidget, Qt::LeftDockWidgetArea, true, true),
-      m_OneClickSegmentationDockWidget));
+      new QGoDockWidgetStatus(m_MeshSegmentationDockWidget, Qt::LeftDockWidgetArea, true, true),
+      m_MeshSegmentationDockWidget));
 
   m_DockWidgetList.push_back(
     std::pair<QGoDockWidgetStatus*, QDockWidget*>(
@@ -227,6 +231,7 @@ QGoTabImageView3DwT::
       }
     }
 
+  delete m_SeedsSegmentation;
 //   DeleteContourMeshStructureElement( m_ContourContainer );
 //   DeleteContourMeshStructureElement( m_MeshContainer );
   }
@@ -249,7 +254,7 @@ GenerateContourRepresentationProperties()
 {
   bool haschanged = false;
 
-  double temp = m_ManualSegmentationDockWidget->m_SettingsDialog->GetLineWidth();
+  double temp = m_ContourSegmentationDockWidget->m_SettingsDialog->GetLineWidth();
 
   if (m_LinesWidth != temp)
     {
@@ -257,7 +262,7 @@ GenerateContourRepresentationProperties()
     haschanged = true;
     }
 
-  QColor temp_color = m_ManualSegmentationDockWidget->m_SettingsDialog->GetLineColor();
+  QColor temp_color = m_ContourSegmentationDockWidget->m_SettingsDialog->GetLineColor();
 
   if (m_LinesColor != temp_color)
     {
@@ -265,14 +270,14 @@ GenerateContourRepresentationProperties()
     haschanged = true;
     }
 
-  temp_color = m_ManualSegmentationDockWidget->m_SettingsDialog->GetNodeColor();
+  temp_color = m_ContourSegmentationDockWidget->m_SettingsDialog->GetNodeColor();
 
   if (m_NodesColor != temp_color)
     {
     m_NodesColor = temp_color;
     haschanged = true;
     }
-  temp_color = m_ManualSegmentationDockWidget->m_SettingsDialog->GetActivatedNodeColor();
+  temp_color = m_ContourSegmentationDockWidget->m_SettingsDialog->GetActivatedNodeColor();
 
   if (m_ActiveNodesColor != temp_color)
     {
@@ -290,45 +295,64 @@ GenerateContourRepresentationProperties()
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
-CreateManualSegmentationdockWidget()
+CreateContourSegmentationdockWidget()
 {
-  m_ManualSegmentationDockWidget = new QGoManualSegmentationDockWidget(this);
-  m_ManualSegmentationDockWidget->setEnabled(false);
+  m_ContourSegmentationDockWidget = new QGoManualSegmentationDockWidget(this);
+  m_ContourSegmentationDockWidget->setEnabled(false);
 
   // Manual segmentation
 
-  QObject::connect(m_ManualSegmentationDockWidget, SIGNAL(ValidatePressed()),
+  QObject::connect(m_ContourSegmentationDockWidget, SIGNAL(ValidatePressed()),
                    this, SLOT(ValidateContour()));
 
-  QObject::connect(m_ManualSegmentationDockWidget, SIGNAL(ReinitializePressed()),
+  QObject::connect(m_ContourSegmentationDockWidget, SIGNAL(ReinitializePressed()),
                    this, SLOT(ReinitializeContour()));
 
-  QObject::connect(m_ManualSegmentationDockWidget, SIGNAL(visibilityChanged(bool)),
+  QObject::connect(m_ContourSegmentationDockWidget, SIGNAL(visibilityChanged(bool)),
                    this, SLOT (ShowTraceDockWidgetForContour(bool)));
 
-  QObject::connect(m_ManualSegmentationDockWidget, SIGNAL(UpdateContourRepresentationProperties()),
+  QObject::connect(m_ContourSegmentationDockWidget, SIGNAL(UpdateContourRepresentationProperties()),
                    this, SLOT(GenerateContourRepresentationProperties()));
 
   QObject::connect(this, SIGNAL(ContourRepresentationPropertiesChanged()),
                    this, SLOT(ChangeContourRepresentationProperty()));
 
   // Connect semi auto segmentation
+  // REQUIERED TO SEND vtkPoints to the filter
+  QObject::connect(m_ContourSegmentationDockWidget, SIGNAL(ApplyFilterPressed()),
+                   this, SLOT(ApplyContourFilterPressed()));
 
-  QObject::connect(m_ManualSegmentationDockWidget, SIGNAL(ApplyFilterPressed()),
-                   this, SLOT(ApplyContourSemiAutoSegmentation()));
+  QObject::connect(this, SIGNAL(StartContourSegmentation(vtkPoints*)),
+                   m_SeedsSegmentation,
+                   SLOT(ApplySeedContourSegmentationFilter(vtkPoints*)));
+
+  QObject::connect(m_ContourSegmentationDockWidget, SIGNAL(RadiusChanged(double)),
+                     m_SeedsSegmentation, SLOT(RadiusChanged(double)));
+
+  QObject::connect(m_ContourSegmentationDockWidget, SIGNAL(ChannelChanged(int)),
+                     m_SeedsSegmentation, SLOT(ChannelChanged(int)));
+
+  QObject::connect(m_ContourSegmentationDockWidget, SIGNAL(NbOfIterationsChanged(int)),
+                       m_SeedsSegmentation, SLOT(NbOfIterationsChanged(int)));
+
+  QObject::connect(m_ContourSegmentationDockWidget, SIGNAL(CurvatureWeightChanged(int)),
+                       m_SeedsSegmentation, SLOT(CurvatureWeightChanged(int)));
+
+  QObject::connect(m_SeedsSegmentation, SIGNAL(ContourSegmentationFinished(vtkPolyData*)),
+      this, SLOT(SaveAndVisuContour(vtkPolyData*)));
+
+  QObject::connect(m_SeedsSegmentation, SIGNAL(ContourSegmentationFinished(vtkPolyData*)),
+      m_ImageView, SLOT(ClearAllSeeds()));
 
   // Cursor interaction
-
-  QObject::connect(m_ManualSegmentationDockWidget, SIGNAL(UpdateInteractorBehavior(bool)),
+  QObject::connect(m_ContourSegmentationDockWidget, SIGNAL(UpdateInteractorBehavior(bool)),
                    this, SLOT(ContourInteractorBehavior(bool)));
 
   // Create action
-
-  QAction* tempaction = m_ManualSegmentationDockWidget->toggleViewAction();
+  QAction* tempaction = m_ContourSegmentationDockWidget->toggleViewAction();
 
   this->m_SegmentationActions.push_back(tempaction);
 }
-//-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void
@@ -338,7 +362,7 @@ ContourInteractorBehavior(bool iVisible)
   // Mode 0 = manual
   // Mode 1 = semi auto
   // Mode 2 = auto
-  int mode = m_ManualSegmentationDockWidget->GetMode();
+  int mode = m_ContourSegmentationDockWidget->GetMode();
   switch (mode)
     {
     case 0:
@@ -450,20 +474,68 @@ Box3DPicking(bool iActive)
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
-CreateOneClickSegmentationDockWidget()
+CreateMeshSegmentationDockWidget()
 {
-  m_OneClickSegmentationDockWidget = new QGoOneClickSegmentationDockWidget(this);
-  m_OneClickSegmentationDockWidget->setEnabled(false);
+  m_MeshSegmentationDockWidget = new QGoOneClickSegmentationDockWidget(this);
+  m_MeshSegmentationDockWidget->setEnabled(false);
 
-  QAction* tempaction = m_OneClickSegmentationDockWidget->toggleViewAction();
+  QAction* tempaction = m_MeshSegmentationDockWidget->toggleViewAction();
 
   this->m_SegmentationActions.push_back(tempaction);
 
-  QObject::connect(m_OneClickSegmentationDockWidget, SIGNAL(ApplyFilterPressed()),
-                   this, SLOT(ApplyOneClickSegmentationFilter()));
-
-  QObject::connect(m_OneClickSegmentationDockWidget, SIGNAL(visibilityChanged(bool)),
+  QObject::connect(m_MeshSegmentationDockWidget, SIGNAL(visibilityChanged(bool)),
                    this, SLOT(ShowTraceDockWidgetForMesh(bool)));
+
+  QObject::connect(m_MeshSegmentationDockWidget, SIGNAL(ApplyFilterPressed()),
+                   this, SLOT(ApplyMeshFilterPressed()));
+
+  // REQUIERED TO SEND vtkPoints to the filter
+  QObject::connect(this, SIGNAL(StartMeshSegmentation(vtkPoints*)),
+                   m_SeedsSegmentation,
+                   SLOT(ApplySeedMeshSegmentationFilter(vtkPoints*)));
+
+  QObject::connect(m_MeshSegmentationDockWidget, SIGNAL(UpdateSegmentationMethod(int)),
+                   m_SeedsSegmentation, SLOT(UpdateSegmentationMethod(int)));
+
+  QObject::connect(m_MeshSegmentationDockWidget, SIGNAL(RadiusChanged(double)),
+                     m_SeedsSegmentation, SLOT(RadiusChanged(double)));
+
+  QObject::connect(m_MeshSegmentationDockWidget, SIGNAL(ChannelChanged(int)),
+                     m_SeedsSegmentation, SLOT(ChannelChanged(int)));
+
+  QObject::connect(m_MeshSegmentationDockWidget, SIGNAL(NbOfIterationsChanged(int)),
+                       m_SeedsSegmentation, SLOT(NbOfIterationsChanged(int)));
+
+  QObject::connect(m_MeshSegmentationDockWidget, SIGNAL(CurvatureWeightChanged(int)),
+                       m_SeedsSegmentation, SLOT(CurvatureWeightChanged(int)));
+
+  QObject::connect(m_SeedsSegmentation, SIGNAL(MeshSegmentationFinished(vtkPolyData*)),
+      this, SLOT(SaveAndVisuMesh(vtkPolyData*)));
+
+  QObject::connect(m_SeedsSegmentation, SIGNAL(MeshSegmentationFinished(vtkPolyData*)),
+      m_ImageView, SLOT(ClearAllSeeds()));
+
+  QObject::connect(m_SeedsSegmentation, SIGNAL(ContourSphereSegmentationFinished(std::vector<vtkPolyData* >*)),
+      this, SLOT(SaveAndVisuContoursList(std::vector<vtkPolyData* >*)));
+
+  QObject::connect(m_SeedsSegmentation, SIGNAL(ContourSphereSegmentationFinished(std::vector<vtkPolyData* >*)),
+      m_ImageView, SLOT(ClearAllSeeds()));
+}
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+ApplyMeshFilterPressed()
+{
+  emit StartMeshSegmentation(m_ImageView->GetAllSeeds());
+}
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+ApplyContourFilterPressed()
+{
+  emit StartContourSegmentation(m_ImageView->GetAllSeeds());
 }
 
 //-------------------------------------------------------------------------
@@ -889,108 +961,62 @@ void QGoTabImageView3DwT::CreateModeActions()
   QGoTabElementBase::CreateModeActions(group);
 
   //---------------------------------//
-  //            Manual mode          //
+  //  Contour segmentation mode      //
   //---------------------------------//
 
-  //////// Manual is becoming contour segmentation
-
-  QAction* ManualEditingAction = new QAction(tr("Manual-Editing"), this);
-  ManualEditingAction->setCheckable(true);
-  QIcon ManualEditingIcon;
-  ManualEditingIcon.addPixmap(QPixmap(QString::fromUtf8(":/fig/manual-editing.png")),
+  QAction* ContourSegmentationAction = new QAction(tr("Manual-Editing"), this);
+  ContourSegmentationAction->setCheckable(true);
+  QIcon ContourSegmentationIcon;
+  ContourSegmentationIcon.addPixmap(QPixmap(QString::fromUtf8(":/fig/manual-editing.png")),
                               QIcon::Normal, QIcon::Off);
-  ManualEditingAction->setIcon(ManualEditingIcon);
+  ContourSegmentationAction->setIcon(ContourSegmentationIcon);
 
-  group->addAction(ManualEditingAction);
+  group->addAction(ContourSegmentationAction);
 
-  this->m_ModeActions.push_back(ManualEditingAction);
+  this->m_ModeActions.push_back(ContourSegmentationAction);
 
   // When click on button, it updates widget in visu
-  QObject::connect(ManualEditingAction, SIGNAL(toggled(bool)),
-                   this->m_ManualSegmentationDockWidget, SLOT(setEnabled(bool)));
-  QObject::connect(ManualEditingAction, SIGNAL(toggled(bool)),
-                   this->m_ManualSegmentationDockWidget, SLOT(setVisible(bool)));
+  QObject::connect(ContourSegmentationAction, SIGNAL(toggled(bool)),
+                   this->m_ContourSegmentationDockWidget, SLOT(setEnabled(bool)));
+  QObject::connect(ContourSegmentationAction, SIGNAL(toggled(bool)),
+                   this->m_ContourSegmentationDockWidget, SLOT(setVisible(bool)));
 
   // it also updates the interactor behaviour
-  QObject::connect(ManualEditingAction, SIGNAL(toggled(bool)),
+  QObject::connect(ContourSegmentationAction, SIGNAL(toggled(bool)),
                    this, SLOT(ContourInteractorBehavior(bool)));
 
   //---------------------------------//
-  //          one click mode         //
+  //        Mesh segmentation        //
   //---------------------------------//
 
-  ////////  is becoming mesh segmentation
-
   // Create/initialize the manual editing action
-  QAction* OneClickAction = new QAction(tr("One Click"), this);
-  OneClickAction->setCheckable(true);
-  OneClickAction->setChecked(false);
+  QAction* MeshSegmentationAction = new QAction(tr("One Click"), this);
+  MeshSegmentationAction->setCheckable(true);
+  MeshSegmentationAction->setChecked(false);
 
   // Definition of the associated icon
-  QIcon OneClickIcon;
-  OneClickIcon.addPixmap(QPixmap(QString::fromUtf8(":/fig/seedIcon.png")),
+  QIcon MeshSegmentationIcon;
+  MeshSegmentationIcon.addPixmap(QPixmap(QString::fromUtf8(":/fig/seedIcon.png")),
                          QIcon::Normal, QIcon::Off);
-  OneClickAction->setIcon(OneClickIcon);
+  MeshSegmentationAction->setIcon(MeshSegmentationIcon);
 
   // When click on button, it updates widget in visu
-  QObject::connect(OneClickAction, SIGNAL(toggled(bool)),
-                   m_OneClickSegmentationDockWidget, SLOT(setEnabled(bool)));
-  QObject::connect(OneClickAction, SIGNAL(toggled(bool)),
-                   m_OneClickSegmentationDockWidget, SLOT(setVisible(bool)));
+  QObject::connect(MeshSegmentationAction, SIGNAL(toggled(bool)),
+                   m_MeshSegmentationDockWidget, SLOT(setEnabled(bool)));
+  QObject::connect(MeshSegmentationAction, SIGNAL(toggled(bool)),
+                   m_MeshSegmentationDockWidget, SLOT(setVisible(bool)));
 
   // it also updates the interactor behaviour
-  QObject::connect(OneClickAction, SIGNAL(toggled(bool)),
+  QObject::connect(MeshSegmentationAction, SIGNAL(toggled(bool)),
                    this, SLOT(MeshInteractorBehavior(bool)));
 
   // Add the action to m_ModeActions and to group
-  this->m_ModeActions.push_back(OneClickAction);
-  group->addAction(OneClickAction);
-/*
-  //---------------------------------//
-  //     Contour picking  mode       //
-  //---------------------------------//
-
-  QAction* ContourPickingAction = new QAction(tr("Contour Picking"), this);
-  ContourPickingAction->setCheckable(true);
-  ContourPickingAction->setChecked(false);
-
-  QIcon ContourPickingIcon;
-  ContourPickingIcon.addPixmap(QPixmap(QString::fromUtf8(":/fig/ContourPicking.png")),
-                               QIcon::Normal, QIcon::Off);
-  ContourPickingAction->setIcon(ContourPickingIcon);
-
-  group->addAction(ContourPickingAction);
-
-  this->m_ModeActions.push_back(ContourPickingAction);
-  // it also updates the interactor behaviour
-  QObject::connect(ContourPickingAction, SIGNAL(toggled(bool)),
-                   this, SLOT(ContourPickingInteractorBehavior(bool)));
-
-  //---------------------------------//
-  //       Mesh picking  mode        //
-  //---------------------------------//
-
-  QAction* MeshPickingAction = new QAction(tr("Mesh Picking"), this);
-  MeshPickingAction->setCheckable(true);
-  MeshPickingAction->setChecked(false);
-
-  QIcon MeshPickingIcon;
-  MeshPickingIcon.addPixmap(QPixmap(QString::fromUtf8(":/fig/MeshPicking.png")),
-                            QIcon::Normal, QIcon::Off);
-  MeshPickingAction->setIcon(MeshPickingIcon);
-
-  group->addAction(MeshPickingAction);
-
-  this->m_ModeActions.push_back(MeshPickingAction);
-  // it also updates the interactor behaviour
-  QObject::connect(MeshPickingAction, SIGNAL(toggled(bool)),
-                   this, SLOT(MeshPickingInteractorBehavior(bool)));
-*/
+  this->m_ModeActions.push_back(MeshSegmentationAction);
+  group->addAction(MeshSegmentationAction);
 
   //---------------------------------//
   //       Actor picking  mode       //
   //---------------------------------//
-
   QAction* ActorPickingAction = new QAction(tr("Actor Picking"), this);
   ActorPickingAction->setCheckable(true);
   ActorPickingAction->setChecked(false);
@@ -1322,8 +1348,8 @@ SetLSMReader(vtkLSMReader* iReader, const int& iTimePoint)
     // Initialize the widgets with the good number of channels
     // it will update the size of the related combobox
     m_NavigationDockWidget->SetNumberOfChannels(NumberOfChannels);
-    m_OneClickSegmentationDockWidget->SetNumberOfChannels(NumberOfChannels);
-    m_ManualSegmentationDockWidget->SetNumberOfChannels(NumberOfChannels);
+    m_MeshSegmentationDockWidget->SetNumberOfChannels(NumberOfChannels);
+    m_ContourSegmentationDockWidget->SetNumberOfChannels(NumberOfChannels);
 
     if (NumberOfChannels > 1)
       {
@@ -1402,8 +1428,8 @@ SetMegaCaptureFile(
   // Initialize the widgets with the good number of channels
   // it will update the size of the related combobox
   m_NavigationDockWidget->SetNumberOfChannels(NumberOfChannels);
-  m_OneClickSegmentationDockWidget->SetNumberOfChannels(NumberOfChannels);
-  m_ManualSegmentationDockWidget->SetNumberOfChannels(NumberOfChannels);
+  m_MeshSegmentationDockWidget->SetNumberOfChannels(NumberOfChannels);
+  m_ContourSegmentationDockWidget->SetNumberOfChannels(NumberOfChannels);
 
   // Set up QSpinBox in m_VideoRecorderWidget
   if (NumberOfChannels > 1)
@@ -1903,19 +1929,17 @@ QGoTabImageView3DwT::
 SaveContour(vtkPolyData* contour, vtkPolyData* contour_nodes)
 {
   IDWithColorData ContourData = IDWithColorData(-1, QColor(Qt::white));
-
   if ((contour->GetNumberOfPoints() > 2) && (m_TCoord >= 0))
     {
     // Compute Bounding Box
     int* bounds = GetBoundingBox(contour);
-
     // Save contour in database!
     ContourData = m_DataBaseTables->SaveContoursFromVisuInDB(bounds[0],
-                                                             bounds[1],
                                                              bounds[2],
-                                                             m_TCoord,
-                                                             bounds[3],
                                                              bounds[4],
+                                                             m_TCoord,
+                                                             bounds[1],
+                                                             bounds[3],
                                                              bounds[5],
                                                              contour_nodes);
     delete bounds;
@@ -2318,12 +2342,12 @@ ReEditContour(const unsigned int& iId)
 
         this->GoToLocation( idx[0], idx[1], idx[2], m_TCoord );
 
-        this->m_ManualSegmentationDockWidget->show();
+        this->m_ContourSegmentationDockWidget->show();
         this->m_ModeActions[0]->setChecked(true);
 
         m_ImageView->InitializeContourWidgetNodes( dir , nodes );
 
-        m_ManualSegmentationDockWidget->setEnabled(true);
+        m_ContourSegmentationDockWidget->setEnabled(true);
         this->m_DataBaseTables->GetTraceManualEditingDockWidget()->setEnabled(false);
         }
 
@@ -2402,6 +2426,19 @@ QGoTabImageView3DwT::
 HighlightContoursYZ()
 {
   HighLightContours<ActorYZ>();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+HighlightMeshXYZ()
+{
+  // Fill container + send sth to visu
+  /// Modifiy "picked" to "modified"
+  HighLightMeshes<ActorXYZ>();
+  // Fill table widget
+  //ListSelectMeshesInTable();
 }
 //-------------------------------------------------------------------------
 
@@ -2726,242 +2763,28 @@ SetSliceView()
 #endif
 }
 //-------------------------------------------------------------------------
-QGoManualSegmentationDockWidget* QGoTabImageView3DwT::
-GetManualSegmentationWidget()
+QGoManualSegmentationDockWidget*
+QGoTabImageView3DwT::
+GetContourSegmentationWidget()
 {
-  return this->m_ManualSegmentationDockWidget;
+  return this->m_ContourSegmentationDockWidget;
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
-ApplyContourSemiAutoSegmentation()
+InitializeSeedSegmentationFilter(QGoSeedsSegmentation& ioSeedsSegmentation,
+    double iRadius, vtkImageData* inputVolume, int iNbOfIterations,
+    int iCurvatureWeight, vtkViewImage2D* iInformations)
 {
-  this->LevelSetSegmentation2D();
+  ioSeedsSegmentation.setRadius(iRadius);
+  ioSeedsSegmentation.setInputVolume(inputVolume);
+  ioSeedsSegmentation.setNumberOfIterations(iNbOfIterations);
+  ioSeedsSegmentation.setCurvatureWeight(iCurvatureWeight);
+  ioSeedsSegmentation.setOriginImageInformation(iInformations);
 }
 //-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
-QGoTabImageView3DwT::
-ApplyOneClickSegmentationFilter()
-{
-  // Check the filter to be applied
-  // 0 = circle contours (sphere aspect)
-  // 1 = sphere ( 3D volume - no contours)
-  // 2 = levelset in 3D
-  int filterToBeApplied = this->m_OneClickSegmentationDockWidget->GetFilter();
-
-  switch (filterToBeApplied)
-    {
-    case 0:  // circle contours creation (sphere aspect)
-      {
-      this->OneClickSphereContours();
-      break;
-      }
-    case 1:  // sphere (3D volume creation)
-      {
-      this->OneClickSphereMeshes();
-      break;
-      }
-    case 2:  // 3d level set
-      {
-      this->LevelSetSegmentation3D();
-      break;
-      }
-
-    default:
-      {
-      /// \todo call an exception here!
-      break;
-      }
-    }
-
-  // Erase seeds once everything is stored in DB
-  this->m_ImageView->ClearAllSeeds();
-
-  // Update visualization
-  this->m_ImageView->UpdateRenderWindows();
-}
-//-------------------------------------------------------------------------
-void
-QGoTabImageView3DwT::
-OneClickSphereContours()
-{
-  vtkPoints* m_SeedsWorldPosition;
-  // Get seeds
-  m_SeedsWorldPosition = this->m_ImageView->GetAllSeeds();
-
-  // Get informations about contour to be saved
-
-  // pos[] will contain position of a seed
-  double seed_pos[3];
-
-  // Initialize the segmentation
-  QGoSeedsSegmentation seedsSegmentation;
-  seedsSegmentation.setRadius(
-    m_OneClickSegmentationDockWidget->GetRadius());
-  seedsSegmentation.setOriginImageInformation(
-    this->m_ImageView->GetImageViewer(0));
-
-  // Apply filter for each seed
-  for (int i = 0; i < m_SeedsWorldPosition->GetNumberOfPoints(); i++)
-    {
-
-    std::list<int> listContoursIDs;
-    // Put position of each seed "i" in "seed_pos[3]"
-    m_SeedsWorldPosition->GetPoint(i, seed_pos);
-    seedsSegmentation.setSeedsPosition(seed_pos);
-
-    std::vector<vtkSmartPointer<vtkPolyData> > ContoursForOnePoint;
-
-    // Each segmentation metho returns the appropriate output
-    ContoursForOnePoint = seedsSegmentation.SphereContoursSegmentation();
-
-    // Save polydatas (=contours) in DB and update visualization
-    for (unsigned int j = 1; j < ContoursForOnePoint.size(); j++)
-      {
-      //save in db
-      listContoursIDs.push_back(SaveAndVisuContour(ContoursForOnePoint[j]));
-      //update visu
-      }
-    // assign contours to mesh
-    // will increment mesh ID automatically
-    if (m_DataBaseTables->IsDatabaseUsed())
-      {
-      m_DataBaseTables->CreateMeshFromOneClickSegmentation(listContoursIDs);
-      }
-    }
-  m_SeedsWorldPosition->Delete();
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
-QGoTabImageView3DwT::
-OneClickSphereMeshes()
-{
-  vtkPoints* m_SeedsWorldPosition;
-  // Get seeds
-  m_SeedsWorldPosition = this->m_ImageView->GetAllSeeds();
-
-  // pos[] will contain position of a seed
-  double seed_pos[3];
-
-  // Initialize the segmentation
-  QGoSeedsSegmentation seedsSegmentation;
-  seedsSegmentation.setRadius(
-    m_OneClickSegmentationDockWidget->GetRadius());
-
-  // Create "spheres" for all the points
-  for (int i = 0; i < m_SeedsWorldPosition->GetNumberOfPoints(); i++)
-    {
-    // Put position of each seed "i" in "pos[3]"
-    m_SeedsWorldPosition->GetPoint(i, seed_pos);
-    seedsSegmentation.setSeedsPosition(seed_pos);
-
-    // save + visu
-    // Save polydatas/mesh (=volume) in DB
-    this->SaveAndVisuMesh(seedsSegmentation.SphereVolumeSegmentation());
-    }
-
-  m_SeedsWorldPosition->Delete();
-}
-
-//-------------------------------------------------------------------------
-void
-QGoTabImageView3DwT::
-LevelSetSegmentation2D()
-{
-  vtkPoints* m_SeedsWorldPosition;
-  // Get seeds (centers for level sets)
-  m_SeedsWorldPosition = this->m_ImageView->GetAllSeeds();
-  // pos[] will contain position of a seed
-  double seed_pos[3];
-
-  // Get input volume, according to selected channel
-  vtkSmartPointer<vtkImageData> inputVolume = vtkSmartPointer<vtkImageData>::New();
-  if ((!m_InternalImages.empty()))
-    {
-    inputVolume->ShallowCopy(
-      m_InternalImages[m_ManualSegmentationDockWidget->GetChannel()]);
-    }
-
-  // Initialize the segmentation
-  QGoSeedsSegmentation seedsSegmentation;
-  seedsSegmentation.setInputVolume(inputVolume);
-  seedsSegmentation.setRadius(
-    m_ManualSegmentationDockWidget->GetRadius());
-  seedsSegmentation.setNumberOfIterations(
-    m_ManualSegmentationDockWidget->GetNumberOfIterations());
-  seedsSegmentation.setCurvatureWeight(
-    m_ManualSegmentationDockWidget->GetCurvatureWeight());
-
-  // Apply filter for each seed
-  for (int i = 0; i < m_SeedsWorldPosition->GetNumberOfPoints(); i++)
-    {
-    // Put position of each seed "i" in "seed_pos[3]"
-    m_SeedsWorldPosition->GetPoint(i, seed_pos);
-    seedsSegmentation.setSeedsPosition(seed_pos);
-    //
-    int orientation = 0;
-    //save in db and see it
-    SaveAndVisuContour(seedsSegmentation.LevelSetSegmentation2D(orientation));
-    }
-
-  // Erase seeds once everything is stored in DB
-  this->m_ImageView->ClearAllSeeds();
-
-  // Update visualization
-  this->m_ImageView->UpdateRenderWindows();
-
-  m_SeedsWorldPosition->Delete();
-
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
-QGoTabImageView3DwT::
-LevelSetSegmentation3D()
-{
-  vtkPoints* m_SeedsWorldPosition;
-  // Get seeds (centers for level sets)
-  m_SeedsWorldPosition = this->m_ImageView->GetAllSeeds();
-  // pos[] will contain position of a seed
-  double seed_pos[3];
-
-  // Get input volume, according to selected channel
-  vtkSmartPointer<vtkImageData> inputVolume = vtkSmartPointer<vtkImageData>::New();
-  if ((!m_InternalImages.empty()))
-    {
-    inputVolume->ShallowCopy(
-      m_InternalImages[m_OneClickSegmentationDockWidget->GetChannel()]);
-    }
-
-  // Initialize the segmentation
-  QGoSeedsSegmentation seedsSegmentation;
-  seedsSegmentation.setInputVolume(inputVolume);
-  seedsSegmentation.setRadius(
-    m_OneClickSegmentationDockWidget->GetRadius());
-  seedsSegmentation.setNumberOfIterations(
-    m_OneClickSegmentationDockWidget->GetNumberOfIterations());
-  seedsSegmentation.setCurvatureWeight(
-    m_OneClickSegmentationDockWidget->GetCurvatureWeight());
-
-  // Apply filter for each seed
-  for (int i = 0; i < m_SeedsWorldPosition->GetNumberOfPoints(); i++)
-    {
-    // Put position of each seed "i" in "seed_pos[3]"
-    m_SeedsWorldPosition->GetPoint(i, seed_pos);
-    seedsSegmentation.setSeedsPosition(seed_pos);
-
-    // save + visu
-    SaveAndVisuMesh(seedsSegmentation.LevelSetSegmentation3D());
-    }
-  m_SeedsWorldPosition->Delete();
-}
 
 //-------------------------------------------------------------------------
 int
@@ -2986,7 +2809,29 @@ SaveAndVisuContour(vtkPolyData* iView)
   // visu
   return VisualizeContour(ID, m_TCoord, iView, contour_nodes, rgba);
 }
+//-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+SaveAndVisuContoursList(std::vector<vtkPolyData* >* iContours)
+{
+  std::list<int> listContoursIDs;
+
+  for (unsigned int j = 1; j < (*iContours).size(); j++)
+    {
+    //save in db
+    listContoursIDs.push_back(SaveAndVisuContour((*iContours)[j]));
+    //update visu
+    }
+  // assign contours to mesh
+  // will increment mesh ID automatically
+  if (m_DataBaseTables->IsDatabaseUsed())
+    {
+  /// TODO rename method for consistency
+    m_DataBaseTables->CreateMeshFromOneClickSegmentation(listContoursIDs);
+    }
+}
 //-------------------------------------------------------------------------
 
 void
@@ -3105,24 +2950,24 @@ void QGoTabImageView3DwT::ShowTraceDockWidgetForContour(
       {
       this->m_DataBaseTables->UpdateWidgetsForCorrespondingTrace("contour","mesh");
       }
-    this->m_OneClickSegmentationDockWidget->setDisabled(true);
-    this->m_OneClickSegmentationDockWidget->hide();
+    this->m_MeshSegmentationDockWidget->setDisabled(true);
+    this->m_MeshSegmentationDockWidget->hide();
     }
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void QGoTabImageView3DwT::ShowTraceDockWidgetForMesh(
-  bool OneClickVisible)
+  bool MeshSegmentationVisible)
 {
-  if (OneClickVisible)
+  if (MeshSegmentationVisible)
     {
     if (this->m_DataBaseTables->IsDatabaseUsed())
       {
       this->m_DataBaseTables->UpdateWidgetsForCorrespondingTrace("mesh","track");
       }
-    this->m_ManualSegmentationDockWidget->setDisabled(true);
-    this->m_ManualSegmentationDockWidget->hide();
+    this->m_ContourSegmentationDockWidget->setDisabled(true);
+    this->m_ContourSegmentationDockWidget->hide();
     }
 }
 //-------------------------------------------------------------------------
@@ -3130,10 +2975,10 @@ void QGoTabImageView3DwT::ShowTraceDockWidgetForMesh(
 //-------------------------------------------------------------------------
 void QGoTabImageView3DwT::GoToDefaultMenu()
 {
-  this->m_ManualSegmentationDockWidget->setDisabled(true);
-  this->m_ManualSegmentationDockWidget->hide();
-  this->m_OneClickSegmentationDockWidget->setDisabled(true);
-  this->m_OneClickSegmentationDockWidget->hide();
+  this->m_ContourSegmentationDockWidget->setDisabled(true);
+  this->m_ContourSegmentationDockWidget->hide();
+  this->m_MeshSegmentationDockWidget->setDisabled(true);
+  this->m_MeshSegmentationDockWidget->hide();
   this->m_ModeActions.at(0)->setChecked(true);
 }
 //-------------------------------------------------------------------------
@@ -3354,19 +3199,6 @@ GoToLocation(int iX, int iY, int iZ, int iT)
   this->SetSliceViewXY(iZ);
   this->SetSliceViewXZ(iY);
   this->SetSliceViewYZ(iX);
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
-QGoTabImageView3DwT::
-HighlightMeshXYZ()
-{
-  // Fill container + send sth to visu
-  /// Modifiy "picked" to "modified"
-  HighLightMeshes<ActorXYZ>();
-  // Fill table widget
-  //ListSelectMeshesInTable();
 }
 //-------------------------------------------------------------------------
 

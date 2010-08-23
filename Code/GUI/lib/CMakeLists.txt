@@ -152,6 +152,7 @@ SET( QGoGUILIB_HDRS
   QGoDBInitCreateAuthorsPage.h
   QGoDBInitCreateMicroscopePage.h
   QGoNetworkUtilities.h
+  QGoSeedsSegmentation.h
 
   QGoSynchronizedView.h
   QGoSynchronizedView2D.h

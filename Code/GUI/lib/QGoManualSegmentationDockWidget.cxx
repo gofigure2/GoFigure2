@@ -75,6 +75,18 @@ QGoManualSegmentationDockWidget(QWidget* iParent) :
   QObject::connect(this->advanceMode, SIGNAL(toggled(bool)),
                    this, SLOT(AdvancedMode(bool)));
 
+  QObject::connect(this->radius, SIGNAL(valueChanged(double)),
+                   this, SIGNAL(RadiusChanged(double)));
+
+  QObject::connect(this->channel, SIGNAL(valueChanged(int)),
+                   this, SIGNAL(ChannelChanged(int)));
+
+  QObject::connect(this->numberOfIterations, SIGNAL(valueChanged(int)),
+                   this, SIGNAL(NbOfIterationsChanged(int)));
+
+  QObject::connect(this->curvatureWeight, SIGNAL(valueChanged(int)),
+                   this, SIGNAL(CurvatureWeightChanged(int)));
+
   // Initialize visualization
   // 0 = manual segmentation
   // 1 = semi auto segmentation

@@ -14,6 +14,7 @@ CONFIGURE_FILE(${GOFIGURE2_SOURCE_DIR}/Code/IO/QGoIOConfigure.h.in
 SET( QGOIO_SRC
   ContourMeshStructure.cxx
   ContourMeshStructureHelper.cxx
+  ContourMeshContainer.cxx
   CreateDataBaseHelper.cxx
   GoDBChannelRow.cxx
   GoDBCollectionOfTraces.cxx
@@ -76,7 +77,7 @@ INSTALL( TARGETS QGoIO
   ARCHIVE DESTINATION ${GOFIGURE2_INSTALL_LIB_DIR} COMPONENT Libraries
   LIBRARY DESTINATION ${GOFIGURE2_INSTALL_LIB_DIR} NAMELINK_SKIP COMPONENT Libraries
   )
-  
+
 # Development
 INSTALL( TARGETS QGoIO
   EXPORT GoFigure2Targets

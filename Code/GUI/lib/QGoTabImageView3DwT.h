@@ -76,6 +76,8 @@ class vtkActor;
 class vtkViewImage2D;
 class vtkProp3D;
 
+class QGoSeedsSegmentation;
+
 #include "QGoGUILibConfigure.h"
 
 /**
@@ -183,7 +185,7 @@ public:
   int GetSliceViewXZ() const;
   int GetSliceViewYZ() const;
   int GetTimePoint() const;
-  QGoManualSegmentationDockWidget* GetManualSegmentationWidget();
+  QGoManualSegmentationDockWidget* GetContourSegmentationWidget();
   QGoTraceManualEditingWidget*     GetTraceManualEditingWidget();
   QGoPrintDatabase* m_DataBaseTables;
 
@@ -197,6 +199,8 @@ signals:
   void FullScreenViewChanged(int FullScreen);
   void UpdateBookmarkOpenActions(std::vector<QAction*>);
   void ContourRepresentationPropertiesChanged();
+  void StartMeshSegmentation(vtkPoints* iPoints);
+  void StartContourSegmentation(vtkPoints* iPoints);
 
 public slots:
   void SetTimePoint(const int&);
@@ -259,6 +263,10 @@ public slots:
                                         const std::string& iTraceName);
 
   void ValidateContour();
+
+  int SaveAndVisuContour(vtkPolyData* iView);
+
+  void SaveAndVisuContoursList(std::vector<vtkPolyData* >* iContours);
 
   /** \brief Save a mesh in the database and render the mesh.
   \todo to be renamed */
@@ -342,19 +350,19 @@ public slots:
     ContourMeshStructureMultiIndexContainer& iContainer,
     ContourMeshStructureMultiIndexContainer* iTbContainer );
 
-  void ApplyOneClickSegmentationFilter();
-  void ApplyContourSemiAutoSegmentation();
-
   void CreateMeshFromSelectedContours(std::list<int> ListContourIDs,int iMeshID);
 
   void HighlightMeshXYZ();
+
+  void ApplyMeshFilterPressed();
+  void ApplyContourFilterPressed();
 
 protected:
   QHBoxLayout*                                m_HBoxLayout;
   QSplitter*                                  m_VSplitter;
   QGoImageView3D*                             m_ImageView;
   std::vector<vtkSmartPointer<vtkLSMReader> > m_LSMReader;
-  std::vector<vtkSmartPointer<vtkImageData> > m_InternalImages;
+  std::vector<vtkImageData*>                  m_InternalImages;
   vtkImageData*                               m_Image;
 
   double m_LinesWidth;
@@ -382,8 +390,9 @@ protected:
 
   /// \todo rename as QGoNavigationDockWidget
   QGoNavigationDockWidget*           m_NavigationDockWidget;
-  QGoManualSegmentationDockWidget*   m_ManualSegmentationDockWidget;
-  QGoOneClickSegmentationDockWidget* m_OneClickSegmentationDockWidget;
+  QGoManualSegmentationDockWidget*   m_ContourSegmentationDockWidget;
+  QGoOneClickSegmentationDockWidget* m_MeshSegmentationDockWidget;
+  QGoSeedsSegmentation*              m_SeedsSegmentation;
 
   /// \todo remove m_FFMPEGWriter and m_AVIWriter from this class
   #if defined ENABLEFFMPEG || defined ENABLEAVI
@@ -400,8 +409,6 @@ protected:
   int VisualizeContour(const int& iContourID,
       const unsigned int& iTCoord, vtkPolyData* contour,
       vtkPolyData* contour_nodes, const double iRGBA[4]);
-
-  int SaveAndVisuContour(vtkPolyData* iView);
 
   int* GetBoundingBox(vtkPolyData* contour);
 
@@ -432,8 +439,8 @@ protected:
   void CreateModeActions();
   void CreateVisuDockWidget();
   //void CreateSettingAndDialogSegmentationWidgets();
-  void CreateManualSegmentationdockWidget();
-  void CreateOneClickSegmentationDockWidget();
+  void CreateContourSegmentationdockWidget();
+  void CreateMeshSegmentationDockWidget();
   void CreateDataBaseTablesConnection();
 
   template< typename TActor >
@@ -447,22 +454,14 @@ protected:
   void HighLightMeshes();
 
   /**
-   * \brief Generates contours and a mesh composed by the generated contours
-   * Contours are circles and mesh looks like a sphere
-   */
-  void OneClickSphereContours();
-  /**
-   * \brief Generates a sphere mesh
-   */
-  void OneClickSphereMeshes();
-  /**
    * \brief Generates contours from seeds by levelset segmentation
    */
-  void LevelSetSegmentation2D();
-  /**
-   * \brief Generates Meshes from seeds by levelset segmentation
-   */
-  void LevelSetSegmentation3D();
+  void LevelSetSegmentation2D(vtkPoints* iImage3D,
+      QGoSeedsSegmentation iSeedsSegmentation);
+
+  void InitializeSeedSegmentationFilter(QGoSeedsSegmentation& ioSeedsSegmentation,
+      double iRadius, vtkImageData* inputVolume, int iNbOfIterations,
+      int iCurvatureWeight, vtkViewImage2D* iInformations);
 
 #if defined (ENABLEFFMPEG) || defined (ENABLEAVI)
   void CreateVideoRecorderWidget();
@@ -491,7 +490,7 @@ protected slots:
   void GetTheOpenBookmarksActions();
   void OpenExistingBookmark();
   void ShowTraceDockWidgetForContour(bool ManualSegVisible);
-  void ShowTraceDockWidgetForMesh(bool OneClickVisible);
+  void ShowTraceDockWidgetForMesh(bool MeshVisible);
   void ChangeColorOfSelectedTracesManager(QColor iSelectedColor);
 
   void GoToLocation(int iX, int iY, int iZ, int iT);
