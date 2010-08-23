@@ -67,7 +67,7 @@ int main(int argc, char** argv)
   castFilter->Update();
 
   // Initialize the segmentation
-  QGoSeedsSegmentation seedsSegmentation;
+  QGoSeedsSegmentation seedsSegmentation(0, NULL, NULL);
   seedsSegmentation.setInputVolume(castFilter->GetOutput());
   seedsSegmentation.setRadius(
     2);

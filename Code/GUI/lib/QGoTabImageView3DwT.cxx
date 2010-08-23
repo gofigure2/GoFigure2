@@ -2772,21 +2772,6 @@ GetContourSegmentationWidget()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void
-QGoTabImageView3DwT::
-InitializeSeedSegmentationFilter(QGoSeedsSegmentation& ioSeedsSegmentation,
-    double iRadius, vtkImageData* inputVolume, int iNbOfIterations,
-    int iCurvatureWeight, vtkViewImage2D* iInformations)
-{
-  ioSeedsSegmentation.setRadius(iRadius);
-  ioSeedsSegmentation.setInputVolume(inputVolume);
-  ioSeedsSegmentation.setNumberOfIterations(iNbOfIterations);
-  ioSeedsSegmentation.setCurvatureWeight(iCurvatureWeight);
-  ioSeedsSegmentation.setOriginImageInformation(iInformations);
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
 int
 QGoTabImageView3DwT::
 SaveAndVisuContour(vtkPolyData* iView)

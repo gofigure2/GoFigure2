@@ -453,16 +453,6 @@ protected:
   template< typename TActor >
   void HighLightMeshes();
 
-  /**
-   * \brief Generates contours from seeds by levelset segmentation
-   */
-  void LevelSetSegmentation2D(vtkPoints* iImage3D,
-      QGoSeedsSegmentation iSeedsSegmentation);
-
-  void InitializeSeedSegmentationFilter(QGoSeedsSegmentation& ioSeedsSegmentation,
-      double iRadius, vtkImageData* inputVolume, int iNbOfIterations,
-      int iCurvatureWeight, vtkViewImage2D* iInformations);
-
 #if defined (ENABLEFFMPEG) || defined (ENABLEAVI)
   void CreateVideoRecorderWidget();
 #endif /* ENABLEVIDEORECORD */

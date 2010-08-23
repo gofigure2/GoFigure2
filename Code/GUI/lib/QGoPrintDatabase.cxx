@@ -1011,13 +1011,8 @@ SaveMeshFromVisuInDB( unsigned int iXCoordMin,
                            atoi(Collection.GetMapValue("Green").c_str()),
                            atoi(Collection.GetMapValue("Blue").c_str()),
                            atoi(Collection.GetMapValue("Alpha").c_str()));*/
-<<<<<<< .working
     CollectionData.second = this->GetQColorFromTraceRow<GoDBTrackRow>(Collection,
       this->m_DatabaseConnector);
-=======
-    CollectionData.second =
-        this->GetQColorFromTraceRow<GoDBTrackRow>(Collection, this->m_DatabaseConnector );
->>>>>>> .merge-right.r2032
 
       /*QColor ColorMesh(atoi(mesh_row.GetMapValue("Red").c_str()),
                            atoi(mesh_row.GetMapValue("Green").c_str()),
