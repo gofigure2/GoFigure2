@@ -199,6 +199,8 @@ signals:
   void FullScreenViewChanged(int FullScreen);
   void UpdateBookmarkOpenActions(std::vector<QAction*>);
   void ContourRepresentationPropertiesChanged();
+  void StartMeshSegmentation(vtkPoints* iPoints);
+  void StartContourSegmentation(vtkPoints* iPoints);
 
 public slots:
   void SetTimePoint(const int&);
@@ -261,6 +263,10 @@ public slots:
                                         const std::string& iTraceName);
 
   void ValidateContour();
+
+  int SaveAndVisuContour(vtkPolyData* iView);
+
+  void SaveAndVisuContoursList(std::vector<vtkPolyData* >* iContours);
 
   /** \brief Save a mesh in the database and render the mesh.
   \todo to be renamed */
@@ -348,12 +354,15 @@ public slots:
 
   void HighlightMeshXYZ();
 
+  void ApplyMeshFilterPressed();
+  void ApplyContourFilterPressed();
+
 protected:
   QHBoxLayout*                                m_HBoxLayout;
   QSplitter*                                  m_VSplitter;
   QGoImageView3D*                             m_ImageView;
   std::vector<vtkSmartPointer<vtkLSMReader> > m_LSMReader;
-  std::vector<vtkSmartPointer<vtkImageData> > m_InternalImages;
+  std::vector<vtkImageData*>                  m_InternalImages;
   vtkImageData*                               m_Image;
 
   double m_LinesWidth;
@@ -384,7 +393,6 @@ protected:
   QGoManualSegmentationDockWidget*   m_ManualSegmentationDockWidget;
   QGoOneClickSegmentationDockWidget* m_OneClickSegmentationDockWidget;
   QGoSeedsSegmentation*              m_SeedsSegmentation;
-  vtkPolyData*                       m_SegmentationOutput;
 
   /// \todo remove m_FFMPEGWriter and m_AVIWriter from this class
   #if defined ENABLEFFMPEG || defined ENABLEAVI
@@ -401,8 +409,6 @@ protected:
   int VisualizeContour(const int& iContourID,
       const unsigned int& iTCoord, vtkPolyData* contour,
       vtkPolyData* contour_nodes, const double iRGBA[4]);
-
-  int SaveAndVisuContour(vtkPolyData* iView);
 
   int* GetBoundingBox(vtkPolyData* contour);
 
@@ -447,11 +453,6 @@ protected:
   template< typename TActor >
   void HighLightMeshes();
 
-  /**
-   * \brief Generates contours and a mesh composed by the generated contours
-   * Contours are circles and mesh looks like a sphere
-   */
-  void MeshSphereContours(QGoSeedsSegmentation iSeedsSegmentation);
   /**
    * \brief Generates contours from seeds by levelset segmentation
    */

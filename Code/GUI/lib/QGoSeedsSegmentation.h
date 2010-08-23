@@ -66,9 +66,7 @@ public:
    */
   explicit QGoSeedsSegmentation(QObject* parent,
       vtkViewImage2D* iOriginImageInformations,
-      vtkPoints*      iSeedsWorldPosition,
-      std::vector<vtkSmartPointer<vtkImageData> >   iInputVolume,
-      vtkPolyData* ioOutput);
+      std::vector<vtkImageData*>*   iInputVolume);
 
   /**
    * \brief Destructor
@@ -107,11 +105,6 @@ public:
   void setOriginImageInformation(vtkViewImage2D* iOriginImageInformation);
 
   /**
-   * \brief Get the result of the segmentation in a polydata
-   */
-  vtkSmartPointer<vtkPolyData> output();
-
-  /**
    * \brief 2D levelset segmentation in the choosen direction
    */
   vtkSmartPointer<vtkPolyData> LevelSetSegmentation2D(int iDirection);
@@ -124,12 +117,12 @@ public:
   /**
    * \brief Sphere contour segmentation
    */
-  std::vector<vtkSmartPointer<vtkPolyData> > SphereContoursSegmentation();
+  std::vector<vtkPolyData* >* SphereContoursSegmentation();
 
   /**
    * \brief Useful fot the sphere contour segmentation
    */
-  vtkSmartPointer<vtkPolyData> GenerateCircleFromGivenSphereAndGivenZ(
+  vtkPolyData* GenerateCircleFromGivenSphereAndGivenZ(
     double iC[3], const double & iRadius, double iZ, const int & iN);
 
   /**
@@ -138,13 +131,14 @@ public:
   vtkSmartPointer<vtkPolyData>  SphereVolumeSegmentation();
 
 signals:
-  void MeshSegmentationFinished();
-  void ContourSegmentationFinished();
+  void MeshSegmentationFinished(vtkPolyData* output);
+  void ContourSegmentationFinished(vtkPolyData* output);
   void ContourMeshSegmentationFinished();
+  void ContourSphereSegmentationFinished(std::vector<vtkPolyData* >*);
 
 public slots:
-  void ApplySeedContourSegmentationFilter();
-  void ApplySeedMeshSegmentationFilter();
+  void ApplySeedContourSegmentationFilter(vtkPoints* iPoints);
+  void ApplySeedMeshSegmentationFilter(vtkPoints* iPoints);
   void UpdateSegmentationMethod(int iSegmentationMethod);
   void RadiusChanged(double iRadius);
   void ChannelChanged(int iChannel);
@@ -156,22 +150,12 @@ private:
   /**
   * \brief Volume to be used for levelset segmentation
   */
-  vtkSmartPointer<vtkImageData> m_OriginImage;
-
-  /**
-  * \brief Volume to be used for levelset segmentation
-  */
-  std::vector<vtkSmartPointer<vtkImageData> > m_InternalImage;
+  vtkImageData* m_OriginImage;
 
   /**
    * \brief Origin points for all segmentations
    */
   double m_SeedsPosition[3];
-
-  /**
-   * \brief Output polydata for each segmentation
-   */
-  vtkSmartPointer<vtkPolyData> m_OutputPolyData;
 
   /**
    *
@@ -196,12 +180,10 @@ private:
 
   vtkPoints*      m_SeedsWorldPosition;
 
-  std::vector<vtkSmartPointer<vtkImageData> >   m_InputVolume;
+  std::vector<vtkImageData*>*   m_InputVolume;
 
   int m_SegmentationMethod;
 
   int m_Channel;
-
-  vtkPolyData* m_Output;
   };
 #endif

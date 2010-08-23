@@ -83,6 +83,10 @@ signals:
   void SettingsPressed();
   void UpdateContourRepresentationProperties();
   void ApplyFilterPressed();
+  void RadiusChanged(double);
+  void ChannelChanged(int);
+  void NbOfIterationsChanged(int);
+  void CurvatureWeightChanged(int);
 
   // Change Mode
   void UpdateInteractorBehavior(bool);

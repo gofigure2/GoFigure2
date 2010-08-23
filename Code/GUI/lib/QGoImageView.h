@@ -227,10 +227,6 @@ public:
    * The seeds have been defined using the one click mode.
    */
   vtkPoints* GetAllSeeds();
-  /**
-   * \brief Clear all the seeds positions after using it.
-   */
-  void       ClearAllSeeds();
 
 public slots:
   /** \brief Set background color for all views.
@@ -248,6 +244,10 @@ public slots:
    * \brief Show annotations in the collection
    */
   void ShowAnnotations();
+  /**
+   * \brief Clear all the seeds positions after using it.
+   */
+  void       ClearAllSeeds();
 
 protected:
   vtkViewImage2DCollection* m_Pool;

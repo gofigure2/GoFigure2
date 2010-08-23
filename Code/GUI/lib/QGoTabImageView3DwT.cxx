@@ -111,6 +111,9 @@
 #include <set>
 
 #include <QDebug>
+
+// testings
+#include "vtkRenderWindow.h"
 //-------------------------------------------------------------------------
 QGoTabImageView3DwT::
 QGoTabImageView3DwT(QWidget* iParent) :
@@ -140,9 +143,8 @@ QGoTabImageView3DwT(QWidget* iParent) :
 
   //CreateSettingAndDialogSegmentationWidgets();
 
-  m_SegmentationOutput = vtkPolyData::New();
   m_SeedsSegmentation = new QGoSeedsSegmentation(0, m_ImageView->GetImageViewer(0),
-      m_ImageView->GetAllSeeds(), m_InternalImages, m_SegmentationOutput);
+      &m_InternalImages);
 
   CreateManualSegmentationdockWidget();
 
@@ -230,7 +232,6 @@ QGoTabImageView3DwT::
     }
 
   delete m_SeedsSegmentation;
-  m_SegmentationOutput->Delete();
 //   DeleteContourMeshStructureElement( m_ContourContainer );
 //   DeleteContourMeshStructureElement( m_MeshContainer );
   }
@@ -317,9 +318,31 @@ CreateManualSegmentationdockWidget()
                    this, SLOT(ChangeContourRepresentationProperty()));
 
   // Connect semi auto segmentation
+  // REQUIERED TO SEND vtkPoints to the filter
   QObject::connect(m_ManualSegmentationDockWidget, SIGNAL(ApplyFilterPressed()),
-                     m_SeedsSegmentation,
-                     SLOT(ApplySeedContourSegmentationFilter()));
+                   this, SLOT(ApplyContourFilterPressed()));
+
+  QObject::connect(this, SIGNAL(StartContourSegmentation(vtkPoints*)),
+                   m_SeedsSegmentation,
+                   SLOT(ApplySeedContourSegmentationFilter(vtkPoints*)));
+
+  QObject::connect(m_ManualSegmentationDockWidget, SIGNAL(RadiusChanged(double)),
+                     m_SeedsSegmentation, SLOT(RadiusChanged(double)));
+
+  QObject::connect(m_ManualSegmentationDockWidget, SIGNAL(ChannelChanged(int)),
+                     m_SeedsSegmentation, SLOT(ChannelChanged(int)));
+
+  QObject::connect(m_ManualSegmentationDockWidget, SIGNAL(NbOfIterationsChanged(int)),
+                       m_SeedsSegmentation, SLOT(NbOfIterationsChanged(int)));
+
+  QObject::connect(m_ManualSegmentationDockWidget, SIGNAL(CurvatureWeightChanged(int)),
+                       m_SeedsSegmentation, SLOT(CurvatureWeightChanged(int)));
+
+  QObject::connect(m_SeedsSegmentation, SIGNAL(ContourSegmentationFinished(vtkPolyData*)),
+      this, SLOT(SaveAndVisuContour(vtkPolyData*)));
+
+  QObject::connect(m_SeedsSegmentation, SIGNAL(ContourSegmentationFinished(vtkPolyData*)),
+      m_ImageView, SLOT(ClearAllSeeds()));
 
   // Cursor interaction
   QObject::connect(m_ManualSegmentationDockWidget, SIGNAL(UpdateInteractorBehavior(bool)),
@@ -330,7 +353,6 @@ CreateManualSegmentationdockWidget()
 
   this->m_SegmentationActions.push_back(tempaction);
 }
-//-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void
@@ -465,8 +487,12 @@ CreateOneClickSegmentationDockWidget()
                    this, SLOT(ShowTraceDockWidgetForMesh(bool)));
 
   QObject::connect(m_OneClickSegmentationDockWidget, SIGNAL(ApplyFilterPressed()),
+                   this, SLOT(ApplyMeshFilterPressed()));
+
+  // REQUIERED TO SEND vtkPoints to the filter
+  QObject::connect(this, SIGNAL(StartMeshSegmentation(vtkPoints*)),
                    m_SeedsSegmentation,
-                   SLOT(ApplySeedMeshSegmentationFilter()));
+                   SLOT(ApplySeedMeshSegmentationFilter(vtkPoints*)));
 
   QObject::connect(m_OneClickSegmentationDockWidget, SIGNAL(UpdateSegmentationMethod(int)),
                    m_SeedsSegmentation, SLOT(UpdateSegmentationMethod(int)));
@@ -482,7 +508,34 @@ CreateOneClickSegmentationDockWidget()
 
   QObject::connect(m_OneClickSegmentationDockWidget, SIGNAL(CurvatureWeightChanged(int)),
                        m_SeedsSegmentation, SLOT(CurvatureWeightChanged(int)));
-  /// TODO CONNECT SIGNAL TO GET POLYDATA BACK
+
+  QObject::connect(m_SeedsSegmentation, SIGNAL(MeshSegmentationFinished(vtkPolyData*)),
+      this, SLOT(SaveAndVisuMesh(vtkPolyData*)));
+
+  QObject::connect(m_SeedsSegmentation, SIGNAL(MeshSegmentationFinished(vtkPolyData*)),
+      m_ImageView, SLOT(ClearAllSeeds()));
+
+  QObject::connect(m_SeedsSegmentation, SIGNAL(ContourSphereSegmentationFinished(std::vector<vtkPolyData* >*)),
+      this, SLOT(SaveAndVisuContoursList(std::vector<vtkPolyData* >*)));
+
+  QObject::connect(m_SeedsSegmentation, SIGNAL(ContourSphereSegmentationFinished(std::vector<vtkPolyData* >*)),
+      m_ImageView, SLOT(ClearAllSeeds()));
+}
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+ApplyMeshFilterPressed()
+{
+  emit StartMeshSegmentation(m_ImageView->GetAllSeeds());
+}
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+ApplyContourFilterPressed()
+{
+  emit StartContourSegmentation(m_ImageView->GetAllSeeds());
 }
 
 //-------------------------------------------------------------------------
@@ -1880,12 +1933,10 @@ QGoTabImageView3DwT::
 SaveContour(vtkPolyData* contour, vtkPolyData* contour_nodes)
 {
   IDWithColorData ContourData = IDWithColorData(-1, QColor(Qt::white));
-
   if ((contour->GetNumberOfPoints() > 2) && (m_TCoord >= 0))
     {
     // Compute Bounding Box
     int* bounds = GetBoundingBox(contour);
-
     // Save contour in database!
     ContourData = m_DataBaseTables->SaveContoursFromVisuInDB(bounds[0],
                                                              bounds[1],
@@ -2727,30 +2778,6 @@ GetManualSegmentationWidget()
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
-MeshSphereContours(QGoSeedsSegmentation iSeedsSegmentation)
-{
-  std::vector<vtkSmartPointer<vtkPolyData> > ContoursForOnePoint;
-  std::list<int> listContoursIDs;
-
-  // Each segmentation metho returns the appropriate output
-  ContoursForOnePoint = iSeedsSegmentation.SphereContoursSegmentation();
-
-  // Save polydatas (=contours) in DB and update visualization
-  for (unsigned int j = 1; j < ContoursForOnePoint.size(); j++)
-    {
-    //save in db
-    listContoursIDs.push_back(SaveAndVisuContour(ContoursForOnePoint[j]));
-    //update visu
-    }
-
-  // Create new mesh for the new contours
-  m_DataBaseTables->CreateMeshFromOneClickSegmentation(listContoursIDs);
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
-QGoTabImageView3DwT::
 InitializeSeedSegmentationFilter(QGoSeedsSegmentation& ioSeedsSegmentation,
     double iRadius, vtkImageData* inputVolume, int iNbOfIterations,
     int iCurvatureWeight, vtkViewImage2D* iInformations)
@@ -2786,7 +2813,28 @@ SaveAndVisuContour(vtkPolyData* iView)
   // visu
   return VisualizeContour(ID, m_TCoord, iView, contour_nodes, rgba);
 }
+//-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+SaveAndVisuContoursList(std::vector<vtkPolyData* >* iContours)
+{
+  std::list<int> listContoursIDs;
+
+  for (unsigned int j = 1; j < (*iContours).size(); j++)
+    {
+    //save in db
+    listContoursIDs.push_back(SaveAndVisuContour((*iContours)[j]));
+    //update visu
+    }
+  // assign contours to mesh
+  // will increment mesh ID automatically
+  if (m_DataBaseTables->IsDatabaseUsed())
+    {
+    m_DataBaseTables->CreateMeshFromOneClickSegmentation(listContoursIDs);
+    }
+}
 //-------------------------------------------------------------------------
 
 void
@@ -2880,6 +2928,25 @@ void
 QGoTabImageView3DwT::
 SaveAndVisuMesh(vtkPolyData* iView)
 {
+  /*
+  std::cout << "signal received" << std::endl;
+
+  vtkRenderWindow* renWin = vtkRenderWindow::New();
+  vtkRenderer*     ren    = vtkRenderer::New();
+  vtkPolyDataMapper* mapper = vtkPolyDataMapper::New();
+  vtkActor*        actor = vtkActor::New();
+  vtkRenderWindowInteractor* iren = vtkRenderWindowInteractor::New();
+
+  mapper->SetInput(iView);
+  actor->SetMapper(mapper);
+  ren->AddActor(actor);
+  renWin->AddRenderer(ren);
+  iren->SetRenderWindow(renWin);
+
+  renWin->Render();
+  iren->Initialize();
+  iren->Start();
+*/
   if(!m_DataBaseTables->IsDatabaseUsed())
     {
     std::cerr << "Problem with DB" << std::endl;
