@@ -961,10 +961,8 @@ void QGoTabImageView3DwT::CreateModeActions()
   QGoTabElementBase::CreateModeActions(group);
 
   //---------------------------------//
-  //            Manual mode          //
+  //  Contour segmentation mode      //
   //---------------------------------//
-
-  //////// Manual is becoming contour segmentation
 
   QAction* ContourSegmentationAction = new QAction(tr("Manual-Editing"), this);
   ContourSegmentationAction->setCheckable(true);
@@ -988,10 +986,8 @@ void QGoTabImageView3DwT::CreateModeActions()
                    this, SLOT(ContourInteractorBehavior(bool)));
 
   //---------------------------------//
-  //          one click mode         //
+  //        Mesh segmentation        //
   //---------------------------------//
-
-  ////////  is becoming mesh segmentation
 
   // Create/initialize the manual editing action
   QAction* MeshSegmentationAction = new QAction(tr("One Click"), this);
@@ -2929,25 +2925,6 @@ void
 QGoTabImageView3DwT::
 SaveAndVisuMesh(vtkPolyData* iView)
 {
-  /*
-  std::cout << "signal received" << std::endl;
-
-  vtkRenderWindow* renWin = vtkRenderWindow::New();
-  vtkRenderer*     ren    = vtkRenderer::New();
-  vtkPolyDataMapper* mapper = vtkPolyDataMapper::New();
-  vtkActor*        actor = vtkActor::New();
-  vtkRenderWindowInteractor* iren = vtkRenderWindowInteractor::New();
-
-  mapper->SetInput(iView);
-  actor->SetMapper(mapper);
-  ren->AddActor(actor);
-  renWin->AddRenderer(ren);
-  iren->SetRenderWindow(renWin);
-
-  renWin->Render();
-  iren->Initialize();
-  iren->Start();
-*/
   if(!m_DataBaseTables->IsDatabaseUsed())
     {
     std::cerr << "Problem with DB" << std::endl;
