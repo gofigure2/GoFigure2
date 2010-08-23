@@ -1935,11 +1935,11 @@ SaveContour(vtkPolyData* contour, vtkPolyData* contour_nodes)
     int* bounds = GetBoundingBox(contour);
     // Save contour in database!
     ContourData = m_DataBaseTables->SaveContoursFromVisuInDB(bounds[0],
-                                                             bounds[1],
                                                              bounds[2],
-                                                             m_TCoord,
-                                                             bounds[3],
                                                              bounds[4],
+                                                             m_TCoord,
+                                                             bounds[1],
+                                                             bounds[3],
                                                              bounds[5],
                                                              contour_nodes);
     delete bounds;
