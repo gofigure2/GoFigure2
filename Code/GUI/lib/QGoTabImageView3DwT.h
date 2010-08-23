@@ -185,7 +185,7 @@ public:
   int GetSliceViewXZ() const;
   int GetSliceViewYZ() const;
   int GetTimePoint() const;
-  QGoManualSegmentationDockWidget* GetManualSegmentationWidget();
+  QGoManualSegmentationDockWidget* GetContourSegmentationWidget();
   QGoTraceManualEditingWidget*     GetTraceManualEditingWidget();
   QGoPrintDatabase* m_DataBaseTables;
 
@@ -390,8 +390,8 @@ protected:
 
   /// \todo rename as QGoNavigationDockWidget
   QGoNavigationDockWidget*           m_NavigationDockWidget;
-  QGoManualSegmentationDockWidget*   m_ManualSegmentationDockWidget;
-  QGoOneClickSegmentationDockWidget* m_OneClickSegmentationDockWidget;
+  QGoManualSegmentationDockWidget*   m_ContourSegmentationDockWidget;
+  QGoOneClickSegmentationDockWidget* m_MeshSegmentationDockWidget;
   QGoSeedsSegmentation*              m_SeedsSegmentation;
 
   /// \todo remove m_FFMPEGWriter and m_AVIWriter from this class
@@ -439,8 +439,8 @@ protected:
   void CreateModeActions();
   void CreateVisuDockWidget();
   //void CreateSettingAndDialogSegmentationWidgets();
-  void CreateManualSegmentationdockWidget();
-  void CreateOneClickSegmentationDockWidget();
+  void CreateContourSegmentationdockWidget();
+  void CreateMeshSegmentationDockWidget();
   void CreateDataBaseTablesConnection();
 
   template< typename TActor >
@@ -490,7 +490,7 @@ protected slots:
   void GetTheOpenBookmarksActions();
   void OpenExistingBookmark();
   void ShowTraceDockWidgetForContour(bool ManualSegVisible);
-  void ShowTraceDockWidgetForMesh(bool OneClickVisible);
+  void ShowTraceDockWidgetForMesh(bool MeshVisible);
   void ChangeColorOfSelectedTracesManager(QColor iSelectedColor);
 
   void GoToLocation(int iX, int iY, int iZ, int iT);
