@@ -14,7 +14,7 @@ CONFIGURE_FILE(${GOFIGURE2_SOURCE_DIR}/Code/IO/QGoIOConfigure.h.in
 SET( QGOIO_SRC
   ContourMeshStructure.cxx
   ContourMeshStructureHelper.cxx
-  ContourMeshContainer.cxx
+#  ContourMeshContainer.cxx
   CreateDataBaseHelper.cxx
   GoDBChannelRow.cxx
   GoDBCollectionOfTraces.cxx
@@ -61,6 +61,7 @@ ADD_DEPENDENCIES( QGoIO vtkLSMReader )
 TARGET_LINK_LIBRARIES( QGoIO
   ${QT_LIBRARIES}
   QGoIO
+  vtkHybrid
   vtkIO
   vtkImaging
   vtkLSMReader
