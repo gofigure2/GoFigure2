@@ -36,8 +36,9 @@
 #define __vtkPoissonReconstruction_h
 
 #include "vtkPolyDataAlgorithm.h"
+#include "PoissonReconstructionConfigure.h"
 
-class vtkPoissonReconstruction : public vtkPolyDataAlgorithm
+class PoissonReconstruction_EXPORT vtkPoissonReconstruction : public vtkPolyDataAlgorithm
   {
 public:
   vtkTypeRevisionMacro(vtkPoissonReconstruction, vtkPolyDataAlgorithm);
