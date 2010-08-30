@@ -1,7 +1,7 @@
 PROJECT( GOFIGURE2 )
 
-# CMake >= 2.6 MUST be installed
-CMAKE_MINIMUM_REQUIRED( VERSION 2.6 )
+# CMake >= 2.8.2 MUST be installed (which is requiered by ITK)
+CMAKE_MINIMUM_REQUIRED( VERSION 2.8.2 )
 
 IF( COMMAND CMAKE_POLICY )
   CMAKE_POLICY( VERSION 2.6 )
