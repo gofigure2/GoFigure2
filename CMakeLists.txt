@@ -212,18 +212,22 @@ IF( VTK_FOUND )
     INCLUDE( ${ITK_USE_FILE} )
 
     IF( ( ${ITK_VERSION_MAJOR} LESS 3 ) OR 
-        ( ${ITK_VERSION_MINOR} LESS 18 ) )
+        ( ( ${ITK_VERSION_MAJOR} EQUAL 3 ) AND
+          ( ${ITK_VERSION_MINOR} LESS 18 ) ) )
       MESSAGE( SEND_ERROR
         "GoFigure2 requires ITK 3.18 or newer version (your version of ITK is ${ITK_VERSION})" )
     ENDIF( ( ${ITK_VERSION_MAJOR} LESS 3 ) OR 
-        ( ${ITK_VERSION_MINOR} LESS 18 ) )
+        ( ( ${ITK_VERSION_MAJOR} EQUAL 3 ) AND
+          ( ${ITK_VERSION_MINOR} LESS 18 ) ) )
 
-    IF( ( ${ITK_USE_REVIEW} MATCHES "OFF" ) OR 
-        ( ${ITK_USE_REVIEW_STATISTICS} MATCHES "OFF" ) )
-      MESSAGE( SEND_ERROR
-        "GoFigure2 requires ITK to be compiled with USE_REVIEW and USE_REVIEW_STATISTICS turned ON" )
-     ENDIF( ( ${ITK_USE_REVIEW} MATCHES "OFF" ) OR 
-        ( ${ITK_USE_REVIEW_STATISTICS} MATCHES "OFF" ) )
+    IF( ${ITK_VERSION_MAJOR} EQUAL 3 )
+      IF( ( ${ITK_USE_REVIEW} MATCHES "OFF" ) OR 
+          ( ${ITK_USE_REVIEW_STATISTICS} MATCHES "OFF" ) )
+        MESSAGE( SEND_ERROR
+          "GoFigure2 requires ITK to be compiled with USE_REVIEW and USE_REVIEW_STATISTICS turned ON" )
+       ENDIF( ( ${ITK_USE_REVIEW} MATCHES "OFF" ) OR 
+          ( ${ITK_USE_REVIEW_STATISTICS} MATCHES "OFF" ) )
+    ENDIF( ${ITK_VERSION_MAJOR} EQUAL 3 )
    
 
   ENDIF( ITK_FOUND )
